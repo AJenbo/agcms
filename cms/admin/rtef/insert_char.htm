@@ -1,0 +1,87 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title>Loading...</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<style type="text/css"><!--
+body { background: #EFEDDE; margin: 0px; }
+table { vertical-align: middle; text-align: center; border: 1px solid #e7e7e7; }
+td { font-family: tahoma, arial; font-size: 12px; vertical-align: middle; text-align: center; border: 1px solid #e7e7e7; height: 15px; width: 18px; background-color:lightyellow; cursor:pointer }
+--></style>
+<script type="text/javascript"><!--
+function selectChar(ch) {
+ window.opener.insertHTML(ch);
+ window.close();
+}
+function InitCharPalette() {
+	var x = document.getElementsByTagName('td');
+	for (var i=0; i < x.length; i++) {
+		x[i].onmouseover = over;
+		x[i].onmouseout = out;
+		x[i].onclick = click;
+	}
+	document.title = window.opener.lblInsertChar;
+}
+function over() {
+	this.style.border = '1px dotted #696969';
+	this.style.backgroundColor = '#ffff99';
+}
+function out() {
+	this.style.border = '1px solid #e7e7e7';
+	this.style.backgroundColor = 'lightyellow';
+}
+function click() {
+	selectChar(this.title);
+}
+//-->
+</script>
+</head><body onload="focus();InitCharPalette();">
+<table cellpadding="0" cellspacing="2" border="0">
+<tr><td style="cursor:pointer" title="¢">¢</td><td title="€">€</td><td title="£">£</td>
+<td title="¤">¤</td><td title="¥">¥</td><td title="©">©</td>
+<td title="®">®</td><td title="™">™</td><td title="÷">÷</td>
+<td title="×">×</td><td title="±">±</td><td title="¼">¼</td>
+<td title="½">½</td><td title="¾">¾</td><td title="°">°</td>
+<td title="¹">¹</td><td title="²">²</td><td title="³">³</td>
+<td title="µ">µ</td><td title="«">«</td>
+</tr><tr>
+<td title="»">»</td><td title="&quot;">&quot;</td><td title="‘">‘</td>
+<td title="’">’</td><td title="‹">‹</td><td title="›">›</td>
+<td title="‚">‚</td><td title="„">„</td><td title="“">“</td>
+<td title="”">”</td><td title="¡">¡</td><td title="¦">¦</td>
+<td title="§">§</td><td title="¬">¬</td><td title="¯">¯</td>
+<td title="¶">¶</td><td title="·">·</td><td title="¸">¸</td>
+<td title="¿">¿</td><td title="ƒ">ƒ</td>
+</tr><tr>
+<td title="—">—</td><td title="–">–</td><td title="•">•</td>
+<td title="…">…</td><td title="‰">‰</td><td title="ª">ª</td>
+<td title="º">º</td><td title="ß">ß</td><td title="†">†</td>
+<td title="‡">‡</td><td title="ð">ð</td><td title="Ð">Ð</td>
+<td title="ø">ø</td><td title="Ø">Ø</td><td title="þ">þ</td>
+<td title="Þ">Þ</td><td title="œ">œ</td><td title="Œ">Œ</td>
+<td title="š">š</td><td title="Š">Š</td>
+</tr><tr>
+<td title="´">´</td><td title="ˆ">ˆ</td><td title="˜">˜</td>
+<td title="¨">¨</td><td title="à">à</td><td title="á">á</td>
+<td title="â">â</td><td title="ã">ã</td><td title="ä">ä</td>
+<td title="å">å</td><td title="æ">æ</td><td title="À">À</td>
+<td title="Á">Á</td><td title="Â">Â</td><td title="Ã">Ã</td>
+<td title="Ä">Ä</td><td title="Å">Å</td><td title="Æ">Æ</td>
+<td title="ç">ç</td><td title="Ç">Ç</td>
+</tr><tr>
+<td title="è">è</td><td title="é">é</td><td title="ê">ê</td>
+<td title="ë">ë</td><td title="È">È</td><td title="É">É</td>
+<td title="Ê">Ê</td><td title="Ë">Ë</td><td title="ì">ì</td>
+<td title="í">í</td><td title="î">î</td><td title="ï">ï</td>
+<td title="Ì">Ì</td><td title="Í">Í</td><td title="Î">Î</td>
+<td title="Ï">Ï</td><td title="ñ">ñ</td><td title="Ñ">Ñ</td>
+<td title="ò">ò</td><td title="ó">ó</td>
+</tr><tr>
+<td title="ô">ô</td><td title="õ">õ</td><td title="ö">ö</td>
+<td title="Ò">Ò</td><td title="Ó">Ó</td><td title="Ô">Ô</td>
+<td title="Õ">Õ</td><td title="Ö">Ö</td><td title="ù">ù</td>
+<td title="ú">ú</td><td title="û">û</td><td title="ü">ü</td>
+<td title="Ù">Ù</td><td title="Ú">Ú</td><td title="Û">Û</td>
+<td title="Ü">Ü</td><td title="ý">ý</td><td title="ÿ">ÿ</td>
+<td title="Ý">Ý</td><td title="Ÿ">Ÿ</td>
+</tr></table></body></html>

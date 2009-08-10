@@ -1,0 +1,105 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title>Loading...</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<style type="text/css">
+<!--
+body {
+	background-color: #EFEDDE;
+	margin: 10px;
+}
+table {
+	font-family: Tahoma, Arial, Helvetica, sans-serif;
+	font-size: 12px;
+}
+legend {
+	font-family: Tahoma, Arial, Helvetica, sans-serif;
+	font-size: 14px;
+	padding-left: 5px;
+	padding-right: 8px;
+}
+.style2 {
+	font-size: 18px;
+	background:black;
+	font-weight:bold;
+	color:white;
+	display:block;
+	width:100%;
+}
+.show {
+	left:auto;
+	top:auto;
+	position:auto;
+}
+.hide {
+	left:-1000px;
+	top:-1000px;
+	position:absolute;
+}
+-->
+</style>
+<script type="text/javascript"><!--
+function submitForm() {
+	if(document.getElementById("searchText").value == ""){
+		alert(window.opener.lblSearchVal0);
+		return;
+	}
+	window.opener.SearchAndReplace(document.getElementById("searchText").value, document.getElementById("replaceText").value, document.getElementById("matchCase").checked, document.getElementById("wholeWord").checked);
+	window.close();
+	return false;
+}
+//--></script>
+</head>
+<body onload="focus();">
+<!--Thanks to Tom Bovingdon and Rob Rix-->
+<form name="linkForm" onsubmit="submitForm();" action="">
+  <table cellpadding="0" cellspacing="0" border="0" width="100%">
+    <tr>
+      <td><fieldset style="margin-left: 5px;">
+        <legend id="lblSearch"></legend>
+        <div style="padding: 2px;"></div>
+        <table cellpadding="4" cellspacing="0" border="0" width="100%">
+          <tr>
+            <td align="right" style="white-space:nowrap" id="lblSearchFind"></td>
+            <td>&nbsp;<input name="searchText" type="text" id="searchText" style="width:250px;height:18px;font-size:14px" value="" /></td>
+          </tr>
+          <tr>
+            <td align="right" style="white-space:nowrap" id="lblSearchReplace"></td>
+            <td>&nbsp;<input name="replaceText" type="text" id="replaceText" style="width:250px;height:18px;font-size:14px" value="" /></td>
+          </tr>
+          <tr>
+            <td align="right" style="white-space:nowrap">&nbsp;</td>
+            <td align="left" id="lblSearchMatch"><input id="matchCase" name="matchCase" type="checkbox" />
+				<br />
+                <input id="wholeWord" name="wholeWord" type="checkbox" /></td>
+          </tr>
+        </table>
+        <div style="padding: 2px;"></div>
+        </fieldset></td>
+      <td></td>
+      <td align="left" valign="top" style="padding: 8px;"><input type="button" name="btnsubmit" id="btnsubmit" value="" style="width:100px" onclick="submitForm();" />
+        <br />
+        <input type="button" name="btncancel" id="btncancel" value="" style="width:100px;" onclick="window.close();" />
+      </td>
+    </tr>
+  </table>
+</form>
+<script type="text/javascript"><!--
+	document.getElementById("btnsubmit").value = window.opener.lblSearchSubmit;
+	document.getElementById("btncancel").value = window.opener.lblSearchCancel;
+
+	document.getElementById("searchText").value = window.opener.selectedText;
+	
+	document.getElementById('lblSearch').appendChild(document.createTextNode(window.opener.lblSearch));
+	document.getElementById('lblSearchFind').appendChild(document.createTextNode(window.opener.lblSearchFind+':'));
+	document.getElementById('lblSearchReplace').appendChild(document.createTextNode(window.opener.lblSearchReplace+':'));
+	
+	var lblSearchMatch = document.getElementById('lblSearchMatch');
+	lblSearchMatch.insertBefore(document.createTextNode(window.opener.lblSearchMatch), lblSearchMatch.childNodes[1]);
+	lblSearchMatch.appendChild(document.createTextNode(window.opener.lblSearchWholeWord));
+	
+	document.title = window.opener.lblSearch;
+--></script>
+</body>
+</html>

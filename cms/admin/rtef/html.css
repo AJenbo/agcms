@@ -1,0 +1,37 @@
+* {
+	background-color:#FFFFFF;
+	padding:0px;
+	margin:0px;
+	border:0px;
+	font-size:12px;
+	font-family:"Courier New", Courier, mono;
+	border-collapse:collapse;
+	text-decoration:none;
+	font-style:normal;
+	font-weight:normal;
+}
+body {
+	margin:8px;
+	color:#000000;
+}
+.tag {
+	color:#000099;
+	margin:0;
+	display:block;
+}
+blockquote {
+	margin:0 0 0 15px;
+}
+b {
+	font-weight:bold;
+}
+.literal {
+	color:#0000FF;
+}
+.comment {
+	color:#CCCCCC;
+	display:block;
+}
+img, iframe, object, embed, input, textarea {
+	display:none;
+}

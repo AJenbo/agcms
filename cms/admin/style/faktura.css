@@ -1,0 +1,63 @@
+@charset "utf-8";
+body, table, input, select {
+	font-size:10px;
+	font-family:Verdana, Geneva, sans-serif;
+}
+
+select, input {
+	border:1px dashed #999999;
+}
+
+input[type=checkbox] {
+	border:2px inset threedface;
+}
+
+input[type=submit], input[type=button] {
+	border:2px outset buttonface;
+}
+
+#print {
+	display:none;
+}
+
+.tal {
+	text-align:right;
+}
+
+thead {
+	font-weight:bold;
+}
+
+img {
+	border:0;
+}
+
+#data {
+	border-collapse:collapse;
+}
+
+#data thead td {
+	vertical-align:middle;
+}
+
+
+#data thead td, .border td {
+	border:1px #000000 solid;
+}
+
+#data tbody td, #data tfoot td {
+	border-right:1px #000000 solid;
+	border-left:1px #000000 solid;
+}
+
+.border td {
+	border-top:2px #000000 solid;
+	vertical-align:middle;
+}
+
+#payamount {
+	font-size:12px;
+}
+#note {
+	width:525px;
+}

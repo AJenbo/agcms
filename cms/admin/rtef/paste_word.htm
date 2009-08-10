@@ -1,0 +1,161 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<!-- TODO change this to and rtef so users don't have to paist html -->
+<title>Loading...</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<style type="text/css"><!--
+body {
+	font-family: Tahoma, Arial, Helvetica, sans-serif;
+	font-size: 12px;
+	background-color: #EFEDDE;
+	margin: 10px;
+}
+legend {
+	font-family: Tahoma, Arial, Helvetica, sans-serif;
+	font-size: 14px;
+	padding-left: 5px;
+	padding-right: 8px;
+}
+.style2 {
+	font-size: 18px;
+	background:black;
+	font-wieght:bold;
+	color:white;
+	display:block;
+	width:100%;
+}
+.show {
+	left:auto;
+	top:auto;
+	position:auto;
+}
+.hide {
+	left:-1000px;
+	top:-1000px;
+	position:absolute;
+}
+--></style>
+<script type="text/javascript" src="lang/en.js"></script>
+<script type="text/javascript" src="richtext_compressed.js"></script>
+<script type="text/javascript" src="xhtml.js"></script>
+<script type="text/javascript"> 
+<!--
+
+function submitForm() {
+	updateRTEs();
+	if (document.getElementById('cleanText').value==''){ 
+		alert(window.opener.lblPasteWordVal0); 
+	}else{
+		cleaned = stripWord(document.getElementById('cleanText').value); 
+		window.opener.insertHTML(cleaned); 
+		window.close(); 
+	}
+}
+
+function stripWord(html){ 
+   html = html.replace(/<o:p>\s*<\/o:p>/g,"<br>"); 
+// .*? swap for [^<]* to be IE5.0 compatible
+	html = html.replace(/<o:p>.*?<\/o:p>/g,"&nbsp;<br>"); 
+   // Remove mso-xxx styles. 
+   html = html.replace(/\s*mso-[^:]+:[^;"]+;?/gi,""); 
+   // Remove margin styles - does not affect indented text 
+   html = html.replace(/\s*MARGIN: 0cm 0cm 0pt\s*;/gi,""); 
+   html = html.replace(/\s*MARGIN: 0cm 0cm 0pt\s*"/gi,"\""); 
+   html = html.replace(/\s*TEXT-INDENT: 0cm\s*;/gi,""); 
+   html = html.replace(/\s*TEXT-INDENT: 0cm\s*"/gi,"\""); 
+   html = html.replace(/\s*TEXT-ALIGN: [^\s;]+;?"/gi,"\""); 
+   html = html.replace(/\s*PAGE-BREAK-BEFORE: [^\s;]+;?"/gi,"\""); 
+   html = html.replace(/\s*FONT-VARIANT: [^\s;]+;?"/gi,"\""); 
+   html = html.replace(/\s*tab-stops:[^;"]*;?/gi,""); 
+   html = html.replace(/\s*tab-stops:[^"]*/gi,""); 
+   // Remove FONT face attributes. 
+   html = html.replace(/\s*face="[^"]*"/gi,""); 
+   html = html.replace(/\s*face=[^ >]*/gi,""); 
+   html = html.replace(/\s*FONT-FAMILY:[^;"]*;?/gi,""); 
+   // Remove Class attributes 
+   html = html.replace(/<(\w[^>]*) class=([^ |>]*)([^>]*)/gi,"<$1$3"); 
+   // Remove styles. 
+   html = html.replace(/<(\w[^>]*) style="([^\"]*)"([^>]*)/gi,"<$1$3"); 
+   // Remove empty styles. 
+   html = html.replace(/\s*style="\s*"/gi,''); 
+   html = html.replace(/<SPAN\s*[^>]*>\s*&nbsp;\s*<\/SPAN>/gi,'&nbsp;'); 
+   html = html.replace(/<SPAN\s*[^>]*><\/SPAN>/gi,''); 
+   // Remove Lang attributes 
+   html = html.replace(/<(\w[^>]*) lang=([^ |>]*)([^>]*)/gi,"<$1$3"); 
+// .*? swap for [^<]* to be IE5.0 compatible
+	html = html.replace(/<SPAN\s*>(.*?)<\/SPAN>/gi,'$1'); 
+// .*? swap for [^<]* to be IE5.0 compatible
+	html = html.replace(/<FONT\s*>(.*?)<\/FONT>/gi,'$1'); 
+   // Remove XML elements and declarations 
+   html = html.replace(/<\\?\?xml[^>]*>/gi,""); 
+   // Remove Tags with XML namespace declarations: <o:p></o:p> 
+   html = html.replace(/<\/?\w+:[^>]*>/gi,""); 
+   html = html.replace(/<H\d>\s*<\/H\d>/gi,''); 
+   html = html.replace(/<H1([^>]*)>/gi,'<span style="font-size:22;font-weight:bold">'); 
+   html = html.replace(/<H2([^>]*)>/gi,'<span style="font-size:20;font-weight:bold">'); 
+   html = html.replace(/<H3([^>]*)>/gi,'<span style="font-size:18;font-weight:bold">'); 
+   html = html.replace(/<H4([^>]*)>/gi,'<span style="font-size:16;font-weight:bold">'); 
+   html = html.replace(/<H5([^>]*)>/gi,'<span style="font-size:14;font-weight:bold">'); 
+   html = html.replace(/<H6([^>]*)>/gi,'<span style="font-size:12;font-weight:bold">'); 
+   html = html.replace(/<\/H\d>/gi, '</span><br><br>'); 
+   html = html.replace(/<(U|I|STRIKE)>&nbsp;<\/\1>/g,'&nbsp;'); 
+
+   // Remove empty tags (three times, just to be sure). 
+   html = html.replace(/<([^\s>]+)[^>]*>\s*<\/\1>/g,''); 
+   // Transform <P> to <span> 
+// Doesnt work in IE5 because of the .*?
+//if(!opener.isIE5) {
+	var re = new RegExp("(<P)([^>]*>.*?)(<\/P>)","gi");
+	html=html.replace(re,"<span$2</span>");
+//}
+	//remove douple line brakes.
+/*	html = html.replace(/<p>/gi,"");
+	html = html.replace(/<\/p>/gi,"");
+/*	html = html.replace(/<span>/gi,"");
+	html = html.replace(/<\/span>/gi,""); 
+*/	
+	
+	return html;
+}
+//--> 
+</script><script type="text/javascript"><!--
+//Usage: initRTE(imagesPath, includesPath, cssFile, genXHTML)
+initRTE("images/", "", "", true);
+
+// Optional javascript rteSafe function
+// var SAFE_CONTENT = rteSafe(YOUR_CONTENT);
+// writeRichText('rte1', SAFE_CONTENT, '', 500, 150, true, false, false);
+
+//--></script>
+</head>
+<body onload="focus();">
+<form action="">
+  <fieldset style="margin:8px;">
+  <legend id="lblPasteWord">
+  </legend>
+  <div style="padding:8px;" id="lblPasteWordHint">
+	<br /><br />
+   <script type="text/javascript"><!--
+//Usage: writeRichText(fieldname, html, css_override, width, height, buttons, readOnly, fullscreen)
+writeRichText('cleanText', '', '', 280, 230, false, false, false);
+//--></script>
+  </div>
+  </fieldset>
+  <div style="text-align:center">
+    <input type="button" name="btnsubmit" id="btnsubmit" value="" style="width:100px" onclick="submitForm();"/>
+    &nbsp;
+    <input type="button" name="btncancel" id="btncancel" value="" style="width:100px" onclick="window.close();"/>
+  </div>
+</form>
+<script type="text/javascript"><!--
+	document.getElementById('lblPasteWord').appendChild(document.createTextNode(window.opener.lblPasteWord));
+	var lblPasteWordHint = document.getElementById('lblPasteWordHint');
+	lblPasteWordHint.insertBefore(document.createTextNode(window.opener.lblPasteWordHint), lblPasteWordHint.firstChild);
+	document.getElementById('btnsubmit').value = window.opener.lblPasteWordSubmit;
+	document.getElementById('btncancel').value = window.opener.lblPasteWordCancel;
+	document.getElementById('cleanText').focus();
+	document.title = window.opener.lblPasteWord;
+--></script>
+</body>
+</html>

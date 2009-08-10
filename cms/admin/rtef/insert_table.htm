@@ -1,0 +1,120 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title>Loading...</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<style type="text/css">
+<!--
+body {
+	background: #EFEDDE;
+	margin:10px;
+}
+table {
+	font-family: Tahoma, Arial, Helvetica, sans-serif;
+	font-size: 12px;
+}
+legend {
+	font-family: Tahoma, Arial, Helvetica, sans-serif;
+	font-size: 14px;
+	padding-left: 5px;
+	padding-right: 8px;
+}
+-->
+</style>
+<script type="text/javascript">
+<!--
+
+function AddTable() {
+	var widthType = (document.getElementById('tableForm').widthType.value == "pixels") ? "" : "%";
+	var html = '<table border="' + document.getElementById('tableForm').border.value + '" cellpadding="' + document.getElementById('tableForm').padding.value + '" ';
+	html += 'cellspacing="' + document.getElementById('tableForm').spacing.value + '" width="' + document.getElementById('tableForm').width.value + widthType + '"><tbody>';
+	for (var rows = 0; rows < document.getElementById('tableForm').rows.value; rows++) {
+		html += "<tr>";
+		for (cols = 0; cols < document.getElementById('tableForm').columns.value; cols++) {
+			html += '<td valign="top">&nbsp;</td>';
+		}
+		html+= "</tr>";
+	}
+	html += "</tbody></table>";
+	window.opener.insertHTML(html);
+	window.opener.showGuidelines("");
+	window.close();
+}
+//-->
+</script>
+</head>
+<body>
+<form id="tableForm" onsubmit="AddTable();" action="">
+  <table cellpadding="0" cellspacing="0" border="0" width="100%">
+    <tr>
+      <td><fieldset style="margin-left: 5px;">
+        <legend id="lblInsertTable"></legend>
+        <div style="padding: 2px;"></div>
+        <table cellpadding="0" cellspacing="0" border="0" width="100%">
+          <tr>
+            <td align="right" id="lblTableRows"></td>
+            <td>&nbsp;<input name="rows" type="text" id="rows" value="1" size="4" />&nbsp;</td>
+            <td align="left" valign="middle" style="white-space:nowrap" id="lblTableColumns">:
+              <input name="columns" type="text" id="columns" value="2" size="4" /></td>
+          </tr>
+          <tr>
+            <td align="right" id="lblTableWidth"></td>
+            <td>&nbsp;<input name="width" type="text" id="width" value="100" size="4" />&nbsp;</td>
+            <td align="left" id="widthTypeContainer">
+            </td>
+          </tr>
+          <tr>
+            <td align="right" style="white-space:nowrap" id="lblTableBorder"></td>
+            <td>&nbsp;<input name="border" type="text" id="border" value="0" size="4" />&nbsp;</td>
+            <td align="left" id="lblTablePx"></td>
+          </tr>
+          <tr>
+            <td align="right" id="lblTablePadding"></td>
+            <td>&nbsp;<input name="padding" type="text" id="padding" value="4" size="4" />&nbsp;</td>
+            <td valign="middle" style="white-space:nowrap" id="lblTableSpacing"><input name="spacing" type="text" id="spacing" value="0" size="4" />&nbsp;</td>
+          </tr>
+        </table>
+        <div style="padding: 2px;"></div>
+        </fieldset></td>
+      <td valign="top" style="padding: 8px;"><input type="button" name="btnsubmit" id="btnsubmit" value="" onclick="AddTable();" style="width:100px"/>
+        <br />
+        <input type="button" name="btncancel" id="btncancel" value="" onclick="window.close();" style="width:100px"/>
+      </td>
+    </tr>
+  </table>
+</form>
+<script type="text/javascript"><!--
+	document.getElementById('lblInsertTable').appendChild(document.createTextNode(window.opener.lblInsertTable));
+	document.getElementById('lblTablePx').appendChild(document.createTextNode(window.opener.lblTablePx));
+	document.getElementById('lblTableWidth').appendChild(document.createTextNode(window.opener.lblTableWidth+':'));
+	document.getElementById('lblTablePadding').appendChild(document.createTextNode(window.opener.lblTablePadding+':'));
+	document.getElementById('lblTableBorder').appendChild(document.createTextNode(window.opener.lblTableBorder+':'));
+	document.getElementById('lblTableRows').appendChild(document.createTextNode(window.opener.lblTableRows+':'));
+
+	var lblTableColumns = document.getElementById('lblTableColumns');
+	lblTableColumns.insertBefore(document.createTextNode(window.opener.lblTableColumns), lblTableColumns.firstChild);
+	var lblTableSpacing = document.getElementById('lblTableSpacing');
+	lblTableSpacing.insertBefore(document.createTextNode(window.opener.lblTableSpacing+': '), lblTableSpacing.firstChild);
+
+	var widthTypeContainer = document.createElement('select');
+	widthTypeContainer.setAttribute("name", "widthType");
+	widthTypeContainer.setAttribute("id", "widthType");
+	
+	var lblTablePercent = document.createElement('option');
+	lblTablePercent.setAttribute("value", "percent");
+	lblTablePercent.setAttribute("selected", "selected");
+	lblTablePercent.appendChild(document.createTextNode(window.opener.lblTablePercent));
+	widthTypeContainer.appendChild(lblTablePercent);
+	var lblTablePx = document.createElement('option');
+	lblTablePx.setAttribute("value", "pixels");
+	lblTablePx.appendChild(document.createTextNode(window.opener.lblTablePx));
+	widthTypeContainer.appendChild(lblTablePx);
+	document.getElementById('widthTypeContainer').appendChild(widthTypeContainer);
+
+	document.getElementById('btnsubmit').value = window.opener.lblTableSubmit;
+	document.getElementById('btncancel').value = window.opener.lblTableCancel;
+	document.title = window.opener.lblInsertTable;
+	document.body.focus();
+--></script>
+</body>
+</html>

@@ -1,0 +1,11 @@
+@charset "utf-8";
+#dir a {
+	padding:1px 3px 1px 3px;
+}
+#dir a:active, #dir .active {
+	color:CaptionText;
+	background-color:ActiveCaption;
+}
+#files .image {
+	line-height:96px;
+}

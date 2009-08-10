@@ -1,0 +1,56 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+	<title>Cross-Browser Rich Text Editor</title>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+	<script type="text/javascript" src="lang/en.js"></script>
+	<script type="text/javascript" src="richtext_compressed.js"></script>
+	<script type="text/javascript" src="xhtml.js"></script>
+	<style type="text/css"><!--
+		.font {
+			font-family:Tahoma, Arial, Helvetica, sans-serif;
+			font-size:small;
+		}
+	--></style>
+</head>
+<body>
+<form action="demo.htm" method="post" id="RTEDemo" onsubmit="return submitForm();">
+<script type="text/javascript"><!--
+function submitForm() {
+	//make sure hidden and iframe values are in sync before submitting form
+	updateRTEs();
+	alert("rte1 = "+document.getElementById('RTEDemo').rte1.value+"\n\nrte2 = "+document.getElementById('RTEDemo').rte2.value+"\n\nrte3 = "+document.getElementById('RTEDemo').rte3.value+"\n\nrte4 = "+document.getElementById('RTEDemo').rte4.value);
+	//change the following line to true to submit form
+	return false;
+}
+
+//Usage: initRTE(imagesPath, includesPath, cssFile, genXHTML)
+initRTE("images/", "", "", true);
+
+// Optional javascript rteSafe function
+// var SAFE_CONTENT = rteSafe(YOUR_CONTENT);
+// writeRichText('rte1', SAFE_CONTENT, '', 500, 150, true, false, false);
+
+//--></script>
+<div class="font">RTE 1: Example of regular rte at a normal width<br />
+<script type="text/javascript"><!--
+//Usage: writeRichText(fieldname, html, css_override, width, height, buttons, readOnly, fullscreen)
+writeRichText('rte1', 'here&#39;s the "<em>preloaded </em><b>content</b>"', '', 650, 300, true, false, false);
+//--></script><noscript><p><textarea rows="" cols="" style="width:648px; height:229px" name="rte1" id="rte1">here&apos;s the "&lt;em&gt;preloaded&lt;/em&gt; &lt;b&gt;content&lt;/b&gt;"</textarea></p></noscript>
+<br />
+RTE 2: Example of regular rte at a narrow width (which invokes the icon auto-wrap)<br />
+<script type="text/javascript"><!--
+writeRichText('rte2', 'here&#39;s the "<em>preloaded </em><b>content</b>"', '', 175, 400, true, false, false);
+--></script><noscript><p><textarea rows="" cols="" style="width:173px; height:400px" name="rte2" id="rte2">here&apos;s the "&lt;em&gt;preloaded&lt;/em&gt; &lt;b&gt;content&lt;/b&gt;"</textarea></p></noscript>
+<br />
+RTE 3: Example of a rte with buttons disabled <br />
+<script type="text/javascript"><!--
+writeRichText('rte3', 'here&#39;s the "<em>preloaded </em><b>content</b>"', '', 300, 300, false, false, false);
+--></script><noscript><p><textarea rows="" cols="" style="width:298px; height:300px" name="rte3" id="rte3">here&apos;s the "&lt;em&gt;preloaded&lt;/em&gt; &lt;b&gt;content&lt;/b&gt;"</textarea></p></noscript>
+</div>
+<p>
+	<input type="submit" name="submit" value="Submit" />
+</p>
+</form>
+</body>
+</html>

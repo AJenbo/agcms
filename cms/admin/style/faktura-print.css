@@ -1,0 +1,110 @@
+@charset "utf-8";
+#web, #mainmenu {
+	display:none;
+}
+
+.tal {
+	text-align:right;
+}
+
+body, table {
+	font-size:10pt;
+}
+
+#main {
+	margin-bottom:5mm;
+}
+
+h1 {
+	font-size:35.5pt;
+	display:inline;
+	padding-bottom:2.6mm;
+	border-bottom:1.5pt #000000 solid;
+}
+
+address {
+	background-color:#FFFFFF;
+	border-left:1.5pt solid #000000;
+	font-size:10pt;
+	font-style:normal;
+	padding-left:8mm;
+	text-align:right;
+	float:right;
+}
+
+#postadresse {
+	margin-top:22mm;
+	margin-left:2mm;
+	width:81mm;
+	height:29mm;
+	font-size:11pt;
+}
+
+#ref span {
+	padding-right:7mm;
+}
+
+#fakturadiv {
+	margin-top:1mm;
+	font-size:25pt;
+	float:right;
+}
+
+#ref {
+	padding-top:17pt;
+}
+
+#printdata {
+	height:12cm;
+	width:100%;
+	border-collapse:collapse;
+}
+
+#printdata td {
+	vertical-align:bottom;
+	padding:1pt 3pt;
+}
+
+#printdata thead td {
+	vertical-align:middle;
+}
+
+#printdata thead td, .border td {
+	border:1pt #000000 solid;
+}
+
+#printdata tbody td, #printdata tfoot td {
+	border-right:1pt #000000 solid;
+	border-left:1pt #000000 solid;
+}
+
+.td1 {
+	width:2cm;
+}
+
+.td3 {
+	width:25mm;
+}
+
+.td4 {
+	width:3cm;
+}
+
+.border td {
+	border-top:1.5pt #000000 solid;
+	vertical-align:middle;
+}
+
+#printpayamount {
+	font-size:12pt;
+}
+
+tr {
+	height:6mm;
+	min-height:6mm;
+	max-height:6mm;
+}
+
+p {
+	margin:0;
+}

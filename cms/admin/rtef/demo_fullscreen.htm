@@ -1,0 +1,33 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+	<title>Cross-Browser Rich Text Editor</title>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+	<script type="text/javascript" src="lang/en.js"></script>
+	<script type="text/javascript" src="richtext_compressed.js"></script>
+	<script type="text/javascript" src="xhtml.js"></script>
+</head>
+<body scroll="no">
+<form action="demo_fullscreen.htm" method="post" id="RTEDemo" onsubmit="return submitForm();">
+<script type="text/javascript"><!--
+function submitForm() {
+	//make sure hidden and iframe values are in sync before submitting form
+	updateRTEs();
+	alert("rte1 = " + document.getElementById('RTEDemo').rte1.value);
+	//change the following line to true to submit form
+	return false;
+}
+//Usage: initRTE(imagesPath, includesPath, cssFile, genXHTML)
+initRTE("images/", "", "", true);
+//--></script>
+<script type="text/javascript"><!--
+// Optional javascript rteSafe function
+// var SAFE_CONTENT = rteSafe(YOUR_CONTENT);
+// writeRichText('rte1', SAFE_CONTENT, '', 100, 150, true, false, true);
+
+//Usage: writeRichText(fieldname, html, css_override, width, height, buttons, readOnly, fullscreen)
+writeRichText('rte1', 'here&#39;s the "<em>preloaded </em><b>content</b>"', '', 100, 150, true, false, true);
+//--></script><noscript><p><textarea rows="" cols="" style="width: 100%; height: 100%; bottom: 0px; top: 0px; left: 0px; right: 0px; position: absolute;" name="rte1" id="rte1">here&apos;s the "&lt;em&gt;preloaded&lt;/em&gt; &lt;b&gt;content&lt;/b&gt;"</textarea></p></noscript>
+</form>
+</body>
+</html>

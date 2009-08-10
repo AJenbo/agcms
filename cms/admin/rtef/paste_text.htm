@@ -1,0 +1,88 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title>Loading...</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<style type="text/css"><!--
+body {
+	font-family: Tahoma, Arial, Helvetica, sans-serif;
+	font-size: 12px;
+	background-color: #EFEDDE;
+	margin: 10px;
+}
+legend {
+	font-family: Tahoma, Arial, Helvetica, sans-serif;
+	font-size: 14px;
+	padding-left: 5px;
+	padding-right: 8px;
+}
+.style2 {
+	font-size: 18px;
+	background:black;
+	font-wieght:bold;
+	color:white;
+	display:block;
+	width:100%;
+}
+.show {
+	left:auto;
+	top:auto;
+	position:auto;
+}
+.hide {
+	left:-1000px;
+	top:-1000px;
+	position:absolute;
+}
+--></style>
+<script type="text/javascript"> 
+<!--
+
+function submitForm(){
+  if (document.getElementById('cleanText').value==''){ 
+    alert(window.opener.lblPasteTextVal0); 
+  }else{
+    cleaned = formatText(document.getElementById('cleanText').value); 
+    window.opener.insertHTML(cleaned); 
+    window.close(); 
+  }
+}
+
+function formatText(html){ 
+   html = html.replace(/&/g, "&amp;"); 
+   html = html.replace(/</g, "&lt;"); 
+   html = html.replace(/>/g, "&gt;");
+   html = html.replace(/\n/g,"</p><p>"); 
+   html = html.replace(/\t/g,"&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"); 
+   return html; 
+}
+//--> 
+</script>
+</head>
+<body onload="focus();">
+<form action="">
+  <fieldset style="margin:8px;">
+  <legend id="lblPasteText">
+  </legend>
+  <div style="padding:8px;" id="lblPasteTextHint">
+	<br /><br />
+    <textarea name="cleanText" rows="" cols="" id="cleanText" style="width:280px; height:230px;"></textarea>
+  </div>
+  </fieldset>
+  <div style="text-align:center">
+    <input type="button" name="btnsubmit" id="btnsubmit" value="" style="width:100px" onclick="submitForm();"/>
+    &nbsp;
+    <input type="button" name="btncancel" id="btncancel" value="" style="width:100px" onclick="window.close();"/>
+  </div>
+</form>
+<script type="text/javascript"><!--
+	document.getElementById('lblPasteText').appendChild(document.createTextNode(window.opener.lblPasteText));
+	var lblPasteTextHint = document.getElementById('lblPasteTextHint');
+	lblPasteTextHint.insertBefore(document.createTextNode(window.opener.lblPasteTextHint), lblPasteTextHint.firstChild);
+	document.getElementById('btnsubmit').value = window.opener.lblPasteTextSubmit;
+	document.getElementById('btncancel').value = window.opener.lblPasteTextCancel;
+	document.getElementById('cleanText').focus();
+	document.title = window.opener.lblPasteText;
+--></script>
+</body>
+</html>
