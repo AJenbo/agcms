@@ -1,0 +1,38 @@
+@charset "utf-8";
+
+body {
+	margin:0;
+	border:0;
+	padding:0;
+}
+
+body, table, input {
+	font-family:Verdana, Geneva, sans-serif;
+	font-size:11px;
+}
+
+caption {
+	font-weight:bold;
+	text-align:left;
+}
+
+#menu {
+	width:145px;
+	position:fixed;
+	top:0;
+	bottom:0;
+	left:0;
+	background-color:#6fa4b1;
+}
+
+#menu a {
+	color:#FFF;
+	font-weight:bold;
+	text-decoration:none;
+	padding:3px;
+}
+
+#content {
+	margin-top:5px;
+	margin-left:150px;
+}
