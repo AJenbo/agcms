@@ -391,8 +391,8 @@ if($_GET['id'] && $_GET['checkid'] == getCheckid($_GET['id'])) {
 			$submit['Version'] = '2';
 			$submit['Customer_refno'] = $GLOBALS['_config']['pbsfix'].$faktura['id'];
 			$submit['Currency'] = 'DKK';
-			$submit['Amount'] = $faktura['amount']*100;
-			$submit['VAT'] = round($netto*$faktura['momssats']*100);
+			$submit['Amount'] = number_format($faktura['amount'], 2, '', '');
+			$submit['VAT'] = number_format($netto*$faktura['momssats'], 2, '', '');
 			$submit['Payment_method'] = 'KORTINDK';
 			$submit['Response_URL'] = $GLOBALS['_config']['base_url'].'/betaling/?checkid='.$_GET['checkid'];
 			$submit['Goods_description'] = '';
@@ -815,30 +815,6 @@ Mvh Computeren
 	if($_GET['checkid'])
 		$GLOBALS['generatedcontent']['text'] = 'Koden er ikke korrekt!';
 }
-	
-////////////////////////////////////////////////
-//send email
-/*
-include "inc/phpMailer/class.phpmailer.php";
-
-$mail             = new PHPMailer();
-$mail->SetLanguage('dk');
-$mail->IsSMTP();
-$mail->SMTPAuth   = true;                  // enable SMTP authentication
-$mail->Host       = "smtp.exserver.dk";      // sets the SMTP server
-$mail->Port       = 26;                   // set the SMTP port for the server
-$mail->Username   = $GLOBALS['_config']['email'][0];  //  username
-$mail->Password   = $GLOBALS['_config']['emailpassword'];            //  password
-$mail->CharSet    = 'utf-8';
-$mail->AddReplyTo($from, $_POST['navn']);
-$mail->From       = $from;
-$mail->FromName   = $_POST['navn'];
-$mail->Subject    = $subject;
-$mail->MsgHTML($body, $_SERVER['DOCUMENT_ROOT']);
-$mail->AddAddress($GLOBALS['_config']['email'][0], $GLOBALS['_config']['site_name']);
-$mail->Send();
-*/
-////////////////////////////////////////////////
 
 //Output page
 require_once 'theme/index.php';
