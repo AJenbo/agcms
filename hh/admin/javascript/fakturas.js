@@ -258,7 +258,7 @@ function sajax_do_call(func_name, args) {
 	var uri;
 	var post_data;
 	
-	uri = window.location;
+	uri = window.location.href;
 
 	if (uri.indexOf("?") == -1) 
 		uri += "?rs=" + encodeURIComponent(func_name);
