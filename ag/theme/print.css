@@ -1,0 +1,16 @@
+@charset "utf-8";
+#headder form, .web {
+	display:none;
+}
+.print {
+	/*not valid :(*/
+	display:auto;
+}
+#menu, #content, #footer, marquee, container, container {
+	height:auto;
+	overflow:visible;
+	overflow-x:visible;
+	overflow-y:visible;
+	bottom:auto;
+	position:static;
+}

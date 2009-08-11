@@ -1,0 +1,34 @@
+<?php
+$GLOBALS['_config']['base_url'] = 'http://arms-gallery.dk';
+$GLOBALS['_config']['site_name'] = 'Arms Gallery';
+$GLOBALS['_config']['address'] = 'Nybrogade 26 - 30';
+$GLOBALS['_config']['postcode'] = '1203';
+$GLOBALS['_config']['city'] = 'K�benhavn K';
+$GLOBALS['_config']['phone'] = '33 11 8338';
+$GLOBALS['_config']['fax'] = '33 14 8338';
+$GLOBALS['_config']['email'][] = 'mail@arms-gallery.dk';
+$GLOBALS['_config']['smtp'] = 'smtp.exserver.dk';
+$GLOBALS['_config']['emailpassword'] = '.45acp';
+$GLOBALS['_config']['interests'][] = 'Paintballbaner';
+$GLOBALS['_config']['interests'][] = 'Batterier';
+$GLOBALS['_config']['interests'][] = 'Buegrej';
+$GLOBALS['_config']['interests'][] = 'Taktisk materiel';
+$GLOBALS['_config']['interests'][] = 'Politiudstyr';
+$GLOBALS['_config']['interests'][] = 'Lygter';
+$GLOBALS['_config']['interests'][] = 'Knive og Tools';
+$GLOBALS['_config']['interests'][] = 'Luft- Haglvåben';
+$GLOBALS['_config']['interests'][] = 'Masker';
+$GLOBALS['_config']['interests'][] = 'Modelvåben';
+$GLOBALS['_config']['interests'][] = 'Paintball';
+$GLOBALS['_config']['interests'][] = 'Sigtemidler';
+$GLOBALS['_config']['interests'][] = 'Soft-Air-Guns';
+$GLOBALS['_config']['interests'][] = 'Sværd';
+$GLOBALS['_config']['interests'][] = 'Vagtudstyr';
+$GLOBALS['_config']['pbsid'] = '';
+$GLOBALS['_config']['pbspassword'] = '';
+$GLOBALS['_config']['pbsfix'] = 'AG';
+$GLOBALS['_config']['mysql_server'] = 'localhost';
+$GLOBALS['_config']['mysql_user'] = 'arms_gallery_dk';
+$GLOBALS['_config']['mysql_password'] = '460weatherby';
+$GLOBALS['_config']['mysql_database'] = 'arms_gallery_dk001';
+?>

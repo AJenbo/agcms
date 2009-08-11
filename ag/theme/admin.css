@@ -1,0 +1,26 @@
+.nypris {
+	font-size:16px;
+	font-weight:bold;
+	color:#CC0000;
+	line-height:125%;
+	font-family:"Times New Roman", Times, serif;
+}
+.pris {
+	font-size:15px;
+	font-weight:bold;
+	font-family:"Times New Roman", Times, serif;
+}
+.xpris {
+	font-size:14px;
+	font-weight:lighter;
+	color:#666666;
+	text-decoration:line-through;
+	font-family:"Times New Roman", Times, serif;
+}
+.admin_name {
+	font-size:17px;
+	font-weight:bold;
+	color:#333333;
+	font-family:"Times New Roman", Times, serif;
+	margin:0;
+}
