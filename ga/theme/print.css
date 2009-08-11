@@ -1,0 +1,8 @@
+@charset "utf-8";
+#headder form, .web {
+	display:none;
+}
+.print {
+	/*not valid :(*/
+	display:auto;
+}

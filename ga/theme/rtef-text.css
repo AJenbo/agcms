@@ -1,0 +1,59 @@
+@charset "utf-8";
+* {
+	font-family:Verdana, Geneva, sans-serif;
+}
+body {
+	text-align:left;
+	font-size:13px;
+	color:#333;
+}
+img {
+	border:0;
+}
+h1 {
+	font-size:17px;
+	color:#333333;
+}
+.vare {
+	text-align:center;
+}
+.vare div {
+	font-size:0;
+	line-height:199px;
+	height:200px;
+}
+.vare div * {
+	vertical-align:middle;
+}
+.vare h2 a {
+	padding:10px 0 5px 0;
+}
+#liste {
+	width:100%;
+}
+#liste td {
+	width:33%;
+}
+.vare h2 {
+	font-size:13px;
+	font-weight:normal;
+	margin:0;
+}
+.vare a {
+	text-decoration:none;
+	color:#000;
+	display:block;
+}
+#date {
+	border-top:1px #CCC solid;
+	color:#CCC;
+	font-size:10px;
+}
+marquee {
+	position:fixed;
+	bottom:0;
+	background-color:#FFF;
+	height:18px;
+	font-size:13px;
+	color:#333;
+}

@@ -1,0 +1,200 @@
+* {
+	border:0px;
+	font-family:"Times New Roman", Times, serif;
+	line-height:120%;
+}
+body {
+	background-color:#FFFCD5;
+	margin:0px;
+}
+#date {
+	display:none;
+}
+input, select, textarea {
+	border:1px solid #000000;
+}
+#wrapper {
+	position:absolute;
+	width:750px;
+	left:50%;
+	margin-left:-375px;
+}
+a {
+	text-decoration:none;
+	color: black;
+	font-weight: bold;
+}
+a:visited {
+	color:#8A0F12;
+}
+a:hover {
+	color:red;
+}
+#crumbs {
+	margin:0px;
+	position:absolute;
+	left:150px;
+	top:0px;
+	padding:0;
+}
+#crumbs * {
+	display:inline;
+	font-size:14px;
+	margin:0;
+	padding:0;
+}
+#crumbs * img {
+	vertical-align:text-top;
+}
+#crumbs li li a { background-color:#DFC586; padding:3px; margin:1px; line-height:25px; }
+#crumbs li li li a { background-color:#C7D6A9; }
+#crumbs li li li li a { background-color:#B3A9D6; }
+#crumbs li li li li li a { background-color:#D9E925; }
+#crumbs li li li li li li a { background-color:#D6A9B8; }
+h3 {
+	font-size:15px;
+	font-weight:bold;
+	text-align:center;
+	margin:0px;
+}
+h3 * {
+	font-size:15px;
+	font-weight:bold;
+}
+h4 {
+	display:inline;
+	font-weight:normal;
+}
+#menu {
+	position:absolute;
+	top:90px;
+	left:50%;
+	margin-left:-390px;
+	bottom:0px;
+	width:144px;
+	overflow:auto;
+	background-color:#FFFCD5;
+}
+#menu * {
+	margin:0px;
+	padding:0px;
+	font-weight: bold;
+	font-size: 14px;
+}
+#menu * img {
+	vertical-align:text-top;
+}
+#menu ul, #menu li {
+	display:inline;
+}
+
+#menu * a {
+	display:block;
+	padding:2px;
+	margin:2px 0;
+}
+#menu li li a {	background-color:#DFC586; }
+#menu li li li a { background-color:#C7D6A9; }
+#menu li li li li a { background-color:#B3A9D6; }
+#menu li li li li li a { background-color:#D9E925; }
+#menu li li li li li li a { background-color:#D6A9B8; }
+#menu a:visited {color:#8A0F12; }
+#menu a:hover {color:red;}
+#text {
+	position:absolute;
+	top:23px;
+	left:50%;
+	margin-left:-246px;
+	clip:auto;
+	width:636px;
+	background-color:#FFFCD5;
+	overflow:auto;
+	bottom:0px;
+}
+#text td, #text div {
+	font-size:16px;
+}
+.tabel {
+	width:100%;
+	clear:both;
+}
+.tabel * {
+	padding:1px;
+}
+.tabel thead {
+	background-color:#DFC586;
+}
+.tabel a {
+	font-weight:bold;
+}
+.altrow {
+	background-color:#F4DCA3;
+}
+#liste {
+	text-align:center;
+	width:587px;
+	margin-left:16px;
+	border-collapse:collapse;
+}
+#liste td {
+	border:0px;
+	width:50%;
+	vertical-align:top;
+	padding:5px 5px 15px 5px;
+}
+.NyPris {
+	font-size:16px;
+	font-weight:bold;
+	color:#CC0000;
+	line-height:125%;
+}
+.Pris {
+	font-size:14px;
+	font-weight:bold;
+}
+.XPris {
+	font-size: 17px;
+	text-decoration: line-through;
+}
+#liste a, h1 {
+	font-size:24px;
+	font-weight:bold;
+}
+.print {
+	display:none;
+}
+.note {
+	font-size:13px;
+	font-style:italic;
+}
+#faktura tbody td {
+	border:1px #000000 solid;
+	border-collapse:collapse;
+	padding:0;
+}
+#faktura thead td {
+	border:1px #000000 solid;
+	border-bottom:2px;
+	border-collapse:collapse;
+	font-weight:bold;
+}
+#faktura table {
+	font-size:14px;
+	border-collapse:collapse;
+}
+#text td .requred, .requred {
+	color:#CC3300;
+	font-size:12px;
+}
+#innercontainer {
+	width:600px;
+	padding-left:16px;
+}
+.imgright {
+	padding: 0pt 0pt 10px 10px;
+	float: right;
+}
+.imgleft {
+	padding: 0pt 10pt 10px 0px;
+	float: left;
+}

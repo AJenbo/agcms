@@ -1,0 +1,11 @@
+User-agent: *
+Disallow: /php/
+Disallow: /admin/
+Disallow: /emailkat.php
+Disallow: /inc/
+Disallow: /javascript/
+Disallow: /theme/
+Disallow: /upload/
+Disallow: /ajax.php
+
+Sitemap: http://www.geoffanderson.com/sitemap.php

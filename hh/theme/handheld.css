@@ -1,0 +1,73 @@
+#wrapper div {
+	margin:auto;
+	width:auto;
+}
+#wrapper {
+	left:auto;
+	margin:auto;
+	position:static;
+	width:auto;
+}
+#crumbs {
+	position:static;
+	padding:0 2px;
+}
+#menu, #text {
+	height:auto;
+}
+#menu {
+	position:static;
+	margin:auto;
+	overflow:visible;
+	padding:2px 0;
+	width:100%;
+}
+#menu * {
+	font-size:16px;
+}
+#menu a {
+	margin:4px 0;
+}
+#text {
+	position:static;
+	margin:auto;
+	overflow:visible;
+	width:100%;
+}
+#text img {
+	max-width:100%;
+}
+#menu * {
+	font-weight:normal;
+}
+.open {
+	font-weight:bold;
+}
+#liste {
+	width:100%;
+	margin:auto;
+}
+#liste * {
+	width:auto;
+}
+#liste td {
+	display:block;
+	width:100%;
+	padding:5px 0 15px;
+}
+#activmenu * {
+	font-weight:bold;
+}
+#liste a {
+	display:block;
+}
+#innercontainer {
+	 padding:0px 2px;
+	 width:auto;
+}
+.imgright, .imgleft {
+	padding:0;
+	margin:auto;
+	display:block;
+	float:none;
+}
