@@ -48,12 +48,9 @@ if(!$_POST) {
 if($_POST['id'])
 	$where = " `id` = '".$_POST['id']."'";
 
-if($_POST['o_id'])
-	$where = " `o_id` = '".$_POST['o_id']."'";
-
 
 //echo("SELECT `momssats`, `premoms`, `values`, `quantities`, `fragt`, `id`, `status`, `clerk`, `amount`, `navn`, UNIX_TIMESTAMP(`date`) AS `date` FROM `fakturas` WHERE ".$where." ORDER BY `id` DESC");
-$fakturas = $mysqli->fetch_array("SELECT `id`, `o_id`, `status`, `clerk`, `amount`, `navn`, `att`, `land`, `adresse`, `postbox`, `postnr`, `by`, `email`, `tlf1`, `tlf2`, UNIX_TIMESTAMP(`date`) AS `date` FROM `fakturas` WHERE ".$where." ORDER BY `id` DESC");
+$fakturas = $mysqli->fetch_array("SELECT `id`, `status`, `clerk`, `amount`, `navn`, `att`, `land`, `adresse`, `postbox`, `postnr`, `by`, `email`, `tlf1`, `tlf2`, UNIX_TIMESTAMP(`date`) AS `date` FROM `fakturas` WHERE ".$where." ORDER BY `id` DESC");
 
 
 /*************Temp code for calcing amount*********
@@ -156,10 +153,9 @@ a {
 <body onload="$('loading').style.display='none';">
 <div id="canvas">
 <form action="" method="post"><table><tr>
-	<td>Id:</td><td>Faktura:</td><td>År:</td><td>Måned:</td><td>Ekspedient:</td><td>Status:</td></tr><tr><td>
+	<td>Id:</td><td>År:</td><td>Måned:</td><td>Ekspedient:</td><td>Status:</td></tr><tr><td>
 
     <input name="id" value="<?php echo($_POST['id']); ?>" size="4" /></td><td>
-    <input name="o_id" value="<?php echo($_POST['o_id']); ?>" size="4" /></td><td>
 
     <select name="y"><?php
 	$oldest = $mysqli->fetch_array("SELECT UNIX_TIMESTAMP(`date`) AS `date` FROM `fakturas` ORDER BY `date` ASC LIMIT 1");
@@ -200,7 +196,7 @@ a {
 	*/
 	
 	
-	$users = $mysqli->fetch_array("SELECT fullname, name FROM `users`");
+	$users = $mysqli->fetch_array("SELECT `fullname`, `name` FROM `users` ORDER BY `fullname` ASC");
 	
     if(count($users) < 2)
     	echo('<span style="display:none">');

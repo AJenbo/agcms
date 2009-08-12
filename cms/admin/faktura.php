@@ -298,13 +298,7 @@ function echoprint($id) {
             </tr>
         </table>
     </div>
-    <div id="fakturadiv"><strong>';
-	if($faktura['o_id']) $html .= 'Faktura';
-	else $html .= 'Online faktura';
-	$html .= '</strong> ';
-	if($faktura['o_id']) $html .= $faktura['o_id'];
-	else $html .= $faktura['id'];
-	$html .= '</div>
+    <div id="fakturadiv"><strong>Online faktura</strong> '.$faktura['id'].'</div>
     <div id="ref"> <strong>Dato: </strong> <span>'.date('d/m/Y', $faktura['date']).'</span> <strong>Vor ref.: </strong> <span>'.$faktura['iref'].'</span> <strong>Deres ref.: </strong> <span>'.$faktura['eref'].'</span></div>';
 	
     $html .= '<table id="printdata" cellspacing="0">
@@ -394,7 +388,6 @@ function copytonew($id) {
 	$faktura = $faktura[0];
 	
 	unset($faktura['id']);
-	unset($faktura['o_id']);
 	unset($faktura['status']);
 	unset($faktura['date']);
 	unset($faktura['paydate']);
@@ -469,13 +462,6 @@ function save($id, $type, $updates) {
 		unset($updates['clerk']);
 	}
 	
-	/*
-	if($type == 'faktura' && !$faktura['o_id']) {
-		$oid = $mysqli->fetch_array("SELECT `o_id` FROM `fakturas` ORDER BY `o_id` DESC LIMIT 1");
-		$updates['o_id'] = $oid[0]['o_id']+1;
-	}
-	*/
-	
 	if(count($updates)) {
 	
 		$sql = "UPDATE `fakturas` SET";
@@ -495,7 +481,7 @@ function save($id, $type, $updates) {
 		$mysqli->query($sql);
 	}
 	
-	$faktura = $mysqli->fetch_array("SELECT `id`, `o_id`, `clerk`, `status`, `email` FROM `fakturas` WHERE `id` = ".$id);
+	$faktura = $mysqli->fetch_array("SELECT `id`, `clerk`, `status`, `email` FROM `fakturas` WHERE `id` = ".$id);
 	$faktura = $faktura[0];
 	
 	if($type == 'email') {
@@ -513,7 +499,7 @@ function save($id, $type, $updates) {
 </head>
 <body>
 <p>Tak for Deres ordre.</p>
-<p>Deres '.($faktura['o_id'] ? 'faktura' : 'ordre').' nr. '.($faktura['o_id'] ? $faktura['o_id'] : $faktura['id']).' er godkendt og klar til forsendelse så snart betaling er udført.</p>
+<p>Deres Online faktura nr. '.$faktura['id'].' er godkendt og klar til forsendelse så snart betaling er udført.</p>
 <p>Betaling på Visa-Dankort/Dankort udføres ved at klikke på nedenstående link. Her kan de ligeledes se Deres online faktura med specifikation af Deres køb. Efter betalingen vil du på samme link kunde se status for dit køb.</p>
 <p>Link til betaling:<br />
     <a href="'.$GLOBALS['_config']['base_url'].'/betaling/?id='.$faktura['id'].'&amp;checkid='.getCheckid($faktura['id']).'">'.$GLOBALS['_config']['base_url'].'/betaling/?id='.$faktura['id'].'&amp;checkid='.getCheckid($faktura['id']).'</a></p>
@@ -1018,38 +1004,12 @@ new tcal ({ 'controlid': 'cdate' });
 --></script></td>
 		</tr><?php
 		}
-		if($faktura['status'] == 'pbsok') {
-		?><tr>
-			<td><input type="button" value="Ekspeder" onclick="pbsconfirm();" /></td>
-			<td></td>
-		</tr>
-		<tr>
-			<td><input type="button" value="Koriger beløb:" onclick="loweramount();" /></td>
-			<td><input name="newamount" id="newamount" value="<?php echo(number_format(max(0, $faktura['amount']), 2, ',', '')); ?>" size="9" /></td>
-		</tr>
-		<tr>
-			<td><input type="button" value="Afvis" /></td>
-			<td></td>
-		</tr><?php
-		}
 		if($faktura['status'] == 'accepted') {
-		?><tr>
-			<td><input type="button" value="Krediter beløb:" /></td>
-			<td><input value="0,00" size="9" /></td>
-		</tr><?php
+			?><tr>
+				<td><input type="button" value="Krediter beløb:" /></td>
+				<td><input value="0,00" size="9" /></td>
+			</tr><?php
 		}
-		?><tr>
-			<td><input type="button" value="Kopier til ny" onclick="copytonew();" /></td>
-			<td></td>
-		</tr><?php
-		/*
-		if(!$faktura['o_id']) {
-		?><tr>
-			<td><input type="button" value="Bind til faktura" onclick="save('faktura');" /></td>
-			<td></td>
-		</tr><?php
-		}
-		*/
         $pnl = $mysqli->fetch_array("SELECT `packageId` FROM `PNL` WHERE `fakturaid` = ".$faktura['id']);
 		foreach($pnl as $pakke) {
 		?><tr>
@@ -1072,14 +1032,8 @@ new tcal ({ 'controlid': 'cdate' });
 		<tr>
 			<td>eKode:</td>
 			<td><?php echo(getCheckid($faktura['id'])); ?></td>
-		</tr><?php
-        if($faktura['o_id']) {
-			?><tr>
-				<td>Faktura:</td>
-				<td><?php echo($faktura['o_id']); ?></td>
-			</tr><?php
-		}
-		?><tr>
+		</tr>
+        <tr>
 			<td>Status:</td>
 			<td><?php if($faktura['status'] == 'new')
 					echo('Ny opretted');
@@ -1115,7 +1069,7 @@ new tcal ({ 'controlid': 'cdate' });
 				--></script>
 				<?php } else { echo(date('d/m/Y', $faktura['date'])); } ?></td>
 		</tr><?php
-        $users = $mysqli->fetch_array("SELECT fullname, name FROM `users` ORDER BY `fullname` ASC");
+        $users = $mysqli->fetch_array("SELECT `fullname`, `name` FROM `users` ORDER BY `fullname` ASC");
 		//TODO block save if ! admin
 		?><tr>
 			<td>Ansvarlig:</td>
@@ -1381,6 +1335,19 @@ if($faktura['status'] != 'canceled' && $faktura['status'] != 'new' && $faktura['
 		$activityButtons[] = '<li><a href="/pnl/?fakturaid='.$faktura['id'].'&amp;email='.rawurlencode($faktura['email']).(!$faktura['altpost'] ? '&amp;name='.rawurlencode($faktura['navn']).'&amp;att='.rawurlencode($faktura['att']).'&amp;address='.rawurlencode($faktura['adresse'] ? $faktura['adresse'] : $faktura['postbox']).'&amp;postcode='.rawurlencode($faktura['postnr']).'&amp;city='.rawurlencode($faktura['by']).'&amp;country='.rawurlencode($faktura['land']) : '&amp;name='.rawurlencode($faktura['postname']).'&amp;att='.rawurlencode($faktura['postatt']).'&amp;address='.rawurlencode($faktura['postaddress'] ? $faktura['postaddress'] : $faktura['postpostbox']).'&amp;address='.rawurlencode($faktura['postaddress2']).'&amp;postcode='.rawurlencode($faktura['postpostalcode']).'&amp;city='.rawurlencode($faktura['postcity']).'&amp;country='.rawurlencode($faktura['postcountry'])).'" target="_blank"><img src="images/package.png" alt="" title="Opret pakke lable" width="16" height="16" /> Opret pakke lable</a></li>';
 	
 }
+
+if($faktura['status'] == 'pbsok') {
+	$activityButtons[] = '<li><a onclick="pbsconfirm(); return false;"><img src="images/money.png" alt="" title="Ekspeder" width="16" height="16" /> Ekspeder</a></li>';
+	$activityButtons[] = '<li><a onclick="alert(\'TODO\'); return false;"><img src="images/bin.png" alt="" title="Afvis" width="16" height="16" /> Afvis</a></li>';
+/*
+TODO
+	?><tr>
+		<td><input type="button" value="Koriger beløb:" onclick="loweramount();" /></td>
+		<td><input name="newamount" id="newamount" value="<?php echo(number_format(max(0, $faktura['amount']), 2, ',', '')); ?>" size="9" /></td>
+	</tr>
+<?php
+*/
+}
 $activityButtons[] = '<li><a onclick="save(); return false;"><img src="images/table_save.png" alt="" title="Gem" width="16" height="16" /> Gem</a></li>';
 if($faktura['status'] == 'new') {
 	$activityButtons[] = '<li><a onclick="save(\'lock\'); return false;"><img src="images/lock.png" alt="" title="Lås" width="16" height="16" /> Lås</a></li>';
@@ -1390,6 +1357,8 @@ if($faktura['status'] != 'new') {
 	$activityButtons[] = '<li><a href="#" onclick="window.print(); return false;"><img height="16" width="16" title="Udskriv" alt="" src="images/printer.png"/> Udskriv</a></li>';
 }
 $activityButtons[] = '<li><a onclick="newfaktura(); return false;"><img src="images/table_add.png" alt="" title="Opret ny" width="16" height="16" /> Opret ny</a></li>';
+$activityButtons[] = '<li><a onclick="copytonew(); return false;"><img src="images/table_multiple.png" alt="" title="Kopier til ny" width="16" height="16" /> Kopier til ny</a></li>';
+
 if($faktura['status'] != 'cancled' && $faktura['status'] != 'pbsok' && $faktura['status'] != 'accepted' && $faktura['status'] != 'giro' && $faktura['status'] != 'cash') {
 	$activityButtons[] = '<li><a onclick="save(\'cancel\'); return false;" href="#"><img src="images/bin.png" alt="" title="Annullér" width="16" height="16" /> Annullér</a></li>';
 }
