@@ -6,6 +6,12 @@ require_once 'config.php';
 require_once '../inc/mysqli.php';
 require_once '../inc/config.php';
 
+$_GET['l'] = ceil(preg_replace(array('/[^0-9,]/', '/,/'), array('', '.'), $_GET['l']));
+$_GET['w'] = ceil(preg_replace(array('/[^0-9,]/', '/,/'), array('', '.'), $_GET['w']));
+$_GET['h'] = ceil(preg_replace(array('/[^0-9,]/', '/,/'), array('', '.'), $_GET['h']));
+$_GET['kg'] = ceil(preg_replace(array('/[^0-9,]/', '/,/'), array('', '.'), $_GET['kg']));
+$_GET['insurance'] = ceil(preg_replace(array('/[^0-9,]/', '/,/'), array('', '.'), $_GET['insurance']));
+
 $sender = array();
 if($_GET['sender'] == 'JF') {
 	$sender['name'] = 'Jagt & Fiskerimagasinet';

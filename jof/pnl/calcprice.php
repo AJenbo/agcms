@@ -3,13 +3,13 @@
 function calcPricePart($country, $product, $kg, $insurance, $l, $w, $h) {
 	
 	$price = 0;
-	$kg = round($kg);
+	$kg = ceil($kg);
 	if(!$kg) $kg = 1;
 	
-	$insurance = round($insurance);
-	$l = round($l);
-	$w = round($w);
-	$h = round($h);
+	$insurance = ceil($insurance);
+	$l = ceil($l);
+	$w = ceil($w);
+	$h = ceil($h);
 	
 	//Budget
 	if($product == 359) {
@@ -49,7 +49,7 @@ function calcPricePart($country, $product, $kg, $insurance, $l, $w, $h) {
 			}
 		}
 		
-		if(isVolume(w, l, h))
+		if(isVolume($w, $l, $h))
 			$price += 80;
 	}
 	
@@ -99,7 +99,7 @@ function calcPricePart($country, $product, $kg, $insurance, $l, $w, $h) {
 			}
 		}
 		
-		if(isVolume(w, l, h))
+		if(isVolume($w, $l, $h))
 			$price += 80;
 	}
 	
@@ -541,3 +541,5 @@ function isAfricaAsienOrMiddeleast($country) {
 	}
 	return false;
 }
+
+?>
