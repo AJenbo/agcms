@@ -11,6 +11,7 @@ table td {
 </head>
 
 <body><?php
+$GLOBALS['unknownpackages'] = array();
 if(isset($_POST['E']) || isset($_POST['P']) || isset($_POST['O'])) {
 		require_once 'calcpakkepris2009.php';
 		require_once '../inc/config.php';
@@ -23,32 +24,35 @@ if(isset($_POST['E']) || isset($_POST['P']) || isset($_POST['O'])) {
 			global $mysqli;
 			preg_match_all('/([0-9]{2})([0-9]{2})\s[0-9]+\s\/\s[0-9]+\s([PO0-9DK]{13})\s([0-9]+)\s[0-9]+\s[0-9]+\s([0-9]+)\s([0-9]+)\s([0-9]+)\s([A-Zæøå\s]*)([0-9,]+)/ui', $text, $matches);
 			unset($text);
-			foreach($matches[0] as $key => $line) {
-				$post = $mysqli->fetch_array('SELECT *, UNIX_TIMESTAMP(`formDate`) as date FROM `post` WHERE deleted = 0 AND `STREGKODE` = \''.$matches[3][$key].'\' LIMIT 1');
-				//TODO correct any mismatch betwean database and this
-				if($post) {
-					$array[$key]['day'] = $matches[1][$key];
-					$array[$key]['month'] = $matches[2][$key];
-					$array[$key]['barcode'] = $matches[3][$key];
-					$array[$key]['weight'] = $matches[4][$key];
-					$array[$key]['length'] = $matches[5][$key];
-					$array[$key]['width'] = $matches[6][$key];
-					$array[$key]['height'] = $matches[7][$key];
-					if($post[0]['ss2'] = 'true' && preg_match('/vo/ui', $matches[8][$key]) && !calcvolume($array[$key]['length'], $array[$key]['width'], $array[$key]['height'])) {
-						$array[$key]['length'] = 1500;
-						$array[$key]['width'] = 500;
-						$array[$key]['height'] = 500;
+			$array = array();
+			if(!empty($matches[0])) {
+				foreach($matches[0] as $key => $line) {
+					$post = $mysqli->fetch_array('SELECT *, UNIX_TIMESTAMP(`formDate`) as date FROM `post` WHERE deleted = 0 AND `STREGKODE` = \''.$matches[3][$key].'\' LIMIT 1');
+					//TODO correct any mismatch betwean database and this
+					if($post) {
+						$array[$key]['day'] = $matches[1][$key];
+						$array[$key]['month'] = $matches[2][$key];
+						$array[$key]['barcode'] = $matches[3][$key];
+						$array[$key]['weight'] = $matches[4][$key];
+						$array[$key]['length'] = $matches[5][$key];
+						$array[$key]['width'] = $matches[6][$key];
+						$array[$key]['height'] = $matches[7][$key];
+						if($post[0]['ss2'] = 'true' && preg_match('/vo/ui', $matches[8][$key]) && !calcvolume($array[$key]['length'], $array[$key]['width'], $array[$key]['height'])) {
+							$array[$key]['length'] = 1500;
+							$array[$key]['width'] = 500;
+							$array[$key]['height'] = 500;
+						}
+						
+						if($array[$key]['ss1'] = preg_match('/Fo/u', $matches[8][$key]) && $post[0]['ss1'] == 'false')
+							$array[$key]['sserror'] = true;
+						if($array[$key]['ss46'] = preg_match('/Lø/u', $matches[8][$key]) && $post[0]['ss46'] == 'false')
+							$array[$key]['sserror'] = true;
+						if(preg_match('/Va/u' ,$matches[8][$key])) 
+							$array[$key]['ss5amount'] = $post[0]['ss5amount'];
+						$array[$key]['price'] = str_replace(',','.',$matches[9][$key]);
+					} else {
+						$GLOBALS['unknownpackages'][] = $matches[3][$key];
 					}
-					
-					if($array[$key]['ss1'] = preg_match('/Fo/u', $matches[8][$key]) && $post[0]['ss1'] == 'false')
-						$array[$key]['sserror'] = true;
-					if($array[$key]['ss46'] = preg_match('/Lø/u', $matches[8][$key]) && $post[0]['ss46'] == 'false')
-						$array[$key]['sserror'] = true;
-					if(preg_match('/Va/u' ,$matches[8][$key])) 
-						$array[$key]['ss5amount'] = $post[0]['ss5amount'];
-					$array[$key]['price'] = str_replace(',','.',$matches[9][$key]);
-				} else {
-					$GLOBALS['unknownpackages'][] = $matches[3][$key];
 				}
 			}
 			unset($matches);
