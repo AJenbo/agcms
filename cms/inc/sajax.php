@@ -65,7 +65,7 @@ if (!isset($SAJAX_INCLUDED)) {
 			
 			$args = array_map("array_addslashes", $args);
 		}
-
+		
 		global $sajax_export_list;
 		foreach($sajax_export_list as $function)
 			if(is_array($function))
@@ -101,10 +101,10 @@ if (!isset($SAJAX_INCLUDED)) {
 		
 		// remote scripting library
 		// (c) copyright 2005 modernmethod, inc
-		var sajax_debug_mode = <?php echo $sajax_debug_mode ? "true" : "false"; ?>;
-        var sajax_request_type = "";
+		var sajax_debug_mode = <?php echo($sajax_debug_mode ? "true" : "false"); ?>;
+		var sajax_request_type = "";
 		var sajax_target_id = "";
-		var sajax_failure_redirect = "<?php echo $sajax_failure_redirect; ?>";
+		var sajax_failure_redirect = "<?php echo($sajax_failure_redirect); ?>";
 		
 		function sajax_debug(text) {
 			if (sajax_debug_mode)
@@ -118,9 +118,9 @@ if (!isset($SAJAX_INCLUDED)) {
 				for (var i = 0; i < sajax_requests.length; i++)
 					if(sajax_requests[i]) {
 						sajax_requests[i].abort();
-						sajax_requests.splice(id, 1, null);
+						sajax_requests.splice(i, 1, null);
 					}
-			} else if(arguments.length == 1 && sajax_requests[id]) {
+			} else if(sajax_requests[id]) {
 				sajax_requests[id].abort();
 				sajax_requests.splice(id, 1, null);
 			}
@@ -144,31 +144,39 @@ if (!isset($SAJAX_INCLUDED)) {
             };
         }
 		
+        if (typeof(encodeURIComponent) == "undefined") {
+        	sajax_debug("No encodeURIComponent using escape, international characters will not be transferred correctly.");
+            encodeURIComponent = function($string) {
+                return escape($string);
+            };
+        }
+		
 		function sajax_do_call(func_name, args, method, asynchronous) {
 			
-            //Handle old code calls
+			//Handle old code calls
 			if(arguments.length == 2) {
 				var method = "GET";
-				var asynchronou = true;
+				var asynchronous = true;
 			} else if(arguments.length == 3) {
-				var asynchronou = true;
+				var asynchronous = true;
 			}
 			
-            if(sajax_request_type != "")
+			if(sajax_request_type != "")
 				method = sajax_request_type;
-            
-			if(method != "GET")
-				method = "POST";
+			
+			if(method != "POST")
+				method = "GET";
 			
 			var i, x, n;
 			var uri;
 			var post_data;
+			var target_id = sajax_target_id;
 			
-			sajax_debug("In sajax_do_call().." + method);
-			uri = <?php echo(!empty($sajax_remote_uri) ? '"'.$sajax_remote_uri.'"' : 'window.location.href.replace(/#.*$/, '')'); ?>;
-
+			sajax_debug("in sajax_do_call().." + method + "/" + sajax_target_id);
+			uri = <?php echo(empty($sajax_remote_uri) ? 'window.location.href.replace(/#.*$/, "")' : '"'.$sajax_remote_uri.'"'); ?>;
+			
 			var geturi = "";
-
+			
 			if (method == "GET") {
 				geturi = uri;
 				if (geturi.indexOf("?") == -1) 
@@ -187,6 +195,7 @@ if (!isset($SAJAX_INCLUDED)) {
 					post_data = null;
 				}
 			}
+            
 			if (method == "POST") {
 				post_data = "rs=" + encodeURIComponent(func_name);
 				
@@ -233,7 +242,9 @@ if (!isset($SAJAX_INCLUDED)) {
 					// let's just assume this is a pre-response bailout and let it slide for now
 					return false;
 				} else if(status != "+" || x.status != 200) {
-					alert("Error " + x.status + ": " + data);
+					//IE ignore faling to do POST, a GET attempt will be made
+					if(x.status =! 12019)
+						alert("Error " + x.status + ": " + data);
 					return false;
 				} else {
 					try {
@@ -246,11 +257,15 @@ if (!isset($SAJAX_INCLUDED)) {
 							callback = args[args.length-1];
 						}
 						if(typeof(JSON) != "undefined" && typeof(JSON.parse) != "undefined")
-							callback(JSON.parse(data), extra_data);
+							res = JSON.parse(data);
 						else {
-							eval("var res = "+data+"; res;")
-							callback(res, extra_data);
+							eval("var res = "+data+"; res;");
 						 }
+						if(target_id) {
+							document.getElementById(target_id).innerHTML = res;
+						} else {
+							callback(res, extra_data);
+						}
 					} catch(e) {
 						sajax_debug("Caught error " + e + ": Could not parse " + data );
 						return false;
@@ -258,21 +273,25 @@ if (!isset($SAJAX_INCLUDED)) {
 				}
 				return true;
 			}
-			x.onreadystatechange = responcefunc;
+			if(asynchronous) {
+				x.onreadystatechange = responcefunc;
+			}
 			
 			sajax_debug(func_name + " uri = " + uri + "/post = " + post_data);
-            try {
+			try {
 				x.send(post_data);
-            }
-            catch(e) {
-                if(method == "POST" && geturi == "") {
+			}
+			catch(e) {
+				if(method == "POST" && geturi == "") {
 					sajax_debug("Browser did not support POST, tyring GET instead");
-            		return sajax_do_call(func_name, args, "GET", asynchronous);
+                    sajax_request_type = "";
+					return sajax_do_call(func_name, args, "GET", asynchronous);
 				} else  {
-					sajax_debug("Browser not supported");
-                	return false;
-                }
-            }
+					delete x;
+					alert("Browser not supported");
+					return false;
+				}
+			}
 			sajax_debug(func_name + " waiting..");
 			
 			if(asynchronous) {
