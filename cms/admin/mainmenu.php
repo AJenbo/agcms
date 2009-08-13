@@ -28,7 +28,7 @@
 	$activityButtons[] = '<li id="loading" style="cursor:default;"><img src="images/loading.gif" width="16" height="16" alt="Arbejder" title="Arbejder" /> Arbejder</li>';
 	
 	if($activityButtons) {
-		?><a class="menuboxheader"  href="javascript:showhide('Activity');">Activity</a>
+		?><a class="menuboxheader"  href="javascript:showhide('Activity');">Handlinger</a>
 		<ul id="Activity"<?php
 		if(!empty($_COOKIE['hideActivity']))
 			echo(' style="display:none"');
