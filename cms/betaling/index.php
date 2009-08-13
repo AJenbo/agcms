@@ -570,10 +570,10 @@ if($_GET['id'] && $_GET['checkid'] == getCheckid($_GET['id'])) {
 				$shopBody = '<br />'.$faktura['navn'].' har godkendt betalingen og nedenstående ordre må/skal sendes til kunden. <br /><br />Vigtigt:<br />Husk at godkende betaling når varen sendes så udbetaling til os kan ske.<br />';
 				
 				require_once 'inc/countries.php';
-				$GLOBALS['generatedcontent']['track'] = 'pageTracker._addTrans("'.$faktura['id'].'", "", "'.$faktura['amount'].'", "'.(($faktura['amount']-$faktura['fragt'])*$faktura['momssats']).'", "'.$faktura['fragt'].'", "'.$faktura['by'].'", "", "'.$countries[$faktura['land']].'");';
+				$GLOBALS['generatedcontent']['track'] = ' pageTracker._addTrans("'.$faktura['id'].'", "", "'.$faktura['amount'].'", "'.(($faktura['amount']-$faktura['fragt'])*$faktura['momssats']).'", "'.$faktura['fragt'].'", "'.$faktura['by'].'", "", "'.$countries[$faktura['land']].'");';
 				foreach($faktura['products'] as $key => $product)
-					$GLOBALS['generatedcontent']['track'] .= ' pageTracker._addItem("'.$faktura['id'].'", "", "'.$product.'", "", "'.$faktura['values'][$key].'", "'.$faktura['quantities'][$key].'");';
-				$GLOBALS['generatedcontent']['track'] .= ' pageTracker._trackTrans();';
+					$GLOBALS['generatedcontent']['track'] .= ' pageTracker._addItem("'.$faktura['id'].'", "'.$faktura['id'].$key.'", "'.$product.'", "", "'.$faktura['values'][$key].'", "'.$faktura['quantities'][$key].'");';
+				$GLOBALS['generatedcontent']['track'] .= ' pageTracker._trackTrans(); ';
 
 				
 				//Mail to customer start
