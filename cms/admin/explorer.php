@@ -617,7 +617,16 @@ function edit_alt($id, $alt) {
 $sajax_request_type = 'POST';
 sajax_init();
 //$sajax_debug_mode = 1;
-sajax_export('renamefile', 'deletefolder', 'deletefile', 'showfiles', 'listdirs', 'makedir', 'searchfiles', 'edit_alt');
+sajax_export(
+	array('name' => 'renamefile', 'method' => 'POST'),
+	array('name' => 'deletefolder', 'method' => 'POST'),
+	array('name' => 'deletefile', 'method' => 'POST'),
+	array('name' => 'showfiles', 'method' => 'GET'),
+	array('name' => 'listdirs', 'method' => 'GET'),
+	array('name' => 'makedir', 'method' => 'POST'),
+	array('name' => 'searchfiles', 'method' => 'GET'),
+	array('name' => 'edit_alt', 'method' => 'POST')
+);
 //$sajax_remote_uri = "/ajax.php";
 sajax_handle_client_request();
 

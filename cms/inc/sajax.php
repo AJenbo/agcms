@@ -5,11 +5,12 @@ if (!isset($SAJAX_INCLUDED)) {
 	 * GLOBALS AND DEFAULTS
 	 *
 	 */ 
-	$GLOBALS['sajax_version'] = '0.13';
+	$GLOBALS['sajax_version'] = "0.13";
 	$GLOBALS['sajax_debug_mode'] = false;
 	$GLOBALS['sajax_export_list'] = array();
-	$GLOBALS['sajax_remote_uri'] = '';
-	$GLOBALS['sajax_failure_redirect'] = '';
+	$GLOBALS['sajax_remote_uri'] = "";
+	$GLOBALS['sajax_failure_redirect'] = "";
+	$GLOBALS['sajax_request_type'] = "GET";
 	
 	/*
 	 * CODE
@@ -101,6 +102,8 @@ if (!isset($SAJAX_INCLUDED)) {
 		// remote scripting library
 		// (c) copyright 2005 modernmethod, inc
 		var sajax_debug_mode = <?php echo $sajax_debug_mode ? "true" : "false"; ?>;
+        var sajax_request_type = "";
+		var sajax_target_id = "";
 		var sajax_failure_redirect = "<?php echo $sajax_failure_redirect; ?>";
 		
 		function sajax_debug(text) {
@@ -123,57 +126,51 @@ if (!isset($SAJAX_INCLUDED)) {
 			}
 		}
 		
- 		function sajax_init_object() {
- 			sajax_debug("sajax_init_object() called..");
-			
-			if (typeof(XMLHttpRequest) == "undefined") {
-				XMLHttpRequest = function() {
-					var msxmlhttp = Array(
-						'Msxml2.XMLHTTP.6.0',
-						'Msxml2.XMLHTTP.5.0',
-						'Msxml2.XMLHTTP.4.0',
-						'Msxml2.XMLHTTP.3.0',
-						'Msxml2.XMLHTTP',
-						'Microsoft.XMLHTTP');
-					for (var i = 0; i < msxmlhttp.length; i++) {
-						try { return new ActiveXObject(msxmlhttp[i]); }
-						catch(e) {}
-					}
-					throw new Error("This browser does not support XMLHttpRequest.");
-					return null;
-				};
-			}
-			
-			var A = new XMLHttpRequest();
-
-			if (!A)
-				sajax_debug("Could not create connection object.");
-			
-			return A;
-		}
+        if (typeof(XMLHttpRequest) == "undefined") {
+            XMLHttpRequest = function() {
+                var msxmlhttp = Array(
+                    'Msxml2.XMLHTTP.6.0',
+                    'Msxml2.XMLHTTP.5.0',
+                    'Msxml2.XMLHTTP.4.0',
+                    'Msxml2.XMLHTTP.3.0',
+                    'Msxml2.XMLHTTP',
+                    'Microsoft.XMLHTTP');
+                for (var i = 0; i < msxmlhttp.length; i++) {
+                    try { return new ActiveXObject(msxmlhttp[i]); }
+                    catch(e) {}
+                }
+                throw new Error("This browser does not support XMLHttpRequest.");
+                return null;
+            };
+        }
 		
 		function sajax_do_call(func_name, args, method, asynchronous) {
 			
+            //Handle old code calls
 			if(arguments.length == 2) {
-				var method = 'POST';
+				var method = "GET";
 				var asynchronou = true;
-			} else if(arguments.length == 2) {
+			} else if(arguments.length == 3) {
 				var asynchronou = true;
 			}
 			
-			if(method != 'GET')
-				method = 'POST';
+            if(sajax_request_type != "")
+				method = sajax_request_type;
+            
+			if(method != "GET")
+				method = "POST";
 			
 			var i, x, n;
 			var uri;
 			var post_data;
 			
 			sajax_debug("In sajax_do_call().." + method);
-			uri = <?php echo(!empty($sajax_remote_uri) ? '"'.$sajax_remote_uri.'"' : 'window.location.href'); ?>;
+			uri = <?php echo(!empty($sajax_remote_uri) ? '"'.$sajax_remote_uri.'"' : 'window.location.href.replace(/#.*$/, '')'); ?>;
+
+			var geturi = "";
+
 			if (method == "GET") {
-			
-				var geturi = uri;
-			
+				geturi = uri;
 				if (geturi.indexOf("?") == -1) 
 					geturi += "?rs=" + encodeURIComponent(func_name);
 				else
@@ -198,7 +195,7 @@ if (!isset($SAJAX_INCLUDED)) {
 				}
 			}
 			
-			x = sajax_init_object();
+			x = new XMLHttpRequest();
 			if(x == null) {
 				//TODO support iframe ajaxing
 				//document.getElementsByTagName("pre")[0].innerHTML
@@ -227,7 +224,7 @@ if (!isset($SAJAX_INCLUDED)) {
 				var data;
 				var txt = x.responseText.replace(/^\s*|\s*$/g,"");
 				status = txt.charAt(0);
-				if(status == '-' || status == '+')
+				if(status == "-" || status == "+")
 					data = txt.substring(2);
 				else
 					data = txt;
@@ -235,7 +232,7 @@ if (!isset($SAJAX_INCLUDED)) {
 				if(status == "" && (x.status == 200 || x.status == "")) {
 					// let's just assume this is a pre-response bailout and let it slide for now
 					return false;
-				} else if(status != '+' || x.status != 200) {
+				} else if(status != "+" || x.status != 200) {
 					alert("Error " + x.status + ": " + data);
 					return false;
 				} else {
@@ -248,10 +245,10 @@ if (!isset($SAJAX_INCLUDED)) {
 						} else {
 							callback = args[args.length-1];
 						}
-						if(typeof(JSON) != 'undefined' && typeof(JSON.parse) != 'undefined')
+						if(typeof(JSON) != "undefined" && typeof(JSON.parse) != "undefined")
 							callback(JSON.parse(data), extra_data);
 						else {
-							eval('var res = '+data+'; res;')
+							eval("var res = "+data+"; res;")
 							callback(res, extra_data);
 						 }
 					} catch(e) {
@@ -264,7 +261,18 @@ if (!isset($SAJAX_INCLUDED)) {
 			x.onreadystatechange = responcefunc;
 			
 			sajax_debug(func_name + " uri = " + uri + "/post = " + post_data);
-			x.send(post_data);
+            try {
+				x.send(post_data);
+            }
+            catch(e) {
+                if(method == "POST" && geturi == "") {
+					sajax_debug("Browser did not support POST, tyring GET instead");
+            		return sajax_do_call(func_name, args, "GET", asynchronous);
+				} else  {
+					sajax_debug("Browser not supported");
+                	return false;
+                }
+            }
 			sajax_debug(func_name + " waiting..");
 			
 			if(asynchronous) {
@@ -295,6 +303,7 @@ if (!isset($SAJAX_INCLUDED)) {
 	$sajax_js_has_been_shown = 0;
 	function sajax_show_javascript()
 	{
+		global $sajax_request_type;
 		global $sajax_js_has_been_shown;
 		
 		if (! $sajax_js_has_been_shown) {
@@ -309,7 +318,7 @@ if (!isset($SAJAX_INCLUDED)) {
 					$function['asynchronous'] = true;
 				
 				if(!isset($function['method']))
-					$function['method'] = 'POST';
+					$function['method'] = $sajax_request_type;
 				
 				$html .= '
 				function x_'.$function['name'].'() {

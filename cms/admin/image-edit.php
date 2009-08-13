@@ -21,10 +21,10 @@ function saveImage($path, $cropX, $cropY, $cropW, $cropH, $maxW, $maxH, $flip, $
 	//TODO close and update image in explorer
 }
 
-$sajax_request_type = 'POST';
-sajax_init();
 //$sajax_debug_mode = 1;
-sajax_export('saveImage');
+sajax_export(
+	array('name' => 'saveImage', 'method' => 'POST')
+);
 //$sajax_remote_uri = "/ajax.php";
 sajax_handle_client_request();
 

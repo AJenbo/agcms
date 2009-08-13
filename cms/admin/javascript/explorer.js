@@ -367,7 +367,7 @@ function viewlFile(type, id, width, height) {
 function edit_alt(id) {
 	var newalt = prompt('Billed beskrivelse', files[id].alt);
 	if(newalt != null && newalt != files[id].alt) {
-		$('loading').style.display = '';
+		$('loading').style.visibility = '';
 		x_edit_alt(id, newalt, edit_alt_r);
 	}
 }

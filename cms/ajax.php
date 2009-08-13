@@ -61,8 +61,10 @@ function get_kat($id, $sort) {
 	return array("id" => 'kat'.$GLOBALS['generatedcontent']['activmenu'], "html" => kat_html($bind, $GLOBALS['cache']['kats'][$GLOBALS['generatedcontent']['activmenu']]['navn']));
 }
 
-sajax_init();
-sajax_export("get_table", "get_kat");
+sajax_export(
+	array('name' => 'get_table', 'method' => 'GET'),
+	array('name' => 'get_kat', 'method' => 'GET')
+);
 //	$sajax_remote_uri = "/ajax.php";
 sajax_handle_client_request();
 ?>

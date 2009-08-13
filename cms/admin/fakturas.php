@@ -150,7 +150,7 @@ a {
 }
 </style>
 </head>
-<body onload="$('loading').style.display='none';">
+<body onload="$('loading').style.visibility = 'hidden';">
 <div id="canvas">
 <form action="" method="post"><table><tr>
 	<td>Id:</td><td>År:</td><td>Måned:</td><td>Ekspedient:</td><td>Status:</td></tr><tr><td>

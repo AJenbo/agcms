@@ -532,6 +532,11 @@ if($_GET['id'] && $_GET['checkid'] == getCheckid($_GET['id'])) {
 				$shopSubject = $_GET['Status'].$_GET['Status_code'].' Betalingen blev afvist af banken, contact deres bank.';
 				$shopBody = '<br />Betalingen blev afvist af banken, '.$faktura['navn'].' skal kontakte sin bank.<br />';
 			break;
+			case 56:
+				$GLOBALS['generatedcontent']['text'] = 'Betalingen blev afvist da den allerede er forsøgt betalt.';
+				$shopSubject = $_GET['Status'].$_GET['Status_code'].' Betalingen blev afvist.';
+				$shopBody = '<br />Betalingen blev afvist da den allerede er forsøgt betalt.<br />';
+			break;
 		}
 		
 		//TODO email error to us

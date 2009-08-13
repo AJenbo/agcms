@@ -2,7 +2,7 @@
 
 function saveImage() {
 	$('save').style.display = 'none';
-	$('loading').style.display = '';
+	$('loading').style.visibility = '';
 	
 	//TODO doesn't work?
 	if(mode == 'thb') {
@@ -22,7 +22,7 @@ function saveImage() {
 }
 
 function saveImage_r(data) {
-	$('loading').style.display = 'none';
+	$('loading').style.visibility = 'hidden';
 	$('save').style.display = '';
 	if(data['error']) {
 		alert(data['error']);
@@ -144,7 +144,7 @@ Event.observe(
 var resizeHandle = null;
 function resize() {
 	$('save').style.display = '';
-	$('loading').style.display = 'none';
+	$('loading').style.visibility = 'hidden';
 	if(resizeHandle != null)
 		resizeHandle.destroy();
 
@@ -376,7 +376,7 @@ function flipVertical() {
 
 function preview() {
 	$('save').style.display = 'none';
-	$('loading').style.display = '';
+	$('loading').style.visibility = '';
 	
 	if(mode == 'thb') {
 		if(rotate) {

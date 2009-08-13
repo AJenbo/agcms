@@ -186,13 +186,13 @@ var listOrderContextMenu = [
 
 function sogogerstat(sog, erstat) {
 	if(confirm('Dette vil søge og erstatte i al tekst på hele siden, vil du forsætte?')==true){
-		$('loading').style.display = '';
+		$('loading').style.visibility = '';
 		x_sogogerstat(sog, erstat, sogogerstat_r);
 	}
 }
 
 function sogogerstat_r(affected_rows) {
-	$('loading').style.display = 'none';
+	$('loading').style.visibility = 'hidden';
 	alert('Påvirket sider: '+affected_rows+'.');
 }
 
@@ -205,7 +205,7 @@ function displaySubMenus(state) {
 
 
 function updateKat(id) {
-	$('loading').style.display = '';
+	$('loading').style.visibility = '';
 	x_updateKat(id, 
 		$('navn').value,
 		getRadio('kat'),
@@ -219,7 +219,7 @@ function updateKat(id) {
 }
 
 function updateSide(id) {
-	$('loading').style.display = '';
+	$('loading').style.visibility = '';
 	updateRTEs();
 	x_updateSide(id,
 		$('navn').value,
@@ -239,7 +239,7 @@ function updateSide(id) {
 }
 
 function updateSpecial(id) {
-	$('loading').style.display = '';
+	$('loading').style.visibility = '';
 	updateRTEs();
 	x_updateSpecial(id,
 		$('text').value,
@@ -248,7 +248,7 @@ function updateSpecial(id) {
 }
 
 function updateForside() {
-	$('loading').style.display = '';
+	$('loading').style.visibility = '';
 	updateRTEs();
 	x_updateForside(1,
 		$('text').value,
@@ -304,13 +304,13 @@ function saveListOrder(id) {
 function makeNewList() {
 	var name = prompt('Ny liste');
 	if(name != null) {
-		$('loading').style.display = '';
+		$('loading').style.visibility = '';
 		x_makeNewList(name, makeNewList_r);
 	}
 }
 
 function makeNewList_r(data) {
-	$('loading').style.display = 'none';
+	$('loading').style.visibility = 'hidden';
 	if(data['error']) {
 		alert(data['error']);
 	} else {
@@ -327,7 +327,7 @@ function makeNewList_r(data) {
 }
 
 function countEmailTo() {
-	$('loading').style.display = '';
+	$('loading').style.visibility = '';
 	//Cancle all othere ajax requests to avoide reponce order mix up
 	sajax_cancel();
 	var interestObjs = $('interests').getElementsByTagName('input');
@@ -343,7 +343,7 @@ function countEmailTo() {
 }
 
 function countEmailTo_r(data) {
-	$('loading').style.display = 'none';
+	$('loading').style.visibility = 'hidden';
 	if(data['error']) {
 		alert(data['error']);
 	}
@@ -351,7 +351,7 @@ function countEmailTo_r(data) {
 }
 
 function saveEmail() {
-	$('loading').style.display = '';
+	$('loading').style.visibility = '';
 	updateRTEs();
 	var interestObjs = $('interests').getElementsByTagName('input');
 	var interests = '';
@@ -363,11 +363,11 @@ function saveEmail() {
 		}
 	}
 	x_saveEmail($('id').value, $('from').value, interests, $('subject').value, $('text').value, generic_r);
-	$('loading').style.display = '';
+	$('loading').style.visibility = '';
 }
 
 function updateContact(id) {
-	$('loading').style.display = '';
+	$('loading').style.visibility = '';
 	var interestObjs = $('interests').getElementsByTagName('input');
 	var interests = '';
 	for(var i=0; i<interestObjs.length; i++) {
@@ -378,11 +378,11 @@ function updateContact(id) {
 		}
 	}
 	x_updateContact(id, $('navn').value, $('email').value, $('adresse').value, $('land').value, $('post').value, $('by').value, $('tlf1').value, $('tlf2').value, $('kartotek').value, interests, updateContact_r);
-	$('loading').style.display = '';
+	$('loading').style.visibility = '';
 }
 
 function updateContact_r(data) {
-	$('loading').style.display = 'none';
+	$('loading').style.visibility = 'hidden';
 	if(data['error']) {
 		alert(data['error']);
 	} else {
@@ -393,20 +393,20 @@ function updateContact_r(data) {
 function sendEmail() {
 	if(!confirm('Ønsker du virkelig at sende denne nyhedsmail nu?'))
 		return false;
-	$('loading').style.display = '';
+	$('loading').style.visibility = '';
 	updateRTEs();
 	if($('from').value == '') {
-		$('loading').style.display = 'none';
+		$('loading').style.visibility = 'hidden';
 		alert('Du skal vælge en afsender!');
 		return false;
 	}
 	if($('subject').value == '') {
-		$('loading').style.display = 'none';
+		$('loading').style.visibility = 'hidden';
 		alert('Du skal skrive et emne!');
 		return false;
 	}
 	if($('text').value == '') {
-		$('loading').style.display = 'none';
+		$('loading').style.visibility = 'hidden';
 		alert('Du skal skrive et tekst!');
 		return false;
 	}
@@ -420,11 +420,11 @@ function sendEmail() {
 		}
 	}
 	x_sendEmail($('id').value, $('from').value, interests, $('subject').value, $('text').value, sendEmail_r);
-	$('loading').style.display = '';
+	$('loading').style.visibility = '';
 }
 
 function sendEmail_r(data) {
-	$('loading').style.display = 'none';
+	$('loading').style.visibility = 'hidden';
 	if(data['error']) {
 		alert(data['error']);
 	} else {
@@ -433,6 +433,6 @@ function sendEmail_r(data) {
 }
 
 function makeNewList(id) {
-	$('loading').style.display = '';
+	$('loading').style.visibility = '';
 	x_updateSpecial(id, $('text').value, generic_r);
 }

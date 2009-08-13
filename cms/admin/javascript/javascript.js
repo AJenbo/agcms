@@ -29,7 +29,7 @@ function explorer_unused() {
 }
 
 function generic_r(data) {
-	$('loading').style.display = 'none';
+	$('loading').style.visibility = 'hidden';
 	if(data['error']) {
 		alert(data['error']);
 	}
@@ -56,7 +56,7 @@ function opretSide() {
 }
 
 function opretSide_r(data) {
-	$('loading').style.display = 'none';
+	$('loading').style.visibility = 'hidden';
 	if(data['error'])
 		alert(data['error']);
 	else window.location.href = '?side=redigerside&id='+data['id'];
@@ -72,7 +72,7 @@ function checkForInt(evt) {
 }
 
 function inject_html(data) {
-	$('loading').style.display = 'none';
+	$('loading').style.visibility = 'hidden';
 	if(data['error']) {
 		alert(data['error']);
 	} else {
@@ -131,7 +131,7 @@ function showhidekats(id,thisobj) {
 	if(obj.style.display == '') {
 		obj.style.display = 'none';
 		setCookie('hide'+id, '1', 360);
-		$('loading').style.display = '';
+		$('loading').style.visibility = '';
 		x_katspath(getRadio('kat'),inject_html);
 	} else {
 		obj.style.display = '';
@@ -194,7 +194,7 @@ function kat_contract(id) {
 
 function kat_expand(id, input) {
 	if($('kat'+id+'content').innerHTML == '') {
-		$('loading').style.display = '';
+		$('loading').style.visibility = '';
 		x_kat_expand(id, input, kat_expand_r);
 	} else {
 		$('kat'+id+'content').style.display = '';
@@ -207,7 +207,7 @@ function kat_expand(id, input) {
 function siteList_expand(id) {
 	setCookie('activekat', id, 360);
 	if($('kat'+id+'content').innerHTML == '') {
-		$('loading').style.display = '';
+		$('loading').style.visibility = '';
 		x_siteList_expand(id, kat_expand_r);
 	} else {
 		$('kat'+id+'content').style.display = '';
@@ -223,7 +223,7 @@ function siteList_expand(id) {
 }
 
 function kat_expand_r(data) {
-	$('loading').style.display = 'none';
+	$('loading').style.visibility = 'hidden';
 	if(data['error']) {
 		alert(data['error']);
 	} else {
@@ -237,7 +237,7 @@ function kat_expand_r(data) {
 }
 
 function init() {
-	$('loading').style.display = 'none';
+	$('loading').style.visibility = 'hidden';
 	attachContextMenus();
 }
 
@@ -248,7 +248,7 @@ function save_krav() {
 }
 
 function bind(id) {
-	$('loading').style.display = '';
+	$('loading').style.visibility = '';
 	x_bind(id, getRadio('kat'), bind_r);
 	return false;
 }
@@ -262,7 +262,7 @@ function objToArray(obj) {
 }
 
 function bindTree_r(data) {
-	$('loading').style.display = 'none';
+	$('loading').style.visibility = 'hidden';
 	if(data['error']) {
 		alert(data['error']);
 	} else {
@@ -277,7 +277,7 @@ function bindTree_r(data) {
 }
 
 function bind_r(data) {
-	$('loading').style.display = 'none';
+	$('loading').style.visibility = 'hidden';
 	if(data['error']) {
 		alert(data['error']);
 	} else {
@@ -319,37 +319,37 @@ function slet(type, navn, id) {
 	switch(type) {
 		case 'side':
 			if(confirm("Vil du slette '"+navn+"'?")==true){
-				$('loading').style.display = '';
+				$('loading').style.visibility = '';
 				x_sletSide(id, sletClass_r);
 			}
 		break;
 		case 'bind':
 			if(confirm("Vil du fjerne siden fra '"+navn+"'?")==true) {
-				$('loading').style.display = '';
+				$('loading').style.visibility = '';
 				x_sletbind(id, bind_r);
 			}
 		break;
 		case 'bindtree':
 			if(confirm("Vil du fjerne siden fra '"+navn+"'?")==true) {
-				$('loading').style.display = '';
+				$('loading').style.visibility = '';
 				x_sletbind(id, bindTree_r);
 			}
 		break;
 		case 'maerke':
 			if(confirm("Vil du slette mærket '"+navn+"'?")==true) {
-				$('loading').style.display = '';
+				$('loading').style.visibility = '';
 				x_sletmaerke(id, slet_r);
 			}
 		break;
 		case 'krav':
 			if(confirm("Vil du slette kravet '"+navn+"'?")==true) {
-				$('loading').style.display = '';
+				$('loading').style.visibility = '';
 				x_sletkrav(id, slet_r);
 			}
 		break;
 		case 'kat':
 			if(confirm("Vil du slette katagorien '"+navn+"'?")==true) {
-				$('loading').style.display = '';
+				$('loading').style.visibility = '';
 				x_sletkat(id, slet_r);
 			}
 		break;
@@ -359,13 +359,13 @@ function slet(type, navn, id) {
 
 function movekat(navn, id, toId, confirmMove) {
 	if(!confirmMove || confirm("Vil du fjerne kategorien '"+navn+"'?")==true) {
-		$('loading').style.display = '';
+		$('loading').style.visibility = '';
 		x_movekat(id, toId, movekat_r);
 	}
 }
 
 function movekat_r(data) {
-	$('loading').style.display = 'none';
+	$('loading').style.visibility = 'hidden';
 	if(data['error']) {
 		alert(data['error']);
 	} else if(data) {
@@ -382,13 +382,13 @@ function movekat_r(data) {
 function renamekat(id, name) {
 	var newname = prompt('Omdøb kategori', name);
 	if(newname != null && newname != name) {
-		$('loading').style.display = '';
+		$('loading').style.visibility = '';
 		x_renamekat(id, newname, renamekat_r);
 	}
 }
 
 function renamekat_r(data) {
-	$('loading').style.display = 'none';
+	$('loading').style.visibility = 'hidden';
 	if(data['error']) {
 		alert(data['error']);
 	} else {
@@ -400,7 +400,7 @@ function renamekat_r(data) {
 }
 
 function sletClass_r(data) {
-	$('loading').style.display = 'none';
+	$('loading').style.visibility = 'hidden';
 	if(data['error']) {
 		alert(data['error']);
 	} else {
@@ -409,7 +409,7 @@ function sletClass_r(data) {
 }
 
 function slet_r(data) {
-	$('loading').style.display = 'none';
+	$('loading').style.visibility = 'hidden';
 	if(data['error']) {
 		alert(data['error']);
 	} else {
@@ -429,7 +429,7 @@ function jumpto() {
 function sogsearch() {
 	var sogtext = $('sogtext').value;
 	if(sogtext) {
-		$('loading').style.display = '';
+		$('loading').style.visibility = '';
 		//TODO make page independant!
 		x_search(sogtext, inject_html);
 	} else

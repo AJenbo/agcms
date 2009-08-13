@@ -54,7 +54,7 @@ if($faktura['id']) {
 			break;
 			case 1:
 			//Denied/Discontinued. The payment has been denied or discontinued.
-				if($faktura['status'] != 'pbserror' && $faktura['status'] != 'giro' && $faktura['status'] != 'cash') {
+				if($faktura['status'] != 'pbserror' && $faktura['status'] != 'giro' && $faktura['status'] != 'cash' && $faktura['status'] != 'canceled') {
 					$faktura['status'] = 'pbserror';
 					$mysqli->query("UPDATE `fakturas` SET `status` = 'pbserror' WHERE `id` = ".$faktura['id']);
 				} else {
@@ -253,7 +253,6 @@ if($faktura['id']) {
 		}
 	}
 }
-//print_r($epayment);
 
 
 function getCheckid($id) {
@@ -391,6 +390,7 @@ function copytonew($id) {
 	unset($faktura['status']);
 	unset($faktura['date']);
 	unset($faktura['paydate']);
+	unset($faktura['sendt']);
 	$faktura['clerk'] = $GLOBALS['_user']['fullname'];
 	
 	$sql = "INSERT INTO `fakturas` SET";
@@ -630,7 +630,15 @@ function validemail($email) {
 require_once '../inc/getaddress.php';
 
 //$sajax_debug_mode = 1;
-sajax_export('validemail', 'pbsconfirm', 'loweramount', 'newfaktura', 'save', 'copytonew', 'pay', 'getAddress');
+sajax_export(
+	array('name' => 'validemail', 'method' => 'GET'),
+	array('name' => 'pbsconfirm', 'method' => 'POST'),
+	array('name' => 'loweramount', 'method' => 'POST'),
+	array('name' => 'newfaktura', 'method' => 'POST'),
+	array('name' => 'save', 'method' => 'POST'),
+	array('name' => 'copytonew', 'method' => 'POST'),
+	array('name' => 'getAddress', 'method' => 'GET')
+);
 //$sajax_remote_uri = '/ajax.php';
 sajax_handle_client_request();
 
@@ -656,11 +664,11 @@ require_once '../inc/countries.php';
 var id = <?php echo($faktura['id']); ?>;
 
 function newfaktura() {
-	$('loading').style.display='';
+	$('loading').style.visibility = '';
 	x_newfaktura(newfaktura_r);
 }
 function copytonew() {
-	$('loading').style.display='';
+	$('loading').style.visibility = '';
 	x_copytonew(id, newfaktura_r);
 }
 function newfaktura_r(id) {
@@ -698,7 +706,7 @@ function addRow() {
 }
 
 function getAddress(tlf) {
-	$('loading').style.display='';
+	$('loading').style.visibility = '';
 	x_getAddress(tlf, getAddress_r);
 }
 
@@ -718,11 +726,11 @@ function getAddress_r(data) {
 		//TODO support more values
 		//TODO setEmailLink();
 	}
-	$('loading').style.display='none';
+	$('loading').style.visibility = 'hidden';
 }
 
 function getAltAddress(tlf) {
-	$('loading').style.display='';
+	$('loading').style.visibility = '';
 	x_getAddress(tlf, getAltAddress_r);
 }
 
@@ -741,7 +749,7 @@ function getAltAddress_r(data) {
 		//TODO support more values
 		//TODO setEmailLink();
 	}
-	$('loading').style.display='none';
+	$('loading').style.visibility = 'hidden';
 }
 
 function prisUpdate() {
@@ -826,13 +834,13 @@ function prisUpdate() {
 }
 
 function pbsconfirm() {
-	$('loading').style.display='';
+	$('loading').style.visibility = '';
 	//TODO save comment
 	x_pbsconfirm(id, reload_r);
 }
 
 function loweramount() {
-	$('loading').style.display='';
+	$('loading').style.visibility = '';
 	//TODO save comment
 	x_loweramount(id, $('newamount').value, reload_r);
 }
@@ -843,14 +851,14 @@ function reload_r(date) {
 	} else {
 		window.location.reload();
 	}
-	$('loading').style.display='none';
+	$('loading').style.visibility = 'hidden';
 }
 
 function save(type) {
 	if(type == 'cancel' && !confirm('Er du sikker på du vil annullere denne faktura?'))
 		return false;
 	
-	$('loading').style.display='';
+	$('loading').style.visibility = '';
 	var update = Array();
 	if(status == 'new') {
 		update['quantities'] = quantities;
@@ -926,24 +934,26 @@ function save_r(date) {
 		}
 	}
 	
-	$('loading').style.display = 'none';
+	$('loading').style.visibility = 'hidden';
 }
 
 var validemailajaxcall;
 var lastemail;
 
 function validemail() {
-	if($('email').value.match('^([a-z0-9_-]+[a-z0-9_.-]*)*[a-z0-9_-]+@[a-z0-9-.]+[.][a-z]{2,4}$')) {
-		if($('email').value != lastemail || $('emaillink').style.display == 'none') {
-			lastemail = $('email').value;
-			if(validemailajaxcall)
-				sajax_cancel(validemailajaxcall);
-			$('loading').style.display = '';
+	if($('emaillink')) {
+		if($('email').value.match('^([a-z0-9_-]+[a-z0-9_.-]*)*[a-z0-9_-]+@[a-z0-9-.]+[.][a-z]{2,4}$')) {
+			if($('email').value != lastemail || $('emaillink').style.display == 'none') {
+				lastemail = $('email').value;
+				if(validemailajaxcall)
+					sajax_cancel(validemailajaxcall);
+				$('loading').style.visibility = '';
+				validemail_r(false);
+				validemailajaxcall = x_validemail($('email').value, validemail_r);
+			}
+		} else {
 			validemail_r(false);
-			validemailajaxcall = x_validemail($('email').value, validemail_r);
 		}
-	} else {
-		validemail_r(false);
 	}
 }
 
@@ -953,7 +963,7 @@ function validemail_r(validemail) {
 	} else {
 		$('emaillink').style.display = 'none';
 	}
-	$('loading').style.display = 'none';
+	$('loading').style.visibility = 'hidden';
 }
 
 function showhidealtpost(status) {
@@ -986,7 +996,7 @@ var status = '<?php echo($faktura['status']); ?>';
 
 --></script>
 </head>
-<body onload="<?php if($faktura['status'] == 'new') echo('showhidealtpost($(\'altpost\').checked); prisUpdate(); validemail();'); ?>$('loading').style.display='none';">
+<body onload="<?php if($faktura['status'] == 'new') echo('showhidealtpost($(\'altpost\').checked); prisUpdate(); validemail();'); ?>$('loading').style.visibility = 'hidden';">
 <div id="canvas"><div id="web"><table style="float:right;"><?php
 		if($faktura['status'] != 'giro' && $faktura['status'] != 'cash' && $faktura['status'] != 'accepted' && $faktura['status'] != 'canceled' && $faktura['status'] != 'pbsok') {
 		?><tr>
@@ -1050,9 +1060,11 @@ new tcal ({ 'controlid': 'cdate' });
 				} elseif($faktura['status'] == 'cash') {
 					echo('Betalt kontant');
 					if($faktura['paydate']) echo(' d. '.date('d/m/Y', $faktura['paydate']));
-				} elseif($faktura['status'] == 'pbserror')
+				} elseif($faktura['status'] == 'pbserror') {
 					echo('Fejl under betalingen');
-				elseif($faktura['status'] == 'canceled')
+					if($epayment['Status'] == 'A' && $epayment['StatusCode'] = 1)
+						echo(', betalingen er nægted eller afbrydt.');
+				} elseif($faktura['status'] == 'canceled')
 					echo('Annulleret');
 				elseif($faktura['status'] == 'rejected')
 					echo('Betaling afvist');
@@ -1359,7 +1371,7 @@ if($faktura['status'] != 'new') {
 $activityButtons[] = '<li><a onclick="newfaktura(); return false;"><img src="images/table_add.png" alt="" title="Opret ny" width="16" height="16" /> Opret ny</a></li>';
 $activityButtons[] = '<li><a onclick="copytonew(); return false;"><img src="images/table_multiple.png" alt="" title="Kopier til ny" width="16" height="16" /> Kopier til ny</a></li>';
 
-if($faktura['status'] != 'cancled' && $faktura['status'] != 'pbsok' && $faktura['status'] != 'accepted' && $faktura['status'] != 'giro' && $faktura['status'] != 'cash') {
+if($faktura['status'] != 'canceled' && $faktura['status'] != 'pbsok' && $faktura['status'] != 'accepted' && $faktura['status'] != 'giro' && $faktura['status'] != 'cash') {
 	$activityButtons[] = '<li><a onclick="save(\'cancel\'); return false;" href="#"><img src="images/bin.png" alt="" title="Annullér" width="16" height="16" /> Annullér</a></li>';
 }
 

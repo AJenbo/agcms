@@ -22,7 +22,7 @@ function listInsertRow(listid) {
 }
 
 function listInsertRow_r(data) {
-	$('loading').style.display = 'none';
+	$('loading').style.visibility = 'hidden';
 	if(data['error']) {
 		alert(data['error']);
 	}
@@ -109,7 +109,7 @@ function listUpdateRow(listid, rowid) {
 }
 
 function listUpdateRow_r(data) {
-	$('loading').style.display = 'none';
+	$('loading').style.visibility = 'hidden';
 	if(data['error']) {
 		alert(data['error']);
 	}
@@ -152,12 +152,12 @@ function listSizeFooter(listid) {
 function listRemoveRow(listid, rowid) {
 	if(confirm('Vil du virkelig slette denne linje.')) {
 		x_listRemoveRow(listid, rowid, listRemoveRow_r);
-		$('loading').style.display = '';
+		$('loading').style.visibility = '';
 	}
 }
 
 function listRemoveRow_r(data) {
-	$('loading').style.display = 'none';
+	$('loading').style.visibility = 'hidden';
 	if(data['error']) {
 		alert(data['error']);
 	}
