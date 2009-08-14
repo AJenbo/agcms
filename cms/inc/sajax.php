@@ -1,7 +1,7 @@
 <?php	
 if (!isset($SAJAX_INCLUDED)) {
 
-	/*  
+	/*
 	 * GLOBALS AND DEFAULTS
 	 *
 	 */ 
@@ -126,30 +126,60 @@ if (!isset($SAJAX_INCLUDED)) {
 			}
 		}
 		
-        if (typeof(XMLHttpRequest) == "undefined") {
-            XMLHttpRequest = function() {
-                var msxmlhttp = Array(
-                    'Msxml2.XMLHTTP.6.0',
-                    'Msxml2.XMLHTTP.5.0',
-                    'Msxml2.XMLHTTP.4.0',
-                    'Msxml2.XMLHTTP.3.0',
-                    'Msxml2.XMLHTTP',
-                    'Microsoft.XMLHTTP');
-                for (var i = 0; i < msxmlhttp.length; i++) {
-                    try { return new ActiveXObject(msxmlhttp[i]); }
-                    catch(e) {}
-                }
-                throw new Error("This browser does not support XMLHttpRequest.");
-                return null;
-            };
-        }
+		//Support IE 5, 5.5 and 6
+		if (typeof(XMLHttpRequest) == "undefined") {
+			XMLHttpRequest = function() {
+				var msxmlhttp = Array(
+					'Msxml2.XMLHTTP.6.0',
+					'Msxml2.XMLHTTP.5.0',
+					'Msxml2.XMLHTTP.4.0',
+					'Msxml2.XMLHTTP.3.0',
+					'Msxml2.XMLHTTP',
+					'Microsoft.XMLHTTP');
+				for (var i = 0; i < msxmlhttp.length; i++) {
+					try { return new ActiveXObject(msxmlhttp[i]); }
+					catch(e) {}
+				}
+				throw new Error("This browser does not support XMLHttpRequest.");
+				return null;
+			};
+		}
 		
-        if (typeof(encodeURIComponent) == "undefined") {
-        	sajax_debug("No encodeURIComponent using escape, international characters will not be transferred correctly.");
-            encodeURIComponent = function($string) {
-                return escape($string);
-            };
-        }
+		//Support IE 5
+		if (typeof(encodeURIComponent) == "undefined") {
+			encodeURIComponent = function(string) {
+				this.encodeChar = function(c) {
+					c = c.charCodeAt(0);
+					var utf8 = "";
+					if (c < 128) {
+						utf8 += String.fromCharCode(c);
+					} else if((c > 127) && (c < 2048)) {
+						utf8 += String.fromCharCode((c >> 6) | 192);
+						utf8 += String.fromCharCode((c & 63) | 128);
+					} else {
+						utf8 += String.fromCharCode((c >> 12) | 224);
+						utf8 += String.fromCharCode(((c >> 6) & 63) | 128);
+						utf8 += String.fromCharCode((c & 63) | 128);
+					}
+					var encoded = "";
+					for(var i = 0; i < utf8.length; i++) {
+						encoded += "%"+utf8.charCodeAt(i).toString(16).toUpperCase();
+					}
+					return encoded;
+				}
+			
+				string = string.replace(/\r\n/g,"\n");
+				var encoded = "";
+				for (var n = 0; n < string.length; n++) {
+					if(string.charAt(n).match(/[~!*()'a-z0-9]/i) == null)
+						encoded += encodeChar(string.charAt(n));
+					else
+						encoded += string.charAt(n);
+				}
+				
+				return encoded;
+			};
+		}
 		
 		function sajax_do_call(func_name, args, method, asynchronous) {
 			
@@ -195,7 +225,7 @@ if (!isset($SAJAX_INCLUDED)) {
 					post_data = null;
 				}
 			}
-            
+			
 			if (method == "POST") {
 				post_data = "rs=" + encodeURIComponent(func_name);
 				
@@ -242,10 +272,12 @@ if (!isset($SAJAX_INCLUDED)) {
 					// let's just assume this is a pre-response bailout and let it slide for now
 					return false;
 				} else if(status != "+" || x.status != 200) {
-					//IE ignore faling to do POST, a GET attempt will be made
-					if(x.status =! 12019)
-						alert("Error " + x.status + ": " + data);
-					return false;
+					try {
+						//ignore faling to do POST, a GET attempt will be made
+						if(x.status =! 12019)
+							alert("Error " + x.status + ": " + data);
+						return false;
+					} catch(e) {}
 				} else {
 					try {
 						var callback;
@@ -284,9 +316,9 @@ if (!isset($SAJAX_INCLUDED)) {
 			catch(e) {
 				if(method == "POST" && geturi == "") {
 					sajax_debug("Browser did not support POST, tyring GET instead");
-                    sajax_request_type = "";
+					sajax_request_type = "";
 					return sajax_do_call(func_name, args, "GET", asynchronous);
-				} else  {
+				} else {
 					delete x;
 					alert("Browser not supported");
 					return false;
