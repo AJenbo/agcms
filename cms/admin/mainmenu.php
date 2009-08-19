@@ -2,9 +2,9 @@
 	
 	if(!empty($_GET['side'])) {
 		if($_GET['side'] == 'redigerside') {
-			$activityButtons[] = '<li><a onclick="updateSide('.$_GET['id'].')"><img src="images/disk.png" width="16" height="16" alt="" title="Gem siden" /> Gem siden</a></li>';
+			$activityButtons[] = '<li><a onclick="updateSide('.$_GET['id'].');"><img src="images/disk.png" width="16" height="16" alt="" title="Gem siden" /> Gem siden</a></li>';
 		} elseif($_GET['side'] == 'redigerkat') {
-			$activityButtons[] = '<li><a onclick="updateKat('.$_GET['id'].'"><img src="images/disk.png" width="16" height="16" alt="" title="Gem siden" /> Gem kategori</a></li>';
+			$activityButtons[] = '<li><a onclick="updateKat('.$_GET['id'].');"><img src="images/disk.png" width="16" height="16" alt="" title="Gem siden" /> Gem kategori</a></li>';
 		} elseif($_GET['side'] == 'redigerFrontpage') {
 			$activityButtons[] = '<li><a onclick="updateForside();"><img src="images/disk.png" width="16" height="16" alt="" title="Gem siden" /> Gem siden</a></li>';
 		} elseif($_GET['side'] == 'redigerSpecial') {
