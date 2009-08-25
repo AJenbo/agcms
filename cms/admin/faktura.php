@@ -267,7 +267,6 @@ function getCheckid($id) {
 
 function echoprint($id) {
 	global $faktura;
-	print_r($faktura);
 	
     $html = '<div id="main">
         <address>'.$GLOBALS['_config']['address'].'

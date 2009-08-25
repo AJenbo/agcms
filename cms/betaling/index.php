@@ -82,7 +82,7 @@ $GLOBALS['generatedcontent']['text'] = '';
 
 if(!empty($_GET['id']) && @$_GET['checkid'] == getCheckid($_GET['id'])) {
 	$faktura = $mysqli->fetch_array("SELECT * FROM `fakturas` WHERE `id` = ".$_GET['id']);
-	$faktura = $faktura[0];
+	$faktura = @$faktura[0];
 	
 	if($faktura['status'] == 'new' || $faktura['status'] == 'locked' || $faktura['status'] == 'pbserror') {
 		$faktura['quantities'] = explode('<', $faktura['quantities']);
