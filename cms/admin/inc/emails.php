@@ -14,12 +14,15 @@ function sendEmail($id, $from, $interests, $subject, $text) {
 	$mail->SetLanguage('dk');
 	
 	$mail->IsSMTP();
-	$mail->SMTPAuth   = true;                  // enable SMTP authentication
-	$mail->Host       = 'smtp.exserver.dk';      // sets the SMTP server
-	$mail->Port       = 26;                   // set the SMTP port for the server
-	
-	$mail->Username   = $GLOBALS['_config']['email'][0];  //  username
-	$mail->Password   = $GLOBALS['_config']['emailpassword'];            //  password
+	if($GLOBALS['_config']['emailpassword'] !== false) {
+		$mail->SMTPAuth   = true; // enable SMTP authentication
+		$mail->Username   = $GLOBALS['_config']['email'][0];
+		$mail->Password   = $GLOBALS['_config']['emailpassword'];
+	} else {
+		$mail->SMTPAuth   = false;
+	}
+	$mail->Host       = $GLOBALS['_config']['smtp'];      // sets the SMTP server
+	$mail->Port       = $GLOBALS['_config']['smtpport'];                   // set the SMTP port for the server
 	
 	$mail->AddReplyTo($from, $GLOBALS['_config']['site_name']);
 	

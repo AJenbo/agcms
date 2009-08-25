@@ -641,11 +641,15 @@ if($_GET['id'] && $_GET['checkid'] == getCheckid($_GET['id'])) {
 				$mail             = new PHPMailer();
 				$mail->SetLanguage('dk');
 				$mail->IsSMTP();
-				$mail->SMTPAuth   = true;                  // enable SMTP authentication
+				if($GLOBALS['_config']['emailpassword'] !== false) {
+					$mail->SMTPAuth   = true; // enable SMTP authentication
+					$mail->Username   = $GLOBALS['_config']['email'][0];
+					$mail->Password   = $GLOBALS['_config']['emailpassword'];
+				} else {
+					$mail->SMTPAuth   = false;
+				}
 				$mail->Host       = $GLOBALS['_config']['smtp'];      // sets the SMTP server
-				$mail->Port       = 25;                   // set the SMTP port for the server
-				$mail->Username   = $GLOBALS['_config']['email'][0];  //  username
-				$mail->Password   = $GLOBALS['_config']['emailpassword'];            //  password
+				$mail->Port       = $GLOBALS['_config']['smtpport'];                   // set the SMTP port for the server
 				$mail->CharSet    = 'utf-8';
 				if(validemail($faktura['department'])) {
 					$mail->AddReplyTo($faktura['department'], $GLOBALS['_config']['site_name']);
@@ -694,11 +698,14 @@ if($_GET['id'] && $_GET['checkid'] == getCheckid($_GET['id'])) {
 				$mail             = new PHPMailer();
 				$mail->SetLanguage('dk');
 				$mail->IsSMTP();
-				$mail->SMTPAuth   = true;                  // enable SMTP authentication
-				$mail->Host       = $GLOBALS['_config']['smtp'];      // sets the SMTP server
-				$mail->Port       = 25;                   // set the SMTP port for the server
-				$mail->Username   = $GLOBALS['_config']['email'][0];  //  username
-				$mail->Password   = $GLOBALS['_config']['emailpassword'];            //  password
+				$mail->IsSMTP();
+				if($GLOBALS['_config']['emailpassword'] !== false) {
+					$mail->SMTPAuth   = true; // enable SMTP authentication
+					$mail->Username   = $GLOBALS['_config']['email'][0];
+					$mail->Password   = $GLOBALS['_config']['emailpassword'];
+				} else {
+					$mail->SMTPAuth   = false;
+				}
 				$mail->CharSet    = 'utf-8';
 				if(validemail($faktura['department'])) {
 					$mail->AddReplyTo($faktura['department'], $GLOBALS['_config']['site_name']);
@@ -767,11 +774,15 @@ if($_GET['id'] && $_GET['checkid'] == getCheckid($_GET['id'])) {
 	$mail             = new PHPMailer();
 	$mail->SetLanguage('dk');
 	$mail->IsSMTP();
-	$mail->SMTPAuth   = true;                  // enable SMTP authentication
+	if($GLOBALS['_config']['emailpassword'] !== false) {
+		$mail->SMTPAuth   = true; // enable SMTP authentication
+		$mail->Username   = $GLOBALS['_config']['email'][0];
+		$mail->Password   = $GLOBALS['_config']['emailpassword'];
+	} else {
+		$mail->SMTPAuth   = false;
+	}
 	$mail->Host       = $GLOBALS['_config']['smtp'];      // sets the SMTP server
-	$mail->Port       = 25;                   // set the SMTP port for the server
-	$mail->Username   = $GLOBALS['_config']['email'][0];  //  username
-	$mail->Password   = $GLOBALS['_config']['emailpassword'];            //  password
+	$mail->Port       = $GLOBALS['_config']['smtpport'];              //  password
 	$mail->CharSet    = 'utf-8';
 	$mail->From       = $GLOBALS['_config']['email'][0];
 	$mail->FromName   = $GLOBALS['_config']['site_name'];

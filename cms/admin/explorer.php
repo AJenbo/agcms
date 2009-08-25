@@ -616,7 +616,7 @@ function edit_alt($id, $alt) {
 }
 
 $sajax_request_type = 'POST';
-sajax_init();
+
 //$sajax_debug_mode = 1;
 sajax_export(
 	array('name' => 'renamefile', 'method' => 'POST'),

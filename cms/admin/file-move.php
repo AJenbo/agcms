@@ -5,7 +5,6 @@ require_once '../inc/mysqli.php';
 require_once 'inc/file-functions.php';
 $mysqli = new simple_mysqli($GLOBALS['_config']['mysql_server'], $GLOBALS['_config']['mysql_user'], $GLOBALS['_config']['mysql_password'], $GLOBALS['_config']['mysql_database']);
 
-sajax_init();
 //$sajax_debug_mode = 1;
 sajax_export(
 	array('name' => 'listdirs', 'method' => 'GET')

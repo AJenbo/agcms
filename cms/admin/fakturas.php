@@ -1,6 +1,4 @@
 <?php
-ini_set("display_errors", "on");
-error_reporting(-1);
 date_default_timezone_set('Europe/Copenhagen'); 
 if(empty($GLOBALS['_user'])) {
 	//TDODO No login !!!
@@ -11,7 +9,6 @@ require_once '../inc/config.php';
 require_once '../inc/mysqli.php';
 $mysqli = new simple_mysqli($GLOBALS['_config']['mysql_server'], $GLOBALS['_config']['mysql_user'], $GLOBALS['_config']['mysql_password'], $GLOBALS['_config']['mysql_database']);
 $sajax_request_type = 'POST';
-sajax_init();
 
 if(!$_POST) {
 	$where = " `date` >= '".date('Y')."-01-01'";

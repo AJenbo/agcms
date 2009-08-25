@@ -1,4 +1,11 @@
 <?php
+date_default_timezone_set('Europe/Copenhagen'); 
+if(empty($GLOBALS['_user'])) {
+	//TODO No login !!!
+	$GLOBALS['_user']['fullname'] = 'No one';
+	$GLOBALS['_user']['access'] = 2;
+}
+
 require_once '../inc/sajax.php';
 require_once '../inc/config.php';
 require_once '../inc/mysqli.php';
@@ -12,13 +19,12 @@ function newfaktura() {
 	return $mysqli->insert_id;
 }
 
-if($_GET['function'] == 'new') {
+if(!empty($_GET['function']) && $_GET['function'] == 'new') {
 	header('Location: faktura.php?id='.newfaktura(), TRUE, 303);
 	exit;
 }
 
 $sajax_request_type = 'POST';
-sajax_init();
 
 $faktura = $mysqli->fetch_array("SELECT *, UNIX_TIMESTAMP(`date`) AS `date`, UNIX_TIMESTAMP(`paydate`) AS `paydate` FROM `fakturas` WHERE `id` = ".$_GET['id']);
 $faktura = $faktura[0];
@@ -261,6 +267,7 @@ function getCheckid($id) {
 
 function echoprint($id) {
 	global $faktura;
+	print_r($faktura);
 	
     $html = '<div id="main">
         <address>'.$GLOBALS['_config']['address'].'
@@ -413,11 +420,11 @@ function save($id, $type, $updates) {
 			$updates = $updates;
 	}
 	
-	if($updates['date']) {
+	if(!empty($updates['date'])) {
 		$date = "STR_TO_DATE('".$updates['date']."', '%d/%m/%Y')";
 		unset($updates['date']);
 	}
-	if($updates['paydate'] && ($type == 'giro' || $type == 'cash')) {
+	if(!empty($updates['paydate']) && ($type == 'giro' || $type == 'cash')) {
 		$paydate = "STR_TO_DATE('".$updates['paydate']."', '%d/%m/%Y')";
 	} elseif($type == 'lock' || $type == 'cancel') {
 		$paydate = 'NOW()';
@@ -469,10 +476,10 @@ function save($id, $type, $updates) {
 			$sql .= " `".addcslashes($key, '`')."` = '".addcslashes($value, "'")."',";
 		$sql = substr($sql, 0, -1);
 		
-		if($date) {
+		if(!empty($date)) {
 			$sql .= ", date = ".$date;
 		}
-		if($paydate) {
+		if(!empty($paydate)) {
 			$sql .= ", paydate = ".$paydate;
 		}
 		
@@ -513,21 +520,28 @@ function save($id, $type, $updates) {
 </body>
 </html>';
 		
-		
 		$mail             = new PHPMailer();
 		$mail->SetLanguage('dk');
 		$mail->IsSMTP();
-		$mail->SMTPAuth   = true;                  // enable SMTP authentication
+		if($GLOBALS['_config']['emailpassword'] !== false) {
+			$mail->SMTPAuth   = true; // enable SMTP authentication
+			$mail->Username   = $GLOBALS['_config']['email'][0];
+			$mail->Password   = $GLOBALS['_config']['emailpassword'];
+		} else {
+			$mail->SMTPAuth   = false;
+		}                  
 		$mail->Host       = $GLOBALS['_config']['smtp'];      // sets the SMTP server
-		$mail->Port       = 25;                   // set the SMTP port for the server
-		$mail->Username   = $GLOBALS['_config']['email'][0];  //  username
-		$mail->Password   = $GLOBALS['_config']['emailpassword'];            //  password
+		$mail->Port       = $GLOBALS['_config']['smtpport'];                   // set the SMTP port for the server
 		$mail->CharSet    = 'utf-8';
 		$mail->AddReplyTo($GLOBALS['_config']['email'][0], $GLOBALS['_config']['site_name']);
 		$mail->From       = $GLOBALS['_config']['email'][0];
 		$mail->FromName   = $GLOBALS['_config']['site_name'];
 		$mail->Subject    = 'Online betaling til '.$GLOBALS['_config']['site_name'];
 		$mail->MsgHTML($emailBody, $_SERVER['DOCUMENT_ROOT']);
+		
+		if(empty($faktura['navn']))
+			$faktura['navn'] = $faktura['email'];
+		
 		$mail->AddAddress($faktura['email'], $faktura['navn']);
 		if(!$mail->Send()) {
 			return array('error' => 'Mailen kunde ikke sendes!');
@@ -617,7 +631,7 @@ function returnamount($id, $returnamount) {
 function validemail($email) {
 	//TODO Is this to strict?
 	//_An-._E-mail@test-domain.test.dk
-	if($email &&
+	if(!empty($email) &&
 	preg_match('/^([a-z0-9_-]+[a-z0-9_.-]*)*[a-z0-9_-]+@[a-z0-9-.]+[.][a-z]{2,4}$/ui', $email) &&
 	!preg_match('/[.]{2}/u', $email) &&
 	getmxrr(preg_replace('/.+?@(.?)/u', '$1', $email), $dummy)) {
@@ -862,11 +876,16 @@ function reload_r(date) {
 }
 
 function save(type) {
-	if(type == 'cancel' && !confirm('Er du sikker på du vil annullere denne faktura?'))
+	if(type == null) {
+		type = 'save';
+	}
+	
+	if(type == 'cancel' && !confirm('Er du sikker på du vil annullere denne faktura?')) {
 		return false;
+	}
 	
 	$('loading').style.visibility = '';
-	var update = Array();
+	var update = {};
 	if(status == 'new') {
 		update['quantities'] = quantities;
 		update['products'] = products;
@@ -949,7 +968,7 @@ var lastemail;
 
 function validemail() {
 	if($('emaillink')) {
-		if($('email').value.match('^([a-z0-9_-]+[a-z0-9_.-]*)*[a-z0-9_-]+@[a-z0-9-.]+[.][a-z]{2,4}$')) {
+		if($('email').value.match('^([A-z0-9_-]+[A-z0-9_.-]*)*[A-z0-9_-]+@[A-z0-9-.]+[.][A-z]{2,4}$')) {
 			if($('email').value != lastemail || $('emaillink').style.display == 'none') {
 				lastemail = $('email').value;
 				if(validemailajaxcall)
@@ -1288,6 +1307,7 @@ new tcal ({ 'controlid': 'cdate' });
 				<?php
 			$productslines = max(count($faktura['quantities']), count($faktura['products']), count($faktura['values']));
 			
+			$netto = 0;
 			for($i=0;$i<$productslines;$i++) {
 				$netto += $faktura['values'][$i]*$faktura['quantities'][$i];
 			}

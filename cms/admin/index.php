@@ -8,7 +8,6 @@
 	require_once 'inc/emails.php';
 	$mysqli = new simple_mysqli($GLOBALS['_config']['mysql_server'], $GLOBALS['_config']['mysql_user'], $GLOBALS['_config']['mysql_password'], $GLOBALS['_config']['mysql_database']);
 	$sajax_request_type = "POST";
-	sajax_init();
 	
 	function rtefsafe($text) {
 		return str_replace(
