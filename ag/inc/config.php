@@ -8,6 +8,7 @@ $GLOBALS['_config']['phone'] = '33 11 8338';
 $GLOBALS['_config']['fax'] = '33 14 8338';
 $GLOBALS['_config']['email'][] = 'mail@arms-gallery.dk';
 $GLOBALS['_config']['smtp'] = 'smtp.exserver.dk';
+$GLOBALS['_config']['smtpport'] = 25;
 $GLOBALS['_config']['emailpassword'] = '.45acp';
 $GLOBALS['_config']['interests'][] = 'Paintballbaner';
 $GLOBALS['_config']['interests'][] = 'Batterier';
