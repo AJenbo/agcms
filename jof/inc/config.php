@@ -8,6 +8,7 @@ $GLOBALS['_config']['phone'] = '33 33 77 77';
 $GLOBALS['_config']['fax'] = '+45 33 14 04 07';
 $GLOBALS['_config']['email'][] = 'mail@jagtogfiskerimagasinet.dk';
 $GLOBALS['_config']['smtp'] = 'smtp.exserver.dk';
+$GLOBALS['_config']['smtpport'] = 25;
 $GLOBALS['_config']['emailpassword'] = '.357magnum';
 $GLOBALS['_config']['interests'][] = 'Fiskeri';
 $GLOBALS['_config']['interests'][] = 'Jagt';
