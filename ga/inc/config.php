@@ -8,6 +8,7 @@ $GLOBALS['_config']['phone'] = '+45 36 44 26 60';
 $GLOBALS['_config']['fax'] = '';
 $GLOBALS['_config']['email'][] = 'info@geoffanderson.com';
 $GLOBALS['_config']['smtp'] = 'send.one.com';
+$GLOBALS['_config']['smtpport'] = 2525;
 $GLOBALS['_config']['emailpassword'] = 'dozer03';
 $GLOBALS['_config']['interests'][] = '';
 $GLOBALS['_config']['pbsid'] = '';
