@@ -4,13 +4,12 @@
 	require_once '../inc/mysqli.php';
 	$mysqli = new simple_mysqli($GLOBALS['_config']['mysql_server'], $GLOBALS['_config']['mysql_user'], $GLOBALS['_config']['mysql_password'], $GLOBALS['_config']['mysql_database']);
 	$sajax_request_type = 'POST';
-	sajax_init();
 	
 	
 	function getCheckid($id) {
 		return mb_substr(md5($id.'salt24raej098'), 3, 5);
 	}
-
+	
 	function save($type, $id, $quantities, $products, $values, $fragt, $momssats, $premoms, $date, $iref, $eref, $navn, $att, $adresse, $postbox, $postnr, $by, $land, $email, $tlf1, $tlf2, $note, $department) {
 		global $mysqli;
 		
@@ -70,6 +69,13 @@
 <link href="style/fakturas_print.css" rel="stylesheet" type="text/css" media="print" />
 <script type="text/javascript" src="javascript/lib/php.min.js"></script>
 <script type="text/javascript" src="javascript/lib/prototype.js"></script>
+<script type="text/javascript"><!--
+JSON = JSON || {};
+JSON.stringify = function(value) { return value.toJSON(); };
+JSON.parse = JSON.parse || function(jsonsring) { return jsonsring.evalJSON(true); };
+//-->
+</script>
+<script type="text/javascript" src="/javascript/sajax.js"></script>
 <script type="text/javascript" src="/javascript/zipcodedk.js"></script>
 <script type="text/javascript" src="javascript/fakturas.js"></script>
 <script type="text/javascript" src="javascript/calendar.js"></script>
@@ -108,7 +114,7 @@
 <div id="menu" class="web">
     <p><form action="" onsubmit="x_ny(ny_r); return false;" method="post" style="display:none;"><input type="submit" accesskey="n" /></form><a onclick="x_ny(ny_r); return false;" href="#"><img src="images/table_add.png" alt="Opret ny" title="Opret ny" width="16" height="16" /></a> <?php
 	if($faktura[0]['status'] == 'new') {
-	    ?><a id="savebn" onclick="save(); return false;" href="#"><img src="images/table_save.png" alt="Gem" title="Gem" width="16" height="16" /></a> <?php
+	    ?><a id="savebn" onclick="save('save'); return false;" href="#"><img src="images/table_save.png" alt="Gem" title="Gem" width="16" height="16" /></a> <?php
 	    ?><form action="" onsubmit="save('lock'); return false;" method="post" style="display:none;"><input type="submit" accesskey="l" /></form><a id="lockbn" onclick="save('lock'); return false;" href="#"><img src="images/lock.png" alt="Lås" title="Lås" width="16" height="16" /></a> <?php
 	}
     ?><a id="printbn"<?php if($faktura[0]['status'] == 'new') { ?> style="display:none;"<?php } ?> onclick="window.print(); return false;" href="#"><img src="images/printer.png" alt="Udskriv" title="Udskriv" width="16" height="16" /></a> <?php
@@ -127,7 +133,7 @@
       <input maxlength="6" name="id" value="<?php echo($faktura[0]['id']); ?>" style="width:100px;" />
     </form>
   </div>
-  <form id="wrapper" action="" method="post" onsubmit="save(); return false;"><input type="submit" accesskey="s" style="display:none;" />
+  <form id="wrapper" action="" method="post" onsubmit="save('save'); return false;"><input type="submit" accesskey="s" style="display:none;" />
     <?php
   if($faktura[0]['status'] != 'new') { echo('<p class="web"><strong>Status: '.$faktura[0]['status'].'</strong></p>'); }
   ?>
@@ -318,7 +324,7 @@ new tcal ({ 'controlid': 'date' });
 	}
 	//TODO remove this input
 	?><input maxlength="32" value="<?php echo($GLOBALS['_user']['fullname']); ?>" name="clerk" id="clerk" type="hidden" /><?
-	?>Online betaling: <?php echo($GLOBALS['_config']['base_url']); ?>/faktura/?id=<?php echo($faktura[0]['id']); ?>&checkid=<?php echo(getCheckid($faktura[0]['id'])); ?><br /><a href="" id="emaillink"<?php if(!$faktura[0]['status'] == 'new') { ?> onclick="save();"<?php } if(!$faktura[0]['email']) { ?> style="display:none;"<?php } ?>>Send link til kunden</a>
+	?>Online betaling: <?php echo($GLOBALS['_config']['base_url']); ?>/faktura/?id=<?php echo($faktura[0]['id']); ?>&checkid=<?php echo(getCheckid($faktura[0]['id'])); ?><br /><a href="" id="emaillink"<?php if(!$faktura[0]['status'] == 'new') { ?> onclick="save('save');"<?php } if(!$faktura[0]['email']) { ?> style="display:none;"<?php } ?>>Send link til kunden</a>
     </div>
     <p<?php if($faktura[0]['status'] == 'new') { ?> class="printblock"<?php } ?> style="margin-left:12cm; font-size:12pt;"><strong>Med venlig hilsen<br />
       <br />
