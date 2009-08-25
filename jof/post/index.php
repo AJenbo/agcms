@@ -362,12 +362,6 @@
 			return false;
 	}
 	
-	function wait($sleep) {
-		usleep(max(round($sleep*1000000-44), 1));
-		return true;
-	}
-	
-	sajax_init();
 //	$sajax_debug_mode = 1;
 //	$sajax_remote_uri = "/ajax.php";
 	sajax_export('changeUser','getPDFURL','getAddress','deleteID', 'payerstatus', 'wait');
@@ -380,8 +374,10 @@
 <script type="text/javascript" src="calcpakkepris.js"></script>
 <script type="text/javascript" src="/javascript/zipcodedk.js"></script>
 <script type="text/javascript" src="javascript.js"></script>
-<script type="text/javascript" src="json_parse.js"></script>
-<script type="text/javascript" src="serialize.js"></script>
+<script type="text/javascript" src="/javascript/json2.stringify.js"></script> 
+<script type="text/javascript" src="/javascript/json_stringify.js"></script>
+<script type="text/javascript" src="/javascript/json_parse_state.js"></script> 
+<script type="text/javascript" src="/javascript/sajax.js"></script> 
 <script type="text/javascript" src="index.js"></script>
 <script type="text/javascript"><!--
 function init2() {

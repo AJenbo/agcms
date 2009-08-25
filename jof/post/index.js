@@ -1,21 +1,13 @@
-function x_wait() {
-	sajax_do_call("wait", arguments, 'GET', false);
-}
-
-function x_changeUser() {
-	sajax_do_call("changeUser", arguments, 'POST', true);
-}
-
 function x_getAddress() {
-	sajax_do_call("getAddress", arguments, 'POST', true);
+	sajax_do_call("getAddress", arguments, 'POST', true, "/post/");
 }
 
 function x_getPDFURL() {
-	sajax_do_call("getPDFURL", arguments, 'POST', true);
+	sajax_do_call("getPDFURL", arguments, 'POST', true, "/post/");
 }
 
 function x_payerstatus() {
-	sajax_do_call("payerstatus", arguments, 'POST', true);
+	sajax_do_call("payerstatus", arguments, 'POST', true, "/post/");
 }
 
 function calc() {

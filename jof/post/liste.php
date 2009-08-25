@@ -20,8 +20,10 @@ require_once("calcpakkepris".$_GET['y'].".php");
 		color:#000000;
 	}
 </style>
-<script type="text/javascript" src="json_parse.js"></script>
-<script type="text/javascript" src="serialize.js"></script>
+<script type="text/javascript" src="/javascript/json2.stringify.js"></script> 
+<script type="text/javascript" src="/javascript/json_stringify.js"></script>
+<script type="text/javascript" src="/javascript/json_parse_state.js"></script> 
+<script type="text/javascript" src="/javascript/sajax.js"></script> 
 <script type="text/javascript" src="javascript.js"></script>
 <script type="text/javascript" src="liste.js"></script>
 </head>

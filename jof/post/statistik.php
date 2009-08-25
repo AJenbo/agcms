@@ -72,7 +72,6 @@
 		return $snoopy->results;
 	}
 	
-	sajax_init();
 //	$sajax_debug_mode = 1;
 //	$sajax_remote_uri = "/ajax.php";
 	sajax_export("changeUser","getPDFURL");
@@ -99,10 +98,15 @@
 	text-decoration:underline;
 }
 </style>
-<script type="text/javascript">
+<script type="text/javascript" src="/javascript/json2.stringify.js"></script> 
+<script type="text/javascript" src="/javascript/json_stringify.js"></script>
+<script type="text/javascript" src="/javascript/json_parse_state.js"></script> 
+<script type="text/javascript" src="/javascript/sajax.js"></script> 
+<script type="text/javascript"><!--
 function handleClick(barCode) {
 	window.open("http://www.postdanmark.dk/tracktrace/TrackTrace.do?i_stregkode=" + barCode + "&i_lang=IND", "ttWindow", "toolbar=no,location=yes,directories=no,status=no,menubar=no,scrollbars=yes,resizable=yes,width=800,height=600");
 }
+//-->
 </script>
 </head>
 <body><div id="loading" style="display:none;"><img src="load.gif" width="228" height="144" alt="" title="Komunikere med post danmark..." /></div>
