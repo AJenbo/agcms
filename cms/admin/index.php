@@ -64,7 +64,7 @@
 		if($id)
 			$kat = $mysqli->fetch_array('SELECT * FROM `kat` WHERE id = '.$id.' LIMIT 1');
 		
-		$html = '<div id="headline">Rediger kategori</div><form action="" onsubmit="return updateKat('.$id.')"><input type="submit" accesskey="s" style="display:none;" />
+		$html = '<div id="headline">Rediger kategori</div><form action="" onsubmit="return updateKat('.$id.')"><input type="submit" accesskey="s" style="width:1px; height:1px; position:absolute; top: -20px; left:-20px;" />
 		<div>Navn: <img style="cursor:pointer;vertical-align:bottom" onclick="explorer(\'thb\',\'icon\')" src="';
 			
 		if(!$kat[0]['icon'])
@@ -148,7 +148,7 @@ $(\'subMenusOrder\').value = newOrder;
 		if(!$sider)
 			return '<div id="headline">Siden eksistere ikke</div>';
 
-		$html = '<div id="headline">Rediger side #'.$id.'</div><form action="" method="post" onsubmit="return updateSide('.$id.');"><input type="submit" accesskey="s" style="display:none;" /><div><script type="text/javascript"><!--
+		$html = '<div id="headline">Rediger side #'.$id.'</div><form action="" method="post" onsubmit="return updateSide('.$id.');"><input type="submit" accesskey="s" style="width:1px; height:1px; position:absolute; top: -20px; left:-20px;" /><div><script type="text/javascript"><!--
 //Usage: initRTE(imagesPath, includesPath, cssFile, genXHTML)
 initRTE("/admin/rtef/images/", "/admin/rtef/", "/theme/rtef-text.css", true);
 //--></script><input type="hidden" name="id" id="id" value="'.$id.'" /><input class="admin_name" type="text" name="navn" id="navn" value="'.htmlspecialchars($sider[0]['navn']).'" maxlength="127" size="127" style="width:'.$GLOBALS['_config']['text_width'].'px" /><script type="text/javascript"><!--
@@ -405,7 +405,7 @@ function redigerFrontpage() {
 	if(!$special)
 		return '<div id="headline">Siden eksistere ikke</div>';
 
-	$html .= '<div id="headline">Rediger Forsiden</div><form action="" method="post" onsubmit="return updateForside();"><input type="submit" accesskey="s" style="display:none;" />';
+	$html .= '<div id="headline">Rediger Forsiden</div><form action="" method="post" onsubmit="return updateForside();"><input type="submit" accesskey="s" style="width:1px; height:1px; position:absolute; top: -20px; left:-20px;" />';
 
 	$subkats = $mysqli->fetch_array('SELECT id, navn, icon FROM `kat` WHERE bind = 0 ORDER BY `order`, `navn`');
 	
@@ -452,7 +452,7 @@ function redigerSpecial($id) {
 	if(!$special)
 		return '<div id="headline">Siden eksistere ikke</div>';
 
-	$html .= '<div id="headline">Rediger '.$special[0]['navn'].'</div><form action="" method="post" onsubmit="return updateSpecial('.$id.');"><input type="submit" accesskey="s" style="display:none;" />';
+	$html .= '<div id="headline">Rediger '.$special[0]['navn'].'</div><form action="" method="post" onsubmit="return updateSpecial('.$id.');"><input type="submit" accesskey="s" style="width:1px; height:1px; position:absolute; top: -20px; left:-20px;" />';
 
 	$html .= '<input type="hidden" id="id" />';
 
@@ -466,7 +466,7 @@ writeRichText("text", \''.rtefsafe($special[0]['text']).'\', "", '.($GLOBALS['_c
 }
 	
 function getnykrav() {
-	$html = '<div id="headline">Opret nyt krav</div><form action="" method="post" onsubmit="return savekrav();"><input type="submit" accesskey="s" style="display:none;" /><input type="hidden" name="id" id="id" value="" /><input class="admin_name" type="text" name="navn" id="navn" value="" maxlength="127" size="127" style="width:'.$GLOBALS['_config']['text_width'].'px" /><script type="text/javascript"><!--
+	$html = '<div id="headline">Opret nyt krav</div><form action="" method="post" onsubmit="return savekrav();"><input type="submit" accesskey="s" style="width:1px; height:1px; position:absolute; top: -20px; left:-20px;" /><input type="hidden" name="id" id="id" value="" /><input class="admin_name" type="text" name="navn" id="navn" value="" maxlength="127" size="127" style="width:'.$GLOBALS['_config']['text_width'].'px" /><script type="text/javascript"><!--
 //Usage: initRTE(imagesPath, includesPath, cssFile, genXHTML)
 initRTE("/admin/rtef/images/", "/admin/rtef/", "/theme/rtef-text.css", true);
 writeRichText("text", "", "", '.$GLOBALS['_config']['text_width'].', 420, true, false, false);
@@ -543,7 +543,7 @@ function editContact($id) {
 	$address = $mysqli->fetch_array('SELECT * FROM `email` WHERE `id` = '.$id);
 	
 	$html = '<div id="headline">Redigere kontakt person</div>';
-	$html .= '<form method="post" action="" onsubmit="updateContact('.$_GET['id'].'); return false;"><input type="submit" accesskey="s" style="display:none;" /><table border="0" cellspacing="0"><tbody><tr><td>Navn:</td><td colspan="2"><input value="'.
+	$html .= '<form method="post" action="" onsubmit="updateContact('.$_GET['id'].'); return false;"><input type="submit" accesskey="s" style="width:1px; height:1px; position:absolute; top: -20px; left:-20px;" /><table border="0" cellspacing="0"><tbody><tr><td>Navn:</td><td colspan="2"><input value="'.
 	$address[0]['navn'].'" id="navn" /></td></tr><tr><td>E-mail:</td><td colspan="2"><input value="'.
 	$address[0]['email'].'" id="email" /></td></tr><tr><td>Adresse:</td><td colspan="2"><input value="'.
 	$address[0]['adresse'].'" id="adresse" /></td></tr><tr><td>Land:</td><td colspan="2"><input value="'.
@@ -833,7 +833,7 @@ function get_db_error() {
 function getnyside() {
 	global $mysqli;
 
-	$html = '<div id="headline">Opret ny side</div><form action="" method="post" onsubmit="return opretSide();"><input type="submit" accesskey="s" style="display:none;" /><div><script type="text/javascript"><!--
+	$html = '<div id="headline">Opret ny side</div><form action="" method="post" onsubmit="return opretSide();"><input type="submit" accesskey="s" style="width:1px; height:1px; position:absolute; top: -20px; left:-20px;" /><div><script type="text/javascript"><!--
 //Usage: initRTE(imagesPath, includesPath, cssFile, genXHTML)
 initRTE("/admin/rtef/images/", "/admin/rtef/", "/theme/rtef-text.css", true);
 //--></script><input type="hidden" name="id" id="id" value="" /><input class="admin_name" type="text" name="navn" id="navn" value="" maxlength="127" size="127" style="width:'.$GLOBALS['_config']['text_width'].'px" /><script type="text/javascript"><!--
@@ -1042,7 +1042,7 @@ function siteList_expand($id) {
 }
 
 function getnykat() {
-	$html = '<div id="headline">Opret kategori</div><form action="" onsubmit="return save_ny_kat()"><input type="submit" accesskey="s" style="display:none;" /><div>Navn: <img style="cursor:pointer;vertical-align:bottom" onclick="explorer(\'thb\',\'icon\')" src="images/folder.png" title="" alt="Billeder" id="iconthb" /> <input id="navn" style="width:256px;" maxlength="64" /> <br /> Icon: <input id="icon" style="width:247px;" maxlength="128" type="hidden" /> <img style="cursor:pointer;vertical-align:bottom" onclick="explorer(\'thb\',\'icon\')" width="16" height="16" src="images/folder_image.png" title="Find billeder" alt="Billeder" /> <img style="cursor:pointer;vertical-align:bottom" onclick="setThb(\'icon\',\'\',\'images/folder.png\')" src="images/cross.png" alt="X" title="Fjern billed" height="16" width="16" /><br /><br />';
+	$html = '<div id="headline">Opret kategori</div><form action="" onsubmit="return save_ny_kat()"><input type="submit" accesskey="s" style="width:1px; height:1px; position:absolute; top: -20px; left:-20px;" /><div>Navn: <img style="cursor:pointer;vertical-align:bottom" onclick="explorer(\'thb\',\'icon\')" src="images/folder.png" title="" alt="Billeder" id="iconthb" /> <input id="navn" style="width:256px;" maxlength="64" /> <br /> Icon: <input id="icon" style="width:247px;" maxlength="128" type="hidden" /> <img style="cursor:pointer;vertical-align:bottom" onclick="explorer(\'thb\',\'icon\')" width="16" height="16" src="images/folder_image.png" title="Find billeder" alt="Billeder" /> <img style="cursor:pointer;vertical-align:bottom" onclick="setThb(\'icon\',\'\',\'images/folder.png\')" src="images/cross.png" alt="X" title="Fjern billed" height="16" width="16" /><br /><br />';
 	
 	//Email
 	$html .= 'Kontakt: <select id="email">';
@@ -1269,7 +1269,7 @@ function editkrav($id) {
 	
 	$krav = $mysqli->fetch_array('SELECT navn, text FROM `krav` WHERE id = '.$id);
 	
-	$html = '<div id="headline">Rediger '.$krav[0]['navn'].'</div><form action="" method="post" onsubmit="return savekrav();"><input type="submit" accesskey="s" style="display:none;" /><input type="hidden" name="id" id="id" value="'.$id.'" /><input class="admin_name" type="text" name="navn" id="navn" value="'.$krav[0]['navn'].'" maxlength="127" size="127" style="width:587px" /><script type="text/javascript"><!--
+	$html = '<div id="headline">Rediger '.$krav[0]['navn'].'</div><form action="" method="post" onsubmit="return savekrav();"><input type="submit" accesskey="s" style="width:1px; height:1px; position:absolute; top: -20px; left:-20px;" /><input type="hidden" name="id" id="id" value="'.$id.'" /><input class="admin_name" type="text" name="navn" id="navn" value="'.$krav[0]['navn'].'" maxlength="127" size="127" style="width:587px" /><script type="text/javascript"><!--
 //Usage: initRTE(imagesPath, includesPath, cssFile, genXHTML)
 initRTE("/admin/rtef/images/", "/admin/rtef/", "/theme/rtef-text.css", true);
 writeRichText("text", \''.rtefsafe($krav[0]['text']).'\', "", '.$GLOBALS['_config']['text_width'].', 420, true, false, false);

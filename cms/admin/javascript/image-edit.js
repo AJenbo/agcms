@@ -49,7 +49,8 @@ function saveImage_r(data) {
 		if(window.opener.returnid && window.opener.returnid != 'undefined') {
 			window.opener.opener.document.getElementById(window.opener.returnid).value = data['path'];
 			window.opener.opener.document.getElementById(window.opener.returnid+'thb').src = data['path'];
-			window.opener.opener.updateSide(window.opener.opener.$('id').value);
+			if(window.opener.opener.window.location.href.indexOf('side=redigerside') > -1)
+				window.opener.opener.updateSide(window.opener.opener.$('id').value);
 			//TODO make shure theas closes
 			window.opener.close();
 		} else {

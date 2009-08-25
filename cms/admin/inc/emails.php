@@ -134,7 +134,7 @@ function getEmail($id) {
 	$html = '<div id="headline">Rediger nyhedsbrev</div>';
 	
 	if($newsmails[0]['sendt'] == 0) {
-		$html .= '<form action="" method="post" onsubmit="return sendNews();"><input type="submit" accesskey="m" style="display:none;" />';
+		$html .= '<form action="" method="post" onsubmit="return sendNews();"><input type="submit" accesskey="m" style="width:1px; height:1px; position:absolute; top: -20px; left:-20px;" />';
 		$html .= '<input value="'.$id.'" id="id" type="hidden" />';
 	}
 	

@@ -590,7 +590,8 @@ function open_file_upload() {
 function insertThumbnail(id) {
 	window.opener.document.getElementById(returnid).value=files[id].path;
 	window.opener.document.getElementById(returnid+'thb').src=files[id].path;
-	window.opener.updateSide(window.opener.$('id').value);
+	if(window.opener.window.location.href.indexOf('side=redigerside') > -1)
+		window.opener.updateSide(window.opener.$('id').value);
 	window.close();
 }
 
@@ -641,25 +642,29 @@ function deletefile_r(data) {
 
 function addfile(id) {
 	window.opener.insertHTML('<a href="' + files[id].path + '" target="_blank">Klik her</a>');
-	window.opener.updateSide(window.opener.$('id').value);
+	if(window.opener.window.location.href.indexOf('side=redigerside') > -1)
+		window.opener.updateSide(window.opener.$('id').value);
 	window.close();
 }
 
 function addimg(id) {
 	window.opener.insertHTML('<img src="'+files[id].path+'" alt="'+files[id].alt+'" title="" />');
-	window.opener.updateSide(window.opener.$('id').value);
+	if(window.opener.window.location.href.indexOf('side=redigerside') > -1)
+		window.opener.updateSide(window.opener.$('id').value);
 	window.close();
 }
 
 function addflv(id, aspect, width, height) {
 	window.opener.insertHTML('<img name="placeholder" class="object" src="/admin/rtef/images/placeholder.gif" width="'+width+'" height="'+height+'" alt="&lt;object width=&quot;'+width+'&quot; height=&quot;'+height+'&quot; classid=&quot;clsid:d27cdb6e-ae6d-11cf-96b8-444553540000&quot; codebase=&quot;http://download.macromedia.com/pub/shockwave/cabs/flash/swflash.cab#version=9,0,0,0&quot; align=&quot;middle&quot;&gt;&lt;param name=&quot;allowScriptAccess&quot; value=&quot;sameDomain&quot; /&gt;&lt;param name=&quot;movie&quot; value=&quot;/player'+aspect+'.swf?flvFilename='+files[id].path+'&quot; /&gt;&lt;param name=&quot;allowFullScreen&quot; value=&quot;true&quot; /&gt;&lt;param name=&quot;quality&quot; value=&quot;high&quot; /&gt;&lt;param name=&quot;bgcolor&quot; value=&quot;#FFFFFF&quot; /&gt;&lt;embed src=&quot;/player'+aspect+'.swf?flvFilename='+files[id].path+'&quot; width=&quot;'+width+'&quot; height=&quot;'+height+'&quot; bgcolor=&quot;#FFFFFF&quot; name=&quot;flash&quot; quality=&quot;high&quot; align=&quot;middle&quot; allowScriptAccess=&quot;sameDomain&quot; allowFullScreen=&quot;true&quot; type=&quot;application/x-shockwave-flash&quot; pluginspage=&quot;http://www.macromedia.com/go/getflashplayer&quot; /&gt;&lt;/object&gt;" />');
-	window.opener.updateSide(window.opener.$('id').value);
+	if(window.opener.window.location.href.indexOf('side=redigerside') > -1)
+		window.opener.updateSide(window.opener.$('id').value);
 	window.close();
 }
 
 function addswf(id, width, height) {
 	window.opener.insertHTML('<img name="placeholder" class="object" src="/admin/rtef/images/placeholder.gif" width="'+width+'" height="'+height+'" alt="&lt;object width=&quot;'+width+'&quot; height=&quot;'+height+'&quot; classid=&quot;clsid:d27cdb6e-ae6d-11cf-96b8-444553540000&quot; codebase=&quot;http://download.macromedia.com/pub/shockwave/cabs/flash/swflash.cab#version=9,0,0,0&quot; align=&quot;middle&quot;&gt;&lt;param name=&quot;allowScriptAccess&quot; value=&quot;sameDomain&quot; /&gt;&lt;param name=&quot;movie&quot; value=&quot;'+files[id].path+'&quot; /&gt;&lt;param name=&quot;allowFullScreen&quot; value=&quot;true&quot; /&gt;&lt;param name=&quot;quality&quot; value=&quot;high&quot; /&gt;&lt;param name=&quot;bgcolor&quot; value=&quot;#FFFFFF&quot; /&gt;&lt;embed src=&quot;'+files[id].path+'&quot; width=&quot;'+width+'&quot; height=&quot;'+height+'&quot; bgcolor=&quot;#FFFFFF&quot; name=&quot;flash&quot; quality=&quot;high&quot; align=&quot;middle&quot; allowScriptAccess=&quot;sameDomain&quot; allowFullScreen=&quot;true&quot; type=&quot;application/x-shockwave-flash&quot; pluginspage=&quot;http://www.macromedia.com/go/getflashplayer&quot; /&gt;&lt;/object&gt;" />');
-	window.opener.updateSide(window.opener.$('id').value);
+	if(window.opener.window.location.href.indexOf('side=redigerside') > -1)
+		window.opener.updateSide(window.opener.$('id').value);
 	window.close();
 }
 

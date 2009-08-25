@@ -749,7 +749,7 @@ function dlgLaunch(rte, command, width, height) {
 		case "image":
 			setRange(rte);
 			parseRTE(rte);
-			InsertImg = popUpWin('explorer.php?return=rtef','AddImage', width, height, 'resize=yes,');
+			InsertImg = popUpWin('explorer.php?return=rtef','AddImage', null, null, 'resize=yes,');
 		break;
 		case "link":
 			selectedText = getText(rte);

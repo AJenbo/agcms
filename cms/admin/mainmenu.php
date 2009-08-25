@@ -49,12 +49,12 @@
     <li><a href="./?side=nykat"><img src="images/folder_add.png" width="16" height="16" alt="" /> Opret kategori</a></li>
     <li><a href="./?side=getSiteTree"><img src="images/book_open.png" width="16" height="16" alt="" /> Oversigt </a></li>
     <li><a href="#" onclick="return jumpto()"><img src="images/book_go.png" width="16" height="16" alt="" /> Spring til side</a>
-      <form onsubmit="jumpto(); return false;" action="" method="get"><input style="display:none;" type="submit" accesskey="g" />
+      <form onsubmit="jumpto(); return false;" action="" method="get"><input style="width:1px; height:1px; position:absolute; top: -20px; left:-20px;" type="submit" accesskey="g" />
         <p style="display:inline"><input style="width:30px;" id="jumptoid" name="id" /></p>
       </form>
     </li>
     <li><a href="#" onclick="return sogsearch()"><img src="images/find.png" width="16" height="16" alt="" /> Søg</a>
-      <form onsubmit="sogsearch(); return false;" action="" method="get"><input style="display:none;" type="submit" accesskey="f" />
+      <form onsubmit="sogsearch(); return false;" action="" method="get"><input style="width:1px; height:1px; position:absolute; top: -20px; left:-20px;" type="submit" accesskey="f" />
         <p style="display:inline"><input style="width:91px;" id="sogtext" name="text" /><input type="hidden" name="side" value="search" /></p>
       </form>
     </li>
