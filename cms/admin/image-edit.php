@@ -35,6 +35,12 @@ sajax_handle_client_request();
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <title>Rediger billed</title>
 <script src="javascript/lib/prototype.js" type="text/javascript"></script>
+<script type="text/javascript"><!--
+JSON = JSON || {};
+JSON.stringify = function(value) { return value.toJSON(); };
+JSON.parse = JSON.parse || function(jsonsring) { return jsonsring.evalJSON(true); };
+//-->
+</script>
 <script src="javascript/lib/scriptaculous.js?load=effects,builder,dragdrop" type="text/javascript"></script>
 <script src="javascript/lib/cropper/cropper.js" type="text/javascript"></script>
 <style type="text/css">
@@ -59,6 +65,7 @@ sajax_handle_client_request();
 }
 </style>
 <script type="text/javascript" src="javascript/lib/php.min.js"></script>
+<script type="text/javascript" src="/javascript/sajax.js"></script>
 <script type="text/javascript"><!--
 <?php sajax_show_javascript();
 $imagesize = @getimagesize($_SERVER['DOCUMENT_ROOT'].$_GET['path']);

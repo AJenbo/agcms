@@ -1581,6 +1581,13 @@ sajax_handle_client_request();
 --></script>
 <script type="text/javascript" src="javascript/lib/php.min.js"></script>
 <script type="text/javascript" src="javascript/lib/prototype.js"></script>
+<script type="text/javascript"><!--
+JSON = JSON || {};
+JSON.stringify = function(value) { return value.toJSON(); };
+JSON.parse = JSON.parse || function(jsonsring) { return jsonsring.evalJSON(true); };
+//-->
+</script>
+<script type="text/javascript" src="/javascript/sajax.js"></script>
 <script type="text/javascript" src="javascript/lib/scriptaculous.js"></script>
 <script type="text/javascript" src="javascript/lib/protomenu/proto.menu.js"></script>
 <link rel="stylesheet" href="style/proto.menu.css" type="text/css" media="screen" />

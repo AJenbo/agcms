@@ -329,6 +329,7 @@ function makeNewList_r(data) {
 function countEmailTo() {
 	$('loading').style.visibility = '';
 	//Cancle all othere ajax requests to avoide reponce order mix up
+	//TODO only cancle requests relating to countEmailTo
 	sajax_cancel();
 	var interestObjs = $('interests').getElementsByTagName('input');
 	var interests = '';

@@ -390,6 +390,7 @@ function searchfiles() {
 	setCookie('qpath', qpath, 360);
 	setCookie('qalt', qalt, 360);
 	setCookie('qtype', qtype, 360);
+	//TODO only cancle requests relating to searchfiles
 	sajax_cancel();
 	x_searchfiles(qpath, qalt, qtype, showfiles_r);
 }
@@ -413,6 +414,7 @@ function showfiles(dir, mode) {
 			dirlist[i].className = '';
 		}
 	}
+	//TODO only cancle requests relating to showfiles
 	sajax_cancel();
 	x_showfiles(dir, showfiles_r);
 }

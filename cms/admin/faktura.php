@@ -651,6 +651,12 @@ require_once '../inc/countries.php';
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <link  href="style/calendar.css" rel="stylesheet" type="text/css" />
 <script type="text/javascript" src="javascript/lib/prototype.js"></script>
+<script type="text/javascript"><!--
+JSON = JSON || {};
+JSON.stringify = function(value) { return value.toJSON(); };
+JSON.parse = JSON.parse || function(jsonsring) { return jsonsring.evalJSON(true); };
+//-->
+</script>
 <script type="text/javascript" src="javascript/lib/php.min.js"></script>
 <script type="text/javascript" src="/javascript/zipcodedk.js"></script>
 <script type="text/javascript" src="javascript/calendar.js"></script>
@@ -659,6 +665,7 @@ require_once '../inc/countries.php';
 <link href="style/faktura.css" rel="stylesheet" type="text/css" media="screen" />
 <link href="style/faktura-print.css" rel="stylesheet" type="text/css" media="print" />
 <script type="text/javascript" src="javascript/javascript.js"></script>
+<script type="text/javascript" src="/javascript/sajax.js"></script>
 <script type="text/javascript"><!--
 <?php sajax_show_javascript(); ?>
 var id = <?php echo($faktura['id']); ?>;

@@ -1,6 +1,4 @@
 <?php
-ini_set("display_errors", "on");
-error_reporting(-1);
 //TODO update compleat source with doConditionalGet
 
 /*
@@ -648,6 +646,12 @@ require_once 'inc/config.php';
 <title>Explorer</title>
 <script type="text/javascript" src="javascript/lib/php.min.js"></script>
 <script type="text/javascript" src="javascript/lib/prototype.js"></script>
+<script type="text/javascript"><!--
+JSON = JSON || {};
+JSON.stringify = function(value) { return value.toJSON(); };
+JSON.parse = JSON.parse || function(jsonsring) { return jsonsring.evalJSON(true); };
+//-->
+</script>
 <script type="text/javascript" src="javascript/lib/protomenu/proto.menu.js"></script>
 <link rel="stylesheet" href="style/proto.menu.css" type="text/css" media="screen" />
 
@@ -655,6 +659,7 @@ require_once 'inc/config.php';
 <!--[if IE]><link href="style/explorer-ie.css" rel="stylesheet" type="text/css" /><![endif]-->
 <script type="text/javascript" src="javascript/javascript.js"></script>
 <script type="text/javascript" src="javascript/explorer.js"></script>
+<script type="text/javascript" src="/javascript/sajax.js"></script>
 <script type="text/javascript"><!--
 var rte = '<?php echo(@$_GET['rte']); ?>';
 var returnid = '<?php echo(@$_GET['returnid']); ?>';

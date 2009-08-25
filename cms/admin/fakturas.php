@@ -1,5 +1,11 @@
 <?php
-
+ini_set("display_errors", "on");
+error_reporting(-1);
+date_default_timezone_set('Europe/Copenhagen'); 
+if(empty($GLOBALS['_user'])) {
+	//TDODO No login !!!
+	$GLOBALS['_user']['fullname'] = 'No one';
+}
 require_once '../inc/sajax.php';
 require_once '../inc/config.php';
 require_once '../inc/mysqli.php';
@@ -18,34 +24,34 @@ if(!$_POST) {
 	$where .= " AND `date` <= '".$_POST['y']."-".$_POST['m']."-31'";
 }
 
-if($_POST['department'])
+if(!empty($_POST['department']))
 	$where .= " AND `department` = '".$_POST['department']."'";
 
-if(!$_POST) {
+if(empty($_POST)) {
 	$where .= " AND `clerk` = '".$GLOBALS['_user']['fullname']."'";
-} elseif($_POST['clerk'])
+} elseif(!empty($_POST['clerk']))
 	$where .= " AND `clerk` = '".$_POST['clerk']."'";
 
-if(!$_POST || $_POST['status'] == 'activ')
+if(empty($_POST) || $_POST['status'] == 'activ')
 	$where .= " AND (`status` = 'new' OR `status` = 'locked' OR `status` = 'pbsok' OR `status` = 'pbserror')";
 elseif($_POST['status'] == 'inactiv')
 	$where .= " AND (`status` != 'new' AND `status` != 'locked' AND `status` != 'pbsok' AND `status` != 'pbserror')";
 elseif($_POST['status'])
 	$where .= " AND `status` = '".$_POST['status']."'";
 
-if($_POST['name'])
+if(!empty($_POST['name']))
 	$where .= " AND `navn` LIKE '%".$_POST['name']."%'";
 
-if($_POST['tlf'])
+if(!empty($_POST['tlf']))
 	$where .= " AND (`tlf1` LIKE '%".$_POST['tlf']."%' OR `tlf2` LIKE '%".$_POST['tlf']."%')";
 
-if(!$_POST) {
+if(empty($_POST)) {
 	$_POST['y'] = date('Y');
 	$_POST['clerk'] = $GLOBALS['_user']['fullname'];
 	$_POST['status'] = 'activ';
 }
 
-if($_POST['id'])
+if(!empty($_POST['id']))
 	$where = " `id` = '".$_POST['id']."'";
 
 
@@ -95,7 +101,14 @@ foreach($fakturas as $key => $faktura) {
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <title>Faktura liste</title>
 <script type="text/javascript" src="javascript/lib/prototype.js"></script>
+<script type="text/javascript"><!--
+JSON = JSON || {};
+JSON.stringify = function(value) { return value.toJSON(); };
+JSON.parse = JSON.parse || function(jsonsring) { return jsonsring.evalJSON(true); };
+//-->
+</script>
 <script type="text/javascript" src="javascript/javascript.js"></script>
+<script type="text/javascript" src="/javascript/sajax.js"></script>
 <link href="style/mainmenu.css" rel="stylesheet" type="text/css" />
 <style type="text/css">
 @charset "utf-8";
@@ -155,12 +168,17 @@ a {
 <form action="" method="post"><table><tr>
 	<td>Id:</td><td>År:</td><td>Måned:</td><td>Ekspedient:</td><td>Status:</td></tr><tr><td>
 
-    <input name="id" value="<?php echo($_POST['id']); ?>" size="4" /></td><td>
+    <input name="id" value="<?php if(!empty($_POST['id'])) echo $_POST['id']; ?>" size="4" /></td><td>
 
     <select name="y"><?php
 	$oldest = $mysqli->fetch_array("SELECT UNIX_TIMESTAMP(`date`) AS `date` FROM `fakturas` ORDER BY `date` ASC LIMIT 1");
-
-	for($i=date('Y', $oldest[0]['date']);$i<date('Y')+1;$i++) {
+	
+	if($oldest)
+		$oldest = date('Y', $oldest[0]['date']);
+	else
+		$oldest = date('Y');
+	
+	for($i=$oldest;$i<date('Y')+1;$i++) {
 		?><option value="<?php echo($i) ?>"<?php if(@$_POST['y'] == $i || (@$_POST['y'] == '' && date('Y') == $i)) echo(' selected="selected"'); ?>><?php echo($i) ?></option><?php
 	}
 	?></select></td><td>
