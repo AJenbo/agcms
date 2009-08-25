@@ -72,11 +72,15 @@ function validate($values) {
 
 //Generate return page
 $GLOBALS['generatedcontent']['crumbs'] = array();
-$GLOBALS['generatedcontent']['crumbs'][0] = array('name' => 'Betaling', 'link' => '/?id='.$_GET['id'].'&checkid='.$_GET['checkid'], 'icon' => NULL);
+if(!empty($_GET['id'])) {
+	$GLOBALS['generatedcontent']['crumbs'][0] = array('name' => 'Betaling', 'link' => '/?id='.$_GET['id'].'&checkid='.$_GET['checkid'], 'icon' => NULL);
+} else {
+	$GLOBALS['generatedcontent']['crumbs'][0] = array('name' => 'Betaling', 'link' => '/', 'icon' => NULL);
+}
 $GLOBALS['generatedcontent']['contenttype'] = 'page';
 $GLOBALS['generatedcontent']['text'] = '';
 
-if($_GET['id'] && $_GET['checkid'] == getCheckid($_GET['id'])) {
+if(!empty($_GET['id']) && @$_GET['checkid'] == getCheckid($_GET['id'])) {
 	$faktura = $mysqli->fetch_array("SELECT * FROM `fakturas` WHERE `id` = ".$_GET['id']);
 	$faktura = $faktura[0];
 	
@@ -469,7 +473,7 @@ if($_GET['id'] && $_GET['checkid'] == getCheckid($_GET['id'])) {
 		}
 	}
 
-} elseif($_GET['Customer_refno']) {
+} elseif(!empty($_GET['Customer_refno'])) {
 	$id = mb_substr($_GET['Customer_refno'], mb_strlen($GLOBALS['_config']['pbsfix']));
 	
 	//Set the proper order for the values
@@ -819,16 +823,16 @@ Mvh Computeren
 		<tbody>
 		  <tr>
 			<td>Ordre nr:</td>
-			<td><input name="id" value="'.$_GET['id'].'" /></td>
+			<td><input name="id" value="'.@$_GET['id'].'" /></td>
 		  </tr>
 		  <tr>
 			<td>Kode:</td>
-			<td><input name="checkid" value="'.$_GET['checkid'].'" /></td>
+			<td><input name="checkid" value="'.@$_GET['checkid'].'" /></td>
 		  </tr>
 		</tbody>
 	  </table><input type="submit" value="Fortsæt" />
 	</form>';
-	if($_GET['checkid'])
+	if(!empty($_GET['checkid']))
 		$GLOBALS['generatedcontent']['text'] = 'Koden er ikke korrekt!';
 }
 

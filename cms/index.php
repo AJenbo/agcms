@@ -490,7 +490,7 @@ if(@$_GET['sog'] || @$GLOBALS['side']['inactive']) {
 	}
 } else {
 	$special = $mysqli->fetch_array("SELECT text, UNIX_TIMESTAMP(dato) AS dato FROM special WHERE id = 1 LIMIT 1");
-	$GLOBALS['cache']['updatetime']['special_1'] = $special['dato'];
+	$GLOBALS['cache']['updatetime']['special_1'] = $special[0]['dato'];
 	
 	$GLOBALS['generatedcontent']['contenttype'] = 'front';
 	$GLOBALS['generatedcontent']['text'] = $special[0]['text'];
@@ -515,7 +515,7 @@ if(@$maerkeet) {
 	$GLOBALS['generatedcontent']['title'] = htmlspecialchars($sider_navn[0]['navn']);
 }
 
-if(!$GLOBALS['generatedcontent']['title'] && @$GLOBALS['generatedcontent']['activmenu'] > 0) {
+if(empty($GLOBALS['generatedcontent']['title']) && @$GLOBALS['generatedcontent']['activmenu'] > 0) {
 	if(!$GLOBALS['cache']['kats'][$GLOBALS['generatedcontent']['activmenu']]['navn']) {
 		$kat_navn = $mysqli->fetch_array("SELECT navn, vis FROM kat WHERE id = ".$GLOBALS['generatedcontent']['activmenu']." LIMIT 1");
 	
@@ -540,11 +540,11 @@ if(!$GLOBALS['generatedcontent']['title'] && @$GLOBALS['generatedcontent']['acti
 		$icon[0]['path'] = pathinfo($GLOBALS['cache']['kats'][$GLOBALS['generatedcontent']['activmenu']]['icon']);
 		$GLOBALS['generatedcontent']['title'] = htmlspecialchars(ucfirst(preg_replace('/-/ui', ' ', $icon[0]['path']['filename'])));
 	}
-} elseif(!$GLOBALS['generatedcontent']['title'] && @$_GET['sog'] == 1) {
+} elseif(empty($GLOBALS['generatedcontent']['title']) && @$_GET['sog'] == 1) {
 	$GLOBALS['generatedcontent']['title'] = 'Søg på '.htmlspecialchars($GLOBALS['_config']['site_name']);
 }
 
-if(!$GLOBALS['generatedcontent']['title']) {
+if(empty($GLOBALS['generatedcontent']['title'])) {
 	$GLOBALS['generatedcontent']['title'] = htmlspecialchars($GLOBALS['_config']['site_name']);
 }
 //end title
