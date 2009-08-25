@@ -8,6 +8,7 @@ $GLOBALS['_config']['phone'] = '33 222 333';
 $GLOBALS['_config']['fax'] = '33 14 04 07';
 $GLOBALS['_config']['email'][] = 'mail@huntershouse.dk';
 $GLOBALS['_config']['smtp'] = 'smtp.exserver.dk';
+$GLOBALS['_config']['smtpport'] = 25;
 $GLOBALS['_config']['emailpassword'] = '.357magnum';
 $GLOBALS['_config']['email'][] = 'fisk@huntershouse.dk';
 $GLOBALS['_config']['email'][] = 'karpegrej@huntershouse.dk';
