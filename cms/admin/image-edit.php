@@ -58,6 +58,7 @@ sajax_handle_client_request();
 	margin:auto;
 }
 </style>
+<script type="text/javascript" src="javascript/lib/php.min.js"></script>
 <script type="text/javascript"><!--
 <?php sajax_show_javascript();
 $imagesize = @getimagesize($_SERVER['DOCUMENT_ROOT'].$_GET['path']);

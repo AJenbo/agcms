@@ -8,9 +8,9 @@
 		} elseif($_GET['side'] == 'redigerFrontpage') {
 			$activityButtons[] = '<li><a onclick="updateForside();"><img src="images/disk.png" width="16" height="16" alt="" title="Gem siden" /> Gem siden</a></li>';
 		} elseif($_GET['side'] == 'redigerSpecial') {
-			$activityButtons[] = '<li><a onclick="updateSpecial('.$_GET['id'].';"><img src="images/disk.png" width="16" height="16" alt="" title="Gem siden" /> Gem siden</a></li>';
+			$activityButtons[] = '<li><a onclick="updateSpecial('.$_GET['id'].');"><img src="images/disk.png" width="16" height="16" alt="" title="Gem siden" /> Gem siden</a></li>';
 		} elseif($_GET['side'] == 'editContact') {
-			$activityButtons[] = '<li><a onclick="updateContact('.$_GET['id'].';"><img src="images/disk.png" width="16" height="16" alt="" title="Gem kontakt" /> Gem kontakt</a></li>';
+			$activityButtons[] = '<li><a onclick="updateContact('.$_GET['id'].');"><img src="images/disk.png" width="16" height="16" alt="" title="Gem kontakt" /> Gem kontakt</a></li>';
 		} elseif($_GET['side'] == 'nyside') {
 			$activityButtons[] = '<li><a onclick="opretSide();"><img src="images/disk.png" width="16" height="16" alt="" title="Gem siden" /> Gem siden</a></li>';
 		} elseif($_GET['side'] == 'nykat') {
@@ -18,7 +18,7 @@
 		} elseif($_GET['side'] == 'nykrav' || $_GET['side'] == 'editkrav') {
 			$activityButtons[] = '<li><a onclick="save_krav();"><img src="images/disk.png" width="16" height="16" alt="" title="Gem krav" /> Gem krav</a></li>';
 		} elseif($_GET['side'] == 'listsort' && $_GET['id']) {
-			$activityButtons[] = '<li><a onclick="saveListOrder('.$_GET['id'].';"><img src="images/disk.png" width="16" height="16" alt="" title="Gem liste" /> Gem liste</a></li>';
+			$activityButtons[] = '<li><a onclick="saveListOrder('.$_GET['id'].');"><img src="images/disk.png" width="16" height="16" alt="" title="Gem liste" /> Gem liste</a></li>';
 		} elseif($_GET['side'] == 'newemail' || $_GET['side'] == 'editemail') {
 			$activityButtons[] = '<li><a onclick="saveEmail();"><img src="images/disk.png" width="16" height="16" alt="" title="Gem E-mail" /> Gem E-mail</a></li>';
 			$activityButtons[] = '<li><a onclick="sendEmail();"><img src="images/email_go.png" width="16" height="16" alt="" title="Send E-mail" /> Send E-mail</a></li>';

@@ -1,5 +1,6 @@
 <?php
 require_once 'inc/sajax.php';
+require_once 'inc/header.php';
 require_once 'inc/functions.php';
 require_once 'inc/config.php';
 require_once 'inc/mysqli.php';

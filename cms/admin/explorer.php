@@ -1,4 +1,6 @@
 <?php
+ini_set("display_errors", "on");
+error_reporting(-1);
 //TODO update compleat source with doConditionalGet
 
 /*
@@ -293,7 +295,7 @@ function makedir($name) {
 	//*/
 	
 	//*
-	if(!ini_get('safe_mode') || (ini_get('safe_mode') && ini_get('safe_mode_gid'))) {
+	if(!ini_get('safe_mode') || (ini_get('safe_mode') && ini_get('safe_mode_gid')) || !function_exists('ftp_mkdir')) {
 		if(!is_dir($_SERVER['DOCUMENT_ROOT'].@$_COOKIE['admin_dir']) ||
 		!mkdir($_SERVER['DOCUMENT_ROOT'].@$_COOKIE['admin_dir']."/".$name, 0771))
 			return array('error' => 'Kunde ikke opratte mappe, du har muligvis ikke ratigheder til denne mappe.');
@@ -312,6 +314,7 @@ function makedir($name) {
 		if(!is_dir($_SERVER['DOCUMENT_ROOT'].@$_COOKIE['admin_dir'].'/'.$name))
 			return array('error' => 'Kunde ikke opratte mappe, du har muligvis ikke rettigheder til denne mappe.');
 	}
+	return array('error' => false);
 	//*/
 }
 
