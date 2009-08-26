@@ -166,19 +166,19 @@ if(!empty($_GET['id']) && @$_GET['checkid'] == getCheckid($_GET['id'])) {
 			if($_POST) {
 				$updates = array();
 				$updates['navn'] = $_POST['navn'];
-				$updates['att'] = $_POST['att'];
+				$updates['att'] = $_POST['att'] != $_POST['navn'] ? $_POST['att'] : '';
 				$updates['adresse'] = $_POST['adresse'];
 				$updates['postbox'] = $_POST['postbox'];
 				$updates['postnr'] = $_POST['postnr'];
 				$updates['by'] = $_POST['by'];
 				$updates['land'] = $_POST['land'];
 				$updates['email'] = $_POST['email'];
-				$updates['tlf1'] = $_POST['tlf1'];
+				$updates['tlf1'] = $_POST['tlf1'] != $_POST['tlf2'] ? $_POST['tlf1'] : '';
 				$updates['tlf2'] = $_POST['tlf2'];
 				$updates['altpost'] = $_POST['altpost'] ? 1 : 0;
 				$updates['posttlf'] = $_POST['posttlf'];
 				$updates['postname'] = $_POST['postname'];
-				$updates['postatt'] = $_POST['postatt'];
+				$updates['postatt'] = $_POST['postatt'] != $_POST['postname'] ? $_POST['postatt'] : '';
 				$updates['postaddress'] = $_POST['postaddress'];
 				$updates['postaddress2'] = $_POST['postaddress2'];
 				$updates['postpostbox'] = $_POST['postpostbox'];
