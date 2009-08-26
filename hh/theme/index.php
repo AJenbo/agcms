@@ -97,7 +97,10 @@ if(/(NetFront|PlayStation|hiptop|IEMobile|Smartphone|iPhone|Opera Mobi|Opera Min
 	document.write('<link href="/theme/handheld.css" rel="stylesheet" type="text/css" />');
 --></script>
 <link href="/theme/print.css" rel="stylesheet" type="text/css" media="print" />
-<script src="/javascript/serialize.js" type="text/javascript"></script>
+<script src="/javascript/json2.stringify.js" type="text/javascript"></script>
+<script src="/javascript/json_stringify.js" type="text/javascript"></script>
+<script src="/javascript/json_parse_state.js" type="text/javascript"></script>
+<script src="/javascript/sajax.js" type="text/javascript"></script>
 <script src="/javascript/javascript.js" type="text/javascript"></script>
 <script src="/theme/javascript.js" type="text/javascript"></script>
 <!--[if lt IE 7]><script src="/theme/ie6fix.js" type="text/javascript"></script><style type="text/css" media="print">#menu {position:absolute}</style><![endif]-->
@@ -259,10 +262,10 @@ if($GLOBALS['generatedcontent']['contenttype'] == 'front') {
 			?></table><?php
 		} else {
 			?><div id="kat<?php echo($GLOBALS['generatedcontent']['activmenu']); ?>"><table class="tabel"><thead><tr>
-<td><a href="javascript:x_get_kat('<?php echo($GLOBALS['generatedcontent']['activmenu']); ?>', 'navn', inject_html);">Titel</a></td>
-<td><a href="javascript:x_get_kat('<?php echo($GLOBALS['generatedcontent']['activmenu']); ?>', 'for', inject_html);">Før</a></td>
-<td><a href="javascript:x_get_kat('<?php echo($GLOBALS['generatedcontent']['activmenu']); ?>', 'pris', inject_html);">Pris</a></td>
-<td><a href="javascript:x_get_kat('<?php echo($GLOBALS['generatedcontent']['activmenu']); ?>', 'varenr', inject_html);">#</a></td>
+<td><a href="#" onclick="x_get_kat('<?php echo($GLOBALS['generatedcontent']['activmenu']); ?>', 'navn', inject_html);">Titel</a></td>
+<td><a href="#" onclick="x_get_kat('<?php echo($GLOBALS['generatedcontent']['activmenu']); ?>', 'for', inject_html);">Før</a></td>
+<td><a href="#" onclick="x_get_kat('<?php echo($GLOBALS['generatedcontent']['activmenu']); ?>', 'pris', inject_html);">Pris</a></td>
+<td><a href="#" onclick="x_get_kat('<?php echo($GLOBALS['generatedcontent']['activmenu']); ?>', 'varenr', inject_html);">#</a></td>
 </tr></thead><tbody><?php
 			$i = 0;
 			foreach($GLOBALS['generatedcontent']['list'] as $value) {
