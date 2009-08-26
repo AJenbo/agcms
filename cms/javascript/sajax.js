@@ -129,7 +129,7 @@ function sajax_do_call(func_name, args, method, asynchronous, uri) {
 	var geturi = "";
 	var data;
 	var target_id = sajax_target_id;
-	var argsarray = Array();
+	var argsarray = [];
 	
 	sajax_debug("in sajax_do_call().." + method + "/" + sajax_target_id);
 	

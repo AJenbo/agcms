@@ -1194,7 +1194,7 @@ function getmaerker() {
 	$mærker = $mysqli->fetch_array('SELECT * FROM `maerke` ORDER BY navn');
 	$nr = count($mærker);
 	for($i=0;$i<$nr;$i++) {
-		$html .= '<div id="maerke'.$mærker[$i]['id'].'"><a href="javascript:slet(\'maerke\',\''.addslashes($mærker[$i]['navn']).'\','.$mærker[$i]['id'].');"><img src="images/cross.png" alt="X" title="Slet '.htmlspecialchars($mærker[$i]['navn']).'!" width="16" height="16"';
+		$html .= '<div id="maerke'.$mærker[$i]['id'].'"><a href="" onclick="slet(\'maerke\',\''.addslashes($mærker[$i]['navn']).'\','.$mærker[$i]['id'].');"><img src="images/cross.png" alt="X" title="Slet '.htmlspecialchars($mærker[$i]['navn']).'!" width="16" height="16"';
 		if(!$mærker[$i]['link'] && !$mærker[$i]['ico'])
 			$html .= ' style="margin-right:32px"';
 		elseif(!$mærker[$i]['link'])
@@ -1257,7 +1257,7 @@ function getkrav() {
 	$krav = $mysqli->fetch_array('SELECT id, navn FROM `krav` ORDER BY navn');
 	$nr = count($krav);
 	for($i=0;$i<$nr;$i++) {
-		$html .= '<div id="krav'.$krav[$i]['id'].'"><a href="javascript:slet(\'krav\',\''.addslashes($krav[$i]['navn']).'\','.$krav[$i]['id'].');"><img src="images/cross.png" title="Slet '.$krav[$i]['navn'].'!" width="16" height="16" /></a><a href="?side=editkrav&amp;id='.$krav[$i]['id'].'">'.$krav[$i]['navn'].'</a></div>';
+		$html .= '<div id="krav'.$krav[$i]['id'].'"><a href="" onclick="slet(\'krav\',\''.addslashes($krav[$i]['navn']).'\','.$krav[$i]['id'].');"><img src="images/cross.png" title="Slet '.$krav[$i]['navn'].'!" width="16" height="16" /></a><a href="?side=editkrav&amp;id='.$krav[$i]['id'].'">'.$krav[$i]['navn'].'</a></div>';
 	}
 	$html .= '</div>';
 	return $html;
@@ -1581,7 +1581,7 @@ sajax_handle_client_request();
 <script type="text/javascript" src="javascript/lib/php.min.js"></script>
 <script type="text/javascript" src="javascript/lib/prototype.js"></script>
 <script type="text/javascript"><!--
-JSON = JSON || {};
+var JSON = JSON || {};
 JSON.stringify = function(value) { return value.toJSON(); };
 JSON.parse = JSON.parse || function(jsonsring) { return jsonsring.evalJSON(true); };
 //-->

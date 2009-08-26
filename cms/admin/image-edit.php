@@ -36,7 +36,7 @@ sajax_handle_client_request();
 <title>Rediger billed</title>
 <script src="javascript/lib/prototype.js" type="text/javascript"></script>
 <script type="text/javascript"><!--
-JSON = JSON || {};
+var JSON = JSON || {};
 JSON.stringify = function(value) { return value.toJSON(); };
 JSON.parse = JSON.parse || function(jsonsring) { return jsonsring.evalJSON(true); };
 //-->

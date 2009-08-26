@@ -23,7 +23,7 @@ $pathinfo = pathinfo($_GET['path']);
 <script type="text/javascript" src="javascript/explorer.js"></script>
 <script type="text/javascript" src="javascript/lib/prototype.js"></script>
 <script type="text/javascript"><!--
-JSON = JSON || {};
+var JSON = JSON || {};
 JSON.stringify = function(value) { return value.toJSON(); };
 JSON.parse = JSON.parse || function(jsonsring) { return jsonsring.evalJSON(true); };
 //-->

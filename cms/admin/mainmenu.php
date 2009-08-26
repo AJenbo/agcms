@@ -28,7 +28,7 @@
 	$activityButtons[] = '<li id="loading" style="cursor:default;"><img src="images/loading.gif" width="16" height="16" alt="Arbejder" title="Arbejder" /> Arbejder</li>';
 	
 	if($activityButtons) {
-		?><a class="menuboxheader"  href="javascript:showhide('Activity');">Handlinger</a>
+		?><a class="menuboxheader" href="" onclick="showhide('Activity');">Handlinger</a>
 		<ul id="Activity"<?php
 		if(!empty($_COOKIE['hideActivity']))
 			echo(' style="display:none"');
@@ -40,7 +40,7 @@
 		?></ul><?php
 	}
 	
-  ?><a class="menuboxheader"  href="javascript:showhide('Indhold');">Indhold</a>
+  ?><a class="menuboxheader" href="" onclick="showhide('Indhold');">Indhold</a>
   <ul id="Indhold"<?php
   if(!empty($_COOKIE['hideIndhold']))
 	  echo(' style="display:none"');
@@ -59,7 +59,7 @@
       </form>
     </li>
   </ul>
-  <a class="menuboxheader" href="javascript:showhide('Suplemanger');">Lister</a>
+  <a class="menuboxheader" href="" onclick="showhide('Suplemanger');">Lister</a>
   <ul id="Suplemanger"<?php
   if(@$_COOKIE['hideSuplemanger'])
 	  echo(' style="display:none"');
@@ -68,7 +68,7 @@
     <li><a href="./?side=maerker"><img src="images/page_white_medal.png" width="16" height="16" alt="" /> Mærker</a></li>
     <li><a href="./?side=listsort"><img src="images/shape_align_left.png" width="16" height="16" alt="" /> Liste sortering</a></li>
   </ul>
-  <a class="menuboxheader" href="javascript:showhide('Tools');">Værktøjer</a>
+  <a class="menuboxheader" href="" onclick="showhide('Tools');">Værktøjer</a>
   <ul id="Tools"<?php
   if(@$_COOKIE['hideTools'])
 	  echo(' style="display:none"');

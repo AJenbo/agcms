@@ -665,7 +665,7 @@ require_once '../inc/countries.php';
 <link  href="style/calendar.css" rel="stylesheet" type="text/css" />
 <script type="text/javascript" src="javascript/lib/prototype.js"></script>
 <script type="text/javascript"><!--
-JSON = JSON || {};
+var JSON = JSON || {};
 JSON.stringify = function(value) { return value.toJSON(); };
 JSON.parse = JSON.parse || function(jsonsring) { return jsonsring.evalJSON(true); };
 //-->
