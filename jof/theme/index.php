@@ -77,7 +77,10 @@ if(/(NetFront|PlayStation|hiptop|IEMobile|Smartphone|iPhone|Opera Mobi|Opera Min
 	document.write('<link href="/theme/handheld.css" rel="stylesheet" type="text/css" />');
 --></script>
 <link href="/theme/print.css" rel="stylesheet" type="text/css" media="print" />
-<script src="/javascript/serialize.js" type="text/javascript"></script>
+<script src="/javascript/json2.stringify.js" type="text/javascript"></script>
+<script src="/javascript/json_stringify.js" type="text/javascript"></script>
+<script src="/javascript/json_parse_state.js" type="text/javascript"></script>
+<script src="/javascript/sajax.js" type="text/javascript"></script>
 <script src="/javascript/javascript.js" type="text/javascript"></script>
 <script src="/theme/javascript.js" type="text/javascript"></script>
 <!--[if lt IE 7]><script src="/theme/ie6fix.js" type="text/javascript"></script><style type="text/css" media="print">#menu {position:absolute}</style><![endif]-->
