@@ -26,8 +26,13 @@ if(!$fakturas = $mysqli->fetch_array('SELECT * FROM `fakturas` WHERE id = '.$_GE
 		$update[] = '`postnr` = \''.$_POST['postnr'].'\'';
 	if(isset($_POST['by']))
 		$update[] = '`by` = \''.$_POST['by'].'\'';
-	if(isset($_POST['land']))
+	if(isset($_POST['land'])) {
+		include 'inc/countries.php';
+		$countries = array_flip($countries);
+		if(!empty($countries[$_POST['land']]))
+			$_POST['land'] = $countries[$_POST['land']];
 		$update[] = '`land` = \''.$_POST['land'].'\'';
+	}
 	if(isset($_POST['tlf1']))
 		$update[] = '`tlf1` = \''.$_POST['tlf1'].'\'';
 	if(isset($_POST['tlf2']))
@@ -47,8 +52,13 @@ if(!$fakturas = $mysqli->fetch_array('SELECT * FROM `fakturas` WHERE id = '.$_GE
 	
 	$fakturas = trim_array($fakturas);
 	
+	
 	if(!$fakturas[0]['land'])
-		$fakturas[0]['land'] = 'Danmark';
+		$fakturas[0]['land'] = 'DK';
+	
+	include 'inc/countries.php';
+	if(!empty($countries[$fakturas[0]['land']]))
+		$fakturas[0]['land'] = $countries[$fakturas[0]['land']];
 	
 	function valide_mail_host($host) {
 		return getmxrr($host, $dummy);
