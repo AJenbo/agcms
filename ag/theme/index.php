@@ -13,6 +13,10 @@ if(/(NetFront|PlayStation|hiptop|IEMobile|Smartphone|iPhone|Opera Mobi|Opera Min
 	document.write('<link href="/theme/handheld.css" rel="stylesheet" type="text/css" />');
 --></script>
 <link href="/theme/print.css" rel="stylesheet" type="text/css" media="print" />
+<script src="/javascript/json2.stringify.js" type="text/javascript"></script>
+<script src="/javascript/json_stringify.js" type="text/javascript"></script>
+<script src="/javascript/json_parse_state.js" type="text/javascript"></script>
+<script src="/javascript/sajax.js" type="text/javascript"></script>
 <script src="/javascript/javascript.js" type="text/javascript"></script>
 <!--[if lt IE 7]><script type="text/javascript" src="/theme/ie6fix.js"></script><![endif]-->
 <!--[if IE]><![if gte IE 7]><![endif]--><script type="text/javascript" src="/theme/menufix.js"></script><!--[if IE]><![endif]><![endif]-->
