@@ -550,20 +550,6 @@ foreach($frequentRecipients as $key => $value) {
                   <td>Standard pakker </td>
                   <td>                 
                <select onchange="standard(this.selectedIndex)" onkeyup="standard(this.selectedIndex)">
-                    <option value="" selected="selected">Vælg størelse...</option>
-                    <option>SB5</option>
-                    <option>SB6</option>
-                    <option>SB27</option>
-                    <option>SB30</option>
-                    <option>SB34</option>
-                    <option>1,5 meter rør + SB4</option>
-                    <option>1,5 meter rør + SB5</option>
-                    <option>1,5 meter rør + SB6</option>
-                    <option>2 meter rør + SB4</option>
-                    <option>2 meter rør + SB5</option>
-                    <option>2 meter rør + SB6</option>
-                    <option>1.5 meter rør</option>
-                    <option>2 meter rør</option>
                 </select></td>
                 </tr>
               <tr>

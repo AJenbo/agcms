@@ -54,84 +54,106 @@ function standard(pakke) {
 			$('length').value = '';
 			//$('porto').value = '';
 		break
-		//SB5
+		//SB4
 		case 1:
+			$('height').value = 14;
+			$('width').value = 14;
+			$('length').value = 15;
+			calc();
+		break
+		//SB5
+		case 2:
 			$('height').value = 17;
 			$('width').value = 17;
 			$('length').value = 18;
 			calc();
 		break
 		//SB6
-		case 2:
+		case 3:
 			$('height').value = 19;
 			$('width').value = 19;
 			$('length').value = 20;
 			calc();
 		break
 		//SB27
-		case 3:
+		case 4:
 			$('height').value = 19;
 			$('width').value = 45;
 			$('length').value = 45;
 			calc();
 		break
 		//SB30
-		case 4:
+		case 5:
 			$('height').value = 19;
 			$('width').value = 10;
 			$('length').value = 7;
 			calc();
 		break
 		//SB34
-		case 5:
+		case 6:
 			$('height').value = 38;
 			$('width').value = 19;
 			$('length').value = 17;
 			calc();
 		break
-		case 6:
-			$('height').value = 14;
-			$('width').value = 24;
-			$('length').value = 150;
-			calc();
-		break
+		//SB35
 		case 7:
+			$('height').value = 38;
+			$('width').value = 29;
+			$('length').value = 17;
+			calc();
+		break
+		//1,5 meter rør + SB4
+		case 8:
+			$('height').value = 14;
+			$('width').value = 24;
+			$('length').value = 150;
+			calc();
+		break
+		//1,5 meter rør + SB5
+		case 9:
 			$('height').value = 17;
 			$('width').value = 27;
 			$('length').value = 150;
 			calc();
 		break
-		case 8:
+		//1,5 meter rør + SB6
+		case 10:
 			$('height').value = 19;
 			$('width').value = 29;
 			$('length').value = 150;
 			calc();
 		break
-		case 9:
+		//2 meter rør + SB4
+		case 11:
 			$('height').value = 14;
 			$('width').value = 24;
 			$('length').value = 200;
 			calc();
 		break
-		case 10:
+		//2 meter rør + SB5
+		case 12:
 			$('height').value = 17;
 			$('width').value = 27;
 			$('length').value = 200;
 			calc();
 		break
-		case 11:
+		//2 meter rør + SB6
+		case 13:
 			$('height').value = 19;
 			$('width').value = 29;
 			$('length').value = 200;
 			calc();
 		break
-		case 12:
+		//1.5 meter rør
+		case 14:
 			$('height').value = 9;
 			$('width').value = 9;
 			$('length').value = 150;
 			calc();
 		break
-		case 13:
+		//2 meter rør
+		case 15:
 			$('height').value = 9;
 			$('width').value = 9;
 			$('length').value = 200;
