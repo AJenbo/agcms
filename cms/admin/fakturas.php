@@ -63,6 +63,8 @@ $fakturas = $mysqli->fetch_array("SELECT `id`, `status`, `clerk`, `amount`, `nav
 *
 ***************************************************/
 /*
+$fakturas = $mysqli->fetch_array("SELECT *, `id`, `status`, `clerk`, `amount`, `navn`, `att`, `land`, `adresse`, `postbox`, `postnr`, `by`, `email`, `tlf1`, `tlf2`, UNIX_TIMESTAMP(`date`) AS `date` FROM `fakturas` WHERE ".$where." ORDER BY `id` DESC");
+
 $netto = 0;
 	
 function removeMoms($value) {
@@ -72,23 +74,20 @@ function removeMoms($value) {
 }
 
 foreach($fakturas as $key => $faktura) {
-	if($fakturas[$key]['amount'] == 0) {
-		$amount = 0;
-		$faktura['quantities'] = explode('<', $faktura['quantities']);
-		$faktura['values'] = explode('<', $faktura['values']);
-		
-		if($faktura['premoms'])
-			$faktura['values'] = array_map('removeMoms', $faktura['values']);
-		
-		foreach($faktura['values'] as $valuekey => $value) {
-			$amount += $value * $faktura['quantities'][$valuekey];
-		}
-		
-		$fakturas[$key]['amount'] = $amount * (1+$faktura['momssats']) + $faktura['fragt'];
-		$mysqli->query("UPDATE `fakturas` SET `amount` = '".$fakturas[$key]['amount']."' WHERE `fakturas`.`id` =".$fakturas[$key]['id']." AND `status` != 'new' LIMIT 1;");
+	$amount = 0;
+	$faktura['quantities'] = explode('<', $faktura['quantities']);
+	$faktura['values'] = explode('<', $faktura['values']);
+	
+	if($faktura['premoms'])
+		$faktura['values'] = array_map('removeMoms', $faktura['values']);
+	
+	foreach($faktura['values'] as $valuekey => $value) {
+		$amount += $value * $faktura['quantities'][$valuekey];
 	}
+	
+	$fakturas[$key]['amount'] = $amount * (1+$faktura['momssats']) + $faktura['fragt'];
+	$mysqli->query("UPDATE `fakturas` SET `amount` = '".$fakturas[$key]['amount']."' WHERE `fakturas`.`id` =".$fakturas[$key]['id']." LIMIT 1;");
 }
-*/
 
 /***************************************************/
 

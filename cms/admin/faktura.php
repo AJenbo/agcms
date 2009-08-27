@@ -487,12 +487,20 @@ function save($id, $type, $updates) {
 		$mysqli->query($sql);
 	}
 	
-	$faktura = $mysqli->fetch_array("SELECT `id`, `clerk`, `status`, `email` FROM `fakturas` WHERE `id` = ".$id);
+	$faktura = $mysqli->fetch_array("SELECT `id`, `amount`, `clerk`, `status`, `email` FROM `fakturas` WHERE `id` = ".$id);
 	$faktura = $faktura[0];
 	
 	if($type == 'email') {
 		if(!validemail($faktura['email'])) {
 			return array('error' => 'Mail adressen er ikke gyldig!');
+		}
+		if(empty($faktura['department']) && count($GLOBALS['_config']['email']) > 1) {
+			return array('error' => 'Du har ikke valgt en afsender!');
+		} else {
+			$faktura['department'] = $GLOBALS['_config']['email'][0];
+		}
+		if($faktura['amount'] < 1) {
+			return array('error' => 'Fakturaen skal være på mindst 1 krone!');
 		}
 		
 		include "../inc/phpMailer/class.phpmailer.php";
@@ -530,10 +538,10 @@ function save($id, $type, $updates) {
 			$mail->SMTPAuth   = false;
 		}                  
 		$mail->Host       = $GLOBALS['_config']['smtp'];      // sets the SMTP server
-		$mail->Port       = $GLOBALS['_config']['smtpport'];                   // set the SMTP port for the server
+		$mail->Port       = $GLOBALS['_config']['smtpport'];  // set the SMTP port for the server
 		$mail->CharSet    = 'utf-8';
-		$mail->AddReplyTo($GLOBALS['_config']['email'][0], $GLOBALS['_config']['site_name']);
-		$mail->From       = $GLOBALS['_config']['email'][0];
+		$mail->AddReplyTo($faktura['department'], $GLOBALS['_config']['site_name']);
+		$mail->From       = $faktura['department'];
 		$mail->FromName   = $GLOBALS['_config']['site_name'];
 		$mail->Subject    = 'Online betaling til '.$GLOBALS['_config']['site_name'];
 		$mail->MsgHTML($emailBody, $_SERVER['DOCUMENT_ROOT']);
@@ -1131,7 +1139,7 @@ new tcal ({ 'controlid': 'cdate' });
 		<tr<?php if(count($_config['email']) == 1) echo(' style="display:none;"'); ?>>
 			<td>Afdeling:</td>
 			<td><select name="department" id="department">
-					<option value=""<?php if(!$faktura['department']) echo(' selected="selected"'); ?>>Alle</option>
+					<option value=""<?php if(!$faktura['department']) echo(' selected="selected"'); ?>>Ikke valgt</option>
 					<?php
 				foreach($_config['email'] as $department) {
 					?>
