@@ -435,7 +435,7 @@ function save($id, $type, $updates) {
 	
 	
 	if($faktura['status'] == 'locked' || $faktura['status'] == 'pbsok' || $faktura['status'] == 'pbserror' || $faktura['status'] == 'rejected') {
-		$updates = array('note' => $updates['note'] ? trim($faktura['note']."\n".$updates['note']) : $faktura['note'], 'clerk' => $updates['clerk']);
+		$updates = array('note' => $updates['note'] ? trim($faktura['note']."\n".$updates['note']) : $faktura['note'], 'clerk' => $updates['clerk'], 'department' => $updates['department']);
 		if($faktura['status'] != 'pbsok') {
 			if($type == 'giro')
 				$updates['status'] = 'giro';
@@ -926,13 +926,15 @@ function save(type) {
 			update['postcity'] = $('postcity').value;
 			update['postcountry'] = $('postcountry').value;
 		}
-		update['department'] = getSelectValue('department');
 	}
 	
 	update['note'] = $('note').value;
 	
-	if($('clerk')) {
-		update['clerk'] = $('clerk').value;
+	if(getSelectValue('clerk')) {
+		update['clerk'] = getSelectValue('clerk');
+	}
+	if(getSelectValue('department')) {
+		update['department'] = getSelectValue('department');
 	}
 	
 	if(type == 'giro')
@@ -1140,7 +1142,8 @@ new tcal ({ 'controlid': 'cdate' });
 		</tr>
 		<tr<?php if(count($GLOBALS['_config']['email']) == 1) echo(' style="display:none;"'); ?>>
 			<td>Afdeling:</td>
-			<td><select name="department" id="department">
+			<td><?php if(count($users) > 1 && $GLOBALS['_user']['access'] == 1 && $faktura['status'] != 'giro' && $faktura['status'] != 'cash' && $faktura['status'] != 'accepted' && $faktura['status'] != 'canceled') { ?>
+				<select name="department" id="department">
 					<option value=""<?php if(!$faktura['department']) echo(' selected="selected"'); ?>>Ikke valgt</option>
 					<?php
 				foreach($GLOBALS['_config']['email'] as $department) {
@@ -1148,7 +1151,11 @@ new tcal ({ 'controlid': 'cdate' });
 					<option<?php if($faktura['department'] == $department) echo(' selected="selected"'); ?>><?php echo($department); ?></option>
 					<?php
 				}
-			?></select></td>
+			?></select><?php
+	} else {
+		echo($faktura['department']);
+	}
+	?></td>
 		</tr>
 		<tr>
 			<td>Vor ref.:</td>
