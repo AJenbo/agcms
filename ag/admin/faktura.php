@@ -491,7 +491,7 @@ function save($id, $type, $updates) {
 		$mysqli->query($sql);
 	}
 	
-	$faktura = $mysqli->fetch_array("SELECT `id`, `amount`, `clerk`, `status`, `email` FROM `fakturas` WHERE `id` = ".$id);
+	$faktura = $mysqli->fetch_array("SELECT `id`, `amount`, `department`, `clerk`, `status`, `email` FROM `fakturas` WHERE `id` = ".$id);
 	$faktura = $faktura[0];
 	
 	if($type == 'email') {
@@ -513,14 +513,25 @@ function save($id, $type, $updates) {
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-<title>Elektronisk faktura vedr. ordre</title>
+<title>Untitled Document</title>
 </head>
 <body>
-<p>Tak for ordren. Vi vedlægger her en elektronisk faktura. Klik venligst på nedenstående link og udfyld formularen. <a href="www.huntershouse.dk/faktura/?id='.$faktura['id'].'&amp;checkid='.getCheckid($faktura['id']).'">www.huntershouse.dk/faktura/?id='.$faktura['id'].'&amp;checkid='.getCheckid($faktura['id']).'</a></p>
-<p>Med venlig hilsen<br />
-    '.$GLOBALS['_config']['site_name'].'.</p>
+<p>Tak for ordren. Vi vedlægger her et link til en elektronisk faktura.</p>
+<p>Linket går til vores hovedkontors hjemmeside på huntershouse.dk:<br />
+</p>
+<p>Klik venligst på vedlagte link herunder og udfyld formularen:<br /><a href="www.huntershouse.dk/faktura/?id='.$faktura['id'].'&amp;checkid='.getCheckid($faktura['id']).'">www.huntershouse.dk/faktura/?id='.$faktura['id'].'&amp;checkid='.getCheckid($faktura['id']).'</a>
+</p>
+<p>Det er en meget stor hjælp for os, - at få en mail, - når du har foretaget betaling via vores betalingssystem.</p>
+<p>Ønsker du at betale på en anden måde eller blot aflyse handlen, - så oplys også gerne dette via mail.<br />
+    <br />
+</p>
+<p>Med venlig hilsen,</p>
+<p>'.$faktura['clerk'].'<br />
+'.$GLOBALS['_config']['site_name'].'<br />
+    <a href="mailto:'.$faktura['department'].'">'.$faktura['department'].'</a></p>
 </body>
-</html>';
+</html>
+';
 		
 		$mail             = new PHPMailer();
 		$mail->SetLanguage('dk');
@@ -549,7 +560,7 @@ function save($id, $type, $updates) {
 			return array('error' => 'Mailen kunde ikke sendes!');
 		}
 		$mysqli->query("UPDATE `fakturas` SET `status` = 'locked' WHERE `status` = 'new' && `id` = ".$faktura['id']);
-		$mysqli->query("UPDATE `fakturas` SET `sendt` = 1 WHERE `id` = ".$faktura['id']);
+		$mysqli->query("UPDATE `fakturas` SET `sendt` = 1, `department` = '".$faktura['department']."' WHERE `id` = ".$faktura['id']);
 		$faktura['status'] = 'sendt';
 	}
 
@@ -921,7 +932,7 @@ function save(type) {
 			update['postcity'] = $('postcity').value;
 			update['postcountry'] = $('postcountry').value;
 		}
-		update['department'] = $('department').value;
+		update['department'] = getSelectValue('department');
 	}
 	
 	update['note'] = $('note').value;
@@ -1075,6 +1086,8 @@ new tcal ({ 'controlid': 'cdate' });
 			<td>Status:</td>
 			<td><?php if($faktura['status'] == 'new')
 					echo('Ny opretted');
+				elseif($faktura['status'] == 'locked' && $faktura['sendt'])
+					echo('Er sendt til kunden.');
 				elseif($faktura['status'] == 'locked')
 					echo('Låst for redigering');
 				elseif($faktura['status'] == 'pbsok')
@@ -1131,12 +1144,12 @@ new tcal ({ 'controlid': 'cdate' });
 	}
 	?></td>
 		</tr>
-		<tr<?php if(count($_config['email']) == 1) echo(' style="display:none;"'); ?>>
+		<tr<?php if(count($GLOBALS['_config']['email']) == 1) echo(' style="display:none;"'); ?>>
 			<td>Afdeling:</td>
 			<td><select name="department" id="department">
 					<option value=""<?php if(!$faktura['department']) echo(' selected="selected"'); ?>>Ikke valgt</option>
 					<?php
-				foreach($_config['email'] as $department) {
+				foreach($GLOBALS['_config']['email'] as $department) {
 					?>
 					<option<?php if($faktura['department'] == $department) echo(' selected="selected"'); ?>><?php echo($department); ?></option>
 					<?php
