@@ -2,20 +2,4 @@
 	<AML:include src="http://huntershouse.dk/faktura/?step=4b&id=${ordrenr}&checkid=${tekst1}&error=${error}"/>
 </AML:ifdef><AML:ifndef name="error">
 	<AML:include src="http://huntershouse.dk/faktura/?step=4&id=${ordrenr}&checkid=${tekst1}"/>
-    <AML:mailto from="mail@huntershouse.dk" to="${email}" subject="Ordrebekræftelse fra ${forhandler_Navn}"> Kære ${kunde_navn}, vi takker for din ordre:<br>
-        Modtagere:<br>
-        ${kunde_navn}<br>
-        ${kunde_adresse}<br>
-        ${kunde_postnr} ${kunde_by}<br>
-        ${kunde_email}<br>
-        <br>
-        ${dato}<br>
-        ${ordrenr}<br>
-        <br>
-        <AML:list name="varer"> ${antal} stk. ${navn} á ${valutatxt.get(${valuta})} ${pris.talformat(',')} - i alt: ${valutatxt.get(${valuta})} ${liniepris.talformat(',')}<br>
-        </AML:list>
-        Pris i alt excl. moms: ${valutatxt.get(${valuta})} ${prisumoms.talformat(',')}<br>
-        Pris i alt incl. moms: ${valutatxt.get(${valuta})} ${prisialt.talformat(',')}<br>
-        ${forhandler_Navn}
-    </AML:mailto>
 </AML:ifndef>

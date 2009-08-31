@@ -176,25 +176,8 @@ if(!$fakturas = $mysqli->fetch_array('SELECT * FROM `fakturas` WHERE id = '.$_GE
 	
 	Afdeling: '.$fakturas[0]['department'].'
 	
-	Ekspedient: '.$fakturas[0]['clerk']; 
+	Ekspedient: '.$fakturas[0]['clerk'];
 	
-	if($fakturas[0]['land'] == 'Danmark') {
-	
-		$GLOBALS['generatedcontent']['text'] .= '&lt;a target="_blank" href="http://jof.dk/post/?tlf1='.rawurlencode($fakturas[0]['tlf1']).'&amp;tlf2='.rawurlencode($fakturas[0]['tlf2']).'&amp;email='.rawurlencode($fakturas[0]['email']).'&amp;att='.rawurlencode($fakturas[0]['att']).'&amp;name='.rawurlencode($fakturas[0]['navn']).'&amp;address='.rawurlencode($fakturas[0]['adresse']).'&amp;zipcode='.rawurlencode($fakturas[0]['postnr']).'&amp;type=P&amp;senderid=';
-		switch($fakturas[0]['department']) {
-			case 'mail@arms-gallery.dk':
-				 $GLOBALS['generatedcontent']['text'] .= '11865';
-			break;
-			case 'mail@huntershouse.dk':
-			case 'fisk@huntershouse.dk':
-				 $GLOBALS['generatedcontent']['text'] .= '11856';
-			break;
-			case 'karpegrej@huntershouse.dk':
-				 $GLOBALS['generatedcontent']['text'] .= '11894';
-			break;
-		}
-		$GLOBALS['generatedcontent']['text'] .= '"&gt;Opret pakke lable&lt;/a&gt;';
-	}
 	$GLOBALS['generatedcontent']['text'] .= '</textarea><br />Kortnummer<br /><input name="kortnr" value="" size="16" id="kortnr" onkeyup="validateKortnr(this.value)" /> <span id="kortnrenter" style="vertical-align:top;">*</span><br /><span class="requred" id="kortnrvalid" style="display:none;">Det indtastede kortnummer<br />er ikke korrekt!</span><br />Udløbsdato<br /><select name="udloebsmaaned"><option value="01">01</option><option value="02">02</option><option value="03">03</option><option value="04">04</option><option value="05">05</option><option value="06">06</option><option value="07">07</option><option value="08">08</option><option value="09">09</option><option value="10">10</option><option value="11">11</option><option value="12">12</option></select><select name="udloebsaar">';
 	
 	$y = date('y', time());
