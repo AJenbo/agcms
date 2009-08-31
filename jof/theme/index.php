@@ -324,7 +324,7 @@ pageTracker._setDomainName("www.jagtogfiskerimagasinet.dk");
 pageTracker._setAllowLinker(true);
 pageTracker._trackPageview();
 <?php
-if($GLOBALS['generatedcontent']['track']) echo($GLOBALS['generatedcontent']['track']);
+if(!empty($GLOBALS['generatedcontent']['track'])) echo($GLOBALS['generatedcontent']['track']);
 ?>
 } catch(err) {}
 --></script></body>
