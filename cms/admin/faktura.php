@@ -554,7 +554,7 @@ function save($id, $type, $updates) {
 			return array('error' => 'Mailen kunde ikke sendes!');
 		}
 		$mysqli->query("UPDATE `fakturas` SET `status` = 'locked' WHERE `status` = 'new' && `id` = ".$faktura['id']);
-		$mysqli->query("UPDATE `fakturas` SET `sendt` = 1 WHERE `id` = ".$faktura['id']);
+		$mysqli->query("UPDATE `fakturas` SET `sendt` = 1, `department` = '".$faktura['department']."' WHERE `id` = ".$faktura['id']);
 		$faktura['status'] = 'locked';
 	}
 
@@ -926,7 +926,7 @@ function save(type) {
 			update['postcity'] = $('postcity').value;
 			update['postcountry'] = $('postcountry').value;
 		}
-		update['department'] = $('department').value;
+		update['department'] = getSelectValue('department');
 	}
 	
 	update['note'] = $('note').value;
@@ -1080,6 +1080,8 @@ new tcal ({ 'controlid': 'cdate' });
 			<td>Status:</td>
 			<td><?php if($faktura['status'] == 'new')
 					echo('Ny opretted');
+				elseif($faktura['status'] == 'locked' && $faktura['sendt'])
+					echo('Er sendt til kunden.');
 				elseif($faktura['status'] == 'locked')
 					echo('Låst for redigering');
 				elseif($faktura['status'] == 'pbsok')
@@ -1136,12 +1138,12 @@ new tcal ({ 'controlid': 'cdate' });
 	}
 	?></td>
 		</tr>
-		<tr<?php if(count($_config['email']) == 1) echo(' style="display:none;"'); ?>>
+		<tr<?php if(count($GLOBALS['_config']['email']) == 1) echo(' style="display:none;"'); ?>>
 			<td>Afdeling:</td>
 			<td><select name="department" id="department">
 					<option value=""<?php if(!$faktura['department']) echo(' selected="selected"'); ?>>Ikke valgt</option>
 					<?php
-				foreach($_config['email'] as $department) {
+				foreach($GLOBALS['_config']['email'] as $department) {
 					?>
 					<option<?php if($faktura['department'] == $department) echo(' selected="selected"'); ?>><?php echo($department); ?></option>
 					<?php

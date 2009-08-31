@@ -53,7 +53,7 @@ if(!empty($_POST['id']))
 
 
 //echo("SELECT `momssats`, `premoms`, `values`, `quantities`, `fragt`, `id`, `status`, `clerk`, `amount`, `navn`, UNIX_TIMESTAMP(`date`) AS `date` FROM `fakturas` WHERE ".$where." ORDER BY `id` DESC");
-$fakturas = $mysqli->fetch_array("SELECT `id`, `status`, `clerk`, `amount`, `navn`, `att`, `land`, `adresse`, `postbox`, `postnr`, `by`, `email`, `tlf1`, `tlf2`, UNIX_TIMESTAMP(`date`) AS `date` FROM `fakturas` WHERE ".$where." ORDER BY `id` DESC");
+$fakturas = $mysqli->fetch_array("SELECT `id`, `status`, `sendt`, `clerk`, `amount`, `navn`, `att`, `land`, `adresse`, `postbox`, `postnr`, `by`, `email`, `tlf1`, `tlf2`, UNIX_TIMESTAMP(`date`) AS `date` FROM `fakturas` WHERE ".$where." ORDER BY `id` DESC");
 
 
 /*************Temp code for calcing amount*********
@@ -257,9 +257,11 @@ a {
 		foreach($fakturas as $i => $faktura) { ?><tr<?php
 				if($i%2==0)
 					echo(' class="altbc"'); ?>>
-            <td style="text-align:center"><?php
+            <td style="text-align:center"><a href="faktura.php?id=<?php echo($faktura['id']); ?>"><?php
 				if($faktura['status'] == 'new')
 					echo('<img src="/admin/images/table.png" alt="Ny" title="Ny" />');
+				elseif($faktura['status'] == 'locked' && $faktura['sendt'])
+					echo('<img src="/admin/images/email_go.png" alt="Sendt" title="Sendt til kunden" />');
 				elseif($faktura['status'] == 'locked')
 					echo('<img src="/admin/images/lock.png" alt="Låst" title="Låst" />');
 				elseif($faktura['status'] == 'pbsok')
@@ -280,7 +282,7 @@ a {
 				//Efterkrav
 				//Bank
 				//Giro
-			?></td>
+			?></a></td>
             <td style="text-align:right"><a href="faktura.php?id=<?php echo($faktura['id']); ?>"><?php echo($faktura['id']); ?></a></td>
             <td style="text-align:right"><a href="faktura.php?id=<?php echo($faktura['id']); ?>"><?php echo(date('j/m/y', $faktura['date'])); ?></a></td>
             <?php if(!$_POST['clerk']) { ?><td><a href="faktura.php?id=<?php echo($faktura['id']); ?>"><?php echo($faktura['clerk']); ?></a></td><?php } ?>

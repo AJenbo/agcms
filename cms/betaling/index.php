@@ -571,12 +571,12 @@ if(!empty($_GET['id']) && @$_GET['checkid'] == getCheckid($_GET['id'])) {
 				}
 				
 				$shopSubject = 'Betaling gennemført';
-				$shopBody = '<br />'.$faktura['navn'].' har godkendt betalingen og nedenstående ordre må/skal sendes til kunden. <br /><br />Vigtigt:<br />Husk at godkende betaling når varen sendes så udbetaling til os kan ske.<br />';
+				$shopBody = $faktura['navn'].' har godkendt betalingen og nedenstående ordre må/skal sendes til kunden. <br /><br />Vigtigt:<br />Husk at godkende betaling når varen sendes så udbetaling til os kan ske.<br />';
 				
 				require_once 'inc/countries.php';
-				$GLOBALS['generatedcontent']['track'] = ' pageTracker._addTrans("'.$faktura['id'].'", "", "'.$faktura['amount'].'", "'.(($faktura['amount']-$faktura['fragt'])*$faktura['momssats']).'", "'.$faktura['fragt'].'", "'.$faktura['by'].'", "", "'.$countries[$faktura['land']].'");';
+				$GLOBALS['generatedcontent']['track'] = ' pageTracker._addTrans("'.$faktura['id'].'", "", "'.$faktura['amount'].'", "'.(($faktura['amount']-$faktura['fragt'])*(1-(1/(1+$faktura['momssats'])))).'", "'.$faktura['fragt'].'", "'.$faktura['by'].'", "", "'.$countries[$faktura['land']].'");';
 				foreach($faktura['products'] as $key => $product)
-					$GLOBALS['generatedcontent']['track'] .= ' pageTracker._addItem("'.$faktura['id'].'", "'.$faktura['id'].$key.'", "'.$product.'", "", "'.$faktura['values'][$key].'", "'.$faktura['quantities'][$key].'");';
+					$GLOBALS['generatedcontent']['track'] .= ' pageTracker._addItem("'.$faktura['id'].'", "'.$faktura['id'].$key.'", "'.$product.'", "", "'.($faktura['values'][$key]*(1+$faktura['momssats'])).'", "'.$faktura['quantities'][$key].'");';
 				$GLOBALS['generatedcontent']['track'] .= ' pageTracker._trackTrans(); ';
 
 				
@@ -670,7 +670,7 @@ if(!empty($_GET['id']) && @$_GET['checkid'] == getCheckid($_GET['id'])) {
 				}
 				$mail->MsgHTML($emailbody, $_SERVER['DOCUMENT_ROOT']);
 				$mail->AddAddress($faktura['email'], $GLOBALS['_config']['site_name']);
-				$mail->Send();
+				$mailtocustsendt = $mail->Send();
 				//Mail to customer end
 				
 				//Mail to Ole start
@@ -722,7 +722,9 @@ if(!empty($_GET['id']) && @$_GET['checkid'] == getCheckid($_GET['id'])) {
 				$mail->Subject    = 'Att: Ole - Ordre '.$GLOBALS['_config']['pbsfix'].$faktura['id'].' : Betaling gennemført';
 				$mail->MsgHTML($emailbody, $_SERVER['DOCUMENT_ROOT']);
 				$mail->AddAddress('mail@huntershouse.dk', 'Hunters House A/S');
-				$mail->Send();
+				$mailtoole = $mail->Send();
+				$mailtooleec = $mail->error_count;
+				$mailtoolee = $mail->ErrorInfo;
 				//Mail to Ole end
 				
 			break;
@@ -774,7 +776,57 @@ if(!empty($_GET['id']) && @$_GET['checkid'] == getCheckid($_GET['id'])) {
 	$faktura = $mysqli->fetch_array("SELECT * FROM `fakturas` WHERE `id` = ".$id);
 	$faktura = $faktura[0];
 	
+	$tilanders = '<br />Til Anders:';
+	if($mailtocustsendt) {
+		$tilanders .= '<br />Mailen er sendt til kunden';
+	}
+	if($mailtoole) {
+		$tilanders .= '<br />Mailen er sendt til Ole';
+	}
+	$tilanders .= '<br />Fejl i til Ole: '.$mailtooleec;
+	$tilanders .= '<br />Fejl besked: '.$mailtooleec;
+	
+	$tilanders .= '<br />S'.$_GET['Status'].'SC'.$_GET['Status_code'];
 	//To shop
+	$emailbody = '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>Att: '.$fakturas[0]['clerk'].' - Online ordre #'.$_GET['id'].' : Betaling gennemført</title>
+<style type="text/css">
+td {
+	border:1px solid #000;
+	border-collapse:collapse;
+}
+</style>
+</head>
+<body>
+<p>'.$fakturas[0]['navn'].'<br />
+    '.$fakturas[0]['adresse'].'<br />
+    '.$fakturas[0]['postnr'].' '.$fakturas[0]['by'].'<br />
+    '.$fakturas[0]['land'].'</p>
+<p>Har godkendt betalingen.
+    Vigtigt: Husk at godkende betaling når varen sendes. Klik <a href="'.$GLOBALS['_config']['base_url'].'/admin/faktura.php?id='.$_GET['id'].'">her</a> for at åbne faktura siden.</p>
+<p><a href="mailto:'.$fakturas[0]['email'].'">'.$fakturas[0]['email'].'</a><br />
+    Mobil: '.$fakturas[0]['tlf2'].'<br />
+    Tlf.: '.$fakturas[0]['tlf1'].'<br />
+    Leverings tlf.: '.$fakturas[0]['posttlf'].'</p>';
+	$emailbody .= '<table id="faktura" cellspacing="0"><thead><tr><td class="td1">Antal</td><td>Benævnelse</td><td class="td3 tal">á pris</td><td class="td4 tal">Total</td></tr></thead><tfoot><tr style="height:auto;min-height:auto;max-height:auto;"><td>&nbsp;</td><td>&nbsp;</td><td class="tal">Nettobeløb</td>';
+	
+	$productslines = max(count($faktura['quantities']), count($faktura['products']), count($faktura['values']));
+	
+	for($i=0;$i<$productslines;$i++) {
+		$netto += $faktura['values'][$i]*$faktura['quantities'][$i];
+	}
+	
+	$emailbody .= '<td class="tal">'.number_format($netto, 2, ',', '').'</td></tr><tr><td>&nbsp;</td><td>&nbsp;</td><td class="tal">Fragt</td><td class="tal">'.number_format($faktura['fragt'], 2, ',', '').'</td></tr><tr><td>&nbsp;</td><td style="text-align:right" class="tal">'.($faktura['momssats']*100).'%</td><td class="tal">Momsbeløb</td><td class="tal">'.number_format($netto*$faktura['momssats'], 2, ',', '').'</td></tr><tr class="border"><td colspan="2">Alle beløb er i DKK</td><td style="text-align:center; font-weight:bold;">AT BETALE</td><td class="tal"><big>'.number_format($faktura['amount'], 2, ',', '').'</big></td></tr></tfoot><tbody>';
+	for($i=0; $i<$productslines; $i++) {
+		$emailbody .= '<tr><td class="tal">'.$faktura['quantities'][$i].'</td><td>'.$faktura['products'][$i].'</td><td class="tal">'.number_format($faktura['values'][$i], 2, ',', '').'</td><td class="tal">'.number_format($faktura['values'][$i]*$faktura['quantities'][$i], 2, ',', '').'</td></tr>';
+	}
+	$emailbody .= '</tbody></table>';
+	$emailbody .= '<p>'.$tilanders.'</p>';
+	$emailbody .= '<p>Mvh Computeren</p></body></html>';
+
 	$mail             = new PHPMailer();
 	$mail->SetLanguage('dk');
 	$mail->IsSMTP();
@@ -791,24 +843,7 @@ if(!empty($_GET['id']) && @$_GET['checkid'] == getCheckid($_GET['id'])) {
 	$mail->From       = $GLOBALS['_config']['email'][0];
 	$mail->FromName   = $GLOBALS['_config']['site_name'];
 	$mail->Subject    = 'Att: '.$faktura['clerk'].' - Online ordre #'.$id.' : '.$shopSubject;
-$mail->MsgHTML('
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml">
-<head>
-<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-<title>Att: '.$faktura['clerk'].' - ordre #'.$id.' : '.$shopSubject.'</title>
-</head>
-<body>'.$shopBody.'Åben administrations siden <a href="'.$GLOBALS['_config']['base_url'].'/admin/faktura.php?id='.$id.'">her</a> for at behandle ordren.<br />
-<p>Direkte kontakt til kunden kan se på:<br />
-Tlf.: '.$faktura['tlf1'].'<br />
-Mobil: '.$faktura['tlf2'].'<br />
-Leverings tlf.: '.$faktura['posttlf'].'<br />
-Email: <a href="mailto:'.$faktura['email'].'">'.$faktura['email'].'</a></p>
-<br />
-Mvh Computeren
-</body>
-</html>
-', $_SERVER['DOCUMENT_ROOT']);	if(validemail($faktura['department']))
+	$mail->MsgHTML($emailbody, $_SERVER['DOCUMENT_ROOT']);	if(validemail($faktura['department']))
 		$mail->AddAddress($faktura['department'], $GLOBALS['_config']['site_name']);
 	else
 		$mail->AddAddress($GLOBALS['_config']['email'][0], $GLOBALS['_config']['site_name']);
