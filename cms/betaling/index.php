@@ -501,6 +501,12 @@ if(!empty($_GET['id']) && @$_GET['checkid'] == getCheckid($_GET['id'])) {
 	unset($validate['checkid']);
 	unset($validate['MAC']);
 	
+	$GLOBALS['generatedcontent']['crumbs'] = array();
+	$GLOBALS['generatedcontent']['crumbs'][1] = array('name' => 'Fejl', 'link' => '#', 'icon' => NULL);
+	$GLOBALS['generatedcontent']['title'] = 'Fejl';
+	$GLOBALS['generatedcontent']['headline'] = 'Fejl';
+	$GLOBALS['generatedcontent']['text'] = 'Der opstod en ukendt fejl.';
+	
 	$shopSubject = $_GET['Status'].$_GET['Status_code'];
 	$shopBody = '<br />Der opstået en fejl på betalings siden ved online faktura #'.$id.'!<br />';
 	
@@ -508,33 +514,23 @@ if(!empty($_GET['id']) && @$_GET['checkid'] == getCheckid($_GET['id'])) {
 		$faktura = $faktura[0];
 	}
 	
+	
 	if(!$faktura) {
-		$GLOBALS['generatedcontent']['crumbs'] = array();
-		$GLOBALS['generatedcontent']['crumbs'][1] = array('name' => 'Fejl', 'link' => '#', 'icon' => NULL);
-		$GLOBALS['generatedcontent']['title'] = 'Fejl';
-		$GLOBALS['generatedcontent']['headline'] = 'Fejl';
 		$GLOBALS['generatedcontent']['text'] = '<p>Betalingen findes ikke i vores system.</p>';
 		$shopBody = '<br />En brugere forsøgte at betale online faktura #'.$id.' som ikke fines i systemet!<br />';
 	} elseif($faktura['status'] != 'locked' && $faktura['status'] != 'new') {
-		$GLOBALS['generatedcontent']['crumbs'] = array();
 		$GLOBALS['generatedcontent']['crumbs'][1] = array('name' => 'Kvittering', 'link' => '#', 'icon' => NULL);
 		$GLOBALS['generatedcontent']['title'] = 'Kvittering';
 		$GLOBALS['generatedcontent']['headline'] = 'Kvittering';
 		$GLOBALS['generatedcontent']['text'] = '<p>Betalingen er registret og du skulde have modtaget en kvitering via E-mail.</p>';
 		$shopBody = '<br />En brugere forsøgte at se status side for online faktura #'.$id.' som allerede er betalt.<br />';
 	} elseif($_GET['MAC'] != md5(implode('', $validate).$GLOBALS['_config']['pbspassword'])) {
-		$GLOBALS['generatedcontent']['crumbs'] = array();
-		$GLOBALS['generatedcontent']['crumbs'][1] = array('name' => 'Fejl', 'link' => '#', 'icon' => NULL);
-		$GLOBALS['generatedcontent']['title'] = 'Fejl';
-		$GLOBALS['generatedcontent']['headline'] = 'Fejl';
 		$GLOBALS['generatedcontent']['text'] = 'Kommunikationen kunne ikke valideres!';
 	} elseif(!$_GET['Status']) {
 		//User pressed "back"
 		header('Location: '.$GLOBALS['_config']['base_url'].'/betaling/?id='.$id.'&checkid='.$_GET['checkid'].'&step=2', TRUE, 303);
 		exit;
 	} elseif($_GET['Status'] == 'E') {
-		$GLOBALS['generatedcontent']['crumbs'] = array();
-		$GLOBALS['generatedcontent']['crumbs'][1] = array('name' => 'Fejl', 'link' => '#', 'icon' => NULL);
 		$GLOBALS['generatedcontent']['title'] = 'Fejl #'.$_GET['Status_code'];
 		$GLOBALS['generatedcontent']['headline'] = 'Fejl #'.$_GET['Status_code'];
 		$GLOBALS['generatedcontent']['text'] = 'Der opstod en fejl under betalingen.<br />Fejl nummer: '.$_GET['Status_code'];
@@ -570,7 +566,6 @@ if(!empty($_GET['id']) && @$_GET['checkid'] == getCheckid($_GET['id'])) {
 		//TODO email error to us
 		//TODO add better description for errors
 	} elseif($_GET['Status'] == 'A') {
-		$GLOBALS['generatedcontent']['crumbs'] = array();
 		$GLOBALS['generatedcontent']['crumbs'][1] = array('name' => 'Kvittering', 'link' => '#', 'icon' => NULL);
 		$GLOBALS['generatedcontent']['title'] = 'Kvittering';
 		$GLOBALS['generatedcontent']['headline'] = 'Kvittering';
@@ -774,19 +769,7 @@ if(!empty($_GET['id']) && @$_GET['checkid'] == getCheckid($_GET['id'])) {
 			case 11:
 				$GLOBALS['generatedcontent']['text'] = 'Sent to bank or Svea Ekonomi. Applies only to the Payment Method INVOICE';
 			break;
-			$GLOBALS['generatedcontent']['crumbs'] = array();
-			$GLOBALS['generatedcontent']['crumbs'][1] = array('name' => 'Fejl', 'link' => '#', 'icon' => NULL);
-			$GLOBALS['generatedcontent']['title'] = 'Fejl';
-			$GLOBALS['generatedcontent']['headline'] = 'Fejl';
-			$GLOBALS['generatedcontent']['text'] = 'Der opstod en ukendt fejl.';
 		}
-		
-	} else {
-		$GLOBALS['generatedcontent']['crumbs'] = array();
-		$GLOBALS['generatedcontent']['crumbs'][1] = array('name' => 'Fejl', 'link' => '#', 'icon' => NULL);
-		$GLOBALS['generatedcontent']['title'] = 'Fejl';
-		$GLOBALS['generatedcontent']['headline'] = 'Fejl';
-		$GLOBALS['generatedcontent']['text'] = 'Der opstod en ukendt fejl.';
 	}
 	
 	require_once "inc/phpMailer/class.phpmailer.php";
