@@ -936,10 +936,10 @@ function save(type) {
 	
 	update['note'] = $('note').value;
 	
-	if(getSelectValue('clerk')) {
+	if($('clerk')) {
 		update['clerk'] = getSelectValue('clerk');
 	}
-	if(getSelectValue('department')) {
+	if($('department')) {
 		update['department'] = getSelectValue('department');
 	}
 	
@@ -1146,10 +1146,10 @@ new tcal ({ 'controlid': 'cdate' });
 	}
 	?></td>
 		</tr>
-		<tr<?php if(count($GLOBALS['_config']['email']) == 1) echo(' style="display:none;"'); ?>>
+		<tr>
 			<td>Afdeling:</td>
-			<td><?php if(count($users) > 1 && $GLOBALS['_user']['access'] == 1 && $faktura['status'] != 'giro' && $faktura['status'] != 'cash' && $faktura['status'] != 'accepted' && $faktura['status'] != 'canceled') { ?>
-				<select name="department" id="department">
+			<td><?php if(count($GLOBALS['_config']['email']) > 1 && $faktura['status'] != 'giro' && $faktura['status'] != 'cash' && $faktura['status'] != 'accepted' && $faktura['status'] != 'canceled') {
+				?><select name="department" id="department">
 					<option value=""<?php if(!$faktura['department']) echo(' selected="selected"'); ?>>Ikke valgt</option>
 					<?php
 				foreach($GLOBALS['_config']['email'] as $department) {
