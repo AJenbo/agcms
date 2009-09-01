@@ -864,8 +864,8 @@ Klik <a href="'.$GLOBALS['_config']['base_url'].'/admin/faktura.php?id='.$id.'">
 </head>
 
 <body>
-'.$shopBody.'
-<p>Mvh Computeren</p>
+'.$shopBody.'<br />S:'.$_GET['Status'].' SC:'.$_GET['Status_code'].
+'<p>Mvh Computeren</p>
 </body>
 </html>
 </body></html>';
