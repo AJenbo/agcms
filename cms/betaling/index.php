@@ -514,8 +514,9 @@ if(!empty($_GET['id']) && @$_GET['checkid'] == getCheckid($_GET['id'])) {
 		$faktura = $faktura[0];
 	}
 	
-	
-	if(!$faktura) {
+	if($_GET['MAC'] != md5(implode('', $validate).$GLOBALS['_config']['pbspassword'])) {
+		$GLOBALS['generatedcontent']['text'] = 'Kommunikationen kunne ikke valideres!';
+	} elseif(!$faktura) {
 		$GLOBALS['generatedcontent']['text'] = '<p>Betalingen findes ikke i vores system.</p>';
 		$shopBody = '<br />En brugere forsøgte at betale online faktura #'.$id.' som ikke fines i systemet!<br />';
 	} elseif($faktura['status'] != 'locked' && $faktura['status'] != 'new') {
@@ -524,8 +525,6 @@ if(!empty($_GET['id']) && @$_GET['checkid'] == getCheckid($_GET['id'])) {
 		$GLOBALS['generatedcontent']['headline'] = 'Kvittering';
 		$GLOBALS['generatedcontent']['text'] = '<p>Betalingen er registret og du skulde have modtaget en kvitering via E-mail.</p>';
 		$shopBody = '<br />En brugere forsøgte at se status side for online faktura #'.$id.' som allerede er betalt.<br />';
-	} elseif($_GET['MAC'] != md5(implode('', $validate).$GLOBALS['_config']['pbspassword'])) {
-		$GLOBALS['generatedcontent']['text'] = 'Kommunikationen kunne ikke valideres!';
 	} elseif(!$_GET['Status']) {
 		//User pressed "back"
 		header('Location: '.$GLOBALS['_config']['base_url'].'/betaling/?id='.$id.'&checkid='.$_GET['checkid'].'&step=2', TRUE, 303);
@@ -687,7 +686,7 @@ if(!empty($_GET['id']) && @$_GET['checkid'] == getCheckid($_GET['id'])) {
 				
 				//Mail to Ole start
 				$emailbody = '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><meta http-equiv="Content-Type" content="text/html; charset=utf-8" /><title>';
-				$emailbody .= 'Ordre '.$faktura['id'].' - Betaling gennemført</title><style type="text/css">#faktura td { border:1px #000 solid; border-collapse:collapse; padding:2px; }</style></head><body><p>Den  '.$faktura['paydate'].' godkendte '.$faktura['navn'].' ordre #'.$GLOBALS['_config']['pbsfix'].$faktura['id'].', Som blev opretted af '.$faktura['clerk'].'.<br />Ordren lød på følgende:';
+				$emailbody .= 'Att: Ole - Online faktura #'.$GLOBALS['_config']['pbsfix'].$faktura['id'].' : Betaling gennemført</title><style type="text/css">#faktura td { border:1px #000 solid; border-collapse:collapse; padding:2px; }</style></head><body><p>Den '.$faktura['paydate'].' godkendte '.$faktura['navn'].' online faktura #'.$GLOBALS['_config']['pbsfix'].$faktura['id'].', Som blev opretted af '.$faktura['clerk'].'.<br />Ordren lød på følgende:';
 				$emailbody .= '</p><table id="faktura" cellspacing="0"><thead><tr><td class="td1">Antal</td><td>Benævnelse</td><td class="td3 tal">á pris</td><td class="td4 tal">Total</td></tr></thead><tfoot><tr style="height:auto;min-height:auto;max-height:auto;"><td>&nbsp;</td><td>&nbsp;</td><td class="tal">Nettobeløb</td>';
 				$productslines = max(count($faktura['quantities']), count($faktura['products']), count($faktura['values']));
 				
@@ -733,7 +732,7 @@ if(!empty($_GET['id']) && @$_GET['checkid'] == getCheckid($_GET['id'])) {
 					$mail->From       = $GLOBALS['_config']['email'][0];
 				}
 				$mail->FromName   = $GLOBALS['_config']['site_name'];
-				$mail->Subject    = 'Att: Ole - Ordre '.$GLOBALS['_config']['pbsfix'].$faktura['id'].' : Betaling gennemført';
+				$mail->Subject    = 'Att: Ole - Online faktura #'.$GLOBALS['_config']['pbsfix'].$faktura['id'].' : Betaling gennemført';
 				$mail->MsgHTML($emailbody, $_SERVER['DOCUMENT_ROOT']);
 				$mail->AddAddress('mail@huntershouse.dk', 'Hunters House A/S');
 				$mailtoole = $mail->Send();
@@ -803,7 +802,7 @@ if(!empty($_GET['id']) && @$_GET['checkid'] == getCheckid($_GET['id'])) {
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-<title>Att: '.$faktura['clerk'].' - Online ordre #'.$id.' : '.$shopSubject.'</title>
+<title>Att: '.$faktura['clerk'].' - Online faktura #'.$id.' : '.$shopSubject.'</title>
 <style type="text/css">
 td {
 	border:1px solid #000;
@@ -843,7 +842,7 @@ Klik <a href="'.$GLOBALS['_config']['base_url'].'/admin/faktura.php?id='.$id.'">
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-<title>Online ordre #'.$id.' : eksistere ikke</title>
+<title>Online faktura #'.$id.' : eksistere ikke</title>
 </head>
 
 <body>
@@ -870,7 +869,7 @@ Klik <a href="'.$GLOBALS['_config']['base_url'].'/admin/faktura.php?id='.$id.'">
 	$mail->CharSet    = 'utf-8';
 	$mail->From       = $GLOBALS['_config']['email'][0];
 	$mail->FromName   = $GLOBALS['_config']['site_name'];
-	$mail->Subject    = 'Att: '.$faktura['clerk'].' - Online ordre #'.$id.' : '.$shopSubject;
+	$mail->Subject    = 'Att: '.$faktura['clerk'].' - Online faktura #'.$id.' : '.$shopSubject;
 	$mail->MsgHTML($emailbody, $_SERVER['DOCUMENT_ROOT']);
 	
 	if(validemail($faktura['department']))
