@@ -494,10 +494,10 @@ function save($id, $type, $updates) {
 		if(!validemail($faktura['email'])) {
 			return array('error' => 'Mail adressen er ikke gyldig!');
 		}
-		if(empty($faktura['department']) && count($GLOBALS['_config']['email']) > 1) {
+		if(!$faktura['department'] && count($GLOBALS['_config']['email']) > 1) {
 			return array('error' => 'Du har ikke valgt en afsender!');
-		} else {
-			$faktura['department'] = $GLOBALS['_config']['email'][0];
+		} elseif(!$faktura['department']) {
+				$faktura['department'] = $GLOBALS['_config']['email'][0];
 		}
 		if($faktura['amount'] < 1) {
 			return array('error' => 'Fakturaen skal være på mindst 1 krone!');
