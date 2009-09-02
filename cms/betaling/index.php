@@ -94,10 +94,11 @@ if(!empty($_GET['id']) && @$_GET['checkid'] == getCheckid($_GET['id'])) {
 		$faktura['products'] = explode('<', $faktura['products']);
 		$faktura['values'] = explode('<', $faktura['values']);
 		
-		if($faktura['premoms'])
+		if($faktura['premoms']) {
 			foreach($faktura['values'] as $key => $value) {
 				$faktura['values'][$key] = $value/1.25;
 			}
+		}
 		
 		$productslines = max(count($faktura['quantities']), count($faktura['products']), count($faktura['values']));
 		
