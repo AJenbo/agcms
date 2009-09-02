@@ -20,21 +20,20 @@ if(!$fakturas = $mysqli->fetch_array('SELECT * FROM `fakturas` WHERE id = '.$_GE
 	$products = explode('<', $fakturas[0]['products']);
 	$values = explode('<', $fakturas[0]['values']);
 	
-	function addMoms($value) {
-		global $momssats;
-		
-		return $value*$momssats;
+	if($fakturas[0]['premoms']) {
+		foreach($values as $key => $value) {
+			$values[$key] = $value/1.25;
+		}
 	}
 	
-	if(!$fakturas[0]['premoms'])
-		$values = array_map('addMoms' ,$values);
+	$productslines = max(count($quantities), count($products), count($values));
 	
 	$GLOBALS['generatedcontent']['text'] .= '<table id="faktura" cellspacing="0" style="width:80%; margin:20px auto"><thead><tr><td>Beskrivels</td><td>Stk</td><td align="center">á</td><td align="right">I alt</td></tr></thead>';
 	
 	$temp = '';
-	for($i=0;$i<count($quantities);$i++) {
-		$temp .= '<tr><td>'.$products[$i].'</td><td style="text-align:right">'.$quantities[$i].'</td><td style="text-align:right">'.number_format($values[$i], 2, ',', '.').'</td><td style="text-align:right">'.number_format($values[$i]*$quantities[$i], 2, ',', '.').'</td></tr>';
-		$total += $values[$i]*$quantities[$i];
+	for($i=0;$i<$productslines;$i++) {
+		$temp .= '<tr><td>'.$products[$i].'</td><td style="text-align:right">'.$quantities[$i].'</td><td style="text-align:right">'.number_format($values[$i]*$momssats, 2, ',', '.').'</td><td style="text-align:right">'.number_format($values[$i]*$quantities[$i]*$momssats, 2, ',', '.').'</td></tr>';
+		$total += $values[$i]*$quantities[$i]*$momssats;
 	}
 	
 	$GLOBALS['generatedcontent']['text'] .= '<tfoot>';

@@ -114,21 +114,20 @@ if(!$fakturas = $mysqli->fetch_array('SELECT * FROM `fakturas` WHERE id = '.$_GE
 	$products = explode('<', $fakturas[0]['products']);
 	$values = explode('<', $fakturas[0]['values']);
 	
-	function addMoms($value) {
-		global $momssats;
-		
-		return $value*$momssats;
+	if($fakturas[0]['premoms']) {
+		foreach($values as $key => $value) {
+			$values[$key] = $value/1.25;
+		}
 	}
 	
-	if(!$fakturas[0]['premoms'])
-		$values = array_map('addMoms' ,$values);
+	$productslines = max(count($quantities), count($products), count($values));
 	
 	$GLOBALS['generatedcontent']['text'] .= '<table id="faktura" cellspacing="0" style="width:80%; margin:20px auto"><thead><tr><td>Beskrivels</td><td>Stk</td><td align="center">á</td><td align="right">I alt</td></tr></thead>';
 	
 	$temp = '';
-	for($i=0;$i<count($quantities);$i++) {
-		$temp .= '<tr><td>'.$products[$i].'</td><td style="text-align:right">'.$quantities[$i].'</td><td style="text-align:right">'.number_format($values[$i], 2, ',', '.').'</td><td style="text-align:right">'.number_format($values[$i]*$quantities[$i], 2, ',', '.').'</td></tr>';
-		$total += $values[$i]*$quantities[$i];
+	for($i=0;$i<$productslines;$i++) {
+		$temp .= '<tr><td>'.$products[$i].'</td><td style="text-align:right">'.$quantities[$i].'</td><td style="text-align:right">'.number_format($values[$i]*$momssats, 2, ',', '.').'</td><td style="text-align:right">'.number_format($values[$i]*$quantities[$i]*$momssats, 2, ',', '.').'</td></tr>';
+		$total += $values[$i]*$quantities[$i]*$momssats;
 	}
 	
 	$GLOBALS['generatedcontent']['text'] .= '<tfoot>';
@@ -144,10 +143,10 @@ if(!$fakturas = $mysqli->fetch_array('SELECT * FROM `fakturas` WHERE id = '.$_GE
 	$GLOBALS['generatedcontent']['text'] .= '<p>'.$fakturas[0]['note'];
 	$GLOBALS['generatedcontent']['text'] .= '</p><form style="width:175px; margin:0 auto;" action="https://pay.scannet.dk/cgi-bin/auth2.pl" method="post" autocomplete="off" onsubmit="return validate()"><input type="hidden" name="butiksnummer" value="3010000287" /><input type="hidden" name="ordrenr" value="'.$_GET['id'].'" /><input type="hidden" name="valuta" value="208" /><input type="hidden" name="dkvalues" value="1" />';
 	
-	for($i=0;$i<count($quantities);$i++) {
+	for($i=0;$i<$productslines;$i++) {
 		if($values[$i] > 0) {
-			$GLOBALS['generatedcontent']['text'] .= '<input type="hidden" name="vare_'.($i+1).'_antal" value="'.$quantities[$i].'" /><input type="hidden" name="vare_'.($i+1).'_navn" value="'.$products[$i].'" /><input type="hidden" name="vare_'.($i+1).'_pris" value="'.number_format($values[$i], 2, ',', '.').'" />';
-			$GLOBALS['generatedcontent']['text'] .= '<input type="hidden" name="vare_'.($i+1).'_exmoms" value="'.number_format($values[$i]/$momssats, 2, ',', '.').'" />';
+			$GLOBALS['generatedcontent']['text'] .= '<input type="hidden" name="vare_'.($i+1).'_antal" value="'.$quantities[$i].'" /><input type="hidden" name="vare_'.($i+1).'_navn" value="'.$products[$i].'" /><input type="hidden" name="vare_'.($i+1).'_pris" value="'.number_format($values[$i]*$momssats, 2, ',', '.').'" />';
+			$GLOBALS['generatedcontent']['text'] .= '<input type="hidden" name="vare_'.($i+1).'_exmoms" value="'.number_format($values[$i], 2, ',', '.').'" />';
 		}
 	}
 	
