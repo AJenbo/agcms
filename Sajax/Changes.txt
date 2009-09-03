@@ -1,0 +1,56 @@
+SAJAX CHANGELOG
+---------------
+
+Sajax version 0.12 (January 30, 2006)
+
+* [php] Numerous improvements to serialization, support for varied PHP
+	setups, addition of sajax_cancel().
+* [asp] Removed due to serious bugs
+
+Sajax version 0.10 (March 21, 2005)
+
+* [php] Support for POST instead of just GET. Set $sajax_request_type.
+        Based on code from Folletto Malefico, to whom I owe thanks.
+        POST mode should be used if you are sending long requests (more
+        than 512 bytes) or if you are modifying data with the request.
+* [php] (untested) Support for GET/POST to pages other than $REQUEST_URI.
+  		Set $sajax_remote_uri to the desired URL to get this behavior.
+* [php] Small fixes to the Wall example, thanks to Leonardo Lorieri 
+		and Jesse Sightler.
+* [cf] Cold Fusion MX support (Thanks Eric Moritz)
+* [asp] ASP support (Thanks Jared Nuzzolillo)
+* [python] Improvements to the Python backend from Adam Collard
+
+Sajax version 0.9 (March 15, 2005)
+
+* [php] Major changes to the PHP backend: 
+* [php] Renamed incl_sajax.php to Sajax.php to fit PEAR and other language
+		naming conventions
+* [php] Functions and vars previously named rs_* are now sajax_*
+* [php] Function stubs all call one generalized sajax_do_call() dispatcher
+* [php] Added non-echoing version of sajax_echo_javascript() called
+		sajax_get_javascript via the magic of output buffering
+* [php] Changed all examples to support new framework
+* [perl] Applied fix for URL encoding of space (Thanks Max Maischein)
+* [ruby] Added Ruby backend contributed by anonymous author
+* [io] Added Io (http://www.iolanguage.com/) backend by Sajax team @ MM
+
+Sajax version 0.8 (March 9, 2005)
+
+* [php] Bug in the long-open-tags changes. Thanks to Matthew M. Vince.
+* [lua] Backend port added. Thanks to Javier Guerra. 
+
+Sajax version 0.7 (March 9, 2005)
+
+* [php] Major bug calling remote functions without args.
+
+Sajax version 0.6 (March 8, 2005)
+
+* Layout of archive changed; base folder changed; subfolders added for backends
+* [php] Used short open tags by default. Thanks to Matthew M. Vince.
+* [perl] Backend port added. Thanks to Nathan Schmidt, Jason Purdy and Nate
+  Mueller.
+* [python] Backend port added. Thanks to Adam Collard. Please note that
+  this port is licensed under the Creative Commons "By" License version
+  2.0. 
+
