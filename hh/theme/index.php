@@ -320,6 +320,7 @@ var referrer = '<?php if(@$_SERVER['HTTP_REFERER']) echo($_SERVER['HTTP_REFERER'
 if(document.referrer == '' && referrer != '') {
 	pageTracker._setReferrerOverride(referrer);
 }
+pageTracker._setDomainName("www.huntershouse.dk");
 pageTracker._setAllowLinker(true);
 pageTracker._trackPageview();
 <?php

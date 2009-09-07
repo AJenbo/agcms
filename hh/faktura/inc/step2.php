@@ -64,7 +64,7 @@ if(!$fakturas = $mysqli->fetch_array('SELECT * FROM `fakturas` WHERE id = '.$_GE
 		return getmxrr($host, $dummy);
 	}
 	
-	$GLOBALS['generatedcontent']['text'] .= '<strong>Trin 2 af 3 - Faktureringsoplysninger</strong><form action="" method="post" onsubmit="return validate()"><table><tbody><tr><td>Navn:</td><td colspan="2"><input name="navn" id="navn" style="width:157px" value="'.$fakturas[0]['navn'].'" /></td>';
+	$GLOBALS['generatedcontent']['text'] .= '<strong>Trin 2 af 3 - Faktureringsoplysninger</strong><form action="" method="post" onsubmit="return validate(); pageTracker._linkByPost(this);"><table><tbody><tr><td>Navn:</td><td colspan="2"><input name="navn" id="navn" style="width:157px" value="'.$fakturas[0]['navn'].'" /></td>';
 				if($_POST && !$fakturas[0]['navn']) {
 					$GLOBALS['generatedcontent']['text'] .= '<td class="requred">Feltet &quot;Navn:&quot; skal udfyldes!</td>';
 					$redirect = false;
