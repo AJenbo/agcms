@@ -12,8 +12,8 @@ function doConditionalGet($timestamp) {
     $etag = '"'.$timestamp.'"';
     // Send the headers
 	
-	header("Cache-Control: max-age=0, must-revalidate");    // HTTP/1.1 
-	header("Pragma: no-cache");                            // HTTP/1.0 
+	header("Cache-Control: max-age=0, must-revalidate");    // HTTP/1.1
+	header("Pragma: no-cache");    // HTTP/1.0
     header('Last-Modified: '.$last_modified);
     header('ETag: '.$etag);
     // See if the client has provided the required headers
@@ -33,8 +33,10 @@ function doConditionalGet($timestamp) {
     if ($if_modified_since && $if_modified_since != $last_modified) {
         return; // if-modified-since is there but doesn't match
     }
+	
     // Nothing has changed since their last request - serve a 304 and exit
-    header('HTTP/1.0 304 Not Modified');
+    //header('HTTP/1.1 304 Not Modified');
+	header("Content-type: ", true, 304);
 	ini_set ('zlib.output_compression', '0');
     die();
 }

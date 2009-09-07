@@ -41,9 +41,8 @@ if($sider) {
 	}
 }
 
-doConditionalGet($sider[0]['dato']);
-
 header("Content-Type: application/rss+xml");
+doConditionalGet($sider[0]['dato']);
 
 $search = array ('@<script[^>]*?>.*?</script>@si', // Strip out javascript
                  '@<[\/\!]*?[^<>]*?>@si',          // Strip out HTML tags
