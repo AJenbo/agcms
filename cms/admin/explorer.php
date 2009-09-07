@@ -1,4 +1,5 @@
 <?php
+require_once $_SERVER['DOCUMENT_ROOT'].'/admin/inc/logon.php';
 //TODO update compleat source with doConditionalGet
 
 /*

@@ -1,4 +1,5 @@
 <?php
+require_once $_SERVER['DOCUMENT_ROOT'].'/admin/inc/logon.php';
 date_default_timezone_set('Europe/Copenhagen'); 
 if(empty($GLOBALS['_user'])) {
 	//TODO No login !!!

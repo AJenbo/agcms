@@ -1,4 +1,6 @@
-<div id="mainmenu"> <?php
+<?php
+require_once $_SERVER['DOCUMENT_ROOT'].'/admin/inc/logon.php';
+?><div id="mainmenu"> <?php
 	
 	if(!empty($_GET['side'])) {
 		if($_GET['side'] == 'redigerside') {

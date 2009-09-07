@@ -11,6 +11,9 @@ function doConditionalGet($timestamp) {
     $last_modified = mb_substr(date('r', $timestamp), 0, -5).'GMT';
     $etag = '"'.$timestamp.'"';
     // Send the headers
+	
+	header("Cache-Control: max-age=0, must-revalidate");    // HTTP/1.1 
+	header("Pragma: no-cache");                            // HTTP/1.0 
     header('Last-Modified: '.$last_modified);
     header('ETag: '.$etag);
     // See if the client has provided the required headers

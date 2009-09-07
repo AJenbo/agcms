@@ -1,4 +1,5 @@
-﻿<?php
+<?php
+require_once $_SERVER['DOCUMENT_ROOT'].'/admin/inc/logon.php';
 require_once '../inc/sajax.php'; 
 require_once '../inc/config.php';
 require_once '../inc/mysqli.php';

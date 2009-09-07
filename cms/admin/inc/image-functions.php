@@ -1,4 +1,5 @@
 <?php
+require_once $_SERVER['DOCUMENT_ROOT'].'/admin/inc/logon.php';
 require_once 'file-functions.php';
 //TODO if (no changes and !$output) do redirect
 function generateImage($path,$cropX,$cropY,$cropW,$cropH,$maxW,$maxH,$flip,$rotate,$output) {

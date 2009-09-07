@@ -1,4 +1,5 @@
 <?php
+require_once $_SERVER['DOCUMENT_ROOT'].'/admin/inc/logon.php';
 
 /**
  * This Class is for simplyfiying sending querys to PBS epayment admin web service

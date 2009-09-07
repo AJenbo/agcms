@@ -17,10 +17,10 @@ require_once $_SERVER['DOCUMENT_ROOT'].'/inc/mysqli.php';
 //Open database
 $mysqli = new simple_mysqli($GLOBALS['_config']['mysql_server'], $GLOBALS['_config']['mysql_user'], $GLOBALS['_config']['mysql_password'], $GLOBALS['_config']['mysql_database']);
 
-if($mysqli->fetch_array('SELECT id FROM users WHERE name = \''.$_POST['name'].'\''))
+if($mysqli->fetch_array('SELECT id FROM users WHERE name = \''.addcslashes($_POST['name'], "'").'\''))
 	die("Bruger navnet er allered taget.");
 
-$mysqli->query('INSERT INTO users SET name = \''.$_POST['name'].'\', password = \''.crypt($_POST['password']).'\', fullname = \''.$fullname.'\'');
+$mysqli->query('INSERT INTO users SET name = \''.addcslashes($_POST['name'], "'").'\', password = \''.addcslashes(crypt($_POST['password']), "'").'\', fullname = \''.addcslashes($_POST['fullname'], "'").'\'');
 
 $mysqli->close();
 unset($mysqli);
