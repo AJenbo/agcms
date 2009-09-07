@@ -1,4 +1,8 @@
 <?php
+//*
+ini_set('display_errors', 1);
+error_reporting(-1);
+/**/
 	$url = urldecode($_SERVER['REQUEST_URI']);
 	//can't detect windows-1252
 	$encoding = mb_detect_encoding($url, 'UTF-8, ISO-8859-1');
@@ -210,7 +214,7 @@
 		//Did any error ocure
 		preg_match('/errorID\sVALUE=["](.*?)["]/', $snoopy->results, $error);
 
-		if($error[1] == 'TokenCorrupt') {
+		if($error && $error[1] == 'TokenCorrupt') {
 			//Password posibly outof date, try to update
 			$error == NULL;
 			updatePassword();
@@ -226,7 +230,7 @@
 			preg_match('/errorID\sVALUE=["](.*?)["]/', $snoopy->results, $error);
 		}
 		
-		if($error[1] != '') {
+		if($error && $error[1] != '') {
 			preg_match('/Broedtekst["][>](.*?)[<]/', $snoopy->results, $errortext);
 			
 			$mysqli->query('DELETE FROM `post` WHERE id = '.$dbid);
@@ -402,9 +406,9 @@ function init2() {
 			echo("$('recPoValue').value = '".addcslashes(@mb_substr($_GET['value'], 0, 12), "'")."';\r\n");
 	if(@mb_substr($_GET['porto'], 0, 12))
 			echo("$('porto').value = '".addcslashes(@mb_substr($_GET['porto'], 0, 12), "'")."';\r\n");
-	if($_GET['fakturaid'])
+	if(!empty($_GET['fakturaid']))
 			echo("$('fakturaid').value = '".addcslashes($_GET['fakturaid'], "'")."';\r\n");
-	if(isset($_GET) && $_GET['porto'] && $_GET['porto'] == '0,00')
+	if(isset($_GET) && !empty($_GET['porto']) && $_GET['porto'] == '0,00')
 		echo("$('ub').checked = true;");
 	
 	?>
