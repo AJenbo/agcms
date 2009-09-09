@@ -498,10 +498,10 @@ function save($id, $type, $updates) {
 		if(!validemail($faktura['email'])) {
 			return array('error' => 'Mail adressen er ikke gyldig!');
 		}
-		if(!$faktura['department'] && count($GLOBALS['_config']['email']) > 1) {
+		if(empty($faktura['department']) && count($GLOBALS['_config']['email']) > 1) {
 			return array('error' => 'Du har ikke valgt en afsender!');
-		} elseif(!$faktura['department']) {
-				$faktura['department'] = $GLOBALS['_config']['email'][0];
+		} else {
+			$faktura['department'] = $GLOBALS['_config']['email'][0];
 		}
 		if($faktura['amount'] < 1) {
 			return array('error' => 'Fakturaen skal være på mindst 1 krone!');
@@ -519,7 +519,7 @@ function save($id, $type, $updates) {
 <p>Tak for ordren. Vi vedlægger her et link til en elektronisk faktura.</p>
 <p>Linket går til vores hovedkontors hjemmeside på huntershouse.dk:<br />
 </p>
-<p>Klik venligst på vedlagte link herunder og udfyld formularen:<br /><a href="www.huntershouse.dk/faktura/?id='.$faktura['id'].'&amp;checkid='.getCheckid($faktura['id']).'">www.huntershouse.dk/faktura/?id='.$faktura['id'].'&amp;checkid='.getCheckid($faktura['id']).'</a>
+<p>Klik venligst på vedlagte link herunder og udfyld formularen:<br /><a href="http://www.huntershouse.dk/faktura/?id='.$faktura['id'].'&amp;checkid='.getCheckid($faktura['id']).'">www.huntershouse.dk/faktura/?id='.$faktura['id'].'&amp;checkid='.getCheckid($faktura['id']).'</a>
 </p>
 <p>Det er en meget stor hjælp for os, - at få en mail, - når du har foretaget betaling via vores betalingssystem.</p>
 <p>Ønsker du at betale på en anden måde eller blot aflyse handlen, - så oplys også gerne dette via mail.<br />
