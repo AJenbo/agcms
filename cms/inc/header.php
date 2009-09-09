@@ -33,10 +33,11 @@ function doConditionalGet($timestamp) {
     if ($if_modified_since && $if_modified_since != $last_modified) {
         return; // if-modified-since is there but doesn't match
     }
-	
+	//TODO One.com has broaken headers when sending 304
+	return;
     // Nothing has changed since their last request - serve a 304 and exit
-    //header('HTTP/1.1 304 Not Modified');
-	header("Content-type: ", true, 304);
+    header('HTTP/1.1 304 Not Modified');
+	//header("Content-type: ", true, 304);
 	ini_set ('zlib.output_compression', '0');
     die();
 }
