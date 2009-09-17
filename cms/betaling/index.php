@@ -576,8 +576,7 @@ if(!empty($_GET['id']) && @$_GET['checkid'] == getCheckid($_GET['id'])) {
 				$faktura = $mysqli->fetch_array("SELECT * FROM `fakturas` WHERE `id` = ".$id);
 				$faktura = $faktura[0];
 				
-				//TODO Stort flueben vises her...
-				$GLOBALS['generatedcontent']['text'] = '<p>Betalingen er nu godkendt. Vi sender Deres vare med posten hurtigst muligt.</p><p>En kopi af Deres ordre er sendt til Deres email.</p>';
+				$GLOBALS['generatedcontent']['text'] = '<p style="text-align:center;"><img src="images/ok.png" alt="" /></p><p>Betalingen er nu godkendt. Vi sender Deres vare med posten hurtigst muligt.</p><p>En kopi af Deres ordre er sendt til Deres email.</p>';
 				
 				$faktura['quantities'] = explode('<', $faktura['quantities']);
 				$faktura['products'] = explode('<', $faktura['products']);

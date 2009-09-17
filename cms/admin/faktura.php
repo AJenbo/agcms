@@ -1,11 +1,6 @@
 <?php
 require_once $_SERVER['DOCUMENT_ROOT'].'/admin/inc/logon.php';
-date_default_timezone_set('Europe/Copenhagen'); 
-if(empty($GLOBALS['_user'])) {
-	//TODO No login !!!
-	$GLOBALS['_user']['fullname'] = 'No one';
-	$GLOBALS['_user']['access'] = 2;
-}
+date_default_timezone_set('Europe/Copenhagen');
 
 require_once '../inc/sajax.php';
 require_once '../inc/config.php';
@@ -562,6 +557,94 @@ function save($id, $type, $updates) {
 	return array('type' => $type, 'status' => $faktura['status']);
 }
 
+function sendReminder($id) {
+	global $mysqli;
+	$faktura = $mysqli->fetch_array("SELECT `status`, `department` FROM `fakturas` WHERE `id` = ".$id);
+	$faktura = $faktura[0];
+	
+	if(!$faktura['status']) {
+		return array('error' => 'Du kan ikke sende en rykker før fakturaen er sendt!');
+	}
+	
+	if(!validemail($faktura['email'])) {
+		return array('error' => 'Mail adressen er ikke gyldig!');
+	}
+	
+	if(empty($faktura['department'])) {
+		$faktura['department'] = $GLOBALS['_config']['email'][0];
+	}
+	
+	include "../inc/phpMailer/class.phpmailer.php";
+	
+	$emailBody = '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>Untitled Document</title>
+</head>
+<body>
+<hr />
+<p style="text-align:center;"> <img src="/images/logoer/jagt-og-fiskermagasinet.png" alt="'.$GLOBALS['_config']['site_name'].'" /> </p>
+<hr />
+<p>Dette er en automatisk genereret rykkermail!</p>
+<p>Dine varer er klar til forsendelse / afhentning, - men endnu ikke <br />
+    registreret, at betalingen kan godkendes, - derfor sender vi herved <br />
+    et nyt link til Dankort-fakturasystemet.<br />
+    <br />
+    <a href="'.$GLOBALS['_config']['base_url'].'/betaling/?id='.$faktura['id'].'&amp;checkid='.getCheckid($faktura['id']).'">'.$GLOBALS['_config']['base_url'].'/betaling/?id='.$faktura['id'].'&amp;checkid='.getCheckid($faktura['id']).'</a><br />
+</p>
+<p>I forbindelse med indtastning af Dankortoplysningerne, - kan der ske <br />
+    fejl så vi ikke registrerer betalingen, - derved opstår der unødig <br />
+    ventetid, - derfor sender vi denne skrivelse.</p>
+<p>Det er en meget stor hjælp og giver kortere ventetid, - hvis du vil <br />
+    være venlig at sende os en mail når betalingen er gennemført.</p>
+<p>Vi modtager også gerne en mail eller telefonopkald, - hvis du:<br />
+    * Oplever problemer med vores Dankort betalingssystem<br />
+    * Ønsker at afbestille ordren<br />
+    * Ønsker at ændre i bestillingen<br />
+    * Ønsker at betale på anden måde, - f.eks ved overførsel via netbank.</p>
+Med venlig hilsen<br />
+<br />
+'.$GLOBALS['_config']['site_name'].'<br />
+'.$GLOBALS['_config']['address'].'<br />
+'.$GLOBALS['_config']['postcode'].' '.$GLOBALS['_config']['city'].'<br />
+Tel: '.$GLOBALS['_config']['phone'].'<br />
+Fax: '.$GLOBALS['_config']['fax'].'<br />
+<a href="mailto:'.$faktura['department'].'">'.$faktura['department'].'</a><br />
+</body>
+</html>
+';
+	
+	$mail             = new PHPMailer();
+	$mail->SetLanguage('dk');
+	$mail->IsSMTP();
+	if($GLOBALS['_config']['emailpassword'] !== false) {
+		$mail->SMTPAuth   = true; // enable SMTP authentication
+		$mail->Username   = $GLOBALS['_config']['email'][0];
+		$mail->Password   = $GLOBALS['_config']['emailpassword'];
+	} else {
+		$mail->SMTPAuth   = false;
+	}                  
+	$mail->Host       = $GLOBALS['_config']['smtp'];      // sets the SMTP server
+	$mail->Port       = $GLOBALS['_config']['smtpport'];  // set the SMTP port for the server
+	$mail->CharSet    = 'utf-8';
+	$mail->AddReplyTo($faktura['department'], $GLOBALS['_config']['site_name']);
+	$mail->From       = $faktura['department'];
+	$mail->FromName   = $GLOBALS['_config']['site_name'];
+	$mail->Subject    = 'Elektronisk faktura vedr. ordre';
+	$mail->MsgHTML($emailBody, $_SERVER['DOCUMENT_ROOT']);
+	
+	if(empty($faktura['navn']))
+		$faktura['navn'] = $faktura['email'];
+	
+	$mail->AddAddress($faktura['email'], $faktura['navn']);
+	if(!$mail->Send()) {
+		return array('error' => 'Mailen kunde ikke sendes!');
+	}
+
+	return array('error' => 'En rykker blev sendt til kunden.');
+}
+
 function pbsconfirm($id) {
 	global $mysqli;
 	global $epaymentAdminService;
@@ -659,7 +742,8 @@ sajax_export(
 	array('name' => 'newfaktura', 'method' => 'POST'),
 	array('name' => 'save', 'method' => 'POST'),
 	array('name' => 'copytonew', 'method' => 'POST'),
-	array('name' => 'getAddress', 'method' => 'GET')
+	array('name' => 'getAddress', 'method' => 'GET'),
+	array('name' => 'sendReminder', 'method' => 'GET')
 );
 //$sajax_remote_uri = '/ajax.php';
 sajax_handle_client_request();
@@ -945,6 +1029,14 @@ function save(type) {
 		update['paydate'] = $('cdate').value;
 	
 	x_save(id, type, update, save_r);
+}
+
+function sendReminder() {
+	x_sendReminder(id, sendReminder_r);
+}
+
+function sendReminder_r(data) {
+	alert(data['error']);
 }
 
 function save_r(date) {
@@ -1424,12 +1516,15 @@ $faktura['status'] != 'cash' &&
 $faktura['status'] != 'pbsok' &&
 $faktura['status'] != 'accepted' &&
 $faktura['status'] != 'canceled' &&
-$faktura['status'] != 'rejected' &&
-!$faktura['sendt']) {
-	if(validemail($faktura['email'])) {
-		$activityButtons[] = '<li id="emaillink"><a href="#" onclick="save(\'email\'); return false;"><img height="16" width="16" title="Send til kunden" alt="" src="images/email_go.png"/> Send</a></li>';
+$faktura['status'] != 'rejected') {
+	if(!$faktura['sendt']) {
+		if(validemail($faktura['email'])) {
+			$activityButtons[] = '<li id="emaillink"><a href="#" onclick="save(\'email\'); return false;"><img height="16" width="16" title="Send til kunden" alt="" src="images/email_go.png"/> Send</a></li>';
+		} else {
+			$activityButtons[] = '<li id="emaillink" style="display:none;"><a href="#" onclick="save(\'email\'); return false;"><img height="16" width="16" title="Send til kunden" alt="" src="images/email_go.png"/> Send</a></li>';
+		}
 	} else {
-		$activityButtons[] = '<li id="emaillink" style="display:none;"><a href="#" onclick="save(\'email\'); return false;"><img height="16" width="16" title="Send til kunden" alt="" src="images/email_go.png"/> Send</a></li>';
+		$activityButtons[] = '<li><a href="#" onclick="sendReminder(); return false;"><img height="16" width="16" title="Send rykker!" alt="" src="images/email_go.png"/> Send rykker!</a></li>';
 	}
 }
 
