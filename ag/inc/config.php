@@ -28,8 +28,8 @@ $GLOBALS['_config']['interests'][] = 'Vagtudstyr';
 $GLOBALS['_config']['pbsid'] = '';
 $GLOBALS['_config']['pbspassword'] = 'salt24raej098';
 $GLOBALS['_config']['pbsfix'] = 'AG';
-$GLOBALS['_config']['mysql_server'] = 'localhost';
+$GLOBALS['_config']['mysql_server'] = 'arms-gallery.dk.mysql';
 $GLOBALS['_config']['mysql_user'] = 'arms_gallery_dk';
-$GLOBALS['_config']['mysql_password'] = '460weatherby';
-$GLOBALS['_config']['mysql_database'] = 'arms_gallery_dk001';
+$GLOBALS['_config']['mysql_password'] = 'hSKe3eDZ';
+$GLOBALS['_config']['mysql_database'] = 'arms_gallery_dk';
 ?>

@@ -1,8 +1,8 @@
 <?php
 //FTP for makedir
-$GLOBALS['_config']['ftp_User'] = 'arms-gallery_dk';
-$GLOBALS['_config']['ftp_Pass'] = 'f7oIzFo4z';
-$GLOBALS['_config']['ftp_Root'] = 'www';
+$GLOBALS['_config']['ftp_User'] = '';
+$GLOBALS['_config']['ftp_Pass'] = '';
+$GLOBALS['_config']['ftp_Root'] = '';
 
 //Site color settings
 $GLOBALS['_config']['bgcolor'] = "FFFFFF";
