@@ -133,7 +133,10 @@ if (!empty($_FILES['Filedata']['tmp_name']) && is_uploaded_file($_FILES['Filedat
 	//MySQL INSERT fejl!
 	header('HTTP/1.1 543 Internal Server Error');
 	
-	$mysqli->query('INSERT INTO files (path, mime, alt, width, height, size, aspect) VALUES (\''.$destpath."', '".$mime."', '".$_GET['alt']."', '".$width."', '".$height."', '".filesize($_SERVER['DOCUMENT_ROOT'].$destpath)."', ".$_GET['aspect'].")");
+	$alt = empty($_GET['alt']) ? '' : $_GET['alt'];
+	$aspect = empty($_GET['aspect']) ? '' : $_GET['aspect'];
+	
+	$mysqli->query('INSERT INTO files (path, mime, alt, width, height, size, aspect) VALUES (\''.$destpath."', '".$mime."', '".$alt."', '".$width."', '".$height."', '".filesize($_SERVER['DOCUMENT_ROOT'].$destpath)."', ".$aspect.")");
 
 	header('HTTP/1.1 200 OK');
 } else
