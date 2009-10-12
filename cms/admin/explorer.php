@@ -1,4 +1,8 @@
 <?php
+/*
+ini_set('display_errors', 1);
+error_reporting(-1);
+/**/
 require_once $_SERVER['DOCUMENT_ROOT'].'/admin/inc/logon.php';
 //TODO update compleat source with doConditionalGet
 
@@ -574,6 +578,8 @@ function searchfiles($qpath, $qalt, $qmime) {
 	
 	
 	$filenumber = 0;
+	$html = '';
+	$javascript = '';
 	while($filenumber < $filecount) {
 		if($filecount-$filenumber<250)
 			$limit = $filecount-$filenumber;

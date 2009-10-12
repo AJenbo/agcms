@@ -1,5 +1,5 @@
 <?php
-//*
+/*
 ini_set('display_errors', 1);
 error_reporting(-1);
 /**/
@@ -605,8 +605,10 @@ function get_db_error() {
 	
 	$tabels = $mysqli->fetch_array("SHOW TABLE STATUS");
 	$dbsize = 0;
-	foreach($tabels as $tabel)
+	foreach($tabels as $tabel) {
 		$dbsize += $tabel['Data_length'];
+		$dbsize += $tabel['Index_length'];
+	}
 	$dbsize = $dbsize/1024/1024;
 	
 	$html .= '<br /><b>Database størelse før optimering: '.number_format($dbsize, 1, ',', '').' MB</b><br />';
@@ -685,6 +687,7 @@ function get_db_error() {
 	
 	//Print error on orphan pages
 	$error = $mysqli->fetch_array('SELECT id, navn FROM `sider`');
+	$temp_html = '';
 	foreach($error as $value) {
 		$bind = $mysqli->fetch_array('SELECT kat FROM `bind` WHERE `side` = '.$value['id']);
 		//Add active pages that has a list that links to this page
@@ -823,8 +826,10 @@ function get_db_error() {
 	
 	$tabels = $mysqli->fetch_array("SHOW TABLE STATUS");
 	$dbsize = 0;
-	foreach($tabels as $tabel)
+	foreach($tabels as $tabel) {
 		$dbsize += $tabel['Data_length'];
+		$dbsize += $tabel['Index_length'];
+	}
 	$dbsize = $dbsize/1024/1024;
 	
 	$html .= '<br /><b>Database størelse efter optimering: '.number_format($dbsize, 1, ',', '').' MB</b><br />';

@@ -344,7 +344,7 @@ function get_mime_type($filepath) {
 		   '7z'=>'application/x-7z-compressed',
 		   'gz'=>'application/x-gzip'
 			);
-			$mime = $mimes[mb_strtolower(@$pathinfo['extension'], 'UTF-8')];
+			$mime = empty($mimes[mb_strtolower(@$pathinfo['extension'], 'UTF-8')]) ? 'application/octet-stream' : $mimes[mb_strtolower(@$pathinfo['extension'], 'UTF-8')];
 		}
     return $mime;
 }
