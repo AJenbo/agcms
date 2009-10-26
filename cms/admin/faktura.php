@@ -510,16 +510,16 @@ function save($id, $type, $updates) {
 <body>
 <p>Tak for Deres ordre.</p>
 <p>Deres Online faktura nr. '.$faktura['id'].' er godkendt og klar til forsendelse så snart betaling er udført.</p>
-<p>Betaling på Visa-Dankort/Dankort udføres ved at klikke på nedenstående link. Her kan de ligeledes se Deres online faktura med specifikation af Deres køb. Efter betalingen vil du på samme link kunde se status for dit køb.</p>
+<p>Betaling med betalings kort udføres ved at klikke på nedenstående link.</p>
 <p>Link til betaling:<br />
     <a href="'.$GLOBALS['_config']['base_url'].'/betaling/?id='.$faktura['id'].'&amp;checkid='.getCheckid($faktura['id']).'">'.$GLOBALS['_config']['base_url'].'/betaling/?id='.$faktura['id'].'&amp;checkid='.getCheckid($faktura['id']).'</a></p>
 <p>Har De spørgsmål til Deres ordre er de velkommen til at kontakte undertegnede.</p>
 <p>Med venlig hilsen,</p>
 <p>'.$faktura['clerk'].'<br />
-    Jagt og Fiskerimagsinet<br />
-    Nørre Voldgade 8-10<br />
-    1358 Kbh K.<br />
-    Tlf. 3333 7777</p>
+    '.$GLOBALS['_config']['site_name'].'<br />
+    '.$GLOBALS['_config']['address'].'<br />
+    '.$GLOBALS['_config']['postcode'].' '.$GLOBALS['_config']['city'].'<br />
+    Tlf. '.$GLOBALS['_config']['phone'].'</p>
 </body>
 </html>';
 		
@@ -551,7 +551,8 @@ function save($id, $type, $updates) {
 		}
 		$mysqli->query("UPDATE `fakturas` SET `status` = 'locked' WHERE `status` = 'new' && `id` = ".$faktura['id']);
 		$mysqli->query("UPDATE `fakturas` SET `sendt` = 1, `department` = '".$faktura['department']."' WHERE `id` = ".$faktura['id']);
-		$faktura['status'] = 'locked';
+		//Forece reload
+		$faktura['status'] = 'sendt';
 	}
 
 	return array('type' => $type, 'status' => $faktura['status']);
