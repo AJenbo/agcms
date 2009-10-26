@@ -653,7 +653,11 @@ if(!empty($_GET['id']) && @$_GET['checkid'] == getCheckid($_GET['id'])) {
 					$emailbody .= '<br /><strong>Notat:</strong><br /><p class="note">';	
 					$emailbody .= nl2br(htmlspecialchars($faktura['note'])).'</p>';
 				}
-				$emailbody .= '<p>Med venlig hilsen,<br /></p><p> </p><p>'.$faktura['clerk'].'<br />Jagt og fiskerimagasinet<br />Nørre Voldgade 8-10<br />1358 København K.<br />Tlf. 3333 7777<br /><a href="mailto:mail@jagtogfiskerimagasinet.dk">mail@jagtogfiskerimagasinet.dk</a></p></body></html>';
+				
+				if(!validemail($faktura['department'])) {
+					$faktura['department'] = $GLOBALS['_config']['email'][0];
+				}
+				$emailbody .= '<p>Med venlig hilsen,<br /></p><p> </p><p>'.$faktura['clerk'].'<br />'.$GLOBALS['_config']['site_name'].'<br />'.$GLOBALS['_config']['address'].'<br />'.$GLOBALS['_config']['postcode'].' '.$GLOBALS['_config']['city'].'.<br />Tlf. '.$GLOBALS['_config']['phone'].'<br /><a href="mailto:'.$faktura['department'].'">'.$faktura['department'].'</a></p></body></html>';
 
 				require_once "inc/phpMailer/class.phpmailer.php";
 	
@@ -670,18 +674,13 @@ if(!empty($_GET['id']) && @$_GET['checkid'] == getCheckid($_GET['id'])) {
 				$mail->Host       = $GLOBALS['_config']['smtp'];      // sets the SMTP server
 				$mail->Port       = $GLOBALS['_config']['smtpport'];                   // set the SMTP port for the server
 				$mail->CharSet    = 'utf-8';
-				if(validemail($faktura['department'])) {
-					$mail->AddReplyTo($faktura['department'], $GLOBALS['_config']['site_name']);
-					$mail->From       = $faktura['department'];
-				} else {
-					$mail->AddReplyTo($GLOBALS['_config']['email'][0], $GLOBALS['_config']['site_name']);
-					$mail->From       = $GLOBALS['_config']['email'][0];
-				}
+				$mail->AddReplyTo($faktura['department'], $GLOBALS['_config']['site_name']);
+				$mail->From       = $faktura['department'];
 				$mail->FromName   = $GLOBALS['_config']['site_name'];
 				$mail->Subject    = 'Ordre '.$faktura['id'].' - Betaling gennemført';
 				$mail->MsgHTML($emailbody, $_SERVER['DOCUMENT_ROOT']);
 				$mail->AddAddress($faktura['email'], $GLOBALS['_config']['site_name']);
-				$mailtocustsendt = $mail->Send();
+				$mail->Send();
 				//Mail to customer end
 				
 				//Mail to Ole start
@@ -724,19 +723,16 @@ if(!empty($_GET['id']) && @$_GET['checkid'] == getCheckid($_GET['id'])) {
 				$mail->Host       = $GLOBALS['_config']['smtp'];      // sets the SMTP server
 				$mail->Port       = $GLOBALS['_config']['smtpport'];              //  password
 				$mail->CharSet    = 'utf-8';
-				if(validemail($faktura['department'])) {
-					$mail->AddReplyTo($faktura['department'], $GLOBALS['_config']['site_name']);
-					$mail->From       = $faktura['department'];
-				} else {
-					$mail->AddReplyTo($GLOBALS['_config']['email'][0], $GLOBALS['_config']['site_name']);
-					$mail->From       = $GLOBALS['_config']['email'][0];
+				if(!validemail($faktura['department'])) {
+					$faktura['department'] = $GLOBALS['_config']['email'][0];
 				}
+				$mail->AddReplyTo($faktura['department'], $GLOBALS['_config']['site_name']);
+				$mail->From       = $faktura['department'];
 				$mail->FromName   = $GLOBALS['_config']['site_name'];
 				$mail->Subject    = 'Att: Ole - Online faktura #'.$GLOBALS['_config']['pbsfix'].$faktura['id'].' : Betaling gennemført';
 				$mail->MsgHTML($emailbody, $_SERVER['DOCUMENT_ROOT']);
 				$mail->AddAddress('mail@huntershouse.dk', 'Hunters House A/S');
 				$mailtoole = $mail->Send();
-				$mailtoolee = $mail->ErrorInfo;
 				//Mail to Ole end
 				
 			break;
@@ -775,7 +771,10 @@ if(!empty($_GET['id']) && @$_GET['checkid'] == getCheckid($_GET['id'])) {
 	
 	//To shop
 	$faktura = $mysqli->fetch_array("SELECT * FROM `fakturas` WHERE `id` = ".$id);
-	if($faktura) {
+	if(!validemail($faktura['department']))
+		faktura['department'] = $GLOBALS['_config']['email'][0];
+	
+	if($faktura && (!$mailtoole || $faktura['department'] != 'mail@huntershouse.dk')) {
 		$faktura = $faktura[0];
 		
 		$faktura['quantities'] = explode('<', $faktura['quantities']);
@@ -787,16 +786,6 @@ if(!empty($_GET['id']) && @$_GET['checkid'] == getCheckid($_GET['id'])) {
 				$faktura['values'][$key] = $value/1.25;
 			}
 		}
-		
-		if($mailtocustsendt) {
-			$tilanders .= '<br />Mailen er sendt til kunden';
-		}
-		if($mailtoole) {
-			$tilanders .= '<br />Mailen er sendt til Ole';
-		}
-		$tilanders .= '<br />Fejl besked i til ole: '.$mailtoolee;
-		
-		$tilanders .= '<br />S:'.$_GET['Status'].' SC:'.$_GET['Status_code'];
 		
 		$emailbody = '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
@@ -835,7 +824,6 @@ Klik <a href="'.$GLOBALS['_config']['base_url'].'/admin/faktura.php?id='.$id.'">
 			$emailbody .= '<tr><td class="tal">'.$faktura['quantities'][$i].'</td><td>'.$faktura['products'][$i].'</td><td class="tal">'.number_format($faktura['values'][$i], 2, ',', '').'</td><td class="tal">'.number_format($faktura['values'][$i]*$faktura['quantities'][$i], 2, ',', '').'</td></tr>';
 		}
 		$emailbody .= '</tbody></table>';
-		$emailbody .= '<p>'.$tilanders.'</p>';
 		$emailbody .= '<p>Mvh Computeren</p></body></html>';
 	} else {
 		$emailbody .= '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
@@ -872,10 +860,7 @@ Klik <a href="'.$GLOBALS['_config']['base_url'].'/admin/faktura.php?id='.$id.'">
 	$mail->Subject    = 'Att: '.$faktura['clerk'].' - Online faktura #'.$id.' : '.$shopSubject;
 	$mail->MsgHTML($emailbody, $_SERVER['DOCUMENT_ROOT']);
 	
-	if(validemail($faktura['department']))
-		$mail->AddAddress($faktura['department'], $GLOBALS['_config']['site_name']);
-	else
-		$mail->AddAddress($GLOBALS['_config']['email'][0], $GLOBALS['_config']['site_name']);
+	$mail->AddAddress($faktura['department'], $GLOBALS['_config']['site_name']);
 	
 	$mail->Send();
 	
