@@ -248,7 +248,7 @@ a {
         <tr>
             <td style="width:16px;"></td>
             <td>Id</td>
-            <td>Opretted</td>
+            <td>Oprettet</td>
             <?php if(!$_POST['clerk']) { ?><td>Ansvarlige</td><?php } ?>
             <td>Beløb</td>
             <td>Modtager</td>

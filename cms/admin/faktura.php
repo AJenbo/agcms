@@ -560,7 +560,7 @@ function save($id, $type, $updates) {
 
 function sendReminder($id) {
 	global $mysqli;
-	$faktura = $mysqli->fetch_array("SELECT `status`, `department` FROM `fakturas` WHERE `id` = ".$id);
+	$faktura = $mysqli->fetch_array("SELECT `email`, `status`, `department` FROM `fakturas` WHERE `id` = ".$id);
 	$faktura = $faktura[0];
 	
 	if(!$faktura['status']) {
@@ -1175,7 +1175,7 @@ new tcal ({ 'controlid': 'cdate' });
         <tr>
 			<td>Status:</td>
 			<td><?php if($faktura['status'] == 'new')
-					echo('Ny opretted');
+					echo('Ny oprettet');
 				elseif($faktura['status'] == 'locked' && $faktura['sendt'])
 					echo('Er sendt til kunden.');
 				elseif($faktura['status'] == 'locked')
@@ -1204,7 +1204,7 @@ new tcal ({ 'controlid': 'cdate' });
 ?></td>
 		</tr>
 		<tr>
-			<td>Opretted:</td>
+			<td>Oprettet:</td>
 			<td><?php if($faktura['status'] == 'new') { ?>
 				<input maxlength="10" name="date" id="date" size="11" value="<?php echo(date('d/m/Y', $faktura['date'])); ?>" />
 				<script type="text/javascript"><!--
