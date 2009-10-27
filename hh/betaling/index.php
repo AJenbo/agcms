@@ -512,7 +512,7 @@ if(!empty($_GET['id']) && @$_GET['checkid'] == getCheckid($_GET['id'])) {
 	$shopBody = '<br />Der opstået en fejl på betalings siden ved online faktura #'.$id.'!<br />';
 	
 	if($faktura = $mysqli->fetch_array("SELECT * FROM `fakturas` WHERE `id` = ".$id)) {
-		$faktura = $faktura[0];
+		$faktura = @$faktura[0];
 	}
 	
 	if($_GET['MAC'] != md5(implode('', $validate).$GLOBALS['_config']['pbspassword'])) {
@@ -574,7 +574,7 @@ if(!empty($_GET['id']) && @$_GET['checkid'] == getCheckid($_GET['id'])) {
 				$mysqli->query("UPDATE `fakturas` SET `status` = 'pbsok', `paydate` = NOW() WHERE `status` IN('new', 'locked', 'pbserror') AND `id` = ".$id);
 				
 				$faktura = $mysqli->fetch_array("SELECT * FROM `fakturas` WHERE `id` = ".$id);
-				$faktura = $faktura[0];
+				$faktura = @$faktura[0];
 				
 				$GLOBALS['generatedcontent']['text'] = '<p>Betalingen er nu godkendt. Vi sender Deres vare med posten hurtigst muligt.</p><p>En kopi af Deres ordre er sendt til Deres email.</p>';
 				
@@ -589,7 +589,7 @@ if(!empty($_GET['id']) && @$_GET['checkid'] == getCheckid($_GET['id'])) {
 				}
 				
 				$shopSubject = 'Betaling gennemført';
-				$shopBody = 'Har godkendt betalingen og nedenstående ordre må/skal sendes til kunden. <br /><br />Vigtigt:<br />Husk at godkende betaling når varen sendes så udbetaling til os kan ske.<br />';
+				$shopBody = 'Kunden har godkendt betalingen og nedenstående ordre skal sendes til kunden.<br /><br />Husk at "ekspedere" betalingen når varen sendes (Betaling overføres først fra kundens konto, når vi trykker "Ekspedér").<br />';
 				
 				require_once 'inc/countries.php';
 				$GLOBALS['generatedcontent']['track'] = ' pageTracker._addTrans("'.$faktura['id'].'", "", "'.$faktura['amount'].'", "'.(($faktura['amount']-$faktura['fragt'])*(1-(1/(1+$faktura['momssats'])))).'", "'.$faktura['fragt'].'", "'.$faktura['by'].'", "", "'.$countries[$faktura['land']].'");';
@@ -771,11 +771,11 @@ if(!empty($_GET['id']) && @$_GET['checkid'] == getCheckid($_GET['id'])) {
 	
 	//To shop
 	$faktura = $mysqli->fetch_array("SELECT * FROM `fakturas` WHERE `id` = ".$id);
+	$faktura = @$faktura[0];
 	if(!validemail($faktura['department']))
-		faktura['department'] = $GLOBALS['_config']['email'][0];
+		$faktura['department'] = $GLOBALS['_config']['email'][0];
 	
-	if($faktura && (!$mailtoole || $faktura['department'] != 'mail@huntershouse.dk')) {
-		$faktura = $faktura[0];
+	if($faktura) {
 		
 		$faktura['quantities'] = explode('<', $faktura['quantities']);
 		$faktura['products'] = explode('<', $faktura['products']);
@@ -801,9 +801,9 @@ td {
 </head>
 <body>
 <p>'.$faktura['navn'].'<br />
-	'.$faktura['adresse'].'<br />
-	'.$faktura['postnr'].' '.$faktura['by'].'<br />
-	'.$faktura['land'].'</p>
+'.$faktura['adresse'].'<br />
+'.$faktura['postnr'].' '.$faktura['by'].'<br />
+'.$faktura['land'].'</p>
 <p>'.$shopBody.'<br />
 Klik <a href="'.$GLOBALS['_config']['base_url'].'/admin/faktura.php?id='.$id.'">her</a> for at åbne faktura siden.</p>
 <p><a href="mailto:'.$faktura['email'].'">'.$faktura['email'].'</a><br />
@@ -826,7 +826,7 @@ Klik <a href="'.$GLOBALS['_config']['base_url'].'/admin/faktura.php?id='.$id.'">
 		$emailbody .= '</tbody></table>';
 		$emailbody .= '<p>Mvh Computeren</p></body></html>';
 	} else {
-		$emailbody .= '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+		$emailbody = '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
@@ -834,7 +834,7 @@ Klik <a href="'.$GLOBALS['_config']['base_url'].'/admin/faktura.php?id='.$id.'">
 </head>
 
 <body>
-'.$shopBody.'<br />S:'.$_GET['Status'].' SC:'.$_GET['Status_code'].
+'.$shopBody.'<br />Status: '.$_GET['Status'].$_GET['Status_code'].
 '<p>Mvh Computeren</p>
 </body>
 </html>
@@ -842,27 +842,29 @@ Klik <a href="'.$GLOBALS['_config']['base_url'].'/admin/faktura.php?id='.$id.'">
 	}
 	
 	
-	$mail = new PHPMailer();
-	$mail->SetLanguage('dk');
-	$mail->IsSMTP();
-	if($GLOBALS['_config']['emailpassword'] !== false) {
-		$mail->SMTPAuth   = true; // enable SMTP authentication
-		$mail->Username   = $GLOBALS['_config']['email'][0];
-		$mail->Password   = $GLOBALS['_config']['emailpassword'];
-	} else {
-		$mail->SMTPAuth   = false;
+	if((!empty($faktura) && (!$mailtoole || $faktura['department'] != 'mail@huntershouse.dk')) || empty($faktura)) {
+		$mail = new PHPMailer();
+		$mail->SetLanguage('dk');
+		$mail->IsSMTP();
+		if($GLOBALS['_config']['emailpassword'] !== false) {
+			$mail->SMTPAuth   = true; // enable SMTP authentication
+			$mail->Username   = $GLOBALS['_config']['email'][0];
+			$mail->Password   = $GLOBALS['_config']['emailpassword'];
+		} else {
+			$mail->SMTPAuth   = false;
+		}
+		$mail->Host       = $GLOBALS['_config']['smtp'];      // sets the SMTP server
+		$mail->Port       = $GLOBALS['_config']['smtpport'];              //  password
+		$mail->CharSet    = 'utf-8';
+		$mail->From       = $GLOBALS['_config']['email'][0];
+		$mail->FromName   = $GLOBALS['_config']['site_name'];
+		$mail->Subject    = 'Att: '.$faktura['clerk'].' - Online faktura #'.$id.' : '.$shopSubject;
+		$mail->MsgHTML($emailbody, $_SERVER['DOCUMENT_ROOT']);
+		
+		$mail->AddAddress($faktura['department'], $GLOBALS['_config']['site_name']);
+		
+		$mail->Send();
 	}
-	$mail->Host       = $GLOBALS['_config']['smtp'];      // sets the SMTP server
-	$mail->Port       = $GLOBALS['_config']['smtpport'];              //  password
-	$mail->CharSet    = 'utf-8';
-	$mail->From       = $GLOBALS['_config']['email'][0];
-	$mail->FromName   = $GLOBALS['_config']['site_name'];
-	$mail->Subject    = 'Att: '.$faktura['clerk'].' - Online faktura #'.$id.' : '.$shopSubject;
-	$mail->MsgHTML($emailbody, $_SERVER['DOCUMENT_ROOT']);
-	
-	$mail->AddAddress($faktura['department'], $GLOBALS['_config']['site_name']);
-	
-	$mail->Send();
 	
 } else {
 	$GLOBALS['generatedcontent']['title'] = 'Betaling';

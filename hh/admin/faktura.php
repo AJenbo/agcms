@@ -559,7 +559,7 @@ function save($id, $type, $updates) {
 
 function sendReminder($id) {
 	global $mysqli;
-	$faktura = $mysqli->fetch_array("SELECT `status`, `department` FROM `fakturas` WHERE `id` = ".$id);
+	$faktura = $mysqli->fetch_array("SELECT `email`, `status`, `department` FROM `fakturas` WHERE `id` = ".$id);
 	$faktura = $faktura[0];
 	
 	if(!$faktura['status']) {
@@ -583,9 +583,6 @@ function sendReminder($id) {
 <title>Untitled Document</title>
 </head>
 <body>
-<hr />
-<p style="text-align:center;"> <img src="/images/logoer/jagt-og-fiskermagasinet.png" alt="'.$GLOBALS['_config']['site_name'].'" /> </p>
-<hr />
 <p>Dette er en automatisk genereret rykkermail!</p>
 <p>Dine varer er klar til forsendelse / afhentning, - men endnu ikke <br />
     registreret, at betalingen kan godkendes, - derfor sender vi herved <br />
@@ -1174,7 +1171,7 @@ new tcal ({ 'controlid': 'cdate' });
         <tr>
 			<td>Status:</td>
 			<td><?php if($faktura['status'] == 'new')
-					echo('Ny opretted');
+					echo('Ny oprettet');
 				elseif($faktura['status'] == 'locked' && $faktura['sendt'])
 					echo('Er sendt til kunden.');
 				elseif($faktura['status'] == 'locked')
@@ -1203,7 +1200,7 @@ new tcal ({ 'controlid': 'cdate' });
 ?></td>
 		</tr>
 		<tr>
-			<td>Opretted:</td>
+			<td>Oprettet:</td>
 			<td><?php if($faktura['status'] == 'new') { ?>
 				<input maxlength="10" name="date" id="date" size="11" value="<?php echo(date('d/m/Y', $faktura['date'])); ?>" />
 				<script type="text/javascript"><!--
