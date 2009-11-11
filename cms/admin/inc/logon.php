@@ -20,7 +20,7 @@ if(empty($_SESSION['_user']) && !empty($_POST['username'])) {
 	$GLOBALS['_user'] = $_SESSION['_user'];
 }
 
-if(empty($GLOBALS['_user']['password']) || (!$GLOBALS['_user']['password'] == crypt(mb_strtolower(@$_POST['password'], 'UTF-8'), $GLOBALS['_user']['password']))) {
+if(empty($GLOBALS['_user']['password']) || ($GLOBALS['_user']['password'] != crypt(mb_strtolower(@$_POST['password'], 'UTF-8'), $GLOBALS['_user']['password']))) {
 	unset($GLOBALS['_user']);
 	unset($_SESSION['_user']);
 	header('HTTP/1.0 401 Unauthorized');
