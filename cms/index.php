@@ -4,6 +4,8 @@ ini_set('display_errors', 1);
 error_reporting(-1);
 /**/
 
+ini_set('zlib.output_compression', 1);
+
 require_once 'inc/header.php'; 
 //include the file   
 require_once("inc/firephp.class.php");

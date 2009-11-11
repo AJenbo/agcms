@@ -1,11 +1,13 @@
 <?php
-//*
+/*
 ini_set('display_errors', 1);
 error_reporting(-1);
 /**/
 
 if(!empty($_COOKIE[session_name()]))
 	unset($_COOKIE[session_name()]);
+
+ini_set("session.use_only_cookies", 0);
 
 require_once $_SERVER['DOCUMENT_ROOT'].'/admin/inc/logon.php';
 	//TODO support wbmp

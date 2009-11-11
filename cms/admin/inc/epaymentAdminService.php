@@ -64,7 +64,10 @@ class epaymentAdminService {
 		if($test)
 			$this->SoapClient = new SoapClient("https://test-epayment.auriganet.eu/webservice/AdminService?WSDL");
 		else
-			$this->SoapClient = new SoapClient("https://epayment.auriganet.eu/webservice/AdminService?WSDL");
+			//$this->SoapClient = new SoapClient("https://epayment.auriganet.eu/webservice/AdminService?WSDL");
+			$this->SoapClient = new SoapClient("inc/AdminService.xml");
+			//require_once 'inc/epaymentAdminService.php';
+			
 	}
 	
 	/**
