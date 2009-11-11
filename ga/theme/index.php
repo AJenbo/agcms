@@ -219,16 +219,21 @@ if(@$_SERVER['HTTPS'] != 'on') {
 } else {
 	?><script src="https://ssl.google-analytics.com/ga.js" type="text/javascript"></script><?php
 }
-
 ?><script type="text/javascript"><!--
+try {
 var pageTracker = _gat._getTracker("UA-1037075-6");
 
 var referrer = '<?php if(@$_SERVER['HTTP_REFERER']) echo($_SERVER['HTTP_REFERER']); ?>';
 if(document.referrer == '' && referrer != '') {
 	pageTracker._setReferrerOverride(referrer);
 }
+pageTracker._setDomainName("www.geoffanderson.com");
 pageTracker._setAllowLinker(true);
 pageTracker._trackPageview();
+<?php
+if(!empty($GLOBALS['generatedcontent']['track'])) echo($GLOBALS['generatedcontent']['track']);
+?>
+} catch(err) {}
 --></script><noscript>
 <img style="display:none;" src="http://www.google-analytics.com/__utm.gif?utmwv=4.3.1&utmn=<?php
 echo(rand(0, 2147483647));
