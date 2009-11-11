@@ -306,6 +306,7 @@ if(@$_SERVER['HTTPS'] != 'on') {
 	?><script src="https://ssl.google-analytics.com/ga.js" type="text/javascript"></script><?php
 }
 ?><script type="text/javascript"><!--
+try {
 var pageTracker = _gat._getTracker("UA-1037075-2");
 
 var referrer = '<?php if(@$_SERVER['HTTP_REFERER']) echo($_SERVER['HTTP_REFERER']); ?>';
@@ -315,6 +316,10 @@ if(document.referrer == '' && referrer != '') {
 pageTracker._setDomainName("arms-gallery.dk");
 pageTracker._setAllowLinker(true);
 pageTracker._trackPageview();
+<?php
+if(!empty($GLOBALS['generatedcontent']['track'])) echo($GLOBALS['generatedcontent']['track']);
+?>
+} catch(err) {}
 --></script>
 </body>
 </html>
