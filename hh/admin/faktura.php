@@ -1,5 +1,5 @@
 <?php
-//*
+/*
 ini_set('display_errors', 1);
 error_reporting(-1);
 /**/
@@ -15,7 +15,7 @@ $mysqli = new simple_mysqli($GLOBALS['_config']['mysql_server'], $GLOBALS['_conf
 function newfaktura() {
 	global $mysqli;
 	
-	$mysqli->query("INSERT INTO `fakturas` (`date`, `clerk`) VALUES (now(), '".addcslashes($GLOBALS['_user']['fullname'], '`\\')."');");
+	$mysqli->query("INSERT INTO `fakturas` (`date`, `clerk`) VALUES (now(), '".addcslashes($_SESSION['_user']['fullname'], '`\\')."');");
 	return $mysqli->insert_id;
 }
 
@@ -397,7 +397,7 @@ function copytonew($id) {
 	unset($faktura['date']);
 	unset($faktura['paydate']);
 	unset($faktura['sendt']);
-	$faktura['clerk'] = $GLOBALS['_user']['fullname'];
+	$faktura['clerk'] = $_SESSION['_user']['fullname'];
 	
 	$sql = "INSERT INTO `fakturas` SET";
 	foreach($faktura as $key => $value)
@@ -463,7 +463,7 @@ function save($id, $type, $updates) {
 		$updates['status'] = 'canceled';
 	}
 	
-	if($GLOBALS['_user']['access'] != 1) {
+	if($_SESSION['_user']['access'] != 1) {
 		unset($updates['clerk']);
 	}
 	
@@ -1208,7 +1208,7 @@ new tcal ({ 'controlid': 'cdate' });
 		//TODO block save if ! admin
 		?><tr>
 			<td>Ansvarlig:</td>
-			<td><?php if(count($users) > 1 && $GLOBALS['_user']['access'] == 1 && $faktura['status'] != 'giro' && $faktura['status'] != 'cash' && $faktura['status'] != 'accepted' && $faktura['status'] != 'canceled') { ?>
+			<td><?php if(count($users) > 1 && $_SESSION['_user']['access'] == 1 && $faktura['status'] != 'giro' && $faktura['status'] != 'cash' && $faktura['status'] != 'accepted' && $faktura['status'] != 'canceled') { ?>
 				<select name="clerk" id="clerk">
 					<option value=""<?php if(!$faktura['clerk']) echo(' selected="selected"'); ?>>Ingen</option><?php
 		$userstest = array();
