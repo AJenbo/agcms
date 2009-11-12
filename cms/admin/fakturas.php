@@ -1,9 +1,9 @@
 <?php
 require_once $_SERVER['DOCUMENT_ROOT'].'/admin/inc/logon.php';
 date_default_timezone_set('Europe/Copenhagen'); 
-if(empty($GLOBALS['_user'])) {
+if(empty($_SESSION['_user'])) {
 	//TDODO No login !!!
-	$GLOBALS['_user']['fullname'] = 'No one';
+	$_SESSION['_user']['fullname'] = 'No one';
 }
 require_once '../inc/sajax.php';
 require_once '../inc/config.php';
@@ -26,7 +26,7 @@ if(!empty($_POST['department']))
 	$where .= " AND `department` = '".$_POST['department']."'";
 
 if(empty($_POST)) {
-	$where .= " AND `clerk` = '".$GLOBALS['_user']['fullname']."'";
+	$where .= " AND `clerk` = '".$_SESSION['_user']['fullname']."'";
 } elseif(!empty($_POST['clerk']))
 	$where .= " AND `clerk` = '".$_POST['clerk']."'";
 
@@ -45,7 +45,7 @@ if(!empty($_POST['tlf']))
 
 if(empty($_POST)) {
 	$_POST['y'] = date('Y');
-	$_POST['clerk'] = $GLOBALS['_user']['fullname'];
+	$_POST['clerk'] = $_SESSION['_user']['fullname'];
 	$_POST['status'] = 'activ';
 }
 
