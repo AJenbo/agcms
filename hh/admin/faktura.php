@@ -1,4 +1,8 @@
 <?php
+//*
+ini_set('display_errors', 1);
+error_reporting(-1);
+/**/
 require_once $_SERVER['DOCUMENT_ROOT'].'/admin/inc/logon.php';
 date_default_timezone_set('Europe/Copenhagen');
 
@@ -11,7 +15,7 @@ $mysqli = new simple_mysqli($GLOBALS['_config']['mysql_server'], $GLOBALS['_conf
 function newfaktura() {
 	global $mysqli;
 	
-	$mysqli->query("INSERT INTO `fakturas` (`date`, `clerk`) VALUES (now(), '".addcslashes($GLOBALS['_user']['fullname'], '`')."');");
+	$mysqli->query("INSERT INTO `fakturas` (`date`, `clerk`) VALUES (now(), '".addcslashes($GLOBALS['_user']['fullname'], '`\\')."');");
 	return $mysqli->insert_id;
 }
 
@@ -67,7 +71,7 @@ if($faktura['id']) {
 			break;
 			case 3:
 				//Annulled. The card payment has been deleted by the Merchant, prior to Acquisition.
-				if($faktura['status'] != 'rejected' && $faktura['status'] != 'giro' && $faktura['status'] != 'cash') {
+				if($faktura['status'] != 'rejected' && $faktura['status'] != 'giro' && $faktura['status'] != 'cash' && $faktura['status'] != 'canceled') {
 					$faktura['status'] = 'rejected';
 					$mysqli->query("UPDATE `fakturas` SET `status` = 'rejected' WHERE `id` = ".$faktura['id']);
 				} else {
@@ -397,7 +401,7 @@ function copytonew($id) {
 	
 	$sql = "INSERT INTO `fakturas` SET";
 	foreach($faktura as $key => $value)
-		$sql .= " `".addcslashes($key, '`')."` = '".addcslashes($value, "'")."',";
+		$sql .= " `".addcslashes($key, '`\\')."` = '".addcslashes($value, "'\\")."',";
 	$sql .= " `date` = NOW();";
 		
 	$mysqli->query($sql);
@@ -411,8 +415,10 @@ function save($id, $type, $updates) {
 	if(!is_array($updates)) {
 		if(get_magic_quotes_gpc())
 			$updates = stripslashes($updates);
-		else
-			$updates = $updates;
+	}
+	
+	if(empty($updates['department'])) {
+		$updates['department'] = $GLOBALS['_config']['email'][0];
 	}
 	
 	if(!empty($updates['date'])) {
@@ -428,7 +434,6 @@ function save($id, $type, $updates) {
 	
 	$faktura = $mysqli->fetch_array("SELECT `status`, `note` FROM `fakturas` WHERE `id` = ".$id);
 	$faktura = $faktura[0];
-	
 	
 	if($faktura['status'] == 'locked' || $faktura['status'] == 'pbsok' || $faktura['status'] == 'pbserror' || $faktura['status'] == 'rejected') {
 		$updates = array('note' => $updates['note'] ? trim($faktura['note']."\n".$updates['note']) : $faktura['note'], 'clerk' => $updates['clerk'], 'department' => $updates['department']);
@@ -452,8 +457,6 @@ function save($id, $type, $updates) {
 			$updates['status'] = 'giro';
 		elseif($type == 'cash')
 			$updates['status'] = 'cash';
-		elseif($type == 'cancel')
-			$updates['status'] = 'cancel';
 	}
 	
 	if($type == 'cancel' && $faktura['status'] != 'pbsok' && $faktura['status'] != 'accepted' && $faktura['status'] != 'giro' && $faktura['status'] != 'cash') {
@@ -468,7 +471,7 @@ function save($id, $type, $updates) {
 	
 		$sql = "UPDATE `fakturas` SET";
 		foreach($updates as $key => $value)
-			$sql .= " `".addcslashes($key, '`')."` = '".addcslashes($value, "'")."',";
+			$sql .= " `".addcslashes($key, '`\\')."` = '".addcslashes($value, "'\\")."',";
 		$sql = substr($sql, 0, -1);
 		
 		if(!empty($date)) {
@@ -551,6 +554,7 @@ function save($id, $type, $updates) {
 		}
 		$mysqli->query("UPDATE `fakturas` SET `status` = 'locked' WHERE `status` = 'new' && `id` = ".$faktura['id']);
 		$mysqli->query("UPDATE `fakturas` SET `sendt` = 1, `department` = '".$faktura['department']."' WHERE `id` = ".$faktura['id']);
+		//Forece reload
 		$faktura['status'] = 'sendt';
 	}
 
@@ -559,7 +563,7 @@ function save($id, $type, $updates) {
 
 function sendReminder($id) {
 	global $mysqli;
-	$faktura = $mysqli->fetch_array("SELECT `email`, `status`, `department` FROM `fakturas` WHERE `id` = ".$id);
+	$faktura = $mysqli->fetch_array("SELECT * FROM `fakturas` WHERE `id` = ".$id);
 	$faktura = $faktura[0];
 	
 	if(!$faktura['status']) {
@@ -656,33 +660,18 @@ function pbsconfirm($id) {
 		return array('error' => $confirmstatus['Status'].$confirmstatus['StatusCode']);
 }
 
-function loweramount($id, $newamount) {
+function annul($id) {
 	global $mysqli;
 	global $epaymentAdminService;
 	
-	//TODO include fragt in calculate of vat
-	
-	$faktura = $mysqli->fetch_array("SELECT `amount`, `momssats`, `discount` FROM `fakturas` WHERE `id` = ".$id);
-	
-	$discount =($faktura['amount']+($faktura['discount']*($faktura['momssats']+1))-$newamount)/($faktura['momssats']+1);
-	
-	if($discount < $faktura['discount'])
-		return array('error' => 'Beløbet skal være laver ind det nuværende.');
-	
-	if($discount == 0)
-		return true;
-	
-	if($discount > $faktura['amount']+($faktura['discount']*($faktura['momssats']+1)))
-		return array('error' => 'Beløbet må ikke være negativt.');
-	
 	$epayment = $epaymentAdminService->query($GLOBALS['_config']['pbsfix'].$id);
-	$authRevStatus = $epaymentAdminService->authRev($epayment['TransactionId'], $newamount, $newamount*$faktura['momssats']);
+	$annulStatus = $epaymentAdminService->annul($epayment['TransactionId']);
 	
-	if($confirmstatus['Status'] == 'A' && $confirmstatus['StatusCode'] == '0') {
-		$mysqli->query("UPDATE `fakturas` SET `discount` = '".$discount."', `amount` = '".$newamount."', `paydate` = NOW() WHERE `id` = 'pbsok' AND `id` = ".$id);
+	if($annulStatus['Status'] == 'A' && $annulStatus['StatusCode'] == '0') {
+		$mysqli->query("UPDATE `fakturas` SET `status` = 'rejected', `paydate` = NOW() WHERE `id` = 'pbsok' AND `id` = ".$id);
 		return true;
 	} else
-		return array('error' => $confirmstatus['Status'].$confirmstatus['StatusCode']);
+		return array('error' => $annulStatus['Status'].$annulStatus['StatusCode']);
 }
 
 function returnamount($id, $returnamount) {
@@ -735,6 +724,7 @@ require_once '../inc/getaddress.php';
 sajax_export(
 	array('name' => 'validemail', 'method' => 'GET'),
 	array('name' => 'pbsconfirm', 'method' => 'POST'),
+	array('name' => 'annul', 'method' => 'POST'),
 	array('name' => 'loweramount', 'method' => 'POST'),
 	array('name' => 'newfaktura', 'method' => 'POST'),
 	array('name' => 'save', 'method' => 'POST'),
@@ -947,6 +937,12 @@ function pbsconfirm() {
 	$('loading').style.visibility = '';
 	//TODO save comment
 	x_pbsconfirm(id, reload_r);
+}
+
+function annul() {
+	$('loading').style.visibility = '';
+	//TODO save comment
+	x_annul(id, reload_r);
 }
 
 function loweramount() {
@@ -1483,7 +1479,7 @@ if($faktura['status'] != 'canceled' && $faktura['status'] != 'new' && $faktura['
 
 if($faktura['status'] == 'pbsok') {
 	$activityButtons[] = '<li><a onclick="pbsconfirm(); return false;"><img src="images/money.png" alt="" title="Ekspeder" width="16" height="16" /> Ekspeder</a></li>';
-	$activityButtons[] = '<li><a onclick="alert(\'TODO\'); return false;"><img src="images/bin.png" alt="" title="Afvis" width="16" height="16" /> Afvis</a></li>';
+	$activityButtons[] = '<li><a onclick="annul(); return false;"><img src="images/bin.png" alt="" title="Afvis" width="16" height="16" /> Afvis</a></li>';
 /*
 TODO
 	?><tr>

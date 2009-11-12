@@ -683,56 +683,59 @@ if(!empty($_GET['id']) && @$_GET['checkid'] == getCheckid($_GET['id'])) {
 				$mail->Send();
 				//Mail to customer end
 				
+				
 				//Mail to Ole start
-				$emailbody = '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><meta http-equiv="Content-Type" content="text/html; charset=utf-8" /><title>';
-				$emailbody .= 'Att: Ole - Online faktura #'.$GLOBALS['_config']['pbsfix'].$faktura['id'].' : Betaling gennemført</title><style type="text/css">#faktura td { border:1px #000 solid; border-collapse:collapse; padding:2px; }</style></head><body><p>Den '.$faktura['paydate'].' godkendte '.$faktura['navn'].' online faktura #'.$GLOBALS['_config']['pbsfix'].$faktura['id'].', Som blev opretted af '.$faktura['clerk'].'.<br />Ordren lød på følgende:';
-				$emailbody .= '</p><table id="faktura" cellspacing="0"><thead><tr><td class="td1">Antal</td><td>Benævnelse</td><td class="td3 tal">á pris</td><td class="td4 tal">Total</td></tr></thead><tfoot><tr style="height:auto;min-height:auto;max-height:auto;"><td>&nbsp;</td><td>&nbsp;</td><td class="tal">Nettobeløb</td>';
-				$productslines = max(count($faktura['quantities']), count($faktura['products']), count($faktura['values']));
-				
-				$netto = 0;
-				for($i=0;$i<$productslines;$i++) {
-					$netto += $faktura['values'][$i]*$faktura['quantities'][$i];
+				if($faktura['department'] != 'mail@huntershouse.dk') {
+					$emailbody = '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><meta http-equiv="Content-Type" content="text/html; charset=utf-8" /><title>';
+					$emailbody .= 'Online faktura #'.$GLOBALS['_config']['pbsfix'].$faktura['id'].' : Betaling gennemført</title><style type="text/css">#faktura td { border:1px #000 solid; border-collapse:collapse; padding:2px; }</style></head><body><p>Den '.$faktura['paydate'].' godkendte '.$faktura['navn'].' online faktura #'.$GLOBALS['_config']['pbsfix'].$faktura['id'].', Som blev opretted af '.$faktura['clerk'].'.<br />Ordren lød på følgende:';
+					$emailbody .= '</p><table id="faktura" cellspacing="0"><thead><tr><td class="td1">Antal</td><td>Benævnelse</td><td class="td3 tal">á pris</td><td class="td4 tal">Total</td></tr></thead><tfoot><tr style="height:auto;min-height:auto;max-height:auto;"><td>&nbsp;</td><td>&nbsp;</td><td class="tal">Nettobeløb</td>';
+					$productslines = max(count($faktura['quantities']), count($faktura['products']), count($faktura['values']));
+					
+					$netto = 0;
+					for($i=0;$i<$productslines;$i++) {
+						$netto += $faktura['values'][$i]*$faktura['quantities'][$i];
+					}
+	
+					$emailbody .= '<td class="tal">'.number_format($netto, 2, ',', '').'</td></tr><tr><td>&nbsp;</td><td>&nbsp;</td><td class="tal">Fragt</td><td class="tal">'.number_format($faktura['fragt'], 2, ',', '').'</td></tr><tr><td>&nbsp;</td><td style="text-align:right" class="tal">'.($faktura['momssats']*100).'%</td><td class="tal">Momsbeløb</td><td class="tal">'.number_format($netto*$faktura['momssats'], 2, ',', '').'</td></tr><tr class="border"><td colspan="2">Alle beløb er i DKK</td><td style="text-align:center; font-weight:bold;">AT BETALE</td><td class="tal"><big>'.number_format($faktura['amount'], 2, ',', '').'</big></td></tr></tfoot><tbody>';
+	
+					for($i=0; $i<$productslines; $i++) {
+						$emailbody .= '<tr><td class="tal">'.$faktura['quantities'][$i].'</td><td>'.$faktura['products'][$i].'</td><td class="tal">'.number_format($faktura['values'][$i], 2, ',', '').'</td><td class="tal">'.number_format($faktura['values'][$i]*$faktura['quantities'][$i], 2, ',', '').'</td></tr>';
+					}
+					
+					$emailbody .= '</tbody></table>';
+					
+					if($faktura['note']) {
+						$emailbody .= '<br /><strong>Notat:</strong><br /><p class="note">';	
+						$emailbody .= nl2br(htmlspecialchars($faktura['note'])).'</p>';
+					}
+					$emailbody .= '<p>Med venlig hilsen</p><p>Computeren</p></body></html>';
+					
+					require_once "inc/phpMailer/class.phpmailer.php";
+					
+					$mail             = new PHPMailer();
+					$mail->SetLanguage('dk');
+					$mail->IsSMTP();
+					if($GLOBALS['_config']['emailpassword'] !== false) {
+						$mail->SMTPAuth   = true; // enable SMTP authentication
+						$mail->Username   = $GLOBALS['_config']['email'][0];
+						$mail->Password   = $GLOBALS['_config']['emailpassword'];
+					} else {
+						$mail->SMTPAuth   = false;
+					}
+					$mail->Host       = $GLOBALS['_config']['smtp'];      // sets the SMTP server
+					$mail->Port       = $GLOBALS['_config']['smtpport'];              //  password
+					$mail->CharSet    = 'utf-8';
+					if(!validemail($faktura['department'])) {
+						$faktura['department'] = $GLOBALS['_config']['email'][0];
+					}
+					$mail->AddReplyTo($faktura['department'], $GLOBALS['_config']['site_name']);
+					$mail->From       = $faktura['department'];
+					$mail->FromName   = $GLOBALS['_config']['site_name'];
+					$mail->Subject    = 'Att: Ole - Online faktura #'.$GLOBALS['_config']['pbsfix'].$faktura['id'].' : Betaling gennemført';
+					$mail->MsgHTML($emailbody, $_SERVER['DOCUMENT_ROOT']);
+					$mail->AddAddress('mail@huntershouse.dk', 'Hunters House A/S');
+					$mail->Send();
 				}
-
-				$emailbody .= '<td class="tal">'.number_format($netto, 2, ',', '').'</td></tr><tr><td>&nbsp;</td><td>&nbsp;</td><td class="tal">Fragt</td><td class="tal">'.number_format($faktura['fragt'], 2, ',', '').'</td></tr><tr><td>&nbsp;</td><td style="text-align:right" class="tal">'.($faktura['momssats']*100).'%</td><td class="tal">Momsbeløb</td><td class="tal">'.number_format($netto*$faktura['momssats'], 2, ',', '').'</td></tr><tr class="border"><td colspan="2">Alle beløb er i DKK</td><td style="text-align:center; font-weight:bold;">AT BETALE</td><td class="tal"><big>'.number_format($faktura['amount'], 2, ',', '').'</big></td></tr></tfoot><tbody>';
-
-				for($i=0; $i<$productslines; $i++) {
-					$emailbody .= '<tr><td class="tal">'.$faktura['quantities'][$i].'</td><td>'.$faktura['products'][$i].'</td><td class="tal">'.number_format($faktura['values'][$i], 2, ',', '').'</td><td class="tal">'.number_format($faktura['values'][$i]*$faktura['quantities'][$i], 2, ',', '').'</td></tr>';
-				}
-				
-				$emailbody .= '</tbody></table>';
-				
-				if($faktura['note']) {
-					$emailbody .= '<br /><strong>Notat:</strong><br /><p class="note">';	
-					$emailbody .= nl2br(htmlspecialchars($faktura['note'])).'</p>';
-				}
-				$emailbody .= '<p>Med venlig hilsen</p><p>Computeren</p></body></html>';
-				
-				require_once "inc/phpMailer/class.phpmailer.php";
-				
-				$mail             = new PHPMailer();
-				$mail->SetLanguage('dk');
-				$mail->IsSMTP();
-				if($GLOBALS['_config']['emailpassword'] !== false) {
-					$mail->SMTPAuth   = true; // enable SMTP authentication
-					$mail->Username   = $GLOBALS['_config']['email'][0];
-					$mail->Password   = $GLOBALS['_config']['emailpassword'];
-				} else {
-					$mail->SMTPAuth   = false;
-				}
-				$mail->Host       = $GLOBALS['_config']['smtp'];      // sets the SMTP server
-				$mail->Port       = $GLOBALS['_config']['smtpport'];              //  password
-				$mail->CharSet    = 'utf-8';
-				if(!validemail($faktura['department'])) {
-					$faktura['department'] = $GLOBALS['_config']['email'][0];
-				}
-				$mail->AddReplyTo($faktura['department'], $GLOBALS['_config']['site_name']);
-				$mail->From       = $faktura['department'];
-				$mail->FromName   = $GLOBALS['_config']['site_name'];
-				$mail->Subject    = 'Att: Ole - Online faktura #'.$GLOBALS['_config']['pbsfix'].$faktura['id'].' : Betaling gennemført';
-				$mail->MsgHTML($emailbody, $_SERVER['DOCUMENT_ROOT']);
-				$mail->AddAddress('mail@huntershouse.dk', 'Hunters House A/S');
-				$mailtoole = $mail->Send();
 				//Mail to Ole end
 				
 			break;
@@ -799,12 +802,14 @@ td {
 }
 </style>
 </head>
-<body>
-<p>'.$faktura['navn'].'<br />
-'.$faktura['adresse'].'<br />
-'.$faktura['postnr'].' '.$faktura['by'].'<br />
-'.$faktura['land'].'</p>
-<p>'.$shopBody.'<br />
+<body>'.
+/*
+'<p>'.$faktura['navn'].'<br />'.
+$faktura['adresse'].'<br />'.
+$faktura['postnr'].' '.$faktura['by'].'<br />'.
+$faktura['land'].'</p>'.
+*/
+'<p>'.$shopBody.'<br />
 Klik <a href="'.$GLOBALS['_config']['base_url'].'/admin/faktura.php?id='.$id.'">her</a> for at åbne faktura siden.</p>
 <p><a href="mailto:'.$faktura['email'].'">'.$faktura['email'].'</a><br />
 	Mobil: '.$faktura['tlf2'].'<br />
@@ -842,7 +847,7 @@ Klik <a href="'.$GLOBALS['_config']['base_url'].'/admin/faktura.php?id='.$id.'">
 	}
 	
 	
-	if((!empty($faktura) && (!$mailtoole || $faktura['department'] != 'mail@huntershouse.dk')) || empty($faktura)) {
+	if(!empty($faktura)) {
 		$mail = new PHPMailer();
 		$mail->SetLanguage('dk');
 		$mail->IsSMTP();

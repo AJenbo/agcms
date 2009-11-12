@@ -1,8 +1,8 @@
 <?php
 //FTP for makedir
-$GLOBALS['_config']['ftp_User'] = 'huntershouse2_dk';
-$GLOBALS['_config']['ftp_Pass'] = 'jiVett363';
-$GLOBALS['_config']['ftp_Root'] = 'www';
+$GLOBALS['_config']['ftp_User'] = '';
+$GLOBALS['_config']['ftp_Pass'] = '';
+$GLOBALS['_config']['ftp_Root'] = '';
 
 //Site color settings
 $GLOBALS['_config']['bgcolor'] = "FFFCD5";
