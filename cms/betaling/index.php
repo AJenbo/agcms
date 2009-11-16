@@ -731,7 +731,7 @@ if(!empty($_GET['id']) && @$_GET['checkid'] == getCheckid($_GET['id'])) {
 					$mail->AddReplyTo($faktura['department'], $GLOBALS['_config']['site_name']);
 					$mail->From       = $faktura['department'];
 					$mail->FromName   = $GLOBALS['_config']['site_name'];
-					$mail->Subject    = 'Att: Ole - Online faktura #'.$GLOBALS['_config']['pbsfix'].$faktura['id'].' : Betaling gennemført';
+					$mail->Subject    = 'Online faktura #'.$GLOBALS['_config']['pbsfix'].$faktura['id'].' : Betaling gennemført';
 					$mail->MsgHTML($emailbody, $_SERVER['DOCUMENT_ROOT']);
 					$mail->AddAddress('mail@huntershouse.dk', 'Hunters House A/S');
 					$mail->Send();
