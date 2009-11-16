@@ -119,7 +119,7 @@ if(/(NetFront|PlayStation|hiptop|IEMobile|Smartphone|iPhone|Opera Mobi|Opera Min
 </head>
 <!--[if lt IE 7]><body onload="setH();setTimeout('init();', 10);" onresize="setH();" scroll="no"><![endif]-->
 <!--[if gte IE 7]><body onload="init();" scroll="auto"><![endif]-->
-<!--[if IE]><![if !IE]><![endif]--><body onload="init();"><!--[if IE]><![endif]><![endif]-->
+<!--[if IE]><![if !IE]><![endif]--><body onLoad="init();"><!--[if IE]><![endif]><![endif]-->
 <div id="wrapper"><div style="text-align:center; width:128px; font-weight:bold"><a href="/"><img src="/images/web/logo.gif" alt="Hunters House logo" width="128" height="72" title="" /></a><br /><?php
 	//Get number of pages
 	$count = $mysqli->fetch_array('SELECT count(id) as count FROM sider');
@@ -262,10 +262,10 @@ if($GLOBALS['generatedcontent']['contenttype'] == 'front') {
 			?></table><?php
 		} else {
 			?><div id="kat<?php echo($GLOBALS['generatedcontent']['activmenu']); ?>"><table class="tabel"><thead><tr>
-<td><a href="#" onclick="x_get_kat('<?php echo($GLOBALS['generatedcontent']['activmenu']); ?>', 'navn', inject_html);">Titel</a></td>
-<td><a href="#" onclick="x_get_kat('<?php echo($GLOBALS['generatedcontent']['activmenu']); ?>', 'for', inject_html);">Før</a></td>
-<td><a href="#" onclick="x_get_kat('<?php echo($GLOBALS['generatedcontent']['activmenu']); ?>', 'pris', inject_html);">Pris</a></td>
-<td><a href="#" onclick="x_get_kat('<?php echo($GLOBALS['generatedcontent']['activmenu']); ?>', 'varenr', inject_html);">#</a></td>
+<td><a href="#" onClick="x_get_kat('<?php echo($GLOBALS['generatedcontent']['activmenu']); ?>', 'navn', inject_html);">Titel</a></td>
+<td><a href="#" onClick="x_get_kat('<?php echo($GLOBALS['generatedcontent']['activmenu']); ?>', 'for', inject_html);">Før</a></td>
+<td><a href="#" onClick="x_get_kat('<?php echo($GLOBALS['generatedcontent']['activmenu']); ?>', 'pris', inject_html);">Pris</a></td>
+<td><a href="#" onClick="x_get_kat('<?php echo($GLOBALS['generatedcontent']['activmenu']); ?>', 'varenr', inject_html);">#</a></td>
 </tr></thead><tbody><?php
 			$i = 0;
 			foreach($GLOBALS['generatedcontent']['list'] as $value) {
@@ -307,12 +307,13 @@ if(isset($GLOBALS['generatedcontent']['search_menu']))
 </ul>
 </div><?php
 //TODO also use https if we are being tunneled threw a https site (pay.scannet.dk).
-if(@$_SERVER['HTTPS'] != 'on' && @$_GET['step'] != 3) { 
+if(@$_SERVER['HTTPS'] != 'on') { 
 	?><script src="http://www.google-analytics.com/ga.js" type="text/javascript"></script><?php
 } else {
 	?><script src="https://ssl.google-analytics.com/ga.js" type="text/javascript"></script><?php
 }
-?><script type="text/javascript"><!--
+?>
+<script type="text/javascript"><!--
 try {
 var pageTracker = _gat._getTracker("UA-1037075-3");
 
@@ -326,7 +327,8 @@ pageTracker._trackPageview();
 <?php
 if(!empty($GLOBALS['generatedcontent']['track'])) echo($GLOBALS['generatedcontent']['track']);
 ?>
-} catch(err) {}
+}
+catch(err) { alert(err); }
 --></script></body>
 </body>
 </html>
