@@ -1,4 +1,9 @@
 <?php
+//*
+ini_set('display_errors', 1);
+error_reporting(-1);
+/**/
+require_once $_SERVER['DOCUMENT_ROOT'].'/admin/inc/logon.php';
 date_default_timezone_set('Europe/Copenhagen');
 
 require_once '../inc/sajax.php';
@@ -6,15 +11,19 @@ require_once '../inc/config.php';
 require_once '../inc/mysqli.php';
 require_once 'inc/epaymentAdminService.php';
 
-$GLOBALS['_config']['mysql_user'] = 'huntershouse2_dk';
-$GLOBALS['_config']['mysql_password'] = '.460weatherby2';
-$GLOBALS['_config']['mysql_database'] = 'huntershouse2_dk001';
+$GLOBALS['_config']['pbsid'] = '3025';
+$GLOBALS['_config']['pbspassword'] = 'afn5gy9hxb62zv4unnce4ghbdykwcp2x';
+$GLOBALS['_config']['pbsfix'] = 'HH';
+$GLOBALS['_config']['mysql_server'] = 'huntershouse.dk.mysql';
+$GLOBALS['_config']['mysql_user'] = 'huntershouse_dk';
+$GLOBALS['_config']['mysql_password'] = 'sabbBFab';
+$GLOBALS['_config']['mysql_database'] = 'huntershouse_dk';
 $mysqli = new simple_mysqli($GLOBALS['_config']['mysql_server'], $GLOBALS['_config']['mysql_user'], $GLOBALS['_config']['mysql_password'], $GLOBALS['_config']['mysql_database']);
 
 function newfaktura() {
 	global $mysqli;
 	
-	$mysqli->query("INSERT INTO `fakturas` (`date`, `clerk`) VALUES (now(), '".addcslashes($GLOBALS['_user']['fullname'], '`')."');");
+	$mysqli->query("INSERT INTO `fakturas` (`date`, `clerk`) VALUES (now(), '".addcslashes($_SESSION['_user']['fullname'], '`\\')."');");
 	return $mysqli->insert_id;
 }
 
@@ -70,7 +79,7 @@ if($faktura['id']) {
 			break;
 			case 3:
 				//Annulled. The card payment has been deleted by the Merchant, prior to Acquisition.
-				if($faktura['status'] != 'rejected' && $faktura['status'] != 'giro' && $faktura['status'] != 'cash') {
+				if($faktura['status'] != 'rejected' && $faktura['status'] != 'giro' && $faktura['status'] != 'cash' && $faktura['status'] != 'canceled') {
 					$faktura['status'] = 'rejected';
 					$mysqli->query("UPDATE `fakturas` SET `status` = 'rejected' WHERE `id` = ".$faktura['id']);
 				} else {
@@ -396,11 +405,11 @@ function copytonew($id) {
 	unset($faktura['date']);
 	unset($faktura['paydate']);
 	unset($faktura['sendt']);
-	$faktura['clerk'] = $GLOBALS['_user']['fullname'];
+	$faktura['clerk'] = $_SESSION['_user']['fullname'];
 	
 	$sql = "INSERT INTO `fakturas` SET";
 	foreach($faktura as $key => $value)
-		$sql .= " `".addcslashes($key, '`')."` = '".addcslashes($value, "'")."',";
+		$sql .= " `".addcslashes($key, '`\\')."` = '".addcslashes($value, "'\\")."',";
 	$sql .= " `date` = NOW();";
 		
 	$mysqli->query($sql);
@@ -414,8 +423,10 @@ function save($id, $type, $updates) {
 	if(!is_array($updates)) {
 		if(get_magic_quotes_gpc())
 			$updates = stripslashes($updates);
-		else
-			$updates = $updates;
+	}
+	
+	if(empty($updates['department'])) {
+		$updates['department'] = $GLOBALS['_config']['email'][0];
 	}
 	
 	if(!empty($updates['date'])) {
@@ -431,7 +442,6 @@ function save($id, $type, $updates) {
 	
 	$faktura = $mysqli->fetch_array("SELECT `status`, `note` FROM `fakturas` WHERE `id` = ".$id);
 	$faktura = $faktura[0];
-	
 	
 	if($faktura['status'] == 'locked' || $faktura['status'] == 'pbsok' || $faktura['status'] == 'pbserror' || $faktura['status'] == 'rejected') {
 		$updates = array('note' => $updates['note'] ? trim($faktura['note']."\n".$updates['note']) : $faktura['note'], 'clerk' => $updates['clerk'], 'department' => $updates['department']);
@@ -455,15 +465,13 @@ function save($id, $type, $updates) {
 			$updates['status'] = 'giro';
 		elseif($type == 'cash')
 			$updates['status'] = 'cash';
-		elseif($type == 'cancel')
-			$updates['status'] = 'cancel';
 	}
 	
 	if($type == 'cancel' && $faktura['status'] != 'pbsok' && $faktura['status'] != 'accepted' && $faktura['status'] != 'giro' && $faktura['status'] != 'cash') {
 		$updates['status'] = 'canceled';
 	}
 	
-	if($GLOBALS['_user']['access'] != 1) {
+	if($_SESSION['_user']['access'] != 1) {
 		unset($updates['clerk']);
 	}
 	
@@ -471,7 +479,7 @@ function save($id, $type, $updates) {
 	
 		$sql = "UPDATE `fakturas` SET";
 		foreach($updates as $key => $value)
-			$sql .= " `".addcslashes($key, '`')."` = '".addcslashes($value, "'")."',";
+			$sql .= " `".addcslashes($key, '`\\')."` = '".addcslashes($value, "'\\")."',";
 		$sql = substr($sql, 0, -1);
 		
 		if(!empty($date)) {
@@ -486,17 +494,17 @@ function save($id, $type, $updates) {
 		$mysqli->query($sql);
 	}
 	
-	$faktura = $mysqli->fetch_array("SELECT `id`, `amount`, `department`, `clerk`, `status`, `email` FROM `fakturas` WHERE `id` = ".$id);
+	$faktura = $mysqli->fetch_array("SELECT `id`, `department`, `amount`, `clerk`, `status`, `email` FROM `fakturas` WHERE `id` = ".$id);
 	$faktura = $faktura[0];
 	
 	if($type == 'email') {
 		if(!validemail($faktura['email'])) {
 			return array('error' => 'Mail adressen er ikke gyldig!');
 		}
-		if(empty($faktura['department']) && count($GLOBALS['_config']['email']) > 1) {
+		if(!$faktura['department'] && count($GLOBALS['_config']['email']) > 1) {
 			return array('error' => 'Du har ikke valgt en afsender!');
-		} else {
-			$faktura['department'] = $GLOBALS['_config']['email'][0];
+		} elseif(!$faktura['department']) {
+				$faktura['department'] = $GLOBALS['_config']['email'][0];
 		}
 		if($faktura['amount'] < 1) {
 			return array('error' => 'Fakturaen skal være på mindst 1 krone!');
@@ -508,13 +516,13 @@ function save($id, $type, $updates) {
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-<title>Untitled Document</title>
+<title>'.'Online betaling til '.$GLOBALS['_config']['site_name'].'</title>
 </head>
 <body>
 <p>Tak for ordren. Vi vedlægger her et link til en elektronisk faktura.</p>
 <p>Linket går til vores hovedkontors hjemmeside på huntershouse.dk:<br />
 </p>
-<p>Klik venligst på vedlagte link herunder og udfyld formularen:<br /><a href="http://www.huntershouse.dk/faktura/?id='.$faktura['id'].'&amp;checkid='.getCheckid($faktura['id']).'">www.huntershouse.dk/faktura/?id='.$faktura['id'].'&amp;checkid='.getCheckid($faktura['id']).'</a>
+<p>Klik venligst på vedlagte link herunder og udfyld formularen:<br /><a href="http://www.huntershouse.dk/betaling/?id='.$faktura['id'].'&amp;checkid='.getCheckid($faktura['id']).'">www.huntershouse.dk/betaling/?id='.$faktura['id'].'&amp;checkid='.getCheckid($faktura['id']).'</a>
 </p>
 <p>Det er en meget stor hjælp for os, - at få en mail, - når du har foretaget betaling via vores betalingssystem.</p>
 <p>Ønsker du at betale på en anden måde eller blot aflyse handlen, - så oplys også gerne dette via mail.<br />
@@ -525,8 +533,7 @@ function save($id, $type, $updates) {
 '.$GLOBALS['_config']['site_name'].'<br />
     <a href="mailto:'.$faktura['department'].'">'.$faktura['department'].'</a></p>
 </body>
-</html>
-';
+</html>';
 		
 		$mail             = new PHPMailer();
 		$mail->SetLanguage('dk');
@@ -544,7 +551,7 @@ function save($id, $type, $updates) {
 		$mail->AddReplyTo($faktura['department'], $GLOBALS['_config']['site_name']);
 		$mail->From       = $faktura['department'];
 		$mail->FromName   = $GLOBALS['_config']['site_name'];
-		$mail->Subject    = 'Elektronisk faktura vedr. ordre';
+		$mail->Subject    = 'Online betaling til '.$GLOBALS['_config']['site_name'];
 		$mail->MsgHTML($emailBody, $_SERVER['DOCUMENT_ROOT']);
 		
 		if(empty($faktura['navn']))
@@ -556,6 +563,7 @@ function save($id, $type, $updates) {
 		}
 		$mysqli->query("UPDATE `fakturas` SET `status` = 'locked' WHERE `status` = 'new' && `id` = ".$faktura['id']);
 		$mysqli->query("UPDATE `fakturas` SET `sendt` = 1, `department` = '".$faktura['department']."' WHERE `id` = ".$faktura['id']);
+		//Forece reload
 		$faktura['status'] = 'sendt';
 	}
 
@@ -564,7 +572,7 @@ function save($id, $type, $updates) {
 
 function sendReminder($id) {
 	global $mysqli;
-	$faktura = $mysqli->fetch_array("SELECT `status`, `department` FROM `fakturas` WHERE `id` = ".$id);
+	$faktura = $mysqli->fetch_array("SELECT * FROM `fakturas` WHERE `id` = ".$id);
 	$faktura = $faktura[0];
 	
 	if(!$faktura['status']) {
@@ -596,7 +604,7 @@ function sendReminder($id) {
     registreret, at betalingen kan godkendes, - derfor sender vi herved <br />
     et nyt link til Dankort-fakturasystemet.<br />
     <br />
-    <a href="http://huntershouse.dk/faktura/?id='.$faktura['id'].'&amp;checkid='.getCheckid($faktura['id']).'">http://huntershouse.dk/faktura/?id='.$faktura['id'].'&amp;checkid='.getCheckid($faktura['id']).'</a><br />
+    <a href="http://huntershouse.dk/betaling/?id='.$faktura['id'].'&amp;checkid='.getCheckid($faktura['id']).'">http://huntershouse.dk/betaling/?id='.$faktura['id'].'&amp;checkid='.getCheckid($faktura['id']).'</a><br />
 </p>
 <p>I forbindelse med indtastning af Dankortoplysningerne, - kan der ske <br />
     fejl så vi ikke registrerer betalingen, - derved opstår der unødig <br />
@@ -664,33 +672,18 @@ function pbsconfirm($id) {
 		return array('error' => $confirmstatus['Status'].$confirmstatus['StatusCode']);
 }
 
-function loweramount($id, $newamount) {
+function annul($id) {
 	global $mysqli;
 	global $epaymentAdminService;
 	
-	//TODO include fragt in calculate of vat
-	
-	$faktura = $mysqli->fetch_array("SELECT `amount`, `momssats`, `discount` FROM `fakturas` WHERE `id` = ".$id);
-	
-	$discount =($faktura['amount']+($faktura['discount']*($faktura['momssats']+1))-$newamount)/($faktura['momssats']+1);
-	
-	if($discount < $faktura['discount'])
-		return array('error' => 'Beløbet skal være laver ind det nuværende.');
-	
-	if($discount == 0)
-		return true;
-	
-	if($discount > $faktura['amount']+($faktura['discount']*($faktura['momssats']+1)))
-		return array('error' => 'Beløbet må ikke være negativt.');
-	
 	$epayment = $epaymentAdminService->query($GLOBALS['_config']['pbsfix'].$id);
-	$authRevStatus = $epaymentAdminService->authRev($epayment['TransactionId'], $newamount, $newamount*$faktura['momssats']);
+	$annulStatus = $epaymentAdminService->annul($epayment['TransactionId']);
 	
-	if($confirmstatus['Status'] == 'A' && $confirmstatus['StatusCode'] == '0') {
-		$mysqli->query("UPDATE `fakturas` SET `discount` = '".$discount."', `amount` = '".$newamount."', `paydate` = NOW() WHERE `id` = 'pbsok' AND `id` = ".$id);
+	if($annulStatus['Status'] == 'A' && $annulStatus['StatusCode'] == '0') {
+		$mysqli->query("UPDATE `fakturas` SET `status` = 'rejected', `paydate` = NOW() WHERE `id` = 'pbsok' AND `id` = ".$id);
 		return true;
 	} else
-		return array('error' => $confirmstatus['Status'].$confirmstatus['StatusCode']);
+		return array('error' => $annulStatus['Status'].$annulStatus['StatusCode']);
 }
 
 function returnamount($id, $returnamount) {
@@ -743,6 +736,7 @@ require_once '../inc/getaddress.php';
 sajax_export(
 	array('name' => 'validemail', 'method' => 'GET'),
 	array('name' => 'pbsconfirm', 'method' => 'POST'),
+	array('name' => 'annul', 'method' => 'POST'),
 	array('name' => 'loweramount', 'method' => 'POST'),
 	array('name' => 'newfaktura', 'method' => 'POST'),
 	array('name' => 'save', 'method' => 'POST'),
@@ -955,6 +949,12 @@ function pbsconfirm() {
 	$('loading').style.visibility = '';
 	//TODO save comment
 	x_pbsconfirm(id, reload_r);
+}
+
+function annul() {
+	$('loading').style.visibility = '';
+	//TODO save comment
+	x_annul(id, reload_r);
 }
 
 function loweramount() {
@@ -1179,7 +1179,7 @@ new tcal ({ 'controlid': 'cdate' });
         <tr>
 			<td>Status:</td>
 			<td><?php if($faktura['status'] == 'new')
-					echo('Ny opretted');
+					echo('Ny oprettet');
 				elseif($faktura['status'] == 'locked' && $faktura['sendt'])
 					echo('Er sendt til kunden.');
 				elseif($faktura['status'] == 'locked')
@@ -1208,7 +1208,7 @@ new tcal ({ 'controlid': 'cdate' });
 ?></td>
 		</tr>
 		<tr>
-			<td>Opretted:</td>
+			<td>Oprettet:</td>
 			<td><?php if($faktura['status'] == 'new') { ?>
 				<input maxlength="10" name="date" id="date" size="11" value="<?php echo(date('d/m/Y', $faktura['date'])); ?>" />
 				<script type="text/javascript"><!--
@@ -1220,7 +1220,7 @@ new tcal ({ 'controlid': 'cdate' });
 		//TODO block save if ! admin
 		?><tr>
 			<td>Ansvarlig:</td>
-			<td><?php if(count($users) > 1 && $GLOBALS['_user']['access'] == 1 && $faktura['status'] != 'giro' && $faktura['status'] != 'cash' && $faktura['status'] != 'accepted' && $faktura['status'] != 'canceled') { ?>
+			<td><?php if(count($users) > 1 && $_SESSION['_user']['access'] == 1 && $faktura['status'] != 'giro' && $faktura['status'] != 'cash' && $faktura['status'] != 'accepted' && $faktura['status'] != 'canceled') { ?>
 				<select name="clerk" id="clerk">
 					<option value=""<?php if(!$faktura['clerk']) echo(' selected="selected"'); ?>>Ingen</option><?php
 		$userstest = array();
@@ -1490,8 +1490,8 @@ if($faktura['status'] != 'canceled' && $faktura['status'] != 'new' && $faktura['
 }
 
 if($faktura['status'] == 'pbsok') {
-	$activityButtons[] = '<li><a href="https://pay.scannet.dk/shop/" target="scannet"><img src="images/money.png" alt="" title="Ekspeder" width="16" height="16" /> Ekspeder</a></li>';
-	$activityButtons[] = '<li><a onclick="alert(\'TODO\'); return false;"><img src="images/bin.png" alt="" title="Afvis" width="16" height="16" /> Afvis</a></li>';
+	$activityButtons[] = '<li><a onclick="pbsconfirm(); return false;"><img src="images/money.png" alt="" title="Ekspeder" width="16" height="16" /> Ekspeder</a></li>';
+	$activityButtons[] = '<li><a onclick="annul(); return false;"><img src="images/bin.png" alt="" title="Afvis" width="16" height="16" /> Afvis</a></li>';
 /*
 TODO
 	?><tr>
@@ -1532,8 +1532,6 @@ $faktura['status'] != 'rejected') {
 		$activityButtons[] = '<li><a href="#" onclick="sendReminder(); return false;"><img height="16" width="16" title="Send rykker!" alt="" src="images/email_go.png"/> Send rykker!</a></li>';
 	}
 }
-
-
 
 require 'mainmenu.php';
 ?>

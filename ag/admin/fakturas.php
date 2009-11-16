@@ -1,16 +1,18 @@
 <?php
+require_once $_SERVER['DOCUMENT_ROOT'].'/admin/inc/logon.php';
 date_default_timezone_set('Europe/Copenhagen'); 
-if(empty($GLOBALS['_user'])) {
+if(empty($_SESSION['_user'])) {
 	//TDODO No login !!!
-	$GLOBALS['_user']['fullname'] = 'No one';
+	$_SESSION['_user']['fullname'] = 'No one';
 }
 require_once '../inc/sajax.php';
 require_once '../inc/config.php';
 require_once '../inc/mysqli.php';
 
-$GLOBALS['_config']['mysql_user'] = 'huntershouse2_dk';
-$GLOBALS['_config']['mysql_password'] = '.460weatherby2';
-$GLOBALS['_config']['mysql_database'] = 'huntershouse2_dk001';
+$GLOBALS['_config']['mysql_server'] = 'huntershouse.dk.mysql';
+$GLOBALS['_config']['mysql_user'] = 'huntershouse_dk';
+$GLOBALS['_config']['mysql_password'] = 'sabbBFab';
+$GLOBALS['_config']['mysql_database'] = 'huntershouse_dk';
 $mysqli = new simple_mysqli($GLOBALS['_config']['mysql_server'], $GLOBALS['_config']['mysql_user'], $GLOBALS['_config']['mysql_password'], $GLOBALS['_config']['mysql_database']);
 $sajax_request_type = 'POST';
 
@@ -29,7 +31,7 @@ if(!empty($_POST['department']))
 	$where .= " AND `department` = '".$_POST['department']."'";
 
 if(empty($_POST)) {
-	$where .= " AND `clerk` = '".$GLOBALS['_user']['fullname']."'";
+	$where .= " AND `clerk` = '".$_SESSION['_user']['fullname']."'";
 } elseif(!empty($_POST['clerk']))
 	$where .= " AND `clerk` = '".$_POST['clerk']."'";
 
@@ -48,7 +50,7 @@ if(!empty($_POST['tlf']))
 
 if(empty($_POST)) {
 	$_POST['y'] = date('Y');
-	$_POST['clerk'] = $GLOBALS['_user']['fullname'];
+	$_POST['clerk'] = $_SESSION['_user']['fullname'];
 	$_POST['status'] = 'activ';
 }
 
@@ -251,7 +253,7 @@ a {
         <tr>
             <td style="width:16px;"></td>
             <td>Id</td>
-            <td>Opretted</td>
+            <td>Oprettet</td>
             <?php if(!$_POST['clerk']) { ?><td>Ansvarlige</td><?php } ?>
             <td>Beløb</td>
             <td>Modtager</td>
@@ -261,7 +263,7 @@ a {
 		foreach($fakturas as $i => $faktura) { ?><tr<?php
 				if($i%2==0)
 					echo(' class="altbc"'); ?>>
-            <td style="text-align:center"><?php
+            <td style="text-align:center"><a href="faktura.php?id=<?php echo($faktura['id']); ?>"><?php
 				if($faktura['status'] == 'new')
 					echo('<img src="/admin/images/table.png" alt="Ny" title="Ny" />');
 				elseif($faktura['status'] == 'locked' && $faktura['sendt'])
@@ -286,7 +288,7 @@ a {
 				//Efterkrav
 				//Bank
 				//Giro
-			?></td>
+			?></a></td>
             <td style="text-align:right"><a href="faktura.php?id=<?php echo($faktura['id']); ?>"><?php echo($faktura['id']); ?></a></td>
             <td style="text-align:right"><a href="faktura.php?id=<?php echo($faktura['id']); ?>"><?php echo(date('j/m/y', $faktura['date'])); ?></a></td>
             <?php if(!$_POST['clerk']) { ?><td><a href="faktura.php?id=<?php echo($faktura['id']); ?>"><?php echo($faktura['clerk']); ?></a></td><?php } ?>
