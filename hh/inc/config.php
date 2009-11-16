@@ -12,7 +12,6 @@ $GLOBALS['_config']['emailpassword'] = false;
 $GLOBALS['_config']['email'][] = 'mail@huntershouse.dk';
 $GLOBALS['_config']['email'][] = 'fisk@huntershouse.dk';
 $GLOBALS['_config']['email'][] = 'karpegrej@huntershouse.dk';
-$GLOBALS['_config']['email'][] = 'mail@arms-gallery.dk';
 $GLOBALS['_config']['interests'][] = 'Fiskeri';
 $GLOBALS['_config']['interests'][] = 'Jagt';
 $GLOBALS['_config']['interests'][] = 'Tøj';
