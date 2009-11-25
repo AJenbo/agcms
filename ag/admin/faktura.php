@@ -1,5 +1,5 @@
 <?php
-//*
+/*
 ini_set('display_errors', 1);
 error_reporting(-1);
 /**/
@@ -273,7 +273,7 @@ function getCheckid($id) {
 	return substr(md5($id.$GLOBALS['_config']['pbspassword']), 3, 5);
 }
 
-function echoprint($id) {
+function echoprint() {
 	global $faktura;
 	
     $html = '<div id="main">
@@ -329,7 +329,8 @@ function echoprint($id) {
                 <td>&nbsp;</td>
                 <td class="tal">Nettobeløb</td>';
 			$productslines = max(count($faktura['quantities']), count($faktura['products']), count($faktura['values']));
-				
+			
+			$netto = 0;
 			for($i=0;$i<$productslines;$i++) {
 				$netto += $faktura['values'][$i]*$faktura['quantities'][$i];
 			}
@@ -1537,7 +1538,7 @@ require 'mainmenu.php';
 ?>
 <div id="print"><?php
 if($faktura['status'] != 'new')
-	echo echoprint($id);
+	echo echoprint();
 ?></div>
 </body>
 </html>
