@@ -3,6 +3,9 @@
 ini_set('display_errors', 1);
 error_reporting(-1);
 /**/
+
+ini_set('zlib.output_compression', 1);
+
 require_once $_SERVER['DOCUMENT_ROOT'].'/admin/inc/logon.php';
 	date_default_timezone_set('Europe/Copenhagen');
 	require_once 'inc/config.php'; 

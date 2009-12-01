@@ -80,7 +80,6 @@ require_once $_SERVER['DOCUMENT_ROOT'].'/admin/inc/logon.php';
     <li><a href="./?side=addressbook"><img src="images/book_addresses.png" width="16" height="16" alt="" /> Adressebog</a></li>
     <li><a href="./?side=sogogerstat"><img src="images/page_white_find.png" width="16" height="16" alt="" /> Søg og erstat</a></li>
     <li><a href="./?side=get_db_error"><img src="images/database_error.png" width="16" height="16" alt="" /> Database scanning</a></li>
-    <li><a target="_blank" href="/php/"><img src="images/database_gear.png" width="16" height="16" alt="" /> MyPHPAdmin</a></li>
     <li><a href="list_krav.php" onclick="alert('todo'); return false;"><img src="images/group_edit.png" width="16" height="16" alt="" /> Rediger Grupper</a></li>
     <li><a href="katalog-lables.php"><img src="images/printer.png" width="16" height="16" alt="" /> Katalog labels</a></li>
 	<li><a href="fakturas.php"><img src="images/table_multiple.png" width="16" height="16" alt="" /> Fakturas</a></li>
