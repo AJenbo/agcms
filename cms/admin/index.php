@@ -1,5 +1,5 @@
 <?php
-/*
+//*
 ini_set('display_errors', 1);
 error_reporting(-1);
 /**/
@@ -34,7 +34,7 @@ require_once $_SERVER['DOCUMENT_ROOT'].'/admin/inc/logon.php';
 		
 		global $mysqli;
 		
-		$sider = $mysqli->fetch_array("SELECT id, navn, MATCH(navn, text, beskrivelse) AGAINST ('".$text."') AS score FROM sider WHERE MATCH (navn, text, beskrivelse) AGAINST('".$q."') > 0 ORDER BY `score` DESC");
+		$sider = $mysqli->fetch_array("SELECT id, navn, MATCH(navn, text, beskrivelse) AGAINST ('".$text."') AS score FROM sider WHERE MATCH (navn, text, beskrivelse) AGAINST('".$text."') > 0 ORDER BY `score` DESC");
 		
 		//fulltext search dosn't catch things like 3 letter words and some other combos
 		$qsearch = array ("/ /","/'/","/´/","/`/");
@@ -603,6 +603,8 @@ function saveListOrder($id, $navn, $text) {
 	
 function get_db_error() {
 	global $mysqli;
+	
+	
 
 	$html = '<div id="headline">Database scanning</div><div>';
 	
@@ -836,8 +838,8 @@ function get_db_error() {
 	$dbsize = $dbsize/1024/1024;
 	
 	$html .= '<br /><b>Database størelse efter optimering: '.number_format($dbsize, 1, ',', '').' MB</b><br />';
-	$files = $mysqli->fetch_array("SELECT sum(`size`)/1024/1024 AS `filesize` FROM `files` ");
-	$html .= '<br /><a onclick="explorer(\'\',\'\');"><b>Samlet størelse af filer og billeder: '.number_format($files[0]['filesize'], 1, ',', '').' MB</b></a><br />';
+	$files = $mysqli->fetch_array("SELECT count( * ) AS `count`, sum( `size` ) /1024 /1024 AS `filesize` FROM `files`");
+	$html .= '<br /><a onclick="explorer(\'\',\'\');"><b>Samlet størelse af '.number_format($files[0]['count'], 0, '', '.').' filer og billeder: '.number_format($files[0]['filesize'], 1, ',', '').' MB</b></a><br />';
 	$html .= '</div>';
 
 	return $html;

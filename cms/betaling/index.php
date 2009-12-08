@@ -89,7 +89,7 @@ if(!empty($_GET['id']) && @$_GET['checkid'] == getCheckid($_GET['id'])) {
 	$faktura = $mysqli->fetch_array("SELECT * FROM `fakturas` WHERE `id` = ".$_GET['id']);
 	$faktura = @$faktura[0];
 	
-	if($faktura['status'] == 'new' || $faktura['status'] == 'locked' || $faktura['status'] == 'pbserror') {
+	if($faktura['status'] == 'new' || $faktura['status'] == 'locked') {
 		$faktura['quantities'] = explode('<', $faktura['quantities']);
 		$faktura['products'] = explode('<', $faktura['products']);
 		$faktura['values'] = explode('<', $faktura['values']);
@@ -423,7 +423,12 @@ if(!empty($_GET['id']) && @$_GET['checkid'] == getCheckid($_GET['id'])) {
 		$GLOBALS['generatedcontent']['crumbs'][1] = array('name' => 'Fejl', 'link' => '#', 'icon' => NULL);
 		$GLOBALS['generatedcontent']['title'] = 'Fejl';
 		$GLOBALS['generatedcontent']['headline'] = 'Fejl';
-		if($faktura['status'] == 'pbsok') {
+		if($faktura['status'] == 'pbserror') {
+			$GLOBALS['generatedcontent']['crumbs'][1] = array('name' => 'Status', 'link' => '#', 'icon' => NULL);
+			$GLOBALS['generatedcontent']['title'] = 'Status';
+			$GLOBALS['generatedcontent']['headline'] = 'Status';
+			$GLOBALS['generatedcontent']['text'] = 'Betalingen blev afvist under første forsøg. Grundet sikkerhedsforanstaltninger hos PBS, skal de kontakte butikken før de kan forsøge at betale igen.';
+		} elseif($faktura['status'] == 'pbsok') {
 			$GLOBALS['generatedcontent']['crumbs'][1] = array('name' => 'Status', 'link' => '#', 'icon' => NULL);
 			$GLOBALS['generatedcontent']['title'] = 'Status';
 			$GLOBALS['generatedcontent']['headline'] = 'Status';
