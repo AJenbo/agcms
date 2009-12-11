@@ -413,6 +413,7 @@ function redigerFrontpage() {
 	if(!$special)
 		return '<div id="headline">Siden eksistere ikke</div>';
 
+	$html = '';
 	$html .= '<div id="headline">Rediger Forsiden</div><form action="" method="post" onsubmit="return updateForside();"><input type="submit" accesskey="s" style="width:1px; height:1px; position:absolute; top: -20px; left:-20px;" />';
 
 	$subkats = $mysqli->fetch_array('SELECT id, navn, icon FROM `kat` WHERE bind = 0 ORDER BY `order`, `navn`');
