@@ -20,6 +20,8 @@ if(empty($_SESSION['_user']) && !empty($_POST['username'])) {
 	 unset($_SESSION['_user']);
 }
 
+unset($_POST);
+
 if(empty($_SESSION['_user'])) {
 	sleep(1);
 	header('HTTP/1.0 401 Unauthorized');
