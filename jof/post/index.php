@@ -471,6 +471,7 @@ $frequentRecipients = $mysqli->fetch_array('SELECT recipientID, recName1, count(
  AND recipientID != \'97122766\'
  AND recipientID != \'35424143\'
  AND recipientID != \'98450180\'
+ AND recipientID != \'75679522\'
  GROUP BY recipientID HAVING n >1 ORDER BY n DESC LIMIT 10');
 
 foreach($frequentRecipients as $key => $value) {
@@ -485,6 +486,7 @@ $frequentRecipients[43410410] = 'Seeland International A/S';
 $frequentRecipients[97122766] = 'Ocean Rainwear';
 $frequentRecipients[35424143] = 'NagPeople Aps';
 $frequentRecipients[98450180] = 'Poul Villaume';
+$frequentRecipients[75679522] = 'S & L Produktion';
 
 $temp = natsort($frequentRecipients);
 
