@@ -64,6 +64,17 @@ img {
 #menu a:hover, #menu a.main_active, #menu a.active {
 	background-image:url('/images/web/button-selected.gif');
 }
+#menu div.submenu {
+	height:21px;
+	background-image:url('/images/web/button2.gif');
+}
+#menu div.submenu a {
+	font-weight:bold;
+	padding:3px 0 4px 0;
+}
+#menu .submenu a:hover, #menu .submenu a.main_active, #menu .submenu a.active {
+	background-image:url('/images/web/button2.gif');
+}
 #text {
 	width:575px;
 	float:right;

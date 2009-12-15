@@ -5,7 +5,6 @@
 <meta http-equiv="page-enter" content="blendTrans(Duration=0)" />
 <meta http-equiv="content-type" content="text/html; charset=utf-8" />
 <link href="/theme/style.css" rel="stylesheet" type="text/css" />
-<link href="/theme/style.css" rel="stylesheet" type="text/css" />
 <!--[if lt IE 8]><style type="text/css" media="print">body {overflow-y: auto;}</style><![endif]-->
 <link href="/theme/handheld.css" rel="stylesheet" type="text/css" media="handheld" />
 <!--[if IE]><![if !IE]><![endif]-->
@@ -183,24 +182,20 @@ if(isset($GLOBALS['generatedcontent']['datetime']) && $GLOBALS['generatedcontent
 	if(@$GLOBALS['generatedcontent']['menu'])
 		foreach($GLOBALS['generatedcontent']['menu'] as $value) {
 			?><div><a href="<?php echo($value['link']); ?>"<?php
-				if($value['id'] == @$GLOBALS['generatedcontent']['activmenu'] || $value['subs']) {
-					echo(' class="main_active"');
-				}
-				if($value['id'] == @$GLOBALS['generatedcontent']['activmenu']) {
-					echo(' id="activmenu"');
-				}
-				?>><?php echo($value['name']); ?></a></div><?php
-			if($value['subs']) {
-				if(@$value['subs']) {
-					foreach($value['subs'] as $valuesubs) {
-						?>
-			<div><a href="<?php echo($valuesubs['link']); ?>"<?php
-						if($valuesubs['id'] == $GLOBALS['generatedcontent']['activmenu'] || $valuesubs['subs']) {
-							?> class="active" id="activmenu"<?php
-						}
-
-						?>><?php echo($valuesubs['name']); ?></a></div><?php
+			if($value['id'] == @$GLOBALS['generatedcontent']['activmenu'] || $value['subs']) {
+				echo(' class="main_active"');
+			}
+			if($value['id'] == @$GLOBALS['generatedcontent']['activmenu']) {
+				echo(' id="activmenu"');
+			}
+			?>><?php echo($value['name']); ?></a></div><?php
+			if(@$value['subs']) {
+				foreach($value['subs'] as $valuesubs) {
+					?><div class="submenu"><a href="<?php echo($valuesubs['link']); ?>"<?php
+					if($valuesubs['id'] == $GLOBALS['generatedcontent']['activmenu'] || $valuesubs['subs']) {
+						?> class="active" id="activmenu"<?php
 					}
+					?>><?php echo($valuesubs['name']); ?></a></div><?php
 				}
 			}
 		}
