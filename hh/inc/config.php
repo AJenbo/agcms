@@ -6,12 +6,22 @@ $GLOBALS['_config']['postcode'] = '1879';
 $GLOBALS['_config']['city'] = 'Frederiksberg C';
 $GLOBALS['_config']['phone'] = '33 222 333';
 $GLOBALS['_config']['fax'] = '33 14 04 07';
+
+$GLOBALS['_config']['email'][] = 'mail@huntershouse.dk';
+$GLOBALS['_config']['emailpasswords'][] = '.357magnum';
+$GLOBALS['_config']['email'][] = 'fisk@huntershouse.dk';
+$GLOBALS['_config']['emailpasswords'][] = 'risris';
+$GLOBALS['_config']['email'][] = 'karpegrej@huntershouse.dk';
+$GLOBALS['_config']['emailpasswords'][] = 'buzzwar';
+
+$GLOBALS['_config']['emailsent'] = 'INBOX.Sent';
+$GLOBALS['_config']['imap'] = 'imap.huntershouse.dk';
+$GLOBALS['_config']['imapport'] = '143';
+
 $GLOBALS['_config']['smtp'] = 'mailout.one.com';
 $GLOBALS['_config']['smtpport'] = 25;
 $GLOBALS['_config']['emailpassword'] = false;
-$GLOBALS['_config']['email'][] = 'mail@huntershouse.dk';
-$GLOBALS['_config']['email'][] = 'fisk@huntershouse.dk';
-$GLOBALS['_config']['email'][] = 'karpegrej@huntershouse.dk';
+
 $GLOBALS['_config']['interests'][] = 'Fiskeri';
 $GLOBALS['_config']['interests'][] = 'Jagt';
 $GLOBALS['_config']['interests'][] = 'Tøj';
