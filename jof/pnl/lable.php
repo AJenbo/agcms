@@ -273,5 +273,15 @@ $emailBody .= '<br />'.$_GET['postcode'].' '.$_GET['city'].'<br />'.$countries[$
 	$mail->MsgHTML($emailBody, $_SERVER['DOCUMENT_ROOT']);
 	$mail->AddAddress($_GET['email'], ($_GET['att'] ? $_GET['att'] : $_GET['name']));
 	$mail->Send();
+	
+	//Upload email to the sent folder via imap
+	if($GLOBALS['_config']['imap']) {
+		require_once "inc/imap.inc.php";
+		$imap = new IMAPMAIL;
+		$imap->open($GLOBALS['_config']['imap'], $GLOBALS['_config']['imapport']);
+		$imap->login($GLOBALS['_config']['email'][0], $GLOBALS['_config']['emailpasswords'][0]);
+		$imap->append_mail($GLOBALS['_config']['emailsent'], $mail->CreateHeader().$mail->CreateBody(), '\Seen');
+		$imap->close();
+	}
 }
 ?>
