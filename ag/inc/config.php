@@ -6,10 +6,17 @@ $GLOBALS['_config']['postcode'] = '1203';
 $GLOBALS['_config']['city'] = 'København K';
 $GLOBALS['_config']['phone'] = '33 11 8338';
 $GLOBALS['_config']['fax'] = '33 13 8338';
+
 $GLOBALS['_config']['email'][] = 'mail@arms-gallery.dk';
-$GLOBALS['_config']['smtp'] = 'smtp.exserver.dk';
+$GLOBALS['_config']['emailpasswords'][] = '.45acp';
+$GLOBALS['_config']['emailsent'] = 'INBOX.Sent';
+$GLOBALS['_config']['imap'] = 'imap.arms-gallery.dk';
+$GLOBALS['_config']['imapport'] = '143';
+
+$GLOBALS['_config']['smtp'] = 'mailout.one.com';
 $GLOBALS['_config']['smtpport'] = 25;
-$GLOBALS['_config']['emailpassword'] = '.45acp';
+$GLOBALS['_config']['emailpassword'] = false;
+
 $GLOBALS['_config']['interests'][] = 'Paintballbaner';
 $GLOBALS['_config']['interests'][] = 'Batterier';
 $GLOBALS['_config']['interests'][] = 'Buegrej';

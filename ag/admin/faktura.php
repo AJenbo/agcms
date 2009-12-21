@@ -511,7 +511,7 @@ function save($id, $type, $updates) {
 			return array('error' => 'Fakturaen skal være på mindst 1 krone!');
 		}
 		
-		include "../inc/phpMailer/class.phpmailer.php";
+		include_once "../inc/phpMailer/class.phpmailer.php";
 		
 		$emailBody = '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
@@ -564,6 +564,18 @@ function save($id, $type, $updates) {
 		}
 		$mysqli->query("UPDATE `fakturas` SET `status` = 'locked' WHERE `status` = 'new' && `id` = ".$faktura['id']);
 		$mysqli->query("UPDATE `fakturas` SET `sendt` = 1, `department` = '".$faktura['department']."' WHERE `id` = ".$faktura['id']);
+		
+		//Upload email to the sent folder via imap
+		if($GLOBALS['_config']['imap']) {
+			include_once "../inc/imap.inc.php";
+			$imap = new IMAPMAIL;
+			$imap->open($GLOBALS['_config']['imap'], $GLOBALS['_config']['imapport']);
+			$emailnr = array_search($faktura['department'], $GLOBALS['_config']['email']);
+			$imap->login($faktura['department'], $GLOBALS['_config']['emailpasswords'][$emailnr ? $emailnr : 0]);
+			$imap->append_mail($GLOBALS['_config']['emailsent'], $mail->CreateHeader().$mail->CreateBody(), '\Seen');
+			$imap->close();
+		}
+		
 		//Forece reload
 		$faktura['status'] = 'sendt';
 	}
@@ -572,6 +584,8 @@ function save($id, $type, $updates) {
 }
 
 function sendReminder($id) {
+	$error = '';
+	
 	global $mysqli;
 	$faktura = $mysqli->fetch_array("SELECT * FROM `fakturas` WHERE `id` = ".$id);
 	$faktura = $faktura[0];
@@ -588,7 +602,7 @@ function sendReminder($id) {
 		$faktura['department'] = $GLOBALS['_config']['email'][0];
 	}
 	
-	include "../inc/phpMailer/class.phpmailer.php";
+	include_once "../inc/phpMailer/class.phpmailer.php";
 	
 	$emailBody = '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
@@ -655,8 +669,34 @@ Fax: '.$GLOBALS['_config']['fax'].'<br />
 	if(!$mail->Send()) {
 		return array('error' => 'Mailen kunde ikke sendes!');
 	}
+	$error .= '
 
-	return array('error' => 'En rykker blev sendt til kunden.');
+En rykker blev sendt til kunden.';
+	
+	//Upload email to the sent folder via imap
+	if($GLOBALS['_config']['imap']) {
+		include_once "../inc/imap.inc.php";
+		$imap = new IMAPMAIL;
+		if(!$imap->open($GLOBALS['_config']['imap'], $GLOBALS['_config']['imapport'])) {
+			$error .= '
+
+Mailen blev ikke gemt i Sendt bakken! (serveren svared ikke).';
+		}
+		$emailnr = array_search($faktura['department'], $GLOBALS['_config']['email']);
+		if(!$imap->login($faktura['department'], $GLOBALS['_config']['emailpasswords'][$emailnr ? $emailnr : 0])) {
+			$error .= '
+
+Mailen blev ikke gemt i Sendt bakken! (koden blev afvist).';
+		}
+		if(!$imap->append_mail($GLOBALS['_config']['emailsent'], $mail->CreateHeader().$mail->CreateBody(), '\Seen')) {
+			$error .= '
+
+Mailen blev ikke gemt i Sendt bakken! (mappen '.$GLOBALS['_config']['emailsent'].' mangled).';
+		}
+		$imap->close();
+	}
+
+	return array('error' => trim($error));
 }
 
 function pbsconfirm($id) {
