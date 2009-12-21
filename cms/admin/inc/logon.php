@@ -17,10 +17,10 @@ if(empty($_SESSION['_user']) && !empty($_POST['username'])) {
 	$_SESSION['_user'] = $mysqli->fetch_array("SELECT * FROM `users` WHERE `name` = '".addcslashes($_POST['username'], "'\\")."' LIMIT 1");
 	$_SESSION['_user'] = @$_SESSION['_user'][0];
 	if($_SESSION['_user']['access'] < 1 || mb_substr(@$_SESSION['_user']['password'], 0, 13) != mb_substr(crypt(@$_POST['password'], $_SESSION['_user']['password']), 0, 13))
-	 unset($_SESSION['_user']);
+		unset($_SESSION['_user']);
+	unset($_POST);
 }
 
-unset($_POST);
 
 if(empty($_SESSION['_user'])) {
 	sleep(1);

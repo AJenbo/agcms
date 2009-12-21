@@ -87,10 +87,21 @@ function sendEmail($id, $from, $interests, $subject, $text) {
 	
 	if(!$mail->Send()) {
 		return array('error' => $mail->ErrorInfo);
-	} else {
-		$mysqli->query('UPDATE `newsmails` SET `sendt` = 1 WHERE `id` = '.$id.' LIMIT 1');
-		return true;
 	}
+	
+	//Upload email to the sent folder via imap
+	if($GLOBALS['_config']['imap']) {
+		require_once "../inc/imap.inc.php";
+		$imap = new IMAPMAIL;
+		$imap->open($GLOBALS['_config']['imap'], $GLOBALS['_config']['imapport']);
+		$emailnr = array_search($from, $GLOBALS['_config']['email']);
+		$imap->login($from, $GLOBALS['_config']['emailpasswords'][$emailnr ? $emailnr : 0]);
+		$imap->append_mail($GLOBALS['_config']['emailsent'], $mail->CreateHeader().$mail->CreateBody(), '\Seen');
+		$imap->close();
+	}
+		
+	$mysqli->query('UPDATE `newsmails` SET `sendt` = 1 WHERE `id` = '.$id.' LIMIT 1');
+	return true;
 }
 
 function countEmailTo($interests) {

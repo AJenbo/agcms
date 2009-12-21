@@ -39,6 +39,18 @@ class PHPMailer {
   /////////////////////////////////////////////////
 
   /**
+   * Hold header 
+   * @var string
+   */
+  public $header = '';
+
+  /**
+   * Hold body 
+   * @var string
+   */
+  public $body = '';
+
+  /**
    * Email priority (1 = High, 3 = Normal, 5 = low).
    * @var int
    */
@@ -425,6 +437,36 @@ class PHPMailer {
         //$result = false;
         //break;
     }
+
+    return $result;
+  }
+  
+  public function returnmessage() {
+    $header = '';
+    $body = '';
+    $result = true;
+
+    if((count($this->to) + count($this->cc) + count($this->bcc)) < 1) {
+      $this->SetError($this->Lang('provide_address'));
+      return false;
+    }
+
+    /* Set whether the message is multipart/alternative */
+    if(!empty($this->AltBody)) {
+      $this->ContentType = 'multipart/alternative';
+    }
+
+    $this->error_count = 0; // reset errors
+    $this->SetMessageType();
+    $header .= $this->CreateHeader();
+    $body = $this->CreateBody();
+
+    if($body == '') {
+      return false;
+    }
+
+    var_dump($header);
+    var_dump($body);
 
     return $result;
   }
