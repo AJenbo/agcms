@@ -487,7 +487,7 @@ function save($id, $type, $updates) {
 		$mysqli->query($sql);
 	}
 	
-	$faktura = $mysqli->fetch_array("SELECT `id`, `department`, `amount`, `clerk`, `status`, `email` FROM `fakturas` WHERE `id` = ".$id);
+	$faktura = $mysqli->fetch_array("SELECT * FROM `fakturas` WHERE `id` = ".$id);
 	$faktura = $faktura[0];
 	
 	if($type == 'email') {
@@ -545,7 +545,7 @@ function save($id, $type, $updates) {
 		$mail->FromName   = $GLOBALS['_config']['site_name'];
 		$mail->Subject    = 'Online betaling til '.$GLOBALS['_config']['site_name'];
 		$mail->MsgHTML($emailBody, $_SERVER['DOCUMENT_ROOT']);
-		
+	
 		if(empty($faktura['navn']))
 			$faktura['navn'] = $faktura['email'];
 		
