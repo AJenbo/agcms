@@ -86,6 +86,7 @@ $GLOBALS['generatedcontent']['contenttype'] = 'page';
 $GLOBALS['generatedcontent']['text'] = '';
 
 if(!empty($_GET['id']) && @$_GET['checkid'] == getCheckid($_GET['id'])) {
+	$rejected = array();
 	$faktura = $mysqli->fetch_array("SELECT * FROM `fakturas` WHERE `id` = ".$_GET['id']);
 	$faktura = @$faktura[0];
 	
@@ -107,7 +108,7 @@ if(!empty($_GET['id']) && @$_GET['checkid'] == getCheckid($_GET['id'])) {
 			$netto += $faktura['values'][$i]*$faktura['quantities'][$i];
 		}
 		
-		if(!$_GET['step']) {
+		if(empty($_GET['step'])) {
 			$mysqli->query("UPDATE `fakturas` SET `status` = 'locked' WHERE `status` IN('new', 'pbserror') AND `id` = ".$_GET['id']);
 			
 			$GLOBALS['generatedcontent']['crumbs'] = array();
@@ -182,7 +183,7 @@ if(!empty($_GET['id']) && @$_GET['checkid'] == getCheckid($_GET['id'])) {
 				$updates['email'] = $_POST['email'];
 				$updates['tlf1'] = $_POST['tlf1'] != $_POST['tlf2'] ? $_POST['tlf1'] : '';
 				$updates['tlf2'] = $_POST['tlf2'];
-				$updates['altpost'] = $_POST['altpost'] ? 1 : 0;
+				$updates['altpost'] = @$_POST['altpost'] ? 1 : 0;
 				$updates['posttlf'] = $_POST['posttlf'];
 				$updates['postname'] = $_POST['postname'];
 				$updates['postatt'] = $_POST['postatt'] != $_POST['postname'] ? $_POST['postatt'] : '';
@@ -192,7 +193,7 @@ if(!empty($_GET['id']) && @$_GET['checkid'] == getCheckid($_GET['id'])) {
 				$updates['postpostalcode'] = $_POST['postpostalcode'];
 				$updates['postcity'] = $_POST['postcity'];
 				$updates['postcountry'] = $_POST['postcountry'];
-				$updates['enote'] = $_POST['enote'];
+				$updates['enote'] = @$_POST['enote'];
 				$updates = array_map('trim', $updates);
 				
 				$rejected = validate($updates);
@@ -246,7 +247,7 @@ if(!empty($_GET['id']) && @$_GET['checkid'] == getCheckid($_GET['id'])) {
 				<td>Navn:</td>
 				<td colspan="2"><input name="navn" id="navn" style="width:157px" value="'.$faktura['navn'].'" /></td>
 				<td>';
-			if($rejected['navn'])
+			if(!empty($rejected['navn']))
 				$GLOBALS['generatedcontent']['text'] .= '<img src="images/error.png" alt="" title="" >';
 			$GLOBALS['generatedcontent']['text'] .= '</td>
 			</tr>
@@ -259,7 +260,7 @@ if(!empty($_GET['id']) && @$_GET['checkid'] == getCheckid($_GET['id'])) {
 				<td> Adresse:</td>
 				<td colspan="2"><input name="adresse" id="adresse" style="width:157px" value="'.$faktura['adresse'].'" /></td>
 				<td>';
-			if($rejected['adresse'])
+			if(!empty($rejected['adresse']))
 				$GLOBALS['generatedcontent']['text'] .= '<img src="images/error.png" alt="" title="" >';
 			$GLOBALS['generatedcontent']['text'] .= '</td>
 			</tr>
@@ -274,9 +275,9 @@ if(!empty($_GET['id']) && @$_GET['checkid'] == getCheckid($_GET['id'])) {
 				<td align="right">By:
 					<input name="by" id="by" style="width:90px" value="'.$faktura['by'].'" /></td>
 				<td>';
-			if($rejected['postnr'])
+			if(!empty($rejected['postnr']))
 				$GLOBALS['generatedcontent']['text'] .= '<img src="images/error.png" alt="" title="" >';
-			if($rejected['by'])
+			if(!empty($rejected['by']))
 				$GLOBALS['generatedcontent']['text'] .= '<img src="images/error.png" alt="" title="" >';
 			$GLOBALS['generatedcontent']['text'] .= '</td>
 			</tr>
@@ -292,7 +293,7 @@ if(!empty($_GET['id']) && @$_GET['checkid'] == getCheckid($_GET['id'])) {
 			}
 			$GLOBALS['generatedcontent']['text'] .= '</select></td>
 				<td>';
-			if($rejected['land'])
+			if(!empty($rejected['land']))
 				$GLOBALS['generatedcontent']['text'] .= '<img src="images/error.png" alt="" title="" >';
 			$GLOBALS['generatedcontent']['text'] .= '</td>
 			</tr>
@@ -300,72 +301,72 @@ if(!empty($_GET['id']) && @$_GET['checkid'] == getCheckid($_GET['id'])) {
 				<td> Email:</td>
 				<td colspan="2"><input name="email" id="email" style="width:157px" value="'.$faktura['email'].'" /></td>
 				<td>';
-			if($rejected['email'])
+			if(!empty($rejected['email']))
 				$GLOBALS['generatedcontent']['text'] .= '<img src="images/error.png" alt="" title="" >';
 			$GLOBALS['generatedcontent']['text'] .= '</td>
 			</tr>
 			<tr>
 				<td colspan="4"><input onclick="showhidealtpost(this.checked);" name="altpost" id="altpost" type="checkbox"';
-			 if($faktura['altpost']) $GLOBALS['generatedcontent']['text'] .= ' checked="checked"';
+			 if(!empty($faktura['altpost'])) $GLOBALS['generatedcontent']['text'] .= ' checked="checked"';
 			 $GLOBALS['generatedcontent']['text'] .= ' /><label for="altpost"> Anden leveringsadresse</label></td>
 			</tr>
 			<tr class="altpost"';
-			if(!$faktura['altpost']) $GLOBALS['generatedcontent']['text'] .= ' style="display:none;"';
+			if(empty($faktura['altpost'])) $GLOBALS['generatedcontent']['text'] .= ' style="display:none;"';
 			$GLOBALS['generatedcontent']['text'] .= '>
 				<td> Telfon:</td>
 				<td colspan="2"><input name="posttlf" id="posttlf" style="width:157px" value="'.$faktura['posttlf'].'" /></td>
 				<td><input type="button" value="Hent" /></td>
 			</tr>
 			<tr class="altpost"';
-			if(!$faktura['altpost']) $GLOBALS['generatedcontent']['text'] .= ' style="display:none;"';
+			if(empty($faktura['altpost'])) $GLOBALS['generatedcontent']['text'] .= ' style="display:none;"';
 			$GLOBALS['generatedcontent']['text'] .= '>
 				<td>Navn:</td>
 				<td colspan="2"><input name="postname" id="postname" style="width:157px" value="'.$faktura['postname'].'" /></td>
 				<td>';
-			if($rejected['postname'])
+			if(!empty($rejected['postname']))
 				$GLOBALS['generatedcontent']['text'] .= '<img src="images/error.png" alt="" title="" >';
 			$GLOBALS['generatedcontent']['text'] .= '</td>
 			</tr>
 			<tr class="altpost"';
-			if(!$faktura['altpost']) $GLOBALS['generatedcontent']['text'] .= ' style="display:none;"';
+			if(empty($faktura['altpost'])) $GLOBALS['generatedcontent']['text'] .= ' style="display:none;"';
 			$GLOBALS['generatedcontent']['text'] .= '>
 				<td> Att:</td>
 				<td colspan="2"><input name="postatt" id="postatt" style="width:157px" value="'.$faktura['postatt'].'" /></td>
 				<td></td>
 			</tr>
 			<tr class="altpost"';
-			if(!$faktura['altpost']) $GLOBALS['generatedcontent']['text'] .= ' style="display:none;"';
+			if(empty($faktura['altpost'])) $GLOBALS['generatedcontent']['text'] .= ' style="display:none;"';
 			$GLOBALS['generatedcontent']['text'] .= '>
 				<td> Adresse:</td>
 				<td colspan="2"><input name="postaddress" id="postaddress" style="width:157px" value="'.$faktura['postaddress'].'" /><br /><input name="postaddress2" id="postaddress2" style="width:157px" value="'.$faktura['postaddress2'].'" /></td>
 				<td>';
-			if($rejected['postaddress'])
+			if(!empty($rejected['postaddress']))
 				$GLOBALS['generatedcontent']['text'] .= '<img src="images/error.png" alt="" title="" >';
 			$GLOBALS['generatedcontent']['text'] .= '</td>
 			</tr>
 			<tr class="altpost"';
-			if(!$faktura['altpost']) $GLOBALS['generatedcontent']['text'] .= ' style="display:none;"';
+			if(empty($faktura['altpost'])) $GLOBALS['generatedcontent']['text'] .= ' style="display:none;"';
 			$GLOBALS['generatedcontent']['text'] .= '>
 				<td> Postboks:</td>
 				<td colspan="2"><input name="postpostbox" id="postpostbox" style="width:157px" value="'.$faktura['postpostbox'].'" /></td>
 				<td></td>
 			</tr>
 			<tr class="altpost"';
-			if(!$faktura['altpost']) $GLOBALS['generatedcontent']['text'] .= ' style="display:none;"';
+			if(empty($faktura['altpost'])) $GLOBALS['generatedcontent']['text'] .= ' style="display:none;"';
 			$GLOBALS['generatedcontent']['text'] .= '>
 				<td> Postnr:</td>
 				<td><input name="postpostalcode" id="postpostalcode" style="width:35px" value="'.$faktura['postpostalcode'].'" onblur="chnageZipCode(this.value, \'postcountry\', \'postcity\')" onkeyup="chnageZipCode(this.value, \'postcountry\', \'postcity\')" onchange="chnageZipCode(this.value, \'postcountry\', \'postcity\')" /></td>
 				<td align="right">By:
 					<input name="postcity" id="postcity" style="width:90px" value="'.$faktura['postcity'].'" /></td>
 				<td>';
-			if($rejected['postpostalcode'])
+			if(!empty($rejected['postpostalcode']))
 				$GLOBALS['generatedcontent']['text'] .= '<img src="images/error.png" alt="" title="" >';
-			if($rejected['postcity'])
+			if(!empty($rejected['postcity']))
 				$GLOBALS['generatedcontent']['text'] .= '<img src="images/error.png" alt="" title="" >';
 			$GLOBALS['generatedcontent']['text'] .= '</td>
 			</tr>
 			<tr class="altpost"';
-			if(!$faktura['altpost']) $GLOBALS['generatedcontent']['text'] .= ' style="display:none;"';
+			if(empty($faktura['altpost'])) $GLOBALS['generatedcontent']['text'] .= ' style="display:none;"';
 			$GLOBALS['generatedcontent']['text'] .= '>
 				<td> Land:</td>
 				<td colspan="2"><select name="postcountry" id="postcountry" style="width:157px" onblur="chnageZipCode($(\'postpostalcode\').value, \'postcountry\', \'postcity\')" onkeyup="chnageZipCode($(\'postpostalcode\').value, \'postcountry\', \'postcity\')" onchange="chnageZipCode($(\'postpostalcode\').value, \'postcountry\', \'postcity\')">';
@@ -378,7 +379,7 @@ if(!empty($_GET['id']) && @$_GET['checkid'] == getCheckid($_GET['id'])) {
 				$GLOBALS['generatedcontent']['text'] .= '>'.htmlspecialchars($country).'</option>';
 			}
 			$GLOBALS['generatedcontent']['text'] .= '</select></td><td>';
-			if($rejected['postcountry'])
+			if(!empty($rejected['postcountry']))
 				$GLOBALS['generatedcontent']['text'] .= '<img src="images/error.png" alt="" title="" >';
 			$GLOBALS['generatedcontent']['text'] .= '</td></tr></tbody></table><input style="font-weight:bold;" type="submit" value="Fortsæt til handelsbetingelserne" /></form>';
 		} elseif($_GET['step'] == 2) {
@@ -396,7 +397,7 @@ if(!empty($_GET['id']) && @$_GET['checkid'] == getCheckid($_GET['id'])) {
 			$GLOBALS['generatedcontent']['headline'] = 'Handelsbetingelser';
 			
 			$special = $mysqli->fetch_array("SELECT `text` FROM `special` WHERE `id` = 3 LIMIT 1");
-			$GLOBALS['generatedcontent']['text'] .= '<br />'.$special[0][text];
+			$GLOBALS['generatedcontent']['text'] .= '<br />'.$special[0]['text'];
 			
 			$submit['Merchant_id'] = $GLOBALS['_config']['pbsid'];
 			$submit['Version'] = '2';
