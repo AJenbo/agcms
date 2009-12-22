@@ -495,7 +495,7 @@ function save($id, $type, $updates) {
 		$mysqli->query($sql);
 	}
 	
-	$faktura = $mysqli->fetch_array("SELECT `id`, `department`, `amount`, `clerk`, `status`, `email` FROM `fakturas` WHERE `id` = ".$id);
+	$faktura = $mysqli->fetch_array("SELECT * FROM `fakturas` WHERE `id` = ".$id);
 	$faktura = $faktura[0];
 	
 	if($type == 'email') {
