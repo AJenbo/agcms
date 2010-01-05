@@ -73,40 +73,40 @@ function pakkepris(height, width, length, weight, packtype, ss1, ss46, ss5amount
 	if(packtype == 'P') {
 		
 		if(weight <= 1) {
-			grundpris = 60;
+			grundpris = 62;
 		} else if(weight <= 5) {
-			grundpris = 64;
+			grundpris = 66;
 		} else if(weight <= 10) {
-			grundpris = 82;
+			grundpris = 84;
 		} else if(weight <= 15) {
-			grundpris = 121;
+			grundpris = 125;
 		} else if(weight <= 20) {
-			grundpris = 131;
+			grundpris = 135;
 		} else if(weight <= 25) {
 			moms = true;
-			grundpris = 156;
+			grundpris = 161;
 		} else if(weight <= 30) {
 			moms = true;
-			grundpris = 203;
+			grundpris = 209;
 		} else if(weight <= 35) {
 			moms = true;
-			grundpris = 247;
+			grundpris = 254;
 		} else if(weight <= 40) {
 			moms = true;
-			grundpris = 289;
+			grundpris = 298;
 		} else if(weight <= 45) {
 			moms = true;
-			grundpris = 335;
+			grundpris = 345;
 		} else if(weight <= 50) {
 			moms = true;
-			grundpris = 381;
+			grundpris = 392;
 		} else {
 			return false;
 		}
 	
 		//Volume
 		if(volume || calcvolume(height, width, length)) {
-			grundpris += 76;
+			grundpris += 79;
 		}
 
 	} else if(packtype == 'E') {
@@ -142,48 +142,48 @@ function pakkepris(height, width, length, weight, packtype, ss1, ss46, ss5amount
 		//Grund priser for volume vægt på Post Opkrævnings pakker
 		moms = true;
 		if(vWeight <= 1) {
-			grundpris = 89;
-		} else if(vWeight <= 5) {
 			grundpris = 92;
+		} else if(vWeight <= 5) {
+			grundpris = 95;
 		} else if(vWeight <= 10) {
-			grundpris = 110;
+			grundpris = 113;
 		} else if(vWeight <= 15) {
-			grundpris = 150;
+			grundpris = 155;
 		} else if(vWeight <= 20) {
-			grundpris = 152;
+			grundpris = 157;
 		} else if(vWeight <= 25) {
-			grundpris = 179;
+			grundpris = 184;
 		} else if(vWeight <= 30) {
-			grundpris = 225;
+			grundpris = 232;
 		} else if(vWeight <= 35) {
-			grundpris = 256;
+			grundpris = 264;
 		} else if(vWeight <= 40) {
-			grundpris = 296;
+			grundpris = 305;
 		} else if(vWeight <= 45) {
-			grundpris = 338;
+			grundpris = 348;
 		} else if(vWeight <= 50) {
-			grundpris = 380;
+			grundpris = 391;
 		} else {
-			grundpris += Math.round((vWeight-50)*5.5*100)/100+380;
+			grundpris += Math.round((vWeight-50)*5.5*100)/100+391;
 		}
 		// Yderliger 16kr bliver opkrævet af kunden ved betaling
 	}
 	
 	//Forsigtig
 	if(ss1) {
-		grundpris += 76;
+		grundpris += 79;
 		moms = true;
 	}
 
 	//Lørdagsomdeling
 	if(ss46) {
-		grundpris += 64;
+		grundpris += 66;
 		moms = true;
 	}
 
 	//Værdipakke
 	if(ss5amount) {
-		grundpris += 85;
+		grundpris += 88;
 		grundpris += Math.ceil(ss5amount/1000)*2;
 	}
 	

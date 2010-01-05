@@ -36,7 +36,7 @@ require_once("../inc/config.php");
 require_once("config.php");
 $mysqli = new simple_mysqli($GLOBALS['_config']['mysql_server'], $GLOBALS['_config']['mysql_user'], $GLOBALS['_config']['mysql_password'], $GLOBALS['_config']['mysql_database']);
 
-if($_GET['delete'])
+if(isset($_GET['delete']))
 	$mysqli->query('UPDATE `post` SET deleted = 1 WHERE id = '.$_GET['delete']);
 
 function rows($where) {
