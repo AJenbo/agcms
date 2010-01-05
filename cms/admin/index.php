@@ -20,12 +20,8 @@ require_once $_SERVER['DOCUMENT_ROOT'].'/admin/inc/logon.php';
 	function rtefsafe($text) {
 		return str_replace(
 			
-			array("'",		chr(10),	chr(13), ' ', ' '),
-			array("&#39;",	" ",		" ",	' ', ' '), $text);
-			/*
-			array("'",	chr(10),	chr(13)),
-			array('&#39;',	' ',	' '), $text);
-			*/
+			array("'", chr(10), chr(13), ' ', ' '),
+			array("&#39;", ' ', ' ', ' ', ' '), $text);
 	}
 	
 	function search($text) {
@@ -350,9 +346,10 @@ listlink['.$list['id'].'] = '.$list['link'].';
 	$html .= '</div></div>';
 //list end
 
+$html .= '</div></form>';
+
 //bind start
-		$html .= '</div></form>
-<form action="" method="post" onsubmit="return bind('.$id.');">
+		$html .= '<form action="" method="post" onsubmit="return bind('.$id.');">
 <div class="toolbox"><a class="menuboxheader" id="bindingheader" style="width:593px;" onclick="showhide(\'binding\',this);">Bindinger: </a><div style="width:613pxpx;" id="binding"><div id="bindinger"><br />';
 	$bind = $mysqli->fetch_array('SELECT id, kat FROM `bind` WHERE `side` = '.$id);
 	$bind_nr = count($bind);
@@ -371,7 +368,6 @@ listlink['.$list['id'].'] = '.$list['link'].';
 		}
 	}
     $html .= '</div>';
-//bind end
 	
 	if(@$_COOKIE['activekat'] >= -1)
 		$html .= katlist(@$_COOKIE['activekat']);
@@ -381,6 +377,38 @@ listlink['.$list['id'].'] = '.$list['link'].';
 	$html .= '<br /><input type="submit" value="Opret binding" accesskey="b" />';
     
 	$html .= '</div></div></form>';
+//bind end
+
+//tilbehor start
+		$html .= '<form action="" method="post" onsubmit="return tilbehor('.$id.');">
+<div class="toolbox"><a class="menuboxheader" id="tilbehorsheader" style="width:593px;" onclick="showhide(\'tilbehor\',this);">Tilbehør: </a><div style="width:613pxpx;" id="tilbehor"><div id="tilbehore"><br />';
+	$tilbehor = $mysqli->fetch_array('SELECT id, tilbehor FROM `tilbehor` WHERE `side` = '.$id);
+	$tilbehor_nr = count($tilbehor);
+	for($i=0;$i<$tilbehor_nr;$i++) {
+		if($tilbehor[$i]['id'] != -1) {
+			$kattree = kattree($tilbehor[$i]['kat']);
+			$kattree_nr = count($kattree);
+			$kattree_html = '';
+			for($kattree_i=0;$kattree_i<$kattree_nr;$kattree_i++) {
+				$kattree_html .= '/'.trim($kattree[$kattree_i]['navn']);
+			}
+			$kattree_html .= '/';
+			
+			$html .= '<p id="tilbehor'.$tilbehor[$i]['id'].'"> <img onclick="slet(\'tilbehor\', \''.addslashes($kattree_html).'\', '.$tilbehor[$i]['id'].')" src="images/cross.png" alt="X" title="Fjern binding" width="16" height="16" /> ';
+			$html .= $kattree_html.'</p>';
+		}
+	}
+    $html .= '</div>';
+	
+	if(@$_COOKIE['activekat'] >= -1)
+		$html .= pagelist(@$_COOKIE['activekat']);
+	else
+		$html .= pagelist(0);
+		
+	$html .= '<br /><input type="submit" value="Tilføj tilbehør" accesskey="a" />';
+    
+	$html .= '</div></div></form>';
+//tilbehor end
 	
 	return $html;
 }
@@ -932,7 +960,7 @@ function katspath($id) {
 function katlist($id) {
 	global $mysqli;
 	global $kattree;
-
+	
 	$html = '<a class="menuboxheader" id="katsheader" style="width:'.$GLOBALS['_config']['text_width'].'px;clear:both" onclick="showhidekats(\'kats\',this);">';
 	if(@$_COOKIE['hidekats']) {
 		$temp = katspath($id);
@@ -941,14 +969,15 @@ function katlist($id) {
 		$html .= 'Vælg placering: ';
 	}
 	$html .= '</a><div style="width:'.($GLOBALS['_config']['text_width']+24).'px;';
-	if(@$_COOKIE['hidekats'])
+	if(@$_COOKIE['hidekats']) {
 		$html .= 'display:none;';
+	}
 	$html .= '" id="kats"><div>';
 	$kattree = kattree($id);
-	$nr = count($kattree);
-	for($i=0;$i<$nr;$i++) {
-		$kattree[$i] = $kattree[$i]['id'];
+	foreach($kattree as $i => $value) {
+		$kattree[$i] = $value['id'];
 	}
+	
 	$openkat = explode('<', @$_COOKIE['openkat']);
 	if($mysqli->fetch_array('SELECT id FROM `kat` WHERE bind = -1 LIMIT 1')) {
 		$html .= '<img';
@@ -970,10 +999,10 @@ function katlist($id) {
 	}
 	$html .= '</div></div><div>';
 	if($mysqli->fetch_array('SELECT id FROM `kat` WHERE bind = 0 LIMIT 1')) {
-		$html .= '<img style="display:';
-		if(array_search(0, $openkat) || false !== array_search('0', $kattree)) { $html .= 'none'; }
-		$html .= '" src="images/+.gif" id="kat0expand" onclick="kat_expand(0, true, kat_expand_r);" height="16" width="16" alt="+" title="" /><img style="display:';
-		if(!array_search(0, $openkat) && false === array_search('0', $kattree)) { $html .= 'none'; }
+		$html .= '<img style="';
+		if(array_search(0, $openkat) || false !== array_search('0', $kattree)) { $html .= 'display:none;'; }
+		$html .= '" src="images/+.gif" id="kat0expand" onclick="kat_expand(0, true, kat_expand_r);" height="16" width="16" alt="+" title="" /><img style="';
+		if(!array_search(0, $openkat) && false === array_search('0', $kattree)) { $html .= 'display:none;'; }
 		$html .= '" src="images/-.gif" id="kat0contract" onclick="kat_contract(\'0\');" height="16" width="16" alt="-" title="" /><a';
 	} else {
 		$html .= '<a style="margin-left:16px"';
@@ -991,6 +1020,63 @@ function katlist($id) {
 	return $html;
 }
 
+function pagelist($id) {
+	global $mysqli;
+	global $kattree;
+	
+	$html = '<a class="menuboxheader" id="pagesheader" style="width:'.$GLOBALS['_config']['text_width'].'px;clear:both" onclick="showhidekats(\'pages\',this);">';
+	if(@$_COOKIE['hidepages']) {
+		$temp = katspath($id);
+		$html .= $temp['html'];
+	} else {
+		$html .= 'Vælg side: ';
+	}
+	$html .= '</a><div style="width:'.($GLOBALS['_config']['text_width']+24).'px;';
+	if(@$_COOKIE['hidepages']) {
+		$html .= 'display:none;';
+	}
+	$html .= '" id="pages"><div>';
+	$kattree = kattree($id);
+	foreach($kattree as $i => $value) {
+		$kattree[$i] = $value['id'];
+	}
+	
+	$openkat = explode('<', @$_COOKIE['openkat']);
+	if($mysqli->fetch_array('SELECT id FROM `kat` WHERE bind = -1 LIMIT 1') || $mysqli->fetch_array('SELECT id FROM `bind` WHERE kat = -1 LIMIT 1')) {
+		$html .= '<img';
+		 if(array_search(-1, $openkat) || false !== array_search('-1', $kattree)) { $html .= ' style="display:none"'; }
+		 $html .= ' src="images/+.gif" id="kat-1expand" onclick="pages_expand(-1, true, kat_expand_r);" height="16" width="16" alt="+" title="" /><img';
+		 if(!array_search(-1, $openkat) && false === array_search('-1', $kattree)) { $html .= ' style="display:none"'; }
+		 $html .= ' src="images/-.gif" id="kat-1contract" onclick="kat_contract(-1);" height="16" width="16" alt="-" title="" /><a';
+		$html .= '<img';
+	} else {
+		$html .= '<img style="margin-left:16px"';
+	}
+	$html .= ' src="images/folder.png" width="16" height="16" alt="" /> Indaktive</a><div id="kat-1content" style="margin-left:16px">';
+	if(array_search(-1, $openkat) || false !== array_search('-1', $kattree)) {
+		$temp = pages_expand(-1, true);
+		$html .= $temp['html'];
+	}
+	$html .= '</div></div><div>';
+	if($mysqli->fetch_array('SELECT id FROM `kat` WHERE bind = 0 LIMIT 1') || $mysqli->fetch_array('SELECT id FROM `bind` WHERE kat = 0 LIMIT 1')) {
+		$html .= '<img style="';
+		if(array_search(0, $openkat) || false !== array_search('0', $kattree)) { $html .= 'display:none;'; }
+		$html .= '" src="images/+.gif" id="kat0expand" onclick="pages_expand(0, true, kat_expand_r);" height="16" width="16" alt="+" title="" /><img style="';
+		if(!array_search(0, $openkat) && false === array_search('0', $kattree)) { $html .= 'display:none;'; }
+		$html .= '" src="images/-.gif" id="kat0contract" onclick="kat_contract(\'0\');" height="16" width="16" alt="-" title="" /><a';
+		$html .= '<img';
+	} else {
+		$html .= '<img style="margin-left:16px"';
+	} 
+	$html .= ' src="images/folder.png" width="16" height="16" alt="" /> Forsiden</a><div id="kat0content" style="margin-left:16px">';
+	if(array_search(0, $openkat) || false !== array_search('0', $kattree)) {
+		$temp = pages_expand(0, true);
+		$html .= $temp['html'];
+	}
+	$html .= '</div></div></div>';
+	return $html;
+}
+
 function siteList($id) {
 	global $mysqli;
 	global $kattree;
@@ -1000,9 +1086,8 @@ function siteList($id) {
 	$kattree = array();
 	if($id !== null) {
 		$kattree = kattree($id);
-		$nr = count($kattree);
-		for($i=0;$i<$nr;$i++) {
-			$kattree[$i] = $kattree[$i]['id'];
+		foreach($kattree as $i => $value) {
+			$kattree[$i] = $value['id'];
 		}
 	}
 	
@@ -1040,6 +1125,25 @@ function siteList($id) {
 	return $html;
 }
 
+function pages_expand($id) {
+	global $mysqli;
+	$html = '';
+
+	$temp = kat_expand($id, false);
+	$html .= $temp['html'];
+	$sider = $mysqli->fetch_array('SELECT sider.id, sider.varenr, bind.id as bind, navn FROM `bind` LEFT JOIN sider on bind.side = sider.id WHERE `kat` = '.$id.' ORDER BY sider.navn');
+	$nr = count($sider);
+	foreach($sider as $side) {
+			$html .= '<div id="bind'.$side['bind'].'" class="side'.$side['id'].'"><a style="margin-left:16px" class="side">
+			<a class="kat" onclick="this.firstChild.checked=true;"><input name="side" type="radio" value="'.$side['id'].'" />
+			<img src="images/page.png" width="16" height="16" alt="" /> '.strip_tags($side['navn'],'<img>');
+			if($side['varenr'])
+				$html .= ' <em>#:'.$side['varenr'].'</em>';
+			$html .= '</a></div>';
+	}
+	return array('id' => $id, 'html' => $html);
+}
+
 function siteList_expand($id) {
 	global $mysqli;
 	$html = '';
@@ -1062,8 +1166,8 @@ function getnykat() {
 	
 	//Email
 	$html .= 'Kontakt: <select id="email">';
-	foreach($GLOBALS['_config']['email'] as $value) {
-		$html .= '<option value="'.$value.'">'.$value.'</option>';
+	foreach($GLOBALS['_config']['email'] as $email) {
+		$html .= '<option value="'.$email.'">'.$email.'</option>';
 	}
 	$html .= '</select>';
 	

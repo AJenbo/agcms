@@ -531,12 +531,12 @@ if(empty($GLOBALS['generatedcontent']['title']) && @$GLOBALS['generatedcontent']
 	
 	
 	//TODO add to url
-	if($GLOBALS['cache']['kats'][$GLOBALS['generatedcontent']['activmenu']]['icon'])
+	if(!empty($GLOBALS['cache']['kats'][$GLOBALS['generatedcontent']['activmenu']]['icon']))
 		$icon = $mysqli->fetch_array("SELECT `alt` FROM `files` WHERE path = '".$GLOBALS['cache']['kats'][$GLOBALS['generatedcontent']['activmenu']]['icon']."' LIMIT 1");
 	
-	if($icon[0]['alt'] && $GLOBALS['generatedcontent']['title']) {
+	if(!empty($icon[0]['alt']) && $GLOBALS['generatedcontent']['title']) {
 		$GLOBALS['generatedcontent']['title'] .= ' '.htmlspecialchars($icon[0]['alt']);
-	} elseif($icon[0]['alt']) {
+	} elseif(!empty($icon[0]['alt'])) {
 		$GLOBALS['generatedcontent']['title'] = htmlspecialchars($icon[0]['alt']);
 	} elseif(!$GLOBALS['generatedcontent']['title']) {
 		$icon[0]['path'] = pathinfo($GLOBALS['cache']['kats'][$GLOBALS['generatedcontent']['activmenu']]['icon']);
