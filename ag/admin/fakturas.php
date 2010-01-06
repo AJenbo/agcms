@@ -16,13 +16,13 @@ $GLOBALS['_config']['mysql_database'] = 'huntershouse_dk';
 $mysqli = new simple_mysqli($GLOBALS['_config']['mysql_server'], $GLOBALS['_config']['mysql_user'], $GLOBALS['_config']['mysql_password'], $GLOBALS['_config']['mysql_database']);
 $sajax_request_type = 'POST';
 
-if(!$_POST) {
+if(empty($_POST)) {
 	$where = " `date` >= '".date('Y')."-01-01'";
 	$where .= " AND `date` <= '".date('Y')."-12-31'";
-} elseif(!$_POST['m']) {
+} elseif(empty($_POST['m'])) {
 	$where = " `date` >= '".$_POST['y']."-01-01'";
 	$where .= " AND `date` <= '".$_POST['y']."-12-31'";
-} elseif($_POST['m']) {
+} else {
 	$where = " `date` >= '".$_POST['y']."-".$_POST['m']."-01'";
 	$where .= " AND `date` <= '".$_POST['y']."-".$_POST['m']."-31'";
 }
