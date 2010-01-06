@@ -31,7 +31,7 @@ if(($_POST['adresse'] && ($_POST['post'] || $_POST['by'])) || !$email_rejected |
 	$mysqli = new simple_mysqli($GLOBALS['_config']['mysql_server'], $GLOBALS['_config']['mysql_user'], $GLOBALS['_config']['mysql_password'], $GLOBALS['_config']['mysql_database']);
 	
 	$mysqli->query("INSERT INTO `email` (`navn`, `email`, `adresse`, `land`, `post`, `by`, `tlf1`, `tlf2`, `kartotek`, `interests`, `dato` , `downloaded` , `ip` )
-	VALUES ('".$_POST['navn']."', '".$_POST['email']."', '".$_POST['adresse']."', '".$_POST['land']."', '".$_POST['post']."', '".$_POST['by']."', '".$_POST['tlf1']."', '".$_POST['tlf2']."', '".$_POST['tilfoj']."', '".@$interests."', now(), '".$downloaded."', '".$_SERVER['REMOTE_ADDR']."')");
+	VALUES ('".$_POST['navn']."', '".$_POST['email']."', '".$_POST['adresse']."', '".$_POST['land']."', '".$_POST['post']."', '".$_POST['by']."', '".$_POST['tlf1']."', '".$_POST['tlf2']."', '".@$_POST['tilfoj']."', '".@$interests."', now(), '".$downloaded."', '".$_SERVER['REMOTE_ADDR']."')");
 	
 	$mysqli->close();
 }
@@ -72,7 +72,9 @@ if($_POST['nodownload']) {
 	require_once 'index.php';
 
 	
-	$GLOBALS['generatedcontent']['contenttype'] = 'page';		
+	$GLOBALS['generatedcontent']['contenttype'] = 'page';	
+	
+	$GLOBALS['generatedcontent']['text'] = '';
 	
 	if($_POST['adresse'] && ($_POST['post'] || $_POST['by'])) {
 		$GLOBALS['generatedcontent']['title'] = 'Tak for bestillingen';
@@ -118,8 +120,9 @@ if($_POST['nodownload']) {
 		$GLOBALS['generatedcontent']['text'] = '<p>De har ikke indtasted en gyldig post adresse.</p>';
 	}
 	
-	if($email_rejected)
+	if($email_rejected) {
 		$GLOBALS['generatedcontent']['text'] .= '<p>Deres email adresse blev ikke godkendt!</p>';
+	}
 	
 	$GLOBALS['generatedcontent']['text'] .= '<p>Med vendlig hilsen<br />'.$GLOBALS['_config']['site_name'].'</p>';
 
