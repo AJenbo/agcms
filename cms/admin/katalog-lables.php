@@ -107,10 +107,10 @@ if($_GET['dato']) {
 			} elseif($i % 3 == 2) {
 				?><div class="td right"><?php
 			}
-			echo('<table><tr><td>'.$email[$i]['navn'].'<br />'
-			.$email[$i]['adresse'].'<br />'
-			.$email[$i]['post'].' '.$email[$i]['by']);
-			if($email[$i]['land'] != 'Danmark') echo ('<br />'.$email[$i]['land']);
+			echo('<table><tr><td>'.@$email[$i]['navn'].'<br />'
+			.@$email[$i]['adresse'].'<br />'
+			.@$email[$i]['post'].' '.@$email[$i]['by']);
+			if(@$email[$i]['land'] != 'Danmark') echo ('<br />'.@$email[$i]['land']);
 			 ?></td></tr></table></div><?
 			//end row
 			if($i % 3 == 2) {
