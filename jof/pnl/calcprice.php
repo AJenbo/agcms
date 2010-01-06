@@ -106,7 +106,7 @@ function calcPricePart($country, $product, $kg, $insurance, $l, $w, $h) {
 	//Business
 	if($product == 330) {
 		$vkg = ceil($l*$w*$h/4000);
-		if($vkg > kg)
+		if($vkg > $kg)
 			$kg = $vkg;
 		
 		if($country == 'FI' ||
@@ -270,7 +270,7 @@ function isRoll($w, $l, $h) {
 function isVolume($w, $l, $h) {
 	if($w > 100 || $l > 100 || $h > 100)	
 		return true;
-	if(isRoll(vw, $l, $h)) {
+	if(isRoll($w, $l, $h)) {
 		if($w > 25 && $l > 25)
 			return true;
 		if($w > 25 && $h > 25)
@@ -282,7 +282,7 @@ function isVolume($w, $l, $h) {
 			return true;
 		if($w > 50 && $h > 50)
 			return true;
-		if($h > 50 && vl > 50)
+		if($h > 50 && $l > 50)
 			return true;
 	}
 	

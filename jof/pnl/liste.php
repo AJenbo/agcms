@@ -156,9 +156,9 @@ img {
                             <option value="1"<?php if(@$_GET['arrived'] == 1) { ?> selected="selected"<?php } ?>>Leveret</option>
                             <option value="0"<?php if(@$_GET['arrived'] === '0') { ?> selected="selected"<?php } ?>>Ikke leveret</option>
                         </select></td>
-                    <td><input name="id" size="3" value="<?php echo($_GET['id']); ?>" /></td>
-                    <td><input name="name" size="13" value="<?php echo($_GET['name']); ?>" /></td>
-                    <td><input name="packageId" size="13" maxlength="13" value="<?php echo($_GET['packageId']); ?>" /></td>
+                    <td><input name="id" size="3" value="<?php echo(@$_GET['id']); ?>" /></td>
+                    <td><input name="name" size="13" value="<?php echo(@$_GET['name']); ?>" /></td>
+                    <td><input name="packageId" size="13" maxlength="13" value="<?php echo(@$_GET['packageId']); ?>" /></td>
                     <td><input type="submit" value="Hent" /></td>
                 </tr>
             </tbody>
