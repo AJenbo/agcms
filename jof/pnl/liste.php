@@ -18,6 +18,8 @@ function getList($sender) {
 	require_once '../inc/config.php';
 	$mysqli = new simple_mysqli($GLOBALS['_config']['mysql_server'], $GLOBALS['_config']['mysql_user'], $GLOBALS['_config']['mysql_password'], $GLOBALS['_config']['mysql_database']);
 	
+	$where = ''; 
+	
 	if(@$_GET['y'] && @$_GET['m']) {
 		$where .= ' AND `bookingDate` >= \''.$_GET['y'].'-'.$_GET['m'].'-01\'';
 		$where .= ' AND `bookingDate` <= \''.$_GET['y'].'-'.$_GET['m'].'-31\'';
