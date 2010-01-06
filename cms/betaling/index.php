@@ -530,7 +530,7 @@ if(!empty($_GET['id']) && @$_GET['checkid'] == getCheckid($_GET['id'])) {
 		$GLOBALS['generatedcontent']['crumbs'][1] = array('name' => 'Kvittering', 'link' => '#', 'icon' => NULL);
 		$GLOBALS['generatedcontent']['title'] = 'Kvittering';
 		$GLOBALS['generatedcontent']['headline'] = 'Kvittering';
-		$GLOBALS['generatedcontent']['text'] = '<p>Betalingen er registret og du skulde have modtaget en kvitering via E-mail.</p>';
+		$GLOBALS['generatedcontent']['text'] = '<p>Betalingen er registreret og du skulle have modtaget en kvitering via E-mail.</p>';
 		$shopBody = '<br />En brugere forsøgte at se status side for online faktura #'.$id.' som allerede er betalt.<br />';
 	} elseif(!$_GET['Status']) {
 		//User pressed "back"
