@@ -9,6 +9,8 @@ $GLOBALS['_config']['fax'] = '';
 
 $GLOBALS['_config']['email'][] = 'morten@geoffanderson.com';
 $GLOBALS['_config']['emailpasswords'][] = 'dozer01';
+$GLOBALS['_config']['email'][] = 'bo@geoffanderson.com';
+$GLOBALS['_config']['emailpasswords'][] = 'dozer02';
 $GLOBALS['_config']['email'][] = 'info@geoffanderson.com';
 $GLOBALS['_config']['emailpasswords'][] = 'dozer03';
 $GLOBALS['_config']['emailsent'] = 'INBOX.Sent';
