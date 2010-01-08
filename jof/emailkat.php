@@ -30,6 +30,8 @@ if(($_POST['adresse'] && ($_POST['post'] || $_POST['by'])) || !$email_rejected |
 	require_once("inc/mysqli.php");
 	$mysqli = new simple_mysqli($GLOBALS['_config']['mysql_server'], $GLOBALS['_config']['mysql_user'], $GLOBALS['_config']['mysql_password'], $GLOBALS['_config']['mysql_database']);
 	
+	
+	
 	$mysqli->query("INSERT INTO `email` (`navn`, `email`, `adresse`, `land`, `post`, `by`, `tlf1`, `tlf2`, `kartotek`, `interests`, `dato` , `downloaded` , `ip` )
 	VALUES ('".$_POST['navn']."', '".$_POST['email']."', '".$_POST['adresse']."', '".$_POST['land']."', '".$_POST['post']."', '".$_POST['by']."', '".$_POST['tlf1']."', '".$_POST['tlf2']."', '".@$_POST['tilfoj']."', '".@$interests."', now(), '".$downloaded."', '".$_SERVER['REMOTE_ADDR']."')");
 	
