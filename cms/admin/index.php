@@ -866,9 +866,49 @@ function get_db_error() {
 	}
 	$dbsize = $dbsize/1024/1024;
 	
+	$siteSize = $dbsize;
+	
 	$html .= '<br /><b>Database størelse efter optimering: '.number_format($dbsize, 1, ',', '').' MB</b><br />';
+	
+	
 	$files = $mysqli->fetch_array("SELECT count( * ) AS `count`, sum( `size` ) /1024 /1024 AS `filesize` FROM `files`");
+	
+	$siteSize += $files[0]['filesize'];
+	
 	$html .= '<br /><a onclick="explorer(\'\',\'\');"><b>Samlet størelse af '.number_format($files[0]['count'], 0, '', '.').' filer og billeder: '.number_format($files[0]['filesize'], 1, ',', '').' MB</b></a><br />';
+	
+	
+	$size = 0;
+	$mailsTotal = 0;
+	
+	require_once "../inc/imap.inc.php";
+	$imap = new IMAPMAIL;
+	$imap->open($GLOBALS['_config']['imap'], $GLOBALS['_config']['imapport']);
+	
+	foreach($GLOBALS['_config']['email'] as $i => $email) {
+		$imap->login($email, $GLOBALS['_config']['emailpasswords'][$i]);
+			
+		$mailboxList = $imap->list_mailbox();
+		foreach($mailboxList as $mailbox) {
+			$mailboxStatus = $imap->open_mailbox($mailbox, true);
+			preg_match('/([0-9]+)\sEXISTS/', $mailboxStatus, $mails);
+			if(!empty($mails[1])) {
+				$mailsTotal += $mails[1];
+				preg_match_all('/SIZE\s([0-9]+)/', $imap->fetch_mail('1:'.$mails[1].'', 'FAST'), $mailSizes);
+				$size += array_sum($mailSizes[1]);
+			}
+		}
+	}
+	$imap->close();
+	
+	$size = $size/1024/1024;
+	
+	$html .= '<br /><b>Samlet størelse af '.number_format($mailsTotal, 0, '', '.').' e-mails: '.number_format($size, 1, ',', '').' MB</b></a><br />';
+	
+	$siteSize += $size;
+	
+	$html .= '<br /><b>Total forbrug '.number_format($siteSize, 1, ',', '').' MB / '.number_format(100/3000*$siteSize, 1, ',', '').'% </b></a><br />';
+		
 	$html .= '</div>';
 
 	return $html;

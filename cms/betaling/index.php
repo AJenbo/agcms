@@ -704,7 +704,7 @@ if(!empty($_GET['id']) && @$_GET['checkid'] == getCheckid($_GET['id'])) {
 				//Mail to Ole start
 				if($faktura['department'] != 'mail@huntershouse.dk') {
 					$emailbody = '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><meta http-equiv="Content-Type" content="text/html; charset=utf-8" /><title>';
-					$emailbody .= 'Online faktura #'.$GLOBALS['_config']['pbsfix'].$faktura['id'].' : Betaling gennemført</title><style type="text/css">#faktura td { border:1px #000 solid; border-collapse:collapse; padding:2px; }</style></head><body><p>Den '.$faktura['paydate'].' godkendte '.$faktura['navn'].' online faktura #'.$GLOBALS['_config']['pbsfix'].$faktura['id'].', Som blev opretted af '.$faktura['clerk'].'.<br />Ordren lød på følgende:';
+					$emailbody .= 'Online faktura #'.$GLOBALS['_config']['pbsfix'].$faktura['id'].' : Betaling gennemført</title><style type="text/css">#faktura td { border:1px #000 solid; border-collapse:collapse; padding:2px; }</style></head><body><p>Den '.$faktura['paydate'].' godkendte '.$faktura['navn'].' online faktura #'.$GLOBALS['_config']['pbsfix'].$faktura['id'].', Som blev oprettet af '.$faktura['clerk'].'.<br />Ordren lød på følgende:';
 					$emailbody .= '</p><table id="faktura" cellspacing="0"><thead><tr><td class="td1">Antal</td><td>Benævnelse</td><td class="td3 tal">á pris</td><td class="td4 tal">Total</td></tr></thead><tfoot><tr style="height:auto;min-height:auto;max-height:auto;"><td>&nbsp;</td><td>&nbsp;</td><td class="tal">Nettobeløb</td>';
 					$productslines = max(count($faktura['quantities']), count($faktura['products']), count($faktura['values']));
 					

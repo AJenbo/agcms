@@ -292,6 +292,25 @@
 			}
 			return $response;
 		}
+		
+		/*The get_capability function returns a listing of capabilities that the
+      server supports.*/
+	
+		function get_quota()
+		{
+			if($this->state!="AUTHORIZATION")
+			{
+				echo "Error : No Connection Found!<br>";
+			}
+			if($this->put_line($this->tag.' fetch 1 fast'))
+			{
+				echo $this->get_server_responce();
+			}
+			else
+			{
+				echo "Error : Could not send User request. <br>";
+			}
+		}
 	
 		/* noop function can be used as a periodic poll for new messages or
       message status updates during a period of inactivity*/
@@ -445,10 +464,10 @@
 					$this->error= "Error : User is not authorised or logged in.!<br>";
 					return false;
 		  }
-		  if($this->put_line($this->tag." SELECT $mailbox_name"))
+		  if($this->put_line($this->tag.' SELECT "'.$mailbox_name.'"'))
 			{
 				$response=$this->get_server_responce();
-				if(substr($response,strpos($response,"$this->tag ")+strlen($this->tag)+1,2)!="OK")
+				if(substr($response,strpos($response,$this->tag.' ')+strlen($this->tag)+1,2)!="OK")
 				{
 					$this->error= "Error : $response !<br>";
 					return false;
@@ -463,7 +482,7 @@
 			return $response;
 		}
 		/* The examin_mailbox command is identical to SELECT and returns the same
-		  output; however, the selected mailbox is identified as read-only.*/ 
+		  output; however, the EXAMINE is identified as read-only.*/ 
 		function examin_mailbox($mailbox_name)
 			{
 		  if($this->state=="AUTHORIZATION")
@@ -471,10 +490,10 @@
 			$this->error= "Error : User is not authorised or logged in.!<br>";
 			return false;
 		  }
-		  if($this->put_line($this->tag." EXAMINE $mailbox_name"))
+		  if($this->put_line($this->tag.' EXAMINE "'.$mailbox_name.'"'))
 			{
 				$response=$this->get_server_responce();
-				if(substr($response,strpos($response,"$this->tag ")+strlen($this->tag)+1,2)!="OK")
+				if(substr($response,strpos($response,$this->tag." ")+strlen($this->tag)+1,2)!="OK")
 				{
 					$this->error= "Error : $response !<br>";
 					return false;
@@ -626,13 +645,13 @@
 	  */
 		function list_mailbox($ref_mail_box="",$wild_card="*")
 		{
-			if($this->state=="AUTHORIZATION")
+			if($this->state == "AUTHORIZATION")
 			{
-				$this->error= "Error : User is not authorised or logged in.!<br>";
+				$this->error = "Error : User is not authorised or logged in.!<br>";
 				return false;
 			}
-			if(trim($ref_mail_box)=="")
-				$ref_mail_box="\"\"";
+			if(trim($ref_mail_box) == "")
+				$ref_mail_box = '""';
 			if($this->put_line($this->tag." LIST $ref_mail_box $wild_card"))
 			{
 				$response=$this->get_server_responce();
@@ -647,14 +666,8 @@
 				$this->error= "Error : Could not send User request. <br>";
 				return false;
 			}
-			$temp_arr=explode("\r\n",$response);
-			$return_arr=array();
-			for($i=0;$i<count($temp_arr)-1;$i++)
-			{
-				$line=$temp_arr[$i];
-				array_push($return_arr,substr($line,strrpos($line," ")));
-			}
-			return $return_arr;
+			
+			return array_slice(preg_replace('/.*"([^"]*)"/', '$1', explode("\r\n", $response)), 1, -1);
 		}
 		
 		//function is same as list_mailbox rather than it returns active mail box list

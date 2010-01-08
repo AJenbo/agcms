@@ -17,7 +17,7 @@ foreach($tables as $table)
 
 $included_files = get_included_files();
 foreach($included_files as $filename) {
-	$GLOBALS['cache']['updatetime']['filemtime'] = max($GLOBALS['cache']['updatetime']['filemtime'], filemtime($filename));
+	$GLOBALS['cache']['updatetime']['filemtime'] = max(@$GLOBALS['cache']['updatetime']['filemtime'], filemtime($filename));
 }
 foreach($GLOBALS['cache']['updatetime'] as $time) {
 	$updatetime = max($updatetime, $time);

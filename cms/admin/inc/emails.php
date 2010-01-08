@@ -107,6 +107,8 @@ function sendEmail($id, $from, $interests, $subject, $text) {
 function countEmailTo($interests) {
 	global $mysqli;
 	
+	$andwhere = '';
+	
 	//Colect interests
 	if($interests) {
 		$interests = explode('<', $interests);
