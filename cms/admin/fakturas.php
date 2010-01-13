@@ -11,15 +11,15 @@ require_once '../inc/mysqli.php';
 $mysqli = new simple_mysqli($GLOBALS['_config']['mysql_server'], $GLOBALS['_config']['mysql_user'], $GLOBALS['_config']['mysql_password'], $GLOBALS['_config']['mysql_database']);
 $sajax_request_type = 'POST';
 
-if(empty($_POST)) {
-	$where = " `date` >= '".date('Y')."-01-01'";
-	$where .= " AND `date` <= '".date('Y')."-12-31'";
-} elseif(empty($_POST['m'])) {
+if(!empty($_POST['m']) && !empty($_POST['y'])) {
+	$where = " `date` >= '".$_POST['y']."-".$_POST['m']."-01'";
+	$where .= " AND `date` <= '".$_POST['y']."-".$_POST['m']."-31'";
+} elseif(!empty($_POST['y'])) {
 	$where = " `date` >= '".$_POST['y']."-01-01'";
 	$where .= " AND `date` <= '".$_POST['y']."-12-31'";
 } else {
-	$where = " `date` >= '".$_POST['y']."-".$_POST['m']."-01'";
-	$where .= " AND `date` <= '".$_POST['y']."-".$_POST['m']."-31'";
+	$where = " `date` >= '".date('Y')."-01-01'";
+	$where .= " AND `date` <= '".date('Y')."-12-31'";
 }
 
 if(!empty($_POST['department']))
@@ -30,11 +30,11 @@ if(empty($_POST)) {
 } elseif(!empty($_POST['clerk']))
 	$where .= " AND `clerk` = '".$_POST['clerk']."'";
 
-if(empty($_POST) || $_POST['status'] == 'activ')
+if(empty($_POST) || (!empty($_POST['status']) && $_POST['status'] == 'activ'))
 	$where .= " AND (`status` = 'new' OR `status` = 'locked' OR `status` = 'pbsok' OR `status` = 'pbserror')";
-elseif($_POST['status'] == 'inactiv')
+elseif(!empty($_POST['status']) && $_POST['status'] == 'inactiv')
 	$where .= " AND (`status` != 'new' AND `status` != 'locked' AND `status` != 'pbsok' AND `status` != 'pbserror')";
-elseif($_POST['status'])
+elseif(!empty($_POST['status']) && $_POST['status'])
 	$where .= " AND `status` = '".$_POST['status']."'";
 
 if(!empty($_POST['name']))
@@ -249,7 +249,7 @@ a {
             <td style="width:16px;"></td>
             <td>Id</td>
             <td>Oprettet</td>
-            <?php if(!$_POST['clerk']) { ?><td>Ansvarlige</td><?php } ?>
+            <?php if(empty($_POST['clerk'])) { ?><td>Ansvarlige</td><?php } ?>
             <td>Beløb</td>
             <td>Modtager</td>
         </tr>

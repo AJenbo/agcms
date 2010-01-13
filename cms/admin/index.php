@@ -1,5 +1,5 @@
 <?php
-//*
+/*
 ini_set('display_errors', 1);
 error_reporting(-1);
 /**/
@@ -632,133 +632,134 @@ function saveListOrder($id, $navn, $text) {
 	
 function get_db_error() {
 	global $mysqli;
-	
-	
 
-	$html = '<div id="headline">Database scanning</div><div>';
-	
-	$tabels = $mysqli->fetch_array("SHOW TABLE STATUS");
-	$dbsize = 0;
-	foreach($tabels as $tabel) {
-		$dbsize += $tabel['Data_length'];
-		$dbsize += $tabel['Index_length'];
-	}
-	$dbsize = $dbsize/1024/1024;
-	
-	$html .= '<br /><b>Database størelse før optimering: '.number_format($dbsize, 1, ',', '').' MB</b><br />';
-	
-	//Remove bad bindings
-	$mysqli->query('DELETE FROM `bind` WHERE (kat != 0 AND kat != -1 AND kat NOT IN (SELECT id FROM kat)) OR side NOT IN ( SELECT id FROM sider );');
-	
-	if($mysqli->affected_rows > 1) {
-		$html .= 'Slettede ';
-		if($mysqli->affected_rows > 1) {
-			$html .= $mysqli->affected_rows.' løse bindinger.<br />';
-		} else {
-			$html .= 'en løs binding.<br />';
+	$html = '<div id="headline">Database scanning</div><div>
+	<div>';
+		$html .= '<script type=""><!--
+		function set_db_errors(result) {
+			if(result != \'\')
+				$(\'errors\').innerHTML = $(\'errors\').innerHTML+result;
 		}
-	}
-	
-	//Remove bad tilbehor bindings
-	$mysqli->query('DELETE FROM `tilbehor` WHERE side NOT IN ( SELECT id FROM sider ) OR tilbehor NOT IN ( SELECT id FROM sider );');
 		
-	if($mysqli->affected_rows > 1) {
-		$html .= 'Slettede ';
-		if($mysqli->affected_rows > 1) {
-			$html .= $mysqli->affected_rows.' forældet tilbehør.<br />';
-		} else {
-			$html .= 'et styk forældet tilbehør.<br />';
+		function scan_db() {
+			$(\'loading\').style.visibility = \'\';
+			$(\'errors\').innerHTML = \'\';
+			
+			var starttime = new Date().getTime();
+			
+			$(\'status\').innerHTML = \'Fjerner nyheds tilbældinger uden kontakt oplysninger\';
+			x_remove_bad_submisions(set_db_errors);
+			
+			$(\'status\').innerHTML = \'Fjerner bindinger til sider der ikke eksistere\';
+			x_remove_bad_bindings(set_db_errors);
+			
+			$(\'status\').innerHTML = \'Fjerner tilbehør der ikke eksistere\';
+			x_remove_bad_accessories(set_db_errors);
+			
+			$(\'status\').innerHTML = \'Søger efter sider uden bindinger\';
+			x_get_orphan_pages(set_db_errors);
+			
+			$(\'status\').innerHTML = \'Søger efter sider med ulovlige bindinger\';
+			x_get_pages_with_mismatch_bindings(set_db_errors);
+			
+			$(\'status\').innerHTML = \'Søger efter løse lister\';
+			x_get_orphan_lists(set_db_errors);
+			
+			$(\'status\').innerHTML = \'Søger efter løse rækker\';
+			x_get_orphan_rows(set_db_errors);
+			
+			$(\'status\').innerHTML = \'Søger efter løse kategorier\';
+			x_get_orphan_cats(set_db_errors);
+			
+			$(\'status\').innerHTML = \'Søger efter cirkulære katagorier\';
+			x_get_looping_cats(set_db_errors);
+			
+			$(\'status\').innerHTML = \'Fjerner ikke eksisterende filer fra databasen\';
+			x_remove_none_existing_files(set_db_errors);
+			
+			$(\'status\').innerHTML = \'Kontrolere filnavne\';
+			x_check_file_names(set_db_errors);
+			
+			$(\'status\').innerHTML = \'Kontrolere mappen navne\';
+			x_check_file_paths(set_db_errors);
+			
+			$(\'status\').innerHTML = \'Sletter midlertidige filer\';
+			x_delete_tempfiles(set_db_errors);
+			
+			$(\'status\').innerHTML = \'Henterstørelsen på filer\';
+			x_get_size_of_files(function(){});
+	
+			$(\'status\').innerHTML = \'Optimere databasen\';
+			x_optimize_tables(set_db_errors);
+			
+			$(\'status\').innerHTML = \'Henter database størelse\';
+			x_get_db_size(function(){});
+			
+			$(\'status\').innerHTML = \'\';
+			$(\'loading\').style.visibility = \'hidden\';
+			$(\'errors\').innerHTML = $(\'errors\').innerHTML+\'<br />Scanningen tog \'+Math.round((new Date().getTime()-starttime)/1000).toString()+\'sek\';
 		}
-	}
+		
+		
+		var mailbox_size = 0;
+		function get_mailbox_list_r(result) {
+			for(mail=0; mail<result.length; mail++) {
+				for(mailbox=0; mailbox<result[mail].length; mailbox++) {
+					$(\'status\').innerHTML = \'Læser indholdet i \'+result[mail][mailbox];
+					x_get_mailbox_size(mail, result[mail][mailbox], get_mailbox_size_r);
+				}
+			}
+			$(\'mailboxsize\').innerHTML = Math.round(mailbox_size/1024/1024);
+			$(\'status\').innerHTML = \'\';
+			$(\'loading\').style.visibility = \'hidden\';
+		}
+		
+		function get_mailbox_size_r(size) {
+			mailbox_size += size;
+		}
+		--></script><div><b>Server forbrug</b> - Mail: <span id="mailboxsize"><button onclick="$(\'loading\').style.visibility = \'\'; x_get_mailbox_list(get_mailbox_list_r);">Hent mail forbrug</button></span> DB: <span id="dbsize">'.number_format(get_db_size(), 1, ',', '').'</span> WWW: <span id="wwwsize">'.number_format(get_size_of_files(), 1, ',', '').'</span></div><div id="status"></div><button onclick="scan_db();">Scan database</button><div id="errors"></div>';
+	$html .= '</div>';
+	$html .= '</div>';
+
+	return $html;
+}
 	
-	//is the email valid
-	function valide_mail($email) {
-		if(preg_match('/^([a-z0-9_\.\-])+\@(([a-z0-9\-])+\.)+([a-z0-9]{2,4})+$/i', $email) && getmxrr(preg_replace('/.+?@(.?)/u', '$1', $email), $dummy))
-			return true;
-		else
-			return false;
-	}
+//is the email valid
+function valide_mail($email) {
+	if(preg_match('/^([a-z0-9_\.\-])+\@(([a-z0-9\-])+\.)+([a-z0-9]{2,4})+$/i', $email) && getmxrr(preg_replace('/.+?@(.?)/u', '$1', $email), $dummy))
+		return true;
+	else
+		return false;
+}
+
+function get_subscriptions_with_bad_emails() {
+	global $mysqli;
 	
-	//Print error on orphan pages
+	$html = '';
 	$errors = 0;
 	$emails = $mysqli->fetch_array("SELECT `id`, `email` FROM `email` WHERE `email` != ''");
 	foreach($emails as $email) {
 		if(valide_mail($email['email'])) {
 			continue;
 		}
+		/*
 		$mysqli->query("UPDATE `email` SET `email` = '' WHERE `id` = ".$email['id']." LIMIT 1;");
 		$errors++;
 	}
 	if($errors) {
 		$html .= 'Rettede '.$errors.' nyheds tildmældinger med udløbet email adresse.<br />';
+*/
+		$html .= 'Email: '.$email['email'].' #'.$email['id'].' er ikke gyldig<br />';
 	}
-	unset($emails);
-	unset($email);
-	unset($errors);
+	if($html)
+		$html = '<b>Følge enmail adresser er ikke gyldige</b><br />'.$html;
+	return $html;
+}
+
+function get_orphan_rows() {
+	global $mysqli;
 	
-	//Remove bad newsletter submisions
-	$mysqli->query("DELETE FROM `email` WHERE `email` = '' AND `adresse` = '' AND `tlf1` = '' AND `tlf2` = '';");
-	
-	if($mysqli->affected_rows > 1) {
-		$html .= 'Slettede ';
-		if($mysqli->affected_rows > 1) {
-			$html .= $mysqli->affected_rows.' nyheds tildmældinger uden modtager.<br />';
-		} else {
-			$html .= 'en nykeds tildmælding uden modtager.<br />';
-		}
-	}
-	
-	//todo remove missing maerke from sider->maerke	
-	
-	//Print error on orphan pages
-	$error = $mysqli->fetch_array('SELECT id FROM `sider` WHERE id NOT IN ( SELECT side FROM bind );');
-	if($error) {
-		$html .= '<br /><b>Følgende sider er løse:</b><br />';
-		foreach($error as $value) {
-			$html .= '<a href="?side=redigerside&amp;id='.$value['id'].'">'.$value['id'].': '.$value['navn'].'</a><br />';
-		}
-	}
-	
-	//Print error on orphan pages
-	$error = $mysqli->fetch_array('SELECT id, navn FROM `sider`');
-	$temp_html = '';
-	foreach($error as $value) {
-		$bind = $mysqli->fetch_array('SELECT kat FROM `bind` WHERE `side` = '.$value['id']);
-		//Add active pages that has a list that links to this page
-		$listlinks = $mysqli->fetch_array("SELECT bind.kat FROM `list_rows` JOIN lists ON list_rows.list_id = lists.id JOIN bind ON lists.page_id = bind.side WHERE `list_rows`.`link` = ".$value['id']);
-		foreach($listlinks as $listlink) {
-			if(binding($listlink['kat']) == 0) {
-				$bind[]['kat'] = $listlink['kat'];
-			}
-		}
-		
-		//Is there any mis matches of the root bindings
-		if(count($bind) > 1) {
-			$binding = binding($bind[0]['kat']);
-			foreach($bind as $enbind) {
-				if($binding != binding($enbind['kat'])) {
-					$temp_html .= '<a href="?side=redigerside&amp;id='.$value['id'].'">'.$value['id'].': '.$value['navn'].'</a><br />';
-					continue 2;
-				}
-			}
-		}
-	}
-	if($temp_html) {
-		$html .= '<br /><b>Følgende sider er både indaktive og aktive:</b><br />';
-		$html .= $temp_html;
-		$temp_html = '';
-	}
-	
-	//Print error on orphan lists
-	$error = $mysqli->fetch_array('SELECT id FROM `lists` WHERE page_id NOT IN (SELECT id FROM sider);');
-	if($error) {
-		$html .= '<br /><b>Følgende lister er løse:</b><br />';
-		foreach($error as $value) {
-			$html .= $value['id'].': '.$value['navn'].' '.$value['cell1'].' '.$value['cell2'].' '.$value['cell3'].' '.$value['cell4'].' '.$value['cell5'].' '.$value['cell6'].' '.$value['cell7'].' '.$value['cell8'].' '.$value['cell9'].' '.$value['img'].' '.$value['link'].'<br />';
-		}
-	}
-	
-	//Print error on orphan rows
+	$html = '';
 	$error = $mysqli->fetch_array('SELECT * FROM `list_rows` WHERE list_id NOT IN (SELECT id FROM lists);');
 	if($error) {
 		$html .= '<br /><b>Følgende klonder er uden lister:</b><br />';
@@ -766,18 +767,33 @@ function get_db_error() {
 			$html .= $value['id'].': '.$value['cells'].' '.$value['link'].'<br />';
 		}
 	}
+	if($html)
+		$html = '<b>Følgende sider har ikke nogen binding</b><br />'.$html;
+	return $html;
+}
+
+function get_orphan_cats() {
+	global $mysqli;
 	
-	//Print error on orphan catagoris
-	$error = $mysqli->fetch_array('SELECT id, navn FROM `kat` WHERE bind != 0 AND bind != -1 AND bind NOT IN (SELECT id FROM kat);');
+	$html = '';
+	$error = $mysqli->fetch_array('SELECT `id`, `navn` FROM `kat` WHERE `bind` != 0 AND `bind` != -1 AND `bind` NOT IN (SELECT `id` FROM `kat`);');
 	if($error) {
 		$html .= '<br /><b>Følgende kategorier er løse:</b><br />';
 		foreach($error as $value) {
 			$html .= '<a href="?side=redigerkat&id='.$value['id'].'">'.$value['id'].': '.$value['navn'].'</a><br />';
 		}
 	}
+	if($html)
+		$html = '<b>Følge kategorier har ingen binding</b><br />'.$html;
+	return $html;
+}
+
+function get_looping_cats() {
+	global $mysqli;
 	
 	$error = $mysqli->fetch_array('SELECT id, bind, navn FROM `kat` WHERE bind != 0 AND bind != -1;');
 	
+	$html = '';
 	$temp_html = '';
 	foreach($error as $kat) {
 		$bindtree = kattree($kat['bind']);
@@ -790,8 +806,14 @@ function get_db_error() {
 	}
 	if($temp_html)
 		$html .= '<br /><b>Følgende kategorier er bundet under sig selv:</b><br />'.$temp_html;
-	
-	//Remove non existing files
+
+	if($html)
+		$html = '<b>Følge kategorier er bundet under sig selv</b><br />'.$html;
+	return $html;
+}
+
+function remove_none_existing_files() {
+	global $mysqli;
 	$files = $mysqli->fetch_array('SELECT id, path FROM `files`');
 
 	$deleted = 0;
@@ -801,41 +823,53 @@ function get_db_error() {
 			$deleted++;
 		}
 	}
-	unset($files);
-	if($deleted) {
-		$html .= '<br /><b>Slettede '.$deleted.' gamle fil referencer.</b><br />';
-		$deleted = 0;
-	}
 	
-	//Check file names
+	return '';
+}
+
+function check_file_names() {
+	global $mysqli;
+	$html = '';
 	$error = $mysqli->fetch_array('SELECT path FROM `files` WHERE `path` COLLATE UTF8_bin REGEXP \'[A-Z|_"\\\'`:%=#&+?*<>{}\\]+[^/]+$\' ORDER BY `path` ASC');
 	if($error) {
 		if($mysqli->affected_rows > 1) {
 			$html .= '<br /><b>Følgende '.$mysqli->affected_rows.' filer skal omdøbes:</b><br /><a onclick="explorer(\'\',\'\');">';
 		} else {
-			$html .= '<br /><b>Denne fil skal omdøbes:</b><br /><a onclick="explorer(\'\',\'\');">';
+			$html .= '<br /><br /><a onclick="explorer(\'\',\'\');">';
 		}
 		foreach($error as $value) {
 			$html .= $value['path'].'<br />';
 		}
 		$html .= '</a>';
 	}
-	
-	//Check file paths
+	if($html)
+		$html = '<b>Følge filer skal omdøbes</b><br />'.$html;
+	return $html;
+}
+
+function check_file_paths() {
+	global $mysqli;
+	$html = '';
 	$error = $mysqli->fetch_array('SELECT path FROM `files` WHERE `path` COLLATE UTF8_bin REGEXP \'[A-Z|_"\\\'`:%=#&+?*<>{}\\]+.*[/]+\' ORDER BY `path` ASC');
 	if($error) {
 		if($mysqli->affected_rows > 1) {
 			$html .= '<br /><b>Følgende '.$mysqli->affected_rows.' filer er i en mappe der skal omdøbes:</b><br /><a onclick="explorer(\'\',\'\');">';
 		} else {
-			$html .= '<br /><b>Denne fil er i en mappe der skal omdøbes:</b><br /><a onclick="explorer(\'\',\'\');">';
+			$html .= '<br /><br /><a onclick="explorer(\'\',\'\');">';
 		}
+		//TODO only repport one error per folder
 		foreach($error as $value) {
 			$html .= $value['path'].'<br />';
 		}
 		$html .= '</a>';
 	}
-	
-	//Delete stuck temp files
+	if($html)
+		$html = '<b>Følge mapper skal omdøbes</b><br />'.$html;
+	return $html;
+}
+
+function delete_tempfiles() {
+	$deleted = 0;
 	$files = scandir($_SERVER['DOCUMENT_ROOT'].'/upload/temp');
 	foreach($files as $file) {
 		if(is_file($_SERVER['DOCUMENT_ROOT'].'/upload/temp/'.$file)) {
@@ -843,40 +877,39 @@ function get_db_error() {
 			$deleted++;
 		}
 	}
-	unset($files);
-	unset($file);
-	if($deleted) {
-		$html .= '<br /><b>Slettede '.$deleted.' midlertidige filer.</b><br />';
-		$deleted = 0;
-	}
 	
-	//TODO test for missing alt="" in img under sider
-	/*preg_match_all('/<img[^>]+/?>/ui', $value, $matches);*/
-	$tables = $mysqli->fetch_array("SHOW TABLE STATUS");
-	foreach($tables as $table)
-		$mysqli->query("OPTIMIZE TABLE `".$table['Name']."`");
-	
-	$html .= '<br /><b>Optimerede databasen.</b><br />';
-	
-	$tabels = $mysqli->fetch_array("SHOW TABLE STATUS");
-	$dbsize = 0;
-	foreach($tabels as $tabel) {
-		$dbsize += $tabel['Data_length'];
-		$dbsize += $tabel['Index_length'];
-	}
-	$dbsize = $dbsize/1024/1024;
-	
-	$siteSize = $dbsize;
-	
-	$html .= '<br /><b>Database størelse efter optimering: '.number_format($dbsize, 1, ',', '').' MB</b><br />';
-	
-	
+	return '';
+}
+
+function get_size_of_files() {
+	global $mysqli;
 	$files = $mysqli->fetch_array("SELECT count( * ) AS `count`, sum( `size` ) /1024 /1024 AS `filesize` FROM `files`");
 	
-	$siteSize += $files[0]['filesize'];
+	return $files[0]['filesize'];
+}
+
+function get_mailbox_list() {
+	$mailboxes = array();
+	require_once "../inc/imap.inc.php";
+	$imap = new IMAPMAIL;
+	$imap->open($GLOBALS['_config']['imap'], $GLOBALS['_config']['imapport']);
 	
-	$html .= '<br /><a onclick="explorer(\'\',\'\');"><b>Samlet størelse af '.number_format($files[0]['count'], 0, '', '.').' filer og billeder: '.number_format($files[0]['filesize'], 1, ',', '').' MB</b></a><br />';
+	foreach($GLOBALS['_config']['email'] as $i => $email) {
+		$imap->login($email, $GLOBALS['_config']['emailpasswords'][$i]);
+		$mailboxes[] = $imap->list_mailbox();
+	}
+	$imap->close();
 	
+	return $mailboxes;
+}
+
+/*
+	
+	//todo remove missing maerke from sider->maerke	
+	
+	
+	//TODO test for missing alt="" in img under sider
+	//preg_match_all('/<img[^>]+/?>/ui', $value, $matches);
 	
 	$size = 0;
 	$mailsTotal = 0;
@@ -901,16 +934,119 @@ function get_db_error() {
 	}
 	$imap->close();
 	
-	$size = $size/1024/1024;
-	
-	$html .= '<br /><b>Samlet størelse af '.number_format($mailsTotal, 0, '', '.').' e-mails: '.number_format($size, 1, ',', '').' MB</b></a><br />';
-	
-	$siteSize += $size;
-	
 	$html .= '<br /><b>Total forbrug '.number_format($siteSize, 1, ',', '').' MB / '.number_format(100/3000*$siteSize, 1, ',', '').'% </b></a><br />';
-		
-	$html .= '</div>';
+		*/
 
+
+function get_orphan_lists() {
+	global $mysqli;
+	
+	$error = $mysqli->fetch_array('SELECT id FROM `lists` WHERE page_id NOT IN (SELECT id FROM sider);');
+ 	$html = '';
+	if($error) {
+		$html .= '<br /><b>Følgende lister er løse:</b><br />';
+		foreach($error as $value) {
+			$html .= $value['id'].': '.$value['navn'].' '.$value['cell1'].' '.$value['cell2'].' '.$value['cell3'].' '.$value['cell4'].' '.$value['cell5'].' '.$value['cell6'].' '.$value['cell7'].' '.$value['cell8'].' '.$value['cell9'].' '.$value['img'].' '.$value['link'].'<br />';
+		}
+	}
+	if($html)
+		$html = '<b>Følge lister er ikke bundet til nogen side</b><br />'.$html;
+	return $html;
+}
+
+function get_db_size() {
+	global $mysqli;
+	
+	$tabels = $mysqli->fetch_array("SHOW TABLE STATUS");
+	$dbsize = 0;
+	foreach($tabels as $tabel) {
+		$dbsize += $tabel['Data_length'];
+		$dbsize += $tabel['Index_length'];
+	}
+	return $dbsize/1024/1024;
+}
+
+function optimize_tables() {
+	global $mysqli;
+	
+	$tables = $mysqli->fetch_array("SHOW TABLE STATUS");
+	foreach($tables as $table) {
+		$mysqli->query("OPTIMIZE TABLE `".$table['Name']."`");
+	}
+	return '';
+}
+
+function remove_bad_submisions() {
+	global $mysqli;
+	
+	$mysqli->query("DELETE FROM `email` WHERE `email` = '' AND `adresse` = '' AND `tlf1` = '' AND `tlf2` = '';");
+	
+	//return $mysqli->affected_rows;
+	return '';
+}
+
+function remove_bad_bindings() {
+	global $mysqli;
+	
+	$mysqli->query('DELETE FROM `bind` WHERE (kat != 0 AND kat != -1 AND kat NOT IN (SELECT id FROM kat)) OR side NOT IN ( SELECT id FROM sider );');
+	
+	//return $mysqli->affected_rows;
+	return '';
+}
+
+function remove_bad_accessories() {
+	global $mysqli;
+	
+	//Remove bad tilbehor bindings
+	$mysqli->query('DELETE FROM `tilbehor` WHERE side NOT IN ( SELECT id FROM sider ) OR tilbehor NOT IN ( SELECT id FROM sider );');
+		
+	//return $mysqli->affected_rows;
+	return '';
+}
+
+function get_orphan_pages() {
+	global $mysqli;
+	
+	$html = '';
+	$sider = $mysqli->fetch_array("SELECT `id`, `navn`, `varenr` FROM `sider` WHERE `id` NOT IN(SELECT `side` FROM `bind`);");
+	foreach($sider as $side) {
+		$html .= '<a href="?side=redigerside&amp;id='.$side['id'].'">'.$side['id'].': '.$side['navn'].'</a><br />';
+	}
+	
+	if($html)
+		$html = '<b>Følge sider har ingen binding</b><br />'.$html;
+	return $html;
+}
+
+function get_pages_with_mismatch_bindings() {
+	global $mysqli;
+	
+	$sider = $mysqli->fetch_array("SELECT `id`, `navn`, `varenr` FROM `sider`;");
+	$html = '';
+	foreach($sider as $value) {
+		$bind = $mysqli->fetch_array("SELECT `kat` FROM `bind` WHERE `side` = ".$value['id']);
+		//Add active pages that has a list that links to this page
+		$listlinks = $mysqli->fetch_array("SELECT `bind`.`kat` FROM `list_rows` JOIN `lists` ON `list_rows`.`list_id` = `lists`.`id` JOIN `bind` ON `lists`.`page_id` = `bind`.`side` WHERE `list_rows`.`link` = ".$value['id']);
+		foreach($listlinks as $listlink) {
+			if(binding($listlink['kat']) == 0) {
+				$bind[]['kat'] = $listlink['kat'];
+			}
+		}
+		
+		//Is there any mismatches of the root bindings
+		if(count($bind) > 1) {
+			$binding = binding($bind[0]['kat']);
+			foreach($bind as $enbind) {
+				if($binding != binding($enbind['kat'])) {
+					$html .= '<a href="?side=redigerside&amp;id='.$value['id'].'">'.$value['id'].': '.$value['navn'].'</a><br />';
+					continue 2;
+				}
+			}
+		}
+	}
+	
+	if($html)
+		$html = '<b>Følge sider er både aktive og indaktive</b><br />'.$html;
 	return $html;
 }
 	
@@ -1600,8 +1736,7 @@ function htmlUrlDecode($text) {
 
 function updateSide($id, $navn, $keywords, $pris, $billed, $beskrivelse, $for, $text, $varenr, $burde, $fra, $krav, $maerke) {
 	global $mysqli;
-
-	$mysqli->query('UPDATE `sider` SET `dato` = now(), `navn` = \''.$navn.'\', `keywords` = \''.$keywords.'\', `pris` = \''.$pris.'\', `text` = \''.htmlUrlDecode($text).'\', `varenr` = \''.$varenr.'\', `for` = \''.$for.'\', `beskrivelse` = \''.htmlUrlDecode($beskrivelse).'\', `krav` = \''.$krav.'\', `maerke` = \''.$maerke.'\', `billed` = \''.$billed.'\', `fra` = '.$fra.', `burde` = '.$burde.' WHERE `id` = '.$id.' LIMIT 1');
+	$mysqli->query("UPDATE `sider` SET `dato` = now(), `navn` = '".addcslashes($navn, "'\\")."', `keywords` = '".$keywords."', `pris` = '".$pris."', `text` = '".htmlUrlDecode($text)."', `varenr` = '".$varenr."', `for` = '".$for."', `beskrivelse` = '".htmlUrlDecode($beskrivelse)."', `krav` = '".$krav."', `maerke` = '".$maerke."', `billed` = '".$billed."', `fra` = ".$fra.", `burde` = ".$burde." WHERE `id` = ".$id." LIMIT 1");
 	return true;
 }
 
@@ -1654,7 +1789,7 @@ function updateSpecial($id, $text) {
 function opretSide($kat, $navn, $keywords, $pris, $billed, $beskrivelse, $for, $text, $varenr, $burde, $fra, $krav, $maerke) {
 	global $mysqli;
 
-	$mysqli->query('INSERT INTO `sider` (`dato` ,`navn` ,`keywords` ,`pris` ,`text` ,`varenr` ,`for` ,`beskrivelse` ,`krav` ,`maerke` ,`billed` ,`fra` ,`burde` ) VALUES (now(), \''.$navn.'\', \''.$keywords.'\', \''.$pris.'\', \''.htmlUrlDecode($text).'\', \''.$varenr.'\', \''.$for.'\', \''.htmlUrlDecode($beskrivelse).'\', \''.$krav.'\', \''.$maerke.'\', \''.$billed.'\', '.$fra.', '.$burde.')');
+	$mysqli->query('INSERT INTO `sider` (`dato` ,`navn` ,`keywords` ,`pris` ,`text` ,`varenr` ,`for` ,`beskrivelse` ,`krav` ,`maerke` ,`billed` ,`fra` ,`burde` ) VALUES (now(), \''.addcslashes($navn, "'\\").'\', \''.$keywords.'\', \''.$pris.'\', \''.htmlUrlDecode($text).'\', \''.$varenr.'\', \''.$for.'\', \''.htmlUrlDecode($beskrivelse).'\', \''.$krav.'\', \''.$maerke.'\', \''.$billed.'\', '.$fra.', '.$burde.')');
 	
 	$id = $mysqli->insert_id;
 	$mysqli->query('INSERT INTO `bind` (`side` ,`kat` ) VALUES (\''.$id.'\', \''.$kat.'\')');
@@ -1723,7 +1858,25 @@ sajax_export(
 	array('name' => 'katspath', 'method' => 'GET'),
 	array('name' => 'siteList_expand', 'method' => 'GET'),
 	array('name' => 'kat_expand', 'method' => 'GET'),
-	array('name' => 'getSiteTree', 'method' => 'GET')
+	array('name' => 'getSiteTree', 'method' => 'GET'),
+	array('name' => 'get_db_size', 'method' => 'GET', "asynchronous" => false),
+	array('name' => 'optimize_tables', 'method' => 'GET', "asynchronous" => false),
+	array('name' => 'remove_bad_bindings', 'method' => 'POST', "asynchronous" => false),
+	array('name' => 'remove_bad_accessories', 'method' => 'POST', "asynchronous" => false),
+	array('name' => 'remove_bad_submisions', 'method' => 'POST', "asynchronous" => false),
+	array('name' => 'get_orphan_pages', 'method' => 'GET', "asynchronous" => false),
+	array('name' => 'get_pages_with_mismatch_bindings', 'method' => 'GET', "asynchronous" => false),
+	array('name' => 'get_orphan_lists', 'method' => 'GET', "asynchronous" => false),
+	array('name' => 'get_orphan_rows', 'method' => 'GET', "asynchronous" => false),
+	array('name' => 'get_orphan_cats', 'method' => 'GET', "asynchronous" => false),
+	array('name' => 'get_looping_cats', 'method' => 'GET', "asynchronous" => false),
+	array('name' => 'remove_none_existing_files', 'method' => 'POST', "asynchronous" => false),
+	array('name' => 'check_file_names', 'method' => 'GET', "asynchronous" => false),
+	array('name' => 'check_file_paths', 'method' => 'GET', "asynchronous" => false),
+	array('name' => 'delete_tempfiles', 'method' => 'POST', "asynchronous" => false),
+	array('name' => 'get_size_of_files', 'method' => 'GET', "asynchronous" => false),
+	array('name' => 'get_mailbox_list', 'method' => 'GET', "asynchronous" => false),
+	array('name' => 'get_mailbox_size', 'uri' => 'get_mailbox_size.php', 'method' => 'GET', "asynchronous" => false)
 );
 //	$sajax_remote_uri = '/ajax.php';
 sajax_handle_client_request();
