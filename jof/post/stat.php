@@ -19,7 +19,10 @@ function print_stat($formSenderID) {
 		$post = $mysqli->fetch_array("SELECT count(*) as count FROM `post` WHERE `token` != '' AND `formSenderID` = '".$formSenderID."' AND `formDate` >= '".$_GET['y']."-".$i."-01' AND `formDate` <= '".$_GET['y']."-".$i."-31' AND deleted = 0 ORDER BY `formDate` DESC, `id` DESC");
 		$total += $post[0]['count'];
 		echo('<td>'.$post[0]['count'].'</td>');
-		$month_total[$i] += $post[0]['count'];
+		if(!empty($month_total[$i]))
+			$month_total[$i] += $post[0]['count'];
+		else
+			$month_total[$i] = $post[0]['count'];
 	}
 	echo('<td>'.$total.'</td>');
 	
@@ -79,6 +82,7 @@ a {
     ?><tr style="background-color:#FFF">
         <td style="font-weight:bold;width:auto;">Totla</td>
         <?php
+		$total = 0;
 		foreach($month_total as $value) {
 			echo('<td>'.$value.'</td>');
 			$total += $value;

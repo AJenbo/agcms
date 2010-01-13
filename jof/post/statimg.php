@@ -28,7 +28,7 @@ $text_color[] = imagecolorallocate($im, 136, 170, 255);
 $text_color[] = imagecolorallocate($im, 47, 185, 0);
 $text_color[] = imagecolorallocate($im, 47, 185, 0);
 $text_color[] = imagecolorallocate($im, 255, 0, 51);
-	
+$total[0] = 0;
 foreach($brugere as $id => $navn) {
 	$grafs[$navn] = print_stat($id);
 	$color = current($text_color);
@@ -36,7 +36,10 @@ foreach($brugere as $id => $navn) {
 	for($x=1; $x<13; $x++) {
 		if($grafs[$navn][$x-1] && $grafs[$navn][$x])
 			imageline($im, ($x-1)*40, 554-$grafs[$navn][$x-1], $x*40, 554-$grafs[$navn][$x], $color);
-		$total[$x] += $grafs[$navn][$x];
+		if(empty($total[$x]))
+			$total[$x] = $grafs[$navn][$x];
+		else
+			$total[$x] += $grafs[$navn][$x];
 	}
 	next($text_color);
 }
