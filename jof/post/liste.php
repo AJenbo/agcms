@@ -166,7 +166,7 @@ for($i=0;$i<$post_nr;$i++) {
 				if(($post[$i]['pd_arrived'] == 'true' && $post[$i]['pd_weight'] == 0) || ($post[$i]['ss2'] == 'true' && $post[$i]['pd_height'] == 0 && ($post[$i]['pd_arrived'] == 'true' || $post[$i]['pd_weight'] != 0))) {
 					?><img src="error.png" width="16" height="16" alt="!" title="Info fra Track &amp; Trace utilstrækkelig" /> <?php
 				} else {
-					?><img src="arrow_refresh.png" width="16" height="16" alt="!" title="Mangler info fra Track &amp; Trace" /> <?php
+					?><a href="/syncpost.php?id=<?php echo($post[$i]['id']); ?>"><img style="border:0" src="arrow_refresh.png" width="16" height="16" alt="!" title="Mangler info fra Track &amp; Trace" /></a> <?php
 					?><a href="?delete=<?php echo($post[$i]['id']); ?>"><img style="border:0" src="bin.png" width="16" height="16" alt="X" title="Slet" /></a> <?php
 				}
 			}
@@ -178,7 +178,7 @@ for($i=0;$i<$post_nr;$i++) {
 				}
 			}
 		} elseif(!$post[$i]['pd_weight'] && !$post[$i]['pd_height'] && !$post[$i]['pd_width'] && !$post[$i]['pd_length'] && $post[$i]['pd_return'] == 'false' && $post[$i]['pd_arrived'] == 'false') {
-			?><img src="arrow_refresh.png" width="16" height="16" alt="!" title="Mangler info fra Track &amp; Trace" /> <?php
+			?><a href="/syncpost.php?id=<?php echo($post[$i]['id']); ?>"><img style="border:0" src="arrow_refresh.png" width="16" height="16" alt="!" title="Mangler info fra Track &amp; Trace" /></a> <?php
 			?><a href="?delete=<?php echo($post[$i]['id']); ?>"><img style="border:0" src="bin.png" width="16" height="16" alt="X" title="Slet" /></a> <?php
 		}
 		?>

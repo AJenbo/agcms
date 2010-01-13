@@ -1,6 +1,8 @@
 <?php
+/*
 ini_set('display_errors', 1);
 error_reporting(-1);
+/**/
 require_once 'post/snoopy/snoopy.class.php';
 require_once 'inc/mysqli.php';
 require_once 'inc/config.php';
@@ -19,7 +21,9 @@ function getTrackTrace($stregkode) {
 	preg_match('/>([.0-9]+)\skg<\\/td>/ui', $snoopy->results, $kg);
 	preg_match_all('/>([0-9]+)\smm.<\\/td>/ui', $snoopy->results, $vol);
 	
-	if(preg_match('/>Retur\stil\safsender</ui', $snoopy->results))
+	if(preg_match('/Retur\stil\safsender/ui', $snoopy->results)
+	|| preg_match('/Ikke\safhentet,\ssendt\sretur/ui', $snoopy->results)
+	|| preg_match('/Returneret/ui', $snoopy->results))
 		$pd_return = 'true';
 	else
 		$pd_return = 'false';
@@ -29,7 +33,10 @@ function getTrackTrace($stregkode) {
 	|| preg_match('/[>]Udleveret[<]/ui', $snoopy->results)
 	|| preg_match('/Omdelt\slandzone/ui', $snoopy->results)
 	|| preg_match('/Flexleveret/ui', $snoopy->results)
-	|| preg_match('/Lørdagsomdelt/ui', $snoopy->results))
+	|| preg_match('/Lørdagsomdelt/ui', $snoopy->results)
+	|| preg_match('/Ankommet\sDøgnpost/ui', $snoopy->results)
+	|| preg_match('/Ekspresforsendelse\sudleveret/ui', $snoopy->results)
+	|| preg_match('/ShowSignatureServlet/ui', $snoopy->results))
 		$pd_arrived = 'true';
 	else
 		$pd_arrived = 'false';
@@ -48,24 +55,32 @@ function getTrackTrace($stregkode) {
 	return $return;
 }
 
-if(!empty($_GET['m']) && !empty($_GET['y'])) {
-	$lm = $_GET['m'];
-	$ly = $_GET['y'];
+$scope = '';
+if(!empty($_GET['id'])) {
+	$scope = " AND `id` = ".$_GET['id'];
+} elseif(!empty($_GET['m']) && !empty($_GET['y'])) {
+	$scope = " AND `formDate` >= '".$_GET['y']."-".$_GET['m']."-01'";
 } elseif(date('m') != 1) {
-	$lm  = date('m')-1;
-	$ly = date('Y');
+	$scope = 
+	" AND `formDate` >= '"
+	.date('Y')
+	."-"
+	.(date('m')
+	-1)
+	."-01'";
 } else {
-	$lm = 12;
-	$ly = date('Y')-1;
+	$scope = " AND `formDate` >= '".(date('Y')-1)."-12-01'";
 }
 
-
-$post = $mysqli->fetch_array("SELECT id, STREGKODE FROM `post` WHERE token > 0 AND deleted = 0 AND `STREGKODE` != '' AND `pd_arrived` = 'false' AND `formDate` >= '".$ly."-".$lm."-01' ORDER BY `formDate`");
+$post = $mysqli->fetch_array("SELECT id, STREGKODE FROM `post` WHERE token > 0 AND deleted = 0 AND `STREGKODE` != '' AND `pd_arrived` = 'false'".$scope." ORDER BY `formDate`");
 
 foreach($post as $pakke) {
 	$size = getTrackTrace($pakke['STREGKODE']);
 	$mysqli->query('UPDATE `post` SET `pd_return` = \''.$size[4].'\', `pd_arrived` = \''.$size[5].'\', `pd_weight` = \''.$size[0].'\', `pd_length` = \''.$size[1].'\', `pd_height` = \''.$size[2].'\', `pd_width` = \''.$size[3].'\' WHERE `id` ='.$pakke['id'].' LIMIT 1');
 }
 
-echo('Der blev søgt på '.count($post).' pakker.');
+if(!empty($_GET['id']))
+	header('Location: /post/liste.php');
+else
+	echo('Der blev søgt på '.count($post).' pakker.');
 ?>
