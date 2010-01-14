@@ -295,7 +295,7 @@ function makedir($name) {
 		chmod($_SERVER['DOCUMENT_ROOT'].@$_COOKIE['admin_dir']."/".$name, 0777);
 		return true;
 	}
-	//*/
+/**/
 	
 	//*
 	if(!ini_get('safe_mode') || (ini_get('safe_mode') && ini_get('safe_mode_gid')) || !function_exists('ftp_mkdir')) {
@@ -550,15 +550,16 @@ function searchfiles($qpath, $qalt, $qmime) {
 			$sql .= ' OR `alt` LIKE \'%'.$qalt.'%\'';
 		if($qpath || $qalt)
 			$sql .= ')';
-		if(($qpath || $qalt) && $sql_mime)
+		if(($qpath || $qalt) && !empty($sql_mime))
 			$sql .= ' AND ';
-		if($sql_mime)
+		if(!empty($sql_mime))
 			$sql .= $sql_mime;
 	}
 	
 	$filecount = $mysqli->fetch_array('SELECT count(id) AS count'.$sql);
 	$filecount = $filecount[0]['count'];
 	
+	$sql_select = '';
 	if($qpath || $qalt) {
 		$sql_select .= ', ';
 		if($qpath && $qalt)
