@@ -298,7 +298,7 @@ writeRichText("beskrivelse", \''.rtefsafe($sider[0]['beskrivelse']).'\', "", '.(
 			unset($rows_cells);
 			
 			//Sort rows
-			if($lists[0]['sorts'][$bycell] < 1)
+			if(empty($bycell) || $lists[0]['sorts'][$bycell] < 1)
 				$rows = array_natsort($rows, 'id' , $lists[0]['sort']);
 			else
 				$rows = array_listsort($rows, 'id', $lists[0]['sort'], NULL, $list[0]['sorts'][$lists[0]['sort']]);
