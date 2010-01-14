@@ -113,29 +113,29 @@ function pakkepris(height, width, length, weight, packtype, ss1, ss46, ss5amount
 		
 		moms = true;
 		if(vWeight <= 1) {
-			grundpris = 34;
+			grundpris = 39.75;
 		} else if(vWeight <= 5) {
-			grundpris = 39.25;
+			grundpris = 45;
 		} else if(vWeight <= 10) {
-			grundpris = 47;
+			grundpris = 52.5;
 		} else if(vWeight <= 15) {
-			grundpris = 56;
+			grundpris = 60.75;
 		} else if(vWeight <= 20) {
-			grundpris = 66;
+			grundpris = 69.5;
 		} else if(vWeight <= 25) {
-			grundpris = 76;
+			grundpris = 79.5;
 		} else if(vWeight <= 30) {
-			grundpris = 86;
+			grundpris = 88.5;
 		} else if(vWeight <= 35) {
-			grundpris = 96;
+			grundpris = 97;
 		} else if(vWeight <= 40) {
 			grundpris = 106;
 		} else if(vWeight <= 45) {
 			grundpris = 116;
 		} else if(vWeight <= 50) {
-			grundpris = 130;
+			grundpris = 140;
 		} else {
-			grundpris += Math.round((vWeight-50)*5.5*100)/100+135;
+			grundpris += Math.round((vWeight-50)*5.5*100)/100+140;
 		}
 
 	} else if(packtype == 'O') {

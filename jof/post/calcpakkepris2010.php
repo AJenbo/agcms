@@ -114,28 +114,28 @@ function pakkepris($height, $width, $length, $weight, $packtype, $ss1, $ss46, $s
 		
 		$moms = true;
 		if($vWeight <= 1) {
-			$grundpris = 34;
+			$grundpris = 39.75;
 			@$GLOBALS['e1']++;
 		} elseif($vWeight <= 5) {
-			$grundpris = 39.25;
+			$grundpris = 45;
 			@$GLOBALS['e5']++;
 		} elseif($vWeight <= 10) {
-			$grundpris = 47;
+			$grundpris = 52.5;
 			@$GLOBALS['e10']++;
 		} elseif($vWeight <= 15) {
-			$grundpris = 56;
+			$grundpris = 60.75;
 			@$GLOBALS['e15']++;
 		} elseif($vWeight <= 20) {
-			$grundpris = 66;
+			$grundpris = 69.5;
 			@$GLOBALS['e20']++;
 		} elseif($vWeight <= 25) {
-			$grundpris = 76;
+			$grundpris = 79.5;
 			@$GLOBALS['e25']++;
 		} elseif($vWeight <= 30) {
-			$grundpris = 86;
+			$grundpris = 88.5;
 			@$GLOBALS['e30']++;
 		} elseif($vWeight <= 35) {
-			$grundpris = 96;
+			$grundpris = 97;
 			@$GLOBALS['e35']++;
 		} elseif($vWeight <= 40) {
 			$grundpris = 106;
@@ -144,10 +144,10 @@ function pakkepris($height, $width, $length, $weight, $packtype, $ss1, $ss46, $s
 			$grundpris = 116;
 			@$GLOBALS['e45']++;
 		} elseif($vWeight <= 50) {
-			$grundpris = 130;
+			$grundpris = 140;
 			@$GLOBALS['e50']++;
 		} else {
-			$grundpris += round(($vWeight-50)*5.5, 2)+135;
+			$grundpris += round(($vWeight-50)*5.5, 2)+140;
 			@$GLOBALS['e50b']++;
 		}
 
