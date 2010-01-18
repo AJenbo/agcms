@@ -50,6 +50,26 @@ class simple_mysqli extends mysqli
 		return $rows;
 	}
 	
+	function fetch_one($query) 
+	{ 
+		//send information
+		//global $firephp;
+		//if(!headers_sent())
+			//$firephp->fb($query);
+		
+		$result = parent::query($query); 
+		if(mysqli_error($this)) { 
+			throw new QueryException(mysqli_error($this), mysqli_errno($this)); 
+		}
+		$row = $result->fetch_assoc();
+			
+		$result->close();
+		
+		if(!isset($row)) $row = array();
+		
+		return $row;
+	}
+	
 	function query($query) 
 	{
 		//send information
