@@ -1,4 +1,5 @@
 <?php
+ini_set('intl.default_locale', 'dk-DA');
 
 require_once("inc/config.php");
 
@@ -20,6 +21,7 @@ function valide_mail_host($host) {
 }
 
 //is the email valid
+$email_rejected = false;
 if(!preg_match('/^([a-z0-9_\.\-])+\@(([a-z0-9\-])+\.)+([a-z0-9]{2,4})+$/i', $_POST['email']) || !valide_mail_host($_POST['email'])) {
 	$_POST['email'] = '';
 	$email_rejected = true;
@@ -29,8 +31,18 @@ if(($_POST['adresse'] && ($_POST['post'] || $_POST['by'])) || !$email_rejected |
 	//Save to database
 	require_once("inc/mysqli.php");
 	$mysqli = new simple_mysqli($GLOBALS['_config']['mysql_server'], $GLOBALS['_config']['mysql_user'], $GLOBALS['_config']['mysql_password'], $GLOBALS['_config']['mysql_database']);
-	
-	
+	if($_POST['adresse'] == strtoupper($_POST['adresse']))
+		$_POST['adresse'] = strtolower($_POST['adresse']);
+	$_POST['adresse'] = ucfirst($_POST['adresse']);
+	if($_POST['by'] == strtoupper($_POST['by']))
+		$_POST['by'] = strtolower($_POST['by']);
+	$_POST['by'] = ucwords($_POST['by']);
+	if($_POST['navn'] == strtoupper($_POST['navn']))
+		$_POST['navn'] = strtolower($_POST['navn']);
+	$_POST['navn'] = ucwords($_POST['navn']);
+	if($_POST['land'] == strtoupper($_POST['land']))
+		$_POST['land'] = strtolower($_POST['land']);
+	$_POST['land'] = ucwords($_POST['land']);
 	
 	$mysqli->query("INSERT INTO `email` (`navn`, `email`, `adresse`, `land`, `post`, `by`, `tlf1`, `tlf2`, `kartotek`, `interests`, `dato` , `downloaded` , `ip` )
 	VALUES ('".$_POST['navn']."', '".$_POST['email']."', '".$_POST['adresse']."', '".$_POST['land']."', '".$_POST['post']."', '".$_POST['by']."', '".$_POST['tlf1']."', '".$_POST['tlf2']."', '".@$_POST['tilfoj']."', '".@$interests."', now(), '".$downloaded."', '".$_SERVER['REMOTE_ADDR']."')");
