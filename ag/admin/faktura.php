@@ -1281,7 +1281,8 @@ new tcal ({ 'controlid': 'cdate' });
 		</tr>
 		<tr>
 			<td>Afdeling:</td>
-			<td><?php if(count($GLOBALS['_config']['email']) > 1 && $faktura['status'] != 'giro' && $faktura['status'] != 'cash' && $faktura['status'] != 'accepted' && $faktura['status'] != 'canceled') {
+			<td><?php if($faktura['status'] != 'giro' && $faktura['status'] != 'cash' && $faktura['status'] != 'accepted' && $faktura['status'] != 'canceled') {
+if(count($GLOBALS['_config']['email']) > 1) {
 				?><select name="department" id="department">
 					<option value=""<?php if(!$faktura['department']) echo(' selected="selected"'); ?>>Ikke valgt</option>
 					<?php
@@ -1291,6 +1292,10 @@ new tcal ({ 'controlid': 'cdate' });
 					<?php
 				}
 			?></select><?php
+		} else {
+		echo($GLOBALS['_config']['email'][0]);
+		?><input name="department" id="department" type="hidden" value="<?php echo($GLOBALS['_config']['email'][0]); ?>" /><?php
+		}
 	} else {
 		echo($faktura['department']);
 	}
