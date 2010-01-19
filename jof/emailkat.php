@@ -125,7 +125,10 @@ if($_POST['nodownload']) {
 		
 		$mail->AddAddress($GLOBALS['_config']['email'][0], $GLOBALS['_config']['site_name']);
 		
-		$mail->Send();
+		if(!$mail->Send()) {
+		//TODO secure this against injects and <; in the email and name
+			$mysqli->query("INSERT INTO `emails` (`subject`, `from`, `to`, `body`, `date`) VALUES ('".$subject."', '".$_POST['navn']."<".$from.">', '".$GLOBALS['_config']['site_name']."<".$GLOBALS['_config']['email'][0].">', '".$body."', NOW());");
+		}
 		////////////////////////////////////////////////
 		
 	} else {

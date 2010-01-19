@@ -272,7 +272,10 @@ $emailBody .= '<br />'.$_GET['postcode'].' '.$_GET['city'].'<br />'.$countries[$
 	$mail->Subject    = 'Forsendelsesadvis';
 	$mail->MsgHTML($emailBody, $_SERVER['DOCUMENT_ROOT']);
 	$mail->AddAddress($_GET['email'], ($_GET['att'] ? $_GET['att'] : $_GET['name']));
-	$mail->Send();
+	if($mail->Send()) {
+		//TODO secure this against injects and <; in the email and name
+		$mysqli->query("INSERT INTO `emails` (`subject`, `from`, `to`, `body`, `date`) VALUES ('Forsendelsesadvis', '".$GLOBALS['_config']['site_name']."<".$GLOBALS['_config']['email'][0].">', '".($_GET['att'] ? $_GET['att'] : $_GET['name'])."<".$_GET['email'].">', '".$$emailBody."', NOW());");
+	}
 	
 	//Upload email to the sent folder via imap
 	if($GLOBALS['_config']['imap']) {
