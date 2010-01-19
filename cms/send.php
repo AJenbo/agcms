@@ -1,0 +1,89 @@
+<?php
+
+//INSERT INTO `emails` (`subject`, `from`, `to`, `body`, `date`) VALUES ('subject', 'from<t@f.dk>', 'to<t@f.dk>;to2<t2@f.dk>', '<div>test</div>', NOW());
+
+require_once "inc/config.php";
+require_once "inc/mysqli.php";
+
+//Open database
+$mysqli = new simple_mysqli($GLOBALS['_config']['mysql_server'], $GLOBALS['_config']['mysql_user'], $GLOBALS['_config']['mysql_password'], $GLOBALS['_config']['mysql_database']);
+
+//Get emails that needs sending
+$emails = $mysqli->fetch_array("SELECT * FROM `emails`");
+
+if(!$emails) {
+	die('Ingen emails at sende.');
+}
+
+$emailsSendt = 0;
+
+//Load the PHPMailer class
+require_once "inc/phpMailer/class.phpmailer.php";
+
+//Set up PHPMailer
+$PHPMailer = new PHPMailer();
+$PHPMailer->SetLanguage('dk');
+$PHPMailer->IsSMTP();
+$PHPMailer->Host       = $GLOBALS['_config']['smtp'];
+$PHPMailer->Port       = $GLOBALS['_config']['smtpport'];
+$PHPMailer->CharSet    = 'utf-8';
+if($GLOBALS['_config']['emailpassword'] !== false) {
+	$PHPMailer->SMTPAuth   = true; // enable SMTP authentication
+	$PHPMailer->Username   = $GLOBALS['_config']['email'][0];
+	$PHPMailer->Password   = $GLOBALS['_config']['emailpassword'];
+} else {
+	$PHPMailer->SMTPAuth   = false;
+}
+
+//Load the imap class, if imap is configured
+if($GLOBALS['_config']['imap'] !== FALSE) {
+	require_once "inc/imap.inc.php";
+}
+
+foreach($emails as $email) {
+	$PHPMailer->ClearAddresses();
+	$PHPMailer->ClearCCs();
+	$PHPMailer->ClearReplyTos();
+	$PHPMailer->ClearAllRecipients();
+	$PHPMailer->ClearAttachments();
+	
+	$email['from'] = explode('<', $email['from']);
+	$email['from'][1] = substr($email['from'][1], 0, -1);
+	$PHPMailer->From       = $email['from'][1];
+	$PHPMailer->FromName   = $email['from'][0];
+	$PHPMailer->AddReplyTo($email['from'][1], $email['from'][0]);
+	
+	$email['to'] = explode(';', $email['to']);
+	foreach($email['to'] as $key => $to) {
+		$email['to'][$key] = explode('<', $to);
+		$email['to'][$key][1] = substr($email['to'][$key][1], 0, -1);
+		$PHPMailer->AddAddress($email['to'][$key][1], $email['to'][$key][0]);
+	}
+	
+	$PHPMailer->Subject = $email['subject'];
+	$PHPMailer->MsgHTML($email['body'], $_SERVER['DOCUMENT_ROOT']);
+	
+	if(!$PHPMailer->Send()) {
+		continue;
+	}
+	
+	$emailsSendt++;
+	
+	$mysqli->query("DELETE FROM `emails` WHERE `id` = ".$email['id']);
+	
+	//Upload email to the sent folder via imap
+	if($GLOBALS['_config']['imap'] !== FALSE) {
+		$imap = new IMAPMAIL;
+		$imap->open($GLOBALS['_config']['imap'], $GLOBALS['_config']['imapport']);
+		$emailnr = array_search('', $GLOBALS['_config']['email']);
+		$imap->login($GLOBALS['_config']['email'][$emailnr ? $emailnr : 0], $GLOBALS['_config']['emailpasswords'][$emailnr ? $emailnr : 0]);
+		$imap->append_mail($GLOBALS['_config']['emailsent'], $PHPMailer->CreateHeader().$PHPMailer->CreateBody(), '\Seen');
+		$imap->close();
+	}
+}
+
+//Close SMTP connection
+$PHPMailer->SmtpClose();
+
+echo($emailsSendt.' email(s) blev sendt.');
+?>
