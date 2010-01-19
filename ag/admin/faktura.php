@@ -560,7 +560,8 @@ function save($id, $type, $updates) {
 		
 		$mail->AddAddress($faktura['email'], $faktura['navn']);
 		if(!$mail->Send()) {
-			return array('error' => 'Mailen kunde ikke sendes!');
+			return array('error' => 'Mailen kunde ikke sendes!
+'.$mail->ErrorInfo);
 		}
 		$mysqli->query("UPDATE `fakturas` SET `status` = 'locked' WHERE `status` = 'new' && `id` = ".$faktura['id']);
 		$mysqli->query("UPDATE `fakturas` SET `sendt` = 1, `department` = '".$faktura['department']."' WHERE `id` = ".$faktura['id']);
@@ -667,7 +668,8 @@ Fax: '.$GLOBALS['_config']['fax'].'<br />
 	
 	$mail->AddAddress($faktura['email'], $faktura['navn']);
 	if(!$mail->Send()) {
-		return array('error' => 'Mailen kunde ikke sendes!');
+		return array('error' => 'Mailen kunde ikke sendes!
+'.$mail->ErrorInfo);
 	}
 	$error .= '
 

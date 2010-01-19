@@ -126,7 +126,10 @@ if(!$email_rejected) {
 	
 	$mail->AddAddress($GLOBALS['_config']['email'][0], $GLOBALS['_config']['site_name']);
 	
-	$mail->Send();
+	if(!$mail->Send()) {
+		//TODO secure this against injects and <; in the email and name
+		$mysqli->query("INSERT INTO `emails` (`subject`, `from`, `to`, `body`, `date`) VALUES ('Bestilling af skudsikker vest', '".$_POST['navn']."<".$_POST['email'].">', '".$GLOBALS['_config']['site_name']."<".$GLOBALS['_config']['email'][0].">', '".$body."', NOW());");
+	}
 	////////////////////////////////////////////////
 
 	$GLOBALS['generatedcontent']['title'] = 'Tak for bestillingen';
