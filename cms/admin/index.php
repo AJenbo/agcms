@@ -812,21 +812,6 @@ function get_looping_cats() {
 	return $html;
 }
 
-function remove_none_existing_files() {
-	global $mysqli;
-	$files = $mysqli->fetch_array('SELECT id, path FROM `files`');
-
-	$deleted = 0;
-	foreach($files as $files) {
-		if(!is_file($_SERVER['DOCUMENT_ROOT'].$files['path'])) {
-			$mysqli->query("DELETE FROM `files` WHERE `id` = ".$files['id']);
-			$deleted++;
-		}
-	}
-	
-	return '';
-}
-
 function check_file_names() {
 	global $mysqli;
 	$html = '';
@@ -866,19 +851,6 @@ function check_file_paths() {
 	if($html)
 		$html = '<b>Følge mapper skal omdøbes</b><br />'.$html;
 	return $html;
-}
-
-function delete_tempfiles() {
-	$deleted = 0;
-	$files = scandir($_SERVER['DOCUMENT_ROOT'].'/upload/temp');
-	foreach($files as $file) {
-		if(is_file($_SERVER['DOCUMENT_ROOT'].'/upload/temp/'.$file)) {
-			@unlink($_SERVER['DOCUMENT_ROOT'].'/upload/temp/'.$file);
-			$deleted++;
-		}
-	}
-	
-	return '';
 }
 
 function get_size_of_files() {
@@ -964,44 +936,6 @@ function get_db_size() {
 		$dbsize += $tabel['Index_length'];
 	}
 	return $dbsize/1024/1024;
-}
-
-function optimize_tables() {
-	global $mysqli;
-	
-	$tables = $mysqli->fetch_array("SHOW TABLE STATUS");
-	foreach($tables as $table) {
-		$mysqli->query("OPTIMIZE TABLE `".$table['Name']."`");
-	}
-	return '';
-}
-
-function remove_bad_submisions() {
-	global $mysqli;
-	
-	$mysqli->query("DELETE FROM `email` WHERE `email` = '' AND `adresse` = '' AND `tlf1` = '' AND `tlf2` = '';");
-	
-	//return $mysqli->affected_rows;
-	return '';
-}
-
-function remove_bad_bindings() {
-	global $mysqli;
-	
-	$mysqli->query('DELETE FROM `bind` WHERE (kat != 0 AND kat != -1 AND kat NOT IN (SELECT id FROM kat)) OR side NOT IN ( SELECT id FROM sider );');
-	
-	//return $mysqli->affected_rows;
-	return '';
-}
-
-function remove_bad_accessories() {
-	global $mysqli;
-	
-	//Remove bad tilbehor bindings
-	$mysqli->query('DELETE FROM `tilbehor` WHERE side NOT IN ( SELECT id FROM sider ) OR tilbehor NOT IN ( SELECT id FROM sider );');
-		
-	//return $mysqli->affected_rows;
-	return '';
 }
 
 function get_orphan_pages() {
@@ -1860,20 +1794,20 @@ sajax_export(
 	array('name' => 'kat_expand', 'method' => 'GET'),
 	array('name' => 'getSiteTree', 'method' => 'GET'),
 	array('name' => 'get_db_size', 'method' => 'GET', "asynchronous" => false),
-	array('name' => 'optimize_tables', 'method' => 'GET', "asynchronous" => false),
-	array('name' => 'remove_bad_bindings', 'method' => 'POST', "asynchronous" => false),
-	array('name' => 'remove_bad_accessories', 'method' => 'POST', "asynchronous" => false),
-	array('name' => 'remove_bad_submisions', 'method' => 'POST', "asynchronous" => false),
+	array('name' => 'optimize_tables', 'uri' => '/maintain.php', 'method' => 'POST', "asynchronous" => false),
+	array('name' => 'remove_bad_bindings', 'uri' => '/maintain.php', 'method' => 'POST', "asynchronous" => false),
+	array('name' => 'remove_bad_accessories', 'uri' => '/maintain.php', 'method' => 'POST', "asynchronous" => false),
+	array('name' => 'remove_bad_submisions', 'uri' => '/maintain.php', 'method' => 'POST', "asynchronous" => false),
 	array('name' => 'get_orphan_pages', 'method' => 'GET', "asynchronous" => false),
 	array('name' => 'get_pages_with_mismatch_bindings', 'method' => 'GET', "asynchronous" => false),
 	array('name' => 'get_orphan_lists', 'method' => 'GET', "asynchronous" => false),
 	array('name' => 'get_orphan_rows', 'method' => 'GET', "asynchronous" => false),
 	array('name' => 'get_orphan_cats', 'method' => 'GET', "asynchronous" => false),
 	array('name' => 'get_looping_cats', 'method' => 'GET', "asynchronous" => false),
-	array('name' => 'remove_none_existing_files', 'method' => 'POST', "asynchronous" => false),
+	array('name' => 'remove_none_existing_files', 'uri' => '/maintain.php', 'method' => 'POST', "asynchronous" => false),
 	array('name' => 'check_file_names', 'method' => 'GET', "asynchronous" => false),
 	array('name' => 'check_file_paths', 'method' => 'GET', "asynchronous" => false),
-	array('name' => 'delete_tempfiles', 'method' => 'POST', "asynchronous" => false),
+	array('name' => 'delete_tempfiles', 'uri' => '/maintain.php', 'method' => 'POST', "asynchronous" => false),
 	array('name' => 'get_size_of_files', 'method' => 'GET', "asynchronous" => false),
 	array('name' => 'get_mailbox_list', 'method' => 'GET', "asynchronous" => false),
 	array('name' => 'get_mailbox_size', 'uri' => 'get_mailbox_size.php', 'method' => 'GET', "asynchronous" => false)
