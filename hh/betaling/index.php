@@ -686,17 +686,20 @@ if(!empty($_GET['id']) && @$_GET['checkid'] == getCheckid($_GET['id'])) {
 				$mail->Subject    = 'Ordre '.$faktura['id'].' - Betaling gennemført';
 				$mail->MsgHTML($emailbody, $_SERVER['DOCUMENT_ROOT']);
 				$mail->AddAddress($faktura['email'], $GLOBALS['_config']['site_name']);
-				$mail->Send();
-				
-				//Upload email to the sent folder via imap
-				if($GLOBALS['_config']['imap']) {
-					require_once "inc/imap.inc.php";
-					$imap = new IMAPMAIL;
-					$imap->open($GLOBALS['_config']['imap'], $GLOBALS['_config']['imapport']);
-					$emailnr = array_search($faktura['department'], $GLOBALS['_config']['email']);
-					$imap->login($faktura['department'], $GLOBALS['_config']['emailpasswords'][$emailnr ? $emailnr : 0]);
-					$imap->append_mail($GLOBALS['_config']['emailsent'], $mail->CreateHeader().$mail->CreateBody(), '\Seen');
-					$imap->close();
+				if($mail->Send()) {
+					//Upload email to the sent folder via imap
+					if($GLOBALS['_config']['imap']) {
+						require_once "inc/imap.inc.php";
+						$imap = new IMAPMAIL;
+						$imap->open($GLOBALS['_config']['imap'], $GLOBALS['_config']['imapport']);
+						$emailnr = array_search($faktura['department'], $GLOBALS['_config']['email']);
+						$imap->login($faktura['department'], $GLOBALS['_config']['emailpasswords'][$emailnr ? $emailnr : 0]);
+						$imap->append_mail($GLOBALS['_config']['emailsent'], $mail->CreateHeader().$mail->CreateBody(), '\Seen');
+						$imap->close();
+					}
+				} else {
+				//TODO secure this against injects and <; in the email and name
+					$mysqli->query("INSERT INTO `emails` (`subject`, `from`, `to`, `body`, `date`) VALUES ('".'Ordre '.$faktura['id'].' - Betaling gennemført'."', '".$GLOBALS['_config']['site_name']."<".$faktura['department'].">', '".$GLOBALS['_config']['site_name']."<".$faktura['email'].">', '".$emailbody."', NOW());");
 				}
 				//Mail to customer end
 				
@@ -751,17 +754,22 @@ if(!empty($_GET['id']) && @$_GET['checkid'] == getCheckid($_GET['id'])) {
 					$mail->Subject    = 'Online faktura #'.$GLOBALS['_config']['pbsfix'].$faktura['id'].' : Betaling gennemført';
 					$mail->MsgHTML($emailbody, $_SERVER['DOCUMENT_ROOT']);
 					$mail->AddAddress('mail@huntershouse.dk', 'Hunters House A/S');
-					$mail->Send();
-				
-					//Upload email to the sent folder via imap
-					if($GLOBALS['_config']['imap']) {
-						require_once "inc/imap.inc.php";
-						$imap = new IMAPMAIL;
-						$imap->open($GLOBALS['_config']['imap'], $GLOBALS['_config']['imapport']);
-						$emailnr = array_search($faktura['department'], $GLOBALS['_config']['email']);
-						$imap->login($faktura['department'], $GLOBALS['_config']['emailpasswords'][$emailnr ? $emailnr : 0]);
-						$imap->append_mail($GLOBALS['_config']['emailsent'], $mail->CreateHeader().$mail->CreateBody(), '\Seen');
-						$imap->close();
+					if($mail->Send()) {
+					
+						//Upload email to the sent folder via imap
+						if($GLOBALS['_config']['imap']) {
+							require_once "inc/imap.inc.php";
+							$imap = new IMAPMAIL;
+							$imap->open($GLOBALS['_config']['imap'], $GLOBALS['_config']['imapport']);
+							$emailnr = array_search($faktura['department'], $GLOBALS['_config']['email']);
+							$imap->login($faktura['department'], $GLOBALS['_config']['emailpasswords'][$emailnr ? $emailnr : 0]);
+							$imap->append_mail($GLOBALS['_config']['emailsent'], $mail->CreateHeader().$mail->CreateBody(), '\Seen');
+							$imap->close();
+						}
+						
+					} else {
+					//TODO secure this against injects and <; in the email and name
+						$mysqli->query("INSERT INTO `emails` (`subject`, `from`, `to`, `body`, `date`) VALUES ('".'Online faktura #'.$GLOBALS['_config']['pbsfix'].$faktura['id'].' : Betaling gennemført'."', '".$GLOBALS['_config']['site_name']."<".$faktura['department'].">', 'Hunters House A/S<mail@huntershouse.dk>', '".$emailbody."', NOW());");
 					}
 				}
 				//Mail to Ole end
@@ -896,16 +904,20 @@ Klik <a href="'.$GLOBALS['_config']['base_url'].'/admin/faktura.php?id='.$id.'">
 		
 		$mail->AddAddress($faktura['department'], $GLOBALS['_config']['site_name']);
 		
-		$mail->Send();
+		if($mail->Send()) {
 		
-		//Upload email to the sent folder via imap
-		if($GLOBALS['_config']['imap']) {
-			require_once "inc/imap.inc.php";
-			$imap = new IMAPMAIL;
-			$imap->open($GLOBALS['_config']['imap'], $GLOBALS['_config']['imapport']);
-			$imap->login($GLOBALS['_config']['email'][0], $GLOBALS['_config']['emailpasswords'][0]);
-			$imap->append_mail($GLOBALS['_config']['emailsent'], $mail->CreateHeader().$mail->CreateBody(), '\Seen');
-			$imap->close();
+			//Upload email to the sent folder via imap
+			if($GLOBALS['_config']['imap']) {
+				require_once "inc/imap.inc.php";
+				$imap = new IMAPMAIL;
+				$imap->open($GLOBALS['_config']['imap'], $GLOBALS['_config']['imapport']);
+				$imap->login($GLOBALS['_config']['email'][0], $GLOBALS['_config']['emailpasswords'][0]);
+				$imap->append_mail($GLOBALS['_config']['emailsent'], $mail->CreateHeader().$mail->CreateBody(), '\Seen');
+				$imap->close();
+			}
+		} else {
+		//TODO secure this against injects and <; in the email and name
+			$mysqli->query("INSERT INTO `emails` (`subject`, `from`, `to`, `body`, `date`) VALUES ('".'Att: '.$faktura['clerk'].' - Online faktura #'.$id.' : '.$shopSubject."', '".$GLOBALS['_config']['site_name']."<".$GLOBALS['_config']['email'][0].">', '".$GLOBALS['_config']['site_name']."<".$faktura['department'].">', '".$emailbody."', NOW());");
 		}
 	}
 	
