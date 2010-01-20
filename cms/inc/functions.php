@@ -272,7 +272,8 @@ function get_table($listid, $bycell, $current_kat) {
 						$html .= '<td style="text-align:right;" class="Pris">';
 						if($row['link'])
 							$html .= $row['link'];
-						$html .= str_replace(',00', ',-', number_format($row[$key], 2, ',', '.'));
+						if(!empty($row[$key]))
+							$html .= str_replace(',00', ',-', number_format($row[$key], 2, ',', '.'));
 						if($row['link'])
 							$html .= '</a>';
 						$html .= '</td>';

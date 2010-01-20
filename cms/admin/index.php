@@ -709,7 +709,7 @@ function get_db_error() {
 					x_get_mailbox_size(mail, result[mail][mailbox], get_mailbox_size_r);
 				}
 			}
-			$(\'mailboxsize\').innerHTML = Math.round(mailbox_size/1024/1024);
+			$(\'mailboxsize\').innerHTML = Math.round(mailbox_size/1024/1024)+\'MB\';
 			$(\'status\').innerHTML = \'\';
 			$(\'loading\').style.visibility = \'hidden\';
 		}
@@ -717,7 +717,14 @@ function get_db_error() {
 		function get_mailbox_size_r(size) {
 			mailbox_size += size;
 		}
-		--></script><div><b>Server forbrug</b> - Mail: <span id="mailboxsize"><button onclick="$(\'loading\').style.visibility = \'\'; x_get_mailbox_list(get_mailbox_list_r);">Hent mail forbrug</button></span> DB: <span id="dbsize">'.number_format(get_db_size(), 1, ',', '').'</span> WWW: <span id="wwwsize">'.number_format(get_size_of_files(), 1, ',', '').'</span></div><div id="status"></div><button onclick="scan_db();">Scan database</button><div id="errors"></div>';
+		--></script><div><b>Server forbrug</b> - Mail: <span id="mailboxsize"><button onclick="$(\'loading\').style.visibility = \'\'; x_get_mailbox_list(get_mailbox_list_r);">Hent mail forbrug</button></span> DB: <span id="dbsize">'.number_format(get_db_size(), 1, ',', '').'MB</span> WWW: <span id="wwwsize">'.number_format(get_size_of_files(), 1, ',', '').'MB</span></div><div id="status"></div><button onclick="scan_db();">Scan database</button><div id="errors"></div>';
+	
+	$emailsCount = $mysqli->fetch_one("SELECT count(*) as 'count' FROM `emails`");
+	$emails = $mysqli->fetch_one("SHOW TABLE STATUS LIKE 'emails'");
+	
+	
+	$html .= '<div>Forsinket emails '.$emailsCount['count'].'/'.($emails['Auto_increment'] - 1).'</div>';
+	
 	$html .= '</div>';
 	$html .= '</div>';
 
