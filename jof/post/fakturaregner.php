@@ -13,7 +13,7 @@ table td {
 <body><?php
 $GLOBALS['unknownpackages'] = array();
 if(isset($_POST['E']) || isset($_POST['P']) || isset($_POST['O'])) {
-		require_once 'calcpakkepris2009.php';
+		require_once 'calcpakkepris'.$_POST['Y'].'.php';
 		require_once '../inc/config.php';
 		require_once '../inc/mysqli.php';
 		
@@ -45,8 +45,11 @@ if(isset($_POST['E']) || isset($_POST['P']) || isset($_POST['O'])) {
 						
 						if($array[$key]['ss1'] = preg_match('/Fo/u', $matches[8][$key]) && $post[0]['ss1'] == 'false')
 							$array[$key]['sserror'] = true;
+						else
+							$array[$key]['sserror'] = FALSE;
 						if($array[$key]['ss46'] = preg_match('/Lø/u', $matches[8][$key]) && $post[0]['ss46'] == 'false')
 							$array[$key]['sserror'] = true;
+						$array[$key]['ss5amount'] = 0;
 						if(preg_match('/Va/u' ,$matches[8][$key])) 
 							$array[$key]['ss5amount'] = $post[0]['ss5amount'];
 						$array[$key]['price'] = str_replace(',','.',$matches[9][$key]);
@@ -58,6 +61,7 @@ if(isset($_POST['E']) || isset($_POST['P']) || isset($_POST['O'])) {
 			unset($matches);
 			unset($key);
 			unset($line);
+			$totalPorto = 0;
 			foreach($array as $pacakage) {
 				$fragt = pakkepris($pacakage['height']/10, $pacakage['width']/10, $pacakage['length']/10, $pacakage['weight']/1000, $type, $pacakage['ss1'] ? 'true' : 'false', $pacakage['ss46'] ? 'true' : 'false', $pacakage['ss5amount'], false);
 				if(round($fragt, 2) != round($pacakage['price'], 2) || $pacakage['sserror'])
@@ -82,7 +86,7 @@ if(isset($_POST['E']) || isset($_POST['P']) || isset($_POST['O'])) {
 					.'</td><td>'
 					.round($pacakage['price'] - $fragt, 2)
 					.'</td></tr>');
-			$totalPorto += $fragt;
+				$totalPorto += $fragt;
 			}
 			echo('<tr><td colspan="10">Total : '.$totalPorto.'</td></tr>');
 		}
@@ -101,6 +105,8 @@ if(isset($_POST['E']) || isset($_POST['P']) || isset($_POST['O'])) {
 		}
 	}
 ?><br /><form action="" method="post">
+Faktura år: <input name="Y" maxlength="4" size="4" type="text" value="<?php echo(date('Y')); ?>" />
+<br />
 Erhverves pakker:<br />
 <textarea name="E" cols="70" rows="20"></textarea>
 <br />
