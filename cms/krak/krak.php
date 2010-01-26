@@ -33,11 +33,36 @@ function getAddressKrak($telephoneNumber) {
 	if(!$result['GetTeleByTnResult'])
 		return false;
 	
-	$return['recName1'] = $result['GetTeleByTnResult']['Tele']['CompanyName'];
-	if(!$return['recName1'])
-	$return['recName1'] = $result['GetTeleByTnResult']['Tele']['FirstName'].' '.$result['GetTeleByTnResult']['Tele']['LastName'];
+	$return['recName1'] = '';
+	if(!empty($result['GetTeleByTnResult']['Tele']['CompanyName'])) {
+		$return['recName1'] = $result['GetTeleByTnResult']['Tele']['CompanyName'];
+	}
+	if(!$return['recName1']) {
+		if(!empty($result['GetTeleByTnResult']['Tele']['FirstName'])) {
+			$return['recName1'] = $result['GetTeleByTnResult']['Tele']['FirstName'];
+		}
+		if(!empty($result['GetTeleByTnResult']['Tele']['LastName'])) {
+			$return['recName1'] .= ' '.$result['GetTeleByTnResult']['Tele']['LastName'];
+		}
+	}
 	$return['recName1'] = trim($return['recName1']);
-	$return['recAddress1'] = trim($result['GetTeleByTnResult']['Tele']['Address']['PlaceName'].' '.$result['GetTeleByTnResult']['Tele']['Address']['RoadName'].' '.$result['GetTeleByTnResult']['Tele']['Address']['HouseNumberNumericFrom'].$result['GetTeleByTnResult']['Tele']['Address']['HouseNumberCharacterFrom'].' '.$result['GetTeleByTnResult']['Tele']['Address']['Floor'].' '.$result['GetTeleByTnResult']['Tele']['Address']['Door']);
+	
+	$return['recAddress1'] = '';
+	if(!empty($result['GetTeleByTnResult']['Tele']['Address']['PlaceName']))
+		$return['recAddress1'] .= $result['GetTeleByTnResult']['Tele']['Address']['PlaceName'];
+	if(!empty($result['GetTeleByTnResult']['Tele']['Address']['RoadName']))
+		$return['recAddress1'] .= ' '.$result['GetTeleByTnResult']['Tele']['Address']['RoadName'];
+	if(!empty($result['GetTeleByTnResult']['Tele']['Address']['HouseNumberNumericFrom']))
+		$return['recAddress1'] .= ' '.$result['GetTeleByTnResult']['Tele']['Address']['HouseNumberNumericFrom'];
+	if(!empty($result['GetTeleByTnResult']['Tele']['Address']['HouseNumberCharacterFrom']))
+		$return['recAddress1'] .= $result['GetTeleByTnResult']['Tele']['Address']['HouseNumberCharacterFrom'];
+	if(!empty($result['GetTeleByTnResult']['Tele']['Address']['Floor']))
+		$return['recAddress1'] .= ' '.$result['GetTeleByTnResult']['Tele']['Address']['Floor'];
+	if(!empty($result['GetTeleByTnResult']['Tele']['Address']['Door']))
+		$return['recAddress1'] .= ' '.$result['GetTeleByTnResult']['Tele']['Address']['Door'];
+	$return['recAddress1'] = trim($return['recAddress1']);
+
+	
 	$return['recZipCode'] = trim($result['GetTeleByTnResult']['Tele']['Address']['PostalCode']);
 	$return['recCVR'] = '';
 	$return['recAttPerson'] = '';
@@ -46,7 +71,10 @@ function getAddressKrak($telephoneNumber) {
 	$return['recAttPerson'] = '';
 	$return['recAddress2'] = '';
 	$return['recPostBox'] = '';
-	$return['email'] = trim($result['GetTeleByTnResult']['Tele']['ContactInfo']['EmailAddress']);
+	$result['GetTeleByTnResult']['Tele']['ContactInfo']['EmailAddress']
+	if(!empty($result['GetTeleByTnResult']['Tele']['ContactInfo']['EmailAddress'])) {
+		$return['email'] = trim($result['GetTeleByTnResult']['Tele']['ContactInfo']['EmailAddress']);
+	}
 		
 	if($return['recName1'] || $return['recAddress1'] || $return['recZipCode'])
 		return $return;
