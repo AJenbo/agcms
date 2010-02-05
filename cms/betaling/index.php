@@ -529,12 +529,18 @@ if(!empty($_GET['id']) && @$_GET['checkid'] == getCheckid($_GET['id'])) {
 	} elseif(!$faktura) {
 		$GLOBALS['generatedcontent']['text'] = '<p>Betalingen findes ikke i vores system.</p>';
 		$shopBody = '<br />En brugere forsøgte at betale online faktura #'.$id.' som ikke fines i systemet!<br />';
+	} elseif($faktura['status'] == 'pbserror' || $faktura['status'] == 'canceled' || $faktura['status'] == 'rejected') {
+		$GLOBALS['generatedcontent']['crumbs'][1] = array('name' => 'Kvittering', 'link' => '#', 'icon' => NULL);
+		$GLOBALS['generatedcontent']['title'] = 'Kvittering';
+		$GLOBALS['generatedcontent']['headline'] = 'Kvittering';
+		$GLOBALS['generatedcontent']['text'] = '<p>Denne handel er blevet annulleret eller afvist.</p>';
+		$shopBody = '<br />En kunde forsøgte at se status-side for online faktura #'.$id.'som er annulleret eller afvist.<br />';
 	} elseif($faktura['status'] != 'locked' && $faktura['status'] != 'new') {
 		$GLOBALS['generatedcontent']['crumbs'][1] = array('name' => 'Kvittering', 'link' => '#', 'icon' => NULL);
 		$GLOBALS['generatedcontent']['title'] = 'Kvittering';
 		$GLOBALS['generatedcontent']['headline'] = 'Kvittering';
 		$GLOBALS['generatedcontent']['text'] = '<p>Betalingen er registreret og du skulle have modtaget en kvitering via E-mail.</p>';
-		$shopBody = '<br />En brugere forsøgte at se status side for online faktura #'.$id.' som allerede er betalt.<br />';
+		$shopBody = '<br />En kunde forsøgte at se status-side for online faktura #'.$id.'som allerede er betalt.<br />';
 	} elseif(empty($_GET['Status'])) {
 		//User pressed "back"
 		header('Location: '.$GLOBALS['_config']['base_url'].'/betaling/?id='.$id.'&checkid='.$_GET['checkid'].'&step=2', TRUE, 303);
