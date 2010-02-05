@@ -48,7 +48,7 @@ function echo_menu($menu) {
 			if($value['id'] == @$GLOBALS['generatedcontent']['activmenu']) {
 				?></h4><?php
 			}
-			if($value['subs']) {
+			if(!empty($value['subs'])) {
 				echo_menu($value['subs']);
 			}
 			?></li><?php

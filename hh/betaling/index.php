@@ -514,7 +514,10 @@ if(!empty($_GET['id']) && @$_GET['checkid'] == getCheckid($_GET['id'])) {
 	$GLOBALS['generatedcontent']['headline'] = 'Fejl';
 	$GLOBALS['generatedcontent']['text'] = 'Der opstod en ukendt fejl.';
 	
-	$shopSubject = $_GET['Status'].$_GET['Status_code'];
+	if(!empty($_GET['Status']) && !empty($_GET['Status_code']))
+		$shopSubject = $_GET['Status'].$_GET['Status_code'];
+	else
+		$shopSubject = 'Ingen status';
 	$shopBody = '<br />Der opstået en fejl på betalings siden ved online faktura #'.$id.'!<br />';
 	
 	if($faktura = $mysqli->fetch_array("SELECT * FROM `fakturas` WHERE `id` = ".$id)) {
@@ -526,13 +529,19 @@ if(!empty($_GET['id']) && @$_GET['checkid'] == getCheckid($_GET['id'])) {
 	} elseif(!$faktura) {
 		$GLOBALS['generatedcontent']['text'] = '<p>Betalingen findes ikke i vores system.</p>';
 		$shopBody = '<br />En brugere forsøgte at betale online faktura #'.$id.' som ikke fines i systemet!<br />';
+	} elseif($faktura['status'] == 'pbserror' || $faktura['status'] == 'canceled' || $faktura['status'] == 'rejected') {
+		$GLOBALS['generatedcontent']['crumbs'][1] = array('name' => 'Kvittering', 'link' => '#', 'icon' => NULL);
+		$GLOBALS['generatedcontent']['title'] = 'Kvittering';
+		$GLOBALS['generatedcontent']['headline'] = 'Kvittering';
+		$GLOBALS['generatedcontent']['text'] = '<p>Denne handel er blevet annulleret eller afvist.</p>';
+		$shopBody = '<br />En kunde forsøgte at se status-side for online faktura #'.$id.'som er annulleret eller afvist.<br />';
 	} elseif($faktura['status'] != 'locked' && $faktura['status'] != 'new') {
 		$GLOBALS['generatedcontent']['crumbs'][1] = array('name' => 'Kvittering', 'link' => '#', 'icon' => NULL);
 		$GLOBALS['generatedcontent']['title'] = 'Kvittering';
 		$GLOBALS['generatedcontent']['headline'] = 'Kvittering';
 		$GLOBALS['generatedcontent']['text'] = '<p>Betalingen er registreret og du skulle have modtaget en kvitering via E-mail.</p>';
-		$shopBody = '<br />En brugere forsøgte at se status side for online faktura #'.$id.' som allerede er betalt.<br />';
-	} elseif(!$_GET['Status']) {
+		$shopBody = '<br />En kunde forsøgte at se status-side for online faktura #'.$id.'som allerede er betalt.<br />';
+	} elseif(empty($_GET['Status'])) {
 		//User pressed "back"
 		header('Location: '.$GLOBALS['_config']['base_url'].'/betaling/?id='.$id.'&checkid='.$_GET['checkid'].'&step=2', TRUE, 303);
 		exit;
