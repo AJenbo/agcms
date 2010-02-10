@@ -4,6 +4,11 @@ ini_set('display_errors', 1);
 error_reporting(-1);
 /**/
 
+date_default_timezone_set('Europe/Copenhagen');
+setlocale(LC_ALL, 'da_DK');
+bindtextdomain("agcms", $_SERVER['DOCUMENT_ROOT'].'/theme/locale');
+textdomain("agcms");
+
 //ini_set('zlib.output_compression', 1);
 
 require_once 'inc/header.php'; 
@@ -405,13 +410,13 @@ if(@$_GET['sog'] || @$GLOBALS['side']['inactive']) {
 	$GLOBALS['generatedcontent']['text'] = '';
 
 	if(@$GLOBALS['side']['inactive'])
-		$GLOBALS['generatedcontent']['text'] .= '<p>Siden kunne ikke findes. Prøv eventuelt at søge efter en lignende side.</p>';
+		$GLOBALS['generatedcontent']['text'] .= '<p>'._('Siden kunne ikke findes. Prøv eventuelt at søge efter en lignende side.').'</p>';
 	
-	$GLOBALS['generatedcontent']['text'] .= '<form action="/" method="get"><table><tr><td>Indeholder</td><td><input name="q" size="31" value="';
+	$GLOBALS['generatedcontent']['text'] .= '<form action="/" method="get"><table><tr><td>'._('Indeholder').'</td><td><input name="q" size="31" value="';
 	if(@$GLOBALS['side']['inactive']) {
 		$GLOBALS['generatedcontent']['text'] .= htmlspecialchars(preg_replace(array('/-/u', '/.*?side[0-9]+\s(.*?)[.]html/u'), array(' ', '\1'), urldecode($_SERVER['REQUEST_URI'])));
 	}
-	$GLOBALS['generatedcontent']['text'] .= '" /></td><td><input type="submit" value="Søg" /></td></tr><tr><td>Vare nummer</td><td><input name="varenr" size="31" value="" maxlength="63" /></td></tr><tr><td>Uden ordene</td><td><input name="sogikke" size="31" value="" /></td></tr><tr><td>Udvidet:</td><td><input name="qext" type="checkbox" value="1" /></td></tr><tr><td>Min pris</td><td><input name="minpris" size="5" maxlength="11" value="" />,-</td></tr><tr><td>Max pris&nbsp;</td><td><input name="maxpris" size="5" maxlength="11" value="" />,-</td></tr><tr><td>M&aelig;rke:</td><td><select name="maerke"><option value="0">Alle</option>';
+	$GLOBALS['generatedcontent']['text'] .= '" /></td><td><input type="submit" value="'._('Søg').'" /></td></tr><tr><td>'._('Vare nummer').'</td><td><input name="varenr" size="31" value="" maxlength="63" /></td></tr><tr><td>'._('Uden ordene').'</td><td><input name="sogikke" size="31" value="" /></td></tr><tr><td>'._('Udvidet:').'</td><td><input name="qext" type="checkbox" value="1" /></td></tr><tr><td>'._('Min pris').'</td><td><input name="minpris" size="5" maxlength="11" value="" />,-</td></tr><tr><td>'._('Max pris').'&nbsp;</td><td><input name="maxpris" size="5" maxlength="11" value="" />,-</td></tr><tr><td>'._('Mærke:').'</td><td><select name="maerke"><option value="0">'._('Alle').'</option>';
 	$maerker = $mysqli->fetch_array('SELECT `id`, `navn` FROM `maerke` ORDER BY `navn` ASC');
 		
 	getUpdateTime('maerke');

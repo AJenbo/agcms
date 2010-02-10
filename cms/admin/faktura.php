@@ -3,8 +3,13 @@
 ini_set('display_errors', 1);
 error_reporting(-1);
 /**/
-require_once $_SERVER['DOCUMENT_ROOT'].'/admin/inc/logon.php';
+
 date_default_timezone_set('Europe/Copenhagen');
+setlocale(LC_ALL, 'da_DK');
+bindtextdomain("agcms", $_SERVER['DOCUMENT_ROOT'].'/theme/locale');
+textdomain("agcms");
+
+require_once $_SERVER['DOCUMENT_ROOT'].'/admin/inc/logon.php';
 
 require_once '../inc/sajax.php';
 require_once '../inc/config.php';
@@ -265,6 +270,7 @@ function getCheckid($id) {
 	return substr(md5($id.$GLOBALS['_config']['pbspassword']), 3, 5);
 }
 
+//TODO gettext this
 function echoprint() {
 	global $faktura;
 	
@@ -492,40 +498,55 @@ function save($id, $type, $updates) {
 	
 	if($type == 'email') {
 		if(!validemail($faktura['email'])) {
-			return array('error' => 'Mail adressen er ikke gyldig!');
+			return array('error' => _('Mail adressen er ikke gyldig!'));
 		}
 		if(!$faktura['department'] && count($GLOBALS['_config']['email']) > 1) {
-			return array('error' => 'Du har ikke valgt en afsender!');
+			return array('error' => _('Du har ikke valgt en afsender!'));
 		} elseif(!$faktura['department']) {
 				$faktura['department'] = $GLOBALS['_config']['email'][0];
 		}
 		if($faktura['amount'] < 1) {
-			return array('error' => 'Fakturaen skal være på mindst 1 krone!');
+			return array('error' => _('Fakturaen skal være på mindst 1 krone!'));
 		}
 		
 		include_once "../inc/phpMailer/class.phpmailer.php";
 		
 		$emailBody = '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml">
-<head>
-<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-<title>'.'Online betaling til '.$GLOBALS['_config']['site_name'].'</title>
-</head>
-<body>
-<p>Tak for Deres ordre.</p>
-<p>Deres Online faktura nr. '.$faktura['id'].' er godkendt og klar til forsendelse så snart betaling er udført.</p>
+<html xmlns="http://www.w3.org/1999/xhtml"><head><meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>'.sprintf(_('Online betaling til %s'), $GLOBALS['_config']['site_name']).'</title>
+</head><body>
+'.sprintf(_('<p>Tak for Deres ordre.</p>
+
+<p>Deres Online faktura nr. %d er godkendt og klar til forsendelse så snart betaling er udført.</p>
+
 <p>Betaling med betalings kort udføres ved at klikke på nedenstående link.</p>
+
 <p>Link til betaling:<br />
-    <a href="'.$GLOBALS['_config']['base_url'].'/betaling/?id='.$faktura['id'].'&amp;checkid='.getCheckid($faktura['id']).'">'.$GLOBALS['_config']['base_url'].'/betaling/?id='.$faktura['id'].'&amp;checkid='.getCheckid($faktura['id']).'</a></p>
+<a href="%s/betaling/?id=%d&amp;checkid=%s">%s/betaling/?id=%d&amp;checkid=%s</a></p>
 <p>Har De spørgsmål til Deres ordre er de velkommen til at kontakte undertegnede.</p>
-<p>Med venlig hilsen,</p>
-<p>'.$faktura['clerk'].'<br />
-    '.$GLOBALS['_config']['site_name'].'<br />
-    '.$GLOBALS['_config']['address'].'<br />
-    '.$GLOBALS['_config']['postcode'].' '.$GLOBALS['_config']['city'].'<br />
-    Tlf. '.$GLOBALS['_config']['phone'].'</p>
-</body>
-</html>';
+
+<p>Med venlig hilsen</p>
+
+<p>%s<br />
+    %s<br />
+    %s<br />
+    %s %s<br />
+    Tlf. %s</p>'),
+			,
+			$faktura['id'],
+			$GLOBALS['_config']['base_url'],
+			$faktura['id'],
+			getCheckid($faktura['id']),
+			$GLOBALS['_config']['base_url'],
+			$faktura['id'],
+			getCheckid($faktura['id']),
+			$faktura['clerk'],
+			$GLOBALS['_config']['site_name'],
+			$GLOBALS['_config']['address'],
+			$GLOBALS['_config']['postcode'],
+			$GLOBALS['_config']['city'],
+			$GLOBALS['_config']['phone']
+		).'</body></html>';
 		
 		$mail             = new PHPMailer();
 		$mail->SetLanguage('dk');
@@ -583,11 +604,11 @@ function sendReminder($id) {
 	$faktura = $faktura[0];
 	
 	if(!$faktura['status']) {
-		return array('error' => 'Du kan ikke sende en rykker før fakturaen er sendt!');
+		return array('error' => _('Du kan ikke sende en rykker før fakturaen er sendt!'));
 	}
 	
 	if(!validemail($faktura['email'])) {
-		return array('error' => 'Mail adressen er ikke gyldig!');
+		return array('error' => _('Mail adressen er ikke gyldig!'));
 	}
 	
 	if(empty($faktura['department'])) {
@@ -596,44 +617,64 @@ function sendReminder($id) {
 	
 	include_once "../inc/phpMailer/class.phpmailer.php";
 	
+	//TODO gettext this
 	$emailBody = '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
-<head>
-<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-<title>Untitled Document</title>
-</head>
-<body>
+<head><meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>'._('Elektronisk faktura vedr. ordre #').$faktura['id'].'</title>
+</head><body>'.
+	sprintf(_('<hr />
+
+<p style="text-align:center;"> <img src="/images/logoer/jagt-og-fiskermagasinet.png" alt="%s" /> </p>
+
 <hr />
-<p style="text-align:center;"> <img src="/images/logoer/jagt-og-fiskermagasinet.png" alt="'.$GLOBALS['_config']['site_name'].'" /> </p>
-<hr />
+
 <p>Dette er en automatisk genereret rykkermail!</p>
+
 <p>Dine varer er klar til forsendelse / afhentning, - men endnu ikke <br />
-    registreret, at betalingen kan godkendes, - derfor sender vi herved <br />
-    et nyt link til Dankort-fakturasystemet.<br />
-    <br />
-    <a href="'.$GLOBALS['_config']['base_url'].'/betaling/?id='.$faktura['id'].'&amp;checkid='.getCheckid($faktura['id']).'">'.$GLOBALS['_config']['base_url'].'/betaling/?id='.$faktura['id'].'&amp;checkid='.getCheckid($faktura['id']).'</a><br />
-</p>
-<p>I forbindelse med indtastning af Dankortoplysningerne, - kan der ske <br />
-    fejl så vi ikke registrerer betalingen, - derved opstår der unødig <br />
-    ventetid, - derfor sender vi denne skrivelse.</p>
-<p>Det er en meget stor hjælp og giver kortere ventetid, - hvis du vil <br />
-    være venlig at sende os en mail når betalingen er gennemført.</p>
-<p>Vi modtager også gerne en mail eller telefonopkald, - hvis du:<br />
-    * Oplever problemer med vores Dankort betalingssystem<br />
-    * Ønsker at afbestille ordren<br />
-    * Ønsker at ændre i bestillingen<br />
-    * Ønsker at betale på anden måde, - f.eks ved overførsel via netbank.</p>
-Med venlig hilsen<br />
+registreret, at betalingen kan godkendes, - derfor sender vi herved <br />
+et nyt link til Dankort-fakturasystemet.<br />
 <br />
-'.$GLOBALS['_config']['site_name'].'<br />
-'.$GLOBALS['_config']['address'].'<br />
-'.$GLOBALS['_config']['postcode'].' '.$GLOBALS['_config']['city'].'<br />
-Tel: '.$GLOBALS['_config']['phone'].'<br />
-Fax: '.$GLOBALS['_config']['fax'].'<br />
-<a href="mailto:'.$faktura['department'].'">'.$faktura['department'].'</a><br />
-</body>
-</html>
-';
+<a href="%s/betaling/?id=%d&amp;checkid=%s">%s/betaling/?id=%d&amp;checkid=%s</a><br />
+</p>
+
+<p>I forbindelse med indtastning af Dankortoplysningerne, - kan der ske <br />
+fejl så vi ikke registrerer betalingen, - derved opstår der unødig <br />
+ventetid, - derfor sender vi denne skrivelse.</p>
+
+<p>Det er en meget stor hjælp og giver kortere ventetid, - hvis du vil <br />
+være venlig at sende os en mail når betalingen er gennemført.</p>
+
+<p>Vi modtager også gerne en mail eller telefonopkald, - hvis du:<br />
+* Oplever problemer med vores Dankort betalingssystem<br />
+* Ønsker at afbestille ordren<br />
+* Ønsker at ændre i bestillingen<br />
+* Ønsker at betale på anden måde, - f.eks ved overførsel via netbank.</p>
+
+<p>Med venlig hilsen<br />
+<br />
+%s<br />
+%s<br />
+%s %s<br />
+Tel: %s<br />
+Fax: %s<br />
+<a href="mailto:%s">%s</a></p>'), 
+	$GLOBALS['_config']['site_name'],
+	$GLOBALS['_config']['base_url'],
+	$faktura['id'],
+	getCheckid($faktura['id']),
+	$GLOBALS['_config']['base_url'],
+	$faktura['id'],
+	getCheckid($faktura['id']),
+	$GLOBALS['_config']['site_name'],
+	$GLOBALS['_config']['address'],
+	$GLOBALS['_config']['postcode'],
+	$GLOBALS['_config']['city'],
+	$GLOBALS['_config']['phone'],
+	$GLOBALS['_config']['fax'],
+	$faktura['department'],
+	$faktura['department'])
+'</body></html>';
 	
 	$mail             = new PHPMailer();
 	$mail->SetLanguage('dk');
@@ -662,29 +703,21 @@ Fax: '.$GLOBALS['_config']['fax'].'<br />
 		return array('error' => 'Mailen kunde ikke sendes!
 '.$mail->ErrorInfo);
 	}
-	$error .= '
-
-En rykker blev sendt til kunden.';
+	$error .= "\n\n"._('En rykker blev sendt til kunden.');
 	
 	//Upload email to the sent folder via imap
 	if($GLOBALS['_config']['imap']) {
 		include_once "../inc/imap.inc.php";
 		$imap = new IMAPMAIL;
 		if(!$imap->open($GLOBALS['_config']['imap'], $GLOBALS['_config']['imapport'])) {
-			$error .= '
-
-Mailen blev ikke gemt i Sendt bakken! (serveren svared ikke).';
+			$error .= "\n\n"._('Mailen blev ikke gemt i Sendt bakken! (serveren svared ikke).');
 		}
 		$emailnr = array_search($faktura['department'], $GLOBALS['_config']['email']);
 		if(!$imap->login($faktura['department'], $GLOBALS['_config']['emailpasswords'][$emailnr ? $emailnr : 0])) {
-			$error .= '
-
-Mailen blev ikke gemt i Sendt bakken! (koden blev afvist).';
+			$error .= "\n\n"._('Mailen blev ikke gemt i Sendt bakken! (koden blev afvist).');
 		}
 		if(!$imap->append_mail($GLOBALS['_config']['emailsent'], $mail->CreateHeader().$mail->CreateBody(), '\Seen')) {
-			$error .= '
-
-Mailen blev ikke gemt i Sendt bakken! (mappen '.$GLOBALS['_config']['emailsent'].' mangled).';
+			$error .= "\n\n".sprintf(_('Mailen blev ikke gemt i Sendt bakken! (mappen %s mangled).', $GLOBALS['_config']['emailsent']);
 		}
 		$imap->close();
 	}
@@ -722,7 +755,7 @@ function annul($id) {
 
 function returnamount($id, $returnamount) {
 	/*
-	Boss not like... yet
+	//TODO only usable and visable to admins
 	global $mysqli;
 	global $epaymentAdminService;
 	
@@ -799,7 +832,7 @@ JSON.parse = JSON.parse || function(jsonsring) { return jsonsring.evalJSON(true)
 <script type="text/javascript" src="javascript/lib/php.min.js"></script>
 <script type="text/javascript" src="/javascript/zipcodedk.js"></script>
 <script type="text/javascript" src="javascript/calendar.js"></script>
-<title>Online faktura <?php echo($faktura['id']); ?></title>
+<title><?php echo(_('Online faktura #').$faktura['id']); ?></title>
 <link href="style/mainmenu.css" rel="stylesheet" type="text/css" />
 <link href="style/faktura.css" rel="stylesheet" type="text/css" media="screen" />
 <link href="style/faktura-print.css" rel="stylesheet" type="text/css" media="print" />
@@ -846,7 +879,7 @@ function addRow() {
 	td.className = 'web';
 	td.style.border = '0';
 	td.style.fontWeight = 'bold';
-	td.innerHTML = '<a href="#" onclick="removeRow(this); return false"><img alt="X" src="images/cross.png" height="16" width="16" title="Fjern linje" /></a>';
+	td.innerHTML = '<a href="#" onclick="removeRow(this); return false"><img alt="X" src="images/cross.png" height="16" width="16" title="<?php echo(_('Fjern linje')); ?>" /></a>';
 	tr.appendChild(td);
 	$('vareTable').appendChild(tr);
 }
@@ -864,7 +897,7 @@ function getAddress_r(data) {
 		$('att').value = data['recAttPerson'];
 		$('adresse').value = data['recAddress1'];
 		$('postnr').value = data['recZipCode'];
-		//TODO by might not be danish!
+		//TODO 'by' might not be danish!
 		var zip = arrayZipcode[data['recZipCode']];
 		if(zip != 'undefined') $('by').value = zip;
 		$('postbox').value = data['recPostBox'];
@@ -888,7 +921,7 @@ function getAltAddress_r(data) {
 		$('postatt').value = data['recAttPerson'];
 		$('postaddress').value = data['recAddress1'];
 		$('postpostalcode').value = data['recZipCode'];
-		//TODO by might not be danish!
+		//TODO 'by' might not be danish!
 		var zip = arrayZipcode[data['recZipCode']];
 		if(zip != 'undefined') $('postcity').value = zip;
 		$('postpostbox').value = data['recPostBox'];
@@ -1011,7 +1044,7 @@ function save(type) {
 		type = 'save';
 	}
 	
-	if(type == 'cancel' && !confirm('Er du sikker på du vil annullere denne faktura?')) {
+	if(type == 'cancel' && !confirm('<?php echo(_('Er du sikker på du vil annullere denne faktura?')); ?>')) {
 		return false;
 	}
 	
@@ -1203,42 +1236,42 @@ new tcal ({ 'controlid': 'cdate' });
     ?></table>
 	<table>
 		<tr>
-			<td>Id:</td>
+			<td><?php echo(_('Id:')); ?></td>
 			<td><?php echo($faktura['id']); ?></td>
 		</tr>
 		<tr>
-			<td>eKode:</td>
+			<td><?php echo(_('eKode:')); ?></td>
 			<td><?php echo(getCheckid($faktura['id'])); ?></td>
 		</tr>
         <tr>
 			<td>Status:</td>
 			<td><?php if($faktura['status'] == 'new')
-					echo('Ny oprettet');
+					echo(_('Ny oprettet'));
 				elseif($faktura['status'] == 'locked' && $faktura['sendt'])
-					echo('Er sendt til kunden.');
+					echo(_('Er sendt til kunden.'));
 				elseif($faktura['status'] == 'locked')
-					echo('Låst for redigering');
+					echo(_('Låst for redigering'));
 				elseif($faktura['status'] == 'pbsok')
-					echo('Klar til ekspedering');
+					echo(_('Klar til ekspedering'));
 				elseif($faktura['status'] == 'accepted') {
-					echo('Betalt online');
-					if($faktura['paydate']) echo(' d. '.date('d/m/Y', $faktura['paydate']));
+					echo(_('Betalt online'));
+					if($faktura['paydate']) echo(' d. '.date(_('d/m/Y'), $faktura['paydate']));
 				} elseif($faktura['status'] == 'giro') {
-					echo('Betalt via giro');
-					if($faktura['paydate']) echo(' d. '.date('d/m/Y', $faktura['paydate']));
+					echo(_('Betalt via giro'));
+					if($faktura['paydate']) echo(' d. '.date(_('d/m/Y'), $faktura['paydate']));
 				} elseif($faktura['status'] == 'cash') {
-					echo('Betalt kontant');
-					if($faktura['paydate']) echo(' d. '.date('d/m/Y', $faktura['paydate']));
+					echo(_('Betalt kontant'));
+					if($faktura['paydate']) echo(' d. '.date(_('d/m/Y'), $faktura['paydate']));
 				} elseif($faktura['status'] == 'pbserror') {
-					echo('Fejl under betalingen');
+					echo(_('Fejl under betalingen'));
 					if($epayment['Status'] == 'A' && $epayment['StatusCode'] = 1)
-						echo(', betalingen er nægted eller afbrydt.');
+						echo(_(', betalingen er nægted eller afbrydt.'));
 				} elseif($faktura['status'] == 'canceled')
-					echo('Annulleret');
+					echo(_('Annulleret'));
 				elseif($faktura['status'] == 'rejected')
-					echo('Betaling afvist');
+					echo(_('Betaling afvist'));
 				else
-					echo('Findes ikke i systemet');
+					echo(_('Findes ikke i systemet'));
 ?></td>
 		</tr>
 		<tr>
@@ -1248,7 +1281,7 @@ new tcal ({ 'controlid': 'cdate' });
 				<script type="text/javascript"><!--
 				new tcal ({ 'controlid': 'date' });
 				--></script>
-				<?php } else { echo(date('d/m/Y', $faktura['date'])); } ?></td>
+				<?php } else { echo(date(_('d/m/Y'), $faktura['date'])); } ?></td>
 		</tr><?php
         $users = $mysqli->fetch_array("SELECT `fullname`, `name` FROM `users` ORDER BY `fullname` ASC");
 		//TODO block save if ! admin
@@ -1295,13 +1328,13 @@ if(count($GLOBALS['_config']['email']) > 1) {
 	?></td>
 		</tr>
 		<tr>
-			<td>Vor ref.:</td>
+			<td><?php echo(_('Vor ref.:')); ?></td>
 			<td><?php if($faktura['status'] == 'new') { ?>
 				<input name="iref" id="iref" value="<?php echo($faktura['iref']); ?>" />
 				<?php } else { echo($faktura['iref']); } ?></td>
 		</tr>
 		<tr>
-			<td>Deres ref.:</td>
+			<td><?php echo(_('Deres ref.:')); ?></td>
 			<td><?php if($faktura['status'] == 'new') { ?>
 				<input name="eref" id="eref" value="<?php echo($faktura['eref']); ?>" />
 				<?php } else { echo($faktura['eref']); } ?></td>
@@ -1310,59 +1343,59 @@ if(count($GLOBALS['_config']['email']) > 1) {
 			<td colspan="2"><strong>Faktureringsadressen:</strong></td>
 		</tr>
 		<tr>
-			<td>Tlf1:</td>
+			<td><?php echo(_('Tlf1:')); ?></td>
 			<td><?php if($faktura['status'] == 'new') { ?>
 				<input name="tlf1" id="tlf1" value="<?php echo($faktura['tlf1']); ?>" />
 				<input type="button" value="Hent" onclick="getAddress($('tlf1').value);" />
 				<?php } else { echo($faktura['tlf1']); } ?></td>
 		</tr>
 		<tr>
-			<td>Tlf2:</td>
+			<td><?php echo(_('Tlf2:')); ?></td>
 			<td><?php if($faktura['status'] == 'new') { ?>
 				<input name="tlf2" id="tlf2" value="<?php echo($faktura['tlf2']); ?>" />
 				<input type="button" value="Hent" onclick="getAddress($('tlf2').value);" />
 				<?php } else { echo($faktura['tlf2']); } ?></td>
 		</tr>
 		<tr>
-			<td>E-mail:</td>
+			<td><?php echo(_('E-mail:')); ?></td>
 			<td><?php if($faktura['status'] == 'new') { ?>
 				<input name="email" id="email" onchange="validemail();" onkeyup="validemail();" value="<?php echo($faktura['email']); ?>" />
 				<?php } else { echo('<a href="mailto:'.$faktura['email'].'">'.$faktura['email'].'</a>'); } ?></td>
 		</tr>
 		<tr>
-			<td>Navn:</td>
+			<td><?php echo(_('Navn:')); ?></td>
 			<td><?php if($faktura['status'] == 'new') { ?>
 				<input name="navn" id="navn" value="<?php echo($faktura['navn']); ?>" />
 				<?php } else { echo($faktura['navn']); } ?></td>
 		</tr>
 		<tr>
-			<td>Att.:</td>
+			<td><?php echo(_('Att.:')); ?></td>
 			<td><?php if($faktura['status'] == 'new') { ?>
 				<input name="att" id="att" value="<?php echo($faktura['att']); ?>" />
 				<?php } else { echo($faktura['att']); } ?></td>
 		</tr>
 		<tr>
-			<td>Addresse:</td>
+			<td><?php echo(_('Adresse:')); ?></td>
 			<td><?php if($faktura['status'] == 'new') { ?>
 				<input name="adresse" id="adresse" value="<?php echo($faktura['adresse']); ?>" />
 				<?php } else { echo($faktura['adresse']); } ?></td>
 		</tr>
 		<tr>
-			<td>Postboks:</td>
+			<td><?php echo(_('Postboks:')); ?></td>
 			<td><?php if($faktura['status'] == 'new') { ?>
 				<input name="postbox" id="postbox" value="<?php echo($faktura['postbox']); ?>" />
 			<?php } else { echo($faktura['postbox']); } ?></td>
 		</tr>
 		<tr>
-			<td>Postnr.:</td>
+			<td><?php echo(_('Postnr.:')); ?></td>
 			<td><?php if($faktura['status'] == 'new') { ?>
 				<input name="postnr" id="postnr" value="<?php echo($faktura['postnr']); ?>" onblur="chnageZipCode(this.value, 'land', 'by')" onkeyup="chnageZipCode(this.value, 'land', 'by')" onchange="chnageZipCode(this.value, 'land', 'by')" />
-				By:
+				<?php echo(_('By:')); ?>
 				<input name="by" id="by" value="<?php echo($faktura['by']); ?>" />
 				<?php } else { echo($faktura['postnr'].' By: '.$faktura['by']); } ?></td>
 		</tr>
 		<tr>
-			<td>Land:</td>
+			<td><?php echo(_('Land:')); ?></td>
 			<td><?php if($faktura['status'] == 'new') { ?>
 				<select name="land" id="land" onblur="chnageZipCode($('postnr').value, 'land', 'by')" onkeyup="chnageZipCode($('postnr').value, 'land', 'by')" onchange="chnageZipCode($('postnr').value, 'land', 'by')">
 					<option value=""<?php if(!$faktura['land']) echo(' selected="selected"'); ?>></option>
@@ -1377,7 +1410,7 @@ if(count($GLOBALS['_config']['email']) > 1) {
 			<td colspan="2"><?php if($faktura['status'] == 'new') {
 			?><input onclick="showhidealtpost(this.checked);" name="altpost" id="altpost" type="checkbox"<?php if($faktura['altpost']) echo(' checked="checked"'); ?> /><?php
 			}
-			?><label for="altpost"> <strong>Anden leveringsadresse</strong></label></td>
+			?><label for="altpost"> <strong><?php echo(_('Anden leveringsadresse')); ?></strong></label></td>
 		</tr>
 		<tr class="altpost"<?php if(!$faktura['altpost']) echo(' style="display:none;"'); ?>>
 			<td>Tlf:</td>
@@ -1387,19 +1420,19 @@ if(count($GLOBALS['_config']['email']) > 1) {
 				<?php } else { echo($faktura['posttlf']); } ?></td>
 		</tr>
 		<tr class="altpost"<?php if(!$faktura['altpost']) echo(' style="display:none;"'); ?>>
-			<td>Navn:</td>
+			<td><?php echo(_('Navn:')); ?></td>
 			<td><?php if($faktura['status'] == 'new') { ?>
 				<input name="postname" id="postname" value="<?php echo($faktura['postname']); ?>" />
 				<?php } else { echo($faktura['postname']); } ?></td>
 		</tr>
 		<tr class="altpost"<?php if(!$faktura['altpost']) echo(' style="display:none;"'); ?>>
-			<td>Att:</td>
+			<td><?php echo(_('Att:')); ?></td>
 			<td><?php if($faktura['status'] == 'new') { ?>
 				<input name="postatt" id="postatt" value="<?php echo($faktura['postatt']); ?>" />
 				<?php } else { echo($faktura['postatt']); } ?></td>
 		</tr>
 		<tr class="altpost"<?php if(!$faktura['altpost']) echo(' style="display:none;"'); ?>>
-			<td>Addresse:</td>
+			<td><?php echo(_('Adresse:')); ?></td>
 			<td><?php if($faktura['status'] == 'new') { ?>
 				<input name="postaddress" id="postaddress" value="<?php echo($faktura['postaddress']); ?>" />
 				<?php } else { echo($faktura['postaddress']); } ?></td>
@@ -1411,21 +1444,21 @@ if(count($GLOBALS['_config']['email']) > 1) {
 			<?php } else { echo($faktura['postaddress2']); } ?></td>
 		</tr>
 		<tr class="altpost"<?php if(!$faktura['altpost']) echo(' style="display:none;"'); ?>>
-			<td>Postboks:</td>
+			<td><?php echo(_('Postboks:')); ?></td>
 			<td><?php if($faktura['status'] == 'new') { ?>
 				<input name="postpostbox" id="postpostbox" value="<?php echo($faktura['postpostbox']); ?>" />
 				<?php } else { echo($faktura['postpostbox']); } ?></td>
 		</tr>
 		<tr class="altpost"<?php if(!$faktura['altpost']) echo(' style="display:none;"'); ?>>
-			<td>Postnr.:</td>
+			<td><?php echo(_('Postnr.:')); ?></td>
 			<td><?php if($faktura['status'] == 'new') { ?>
 				<input name="postpostalcode" id="postpostalcode" value="<?php echo($faktura['postpostalcode']); ?>" onblur="chnageZipCode(this.value, 'postcountry', 'postcity')" onkeyup="chnageZipCode(this.value, 'postcountry', 'postcity')" onchange="chnageZipCode(this.value, 'postcountry', 'postcity')" />
-				By:
+				<?php echo(_('By:')); ?>
 				<input name="postcity" id="postcity" value="<?php echo($faktura['postcity']); ?>" />
 				<?php } else { echo($faktura['postpostalcode'].' By: '.$faktura['postcity']); } ?></td>
 		</tr>
 		<tr class="altpost"<?php if(!$faktura['altpost']) echo(' style="display:none;"'); ?>>
-			<td>Land:</td>
+			<td><?php echo(_('Land:')); ?></td>
 			<td><?php if($faktura['status'] == 'new') { ?>
 				<select name="postcountry" id="postcountry" onblur="chnageZipCode($('postpostalcode').value, 'postcountry', 'postcity')" onkeyup="chnageZipCode($('postpostalcode').value, 'postcountry', 'postcity')" onchange="chnageZipCode($('postpostalcode').value, 'postcountry', 'postcity')">
 					<option value=""<?php if(!$faktura['postcountry']) echo(' selected="selected"'); ?>></option><?php
@@ -1439,24 +1472,24 @@ if(count($GLOBALS['_config']['email']) > 1) {
 		if($faktura['status'] == 'new') {
 		?><tr>
 			<td colspan="2"><input type="checkbox"<?php if($faktura['premoms']) echo(' checked="checked"'); ?> id="premoms" onkeyup="prisUpdate()" onchange="prisUpdate()" onblur="prisUpdate()" onclick="prisUpdate()" />
-		<label for="premoms">Indtasted beløb er med moms</label></td>
+		<label for="premoms"><?php echo(_('Indtasted beløb er med moms')); ?></label></td>
 		</tr><?php
 		}
 	?></table>
 	<table id="data" cellspacing="0">
 		<thead>
 			<tr>
-				<td>Antal</td>
-				<td>Benævnelse</td>
-				<td class="tal">á pris</td>
-				<td class="tal">Total</td>
+				<td><?php echo(_('Antal')); ?></td>
+				<td><?php echo(_('Benævnelse')); ?></td>
+				<td class="tal"><?php echo(_('á pris')); ?></td>
+				<td class="tal"><?php echo(_('Total')); ?></td>
 			</tr>
 		</thead>
 		<tfoot>
 			<tr style="height:auto;min-height:auto;max-height:auto;">
 				<td>&nbsp;</td>
 				<td>&nbsp;</td>
-				<td class="tal">Nettobeløb</td>
+				<td class="tal"><?php echo(_('Nettobeløb')); ?></td>
 				<?php
 			$productslines = max(count($faktura['quantities']), count($faktura['products']), count($faktura['values']));
 			
@@ -1470,7 +1503,7 @@ if(count($GLOBALS['_config']['email']) > 1) {
 			<tr>
 				<td>&nbsp;</td>
 				<td>&nbsp;</td>
-				<td class="tal">Fragt</td>
+				<td class="tal"><?php echo(_('Fragt')); ?></td>
 				<td class="tal"><?php if($faktura['status'] == 'new') { ?>
 					<input maxlength="7" name="fragt" id="fragt" style="width:80px;" class="tal" value="<?php echo(number_format($faktura['fragt'], 2, ',', '')); ?>" onkeyup="prisUpdate()" onchange="prisUpdate()" onblur="prisUpdate()" />
 					<?php } else { echo(number_format($faktura['fragt'], 2, ',', '')); } ?></td>
@@ -1483,12 +1516,12 @@ if(count($GLOBALS['_config']['email']) > 1) {
 						<option value="0"<?php if(!$faktura['momssats']) echo(' selected="selected"');?>>0%</option>
 					</select>
 					<?php } else { echo(($faktura['momssats']*100).'%'); } ?></td>
-				<td class="tal">Momsbeløb</td>
+				<td class="tal"><?php echo(_('Momsbeløb')); ?></td>
 				<td class="tal" id="moms"><?php echo(number_format($netto*$faktura['momssats'], 2, ',', '')); ?></td>
 			</tr>
 			<tr class="border">
 				<td colspan="2">&nbsp;</td>
-				<td style="text-align:center; font-weight:bold;">AT BETALE</td>
+				<td style="text-align:center; font-weight:bold;"><?php echo(_('AT BETALE')); ?></td>
 				<td class="tal" id="payamount"><?php echo(number_format($netto*(1+$faktura['momssats'])+$faktura['fragt'], 2, ',', '')); ?></td>
 			</tr>
 		</tfoot>
@@ -1515,7 +1548,7 @@ if(count($GLOBALS['_config']['email']) > 1) {
 		}
 		?></tbody>
 	</table>
-	<p><strong>Note:</strong></p>
+	<p><strong><?php echo(_('Note:')); ?></strong></p>
 	<p class="note"><?php if($faktura['status'] != 'new') echo(nl2br(htmlspecialchars($faktura['note']))); ?></p>
 	<textarea name="note" id="note"><?php if($faktura['status'] == 'new') echo(htmlspecialchars($faktura['note'])); ?></textarea>
 </div>
@@ -1529,30 +1562,30 @@ if($faktura['status'] != 'canceled' && $faktura['status'] != 'new' && $faktura['
 }
 
 if($faktura['status'] == 'pbsok') {
-	$activityButtons[] = '<li><a onclick="pbsconfirm(); return false;"><img src="images/money.png" alt="" title="Ekspeder" width="16" height="16" /> Ekspeder</a></li>';
-	$activityButtons[] = '<li><a onclick="annul(); return false;"><img src="images/bin.png" alt="" title="Afvis" width="16" height="16" /> Afvis</a></li>';
+	$activityButtons[] = '<li><a onclick="pbsconfirm(); return false;"><img src="images/money.png" alt="" width="16" height="16" /> '._('Ekspeder').'</a></li>';
+	$activityButtons[] = '<li><a onclick="annul(); return false;"><img src="images/bin.png" alt="" width="16" height="16" /> '._('Afvis').'</a></li>';
 /*
 TODO
 	?><tr>
-		<td><input type="button" value="Koriger beløb:" onclick="loweramount();" /></td>
+		<td><input type="button" value="<?php echo(_('Koriger beløb:')); ?>" onclick="loweramount();" /></td>
 		<td><input name="newamount" id="newamount" value="<?php echo(number_format(max(0, $faktura['amount']), 2, ',', '')); ?>" size="9" /></td>
 	</tr>
 <?php
 */
 }
-$activityButtons[] = '<li><a onclick="save(); return false;"><img src="images/table_save.png" alt="" title="Gem" width="16" height="16" /> Gem</a></li>';
+$activityButtons[] = '<li><a onclick="save(); return false;"><img src="images/table_save.png" alt="" width="16" height="16" /> '._('Gem').'</a></li>';
 if($faktura['status'] == 'new') {
-	$activityButtons[] = '<li><a onclick="save(\'lock\'); return false;"><img src="images/lock.png" alt="" title="Lås" width="16" height="16" /> Lås</a></li>';
+	$activityButtons[] = '<li><a onclick="save(\'lock\'); return false;"><img src="images/lock.png" alt="" width="16" height="16" /> '._('Lås').'</a></li>';
 }
 
 if($faktura['status'] != 'new') {
-	$activityButtons[] = '<li><a href="#" onclick="window.print(); return false;"><img height="16" width="16" title="Udskriv" alt="" src="images/printer.png"/> Udskriv</a></li>';
+	$activityButtons[] = '<li><a href="#" onclick="window.print(); return false;"><img height="16" width="16" title="" src="images/printer.png"/> '._('Udskriv').'</a></li>';
 }
-$activityButtons[] = '<li><a onclick="newfaktura(); return false;"><img src="images/table_add.png" alt="" title="Opret ny" width="16" height="16" /> Opret ny</a></li>';
-$activityButtons[] = '<li><a onclick="copytonew(); return false;"><img src="images/table_multiple.png" alt="" title="Kopier til ny" width="16" height="16" /> Kopier til ny</a></li>';
+$activityButtons[] = '<li><a onclick="newfaktura(); return false;"><img src="images/table_add.png" alt="" width="16" height="16" /> '._('Opret ny').'</a></li>';
+$activityButtons[] = '<li><a onclick="copytonew(); return false;"><img src="images/table_multiple.png" alt="" width="16" height="16" /> '._('Kopier til ny').'</a></li>';
 
 if($faktura['status'] != 'canceled' && $faktura['status'] != 'pbsok' && $faktura['status'] != 'accepted' && $faktura['status'] != 'giro' && $faktura['status'] != 'cash') {
-	$activityButtons[] = '<li><a onclick="save(\'cancel\'); return false;" href="#"><img src="images/bin.png" alt="" title="Annullér" width="16" height="16" /> Annullér</a></li>';
+	$activityButtons[] = '<li><a onclick="save(\'cancel\'); return false;" href="#"><img src="images/bin.png" alt="" width="16" height="16" /> '._('Annullér').'</a></li>';
 }
 
 if($faktura['status'] != 'giro' &&
@@ -1563,12 +1596,12 @@ $faktura['status'] != 'canceled' &&
 $faktura['status'] != 'rejected') {
 	if(!$faktura['sendt']) {
 		if(validemail($faktura['email'])) {
-			$activityButtons[] = '<li id="emaillink"><a href="#" onclick="save(\'email\'); return false;"><img height="16" width="16" title="Send til kunden" alt="" src="images/email_go.png"/> Send</a></li>';
+			$activityButtons[] = '<li id="emaillink"><a href="#" onclick="save(\'email\'); return false;"><img height="16" width="16" title="'._('Send til kunden').'" alt="" src="images/email_go.png"/> '._('Send').'</a></li>';
 		} else {
-			$activityButtons[] = '<li id="emaillink" style="display:none;"><a href="#" onclick="save(\'email\'); return false;"><img height="16" width="16" title="Send til kunden" alt="" src="images/email_go.png"/> Send</a></li>';
+			$activityButtons[] = '<li id="emaillink" style="display:none;"><a href="#" onclick="save(\'email\'); return false;"><img height="16" width="16" title="'._('Send til kunden').'" alt="" src="images/email_go.png"/> '._('Send').'</a></li>';
 		}
 	} else {
-		$activityButtons[] = '<li><a href="#" onclick="sendReminder(); return false;"><img height="16" width="16" title="Send rykker!" alt="" src="images/email_go.png"/> Send rykker!</a></li>';
+		$activityButtons[] = '<li><a href="#" onclick="sendReminder(); return false;"><img height="16" width="16" alt="" src="images/email_go.png"/> '._('Send rykker!').'</a></li>';
 	}
 }
 

@@ -2,6 +2,11 @@
 
 //INSERT INTO `emails` (`subject`, `from`, `to`, `body`, `date`) VALUES ('subject', 'from<t@f.dk>', 'to<t@f.dk>;to2<t2@f.dk>', '<div>test</div>', NOW());
 
+date_default_timezone_set('Europe/Copenhagen');
+setlocale(LC_ALL, 'da_DK');
+bindtextdomain("agcms", $_SERVER['DOCUMENT_ROOT'].'/theme/locale');
+textdomain("agcms");
+
 require_once "inc/config.php";
 require_once "inc/mysqli.php";
 
@@ -12,7 +17,7 @@ $mysqli = new simple_mysqli($GLOBALS['_config']['mysql_server'], $GLOBALS['_conf
 $emails = $mysqli->fetch_array("SELECT * FROM `emails`");
 
 if(!$emails) {
-	die('Ingen emails at sende.');
+	die(_('Ingen emails at sende.'));
 }
 
 $emailsSendt = 0;
@@ -85,5 +90,5 @@ foreach($emails as $email) {
 //Close SMTP connection
 $PHPMailer->SmtpClose();
 
-echo($emailsSendt.' email(s) blev sendt.');
+printf(ngettext("%d e-Mail blev sendt.", "%d e-Mails blev sendt.", $emailsSendt), $emailsSendt);
 ?>

@@ -383,7 +383,7 @@ function renamefile($id, $path, $dir, $filename, $force=0) {
 		
 		//File already exists, but are we trying to force a overwrite?
 		if(is_file($_SERVER['DOCUMENT_ROOT'].$dir.'/'.$filename.'.'.$pathinfo['extension']) && !$force) {
-			return array('yesno' => 'En file med samme navn eksistere allerede'."\r\n".'Vil du erstatte den eksisterende fil?', 'id' => $id);
+			return array('yesno' => 'En file med samme navn eksistere allerede'."\n".'Vil du erstatte den eksisterende fil?', 'id' => $id);
 		}
 		
 		//Rename/move or give an error
@@ -426,7 +426,7 @@ function renamefile($id, $path, $dir, $filename, $force=0) {
 		
 		//File already exists, but are we trying to force a overwrite?
 		if(is_file($_SERVER['DOCUMENT_ROOT'].$path) && !$force) {
-			return array('yesno' => 'En file med samme navn eksistere allerede'."\r\n".'Vil du erstatte den eksisterende fil?', 'id' => $id);
+			return array('yesno' => 'En file med samme navn eksistere allerede'."\n".'Vil du erstatte den eksisterende fil?', 'id' => $id);
 		}
 	
 		//Rename/move or give an error
