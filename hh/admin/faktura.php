@@ -1339,7 +1339,7 @@ if(count($GLOBALS['_config']['email']) > 1) {
 				<?php } else { echo($faktura['att']); } ?></td>
 		</tr>
 		<tr>
-			<td>Addresse:</td>
+			<td><?php echo(_('Adresse:')); ?></td>
 			<td><?php if($faktura['status'] == 'new') { ?>
 				<input name="adresse" id="adresse" value="<?php echo($faktura['adresse']); ?>" />
 				<?php } else { echo($faktura['adresse']); } ?></td>
@@ -1396,7 +1396,7 @@ if(count($GLOBALS['_config']['email']) > 1) {
 				<?php } else { echo($faktura['postatt']); } ?></td>
 		</tr>
 		<tr class="altpost"<?php if(!$faktura['altpost']) echo(' style="display:none;"'); ?>>
-			<td>Addresse:</td>
+			<td><?php echo(_('Adresse:')); ?></td>
 			<td><?php if($faktura['status'] == 'new') { ?>
 				<input name="postaddress" id="postaddress" value="<?php echo($faktura['postaddress']); ?>" />
 				<?php } else { echo($faktura['postaddress']); } ?></td>
