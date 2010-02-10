@@ -201,7 +201,11 @@ function search_liste($q, $wheresider) {
 		getUpdateTime('kat');
 		
 		//TODO rawurlencode $url (PIE doesn't do it buy it self :(
-		$url = '/kat'.$kat[0]['id'].'-'.rawurlencode(clear_file_name($kat[0]['navn'])).'/side'.$sider[0]['id'].'-'.rawurlencode(clear_file_name($sider[0]['navn'])).'.html';
+		if(!empty($kat[0]['id'])) {
+			$url = '/kat'.$kat[0]['id'].'-'.rawurlencode(clear_file_name($kat[0]['navn'])).'/side'.$sider[0]['id'].'-'.rawurlencode(clear_file_name($sider[0]['navn'])).'.html';
+		} else {
+			$url = '/side'.$sider[0]['id'].'-'.rawurlencode(clear_file_name($sider[0]['navn'])).'.html';
+		}
 		//redirect til en side
 		header('Location: '.$url);
 		die();
