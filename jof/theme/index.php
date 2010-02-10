@@ -37,21 +37,21 @@ function echo_menu($menu) {
 		?><ul><?php
 		for($i=0;$i<$menu_nr;$i++) {
 			?><li<?php
-			if($menu[$i]['subs']) {
+			if(!empty($menu[$i]['subs'])) {
 				?> class="open"<?php
-			} elseif($menu[$i]['sub']) {
+			} elseif(!empty($menu[$i]['sub'])) {
 				?> class="close"<?php
 			} elseif($menu[$i]['id'] == $GLOBALS['generatedcontent']['activmenu']) {
 				?> class="activ"<?php
 			}
 			?>><a href="<?php echo($menu[$i]['link']); ?>"><?php
-			if($menu[$i]['icon']) {
+			if(!empty($menu[$i]['icon'])) {
 				?><img src="<?php echo($menu[$i]['icon']); ?>" alt="" /> <?php
 			}
 			echo($menu[$i]['name']);
 			?></a></li><?php
 			
-			if($menu[$i]['subs']) {
+			if(!empty($menu[$i]['subs'])) {
 				?><li style="display:inline"><?php
 					echo_menu($menu[$i]['subs']);
 				?></li><?php
