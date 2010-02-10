@@ -516,7 +516,7 @@ foreach($frequentRecipients as $key => $value) {
                 <td><input name="recAttPerson" id="recAttPerson" maxlength="34" value="" /></td>
               </tr>
               <tr>
-                <td> Addresse:</td>
+                <td> <?php echo(_('Adresse:')); ?></td>
                 <td><input value="" name="recAddress1" maxlength="34" id="recAddress1" onchange="changeRecAddress1(this.value)" onblur="changeRecAddress1(this.value)" onkeyup="changeRecAddress1(this.value)" onkeydown="changeRecAddress1(this.value)" onfocus="changeRecAddress1(this.value)" />
                   <br />
                   <input value="" name="recAddress2" maxlength="34" id="recAddress2" /> </td>
