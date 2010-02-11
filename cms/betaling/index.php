@@ -593,7 +593,9 @@ Fejl nummer: ').$_GET['Status_code'];
 				
 				$GLOBALS['generatedcontent']['text'] = _('<p style="text-align:center;"><img src="images/ok.png" alt="" /></p>
 
-<p>Betalingen er nu godkendt. Vi sender Deres vare med posten hurtigst muligt.</p><p>En kopi af Deres ordre er sendt til Deres email.</p>');
+<p>Betalingen er nu godkendt. Vi sender Deres vare med posten hurtigst muligt.</p>
+
+<p>En kopi af Deres ordre er sendt til Deres email.</p>');
 				
 				$faktura['quantities'] = explode('<', $faktura['quantities']);
 				$faktura['products'] = explode('<', $faktura['products']);
@@ -629,7 +631,7 @@ Husk at "ekspedere" betalingen når varen sendes (Betaling overføres først fra
 					$emailbody_address .= '<td>'.$faktura['postname'].'</td>';
 				$emailbody_address .= '</tr>';
 				if($faktura['tlf1'] || ($faktura['altpost'] && $faktura['posttlf'])) {
-					$emailbody_address .= '<tr><td'._('>Tlf.:').'</td><td>'.$faktura['tlf1'].'</td>';
+					$emailbody_address .= '<tr><td>'._('Tlf.:').'</td><td>'.$faktura['tlf1'].'</td>';
 					if($faktura['altpost'])
 						$emailbody_address .= '<td>'.$faktura['posttlf'].'</td>';
 					$emailbody_address .= '</tr>';
