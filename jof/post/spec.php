@@ -70,7 +70,7 @@ require_once("../inc/config.php");
 //Open database
 $mysqli = new simple_mysqli($GLOBALS['_config']['mysql_server'], $GLOBALS['_config']['mysql_user'], $GLOBALS['_config']['mysql_password'], $GLOBALS['_config']['mysql_database']);
 
-
+$GLOBALS['totalPorto'] = 0;
 function rows($type) {
 	global $mysqli;
 
@@ -90,7 +90,7 @@ function rows($type) {
 	}
 	$post = $mysqli->fetch_array('SELECT *, UNIX_TIMESTAMP(`formDate`) as date FROM `post` WHERE deleted = 0 AND formDate >= \''.$_GET['y'].'-'.$_GET['m'].'-01\' AND formDate <= \''.$_GET['y'].'-'.$_GET['m'].'-31\' AND optRecipType = \''.$type.'\' ORDER BY `optRecipType` ASC, formDate, `STREGKODE` ASC');
 	$post_nr = count($post);
-	
+	$totalPorto = 0;
 	for($i=0;$i<$post_nr;$i++) {
 		$fragt = pakkepris($post[$i]['pd_height'], $post[$i]['pd_width'], $post[$i]['pd_length'], $post[$i]['pd_weight'], $post[$i]['optRecipType'], $post[$i]['ss1'], $post[$i]['ss46'], $post[$i]['ss5amount'], false);
 		$totalPorto += $fragt;
@@ -99,6 +99,7 @@ function rows($type) {
 		<td style="text-align:left"><?php echo(date('dm', $post[$i]['date'])); ?></td>
 		<td style="text-align:left"><?php echo($post[$i]['STREGKODE']); ?></td>
 		<td style="text-align:right"><?php
+		$vkg = 0;
 		if($type != 'P') 
 			$vkg = $post[$i]['pd_length']*$post[$i]['pd_width']*$post[$i]['pd_height']/4;
 		echo(max($post[$i]['pd_weight']*1000, round($vkg))); ?></td>

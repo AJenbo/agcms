@@ -119,20 +119,20 @@ ORDER BY `post`.`id` ASC');
 		echo '<tr><td>Postopkrævningspakke 15-20 Kg</td><td style="text-align:right;">'.$GLOBALS['o20'].'</td></tr>';
 	if($GLOBALS['o25'])
 		echo '<tr><td>Postopkrævningspakke 20-25 Kg</td><td style="text-align:right;">'.$GLOBALS['o25'].'</td></tr>';
-	if($GLOBALS['o30'])
+	if(!empty($GLOBALS['o30']))
 		echo '<tr><td>Postopkrævningspakke 25-30 Kg</td><td style="text-align:right;">'.$GLOBALS['o30'].'</td></tr>';
-	if($GLOBALS['o35'])
+	if(!empty($GLOBALS['o35']))
 		echo '<tr><td>Postopkrævningspakke 30-35 Kg</td><td style="text-align:right;">'.$GLOBALS['o35'].'</td></tr>';
-	if($GLOBALS['o40'])
+	if(!empty($GLOBALS['o40']))
 		echo '<tr><td>Postopkrævningspakke 35-40 Kg</td><td style="text-align:right;">'.$GLOBALS['o40'].'</td></tr>';
-	if($GLOBALS['o45'])
+	if(!empty($GLOBALS['o45']))
 		echo '<tr><td>Postopkrævningspakke 40-45 Kg</td><td style="text-align:right;">'.$GLOBALS['o40'].'</td></tr>';
-	if($GLOBALS['o50'])
+	if(!empty($GLOBALS['o50']))
 		echo '<tr><td>Postopkrævningspakke 45-50 Kg</td><td style="text-align:right;">'.$GLOBALS['o50'].'</td></tr>';
-	if($GLOBALS['o50b'])
+	if(!empty($GLOBALS['o50b']))
 		echo '<tr><td>Postopkrævningspakke over 50 Kg</td><td style="text-align:right;">'.$GLOBALS['o50b'].'</td></tr>';
 	
-	if($GLOBALS['valuem']) {
+	if(!empty($GLOBALS['valuem'])) {
 		ksort($GLOBALS['valuem']);
 		foreach($GLOBALS['valuem'] as $key => $value) {
 			echo '<tr><td>Værdi '.$key.' Momspligtig</td><td style="text-align:right;">'.$value.'</td></tr>';
@@ -149,10 +149,10 @@ ORDER BY `post`.`id` ASC');
 	if($GLOBALS['volume'])
 		echo '<tr><td>Volumen</td><td style="text-align:right;">'.$GLOBALS['volume'].'</td></tr>';
 		
-	if($GLOBALS['lørdag'])
+	if(!empty($GLOBALS['lørdag']))
 		echo '<tr><td>lørdagsomdeling</td><td style="text-align:right;">'.$GLOBALS['lørdag'].'</td></tr>';
 
-	if($GLOBALS['forsigtig'])
+	if(!empty($GLOBALS['forsigtig']))
 		echo '<tr><td>Forsigtig</td><td style="text-align:right;">'.$GLOBALS['forsigtig'].'</td></tr>';
 
 	if($GLOBALS['moms'])
