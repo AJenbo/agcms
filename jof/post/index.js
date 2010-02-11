@@ -175,6 +175,7 @@ function openPDF(data) {
 		}
 	} else if(data['yesno']) {
 		if(confirm('Addressen blev ikke godkendt, ønsker du alligevel at udskrive?')) {
+			$('loading').style.display = '';
 			getPDFURL(true);
 		}
 	} else {

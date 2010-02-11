@@ -1,0 +1,227 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2010-02-11 11:11+0100\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: index.php:519
+msgid "Adresse:"
+msgstr ""
+
+#: liste.php:123
+msgid "Forsigtig"
+msgstr ""
+
+#: liste.php:127
+msgid "Lørdags express"
+msgstr ""
+
+#: liste.php:131
+msgid "Værdi:"
+msgstr ""
+
+#: liste.php:139 liste.php:141 liste.php:145 liste.php:147
+msgid "Fragt stemmer ikke:"
+msgstr ""
+
+#: liste.php:152
+msgid "Ikke volume sendt som volume"
+msgstr ""
+
+#: liste.php:154
+msgid "Volume sendt som ikke volume"
+msgstr ""
+
+#: liste.php:157 liste.php:159
+#, php-format
+msgid "Forkert volumevægt: %f kg"
+msgstr ""
+
+#: liste.php:164
+msgid "Info fra Track &amp; Trace utilstrækkelig"
+msgstr ""
+
+#: liste.php:166 liste.php:178
+msgid "Mangler info fra Track &amp; Trace"
+msgstr ""
+
+#: liste.php:167 liste.php:179
+msgid "Slet"
+msgstr ""
+
+#: liste.php:172 liste.php:174
+#, php-format
+msgid "Forkert vægt: %f kg"
+msgstr ""
+
+#: liste.php:197
+msgid "I alt:"
+msgstr ""
+
+#: liste.php:197
+msgid "Postopkrævning:"
+msgstr ""
+
+#: liste.php:197
+msgid "Opkrævet porto:"
+msgstr ""
+
+#: liste.php:197
+msgid "Porto:"
+msgstr ""
+
+#: liste.php:253
+msgid "Forsendelser"
+msgstr ""
+
+#: liste.php:257
+msgid "Afsender"
+msgstr ""
+
+#: liste.php:258
+msgid "År"
+msgstr ""
+
+#: liste.php:259
+msgid "Måned"
+msgstr ""
+
+#: liste.php:260
+msgid "Pakke type"
+msgstr ""
+
+#: liste.php:261
+msgid "Status"
+msgstr ""
+
+#: liste.php:262
+msgid "Id"
+msgstr ""
+
+#: liste.php:263
+msgid "Modtager"
+msgstr ""
+
+#: liste.php:264
+msgid "Tlf"
+msgstr ""
+
+#: liste.php:265
+msgid "Stregkode"
+msgstr ""
+
+#: liste.php:266
+msgid "Beløb"
+msgstr ""
+
+#: liste.php:269 liste.php:282 liste.php:297 liste.php:304
+msgid "Alle"
+msgstr ""
+
+#: liste.php:283
+msgid "Jan"
+msgstr ""
+
+#: liste.php:284
+msgid "Feb"
+msgstr ""
+
+#: liste.php:285
+msgid "Mar"
+msgstr ""
+
+#: liste.php:286
+msgid "Apr"
+msgstr ""
+
+#: liste.php:287
+msgid "Maj"
+msgstr ""
+
+#: liste.php:288
+msgid "Jun"
+msgstr ""
+
+#: liste.php:289
+msgid "Jul"
+msgstr ""
+
+#: liste.php:290
+msgid "Aug"
+msgstr ""
+
+#: liste.php:291
+msgid "Sep"
+msgstr ""
+
+#: liste.php:292
+msgid "Oct"
+msgstr ""
+
+#: liste.php:293
+msgid "Nov"
+msgstr ""
+
+#: liste.php:294
+msgid "Dec"
+msgstr ""
+
+#: liste.php:298
+msgid "Privat"
+msgstr ""
+
+#: liste.php:299
+msgid "Erhverv"
+msgstr ""
+
+#: liste.php:300
+msgid "PO"
+msgstr ""
+
+#: liste.php:301
+msgid "UB"
+msgstr ""
+
+#: liste.php:305
+msgid "Levert"
+msgstr ""
+
+#: liste.php:306
+msgid "Ikke levert"
+msgstr ""
+
+#: liste.php:307
+msgid "Sendt retur"
+msgstr ""
+
+#: liste.php:308
+msgid "Ikke retur"
+msgstr ""
+
+#: liste.php:318
+msgid "Hent"
+msgstr ""
+
+#: liste.php:320
+msgid "med Track &amp; Trace"
+msgstr ""
+
+#: liste.php:321
+msgid "Vis som postdanmark regning"
+msgstr ""
+
+#: liste.php:322
+msgid "Vis som postdanmark Fakturaspecifikation"
+msgstr ""

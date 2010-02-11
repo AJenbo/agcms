@@ -123,9 +123,49 @@ error_reporting(-1);
 
 		require("config.php");
 		$mysqli = new simple_mysqli($GLOBALS['_config']['mysql_server'], $GLOBALS['_config']['mysql_user'], $GLOBALS['_config']['mysql_password'], $GLOBALS['_config']['mysql_database']);
-		
-		$mysqli->query('INSERT INTO `post` (`fakturaid` ,`formSenderID` ,`recName1` ,`recAddress1` ,`recZipCode` ,`recPoValue` ,`recipientID` ,`formDate` ,`optRecipType` ,`weight` ,`ss1` ,`ss2` ,`ss46` ,`ss5amount` ,`height` ,`width` ,`length` ,`porto` ,`ub`)
-			VALUES (\''.$fakturaid.'\', \''.$formSenderID.'\', \''.$recName1.'\', \''.$recAddress1.'\', \''.$recZipCode.'\', \''.$recPoValue.'\', \''.$recipientID.'\', \''.preg_replace('/^([0-9]{2})[.]([0-9]{2})[.]([0-9]{4})$/i', '$3-$2-$1', $formDate).'\', \''.$optRecipType.'\', \''.$weight.'\', \''.$ss1.'\', \''.$ss2.'\', \''.$ss46.'\', \''.$ss5amount.'\', \''.$height.'\', \''.$width.'\', \''.$length.'\', \''.$porto.'\', \''.$ub.'\');');
+
+		$mysqli->query("INSERT INTO `post` (
+				`fakturaid`,
+				`formSenderID`,
+				`recName1`,
+				`recAddress1`,
+				`recZipCode`,
+				`recPoValue`,
+				`recipientID`,
+				`formDate`,
+				`optRecipType`,
+				`weight`,
+				`ss1`,
+				`ss2`,
+				`ss46`,
+				`ss5amount`,
+				`height`,
+				`width`,
+				`length`,
+				`porto`,
+				`ub`)
+			VALUES (
+				'".addcslashes($fakturaid, "'\\")."',
+				'".addcslashes($formSenderID, "'\\")."',
+				'".addcslashes($recName1, "'\\")."',
+				'".addcslashes($recAddress1, "'\\")."',
+				'".addcslashes($recZipCode, "'\\")."',
+				'".addcslashes($recPoValue, "'\\")."',
+				'".addcslashes($recipientID, "'\\")."',
+				'".addcslashes(preg_replace('/^([0-9]{2})[.]([0-9]{2})[.]([0-9]{4})$/i', '$3-$2-$1', $formDate), "'\\")."',
+				'".addcslashes($optRecipType, "'\\")."',
+				'".addcslashes($weight, "'\\")."',
+				'".addcslashes($ss1, "'\\")."',
+				'".addcslashes($ss2, "'\\")."',
+				'".addcslashes($ss46, "'\\")."',
+				'".addcslashes($ss5amount, "'\\")."',
+				'".addcslashes($height, "'\\")."',
+				'".addcslashes($width, "'\\")."',
+				'".addcslashes($length, "'\\")."',
+				'".addcslashes($porto, "'\\")."',
+				'".addcslashes($ub, "'\\")."'
+				);
+		");
 
 		$dbid = $mysqli->insert_id;
 	 
@@ -173,7 +213,7 @@ error_reporting(-1);
 		$submit_vars['formDate'] = utf8_decode($formDate);
 		$submit_vars['typedRecCVR'] = '';
 		$submit_vars['recZipCode'] = utf8_decode($recZipCode);
-		$submit_vars['recPostBox'] = utf8_decode($recPostBox);
+		$submit_vars['recPostBox'] = utf8_decode($recPost);
 		$submit_vars['recPoValue'] = $recPoValue;
 		$submit_vars['recPoRef'] = str_replace('.', '', $formDate);
 		while (strlen($submit_vars['recPoRef'])+strlen($dbid)<16) {
