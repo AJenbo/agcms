@@ -518,8 +518,6 @@ if(!empty($_GET['id']) && @$_GET['checkid'] == getCheckid($_GET['id'])) {
 	else
 		$shopSubject = _('Ingen status');
 	$shopBody = '<br />'.sprintf(_(.'Der opstod en fejl på betalings siden ved online faktura #%d!'), $id).'<br />';
-
-	//TODO continue making strings to gettext from here and down
 	
 	if($faktura = $mysqli->fetch_array("SELECT * FROM `fakturas` WHERE `id` = ".$id)) {
 		$faktura = @$faktura[0];
@@ -593,7 +591,9 @@ Fejl nummer: ').$_GET['Status_code'];
 				$faktura = $mysqli->fetch_array("SELECT * FROM `fakturas` WHERE `id` = ".$id);
 				$faktura = @$faktura[0];
 				
-				$GLOBALS['generatedcontent']['text'] = '<p style="text-align:center;">'._('<img src="images/ok.png" alt="" /></p><p>Betalingen er nu godkendt. Vi sender Deres vare med posten hurtigst muligt.</p><p>En kopi af Deres ordre er sendt til Deres email.').'</p>';
+				$GLOBALS['generatedcontent']['text'] = _('<p style="text-align:center;"><img src="images/ok.png" alt="" /></p>
+
+<p>Betalingen er nu godkendt. Vi sender Deres vare med posten hurtigst muligt.</p><p>En kopi af Deres ordre er sendt til Deres email.</p>');
 				
 				$faktura['quantities'] = explode('<', $faktura['quantities']);
 				$faktura['products'] = explode('<', $faktura['products']);
@@ -606,7 +606,7 @@ Fejl nummer: ').$_GET['Status_code'];
 				}
 				
 				$shopSubject = _('Betaling gennemført');
-				$shopBody = ('Kunden har godkendt betalingen og nedenstående ordre skal sendes til kunden.<br />
+				$shopBody = _('Kunden har godkendt betalingen og nedenstående ordre skal sendes til kunden.<br />
 <br />
 Husk at "ekspedere" betalingen når varen sendes (Betaling overføres først fra kundens konto, når vi trykker "Ekspedér").').'<br />';
 				
@@ -616,67 +616,122 @@ Husk at "ekspedere" betalingen når varen sendes (Betaling overføres først fra
 					$GLOBALS['generatedcontent']['track'] .= ' pageTracker._addItem("'.$faktura['id'].'", "'.$faktura['id'].$key.'", "'.$product.'", "", "'.($faktura['values'][$key]*(1+$faktura['momssats'])).'", "'.$faktura['quantities'][$key].'");';
 				$GLOBALS['generatedcontent']['track'] .= ' pageTracker._trackTrans(); ';
 
-				
 				//Mail to customer start
 				$emailbody = '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><meta http-equiv="Content-Type" content="text/html; charset=utf-8" /><title>';
-				$emailbody .= 'Ordre '.$faktura['id'].' - Betaling gennemført';
-				$emailbody .= '</title><style type="text/css">#faktura td { border:1px #000 solid; border-collapse:collapse; padding:2px; }</style></head><body><p>Dato: '.$faktura['paydate'].'<br /></p><table><tr><td></td><td>Kunde:</td>';
-				if($faktura['altpost']) $emailbody .= '<td>Lev. adresse:</td>';
-				$emailbody .= '</tr><tr><td>Navn:</td><td>'.$faktura['navn'].'</td>';
-				if($faktura['altpost']) $emailbody .= '<td>'.$faktura['postname'].'</td>';
-				$emailbody .= '</tr>';
+				$emailbody .= sprintf(_('Ordre %d - Betaling gennemført'), $faktura['id']);
+				$emailbody .= '</title><style type="text/css">#faktura td { border:1px #000 solid; border-collapse:collapse; padding:2px; }</style></head><body>';
+ 
+ 				//Generate the reseaving address
+				if($faktura['altpost'])
+					$emailbody_address .= '<td>'._('Lev. adresse:').'</td>';
+				$emailbody_address .= '</tr><tr><td>'._('Navn:').'</td><td>'.$faktura['navn'].'</td>';
+				if($faktura['altpost'])
+					$emailbody_address .= '<td>'.$faktura['postname'].'</td>';
+				$emailbody_address .= '</tr>';
 				if($faktura['tlf1'] || ($faktura['altpost'] && $faktura['posttlf'])) {
-					$emailbody .= '<tr><td>Tlf.:</td><td>'.$faktura['tlf1'].'</td>';
-					if($faktura['altpost']) $emailbody .= '<td>'.$faktura['posttlf'].'</td>';
-					$emailbody .= '</tr>';
+					$emailbody_address .= '<tr><td'._('>Tlf.:').'</td><td>'.$faktura['tlf1'].'</td>';
+					if($faktura['altpost'])
+						$emailbody_address .= '<td>'.$faktura['posttlf'].'</td>';
+					$emailbody_address .= '</tr>';
 				}
 				if($faktura['att'] || ($faktura['altpost'] && $faktura['postatt'])) {
-					$emailbody .= '<tr><td>Att.:</td><td>'.$faktura['att'].'</td>';
-					if($faktura['altpost']) $emailbody .= '<td>'.$faktura['postatt'].'</td>';
-					$emailbody .= '</tr>';
+					$emailbody_address .= '<tr><td>'._('Att.:').'</td><td>'.$faktura['att'].'</td>';
+					if($faktura['altpost'])
+						$emailbody_address .= '<td>'.$faktura['postatt'].'</td>';
+					$emailbody_address .= '</tr>';
 				}
 				if($faktura['adresse'] || ($faktura['adresse'] && ($faktura['postaddress'] || $faktura['postaddress2']))) {
-					$emailbody .= '<tr><td>Adresse:</td><td>'.$faktura['adresse'].'</td>';
-					if($faktura['altpost']) $emailbody .= '<td>'.$faktura['postaddress'].'<br />'.$faktura['postaddress2'].'</td>';
-					$emailbody .= '</tr>';
+					$emailbody_address .= '<tr><td>'._('Adresse:').'</td><td>'.$faktura['adresse'].'</td>';
+					if($faktura['altpost'])
+						$emailbody_address .= '<td>'.$faktura['postaddress'].'<br />'.$faktura['postaddress2'].'</td>';
+					$emailbody_address .= '</tr>';
 				}
 				if($faktura['postbox'] || ($faktura['altpost'] && $faktura['postpostbox'])) {
-					$emailbody .= '<tr><td>Postboks:</td><td>'.$faktura['postbox'].'</td>';
-					if($faktura['altpost']) $emailbody .= '<td>'.$faktura['postpostbox'].'</td>';
-					$emailbody .= '</tr>';
+					$emailbody_address .= '<tr><td>'._('Postboks:').'</td><td>'.$faktura['postbox'].'</td>';
+					if($faktura['altpost'])
+						$emailbody_address .= '<td>'.$faktura['postpostbox'].'</td>';
+					$emailbody_address .= '</tr>';
 				}
-				$emailbody .= '<tr><td>Postnr.:</td><td>'.$faktura['postnr'].'</td>';
-				if($faktura['altpost']) $emailbody .= '<td>'.$faktura['postpostalcode'].'</td>';
-				$emailbody .= '</tr><tr><td>By:</td><td>'.$faktura['by'].'</td>';
-				if($faktura['altpost']) $emailbody .= '<td>'.$faktura['postcity'].'</td>';
-				$emailbody .= '</tr><tr><td>Land:</td><td>'.$countries[$faktura['land']].'</td>';
-				if($faktura['altpost']) $emailbody .= '<td>'.$countries[$faktura['postcountry']].'</td>';
-				$emailbody .= '</tr>';
-				if($faktura['tlf2']) $emailbody .= '<tr><td>Mobil:</td><td>'.$faktura['tlf2'].'</td></tr>';
-				$emailbody .= '<tr><td>Email:</td><td><a href="mailto:'.$faktura['email'].'">'.$faktura['email'].'</a></td></tr></table><p>Betaling for Deres ordre nr. '.$faktura['id'].' er nu godkendt. Deres vare vil blive afsendt hurtigst muligt. Der vil automatisk blive sendt en email med et Track &amp; Trace link hvor de kan følge pakken.<br /></p>';
-				$emailbody .= '<table id="faktura" cellspacing="0"><thead><tr><td class="td1">Antal</td><td>Benævnelse</td><td class="td3 tal">á pris</td><td class="td4 tal">Total</td></tr></thead><tfoot><tr style="height:auto;min-height:auto;max-height:auto;"><td>&nbsp;</td><td>&nbsp;</td><td class="tal">Nettobeløb</td>';
-
-				$productslines = max(count($faktura['quantities']), count($faktura['products']), count($faktura['values']));
+				
+				$emailbody_address .= '<tr><td>'._('Postnr.:').'</td><td>'.$faktura['postnr'].'</td>';
+				if($faktura['altpost'])
+					$emailbody_address .= '<td>'.$faktura['postpostalcode'].'</td>';
+				$emailbody_address .= '</tr><tr><td>'._('By:').'</td><td>'.$faktura['by'].'</td>';
+				if($faktura['altpost'])
+					$emailbody_address .= '<td>'.$faktura['postcity'].'</td>';
+				$emailbody_address .= '</tr><tr><td>'._('Land:').'</td><td>'.$countries[$faktura['land']].'</td>';
+				if($faktura['altpost'])
+					$emailbody_address .= '<td>'.$countries[$faktura['postcountry']].'</td>';
+				if($faktura['tlf2'])
+					$emailbody_address .= '</tr><tr><td>'._('Mobil:').'</td><td>'.$faktura['tlf2'].'</td>';
 				
 				$netto = 0;
 				for($i=0;$i<$productslines;$i++) {
 					$netto += $faktura['values'][$i]*$faktura['quantities'][$i];
 				}
 
-				$emailbody .= '<td class="tal">'.number_format($netto, 2, ',', '').'</td></tr><tr><td>&nbsp;</td><td>&nbsp;</td><td class="tal">Fragt</td><td class="tal">'.number_format($faktura['fragt'], 2, ',', '').'</td></tr><tr><td>&nbsp;</td><td style="text-align:right" class="tal">'.($faktura['momssats']*100).'%</td><td class="tal">Momsbeløb</td><td class="tal">'.number_format($netto*$faktura['momssats'], 2, ',', '').'</td></tr><tr class="border"><td colspan="2">Alle beløb er i DKK</td><td style="text-align:center; font-weight:bold;">AT BETALE</td><td class="tal"><big>'.number_format($faktura['amount'], 2, ',', '').'</big></td></tr></tfoot><tbody>';
+				$productslines = max(count($faktura['quantities']), count($faktura['products']), count($faktura['values']));
+				
+				$emailbody_tablerows = '';
 				for($i=0; $i<$productslines; $i++) {
-					$emailbody .= '<tr><td class="tal">'.$faktura['quantities'][$i].'</td><td>'.$faktura['products'][$i].'</td><td class="tal">'.number_format($faktura['values'][$i], 2, ',', '').'</td><td class="tal">'.number_format($faktura['values'][$i]*$faktura['quantities'][$i], 2, ',', '').'</td></tr>';
+					$emailbody_tablerows .= '<tr><td class="tal">'.$faktura['quantities'][$i].'</td><td>'.$faktura['products'][$i].'</td><td class="tal">'.number_format($faktura['values'][$i], 2, ',', '').'</td><td class="tal">'.number_format($faktura['values'][$i]*$faktura['quantities'][$i], 2, ',', '').'</td></tr>';
 				}
-				$emailbody .= '</tbody></table>';
+				
+				$emailbody_nore = '';
 				if($faktura['note']) {
-					$emailbody .= '<br /><strong>Notat:</strong><br /><p class="note">';	
-					$emailbody .= nl2br(htmlspecialchars($faktura['note'])).'</p>';
+					$emailbody_nore = '<br /><strong>'._('Notat:').'</strong><br /><p class="note">';	
+					$emailbody_nore .= nl2br(htmlspecialchars($faktura['note'])).'</p>';
 				}
 				
 				if(!validemail($faktura['department'])) {
 					$faktura['department'] = $GLOBALS['_config']['email'][0];
 				}
-				$emailbody .= '<p>Med venlig hilsen,<br /></p><p> </p><p>'.$faktura['clerk'].'<br />'.$GLOBALS['_config']['site_name'].'<br />'.$GLOBALS['_config']['address'].'<br />'.$GLOBALS['_config']['postcode'].' '.$GLOBALS['_config']['city'].'.<br />Tlf. '.$GLOBALS['_config']['phone'].'<br /><a href="mailto:'.$faktura['department'].'">'.$faktura['department'].'</a></p></body></html>';
+				
+				//generate the actual email content
+				$emailbody .= sprintf(_('<p>Dato: %s<br />
+</p>
+<table><tr><td></td><td>Kunde:</td>%s</tr>
+<tr><td>Email:</td><td><a href="mailto:%s">%s</a></td></tr></table>
+<p>Betaling for Deres ordre nr. %s er nu godkendt. Deres vare vil blive afsendt hurtigst muligt. Der vil automatisk blive sendt en email med et Track &amp; Trace link hvor de kan følge pakken.<br />
+</p>
+<table id="faktura" cellspacing="0"><thead><tr><td class="td1">Antal</td><td>Benævnelse</td><td class="td3 tal">á pris</td><td class="td4 tal">Total</td></tr></thead><tfoot>
+<tr style="height:auto;min-height:auto;max-height:auto;"><td>&nbsp;</td><td>&nbsp;</td><td class="tal">Nettobeløb</td><td class="tal">%s</td></tr>
+<tr><td>&nbsp;</td><td>&nbsp;</td><td class="tal">Fragt</td><td class="tal">%s</td></tr>
+<tr><td>&nbsp;</td><td style="text-align:right" class="tal">%d%%</td><td class="tal">Momsbeløb</td><td class="tal">%s</td></tr>
+<tr class="border"><td colspan="2">Alle beløb er i DKK</td><td style="text-align:center; font-weight:bold;">AT BETALE</td><td class="tal"><big>%s</big></td></tr></tfoot>
+<tbody>%s</tbody></table>%s
+<p>Med venlig hilsen<br />
+</p>
+
+<p>%s<br />
+%s<br />
+%s<br />
+%s %s.<br />
+Tlf. %s<br />
+<a href="mailto:%s">%s</a></p>'), 
+					$faktura['paydate'],
+					$emailbody_address,
+					$faktura['email'],
+					$faktura['email'],
+					$faktura['id'],
+					number_format($netto, 2, ',', ''),
+					number_format($faktura['fragt'], 2, ',', ''),
+					$faktura['momssats']*100,
+					number_format($netto*$faktura['momssats'], 2, ',', ''),
+					number_format($faktura['amount'], 2, ',', ''),
+					$emailbody_tablerows,
+					$emailbody_nore,
+					$faktura['clerk'],
+					$GLOBALS['_config']['site_name'],
+					$GLOBALS['_config']['address'],
+					$GLOBALS['_config']['postcode'],
+					$GLOBALS['_config']['city'],
+					$GLOBALS['_config']['phone'],
+					$faktura['department'],
+					$faktura['department']
+				);
+				
+				$emailbody .= '</body></html>';
 
 				require_once "inc/phpMailer/class.phpmailer.php";
 	
@@ -696,7 +751,7 @@ Husk at "ekspedere" betalingen når varen sendes (Betaling overføres først fra
 				$mail->AddReplyTo($faktura['department'], $GLOBALS['_config']['site_name']);
 				$mail->From       = $faktura['department'];
 				$mail->FromName   = $GLOBALS['_config']['site_name'];
-				$mail->Subject    = 'Ordre '.$faktura['id'].' - Betaling gennemført';
+				$mail->Subject    = sprintf(_('Ordre #%d - Betaling gennemført'), $faktura['id']);
 				$mail->MsgHTML($emailbody, $_SERVER['DOCUMENT_ROOT']);
 				$mail->AddAddress($faktura['email'], $GLOBALS['_config']['site_name']);
 				if($mail->Send()) {
@@ -720,28 +775,52 @@ Husk at "ekspedere" betalingen når varen sendes (Betaling overføres først fra
 				//Mail to Ole start
 				if($faktura['department'] != 'mail@huntershouse.dk') {
 					$emailbody = '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><meta http-equiv="Content-Type" content="text/html; charset=utf-8" /><title>';
-					$emailbody .= 'Online faktura #'.$GLOBALS['_config']['pbsfix'].$faktura['id'].' : Betaling gennemført</title><style type="text/css">#faktura td { border:1px #000 solid; border-collapse:collapse; padding:2px; }</style></head><body><p>Den '.$faktura['paydate'].' godkendte '.$faktura['navn'].' online faktura #'.$GLOBALS['_config']['pbsfix'].$faktura['id'].', Som blev oprettet af '.$faktura['clerk'].'.<br />Ordren lød på følgende:';
-					$emailbody .= '</p><table id="faktura" cellspacing="0"><thead><tr><td class="td1">Antal</td><td>Benævnelse</td><td class="td3 tal">á pris</td><td class="td4 tal">Total</td></tr></thead><tfoot><tr style="height:auto;min-height:auto;max-height:auto;"><td>&nbsp;</td><td>&nbsp;</td><td class="tal">Nettobeløb</td>';
+					$emailbody .= sprintf(_('Online faktura #%s : Betaling gennemført'), $GLOBALS['_config']['pbsfix'].$faktura['id']);
+					$emailbody .= '</title><style type="text/css">#faktura td { border:1px #000 solid; border-collapse:collapse; padding:2px; }</style></head><body>';
+
 					$productslines = max(count($faktura['quantities']), count($faktura['products']), count($faktura['values']));
 					
 					$netto = 0;
 					for($i=0;$i<$productslines;$i++) {
 						$netto += $faktura['values'][$i]*$faktura['quantities'][$i];
 					}
-	
-					$emailbody .= '<td class="tal">'.number_format($netto, 2, ',', '').'</td></tr><tr><td>&nbsp;</td><td>&nbsp;</td><td class="tal">Fragt</td><td class="tal">'.number_format($faktura['fragt'], 2, ',', '').'</td></tr><tr><td>&nbsp;</td><td style="text-align:right" class="tal">'.($faktura['momssats']*100).'%</td><td class="tal">Momsbeløb</td><td class="tal">'.number_format($netto*$faktura['momssats'], 2, ',', '').'</td></tr><tr class="border"><td colspan="2">Alle beløb er i DKK</td><td style="text-align:center; font-weight:bold;">AT BETALE</td><td class="tal"><big>'.number_format($faktura['amount'], 2, ',', '').'</big></td></tr></tfoot><tbody>';
-	
+					
+					$emailbody_tablerows = '';
 					for($i=0; $i<$productslines; $i++) {
-						$emailbody .= '<tr><td class="tal">'.$faktura['quantities'][$i].'</td><td>'.$faktura['products'][$i].'</td><td class="tal">'.number_format($faktura['values'][$i], 2, ',', '').'</td><td class="tal">'.number_format($faktura['values'][$i]*$faktura['quantities'][$i], 2, ',', '').'</td></tr>';
+						$emailbody_tablerows .= '<tr><td class="tal">'.$faktura['quantities'][$i].'</td><td>'.$faktura['products'][$i].'</td><td class="tal">'.number_format($faktura['values'][$i], 2, ',', '').'</td><td class="tal">'.number_format($faktura['values'][$i]*$faktura['quantities'][$i], 2, ',', '').'</td></tr>';
 					}
 					
-					$emailbody .= '</tbody></table>';
-					
+					$emailbody_nore = '';
 					if($faktura['note']) {
-						$emailbody .= '<br /><strong>Notat:</strong><br /><p class="note">';	
+						$emailbody_nore = '<br /><strong>Notat:</strong><br /><p class="note">';	
 						$emailbody .= nl2br(htmlspecialchars($faktura['note'])).'</p>';
 					}
-					$emailbody .= '<p>Med venlig hilsen</p><p>Computeren</p></body></html>';
+
+					$emailbody .= sprintf(_('<p>Den %s godkendte %s online faktura #%s, Som blev oprettet af %s.<br />
+Ordren lød på følgende:</p>
+<table id="faktura" cellspacing="0"><thead><tr><td class="td1">Antal</td><td>Benævnelse</td><td class="td3 tal">á pris</td><td class="td4 tal">Total</td></tr></thead><tfoot>
+<tr style="height:auto;min-height:auto;max-height:auto;"><td>&nbsp;</td><td>&nbsp;</td><td class="tal">Nettobeløb</td><td class="tal">%s</td></tr>
+<tr><td>&nbsp;</td><td>&nbsp;</td><td class="tal">Fragt</td><td class="tal">%s</td></tr>
+<tr><td>&nbsp;</td><td style="text-align:right" class="tal">%d%%</td><td class="tal">Momsbeløb</td><td class="tal">%s</td></tr>
+<tr class="border"><td colspan="2">Alle beløb er i DKK</td><td style="text-align:center; font-weight:bold;">AT BETALE</td><td class="tal"><big>%s</big></td></tr></tfoot>
+<tbody>%s</tbody></table>%s
+<p>Med venlig hilsen</p>
+
+<p>Computeren</p>'),
+						$faktura['paydate'],
+						$faktura['navn'],
+						$GLOBALS['_config']['pbsfix'].$faktura['id'],
+						$faktura['clerk'],
+						number_format($netto, 2, ',', ''),
+						number_format($faktura['fragt'], 2, ',', ''),
+						$faktura['momssats']*100,
+						number_format($netto*$faktura['momssats'], 2, ',', ''),
+						number_format($faktura['amount'], 2, ',', ''),
+						$emailbody_tablerows,
+						$emailbody_nore
+					);
+					
+					$emailbody .= '</body></html>';
 					
 					require_once "inc/phpMailer/class.phpmailer.php";
 					
@@ -764,7 +843,7 @@ Husk at "ekspedere" betalingen når varen sendes (Betaling overføres først fra
 					$mail->AddReplyTo($faktura['department'], $GLOBALS['_config']['site_name']);
 					$mail->From       = $faktura['department'];
 					$mail->FromName   = $GLOBALS['_config']['site_name'];
-					$mail->Subject    = 'Online faktura #'.$GLOBALS['_config']['pbsfix'].$faktura['id'].' : Betaling gennemført';
+					$mail->Subject    = sprintf(_('Online faktura #%s : Betaling gennemført'), $GLOBALS['_config']['pbsfix'].$faktura['id']);
 					$mail->MsgHTML($emailbody, $_SERVER['DOCUMENT_ROOT']);
 					$mail->AddAddress('mail@huntershouse.dk', 'Hunters House A/S');
 					if($mail->Send()) {
@@ -789,32 +868,32 @@ Husk at "ekspedere" betalingen når varen sendes (Betaling overføres først fra
 				
 			break;
 			case 1:
-				$GLOBALS['generatedcontent']['text'] = 'Nægtet/Afbrudt. Betalingen er nægtet eller afbrudt.';
+				$GLOBALS['generatedcontent']['text'] = _('Nægtet/Afbrudt. Betalingen er nægtet eller afbrudt.');
 				$mysqli->query("UPDATE `fakturas` SET `status` = 'pbserror', `paydate` = NOW() WHERE `status` IN('new', 'locked') AND `id` = ".$id);
 			break;
 			case 2:
-				$GLOBALS['generatedcontent']['text'] = 'I gang. Betaling venter på svar fra banken.';
+				$GLOBALS['generatedcontent']['text'] = _('I gang. Betaling venter på svar fra banken.');
 			break;
 			case 3:
-				$GLOBALS['generatedcontent']['text'] = 'Annulleret. Kortbetalingen er makuleret af Butikken før indløsningen.';
+				$GLOBALS['generatedcontent']['text'] = _('Annulleret. Kortbetalingen er makuleret af Butikken før indløsningen.');
 			break;
 			case 4:
-				$GLOBALS['generatedcontent']['text'] = 'Påbegyndt. Betalingen er initieret af køberen.';
+				$GLOBALS['generatedcontent']['text'] = _('Påbegyndt. Betalingen er initieret af køberen.');
 			break;
 			case 6:
-				$GLOBALS['generatedcontent']['text'] = 'Autoriseret. Kortbetaling er autoriseret; venter på bekræftelse og indløsning.';
+				$GLOBALS['generatedcontent']['text'] = _('Autoriseret. Kortbetaling er autoriseret; venter på bekræftelse og indløsning.');
 			break;
 			case 7:
-				$GLOBALS['generatedcontent']['text'] = 'Indløsning mislykkedes. Kortbetalingen kunne ikke indløses.';
+				$GLOBALS['generatedcontent']['text'] = _('Indløsning mislykkedes. Kortbetalingen kunne ikke indløses.');
 			break;
 			case 8:
-				$GLOBALS['generatedcontent']['text'] = 'Indløsning i gang. Indløsning af kortbetalingen er i øjeblikket i gang.';
+				$GLOBALS['generatedcontent']['text'] = _('Indløsning i gang. Indløsning af kortbetalingen er i øjeblikket i gang.');
 			break;
 			case 9:
-				$GLOBALS['generatedcontent']['text'] = 'Bekræftet. Kortbetalingen er bekræftet og bliver indløst.';
+				$GLOBALS['generatedcontent']['text'] = _('Bekræftet. Kortbetalingen er bekræftet og bliver indløst.');
 			break;
 			case 11:
-				$GLOBALS['generatedcontent']['text'] = 'Sent to bank or Svea Ekonomi. Applies only to the Payment Method INVOICE';
+				$GLOBALS['generatedcontent']['text'] = _('Sent to bank or Svea Ekonomi. Applies only to the Payment Method INVOICE');
 			break;
 		}
 	}
@@ -839,11 +918,24 @@ Husk at "ekspedere" betalingen når varen sendes (Betaling overføres først fra
 			}
 		}
 		
+		$productslines = max(count($faktura['quantities']), count($faktura['products']), count($faktura['values']));
+		
+		$netto = 0;
+		for($i=0;$i<$productslines;$i++) {
+			$netto += $faktura['values'][$i]*$faktura['quantities'][$i];
+		}
+		
+		$emailbody_tablerows = '';
+		for($i=0; $i<$productslines; $i++) {
+			$emailbody_tablerows .= '<tr><td class="tal">'.$faktura['quantities'][$i].'</td><td>'.$faktura['products'][$i].'</td><td class="tal">'.number_format($faktura['values'][$i], 2, ',', '').'</td><td class="tal">'.number_format($faktura['values'][$i]*$faktura['quantities'][$i], 2, ',', '').'</td></tr>';
+		}
+		
+		//TODO make this a gettext
 		$emailbody = '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-<title>Att: '.$faktura['clerk'].' - Online faktura #'.$id.' : '.$shopSubject.'</title>
+<title>'.sprintf(_('Att: %s - Online faktura #%d : %s'), $faktura['clerk'], $id, $shopSubject).'</title>
 <style type="text/css">
 td {
 	border:1px solid #000;
@@ -858,39 +950,41 @@ $faktura['adresse'].'<br />'.
 $faktura['postnr'].' '.$faktura['by'].'<br />'.
 $faktura['land'].'</p>'.
 */
-'<p>'.$shopBody.'<br />
-Klik <a href="'.$GLOBALS['_config']['base_url'].'/admin/faktura.php?id='.$id.'">her</a> for at åbne faktura siden.</p>
-<p><a href="mailto:'.$faktura['email'].'">'.$faktura['email'].'</a><br />
-	Mobil: '.$faktura['tlf2'].'<br />
-	Tlf.: '.$faktura['tlf1'].'<br />
-	Leverings tlf.: '.$faktura['posttlf'].'</p>';
-		$emailbody .= '<table id="faktura" cellspacing="0"><thead><tr><td class="td1">Antal</td><td>Benævnelse</td><td class="td3 tal">á pris</td><td class="td4 tal">Total</td></tr></thead><tfoot><tr style="height:auto;min-height:auto;max-height:auto;"><td>&nbsp;</td><td>&nbsp;</td><td class="tal">Nettobeløb</td>';
+sprintf(_('<p>%s<br />
+Klik <a href="%s/admin/faktura.php?id=%d">her</a> for at åbne faktura siden.</p>
+<p><a href="mailto:%s">%s</a><br />
+Mobil: %s<br />
+Tlf.: %s<br />
+Leverings tlf.: %s</p>
+<table id="faktura" cellspacing="0"><thead><tr><td class="td1">Antal</td><td>Benævnelse</td><td class="td3 tal">á pris</td><td class="td4 tal">Total</td></tr></thead>
+<tfoot><tr style="height:auto;min-height:auto;max-height:auto;"><td>&nbsp;</td><td>&nbsp;</td><td class="tal">Nettobeløb</td><td class="tal">%s</td></tr>
+<tr><td>&nbsp;</td><td>&nbsp;</td><td class="tal">Fragt</td><td class="tal">%s</td></tr>
+<tr><td>&nbsp;</td><td style="text-align:right" class="tal">%d%%</td><td class="tal">Momsbeløb</td><td class="tal">%s</td></tr>
+<tr class="border"><td colspan="2">Alle beløb er i DKK</td><td style="text-align:center; font-weight:bold;">AT BETALE</td><td class="tal"><big>%s</big></td></tr></tfoot>
+<tbody>%s</tbody></table>
+<p>Mvh Computeren</p>'),
+			$shopBody,
+			$GLOBALS['_config']['base_url'],
+			$id,
+			$faktura['email'],
+			$faktura['email'],
+			$faktura['tlf2'],
+			$faktura['tlf1'],
+			$faktura['posttlf'],
+			number_format($netto, 2, ',', ''),
+			number_format($faktura['fragt'], 2, ',', ''),
+			$faktura['momssats']*100,
+			number_format($netto*$faktura['momssats'], 2, ',', ''),
+			number_format($faktura['amount'], 2, ',', ''),
+			$emailbody_tablerows
+		);
 		
-		$productslines = max(count($faktura['quantities']), count($faktura['products']), count($faktura['values']));
-		
-		$netto = 0;
-		for($i=0;$i<$productslines;$i++) {
-			$netto += $faktura['values'][$i]*$faktura['quantities'][$i];
-		}
-		
-		$emailbody .= '<td class="tal">'.number_format($netto, 2, ',', '').'</td></tr><tr><td>&nbsp;</td><td>&nbsp;</td><td class="tal">Fragt</td><td class="tal">'.number_format($faktura['fragt'], 2, ',', '').'</td></tr><tr><td>&nbsp;</td><td style="text-align:right" class="tal">'.($faktura['momssats']*100).'%</td><td class="tal">Momsbeløb</td><td class="tal">'.number_format($netto*$faktura['momssats'], 2, ',', '').'</td></tr><tr class="border"><td colspan="2">Alle beløb er i DKK</td><td style="text-align:center; font-weight:bold;">AT BETALE</td><td class="tal"><big>'.number_format($faktura['amount'], 2, ',', '').'</big></td></tr></tfoot><tbody>';
-		for($i=0; $i<$productslines; $i++) {
-			$emailbody .= '<tr><td class="tal">'.$faktura['quantities'][$i].'</td><td>'.$faktura['products'][$i].'</td><td class="tal">'.number_format($faktura['values'][$i], 2, ',', '').'</td><td class="tal">'.number_format($faktura['values'][$i]*$faktura['quantities'][$i], 2, ',', '').'</td></tr>';
-		}
-		$emailbody .= '</tbody></table>';
-		$emailbody .= '<p>Mvh Computeren</p></body></html>';
+		$emailbody .= '</body></html>';
 	} else {
 		$emailbody = '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml">
-<head>
-<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-<title>Online faktura #'.$id.' : eksistere ikke</title>
-</head>
-
-<body>
-'.$shopBody.'<br />Status: '.$_GET['Status'].$_GET['Status_code'].
-'<p>Mvh Computeren</p>
-</body>
+<html xmlns="http://www.w3.org/1999/xhtml"><head><meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>'.sprintf(_('Online faktura #%d : eksistere ikke'), $id).'</title></head><body>
+'.$shopBody.'<br />'._('Status:').' '.$_GET['Status'].$_GET['Status_code'].'<p>'._('Mvh Computeren').'</p></body>
 </html>
 </body></html>';
 	}
@@ -912,7 +1006,7 @@ Klik <a href="'.$GLOBALS['_config']['base_url'].'/admin/faktura.php?id='.$id.'">
 		$mail->CharSet    = 'utf-8';
 		$mail->From       = $GLOBALS['_config']['email'][0];
 		$mail->FromName   = $GLOBALS['_config']['site_name'];
-		$mail->Subject    = 'Att: '.$faktura['clerk'].' - Online faktura #'.$id.' : '.$shopSubject;
+		$mail->Subject    = sprintf(_('Att: %s - Online faktura #%d : %s'), $faktura['clerk'], $id, $shopSubject);
 		$mail->MsgHTML($emailbody, $_SERVER['DOCUMENT_ROOT']);
 		
 		$mail->AddAddress($faktura['department'], $GLOBALS['_config']['site_name']);
@@ -935,25 +1029,25 @@ Klik <a href="'.$GLOBALS['_config']['base_url'].'/admin/faktura.php?id='.$id.'">
 	}
 	
 } else {
-	$GLOBALS['generatedcontent']['title'] = 'Betaling';
-	$GLOBALS['generatedcontent']['headline'] = 'Betaling';
+	$GLOBALS['generatedcontent']['title'] = _('Betaling');
+	$GLOBALS['generatedcontent']['headline'] = _('Betaling');
 	
 	$GLOBALS['generatedcontent']['text'] = '<form action="" method="get">
 	  <table>
 		<tbody>
 		  <tr>
-			<td>Ordre nr:</td>
+			<td>'._('Ordre nr:').'</td>
 			<td><input name="id" value="'.@$_GET['id'].'" /></td>
 		  </tr>
 		  <tr>
-			<td>Kode:</td>
+			<td>'._('Kode:').'</td>
 			<td><input name="checkid" value="'.@$_GET['checkid'].'" /></td>
 		  </tr>
 		</tbody>
-	  </table><input type="submit" value="Fortsæt" />
+	  </table><input type="submit" value="'._('Fortsæt').'" />
 	</form>';
 	if(!empty($_GET['checkid']))
-		$GLOBALS['generatedcontent']['text'] = 'Koden er ikke korrekt!';
+		$GLOBALS['generatedcontent']['text'] = _('Koden er ikke korrekt!');
 }
 
 //Output page
