@@ -528,11 +528,10 @@ function save($id, $type, $updates) {
 <p>Med venlig hilsen</p>
 
 <p>%s<br />
-    %s<br />
-    %s<br />
-    %s %s<br />
-    Tlf. %s</p>'),
-			,
+%s<br />
+%s<br />
+%s %s<br />
+Tlf. %s</p>'),
 			$faktura['id'],
 			$GLOBALS['_config']['base_url'],
 			$faktura['id'],
@@ -617,7 +616,6 @@ function sendReminder($id) {
 	
 	include_once "../inc/phpMailer/class.phpmailer.php";
 	
-	//TODO gettext this
 	$emailBody = '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head><meta http-equiv="Content-Type" content="text/html; charset=utf-8" />

@@ -1,6 +1,12 @@
 <?php
+
+date_default_timezone_set('Europe/Copenhagen');
+setlocale(LC_ALL, 'da_DK');
+bindtextdomain("agcms", $_SERVER['DOCUMENT_ROOT'].'/theme/locale');
+textdomain("agcms");
+
 require_once $_SERVER['DOCUMENT_ROOT'].'/admin/inc/logon.php';
-date_default_timezone_set('Europe/Copenhagen'); 
+
 if(empty($_SESSION['_user'])) {
 	//TDODO No login !!!
 	$_SESSION['_user']['fullname'] = 'No one';
@@ -168,7 +174,7 @@ a {
 <body onload="$('loading').style.visibility = 'hidden';">
 <div id="canvas">
 <form action="" method="post"><table><tr>
-	<td>Id:</td><td>År:</td><td>Måned:</td><td>Ekspedient:</td><td>Status:</td></tr><tr><td>
+	<td><?php echo(_('Id:')); ?></td><td><?php echo(_('År:')); ?></td><td><?php echo(_('Måned:')); ?></td><td><?php echo(_('Ekspedient:')); ?></td><td><?php echo(_('Status:')); ?></td></tr><tr><td>
 
     <input name="id" value="<?php if(!empty($_POST['id'])) echo $_POST['id']; ?>" size="4" /></td><td>
 
