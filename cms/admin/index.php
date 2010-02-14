@@ -26,7 +26,7 @@ require_once $_SERVER['DOCUMENT_ROOT'].'/admin/inc/logon.php';
 	
 	function search($text) {
 		if(!@$text)
-			return array('error' => 'Du skal indtaste et søge ord.');
+			return array('error' => _('Du skal indtaste et søge ord.'));
 		
 		global $mysqli;
 		
@@ -68,21 +68,21 @@ require_once $_SERVER['DOCUMENT_ROOT'].'/admin/inc/logon.php';
 		if($id)
 			$kat = $mysqli->fetch_array('SELECT * FROM `kat` WHERE id = '.$id.' LIMIT 1');
 		
-		$html = '<div id="headline">Rediger kategori</div><form action="" onsubmit="return updateKat('.$id.')"><input type="submit" accesskey="s" style="width:1px; height:1px; position:absolute; top: -20px; left:-20px;" />
-		<div>Navn: <img style="cursor:pointer;vertical-align:bottom" onclick="explorer(\'thb\',\'icon\')" src="';
+		$html = '<div id="headline">'.('Rediger kategori').'</div><form action="" onsubmit="return updateKat('.$id.')"><input type="submit" accesskey="s" style="width:1px; height:1px; position:absolute; top: -20px; left:-20px;" />
+		<div>'._('Navn:').' <img style="cursor:pointer;vertical-align:bottom" onclick="explorer(\'thb\',\'icon\')" src="';
 			
 		if(!$kat[0]['icon'])
 			$html .= 'images/folder.png';
 		else
 			$html .= $kat[0]['icon'];
 		
-		$html .= '" title="" alt="Billeder" id="iconthb" /> <input id="navn" style="width:256px;" maxlength="64" value="'.$kat[0]['navn'].'" /> <br /> Icon: <input id="icon" style="width:247px;" maxlength="128" type="hidden" value="'.$kat[0]['icon'].'" /> <img style="cursor:pointer;vertical-align:bottom" onclick="explorer(\'thb\',\'icon\')" width="16" height="16" src="images/folder_image.png" title="Find billeder" alt="Billeder" /> <img style="cursor:pointer;vertical-align:bottom" onclick="setThb(\'icon\',\'\',\'images/folder.png\')" src="images/cross.png" alt="X" title="Fjern billed" height="16" width="16" /><br /><br />';
+		$html .= '" title="" alt="Billeder" id="iconthb" /> <input id="navn" style="width:256px;" maxlength="64" value="'.$kat[0]['navn'].'" /> <br /> '._('Icon:').' <input id="icon" style="width:247px;" maxlength="128" type="hidden" value="'.$kat[0]['icon'].'" /> <img style="cursor:pointer;vertical-align:bottom" onclick="explorer(\'thb\',\'icon\')" width="16" height="16" src="images/folder_image.png" title="'._('Find billeder').'" alt="'._('Billeder').'" /> <img style="cursor:pointer;vertical-align:bottom" onclick="setThb(\'icon\',\'\',\'images/folder.png\')" src="images/cross.png" alt="X" title="'._('Fjern billed').'" height="16" width="16" /><br /><br />';
 		
 		if($subkats = $mysqli->fetch_array('SELECT id, navn, icon FROM `kat` WHERE bind = '.$id.' ORDER BY `order`, `navn`')) {
-			$html .= 'Sorter under kategorier:<select id="custom_sort_subs" onchange="displaySubMenus(this.value);" onblur="displaySubMenus(this.value);"><option value="0">Alfabetisk</option><option value="1"';
+			$html .= _('Sorter under kategorier:').'<select id="custom_sort_subs" onchange="displaySubMenus(this.value);" onblur="displaySubMenus(this.value);"><option value="0">'._('Alfabetisk').'</option><option value="1"';
 			if($kat[0]['custom_sort_subs'])
 				$html .= ' selected="selected"';
-			$html .= '>Manuelt</option></select><br /><ul id="subMenus" style="width:'.$GLOBALS['_config']['text_width'].'px;';
+			$html .= '>'._('Manuelt').'</option></select><br /><ul id="subMenus" style="width:'.$GLOBALS['_config']['text_width'].'px;';
 			if(!$kat[0]['custom_sort_subs'])
 				$html .= 'display:none;';
 			$html .= '">';
@@ -115,7 +115,7 @@ $(\'subMenusOrder\').value = newOrder;
 		}
 
 		//Email
-		$html .= 'Kontakt: <select id="email">';
+		$html .= _('Kontakt:').' <select id="email">';
 		foreach($GLOBALS['_config']['email'] as $value) {
 			$html .= '<option value="'.$value.'"';
 			if($kat[0]['email'] == $value)
@@ -125,16 +125,16 @@ $(\'subMenusOrder\').value = newOrder;
 		$html .= '</select>';
 		
 		//Visning
-		$html .= '<br />Visning: <select id="vis"><option value="0"';
+		$html .= '<br />'._('Visning:').' <select id="vis"><option value="0"';
 		if($kat[0]['vis'] == 0)
 			$html .= ' selected="selected"';
-		$html .= '>Skjul</option><option value="1"';
+		$html .= '>'._('Skjul').'</option><option value="1"';
 		if($kat[0]['vis'] == 1)
 			$html .= ' selected="selected"';
-		$html .= '>Galleri</option><option value="2"';
+		$html .= '>'._('Galleri').'</option><option value="2"';
 		if($kat[0]['vis'] == 2)
 			$html .= ' selected="selected"';
-		$html .= '>Liste</option></select>';
+		$html .= '>'._('Liste').'</option></select>';
 		
 		//Binding
 		//TODO init error, vælger fra cookie i stedet for $kat[0]['bind']
@@ -152,70 +152,70 @@ $(\'subMenusOrder\').value = newOrder;
 		if(!$sider)
 			return '<div id="headline">Siden eksistere ikke</div>';
 
-		$html = '<div id="headline">Rediger side #'.$id.'</div><form action="" method="post" onsubmit="return updateSide('.$id.');"><input type="submit" accesskey="s" style="width:1px; height:1px; position:absolute; top: -20px; left:-20px;" /><div><script type="text/javascript"><!--
+		$html = '<div id="headline">'._('Rediger side #').$id.'</div><form action="" method="post" onsubmit="return updateSide('.$id.');"><input type="submit" accesskey="s" style="width:1px; height:1px; position:absolute; top: -20px; left:-20px;" /><div><script type="text/javascript"><!--
 //Usage: initRTE(imagesPath, includesPath, cssFile, genXHTML)
 initRTE("/admin/rtef/images/", "/admin/rtef/", "/theme/rtef-text.css", true);
 //--></script><input type="hidden" name="id" id="id" value="'.$id.'" /><input class="admin_name" type="text" name="navn" id="navn" value="'.htmlspecialchars($sider[0]['navn']).'" maxlength="127" size="127" style="width:'.$GLOBALS['_config']['text_width'].'px" /><script type="text/javascript"><!--
 writeRichText("text", \''.rtefsafe($sider[0]['text']).'\', "", '.($GLOBALS['_config']['text_width']+32).', 420, true, false, false);
 //--></script>';
-		$html .= 'Søge ord (seperere søge ord med et komma "Emergency Blanket, Redningstæppe"):<br /><textarea name="keywords" id="keywords" style="width:'.$GLOBALS['_config']['text_width'].'px;max-width:'.$GLOBALS['_config']['text_width'].'px" rows="2" cols="">'.htmlspecialchars($sider[0]['keywords']).'</textarea>';
+		$html .= _('Søge ord (seperere søge ord med et komma "Emergency Blanket, Redningstæppe"):').'<br /><textarea name="keywords" id="keywords" style="width:'.$GLOBALS['_config']['text_width'].'px;max-width:'.$GLOBALS['_config']['text_width'].'px" rows="2" cols="">'.htmlspecialchars($sider[0]['keywords']).'</textarea>';
 //Beskrivelse start
-		$html .= '<div class="toolbox"><a class="menuboxheader" id="beskrivelseboxheader" style="width:'.($GLOBALS['_config']['thumb_width']+14).'px" onclick="showhide(\'beskrivelsebox\',this);">Beskrivelse: </a><div style="text-align:center;width:'.($GLOBALS['_config']['thumb_width']+34).'px" id="beskrivelsebox"><br /><input type="hidden" value="';
+		$html .= '<div class="toolbox"><a class="menuboxheader" id="beskrivelseboxheader" style="width:'.($GLOBALS['_config']['thumb_width']+14).'px" onclick="showhide(\'beskrivelsebox\',this);">'._('Beskrivelse:').' </a><div style="text-align:center;width:'.($GLOBALS['_config']['thumb_width']+34).'px" id="beskrivelsebox"><br /><input type="hidden" value="';
 		if($sider[0]['billed']) {
             $html .= $sider[0]['billed'];
 		} else {
-            $html .= '/images/web/intet-foto.jpg';
+            $html .= _('/images/web/intet-foto.jpg');
 		}
 		$html .= '" id="billed" name="billed" /><img id="billedthb" src="';
 
 		if($sider[0]['billed']) {
             $html .= $sider[0]['billed'];
 		} else {
-            $html .= '/images/web/intet-foto.jpg';
+            $html .= _('/images/web/intet-foto.jpg');
 		}
-		$html .= '" alt="" onclick="explorer(\'thb\', \'billed\')" /><br /><img onclick="explorer(\'thb\', \'billed\')" src="images/folder_image.png" width="16" height="16" alt="Billeder" title="Find billed" /><a onclick="setThb(\'billed\',\'\',\'/images/web/intet-foto.jpg\')"><img src="images/cross.png" alt="X" title="Fjern billed" width="16" height="16" /></a>';
+		$html .= '" alt="" onclick="explorer(\'thb\', \'billed\')" /><br /><img onclick="explorer(\'thb\', \'billed\')" src="images/folder_image.png" width="16" height="16" alt="'._('Billeder').'" title="'._('Find billed').'" /><a onclick="setThb(\'billed\',\'\',\'/images/web/intet-foto.jpg\')"><img src="images/cross.png" alt="X" title="'._('Fjern billed').'" width="16" height="16" /></a>';
 		$html .= '<script type="text/javascript"><!--
 writeRichText("beskrivelse", \''.rtefsafe($sider[0]['beskrivelse']).'\', "", '.($GLOBALS['_config']['thumb_width']+32).', 115, false, false, false);
 //--></script>';
 		$html .= '</div></div>';
 //Beskrivelse end
 //Pris start
-		$html .= '<div class="toolbox"><a class="menuboxheader" id="priserheader" style="width:230px" onclick="showhide(\'priser\',this);">Pris: </a><div style="width:250px;" id="priser"><table style="width:100%"><tr><td><select name="burde" id="burde">
+		$html .= '<div class="toolbox"><a class="menuboxheader" id="priserheader" style="width:230px" onclick="showhide(\'priser\',this);">'._('Pris:').' </a><div style="width:250px;" id="priser"><table style="width:100%"><tr><td><select name="burde" id="burde">
 		<option value="0"';
 		if($sider[0]['burde'] == 0)
 			$html .= ' selected="selected"';
-		$html .= '>Før</option>
+		$html .= '>'._('Før').'</option>
 		<option value="1"';
 		if($sider[0]['burde'] == 1)
 			$html .= ' selected="selected"';
-		$html .= '>Vejledende pris</option>
+		$html .= '>'._('Vejledende pris').'</option>
 		<option value="2"';
 		if($sider[0]['burde'] == 2)
 			$html .= ' selected="selected"';
-		$html .= '>Burde koste</option>
+		$html .= '>'._('Burde koste').'</option>
 		</select></td><td style="text-align:right"><input class="XPris" onkeypress="return checkForInt(event)" onchange="prisHighlight()" value="'.$sider[0]['for'].'" name="for" id="for" size="11" maxlength="11" style="width:100px;text-align:right" />,-</td></tr>';
 		$html .= '<tr><td><select name="fra" id="fra">
 		<option value="0"';
 		if($sider[0]['fra'] == 0)
 			$html .= ' selected="selected"';
-		$html .= '>Pris</option>
+		$html .= '>'._('Pris').'</option>
 		<option value="1"';
 		if($sider[0]['fra'] == 1)
 			$html .= ' selected="selected"';
-		$html .= '>Fra</option>
+		$html .= '>'._('Fra').'</option>
 		<option value="2"';
 		if($sider[0]['fra'] == 2)
 			$html .= ' selected="selected"';
-		$html .= '>Brugt</option></select></td><td style="text-align:right"><input value="'.$sider[0]['pris'].'" class="';
+		$html .= '>'._('Brugt').'</option></select></td><td style="text-align:right"><input value="'.$sider[0]['pris'].'" class="';
 		if($sider[0]['for'])
-			$html .= 'NyPris';
+			$html .= _('NyPris');
 		else
-			$html .= 'Pris';
+			$html .= _('Pris');
 		$html .= '" name="pris" id="pris" size="11" maxlength="11" style="width:100px;text-align:right" onkeypress="return checkForInt(event)" onchange="prisHighlight()" />,-';
 		$html .= '</td></tr></table></div></div>';
 //Pris end
 //misc start
-		$html .= '<div class="toolbox"><a class="menuboxheader" id="miscboxheader" style="width:201px" onclick="showhide(\'miscbox\',this);">Andet: </a><div style="width:221px" id="miscbox">Varenummer: <input type="text" name="varenr" id="varenr" maxlength="63" style="text-align:right;width:128px" value="'.htmlspecialchars($sider[0]['varenr']).'" /><br /><img src="images/page_white_key.png" width="16" height="16" alt="" /><select id="krav" name="krav"><option value="0">Ingen</option>';
+		$html .= '<div class="toolbox"><a class="menuboxheader" id="miscboxheader" style="width:201px" onclick="showhide(\'miscbox\',this);">Andet: </a><div style="width:221px" id="miscbox">'._('Varenummer:').' <input type="text" name="varenr" id="varenr" maxlength="63" style="text-align:right;width:128px" value="'.htmlspecialchars($sider[0]['varenr']).'" /><br /><img src="images/page_white_key.png" width="16" height="16" alt="" /><select id="krav" name="krav"><option value="0">'._('Ingen').'</option>';
 		$krav = $mysqli->fetch_array('SELECT id, navn FROM `krav` ORDER BY navn');
 		$krav_nr = count($krav);
 		for($i=0;$i<$krav_nr;$i++) {
@@ -224,7 +224,7 @@ writeRichText("beskrivelse", \''.rtefsafe($sider[0]['beskrivelse']).'\', "", '.(
 				$html .= ' selected="selected"';
 			$html .= '>'.htmlspecialchars($krav[$i]['navn']).'</option>';
 		}
-		$html .= '</select><br /><img width="16" height="16" alt="" src="images/page_white_medal.png"/><select id="maerke" name="maerke" multiple="multiple" size="15"><option value="0">Alle de andre</option>';
+		$html .= '</select><br /><img width="16" height="16" alt="" src="images/page_white_medal.png"/><select id="maerke" name="maerke" multiple="multiple" size="15"><option value="0">'._('Alle de andre').'</option>';
 
 		$maerker = explode(',',$sider[0]['maerke']);
 
@@ -239,7 +239,7 @@ writeRichText("beskrivelse", \''.rtefsafe($sider[0]['beskrivelse']).'\', "", '.(
 		$html .= '</select></div></div>';
 //misc end
 //list start
-	$html .= '<div class="toolbox"><a class="menuboxheader" id="listboxheader" style="width:'.($GLOBALS['_config']['text_width']-20+32).'px" onclick="showhide(\'listbox\',this);">Lister: </a><div style="width:'.($GLOBALS['_config']['text_width']+32).'px" id="listbox">';
+	$html .= '<div class="toolbox"><a class="menuboxheader" id="listboxheader" style="width:'.($GLOBALS['_config']['text_width']-20+32).'px" onclick="showhide(\'listbox\',this);">'._('Lister:').' </a><div style="width:'.($GLOBALS['_config']['text_width']+32).'px" id="listbox">';
 	$lists = $mysqli->fetch_array('SELECT * FROM `lists` WHERE page_id = '.$id);
 	foreach($lists as $list) {
 		$html .= '<table>';
@@ -254,7 +254,7 @@ writeRichText("beskrivelse", \''.rtefsafe($sider[0]['beskrivelse']).'\', "", '.(
 			$html .= '<td>'.$name.'</td>';
 		}
 		if($list['link'])
-			$html .= '<td><img src="images/link.png" alt="Link" title="" width="16" height="16" /></td>';
+			$html .= '<td><img src="images/link.png" alt="'._('Link').'" title="" width="16" height="16" /></td>';
 		$html .= '<td></td>';
 		$html .= '</tr></thead><tfoot><tr id="list'.$list['id'].'footer">';
 		foreach($list['cells'] as $key => $type) {
@@ -279,7 +279,7 @@ writeRichText("beskrivelse", \''.rtefsafe($sider[0]['beskrivelse']).'\', "", '.(
 		}
 		if($list['link'])
 			$html .= '<td><input style="display:none;text-align:right;" /></td>';
-		$html .= '<td><img onclick="listInsertRow('.$list['id'].');" src="images/disk.png" alt="Rediger" title="Rediger" width="16" height="16" /></td>';
+		$html .= '<td><img onclick="listInsertRow('.$list['id'].');" src="images/disk.png" alt="'._('Rediger').'" title="'._('Rediger').'" width="16" height="16" /></td>';
 		$html .= '</tr></tfoot>';
 		$html .= '<tbody id="list'.$list['id'].'rows">';
 		
@@ -334,7 +334,7 @@ writeRichText("beskrivelse", \''.rtefsafe($sider[0]['beskrivelse']).'\', "", '.(
 				if($list['link'])
 					$html .= '<td style="text-align:right;"><input value="'.$row['link'].'" style="display:none;text-align:right;" /><span>'.$row['link'].'</span></td>';
 				//TODO change to right click
-				$html .= '<td><img onclick="listEditRow('.$list['id'].', '.$row['id'].');" src="images/application_edit.png" alt="Rediger" title="Rediger" width="16" height="16" /><img onclick="listUpdateRow('.$list['id'].', '.$row['id'].');" style="display:none" src="images/disk.png" alt="Rediger" title="Rediger" width="16" height="16" /><img src="images/cross.png" alt="X" title="Slet række" onclick="listRemoveRow('.$list['id'].', '.$row['id'].')" /></td>';
+				$html .= '<td><img onclick="listEditRow('.$list['id'].', '.$row['id'].');" src="images/application_edit.png" alt="'._('Rediger').'" title="'._('Rediger').'" width="16" height="16" /><img onclick="listUpdateRow('.$list['id'].', '.$row['id'].');" style="display:none" src="images/disk.png" alt="'._('Rediger').'" title="'._('Rediger').'" width="16" height="16" /><img src="images/cross.png" alt="X" title="'._('Slet række').'" onclick="listRemoveRow('.$list['id'].', '.$row['id'].')" /></td>';
 				$html .= '</tr>';
 			}
 		}
@@ -363,7 +363,7 @@ $html .= '</div></form>';
 			}
 			$kattree_html .= '/';
 			
-			$html .= '<p id="bind'.$bind[$i]['id'].'"> <img onclick="slet(\'bind\', \''.addslashes($kattree_html).'\', '.$bind[$i]['id'].')" src="images/cross.png" alt="X" title="Fjern binding" width="16" height="16" /> ';
+			$html .= '<p id="bind'.$bind[$i]['id'].'"> <img onclick="slet(\'bind\', \''.addslashes($kattree_html).'\', '.$bind[$i]['id'].')" src="images/cross.png" alt="X" title="'._('Fjern binding').'" width="16" height="16" /> ';
 			$html .= $kattree_html.'</p>';
 		}
 	}
@@ -374,14 +374,14 @@ $html .= '</div></form>';
 	else
 		$html .= katlist(-1);
 		
-	$html .= '<br /><input type="submit" value="Opret binding" accesskey="b" />';
+	$html .= '<br /><input type="submit" value="'._('Opret binding').'" accesskey="b" />';
     
 	$html .= '</div></div></form>';
 //bind end
 
 //tilbehor start
 		$html .= '<form action="" method="post" onsubmit="return tilbehor('.$id.');">
-<div class="toolbox"><a class="menuboxheader" id="tilbehorsheader" style="width:593px;" onclick="showhide(\'tilbehor\',this);">Tilbehør: </a><div style="width:613pxpx;" id="tilbehor"><div id="tilbehore"><br />';
+<div class="toolbox"><a class="menuboxheader" id="tilbehorsheader" style="width:593px;" onclick="showhide(\'tilbehor\',this);">'._('Tilbehør:').' </a><div style="width:613pxpx;" id="tilbehor"><div id="tilbehore"><br />';
 	$tilbehor = $mysqli->fetch_array('SELECT id, tilbehor FROM `tilbehor` WHERE `side` = '.$id);
 	$tilbehor_nr = count($tilbehor);
 	for($i=0;$i<$tilbehor_nr;$i++) {
@@ -394,7 +394,7 @@ $html .= '</div></form>';
 			}
 			$kattree_html .= '/';
 			
-			$html .= '<p id="tilbehor'.$tilbehor[$i]['id'].'"> <img onclick="slet(\'tilbehor\', \''.addslashes($kattree_html).'\', '.$tilbehor[$i]['id'].')" src="images/cross.png" alt="X" title="Fjern binding" width="16" height="16" /> ';
+			$html .= '<p id="tilbehor'.$tilbehor[$i]['id'].'"> <img onclick="slet(\'tilbehor\', \''.addslashes($kattree_html).'\', '.$tilbehor[$i]['id'].')" src="images/cross.png" alt="X" title="'._('Fjern binding').'" width="16" height="16" /> ';
 			$html .= $kattree_html.'</p>';
 		}
 	}
@@ -405,7 +405,7 @@ $html .= '</div></form>';
 	else
 		$html .= pagelist(0);
 		
-	$html .= '<br /><input type="submit" value="Tilføj tilbehør" accesskey="a" />';
+	$html .= '<br /><input type="submit" value="'._('Tilføj tilbehør').'" accesskey="a" />';
     
 	$html .= '</div></div></form>';
 //tilbehor end
@@ -439,14 +439,14 @@ function redigerFrontpage() {
 
 	$special = $mysqli->fetch_array('SELECT `text` FROM `special` WHERE id = 1 LIMIT 1');
 	if(!$special)
-		return '<div id="headline">Siden eksistere ikke</div>';
+		return '<div id="headline">'._('Siden eksistere ikke').'</div>';
 
 	$html = '';
-	$html .= '<div id="headline">Rediger Forsiden</div><form action="" method="post" onsubmit="return updateForside();"><input type="submit" accesskey="s" style="width:1px; height:1px; position:absolute; top: -20px; left:-20px;" />';
+	$html .= '<div id="headline">'._('Rediger Forsiden').'</div><form action="" method="post" onsubmit="return updateForside();"><input type="submit" accesskey="s" style="width:1px; height:1px; position:absolute; top: -20px; left:-20px;" />';
 
 	$subkats = $mysqli->fetch_array('SELECT id, navn, icon FROM `kat` WHERE bind = 0 ORDER BY `order`, `navn`');
 	
-	$html .= 'Sorter hoved kategorier:';
+	$html .= _('Sorter hoved kategorier:');
 	$html .= '<ul id="subMenus" style="width:'.$GLOBALS['_config']['text_width'].'px;">';
 	
 	foreach($subkats as $value) {
@@ -487,9 +487,9 @@ function redigerSpecial($id) {
 
 	$special = $mysqli->fetch_array('SELECT * FROM `special` WHERE id = '.$id.' LIMIT 1');
 	if(!$special)
-		return '<div id="headline">Siden eksistere ikke</div>';
+		return '<div id="headline">'._('Siden eksistere ikke').'</div>';
 
-	$html .= '<div id="headline">Rediger '.$special[0]['navn'].'</div><form action="" method="post" onsubmit="return updateSpecial('.$id.');"><input type="submit" accesskey="s" style="width:1px; height:1px; position:absolute; top: -20px; left:-20px;" />';
+	$html .= '<div id="headline">'.sprintf(_('Rediger %s'), $special[0]['navn']).'</div><form action="" method="post" onsubmit="return updateSpecial('.$id.');"><input type="submit" accesskey="s" style="width:1px; height:1px; position:absolute; top: -20px; left:-20px;" />';
 
 	$html .= '<input type="hidden" id="id" />';
 
@@ -503,7 +503,7 @@ writeRichText("text", \''.rtefsafe($special[0]['text']).'\', "", '.($GLOBALS['_c
 }
 	
 function getnykrav() {
-	$html = '<div id="headline">Opret nyt krav</div><form action="" method="post" onsubmit="return savekrav();"><input type="submit" accesskey="s" style="width:1px; height:1px; position:absolute; top: -20px; left:-20px;" /><input type="hidden" name="id" id="id" value="" /><input class="admin_name" type="text" name="navn" id="navn" value="" maxlength="127" size="127" style="width:'.$GLOBALS['_config']['text_width'].'px" /><script type="text/javascript"><!--
+	$html = '<div id="headline">'._('Opret nyt krav').'</div><form action="" method="post" onsubmit="return savekrav();"><input type="submit" accesskey="s" style="width:1px; height:1px; position:absolute; top: -20px; left:-20px;" /><input type="hidden" name="id" id="id" value="" /><input class="admin_name" type="text" name="navn" id="navn" value="" maxlength="127" size="127" style="width:'.$GLOBALS['_config']['text_width'].'px" /><script type="text/javascript"><!--
 //Usage: initRTE(imagesPath, includesPath, cssFile, genXHTML)
 initRTE("/admin/rtef/images/", "/admin/rtef/", "/theme/rtef-text.css", true);
 writeRichText("text", "", "", '.$GLOBALS['_config']['text_width'].', 420, true, false, false);
@@ -518,9 +518,9 @@ function listsort($id = NULL) {
 	if($id) {
 		$liste = $mysqli->fetch_array('SELECT * FROM `tablesort` WHERE `id` = '.$id);
 		
-		$html = '<div id="headline">Rediger '.$liste[0]['navn'].' sortering</div><div>';
+		$html = '<div id="headline">'.sprintf(_('Rediger %s sortering'), $liste[0]['navn']).'</div><div>';
 		
-		$html .= 'Navn: <input id="listOrderNavn" value="'.$liste[0]['navn'].'"><form action="" method="post" onsubmit="addNewItem(); return false;">Nyt punkt: <input id="newItem"> <input type="submit" value="tilføj" accesskey="t"></form>';
+		$html .= _('Navn:').' <input id="listOrderNavn" value="'.$liste[0]['navn'].'"><form action="" method="post" onsubmit="addNewItem(); return false;">'._('Nyt punkt:').' <input id="newItem"> <input type="submit" value="tilføj" accesskey="t"></form>';
 		
 		$html .= '<ul id="listOrder" style="width:'.$GLOBALS['_config']['text_width'].'px;">';
 		$liste[0]['text'] = explode('<', $liste[0]['text']);
@@ -534,8 +534,8 @@ var items = '.count($liste[0]['text']).';
 Sortable.create(\'listOrder\',{ghosting:false,constraint:false,hoverclass:\'over\'});
 --></script></div>';
 	} else {
-		$html = '<div id="headline">Liste sorttering</div><div>';
-		$html .= '<a href="#" onclick="makeNewList(); return false;">Opret ny sortering</a><br /><br />';
+		$html = '<div id="headline">'._('Liste sorttering').'</div><div>';
+		$html .= '<a href="#" onclick="makeNewList(); return false;">'._('Opret ny sortering').'</a><br /><br />';
 		
 		$lists = $mysqli->fetch_array('SELECT id, navn FROM `tablesort`');
 		
@@ -553,8 +553,8 @@ function getaddressbook() {
 	
 	$addresses = $mysqli->fetch_array('SELECT * FROM `email` ORDER BY `navn`');
 	
-	$html = '<div id="headline">Adressebog</div><div>';
-	$html .= '<table id="addressbook"><thead><tr><td></td><td>Navn</td><td>eMail</td><td>Tlf.</td></tr></thead><tbody>';
+	$html = '<div id="headline">'._('Adressebog').'</div><div>';
+	$html .= '<table id="addressbook"><thead><tr><td></td><td>'._('Navn').'</td><td>'._('E-mail').'</td><td>'._('Tlf.').'</td></tr></thead><tbody>';
 	
 	foreach($addresses as $i => $addres) {
 		if(!$addres['tlf1'] && $addres['tlf2'])
@@ -565,7 +565,7 @@ function getaddressbook() {
 		if($i % 2)
 			$html .= ' class="altrow"';
 		
-		$html .= '><td><a href="?side=editContact&id='.$addres['id'].'"><img width="16" height="16" src="images/vcard_edit.png" alt="R" title="Rediger" /></a><img onclick="x_deleteContact('.$addres['id'].', removeTagById)" width="16" height="16" src="images/cross.png" alt="X" title="Slet" /></td>';
+		$html .= '><td><a href="?side=editContact&id='.$addres['id'].'"><img width="16" height="16" src="images/vcard_edit.png" alt="R" title="'._('Rediger').'" /></a><img onclick="x_deleteContact('.$addres['id'].', removeTagById)" width="16" height="16" src="images/cross.png" alt="X" title="'._('Slet').'" /></td>';
 		$html .= '<td>'.$addres['navn'].'</td><td>'.$addres['email'].'</td><td>'.$addres['tlf1'].'</td></tr>';
 	}
 	
@@ -579,20 +579,20 @@ function editContact($id) {
 	
 	$address = $mysqli->fetch_array('SELECT * FROM `email` WHERE `id` = '.$id);
 	
-	$html = '<div id="headline">Redigere kontakt person</div>';
-	$html .= '<form method="post" action="" onsubmit="updateContact('.$_GET['id'].'); return false;"><input type="submit" accesskey="s" style="width:1px; height:1px; position:absolute; top: -20px; left:-20px;" /><table border="0" cellspacing="0"><tbody><tr><td>Navn:</td><td colspan="2"><input value="'.
-	$address[0]['navn'].'" id="navn" /></td></tr><tr><td>E-mail:</td><td colspan="2"><input value="'.
-	$address[0]['email'].'" id="email" /></td></tr><tr><td>Adresse:</td><td colspan="2"><input value="'.
-	$address[0]['adresse'].'" id="adresse" /></td></tr><tr><td>Land:</td><td colspan="2"><input value="'.
-	$address[0]['land'].'" id="land" /></td></tr><tr><td width="1%">Post nr.:</td><td width="1%"><input maxlength="8" size="8" id="post" value="'.
-	$address[0]['post'].'" /></td><td align="left" nowrap="nowrap">By:<input size="8" id="by" value="'.
-	$address[0]['by'].'" /></td></tr><tr><td nowrap="nowrap">Privat tlf.:</td><td colspan="2"><input maxlength="11" size="15" id="tlf1" value="'.
-	$address[0]['tlf1'].'" /></td></tr><tr><td nowrap="nowrap">Mobil tlf.:</td><td colspan="2"><input maxlength="11" size="15" id="tlf2" value="'.
+	$html = '<div id="headline">'._('Redigere kontakt person').'</div>';
+	$html .= '<form method="post" action="" onsubmit="updateContact('.$_GET['id'].'); return false;"><input type="submit" accesskey="s" style="width:1px; height:1px; position:absolute; top: -20px; left:-20px;" /><table border="0" cellspacing="0"><tbody><tr><td>'._('Navn:').'</td><td colspan="2"><input value="'.
+	$address[0]['navn'].'" id="navn" /></td></tr><tr><td>'._('E-mail:').'</td><td colspan="2"><input value="'.
+	$address[0]['email'].'" id="email" /></td></tr><tr><td>'._('Adresse:').'</td><td colspan="2"><input value="'.
+	$address[0]['adresse'].'" id="adresse" /></td></tr><tr><td>'._('Land:').'</td><td colspan="2"><input value="'.
+	$address[0]['land'].'" id="land" /></td></tr><tr><td width="1%">'._('Post nr.:').'</td><td width="1%"><input maxlength="8" size="8" id="post" value="'.
+	$address[0]['post'].'" /></td><td align="left" nowrap="nowrap">'._('By:').'<input size="8" id="by" value="'.
+	$address[0]['by'].'" /></td></tr><tr><td nowrap="nowrap">'._('Privat tlf.:').'</td><td colspan="2"><input maxlength="11" size="15" id="tlf1" value="'.
+	$address[0]['tlf1'].'" /></td></tr><tr><td nowrap="nowrap">'._('Mobil tlf.:').'</td><td colspan="2"><input maxlength="11" size="15" id="tlf2" value="'.
 	$address[0]['tlf2'].'" /></td></tr><tr><td colspan="5"><br /><label for="kartotek"><input value="1" id="kartotek" type="checkbox"';
 	if($address[0]['kartotek'])
 		$html .= ' checked="checked"';
-	$html .= ' />Modtag nyhedsbreve.</label><br />
-	<strong>Interesse:</strong>';
+	$html .= ' />'._('Modtag nyhedsbreve.').'</label><br />
+	<strong>'._('Interesse:').'</strong>';
 	$html .= '<div id="interests">';
 	$address[0]['interests_array'] = explode('<', $address[0]['interests']);
 	foreach($GLOBALS['_config']['interests'] as $interest) {
@@ -633,7 +633,7 @@ function saveListOrder($id, $navn, $text) {
 function get_db_error() {
 	global $mysqli;
 
-	$html = '<div id="headline">Database scanning</div><div>
+	$html = '<div id="headline">'._('Database scanning').'</div><div>
 	<div>';
 		$html .= '<script type=""><!--
 		function set_db_errors(result) {
@@ -647,57 +647,60 @@ function get_db_error() {
 			
 			var starttime = new Date().getTime();
 			
-			$(\'status\').innerHTML = \'Fjerner nyheds tilbældinger uden kontakt oplysninger\';
+			$(\'status\').innerHTML = \''._('Fjerner nyheds tilbældinger uden kontakt oplysninger').'\';
 			x_remove_bad_submisions(set_db_errors);
 			
-			$(\'status\').innerHTML = \'Fjerner bindinger til sider der ikke eksistere\';
+			$(\'status\').innerHTML = \''._('Fjerner bindinger til sider der ikke eksistere').'\';
 			x_remove_bad_bindings(set_db_errors);
 			
-			$(\'status\').innerHTML = \'Fjerner tilbehør der ikke eksistere\';
+			$(\'status\').innerHTML = \''._('Fjerner tilbehør der ikke eksistere').'\';
 			x_remove_bad_accessories(set_db_errors);
 			
-			$(\'status\').innerHTML = \'Søger efter sider uden bindinger\';
+			$(\'status\').innerHTML = \''._('Søger efter sider uden bindinger').'\';
 			x_get_orphan_pages(set_db_errors);
 			
-			$(\'status\').innerHTML = \'Søger efter sider med ulovlige bindinger\';
+			$(\'status\').innerHTML = \''._('Søger efter sider med ulovlige bindinger').'\';
 			x_get_pages_with_mismatch_bindings(set_db_errors);
 			
-			$(\'status\').innerHTML = \'Søger efter løse lister\';
+			$(\'status\').innerHTML = \''._('Søger efter løse lister').'\';
 			x_get_orphan_lists(set_db_errors);
 			
-			$(\'status\').innerHTML = \'Søger efter løse rækker\';
+			$(\'status\').innerHTML = \''._('Søger efter løse rækker').'\';
 			x_get_orphan_rows(set_db_errors);
 			
-			$(\'status\').innerHTML = \'Søger efter løse kategorier\';
+			$(\'status\').innerHTML = \''._('Søger efter løse kategorier').'\';
 			x_get_orphan_cats(set_db_errors);
 			
-			$(\'status\').innerHTML = \'Søger efter cirkulære katagorier\';
+			$(\'status\').innerHTML = \''._('Søger efter cirkulære katagorier').'\';
 			x_get_looping_cats(set_db_errors);
 			
-			$(\'status\').innerHTML = \'Fjerner ikke eksisterende filer fra databasen\';
+			$(\'status\').innerHTML = \''._('Søger efter ulovlige e-mail aresser').'\';
+			x_get_subscriptions_with_bad_emails(set_db_errors);
+			
+			$(\'status\').innerHTML = \''._('Fjerner ikke eksisterende filer fra databasen').'\';
 			x_remove_none_existing_files(set_db_errors);
 			
-			$(\'status\').innerHTML = \'Kontrolere filnavne\';
+			$(\'status\').innerHTML = \''._('Kontrolere filnavne').'\';
 			x_check_file_names(set_db_errors);
 			
-			$(\'status\').innerHTML = \'Kontrolere mappen navne\';
+			$(\'status\').innerHTML = \''._('Kontrolere mappen navne').'\';
 			x_check_file_paths(set_db_errors);
 			
-			$(\'status\').innerHTML = \'Sletter midlertidige filer\';
+			$(\'status\').innerHTML = \''._('Sletter midlertidige filer').'\';
 			x_delete_tempfiles(set_db_errors);
 			
-			$(\'status\').innerHTML = \'Henterstørelsen på filer\';
+			$(\'status\').innerHTML = \''._('Henterstørelsen på filer').'\';
 			x_get_size_of_files(function(){});
 	
-			$(\'status\').innerHTML = \'Optimere databasen\';
+			$(\'status\').innerHTML = \''._('Optimere databasen').'\';
 			x_optimize_tables(set_db_errors);
 			
-			$(\'status\').innerHTML = \'Henter database størelse\';
+			$(\'status\').innerHTML = \''._('Henter database størelse').'\';
 			x_get_db_size(function(){});
 			
 			$(\'status\').innerHTML = \'\';
 			$(\'loading\').style.visibility = \'hidden\';
-			$(\'errors\').innerHTML = $(\'errors\').innerHTML+\'<br />Scanningen tog \'+Math.round((new Date().getTime()-starttime)/1000).toString()+\'sek\';
+			$(\'errors\').innerHTML = $(\'errors\').innerHTML+\'<br />\'+sprintf(\''._('Scanningen tog %d sek.').'\', Math.round((new Date().getTime()-starttime)/1000).toString());
 		}
 		
 		
@@ -709,7 +712,7 @@ function get_db_error() {
 					x_get_mailbox_size(mail, result[mail][mailbox], get_mailbox_size_r);
 				}
 			}
-			$(\'mailboxsize\').innerHTML = Math.round(mailbox_size/1024/1024)+\'MB\';
+			$(\'mailboxsize\').innerHTML = Math.round(mailbox_size/1024/1024)+\''._('MB').'\';
 			$(\'status\').innerHTML = \'\';
 			$(\'loading\').style.visibility = \'hidden\';
 		}
@@ -717,13 +720,13 @@ function get_db_error() {
 		function get_mailbox_size_r(size) {
 			mailbox_size += size;
 		}
-		--></script><div><b>Server forbrug</b> - Mail: <span id="mailboxsize"><button onclick="$(\'loading\').style.visibility = \'\'; x_get_mailbox_list(get_mailbox_list_r);">Hent mail forbrug</button></span> DB: <span id="dbsize">'.number_format(get_db_size(), 1, ',', '').'MB</span> WWW: <span id="wwwsize">'.number_format(get_size_of_files(), 1, ',', '').'MB</span></div><div id="status"></div><button onclick="scan_db();">Scan database</button><div id="errors"></div>';
+		--></script><div><b>'._('Server forbrug').'</b> - '._('Mail:').' <span id="mailboxsize"><button onclick="$(\'loading\').style.visibility = \'\'; x_get_mailbox_list(get_mailbox_list_r);">'._('Hent mail forbrug').'</button></span> '._('DB:').' <span id="dbsize">'.number_format(get_db_size(), 1, ',', '')._('MB').'</span> '._('WWW').': <span id="wwwsize">'.number_format(get_size_of_files(), 1, ',', '')._('MB').'</span></div><div id="status"></div><button onclick="scan_db();">'._('Scan database').'</button><div id="errors"></div>';
 	
 	$emailsCount = $mysqli->fetch_one("SELECT count(*) as 'count' FROM `emails`");
 	$emails = $mysqli->fetch_one("SHOW TABLE STATUS LIKE 'emails'");
 	
 	
-	$html .= '<div>Forsinket emails '.$emailsCount['count'].'/'.($emails['Auto_increment'] - 1).'</div>';
+	$html .= '<div>'.sprintf(_('Forsinket emails %d/%d'), $emailsCount['count'], $emails['Auto_increment'] - 1).'</div>';
 	
 	$html .= '</div>';
 	$html .= '</div>';
@@ -746,20 +749,12 @@ function get_subscriptions_with_bad_emails() {
 	$errors = 0;
 	$emails = $mysqli->fetch_array("SELECT `id`, `email` FROM `email` WHERE `email` != ''");
 	foreach($emails as $email) {
-		if(valide_mail($email['email'])) {
-			continue;
+		if(!valide_mail($email['email'])) {
+			$html .= '<a href="?side=editContact&id='.$email['id'].'">'.sprintf(_('Email: %s #%d er ikke gyldig'), $email['email'], $email['id']).'</a><br />';
 		}
-		/*
-		$mysqli->query("UPDATE `email` SET `email` = '' WHERE `id` = ".$email['id']." LIMIT 1;");
-		$errors++;
-	}
-	if($errors) {
-		$html .= 'Rettede '.$errors.' nyheds tildmældinger med udløbet email adresse.<br />';
-*/
-		$html .= 'Email: '.$email['email'].' #'.$email['id'].' er ikke gyldig<br />';
 	}
 	if($html)
-		$html = '<b>Følge enmail adresser er ikke gyldige</b><br />'.$html;
+		$html = '<b>'._('Følge enmail adresser er ikke gyldige').'</b><br />'.$html;
 	return $html;
 }
 
@@ -769,13 +764,13 @@ function get_orphan_rows() {
 	$html = '';
 	$error = $mysqli->fetch_array('SELECT * FROM `list_rows` WHERE list_id NOT IN (SELECT id FROM lists);');
 	if($error) {
-		$html .= '<br /><b>Følgende klonder er uden lister:</b><br />';
+		$html .= '<br /><b>'._('Følgende klonder er uden lister:').'</b><br />';
 		foreach($error as $value) {
 			$html .= $value['id'].': '.$value['cells'].' '.$value['link'].'<br />';
 		}
 	}
 	if($html)
-		$html = '<b>Følgende sider har ikke nogen binding</b><br />'.$html;
+		$html = '<b>'._('Følgende sider har ikke nogen binding').'</b><br />'.$html;
 	return $html;
 }
 
@@ -785,13 +780,13 @@ function get_orphan_cats() {
 	$html = '';
 	$error = $mysqli->fetch_array('SELECT `id`, `navn` FROM `kat` WHERE `bind` != 0 AND `bind` != -1 AND `bind` NOT IN (SELECT `id` FROM `kat`);');
 	if($error) {
-		$html .= '<br /><b>Følgende kategorier er løse:</b><br />';
+		$html .= '<br /><b>'._('Følgende kategorier er løse:').'</b><br />';
 		foreach($error as $value) {
 			$html .= '<a href="?side=redigerkat&id='.$value['id'].'">'.$value['id'].': '.$value['navn'].'</a><br />';
 		}
 	}
 	if($html)
-		$html = '<b>Følge kategorier har ingen binding</b><br />'.$html;
+		$html = '<b>'._('Følge kategorier har ingen binding').'</b><br />'.$html;
 	return $html;
 }
 
@@ -812,10 +807,10 @@ function get_looping_cats() {
 		}
 	}
 	if($temp_html)
-		$html .= '<br /><b>Følgende kategorier er bundet under sig selv:</b><br />'.$temp_html;
+		$html .= '<br /><b>'._('Følgende kategorier er bundet under sig selv:').'</b><br />'.$temp_html;
 
 	if($html)
-		$html = '<b>Følge kategorier er bundet under sig selv</b><br />'.$html;
+		$html = '<b>'._('Følge kategorier er bundet under sig selv').'</b><br />'.$html;
 	return $html;
 }
 
@@ -825,7 +820,7 @@ function check_file_names() {
 	$error = $mysqli->fetch_array('SELECT path FROM `files` WHERE `path` COLLATE UTF8_bin REGEXP \'[A-Z|_"\\\'`:%=#&+?*<>{}\\]+[^/]+$\' ORDER BY `path` ASC');
 	if($error) {
 		if($mysqli->affected_rows > 1) {
-			$html .= '<br /><b>Følgende '.$mysqli->affected_rows.' filer skal omdøbes:</b><br /><a onclick="explorer(\'\',\'\');">';
+			$html .= '<br /><b>'.sprintf(_('Følgende %d filer skal omdøbes:'), $mysqli->affected_rows).'</b><br /><a onclick="explorer(\'\',\'\');">';
 		} else {
 			$html .= '<br /><br /><a onclick="explorer(\'\',\'\');">';
 		}
@@ -835,7 +830,7 @@ function check_file_names() {
 		$html .= '</a>';
 	}
 	if($html)
-		$html = '<b>Følge filer skal omdøbes</b><br />'.$html;
+		$html = '<b>'._('Følge filer skal omdøbes').'</b><br />'.$html;
 	return $html;
 }
 
@@ -845,7 +840,7 @@ function check_file_paths() {
 	$error = $mysqli->fetch_array('SELECT path FROM `files` WHERE `path` COLLATE UTF8_bin REGEXP \'[A-Z|_"\\\'`:%=#&+?*<>{}\\]+.*[/]+\' ORDER BY `path` ASC');
 	if($error) {
 		if($mysqli->affected_rows > 1) {
-			$html .= '<br /><b>Følgende '.$mysqli->affected_rows.' filer er i en mappe der skal omdøbes:</b><br /><a onclick="explorer(\'\',\'\');">';
+			$html .= '<br /><b>'.sprintf(_('Følgende %d filer er i en mappe der skal omdøbes:'), $mysqli->affected_rows).'</b><br /><a onclick="explorer(\'\',\'\');">';
 		} else {
 			$html .= '<br /><br /><a onclick="explorer(\'\',\'\');">';
 		}
@@ -856,7 +851,7 @@ function check_file_paths() {
 		$html .= '</a>';
 	}
 	if($html)
-		$html = '<b>Følge mapper skal omdøbes</b><br />'.$html;
+		$html = '<b>'._('Følge mapper skal omdøbes').'</b><br />'.$html;
 	return $html;
 }
 
@@ -923,13 +918,13 @@ function get_orphan_lists() {
 	$error = $mysqli->fetch_array('SELECT id FROM `lists` WHERE page_id NOT IN (SELECT id FROM sider);');
  	$html = '';
 	if($error) {
-		$html .= '<br /><b>Følgende lister er løse:</b><br />';
+		$html .= '<br /><b>'._('Følgende lister er løse:').'</b><br />';
 		foreach($error as $value) {
 			$html .= $value['id'].': '.$value['navn'].' '.$value['cell1'].' '.$value['cell2'].' '.$value['cell3'].' '.$value['cell4'].' '.$value['cell5'].' '.$value['cell6'].' '.$value['cell7'].' '.$value['cell8'].' '.$value['cell9'].' '.$value['img'].' '.$value['link'].'<br />';
 		}
 	}
 	if($html)
-		$html = '<b>Følge lister er ikke bundet til nogen side</b><br />'.$html;
+		$html = '<b>'._('Følge lister er ikke bundet til nogen side').'</b><br />'.$html;
 	return $html;
 }
 
@@ -955,7 +950,7 @@ function get_orphan_pages() {
 	}
 	
 	if($html)
-		$html = '<b>Følge sider har ingen binding</b><br />'.$html;
+		$html = '<b>'._('Følge sider har ingen binding').'</b><br />'.$html;
 	return $html;
 }
 
@@ -987,7 +982,7 @@ function get_pages_with_mismatch_bindings() {
 	}
 	
 	if($html)
-		$html = '<b>Følge sider er både aktive og indaktive</b><br />'.$html;
+		$html = '<b>'._('Følge sider er både aktive og indaktive').'</b><br />'.$html;
 	return $html;
 }
 	
@@ -1000,24 +995,24 @@ initRTE("/admin/rtef/images/", "/admin/rtef/", "/theme/rtef-text.css", true);
 //--></script><input type="hidden" name="id" id="id" value="" /><input class="admin_name" type="text" name="navn" id="navn" value="" maxlength="127" size="127" style="width:'.$GLOBALS['_config']['text_width'].'px" /><script type="text/javascript"><!--
 writeRichText("text", \'\', "", '.($GLOBALS['_config']['text_width']+32).', 420, true, false, false);
 //--></script>';
-	$html .= 'Søge ord (seperere søge ord med et komma "Emergency Blanket, Redningstæppe"):<br /><textarea name="keywords" id="keywords" style="width:'.$GLOBALS['_config']['text_width'].'px;max-width:'.$GLOBALS['_config']['text_width'].'px" rows="2" cols=""></textarea>';
+	$html .= _('Søge ord (seperere søge ord med et komma "Emergency Blanket, Redningstæppe"):').'<br /><textarea name="keywords" id="keywords" style="width:'.$GLOBALS['_config']['text_width'].'px;max-width:'.$GLOBALS['_config']['text_width'].'px" rows="2" cols=""></textarea>';
 	//Beskrivelse start
-	$html .= '<div class="toolbox"><a class="menuboxheader" id="beskrivelseboxheader" style="width:'.($GLOBALS['_config']['thumb_width']+14).'px" onclick="showhide(\'beskrivelsebox\',this);">Beskrivelse: </a><div style="text-align:center;width:'.($GLOBALS['_config']['thumb_width']+34).'px" id="beskrivelsebox"><br /><input type="hidden" value="/images/web/intet-foto.jpg" id="billed" name="billed" /><img id="billedthb" src="/images/web/intet-foto.jpg" alt="" onclick="explorer(\'thb\', \'billed\')" /><br /><img onclick="explorer(\'thb\', \'billed\')" src="images/folder_image.png" width="16" height="16" alt="Billeder" title="Find billed" /><img onclick="setThb(\'billed\', \'\', \'/images/web/intet-foto.jpg\')" src="images/cross.png" alt="X" title="Fjern billed" width="16" height="16" /><script type="text/javascript"><!--
+	$html .= '<div class="toolbox"><a class="menuboxheader" id="beskrivelseboxheader" style="width:'.($GLOBALS['_config']['thumb_width']+14).'px" onclick="showhide(\'beskrivelsebox\',this);">'._('Beskrivelse:').' </a><div style="text-align:center;width:'.($GLOBALS['_config']['thumb_width']+34).'px" id="beskrivelsebox"><br /><input type="hidden" value="/images/web/intet-foto.jpg" id="billed" name="billed" /><img id="billedthb" src="'._('/images/web/intet-foto.jpg').'" alt="" onclick="explorer(\'thb\', \'billed\')" /><br /><img onclick="explorer(\'thb\', \'billed\')" src="images/folder_image.png" width="16" height="16" alt="'._('Billeder').'" title="'._('Find billed').'" /><img onclick="setThb(\'billed\', \'\', \''._('/images/web/intet-foto.jpg').'\')" src="images/cross.png" alt="X" title="'._('Fjern billed').'" width="16" height="16" /><script type="text/javascript"><!--
 writeRichText("beskrivelse", \'\', "", '.($GLOBALS['_config']['thumb_width']+32).', 115, false, false, false);
 //--></script></div></div>';
 	//Beskrivelse end
 	//Pris start
-	$html .= '<div class="toolbox"><a class="menuboxheader" id="priserheader" style="width:230px" onclick="showhide(\'priser\',this);">Pris: </a><div style="width:250px;" id="priser"><table style="width:100%"><tr><td><select name="burde" id="burde"><option value="0">Før</option><option value="1">Vejledende pris</option></select></td><td style="text-align:right"><input class="XPris" onkeypress="return checkForInt(event)" onchange="prisHighlight()" value="" name="for" id="for" size="11" maxlength="11" style="width:100px;text-align:right" />,-</td></tr><tr><td><select name="fra" id="fra"><option value="0">Pris</option><option value="1">Fra</option></select></td><td style="text-align:right"><input value="" class="Pris" name="pris" id="pris" size="11" maxlength="11" style="width:100px;text-align:right" onkeypress="return checkForInt(event)" onchange="prisHighlight()" />,-</td></tr></table></div></div>';
+	$html .= '<div class="toolbox"><a class="menuboxheader" id="priserheader" style="width:230px" onclick="showhide(\'priser\',this);">'._('Pris:').' </a><div style="width:250px;" id="priser"><table style="width:100%"><tr><td><select name="burde" id="burde"><option value="0">'._('Før').'</option><option value="1">'._('Vejledende pris').'</option></select></td><td style="text-align:right"><input class="XPris" onkeypress="return checkForInt(event)" onchange="prisHighlight()" value="" name="for" id="for" size="11" maxlength="11" style="width:100px;text-align:right" />,-</td></tr><tr><td><select name="fra" id="fra"><option value="0">'._('Pris').'</option><option value="1">'._('Fra').'</option></select></td><td style="text-align:right"><input value="" class="Pris" name="pris" id="pris" size="11" maxlength="11" style="width:100px;text-align:right" onkeypress="return checkForInt(event)" onchange="prisHighlight()" />,-</td></tr></table></div></div>';
 	//Pris end
 	//misc start
-	$html .= '<div class="toolbox"><a class="menuboxheader" id="miscboxheader" style="width:201px" onclick="showhide(\'miscbox\',this);">Andet: </a><div style="width:221px" id="miscbox">Varenummer: <input type="text" name="varenr" id="varenr" maxlength="63" style="text-align:right;width:128px" value="" /><br /><img src="images/page_white_key.png" width="16" height="16" alt="" /><select id="krav" name="krav"><option value="0">Ingen</option>';
+	$html .= '<div class="toolbox"><a class="menuboxheader" id="miscboxheader" style="width:201px" onclick="showhide(\'miscbox\',this);">'._('Andet:').' </a><div style="width:221px" id="miscbox">'._('Varenummer:').' <input type="text" name="varenr" id="varenr" maxlength="63" style="text-align:right;width:128px" value="" /><br /><img src="images/page_white_key.png" width="16" height="16" alt="" /><select id="krav" name="krav"><option value="0">'._('Ingen').'</option>';
 	$krav = $mysqli->fetch_array('SELECT id, navn FROM `krav`');
 	$krav_nr = count($krav);
 	for($i=0;$i<$krav_nr;$i++) {
 		$html .= '<option value="'.$krav[$i]['id'].'"';
 		$html .= '>'.htmlspecialchars($krav[$i]['navn']).'</option>';
 	}
-	$html .= '</select><br /><img width="16" height="16" alt="" src="images/page_white_medal.png"/><select id="maerke" name="maerke" multiple="multiple" size="10"><option value="0">Alle de andre</option>';
+	$html .= '</select><br /><img width="16" height="16" alt="" src="images/page_white_medal.png"/><select id="maerke" name="maerke" multiple="multiple" size="10"><option value="0">'._('Alle de andre').'</option>';
 	$maerke = $mysqli->fetch_array('SELECT id, navn FROM `maerke` ORDER BY navn');
 	$maerke_nr = count($maerke);
 	for($i=0;$i<$maerke_nr;$i++) {
@@ -1055,10 +1050,10 @@ function kattree($id) {
 	
 	if(!$id) {
 		$kattree[]['id'] = 0;
-		$kattree[count($kattree)-1]['navn'] = 'Forsiden';
+		$kattree[count($kattree)-1]['navn'] = _('Forsiden');
 	} else {
 		$kattree[]['id'] = -1;
-		$kattree[count($kattree)-1]['navn'] = 'Indaktive';
+		$kattree[count($kattree)-1]['navn'] = _('Indaktive');
 	}
 	return array_reverse($kattree);
 }
@@ -1066,7 +1061,7 @@ function kattree($id) {
 function katspath($id) {
 	$kattree = kattree($id);
 	$nr = count($kattree);
-	$html = 'Vælg placering: ';
+	$html = _('Vælg placering:').' ';
 	for($i=0;$i<$nr;$i++) {
 		$html .= '/'.trim($kattree[$i]['navn']);
 	}
@@ -1083,7 +1078,7 @@ function katlist($id) {
 		$temp = katspath($id);
 		$html .= $temp['html'];
 	} else {
-		$html .= 'Vælg placering: ';
+		$html .= _('Vælg placering:').' ';
 	}
 	$html .= '</a><div style="width:'.($GLOBALS['_config']['text_width']+24).'px;';
 	if(@$_COOKIE['hidekats']) {
@@ -1109,7 +1104,7 @@ function katlist($id) {
 	if($kattree[count($kattree)-1] == -1) {
 		$html .= ' checked="checked"';
 	}
-	$html .= ' /><img src="images/folder.png" width="16" height="16" alt="" /> Indaktive</a><div id="kat-1content" style="margin-left:16px">';
+	$html .= ' /><img src="images/folder.png" width="16" height="16" alt="" /> '._('Indaktive').'</a><div id="kat-1content" style="margin-left:16px">';
 	if(array_search(-1, $openkat) || false !== array_search('-1', $kattree)) {
 		$temp = kat_expand(-1, true);
 		$html .= $temp['html'];
@@ -1128,7 +1123,7 @@ function katlist($id) {
 	if(!$kattree[count($kattree)-1]) {
 		$html .= ' checked="checked"';
 	}
-	$html .= ' /><img src="images/folder.png" width="16" height="16" alt="" /> Forsiden</a><div id="kat0content" style="margin-left:16px">';
+	$html .= ' /><img src="images/folder.png" width="16" height="16" alt="" /> '._('Forsiden').'</a><div id="kat0content" style="margin-left:16px">';
 	if(array_search(0, $openkat) || false !== array_search('0', $kattree)) {
 		$temp = kat_expand(0, true);
 		$html .= $temp['html'];
@@ -1146,7 +1141,7 @@ function pagelist($id) {
 		$temp = katspath($id);
 		$html .= $temp['html'];
 	} else {
-		$html .= 'Vælg side: ';
+		$html .= _('Vælg side:').' ';
 	}
 	$html .= '</a><div style="width:'.($GLOBALS['_config']['text_width']+24).'px;';
 	if(@$_COOKIE['hidepages']) {
@@ -1185,7 +1180,7 @@ function pagelist($id) {
 	} else {
 		$html .= '<img style="margin-left:16px"';
 	} 
-	$html .= ' src="images/folder.png" width="16" height="16" alt="" /> Forsiden</a><div id="kat0content" style="margin-left:16px">';
+	$html .= ' src="images/folder.png" width="16" height="16" alt="" /> '._('Forsiden').'</a><div id="kat0content" style="margin-left:16px">';
 	if(array_search(0, $openkat) || false !== array_search('0', $kattree)) {
 		$temp = pages_expand(0, true);
 		$html .= $temp['html'];
@@ -1218,7 +1213,7 @@ function siteList($id) {
 	} else {
 		$html .= '<a style="margin-left:16px"';
 	}
-	$html .= '><img src="images/folder.png" width="16" height="16" alt="" /> Indaktive</a><div id="kat-1content" style="margin-left:16px">';
+	$html .= '><img src="images/folder.png" width="16" height="16" alt="" /> '._('Indaktive').'</a><div id="kat-1content" style="margin-left:16px">';
 	if(array_search(-1, $openkat) || false !== array_search('-1', $kattree)) {
 		$temp = siteList_expand(-1);
 		$html .= $temp['html'];
@@ -1233,7 +1228,7 @@ function siteList($id) {
 	} else {
 		$html .= '<a style="margin-left:16px"';
 	} 
-	$html .= ' href="?side=redigerFrontpage"><img src="images/page.png" width="16" height="16" alt="" /> Forsiden</a><div id="kat0content" style="margin-left:16px">';
+	$html .= ' href="?side=redigerFrontpage"><img src="images/page.png" width="16" height="16" alt="" /> '._('Forsiden').'</a><div id="kat0content" style="margin-left:16px">';
 	if(array_search(0, $openkat) || false !== array_search('0', $kattree)) {
 		$temp = siteList_expand(0);
 		$html .= $temp['html'];
@@ -1279,17 +1274,19 @@ function siteList_expand($id) {
 }
 
 function getnykat() {
-	$html = '<div id="headline">Opret kategori</div><form action="" onsubmit="return save_ny_kat()"><input type="submit" accesskey="s" style="width:1px; height:1px; position:absolute; top: -20px; left:-20px;" /><div>Navn: <img style="cursor:pointer;vertical-align:bottom" onclick="explorer(\'thb\',\'icon\')" src="images/folder.png" title="" alt="Billeder" id="iconthb" /> <input id="navn" style="width:256px;" maxlength="64" /> <br /> Icon: <input id="icon" style="width:247px;" maxlength="128" type="hidden" /> <img style="cursor:pointer;vertical-align:bottom" onclick="explorer(\'thb\',\'icon\')" width="16" height="16" src="images/folder_image.png" title="Find billeder" alt="Billeder" /> <img style="cursor:pointer;vertical-align:bottom" onclick="setThb(\'icon\',\'\',\'images/folder.png\')" src="images/cross.png" alt="X" title="Fjern billed" height="16" width="16" /><br /><br />';
+	$html = '<div id="headline">'._('Opret kategori').'</div><form action="" onsubmit="return save_ny_kat()"><input type="submit" accesskey="s" style="width:1px; height:1px; position:absolute; top: -20px; left:-20px;" /><div>'._('Navn:').' <img style="cursor:pointer;vertical-align:bottom" onclick="explorer(\'thb\',\'icon\')" src="images/folder.png" title="" alt="'._('Billeder').'" id="iconthb" /> <input id="navn" style="width:256px;" maxlength="64" /> <br /> '._('Icon:').' <input id="icon" style="width:247px;" maxlength="128" type="hidden" /> <img style="cursor:pointer;vertical-align:bottom" onclick="explorer(\'thb\',\'icon\')" width="16" height="16" src="images/folder_image.png" title="'._('Find billeder').'" alt="'._('Billeder').'" /> <img style="cursor:pointer;vertical-align:bottom" onclick="setThb(\'icon\',\'\',\'images/folder.png\')" src="images/cross.png" alt="X" title="'._('Fjern billed').'" height="16" width="16" /><br /><br />';
 	
 	//Email
-	$html .= 'Kontakt: <select id="email">';
+	$html .= _('Kontakt:').' <select id="email">';
 	foreach($GLOBALS['_config']['email'] as $email) {
 		$html .= '<option value="'.$email.'">'.$email.'</option>';
 	}
 	$html .= '</select>';
 	
 	//Visning
-	$html .= '<br />Visning: <select id="vis"><option value="0">Skjul</option><option value="1" selected="selected">Galleri</option><option value="2">Liste</option></select>';
+	$html .= '<br />'._('Visning:').' <select id="vis"><option value="0">'._('Skjul').'</option><option value="1" selected="selected">'._('Galleri').'</option><option value="2">'._('Liste').'</option></select>';
+	
+	//TOOD continue making gettext from here down
 	
 	//binding
 	if(@$_COOKIE['activekat'] >= -1)
@@ -1811,6 +1808,7 @@ sajax_export(
 	array('name' => 'get_orphan_rows', 'method' => 'GET', "asynchronous" => false),
 	array('name' => 'get_orphan_cats', 'method' => 'GET', "asynchronous" => false),
 	array('name' => 'get_looping_cats', 'method' => 'GET', "asynchronous" => false),
+	array('name' => 'get_subscriptions_with_bad_emails', 'method' => 'GET', "asynchronous" => false),
 	array('name' => 'remove_none_existing_files', 'uri' => '/maintain.php', 'method' => 'POST', "asynchronous" => false),
 	array('name' => 'check_file_names', 'method' => 'GET', "asynchronous" => false),
 	array('name' => 'check_file_paths', 'method' => 'GET', "asynchronous" => false),
