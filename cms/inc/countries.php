@@ -1,5 +1,10 @@
 <?php
 
+date_default_timezone_set('Europe/Copenhagen');
+setlocale(LC_ALL, 'da_DK');
+bindtextdomain("agcms", $_SERVER['DOCUMENT_ROOT'].'/theme/locale');
+textdomain("agcms");
+
 //$countries[0] = '----Europa----';
 $countries['FI'] = 'Finland';
 $countries['NO'] = 'Norge';

@@ -3,6 +3,12 @@
 ini_set('display_errors', 1);
 error_reporting(-1);
 /**/
+
+date_default_timezone_set('Europe/Copenhagen');
+setlocale(LC_ALL, 'da_DK');
+bindtextdomain("agcms", $_SERVER['DOCUMENT_ROOT'].'/theme/locale');
+textdomain("agcms");
+
 require_once $_SERVER['DOCUMENT_ROOT'].'/admin/inc/logon.php';
 //TODO update compleat source with doConditionalGet
 
@@ -489,7 +495,7 @@ function deletefolder() {
 					|| $mysqli->fetch_array('SELECT id FROM `maerke` WHERE `ico` LIKE \'%'.$dir."/".$dirlist[$i].'%\' LIMIT 1')
 					|| $mysqli->fetch_array('SELECT id FROM `list_rows` WHERE `cells` LIKE \'%'.$dir."/".$dirlist[$i].'%\' LIMIT 1')
 					|| $mysqli->fetch_array('SELECT id FROM `kat` WHERE `navn` LIKE \'%'.$dir."/".$dirlist[$i].'%\' OR `icon` LIKE \'%'.$dir."/".$dirlist[$i].'%\' LIMIT 1'))
-					return array('error' => _('En filen kunne ikke slettes da den bliver brugt pÂ en side.'));
+					return array('error' => _('En filen kunne ikke slettes da den bliver brugt p√• en side.'));
 					@unlink($_SERVER['DOCUMENT_ROOT'].$dir."/".$dirlist[$i]);
 				}
 			}
@@ -686,8 +692,8 @@ var returnid = '<?php echo(@$_GET['returnid']); ?>';
 </head>
 <body scroll="auto">
 picture_error
-<div id="menu"><img id="loading" src="images/loading.gif" width="16" height="16" alt="<?php echo(_('IndlÊser')); ?>" title="<?php echo(_('IndlÊser')); ?>" /><a id="dir_bn" class="<?php
-if(!@$_COOKIE['qpath'] && !@$_COOKIE['qalt'] && !@$_COOKIE['qtype']) echo 'down'; ?>" title="<?php echo(_('Mapper')); ?>" onclick="return swap_pannel('dir');"><img width="16" height="16" src="images/folder.png" alt="" /> Mapper</a> <a id="search_bn" title="S¯g" class="<?php if(@$_COOKIE['qpath'] || @$_COOKIE['qalt'] || @$_COOKIE['qtype']) echo 'down'; ?>" onclick="return swap_pannel('search');"><img width="16" height="16" src="images/magnifier.png" alt="" /> <?php echo(_('S¯g')); ?></a> <a title="<?php echo(_('Ny mappe')); ?>" onclick="makedir();return false"><img width="16" height="16" src="images/folder_add.png" alt="" /> <?php echo(_('Ny mappe')); ?></a> <a title="<?php echo(_('Slet mappe')); ?>" onclick="deletefolder();return false"><img width="16" height="16" src="images/folder_delete.png" alt="" /> <?php echo(_('Slet mappe')); ?></a> <a title="<?php echo(_('Tilf¯j fil')); ?>" onclick="open_file_upload();return false;"><img width="16" height="16" src="images/folder_page_white.png" alt="" /> <?php echo(_('Tilf¯j fil')); ?></a></div>
+<div id="menu"><img id="loading" src="images/loading.gif" width="16" height="16" alt="<?php echo(_('Indl√¶ser')); ?>" title="<?php echo(_('Indl√¶ser')); ?>" /><a id="dir_bn" class="<?php
+if(!@$_COOKIE['qpath'] && !@$_COOKIE['qalt'] && !@$_COOKIE['qtype']) echo 'down'; ?>" title="<?php echo(_('Mapper')); ?>" onclick="return swap_pannel('dir');"><img width="16" height="16" src="images/folder.png" alt="" /> Mapper</a> <a id="search_bn" title="S√∏g" class="<?php if(@$_COOKIE['qpath'] || @$_COOKIE['qalt'] || @$_COOKIE['qtype']) echo 'down'; ?>" onclick="return swap_pannel('search');"><img width="16" height="16" src="images/magnifier.png" alt="" /> <?php echo(_('S√∏g')); ?></a> <a title="<?php echo(_('Ny mappe')); ?>" onclick="makedir();return false"><img width="16" height="16" src="images/folder_add.png" alt="" /> <?php echo(_('Ny mappe')); ?></a> <a title="<?php echo(_('Slet mappe')); ?>" onclick="deletefolder();return false"><img width="16" height="16" src="images/folder_delete.png" alt="" /> <?php echo(_('Slet mappe')); ?></a> <a title="<?php echo(_('Tilf√∏j fil')); ?>" onclick="open_file_upload();return false;"><img width="16" height="16" src="images/folder_page_white.png" alt="" /> <?php echo(_('Tilf√∏j fil')); ?></a></div>
 <div id="dir"<?php if(@$_COOKIE['qpath'] || @$_COOKIE['qalt'] || @$_COOKIE['qtype']) echo ' style="display:none"'; ?>>
   <div id="dir_.images"><img<?php if(@$_COOKIE['/images']) { echo ' style="display:none"'; } ?> src="images/+.gif" onclick="dir_expand(this, 0);" height="16" width="16" alt="+" title="" /><img<?php if(!@$_COOKIE['/images']) { echo ' style="display:none"'; } ?> src="images/-.gif" onclick="dir_contract(this);" height="16" width="16" alt="-" title="" /><a<?php
 	if('/images' == @$_COOKIE['admin_dir'])
@@ -731,7 +737,7 @@ if(!@$_COOKIE['qpath'] && !@$_COOKIE['qalt'] && !@$_COOKIE['qtype']) echo 'down'
   </select>
   <br />
   <br />
-  <input type="submit" value="S¯g nu" accesskey="f" />
+  <input type="submit" value="S√∏g nu" accesskey="f" />
 </div></form>
 <div id="files"><?php
 echo $showfiles['html'];

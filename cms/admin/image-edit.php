@@ -1,4 +1,10 @@
 <?php
+
+date_default_timezone_set('Europe/Copenhagen');
+setlocale(LC_ALL, 'da_DK');
+bindtextdomain("agcms", $_SERVER['DOCUMENT_ROOT'].'/theme/locale');
+textdomain("agcms");
+
 require_once $_SERVER['DOCUMENT_ROOT'].'/admin/inc/logon.php';
 require_once '../inc/sajax.php';
 require_once 'inc/config.php';
@@ -96,7 +102,7 @@ var maxH = <?php echo($imagesize[1]); ?>;
 <img id="flipH" onclick="flipHorizontal()" src="images/shape_flip_horizontal.png" alt="|" title="<?php echo(_('Speglvend horisontalt')); ?>" width="16" height="16" />
 <img id="flipV" onclick="flipVertical()" src="images/shape_flip_vertical.png" alt="-" title="<?php echo(_('Speglvend verticalt')); ?>" width="16" height="16" />
 <img id="resetCropper" src="images/cut.png" alt="X" title="<?php echo(_('Klip')); ?>" width="16" height="16" /><img id="removeCropper" src="images/cut.png" alt="X" title="<?php echo(_('Klip')); ?>" width="16" height="16" style="display:none" />
-<img id="save" onclick="saveImage();" src="images/disk.png" alt="<?php echo(_('Gem')); ?>" title="<?php echo(_('Gem')); ?>" width="16" height="16" style="display:none" /><img id="loading" src="images/loading.gif" width="16" height="16" alt="<?php echo(_('Indlæser')); ?>" title="<?php echo(_('Indlæser')); ?>" /></div>
+<img id="save" onclick="saveImage();" src="images/disk.png" alt="<?php echo(_('Gem')); ?>" title="<?php echo(_('Gem')); ?>" width="16" height="16" style="display:none" /><img id="loading" src="images/loading.gif" width="16" height="16" alt="<?php echo(_('IndlÃ¦ser')); ?>" title="<?php echo(_('IndlÃ¦ser')); ?>" /></div>
 <div id="ruler" style="width: <?php echo($GLOBALS['_config']['text_width']); ?>px;"><div style="width: <?php echo($GLOBALS['_config']['text_width']-1); ?>px; border-right:1px #FF0000 solid"><div style="width: <?php echo($GLOBALS['_config']['thumb_width']-1); ?>px; border-right:1px #0000FF solid"><div style="width: <?php echo($imagesize[0]-1); ?>px; border-right:1px #00FF00 solid">&nbsp;</div></div></div></div>
 <div id="textDiv" style="width: <?php echo($GLOBALS['_config']['text_width']); ?>px;">
 <?php
