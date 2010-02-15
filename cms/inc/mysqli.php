@@ -6,7 +6,7 @@ require_once("firephp.class.php");
 global $firephp;
 $firephp = FirePHP::getInstance(true);
 
-/* Create custom exception classes */ } 
+/* Create custom exception classes */
 class QueryException extends Exception {} 
 
 class simple_mysqli extends mysqli 
