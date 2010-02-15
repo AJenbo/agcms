@@ -43,7 +43,7 @@ require_once 'inc/config.php';
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-<title>File opload</title>
+<title><?php echo(_('File opload')); ?></title>
 <style type="text/css"><!--
 * {
 	margin:0;

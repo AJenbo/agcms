@@ -29,14 +29,14 @@ if(empty($_SESSION['_user'])) {
 	<html xmlns="http://www.w3.org/1999/xhtml">
 	<head>
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-	<title>Login</title>
+	<title><?php echo(_('Login')); ?></title>
 	</head>
 	<body>
 	<form action="" method="post" style="text-align:right; width:300px; margin:auto;">
-	 Bruger:
+	 <?php echo(_('Bruger:')); ?>
 	 <input name="username" />
 	 <br />
-	 Adgangskode:
+	 <?php echo(_('Adgangskode:')); ?>
 	 <input type="password" name="password" />
 	 <br />
 	 <input type="submit" value="Log ind" />

@@ -9,7 +9,7 @@ require_once $_SERVER['DOCUMENT_ROOT'].'/admin/inc/logon.php';
 
 if(empty($_SESSION['_user'])) {
 	//TDODO No login !!!
-	$_SESSION['_user']['fullname'] = 'No one';
+	$_SESSION['_user']['fullname'] = _('No one';
 }
 require_once '../inc/sajax.php';
 require_once '../inc/config.php';
@@ -52,7 +52,7 @@ if(!empty($_POST['tlf']))
 if(empty($_POST)) {
 	$_POST['y'] = date('Y');
 	$_POST['clerk'] = $_SESSION['_user']['fullname'];
-	$_POST['status'] = 'activ';
+	$_POST['status'] = _('activ';
 }
 
 if(!empty($_POST['id']))
@@ -169,7 +169,7 @@ a {
 <body onload="$('loading').style.visibility = 'hidden';">
 <div id="canvas">
 <form action="" method="post"><table><tr>
-	<td><?php echo(_('Id:')); ?></td><td><?php echo(_('Ã…r:')); ?></td><td><?php echo(_('MÃ¥ned:')); ?></td><td><?php echo(_('Ekspedient:')); ?></td><td><?php echo(_('Status:')); ?></td></tr><tr><td>
+	<td><?php echo(_('Id:')); ?></td><td><?php echo(_('År:')); ?></td><td><?php echo(_('Måned:')); ?></td><td><?php echo(_('Ekspedient:')); ?></td><td><?php echo(_('Status:')); ?></td></tr><tr><td>
 
     <input name="id" value="<?php if(!empty($_POST['id'])) echo $_POST['id']; ?>" size="4" /></td><td>
 
@@ -238,7 +238,7 @@ a {
         <option value="activ"<?php if($_POST['status'] == 'activ') echo(' selected="selected"'); ?>>Aktuelle</option>
         <option value="inactiv"<?php if($_POST['status'] == 'inactiv') echo(' selected="selected"'); ?>>Afsluttet</option>
         <option value="new"<?php if($_POST['status'] == 'new') echo(' selected="selected"'); ?>>Ny</option>
-        <option value="locked"<?php if($_POST['status'] == 'locked') echo(' selected="selected"'); ?>>LÃ¥st</option>
+        <option value="locked"<?php if($_POST['status'] == 'locked') echo(' selected="selected"'); ?>>Låst</option>
         <option value="pbsok"<?php if($_POST['status'] == 'pbsok') echo(' selected="selected"'); ?>>Klar</option>
         <option value="accepted"<?php if($_POST['status'] == 'accepted') echo(' selected="selected"'); ?>>Ekspederede</option>
         <option value="giro"<?php if($_POST['status'] == 'giro') echo(' selected="selected"'); ?>>Giro</option>
@@ -256,7 +256,7 @@ a {
             <td>Id</td>
             <td>Oprettet</td>
             <?php if(empty($_POST['clerk'])) { ?><td>Ansvarlige</td><?php } ?>
-            <td>BelÃ¸b</td>
+            <td>Beløb</td>
             <td>Modtager</td>
         </tr>
     </thead>
@@ -270,7 +270,7 @@ a {
 				elseif($faktura['status'] == 'locked' && $faktura['sendt'])
 					echo('<img src="/admin/images/email_go.png" alt="Sendt" title="Sendt til kunden" />');
 				elseif($faktura['status'] == 'locked')
-					echo('<img src="/admin/images/lock.png" alt="LÃ¥st" title="LÃ¥st" />');
+					echo('<img src="/admin/images/lock.png" alt="Låst" title="Låst" />');
 				elseif($faktura['status'] == 'pbsok')
 					echo('<img src="/admin/images/money.png" alt="Klar" title="Klar" />');
 				elseif($faktura['status'] == 'accepted')
@@ -314,7 +314,7 @@ a {
 </div>
 <?php
 $activityButtons[] = '<li><a href="faktura.php?function=new"><img src="images/table_add.png" width="16" height="16" alt="" title="Opret ny" /> Opret ny</a></li>';
-$activityButtons[] = '<li><a href="fakturasearch.php"><img src="images/magnifier.png" width="16" height="16" alt="" title="Advanceret sÃ¸gning" /> SÃ¸gning</a></li>';
+$activityButtons[] = '<li><a href="fakturasearch.php"><img src="images/magnifier.png" width="16" height="16" alt="" title="Advanceret søgning" /> Søgning</a></li>';
 
 require 'mainmenu.php';
 ?>

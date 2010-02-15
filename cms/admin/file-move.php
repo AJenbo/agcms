@@ -19,7 +19,7 @@ $pathinfo = pathinfo($_GET['path']);
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-<title>Flyt fil</title>
+<title><?php echo(_('Flyt fil')); ?></title>
 <script type="text/javascript" src="javascript/javascript.js"></script>
 <script type="text/javascript" src="javascript/explorer.js"></script>
 <script type="text/javascript" src="javascript/lib/prototype.js"></script>
@@ -111,8 +111,8 @@ body {
 --></style>
 </head>
 
-<body style="background-color:ThreeDFace; border:0px #FF0000 none;"><p>Klik på den mappe, hvor du vil flytte filen '<?php echo $pathinfo['filename']; ?>' til.</p>
-<img id="loading" style="float:right; cursor:default; display:none; padding:4px" src="images/loading.gif" width="16" height="16" alt="Loading" />
+<body style="background-color:ThreeDFace; border:0px #FF0000 none;"><p><?php printf(_('Klik på den mappe, hvor du vil flytte filen "%s" til.'),$pathinfo['filename']); ?></p>
+<img id="loading" style="float:right; cursor:default; display:none; padding:4px" src="images/loading.gif" width="16" height="16" alt="<?php echo(_('Loading')); ?>" />
 <div id="dir"><?php
 /*
 $listdirs = listdirs('/images', 1);
@@ -122,17 +122,17 @@ echo $listdirs['html'];
 <div id="dir_.images"><img<?php if(@$_COOKIE['/images']) { echo ' style="display:none"'; }
 ?> src="images/+.gif" onclick="dir_expand(this, 1);" height="16" width="16" alt="" /><img<?php
 if(!@$_COOKIE['/images']) { echo ' style="display:none"'; }
-?> src="images/-.gif" onclick="dir_contract(this);" height="16" width="16" alt="" /><a onclick="movefile('/images')"><img src="images/folder.png" height="16" width="16" alt="" /> Billeder </a>
+?> src="images/-.gif" onclick="dir_contract(this);" height="16" width="16" alt="" /><a onclick="movefile('/images')"><img src="images/folder.png" height="16" width="16" alt="" /> <?php echo(_('Billeder')); ?> </a>
 <div><?php
 if(@$_COOKIE['/images']) {
 	$listdirs = listdirs('/images', 1);
 	echo $listdirs['html'];
 }
 ?></div></div>
-<div id="dir_.files"><img<?php if(@$_COOKIE['/files']) { echo ' style="display:none"'; } ?> src="images/+.gif" onclick="dir_expand(this, 1);" height="16" width="16" alt="" /><img<?php if(!@$_COOKIE['/files']) { echo ' style="display:none"'; } ?> src="images/-.gif" onclick="dir_contract(this);" height="16" width="16" alt="" /><a onclick="movefile('/files')"><img src="images/folder.png" height="16" width="16" alt="" /> Filer </a>
+<div id="dir_.files"><img<?php if(@$_COOKIE['/files']) { echo ' style="display:none"'; } ?> src="images/+.gif" onclick="dir_expand(this, 1);" height="16" width="16" alt="" /><img<?php if(!@$_COOKIE['/files']) { echo ' style="display:none"'; } ?> src="images/-.gif" onclick="dir_contract(this);" height="16" width="16" alt="" /><a onclick="movefile('/files')"><img src="images/folder.png" height="16" width="16" alt="" /> <?php echo(_('Filer')); ?> </a>
 <div><?php
 if(@$_COOKIE['/files']) {
 	$listdirs = listdirs('/files', 1);
 	echo $listdirs['html'];
 }
-?></div></div></div><p style="bottom:18px; position:absolute;">Klik på plustegnet ovenfor for at se undermapper.</p></body></html>
+?></div></div></div><p style="bottom:18px; position:absolute;"><?php echo(_('Klik på plustegnet ovenfor for at se undermapper.')); ?></p></body></html>

@@ -145,7 +145,7 @@ function getEmail($id) {
 	global $mysqli;
 	$newsmails = $mysqli->fetch_array('SELECT * FROM `newsmails` WHERE `id` = '.$id);
 
-	$html = '<div id="headline">Rediger nyhedsbrev</div>';
+	$html = '<div id="headline">'._('Rediger nyhedsbrev').'</div>';
 	
 	if($newsmails[0]['sendt'] == 0) {
 		$html .= '<form action="" method="post" onsubmit="return sendNews();"><input type="submit" accesskey="m" style="width:1px; height:1px; position:absolute; top: -20px; left:-20px;" />';
@@ -157,8 +157,8 @@ function getEmail($id) {
 	//TODO error if value = ''
 	if($newsmails[0]['sendt'] == 0) {
 		if(count($GLOBALS['_config']['email']) > 1) {
-			$html .= 'Afsender: <select id="from">';
-			$html .= '<option value="">Vælge afsender</option>';
+			$html .= _('Afsender:').' <select id="from">';
+			$html .= '<option value="">'._('Vælge afsender').'</option>';
 			foreach($GLOBALS['_config']['email'] as $email) {
 				$html .= '<option value="'.$email.'">'.$email.'</option>';
 			}
@@ -167,14 +167,14 @@ function getEmail($id) {
 			$html .= '<input value="'.$GLOBALS['_config']['email'][0].'" id="from" style="display:none;" />';
 		}
 	} else {
-		$html .= 'Afsender: '.$newsmails[0]['from'];
+		$html .= _('Afsender:').' '.$newsmails[0]['from'];
 	}
 	
 	//Modtager
 	if($newsmails[0]['sendt'] == 1) {
-		$html .= '<br /><br />Modtager:';
+		$html .= '<br /><br />'._('Modtager:');
 	} else {
-		$html .= '<br />Begræns modtager til:';
+		$html .= '<br />'._('Begræns modtager til:');
 	}
 	$html .= '<div id="interests">';
 	$newsmails[0]['interests_array'] = explode('<', $newsmails[0]['interests']);
@@ -194,12 +194,12 @@ countEmailTo();
 	$html .= '</div>';
 	
 	if($newsmails[0]['sendt'] == 0)
-		$html .= '<br />Antal modtager: <span id="mailToCount">'.countEmailTo($newsmails[0]['interests']).'</span><br />';
+		$html .= '<br />'._('Antal modtager:').' <span id="mailToCount">'.countEmailTo($newsmails[0]['interests']).'</span><br />';
 	
 	if($newsmails[0]['sendt'] == 1){
-		$html .= '<br />Emne: '.$newsmails[0]['subject'].'<div style="width:'.$GLOBALS['_config']['text_width'].'px; border:1px solid #D2D2D2">'.$newsmails[0]['text'].'</div></div>';
+		$html .= '<br />'._('Emne:').' '.$newsmails[0]['subject'].'<div style="width:'.$GLOBALS['_config']['text_width'].'px; border:1px solid #D2D2D2">'.$newsmails[0]['text'].'</div></div>';
 	} else {
-		$html .= '<br />Emne: <input class="admin_name" name="subject" id="subject" value="'.$newsmails[0]['subject'].'" size="127" style="width:'.($GLOBALS['_config']['text_width']-34).'px" /><script type="text/javascript"><!--
+		$html .= '<br />'._('Emne:').' <input class="admin_name" name="subject" id="subject" value="'.$newsmails[0]['subject'].'" size="127" style="width:'.($GLOBALS['_config']['text_width']-34).'px" /><script type="text/javascript"><!--
 //Usage: initRTE(imagesPath, includesPath, cssFile, genXHTML)
 initRTE("/admin/rtef/images/", "/admin/rtef/", "/theme/email.css", true);
 writeRichText("text", \''.rtefsafe($newsmails[0]['text']).'\', "", '.($GLOBALS['_config']['text_width']+32).', 422, true, false, false);
@@ -218,7 +218,7 @@ function getEmailList() {
 	global $mysqli;
 	$newsmails = $mysqli->fetch_array('SELECT `id`, `subject`, `sendt` FROM `newsmails`');
 	
-	$html = '<div id="headline">Nyhedsbreve</div><div><a href="?side=newemail"><img src="images/email_add.png" width="16" height="16" alt="" /> Opret nyt nyhedsbrev</a><br /><br />';
+	$html = '<div id="headline">'._('Nyhedsbreve').'</div><div><a href="?side=newemail"><img src="images/email_add.png" width="16" height="16" alt="" /> '._('Opret nyt nyhedsbrev').'</a><br /><br />';
 	foreach($newsmails as $newemail) {
 		if($newemail['sendt'] == 0) {
 			$html .= '<a href="?side=editemail&amp;id='.$newemail['id'].'"><img src="images/email_edit';

@@ -10,9 +10,9 @@ function saveImage($path, $cropX, $cropY, $cropW, $cropH, $maxW, $maxH, $flip, $
 	$mimeType = get_mime_type($path);
 
 	if($mimeType == 'image/jpeg')
-		$output['type'] = 'jpg';
+		$output['type'] = _('jpg';
 	else
-		$output['type'] = 'png';
+		$output['type'] = _('png';
 		
 	$output['filename'] = $filename;
 	$output['force'] = $force;
@@ -34,7 +34,7 @@ sajax_handle_client_request();
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-<title>Rediger billed</title>
+<title><?php echo(_('Rediger billed')); ?></title>
 <script src="javascript/lib/prototype.js" type="text/javascript"></script>
 <script type="text/javascript"><!--
 var JSON = JSON || {};
@@ -91,12 +91,12 @@ var maxH = <?php echo($imagesize[1]); ?>;
 </head>
 <body>
 <div id="tools">
-<img id="ccw" onclick="rotateCCW()" src="images/shape_rotate_anticlockwise.png" alt="&lt;-" title="Roter mod uret" width="16" height="16" />
-<img id="cw" onclick="rotateCW()" src="images/shape_rotate_clockwise.png" alt="-&gt;" title="Roter med uret" width="16" height="16" />
-<img id="flipH" onclick="flipHorizontal()" src="images/shape_flip_horizontal.png" alt="|" title="Speglvend horisontalt" width="16" height="16" />
-<img id="flipV" onclick="flipVertical()" src="images/shape_flip_vertical.png" alt="-" title="Speglvend verticalt" width="16" height="16" />
-<img id="resetCropper" src="images/cut.png" alt="X" title="Klip" width="16" height="16" /><img id="removeCropper" src="images/cut.png" alt="X" title="Klip" width="16" height="16" style="display:none" />
-<img id="save" onclick="saveImage();" src="images/disk.png" alt="Gem" title="Gem" width="16" height="16" style="display:none" /><img id="loading" src="images/loading.gif" width="16" height="16" alt="IndlÃ¦ser" title="IndlÃ¦ser" /></div>
+<img id="ccw" onclick="rotateCCW()" src="images/shape_rotate_anticlockwise.png" alt="&lt;-" title="<?php echo(_('Roter mod uret')); ?>" width="16" height="16" />
+<img id="cw" onclick="rotateCW()" src="images/shape_rotate_clockwise.png" alt="-&gt;" title="<?php echo(_('Roter med uret')); ?>" width="16" height="16" />
+<img id="flipH" onclick="flipHorizontal()" src="images/shape_flip_horizontal.png" alt="|" title="<?php echo(_('Speglvend horisontalt')); ?>" width="16" height="16" />
+<img id="flipV" onclick="flipVertical()" src="images/shape_flip_vertical.png" alt="-" title="<?php echo(_('Speglvend verticalt')); ?>" width="16" height="16" />
+<img id="resetCropper" src="images/cut.png" alt="X" title="<?php echo(_('Klip')); ?>" width="16" height="16" /><img id="removeCropper" src="images/cut.png" alt="X" title="<?php echo(_('Klip')); ?>" width="16" height="16" style="display:none" />
+<img id="save" onclick="saveImage();" src="images/disk.png" alt="<?php echo(_('Gem')); ?>" title="<?php echo(_('Gem')); ?>" width="16" height="16" style="display:none" /><img id="loading" src="images/loading.gif" width="16" height="16" alt="<?php echo(_('Indlæser')); ?>" title="<?php echo(_('Indlæser')); ?>" /></div>
 <div id="ruler" style="width: <?php echo($GLOBALS['_config']['text_width']); ?>px;"><div style="width: <?php echo($GLOBALS['_config']['text_width']-1); ?>px; border-right:1px #FF0000 solid"><div style="width: <?php echo($GLOBALS['_config']['thumb_width']-1); ?>px; border-right:1px #0000FF solid"><div style="width: <?php echo($imagesize[0]-1); ?>px; border-right:1px #00FF00 solid">&nbsp;</div></div></div></div>
 <div id="textDiv" style="width: <?php echo($GLOBALS['_config']['text_width']); ?>px;">
 <?php
