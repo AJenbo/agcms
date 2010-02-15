@@ -28,7 +28,7 @@ function getAddress($id) {
 	$dbs[3]['mysql_password'] = '2iEEXLMM';
 	$dbs[3]['mysql_database'] = 'geoffanderson_c';
 	
-	require_once 'mysqli.php';
+	require_once $_SERVER['DOCUMENT_ROOT'].'/inc/mysqli.php';
 	
 	foreach($dbs as $db) {
 		$mysqli_ext = new simple_mysqli($db['mysql_server'], $db['mysql_user'], $db['mysql_password'], $db['mysql_database']);
@@ -67,14 +67,14 @@ function getAddress($id) {
 		}
 	}
 		
-	require_once('../krak/krak.php');
+	require_once($_SERVER['DOCUMENT_ROOT'].'/krak/krak.php');
 	if($return = getAddressKrak($id)) {
 		$return = array_merge($default, $return);
 			
 		if($return != $default)
 			return $return;
 	} else {
-		return array('error' => 'Addressen kunde ikke findes.');
+		return array('error' => _('Addressen kunde ikke findes.'));
 	}
 }
 ?>

@@ -30,7 +30,7 @@ $updatetime = 0;
 
 function get_kat($id, $sort) {
 	global $mysqli;
-	require_once 'inc/liste.php';
+	require_once $_SERVER['DOCUMENT_ROOT'].'/inc/liste.php';
 	$GLOBALS['generatedcontent']['activmenu'] = $id;
 
 	//check browser cache
@@ -62,9 +62,15 @@ function get_kat($id, $sort) {
 	return array("id" => 'kat'.$GLOBALS['generatedcontent']['activmenu'], "html" => kat_html($bind, $GLOBALS['cache']['kats'][$GLOBALS['generatedcontent']['activmenu']]['navn']));
 }
 
+function get_address($phonenumber) {
+	require_once $_SERVER['DOCUMENT_ROOT'].'/inc/getaddress.php';
+	return getAddress($phonenumber);
+}
+
 sajax_export(
 	array('name' => 'get_table', 'method' => 'GET'),
-	array('name' => 'get_kat', 'method' => 'GET')
+	array('name' => 'get_kat', 'method' => 'GET'),
+	array('name' => 'get_address', 'method' => 'GET')
 );
 //	$sajax_remote_uri = "/ajax.php";
 sajax_handle_client_request();

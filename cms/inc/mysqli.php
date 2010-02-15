@@ -6,8 +6,7 @@ require_once("firephp.class.php");
 global $firephp;
 $firephp = FirePHP::getInstance(true);
 
-/* Create custom exception classes */ 
-class ConnectException extends Exception {} 
+/* Create custom exception classes */ } 
 class QueryException extends Exception {} 
 
 class simple_mysqli extends mysqli 
@@ -20,7 +19,7 @@ class simple_mysqli extends mysqli
 		
 		/* Throw an error if the connection fails */ 
 		if(mysqli_connect_error()){ 
-			throw new ConnectException(mysqli_connect_error(), mysqli_connect_errno()); 
+			throw new Exception('', mysqli_connect_errno()); 
 		} 
 		
 		$this->query("SET NAMES 'UTF8'");
