@@ -241,12 +241,12 @@ if(!empty($_GET['id']) && @$_GET['checkid'] == getCheckid($_GET['id'])) {
 			<tr>
 				<td> '._('Telfon:').'</td>
 				<td colspan="2"><input name="tlf1" id="tlf1" style="width:157px" value="'.$faktura['tlf1'].'" /></td>
-				<td><input type="button" value="'._('Hent adresse').'" /></td>
+				<td><input type="button" value="'._('Hent adresse').'" onclick="get_address(document.getElementById(\'tlf1\').value, get_address_r1);" /></td>
 			</tr>
 			<tr>
 				<td> '._('Mobil:').'</td>
 				<td colspan="2"><input name="tlf2" id="tlf2" style="width:157px" value="'.$faktura['tlf2'].'" /></td>
-				<td><input type="button" value="'._('Hent adresse')." /></td>
+				<td><input type="button" value="'._('Hent adresse').'" onclick="get_address(document.getElementById(\'tlf2\').value, get_address_r1);" /></td>
 			</tr>
 			<tr>
 				<td>'._('Navn:').'</td>
@@ -320,7 +320,7 @@ if(!empty($_GET['id']) && @$_GET['checkid'] == getCheckid($_GET['id'])) {
 			$GLOBALS['generatedcontent']['text'] .= '>
 				<td> '._('Telfon:').'</td>
 				<td colspan="2"><input name="posttlf" id="posttlf" style="width:157px" value="'.$faktura['posttlf'].'" /></td>
-				<td><input type="button" value="'._('Hent').'" /></td>
+				<td><input type="button" value="'._('Hent adresse').'" onclick="get_address(document.getElementById(\'posttlf\').value, get_address_r2);" /></td>
 			</tr>
 			<tr class="altpost"';
 			if(empty($faktura['altpost'])) $GLOBALS['generatedcontent']['text'] .= ' style="display:none;"';
@@ -517,7 +517,7 @@ if(!empty($_GET['id']) && @$_GET['checkid'] == getCheckid($_GET['id'])) {
 		$shopSubject = $_GET['Status'].$_GET['Status_code'];
 	else
 		$shopSubject = _('Ingen status');
-	$shopBody = '<br />'.sprintf(_(.'Der opstod en fejl på betalings siden ved online faktura #%d!'), $id).'<br />';
+	$shopBody = '<br />'.sprintf(_('Der opstod en fejl på betalings siden ved online faktura #%d!'), $id).'<br />';
 	
 	if($faktura = $mysqli->fetch_array("SELECT * FROM `fakturas` WHERE `id` = ".$id)) {
 		$faktura = @$faktura[0];
@@ -627,7 +627,7 @@ Husk at "ekspedere" betalingen når varen sendes (Betaling overføres først fra
 					$emailbody_address .= '<td>'.$faktura['postname'].'</td>';
 				$emailbody_address .= '</tr>';
 				if($faktura['tlf1'] || ($faktura['altpost'] && $faktura['posttlf'])) {
-					$emailbody_address .= '<tr><td'._('>Tlf.:').'</td><td>'.$faktura['tlf1'].'</td>';
+					$emailbody_address .= '<tr><td>'._('Tlf.:').'</td><td>'.$faktura['tlf1'].'</td>';
 					if($faktura['altpost'])
 						$emailbody_address .= '<td>'.$faktura['posttlf'].'</td>';
 					$emailbody_address .= '</tr>';
