@@ -9,7 +9,7 @@ require_once $_SERVER['DOCUMENT_ROOT'].'/admin/inc/logon.php';
 
 if(empty($_SESSION['_user'])) {
 	//TDODO No login !!!
-	$_SESSION['_user']['fullname'] = _('No one';
+	$_SESSION['_user']['fullname'] = _('No one');
 }
 require_once '../inc/sajax.php';
 require_once '../inc/config.php';
@@ -52,7 +52,7 @@ if(!empty($_POST['tlf']))
 if(empty($_POST)) {
 	$_POST['y'] = date('Y');
 	$_POST['clerk'] = $_SESSION['_user']['fullname'];
-	$_POST['status'] = _('activ';
+	$_POST['status'] = 'activ';
 }
 
 if(!empty($_POST['id']))

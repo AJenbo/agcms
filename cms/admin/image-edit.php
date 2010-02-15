@@ -10,9 +10,9 @@ function saveImage($path, $cropX, $cropY, $cropW, $cropH, $maxW, $maxH, $flip, $
 	$mimeType = get_mime_type($path);
 
 	if($mimeType == 'image/jpeg')
-		$output['type'] = _('jpg';
+		$output['type'] = 'jpg';
 	else
-		$output['type'] = _('png';
+		$output['type'] = 'png';
 		
 	$output['filename'] = $filename;
 	$output['force'] = $force;
