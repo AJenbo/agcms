@@ -17,7 +17,7 @@ $mysqli = new simple_mysqli($GLOBALS['_config']['mysql_server'], $GLOBALS['_conf
 $emails = $mysqli->fetch_array("SELECT * FROM `emails`");
 
 if(!$emails) {
-	die(_('Ingen emails at sende.'));
+	die(_('No e-mails to send.'));
 }
 
 $emailsSendt = 0;
@@ -90,5 +90,5 @@ foreach($emails as $email) {
 //Close SMTP connection
 $PHPMailer->SmtpClose();
 
-printf(ngettext("%d e-Mail blev sendt.", "%d e-Mails blev sendt.", $emailsSendt), $emailsSendt);
+printf(ngettext("%d e-mail was sent.", "%d e-mails was sent.", $emailsSendt), $emailsSendt);
 ?>

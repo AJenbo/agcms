@@ -30,12 +30,12 @@ function deletefile($id, $path) {
 	global $mysqli;
 
 	if(isinuse($path))
-		return array('error' => _('Filen kan ikke slettes da den bliver brugt på en side.'));
+		return array('error' => _('The file can not be deleted because it is used on a page.'));
 	if(@unlink($_SERVER['DOCUMENT_ROOT'].$path)) {
 		    $mysqli->query("DELETE FROM files WHERE `path` = '".$path."'");
 		return array('id' => $id);
 	} else
-		return array('error' => _('Der opstod en fejl under slettningen af filen, filen er mulig vis i brug.'));
+		return array('error' => _('There was an error deleting the file, the file may be in use.'));
 }
 
 //Scan folder and get list of files and folders in it

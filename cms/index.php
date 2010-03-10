@@ -410,13 +410,13 @@ if(@$_GET['sog'] || @$GLOBALS['side']['inactive']) {
 	$GLOBALS['generatedcontent']['text'] = '';
 
 	if(@$GLOBALS['side']['inactive'])
-		$GLOBALS['generatedcontent']['text'] .= '<p>'._('Siden kunne ikke findes. Prøv eventuelt at søge efter en lignende side.').'</p>';
+		$GLOBALS['generatedcontent']['text'] .= '<p>'._('Page could not be found. Try searching for a similar page.').'</p>';
 	
-	$GLOBALS['generatedcontent']['text'] .= '<form action="/" method="get"><table><tr><td>'._('Indeholder').'</td><td><input name="q" size="31" value="';
+	$GLOBALS['generatedcontent']['text'] .= '<form action="/" method="get"><table><tr><td>'._('Contains').'</td><td><input name="q" size="31" value="';
 	if(@$GLOBALS['side']['inactive']) {
 		$GLOBALS['generatedcontent']['text'] .= htmlspecialchars(preg_replace(array('/-/u', '/.*?side[0-9]+\s(.*?)[.]html/u'), array(' ', '\1'), urldecode($_SERVER['REQUEST_URI'])));
 	}
-	$GLOBALS['generatedcontent']['text'] .= '" /></td><td><input type="submit" value="'._('Søg').'" /></td></tr><tr><td>'._('Vare nummer').'</td><td><input name="varenr" size="31" value="" maxlength="63" /></td></tr><tr><td>'._('Uden ordene').'</td><td><input name="sogikke" size="31" value="" /></td></tr><tr><td>'._('Udvidet:').'</td><td><input name="qext" type="checkbox" value="1" /></td></tr><tr><td>'._('Min pris').'</td><td><input name="minpris" size="5" maxlength="11" value="" />,-</td></tr><tr><td>'._('Max pris').'&nbsp;</td><td><input name="maxpris" size="5" maxlength="11" value="" />,-</td></tr><tr><td>'._('Mærke:').'</td><td><select name="maerke"><option value="0">'._('Alle').'</option>';
+	$GLOBALS['generatedcontent']['text'] .= '" /></td><td><input type="submit" value="'._('Search').'" /></td></tr><tr><td>'._('Part No.').'</td><td><input name="varenr" size="31" value="" maxlength="63" /></td></tr><tr><td>'._('Without the words').'</td><td><input name="sogikke" size="31" value="" /></td></tr><tr><td>'._('Enhanced:').'</td><td><input name="qext" type="checkbox" value="1" /></td></tr><tr><td>'._('Min price').'</td><td><input name="minpris" size="5" maxlength="11" value="" />,-</td></tr><tr><td>'._('Max price').'&nbsp;</td><td><input name="maxpris" size="5" maxlength="11" value="" />,-</td></tr><tr><td>'._('Brand:').'</td><td><select name="maerke"><option value="0">'._('All').'</option>';
 	$maerker = $mysqli->fetch_array('SELECT `id`, `navn` FROM `maerke` ORDER BY `navn` ASC');
 		
 	getUpdateTime('maerke');

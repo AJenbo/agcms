@@ -38,10 +38,10 @@ if(empty($_SESSION['_user'])) {
 	</head>
 	<body>
 	<form action="" method="post" style="text-align:right; width:300px; margin:auto;">
-	 <?php echo(_('Bruger:')); ?>
+	 <?php echo(_('User:')); ?>
 	 <input name="username" />
 	 <br />
-	 <?php echo(_('Adgangskode:')); ?>
+	 <?php echo(_('Password:')); ?>
 	 <input type="password" name="password" />
 	 <br />
 	 <input type="submit" value="Log ind" />

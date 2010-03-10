@@ -83,9 +83,9 @@ function validate($values) {
 //Generate return page
 $GLOBALS['generatedcontent']['crumbs'] = array();
 if(!empty($_GET['id'])) {
-	$GLOBALS['generatedcontent']['crumbs'][0] = array('name' => _('Betaling'), 'link' => '/?id='.$_GET['id'].'&checkid='.$_GET['checkid'], 'icon' => NULL);
+	$GLOBALS['generatedcontent']['crumbs'][0] = array('name' => _('Payment'), 'link' => '/?id='.$_GET['id'].'&checkid='.$_GET['checkid'], 'icon' => NULL);
 } else {
-	$GLOBALS['generatedcontent']['crumbs'][0] = array('name' => _('Betaling'), 'link' => '/', 'icon' => NULL);
+	$GLOBALS['generatedcontent']['crumbs'][0] = array('name' => _('Payment'), 'link' => '/', 'icon' => NULL);
 }
 $GLOBALS['generatedcontent']['contenttype'] = 'page';
 $GLOBALS['generatedcontent']['text'] = '';
@@ -125,9 +125,9 @@ if(!empty($_GET['id']) && @$_GET['checkid'] == getCheckid($_GET['id'])) {
 			$GLOBALS['generatedcontent']['text'] = '<table id="faktura" cellspacing="0">
 				<thead>
 					<tr>
-						<td class="td1">'._('Antal').'</td>
-						<td>'._('Benævnelse').'</td>
-						<td class="td3 tal">'._('á pris').'</td>
+						<td class="td1">'._('Quantity').'</td>
+						<td>'._('Title').'</td>
+						<td class="td3 tal">'._('unit price').'</td>
 						<td class="td4 tal">'._('Total').'</td>
 					</tr>
 				</thead>
@@ -135,25 +135,25 @@ if(!empty($_GET['id']) && @$_GET['checkid'] == getCheckid($_GET['id'])) {
 					<tr style="height:auto;min-height:auto;max-height:auto;">
 						<td>&nbsp;</td>
 						<td>&nbsp;</td>
-						<td class="tal">'._('Nettobeløb').'</td>';
+						<td class="tal">'._('Net Amount').'</td>';
 			
 			$GLOBALS['generatedcontent']['text'] .= '<td class="tal">'.number_format($netto, 2, ',', '').'</td>
 				</tr>
 				<tr>
 					<td>&nbsp;</td>
 					<td>&nbsp;</td>
-					<td class="tal">'._('Fragt').'</td>
+					<td class="tal">'._('Freight').'</td>
 					<td class="tal">'.number_format($faktura['fragt'], 2, ',', '').'</td>
 				</tr>
 				<tr>
 					<td>&nbsp;</td>
 					<td style="text-align:right" class="tal">'.($faktura['momssats']*100).'%</td>
-					<td class="tal">'._('Momsbeløb').'</td>
+					<td class="tal">'._('VAT Amount').'</td>
 					<td class="tal">'.number_format($netto*$faktura['momssats'], 2, ',', '').'</td>
 				</tr>
 				<tr class="border">
-					<td colspan="2">'._('Alle beløb er i DKK').'</td>
-					<td style="text-align:center; font-weight:bold;">'._('AT BETALE').'</td>
+					<td colspan="2">'._('All figures are in DKK').'</td>
+					<td style="text-align:center; font-weight:bold;">'._('TO PAY').'</td>
 					<td class="tal"><big>'.number_format($faktura['amount'], 2, ',', '').'</big></td>
 				</tr>
 			</tfoot>
@@ -170,10 +170,10 @@ if(!empty($_GET['id']) && @$_GET['checkid'] == getCheckid($_GET['id'])) {
 			$GLOBALS['generatedcontent']['text'] .= '</tbody></table>';
 			
 			if($faktura['note']) {
-				$GLOBALS['generatedcontent']['text'] .= '<br /><strong>'._('Notat:').'</strong><br /><p class="note">';	
+				$GLOBALS['generatedcontent']['text'] .= '<br /><strong>'._('Note:').'</strong><br /><p class="note">';
 				$GLOBALS['generatedcontent']['text'] .= nl2br(htmlspecialchars($faktura['note'])).'</p>';
 			}
-			$GLOBALS['generatedcontent']['text'] .= '<form action="" method="get"><input type="hidden" name="id" value="'.$_GET['id'].'" /><input type="hidden" name="checkid" value="'.$_GET['checkid'].'" /><input type="hidden" name="step" value="1" /><input type="hidden" name="checkid" value="'.$_GET['checkid'].'" /><input style="font-weight:bold;" type="submit" value="'._('Fortsæt').'" /></form>';
+			$GLOBALS['generatedcontent']['text'] .= '<form action="" method="get"><input type="hidden" name="id" value="'.$_GET['id'].'" /><input type="hidden" name="checkid" value="'.$_GET['checkid'].'" /><input type="hidden" name="step" value="1" /><input type="hidden" name="checkid" value="'.$_GET['checkid'].'" /><input style="font-weight:bold;" type="submit" value="'._('Continue').'" /></form>';
 			
 		} elseif($_GET['step'] == 1) {
 			if($_POST) {
@@ -225,9 +225,9 @@ if(!empty($_GET['id']) && @$_GET['checkid'] == getCheckid($_GET['id'])) {
 			
 			//TODO add enote
 			$GLOBALS['generatedcontent']['crumbs'] = array();
-			$GLOBALS['generatedcontent']['crumbs'][1] = array('name' => _('Modtager'), 'link' => '#', 'icon' => NULL);
-			$GLOBALS['generatedcontent']['title'] = _('Modtager');
-			$GLOBALS['generatedcontent']['headline'] = _('Modtager');
+			$GLOBALS['generatedcontent']['crumbs'][1] = array('name' => _('Recipient'), 'link' => '#', 'icon' => NULL);
+			$GLOBALS['generatedcontent']['title'] = _('Recipient');
+			$GLOBALS['generatedcontent']['headline'] = _('Recipient');
 			
 			$GLOBALS['generatedcontent']['text'] = '
 			<script type="text/javascript"><!--
@@ -239,17 +239,17 @@ if(!empty($_GET['id']) && @$_GET['checkid'] == getCheckid($_GET['id'])) {
 	<table>
 		<tbody>
 			<tr>
-				<td> '._('Telfon:').'</td>
+				<td> '._('Phone:').'</td>
 				<td colspan="2"><input name="tlf1" id="tlf1" style="width:157px" value="'.$faktura['tlf1'].'" /></td>
-				<td><input type="button" value="'._('Hent adresse').'" onclick="get_address(document.getElementById(\'tlf1\').value, get_address_r1);" /></td>
+				<td><input type="button" value="'._('Get address').'" onclick="get_address(document.getElementById(\'tlf1\').value, get_address_r1);" /></td>
 			</tr>
 			<tr>
-				<td> '._('Mobil:').'</td>
+				<td> '._('Mobile:').'</td>
 				<td colspan="2"><input name="tlf2" id="tlf2" style="width:157px" value="'.$faktura['tlf2'].'" /></td>
-				<td><input type="button" value="'._('Hent adresse').'" onclick="get_address(document.getElementById(\'tlf2\').value, get_address_r1);" /></td>
+				<td><input type="button" value="'._('Get address').'" onclick="get_address(document.getElementById(\'tlf2\').value, get_address_r1);" /></td>
 			</tr>
 			<tr>
-				<td>'._('Navn:').'</td>
+				<td>'._('Name:').'</td>
 				<td colspan="2"><input name="navn" id="navn" style="width:157px" value="'.$faktura['navn'].'" /></td>
 				<td>';
 			if(!empty($rejected['navn']))
@@ -257,12 +257,12 @@ if(!empty($_GET['id']) && @$_GET['checkid'] == getCheckid($_GET['id'])) {
 			$GLOBALS['generatedcontent']['text'] .= '</td>
 			</tr>
 			<tr>
-				<td> '._('Att:').'</td>
+				<td> '._('Name:').'</td>
 				<td colspan="2"><input name="att" id="att" style="width:157px" value="'.$faktura['att'].'" /></td>
 				<td></td>
 			</tr>
 			<tr>
-				<td> '._('Adresse:').'</td>
+				<td> '._('Address:').'</td>
 				<td colspan="2"><input name="adresse" id="adresse" style="width:157px" value="'.$faktura['adresse'].'" /></td>
 				<td>';
 			if(!empty($rejected['adresse']))
@@ -270,14 +270,14 @@ if(!empty($_GET['id']) && @$_GET['checkid'] == getCheckid($_GET['id'])) {
 			$GLOBALS['generatedcontent']['text'] .= '</td>
 			</tr>
 			<tr>
-				<td> '._('Postboks:').'</td>
+				<td> '._('Postbox:').'</td>
 				<td colspan="2"><input name="postbox" id="postbox" style="width:157px" value="'.$faktura['postbox'].'" /></td>
 				<td></td>
 			</tr>
 			<tr>
 				<td> '._('Postnr:').'</td>
 				<td><input name="postnr" id="postnr" style="width:35px" value="'.$faktura['postnr'].'" onblur="chnageZipCode(this.value, \'land\', \'by\')" onkeyup="chnageZipCode(this.value, \'land\', \'by\')" onchange="chnageZipCode(this.value, \'land\', \'by\')" /></td>
-				<td align="right">'._('By:').'
+				<td align="right">'._('City:').'
 					<input name="by" id="by" style="width:90px" value="'.$faktura['by'].'" /></td>
 				<td>';
 			if(!empty($rejected['postnr']))
@@ -287,7 +287,7 @@ if(!empty($_GET['id']) && @$_GET['checkid'] == getCheckid($_GET['id'])) {
 			$GLOBALS['generatedcontent']['text'] .= '</td>
 			</tr>
 			<tr>
-				<td> '._('Land:').'</td>
+				<td> '._('Country:').'</td>
 				<td colspan="2"><select name="land" id="land" style="width:157px" onblur="chnageZipCode($(\'postnr\').value, \'land\', \'by\')" onkeyup="chnageZipCode($(\'postnr\').value, \'land\', \'by\')" onchange="chnageZipCode($(\'postnr\').value, \'land\', \'by\')">';
 			require_once 'inc/countries.php';
 			foreach($countries as $code => $country) {
@@ -303,7 +303,7 @@ if(!empty($_GET['id']) && @$_GET['checkid'] == getCheckid($_GET['id'])) {
 			$GLOBALS['generatedcontent']['text'] .= '</td>
 			</tr>
 			<tr>
-				<td> '._('Email:').'</td>
+				<td> '._('E-mail:').'</td>
 				<td colspan="2"><input name="email" id="email" style="width:157px" value="'.$faktura['email'].'" /></td>
 				<td>';
 			if(!empty($rejected['email']))
@@ -313,19 +313,19 @@ if(!empty($_GET['id']) && @$_GET['checkid'] == getCheckid($_GET['id'])) {
 			<tr>
 				<td colspan="4"><input onclick="showhidealtpost(this.checked);" name="altpost" id="altpost" type="checkbox"';
 			 if(!empty($faktura['altpost'])) $GLOBALS['generatedcontent']['text'] .= ' checked="checked"';
-			 $GLOBALS['generatedcontent']['text'] .= ' /><label for="altpost"> '._('Anden leveringsadresse').'</label></td>
+			 $GLOBALS['generatedcontent']['text'] .= ' /><label for="altpost"> '._('Other delivery address').'</label></td>
 			</tr>
 			<tr class="altpost"';
 			if(empty($faktura['altpost'])) $GLOBALS['generatedcontent']['text'] .= ' style="display:none;"';
 			$GLOBALS['generatedcontent']['text'] .= '>
-				<td> '._('Telfon:').'</td>
+				<td> '._('Phone:').'</td>
 				<td colspan="2"><input name="posttlf" id="posttlf" style="width:157px" value="'.$faktura['posttlf'].'" /></td>
-				<td><input type="button" value="'._('Hent adresse').'" onclick="get_address(document.getElementById(\'posttlf\').value, get_address_r2);" /></td>
+				<td><input type="button" value="'._('Get address').'" onclick="get_address(document.getElementById(\'posttlf\').value, get_address_r2);" /></td>
 			</tr>
 			<tr class="altpost"';
 			if(empty($faktura['altpost'])) $GLOBALS['generatedcontent']['text'] .= ' style="display:none;"';
 			$GLOBALS['generatedcontent']['text'] .= '>
-				<td>'._('Navn:').'</td>
+				<td>'._('Name:').'</td>
 				<td colspan="2"><input name="postname" id="postname" style="width:157px" value="'.$faktura['postname'].'" /></td>
 				<td>';
 			if(!empty($rejected['postname']))
@@ -335,14 +335,14 @@ if(!empty($_GET['id']) && @$_GET['checkid'] == getCheckid($_GET['id'])) {
 			<tr class="altpost"';
 			if(empty($faktura['altpost'])) $GLOBALS['generatedcontent']['text'] .= ' style="display:none;"';
 			$GLOBALS['generatedcontent']['text'] .= '>
-				<td> '._('Att:').'</td>
+				<td> '._('Attn.:').'</td>
 				<td colspan="2"><input name="postatt" id="postatt" style="width:157px" value="'.$faktura['postatt'].'" /></td>
 				<td></td>
 			</tr>
 			<tr class="altpost"';
 			if(empty($faktura['altpost'])) $GLOBALS['generatedcontent']['text'] .= ' style="display:none;"';
 			$GLOBALS['generatedcontent']['text'] .= '>
-				<td> '._('Adresse:').'</td>
+				<td> '._('Address:').'</td>
 				<td colspan="2"><input name="postaddress" id="postaddress" style="width:157px" value="'.$faktura['postaddress'].'" /><br /><input name="postaddress2" id="postaddress2" style="width:157px" value="'.$faktura['postaddress2'].'" /></td>
 				<td>';
 			if(!empty($rejected['postaddress']))
@@ -352,7 +352,7 @@ if(!empty($_GET['id']) && @$_GET['checkid'] == getCheckid($_GET['id'])) {
 			<tr class="altpost"';
 			if(empty($faktura['altpost'])) $GLOBALS['generatedcontent']['text'] .= ' style="display:none;"';
 			$GLOBALS['generatedcontent']['text'] .= '>
-				<td> '._('Postboks:').'</td>
+				<td> '._('Postbox:').'</td>
 				<td colspan="2"><input name="postpostbox" id="postpostbox" style="width:157px" value="'.$faktura['postpostbox'].'" /></td>
 				<td></td>
 			</tr>
@@ -361,7 +361,7 @@ if(!empty($_GET['id']) && @$_GET['checkid'] == getCheckid($_GET['id'])) {
 			$GLOBALS['generatedcontent']['text'] .= '>
 				<td> '._('Postnr:').'</td>
 				<td><input name="postpostalcode" id="postpostalcode" style="width:35px" value="'.$faktura['postpostalcode'].'" onblur="chnageZipCode(this.value, \'postcountry\', \'postcity\')" onkeyup="chnageZipCode(this.value, \'postcountry\', \'postcity\')" onchange="chnageZipCode(this.value, \'postcountry\', \'postcity\')" /></td>
-				<td align="right">'._('By:').'
+				<td align="right">'._('City:').'
 					<input name="postcity" id="postcity" style="width:90px" value="'.$faktura['postcity'].'" /></td>
 				<td>';
 			if(!empty($rejected['postpostalcode']))
@@ -373,7 +373,7 @@ if(!empty($_GET['id']) && @$_GET['checkid'] == getCheckid($_GET['id'])) {
 			<tr class="altpost"';
 			if(empty($faktura['altpost'])) $GLOBALS['generatedcontent']['text'] .= ' style="display:none;"';
 			$GLOBALS['generatedcontent']['text'] .= '>
-				<td> '._('Land:').'</td>
+				<td> '._('Country:').'</td>
 				<td colspan="2"><select name="postcountry" id="postcountry" style="width:157px" onblur="chnageZipCode($(\'postpostalcode\').value, \'postcountry\', \'postcity\')" onkeyup="chnageZipCode($(\'postpostalcode\').value, \'postcountry\', \'postcity\')" onchange="chnageZipCode($(\'postpostalcode\').value, \'postcountry\', \'postcity\')">';
 				
 			require_once 'inc/countries.php';
@@ -386,7 +386,7 @@ if(!empty($_GET['id']) && @$_GET['checkid'] == getCheckid($_GET['id'])) {
 			$GLOBALS['generatedcontent']['text'] .= '</select></td><td>';
 			if(!empty($rejected['postcountry']))
 				$GLOBALS['generatedcontent']['text'] .= '<img src="images/error.png" alt="" title="" >';
-			$GLOBALS['generatedcontent']['text'] .= '</td></tr></tbody></table><input style="font-weight:bold;" type="submit" value="'._('Fortsæt til handelsbetingelserne').'" /></form>';
+			$GLOBALS['generatedcontent']['text'] .= '</td></tr></tbody></table><input style="font-weight:bold;" type="submit" value="'._('Proceed to the terms of trade').'" /></form>';
 		} elseif($_GET['step'] == 2) {
 
 			if(count(validate($faktura))) {
@@ -397,9 +397,9 @@ if(!empty($_GET['id']) && @$_GET['checkid'] == getCheckid($_GET['id'])) {
 			$mysqli->query("UPDATE `fakturas` SET `status` = 'locked' WHERE `status` IN('new', 'pbserror') AND `id` = ".$_GET['id']);
 			
 			$GLOBALS['generatedcontent']['crumbs'] = array();
-			$GLOBALS['generatedcontent']['crumbs'][1] = array('name' => _('Handelsbetingelser'), 'link' => '#', 'icon' => NULL);
-			$GLOBALS['generatedcontent']['title'] = _('Handelsbetingelser');
-			$GLOBALS['generatedcontent']['headline'] = _('Handelsbetingelser');
+			$GLOBALS['generatedcontent']['crumbs'][1] = array('name' => _('Trade Conditions'), 'link' => '#', 'icon' => NULL);
+			$GLOBALS['generatedcontent']['title'] = _('Trade Conditions');
+			$GLOBALS['generatedcontent']['headline'] = _('Trade Conditions');
 			
 			$special = $mysqli->fetch_array("SELECT `text` FROM `special` WHERE `id` = 3 LIMIT 1");
 			$GLOBALS['generatedcontent']['text'] .= '<br />'.$special[0]['text'];
@@ -422,18 +422,18 @@ if(!empty($_GET['id']) && @$_GET['checkid'] == getCheckid($_GET['id'])) {
 			foreach($submit as $key => $value)
 				$GLOBALS['generatedcontent']['text'] .= '<input type="hidden" name="'.$key.'" value="'.htmlspecialchars($value).'" />';
 			$GLOBALS['generatedcontent']['text'] .= '<input type="hidden" name="MAC" value="'.md5(implode('', $submit).$GLOBALS['_config']['pbspassword']).'" />';
-			$GLOBALS['generatedcontent']['text'] .= '<input class="web" type="submit" value="'._('Jeg accepterer hermed handelsbetingelserne').'" /></form>';
+			$GLOBALS['generatedcontent']['text'] .= '<input class="web" type="submit" value="'._('I hereby agree to the terms of trade').'" /></form>';
 		}
 	} else {
 		$GLOBALS['generatedcontent']['crumbs'] = array();
-		$GLOBALS['generatedcontent']['crumbs'][1] = array('name' => _('Fejl'), 'link' => '#', 'icon' => NULL);
-		$GLOBALS['generatedcontent']['title'] = _('Fejl');
-		$GLOBALS['generatedcontent']['headline'] = _('Fejl');
+		$GLOBALS['generatedcontent']['crumbs'][1] = array('name' => _('Error'), 'link' => '#', 'icon' => NULL);
+		$GLOBALS['generatedcontent']['title'] = _('Error');
+		$GLOBALS['generatedcontent']['headline'] = _('Error');
 		if($faktura['status'] == 'pbserror') {
 			$GLOBALS['generatedcontent']['crumbs'][1] = array('name' => _('Status'), 'link' => '#', 'icon' => NULL);
 			$GLOBALS['generatedcontent']['title'] = _('Status');
 			$GLOBALS['generatedcontent']['headline'] = _('Status');
-			$GLOBALS['generatedcontent']['text'] = _('Betalingen blev afvist under første forsøg. Grundet sikkerhedsforanstaltninger hos PBS, skal de kontakte butikken før de kan forsøge at betale igen.');
+			$GLOBALS['generatedcontent']['text'] = _('The payment was rejected at first attempt. Due to security measures at PBS, you must contact the store before you can try to pay again.');
 		} elseif($faktura['status'] == 'pbsok') {
 			$GLOBALS['generatedcontent']['crumbs'][1] = array('name' => _('Status'), 'link' => '#', 'icon' => NULL);
 			$GLOBALS['generatedcontent']['title'] = _('Status');
@@ -443,7 +443,7 @@ if(!empty($_GET['id']) && @$_GET['checkid'] == getCheckid($_GET['id'])) {
 			$GLOBALS['generatedcontent']['crumbs'][1] = array('name' => _('Status'), 'link' => '#', 'icon' => NULL);
 			$GLOBALS['generatedcontent']['title'] = _('Status');
 			$GLOBALS['generatedcontent']['headline'] = _('Status');
-			$GLOBALS['generatedcontent']['text'] = _('Betalingen er modtaget og pakken er sendt.');
+			$GLOBALS['generatedcontent']['text'] = _('The payment was received and the package is sent.');
 			$pakker = $mysqli->fetch_array("SELECT `STREGKODE` FROM `post` WHERE `deleted` = 0 AND `fakturaid` = ".$faktura['id']);
 			
 			require_once 'inc/snoopy.class.php';
@@ -453,7 +453,7 @@ if(!empty($_GET['id']) && @$_GET['checkid'] == getCheckid($_GET['id'])) {
 			
 			foreach($pakker as $pakke) {
 				// connect to a URL
-				$GLOBALS['generatedcontent']['text'] .= '<br /><br />'._('Forsendelsens nummer:').' <strong>'.$pakke['STREGKODE'].'</strong><br /><br />';
+				$GLOBALS['generatedcontent']['text'] .= '<br /><br />'._('Shipment Number:').' <strong>'.$pakke['STREGKODE'].'</strong><br /><br />';
 				if ($wsql->connect('url', 'http://www.postdanmark.dk/tracktrace/TrackTrace.do?i_lang=IND&i_stregkode='.$pakke['STREGKODE'])) {
 				
 					if ($wsql->query('SELECT text FROM div WHERE $id == "pdkTable"')) {
@@ -473,15 +473,15 @@ if(!empty($_GET['id']) && @$_GET['checkid'] == getCheckid($_GET['id'])) {
 				$GLOBALS['generatedcontent']['text'] .= '<br /><a href="http://online.pannordic.com/pn_logistics/index_tracking_email.jsp?id='.$pakke['packageId'].'&Search=search" target="_blank">'.$pakke['packageId'].'</a>';
 			}
 		} elseif($faktura['status'] == 'giro') {
-			$GLOBALS['generatedcontent']['text'] = _('Betalingen er allerede modtaget via giro.');
+			$GLOBALS['generatedcontent']['text'] = _('The payment is already received in cash.');
 		} elseif($faktura['status'] == 'cash') {
-			$GLOBALS['generatedcontent']['text'] = _('Betalingen er allerede modtaget kontant.');
+			$GLOBALS['generatedcontent']['text'] = _('The payment is already received in cash.');
 		} elseif($faktura['status'] == 'canceled') {
-			$GLOBALS['generatedcontent']['text'] = _('Handlen er annulleret.');
+			$GLOBALS['generatedcontent']['text'] = _('The transaction is canceled.');
 		} elseif($faktura['status'] == 'rejected') {
-			$GLOBALS['generatedcontent']['text'] = _('Betalingen er afvist.');
+			$GLOBALS['generatedcontent']['text'] = _('Payment rejected.');
 		} else {
-			$GLOBALS['generatedcontent']['text'] = _('Der opstod en fejl.');
+			$GLOBALS['generatedcontent']['text'] = _('An errror occured.');
 		}
 	}
 
@@ -508,82 +508,82 @@ if(!empty($_GET['id']) && @$_GET['checkid'] == getCheckid($_GET['id'])) {
 	unset($validate['MAC']);
 	
 	$GLOBALS['generatedcontent']['crumbs'] = array();
-	$GLOBALS['generatedcontent']['crumbs'][1] = array('name' => _('Fejl'), 'link' => '#', 'icon' => NULL);
-	$GLOBALS['generatedcontent']['title'] = _('Fejl');
-	$GLOBALS['generatedcontent']['headline'] = _('Fejl');
-	$GLOBALS['generatedcontent']['text'] = _('Der opstod en ukendt fejl.');
+	$GLOBALS['generatedcontent']['crumbs'][1] = array('name' => _('Error'), 'link' => '#', 'icon' => NULL);
+	$GLOBALS['generatedcontent']['title'] = _('Error');
+	$GLOBALS['generatedcontent']['headline'] = _('Error');
+	$GLOBALS['generatedcontent']['text'] = _('An unknown error occured.');
 	
 	if(!empty($_GET['Status']) && !empty($_GET['Status_code']))
 		$shopSubject = $_GET['Status'].$_GET['Status_code'];
 	else
-		$shopSubject = _('Ingen status');
-	$shopBody = '<br />'.sprintf(_('Der opstod en fejl på betalings siden ved online faktura #%d!'), $id).'<br />';
+		$shopSubject = _('No Status');
+	$shopBody = '<br />'.sprintf(_('There was an error on the payment page of online invoice #%d!'), $id).'<br />';
 	
 	if($faktura = $mysqli->fetch_array("SELECT * FROM `fakturas` WHERE `id` = ".$id)) {
 		$faktura = @$faktura[0];
 	}
 	
 	if($_GET['MAC'] != md5(implode('', $validate).$GLOBALS['_config']['pbspassword'])) {
-		$GLOBALS['generatedcontent']['text'] = _('Kommunikationen kunne ikke valideres!');
+		$GLOBALS['generatedcontent']['text'] = _('The communication could not be validated!');
 	} elseif(!$faktura) {
-		$GLOBALS['generatedcontent']['text'] = '<p>'._('Betalingen findes ikke i vores system.').'</p>';
-		$shopBody = '<br />'.sprintf(_('En brugere forsøgte at betale online faktura #%d som ikke fines i systemet!'), $id).'<br />';
+		$GLOBALS['generatedcontent']['text'] = '<p>'._('The payment does not exist in our system.').'</p>';
+		$shopBody = '<br />'.sprintf(_('A user tried to pay online invoice #%d, which is not in the system!'), $id).'<br />';
 	} elseif($faktura['status'] == 'pbserror' || $faktura['status'] == 'canceled' || $faktura['status'] == 'rejected') {
-		$GLOBALS['generatedcontent']['crumbs'][1] = array('name' => _('Kvittering'), 'link' => '#', 'icon' => NULL);
-		$GLOBALS['generatedcontent']['title'] = _('Kvittering');
-		$GLOBALS['generatedcontent']['headline'] = _('Kvittering');
-		$GLOBALS['generatedcontent']['text'] = '<p>'._('Denne handel er blevet annulleret eller afvist.').'</p>';
-		$shopBody = '<br />'.sprintf(_('En kunde forsøgte at se status-side for online faktura #%d som er annulleret eller afvist.'), $id).'<br />';
+		$GLOBALS['generatedcontent']['crumbs'][1] = array('name' => _('Reciept'), 'link' => '#', 'icon' => NULL);
+		$GLOBALS['generatedcontent']['title'] = _('Reciept');
+		$GLOBALS['generatedcontent']['headline'] = _('Reciept');
+		$GLOBALS['generatedcontent']['text'] = '<p>'._('This trade has been canceled or refused.').'</p>';
+		$shopBody = '<br />'.sprintf(_('A customer tried to see the status page for online invoice #%d which is canceled or rejected.'), $id).'<br />';
 	} elseif($faktura['status'] != 'locked' && $faktura['status'] != 'new') {
-		$GLOBALS['generatedcontent']['crumbs'][1] = array('name' => _('Kvittering'), 'link' => '#', 'icon' => NULL);
-		$GLOBALS['generatedcontent']['title'] = _('Kvittering');
-		$GLOBALS['generatedcontent']['headline'] = _('Kvittering');
-		$GLOBALS['generatedcontent']['text'] = '<p>'._('Betalingen er registreret og du skulle have modtaget en kvitering via E-mail.').'</p>';
-		$shopBody = '<br />'.sprintf(_('En kunde forsøgte at se status-side for online faktura #%d som allerede er betalt.'). $id).'<br />';
+		$GLOBALS['generatedcontent']['crumbs'][1] = array('name' => _('Reciept'), 'link' => '#', 'icon' => NULL);
+		$GLOBALS['generatedcontent']['title'] = _('Reciept');
+		$GLOBALS['generatedcontent']['headline'] = _('Reciept');
+		$GLOBALS['generatedcontent']['text'] = '<p>'._('Payment is registered and you ought to have received a receipt by email.').'</p>';
+		$shopBody = '<br />'.sprintf(_('A customer tried to see the status page for online invoice #%d, which is already paid.'). $id).'<br />';
 	} elseif(empty($_GET['Status'])) {
 		//User pressed "back"
 		header('Location: '.$GLOBALS['_config']['base_url'].'/betaling/?id='.$id.'&checkid='.$_GET['checkid'].'&step=2', TRUE, 303);
 		exit;
 	} elseif($_GET['Status'] == 'E') {
-		$GLOBALS['generatedcontent']['title'] = _('Fejl #').$_GET['Status_code'];
-		$GLOBALS['generatedcontent']['headline'] = _('Fejl #').$_GET['Status_code'];
-		$GLOBALS['generatedcontent']['text'] = _('Der opstod en fejl under betalingen.<br />
-Fejl nummer: ').$_GET['Status_code'];
+		$GLOBALS['generatedcontent']['title'] = _('Error #').$_GET['Status_code'];
+		$GLOBALS['generatedcontent']['headline'] = _('Error #').$_GET['Status_code'];
+		$GLOBALS['generatedcontent']['text'] = _('An error occurred during the payment.<br />
+Error number:').' '.$_GET['Status_code'];
 		$mysqli->query("UPDATE `fakturas` SET `status` = 'pbserror', `paydate` = NOW() WHERE `status` IN('new', 'locked') AND `id` = ".$id);
 		switch($_GET['Status_code']) {
 			case 12:
-				$GLOBALS['generatedcontent']['text'] = _('Kommunikationen kunne ikke valideres!');
-				$shopSubject = $_GET['Status'].$_GET['Status_code'].' '._('Fusk med data.');
-				$shopBody = '<br />'.sprintf(_('Kommunikationen kunne ikke valideres da %s skulde betale!'), $faktura['navn']).'<br />';
+				$GLOBALS['generatedcontent']['text'] = _('The communication could not be validated!');
+				$shopSubject = $_GET['Status'].$_GET['Status_code'].' '._('Data was manipulated.');
+				$shopBody = '<br />'.sprintf(_('Communication could not be validated as %s was about to pay!'), $faktura['navn']).'<br />';
 			break;
 			case 18:
-				$GLOBALS['generatedcontent']['text'] = _('Betalingssiden svarer ikke.');
-				$shopSubject = $_GET['Status'].$_GET['Status_code'].' '._('Betalingssiden svarer ikke.');
-				$shopBody = '<br />'.sprintf(_('Betalingssiden svarede ikke da %s skulde betale!'), $faktura['navn']).'<br />';
+				$GLOBALS['generatedcontent']['text'] = _('Payment page is not responding.');
+				$shopSubject = $_GET['Status'].$_GET['Status_code'].' '._('Payment page is not responding.');
+				$shopBody = '<br />'.sprintf(_('Payment page did not answer when %s was about to pay!'), $faktura['navn']).'<br />';
 			break;
 			case 19:
-				$GLOBALS['generatedcontent']['text'] = _('Betalingen blev afvist af banken, korted er udløbet.');
-				$shopSubject = $_GET['Status'].$_GET['Status_code'].' '._('Betalingen blev afvist af banken, korted er udløbet.');
+				$GLOBALS['generatedcontent']['text'] = _('Payment was refused by the bank, the card has expired.');
+				$shopSubject = $_GET['Status'].$_GET['Status_code'].' '._('Payment was refused by the bank, the card has expired.');
 				$shopBody = '<br />'.sprintf(_('Betalingen blev afvist af banken, %s\'s kort er udløbet!'), $faktura['navn']).'<br />';
 			break;
 			case 20:
-				$GLOBALS['generatedcontent']['text'] = _('Betalingen blev afvist af banken, contact deres bank.');
-				$shopSubject = $_GET['Status'].$_GET['Status_code'].' '._('Betalingen blev afvist af banken, contact deres bank.');
-				$shopBody = '<br />'.sprintf(_('Betalingen blev afvist af banken, %s skal kontakte sin bank.'), $faktura['navn']).'<br />';
+				$GLOBALS['generatedcontent']['text'] = _('Payment was refused by the bank, contact your bank.');
+				$shopSubject = $_GET['Status'].$_GET['Status_code'].' '._('Payment was refused by the bank, contact your bank.');
+				$shopBody = '<br />'.sprintf(_('Payment was refused by the bank, %s must contact his or her bank.'), $faktura['navn']).'<br />';
 			break;
 			case 56:
-				$GLOBALS['generatedcontent']['text'] = _('Betalingen blev afvist da den allerede er forsøgt betalt.');
-				$shopSubject = $_GET['Status'].$_GET['Status_code'].' '._('Betalingen blev afvist.');
-				$shopBody = '<br />'._('Betalingen blev afvist da den allerede er forsøgt betalt.').'<br />';
+				$GLOBALS['generatedcontent']['text'] = _('The payment was refused because the customer has already attempted to pay.');
+				$shopSubject = $_GET['Status'].$_GET['Status_code'].' '._('Payment was refused.');
+				$shopBody = '<br />'._('The payment was refused because the customer has already attempted to pay.').'<br />';
 			break;
 		}
 		
 		//TODO email error to us
 		//TODO add better description for errors
 	} elseif($_GET['Status'] == 'A') {
-		$GLOBALS['generatedcontent']['crumbs'][1] = array('name' => _('Kvittering'), 'link' => '#', 'icon' => NULL);
-		$GLOBALS['generatedcontent']['title'] = _('Kvittering');
-		$GLOBALS['generatedcontent']['headline'] = _('Kvittering');
+		$GLOBALS['generatedcontent']['crumbs'][1] = array('name' => _('Reciept'), 'link' => '#', 'icon' => NULL);
+		$GLOBALS['generatedcontent']['title'] = _('Reciept');
+		$GLOBALS['generatedcontent']['headline'] = _('Reciept');
 		switch($_GET['Status_code']) {
 			case 0:
 				$mysqli->query("UPDATE `fakturas` SET `status` = 'pbsok', `paydate` = NOW() WHERE `status` IN('new', 'locked', 'pbserror') AND `id` = ".$id);
@@ -593,9 +593,9 @@ Fejl nummer: ').$_GET['Status_code'];
 				
 				$GLOBALS['generatedcontent']['text'] = _('<p style="text-align:center;"><img src="images/ok.png" alt="" /></p>
 
-<p>Betalingen er nu godkendt. Vi sender Deres vare med posten hurtigst muligt.</p>
+<p>Payment is now accepted. We will send your goods by mail as soon as possible.</p>
 
-<p>En kopi af Deres ordre er sendt til Deres email.</p>');
+<p>A copy of your order is sent to your email.</p>');
 				
 				$faktura['quantities'] = explode('<', $faktura['quantities']);
 				$faktura['products'] = explode('<', $faktura['products']);
@@ -607,10 +607,10 @@ Fejl nummer: ').$_GET['Status_code'];
 					}
 				}
 				
-				$shopSubject = _('Betaling gennemført');
-				$shopBody = _('Kunden har godkendt betalingen og nedenstående ordre skal sendes til kunden.<br />
+				$shopSubject = _('Payment complete');
+				$shopBody = _('The customer has approved the payment and the following order must be shipped to the customer.<br />
 <br />
-Husk at "ekspedere" betalingen når varen sendes (Betaling overføres først fra kundens konto, når vi trykker "Ekspedér").').'<br />';
+Remember to \'expedite\' the payment when the product is sent (The payment is first transferred from the customer\'s account once we hit \'Expedite\').').'<br />';
 				
 				require_once 'inc/countries.php';
 				$GLOBALS['generatedcontent']['track'] = ' pageTracker._addTrans("'.$faktura['id'].'", "", "'.$faktura['amount'].'", "'.(($faktura['amount']-$faktura['fragt'])*(1-(1/(1+$faktura['momssats'])))).'", "'.$faktura['fragt'].'", "'.$faktura['by'].'", "", "'.$countries[$faktura['land']].'");';
@@ -620,52 +620,52 @@ Husk at "ekspedere" betalingen når varen sendes (Betaling overføres først fra
 
 				//Mail to customer start
 				$emailbody = '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><meta http-equiv="Content-Type" content="text/html; charset=utf-8" /><title>';
-				$emailbody .= sprintf(_('Ordre %d - Betaling gennemført'), $faktura['id']);
+				$emailbody .= sprintf(_('Ordre %d - Payment complete'), $faktura['id']);
 				$emailbody .= '</title><style type="text/css">#faktura td { border:1px #000 solid; border-collapse:collapse; padding:2px; }</style></head><body>';
  
  				//Generate the reseaving address
 				if($faktura['altpost'])
-					$emailbody_address .= '<td>'._('Lev. adresse:').'</td>';
-				$emailbody_address .= '</tr><tr><td>'._('Navn:').'</td><td>'.$faktura['navn'].'</td>';
+					$emailbody_address .= '<td>'._('Delivery address:').'</td>';
+				$emailbody_address .= '</tr><tr><td>'._('Name:').'</td><td>'.$faktura['navn'].'</td>';
 				if($faktura['altpost'])
 					$emailbody_address .= '<td>'.$faktura['postname'].'</td>';
 				$emailbody_address .= '</tr>';
 				if($faktura['tlf1'] || ($faktura['altpost'] && $faktura['posttlf'])) {
-					$emailbody_address .= '<tr><td>'._('Tlf.:').'</td><td>'.$faktura['tlf1'].'</td>';
+					$emailbody_address .= '<tr><td>'._('Phone:').'</td><td>'.$faktura['tlf1'].'</td>';
 					if($faktura['altpost'])
 						$emailbody_address .= '<td>'.$faktura['posttlf'].'</td>';
 					$emailbody_address .= '</tr>';
 				}
 				if($faktura['att'] || ($faktura['altpost'] && $faktura['postatt'])) {
-					$emailbody_address .= '<tr><td>'._('Att.:').'</td><td>'.$faktura['att'].'</td>';
+					$emailbody_address .= '<tr><td>'._('Attn.:').'</td><td>'.$faktura['att'].'</td>';
 					if($faktura['altpost'])
 						$emailbody_address .= '<td>'.$faktura['postatt'].'</td>';
 					$emailbody_address .= '</tr>';
 				}
 				if($faktura['adresse'] || ($faktura['adresse'] && ($faktura['postaddress'] || $faktura['postaddress2']))) {
-					$emailbody_address .= '<tr><td>'._('Adresse:').'</td><td>'.$faktura['adresse'].'</td>';
+					$emailbody_address .= '<tr><td>'._('Address:').'</td><td>'.$faktura['adresse'].'</td>';
 					if($faktura['altpost'])
 						$emailbody_address .= '<td>'.$faktura['postaddress'].'<br />'.$faktura['postaddress2'].'</td>';
 					$emailbody_address .= '</tr>';
 				}
 				if($faktura['postbox'] || ($faktura['altpost'] && $faktura['postpostbox'])) {
-					$emailbody_address .= '<tr><td>'._('Postboks:').'</td><td>'.$faktura['postbox'].'</td>';
+					$emailbody_address .= '<tr><td>'._('Postbox:').'</td><td>'.$faktura['postbox'].'</td>';
 					if($faktura['altpost'])
 						$emailbody_address .= '<td>'.$faktura['postpostbox'].'</td>';
 					$emailbody_address .= '</tr>';
 				}
 				
-				$emailbody_address .= '<tr><td>'._('Postnr.:').'</td><td>'.$faktura['postnr'].'</td>';
+				$emailbody_address .= '<tr><td>'._('Zipcode:').'</td><td>'.$faktura['postnr'].'</td>';
 				if($faktura['altpost'])
 					$emailbody_address .= '<td>'.$faktura['postpostalcode'].'</td>';
-				$emailbody_address .= '</tr><tr><td>'._('By:').'</td><td>'.$faktura['by'].'</td>';
+				$emailbody_address .= '</tr><tr><td>'._('City:').'</td><td>'.$faktura['by'].'</td>';
 				if($faktura['altpost'])
 					$emailbody_address .= '<td>'.$faktura['postcity'].'</td>';
-				$emailbody_address .= '</tr><tr><td>'._('Land:').'</td><td>'.$countries[$faktura['land']].'</td>';
+				$emailbody_address .= '</tr><tr><td>'._('Country:').'</td><td>'.$countries[$faktura['land']].'</td>';
 				if($faktura['altpost'])
 					$emailbody_address .= '<td>'.$countries[$faktura['postcountry']].'</td>';
 				if($faktura['tlf2'])
-					$emailbody_address .= '</tr><tr><td>'._('Mobil:').'</td><td>'.$faktura['tlf2'].'</td>';
+					$emailbody_address .= '</tr><tr><td>'._('Mobile:').'</td><td>'.$faktura['tlf2'].'</td>';
 				
 				$netto = 0;
 				for($i=0;$i<$productslines;$i++) {
@@ -681,7 +681,7 @@ Husk at "ekspedere" betalingen når varen sendes (Betaling overføres først fra
 				
 				$emailbody_nore = '';
 				if($faktura['note']) {
-					$emailbody_nore = '<br /><strong>'._('Notat:').'</strong><br /><p class="note">';	
+					$emailbody_nore = '<br /><strong>'._('Note:').'</strong><br /><p class="note">';
 					$emailbody_nore .= nl2br(htmlspecialchars($faktura['note'])).'</p>';
 				}
 				
@@ -690,26 +690,26 @@ Husk at "ekspedere" betalingen når varen sendes (Betaling overføres først fra
 				}
 				
 				//generate the actual email content
-				$emailbody .= sprintf(_('<p>Dato: %s<br />
+				$emailbody .= sprintf(_('<p>Date: %s<br />
 </p>
-<table><tr><td></td><td>Kunde:</td>%s</tr>
+<table><tr><td></td><td>customer:</td>%s</tr>
 <tr><td>Email:</td><td><a href="mailto:%s">%s</a></td></tr></table>
-<p>Betaling for Deres ordre nr. %s er nu godkendt. Deres vare vil blive afsendt hurtigst muligt. Der vil automatisk blive sendt en email med et Track &amp; Trace link hvor de kan følge pakken.<br />
+<p>Payment for your order no. %s is now approved. Your product will be shipped as soon as possible. There will automatically be sent an email with a Track &amp; Trace link where they can follow the package.<br />
 </p>
-<table id="faktura" cellspacing="0"><thead><tr><td class="td1">Antal</td><td>Benævnelse</td><td class="td3 tal">á pris</td><td class="td4 tal">Total</td></tr></thead><tfoot>
-<tr style="height:auto;min-height:auto;max-height:auto;"><td>&nbsp;</td><td>&nbsp;</td><td class="tal">Nettobeløb</td><td class="tal">%s</td></tr>
-<tr><td>&nbsp;</td><td>&nbsp;</td><td class="tal">Fragt</td><td class="tal">%s</td></tr>
-<tr><td>&nbsp;</td><td style="text-align:right" class="tal">%d%%</td><td class="tal">Momsbeløb</td><td class="tal">%s</td></tr>
-<tr class="border"><td colspan="2">Alle beløb er i DKK</td><td style="text-align:center; font-weight:bold;">AT BETALE</td><td class="tal"><big>%s</big></td></tr></tfoot>
+<table id="faktura" cellspacing="0"><thead><tr><td class="td1">Number</td><td>Quantity</td><td>Title</td><td class="td3 tal">unit price</td><td class="td4 tal">Total</td></tr></thead><tfoot>
+<tr style="height:auto;min-height:auto;max-height:auto;"><td>&nbsp;</td><td>&nbsp;</td><td class="tal">Net Amount</td><td class="tal">%s</td></tr>
+<tr><td>&nbsp;</td><td>&nbsp;</td><td class="tal">Freight</td><td class="tal">%s</td></tr>
+<tr><td>&nbsp;</td><td style="text-align:right" class="tal">%d%%</td><td class="tal">Vat Amount</td><td class="tal">%s</td></tr>
+<tr class="border"><td colspan="2">All figures are in DKK</td><td style="text-align:center; font-weight:bold;">TO PAY </td><td class="tal"><big>%s</big></td></tr></tfoot>
 <tbody>%s</tbody></table>%s
-<p>Med venlig hilsen<br />
+<p>Sincerely the computer<br />
 </p>
 
 <p>%s<br />
 %s<br />
 %s<br />
 %s %s.<br />
-Tlf. %s<br />
+Tel. %s<br />
 <a href="mailto:%s">%s</a></p>'), 
 					$faktura['paydate'],
 					$emailbody_address,
@@ -753,7 +753,7 @@ Tlf. %s<br />
 				$mail->AddReplyTo($faktura['department'], $GLOBALS['_config']['site_name']);
 				$mail->From       = $faktura['department'];
 				$mail->FromName   = $GLOBALS['_config']['site_name'];
-				$mail->Subject    = sprintf(_('Ordre #%d - Betaling gennemført'), $faktura['id']);
+				$mail->Subject    = sprintf(_('Order #%d - payment completed'), $faktura['id']);
 				$mail->MsgHTML($emailbody, $_SERVER['DOCUMENT_ROOT']);
 				$mail->AddAddress($faktura['email'], $GLOBALS['_config']['site_name']);
 				if($mail->Send()) {
@@ -769,7 +769,7 @@ Tlf. %s<br />
 					}
 				} else {
 				//TODO secure this against injects and <; in the email and name
-					$mysqli->query("INSERT INTO `emails` (`subject`, `from`, `to`, `body`, `date`) VALUES ('".'Ordre '.$faktura['id'].' - Betaling gennemført'."', '".$GLOBALS['_config']['site_name']."<".$faktura['department'].">', '".$GLOBALS['_config']['site_name']."<".$faktura['email'].">', '".$emailbody."', NOW());");
+					$mysqli->query("INSERT INTO `emails` (`subject`, `from`, `to`, `body`, `date`) VALUES ('".'Ordre '.$faktura['id'].' - '._('Payment complete')."', '".$GLOBALS['_config']['site_name']."<".$faktura['department'].">', '".$GLOBALS['_config']['site_name']."<".$faktura['email'].">', '".$emailbody."', NOW());");
 				}
 				//Mail to customer end
 				
@@ -777,7 +777,7 @@ Tlf. %s<br />
 				//Mail to Ole start
 				if($faktura['department'] != 'mail@huntershouse.dk') {
 					$emailbody = '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><meta http-equiv="Content-Type" content="text/html; charset=utf-8" /><title>';
-					$emailbody .= sprintf(_('Online faktura #%s : Betaling gennemført'), $GLOBALS['_config']['pbsfix'].$faktura['id']);
+					$emailbody .= sprintf(_('Online Invoice #%s : Payment completed'), $GLOBALS['_config']['pbsfix'].$faktura['id']);
 					$emailbody .= '</title><style type="text/css">#faktura td { border:1px #000 solid; border-collapse:collapse; padding:2px; }</style></head><body>';
 
 					$productslines = max(count($faktura['quantities']), count($faktura['products']), count($faktura['values']));
@@ -794,21 +794,21 @@ Tlf. %s<br />
 					
 					$emailbody_nore = '';
 					if($faktura['note']) {
-						$emailbody_nore = '<br /><strong>Notat:</strong><br /><p class="note">';	
+						$emailbody_nore = '<br /><strong>'._('Notat:').'</strong><br /><p class="note">';
 						$emailbody .= nl2br(htmlspecialchars($faktura['note'])).'</p>';
 					}
 
-					$emailbody .= sprintf(_('<p>Den %s godkendte %s online faktura #%s, Som blev oprettet af %s.<br />
-Ordren lød på følgende:</p>
-<table id="faktura" cellspacing="0"><thead><tr><td class="td1">Antal</td><td>Benævnelse</td><td class="td3 tal">á pris</td><td class="td4 tal">Total</td></tr></thead><tfoot>
-<tr style="height:auto;min-height:auto;max-height:auto;"><td>&nbsp;</td><td>&nbsp;</td><td class="tal">Nettobeløb</td><td class="tal">%s</td></tr>
-<tr><td>&nbsp;</td><td>&nbsp;</td><td class="tal">Fragt</td><td class="tal">%s</td></tr>
-<tr><td>&nbsp;</td><td style="text-align:right" class="tal">%d%%</td><td class="tal">Momsbeløb</td><td class="tal">%s</td></tr>
-<tr class="border"><td colspan="2">Alle beløb er i DKK</td><td style="text-align:center; font-weight:bold;">AT BETALE</td><td class="tal"><big>%s</big></td></tr></tfoot>
+					$emailbody .= sprintf(_('<p>The %s, %s approved the online Invoice #%s, which was created by %s.<br />
+The order was as following:</p>
+<table id="faktura" cellspacing="0"><thead><tr><td class="td1">Quantity</td><td>Title</td><td class="td3 tal">unit price</td><td class="td4 tal">Total</td></tr></thead><tfoot>
+<tr style="height:auto;min-height:auto;max-height:auto;"><td>&nbsp;</td><td>&nbsp;</td><td class="tal">Net Amount</td><td class="tal">%s</td></tr>
+<tr><td>&nbsp;</td><td>&nbsp;</td><td class="tal">Freight</td><td class="tal">%s</td></tr>
+<tr><td>&nbsp;</td><td style="text-align:right" class="tal">%d%%</td><td class="tal">VAT Amount</td><td class="tal">%s</td></tr>
+<tr class="border"><td colspan="2">All figures are in DKK</td><td style="text-align:center; font-weight:bold;">TO PAY</td><td class="tal"><big>%s</big></td></tr></tfoot>
 <tbody>%s</tbody></table>%s
-<p>Med venlig hilsen</p>
+<p>Sincerely,</p>
 
-<p>Computeren</p>'),
+<p>The computer</p>'),
 						$faktura['paydate'],
 						$faktura['navn'],
 						$GLOBALS['_config']['pbsfix'].$faktura['id'],
@@ -845,7 +845,7 @@ Ordren lød på følgende:</p>
 					$mail->AddReplyTo($faktura['department'], $GLOBALS['_config']['site_name']);
 					$mail->From       = $faktura['department'];
 					$mail->FromName   = $GLOBALS['_config']['site_name'];
-					$mail->Subject    = sprintf(_('Online faktura #%s : Betaling gennemført'), $GLOBALS['_config']['pbsfix'].$faktura['id']);
+					$mail->Subject    = sprintf(_('Online Invoice #%s : Payment completed'), $GLOBALS['_config']['pbsfix'].$faktura['id']);
 					$mail->MsgHTML($emailbody, $_SERVER['DOCUMENT_ROOT']);
 					$mail->AddAddress('mail@huntershouse.dk', 'Hunters House A/S');
 					if($mail->Send()) {
@@ -863,36 +863,36 @@ Ordren lød på følgende:</p>
 						
 					} else {
 					//TODO secure this against injects and <; in the email and name
-						$mysqli->query("INSERT INTO `emails` (`subject`, `from`, `to`, `body`, `date`) VALUES ('".'Online faktura #'.$GLOBALS['_config']['pbsfix'].$faktura['id'].' : Betaling gennemført'."', '".$GLOBALS['_config']['site_name']."<".$faktura['department'].">', 'Hunters House A/S<mail@huntershouse.dk>', '".$emailbody."', NOW());");
+						$mysqli->query("INSERT INTO `emails` (`subject`, `from`, `to`, `body`, `date`) VALUES ('".'Online faktura #'.$GLOBALS['_config']['pbsfix'].$faktura['id'].' : '._('Payment complete')."', '".$GLOBALS['_config']['site_name']."<".$faktura['department'].">', 'Hunters House A/S<mail@huntershouse.dk>', '".$emailbody."', NOW());");
 					}
 				}
 				//Mail to Ole end
 				
 			break;
 			case 1:
-				$GLOBALS['generatedcontent']['text'] = _('Nægtet/Afbrudt. Betalingen er nægtet eller afbrudt.');
+				$GLOBALS['generatedcontent']['text'] = _('Denied/interrupted. The payment was denied or interrupted.');
 				$mysqli->query("UPDATE `fakturas` SET `status` = 'pbserror', `paydate` = NOW() WHERE `status` IN('new', 'locked') AND `id` = ".$id);
 			break;
 			case 2:
-				$GLOBALS['generatedcontent']['text'] = _('I gang. Betaling venter på svar fra banken.');
+				$GLOBALS['generatedcontent']['text'] = _('Ongoing. Payment awaiting an response from the bank.');
 			break;
 			case 3:
-				$GLOBALS['generatedcontent']['text'] = _('Annulleret. Kortbetalingen er makuleret af Butikken før indløsningen.');
+				$GLOBALS['generatedcontent']['text'] = _('Canceled. The card payment is shredded by the store before cash in.');
 			break;
 			case 4:
-				$GLOBALS['generatedcontent']['text'] = _('Påbegyndt. Betalingen er initieret af køberen.');
+				$GLOBALS['generatedcontent']['text'] = _('Commenced. Payment is initiated by the customer.');
 			break;
 			case 6:
-				$GLOBALS['generatedcontent']['text'] = _('Autoriseret. Kortbetaling er autoriseret; venter på bekræftelse og indløsning.');
+				$GLOBALS['generatedcontent']['text'] = _('Authorized. Card payment is authorized; awaiting confirmation and cash in.');
 			break;
 			case 7:
-				$GLOBALS['generatedcontent']['text'] = _('Indløsning mislykkedes. Kortbetalingen kunne ikke indløses.');
+				$GLOBALS['generatedcontent']['text'] = _('Cash in failed. Card payments can not be cashed in.');
 			break;
 			case 8:
-				$GLOBALS['generatedcontent']['text'] = _('Indløsning i gang. Indløsning af kortbetalingen er i øjeblikket i gang.');
+				$GLOBALS['generatedcontent']['text'] = _('Cash-in in progress. Redeeming card payment is currently underway.');
 			break;
 			case 9:
-				$GLOBALS['generatedcontent']['text'] = _('Bekræftet. Kortbetalingen er bekræftet og bliver indløst.');
+				$GLOBALS['generatedcontent']['text'] = _('Confirmed. The card payments is confirmed and will be cashed in.');
 			break;
 			case 11:
 				$GLOBALS['generatedcontent']['text'] = _('Sent to bank or Svea Ekonomi. Applies only to the Payment Method INVOICE');
@@ -937,7 +937,7 @@ Ordren lød på følgende:</p>
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-<title>'.sprintf(_('Att: %s - Online faktura #%d : %s'), $faktura['clerk'], $id, $shopSubject).'</title>
+<title>'.sprintf(_('Attn.: %s - Online invoice #%d : %s'), $faktura['clerk'], $id, $shopSubject).'</title>
 <style type="text/css">
 td {
 	border:1px solid #000;
@@ -953,18 +953,18 @@ $faktura['postnr'].' '.$faktura['by'].'<br />'.
 $faktura['land'].'</p>'.
 */
 sprintf(_('<p>%s<br />
-Klik <a href="%s/admin/faktura.php?id=%d">her</a> for at åbne faktura siden.</p>
+Click <a href="%s/admin/faktura.php?id=%d">here</a> to open the invoice page.</p>
 <p><a href="mailto:%s">%s</a><br />
-Mobil: %s<br />
-Tlf.: %s<br />
-Leverings tlf.: %s</p>
-<table id="faktura" cellspacing="0"><thead><tr><td class="td1">Antal</td><td>Benævnelse</td><td class="td3 tal">á pris</td><td class="td4 tal">Total</td></tr></thead>
-<tfoot><tr style="height:auto;min-height:auto;max-height:auto;"><td>&nbsp;</td><td>&nbsp;</td><td class="tal">Nettobeløb</td><td class="tal">%s</td></tr>
-<tr><td>&nbsp;</td><td>&nbsp;</td><td class="tal">Fragt</td><td class="tal">%s</td></tr>
-<tr><td>&nbsp;</td><td style="text-align:right" class="tal">%d%%</td><td class="tal">Momsbeløb</td><td class="tal">%s</td></tr>
-<tr class="border"><td colspan="2">Alle beløb er i DKK</td><td style="text-align:center; font-weight:bold;">AT BETALE</td><td class="tal"><big>%s</big></td></tr></tfoot>
+Mobile: %s<br />
+Phone: %s<br />
+Delivery phone: %s</p>
+<table id="faktura" cellspacing="0"><thead><tr><td class="td1">Quantity</td><td>Title</td><td class="td3 tal">unit price</td><td class="td4 tal">Total</td></tr></thead>
+<tfoot><tr style="height:auto;min-height:auto;max-height:auto;"><td>&nbsp;</td><td>&nbsp;</td><td class="tal">Net Amount</td><td class="tal">%s</td></tr>
+<tr><td>&nbsp;</td><td>&nbsp;</td><td class="tal">Freight</td><td class="tal">%s</td></tr>
+<tr><td>&nbsp;</td><td style="text-align:right" class="tal">%d%%</td><td class="tal">VAT Amount</td><td class="tal">%s</td></tr>
+<tr class="border"><td colspan="2">All figures are in DKK</td><td style="text-align:center; font-weight:bold;">TO PAY</td><td class="tal"><big>%s</big></td></tr></tfoot>
 <tbody>%s</tbody></table>
-<p>Mvh Computeren</p>'),
+<p>Sincerely, the computer</p>'),
 			$shopBody,
 			$GLOBALS['_config']['base_url'],
 			$id,
@@ -985,8 +985,8 @@ Leverings tlf.: %s</p>
 	} else {
 		$emailbody = '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml"><head><meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-<title>'.sprintf(_('Online faktura #%d : eksistere ikke'), $id).'</title></head><body>
-'.$shopBody.'<br />'._('Status:').' '.$_GET['Status'].$_GET['Status_code'].'<p>'._('Mvh Computeren').'</p></body>
+<title>'.sprintf(_('Online Invoice #%d: does\'t exist'), $id).'</title></head><body>
+'.$shopBody.'<br />'._('Status:').' '.$_GET['Status'].$_GET['Status_code'].'<p>'._('Sincerely the computer').'</p></body>
 </html>
 </body></html>';
 	}
@@ -1008,7 +1008,7 @@ Leverings tlf.: %s</p>
 		$mail->CharSet    = 'utf-8';
 		$mail->From       = $GLOBALS['_config']['email'][0];
 		$mail->FromName   = $GLOBALS['_config']['site_name'];
-		$mail->Subject    = sprintf(_('Att: %s - Online faktura #%d : %s'), $faktura['clerk'], $id, $shopSubject);
+		$mail->Subject    = sprintf(_('Attn.: %s - Online invoice #%d : %s'), $faktura['clerk'], $id, $shopSubject);
 		$mail->MsgHTML($emailbody, $_SERVER['DOCUMENT_ROOT']);
 		
 		$mail->AddAddress($faktura['department'], $GLOBALS['_config']['site_name']);
@@ -1031,25 +1031,25 @@ Leverings tlf.: %s</p>
 	}
 	
 } else {
-	$GLOBALS['generatedcontent']['title'] = _('Betaling');
-	$GLOBALS['generatedcontent']['headline'] = _('Betaling');
+	$GLOBALS['generatedcontent']['title'] = _('Payment');
+	$GLOBALS['generatedcontent']['headline'] = _('Payment');
 	
 	$GLOBALS['generatedcontent']['text'] = '<form action="" method="get">
 	  <table>
 		<tbody>
 		  <tr>
-			<td>'._('Ordre nr:').'</td>
+			<td>'._('Order No:').'</td>
 			<td><input name="id" value="'.@$_GET['id'].'" /></td>
 		  </tr>
 		  <tr>
-			<td>'._('Kode:').'</td>
+			<td>'._('Code:').'</td>
 			<td><input name="checkid" value="'.@$_GET['checkid'].'" /></td>
 		  </tr>
 		</tbody>
-	  </table><input type="submit" value="'._('Fortsæt').'" />
+	  </table><input type="submit" value="'._('Continue').'" />
 	</form>';
 	if(!empty($_GET['checkid']))
-		$GLOBALS['generatedcontent']['text'] = _('Koden er ikke korrekt!');
+		$GLOBALS['generatedcontent']['text'] = _('The code is not correct!');
 }
 
 //Output page

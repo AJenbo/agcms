@@ -66,7 +66,7 @@ $fakturas = $mysqli->fetch_array("SELECT `id`, `status`, `sendt`, `clerk`, `amou
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-<title><?php echo(_('Faktura liste')); ?></title>
+<title><?php echo(_('Invoice list')); ?></title>
 <script type="text/javascript" src="javascript/lib/prototype.js"></script>
 <script type="text/javascript"><!--
 var JSON = JSON || {};
@@ -133,7 +133,7 @@ a {
 <body onload="$('loading').style.visibility = 'hidden';">
 <div id="canvas">
 <form action="" method="post"><table><tr>
-	<td><?php echo(_('Id:')); ?></td><td><?php echo(_('År:')); ?></td><td><?php echo(_('Måned:')); ?></td><td><?php echo(_('Ekspedient:')); ?></td><td><?php echo(_('Status:')); ?></td></tr><tr><td>
+	<td><?php echo(_('Id:')); ?></td><td><?php echo(_('Year:')); ?></td><td><?php echo(_('Month:')); ?></td><td><?php echo(_('Clerk:')); ?></td><td><?php echo(_('Status:')); ?></td></tr><tr><td>
 
     <input name="id" value="<?php if(!empty($_POST['id'])) echo $_POST['id']; ?>" size="4" /></td><td>
 
@@ -150,12 +150,12 @@ a {
 	}
 	?></select></td><td>
     <select name="m">
-        <option value=""<?php if(@!$_POST['m']) echo(' selected="selected"'); ?>><?php echo(_('Alle')); ?></option>
+        <option value=""<?php if(@!$_POST['m']) echo(' selected="selected"'); ?>><?php echo(_('All')); ?></option>
         <option value="1"<?php if(@$_POST['m'] == '1') echo(' selected="selected"'); ?>><?php echo(_('Jan')); ?></option>
         <option value="2"<?php if(@$_POST['m'] == '2') echo(' selected="selected"'); ?>><?php echo(_('Feb')); ?></option>
         <option value="3"<?php if(@$_POST['m'] == '3') echo(' selected="selected"'); ?>><?php echo(_('Mar')); ?></option>
         <option value="4"<?php if(@$_POST['m'] == '4') echo(' selected="selected"'); ?>><?php echo(_('Apr')); ?></option>
-        <option value="5"<?php if(@$_POST['m'] == '5') echo(' selected="selected"'); ?>><?php echo(_('Maj')); ?></option>
+        <option value="5"<?php if(@$_POST['m'] == '5') echo(' selected="selected"'); ?>><?php echo(_('May')); ?></option>
         <option value="6"<?php if(@$_POST['m'] == '6') echo(' selected="selected"'); ?>><?php echo(_('Jun')); ?></option>
         <option value="7"<?php if(@$_POST['m'] == '7') echo(' selected="selected"'); ?>><?php echo(_('Jul')); ?></option>
         <option value="8"<?php if(@$_POST['m'] == '8') echo(' selected="selected"'); ?>><?php echo(_('Aug')); ?></option>
@@ -171,7 +171,7 @@ a {
     	echo('<span style="display:none">');
     ?></td><td>
     <select name="department">
-        <option value=""<?php if(!$_POST['department']) echo(' selected="selected"'); ?>><?php echo(_('Alle')); ?></option><?php
+        <option value=""<?php if(!$_POST['department']) echo(' selected="selected"'); ?>><?php echo(_('All')); ?></option><?php
 		foreach($GLOBALS['_config']['email'] as $email) {
 	        ?><option<?php if($_POST['department'] == $email) echo(' selected="selected"'); ?>><?php echo($email); ?></option><?php
 		}
@@ -187,7 +187,7 @@ a {
     	echo('<span style="display:none">');
     ?></td><td>
     <select name="clerk">
-        <option value=""<?php if(!$_POST['clerk']) echo(' selected="selected"'); ?>><?php echo(_('Alle')); ?></option><?php
+        <option value=""<?php if(!$_POST['clerk']) echo(' selected="selected"'); ?>><?php echo(_('All')); ?></option><?php
         foreach($users as $user) {
 			//warning if a user name is a it could colide with all
 	        ?><option<?php if($_POST['clerk'] == $user['fullname']) echo(' selected="selected"'); ?>><?php echo($user['fullname']); ?></option><?php
@@ -198,18 +198,18 @@ a {
 	
     ?></td><td>
     <select name="status">
-        <option value=""<?php if(!$_POST['status']) echo(' selected="selected"'); ?>><?php echo(_('Alle')); ?></option>
-        <option value="activ"<?php if($_POST['status'] == 'activ') echo(' selected="selected"'); ?>><?php echo(_('Aktuelle')); ?></option>
-        <option value="inactiv"<?php if($_POST['status'] == 'inactiv') echo(' selected="selected"'); ?>><?php echo(_('Afsluttet')); ?></option>
-        <option value="new"<?php if($_POST['status'] == 'new') echo(' selected="selected"'); ?>>Ny</option>
-        <option value="locked"<?php if($_POST['status'] == 'locked') echo(' selected="selected"'); ?>><?php echo(_('Låst')); ?></option>
-        <option value="pbsok"<?php if($_POST['status'] == 'pbsok') echo(' selected="selected"'); ?>><?php echo(_('Klar')); ?></option>
-        <option value="accepted"<?php if($_POST['status'] == 'accepted') echo(' selected="selected"'); ?>><?php echo(_('Ekspederede')); ?></option>
+        <option value=""<?php if(!$_POST['status']) echo(' selected="selected"'); ?>><?php echo(_('All')); ?></option>
+        <option value="activ"<?php if($_POST['status'] == 'activ') echo(' selected="selected"'); ?>><?php echo(_('Current')); ?></option>
+        <option value="inactiv"<?php if($_POST['status'] == 'inactiv') echo(' selected="selected"'); ?>><?php echo(_('Completed')); ?></option>
+        <option value="new"<?php if($_POST['status'] == 'new') echo(' selected="selected"'); ?>><?php echo(_('New')); ?></option>
+        <option value="locked"<?php if($_POST['status'] == 'locked') echo(' selected="selected"'); ?>><?php echo(_('Locked')); ?></option>
+        <option value="pbsok"<?php if($_POST['status'] == 'pbsok') echo(' selected="selected"'); ?>><?php echo(_('Ready')); ?></option>
+        <option value="accepted"<?php if($_POST['status'] == 'accepted') echo(' selected="selected"'); ?>><?php echo(_('Expedited')); ?></option>
         <option value="giro"<?php if($_POST['status'] == 'giro') echo(' selected="selected"'); ?>><?php echo(_('Giro')); ?></option>
-        <option value="cash"<?php if($_POST['status'] == 'cash') echo(' selected="selected"'); ?>><?php echo(_('Kontant')); ?></option>
-        <option value="pbserror"<?php if($_POST['status'] == 'pbserror') echo(' selected="selected"'); ?>><?php echo(_('Fejl')); ?></option>
-        <option value="canceled"<?php if($_POST['status'] == 'canceled') echo(' selected="selected"'); ?>><?php echo(_('Annulleret')); ?></option>
-        <option value="rejected"<?php if($_POST['status'] == 'rejected') echo(' selected="selected"'); ?>><?php echo(_('Afvist')); ?></option>
+        <option value="cash"<?php if($_POST['status'] == 'cash') echo(' selected="selected"'); ?>><?php echo(_('Cash')); ?></option>
+        <option value="pbserror"<?php if($_POST['status'] == 'pbserror') echo(' selected="selected"'); ?>><?php echo(_('Error')); ?></option>
+        <option value="canceled"<?php if($_POST['status'] == 'canceled') echo(' selected="selected"'); ?>><?php echo(_('Canceled')); ?></option>
+        <option value="rejected"<?php if($_POST['status'] == 'rejected') echo(' selected="selected"'); ?>><?php echo(_('Rejected')); ?></option>
     </select></td><td><input type="submit" value="Hent" /></td></tr></table>
     
 </form>
@@ -217,11 +217,11 @@ a {
     <thead>
         <tr>
             <td style="width:16px;"></td>
-            <td><?php echo(_('Id')); ?></td>
-            <td><?php echo(_('Oprettet')); ?></td>
-            <?php if(empty($_POST['clerk'])) { ?><td><?php echo(_('Ansvarlige')); ?></td><?php } ?>
-            <td><?php echo(_('Beløb')); ?></td>
-            <td><?php echo(_('Modtager')); ?></td>
+            <td><?php echo(_('ID')); ?></td>
+            <td><?php echo(_('Created')); ?></td>
+            <?php if(empty($_POST['clerk'])) { ?><td><?php echo(_('Responsible')); ?></td><?php } ?>
+            <td><?php echo(_('Amount')); ?></td>
+            <td><?php echo(_('Recipient')); ?></td>
         </tr>
     </thead>
     <tbody id="list"><?php
@@ -230,25 +230,25 @@ a {
 					echo(' class="altbc"'); ?>>
             <td style="text-align:center"><a href="faktura.php?id=<?php echo($faktura['id']); ?>"><?php
 				if($faktura['status'] == 'new')
-					echo('<img src="/admin/images/table.png" alt="'._('Ny').'" title="'._('Ny').'" />');
+					echo('<img src="/admin/images/table.png" alt="'._('New').'" title="'._('New').'" />');
 				elseif($faktura['status'] == 'locked' && $faktura['sendt'])
-					echo('<img src="/admin/images/email_go.png" alt="'._('Sendt').'" title="'._('Sendt til kunden').'" />');
+					echo('<img src="/admin/images/email_go.png" alt="'._('Sent').'" title="'._('Sent to customer').'" />');
 				elseif($faktura['status'] == 'locked')
-					echo('<img src="/admin/images/lock.png" alt="'._('Låst').'" title="'._('Låst').'" />');
+					echo('<img src="/admin/images/lock.png" alt="'._('Locked').'" title="'._('Locked').'" />');
 				elseif($faktura['status'] == 'pbsok')
-					echo('<img src="/admin/images/money.png" alt="'._('Klar').'" title="'._('Klar').'" />');
+					echo('<img src="/admin/images/money.png" alt="'._('Ready').'" title="'._('Ready').'" />');
 				elseif($faktura['status'] == 'accepted')
-					echo('<img src="/admin/images/email.png" alt="'._('Ekspederede').'" title="'._('Ekspederede').'" />');
+					echo('<img src="/admin/images/email.png" alt="'._('Expedited').'" title="'._('Expedited').'" />');
 				elseif($faktura['status'] == 'giro')
 					echo('<img src="/admin/images/email.png" alt="'._('Giro').'" title="'._('Giro').'" />');
 				elseif($faktura['status'] == 'cash')
-					echo('<img src="/admin/images/email.png" alt="'._('Kontant').'" title="'._('Kontant').'" />');
+					echo('<img src="/admin/images/email.png" alt="'._('Cash').'" title="'._('Cash').'" />');
 				elseif($faktura['status'] == 'pbserror')
-					echo('<img src="/admin/images/error.png" alt="'._('Fejl').'" title="'._('Fejl').'" />');
+					echo('<img src="/admin/images/error.png" alt="'._('Error').'" title="'._('Error').'" />');
 				elseif($faktura['status'] == 'canceled')
-					echo('<img src="/admin/images/bin.png" alt="'._('Annulleret').'" title="'._('Annulleret').'" />');
+					echo('<img src="/admin/images/bin.png" alt="'._('Canceled').'" title="'._('Canceled').'" />');
 				elseif($faktura['status'] == 'rejected')
-					echo('<img src="/admin/images/bin.png" alt="'._('Afvist').'" title="'._('Afvist').'" />');
+					echo('<img src="/admin/images/bin.png" alt="'._('Rejected').'" title="'._('Rejected').'" />');
 					
 				//Efterkrav
 				//Bank
@@ -278,7 +278,7 @@ a {
 </div>
 <?php
 $activityButtons[] = '<li><a href="faktura.php?function=new"><img src="images/table_add.png" width="16" height="16" alt="" title="'._('Opret ny').'" /> '._('Opret ny').'</a></li>';
-$activityButtons[] = '<li><a href="fakturasearch.php"><img src="images/magnifier.png" width="16" height="16" alt="" title="Advanceret '._('Søgning').'" /> '._('Søgning').'</a></li>';
+$activityButtons[] = '<li><a href="fakturasearch.php"><img src="images/magnifier.png" width="16" height="16" alt="" title="Advanceret '._('Search').'" /> '._('Search').'</a></li>';
 
 require 'mainmenu.php';
 ?>

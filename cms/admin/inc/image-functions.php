@@ -55,7 +55,7 @@ function generateImage($path,$cropX,$cropY,$cropW,$cropH,$maxW,$maxH,$flip,$rota
 	$mimeType = get_mime_type($path);
 
 	if(@$output['type'] && !$output['force'] && is_file($_SERVER['DOCUMENT_ROOT'].$output['path'])) {
-		return array('yesno' => _('En file med samme navn eksistere allerede'."\n".'Vil du erstatte den eksisterende fil?'), 'filename' => $output['filename']);
+		return array('yesno' => _('A file with the same name already exists.'."\n".'Would you like to replace the existing file?'), 'filename' => $output['filename']);
 	}
 
 	switch($mimeType) {

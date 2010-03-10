@@ -291,7 +291,7 @@ function makedir($name) {
 
 	$name = genfilename($name);
 	if(is_dir($_SERVER['DOCUMENT_ROOT'].@$_COOKIE['admin_dir'].'/'.$name))
-		return array('error' => _('En fil eller mappe med samme navn eksistere allerede.'));
+		return array('error' => _('A file or folder with the same name already exists.'));
 
 	/*Kode til Scannet's server
 	if(is_dir($_SERVER['DOCUMENT_ROOT'].@$_COOKIE['admin_dir'])) {
@@ -307,21 +307,21 @@ function makedir($name) {
 	if(!ini_get('safe_mode') || (ini_get('safe_mode') && ini_get('safe_mode_gid')) || !function_exists('ftp_mkdir')) {
 		if(!is_dir($_SERVER['DOCUMENT_ROOT'].@$_COOKIE['admin_dir']) ||
 		!mkdir($_SERVER['DOCUMENT_ROOT'].@$_COOKIE['admin_dir']."/".$name, 0771))
-			return array('error' => _('Kunde ikke opratte mappe, du har muligvis ikke ratigheder til denne mappe.'));
+			return array('error' => _('Could not create folder, you may not have sufficient rights to this folder.'));
 	} else {
 		require_once 'inc/config.php';
 		//FTP methode for server with secure mode On
 		if(!is_dir($_SERVER['DOCUMENT_ROOT'].@$_COOKIE['admin_dir']) ||
 		!$FTP_Conn = ftp_connect('localhost'))
-			return array('error' => _('Der opstod en fejl med FTP forbindelsen.'));
+			return array('error' => _('An error occurred with the FTP connection.'));
 		if(!@ftp_login($FTP_Conn, $GLOBALS['_config']['ftp_User'], $GLOBALS['_config']['ftp_Pass']) ||
 		!@ftp_chdir($FTP_Conn, $GLOBALS['_config']['ftp_Root'].@$_COOKIE['admin_dir']) ||
 		!ftp_mkdir($FTP_Conn, $name) ||
 		!ftp_site($FTP_Conn, "CHMOD 0771 ".$name))
-			return array('error' => _('Der opstod en fejl med FTP forbindelsen.'));
+			return array('error' => _('An error occurred with the FTP connection.'));
 			
 		if(!is_dir($_SERVER['DOCUMENT_ROOT'].@$_COOKIE['admin_dir'].'/'.$name))
-			return array('error' => _('Kunde ikke opratte mappe, du har muligvis ikke rettigheder til denne mappe.'));
+			return array('error' => _('Could not create folder, you may not have sufficient rights to this folder.'));
 	}
 	return array('error' => false);
 	//*/
@@ -370,11 +370,11 @@ function renamefile($id, $path, $dir, $filename, $force=0) {
 	$filename = genfilename($filename);
 
 	if(!$filename)
-		return array('error' => _('Navnet er ugyltid.'), 'id' => $id);
+		return array('error' => _('The name is invalid.'), 'id' => $id);
 
 	//Destination folder doesn't exist
 	if(!is_dir($_SERVER['DOCUMENT_ROOT'].$dir.'/')) {
-		return array('error' => _('Filen kunne ikke flyttes da destinations mappen ikke eksister.'), 'id' => $id);
+		return array('error' => _('The file could not be moved because the destination folder does not exist.'), 'id' => $id);
 	}
 	if($pathinfo['extension']) {
 		//No changes was requested.
@@ -384,13 +384,13 @@ function renamefile($id, $path, $dir, $filename, $force=0) {
 		
 		//if file path more then 255 erturn error
 		if(mb_strlen($dir.'/'.$filename.'.'.$pathinfo['extension'], 'UTF-8') > 255) {
-			return array('error' => _('filnavnet er for langt.'), 'id' => $id);
+			return array('error' => _('The filename is too long.'), 'id' => $id);
 		}
 		
 		//File already exists, but are we trying to force a overwrite?
 		if(is_file($_SERVER['DOCUMENT_ROOT'].$dir.'/'.$filename.'.'.$pathinfo['extension']) && !$force) {
-			return array('yesno' => _('En file med samme navn eksistere allerede
-Vil du erstatte den eksisterende fil?'), 'id' => $id);
+			return array('yesno' => _('A file with the same name already exists.
+Would you like to replace the existing file?'), 'id' => $id);
 		}
 		
 		//Rename/move or give an error
@@ -410,7 +410,7 @@ Vil du erstatte den eksisterende fil?'), 'id' => $id);
 			
 			return array('id' => $id, 'filename' => $filename, 'path' => $dir.'/'.$filename.'.'.$pathinfo['extension']);
 		} else {
-			return array('error' => _('Der opstod en fejl ved filhandlingen.'), 'id' => $id);
+			return array('error' => _('An error occurred with the file operations.'), 'id' => $id);
 		}
 	} else {
 	//Dir or file with no extension
@@ -423,18 +423,18 @@ Vil du erstatte den eksisterende fil?'), 'id' => $id);
 	
 		//folder already exists
 		if(is_dir($_SERVER['DOCUMENT_ROOT'].$dir.'/'.$filename)) {
-			return array('error' => _('En mappe med samme navn eksistere allerede.'), 'id' => $id);
+			return array('error' => _('A folder with the same name already exists.'), 'id' => $id);
 		}
 		
 		//if file path more then 255 erturn error
 		if(mb_strlen($dir.'/'.$filename, 'UTF-8') > 255) {
-			return array('error' => _('filnavnet er for langt.'), 'id' => $id);
+			return array('error' => _('The filename is too long.'), 'id' => $id);
 		}
 		
 		//File already exists, but are we trying to force a overwrite?
 		if(is_file($_SERVER['DOCUMENT_ROOT'].$path) && !$force) {
-			return array('yesno' => _('En file med samme navn eksistere allerede
-Vil du erstatte den eksisterende fil?'), 'id' => $id);
+			return array('yesno' => _('A file with the same name already exists.
+Would you like to replace the existing file?'), 'id' => $id);
 		}
 	
 		//Rename/move or give an error
@@ -462,7 +462,7 @@ Vil du erstatte den eksisterende fil?'), 'id' => $id);
 			
 			return array('id' => $id, 'filename' => $filename, 'path' => $dir.'/'.$filename);
 		} else {
-			return array('error' => _('Der opstod en fejl ved filhandlingen.'), 'id' => $id);
+			return array('error' => _('An error occurred with the file operations.'), 'id' => $id);
 		}
 	}
 }
@@ -495,7 +495,7 @@ function deletefolder() {
 					|| $mysqli->fetch_array('SELECT id FROM `maerke` WHERE `ico` LIKE \'%'.$dir."/".$dirlist[$i].'%\' LIMIT 1')
 					|| $mysqli->fetch_array('SELECT id FROM `list_rows` WHERE `cells` LIKE \'%'.$dir."/".$dirlist[$i].'%\' LIMIT 1')
 					|| $mysqli->fetch_array('SELECT id FROM `kat` WHERE `navn` LIKE \'%'.$dir."/".$dirlist[$i].'%\' OR `icon` LIKE \'%'.$dir."/".$dirlist[$i].'%\' LIMIT 1'))
-					return array('error' => _('En filen kunne ikke slettes da den bliver brugt på en side.'));
+					return array('error' => _('A file could not be deleted because it is used on a site.'));
 					@unlink($_SERVER['DOCUMENT_ROOT'].$dir."/".$dirlist[$i]);
 				}
 			}
@@ -506,7 +506,7 @@ function deletefolder() {
 	if(@rmdir($_SERVER['DOCUMENT_ROOT'].@$_COOKIE['admin_dir'])) {
 		@setcookie(@$_COOKIE['admin_dir'], false);
 		return true;
-	} else return array('error' => _('Mappen kune ikke slettes, du har muligvis ikke rettigheder til denne mappe.'));
+	} else return array('error' => _('he folder could not be deleted, you may not have sufficient rights to this folder.'));
 }
 
 function searchfiles($qpath, $qalt, $qmime) {
@@ -514,28 +514,29 @@ function searchfiles($qpath, $qalt, $qmime) {
 
 	$qpath = $mysqli->escape_wildcards($mysqli->real_escape_string($qpath));
 	$qalt = $mysqli->escape_wildcards($mysqli->real_escape_string($qalt));
-
+	
+	$sql_mime = '';
 	switch($qmime) {
 		case 'image':
-			$sql_mime = '(mime = \'image/jpeg\' OR mime = \'image/png\' OR mime = \'image/gif\' OR mime = \'image/vnd.wap.wbmp\')';
+			$sql_mime = "(mime = 'image/jpeg' OR mime = 'image/png' OR mime = 'image/gif' OR mime = 'image/vnd.wap.wbmp')";
 		break;
 		case 'imagefile':
-			$sql_mime = '(mime = \'application/postscript\' OR mime = \'image/x-ms-bmp\' OR mime = \'image/x-psd\' OR mime = \'image/x-photoshop\' OR mime = \'image/tiff\' OR mime = \'image/x-eps\' OR mime = \'image/bmp\')';
+			$sql_mime = "(mime = 'application/postscript' OR mime = 'image/x-ms-bmp' OR mime = 'image/x-psd' OR mime = 'image/x-photoshop' OR mime = 'image/tiff' OR mime = 'image/x-eps' OR mime = 'image/bmp')";
 		break;
 		case 'video':
-			$sql_mime = '(mime = \'video/avi\' OR mime = \'video/x-msvideo\' OR mime = \'video/mpeg\' OR mime = \'video/quicktime\' OR mime = \'video/x-shockwave-flash\' OR mime = \'application/futuresplash\' OR mime = \'application/x-shockwave-flash\' OR mime = \'video/x-flv\' OR mime = \'video/x-ms-asf\' OR mime = \'video/x-ms-wmv\' OR mime = \'application/vnd.ms-powerpoint\' OR mime = \'video/vnd.rn-realvideo\' OR mime = \'application/vnd.rn-realmedia\')';
+			$sql_mime = "(mime = 'video/avi' OR mime = 'video/x-msvideo' OR mime = 'video/mpeg' OR mime = 'video/quicktime' OR mime = 'video/x-shockwave-flash' OR mime = 'application/futuresplash' OR mime = 'application/x-shockwave-flash' OR mime = 'video/x-flv' OR mime = 'video/x-ms-asf' OR mime = 'video/x-ms-wmv' OR mime = 'application/vnd.ms-powerpoint' OR mime = 'video/vnd.rn-realvideo' OR mime = 'application/vnd.rn-realmedia')";
 		break;
 		case 'audio':
-			$sql_mime = '(mime = \'audio/vnd.rn-realaudio\' OR mime = \'audio/x-wav\' OR mime = \'audio/mpeg\' OR mime = \'audio/midi\' OR mime = \'audio/x-ms-wma\')';
+			$sql_mime = "(mime = 'audio/vnd.rn-realaudio' OR mime = 'audio/x-wav' OR mime = 'audio/mpeg' OR mime = 'audio/midi' OR mime = 'audio/x-ms-wma')";
 		break;
 		case 'text':
-			$sql_mime = '(mime = \'application/pdf\' OR mime = \'text/plain\' OR mime = \'application/rtf\' OR mime = \'text/rtf\' OR mime = \'application/msword\' OR mime = \'application/vnd.ms-works\' OR mime = \'application/vnd.ms-excel\')';
+			$sql_mime = "(mime = 'application/pdf' OR mime = 'text/plain' OR mime = 'application/rtf' OR mime = 'text/rtf' OR mime = 'application/msword' OR mime = 'application/vnd.ms-works' OR mime = 'application/vnd.ms-excel')";
 		break;
 		case 'sysfile':
-			$sql_mime = '(mime = \'text/html\' OR mime = \'text/css\')';
+			$sql_mime = "(mime = 'text/html' OR mime = 'text/css')";
 		break;
 		case 'compressed':
-			$sql_mime = '(mime = \'application/x-gzip\' OR mime = \'application/x-gtar\' OR mime = \'application/x-tar\' OR mime = \'application/x-stuffit\' OR mime = \'application/x-stuffitx\' OR mime = \'application/zip\' OR mime = \'application/x-zip\' OR mime = \'application/x-compressed\' OR mime = \'application/x-compress\' OR mime = \'application/mac-binhex40\' OR mime = \'application/x-rar-compressed\' OR mime = \'application/x-rar\' OR mime = \'application/x-bzip2\' OR mime = \'application/x-7z-compressed\')';
+			$sql_mime = "(mime = 'application/x-gzip' OR mime = 'application/x-gtar' OR mime = 'application/x-tar' OR mime = 'application/x-stuffit' OR mime = 'application/x-stuffitx' OR mime = 'application/zip' OR mime = 'application/x-zip' OR mime = 'application/x-compressed' OR mime = 'application/x-compress' OR mime = 'application/mac-binhex40' OR mime = 'application/x-rar-compressed' OR mime = 'application/x-rar' OR mime = 'application/x-bzip2' OR mime = 'application/x-7z-compressed')";
 		break;
 	}
 	
@@ -547,19 +548,19 @@ function searchfiles($qpath, $qalt, $qmime) {
 		if($qpath || $qalt)
 			$sql .= '(';
 		if($qpath)
-			$sql .= 'MATCH(path) AGAINST(\''.$qpath.'\')>0';
+			$sql .= "MATCH(path) AGAINST('".$qpath."')>0";
 		if($qpath && $qalt)
-			$sql .= ' OR ';
+			$sql .= " OR ";
 		if($qalt)
-			$sql .= 'MATCH(alt) AGAINST(\''.$qalt.'\')>0';
+			$sql .= "MATCH(alt) AGAINST('".$qalt."')>0";
 		if($qpath)
-			$sql .= ' OR `path` LIKE \'%'.$qpath.'%\' ';
+			$sql .= " OR `path` LIKE '%".$qpath."%' ";
 		if($qalt)
-			$sql .= ' OR `alt` LIKE \'%'.$qalt.'%\'';
+			$sql .= " OR `alt` LIKE '%".$qalt."%'";
 		if($qpath || $qalt)
-			$sql .= ')';
+			$sql .= ")";
 		if(($qpath || $qalt) && !empty($sql_mime))
-			$sql .= ' AND ';
+			$sql .= " AND ";
 		if(!empty($sql_mime))
 			$sql .= $sql_mime;
 	}
@@ -692,13 +693,13 @@ var returnid = '<?php echo(@$_GET['returnid']); ?>';
 </head>
 <body scroll="auto">
 picture_error
-<div id="menu"><img id="loading" src="images/loading.gif" width="16" height="16" alt="<?php echo(_('Indlæser')); ?>" title="<?php echo(_('Indlæser')); ?>" /><a id="dir_bn" class="<?php
-if(!@$_COOKIE['qpath'] && !@$_COOKIE['qalt'] && !@$_COOKIE['qtype']) echo 'down'; ?>" title="<?php echo(_('Mapper')); ?>" onclick="return swap_pannel('dir');"><img width="16" height="16" src="images/folder.png" alt="" /> Mapper</a> <a id="search_bn" title="Søg" class="<?php if(@$_COOKIE['qpath'] || @$_COOKIE['qalt'] || @$_COOKIE['qtype']) echo 'down'; ?>" onclick="return swap_pannel('search');"><img width="16" height="16" src="images/magnifier.png" alt="" /> <?php echo(_('Søg')); ?></a> <a title="<?php echo(_('Ny mappe')); ?>" onclick="makedir();return false"><img width="16" height="16" src="images/folder_add.png" alt="" /> <?php echo(_('Ny mappe')); ?></a> <a title="<?php echo(_('Slet mappe')); ?>" onclick="deletefolder();return false"><img width="16" height="16" src="images/folder_delete.png" alt="" /> <?php echo(_('Slet mappe')); ?></a> <a title="<?php echo(_('Tilføj fil')); ?>" onclick="open_file_upload();return false;"><img width="16" height="16" src="images/folder_page_white.png" alt="" /> <?php echo(_('Tilføj fil')); ?></a></div>
+<div id="menu"><img id="loading" src="images/loading.gif" width="16" height="16" alt="<?php echo(_('Loading')); ?>" title="<?php echo(_('Loading')); ?>" /><a id="dir_bn" class="<?php
+if(!@$_COOKIE['qpath'] && !@$_COOKIE['qalt'] && !@$_COOKIE['qtype']) echo 'down'; ?>" title="<?php echo(_('Mapper')); ?>" onclick="return swap_pannel('dir');"><img width="16" height="16" src="images/folder.png" alt="" /> Mapper</a> <a id="search_bn" title="Søg" class="<?php if(@$_COOKIE['qpath'] || @$_COOKIE['qalt'] || @$_COOKIE['qtype']) echo 'down'; ?>" onclick="return swap_pannel('search');"><img width="16" height="16" src="images/magnifier.png" alt="" /> <?php echo(_('Search')); ?></a> <a title="<?php echo(_('New folder')); ?>" onclick="makedir();return false"><img width="16" height="16" src="images/folder_add.png" alt="" /> <?php echo(_('New folder')); ?></a> <a title="<?php echo(_('Delete folder')); ?>" onclick="deletefolder();return false"><img width="16" height="16" src="images/folder_delete.png" alt="" /> <?php echo(_('Delete folder')); ?></a> <a title="<?php echo(_('Add File')); ?>" onclick="open_file_upload();return false;"><img width="16" height="16" src="images/folder_page_white.png" alt="" /> <?php echo(_('Add File')); ?></a></div>
 <div id="dir"<?php if(@$_COOKIE['qpath'] || @$_COOKIE['qalt'] || @$_COOKIE['qtype']) echo ' style="display:none"'; ?>>
   <div id="dir_.images"><img<?php if(@$_COOKIE['/images']) { echo ' style="display:none"'; } ?> src="images/+.gif" onclick="dir_expand(this, 0);" height="16" width="16" alt="+" title="" /><img<?php if(!@$_COOKIE['/images']) { echo ' style="display:none"'; } ?> src="images/-.gif" onclick="dir_contract(this);" height="16" width="16" alt="-" title="" /><a<?php
 	if('/images' == @$_COOKIE['admin_dir'])
 		echo ' class="active"';
-	?> onclick="showfiles('/images', 0);this.className='active'"><img src="images/folder.png" height="16" width="16" alt="" /> <?php echo(_('Billeder')); ?> </a>
+	?> onclick="showfiles('/images', 0);this.className='active'"><img src="images/folder.png" height="16" width="16" alt="" /> <?php echo(_('Pictures')); ?> </a>
     <div><?php
 	if(@$_COOKIE['/images']) {
 		$listdirs = listdirs('/images', 0);
@@ -708,32 +709,32 @@ if(!@$_COOKIE['qpath'] && !@$_COOKIE['qalt'] && !@$_COOKIE['qtype']) echo 'down'
   <div id="dir_.files"><img<?php if(@$_COOKIE['/files']) { echo ' style="display:none"'; } ?> src="images/+.gif" onclick="dir_expand(this, 0);" height="16" width="16" alt="+" title="" /><img<?php if(!@$_COOKIE['/files']) { echo ' style="display:none"'; } ?> src="images/-.gif" onclick="dir_contract(this);" height="16" width="16" alt="-" title="" /><a<?php
 	if('/files' == @$_COOKIE['admin_dir'])
 		echo ' class="active"';
-	?> onclick="showfiles('/files', 0);this.className='active'"><img src="images/folder.png" height="16" width="16" alt="" /> <?php echo(_('Filer')); ?> </a><div><?php
+	?> onclick="showfiles('/files', 0);this.className='active'"><img src="images/folder.png" height="16" width="16" alt="" /> <?php echo(_('Files')); ?> </a><div><?php
 	if(@$_COOKIE['/files']) {
 		$listdirs = listdirs('/files', 0);
 		echo $listdirs['html'];
 	} ?></div></div>
 </div>
 <form id="search"<?php if(!@$_COOKIE['qpath'] && !@$_COOKIE['qalt'] && !@$_COOKIE['qtype']) echo ' style="display:none"'; ?> action="" onsubmit="searchfiles();return false;"><div>
-  <?php echo(_('Navn:')); ?><br />
+  <?php echo(_('Name:')); ?><br />
   <input name="searchpath" id="searchpath" value="<?php echo @$_COOKIE['qpath']; ?>" />
   <br />
   <br />
-  <?php echo(_('Beskrivelse:')); ?><br />
+  <?php echo(_('Description:')); ?><br />
   <input name="searchalt" id="searchalt" value="<?php echo @$_COOKIE['qalt']; ?>" />
   <br />
   <br />
   <?php echo(_('Type:')); ?><br />
   <select name="searchtype" id="searchtype">
     <option value="" selected="selected">alle</option>
-    <option value="image"<?php if(@$_COOKIE['qtype'] == 'image') echo ' selected="selected"'; ?>><?php echo(_('Billeder')); ?></option>
-    <option value="imagefile"<?php if(@$_COOKIE['qtype'] == 'imagefile') echo ' selected="selected"'; ?>><?php echo(_('Billed filer')); ?></option>
-    <option value="video"<?php if(@$_COOKIE['qtype'] == 'video') echo ' selected="selected"'; ?>><?php echo(_('Videoer')); ?></option>
-    <option value="audio"<?php if(@$_COOKIE['qtype'] == 'audio') echo ' selected="selected"'; ?>><?php echo(_('Lyde')); ?></option>
-    <option value="text"<?php if(@$_COOKIE['qtype'] == 'text') echo ' selected="selected"'; ?>><?php echo(_('Dokumenter')); ?></option>
-    <option value="sysfile"<?php if(@$_COOKIE['qtype'] == 'sysfile') echo ' selected="selected"'; ?>><?php echo(_('System filer')); ?></option>
-    <option value="compressed"<?php if(@$_COOKIE['qtype'] == 'compressed') echo ' selected="selected"'; ?>><?php echo(_('Komprimered filer')); ?></option>
-    <option value="unused"<?php if(@$_COOKIE['qtype'] == 'unused') echo ' selected="selected"'; ?>><?php echo(_('Ubrugte filer')); ?></option>
+    <option value="image"<?php if(@$_COOKIE['qtype'] == 'image') echo ' selected="selected"'; ?>><?php echo(_('Pictures')); ?></option>
+    <option value="imagefile"<?php if(@$_COOKIE['qtype'] == 'imagefile') echo ' selected="selected"'; ?>><?php echo(_('Image files')); ?></option>
+    <option value="video"<?php if(@$_COOKIE['qtype'] == 'video') echo ' selected="selected"'; ?>><?php echo(_('Videos')); ?></option>
+    <option value="audio"<?php if(@$_COOKIE['qtype'] == 'audio') echo ' selected="selected"'; ?>><?php echo(_('Sounds')); ?></option>
+    <option value="text"<?php if(@$_COOKIE['qtype'] == 'text') echo ' selected="selected"'; ?>><?php echo(_('Documents')); ?></option>
+    <option value="sysfile"<?php if(@$_COOKIE['qtype'] == 'sysfile') echo ' selected="selected"'; ?>><?php echo(_('System files')); ?></option>
+    <option value="compressed"<?php if(@$_COOKIE['qtype'] == 'compressed') echo ' selected="selected"'; ?>><?php echo(_('Compressed files')); ?></option>
+    <option value="unused"<?php if(@$_COOKIE['qtype'] == 'unused') echo ' selected="selected"'; ?>><?php echo(_('Unused files')); ?></option>
   </select>
   <br />
   <br />
