@@ -7,6 +7,7 @@ error_reporting(-1);
 date_default_timezone_set('Europe/Copenhagen');
 setlocale(LC_ALL, 'da_DK');
 bindtextdomain("agcms", $_SERVER['DOCUMENT_ROOT'].'/theme/locale');
+bind_textdomain_codeset("agcms", 'UTF-8');
 textdomain("agcms");
 
 chdir('../');
@@ -117,9 +118,9 @@ if(!empty($_GET['id']) && @$_GET['checkid'] == getCheckid($_GET['id'])) {
 			$mysqli->query("UPDATE `fakturas` SET `status` = 'locked' WHERE `status` IN('new', 'pbserror') AND `id` = ".$_GET['id']);
 			
 			$GLOBALS['generatedcontent']['crumbs'] = array();
-			$GLOBALS['generatedcontent']['crumbs'][1] = array('name' => _('Ordre #').$_GET['id'], 'link' => '#', 'icon' => NULL);
-			$GLOBALS['generatedcontent']['title'] = _('Ordre #').$_GET['id'];
-			$GLOBALS['generatedcontent']['headline'] = _('Ordre #').$_GET['id'];
+			$GLOBALS['generatedcontent']['crumbs'][1] = array('name' => _('Order #').$_GET['id'], 'link' => '#', 'icon' => NULL);
+			$GLOBALS['generatedcontent']['title'] = _('Order #').$_GET['id'];
+			$GLOBALS['generatedcontent']['headline'] = _('Order #').$_GET['id'];
 		
 			
 			$GLOBALS['generatedcontent']['text'] = '<table id="faktura" cellspacing="0">
@@ -275,7 +276,7 @@ if(!empty($_GET['id']) && @$_GET['checkid'] == getCheckid($_GET['id'])) {
 				<td></td>
 			</tr>
 			<tr>
-				<td> '._('Postnr:').'</td>
+				<td> '._('Zipcode:').'</td>
 				<td><input name="postnr" id="postnr" style="width:35px" value="'.$faktura['postnr'].'" onblur="chnageZipCode(this.value, \'land\', \'by\')" onkeyup="chnageZipCode(this.value, \'land\', \'by\')" onchange="chnageZipCode(this.value, \'land\', \'by\')" /></td>
 				<td align="right">'._('City:').'
 					<input name="by" id="by" style="width:90px" value="'.$faktura['by'].'" /></td>
@@ -359,7 +360,7 @@ if(!empty($_GET['id']) && @$_GET['checkid'] == getCheckid($_GET['id'])) {
 			<tr class="altpost"';
 			if(empty($faktura['altpost'])) $GLOBALS['generatedcontent']['text'] .= ' style="display:none;"';
 			$GLOBALS['generatedcontent']['text'] .= '>
-				<td> '._('Postnr:').'</td>
+				<td> '._('Zipcode:').'</td>
 				<td><input name="postpostalcode" id="postpostalcode" style="width:35px" value="'.$faktura['postpostalcode'].'" onblur="chnageZipCode(this.value, \'postcountry\', \'postcity\')" onkeyup="chnageZipCode(this.value, \'postcountry\', \'postcity\')" onchange="chnageZipCode(this.value, \'postcountry\', \'postcity\')" /></td>
 				<td align="right">'._('City:').'
 					<input name="postcity" id="postcity" style="width:90px" value="'.$faktura['postcity'].'" /></td>
@@ -438,7 +439,7 @@ if(!empty($_GET['id']) && @$_GET['checkid'] == getCheckid($_GET['id'])) {
 			$GLOBALS['generatedcontent']['crumbs'][1] = array('name' => _('Status'), 'link' => '#', 'icon' => NULL);
 			$GLOBALS['generatedcontent']['title'] = _('Status');
 			$GLOBALS['generatedcontent']['headline'] = _('Status');
-			$GLOBALS['generatedcontent']['text'] = _('Betalingen er modtaget.');
+			$GLOBALS['generatedcontent']['text'] = _('Payment received.');
 		} elseif($faktura['status'] == 'accepted') {
 			$GLOBALS['generatedcontent']['crumbs'][1] = array('name' => _('Status'), 'link' => '#', 'icon' => NULL);
 			$GLOBALS['generatedcontent']['title'] = _('Status');
@@ -564,7 +565,7 @@ Error number:').' '.$_GET['Status_code'];
 			case 19:
 				$GLOBALS['generatedcontent']['text'] = _('Payment was refused by the bank, the card has expired.');
 				$shopSubject = $_GET['Status'].$_GET['Status_code'].' '._('Payment was refused by the bank, the card has expired.');
-				$shopBody = '<br />'.sprintf(_('Betalingen blev afvist af banken, %s\'s kort er udløbet!'), $faktura['navn']).'<br />';
+				$shopBody = '<br />'.sprintf(_('Payment was refused by the bank, %s\'s card has expired!'), $faktura['navn']).'<br />';
 			break;
 			case 20:
 				$GLOBALS['generatedcontent']['text'] = _('Payment was refused by the bank, contact your bank.');
@@ -794,7 +795,7 @@ Tel. %s<br />
 					
 					$emailbody_nore = '';
 					if($faktura['note']) {
-						$emailbody_nore = '<br /><strong>'._('Notat:').'</strong><br /><p class="note">';
+						$emailbody_nore = '<br /><strong>'._('Note:').'</strong><br /><p class="note">';
 						$emailbody .= nl2br(htmlspecialchars($faktura['note'])).'</p>';
 					}
 

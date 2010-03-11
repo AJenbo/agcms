@@ -74,7 +74,8 @@ function getAddress($id) {
 		if($return != $default)
 			return $return;
 	} else {
-		return array('error' => _('Addressen kunde ikke findes.'));
+	//Addressen kunde ikke findes.
+		return array('error' => _('The address could not be found.'));
 	}
 }
 ?>

@@ -3,6 +3,7 @@
 date_default_timezone_set('Europe/Copenhagen');
 setlocale(LC_ALL, 'da_DK');
 bindtextdomain("agcms", $_SERVER['DOCUMENT_ROOT'].'/theme/locale');
+bind_textdomain_codeset("agcms", 'UTF-8');
 textdomain("agcms");
 
 require_once $_SERVER['DOCUMENT_ROOT'].'/admin/inc/logon.php';
@@ -133,7 +134,7 @@ a {
 <body onload="$('loading').style.visibility = 'hidden';">
 <div id="canvas">
 <form action="" method="post"><table><tr>
-	<td><?php echo(_('Id:')); ?></td><td><?php echo(_('Year:')); ?></td><td><?php echo(_('Month:')); ?></td><td><?php echo(_('Clerk:')); ?></td><td><?php echo(_('Status:')); ?></td></tr><tr><td>
+	<td><?php echo(_('ID:')); ?></td><td><?php echo(_('Year:')); ?></td><td><?php echo(_('Month:')); ?></td><td><?php echo(_('Clerk:')); ?></td><td><?php echo(_('Status:')); ?></td></tr><tr><td>
 
     <input name="id" value="<?php if(!empty($_POST['id'])) echo $_POST['id']; ?>" size="4" /></td><td>
 
@@ -277,7 +278,7 @@ a {
 </table>
 </div>
 <?php
-$activityButtons[] = '<li><a href="faktura.php?function=new"><img src="images/table_add.png" width="16" height="16" alt="" title="'._('Opret ny').'" /> '._('Opret ny').'</a></li>';
+$activityButtons[] = '<li><a href="faktura.php?function=new"><img src="images/table_add.png" width="16" height="16" alt="" title="'._('Create new').'" /> '._('Create new').'</a></li>';
 $activityButtons[] = '<li><a href="fakturasearch.php"><img src="images/magnifier.png" width="16" height="16" alt="" title="Advanceret '._('Search').'" /> '._('Search').'</a></li>';
 
 require 'mainmenu.php';

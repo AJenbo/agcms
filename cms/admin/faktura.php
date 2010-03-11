@@ -7,6 +7,7 @@ error_reporting(-1);
 date_default_timezone_set('Europe/Copenhagen');
 setlocale(LC_ALL, 'da_DK');
 bindtextdomain("agcms", $_SERVER['DOCUMENT_ROOT'].'/theme/locale');
+bind_textdomain_codeset("agcms", 'UTF-8');
 textdomain("agcms");
 
 require_once $_SERVER['DOCUMENT_ROOT'].'/admin/inc/logon.php';
@@ -347,8 +348,8 @@ function echoprint() {
 				<td class="tal">'.number_format($netto*$faktura['momssats'], 2, ',', '').'</td>
             </tr>
             <tr class="border">
-                <td colspan="2" id="warning"><strong>'._('Betalingsbetingelser:').'</strong> '._('Netto kontant ved faktura modtagelse.').'<br />
-                    <span style="font-size:8pt;">'._('Ved senere indbetaling end anførte frist, vil der blive debiteret 2% rente pr. påbegyndt måned.').'</span></td>
+                <td colspan="2" id="warning"><strong>'._('Payment Terms:').'</strong> '._('Net cash at invoice reception.').'<br />
+                    <span style="font-size:8pt;">'._('In case of payment later than the stated deadline, 2% interest will be added per. started months.').'</span></td>
                 <td style="text-align:center; font-weight:bold;">'._('TO PAY').'</td>
                 <td class="tal" id="printpayamount">'.number_format($faktura['amount'], 2, ',', '').'</td>
             </tr>
@@ -670,7 +671,7 @@ Fax: %s<br />
 	$GLOBALS['_config']['fax'],
 	$faktura['department'],
 	$faktura['department'])
-'</body></html>';
+.'</body></html>';
 	
 	$mail             = new PHPMailer();
 	$mail->SetLanguage('dk');
@@ -713,7 +714,7 @@ Fax: %s<br />
 			$error .= "\n\n"._('The e-mail was not saved in the Sent box! (the code was rejected).');
 		}
 		if(!$imap->append_mail($GLOBALS['_config']['emailsent'], $mail->CreateHeader().$mail->CreateBody(), '\Seen')) {
-			$error .= "\n\n".sprintf(_('The e-mail was not saved in the Sent box! (the folder %s was missing).', $GLOBALS['_config']['emailsent']);
+			$error .= "\n\n".sprintf(_('The e-mail was not saved in the Sent box! (the folder %s was missing).'), $GLOBALS['_config']['emailsent']);
 		}
 		$imap->close();
 	}
@@ -1383,7 +1384,7 @@ if(count($GLOBALS['_config']['email']) > 1) {
 			<?php } else { echo($faktura['postbox']); } ?></td>
 		</tr>
 		<tr>
-			<td><?php echo(_('Zip.:')); ?></td>
+			<td><?php echo(_('Zipcode:')); ?></td>
 			<td><?php if($faktura['status'] == 'new') { ?>
 				<input name="postnr" id="postnr" value="<?php echo($faktura['postnr']); ?>" onblur="chnageZipCode(this.value, 'land', 'by')" onkeyup="chnageZipCode(this.value, 'land', 'by')" onchange="chnageZipCode(this.value, 'land', 'by')" />
 				<?php echo(_('City:')); ?>
@@ -1446,7 +1447,7 @@ if(count($GLOBALS['_config']['email']) > 1) {
 				<?php } else { echo($faktura['postpostbox']); } ?></td>
 		</tr>
 		<tr class="altpost"<?php if(!$faktura['altpost']) echo(' style="display:none;"'); ?>>
-			<td><?php echo(_('Zip.:')); ?></td>
+			<td><?php echo(_('Zipcode:')); ?></td>
 			<td><?php if($faktura['status'] == 'new') { ?>
 				<input name="postpostalcode" id="postpostalcode" value="<?php echo($faktura['postpostalcode']); ?>" onblur="chnageZipCode(this.value, 'postcountry', 'postcity')" onkeyup="chnageZipCode(this.value, 'postcountry', 'postcity')" onchange="chnageZipCode(this.value, 'postcountry', 'postcity')" />
 				<?php echo(_('City:')); ?>

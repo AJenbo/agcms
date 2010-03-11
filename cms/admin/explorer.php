@@ -7,6 +7,7 @@ error_reporting(-1);
 date_default_timezone_set('Europe/Copenhagen');
 setlocale(LC_ALL, 'da_DK');
 bindtextdomain("agcms", $_SERVER['DOCUMENT_ROOT'].'/theme/locale');
+bind_textdomain_codeset("agcms", 'UTF-8');
 textdomain("agcms");
 
 require_once $_SERVER['DOCUMENT_ROOT'].'/admin/inc/logon.php';
@@ -506,7 +507,7 @@ function deletefolder() {
 	if(@rmdir($_SERVER['DOCUMENT_ROOT'].@$_COOKIE['admin_dir'])) {
 		@setcookie(@$_COOKIE['admin_dir'], false);
 		return true;
-	} else return array('error' => _('he folder could not be deleted, you may not have sufficient rights to this folder.'));
+	} else return array('error' => _('The folder could not be deleted, you may not have sufficient rights to this folder.'));
 }
 
 function searchfiles($qpath, $qalt, $qmime) {
@@ -694,7 +695,7 @@ var returnid = '<?php echo(@$_GET['returnid']); ?>';
 <body scroll="auto">
 picture_error
 <div id="menu"><img id="loading" src="images/loading.gif" width="16" height="16" alt="<?php echo(_('Loading')); ?>" title="<?php echo(_('Loading')); ?>" /><a id="dir_bn" class="<?php
-if(!@$_COOKIE['qpath'] && !@$_COOKIE['qalt'] && !@$_COOKIE['qtype']) echo 'down'; ?>" title="<?php echo(_('Mapper')); ?>" onclick="return swap_pannel('dir');"><img width="16" height="16" src="images/folder.png" alt="" /> Mapper</a> <a id="search_bn" title="Søg" class="<?php if(@$_COOKIE['qpath'] || @$_COOKIE['qalt'] || @$_COOKIE['qtype']) echo 'down'; ?>" onclick="return swap_pannel('search');"><img width="16" height="16" src="images/magnifier.png" alt="" /> <?php echo(_('Search')); ?></a> <a title="<?php echo(_('New folder')); ?>" onclick="makedir();return false"><img width="16" height="16" src="images/folder_add.png" alt="" /> <?php echo(_('New folder')); ?></a> <a title="<?php echo(_('Delete folder')); ?>" onclick="deletefolder();return false"><img width="16" height="16" src="images/folder_delete.png" alt="" /> <?php echo(_('Delete folder')); ?></a> <a title="<?php echo(_('Add File')); ?>" onclick="open_file_upload();return false;"><img width="16" height="16" src="images/folder_page_white.png" alt="" /> <?php echo(_('Add File')); ?></a></div>
+if(!@$_COOKIE['qpath'] && !@$_COOKIE['qalt'] && !@$_COOKIE['qtype']) echo 'down'; ?>" title="<?php echo(_('Folders')); ?>" onclick="return swap_pannel('dir');"><img width="16" height="16" src="images/folder.png" alt="" /> Mapper</a> <a id="search_bn" title="Søg" class="<?php if(@$_COOKIE['qpath'] || @$_COOKIE['qalt'] || @$_COOKIE['qtype']) echo 'down'; ?>" onclick="return swap_pannel('search');"><img width="16" height="16" src="images/magnifier.png" alt="" /> <?php echo(_('Search')); ?></a> <a title="<?php echo(_('New folder')); ?>" onclick="makedir();return false"><img width="16" height="16" src="images/folder_add.png" alt="" /> <?php echo(_('New folder')); ?></a> <a title="<?php echo(_('Delete folder')); ?>" onclick="deletefolder();return false"><img width="16" height="16" src="images/folder_delete.png" alt="" /> <?php echo(_('Delete folder')); ?></a> <a title="<?php echo(_('Add File')); ?>" onclick="open_file_upload();return false;"><img width="16" height="16" src="images/folder_page_white.png" alt="" /> <?php echo(_('Add File')); ?></a></div>
 <div id="dir"<?php if(@$_COOKIE['qpath'] || @$_COOKIE['qalt'] || @$_COOKIE['qtype']) echo ' style="display:none"'; ?>>
   <div id="dir_.images"><img<?php if(@$_COOKIE['/images']) { echo ' style="display:none"'; } ?> src="images/+.gif" onclick="dir_expand(this, 0);" height="16" width="16" alt="+" title="" /><img<?php if(!@$_COOKIE['/images']) { echo ' style="display:none"'; } ?> src="images/-.gif" onclick="dir_contract(this);" height="16" width="16" alt="-" title="" /><a<?php
 	if('/images' == @$_COOKIE['admin_dir'])

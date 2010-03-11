@@ -3,6 +3,7 @@
 date_default_timezone_set('Europe/Copenhagen');
 setlocale(LC_ALL, 'da_DK');
 bindtextdomain("agcms", $_SERVER['DOCUMENT_ROOT'].'/theme/locale');
+bind_textdomain_codeset("agcms", 'UTF-8');
 textdomain("agcms");
 
 require_once $_SERVER['DOCUMENT_ROOT'].'/admin/inc/logon.php';
@@ -11,7 +12,8 @@ require_once $_SERVER['DOCUMENT_ROOT'].'/admin/inc/logon.php';
 function sendEmail($id, $from, $interests, $subject, $text) {
 	global $mysqli;
 	if(!$mysqli->fetch_array('SELECT `id` FROM `newsmails` WHERE `sendt` = 0'))
-		return array('error' => _('Nyhedsbrevet er allerede afsendt!'));
+		//Nyhedsbrevet er allerede afsendt!
+		return array('error' => _('The newsletter has already been sent!'));
 	
 	saveEmail($id, $from, $interests, $subject, $text);
 
