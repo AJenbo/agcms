@@ -702,7 +702,7 @@ function get_db_error() {
 			
 			$(\'status\').innerHTML = \'\';
 			$(\'loading\').style.visibility = \'hidden\';
-			$(\'errors\').innerHTML = $(\'errors\').innerHTML+\'<br />\'+sprintf(\''._('The scan took %d seconds.').'\', Math.round((new Date().getTime()-starttime)/1000).toString());
+			$(\'errors\').innerHTML = $(\'errors\').innerHTML+\'<br />\'+(\''._('The scan took %d seconds.').'\'.replace(/[%]d/g, Math.round((new Date().getTime()-starttime)/1000).toString()));
 		}
 		
 		
