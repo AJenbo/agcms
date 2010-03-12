@@ -1680,7 +1680,7 @@ function htmlUrlDecode($text) {
 
 function updateSide($id, $navn, $keywords, $pris, $billed, $beskrivelse, $for, $text, $varenr, $burde, $fra, $krav, $maerke) {
 	global $mysqli;
-	$mysqli->query("UPDATE `sider` SET `dato` = now(), `navn` = '".addcslashes($navn, "'\\")."', `keywords` = '".$keywords."', `pris` = '".$pris."', `text` = '".htmlUrlDecode($text)."', `varenr` = '".$varenr."', `for` = '".$for."', `beskrivelse` = '".htmlUrlDecode($beskrivelse)."', `krav` = '".$krav."', `maerke` = '".$maerke."', `billed` = '".$billed."', `fra` = ".$fra.", `burde` = ".$burde." WHERE `id` = ".$id." LIMIT 1");
+	$mysqli->query("UPDATE `sider` SET `dato` = now(), `navn` = '".addcslashes($navn, "'\\")."', `keywords` = '".addcslashes($keywords, "'\\")."', `pris` = '".addcslashes($pris, "'\\")."', `text` = '".htmlUrlDecode($text)."', `varenr` = '".addcslashes($varenr, "'\\")."', `for` = '".addcslashes($for, "'\\")."', `beskrivelse` = '".htmlUrlDecode($beskrivelse)."', `krav` = '".addcslashes($krav, "'\\")."', `maerke` = '".addcslashes($maerke, "'\\")."', `billed` = '".addcslashes($billed, "'\\")."', `fra` = ".addcslashes($fra, "'\\").", `burde` = ".addcslashes($burde, "'\\")." WHERE `id` = ".addcslashes($id, "'\\")." LIMIT 1");
 	return true;
 }
 
