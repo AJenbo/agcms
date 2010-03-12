@@ -3,13 +3,14 @@ function listInsertRow(listid) {
 	var footer = $('list'+listid+'footer');
 	
 	var cells = '';
+	var rowlink = 0;
 	if(listlink[listid] == 1) {
 		for(i=0; i<footer.childNodes.length-2; i++) {
 			if(cells)
 				cells += '<';
 			cells += htmlspecialchars(footer.childNodes[i].firstChild.value);
 		}
-		var rowlink = footer.childNodes[footer.childNodes.length-2].firstChild.value;
+		rowlink = footer.childNodes[footer.childNodes.length-2].firstChild.value;
 	} else {
 		for(i=0; i<footer.childNodes.length-1; i++) {
 			if(cells)
@@ -91,13 +92,14 @@ function listUpdateRow(listid, rowid) {
 	var row = $('list_row'+rowid);
 	
 	var cells = '';
+	var rowlink = 0;
 	if(listlink[listid] == 1) {
 		for(i=0; i<row.childNodes.length-2; i++) {
 			if(cells)
 				cells += '<';
 			cells += htmlspecialchars(row.childNodes[i].firstChild.value);
 		}
-		var rowlink = row.childNodes[row.childNodes.length-2].firstChild.value;
+		rowlink = row.childNodes[row.childNodes.length-2].firstChild.value;
 	} else {
 		for(i=0; i<row.childNodes.length-1; i++) {
 			if(cells)
@@ -141,7 +143,7 @@ function listSizeFooter(listid) {
 	var row = $('list'+listid+'footer');
 	
 	for(var i=0; i<row.childNodes.length-1; i++) {
-		row.childNodes[i].firstChild.style.width = row.childNodes[i].clientWidth-2+'px';
+		row.childNodes[i].firstChild.style.width = row.childNodes[i].clientWidth+'px';
 	}
 	for(i=0; i<row.childNodes.length-1; i++) {
 		row.childNodes[i].lastChild.style.display = 'none';
