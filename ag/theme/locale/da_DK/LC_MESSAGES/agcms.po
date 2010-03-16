@@ -1,0 +1,2919 @@
+# Danish translation of agcms.
+# Copyright (C) 2010 Arms Gallery A/S
+# This file is distributed under the same license as the agcms package.
+# Anders Jenbo <anders@jenbo.dk>, 2010.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: \n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2010-03-10 17:37+0100\n"
+"PO-Revision-Date: 2010-03-16 14:14+0100\n"
+"Last-Translator: Anders Jenbo <anders@jenbo.dk>\n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#: index.php:413
+msgid "Page could not be found. Try searching for a similar page."
+msgstr "Siden kunne ikke findes. Prøv eventuelt at søge efter en lignende side."
+
+#: index.php:415
+msgid "Contains"
+msgstr "Indeholder"
+
+#: index.php:419
+#: explorer.php:697
+#: fakturas.php:281
+#: mainmenu.php:64
+msgid "Search"
+msgstr "Søg"
+
+#: index.php:419
+msgid "Part No."
+msgstr "Varenummer"
+
+#: index.php:419
+msgid "Without the words"
+msgstr "Uden ordene"
+
+#: index.php:419
+msgid "Enhanced:"
+msgstr "Udvidet:"
+
+#: index.php:419
+msgid "Min price"
+msgstr "Min pris"
+
+#: index.php:419
+msgid "Max price"
+msgstr "Max pris"
+
+#: index.php:419
+msgid "Brand:"
+msgstr "Mærke:"
+
+#: index.php:419
+#: fakturas.php:153
+#: fakturas.php:190
+#: fakturas.php:201
+msgid "All"
+msgstr "Alle"
+
+#: send.php:20
+msgid "No e-mails to send."
+msgstr "Ingen emails at sende."
+
+#: send.php:93
+#, php-format
+msgid "%d e-mail was sent."
+msgid_plural "%d e-mails was sent."
+msgstr[0] "%d e-Mail blev sendt."
+msgstr[1] "%d e-Mails blev sendt."
+
+#: index.php:86
+#: index.php:88
+#: index.php:1034
+#: index.php:1035
+msgid "Payment"
+msgstr "Betaling"
+
+#: index.php:120
+#: index.php:121
+#: index.php:122
+msgid "Order #"
+msgstr "Ordre #"
+
+#: index.php:128
+#: faktura.php:317
+#: faktura.php:1484
+msgid "Quantity"
+msgstr "Antal"
+
+#: index.php:129
+#: faktura.php:318
+#: faktura.php:1485
+msgid "Title"
+msgstr "Benævnelse"
+
+#: index.php:130
+#: faktura.php:319
+#: faktura.php:1486
+msgid "unit price"
+msgstr "á pris"
+
+#: index.php:131
+#: faktura.php:320
+#: faktura.php:1487
+msgid "Total"
+msgstr "Total"
+
+#: index.php:138
+#: faktura.php:327
+#: faktura.php:1494
+msgid "Net Amount"
+msgstr "Nettobeløb"
+
+#: index.php:145
+#: faktura.php:340
+#: faktura.php:1508
+msgid "Freight"
+msgstr "Fragt"
+
+#: index.php:151
+#: faktura.php:346
+#: faktura.php:1521
+msgid "VAT Amount"
+msgstr "Momsbeløb"
+
+#: index.php:155
+msgid "All figures are in DKK"
+msgstr "Alle beløb er i DKK"
+
+#: index.php:156
+#: faktura.php:358
+#: faktura.php:1526
+msgid "TO PAY"
+msgstr "AT BETALE"
+
+#: index.php:173
+#: index.php:684
+#: index.php:797
+#: faktura.php:374
+#: faktura.php:1553
+msgid "Note:"
+msgstr "Notat:"
+
+#: index.php:176
+#: index.php:1049
+msgid "Continue"
+msgstr "Fortsæt"
+
+#: index.php:228
+#: index.php:229
+#: index.php:230
+#: fakturas.php:224
+msgid "Recipient"
+msgstr "Modtager"
+
+#: index.php:242
+#: index.php:321
+#: index.php:634
+#: faktura.php:281
+msgid "Phone:"
+msgstr "Telefon:"
+
+#: index.php:244
+#: index.php:249
+#: index.php:323
+msgid "Get address"
+msgstr "Hent adresse"
+
+#: index.php:247
+#: index.php:668
+msgid "Mobile:"
+msgstr "Mobil:"
+
+#: index.php:252
+#: index.php:260
+#: index.php:328
+#: index.php:629
+#: explorer.php:719
+#: faktura.php:1368
+#: faktura.php:1425
+#: faktura.php:1431
+#: index.php:76
+#: index.php:527
+#: index.php:587
+#: index.php:1282
+#: index.php:1428
+#: index.php:1459
+msgid "Name:"
+msgstr "Navn:"
+
+#: index.php:265
+#: index.php:345
+#: index.php:646
+#: faktura.php:1380
+#: faktura.php:1437
+#: index.php:589
+msgid "Address:"
+msgstr "Adresse:"
+
+#: index.php:273
+#: index.php:355
+#: index.php:652
+#: faktura.php:1386
+#: faktura.php:1449
+msgid "Postbox:"
+msgstr "Postboks:"
+
+#: index.php:278
+#: index.php:362
+#: index.php:658
+#: faktura.php:1392
+#: faktura.php:1455
+msgid "Zipcode:"
+msgstr "Postnr.:"
+
+#: index.php:280
+#: index.php:364
+#: index.php:661
+#: faktura.php:1395
+#: faktura.php:1397
+#: faktura.php:1458
+#: faktura.php:1460
+#: index.php:592
+msgid "City:"
+msgstr "By:"
+
+#: index.php:290
+#: index.php:376
+#: index.php:664
+#: faktura.php:1400
+#: faktura.php:1463
+#: index.php:590
+msgid "Country:"
+msgstr "Land:"
+
+#: index.php:306
+#: faktura.php:1362
+#: index.php:588
+#: index.php:727
+msgid "E-mail:"
+msgstr "Email:"
+
+#: index.php:316
+#: faktura.php:1415
+msgid "Other delivery address"
+msgstr "Anden leveringsadresse"
+
+#: index.php:338
+#: index.php:640
+#: faktura.php:298
+#: faktura.php:1374
+msgid "Attn.:"
+msgstr "Att:"
+
+#: index.php:389
+msgid "Proceed to the terms of trade"
+msgstr "Fortsæt til handelsbetingelserne"
+
+#: index.php:400
+#: index.php:401
+#: index.php:402
+msgid "Trade Conditions"
+msgstr "Handelsbetingelser"
+
+#: index.php:425
+msgid "I hereby agree to the terms of trade"
+msgstr "Jeg accepterer hermed handelsbetingelserne"
+
+#: index.php:429
+#: index.php:430
+#: index.php:431
+#: index.php:511
+#: index.php:512
+#: index.php:513
+#: fakturas.php:210
+#: fakturas.php:247
+msgid "Error"
+msgstr "Fejl"
+
+#: index.php:433
+#: index.php:434
+#: index.php:435
+#: index.php:438
+#: index.php:439
+#: index.php:440
+#: index.php:443
+#: index.php:444
+#: index.php:445
+msgid "Status"
+msgstr "Status"
+
+#: index.php:436
+msgid "The payment was rejected at first attempt. Due to security measures at PBS, you must contact the store before you can try to pay again."
+msgstr "Betalingen blev afvist under første forsøg. Grundet sikkerhedsforanstaltninger hos PBS, skal de kontakte butikken før de kan forsøge at betale igen."
+
+#: index.php:441
+msgid "Payment received."
+msgstr "Betalingen er modtaget."
+
+#: index.php:446
+msgid "The payment was received and the package is sent."
+msgstr "Betalingen er modtaget og pakken er sendt."
+
+#: index.php:456
+msgid "Shipment Number:"
+msgstr "Forsendelsens nummer:"
+
+#: index.php:476
+#: index.php:478
+msgid "The payment is already received in cash."
+msgstr "Betalingen er allerede modtaget kontant."
+
+#: index.php:480
+msgid "The transaction is canceled."
+msgstr "Handlen er annulleret."
+
+#: index.php:482
+msgid "Payment rejected."
+msgstr "Betalingen er afvist."
+
+#: index.php:484
+msgid "An errror occured."
+msgstr "Der opstod en fejl."
+
+#: index.php:514
+msgid "An unknown error occured."
+msgstr "Der opstod en ukendt fejl."
+
+#: index.php:519
+msgid "No Status"
+msgstr "Ingen status"
+
+#: index.php:520
+#, php-format
+msgid "There was an error on the payment page of online invoice #%d!"
+msgstr "Der opstod en fejl på betalings siden ved online faktura #%d!"
+
+#: index.php:527
+#: index.php:555
+msgid "The communication could not be validated!"
+msgstr "Kommunikationen kunne ikke valideres!"
+
+#: index.php:529
+msgid "The payment does not exist in our system."
+msgstr "Betalingen findes ikke i vores system."
+
+#: index.php:530
+#, php-format
+msgid "A user tried to pay online invoice #%d, which is not in the system!"
+msgstr "En bruger forsøgte at betale online faktura #%d som ikke findes i systemet!"
+
+#: index.php:532
+#: index.php:533
+#: index.php:534
+#: index.php:538
+#: index.php:539
+#: index.php:540
+#: index.php:584
+#: index.php:585
+#: index.php:586
+msgid "Reciept"
+msgstr "Kvittering"
+
+#: index.php:535
+msgid "This trade has been canceled or refused."
+msgstr "Denne handel er blevet annulleret eller afvist."
+
+#: index.php:536
+#, php-format
+msgid "A customer tried to see the status page for online invoice #%d which is canceled or rejected."
+msgstr "En kunde forsøgte at se status-side for online faktura #%d som er annulleret eller afvist."
+
+#: index.php:541
+msgid "Payment is registered and you ought to have received a receipt by email."
+msgstr "Betalingen er registreret og du skulle have modtaget en kvitering via email."
+
+#: index.php:542
+#, php-format
+msgid "A customer tried to see the status page for online invoice #%d, which is already paid."
+msgstr "En kunde forsøgte at se status-side for online faktura #%d som allerede er betalt."
+
+#: index.php:548
+#: index.php:549
+msgid "Error #"
+msgstr "Fejl #"
+
+#: index.php:550
+msgid ""
+"An error occurred during the payment.<br />\n"
+"Error number:"
+msgstr ""
+"Der opstod en fejl under betalingen.<br />\n"
+"Fejl nummer:"
+
+#: index.php:556
+msgid "Data was manipulated."
+msgstr "Fusk med data."
+
+#: index.php:557
+#, php-format
+msgid "Communication could not be validated as %s was about to pay!"
+msgstr "Kommunikationen kunne ikke valideres da %s skulle betale!"
+
+#: index.php:560
+#: index.php:561
+msgid "Payment page is not responding."
+msgstr "Betalingssiden svarer ikke."
+
+#: index.php:562
+#, php-format
+msgid "Payment page did not answer when %s was about to pay!"
+msgstr "Betalingssiden svarede ikke da %s skulle betale!"
+
+#: index.php:565
+#: index.php:566
+msgid "Payment was refused by the bank, the card has expired."
+msgstr "Betalingen blev afvist af banken, kortet er udløbet."
+
+#: index.php:567
+#, php-format
+msgid "Payment was refused by the bank, %s's card has expired!"
+msgstr "Betalingen blev afvist af banken, %s's kort er udløbet!"
+
+#: index.php:570
+#: index.php:571
+msgid "Payment was refused by the bank, contact your bank."
+msgstr "Betalingen blev afvist af banken, kontakt Deres bank."
+
+#: index.php:572
+#, php-format
+msgid "Payment was refused by the bank, %s must contact his or her bank."
+msgstr "Betalingen blev afvist af banken, %s skal kontakte sin bank."
+
+#: index.php:575
+#: index.php:577
+msgid "The payment was refused because the customer has already attempted to pay."
+msgstr "Betalingen blev afvist da den allerede er forsøgt betalt."
+
+#: index.php:576
+msgid "Payment was refused."
+msgstr "Betalingen blev afvist."
+
+#: index.php:594
+msgid ""
+"<p style=\"text-align:center;\"><img src=\"images/ok.png\" alt=\"\" /></p>\n"
+"\n"
+"<p>Payment is now accepted. We will send your goods by mail as soon as possible.</p>\n"
+"\n"
+"<p>A copy of your order is sent to your email.</p>"
+msgstr ""
+"<p style=\"text-align:center;\"><img src=\"images/ok.png\" alt=\"\" /></p>\n"
+"\n"
+"<p>Betalingen er nu godkendt. Vi sender Deres vare med posten hurtigst muligt.</p>\n"
+"\n"
+"<p>En kopi af Deres ordre er sendt til Deres email.</p>"
+
+#: index.php:610
+#: index.php:772
+#: index.php:866
+msgid "Payment complete"
+msgstr "Betaling gennemført"
+
+#: index.php:611
+msgid ""
+"The customer has approved the payment and the following order must be shipped to the customer.<br />\n"
+"<br />\n"
+"Remember to 'expedite' the payment when the product is sent (The payment is first transferred from the customer's account once we hit 'Expedite')."
+msgstr ""
+"Kunden har godkendt betalingen og nedenstående ordre skal sendes til kunden.<br />\n"
+"<br />\n"
+"Husk at \"ekspedere\" betalingen når varen sendes (Betaling overføres først fra kundens konto, når vi trykker \"Ekspedér\")."
+
+#: index.php:623
+#, php-format
+msgid "Ordre %d - Payment complete"
+msgstr "Ordre %d - Betaling gennemført"
+
+#: index.php:628
+msgid "Delivery address:"
+msgstr "Lev. adresse:"
+
+#: index.php:693
+#, php-format
+msgid ""
+"<p>Date: %s<br />\n"
+"</p>\n"
+"<table><tr><td></td><td>customer:</td>%s</tr>\n"
+"<tr><td>Email:</td><td><a href=\"mailto:%s\">%s</a></td></tr></table>\n"
+"<p>Payment for your order no. %s is now approved. Your product will be shipped as soon as possible. There will automatically be sent an email with a Track &amp; Trace link where they can follow the package.<br />\n"
+"</p>\n"
+"<table id=\"faktura\" cellspacing=\"0\"><thead><tr><td class=\"td1\">Number</td><td>Quantity</td><td>Title</td><td class=\"td3 tal\">unit price</td><td class=\"td4 tal\">Total</td></tr></thead><tfoot>\n"
+"<tr style=\"height:auto;min-height:auto;max-height:auto;\"><td>&nbsp;</td><td>&nbsp;</td><td class=\"tal\">Net Amount</td><td class=\"tal\">%s</td></tr>\n"
+"<tr><td>&nbsp;</td><td>&nbsp;</td><td class=\"tal\">Freight</td><td class=\"tal\">%s</td></tr>\n"
+"<tr><td>&nbsp;</td><td style=\"text-align:right\" class=\"tal\">%d%%</td><td class=\"tal\">Vat Amount</td><td class=\"tal\">%s</td></tr>\n"
+"<tr class=\"border\"><td colspan=\"2\">All figures are in DKK</td><td style=\"text-align:center; font-weight:bold;\">TO PAY </td><td class=\"tal\"><big>%s</big></td></tr></tfoot>\n"
+"<tbody>%s</tbody></table>%s\n"
+"<p>Sincerely the computer<br />\n"
+"</p>\n"
+"\n"
+"<p>%s<br />\n"
+"%s<br />\n"
+"%s<br />\n"
+"%s %s.<br />\n"
+"Tel. %s<br />\n"
+"<a href=\"mailto:%s\">%s</a></p>"
+msgstr ""
+"<p>Dato: %s<br />\n"
+"</p>\n"
+"<table><tr><td></td><td>Kunde:</td>%s</tr>\n"
+"<tr><td>Email:</td><td><a href=\"mailto:%s\">%s</a></td></tr></table>\n"
+"<p>Betaling for Deres ordre nr. %s er nu godkendt. Deres vare vil blive afsendt hurtigst muligt. Der vil automatisk blive sendt en email med et Track &amp; Trace link hvor de kan følge pakken.<br />\n"
+"</p>\n"
+"<table id=\"faktura\" cellspacing=\"0\"><thead><tr><td class=\"td1\">Antal</td><td>Benævnelse</td><td class=\"td3 tal\">á pris</td><td class=\"td4 tal\">Total</td></tr></thead><tfoot>\n"
+"<tr style=\"height:auto;min-height:auto;max-height:auto;\"><td>&nbsp;</td><td>&nbsp;</td><td class=\"tal\">Nettobeløb</td><td class=\"tal\">%s</td></tr>\n"
+"<tr><td>&nbsp;</td><td>&nbsp;</td><td class=\"tal\">Fragt</td><td class=\"tal\">%s</td></tr>\n"
+"<tr><td>&nbsp;</td><td style=\"text-align:right\" class=\"tal\">%d%%</td><td class=\"tal\">Momsbeløb</td><td class=\"tal\">%s</td></tr>\n"
+"<tr class=\"border\"><td colspan=\"2\">Alle beløb er i DKK</td><td style=\"text-align:center; font-weight:bold;\">AT BETALE</td><td class=\"tal\"><big>%s</big></td></tr></tfoot>\n"
+"<tbody>%s</tbody></table>%s\n"
+"<p>Med venlig hilsen<br />\n"
+"</p>\n"
+"\n"
+"<p>%s<br />\n"
+"%s<br />\n"
+"%s<br />\n"
+"%s %s.<br />\n"
+"Tlf. %s<br />\n"
+"<a href=\"mailto:%s\">%s</a></p>"
+
+#: index.php:756
+#, php-format
+msgid "Order #%d - payment completed"
+msgstr "Ordre #%d - Betaling gennemført"
+
+#: index.php:780
+#: index.php:848
+#, php-format
+msgid "Online Invoice #%s : Payment completed"
+msgstr "Online faktura #%s : Betaling gennemført"
+
+#: index.php:801
+#, php-format
+msgid ""
+"<p>The %s, %s approved the online Invoice #%s, which was created by %s.<br />\n"
+"The order was as following:</p>\n"
+"<table id=\"faktura\" cellspacing=\"0\"><thead><tr><td class=\"td1\">Quantity</td><td>Title</td><td class=\"td3 tal\">unit price</td><td class=\"td4 tal\">Total</td></tr></thead><tfoot>\n"
+"<tr style=\"height:auto;min-height:auto;max-height:auto;\"><td>&nbsp;</td><td>&nbsp;</td><td class=\"tal\">Net Amount</td><td class=\"tal\">%s</td></tr>\n"
+"<tr><td>&nbsp;</td><td>&nbsp;</td><td class=\"tal\">Freight</td><td class=\"tal\">%s</td></tr>\n"
+"<tr><td>&nbsp;</td><td style=\"text-align:right\" class=\"tal\">%d%%</td><td class=\"tal\">VAT Amount</td><td class=\"tal\">%s</td></tr>\n"
+"<tr class=\"border\"><td colspan=\"2\">All figures are in DKK</td><td style=\"text-align:center; font-weight:bold;\">TO PAY</td><td class=\"tal\"><big>%s</big></td></tr></tfoot>\n"
+"<tbody>%s</tbody></table>%s\n"
+"<p>Sincerely,</p>\n"
+"\n"
+"<p>The computer</p>"
+msgstr ""
+"<p>Den %s godkendte %s online faktura #%s, Som blev oprettet af %s.<br />\n"
+"Ordren lød på følgende:</p>\n"
+"<table id=\"faktura\" cellspacing=\"0\"><thead><tr><td class=\"td1\">Antal</td><td>Benævnelse</td><td class=\"td3 tal\">á pris</td><td class=\"td4 tal\">Total</td></tr></thead><tfoot>\n"
+"<tr style=\"height:auto;min-height:auto;max-height:auto;\"><td>&nbsp;</td><td>&nbsp;</td><td class=\"tal\">Nettobeløb</td><td class=\"tal\">%s</td></tr>\n"
+"<tr><td>&nbsp;</td><td>&nbsp;</td><td class=\"tal\">Fragt</td><td class=\"tal\">%s</td></tr>\n"
+"<tr><td>&nbsp;</td><td style=\"text-align:right\" class=\"tal\">%d%%</td><td class=\"tal\">Momsbeløb</td><td class=\"tal\">%s</td></tr>\n"
+"<tr class=\"border\"><td colspan=\"2\">Alle beløb er i DKK</td><td style=\"text-align:center; font-weight:bold;\">AT BETALE</td><td class=\"tal\"><big>%s</big></td></tr></tfoot>\n"
+"<tbody>%s</tbody></table>%s\n"
+"<p>Med venlig hilsen</p>\n"
+"\n"
+"<p>Computeren</p>"
+
+#: index.php:873
+msgid "Denied/interrupted. The payment was denied or interrupted."
+msgstr "Nægtet/Afbrudt. Betalingen er nægtet eller afbrudt."
+
+#: index.php:877
+msgid "Ongoing. Payment awaiting an response from the bank."
+msgstr "I gang. Betaling venter på svar fra banken."
+
+#: index.php:880
+msgid "Canceled. The card payment is shredded by the store before cash in."
+msgstr "Annulleret. Kortbetalingen er makuleret af butikken før indløsningen."
+
+#: index.php:883
+msgid "Commenced. Payment is initiated by the customer."
+msgstr "Påbegyndt. Betalingen er initieret af køberen."
+
+#: index.php:886
+msgid "Authorized. Card payment is authorized; awaiting confirmation and cash in."
+msgstr "Autoriseret. Kortbetaling er autoriseret; venter på bekræftelse og indløsning."
+
+#: index.php:889
+msgid "Cash in failed. Card payments can not be cashed in."
+msgstr "Indløsning mislykkedes. Kortbetalingen kunne ikke indløses."
+
+#: index.php:892
+msgid "Cash-in in progress. Redeeming card payment is currently underway."
+msgstr "Indløsning i gang. Indløsning af kortbetalingen er i øjeblikket i gang."
+
+#: index.php:895
+msgid "Confirmed. The card payments is confirmed and will be cashed in."
+msgstr "Bekræftet. Kortbetalingen er bekræftet og bliver indløst."
+
+#: index.php:898
+msgid "Sent to bank or Svea Ekonomi. Applies only to the Payment Method INVOICE"
+msgstr "Sendt til Svea Ekonomi banken. Gælder kun for betalingsmetoden INVOICE"
+
+#: index.php:940
+#: index.php:1011
+#, php-format
+msgid "Attn.: %s - Online invoice #%d : %s"
+msgstr "Att: %s - Online faktura #%d : %s"
+
+#: index.php:955
+#, php-format
+msgid ""
+"<p>%s<br />\n"
+"Click <a href=\"%s/admin/faktura.php?id=%d\">here</a> to open the invoice page.</p>\n"
+"<p><a href=\"mailto:%s\">%s</a><br />\n"
+"Mobile: %s<br />\n"
+"Phone: %s<br />\n"
+"Delivery phone: %s</p>\n"
+"<table id=\"faktura\" cellspacing=\"0\"><thead><tr><td class=\"td1\">Quantity</td><td>Title</td><td class=\"td3 tal\">unit price</td><td class=\"td4 tal\">Total</td></tr></thead>\n"
+"<tfoot><tr style=\"height:auto;min-height:auto;max-height:auto;\"><td>&nbsp;</td><td>&nbsp;</td><td class=\"tal\">Net Amount</td><td class=\"tal\">%s</td></tr>\n"
+"<tr><td>&nbsp;</td><td>&nbsp;</td><td class=\"tal\">Freight</td><td class=\"tal\">%s</td></tr>\n"
+"<tr><td>&nbsp;</td><td style=\"text-align:right\" class=\"tal\">%d%%</td><td class=\"tal\">VAT Amount</td><td class=\"tal\">%s</td></tr>\n"
+"<tr class=\"border\"><td colspan=\"2\">All figures are in DKK</td><td style=\"text-align:center; font-weight:bold;\">TO PAY</td><td class=\"tal\"><big>%s</big></td></tr></tfoot>\n"
+"<tbody>%s</tbody></table>\n"
+"<p>Sincerely, the computer</p>"
+msgstr ""
+"<p>%s<br />\n"
+"Klik <a href=\"%s/admin/faktura.php?id=%d\">her</a> for at åbne faktura siden.</p>\n"
+"<p><a href=\"mailto:%s\">%s</a><br />\n"
+"Mobil: %s<br />\n"
+"Tlf.: %s<br />\n"
+"Leverings tlf.: %s</p>\n"
+"<table id=\"faktura\" cellspacing=\"0\"><thead><tr><td class=\"td1\">Antal</td><td>Benævnelse</td><td class=\"td3 tal\">á pris</td><td class=\"td4 tal\">Total</td></tr></thead>\n"
+"<tfoot><tr style=\"height:auto;min-height:auto;max-height:auto;\"><td>&nbsp;</td><td>&nbsp;</td><td class=\"tal\">Nettobeløb</td><td class=\"tal\">%s</td></tr>\n"
+"<tr><td>&nbsp;</td><td>&nbsp;</td><td class=\"tal\">Fragt</td><td class=\"tal\">%s</td></tr>\n"
+"<tr><td>&nbsp;</td><td style=\"text-align:right\" class=\"tal\">%d%%</td><td class=\"tal\">Momsbeløb</td><td class=\"tal\">%s</td></tr>\n"
+"<tr class=\"border\"><td colspan=\"2\">Alle beløb er i DKK</td><td style=\"text-align:center; font-weight:bold;\">AT BETALE</td><td class=\"tal\"><big>%s</big></td></tr></tfoot>\n"
+"<tbody>%s</tbody></table>\n"
+"<p>Mvh Computeren</p>"
+
+#: index.php:988
+#, php-format
+msgid "Online Invoice #%d: does't exist"
+msgstr "Online faktura #%d : eksisterer ikke"
+
+#: index.php:989
+#: fakturas.php:136
+msgid "Status:"
+msgstr "Status:"
+
+#: index.php:989
+msgid "Sincerely the computer"
+msgstr "Mvh Computeren"
+
+#: index.php:1041
+msgid "Order No:"
+msgstr "Ordre nr:"
+
+#: index.php:1045
+msgid "Code:"
+msgstr "Kode:"
+
+#: index.php:1052
+msgid "The code is not correct!"
+msgstr "Koden er ikke korrekt!"
+
+#: countries.php:2
+msgid "Denmark"
+msgstr "Danmark"
+
+#: countries.php:3
+msgid "Finland"
+msgstr "Finland"
+
+#: countries.php:4
+msgid "Norway"
+msgstr "Norge"
+
+#: countries.php:5
+msgid "Sweden"
+msgstr "Sverige"
+
+#: countries.php:6
+msgid "Afghanistan"
+msgstr "Afghanistan"
+
+#: countries.php:7
+msgid "Albania"
+msgstr "Albanien"
+
+#: countries.php:8
+msgid "Algeria"
+msgstr "Algeriet"
+
+#: countries.php:9
+msgid "American Samoa"
+msgstr "Samoa"
+
+#: countries.php:10
+msgid "Andorra"
+msgstr "Andorra"
+
+#: countries.php:11
+msgid "Angola"
+msgstr "Angola"
+
+#: countries.php:12
+msgid "Anguilla"
+msgstr "St. Christopher og Nevis"
+
+#: countries.php:14
+msgid "Antigua and Barbuda"
+msgstr "Antigua og Barbuda"
+
+#: countries.php:15
+msgid "Argentina"
+msgstr "Argentina"
+
+#: countries.php:16
+msgid "Armenia"
+msgstr "Armenien"
+
+#: countries.php:17
+msgid "Aruba"
+msgstr "Aruba"
+
+#: countries.php:18
+msgid "Australia"
+msgstr "Australien"
+
+#: countries.php:19
+msgid "Austria"
+msgstr "Østrig"
+
+#: countries.php:20
+msgid "Azerbaidjan"
+msgstr "Azerbajdzhan"
+
+#: countries.php:21
+msgid "Bahamas"
+msgstr "Bahama Øerne"
+
+#: countries.php:22
+msgid "Bahrain"
+msgstr "Bahrain"
+
+#: countries.php:23
+msgid "Bangladesh"
+msgstr "Bangladesh"
+
+#: countries.php:24
+msgid "Barbados"
+msgstr "Barbados"
+
+#: countries.php:25
+msgid "Belarus"
+msgstr "Hviderusland"
+
+#: countries.php:26
+msgid "Belgium"
+msgstr "Belgien"
+
+#: countries.php:27
+msgid "Belize"
+msgstr "Belize"
+
+#: countries.php:28
+msgid "Benin"
+msgstr "Benin"
+
+#: countries.php:29
+msgid "Bermuda"
+msgstr "Bermuda Øerne"
+
+#: countries.php:30
+msgid "Bhutan"
+msgstr "Bhutan"
+
+#: countries.php:31
+msgid "Bolivia"
+msgstr "Bolivia"
+
+#: countries.php:32
+msgid "Bosnia-Herzegovina"
+msgstr "Bosnien Herzegovina"
+
+#: countries.php:33
+msgid "Botswana"
+msgstr "Botswana"
+
+#: countries.php:35
+msgid "Brazil"
+msgstr "Brasilien"
+
+#: countries.php:36
+msgid "British Indian Ocean Territory"
+msgstr "British Indian Ocean Territories"
+
+#: countries.php:37
+msgid "Brunei Darussalam"
+msgstr "Brunei Darussalam"
+
+#: countries.php:38
+msgid "Bulgaria"
+msgstr "Bulgarien"
+
+#: countries.php:39
+msgid "Burkina Faso"
+msgstr "Burkina Faso"
+
+#: countries.php:40
+msgid "Burundi"
+msgstr "Burundi"
+
+#: countries.php:41
+msgid "Cambodia"
+msgstr "Cambodja"
+
+#: countries.php:42
+msgid "Cameroon"
+msgstr "Cameroun"
+
+#: countries.php:43
+msgid "Canada"
+msgstr "Canada"
+
+#: countries.php:44
+msgid "Cape Verde"
+msgstr "Cap Verde Øerne"
+
+#: countries.php:45
+msgid "Cayman Islands"
+msgstr "Cayman Øerne"
+
+#: countries.php:46
+msgid "Central African Republic"
+msgstr "Centralafrikanske Republik"
+
+#: countries.php:47
+msgid "Chad"
+msgstr "Tchad"
+
+#: countries.php:48
+msgid "Chile"
+msgstr "Chile"
+
+#: countries.php:49
+msgid "China"
+msgstr "Kina"
+
+#: countries.php:52
+msgid "Colombia"
+msgstr "Columbia"
+
+#: countries.php:53
+msgid "Comoros"
+msgstr "Comorerne"
+
+#: countries.php:54
+msgid "Congo"
+msgstr "Congo Republikken"
+
+#: countries.php:55
+msgid "Cook Islands"
+msgstr "Cook Islands"
+
+#: countries.php:56
+msgid "Costa Rica"
+msgstr "Costa Rica"
+
+#: countries.php:57
+msgid "Croatia"
+msgstr "Kroatien"
+
+#: countries.php:58
+msgid "Cuba"
+msgstr "Cuba"
+
+#: countries.php:59
+msgid "Cyprus"
+msgstr "Cypern"
+
+#: countries.php:60
+msgid "Czech Republic"
+msgstr "Tjekkiet"
+
+#: countries.php:61
+msgid "Djibouti"
+msgstr "Djibouti"
+
+#: countries.php:62
+msgid "Dominica"
+msgstr "Domenica"
+
+#: countries.php:63
+msgid "Dominican Republic"
+msgstr "Dominikanske Republik"
+
+#: countries.php:64
+msgid "East Timor"
+msgstr "Øst Timor"
+
+#: countries.php:65
+msgid "Ecuador"
+msgstr "Ecuador"
+
+#: countries.php:66
+msgid "Egypt"
+msgstr "Egypten"
+
+#: countries.php:67
+msgid "El Salvador"
+msgstr "El Salvador"
+
+#: countries.php:68
+msgid "Equatorial Guinea"
+msgstr ""
+
+#: countries.php:69
+msgid "Eritrea"
+msgstr ""
+
+#: countries.php:70
+msgid "Estonia"
+msgstr ""
+
+#: countries.php:71
+msgid "Ethiopia"
+msgstr ""
+
+#: countries.php:72
+msgid "Falkland Islands"
+msgstr ""
+
+#: countries.php:73
+msgid "Faroe Islands"
+msgstr ""
+
+#: countries.php:74
+msgid "Fiji"
+msgstr ""
+
+#: countries.php:76
+msgid "France"
+msgstr ""
+
+#: countries.php:78
+msgid "French Guyana"
+msgstr ""
+
+#: countries.php:79
+msgid "French Southern Territories"
+msgstr ""
+
+#: countries.php:80
+msgid "Gabon"
+msgstr ""
+
+#: countries.php:81
+msgid "Gambia"
+msgstr ""
+
+#: countries.php:82
+msgid "Georgia"
+msgstr ""
+
+#: countries.php:83
+msgid "Germany"
+msgstr ""
+
+#: countries.php:84
+msgid "Ghana"
+msgstr ""
+
+#: countries.php:85
+msgid "Gibraltar"
+msgstr ""
+
+#: countries.php:86
+msgid "Great Britain"
+msgstr ""
+
+#: countries.php:87
+msgid "Greece"
+msgstr ""
+
+#: countries.php:88
+msgid "Greenland"
+msgstr ""
+
+#: countries.php:89
+msgid "Grenada"
+msgstr ""
+
+#: countries.php:90
+msgid "Guadeloupe (French)"
+msgstr ""
+
+#: countries.php:91
+msgid "Guam (USA)"
+msgstr ""
+
+#: countries.php:92
+msgid "Guatemala"
+msgstr ""
+
+#: countries.php:93
+msgid "Guinea"
+msgstr ""
+
+#: countries.php:94
+msgid "Guinea Bissau"
+msgstr ""
+
+#: countries.php:95
+msgid "Guyana"
+msgstr ""
+
+#: countries.php:96
+msgid "Haiti"
+msgstr ""
+
+#: countries.php:98
+msgid "Honduras"
+msgstr ""
+
+#: countries.php:99
+msgid "Hong Kong"
+msgstr ""
+
+#: countries.php:100
+msgid "Hungary"
+msgstr ""
+
+#: countries.php:101
+msgid "Iceland"
+msgstr ""
+
+#: countries.php:102
+msgid "India"
+msgstr ""
+
+#: countries.php:103
+msgid "Indonesia"
+msgstr ""
+
+#: countries.php:104
+msgid "Iran"
+msgstr ""
+
+#: countries.php:105
+msgid "Iraq"
+msgstr ""
+
+#: countries.php:106
+msgid "Ireland"
+msgstr ""
+
+#: countries.php:107
+msgid "Israel"
+msgstr ""
+
+#: countries.php:108
+msgid "Italy"
+msgstr ""
+
+#: countries.php:109
+msgid "Ivory Coast"
+msgstr ""
+
+#: countries.php:110
+msgid "Jamaica"
+msgstr ""
+
+#: countries.php:111
+msgid "Japan"
+msgstr ""
+
+#: countries.php:112
+msgid "Jordan"
+msgstr ""
+
+#: countries.php:113
+msgid "Kazakhstan"
+msgstr ""
+
+#: countries.php:114
+msgid "Kenya"
+msgstr ""
+
+#: countries.php:115
+msgid "Kiribati"
+msgstr ""
+
+#: countries.php:116
+msgid "Kuwait"
+msgstr ""
+
+#: countries.php:117
+msgid "Kyrgyzstan"
+msgstr ""
+
+#: countries.php:118
+msgid "Laos"
+msgstr ""
+
+#: countries.php:119
+msgid "Latvia"
+msgstr ""
+
+#: countries.php:120
+msgid "Lebanon"
+msgstr ""
+
+#: countries.php:121
+msgid "Lesotho"
+msgstr ""
+
+#: countries.php:122
+msgid "Liberia"
+msgstr ""
+
+#: countries.php:123
+msgid "Libya"
+msgstr ""
+
+#: countries.php:124
+msgid "Liechtenstein"
+msgstr ""
+
+#: countries.php:125
+msgid "Lithuania"
+msgstr ""
+
+#: countries.php:126
+msgid "Luxembourg"
+msgstr ""
+
+#: countries.php:127
+msgid "Macau"
+msgstr ""
+
+#: countries.php:128
+msgid "Macedonia"
+msgstr ""
+
+#: countries.php:129
+msgid "Madagascar"
+msgstr ""
+
+#: countries.php:130
+msgid "Malawi"
+msgstr ""
+
+#: countries.php:131
+msgid "Malaysia"
+msgstr ""
+
+#: countries.php:132
+msgid "Maldives"
+msgstr ""
+
+#: countries.php:133
+msgid "Mali"
+msgstr ""
+
+#: countries.php:134
+msgid "Malta"
+msgstr ""
+
+#: countries.php:136
+msgid "Martinique (French)"
+msgstr ""
+
+#: countries.php:137
+msgid "Mauritania"
+msgstr ""
+
+#: countries.php:138
+msgid "Mauritius"
+msgstr ""
+
+#: countries.php:139
+msgid "Mayotte"
+msgstr ""
+
+#: countries.php:140
+msgid "Mexico"
+msgstr ""
+
+#: countries.php:141
+msgid "Micronesia"
+msgstr ""
+
+#: countries.php:142
+msgid "Moldavia"
+msgstr ""
+
+#: countries.php:143
+msgid "Monaco"
+msgstr ""
+
+#: countries.php:144
+msgid "Mongolia"
+msgstr ""
+
+#: countries.php:145
+msgid "Montenegro"
+msgstr ""
+
+#: countries.php:146
+msgid "Montserrat"
+msgstr ""
+
+#: countries.php:147
+msgid "Morocco"
+msgstr ""
+
+#: countries.php:148
+msgid "Mozambique"
+msgstr ""
+
+#: countries.php:149
+msgid "Myanmar"
+msgstr ""
+
+#: countries.php:150
+msgid "Namibia"
+msgstr ""
+
+#: countries.php:151
+msgid "Nauru"
+msgstr ""
+
+#: countries.php:152
+msgid "Nepal"
+msgstr ""
+
+#: countries.php:153
+msgid "Netherlands"
+msgstr ""
+
+#: countries.php:154
+msgid "Netherlands Antilles"
+msgstr ""
+
+#: countries.php:155
+msgid "Network"
+msgstr ""
+
+#: countries.php:157
+msgid "New Caledonia (French)"
+msgstr ""
+
+#: countries.php:158
+msgid "New Zealand"
+msgstr ""
+
+#: countries.php:159
+msgid "Nicaragua"
+msgstr ""
+
+#: countries.php:160
+msgid "Nigeria"
+msgstr ""
+
+#: countries.php:163
+msgid "North Korea"
+msgstr ""
+
+#: countries.php:165
+msgid "Oman"
+msgstr ""
+
+#: countries.php:166
+msgid "Pakistan"
+msgstr ""
+
+#: countries.php:168
+msgid "Panama"
+msgstr ""
+
+#: countries.php:169
+msgid "Papua New Guinea"
+msgstr ""
+
+#: countries.php:170
+msgid "Paraguay"
+msgstr ""
+
+#: countries.php:171
+msgid "Peru"
+msgstr ""
+
+#: countries.php:172
+msgid "Philippines"
+msgstr ""
+
+#: countries.php:173
+msgid "Pitcairn Island"
+msgstr ""
+
+#: countries.php:174
+msgid "Poland"
+msgstr ""
+
+#: countries.php:175
+msgid "Polynesia (French)"
+msgstr ""
+
+#: countries.php:176
+msgid "Portugal"
+msgstr ""
+
+#: countries.php:177
+msgid "Puerto Rico"
+msgstr ""
+
+#: countries.php:178
+msgid "Qatar"
+msgstr ""
+
+#: countries.php:179
+msgid "Reunion (French)"
+msgstr ""
+
+#: countries.php:180
+msgid "Romania"
+msgstr ""
+
+#: countries.php:181
+msgid "Russia"
+msgstr ""
+
+#: countries.php:182
+msgid "Rwanda"
+msgstr ""
+
+#: countries.php:183
+msgid "S. Georgia & S. Sandwich Isls."
+msgstr ""
+
+#: countries.php:184
+msgid "Saint Helena"
+msgstr ""
+
+#: countries.php:185
+msgid "Saint Kitts & Nevis Anguilla"
+msgstr ""
+
+#: countries.php:186
+msgid "Saint Lucia"
+msgstr ""
+
+#: countries.php:187
+msgid "Saint Pierre and Miquelon"
+msgstr ""
+
+#: countries.php:188
+msgid "Saint Tome (Sao Tome) and Principe"
+msgstr ""
+
+#: countries.php:189
+msgid "Saint Vincent & Grenadines"
+msgstr ""
+
+#: countries.php:190
+msgid "Samoa"
+msgstr ""
+
+#: countries.php:191
+msgid "San Marino"
+msgstr ""
+
+#: countries.php:192
+msgid "Saudi Arabia"
+msgstr ""
+
+#: countries.php:193
+msgid "Senegal"
+msgstr ""
+
+#: countries.php:194
+msgid "Serbia"
+msgstr ""
+
+#: countries.php:195
+msgid "Seychelles"
+msgstr ""
+
+#: countries.php:196
+msgid "Sierra Leone"
+msgstr ""
+
+#: countries.php:197
+msgid "Singapore"
+msgstr ""
+
+#: countries.php:198
+msgid "Slovakia"
+msgstr ""
+
+#: countries.php:199
+msgid "Slovenia"
+msgstr ""
+
+#: countries.php:200
+msgid "Solomon Islands"
+msgstr ""
+
+#: countries.php:201
+msgid "Somalia"
+msgstr ""
+
+#: countries.php:202
+msgid "South Africa"
+msgstr ""
+
+#: countries.php:203
+msgid "South Korea"
+msgstr ""
+
+#: countries.php:204
+msgid "Spain"
+msgstr ""
+
+#: countries.php:205
+msgid "Sri Lanka"
+msgstr ""
+
+#: countries.php:206
+msgid "Sudan"
+msgstr ""
+
+#: countries.php:207
+msgid "Suriname"
+msgstr ""
+
+#: countries.php:209
+msgid "Swaziland"
+msgstr ""
+
+#: countries.php:210
+msgid "Switzerland"
+msgstr ""
+
+#: countries.php:211
+msgid "Syria"
+msgstr ""
+
+#: countries.php:212
+msgid "Tadjikistan"
+msgstr "Tadzhikistan"
+
+#: countries.php:213
+msgid "Taiwan"
+msgstr "Taiwan"
+
+#: countries.php:214
+msgid "Tanzania"
+msgstr ""
+
+#: countries.php:215
+msgid "Thailand"
+msgstr ""
+
+#: countries.php:216
+msgid "Togo"
+msgstr ""
+
+#: countries.php:218
+msgid "Tonga"
+msgstr ""
+
+#: countries.php:219
+msgid "Trinidad and Tobago"
+msgstr ""
+
+#: countries.php:220
+msgid "Tunisia"
+msgstr ""
+
+#: countries.php:221
+msgid "Turkey"
+msgstr ""
+
+#: countries.php:222
+msgid "Turkmenistan"
+msgstr ""
+
+#: countries.php:223
+msgid "Turks and Caicos Islands"
+msgstr ""
+
+#: countries.php:224
+msgid "Tuvalu"
+msgstr ""
+
+#: countries.php:225
+msgid "Uganda"
+msgstr ""
+
+#: countries.php:226
+msgid "Ukraine"
+msgstr ""
+
+#: countries.php:227
+msgid "United Arab Emirates"
+msgstr ""
+
+#: countries.php:228
+msgid "United States"
+msgstr ""
+
+#: countries.php:229
+msgid "Uruguay"
+msgstr ""
+
+#: countries.php:231
+msgid "Uzbekistan"
+msgstr ""
+
+#: countries.php:232
+msgid "Vanuatu"
+msgstr ""
+
+#: countries.php:233
+msgid "Vatican City State"
+msgstr ""
+
+#: countries.php:234
+msgid "Venezuela"
+msgstr ""
+
+#: countries.php:235
+msgid "Vietnam"
+msgstr ""
+
+#: countries.php:236
+msgid "Virgin Islands (British)"
+msgstr ""
+
+#: countries.php:237
+msgid "Virgin Islands (USA)"
+msgstr ""
+
+#: countries.php:238
+msgid "Wallis and Futuna Islands"
+msgstr ""
+
+#: countries.php:240
+msgid "Yemen"
+msgstr ""
+
+#: countries.php:242
+msgid "Zambia"
+msgstr ""
+
+#: countries.php:243
+msgid "Zimbabwe"
+msgstr ""
+
+#: countries.php:244
+msgid "Åland"
+msgstr "Åland"
+
+#: getaddress.php:78
+msgid "The address could not be found."
+msgstr "Adressen kunne ikke findes."
+
+#: explorer.php:294
+msgid "A file or folder with the same name already exists."
+msgstr "En fil eller mappe med samme navn eksisterer allerede."
+
+#: explorer.php:310
+#: explorer.php:324
+msgid "Could not create folder, you may not have sufficient rights to this folder."
+msgstr "Kunne ikke oprette mappe, du har muligvis ikke rettigheder til denne mappe."
+
+#: explorer.php:316
+#: explorer.php:321
+msgid "An error occurred with the FTP connection."
+msgstr "Der opstod en fejl med FTP forbindelsen."
+
+#: explorer.php:373
+msgid "The name is invalid."
+msgstr "Navnet er ugyldigt."
+
+#: explorer.php:377
+msgid "The file could not be moved because the destination folder does not exist."
+msgstr "Filen kunne ikke flyttes da destinations mappen ikke eksisterer."
+
+#: explorer.php:387
+#: explorer.php:431
+msgid "The filename is too long."
+msgstr "Filnavnet er for langt."
+
+#: explorer.php:392
+#: explorer.php:436
+#: image-functions.php:58
+msgid ""
+"A file with the same name already exists.\n"
+"Would you like to replace the existing file?"
+msgstr ""
+"En fil med samme navn eksistere allerede.\n"
+"Vil du erstatte den eksisterende fil?"
+
+#: explorer.php:413
+#: explorer.php:465
+msgid "An error occurred with the file operations."
+msgstr "Der opstod en fejl ved filhandlingen."
+
+#: explorer.php:426
+msgid "A folder with the same name already exists."
+msgstr "En mappe med samme navn eksisterer allerede."
+
+#: explorer.php:498
+msgid "A file could not be deleted because it is used on a site."
+msgstr "Filen kunne ikke slettes da den bliver brugt på en side."
+
+#: explorer.php:509
+msgid "The folder could not be deleted, you may not have sufficient rights to this folder."
+msgstr "Mappen kunne ikke slettes, du har muligvis ikke rettigheder til denne mappe."
+
+#: explorer.php:663
+msgid "Explorer"
+msgstr "Explorer"
+
+#: explorer.php:696
+#: file-move.php:121
+#: image-edit.php:105
+#: mainmenu.php:36
+msgid "Loading"
+msgstr "Indlæser"
+
+#: explorer.php:697
+msgid "Folders"
+msgstr "Mapper"
+
+#: explorer.php:697
+msgid "New folder"
+msgstr "Ny mappe"
+
+#: explorer.php:697
+msgid "Delete folder"
+msgstr "Slet mappe"
+
+#: explorer.php:697
+msgid "Add File"
+msgstr "Tilføj fil"
+
+#: explorer.php:702
+#: explorer.php:730
+#: file-move.php:131
+#: index.php:83
+#: index.php:180
+#: index.php:1005
+#: index.php:1282
+#: index.php:1429
+#: index.php:1465
+msgid "Pictures"
+msgstr "Billeder"
+
+#: explorer.php:712
+#: file-move.php:138
+msgid "Files"
+msgstr "Filer"
+
+#: explorer.php:723
+#: index.php:167
+#: index.php:1005
+msgid "Description:"
+msgstr "Beskrivelse:"
+
+#: explorer.php:727
+msgid "Type:"
+msgstr "Type:"
+
+#: explorer.php:731
+msgid "Image files"
+msgstr "Billed filer"
+
+#: explorer.php:732
+msgid "Videos"
+msgstr "Videoer"
+
+#: explorer.php:733
+msgid "Sounds"
+msgstr "Lyde"
+
+#: explorer.php:734
+msgid "Documents"
+msgstr "Dokumenter"
+
+#: explorer.php:735
+msgid "System files"
+msgstr "System filer"
+
+#: explorer.php:736
+msgid "Compressed files"
+msgstr "Komprimerede filer"
+
+#: explorer.php:737
+msgid "Unused files"
+msgstr "Ubrugte filer"
+
+#: faktura.php:311
+msgid "Online Invoice"
+msgstr "Online faktura"
+
+#: faktura.php:312
+msgid "Date"
+msgstr "Dato"
+
+#: faktura.php:312
+#: faktura.php:378
+#: faktura.php:382
+#: faktura.php:386
+#: faktura.php:1206
+#: faktura.php:1213
+#: faktura.php:1260
+#: faktura.php:1263
+#: faktura.php:1266
+#: faktura.php:1282
+#: faktura.php:1286
+msgid "m/d/Y"
+msgstr "d/m/Y"
+
+#: faktura.php:312
+#: faktura.php:1333
+msgid "Our ref.:"
+msgstr "Vor ref.:"
+
+#: faktura.php:312
+#: faktura.php:1339
+msgid "Their ref.:"
+msgstr "Deres ref.:"
+
+#: faktura.php:352
+msgid "Payment Terms:"
+msgstr "Betalingsbetingelser:"
+
+#: faktura.php:354
+msgid "Net cash at invoice reception."
+msgstr "Netto kontant ved faktura modtagelse."
+
+#: faktura.php:357
+msgid "In case of payment late than the stated deadline, 2% interest will be added per. started months."
+msgstr "Ved senere indbetaling end anførte frist, vil der blive debiteret 2% rente pr. påbegyndt måned."
+
+#: faktura.php:377
+#: faktura.php:1259
+msgid "Paid online"
+msgstr "Betalt online"
+
+#: faktura.php:381
+#: faktura.php:1205
+#: faktura.php:1262
+msgid "Paid via giro"
+msgstr "Betalt via giro"
+
+#: faktura.php:385
+#: faktura.php:1212
+#: faktura.php:1265
+msgid "Paid in cash"
+msgstr "Betalt kontant"
+
+#: faktura.php:393
+msgid "Sincerely,"
+msgstr "Med venlig hilsen"
+
+#: faktura.php:506
+#: faktura.php:615
+msgid "E-mail address is not valid!"
+msgstr "Email adressen er ikke gyldig!"
+
+#: faktura.php:509
+msgid "You have not selected a sender!"
+msgstr "Du har ikke valgt en afsender!"
+
+#: faktura.php:514
+msgid "The invoice must be of at at least 1 krone!"
+msgstr "Fakturaen skal være på mindst 1 krone!"
+
+#: faktura.php:521
+#, php-format
+msgid "Online payment to %s"
+msgstr "Online betaling til %s"
+
+#: faktura.php:523
+#, php-format
+msgid ""
+"<p>Thank you for your order.</p>\n"
+"\n"
+"<p>your online invoice no %d is approved and ready for shipment once the payment is complete.</p>\n"
+"\n"
+"<p>Payment with credit card, is performed by clicking on the link below.</p>\n"
+"\n"
+"<p>Link to payment:<br />\n"
+"<a href=\"%s/betaling/?id=%d&amp;checkid=%s\">%s/betaling/?id=%d&amp;checkid=%s</a></p>\n"
+"<p>Do you have questions about your order, do not hesitate to contact us.</p>\n"
+"\n"
+"<p>Sincerely,</p>\n"
+"\n"
+"<p>%s<br />\n"
+"<br />%s\n"
+"<br />%s\n"
+"%s %s<br />\n"
+"Tel. %s</p>"
+msgstr ""
+"<p>Tak for ordren. Vi vedlægger her et link til en elektronisk faktura.</p>\n"
+"\n"
+"<p>Linket går til vores hovedkontors hjemmeside på huntershouse.dk, faltira #%d:<br /></p>\n"
+"\n"
+"<p>Klik venligst på vedlagte link herunder og udfyld formularen:<br />\n"
+"<a href=\"%s/betaling/?id=%d&amp;checkid=%s\">%s/betaling/?id=%d&amp;checkid=%s</a></p>\n"
+"\n"
+"<p>Det er en meget stor hjælp for os, - at få en mail, - når du har foretaget betaling via vores betalingssystem.</p>\n"
+"\n"
+"<p>Ønsker du at betale på en anden måde eller blot aflyse handlen, - så oplys også gerne dette via mail.<br />\n"
+"<br />\n"
+"</p>\n"
+"\n"
+"<p>Med venlig hilsen</p>\n"
+"\n"
+"<p>%s<br />\n"
+"%s<br />\n"
+"%s<br />\n"
+"%s %s<br />\n"
+"Tlf. %s</p>"
+
+#: faktura.php:611
+msgid "You can not send a reminder until the invoice is sent!"
+msgstr "Du kan ikke sende en rykker før fakturaen er sendt!"
+
+#: faktura.php:627
+msgid "Electronic Invoice concerning order #"
+msgstr "Elektronisk faktura vedr. ordre #"
+
+#: faktura.php:629
+#, php-format
+msgid ""
+"<hr />\n"
+"\n"
+"<p style=\"text-align:center;\"> <img src=\"/images/logoer/jagt-og-fiskermagasinet.png\" alt=\"%s\" /> </p>\n"
+"\n"
+"<hr />\n"
+"\n"
+"<p>This is an automatically generated email reminder:</p>\n"
+"\n"
+"<p>Your goods are ready for delivery / pick-up - but we have not yet <br />\n"
+"registred, that the payment can be accepted - therefore we are <br />\n"
+"sending a you a new link to the credit card invoice system <br />\n"
+"<br />\n"
+"<a href=\"%s/betaling/?id=%d&amp;checkid=%s\">%s/betaling/?id=%d&amp;checkid=%s</a><br />\n"
+"</p>\n"
+"\n"
+"<p>When entering your credit card information, - errors may occure <br />\n"
+" preventing us from noticing the payment - thus causing unnecessary <br />\n"
+" delays - therefore we include the following notice. </p>\n"
+" \n"
+" <p>It is very helpful and results in a shorter expedite time - if you could <br />\n"
+" please send us an email when the payment is made. </p>n\n"
+" <p>We would also welcome an email or phone call - if you: <br />\n"
+" * Experiencing problems with our payment system <br />\n"
+" * Wish to cancel the order <br />\n"
+" * Wish to change the order <br />\n"
+" * Wish to pay by other means - for example, by transfering the amount via home banking. </p>\n"
+" \n"
+" <p>Kind regards <br />\n"
+"<br />\n"
+"%s<br />\n"
+"%s<br />\n"
+"%s %s<br />\n"
+"Tel: %s<br />\n"
+"Fax: %s<br />\n"
+"<a href=\"mailto:%s\">%s</a></p>"
+msgstr ""
+"<hr />\n"
+"\n"
+"<p style=\"text-align:center;\"> <img src=\"/images/web/logo.gif\" alt=\"%s\" /> </p>\n"
+"\n"
+"<hr />\n"
+"\n"
+"<p>Dette er en automatisk genereret rykkermail!</p>\n"
+"\n"
+"<p>Dine varer er klar til forsendelse / afhentning, - men det er endnu ikke <br />\n"
+"registreret, at betalingen kan godkendes, - derfor sender vi herved <br />\n"
+"et nyt link til Dankort-fakturasystemet.<br />\n"
+"<br />\n"
+"<a href=\"%s/betaling/?id=%d&amp;checkid=%s\">%s/betaling/?id=%d&amp;checkid=%s</a><br />\n"
+"</p>\n"
+"\n"
+"<p>I forbindelse med indtastning af Dankortoplysningerne, - kan der ske <br />\n"
+"fejl så vi ikke registrerer betalingen, - derved opstår der unødig <br />\n"
+"ventetid, - derfor sender vi denne skrivelse.</p>\n"
+"\n"
+"<p>Det er en meget stor hjælp og giver kortere ventetid, - hvis du vil <br />\n"
+"være venlig at sende os en mail når betalingen er gennemført.</p>\n"
+"\n"
+"<p>Vi modtager også gerne en mail eller telefonopkald, - hvis du:<br />\n"
+"* Oplever problemer med vores Dankort betalingssystem<br />\n"
+"* Ønsker at afbestille ordren<br />\n"
+"* Ønsker at ændre i bestillingen<br />\n"
+"* Ønsker at betale på anden måde, - f.eks ved overførsel via netbank.</p>\n"
+"\n"
+"<p>Med venlig hilsen<br />\n"
+"<br />\n"
+"%s<br />\n"
+"%s<br />\n"
+"%s %s<br />\n"
+"Tel: %s<br />\n"
+"Fax: %s<br />\n"
+"<a href=\"mailto:%s\">%s</a></p>"
+
+#: faktura.php:708
+msgid "A Reminder was sent to the customer."
+msgstr "En rykker blev sendt til kunden."
+
+#: faktura.php:715
+msgid "The e-mail was not saved in the Sent box! (the server did not respond)."
+msgstr "Mailen blev ikke gemt i sendt mappen! (serveren svarede ikke)."
+
+#: faktura.php:719
+msgid "The e-mail was not saved in the Sent box! (the code was rejected)."
+msgstr "Mailen blev ikke gemt i sendt mappen! (koden blev afvist)."
+
+#: faktura.php:722
+#, php-format
+msgid "The e-mail was not saved in the Sent box! (the folder %s was missing)."
+msgstr "Mailen blev ikke gemt i sendt mappen! (mappen %s manglede)."
+
+#: faktura.php:837
+msgid "Online Invoice #"
+msgstr "Online faktura #"
+
+#: faktura.php:884
+#: faktura.php:1538
+msgid "Remove Line"
+msgstr "Fjern linje"
+
+#: faktura.php:1049
+msgid "Are you sure you want to cancel this Invoice?"
+msgstr "Er du sikker på du vil annullere denne faktura?"
+
+#: faktura.php:1241
+#: fakturas.php:136
+msgid "ID:"
+msgstr "Id:"
+
+#: faktura.php:1245
+msgid "eCode:"
+msgstr "eKode:"
+
+#: faktura.php:1251
+msgid "Newly created"
+msgstr "Nyoprettet"
+
+#: faktura.php:1253
+msgid "Is sent to the Customer."
+msgstr "Er sendt til kunden."
+
+#: faktura.php:1255
+msgid "Locked for editing"
+msgstr "Låst for redigering"
+
+#: faktura.php:1257
+msgid "Ready to expedite"
+msgstr "Klar til ekspedering"
+
+#: faktura.php:1268
+msgid "Error during the payment"
+msgstr "Fejl under betalingen"
+
+#: faktura.php:1270
+msgid ", payment was interrupted."
+msgstr ", betalingen er nægted eller afbrudt."
+
+#: faktura.php:1272
+#: fakturas.php:211
+#: fakturas.php:249
+msgid "Canceled"
+msgstr "Annulleret"
+
+#: faktura.php:1274
+msgid "Payment declined"
+msgstr "Betaling afvist"
+
+#: faktura.php:1276
+msgid "Does not exist in the system"
+msgstr "Findes ikke i systemet"
+
+#: faktura.php:1294
+#: fakturas.php:12
+msgid "No one"
+msgstr "Ingen"
+
+#: faktura.php:1348
+msgid "Phone 1:"
+msgstr "Tlf. 1:"
+
+#: faktura.php:1355
+msgid "Phone 2:"
+msgstr "Tlf. 2:"
+
+#: faktura.php:1477
+msgid "Entered amount includes VAT"
+msgstr "Indtastet beløb er med moms"
+
+#: faktura.php:1567
+#, php-format
+msgid "Expedite"
+msgstr "Ekspeder"
+
+#: faktura.php:1568
+#, php-format
+msgid "Reject"
+msgstr "Afvis"
+
+#: faktura.php:1578
+#: image-edit.php:105
+#, php-format
+msgid "Save"
+msgstr "Gem"
+
+#: faktura.php:1580
+#, php-format
+msgid "Lock"
+msgstr "Lås"
+
+#: faktura.php:1584
+#, php-format
+msgid "Print"
+msgstr "Udskriv"
+
+#: faktura.php:1586
+#: fakturas.php:280
+#, php-format
+msgid "Create new"
+msgstr "Opret ny"
+
+#: faktura.php:1587
+#, php-format
+msgid "Copy to new"
+msgstr "Kopier til ny"
+
+#: faktura.php:1590
+#, php-format
+msgid "Cancel"
+msgstr "Annullér"
+
+#: faktura.php:1601
+#: faktura.php:1603
+#, php-format
+msgid "Send to customer"
+msgstr "Send til kunden"
+
+#: faktura.php:1601
+#: faktura.php:1603
+#, php-format
+msgid "Send"
+msgstr "Send"
+
+#: faktura.php:1606
+#, php-format
+msgid "Send reminder!"
+msgstr "Send rykker!"
+
+#: fakturas.php:69
+msgid "Invoice list"
+msgstr "Faktura liste"
+
+#: fakturas.php:136
+msgid "Year:"
+msgstr "År:"
+
+#: fakturas.php:136
+msgid "Month:"
+msgstr "Måned:"
+
+#: fakturas.php:136
+msgid "Clerk:"
+msgstr "Ekspedient:"
+
+#: fakturas.php:154
+msgid "Jan"
+msgstr "Jan"
+
+#: fakturas.php:155
+msgid "Feb"
+msgstr "Feb"
+
+#: fakturas.php:156
+msgid "Mar"
+msgstr "Mar"
+
+#: fakturas.php:157
+msgid "Apr"
+msgstr "Apr"
+
+#: fakturas.php:158
+msgid "May"
+msgstr "Maj"
+
+#: fakturas.php:159
+msgid "Jun"
+msgstr "Jun"
+
+#: fakturas.php:160
+msgid "Jul"
+msgstr "Jul"
+
+#: fakturas.php:161
+msgid "Aug"
+msgstr "Aug"
+
+#: fakturas.php:162
+msgid "Sep"
+msgstr "Sep"
+
+#: fakturas.php:163
+msgid "Oct"
+msgstr "Okt"
+
+#: fakturas.php:164
+msgid "Nov"
+msgstr "Nov"
+
+#: fakturas.php:165
+msgid "Dec"
+msgstr "Dec"
+
+#: fakturas.php:202
+msgid "Current"
+msgstr "Aktuelle"
+
+#: fakturas.php:203
+msgid "Completed"
+msgstr "Afsluttet"
+
+#: fakturas.php:204
+#: fakturas.php:233
+msgid "New"
+msgstr "Ny"
+
+#: fakturas.php:205
+#: fakturas.php:237
+msgid "Locked"
+msgstr "Låst"
+
+#: fakturas.php:206
+#: fakturas.php:239
+msgid "Ready"
+msgstr "Klar"
+
+#: fakturas.php:207
+#: fakturas.php:241
+msgid "Expedited"
+msgstr "Ekspederet"
+
+#: fakturas.php:208
+#: fakturas.php:243
+msgid "Giro"
+msgstr "Giro"
+
+#: fakturas.php:209
+#: fakturas.php:245
+msgid "Cash"
+msgstr "Kontant"
+
+#: fakturas.php:212
+#: fakturas.php:251
+msgid "Rejected"
+msgstr "Afvist"
+
+#: fakturas.php:220
+msgid "ID"
+msgstr "Id"
+
+#: fakturas.php:221
+msgid "Created"
+msgstr "Oprettet"
+
+#: fakturas.php:222
+msgid "Responsible"
+msgstr "Ansvarlige"
+
+#: fakturas.php:223
+msgid "Amount"
+msgstr "Beløb"
+
+#: fakturas.php:235
+msgid "Sent"
+msgstr "Sendt"
+
+#: fakturas.php:235
+msgid "Sent to customer"
+msgstr "Sendt til kunden"
+
+#: file-move.php:28
+msgid "Move file"
+msgstr "Flyt fil"
+
+#: file-move.php:120
+#, php-format
+msgid "Click on the folder where you want to move the file '%s'."
+msgstr "Klik på den mappe, hvor du vil flytte filen \"%s\" til."
+
+#: file-move.php:144
+msgid "Click the plus sign above to see the subfolders."
+msgstr "Klik på plustegnet ovenfor for at se undermapper."
+
+#: file-upload.php:52
+msgid "File upload"
+msgstr "Fil-opload"
+
+#: image-edit.php:43
+msgid "Edit picture"
+msgstr "Rediger billed"
+
+#: image-edit.php:100
+msgid "Rotate counterclockwise"
+msgstr "Roter mod uret"
+
+#: image-edit.php:101
+msgid "Rotate clockwise"
+msgstr "Roter med uret"
+
+#: image-edit.php:102
+msgid "Flip horizontally"
+msgstr "Spejlvend horisontalt"
+
+#: image-edit.php:103
+msgid "Flip Vertically"
+msgstr "Spejlvend verticalt"
+
+#: image-edit.php:104
+msgid "Clip"
+msgstr "Klip"
+
+#: index.php:33
+msgid "You must enter a search word."
+msgstr "Du skal indtaste et søge ord."
+
+#: index.php:83
+#: index.php:1282
+msgid "Icon:"
+msgstr "Ikon:"
+
+#: index.php:83
+#: index.php:1282
+msgid "Find pictures"
+msgstr "Find billeder"
+
+#: index.php:83
+#: index.php:180
+#: index.php:1005
+#: index.php:1282
+#: index.php:1429
+#: index.php:1465
+msgid "Remove picture"
+msgstr "Fjern billede"
+
+#: index.php:86
+msgid "Sort subcategories:"
+msgstr "Sorter underkategorier:"
+
+#: index.php:86
+msgid "Alphabetically"
+msgstr "Alfabetisk"
+
+#: index.php:89
+msgid "Manually"
+msgstr "Manuelt"
+
+#: index.php:122
+#: index.php:1285
+msgid "Contact:"
+msgstr "Kontakt:"
+
+#: index.php:132
+#: index.php:1292
+msgid "Display:"
+msgstr "Visning:"
+
+#: index.php:135
+#: index.php:1292
+msgid "Hide"
+msgstr "Skjul"
+
+#: index.php:138
+#: index.php:1292
+msgid "Gallery"
+msgstr "Galleri"
+
+#: index.php:141
+#: index.php:1292
+msgid "List"
+msgstr "Liste"
+
+#: index.php:157
+#: index.php:446
+#: index.php:494
+msgid "The page does not exist"
+msgstr "Siden eksisterer ikke"
+
+#: index.php:159
+msgid "Edit page #"
+msgstr "Rediger side #"
+
+#: index.php:165
+msgid "Search word (separate search words with a comma 'Emergency Blanket, Emergency Blanket'):"
+msgstr "Søge ord (separere søge ord med et komma \"Emergency Blanket, Redningstæppe\"):"
+
+#: index.php:171
+#: index.php:178
+#: index.php:180
+#: index.php:1005
+#: index.php:1429
+#: index.php:1464
+#: index.php:1465
+msgid "/images/web/intet-foto.jpg"
+msgstr "/images/web/intet-foto.jpg"
+
+#: index.php:180
+#: index.php:1005
+#: index.php:1429
+#: index.php:1465
+msgid "Find image"
+msgstr "Find billede"
+
+#: index.php:187
+#: index.php:1010
+msgid "Price:"
+msgstr "Pris:"
+
+#: index.php:191
+#: index.php:1010
+msgid "Before"
+msgstr "Før"
+
+#: index.php:195
+#: index.php:1010
+msgid "Indicative price"
+msgstr "Vejledende pris"
+
+#: index.php:199
+msgid "Should cost"
+msgstr "Burde koste"
+
+#: index.php:205
+#: index.php:1010
+msgid "Price"
+msgstr "Pris"
+
+#: index.php:209
+#: index.php:1010
+msgid "From"
+msgstr "Fra"
+
+#: index.php:213
+msgid "Used"
+msgstr "Brugt"
+
+#: index.php:222
+#: index.php:1013
+msgid "Other:"
+msgstr "Andet:"
+
+#: index.php:222
+#: index.php:1013
+msgid "SKU:"
+msgstr "Varenummer:"
+
+#: index.php:222
+#: index.php:1013
+msgid "None"
+msgstr "Ingen"
+
+#: index.php:231
+#: index.php:1020
+msgid "All others"
+msgstr "Alle de andre"
+
+#: index.php:246
+msgid "Lists:"
+msgstr "Lister:"
+
+#: index.php:261
+msgid "Link"
+msgstr "Link"
+
+#: index.php:286
+#: index.php:341
+#: index.php:572
+msgid "Edit"
+msgstr "Rediger"
+
+#: index.php:341
+msgid "Delete row"
+msgstr "Slet række"
+
+#: index.php:370
+#: index.php:401
+msgid "Remove binding"
+msgstr "Fjern binding"
+
+#: index.php:381
+msgid "Create binding"
+msgstr "Opret binding"
+
+#: index.php:388
+msgid "Accessories:"
+msgstr "Tilbehør:"
+
+#: index.php:412
+msgid "Add accessories"
+msgstr "Tilføj tilbehør"
+
+#: index.php:449
+msgid "Edit frontpage"
+msgstr "Rediger Forsiden"
+
+#: index.php:453
+msgid "Sort maincategories:"
+msgstr "Sorter hovedkategorier:"
+
+#: index.php:496
+#: index.php:1509
+#, php-format
+msgid "Edit %s"
+msgstr "Rediger %s"
+
+#: index.php:510
+msgid "Create new requirement"
+msgstr "Opret nyt krav"
+
+#: index.php:525
+#, php-format
+msgid "Edit %s sorting"
+msgstr "Rediger %s sortering"
+
+#: index.php:527
+msgid "New Item:"
+msgstr "Nyt punkt:"
+
+#: index.php:541
+#: mainmenu.php:77
+msgid "List sorting"
+msgstr "Liste sortering"
+
+#: index.php:542
+msgid "Create new sorting"
+msgstr "Opret ny sortering"
+
+#: index.php:560
+#: mainmenu.php:86
+msgid "Address Book"
+msgstr "Adressebog"
+
+#: index.php:561
+msgid "Name"
+msgstr "Navn"
+
+#: index.php:561
+msgid "E-mail"
+msgstr "Email"
+
+#: index.php:561
+msgid "Phone"
+msgstr "Tlf."
+
+#: index.php:572
+#: index.php:1434
+msgid "Delete"
+msgstr "Slet"
+
+#: index.php:586
+msgid "Edit contact person"
+msgstr "Rediger kontakt person"
+
+#: index.php:591
+msgid "Postal Code:"
+msgstr "Post nr.:"
+
+#: index.php:593
+msgid "Private phone:"
+msgstr "Privat tlf.:"
+
+#: index.php:594
+msgid "Mobile phone:"
+msgstr "Mobil tlf.:"
+
+#: index.php:598
+msgid "Receive newsletters."
+msgstr "Modtag nyhedsbreve."
+
+#: index.php:599
+msgid "Interests:"
+msgstr "Interesser:"
+
+#: index.php:640
+#: mainmenu.php:88
+msgid "Maintenance"
+msgstr "Vedligeholdelse"
+
+#: index.php:654
+msgid "Removing news subscribers without contact information"
+msgstr "Fjerner nyheds tilmeldinger uden kontakt oplysninger"
+
+#: index.php:657
+msgid "Removing bindings to pages that do not exist"
+msgstr "Fjerner bindinger til sider der ikke eksisterer"
+
+#: index.php:660
+msgid "Removing accessories that do not exist"
+msgstr "Fjerner tilbehør der ikke eksisterer"
+
+#: index.php:663
+msgid "Searching for pages without bindings"
+msgstr "Søger efter sider uden bindinger"
+
+#: index.php:666
+msgid "Searching for pages with illegal bindings"
+msgstr "Søger efter sider med ulovlige bindinger"
+
+#: index.php:669
+msgid "Searching for orphaned lists"
+msgstr "Søger efter løse lister"
+
+#: index.php:672
+msgid "Searching for orphaned rows"
+msgstr "Søger efter løse rækker"
+
+#: index.php:675
+msgid "Searching for orphaned categories"
+msgstr "Søger efter løse kategorier"
+
+#: index.php:678
+msgid "Searching for cirkalur linked categories"
+msgstr "Søger efter cirkulære katagorier"
+
+#: index.php:681
+msgid "Searching for illegal e-mail adresses"
+msgstr "Søger efter ulovlige e-mail aresser"
+
+#: index.php:684
+msgid "Removes not existing files from the database"
+msgstr "Fjerner ikke eksisterende filer fra databasen"
+
+#: index.php:687
+msgid "Checking the file names"
+msgstr "Kontrollerer filnavne"
+
+#: index.php:690
+msgid "Checking the folder names"
+msgstr "Kontrollerer mappe navne"
+
+#: index.php:693
+msgid "Deleting temporary files"
+msgstr "Sletter midlertidige filer"
+
+#: index.php:696
+msgid "Retrieving the size of the files"
+msgstr "Henter størelsen på filerne"
+
+#: index.php:699
+msgid "Optimizing the database"
+msgstr "Optimerer databasen"
+
+#: index.php:702
+msgid "Getting Database Size"
+msgstr "Henter database størelse"
+
+#: index.php:707
+#, php-format
+msgid "The scan took %d seconds."
+msgstr "Scanningen tog %d sek."
+
+#: index.php:719
+#: index.php:727
+msgid "MB"
+msgstr "MB"
+
+#: index.php:727
+msgid "Server consumption"
+msgstr "Server forbrug"
+
+#: index.php:727
+msgid "Get e-mail consumption"
+msgstr "Hent email forbrug"
+
+#: index.php:727
+msgid "DB:"
+msgstr "DB:"
+
+#: index.php:727
+msgid "WWW"
+msgstr "WWW"
+
+#: index.php:727
+msgid "Scan database"
+msgstr "Scan database"
+
+#: index.php:733
+#, php-format
+msgid "Delayed e-mails %d/%d"
+msgstr "Forsinkede emails %d/%d"
+
+#: index.php:757
+#, php-format
+msgid "E-mail: %s #%d is not valid"
+msgstr "Email: %s #%d er ikke gyldig"
+
+#: index.php:761
+msgid "The following e-mail addresses are not valid"
+msgstr "Følgende email adresser er ikke gyldige"
+
+#: index.php:771
+msgid "The following rows have no lists:"
+msgstr "Følgende rækker er uden lister:"
+
+#: index.php:777
+#: index.php:957
+msgid "The following pages have no binding"
+msgstr "Følgende sider har ikke nogen binding"
+
+#: index.php:787
+msgid "The following categories are orphans:"
+msgstr "Følgende kategorier er løse:"
+
+#: index.php:793
+msgid "The following categories have no binding"
+msgstr "Følgende kategorier har ingen binding"
+
+#: index.php:814
+#: index.php:817
+msgid "The following categories are tied in itself:"
+msgstr "Følgende kategorier er bundet under sig selv:"
+
+#: index.php:827
+#, php-format
+msgid "The following %d files must be renamed:"
+msgstr "Følgende %d filer skal omdøbes:"
+
+#: index.php:837
+msgid "The following files must be renamed"
+msgstr "Følge filer skal omdøbes"
+
+#: index.php:847
+#, php-format
+msgid "The following %d files are in a folder that needs to be renamed:"
+msgstr "Følgende %d filer er i en mappe der skal omdøbes:"
+
+#: index.php:858
+msgid "The following folders must be renamed"
+msgstr "Følgende mapper skal omdøbes"
+
+#: index.php:925
+msgid "The following lists are orphans:"
+msgstr "Følgende lister er løse:"
+
+#: index.php:931
+msgid "The following lists are not tied to any page"
+msgstr "Følgende lister er ikke bundet til nogen side"
+
+#: index.php:989
+msgid "The following pages are both active and inactive"
+msgstr "Følgende sider er både aktive og inaktive"
+
+#: index.php:1003
+msgid "Search word (separate search words with a comma 'Emergency Blanket, Rescue Blanket'):"
+msgstr "Søge ord (seperer søge ord med et komma \"Emergency Blanket, Redningstæppe\"):"
+
+#: index.php:1058
+#: index.php:1131
+#: index.php:1188
+#: index.php:1236
+msgid "Frontpage"
+msgstr "Forsiden"
+
+#: index.php:1061
+#: index.php:1112
+#: index.php:1172
+#: index.php:1221
+#: index.php:1582
+msgid "Inactive"
+msgstr "Inaktive"
+
+#: index.php:1069
+#: index.php:1086
+msgid "Select location:"
+msgstr "Vælg placering:"
+
+#: index.php:1149
+msgid "Select page:"
+msgstr "Vælg side:"
+
+#: index.php:1282
+#: mainmenu.php:57
+msgid "Create category"
+msgstr "Opret kategori"
+
+#: index.php:1305
+#: mainmenu.php:58
+msgid "Overview"
+msgstr "Oversigt"
+
+#: index.php:1394
+msgid "You must enter a name and choose a location for the new category."
+msgstr "Du skal indtaste et navn og vælge en placering til den nye kategori."
+
+#: index.php:1409
+msgid "You must enter a name and a text of the requirement."
+msgstr "Du skal indtaste et navn og en tekst til kravet."
+
+#: index.php:1414
+#: mainmenu.php:87
+msgid "Find and replace"
+msgstr "Søg og erstat"
+
+#: index.php:1414
+msgid "This function affects all pages."
+msgstr "Denne funktion påvirker alle sider."
+
+#: index.php:1414
+msgid "Find:"
+msgstr "Søg:"
+
+#: index.php:1414
+msgid "Replace:"
+msgstr "Erstat:"
+
+#: index.php:1428
+msgid "List of brands"
+msgstr "Mærkeliste"
+
+#: index.php:1428
+msgid "Link:"
+msgstr "Link:"
+
+#: index.php:1428
+#: index.php:1459
+msgid "Logo:"
+msgstr "Logo:"
+
+#: index.php:1430
+msgid "Add brand"
+msgstr "Tilføj mærke"
+
+#: index.php:1459
+#, php-format
+msgid "Edit the brand %d"
+msgstr "Rediger mærket %d"
+
+#: index.php:1466
+msgid "Save brand"
+msgstr "Gem mærke"
+
+#: index.php:1477
+#: index.php:1487
+msgid "You must enter a name."
+msgstr "Du skal indtaste et navn."
+
+#: index.php:1493
+msgid "Requirements list"
+msgstr "Kravliste"
+
+#: index.php:1574
+msgid "The binding does not exist."
+msgstr "Bindingen eksisterer ikke."
+
+#: index.php:1595
+msgid "The binding already exists."
+msgstr "Bindingen eksisterer allerede."
+
+#: index.php:1688
+msgid "The category can not be placed under itself."
+msgstr "Kategorien kan ikke placeres under sig selv."
+
+#: mainmenu.php:13
+#: mainmenu.php:17
+#: mainmenu.php:19
+#: mainmenu.php:23
+msgid "Save page"
+msgstr "Gem siden"
+
+#: mainmenu.php:15
+#: mainmenu.php:25
+msgid "Save category"
+msgstr "Gem kategori"
+
+#: mainmenu.php:21
+msgid "Save contact"
+msgstr "Gem kontakt"
+
+#: mainmenu.php:27
+msgid "Save requirement"
+msgstr "Gem krav"
+
+#: mainmenu.php:29
+msgid "Save list"
+msgstr "Gem liste"
+
+#: mainmenu.php:31
+msgid "Save e-mail"
+msgstr "Gem email"
+
+#: mainmenu.php:32
+msgid "Send e-mail"
+msgstr "Send email"
+
+#: mainmenu.php:56
+msgid "Create page"
+msgstr "Opret side"
+
+#: mainmenu.php:59
+msgid "Skip to page"
+msgstr "Spring til side"
+
+#: mainmenu.php:70
+msgid "Lists"
+msgstr "Lister"
+
+#: mainmenu.php:75
+msgid "Requirements"
+msgstr "Krav"
+
+#: mainmenu.php:76
+msgid "Brands"
+msgstr "Mærker"
+
+#: mainmenu.php:79
+msgid "Tools"
+msgstr "Værktøjer"
+
+#: mainmenu.php:84
+msgid "Open file manager"
+msgstr "Åben fil håndtering"
+
+#: mainmenu.php:85
+#: emails.php:228
+msgid "Newsletters"
+msgstr "Nyhedsbreve"
+
+#: mainmenu.php:89
+msgid "Edit groups"
+msgstr "Rediger Grupper"
+
+#: mainmenu.php:90
+msgid "Catalog labels"
+msgstr "Kataloglabels"
+
+#: mainmenu.php:91
+msgid "Invoices"
+msgstr "Fakturas"
+
+#: emails.php:15
+msgid "The newsletter has already been sent!"
+msgstr "Nyhedsbrevet er allerede afsendt!"
+
+#: emails.php:155
+msgid "Edit newsletter"
+msgstr "Rediger nyhedsbrev"
+
+#: emails.php:167
+#: emails.php:177
+msgid "Sender:"
+msgstr "Afsender:"
+
+#: emails.php:168
+msgid "Select sender"
+msgstr "Vælg afsender"
+
+#: emails.php:182
+msgid "Recipient:"
+msgstr "Modtager:"
+
+#: emails.php:184
+msgid "Restrict recipients to:"
+msgstr "Begræns modtagere til:"
+
+#: emails.php:204
+msgid "Number of recipients:"
+msgstr "Antal modtagere:"
+
+#: emails.php:207
+#: emails.php:209
+msgid "Subject:"
+msgstr "Emne:"
+
+#: emails.php:228
+msgid "Create new newsletter"
+msgstr "Opret nyt nyhedsbrev"
+
+#: file-functions.php:33
+msgid "The file can not be deleted because it is used on a page."
+msgstr "Filen kan ikke slettes da den bliver brugt på en side."
+
+#: file-functions.php:38
+msgid "There was an error deleting the file, the file may be in use."
+msgstr "Der opstod en fejl under slettningen af filen, filen er muligvis i brug."
+
+#: logon.php:37
+msgid "Login"
+msgstr "Login"
+
+#: logon.php:41
+msgid "User:"
+msgstr "Bruger:"
+
+#: logon.php:44
+msgid "Password:"
+msgstr "Adgangskode:"
+
