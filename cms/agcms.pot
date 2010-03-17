@@ -17,332 +17,336 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-#: index.php:413
+#: index.php:414
 msgid "Page could not be found. Try searching for a similar page."
 msgstr ""
 
-#: index.php:415
+#: index.php:416
 msgid "Contains"
 msgstr ""
 
-#: index.php:419 explorer.php:697 fakturas.php:281 mainmenu.php:64
+#: index.php:420 explorer.php:698 fakturas.php:282 mainmenu.php:65
 msgid "Search"
 msgstr ""
 
-#: index.php:419
+#: index.php:420
 msgid "Part No."
 msgstr ""
 
-#: index.php:419
+#: index.php:420
 msgid "Without the words"
 msgstr ""
 
-#: index.php:419
+#: index.php:420
 msgid "Enhanced:"
 msgstr ""
 
-#: index.php:419
+#: index.php:420
 msgid "Min price"
 msgstr ""
 
-#: index.php:419
+#: index.php:420
 msgid "Max price"
 msgstr ""
 
-#: index.php:419
+#: index.php:420
 msgid "Brand:"
 msgstr ""
 
-#: index.php:419 fakturas.php:153 fakturas.php:190 fakturas.php:201
+#: index.php:420 fakturas.php:154 fakturas.php:191 fakturas.php:202
 msgid "All"
 msgstr ""
 
-#: send.php:20
+#: send.php:21
 msgid "No e-mails to send."
 msgstr ""
 
-#: send.php:93
+#: send.php:94
 #, php-format
 msgid "%d e-mail was sent."
 msgid_plural "%d e-mails was sent."
 msgstr[0] ""
 msgstr[1] ""
 
-#: index.php:86 index.php:88 index.php:1034 index.php:1035
+#: index.php:87 index.php:89 index.php:1058 index.php:1059
 msgid "Payment"
 msgstr ""
 
-#: index.php:120 index.php:121 index.php:122
+#: index.php:121 index.php:122 index.php:123
 msgid "Order #"
 msgstr ""
 
-#: index.php:128 faktura.php:317 faktura.php:1484
+#: index.php:129 faktura.php:318 faktura.php:1479
 msgid "Quantity"
 msgstr ""
 
-#: index.php:129 faktura.php:318 faktura.php:1485
+#: index.php:130 faktura.php:319 faktura.php:1480
 msgid "Title"
 msgstr ""
 
-#: index.php:130 faktura.php:319 faktura.php:1486
+#: index.php:131 faktura.php:320 faktura.php:1481
 msgid "unit price"
 msgstr ""
 
-#: index.php:131 faktura.php:320 faktura.php:1487
+#: index.php:132 faktura.php:321 faktura.php:1482
 msgid "Total"
 msgstr ""
 
-#: index.php:138 faktura.php:327 faktura.php:1494
+#: index.php:139 faktura.php:328 faktura.php:1489
 msgid "Net Amount"
 msgstr ""
 
-#: index.php:145 faktura.php:340 faktura.php:1508
+#: index.php:146 faktura.php:341 faktura.php:1503
 msgid "Freight"
 msgstr ""
 
-#: index.php:151 faktura.php:346 faktura.php:1521
+#: index.php:152 faktura.php:347 faktura.php:1516
 msgid "VAT Amount"
 msgstr ""
 
-#: index.php:155
+#: index.php:156
 msgid "All figures are in DKK"
 msgstr ""
 
-#: index.php:156 faktura.php:358 faktura.php:1526
+#: index.php:157 faktura.php:353 faktura.php:1521
 msgid "TO PAY"
 msgstr ""
 
-#: index.php:173 index.php:684 index.php:797 faktura.php:374 faktura.php:1553
+#: index.php:174 index.php:708 index.php:821 faktura.php:369 faktura.php:1548
 msgid "Note:"
 msgstr ""
 
-#: index.php:176 index.php:1049
+#: index.php:177 index.php:1073
 msgid "Continue"
 msgstr ""
 
-#: index.php:228 index.php:229 index.php:230 fakturas.php:224
+#: index.php:246 index.php:247 index.php:248 fakturas.php:225
 msgid "Recipient"
 msgstr ""
 
-#: index.php:242 index.php:321 index.php:634 faktura.php:281
+#: index.php:260 index.php:339 index.php:658 faktura.php:282
 msgid "Phone:"
 msgstr ""
 
-#: index.php:244 index.php:249 index.php:323
+#: index.php:262 index.php:267 index.php:341
 msgid "Get address"
 msgstr ""
 
-#: index.php:247 index.php:668
+#: index.php:265 index.php:692
 msgid "Mobile:"
 msgstr ""
 
-#: index.php:252 index.php:260 index.php:328 index.php:629 explorer.php:719
-#: faktura.php:1368 faktura.php:1425 faktura.php:1431 index.php:76
-#: index.php:527 index.php:587 index.php:1282 index.php:1428 index.php:1459
+#: index.php:270 index.php:278 index.php:346 index.php:653 explorer.php:720
+#: faktura.php:1363 faktura.php:1420 faktura.php:1426 index.php:77
+#: index.php:525 index.php:585 index.php:1223 index.php:1369 index.php:1400
 msgid "Name:"
 msgstr ""
 
-#: index.php:265 index.php:345 index.php:646 faktura.php:1380 faktura.php:1437
-#: index.php:589
+#: index.php:283 index.php:363 index.php:670 faktura.php:1375 faktura.php:1432
+#: index.php:587
 msgid "Address:"
 msgstr ""
 
-#: index.php:273 index.php:355 index.php:652 faktura.php:1386 faktura.php:1449
+#: index.php:291 index.php:373 index.php:676 faktura.php:1381 faktura.php:1444
 msgid "Postbox:"
 msgstr ""
 
-#: index.php:278 index.php:362 index.php:658 faktura.php:1392 faktura.php:1455
+#: index.php:296 index.php:380 index.php:682 faktura.php:1387 faktura.php:1450
 msgid "Zipcode:"
 msgstr ""
 
-#: index.php:280 index.php:364 index.php:661 faktura.php:1395 faktura.php:1397
-#: faktura.php:1458 faktura.php:1460 index.php:592
+#: index.php:298 index.php:382 index.php:685 faktura.php:1390 faktura.php:1392
+#: faktura.php:1453 faktura.php:1455 index.php:590
 msgid "City:"
 msgstr ""
 
-#: index.php:290 index.php:376 index.php:664 faktura.php:1400 faktura.php:1463
-#: index.php:590
+#: index.php:308 index.php:394 index.php:688 faktura.php:1395 faktura.php:1458
+#: index.php:588
 msgid "Country:"
 msgstr ""
 
-#: index.php:306 faktura.php:1362 index.php:588 index.php:727
+#: index.php:324 faktura.php:1357 index.php:586 index.php:725
 msgid "E-mail:"
 msgstr ""
 
-#: index.php:316 faktura.php:1415
+#: index.php:334 faktura.php:1410
 msgid "Other delivery address"
 msgstr ""
 
-#: index.php:338 index.php:640 faktura.php:298 faktura.php:1374
+#: index.php:356 index.php:664 faktura.php:299 faktura.php:1369
 msgid "Attn.:"
 msgstr ""
 
-#: index.php:389
+#: index.php:411
+msgid "Please send me your newsletter."
+msgstr ""
+
+#: index.php:413
 msgid "Proceed to the terms of trade"
 msgstr ""
 
-#: index.php:400 index.php:401 index.php:402
+#: index.php:424 index.php:425 index.php:426
 msgid "Trade Conditions"
 msgstr ""
 
-#: index.php:425
+#: index.php:449
 msgid "I hereby agree to the terms of trade"
 msgstr ""
 
-#: index.php:429 index.php:430 index.php:431 index.php:511 index.php:512
-#: index.php:513 fakturas.php:210 fakturas.php:247
+#: index.php:453 index.php:454 index.php:455 index.php:535 index.php:536
+#: index.php:537 fakturas.php:211 fakturas.php:248
 msgid "Error"
 msgstr ""
 
-#: index.php:433 index.php:434 index.php:435 index.php:438 index.php:439
-#: index.php:440 index.php:443 index.php:444 index.php:445
+#: index.php:457 index.php:458 index.php:459 index.php:462 index.php:463
+#: index.php:464 index.php:467 index.php:468 index.php:469
 msgid "Status"
 msgstr ""
 
-#: index.php:436
+#: index.php:460
 msgid ""
 "The payment was rejected at first attempt. Due to security measures at PBS, "
 "you must contact the store before you can try to pay again."
 msgstr ""
 
-#: index.php:441
+#: index.php:465
 msgid "Payment received."
 msgstr ""
 
-#: index.php:446
+#: index.php:470
 msgid "The payment was received and the package is sent."
 msgstr ""
 
-#: index.php:456
+#: index.php:480
 msgid "Shipment Number:"
 msgstr ""
 
-#: index.php:476 index.php:478
+#: index.php:500 index.php:502
 msgid "The payment is already received in cash."
 msgstr ""
 
-#: index.php:480
+#: index.php:504
 msgid "The transaction is canceled."
 msgstr ""
 
-#: index.php:482
+#: index.php:506
 msgid "Payment rejected."
 msgstr ""
 
-#: index.php:484
+#: index.php:508
 msgid "An errror occured."
 msgstr ""
 
-#: index.php:514
+#: index.php:538
 msgid "An unknown error occured."
 msgstr ""
 
-#: index.php:519
+#: index.php:543
 msgid "No Status"
 msgstr ""
 
-#: index.php:520
+#: index.php:544
 #, php-format
 msgid "There was an error on the payment page of online invoice #%d!"
 msgstr ""
 
-#: index.php:527 index.php:555
+#: index.php:551 index.php:579
 msgid "The communication could not be validated!"
 msgstr ""
 
-#: index.php:529
+#: index.php:553
 msgid "The payment does not exist in our system."
 msgstr ""
 
-#: index.php:530
+#: index.php:554
 #, php-format
 msgid "A user tried to pay online invoice #%d, which is not in the system!"
 msgstr ""
 
-#: index.php:532 index.php:533 index.php:534 index.php:538 index.php:539
-#: index.php:540 index.php:584 index.php:585 index.php:586
+#: index.php:556 index.php:557 index.php:558 index.php:562 index.php:563
+#: index.php:564 index.php:608 index.php:609 index.php:610
 msgid "Reciept"
 msgstr ""
 
-#: index.php:535
+#: index.php:559
 msgid "This trade has been canceled or refused."
 msgstr ""
 
-#: index.php:536
+#: index.php:560
 #, php-format
 msgid ""
 "A customer tried to see the status page for online invoice #%d which is "
 "canceled or rejected."
 msgstr ""
 
-#: index.php:541
+#: index.php:565
 msgid ""
 "Payment is registered and you ought to have received a receipt by email."
 msgstr ""
 
-#: index.php:542
+#: index.php:566
 #, php-format
 msgid ""
 "A customer tried to see the status page for online invoice #%d, which is "
 "already paid."
 msgstr ""
 
-#: index.php:548 index.php:549
+#: index.php:572 index.php:573
 msgid "Error #"
 msgstr ""
 
-#: index.php:550
+#: index.php:574
 msgid ""
 "An error occurred during the payment.<br />\n"
 "Error number:"
 msgstr ""
 
-#: index.php:556
+#: index.php:580
 msgid "Data was manipulated."
 msgstr ""
 
-#: index.php:557
+#: index.php:581
 #, php-format
 msgid "Communication could not be validated as %s was about to pay!"
 msgstr ""
 
-#: index.php:560 index.php:561
+#: index.php:584 index.php:585
 msgid "Payment page is not responding."
 msgstr ""
 
-#: index.php:562
+#: index.php:586
 #, php-format
 msgid "Payment page did not answer when %s was about to pay!"
 msgstr ""
 
-#: index.php:565 index.php:566
+#: index.php:589 index.php:590
 msgid "Payment was refused by the bank, the card has expired."
 msgstr ""
 
-#: index.php:567
+#: index.php:591
 #, php-format
 msgid "Payment was refused by the bank, %s's card has expired!"
 msgstr ""
 
-#: index.php:570 index.php:571
+#: index.php:594 index.php:595
 msgid "Payment was refused by the bank, contact your bank."
 msgstr ""
 
-#: index.php:572
+#: index.php:596
 #, php-format
 msgid "Payment was refused by the bank, %s must contact his or her bank."
 msgstr ""
 
-#: index.php:575 index.php:577
+#: index.php:599 index.php:601
 msgid ""
 "The payment was refused because the customer has already attempted to pay."
 msgstr ""
 
-#: index.php:576
+#: index.php:600
 msgid "Payment was refused."
 msgstr ""
 
-#: index.php:594
+#: index.php:618
 msgid ""
 "<p style=\"text-align:center;\"><img src=\"images/ok.png\" alt=\"\" /></p>\n"
 "\n"
@@ -352,11 +356,11 @@ msgid ""
 "<p>A copy of your order is sent to your email.</p>"
 msgstr ""
 
-#: index.php:610 index.php:772 index.php:866
+#: index.php:634 index.php:796 index.php:890
 msgid "Payment complete"
 msgstr ""
 
-#: index.php:611
+#: index.php:635
 msgid ""
 "The customer has approved the payment and the following order must be "
 "shipped to the customer.<br />\n"
@@ -365,16 +369,16 @@ msgid ""
 "first transferred from the customer's account once we hit 'Expedite')."
 msgstr ""
 
-#: index.php:623
+#: index.php:647
 #, php-format
 msgid "Ordre %d - Payment complete"
 msgstr ""
 
-#: index.php:628
+#: index.php:652
 msgid "Delivery address:"
 msgstr ""
 
-#: index.php:693
+#: index.php:717
 #, php-format
 msgid ""
 "<p>Date: %s<br />\n"
@@ -410,17 +414,17 @@ msgid ""
 "<a href=\"mailto:%s\">%s</a></p>"
 msgstr ""
 
-#: index.php:756
+#: index.php:780
 #, php-format
 msgid "Order #%d - payment completed"
 msgstr ""
 
-#: index.php:780 index.php:848
+#: index.php:804 index.php:872
 #, php-format
 msgid "Online Invoice #%s : Payment completed"
 msgstr ""
 
-#: index.php:801
+#: index.php:825
 #, php-format
 msgid ""
 "<p>The %s, %s approved the online Invoice #%s, which was created by %s.<br /"
@@ -445,50 +449,50 @@ msgid ""
 "<p>The computer</p>"
 msgstr ""
 
-#: index.php:873
+#: index.php:897
 msgid "Denied/interrupted. The payment was denied or interrupted."
 msgstr ""
 
-#: index.php:877
+#: index.php:901
 msgid "Ongoing. Payment awaiting an response from the bank."
 msgstr ""
 
-#: index.php:880
+#: index.php:904
 msgid "Canceled. The card payment is shredded by the store before cash in."
 msgstr ""
 
-#: index.php:883
+#: index.php:907
 msgid "Commenced. Payment is initiated by the customer."
 msgstr ""
 
-#: index.php:886
+#: index.php:910
 msgid ""
 "Authorized. Card payment is authorized; awaiting confirmation and cash in."
 msgstr ""
 
-#: index.php:889
+#: index.php:913
 msgid "Cash in failed. Card payments can not be cashed in."
 msgstr ""
 
-#: index.php:892
+#: index.php:916
 msgid "Cash-in in progress. Redeeming card payment is currently underway."
 msgstr ""
 
-#: index.php:895
+#: index.php:919
 msgid "Confirmed. The card payments is confirmed and will be cashed in."
 msgstr ""
 
-#: index.php:898
+#: index.php:922
 msgid ""
 "Sent to bank or Svea Ekonomi. Applies only to the Payment Method INVOICE"
 msgstr ""
 
-#: index.php:940 index.php:1011
+#: index.php:964 index.php:1035
 #, php-format
 msgid "Attn.: %s - Online invoice #%d : %s"
 msgstr ""
 
-#: index.php:955
+#: index.php:979
 #, php-format
 msgid ""
 "<p>%s<br />\n"
@@ -515,28 +519,28 @@ msgid ""
 "<p>Sincerely, the computer</p>"
 msgstr ""
 
-#: index.php:988
+#: index.php:1012
 #, php-format
 msgid "Online Invoice #%d: does't exist"
 msgstr ""
 
-#: index.php:989 fakturas.php:136
+#: index.php:1013 fakturas.php:137
 msgid "Status:"
 msgstr ""
 
-#: index.php:989
+#: index.php:1013
 msgid "Sincerely the computer"
 msgstr ""
 
-#: index.php:1041
+#: index.php:1065
 msgid "Order No:"
 msgstr ""
 
-#: index.php:1045
+#: index.php:1069
 msgid "Code:"
 msgstr ""
 
-#: index.php:1052
+#: index.php:1076
 msgid "The code is not correct!"
 msgstr ""
 
@@ -1444,195 +1448,195 @@ msgstr ""
 msgid "The address could not be found."
 msgstr ""
 
-#: explorer.php:294
+#: explorer.php:295
 msgid "A file or folder with the same name already exists."
 msgstr ""
 
-#: explorer.php:310 explorer.php:324
+#: explorer.php:311 explorer.php:325
 msgid ""
 "Could not create folder, you may not have sufficient rights to this folder."
 msgstr ""
 
-#: explorer.php:316 explorer.php:321
+#: explorer.php:317 explorer.php:322
 msgid "An error occurred with the FTP connection."
 msgstr ""
 
-#: explorer.php:373
+#: explorer.php:374
 msgid "The name is invalid."
 msgstr ""
 
-#: explorer.php:377
+#: explorer.php:378
 msgid ""
 "The file could not be moved because the destination folder does not exist."
 msgstr ""
 
-#: explorer.php:387 explorer.php:431
+#: explorer.php:388 explorer.php:432
 msgid "The filename is too long."
 msgstr ""
 
-#: explorer.php:392 explorer.php:436 image-functions.php:58
+#: explorer.php:393 explorer.php:437 image-functions.php:59
 msgid ""
 "A file with the same name already exists.\n"
 "Would you like to replace the existing file?"
 msgstr ""
 
-#: explorer.php:413 explorer.php:465
+#: explorer.php:414 explorer.php:466
 msgid "An error occurred with the file operations."
 msgstr ""
 
-#: explorer.php:426
+#: explorer.php:427
 msgid "A folder with the same name already exists."
 msgstr ""
 
-#: explorer.php:498
+#: explorer.php:499
 msgid "A file could not be deleted because it is used on a site."
 msgstr ""
 
-#: explorer.php:509
+#: explorer.php:510
 msgid ""
 "The folder could not be deleted, you may not have sufficient rights to this "
 "folder."
 msgstr ""
 
-#: explorer.php:663
+#: explorer.php:664
 msgid "Explorer"
 msgstr ""
 
-#: explorer.php:696 file-move.php:121 image-edit.php:105 mainmenu.php:36
+#: explorer.php:697 file-move.php:122 image-edit.php:106 mainmenu.php:37
 msgid "Loading"
 msgstr ""
 
-#: explorer.php:697
+#: explorer.php:698
 msgid "Folders"
 msgstr ""
 
-#: explorer.php:697
+#: explorer.php:698
 msgid "New folder"
 msgstr ""
 
-#: explorer.php:697
+#: explorer.php:698
 msgid "Delete folder"
 msgstr ""
 
-#: explorer.php:697
+#: explorer.php:698
 msgid "Add File"
 msgstr ""
 
-#: explorer.php:702 explorer.php:730 file-move.php:131 index.php:83
-#: index.php:180 index.php:1005 index.php:1282 index.php:1429 index.php:1465
+#: explorer.php:703 explorer.php:731 file-move.php:132 index.php:84
+#: index.php:181 index.php:1003 index.php:1223 index.php:1370 index.php:1406
 msgid "Pictures"
 msgstr ""
 
-#: explorer.php:712 file-move.php:138
+#: explorer.php:713 file-move.php:139
 msgid "Files"
 msgstr ""
 
-#: explorer.php:723 index.php:167 index.php:1005
+#: explorer.php:724 index.php:168 index.php:1003
 msgid "Description:"
 msgstr ""
 
-#: explorer.php:727
+#: explorer.php:728
 msgid "Type:"
 msgstr ""
 
-#: explorer.php:731
+#: explorer.php:732
 msgid "Image files"
 msgstr ""
 
-#: explorer.php:732
+#: explorer.php:733
 msgid "Videos"
 msgstr ""
 
-#: explorer.php:733
+#: explorer.php:734
 msgid "Sounds"
 msgstr ""
 
-#: explorer.php:734
+#: explorer.php:735
 msgid "Documents"
 msgstr ""
 
-#: explorer.php:735
+#: explorer.php:736
 msgid "System files"
 msgstr ""
 
-#: explorer.php:736
+#: explorer.php:737
 msgid "Compressed files"
 msgstr ""
 
-#: explorer.php:737
+#: explorer.php:738
 msgid "Unused files"
 msgstr ""
 
-#: faktura.php:311
+#: faktura.php:312
 msgid "Online Invoice"
 msgstr ""
 
-#: faktura.php:312
+#: faktura.php:313
 msgid "Date"
 msgstr ""
 
-#: faktura.php:312 faktura.php:378 faktura.php:382 faktura.php:386
-#: faktura.php:1206 faktura.php:1213 faktura.php:1260 faktura.php:1263
-#: faktura.php:1266 faktura.php:1282 faktura.php:1286
+#: faktura.php:313 faktura.php:373 faktura.php:377 faktura.php:381
+#: faktura.php:1201 faktura.php:1208 faktura.php:1255 faktura.php:1258
+#: faktura.php:1261 faktura.php:1277 faktura.php:1281
 msgid "m/d/Y"
 msgstr ""
 
-#: faktura.php:312 faktura.php:1333
+#: faktura.php:313 faktura.php:1328
 msgid "Our ref.:"
 msgstr ""
 
-#: faktura.php:312 faktura.php:1339
+#: faktura.php:313 faktura.php:1334
 msgid "Their ref.:"
 msgstr ""
 
-#: faktura.php:352
+#: faktura.php:351
 msgid "Payment Terms:"
 msgstr ""
 
-#: faktura.php:354
+#: faktura.php:351
 msgid "Net cash at invoice reception."
 msgstr ""
 
-#: faktura.php:357
+#: faktura.php:352
 msgid ""
-"In case of payment late than the stated deadline, 2% interest will be added "
+"In case of payment later than the stated deadline, 2% interest will be added "
 "per. started months."
 msgstr ""
 
-#: faktura.php:377 faktura.php:1259
+#: faktura.php:372 faktura.php:1254
 msgid "Paid online"
 msgstr ""
 
-#: faktura.php:381 faktura.php:1205 faktura.php:1262
+#: faktura.php:376 faktura.php:1200 faktura.php:1257
 msgid "Paid via giro"
 msgstr ""
 
-#: faktura.php:385 faktura.php:1212 faktura.php:1265
+#: faktura.php:380 faktura.php:1207 faktura.php:1260
 msgid "Paid in cash"
 msgstr ""
 
-#: faktura.php:393
+#: faktura.php:388
 msgid "Sincerely,"
 msgstr ""
 
-#: faktura.php:506 faktura.php:615
+#: faktura.php:501 faktura.php:610
 msgid "E-mail address is not valid!"
 msgstr ""
 
-#: faktura.php:509
+#: faktura.php:504
 msgid "You have not selected a sender!"
 msgstr ""
 
-#: faktura.php:514
+#: faktura.php:509
 msgid "The invoice must be of at at least 1 krone!"
 msgstr ""
 
-#: faktura.php:521
+#: faktura.php:516
 #, php-format
 msgid "Online payment to %s"
 msgstr ""
 
-#: faktura.php:523
+#: faktura.php:518
 #, php-format
 msgid ""
 "<p>Thank you for your order.</p>\n"
@@ -1658,15 +1662,15 @@ msgid ""
 "Tel. %s</p>"
 msgstr ""
 
-#: faktura.php:611
+#: faktura.php:606
 msgid "You can not send a reminder until the invoice is sent!"
 msgstr ""
 
-#: faktura.php:627
+#: faktura.php:622
 msgid "Electronic Invoice concerning order #"
 msgstr ""
 
-#: faktura.php:629
+#: faktura.php:624
 #, php-format
 msgid ""
 "<hr />\n"
@@ -1710,929 +1714,916 @@ msgid ""
 "<a href=\"mailto:%s\">%s</a></p>"
 msgstr ""
 
-#: faktura.php:708
+#: faktura.php:703
 msgid "A Reminder was sent to the customer."
 msgstr ""
 
-#: faktura.php:715
+#: faktura.php:710
 msgid "The e-mail was not saved in the Sent box! (the server did not respond)."
 msgstr ""
 
-#: faktura.php:719
+#: faktura.php:714
 msgid "The e-mail was not saved in the Sent box! (the code was rejected)."
 msgstr ""
 
-#: faktura.php:722
+#: faktura.php:717
 #, php-format
 msgid "The e-mail was not saved in the Sent box! (the folder %s was missing)."
 msgstr ""
 
-#: faktura.php:837
+#: faktura.php:832
 msgid "Online Invoice #"
 msgstr ""
 
-#: faktura.php:884 faktura.php:1538
+#: faktura.php:879 faktura.php:1533
 msgid "Remove Line"
 msgstr ""
 
-#: faktura.php:1049
+#: faktura.php:1044
 msgid "Are you sure you want to cancel this Invoice?"
 msgstr ""
 
-#: faktura.php:1241 fakturas.php:136
+#: faktura.php:1236 fakturas.php:137
 msgid "ID:"
 msgstr ""
 
-#: faktura.php:1245
+#: faktura.php:1240
 msgid "eCode:"
 msgstr ""
 
-#: faktura.php:1251
+#: faktura.php:1246
 msgid "Newly created"
 msgstr ""
 
-#: faktura.php:1253
+#: faktura.php:1248
 msgid "Is sent to the Customer."
 msgstr ""
 
-#: faktura.php:1255
+#: faktura.php:1250
 msgid "Locked for editing"
 msgstr ""
 
-#: faktura.php:1257
+#: faktura.php:1252
 msgid "Ready to expedite"
 msgstr ""
 
-#: faktura.php:1268
+#: faktura.php:1263
 msgid "Error during the payment"
 msgstr ""
 
-#: faktura.php:1270
+#: faktura.php:1265
 msgid ", payment was interrupted."
 msgstr ""
 
-#: faktura.php:1272 fakturas.php:211 fakturas.php:249
+#: faktura.php:1267 fakturas.php:212 fakturas.php:250
 msgid "Canceled"
 msgstr ""
 
-#: faktura.php:1274
+#: faktura.php:1269
 msgid "Payment declined"
 msgstr ""
 
-#: faktura.php:1276
+#: faktura.php:1271
 msgid "Does not exist in the system"
 msgstr ""
 
-#: faktura.php:1294 fakturas.php:12
+#: faktura.php:1289 fakturas.php:13
 msgid "No one"
 msgstr ""
 
-#: faktura.php:1348
+#: faktura.php:1343
 msgid "Phone 1:"
 msgstr ""
 
-#: faktura.php:1355
+#: faktura.php:1350
 msgid "Phone 2:"
 msgstr ""
 
-#: faktura.php:1477
+#: faktura.php:1472
 msgid "Entered amount includes VAT"
 msgstr ""
 
-#: faktura.php:1567
-#, php-format
+#: faktura.php:1562
 msgid "Expedite"
 msgstr ""
 
-#: faktura.php:1568
-#, php-format
+#: faktura.php:1563
 msgid "Reject"
 msgstr ""
 
-#: faktura.php:1578 image-edit.php:105
-#, php-format
+#: faktura.php:1573 image-edit.php:106
 msgid "Save"
 msgstr ""
 
-#: faktura.php:1580
-#, php-format
+#: faktura.php:1575
 msgid "Lock"
 msgstr ""
 
-#: faktura.php:1584
-#, php-format
+#: faktura.php:1579
 msgid "Print"
 msgstr ""
 
-#: faktura.php:1586 fakturas.php:280
-#, php-format
+#: faktura.php:1581 fakturas.php:281
 msgid "Create new"
 msgstr ""
 
-#: faktura.php:1587
-#, php-format
+#: faktura.php:1582
 msgid "Copy to new"
 msgstr ""
 
-#: faktura.php:1590
-#, php-format
+#: faktura.php:1585
 msgid "Cancel"
 msgstr ""
 
-#: faktura.php:1601 faktura.php:1603
-#, php-format
+#: faktura.php:1596 faktura.php:1598
 msgid "Send to customer"
 msgstr ""
 
-#: faktura.php:1601 faktura.php:1603
-#, php-format
+#: faktura.php:1596 faktura.php:1598
 msgid "Send"
 msgstr ""
 
-#: faktura.php:1606
-#, php-format
+#: faktura.php:1601
 msgid "Send reminder!"
 msgstr ""
 
-#: fakturas.php:69
+#: fakturas.php:70
 msgid "Invoice list"
 msgstr ""
 
-#: fakturas.php:136
+#: fakturas.php:137
 msgid "Year:"
 msgstr ""
 
-#: fakturas.php:136
+#: fakturas.php:137
 msgid "Month:"
 msgstr ""
 
-#: fakturas.php:136
+#: fakturas.php:137
 msgid "Clerk:"
 msgstr ""
 
-#: fakturas.php:154
+#: fakturas.php:155
 msgid "Jan"
 msgstr ""
 
-#: fakturas.php:155
+#: fakturas.php:156
 msgid "Feb"
 msgstr ""
 
-#: fakturas.php:156
+#: fakturas.php:157
 msgid "Mar"
 msgstr ""
 
-#: fakturas.php:157
+#: fakturas.php:158
 msgid "Apr"
 msgstr ""
 
-#: fakturas.php:158
+#: fakturas.php:159
 msgid "May"
 msgstr ""
 
-#: fakturas.php:159
+#: fakturas.php:160
 msgid "Jun"
 msgstr ""
 
-#: fakturas.php:160
+#: fakturas.php:161
 msgid "Jul"
 msgstr ""
 
-#: fakturas.php:161
+#: fakturas.php:162
 msgid "Aug"
 msgstr ""
 
-#: fakturas.php:162
+#: fakturas.php:163
 msgid "Sep"
 msgstr ""
 
-#: fakturas.php:163
+#: fakturas.php:164
 msgid "Oct"
 msgstr ""
 
-#: fakturas.php:164
+#: fakturas.php:165
 msgid "Nov"
 msgstr ""
 
-#: fakturas.php:165
+#: fakturas.php:166
 msgid "Dec"
 msgstr ""
 
-#: fakturas.php:202
+#: fakturas.php:203
 msgid "Current"
 msgstr ""
 
-#: fakturas.php:203
+#: fakturas.php:204
 msgid "Completed"
 msgstr ""
 
-#: fakturas.php:204 fakturas.php:233
+#: fakturas.php:205 fakturas.php:234
 msgid "New"
 msgstr ""
 
-#: fakturas.php:205 fakturas.php:237
+#: fakturas.php:206 fakturas.php:238
 msgid "Locked"
 msgstr ""
 
-#: fakturas.php:206 fakturas.php:239
+#: fakturas.php:207 fakturas.php:240
 msgid "Ready"
 msgstr ""
 
-#: fakturas.php:207 fakturas.php:241
+#: fakturas.php:208 fakturas.php:242
 msgid "Expedited"
 msgstr ""
 
-#: fakturas.php:208 fakturas.php:243
+#: fakturas.php:209 fakturas.php:244
 msgid "Giro"
 msgstr ""
 
-#: fakturas.php:209 fakturas.php:245
+#: fakturas.php:210 fakturas.php:246
 msgid "Cash"
 msgstr ""
 
-#: fakturas.php:212 fakturas.php:251
+#: fakturas.php:213 fakturas.php:252
 msgid "Rejected"
 msgstr ""
 
-#: fakturas.php:220
+#: fakturas.php:221
 msgid "ID"
 msgstr ""
 
-#: fakturas.php:221
+#: fakturas.php:222
 msgid "Created"
 msgstr ""
 
-#: fakturas.php:222
+#: fakturas.php:223
 msgid "Responsible"
 msgstr ""
 
-#: fakturas.php:223
+#: fakturas.php:224
 msgid "Amount"
 msgstr ""
 
-#: fakturas.php:235
+#: fakturas.php:236
 msgid "Sent"
 msgstr ""
 
-#: fakturas.php:235
+#: fakturas.php:236
 msgid "Sent to customer"
 msgstr ""
 
-#: file-move.php:28
+#: file-move.php:29
 msgid "Move file"
 msgstr ""
 
-#: file-move.php:120
+#: file-move.php:121
 #, php-format
 msgid "Click on the folder where you want to move the file '%s'."
 msgstr ""
 
-#: file-move.php:144
+#: file-move.php:145
 msgid "Click the plus sign above to see the subfolders."
 msgstr ""
 
-#: file-upload.php:52
+#: file-upload.php:53
 msgid "File upload"
 msgstr ""
 
-#: image-edit.php:43
+#: image-edit.php:44
 msgid "Edit picture"
 msgstr ""
 
-#: image-edit.php:100
+#: image-edit.php:101
 msgid "Rotate counterclockwise"
 msgstr ""
 
-#: image-edit.php:101
+#: image-edit.php:102
 msgid "Rotate clockwise"
 msgstr ""
 
-#: image-edit.php:102
+#: image-edit.php:103
 msgid "Flip horizontally"
 msgstr ""
 
-#: image-edit.php:103
+#: image-edit.php:104
 msgid "Flip Vertically"
 msgstr ""
 
-#: image-edit.php:104
+#: image-edit.php:105
 msgid "Clip"
 msgstr ""
 
-#: index.php:33
+#: index.php:34
 msgid "You must enter a search word."
 msgstr ""
 
-#: index.php:83 index.php:1282
+#: index.php:84 index.php:1223
 msgid "Icon:"
 msgstr ""
 
-#: index.php:83 index.php:1282
+#: index.php:84 index.php:1223
 msgid "Find pictures"
 msgstr ""
 
-#: index.php:83 index.php:180 index.php:1005 index.php:1282 index.php:1429
-#: index.php:1465
+#: index.php:84 index.php:181 index.php:1003 index.php:1223 index.php:1370
+#: index.php:1406
 msgid "Remove picture"
 msgstr ""
 
-#: index.php:86
+#: index.php:87
 msgid "Sort subcategories:"
 msgstr ""
 
-#: index.php:86
+#: index.php:87
 msgid "Alphabetically"
 msgstr ""
 
-#: index.php:89
+#: index.php:90
 msgid "Manually"
 msgstr ""
 
-#: index.php:122 index.php:1285
+#: index.php:123 index.php:1226
 msgid "Contact:"
 msgstr ""
 
-#: index.php:132 index.php:1292
+#: index.php:133 index.php:1233
 msgid "Display:"
 msgstr ""
 
-#: index.php:135 index.php:1292
+#: index.php:136 index.php:1233
 msgid "Hide"
 msgstr ""
 
-#: index.php:138 index.php:1292
+#: index.php:139 index.php:1233
 msgid "Gallery"
 msgstr ""
 
-#: index.php:141 index.php:1292
+#: index.php:142 index.php:1233
 msgid "List"
 msgstr ""
 
-#: index.php:157 index.php:446 index.php:494
+#: index.php:158 index.php:444 index.php:492
 msgid "The page does not exist"
 msgstr ""
 
-#: index.php:159
+#: index.php:160
 msgid "Edit page #"
 msgstr ""
 
-#: index.php:165
+#: index.php:166
 msgid ""
 "Search word (separate search words with a comma 'Emergency Blanket, "
 "Emergency Blanket'):"
 msgstr ""
 
-#: index.php:171 index.php:178 index.php:180 index.php:1005 index.php:1429
-#: index.php:1464 index.php:1465
+#: index.php:172 index.php:179 index.php:181 index.php:1003 index.php:1370
+#: index.php:1405 index.php:1406
 msgid "/images/web/intet-foto.jpg"
 msgstr ""
 
-#: index.php:180 index.php:1005 index.php:1429 index.php:1465
+#: index.php:181 index.php:1003 index.php:1370 index.php:1406
 msgid "Find image"
 msgstr ""
 
-#: index.php:187 index.php:1010
+#: index.php:188 index.php:1008
 msgid "Price:"
 msgstr ""
 
-#: index.php:191 index.php:1010
+#: index.php:192 index.php:1008
 msgid "Before"
 msgstr ""
 
-#: index.php:195 index.php:1010
+#: index.php:196 index.php:1008
 msgid "Indicative price"
 msgstr ""
 
-#: index.php:199
+#: index.php:200
 msgid "Should cost"
 msgstr ""
 
-#: index.php:205 index.php:1010
+#: index.php:206 index.php:1008
 msgid "Price"
 msgstr ""
 
-#: index.php:209 index.php:1010
+#: index.php:210 index.php:1008
 msgid "From"
 msgstr ""
 
-#: index.php:213
+#: index.php:214
 msgid "Used"
 msgstr ""
 
-#: index.php:222 index.php:1013
+#: index.php:223 index.php:1011
 msgid "Other:"
 msgstr ""
 
-#: index.php:222 index.php:1013
+#: index.php:223 index.php:1011
 msgid "SKU:"
 msgstr ""
 
-#: index.php:222 index.php:1013
+#: index.php:223 index.php:1011
 msgid "None"
 msgstr ""
 
-#: index.php:231 index.php:1020
+#: index.php:232 index.php:1018
 msgid "All others"
 msgstr ""
 
-#: index.php:246
+#: index.php:247
 msgid "Lists:"
 msgstr ""
 
-#: index.php:261
+#: index.php:262
 msgid "Link"
 msgstr ""
 
-#: index.php:286 index.php:341 index.php:572
+#: index.php:287 index.php:342 index.php:570
 msgid "Edit"
 msgstr ""
 
-#: index.php:341
+#: index.php:342
 msgid "Delete row"
 msgstr ""
 
-#: index.php:370 index.php:401
+#: index.php:372 index.php:403
 msgid "Remove binding"
 msgstr ""
 
-#: index.php:381
+#: index.php:383
 msgid "Create binding"
 msgstr ""
 
-#: index.php:388
+#: index.php:390
 msgid "Accessories:"
 msgstr ""
 
-#: index.php:412
+#: index.php:410
 msgid "Add accessories"
 msgstr ""
 
-#: index.php:449
+#: index.php:447
 msgid "Edit frontpage"
 msgstr ""
 
-#: index.php:453
+#: index.php:451
 msgid "Sort maincategories:"
 msgstr ""
 
-#: index.php:496 index.php:1509
+#: index.php:494 index.php:1450
 #, php-format
 msgid "Edit %s"
 msgstr ""
 
-#: index.php:510
+#: index.php:508
 msgid "Create new requirement"
 msgstr ""
 
-#: index.php:525
+#: index.php:523
 #, php-format
 msgid "Edit %s sorting"
 msgstr ""
 
-#: index.php:527
+#: index.php:525
 msgid "New Item:"
 msgstr ""
 
-#: index.php:541 mainmenu.php:77
+#: index.php:539 mainmenu.php:78
 msgid "List sorting"
 msgstr ""
 
-#: index.php:542
+#: index.php:540
 msgid "Create new sorting"
 msgstr ""
 
-#: index.php:560 mainmenu.php:86
+#: index.php:558 mainmenu.php:87
 msgid "Address Book"
 msgstr ""
 
-#: index.php:561
+#: index.php:559
 msgid "Name"
 msgstr ""
 
-#: index.php:561
+#: index.php:559
 msgid "E-mail"
 msgstr ""
 
-#: index.php:561
+#: index.php:559
 msgid "Phone"
 msgstr ""
 
-#: index.php:572 index.php:1434
+#: index.php:570 index.php:1375
 msgid "Delete"
 msgstr ""
 
-#: index.php:586
+#: index.php:584
 msgid "Edit contact person"
 msgstr ""
 
-#: index.php:591
+#: index.php:589
 msgid "Postal Code:"
 msgstr ""
 
-#: index.php:593
+#: index.php:591
 msgid "Private phone:"
 msgstr ""
 
-#: index.php:594
+#: index.php:592
 msgid "Mobile phone:"
 msgstr ""
 
-#: index.php:598
+#: index.php:596
 msgid "Receive newsletters."
 msgstr ""
 
-#: index.php:599
+#: index.php:597
 msgid "Interests:"
 msgstr ""
 
-#: index.php:640 mainmenu.php:88
+#: index.php:638 mainmenu.php:89
 msgid "Maintenance"
 msgstr ""
 
-#: index.php:654
+#: index.php:652
 msgid "Removing news subscribers without contact information"
 msgstr ""
 
-#: index.php:657
+#: index.php:655
 msgid "Removing bindings to pages that do not exist"
 msgstr ""
 
-#: index.php:660
+#: index.php:658
 msgid "Removing accessories that do not exist"
 msgstr ""
 
-#: index.php:663
+#: index.php:661
 msgid "Searching for pages without bindings"
 msgstr ""
 
-#: index.php:666
+#: index.php:664
 msgid "Searching for pages with illegal bindings"
 msgstr ""
 
-#: index.php:669
+#: index.php:667
 msgid "Searching for orphaned lists"
 msgstr ""
 
-#: index.php:672
+#: index.php:670
 msgid "Searching for orphaned rows"
 msgstr ""
 
-#: index.php:675
+#: index.php:673
 msgid "Searching for orphaned categories"
 msgstr ""
 
-#: index.php:678
+#: index.php:676
 msgid "Searching for cirkalur linked categories"
 msgstr ""
 
-#: index.php:681
+#: index.php:679
 msgid "Searching for illegal e-mail adresses"
 msgstr ""
 
-#: index.php:684
+#: index.php:682
 msgid "Removes not existing files from the database"
 msgstr ""
 
-#: index.php:687
+#: index.php:685
 msgid "Checking the file names"
 msgstr ""
 
-#: index.php:690
+#: index.php:688
 msgid "Checking the folder names"
 msgstr ""
 
-#: index.php:693
+#: index.php:691
 msgid "Deleting temporary files"
 msgstr ""
 
-#: index.php:696
+#: index.php:694
 msgid "Retrieving the size of the files"
 msgstr ""
 
-#: index.php:699
+#: index.php:697
 msgid "Optimizing the database"
 msgstr ""
 
-#: index.php:702
+#: index.php:700
 msgid "Getting Database Size"
 msgstr ""
 
-#: index.php:707
+#: index.php:705
 #, php-format
 msgid "The scan took %d seconds."
 msgstr ""
 
-#: index.php:719 index.php:727
+#: index.php:717 index.php:725
 msgid "MB"
 msgstr ""
 
-#: index.php:727
+#: index.php:725
 msgid "Server consumption"
 msgstr ""
 
-#: index.php:727
+#: index.php:725
 msgid "Get e-mail consumption"
 msgstr ""
 
-#: index.php:727
+#: index.php:725
 msgid "DB:"
 msgstr ""
 
-#: index.php:727
+#: index.php:725
 msgid "WWW"
 msgstr ""
 
-#: index.php:727
+#: index.php:725
 msgid "Scan database"
 msgstr ""
 
-#: index.php:733
+#: index.php:731
 #, php-format
 msgid "Delayed e-mails %d/%d"
 msgstr ""
 
-#: index.php:757
+#: index.php:755
 #, php-format
 msgid "E-mail: %s #%d is not valid"
 msgstr ""
 
-#: index.php:761
+#: index.php:759
 msgid "The following e-mail addresses are not valid"
 msgstr ""
 
-#: index.php:771
+#: index.php:769
 msgid "The following rows have no lists:"
 msgstr ""
 
-#: index.php:777 index.php:957
+#: index.php:775 index.php:955
 msgid "The following pages have no binding"
 msgstr ""
 
-#: index.php:787
+#: index.php:785
 msgid "The following categories are orphans:"
 msgstr ""
 
-#: index.php:793
+#: index.php:791
 msgid "The following categories have no binding"
 msgstr ""
 
-#: index.php:814 index.php:817
+#: index.php:812 index.php:815
 msgid "The following categories are tied in itself:"
 msgstr ""
 
-#: index.php:827
+#: index.php:825
 #, php-format
 msgid "The following %d files must be renamed:"
 msgstr ""
 
-#: index.php:837
+#: index.php:835
 msgid "The following files must be renamed"
 msgstr ""
 
-#: index.php:847
+#: index.php:845
 #, php-format
 msgid "The following %d files are in a folder that needs to be renamed:"
 msgstr ""
 
-#: index.php:858
+#: index.php:856
 msgid "The following folders must be renamed"
 msgstr ""
 
-#: index.php:925
+#: index.php:923
 msgid "The following lists are orphans:"
 msgstr ""
 
-#: index.php:931
+#: index.php:929
 msgid "The following lists are not tied to any page"
 msgstr ""
 
-#: index.php:989
+#: index.php:987
 msgid "The following pages are both active and inactive"
 msgstr ""
 
-#: index.php:1003
+#: index.php:1001
 msgid ""
 "Search word (separate search words with a comma 'Emergency Blanket, Rescue "
 "Blanket'):"
 msgstr ""
 
-#: index.php:1058 index.php:1131 index.php:1188 index.php:1236
+#: index.php:1056 index.php:1129 index.php:1177 pagelist.php:45
+#: pagelist.php:118 pagelist.php:166
 msgid "Frontpage"
 msgstr ""
 
-#: index.php:1061 index.php:1112 index.php:1172 index.php:1221 index.php:1582
+#: index.php:1059 index.php:1110 index.php:1162 index.php:1523 pagelist.php:48
+#: pagelist.php:99 pagelist.php:151
 msgid "Inactive"
 msgstr ""
 
-#: index.php:1069 index.php:1086
+#: index.php:1067 index.php:1084 pagelist.php:56 pagelist.php:73
 msgid "Select location:"
 msgstr ""
 
-#: index.php:1149
-msgid "Select page:"
-msgstr ""
-
-#: index.php:1282 mainmenu.php:57
+#: index.php:1223 mainmenu.php:58
 msgid "Create category"
 msgstr ""
 
-#: index.php:1305 mainmenu.php:58
+#: index.php:1246 mainmenu.php:59 pagelist.php:212
 msgid "Overview"
 msgstr ""
 
-#: index.php:1394
+#: index.php:1335
 msgid "You must enter a name and choose a location for the new category."
 msgstr ""
 
-#: index.php:1409
+#: index.php:1350
 msgid "You must enter a name and a text of the requirement."
 msgstr ""
 
-#: index.php:1414 mainmenu.php:87
+#: index.php:1355 mainmenu.php:88
 msgid "Find and replace"
 msgstr ""
 
-#: index.php:1414
+#: index.php:1355
 msgid "This function affects all pages."
 msgstr ""
 
-#: index.php:1414
+#: index.php:1355
 msgid "Find:"
 msgstr ""
 
-#: index.php:1414
+#: index.php:1355
 msgid "Replace:"
 msgstr ""
 
-#: index.php:1428
+#: index.php:1369
 msgid "List of brands"
 msgstr ""
 
-#: index.php:1428
+#: index.php:1369
 msgid "Link:"
 msgstr ""
 
-#: index.php:1428 index.php:1459
+#: index.php:1369 index.php:1400
 msgid "Logo:"
 msgstr ""
 
-#: index.php:1430
+#: index.php:1371
 msgid "Add brand"
 msgstr ""
 
-#: index.php:1459
+#: index.php:1400
 #, php-format
 msgid "Edit the brand %d"
 msgstr ""
 
-#: index.php:1466
+#: index.php:1407
 msgid "Save brand"
 msgstr ""
 
-#: index.php:1477 index.php:1487
+#: index.php:1418 index.php:1428
 msgid "You must enter a name."
 msgstr ""
 
-#: index.php:1493
+#: index.php:1434
 msgid "Requirements list"
 msgstr ""
 
-#: index.php:1574
+#: index.php:1515
 msgid "The binding does not exist."
 msgstr ""
 
-#: index.php:1595
+#: index.php:1536
 msgid "The binding already exists."
 msgstr ""
 
-#: index.php:1688
+#: index.php:1631
 msgid "The category can not be placed under itself."
 msgstr ""
 
-#: mainmenu.php:13 mainmenu.php:17 mainmenu.php:19 mainmenu.php:23
+#: mainmenu.php:14 mainmenu.php:18 mainmenu.php:20 mainmenu.php:24
 msgid "Save page"
 msgstr ""
 
-#: mainmenu.php:15 mainmenu.php:25
+#: mainmenu.php:16 mainmenu.php:26
 msgid "Save category"
 msgstr ""
 
-#: mainmenu.php:21
+#: mainmenu.php:22
 msgid "Save contact"
 msgstr ""
 
-#: mainmenu.php:27
+#: mainmenu.php:28
 msgid "Save requirement"
 msgstr ""
 
-#: mainmenu.php:29
+#: mainmenu.php:30
 msgid "Save list"
 msgstr ""
 
-#: mainmenu.php:31
+#: mainmenu.php:32
 msgid "Save e-mail"
 msgstr ""
 
-#: mainmenu.php:32
+#: mainmenu.php:33
 msgid "Send e-mail"
 msgstr ""
 
-#: mainmenu.php:56
+#: mainmenu.php:57
 msgid "Create page"
 msgstr ""
 
-#: mainmenu.php:59
+#: mainmenu.php:60
 msgid "Skip to page"
 msgstr ""
 
-#: mainmenu.php:70
+#: mainmenu.php:71
 msgid "Lists"
 msgstr ""
 
-#: mainmenu.php:75
+#: mainmenu.php:76
 msgid "Requirements"
 msgstr ""
 
-#: mainmenu.php:76
+#: mainmenu.php:77
 msgid "Brands"
 msgstr ""
 
-#: mainmenu.php:79
+#: mainmenu.php:80
 msgid "Tools"
 msgstr ""
 
-#: mainmenu.php:84
+#: mainmenu.php:85
 msgid "Open file manager"
 msgstr ""
 
-#: mainmenu.php:85 emails.php:228
+#: mainmenu.php:86 emails.php:229
 msgid "Newsletters"
 msgstr ""
 
-#: mainmenu.php:89
+#: mainmenu.php:90
 msgid "Edit groups"
 msgstr ""
 
-#: mainmenu.php:90
+#: mainmenu.php:91
 msgid "Catalog labels"
 msgstr ""
 
-#: mainmenu.php:91
+#: mainmenu.php:92
 msgid "Invoices"
 msgstr ""
 
-#: emails.php:15
+#: emails.php:16
 msgid "The newsletter has already been sent!"
 msgstr ""
 
-#: emails.php:155
+#: emails.php:156
 msgid "Edit newsletter"
 msgstr ""
 
-#: emails.php:167 emails.php:177
+#: emails.php:168 emails.php:178
 msgid "Sender:"
 msgstr ""
 
-#: emails.php:168
+#: emails.php:169
 msgid "Select sender"
 msgstr ""
 
-#: emails.php:182
+#: emails.php:183
 msgid "Recipient:"
 msgstr ""
 
-#: emails.php:184
+#: emails.php:185
 msgid "Restrict recipients to:"
 msgstr ""
 
-#: emails.php:204
+#: emails.php:205
 msgid "Number of recipients:"
 msgstr ""
 
-#: emails.php:207 emails.php:209
+#: emails.php:208 emails.php:210
 msgid "Subject:"
 msgstr ""
 
-#: emails.php:228
+#: emails.php:229
 msgid "Create new newsletter"
 msgstr ""
 
-#: file-functions.php:33
+#: file-functions.php:34
 msgid "The file can not be deleted because it is used on a page."
 msgstr ""
 
-#: file-functions.php:38
+#: file-functions.php:39
 msgid "There was an error deleting the file, the file may be in use."
 msgstr ""
 
-#: logon.php:37
+#: logon.php:38
 msgid "Login"
 msgstr ""
 
-#: logon.php:41
+#: logon.php:42
 msgid "User:"
 msgstr ""
 
-#: logon.php:44
+#: logon.php:45
 msgid "Password:"
 msgstr ""

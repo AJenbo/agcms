@@ -206,7 +206,7 @@ if(!empty($_GET['id']) && @$_GET['checkid'] == getCheckid($_GET['id'])) {
 				
 				$sql = "UPDATE `fakturas` SET";
 				foreach($updates as $key => $value)
-					$sql .= " `".addcslashes($key, '`')."` = '".addcslashes($value, "'")."',";
+					$sql .= " `".addcslashes($key, '`\\')."` = '".addcslashes($value, "'\\")."',";
 				$sql = substr($sql, 0, -1);
 				
 				$sql .= 'WHERE `id` = '.$_GET['id'];
@@ -217,6 +217,23 @@ if(!empty($_GET['id']) && @$_GET['checkid'] == getCheckid($_GET['id'])) {
 			
 				//TODO move down to skip address page if valid
 				if(!count($rejected)) {
+					
+					if(@$_POST['newsletter'] ? 1 : 0) {
+						
+						require_once 'inc/countries.php';
+						$mysqli->query("INSERT INTO `email` (`navn`, `email`, `adresse`, `land`, `post`, `by`, `tlf1`, `tlf2`, `kartotek`, `dato` , `ip` )
+	VALUES ('".
+						addcslashes($updates['navn'], '`\\')."', '".
+						addcslashes($updates['email'], '`\\')."', '".
+						addcslashes($updates['adresse'], '`\\')."', '".
+						addcslashes($countries[$updates['land']], '`\\')."', '".
+						addcslashes($updates['postnr'], '`\\')."', '".
+						addcslashes($updates['by'], '`\\')."', '".
+						addcslashes($updates['tlf1'], '`\\')."', '".
+						addcslashes($updates['tlf2'], '`\\')."', '1', now(), '".
+						addcslashes($_SERVER['REMOTE_ADDR'], '`\\')."')");
+					}
+					
 					header('Location: '.$GLOBALS['_config']['base_url'].'/betaling/?id='.$_GET['id'].'&checkid='.$_GET['checkid'].'&step=2', TRUE, 303);
 					exit;
 				}
@@ -387,7 +404,13 @@ if(!empty($_GET['id']) && @$_GET['checkid'] == getCheckid($_GET['id'])) {
 			$GLOBALS['generatedcontent']['text'] .= '</select></td><td>';
 			if(!empty($rejected['postcountry']))
 				$GLOBALS['generatedcontent']['text'] .= '<img src="images/error.png" alt="" title="" >';
-			$GLOBALS['generatedcontent']['text'] .= '</td></tr></tbody></table><input style="font-weight:bold;" type="submit" value="'._('Proceed to the terms of trade').'" /></form>';
+			$GLOBALS['generatedcontent']['text'] .= '</td></tr>';
+			$GLOBALS['generatedcontent']['text'] .= '<tr>
+				<td colspan="4"><input name="newsletter" id="newsletter" type="checkbox"';
+			if(!empty($_POST['newsletter'])) $GLOBALS['generatedcontent']['text'] .= ' checked="checked"';
+			$GLOBALS['generatedcontent']['text'] .= ' /><label for="newsletter"> '._('Please send me your newsletter.').'</label></td>
+			</tr>';
+			$GLOBALS['generatedcontent']['text'] .= '</tbody></table><input style="font-weight:bold;" type="submit" value="'._('Proceed to the terms of trade').'" /></form>';
 		} elseif($_GET['step'] == 2) {
 
 			if(count(validate($faktura))) {
