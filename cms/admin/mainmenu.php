@@ -37,7 +37,7 @@ require_once $_SERVER['DOCUMENT_ROOT'].'/admin/inc/logon.php';
 	$activityButtons[] = '<li id="loading" style="cursor:default;"><img src="images/loading.gif" width="16" height="16" alt="Processing" /> '._('Loading').'</li>';
 	
 	if($activityButtons) {
-		?><a class="menuboxheader" href="" onclick="showhide('Activity');">Handlinger</a>
+		?><a class="menuboxheader" href="" onclick="showhide('Activity');"><?php echo(_('Handlinger')); ?></a>
 		<ul id="Activity"<?php
 		if(!empty($_COOKIE['hideActivity']))
 			echo(' style="display:none"');
@@ -46,10 +46,10 @@ require_once $_SERVER['DOCUMENT_ROOT'].'/admin/inc/logon.php';
 		foreach($activityButtons as $value)
 			echo($value);
 		
-		?></ul><?php
+		?><li><a href="./logout.php"><img src="images/door_in.png" width="16" height="16" alt="" /> <?php echo(_('Log out')); ?></a></li></ul><?php
 	}
 	
-  ?><a class="menuboxheader" href="" onclick="showhide('Indhold');">Indhold</a>
+  ?><a class="menuboxheader" href="" onclick="showhide('Indhold');"><?php echo(_('Indhold')); ?></a>
   <ul id="Indhold"<?php
   if(!empty($_COOKIE['hideIndhold']))
 	  echo(' style="display:none"');
