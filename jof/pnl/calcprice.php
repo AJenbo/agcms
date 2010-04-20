@@ -15,37 +15,28 @@ function calcPricePart($country, $product, $kg, $insurance, $l, $w, $h) {
 	if($product == 359) {
 		if($country == 'GL') {
 			//Grønland
-			$price = 128;
-			$price += 20*$kg;
+			$price = 132;
+			$price += 21*$kg;
 		} elseif($country == 'FO') {
 			//Færøerne
-			$price = 136;
-			$price += 9*$kg;
+			$price = 140;
+			$price += 10*$kg;
 		} elseif($country == 'IS') {
 			//Island
-			$price = 156;
+			$price = 160;
 			$price += 13*$kg;
-		} elseif(isAmerika($country)) {
-			//Amerika
-			$price = 156;
-			$price += 37*$kg;
-		} elseif(isAfricaAsienOrMiddeleast($country)) {
-			//Afrika, Asien og Mellemøsten
-			$price = 156;
-			$price += 39*$kg;
 		} else {
 			//Øvrige verden
-			$price = 156;
-			$price += 43*$kg;
+			return false;
 		}
 		
 		if($insurance) {
 			if(isEU($country)) {
 				//EU
-				$price += 70;
+				$price += 80;
 			} else {
 				//Øvrige lande
-				$price += 100;
+				$price += 110;
 			}
 		}
 		
@@ -92,10 +83,10 @@ function calcPricePart($country, $product, $kg, $insurance, $l, $w, $h) {
 		if($insurance) {
 			if(isEU($country)) {
 				//EU
-				$price += 70;
+				$price += 80;
 			} else {
 				//Øvrige lande
-				$price += 100;
+				$price += 110;
 			}
 		}
 		
@@ -115,8 +106,8 @@ function calcPricePart($country, $product, $kg, $insurance, $l, $w, $h) {
 		$country == 'DE' ||
 		$country == 'AX') {
 			//Priszone 1
-			$price = 161;
-			$price += 13*$kg;
+			$price = 165;
+			$price += 14*$kg;
 		} elseif($country == 'BE' ||
 		$country == 'IS' ||
 		$country == 'IE' ||
@@ -124,8 +115,8 @@ function calcPricePart($country, $product, $kg, $insurance, $l, $w, $h) {
 		$country == 'NL' ||
 		$country == 'GB') {
 			//Priszone 2
-			$price = 171;
-			$price += 14*$kg;
+			$price = 175;
+			$price += 15*$kg;
 		} elseif($country == 'FR' ||
 		$country == 'IT' ||
 		$country == 'MC' ||
@@ -134,15 +125,15 @@ function calcPricePart($country, $product, $kg, $insurance, $l, $w, $h) {
 		$country == 'ES' ||
 		$country == 'AT') {
 			//Priszone 3
-			$price = 181;
-			$price += 18*$kg;
+			$price = 185;
+			$price += 19*$kg;
 		} elseif($country == 'EE' ||
 		$country == 'LV' ||
 		$country == 'LT' ||
 		$country == 'PL') {
 			//Priszone 4
-			$price = 196;
-			$price += 33*$kg;
+			$price = 200;
+			$price += 34*$kg;
 		} elseif($country == 'BG' ||
 		$country == 'CY' ||
 		$country == 'GR' ||
@@ -160,14 +151,14 @@ function calcPricePart($country, $product, $kg, $insurance, $l, $w, $h) {
 		$country == 'UA' ||
 		$country == 'HU') {
 			//Priszone 5
-			$price = 196;
-			$price += 48*$kg;
+			$price = 200;
+			$price += 49*$kg;
 		} elseif($country == 'CA' ||
 		$country == 'ZA' ||
 		$country == 'US') {
 			//Priszone 6
-			$price = 196;
-			$price += 55*$kg;
+			$price = 200;
+			$price += 56*$kg;
 		} elseif($country == 'AR' ||
 		$country == 'AU' ||
 		$country == 'BR' ||
@@ -186,20 +177,20 @@ function calcPricePart($country, $product, $kg, $insurance, $l, $w, $h) {
 		$country == 'TW' ||
 		$country == 'TH') {
 			//Priszone 7
-			$price = 201;
-			$price += 95*$kg;
+			$price = 205;
+			$price += 96*$kg;
 		} elseif($country == 'FO') {
 			//Priszone 8
-			$price = 166;
-			$price += 23*$kg;
+			$price = 170;
+			$price += 24*$kg;
 		} elseif($country == 'GL') {
 			//Priszone 9
-			$price = 126;
-			$price += 78*$kg;
+			$price = 130;
+			$price += 79*$kg;
 		} else {
 			//Øvrige lande
-			$price = 156;
-			$price += 71*$kg;
+			$price = 160;
+			$price += 72*$kg;
 		}
 		
 		//Told
@@ -241,10 +232,10 @@ function calcPricePart($country, $product, $kg, $insurance, $l, $w, $h) {
 		if($insurance) {
 			if(isEU($country)) {
 				//EU
-				$price += 70;
+				$price += 80;
 			} else {
 				//Øvrige verden
-				$price += 100;
+				$price += 110;
 			}
 		}
 	}

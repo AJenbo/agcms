@@ -504,15 +504,6 @@ Indenlandske pakker</td></tr></tbody></table><form action="" method="post" name=
 
 $mysqli = new simple_mysqli($GLOBALS['_config']['mysql_server'], $GLOBALS['_config']['mysql_user'], $GLOBALS['_config']['mysql_password'], $GLOBALS['_config']['mysql_database']);
 $frequentRecipients = $mysqli->fetch_array('SELECT recipientID, recName1, count(*) AS n FROM post WHERE deleted = 0 AND recipientID != \'\'
- AND recipientID != \'70157015\'
- AND recipientID != \'96802000\'
- AND recipientID != \'74223520\'
- AND recipientID != \'43410410\'
- AND recipientID != \'97122766\'
- AND recipientID != \'35424143\'
- AND recipientID != \'98450180\'
- AND recipientID != \'75679522\'
- AND recipientID != \'36165018\'
  GROUP BY recipientID HAVING n >1 ORDER BY n DESC LIMIT 10');
 
 foreach($frequentRecipients as $key => $value) {
@@ -529,6 +520,7 @@ $frequentRecipients[35424143] = 'NagPeople Aps';
 $frequentRecipients[98450180] = 'Poul Villaume';
 $frequentRecipients[75679522] = 'S & L Produktion';
 $frequentRecipients[36165018] = 'Mercia Outdoor ApS';
+$frequentRecipients[87939925] = 'Tretorn';
 
 $temp = natsort($frequentRecipients);
 

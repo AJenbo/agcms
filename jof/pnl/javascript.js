@@ -16,37 +16,27 @@ function calcPricePart(product) {
 	if(product == 359) {
 		if($('country').value == 'GL') {
 			//Grønland
-			price = 128;
-			price += 20*Math.ceil(kg);
+			price = 132;
+			price += 21*Math.ceil(kg);
 		} else if($('country').value == 'FO') {
 			//Færøerne
-			price = 136;
-			price += 9*Math.ceil(kg);
+			price = 140;
+			price += 10*Math.ceil(kg);
 		} else if($('country').value == 'IS') {
 			//Island
-			price = 156;
+			price = 160;
 			price += 13*Math.ceil(kg);
-		} else if(isAmerika($('country').value)) {
-			//Amerika
-			price = 156;
-			price += 37*Math.ceil(kg);
-		} else if(isAfricaAsienOrMiddeleast($('country').value)) {
-			//Afrika, Asien og Mellemøsten
-			price = 156;
-			price += 39*Math.ceil(kg);
 		} else {
-			//Øvrige verden
-			price = 156;
-			price += 43*Math.ceil(kg);
+			return false;
 		}
 		
 		if(insurance) {
 			if(isEU($('country').value)) {
 				//EU
-				price += 70;
+				price += 80;
 			} else {
 				//Øvrige lande
-				price += 100;
+				price += 110;
 			}
 		}
 		
@@ -58,45 +48,45 @@ function calcPricePart(product) {
 	if(product == 340) {
 		if($('country').value == 'GL') {
 			//Grønland
-			price = 141;
-			price += 75*Math.ceil(kg);
+			price = 145;
+			price += 76*Math.ceil(kg);
 		} else if($('country').value == 'FO') {
 			//Færøerne
-			price = 156;
-			price += 21*Math.ceil(kg);
+			price = 160;
+			price += 22*Math.ceil(kg);
 		} else if($('country').value == 'FI' ||
 		$('country').value == 'NO' ||
 		$('country').value == 'SE' ||
 		$('country').value == 'DE' ||
 		$('country').value == 'AX') {
 			//Priszone 1
-			price = 156;
-			price += 13*Math.ceil(kg);
+			price = 160;
+			price += 14*Math.ceil(kg);
 		} else if(isEurop($('country').value)) {
 			//Priszone 2
-			price = 156;
-			price += 21*Math.ceil(kg);
+			price = 160;
+			price += 22*Math.ceil(kg);
 		} else if(isAmerika($('country').value)) {
 			//Amerika
-			price = 156;
-			price += 61*Math.ceil(kg);
+			price = 160;
+			price += 62*Math.ceil(kg);
 		} else if(isAfricaAsienOrMiddeleast($('country').value)) {
 			//Afrika, Asien og Mellemøsten
-			price = 156;
-			price += 71*Math.ceil(kg);
+			price = 160;
+			price += 72*Math.ceil(kg);
 		} else {
 			//Øvrige verden
-			price = 156;
-			price += 81*Math.ceil(kg);
+			price = 160;
+			price += 82*Math.ceil(kg);
 		}
 		
 		if(insurance) {
 			if(isEU($('country').value)) {
 				//EU
-				price += 70;
+				price += 80;
 			} else {
 				//Øvrige lande
-				price += 100;
+				price += 110;
 			}
 		}
 		
@@ -116,8 +106,8 @@ function calcPricePart(product) {
 		$('country').value == 'DE' ||
 		$('country').value == 'AX') {
 			//Priszone 1
-			price = 161;
-			price += 13*Math.ceil(kg);
+			price = 165;
+			price += 14*Math.ceil(kg);
 		} else if($('country').value == 'BE' ||
 		$('country').value == 'IS' ||
 		$('country').value == 'IE' ||
@@ -125,8 +115,8 @@ function calcPricePart(product) {
 		$('country').value == 'NL' ||
 		$('country').value == 'GB') {
 			//Priszone 2
-			price = 171;
-			price += 14*Math.ceil(kg);
+			price = 175;
+			price += 15*Math.ceil(kg);
 		} else if($('country').value == 'FR' ||
 		$('country').value == 'IT' ||
 		$('country').value == 'MC' ||
@@ -135,15 +125,15 @@ function calcPricePart(product) {
 		$('country').value == 'ES' ||
 		$('country').value == 'AT') {
 			//Priszone 3
-			price = 181;
-			price += 18*Math.ceil(kg);
+			price = 185;
+			price += 19*Math.ceil(kg);
 		} else if($('country').value == 'EE' ||
 		$('country').value == 'LV' ||
 		$('country').value == 'LT' ||
 		$('country').value == 'PL') {
 			//Priszone 4
-			price = 196;
-			price += 33*Math.ceil(kg);
+			price = 200;
+			price += 34*Math.ceil(kg);
 		} else if($('country').value == 'BG' ||
 		$('country').value == 'CY' ||
 		$('country').value == 'GR' ||
@@ -161,14 +151,14 @@ function calcPricePart(product) {
 		$('country').value == 'UA' ||
 		$('country').value == 'HU') {
 			//Priszone 5
-			price = 196;
-			price += 48*Math.ceil(kg);
+			price = 200;
+			price += 49*Math.ceil(kg);
 		} else if($('country').value == 'CA' ||
 		$('country').value == 'ZA' ||
 		$('country').value == 'US') {
 			//Priszone 6
-			price = 196;
-			price += 55*Math.ceil(kg);
+			price = 200;
+			price += 56*Math.ceil(kg);
 		} else if($('country').value == 'AR' ||
 		$('country').value == 'AU' ||
 		$('country').value == 'BR' ||
@@ -187,20 +177,20 @@ function calcPricePart(product) {
 		$('country').value == 'TW' ||
 		$('country').value == 'TH') {
 			//Priszone 7
-			price = 201;
-			price += 95*Math.ceil(kg);
+			price = 205;
+			price += 96*Math.ceil(kg);
 		} else if($('country').value == 'FO') {
 			//Priszone 8
-			price = 166;
-			price += 23*Math.ceil(kg);
+			price = 170;
+			price += 24*Math.ceil(kg);
 		} else if($('country').value == 'GL') {
 			//Priszone 9
-			price = 126;
-			price += 78*Math.ceil(kg);
+			price = 130;
+			price += 79*Math.ceil(kg);
 		} else {
 			//Øvrige lande
-			price = 156;
-			price += 71*Math.ceil(kg);
+			price = 160;
+			price += 72*Math.ceil(kg);
 		}
 		
 		//Told
@@ -242,10 +232,10 @@ function calcPricePart(product) {
 		if(insurance) {
 			if(isEU($('country').value)) {
 				//EU
-				price += 70;
+				price += 80;
 			} else {
 				//Øvrige verden
-				price += 100;
+				price += 110;
 			}
 		}
 	}
@@ -565,64 +555,84 @@ function calcPrice() {
 	}
 	
 	//Set product
-	if(!$('express').checked && calcPricePart(340) < calcPricePart(330) &&
-	(calcPricePart(340) < calcPricePart(359) || 
-	($('country').value == 'FI' ||
-	$('country').value == 'NO' ||
-	$('country').value == 'SE' ||
-	$('country').value == 'DE' ||
-	$('country').value == 'AL' ||
-	$('country').value == 'AD' ||
-	$('country').value == 'AM' ||
-	$('country').value == 'AT' ||
-	$('country').value == 'AZ' ||
-	$('country').value == 'BY' ||
-	$('country').value == 'BE' ||
-	$('country').value == 'BA' ||
-	$('country').value == 'BG' ||
-	$('country').value == 'HR' ||
-	$('country').value == 'CY' ||
-	$('country').value == 'CZ' ||
-	$('country').value == 'EE' ||
-	$('country').value == 'FR' ||
-	$('country').value == 'GE' ||
-	$('country').value == 'GI' ||
-	$('country').value == 'GB' ||
-	$('country').value == 'GR' ||
-	$('country').value == 'HU' ||
-	$('country').value == 'IE' ||
-	$('country').value == 'IT' ||
-	$('country').value == 'KZ' ||
-	$('country').value == 'KG' ||
-	$('country').value == 'LV' ||
-	$('country').value == 'LI' ||
-	$('country').value == 'LT' ||
-	$('country').value == 'LU' ||
-	$('country').value == 'MK' ||
-	$('country').value == 'MT' ||
-	$('country').value == 'MD' ||
-	$('country').value == 'MC' ||
-	$('country').value == 'ME' ||
-	$('country').value == 'NL' ||
-	$('country').value == 'PL' ||
-	$('country').value == 'PT' ||
-	$('country').value == 'RO' ||
-	$('country').value == 'RU' ||
-	$('country').value == 'SM' ||
-	$('country').value == 'RS' ||
-	$('country').value == 'SK' ||
-	$('country').value == 'SI' ||
-	$('country').value == 'ES' ||
-	$('country').value == 'CH' ||
-	$('country').value == 'TJ' ||
-	$('country').value == 'TR' ||
-	$('country').value == 'TM' ||
-	$('country').value == 'UZ' ||
-	$('country').value == 'VA' ||
-	$('country').value == 'AX'))) {
+	if(
+		!$('express').checked
+		&&
+		calcPricePart(340) < calcPricePart(330)
+		&&
+		(
+			(
+				$('country').value == 'FI' ||
+				$('country').value == 'NO' ||
+				$('country').value == 'SE' ||
+				$('country').value == 'DE' ||
+				$('country').value == 'AL' ||
+				$('country').value == 'AD' ||
+				$('country').value == 'AM' ||
+				$('country').value == 'AT' ||
+				$('country').value == 'AZ' ||
+				$('country').value == 'BY' ||
+				$('country').value == 'BE' ||
+				$('country').value == 'BA' ||
+				$('country').value == 'BG' ||
+				$('country').value == 'HR' ||
+				$('country').value == 'CY' ||
+				$('country').value == 'CZ' ||
+				$('country').value == 'EE' ||
+				$('country').value == 'FR' ||
+				$('country').value == 'GE' ||
+				$('country').value == 'GI' ||
+				$('country').value == 'GB' ||
+				$('country').value == 'GR' ||
+				$('country').value == 'HU' ||
+				$('country').value == 'IE' ||
+				$('country').value == 'IT' ||
+				$('country').value == 'KZ' ||
+				$('country').value == 'KG' ||
+				$('country').value == 'LV' ||
+				$('country').value == 'LI' ||
+				$('country').value == 'LT' ||
+				$('country').value == 'LU' ||
+				$('country').value == 'MK' ||
+				$('country').value == 'MT' ||
+				$('country').value == 'MD' ||
+				$('country').value == 'MC' ||
+				$('country').value == 'ME' ||
+				$('country').value == 'NL' ||
+				$('country').value == 'PL' ||
+				$('country').value == 'PT' ||
+				$('country').value == 'RO' ||
+				$('country').value == 'RU' ||
+				$('country').value == 'SM' ||
+				$('country').value == 'RS' ||
+				$('country').value == 'SK' ||
+				$('country').value == 'SI' ||
+				$('country').value == 'ES' ||
+				$('country').value == 'CH' ||
+				$('country').value == 'TJ' ||
+				$('country').value == 'TR' ||
+				$('country').value == 'TM' ||
+				$('country').value == 'UZ' ||
+				$('country').value == 'VA' ||
+				$('country').value == 'AX'
+			)
+			||
+			calcPricePart(340) < calcPricePart(359)
+		)
+	) {
 		//HomeShopping
 		$('product').value = '340';
-	} else if(!$('express').checked && calcPricePart(359) < calcPricePart(330)) {
+	} else if(
+		!$('express').checked
+		&&
+		(
+			$('country').value == 'GL' ||
+			$('country').value == 'FO' ||
+			$('country').value == 'IS'
+		)
+		&&
+		calcPricePart(359) < calcPricePart(330)
+	) {
 		//Budget
 		$('product').value = '359';
 	} else {
