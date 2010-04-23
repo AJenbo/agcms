@@ -10,7 +10,7 @@ $files = $mysqli->fetch_array('SELECT alt, width, height FROM `files` WHERE `pat
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <title><?php echo($_GET['url']); ?></title>
 <style type="text/css"><!--
-img {position:absolute;display:block;left:50%;top:50%; margin-left:-<?php echo($files[0]['width']/2); ?>px; margin-top:-<?php echo($files[0]['height']/2); ?>px;}
+body {margin:0}
 --></style>
 </head>
 
