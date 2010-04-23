@@ -139,8 +139,15 @@ if($GLOBALS['generatedcontent']['contenttype'] == 'front') {
         ?></a><?php
 	}
 	?><p style="text-align:right"><?php
+
+	?><script type="text/javascript"><!--
+var addthis_config = {
+     ui_language: "da"
+}
+--></script><a class="addthis_button" href="http://addthis.com/bookmark.php?v=250&amp;username=armsgallery"><img src="http://s7.addthis.com/static/btn/v2/lg-share-da.gif" width="125" height="16" alt="PUBLICER" title="" style="border:0"/></a><script type="text/javascript" src="http://s7.addthis.com/js/250/addthis_widget.js#username=armsgallery"></script><?php
+
 	if($GLOBALS['generatedcontent']['serial']) {
-	    ?><strong>Varenr: <?php echo($GLOBALS['generatedcontent']['serial']); ?></strong><br /><?php
+	    ?><br /><strong>Varenr: <?php echo($GLOBALS['generatedcontent']['serial']); ?></strong><br /><?php
 	}
 
 	//Skriv prisen og tilbudet
