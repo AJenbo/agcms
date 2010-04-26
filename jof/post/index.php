@@ -396,12 +396,12 @@ error_reporting(-1);
 	
 	function payerstatus($recipientID) {
 		$mysqli = new simple_mysqli($GLOBALS['_config']['mysql_server'], $GLOBALS['_config']['mysql_user'], $GLOBALS['_config']['mysql_password'], $GLOBALS['_config']['mysql_database']);
-		$returns = $mysqli->fetch_array("SELECT count(*) as 'returns' FROM `post` WHERE `recipientID` = '".$recipientID."' AND `pd_return` = 'true'");
-		$nonepayed = $mysqli->fetch_array("SELECT count(*) as 'returns' FROM `post` WHERE `recipientID` = '".$recipientID."' AND `pd_return` = 'true' AND `optRecipType` = 'O'");
-		if($nonepayed[0]['returns'])
-			return $responce = 'Denne kunde er dårlig betaler og har lad pakken gå retur '.$returns[0]['returns'].' gang(e)!';
-		elseif($returns[0]['returns'])
-			return 'Denne kunde har lad pakken gå retur '.$returns[0]['returns'].' gang(e)!';
+		$returns = $mysqli->fetch_one("SELECT count(*) as 'returns' FROM `post` WHERE `recipientID` = '".$recipientID."' AND `pd_return` = 'true'");
+		$nonepayed = $mysqli->fetch_one("SELECT count(*) as 'returns' FROM `post` WHERE `recipientID` = '".$recipientID."' AND `pd_return` = 'true' AND `optRecipType` = 'O'");
+		if($nonepayed['returns'])
+			return $responce = 'Denne kunde er dårlig betaler og har lad pakken gå retur '.$returns['returns'].' gang(e)!';
+		elseif($returns['returns'])
+			return 'Denne kunde har lad pakken gå retur '.$returns['returns'].' gang(e)!';
 		else
 			return false;
 	}

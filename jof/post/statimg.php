@@ -10,11 +10,11 @@ $mysqli = new simple_mysqli($GLOBALS['_config']['mysql_server'], $GLOBALS['_conf
 
 function print_stat($formSenderID) {
 	global $mysqli;
-	$post = $mysqli->fetch_array("SELECT count(*) as count FROM `post` WHERE `token` != '' AND `formSenderID` = '".$formSenderID."' AND `formDate` >= '".($_GET['y']-1)."-12-01' AND `formDate` <= '".($_GET['y']-1)."-12-31' AND deleted = 0 ORDER BY `formDate` DESC, `id` DESC");
-	$array[] = $post[0]['count'];
+	$post = $mysqli->fetch_one("SELECT count(*) as count FROM `post` WHERE `token` != '' AND `formSenderID` = '".$formSenderID."' AND `formDate` >= '".($_GET['y']-1)."-12-01' AND `formDate` <= '".($_GET['y']-1)."-12-31' AND deleted = 0 ORDER BY `formDate` DESC, `id` DESC");
+	$array[] = $post['count'];
 	for($i=1; $i<13; $i++) {
 		$post = $mysqli->fetch_array("SELECT count(*) as count FROM `post` WHERE `token` != '' AND `formSenderID` = '".$formSenderID."' AND `formDate` >= '".$_GET['y']."-".$i."-01' AND `formDate` <= '".$_GET['y']."-".$i."-31' AND deleted = 0 ORDER BY `formDate` DESC, `id` DESC");
-		$array[] = $post[0]['count'];
+		$array[] = $post['count'];
 	}
 	return $array;
 }
