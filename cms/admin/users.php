@@ -37,9 +37,9 @@ JSON.parse = JSON.parse || function(jsonsring) { return jsonsring.evalJSON(true)
 <link href="style/style.css" rel="stylesheet" type="text/css" />
 </head>
 <body onload="$('loading').style.visibility = 'hidden';">
-<div id="canvas"><div id="headline"><?php echo(_('Users and Groups')); ?></div><table id="addressbook"><thead><tr><td></td><td><?php echo(_('Name')); ?></td></tr></thead><tbody><?php
+<div id="canvas"><div id="headline"><?php echo(_('Users and Groups')); ?></div><table id="addressbook"><thead><tr><td></td><td><?php echo(_('Name')); ?></td><td><?php echo(_('Last online')); ?></td></tr></thead><tbody><?php
 
-$users = $mysqli->fetch_array("SELECT * FROM `users` ORDER BY `fullname` ASC");
+$users = $mysqli->fetch_array("SELECT *, UNIX_TIMESTAMP(`lastlogin`) AS 'lastlogin' FROM `users` ORDER BY `fullname` ASC");
 
 foreach($users as $key => $user) {
 	echo('<tr');
@@ -48,7 +48,15 @@ foreach($users as $key => $user) {
 	echo('><td>');
 	if($_SESSION['_user']['access'] == 1)
 		echo(' <img src="images/cross.png" alt="X" title="'._('Delete').'">');
-	echo('</td><td><a href="user.php?id='.$user['id'].'">'.$user['fullname'].'</a></td></tr>');
+	echo('</td><td><a href="user.php?id='.$user['id'].'">'.$user['fullname'].'</a></td><td><a href="user.php?id='.$user['id'].'">');
+	if($user['lastlogin'] == 0) {
+		echo(_('Never'));
+	} elseif($user['lastlogin'] > time()-1800) {
+		echo(_('Online'));
+	} else {
+		echo(date('j/M - Y', $user['lastlogin']));
+	}
+	echo('</a></td></tr>');
 }
 
 ?></tbody></table></div><?php

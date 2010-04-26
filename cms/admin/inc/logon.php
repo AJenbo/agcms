@@ -17,16 +17,17 @@ require_once $_SERVER['DOCUMENT_ROOT'].'/inc/mysqli.php';
 
 session_start();
 
+$mysqli = new simple_mysqli($GLOBALS['_config']['mysql_server'], $GLOBALS['_config']['mysql_user'], $GLOBALS['_config']['mysql_password'], $GLOBALS['_config']['mysql_database']);
+
 if(empty($_SESSION['_user']) && !empty($_POST['username'])) {
-	$mysqli = new simple_mysqli($GLOBALS['_config']['mysql_server'], $GLOBALS['_config']['mysql_user'], $GLOBALS['_config']['mysql_password'], $GLOBALS['_config']['mysql_database']);
 
 	$_SESSION['_user'] = $mysqli->fetch_array("SELECT * FROM `users` WHERE `name` = '".addcslashes($_POST['username'], "'\\")."' LIMIT 1");
 	$_SESSION['_user'] = @$_SESSION['_user'][0];
 	if($_SESSION['_user']['access'] < 1 || mb_substr(@$_SESSION['_user']['password'], 0, 13) != mb_substr(crypt(@$_POST['password'], $_SESSION['_user']['password']), 0, 13))
 		unset($_SESSION['_user']);
+
 	unset($_POST);
 }
-
 
 if(empty($_SESSION['_user'])) {
 	sleep(1);
@@ -51,4 +52,6 @@ if(empty($_SESSION['_user'])) {
 	</html><?php
 	die();
 }
+
+$mysqli->query("UPDATE `users` SET `lastlogin` =  NOW() WHERE `id` = ".$_SESSION['_user']['id']." LIMIT 1");
 ?>

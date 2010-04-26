@@ -20,8 +20,7 @@ $mysqli = new simple_mysqli($GLOBALS['_config']['mysql_server'], $GLOBALS['_conf
 $sajax_request_type = 'POST';
 
 
-$user = $mysqli->fetch_array("SELECT * FROM `users` WHERE id = ".$_GET['id']);
-$user = $user[0];
+$user = $mysqli->fetch_one("SELECT * FROM `users` WHERE id = ".$_GET['id']);
 
 ?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">

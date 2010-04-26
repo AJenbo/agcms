@@ -32,8 +32,7 @@ if(!empty($_GET['function']) && $_GET['function'] == 'new') {
 
 $sajax_request_type = 'POST';
 
-$faktura = $mysqli->fetch_array("SELECT *, UNIX_TIMESTAMP(`date`) AS `date`, UNIX_TIMESTAMP(`paydate`) AS `paydate` FROM `fakturas` WHERE `id` = ".$_GET['id']);
-$faktura = $faktura[0];
+$faktura = $mysqli->fetch_one("SELECT *, UNIX_TIMESTAMP(`date`) AS `date`, UNIX_TIMESTAMP(`paydate`) AS `paydate` FROM `fakturas` WHERE `id` = ".$_GET['id']);
 
 $faktura['quantities'] = explode('<', $faktura['quantities']);
 $faktura['products'] = explode('<', $faktura['products']);
@@ -396,8 +395,7 @@ function echoprint() {
 function copytonew($id) {
 	global $mysqli;
 	
-	$faktura = $mysqli->fetch_array("SELECT * FROM `fakturas` WHERE `id` = ".$id);
-	$faktura = $faktura[0];
+	$faktura = $mysqli->fetch_one("SELECT * FROM `fakturas` WHERE `id` = ".$id);
 	
 	unset($faktura['id']);
 	unset($faktura['status']);
@@ -439,8 +437,7 @@ function save($id, $type, $updates) {
 	}
 	unset($updates['paydate']);
 	
-	$faktura = $mysqli->fetch_array("SELECT `status`, `note` FROM `fakturas` WHERE `id` = ".$id);
-	$faktura = $faktura[0];
+	$faktura = $mysqli->fetch_one("SELECT `status`, `note` FROM `fakturas` WHERE `id` = ".$id);
 	
 	if($faktura['status'] == 'locked' || $faktura['status'] == 'pbsok' || $faktura['status'] == 'pbserror' || $faktura['status'] == 'rejected') {
 		$updates = array('note' => $updates['note'] ? trim($faktura['note']."\n".$updates['note']) : $faktura['note'], 'clerk' => $updates['clerk'], 'department' => $updates['department']);
@@ -493,8 +490,7 @@ function save($id, $type, $updates) {
 		$mysqli->query($sql);
 	}
 	
-	$faktura = $mysqli->fetch_array("SELECT * FROM `fakturas` WHERE `id` = ".$id);
-	$faktura = $faktura[0];
+	$faktura = $mysqli->fetch_one("SELECT * FROM `fakturas` WHERE `id` = ".$id);
 	
 	if($type == 'email') {
 		if(!validemail($faktura['email'])) {
@@ -599,8 +595,7 @@ function sendReminder($id) {
 	$error = '';
 	
 	global $mysqli;
-	$faktura = $mysqli->fetch_array("SELECT * FROM `fakturas` WHERE `id` = ".$id);
-	$faktura = $faktura[0];
+	$faktura = $mysqli->fetch_one("SELECT * FROM `fakturas` WHERE `id` = ".$id);
 	
 	if(!$faktura['status']) {
 		return array('error' => _('You can not send a reminder until the invoice is sent!'));

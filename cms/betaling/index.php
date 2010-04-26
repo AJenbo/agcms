@@ -93,8 +93,7 @@ $GLOBALS['generatedcontent']['text'] = '';
 
 if(!empty($_GET['id']) && @$_GET['checkid'] == getCheckid($_GET['id'])) {
 	$rejected = array();
-	$faktura = $mysqli->fetch_array("SELECT * FROM `fakturas` WHERE `id` = ".$_GET['id']);
-	$faktura = @$faktura[0];
+	$faktura = $mysqli->fetch_one("SELECT * FROM `fakturas` WHERE `id` = ".$_GET['id']);
 	
 	if($faktura['status'] == 'new' || $faktura['status'] == 'locked') {
 		$faktura['quantities'] = explode('<', $faktura['quantities']);
@@ -543,9 +542,7 @@ if(!empty($_GET['id']) && @$_GET['checkid'] == getCheckid($_GET['id'])) {
 		$shopSubject = _('No Status');
 	$shopBody = '<br />'.sprintf(_('There was an error on the payment page of online invoice #%d!'), $id).'<br />';
 	
-	if($faktura = $mysqli->fetch_array("SELECT * FROM `fakturas` WHERE `id` = ".$id)) {
-		$faktura = @$faktura[0];
-	}
+	$faktura = $mysqli->fetch_one("SELECT * FROM `fakturas` WHERE `id` = ".$id);
 	
 	if($_GET['MAC'] != md5(implode('', $validate).$GLOBALS['_config']['pbspassword'])) {
 		$GLOBALS['generatedcontent']['text'] = _('The communication could not be validated!');
@@ -612,8 +609,7 @@ Error number:').' '.$_GET['Status_code'];
 			case 0:
 				$mysqli->query("UPDATE `fakturas` SET `status` = 'pbsok', `paydate` = NOW() WHERE `status` IN('new', 'locked', 'pbserror') AND `id` = ".$id);
 				
-				$faktura = $mysqli->fetch_array("SELECT * FROM `fakturas` WHERE `id` = ".$id);
-				$faktura = @$faktura[0];
+				$faktura = $mysqli->fetch_one("SELECT * FROM `fakturas` WHERE `id` = ".$id);
 				
 				$GLOBALS['generatedcontent']['text'] = _('<p style="text-align:center;"><img src="images/ok.png" alt="" /></p>
 
@@ -927,8 +923,7 @@ The order was as following:</p>
 	require_once "inc/phpMailer/class.phpmailer.php";
 	
 	//To shop
-	$faktura = $mysqli->fetch_array("SELECT * FROM `fakturas` WHERE `id` = ".$id);
-	$faktura = @$faktura[0];
+	$faktura = $mysqli->fetch_one("SELECT * FROM `fakturas` WHERE `id` = ".$id);
 	if(!validemail($faktura['department']))
 		$faktura['department'] = $GLOBALS['_config']['email'][0];
 	
