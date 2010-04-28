@@ -152,7 +152,6 @@ $countries['NR'] = _('Nauru');
 $countries['NP'] = _('Nepal');
 $countries['NL'] = _('Netherlands');
 $countries['AN'] = _('Netherlands Antilles');
-$countries['NE'] = _('Network');
 //$countries['NT'] = _('Neutral Zone');
 $countries['NC'] = _('New Caledonia (French)');
 $countries['NZ'] = _('New Zealand');
