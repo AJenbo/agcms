@@ -505,7 +505,7 @@ function save($id, $type, $updates) {
 			return array('error' => _('The invoice must be of at at least 1 krone!'));
 		}
 		
-		include_once "../inc/phpMailer/class.phpmailer.php";
+		require_once $_SERVER['DOCUMENT_ROOT'].'/inc/phpMailer/class.phpmailer.php';
 		
 		$emailBody = '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml"><head><meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
@@ -559,7 +559,7 @@ Tel. %s</p>'),
 		$mail->AddReplyTo($faktura['department'], $GLOBALS['_config']['site_name']);
 		$mail->From       = $faktura['department'];
 		$mail->FromName   = $GLOBALS['_config']['site_name'];
-		$mail->Subject    = 'Online betaling til '.$GLOBALS['_config']['site_name'];
+		$mail->Subject    = _('Online payment for ').$GLOBALS['_config']['site_name'];
 		$mail->MsgHTML($emailBody, $_SERVER['DOCUMENT_ROOT']);
 		
 		if(empty($faktura['navn']))
@@ -567,8 +567,7 @@ Tel. %s</p>'),
 		
 		$mail->AddAddress($faktura['email'], $faktura['navn']);
 		if(!$mail->Send()) {
-			return array('error' => 'Mailen kunde ikke sendes!
-'.$mail->ErrorInfo);
+			return array('error' => _('Unable to sendt e-mail!')."\n".$mail->ErrorInfo);
 		}
 		$mysqli->query("UPDATE `fakturas` SET `status` = 'locked' WHERE `status` = 'new' && `id` = ".$faktura['id']);
 		$mysqli->query("UPDATE `fakturas` SET `sendt` = 1, `department` = '".$faktura['department']."' WHERE `id` = ".$faktura['id']);
