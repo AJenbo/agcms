@@ -779,7 +779,7 @@ Tel. %s<br />
 				if($mail->Send()) {
 					//Upload email to the sent folder via imap
 					if($GLOBALS['_config']['imap']) {
-						require_once "inc/imap.inc.php";
+						require_once $_SERVER['DOCUMENT_ROOT'].'/inc/imap.inc.php';
 						$imap = new IMAPMAIL;
 						$imap->open($GLOBALS['_config']['imap'], $GLOBALS['_config']['imapport']);
 						$emailnr = array_search($faktura['department'], $GLOBALS['_config']['email']);
@@ -872,7 +872,7 @@ The order was as following:</p>
 					
 						//Upload email to the sent folder via imap
 						if($GLOBALS['_config']['imap']) {
-							require_once "inc/imap.inc.php";
+							require_once $_SERVER['DOCUMENT_ROOT'].'/inc/imap.inc.php';
 							$imap = new IMAPMAIL;
 							$imap->open($GLOBALS['_config']['imap'], $GLOBALS['_config']['imapport']);
 							$emailnr = array_search($faktura['department'], $GLOBALS['_config']['email']);
@@ -1036,7 +1036,7 @@ Delivery phone: %s</p>
 		
 			//Upload email to the sent folder via imap
 			if($GLOBALS['_config']['imap']) {
-				require_once "inc/imap.inc.php";
+				require_once $_SERVER['DOCUMENT_ROOT'].'/inc/imap.inc.php';
 				$imap = new IMAPMAIL;
 				$imap->open($GLOBALS['_config']['imap'], $GLOBALS['_config']['imapport']);
 				$imap->login($GLOBALS['_config']['email'][0], $GLOBALS['_config']['emailpasswords'][0]);
