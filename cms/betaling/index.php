@@ -607,7 +607,7 @@ Error number:').' '.$_GET['Status_code'];
 		$GLOBALS['generatedcontent']['headline'] = _('Reciept');
 		switch($_GET['Status_code']) {
 			case 0:
-				$mysqli->query("UPDATE `fakturas` SET `status` = 'pbsok', `paydate` = NOW() WHERE `status` IN('new', 'locked', 'pbserror') AND `id` = ".$id);
+				$mysqli->query("UPDATE `fakturas` SET `paymethode` = '".$_GET['Payment_method']."', `cardtype` = '".$_GET['Card_type']."', `status` = 'pbsok', `paydate` = NOW() WHERE `status` IN('new', 'locked', 'pbserror') AND `id` = ".$id);
 				
 				$faktura = $mysqli->fetch_one("SELECT * FROM `fakturas` WHERE `id` = ".$id);
 				
