@@ -818,7 +818,28 @@ Tel. %s<br />
 						$emailbody .= nl2br(htmlspecialchars($faktura['note'])).'</p>';
 					}
 
-					$emailbody .= sprintf(_('<p>The %s, %s approved the online Invoice #%s, which was created by %s.<br />
+					switch($faktura['paymethode']) {
+					case 'KORTINDK':
+					case 'KORTABDK':
+					case 'NORDEADK':
+						$cardtype = _('Danish');
+					break;
+					default:
+						$cardtype = $faktura['paymethode'];
+					break;
+					}
+
+					switch($faktura['cardtype']) {
+					case 'DANKORT':
+						$cardtype .= ' '._('Dankort');
+					break;
+					default:
+						$cardtype .= ' '._($faktura['cardtype']);
+					break;
+						
+					}
+
+					$emailbody .= sprintf(_('<p>The %s, %s approved the online Invoice #%s, which was created by %s, using a %s.<br />
 The order was as following:</p>
 <table id="faktura" cellspacing="0"><thead><tr><td class="td1">Quantity</td><td>Title</td><td class="td3 tal">unit price</td><td class="td4 tal">Total</td></tr></thead><tfoot>
 <tr style="height:auto;min-height:auto;max-height:auto;"><td>&nbsp;</td><td>&nbsp;</td><td class="tal">Net Amount</td><td class="tal">%s</td></tr>
@@ -833,6 +854,7 @@ The order was as following:</p>
 						$faktura['navn'],
 						$GLOBALS['_config']['pbsfix'].$faktura['id'],
 						$faktura['clerk'],
+						$cardtype,
 						number_format($netto, 2, ',', ''),
 						number_format($faktura['fragt'], 2, ',', ''),
 						$faktura['momssats']*100,
