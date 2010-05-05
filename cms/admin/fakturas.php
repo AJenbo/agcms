@@ -278,7 +278,10 @@ a {
 </div>
 <?php
 $activityButtons[] = '<li><a href="faktura.php?function=new"><img src="images/table_add.png" width="16" height="16" alt="" title="'._('Create new').'" /> '._('Create new').'</a></li>';
-$activityButtons[] = '<li><a href="fakturasearch.php"><img src="images/magnifier.png" width="16" height="16" alt="" title="Advanceret '._('Search').'" /> '._('Search').'</a></li>';
+$activityButtons[] = '<li><a href="fakturasearch.php"><img src="images/magnifier.png" width="16" height="16" alt="" title="'._('Advanced Search').'" /> '._('Search').'</a></li>';
+if($_SESSION['_user']['access'] == 1) {
+	$activityButtons[] = '<li><a href="fakturasvalidate.php"><img src="images/tick.png" width="16" height="16" alt="" title="'._('Validate').'" /> '._('Validate').'</a></li>';
+}
 
 require 'mainmenu.php';
 ?>

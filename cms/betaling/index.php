@@ -833,6 +833,10 @@ Tel. %s<br />
 					case 'DANKORT':
 						$cardtype .= ' '._('Dankort');
 					break;
+					MASTERCARD
+					case 'MASTERCARD':
+						$cardtype .= ' '._('MasterCard');
+					break;
 					default:
 						$cardtype .= ' '._($faktura['cardtype']);
 					break;
