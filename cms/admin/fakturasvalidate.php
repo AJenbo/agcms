@@ -14,6 +14,9 @@ require_once '../inc/mysqli.php';
 $mysqli = new simple_mysqli($GLOBALS['_config']['mysql_server'], $GLOBALS['_config']['mysql_user'], $GLOBALS['_config']['mysql_password'], $GLOBALS['_config']['mysql_database']);
 $sajax_request_type = 'POST';
 
+if(!empty($_GET['id']))
+	$mysqli->fetch_query("UPDATE `fakturas` SET `transferred` =  '1' WHERE `id` = ".$_GET['id']);
+
 $fakturas = $mysqli->fetch_array("SELECT `id`, `status`, `clerk`, `amount`, UNIX_TIMESTAMP(`paydate`) AS `paydate` FROM `fakturas` WHERE  `transferred` = 0 AND (`status` = 'accepted' OR `status` = 'cash' OR `status` = 'giro') ORDER BY `id` DESC");
 
 ?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
