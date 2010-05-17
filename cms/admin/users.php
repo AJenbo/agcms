@@ -54,7 +54,7 @@ foreach($users as $key => $user) {
 	} elseif($user['lastlogin'] > time()-1800) {
 		echo(_('Online'));
 	} else {
-		echo(date('j/M - Y', $user['lastlogin']));
+		echo(round((time()-$user['lastlogin'])/86400)._(' dayes ago'));
 	}
 	echo('</a></td></tr>');
 }
