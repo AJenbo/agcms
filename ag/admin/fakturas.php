@@ -65,7 +65,6 @@ if(empty($_POST)) {
 if(!empty($_POST['id']))
 	$where = " `id` = '".$_POST['id']."'";
 
-
 //echo("SELECT `momssats`, `premoms`, `values`, `quantities`, `fragt`, `id`, `status`, `clerk`, `amount`, `navn`, UNIX_TIMESTAMP(`date`) AS `date` FROM `fakturas` WHERE ".$where." ORDER BY `id` DESC");
 $fakturas = $mysqli->fetch_array("SELECT `id`, `status`, `sendt`, `clerk`, `amount`, `navn`, `att`, `land`, `adresse`, `postbox`, `postnr`, `by`, `email`, `tlf1`, `tlf2`, UNIX_TIMESTAMP(`date`) AS `date` FROM `fakturas` WHERE ".$where." ORDER BY `id` DESC");
 
@@ -245,9 +244,9 @@ a {
 				elseif($faktura['status'] == 'pbsok')
 					echo('<img src="/admin/images/money.png" alt="'._('Ready').'" title="'._('Ready').'" />');
 				elseif($faktura['status'] == 'accepted')
-					echo('<img src="/admin/images/email.png" alt="'._('Expedited').'" title="'._('Expedited').'" />');
+					echo('<img src="/admin/images/creditcards.png" alt="'._('Expedited').'" title="'._('Expedited').'" />');
 				elseif($faktura['status'] == 'giro')
-					echo('<img src="/admin/images/email.png" alt="'._('Giro').'" title="'._('Giro').'" />');
+					echo('<img src="/admin/images/building.png" alt="'._('Giro').'" title="'._('Giro').'" />');
 				elseif($faktura['status'] == 'cash')
 					echo('<img src="/admin/images/email.png" alt="'._('Cash').'" title="'._('Cash').'" />');
 				elseif($faktura['status'] == 'pbserror')
@@ -285,7 +284,10 @@ a {
 </div>
 <?php
 $activityButtons[] = '<li><a href="faktura.php?function=new"><img src="images/table_add.png" width="16" height="16" alt="" title="'._('Create new').'" /> '._('Create new').'</a></li>';
-$activityButtons[] = '<li><a href="fakturasearch.php"><img src="images/magnifier.png" width="16" height="16" alt="" title="Advanceret '._('Search').'" /> '._('Search').'</a></li>';
+$activityButtons[] = '<li><a href="fakturasearch.php"><img src="images/magnifier.png" width="16" height="16" alt="" title="'._('Advanced Search').'" /> '._('Search').'</a></li>';
+if($_SESSION['_user']['access'] == 1) {
+	$activityButtons[] = '<li><a href="fakturasvalidate.php"><img src="images/tick.png" width="16" height="16" alt="" title="'._('Validate').'" /> '._('Validate').'</a></li>';
+}
 
 require 'mainmenu.php';
 ?>
