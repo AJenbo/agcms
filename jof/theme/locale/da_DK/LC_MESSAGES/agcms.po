@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2010-03-11 14:07+0100\n"
-"PO-Revision-Date: 2010-04-15 13:38+0100\n"
+"POT-Creation-Date: 2010-05-07 11:17+0200\n"
+"PO-Revision-Date: 2010-05-17 10:05+0100\n"
 "Last-Translator: Anders Jenbo <anders@jenbo.dk>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -27,7 +27,8 @@ msgstr "Indeholder"
 
 #: index.php:420
 #: explorer.php:698
-#: fakturas.php:282
+#: fakturas.php:281
+#: fakturasvalidate.php:142
 #: mainmenu.php:65
 msgid "Search"
 msgstr "Søg"
@@ -57,9 +58,9 @@ msgid "Brand:"
 msgstr "Mærke:"
 
 #: index.php:420
-#: fakturas.php:154
-#: fakturas.php:191
-#: fakturas.php:202
+#: fakturas.php:153
+#: fakturas.php:190
+#: fakturas.php:201
 msgid "All"
 msgstr "Alle"
 
@@ -76,115 +77,115 @@ msgstr[1] "%d e-Mails blev sendt."
 
 #: index.php:87
 #: index.php:89
-#: index.php:1058
-#: index.php:1059
+#: index.php:1399
+#: index.php:1400
 msgid "Payment"
 msgstr "Betaling"
 
+#: index.php:120
 #: index.php:121
 #: index.php:122
-#: index.php:123
 msgid "Order #"
 msgstr "Ordre #"
 
-#: index.php:129
-#: faktura.php:318
-#: faktura.php:1479
+#: index.php:128
+#: faktura.php:320
+#: faktura.php:1476
 msgid "Quantity"
 msgstr "Antal"
 
-#: index.php:130
-#: faktura.php:319
-#: faktura.php:1480
+#: index.php:129
+#: faktura.php:321
+#: faktura.php:1477
 msgid "Title"
 msgstr "Benævnelse"
 
-#: index.php:131
-#: faktura.php:320
-#: faktura.php:1481
+#: index.php:130
+#: faktura.php:322
+#: faktura.php:1478
 msgid "unit price"
 msgstr "á pris"
 
-#: index.php:132
-#: faktura.php:321
-#: faktura.php:1482
+#: index.php:131
+#: faktura.php:323
+#: faktura.php:1479
 msgid "Total"
 msgstr "Total"
 
-#: index.php:139
-#: faktura.php:328
-#: faktura.php:1489
+#: index.php:138
+#: faktura.php:330
+#: faktura.php:1486
 msgid "Net Amount"
 msgstr "Nettobeløb"
 
-#: index.php:146
-#: faktura.php:341
-#: faktura.php:1503
+#: index.php:145
+#: faktura.php:343
+#: faktura.php:1500
 msgid "Freight"
 msgstr "Fragt"
 
-#: index.php:152
-#: faktura.php:347
-#: faktura.php:1516
+#: index.php:151
+#: faktura.php:349
+#: faktura.php:1513
 msgid "VAT Amount"
 msgstr "Momsbeløb"
 
-#: index.php:156
+#: index.php:155
 msgid "All figures are in DKK"
 msgstr "Alle beløb er i DKK"
 
-#: index.php:157
-#: faktura.php:353
-#: faktura.php:1521
+#: index.php:156
+#: faktura.php:355
+#: faktura.php:1518
 msgid "TO PAY"
 msgstr "AT BETALE"
 
-#: index.php:174
-#: index.php:708
-#: index.php:821
-#: faktura.php:369
-#: faktura.php:1548
+#: index.php:173
+#: index.php:1031
+#: index.php:1144
+#: faktura.php:371
+#: faktura.php:1545
 msgid "Note:"
 msgstr "Notat:"
 
-#: index.php:177
-#: index.php:1073
+#: index.php:176
+#: index.php:1414
 msgid "Continue"
 msgstr "Fortsæt"
 
+#: index.php:245
 #: index.php:246
 #: index.php:247
-#: index.php:248
-#: fakturas.php:225
+#: fakturas.php:224
 msgid "Recipient"
 msgstr "Modtager"
 
-#: index.php:260
-#: index.php:339
-#: index.php:658
-#: faktura.php:282
+#: index.php:259
+#: index.php:338
+#: index.php:981
+#: faktura.php:284
 msgid "Phone:"
 msgstr "Telefon:"
 
-#: index.php:262
-#: index.php:267
-#: index.php:341
+#: index.php:261
+#: index.php:266
+#: index.php:340
 msgid "Get address"
 msgstr "Hent adresse"
 
-#: index.php:265
-#: index.php:692
+#: index.php:264
+#: index.php:1015
 msgid "Mobile:"
 msgstr "Mobil:"
 
-#: index.php:270
-#: index.php:278
-#: index.php:346
-#: index.php:653
+#: index.php:269
+#: index.php:277
+#: index.php:345
+#: index.php:976
 #: explorer.php:720
-#: faktura.php:1363
-#: faktura.php:1420
-#: faktura.php:1426
+#: faktura.php:1360
+#: faktura.php:1417
+#: faktura.php:1423
 #: index.php:77
 #: index.php:525
 #: index.php:585
@@ -194,207 +195,207 @@ msgstr "Mobil:"
 msgid "Name:"
 msgstr "Navn:"
 
-#: index.php:283
-#: index.php:363
-#: index.php:670
-#: faktura.php:1375
-#: faktura.php:1432
+#: index.php:282
+#: index.php:362
+#: index.php:993
+#: faktura.php:1372
+#: faktura.php:1429
 #: index.php:587
 msgid "Address:"
 msgstr "Adresse:"
 
-#: index.php:291
-#: index.php:373
-#: index.php:676
-#: faktura.php:1381
-#: faktura.php:1444
+#: index.php:290
+#: index.php:372
+#: index.php:999
+#: faktura.php:1378
+#: faktura.php:1441
 msgid "Postbox:"
 msgstr "Postboks:"
 
-#: index.php:296
-#: index.php:380
-#: index.php:682
-#: faktura.php:1387
-#: faktura.php:1450
+#: index.php:295
+#: index.php:379
+#: index.php:1005
+#: faktura.php:1384
+#: faktura.php:1447
 msgid "Zipcode:"
 msgstr "Postnr.:"
 
-#: index.php:298
-#: index.php:382
-#: index.php:685
-#: faktura.php:1390
-#: faktura.php:1392
-#: faktura.php:1453
-#: faktura.php:1455
+#: index.php:297
+#: index.php:381
+#: index.php:1008
+#: faktura.php:1387
+#: faktura.php:1389
+#: faktura.php:1450
+#: faktura.php:1452
 #: index.php:590
 msgid "City:"
 msgstr "By:"
 
-#: index.php:308
-#: index.php:394
-#: index.php:688
-#: faktura.php:1395
-#: faktura.php:1458
+#: index.php:307
+#: index.php:393
+#: index.php:1011
+#: faktura.php:1392
+#: faktura.php:1455
 #: index.php:588
 msgid "Country:"
 msgstr "Land:"
 
-#: index.php:324
-#: faktura.php:1357
+#: index.php:323
+#: faktura.php:1354
 #: index.php:586
 #: index.php:725
 msgid "E-mail:"
 msgstr "Email:"
 
-#: index.php:334
-#: faktura.php:1410
+#: index.php:333
+#: faktura.php:1407
 msgid "Other delivery address"
 msgstr "Anden leveringsadresse"
 
-#: index.php:356
-#: index.php:664
-#: faktura.php:299
-#: faktura.php:1369
+#: index.php:355
+#: index.php:987
+#: faktura.php:301
+#: faktura.php:1366
 msgid "Attn.:"
 msgstr "Att:"
 
-#: index.php:411
+#: index.php:410
 msgid "Please send me your newsletter."
 msgstr "Ja tak! Send mig jeres nyhedsbrev."
 
-#: index.php:413
+#: index.php:412
 msgid "Proceed to the terms of trade"
 msgstr "Fortsæt til handelsbetingelserne"
 
+#: index.php:423
 #: index.php:424
 #: index.php:425
-#: index.php:426
 msgid "Trade Conditions"
 msgstr "Handelsbetingelser"
 
-#: index.php:449
+#: index.php:448
 msgid "I hereby agree to the terms of trade"
 msgstr "Jeg accepterer hermed handelsbetingelserne"
 
+#: index.php:452
 #: index.php:453
 #: index.php:454
-#: index.php:455
+#: index.php:534
 #: index.php:535
 #: index.php:536
-#: index.php:537
-#: fakturas.php:211
-#: fakturas.php:248
+#: fakturas.php:210
+#: fakturas.php:247
 msgid "Error"
 msgstr "Fejl"
 
+#: index.php:456
 #: index.php:457
 #: index.php:458
-#: index.php:459
+#: index.php:461
 #: index.php:462
 #: index.php:463
-#: index.php:464
+#: index.php:466
 #: index.php:467
 #: index.php:468
-#: index.php:469
 msgid "Status"
 msgstr "Status"
 
-#: index.php:460
+#: index.php:459
 msgid "The payment was rejected at first attempt. Due to security measures at PBS, you must contact the store before you can try to pay again."
 msgstr "Betalingen blev afvist under første forsøg. Grundet sikkerhedsforanstaltninger hos PBS, skal de kontakte butikken før de kan forsøge at betale igen."
 
-#: index.php:465
+#: index.php:464
 msgid "Payment received."
 msgstr "Betalingen er modtaget."
 
-#: index.php:470
+#: index.php:469
 msgid "The payment was received and the package is sent."
 msgstr "Betalingen er modtaget og pakken er sendt."
 
-#: index.php:480
+#: index.php:479
 msgid "Shipment Number:"
 msgstr "Forsendelsens nummer:"
 
-#: index.php:500
-#: index.php:502
+#: index.php:499
+#: index.php:501
 msgid "The payment is already received in cash."
 msgstr "Betalingen er allerede modtaget kontant."
 
-#: index.php:504
+#: index.php:503
 msgid "The transaction is canceled."
 msgstr "Handlen er annulleret."
 
-#: index.php:506
+#: index.php:505
 msgid "Payment rejected."
 msgstr "Betalingen er afvist."
 
-#: index.php:508
+#: index.php:507
 msgid "An errror occured."
 msgstr "Der opstod en fejl."
 
-#: index.php:538
+#: index.php:537
 msgid "An unknown error occured."
 msgstr "Der opstod en ukendt fejl."
 
-#: index.php:543
+#: index.php:542
 msgid "No Status"
 msgstr "Ingen status"
 
-#: index.php:544
+#: index.php:543
 #, php-format
 msgid "There was an error on the payment page of online invoice #%d!"
 msgstr "Der opstod en fejl på betalings siden ved online faktura #%d!"
 
-#: index.php:551
-#: index.php:579
+#: index.php:548
+#: index.php:577
 msgid "The communication could not be validated!"
 msgstr "Kommunikationen kunne ikke valideres!"
 
-#: index.php:553
+#: index.php:550
 msgid "The payment does not exist in our system."
 msgstr "Betalingen findes ikke i vores system."
 
-#: index.php:554
+#: index.php:551
 #, php-format
 msgid "A user tried to pay online invoice #%d, which is not in the system!"
 msgstr "En bruger forsøgte at betale online faktura #%d som ikke findes i systemet!"
 
-#: index.php:556
-#: index.php:557
-#: index.php:558
-#: index.php:562
-#: index.php:563
-#: index.php:564
-#: index.php:608
-#: index.php:609
-#: index.php:610
+#: index.php:553
+#: index.php:554
+#: index.php:555
+#: index.php:559
+#: index.php:560
+#: index.php:561
+#: index.php:932
+#: index.php:933
+#: index.php:934
 msgid "Reciept"
 msgstr "Kvittering"
 
-#: index.php:559
+#: index.php:556
 msgid "This trade has been canceled or refused."
 msgstr "Denne handel er blevet annulleret eller afvist."
 
-#: index.php:560
+#: index.php:557
 #, php-format
 msgid "A customer tried to see the status page for online invoice #%d which is canceled or rejected."
 msgstr "En kunde forsøgte at se status-side for online faktura #%d som er annulleret eller afvist."
 
-#: index.php:565
+#: index.php:562
 msgid "Payment is registered and you ought to have received a receipt by email."
 msgstr "Betalingen er registreret og du skulle have modtaget en kvitering via email."
 
-#: index.php:566
+#: index.php:563
 #, php-format
 msgid "A customer tried to see the status page for online invoice #%d, which is already paid."
 msgstr "En kunde forsøgte at se status-side for online faktura #%d som allerede er betalt."
 
-#: index.php:572
-#: index.php:573
+#: index.php:569
+#: index.php:570
 msgid "Error #"
 msgstr "Fejl #"
 
-#: index.php:574
+#: index.php:571
 msgid ""
 "An error occurred during the payment.<br />\n"
 "Error number:"
@@ -402,55 +403,452 @@ msgstr ""
 "Der opstod en fejl under betalingen.<br />\n"
 "Fejl nummer:"
 
-#: index.php:580
+#: index.php:578
 msgid "Data was manipulated."
 msgstr "Fusk med data."
 
-#: index.php:581
+#: index.php:579
 #, php-format
 msgid "Communication could not be validated as %s was about to pay!"
 msgstr "Kommunikationen kunne ikke valideres da %s skulle betale!"
 
-#: index.php:584
-#: index.php:585
+#: index.php:582
+#: index.php:583
 msgid "Payment page is not responding."
 msgstr "Betalingssiden svarer ikke."
 
-#: index.php:586
+#: index.php:584
 #, php-format
 msgid "Payment page did not answer when %s was about to pay!"
 msgstr "Betalingssiden svarede ikke da %s skulle betale!"
 
-#: index.php:589
-#: index.php:590
+#: index.php:587
+#: index.php:588
 msgid "Payment was refused by the bank, the card has expired."
 msgstr "Betalingen blev afvist af banken, kortet er udløbet."
 
-#: index.php:591
+#: index.php:589
 #, php-format
 msgid "Payment was refused by the bank, %s's card has expired!"
 msgstr "Betalingen blev afvist af banken, %s's kort er udløbet!"
 
-#: index.php:594
-#: index.php:595
+#: index.php:592
+#: index.php:593
 msgid "Payment was refused by the bank, contact your bank."
 msgstr "Betalingen blev afvist af banken, kontakt Deres bank."
 
-#: index.php:596
+#: index.php:594
 #, php-format
 msgid "Payment was refused by the bank, %s must contact his or her bank."
 msgstr "Betalingen blev afvist af banken, %s skal kontakte sin bank."
 
+#: index.php:597
+#: index.php:598
 #: index.php:599
-#: index.php:601
-msgid "The payment was refused because the customer has already attempted to pay."
-msgstr "Betalingen blev afvist da den allerede er forsøgt betalt."
+msgid "Suspected fraud."
+msgstr "Mistanke om bedrageri."
 
-#: index.php:600
+#: index.php:602
+#: index.php:604
+msgid "Denied due to too many payment attempts."
+msgstr "Nægtet på grund af for mange betalings forsøg."
+
+#: index.php:603
+#: index.php:608
+#: index.php:614
 msgid "Payment was refused."
 msgstr "Betalingen blev afvist."
 
+#: index.php:607
+#: index.php:609
+msgid "The payment was refused because the customer has already attempted to pay."
+msgstr "Betalingen blev afvist da den allerede er forsøgt betalt."
+
+#: index.php:613
+#: index.php:615
+msgid "An obligatory field is lacking or is incorrectly formatted."
+msgstr "En obligatorisk felt mangler eller er forkert formateret."
+
 #: index.php:618
+#: index.php:619
+#: index.php:620
+msgid "Incorrect Merchant ID."
+msgstr "Forkert forhandler ID."
+
+#: index.php:623
+#: index.php:624
+#: index.php:625
+#: index.php:628
+#: index.php:629
+#: index.php:630
+msgid "Incorrect amount."
+msgstr "Forkert beløb."
+
+#: index.php:633
+#: index.php:634
+#: index.php:635
+msgid "Was not possible to contact bank."
+msgstr "Det var ikke muligt at kontakte banken."
+
+#: index.php:638
+#: index.php:639
+#: index.php:640
+msgid "Amount too large."
+msgstr "Beløbet er for stort."
+
+#: index.php:643
+#: index.php:644
+#: index.php:645
+msgid "Incorrect date/time format."
+msgstr "Forkert dato / tids format."
+
+#: index.php:648
+#: index.php:649
+#: index.php:650
+msgid "Incorrect purchase date."
+msgstr "Forkert købsdato."
+
+#: index.php:653
+#: index.php:654
+#: index.php:655
+msgid "Payment Type not configured for the Merchant."
+msgstr "Betalings type er ikke er konfigureret til forhandleren."
+
+#: index.php:658
+#: index.php:659
+#: index.php:660
+msgid "Card Payment: Error upon Authorisation or no contact with the bank."
+msgstr "Kort betaling: Fejl ved godkendelse eller ingen kontakt med banken."
+
+#: index.php:663
+#: index.php:666
+#: index.php:669
+msgid ""
+"Card Payment: Purchase denied at the bank (the card's validity\n"
+"period has expired), contact the bank.\n"
+msgstr ""
+"Kort betaling: Køb nægtet i banken (kortets gyldighed\n"
+"er udløbet), kontakt banken.\n"
+
+#: index.php:674
+#: index.php:675
+#: index.php:676
+msgid "Country for card-issuing bank is not permitted."
+msgstr "Land for kortudstedende bank er ikke tilladt."
+
+#: index.php:679
+#: index.php:680
+#: index.php:681
+msgid "The risk assessment value for the transaction exceeds the permissible value."
+msgstr "Risikovurderingsværdien for transaktionen overstiger den tilladte værdi."
+
+#: index.php:684
+#: index.php:686
+#: index.php:688
+msgid ""
+"Card Payment: Card saved/inactivated at the card-issuing bank. E.g.\n"
+"lost, stolen, too many incorrect PIN entry attempts, etc."
+msgstr ""
+"Kort betaling: Kort gemt/deaktiveret på den kortudstedende bank. F.eks.\n"
+"tabt, stjålet, for mange forkerte PIN-kode indtastnings forsøg, osv."
+
+#: index.php:692
+#: index.php:693
+#: index.php:694
+msgid "Error Request_type in Order Administration call."
+msgstr "Fejl Request_type i administrationsbestillingskald."
+
+#: index.php:697
+#: index.php:698
+#: index.php:699
+msgid "Amount too high: insufficient balance, card-issuing bank will not allow this amount on this card."
+msgstr "Beløb for højt: utilstrækkelig balance, kortudstedende bank vil ikke tillade dette beløb på dette kort."
+
+#: index.php:702
+#: index.php:703
+#: index.php:704
+msgid "Purchase amount must be greater than zero."
+msgstr "Købsprisen skal være større end nul."
+
+#: index.php:707
+#: index.php:708
+#: index.php:709
+msgid "Denied due to time-out, no response from bank"
+msgstr "Nægtet, tiden udløb, intet svar fra banken"
+
+#: index.php:712
+#: index.php:713
+#: index.php:714
+msgid "Purchase terminated (by the purchaser)."
+msgstr "Køb afsluttet (af køberen)."
+
+#: index.php:717
+#: index.php:719
+#: index.php:721
+msgid ""
+"Error in order, transaction already registered and paid. This\n"
+"Customer_refno is already registered on another transaction."
+msgstr ""
+"Fejl i ordren, transaktionen er allerede registreret og betalt. Denne\n"
+"Customer_refno er allerede registreret på en anden transaktion."
+
+#: index.php:725
+#: index.php:727
+#: index.php:729
+msgid ""
+"eKöp: Technical error in communication with Postgirot/Nordea.\n"
+"Please try again later."
+msgstr ""
+"eKöp: Teknisk fejl i kommunikationen med Postgirot/Nordea.\n"
+"Prøv venligst igen senere."
+
+#: index.php:733
+#: index.php:734
+#: index.php:735
+msgid "Provided recipient account incorrect."
+msgstr "Indgivet modtagerkonti forkert."
+
+#: index.php:738
+#: index.php:739
+#: index.php:740
+msgid "Provided sending account incorrect."
+msgstr "Indgivet sende konto forkert."
+
+#: index.php:743
+#: index.php:744
+#: index.php:745
+msgid "eKöp: Provided sending account temporarily frozen."
+msgstr "eKöp: Indgivet sende konto midlertidigt indefrosset."
+
+#: index.php:748
+#: index.php:749
+#: index.php:750
+msgid "eKöp: Provided certificate incorrect."
+msgstr "eKöp: Indgivet certifikat forkert."
+
+#: index.php:753
+#: index.php:754
+#: index.php:755
+msgid "eKöp: Account not connected to the service."
+msgstr "eKöp: Kontoen ikke er tilsluttet tjenesten."
+
+#: index.php:758
+#: index.php:759
+#: index.php:760
+msgid "Payment Selection Page/Card Payment Page: Merchant not connected to the service."
+msgstr "Betalingsvalgssiden / kortbetalingsside: forhandleren er ikke er tilsluttet tjenesten."
+
+#: index.php:763
+#: index.php:764
+#: index.php:765
+msgid "Bad Auth_null. Should be YES or NO."
+msgstr "Forkert Auth_null. Skal være JA eller NEJ."
+
+#: index.php:768
+#: index.php:769
+#: index.php:770
+msgid "Bad Capture_now. Should be YES or NO."
+msgstr "Forkert Capture_now. Skal være JA eller NEJ."
+
+#: index.php:773
+#: index.php:774
+#: index.php:775
+msgid "For Order Administration: The status of the transaction does not permit the operation."
+msgstr "Ordre administration: Status for transaktionen giver ikke mulighed for handling. "
+
+#: index.php:778
+#: index.php:779
+#: index.php:780
+msgid "For Order Administration: The transaction does not exist."
+msgstr "Ordre administration: Ordren eksisterer ikke."
+
+#: index.php:783
+#: index.php:785
+#: index.php:787
+msgid ""
+"Card Payment: Merchant not configured for currency/card type combination... Card type not uploaded, incorrect card type\n"
+"or card-issuing bank declines the card."
+msgstr ""
+"Kort betaling: Forhandleren er ikke er konfigureret til valuta / korttype kombination ... Korttype er ikke uploaded, forkert korttype\n"
+"eller kortudstedende bank nægter kortet."
+
+#: index.php:791
+#: index.php:792
+#: index.php:793
+msgid "Bad Track2"
+msgstr "Forkert Track2"
+
+#: index.php:796
+#: index.php:797
+#: index.php:798
+msgid "Bad MOTO method. Should be PHONE or MAIL"
+msgstr "Forkert MOTO metode. Bør være telefon eller email"
+
+#: index.php:801
+#: index.php:802
+#: index.php:803
+msgid "Incorrect Customer_refno"
+msgstr "Inkorrekt Customer_refno"
+
+#: index.php:806
+#: index.php:807
+msgid "Incorrect Version, incorrect format on the version parameters (should be Version=2)."
+msgstr "Forkert version, forkert format på versionsparametrene (skal være version = 2)."
+
+#: index.php:808
+msgid ""
+"Incorrect Version, incorrect format on the version parameters\n"
+"(should be Version=2)."
+msgstr ""
+"Forkert version, forkert format på versionsparametrene\n"
+"(Skal være version = 2)."
+
+#: index.php:812
+#: index.php:813
+#: index.php:814
+msgid "Transaction already registered and awaiting a response from the bank."
+msgstr "Transaktionen er allerede registreret og afventer svar fra banken."
+
+#: index.php:817
+#: index.php:818
+#: index.php:819
+msgid "Crediting could not be carried out."
+msgstr "Kreditering kunne ikke udføres."
+
+#: index.php:822
+#: index.php:823
+#: index.php:824
+msgid "Technical error, Auriga ePayment"
+msgstr "Teknisk fejl, Auriga ePayment"
+
+#: index.php:827
+#: index.php:828
+#: index.php:829
+msgid "For Order Administration: The function is not supported."
+msgstr "Ordreadministration: Funktionen understøttes ikke."
+
+#: index.php:832
+#: index.php:833
+#: index.php:834
+msgid "Incorrect format or size on the Response URL."
+msgstr "Forkert format eller størrelse på respons URL."
+
+#: index.php:837
+#: index.php:838
+#: index.php:839
+msgid "Incorrect Currency code."
+msgstr "Forkert valuta kode."
+
+#: index.php:842
+#: index.php:843
+#: index.php:844
+msgid "Incorrect Language Code."
+msgstr "Forkert sprogkode."
+
+#: index.php:847
+#: index.php:848
+#: index.php:849
+msgid "Incorrect Comments."
+msgstr "Forkerte kommentarer."
+
+#: index.php:852
+#: index.php:853
+#: index.php:854
+msgid "Incorrect goods description."
+msgstr "Forkert beskrivelse af varerne."
+
+#: index.php:857
+#: index.php:858
+#: index.php:859
+msgid "Customer_refno does not match the Transaction_id."
+msgstr "Customer_refno svarer ikke til Transaction_id."
+
+#: index.php:862
+#: index.php:863
+#: index.php:864
+msgid "Card Payment: Authorisation Reversal could not be carried out."
+msgstr "Kort betaling: tilbageførselstilladelse kunne ikke gennemføres."
+
+#: index.php:867
+#: index.php:868
+#: index.php:869
+msgid "Card Payment: Acquiring could not be carried out (capture)."
+msgstr "Kort betaling: Erhvervelse kunne ikke udføres (indfanges)."
+
+#: index.php:872
+#: index.php:873
+#: index.php:874
+msgid "Card Payment: Unsuccessful 3-D Secure identification (for Verified by Visa or SecureCode). Card Authorisation is not carried out."
+msgstr "Kort betaling: Mislykket 3-D sikkerheds identifikation (som verificeret af Visa eller med sikkerhedskode). Kort anvisning er ikke gennemført."
+
+#: index.php:877
+#: index.php:878
+#: index.php:879
+msgid "Card Payment: 3-D Secure identification denied due to timeout (for Verified by Visa or SecureCode). Occurs when the cardholder cannot identify themselves within approximately 5 minutes of the start of the transaction. Card Authorisation is not carried out."
+msgstr "Kort betaling: 3-D sikkerheds identifikation nægtet på grund af timeout (som verficeret af Visa eller med sikkerhedskode). Opstår, når kortindehaveren ikke kan identificere sig inden for ca 5 minutter efter påbegyndelsen af transaktionen. Kort anvisning er ikke gennemført."
+
+#: index.php:882
+#: index.php:883
+#: index.php:884
+msgid "Subscription has ended."
+msgstr "Abonnement er ophørt."
+
+#: index.php:887
+#: index.php:888
+#: index.php:889
+msgid "Subscription not found."
+msgstr "Abonnement ikke fundet."
+
+#: index.php:892
+#: index.php:893
+msgid "Subscription not captured, does not have Paid status."
+msgstr "Abonnement ikke indfanget, status=har ikke betalt."
+
+#: index.php:894
+msgid ""
+"Subscription not captured, does not have Paid\n"
+"status."
+msgstr ""
+"Abonnement ikke indfanget, har ikke har betalt\n"
+"status."
+
+#: index.php:898
+#: index.php:899
+#: index.php:900
+msgid "Payment Selection Page: Incorrect format or size for Cancel URL."
+msgstr "Betalingsvalgsside: Forkert format eller størrelse for annullering af URL."
+
+#: index.php:903
+#: index.php:904
+#: index.php:905
+msgid "Invoice purchase: Incorrect OCR number, e.g. incorrect control digit."
+msgstr "Faktura indkøb: Forkert OCR-nummer, f.eks forkerte kontrol cifre."
+
+#: index.php:908
+#: index.php:909
+#: index.php:910
+msgid "Incorrect length for invoice parameters."
+msgstr "Forkert længde for faktura parametre."
+
+#: index.php:913
+#: index.php:914
+#: index.php:915
+msgid "Incorrect guarantee parameter."
+msgstr "Forkert garanti parameter."
+
+#: index.php:918
+#: index.php:919
+#: index.php:920
+msgid "Incorrect postal code."
+msgstr "Forkert postnummer."
+
+#: index.php:923
+#: index.php:924
+#: index.php:925
+msgid "Invoice purchase: Invalid personal identity number or organisation number."
+msgstr "Faktura indkøb: Ugyldigt CPR-nummer eller virksomhedsnummer."
+
+#: index.php:941
 msgid ""
 "<p style=\"text-align:center;\"><img src=\"images/ok.png\" alt=\"\" /></p>\n"
 "\n"
@@ -464,13 +862,13 @@ msgstr ""
 "\n"
 "<p>En kopi af Deres ordre er sendt til Deres email.</p>"
 
-#: index.php:634
-#: index.php:796
-#: index.php:890
+#: index.php:957
+#: index.php:1119
+#: index.php:1232
 msgid "Payment complete"
 msgstr "Betaling gennemført"
 
-#: index.php:635
+#: index.php:958
 msgid ""
 "The customer has approved the payment and the following order must be shipped to the customer.<br />\n"
 "<br />\n"
@@ -480,16 +878,16 @@ msgstr ""
 "<br />\n"
 "Husk at \"ekspedere\" betalingen når varen sendes (Betaling overføres først fra kundens konto, når vi trykker \"Ekspedér\")."
 
-#: index.php:647
+#: index.php:970
 #, php-format
 msgid "Ordre %d - Payment complete"
 msgstr "Ordre %d - Betaling gennemført"
 
-#: index.php:652
+#: index.php:975
 msgid "Delivery address:"
 msgstr "Lev. adresse:"
 
-#: index.php:717
+#: index.php:1040
 #, php-format
 msgid ""
 "<p>Date: %s<br />\n"
@@ -536,21 +934,41 @@ msgstr ""
 "Tlf. %s<br />\n"
 "<a href=\"mailto:%s\">%s</a></p>"
 
-#: index.php:780
+#: index.php:1103
 #, php-format
 msgid "Order #%d - payment completed"
 msgstr "Ordre #%d - Betaling gennemført"
 
-#: index.php:804
-#: index.php:872
+#: index.php:1127
+#: index.php:1214
 #, php-format
 msgid "Online Invoice #%s : Payment completed"
 msgstr "Online faktura #%s : Betaling gennemført"
 
-#: index.php:825
+#: index.php:1150
+#: fakturasvalidate.php:112
+msgid "Dankort"
+msgstr "Dankort"
+
+#: index.php:1153
+#: fakturasvalidate.php:115
+msgid "MasterCard"
+msgstr "Mastercard"
+
+#: index.php:1156
+#: fakturasvalidate.php:118
+msgid "American Express"
+msgstr "American Express"
+
+#: index.php:1159
+#: fakturasvalidate.php:121
+msgid "VISA"
+msgstr "VISA"
+
+#: index.php:1166
 #, php-format
 msgid ""
-"<p>The %s, %s approved the online Invoice #%s, which was created by %s.<br />\n"
+"<p>The %s, %s approved the online Invoice #%s, which was created by %s, using a %s.<br />\n"
 "The order was as following:</p>\n"
 "<table id=\"faktura\" cellspacing=\"0\"><thead><tr><td class=\"td1\">Quantity</td><td>Title</td><td class=\"td3 tal\">unit price</td><td class=\"td4 tal\">Total</td></tr></thead><tfoot>\n"
 "<tr style=\"height:auto;min-height:auto;max-height:auto;\"><td>&nbsp;</td><td>&nbsp;</td><td class=\"tal\">Net Amount</td><td class=\"tal\">%s</td></tr>\n"
@@ -562,7 +980,7 @@ msgid ""
 "\n"
 "<p>The computer</p>"
 msgstr ""
-"<p>Den %s godkendte %s online faktura #%s, Som blev oprettet af %s.<br />\n"
+"<p>Den %s, godkendte %s online faktura #%s, Som blev oprettet af %s, med et %s.<br />\n"
 "Ordren lød på følgende:</p>\n"
 "<table id=\"faktura\" cellspacing=\"0\"><thead><tr><td class=\"td1\">Antal</td><td>Benævnelse</td><td class=\"td3 tal\">á pris</td><td class=\"td4 tal\">Total</td></tr></thead><tfoot>\n"
 "<tr style=\"height:auto;min-height:auto;max-height:auto;\"><td>&nbsp;</td><td>&nbsp;</td><td class=\"tal\">Nettobeløb</td><td class=\"tal\">%s</td></tr>\n"
@@ -574,49 +992,49 @@ msgstr ""
 "\n"
 "<p>Computeren</p>"
 
-#: index.php:897
+#: index.php:1239
 msgid "Denied/interrupted. The payment was denied or interrupted."
 msgstr "Nægtet/Afbrudt. Betalingen er nægtet eller afbrudt."
 
-#: index.php:901
+#: index.php:1243
 msgid "Ongoing. Payment awaiting an response from the bank."
 msgstr "I gang. Betaling venter på svar fra banken."
 
-#: index.php:904
+#: index.php:1246
 msgid "Canceled. The card payment is shredded by the store before cash in."
 msgstr "Annulleret. Kortbetalingen er makuleret af butikken før indløsningen."
 
-#: index.php:907
+#: index.php:1249
 msgid "Commenced. Payment is initiated by the customer."
 msgstr "Påbegyndt. Betalingen er initieret af køberen."
 
-#: index.php:910
+#: index.php:1252
 msgid "Authorized. Card payment is authorized; awaiting confirmation and cash in."
 msgstr "Autoriseret. Kortbetaling er autoriseret; venter på bekræftelse og indløsning."
 
-#: index.php:913
+#: index.php:1255
 msgid "Cash in failed. Card payments can not be cashed in."
 msgstr "Indløsning mislykkedes. Kortbetalingen kunne ikke indløses."
 
-#: index.php:916
+#: index.php:1258
 msgid "Cash-in in progress. Redeeming card payment is currently underway."
 msgstr "Indløsning i gang. Indløsning af kortbetalingen er i øjeblikket i gang."
 
-#: index.php:919
+#: index.php:1261
 msgid "Confirmed. The card payments is confirmed and will be cashed in."
 msgstr "Bekræftet. Kortbetalingen er bekræftet og bliver indløst."
 
-#: index.php:922
+#: index.php:1264
 msgid "Sent to bank or Svea Ekonomi. Applies only to the Payment Method INVOICE"
 msgstr "Sendt til Svea Ekonomi banken. Gælder kun for betalingsmetoden INVOICE"
 
-#: index.php:964
-#: index.php:1035
+#: index.php:1305
+#: index.php:1376
 #, php-format
 msgid "Attn.: %s - Online invoice #%d : %s"
 msgstr "Att: %s - Online faktura #%d : %s"
 
-#: index.php:979
+#: index.php:1320
 #, php-format
 msgid ""
 "<p>%s<br />\n"
@@ -647,29 +1065,29 @@ msgstr ""
 "<tbody>%s</tbody></table>\n"
 "<p>Mvh Computeren</p>"
 
-#: index.php:1012
+#: index.php:1353
 #, php-format
 msgid "Online Invoice #%d: does't exist"
 msgstr "Online faktura #%d : eksisterer ikke"
 
-#: index.php:1013
-#: fakturas.php:137
+#: index.php:1354
+#: fakturas.php:136
 msgid "Status:"
 msgstr "Status:"
 
-#: index.php:1013
+#: index.php:1354
 msgid "Sincerely the computer"
 msgstr "Mvh Computeren"
 
-#: index.php:1065
+#: index.php:1406
 msgid "Order No:"
 msgstr "Ordre nr:"
 
-#: index.php:1069
+#: index.php:1410
 msgid "Code:"
 msgstr "Kode:"
 
-#: index.php:1076
+#: index.php:1417
 msgid "The code is not correct!"
 msgstr "Koden er ikke korrekt!"
 
@@ -1253,319 +1671,319 @@ msgstr "Holland"
 msgid "Netherlands Antilles"
 msgstr "Nederlandske Antiller"
 
-#: countries.php:157
+#: countries.php:156
 msgid "New Caledonia (French)"
 msgstr "Ny Caledonien"
 
-#: countries.php:158
+#: countries.php:157
 msgid "New Zealand"
 msgstr "New Zealand"
 
-#: countries.php:159
+#: countries.php:158
 msgid "Nicaragua"
 msgstr "Nicaragua"
 
-#: countries.php:160
+#: countries.php:159
 msgid "Nigeria"
 msgstr "Nigeria"
 
-#: countries.php:163
+#: countries.php:162
 msgid "North Korea"
 msgstr "Nordkorea"
 
-#: countries.php:165
+#: countries.php:164
 msgid "Oman"
 msgstr "Oman"
 
-#: countries.php:166
+#: countries.php:165
 msgid "Pakistan"
 msgstr "Pakistan"
 
-#: countries.php:168
+#: countries.php:167
 msgid "Panama"
 msgstr "Panama"
 
-#: countries.php:169
+#: countries.php:168
 msgid "Papua New Guinea"
 msgstr "Papua Ny Guinea"
 
-#: countries.php:170
+#: countries.php:169
 msgid "Paraguay"
 msgstr "Paraguay"
 
-#: countries.php:171
+#: countries.php:170
 msgid "Peru"
 msgstr "Peru"
 
-#: countries.php:172
+#: countries.php:171
 msgid "Philippines"
 msgstr "Filippinerne"
 
-#: countries.php:173
+#: countries.php:172
 msgid "Pitcairn Island"
 msgstr "Pitcairn Øerne"
 
-#: countries.php:174
+#: countries.php:173
 msgid "Poland"
 msgstr "Polen"
 
-#: countries.php:175
+#: countries.php:174
 msgid "Polynesia (French)"
 msgstr "Fransk Polynesien"
 
-#: countries.php:176
+#: countries.php:175
 msgid "Portugal"
 msgstr "Portugal"
 
-#: countries.php:177
+#: countries.php:176
 msgid "Puerto Rico"
 msgstr "Puerto Rico"
 
-#: countries.php:178
+#: countries.php:177
 msgid "Qatar"
 msgstr "Qatar"
 
-#: countries.php:179
+#: countries.php:178
 msgid "Reunion (French)"
 msgstr "Réunion"
 
-#: countries.php:180
+#: countries.php:179
 msgid "Romania"
 msgstr "Rumænien"
 
-#: countries.php:181
+#: countries.php:180
 msgid "Russia"
 msgstr "Rusland"
 
-#: countries.php:182
+#: countries.php:181
 msgid "Rwanda"
 msgstr "Rwanda"
 
-#: countries.php:183
+#: countries.php:182
 msgid "S. Georgia & S. Sandwich Isls."
 msgstr "S. Georgia og S. Sandwich Islands"
 
-#: countries.php:184
+#: countries.php:183
 msgid "Saint Helena"
 msgstr "St. Helena"
 
-#: countries.php:185
+#: countries.php:184
 msgid "Saint Kitts & Nevis Anguilla"
 msgstr "St. Christopher og Nevis"
 
-#: countries.php:186
+#: countries.php:185
 msgid "Saint Lucia"
 msgstr "St. Lucia"
 
-#: countries.php:187
+#: countries.php:186
 msgid "Saint Pierre and Miquelon"
 msgstr "St.-Pierre og Miquelon"
 
-#: countries.php:188
+#: countries.php:187
 msgid "Saint Tome (Sao Tome) and Principe"
 msgstr "Sao Tomé og Principe"
 
-#: countries.php:189
+#: countries.php:188
 msgid "Saint Vincent & Grenadines"
 msgstr "St. Vincent og Grenadinerne"
 
-#: countries.php:190
+#: countries.php:189
 msgid "Samoa"
 msgstr "Samoa"
 
-#: countries.php:191
+#: countries.php:190
 msgid "San Marino"
 msgstr "San Marino"
 
-#: countries.php:192
+#: countries.php:191
 msgid "Saudi Arabia"
 msgstr "Saudi Arabien"
 
-#: countries.php:193
+#: countries.php:192
 msgid "Senegal"
 msgstr "Senegal"
 
-#: countries.php:194
+#: countries.php:193
 msgid "Serbia"
 msgstr "Serbien"
 
-#: countries.php:195
+#: countries.php:194
 msgid "Seychelles"
 msgstr "Seychellerne"
 
-#: countries.php:196
+#: countries.php:195
 msgid "Sierra Leone"
 msgstr "Sierra Leone"
 
-#: countries.php:197
+#: countries.php:196
 msgid "Singapore"
 msgstr "Singapore"
 
-#: countries.php:198
+#: countries.php:197
 msgid "Slovakia"
 msgstr "Slovakiet"
 
-#: countries.php:199
+#: countries.php:198
 msgid "Slovenia"
 msgstr "Slovenien"
 
-#: countries.php:200
+#: countries.php:199
 msgid "Solomon Islands"
 msgstr "Solomon Øerne"
 
-#: countries.php:201
+#: countries.php:200
 msgid "Somalia"
 msgstr "Somalia"
 
-#: countries.php:202
+#: countries.php:201
 msgid "South Africa"
 msgstr "Sydafrika"
 
-#: countries.php:203
+#: countries.php:202
 msgid "South Korea"
 msgstr "Sydkorea"
 
-#: countries.php:204
+#: countries.php:203
 msgid "Spain"
 msgstr "Spanien"
 
-#: countries.php:205
+#: countries.php:204
 msgid "Sri Lanka"
 msgstr "Sri Lanka"
 
-#: countries.php:206
+#: countries.php:205
 msgid "Sudan"
 msgstr "Sudan"
 
-#: countries.php:207
+#: countries.php:206
 msgid "Suriname"
 msgstr "Suriname"
 
-#: countries.php:209
+#: countries.php:208
 msgid "Swaziland"
 msgstr "Swaziland"
 
-#: countries.php:210
+#: countries.php:209
 msgid "Switzerland"
 msgstr "Schweiz"
 
-#: countries.php:211
+#: countries.php:210
 msgid "Syria"
 msgstr "Syrien"
 
-#: countries.php:212
+#: countries.php:211
 msgid "Tadjikistan"
 msgstr "Tadzhikistan"
 
-#: countries.php:213
+#: countries.php:212
 msgid "Taiwan"
 msgstr "Taiwan"
 
-#: countries.php:214
+#: countries.php:213
 msgid "Tanzania"
 msgstr "Tanzania"
 
-#: countries.php:215
+#: countries.php:214
 msgid "Thailand"
 msgstr "Thailand"
 
-#: countries.php:216
+#: countries.php:215
 msgid "Togo"
 msgstr "Togo"
 
-#: countries.php:218
+#: countries.php:217
 msgid "Tonga"
 msgstr "Tonga Øerne"
 
-#: countries.php:219
+#: countries.php:218
 msgid "Trinidad and Tobago"
 msgstr "Trinidad og Tobago"
 
-#: countries.php:220
+#: countries.php:219
 msgid "Tunisia"
 msgstr "Tunesien"
 
-#: countries.php:221
+#: countries.php:220
 msgid "Turkey"
 msgstr "Tyrkiet"
 
-#: countries.php:222
+#: countries.php:221
 msgid "Turkmenistan"
 msgstr "Turkmenistan"
 
-#: countries.php:223
+#: countries.php:222
 msgid "Turks and Caicos Islands"
 msgstr "Turks og Caicos Øerne"
 
-#: countries.php:224
+#: countries.php:223
 msgid "Tuvalu"
 msgstr "Tuvalu"
 
-#: countries.php:225
+#: countries.php:224
 msgid "Uganda"
 msgstr "Uganda"
 
-#: countries.php:226
+#: countries.php:225
 msgid "Ukraine"
 msgstr "Ukraine"
 
-#: countries.php:227
+#: countries.php:226
 msgid "United Arab Emirates"
 msgstr "Forenede Arabiske Emirater"
 
-#: countries.php:228
+#: countries.php:227
 msgid "United States"
 msgstr "USA"
 
-#: countries.php:229
+#: countries.php:228
 msgid "Uruguay"
 msgstr "Uruguay"
 
-#: countries.php:231
+#: countries.php:230
 msgid "Uzbekistan"
 msgstr "Uzbekistan"
 
-#: countries.php:232
+#: countries.php:231
 msgid "Vanuatu"
 msgstr "Vanuatu"
 
-#: countries.php:233
+#: countries.php:232
 msgid "Vatican City State"
 msgstr "Vatikanstaten"
 
-#: countries.php:234
+#: countries.php:233
 msgid "Venezuela"
 msgstr "Venezuela"
 
-#: countries.php:235
+#: countries.php:234
 msgid "Vietnam"
 msgstr "Vietnam"
 
-#: countries.php:236
+#: countries.php:235
 msgid "Virgin Islands (British)"
 msgstr "Britiske Jomfruøer"
 
-#: countries.php:237
+#: countries.php:236
 msgid "Virgin Islands (USA)"
 msgstr "Amerikanske Jomfruøer"
 
-#: countries.php:238
+#: countries.php:237
 msgid "Wallis and Futuna Islands"
 msgstr "Wallis og Futuna"
 
-#: countries.php:240
+#: countries.php:239
 msgid "Yemen"
 msgstr "Yemen"
 
-#: countries.php:242
+#: countries.php:241
 msgid "Zambia"
 msgstr "Zambia"
 
-#: countries.php:243
+#: countries.php:242
 msgid "Zimbabwe"
 msgstr "Zimbabwe"
 
-#: countries.php:244
+#: countries.php:243
 msgid "Åland"
 msgstr "Åland"
 
@@ -1709,90 +2127,90 @@ msgstr "Komprimerede filer"
 msgid "Unused files"
 msgstr "Ubrugte filer"
 
-#: faktura.php:312
+#: faktura.php:314
 msgid "Online Invoice"
 msgstr "Online faktura"
 
-#: faktura.php:313
+#: faktura.php:315
 msgid "Date"
 msgstr "Dato"
 
-#: faktura.php:313
-#: faktura.php:373
-#: faktura.php:377
-#: faktura.php:381
-#: faktura.php:1201
-#: faktura.php:1208
+#: faktura.php:315
+#: faktura.php:375
+#: faktura.php:379
+#: faktura.php:383
+#: faktura.php:1198
+#: faktura.php:1205
+#: faktura.php:1252
 #: faktura.php:1255
 #: faktura.php:1258
-#: faktura.php:1261
-#: faktura.php:1277
-#: faktura.php:1281
+#: faktura.php:1274
+#: faktura.php:1278
 msgid "m/d/Y"
 msgstr "d/m/Y"
 
-#: faktura.php:313
-#: faktura.php:1328
+#: faktura.php:315
+#: faktura.php:1325
 msgid "Our ref.:"
 msgstr "Vor ref.:"
 
-#: faktura.php:313
-#: faktura.php:1334
+#: faktura.php:315
+#: faktura.php:1331
 msgid "Their ref.:"
 msgstr "Deres ref.:"
 
-#: faktura.php:351
+#: faktura.php:353
 msgid "Payment Terms:"
 msgstr "Betalingsbetingelser:"
 
-#: faktura.php:351
+#: faktura.php:353
 msgid "Net cash at invoice reception."
 msgstr "Netto kontant ved faktura modtagelse."
 
-#: faktura.php:352
+#: faktura.php:354
 msgid "In case of payment later than the stated deadline, 2% interest will be added per. started months."
 msgstr "Ved senere indbetaling end anførte frist, vil der blive debiteret 2% rente pr. påbegyndt måned."
 
-#: faktura.php:372
-#: faktura.php:1254
+#: faktura.php:374
+#: faktura.php:1251
 msgid "Paid online"
 msgstr "Betalt online"
 
-#: faktura.php:376
-#: faktura.php:1200
-#: faktura.php:1257
+#: faktura.php:378
+#: faktura.php:1197
+#: faktura.php:1254
 msgid "Paid via giro"
 msgstr "Betalt via giro"
 
-#: faktura.php:380
-#: faktura.php:1207
-#: faktura.php:1260
+#: faktura.php:382
+#: faktura.php:1204
+#: faktura.php:1257
 msgid "Paid in cash"
 msgstr "Betalt kontant"
 
-#: faktura.php:388
+#: faktura.php:390
 msgid "Sincerely,"
 msgstr "Med venlig hilsen"
 
-#: faktura.php:501
-#: faktura.php:610
+#: faktura.php:500
+#: faktura.php:607
 msgid "E-mail address is not valid!"
 msgstr "Email adressen er ikke gyldig!"
 
-#: faktura.php:504
+#: faktura.php:503
 msgid "You have not selected a sender!"
 msgstr "Du har ikke valgt en afsender!"
 
-#: faktura.php:509
+#: faktura.php:508
 msgid "The invoice must be of at at least 1 krone!"
 msgstr "Fakturaen skal være på mindst 1 krone!"
 
-#: faktura.php:516
+#: faktura.php:515
 #, php-format
 msgid "Online payment to %s"
 msgstr "Online betaling til %s"
 
-#: faktura.php:518
+#: faktura.php:517
 #, php-format
 msgid ""
 "<p>Thank you for your order.</p>\n"
@@ -1831,15 +2249,23 @@ msgstr ""
 "%s %s<br />\n"
 "Tlf. %s</p>"
 
-#: faktura.php:606
+#: faktura.php:565
+msgid "Online payment for "
+msgstr "Online betaling til "
+
+#: faktura.php:573
+msgid "Unable to sendt e-mail!"
+msgstr "Kan ikke sende e-mail!"
+
+#: faktura.php:603
 msgid "You can not send a reminder until the invoice is sent!"
 msgstr "Du kan ikke sende en rykker før fakturaen er sendt!"
 
-#: faktura.php:622
+#: faktura.php:619
 msgid "Electronic Invoice concerning order #"
 msgstr "Elektronisk faktura vedr. ordre #"
 
-#: faktura.php:624
+#: faktura.php:621
 #, php-format
 msgid ""
 "<hr />\n"
@@ -1915,278 +2341,314 @@ msgstr ""
 "Fax: %s<br />\n"
 "<a href=\"mailto:%s\">%s</a></p>"
 
-#: faktura.php:703
+#: faktura.php:700
 msgid "A Reminder was sent to the customer."
 msgstr "En rykker blev sendt til kunden."
 
-#: faktura.php:710
+#: faktura.php:707
 msgid "The e-mail was not saved in the Sent box! (the server did not respond)."
 msgstr "Mailen blev ikke gemt i sendt mappen! (serveren svarede ikke)."
 
-#: faktura.php:714
+#: faktura.php:711
 msgid "The e-mail was not saved in the Sent box! (the code was rejected)."
 msgstr "Mailen blev ikke gemt i sendt mappen! (koden blev afvist)."
 
-#: faktura.php:717
+#: faktura.php:714
 #, php-format
 msgid "The e-mail was not saved in the Sent box! (the folder %s was missing)."
 msgstr "Mailen blev ikke gemt i sendt mappen! (mappen %s manglede)."
 
-#: faktura.php:832
+#: faktura.php:829
 msgid "Online Invoice #"
 msgstr "Online faktura #"
 
-#: faktura.php:879
-#: faktura.php:1533
+#: faktura.php:876
+#: faktura.php:1530
 msgid "Remove Line"
 msgstr "Fjern linje"
 
-#: faktura.php:1044
+#: faktura.php:1041
 msgid "Are you sure you want to cancel this Invoice?"
 msgstr "Er du sikker på du vil annullere denne faktura?"
 
-#: faktura.php:1236
-#: fakturas.php:137
+#: faktura.php:1233
+#: fakturas.php:136
 msgid "ID:"
 msgstr "Id:"
 
-#: faktura.php:1240
+#: faktura.php:1237
 msgid "eCode:"
 msgstr "eKode:"
 
-#: faktura.php:1246
+#: faktura.php:1243
 msgid "Newly created"
 msgstr "Nyoprettet"
 
-#: faktura.php:1248
+#: faktura.php:1245
 msgid "Is sent to the Customer."
 msgstr "Er sendt til kunden."
 
-#: faktura.php:1250
+#: faktura.php:1247
 msgid "Locked for editing"
 msgstr "Låst for redigering"
 
-#: faktura.php:1252
+#: faktura.php:1249
 msgid "Ready to expedite"
 msgstr "Klar til ekspedering"
 
-#: faktura.php:1263
+#: faktura.php:1260
 msgid "Error during the payment"
 msgstr "Fejl under betalingen"
 
-#: faktura.php:1265
+#: faktura.php:1262
 msgid ", payment was interrupted."
 msgstr ", betalingen er nægted eller afbrudt."
 
-#: faktura.php:1267
-#: fakturas.php:212
-#: fakturas.php:250
+#: faktura.php:1264
+#: fakturas.php:211
+#: fakturas.php:249
 msgid "Canceled"
 msgstr "Annulleret"
 
-#: faktura.php:1269
+#: faktura.php:1266
 msgid "Payment declined"
 msgstr "Betaling afvist"
 
-#: faktura.php:1271
+#: faktura.php:1268
 msgid "Does not exist in the system"
 msgstr "Findes ikke i systemet"
 
-#: faktura.php:1289
+#: faktura.php:1286
 #: fakturas.php:13
 msgid "No one"
 msgstr "Ingen"
 
-#: faktura.php:1343
+#: faktura.php:1340
 msgid "Phone 1:"
 msgstr "Tlf. 1:"
 
-#: faktura.php:1350
+#: faktura.php:1347
 msgid "Phone 2:"
 msgstr "Tlf. 2:"
 
-#: faktura.php:1472
+#: faktura.php:1469
 msgid "Entered amount includes VAT"
 msgstr "Indtastet beløb er med moms"
 
-#: faktura.php:1562
+#: faktura.php:1559
 msgid "Expedite"
 msgstr "Ekspeder"
 
-#: faktura.php:1563
+#: faktura.php:1560
 msgid "Reject"
 msgstr "Afvis"
 
-#: faktura.php:1573
+#: faktura.php:1570
 #: image-edit.php:106
 msgid "Save"
 msgstr "Gem"
 
-#: faktura.php:1575
+#: faktura.php:1572
 msgid "Lock"
 msgstr "Lås"
 
-#: faktura.php:1579
+#: faktura.php:1576
 msgid "Print"
 msgstr "Udskriv"
 
-#: faktura.php:1581
-#: fakturas.php:281
+#: faktura.php:1578
+#: fakturas.php:280
 msgid "Create new"
 msgstr "Opret ny"
 
-#: faktura.php:1582
+#: faktura.php:1579
 msgid "Copy to new"
 msgstr "Kopier til ny"
 
-#: faktura.php:1585
+#: faktura.php:1582
 msgid "Cancel"
 msgstr "Annullér"
 
-#: faktura.php:1596
-#: faktura.php:1598
+#: faktura.php:1593
+#: faktura.php:1595
 msgid "Send to customer"
 msgstr "Send til kunden"
 
-#: faktura.php:1596
-#: faktura.php:1598
+#: faktura.php:1593
+#: faktura.php:1595
 msgid "Send"
 msgstr "Send"
 
-#: faktura.php:1601
+#: faktura.php:1598
 msgid "Send reminder!"
 msgstr "Send rykker!"
 
-#: fakturas.php:70
+#: fakturas.php:69
 msgid "Invoice list"
 msgstr "Faktura liste"
 
-#: fakturas.php:137
+#: fakturas.php:136
 msgid "Year:"
 msgstr "År:"
 
-#: fakturas.php:137
+#: fakturas.php:136
 msgid "Month:"
 msgstr "Måned:"
 
-#: fakturas.php:137
+#: fakturas.php:136
 msgid "Clerk:"
 msgstr "Ekspedient:"
 
-#: fakturas.php:155
+#: fakturas.php:154
 msgid "Jan"
 msgstr "Jan"
 
-#: fakturas.php:156
+#: fakturas.php:155
 msgid "Feb"
 msgstr "Feb"
 
-#: fakturas.php:157
+#: fakturas.php:156
 msgid "Mar"
 msgstr "Mar"
 
-#: fakturas.php:158
+#: fakturas.php:157
 msgid "Apr"
 msgstr "Apr"
 
-#: fakturas.php:159
+#: fakturas.php:158
 msgid "May"
 msgstr "Maj"
 
-#: fakturas.php:160
+#: fakturas.php:159
 msgid "Jun"
 msgstr "Jun"
 
-#: fakturas.php:161
+#: fakturas.php:160
 msgid "Jul"
 msgstr "Jul"
 
-#: fakturas.php:162
+#: fakturas.php:161
 msgid "Aug"
 msgstr "Aug"
 
-#: fakturas.php:163
+#: fakturas.php:162
 msgid "Sep"
 msgstr "Sep"
 
-#: fakturas.php:164
+#: fakturas.php:163
 msgid "Oct"
 msgstr "Okt"
 
-#: fakturas.php:165
+#: fakturas.php:164
 msgid "Nov"
 msgstr "Nov"
 
-#: fakturas.php:166
+#: fakturas.php:165
 msgid "Dec"
 msgstr "Dec"
 
-#: fakturas.php:203
+#: fakturas.php:202
 msgid "Current"
 msgstr "Aktuelle"
 
-#: fakturas.php:204
+#: fakturas.php:203
 msgid "Completed"
 msgstr "Afsluttet"
 
-#: fakturas.php:205
-#: fakturas.php:234
+#: fakturas.php:204
+#: fakturas.php:233
 msgid "New"
 msgstr "Ny"
 
-#: fakturas.php:206
-#: fakturas.php:238
+#: fakturas.php:205
+#: fakturas.php:237
 msgid "Locked"
 msgstr "Låst"
 
-#: fakturas.php:207
-#: fakturas.php:240
+#: fakturas.php:206
+#: fakturas.php:239
 msgid "Ready"
 msgstr "Klar"
 
-#: fakturas.php:208
-#: fakturas.php:242
+#: fakturas.php:207
+#: fakturas.php:241
 msgid "Expedited"
 msgstr "Ekspederet"
 
-#: fakturas.php:209
-#: fakturas.php:244
+#: fakturas.php:208
+#: fakturas.php:243
 msgid "Giro"
 msgstr "Giro"
 
-#: fakturas.php:210
-#: fakturas.php:246
+#: fakturas.php:209
+#: fakturas.php:245
 msgid "Cash"
 msgstr "Kontant"
 
-#: fakturas.php:213
-#: fakturas.php:252
+#: fakturas.php:212
+#: fakturas.php:251
 msgid "Rejected"
 msgstr "Afvist"
 
-#: fakturas.php:221
+#: fakturas.php:220
+#: fakturasvalidate.php:95
 msgid "ID"
 msgstr "Id"
 
-#: fakturas.php:222
+#: fakturas.php:221
 msgid "Created"
 msgstr "Oprettet"
 
-#: fakturas.php:223
+#: fakturas.php:222
+#: fakturasvalidate.php:98
 msgid "Responsible"
 msgstr "Ansvarlige"
 
-#: fakturas.php:224
+#: fakturas.php:223
+#: fakturasvalidate.php:99
 msgid "Amount"
 msgstr "Beløb"
 
-#: fakturas.php:236
+#: fakturas.php:235
 msgid "Sent"
 msgstr "Sendt"
 
-#: fakturas.php:236
+#: fakturas.php:235
 msgid "Sent to customer"
 msgstr "Sendt til kunden"
+
+#: fakturas.php:281
+msgid "Advanced Search"
+msgstr "Avanceret søgning"
+
+#: fakturas.php:283
+msgid "Validate"
+msgstr "Validér"
+
+#: fakturasvalidate.php:26
+#: fakturasvalidate.php:91
+msgid "Invoice validation"
+msgstr "Faktura godkendelse"
+
+#: fakturasvalidate.php:96
+msgid "Payment methode"
+msgstr "Betalingsmetode"
+
+#: fakturasvalidate.php:97
+msgid "Pay date"
+msgstr "Betalings dato"
+
+#: fakturasvalidate.php:124
+msgid "Unknown"
+msgstr "Ukendt"
+
+#: fakturasvalidate.php:128
+msgid "Bank overførsel"
+msgstr "Bank overførsel"
+
+#: fakturasvalidate.php:136
+msgid "Approve"
+msgstr "Godkendt"
 
 #: file-move.php:29
 msgid "Move file"
@@ -2384,6 +2846,8 @@ msgstr "Link"
 #: index.php:287
 #: index.php:342
 #: index.php:570
+#: user.php:29
+#: user.php:43
 msgid "Edit"
 msgstr "Rediger"
 
@@ -2450,6 +2914,7 @@ msgid "Address Book"
 msgstr "Adressebog"
 
 #: index.php:559
+#: users.php:40
 msgid "Name"
 msgstr "Navn"
 
@@ -2463,6 +2928,7 @@ msgstr "Tlf."
 
 #: index.php:570
 #: index.php:1375
+#: users.php:50
 msgid "Delete"
 msgstr "Slet"
 
@@ -2804,6 +3270,18 @@ msgstr "Gem email"
 msgid "Send e-mail"
 msgstr "Send email"
 
+#: mainmenu.php:40
+msgid "Handlinger"
+msgstr "Handlinger"
+
+#: mainmenu.php:49
+msgid "Log out"
+msgstr "log ud"
+
+#: mainmenu.php:52
+msgid "Indhold"
+msgstr "Indhold"
+
 #: mainmenu.php:57
 msgid "Create page"
 msgstr "Opret side"
@@ -2833,13 +3311,15 @@ msgid "Open file manager"
 msgstr "Åben fil håndtering"
 
 #: mainmenu.php:86
-#: emails.php:229
+#: emails.php:243
 msgid "Newsletters"
 msgstr "Nyhedsbreve"
 
 #: mainmenu.php:90
-msgid "Edit groups"
-msgstr "Rediger Grupper"
+#: users.php:26
+#: users.php:40
+msgid "Users and Groups"
+msgstr "Brugere og grupper"
 
 #: mainmenu.php:91
 msgid "Catalog labels"
@@ -2849,41 +3329,107 @@ msgstr "Kataloglabels"
 msgid "Invoices"
 msgstr "Fakturas"
 
+#: newuser.php:13
+#: newuser.php:51
+#: logon.php:54
+msgid "Create account"
+msgstr "Opret konto"
+
+#: newuser.php:18
+#: newuser.php:57
+msgid "All fields must be filled."
+msgstr "Alle felter skal udfyldes."
+
+#: newuser.php:22
+#: newuser.php:60
+msgid "The passwords does not match."
+msgstr "Adgangskoderne er ikke ens."
+
+#: newuser.php:39
+msgid "Fullname:"
+msgstr "Fulde navn: "
+
+#: newuser.php:42
+msgid "Username:"
+msgstr "Brugernavn:"
+
+#: newuser.php:45
+#: logon.php:47
+msgid "Password:"
+msgstr "Adgangskode:"
+
+#: newuser.php:48
+msgid "Repeat password:"
+msgstr "Gentag adgangskode:"
+
+#: newuser.php:70
+msgid "Username already taken."
+msgstr "Brugernavnet er allerede i brug."
+
+#: newuser.php:78
+#: newuser.php:101
+msgid "New user"
+msgstr "Ny bruger"
+
+#: newuser.php:79
+msgid " has created an account for the administrator page. An administrator needs to confirm the accound or reject it."
+msgstr "har oprettet en konto til administrator siden. En administrator skal bekræfte konto eller afvise den."
+
+#: newuser.php:86
+msgid "en"
+msgstr "da"
+
+#: newuser.php:123
+msgid "Your account has been created. An administrator will evaluate it shortly."
+msgstr "Din konto er blevet oprettet. En administrator vil evaluere den om kort tid."
+
+#: users.php:40
+msgid "Last online"
+msgstr "Sidst online"
+
+#: users.php:53
+msgid "Never"
+msgstr "Aldrig"
+
+#: users.php:55
+msgid "Online"
+msgstr "Online"
+
 #: emails.php:16
 msgid "The newsletter has already been sent!"
 msgstr "Nyhedsbrevet er allerede afsendt!"
 
-#: emails.php:156
+#: emails.php:170
 msgid "Edit newsletter"
 msgstr "Rediger nyhedsbrev"
 
-#: emails.php:168
-#: emails.php:178
+#: emails.php:182
+#: emails.php:192
 msgid "Sender:"
 msgstr "Afsender:"
 
-#: emails.php:169
+#: emails.php:183
 msgid "Select sender"
 msgstr "Vælg afsender"
 
-#: emails.php:183
+#: emails.php:197
 msgid "Recipient:"
 msgstr "Modtager:"
 
-#: emails.php:185
+#: emails.php:199
 msgid "Restrict recipients to:"
 msgstr "Begræns modtagere til:"
 
-#: emails.php:205
+#: emails.php:219
 msgid "Number of recipients:"
 msgstr "Antal modtagere:"
 
-#: emails.php:208
-#: emails.php:210
+#: emails.php:222
+#: emails.php:224
 msgid "Subject:"
 msgstr "Emne:"
 
-#: emails.php:229
+#: emails.php:243
 msgid "Create new newsletter"
 msgstr "Opret nyt nyhedsbrev"
 
@@ -2895,18 +3441,20 @@ msgstr "Filen kan ikke slettes da den bliver brugt på en side."
 msgid "There was an error deleting the file, the file may be in use."
 msgstr "Der opstod en fejl under slettningen af filen, filen er muligvis i brug."
 
-#: logon.php:38
+#: logon.php:39
 msgid "Login"
 msgstr "Login"
 
-#: logon.php:42
+#: logon.php:44
 msgid "User:"
 msgstr "Bruger:"
 
-#: logon.php:45
-msgid "Password:"
-msgstr "Adgangskode:"
+#: logon.php:52
+msgid "Lost password?"
+msgstr "Glemt adgangskode?"
 
+#~ msgid "Edit groups"
+#~ msgstr "Rediger Grupper"
 #~ msgid "Select page:"
 #~ msgstr "Vælg side:"
 
