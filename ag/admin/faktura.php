@@ -44,8 +44,7 @@ if(!empty($_GET['function']) && $_GET['function'] == 'new') {
 
 $sajax_request_type = 'POST';
 
-$faktura = $mysqli->fetch_array("SELECT *, UNIX_TIMESTAMP(`date`) AS `date`, UNIX_TIMESTAMP(`paydate`) AS `paydate` FROM `fakturas` WHERE `id` = ".$_GET['id']);
-$faktura = $faktura[0];
+$faktura = $mysqli->fetch_one("SELECT *, UNIX_TIMESTAMP(`date`) AS `date`, UNIX_TIMESTAMP(`paydate`) AS `paydate` FROM `fakturas` WHERE `id` = ".$_GET['id']);
 
 $faktura['quantities'] = explode('<', $faktura['quantities']);
 $faktura['products'] = explode('<', $faktura['products']);
@@ -60,6 +59,9 @@ if($faktura['premoms']) {
 if($faktura['id']) {
 	$epaymentAdminService = new epaymentAdminService($GLOBALS['_config']['pbsid'], $GLOBALS['_config']['pbspassword']);
 	$epayment = $epaymentAdminService->query($GLOBALS['_config']['pbsfix'].$faktura['id']);
+	if($faktura['cardtype'] == '' && $epayment['CardType'] != '') {
+		$mysqli->query("UPDATE `fakturas` SET `cardtype` = '".$epayment['CardType']."' WHERE `id` = ".$faktura['id']);
+	}
 	if($epayment['Status'] == 'A') {
 		
 		if($epayment['AuthorizedAmount']/100 != $faktura['amount']) {
@@ -408,8 +410,7 @@ function echoprint() {
 function copytonew($id) {
 	global $mysqli;
 	
-	$faktura = $mysqli->fetch_array("SELECT * FROM `fakturas` WHERE `id` = ".$id);
-	$faktura = $faktura[0];
+	$faktura = $mysqli->fetch_one("SELECT * FROM `fakturas` WHERE `id` = ".$id);
 	
 	unset($faktura['id']);
 	unset($faktura['status']);
@@ -451,8 +452,7 @@ function save($id, $type, $updates) {
 	}
 	unset($updates['paydate']);
 	
-	$faktura = $mysqli->fetch_array("SELECT `status`, `note` FROM `fakturas` WHERE `id` = ".$id);
-	$faktura = $faktura[0];
+	$faktura = $mysqli->fetch_one("SELECT `status`, `note` FROM `fakturas` WHERE `id` = ".$id);
 	
 	if($faktura['status'] == 'locked' || $faktura['status'] == 'pbsok' || $faktura['status'] == 'pbserror' || $faktura['status'] == 'rejected') {
 		$updates = array('note' => $updates['note'] ? trim($faktura['note']."\n".$updates['note']) : $faktura['note'], 'clerk' => $updates['clerk'], 'department' => $updates['department']);
@@ -505,8 +505,7 @@ function save($id, $type, $updates) {
 		$mysqli->query($sql);
 	}
 	
-	$faktura = $mysqli->fetch_array("SELECT * FROM `fakturas` WHERE `id` = ".$id);
-	$faktura = $faktura[0];
+	$faktura = $mysqli->fetch_one("SELECT * FROM `fakturas` WHERE `id` = ".$id);
 	
 	if($type == 'email') {
 		if(!validemail($faktura['email'])) {
@@ -521,7 +520,7 @@ function save($id, $type, $updates) {
 			return array('error' => _('The invoice must be of at at least 1 krone!'));
 		}
 		
-		include_once "../inc/phpMailer/class.phpmailer.php";
+		require_once $_SERVER['DOCUMENT_ROOT'].'/inc/phpMailer/class.phpmailer.php';
 		
 		$emailBody = '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml"><head><meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
@@ -575,7 +574,7 @@ Tel. %s</p>'),
 		$mail->AddReplyTo($faktura['department'], $GLOBALS['_config']['site_name']);
 		$mail->From       = $faktura['department'];
 		$mail->FromName   = $GLOBALS['_config']['site_name'];
-		$mail->Subject    = 'Online betaling til '.$GLOBALS['_config']['site_name'];
+		$mail->Subject    = _('Online payment for ').$GLOBALS['_config']['site_name'];
 		$mail->MsgHTML($emailBody, $_SERVER['DOCUMENT_ROOT']);
 		
 		if(empty($faktura['navn']))
@@ -583,8 +582,7 @@ Tel. %s</p>'),
 		
 		$mail->AddAddress($faktura['email'], $faktura['navn']);
 		if(!$mail->Send()) {
-			return array('error' => 'Mailen kunde ikke sendes!
-'.$mail->ErrorInfo);
+			return array('error' => _('Unable to sendt e-mail!')."\n".$mail->ErrorInfo);
 		}
 		$mysqli->query("UPDATE `fakturas` SET `status` = 'locked' WHERE `status` = 'new' && `id` = ".$faktura['id']);
 		$mysqli->query("UPDATE `fakturas` SET `sendt` = 1, `department` = '".$faktura['department']."' WHERE `id` = ".$faktura['id']);
@@ -611,8 +609,7 @@ function sendReminder($id) {
 	$error = '';
 	
 	global $mysqli;
-	$faktura = $mysqli->fetch_array("SELECT * FROM `fakturas` WHERE `id` = ".$id);
-	$faktura = $faktura[0];
+	$faktura = $mysqli->fetch_one("SELECT * FROM `fakturas` WHERE `id` = ".$id);
 	
 	if(!$faktura['status']) {
 		return array('error' => _('You can not send a reminder until the invoice is sent!'));
@@ -1232,7 +1229,7 @@ new tcal ({ 'controlid': 'cdate' });
         $pnl = $mysqli->fetch_array("SELECT `packageId` FROM `PNL` WHERE `fakturaid` = ".$faktura['id']);
 		foreach($pnl as $pakke) {
 		?><tr>
-			<td><a target="_blank" href="http://online.pannordic.com/pn_logistics/index_tracking_email.jsp?id=<?php echo($pakke['packageId']); ?>'&amp;Search=search"><?php echo($pakke['packageId']); ?></a></td>
+			<td><a target="_blank" href="http://online.pannordic.com/pn_logistics/index_tracking_email.jsp?id=<?php echo($pakke['packageId']); ?>&amp;Search=search"><?php echo($pakke['packageId']); ?></a></td>
 		</tr><?php
 		}
         $post = $mysqli->fetch_array("SELECT `STREGKODE` FROM `post` WHERE `deleted` = 0 AND `fakturaid` = ".$faktura['id']);
