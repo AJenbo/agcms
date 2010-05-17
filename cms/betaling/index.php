@@ -572,6 +572,7 @@ if(!empty($_GET['id']) && @$_GET['checkid'] == getCheckid($_GET['id'])) {
 Error number:').' '.$_GET['Status_code'];
 		$mysqli->query("UPDATE `fakturas` SET `status` = 'pbserror', `paydate` = NOW() WHERE `status` IN('new', 'locked') AND `id` = ".$id);
 		switch($_GET['Status_code']) {
+			//Theas has been seen IRL
 			case 12:
 				$GLOBALS['generatedcontent']['text'] = _('The communication could not be validated!');
 				$shopSubject = $_GET['Status'].$_GET['Status_code'].' '._('Data was manipulated.');
@@ -592,10 +593,336 @@ Error number:').' '.$_GET['Status_code'];
 				$shopSubject = $_GET['Status'].$_GET['Status_code'].' '._('Payment was refused by the bank, contact your bank.');
 				$shopBody = '<br />'.sprintf(_('Payment was refused by the bank, %s must contact his or her bank.'), $faktura['navn']).'<br />';
 			break;
+			case 26:
+				$GLOBALS['generatedcontent']['text'] = _('Suspected fraud.');
+				$shopSubject = $_GET['Status'].$_GET['Status_code'].' '._('Suspected fraud.');
+				$shopBody = '<br />'._('Suspected fraud.').'<br />';
+			break;
+			case 28:
+				$GLOBALS['generatedcontent']['text'] = _('Denied due to too many payment attempts.');
+				$shopSubject = $_GET['Status'].$_GET['Status_code'].' '._('Payment was refused.');
+				$shopBody = $_GET['Status'].$_GET['Status_code'].' '._('Denied due to too many payment attempts.');
+			break;
 			case 56:
 				$GLOBALS['generatedcontent']['text'] = _('The payment was refused because the customer has already attempted to pay.');
 				$shopSubject = $_GET['Status'].$_GET['Status_code'].' '._('Payment was refused.');
 				$shopBody = '<br />'._('The payment was refused because the customer has already attempted to pay.').'<br />';
+			break;
+			//Theas havent
+			case 3:
+				$GLOBALS['generatedcontent']['text'] = _('An obligatory field is lacking or is incorrectly formatted.');
+				$shopSubject = $_GET['Status'].$_GET['Status_code'].' '._('Payment was refused.');
+				$shopBody = '<br />'._('An obligatory field is lacking or is incorrectly formatted.').'<br />';
+			break;
+			case 4:
+				$GLOBALS['generatedcontent']['text'] = _('Incorrect Merchant ID.');
+				$shopSubject = $_GET['Status'].$_GET['Status_code'].' '._('Incorrect Merchant ID.');
+				$shopBody = '<br />'._('Incorrect Merchant ID.').'<br />';
+			break;
+			case 5:
+				$GLOBALS['generatedcontent']['text'] = _('Incorrect amount.');
+				$shopSubject = $_GET['Status'].$_GET['Status_code'].' '._('Incorrect amount.');
+				$shopBody = '<br />'._('Incorrect amount.').'<br />';
+			break;
+			case 6:
+				$GLOBALS['generatedcontent']['text'] = _('Incorrect amount.');
+				$shopSubject = $_GET['Status'].$_GET['Status_code'].' '._('Incorrect amount.');
+				$shopBody = '<br />'._('Incorrect amount.').'<br />';
+			break;
+			case 11:
+				$GLOBALS['generatedcontent']['text'] = _('Was not possible to contact bank.');
+				$shopSubject = $_GET['Status'].$_GET['Status_code'].' '._('Was not possible to contact bank.');
+				$shopBody = '<br />'._('Was not possible to contact bank.').'<br />';
+			break;
+			case 13:
+				$GLOBALS['generatedcontent']['text'] = _('Amount too large.');
+				$shopSubject = $_GET['Status'].$_GET['Status_code'].' '._('Amount too large.');
+				$shopBody = '<br />'._('Amount too large.').'<br />';
+			break;
+			case 14:
+				$GLOBALS['generatedcontent']['text'] = _('Incorrect date/time format.');
+				$shopSubject = $_GET['Status'].$_GET['Status_code'].' '._('Incorrect date/time format.');
+				$shopBody = '<br />'._('Incorrect date/time format.').'<br />';
+			break;
+			case 15:
+				$GLOBALS['generatedcontent']['text'] = _('Incorrect purchase date.');
+				$shopSubject = $_GET['Status'].$_GET['Status_code'].' '._('Incorrect purchase date.');
+				$shopBody = '<br />'._('Incorrect purchase date.').'<br />';
+			break;
+			case 17:
+				$GLOBALS['generatedcontent']['text'] = _('Payment Type not configured for the Merchant.');
+				$shopSubject = $_GET['Status'].$_GET['Status_code'].' '._('Payment Type not configured for the Merchant.');
+				$shopBody = '<br />'._('Payment Type not configured for the Merchant.').'<br />';
+			break;
+			case 18:
+				$GLOBALS['generatedcontent']['text'] = _('Card Payment: Error upon Authorisation or no contact with the bank.');
+				$shopSubject = $_GET['Status'].$_GET['Status_code'].' '._('Card Payment: Error upon Authorisation or no contact with the bank.');
+				$shopBody = '<br />'._('Card Payment: Error upon Authorisation or no contact with the bank.').'<br />';
+			break;
+			case 19:
+				$GLOBALS['generatedcontent']['text'] = _('Card Payment: Purchase denied at the bank (the card\'s validity
+period has expired), contact the bank.
+');
+				$shopSubject = $_GET['Status'].$_GET['Status_code'].' '._('Card Payment: Purchase denied at the bank (the card\'s validity
+period has expired), contact the bank.
+');
+				$shopBody = '<br />'._('Card Payment: Purchase denied at the bank (the card\'s validity
+period has expired), contact the bank.
+').'<br />';
+			break;
+			case 21:
+				$GLOBALS['generatedcontent']['text'] = _('Country for card-issuing bank is not permitted.');
+				$shopSubject = $_GET['Status'].$_GET['Status_code'].' '._('Country for card-issuing bank is not permitted.');
+				$shopBody = '<br />'._('Country for card-issuing bank is not permitted.').'<br />';
+			break;
+			case 22:
+				$GLOBALS['generatedcontent']['text'] = _('The risk assessment value for the transaction exceeds the permissible value.');
+				$shopSubject = $_GET['Status'].$_GET['Status_code'].' '._('The risk assessment value for the transaction exceeds the permissible value.');
+				$shopBody = '<br />'._('The risk assessment value for the transaction exceeds the permissible value.').'<br />';
+			break;
+			case 23:
+				$GLOBALS['generatedcontent']['text'] = _('Card Payment: Card saved/inactivated at the card-issuing bank. E.g.
+lost, stolen, too many incorrect PIN entry attempts, etc.');
+				$shopSubject = $_GET['Status'].$_GET['Status_code'].' '._('Card Payment: Card saved/inactivated at the card-issuing bank. E.g.
+lost, stolen, too many incorrect PIN entry attempts, etc.');
+				$shopBody = '<br />'._('Card Payment: Card saved/inactivated at the card-issuing bank. E.g.
+lost, stolen, too many incorrect PIN entry attempts, etc.').'<br />';
+			break;
+			case 24:
+				$GLOBALS['generatedcontent']['text'] = _('Error Request_type in Order Administration call.');
+				$shopSubject = $_GET['Status'].$_GET['Status_code'].' '._('Error Request_type in Order Administration call.');
+				$shopBody = '<br />'._('Error Request_type in Order Administration call.').'<br />';
+			break;
+			case 25:
+				$GLOBALS['generatedcontent']['text'] = _('Amount too high: insufficient balance, card-issuing bank will not allow this amount on this card.');
+				$shopSubject = $_GET['Status'].$_GET['Status_code'].' '._('Amount too high: insufficient balance, card-issuing bank will not allow this amount on this card.');
+				$shopBody = '<br />'._('Amount too high: insufficient balance, card-issuing bank will not allow this amount on this card.').'<br />';
+			break;
+			case 27:
+				$GLOBALS['generatedcontent']['text'] = _('Purchase amount must be greater than zero.');
+				$shopSubject = $_GET['Status'].$_GET['Status_code'].' '._('Purchase amount must be greater than zero.');
+				$shopBody = '<br />'._('Purchase amount must be greater than zero.').'<br />';
+			break;
+			case 30:
+				$GLOBALS['generatedcontent']['text'] = _('Denied due to time-out, no response from bank');
+				$shopSubject = $_GET['Status'].$_GET['Status_code'].' '._('Denied due to time-out, no response from bank');
+				$shopBody = '<br />'._('Denied due to time-out, no response from bank').'<br />';
+			break;
+			case 31:
+				$GLOBALS['generatedcontent']['text'] = _('Purchase terminated (by the purchaser).');
+				$shopSubject = $_GET['Status'].$_GET['Status_code'].' '._('Purchase terminated (by the purchaser).');
+				$shopBody = '<br />'._('Purchase terminated (by the purchaser).').'<br />';
+			break;
+			case 32:
+				$GLOBALS['generatedcontent']['text'] = _('Error in order, transaction already registered and paid. This
+Customer_refno is already registered on another transaction.');
+				$shopSubject = $_GET['Status'].$_GET['Status_code'].' '._('Error in order, transaction already registered and paid. This
+Customer_refno is already registered on another transaction.');
+				$shopBody = '<br />'._('Error in order, transaction already registered and paid. This
+Customer_refno is already registered on another transaction.').'<br />';
+			break;
+			case 33:
+				$GLOBALS['generatedcontent']['text'] = _('eKöp: Technical error in communication with Postgirot/Nordea.
+Please try again later.');
+				$shopSubject = $_GET['Status'].$_GET['Status_code'].' '._('eKöp: Technical error in communication with Postgirot/Nordea.
+Please try again later.');
+				$shopBody = '<br />'._('eKöp: Technical error in communication with Postgirot/Nordea.
+Please try again later.').'<br />';
+			break;
+			case 34:
+				$GLOBALS['generatedcontent']['text'] = _('Provided recipient account incorrect.');
+				$shopSubject = $_GET['Status'].$_GET['Status_code'].' '._('Provided recipient account incorrect.');
+				$shopBody = '<br />'._('Provided recipient account incorrect.').'<br />';
+			break;
+			case 35:
+				$GLOBALS['generatedcontent']['text'] = _('Provided sending account incorrect.');
+				$shopSubject = $_GET['Status'].$_GET['Status_code'].' '._('Provided sending account incorrect.');
+				$shopBody = '<br />'._('Provided sending account incorrect.').'<br />';
+			break;
+			case 36:
+				$GLOBALS['generatedcontent']['text'] = _('eKöp: Provided sending account temporarily frozen.');
+				$shopSubject = $_GET['Status'].$_GET['Status_code'].' '._('eKöp: Provided sending account temporarily frozen.');
+				$shopBody = '<br />'._('eKöp: Provided sending account temporarily frozen.').'<br />';
+			break;
+			case 39:
+				$GLOBALS['generatedcontent']['text'] = _('eKöp: Provided certificate incorrect.');
+				$shopSubject = $_GET['Status'].$_GET['Status_code'].' '._('eKöp: Provided certificate incorrect.');
+				$shopBody = '<br />'._('eKöp: Provided certificate incorrect.').'<br />';
+			break;
+			case 40:
+				$GLOBALS['generatedcontent']['text'] = _('eKöp: Account not connected to the service.');
+				$shopSubject = $_GET['Status'].$_GET['Status_code'].' '._('eKöp: Account not connected to the service.');
+				$shopBody = '<br />'._('eKöp: Account not connected to the service.').'<br />';
+			break;
+			case 41:
+				$GLOBALS['generatedcontent']['text'] = _('Payment Selection Page/Card Payment Page: Merchant not connected to the service.');
+				$shopSubject = $_GET['Status'].$_GET['Status_code'].' '._('Payment Selection Page/Card Payment Page: Merchant not connected to the service.');
+				$shopBody = '<br />'._('Payment Selection Page/Card Payment Page: Merchant not connected to the service.').'<br />';
+			break;
+			case 42:
+				$GLOBALS['generatedcontent']['text'] = _('Bad Auth_null. Should be YES or NO.');
+				$shopSubject = $_GET['Status'].$_GET['Status_code'].' '._('Bad Auth_null. Should be YES or NO.');
+				$shopBody = '<br />'._('Bad Auth_null. Should be YES or NO.').'<br />';
+			break;
+			case 43:
+				$GLOBALS['generatedcontent']['text'] = _('Bad Capture_now. Should be YES or NO.');
+				$shopSubject = $_GET['Status'].$_GET['Status_code'].' '._('Bad Capture_now. Should be YES or NO.');
+				$shopBody = '<br />'._('Bad Capture_now. Should be YES or NO.').'<br />';
+			break;
+			case 45:
+				$GLOBALS['generatedcontent']['text'] = _('For Order Administration: The status of the transaction does not permit the operation.');
+				$shopSubject = $_GET['Status'].$_GET['Status_code'].' '._('For Order Administration: The status of the transaction does not permit the operation.');
+				$shopBody = '<br />'._('For Order Administration: The status of the transaction does not permit the operation.').'<br />';
+			break;
+			case 48:
+				$GLOBALS['generatedcontent']['text'] = _('For Order Administration: The transaction does not exist.');
+				$shopSubject = $_GET['Status'].$_GET['Status_code'].' '._('For Order Administration: The transaction does not exist.');
+				$shopBody = '<br />'._('For Order Administration: The transaction does not exist.').'<br />';
+			break;
+			case 50:
+				$GLOBALS['generatedcontent']['text'] = _('Card Payment: Merchant not configured for currency/card type combination... Card type not uploaded, incorrect card type
+or card-issuing bank declines the card.');
+				$shopSubject = $_GET['Status'].$_GET['Status_code'].' '._('Card Payment: Merchant not configured for currency/card type combination... Card type not uploaded, incorrect card type
+or card-issuing bank declines the card.');
+				$shopBody = '<br />'._('Card Payment: Merchant not configured for currency/card type combination... Card type not uploaded, incorrect card type
+or card-issuing bank declines the card.').'<br />';
+			break;
+			case 54:
+				$GLOBALS['generatedcontent']['text'] = _('Bad Track2');
+				$shopSubject = $_GET['Status'].$_GET['Status_code'].' '._('Bad Track2');
+				$shopBody = '<br />'._('Bad Track2').'<br />';
+			break;
+			case 55:
+				$GLOBALS['generatedcontent']['text'] = _('Bad MOTO method. Should be PHONE or MAIL');
+				$shopSubject = $_GET['Status'].$_GET['Status_code'].' '._('Bad MOTO method. Should be PHONE or MAIL');
+				$shopBody = '<br />'._('Bad MOTO method. Should be PHONE or MAIL').'<br />';
+			break;
+			case 57:
+				$GLOBALS['generatedcontent']['text'] = _('Incorrect Customer_refno');
+				$shopSubject = $_GET['Status'].$_GET['Status_code'].' '._('Incorrect Customer_refno');
+				$shopBody = '<br />'._('Incorrect Customer_refno').'<br />';
+			break;
+			case 58:
+				$GLOBALS['generatedcontent']['text'] = _('Incorrect Version, incorrect format on the version parameters (should be Version=2).');
+				$shopSubject = $_GET['Status'].$_GET['Status_code'].' '._('Incorrect Version, incorrect format on the version parameters (should be Version=2).');
+				$shopBody = '<br />'._('Incorrect Version, incorrect format on the version parameters
+(should be Version=2).').'<br />';
+			break;
+			case 65:
+				$GLOBALS['generatedcontent']['text'] = _('Transaction already registered and awaiting a response from the bank.');
+				$shopSubject = $_GET['Status'].$_GET['Status_code'].' '._('Transaction already registered and awaiting a response from the bank.');
+				$shopBody = '<br />'._('Transaction already registered and awaiting a response from the bank.').'<br />';
+			break;
+			case 67:
+				$GLOBALS['generatedcontent']['text'] = _('Crediting could not be carried out.');
+				$shopSubject = $_GET['Status'].$_GET['Status_code'].' '._('Crediting could not be carried out.');
+				$shopBody = '<br />'._('Crediting could not be carried out.').'<br />';
+			break;
+			case 69:
+				$GLOBALS['generatedcontent']['text'] = _('Technical error, Auriga ePayment');
+				$shopSubject = $_GET['Status'].$_GET['Status_code'].' '._('Technical error, Auriga ePayment');
+				$shopBody = '<br />'._('Technical error, Auriga ePayment').'<br />';
+			break;
+			case 70:
+				$GLOBALS['generatedcontent']['text'] = _('For Order Administration: The function is not supported.');
+				$shopSubject = $_GET['Status'].$_GET['Status_code'].' '._('For Order Administration: The function is not supported.');
+				$shopBody = '<br />'._('For Order Administration: The function is not supported.').'<br />';
+			break;
+			case 71:
+				$GLOBALS['generatedcontent']['text'] = _('Incorrect format or size on the Response URL.');
+				$shopSubject = $_GET['Status'].$_GET['Status_code'].' '._('Incorrect format or size on the Response URL.');
+				$shopBody = '<br />'._('Incorrect format or size on the Response URL.').'<br />';
+			break;
+			case 72:
+				$GLOBALS['generatedcontent']['text'] = _('Incorrect Currency code.');
+				$shopSubject = $_GET['Status'].$_GET['Status_code'].' '._('Incorrect Currency code.');
+				$shopBody = '<br />'._('Incorrect Currency code.').'<br />';
+			break;
+			case 73:
+				$GLOBALS['generatedcontent']['text'] = _('Incorrect Language Code.');
+				$shopSubject = $_GET['Status'].$_GET['Status_code'].' '._('Incorrect Language Code.');
+				$shopBody = '<br />'._('Incorrect Language Code.').'<br />';
+			break;
+			case 75:
+				$GLOBALS['generatedcontent']['text'] = _('Incorrect Comments.');
+				$shopSubject = $_GET['Status'].$_GET['Status_code'].' '._('Incorrect Comments.');
+				$shopBody = '<br />'._('Incorrect Comments.').'<br />';
+			break;
+			case 76:
+				$GLOBALS['generatedcontent']['text'] = _('Incorrect goods description.');
+				$shopSubject = $_GET['Status'].$_GET['Status_code'].' '._('Incorrect goods description.');
+				$shopBody = '<br />'._('Incorrect goods description.').'<br />';
+			break;
+			case 77:
+				$GLOBALS['generatedcontent']['text'] = _('Customer_refno does not match the Transaction_id.');
+				$shopSubject = $_GET['Status'].$_GET['Status_code'].' '._('Customer_refno does not match the Transaction_id.');
+				$shopBody = '<br />'._('Customer_refno does not match the Transaction_id.').'<br />';
+			break;
+			case 78:
+				$GLOBALS['generatedcontent']['text'] = _('Card Payment: Authorisation Reversal could not be carried out.');
+				$shopSubject = $_GET['Status'].$_GET['Status_code'].' '._('Card Payment: Authorisation Reversal could not be carried out.');
+				$shopBody = '<br />'._('Card Payment: Authorisation Reversal could not be carried out.').'<br />';
+			break;
+			case 79:
+				$GLOBALS['generatedcontent']['text'] = _('Card Payment: Acquiring could not be carried out (capture).');
+				$shopSubject = $_GET['Status'].$_GET['Status_code'].' '._('Card Payment: Acquiring could not be carried out (capture).');
+				$shopBody = '<br />'._('Card Payment: Acquiring could not be carried out (capture).').'<br />';
+			break;
+			case 81:
+				$GLOBALS['generatedcontent']['text'] = _('Card Payment: Unsuccessful 3-D Secure identification (for Verified by Visa or SecureCode). Card Authorisation is not carried out.');
+				$shopSubject = $_GET['Status'].$_GET['Status_code'].' '._('Card Payment: Unsuccessful 3-D Secure identification (for Verified by Visa or SecureCode). Card Authorisation is not carried out.');
+				$shopBody = '<br />'._('Card Payment: Unsuccessful 3-D Secure identification (for Verified by Visa or SecureCode). Card Authorisation is not carried out.').'<br />';
+			break;
+			case 82:
+				$GLOBALS['generatedcontent']['text'] = _('Card Payment: 3-D Secure identification denied due to timeout (for Verified by Visa or SecureCode). Occurs when the cardholder cannot identify themselves within approximately 5 minutes of the start of the transaction. Card Authorisation is not carried out.');
+				$shopSubject = $_GET['Status'].$_GET['Status_code'].' '._('Card Payment: 3-D Secure identification denied due to timeout (for Verified by Visa or SecureCode). Occurs when the cardholder cannot identify themselves within approximately 5 minutes of the start of the transaction. Card Authorisation is not carried out.');
+				$shopBody = '<br />'._('Card Payment: 3-D Secure identification denied due to timeout (for Verified by Visa or SecureCode). Occurs when the cardholder cannot identify themselves within approximately 5 minutes of the start of the transaction. Card Authorisation is not carried out.').'<br />';
+			break;
+			case 90:
+				$GLOBALS['generatedcontent']['text'] = _('Subscription has ended.');
+				$shopSubject = $_GET['Status'].$_GET['Status_code'].' '._('Subscription has ended.');
+				$shopBody = '<br />'._('Subscription has ended.').'<br />';
+			break;
+			case 91:
+				$GLOBALS['generatedcontent']['text'] = _('Subscription not found.');
+				$shopSubject = $_GET['Status'].$_GET['Status_code'].' '._('Subscription not found.');
+				$shopBody = '<br />'._('Subscription not found.').'<br />';
+			break;
+			case 92:
+				$GLOBALS['generatedcontent']['text'] = _('Subscription not captured, does not have Paid status.');
+				$shopSubject = $_GET['Status'].$_GET['Status_code'].' '._('Subscription not captured, does not have Paid status.');
+				$shopBody = '<br />'._('Subscription not captured, does not have Paid
+status.').'<br />';
+			break;
+			case 93:
+				$GLOBALS['generatedcontent']['text'] = _('Payment Selection Page: Incorrect format or size for Cancel URL.');
+				$shopSubject = $_GET['Status'].$_GET['Status_code'].' '._('Payment Selection Page: Incorrect format or size for Cancel URL.');
+				$shopBody = '<br />'._('Payment Selection Page: Incorrect format or size for Cancel URL.').'<br />';
+			break;
+			case 95:
+				$GLOBALS['generatedcontent']['text'] = _('Invoice purchase: Incorrect OCR number, e.g. incorrect control digit.');
+				$shopSubject = $_GET['Status'].$_GET['Status_code'].' '._('Invoice purchase: Incorrect OCR number, e.g. incorrect control digit.');
+				$shopBody = '<br />'._('Invoice purchase: Incorrect OCR number, e.g. incorrect control digit.').'<br />';
+			break;
+			case 96:
+				$GLOBALS['generatedcontent']['text'] = _('Incorrect length for invoice parameters.');
+				$shopSubject = $_GET['Status'].$_GET['Status_code'].' '._('Incorrect length for invoice parameters.');
+				$shopBody = '<br />'._('Incorrect length for invoice parameters.').'<br />';
+			break;
+			case 97:
+				$GLOBALS['generatedcontent']['text'] = _('Incorrect guarantee parameter.');
+				$shopSubject = $_GET['Status'].$_GET['Status_code'].' '._('Incorrect guarantee parameter.');
+				$shopBody = '<br />'._('Incorrect guarantee parameter.').'<br />';
+			break;
+			case 98:
+				$GLOBALS['generatedcontent']['text'] = _('Incorrect postal code.');
+				$shopSubject = $_GET['Status'].$_GET['Status_code'].' '._('Incorrect postal code.');
+				$shopBody = '<br />'._('Incorrect postal code.').'<br />';
+			break;
+			case 110:
+				$GLOBALS['generatedcontent']['text'] = _('Invoice purchase: Invalid personal identity number or organisation number.');
+				$shopSubject = $_GET['Status'].$_GET['Status_code'].' '._('Invoice purchase: Invalid personal identity number or organisation number.');
+				$shopBody = '<br />'._('Invoice purchase: Invalid personal identity number or organisation number.').'<br />';
 			break;
 		}
 		
@@ -607,7 +934,7 @@ Error number:').' '.$_GET['Status_code'];
 		$GLOBALS['generatedcontent']['headline'] = _('Reciept');
 		switch($_GET['Status_code']) {
 			case 0:
-				$mysqli->query("UPDATE `fakturas` SET `paymethode` = '".$_GET['Payment_method']."', `cardtype` = '".$_GET['Card_type']."', `status` = 'pbsok', `paydate` = NOW() WHERE `status` IN('new', 'locked', 'pbserror') AND `id` = ".$id);
+				$mysqli->query("UPDATE `fakturas` SET `cardtype` = '".$_GET['Card_type']."', `status` = 'pbsok', `paydate` = NOW() WHERE `status` IN('new', 'locked', 'pbserror') AND `id` = ".$id);
 				
 				$faktura = $mysqli->fetch_one("SELECT * FROM `fakturas` WHERE `id` = ".$id);
 				
@@ -818,29 +1145,22 @@ Tel. %s<br />
 						$emailbody .= nl2br(htmlspecialchars($faktura['note'])).'</p>';
 					}
 
-					switch($faktura['paymethode']) {
-					case 'KORTINDK':
-					case 'KORTABDK':
-					case 'NORDEADK':
-						$cardtype = _('Danish');
-					break;
-					default:
-						$cardtype = $faktura['paymethode'];
-					break;
-					}
-
 					switch($faktura['cardtype']) {
 					case 'DANKORT':
-						$cardtype .= ' '._('Dankort');
+						$cardtype .= _('Dankort');
 					break;
-					MASTERCARD
 					case 'MASTERCARD':
-						$cardtype .= ' '._('MasterCard');
+						$cardtype .= _('MasterCard');
+					break;
+					case 'AMEX':
+						$cardtype .= _('American Express');
+					break;
+					case 'VISA':
+						$cardtype .= _('VISA');
 					break;
 					default:
-						$cardtype .= ' '._($faktura['cardtype']);
+						$cardtype .= $faktura['cardtype'];
 					break;
-						
 					}
 
 					$emailbody .= sprintf(_('<p>The %s, %s approved the online Invoice #%s, which was created by %s, using a %s.<br />

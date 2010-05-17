@@ -238,9 +238,9 @@ a {
 				elseif($faktura['status'] == 'pbsok')
 					echo('<img src="/admin/images/money.png" alt="'._('Ready').'" title="'._('Ready').'" />');
 				elseif($faktura['status'] == 'accepted')
-					echo('<img src="/admin/images/email.png" alt="'._('Expedited').'" title="'._('Expedited').'" />');
+					echo('<img src="/admin/images/creditcards.png" alt="'._('Expedited').'" title="'._('Expedited').'" />');
 				elseif($faktura['status'] == 'giro')
-					echo('<img src="/admin/images/email.png" alt="'._('Giro').'" title="'._('Giro').'" />');
+					echo('<img src="/admin/images/building.png" alt="'._('Giro').'" title="'._('Giro').'" />');
 				elseif($faktura['status'] == 'cash')
 					echo('<img src="/admin/images/email.png" alt="'._('Cash').'" title="'._('Cash').'" />');
 				elseif($faktura['status'] == 'pbserror')
