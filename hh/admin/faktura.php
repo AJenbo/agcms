@@ -47,6 +47,9 @@ if($faktura['premoms']) {
 if($faktura['id']) {
 	$epaymentAdminService = new epaymentAdminService($GLOBALS['_config']['pbsid'], $GLOBALS['_config']['pbspassword']);
 	$epayment = $epaymentAdminService->query($GLOBALS['_config']['pbsfix'].$faktura['id']);
+	if($faktura['cardtype'] == '' && $epayment['CardType'] != '') {
+		$mysqli->query("UPDATE `fakturas` SET `cardtype` = '".$epayment['CardType']."' WHERE `id` = ".$faktura['id']);
+	}
 	if($epayment['Status'] == 'A') {
 		
 		if($epayment['AuthorizedAmount']/100 != $faktura['amount']) {
