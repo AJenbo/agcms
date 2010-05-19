@@ -37,6 +37,15 @@ JSON.parse = JSON.parse || function(jsonsring) { return jsonsring.evalJSON(true)
 <style type="text/css">
 @charset "utf-8";
 
+#headline {
+	background-image:url("images/headerbar.gif");
+	font-weight:bold;
+	height:13px;
+	margin:0;
+	padding:4px 0;
+	text-align:center;
+}
+
 body {
 	margin:0;
 	border:0;

@@ -17,7 +17,21 @@ require_once '../inc/config.php';
 require_once '../inc/mysqli.php';
 $mysqli = new simple_mysqli($GLOBALS['_config']['mysql_server'], $GLOBALS['_config']['mysql_user'], $GLOBALS['_config']['mysql_password'], $GLOBALS['_config']['mysql_database']);
 
+function deleteuser($id) {
+	if($_SESSION['_user']['access'] == 1) {
+		global $mysqli;
+		$mysqli->query("DELETE FROM `users` WHERE `id` = ".$id);
+	}
+}
+
 $sajax_request_type = 'POST';
+
+//$sajax_debug_mode = 1;
+sajax_export(
+	array('name' => 'deleteuser', 'method' => 'POST')
+);
+//$sajax_remote_uri = '/ajax.php';
+sajax_handle_client_request();
 
 ?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
@@ -35,11 +49,32 @@ JSON.parse = JSON.parse || function(jsonsring) { return jsonsring.evalJSON(true)
 <script type="text/javascript" src="/javascript/sajax.js"></script>
 <link href="style/mainmenu.css" rel="stylesheet" type="text/css" />
 <link href="style/style.css" rel="stylesheet" type="text/css" />
+<script type="text/javascript"><!--
+
+function deleteuser(id, name) {
+	if(confirm('<?php echo(sprintf(addcslashes(_('Do you realy want to delete the user \'%s\'?'), "\\'"), "'+name+'")); ?>') == true) {
+		$('loading').style.visibility = 'hidden';
+		x_deleteuser(id, deleteuser_r);
+	}
+}
+
+function deleteuser_r() {
+	if(data['error'])
+		alert(data['error']);
+	else window.location.reload(true);
+}
+
+//-->
+</script>
 </head>
 <body onload="$('loading').style.visibility = 'hidden';">
-<div id="canvas"><div id="headline"><?php echo(_('Users and Groups')); ?></div><table id="addressbook"><thead><tr><td></td><td><?php echo(_('Name')); ?></td><td><?php echo(_('Last online')); ?></td></tr></thead><tbody><?php
+<div id="canvas"><div id="headline"><?php echo(_('Users and Groups')); ?></div><table id="addressbook"><thead><tr><td></td><td><a href="?order=date"><a href="users.php"><?php echo(_('Name')); ?></a></td><td><a href="?order=date"><?php echo(_('Last online')); ?></a></td></tr></thead><tbody><?php
 
-$users = $mysqli->fetch_array("SELECT *, UNIX_TIMESTAMP(`lastlogin`) AS 'lastlogin' FROM `users` ORDER BY `fullname` ASC");
+if(empty($_GET['order'])) {
+	$users = $mysqli->fetch_array("SELECT *, UNIX_TIMESTAMP(`lastlogin`) AS 'lastlogin' FROM `users` ORDER BY `fullname` ASC");
+} else {
+	$users = $mysqli->fetch_array("SELECT *, UNIX_TIMESTAMP(`lastlogin`) AS 'lastlogin' FROM `users` ORDER BY `lastlogin` DESC");
+}
 
 foreach($users as $key => $user) {
 	echo('<tr');
@@ -47,14 +82,24 @@ foreach($users as $key => $user) {
 		echo(' class="altrow"');
 	echo('><td>');
 	if($_SESSION['_user']['access'] == 1)
-		echo(' <img src="images/cross.png" alt="X" title="'._('Delete').'">');
+		echo(' <img src="images/cross.png" alt="X" title="'._('Delete').'" onclick="deleteuser('.$user['id'].', \''.addcslashes($user['fullname'], "\\'").'\');" />');
 	echo('</td><td><a href="user.php?id='.$user['id'].'">'.$user['fullname'].'</a></td><td><a href="user.php?id='.$user['id'].'">');
 	if($user['lastlogin'] == 0) {
 		echo(_('Never'));
 	} elseif($user['lastlogin'] > time()-1800) {
 		echo(_('Online'));
 	} else {
-		echo(round((time()-$user['lastlogin'])/86400)._(' dayes ago'));
+		$dayes = round((time()-$user['lastlogin'])/86400);
+		if($dayes == 0) {
+			$houres = round((time()-$user['lastlogin'])/3600);
+			if($houres == 0) {
+				echo(sprintf(_('%s minuts ago'), round((time()-$user['lastlogin'])/60)));
+			} else {
+				echo(sprintf(_('%s houres ago'), $houres));
+			}
+		} else {
+			echo(sprintf(_('%s dayes ago'), $dayes));
+		}
 	}
 	echo('</a></td></tr>');
 }
