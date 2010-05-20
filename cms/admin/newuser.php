@@ -36,10 +36,10 @@ table, td, tr {
 ?><form action="" method="post" onsubmit="return validate();">
 	<table style="background-color: #DDDDDD; border: 1px solid #AAAAAA; padding: 7px; margin: auto;">
 		<tr>
-			<td><?php echo(_('Fullname:')); ?></td>
+			<td><?php echo(_('Full name:')); ?></td>
 			<td><input id="fullname" name="fullname" /></td></tr>
 		<tr>
-			<td><?php echo(_('Username:')); ?></td>
+			<td><?php echo(_('User name:')); ?></td>
 			<td><input id="name" name="name" /></td></tr>
 		<tr>
 			<td><?php echo(_('Password:')); ?></td>
@@ -57,7 +57,7 @@ if($_POST) {
 		die('<p style="text-align: center; margin-top: 20px;">'._('All fields must be filled.').'</p></body></html>');
 	}
 	if($_POST['password'] != $_POST['password2']) {
-		die('<p style="text-align: center; margin-top: 20px;">'._('The passwords does not match.').'</p></body></html>');
+		die('<p style="text-align: center; margin-top: 20px;">'._('The passwords doesn\'t match.').'</p></body></html>');
 	}
 
 	require_once $_SERVER['DOCUMENT_ROOT'].'/inc/config.php';

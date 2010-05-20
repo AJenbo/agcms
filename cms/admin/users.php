@@ -50,6 +50,7 @@ JSON.parse = JSON.parse || function(jsonsring) { return jsonsring.evalJSON(true)
 <link href="style/mainmenu.css" rel="stylesheet" type="text/css" />
 <link href="style/style.css" rel="stylesheet" type="text/css" />
 <script type="text/javascript"><!--
+<?php sajax_show_javascript(); ?>
 
 function deleteuser(id, name) {
 	if(confirm('<?php echo(sprintf(addcslashes(_('Do you realy want to delete the user \'%s\'?'), "\\'"), "'+name+'")); ?>') == true) {
@@ -61,7 +62,7 @@ function deleteuser(id, name) {
 function deleteuser_r() {
 	if(data['error'])
 		alert(data['error']);
-	else window.location.reload(true);
+	window.location.reload();
 }
 
 //-->

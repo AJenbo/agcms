@@ -1,10 +1,4 @@
 <?php
-//access
-//0:ny, ingen ratigheder.
-//1:supper admin.
-//2:admin.
-//3:klader.
-//4:gaest, ikke gemme.
 
 date_default_timezone_set('Europe/Copenhagen');
 setlocale(LC_ALL, 'da_DK');
