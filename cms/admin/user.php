@@ -27,10 +27,9 @@ function updateuser($id, $updates) {
 		}
 
 		//Validate password update
-		if(!empty($updates['password']) && !empty($updates['password'])) {
-
+		if(!empty($updates['password_new'])) {
 			if($_SESSION['_user']['access'] == 1 && $_SESSION['_user']['id'] != $id) {
-				$updates['password'] = $updates['password_new'];
+				$updates['password'] = crypt($updates['password_new']);
 			} elseif($_SESSION['_user']['id'] == $id) {
 				$user = $mysqli->fetch_one("SELECT `password` FROM `users` WHERE id = ".$id);
 				if(mb_substr($user['password'], 0, 13) == mb_substr(crypt($updates['password'], $user['password']), 0, 13)) {

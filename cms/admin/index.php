@@ -1030,6 +1030,7 @@ writeRichText("beskrivelse", \'\', "", '.($GLOBALS['_config']['thumb_width']+32)
 	else
 		$html .= katlist(-1);
 	
+	$html .= '</form>';
 	return $html;
 }
 	
