@@ -71,6 +71,9 @@ function pakkepris(height, width, length, weight, packtype, ss1, ss46, ss5amount
 	var vWeight = Math.max(height*width*length/4000, weight);
 	
 	if(packtype == 'P') {
+
+		if(weight > 20)
+			weight = vWeight;
 		
 		if(weight <= 1) {
 			grundpris = 62;
@@ -84,24 +87,25 @@ function pakkepris(height, width, length, weight, packtype, ss1, ss46, ss5amount
 			grundpris = 135;
 		} else if(weight <= 25) {
 			moms = true;
-			grundpris = 161;
+			grundpris = 271;
 		} else if(weight <= 30) {
 			moms = true;
-			grundpris = 209;
+			grundpris = 319;
 		} else if(weight <= 35) {
 			moms = true;
-			grundpris = 254;
+			grundpris = 364;
 		} else if(weight <= 40) {
 			moms = true;
-			grundpris = 298;
+			grundpris = 408;
 		} else if(weight <= 45) {
 			moms = true;
-			grundpris = 345;
+			grundpris = 455;
 		} else if(weight <= 50) {
 			moms = true;
-			grundpris = 392;
+			grundpris = 502;
 		} else {
-			return false;
+			moms = true;
+			grundpris += Math.round((vWeight-50)*5.5*100)/100+502;
 		}
 	
 		//Volume

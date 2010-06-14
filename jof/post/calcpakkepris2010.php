@@ -48,8 +48,7 @@ function calcvolume($height, $width, $length) {
 }
 
 
-function pakkepris($height, $width, $length, $weight, $packtype, $ss1, $ss46, $ss5amount, $domoms = true) {
-
+function pakkepris($height, $width, $length, $weight, $packtype, $ss1, $ss46, $ss5amount, $domoms = true, $volume = false) {
 	$ss1 = ($ss1 == 'false' ? false : true);
 	$ss46 = ($ss46 == 'false' ? false : true);
 
@@ -61,6 +60,9 @@ function pakkepris($height, $width, $length, $weight, $packtype, $ss1, $ss46, $s
 	$vWeight = max($height*$width*$length/4000, $weight);
 	
 	if($packtype == 'P') {
+
+		if($weight > 20)
+			$weight = $vWeight;
 		
 		if($weight <= 1) {
 			$grundpris = 62;
@@ -79,34 +81,37 @@ function pakkepris($height, $width, $length, $weight, $packtype, $ss1, $ss46, $s
 			@$GLOBALS['p20'.($ss46 ? 'l' : '')]++;
 		} elseif($weight <= 25) {
 			$moms = true;
-			$grundpris = 161;
+			$grundpris = 271;
 			@$GLOBALS['p25'.($ss46 ? 'l' : '')]++;
 		} elseif($weight <= 30) {
 			$moms = true;
-			$grundpris = 209;
+			$grundpris = 319;
 			@$GLOBALS['p30'.($ss46 ? 'l' : '')]++;
 		} elseif($weight <= 35) {
 			$moms = true;
-			$grundpris = 254;
+			$grundpris = 364;
 			@$GLOBALS['p35'.($ss46 ? 'l' : '')]++;
 		} elseif($weight <= 40) {
 			$moms = true;
-			$grundpris = 298;
+			$grundpris = 408;
 			@$GLOBALS['p40'.($ss46 ? 'l' : '')]++;
 		} elseif($weight <= 45) {
 			$moms = true;
-			$grundpris = 345;
+			$grundpris = 445;
 			@$GLOBALS['p45'.($ss46 ? 'l' : '')]++;
 		} elseif($weight <= 50) {
 			$moms = true;
-			$grundpris = 392;
+			$grundpris = 502;
 			@$GLOBALS['p50'.($ss46 ? 'l' : '')]++;
 		} else {
-			return false;
+			$moms = true;
+			$grundpris = 502 + ($weight-50) * 5.5;
+			
+			@$GLOBALS['p50b'.($ss46 ? 'l' : '')]++;
 		}
 	
 		//Volume
-		if(calcvolume($height, $width, $length)) {
+		if($volume || calcvolume($height, $width, $length)) {
 			$grundpris += 79;
 		}
 
