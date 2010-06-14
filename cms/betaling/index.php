@@ -1122,6 +1122,7 @@ Tel. %s<br />
 				
 				
 				//Mail to Ole start
+				/*
 				if($faktura['department'] != 'mail@huntershouse.dk') {
 					$emailbody = '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><meta http-equiv="Content-Type" content="text/html; charset=utf-8" /><title>';
 					$emailbody .= sprintf(_('Online Invoice #%s : Payment completed'), $GLOBALS['_config']['pbsfix'].$faktura['id']);
@@ -1233,7 +1234,7 @@ The order was as following:</p>
 					}
 				}
 				//Mail to Ole end
-				
+				*/
 			break;
 			case 1:
 				$GLOBALS['generatedcontent']['text'] = _('Denied/interrupted. The payment was denied or interrupted.');

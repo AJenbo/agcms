@@ -1587,8 +1587,8 @@ function htmlUrlDecode($text) {
 						html_entity_decode(
 							//Double encode importand encodings, to survive next step and remove white space
 							preg_replace(
-							array('/&lt;/u', '/&gt;/u', '/&amp;/u', '/[?]/u', '/\s+/u'),
-							array('&amp;lt;', '&amp;gt;', '&amp;amp;', ' ', ' '),
+							array('/&lt;/u', '/&gt;/u', '/&amp;/u', '/\s+/u'),
+							array('&amp;lt;', '&amp;gt;', '&amp;amp;', ' '),
 								trim($text)),
 							ENT_QUOTES,
 							'UTF-8')
@@ -1606,8 +1606,8 @@ function htmlUrlDecode($text) {
 					html_entity_decode(
 						//Double encode importand encodings, to survive html_entity_decode and remove white space
 						preg_replace(
-							array('/&lt;/u',  '/&gt;/u',  '/&amp;/u',  '/[?]/u', '/\s+/'),
-							array('&amp;lt;', '&amp;gt;', '&amp;amp;', ' ',    ' '),
+							array('/&lt;/u',  '/&gt;/u',  '/&amp;/u',  '/\s+/'),
+							array('&amp;lt;', '&amp;gt;', '&amp;amp;', ' '),
 							trim($text)
 						),
 						ENT_QUOTES,
