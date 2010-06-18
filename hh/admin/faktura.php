@@ -273,128 +273,6 @@ function getCheckid($id) {
 	return substr(md5($id.$GLOBALS['_config']['pbspassword']), 3, 5);
 }
 
-function echoprint() {
-	global $faktura;
-	
-    $html = '<div id="main">
-        <address>'.$GLOBALS['_config']['address'].'
-        <br />
-        '.$GLOBALS['_config']['postcode'].' '.$GLOBALS['_config']['city'].'<br />
-        Fax: '.$GLOBALS['_config']['fax'].'<br />
-        <big>'._('Phone:').' '.$GLOBALS['_config']['phone'].'<br />
-        <br />
-        </big> <big>Danske Bank <small>(Giro)</small><br />
-        9541 - 169 3336</big><br />
-        <br />
-        IBAN:<br />
-        DK693 000 000-1693336<br />
-        SWIFT BIC:<br />
-        DABADKKK<br />
-        <small><br />
-        </small> <big><strong> SE 1308 1387</strong></big>
-        </address>
-        <h1>'.$GLOBALS['_config']['site_name'].'</h1>
-        <table id="postadresse">
-            <tr>
-                <td>';
-		$html .= $faktura['navn'];
-		if($faktura['att']) $html .= '<br />'._('Attn.:').' '.$faktura['att'];
-		if($faktura['adresse']) $html .= '<br />'.$faktura['adresse'];
-		if($faktura['postbox']) $html .= '<br />'.$faktura['postbox'];
-		if($faktura['postnr']) $html .= '<br />'.$faktura['postnr'].' '.$faktura['by'];
-		else $html .= '<br />'.$faktura['by']; 
-		if($faktura['land']) {
-			require '../inc/countries.php';
-			$html .= '<br />'.$countries[$faktura['land']];
-		}
-		$html .= '</td>
-            </tr>
-        </table>
-    </div>
-    <div id="fakturadiv"><strong>'._('Online Invoice').'</strong> '.$faktura['id'].'</div>
-    <div id="ref"> <strong>'._('Date').': </strong> <span>'.date(_('m/d/Y'), $faktura['date']).'</span> <strong>'._('Our ref.:').' </strong> <span>'.$faktura['iref'].'</span> <strong>'._('Their ref.:').' </strong> <span>'.$faktura['eref'].'</span></div>';
-	
-    $html .= '<table id="printdata" cellspacing="0">
-        <thead>
-            <tr>
-                <td class="td1">'._('Quantity').'</td>
-                <td>'._('Title').'</td>
-                <td class="td3 tal">'._('unit price').'</td>
-                <td class="td4 tal">'._('Total').'</td>
-            </tr>
-        </thead>
-        <tfoot>
-            <tr style="height:auto;min-height:auto;max-height:auto;">
-                <td>&nbsp;</td>
-                <td>&nbsp;</td>
-                <td class="tal">'._('Net Amount').'</td>';
-			$productslines = max(count($faktura['quantities']), count($faktura['products']), count($faktura['values']));
-			
-			$netto = 0;
-			for($i=0;$i<$productslines;$i++) {
-				$netto += $faktura['values'][$i]*$faktura['quantities'][$i];
-			}
-		
-                $html .= '<td class="tal">'.number_format($netto, 2, ',', '').'</td>
-            </tr>
-            <tr>
-                <td>&nbsp;</td>
-                <td>&nbsp;</td>
-                <td class="tal">'._('Freight').'</td>
-                <td class="tal">'.number_format($faktura['fragt'], 2, ',', '').'</td>
-            </tr>
-            <tr>
-                <td>&nbsp;</td>
-                <td style="text-align:right" class="tal">'.($faktura['momssats']*100).'%</td>
-                <td class="tal">'._('VAT Amount').'</td>
-				<td class="tal">'.number_format($netto*$faktura['momssats'], 2, ',', '').'</td>
-            </tr>
-            <tr class="border">
-                <td colspan="2" id="warning"><strong>'._('Payment Terms:').'</strong> '._('Net cash at invoice reception.').'<br />
-                    <span style="font-size:8pt;">'._('In case of payment later than the stated deadline, 2% interest will be added per. started months.').'</span></td>
-                <td style="text-align:center; font-weight:bold;">'._('TO PAY').'</td>
-                <td class="tal" id="printpayamount">'.number_format($faktura['amount'], 2, ',', '').'</td>
-            </tr>
-        </tfoot>
-        <tbody>';
-			for($i=0; $i<$productslines; $i++) {
-				$html .= '<tr>
-					<td class="tal">'.$faktura['quantities'][$i].'</td>
-					<td>'.$faktura['products'][$i].'</td>
-					<td class="tal">'.number_format($faktura['values'][$i], 2, ',', '').'</td>
-					<td class="tal">'.number_format($faktura['values'][$i]*$faktura['quantities'][$i], 2, ',', '').'</td>
-				</tr>';
-			}
-        $html .= '</tbody>
-    </table>
-    <br />
-    <strong>'._('Note:').'</strong><br />
-    <p class="note">';
-	if($faktura['status'] == 'accepted') {
-		$html .= _('Paid online');
-		if($faktura['paydate']) $html .= ' d. '.date(_('m/d/Y'), $faktura['paydate']);
-		$html .= '<br />';
-	} elseif($faktura['status'] == 'giro') {
-		$html .= _('Paid via giro');
-		if($faktura['paydate']) $html .= ' d. '.date(_('m/d/Y'), $faktura['paydate']);
-		$html .= '<br />';
-	} elseif($faktura['status'] == 'cash') {
-		$html .= _('Paid in cash');
-		if($faktura['paydate']) $html .= ' d. '.date(_('m/d/Y'), $faktura['paydate']);
-		$html .= '<br />';
-	}
-	
-	$html .= nl2br(htmlspecialchars($faktura['note'])).'</p>
-    <br />
-    <br />
-    <p style="font-size:12pt; float:right; min-width:6cm;"><strong>'._('Sincerely,').'<br />
-        <br />
-        <br />
-        <span class="clerk">'.$faktura['clerk'].'</span> <br />
-        </strong><strong>'.$GLOBALS['_config']['site_name'].'</strong></p>';
-	return $html;
-}
-
 function copytonew($id) {
 	global $mysqli;
 	
@@ -1574,7 +1452,7 @@ if($faktura['status'] == 'new') {
 }
 
 if($faktura['status'] != 'new') {
-	$activityButtons[] = '<li><a href="#" onclick="window.print(); return false;"><img height="16" width="16" title="" src="images/printer.png"/> '._('Print').'</a></li>';
+	$activityButtons[] = '<li><a href="faktura-pdf.php?id='.$faktura['id'].'"><img height="16" width="16" title="" src="images/printer.png"/> '._('Print').'</a></li>';
 }
 $activityButtons[] = '<li><a onclick="newfaktura(); return false;"><img src="images/table_add.png" alt="" width="16" height="16" /> '._('Create new').'</a></li>';
 $activityButtons[] = '<li><a onclick="copytonew(); return false;"><img src="images/table_multiple.png" alt="" width="16" height="16" /> '._('Copy to new').'</a></li>';
@@ -1602,9 +1480,5 @@ $faktura['status'] != 'rejected') {
 
 require 'mainmenu.php';
 ?>
-<div id="print"><?php
-if($faktura['status'] != 'new')
-	echo echoprint();
-?></div>
 </body>
 </html>

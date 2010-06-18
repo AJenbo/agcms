@@ -6,7 +6,7 @@ $GLOBALS['_config']['address'] = 'H.C. Ørsteds Vej 7 B';
 $GLOBALS['_config']['postcode'] = '1879';
 $GLOBALS['_config']['city'] = 'Frederiksberg C';
 $GLOBALS['_config']['phone'] = '33 222 333';
-$GLOBALS['_config']['fax'] = '33 14 04 07';
+$GLOBALS['_config']['fax'] = '33 22 82 00';
 
 //Email settings
 $GLOBALS['_config']['email'][] = 'mail@huntershouse.dk';
