@@ -25,10 +25,16 @@ if(!$faktura) {
 $faktura['quantities'] = explode('<', $faktura['quantities']);
 $faktura['products'] = explode('<', $faktura['products']);
 $faktura['values'] = explode('<', $faktura['values']);
-	
-if(!$faktura['premoms']) {
+
+if(!$faktura['premoms'] && $faktura['momssats']) {
+//if numbers where aded with out vat but vat should be payed, then add it
 	foreach($faktura['values'] as $key => $value) {
-		$faktura['values'][$key] = $value*(1+$faktura['momssats']);
+		$faktura['values'][$key] = $value*(1.25);
+	}
+} elseif(!$faktura['momssats']) {
+//if values where entered including vat, but no vat should be payed, then remove the vat
+	foreach($faktura['values'] as $key => $value) {
+		$faktura['values'][$key] = $value/1.25;
 	}
 }
 
@@ -76,7 +82,7 @@ $pdf->Write(0,
 	$GLOBALS['_config']['address']."\n".
 	$GLOBALS['_config']['postcode']." ".$GLOBALS['_config']['city']."\n".
 	"Fax: ".$GLOBALS['_config']['fax']."\n", '', 0, 'R');
-$pdf->SetFont('times', '', 11);
+$pdf->SetFont('times', 'B', 11);
 $pdf->Write(0, _('Phone:')." ".$GLOBALS['_config']['phone']."\n", '', 0, 'R');
 $pdf->SetFont('times', '', 10);
 
@@ -188,7 +194,7 @@ foreach($faktura['values'] as $i => $value) {
 	$netto += $value*$faktura['quantities'][$i];
 
 	$pdf->Cell( 24, 6, $faktura['quantities'][$i], 'RL', 0, 'R');
-	$lines = $pdf->MultiCell(106, 6, htmlspecialchars_decode($faktura['products'][$i]), 'RL', '0', 0, 0, '', '', true, 0, false, true, 0);
+	$lines = $pdf->MultiCell(106, 6, html_entity_decode($faktura['products'][$i]), 'RL', '0', 0, 0, '', '', true, 0, false, true, 0);
 //	$pdf->Cell(106, 6, $faktura['products'][$i], 'RL', 0, 'L');
 	$pdf->Cell( 29, 6, number_format($value, 2, ',', ''), 'RL', 0, 'R');
 	$pdf->Cell( 34, 6, number_format($value*$faktura['quantities'][$i], 2, ',', ''), 'RL', 1, 'R');
