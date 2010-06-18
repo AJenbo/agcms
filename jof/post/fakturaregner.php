@@ -38,11 +38,16 @@ if(isset($_POST['E']) || isset($_POST['P']) || isset($_POST['O'])) {
 						$array[$key]['weight'] = $matches[4][$key];
 						$array[$key]['length'] = $matches[5][$key];
 						$array[$key]['width'] = $matches[6][$key];
+						if(!$array[$key]['weight'] && !$post['weight'])
+							$array[$key]['weight'] = 5000;
 						$array[$key]['height'] = $matches[7][$key];
-						if($post['ss2'] == 'true' && preg_match('/Vo/ui', $matches[8][$key]) && !calcvolume($array[$key]['length'], $array[$key]['width'], $array[$key]['height'])) {
+						//If we agree that it is volume then force it
+
+						if($post['ss2'] == 'true' && preg_match('/Vo/ui', $matches[8][$key])) {
 							$array[$key]['volume'] = true;
-						} elseif($post['ss2'] != 'true') {
-							$pacakage['volumeerr'] = true;
+						//if we don't aggree then make a note of it
+						} elseif($post['ss2'] != 'true' && preg_match('/Vo/ui', $matches[8][$key])) {
+							$array[$key]['volumeerr'] = true;
 						}
 						$array[$key]['ss1'] = preg_match('/Fo/u', $matches[8][$key]);
 						$array[$key]['ss46'] = preg_match('/Lø/u', $matches[8][$key]);
@@ -82,7 +87,7 @@ if($pacakage['ss1']) echo('Fo');
 if($pacakage['ss46']) echo('Lø');
 					echo('</td><td>');
 if($pacakage['volume']) echo('Vo');
-if($pacakage['volumeerr']) echo('<span style="color:red;">Vo</span>');
+if($pacakage['volumeerr']) echo('<span style="color:red;">!Vo</span>');
 					echo('</td><td>');
 if($pacakage['ss5amount']) echo(number_format($pacakage['ss5amount'], 2, ',', '.'));
 					echo('</td><td>');
@@ -99,7 +104,7 @@ if(!($type == 'P' && $pacakage['weight']/1000 < 20)) echo('Ja');
 				}
 			}
 			if($diff)
-				echo('<tr><td colspan="10">Diff : '.number_format($diff, 2, ',', '.').'</td></tr>');
+				echo('<tr><td colspan="10">Diff (inc. moms) : '.number_format($diff, 2, ',', '.').'</td></tr>');
 		}
 		
 		echo('<h1>Pakker hvor prisen ikke stemmer!</h1>');
