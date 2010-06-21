@@ -1,4 +1,10 @@
 <?php
+//access
+//0:ny, ingen ratigheder.
+//1:supper admin.
+//2:admin.
+//3:klader.
+//4:gaest, ikke gemme.
 
 date_default_timezone_set('Europe/Copenhagen');
 setlocale(LC_ALL, 'da_DK');
@@ -17,7 +23,7 @@ if(empty($_SESSION['_user']) && !empty($_POST['username'])) {
 
 	$_SESSION['_user'] = $mysqli->fetch_array("SELECT * FROM `users` WHERE `name` = '".addcslashes($_POST['username'], "'\\")."' LIMIT 1");
 	$_SESSION['_user'] = @$_SESSION['_user'][0];
-	if($_SESSION['_user']['access'] < 1 || mb_substr(@$_SESSION['_user']['password'], 0, 13) != mb_substr(crypt(@$_POST['password'], $_SESSION['_user']['password']), 0, 13))
+	if($_SESSION['_user']['access'] < 1 || @$_SESSION['_user']['password'] != crypt(@$_POST['password'], $_SESSION['_user']['password']))
 		unset($_SESSION['_user']);
 
 	unset($_POST);
@@ -31,7 +37,7 @@ if(empty($_SESSION['_user'])) {
 	<head>
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 	<title><?php echo(_('Login')); ?></title>
-	<link type="text/css" rel="stylesheet" href="style/style.css" />
+	<link type="text/css" rel="stylesheet" href="style/style.css">
 	</head>
 	<body style="margin:20px;" onload="document.getElementById('form').style.width = document.getElementById('width').offsetWidth+'px';">
 	<form id="form" action="" method="post" style="margin: auto; text-align: right; background-color: #DDDDDD; border: 1px solid #AAAAAA; padding: 10px;">
