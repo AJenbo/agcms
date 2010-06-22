@@ -268,7 +268,6 @@ if($faktura['id']) {
 	}
 }
 
-
 function getCheckid($id) {
 	return substr(md5($id.$GLOBALS['_config']['pbspassword']), 3, 5);
 }
@@ -386,7 +385,7 @@ function save($id, $type, $updates) {
 			return array('error' => _('The invoice must be of at at least 1 krone!'));
 		}
 		
-		include_once "../inc/phpMailer/class.phpmailer.php";
+		require_once $_SERVER['DOCUMENT_ROOT'].'/inc/phpMailer/class.phpmailer.php';
 		
 		$emailBody = '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml"><head><meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
@@ -440,7 +439,7 @@ Tel. %s</p>'),
 		$mail->AddReplyTo($faktura['department'], $GLOBALS['_config']['site_name']);
 		$mail->From       = $faktura['department'];
 		$mail->FromName   = $GLOBALS['_config']['site_name'];
-		$mail->Subject    = 'Online betaling til '.$GLOBALS['_config']['site_name'];
+		$mail->Subject    = _('Online payment for ').$GLOBALS['_config']['site_name'];
 		$mail->MsgHTML($emailBody, $_SERVER['DOCUMENT_ROOT']);
 		
 		if(empty($faktura['navn']))
@@ -448,8 +447,7 @@ Tel. %s</p>'),
 		
 		$mail->AddAddress($faktura['email'], $faktura['navn']);
 		if(!$mail->Send()) {
-			return array('error' => 'Mailen kunde ikke sendes!
-'.$mail->ErrorInfo);
+			return array('error' => _('Unable to sendt e-mail!')."\n".$mail->ErrorInfo);
 		}
 		$mysqli->query("UPDATE `fakturas` SET `status` = 'locked' WHERE `status` = 'new' && `id` = ".$faktura['id']);
 		$mysqli->query("UPDATE `fakturas` SET `sendt` = 1, `department` = '".$faktura['department']."' WHERE `id` = ".$faktura['id']);
@@ -708,7 +706,6 @@ JSON.parse = JSON.parse || function(jsonsring) { return jsonsring.evalJSON(true)
 <title><?php echo(_('Online Invoice #').$faktura['id']); ?></title>
 <link href="style/mainmenu.css" rel="stylesheet" type="text/css" />
 <link href="style/faktura.css" rel="stylesheet" type="text/css" media="screen" />
-<link href="style/faktura-print.css" rel="stylesheet" type="text/css" media="print" />
 <script type="text/javascript" src="javascript/javascript.js"></script>
 <script type="text/javascript" src="/javascript/sajax.js"></script>
 <script type="text/javascript"><!--
@@ -1096,7 +1093,7 @@ new tcal ({ 'controlid': 'cdate' });
         $pnl = $mysqli->fetch_array("SELECT `packageId` FROM `PNL` WHERE `fakturaid` = ".$faktura['id']);
 		foreach($pnl as $pakke) {
 		?><tr>
-			<td><a target="_blank" href="http://online.pannordic.com/pn_logistics/index_tracking_email.jsp?id=<?php echo($pakke['packageId']); ?>'&amp;Search=search"><?php echo($pakke['packageId']); ?></a></td>
+			<td><a target="_blank" href="http://online.pannordic.com/pn_logistics/index_tracking_email.jsp?id=<?php echo($pakke['packageId']); ?>&amp;Search=search"><?php echo($pakke['packageId']); ?></a></td>
 		</tr><?php
 		}
         $post = $mysqli->fetch_array("SELECT `STREGKODE` FROM `post` WHERE `deleted` = 0 AND `fakturaid` = ".$faktura['id']);
@@ -1413,7 +1410,7 @@ if(count($GLOBALS['_config']['email']) > 1) {
 			for($i=0; $i<$productslines; $i++) {
 				?><tr>
 				<td class="tal"><?php echo($faktura['quantities'][$i]); ?></td>
-				<td><?php echo($faktura['products'][$i]); ?></td>
+				<td><?php echo(htmlspecialchars_decode($faktura['products'][$i])); ?></td>
 				<td class="tal"><?php echo(number_format($faktura['values'][$i], 2, ',', '')); ?></td>
 				<td class="tal"><?php echo(number_format($faktura['values'][$i]*$faktura['quantities'][$i], 2, ',', '')); ?></td>
 			</tr><?php
