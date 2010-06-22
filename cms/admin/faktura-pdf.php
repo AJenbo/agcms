@@ -194,7 +194,7 @@ foreach($faktura['values'] as $i => $value) {
 	$netto += $value*$faktura['quantities'][$i];
 
 	$pdf->Cell( 24, 6, $faktura['quantities'][$i], 'RL', 0, 'R');
-	$lines = $pdf->MultiCell(106, 6, html_entity_decode($faktura['products'][$i]), 'RL', '0', 0, 0, '', '', true, 0, false, true, 0);
+	$lines = $pdf->MultiCell(106, 6, html_entity_decode(htmlspecialchars_decode($faktura['products'][$i], ENT_QUOTES)), 'RL', '0', 0, 0, '', '', true, 0, false, true, 0);
 //	$pdf->Cell(106, 6, $faktura['products'][$i], 'RL', 0, 'L');
 	$pdf->Cell( 29, 6, number_format($value, 2, ',', ''), 'RL', 0, 'R');
 	$pdf->Cell( 34, 6, number_format($value*$faktura['quantities'][$i], 2, ',', ''), 'RL', 1, 'R');

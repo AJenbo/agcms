@@ -161,7 +161,7 @@ if(!empty($_GET['id']) && @$_GET['checkid'] == getCheckid($_GET['id'])) {
 			for($i=0; $i<$productslines; $i++) {
 				$GLOBALS['generatedcontent']['text'] .= '<tr>
 					<td class="tal">'.$faktura['quantities'][$i].'</td>
-					<td>'.$faktura['products'][$i].'</td>
+					<td>'.htmlspecialchars_decode($faktura['products'][$i]).'</td>
 					<td class="tal">'.number_format($faktura['values'][$i], 2, ',', '').'</td>
 					<td class="tal">'.number_format($faktura['values'][$i]*$faktura['quantities'][$i], 2, ',', '').'</td>
 				</tr>';
@@ -1023,7 +1023,7 @@ Remember to \'expedite\' the payment when the product is sent (The payment is fi
 				
 				$emailbody_tablerows = '';
 				for($i=0; $i<$productslines; $i++) {
-					$emailbody_tablerows .= '<tr><td class="tal">'.$faktura['quantities'][$i].'</td><td>'.$faktura['products'][$i].'</td><td class="tal">'.number_format($faktura['values'][$i], 2, ',', '').'</td><td class="tal">'.number_format($faktura['values'][$i]*$faktura['quantities'][$i], 2, ',', '').'</td></tr>';
+					$emailbody_tablerows .= '<tr><td class="tal">'.$faktura['quantities'][$i].'</td><td>'.htmlspecialchars_decode($faktura['products'][$i]).'</td><td class="tal">'.number_format($faktura['values'][$i], 2, ',', '').'</td><td class="tal">'.number_format($faktura['values'][$i]*$faktura['quantities'][$i], 2, ',', '').'</td></tr>';
 				}
 				
 				$emailbody_nore = '';
@@ -1119,122 +1119,6 @@ Tel. %s<br />
 					$mysqli->query("INSERT INTO `emails` (`subject`, `from`, `to`, `body`, `date`) VALUES ('".'Ordre '.$faktura['id'].' - '._('Payment complete')."', '".$GLOBALS['_config']['site_name']."<".$faktura['department'].">', '".$GLOBALS['_config']['site_name']."<".$faktura['email'].">', '".$emailbody."', NOW());");
 				}
 				//Mail to customer end
-				
-				
-				//Mail to Ole start
-				/*
-				if($faktura['department'] != 'mail@huntershouse.dk') {
-					$emailbody = '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><meta http-equiv="Content-Type" content="text/html; charset=utf-8" /><title>';
-					$emailbody .= sprintf(_('Online Invoice #%s : Payment completed'), $GLOBALS['_config']['pbsfix'].$faktura['id']);
-					$emailbody .= '</title><style type="text/css">#faktura td { border:1px #000 solid; border-collapse:collapse; padding:2px; }</style></head><body>';
-
-					$productslines = max(count($faktura['quantities']), count($faktura['products']), count($faktura['values']));
-					
-					$netto = 0;
-					for($i=0;$i<$productslines;$i++) {
-						$netto += $faktura['values'][$i]*$faktura['quantities'][$i];
-					}
-					
-					$emailbody_tablerows = '';
-					for($i=0; $i<$productslines; $i++) {
-						$emailbody_tablerows .= '<tr><td class="tal">'.$faktura['quantities'][$i].'</td><td>'.$faktura['products'][$i].'</td><td class="tal">'.number_format($faktura['values'][$i], 2, ',', '').'</td><td class="tal">'.number_format($faktura['values'][$i]*$faktura['quantities'][$i], 2, ',', '').'</td></tr>';
-					}
-					
-					$emailbody_nore = '';
-					if($faktura['note']) {
-						$emailbody_nore = '<br /><strong>'._('Note:').'</strong><br /><p class="note">';
-						$emailbody .= nl2br(htmlspecialchars($faktura['note'])).'</p>';
-					}
-
-					switch($faktura['cardtype']) {
-					case 'DANKORT':
-						$cardtype .= _('Dankort');
-					break;
-					case 'MASTERCARD':
-						$cardtype .= _('MasterCard');
-					break;
-					case 'AMEX':
-						$cardtype .= _('American Express');
-					break;
-					case 'VISA':
-						$cardtype .= _('VISA');
-					break;
-					default:
-						$cardtype .= $faktura['cardtype'];
-					break;
-					}
-
-					$emailbody .= sprintf(_('<p>The %s, %s approved the online Invoice #%s, which was created by %s, using a %s.<br />
-The order was as following:</p>
-<table id="faktura" cellspacing="0"><thead><tr><td class="td1">Quantity</td><td>Title</td><td class="td3 tal">unit price</td><td class="td4 tal">Total</td></tr></thead><tfoot>
-<tr style="height:auto;min-height:auto;max-height:auto;"><td>&nbsp;</td><td>&nbsp;</td><td class="tal">Net Amount</td><td class="tal">%s</td></tr>
-<tr><td>&nbsp;</td><td>&nbsp;</td><td class="tal">Freight</td><td class="tal">%s</td></tr>
-<tr><td>&nbsp;</td><td style="text-align:right" class="tal">%d%%</td><td class="tal">VAT Amount</td><td class="tal">%s</td></tr>
-<tr class="border"><td colspan="2">All figures are in DKK</td><td style="text-align:center; font-weight:bold;">TO PAY</td><td class="tal"><big>%s</big></td></tr></tfoot>
-<tbody>%s</tbody></table>%s
-<p>Sincerely,</p>
-
-<p>The computer</p>'),
-						$faktura['paydate'],
-						$faktura['navn'],
-						$GLOBALS['_config']['pbsfix'].$faktura['id'],
-						$faktura['clerk'],
-						$cardtype,
-						number_format($netto, 2, ',', ''),
-						number_format($faktura['fragt'], 2, ',', ''),
-						$faktura['momssats']*100,
-						number_format($netto*$faktura['momssats'], 2, ',', ''),
-						number_format($faktura['amount'], 2, ',', ''),
-						$emailbody_tablerows,
-						$emailbody_nore
-					);
-					
-					$emailbody .= '</body></html>';
-					
-					require_once "inc/phpMailer/class.phpmailer.php";
-					
-					$mail             = new PHPMailer();
-					$mail->SetLanguage('dk');
-					$mail->IsSMTP();
-					if($GLOBALS['_config']['emailpassword'] !== false) {
-						$mail->SMTPAuth   = true; // enable SMTP authentication
-						$mail->Username   = $GLOBALS['_config']['email'][0];
-						$mail->Password   = $GLOBALS['_config']['emailpassword'];
-					} else {
-						$mail->SMTPAuth   = false;
-					}
-					$mail->Host       = $GLOBALS['_config']['smtp'];      // sets the SMTP server
-					$mail->Port       = $GLOBALS['_config']['smtpport'];              //  password
-					$mail->CharSet    = 'utf-8';
-					if(!validemail($faktura['department'])) {
-						$faktura['department'] = $GLOBALS['_config']['email'][0];
-					}
-					$mail->AddReplyTo($faktura['department'], $GLOBALS['_config']['site_name']);
-					$mail->From       = $faktura['department'];
-					$mail->FromName   = $GLOBALS['_config']['site_name'];
-					$mail->Subject    = sprintf(_('Online Invoice #%s : Payment completed'), $GLOBALS['_config']['pbsfix'].$faktura['id']);
-					$mail->MsgHTML($emailbody, $_SERVER['DOCUMENT_ROOT']);
-					$mail->AddAddress('mail@huntershouse.dk', 'Hunters House A/S');
-					if($mail->Send()) {
-					
-						//Upload email to the sent folder via imap
-						if($GLOBALS['_config']['imap']) {
-							require_once $_SERVER['DOCUMENT_ROOT'].'/inc/imap.inc.php';
-							$imap = new IMAPMAIL;
-							$imap->open($GLOBALS['_config']['imap'], $GLOBALS['_config']['imapport']);
-							$emailnr = array_search($faktura['department'], $GLOBALS['_config']['email']);
-							$imap->login($faktura['department'], $GLOBALS['_config']['emailpasswords'][$emailnr ? $emailnr : 0]);
-							$imap->append_mail($GLOBALS['_config']['emailsent'], $mail->CreateHeader().$mail->CreateBody(), '\Seen');
-							$imap->close();
-						}
-						
-					} else {
-					//TODO secure this against injects and <; in the email and name
-						$mysqli->query("INSERT INTO `emails` (`subject`, `from`, `to`, `body`, `date`) VALUES ('".'Online faktura #'.$GLOBALS['_config']['pbsfix'].$faktura['id'].' : '._('Payment complete')."', '".$GLOBALS['_config']['site_name']."<".$faktura['department'].">', 'Hunters House A/S<mail@huntershouse.dk>', '".$emailbody."', NOW());");
-					}
-				}
-				//Mail to Ole end
-				*/
 			break;
 			case 1:
 				$GLOBALS['generatedcontent']['text'] = _('Denied/interrupted. The payment was denied or interrupted.');
@@ -1295,7 +1179,7 @@ The order was as following:</p>
 		
 		$emailbody_tablerows = '';
 		for($i=0; $i<$productslines; $i++) {
-			$emailbody_tablerows .= '<tr><td class="tal">'.$faktura['quantities'][$i].'</td><td>'.$faktura['products'][$i].'</td><td class="tal">'.number_format($faktura['values'][$i], 2, ',', '').'</td><td class="tal">'.number_format($faktura['values'][$i]*$faktura['quantities'][$i], 2, ',', '').'</td></tr>';
+			$emailbody_tablerows .= '<tr><td class="tal">'.$faktura['quantities'][$i].'</td><td>'.htmlspecialchars_decode($faktura['products'][$i]).'</td><td class="tal">'.number_format($faktura['values'][$i], 2, ',', '').'</td><td class="tal">'.number_format($faktura['values'][$i]*$faktura['quantities'][$i], 2, ',', '').'</td></tr>';
 		}
 		
 		//TODO make this a gettext
