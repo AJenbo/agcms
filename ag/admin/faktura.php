@@ -280,7 +280,6 @@ if($faktura['id']) {
 	}
 }
 
-
 function getCheckid($id) {
 	return substr(md5($id.$GLOBALS['_config']['pbspassword']), 3, 5);
 }
@@ -1423,7 +1422,7 @@ if(count($GLOBALS['_config']['email']) > 1) {
 			for($i=0; $i<$productslines; $i++) {
 				?><tr>
 				<td class="tal"><?php echo($faktura['quantities'][$i]); ?></td>
-				<td><?php echo($faktura['products'][$i]); ?></td>
+				<td><?php echo(htmlspecialchars_decode($faktura['products'][$i])); ?></td>
 				<td class="tal"><?php echo(number_format($faktura['values'][$i], 2, ',', '')); ?></td>
 				<td class="tal"><?php echo(number_format($faktura['values'][$i]*$faktura['quantities'][$i], 2, ',', '')); ?></td>
 			</tr><?php
