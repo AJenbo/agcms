@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2010-06-28 17:00+0200\n"
-"PO-Revision-Date: 2010-06-28 17:20+0100\n"
+"PO-Revision-Date: 2010-06-28 17:28+0100\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -374,7 +374,7 @@ msgstr "Lev. adresse:"
 #: index.php:670
 #, php-format
 msgid "Click <a href=\"%s\">here</a> to expedite the order."
-msgstr "Tryk <a href=\"%s\">her</a> for at ekspedere ordren."
+msgstr ""
 
 #: index.php:673
 msgid "email:"
