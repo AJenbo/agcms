@@ -34,6 +34,11 @@ $sajax_request_type = 'POST';
 
 $faktura = $mysqli->fetch_one("SELECT *, UNIX_TIMESTAMP(`date`) AS `date`, UNIX_TIMESTAMP(`paydate`) AS `paydate` FROM `fakturas` WHERE `id` = ".$_GET['id']);
 
+if(empty($faktura['clerk'])) {
+	$mysqli->query("UPDATE `fakturas` SET `clerk` = '".addcslashes($_SESSION['_user']['fullname'], '`\\')."' WHERE `id` = ".$faktura['id']);
+	$faktura['clerk'] = $_SESSION['_user']['fullname'];
+}
+
 $faktura['quantities'] = explode('<', $faktura['quantities']);
 $faktura['products'] = explode('<', $faktura['products']);
 $faktura['values'] = explode('<', $faktura['values']);
@@ -1296,7 +1301,7 @@ if(count($GLOBALS['_config']['email']) > 1) {
 				<?php } else { echo($faktura['postname']); } ?></td>
 		</tr>
 		<tr class="altpost"<?php if(!$faktura['altpost']) echo(' style="display:none;"'); ?>>
-			<td><?php echo(_('Name:')); ?></td>
+			<td><?php echo(_('Attn.:')); ?></td>
 			<td><?php if($faktura['status'] == 'new') { ?>
 				<input name="postatt" id="postatt" value="<?php echo($faktura['postatt']); ?>" />
 				<?php } else { echo($faktura['postatt']); } ?></td>
