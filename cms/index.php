@@ -1,5 +1,5 @@
 <?php
-/*
+//*
 ini_set('display_errors', 1);
 error_reporting(-1);
 /**/
@@ -10,10 +10,13 @@ bindtextdomain("agcms", $_SERVER['DOCUMENT_ROOT'].'/theme/locale');
 bind_textdomain_codeset("agcms", 'UTF-8');
 textdomain("agcms");
 
+session_start();
+
 //ini_set('zlib.output_compression', 1);
 
 require_once 'inc/header.php'; 
-//include the file   
+/*
+//include the file
 require_once("inc/firephp.class.php");
 //create the object
 if(!isset($firephp))
@@ -150,13 +153,13 @@ function search_menu($q, $wherekat) {
 			$maerke = $mysqli->fetch_array("SELECT id, navn FROM maerke WHERE navn LIKE '%".$simpleq."%' ORDER BY navn");
 		}
 	}
-	if($maerke)
+	if(@$maerke)
 	foreach($maerke as $value) {
 		$GLOBALS['generatedcontent']['search_menu'][] = array('id' => 0,
 			'name' => htmlspecialchars($value['navn']),
 			'link' => '/mærke'.$value['id'].'-'.clear_file_name($value['navn']).'/');
 	}
-	if($kat)
+	if(@$kat)
 	foreach($kat as $value) {
 		if(skriv($value['id'])) {
 			$GLOBALS['generatedcontent']['search_menu'][] = array('id' => $value['id'],
@@ -472,12 +475,12 @@ if(@$_GET['sog'] || @$GLOBALS['side']['inactive']) {
 
 	$limit =  ' LIMIT '.$start.' , '.$num;
 	require_once 'inc/liste.php';
-	search_liste($_GET['q'], $wheresider);
+	search_liste(@$_GET['q'], $wheresider);
 
 	$wherekat = '';
-	if($_GET['sogikke'])
+	if(@$_GET['sogikke'])
 		$wherekat .= ' AND !MATCH (navn) AGAINST(\''.$_GET['sogikke'].'\') > 0';
-	search_menu($_GET['q'], $wherekat);
+	search_menu(@$_GET['q'], $wherekat);
 	
 	if(!@$GLOBALS['generatedcontent']['list'] && !@$GLOBALS['generatedcontent']['search_menu']) {
 		header('HTTP/1.1 404 Not Found');

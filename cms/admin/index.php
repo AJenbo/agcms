@@ -427,10 +427,10 @@ function listSavetRow($list_id, $cells, $link, $row_id) {
 	global $mysqli;
 	
 	if(!$row_id) {
-		$mysqli->query('INSERT INTO `list_rows`(`list_id`, `cells`, `link`) VALUES ('.$list_id.', \''.$cells.'\', \''.$link.'\')');
+		$mysqli->query('INSERT INTO `list_rows`(`list_id`, `cells`, `link`) VALUES ('.$list_id.', \''.addcslashes($cells, "'\\").'\', \''.$link.'\')');
 		$row_id = $mysqli->insert_id;
 	} else {
-		$mysqli->query('UPDATE `list_rows` SET `list_id` = \''.$list_id.'\', `cells` = \''.$cells.'\', `link` = \''.$link.'\' WHERE id = '.$row_id);
+		$mysqli->query('UPDATE `list_rows` SET `list_id` = \''.$list_id.'\', `cells` = \''.addcslashes($cells, "'\\").'\', `link` = \''.$link.'\' WHERE id = '.$row_id);
 	}
 
 	return array('listid' => $list_id, 'rowid' => $row_id);

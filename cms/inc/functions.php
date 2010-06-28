@@ -187,6 +187,8 @@ function trim_array($totrim) {
 //return html for a sorted table
 function get_table($listid, $bycell, $current_kat) {
 	global $mysqli;
+				
+	$html = '';
 	
 	getUpdateTime('lists');
 	$lists = $mysqli->fetch_array('SELECT * FROM `lists` WHERE id = '.$listid);
@@ -222,8 +224,6 @@ function get_table($listid, $bycell, $current_kat) {
 			$rows = array_listsort($rows, 'id', $bycell, NULL, $lists[0]['sorts'][$bycell]);
 		
 		//unset temp holder for rows
-				
-		$html = '';
 		
 		$html .= '<table class="tabel">';
 		if($lists[0]['title']) {
@@ -272,28 +272,36 @@ function get_table($listid, $bycell, $current_kat) {
 						$html .= '<td style="text-align:right;" class="Pris">';
 						if($row['link'])
 							$html .= $row['link'];
-						if(!empty($row[$key]))
+						if(is_numeric(@$row[$key]))
 							$html .= str_replace(',00', ',-', number_format($row[$key], 2, ',', '.'));
+						else
+							$html .= @$row[$key];
 						if($row['link'])
 							$html .= '</a>';
 						$html .= '</td>';
+						$GLOBALS['generatedcontent']['has_product_table'] = true;
 						break;
 					case 3:
 						//new price
 						$html .= '<td style="text-align:right;" class="NyPris">';
 						if($row['link'])
 							$html .= $row['link'];
-						$html .= str_replace(',00', ',-', number_format($row[$key], 2, ',', '.'));
+						if(is_numeric(@$row[$key]))
+							$html .= str_replace(',00', ',-', number_format($row[$key], 2, ',', '.'));
+						else
+							$html .= @$row[$key];
 						if($row['link'])
 							$html .= '</a>';
 						$html .= '</td>';
+						$GLOBALS['generatedcontent']['has_product_table'] = true;
 						break;
 					case 4:
 						//pold price
 						$html .= '<td style="text-align:right;" class="XPris">';
 						if($row['link'])
 							$html .= $row['link'];
-						$html .= str_replace(',00', ',-', number_format($row[$key], 2, ',', '.'));
+						if(is_numeric(@$row[$key]))
+							$html .= str_replace(',00', ',-', number_format($row[$key], 2, ',', '.'));
 						if($row['link'])
 							$html .= '</a>';
 						$html .= '</td>';
@@ -316,6 +324,7 @@ function get_table($listid, $bycell, $current_kat) {
 						
 				}
 			}
+			$html .= '<td class="addtocart"><a href="/bestilling/?add_list_item='.$row['id'].'"><img src="/theme/images/cart_add.png" title="'._('Add to shopping cart').'" alt="+" /></a></td>';
 			$html .= '</tr>';
 		}
 		
