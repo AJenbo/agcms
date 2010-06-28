@@ -239,10 +239,15 @@ function calcPricePart(product) {
 			}
 		}
 	}
-		
+
+	//tax
 	if(isEU($('country').value)) {
 		price = price*1.25;
 	}
+
+	//Fule
+	price = price*1.075;
+	
 	
 	return price;
 }

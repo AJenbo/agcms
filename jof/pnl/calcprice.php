@@ -243,6 +243,9 @@ function calcPricePart($country, $product, $kg, $insurance, $l, $w, $h) {
 	if(isEU($country)) {
 		$price = $price*1.25;
 	}
+
+	//Fule
+	$price = $price*1.075;
 	
 	return $price;
 }

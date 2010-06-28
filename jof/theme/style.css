@@ -296,9 +296,7 @@ border-top:2px #000000 solid;
 #faktura .td1 {
 width:1%;
 }
-#faktura .td3 {
-width:1%;
-}
-#faktura .td4 {
-width:1%;
+.addtocart {
+width:16px;
+text-align:center;
 }

@@ -40,7 +40,7 @@ function calc() {
 	if((height != 0 && width != 0 && length != 0) || weight != 0)
 		weight = Math.max(5, weight);
 
-	var pakkeprisv = pakkepris(height, width, length, weight, getRadio('optRecipType'), $('ss1').checked, $('ss46').checked, parseFloat($('ss5amount').value.replace(/,/,'.')), false);
+	var pakkeprisv = pakkepris(height, width, length, weight, getRadio('optRecipType'), $('ss1').checked, $('ss46').checked, parseFloat($('ss5amount').value.replace(/,/,'.')), $('ss2').checked);
 
 	if(!pakkeprisv)
 		return false;

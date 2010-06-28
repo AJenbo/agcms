@@ -164,11 +164,20 @@ if($GLOBALS['generatedcontent']['contenttype'] == 'front') {
 
 	echo($GLOBALS['generatedcontent']['text']);
 
+if(
+	(
+		//If it has a value
+		$GLOBALS['generatedcontent']['price']['now'] > 0 || $GLOBALS['generatedcontent']['price']['befor'] > 0
+	) && (
+		//if it is not a from price that has a table
+		!@$GLOBALS['generatedcontent']['has_product_table']
+	)
+) {
 	?><p style="text-align:center"><?php
 	echo_pris($GLOBALS['generatedcontent']['price']['now'], $GLOBALS['generatedcontent']['price']['befor'], $GLOBALS['generatedcontent']['price']['from'], $GLOBALS['generatedcontent']['price']['market']);
 	?><br />
 	<img src="/images/web/nocolors.gif" alt="" width="196" height="5" /><br />
-	<span class="web"><a href="mailto:mail@jagtogfiskerimagasinet.dk?subject=Bestilling" class="Pris" style="color:#000;">Bestil via e-mail</a></span> <span class="Pris, print">mail@jagtogfiskerimagasinet.dk</span></p>
+	<span class="web"><a href="/bestilling/?add=<?php echo($GLOBALS['side']['id']); ?>" class="Pris" style="color:#000;">Tilføj til indkøbsliste</a></span><?php } ?><span class="Pris, print">mail@jagtogfiskerimagasinet.dk</span></p>
     </div><?php
   
 	if(@$GLOBALS['generatedcontent']['accessories']) {
@@ -282,6 +291,10 @@ if($GLOBALS['generatedcontent']['contenttype'] == 'front') {
 
 ?>><a name="top"></a>
 	<?php
+
+if(@$_SESSION['faktura']) {
+	?><a style="display:inline;margin-left:5px;" href="/bestilling/"><img alt="" src="/theme/images/cart.png" /> Indkøbsliste</a><br /><br /><?php
+}
 
 if($GLOBALS['generatedcontent']['contenttype'] == 'front') {
 	echo($GLOBALS['generatedcontent']['text']);
