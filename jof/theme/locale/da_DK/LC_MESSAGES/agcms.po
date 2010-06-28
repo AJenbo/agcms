@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2010-06-22 14:51+0200\n"
-"PO-Revision-Date: 2010-06-22 14:57+0100\n"
+"POT-Creation-Date: 2010-06-28 17:00+0200\n"
+"PO-Revision-Date: 2010-06-28 17:21+0100\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -17,50 +17,50 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 "X-Poedit-Language: Danish\n"
 
-#: index.php:414
+#: index.php:417
 msgid "Page could not be found. Try searching for a similar page."
 msgstr "Siden kunne ikke findes. Prøv eventuelt at søge efter en lignende side."
 
-#: index.php:416
+#: index.php:419
 msgid "Contains"
 msgstr "Indeholder"
 
-#: index.php:420
+#: index.php:423
 #: explorer.php:698
-#: fakturas.php:281
+#: fakturas.php:282
 #: fakturasvalidate.php:151
 #: mainmenu.php:65
 msgid "Search"
 msgstr "Søg"
 
-#: index.php:420
+#: index.php:423
 msgid "Part No."
 msgstr "Varenummer"
 
-#: index.php:420
+#: index.php:423
 msgid "Without the words"
 msgstr "Uden ordene"
 
-#: index.php:420
+#: index.php:423
 msgid "Enhanced:"
 msgstr "Udvidet:"
 
-#: index.php:420
+#: index.php:423
 msgid "Min price"
 msgstr "Min pris"
 
-#: index.php:420
+#: index.php:423
 msgid "Max price"
 msgstr "Max pris"
 
-#: index.php:420
+#: index.php:423
 msgid "Brand:"
 msgstr "Mærke:"
 
-#: index.php:420
-#: fakturas.php:153
-#: fakturas.php:190
-#: fakturas.php:201
+#: index.php:423
+#: fakturas.php:154
+#: fakturas.php:191
+#: fakturas.php:202
 msgid "All"
 msgstr "Alle"
 
@@ -75,6 +75,7 @@ msgid_plural "%d e-mails was sent."
 msgstr[0] "%d e-Mail blev sendt."
 msgstr[1] "%d e-Mails blev sendt."
 
+#: index.php:171
 #: index.php:87
 #: index.php:89
 #: index.php:1284
@@ -82,81 +83,121 @@ msgstr[1] "%d e-Mails blev sendt."
 msgid "Payment"
 msgstr "Betaling"
 
-#: index.php:120
-#: index.php:121
-#: index.php:122
-msgid "Order #"
-msgstr "Ordre #"
+#: index.php:203
+#: index.php:204
+#: index.php:205
+#: index.php:730
+#: index.php:731
+msgid "Place order"
+msgstr "Indsend bestilling"
 
+#: index.php:211
+#: index.php:609
 #: index.php:128
 #: faktura-pdf.php:175
-#: faktura.php:1352
+#: faktura.php:1357
 msgid "Quantity"
 msgstr "Antal"
 
+#: index.php:212
+#: index.php:610
 #: index.php:129
 #: faktura-pdf.php:176
-#: faktura.php:1353
+#: faktura.php:1358
 msgid "Title"
 msgstr "Benævnelse"
 
+#: index.php:213
+#: index.php:611
 #: index.php:130
 #: faktura-pdf.php:177
-#: faktura.php:1354
+#: faktura.php:1359
 msgid "unit price"
 msgstr "á pris"
 
+#: index.php:214
+#: index.php:221
+#: index.php:612
 #: index.php:131
 #: faktura-pdf.php:178
-#: faktura.php:1355
+#: faktura.php:1360
 msgid "Total"
 msgstr "Total"
 
-#: index.php:138
-#: faktura.php:1362
-msgid "Net Amount"
-msgstr "Nettobeløb"
+#: index.php:249
+msgid "* The price cannot be determined automatically, please make sure to describe the exact type in the note field."
+msgstr "* Prisen kan ikke automatisk fastsættes, beskriv venligst den eksakte type i notat feltet for neden."
 
-#: index.php:145
-#: faktura.php:1376
-msgid "Freight"
-msgstr "Fragt"
+#: index.php:253
+msgid "Prefered payment method:"
+msgstr "Foretrukne betalingsmetode:"
 
-#: index.php:151
-#: faktura-pdf.php:219
-#: faktura.php:1389
-msgid "VAT Amount"
-msgstr "Heraf moms"
+#: index.php:257
+msgid "Credit Card"
+msgstr "Betalingskort"
 
-#: index.php:155
-msgid "All figures are in DKK"
-msgstr "Alle beløb er i DKK"
+#: index.php:261
+msgid "Bank transaction"
+msgstr "Bank overførsel"
 
-#: index.php:156
-#: faktura-pdf.php:231
-#: faktura.php:1394
-msgid "TO PAY"
-msgstr "AT BETALE"
+#: index.php:265
+msgid "Mail order"
+msgstr "Post opkrævning"
 
+#: index.php:269
+#: fakturas.php:210
+#: fakturas.php:246
+msgid "Cash"
+msgstr "Kontant"
+
+#: index.php:274
+msgid "Delevery:"
+msgstr "Levering:"
+
+#: index.php:278
+msgid "Mail"
+msgstr "Post"
+
+#: index.php:282
+msgid "Mail express"
+msgstr "Ekspres post"
+
+#: index.php:286
+msgid "Pickup in store"
+msgstr "Afhent i butikken"
+
+#: index.php:287
+msgid "The excact shipping cost will be calculcated as the goods are packed."
+msgstr "Den nøjagtige forsendelses pris vil blive udregnet når varende pakkes."
+
+#: index.php:292
+#: index.php:627
 #: index.php:173
 #: index.php:1031
 #: faktura-pdf.php:255
-#: faktura.php:1421
+#: faktura.php:1426
 msgid "Note:"
 msgstr "Notat:"
 
+#: index.php:294
 #: index.php:176
 #: index.php:1299
 msgid "Continue"
 msgstr "Fortsæt"
 
+#: index.php:362
+#: index.php:363
+#: index.php:364
 #: index.php:245
 #: index.php:246
 #: index.php:247
-#: fakturas.php:224
+#: fakturas.php:225
 msgid "Recipient"
 msgstr "Modtager"
 
+#: index.php:376
+#: index.php:455
+#: index.php:675
 #: index.php:259
 #: index.php:338
 #: index.php:981
@@ -164,25 +205,31 @@ msgstr "Modtager"
 msgid "Phone:"
 msgstr "Telefon:"
 
+#: index.php:378
+#: index.php:383
+#: index.php:457
 #: index.php:261
 #: index.php:266
 #: index.php:340
 msgid "Get address"
 msgstr "Hent adresse"
 
+#: index.php:381
 #: index.php:264
 #: index.php:1015
 msgid "Mobile:"
 msgstr "Mobil:"
 
+#: index.php:386
+#: index.php:394
+#: index.php:462
 #: index.php:269
 #: index.php:277
 #: index.php:345
 #: index.php:976
 #: explorer.php:720
-#: faktura.php:1236
-#: faktura.php:1293
-#: faktura.php:1299
+#: faktura.php:1241
+#: faktura.php:1298
 #: index.php:77
 #: index.php:525
 #: index.php:585
@@ -192,74 +239,200 @@ msgstr "Mobil:"
 msgid "Name:"
 msgstr "Navn:"
 
+#: index.php:399
+#: index.php:479
+#: index.php:630
 #: index.php:282
 #: index.php:362
 #: index.php:993
-#: faktura.php:1248
-#: faktura.php:1305
+#: faktura.php:1253
+#: faktura.php:1310
 #: index.php:587
 msgid "Address:"
 msgstr "Adresse:"
 
+#: index.php:407
+#: index.php:489
 #: index.php:290
 #: index.php:372
 #: index.php:999
-#: faktura.php:1254
-#: faktura.php:1317
+#: faktura.php:1259
+#: faktura.php:1322
 msgid "Postbox:"
 msgstr "Postboks:"
 
+#: index.php:412
+#: index.php:496
 #: index.php:295
 #: index.php:379
 #: index.php:1005
-#: faktura.php:1260
-#: faktura.php:1323
+#: faktura.php:1265
+#: faktura.php:1328
 msgid "Zipcode:"
 msgstr "Postnr.:"
 
+#: index.php:414
+#: index.php:498
 #: index.php:297
 #: index.php:381
 #: index.php:1008
-#: faktura.php:1263
-#: faktura.php:1265
-#: faktura.php:1326
-#: faktura.php:1328
+#: faktura.php:1268
+#: faktura.php:1270
+#: faktura.php:1331
+#: faktura.php:1333
 #: index.php:590
 msgid "City:"
 msgstr "By:"
 
+#: index.php:424
+#: index.php:510
 #: index.php:307
 #: index.php:393
 #: index.php:1011
-#: faktura.php:1268
-#: faktura.php:1331
+#: faktura.php:1273
+#: faktura.php:1336
 #: index.php:588
 msgid "Country:"
 msgstr "Land:"
 
+#: index.php:440
 #: index.php:323
-#: faktura.php:1230
+#: faktura.php:1235
 #: index.php:586
 #: index.php:725
 msgid "E-mail:"
 msgstr "Email:"
 
+#: index.php:450
 #: index.php:333
-#: faktura.php:1283
+#: faktura.php:1288
 msgid "Other delivery address"
 msgstr "Anden leveringsadresse"
 
+#: index.php:472
 #: index.php:355
 #: index.php:987
 #: faktura-pdf.php:112
 #: faktura-pdf.php:131
-#: faktura.php:1242
+#: faktura.php:1247
+#: faktura.php:1304
 msgid "Attn.:"
 msgstr "Att:"
 
+#: index.php:527
 #: index.php:410
 msgid "Please send me your newsletter."
 msgstr "Ja tak! Send mig jeres nyhedsbrev."
+
+#: index.php:529
+msgid "Send order"
+msgstr "Send bestilling"
+
+#: index.php:537
+msgid "I would like to pay via credit card."
+msgstr "Jeg ønsker at betale med betalingskort."
+
+#: index.php:539
+msgid "I would like to pay via bank transaction."
+msgstr "Jeg ønsker at betale med bank overførsel."
+
+#: index.php:541
+msgid "I would like to pay via mail order."
+msgstr "Jeg ønsker at betale med postopkrævning."
+
+#: index.php:543
+msgid "I would like to pay via cash."
+msgstr "Jeg ønsker at betale med kontanter."
+
+#: index.php:546
+msgid "I will pick up the goods in your shop."
+msgstr "Jeg henter varende i butikken."
+
+#: index.php:548
+msgid "Please send the goods by mail."
+msgstr "Send venligts varende med posten."
+
+#: index.php:550
+msgid "Please send the order to by mail express."
+msgstr "Send venligts varende med express post."
+
+#: index.php:594
+#: index.php:701
+msgid "Online order #"
+msgstr "Online bestilling #"
+
+#: index.php:603
+msgid " has placed an order for the following:"
+msgstr " har lavet en bestilling på følgende:"
+
+#: index.php:649
+#: index.php:975
+#: faktura-pdf.php:147
+msgid "Delivery address:"
+msgstr "Lev. adresse:"
+
+#: index.php:670
+#, php-format
+msgid "Click <a href=\"%s\">here</a> to expedite the order."
+msgstr "Tryk <a href=\"%s\">her</a> for at ekspedere ordren."
+
+#: index.php:673
+msgid "email:"
+msgstr "Email:"
+
+#: index.php:677
+msgid "Mobil:"
+msgstr "Mobil:"
+
+#: index.php:678
+#: index.php:1239
+msgid "Sincerely the computer"
+msgstr "Mvh Computeren"
+
+#: index.php:723
+#: index.php:724
+msgid "Order placed"
+msgstr "Bestilling sendt"
+
+#: index.php:725
+msgid "Thank you for your order, you will recive an email with instructions on how to perform the payment as soon as we have validated that all goods are in stock."
+msgstr "Tak for din bestilling, De vil modtage en email med informationer om hvor dan De betaler så snart vi har kontrolleret at alle vare er på lager."
+
+#: index.php:732
+msgid "Ther is no content in the basket!"
+msgstr "Der er intet indhold på listen!"
+
+#: index.php:120
+#: index.php:121
+#: index.php:122
+msgid "Order #"
+msgstr "Ordre #"
+
+#: index.php:138
+#: faktura.php:1367
+msgid "Net Amount"
+msgstr "Nettobeløb"
+
+#: index.php:145
+#: faktura.php:1381
+msgid "Freight"
+msgstr "Fragt"
+
+#: index.php:151
+#: faktura-pdf.php:219
+#: faktura.php:1394
+msgid "VAT Amount"
+msgstr "Heraf moms"
+
+#: index.php:155
+msgid "All figures are in DKK"
+msgstr "Alle beløb er i DKK"
+
+#: index.php:156
+#: faktura-pdf.php:231
+#: faktura.php:1399
+msgid "TO PAY"
+msgstr "AT BETALE"
 
 #: index.php:412
 msgid "Proceed to the terms of trade"
@@ -281,8 +454,8 @@ msgstr "Jeg accepterer hermed handelsbetingelserne"
 #: index.php:534
 #: index.php:535
 #: index.php:536
-#: fakturas.php:210
-#: fakturas.php:247
+#: fakturas.php:211
+#: fakturas.php:248
 msgid "Error"
 msgstr "Fejl"
 
@@ -880,11 +1053,6 @@ msgstr ""
 msgid "Ordre %d - Payment complete"
 msgstr "Ordre %d - Betaling gennemført"
 
-#: index.php:975
-#: faktura-pdf.php:147
-msgid "Delivery address:"
-msgstr "Lev. adresse:"
-
 #: index.php:1040
 #, php-format
 msgid ""
@@ -1016,13 +1184,9 @@ msgid "Online Invoice #%d: does't exist"
 msgstr "Online faktura #%d : eksisterer ikke"
 
 #: index.php:1239
-#: fakturas.php:136
+#: fakturas.php:137
 msgid "Status:"
 msgstr "Status:"
-
-#: index.php:1239
-msgid "Sincerely the computer"
-msgstr "Mvh Computeren"
 
 #: index.php:1291
 msgid "Order No:"
@@ -1932,6 +2096,10 @@ msgstr "Zimbabwe"
 msgid "Åland"
 msgstr "Åland"
 
+#: functions.php:327
+msgid "Add to shopping cart"
+msgstr "Tilføj til indkøbsliste"
+
 #: getaddress.php:78
 msgid "The address could not be found."
 msgstr "Adressen kunne ikke findes."
@@ -2088,23 +2256,23 @@ msgstr "Dato"
 #: faktura-pdf.php:239
 #: faktura-pdf.php:243
 #: faktura-pdf.php:247
-#: faktura.php:1074
-#: faktura.php:1081
-#: faktura.php:1128
-#: faktura.php:1131
-#: faktura.php:1134
-#: faktura.php:1150
-#: faktura.php:1154
+#: faktura.php:1079
+#: faktura.php:1086
+#: faktura.php:1133
+#: faktura.php:1136
+#: faktura.php:1139
+#: faktura.php:1155
+#: faktura.php:1159
 msgid "m/d/Y"
 msgstr "d/m/Y"
 
 #: faktura-pdf.php:158
-#: faktura.php:1201
+#: faktura.php:1206
 msgid "Our ref.:"
 msgstr "Vor ref.:"
 
 #: faktura-pdf.php:159
-#: faktura.php:1207
+#: faktura.php:1212
 msgid "Their ref.:"
 msgstr "Deres ref.:"
 
@@ -2129,19 +2297,19 @@ msgid "In case of payment later than the stated deadline, 2% interest will be ad
 msgstr "Ved senere indbetaling end anførte frist, vil der blive debiteret 2% rente pr. påbegyndt måned."
 
 #: faktura-pdf.php:238
-#: faktura.php:1127
+#: faktura.php:1132
 msgid "Paid online"
 msgstr "Betalt online"
 
 #: faktura-pdf.php:242
-#: faktura.php:1073
-#: faktura.php:1130
+#: faktura.php:1078
+#: faktura.php:1135
 msgid "Paid via giro"
 msgstr "Betalt via giro"
 
 #: faktura-pdf.php:246
-#: faktura.php:1080
-#: faktura.php:1133
+#: faktura.php:1085
+#: faktura.php:1138
 msgid "Paid in cash"
 msgstr "Betalt kontant"
 
@@ -2149,25 +2317,25 @@ msgstr "Betalt kontant"
 msgid "Sincerely,"
 msgstr "Med venlig hilsen"
 
-#: faktura.php:377
-#: faktura.php:484
+#: faktura.php:382
+#: faktura.php:489
 msgid "E-mail address is not valid!"
 msgstr "Email adressen er ikke gyldig!"
 
-#: faktura.php:380
+#: faktura.php:385
 msgid "You have not selected a sender!"
 msgstr "Du har ikke valgt en afsender!"
 
-#: faktura.php:385
+#: faktura.php:390
 msgid "The invoice must be of at at least 1 krone!"
 msgstr "Fakturaen skal være på mindst 1 krone!"
 
-#: faktura.php:392
+#: faktura.php:397
 #, php-format
 msgid "Online payment to %s"
 msgstr "Online betaling til %s"
 
-#: faktura.php:394
+#: faktura.php:399
 #, php-format
 msgid ""
 "<p>Thank you for your order.</p>\n"
@@ -2206,23 +2374,23 @@ msgstr ""
 "%s %s<br />\n"
 "Tlf. %s</p>"
 
-#: faktura.php:442
+#: faktura.php:447
 msgid "Online payment for "
 msgstr "Online betaling til "
 
-#: faktura.php:450
+#: faktura.php:455
 msgid "Unable to sendt e-mail!"
 msgstr "Kan ikke sende e-mail!"
 
-#: faktura.php:480
+#: faktura.php:485
 msgid "You can not send a reminder until the invoice is sent!"
 msgstr "Du kan ikke sende en rykker før fakturaen er sendt!"
 
-#: faktura.php:496
+#: faktura.php:501
 msgid "Electronic Invoice concerning order #"
 msgstr "Elektronisk faktura vedr. ordre #"
 
-#: faktura.php:498
+#: faktura.php:503
 #, php-format
 msgid ""
 "<hr />\n"
@@ -2298,288 +2466,283 @@ msgstr ""
 "Fax: %s<br />\n"
 "<a href=\"mailto:%s\">%s</a></p>"
 
-#: faktura.php:577
+#: faktura.php:582
 msgid "A Reminder was sent to the customer."
 msgstr "En rykker blev sendt til kunden."
 
-#: faktura.php:584
+#: faktura.php:589
 msgid "The e-mail was not saved in the Sent box! (the server did not respond)."
 msgstr "Mailen blev ikke gemt i sendt mappen! (serveren svarede ikke)."
 
-#: faktura.php:588
+#: faktura.php:593
 msgid "The e-mail was not saved in the Sent box! (the code was rejected)."
 msgstr "Mailen blev ikke gemt i sendt mappen! (koden blev afvist)."
 
-#: faktura.php:591
+#: faktura.php:596
 #, php-format
 msgid "The e-mail was not saved in the Sent box! (the folder %s was missing)."
 msgstr "Mailen blev ikke gemt i sendt mappen! (mappen %s manglede)."
 
-#: faktura.php:706
+#: faktura.php:711
 msgid "Online Invoice #"
 msgstr "Online faktura #"
 
-#: faktura.php:752
-#: faktura.php:1406
+#: faktura.php:757
+#: faktura.php:1411
 msgid "Remove Line"
 msgstr "Fjern linje"
 
-#: faktura.php:917
+#: faktura.php:922
 msgid "Are you sure you want to cancel this Invoice?"
 msgstr "Er du sikker på du vil annullere denne faktura?"
 
-#: faktura.php:1109
-#: fakturas.php:136
+#: faktura.php:1114
+#: fakturas.php:137
 msgid "ID:"
 msgstr "Id:"
 
-#: faktura.php:1113
+#: faktura.php:1118
 msgid "eCode:"
 msgstr "eKode:"
 
-#: faktura.php:1119
+#: faktura.php:1124
 msgid "Newly created"
 msgstr "Nyoprettet"
 
-#: faktura.php:1121
+#: faktura.php:1126
 msgid "Is sent to the Customer."
 msgstr "Er sendt til kunden."
 
-#: faktura.php:1123
+#: faktura.php:1128
 msgid "Locked for editing"
 msgstr "Låst for redigering"
 
-#: faktura.php:1125
+#: faktura.php:1130
 msgid "Ready to expedite"
 msgstr "Klar til ekspedering"
 
-#: faktura.php:1136
+#: faktura.php:1141
 msgid "Error during the payment"
 msgstr "Fejl under betalingen"
 
-#: faktura.php:1138
+#: faktura.php:1143
 msgid ", payment was interrupted."
 msgstr ", betalingen er nægted eller afbrudt."
 
-#: faktura.php:1140
-#: fakturas.php:211
-#: fakturas.php:249
+#: faktura.php:1145
+#: fakturas.php:212
+#: fakturas.php:250
 msgid "Canceled"
 msgstr "Annulleret"
 
-#: faktura.php:1142
+#: faktura.php:1147
 msgid "Payment declined"
 msgstr "Betaling afvist"
 
-#: faktura.php:1144
+#: faktura.php:1149
 msgid "Does not exist in the system"
 msgstr "Findes ikke i systemet"
 
-#: faktura.php:1162
+#: faktura.php:1167
 #: fakturas.php:13
 msgid "No one"
 msgstr "Ingen"
 
-#: faktura.php:1216
+#: faktura.php:1221
 msgid "Phone 1:"
 msgstr "Tlf. 1:"
 
-#: faktura.php:1223
+#: faktura.php:1228
 msgid "Phone 2:"
 msgstr "Tlf. 2:"
 
-#: faktura.php:1345
+#: faktura.php:1350
 msgid "Entered amount includes VAT"
 msgstr "Indtastet beløb er med moms"
 
-#: faktura.php:1435
+#: faktura.php:1440
 msgid "Expedite"
 msgstr "Ekspeder"
 
-#: faktura.php:1436
+#: faktura.php:1441
 msgid "Reject"
 msgstr "Afvis"
 
-#: faktura.php:1446
+#: faktura.php:1451
 #: image-edit.php:106
 #: user.php:154
 msgid "Save"
 msgstr "Gem"
 
-#: faktura.php:1448
+#: faktura.php:1453
 msgid "Lock"
 msgstr "Lås"
 
-#: faktura.php:1452
+#: faktura.php:1457
 msgid "Print"
 msgstr "Udskriv"
 
-#: faktura.php:1454
-#: fakturas.php:280
+#: faktura.php:1459
+#: fakturas.php:281
 msgid "Create new"
 msgstr "Opret ny"
 
-#: faktura.php:1455
+#: faktura.php:1460
 msgid "Copy to new"
 msgstr "Kopier til ny"
 
-#: faktura.php:1458
+#: faktura.php:1463
 msgid "Cancel"
 msgstr "Annullér"
 
-#: faktura.php:1469
-#: faktura.php:1471
+#: faktura.php:1474
+#: faktura.php:1476
 msgid "Send to customer"
 msgstr "Send til kunden"
 
-#: faktura.php:1469
-#: faktura.php:1471
+#: faktura.php:1474
+#: faktura.php:1476
 msgid "Send"
 msgstr "Send"
 
-#: faktura.php:1474
+#: faktura.php:1479
 msgid "Send reminder!"
 msgstr "Send rykker!"
 
-#: fakturas.php:69
+#: fakturas.php:70
 msgid "Invoice list"
 msgstr "Faktura liste"
 
-#: fakturas.php:136
+#: fakturas.php:137
 msgid "Year:"
 msgstr "År:"
 
-#: fakturas.php:136
+#: fakturas.php:137
 msgid "Month:"
 msgstr "Måned:"
 
-#: fakturas.php:136
+#: fakturas.php:137
 msgid "Clerk:"
 msgstr "Ekspedient:"
 
-#: fakturas.php:154
+#: fakturas.php:155
 msgid "Jan"
 msgstr "Jan"
 
-#: fakturas.php:155
+#: fakturas.php:156
 msgid "Feb"
 msgstr "Feb"
 
-#: fakturas.php:156
+#: fakturas.php:157
 msgid "Mar"
 msgstr "Mar"
 
-#: fakturas.php:157
+#: fakturas.php:158
 msgid "Apr"
 msgstr "Apr"
 
-#: fakturas.php:158
+#: fakturas.php:159
 msgid "May"
 msgstr "Maj"
 
-#: fakturas.php:159
+#: fakturas.php:160
 msgid "Jun"
 msgstr "Jun"
 
-#: fakturas.php:160
+#: fakturas.php:161
 msgid "Jul"
 msgstr "Jul"
 
-#: fakturas.php:161
+#: fakturas.php:162
 msgid "Aug"
 msgstr "Aug"
 
-#: fakturas.php:162
+#: fakturas.php:163
 msgid "Sep"
 msgstr "Sep"
 
-#: fakturas.php:163
+#: fakturas.php:164
 msgid "Oct"
 msgstr "Okt"
 
-#: fakturas.php:164
+#: fakturas.php:165
 msgid "Nov"
 msgstr "Nov"
 
-#: fakturas.php:165
+#: fakturas.php:166
 msgid "Dec"
 msgstr "Dec"
 
-#: fakturas.php:202
+#: fakturas.php:203
 msgid "Current"
 msgstr "Aktuelle"
 
-#: fakturas.php:203
+#: fakturas.php:204
 msgid "Completed"
 msgstr "Afsluttet"
 
-#: fakturas.php:204
-#: fakturas.php:233
+#: fakturas.php:205
+#: fakturas.php:234
 msgid "New"
 msgstr "Ny"
 
-#: fakturas.php:205
-#: fakturas.php:237
+#: fakturas.php:206
+#: fakturas.php:238
 msgid "Locked"
 msgstr "Låst"
 
-#: fakturas.php:206
-#: fakturas.php:239
+#: fakturas.php:207
+#: fakturas.php:240
 msgid "Ready"
 msgstr "Klar"
 
-#: fakturas.php:207
-#: fakturas.php:241
+#: fakturas.php:208
+#: fakturas.php:242
 msgid "Expedited"
 msgstr "Ekspederet"
 
-#: fakturas.php:208
-#: fakturas.php:243
+#: fakturas.php:209
+#: fakturas.php:244
 msgid "Giro"
 msgstr "Giro"
 
-#: fakturas.php:209
-#: fakturas.php:245
-msgid "Cash"
-msgstr "Kontant"
-
-#: fakturas.php:212
-#: fakturas.php:251
+#: fakturas.php:213
+#: fakturas.php:252
 msgid "Rejected"
 msgstr "Afvist"
 
-#: fakturas.php:220
+#: fakturas.php:221
 #: fakturasvalidate.php:104
 msgid "ID"
 msgstr "Id"
 
-#: fakturas.php:221
+#: fakturas.php:222
 msgid "Created"
 msgstr "Oprettet"
 
-#: fakturas.php:222
+#: fakturas.php:223
 #: fakturasvalidate.php:107
 msgid "Responsible"
 msgstr "Ansvarlige"
 
-#: fakturas.php:223
+#: fakturas.php:224
 #: fakturasvalidate.php:108
 msgid "Amount"
 msgstr "Beløb"
 
-#: fakturas.php:235
+#: fakturas.php:236
 msgid "Sent"
 msgstr "Sendt"
 
-#: fakturas.php:235
+#: fakturas.php:236
 msgid "Sent to customer"
 msgstr "Sendt til kunden"
 
-#: fakturas.php:281
+#: fakturas.php:282
 msgid "Advanced Search"
 msgstr "Avanceret søgning"
 
-#: fakturas.php:283
+#: fakturas.php:284
 msgid "Validate"
 msgstr "Validér"
 
