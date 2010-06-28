@@ -33,9 +33,9 @@ if(!empty($_POST['department']))
 	$where .= " AND `department` = '".$_POST['department']."'";
 
 if(empty($_POST)) {
-	$where .= " AND `clerk` = '".$_SESSION['_user']['fullname']."'";
+	$where .= " AND (`clerk` = '".$_SESSION['_user']['fullname']."' OR `clerk` = '')";
 } elseif(!empty($_POST['clerk']))
-	$where .= " AND `clerk` = '".$_POST['clerk']."'";
+	$where .= " AND (`clerk` = '".$_POST['clerk']."' OR `clerk` = '')";
 
 if(empty($_POST) || (!empty($_POST['status']) && $_POST['status'] == 'activ'))
 	$where .= " AND (`status` = 'new' OR `status` = 'locked' OR `status` = 'pbsok' OR `status` = 'pbserror')";
