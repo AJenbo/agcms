@@ -48,7 +48,11 @@ if(/(NetFront|PlayStation|hiptop|IEMobile|Smartphone|iPhone|Opera Mobi|Opera Min
 </div>
 <div class="bar" id="crumb">
   <ul>
-    <li><a href="/">Forside</a></li><?php
+    <?php
+
+if(@$_SESSION['faktura']) {
+	?><li><a href="/bestilling/">Indkøbshummer <img src="/theme/images/cart.png" alt="" /></a></li>
+<?php } ?><li><a href="/">Forside</a></li><?php
 	if(@$GLOBALS['generatedcontent']['crumbs'])
 		foreach($GLOBALS['generatedcontent']['crumbs'] as $value) {
 			?><li> &gt; <a href="<?php echo($value['link']); ?>"><?php echo($value['name']); ?></a></li><?php
@@ -133,7 +137,7 @@ if($GLOBALS['generatedcontent']['contenttype'] == 'front') {
 		echo(round(100/$GLOBALS['generatedcontent']['price']['befor']*($GLOBALS['generatedcontent']['price']['befor']-$GLOBALS['generatedcontent']['price']['now'])));
         ?>%</div><?php
 	}
-	if($GLOBALS['generatedcontent']['requirement']['link']) {
+	if(@$GLOBALS['generatedcontent']['requirement']['link']) {
 		?><a id="krav" href="<?php echo($GLOBALS['generatedcontent']['requirement']['link']); ?>" onclick="return openkrav('<?php echo($GLOBALS['generatedcontent']['requirement']['link']); ?>')" target="krav"><img src="/images/web/advarsel.gif" alt="" title="" width="54" height="47" /><br /><?php
 		echo($GLOBALS['generatedcontent']['requirement']['name']);
         ?></a><?php
@@ -177,7 +181,9 @@ var addthis_config = {
 		} else {
 			?> Pris: <span class="pris"><?php
 		}
-		echo(str_replace(',00', ',-', number_format($GLOBALS['generatedcontent']['price']['now'], 2, ',', '.'))); ?></span><?php 
+		echo(str_replace(',00', ',-', number_format($GLOBALS['generatedcontent']['price']['now'], 2, ',', '.'))); ?></span>
+		<a href="/bestilling/?add=<?php echo($GLOBALS['side']['id']); ?>"><img src="/theme/images/cart_add.png" alt="+" title="Tilføj til indkøbshummer" /></a>
+<?php 
 	}
 	
 	?></p><?php

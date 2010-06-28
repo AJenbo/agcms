@@ -40,6 +40,7 @@ a {
 }
 .bar img {
 	vertical-align:text-top;
+	max-height:15px;
 }
 input {
 	border-color:#3C3C3C;
