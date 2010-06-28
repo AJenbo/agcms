@@ -130,3 +130,36 @@ marquee {
 	font-size:13px;
 	color:#333;
 }
+.addtocart {
+	display:none;
+width:16px;
+text-align:center;
+}
+#faktura {
+width:100%;
+border-collapse:collapse;
+}
+#faktura td {
+padding:1px 3px;
+}
+#faktura thead td {
+vertical-align:middle;
+font-weight:bold;
+}
+#faktura thead td, #faktura .border td {
+border:1px #000000 solid;
+}
+#faktura tbody td, #faktura tfoot td {
+border-right:1px #000000 solid;
+border-left:1px #000000 solid;
+white-space:nowrap;
+}
+#faktura .border td {
+border-top:2px #000000 solid;
+}
+#faktura .td1 {
+width:1%;
+}
+.tal {
+text-align:right;
+}
