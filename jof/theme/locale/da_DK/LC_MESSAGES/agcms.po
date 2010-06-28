@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2010-06-28 17:00+0200\n"
-"PO-Revision-Date: 2010-06-28 17:21+0100\n"
+"PO-Revision-Date: 2010-06-28 17:13+0100\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -168,7 +168,7 @@ msgstr "Afhent i butikken"
 
 #: index.php:287
 msgid "The excact shipping cost will be calculcated as the goods are packed."
-msgstr "Den nøjagtige forsendelses pris vil blive udregnet når varende pakkes."
+msgstr "Den nøjagtige forsendelses pris vil blive udregnet når varende pakkes. Se <a href=\"/kat76-Info/\">Info</a> for vores forsendelses priser."
 
 #: index.php:292
 #: index.php:627
