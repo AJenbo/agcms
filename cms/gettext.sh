@@ -1,6 +1,8 @@
 cd /domains/cms
 xgettext --language=PHP --default-domain=agcms --from-code=UTF-8 *.php
-cd betaling
+cd bestilling
+xgettext --join-existing --language=PHP --default-domain=../agcms --from-code=UTF-8 *.php
+cd ../betaling
 xgettext --join-existing --language=PHP --default-domain=../agcms --from-code=UTF-8 *.php
 cd ../krav
 xgettext --join-existing --language=PHP --default-domain=../agcms --from-code=UTF-8 *.php

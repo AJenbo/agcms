@@ -18,37 +18,38 @@ require_once '../inc/mysqli.php';
 $mysqli = new simple_mysqli($GLOBALS['_config']['mysql_server'], $GLOBALS['_config']['mysql_user'], $GLOBALS['_config']['mysql_password'], $GLOBALS['_config']['mysql_database']);
 $sajax_request_type = 'POST';
 
+$where = array();
+
 if(!empty($_POST['m']) && !empty($_POST['y'])) {
-	$where = " `date` >= '".$_POST['y']."-".$_POST['m']."-01'";
-	$where .= " AND `date` <= '".$_POST['y']."-".$_POST['m']."-31'";
+	$where[] = "`date` >= '".$_POST['y']."-".$_POST['m']."-01'";
+	$where[] = "`date` <= '".$_POST['y']."-".$_POST['m']."-31'";
 } elseif(!empty($_POST['y'])) {
-	$where = " `date` >= '".$_POST['y']."-01-01'";
-	$where .= " AND `date` <= '".$_POST['y']."-12-31'";
-} else {
-	$where = " `date` >= '".date('Y')."-01-01'";
-	$where .= " AND `date` <= '".date('Y')."-12-31'";
+	$where[] = "`date` >= '".$_POST['y']."-01-01'";
+	$where[] = "`date` <= '".$_POST['y']."-12-31'";
 }
 
 if(!empty($_POST['department']))
-	$where .= " AND `department` = '".$_POST['department']."'";
+	$where[] = "`department` = '".$_POST['department']."'";
 
 if(empty($_POST)) {
-	$where .= " AND (`clerk` = '".$_SESSION['_user']['fullname']."' OR `clerk` = '')";
+	$where[] = "(`clerk` = '".$_SESSION['_user']['fullname']."' OR `clerk` = '')";
 } elseif(!empty($_POST['clerk']))
-	$where .= " AND (`clerk` = '".$_POST['clerk']."' OR `clerk` = '')";
+	$where[] = "(`clerk` = '".$_POST['clerk']."' OR `clerk` = '')";
 
 if(empty($_POST) || (!empty($_POST['status']) && $_POST['status'] == 'activ'))
-	$where .= " AND (`status` = 'new' OR `status` = 'locked' OR `status` = 'pbsok' OR `status` = 'pbserror')";
+	$where[] = "(`status` = 'new' OR `status` = 'locked' OR `status` = 'pbsok' OR `status` = 'pbserror')";
 elseif(!empty($_POST['status']) && $_POST['status'] == 'inactiv')
-	$where .= " AND (`status` != 'new' AND `status` != 'locked' AND `status` != 'pbsok' AND `status` != 'pbserror')";
+	$where[] = "(`status` != 'new' AND `status` != 'locked' AND `status` != 'pbsok' AND `status` != 'pbserror')";
 elseif(!empty($_POST['status']) && $_POST['status'])
-	$where .= " AND `status` = '".$_POST['status']."'";
+	$where[] = "`status` = '".$_POST['status']."'";
 
 if(!empty($_POST['name']))
-	$where .= " AND `navn` LIKE '%".$_POST['name']."%'";
+	$where[] = "`navn` LIKE '%".$_POST['name']."%'";
 
 if(!empty($_POST['tlf']))
-	$where .= " AND (`tlf1` LIKE '%".$_POST['tlf']."%' OR `tlf2` LIKE '%".$_POST['tlf']."%')";
+	$where[] = "(`tlf1` LIKE '%".$_POST['tlf']."%' OR `tlf2` LIKE '%".$_POST['tlf']."%')";
+
+$where = implode(' AND ', $where);
 
 if(empty($_POST)) {
 	$_POST['y'] = date('Y');
