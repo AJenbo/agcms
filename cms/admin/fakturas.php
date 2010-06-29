@@ -31,7 +31,7 @@ if(!empty($_POST['m']) && !empty($_POST['y'])) {
 if(!empty($_POST['department']))
 	$where[] = "`department` = '".$_POST['department']."'";
 
-if(empty($_POST)) {
+if(empty($_POST) && $_SESSION['_user']['access'] != 1) {
 	$where[] = "(`clerk` = '".$_SESSION['_user']['fullname']."' OR `clerk` = '')";
 } elseif(!empty($_POST['clerk']))
 	$where[] = "(`clerk` = '".$_POST['clerk']."' OR `clerk` = '')";
