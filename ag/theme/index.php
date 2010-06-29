@@ -47,20 +47,23 @@ if(/(NetFront|PlayStation|hiptop|IEMobile|Smartphone|iPhone|Opera Mobi|Opera Min
   </div>
 </div>
 <div class="bar" id="crumb">
-  <ul>
-    <?php
-
-if(@$_SESSION['faktura']) {
-	?><li><a href="/bestilling/">Indkøbshummer <img src="/theme/images/cart.png" alt="" /></a></li>
-<?php } ?><li><a href="/">Forside</a></li><?php
+  <ul><li><a href="/">Forside</a></li><?php
 	if(@$GLOBALS['generatedcontent']['crumbs'])
 		foreach($GLOBALS['generatedcontent']['crumbs'] as $value) {
 			?><li> &gt; <a href="<?php echo($value['link']); ?>"><?php echo($value['name']); ?></a></li><?php
 		}
     ?>
   </ul>
-</div>
-<div class="bar" id="submenu"><?php
+</div><?php
+
+if(@$_SESSION['faktura']) {
+	?><div class="bar" id="cart">
+		<ul><li><a href="/bestilling/">Indkøbshummer <img src="/theme/images/cart.png" alt="" /></a></li>
+		</ul>
+	</div><?php
+}
+
+?><div class="bar" id="submenu"><?php
 	if($GLOBALS['generatedcontent']['contenttype'] == 'front') {
 		if($sider_nr = count($GLOBALS['generatedcontent']['sider'])) {
 			?><ul><?php

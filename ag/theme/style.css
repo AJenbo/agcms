@@ -162,7 +162,7 @@ h1 {
 #logo {
 	float:left;
 }
-#crumb {
+#crumb, #cart {
 	background-image:url('/images/web/bar.gif');
 }
 #submenu {
