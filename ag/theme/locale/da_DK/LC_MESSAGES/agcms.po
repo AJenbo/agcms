@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2010-06-28 17:00+0200\n"
-"PO-Revision-Date: 2010-06-28 17:30+0100\n"
+"PO-Revision-Date: 2010-06-29 10:26+0100\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -126,11 +126,11 @@ msgstr "Total"
 
 #: index.php:249
 msgid "* The price cannot be determined automatically, please make sure to describe the exact type in the note field."
-msgstr "* Prisen kan ikke automatisk fastsættes, beskriv venligst den eksakte type i notat feltet for neden."
+msgstr "* Prisen kan ikke automatisk fastsættes, beskriv venligst den eksakte type i notatfeltet for neden."
 
 #: index.php:253
 msgid "Prefered payment method:"
-msgstr "Foretrukne betalingsmetode:"
+msgstr "Foretrukken betalingsmetode:"
 
 #: index.php:257
 msgid "Credit Card"
@@ -168,7 +168,7 @@ msgstr "Afhent i butikken"
 
 #: index.php:287
 msgid "The excact shipping cost will be calculcated as the goods are packed."
-msgstr "Den nøjagtige forsendelses pris vil blive udregnet når varende pakkes."
+msgstr "Den nøjagtige forsendelses pris vil blive udregnet når varerne pakkes."
 
 #: index.php:292
 #: index.php:627
@@ -346,15 +346,15 @@ msgstr "Jeg ønsker at betale med kontanter."
 
 #: index.php:546
 msgid "I will pick up the goods in your shop."
-msgstr "Jeg henter varende i butikken."
+msgstr "Jeg henter varerne i butikken."
 
 #: index.php:548
 msgid "Please send the goods by mail."
-msgstr "Send venligts varende med posten."
+msgstr "Send venligst varerne med posten."
 
 #: index.php:550
 msgid "Please send the order to by mail express."
-msgstr "Send venligts varende med express post."
+msgstr "Send venligst varerne med ekspres post."
 
 #: index.php:594
 #: index.php:701
@@ -396,7 +396,7 @@ msgstr "Bestilling sendt"
 
 #: index.php:725
 msgid "Thank you for your order, you will recive an email with instructions on how to perform the payment as soon as we have validated that all goods are in stock."
-msgstr "Tak for din bestilling, De vil modtage en email med informationer om hvor dan De betaler så snart vi har kontrolleret at alle vare er på lager."
+msgstr "Tak for din bestilling, De vil modtage en email med informationer om hvordan De betaler så snart vi har kontrolleret at alle varer er på lager."
 
 #: index.php:732
 msgid "Ther is no content in the basket!"
