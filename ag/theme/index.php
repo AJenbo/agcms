@@ -58,7 +58,7 @@ if(/(NetFront|PlayStation|hiptop|IEMobile|Smartphone|iPhone|Opera Mobi|Opera Min
 
 if(@$_SESSION['faktura']) {
 	?><div class="bar" id="cart">
-		<ul><li><a href="/bestilling/">Indkøbshummer <img src="/theme/images/cart.png" alt="" /></a></li>
+		<ul><li><a href="/bestilling/">Indkøbsliste <img src="/theme/images/cart.png" alt="" /></a></li>
 		</ul>
 	</div><?php
 }
