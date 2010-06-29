@@ -349,7 +349,8 @@ Event.observe(window, \'load\', function() { listSizeFooter('.$list['id'].'); })
 listlink['.$list['id'].'] = '.$list['link'].';
 --></script>';
 	}
-	$html .= '</div></div>';
+	$html .= '</div>';
+	$html .= '<input type="button" onclick="window.open(\'addlist.php?id='.$id.'\', \'addlist\',\'status=1,resizable=1,toolbar=0,menubar=0,location=0,scrollbars=0\');" value="'._('Add list').'"></div>';
 //list end
 
 $html .= '</div></form>';

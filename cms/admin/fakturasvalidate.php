@@ -17,7 +17,7 @@ $sajax_request_type = 'POST';
 if($_SESSION['_user']['access'] == 1 && !empty($_GET['id']))
 	$mysqli->query("UPDATE `fakturas` SET `transferred` =  '1' WHERE `id` = ".$_GET['id']);
 
-$fakturas = $mysqli->fetch_array("SELECT `id`, `status`, `cardtype`, `clerk`, `amount`, UNIX_TIMESTAMP(`paydate`) AS `paydate`, UNIX_TIMESTAMP(`date`) AS `date` FROM `fakturas` WHERE  `transferred` = 0 AND (`status` = 'accepted' OR `status` = 'giro') ORDER BY `paydate` DESC , `id` DESC");
+$fakturas = $mysqli->fetch_array("SELECT `id`, `status`, `cardtype`, `clerk`, `amount`, UNIX_TIMESTAMP(`paydate`) AS `paydate`, UNIX_TIMESTAMP(`date`) AS `date` FROM `fakturas` WHERE  `transferred` = 0 AND `status` = 'accepted' ORDER BY `paydate` DESC , `id` DESC");
 
 ?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">

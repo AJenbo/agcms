@@ -324,7 +324,8 @@ function get_table($listid, $bycell, $current_kat) {
 						
 				}
 			}
-			$html .= '<td class="addtocart"><a href="/bestilling/?add_list_item='.$row['id'].'"><img src="/theme/images/cart_add.png" title="'._('Add to shopping cart').'" alt="+" /></a></td>';
+			if(@$GLOBALS['generatedcontent']['has_product_table'])
+				$html .= '<td class="addtocart"><a href="/bestilling/?add_list_item='.$row['id'].'"><img src="/theme/images/cart_add.png" title="'._('Add to shopping cart').'" alt="+" /></a></td>';
 			$html .= '</tr>';
 		}
 		
