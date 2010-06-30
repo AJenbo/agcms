@@ -46,11 +46,6 @@ $sajax_request_type = 'POST';
 
 $faktura = $mysqli->fetch_one("SELECT *, UNIX_TIMESTAMP(`date`) AS `date`, UNIX_TIMESTAMP(`paydate`) AS `paydate` FROM `fakturas` WHERE `id` = ".$_GET['id']);
 
-if(empty($faktura['clerk'])) {
-	$mysqli->query("UPDATE `fakturas` SET `clerk` = '".addcslashes($_SESSION['_user']['fullname'], '`\\')."' WHERE `id` = ".$faktura['id']);
-	$faktura['clerk'] = $_SESSION['_user']['fullname'];
-}
-
 $faktura['quantities'] = explode('<', $faktura['quantities']);
 $faktura['products'] = explode('<', $faktura['products']);
 $faktura['values'] = explode('<', $faktura['values']);
@@ -468,6 +463,11 @@ Tel. %s</p>'),
 		}
 		$mysqli->query("UPDATE `fakturas` SET `status` = 'locked' WHERE `status` = 'new' && `id` = ".$faktura['id']);
 		$mysqli->query("UPDATE `fakturas` SET `sendt` = 1, `department` = '".$faktura['department']."' WHERE `id` = ".$faktura['id']);
+
+		if(empty($faktura['clerk'])) {
+			$mysqli->query("UPDATE `fakturas` SET `clerk` = '".addcslashes($_SESSION['_user']['fullname'], '`\\')."' WHERE `id` = ".$faktura['id']);
+			$faktura['clerk'] = $_SESSION['_user']['fullname'];
+		}
 		
 		//Upload email to the sent folder via imap
 		if($GLOBALS['_config']['imap']) {
