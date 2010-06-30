@@ -205,13 +205,14 @@ if(!empty($_SESSION['faktura']['quantities'])) {
 		$GLOBALS['generatedcontent']['headline'] = _('Place order');
 	
 		
-		$GLOBALS['generatedcontent']['text'] = '<form action="" method="post"><p><table style="border-bottom:1px solid;" id="faktura" cellspacing="0">
+		$GLOBALS['generatedcontent']['text'] = '<script type="text/javascript" src="javascript.js"></script>
+		<form action="" method="post"><p><table style="border-bottom:1px solid;" id="faktura" cellspacing="0">
 			<thead>
 				<tr>
 					<td class="td1">'._('Quantity').'</td>
 					<td>'._('Title').'</td>
-					<td class="td3 tal">'._('unit price').'</td>
-					<td class="td4 tal">'._('Total').'</td>
+					<td class="td3 tal" style="width:64px">'._('unit price').'</td>
+					<td class="td4 tal" style="width:72px">'._('Total').'</td>
 				</tr>
 			</thead>
 			<tfoot>
@@ -219,24 +220,27 @@ if(!empty($_SESSION['faktura']['quantities'])) {
 					<td class="td1"></td>
 					<td></td>
 					<td class="td3 tal">'._('Total').'</td>
-					<td class="td4 tal">'.number_format($_SESSION['faktura']['amount'], 2, ',', '').'</td>
+					<td class="td4 tal" id="total">'.number_format($_SESSION['faktura']['amount'], 2, ',', '').'</td>
 				</tr>
 			</tfoot>
 			<tbody>';
 
 		$unknownvalue = false;
+		$javascript = 'var values = [];';
 		foreach($_SESSION['faktura']['quantities'] as $i => $quantity) {
 			$GLOBALS['generatedcontent']['text'] .= '<tr>
-				<td class="tal"><input class="tal" value="'.$quantity.'" name="quantity[ ]" size="3" /></td>
+				<td class="tal"><input onkeyup="updateprice();" onchange="updateprice();" class="tal" value="'.$quantity.'" name="quantity[ ]" size="3" /></td>
 				<td>'.$_SESSION['faktura']['products'][$i].'</td>
 				<td class="tal">';
 			if(is_numeric($_SESSION['faktura']['values'][$i])) {
 				$GLOBALS['generatedcontent']['text'] .= number_format($_SESSION['faktura']['values'][$i], 2, ',', '');
+				$javascript .= "\n".'values['.$i.'] = '.$_SESSION['faktura']['values'][$i].';';
 			} else {
 				$GLOBALS['generatedcontent']['text'] .= '*';
+				$javascript .= "\n".'values['.$i.'] = 0;';
 				$unknownvalue = true;
 			}
-			$GLOBALS['generatedcontent']['text'] .= '</td><td class="tal">';
+			$GLOBALS['generatedcontent']['text'] .= '</td><td class="tal total">';
 			if(is_numeric($_SESSION['faktura']['values'][$i])) {
 				$GLOBALS['generatedcontent']['text'] .= number_format($_SESSION['faktura']['values'][$i]*$quantity, 2, ',', '');
 			} else {
@@ -245,6 +249,9 @@ if(!empty($_SESSION['faktura']['quantities'])) {
 			$GLOBALS['generatedcontent']['text'] .= '</td></tr>';
 		}
 		$GLOBALS['generatedcontent']['text'] .= '</tbody></table>';
+		$GLOBALS['generatedcontent']['text'] .= '<script type="text/javascript"><!--
+'.$javascript.'
+--></script>';
 		if($unknownvalue)
 			$GLOBALS['generatedcontent']['text'] .= '<small>'._('* The price cannot be determined automatically, please make sure to describe the exact type in the note field.').'</small></p>';
 

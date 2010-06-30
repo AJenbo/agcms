@@ -89,6 +89,7 @@ require_once $_SERVER['DOCUMENT_ROOT'].'/admin/inc/logon.php';
     <li><a href="./?side=get_db_error"><img src="images/database_error.png" width="16" height="16" alt="" /> <?php echo(_('Maintenance')); ?></a></li>
     <li><a href="users.php"><img src="images/group_edit.png" width="16" height="16" alt="" /> <?php echo(_('Users and Groups')); ?></a></li>
     <li><a href="katalog-lables.php"><img src="images/printer.png" width="16" height="16" alt="" /> <?php echo(_('Catalog labels')); ?></a></li>
+    <li><a href="listview.php"><img src="images/book_open.png" width="16" height="16" alt="" /> <?php echo(_('Pris liste')); ?></a></li>
 	<li><a href="fakturas.php"><img src="images/table_multiple.png" width="16" height="16" alt="" /> <?php echo(_('Invoices')); ?></a></li>
   </ul>
 </div>

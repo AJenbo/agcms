@@ -1,3 +1,28 @@
+document.getElementsByClassName = getElementsByClassName;
+function getElementsByClassName(name) {
+	var allelems, retary, i;
+	retary = new Array();
+	allelems = document.getElementsByTagName("*");
+	for(i = 0; i < allelems.length; i++)
+		if(allelems[i].className)
+			if(allelems[i].className.indexOf(name) != -1)
+				retary.push(allelems[i]);
+	return retary;
+}
+
+function updateprice() {
+	var total = document.getElementsByClassName('total');
+	var input = document.getElementsByName('quantity[ ]');
+	var subtotal = 0;
+	for(var i=0;i<values.length;i++) {
+		value = values[i]*input[i].value;
+		if(values[i] > 0)
+			total[i].innerHTML = value.toFixed(2).toString().replace(/\./,',');
+		subtotal = subtotal+value;
+	}
+	document.getElementById('total').innerHTML = subtotal.toFixed(2).toString().replace(/\./,',');
+}
+
 function showhidealtpost(status) {
 	var Trs = document.getElementsByTagName('TR');
 	if(status) {
