@@ -246,6 +246,10 @@ function get_table($listid, $bycell, $current_kat) {
 				$row['link'] = '<a href="/kat'.$current_kat.'-'.clear_file_name($sider[0]['kat_navn']).'/side'.$row['link'].'-'.clear_file_name($sider[0]['navn']).'.html">';
 			}
 			foreach($lists[0]['cells'] as $key => $type) {
+				if(empty($row[$key])) {
+                	$row[$key] = '';
+                }
+
 				switch($type) {
 					case 0:
 						//Plain text
