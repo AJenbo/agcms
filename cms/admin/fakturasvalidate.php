@@ -17,6 +17,9 @@ $sajax_request_type = 'POST';
 if($_SESSION['_user']['access'] == 1 && !empty($_GET['id']))
 	$mysqli->query("UPDATE `fakturas` SET `transferred` =  '1' WHERE `id` = ".$_GET['id']);
 
+if($_SESSION['_user']['access'] == 1 && !empty($_GET['undoid']))
+	$mysqli->query("UPDATE `fakturas` SET `transferred` =  '0' WHERE `id` = ".$_GET['undoid']);
+
 $fakturas = $mysqli->fetch_array("SELECT `id`, `status`, `cardtype`, `clerk`, `amount`, UNIX_TIMESTAMP(`paydate`) AS `paydate`, UNIX_TIMESTAMP(`date`) AS `date` FROM `fakturas` WHERE  `transferred` = 0 AND `status` = 'accepted' ORDER BY `paydate` DESC , `id` DESC");
 
 ?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
@@ -142,7 +145,7 @@ a {
 	echo(date('j/m/y', $faktura['paydate'] ? $faktura['paydate'] : $faktura['date'])); ?></a></td>
             <td><a href="faktura.php?id=<?php echo($faktura['id']); ?>"><?php echo($faktura['clerk']); ?></a></td>
             <td style="text-align:right"><a href="faktura.php?id=<?php echo($faktura['id']); ?>"><?php echo(number_format($faktura['amount'], 2, ',', '.')); ?></a></td>
-			<td style="text-align:center"><a href="?id=<?php echo($faktura['id']); ?>"><img src="/admin/images/tick.png" alt="<?php echo(_('Approve')); ?>" title="<?php echo(_('Approve')); ?>" /></a></td>
+			<td style="text-align:center"><a onclick="return confirm_faktura_validate(<?php echo($faktura['id']); ?>);" href="?id=<?php echo($faktura['id']); ?>"><img src="/admin/images/tick.png" alt="<?php echo(_('Approve')); ?>" title="<?php echo(_('Approve')); ?>" /></a></td>
         </tr><?php } ?>
     </tbody>
 </table>

@@ -436,3 +436,7 @@ function sogsearch() {
 		alert('Du skal indtaste et søge ord.');
 	return false;
 }
+
+function confirm_faktura_validate(id) {
+    return confirm("Mente du '"+id+"'?");
+}
