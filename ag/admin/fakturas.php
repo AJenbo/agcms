@@ -16,10 +16,20 @@ require_once '../inc/sajax.php';
 require_once '../inc/config.php';
 require_once '../inc/mysqli.php';
 
+
+
+$GLOBALS['_config']['pbsid'] = '3025';
+$GLOBALS['_config']['pbspassword'] = 'afn5gy9hxb62zv4unnce4ghbdykwcp2x';
+$GLOBALS['_config']['pbsfix'] = 'HH';
 $GLOBALS['_config']['mysql_server'] = 'huntershouse.dk.mysql';
 $GLOBALS['_config']['mysql_user'] = 'huntershouse_dk';
 $GLOBALS['_config']['mysql_password'] = 'sabbBFab';
 $GLOBALS['_config']['mysql_database'] = 'huntershouse_dk';
+$GLOBALS['_config']['mysql_database'] = 'huntershouse_dk';
+$GLOBALS['_config']['base_url'] = 'http://huntershouse.dk';
+$GLOBALS['_config']['site_name'] = 'Hunters House A/S';
+
+
 
 $mysqli = new simple_mysqli($GLOBALS['_config']['mysql_server'], $GLOBALS['_config']['mysql_user'], $GLOBALS['_config']['mysql_password'], $GLOBALS['_config']['mysql_database']);
 $sajax_request_type = 'POST';
@@ -38,9 +48,15 @@ if(!empty($_POST['department']))
 	$where[] = "`department` = '".$_POST['department']."'";
 
 if(empty($_POST) && $_SESSION['_user']['access'] != 1) {
+    //Non admin default viewz
 	$where[] = "(`clerk` = '".$_SESSION['_user']['fullname']."' OR `clerk` = '')";
-} elseif(!empty($_POST['clerk']))
+} elseif(!empty($_POST['clerk']) && $_SESSION['_user']['fullname'] == $_POST['clerk']) {
+    //Viewing your self
 	$where[] = "(`clerk` = '".$_POST['clerk']."' OR `clerk` = '')";
+} elseif(!empty($_POST['clerk'])) {
+    //Viewing some one else
+	$where[] = "(`clerk` = '".$_POST['clerk']."')";
+}
 
 if(empty($_POST) || (!empty($_POST['status']) && $_POST['status'] == 'activ'))
 	$where[] = "(`status` = 'new' OR `status` = 'locked' OR `status` = 'pbsok' OR `status` = 'pbserror')";
@@ -59,7 +75,8 @@ $where = implode(' AND ', $where);
 
 if(empty($_POST)) {
 	$_POST['y'] = date('Y');
-	$_POST['clerk'] = $_SESSION['_user']['fullname'];
+    if($_SESSION['_user']['access'] != 1)
+    	$_POST['clerk'] = $_SESSION['_user']['fullname'];
 	$_POST['status'] = 'activ';
 }
 

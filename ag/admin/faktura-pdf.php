@@ -15,17 +15,14 @@ if($_GET['id'] > 0) {
 
 require_once '../inc/config.php';
 
-
-$GLOBALS['_config']['pbsid'] = '3025';
-$GLOBALS['_config']['pbspassword'] = 'afn5gy9hxb62zv4unnce4ghbdykwcp2x';
+/* Force HH config */
 $GLOBALS['_config']['pbsfix'] = 'HH';
 $GLOBALS['_config']['mysql_server'] = 'huntershouse.dk.mysql';
 $GLOBALS['_config']['mysql_user'] = 'huntershouse_dk';
 $GLOBALS['_config']['mysql_password'] = 'sabbBFab';
 $GLOBALS['_config']['mysql_database'] = 'huntershouse_dk';
 $GLOBALS['_config']['mysql_database'] = 'huntershouse_dk';
-$GLOBALS['_config']['base_url'] = 'http://huntershouse.dk';
-$GLOBALS['_config']['site_name'] = 'Hunters House A/S';
+/* End HH config */
 
 
 require_once '../inc/mysqli.php';
@@ -205,7 +202,7 @@ foreach($faktura['values'] as $i => $value) {
 		$pdf->Cell( 34, 6*$lines, '', 'RL', 1);
 	}
 
-	$netto += $value*$faktura['quantities'][$i];
+	$netto += $value/(1+$faktura['momssats'])*$faktura['quantities'][$i];
 
 	$pdf->Cell( 24, 6, $faktura['quantities'][$i], 'RL', 0, 'R');
 	$lines = $pdf->MultiCell(106, 6, html_entity_decode(htmlspecialchars_decode($faktura['products'][$i], ENT_QUOTES)), 'RL', '0', 0, 0, '', '', true, 0, false, true, 0);
