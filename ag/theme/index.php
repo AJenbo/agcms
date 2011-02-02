@@ -156,37 +156,38 @@ var addthis_config = {
 	if($GLOBALS['generatedcontent']['serial']) {
 	    ?><br /><strong>Varenr: <?php echo($GLOBALS['generatedcontent']['serial']); ?></strong><br /><?php
 	}
+    if(!@$GLOBALS['generatedcontent']['has_product_table']) {
+	    //Skriv prisen og tilbudet
+	    if($GLOBALS['generatedcontent']['price']['befor']) {
+		    if($GLOBALS['generatedcontent']['price']['market'] == 2) {
+			    ?>Burde koste: <?php echo(str_replace(',00', ',-', number_format($GLOBALS['generatedcontent']['price']['befor'], 2, ',', '.')));
+		    } elseif($GLOBALS['generatedcontent']['price']['market'] == 1) {
+			    ?>Vejledende: <?php echo(str_replace(',00', ',-', number_format($GLOBALS['generatedcontent']['price']['befor'], 2, ',', '.')));
+		    } else {
+			    ?>Før: <span class="xpris"><?php
+			     echo(str_replace(',00', ',-', number_format($GLOBALS['generatedcontent']['price']['befor'], 2, ',', '.')));
+			    ?></span><?php
+		    }
+	    }
 
-	//Skriv prisen og tilbudet
-	if($GLOBALS['generatedcontent']['price']['befor']) {
-		if($GLOBALS['generatedcontent']['price']['market'] == 2) {
-			?>Burde koste: <?php echo(str_replace(',00', ',-', number_format($GLOBALS['generatedcontent']['price']['befor'], 2, ',', '.')));
-		} elseif($GLOBALS['generatedcontent']['price']['market'] == 1) {
-			?>Vejledende: <?php echo(str_replace(',00', ',-', number_format($GLOBALS['generatedcontent']['price']['befor'], 2, ',', '.')));
-		} else {
-			?>Før: <span class="xpris"><?php
-			 echo(str_replace(',00', ',-', number_format($GLOBALS['generatedcontent']['price']['befor'], 2, ',', '.')));
-			?></span><?php
-		}
-	}
-
-	if($GLOBALS['generatedcontent']['price']['now']) {
-		if($GLOBALS['generatedcontent']['price']['from'] == 1 && $GLOBALS['generatedcontent']['price']['befor']) {
-			?> <span class="nypris">Nu fra: <?php
-		} elseif($GLOBALS['generatedcontent']['price']['from'] == 1) {
-			?> Fra: <span class="pris"><?php
-		} elseif($GLOBALS['generatedcontent']['price']['from'] == 2 && $GLOBALS['generatedcontent']['price']['befor']) {
-			?> <span class="nypris">Brugt: <?php
-		} elseif($GLOBALS['generatedcontent']['price']['from'] == 2) {
-			?> Brugt: <span class="pris"><?php
-		} elseif($GLOBALS['generatedcontent']['price']['befor']) {
-			?> <span class="nypris">Nu: <?php
-		} else {
-			?> Pris: <span class="pris"><?php
-		}
-		echo(str_replace(',00', ',-', number_format($GLOBALS['generatedcontent']['price']['now'], 2, ',', '.'))); ?></span>
-		<a href="/bestilling/?add=<?php echo($GLOBALS['side']['id']); ?>"><img src="/theme/images/cart_add.png" alt="+" title="Tilføj til indkøbshummer" /></a>
-<?php 
+	    if($GLOBALS['generatedcontent']['price']['now']) {
+		    if($GLOBALS['generatedcontent']['price']['from'] == 1 && $GLOBALS['generatedcontent']['price']['befor']) {
+			    ?> <span class="nypris">Nu fra: <?php
+		    } elseif($GLOBALS['generatedcontent']['price']['from'] == 1) {
+			    ?> Fra: <span class="pris"><?php
+		    } elseif($GLOBALS['generatedcontent']['price']['from'] == 2 && $GLOBALS['generatedcontent']['price']['befor']) {
+			    ?> <span class="nypris">Brugt: <?php
+		    } elseif($GLOBALS['generatedcontent']['price']['from'] == 2) {
+			    ?> Brugt: <span class="pris"><?php
+		    } elseif($GLOBALS['generatedcontent']['price']['befor']) {
+			    ?> <span class="nypris">Nu: <?php
+		    } else {
+			    ?> Pris: <span class="pris"><?php
+		    }
+		    echo(str_replace(',00', ',-', number_format($GLOBALS['generatedcontent']['price']['now'], 2, ',', '.'))); ?></span>
+		    <a href="/bestilling/?add=<?php echo($GLOBALS['side']['id']); ?>"><img src="/theme/images/cart_add.png" alt="+" title="Tilføj til indkøbshummer" /></a>
+    <?php 
+	    }
 	}
 	
 	?></p><?php

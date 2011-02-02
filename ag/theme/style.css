@@ -21,7 +21,7 @@ a {
 	clear:both;
 }
 .bar ul {
-	width:740px;
+	width:760px;
 	margin:0 auto;
 	list-style:none;
 	padding:0;
@@ -79,7 +79,7 @@ input {
 	float:left;
 }
 #menu {
-	width:157px;
+	width:177px;
 	background-image:url('/images/web/bg.jpg');
 	height:100%;
 	overflow:auto;
@@ -91,7 +91,7 @@ input {
 }
 
 #menu a {
-	width:128px;
+	width:148px;
 	margin:auto;
 	overflow:hidden;
 	display:block;
@@ -111,7 +111,7 @@ input {
 	background-repeat:no-repeat;
 	background-position:top;
 	display:block;
-	width:128px;
+	width:148px;
 	margin:auto;
 	color:#BBBBBB;
 	font-weight:bold;
@@ -152,7 +152,7 @@ h1 {
 	background-color:#FFFFFF;
 }
 #headder div {
-	width:740px;
+	width:760px;
 	margin:0px auto;
 	padding:10px;
 }
@@ -180,11 +180,11 @@ h1 {
 }
 #container2 {
 	height:100%;
-	width:740px;
+	width:760px;
 	margin:auto;
 }
 #container3 {
-	width:740px;
+	width:760px;
 	margin:0 auto;
 	height:100%;
 	position:absolute;
@@ -285,6 +285,26 @@ marquee {
 .imgleft {
 	padding: 0pt 10pt 10px 0px;
 	float: left;
+}
+.tabel {
+font-size:12px;
+width:100%;
+clear:both;
+}
+.tabel * {
+font-size:12px;
+color:#000000;
+padding:1px;
+}
+.tabel thead {
+background-color:#999999;
+}
+.tabel a {
+font-weight:bold;
+color:#000000;
+}
+.altrow {
+background-color:#cccccc;
 }
 #faktura {
 width:100%;
