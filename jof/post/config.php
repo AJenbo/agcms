@@ -1,6 +1,6 @@
 <?php
 	$clientID = '150007792';
-	$password = 'Chips18';
+	$password = 'Post12';
 	
 	$brugere[11856] = 'HH7B Jagt';
 	$brugere[19462] = 'Hu7B Fisk';

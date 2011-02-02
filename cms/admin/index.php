@@ -710,9 +710,9 @@ function get_db_error() {
 		var mailbox_size = 0;
 		function get_mailbox_list_r(result) {
 			for(mail=0; mail<result.length; mail++) {
-				for(mailbox=0; mailbox<result[mail].length; mailbox++) {
-					$(\'status\').innerHTML = \'Læser indholdet i \'+result[mail][mailbox];
-					x_get_mailbox_size(mail, result[mail][mailbox], get_mailbox_size_r);
+				for(mailbox=0; mailbox<result[mail].mailboxs.length; mailbox++) {
+					$(\'status\').innerHTML = \'Læser indholdet i \'+result[mail].mailbox_names[mailbox];
+					x_get_mailbox_size(mail, result[mail].mailboxs[mailbox], get_mailbox_size_r);
 				}
 			}
 			$(\'mailboxsize\').innerHTML = Math.round(mailbox_size/1024/1024)+\''._('MB').'\';
@@ -871,9 +871,15 @@ function get_mailbox_list() {
 	$imap = new IMAPMAIL;
 	$imap->open($GLOBALS['_config']['imap'], $GLOBALS['_config']['imapport']);
 	
+	$temp = array();
 	foreach($GLOBALS['_config']['email'] as $i => $email) {
 		$imap->login($email, $GLOBALS['_config']['emailpasswords'][$i]);
-		$mailboxes[] = $imap->list_mailbox();
+		$mailboxes[$i] = $imap->list_mailbox();
+	    foreach($mailboxes[$i] as $i2 => $mailbox) {
+	        $temp['mailboxs'][$i2] = $mailbox;
+	        $temp['mailbox_names'][$i2] = mb_convert_encoding($mailbox, "UTF-8", "UTF7-IMAP");
+	    }
+	    $mailboxes[$i] = $temp;
 	}
 	$imap->close();
 	

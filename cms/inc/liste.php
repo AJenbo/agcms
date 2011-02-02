@@ -160,7 +160,7 @@ function search_liste($q, $wheresider) {
 			getUpdateTime('sider');
 
 			foreach($sider as $value) {
-				if($value['side'] == $lists[0]['id']) {
+				if(!empty($value['side']) && $value['side'] == $lists[0]['id']) {
 					$match = true;
 					break;
 				}

@@ -297,7 +297,7 @@ class Snoopy
 					if($this->_isproxy)
 					{
 						// using proxy, send entire URI
-						$this->_httprequest($URI,$fp,$URI,$this->_submit_method,$this->_submit_type,$postdata);
+						$this->_httprequest($URI, $fp, $URI, $this->_submit_method, $this->_submit_type, $postdata);
 					}
 					else
 					{
@@ -806,7 +806,8 @@ class Snoopy
 			if ( count($this->cookies) > 0 ) {
 				$cookie_headers .= 'Cookie: ';
 				foreach ( $this->cookies as $cookieKey => $cookieVal ) {
-				$cookie_headers .= $cookieKey."=".urlencode($cookieVal)."; ";
+					//TODO encode only ;
+					$cookie_headers .= $cookieKey."=".$cookieVal."; ";
 				}
 				$headers .= substr($cookie_headers,0,-2) . "\r\n";
 			} 
@@ -841,7 +842,7 @@ class Snoopy
 			socket_set_timeout($fp, $this->read_timeout);
 		$this->timed_out = false;
 		
-		fwrite($fp,$headers.$body,strlen($headers.$body));
+		fwrite($fp, $headers.$body, strlen($headers.$body));
 		
 		$this->_redirectaddr = false;
 		unset($this->headers);
@@ -970,7 +971,8 @@ class Snoopy
 			if ( count($this->cookies) > 0 ) {
 				$cookie_str = 'Cookie: ';
 				foreach ( $this->cookies as $cookieKey => $cookieVal ) {
-				$cookie_str .= $cookieKey."=".urlencode($cookieVal)."; ";
+					//TODO encode only ;
+					$cookie_str .= $cookieKey."=".$cookieVal."; ";
 				}
 				$headers[] = substr($cookie_str,0,-2);
 			}
@@ -1087,7 +1089,7 @@ class Snoopy
 		for($x=0; $x<count($this->headers); $x++)
 		{
 		if(preg_match('/^set-cookie:[\s]+([^=]+)=([^;]+)/i', $this->headers[$x],$match))
-			$this->cookies[$match[1]] = urldecode($match[2]);
+			$this->cookies[trim($match[1])] = trim(urldecode($match[2]));
 		}
 	}
 
@@ -1203,6 +1205,7 @@ class Snoopy
 					} else
 						$postdata .= urlencode($key)."=".urlencode($val)."&";
 				}
+				$postdata = substr($postdata, 0, -1);
 				break;
 
 			case "multipart/form-data":

@@ -34,11 +34,11 @@ function doConditionalGet($timestamp) {
         return; // if-modified-since is there but doesn't match
     }
 	//TODO One.com has broaken headers when sending 304
-	return;
+	//Update one seams to have fixed this issue.
+	//return;
     // Nothing has changed since their last request - serve a 304 and exit
-    header('HTTP/1.1 304 Not Modified');
-	//header("Content-type: ", true, 304);
 	ini_set ('zlib.output_compression', '0');
+    header("HTTP/1.1 304 Not Modified", true, 304);
     die();
 }
 ?>

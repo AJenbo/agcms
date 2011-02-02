@@ -44,7 +44,7 @@ class clsWorkDays {
         // 
 
         if ( $p_type=='DK' ) { 
-         	//faste helig dage der ikke falder i weekenden
+         	//faste helig dage der ikke faler i weekenden
             $this->holidays[] = new Holiday("Nytårsdag", $this->get_timestamp(date('Y').'-01-01')); 
             $this->holidays[] = new Holiday("Grundlovsdag", $this->get_timestamp(date('Y').'-06-05')); 
             $this->holidays[] = new Holiday("Juleaften", $this->get_timestamp(date('Y').'-12-24'));

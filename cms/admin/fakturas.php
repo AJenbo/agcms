@@ -32,9 +32,15 @@ if(!empty($_POST['department']))
 	$where[] = "`department` = '".$_POST['department']."'";
 
 if(empty($_POST) && $_SESSION['_user']['access'] != 1) {
+    //Non admin default viewz
 	$where[] = "(`clerk` = '".$_SESSION['_user']['fullname']."' OR `clerk` = '')";
-} elseif(!empty($_POST['clerk']))
+} elseif(!empty($_POST['clerk']) && $_SESSION['_user']['fullname'] == $_POST['clerk']) {
+    //Viewing your self
 	$where[] = "(`clerk` = '".$_POST['clerk']."' OR `clerk` = '')";
+} elseif(!empty($_POST['clerk'])) {
+    //Viewing some one else
+	$where[] = "(`clerk` = '".$_POST['clerk']."')";
+}
 
 if(empty($_POST) || (!empty($_POST['status']) && $_POST['status'] == 'activ'))
 	$where[] = "(`status` = 'new' OR `status` = 'locked' OR `status` = 'pbsok' OR `status` = 'pbserror')";
@@ -53,7 +59,8 @@ $where = implode(' AND ', $where);
 
 if(empty($_POST)) {
 	$_POST['y'] = date('Y');
-	$_POST['clerk'] = $_SESSION['_user']['fullname'];
+    if($_SESSION['_user']['access'] != 1)
+    	$_POST['clerk'] = $_SESSION['_user']['fullname'];
 	$_POST['status'] = 'activ';
 }
 

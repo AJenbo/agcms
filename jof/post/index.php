@@ -1,5 +1,5 @@
 <?php
-/*
+//*
 ini_set('display_errors', 1);
 error_reporting(-1);
 /**/
@@ -37,16 +37,19 @@ error_reporting(-1);
 		if($passwordOverwrite)
 			$password = $passwordOverwrite;
 		$snoopy = new Snoopy;
-		
-		$submit_url = "http://www.postdanmark.dk/pfs/PfsLoginServlet";
+		$submit_url = "http://www.postdanmark.dk/pfs/pfsCallLoginServlet.jsp";
 		
 		$submit_vars['gotoURL'] = "http://www.postdanmark.dk/pfs/PfsLoginServlet";
-		$submit_vars['clientID'] = $clientID;
 		$submit_vars['userID'] = "admin";
+		$submit_vars['clientID'] = $clientID;
 		$submit_vars['password'] = $password;
-			
+
 		$snoopy->submit($submit_url, $submit_vars);
+		$snoopy->setcookies();
 		
+		$submit_url = "http://www.postdanmark.dk/pfs/PfsLoginServlet";
+		$snoopy->submit($submit_url, $submit_vars);
+
 		if($snoopy->results == '' || $snoopy->results == 'No backend servers available') {
 			die('var res = { "error": \'Postdanmark server er nede, prøv igen senere.\' }; res;');
 		}
@@ -213,6 +216,8 @@ error_reporting(-1);
 		$submit_vars['formDate'] = utf8_decode($formDate);
 		$submit_vars['typedRecCVR'] = '';
 		$submit_vars['recZipCode'] = utf8_decode($recZipCode);
+		if(empty($recPost))
+			$recPost = '';
 		$submit_vars['recPostBox'] = utf8_decode($recPost);
 		$submit_vars['recPoValue'] = $recPoValue;
 		$submit_vars['recPoRef'] = str_replace('.', '', $formDate);
@@ -396,12 +401,12 @@ error_reporting(-1);
 	
 	function payerstatus($recipientID) {
 		$mysqli = new simple_mysqli($GLOBALS['_config']['mysql_server'], $GLOBALS['_config']['mysql_user'], $GLOBALS['_config']['mysql_password'], $GLOBALS['_config']['mysql_database']);
-		$returns = $mysqli->fetch_one("SELECT count(*) as 'returns' FROM `post` WHERE `recipientID` = '".$recipientID."' AND `pd_return` = 'true'");
-		$nonepayed = $mysqli->fetch_one("SELECT count(*) as 'returns' FROM `post` WHERE `recipientID` = '".$recipientID."' AND `pd_return` = 'true' AND `optRecipType` = 'O'");
-		if($nonepayed['returns'])
-			return $responce = 'Denne kunde er dårlig betaler og har lad pakken gå retur '.$returns['returns'].' gang(e)!';
-		elseif($returns['returns'])
-			return 'Denne kunde har lad pakken gå retur '.$returns['returns'].' gang(e)!';
+		$returns = $mysqli->fetch_array("SELECT count(*) as 'returns' FROM `post` WHERE `recipientID` = '".$recipientID."' AND `pd_return` = 'true'");
+		$nonepayed = $mysqli->fetch_array("SELECT count(*) as 'returns' FROM `post` WHERE `recipientID` = '".$recipientID."' AND `pd_return` = 'true' AND `optRecipType` = 'O'");
+		if($nonepayed[0]['returns'])
+			return $responce = 'Denne kunde er dårlig betaler og har lad pakken gå retur '.$returns[0]['returns'].' gang(e)!';
+		elseif($returns[0]['returns'])
+			return 'Denne kunde har lad pakken gå retur '.$returns[0]['returns'].' gang(e)!';
 		else
 			return false;
 	}

@@ -1,4 +1,8 @@
 <?php
+//*
+ini_set('display_errors', 1);
+error_reporting(-1);
+/**/
 
 require_once("clsWorkDays.php");
 
@@ -103,6 +107,12 @@ for($i=0;$i<$post_nr;$i++) {
 			}
             ?></a> <?php
 		}
+		/*
+		Post danmark pakke info side
+		if($post[$i]['token'] > 1) {
+			?><a href="http://www.jagtogfiskerimagasinet.dk/post/statistik.php?consignmentID=<?php echo($post[$i]['token']); ?>" target="_blank"><img height="16" width="16" alt="Info" title="Info" src="information.png" style="border:0" /></a> <?php
+		}
+		*/
 		//Pakke type
 		if($post[$i]['optRecipType'] == 'P') {
 			if($post[$i]['ss2'] == 'true') {
@@ -115,20 +125,17 @@ for($i=0;$i<$post_nr;$i++) {
 		} elseif($post[$i]['optRecipType'] == 'O') {
 	        ?><img src="money.png" width="16" height="16" alt="O" title="Post opkrævning: <?php echo(str_replace(',00', ',-', number_format($post[$i]['recPoValue'], 2, ',', '.'))); ?>" /> <?php
 		}
-		
-		//TODO convert strings to gettext from here and up
-		
 		//Forsigtig
 		if($post[$i]['ss1'] == 'true') {
-	        ?><img src="drink_empty.png" width="16" height="16" alt="F" title="<?php echo(_('Forsigtig')); ?>" /> <?php
+	        ?><img src="drink_empty.png" width="16" height="16" alt="F" title="Forsigtig" /> <?php
 		}
 		//Lørdags express
 		if($post[$i]['ss46'] == 'true') {
-	        ?><img src="lightning.png" width="16" height="16" alt="L" title="<?php echo(_('Lørdags express')); ?>" /> <?php
+	        ?><img src="lightning.png" width="16" height="16" alt="L" title="Lørdags express" /> <?php
 		}
 		//Hvad er værdi
 		if($post[$i]['ss5amount']) {
-	        ?><img src="coins.png" width="16" height="16" alt="V" title="<?php echo(_('Værdi:')); ?> <?php echo str_replace(',00', ',-', number_format($post[$i]['ss5amount'], 2, ',', '.')); ?>" /> <?php
+	        ?><img src="coins.png" width="16" height="16" alt="V" title="Værdi: <?php echo str_replace(',00', ',-', number_format($post[$i]['ss5amount'], 2, ',', '.')); ?>" /> <?php
 		}
 		//Er porto sat forkert
 		if($post[$i]['ub'] == 'false') {
@@ -136,47 +143,47 @@ for($i=0;$i<$post_nr;$i++) {
 				
 				if($specialFragt != 57 && $fragt != 54 && $specialFragt != $post[$i]['porto'] && $fragt != $post[$i]['porto']) {
 					if($post[$i]['porto']-$specialFragt > 0) {
-						?><img src="error_add.png" width="16" height="16" alt="!+" title="<?php echo(_('Fragt stemmer ikke:')); ?> <?php echo str_replace(',00', ',-', number_format($post[$i]['porto']-$specialFragt, 2, ',', '.')); ?>" /> <?php
+						?><img src="error_add.png" width="16" height="16" alt="!+" title="Fragt stemmer ikke: <?php echo str_replace(',00', ',-', number_format($post[$i]['porto']-$specialFragt, 2, ',', '.')); ?>" /> <?php
 					} else {
-						?><img src="error_delete.png" width="16" height="16" alt="!-" title="<?php echo(_('Fragt stemmer ikke:')); ?> <?php echo str_replace(',00', ',-', number_format($post[$i]['porto']-$specialFragt, 2, ',', '.')); ?>" /> <?php
+						?><img src="error_delete.png" width="16" height="16" alt="!-" title="Fragt stemmer ikke: <?php echo str_replace(',00', ',-', number_format($post[$i]['porto']-$specialFragt, 2, ',', '.')); ?>" /> <?php
 					}
 				} elseif($specialFragt != $post[$i]['porto'] && $fragt != $post[$i]['porto']) {
 					if($post[$i]['porto']-$fragt > 0) {
-						?><img src="error_add.png" width="16" height="16" alt="!+" title="<?php echo(_('Fragt stemmer ikke:')); ?> <?php echo str_replace(',00', ',-', number_format($post[$i]['porto']-$fragt, 2, ',', '.')); ?>" /> <?php
+						?><img src="error_add.png" width="16" height="16" alt="!+" title="Fragt stemmer ikke: <?php echo str_replace(',00', ',-', number_format($post[$i]['porto']-$fragt, 2, ',', '.')); ?>" /> <?php
 					} else {
-						?><img src="error_delete.png" width="16" height="16" alt="!-" title="<?php echo(_('Fragt stemmer ikke:')); ?> <?php echo str_replace(',00', ',-', number_format($post[$i]['porto']-$fragt, 2, ',', '.')); ?>" /> <?php
+						?><img src="error_delete.png" width="16" height="16" alt="!-" title="Fragt stemmer ikke: <?php echo str_replace(',00', ',-', number_format($post[$i]['porto']-$fragt, 2, ',', '.')); ?>" /> <?php
 					}
 				}
 			//Er volume blevet sat ved fejl
 				if($post[$i]['ss2'] == 'true' && !calcvolume($post[$i]['pd_height'], $post[$i]['pd_width'], $post[$i]['pd_length'])) {
-					?><img src="brick_add.png" width="16" height="16" alt="!" title="<?php echo(_('Ikke volume sendt som volume')); ?>" /> <?php
+					?><img src="brick_add.png" width="16" height="16" alt="!" title="Ikke volume sendt som volume" /> <?php
 				} elseif($post[$i]['ss2'] == 'false' && $post[$i]['optRecipType'] == 'P' && calcvolume($post[$i]['pd_height'], $post[$i]['pd_width'], $post[$i]['pd_length'])) {
-					?><img src="brick_delete.png" width="16" height="16" alt="!" title="<?php echo(_('Volume sendt som ikke volume')); ?>" /> <?php
+					?><img src="brick_delete.png" width="16" height="16" alt="!" title="Volume sendt som ikke volume" /> <?php
 				} elseif($post[$i]['optRecipType'] != 'P' && $post[$i]['pd_height'] && $post[$i]['pd_width'] && $post[$i]['pd_length'] && $post[$i]['height'] && $post[$i]['width'] && $post[$i]['length']) {
 					if(ceil($post[$i]['pd_height'] * $post[$i]['pd_width'] * $post[$i]['pd_length'] / 4000*0.2)/0.2 > ceil($post[$i]['height'] * $post[$i]['width'] * $post[$i]['length'] / 4000*0.2)/0.2) {
-						?><img src="brick_add.png" width="16" height="16" alt="!" title="<?php echo(sprintf(_('Forkert volumevægt: %f kg'), round($post[$i]['pd_height'] * $post[$i]['pd_width'] * $post[$i]['pd_length'] / 4000 - $post[$i]['height'] * $post[$i]['width'] * $post[$i]['length'] / 4000))); ?>" /> <?php
+						?><img src="brick_add.png" width="16" height="16" alt="!" title="Forkert volumevægt: <?php echo(round($post[$i]['pd_height'] * $post[$i]['pd_width'] * $post[$i]['pd_length'] / 4000 - $post[$i]['height'] * $post[$i]['width'] * $post[$i]['length'] / 4000)) ?> kg" /> <?php
 					} elseif(ceil($post[$i]['pd_height'] * $post[$i]['pd_width'] * $post[$i]['pd_length'] / 4000*0.2)/0.2 > ceil($post[$i]['height'] * $post[$i]['width'] * $post[$i]['length'] / 4000*0.2)/0.2) {
-						?><img src="brick_delete.png" width="16" height="16" alt="!" title="<?php echo(sprintf(_('Forkert volumevægt: %f kg'), round($post[$i]['pd_height'] * $post[$i]['pd_width'] * $post[$i]['pd_length'] / 4000 - $post[$i]['height'] * $post[$i]['width'] * $post[$i]['length'] / 4000))); ?>" /> <?php
+						?><img src="brick_delete.png" width="16" height="16" alt="!" title="Forkert volumevægt: <?php echo(round($post[$i]['pd_height'] * $post[$i]['pd_width'] * $post[$i]['pd_length'] / 4000 - $post[$i]['height'] * $post[$i]['width'] * $post[$i]['length'] / 4000)) ?> kg" /> <?php
 					}
 				}
 			} else {
 				if(($post[$i]['pd_arrived'] == 'true' && $post[$i]['pd_weight'] == 0) || ($post[$i]['ss2'] == 'true' && $post[$i]['pd_height'] == 0 && ($post[$i]['pd_arrived'] == 'true' || $post[$i]['pd_weight'] != 0))) {
-					?><img src="error.png" width="16" height="16" alt="!" title="<?php echo(_('Info fra Track &amp; Trace utilstrækkelig')); ?>" /> <?php
+					?><img src="error.png" width="16" height="16" alt="!" title="Info fra Track &amp; Trace utilstrækkelig" /> <?php
 				} else {
-					?><a href="/syncpost.php?id=<?php echo($post[$i]['id']); ?>"><img style="border:0" src="arrow_refresh.png" width="16" height="16" alt="!" title="<?php echo(_('Mangler info fra Track &amp; Trace')); ?>" /></a> <?php
-					?><a href="?delete=<?php echo($post[$i]['id']); ?>"><img style="border:0" src="bin.png" width="16" height="16" alt="X" title="<?php echo(_('Slet')); ?>" /></a> <?php
+					?><a href="/syncpost.php?id=<?php echo($post[$i]['id']); ?>"><img style="border:0" src="arrow_refresh.png" width="16" height="16" alt="!" title="Mangler info fra Track &amp; Trace" /></a> <?php
+					?><a href="?delete=<?php echo($post[$i]['id']); ?>"><img style="border:0" src="bin.png" width="16" height="16" alt="X" title="Slet" /></a> <?php
 				}
 			}
 			if($post[$i]['pd_weight'] > 0 && $post[$i]['weight'] > 0) {
 				if(ceil($post[$i]['pd_weight']*0.2)/0.2 < ceil($post[$i]['weight']*0.2)/0.2) {
-					?><img src="tag_blue_add.png" width="16" height="16" alt="!" title="<?php echo(sprintf(_('Forkert vægt: %f kg'), $post[$i]['pd_weight'] - $post[$i]['weight'])); ?>" /> <?php
+					?><img src="tag_blue_add.png" width="16" height="16" alt="!" title="Forkert vægt: <?php echo $post[$i]['pd_weight'] - $post[$i]['weight']; ?> kg" /> <?php
 				} elseif(ceil($post[$i]['pd_weight']*0.2)/0.2 > ceil($post[$i]['weight']*0.2)/0.2) {
-					?><img src="tag_blue_delete.png" width="16" height="16" alt="!" title="<?php echo(sprintf(_('Forkert vægt: %f kg'), $post[$i]['pd_weight'] - $post[$i]['weight'])); ?>" /> <?php
+					?><img src="tag_blue_delete.png" width="16" height="16" alt="!" title="Forkert vægt: <?php echo $post[$i]['pd_weight'] - $post[$i]['weight']; ?> kg" /> <?php
 				}
 			}
 		} elseif(!$post[$i]['pd_weight'] && !$post[$i]['pd_height'] && !$post[$i]['pd_width'] && !$post[$i]['pd_length'] && $post[$i]['pd_return'] == 'false' && $post[$i]['pd_arrived'] == 'false') {
-			?><a href="/syncpost.php?id=<?php echo($post[$i]['id']); ?>"><img style="border:0" src="arrow_refresh.png" width="16" height="16" alt="!" title="<?php echo(_('Mangler info fra Track &amp; Trace')); ?>" /></a> <?php
-			?><a href="?delete=<?php echo($post[$i]['id']); ?>"><img style="border:0" src="bin.png" width="16" height="16" alt="X" title="<?php echo(_('Slet')); ?>" /></a> <?php
+			?><a href="/syncpost.php?id=<?php echo($post[$i]['id']); ?>"><img style="border:0" src="arrow_refresh.png" width="16" height="16" alt="!" title="Mangler info fra Track &amp; Trace" /></a> <?php
+			?><a href="?delete=<?php echo($post[$i]['id']); ?>"><img style="border:0" src="bin.png" width="16" height="16" alt="X" title="Slet" /></a> <?php
 		}
 		?>
         </td>
@@ -194,7 +201,7 @@ for($i=0;$i<$post_nr;$i++) {
 $total = $mysqli->fetch_array('SELECT sum(`recPoValue`) AS po, sum(`porto`) AS gebyr FROM `post`'.$where.' AND ub = \'false\' AND deleted = 0');
 @$GLOBALS['totalPorto'] += $totalPorto;
 ?><tr style="font-weight:bold">
-    <td colspan="8"><table cellpadding="0" cellspacing="0" style="width:100%"><tr><td><?php echo(_('I alt:')); ?></td> <td><?php echo(_('Postopkrævning:')); ?> <?php echo(str_replace(',00', ',-', number_format($total[0]['po'], 2, ',', '.'))) ?></td> <td><?php echo(_('Opkrævet porto:')); ?> <?php echo(str_replace(',00', ',-', number_format($total[0]['gebyr'], 2, ',', '.'))) ?></td> <td><?php echo(_('Porto:')); ?> <?php echo(str_replace(',00', ',-', number_format(@$totalPorto, 2, ',', '.'))) ?></td></tr></table></td>
+    <td colspan="8"><table cellpadding="0" cellspacing="0" style="width:100%"><tr><td>I alt</td> <td>Postopkrævning: <?php echo(str_replace(',00', ',-', number_format($total[0]['po'], 2, ',', '.'))) ?></td> <td>Opkrævet porto: <?php echo(str_replace(',00', ',-', number_format($total[0]['gebyr'], 2, ',', '.'))) ?></td> <td>Porto: <?php echo(str_replace(',00', ',-', number_format(@$totalPorto, 2, ',', '.'))) ?></td></tr></table></td>
 </tr><?php
 }
 
@@ -250,23 +257,23 @@ if(@$_GET['multirecp']) {
 
 ?>
 <div style="width:650px; margin:10px 0 0 180px"> <img height="50" alt="" src="http://www.postdanmark.dk/pfs/grafik/pakker.gif" style="float:right" />
-  <h2 style="padding:25px 0 0 0; margin:0"><?php echo(_('Forsendelser')); ?></h2>
+  <h2 style="padding:25px 0 0 0; margin:0">Forsendelser</h2>
   <hr />
   <br />
   <form action="" method="get" style="margin:0"><table><tr>
-  <td><?php echo(_('Afsender')); ?></td>
-  <td><?php echo(_('År')); ?></td>
-  <td><?php echo(_('Måned')); ?></td>
-  <td><?php echo(_('Pakke type')); ?></td>
-  <td><?php echo(_('Status')); ?></td>
-  <td><?php echo(_('Id')); ?></td>
-  <td><?php echo(_('Modtager')); ?></td>
-  <td><?php echo(_('Tlf')); ?></td>
-  <td><?php echo(_('Stregkode')); ?></td>
-  <td><?php echo(_('Beløb')); ?></td>
+  <td>Afsender</td>
+  <td>År</td>
+  <td>Måned</td>
+  <td>Pakke type</td>
+  <td>Status</td>
+  <td>Id</td>
+  <td>Modtager</td>
+  <td>Tlf</td>
+  <td>Stregkode</td>
+  <td>Beløb</td>
   </tr><tr><td>
     <select name="user">
-      <option value=""<?php if(@$_GET['user'] == '') { ?> selected="selected"<?php } ?>><?php echo(_('Alle')); ?></option><?php
+      <option value=""<?php if(@$_GET['user'] == '') { ?> selected="selected"<?php } ?>>Alle</option><?php
       foreach($brugere as $id => $navn) {
       	?><option value="<?php echo($id); ?>"<?php if(@$_GET['user'] == $id) { ?> selected="selected"<?php } ?>><?php echo($navn); ?></option><?php
       }
@@ -279,33 +286,33 @@ if(@$_GET['multirecp']) {
  ?>
     </select></td><td>
     <select name="m">
-      <option value=""<?php if(@$_GET['m'] == '') { ?> selected="selected"<?php } ?>><?php echo(_('Alle')); ?></option>
-      <option value="1"<?php if(@$_GET['m'] == 1) { ?> selected="selected"<?php } ?>><?php echo(_('Jan')); ?></option>
-      <option value="2"<?php if(@$_GET['m'] == 2) { ?> selected="selected"<?php } ?>><?php echo(_('Feb')); ?></option>
-      <option value="3"<?php if(@$_GET['m'] == 3) { ?> selected="selected"<?php } ?>><?php echo(_('Mar')); ?></option>
-      <option value="4"<?php if(@$_GET['m'] == 4) { ?> selected="selected"<?php } ?>><?php echo(_('Apr')); ?></option>
-      <option value="5"<?php if(@$_GET['m'] == 5) { ?> selected="selected"<?php } ?>><?php echo(_('Maj')); ?></option>
-      <option value="6"<?php if(@$_GET['m'] == 6) { ?> selected="selected"<?php } ?>><?php echo(_('Jun')); ?></option>
-      <option value="7"<?php if(@$_GET['m'] == 7) { ?> selected="selected"<?php } ?>><?php echo(_('Jul')); ?></option>
-      <option value="8"<?php if(@$_GET['m'] == 8) { ?> selected="selected"<?php } ?>><?php echo(_('Aug')); ?></option>
-      <option value="9"<?php if(@$_GET['m'] == 9) { ?> selected="selected"<?php } ?>><?php echo(_('Sep')); ?></option>
-      <option value="10"<?php if(@$_GET['m'] == 10) { ?> selected="selected"<?php } ?>><?php echo(_('Oct')); ?></option>
-      <option value="11"<?php if(@$_GET['m'] == 11) { ?> selected="selected"<?php } ?>><?php echo(_('Nov')); ?></option>
-      <option value="12"<?php if(@$_GET['m'] == 12) { ?> selected="selected"<?php } ?>><?php echo(_('Dec')); ?></option>
+      <option value=""<?php if(@$_GET['m'] == '') { ?> selected="selected"<?php } ?>>Alle</option>
+      <option value="1"<?php if(@$_GET['m'] == 1) { ?> selected="selected"<?php } ?>>Jan</option>
+      <option value="2"<?php if(@$_GET['m'] == 2) { ?> selected="selected"<?php } ?>>Feb</option>
+      <option value="3"<?php if(@$_GET['m'] == 3) { ?> selected="selected"<?php } ?>>Mar</option>
+      <option value="4"<?php if(@$_GET['m'] == 4) { ?> selected="selected"<?php } ?>>Apr</option>
+      <option value="5"<?php if(@$_GET['m'] == 5) { ?> selected="selected"<?php } ?>>Maj</option>
+      <option value="6"<?php if(@$_GET['m'] == 6) { ?> selected="selected"<?php } ?>>Jun</option>
+      <option value="7"<?php if(@$_GET['m'] == 7) { ?> selected="selected"<?php } ?>>Jul</option>
+      <option value="8"<?php if(@$_GET['m'] == 8) { ?> selected="selected"<?php } ?>>Aug</option>
+      <option value="9"<?php if(@$_GET['m'] == 9) { ?> selected="selected"<?php } ?>>Sep</option>
+      <option value="10"<?php if(@$_GET['m'] == 10) { ?> selected="selected"<?php } ?>>Oct</option>
+      <option value="11"<?php if(@$_GET['m'] == 11) { ?> selected="selected"<?php } ?>>Nov</option>
+      <option value="12"<?php if(@$_GET['m'] == 12) { ?> selected="selected"<?php } ?>>Dec</option>
     </select></td><td>
     <select name="optRecipType">
-      <option value=""<?php if(@$_GET['optRecipType'] == '') { ?> selected="selected"<?php } ?>><?php echo(_('Alle')); ?></option>
-      <option value="P"<?php if(@$_GET['optRecipType'] == 'P') { ?> selected="selected"<?php } ?>><?php echo(_('Privat')); ?></option>
-      <option value="E"<?php if(@$_GET['optRecipType'] == 'E') { ?> selected="selected"<?php } ?>><?php echo(_('Erhverv')); ?></option>
-      <option value="O"<?php if(@$_GET['optRecipType'] == 'O') { ?> selected="selected"<?php } ?>><?php echo(_('PO')); ?></option>
-      <option value="ub"<?php if(@$_GET['optRecipType'] == 'ub') { ?> selected="selected"<?php } ?>><?php echo(_('UB')); ?></option>
+      <option value=""<?php if(@$_GET['optRecipType'] == '') { ?> selected="selected"<?php } ?>>Alle</option>
+      <option value="P"<?php if(@$_GET['optRecipType'] == 'P') { ?> selected="selected"<?php } ?>>Privat</option>
+      <option value="E"<?php if(@$_GET['optRecipType'] == 'E') { ?> selected="selected"<?php } ?>>Erhverv</option>
+      <option value="O"<?php if(@$_GET['optRecipType'] == 'O') { ?> selected="selected"<?php } ?>>PO</option>
+      <option value="ub"<?php if(@$_GET['optRecipType'] == 'ub') { ?> selected="selected"<?php } ?>>UB</option>
     </select></td><td>
     <select name="status">
-      <option value=""<?php if(@$_GET['status'] == '') { ?> selected="selected"<?php } ?>><?php echo(_('Alle')); ?></option>
-      <option value="pd_arrived_true"<?php if(@$_GET['status'] == 'pd_arrived_true') { ?> selected="selected"<?php } ?>><?php echo(_('Levert')); ?></option>
-      <option value="pd_arrived_false"<?php if(@$_GET['status'] == 'pd_arrived_false') { ?> selected="selected"<?php } ?>><?php echo(_('Ikke levert')); ?></option>
-      <option value="pd_return_true"<?php if(@$_GET['status'] == 'pd_return_true') { ?> selected="selected"<?php } ?>><?php echo(_('Sendt retur')); ?></option>
-      <option value="pd_return_false"<?php if(@$_GET['status'] == 'pd_return_false') { ?> selected="selected"<?php } ?>><?php echo(_('Ikke retur')); ?></option>
+      <option value=""<?php if(@$_GET['status'] == '') { ?> selected="selected"<?php } ?>>Alle</option>
+      <option value="pd_arrived_true"<?php if(@$_GET['status'] == 'pd_arrived_true') { ?> selected="selected"<?php } ?>>Levert</option>
+      <option value="pd_arrived_false"<?php if(@$_GET['status'] == 'pd_arrived_false') { ?> selected="selected"<?php } ?>>Ikke levert</option>
+      <option value="pd_return_true"<?php if(@$_GET['status'] == 'pd_return_true') { ?> selected="selected"<?php } ?>>Sendt retur</option>
+      <option value="pd_return_false"<?php if(@$_GET['status'] == 'pd_return_false') { ?> selected="selected"<?php } ?>>Ikke retur</option>
 
     </select></td><td>
     <input name="id" size="3" style="width:auto" value="<?php echo(@$_GET['id']); ?>" /></td><td>
@@ -315,11 +322,11 @@ if(@$_GET['multirecp']) {
     <input name="recipientID" size="10" style="width:auto" value="<?php echo(@$_GET['recipientID']); ?>" /></td><td>
     <input name="STREGKODE" size="13" maxlength="13" style="width:auto" value="<?php echo(@$_GET['STREGKODE']); ?>" /></td><td>
     <input name="recPoValue" size="5" maxlength="5" style="width:auto" value="<?php echo(@$_GET['recPoValue']); ?>" /></td></tr>
-   <tr><td><input type="submit" value="<?php echo(_('Hent')); ?>" style="width:auto" /></td></tr>
+   <tr><td><input type="submit" value="Hent" style="width:auto" /></td></tr>
   </form></table><br />
-<a href="/syncpost.php?y=<?php echo(@$_GET['y']) ?>&amp;m=<?php echo(@$_GET['m']) ?>" style="color:#000000"><img src="arrow_refresh.png" alt="" width="16" height="16" title="" style="border:0" /> <?php echo(_('med Track &amp; Trace')); ?></a><br />
-<a href="postregning.php?y=<?php echo(@$_GET['y']) ?>&amp;m=<?php echo(@$_GET['m']) ?>" style="color:#000000"><img src="application_view_list.png" alt="" width="16" height="16" title="" style="border:0" /> <?php echo(_('Vis som postdanmark regning')); ?></a>
-<a href="spec.php?y=<?php echo(@$_GET['y']) ?>&amp;m=<?php echo(@$_GET['m']) ?>" style="color:#000000"><img src="application_view_list.png" alt="" width="16" height="16" title="" style="border:0" /> <?php echo(_('Vis som postdanmark Fakturaspecifikation')); ?></a>
+<a href="getsize.php?y=<?php echo(@$_GET['y']) ?>&amp;m=<?php echo(@$_GET['m']) ?>" style="color:#000000"><img src="arrow_refresh.png" alt="" width="16" height="16" title="" style="border:0" /> Sync med Track & Trace</a><br />
+<a href="postregning.php?y=<?php echo(@$_GET['y']) ?>&amp;m=<?php echo(@$_GET['m']) ?>" style="color:#000000"><img src="application_view_list.png" alt="" width="16" height="16" title="" style="border:0" /> Vis som postdanmark regning</a>
+<a href="spec.php?y=<?php echo(@$_GET['y']) ?>&amp;m=<?php echo(@$_GET['m']) ?>" style="color:#000000"><img src="application_view_list.png" alt="" width="16" height="16" title="" style="border:0" /> Vis som postdanmark Fakturaspecifikation</a>
   <table><?php
   
   foreach($brugere as $id => $navn) {

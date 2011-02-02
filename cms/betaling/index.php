@@ -2,7 +2,7 @@
 /*
 ini_set('display_errors', 1);
 error_reporting(-1);
-*/
+/**/
 
 date_default_timezone_set('Europe/Copenhagen');
 setlocale(LC_ALL, 'da_DK');
@@ -162,8 +162,8 @@ if(!empty($_GET['id']) && @$_GET['checkid'] == getCheckid($_GET['id'])) {
 				$GLOBALS['generatedcontent']['text'] .= '<tr>
 					<td class="tal">'.$faktura['quantities'][$i].'</td>
 					<td>'.htmlspecialchars_decode($faktura['products'][$i]).'</td>
-					<td class="tal">'.number_format($faktura['values'][$i], 2, ',', '').'</td>
-					<td class="tal">'.number_format($faktura['values'][$i]*$faktura['quantities'][$i], 2, ',', '').'</td>
+					<td class="tal">'.number_format($faktura['values'][$i]*(1+$faktura['momssats']), 2, ',', '').'</td>
+					<td class="tal">'.number_format($faktura['values'][$i]*(1+$faktura['momssats'])*$faktura['quantities'][$i], 2, ',', '').'</td>
 				</tr>';
 			}
 			
@@ -1023,7 +1023,7 @@ Remember to \'expedite\' the payment when the product is sent (The payment is fi
 				
 				$emailbody_tablerows = '';
 				for($i=0; $i<$productslines; $i++) {
-					$emailbody_tablerows .= '<tr><td class="tal">'.$faktura['quantities'][$i].'</td><td>'.htmlspecialchars_decode($faktura['products'][$i]).'</td><td class="tal">'.number_format($faktura['values'][$i], 2, ',', '').'</td><td class="tal">'.number_format($faktura['values'][$i]*$faktura['quantities'][$i], 2, ',', '').'</td></tr>';
+					$emailbody_tablerows .= '<tr><td class="tal">'.$faktura['quantities'][$i].'</td><td>'.htmlspecialchars_decode($faktura['products'][$i]).'</td><td class="tal">'.number_format($faktura['values'][$i]*(1+$faktura['momssats']), 2, ',', '').'</td><td class="tal">'.number_format($faktura['values'][$i]*(1+$faktura['momssats'])*$faktura['quantities'][$i], 2, ',', '').'</td></tr>';
 				}
 				
 				$emailbody_nore = '';
@@ -1179,7 +1179,7 @@ Tel. %s<br />
 		
 		$emailbody_tablerows = '';
 		for($i=0; $i<$productslines; $i++) {
-			$emailbody_tablerows .= '<tr><td class="tal">'.$faktura['quantities'][$i].'</td><td>'.htmlspecialchars_decode($faktura['products'][$i]).'</td><td class="tal">'.number_format($faktura['values'][$i], 2, ',', '').'</td><td class="tal">'.number_format($faktura['values'][$i]*$faktura['quantities'][$i], 2, ',', '').'</td></tr>';
+			$emailbody_tablerows .= '<tr><td class="tal">'.$faktura['quantities'][$i].'</td><td>'.htmlspecialchars_decode($faktura['products'][$i]).'</td><td class="tal">'.number_format($faktura['values'][$i]*(1+$faktura['momssats']), 2, ',', '').'</td><td class="tal">'.number_format($faktura['values'][$i]*(1+$faktura['momssats'])*$faktura['quantities'][$i], 2, ',', '').'</td></tr>';
 		}
 		
 		//TODO make this a gettext

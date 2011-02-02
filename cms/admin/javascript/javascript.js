@@ -124,7 +124,6 @@ function showhide(id) {
 		obj.style.display = '';
 		setCookie('hide'+id, '', 0);
 	}
-	return false;
 }
 
 function showhidekats(id,thisobj) {
