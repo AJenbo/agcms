@@ -1150,6 +1150,15 @@ new tcal ({ 'controlid': 'cdate' });
 ?></td>
 		</tr>
 		<tr>
+			<td><?php echo(_('Recived:')); ?></td>
+			<td><?php echo($faktura['transferred'] ? _('Yes') : _('No')); ?>
+            <?php 
+            if($_SESSION['_user']['access'] == 1 && $faktura['transferred'])
+	            echo(' (<a href="fakturasvalidate.php?undoid='.$faktura['id'].'">'._('Remove').'</a>)');
+            ?>
+			</td>
+		</tr>
+		<tr>
 			<td>Oprettet:</td>
 			<td><?php if($faktura['status'] == 'new') { ?>
 				<input maxlength="10" name="date" id="date" size="11" value="<?php echo(date(_('m/d/Y'), $faktura['date'])); ?>" />

@@ -471,6 +471,7 @@ include('config.php');
 <div id="popup" style="position:absolute; display:none; left:0; right:0; top:0; bottom:0; background-color:#666666;z-index:2; color:#FFFFFF;opacity:0.9;filter:alpha(opacity=90);"> Din popup blokker (stop extra vinduer), har forhindret at PDF filen blev åbnet automatisk.<br />
 	<a id="popuplink" href="#" style="text-decoration:underline" onclick="this.parentNode.style.display = 'none';" target="_blank">Tryk på dette link for at åbne PDF filen manuelt.</a></div>
 <div style="position:relative;width:100%;z-index:1000;background-color:#000000; top:0; left:0;color:#FFFFFF;font-weight:bold; text-align:center; font-size:40px;opacity:0.5;filter:alpha(opacity=50);" id="postdkloading">Venter på Post Danmark's server.</div>
+<div style="position:relative;width:100%;z-index:1000;background-color:#000000; top:0; left:0;color:#FFFFFF;font-weight:bold; text-align:center; font-size:40px;opacity:0.5;filter:alpha(opacity=50);" id="jofloading">JoF server skal genstartes.</div>
 <img src="http://www.postdanmark.dk/pfs/grafik/pakker.gif" alt="" style="float:right; padding:0 0 5px 0" height="50" /><h2 style="padding:25px 0 0 0; margin:0">Indenlandsk Pakke</h2>
 <hr />
 <table style="width:653px"><tbody><tr><td style="width:33%"><strong>Afsender</strong><br />

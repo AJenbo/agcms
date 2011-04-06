@@ -274,10 +274,15 @@ function init() {
 setInterval('pingserver()', 2*60*1000);
 
 function pingserver() {
-	var servertest = new Image();
-	servertest.onload = function () { $('postdkloading').style.display = 'none'; }
-	servertest.onerror = function () { $('postdkloading').style.display = ''; }
-	servertest.src = 'http://www.postdanmark.dk/pfs/grafik/pakker.gif?time='+(new Date).getTime();
+	var pservertest = new Image();
+	pservertest.onload = function () { $('postdkloading').style.display = 'none'; }
+	pservertest.onerror = function () { $('postdkloading').style.display = ''; }
+	pservertest.src = 'http://www.postdanmark.dk/pfs/grafik/pakker.gif?time='+(new Date).getTime();
+	
+	var jservertest = new Image();
+	jservertest.onload = function () { $('jofloading').style.display = 'none'; }
+	jservertest.onerror = function () { $('jofloading').style.display = ''; }
+	jservertest.src = 'http://a.jof.dk/icons/folder.gif?time='+(new Date).getTime();
 }
 
 function dummy() {

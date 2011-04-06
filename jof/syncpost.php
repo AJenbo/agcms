@@ -81,6 +81,8 @@ foreach($post as $pakke) {
 
 if(!empty($_GET['id']))
 	header('Location: /post/liste.php');
+elseif(!empty($_GET['y']))
+	header('Location: /post/liste.php?y='.$_GET['y'].'&m='.$_GET['m']);
 else
 	echo('Der blev søgt på '.count($post).' pakker.');
 ?>

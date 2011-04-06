@@ -212,10 +212,10 @@ foreach($faktura['values'] as $i => $value) {
 }
 
 //Spacing
-$pdf->Cell( 24, 6*(16-$i-$extralines), '', 'RL', 0);
-$pdf->Cell(106, 6*(16-$i-$extralines), '', 'RL', 0);
-$pdf->Cell( 29, 6*(16-$i-$extralines), '', 'RL', 0);
-$pdf->Cell( 34, 6*(16-$i-$extralines), '', 'RL', 1);
+$pdf->Cell( 24, 6*(17-$i-$extralines), '', 'RL', 0);
+$pdf->Cell(106, 6*(17-$i-$extralines), '', 'RL', 0);
+$pdf->Cell( 29, 6*(17-$i-$extralines), '', 'RL', 0);
+$pdf->Cell( 34, 6*(17-$i-$extralines), '', 'RL', 1);
 
 //Footer
 /*
@@ -224,14 +224,15 @@ $pdf->Cell(106, 6, '', 'RL', 0);
 $pdf->Cell( 29, 6, _('Net Amount'), 'RL', 0, 'R');
 $pdf->Cell( 34, 6, number_format($netto, 2, ',', ''), 'RL', 1, 'R');
 */
+/*
+//Her af moms
 $pdf->Cell( 24, 6, '', 'RL', 0);
 $pdf->Cell(106, 6, ($faktura['momssats']*100).'%', 'RL', 0, 'R');
-//Her af moms
 $pdf->Cell( 29, 6, _('VAT Amount'), 'RL', 0, 'R');
 $pdf->Cell( 34, 6, number_format($netto*$faktura['momssats'], 2, ',', ''), 'RL', 1, 'R');
-
+*/
 $pdf->Cell( 24, 6, '', 'RL', 0);
-$pdf->Cell(106, 6, '', 'RL', 0);
+$pdf->Cell(106, 6, ($faktura['momssats']*100)._('% VAT is: ').number_format($netto*$faktura['momssats'], 2, ',', ''), 'RL', 0);
 //Forsendelse
 $pdf->Cell( 29, 6, _('Shipping'), 'RL', 0, 'R');
 $pdf->Cell( 34, 6, number_format($faktura['fragt'], 2, ',', ''), 'RL', 1, 'R');

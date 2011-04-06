@@ -324,7 +324,7 @@ if(@$_GET['multirecp']) {
     <input name="recPoValue" size="5" maxlength="5" style="width:auto" value="<?php echo(@$_GET['recPoValue']); ?>" /></td></tr>
    <tr><td><input type="submit" value="Hent" style="width:auto" /></td></tr>
   </form></table><br />
-<a href="getsize.php?y=<?php echo(@$_GET['y']) ?>&amp;m=<?php echo(@$_GET['m']) ?>" style="color:#000000"><img src="arrow_refresh.png" alt="" width="16" height="16" title="" style="border:0" /> Sync med Track & Trace</a><br />
+<a href="/syncpost.php?y=<?php echo(@$_GET['y']) ?>&amp;m=<?php echo(@$_GET['m']) ?>" style="color:#000000"><img src="arrow_refresh.png" alt="" width="16" height="16" title="" style="border:0" /> Sync med Track & Trace</a><br />
 <a href="postregning.php?y=<?php echo(@$_GET['y']) ?>&amp;m=<?php echo(@$_GET['m']) ?>" style="color:#000000"><img src="application_view_list.png" alt="" width="16" height="16" title="" style="border:0" /> Vis som postdanmark regning</a>
 <a href="spec.php?y=<?php echo(@$_GET['y']) ?>&amp;m=<?php echo(@$_GET['m']) ?>" style="color:#000000"><img src="application_view_list.png" alt="" width="16" height="16" title="" style="border:0" /> Vis som postdanmark Fakturaspecifikation</a>
   <table><?php
