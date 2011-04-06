@@ -21,7 +21,7 @@ $mysqli = new simple_mysqli($GLOBALS['_config']['mysql_server'], $GLOBALS['_conf
 function newfaktura() {
 	global $mysqli;
 	
-	$mysqli->query("INSERT INTO `fakturas` (`date`, `clerk`) VALUES (now(), '".addcslashes($_SESSION['_user']['fullname'], '`\\')."');");
+	$mysqli->query("INSERT INTO `fakturas` (`date`, `clerk`) VALUES (now(), '".addcslashes($_SESSION['_user']['fullname'], '\'\\')."');");
 	return $mysqli->insert_id;
 }
 
@@ -371,6 +371,11 @@ function save($id, $type, $updates) {
 	}
 	
 	$faktura = $mysqli->fetch_one("SELECT * FROM `fakturas` WHERE `id` = ".$id);
+
+	if(empty($faktura['clerk'])) {
+		$mysqli->query("UPDATE `fakturas` SET `clerk` = '".addcslashes($_SESSION['_user']['fullname'], '\'\\')."' WHERE `id` = ".$faktura['id']);
+		$faktura['clerk'] = $_SESSION['_user']['fullname'];
+	}
 	
 	if($type == 'email') {
 		if(!validemail($faktura['email'])) {
@@ -451,11 +456,6 @@ Tel. %s</p>'),
 		}
 		$mysqli->query("UPDATE `fakturas` SET `status` = 'locked' WHERE `status` = 'new' && `id` = ".$faktura['id']);
 		$mysqli->query("UPDATE `fakturas` SET `sendt` = 1, `department` = '".$faktura['department']."' WHERE `id` = ".$faktura['id']);
-
-		if(empty($faktura['clerk'])) {
-			$mysqli->query("UPDATE `fakturas` SET `clerk` = '".addcslashes($_SESSION['_user']['fullname'], '`\\')."' WHERE `id` = ".$faktura['id']);
-			$faktura['clerk'] = $_SESSION['_user']['fullname'];
-		}
 		
 		//Upload email to the sent folder via imap
 		if($GLOBALS['_config']['imap']) {
