@@ -34,6 +34,10 @@ require_once 'inc/mysqli.php';
 $GLOBALS['cache'] = array();
 $GLOBALS['cache']['updatetime'] = array();
 
+if(!empty($_SESSION['faktura']['quantities'])) {
+	$GLOBALS['cache']['updatetime'][] = time();
+}
+
 //Open database
 $mysqli = new simple_mysqli($GLOBALS['_config']['mysql_server'], $GLOBALS['_config']['mysql_user'], $GLOBALS['_config']['mysql_password'], $GLOBALS['_config']['mysql_database']);
 

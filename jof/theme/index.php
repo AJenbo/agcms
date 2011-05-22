@@ -292,7 +292,7 @@ if($GLOBALS['generatedcontent']['contenttype'] == 'front') {
 ?>><a name="top"></a>
 	<?php
 
-if(@$_SESSION['faktura']) {
+if(@$_SESSION['faktura']['quantities']) {
 	?><a style="display:inline;margin-left:5px;" href="/bestilling/"><img alt="" src="/theme/images/cart.png" /> Indkøbsliste</a><br /><br /><?php
 }
 

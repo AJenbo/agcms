@@ -25,7 +25,7 @@ if(/(NetFront|PlayStation|hiptop|IEMobile|Smartphone|iPhone|Opera Mobi|Opera Min
 <link title="Arms Gallery" type="application/opensearchdescription+xml" rel="search" href="/sog.php" />
 <meta http-equiv="content-language" content="da" />
 <meta name="Description" content="" />
-<meta name="Author" content="Anders Jenbo" />
+<meta name="author" content="Anders Jenbo" />
 <meta name="Classification" content="" />
 <?php if(@$GLOBALS['generatedcontent']['keywords']) echo('<meta name="Keywords" content="'.$GLOBALS['generatedcontent']['keywords'].'" />'); ?>
 <meta name="Reply-to" content="mail@arms-gallery.dk" />
@@ -56,7 +56,7 @@ if(/(NetFront|PlayStation|hiptop|IEMobile|Smartphone|iPhone|Opera Mobi|Opera Min
   </ul>
 </div><?php
 
-if(@$_SESSION['faktura']) {
+if(!empty($_SESSION['faktura']['quantities'])) {
 	?><div class="bar" id="cart">
 		<ul><li><a href="/bestilling/">Indkøbsliste <img src="/theme/images/cart.png" alt="" /></a></li>
 		</ul>

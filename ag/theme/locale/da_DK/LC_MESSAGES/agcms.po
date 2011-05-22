@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2010-06-28 17:00+0200\n"
-"PO-Revision-Date: 2011-04-06 18:20+0100\n"
+"PO-Revision-Date: 2011-04-06 19:01+0100\n"
 "Last-Translator: Anders Jenbo <anders@jenbo.dk>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -448,7 +448,7 @@ msgstr "Alle beløb er i DKK"
 #: faktura-pdf.php:231
 #: faktura.php:1399
 msgid "TO PAY"
-msgstr "AT BETALE"
+msgstr "I alt (dkk)"
 
 #: index.php:412
 msgid "Proceed to the terms of trade"
