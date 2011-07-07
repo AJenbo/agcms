@@ -90,6 +90,7 @@ if(!empty($_GET['id'])) {
 }
 $GLOBALS['generatedcontent']['contenttype'] = 'page';
 $GLOBALS['generatedcontent']['text'] = '';
+$productslines = 0;
 
 if(!empty($_GET['id']) && @$_GET['checkid'] == getCheckid($_GET['id'])) {
 	$rejected = array();
@@ -971,6 +972,7 @@ Remember to \'expedite\' the payment when the product is sent (The payment is fi
 				$emailbody .= '</title><style type="text/css">#faktura td { border:1px #000 solid; border-collapse:collapse; padding:2px; }</style></head><body>';
  
  				//Generate the reseaving address
+ 				$emailbody_address = '';
 				if($faktura['altpost'])
 					$emailbody_address .= '<td>'._('Delivery address:').'</td>';
 				$emailbody_address .= '</tr><tr><td>'._('Name:').'</td><td>'.$faktura['navn'].'</td>';
