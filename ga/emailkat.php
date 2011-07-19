@@ -19,6 +19,7 @@ function valide_mail_host($host) {
 	return getmxrr(preg_replace('/.+?@(.?)/u', '$1', $host), $dummy);
 }
 
+$email_rejected = false;
 //is the email valid
 if(!preg_match('/^([a-z0-9_\.\-])+\@(([a-z0-9\-])+\.)+([a-z0-9]{2,4})+$/i', $_POST['email']) || !valide_mail_host($_POST['email'])) {
 	$_POST['email'] = '';
