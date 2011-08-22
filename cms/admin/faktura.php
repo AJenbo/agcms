@@ -1108,7 +1108,12 @@ new tcal ({ 'controlid': 'cdate' });
 		</tr><?php
 		}
         
-    ?></table>
+    ?><tr><td colspan="2"><p><strong><?php echo(_('Note:')); ?></strong></p>
+	<p class="note"><?php if($faktura['status'] != 'new') echo(nl2br(htmlspecialchars($faktura['note']))); ?></p><?php
+	$rows = count(explode("\n", $faktura['note']));
+	$rows += 2;
+	?><textarea style="width:350px" name="note" id="note" rows="<?=$rows?>"><?php if($faktura['status'] == 'new') echo(htmlspecialchars($faktura['note'])); ?></textarea>
+</table>
 	<table>
 		<tr>
 			<td><?php echo(_('ID:')); ?></td>
@@ -1432,9 +1437,6 @@ if(count($GLOBALS['_config']['email']) > 1) {
 		}
 		?></tbody>
 	</table>
-	<p><strong><?php echo(_('Note:')); ?></strong></p>
-	<p class="note"><?php if($faktura['status'] != 'new') echo(nl2br(htmlspecialchars($faktura['note']))); ?></p>
-	<textarea name="note" id="note"><?php if($faktura['status'] == 'new') echo(htmlspecialchars($faktura['note'])); ?></textarea>
 </div>
 </div><?php
 if($faktura['status'] != 'canceled' && $faktura['status'] != 'new' && $faktura['status'] != 'accepted') {
