@@ -1107,13 +1107,16 @@ new tcal ({ 'controlid': 'cdate' });
 			<td><a href="http://www.postdanmark.dk/tracktrace/TrackTrace.do?i_lang=IND&amp;i_stregkode=<?php echo($pakke['STREGKODE']); ?>" target="_blank"><?php echo($pakke['STREGKODE']); ?></a></td>
 		</tr><?php
 		}
-        
-    ?><tr><td colspan="2"><p><strong><?php echo(_('Note:')); ?></strong></p>
-	<p class="note"><?php if($faktura['status'] != 'new') echo(nl2br(htmlspecialchars($faktura['note']))); ?></p><?php
-	$rows = count(explode("\n", $faktura['note']));
-	$rows += 2;
-	?><textarea style="width:350px" name="note" id="note" rows="<?=$rows?>"><?php if($faktura['status'] == 'new') echo(htmlspecialchars($faktura['note'])); ?></textarea>
-</table>
+		?><tr>
+			<td colspan="2">
+				<p><strong><?php echo(_('Note:')); ?></strong></p>
+				<p class="note" style="width:350px"><?php if($faktura['status'] != 'new') echo(nl2br(htmlspecialchars($faktura['note']))); ?></p><?php
+				$rows = count(explode("\n", $faktura['note']));
+				$rows += 2;
+				?><textarea style="width:350px" name="note" id="note" rows="<?=$rows?>"><?php if($faktura['status'] == 'new') echo(htmlspecialchars($faktura['note'])); ?></textarea>
+			</td>
+		</tr>
+	</table>
 	<table>
 		<tr>
 			<td><?php echo(_('ID:')); ?></td>
