@@ -285,8 +285,9 @@ function copytonew($id) {
 	$faktura['clerk'] = $_SESSION['_user']['fullname'];
 	
 	$sql = "INSERT INTO `fakturas` SET";
-	foreach ($faktura as $key => $value)
+	foreach ($faktura as $key => $value) {
 		$sql .= " `".addcslashes($key, '`\\')."` = '".addcslashes($value, "'\\")."',";
+	}
 	$sql .= " `date` = NOW();";
 		
 	$mysqli->query($sql);
@@ -354,8 +355,9 @@ function save($id, $type, $updates) {
 	if (count($updates)) {
 	
 		$sql = "UPDATE `fakturas` SET";
-		foreach ($updates as $key => $value)
+		foreach ($updates as $key => $value) {
 			$sql .= " `".addcslashes($key, '`\\')."` = '".addcslashes($value, "'\\")."',";
+		}
 		$sql = substr($sql, 0, -1);
 		
 		if (!empty($date)) {

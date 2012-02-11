@@ -104,8 +104,9 @@ function sendEmail($id, $from, $interests, $subject, $text) {
 
 	foreach ($emails_group as $emails) {
 		$mail->ClearBCCs();
-		foreach ($emails as $email)
+		foreach ($emails as $email) {
 			$mail->AddBCC($email['email'], $email['navn']);
+		}
 	
 		if (!$mail->Send()) {
 			//TODO upload if send fails
