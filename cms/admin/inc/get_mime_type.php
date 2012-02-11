@@ -346,6 +346,10 @@ function get_mime_type($filepath) {
 			);
 			$mime = empty($mimes[mb_strtolower(@$pathinfo['extension'], 'UTF-8')]) ? 'application/octet-stream' : $mimes[mb_strtolower(@$pathinfo['extension'], 'UTF-8')];
 		}
+
+	$mime = explode(';', $mime);
+	$mime = $mime[0];
+
     return $mime;
 }
 ?>
