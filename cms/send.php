@@ -17,7 +17,7 @@ $mysqli = new simple_mysqli($GLOBALS['_config']['mysql_server'], $GLOBALS['_conf
 //Get emails that needs sending
 $emails = $mysqli->fetch_array("SELECT * FROM `emails`");
 
-if(!$emails) {
+if (!$emails) {
 	die(_('No e-mails to send.'));
 }
 
@@ -33,7 +33,7 @@ $PHPMailer->IsSMTP();
 $PHPMailer->Host       = $GLOBALS['_config']['smtp'];
 $PHPMailer->Port       = $GLOBALS['_config']['smtpport'];
 $PHPMailer->CharSet    = 'utf-8';
-if($GLOBALS['_config']['emailpassword'] !== false) {
+if ($GLOBALS['_config']['emailpassword'] !== false) {
 	$PHPMailer->SMTPAuth   = true; // enable SMTP authentication
 	$PHPMailer->Username   = $GLOBALS['_config']['email'][0];
 	$PHPMailer->Password   = $GLOBALS['_config']['emailpassword'];
@@ -42,7 +42,7 @@ if($GLOBALS['_config']['emailpassword'] !== false) {
 }
 
 //Load the imap class, if imap is configured
-if($GLOBALS['_config']['imap'] !== FALSE) {
+if ($GLOBALS['_config']['imap'] !== FALSE) {
 	require_once "inc/imap.inc.php";
 }
 
@@ -69,7 +69,7 @@ foreach($emails as $email) {
 	$PHPMailer->Subject = $email['subject'];
 	$PHPMailer->MsgHTML($email['body'], $_SERVER['DOCUMENT_ROOT']);
 	
-	if(!$PHPMailer->Send()) {
+	if (!$PHPMailer->Send()) {
 		continue;
 	}
 	
@@ -78,7 +78,7 @@ foreach($emails as $email) {
 	$mysqli->query("DELETE FROM `emails` WHERE `id` = ".$email['id']);
 	
 	//Upload email to the sent folder via imap
-	if($GLOBALS['_config']['imap'] !== FALSE) {
+	if ($GLOBALS['_config']['imap'] !== FALSE) {
 		$imap = new IMAPMAIL;
 		$imap->open($GLOBALS['_config']['imap'], $GLOBALS['_config']['imapport']);
 		$emailnr = array_search('', $GLOBALS['_config']['email']);

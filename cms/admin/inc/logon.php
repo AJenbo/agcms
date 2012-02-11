@@ -19,17 +19,17 @@ session_start();
 
 $mysqli = new simple_mysqli($GLOBALS['_config']['mysql_server'], $GLOBALS['_config']['mysql_user'], $GLOBALS['_config']['mysql_password'], $GLOBALS['_config']['mysql_database']);
 
-if(empty($_SESSION['_user']) && !empty($_POST['username'])) {
+if (empty($_SESSION['_user']) && !empty($_POST['username'])) {
 
 	$_SESSION['_user'] = $mysqli->fetch_array("SELECT * FROM `users` WHERE `name` = '".addcslashes($_POST['username'], "'\\")."' LIMIT 1");
 	$_SESSION['_user'] = @$_SESSION['_user'][0];
-	if($_SESSION['_user']['access'] < 1 || @$_SESSION['_user']['password'] != crypt(@$_POST['password'], $_SESSION['_user']['password']))
+	if ($_SESSION['_user']['access'] < 1 || @$_SESSION['_user']['password'] != crypt(@$_POST['password'], $_SESSION['_user']['password']))
 		unset($_SESSION['_user']);
 
 	unset($_POST);
 }
 
-if(empty($_SESSION['_user'])) {
+if (empty($_SESSION['_user'])) {
 	sleep(1);
 	header('HTTP/1.0 401 Unauthorized');
 	?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">

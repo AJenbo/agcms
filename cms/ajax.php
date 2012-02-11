@@ -22,7 +22,7 @@ foreach($included_files as $filename) {
 foreach($GLOBALS['cache']['updatetime'] as $time) {
 	$updatetime = max($updatetime, $time);
 }
-if($updatetime < 1)
+if ($updatetime < 1)
 	$updatetime = time();
 
 doConditionalGet($updatetime);
@@ -42,7 +42,7 @@ function get_kat($id, $sort) {
 	foreach($GLOBALS['cache']['updatetime'] as $time) {
 		$updatetime = max($updatetime, $time);
 	}
-	if($updatetime < 1)
+	if ($updatetime < 1)
 		$updatetime = time();
 	
 	doConditionalGet($updatetime);
@@ -50,13 +50,13 @@ function get_kat($id, $sort) {
 	//Get pages list
 	$bind = $mysqli->fetch_array("SELECT sider.id, sider.navn, sider.burde, sider.fra, sider.pris, sider.for, sider.varenr FROM bind JOIN sider ON bind.side = sider.id WHERE bind.kat = ".$GLOBALS['generatedcontent']['activmenu']." ORDER BY sider.".$sort." ASC");
 	$bind = array_natsort($bind, 'id', $sort);
-	if(!@$GLOBALS['cache']['kats'][$GLOBALS['generatedcontent']['activmenu']]['navn']) {
+	if (!@$GLOBALS['cache']['kats'][$GLOBALS['generatedcontent']['activmenu']]['navn']) {
 		$kat = $mysqli->fetch_array("SELECT navn, vis FROM kat WHERE id = ".$GLOBALS['generatedcontent']['activmenu']." LIMIT 1");
 		$GLOBALS['cache']['kats'][$GLOBALS['generatedcontent']['activmenu']]['navn'] = $kat[0]['navn'];
 	}
 	
 	
-	if($bind) 
+	if ($bind) 
 		$bind_nr = count($bind);
 
 	return array("id" => 'kat'.$GLOBALS['generatedcontent']['activmenu'], "html" => kat_html($bind, $GLOBALS['cache']['kats'][$GLOBALS['generatedcontent']['activmenu']]['navn']));

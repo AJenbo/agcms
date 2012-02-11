@@ -16,7 +16,7 @@ require_once '../inc/config.php';
 require_once '../inc/mysqli.php';
 $mysqli = new simple_mysqli($GLOBALS['_config']['mysql_server'], $GLOBALS['_config']['mysql_user'], $GLOBALS['_config']['mysql_password'], $GLOBALS['_config']['mysql_database']);
 
-if(!empty($_POST)) {
+if (!empty($_POST)) {
 	$mysqli->query("INSERT INTO `lists` (`page_id` , `title` , `cells` , `cell_names` , `sort` , `sorts` , `link` )
 VALUES (
 '".$_POST['id']."', '".$_POST['title']."', '".$_POST['cells']."', '".$_POST['cell_names']."', '".$_POST['dsort']."', '".$_POST['sorts']."', ".($_POST['link'] ? 1 : 0)."
@@ -50,8 +50,8 @@ function asdsasgwtgernytymifdsbs() {
 	$('dsort').value = parseInt($('dsort').value).toString();
 
 	for(var i=0;i<cellsObjs.length;i++) {
-		if(cellsObjs[i].value != '' || cell_namesObjs[i].value != '' || sortsObjs[i].value != '') {
-			if(cells != '') {
+		if (cellsObjs[i].value != '' || cell_namesObjs[i].value != '' || sortsObjs[i].value != '') {
+			if (cells != '') {
 				cells += '<';
 				cell_names += '<';
 				sorts += '<';

@@ -61,7 +61,7 @@ class epaymentAdminService {
 	function __construct($Merchant_id, $Secret_word, $test = false) {
 		$this->Merchant_id = $Merchant_id;
 		$this->Secret_word = $Secret_word;
-		if($test)
+		if ($test)
 			$this->SoapClient = new SoapClient("https://test-epayment.auriganet.eu/webservice/AdminService?WSDL");
 		else
 			$this->SoapClient = new SoapClient("https://epayment.auriganet.eu/webservice/AdminService?WSDL");

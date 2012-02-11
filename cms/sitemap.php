@@ -32,7 +32,7 @@ function ListPages($id,$katname) {
 	global $mysqli;
 
 	$bind = $mysqli->fetch_array("SELECT side FROM bind WHERE kat = $id");
-	if(count($bind) > 1) {
+	if (count($bind) > 1) {
 		for($si=0;$si<count($bind);$si++) {
 			$sider = $mysqli->fetch_array("SELECT navn, dato FROM sider WHERE id = ".$bind[$si]['side']." LIMIT 1");
 		//print xml

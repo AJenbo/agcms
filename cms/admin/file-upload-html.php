@@ -7,27 +7,27 @@ bind_textdomain_codeset("agcms", 'UTF-8');
 textdomain("agcms");
 
 require_once $_SERVER['DOCUMENT_ROOT'].'/admin/inc/logon.php';
-if(@$_POST['filename']) {
+if (@$_POST['filename']) {
 	require_once 'inc/file-functions.php';
 	$pathinfo = pathinfo($_POST['filename']);
 	
-	if($_POST['type'] == 'image') {
+	if ($_POST['type'] == 'image') {
 		//If it is being forced to .jpg
-		if(is_file($_SERVER['DOCUMENT_ROOT'].@$_COOKIE['admin_dir'].'/'.genfilename($pathinfo['filename']).'.jpg')) {
+		if (is_file($_SERVER['DOCUMENT_ROOT'].@$_COOKIE['admin_dir'].'/'.genfilename($pathinfo['filename']).'.jpg')) {
 			$isfile = 'true';
 		} else {
 			$isfile = 'false';
 		}
-	} elseif($_POST['type'] == 'lineimage') {
+	} elseif ($_POST['type'] == 'lineimage') {
 		//If it is being forced to .png
-		if(is_file($_SERVER['DOCUMENT_ROOT'].@$_COOKIE['admin_dir'].'/'.genfilename($pathinfo['filename']).'.png')) {
+		if (is_file($_SERVER['DOCUMENT_ROOT'].@$_COOKIE['admin_dir'].'/'.genfilename($pathinfo['filename']).'.png')) {
 			$isfile = 'true';
 		} else {
 			$isfile = 'false';
 		}
 	} else {
 		//Test if file exists
-		if(is_file($_SERVER['DOCUMENT_ROOT'].@$_COOKIE['admin_dir'].'/'.genfilename($pathinfo['filename']).'.'.$pathinfo['extension'])) {
+		if (is_file($_SERVER['DOCUMENT_ROOT'].@$_COOKIE['admin_dir'].'/'.genfilename($pathinfo['filename']).'.'.$pathinfo['extension'])) {
 			$isfile = 'true';
 		} else {
 			$isfile = 'false';
@@ -37,7 +37,7 @@ if(@$_POST['filename']) {
 	die('isfile='.$isfile);
 }
 
-if(!@$_COOKIE['admin_dir'] || !is_dir($_SERVER['DOCUMENT_ROOT'].@$_COOKIE['admin_dir'])) {
+if (!@$_COOKIE['admin_dir'] || !is_dir($_SERVER['DOCUMENT_ROOT'].@$_COOKIE['admin_dir'])) {
 	@setcookie('admin_dir', '/images');
 	@$_COOKIE['admin_dir'] = '/images';
 }

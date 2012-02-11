@@ -51,7 +51,7 @@ function remove_none_existing_files() {
 
 	$deleted = 0;
 	foreach($files as $files) {
-		if(!is_file($_SERVER['DOCUMENT_ROOT'].$files['path'])) {
+		if (!is_file($_SERVER['DOCUMENT_ROOT'].$files['path'])) {
 			$mysqli->query("DELETE FROM `files` WHERE `id` = ".$files['id']);
 			$deleted++;
 		}
@@ -64,7 +64,7 @@ function delete_tempfiles() {
 	$deleted = 0;
 	$files = scandir($_SERVER['DOCUMENT_ROOT'].'/upload/temp');
 	foreach($files as $file) {
-		if(is_file($_SERVER['DOCUMENT_ROOT'].'/upload/temp/'.$file)) {
+		if (is_file($_SERVER['DOCUMENT_ROOT'].'/upload/temp/'.$file)) {
 			@unlink($_SERVER['DOCUMENT_ROOT'].'/upload/temp/'.$file);
 			$deleted++;
 		}

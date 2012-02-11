@@ -67,7 +67,7 @@ p.line8 {
 </head>
 <body><?php
 
-if($_GET['dato'])
+if ($_GET['dato'])
 	$dato = $_GET['dato'];
 else
 	$dato = date('Y-m-d', time()-7*24*60*60);
@@ -77,7 +77,7 @@ else
   <input value="<?php echo($dato); ?>" name="dato" />
 </form><?php
 
-if($_GET['dato']) {
+if ($_GET['dato']) {
 	require_once '../inc/config.php';
 	require_once '../inc/mysqli.php';
 	$mysqli = new simple_mysqli($GLOBALS['_config']['mysql_server'], $GLOBALS['_config']['mysql_user'], $GLOBALS['_config']['mysql_password'], $GLOBALS['_config']['mysql_database']);
@@ -85,7 +85,7 @@ if($_GET['dato']) {
 	WHERE `dato` > '".$_GET['dato']." 00:00:00'
 	AND `navn` != '' AND `adresse` != '' AND `post` != '' AND `by` != '' AND `downloaded` = '0' ORDER BY dato");
 	
-	if($email) {
+	if ($email) {
 		//Pad rows to fit on 
 		$email_nr = ceil(count($email)/21)*21;
 		echo('<h1 class="web">'.($email_nr/21).' sider</h1>');
@@ -93,32 +93,32 @@ if($_GET['dato']) {
 		for($i=0;$i<$email_nr;$i++) {
 			
 			//Bigin new table
-			if(!$i % 21 && !$i) {
+			if (!$i % 21 && !$i) {
 				?><div class="table"><?php
-			} elseif($i % 21 == 0) {
+			} elseif ($i % 21 == 0) {
 				?><p class="line8">&nbsp;</p><div class="table"><?php
 			} 
 			
 			//Print cells (and row)
-			if($i % 3 == 0) {
+			if ($i % 3 == 0) {
 				?><div class="tr"><div class="td left"><?php
-			} elseif($i % 3 == 1) {
+			} elseif ($i % 3 == 1) {
 				?><div class="td"><?php
-			} elseif($i % 3 == 2) {
+			} elseif ($i % 3 == 2) {
 				?><div class="td right"><?php
 			}
 			echo('<table><tr><td>'.@$email[$i]['navn'].'<br />'
 			.@$email[$i]['adresse'].'<br />'
 			.@$email[$i]['post'].' '.@$email[$i]['by']);
-			if(@$email[$i]['land'] != 'Danmark') echo ('<br />'.@$email[$i]['land']);
+			if (@$email[$i]['land'] != 'Danmark') echo ('<br />'.@$email[$i]['land']);
 			 ?></td></tr></table></div><?
 			//end row
-			if($i % 3 == 2) {
+			if ($i % 3 == 2) {
 				?></div><?php
 			}
 			
 			//end table
-			if($i % 21 == 20) {
+			if ($i % 21 == 20) {
 				?></div><?php
 			}
 		}

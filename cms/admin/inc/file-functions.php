@@ -13,7 +13,7 @@ require_once '../inc/header.php';
 function isinuse($path) {
 	global $mysqli;
 	
-	if($mysqli->fetch_array("(SELECT id FROM `sider` WHERE `text` LIKE '%$path%' OR `beskrivelse` LIKE '%$path%' OR `billed` LIKE '$path' LIMIT 1)
+	if ($mysqli->fetch_array("(SELECT id FROM `sider` WHERE `text` LIKE '%$path%' OR `beskrivelse` LIKE '%$path%' OR `billed` LIKE '$path' LIMIT 1)
 	UNION (SELECT id FROM `template` WHERE `text` LIKE '%$path%' OR `beskrivelse` LIKE '%$path%' OR `billed` LIKE '$path' LIMIT 1)
 	UNION (SELECT id FROM `special` WHERE `text` LIKE '%$path%' LIMIT 1)
 	UNION (SELECT id FROM `krav` WHERE `text` LIKE '%$path%' LIMIT 1)
@@ -30,9 +30,9 @@ function isinuse($path) {
 function deletefile($id, $path) {
 	global $mysqli;
 
-	if(isinuse($path))
+	if (isinuse($path))
 		return array('error' => _('The file can not be deleted because it is used on a page.'));
-	if(@unlink($_SERVER['DOCUMENT_ROOT'].$path)) {
+	if (@unlink($_SERVER['DOCUMENT_ROOT'].$path)) {
 		    $mysqli->query("DELETE FROM files WHERE `path` = '".$path."'");
 		return array('id' => $id);
 	} else
@@ -40,9 +40,9 @@ function deletefile($id, $path) {
 }
 
 //Scan folder and get list of files and folders in it
-if(!function_exists('scandir')) {
+if (!function_exists('scandir')) {
     function scandir($dir, $sortorder = 0) {
-        if(is_dir($dir) && $listdirs = @opendir($dir)) {
+        if (is_dir($dir) && $listdirs = @opendir($dir)) {
             while(($file = readdir($listdirs)) !== false) {
                 $files[] = $file;
             }
@@ -66,7 +66,7 @@ function genfilename($filename) {
 //return tru for directorys and fall for every thing else
 function is_dirs($str_file) {
 	global $temp;
-	if(is_file($_SERVER['DOCUMENT_ROOT'].$temp.'/'.$str_file) || $str_file == '.' || $str_file == '..')
+	if (is_file($_SERVER['DOCUMENT_ROOT'].$temp.'/'.$str_file) || $str_file == '.' || $str_file == '..')
 		return false;
 	return true;
 }
@@ -75,7 +75,7 @@ function is_dirs($str_file) {
 function sub_dirs($dir) {
 	global $temp;
 	$temp = $dir;
-	if($dirs = scandir($_SERVER['DOCUMENT_ROOT'].$dir)) {
+	if ($dirs = scandir($_SERVER['DOCUMENT_ROOT'].$dir)) {
 		$dirs = array_filter($dirs, 'is_dirs');
 		natcasesort($dirs);
 		$dirs = array_values($dirs);
@@ -91,37 +91,37 @@ function listdirs($dir, $mode=0) {
 	$html = '';
 	foreach($subdirs as $subdir) {
 		$html .= '<div id="dir_'.preg_replace('#/#u','.',$dir.'/'.$subdir).'">';
-		if(sub_dirs($dir.'/'.$subdir)) {
+		if (sub_dirs($dir.'/'.$subdir)) {
 			$html .= '<img';
-			if(@$_COOKIE[$dir.'/'.$subdir]) { $html .= ' style="display:none"'; }
+			if (@$_COOKIE[$dir.'/'.$subdir]) { $html .= ' style="display:none"'; }
 			$html .= ' src="images/+.gif"';
 			$html .= ' onclick="dir_expand(this,'.$mode.');"';
 			$html .= ' height="16" width="16" alt="+" title="" /><img';
-			if(!@$_COOKIE[$dir.'/'.$subdir]) { $html .= ' style="display:none"'; }
+			if (!@$_COOKIE[$dir.'/'.$subdir]) { $html .= ' style="display:none"'; }
 			$html .= ' src="images/-.gif"';
 			$html .= ' onclick="dir_contract(this);"';
 			$html .= ' height="16" width="16" alt="-" title="" /><a';
-			if($dir.'/'.$subdir == @$_COOKIE['admin_dir'])
+			if ($dir.'/'.$subdir == @$_COOKIE['admin_dir'])
 				$html .= ' class="active"';
-			if($mode == 0) {
+			if ($mode == 0) {
 				$html .= ' onclick="showfiles(\''.$dir.'/'.$subdir.'\', 0);this.className=\'active\'" ondblclick="showdirname(this)" title="'.$subdir.'"><img src="images/folder.png" height="16" width="16" alt="" /> <span>'.$subdir.'</span></a><form action="" method="get" onsubmit="document.getElementById(\'files\').focus();return false;" style="display:none"><p style="display: inline; margin-left: 3px;"><img width="16" height="16" alt="" src="images/folder.png"/><input style="display:inline;" onblur="renamedir(this);" maxlength="'.(254-mb_strlen($dir, 'UTF-8')).'" value="'.$subdir.'" name="'.$dir.'/'.$subdir.'" /></p></form>';
-			} elseif($mode == 1) {
+			} elseif ($mode == 1) {
 				$html .= ' onclick="movefile(\''.$dir.'/'.$subdir.'\')" title="'.$subdir.'"><img src="images/folder.png" height="16" width="16" alt="" /> '.$subdir.' </a>';
 			}
 
 			$html .= '<div>';
-			if(@$_COOKIE[$dir.'/'.$subdir]) {
+			if (@$_COOKIE[$dir.'/'.$subdir]) {
 				$listdirs = listdirs($dir.'/'.$subdir, $mode);
 				$html .= $listdirs['html'];
 			}
 			$html .= '</div></div>';
 		} else {
 			$html .= '<a style="margin-left:16px"';
-			if($dir.'/'.$subdir == @$_COOKIE['admin_dir'])
+			if ($dir.'/'.$subdir == @$_COOKIE['admin_dir'])
 				$html .= ' class="active"';
-			if($mode == 0) {
+			if ($mode == 0) {
 				$html .= ' onclick="showfiles(\''.$dir.'/'.$subdir.'\', 0);this.className=\'active\'" ondblclick="showdirname(this)" title="'.$subdir.'"><img src="images/folder.png" height="16" width="16" alt="" /> <span>'.$subdir.'</span></a><form action="" method="get" onsubmit="document.getElementById(\'files\').focus();return false;" style="display:none"><p style="display: inline; margin-left: 19px;"><img width="16" height="16" alt="" src="images/folder.png"/><input style="display:inline;" onblur="renamedir(this);" maxlength="'.(254-mb_strlen($dir, 'UTF-8')).'" value="'.$subdir.'" name="'.$dir.'/'.$subdir.'" /></p></form></div>';
-			} elseif($mode == 1) {
+			} elseif ($mode == 1) {
 				$html .= ' onclick="movefile(\''.$dir.'/'.$subdir.'\')" title="'.$subdir.'"><img src="images/folder.png" height="16" width="16" alt="" /> '.$subdir.' </a></div>';
 			}
 		}

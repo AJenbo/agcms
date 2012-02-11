@@ -37,15 +37,15 @@ if (!isset($SAJAX_INCLUDED)) {
                 $args = $_POST["rsargs"];
         }
          
-        if(! empty($args)) { 
-            if(get_magic_quotes_gpc()) 
+        if (! empty($args)) { 
+            if (get_magic_quotes_gpc()) 
                 $args = stripslashes($args); 
              
             $args = json_decode($args, true);
              
-            if(get_magic_quotes_gpc()) { 
+            if (get_magic_quotes_gpc()) { 
                 function array_addslashes($value) { 
-                    if(is_array($value)) 
+                    if (is_array($value)) 
                         return array_map("array_addslashes", $value); 
                     else 
                         return addslashes($value); 
@@ -69,7 +69,7 @@ if (!isset($SAJAX_INCLUDED)) {
         } 
              
         header('Content-Type: text/plain; charset=UTF-8'); 
-        if(!empty($error)) { 
+        if (!empty($error)) { 
             echo '-:'.$error; 
         } else { 
             echo "+:".json_encode($result); 
@@ -112,16 +112,16 @@ if (!isset($SAJAX_INCLUDED)) {
         for ($i=0; $i<$num; $i++) { 
             $function = func_get_arg($i); 
              
-            if(!is_array($function)) 
+            if (!is_array($function)) 
                 $function = array("name" => $function); 
              
-            if(!isset($function["method"])) 
+            if (!isset($function["method"])) 
                 $function["method"] = $sajax_request_type; 
              
-            if(!isset($function["asynchronous"])) 
+            if (!isset($function["asynchronous"])) 
                 $function["asynchronous"] = true; 
              
-            if(!isset($function["uri"])) 
+            if (!isset($function["uri"])) 
                 $function["uri"] = $sajax_remote_uri; 
              
             $key = array_search($function["name"], $sajax_export_list); 

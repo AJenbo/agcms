@@ -13,16 +13,16 @@ $updatetime = 0;
 foreach($tabels as $tabel)
 	$updatetime = max($updatetime, strtotime($tabel['Update_time']));
 
-if($updatetime < 1)
+if ($updatetime < 1)
 	$updatetime = time();
 
 doConditionalGet($updatetime);
 
 $time = 0;
-if(isset($_SERVER['HTTP_IF_MODIFIED_SINCE']))
+if (isset($_SERVER['HTTP_IF_MODIFIED_SINCE']))
 	$time = strtotime(stripslashes($_SERVER['HTTP_IF_MODIFIED_SINCE']));
 
-if($time > 1000000000) {
+if ($time > 1000000000) {
 //	$mysqli->query("INSERT INTO `hack-trap` (`log` ,`date`) VALUES ('RSS last load time ".$time."', '".date('Y-m-d h:i:s',$time)."')");
 	$where = " WHERE `dato` > '".date('Y-m-d h:i:s',$time)."'";
 } else {
@@ -32,9 +32,9 @@ if($time > 1000000000) {
 $sider = $mysqli->fetch_array("SELECT sider.id, sider.maerke, sider.navn, UNIX_TIMESTAMP(dato) AS dato, billed, kat.id AS kat_id, kat.navn AS kat_navn FROM sider JOIN bind ON (side = sider.id) JOIN kat ON (kat.id = kat) ".@$where.' GROUP BY id ORDER BY - dato'.@$limit);
 
 //check for inactive
-if($sider) {
+if ($sider) {
 	for($i=0;$i<count($sider);$i++) {
-		if(binding($sider[$i]['kat_id']) == -1) {
+		if (binding($sider[$i]['kat_id']) == -1) {
 			array_splice($sider, $i, 1);
 			$i--;
 		}
@@ -69,7 +69,7 @@ echo '<?xml version="1.0" encoding="utf-8"?>
 			<managingEditor>'.$GLOBALS['_config']['email'][0].' ('.$GLOBALS['_config']['site_name'].')</managingEditor>';
 		for($i=0;$i<count($sider);$i++) {
 			
-			if(!$sider[$i]['navn'] = trim(htmlspecialchars($sider[$i]['navn'])))
+			if (!$sider[$i]['navn'] = trim(htmlspecialchars($sider[$i]['navn'])))
 				$sider[$i]['navn'] = $GLOBALS['_config']['site_name'];
 			$sideText = $mysqli->fetch_array("SELECT text FROM sider WHERE id = ".$sider[$i]['id']);
 
@@ -78,7 +78,7 @@ echo '<?xml version="1.0" encoding="utf-8"?>
                 <title>'.$sider[$i]['navn'].'</title>
                 <link>'.$GLOBALS['_config']['base_url'].'/kat'.$sider[$i]['kat_id'].'-'.rawurlencode(clear_file_name($sider[$i]['kat_navn'])).'/side'.$sider[$i]['id'].'-'.rawurlencode(clear_file_name($sider[$i]['navn'])).'.html</link>
                 <description>';
-					  if($sider[$i]['billed'] && $sider[$i]['billed'] != '/images/web/intet-foto.jpg')
+					  if ($sider[$i]['billed'] && $sider[$i]['billed'] != '/images/web/intet-foto.jpg')
 						  echo '&lt;img style="float:left;margin:0 10px 5px 0;" src="'.$GLOBALS['_config']['base_url'].$sider[$i]['billed'].'" &gt;&lt;p&gt;';
 						  //TODO limit to summery
 					  echo trim(htmlspecialchars(preg_replace($search, $replace, $sideText[0]['text']))).'</description>
@@ -91,7 +91,7 @@ echo '<?xml version="1.0" encoding="utf-8"?>
 					$kats[] = $bind[$ibind]['kat'];
 					
 					$temp = $mysqli->fetch_array("SELECT bind FROM `kat` WHERE id = '".$bind[$ibind]['kat']."' LIMIT 1");
-					if(@$temp[0])
+					if (@$temp[0])
 						while($temp && !in_array($temp[0]['bind'], $kats)) {
 							$kats[] = $temp[0]['bind'];
 							$temp = $mysqli->fetch_array("SELECT bind FROM `kat` WHERE id = '".$temp[0]['bind']."' LIMIT 1");
@@ -99,25 +99,25 @@ echo '<?xml version="1.0" encoding="utf-8"?>
 				}
 //				$kats = array_unique($kats);
 				for($icategory=0;$icategory<count($kats);$icategory++) {
-					if($kats[$icategory]) {
+					if ($kats[$icategory]) {
 						$kat = $mysqli->fetch_array("SELECT `navn` FROM kat WHERE id = ".$kats[$icategory]." LIMIT 1");
-						if($category = trim(preg_replace($search, $replace, @$kat[0]['navn'])))
+						if ($category = trim(preg_replace($search, $replace, @$kat[0]['navn'])))
 							echo '<category>'.htmlspecialchars($category, ENT_NOQUOTES ).'</category>';
 					}
 				}
-				if($sider[$i]['maerke']) {
+				if ($sider[$i]['maerke']) {
 					$maerker = explode(',' ,$sider[$i]['maerke']);
 					$maerker_nr = count($maerker);
 					$where = '';
 					for($imaerker=0;$imaerker<$maerker_nr;$imaerker++) {
-						if($imaerker > 0)
+						if ($imaerker > 0)
 							$where .= ' OR';
 						$where .= ' id = '.$maerker[$imaerker];
 					}
 					$maerker = $mysqli->fetch_array("SELECT `navn` FROM maerke WHERE".$where." LIMIT ".$maerker_nr);
 					$maerker_nr = count($maerker);
 					for($imaerker=0;$imaerker<$maerker_nr;$imaerker++) {
-						if($category = trim(preg_replace($search, $replace, $maerker[$imaerker]['navn'])))
+						if ($category = trim(preg_replace($search, $replace, $maerker[$imaerker]['navn'])))
 							echo '<category>'.htmlspecialchars($category, ENT_NOQUOTES ).'</category>';
 					}
 				}

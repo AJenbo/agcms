@@ -9,26 +9,26 @@ textdomain("agcms");
 require_once $_SERVER['DOCUMENT_ROOT'].'/admin/inc/logon.php';
 ?><div id="mainmenu"> <?php
 	
-	if(!empty($_GET['side'])) {
-		if($_GET['side'] == 'redigerside') {
+	if (!empty($_GET['side'])) {
+		if ($_GET['side'] == 'redigerside') {
 			$activityButtons[] = '<li><a onclick="updateSide('.$_GET['id'].');"><img src="images/disk.png" width="16" height="16" alt="" /> '._('Save page').'</a></li>';
-		} elseif($_GET['side'] == 'redigerkat') {
+		} elseif ($_GET['side'] == 'redigerkat') {
 			$activityButtons[] = '<li><a onclick="updateKat('.$_GET['id'].');"><img src="images/disk.png" width="16" height="16" alt="" /> '._('Save category').'</a></li>';
-		} elseif($_GET['side'] == 'redigerFrontpage') {
+		} elseif ($_GET['side'] == 'redigerFrontpage') {
 			$activityButtons[] = '<li><a onclick="updateForside();"><img src="images/disk.png" width="16" height="16" alt="" /> '._('Save page').'</a></li>';
-		} elseif($_GET['side'] == 'redigerSpecial') {
+		} elseif ($_GET['side'] == 'redigerSpecial') {
 			$activityButtons[] = '<li><a onclick="updateSpecial('.$_GET['id'].');"><img src="images/disk.png" width="16" height="16" alt="" /> '._('Save page').'</a></li>';
-		} elseif($_GET['side'] == 'editContact') {
+		} elseif ($_GET['side'] == 'editContact') {
 			$activityButtons[] = '<li><a onclick="updateContact('.$_GET['id'].');"><img src="images/disk.png" width="16" height="16" alt="" /> '._('Save contact').'</a></li>';
-		} elseif($_GET['side'] == 'nyside') {
+		} elseif ($_GET['side'] == 'nyside') {
 			$activityButtons[] = '<li><a onclick="opretSide();"><img src="images/disk.png" width="16" height="16" alt="" /> '._('Save page').'</a></li>';
-		} elseif($_GET['side'] == 'nykat') {
+		} elseif ($_GET['side'] == 'nykat') {
 			$activityButtons[] = '<li><a onclick="save_ny_kat();"><img src="images/disk.png" width="16" height="16" alt="" /> '._('Save category').'</a></li>';
-		} elseif($_GET['side'] == 'nykrav' || $_GET['side'] == 'editkrav') {
+		} elseif ($_GET['side'] == 'nykrav' || $_GET['side'] == 'editkrav') {
 			$activityButtons[] = '<li><a onclick="save_krav();"><img src="images/disk.png" width="16" height="16" alt="" /> '._('Save requirement').'</a></li>';
-		} elseif($_GET['side'] == 'listsort' && $_GET['id']) {
+		} elseif ($_GET['side'] == 'listsort' && $_GET['id']) {
 			$activityButtons[] = '<li><a onclick="saveListOrder('.$_GET['id'].');"><img src="images/disk.png" width="16" height="16" alt="" /> '._('Save list').'</a></li>';
-		} elseif($_GET['side'] == 'newemail' || $_GET['side'] == 'editemail') {
+		} elseif ($_GET['side'] == 'newemail' || $_GET['side'] == 'editemail') {
 			$activityButtons[] = '<li><a onclick="saveEmail();"><img src="images/disk.png" width="16" height="16" alt="" /> '._('Save e-mail').'</a></li>';
 			$activityButtons[] = '<li><a onclick="sendEmail();"><img src="images/email_go.png" width="16" height="16" alt="" /> '._('Send e-mail').'</a></li>';
 		}
@@ -36,10 +36,10 @@ require_once $_SERVER['DOCUMENT_ROOT'].'/admin/inc/logon.php';
 	
 	$activityButtons[] = '<li id="loading" style="cursor:default;"><img src="images/loading.gif" width="16" height="16" alt="Processing" /> '._('Loading').'</li>';
 	
-	if($activityButtons) {
+	if ($activityButtons) {
 		?><a class="menuboxheader" href="" onclick="showhide('Activity');"><?php echo(_('Handlinger')); ?></a>
 		<ul id="Activity"<?php
-		if(!empty($_COOKIE['hideActivity']))
+		if (!empty($_COOKIE['hideActivity']))
 			echo(' style="display:none"');
 		?>><?php
 		
@@ -51,7 +51,7 @@ require_once $_SERVER['DOCUMENT_ROOT'].'/admin/inc/logon.php';
 	
   ?><a class="menuboxheader" href="" onclick="showhide('Indhold');"><?php echo(_('Indhold')); ?></a>
   <ul id="Indhold"<?php
-  if(!empty($_COOKIE['hideIndhold']))
+  if (!empty($_COOKIE['hideIndhold']))
 	  echo(' style="display:none"');
   ?>>
     <li><a href="./?side=nyside"><img src="images/page_add.png" width="16" height="16" alt="" /> <?php echo(_('Create page')); ?></a></li>
@@ -70,7 +70,7 @@ require_once $_SERVER['DOCUMENT_ROOT'].'/admin/inc/logon.php';
   </ul>
   <a class="menuboxheader" href="" onclick="showhide('Suplemanger');"><?php echo(_('Lists')); ?></a>
   <ul id="Suplemanger"<?php
-  if(@$_COOKIE['hideSuplemanger'])
+  if (@$_COOKIE['hideSuplemanger'])
 	  echo(' style="display:none"');
   ?>>
     <li><a href="./?side=krav"><img src="images/page_white_key.png" width="16" height="16" alt="" /> <?php echo(_('Requirements')); ?></a></li>
@@ -79,7 +79,7 @@ require_once $_SERVER['DOCUMENT_ROOT'].'/admin/inc/logon.php';
   </ul>
   <a class="menuboxheader" href="" onclick="showhide('Tools');"><?php echo(_('Tools')); ?></a>
   <ul id="Tools"<?php
-  if(@$_COOKIE['hideTools'])
+  if (@$_COOKIE['hideTools'])
 	  echo(' style="display:none"');
   ?>>
     <li><a onclick="explorer('','');"><img src="images/folder_page_white.png" width="16" height="16" alt="" /> <?php echo(_('Open file manager')); ?></a></li>

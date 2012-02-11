@@ -20,19 +20,19 @@ $mysqli = new simple_mysqli($GLOBALS['_config']['mysql_server'], $GLOBALS['_conf
 function updateuser($id, $updates) {
 	global $mysqli;
 	
-	if($_SESSION['_user']['access'] == 1 || $_SESSION['_user']['id'] == $id) {
+	if ($_SESSION['_user']['access'] == 1 || $_SESSION['_user']['id'] == $id) {
 		//Validate access lavel update
-		if($_SESSION['_user']['id'] == $id && $updates['access'] != $_SESSION['_user']['access']) {
+		if ($_SESSION['_user']['id'] == $id && $updates['access'] != $_SESSION['_user']['access']) {
 			return array('error' => _('You can\'t change your own access level'));
 		}
 
 		//Validate password update
-		if(!empty($updates['password_new'])) {
-			if($_SESSION['_user']['access'] == 1 && $_SESSION['_user']['id'] != $id) {
+		if (!empty($updates['password_new'])) {
+			if ($_SESSION['_user']['access'] == 1 && $_SESSION['_user']['id'] != $id) {
 				$updates['password'] = crypt($updates['password_new']);
-			} elseif($_SESSION['_user']['id'] == $id) {
+			} elseif ($_SESSION['_user']['id'] == $id) {
 				$user = $mysqli->fetch_one("SELECT `password` FROM `users` WHERE id = ".$id);
-				if(mb_substr($user['password'], 0, 13) == mb_substr(crypt($updates['password'], $user['password']), 0, 13)) {
+				if (mb_substr($user['password'], 0, 13) == mb_substr(crypt($updates['password'], $user['password']), 0, 13)) {
 					$updates['password'] = crypt($updates['password_new']);
 				} else {
 					return array('error' => _('Incorrect password.'));
@@ -90,7 +90,7 @@ id = <?php echo($_GET['id']); ?>;
 <?php sajax_show_javascript(); ?>
 
 function updateuser() {
-	if($('password_new').value != $('password2').value) {
+	if ($('password_new').value != $('password2').value) {
 		alert('<?php echo(addcslashes(_('The passwords doesn\'t match.'), "'\\")); ?>');
 		return false;
 	}
@@ -104,7 +104,7 @@ function updateuser() {
 }
 
 function updateuser_r(date) {
-	if(date['error']) {
+	if (date['error']) {
 		alert(date['error']);
 	}
 	window.location.reload();
@@ -120,12 +120,12 @@ function updateuser_r(date) {
 <div id="canvas"><div id="headline"><?php echo(_('Edit').' '.$user['fullname']); ?></div>
 <table><tbody>
 <tr<?php
-	if($_SESSION['_user']['access'] != 1 &&
+	if ($_SESSION['_user']['access'] != 1 &&
 	$_SESSION['_user']['id'] != $_GET['id'])
 		echo(' style="display:none"');
 ?>><td><?php echo(_('Full name:')); ?></td><td><input value="<?php echo($user['fullname']); ?>" id="fullname" name="fullname" /></td></tr>
 <tr<?php
-	if($_SESSION['_user']['id'] == $_GET['id'] ||
+	if ($_SESSION['_user']['id'] == $_GET['id'] ||
 	$_SESSION['_user']['access'] == 1)
 		echo(' style="display:none"');
 ?>><td><?php echo(_('Full name:')); ?></td><td><?php echo($user['fullname']); ?></td></tr>
@@ -142,12 +142,12 @@ $accesslevels = array(
 
 foreach($accesslevels as $level => $name) {
 		//warning if a user name is a it could colide with all
-        ?><option<?php if($user['access'] == $level) echo(' selected="selected"'); ?> value="<?php echo($level); ?>"><?php echo($name); ?></option><?php
+        ?><option<?php if ($user['access'] == $level) echo(' selected="selected"'); ?> value="<?php echo($level); ?>"><?php echo($name); ?></option><?php
 	}
 ?></select></td></tr>
-<tr<?php if($_SESSION['_user']['id'] != $_GET['id']) echo(' style="display:none"'); ?>><td><?php echo(_('Password:')); ?></td><td><input type="password" id="password" name="password" /></td></tr>
-<tr<?php if($_SESSION['_user']['access'] != 1 && $_SESSION['_user']['id'] != $_GET['id']) echo(' style="display:none"'); ?>><td><?php echo(_('New password:')); ?></td><td><input type="password" id="password_new" name="password_new" /></td></tr>
-<tr<?php if($_SESSION['_user']['access'] != 1 && $_SESSION['_user']['id'] != $_GET['id']) echo(' style="display:none"'); ?>><td><?php echo(_('Repeat password:')); ?></td><td><input type="password" id="password2" name="password2" /></td></tr>
+<tr<?php if ($_SESSION['_user']['id'] != $_GET['id']) echo(' style="display:none"'); ?>><td><?php echo(_('Password:')); ?></td><td><input type="password" id="password" name="password" /></td></tr>
+<tr<?php if ($_SESSION['_user']['access'] != 1 && $_SESSION['_user']['id'] != $_GET['id']) echo(' style="display:none"'); ?>><td><?php echo(_('New password:')); ?></td><td><input type="password" id="password_new" name="password_new" /></td></tr>
+<tr<?php if ($_SESSION['_user']['access'] != 1 && $_SESSION['_user']['id'] != $_GET['id']) echo(' style="display:none"'); ?>><td><?php echo(_('Repeat password:')); ?></td><td><input type="password" id="password2" name="password2" /></td></tr>
 
 </tbody></table></div><?php
 

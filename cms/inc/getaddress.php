@@ -34,26 +34,26 @@ function getAddress($id) {
 		$mysqli_ext = new simple_mysqli($db['mysql_server'], $db['mysql_user'], $db['mysql_password'], $db['mysql_database']);
 		
 		//try packages
-		if($user = $mysqli_ext->fetch_array('SELECT recName1, recAddress1, recZipCode FROM `post` WHERE `recipientID` LIKE \''.$id.'\' ORDER BY id DESC LIMIT 1')) {
+		if ($user = $mysqli_ext->fetch_array('SELECT recName1, recAddress1, recZipCode FROM `post` WHERE `recipientID` LIKE \''.$id.'\' ORDER BY id DESC LIMIT 1')) {
 			$return = array_merge($default, $user[0]);
-			if($return != $default)
+			if ($return != $default)
 				return $return;
 		}
 		
 		//Try katalog orders
-		if($user = $mysqli_ext->fetch_array('SELECT navn, email, adresse, post FROM `email` WHERE `tlf1` LIKE \''.$id.'\' OR `tlf2` LIKE \''.$id.'\' ORDER BY id DESC LIMIT 1')) {
+		if ($user = $mysqli_ext->fetch_array('SELECT navn, email, adresse, post FROM `email` WHERE `tlf1` LIKE \''.$id.'\' OR `tlf2` LIKE \''.$id.'\' ORDER BY id DESC LIMIT 1')) {
 			$return['recName1'] = $user[0]['navn'];
 			$return['recAddress1'] = $user[0]['adresse'];
 			$return['recZipCode'] = $user[0]['post'];
 			$return['email'] = $user[0]['email'];
 			$return = array_merge($default, $return);
 			
-			if($return != $default)
+			if ($return != $default)
 				return $return;
 		}
 		
 		//Try fakturas
-		if($user = $mysqli_ext->fetch_array('SELECT navn, email, att, adresse, postnr, postbox FROM `fakturas` WHERE `tlf1` LIKE \''.$id.'\' OR `tlf2` LIKE \''.$id.'\' ORDER BY id DESC LIMIT 1')) {
+		if ($user = $mysqli_ext->fetch_array('SELECT navn, email, att, adresse, postnr, postbox FROM `fakturas` WHERE `tlf1` LIKE \''.$id.'\' OR `tlf2` LIKE \''.$id.'\' ORDER BY id DESC LIMIT 1')) {
 		$return['recName1'] = $user[0]['navn'];
 		$return['recAddress1'] = $user[0]['adresse'];
 		$return['recZipCode'] = $user[0]['postnr'];
@@ -62,16 +62,16 @@ function getAddress($id) {
 		$return['email'] = $user[0]['email'];
 		$return = array_merge($default, $return);
 			
-		if($return != $default)
+		if ($return != $default)
 			return $return;
 		}
 	}
 		
 	require_once($_SERVER['DOCUMENT_ROOT'].'/krak/krak.php');
-	if($return = getAddressKrak($id)) {
+	if ($return = getAddressKrak($id)) {
 		$return = array_merge($default, $return);
 			
-		if($return != $default)
+		if ($return != $default)
 			return $return;
 	} else {
 	//Addressen kunde ikke findes.

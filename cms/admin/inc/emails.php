@@ -11,7 +11,7 @@ require_once $_SERVER['DOCUMENT_ROOT'].'/admin/inc/logon.php';
 
 function sendEmail($id, $from, $interests, $subject, $text) {
 	global $mysqli;
-	if(!$mysqli->fetch_array('SELECT `id` FROM `newsmails` WHERE `sendt` = 0'))
+	if (!$mysqli->fetch_array('SELECT `id` FROM `newsmails` WHERE `sendt` = 0'))
 		//Nyhedsbrevet er allerede afsendt!
 		return array('error' => _('The newsletter has already been sent!'));
 	
@@ -23,7 +23,7 @@ function sendEmail($id, $from, $interests, $subject, $text) {
 	$mail->SetLanguage('dk');
 	
 	$mail->IsSMTP();
-	if($GLOBALS['_config']['emailpassword'] !== false) {
+	if ($GLOBALS['_config']['emailpassword'] !== false) {
 		$mail->SMTPAuth   = true; // enable SMTP authentication
 		$mail->Username   = $GLOBALS['_config']['email'][0];
 		$mail->Password   = $GLOBALS['_config']['emailpassword'];
@@ -65,11 +65,11 @@ function sendEmail($id, $from, $interests, $subject, $text) {
 	
 	
 	//Colect interests
-	if($interests) {
+	if ($interests) {
 		$interests = explode('<', $interests);
 		$andwhere = '';
 		foreach($interests as $interest) {
-			if($andwhere)
+			if ($andwhere)
 				$andwhere .= ' OR ';
 			$andwhere .= '`interests` LIKE \'';
 			$andwhere .= $interest;
@@ -107,7 +107,7 @@ function sendEmail($id, $from, $interests, $subject, $text) {
 		foreach($emails as $email)
 			$mail->AddBCC($email['email'], $email['navn']);
 	
-		if(!$mail->Send()) {
+		if (!$mail->Send()) {
 			//TODO upload if send fails
 			$error .= $mail->ErrorInfo."\n";
 		}
@@ -124,7 +124,7 @@ function sendEmail($id, $from, $interests, $subject, $text) {
 		}
 	}
 	
-	if($error) {
+	if ($error) {
 		return array('error' => $error);
 	} else {
 		$mysqli->query('UPDATE `newsmails` SET `sendt` = 1 WHERE `id` = '.$id.' LIMIT 1');
@@ -138,11 +138,11 @@ function countEmailTo($interests) {
 	$andwhere = '';
 	
 	//Colect interests
-	if($interests) {
+	if ($interests) {
 		$interests = explode('<', $interests);
 		$andwhere = '';
 		foreach($interests as $interest) {
-			if($andwhere)
+			if ($andwhere)
 				$andwhere .= ' OR ';
 			$andwhere .= '`interests` LIKE \'';
 			$andwhere .= $interest;
@@ -175,7 +175,7 @@ function getEmail($id) {
 
 	$html = '<div id="headline">'._('Edit newsletter').'</div>';
 	
-	if($newsmails[0]['sendt'] == 0) {
+	if ($newsmails[0]['sendt'] == 0) {
 		$html .= '<form action="" method="post" onsubmit="return sendNews();"><input type="submit" accesskey="m" style="width:1px; height:1px; position:absolute; top: -20px; left:-20px;" />';
 		$html .= '<input value="'.$id.'" id="id" type="hidden" />';
 	}
@@ -183,8 +183,8 @@ function getEmail($id) {
 	$html .= '<div>';
 	
 	//TODO error if value = ''
-	if($newsmails[0]['sendt'] == 0) {
-		if(count($GLOBALS['_config']['email']) > 1) {
+	if ($newsmails[0]['sendt'] == 0) {
+		if (count($GLOBALS['_config']['email']) > 1) {
 			$html .= _('Sender:').' <select id="from">';
 			$html .= '<option value="">'._('Select sender').'</option>';
 			foreach($GLOBALS['_config']['email'] as $email) {
@@ -199,7 +199,7 @@ function getEmail($id) {
 	}
 	
 	//Modtager
-	if($newsmails[0]['sendt'] == 1) {
+	if ($newsmails[0]['sendt'] == 1) {
 		$html .= '<br /><br />'._('Recipient:');
 	} else {
 		$html .= '<br />'._('Restrict recipients to:');
@@ -208,9 +208,9 @@ function getEmail($id) {
 	$newsmails[0]['interests_array'] = explode('<', $newsmails[0]['interests']);
 	foreach($GLOBALS['_config']['interests'] as $interest) {
 		$html .= '<input';
-		if(false !== array_search($interest, $newsmails[0]['interests_array']))
+		if (false !== array_search($interest, $newsmails[0]['interests_array']))
 			$html .= ' checked="checked"';
-		if($newsmails[0]['sendt'] == 1)
+		if ($newsmails[0]['sendt'] == 1)
 			$html .= ' disabled="disabled"';
 		else
 			$html .= ' onchange="countEmailTo()" onclick="countEmailTo()"';
@@ -221,10 +221,10 @@ countEmailTo();
 --></script>';
 	$html .= '</div>';
 	
-	if($newsmails[0]['sendt'] == 0)
+	if ($newsmails[0]['sendt'] == 0)
 		$html .= '<br />'._('Number of recipients:').' <span id="mailToCount">'.countEmailTo($newsmails[0]['interests']).'</span><br />';
 	
-	if($newsmails[0]['sendt'] == 1){
+	if ($newsmails[0]['sendt'] == 1){
 		$html .= '<br />'._('Subject:').' '.$newsmails[0]['subject'].'<div style="width:'.$GLOBALS['_config']['text_width'].'px; border:1px solid #D2D2D2">'.$newsmails[0]['text'].'</div></div>';
 	} else {
 		$html .= '<br />'._('Subject:').' <input class="admin_name" name="subject" id="subject" value="'.$newsmails[0]['subject'].'" size="127" style="width:'.($GLOBALS['_config']['text_width']-34).'px" /><script type="text/javascript"><!--
@@ -261,7 +261,7 @@ function getEmailList() {
 	
 	$html = '<div id="headline">'._('Newsletters').'</div><div><a href="?side=newemail"><img src="images/email_add.png" width="16" height="16" alt="" /> '._('Create new newsletter').'</a><br /><br />';
 	foreach($newsmails as $newemail) {
-		if($newemail['sendt'] == 0) {
+		if ($newemail['sendt'] == 0) {
 			$html .= '<a href="?side=editemail&amp;id='.$newemail['id'].'"><img src="images/email_edit';
 		} else {
 			$html .= '<a href="?side=viewemail&amp;id='.$newemail['id'].'"><img src="images/email_open';

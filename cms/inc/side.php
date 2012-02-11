@@ -3,10 +3,10 @@
 function side() {
 	global $mysqli;
 
-	if(!isset($GLOBALS['side']['navn'])) {
+	if (!isset($GLOBALS['side']['navn'])) {
 		$sider = $mysqli->fetch_array("SELECT `navn`,`burde`,`fra`,`text`,`pris`,`for`,`krav`,`maerke`, varenr, UNIX_TIMESTAMP(dato) AS dato FROM sider WHERE id = ".$GLOBALS['side']['id']);
 		
-		if(!$sider) {
+		if (!$sider) {
 			header('HTTP/1.1 404 Not Found');
 			//TODO lav en søgning
 		}
@@ -30,7 +30,7 @@ function side() {
 	$GLOBALS['generatedcontent']['datetime'] = $GLOBALS['side']['dato'];
 	$GLOBALS['generatedcontent']['text'] = $GLOBALS['side']['text'];
 	
-	if($GLOBALS['side']['krav']) {
+	if ($GLOBALS['side']['krav']) {
 		$krav = $mysqli->fetch_array("SELECT navn FROM krav WHERE id = ".$GLOBALS['side']['krav']);
 				
 		getUpdateTime('krav');
@@ -56,18 +56,18 @@ function side() {
 	$GLOBALS['generatedcontent']['price']['new'] = $GLOBALS['side']['pris'];
 	$GLOBALS['generatedcontent']['price']['from'] = $GLOBALS['side']['fra'];
 	
-	if(!@$GLOBALS['generatedcontent']['email'])
+	if (!@$GLOBALS['generatedcontent']['email'])
 		$kat = $mysqli->fetch_array("SELECT `email` FROM `kat` WHERE id = ".$GLOBALS['generatedcontent']['activmenu']);
 				
 	getUpdateTime('kat');
 	
-	if(!@$kat[0]['email'])
+	if (!@$kat[0]['email'])
 		$GLOBALS['generatedcontent']['email'] = $GLOBALS['_config']['email'];
 	else
 		$GLOBALS['generatedcontent']['email'] = $kat[0]['email'];
 
 
-	if($GLOBALS['side']['maerke']) {
+	if ($GLOBALS['side']['maerke']) {
 		$maerker = $mysqli->fetch_array("SELECT `id`, `navn`, `link`, `ico` FROM `maerke` WHERE `id` IN(".$GLOBALS['side']['maerke'].") AND `ico` != '' ORDER BY `navn`");
 		$temp = $mysqli->fetch_array("SELECT `id`, `navn`, `link`, `ico` FROM `maerke` WHERE `id` IN(".$GLOBALS['side']['maerke'].") AND `ico` = '' ORDER BY `navn`");
 		$maerker = array_merge($maerker, $temp);
@@ -88,7 +88,7 @@ function side() {
 	getUpdateTime('sider');
 	
 	foreach($tilbehor as $value) {
-		if($value['kat']) {
+		if ($value['kat']) {
 			$kat = $mysqli->fetch_array("SELECT id, navn FROM kat WHERE id = ".$value['kat']);
 			getUpdateTime('kat');
 			$kat = '/kat'.$kat[0]['id'].'-'.clear_file_name($kat[0]['navn']);

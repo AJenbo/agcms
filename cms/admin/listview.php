@@ -48,37 +48,37 @@ img {
 --></style>
 </head><?php
 
-if($_GET['sort'] == 'id') {
+if ($_GET['sort'] == 'id') {
 	$sort = 'id';
-} elseif($_GET['sort'] == 'navn') {
+} elseif ($_GET['sort'] == 'navn') {
 	$sort = 'navn';
-} elseif($_GET['sort'] == 'varenr') {
+} elseif ($_GET['sort'] == 'varenr') {
 	$sort = 'varenr';
-} elseif($_GET['sort'] == 'for') {
+} elseif ($_GET['sort'] == 'for') {
 	$sort = '`for`';
-} elseif($_GET['sort'] == 'pris') {
+} elseif ($_GET['sort'] == 'pris') {
 	$sort = 'pris';
-} elseif($_GET['sort'] == 'dato') {
+} elseif ($_GET['sort'] == 'dato') {
 	$sort = 'dato';
-} elseif($_GET['sort'] == 'maerke') {
+} elseif ($_GET['sort'] == 'maerke') {
 	$sort = 'maerke';
-} elseif($_GET['sort'] == 'krav') {
+} elseif ($_GET['sort'] == 'krav') {
 	$sort = 'krav';
-} elseif($_GET['sort'] == '-id') {
+} elseif ($_GET['sort'] == '-id') {
 	$sort = '-sider.`id`';
-} elseif($_GET['sort'] == '-navn') {
+} elseif ($_GET['sort'] == '-navn') {
 	$sort = '-navn';
-} elseif($_GET['sort'] == '-varenr') {
+} elseif ($_GET['sort'] == '-varenr') {
 	$sort = '-varenr';
-} elseif($_GET['sort'] == '-for') {
+} elseif ($_GET['sort'] == '-for') {
 	$sort = '-`for`';
-} elseif($_GET['sort'] == '-pris') {
+} elseif ($_GET['sort'] == '-pris') {
 	$sort = '-pris';
-} elseif($_GET['sort'] == '-dato') {
+} elseif ($_GET['sort'] == '-dato') {
 	$sort = '-dato';
-} elseif($_GET['sort'] == '-maerke') {
+} elseif ($_GET['sort'] == '-maerke') {
 	$sort = '-maerke';
-} elseif($_GET['sort'] == '-krav') {
+} elseif ($_GET['sort'] == '-krav') {
 	$sort = '-krav';
 } else {
 	$sort = 'navn';
@@ -86,14 +86,14 @@ if($_GET['sort'] == 'id') {
 
 ?>
 <body><table><thead><tr>
-      <td><a href="?sort=<?php if($sort == 'id') echo('-'); ?>id<?php if(is_numeric($_GET['kat'])) echo('&amp;kat='.$_GET['kat']); ?>">ID</a></td>
-      <td><a href="?sort=<?php if($sort == 'navn') echo('-'); ?>navn<?php if(is_numeric($_GET['kat'])) echo('&amp;kat='.$_GET['kat']); ?>">Navn</a></td>
-      <td><a href="?sort=<?php if($sort == 'varenr') echo('-'); ?>varenr<?php if(is_numeric($_GET['kat'])) echo('&amp;kat='.$_GET['kat']); ?>">Varenummer</a></td>
-      <td><a href="?sort=<?php if($sort == '`for`') echo('-'); ?>for<?php if(is_numeric($_GET['kat'])) echo('&amp;kat='.$_GET['kat']); ?>">Før pris</a></td>
-      <td><a href="?sort=<?php if($sort == 'pris') echo('-'); ?>pris<?php if(is_numeric($_GET['kat'])) echo('&amp;kat='.$_GET['kat']); ?>">Nu Pris</a></td>
-      <td><a href="?sort=<?php if($sort == 'dato') echo('-'); ?>dato<?php if(is_numeric($_GET['kat'])) echo('&amp;kat='.$_GET['kat']); ?>">Sidst ændret</a></td>
-      <td><a href="?sort=<?php if($sort == 'maerke') echo('-'); ?>maerke<?php if(is_numeric($_GET['kat'])) echo('&amp;kat='.$_GET['kat']); ?>">Mærke</a></td>
-      <td><a href="?sort=<?php if($sort == 'krav') echo('-'); ?>krav<?php if(is_numeric($_GET['kat'])) echo('&amp;kat='.$_GET['kat']); ?>">Krav</a></td>
+      <td><a href="?sort=<?php if ($sort == 'id') echo('-'); ?>id<?php if (is_numeric($_GET['kat'])) echo('&amp;kat='.$_GET['kat']); ?>">ID</a></td>
+      <td><a href="?sort=<?php if ($sort == 'navn') echo('-'); ?>navn<?php if (is_numeric($_GET['kat'])) echo('&amp;kat='.$_GET['kat']); ?>">Navn</a></td>
+      <td><a href="?sort=<?php if ($sort == 'varenr') echo('-'); ?>varenr<?php if (is_numeric($_GET['kat'])) echo('&amp;kat='.$_GET['kat']); ?>">Varenummer</a></td>
+      <td><a href="?sort=<?php if ($sort == '`for`') echo('-'); ?>for<?php if (is_numeric($_GET['kat'])) echo('&amp;kat='.$_GET['kat']); ?>">Før pris</a></td>
+      <td><a href="?sort=<?php if ($sort == 'pris') echo('-'); ?>pris<?php if (is_numeric($_GET['kat'])) echo('&amp;kat='.$_GET['kat']); ?>">Nu Pris</a></td>
+      <td><a href="?sort=<?php if ($sort == 'dato') echo('-'); ?>dato<?php if (is_numeric($_GET['kat'])) echo('&amp;kat='.$_GET['kat']); ?>">Sidst ændret</a></td>
+      <td><a href="?sort=<?php if ($sort == 'maerke') echo('-'); ?>maerke<?php if (is_numeric($_GET['kat'])) echo('&amp;kat='.$_GET['kat']); ?>">Mærke</a></td>
+      <td><a href="?sort=<?php if ($sort == 'krav') echo('-'); ?>krav<?php if (is_numeric($_GET['kat'])) echo('&amp;kat='.$_GET['kat']); ?>">Krav</a></td>
 </tr></thead><tbody><?php
 require_once '../inc/config.php';
 require_once '../inc/mysqli.php';
@@ -133,7 +133,7 @@ function print_pages($kat) {
 	foreach($sider as $side) {
 		echo("\n".'
     <tr');
-	if($altrow) {
+	if ($altrow) {
 		echo(' class="altrow"');
 		$altrow = 0;
 	} else {
@@ -157,10 +157,10 @@ function print_pages($kat) {
 	}
 }
 
-if(is_numeric($_GET['kat'])) {
-	if($_GET['kat'] > 0) {
+if (is_numeric($_GET['kat'])) {
+	if ($_GET['kat'] > 0) {
 		$kat = $mysqli->fetch_one("SELECT id, navn FROM `kat` WHERE id = ".$_GET['kat']);
-	} elseif($_GET['kat'] == 0) {
+	} elseif ($_GET['kat'] == 0) {
 		$kat = array('id' => 0, 'navn' => 'Forside');
 	} else {
 		$kat = array('id' => -1, 'navn' => 'Indaktiv');

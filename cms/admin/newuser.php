@@ -14,11 +14,11 @@ textdomain("agcms");
 <link type="text/css" rel="stylesheet" href="style/style.css" />
 <script type="text/javascript"><!--
 function validate() {
-	if(document.getElementById('fullname').value == '' || document.getElementById('name').value == '' || document.getElementById('password').value == '') {
+	if (document.getElementById('fullname').value == '' || document.getElementById('name').value == '' || document.getElementById('password').value == '') {
 		alert('<?php echo(_('All fields must be filled.')); ?>');
 		return false;
 	}
-	if(document.getElementById('password').value != document.getElementById('password2').value) {
+	if (document.getElementById('password').value != document.getElementById('password2').value) {
 		alert('<?php echo(_('The passwords does not match.')); ?>');
 		return false;
 	}
@@ -52,11 +52,11 @@ table, td, tr {
 	</table>
 </form><?php
 
-if($_POST) {
-	if(empty($_POST['fullname']) || empty($_POST['name']) || empty($_POST['password'])) {
+if ($_POST) {
+	if (empty($_POST['fullname']) || empty($_POST['name']) || empty($_POST['password'])) {
 		die('<p style="text-align: center; margin-top: 20px;">'._('All fields must be filled.').'</p></body></html>');
 	}
-	if($_POST['password'] != $_POST['password2']) {
+	if ($_POST['password'] != $_POST['password2']) {
 		die('<p style="text-align: center; margin-top: 20px;">'._('The passwords does not match.').'</p></body></html>');
 	}
 
@@ -66,7 +66,7 @@ if($_POST) {
 	//Open database
 	$mysqli = new simple_mysqli($GLOBALS['_config']['mysql_server'], $GLOBALS['_config']['mysql_user'], $GLOBALS['_config']['mysql_password'], $GLOBALS['_config']['mysql_database']);
 
-	if($mysqli->fetch_array('SELECT id FROM users WHERE name = \''.addcslashes($_POST['name'], "'").'\''))
+	if ($mysqli->fetch_array('SELECT id FROM users WHERE name = \''.addcslashes($_POST['name'], "'").'\''))
 		die('<p style="text-align: center; margin-top: 20px;">'._('Username already taken.').'</p></body></html>');
 
 	$mysqli->query('INSERT INTO users SET name = \''.addcslashes($_POST['name'], "'").'\', password = \''.addcslashes(crypt($_POST['password']), "'").'\', fullname = \''.addcslashes($_POST['fullname'], "'").'\'');
@@ -85,7 +85,7 @@ if($_POST) {
 	$mail = new PHPMailer();
 	$mail->SetLanguage(_('en'));
 	$mail->IsSMTP();
-	if($GLOBALS['_config']['emailpassword'] !== false) {
+	if ($GLOBALS['_config']['emailpassword'] !== false) {
 		$mail->SMTPAuth   = true; // enable SMTP authentication
 		$mail->Username   = $GLOBALS['_config']['email'][0];
 		$mail->Password   = $GLOBALS['_config']['emailpassword'];
@@ -103,10 +103,10 @@ if($_POST) {
 	$mail->MsgHTML($emailbody, $_SERVER['DOCUMENT_ROOT']);
 	
 	$mail->AddAddress($GLOBALS['_config']['email'][0], $GLOBALS['_config']['site_name']);
-	if(!$mail->Send()) {
+	if (!$mail->Send()) {
 		//Upload email to the sent folder via imap
 		var_dump($mail->ErrorInfo);
-		if($GLOBALS['_config']['imap']) {
+		if ($GLOBALS['_config']['imap']) {
 			require_once $_SERVER['DOCUMENT_ROOT'].'/inc/imap.inc.php';
 			$imap = new IMAPMAIL;
 			$imap->open($GLOBALS['_config']['imap'], $GLOBALS['_config']['imapport']);

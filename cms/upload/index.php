@@ -4,7 +4,7 @@ ini_set('display_errors', 1);
 error_reporting(-1);
 /**/
 
-if(!empty($_COOKIE[session_name()]))
+if (!empty($_COOKIE[session_name()]))
 	unset($_COOKIE[session_name()]);
 
 ini_set("session.use_only_cookies", 0);
@@ -34,30 +34,30 @@ if (!empty($_FILES['Filedata']['tmp_name']) && is_uploaded_file($_FILES['Filedat
 	//Kunne ikke finde billed størelsen.
 	header('HTTP/1.1 512 Internal Server Error');
 	
-	if((!@$_GET['x'] || !@$_GET['y']) && ($mime == 'image/jpeg' || $mime == 'image/gif' || $mime == 'image/png' || $mime == 'image/vnd.wap.wbmp'))
+	if ((!@$_GET['x'] || !@$_GET['y']) && ($mime == 'image/jpeg' || $mime == 'image/gif' || $mime == 'image/png' || $mime == 'image/vnd.wap.wbmp'))
 		$imagesize = getimagesize($_SERVER['DOCUMENT_ROOT'].'/upload/temp/'.$name);
 	else {
 		$imagesize[0] = $_GET['x'];
 		$imagesize[1] = $_GET['y'];
 	}
-	if(!$imagesize)
+	if (!$imagesize)
 		die();
 	
 	//TODO BUG IN SWF FILE!!!
-	if(@$_GET['aspect'] == '4-9') {
+	if (@$_GET['aspect'] == '4-9') {
 		$_GET['aspect'] = "'4-3'";
-	} elseif(@$_GET['aspect'] == '16-9') {
+	} elseif (@$_GET['aspect'] == '16-9') {
 		$_GET['aspect'] = "'16-9'";
 	} else {
 		$_GET['aspect'] = 'NULL';
 	}
 	
-	if(empty($_GET['type']))
+	if (empty($_GET['type']))
 		$_GET['type'] = '';
 
 	require_once '../admin/inc/config.php';
 	//TODO test if trim, resize or recompression is needed
-	if(($_GET['type'] == 'image' && $mime != 'image/jpeg') ||
+	if (($_GET['type'] == 'image' && $mime != 'image/jpeg') ||
 		(($_GET['type'] == 'image' || $_GET['type'] == 'lineimage') && $imagesize[0] > $GLOBALS['_config']['text_width']) ||
 		(($_GET['type'] == 'image' || $_GET['type'] == 'lineimage') && $_FILES['Filedata']['size']/($imagesize[0]*$imagesize[1]) > 0.7) ||
 		($_GET['type'] == 'lineimage' && $mime != 'image/png' && $mime != 'image/gif')) {
@@ -77,12 +77,12 @@ if (!empty($_FILES['Filedata']['tmp_name']) && is_uploaded_file($_FILES['Filedat
 		
 		$memory_limit = return_bytes(ini_get('memory_limit'))-270336;
 		
-		if($imagesize[0]*$imagesize[1] > $memory_limit/9.92) {
+		if ($imagesize[0]*$imagesize[1] > $memory_limit/9.92) {
 		
 			//Kunne ikke slette filen.
 			header('HTTP/1.1 520 Internal Server Error');
 			
-			if(@unlink($_SERVER['DOCUMENT_ROOT'].'/upload/temp/'.$name))
+			if (@unlink($_SERVER['DOCUMENT_ROOT'].'/upload/temp/'.$name))
 				//Billedet er for stor.
 				header('HTTP/1.1 521 Internal Server Error');
 			
@@ -95,7 +95,7 @@ if (!empty($_FILES['Filedata']['tmp_name']) && is_uploaded_file($_FILES['Filedat
 		//Fejl under billed behandling.
 		header('HTTP/1.1 561 Internal Server Error');
 
-		if($_GET['type'] == 'lineimage')
+		if ($_GET['type'] == 'lineimage')
 			$output['type'] = 'png';
 		else
 			$output['type'] = 'jpg';

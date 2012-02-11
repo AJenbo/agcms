@@ -12,24 +12,24 @@ textdomain("agcms");
 
 chdir('../');
 
-if(is_numeric(@$_GET['add']) || is_numeric(@$_GET['add_list_item'])) {
+if (is_numeric(@$_GET['add']) || is_numeric(@$_GET['add_list_item'])) {
 	require_once 'inc/config.php';
 	require_once 'inc/mysqli.php';
 	//Open database
 	$mysqli = new simple_mysqli($GLOBALS['_config']['mysql_server'], $GLOBALS['_config']['mysql_user'], $GLOBALS['_config']['mysql_password'], $GLOBALS['_config']['mysql_database']);
 
-	if($_SERVER['HTTP_REFERER']) {
+	if ($_SERVER['HTTP_REFERER']) {
 		$goto_uri = $_SERVER['HTTP_REFERER'];
 	} else {
 		$goto_uri = '';
 	}	
 
-	if(is_numeric(@$_GET['add_list_item'])) {
+	if (is_numeric(@$_GET['add_list_item'])) {
 		$list_row = $mysqli->fetch_one('SELECT * FROM `list_rows` WHERE id = '.$_GET['add_list_item']);
-		if($list_row['link']) {
+		if ($list_row['link']) {
 			$product = $mysqli->fetch_one('SELECT `navn`, `pris`, `fra` FROM `sider` WHERE id = '.$list_row['link']);
 
-			if(!$goto_uri)
+			if (!$goto_uri)
 				$goto_uri = '/?side='.$product['link'];
 		} else {
 			$list = $mysqli->fetch_one('SELECT `page_id`, `cells` FROM `lists` WHERE id = '.$list_row['list_id']);
@@ -39,42 +39,42 @@ if(is_numeric(@$_GET['add']) || is_numeric(@$_GET['add_list_item'])) {
 			$product['pris'] = null;
 			$product['fra'] = 0;
 			foreach($list['cells'] as $i => $celltype) {
-				if($celltype == 0 || $celltype == 1)
+				if ($celltype == 0 || $celltype == 1)
 					$product['navn'] .= ' '.@$list_row['cells'][$i];
-				elseif($celltype == 2 || $celltype == 3)
+				elseif ($celltype == 2 || $celltype == 3)
 					$product['pris'] = @$list_row['cells'][$i];
 			}
 
-			if(!$goto_uri)
+			if (!$goto_uri)
 				$goto_uri = '/?side='.$list['page_id'];
 		}
-	} elseif(is_numeric(@$_GET['add'])) {
+	} elseif (is_numeric(@$_GET['add'])) {
 		$product = $mysqli->fetch_one('SELECT `navn`, `pris`, `fra` FROM `sider` WHERE id = '.$_GET['add']);
 
-		if(!$goto_uri)
+		if (!$goto_uri)
 			$goto_uri = '/?side='.$_GET['add'];
 	}
 
 	session_start();
 
 	$product_exists = false;
-	if(!empty($_SESSION['faktura']['quantities'])) {
+	if (!empty($_SESSION['faktura']['quantities'])) {
 		foreach($_SESSION['faktura']['products'] as $i => $product_name) {
-			if($product_name == $product['navn']) {
+			if ($product_name == $product['navn']) {
 				$_SESSION['faktura']['quantities'][$i]++;
 				$product_exists = true;
 				break;
 			}
 		}
 	}
-	if(!$product_exists) {
+	if (!$product_exists) {
 		$_SESSION['faktura']['quantities'][] = 1;
 		$_SESSION['faktura']['products'][] = $product['navn'];
-		if($product['fra'] == 1) $product['pris'] = null;
+		if ($product['fra'] == 1) $product['pris'] = null;
 		$_SESSION['faktura']['values'][] = $product['pris'];
 	}
 
-	if($_SERVER['HTTP_REFERER'])
+	if ($_SERVER['HTTP_REFERER'])
 		header('Location: '.$_SERVER['HTTP_REFERER'], TRUE, 303);
 	else
 		header('Location: /?side='.$_GET['add'], TRUE, 303);
@@ -83,7 +83,7 @@ if(is_numeric(@$_GET['add']) || is_numeric(@$_GET['add_list_item'])) {
 
 /*fake basket content*/
 /*
-if(!$_SESSION['faktura'] && empty($_GET['step'])) {
+if (!$_SESSION['faktura'] && empty($_GET['step'])) {
 	$_SESSION['faktura']['quantities'][0] = 1;
 	$_SESSION['faktura']['products'][0] = 'Garmin 720 s';
 	$_SESSION['faktura']['values'][0] = 10499;
@@ -100,14 +100,14 @@ $GLOBALS['generatedcontent']['datetime'] = time();
 
 unset($_POST['values']);
 unset($_POST['products']);
-if(count($_POST)) {
+if (count($_POST)) {
 	foreach($_POST as $key => $value) {
 		$_SESSION['faktura'][$key] = $value;
 	}
 }
 
 function validemail($email) {
-	if($email &&
+	if ($email &&
 	preg_match('/^([a-z0-9_\.\-])+\@(([a-z0-9\-])+\.)+([a-z0-9]{2,4})+$/ui', $email) &&
 	getmxrr(preg_replace('/.+?@(.?)/u', '$1', $email), $dummy)) {
 		return true;
@@ -120,46 +120,46 @@ function validate($values) {
 	
 	$rejected = array();
 	
-	if(!validemail(@$values['email']))
+	if (!validemail(@$values['email']))
 		$rejected['email'] = true;
 	
-	if(empty($values['navn'])) {
+	if (empty($values['navn'])) {
 		$rejected['navn'] = true;
 	}
-	if(empty($values['land'])) {
+	if (empty($values['land'])) {
 		$rejected['land'] = true;
 	}
-	if((empty($values['adresse']) || ($values['land'] == 'DK' && !preg_match('/\s/ui', @$values['adresse']))) && empty($values['postbox'])) {
+	if ((empty($values['adresse']) || ($values['land'] == 'DK' && !preg_match('/\s/ui', @$values['adresse']))) && empty($values['postbox'])) {
 		$rejected['adresse'] = true;
 	}
-	if(empty($values['postnr'])) {
+	if (empty($values['postnr'])) {
 		$rejected['postnr'] = true;
 	}
 	//TODO if land = DK and postnr != by
-	if(empty($values['by'])) {
+	if (empty($values['by'])) {
 		$rejected['by'] = true;
 	}
-	if(!$values['land']) {
+	if (!$values['land']) {
 		$rejected['land'] = true;
 	}
-	if(!empty($values['altpost'])) {
-		if(empty($values['postname'])) {
+	if (!empty($values['altpost'])) {
+		if (empty($values['postname'])) {
 			$rejected['postname'] = true;
 		}
-		if(empty($values['land'])) {
+		if (empty($values['land'])) {
 			$rejected['land'] = true;
 		}
-		if((empty($values['postaddress']) || ($values['postcountry'] == 'DK' && !preg_match('/\s/ui', $values['postaddress']))) && empty($values['postpostbox'])) {
+		if ((empty($values['postaddress']) || ($values['postcountry'] == 'DK' && !preg_match('/\s/ui', $values['postaddress']))) && empty($values['postpostbox'])) {
 			$rejected['postaddress'] = true;
 		}
-		if(empty($values['postpostalcode'])) {
+		if (empty($values['postpostalcode'])) {
 			$rejected['postpostalcode'] = true;
 		}
 		//TODO if postcountry = DK and postpostalcode != postcity
-		if(empty($values['postcity'])) {
+		if (empty($values['postcity'])) {
 			$rejected['postcity'] = true;
 		}
-		if(empty($values['postcountry'])) {
+		if (empty($values['postcountry'])) {
 			$rejected['postcountry'] = true;
 		}
 	}
@@ -173,13 +173,13 @@ $GLOBALS['generatedcontent']['crumbs'][0] = array('name' => _('Payment'), 'link'
 $GLOBALS['generatedcontent']['contenttype'] = 'page';
 $GLOBALS['generatedcontent']['text'] = '';
 
-if(!empty($_SESSION['faktura']['quantities'])) {
+if (!empty($_SESSION['faktura']['quantities'])) {
 	$rejected = array();
 		
-	if(empty($_GET['step'])) {
-		if($_POST) {
+	if (empty($_GET['step'])) {
+		if ($_POST) {
 			foreach($_POST['quantity'] as $i => $quantiy) {
-				if($quantiy < 1) {
+				if ($quantiy < 1) {
 					unset($_SESSION['faktura']['quantities'][$i]);
 					unset($_SESSION['faktura']['products'][$i]);
 					unset($_SESSION['faktura']['values'][$i]);
@@ -232,7 +232,7 @@ if(!empty($_SESSION['faktura']['quantities'])) {
 				<td class="tal"><input onkeyup="updateprice();" onchange="updateprice();" class="tal" value="'.$quantity.'" name="quantity[ ]" size="3" /></td>
 				<td>'.$_SESSION['faktura']['products'][$i].'</td>
 				<td class="tal">';
-			if(is_numeric($_SESSION['faktura']['values'][$i])) {
+			if (is_numeric($_SESSION['faktura']['values'][$i])) {
 				$GLOBALS['generatedcontent']['text'] .= number_format($_SESSION['faktura']['values'][$i], 2, ',', '');
 				$javascript .= "\n".'values['.$i.'] = '.$_SESSION['faktura']['values'][$i].';';
 			} else {
@@ -241,7 +241,7 @@ if(!empty($_SESSION['faktura']['quantities'])) {
 				$unknownvalue = true;
 			}
 			$GLOBALS['generatedcontent']['text'] .= '</td><td class="tal total">';
-			if(is_numeric($_SESSION['faktura']['values'][$i])) {
+			if (is_numeric($_SESSION['faktura']['values'][$i])) {
 				$GLOBALS['generatedcontent']['text'] .= number_format($_SESSION['faktura']['values'][$i]*$quantity, 2, ',', '');
 			} else {
 				$GLOBALS['generatedcontent']['text'] .= '*';
@@ -252,64 +252,64 @@ if(!empty($_SESSION['faktura']['quantities'])) {
 		$GLOBALS['generatedcontent']['text'] .= '<script type="text/javascript"><!--
 '.$javascript.'
 --></script>';
-		if($unknownvalue)
+		if ($unknownvalue)
 			$GLOBALS['generatedcontent']['text'] .= '<small>'._('* The price cannot be determined automatically, please make sure to describe the exact type in the note field.').'</small></p>';
 
-		if(empty($_SESSION['faktura']['paymethod']))
+		if (empty($_SESSION['faktura']['paymethod']))
 			$_SESSION['faktura']['paymethod'] = '';
 		$GLOBALS['generatedcontent']['text'] .= '<p>'._('Prefered payment method:').' <select name="paymethod" style="float:right;">
 			<option value="creditcard"';
-		if($_SESSION['faktura']['paymethod'] == 'creditcard')
+		if ($_SESSION['faktura']['paymethod'] == 'creditcard')
 			$GLOBALS['generatedcontent']['text'] .= ' selected="selected"';
 		$GLOBALS['generatedcontent']['text'] .= '>'._('Credit Card').'</option>
 			<option value="bank"';
-		if($_SESSION['faktura']['paymethod'] == 'bank')
+		if ($_SESSION['faktura']['paymethod'] == 'bank')
 			$GLOBALS['generatedcontent']['text'] .= ' selected="selected"';
 		$GLOBALS['generatedcontent']['text'] .= '>'._('Bank transaction').'</option>
 			<option value="mail"';
-		if($_SESSION['faktura']['paymethod'] == 'mail')
+		if ($_SESSION['faktura']['paymethod'] == 'mail')
 			$GLOBALS['generatedcontent']['text'] .= ' selected="selected"';
 		$GLOBALS['generatedcontent']['text'] .= '>'._('Mail order').'</option>
 			<option value="cash"';
-		if($_SESSION['faktura']['paymethod'] == 'cash')
+		if ($_SESSION['faktura']['paymethod'] == 'cash')
 			$GLOBALS['generatedcontent']['text'] .= ' selected="selected"';
 		$GLOBALS['generatedcontent']['text'] .= '>'._('Cash').'</option>
 		</select></p>';
 
-		if(empty($_SESSION['faktura']['delevery']))
+		if (empty($_SESSION['faktura']['delevery']))
 			$_SESSION['faktura']['delevery'] = '';
 		$GLOBALS['generatedcontent']['text'] .= '<p>'._('Delevery:').' <select style="float:right;" name="delevery">
 			<option value="postal"';
-		if($_SESSION['faktura']['delevery'] == 'postal')
+		if ($_SESSION['faktura']['delevery'] == 'postal')
 			$GLOBALS['generatedcontent']['text'] .= ' selected="selected"';
 		$GLOBALS['generatedcontent']['text'] .= '>'._('Mail').'</option>
 			<option value="express"';
-		if($_SESSION['faktura']['delevery'] == 'express')
+		if ($_SESSION['faktura']['delevery'] == 'express')
 			$GLOBALS['generatedcontent']['text'] .= ' selected="selected"';
 		$GLOBALS['generatedcontent']['text'] .= '>'._('Mail express').'</option>
 			<option value="pickup"';
-		if($_SESSION['faktura']['delevery'] == 'pickup')
+		if ($_SESSION['faktura']['delevery'] == 'pickup')
 			$GLOBALS['generatedcontent']['text'] .= ' selected="selected"';
 		$GLOBALS['generatedcontent']['text'] .= '>'._('Pickup in store').'</option>
 		</select><small id="shipping"><br />'._('The excact shipping cost will be calculcated as the goods are packed.').'</small></p>';
 
 
-		if(empty($_SESSION['faktura']['note']))
+		if (empty($_SESSION['faktura']['note']))
 			$_SESSION['faktura']['note'] = '';
 		$GLOBALS['generatedcontent']['text'] .= '<p>'._('Note:').'<br /><textarea style="width:100%;" name="note">'.htmlspecialchars($_SESSION['faktura']['note']).'</textarea><p>';
 		
 		$GLOBALS['generatedcontent']['text'] .= '<input value="'._('Continue').'" type="submit" /></form>';
 
-	} elseif($_GET['step'] == 1) {
+	} elseif ($_GET['step'] == 1) {
 
-		if(empty($_SESSION['faktura']['postcountry'])) {
+		if (empty($_SESSION['faktura']['postcountry'])) {
 			$_SESSION['faktura']['postcountry'] = 'DK';
 		}
-		if(empty($_SESSION['faktura']['land'])) {
+		if (empty($_SESSION['faktura']['land'])) {
 			$_SESSION['faktura']['land'] = 'DK';
 		}
 		
-		if($_POST) {
+		if ($_POST) {
 			$updates = array();
 			$updates['navn'] = $_POST['navn'];
 			$updates['att'] = $_POST['att'] != $_POST['navn'] ? $_POST['att'] : '';
@@ -337,9 +337,9 @@ if(!empty($_SESSION['faktura']['quantities'])) {
 			$_SESSION['faktura'] = array_merge($_SESSION['faktura'], $updates);
 			$rejected = validate($updates);
 		
-			if(!count($rejected)) {
+			if (!count($rejected)) {
 				
-				if(@$_POST['newsletter'] ? 1 : 0) {
+				if (@$_POST['newsletter'] ? 1 : 0) {
 					
 					require_once 'inc/countries.php';
 					$mysqli->query("INSERT INTO `email` (`navn`, `email`, `adresse`, `land`, `post`, `by`, `tlf1`, `tlf2`, `kartotek`, `dato` , `ip` )
@@ -393,7 +393,7 @@ VALUES ('".
 			<td>'._('Name:').'</td>
 			<td colspan="2"><input name="navn" id="navn" style="width:157px" value="'.@$_SESSION['faktura']['navn'].'" /></td>
 			<td>';
-		if(!empty($rejected['navn']))
+		if (!empty($rejected['navn']))
 			$GLOBALS['generatedcontent']['text'] .= '<img src="images/error.png" alt="" title="" >';
 		$GLOBALS['generatedcontent']['text'] .= '</td>
 		</tr>
@@ -406,7 +406,7 @@ VALUES ('".
 			<td> '._('Address:').'</td>
 			<td colspan="2"><input name="adresse" id="adresse" style="width:157px" value="'.@$_SESSION['faktura']['adresse'].'" /></td>
 			<td>';
-		if(!empty($rejected['adresse']))
+		if (!empty($rejected['adresse']))
 			$GLOBALS['generatedcontent']['text'] .= '<img src="images/error.png" alt="" title="" >';
 		$GLOBALS['generatedcontent']['text'] .= '</td>
 		</tr>
@@ -421,9 +421,9 @@ VALUES ('".
 			<td align="right">'._('City:').'
 				<input name="by" id="by" style="width:90px" value="'.@$_SESSION['faktura']['by'].'" /></td>
 			<td>';
-		if(!empty($rejected['postnr']))
+		if (!empty($rejected['postnr']))
 			$GLOBALS['generatedcontent']['text'] .= '<img src="images/error.png" alt="" title="" >';
-		if(!empty($rejected['by']))
+		if (!empty($rejected['by']))
 			$GLOBALS['generatedcontent']['text'] .= '<img src="images/error.png" alt="" title="" >';
 		$GLOBALS['generatedcontent']['text'] .= '</td>
 		</tr>
@@ -433,13 +433,13 @@ VALUES ('".
 		require_once 'inc/countries.php';
 		foreach($countries as $code => $country) {
 			$GLOBALS['generatedcontent']['text'] .= '<option value="'.$code.'"';
-			if($_SESSION['faktura']['land'] == $code)
+			if ($_SESSION['faktura']['land'] == $code)
 				$GLOBALS['generatedcontent']['text'] .= ' selected="selected"';
 			$GLOBALS['generatedcontent']['text'] .= '>'.htmlspecialchars($country).'</option>';
 		}
 		$GLOBALS['generatedcontent']['text'] .= '</select></td>
 			<td>';
-		if(!empty($rejected['land']))
+		if (!empty($rejected['land']))
 			$GLOBALS['generatedcontent']['text'] .= '<img src="images/error.png" alt="" title="" >';
 		$GLOBALS['generatedcontent']['text'] .= '</td>
 		</tr>
@@ -447,72 +447,72 @@ VALUES ('".
 			<td> '._('E-mail:').'</td>
 			<td colspan="2"><input name="email" id="email" style="width:157px" value="'.@$_SESSION['faktura']['email'].'" /></td>
 			<td>';
-		if(!empty($rejected['email']))
+		if (!empty($rejected['email']))
 			$GLOBALS['generatedcontent']['text'] .= '<img src="images/error.png" alt="" title="" >';
 		$GLOBALS['generatedcontent']['text'] .= '</td>
 		</tr>
 		<tr>
 			<td colspan="4"><input onclick="showhidealtpost(this.checked);" name="altpost" id="altpost" type="checkbox"';
-		 if(!empty($_SESSION['faktura']['altpost'])) $GLOBALS['generatedcontent']['text'] .= ' checked="checked"';
+		 if (!empty($_SESSION['faktura']['altpost'])) $GLOBALS['generatedcontent']['text'] .= ' checked="checked"';
 		 $GLOBALS['generatedcontent']['text'] .= ' /><label for="altpost"> '._('Other delivery address').'</label></td>
 		</tr>
 		<tr class="altpost"';
-		if(empty($_SESSION['faktura']['altpost'])) $GLOBALS['generatedcontent']['text'] .= ' style="display:none;"';
+		if (empty($_SESSION['faktura']['altpost'])) $GLOBALS['generatedcontent']['text'] .= ' style="display:none;"';
 		$GLOBALS['generatedcontent']['text'] .= '>
 			<td> '._('Phone:').'</td>
 			<td colspan="2"><input name="posttlf" id="posttlf" style="width:157px" value="'.@$_SESSION['faktura']['posttlf'].'" /></td>
 			<td><input type="button" value="'._('Get address').'" onclick="get_address(document.getElementById(\'posttlf\').value, get_address_r2);" /></td>
 		</tr>
 		<tr class="altpost"';
-		if(empty($_SESSION['faktura']['altpost'])) $GLOBALS['generatedcontent']['text'] .= ' style="display:none;"';
+		if (empty($_SESSION['faktura']['altpost'])) $GLOBALS['generatedcontent']['text'] .= ' style="display:none;"';
 		$GLOBALS['generatedcontent']['text'] .= '>
 			<td>'._('Name:').'</td>
 			<td colspan="2"><input name="postname" id="postname" style="width:157px" value="'.@$_SESSION['faktura']['postname'].'" /></td>
 			<td>';
-		if(!empty($rejected['postname']))
+		if (!empty($rejected['postname']))
 			$GLOBALS['generatedcontent']['text'] .= '<img src="images/error.png" alt="" title="" >';
 		$GLOBALS['generatedcontent']['text'] .= '</td>
 		</tr>
 		<tr class="altpost"';
-		if(empty($_SESSION['faktura']['altpost'])) $GLOBALS['generatedcontent']['text'] .= ' style="display:none;"';
+		if (empty($_SESSION['faktura']['altpost'])) $GLOBALS['generatedcontent']['text'] .= ' style="display:none;"';
 		$GLOBALS['generatedcontent']['text'] .= '>
 			<td> '._('Attn.:').'</td>
 			<td colspan="2"><input name="postatt" id="postatt" style="width:157px" value="'.@$_SESSION['faktura']['postatt'].'" /></td>
 			<td></td>
 		</tr>
 		<tr class="altpost"';
-		if(empty($_SESSION['faktura']['altpost'])) $GLOBALS['generatedcontent']['text'] .= ' style="display:none;"';
+		if (empty($_SESSION['faktura']['altpost'])) $GLOBALS['generatedcontent']['text'] .= ' style="display:none;"';
 		$GLOBALS['generatedcontent']['text'] .= '>
 			<td> '._('Address:').'</td>
 			<td colspan="2"><input name="postaddress" id="postaddress" style="width:157px" value="'.@$_SESSION['faktura']['postaddress'].'" /><br /><input name="postaddress2" id="postaddress2" style="width:157px" value="'.@$_SESSION['faktura']['postaddress2'].'" /></td>
 			<td>';
-		if(!empty($rejected['postaddress']))
+		if (!empty($rejected['postaddress']))
 			$GLOBALS['generatedcontent']['text'] .= '<img src="images/error.png" alt="" title="" >';
 		$GLOBALS['generatedcontent']['text'] .= '</td>
 		</tr>
 		<tr class="altpost"';
-		if(empty($_SESSION['faktura']['altpost'])) $GLOBALS['generatedcontent']['text'] .= ' style="display:none;"';
+		if (empty($_SESSION['faktura']['altpost'])) $GLOBALS['generatedcontent']['text'] .= ' style="display:none;"';
 		$GLOBALS['generatedcontent']['text'] .= '>
 			<td> '._('Postbox:').'</td>
 			<td colspan="2"><input name="postpostbox" id="postpostbox" style="width:157px" value="'.@$_SESSION['faktura']['postpostbox'].'" /></td>
 			<td></td>
 		</tr>
 		<tr class="altpost"';
-		if(empty($_SESSION['faktura']['altpost'])) $GLOBALS['generatedcontent']['text'] .= ' style="display:none;"';
+		if (empty($_SESSION['faktura']['altpost'])) $GLOBALS['generatedcontent']['text'] .= ' style="display:none;"';
 		$GLOBALS['generatedcontent']['text'] .= '>
 			<td> '._('Zipcode:').'</td>
 			<td><input name="postpostalcode" id="postpostalcode" style="width:35px" value="'.@$_SESSION['faktura']['postpostalcode'].'" onblur="chnageZipCode(this.value, \'postcountry\', \'postcity\')" onkeyup="chnageZipCode(this.value, \'postcountry\', \'postcity\')" onchange="chnageZipCode(this.value, \'postcountry\', \'postcity\')" /></td>
 			<td align="right">'._('City:').'
 				<input name="postcity" id="postcity" style="width:90px" value="'.@$_SESSION['faktura']['postcity'].'" /></td>
 			<td>';
-		if(!empty($rejected['postpostalcode']))
+		if (!empty($rejected['postpostalcode']))
 			$GLOBALS['generatedcontent']['text'] .= '<img src="images/error.png" alt="" title="" >';
-		if(!empty($rejected['postcity']))
+		if (!empty($rejected['postcity']))
 			$GLOBALS['generatedcontent']['text'] .= '<img src="images/error.png" alt="" title="" >';
 		$GLOBALS['generatedcontent']['text'] .= '</td>
 		</tr>
 		<tr class="altpost"';
-		if(empty($_SESSION['faktura']['altpost'])) $GLOBALS['generatedcontent']['text'] .= ' style="display:none;"';
+		if (empty($_SESSION['faktura']['altpost'])) $GLOBALS['generatedcontent']['text'] .= ' style="display:none;"';
 		$GLOBALS['generatedcontent']['text'] .= '>
 			<td> '._('Country:').'</td>
 			<td colspan="2"><select name="postcountry" id="postcountry" style="width:157px" onblur="chnageZipCode($(\'postpostalcode\').value, \'postcountry\', \'postcity\')" onkeyup="chnageZipCode($(\'postpostalcode\').value, \'postcountry\', \'postcity\')" onchange="chnageZipCode($(\'postpostalcode\').value, \'postcountry\', \'postcity\')">';
@@ -520,40 +520,40 @@ VALUES ('".
 		require_once 'inc/countries.php';
 		foreach($countries as $code => $country) {
 			$GLOBALS['generatedcontent']['text'] .= '<option value="'.$code.'"';
-			if($_SESSION['faktura']['postcountry'] == $code)
+			if ($_SESSION['faktura']['postcountry'] == $code)
 				$GLOBALS['generatedcontent']['text'] .= ' selected="selected"';
 			$GLOBALS['generatedcontent']['text'] .= '>'.htmlspecialchars($country).'</option>';
 		}
 		$GLOBALS['generatedcontent']['text'] .= '</select></td><td>';
-		if(!empty($rejected['postcountry']))
+		if (!empty($rejected['postcountry']))
 			$GLOBALS['generatedcontent']['text'] .= '<img src="images/error.png" alt="" title="" >';
 		$GLOBALS['generatedcontent']['text'] .= '</td></tr>';
 		$GLOBALS['generatedcontent']['text'] .= '<tr>
 			<td colspan="4"><input name="newsletter" id="newsletter" type="checkbox"';
-		if(!empty($_POST['newsletter'])) $GLOBALS['generatedcontent']['text'] .= ' checked="checked"';
+		if (!empty($_POST['newsletter'])) $GLOBALS['generatedcontent']['text'] .= ' checked="checked"';
 		$GLOBALS['generatedcontent']['text'] .= ' /><label for="newsletter"> '._('Please send me your newsletter.').'</label></td>
 		</tr>';
 		$GLOBALS['generatedcontent']['text'] .= '</tbody></table><input style="font-weight:bold;" type="submit" value="'._('Send order').'" /></form>';
-	} elseif($_GET['step'] == 2) {
-		if(!$_SESSION['faktura'] || !$_SESSION['faktura']['email']) {
+	} elseif ($_GET['step'] == 2) {
+		if (!$_SESSION['faktura'] || !$_SESSION['faktura']['email']) {
 			header('Location: '.$GLOBALS['_config']['base_url'].'/bestilling/', TRUE, 303);
 			exit;
 		}
 
-		if($_SESSION['faktura']['paymethod'] == 'creditcard')
+		if ($_SESSION['faktura']['paymethod'] == 'creditcard')
 			$_SESSION['faktura']['note'] = _('I would like to pay via credit card.')."\n".$_SESSION['faktura']['note'];
-		elseif($_SESSION['faktura']['paymethod'] == 'bank')
+		elseif ($_SESSION['faktura']['paymethod'] == 'bank')
 			$_SESSION['faktura']['note'] = _('I would like to pay via bank transaction.')."\n".$_SESSION['faktura']['note'];
-		elseif($_SESSION['faktura']['paymethod'] == 'mail')
+		elseif ($_SESSION['faktura']['paymethod'] == 'mail')
 			$_SESSION['faktura']['note'] = _('I would like to pay via mail order.')."\n".$_SESSION['faktura']['note'];
-		elseif($_SESSION['faktura']['paymethod'] == 'cash')
+		elseif ($_SESSION['faktura']['paymethod'] == 'cash')
 			$_SESSION['faktura']['note'] = _('I would like to pay via cash.')."\n".$_SESSION['faktura']['note'];
 
-		if($_SESSION['faktura']['delevery'] == 'pickup')
+		if ($_SESSION['faktura']['delevery'] == 'pickup')
 			$_SESSION['faktura']['note'] = _('I will pick up the goods in your shop.')."\n".$_SESSION['faktura']['note'];
-		elseif($_SESSION['faktura']['delevery'] == 'postal')
+		elseif ($_SESSION['faktura']['delevery'] == 'postal')
 			$_SESSION['faktura']['note'] = _('Please send the goods by mail.')."\n".$_SESSION['faktura']['note'];
-		elseif($_SESSION['faktura']['delevery'] == 'express')
+		elseif ($_SESSION['faktura']['delevery'] == 'express')
 			$_SESSION['faktura']['note'] = _('Please send the order to by mail express.')."\n".$_SESSION['faktura']['note'];
 
 		$quantities = array_map('htmlspecialchars', $_SESSION['faktura']['quantities']);
@@ -635,38 +635,38 @@ VALUES ('".
 
 		//Address
 		$emailbody .= '<p><b>'._('Address:').'</b>';
-		if($_SESSION['faktura']['navn'])
+		if ($_SESSION['faktura']['navn'])
 			$emailbody .= '<br />'.$_SESSION['faktura']['navn'];
-		if($_SESSION['faktura']['att'])
+		if ($_SESSION['faktura']['att'])
 			$emailbody .= '<br />'.$_SESSION['faktura']['att'];
-		if($_SESSION['faktura']['adresse'])
+		if ($_SESSION['faktura']['adresse'])
 			$emailbody .= '<br />'.$_SESSION['faktura']['adresse'];
-		if($_SESSION['faktura']['postbox'])
+		if ($_SESSION['faktura']['postbox'])
 			$emailbody .= '<br />'.$_SESSION['faktura']['postbox'];
-		if($_SESSION['faktura']['by'])
+		if ($_SESSION['faktura']['by'])
 			$emailbody .= '<br />'.$_SESSION['faktura']['postnr'].' '.$_SESSION['faktura']['by'];
-		if($_SESSION['faktura']['land'] != 'DK') {
+		if ($_SESSION['faktura']['land'] != 'DK') {
 			require_once 'inc/countries.php';
 			$emailbody .= '<br />'._($countries[$_SESSION['faktura']['land']]);
 		}
 		$emailbody .= '</p>';
 
 		//Delivery address
-		if($_SESSION['faktura']['altpost']) {
+		if ($_SESSION['faktura']['altpost']) {
 			$emailbody .= '<p><b>'._('Delivery address:').'</b>';
-			if($_SESSION['faktura']['postname'])
+			if ($_SESSION['faktura']['postname'])
 				$emailbody .= '<br />'.$_SESSION['faktura']['postname'];
-			if($_SESSION['faktura']['postatt'])
+			if ($_SESSION['faktura']['postatt'])
 				$emailbody .= '<br />'.$_SESSION['faktura']['postatt'];
-			if($_SESSION['faktura']['postaddress'])
+			if ($_SESSION['faktura']['postaddress'])
 				$emailbody .= '<br />'.$_SESSION['faktura']['postaddress'];
-			if($_SESSION['faktura']['postaddress2'])
+			if ($_SESSION['faktura']['postaddress2'])
 				$emailbody .= '<br />'.$_SESSION['faktura']['postaddress2'];
-			if($_SESSION['faktura']['postpostbox'])
+			if ($_SESSION['faktura']['postpostbox'])
 				$emailbody .= '<br />'.$_SESSION['faktura']['postpostbox'];
-			if($_SESSION['faktura']['postcity'])
+			if ($_SESSION['faktura']['postcity'])
 				$emailbody .= '<br />'.$_SESSION['faktura']['postpostalcode'].' '.$_SESSION['faktura']['postcity'];
-			if($_SESSION['faktura']['postcountry'] != 'DK') {
+			if ($_SESSION['faktura']['postcountry'] != 'DK') {
 				require_once 'inc/countries.php';
 				$emailbody .= '<br />'._($countries[$_SESSION['faktura']['postcountry']]);
 			}
@@ -678,9 +678,9 @@ VALUES ('".
 
 		//Contact
 		$emailbody .= '<p>'._('email:').' <a href="mailto:'.$_SESSION['faktura']['email'].'">'.$_SESSION['faktura']['email'].'</a>';
-		if($_SESSION['faktura']['tlf1'])
+		if ($_SESSION['faktura']['tlf1'])
 			$emailbody .= ' '._('Phone:').' '.$_SESSION['faktura']['tlf1'];
-		if($_SESSION['faktura']['tlf2'])
+		if ($_SESSION['faktura']['tlf2'])
 			$emailbody .= ' '._('Mobil:').' '.$_SESSION['faktura']['tlf2'];
 		$emailbody .= '</p><p>'._('Sincerely the computer').'</p></body></html></body></html>';
 
@@ -690,7 +690,7 @@ VALUES ('".
 		$mail = new PHPMailer();
 		$mail->SetLanguage('dk');
 		$mail->IsSMTP();
-		if($GLOBALS['_config']['emailpassword'] !== false) {
+		if ($GLOBALS['_config']['emailpassword'] !== false) {
 			$mail->SMTPAuth   = true; // enable SMTP authentication
 			$mail->Username   = $GLOBALS['_config']['email'][0];
 			$mail->Password   = $GLOBALS['_config']['emailpassword'];
@@ -711,10 +711,10 @@ VALUES ('".
 		//TODO allow other departments to revice orders
 		$mail->AddAddress($GLOBALS['_config']['email'][0], $GLOBALS['_config']['site_name']);
 
-		if($mail->Send()) {
+		if ($mail->Send()) {
 	
 			//Upload email to the sent folder via imap
-			if($GLOBALS['_config']['imap']) {
+			if ($GLOBALS['_config']['imap']) {
 				require_once $_SERVER['DOCUMENT_ROOT'].'/inc/imap.inc.php';
 				$imap = new IMAPMAIL;
 				$imap->open($GLOBALS['_config']['imap'], $GLOBALS['_config']['imapport']);

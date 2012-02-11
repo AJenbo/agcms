@@ -7,7 +7,7 @@ textdomain("agcms");
 
 require_once $_SERVER['DOCUMENT_ROOT'].'/admin/inc/logon.php';
 
-if($_GET['id'] > 0) {
+if ($_GET['id'] > 0) {
 	$id = $_GET['id'];
 } else  {
 	die(_('Wrong id.'));
@@ -18,7 +18,7 @@ require_once '../inc/mysqli.php';
 $mysqli = new simple_mysqli($GLOBALS['_config']['mysql_server'], $GLOBALS['_config']['mysql_user'], $GLOBALS['_config']['mysql_password'], $GLOBALS['_config']['mysql_database']);
 
 $faktura = $mysqli->fetch_one("SELECT *, UNIX_TIMESTAMP(`date`) AS `date`, UNIX_TIMESTAMP(`paydate`) AS `paydate` FROM `fakturas` WHERE `id` = ".$id." AND `status` != 'new'");
-if(!$faktura) {
+if (!$faktura) {
 	die(_('Can\'t print.'));
 }
 
@@ -26,12 +26,12 @@ $faktura['quantities'] = explode('<', $faktura['quantities']);
 $faktura['products'] = explode('<', $faktura['products']);
 $faktura['values'] = explode('<', $faktura['values']);
 
-if(!$faktura['premoms'] && $faktura['momssats']) {
+if (!$faktura['premoms'] && $faktura['momssats']) {
 //if numbers where aded with out vat but vat should be payed, then add it
 	foreach($faktura['values'] as $key => $value) {
 		$faktura['values'][$key] = $value*(1.25);
 	}
-} elseif(!$faktura['momssats']) {
+} elseif (!$faktura['momssats']) {
 //if values where entered including vat, but no vat should be payed, then remove the vat
 	foreach($faktura['values'] as $key => $value) {
 		$faktura['values'][$key] = $value/1.25;
@@ -86,7 +86,7 @@ $pdf->SetFont('times', 'B', 11);
 $pdf->Write(0, _('Phone:')." ".$GLOBALS['_config']['phone']."\n", '', 0, 'R');
 $pdf->SetFont('times', '', 10);
 
-if(empty($faktura['department'])) {
+if (empty($faktura['department'])) {
 	$faktura['department'] = $GLOBALS['_config']['email'][0];
 }
 $domain = explode('/', $GLOBALS['_config']['base_url']);
@@ -109,12 +109,12 @@ $pdf->Line(152.5, 12, 152.5, 74.5);
 //Invoice address
 $address = '';
 $address .= $faktura['navn'];
-if($faktura['att']) $address .= "\n"._('Attn.:').' '.$faktura['att'];
-if($faktura['adresse']) $address .= "\n".$faktura['adresse'];
-if($faktura['postbox']) $address .= "\n".$faktura['postbox'];
-if($faktura['postnr']) $address .= "\n".$faktura['postnr'].' '.$faktura['by'];
+if ($faktura['att']) $address .= "\n"._('Attn.:').' '.$faktura['att'];
+if ($faktura['adresse']) $address .= "\n".$faktura['adresse'];
+if ($faktura['postbox']) $address .= "\n".$faktura['postbox'];
+if ($faktura['postnr']) $address .= "\n".$faktura['postnr'].' '.$faktura['by'];
 else $address .= "\n".$faktura['by']; 
-if($faktura['land'] && $faktura['land'] != 'DK') {
+if ($faktura['land'] && $faktura['land'] != 'DK') {
 	require_once '../inc/countries.php';
 	$address .= "\n"._($countries[$faktura['land']]);
 }
@@ -128,18 +128,18 @@ $pdf->Write(0, trim($address));
 //Delivery address
 $address = '';
 $address .= $faktura['postname'];
-if($faktura['postatt']) $address .= "\n"._('Attn.:').' '.$faktura['postatt'];
-if($faktura['postaddress']) $address .= "\n".$faktura['postaddress'];
-if($faktura['postaddress2']) $address .= "\n".$faktura['postaddress2'];
-if($faktura['postpostbox']) $address .= "\n".$faktura['postpostbox'];
-if($faktura['postpostalcode']) $address .= "\n".$faktura['postpostalcode'].' '.$faktura['postcity'];
-elseif($faktura['postcity']) $address .= "\n".$faktura['postcity']; 
-if($faktura['land'] && $faktura['land'] != 'DK') {
+if ($faktura['postatt']) $address .= "\n"._('Attn.:').' '.$faktura['postatt'];
+if ($faktura['postaddress']) $address .= "\n".$faktura['postaddress'];
+if ($faktura['postaddress2']) $address .= "\n".$faktura['postaddress2'];
+if ($faktura['postpostbox']) $address .= "\n".$faktura['postpostbox'];
+if ($faktura['postpostalcode']) $address .= "\n".$faktura['postpostalcode'].' '.$faktura['postcity'];
+elseif ($faktura['postcity']) $address .= "\n".$faktura['postcity']; 
+if ($faktura['land'] && $faktura['land'] != 'DK') {
 	require_once '../inc/countries.php';
 	$address .= "\n"._($countries[$faktura['land']]);
 }
 
-if($address) {
+if ($address) {
 	$pdf->SetMargins(110, 0, 0);
 	$pdf->Write(0, "\n");
 	$pdf->SetY(30.6);
@@ -155,8 +155,8 @@ $pdf->SetMargins(8, 9, 8);
 $pdf->Write(0, "\n");
 $pdf->SetY(90.5);
 $info = '<strong>'._('Date').':</strong> '.date(_('m/d/Y'), $faktura['date']);
-if($faktura['iref']) $info .= '       <strong>'._('Our ref.:').'</strong> '.$faktura['iref'];
-if($faktura['eref']) $info .= '       <strong>'._('Their ref.:').'</strong> '.$faktura['eref'];
+if ($faktura['iref']) $info .= '       <strong>'._('Our ref.:').'</strong> '.$faktura['iref'];
+if ($faktura['eref']) $info .= '       <strong>'._('Their ref.:').'</strong> '.$faktura['eref'];
 $pdf->writeHTML($info);
 
 //Invoice info
@@ -182,7 +182,7 @@ $netto = 0;
 $extralines = 0;
 foreach($faktura['values'] as $i => $value) {
 	
-	if($lines > 1) {
+	if ($lines > 1) {
 		$lines -= 1;
 		$extralines += $lines;
 		$pdf->Cell( 24, 6*$lines, '', 'RL', 0);
@@ -235,23 +235,23 @@ $pdf->Cell(34, 8, number_format($faktura['amount'], 2, ',', ''), 1, 1, 'R');
 
 //Note
 $note = '';
-if($faktura['status'] == 'accepted') {
+if ($faktura['status'] == 'accepted') {
 	$note .= _('Paid online');
-	if($faktura['paydate']) $note .= ' d. '.date(_('m/d/Y'), $faktura['paydate']);
+	if ($faktura['paydate']) $note .= ' d. '.date(_('m/d/Y'), $faktura['paydate']);
 	$note .= "\n";
-} elseif($faktura['status'] == 'giro') {
+} elseif ($faktura['status'] == 'giro') {
 	$note .= _('Paid via giro');
-	if($faktura['paydate']) $note .= ' d. '.date(_('m/d/Y'), $faktura['paydate']);
+	if ($faktura['paydate']) $note .= ' d. '.date(_('m/d/Y'), $faktura['paydate']);
 	$note .= "\n";
-} elseif($faktura['status'] == 'cash') {
+} elseif ($faktura['status'] == 'cash') {
 	$note .= _('Paid in cash');
-	if($faktura['paydate']) $note .= ' d. '.date(_('m/d/Y'), $faktura['paydate']);
+	if ($faktura['paydate']) $note .= ' d. '.date(_('m/d/Y'), $faktura['paydate']);
 	$note .= "\n";
 }
 
 $note .= $faktura['note'];
 
-if($note) {
+if ($note) {
 	$pdf->SetFont('times', 'B', 10);
 	$pdf->Write(0, "\n"._('Note:')."\n");
 	$pdf->SetFont('times', '', 10);

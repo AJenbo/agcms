@@ -11,7 +11,7 @@ function get_mailbox_size($email, $mailbox) {
 	$mailSizes = array();
 	$mailboxStatus = $imap->open_mailbox($mailbox, true);
 	preg_match_all('/SIZE\s([0-9]+)/', $imap->fetch_mail('1:*', 'RFC822.SIZE'), $mailSizes);
-	if($mailSizes)
+	if ($mailSizes)
 		$size += array_sum($mailSizes[1]);
 	return $size;
 }

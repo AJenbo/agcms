@@ -4,11 +4,11 @@ function vare($side, $katnavn, $type) {
 	global $mysqli;
 
 	//Soge katagori har ikke et fast nummer brug først faste per side.
-	if(!$GLOBALS['generatedcontent']['activmenu']) {
+	if (!$GLOBALS['generatedcontent']['activmenu']) {
 		$bind = $mysqli->fetch_array("SELECT kat FROM bind WHERE side = ".$side['id']);
 		$GLOBALS['generatedcontent']['activmenu'] = $bind[0]['kat'];
-		if(!@$GLOBALS['cache']['kats'][$bind[0]['kat']]['navn']) {
-			if($kat = $mysqli->fetch_array("SELECT navn, vis FROM kat WHERE id = ".$bind[0]['kat'])) {
+		if (!@$GLOBALS['cache']['kats'][$bind[0]['kat']]['navn']) {
+			if ($kat = $mysqli->fetch_array("SELECT navn, vis FROM kat WHERE id = ".$bind[0]['kat'])) {
 				
 				getUpdateTime('kat');
 				
@@ -19,8 +19,8 @@ function vare($side, $katnavn, $type) {
 		$katnavn = @$GLOBALS['cache']['kats'][$bind[0]['kat']]['navn'];
 	}
 	
-	if($type == 1) {
-		if(!$side['beskrivelse'] && $side['text']) {
+	if ($type == 1) {
+		if (!$side['beskrivelse'] && $side['text']) {
 			$side['beskrivelse'] = stringLimit($side['text'], 100);
 		}
 		$GLOBALS['generatedcontent']['list'][] = array(
@@ -64,8 +64,8 @@ function liste() {
 	
 	getUpdateTime('kat');
 	
-	if($bind) {
-		if(count($bind) == 1) {
+	if ($bind) {
+		if (count($bind) == 1) {
 			require_once 'inc/side.php';
 			$GLOBALS['side']['id'] = $bind[0]['id'];
 			side();
@@ -73,7 +73,7 @@ function liste() {
 			$bind = array_natsort($bind, 'id', 'navn', 'asc');
 			foreach($bind as $value) {
 				//Add space around all tags, strip all tags, remove all unneded white space
-				if($kat[0]['vis'] == 1)
+				if ($kat[0]['vis'] == 1)
 					$value['text'] = preg_replace('/\s+/', ' ', strip_tags(preg_replace(array('/</', '/>/', '/\s+/'), array(' <', '> ', ' '), $value['text'])));
 				vare($value, $kat[0]['navn'], $kat[0]['vis']);
 			}
@@ -86,17 +86,17 @@ function kat_html($side, $kat_navn) {
 		$i = 0;
 		foreach($side as $value) {
 				
-			if(!$value['for'])
+			if (!$value['for'])
 				$value['for'] = '';
 			else
 				$value['for'] = $value['for'].',-';
-			if(!$value['pris'])
+			if (!$value['pris'])
 				$value['pris'] = '';
 			else
 				$value['pris'] = $value['pris'].',-';
 			$html .= "<td><a href=\"/kat".$GLOBALS['generatedcontent']['activmenu']."-".clear_file_name($kat_navn)."/side".$value['id']."-".clear_file_name($value['navn']).".html\">".$value['navn']."</a></td><td class=\"XPris\" align=\"right\">".$value['for']."</td><td class=\"Pris\" align=\"right\">".$value['pris']."</td><td align=\"right\" style=\"font-size:11px\">".$value['varenr']."</td>";
 
-			if($i % 2)
+			if ($i % 2)
 				$html .= "</tr><tr>";
 			else
 				$html .= '</tr><tr class="altrow">';
@@ -111,13 +111,13 @@ function search_liste($q, $wheresider) {
 	global $qext;
 	global $mysqli;
 	
-	if($qext)
+	if ($qext)
 		$qext = ' WITH QUERY EXPANSION';
 	else
 		$qext = '';
 	//Temporarly store the katalog number so it can be restored when search is over
 	$temp_kat = $GLOBALS['generatedcontent']['activmenu'];
-	if($q) {
+	if ($q) {
 	
 		$sider = $mysqli->fetch_array("SELECT id, beskrivelse, text, navn, pris, `for`, sider.burde, sider.fra, billed, MATCH(navn,text,beskrivelse) AGAINST ('$q'$qext) AS score FROM sider WHERE MATCH (navn,text,beskrivelse) AGAINST('$q'$qext) > 0 $wheresider ORDER BY `score` DESC"); 
 		
@@ -136,13 +136,13 @@ function search_liste($q, $wheresider) {
 			$match = false;
 
 			foreach($sider as $sider_value) {
-				if(@$sider_value['side'] == $value['id']) {
+				if (@$sider_value['side'] == $value['id']) {
 					$match = true;
 					break;
 				}
 			}
 			unset($sider_value);
-			if(!$match)
+			if (!$match)
 				$sider[] = $value;
 		}
 		unset($value);
@@ -160,12 +160,12 @@ function search_liste($q, $wheresider) {
 			getUpdateTime('sider');
 
 			foreach($sider as $value) {
-				if(!empty($value['side']) && $value['side'] == $lists[0]['id']) {
+				if (!empty($value['side']) && $value['side'] == $lists[0]['id']) {
 					$match = true;
 					break;
 				}
 			}
-			if(!$match)
+			if (!$match)
 				$sider[] = $lists[0];
 		}
 
@@ -174,14 +174,14 @@ function search_liste($q, $wheresider) {
 		
 		getUpdateTime('sider');
 	}
-	if($sider) {
+	if ($sider) {
 	
 		//erace duplicates
 		$sider = array_merge(array_filter($sider, 'uniquecol'));
 
 		//remove inactive pages
 		for($i=0;$i<count($sider);$i++) {
-			if(is_inactive_page($sider[$i]['id'])) {
+			if (is_inactive_page($sider[$i]['id'])) {
 				array_splice($sider, $i, 1);
 				$i--;
 			}
@@ -189,8 +189,8 @@ function search_liste($q, $wheresider) {
 	}	
 	
 	//Draw the list
-	if(count($sider) == 0) {
-	} elseif(count($sider) == 1 && $GLOBALS['generatedcontent']['contenttype'] != 'brand') {
+	if (count($sider) == 0) {
+	} elseif (count($sider) == 1 && $GLOBALS['generatedcontent']['contenttype'] != 'brand') {
 		header('HTTP/1.1 302 Found');
 		$sider[0]['id'];
 		//TODO cach
@@ -201,7 +201,7 @@ function search_liste($q, $wheresider) {
 		getUpdateTime('kat');
 		
 		//TODO rawurlencode $url (PIE doesn't do it buy it self :(
-		if(!empty($kat[0]['id'])) {
+		if (!empty($kat[0]['id'])) {
 			$url = '/kat'.$kat[0]['id'].'-'.rawurlencode(clear_file_name($kat[0]['navn'])).'/side'.$sider[0]['id'].'-'.rawurlencode(clear_file_name($sider[0]['navn'])).'.html';
 		} else {
 			$url = '/side'.$sider[0]['id'].'-'.rawurlencode(clear_file_name($sider[0]['navn'])).'.html';

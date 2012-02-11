@@ -54,16 +54,16 @@ function movefile_r(data) {
 
 	window.opener.document.getElementById('loading').style.display = 'none';
 	
-	if(data['path'] == '<?php echo $_GET['path']; ?>')
+	if (data['path'] == '<?php echo $_GET['path']; ?>')
 		return;
 
-	if(data['error']) {
+	if (data['error']) {
 		alert(data['error']);
 		//Somthing prevents the FF from closing when hovering the link so we remove it
 		document.body.innerHTML = '';
 		window.close();
-	} else if(data['yesno']) {
-		if(eval(confirm(data['yesno']))==true){
+	} else if (data['yesno']) {
+		if (eval(confirm(data['yesno']))==true){
 			document.getElementById('loading').style.display = '';
 			window.opener.x_renamefile(<?php echo $_GET['id']; ?>, '<?php echo $_GET['path']; ?>', global_dir, '', 1, movefile_r);
 		} else {
@@ -126,19 +126,19 @@ $listdirs = listdirs('/images', 1);
 echo $listdirs['html'];
 */
 ?>
-<div id="dir_.images"><img<?php if(@$_COOKIE['/images']) { echo ' style="display:none"'; }
+<div id="dir_.images"><img<?php if (@$_COOKIE['/images']) { echo ' style="display:none"'; }
 ?> src="images/+.gif" onclick="dir_expand(this, 1);" height="16" width="16" alt="" /><img<?php
-if(!@$_COOKIE['/images']) { echo ' style="display:none"'; }
+if (!@$_COOKIE['/images']) { echo ' style="display:none"'; }
 ?> src="images/-.gif" onclick="dir_contract(this);" height="16" width="16" alt="" /><a onclick="movefile('/images')"><img src="images/folder.png" height="16" width="16" alt="" /> <?php echo(_('Pictures')); ?> </a>
 <div><?php
-if(@$_COOKIE['/images']) {
+if (@$_COOKIE['/images']) {
 	$listdirs = listdirs('/images', 1);
 	echo $listdirs['html'];
 }
 ?></div></div>
-<div id="dir_.files"><img<?php if(@$_COOKIE['/files']) { echo ' style="display:none"'; } ?> src="images/+.gif" onclick="dir_expand(this, 1);" height="16" width="16" alt="" /><img<?php if(!@$_COOKIE['/files']) { echo ' style="display:none"'; } ?> src="images/-.gif" onclick="dir_contract(this);" height="16" width="16" alt="" /><a onclick="movefile('/files')"><img src="images/folder.png" height="16" width="16" alt="" /> <?php echo(_('Files')); ?> </a>
+<div id="dir_.files"><img<?php if (@$_COOKIE['/files']) { echo ' style="display:none"'; } ?> src="images/+.gif" onclick="dir_expand(this, 1);" height="16" width="16" alt="" /><img<?php if (!@$_COOKIE['/files']) { echo ' style="display:none"'; } ?> src="images/-.gif" onclick="dir_contract(this);" height="16" width="16" alt="" /><a onclick="movefile('/files')"><img src="images/folder.png" height="16" width="16" alt="" /> <?php echo(_('Files')); ?> </a>
 <div><?php
-if(@$_COOKIE['/files']) {
+if (@$_COOKIE['/files']) {
 	$listdirs = listdirs('/files', 1);
 	echo $listdirs['html'];
 }

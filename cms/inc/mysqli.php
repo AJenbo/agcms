@@ -18,7 +18,7 @@ class simple_mysqli extends mysqli
 		parent::__construct($args[0], $args[1], $args[2], $args[3]); 
 		
 		/* Throw an error if the connection fails */ 
-		if(mysqli_connect_error()){ 
+		if (mysqli_connect_error()){ 
 			throw new Exception('', mysqli_connect_errno()); 
 		} 
 		
@@ -33,18 +33,18 @@ class simple_mysqli extends mysqli
 	{ 
 		//send information
 		//global $firephp;
-		//if(!headers_sent())
+		//if (!headers_sent())
 			//$firephp->fb($query);
 		
 		$result = parent::query($query); 
-		if(mysqli_error($this)) { 
+		if (mysqli_error($this)) { 
 			throw new QueryException(mysqli_error($this), mysqli_errno($this)); 
 		}
 		while($row = $result->fetch_assoc())
 			$rows[] = $row;
 		$result->close();
 		
-		if(!isset($rows)) $rows = array();
+		if (!isset($rows)) $rows = array();
 		
 		return $rows;
 	}
@@ -53,18 +53,18 @@ class simple_mysqli extends mysqli
 	{ 
 		//send information
 		//global $firephp;
-		//if(!headers_sent())
+		//if (!headers_sent())
 			//$firephp->fb($query);
 		
 		$result = parent::query($query); 
-		if(mysqli_error($this)) { 
+		if (mysqli_error($this)) { 
 			throw new QueryException(mysqli_error($this), mysqli_errno($this)); 
 		}
 		$row = $result->fetch_assoc();
 			
 		$result->close();
 		
-		if(!isset($row)) $row = array();
+		if (!isset($row)) $row = array();
 		
 		return $row;
 	}
@@ -73,11 +73,11 @@ class simple_mysqli extends mysqli
 	{
 		//send information
 		//global $firephp;
-		//if(!headers_sent())
+		//if (!headers_sent())
 			//$firephp->fb($query);
 		
 		$result = parent::query($query); 
-		if(mysqli_error($this)) { 
+		if (mysqli_error($this)) { 
 			throw new QueryException(mysqli_error($this), mysqli_errno($this)); 
 		}
 		return true;
