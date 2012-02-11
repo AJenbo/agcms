@@ -88,7 +88,13 @@ function sendEmail($id, $from, $interests, $subject, $text) {
 	$mail->AddAddress($from, $GLOBALS['_config']['site_name']);
 	
 	global $mysqli;
-	$emails = $mysqli->fetch_array('SELECT navn, email FROM `email` WHERE `email` NOT LIKE \'\' AND `kartotek` = \'1\' '.$andwhere.' GROUP BY `email`');
+	$emails = $mysqli->fetch_array(
+		'SELECT navn, email
+		FROM `email`
+		WHERE `email` NOT LIKE \'\'
+		  AND `kartotek` = \'1\' '.$andwhere.'
+		GROUP BY `email`'
+	);
 
 	foreach($emails as $x => $email) {
        		$emails_group[floor($x/99)][] = $email;
@@ -107,7 +113,7 @@ function sendEmail($id, $from, $interests, $subject, $text) {
 		}
 	
 		//Upload email to the sent folder via imap
-		if($GLOBALS['_config']['imap']) {
+		if ($GLOBALS['_config']['imap']) {
 			require_once "../inc/imap.inc.php";
 			$imap = new IMAPMAIL;
 			$imap->open($GLOBALS['_config']['imap'], $GLOBALS['_config']['imapport']);
@@ -232,7 +238,20 @@ writeRichText("text", \''.rtefsafe($newsmails[0]['text']).'\', "", '.($GLOBALS['
 
 function saveEmail($id, $from, $interests, $subject, $text) {
 	global $mysqli;
-	$mysqli->query('UPDATE `newsmails` SET `from` = \''.$from.'\', `interests` = \''.$interests.'\', `subject` = \''.$subject.'\', `text` = \''.$text.'\' WHERE `id` = '.$id.' LIMIT 1');
+
+	$from = $mysqli->real_escape_string($from);
+	$interests = $mysqli->real_escape_string($interests);
+	$subject = $mysqli->real_escape_string($subject);
+	$text = $mysqli->real_escape_string($text);
+
+	$mysqli->query(
+		"UPDATE `newsmails`
+		SET `from` = '" .$from ."',
+		`interests` = '" .$interests ."',
+		`subject` = '" .$subject ."',
+		`text` = '" .$text ."'
+		WHERE `id` = " .$id ." LIMIT 1"
+	);
 	return true;
 }
 
