@@ -47,7 +47,7 @@ function updateuser($id, $updates) {
 
 		//Generate SQL command
 		$sql = "UPDATE `users` SET";
-		foreach($updates as $key => $value)
+		foreach ($updates as $key => $value)
 			$sql .= " `".addcslashes($key, '`\\')."` = '".addcslashes($value, "'\\")."',";
 		$sql = substr($sql, 0, -1);
 		$sql .= ' WHERE `id` = '.$id;
@@ -140,7 +140,7 @@ $accesslevels = array(
  4 => _('User')
 );
 
-foreach($accesslevels as $level => $name) {
+foreach ($accesslevels as $level => $name) {
 		//warning if a user name is a it could colide with all
         ?><option<?php if ($user['access'] == $level) echo(' selected="selected"'); ?> value="<?php echo($level); ?>"><?php echo($name); ?></option><?php
 	}

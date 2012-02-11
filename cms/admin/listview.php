@@ -100,14 +100,14 @@ require_once '../inc/mysqli.php';
 $mysqli = new simple_mysqli($GLOBALS['_config']['mysql_server'], $GLOBALS['_config']['mysql_user'], $GLOBALS['_config']['mysql_password'], $GLOBALS['_config']['mysql_database']);
 
 $maerker = $mysqli->fetch_array("SELECT id, navn FROM `maerke`");
-foreach($maerker as $maerke) {
+foreach ($maerker as $maerke) {
 	$temp[$maerke['id']] = htmlspecialchars($maerke['navn']);
 }
 $maerker = $temp;
 unset($temp);
 
 $krav = $mysqli->fetch_array("SELECT id, navn FROM `krav`");
-foreach($krav as $element) {
+foreach ($krav as $element) {
 	$temp[$element['id']] = htmlspecialchars($element['navn']);
 }
 $krav = $temp;
@@ -116,7 +116,7 @@ unset($temp);
 function print_kat($bind, $path_name) {
 	global $mysqli;
 	$kats = $mysqli->fetch_array("SELECT id, bind, navn FROM `kat` WHERE bind = ".$bind." ORDER BY navn");
-	foreach($kats as $kat) {
+	foreach ($kats as $kat) {
 		echo("\n".'  <tr class="path"><td colspan="8"><a href="?sort='.$_GET['sort'].'&amp;kat='.$kat['id'].'"><img src="images/find.png" alt="Vis" title="Vis kun denne kategori" /></a> '.$path_name.' &gt; <a href="/kat'.$kat['id'].'-">'.htmlspecialchars($kat['navn']).'</a></td></tr>');
 		print_pages($kat['id']);
 		print_kat($kat['id'], $path_name.' &gt; '.htmlspecialchars($kat['navn']));
@@ -130,7 +130,7 @@ function print_pages($kat) {
 	global $sort;
 	$sider = $mysqli->fetch_array("SELECT sider.id, sider.navn, sider.varenr, sider.`for`, sider.pris, sider.dato, sider.maerke, sider.krav FROM `bind` JOIN sider ON bind.side = sider.id WHERE bind.kat = ".$kat." ORDER BY ".$sort);
 	$altrow = 0;
-	foreach($sider as $side) {
+	foreach ($sider as $side) {
 		echo("\n".'
     <tr');
 	if ($altrow) {
@@ -149,7 +149,7 @@ function print_pages($kat) {
       <td class="tal">'.$side['dato'].'</td>
       <td>');
 	$side['maerke'] = explode(',', $side['maerke']);
-	foreach($side['maerke'] as $maerke)
+	foreach ($side['maerke'] as $maerke)
 		echo($maerker[$maerke].' ');
 	echo('</td>
       <td>'.$krav[$side['krav']].'</td>

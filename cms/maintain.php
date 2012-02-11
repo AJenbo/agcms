@@ -11,7 +11,7 @@ function optimize_tables() {
 	global $mysqli;
 	
 	$tables = $mysqli->fetch_array("SHOW TABLE STATUS");
-	foreach($tables as $table) {
+	foreach ($tables as $table) {
 		$mysqli->query("OPTIMIZE TABLE `".$table['Name']."`");
 	}
 	return '';
@@ -50,7 +50,7 @@ function remove_none_existing_files() {
 	$files = $mysqli->fetch_array('SELECT id, path FROM `files`');
 
 	$deleted = 0;
-	foreach($files as $files) {
+	foreach ($files as $files) {
 		if (!is_file($_SERVER['DOCUMENT_ROOT'].$files['path'])) {
 			$mysqli->query("DELETE FROM `files` WHERE `id` = ".$files['id']);
 			$deleted++;
@@ -63,7 +63,7 @@ function remove_none_existing_files() {
 function delete_tempfiles() {
 	$deleted = 0;
 	$files = scandir($_SERVER['DOCUMENT_ROOT'].'/upload/temp');
-	foreach($files as $file) {
+	foreach ($files as $file) {
 		if (is_file($_SERVER['DOCUMENT_ROOT'].'/upload/temp/'.$file)) {
 			@unlink($_SERVER['DOCUMENT_ROOT'].'/upload/temp/'.$file);
 			$deleted++;

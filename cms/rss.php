@@ -10,7 +10,7 @@ $mysqli = new simple_mysqli($GLOBALS['_config']['mysql_server'], $GLOBALS['_conf
 
 $tabels = $mysqli->fetch_array("SHOW TABLE STATUS");
 $updatetime = 0;
-foreach($tabels as $tabel)
+foreach ($tabels as $tabel)
 	$updatetime = max($updatetime, strtotime($tabel['Update_time']));
 
 if ($updatetime < 1)

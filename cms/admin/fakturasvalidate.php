@@ -113,7 +113,7 @@ a {
         </tr>
     </thead>
     <tbody id="list"><?php
-		foreach($fakturas as $i => $faktura) { ?><tr<?php
+		foreach ($fakturas as $i => $faktura) { ?><tr<?php
 				if ($i%2==0)
 					echo(' class="altbc"'); ?>>
             <td style="text-align:right"><a href="faktura.php?id=<?php echo($faktura['id']); ?>"><?php echo($faktura['id']); ?></a></td>

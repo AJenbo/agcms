@@ -73,7 +73,7 @@ function unhtmlentitiesUtf8($string) {
 	$trans_tbl = get_html_translation_table(HTML_ENTITIES);
 	$trans_tbl = array_flip($trans_tbl);
 	// changing translation table to UTF-8
-	foreach( $trans_tbl as $key => $value ) {
+	foreach ( $trans_tbl as $key => $value ) {
 		$trans_tbl[$key] = utf8_encode($value);
 	}
 	return strtr($string, $trans_tbl);

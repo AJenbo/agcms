@@ -601,7 +601,7 @@ function searchfiles($qpath, $qalt, $qmime) {
 		$files = $mysqli->fetch_array('SELECT *'.$sql.' LIMIT '.$filenumber.', '.$limit);
 		$filenumber += 250;
 		
-		foreach($files as $key => $file) {
+		foreach ($files as $key => $file) {
 			if ($qmime != 'unused' || !isinuse($file['path'])) {
 				$html .= filehtml($file);
 				$javascript .= filejavascript($file);
@@ -623,7 +623,7 @@ function edit_alt($id, $alt) {
 	$sider = $mysqli->fetch_array('SELECT id, text FROM `sider` WHERE `text` LIKE \'%'.$file[0]['path'].'%\'');
 	
 	if ($sider)
-		foreach($sider as $value) {
+		foreach ($sider as $value) {
 			//TODO move this to db fixer to test for missing alt="" in img
 			/*preg_match_all('/<img[^>]+/?>/ui', $value, $matches);*/
 			$value['text'] = preg_replace('/(<img[^>]+src="'.addcslashes(str_replace('.', '[.]', $file[0]['path']), '/').'"[^>]+alt=)"[^"]*"([^>]*>)/iu', '\1"'.htmlspecialchars($alt).'"\2', $value['text']);

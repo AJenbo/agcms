@@ -74,7 +74,7 @@ function side() {
 				
 		getUpdateTime('maerke');
 
-		foreach($maerker as $value) {	
+		foreach ($maerker as $value) {	
 			$GLOBALS['generatedcontent']['brands'][] = array('name' => $value['navn'],
 			'link' => '/mærke'.$value['id'].'-'.clear_file_name($value['navn']).'/',
 			'xlink' => $value['link'],
@@ -87,7 +87,7 @@ function side() {
 	getUpdateTime('tilbehor');
 	getUpdateTime('sider');
 	
-	foreach($tilbehor as $value) {
+	foreach ($tilbehor as $value) {
 		if ($value['kat']) {
 			$kat = $mysqli->fetch_array("SELECT id, navn FROM kat WHERE id = ".$value['kat']);
 			getUpdateTime('kat');

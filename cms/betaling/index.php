@@ -102,7 +102,7 @@ if (!empty($_GET['id']) && @$_GET['checkid'] == getCheckid($_GET['id'])) {
 		$faktura['values'] = explode('<', $faktura['values']);
 		
 		if ($faktura['premoms']) {
-			foreach($faktura['values'] as $key => $value) {
+			foreach ($faktura['values'] as $key => $value) {
 				$faktura['values'][$key] = $value/1.25;
 			}
 		}
@@ -205,7 +205,7 @@ if (!empty($_GET['id']) && @$_GET['checkid'] == getCheckid($_GET['id'])) {
 				$rejected = validate($updates);
 				
 				$sql = "UPDATE `fakturas` SET";
-				foreach($updates as $key => $value)
+				foreach ($updates as $key => $value)
 					$sql .= " `".addcslashes($key, '`\\')."` = '".addcslashes($value, "'\\")."',";
 				$sql = substr($sql, 0, -1);
 				
@@ -308,7 +308,7 @@ if (!empty($_GET['id']) && @$_GET['checkid'] == getCheckid($_GET['id'])) {
 				<td> '._('Country:').'</td>
 				<td colspan="2"><select name="land" id="land" style="width:157px" onblur="chnageZipCode($(\'postnr\').value, \'land\', \'by\')" onkeyup="chnageZipCode($(\'postnr\').value, \'land\', \'by\')" onchange="chnageZipCode($(\'postnr\').value, \'land\', \'by\')">';
 			require_once 'inc/countries.php';
-			foreach($countries as $code => $country) {
+			foreach ($countries as $code => $country) {
 				$GLOBALS['generatedcontent']['text'] .= '<option value="'.$code.'"';
 				if ($faktura['land'] == $code)
 					$GLOBALS['generatedcontent']['text'] .= ' selected="selected"';
@@ -395,7 +395,7 @@ if (!empty($_GET['id']) && @$_GET['checkid'] == getCheckid($_GET['id'])) {
 				<td colspan="2"><select name="postcountry" id="postcountry" style="width:157px" onblur="chnageZipCode($(\'postpostalcode\').value, \'postcountry\', \'postcity\')" onkeyup="chnageZipCode($(\'postpostalcode\').value, \'postcountry\', \'postcity\')" onchange="chnageZipCode($(\'postpostalcode\').value, \'postcountry\', \'postcity\')">';
 				
 			require_once 'inc/countries.php';
-			foreach($countries as $code => $country) {
+			foreach ($countries as $code => $country) {
 				$GLOBALS['generatedcontent']['text'] .= '<option value="'.$code.'"';
 				if ($faktura['postcountry'] == $code)
 					$GLOBALS['generatedcontent']['text'] .= ' selected="selected"';
@@ -443,7 +443,7 @@ if (!empty($_GET['id']) && @$_GET['checkid'] == getCheckid($_GET['id'])) {
 			$submit['Cancel_URL'] = $submit['Response_URL'];
 			
 			$GLOBALS['generatedcontent']['text'] .= '<form style="text-align:center;" action="https://epayment.auriganet.eu/paypagegw" method="post">';
-			foreach($submit as $key => $value)
+			foreach ($submit as $key => $value)
 				$GLOBALS['generatedcontent']['text'] .= '<input type="hidden" name="'.$key.'" value="'.htmlspecialchars($value).'" />';
 			$GLOBALS['generatedcontent']['text'] .= '<input type="hidden" name="MAC" value="'.md5(implode('', $submit).$GLOBALS['_config']['pbspassword']).'" />';
 			$GLOBALS['generatedcontent']['text'] .= '<input class="web" type="submit" value="'._('I hereby agree to the terms of trade').'" /></form>';
@@ -475,14 +475,14 @@ if (!empty($_GET['id']) && @$_GET['checkid'] == getCheckid($_GET['id'])) {
 			
 			$wsql = new htmlsql();
 			
-			foreach($pakker as $pakke) {
+			foreach ($pakker as $pakke) {
 				// connect to a URL
 				$GLOBALS['generatedcontent']['text'] .= '<br /><br />'._('Shipment Number:').' <strong>'.$pakke['STREGKODE'].'</strong><br /><br />';
 				if ($wsql->connect('url', 'http://www.postdanmark.dk/tracktrace/TrackTrace.do?i_lang=IND&i_stregkode='.$pakke['STREGKODE'])) {
 				
 					if ($wsql->query('SELECT text FROM div WHERE $id == "pdkTable"')) {
 						// show results:
-						foreach($wsql->fetch_array() as $row){
+						foreach ($wsql->fetch_array() as $row){
 							$GLOBALS['generatedcontent']['text'] .= utf8_encode(preg_replace(
 								array('/\\sborder=0\\scellpadding=0/',
 									  '/\\snowrap/',
@@ -493,7 +493,7 @@ if (!empty($_GET['id']) && @$_GET['checkid'] == getCheckid($_GET['id'])) {
 				}
 			}
 			$pakker = $mysqli->fetch_array("SELECT `packageId` FROM `PNL` WHERE `fakturaid` = ".$faktura['id']);
-			foreach($pakker as $pakke) {
+			foreach ($pakker as $pakke) {
 				$GLOBALS['generatedcontent']['text'] .= '<br /><a href="http://online.pannordic.com/pn_logistics/index_tracking_email.jsp?id='.$pakke['packageId'].'&Search=search" target="_blank">'.$pakke['packageId'].'</a>';
 			}
 		} elseif ($faktura['status'] == 'giro') {
@@ -950,7 +950,7 @@ status.').'<br />';
 				$faktura['values'] = explode('<', $faktura['values']);
 					
 				if ($faktura['premoms']) {
-					foreach($faktura['values'] as $key => $value) {
+					foreach ($faktura['values'] as $key => $value) {
 						$faktura['values'][$key] = $value/1.25;
 					}
 				}
@@ -962,7 +962,7 @@ Remember to \'expedite\' the payment when the product is sent (The payment is fi
 				
 				require_once 'inc/countries.php';
 				$GLOBALS['generatedcontent']['track'] = ' pageTracker._addTrans("'.$faktura['id'].'", "", "'.$faktura['amount'].'", "'.(($faktura['amount']-$faktura['fragt'])*(1-(1/(1+$faktura['momssats'])))).'", "'.$faktura['fragt'].'", "'.$faktura['by'].'", "", "'.$countries[$faktura['land']].'");';
-				foreach($faktura['products'] as $key => $product)
+				foreach ($faktura['products'] as $key => $product)
 					$GLOBALS['generatedcontent']['track'] .= ' pageTracker._addItem("'.$faktura['id'].'", "'.$faktura['id'].$key.'", "'.$product.'", "", "'.($faktura['values'][$key]*(1+$faktura['momssats'])).'", "'.$faktura['quantities'][$key].'");';
 				$GLOBALS['generatedcontent']['track'] .= ' pageTracker._trackTrans(); ';
 
@@ -1167,7 +1167,7 @@ Tel. %s<br />
 		$faktura['values'] = explode('<', $faktura['values']);
 			
 		if ($faktura['premoms']) {
-			foreach($faktura['values'] as $key => $value) {
+			foreach ($faktura['values'] as $key => $value) {
 				$faktura['values'][$key] = $value/1.25;
 			}
 		}

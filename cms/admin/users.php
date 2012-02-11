@@ -77,7 +77,7 @@ if (empty($_GET['order'])) {
 	$users = $mysqli->fetch_array("SELECT *, UNIX_TIMESTAMP(`lastlogin`) AS 'lastlogin' FROM `users` ORDER BY `lastlogin` DESC");
 }
 
-foreach($users as $key => $user) {
+foreach ($users as $key => $user) {
 	echo('<tr');
 	if ($key % 2)
 		echo(' class="altrow"');

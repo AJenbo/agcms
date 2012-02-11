@@ -72,7 +72,7 @@ function asdsasgwtgernytymifdsbs() {
 function addcolumn() {
 	var td = document.createElement('td');
 	td.innerHTML = '<td><select name="cell"><option value="0">Tekst</option><option value="1">Tal</option><option value="2">Pris</option><option value="4">Før pris</option><option value="3">Tilbud</option></select><br /><select name="sort"><option value="0">Alfanumerisk</option><?php
-foreach($tablesorts as $tablesort) {
+foreach ($tablesorts as $tablesort) {
 	?><option value="<?php echo($tablesort['id']);
 	?>"><?php echo($tablesort['navn']);
 	?></option><?php
@@ -107,7 +107,7 @@ Sorter efter colonne: <input size="1" name="dsort" id="dsort" value="0" />
 			</select><br />
 			<select name="sort">
 				<option value="0">Alfanumerisk</option><?php
-				foreach($tablesorts as $tablesort) {
+				foreach ($tablesorts as $tablesort) {
 					?><option value="<?php echo($tablesort['id']); ?>"><?php echo($tablesort['navn']); ?></option><?php
 				}
 			?></select><br />

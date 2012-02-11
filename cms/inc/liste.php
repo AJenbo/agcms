@@ -71,7 +71,7 @@ function liste() {
 			side();
 		} else {
 			$bind = array_natsort($bind, 'id', 'navn', 'asc');
-			foreach($bind as $value) {
+			foreach ($bind as $value) {
 				//Add space around all tags, strip all tags, remove all unneded white space
 				if ($kat[0]['vis'] == 1)
 					$value['text'] = preg_replace('/\s+/', ' ', strip_tags(preg_replace(array('/</', '/>/', '/\s+/'), array(' <', '> ', ' '), $value['text'])));
@@ -84,7 +84,7 @@ function liste() {
 function kat_html($side, $kat_navn) {
 		$html = "<table class=\"tabel\"><thead><tr><td><a href=\"\" onclick=\"x_get_kat('".$GLOBALS['generatedcontent']['activmenu']."', 'navn', inject_html);return false;\">Titel</a></td><td><a href=\"\" onclick=\"x_get_kat('".$GLOBALS['generatedcontent']['activmenu']."', 'for', inject_html);return false;\">Før</a></td><td><a href=\"\" onclick=\"x_get_kat('".$GLOBALS['generatedcontent']['activmenu']."', 'pris', inject_html);return false;\">Pris</a></td><td><a href=\"\" onclick=\"x_get_kat('".$GLOBALS['generatedcontent']['activmenu']."', 'varenr', inject_html);return false;\">#</a></td></tr></thead><tbody><tr>";
 		$i = 0;
-		foreach($side as $value) {
+		foreach ($side as $value) {
 				
 			if (!$value['for'])
 				$value['for'] = '';
@@ -132,10 +132,10 @@ function search_liste($q, $wheresider) {
 		getUpdateTime('sider');
 
 		//join $sidersimple to $sider
-		foreach($sidersimple as $value) {
+		foreach ($sidersimple as $value) {
 			$match = false;
 
-			foreach($sider as $sider_value) {
+			foreach ($sider as $sider_value) {
 				if (@$sider_value['side'] == $value['id']) {
 					$match = true;
 					break;
@@ -152,14 +152,14 @@ function search_liste($q, $wheresider) {
 		getUpdateTime('list_rows');
 		
 		//join $table to $sider
-		foreach($table as $value) {
+		foreach ($table as $value) {
 			$match = false;
 			$lists = $mysqli->fetch_array("SELECT sider.id, sider.beskrivelse, sider.text, sider.navn, sider.pris, sider.for, sider.varenr, sider.billed FROM `lists` JOIN sider ON lists.page_id = sider.id WHERE lists.id = ".$value['list_id']." LIMIT 1");
 			
 			getUpdateTime('lists');
 			getUpdateTime('sider');
 
-			foreach($sider as $value) {
+			foreach ($sider as $value) {
 				if (!empty($value['side']) && $value['side'] == $lists[0]['id']) {
 					$match = true;
 					break;
@@ -210,7 +210,7 @@ function search_liste($q, $wheresider) {
 		header('Location: '.$url);
 		die();
 	} else {
-		foreach($sider as $value) {
+		foreach ($sider as $value) {
 			$GLOBALS['generatedcontent']['activmenu'] = 0;
 			$value['text'] = strip_tags($value['text']);
 			vare($value, 0, 1);

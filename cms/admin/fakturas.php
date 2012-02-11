@@ -180,7 +180,7 @@ a {
     ?></td><td>
     <select name="department">
         <option value=""<?php if (!$_POST['department']) echo(' selected="selected"'); ?>><?php echo(_('All')); ?></option><?php
-		foreach($GLOBALS['_config']['email'] as $email) {
+		foreach ($GLOBALS['_config']['email'] as $email) {
 	        ?><option<?php if ($_POST['department'] == $email) echo(' selected="selected"'); ?>><?php echo($email); ?></option><?php
 		}
     ?></select><?php
@@ -196,7 +196,7 @@ a {
     ?></td><td>
     <select name="clerk">
         <option value=""<?php if (!$_POST['clerk']) echo(' selected="selected"'); ?>><?php echo(_('All')); ?></option><?php
-        foreach($users as $user) {
+        foreach ($users as $user) {
 			//warning if a user name is a it could colide with all
 	        ?><option<?php if ($_POST['clerk'] == $user['fullname']) echo(' selected="selected"'); ?>><?php echo($user['fullname']); ?></option><?php
 		}
@@ -233,7 +233,7 @@ a {
         </tr>
     </thead>
     <tbody id="list"><?php
-		foreach($fakturas as $i => $faktura) { ?><tr<?php
+		foreach ($fakturas as $i => $faktura) { ?><tr<?php
 				if ($i%2==0)
 					echo(' class="altbc"'); ?>>
             <td style="text-align:center"><a href="faktura.php?id=<?php echo($faktura['id']); ?>"><?php

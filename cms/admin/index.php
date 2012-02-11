@@ -44,10 +44,10 @@ require_once $_SERVER['DOCUMENT_ROOT'].'/admin/inc/logon.php';
 		$sidersimple = $mysqli->fetch_array("SELECT id, navn FROM `sider` WHERE (`navn` LIKE '%".$simpleq."%' OR `text` LIKE '%".$simpleq."%' OR `beskrivelse` LIKE '%".$simpleq."%')");
 
 		//join $sidersimple to $sider
-		foreach($sidersimple as $value) {
+		foreach ($sidersimple as $value) {
 			$match = false;
 
-			foreach($sider as $sider_value) {
+			foreach ($sider as $sider_value) {
 				if (@$sider_value['side'] == $value['id']) {
 					$match = true;
 					break;
@@ -59,7 +59,7 @@ require_once $_SERVER['DOCUMENT_ROOT'].'/admin/inc/logon.php';
 		}
 		
 		$html = '<div id="headline">Søgning</div><div><div><span style="margin-left: 16px;"><img src="images/folder.png" width="16" height="16" alt="" /> &quot;'.$text.'&quot;</span><div style="margin-left:16px">';
-		foreach($sider as $value) {
+		foreach ($sider as $value) {
 			$html .= '<div class="side'.$value['id'].'"><a style="margin-left:16px" class="side" href="?side=redigerside&amp;id='.$value['id'].'"><img src="images/page.png" width="16" height="16" alt="" /> '.$value['navn'].'</a></div>';
 		}
 		$html .= '</div></div></div>';
@@ -92,7 +92,7 @@ require_once $_SERVER['DOCUMENT_ROOT'].'/admin/inc/logon.php';
 				$html .= 'display:none;';
 			$html .= '">';
 			
-			foreach($subkats as $value) {
+			foreach ($subkats as $value) {
 				$html .= '<li id="item_'.$value['id'].'"><img src="';
 				if ($value['icon'])
 					$html .= $value['icon'];
@@ -121,7 +121,7 @@ $(\'subMenusOrder\').value = newOrder;
 
 		//Email
 		$html .= _('Contact:').' <select id="email">';
-		foreach($GLOBALS['_config']['email'] as $value) {
+		foreach ($GLOBALS['_config']['email'] as $value) {
 			$html .= '<option value="'.$value.'"';
 			if ($kat[0]['email'] == $value)
 				$html .= ' selected="selected"';
@@ -246,7 +246,7 @@ writeRichText("beskrivelse", \''.rtefsafe($sider[0]['beskrivelse']).'\', "", '.(
 //list start
 	$html .= '<div class="toolbox"><a class="menuboxheader" id="listboxheader" style="width:'.($GLOBALS['_config']['text_width']-20+32).'px" onclick="showhide(\'listbox\',this);">'._('Lists:').' </a><div style="width:'.($GLOBALS['_config']['text_width']+32).'px" id="listbox">';
 	$lists = $mysqli->fetch_array('SELECT * FROM `lists` WHERE page_id = '.$id);
-	foreach($lists as $list) {
+	foreach ($lists as $list) {
 		$html .= '<table>';
 		
 		$list['cells'] = explode('<', $list['cells']);
@@ -255,14 +255,14 @@ writeRichText("beskrivelse", \''.rtefsafe($sider[0]['beskrivelse']).'\', "", '.(
 		
 		
 		$html .= '<thead><tr>';
-		foreach($list['cell_names'] as $name) {
+		foreach ($list['cell_names'] as $name) {
 			$html .= '<td>'.$name.'</td>';
 		}
 		if ($list['link'])
 			$html .= '<td><img src="images/link.png" alt="'._('Link').'" title="" width="16" height="16" /></td>';
 		$html .= '<td style="width:32px;"></td>';
 		$html .= '</tr></thead><tfoot><tr id="list'.$list['id'].'footer">';
-		foreach($list['cells'] as $key => $type) {
+		foreach ($list['cells'] as $key => $type) {
 			if ($list['sorts'][$key] == 0) {
 				if ($type != 0) {
 					$html .= '<td><input style="display:none;text-align:right;" /></td>';
@@ -276,7 +276,7 @@ writeRichText("beskrivelse", \''.rtefsafe($sider[0]['beskrivelse']).'\', "", '.(
 				}
 				
 				$html .= '<td><select style="display:none;"><option value=""></option>';
-				foreach($options[$list['sorts'][$key]] as $option) {
+				foreach ($options[$list['sorts'][$key]] as $option) {
 					$html .= '<option value="'.$option.'">'.$option.'</option>';
 				}
 				$html .= '</select></td>';
@@ -291,7 +291,7 @@ writeRichText("beskrivelse", \''.rtefsafe($sider[0]['beskrivelse']).'\', "", '.(
 		if ($rows = $mysqli->fetch_array('SELECT * FROM `list_rows` WHERE list_id = '.$list['id'])) {
 		
 			//Explode cells
-			foreach($rows as $row) {
+			foreach ($rows as $row) {
 				$cells = explode('<', $row['cells']);
 				$cells['id'] = $row['id'];
 				$cells['link'] = $row['link'];
@@ -308,12 +308,12 @@ writeRichText("beskrivelse", \''.rtefsafe($sider[0]['beskrivelse']).'\', "", '.(
 			else
 				$rows = array_listsort($rows, 'id', $lists[0]['sort'], NULL, $list[0]['sorts'][$lists[0]['sort']]);
 			
-			foreach($rows as $i => $row) {
+			foreach ($rows as $i => $row) {
 				if ($i % 2)
 					$html .= '<tr id="list_row'.$row['id'].'" class="altrow">';
 				else
 					$html .= '<tr id="list_row'.$row['id'].'">';
-				foreach($list['cells'] as $key => $type) {
+				foreach ($list['cells'] as $key => $type) {
 					if ($list['sorts'][$key] == 0) {
 						if ($type != 0) {
 							$html .= '<td style="text-align:right;"><input value="'.$row[$key].'" style="display:none;text-align:right;" /><span>'.$row[$key].'</span></td>';
@@ -327,7 +327,7 @@ writeRichText("beskrivelse", \''.rtefsafe($sider[0]['beskrivelse']).'\', "", '.(
 						}
 						
 						$html .= '<td><select style="display:none"><option value=""></option>';
-						foreach($options[$list['sorts'][$key]] as $option) {
+						foreach ($options[$list['sorts'][$key]] as $option) {
 							$html .= '<option value="'.$option.'"';
 							if ($row[$key] == $option)
 								$html .= ' selected="selected"';
@@ -452,7 +452,7 @@ function redigerFrontpage() {
 	$html .= _('Sort maincategories:');
 	$html .= '<ul id="subMenus" style="width:'.$GLOBALS['_config']['text_width'].'px;">';
 	
-	foreach($subkats as $value) {
+	foreach ($subkats as $value) {
 		$html .= '<li id="item_'.$value['id'].'"><img src="';
 				if ($value['icon'])
 					$html .= $value['icon'];
@@ -528,7 +528,7 @@ function listsort($id = NULL) {
 		$html .= '<ul id="listOrder" style="width:'.$GLOBALS['_config']['text_width'].'px;">';
 		$liste[0]['text'] = explode('<', $liste[0]['text']);
 		
-		foreach($liste[0]['text'] as $key => $value) {
+		foreach ($liste[0]['text'] as $key => $value) {
 			$html .= '<li id="item_'.$key.'">'.$value.'</li>';
 		}
 		
@@ -542,7 +542,7 @@ Sortable.create(\'listOrder\',{ghosting:false,constraint:false,hoverclass:\'over
 		
 		$lists = $mysqli->fetch_array('SELECT id, navn FROM `tablesort`');
 		
-		foreach($lists as $value) {
+		foreach ($lists as $value) {
 			$html .= '<a href="?side=listsort&amp;id='.$value['id'].'"><img src="images/shape_align_left.png" width="16" height="16" alt="" /> '.$value['navn'].'</a><br />';
 		}
 		$html .= '</div>';
@@ -559,7 +559,7 @@ function getaddressbook() {
 	$html = '<div id="headline">'._('Address Book').'</div><div>';
 	$html .= '<table id="addressbook"><thead><tr><td></td><td>'._('Name').'</td><td>'._('E-mail').'</td><td>'._('Phone').'</td></tr></thead><tbody>';
 	
-	foreach($addresses as $i => $addres) {
+	foreach ($addresses as $i => $addres) {
 		if (!$addres['tlf1'] && $addres['tlf2'])
 			$addres['tlf1'] = $addres['tlf2'];
 		
@@ -598,7 +598,7 @@ function editContact($id) {
 	<strong>'._('Interests:').'</strong>';
 	$html .= '<div id="interests">';
 	$address[0]['interests_array'] = explode('<', $address[0]['interests']);
-	foreach($GLOBALS['_config']['interests'] as $interest) {
+	foreach ($GLOBALS['_config']['interests'] as $interest) {
 		$html .= '<label for="'.$interest.'"><input';
 		if (false !== array_search($interest, $address[0]['interests_array']))
 			$html .= ' checked="checked"';
@@ -751,7 +751,7 @@ function get_subscriptions_with_bad_emails() {
 	$html = '';
 	$errors = 0;
 	$emails = $mysqli->fetch_array("SELECT `id`, `email` FROM `email` WHERE `email` != ''");
-	foreach($emails as $email) {
+	foreach ($emails as $email) {
 		if (!valide_mail($email['email'])) {
 			$html .= '<a href="?side=editContact&id='.$email['id'].'">'.sprintf(_('E-mail: %s #%d is not valid'), $email['email'], $email['id']).'</a><br />';
 		}
@@ -768,7 +768,7 @@ function get_orphan_rows() {
 	$error = $mysqli->fetch_array('SELECT * FROM `list_rows` WHERE list_id NOT IN (SELECT id FROM lists);');
 	if ($error) {
 		$html .= '<br /><b>'._('The following rows have no lists:').'</b><br />';
-		foreach($error as $value) {
+		foreach ($error as $value) {
 			$html .= $value['id'].': '.$value['cells'].' '.$value['link'].'<br />';
 		}
 	}
@@ -784,7 +784,7 @@ function get_orphan_cats() {
 	$error = $mysqli->fetch_array('SELECT `id`, `navn` FROM `kat` WHERE `bind` != 0 AND `bind` != -1 AND `bind` NOT IN (SELECT `id` FROM `kat`);');
 	if ($error) {
 		$html .= '<br /><b>'._('The following categories are orphans:').'</b><br />';
-		foreach($error as $value) {
+		foreach ($error as $value) {
 			$html .= '<a href="?side=redigerkat&id='.$value['id'].'">'.$value['id'].': '.$value['navn'].'</a><br />';
 		}
 	}
@@ -800,9 +800,9 @@ function get_looping_cats() {
 	
 	$html = '';
 	$temp_html = '';
-	foreach($error as $kat) {
+	foreach ($error as $kat) {
 		$bindtree = kattree($kat['bind']);
-		foreach($bindtree as $bindbranch) {
+		foreach ($bindtree as $bindbranch) {
 			if ($kat['id'] == $bindbranch['id']) {
 				$temp_html .= '<a href="?side=redigerkat&id='.$kat['id'].'">'.$kat['id'].': '.$kat['navn'].'</a><br />';
 				continue;
@@ -827,7 +827,7 @@ function check_file_names() {
 		} else {
 			$html .= '<br /><br /><a onclick="explorer(\'\',\'\');">';
 		}
-		foreach($error as $value) {
+		foreach ($error as $value) {
 			$html .= $value['path'].'<br />';
 		}
 		$html .= '</a>';
@@ -848,7 +848,7 @@ function check_file_paths() {
 			$html .= '<br /><br /><a onclick="explorer(\'\',\'\');">';
 		}
 		//TODO only repport one error per folder
-		foreach($error as $value) {
+		foreach ($error as $value) {
 			$html .= $value['path'].'<br />';
 		}
 		$html .= '</a>';
@@ -872,10 +872,10 @@ function get_mailbox_list() {
 	$imap->open($GLOBALS['_config']['imap'], $GLOBALS['_config']['imapport']);
 	
 	$temp = array();
-	foreach($GLOBALS['_config']['email'] as $i => $email) {
+	foreach ($GLOBALS['_config']['email'] as $i => $email) {
 		$imap->login($email, $GLOBALS['_config']['emailpasswords'][$i]);
 		$mailboxes[$i] = $imap->list_mailbox();
-	    foreach($mailboxes[$i] as $i2 => $mailbox) {
+	    foreach ($mailboxes[$i] as $i2 => $mailbox) {
 	        $temp['mailboxs'][$i2] = $mailbox;
 	        $temp['mailbox_names'][$i2] = mb_convert_encoding($mailbox, "UTF-8", "UTF7-IMAP");
 	    }
@@ -901,11 +901,11 @@ function get_mailbox_list() {
 	$imap = new IMAPMAIL;
 	$imap->open($GLOBALS['_config']['imap'], $GLOBALS['_config']['imapport']);
 	
-	foreach($GLOBALS['_config']['email'] as $i => $email) {
+	foreach ($GLOBALS['_config']['email'] as $i => $email) {
 		$imap->login($email, $GLOBALS['_config']['emailpasswords'][$i]);
 			
 		$mailboxList = $imap->list_mailbox();
-		foreach($mailboxList as $mailbox) {
+		foreach ($mailboxList as $mailbox) {
 			$mailboxStatus = $imap->open_mailbox($mailbox, true);
 			preg_match('/([0-9]+)\sEXISTS/', $mailboxStatus, $mails);
 			if (!empty($mails[1])) {
@@ -928,7 +928,7 @@ function get_orphan_lists() {
  	$html = '';
 	if ($error) {
 		$html .= '<br /><b>'._('The following lists are orphans:').'</b><br />';
-		foreach($error as $value) {
+		foreach ($error as $value) {
 			$html .= $value['id'].': '.$value['navn'].' '.$value['cell1'].' '.$value['cell2'].' '.$value['cell3'].' '.$value['cell4'].' '.$value['cell5'].' '.$value['cell6'].' '.$value['cell7'].' '.$value['cell8'].' '.$value['cell9'].' '.$value['img'].' '.$value['link'].'<br />';
 		}
 	}
@@ -942,7 +942,7 @@ function get_db_size() {
 	
 	$tabels = $mysqli->fetch_array("SHOW TABLE STATUS");
 	$dbsize = 0;
-	foreach($tabels as $tabel) {
+	foreach ($tabels as $tabel) {
 		$dbsize += $tabel['Data_length'];
 		$dbsize += $tabel['Index_length'];
 	}
@@ -954,7 +954,7 @@ function get_orphan_pages() {
 	
 	$html = '';
 	$sider = $mysqli->fetch_array("SELECT `id`, `navn`, `varenr` FROM `sider` WHERE `id` NOT IN(SELECT `side` FROM `bind`);");
-	foreach($sider as $side) {
+	foreach ($sider as $side) {
 		$html .= '<a href="?side=redigerside&amp;id='.$side['id'].'">'.$side['id'].': '.$side['navn'].'</a><br />';
 	}
 	
@@ -968,11 +968,11 @@ function get_pages_with_mismatch_bindings() {
 	
 	$sider = $mysqli->fetch_array("SELECT `id`, `navn`, `varenr` FROM `sider`;");
 	$html = '';
-	foreach($sider as $value) {
+	foreach ($sider as $value) {
 		$bind = $mysqli->fetch_array("SELECT `kat` FROM `bind` WHERE `side` = ".$value['id']);
 		//Add active pages that has a list that links to this page
 		$listlinks = $mysqli->fetch_array("SELECT `bind`.`kat` FROM `list_rows` JOIN `lists` ON `list_rows`.`list_id` = `lists`.`id` JOIN `bind` ON `lists`.`page_id` = `bind`.`side` WHERE `list_rows`.`link` = ".$value['id']);
-		foreach($listlinks as $listlink) {
+		foreach ($listlinks as $listlink) {
 			if (binding($listlink['kat']) == 0) {
 				$bind[]['kat'] = $listlink['kat'];
 			}
@@ -981,7 +981,7 @@ function get_pages_with_mismatch_bindings() {
 		//Is there any mismatches of the root bindings
 		if (count($bind) > 1) {
 			$binding = binding($bind[0]['kat']);
-			foreach($bind as $enbind) {
+			foreach ($bind as $enbind) {
 				if ($binding != binding($enbind['kat'])) {
 					$html .= '<a href="?side=redigerside&amp;id='.$value['id'].'">'.$value['id'].': '.$value['navn'].'</a><br />';
 					continue 2;
@@ -1097,7 +1097,7 @@ function katlist($id) {
 	}
 	$html .= '" id="kats"><div>';
 	$kattree = kattree($id);
-	foreach($kattree as $i => $value) {
+	foreach ($kattree as $i => $value) {
 		$kattree[$i] = $value['id'];
 	}
 	
@@ -1152,7 +1152,7 @@ function siteList($id) {
 	$kattree = array();
 	if ($id !== null) {
 		$kattree = kattree($id);
-		foreach($kattree as $i => $value) {
+		foreach ($kattree as $i => $value) {
 			$kattree[$i] = $value['id'];
 		}
 	}
@@ -1199,7 +1199,7 @@ function pages_expand($id) {
 	$html .= $temp['html'];
 	$sider = $mysqli->fetch_array('SELECT sider.id, sider.varenr, bind.id as bind, navn FROM `bind` LEFT JOIN sider on bind.side = sider.id WHERE `kat` = '.$id.' ORDER BY sider.navn');
 	$nr = count($sider);
-	foreach($sider as $side) {
+	foreach ($sider as $side) {
 			$html .= '<div id="bind'.$side['bind'].'" class="side'.$side['id'].'"><a style="margin-left:16px" class="side">
 			<a class="kat" onclick="this.firstChild.checked=true;"><input name="side" type="radio" value="'.$side['id'].'" />
 			<img src="images/page.png" width="16" height="16" alt="" /> '.strip_tags($side['navn'],'<img>');
@@ -1232,7 +1232,7 @@ function getnykat() {
 	
 	//Email
 	$html .= _('Contact:').' <select id="email">';
-	foreach($GLOBALS['_config']['email'] as $email) {
+	foreach ($GLOBALS['_config']['email'] as $email) {
 		$html .= '<option value="'.$email.'">'.$email.'</option>';
 	}
 	$html .= '</select>';
@@ -1256,7 +1256,7 @@ function getSiteTree() {
 	
 	global $mysqli;
 	$specials = $mysqli->fetch_array('SELECT `id`, `navn` FROM `special` WHERE `id` > 1 ORDER BY `navn`');
-	foreach($specials as $special)
+	foreach ($specials as $special)
 		$html .= '<div style="margin-left: 16px;"><a href="?side=redigerSpecial&id='.$special['id'].'"><img height="16" width="16" alt="" src="images/page.png"/> '.$special['navn'].'</a></div>';
 		
 	return $html.'</div>';
@@ -1483,13 +1483,13 @@ function sletkat($id) {
 
 	$mysqli->query('DELETE FROM `kat` WHERE `id` = '.$id.' LIMIT 1');
 	if ($kats = $mysqli->fetch_array('SELECT id FROM `kat` WHERE `bind` = '.$id)) {
-		foreach($kats as $kat) {
+		foreach ($kats as $kat) {
 			sletkat($kat['id']);
 		}
 	}
 	if ($bind = $mysqli->fetch_array('SELECT side FROM `bind` WHERE `kat` = '.$id)) {
 		$mysqli->query('DELETE FROM `bind` WHERE `kat` = '.$id);
-		foreach($bind as $side) {
+		foreach ($bind as $side) {
 			if (!$mysqli->fetch_array('SELECT id FROM `bind` WHERE `side` = '.$side['side'].' LIMIT 1')) {
 				sletSide($side['side']);
 			}
@@ -1551,7 +1551,7 @@ function bind($id, $kat) {
 
 	//Delete any binding not under $katRoot
 	$binds = $mysqli->fetch_array('SELECT id, kat FROM `bind` WHERE `side` = '.$id);
-	foreach($binds as $bind) {
+	foreach ($binds as $bind) {
 		$bindRoot = $bind['kat'];
 		while($bindRoot > 0) {
 			$bindRoot = $mysqli->fetch_array("SELECT bind FROM `kat` WHERE id = '".$bindRoot."' LIMIT 1");
@@ -1634,7 +1634,7 @@ function updateSide($id, $navn, $keywords, $pris, $billed, $beskrivelse, $for, $
 
 function updateKat($id, $navn, $bind, $icon, $vis, $email, $custom_sort_subs, $subsorder) {
 	$bindtree = kattree($bind);
-	foreach($bindtree as $bindbranch)
+	foreach ($bindtree as $bindbranch)
 		if ($id == $bindbranch['id'])
 			return array('error' => _('The category can not be placed under itself.'));
 	
@@ -1658,7 +1658,7 @@ function updateKatOrder($subsorder) {
 	
 	$subsorder = explode(',', $subsorder);
 	
-	foreach($subsorder as $key => $value) {
+	foreach ($subsorder as $key => $value) {
 		$orderquery->execute(); 
 	}
 	

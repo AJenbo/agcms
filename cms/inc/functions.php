@@ -32,7 +32,7 @@ function skriv($id) {
 	getUpdateTime('kat');
 	
 	//cache all results
-	foreach($kat as $value) {
+	foreach ($kat as $value) {
 		if ($value['skriv']) {
 			$GLOBALS['cache']['kats'][$value['id']]['skriv'] = true;
 			$return = true;
@@ -46,7 +46,7 @@ function skriv($id) {
 	}
 	
 	//Search deeper if a result wasn't found yet
-	foreach($kat as $value) {
+	foreach ($kat as $value) {
 		if (skriv($value['id'])) {
 			$GLOBALS['cache']['kats'][$value['id']]['skriv'] = true;
 			return true;
@@ -67,7 +67,7 @@ function subs($kat) {
 	
 	getUpdateTime('kat');
 	
-	foreach($sub as $value) {
+	foreach ($sub as $value) {
 		//er der sider bundet til katagorien
 		if (skriv($value['id'])) {
 			return 1;       
@@ -206,7 +206,7 @@ function get_table($listid, $bycell, $current_kat) {
 		}
 	
 		//Explode cells
-		foreach($rows as $row) {
+		foreach ($rows as $row) {
 			$cells = explode('<', $row['cells']);
 			$cells['id'] = $row['id'];
 			$cells['link'] = $row['link'];
@@ -230,11 +230,11 @@ function get_table($listid, $bycell, $current_kat) {
 			$html .= '<caption>'.$lists[0]['title'].'</caption>';
 		}
 		$html .= '<thead><tr>';
-		foreach($lists[0]['cell_names'] as $key => $cell_name) {
+		foreach ($lists[0]['cell_names'] as $key => $cell_name) {
 			$html .= '<td><a href="" onclick="x_get_table(\''.$lists[0]['id'].'\', \''.$key.'\', '.$current_kat.', inject_html);return false;">'.$cell_name.'</a></td>';
 		}
 		$html .= '</tr></thead><tbody>';
-		foreach($rows as $i => $row) {
+		foreach ($rows as $i => $row) {
 			$html .= '<tr';
 			if ($i % 2)
 				$html .= ' class="altrow"';
@@ -245,7 +245,7 @@ function get_table($listid, $bycell, $current_kat) {
 				$sider = $mysqli->fetch_array('SELECT `sider`.`navn`, `kat`.`navn` AS `kat_navn` FROM `sider` JOIN `kat` ON `kat`.`id` = '.$current_kat.' WHERE `sider`.`id` = '.$row['link'].' LIMIT 1');
 				$row['link'] = '<a href="/kat'.$current_kat.'-'.clear_file_name($sider[0]['kat_navn']).'/side'.$row['link'].'-'.clear_file_name($sider[0]['navn']).'.html">';
 			}
-			foreach($lists[0]['cells'] as $key => $type) {
+			foreach ($lists[0]['cells'] as $key => $type) {
 				if (empty($row[$key])) {
                 	$row[$key] = '';
                 }
@@ -339,10 +339,10 @@ function get_table($listid, $bycell, $current_kat) {
 	
 	$updatetime = 0;
 	$included_files = get_included_files();
-	foreach($included_files as $filename) {
+	foreach ($included_files as $filename) {
 		$GLOBALS['cache']['updatetime']['filemtime'] = max($GLOBALS['cache']['updatetime']['filemtime'], filemtime($filename));
 	}
-	foreach($GLOBALS['cache']['updatetime'] as $time) {
+	foreach ($GLOBALS['cache']['updatetime'] as $time) {
 		$updatetime = max($updatetime, $time);
 	}
 	if ($updatetime < 1)
@@ -361,7 +361,7 @@ function echo_table($sideid, $mansort, $desc) {
 	
 	getUpdateTime('tablesort');
 	
-	foreach($tablesort as $value) {
+	foreach ($tablesort as $value) {
 		$GLOBALS['tablesort_navn'][] = $value['navn'];
 		$GLOBALS['tablesort'][] = trim_array(explode(',', $value['text']));
 	}
@@ -371,7 +371,7 @@ function echo_table($sideid, $mansort, $desc) {
 	
 	getUpdateTime('lists');
 	
-	foreach($lists as $list) {
+	foreach ($lists as $list) {
 		$html = '<div id="table'.$list['id'].'">';
 		
 		$table_html = get_table($list['id'], NULL, $GLOBALS['generatedcontent']['activmenu']);
@@ -397,7 +397,7 @@ function kats($id) {
 		$data =  kats($kat[0]['bind']);
 		$nr = count($data);
 		$kats[0] = $id;
-		foreach($data as $value){
+		foreach ($data as $value){
 			$kats[] = $value;
 		}
 	}

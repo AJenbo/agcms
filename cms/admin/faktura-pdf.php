@@ -28,12 +28,12 @@ $faktura['values'] = explode('<', $faktura['values']);
 
 if (!$faktura['premoms'] && $faktura['momssats']) {
 //if numbers where aded with out vat but vat should be payed, then add it
-	foreach($faktura['values'] as $key => $value) {
+	foreach ($faktura['values'] as $key => $value) {
 		$faktura['values'][$key] = $value*(1.25);
 	}
 } elseif (!$faktura['momssats']) {
 //if values where entered including vat, but no vat should be payed, then remove the vat
-	foreach($faktura['values'] as $key => $value) {
+	foreach ($faktura['values'] as $key => $value) {
 		$faktura['values'][$key] = $value/1.25;
 	}
 }
@@ -180,7 +180,7 @@ $pdf->Cell( 34, 5, _('Total'), 1, 1, 'R');
 //Cells
 $netto = 0;
 $extralines = 0;
-foreach($faktura['values'] as $i => $value) {
+foreach ($faktura['values'] as $i => $value) {
 	
 	if ($lines > 1) {
 		$lines -= 1;

@@ -1,4 +1,16 @@
 <?php
+/**
+ * Handle AJAX requests
+ *
+ * PHP version 5
+ *
+ * @category AGCMS
+ * @package  AGCMS
+ * @author   Anders Jenbo <anders@jenbo.dk>
+ * @license  GPLv2 http://www.gnu.org/licenses/gpl-2.0.html
+ * @link     http://www.arms-gallery.dk/
+ */
+
 require_once 'inc/sajax.php';
 require_once 'inc/header.php';
 require_once 'inc/functions.php';
@@ -12,38 +24,42 @@ $mysqli = new simple_mysqli($GLOBALS['_config']['mysql_server'], $GLOBALS['_conf
 //the remedy is to update the database when new cms files are added.
 $tables = $mysqli->fetch_array("SHOW TABLE STATUS");
 $updatetime = 0;
-foreach($tables as $table)
+foreach ($tables as $table) {
 	$updatetime = max($updatetime, strtotime($table['Update_time']));
+}
 
 $included_files = get_included_files();
-foreach($included_files as $filename) {
+foreach ($included_files as $filename) {
 	$GLOBALS['cache']['updatetime']['filemtime'] = max(@$GLOBALS['cache']['updatetime']['filemtime'], filemtime($filename));
 }
-foreach($GLOBALS['cache']['updatetime'] as $time) {
+foreach ($GLOBALS['cache']['updatetime'] as $time) {
 	$updatetime = max($updatetime, $time);
 }
-if ($updatetime < 1)
+if ($updatetime < 1) {
 	$updatetime = time();
+}
 
 doConditionalGet($updatetime);
 $updatetime = 0;
 
-function get_kat($id, $sort) {
+function get_kat($id, $sort)
+{
 	global $mysqli;
-	require_once $_SERVER['DOCUMENT_ROOT'].'/inc/liste.php';
+	include_once $_SERVER['DOCUMENT_ROOT'].'/inc/liste.php';
 	$GLOBALS['generatedcontent']['activmenu'] = $id;
 
 	//check browser cache
 	$updatetime = 0;
 	$included_files = get_included_files();
-	foreach($included_files as $filename) {
+	foreach ($included_files as $filename) {
 		$GLOBALS['cache']['updatetime']['filemtime'] = max($GLOBALS['cache']['updatetime']['filemtime'], filemtime($filename));
 	}
-	foreach($GLOBALS['cache']['updatetime'] as $time) {
+	foreach ($GLOBALS['cache']['updatetime'] as $time) {
 		$updatetime = max($updatetime, $time);
 	}
-	if ($updatetime < 1)
+	if ($updatetime < 1) {
 		$updatetime = time();
+	}
 	
 	doConditionalGet($updatetime);
 	
@@ -56,14 +72,16 @@ function get_kat($id, $sort) {
 	}
 	
 	
-	if ($bind) 
+	if ($bind) {
 		$bind_nr = count($bind);
+	}
 
 	return array("id" => 'kat'.$GLOBALS['generatedcontent']['activmenu'], "html" => kat_html($bind, $GLOBALS['cache']['kats'][$GLOBALS['generatedcontent']['activmenu']]['navn']));
 }
 
-function get_address($phonenumber) {
-	require_once $_SERVER['DOCUMENT_ROOT'].'/inc/getaddress.php';
+function get_address($phonenumber)
+{
+	include_once $_SERVER['DOCUMENT_ROOT'].'/inc/getaddress.php';
 	return getAddress($phonenumber);
 }
 
@@ -74,4 +92,4 @@ sajax_export(
 );
 //	$sajax_remote_uri = "/ajax.php";
 sajax_handle_client_request();
-?>
+

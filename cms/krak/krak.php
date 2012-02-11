@@ -1,7 +1,7 @@
 <?php
 function objectToArray($object) {
 	$object = (array) $object;
-	foreach($object as $key => $value ){
+	foreach ($object as $key => $value ){
 	 if (is_object($value) || is_array($value))
 	 $object[$key] = objectToArray($value);
 	 }

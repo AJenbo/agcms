@@ -30,7 +30,7 @@ function getAddress($id) {
 	
 	require_once $_SERVER['DOCUMENT_ROOT'].'/inc/mysqli.php';
 	
-	foreach($dbs as $db) {
+	foreach ($dbs as $db) {
 		$mysqli_ext = new simple_mysqli($db['mysql_server'], $db['mysql_user'], $db['mysql_password'], $db['mysql_database']);
 		
 		//try packages

@@ -68,7 +68,7 @@ function sendEmail($id, $from, $interests, $subject, $text) {
 	if ($interests) {
 		$interests = explode('<', $interests);
 		$andwhere = '';
-		foreach($interests as $interest) {
+		foreach ($interests as $interest) {
 			if ($andwhere)
 				$andwhere .= ' OR ';
 			$andwhere .= '`interests` LIKE \'';
@@ -96,15 +96,15 @@ function sendEmail($id, $from, $interests, $subject, $text) {
 		GROUP BY `email`'
 	);
 
-	foreach($emails as $x => $email) {
+	foreach ($emails as $x => $email) {
        		$emails_group[floor($x/99)][] = $email;
     	}
 
 	$error = '';
 
-	foreach($emails_group as $emails) {
+	foreach ($emails_group as $emails) {
 		$mail->ClearBCCs();
-		foreach($emails as $email)
+		foreach ($emails as $email)
 			$mail->AddBCC($email['email'], $email['navn']);
 	
 		if (!$mail->Send()) {
@@ -141,7 +141,7 @@ function countEmailTo($interests) {
 	if ($interests) {
 		$interests = explode('<', $interests);
 		$andwhere = '';
-		foreach($interests as $interest) {
+		foreach ($interests as $interest) {
 			if ($andwhere)
 				$andwhere .= ' OR ';
 			$andwhere .= '`interests` LIKE \'';
@@ -187,7 +187,7 @@ function getEmail($id) {
 		if (count($GLOBALS['_config']['email']) > 1) {
 			$html .= _('Sender:').' <select id="from">';
 			$html .= '<option value="">'._('Select sender').'</option>';
-			foreach($GLOBALS['_config']['email'] as $email) {
+			foreach ($GLOBALS['_config']['email'] as $email) {
 				$html .= '<option value="'.$email.'">'.$email.'</option>';
 			}
 			$html .= '</select>';
@@ -206,7 +206,7 @@ function getEmail($id) {
 	}
 	$html .= '<div id="interests">';
 	$newsmails[0]['interests_array'] = explode('<', $newsmails[0]['interests']);
-	foreach($GLOBALS['_config']['interests'] as $interest) {
+	foreach ($GLOBALS['_config']['interests'] as $interest) {
 		$html .= '<input';
 		if (false !== array_search($interest, $newsmails[0]['interests_array']))
 			$html .= ' checked="checked"';
@@ -260,7 +260,7 @@ function getEmailList() {
 	$newsmails = $mysqli->fetch_array('SELECT `id`, `subject`, `sendt` FROM `newsmails`');
 	
 	$html = '<div id="headline">'._('Newsletters').'</div><div><a href="?side=newemail"><img src="images/email_add.png" width="16" height="16" alt="" /> '._('Create new newsletter').'</a><br /><br />';
-	foreach($newsmails as $newemail) {
+	foreach ($newsmails as $newemail) {
 		if ($newemail['sendt'] == 0) {
 			$html .= '<a href="?side=editemail&amp;id='.$newemail['id'].'"><img src="images/email_edit';
 		} else {

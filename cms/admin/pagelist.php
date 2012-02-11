@@ -78,7 +78,7 @@ function katlist($id) {
 	}
 	$html .= '" id="kats"><div>';
 	$kattree = kattree($id);
-	foreach($kattree as $i => $value) {
+	foreach ($kattree as $i => $value) {
 		$kattree[$i] = $value['id'];
 	}
 	
@@ -133,7 +133,7 @@ function siteList($id) {
 	$kattree = array();
 	if ($id !== null) {
 		$kattree = kattree($id);
-		foreach($kattree as $i => $value) {
+		foreach ($kattree as $i => $value) {
 			$kattree[$i] = $value['id'];
 		}
 	}
@@ -180,7 +180,7 @@ function pages_expand($id) {
 	$html .= $temp['html'];
 	$sider = $mysqli->fetch_array('SELECT sider.id, sider.varenr, bind.id as bind, navn FROM `bind` LEFT JOIN sider on bind.side = sider.id WHERE `kat` = '.$id.' ORDER BY sider.navn');
 	$nr = count($sider);
-	foreach($sider as $side) {
+	foreach ($sider as $side) {
 			$html .= '<div id="bind'.$side['bind'].'" class="side'.$side['id'].'"><a style="margin-left:16px" class="side">
 			<a class="kat" onclick="this.firstChild.checked=true;"><input name="side" type="radio" value="'.$side['id'].'" />
 			<img src="images/page.png" width="16" height="16" alt="" /> '.strip_tags($side['navn'],'<img>');
@@ -214,7 +214,7 @@ function getSiteTree() {
 	
 	global $mysqli;
 	$specials = $mysqli->fetch_array('SELECT `id`, `navn` FROM `special` WHERE `id` > 1 ORDER BY `navn`');
-	foreach($specials as $special)
+	foreach ($specials as $special)
 		$html .= '<div style="margin-left: 16px;"><a href="?side=redigerSpecial&id='.$special['id'].'"><img height="16" width="16" alt="" src="images/page.png"/> '.$special['navn'].'</a></div>';
 		
 	return $html.'</div>';

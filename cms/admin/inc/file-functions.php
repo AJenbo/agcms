@@ -89,7 +89,7 @@ function sub_dirs($dir) {
 function listdirs($dir, $mode=0) {
 	$subdirs = sub_dirs($dir);
 	$html = '';
-	foreach($subdirs as $subdir) {
+	foreach ($subdirs as $subdir) {
 		$html .= '<div id="dir_'.preg_replace('#/#u','.',$dir.'/'.$subdir).'">';
 		if (sub_dirs($dir.'/'.$subdir)) {
 			$html .= '<img';

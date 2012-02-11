@@ -43,7 +43,7 @@ require_once $_SERVER['DOCUMENT_ROOT'].'/admin/inc/logon.php';
 			echo(' style="display:none"');
 		?>><?php
 		
-		foreach($activityButtons as $value)
+		foreach ($activityButtons as $value)
 			echo($value);
 		
 		?><li><a href="./logout.php"><img src="images/door_in.png" width="16" height="16" alt="" /> <?php echo(_('Log out')); ?></a></li></ul><?php

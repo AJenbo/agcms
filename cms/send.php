@@ -46,7 +46,7 @@ if ($GLOBALS['_config']['imap'] !== FALSE) {
 	require_once "inc/imap.inc.php";
 }
 
-foreach($emails as $email) {
+foreach ($emails as $email) {
 	$PHPMailer->ClearAddresses();
 	$PHPMailer->ClearCCs();
 	$PHPMailer->ClearReplyTos();
@@ -60,7 +60,7 @@ foreach($emails as $email) {
 	$PHPMailer->AddReplyTo($email['from'][1], $email['from'][0]);
 	
 	$email['to'] = explode(';', $email['to']);
-	foreach($email['to'] as $key => $to) {
+	foreach ($email['to'] as $key => $to) {
 		$email['to'][$key] = explode('<', $to);
 		$email['to'][$key][1] = substr($email['to'][$key][1], 0, -1);
 		$PHPMailer->AddAddress($email['to'][$key][1], $email['to'][$key][0]);

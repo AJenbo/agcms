@@ -38,7 +38,7 @@ if (is_numeric(@$_GET['add']) || is_numeric(@$_GET['add_list_item'])) {
 			$product['navn'] = '';
 			$product['pris'] = null;
 			$product['fra'] = 0;
-			foreach($list['cells'] as $i => $celltype) {
+			foreach ($list['cells'] as $i => $celltype) {
 				if ($celltype == 0 || $celltype == 1)
 					$product['navn'] .= ' '.@$list_row['cells'][$i];
 				elseif ($celltype == 2 || $celltype == 3)
@@ -59,7 +59,7 @@ if (is_numeric(@$_GET['add']) || is_numeric(@$_GET['add_list_item'])) {
 
 	$product_exists = false;
 	if (!empty($_SESSION['faktura']['quantities'])) {
-		foreach($_SESSION['faktura']['products'] as $i => $product_name) {
+		foreach ($_SESSION['faktura']['products'] as $i => $product_name) {
 			if ($product_name == $product['navn']) {
 				$_SESSION['faktura']['quantities'][$i]++;
 				$product_exists = true;
@@ -101,7 +101,7 @@ $GLOBALS['generatedcontent']['datetime'] = time();
 unset($_POST['values']);
 unset($_POST['products']);
 if (count($_POST)) {
-	foreach($_POST as $key => $value) {
+	foreach ($_POST as $key => $value) {
 		$_SESSION['faktura'][$key] = $value;
 	}
 }
@@ -178,7 +178,7 @@ if (!empty($_SESSION['faktura']['quantities'])) {
 		
 	if (empty($_GET['step'])) {
 		if ($_POST) {
-			foreach($_POST['quantity'] as $i => $quantiy) {
+			foreach ($_POST['quantity'] as $i => $quantiy) {
 				if ($quantiy < 1) {
 					unset($_SESSION['faktura']['quantities'][$i]);
 					unset($_SESSION['faktura']['products'][$i]);
@@ -195,7 +195,7 @@ if (!empty($_SESSION['faktura']['quantities'])) {
 		}
 	
 		$_SESSION['faktura']['amount'] = 0;
-		foreach($_SESSION['faktura']['quantities'] as $i => $quantity) {
+		foreach ($_SESSION['faktura']['quantities'] as $i => $quantity) {
 			$_SESSION['faktura']['amount'] += $_SESSION['faktura']['values'][$i]*$quantity;
 		}
 		
@@ -227,7 +227,7 @@ if (!empty($_SESSION['faktura']['quantities'])) {
 
 		$unknownvalue = false;
 		$javascript = 'var values = [];';
-		foreach($_SESSION['faktura']['quantities'] as $i => $quantity) {
+		foreach ($_SESSION['faktura']['quantities'] as $i => $quantity) {
 			$GLOBALS['generatedcontent']['text'] .= '<tr>
 				<td class="tal"><input onkeyup="updateprice();" onchange="updateprice();" class="tal" value="'.$quantity.'" name="quantity[ ]" size="3" /></td>
 				<td>'.$_SESSION['faktura']['products'][$i].'</td>
@@ -431,7 +431,7 @@ VALUES ('".
 			<td> '._('Country:').'</td>
 			<td colspan="2"><select name="land" id="land" style="width:157px" onblur="chnageZipCode($(\'postnr\').value, \'land\', \'by\')" onkeyup="chnageZipCode($(\'postnr\').value, \'land\', \'by\')" onchange="chnageZipCode($(\'postnr\').value, \'land\', \'by\')">';
 		require_once 'inc/countries.php';
-		foreach($countries as $code => $country) {
+		foreach ($countries as $code => $country) {
 			$GLOBALS['generatedcontent']['text'] .= '<option value="'.$code.'"';
 			if ($_SESSION['faktura']['land'] == $code)
 				$GLOBALS['generatedcontent']['text'] .= ' selected="selected"';
@@ -518,7 +518,7 @@ VALUES ('".
 			<td colspan="2"><select name="postcountry" id="postcountry" style="width:157px" onblur="chnageZipCode($(\'postpostalcode\').value, \'postcountry\', \'postcity\')" onkeyup="chnageZipCode($(\'postpostalcode\').value, \'postcountry\', \'postcity\')" onchange="chnageZipCode($(\'postpostalcode\').value, \'postcountry\', \'postcity\')">';
 			
 		require_once 'inc/countries.php';
-		foreach($countries as $code => $country) {
+		foreach ($countries as $code => $country) {
 			$GLOBALS['generatedcontent']['text'] .= '<option value="'.$code.'"';
 			if ($_SESSION['faktura']['postcountry'] == $code)
 				$GLOBALS['generatedcontent']['text'] .= ' selected="selected"';
@@ -620,7 +620,7 @@ VALUES ('".
 				</tr>
 			</thead>
 			<tbody>';
-		foreach($_SESSION['faktura']['quantities'] as $i => $quantity) {
+		foreach ($_SESSION['faktura']['quantities'] as $i => $quantity) {
 			$emailbody .= '<tr>
 				<td class="tal">'.$quantity.'</td>
 				<td>'.$_SESSION['faktura']['products'][$i].'</td>

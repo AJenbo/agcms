@@ -39,7 +39,7 @@ $faktura['products'] = explode('<', $faktura['products']);
 $faktura['values'] = explode('<', $faktura['values']);
 	
 if ($faktura['premoms']) {
-	foreach($faktura['values'] as $key => $value) {
+	foreach ($faktura['values'] as $key => $value) {
 		$faktura['values'][$key] = $value/1.25;
 	}
 }
@@ -285,7 +285,7 @@ function copytonew($id) {
 	$faktura['clerk'] = $_SESSION['_user']['fullname'];
 	
 	$sql = "INSERT INTO `fakturas` SET";
-	foreach($faktura as $key => $value)
+	foreach ($faktura as $key => $value)
 		$sql .= " `".addcslashes($key, '`\\')."` = '".addcslashes($value, "'\\")."',";
 	$sql .= " `date` = NOW();";
 		
@@ -354,7 +354,7 @@ function save($id, $type, $updates) {
 	if (count($updates)) {
 	
 		$sql = "UPDATE `fakturas` SET";
-		foreach($updates as $key => $value)
+		foreach ($updates as $key => $value)
 			$sql .= " `".addcslashes($key, '`\\')."` = '".addcslashes($value, "'\\")."',";
 		$sql = substr($sql, 0, -1);
 		
@@ -1096,13 +1096,13 @@ new tcal ({ 'controlid': 'cdate' });
 			</tr><?php
 		}
         $pnl = $mysqli->fetch_array("SELECT `packageId` FROM `PNL` WHERE `fakturaid` = ".$faktura['id']);
-		foreach($pnl as $pakke) {
+		foreach ($pnl as $pakke) {
 		?><tr>
 			<td><a target="_blank" href="http://online.pannordic.com/pn_logistics/index_tracking_email.jsp?id=<?php echo($pakke['packageId']); ?>&amp;Search=search"><?php echo($pakke['packageId']); ?></a></td>
 		</tr><?php
 		}
         $post = $mysqli->fetch_array("SELECT `STREGKODE` FROM `post` WHERE `deleted` = 0 AND `fakturaid` = ".$faktura['id']);
-		foreach($post as $pakke) {
+		foreach ($post as $pakke) {
 		?><tr>
 			<td><a href="http://www.postdanmark.dk/tracktrace/TrackTrace.do?i_lang=IND&amp;i_stregkode=<?php echo($pakke['STREGKODE']); ?>" target="_blank"><?php echo($pakke['STREGKODE']); ?></a></td>
 		</tr><?php
@@ -1183,7 +1183,7 @@ new tcal ({ 'controlid': 'cdate' });
 				<select name="clerk" id="clerk">
 					<option value=""<?php if (!$faktura['clerk']) echo(' selected="selected"'); ?>><?php echo(_('No one')); ?></option><?php
 		$userstest = array();
-		foreach($users as $user) {
+		foreach ($users as $user) {
 			?><option value="<?php echo($user['fullname']); ?>"<?php if ($faktura['clerk'] == $user['fullname']) echo(' selected="selected"'); ?>><?php echo($user['fullname']); ?></option><?php
 			$userstest[] = $user['fullname'];
 		}
@@ -1204,7 +1204,7 @@ if (count($GLOBALS['_config']['email']) > 1) {
 				?><select name="department" id="department">
 					<option value=""<?php if (!$faktura['department']) echo(' selected="selected"'); ?>>Ikke valgt</option>
 					<?php
-				foreach($GLOBALS['_config']['email'] as $department) {
+				foreach ($GLOBALS['_config']['email'] as $department) {
 					?>
 					<option<?php if ($faktura['department'] == $department) echo(' selected="selected"'); ?>><?php echo($department); ?></option>
 					<?php
@@ -1292,7 +1292,7 @@ if (count($GLOBALS['_config']['email']) > 1) {
 				<select name="land" id="land" onblur="chnageZipCode($('postnr').value, 'land', 'by')" onkeyup="chnageZipCode($('postnr').value, 'land', 'by')" onchange="chnageZipCode($('postnr').value, 'land', 'by')">
 					<option value=""<?php if (!$faktura['land']) echo(' selected="selected"'); ?>></option>
 					<?php
-			foreach($countries as $code => $country) {
+			foreach ($countries as $code => $country) {
 				?><option value="<?php echo($code); ?>"<?php if ($faktura['land'] == $code) echo(' selected="selected"'); ?>><?php echo(htmlspecialchars($country)); ?></option><?php
 			}
 			?></select><?php } else { echo($countries[$faktura['land']]); } ?></td>
@@ -1354,7 +1354,7 @@ if (count($GLOBALS['_config']['email']) > 1) {
 			<td><?php if ($faktura['status'] == 'new') { ?>
 				<select name="postcountry" id="postcountry" onblur="chnageZipCode($('postpostalcode').value, 'postcountry', 'postcity')" onkeyup="chnageZipCode($('postpostalcode').value, 'postcountry', 'postcity')" onchange="chnageZipCode($('postpostalcode').value, 'postcountry', 'postcity')">
 					<option value=""<?php if (!$faktura['postcountry']) echo(' selected="selected"'); ?>></option><?php
-			foreach($countries as $code => $country) {
+			foreach ($countries as $code => $country) {
 				?><option value="<?php echo($code); ?>"<?php if ($faktura['postcountry'] == $code) echo(' selected="selected"'); ?>><?php echo(htmlspecialchars($country)); ?></option><?php
 			}
 			?></select><?php
