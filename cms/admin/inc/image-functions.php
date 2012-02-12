@@ -9,7 +9,8 @@ textdomain("agcms");
 require_once $_SERVER['DOCUMENT_ROOT'].'/admin/inc/logon.php';
 require_once 'file-functions.php';
 //TODO if (no changes and !$output) do redirect
-function generateImage($path,$cropX,$cropY,$cropW,$cropH,$maxW,$maxH,$flip,$rotate,$output) {
+function generateImage($path, $cropX, $cropY, $cropW, $cropH, $maxW, $maxH, $flip, $rotate, $output)
+{
 	
 	require_once $_SERVER['DOCUMENT_ROOT'].'/admin/inc/config.php';
 
@@ -182,7 +183,8 @@ function generateImage($path,$cropX,$cropY,$cropW,$cropH,$maxW,$maxH,$flip,$rota
 	/**/
 }
 
-function flip($image, $flip) {
+function flip($image, $flip)
+{
     $width = imagesx($image);
     $height = imagesy($image);
 	
@@ -200,7 +202,8 @@ function flip($image, $flip) {
     return $temp;
 }
 
-function rotateImage($image, $degrees) {
+function rotateImage($image, $degrees)
+{
     $width = imagesx($image);
     $height = imagesy($image);
     $side = $width > $height ? $width : $height;
@@ -216,7 +219,8 @@ function rotateImage($image, $degrees) {
     return $image;
 } 
 
-function resize($image, $maxW, $maxH) {
+function resize($image, $maxW, $maxH)
+{
 
 	$imageW = imagesx($image);
 	$imageH = imagesy($image);
@@ -243,7 +247,8 @@ function resize($image, $maxW, $maxH) {
 	}
 }
 
-function crop($image, $cropX, $cropY, $cropW, $cropH, $fill=true) {
+function crop($image, $cropX, $cropY, $cropW, $cropH, $fill=true)
+{
 	//crop image and set background color
 	if (!$cropW)
 		$cropW == imagesx($image);
@@ -265,7 +270,8 @@ function crop($image, $cropX, $cropY, $cropW, $cropH, $fill=true) {
 	}
 }
 
-function imagetrim($image, $bg, $fill){
+function imagetrim($image, $bg, $fill)
+{
     // Get the image width and height.
     $imageW = imagesx($image);
     $imageH = imagesy($image);

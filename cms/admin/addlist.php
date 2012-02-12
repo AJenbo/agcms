@@ -40,7 +40,8 @@ $tablesorts = $mysqli->fetch_array("SELECT id, navn FROM `tablesort`");
 <script type="text/javascript" src="javascript/lib/php.min.js"></script>
 <script type="text/javascript" src="javascript/javascript.js"></script>
 <script type="text/javascript"><!--
-function asdsasgwtgernytymifdsbs() {
+function asdsasgwtgernytymifdsbs()
+{
 	var cells = '';
 	var cell_names = '';
 	var sorts = '';
@@ -69,7 +70,8 @@ function asdsasgwtgernytymifdsbs() {
 	return true;
 }
 
-function addcolumn() {
+function addcolumn()
+{
 	var td = document.createElement('td');
 	td.innerHTML = '<td><select name="cell"><option value="0">Tekst</option><option value="1">Tal</option><option value="2">Pris</option><option value="4">Før pris</option><option value="3">Tilbud</option></select><br /><select name="sort"><option value="0">Alfanumerisk</option><?php
 foreach ($tablesorts as $tablesort) {

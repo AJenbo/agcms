@@ -17,7 +17,8 @@ require_once '../inc/config.php';
 require_once '../inc/mysqli.php';
 $mysqli = new simple_mysqli($GLOBALS['_config']['mysql_server'], $GLOBALS['_config']['mysql_user'], $GLOBALS['_config']['mysql_password'], $GLOBALS['_config']['mysql_database']);
 
-function deleteuser($id) {
+function deleteuser($id)
+{
 	if ($_SESSION['_user']['access'] == 1) {
 		global $mysqli;
 		$mysqli->query("DELETE FROM `users` WHERE `id` = ".$id);
@@ -52,7 +53,8 @@ JSON.parse = JSON.parse || function(jsonsring) { return jsonsring.evalJSON(true)
 <script type="text/javascript"><!--
 <?php sajax_show_javascript(); ?>
 
-function deleteuser(id, name) {
+function deleteuser(id, name)
+{
 	if (confirm('<?php echo(sprintf(addcslashes(_('Do you realy want to delete the user \'%s\'?'), "\\'"), "'+name+'")); ?>') == true) {
 		$('loading').style.visibility = 'hidden';
 		x_deleteuser(id, deleteuser_r);

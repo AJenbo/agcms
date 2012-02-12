@@ -31,7 +31,8 @@ if (!@$_COOKIE['admin_dir'] || !is_dir($_SERVER['DOCUMENT_ROOT'].@$_COOKIE['admi
 }
 
 //Returns false for files that the users shoudn't see in the files view
-function is_files($str_file) {
+function is_files($str_file)
+{
 	global $dir;
 	if ($str_file == '.' || $str_file == '..' || $str_file == '.htaccess' || is_dir($_SERVER['DOCUMENT_ROOT'].$dir.'/'.$str_file))
 		return false;
@@ -39,7 +40,8 @@ function is_files($str_file) {
 }
 
 //display a list of files in the selected folder
-function showfiles($temp_dir) {
+function showfiles($temp_dir)
+{
 	require_once 'inc/config.php';
 	//temp_dir is needed to initialize dir as global
 	//$dir needs to be global for other functions like is_files()
@@ -85,7 +87,8 @@ function showfiles($temp_dir) {
 	return array('id' => 'files', 'html' => $html, 'javascript' => $javascript);
 }
 
-function filejavascript($fileinfo) {
+function filejavascript($fileinfo)
+{
 	require_once 'inc/config.php';
 	$pathinfo = pathinfo($fileinfo['path']);
 	
@@ -133,7 +136,8 @@ function filejavascript($fileinfo) {
 	return $javascript;
 }
 
-function filehtml($fileinfo) {
+function filehtml($fileinfo)
+{
 	require_once 'inc/config.php';
 	$pathinfo = pathinfo($fileinfo['path']);
 	
@@ -288,7 +292,8 @@ $html .= '<div id="tilebox'.$fileinfo['id'].'" class="filetile"><div class="imag
 	return $html;
 }
 
-function makedir($name) {
+function makedir($name)
+{
 
 	$name = genfilename($name);
 	if (is_dir($_SERVER['DOCUMENT_ROOT'].@$_COOKIE['admin_dir'].'/'.$name))
@@ -332,7 +337,8 @@ function makedir($name) {
 //TODO if force, refresh folder or we might have duplicates displaying in the folder.
 //TODO Error out if the files is being moved to it self
 //TODO moving two files to the same dire with no reload inbetwean = file exists?????????????
-function renamefile($id, $path, $dir, $filename, $force=0) {
+function renamefile($id, $path, $dir, $filename, $force=0)
+{
 //return array('error' => 'id='.id.' path='.$path.' dir='.$dir.' filename='.$filename.' force='.$force, 'id' => $id);
 	global $mysqli;
 	
@@ -476,8 +482,10 @@ require_once 'inc/get_mime_type.php';
 
 $mysqli = new simple_mysqli($GLOBALS['_config']['mysql_server'], $GLOBALS['_config']['mysql_user'], $GLOBALS['_config']['mysql_password'], $GLOBALS['_config']['mysql_database']);
 
-function deletefolder() {
-	function deltree($dir) {
+function deletefolder()
+{
+	function deltree($dir)
+	{
 		$dirlist = scandir($_SERVER['DOCUMENT_ROOT'].$dir);
 		$nr = count($dirlist);
 		for($i=0;$i<$nr;$i++) {
@@ -510,7 +518,8 @@ function deletefolder() {
 	} else return array('error' => _('The folder could not be deleted, you may not have sufficient rights to this folder.'));
 }
 
-function searchfiles($qpath, $qalt, $qmime) {
+function searchfiles($qpath, $qalt, $qmime)
+{
 	global $mysqli;
 
 	$qpath = $mysqli->escape_wildcards($mysqli->real_escape_string($qpath));
@@ -613,7 +622,8 @@ function searchfiles($qpath, $qalt, $qmime) {
 	return array('id' => 'files', 'html' => $html, 'javascript' => $javascript);
 }
 
-function edit_alt($id, $alt) {
+function edit_alt($id, $alt)
+{
 	global $mysqli;
 
 	$mysqli->query("UPDATE `files` SET `alt` = '".$mysqli->real_escape_string($alt)."' WHERE `id` = ".$id." LIMIT 1");

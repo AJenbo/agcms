@@ -17,11 +17,13 @@ $delayprint = true;
 require_once 'index.php';
 $GLOBALS['generatedcontent']['datetime'] = time();
 
-function getCheckid($id) {
+function getCheckid($id)
+{
 	return substr(md5($id.$GLOBALS['_config']['pbspassword']), 3, 5);
 }
 
-function validemail($email) {
+function validemail($email)
+{
 	if ($email &&
 	preg_match('/^([a-z0-9_\.\-])+\@(([a-z0-9\-])+\.)+([a-z0-9]{2,4})+$/ui', $email) &&
 	getmxrr(preg_replace('/.+?@(.?)/u', '$1', $email), $dummy)) {
@@ -31,7 +33,8 @@ function validemail($email) {
 	}
 }
 
-function validate($values) {
+function validate($values)
+{
 	
 	$rejected = array();
 	

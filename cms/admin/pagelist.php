@@ -22,7 +22,8 @@ require_once 'inc/emails.php';
 $mysqli = new simple_mysqli($GLOBALS['_config']['mysql_server'], $GLOBALS['_config']['mysql_user'], $GLOBALS['_config']['mysql_password'], $GLOBALS['_config']['mysql_database']);
 $sajax_request_type = "POST";
 	
-function kattree($id) {
+function kattree($id)
+{
 	global $mysqli;
 
 	$kat = $mysqli->fetch_array('SELECT id, navn, bind FROM `kat` WHERE id = '.$id.' LIMIT 1');
@@ -50,7 +51,8 @@ function kattree($id) {
 	return array_reverse($kattree);
 }
 
-function katspath($id) {
+function katspath($id)
+{
 	$kattree = kattree($id);
 	$nr = count($kattree);
 	$html = _('Select location:').' ';
@@ -61,7 +63,8 @@ function katspath($id) {
 	return array('id' => 'katsheader', 'html' => $html);
 }
 
-function katlist($id) {
+function katlist($id)
+{
 	global $mysqli;
 	global $kattree;
 	
@@ -124,7 +127,8 @@ function katlist($id) {
 	return $html;
 }
 
-function siteList($id) {
+function siteList($id)
+{
 	global $mysqli;
 	global $kattree;
 	
@@ -172,7 +176,8 @@ function siteList($id) {
 	return $html;
 }
 
-function pages_expand($id) {
+function pages_expand($id)
+{
 	global $mysqli;
 	$html = '';
 
@@ -191,7 +196,8 @@ function pages_expand($id) {
 	return array('id' => $id, 'html' => $html);
 }
 
-function siteList_expand($id) {
+function siteList_expand($id)
+{
 	global $mysqli;
 	$html = '';
 
@@ -220,7 +226,8 @@ function getSiteTree() {
 	return $html.'</div>';
 }
 
-function kat_expand($id, $input=true) {
+function kat_expand($id, $input=true)
+{
 	global $mysqli;
 	global $kattree;
 	$html = '';

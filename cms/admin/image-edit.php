@@ -10,7 +10,8 @@ require_once $_SERVER['DOCUMENT_ROOT'].'/admin/inc/logon.php';
 require_once '../inc/sajax.php';
 require_once 'inc/config.php';
 
-function saveImage($path, $cropX, $cropY, $cropW, $cropH, $maxW, $maxH, $flip, $rotate, $filename, $force) {
+function saveImage($path, $cropX, $cropY, $cropW, $cropH, $maxW, $maxH, $flip, $rotate, $filename, $force)
+{
 	require_once 'inc/image-functions.php';
 
 	require_once 'inc/get_mime_type.php';

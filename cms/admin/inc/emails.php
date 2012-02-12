@@ -9,7 +9,8 @@ textdomain("agcms");
 require_once $_SERVER['DOCUMENT_ROOT'].'/admin/inc/logon.php';
 //TODO run countEmailTo() onload
 
-function sendEmail($id, $from, $interests, $subject, $text) {
+function sendEmail($id, $from, $interests, $subject, $text)
+{
 	global $mysqli;
 	if (!$mysqli->fetch_array('SELECT `id` FROM `newsmails` WHERE `sendt` = 0'))
 		//Nyhedsbrevet er allerede afsendt!
@@ -133,7 +134,8 @@ function sendEmail($id, $from, $interests, $subject, $text) {
 	}
 }
 
-function countEmailTo($interests) {
+function countEmailTo($interests)
+{
 	global $mysqli;
 	
 	$andwhere = '';
@@ -164,13 +166,15 @@ function countEmailTo($interests) {
 	return $emails[0]['count'];
 }
 
-function getNewEmail() {
+function getNewEmail()
+{
 	global $mysqli;
 	$mysqli->query('INSERT INTO `newsmails` () VALUES ()');
 	return getEmail($mysqli->insert_id);
 }
 
-function getEmail($id) {
+function getEmail($id)
+{
 	global $mysqli;
 	$newsmails = $mysqli->fetch_array('SELECT * FROM `newsmails` WHERE `id` = '.$id);
 
@@ -237,7 +241,8 @@ writeRichText("text", \''.rtefsafe($newsmails[0]['text']).'\', "", '.($GLOBALS['
 	return $html;
 }
 
-function saveEmail($id, $from, $interests, $subject, $text) {
+function saveEmail($id, $from, $interests, $subject, $text)
+{
 	global $mysqli;
 
 	$from = $mysqli->real_escape_string($from);
@@ -256,7 +261,8 @@ function saveEmail($id, $from, $interests, $subject, $text) {
 	return true;
 }
 
-function getEmailList() {
+function getEmailList()
+{
 	global $mysqli;
 	$newsmails = $mysqli->fetch_array('SELECT `id`, `subject`, `sendt` FROM `newsmails`');
 	

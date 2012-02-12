@@ -83,7 +83,8 @@ class simple_mysqli extends mysqli
 		return true;
 	}
 	
-	function escape_wildcards($string) {
+	function escape_wildcards($string)
+{
     	return preg_replace('/([%_])/u', '\\\\$1', $string);
 	}
 }

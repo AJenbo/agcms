@@ -1,7 +1,6 @@
 <?php
-function getAddress($id) {
-	
-	
+function getAddress($id)
+{
 	$default['recName1'] = '';
 	$default['recAddress1'] = '';
 	$default['recZipCode'] = '';

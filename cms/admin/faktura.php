@@ -18,7 +18,8 @@ require_once '../inc/mysqli.php';
 require_once 'inc/epaymentAdminService.php';
 $mysqli = new simple_mysqli($GLOBALS['_config']['mysql_server'], $GLOBALS['_config']['mysql_user'], $GLOBALS['_config']['mysql_password'], $GLOBALS['_config']['mysql_database']);
 
-function newfaktura() {
+function newfaktura()
+{
 	global $mysqli;
 	
 	$mysqli->query("INSERT INTO `fakturas` (`date`, `clerk`) VALUES (now(), '".addcslashes($_SESSION['_user']['fullname'], '\'\\')."');");
@@ -268,11 +269,13 @@ if ($faktura['id']) {
 	}
 }
 
-function getCheckid($id) {
+function getCheckid($id)
+{
 	return substr(md5($id.$GLOBALS['_config']['pbspassword']), 3, 5);
 }
 
-function copytonew($id) {
+function copytonew($id)
+{
 	global $mysqli;
 	
 	$faktura = $mysqli->fetch_one("SELECT * FROM `fakturas` WHERE `id` = ".$id);
@@ -295,7 +298,8 @@ function copytonew($id) {
 	return $mysqli->insert_id;
 }
 
-function save($id, $type, $updates) {
+function save($id, $type, $updates)
+{
 	global $mysqli;
 	
 	if (!is_array($updates)) {
@@ -477,7 +481,8 @@ Tel. %s</p>'),
 	return array('type' => $type, 'status' => $faktura['status']);
 }
 
-function sendReminder($id) {
+function sendReminder($id)
+{
 	$error = '';
 	
 	global $mysqli;
@@ -603,7 +608,8 @@ Fax: %s<br />
 	return array('error' => trim($error));
 }
 
-function pbsconfirm($id) {
+function pbsconfirm($id)
+{
 	global $mysqli;
 	global $epaymentAdminService;
 	
@@ -617,7 +623,8 @@ function pbsconfirm($id) {
 		return array('error' => $confirmstatus['Status'].$confirmstatus['StatusCode']);
 }
 
-function annul($id) {
+function annul($id)
+{
 	global $mysqli;
 	global $epaymentAdminService;
 	
@@ -631,7 +638,8 @@ function annul($id) {
 		return array('error' => $annulStatus['Status'].$annulStatus['StatusCode']);
 }
 
-function returnamount($id, $returnamount) {
+function returnamount($id, $returnamount)
+{
 	/*
 	//TODO only usable and visable to admins
 	global $mysqli;
@@ -662,7 +670,8 @@ function returnamount($id, $returnamount) {
 	*/
 }
 
-function validemail($email) {
+function validemail($email)
+{
 	//TODO Is this to strict?
 	//_An-._E-mail@test-domain.test.dk
 	if (!empty($email) &&
@@ -719,26 +728,31 @@ JSON.parse = JSON.parse || function(jsonsring) { return jsonsring.evalJSON(true)
 <?php sajax_show_javascript(); ?>
 var id = <?php echo($faktura['id']); ?>;
 
-function newfaktura() {
+function newfaktura()
+{
 	$('loading').style.visibility = '';
 	x_newfaktura(newfaktura_r);
 }
-function copytonew() {
+function copytonew()
+{
 	$('loading').style.visibility = '';
 	x_copytonew(id, newfaktura_r);
 }
-function newfaktura_r(id) {
+function newfaktura_r(id)
+{
 	 window.location.href = '?id='+id;
 }
 
-function removeRow(row) {
+function removeRow(row)
+{
 	$('vareTable').removeChild(row.parentNode.parentNode);
 	if ($('vareTable').childNodes.length == 0)
 		addRow();
 	prisUpdate();
 }
 
-function addRow() {
+function addRow()
+{
 	var tr = document.createElement('tr');
 	var td = document.createElement('td');
 	td.innerHTML = '<input name="quantitie" style="width:58px;" class="tal" onkeyup="prisUpdate()" onchange="prisUpdate()" onblur="prisUpdate()" />';
@@ -761,12 +775,14 @@ function addRow() {
 	$('vareTable').appendChild(tr);
 }
 
-function getAddress(tlf) {
+function getAddress(tlf)
+{
 	$('loading').style.visibility = '';
 	x_getAddress(tlf, getAddress_r);
 }
 
-function getAddress_r(data) {
+function getAddress_r(data)
+{
 	if (data['error']) {
 		alert(data['error']);
 	} else {
@@ -785,12 +801,14 @@ function getAddress_r(data) {
 	$('loading').style.visibility = 'hidden';
 }
 
-function getAltAddress(tlf) {
+function getAltAddress(tlf)
+{
 	$('loading').style.visibility = '';
 	x_getAddress(tlf, getAltAddress_r);
 }
 
-function getAltAddress_r(data) {
+function getAltAddress_r(data)
+{
 	if (data['error']) {
 		alert(data['error']);
 	} else {
@@ -808,7 +826,8 @@ function getAltAddress_r(data) {
 	$('loading').style.visibility = 'hidden';
 }
 
-function prisUpdate() {
+function prisUpdate()
+{
 	quantities = '';
 	products = '';
 	values = '';
@@ -889,25 +908,29 @@ function prisUpdate() {
 	return true;
 }
 
-function pbsconfirm() {
+function pbsconfirm()
+{
 	$('loading').style.visibility = '';
 	//TODO save comment
 	x_pbsconfirm(id, reload_r);
 }
 
-function annul() {
+function annul()
+{
 	$('loading').style.visibility = '';
 	//TODO save comment
 	x_annul(id, reload_r);
 }
 
-function loweramount() {
+function loweramount()
+{
 	$('loading').style.visibility = '';
 	//TODO save comment
 	x_loweramount(id, $('newamount').value, reload_r);
 }
 
-function reload_r(date) {
+function reload_r(date)
+{
 	if (date['error']) {
 		alert(date['error']);
 	} else {
@@ -916,7 +939,8 @@ function reload_r(date) {
 	$('loading').style.visibility = 'hidden';
 }
 
-function save(type) {
+function save(type)
+{
 	if (type == null) {
 		type = 'save';
 	}
@@ -980,15 +1004,18 @@ function save(type) {
 	x_save(id, type, update, save_r);
 }
 
-function sendReminder() {
+function sendReminder()
+{
 	x_sendReminder(id, sendReminder_r);
 }
 
-function sendReminder_r(data) {
+function sendReminder_r(data)
+{
 	alert(data['error']);
 }
 
-function save_r(date) {
+function save_r(date)
+{
 	if (date['error'])
 		alert(date['error']);
 	
@@ -1017,7 +1044,8 @@ function save_r(date) {
 var validemailajaxcall;
 var lastemail;
 
-function validemail() {
+function validemail()
+{
 	if ($('emaillink')) {
 		if ($('email').value.match('^([A-z0-9_-]+[A-z0-9_.-]*)*[A-z0-9_-]+@[A-z0-9-.]+[.][A-z]{2,4}$')) {
 			if ($('email').value != lastemail || $('emaillink').style.display == 'none') {
@@ -1034,7 +1062,8 @@ function validemail() {
 	}
 }
 
-function validemail_r(validemail) {
+function validemail_r(validemail)
+{
 	if (validemail) {
 		$('emaillink').style.display = '';
 	} else {
@@ -1043,7 +1072,8 @@ function validemail_r(validemail) {
 	$('loading').style.visibility = 'hidden';
 }
 
-function showhidealtpost(status) {
+function showhidealtpost(status)
+{
 	var altpostTrs = $$('.altpost');
 	if (status) {
 		for(var i = 0; i<altpostTrs.length; i++) {
@@ -1056,7 +1086,8 @@ function showhidealtpost(status) {
 	}
 }
 
-function chnageZipCode(zipcode, country, city) {
+function chnageZipCode(zipcode, country, city)
+{
 	if ($(country).value == 'DK')
 		if (!arrayZipcode[zipcode]) {
 			$(city).value = '';

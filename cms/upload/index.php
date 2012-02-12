@@ -62,7 +62,8 @@ if (!empty($_FILES['Filedata']['tmp_name']) && is_uploaded_file($_FILES['Filedat
 		(($_GET['type'] == 'image' || $_GET['type'] == 'lineimage') && $_FILES['Filedata']['size']/($imagesize[0]*$imagesize[1]) > 0.7) ||
 		($_GET['type'] == 'lineimage' && $mime != 'image/png' && $mime != 'image/gif')) {
 
-		function return_bytes($val) {
+		function return_bytes($val)
+		{
 			$last = mb_strtolower($val{mb_strlen($val, 'UTF-8')-1}, 'UTF-8');
 			switch($last) {
 				case 'g':

@@ -1,7 +1,8 @@
 <?php
 
 //Get last update time for table
-function getUpdateTime($table) {
+function getUpdateTime($table)
+{
 	global $mysqli;
 	if (!@$GLOBALS['cache']['updatetime'][$table]) {
 		$updatetime = $mysqli->fetch_array("SHOW TABLE STATUS LIKE '".$table."'");
@@ -10,7 +11,8 @@ function getUpdateTime($table) {
 }
 
 //er der sider bundet til katagorien
-function skriv($id) {
+function skriv($id)
+{
 	global $mysqli;
 
 	if (@$GLOBALS['cache']['kats'][$id]['skriv']) {
@@ -60,7 +62,8 @@ function skriv($id) {
 
 //Har denne katagori under katagorier med indhould
 //Afhngi af skriv()
-function subs($kat) {
+function subs($kat)
+{
 	global $mysqli;
 
 	$sub = $mysqli->fetch_array("SELECT id FROM kat WHERE bind = $kat ORDER BY navn");
@@ -75,13 +78,15 @@ function subs($kat) {
 	}
 }
 
-function clear_file_name($name) {
+function clear_file_name($name)
+{
 	$search = array('/[&?\/:*"<>|%\s-_#\\\\]+/u', '/^\s+|\s+$/u', '/\s+/u');
 	$replace = array(' ', '', '-');
 	return preg_replace($search, $replace, $name);
 }
 
-function array_natsort($aryData, $strIndex, $strSortBy, $strSortType=false) {
+function array_natsort($aryData, $strIndex, $strSortBy, $strSortType=false)
+{
 	//Make sure the sort by is a string
 	$strSortBy .= '';
 	//Make sure the index is a string
@@ -126,7 +131,8 @@ function array_natsort($aryData, $strIndex, $strSortBy, $strSortType=false) {
 	return $aryResult;
 }
 
-function array_listsort($aryData, $strIndex, $strSortBy, $strSortType=false, $intSortingOrder) {
+function array_listsort($aryData, $strIndex, $strSortBy, $strSortType=false, $intSortingOrder)
+{
 	global $mysqli;
 	
 	//Open database
@@ -171,11 +177,13 @@ function array_listsort($aryData, $strIndex, $strSortBy, $strSortType=false, $in
 }
 
 //Quick function to trim arrays
-function trim_value(&$value) { 
+function trim_value(&$value)
+{
    $value = trim($value); 
 }
 
-function trim_array($totrim) {
+function trim_array($totrim)
+{
    if (is_array($totrim)) {
        $totrim = array_map("trim_array", $totrim);
    } else {
@@ -185,7 +193,8 @@ function trim_array($totrim) {
 }
 
 //return html for a sorted table
-function get_table($listid, $bycell, $current_kat) {
+function get_table($listid, $bycell, $current_kat)
+{
 	global $mysqli;
 				
 	$html = '';
@@ -354,7 +363,8 @@ function get_table($listid, $bycell, $current_kat) {
 }
 
 //print out the table
-function echo_table($sideid, $mansort, $desc) {
+function echo_table($sideid, $mansort, $desc)
+{
 	global $mysqli;
 
 	$tablesort = $mysqli->fetch_array('SELECT `navn`, `text` FROM `tablesort` ORDER BY `id`');
@@ -386,7 +396,8 @@ function echo_table($sideid, $mansort, $desc) {
 }
 
 //Find stien til katagorien
-function kats($id) {
+function kats($id)
+{
 	global $mysqli;
 
 	$kat = $mysqli->fetch_array('SELECT bind FROM kat WHERE id = '.$id);
@@ -409,7 +420,8 @@ function kats($id) {
 }
 
 //Search for root.
-function binding($bind) {
+function binding($bind)
+{
 	global $mysqli;
 
 	if ($bind > 0) {
@@ -423,7 +435,8 @@ function binding($bind) {
 }
 
 //Used with array_filter() to make a 2d array uniqe
-function uniquecol($array) {
+function uniquecol($array)
+{
   static $idlist = array();
 
   if (in_array($array['id'], $idlist))

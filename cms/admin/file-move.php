@@ -42,7 +42,8 @@ JSON.parse = JSON.parse || function(jsonsring) { return jsonsring.evalJSON(true)
 
 var global_dir = '';
 
-function movefile(dir) {
+function movefile(dir)
+{
 	global_dir = dir;
 //TOdo issues with ie
 	window.opener.document.getElementById('loading').style.display = '';
@@ -50,7 +51,8 @@ function movefile(dir) {
 }
 
 //TODO Closes on mouse out???
-function movefile_r(data) {
+function movefile_r(data)
+{
 
 	window.opener.document.getElementById('loading').style.display = 'none';
 	

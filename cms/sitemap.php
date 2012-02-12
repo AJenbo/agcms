@@ -11,7 +11,8 @@ require_once 'inc/functions.php';
 $mysqli = new simple_mysqli($GLOBALS['_config']['mysql_server'], $GLOBALS['_config']['mysql_user'], $GLOBALS['_config']['mysql_password'], $GLOBALS['_config']['mysql_database']);
 
 
-function ListKats($id) {
+function ListKats($id)
+{
 	global $mysqli;
 	
 	$kats = $mysqli->fetch_array('SELECT id, navn FROM kat WHERE bind = '.$id);
@@ -28,7 +29,8 @@ function ListKats($id) {
 	}
 }
 
-function ListPages($id,$katname) {
+function ListPages($id,$katname)
+{
 	global $mysqli;
 
 	$bind = $mysqli->fetch_array("SELECT side FROM bind WHERE kat = $id");

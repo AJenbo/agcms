@@ -1,7 +1,8 @@
 <?php
 require_once '../inc/sajax.php';
 require_once "../inc/config.php";
-function get_mailbox_size($email, $mailbox) {
+function get_mailbox_size($email, $mailbox)
+{
 	require_once "../inc/imap.inc.php";
 	$size = 0;
 	$imap = new IMAPMAIL;

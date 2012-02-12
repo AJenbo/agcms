@@ -1,6 +1,7 @@
 <?php
 
-function vare($side, $katnavn, $type) {
+function vare($side, $katnavn, $type)
+{
 	global $mysqli;
 
 	//Soge katagori har ikke et fast nummer brug først faste per side.
@@ -48,7 +49,8 @@ function vare($side, $katnavn, $type) {
 	}
 }
 
-function stringLimit($string, $length = 50, $ellipsis = '…') {
+function stringLimit($string, $length = 50, $ellipsis = '…')
+{
 	return mb_strlen($string) > $length ? preg_replace('/\s*\S*$/', '',  mb_substr($string, 0, $length - mb_strlen($ellipsis))) . $ellipsis : $string;
 }
 
@@ -81,7 +83,8 @@ function liste() {
 	}
 }
 
-function kat_html($side, $kat_navn) {
+function kat_html($side, $kat_navn)
+{
 		$html = "<table class=\"tabel\"><thead><tr><td><a href=\"\" onclick=\"x_get_kat('".$GLOBALS['generatedcontent']['activmenu']."', 'navn', inject_html);return false;\">Titel</a></td><td><a href=\"\" onclick=\"x_get_kat('".$GLOBALS['generatedcontent']['activmenu']."', 'for', inject_html);return false;\">Før</a></td><td><a href=\"\" onclick=\"x_get_kat('".$GLOBALS['generatedcontent']['activmenu']."', 'pris', inject_html);return false;\">Pris</a></td><td><a href=\"\" onclick=\"x_get_kat('".$GLOBALS['generatedcontent']['activmenu']."', 'varenr', inject_html);return false;\">#</a></td></tr></thead><tbody><tr>";
 		$i = 0;
 		foreach ($side as $value) {
@@ -107,7 +110,8 @@ function kat_html($side, $kat_navn) {
 }
 
 //TODO duplicate text with out html for better searching.
-function search_liste($q, $wheresider) {
+function search_liste($q, $wheresider)
+{
 	global $qext;
 	global $mysqli;
 	

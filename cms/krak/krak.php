@@ -1,5 +1,6 @@
 <?php
-function objectToArray($object) {
+function objectToArray($object)
+{
 	$object = (array) $object;
 	foreach ($object as $key => $value ){
 	 if (is_object($value) || is_array($value))
@@ -8,7 +9,8 @@ function objectToArray($object) {
 	return $object;
 }
 
-function getAddressKrak($telephoneNumber) {
+function getAddressKrak($telephoneNumber)
+{
  
 	$username = 'jagtogfiskerimagasinet_dk'; 	// Set username here
 	$password = '.357magnum'; 	 // Set password here

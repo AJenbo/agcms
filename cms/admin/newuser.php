@@ -13,7 +13,8 @@ textdomain("agcms");
 <title><?php echo(_('Create account')); ?></title>
 <link type="text/css" rel="stylesheet" href="style/style.css" />
 <script type="text/javascript"><!--
-function validate() {
+function validate()
+{
 	if (document.getElementById('fullname').value == '' || document.getElementById('name').value == '' || document.getElementById('password').value == '') {
 		alert('<?php echo(_('All fields must be filled.')); ?>');
 		return false;

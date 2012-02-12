@@ -113,7 +113,8 @@ foreach ($krav as $element) {
 $krav = $temp;
 unset($temp);
 
-function print_kat($bind, $path_name) {
+function print_kat($bind, $path_name)
+{
 	global $mysqli;
 	$kats = $mysqli->fetch_array("SELECT id, bind, navn FROM `kat` WHERE bind = ".$bind." ORDER BY navn");
 	foreach ($kats as $kat) {
@@ -123,7 +124,8 @@ function print_kat($bind, $path_name) {
 	}
 }
 
-function print_pages($kat) {
+function print_pages($kat)
+{
 	global $mysqli;
 	global $maerker;
 	global $krav;

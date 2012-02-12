@@ -16,7 +16,8 @@ require_once $_SERVER['DOCUMENT_ROOT'].'/admin/inc/logon.php';
 
 require_once '../inc/mysqli.php';
 
-function htmlUrlDecode($text) {
+function htmlUrlDecode($text)
+{
 	global $mysqli;
 	//TODO is this needed now that AJAX is used?
 	if (get_magic_quotes_gpc()) {
@@ -65,7 +66,8 @@ function htmlUrlDecode($text) {
 $mysqli = new simple_mysqli($GLOBALS['_config']['mysql_server'], $GLOBALS['_config']['mysql_user'], $GLOBALS['_config']['mysql_password'], $GLOBALS['_config']['mysql_database']);
 
 /*
-function unhtmlentitiesUtf8($string) {
+function unhtmlentitiesUtf8($string)
+{
 	// replace numeric entities
 	$string = preg_replace('~&#x([0-9a-f]+);~ei', 'chr(hexdec("\\1"))', $string);
 	$string = preg_replace('~&#([0-9]+);~e', 'chr("\\1")', $string);

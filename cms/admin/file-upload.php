@@ -56,14 +56,16 @@ require_once 'inc/config.php';
 	margin:0;
 }
 --></style><script type="text/javascript"><!--
-function refreshFolder() {
+function refreshFolder()
+{
 	window.opener.showfiles('', 1);
 }
 --></script>
 </head>
 <body onload="window.focus();" bgcolor="#ffffff"><?php
 
-	function return_bytes($val) {
+	function return_bytes($val)
+	{
 		$last = mb_strtolower($val{mb_strlen($val, 'UTF-8')-1}, 'UTF-8');
 		switch($last) {
 			// The 'G' modifier is available since PHP 5.1.0

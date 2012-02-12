@@ -10,7 +10,8 @@ require_once $_SERVER['DOCUMENT_ROOT'].'/admin/inc/logon.php';
 require_once '../inc/header.php';
 
 //Check if file is in use
-function isinuse($path) {
+function isinuse($path)
+{
 	global $mysqli;
 	
 	if ($mysqli->fetch_array("(SELECT id FROM `sider` WHERE `text` LIKE '%$path%' OR `beskrivelse` LIKE '%$path%' OR `billed` LIKE '$path' LIMIT 1)
@@ -27,7 +28,8 @@ function isinuse($path) {
 
 
 //Delete unused file
-function deletefile($id, $path) {
+function deletefile($id, $path)
+{
 	global $mysqli;
 
 	if (isinuse($path))
@@ -41,7 +43,8 @@ function deletefile($id, $path) {
 
 //Scan folder and get list of files and folders in it
 if (!function_exists('scandir')) {
-    function scandir($dir, $sortorder = 0) {
+    function scandir($dir, $sortorder = 0)
+    {
         if (is_dir($dir) && $listdirs = @opendir($dir)) {
             while(($file = readdir($listdirs)) !== false) {
                 $files[] = $file;
@@ -56,7 +59,8 @@ if (!function_exists('scandir')) {
 //Takes a string and changes it to comply with file name restrictions in windows, linux, mac and urls (UTF8)
 // .|"'´`:%=#&\/+?*<>{}-_
 
-function genfilename($filename) {
+function genfilename($filename)
+{
 	// .|"'´`:%=#&\/+?*<>{}-_
 	$search = array('/[.&?\/:*"\'´`<>{}|%\s-_=+#\\\\]+/u', '/^\s+|\s+$/u', '/\s+/u');
 	$replace = array(' ', '', '-');
@@ -64,7 +68,8 @@ function genfilename($filename) {
 }
 
 //return tru for directorys and fall for every thing else
-function is_dirs($str_file) {
+function is_dirs($str_file)
+{
 	global $temp;
 	if (is_file($_SERVER['DOCUMENT_ROOT'].$temp.'/'.$str_file) || $str_file == '.' || $str_file == '..')
 		return false;
@@ -72,7 +77,8 @@ function is_dirs($str_file) {
 }
 
 //return list of folders in a folder
-function sub_dirs($dir) {
+function sub_dirs($dir)
+{
 	global $temp;
 	$temp = $dir;
 	if ($dirs = scandir($_SERVER['DOCUMENT_ROOT'].$dir)) {
@@ -86,7 +92,8 @@ function sub_dirs($dir) {
 //TODO document type does not allow element "input" here; missing one of "p", "h1", "h2", "h3", "h4", "h5", "h6", "div", "pre", "address", "fieldset", "ins", "del" start-tag.
 //Display a list of directorys for the explorer
 
-function listdirs($dir, $mode=0) {
+function listdirs($dir, $mode=0)
+{
 	$subdirs = sub_dirs($dir);
 	$html = '';
 	foreach ($subdirs as $subdir) {

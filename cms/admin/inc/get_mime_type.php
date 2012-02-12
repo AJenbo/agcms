@@ -2,7 +2,8 @@
 require_once $_SERVER['DOCUMENT_ROOT'].'/admin/inc/logon.php';
 require_once 'file-functions.php';
 
-function get_mime_type($filepath) {
+function get_mime_type($filepath)
+{
 	$mime = '';
 	if (function_exists('finfo_file')) {
 		$mime = finfo_file($finfo = finfo_open(FILEINFO_MIME), $_SERVER['DOCUMENT_ROOT'].$filepath);

@@ -5,7 +5,8 @@ mb_internal_encoding('UTF-8');
 date_default_timezone_set('Europe/Copenhagen');
 
 //Optimize trafic by serving proper http header
-function doConditionalGet($timestamp) {
+function doConditionalGet($timestamp)
+{
     // A PHP implementation of conditional get, see 
     // http://fishbowl.pastiche.org/archives/001132.html
     $last_modified = mb_substr(date('r', $timestamp), 0, -5).'GMT';

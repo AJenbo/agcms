@@ -17,7 +17,8 @@ require_once '../inc/config.php';
 require_once '../inc/mysqli.php';
 $mysqli = new simple_mysqli($GLOBALS['_config']['mysql_server'], $GLOBALS['_config']['mysql_user'], $GLOBALS['_config']['mysql_password'], $GLOBALS['_config']['mysql_database']);
 
-function updateuser($id, $updates) {
+function updateuser($id, $updates)
+{
 	global $mysqli;
 	
 	if ($_SESSION['_user']['access'] == 1 || $_SESSION['_user']['id'] == $id) {
@@ -103,7 +104,8 @@ function updateuser() {
 	x_updateuser(id, update, updateuser_r);
 }
 
-function updateuser_r(date) {
+function updateuser_r(date)
+{
 	if (date['error']) {
 		alert(date['error']);
 	}

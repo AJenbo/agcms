@@ -18,7 +18,8 @@ require_once '../inc/mysqli.php';
 require_once '../inc/config.php';
 
 
-function removeheight($text) {
+function removeheight($text)
+{
 	global $mysqli;
 		return $mysqli->real_escape_string(
 			
@@ -30,7 +31,8 @@ function removeheight($text) {
 $mysqli = new simple_mysqli($GLOBALS['_config']['mysql_server'], $GLOBALS['_config']['mysql_user'], $GLOBALS['_config']['mysql_password'], $GLOBALS['_config']['mysql_database']);
 
 /*
-function unhtmlentitiesUtf8($string) {
+function unhtmlentitiesUtf8($string)
+{
 	// replace numeric entities
 	$string = preg_replace('~&#x([0-9a-f]+);~ei', 'chr(hexdec("\\1"))', $string);
 	$string = preg_replace('~&#([0-9]+);~e', 'chr("\\1")', $string);
