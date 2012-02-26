@@ -7,7 +7,8 @@ require_once 'inc/sajax.php';
 //Open database
 $mysqli = new simple_mysqli($GLOBALS['_config']['mysql_server'], $GLOBALS['_config']['mysql_user'], $GLOBALS['_config']['mysql_password'], $GLOBALS['_config']['mysql_database']);
 
-function optimize_tables() {
+function optimize_tables()
+{
 	global $mysqli;
 	
 	$tables = $mysqli->fetch_array("SHOW TABLE STATUS");
@@ -17,7 +18,8 @@ function optimize_tables() {
 	return '';
 }
 
-function remove_bad_submisions() {
+function remove_bad_submisions()
+{
 	global $mysqli;
 	
 	$mysqli->query("DELETE FROM `email` WHERE `email` = '' AND `adresse` = '' AND `tlf1` = '' AND `tlf2` = '';");
@@ -26,7 +28,8 @@ function remove_bad_submisions() {
 	return '';
 }
 
-function remove_bad_bindings() {
+function remove_bad_bindings()
+{
 	global $mysqli;
 	
 	$mysqli->query('DELETE FROM `bind` WHERE (kat != 0 AND kat != -1 AND kat NOT IN (SELECT id FROM kat)) OR side NOT IN ( SELECT id FROM sider );');
@@ -35,7 +38,8 @@ function remove_bad_bindings() {
 	return '';
 }
 
-function remove_bad_accessories() {
+function remove_bad_accessories()
+{
 	global $mysqli;
 	
 	//Remove bad tilbehor bindings
@@ -45,7 +49,8 @@ function remove_bad_accessories() {
 	return '';
 }
 
-function remove_none_existing_files() {
+function remove_none_existing_files()
+{
 	global $mysqli;
 	$files = $mysqli->fetch_array('SELECT id, path FROM `files`');
 
@@ -60,7 +65,8 @@ function remove_none_existing_files() {
 	return '';
 }
 
-function delete_tempfiles() {
+function delete_tempfiles()
+{
 	$deleted = 0;
 	$files = scandir($_SERVER['DOCUMENT_ROOT'].'/upload/temp');
 	foreach ($files as $file) {
@@ -83,4 +89,4 @@ sajax_export(
 	array('name' => 'delete_tempfiles', 'method' => 'POST', "asynchronous" => false)
 );
 sajax_handle_client_request();
-?>
+

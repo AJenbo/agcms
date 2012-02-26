@@ -42,8 +42,8 @@ if ($GLOBALS['_config']['emailpassword'] !== false) {
 }
 
 //Load the imap class, if imap is configured
-if ($GLOBALS['_config']['imap'] !== FALSE) {
-	require_once "inc/imap.inc.php";
+if ($GLOBALS['_config']['imap'] !== false) {
+	include_once "inc/imap.inc.php";
 }
 
 foreach ($emails as $email) {
@@ -78,7 +78,7 @@ foreach ($emails as $email) {
 	$mysqli->query("DELETE FROM `emails` WHERE `id` = ".$email['id']);
 	
 	//Upload email to the sent folder via imap
-	if ($GLOBALS['_config']['imap'] !== FALSE) {
+	if ($GLOBALS['_config']['imap'] !== false) {
 		$imap = new IMAPMAIL;
 		$imap->open($GLOBALS['_config']['imap'], $GLOBALS['_config']['imapport']);
 		$emailnr = array_search('', $GLOBALS['_config']['email']);

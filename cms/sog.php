@@ -10,3 +10,4 @@ require_once 'inc/config.php';
     <Description>Find i <?php echo($GLOBALS['_config']['site_name']); ?></Description>
     <Url type="text/html" template="<?php echo($GLOBALS['_config']['base_url']); ?>/?q={searchTerms}" />
 </OpenSearchDescription>
+
