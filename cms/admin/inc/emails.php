@@ -12,9 +12,10 @@ require_once $_SERVER['DOCUMENT_ROOT'].'/admin/inc/logon.php';
 function sendEmail($id, $from, $interests, $subject, $text)
 {
 	global $mysqli;
-	if (!$mysqli->fetch_array('SELECT `id` FROM `newsmails` WHERE `sendt` = 0'))
+	if (!$mysqli->fetch_array('SELECT `id` FROM `newsmails` WHERE `sendt` = 0')) {
 		//Nyhedsbrevet er allerede afsendt!
 		return array('error' => _('The newsletter has already been sent!'));
+	}
 	
 	saveEmail($id, $from, $interests, $subject, $text);
 
@@ -70,8 +71,9 @@ function sendEmail($id, $from, $interests, $subject, $text)
 		$interests = explode('<', $interests);
 		$andwhere = '';
 		foreach ($interests as $interest) {
-			if ($andwhere)
+			if ($andwhere) {
 				$andwhere .= ' OR ';
+			}
 			$andwhere .= '`interests` LIKE \'';
 			$andwhere .= $interest;
 			$andwhere .= '\' OR `interests` LIKE \'';
@@ -98,8 +100,8 @@ function sendEmail($id, $from, $interests, $subject, $text)
 	);
 
 	foreach ($emails as $x => $email) {
-       		$emails_group[floor($x/99)][] = $email;
-    	}
+		$emails_group[floor($x/99)][] = $email;
+	}
 
 	$error = '';
 
@@ -116,7 +118,7 @@ function sendEmail($id, $from, $interests, $subject, $text)
 	
 		//Upload email to the sent folder via imap
 		if ($GLOBALS['_config']['imap']) {
-			require_once "../inc/imap.inc.php";
+			include_once "../inc/imap.inc.php";
 			$imap = new IMAPMAIL;
 			$imap->open($GLOBALS['_config']['imap'], $GLOBALS['_config']['imapport']);
 			$emailnr = array_search($from, $GLOBALS['_config']['email']);
@@ -145,8 +147,9 @@ function countEmailTo($interests)
 		$interests = explode('<', $interests);
 		$andwhere = '';
 		foreach ($interests as $interest) {
-			if ($andwhere)
+			if ($andwhere) {
 				$andwhere .= ' OR ';
+			}
 			$andwhere .= '`interests` LIKE \'';
 			$andwhere .= $interest;
 			$andwhere .= '\' OR `interests` LIKE \'';
@@ -213,12 +216,14 @@ function getEmail($id)
 	$newsmails[0]['interests_array'] = explode('<', $newsmails[0]['interests']);
 	foreach ($GLOBALS['_config']['interests'] as $interest) {
 		$html .= '<input';
-		if (false !== array_search($interest, $newsmails[0]['interests_array']))
+		if (false !== array_search($interest, $newsmails[0]['interests_array'])) {
 			$html .= ' checked="checked"';
-		if ($newsmails[0]['sendt'] == 1)
+		}
+		if ($newsmails[0]['sendt'] == 1) {
 			$html .= ' disabled="disabled"';
-		else
+		} else {
 			$html .= ' onchange="countEmailTo()" onclick="countEmailTo()"';
+		}
 		$html .= ' type="checkbox" value="'.$interest.'" id="'.$interest.'" /><label for="'.$interest.'"> '.$interest.'</label> ';
 	}
 	$html .= '<script type="text/javascript"><!--
@@ -226,10 +231,11 @@ countEmailTo();
 --></script>';
 	$html .= '</div>';
 	
-	if ($newsmails[0]['sendt'] == 0)
+	if ($newsmails[0]['sendt'] == 0) {
 		$html .= '<br />'._('Number of recipients:').' <span id="mailToCount">'.countEmailTo($newsmails[0]['interests']).'</span><br />';
+	}
 	
-	if ($newsmails[0]['sendt'] == 1){
+	if ($newsmails[0]['sendt'] == 1) {
 		$html .= '<br />'._('Subject:').' '.$newsmails[0]['subject'].'<div style="width:'.$GLOBALS['_config']['text_width'].'px; border:1px solid #D2D2D2">'.$newsmails[0]['text'].'</div></div>';
 	} else {
 		$html .= '<br />'._('Subject:').' <input class="admin_name" name="subject" id="subject" value="'.$newsmails[0]['subject'].'" size="127" style="width:'.($GLOBALS['_config']['text_width']-34).'px" /><script type="text/javascript"><!--
@@ -279,4 +285,4 @@ function getEmailList()
 	
 	return $html;
 }
-?>
+

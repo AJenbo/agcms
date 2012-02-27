@@ -745,7 +745,11 @@ if (!@$_COOKIE['qpath'] && !@$_COOKIE['qalt'] && !@$_COOKIE['qtype']) echo 'down
     <option value="text"<?php if (@$_COOKIE['qtype'] == 'text') echo ' selected="selected"'; ?>><?php echo(_('Documents')); ?></option>
     <option value="sysfile"<?php if (@$_COOKIE['qtype'] == 'sysfile') echo ' selected="selected"'; ?>><?php echo(_('System files')); ?></option>
     <option value="compressed"<?php if (@$_COOKIE['qtype'] == 'compressed') echo ' selected="selected"'; ?>><?php echo(_('Compressed files')); ?></option>
-    <option value="unused"<?php if (@$_COOKIE['qtype'] == 'unused') echo ' selected="selected"'; ?>><?php echo(_('Unused files')); ?></option>
+    <option value="unused"<?php
+	if (@$_COOKIE['qtype'] == 'unused') {
+		echo ' selected="selected"';
+	}
+	?>><?php echo(_('Unused files')); ?></option>
   </select>
   <br />
   <br />
