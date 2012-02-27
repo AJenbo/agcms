@@ -38,8 +38,8 @@ function doConditionalGet($timestamp)
 	//Update one seams to have fixed this issue.
 	//return;
     // Nothing has changed since their last request - serve a 304 and exit
-	ini_set ('zlib.output_compression', '0');
+	ini_set('zlib.output_compression', '0');
     header("HTTP/1.1 304 Not Modified", true, 304);
     die();
 }
-?>
+

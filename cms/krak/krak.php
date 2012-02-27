@@ -2,16 +2,16 @@
 function objectToArray($object)
 {
 	$object = (array) $object;
-	foreach ($object as $key => $value ){
-	 if (is_object($value) || is_array($value))
-	 $object[$key] = objectToArray($value);
-	 }
+	foreach ($object as $key => $value ) {
+		if (is_object($value) || is_array($value)) {
+			$object[$key] = objectToArray($value);
+		}
+	}
 	return $object;
 }
 
 function getAddressKrak($telephoneNumber)
 {
- 
 	$username = 'jagtogfiskerimagasinet_dk'; 	// Set username here
 	$password = '.357magnum'; 	 // Set password here
 	$locale = 'da-DK';
@@ -32,37 +32,44 @@ function getAddressKrak($telephoneNumber)
  
 	//Convert to oure format
 
-	if (!$result['GetTeleByTnResult'])
-	 return false;
+	if (!$result['GetTeleByTnResult']) {
+		return false;
+	}
  
 	$return['recName1'] = '';
 	if (!empty($result['GetTeleByTnResult']['Tele']['CompanyName'])) {
-	 $return['recName1'] = $result['GetTeleByTnResult']['Tele']['CompanyName'];
+		$return['recName1'] = $result['GetTeleByTnResult']['Tele']['CompanyName'];
 	}
 	if (!$return['recName1']) {
-  if (!empty($result['GetTeleByTnResult']['Tele']['FirstName'])) {
-	 $return['recName1'] = $result['GetTeleByTnResult']['Tele']['FirstName'];
-	 }
-  if (!empty($result['GetTeleByTnResult']['Tele']['LastName'])) {
-	 $return['recName1'] .= ' '.$result['GetTeleByTnResult']['Tele']['LastName'];
-	 }
+		if (!empty($result['GetTeleByTnResult']['Tele']['FirstName'])) {
+			$return['recName1'] = $result['GetTeleByTnResult']['Tele']['FirstName'];
+		}
+		if (!empty($result['GetTeleByTnResult']['Tele']['LastName'])) {
+			$return['recName1'] .= ' '.$result['GetTeleByTnResult']['Tele']['LastName'];
+		}
 	}
 	$return['recName1'] = trim($return['recName1']);
  
 	$return['recAddress1'] = '';
-	if (!empty($result['GetTeleByTnResult']['Tele']['Address']['PlaceName']))
-	 $return['recAddress1'] .= $result['GetTeleByTnResult']['Tele']['Address']['PlaceName'];
-	if (!empty($result['GetTeleByTnResult']['Tele']['Address']['RoadName']))
-	 $return['recAddress1'] .= ' '.$result['GetTeleByTnResult']['Tele']['Address']['RoadName'];
-	if (!empty($result['GetTeleByTnResult']['Tele']['Address']['HouseNumberNumericFrom']))
-	 $return['recAddress1'] .= ' '.$result['GetTeleByTnResult']['Tele']['Address']['HouseNumberNumericFrom'];
-	if (!empty($result['GetTeleByTnResult']['Tele']['Address']['HouseNumberCharacterFrom']))
-	 $return['recAddress1'] .= $result['GetTeleByTnResult']['Tele']['Address']['HouseNumberCharacterFrom'];
-	if (!empty($result['GetTeleByTnResult']['Tele']['Address']['Floor']))
-	 $return['recAddress1'] .= ' '.$result['GetTeleByTnResult']['Tele']['Address']['Floor'];
+	if (!empty($result['GetTeleByTnResult']['Tele']['Address']['PlaceName'])) {
+		$return['recAddress1'] .= $result['GetTeleByTnResult']['Tele']['Address']['PlaceName'];
+	}
+	if (!empty($result['GetTeleByTnResult']['Tele']['Address']['RoadName'])) {
+		$return['recAddress1'] .= ' '.$result['GetTeleByTnResult']['Tele']['Address']['RoadName'];
+	}
+	if (!empty($result['GetTeleByTnResult']['Tele']['Address']['HouseNumberNumericFrom'])) {
+		$return['recAddress1'] .= ' '.$result['GetTeleByTnResult']['Tele']['Address']['HouseNumberNumericFrom'];
+	}
+	if (!empty($result['GetTeleByTnResult']['Tele']['Address']['HouseNumberCharacterFrom'])) {
+		$return['recAddress1'] .= $result['GetTeleByTnResult']['Tele']['Address']['HouseNumberCharacterFrom'];
+	}
+	if (!empty($result['GetTeleByTnResult']['Tele']['Address']['Floor'])) {
+		$return['recAddress1'] .= ' '.$result['GetTeleByTnResult']['Tele']['Address']['Floor'];
+	}
   
-if (!empty($result['GetTeleByTnResult']['Tele']['Address']['Door']))
-	 $return['recAddress1'] .= ' '.$result['GetTeleByTnResult']['Tele']['Address']['Door'];
+	if (!empty($result['GetTeleByTnResult']['Tele']['Address']['Door'])) {
+		$return['recAddress1'] .= ' '.$result['GetTeleByTnResult']['Tele']['Address']['Door'];
+	}
 	$return['recAddress1'] = trim($return['recAddress1']);
 
  
@@ -76,12 +83,13 @@ if (!empty($result['GetTeleByTnResult']['Tele']['Address']['Door']))
 	$return['recPostBox'] = '';
 	$result['GetTeleByTnResult']['Tele']['ContactInfo']['EmailAddress'];
 	if (!empty($result['GetTeleByTnResult']['Tele']['ContactInfo']['EmailAddress'])) {
-	 $return['email'] = trim($result['GetTeleByTnResult']['Tele']['ContactInfo']['EmailAddress']);
+		$return['email'] = trim($result['GetTeleByTnResult']['Tele']['ContactInfo']['EmailAddress']);
 	}
  
-	if ($return['recName1'] || $return['recAddress1'] || $return['recZipCode'])
-	 return $return;
-	else
-	 return false;
+	if ($return['recName1'] || $return['recAddress1'] || $return['recZipCode']) {
+		return $return;
+	} else {
+		return false;
+	}
 }
-?>
+

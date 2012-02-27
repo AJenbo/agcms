@@ -1,6 +1,7 @@
 <?php
 
-function side() {
+function side()
+{
 	global $mysqli;
 
 	if (!isset($GLOBALS['side']['navn'])) {
@@ -49,23 +50,24 @@ function side() {
 	
 	//TODO Pump all this in to an array instead of dumping a bunch of html
 	//TODO and figure out how to do the sorting ajax and js style
-	$GLOBALS['generatedcontent']['text'] .= echo_table($GLOBALS['side']['id'], NULL, 'asc');
+	$GLOBALS['generatedcontent']['text'] .= echo_table($GLOBALS['side']['id'], null, 'asc');
 	
 	$GLOBALS['generatedcontent']['price']['old'] = $GLOBALS['side']['for'];
 	$GLOBALS['generatedcontent']['price']['market'] = $GLOBALS['side']['burde'];
 	$GLOBALS['generatedcontent']['price']['new'] = $GLOBALS['side']['pris'];
 	$GLOBALS['generatedcontent']['price']['from'] = $GLOBALS['side']['fra'];
 	
-	if (!@$GLOBALS['generatedcontent']['email'])
+	if (!@$GLOBALS['generatedcontent']['email']) {
 		$kat = $mysqli->fetch_array("SELECT `email` FROM `kat` WHERE id = ".$GLOBALS['generatedcontent']['activmenu']);
+	}
 				
 	getUpdateTime('kat');
 	
-	if (!@$kat[0]['email'])
+	if (!@$kat[0]['email']) {
 		$GLOBALS['generatedcontent']['email'] = $GLOBALS['_config']['email'];
-	else
+	} else {
 		$GLOBALS['generatedcontent']['email'] = $kat[0]['email'];
-
+	}
 
 	if ($GLOBALS['side']['maerke']) {
 		$maerker = $mysqli->fetch_array("SELECT `id`, `navn`, `link`, `ico` FROM `maerke` WHERE `id` IN(".$GLOBALS['side']['maerke'].") AND `ico` != '' ORDER BY `navn`");

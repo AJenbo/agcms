@@ -66,7 +66,14 @@ function subs($kat)
 {
 	global $mysqli;
 
-	$sub = $mysqli->fetch_array("SELECT id FROM kat WHERE bind = $kat ORDER BY navn");
+	$sub = $mysqli->fetch_array(
+		"
+		SELECT id
+		FROM kat
+		WHERE bind = $kat
+		ORDER BY navn
+		"
+	);
 	
 	getUpdateTime('kat');
 	
@@ -80,7 +87,11 @@ function subs($kat)
 
 function clear_file_name($name)
 {
-	$search = array('/[&?\/:*"<>|%\s-_#\\\\]+/u', '/^\s+|\s+$/u', '/\s+/u');
+	$search = array(
+		'/[&?\/:*"<>|%\s-_#\\\\]+/u',
+		'/^\s+|\s+$/u',
+		'/\s+/u'
+	);
 	$replace = array(' ', '', '-');
 	return preg_replace($search, $replace, $name);
 }
@@ -93,8 +104,9 @@ function array_natsort($aryData, $strIndex, $strSortBy, $strSortType=false)
 	$strIndex .= '';
 	
 	//if the parameters are invalid
-	if (!is_array($aryData) || $strIndex === '' || $strSortBy === '')
+	if (!is_array($aryData) || $strIndex === '' || $strSortBy === '') {
 		return $aryData;
+	}
 	
 	//ignore
 	$match = array();
@@ -105,27 +117,31 @@ function array_natsort($aryData, $strIndex, $strSortBy, $strSortType=false)
 	//print_r($aryData);
 	
 	//loop through the array
-	foreach ($aryData as $aryRow)
+	foreach ($aryData as $aryRow) {
 		//set up the value in the array
 		$arySort[$aryRow[$strIndex]] = str_replace($match, $replace, $aryRow[$strSortBy]);
-	
+	}
+
 	//apply the natural sort
 	natcasesort($arySort);
 	
 	//if the sort type is descending
-	if ($strSortType == 'desc' || $strSortType == '-' )
-	//reverse the array
+	if ($strSortType == 'desc' || $strSortType == '-' ) {
+		//reverse the array
 		arsort($arySort);
+	}
 	
 	//loop through the sorted and original data
-	foreach ($arySort as $arySortKey => $arySorted)
-		foreach ($aryData as $aryOriginal)
-		//if the key matches
+	foreach ($arySort as $arySortKey => $arySorted) {
+		foreach ($aryData as $aryOriginal) {
+			//if the key matches
 			if ($aryOriginal[$strIndex]==$arySortKey) {
 				//add it to the output array
 				array_push($aryResult, $aryOriginal);
 				break;
 			}
+		}
+	}
 	
 	//return the result
 	return $aryResult;
@@ -136,15 +152,17 @@ function array_listsort($aryData, $strIndex, $strSortBy, $strSortType=false, $in
 	global $mysqli;
 	
 	//Open database
-	if (!isset($mysqli))
+	if (!isset($mysqli)) {
 		$mysqli = new simple_mysqli($GLOBALS['_config']['mysql_server'], $GLOBALS['_config']['mysql_user'], $GLOBALS['_config']['mysql_password'], $GLOBALS['_config']['mysql_database']);
-		
+	}
 
-	if (!is_array($aryData) || !$strIndex || !$strSortBy)
+	if (!is_array($aryData) || !$strIndex || !$strSortBy) {
 		return $aryData;
+	}
 	
-	if ($kaliber = $mysqli->fetch_array('SELECT text FROM `tablesort` WHERE id = '.$intSortingOrder))
+	if ($kaliber = $mysqli->fetch_array('SELECT text FROM `tablesort` WHERE id = '.$intSortingOrder)) {
 		$kaliber = explode('<', $kaliber[0]['text']);
+	}
 	
 	getUpdateTime('tablesort');
 	
@@ -152,26 +170,30 @@ function array_listsort($aryData, $strIndex, $strSortBy, $strSortType=false, $in
 	
 	foreach ($aryData as $aryRow) {
 		$arySort[$aryRow[$strIndex]] = -1;
-		foreach ($kaliber as $kalKey => $kalSort)
+		foreach ($kaliber as $kalKey => $kalSort) {
 			if ($aryRow[$strSortBy]==$kalSort) {
 				$arySort[$aryRow[$strIndex]] = $kalKey;
 					break;
 			}
+		}
 	}				
 	
 	natcasesort($arySort);
 	
 	echo $strSortType;
 	
-	if ($strSortType=="desc" || $strSortType=="-" )
+	if ($strSortType=="desc" || $strSortType=="-") {
 		arsort($arySort);
+	}
 	
-	foreach ($arySort as $arySortKey => $arySorted)
-		foreach ($aryData as $aryOriginal)
+	foreach ($arySort as $arySortKey => $arySorted) {
+		foreach ($aryData as $aryOriginal) {
 			if ($aryOriginal[$strIndex]==$arySortKey) {
 				array_push($aryResult, $aryOriginal);
 				break;
 			}
+		}
+	}
 	
 	return $aryResult;
 }
@@ -179,17 +201,17 @@ function array_listsort($aryData, $strIndex, $strSortBy, $strSortType=false, $in
 //Quick function to trim arrays
 function trim_value(&$value)
 {
-   $value = trim($value); 
+	$value = trim($value); 
 }
 
 function trim_array($totrim)
 {
-   if (is_array($totrim)) {
-       $totrim = array_map("trim_array", $totrim);
-   } else {
-       $totrim = trim($totrim);
-   }
-   return $totrim;
+	if (is_array($totrim)) {
+		$totrim = array_map("trim_array", $totrim);
+	} else {
+		$totrim = trim($totrim);
+	}
+	return $totrim;
 }
 
 //return html for a sorted table
@@ -227,10 +249,11 @@ function get_table($listid, $bycell, $current_kat)
 		unset($rows_cells);
 		
 		//Sort rows
-		if ($lists[0]['sorts'][$bycell] < 1)
-			$rows = array_natsort($rows, 'id' , $bycell);
-		else
-			$rows = array_listsort($rows, 'id', $bycell, NULL, $lists[0]['sorts'][$bycell]);
+		if ($lists[0]['sorts'][$bycell] < 1) {
+			$rows = array_natsort($rows, 'id', $bycell);
+		} else {
+			$rows = array_listsort($rows, 'id', $bycell, null, $lists[0]['sorts'][$bycell]);
+		}
 		
 		//unset temp holder for rows
 		
@@ -245,8 +268,9 @@ function get_table($listid, $bycell, $current_kat)
 		$html .= '</tr></thead><tbody>';
 		foreach ($rows as $i => $row) {
 			$html .= '<tr';
-			if ($i % 2)
+			if ($i % 2) {
 				$html .= ' class="altrow"';
+			}
 			$html .= '>';
 			if ($row['link']) {
 				getUpdateTime('sider');
@@ -259,86 +283,101 @@ function get_table($listid, $bycell, $current_kat)
                 	$row[$key] = '';
                 }
 
-				switch($type) {
-					case 0:
-						//Plain text
-						$html .= '<td>';
-						if ($row['link'])
-							$html .= $row['link'];
-						$html .= $row[$key];
-						if ($row['link'])
-							$html .= '</a>';
-						$html .= '</td>';
-						break;
-					case 1:
-						//number
-						$html .= '<td style="text-align:right;">';
-						if ($row['link'])
-							$html .= $row['link'];
-						$html .= $row[$key];
-						if ($row['link'])
-							$html .= '</a>';
-						$html .= '</td>';
-						break;
-					case 2:
-						//price
-						$html .= '<td style="text-align:right;" class="Pris">';
-						if ($row['link'])
-							$html .= $row['link'];
-						if (is_numeric(@$row[$key]))
-							$html .= str_replace(',00', ',-', number_format($row[$key], 2, ',', '.'));
-						else
-							$html .= @$row[$key];
-						if ($row['link'])
-							$html .= '</a>';
-						$html .= '</td>';
-						$GLOBALS['generatedcontent']['has_product_table'] = true;
-						break;
-					case 3:
-						//new price
-						$html .= '<td style="text-align:right;" class="NyPris">';
-						if ($row['link'])
-							$html .= $row['link'];
-						if (is_numeric(@$row[$key]))
-							$html .= str_replace(',00', ',-', number_format($row[$key], 2, ',', '.'));
-						else
-							$html .= @$row[$key];
-						if ($row['link'])
-							$html .= '</a>';
-						$html .= '</td>';
-						$GLOBALS['generatedcontent']['has_product_table'] = true;
-						break;
-					case 4:
-						//pold price
-						$html .= '<td style="text-align:right;" class="XPris">';
-						if ($row['link'])
-							$html .= $row['link'];
-						if (is_numeric(@$row[$key]))
-							$html .= str_replace(',00', ',-', number_format($row[$key], 2, ',', '.'));
-						if ($row['link'])
-							$html .= '</a>';
-						$html .= '</td>';
-						break;
-					case 5:
-						//image
-						$html .= '<td>';
-						$files = $mysqli->fetch_array('SELECT * FROM `files` WHERE path = '.$row[$key].' LIMIT 1');
-						
-						getUpdateTime('files');
-						
-						//TODO make image tag
-						if ($row['link'])
-							$html .= $row['link'];
-						$html .= '<img src="'.$row[$key].'" alt="'.$files[0]['alt'].'" title="" width="'.$files[0]['width'].'" height="'.$files[0]['height'].'" />';
-						if ($row['link'])
-							$html .= '</a>';
-						$html .= '</td>';
-						break;
-						
+				switch ($type) {
+				case 0:
+					//Plain text
+					$html .= '<td>';
+					if ($row['link']) {
+						$html .= $row['link'];
+					}
+					$html .= $row[$key];
+					if ($row['link']) {
+						$html .= '</a>';
+					}
+					$html .= '</td>';
+					break;
+				case 1:
+					//number
+					$html .= '<td style="text-align:right;">';
+					if ($row['link']) {
+						$html .= $row['link'];
+					}
+					$html .= $row[$key];
+					if ($row['link']) {
+						$html .= '</a>';
+					}
+					$html .= '</td>';
+					break;
+				case 2:
+					//price
+					$html .= '<td style="text-align:right;" class="Pris">';
+					if ($row['link']) {
+						$html .= $row['link'];
+					}
+					if (is_numeric(@$row[$key])) {
+						$html .= str_replace(',00', ',-', number_format($row[$key], 2, ',', '.'));
+					} else {
+						$html .= @$row[$key];
+					}
+					if ($row['link']) {
+						$html .= '</a>';
+					}
+					$html .= '</td>';
+					$GLOBALS['generatedcontent']['has_product_table'] = true;
+					break;
+				case 3:
+					//new price
+					$html .= '<td style="text-align:right;" class="NyPris">';
+					if ($row['link']) {
+						$html .= $row['link'];
+					}
+					if (is_numeric(@$row[$key])) {
+						$html .= str_replace(',00', ',-', number_format($row[$key], 2, ',', '.'));
+					} else {
+						$html .= @$row[$key];
+					}
+					if ($row['link']) {
+						$html .= '</a>';
+					}
+					$html .= '</td>';
+					$GLOBALS['generatedcontent']['has_product_table'] = true;
+					break;
+				case 4:
+					//pold price
+					$html .= '<td style="text-align:right;" class="XPris">';
+					if ($row['link']) {
+						$html .= $row['link'];
+					}
+					if (is_numeric(@$row[$key])) {
+						$html .= str_replace(',00', ',-', number_format($row[$key], 2, ',', '.'));
+					}
+					if ($row['link']) {
+						$html .= '</a>';
+					}
+					$html .= '</td>';
+					break;
+				case 5:
+					//image
+					$html .= '<td>';
+					$files = $mysqli->fetch_array('SELECT * FROM `files` WHERE path = '.$row[$key].' LIMIT 1');
+					
+					getUpdateTime('files');
+					
+					//TODO make image tag
+					if ($row['link']) {
+						$html .= $row['link'];
+					}
+					$html .= '<img src="'.$row[$key].'" alt="'.$files[0]['alt'].'" title="" width="'.$files[0]['width'].'" height="'.$files[0]['height'].'" />';
+					if ($row['link']) {
+						$html .= '</a>';
+					}
+					$html .= '</td>';
+					break;
 				}
 			}
-			if (@$GLOBALS['generatedcontent']['has_product_table'])
+			if (@$GLOBALS['generatedcontent']['has_product_table']) {
 				$html .= '<td class="addtocart"><a href="/bestilling/?add_list_item='.$row['id'].'"><img src="/theme/images/cart_add.png" title="'._('Add to shopping cart').'" alt="+" /></a></td>';
+			}
 			$html .= '</tr>';
 		}
 		
@@ -354,8 +393,9 @@ function get_table($listid, $bycell, $current_kat)
 	foreach ($GLOBALS['cache']['updatetime'] as $time) {
 		$updatetime = max($updatetime, $time);
 	}
-	if ($updatetime < 1)
+	if ($updatetime < 1) {
 		$updatetime = time();
+	}
 	
 	doConditionalGet($updatetime);
 
@@ -367,7 +407,12 @@ function echo_table($sideid, $mansort, $desc)
 {
 	global $mysqli;
 
-	$tablesort = $mysqli->fetch_array('SELECT `navn`, `text` FROM `tablesort` ORDER BY `id`');
+	$tablesort = $mysqli->fetch_array(
+		"
+		SELECT `navn`, `text`
+		FROM `tablesort`
+		ORDER BY `id`"
+	);
 	
 	getUpdateTime('tablesort');
 	
@@ -384,13 +429,14 @@ function echo_table($sideid, $mansort, $desc)
 	foreach ($lists as $list) {
 		$html = '<div id="table'.$list['id'].'">';
 		
-		$table_html = get_table($list['id'], NULL, $GLOBALS['generatedcontent']['activmenu']);
+		$table_html = get_table($list['id'], null, $GLOBALS['generatedcontent']['activmenu']);
 		$html .= $table_html['html'];
 		$html .= '</div>';
 	}
 	
-	if (!isset($html))
+	if (!isset($html)) {
 		$html = '';
+	}
 
 	return $html;
 }
@@ -408,14 +454,15 @@ function kats($id)
 		$data =  kats($kat[0]['bind']);
 		$nr = count($data);
 		$kats[0] = $id;
-		foreach ($data as $value){
+		foreach ($data as $value) {
 			$kats[] = $value;
 		}
 	}
 	
-	if (!isset($kats))
+	if (!isset($kats)) {
 		$kats = array();
-	
+	}
+
 	return $kats;
 }
 
@@ -430,20 +477,22 @@ function binding($bind)
 		getUpdateTime('kat');
 		
 		return binding($sog_kat[0]['bind']);
-	} else
+	} else {
 		return $bind;
+	}
 }
 
 //Used with array_filter() to make a 2d array uniqe
 function uniquecol($array)
 {
-  static $idlist = array();
+	static $idlist = array();
 
-  if (in_array($array['id'], $idlist))
-    return false;
+	if (in_array($array['id'], $idlist)) {
+		return false;
+	}
 
-  $idlist[] = $array['id'];
-  return true;
+	$idlist[] = $array['id'];
+
+	return true;
 }
 
-?>

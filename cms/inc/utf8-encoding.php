@@ -7,4 +7,3 @@ date_default_timezone_set('Europe/Copenhagen');
 //Convert output to utf-8, but every thing should already be utf-8
 //mb_http_output('UTF-8');
 
-?>

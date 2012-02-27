@@ -54,7 +54,8 @@ function stringLimit($string, $length = 50, $ellipsis = '…')
 	return mb_strlen($string) > $length ? preg_replace('/\s*\S*$/', '',  mb_substr($string, 0, $length - mb_strlen($ellipsis))) . $ellipsis : $string;
 }
 
-function liste() {
+function liste()
+{
 	global $mysqli;
 
 	$bind = $mysqli->fetch_array("SELECT sider.id, UNIX_TIMESTAMP(dato) AS dato, sider.navn, sider.beskrivelse, sider.text, sider.pris, sider.for, sider.burde, sider.fra, sider.varenr, sider.billed FROM bind JOIN sider ON bind.side = sider.id WHERE bind.kat = ".$GLOBALS['generatedcontent']['activmenu']." ORDER BY sider.navn ASC");
@@ -68,15 +69,16 @@ function liste() {
 	
 	if ($bind) {
 		if (count($bind) == 1) {
-			require_once 'inc/side.php';
+			include_once 'inc/side.php';
 			$GLOBALS['side']['id'] = $bind[0]['id'];
 			side();
 		} else {
 			$bind = array_natsort($bind, 'id', 'navn', 'asc');
 			foreach ($bind as $value) {
 				//Add space around all tags, strip all tags, remove all unneded white space
-				if ($kat[0]['vis'] == 1)
+				if ($kat[0]['vis'] == 1) {
 					$value['text'] = preg_replace('/\s+/', ' ', strip_tags(preg_replace(array('/</', '/>/', '/\s+/'), array(' <', '> ', ' '), $value['text'])));
+				}
 				vare($value, $kat[0]['navn'], $kat[0]['vis']);
 			}
 		}
@@ -85,27 +87,29 @@ function liste() {
 
 function kat_html($side, $kat_navn)
 {
-		$html = "<table class=\"tabel\"><thead><tr><td><a href=\"\" onclick=\"x_get_kat('".$GLOBALS['generatedcontent']['activmenu']."', 'navn', inject_html);return false;\">Titel</a></td><td><a href=\"\" onclick=\"x_get_kat('".$GLOBALS['generatedcontent']['activmenu']."', 'for', inject_html);return false;\">Før</a></td><td><a href=\"\" onclick=\"x_get_kat('".$GLOBALS['generatedcontent']['activmenu']."', 'pris', inject_html);return false;\">Pris</a></td><td><a href=\"\" onclick=\"x_get_kat('".$GLOBALS['generatedcontent']['activmenu']."', 'varenr', inject_html);return false;\">#</a></td></tr></thead><tbody><tr>";
-		$i = 0;
-		foreach ($side as $value) {
-				
-			if (!$value['for'])
-				$value['for'] = '';
-			else
-				$value['for'] = $value['for'].',-';
-			if (!$value['pris'])
-				$value['pris'] = '';
-			else
-				$value['pris'] = $value['pris'].',-';
-			$html .= "<td><a href=\"/kat".$GLOBALS['generatedcontent']['activmenu']."-".clear_file_name($kat_navn)."/side".$value['id']."-".clear_file_name($value['navn']).".html\">".$value['navn']."</a></td><td class=\"XPris\" align=\"right\">".$value['for']."</td><td class=\"Pris\" align=\"right\">".$value['pris']."</td><td align=\"right\" style=\"font-size:11px\">".$value['varenr']."</td>";
-
-			if ($i % 2)
-				$html .= "</tr><tr>";
-			else
-				$html .= '</tr><tr class="altrow">';
-			$i++;
+	$html = "<table class=\"tabel\"><thead><tr><td><a href=\"\" onclick=\"x_get_kat('".$GLOBALS['generatedcontent']['activmenu']."', 'navn', inject_html);return false;\">Titel</a></td><td><a href=\"\" onclick=\"x_get_kat('".$GLOBALS['generatedcontent']['activmenu']."', 'for', inject_html);return false;\">Før</a></td><td><a href=\"\" onclick=\"x_get_kat('".$GLOBALS['generatedcontent']['activmenu']."', 'pris', inject_html);return false;\">Pris</a></td><td><a href=\"\" onclick=\"x_get_kat('".$GLOBALS['generatedcontent']['activmenu']."', 'varenr', inject_html);return false;\">#</a></td></tr></thead><tbody><tr>";
+	$i = 0;
+	foreach ($side as $value) {
+		if (!$value['for']) {
+			$value['for'] = '';
+		} else {
+			$value['for'] = $value['for'].',-';
 		}
-		$html .= "</tr></tbody></table>";
+		if (!$value['pris']) {
+			$value['pris'] = '';
+		} else {
+			$value['pris'] = $value['pris'].',-';
+		}
+		$html .= "<td><a href=\"/kat".$GLOBALS['generatedcontent']['activmenu']."-".clear_file_name($kat_navn)."/side".$value['id']."-".clear_file_name($value['navn']).".html\">".$value['navn']."</a></td><td class=\"XPris\" align=\"right\">".$value['for']."</td><td class=\"Pris\" align=\"right\">".$value['pris']."</td><td align=\"right\" style=\"font-size:11px\">".$value['varenr']."</td>";
+
+		if ($i % 2) {
+			$html .= "</tr><tr>";
+		} else {
+			$html .= '</tr><tr class="altrow">';
+		}
+		$i++;
+	}
+	$html .= "</tr></tbody></table>";
 	return $html;
 }
 
@@ -115,10 +119,11 @@ function search_liste($q, $wheresider)
 	global $qext;
 	global $mysqli;
 	
-	if ($qext)
+	if ($qext) {
 		$qext = ' WITH QUERY EXPANSION';
-	else
+	} else {
 		$qext = '';
+	}
 	//Temporarly store the katalog number so it can be restored when search is over
 	$temp_kat = $GLOBALS['generatedcontent']['activmenu'];
 	if ($q) {
@@ -146,8 +151,9 @@ function search_liste($q, $wheresider)
 				}
 			}
 			unset($sider_value);
-			if (!$match)
+			if (!$match) {
 				$sider[] = $value;
+			}
 		}
 		unset($value);
 		
@@ -169,8 +175,9 @@ function search_liste($q, $wheresider)
 					break;
 				}
 			}
-			if (!$match)
+			if (!$match) {
 				$sider[] = $lists[0];
+			}
 		}
 
 	} else {
@@ -184,7 +191,7 @@ function search_liste($q, $wheresider)
 		$sider = array_merge(array_filter($sider, 'uniquecol'));
 
 		//remove inactive pages
-		for($i=0;$i<count($sider);$i++) {
+		for ($i=0;$i<count($sider);$i++) {
 			if (is_inactive_page($sider[$i]['id'])) {
 				array_splice($sider, $i, 1);
 				$i--;
