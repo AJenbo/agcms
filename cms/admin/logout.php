@@ -11,4 +11,4 @@ require_once $_SERVER['DOCUMENT_ROOT'].'/admin/inc/logon.php';
 session_destroy();
 
 header('Location: ./');
-?>
+

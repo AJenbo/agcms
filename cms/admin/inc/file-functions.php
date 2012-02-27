@@ -20,10 +20,11 @@ function isinuse($path)
 	UNION (SELECT id FROM `krav` WHERE `text` LIKE '%$path%' LIMIT 1)
 	UNION (SELECT id FROM `maerke` WHERE `ico` LIKE '$path' LIMIT 1)
 	UNION (SELECT id FROM `list_rows` WHERE `cells` LIKE '%$path%' LIMIT 1)
-	UNION (SELECT id FROM `kat` WHERE `navn` LIKE '%$path%' OR `icon` LIKE '$path' LIMIT 1) LIMIT 1"))
+	UNION (SELECT id FROM `kat` WHERE `navn` LIKE '%$path%' OR `icon` LIKE '$path' LIMIT 1) LIMIT 1")) {
 		return true;
-	else
+	} else {
 		return false;
+	}
 }
 
 

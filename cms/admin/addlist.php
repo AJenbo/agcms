@@ -17,15 +17,35 @@ require_once '../inc/mysqli.php';
 $mysqli = new simple_mysqli($GLOBALS['_config']['mysql_server'], $GLOBALS['_config']['mysql_user'], $GLOBALS['_config']['mysql_password'], $GLOBALS['_config']['mysql_database']);
 
 if (!empty($_POST)) {
-	$mysqli->query("INSERT INTO `lists` (`page_id` , `title` , `cells` , `cell_names` , `sort` , `sorts` , `link` )
-VALUES (
-'".$_POST['id']."', '".$_POST['title']."', '".$_POST['cells']."', '".$_POST['cell_names']."', '".$_POST['dsort']."', '".$_POST['sorts']."', ".($_POST['link'] ? 1 : 0)."
-);");
+	$mysqli->query(
+		"
+		INSERT INTO `lists` (
+			`page_id`,
+			`title`,
+			`cells`,
+			`cell_names`,
+			`sort`,
+			`sorts`,
+			`link`
+		)
+		VALUES (
+			'".$_POST['id']."',
+			'".$_POST['title']."',
+			'".$_POST['cells']."',
+			'".$_POST['cell_names']."',
+			'".$_POST['dsort']."',
+			'".$_POST['sorts']."',
+			".($_POST['link'] ? 1 : 0)."
+		);
+		"
+	);
 
-	?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><meta http-equiv="Content-Type" content="text/html; charset=utf-8" /><title><?php echo(_('Add list')); ?></title><script type="text/javascript"><!--
-window.opener.location.reload();
-window.close();
---></script></head><body></body></html><?php
+	?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><meta http-equiv="Content-Type" content="text/html; charset=utf-8" /><title><?php
+	echo(_('Add list'));
+	?></title><script type="text/javascript"><!--
+	window.opener.location.reload();
+	window.close();
+	--></script></head><body></body></html><?php
 	exit;
 }
 
@@ -109,9 +129,9 @@ Sorter efter colonne: <input size="1" name="dsort" id="dsort" value="0" />
 			</select><br />
 			<select name="sort">
 				<option value="0">Alfanumerisk</option><?php
-				foreach ($tablesorts as $tablesort) {
-					?><option value="<?php echo($tablesort['id']); ?>"><?php echo($tablesort['navn']); ?></option><?php
-				}
+foreach ($tablesorts as $tablesort) {
+	?><option value="<?php echo($tablesort['id']); ?>"><?php echo($tablesort['navn']); ?></option><?php
+}
 			?></select><br />
 			<input name="cell_name" style="width:102px;" />
 		</td>

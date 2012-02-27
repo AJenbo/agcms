@@ -20,4 +20,4 @@ function get_mailbox_size($email, $mailbox)
 $sajax_debug_mode = 0;
 sajax_export(array('name' => 'get_mailbox_size', 'method' => 'GET', "asynchronous" => false));
 sajax_handle_client_request();
-?>
+

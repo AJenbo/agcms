@@ -9,8 +9,9 @@ function get_mime_type($filepath)
 		$mime = finfo_file($finfo = finfo_open(FILEINFO_MIME), $_SERVER['DOCUMENT_ROOT'].$filepath);
 		finfo_close($finfo);
 	}
-	if (!$mime && function_exists('mime_content_type'))
+	if (!$mime && function_exists('mime_content_type')) {
 		$mime = mime_content_type($_SERVER['DOCUMENT_ROOT'].$filepath);
+	}
 
 	//Some types can't be trusted, and finding them via extension seams to give better resutls.
 	if (!$mime || $mime == 'text/plain' || $mime == 'application/msword') {

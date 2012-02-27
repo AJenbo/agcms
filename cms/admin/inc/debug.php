@@ -7,4 +7,4 @@ function memstatus($string)
 	$GLOBALS['mem'] = memory_get_usage();
 }
 memstatus('init');
-?>
+
