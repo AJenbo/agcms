@@ -1,7 +1,0 @@
-ErrorDocument 404 /404.php
-
-#default charset for text files
-AddDefaultCharset UTF-8
-AddType application/vnd.bw-fontobject eot
-AddType text/javascript js
-AddType text/xml xml
