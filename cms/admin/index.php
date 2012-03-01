@@ -146,7 +146,8 @@ $(\'subMenusOrder\').value = newOrder;
 		
 		//Binding
 		//TODO init error, vælger fra cookie i stedet for $kat[0]['bind']
-		$html .= katlist($kat[0]['bind']);
+		$kat = (int) $kat[0]['bind'];
+		$html .= katlist($kat);
 		
 		$html .= '<br /></div><p style="display:none;"></p></form>';
 		return $html;
@@ -366,7 +367,7 @@ $html .= '</div></form>';
 	$bind_nr = count($bind);
 	for($i=0;$i<$bind_nr;$i++) {
 		if ($bind[$i]['id'] != -1) {
-			$kattree = kattree($bind[$i]['kat']);
+			$kattree = kattree((int) $bind[$i]['kat']);
 			$kattree_nr = count($kattree);
 			$kattree_html = '';
 			for($kattree_i=0;$kattree_i<$kattree_nr;$kattree_i++) {
@@ -396,8 +397,8 @@ $html .= '</div></form>';
 	$tilbehor = $mysqli->fetch_array('SELECT id, tilbehor FROM `tilbehor` WHERE `side` = '.$id);
 	$tilbehor_nr = count($tilbehor);
 	for($i=0;$i<$tilbehor_nr;$i++) {
-		if ($tilbehor[$i]['id'] != -1) {
-			$kattree = kattree($tilbehor[$i]['kat']);
+		if ($tilbehor[$i]['id'] != null && $tilbehor[$i]['id'] != -1) {
+			$kattree = kattree((int) $tilbehor[$i]['kat']);
 			$kattree_nr = count($kattree);
 			$kattree_html = '';
 			for($kattree_i=0;$kattree_i<$kattree_nr;$kattree_i++) {
@@ -594,8 +595,8 @@ function editContact($id)
 	
 	$address = $mysqli->fetch_array('SELECT * FROM `email` WHERE `id` = '.$id);
 	
-	$html = '<div id="headline">'._('Edit contact person').'</div>';
-	$html .= '<form method="post" action="" onsubmit="updateContact('.$_GET['id'].'); return false;"><input type="submit" accesskey="s" style="width:1px; height:1px; position:absolute; top: -20px; left:-20px;" /><table border="0" cellspacing="0"><tbody><tr><td>'._('Name:').'</td><td colspan="2"><input value="'.
+	$html = '<div id="headline">' ._('Edit contact person') .'</div>';
+	$html .= '<form method="post" action="" onsubmit="updateContact(' .$id .'); return false;"><input type="submit" accesskey="s" style="width:1px; height:1px; position:absolute; top: -20px; left:-20px;" /><table border="0" cellspacing="0"><tbody><tr><td>'._('Name:').'</td><td colspan="2"><input value="'.
 	$address[0]['navn'].'" id="navn" /></td></tr><tr><td>'._('E-mail:').'</td><td colspan="2"><input value="'.
 	$address[0]['email'].'" id="email" /></td></tr><tr><td>'._('Address:').'</td><td colspan="2"><input value="'.
 	$address[0]['adresse'].'" id="adresse" /></td></tr><tr><td>'._('Country:').'</td><td colspan="2"><input value="'.
@@ -1078,9 +1079,10 @@ writeRichText("beskrivelse", \'\', "", '.($GLOBALS['_config']['thumb_width']+32)
 	
 function kattree($id)
 {
+	$id = $id;
 	global $mysqli;
 
-	$kat = $mysqli->fetch_array('SELECT id, navn, bind FROM `kat` WHERE id = '.$id.' LIMIT 1');
+	$kat = $mysqli->fetch_array('SELECT id, navn, bind FROM `kat` WHERE id = ' .$id .' LIMIT 1');
 
 	if ($kat) {
 		$id = $kat[0]['bind'];
@@ -1885,7 +1887,7 @@ JSON.parse = JSON.parse || function(jsonsring) { return jsonsring.evalJSON(true)
 		break;
 		case 'viewemail':
 		case 'editemail':
-			echo getEmail($_GET['id']);
+			echo getEmail((int) $_GET['id']);
 		break;
 		case 'sogogerstat':
 			echo getsogogerstat();
@@ -1908,25 +1910,25 @@ JSON.parse = JSON.parse || function(jsonsring) { return jsonsring.evalJSON(true)
 			echo $temp['html'];
 		break;
 		case 'editkrav':
-			echo editkrav($_GET['id']);
+			echo editkrav((int) $_GET['id']);
 		break;
 		case 'nykrav':
 			echo getnykrav();
 		break;
 		case 'updatemaerke';
-			echo getupdatemaerke($_GET['id']);
+			echo getupdatemaerke((int) $_GET['id']);
 		break;
 		case 'redigerside';
-			echo redigerside($_GET['id']);
+			echo redigerside((int) $_GET['id']);
 		break;
 		case 'redigerkat';
-			echo redigerkat($_GET['id']);
+			echo redigerkat((int) $_GET['id']);
 		break;
 		case 'getSiteTree';
 			echo getSiteTree();
 		break;
 		case 'redigerSpecial';
-			echo redigerSpecial($_GET['id']);
+			echo redigerSpecial((int) $_GET['id']);
 		break;
 		case 'redigerFrontpage';
 			echo redigerFrontpage();
@@ -1935,10 +1937,10 @@ JSON.parse = JSON.parse || function(jsonsring) { return jsonsring.evalJSON(true)
 			echo get_db_error();
 		break;
 		case 'listsort';
-			echo listsort($_GET['id']);
+			echo listsort((int) $_GET['id']);
 		break;
 		case 'editContact';
-			echo editContact($_GET['id']);
+			echo editContact((int) $_GET['id']);
 		break;
 		case 'addressbook';
 			echo getaddressbook();
