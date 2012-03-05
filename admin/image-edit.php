@@ -12,20 +12,19 @@ require_once 'inc/config.php';
 
 function saveImage($path, $cropX, $cropY, $cropW, $cropH, $maxW, $maxH, $flip, $rotate, $filename, $force)
 {
-	require_once 'inc/image-functions.php';
-
-	require_once 'inc/get_mime_type.php';
+	include_once 'inc/image-functions.php';
+	include_once 'inc/get_mime_type.php';
 	$mimeType = get_mime_type($path);
 
-	if ($mimeType == 'image/jpeg')
+	if ($mimeType == 'image/jpeg') {
 		$output['type'] = 'jpg';
-	else
+	} else {
 		$output['type'] = 'png';
+	}
 		
 	$output['filename'] = $filename;
 	$output['force'] = $force;
 
-//		   generateImage($path, $cropX, $cropY, $cropW, $cropH, $maxW, $maxH, $flip, $rotate, $output[]);
 	return generateImage($path, $cropX, $cropY, $cropW, $cropH, $maxW, $maxH, $flip, $rotate, $output);
 	//TODO close and update image in explorer
 }
@@ -83,10 +82,10 @@ $imagesize = @getimagesize($_SERVER['DOCUMENT_ROOT'].$_GET['path']);
 var id = <?php echo($_GET['id']); ?>;
 var mode = '<?php echo($_GET['mode']); ?>';
 var filename = '<?php
-	if ($_GET['mode'] == 'thb') {
-		$pathinfo = pathinfo($_GET['path']);
-		echo($pathinfo['filename'].'-thb');
-	}
+if ($_GET['mode'] == 'thb') {
+	$pathinfo = pathinfo($_GET['path']);
+	echo($pathinfo['filename'].'-thb');
+}
 ?>';
 var thumb_width = <?php echo($GLOBALS['_config']['thumb_width']); ?>;
 var thumb_height = <?php echo($GLOBALS['_config']['thumb_height']); ?>;

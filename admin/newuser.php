@@ -61,14 +61,15 @@ if ($_POST) {
 		die('<p style="text-align: center; margin-top: 20px;">'._('The passwords does not match.').'</p></body></html>');
 	}
 
-	require_once $_SERVER['DOCUMENT_ROOT'].'/inc/config.php';
-	require_once $_SERVER['DOCUMENT_ROOT'].'/inc/mysqli.php';
+	include_once $_SERVER['DOCUMENT_ROOT'].'/inc/config.php';
+	include_once $_SERVER['DOCUMENT_ROOT'].'/inc/mysqli.php';
 
 	//Open database
 	$mysqli = new simple_mysqli($GLOBALS['_config']['mysql_server'], $GLOBALS['_config']['mysql_user'], $GLOBALS['_config']['mysql_password'], $GLOBALS['_config']['mysql_database']);
 
-	if ($mysqli->fetch_array('SELECT id FROM users WHERE name = \''.addcslashes($_POST['name'], "'").'\''))
+	if ($mysqli->fetch_array('SELECT id FROM users WHERE name = \''.addcslashes($_POST['name'], "'").'\'')) {
 		die('<p style="text-align: center; margin-top: 20px;">'._('Username already taken.').'</p></body></html>');
+	}
 
 	$mysqli->query('INSERT INTO users SET name = \''.addcslashes($_POST['name'], "'").'\', password = \''.addcslashes(crypt($_POST['password']), "'").'\', fullname = \''.addcslashes($_POST['fullname'], "'").'\'');
 
@@ -82,7 +83,7 @@ if ($_POST) {
 <p>Sincerely the computer</p></body>
 </html>';
 
-	require_once $_SERVER['DOCUMENT_ROOT'].'/inc/phpMailer/class.phpmailer.php';
+	include_once $_SERVER['DOCUMENT_ROOT'].'/inc/phpMailer/class.phpmailer.php';
 	$mail = new PHPMailer();
 	$mail->SetLanguage(_('en'));
 	$mail->IsSMTP();
@@ -108,7 +109,7 @@ if ($_POST) {
 		//Upload email to the sent folder via imap
 		var_dump($mail->ErrorInfo);
 		if ($GLOBALS['_config']['imap']) {
-			require_once $_SERVER['DOCUMENT_ROOT'].'/inc/imap.inc.php';
+			include_once $_SERVER['DOCUMENT_ROOT'].'/inc/imap.inc.php';
 			$imap = new IMAPMAIL;
 			$imap->open($GLOBALS['_config']['imap'], $GLOBALS['_config']['imapport']);
 			$emailnr = array_search($GLOBALS['_config']['email'][0], $GLOBALS['_config']['email']);

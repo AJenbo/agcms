@@ -48,8 +48,9 @@ function updateuser($id, $updates)
 
 		//Generate SQL command
 		$sql = "UPDATE `users` SET";
-		foreach ($updates as $key => $value)
+		foreach ($updates as $key => $value) {
 			$sql .= " `".addcslashes($key, '`\\')."` = '".addcslashes($value, "'\\")."',";
+		}
 		$sql = substr($sql, 0, -1);
 		$sql .= ' WHERE `id` = '.$id;
 
@@ -122,14 +123,18 @@ function updateuser_r(date)
 <div id="canvas"><div id="headline"><?php echo(_('Edit').' '.$user['fullname']); ?></div>
 <table><tbody>
 <tr<?php
-	if ($_SESSION['_user']['access'] != 1 &&
-	$_SESSION['_user']['id'] != $_GET['id'])
-		echo(' style="display:none"');
+if ($_SESSION['_user']['access'] != 1
+	&& $_SESSION['_user']['id'] != $_GET['id']
+) {
+	echo ' style="display:none"';
+}
 ?>><td><?php echo(_('Full name:')); ?></td><td><input value="<?php echo($user['fullname']); ?>" id="fullname" name="fullname" /></td></tr>
 <tr<?php
-	if ($_SESSION['_user']['id'] == $_GET['id'] ||
-	$_SESSION['_user']['access'] == 1)
-		echo(' style="display:none"');
+if ($_SESSION['_user']['id'] == $_GET['id']
+	|| $_SESSION['_user']['access'] == 1
+) {
+	echo(' style="display:none"');
+}
 ?>><td><?php echo(_('Full name:')); ?></td><td><?php echo($user['fullname']); ?></td></tr>
 <tr><td><?php echo(_('User name:')); ?></td><td><?php echo($user['name']); ?></td></tr>
 <tr><td><?php echo(_('Last online:')); ?></td><td><?php echo(date(_('d/m/Y H:i'), $user['lastlogin'])); ?></td></tr>
@@ -143,13 +148,29 @@ $accesslevels = array(
 );
 
 foreach ($accesslevels as $level => $name) {
-		//warning if a user name is a it could colide with all
-        ?><option<?php if ($user['access'] == $level) echo(' selected="selected"'); ?> value="<?php echo($level); ?>"><?php echo($name); ?></option><?php
+	//warning if a user name is a it could colide with all
+    ?><option<?php
+	if ($user['access'] == $level) {
+		echo ' selected="selected"';
 	}
+	?> value="<?php echo($level); ?>"><?php echo($name); ?></option><?php
+}
 ?></select></td></tr>
-<tr<?php if ($_SESSION['_user']['id'] != $_GET['id']) echo(' style="display:none"'); ?>><td><?php echo(_('Password:')); ?></td><td><input type="password" id="password" name="password" /></td></tr>
-<tr<?php if ($_SESSION['_user']['access'] != 1 && $_SESSION['_user']['id'] != $_GET['id']) echo(' style="display:none"'); ?>><td><?php echo(_('New password:')); ?></td><td><input type="password" id="password_new" name="password_new" /></td></tr>
-<tr<?php if ($_SESSION['_user']['access'] != 1 && $_SESSION['_user']['id'] != $_GET['id']) echo(' style="display:none"'); ?>><td><?php echo(_('Repeat password:')); ?></td><td><input type="password" id="password2" name="password2" /></td></tr>
+<tr<?php
+if ($_SESSION['_user']['id'] != $_GET['id']) {
+	echo(' style="display:none"');
+}
+?>><td><?php echo(_('Password:')); ?></td><td><input type="password" id="password" name="password" /></td></tr>
+<tr<?php
+if ($_SESSION['_user']['access'] != 1 && $_SESSION['_user']['id'] != $_GET['id']) {
+	echo(' style="display:none"');
+}
+?>><td><?php echo(_('New password:')); ?></td><td><input type="password" id="password_new" name="password_new" /></td></tr>
+<tr<?php
+if ($_SESSION['_user']['access'] != 1 && $_SESSION['_user']['id'] != $_GET['id']) {
+	echo(' style="display:none"');
+}
+?>><td><?php echo(_('Repeat password:')); ?></td><td><input type="password" id="password2" name="password2" /></td></tr>
 
 </tbody></table></div><?php
 

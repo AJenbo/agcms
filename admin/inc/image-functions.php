@@ -12,31 +12,37 @@ require_once 'file-functions.php';
 function generateImage($path, $cropX, $cropY, $cropW, $cropH, $maxW, $maxH, $flip, $rotate, $output)
 {
 	
-	require_once $_SERVER['DOCUMENT_ROOT'].'/admin/inc/config.php';
+	include_once $_SERVER['DOCUMENT_ROOT'].'/admin/inc/config.php';
 
 	$imagesize = @getimagesize($_SERVER['DOCUMENT_ROOT'].$path);
 	$pathinfo = pathinfo($path);
 
-	if (!@$output['filename'])
+	if (!@$output['filename']) {
 		$output['filename'] = $pathinfo['filename'];
+	}
 			
-	if (@$output['type'] == 'jpg')
+	if (@$output['type'] == 'jpg') {
 		$output['path'] = $pathinfo['dirname'].'/'.$output['filename'].'.jpg';
-	elseif (@$output['type'] == 'png')
+	} elseif (@$output['type'] == 'png') {
 		$output['path'] = $pathinfo['dirname'].'/'.$output['filename'].'.png';
+	}
 	
-	if (!$cropW)
+	if (!$cropW) {
 		$cropW = $imagesize[0];
-	if (!$cropH)
+	}
+	if (!$cropH) {
 		$cropH = $imagesize[1];
+	}
 	
 	$cropW = min($imagesize[0], $cropW);
 	$cropH = min($imagesize[1], $cropH);
 	
-	if ($cropW == $imagesize[0])
+	if ($cropW == $imagesize[0]) {
 		$cropX = 0;
-	if ($cropH == $imagesize[1])
+	}
+	if ($cropH == $imagesize[1]) {
 		$cropY = 0;
+	}
 	
 	$maxW = min($cropW, $maxW);
 	$maxH = min($cropH, $maxH);
@@ -53,7 +59,7 @@ function generateImage($path, $cropX, $cropY, $cropW, $cropH, $maxW, $maxH, $fli
 		$height = $maxH;
 	}
 	
-	require_once 'get_mime_type.php';
+	include_once 'get_mime_type.php';
 	$mimeType = get_mime_type($path);
 
 	if (@$output['type'] && !$output['force'] && is_file($_SERVER['DOCUMENT_ROOT'].$output['path'])) {
@@ -61,39 +67,39 @@ function generateImage($path, $cropX, $cropY, $cropW, $cropH, $maxW, $maxH, $fli
 	}
 
 	switch($mimeType) {
-		case 'image/jpeg':
-			//TODO error if jpg > 1610361 pixel
-			$image = imagecreatefromjpeg($_SERVER['DOCUMENT_ROOT'].$path);
-			$fill = false;
+	case 'image/jpeg':
+		//TODO error if jpg > 1610361 pixel
+		$image = imagecreatefromjpeg($_SERVER['DOCUMENT_ROOT'].$path);
+		$fill = false;
 		break;
-		case 'image/png':
-			//TODO error if png > 804609 Pixels
-			$temp = imagecreatefrompng($_SERVER['DOCUMENT_ROOT'].$path);
-			
-			//Fill back ground
-			$image = imagecreatetruecolor(imagesx($temp), imagesy($temp)); // Create a blank image
-			imagealphablending($image, true);
-			$fill = true;
-			imagefilledrectangle($image, 0, 0, imagesx($temp), imagesy($temp), imagecolorallocate($image, $GLOBALS['_config']['bgcolorR'], $GLOBALS['_config']['bgcolorG'], $GLOBALS['_config']['bgcolorB']));
-			imagecopy($image, $temp, 0, 0, 0, 0, imagesx($temp), imagesy($temp));
-			imagedestroy($temp);
+	case 'image/png':
+		//TODO error if png > 804609 Pixels
+		$temp = imagecreatefrompng($_SERVER['DOCUMENT_ROOT'].$path);
+		
+		//Fill back ground
+		$image = imagecreatetruecolor(imagesx($temp), imagesy($temp)); // Create a blank image
+		imagealphablending($image, true);
+		$fill = true;
+		imagefilledrectangle($image, 0, 0, imagesx($temp), imagesy($temp), imagecolorallocate($image, $GLOBALS['_config']['bgcolorR'], $GLOBALS['_config']['bgcolorG'], $GLOBALS['_config']['bgcolorB']));
+		imagecopy($image, $temp, 0, 0, 0, 0, imagesx($temp), imagesy($temp));
+		imagedestroy($temp);
 		break;
-		case 'image/gif':
-			//TODO error if gif > 1149184 pixel
-			$temp = imagecreatefromgif($_SERVER['DOCUMENT_ROOT'].$path);
-						
-			//Fill back ground
-			$image = imagecreatetruecolor(imagesx($temp), imagesy($temp)); // Create a blank image
-			imagealphablending($image, true);
-			$fill = true;
-			imagefilledrectangle($image, 0, 0, imagesx($temp), imagesy($temp), imagecolorallocate($image, $GLOBALS['_config']['bgcolorR'], $GLOBALS['_config']['bgcolorG'], $GLOBALS['_config']['bgcolorB']));
-			imagecopy($image, $temp, 0, 0, 0, 0, imagesx($temp), imagesy($temp));
-			imagedestroy($temp);
+	case 'image/gif':
+		//TODO error if gif > 1149184 pixel
+		$temp = imagecreatefromgif($_SERVER['DOCUMENT_ROOT'].$path);
+					
+		//Fill back ground
+		$image = imagecreatetruecolor(imagesx($temp), imagesy($temp)); // Create a blank image
+		imagealphablending($image, true);
+		$fill = true;
+		imagefilledrectangle($image, 0, 0, imagesx($temp), imagesy($temp), imagecolorallocate($image, $GLOBALS['_config']['bgcolorR'], $GLOBALS['_config']['bgcolorG'], $GLOBALS['_config']['bgcolorB']));
+		imagecopy($image, $temp, 0, 0, 0, 0, imagesx($temp), imagesy($temp));
+		imagedestroy($temp);
 		break;
-		case 'image/vnd.wap.wbmp':
-			//TODO error if gif > 1149184 pixel
-			$image = imagecreatefromwbmp($_SERVER['DOCUMENT_ROOT'].$path);
-			$fill = false;
+	case 'image/vnd.wap.wbmp':
+		//TODO error if gif > 1149184 pixel
+		$image = imagecreatefromwbmp($_SERVER['DOCUMENT_ROOT'].$path);
+		$fill = false;
 		break;
 	}
 	
@@ -119,13 +125,13 @@ function generateImage($path, $cropX, $cropY, $cropW, $cropH, $maxW, $maxH, $fli
 	}
 
 	switch($rotate) {
-		case 180:
-			$image = imagerotate($image, $rotate, 0, 1);
+	case 180:
+		$image = imagerotate($image, $rotate, 0, 1);
 		break;
 
-		case 90:
-		case 270:
-			$image = rotateImage($image, $rotate);
+	case 90:
+	case 270:
+		$image = rotateImage($image, $rotate);
 		break;
 	}
 	
@@ -142,12 +148,12 @@ function generateImage($path, $cropX, $cropY, $cropW, $cropH, $maxW, $maxH, $fli
 		
 	} elseif ($mimeType == 'image/jpeg') {
 		header("Content-Type: image/jpeg");
-		imagejpeg($image, NULL, 80);
+		imagejpeg($image, null, 80);
 		die();
 		
 	} else {
 		header("Content-Type: image/png");
-		imagepng($image, NULL, 9);
+		imagepng($image, null, 9);
 		die();
 	}
 
@@ -157,11 +163,12 @@ function generateImage($path, $cropX, $cropY, $cropW, $cropH, $maxW, $maxH, $fli
 
 	
 	//save or output image
-	require_once $_SERVER['DOCUMENT_ROOT'].'/inc/config.php';
-	require_once $_SERVER['DOCUMENT_ROOT'].'/inc/mysqli.php';
+	include_once $_SERVER['DOCUMENT_ROOT'].'/inc/config.php';
+	include_once $_SERVER['DOCUMENT_ROOT'].'/inc/mysqli.php';
 	global $mysqli;
-	if (!$mysqli)
+	if (!$mysqli) {
 		$mysqli = new simple_mysqli($GLOBALS['_config']['mysql_server'], $GLOBALS['_config']['mysql_user'], $GLOBALS['_config']['mysql_password'], $GLOBALS['_config']['mysql_database']);
+	}
 	
 	if ($output['filename'] == $pathinfo['filename'] && $output['path'] != $path) {
 		$id = $mysqli->fetch_array('SELECT id FROM files WHERE path = \''.$path.'\'');
@@ -172,9 +179,9 @@ function generateImage($path, $cropX, $cropY, $cropW, $cropH, $maxW, $maxH, $fli
 	}
 	$id = @$id[0]['id'];
 
-	if ($id)
+	if ($id) {
 		$mysqli->query('UPDATE files SET path = \''.$output['path'].'\', size = '.$filesize.', mime = \''.$mimeType.'\', width = \''.$width.'\', height = \''.$height.'\' WHERE id = '.$id);
-	else {
+	} else {
 		$mysqli->query('INSERT INTO files (path, mime, width, height, size, aspect) VALUES (\''.$output['path']."', '".$mimeType."', '".$width."', '".$height."', '".$filesize."', NULL )");
 		$id = $mysqli->insert_id;
 	}
@@ -192,11 +199,13 @@ function flip($image, $flip)
 	//imagealphablending($temp, false);
 
 	if ($flip == 1) {
-		for($x=0; $x<$width; $x++)
+		for ($x=0; $x<$width; $x++) {
 			imagecopy($temp, $image, $width-$x-1, 0, $x, 0, 1, $height);
+		}
 	} elseif ($flip == 2) {
-		for($y=0; $y<$height; $y++)
+		for ($y=0; $y<$height; $y++) {
 			imagecopy($temp, $image, 0, $height-$y-1, 0, $y, $width, 1);
+		}
 	}
 	imagedestroy($image);
     return $temp;
@@ -250,10 +259,12 @@ function resize($image, $maxW, $maxH)
 function crop($image, $cropX, $cropY, $cropW, $cropH, $fill=true)
 {
 	//crop image and set background color
-	if (!$cropW)
+	if (!$cropW) {
 		$cropW == imagesx($image);
-	if (!$cropH)
+	}
+	if (!$cropH) {
 		$cropH == imagesy($image);
+	}
 	
 	if ($fill == false && ($cropW == imagesx($image) && $cropH == imagesy($image))) {
 		return $image;
@@ -277,8 +288,8 @@ function imagetrim($image, $bg, $fill)
     $imageH = imagesy($image);
 	
     //Scann for left
-	for($ix=0; $ix<$imageW; $ix++) {
-		for($iy=0; $iy<$imageH; $iy++) {
+	for ($ix=0; $ix<$imageW; $ix++) {
+		for ($iy=0; $iy<$imageH; $iy++) {
             if ($bg != imagecolorat($image, $ix, $iy)) {
 				$cropX = $ix;
 				//Not set in stone but may provide speed bump
@@ -291,8 +302,8 @@ function imagetrim($image, $bg, $fill)
     }
 	
     //Scann for top
-	for($iy=0; $iy<$cropY-1; $iy++) {
-		for($ix=0; $ix<$imageW; $ix++) {
+	for ($iy=0; $iy<$cropY-1; $iy++) {
+		for ($ix=0; $ix<$imageW; $ix++) {
             if ($bg != imagecolorat($image, $ix, $iy)) {
 				$ix = $imageW;
 				$cropY = $iy;
@@ -301,9 +312,9 @@ function imagetrim($image, $bg, $fill)
     }
 	
     //Scann for right
-	for($ix=$imageW-1; $ix>=0; $ix--){
-		for($iy=$imageH-1; $iy>=0; $iy--){
-            if ($bg != imagecolorat($image, $ix, $iy)){
+	for ($ix=$imageW-1; $ix>=0; $ix--) {
+		for ($iy=$imageH-1; $iy>=0; $iy--) {
+            if ($bg != imagecolorat($image, $ix, $iy)) {
 				$cropW = $ix - $cropX + 1;
 				$iy = 0;
 				$ix = 0;
@@ -312,9 +323,9 @@ function imagetrim($image, $bg, $fill)
     }
 	
     //Scann for bottom
-	for($iy=$imageH-1; $iy>=0; $iy--){
-		for($ix=$imageW-1; $ix>=0; $ix--){
-            if ($bg != imagecolorat($image, $ix, $iy)){
+	for ($iy=$imageH-1; $iy>=0; $iy--) {
+		for ($ix=$imageW-1; $ix>=0; $ix--) {
+            if ($bg != imagecolorat($image, $ix, $iy)) {
 				$cropH = $iy - $cropY + 1;
 				$iy = 0;
 				$ix = 0;

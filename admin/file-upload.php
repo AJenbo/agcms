@@ -8,7 +8,7 @@ textdomain("agcms");
 
 require_once $_SERVER['DOCUMENT_ROOT'].'/admin/inc/logon.php';
 if (@$_POST['filename']) {
-	require_once 'inc/file-functions.php';
+	include_once 'inc/file-functions.php';
 	$pathinfo = pathinfo($_POST['filename']);
 	
 	if ($_POST['type'] == 'image') {
@@ -64,20 +64,20 @@ function refreshFolder()
 </head>
 <body onload="window.focus();" bgcolor="#ffffff"><?php
 
-	function return_bytes($val)
-	{
-		$last = mb_strtolower($val{mb_strlen($val, 'UTF-8')-1}, 'UTF-8');
-		switch($last) {
-			// The 'G' modifier is available since PHP 5.1.0
-			case 'g':
-				$val *= 1024;
-			case 'm':
-				$val *= 1024;
-			case 'k':
-				$val *= 1024;
-		}
-		return $val;
+function return_bytes($val)
+{
+	$last = mb_strtolower($val{mb_strlen($val, 'UTF-8')-1}, 'UTF-8');
+	switch($last) {
+	// The 'G' modifier is available since PHP 5.1.0
+	case 'g':
+		$val *= 1024;
+	case 'm':
+		$val *= 1024;
+	case 'k':
+		$val *= 1024;
 	}
+	return $val;
+}
 	$maxbyte = min(return_bytes(ini_get('post_max_size')), return_bytes(ini_get('upload_max_filesize')));
 ?><object classid="clsid:d27cdb6e-ae6d-11cf-96b8-444553540000" codebase="http://fpdownload.macromedia.com/pub/shockwave/cabs/flash/swflash.cab#version=8,0,0,0" width="245" height="127" id="fileUpload" align="middle">
 	<param name="allowScriptAccess" value="sameDomain" />

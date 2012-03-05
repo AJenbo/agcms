@@ -81,11 +81,13 @@ if (empty($_GET['order'])) {
 
 foreach ($users as $key => $user) {
 	echo('<tr');
-	if ($key % 2)
+	if ($key % 2) {
 		echo(' class="altrow"');
+	}
 	echo('><td>');
-	if ($_SESSION['_user']['access'] == 1)
+	if ($_SESSION['_user']['access'] == 1) {
 		echo(' <img src="images/cross.png" alt="X" title="'._('Delete').'" onclick="deleteuser('.$user['id'].', \''.addcslashes($user['fullname'], "\\'").'\');" />');
+	}
 	echo('</td><td><a href="user.php?id='.$user['id'].'">'.$user['fullname'].'</a></td><td><a href="user.php?id='.$user['id'].'">');
 	if ($user['lastlogin'] == 0) {
 		echo(_('Never'));
