@@ -27,7 +27,7 @@ function newfaktura()
 }
 
 if (!empty($_GET['function']) && $_GET['function'] == 'new') {
-	header('Location: faktura.php?id='.newfaktura(), TRUE, 303);
+	header('Location: faktura.php?id='.newfaktura(), true, 303);
 	exit;
 }
 
@@ -59,71 +59,71 @@ if ($faktura['id']) {
 		
 		switch($epayment['StatusCode']) {
 		case 0:
-				//The payment/order placement has been carried out: Paid.
-				if ($faktura['status'] != 'accepted' && $faktura['status'] != 'giro' && $faktura['status'] != 'cash') {
-					$faktura['status'] = 'accepted';
-					$mysqli->query("UPDATE `fakturas` SET `status` = 'accepted' WHERE `id` = ".$faktura['id']);
-				} else {
-					//TODO warning
-				}
+			//The payment/order placement has been carried out: Paid.
+			if ($faktura['status'] != 'accepted' && $faktura['status'] != 'giro' && $faktura['status'] != 'cash') {
+				$faktura['status'] = 'accepted';
+				$mysqli->query("UPDATE `fakturas` SET `status` = 'accepted' WHERE `id` = ".$faktura['id']);
+			} else {
+				//TODO warning
+			}
 			break;
 		case 1:
 			//Denied/Discontinued. The payment has been denied or discontinued.
-				if ($faktura['status'] != 'pbserror' && $faktura['status'] != 'giro' && $faktura['status'] != 'cash' && $faktura['status'] != 'canceled') {
-					$faktura['status'] = 'pbserror';
-					$mysqli->query("UPDATE `fakturas` SET `status` = 'pbserror' WHERE `id` = ".$faktura['id']);
-				} else {
-					//TODO warning
-				}
+			if ($faktura['status'] != 'pbserror' && $faktura['status'] != 'giro' && $faktura['status'] != 'cash' && $faktura['status'] != 'canceled') {
+				$faktura['status'] = 'pbserror';
+				$mysqli->query("UPDATE `fakturas` SET `status` = 'pbserror' WHERE `id` = ".$faktura['id']);
+			} else {
+				//TODO warning
+			}
 			break;
 		case 2:
 			break;
 		case 3:
-				//Annulled. The card payment has been deleted by the Merchant, prior to Acquisition.
-				if ($faktura['status'] != 'rejected' && $faktura['status'] != 'giro' && $faktura['status'] != 'cash' && $faktura['status'] != 'canceled') {
-					$faktura['status'] = 'rejected';
-					$mysqli->query("UPDATE `fakturas` SET `status` = 'rejected' WHERE `id` = ".$faktura['id']);
-				} else {
-					//TODO warning
-				}
+			//Annulled. The card payment has been deleted by the Merchant, prior to Acquisition.
+			if ($faktura['status'] != 'rejected' && $faktura['status'] != 'giro' && $faktura['status'] != 'cash' && $faktura['status'] != 'canceled') {
+				$faktura['status'] = 'rejected';
+				$mysqli->query("UPDATE `fakturas` SET `status` = 'rejected' WHERE `id` = ".$faktura['id']);
+			} else {
+				//TODO warning
+			}
 			break;
 		case 4:
-				//Initiated. The payment has been initiated by the purchaser.
-				if ($faktura['status'] != 'locked' && $faktura['status'] != 'giro' && $faktura['status'] != 'cash') {
-					$faktura['status'] = 'locked';
-					$mysqli->query("UPDATE `fakturas` SET `status` = 'locked' WHERE `id` = ".$faktura['id']);
-				} else {
-					//TODO warning
-				}
+			//Initiated. The payment has been initiated by the purchaser.
+			if ($faktura['status'] != 'locked' && $faktura['status'] != 'giro' && $faktura['status'] != 'cash') {
+				$faktura['status'] = 'locked';
+				$mysqli->query("UPDATE `fakturas` SET `status` = 'locked' WHERE `id` = ".$faktura['id']);
+			} else {
+				//TODO warning
+			}
 			break;
 		case 6:
-				//Authorised. The card payment is authorised and awaiting confirmation and Acquisition.
-				if ($faktura['status'] != 'pbsok' && $faktura['status'] != 'giro' && $faktura['status'] != 'cash') {
-					$faktura['status'] = 'pbsok';
-					$mysqli->query("UPDATE `fakturas` SET `status` = 'pbsok' WHERE `id` = ".$faktura['id']);
-				} else {
-					//TODO warning
-				}
+			//Authorised. The card payment is authorised and awaiting confirmation and Acquisition.
+			if ($faktura['status'] != 'pbsok' && $faktura['status'] != 'giro' && $faktura['status'] != 'cash') {
+				$faktura['status'] = 'pbsok';
+				$mysqli->query("UPDATE `fakturas` SET `status` = 'pbsok' WHERE `id` = ".$faktura['id']);
+			} else {
+				//TODO warning
+			}
 			break;
 		case 7:
-				//Acquiring unsuccessful. It was not possible to acquire the payment.
-				if ($faktura['status'] != 'pbserror' && $faktura['status'] != 'giro' && $faktura['status'] != 'cash') {
-					$faktura['status'] = 'pbserror';
-					$mysqli->query("UPDATE `fakturas` SET `status` = 'pbserror' WHERE `id` = ".$faktura['id']);
-				} else {
-					//TODO warning
-				}
+			//Acquiring unsuccessful. It was not possible to acquire the payment.
+			if ($faktura['status'] != 'pbserror' && $faktura['status'] != 'giro' && $faktura['status'] != 'cash') {
+				$faktura['status'] = 'pbserror';
+				$mysqli->query("UPDATE `fakturas` SET `status` = 'pbserror' WHERE `id` = ".$faktura['id']);
+			} else {
+				//TODO warning
+			}
 			break;
 		case 8:
 			break;
 		case 9:
-				//Confirmed. The payment is confirmed and will be acquired.
-				if ($faktura['status'] != 'accepted' && $faktura['status'] != 'giro' && $faktura['status'] != 'cash') {
-					$faktura['status'] = 'accepted';
-					$mysqli->query("UPDATE `fakturas` SET `status` = 'accepted' WHERE `id` = ".$faktura['id']);
-				} else {
-					//TODO warning
-				}
+			//Confirmed. The payment is confirmed and will be acquired.
+			if ($faktura['status'] != 'accepted' && $faktura['status'] != 'giro' && $faktura['status'] != 'cash') {
+				$faktura['status'] = 'accepted';
+				$mysqli->query("UPDATE `fakturas` SET `status` = 'accepted' WHERE `id` = ".$faktura['id']);
+			} else {
+				//TODO warning
+			}
 			break;
 		case 11:
 			break;
@@ -195,11 +195,11 @@ if ($faktura['id']) {
 		case 45:
 			break;
 		case 48:
-				//For Order Administration: The transaction does not exist.
-				if ($faktura['status'] == 'pbsok' || $faktura['status'] == 'accepted') {
-					//$faktura['status'] = 'locked';
-					//$mysqli->query("UPDATE `fakturas` SET `status` = 'locked' WHERE `id` = ".$faktura['id']);
-				}
+			//For Order Administration: The transaction does not exist.
+			if ($faktura['status'] == 'pbsok' || $faktura['status'] == 'accepted') {
+				//$faktura['status'] = 'locked';
+				//$mysqli->query("UPDATE `fakturas` SET `status` = 'locked' WHERE `id` = ".$faktura['id']);
+			}
 			break;
 		case 50:
 			break;
@@ -303,8 +303,9 @@ function save($id, $type, $updates)
 	global $mysqli;
 	
 	if (!is_array($updates)) {
-		if (get_magic_quotes_gpc())
+		if (get_magic_quotes_gpc()) {
 			$updates = stripslashes($updates);
+		}
 	}
 	
 	if (empty($updates['department'])) {
@@ -327,25 +328,29 @@ function save($id, $type, $updates)
 	if ($faktura['status'] == 'locked' || $faktura['status'] == 'pbsok' || $faktura['status'] == 'pbserror' || $faktura['status'] == 'rejected') {
 		$updates = array('note' => $updates['note'] ? trim($faktura['note']."\n".$updates['note']) : $faktura['note'], 'clerk' => $updates['clerk'], 'department' => $updates['department']);
 		if ($faktura['status'] != 'pbsok') {
-			if ($type == 'giro')
+			if ($type == 'giro') {
 				$updates['status'] = 'giro';
-			if ($type == 'cash')
+			}
+			if ($type == 'cash') {
 				$updates['status'] = 'cash';
+			}
 		}
 	} elseif ($faktura['status'] == 'accepted' || $faktura['status'] == 'giro' || $faktura['status'] == 'cash' || $faktura['status'] == 'canceled') {
-		if ($updates['note'])
+		if ($updates['note']) {
 			$updates = array('note' => $faktura['note']."\n".$updates['note']);
-		else
+		} else {
 			$updates = array();
+		}
 	} elseif ($faktura['status'] == 'new') {
 		unset($updates['id']);
 		unset($updates['status']);
-		if ($type == 'lock')
+		if ($type == 'lock') {
 			$updates['status'] = 'locked';
-		elseif ($type == 'giro')
+		} elseif ($type == 'giro') {
 			$updates['status'] = 'giro';
-		elseif ($type == 'cash')
+		} elseif ($type == 'cash') {
 			$updates['status'] = 'cash';
+		}
 	}
 	
 	if ($type == 'cancel' && $faktura['status'] != 'pbsok' && $faktura['status'] != 'accepted' && $faktura['status'] != 'giro' && $faktura['status'] != 'cash') {
@@ -396,13 +401,10 @@ function save($id, $type, $updates)
 			return array('error' => _('The invoice must be of at at least 1 krone!'));
 		}
 		
-		require_once $_SERVER['DOCUMENT_ROOT'].'/inc/phpMailer/class.phpmailer.php';
-		
-		$emailBody = '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml"><head><meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-<title>'.sprintf(_('Online payment to %s'), $GLOBALS['_config']['site_name']).'</title>
-</head><body>
-'.sprintf(_('<p>Thank you for your order.</p>
+		include_once $_SERVER['DOCUMENT_ROOT'].'/inc/phpMailer/class.phpmailer.php';
+
+		$msg = _(
+			'<p>Thank you for your order.</p>
 
 <p>your online invoice no %d is approved and ready for shipment once the payment is complete.</p>
 
@@ -418,7 +420,10 @@ function save($id, $type, $updates)
 <br />%s
 <br />%s
 %s %s<br />
-Tel. %s</p>'),
+Tel. %s</p>'
+		);
+		$msg = sprintf(
+			$msg,
 			$faktura['id'],
 			$GLOBALS['_config']['base_url'],
 			$faktura['id'],
@@ -432,7 +437,12 @@ Tel. %s</p>'),
 			$GLOBALS['_config']['postcode'],
 			$GLOBALS['_config']['city'],
 			$GLOBALS['_config']['phone']
-		).'</body></html>';
+		);
+		
+		$emailBody = '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"><head><meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>'. sprintf(_('Online payment to %s'), $GLOBALS['_config']['site_name']).'</title>
+</head><body>' .$msg .'</body></html>';
 		
 		$mail             = new PHPMailer();
 		$mail->SetLanguage('dk');
@@ -453,8 +463,9 @@ Tel. %s</p>'),
 		$mail->Subject    = _('Online payment for ').$GLOBALS['_config']['site_name'];
 		$mail->MsgHTML($emailBody, $_SERVER['DOCUMENT_ROOT']);
 		
-		if (empty($faktura['navn']))
+		if (empty($faktura['navn'])) {
 			$faktura['navn'] = $faktura['email'];
+		}
 		
 		$mail->AddAddress($faktura['email'], $faktura['navn']);
 		if (!$mail->Send()) {
@@ -501,13 +512,9 @@ function sendReminder($id)
 	}
 	
 	include_once "../inc/phpMailer/class.phpmailer.php";
-	
-	$emailBody = '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml">
-<head><meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-<title>'._('Electronic Invoice concerning order #').$faktura['id'].'</title>
-</head><body>'.
-	sprintf(_('<hr />
+
+	$msg = _(
+		'<hr />
 
 <p style="text-align:center;"> <img src="/images/logoer/jagt-og-fiskermagasinet.png" alt="%s" /> </p>
 
@@ -541,23 +548,33 @@ sending a you a new link to the credit card invoice system <br />
 %s %s<br />
 Tel: %s<br />
 Fax: %s<br />
-<a href="mailto:%s">%s</a></p>'), 
-	$GLOBALS['_config']['site_name'],
-	$GLOBALS['_config']['base_url'],
-	$faktura['id'],
-	getCheckid($faktura['id']),
-	$GLOBALS['_config']['base_url'],
-	$faktura['id'],
-	getCheckid($faktura['id']),
-	$GLOBALS['_config']['site_name'],
-	$GLOBALS['_config']['address'],
-	$GLOBALS['_config']['postcode'],
-	$GLOBALS['_config']['city'],
-	$GLOBALS['_config']['phone'],
-	$GLOBALS['_config']['fax'],
-	$faktura['department'],
-	$faktura['department'])
-.'</body></html>';
+<a href="mailto:%s">%s</a></p>'
+	);
+
+	$msg = sprintf(
+		$msg, 
+		$GLOBALS['_config']['site_name'],
+		$GLOBALS['_config']['base_url'],
+		$faktura['id'],
+		getCheckid($faktura['id']),
+		$GLOBALS['_config']['base_url'],
+		$faktura['id'],
+		getCheckid($faktura['id']),
+		$GLOBALS['_config']['site_name'],
+		$GLOBALS['_config']['address'],
+		$GLOBALS['_config']['postcode'],
+		$GLOBALS['_config']['city'],
+		$GLOBALS['_config']['phone'],
+		$GLOBALS['_config']['fax'],
+		$faktura['department'],
+		$faktura['department']
+	);
+
+	$emailBody = '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head><meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>'._('Electronic Invoice concerning order #').$faktura['id'].'</title>
+</head><body>' .$msg .'</body></html>';
 	
 	$mail             = new PHPMailer();
 	$mail->SetLanguage('dk');
@@ -578,8 +595,9 @@ Fax: %s<br />
 	$mail->Subject    = 'Elektronisk faktura vedr. ordre';
 	$mail->MsgHTML($emailBody, $_SERVER['DOCUMENT_ROOT']);
 	
-	if (empty($faktura['navn']))
+	if (empty($faktura['navn'])) {
 		$faktura['navn'] = $faktura['email'];
+	}
 	
 	$mail->AddAddress($faktura['email'], $faktura['navn']);
 	if (!$mail->Send()) {
@@ -619,8 +637,9 @@ function pbsconfirm($id)
 	if ($confirmstatus['Status'] == 'A' && $confirmstatus['StatusCode'] == '0') {
 		$mysqli->query("UPDATE `fakturas` SET `status` = 'accepted', `paydate` = NOW() WHERE `id` = ".$id);
 		return true;
-	} else
+	} else {
 		return array('error' => $confirmstatus['Status'].$confirmstatus['StatusCode']);
+	}
 }
 
 function annul($id)
@@ -634,8 +653,9 @@ function annul($id)
 	if ($annulStatus['Status'] == 'A' && $annulStatus['StatusCode'] == '0') {
 		$mysqli->query("UPDATE `fakturas` SET `status` = 'rejected', `paydate` = NOW() WHERE `id` = 'pbsok' AND `id` = ".$id);
 		return true;
-	} else
+	} else {
 		return array('error' => $annulStatus['Status'].$annulStatus['StatusCode']);
+	}
 }
 
 function returnamount($id, $returnamount)
@@ -674,10 +694,11 @@ function validemail($email)
 {
 	//TODO Is this to strict?
 	//_An-._E-mail@test-domain.test.dk
-	if (!empty($email) &&
-	preg_match('/^([a-z0-9_-]+[a-z0-9_.-]*)*[a-z0-9_-]+@[a-z0-9-.]+[.][a-z]{2,4}$/ui', $email) &&
-	!preg_match('/[.]{2}/u', $email) &&
-	getmxrr(preg_replace('/.+?@(.?)/u', '$1', $email), $dummy)) {
+	if (!empty($email)
+		&& preg_match('/^([a-z0-9_-]+[a-z0-9_.-]*)*[a-z0-9_-]+@[a-z0-9-.]+[.][a-z]{2,4}$/ui', $email)
+		&& !preg_match('/[.]{2}/u', $email)
+		&& getmxrr(preg_replace('/.+?@(.?)/u', '$1', $email), $dummy)
+	) {
 		return true;
 	} else {
 		return false;
@@ -1103,50 +1124,62 @@ var amount;
 var status = '<?php echo($faktura['status']); ?>';
 
 --></script>
-</head>
-<body onload="<?php if ($faktura['status'] == 'new') echo('showhidealtpost($(\'altpost\').checked); prisUpdate(); validemail();'); ?>$('loading').style.visibility = 'hidden';">
-<div id="canvas"><div id="web"><table style="float:right;"><?php
-		if ($faktura['status'] != 'giro' && $faktura['status'] != 'cash' && $faktura['status'] != 'accepted' && $faktura['status'] != 'canceled' && $faktura['status'] != 'pbsok') {
-		?><tr>
-			<td><input type="button" value="<?php echo(_('Paid via giro')); ?>" onclick="save('giro');" /></td>
-			<td><input maxlength="10" name="gdate" id="gdate" size="11" value="<?php echo(date(_('m/d/Y'))); ?>" />
-				<script type="text/javascript"><!--
-				new tcal ({ 'controlid': 'gdate' });
-				--></script></td>
-		</tr>
-		<tr>
-			<td><input type="button" value="<?php echo(_('Paid in cash')); ?>" onclick="save('cash');" /></td>
-			<td><input maxlength="10" name="cdate" id="cdate" size="11" value="<?php echo(date(_('m/d/Y'))); ?>" />
-				<script type="text/javascript"><!--
-new tcal ({ 'controlid': 'cdate' });
---></script></td>
+</head><?php
+echo '<body onload="';
+if ($faktura['status'] == 'new') {
+	echo('showhidealtpost($(\'altpost\').checked); prisUpdate(); validemail();');
+}
+echo '$(\'loading\').style.visibility = \'hidden\';">';
+?><div id="canvas"><div id="web"><table style="float:right;"><?php
+if ($faktura['status'] != 'giro' && $faktura['status'] != 'cash' && $faktura['status'] != 'accepted' && $faktura['status'] != 'canceled' && $faktura['status'] != 'pbsok') {
+	?><tr>
+	<td><input type="button" value="<?php echo(_('Paid via giro')); ?>" onclick="save('giro');" /></td>
+	<td><input maxlength="10" name="gdate" id="gdate" size="11" value="<?php echo(date(_('m/d/Y'))); ?>" />
+		<script type="text/javascript"><!--
+		new tcal ({ 'controlid': 'gdate' });
+		--></script></td>
+	</tr>
+	<tr>
+	<td><input type="button" value="<?php echo(_('Paid in cash')); ?>" onclick="save('cash');" /></td>
+	<td><input maxlength="10" name="cdate" id="cdate" size="11" value="<?php echo(date(_('m/d/Y'))); ?>" />
+		<script type="text/javascript"><!--
+		new tcal ({ 'controlid': 'cdate' });
+		--></script></td>
 		</tr><?php
-		}
-		if ($faktura['status'] == 'accepted') {
-			?><tr>
-				<td><input type="button" value="Krediter beløb:" /></td>
-				<td><input value="0,00" size="9" /></td>
-			</tr><?php
-		}
-        $pnl = $mysqli->fetch_array("SELECT `packageId` FROM `PNL` WHERE `fakturaid` = ".$faktura['id']);
-		foreach ($pnl as $pakke) {
-		?><tr>
-			<td><a target="_blank" href="http://online.pannordic.com/pn_logistics/index_tracking_email.jsp?id=<?php echo($pakke['packageId']); ?>&amp;Search=search"><?php echo($pakke['packageId']); ?></a></td>
-		</tr><?php
-		}
-        $post = $mysqli->fetch_array("SELECT `STREGKODE` FROM `post` WHERE `deleted` = 0 AND `fakturaid` = ".$faktura['id']);
-		foreach ($post as $pakke) {
-		?><tr>
-			<td><a href="http://www.postdanmark.dk/tracktrace/TrackTrace.do?i_lang=IND&amp;i_stregkode=<?php echo($pakke['STREGKODE']); ?>" target="_blank"><?php echo($pakke['STREGKODE']); ?></a></td>
-		</tr><?php
-		}
-		?><tr>
-			<td colspan="2">
-				<p><strong><?php echo(_('Note:')); ?></strong></p>
-				<p class="note" style="width:350px"><?php if ($faktura['status'] != 'new') echo(nl2br(htmlspecialchars($faktura['note']))); ?></p><?php
-				$rows = count(explode("\n", $faktura['note']));
-				$rows += 2;
-				?><textarea style="width:350px" name="note" id="note" rows="<?=$rows?>"><?php if ($faktura['status'] == 'new') echo(htmlspecialchars($faktura['note'])); ?></textarea>
+}
+if ($faktura['status'] == 'accepted') {
+	?><tr>
+		<td><input type="button" value="Krediter beløb:" /></td>
+		<td><input value="0,00" size="9" /></td>
+	</tr><?php
+}
+$pnl = $mysqli->fetch_array("SELECT `packageId` FROM `PNL` WHERE `fakturaid` = ".$faktura['id']);
+foreach ($pnl as $pakke) {
+	?><tr>
+	<td><a target="_blank" href="http://online.pannordic.com/pn_logistics/index_tracking_email.jsp?id=<?php echo($pakke['packageId']); ?>&amp;Search=search"><?php echo($pakke['packageId']); ?></a></td>
+	</tr><?php
+}
+$post = $mysqli->fetch_array("SELECT `STREGKODE` FROM `post` WHERE `deleted` = 0 AND `fakturaid` = ".$faktura['id']);
+foreach ($post as $pakke) {
+	?><tr>
+	<td><a href="http://www.postdanmark.dk/tracktrace/TrackTrace.do?i_lang=IND&amp;i_stregkode=<?php echo($pakke['STREGKODE']); ?>" target="_blank"><?php echo($pakke['STREGKODE']); ?></a></td>
+	</tr><?php
+}
+?><tr>
+	<td colspan="2">
+		<p><strong><?php echo(_('Note:')); ?></strong></p>
+		<p class="note" style="width:350px"><?php
+if ($faktura['status'] != 'new') {
+	echo(nl2br(htmlspecialchars($faktura['note'])));
+}
+?></p><?php
+$rows = count(explode("\n", $faktura['note']));
+$rows += 2;
+?><textarea style="width:350px" name="note" id="note" rows="<?php echo $rows; ?>"><?php
+if ($faktura['status'] == 'new') {
+	echo(htmlspecialchars($faktura['note']));
+}
+?></textarea>
 			</td>
 		</tr>
 	</table>
@@ -1161,41 +1194,51 @@ new tcal ({ 'controlid': 'cdate' });
 		</tr>
         <tr>
 			<td>Status:</td>
-			<td><?php if ($faktura['status'] == 'new')
-					echo(_('Newly created'));
-				elseif ($faktura['status'] == 'locked' && $faktura['sendt'])
-					echo(_('Is sent to the Customer.'));
-				elseif ($faktura['status'] == 'locked')
-					echo(_('Locked for editing'));
-				elseif ($faktura['status'] == 'pbsok')
-					echo(_('Ready to expedite'));
-				elseif ($faktura['status'] == 'accepted') {
-					echo(_('Paid online'));
-					if ($faktura['paydate']) echo(' d. '.date(_('m/d/Y'), $faktura['paydate']));
-				} elseif ($faktura['status'] == 'giro') {
-					echo(_('Paid via giro'));
-					if ($faktura['paydate']) echo(' d. '.date(_('m/d/Y'), $faktura['paydate']));
-				} elseif ($faktura['status'] == 'cash') {
-					echo(_('Paid in cash'));
-					if ($faktura['paydate']) echo(' d. '.date(_('m/d/Y'), $faktura['paydate']));
-				} elseif ($faktura['status'] == 'pbserror') {
-					echo(_('Error during the payment'));
-					if ($epayment['Status'] == 'A' && $epayment['StatusCode'] = 1)
-						echo(_(', payment was interrupted.'));
-				} elseif ($faktura['status'] == 'canceled')
-					echo(_('Canceled'));
-				elseif ($faktura['status'] == 'rejected')
-					echo(_('Payment declined'));
-				else
-					echo(_('Does not exist in the system'));
+		<td><?php
+if ($faktura['status'] == 'new') {
+	echo(_('Newly created'));
+} elseif ($faktura['status'] == 'locked' && $faktura['sendt']) {
+	echo(_('Is sent to the Customer.'));
+} elseif ($faktura['status'] == 'locked') {
+	echo(_('Locked for editing'));
+} elseif ($faktura['status'] == 'pbsok') {
+	echo(_('Ready to expedite'));
+} elseif ($faktura['status'] == 'accepted') {
+	echo(_('Paid online'));
+	if ($faktura['paydate']) {
+		echo(' d. '.date(_('m/d/Y'), $faktura['paydate']));
+	}
+} elseif ($faktura['status'] == 'giro') {
+	echo(_('Paid via giro'));
+	if ($faktura['paydate']) {
+		echo(' d. '.date(_('m/d/Y'), $faktura['paydate']));
+	}
+} elseif ($faktura['status'] == 'cash') {
+	echo(_('Paid in cash'));
+	if ($faktura['paydate']) {
+		echo(' d. '.date(_('m/d/Y'), $faktura['paydate']));
+	}
+} elseif ($faktura['status'] == 'pbserror') {
+	echo(_('Error during the payment'));
+	if ($epayment['Status'] == 'A' && $epayment['StatusCode'] = 1) {
+		echo(_(', payment was interrupted.'));
+	}
+} elseif ($faktura['status'] == 'canceled') {
+	echo(_('Canceled'));
+} elseif ($faktura['status'] == 'rejected') {
+	echo(_('Payment declined'));
+} else {
+	echo(_('Does not exist in the system'));
+}
 ?></td>
 		</tr>
 		<tr>
 			<td><?php echo(_('Recived:')); ?></td>
 			<td><?php echo($faktura['transferred'] ? _('Yes') : _('No')); ?>
             <?php 
-            if ($_SESSION['_user']['access'] == 1 && $faktura['transferred'])
-	            echo(' (<a href="fakturasvalidate.php?undoid='.$faktura['id'].'">'._('Remove').'</a>)');
+if ($_SESSION['_user']['access'] == 1 && $faktura['transferred']) {
+    echo(' (<a href="fakturasvalidate.php?undoid='.$faktura['id'].'">'._('Remove').'</a>)');
+}
             ?>
 			</td>
 		</tr>
@@ -1206,63 +1249,89 @@ new tcal ({ 'controlid': 'cdate' });
 				<script type="text/javascript"><!--
 				new tcal ({ 'controlid': 'date' });
 				--></script>
-				<?php } else { echo(date(_('m/d/Y'), $faktura['date'])); } ?></td>
-		</tr><?php
-        $users = $mysqli->fetch_array("SELECT `fullname`, `name` FROM `users` ORDER BY `fullname` ASC");
-		//TODO block save if ! admin
-		?><tr>
-			<td>Ansvarlig:</td>
-			<td><?php if (count($users) > 1 && $_SESSION['_user']['access'] == 1 && $faktura['status'] != 'giro' && $faktura['status'] != 'cash' && $faktura['status'] != 'accepted' && $faktura['status'] != 'canceled') { ?>
-				<select name="clerk" id="clerk">
-					<option value=""<?php if (!$faktura['clerk']) echo(' selected="selected"'); ?>><?php echo(_('No one')); ?></option><?php
-		$userstest = array();
-		foreach ($users as $user) {
-			?><option value="<?php echo($user['fullname']); ?>"<?php if ($faktura['clerk'] == $user['fullname']) echo(' selected="selected"'); ?>><?php echo($user['fullname']); ?></option><?php
-			$userstest[] = $user['fullname'];
-		}
-		
-		if ($faktura['clerk'] && !in_array($faktura['clerk'], $userstest)) {
-			?><option value="<?php echo($faktura['clerk']); ?>" selected="selected"><?php echo($faktura['clerk']); ?></option><?php
-		}
-	?></select><?php
-	} else {
-		echo($faktura['clerk']);
+				<?php
+} else {
+	echo(date(_('m/d/Y'), $faktura['date']));
+}
+?></td></tr><?php
+$users = $mysqli->fetch_array("SELECT `fullname`, `name` FROM `users` ORDER BY `fullname` ASC");
+//TODO block save if ! admin
+?><tr>
+	<td>Ansvarlig:</td>
+	<td><?php
+if (count($users) > 1 && $_SESSION['_user']['access'] == 1 && $faktura['status'] != 'giro' && $faktura['status'] != 'cash' && $faktura['status'] != 'accepted' && $faktura['status'] != 'canceled') {
+	?><select name="clerk" id="clerk">
+		<option value=""<?php
+	if (!$faktura['clerk']) {
+		echo(' selected="selected"');
 	}
-	?></td>
+	?>><?php echo(_('No one')); ?></option><?php
+	$userstest = array();
+	foreach ($users as $user) {
+		?><option value="<?php echo($user['fullname']); ?>"<?php
+		if ($faktura['clerk'] == $user['fullname']) {
+			echo(' selected="selected"');
+		}
+		?>><?php echo($user['fullname']); ?></option><?php
+		$userstest[] = $user['fullname'];
+	}
+
+	if ($faktura['clerk'] && !in_array($faktura['clerk'], $userstest)) {
+		?><option value="<?php echo($faktura['clerk']); ?>" selected="selected"><?php echo($faktura['clerk']); ?></option><?php
+	}
+	?></select><?php
+} else {
+	echo($faktura['clerk']);
+}
+?></td>
 		</tr>
 		<tr>
 			<td>Afdeling:</td>
-			<td><?php if ($faktura['status'] != 'giro' && $faktura['status'] != 'cash' && $faktura['status'] != 'accepted' && $faktura['status'] != 'canceled') {
-if (count($GLOBALS['_config']['email']) > 1) {
-				?><select name="department" id="department">
-					<option value=""<?php if (!$faktura['department']) echo(' selected="selected"'); ?>>Ikke valgt</option>
-					<?php
-				foreach ($GLOBALS['_config']['email'] as $department) {
-					?>
-					<option<?php if ($faktura['department'] == $department) echo(' selected="selected"'); ?>><?php echo($department); ?></option>
-					<?php
-				}
-			?></select><?php
-		} else {
+			<td><?php
+if ($faktura['status'] != 'giro' && $faktura['status'] != 'cash' && $faktura['status'] != 'accepted' && $faktura['status'] != 'canceled') {
+	if (count($GLOBALS['_config']['email']) > 1) {
+		?><select name="department" id="department">
+			<option value=""<?php
+		if (!$faktura['department']) {
+			echo(' selected="selected"');
+		}
+		?>>Ikke valgt</option><?php
+		foreach ($GLOBALS['_config']['email'] as $department) {
+			?><option<?php
+			if ($faktura['department'] == $department) {
+				echo(' selected="selected"');
+			}
+			?>><?php echo($department); ?></option><?php
+		}
+		?></select><?php
+	} else {
 		echo($GLOBALS['_config']['email'][0]);
 		?><input name="department" id="department" type="hidden" value="<?php echo($GLOBALS['_config']['email'][0]); ?>" /><?php
-		}
-	} else {
-		echo($faktura['department']);
 	}
-	?></td>
-		</tr>
-		<tr>
-			<td><?php echo(_('Our ref.:')); ?></td>
-			<td><?php if ($faktura['status'] == 'new') { ?>
-				<input name="iref" id="iref" value="<?php echo($faktura['iref']); ?>" />
-				<?php } else { echo($faktura['iref']); } ?></td>
+} else {
+	echo($faktura['department']);
+}
+?></td>
+	</tr>
+	<tr>
+		<td><?php echo(_('Our ref.:')); ?></td>
+		<td><?php if ($faktura['status'] == 'new') { ?>
+			<input name="iref" id="iref" value="<?php echo($faktura['iref']); ?>" />
+			<?php
+} else {
+	echo($faktura['iref']);
+}
+?></td>
 		</tr>
 		<tr>
 			<td><?php echo(_('Their ref.:')); ?></td>
 			<td><?php if ($faktura['status'] == 'new') { ?>
 				<input name="eref" id="eref" value="<?php echo($faktura['eref']); ?>" />
-				<?php } else { echo($faktura['eref']); } ?></td>
+				<?php
+} else {
+	echo($faktura['eref']);
+}
+?></td>
 		</tr>
 		<tr>
 			<td colspan="2"><strong>Faktureringsadressen:</strong></td>
@@ -1272,44 +1341,72 @@ if (count($GLOBALS['_config']['email']) > 1) {
 			<td><?php if ($faktura['status'] == 'new') { ?>
 				<input name="tlf1" id="tlf1" value="<?php echo($faktura['tlf1']); ?>" />
 				<input type="button" value="Hent" onclick="getAddress($('tlf1').value);" />
-				<?php } else { echo($faktura['tlf1']); } ?></td>
+				<?php
+} else {
+	echo($faktura['tlf1']);
+}
+?></td>
 		</tr>
 		<tr>
 			<td><?php echo(_('Phone 2:')); ?></td>
 			<td><?php if ($faktura['status'] == 'new') { ?>
 				<input name="tlf2" id="tlf2" value="<?php echo($faktura['tlf2']); ?>" />
 				<input type="button" value="Hent" onclick="getAddress($('tlf2').value);" />
-				<?php } else { echo($faktura['tlf2']); } ?></td>
+				<?php
+} else {
+	echo($faktura['tlf2']);
+}
+?></td>
 		</tr>
 		<tr>
 			<td><?php echo(_('E-mail:')); ?></td>
 			<td><?php if ($faktura['status'] == 'new') { ?>
 				<input name="email" id="email" onchange="validemail();" onkeyup="validemail();" value="<?php echo($faktura['email']); ?>" />
-				<?php } else { echo('<a href="mailto:'.$faktura['email'].'">'.$faktura['email'].'</a>'); } ?></td>
+				<?php
+} else {
+	echo('<a href="mailto:'.$faktura['email'].'">'.$faktura['email'].'</a>');
+}
+?></td>
 		</tr>
 		<tr>
 			<td><?php echo(_('Name:')); ?></td>
 			<td><?php if ($faktura['status'] == 'new') { ?>
 				<input name="navn" id="navn" value="<?php echo($faktura['navn']); ?>" />
-				<?php } else { echo($faktura['navn']); } ?></td>
+				<?php
+} else {
+	echo($faktura['navn']);
+}
+?></td>
 		</tr>
 		<tr>
 			<td><?php echo(_('Attn.:')); ?></td>
 			<td><?php if ($faktura['status'] == 'new') { ?>
 				<input name="att" id="att" value="<?php echo($faktura['att']); ?>" />
-				<?php } else { echo($faktura['att']); } ?></td>
+				<?php
+} else {
+	echo($faktura['att']);
+}
+?></td>
 		</tr>
 		<tr>
 			<td><?php echo(_('Address:')); ?></td>
 			<td><?php if ($faktura['status'] == 'new') { ?>
 				<input name="adresse" id="adresse" value="<?php echo($faktura['adresse']); ?>" />
-				<?php } else { echo($faktura['adresse']); } ?></td>
+				<?php
+} else {
+	echo($faktura['adresse']);
+}
+?></td>
 		</tr>
 		<tr>
 			<td><?php echo(_('Postbox:')); ?></td>
 			<td><?php if ($faktura['status'] == 'new') { ?>
 				<input name="postbox" id="postbox" value="<?php echo($faktura['postbox']); ?>" />
-			<?php } else { echo($faktura['postbox']); } ?></td>
+			<?php
+} else {
+	echo($faktura['postbox']);
+}
+?></td>
 		</tr>
 		<tr>
 			<td><?php echo(_('Zipcode:')); ?></td>
@@ -1317,84 +1414,157 @@ if (count($GLOBALS['_config']['email']) > 1) {
 				<input name="postnr" id="postnr" value="<?php echo($faktura['postnr']); ?>" onblur="chnageZipCode(this.value, 'land', 'by')" onkeyup="chnageZipCode(this.value, 'land', 'by')" onchange="chnageZipCode(this.value, 'land', 'by')" />
 				<?php echo(_('City:')); ?>
 				<input name="by" id="by" value="<?php echo($faktura['by']); ?>" />
-				<?php } else { echo($faktura['postnr'].' '._('City:').' '.$faktura['by']); } ?></td>
+				<?php
+} else {
+	echo($faktura['postnr'].' '._('City:').' '.$faktura['by']);
+}
+?></td>
 		</tr>
 		<tr>
 			<td><?php echo(_('Country:')); ?></td>
-			<td><?php if ($faktura['status'] == 'new') { ?>
-				<select name="land" id="land" onblur="chnageZipCode($('postnr').value, 'land', 'by')" onkeyup="chnageZipCode($('postnr').value, 'land', 'by')" onchange="chnageZipCode($('postnr').value, 'land', 'by')">
-					<option value=""<?php if (!$faktura['land']) echo(' selected="selected"'); ?>></option>
-					<?php
-			foreach ($countries as $code => $country) {
-				?><option value="<?php echo($code); ?>"<?php if ($faktura['land'] == $code) echo(' selected="selected"'); ?>><?php echo(htmlspecialchars($country)); ?></option><?php
-			}
-			?></select><?php } else { echo($countries[$faktura['land']]); } ?></td>
-		</tr><?php
-if (($faktura['status'] != 'new' && $faktura['altpost']) || $faktura['status'] == 'new') {
-?><tr>
-	<td colspan="2"><?php if ($faktura['status'] == 'new') {
-	?><input onclick="showhidealtpost(this.checked);" name="altpost" id="altpost" type="checkbox"<?php if ($faktura['altpost']) echo(' checked="checked"'); ?> /><?php
+			<td><?php
+if ($faktura['status'] == 'new') {
+		?><select name="land" id="land" onblur="chnageZipCode($('postnr').value, 'land', 'by')" onkeyup="chnageZipCode($('postnr').value, 'land', 'by')" onchange="chnageZipCode($('postnr').value, 'land', 'by')">
+			<option value=""<?php
+	if (!$faktura['land']) {
+		echo ' selected="selected"';
 	}
-	?><label for="altpost"> <strong><?php echo(_('Other delivery address')); ?></strong></label></td>
-</tr>
-<tr class="altpost"<?php if (!$faktura['altpost']) echo(' style="display:none;"'); ?>>
+	?>></option><?php
+	foreach ($countries as $code => $country) {
+		?><option value="<?php echo($code); ?>"<?php
+		if ($faktura['land'] == $code) {
+			echo(' selected="selected"');
+		}
+		?>><?php echo(htmlspecialchars($country)); ?></option><?php
+	}
+	?></select><?php
+} else {
+	echo($countries[$faktura['land']]);
+}
+?></td></tr><?php
+if (($faktura['status'] != 'new' && $faktura['altpost']) || $faktura['status'] == 'new') {
+	?><tr>
+	<td colspan="2"><?php
+	if ($faktura['status'] == 'new') {
+		?><input onclick="showhidealtpost(this.checked);" name="altpost" id="altpost" type="checkbox"<?php
+		if ($faktura['altpost']) {
+			echo(' checked="checked"');
+		}
+		?> /><?php
+	}
+	?><label for="altpost"> <strong><?php echo(_('Other delivery address')); ?></strong></label></td></tr><tr class="altpost"<?php
+	if (!$faktura['altpost']) {
+		echo(' style="display:none;"');
+	}
+	?>>
 	<td>Tlf:</td>
-	<td><?php if ($faktura['status'] == 'new') { ?>
-		<input name="posttlf" id="posttlf" value="<?php echo($faktura['posttlf']); ?>" />
-		<input type="button" value="Hent" onclick="getAltAddress($('posttlf').value);" />
-		<?php } else { echo($faktura['posttlf']); } ?></td>
-</tr>
-<tr class="altpost"<?php if (!$faktura['altpost']) echo(' style="display:none;"'); ?>>
+	<td><?php
+	if ($faktura['status'] == 'new') {
+		?><input name="posttlf" id="posttlf" value="<?php echo($faktura['posttlf']); ?>" />
+		<input type="button" value="Hent" onclick="getAltAddress($('posttlf').value);" /><?php
+	} else {
+		echo($faktura['posttlf']);
+	}
+	?></td></tr><tr class="altpost"<?php
+	if (!$faktura['altpost']) {
+		echo(' style="display:none;"');
+	}
+	?>>
 	<td><?php echo(_('Name:')); ?></td>
-	<td><?php if ($faktura['status'] == 'new') { ?>
-		<input name="postname" id="postname" value="<?php echo($faktura['postname']); ?>" />
-		<?php } else { echo($faktura['postname']); } ?></td>
-</tr>
-<tr class="altpost"<?php if (!$faktura['altpost']) echo(' style="display:none;"'); ?>>
+	<td><?php
+	if ($faktura['status'] == 'new') {
+		?><input name="postname" id="postname" value="<?php echo($faktura['postname']); ?>" /><?php
+	} else {
+		echo $faktura['postname'];
+	}
+	?></td></tr><tr class="altpost"<?php
+	if (!$faktura['altpost']) {
+		echo ' style="display:none;"';
+	}
+	?>>
 	<td><?php echo(_('Attn.:')); ?></td>
-	<td><?php if ($faktura['status'] == 'new') { ?>
-		<input name="postatt" id="postatt" value="<?php echo($faktura['postatt']); ?>" />
-		<?php } else { echo($faktura['postatt']); } ?></td>
-</tr>
-<tr class="altpost"<?php if (!$faktura['altpost']) echo(' style="display:none;"'); ?>>
+	<td><?php
+	if ($faktura['status'] == 'new') {
+		?><input name="postatt" id="postatt" value="<?php echo($faktura['postatt']); ?>" />
+		<?php
+	} else {
+		echo $faktura['postatt'];
+	}
+	?></td></tr><tr class="altpost"<?php
+	if (!$faktura['altpost']) {
+		echo(' style="display:none;"');
+	}
+	?>>
 	<td><?php echo(_('Address:')); ?></td>
-	<td><?php if ($faktura['status'] == 'new') { ?>
-		<input name="postaddress" id="postaddress" value="<?php echo($faktura['postaddress']); ?>" />
-		<?php } else { echo($faktura['postaddress']); } ?></td>
-</tr>
-<tr class="altpost"<?php if (!$faktura['altpost']) echo(' style="display:none;"'); ?>>
+	<td><?php
+	if ($faktura['status'] == 'new') {
+		?><input name="postaddress" id="postaddress" value="<?php echo($faktura['postaddress']); ?>" /><?php
+	} else {
+		echo($faktura['postaddress']);
+	}
+	?></td></tr><tr class="altpost"<?php
+	if (!$faktura['altpost']) {
+		echo(' style="display:none;"');
+	}
+	?>>
 	<td></td>
-	<td><?php if ($faktura['status'] == 'new') { ?>
-		<input name="postaddress2" id="postaddress2" value="<?php echo($faktura['postaddress2']); ?>" />
-	<?php } else { echo($faktura['postaddress2']); } ?></td>
-</tr>
-<tr class="altpost"<?php if (!$faktura['altpost']) echo(' style="display:none;"'); ?>>
-	<td><?php echo(_('Postbox:')); ?></td>
-	<td><?php if ($faktura['status'] == 'new') { ?>
-		<input name="postpostbox" id="postpostbox" value="<?php echo($faktura['postpostbox']); ?>" />
-		<?php } else { echo($faktura['postpostbox']); } ?></td>
-</tr>
-<tr class="altpost"<?php if (!$faktura['altpost']) echo(' style="display:none;"'); ?>>
-	<td><?php echo(_('Zipcode:')); ?></td>
-	<td><?php if ($faktura['status'] == 'new') { ?>
-		<input name="postpostalcode" id="postpostalcode" value="<?php echo($faktura['postpostalcode']); ?>" onblur="chnageZipCode(this.value, 'postcountry', 'postcity')" onkeyup="chnageZipCode(this.value, 'postcountry', 'postcity')" onchange="chnageZipCode(this.value, 'postcountry', 'postcity')" />
+	<td><?php
+	if ($faktura['status'] == 'new') {
+		?><input name="postaddress2" id="postaddress2" value="<?php echo($faktura['postaddress2']); ?>" /><?php
+	} else {
+		echo $faktura['postaddress2'];
+	}
+	?></td></tr><tr class="altpost"<?php
+	if (!$faktura['altpost']) {
+		echo(' style="display:none;"');
+	}
+	?>><td><?php
+	echo _('Postbox:');
+	?></td><td><?php
+	if ($faktura['status'] == 'new') {
+		?><input name="postpostbox" id="postpostbox" value="<?php echo($faktura['postpostbox']); ?>" /><?php
+	} else {
+		echo($faktura['postpostbox']);
+	}
+	?></td></tr><tr class="altpost"<?php
+	if (!$faktura['altpost']) {
+		echo ' style="display:none;"';
+	}
+	?>>
+	<td><?php
+	echo _('Zipcode:');
+	?></td>
+	<td><?php
+	if ($faktura['status'] == 'new') {
+		?><input name="postpostalcode" id="postpostalcode" value="<?php echo($faktura['postpostalcode']); ?>" onblur="chnageZipCode(this.value, 'postcountry', 'postcity')" onkeyup="chnageZipCode(this.value, 'postcountry', 'postcity')" onchange="chnageZipCode(this.value, 'postcountry', 'postcity')" />
 		<?php echo(_('City:')); ?>
-		<input name="postcity" id="postcity" value="<?php echo($faktura['postcity']); ?>" />
-		<?php } else { echo($faktura['postpostalcode'].' '._('City:').' '.$faktura['postcity']); } ?></td>
-</tr>
-<tr class="altpost"<?php if (!$faktura['altpost']) echo(' style="display:none;"'); ?>>
+		<input name="postcity" id="postcity" value="<?php echo($faktura['postcity']); ?>" /><?php
+	} else {
+		echo($faktura['postpostalcode'].' '._('City:').' '.$faktura['postcity']);
+	}
+	?></td>
+	</tr>
+	<tr class="altpost"<?php
+	if (!$faktura['altpost']) {
+		echo(' style="display:none;"');
+	}
+	?>>
 	<td><?php echo(_('Country:')); ?></td>
 	<td><?php
 	if ($faktura['status'] == 'new') {
 		?><select name="postcountry" id="postcountry" onblur="chnageZipCode($('postpostalcode').value, 'postcountry', 'postcity')" onkeyup="chnageZipCode($('postpostalcode').value, 'postcountry', 'postcity')" onchange="chnageZipCode($('postpostalcode').value, 'postcountry', 'postcity')">
-				<option value=""<?php if (!$faktura['postcountry']) echo(' selected="selected"'); ?>></option><?php
-		foreach ($countries as $code => $country) {
-			?><option value="<?php echo($code); ?>"<?php
-		if ($faktura['postcountry'] == $code) {
+			<option value=""<?php
+		if (!$faktura['postcountry']) {
 			echo(' selected="selected"');
 		}
-		?>><?php
-		echo(htmlspecialchars($country)); ?></option><?php
+		?>></option><?php
+		foreach ($countries as $code => $country) {
+			?><option value="<?php echo($code); ?>"<?php
+			if ($faktura['postcountry'] == $code) {
+				echo(' selected="selected"');
+			}
+			?>><?php
+			echo(htmlspecialchars($country)); ?></option><?php
 		}
 		?></select><?php
 	} else {
