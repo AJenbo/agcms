@@ -794,7 +794,11 @@ function get_db_error()
 	return $html;
 }
 	
-//is the email valid
+/**
+ * Check if an email address is valid
+ *
+ * @return bool
+ */
 function valide_mail($email)
 {
 	if (preg_match('/^([a-z0-9_\.\-])+\@(([a-z0-9\-])+\.)+([a-z0-9]{2,4})+$/i', $email) && getmxrr(preg_replace('/.+?@(.?)/u', '$1', $email), $dummy)) {
