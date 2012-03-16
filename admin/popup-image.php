@@ -8,11 +8,11 @@ $files = $mysqli->fetch_array('SELECT alt, width, height FROM `files` WHERE `pat
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-<title><?php echo($_GET['url']); ?></title>
+<title><?php echo $_GET['url'] ?></title>
 <style type="text/css"><!--
 body {margin:0}
 --></style>
 </head>
 
-<body><div><img src="<?php echo($_GET['url']); ?>" alt="<?php echo($files[0]['alt']); ?>" title="<?php echo($files[0]['alt']); ?>" width="<?php echo($files[0]['width']); ?>" height="<?php echo($files[0]['height']); ?>" /></div></body>
+<body><div><img src="<?php echo $_GET['url'] ?>" alt="<?php echo $files[0]['alt'] ?>" title="<?php echo $files[0]['alt'] ?>" width="<?php echo $files[0]['width'] ?>" height="<?php echo $files[0]['height'] ?>" /></div></body>
 </html>

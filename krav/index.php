@@ -25,8 +25,8 @@ body {
 }
 </style>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-<title><?php echo($krav[0]['navn']); ?></title>
+<title><?php echo $krav[0]['navn'] ?></title>
 </head>
 
-<body><h1><?php echo($krav[0]['navn']); ?></h1><div id="text"><?php echo($krav[0]['text']); ?></div></body>
+<body><h1><?php echo $krav[0]['navn'] ?></h1><div id="text"><?php echo $krav[0]['text'] ?></div></body>
 </html>

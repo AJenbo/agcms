@@ -86,14 +86,14 @@ if (!isset($SAJAX_INCLUDED)) {
 
         if (! $sajax_js_has_been_shown) {
 ?>
-    sajax_debug_mode = <?php echo($sajax_debug_mode ? "true" : "false"); ?>;
-    sajax_failure_redirect = "<?php echo($sajax_failure_redirect); ?>";
+    sajax_debug_mode = <?php echo $sajax_debug_mode ? "true" : "false" ?>;
+    sajax_failure_redirect = "<?php echo $sajax_failure_redirect ?>";
 <?php
             global $sajax_export_array;
             foreach($sajax_export_array as $function) {
 ?>
-    function x_<?php echo($function["name"]); ?>() {
-        return sajax_do_call("<?php echo($function["name"]); ?>", arguments, "<?php echo($function["method"]); ?>", <?php echo($function["asynchronous"] ? 'true' : 'false'); ?>, "<?php echo($function["uri"]); ?>");
+    function x_<?php echo $function["name"] ?>() {
+        return sajax_do_call("<?php echo $function["name"] ?>", arguments, "<?php echo $function["method"] ?>", <?php echo $function["asynchronous"] ? 'true' : 'false' ?>, "<?php echo $function["uri"] ?>");
     }
 <?php
             }

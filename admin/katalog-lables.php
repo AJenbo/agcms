@@ -74,7 +74,7 @@ else
 
 ?><form action="" method="get" style="text-align:center">
   <input type="submit" value="Vis nyere end" accesskey="f" />
-  <input value="<?php echo($dato); ?>" name="dato" />
+  <input value="<?php echo $dato ?>" name="dato" />
 </form><?php
 
 if ($_GET['dato']) {
@@ -88,7 +88,7 @@ if ($_GET['dato']) {
     if ($email) {
         //Pad rows to fit on
         $email_nr = ceil(count($email)/21)*21;
-        echo('<h1 class="web">'.($email_nr/21).' sider</h1>');
+        echo '<h1 class="web">'.($email_nr/21).' sider</h1>'
 
         for($i=0;$i<$email_nr;$i++) {
 
@@ -107,9 +107,9 @@ if ($_GET['dato']) {
             } elseif ($i % 3 == 2) {
                 ?><div class="td right"><?php
             }
-            echo('<table><tr><td>'.@$email[$i]['navn'].'<br />'
+            echo '<table><tr><td>'.@$email[$i]['navn'].'<br />'
             .@$email[$i]['adresse'].'<br />'
-            .@$email[$i]['post'].' '.@$email[$i]['by']);
+            .@$email[$i]['post'].' '.@$email[$i]['by'];
             if (@$email[$i]['land'] != 'Danmark') echo ('<br />'.@$email[$i]['land']);
              ?></td></tr></table></div><?
             //end row

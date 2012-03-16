@@ -50,7 +50,7 @@ require_once 'inc/config.php';
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-<title><?php echo(_('File upload')); ?></title>
+<title><?php echo _('File upload') ?></title>
 <style type="text/css"><!--
 * {
     margin:0;
@@ -81,10 +81,10 @@ function return_bytes($val)
     $maxbyte = min(return_bytes(ini_get('post_max_size')), return_bytes(ini_get('upload_max_filesize')));
 ?><object classid="clsid:d27cdb6e-ae6d-11cf-96b8-444553540000" codebase="http://fpdownload.macromedia.com/pub/shockwave/cabs/flash/swflash.cab#version=8,0,0,0" width="245" height="127" id="fileUpload" align="middle">
     <param name="allowScriptAccess" value="sameDomain" />
-    <param name="movie" value="file-upload.swf?maxbyte=<?php echo $maxbyte; ?>&amp;admin_dir=<?php echo @$_COOKIE['admin_dir']; ?>&amp;text_width=<?php echo $GLOBALS['_config']['text_width']; ?>&amp;session_name=<?php echo(session_name()); ?>&amp;session_id=<?php echo(session_id()); ?>" />
+    <param name="movie" value="file-upload.swf?maxbyte=<?php echo $maxbyte; ?>&amp;admin_dir=<?php echo @$_COOKIE['admin_dir']; ?>&amp;text_width=<?php echo $GLOBALS['_config']['text_width']; ?>&amp;session_name=<?php echo session_name() ?>&amp;session_id=<?php echo session_id() ?>" />
     <param name="quality" value="high" />
     <param name="bgcolor" value="#ffffff" />
-    <embed src="file-upload.swf?maxbyte=<?php echo $maxbyte; ?>&amp;admin_dir=<?php echo @$_COOKIE['admin_dir']; ?>&amp;text_width=<?php echo $GLOBALS['_config']['text_width']; ?>&amp;session_name=<?php echo(session_name()); ?>&amp;session_id=<?php echo(session_id()); ?>" quality="high" bgcolor="#ffffff" width="245" height="127" name="fileUpload" align="middle" allowscriptaccess="sameDomain" type="application/x-shockwave-flash" pluginspage="http://www.macromedia.com/go/getflashplayer" />
+    <embed src="file-upload.swf?maxbyte=<?php echo $maxbyte; ?>&amp;admin_dir=<?php echo @$_COOKIE['admin_dir']; ?>&amp;text_width=<?php echo $GLOBALS['_config']['text_width']; ?>&amp;session_name=<?php echo session_name() ?>&amp;session_id=<?php echo session_id() ?>" quality="high" bgcolor="#ffffff" width="245" height="127" name="fileUpload" align="middle" allowscriptaccess="sameDomain" type="application/x-shockwave-flash" pluginspage="http://www.macromedia.com/go/getflashplayer" />
 </object>
 <!--[if lt IE 8]><![if gte IE 6]><script type="text/javascript" src="javascript/ieupdate.js"></script><![endif]><![endif]-->
 </body>

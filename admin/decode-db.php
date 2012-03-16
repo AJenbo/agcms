@@ -123,14 +123,14 @@ $sider_nr = count($sider);
 for ($i=0;$i<$sider_nr;$i++) {
     $mysqli->query("UPDATE `sider` SET `text` = '".htmlUrlDecode($sider[$i]['text'])."', `beskrivelse` = '".htmlUrlDecode($sider[$i]['beskrivelse'])."' WHERE `id` = ".$sider[$i]['id']." LIMIT 1");
     unset($sider[$i]);
-    echo("$i - ");
+    echo "$i - ";
 }
 $special = $mysqli->fetch_array("SELECT id, text FROM `special` WHERE text != ''");
 $special_nr = count($special);
 for ($i=0;$i<$special_nr;$i++) {
     $mysqli->query("UPDATE `special` SET `text` = '".htmlUrlDecode($special[$i]['text'])."' WHERE `id` = ".$special[$i]['id']." LIMIT 1");
     unset($special[$i]);
-    echo("$i - ");
+    echo "$i - ";
 }
 luk_forbindelse();
 ?>Done!

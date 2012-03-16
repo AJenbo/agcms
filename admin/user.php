@@ -78,7 +78,7 @@ $user = $mysqli->fetch_one("SELECT *, UNIX_TIMESTAMP(`lastlogin`) AS 'lastlogin'
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-<title><?php echo(_('Edit').' '.$user['fullname']); ?></title>
+<title><?php echo _('Edit').' '.$user['fullname'] ?></title>
 <script type="text/javascript" src="javascript/lib/prototype.js"></script>
 <script type="text/javascript"><!--
 var JSON = JSON || {};
@@ -87,13 +87,13 @@ JSON.parse = JSON.parse || function(jsonsring) { return jsonsring.evalJSON(true)
 //-->
 </script>
 <script type="text/javascript"><!--
-id = <?php echo($_GET['id']); ?>;
+id = <?php echo $_GET['id'] ?>;
 
 <?php sajax_show_javascript(); ?>
 
 function updateuser() {
     if ($('password_new').value != $('password2').value) {
-        alert('<?php echo(addcslashes(_('The passwords doesn\'t match.'), "'\\")); ?>');
+        alert('<?php echo addcslashes(_('The passwords doesn\'t match.'), "'\\") ?>');
         return false;
     }
     $('loading').style.visibility = '';
@@ -120,7 +120,7 @@ function updateuser_r(date)
 <link href="style/style.css" rel="stylesheet" type="text/css" />
 </head>
 <body onload="$('loading').style.visibility = 'hidden';">
-<div id="canvas"><div id="headline"><?php echo(_('Edit').' '.$user['fullname']); ?></div>
+<div id="canvas"><div id="headline"><?php echo _('Edit').' '.$user['fullname'] ?></div>
 <table><tbody>
 <tr<?php
 if ($_SESSION['_user']['access'] != 1
@@ -128,17 +128,17 @@ if ($_SESSION['_user']['access'] != 1
 ) {
     echo ' style="display:none"';
 }
-?>><td><?php echo(_('Full name:')); ?></td><td><input value="<?php echo($user['fullname']); ?>" id="fullname" name="fullname" /></td></tr>
+?>><td><?php echo _('Full name:') ?></td><td><input value="<?php echo $user['fullname'] ?>" id="fullname" name="fullname" /></td></tr>
 <tr<?php
 if ($_SESSION['_user']['id'] == $_GET['id']
     || $_SESSION['_user']['access'] == 1
 ) {
-    echo(' style="display:none"');
+    echo ' style="display:none"'
 }
-?>><td><?php echo(_('Full name:')); ?></td><td><?php echo($user['fullname']); ?></td></tr>
-<tr><td><?php echo(_('User name:')); ?></td><td><?php echo($user['name']); ?></td></tr>
-<tr><td><?php echo(_('Last online:')); ?></td><td><?php echo(date(_('d/m/Y H:i'), $user['lastlogin'])); ?></td></tr>
-<tr><td><?php echo(_('Access level:')); ?></td><td><select name="access" id="access"><?php
+?>><td><?php echo _('Full name:') ?></td><td><?php echo $user['fullname'] ?></td></tr>
+<tr><td><?php echo _('User name:') ?></td><td><?php echo $user['name'] ?></td></tr>
+<tr><td><?php echo _('Last online:') ?></td><td><?php echo date(_('d/m/Y H:i'), $user['lastlogin']) ?></td></tr>
+<tr><td><?php echo _('Access level:') ?></td><td><select name="access" id="access"><?php
 
 $accesslevels = array(
  0 => _('No access'),
@@ -153,24 +153,24 @@ foreach ($accesslevels as $level => $name) {
     if ($user['access'] == $level) {
         echo ' selected="selected"';
     }
-    ?> value="<?php echo($level); ?>"><?php echo($name); ?></option><?php
+    ?> value="<?php echo $level ?>"><?php echo $name ?></option><?php
 }
 ?></select></td></tr>
 <tr<?php
 if ($_SESSION['_user']['id'] != $_GET['id']) {
-    echo(' style="display:none"');
+    echo ' style="display:none"'
 }
-?>><td><?php echo(_('Password:')); ?></td><td><input type="password" id="password" name="password" /></td></tr>
+?>><td><?php echo _('Password:') ?></td><td><input type="password" id="password" name="password" /></td></tr>
 <tr<?php
 if ($_SESSION['_user']['access'] != 1 && $_SESSION['_user']['id'] != $_GET['id']) {
-    echo(' style="display:none"');
+    echo ' style="display:none"'
 }
-?>><td><?php echo(_('New password:')); ?></td><td><input type="password" id="password_new" name="password_new" /></td></tr>
+?>><td><?php echo _('New password:') ?></td><td><input type="password" id="password_new" name="password_new" /></td></tr>
 <tr<?php
 if ($_SESSION['_user']['access'] != 1 && $_SESSION['_user']['id'] != $_GET['id']) {
-    echo(' style="display:none"');
+    echo ' style="display:none"'
 }
-?>><td><?php echo(_('Repeat password:')); ?></td><td><input type="password" id="password2" name="password2" /></td></tr>
+?>><td><?php echo _('Repeat password:') ?></td><td><input type="password" id="password2" name="password2" /></td></tr>
 
 </tbody></table></div><?php
 
