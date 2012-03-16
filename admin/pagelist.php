@@ -362,6 +362,6 @@ JSON.parse = JSON.parse || function(jsonsring) { return jsonsring.evalJSON(true)
 </head>
 <body onload="init()">
 <img id="loading" src="images/loading.gif" width="16" height="16" alt="Processing" />
-<?php echo getSiteTree() ?>
+<?php echo getSiteTree(); ?>
 </body>
 </html>

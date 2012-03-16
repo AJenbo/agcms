@@ -10,17 +10,17 @@ textdomain("agcms");
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-<title><?php echo _('Create account') ?></title>
+<title><?php echo _('Create account'); ?></title>
 <link type="text/css" rel="stylesheet" href="style/style.css" />
 <script type="text/javascript"><!--
 function validate()
 {
     if (document.getElementById('fullname').value == '' || document.getElementById('name').value == '' || document.getElementById('password').value == '') {
-        alert('<?php echo _('All fields must be filled.') ?>');
+        alert('<?php echo _('All fields must be filled.'); ?>');
         return false;
     }
     if (document.getElementById('password').value != document.getElementById('password2').value) {
-        alert('<?php echo _('The passwords does not match.') ?>');
+        alert('<?php echo _('The passwords does not match.'); ?>');
         return false;
     }
 }
@@ -37,19 +37,19 @@ table, td, tr {
 ?><form action="" method="post" onsubmit="return validate();">
     <table style="background-color: #DDDDDD; border: 1px solid #AAAAAA; padding: 7px; margin: auto;">
         <tr>
-            <td><?php echo _('Fullname:') ?></td>
+            <td><?php echo _('Fullname:'); ?></td>
             <td><input id="fullname" name="fullname" /></td></tr>
         <tr>
-            <td><?php echo _('Username:') ?></td>
+            <td><?php echo _('Username:'); ?></td>
             <td><input id="name" name="name" /></td></tr>
         <tr>
-            <td><?php echo _('Password:') ?></td>
+            <td><?php echo _('Password:'); ?></td>
             <td><input id="password" name="password" type="password" /></td></tr>
         <tr>
-            <td><?php echo _('Repeat password:') ?></td>
+            <td><?php echo _('Repeat password:'); ?></td>
             <td><input id="password2" name="password2" type="password" /></td></tr>
         <tr>
-            <td colspan="2" align="center"><input type="submit" style="margin-top:6px; width:52; height:24;" value="<?php echo _('Create account') ?>" /></td></tr>
+            <td colspan="2" align="center"><input type="submit" style="margin-top:6px; width:52; height:24;" value="<?php echo _('Create account'); ?>" /></td></tr>
     </table>
 </form><?php
 

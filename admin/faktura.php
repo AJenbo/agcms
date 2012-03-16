@@ -1314,7 +1314,7 @@ if ($faktura['status'] != 'giro' && $faktura['status'] != 'cash' && $faktura['st
 ?></td>
     </tr>
     <tr>
-        <td><?php echo _('Our ref.:') ?></td>
+        <td><?php echo _('Our ref.:'); ?></td>
         <td><?php if ($faktura['status'] == 'new') { ?>
             <input name="iref" id="iref" value="<?php echo $faktura['iref'] ?>" />
             <?php
@@ -1324,7 +1324,7 @@ if ($faktura['status'] != 'giro' && $faktura['status'] != 'cash' && $faktura['st
 ?></td>
         </tr>
         <tr>
-            <td><?php echo _('Their ref.:') ?></td>
+            <td><?php echo _('Their ref.:'); ?></td>
             <td><?php if ($faktura['status'] == 'new') { ?>
                 <input name="eref" id="eref" value="<?php echo $faktura['eref'] ?>" />
                 <?php
@@ -1337,7 +1337,7 @@ if ($faktura['status'] != 'giro' && $faktura['status'] != 'cash' && $faktura['st
             <td colspan="2"><strong>Faktureringsadressen:</strong></td>
         </tr>
         <tr>
-            <td><?php echo _('Phone 1:') ?></td>
+            <td><?php echo _('Phone 1:'); ?></td>
             <td><?php if ($faktura['status'] == 'new') { ?>
                 <input name="tlf1" id="tlf1" value="<?php echo $faktura['tlf1'] ?>" />
                 <input type="button" value="Hent" onclick="getAddress($('tlf1').value);" />
@@ -1348,7 +1348,7 @@ if ($faktura['status'] != 'giro' && $faktura['status'] != 'cash' && $faktura['st
 ?></td>
         </tr>
         <tr>
-            <td><?php echo _('Phone 2:') ?></td>
+            <td><?php echo _('Phone 2:'); ?></td>
             <td><?php if ($faktura['status'] == 'new') { ?>
                 <input name="tlf2" id="tlf2" value="<?php echo $faktura['tlf2'] ?>" />
                 <input type="button" value="Hent" onclick="getAddress($('tlf2').value);" />
@@ -1359,7 +1359,7 @@ if ($faktura['status'] != 'giro' && $faktura['status'] != 'cash' && $faktura['st
 ?></td>
         </tr>
         <tr>
-            <td><?php echo _('E-mail:') ?></td>
+            <td><?php echo _('E-mail:'); ?></td>
             <td><?php if ($faktura['status'] == 'new') { ?>
                 <input name="email" id="email" onchange="validemail();" onkeyup="validemail();" value="<?php echo $faktura['email'] ?>" />
                 <?php
@@ -1369,7 +1369,7 @@ if ($faktura['status'] != 'giro' && $faktura['status'] != 'cash' && $faktura['st
 ?></td>
         </tr>
         <tr>
-            <td><?php echo _('Name:') ?></td>
+            <td><?php echo _('Name:'); ?></td>
             <td><?php if ($faktura['status'] == 'new') { ?>
                 <input name="navn" id="navn" value="<?php echo $faktura['navn'] ?>" />
                 <?php
@@ -1379,7 +1379,7 @@ if ($faktura['status'] != 'giro' && $faktura['status'] != 'cash' && $faktura['st
 ?></td>
         </tr>
         <tr>
-            <td><?php echo _('Attn.:') ?></td>
+            <td><?php echo _('Attn.:'); ?></td>
             <td><?php if ($faktura['status'] == 'new') { ?>
                 <input name="att" id="att" value="<?php echo $faktura['att'] ?>" />
                 <?php
@@ -1389,7 +1389,7 @@ if ($faktura['status'] != 'giro' && $faktura['status'] != 'cash' && $faktura['st
 ?></td>
         </tr>
         <tr>
-            <td><?php echo _('Address:') ?></td>
+            <td><?php echo _('Address:'); ?></td>
             <td><?php if ($faktura['status'] == 'new') { ?>
                 <input name="adresse" id="adresse" value="<?php echo $faktura['adresse'] ?>" />
                 <?php
@@ -1399,7 +1399,7 @@ if ($faktura['status'] != 'giro' && $faktura['status'] != 'cash' && $faktura['st
 ?></td>
         </tr>
         <tr>
-            <td><?php echo _('Postbox:') ?></td>
+            <td><?php echo _('Postbox:'); ?></td>
             <td><?php if ($faktura['status'] == 'new') { ?>
                 <input name="postbox" id="postbox" value="<?php echo $faktura['postbox'] ?>" />
             <?php
@@ -1409,10 +1409,10 @@ if ($faktura['status'] != 'giro' && $faktura['status'] != 'cash' && $faktura['st
 ?></td>
         </tr>
         <tr>
-            <td><?php echo _('Zipcode:') ?></td>
+            <td><?php echo _('Zipcode:'); ?></td>
             <td><?php if ($faktura['status'] == 'new') { ?>
                 <input name="postnr" id="postnr" value="<?php echo $faktura['postnr'] ?>" onblur="chnageZipCode(this.value, 'land', 'by')" onkeyup="chnageZipCode(this.value, 'land', 'by')" onchange="chnageZipCode(this.value, 'land', 'by')" />
-                <?php echo _('City:') ?>
+                <?php echo _('City:'); ?>
                 <input name="by" id="by" value="<?php echo $faktura['by'] ?>" />
                 <?php
 } else {
@@ -1421,7 +1421,7 @@ if ($faktura['status'] != 'giro' && $faktura['status'] != 'cash' && $faktura['st
 ?></td>
         </tr>
         <tr>
-            <td><?php echo _('Country:') ?></td>
+            <td><?php echo _('Country:'); ?></td>
             <td><?php
 if ($faktura['status'] == 'new') {
         ?><select name="land" id="land" onblur="chnageZipCode($('postnr').value, 'land', 'by')" onkeyup="chnageZipCode($('postnr').value, 'land', 'by')" onchange="chnageZipCode($('postnr').value, 'land', 'by')">
@@ -1435,7 +1435,7 @@ if ($faktura['status'] == 'new') {
         if ($faktura['land'] == $code) {
             echo ' selected="selected"'
         }
-        ?>><?php echo htmlspecialchars($country) ?></option><?php
+        ?>><?php echo htmlspecialchars($country); ?></option><?php
     }
     ?></select><?php
 } else {
@@ -1452,7 +1452,7 @@ if (($faktura['status'] != 'new' && $faktura['altpost']) || $faktura['status'] =
         }
         ?> /><?php
     }
-    ?><label for="altpost"> <strong><?php echo _('Other delivery address') ?></strong></label></td></tr><tr class="altpost"<?php
+    ?><label for="altpost"> <strong><?php echo _('Other delivery address'); ?></strong></label></td></tr><tr class="altpost"<?php
     if (!$faktura['altpost']) {
         echo ' style="display:none;"'
     }
@@ -1470,7 +1470,7 @@ if (($faktura['status'] != 'new' && $faktura['altpost']) || $faktura['status'] =
         echo ' style="display:none;"'
     }
     ?>>
-    <td><?php echo _('Name:') ?></td>
+    <td><?php echo _('Name:'); ?></td>
     <td><?php
     if ($faktura['status'] == 'new') {
         ?><input name="postname" id="postname" value="<?php echo $faktura['postname'] ?>" /><?php
@@ -1482,7 +1482,7 @@ if (($faktura['status'] != 'new' && $faktura['altpost']) || $faktura['status'] =
         echo ' style="display:none;"';
     }
     ?>>
-    <td><?php echo _('Attn.:') ?></td>
+    <td><?php echo _('Attn.:'); ?></td>
     <td><?php
     if ($faktura['status'] == 'new') {
         ?><input name="postatt" id="postatt" value="<?php echo $faktura['postatt'] ?>" />
@@ -1495,7 +1495,7 @@ if (($faktura['status'] != 'new' && $faktura['altpost']) || $faktura['status'] =
         echo ' style="display:none;"'
     }
     ?>>
-    <td><?php echo _('Address:') ?></td>
+    <td><?php echo _('Address:'); ?></td>
     <td><?php
     if ($faktura['status'] == 'new') {
         ?><input name="postaddress" id="postaddress" value="<?php echo $faktura['postaddress'] ?>" /><?php
@@ -1537,7 +1537,7 @@ if (($faktura['status'] != 'new' && $faktura['altpost']) || $faktura['status'] =
     <td><?php
     if ($faktura['status'] == 'new') {
         ?><input name="postpostalcode" id="postpostalcode" value="<?php echo $faktura['postpostalcode'] ?>" onblur="chnageZipCode(this.value, 'postcountry', 'postcity')" onkeyup="chnageZipCode(this.value, 'postcountry', 'postcity')" onchange="chnageZipCode(this.value, 'postcountry', 'postcity')" />
-        <?php echo _('City:') ?>
+        <?php echo _('City:'); ?>
         <input name="postcity" id="postcity" value="<?php echo $faktura['postcity'] ?>" /><?php
     } else {
         echo $faktura['postpostalcode'].' '._('City:').' '.$faktura['postcity']
@@ -1549,7 +1549,7 @@ if (($faktura['status'] != 'new' && $faktura['altpost']) || $faktura['status'] =
         echo ' style="display:none;"'
     }
     ?>>
-    <td><?php echo _('Country:') ?></td>
+    <td><?php echo _('Country:'); ?></td>
     <td><?php
     if ($faktura['status'] == 'new') {
         ?><select name="postcountry" id="postcountry" onblur="chnageZipCode($('postpostalcode').value, 'postcountry', 'postcity')" onkeyup="chnageZipCode($('postpostalcode').value, 'postcountry', 'postcity')" onchange="chnageZipCode($('postpostalcode').value, 'postcountry', 'postcity')">
@@ -1564,7 +1564,7 @@ if (($faktura['status'] != 'new' && $faktura['altpost']) || $faktura['status'] =
                 echo ' selected="selected"'
             }
             ?>><?php
-            echo htmlspecialchars($country) ?></option><?php
+            echo htmlspecialchars($country); ?></option><?php
         }
         ?></select><?php
     } else {
@@ -1579,24 +1579,24 @@ if ($faktura['status'] == 'new') {
         echo ' checked="checked"'
     }
     ?> id="premoms" onkeyup="prisUpdate()" onchange="prisUpdate()" onblur="prisUpdate()" onclick="prisUpdate()" />
-    <label for="premoms"><?php echo _('Entered amount includes VAT') ?></label></td>
+    <label for="premoms"><?php echo _('Entered amount includes VAT'); ?></label></td>
     </tr><?php
 }
 ?></table>
 <table id="data" cellspacing="0">
 <thead>
 <tr>
-    <td><?php echo _('Quantity') ?></td>
-    <td><?php echo _('Title') ?></td>
-    <td class="tal"><?php echo _('unit price') ?></td>
-    <td class="tal"><?php echo _('Total') ?></td>
+    <td><?php echo _('Quantity'); ?></td>
+    <td><?php echo _('Title'); ?></td>
+    <td class="tal"><?php echo _('unit price'); ?></td>
+    <td class="tal"><?php echo _('Total'); ?></td>
 </tr>
 </thead>
 <tfoot>
 <tr style="height:auto;min-height:auto;max-height:auto;">
     <td>&nbsp;</td>
     <td>&nbsp;</td>
-    <td class="tal"><?php echo _('Net Amount') ?></td>
+    <td class="tal"><?php echo _('Net Amount'); ?></td>
     <?php
 $productslines = max(count($faktura['quantities']), count($faktura['products']), count($faktura['values']));
 
@@ -1605,15 +1605,15 @@ for ($i=0;$i<$productslines;$i++) {
     $netto += $faktura['values'][$i]*$faktura['quantities'][$i];
 }
 ?>
-    <td class="tal" id="netto"><?php echo number_format($netto, 2, ',', '') ?></td>
+    <td class="tal" id="netto"><?php echo number_format($netto, 2, ',', ''); ?></td>
 </tr>
 <tr>
     <td>&nbsp;</td>
     <td>&nbsp;</td>
-    <td class="tal"><?php echo _('Freight') ?></td>
+    <td class="tal"><?php echo _('Freight'); ?></td>
     <td class="tal"><?php
 if ($faktura['status'] == 'new') {
-    ?><input maxlength="7" name="fragt" id="fragt" style="width:80px;" class="tal" value="<?php echo number_format($faktura['fragt'], 2, ',', '') ?>" onkeyup="prisUpdate()" onchange="prisUpdate()" onblur="prisUpdate()" />
+    ?><input maxlength="7" name="fragt" id="fragt" style="width:80px;" class="tal" value="<?php echo number_format($faktura['fragt'], 2, ',', ''); ?>" onkeyup="prisUpdate()" onchange="prisUpdate()" onblur="prisUpdate()" />
     <?php
 } else {
     echo number_format($faktura['fragt'], 2, ',', '')
@@ -1639,13 +1639,13 @@ if ($faktura['status'] == 'new') {
     echo ($faktura['momssats']*100).'%'
 }
         ?></td>
-    <td class="tal"><?php echo _('VAT Amount') ?></td>
-    <td class="tal" id="moms"><?php echo number_format($netto*$faktura['momssats'], 2, ',', '') ?></td>
+    <td class="tal"><?php echo _('VAT Amount'); ?></td>
+    <td class="tal" id="moms"><?php echo number_format($netto*$faktura['momssats'], 2, ',', ''); ?></td>
 </tr>
 <tr class="border">
     <td colspan="2">&nbsp;</td>
-    <td style="text-align:center; font-weight:bold;"><?php echo _('TO PAY') ?></td>
-    <td class="tal" id="payamount"><?php echo number_format($netto*(1+$faktura['momssats'])+$faktura['fragt'], 2, ',', '') ?></td>
+    <td style="text-align:center; font-weight:bold;"><?php echo _('TO PAY'); ?></td>
+    <td class="tal" id="payamount"><?php echo number_format($netto*(1+$faktura['momssats'])+$faktura['fragt'], 2, ',', ''); ?></td>
 </tr>
 </tfoot>
 <tbody id="vareTable"><?php
@@ -1662,15 +1662,15 @@ if ($faktura['status'] == 'new') {
         echo '" onkeyup="prisUpdate()" onchange="prisUpdate()" onblur="prisUpdate()" />';
         ?></td>
         <td class="tal total"></td>
-        <td style="border:0; font-weight:bold;"><a href="#" onclick="removeRow(this); return false"><img alt="X" src="images/cross.png" height="16" width="16" title="<?php echo _('Remove Line') ?>" /></a></td></tr><?php
+        <td style="border:0; font-weight:bold;"><a href="#" onclick="removeRow(this); return false"><img alt="X" src="images/cross.png" height="16" width="16" title="<?php echo _('Remove Line'); ?>" /></a></td></tr><?php
     }
 } else {
     for ($i=0; $i<$productslines; $i++) {
         ?><tr>
         <td class="tal"><?php echo $faktura['quantities'][$i] ?></td>
-        <td><?php echo htmlspecialchars_decode($faktura['products'][$i]) ?></td>
-        <td class="tal"><?php echo number_format($faktura['values'][$i], 2, ',', '') ?></td>
-        <td class="tal"><?php echo number_format($faktura['values'][$i]*$faktura['quantities'][$i], 2, ',', '') ?></td></tr><?php
+        <td><?php echo htmlspecialchars_decode($faktura['products'][$i]); ?></td>
+        <td class="tal"><?php echo number_format($faktura['values'][$i], 2, ',', ''); ?></td>
+        <td class="tal"><?php echo number_format($faktura['values'][$i]*$faktura['quantities'][$i], 2, ',', ''); ?></td></tr><?php
     }
 }
 ?></tbody>
@@ -1691,8 +1691,8 @@ if ($faktura['status'] == 'pbsok') {
     /*
     TODO
         ?><tr>
-            <td><input type="button" value="<?php echo _('Koriger beløb:') ?>" onclick="loweramount();" /></td>
-            <td><input name="newamount" id="newamount" value="<?php echo number_format(max(0, $faktura['amount']), 2, ',', '') ?>" size="9" /></td>
+            <td><input type="button" value="<?php echo _('Koriger beløb:'); ?>" onclick="loweramount();" /></td>
+            <td><input name="newamount" id="newamount" value="<?php echo number_format(max(0, $faktura['amount']), 2, ',', ''); ?>" size="9" /></td>
         </tr>
     <?php
     */

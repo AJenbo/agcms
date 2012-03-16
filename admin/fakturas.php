@@ -78,7 +78,7 @@ $fakturas = $mysqli->fetch_array("SELECT `id`, `status`, `sendt`, `clerk`, `amou
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-<title><?php echo _('Invoice list') ?></title>
+<title><?php echo _('Invoice list'); ?></title>
 <script type="text/javascript" src="javascript/lib/prototype.js"></script>
 <script type="text/javascript"><!--
 var JSON = JSON || {};
@@ -145,7 +145,7 @@ a {
 <body onload="$('loading').style.visibility = 'hidden';">
 <div id="canvas">
 <form action="" method="post"><table><tr>
-<td><?php echo _('ID:') ?></td><td><?php echo _('Year:') ?></td><td><?php echo _('Month:') ?></td><td><?php echo _('Clerk:') ?></td><td><?php echo _('Status:') ?></td></tr><tr><td>
+<td><?php echo _('ID:'); ?></td><td><?php echo _('Year:'); ?></td><td><?php echo _('Month:'); ?></td><td><?php echo _('Clerk:'); ?></td><td><?php echo _('Status:'); ?></td></tr><tr><td>
 
 <input name="id" value="<?php
 if (!empty($_POST['id'])) {
@@ -174,67 +174,67 @@ for ($i=$oldest;$i<date('Y')+1;$i++) {
 if (@!$_POST['m']) {
     echo ' selected="selected"'
 }
-?>><?php echo _('All') ?></option>
+?>><?php echo _('All'); ?></option>
     <option value="1"<?php
 if (@$_POST['m'] == '1') {
     echo ' selected="selected"'
 }
-?>><?php echo _('Jan') ?></option>
+?>><?php echo _('Jan'); ?></option>
     <option value="2"<?php
 if (@$_POST['m'] == '2') {
     echo ' selected="selected"'
 }
-?>><?php echo _('Feb') ?></option>
+?>><?php echo _('Feb'); ?></option>
     <option value="3"<?php
 if (@$_POST['m'] == '3') {
     echo ' selected="selected"'
 }
-?>><?php echo _('Mar') ?></option>
+?>><?php echo _('Mar'); ?></option>
     <option value="4"<?php
 if (@$_POST['m'] == '4') {
     echo ' selected="selected"'
 }
-?>><?php echo _('Apr') ?></option>
+?>><?php echo _('Apr'); ?></option>
     <option value="5"<?php
 if (@$_POST['m'] == '5') {
     echo ' selected="selected"'
 }
-?>><?php echo _('May') ?></option>
+?>><?php echo _('May'); ?></option>
     <option value="6"<?php
 if (@$_POST['m'] == '6') {
     echo ' selected="selected"'
 }
-?>><?php echo _('Jun') ?></option>
+?>><?php echo _('Jun'); ?></option>
     <option value="7"<?php
 if (@$_POST['m'] == '7') {
     echo ' selected="selected"'
 }
-?>><?php echo _('Jul') ?></option>
+?>><?php echo _('Jul'); ?></option>
     <option value="8"<?php
 if (@$_POST['m'] == '8') {
     echo ' selected="selected"'
 }
-?>><?php echo _('Aug') ?></option>
+?>><?php echo _('Aug'); ?></option>
     <option value="9"<?php
 if (@$_POST['m'] == '9') {
     echo ' selected="selected"'
 }
-?>><?php echo _('Sep') ?></option>
+?>><?php echo _('Sep'); ?></option>
     <option value="10"<?php
 if (@$_POST['m'] == '10') {
     echo ' selected="selected"'
 }
-?>><?php echo _('Oct') ?></option>
+?>><?php echo _('Oct'); ?></option>
     <option value="11"<?php
 if (@$_POST['m'] == '11') {
     echo ' selected="selected"'
 }
-?>><?php echo _('Nov') ?></option>
+?>><?php echo _('Nov'); ?></option>
     <option value="12"<?php
 if (@$_POST['m'] == '12') {
     echo ' selected="selected"'
 }
-?>><?php echo _('Dec') ?></option>
+?>><?php echo _('Dec'); ?></option>
 </select>
 
 <?php
@@ -243,7 +243,7 @@ if (count($GLOBALS['_config']['email']) < 2)
     echo '<span style="display:none">'
 ?></td><td>
 <select name="department">
-    <option value=""<?php if (!$_POST['department']) echo ' selected="selected"' ?>><?php echo _('All') ?></option><?php
+    <option value=""<?php if (!$_POST['department']) echo ' selected="selected"' ?>><?php echo _('All'); ?></option><?php
     foreach ($GLOBALS['_config']['email'] as $email) {
         ?><option<?php if ($_POST['department'] == $email) echo ' selected="selected"' ?>><?php echo $email ?></option><?php
     }
@@ -264,7 +264,7 @@ if (count($users) < 2) {
 if (!$_POST['clerk']) {
     echo ' selected="selected"'
 }
-?>><?php echo _('All') ?></option><?php
+?>><?php echo _('All'); ?></option><?php
 foreach ($users as $user) {
     //warning if a user name is a it could colide with all
     ?><option<?php
@@ -283,62 +283,62 @@ if (count($users) < 2) {
 if (!$_POST['status']) {
     echo ' selected="selected"'
 }
-?>><?php echo _('All') ?></option>
+?>><?php echo _('All'); ?></option>
     <option value="activ"<?php
 if ($_POST['status'] == 'activ') {
     echo ' selected="selected"'
 }
-?>><?php echo _('Current') ?></option>
+?>><?php echo _('Current'); ?></option>
     <option value="inactiv"<?php
 if ($_POST['status'] == 'inactiv') {
     echo ' selected="selected"'
 }
-?>><?php echo _('Completed') ?></option>
+?>><?php echo _('Completed'); ?></option>
     <option value="new"<?php
 if ($_POST['status'] == 'new') {
     echo ' selected="selected"'
 }
-?>><?php echo _('New') ?></option>
+?>><?php echo _('New'); ?></option>
     <option value="locked"<?php
 if ($_POST['status'] == 'locked') {
     echo ' selected="selected"'
 }
-?>><?php echo _('Locked') ?></option>
+?>><?php echo _('Locked'); ?></option>
     <option value="pbsok"<?php
 if ($_POST['status'] == 'pbsok') {
     echo ' selected="selected"'
 }
-?>><?php echo _('Ready') ?></option>
+?>><?php echo _('Ready'); ?></option>
     <option value="accepted"<?php
 if ($_POST['status'] == 'accepted') {
     echo ' selected="selected"'
 }
-?>><?php echo _('Expedited') ?></option>
+?>><?php echo _('Expedited'); ?></option>
     <option value="giro"<?php
 if ($_POST['status'] == 'giro') {
     echo ' selected="selected"'
 }
-?>><?php echo _('Giro') ?></option>
+?>><?php echo _('Giro'); ?></option>
     <option value="cash"<?php
 if ($_POST['status'] == 'cash') {
     echo ' selected="selected"'
 }
-?>><?php echo _('Cash') ?></option>
+?>><?php echo _('Cash'); ?></option>
     <option value="pbserror"<?php
 if ($_POST['status'] == 'pbserror') {
     echo ' selected="selected"'
 }
-?>><?php echo _('Error') ?></option>
+?>><?php echo _('Error'); ?></option>
     <option value="canceled"<?php
 if ($_POST['status'] == 'canceled') {
     echo ' selected="selected"'
 }
-?>><?php echo _('Canceled') ?></option>
+?>><?php echo _('Canceled'); ?></option>
     <option value="rejected"<?php
 if ($_POST['status'] == 'rejected') {
     echo ' selected="selected"'
 }
-?>><?php echo _('Rejected') ?></option>
+?>><?php echo _('Rejected'); ?></option>
 </select></td><td><input type="submit" value="Hent" /></td></tr></table>
 
 </form>
@@ -346,15 +346,15 @@ if ($_POST['status'] == 'rejected') {
 <thead>
     <tr>
         <td style="width:16px;"></td>
-        <td><?php echo _('ID') ?></td>
-        <td><?php echo _('Created') ?></td>
+        <td><?php echo _('ID'); ?></td>
+        <td><?php echo _('Created'); ?></td>
         <?php
 if (empty($_POST['clerk'])) {
-    ?><td><?php echo _('Responsible') ?></td><?php
+    ?><td><?php echo _('Responsible'); ?></td><?php
 }
 ?>
-        <td><?php echo _('Amount') ?></td>
-        <td><?php echo _('Recipient') ?></td>
+        <td><?php echo _('Amount'); ?></td>
+        <td><?php echo _('Recipient'); ?></td>
     </tr>
 </thead>
 <tbody id="list"><?php
@@ -391,7 +391,7 @@ foreach ($fakturas as $i => $faktura) {
     //Giro
     ?></a></td>
     <td style="text-align:right"><a href="faktura.php?id=<?php echo $faktura['id'] ?>"><?php echo $faktura['id'] ?></a></td>
-    <td style="text-align:right"><a href="faktura.php?id=<?php echo $faktura['id'] ?>"><?php echo date('j/m/y', $faktura['date']) ?></a></td>
+    <td style="text-align:right"><a href="faktura.php?id=<?php echo $faktura['id'] ?>"><?php echo date('j/m/y', $faktura['date']); ?></a></td>
     <?php
     if (!$_POST['clerk']) {
         ?><td><a href="faktura.php?id=<?php echo $faktura['id'] ?>"><?php
@@ -399,7 +399,7 @@ foreach ($fakturas as $i => $faktura) {
         ?></a></td><?php
     }
     ?>
-    <td style="text-align:right"><a href="faktura.php?id=<?php echo $faktura['id'] ?>"><?php echo number_format($faktura['amount'], 2, ',', '.') ?></a></td>
+    <td style="text-align:right"><a href="faktura.php?id=<?php echo $faktura['id'] ?>"><?php echo number_format($faktura['amount'], 2, ',', '.'); ?></a></td>
     <td><a href="faktura.php?id=<?php echo $faktura['id']; ?>"><?php
     if (!$faktura['navn'] && $faktura['email']) {
         echo $faktura['email']

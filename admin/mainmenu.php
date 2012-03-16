@@ -37,7 +37,7 @@ if (!empty($_GET['side'])) {
 $activityButtons[] = '<li id="loading" style="cursor:default;"><img src="images/loading.gif" width="16" height="16" alt="Processing" /> '._('Loading').'</li>';
 
 if ($activityButtons) {
-    ?><a class="menuboxheader" href="" onclick="showhide('Activity');"><?php echo _('Handlinger') ?></a>
+    ?><a class="menuboxheader" href="" onclick="showhide('Activity');"><?php echo _('Handlinger'); ?></a>
     <ul id="Activity"<?php
     if (!empty($_COOKIE['hideActivity'])) {
         echo ' style="display:none"'
@@ -48,53 +48,53 @@ if ($activityButtons) {
         echo $value
     }
 
-    ?><li><a href="./logout.php"><img src="images/door_in.png" width="16" height="16" alt="" /> <?php echo _('Log out') ?></a></li></ul><?php
+    ?><li><a href="./logout.php"><img src="images/door_in.png" width="16" height="16" alt="" /> <?php echo _('Log out'); ?></a></li></ul><?php
 }
 
-  ?><a class="menuboxheader" href="" onclick="showhide('Indhold');"><?php echo _('Indhold') ?></a>
+  ?><a class="menuboxheader" href="" onclick="showhide('Indhold');"><?php echo _('Indhold'); ?></a>
   <ul id="Indhold"<?php
 if (!empty($_COOKIE['hideIndhold'])) {
     echo ' style="display:none"'
 }
   ?>>
-    <li><a href="./?side=nyside"><img src="images/page_add.png" width="16" height="16" alt="" /> <?php echo _('Create page') ?></a></li>
-    <li><a href="./?side=nykat"><img src="images/folder_add.png" width="16" height="16" alt="" /> <?php echo _('Create category') ?></a></li>
-    <li><a href="./?side=getSiteTree"><img src="images/book_open.png" width="16" height="16" alt="" /> <?php echo _('Overview') ?></a></li>
-    <li><a href="#" onclick="return jumpto()"><img src="images/book_go.png" width="16" height="16" alt="" /> <?php echo _('Skip to page') ?></a>
+    <li><a href="./?side=nyside"><img src="images/page_add.png" width="16" height="16" alt="" /> <?php echo _('Create page'); ?></a></li>
+    <li><a href="./?side=nykat"><img src="images/folder_add.png" width="16" height="16" alt="" /> <?php echo _('Create category'); ?></a></li>
+    <li><a href="./?side=getSiteTree"><img src="images/book_open.png" width="16" height="16" alt="" /> <?php echo _('Overview'); ?></a></li>
+    <li><a href="#" onclick="return jumpto()"><img src="images/book_go.png" width="16" height="16" alt="" /> <?php echo _('Skip to page'); ?></a>
       <form onsubmit="jumpto(); return false;" action="" method="get"><input style="width:1px; height:1px; position:absolute; top: -20px; left:-20px;" type="submit" accesskey="g" />
         <p style="display:inline"><input style="width:30px;" id="jumptoid" name="id" /></p>
       </form>
     </li>
-    <li><a href="#" onclick="return sogsearch()"><img src="images/find.png" width="16" height="16" alt="" /> <?php echo _('Search') ?></a>
+    <li><a href="#" onclick="return sogsearch()"><img src="images/find.png" width="16" height="16" alt="" /> <?php echo _('Search'); ?></a>
       <form onsubmit="sogsearch(); return false;" action="" method="get"><input style="width:1px; height:1px; position:absolute; top: -20px; left:-20px;" type="submit" accesskey="f" />
         <p style="display:inline"><input style="width:91px;" id="sogtext" name="text" /><input type="hidden" name="side" value="search" /></p>
       </form>
     </li>
   </ul>
-  <a class="menuboxheader" href="" onclick="showhide('Suplemanger');"><?php echo _('Lists') ?></a>
+  <a class="menuboxheader" href="" onclick="showhide('Suplemanger');"><?php echo _('Lists'); ?></a>
   <ul id="Suplemanger"<?php
 if (@$_COOKIE['hideSuplemanger']) {
     echo ' style="display:none"'
 }
 ?>>
-    <li><a href="./?side=krav"><img src="images/page_white_key.png" width="16" height="16" alt="" /> <?php echo _('Requirements') ?></a></li>
-    <li><a href="./?side=maerker"><img src="images/page_white_medal.png" width="16" height="16" alt="" /> <?php echo _('Brands') ?></a></li>
-    <li><a href="./?side=listsort"><img src="images/shape_align_left.png" width="16" height="16" alt="" /> <?php echo _('List sorting') ?></a></li>
+    <li><a href="./?side=krav"><img src="images/page_white_key.png" width="16" height="16" alt="" /> <?php echo _('Requirements'); ?></a></li>
+    <li><a href="./?side=maerker"><img src="images/page_white_medal.png" width="16" height="16" alt="" /> <?php echo _('Brands'); ?></a></li>
+    <li><a href="./?side=listsort"><img src="images/shape_align_left.png" width="16" height="16" alt="" /> <?php echo _('List sorting'); ?></a></li>
   </ul>
-  <a class="menuboxheader" href="" onclick="showhide('Tools');"><?php echo _('Tools') ?></a>
+  <a class="menuboxheader" href="" onclick="showhide('Tools');"><?php echo _('Tools'); ?></a>
   <ul id="Tools"<?php
 if (@$_COOKIE['hideTools']) {
     echo ' style="display:none"'
 }
   ?>>
-    <li><a onclick="explorer('','');"><img src="images/folder_page_white.png" width="16" height="16" alt="" /> <?php echo _('Open file manager') ?></a></li>
-    <li><a href="./?side=emaillist"><img src="images/email.png" width="16" height="16" alt="" /> <?php echo _('Newsletters') ?></a></li>
-    <li><a href="./?side=addressbook"><img src="images/book_addresses.png" width="16" height="16" alt="" /> <?php echo _('Address Book') ?></a></li>
-    <li><a href="./?side=sogogerstat"><img src="images/page_white_find.png" width="16" height="16" alt="" /> <?php echo _('Find and replace') ?></a></li>
-    <li><a href="./?side=get_db_error"><img src="images/database_error.png" width="16" height="16" alt="" /> <?php echo _('Maintenance') ?></a></li>
-    <li><a href="users.php"><img src="images/group_edit.png" width="16" height="16" alt="" /> <?php echo _('Users and Groups') ?></a></li>
-    <li><a href="katalog-lables.php"><img src="images/printer.png" width="16" height="16" alt="" /> <?php echo _('Catalog labels') ?></a></li>
-    <li><a href="listview.php"><img src="images/book_open.png" width="16" height="16" alt="" /> <?php echo _('Pris liste') ?></a></li>
-    <li><a href="fakturas.php"><img src="images/table_multiple.png" width="16" height="16" alt="" /> <?php echo _('Invoices') ?></a></li>
+    <li><a onclick="explorer('','');"><img src="images/folder_page_white.png" width="16" height="16" alt="" /> <?php echo _('Open file manager'); ?></a></li>
+    <li><a href="./?side=emaillist"><img src="images/email.png" width="16" height="16" alt="" /> <?php echo _('Newsletters'); ?></a></li>
+    <li><a href="./?side=addressbook"><img src="images/book_addresses.png" width="16" height="16" alt="" /> <?php echo _('Address Book'); ?></a></li>
+    <li><a href="./?side=sogogerstat"><img src="images/page_white_find.png" width="16" height="16" alt="" /> <?php echo _('Find and replace'); ?></a></li>
+    <li><a href="./?side=get_db_error"><img src="images/database_error.png" width="16" height="16" alt="" /> <?php echo _('Maintenance'); ?></a></li>
+    <li><a href="users.php"><img src="images/group_edit.png" width="16" height="16" alt="" /> <?php echo _('Users and Groups'); ?></a></li>
+    <li><a href="katalog-lables.php"><img src="images/printer.png" width="16" height="16" alt="" /> <?php echo _('Catalog labels'); ?></a></li>
+    <li><a href="listview.php"><img src="images/book_open.png" width="16" height="16" alt="" /> <?php echo _('Pris liste'); ?></a></li>
+    <li><a href="fakturas.php"><img src="images/table_multiple.png" width="16" height="16" alt="" /> <?php echo _('Invoices'); ?></a></li>
   </ul>
 </div>

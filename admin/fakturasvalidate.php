@@ -27,7 +27,7 @@ $fakturas = $mysqli->fetch_array("SELECT `id`, `status`, `cardtype`, `clerk`, `a
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-<title><?php echo _('Invoice validation') ?></title>
+<title><?php echo _('Invoice validation'); ?></title>
 <script type="text/javascript" src="javascript/lib/prototype.js"></script>
 <script type="text/javascript"><!--
 var JSON = JSON || {};
@@ -101,15 +101,15 @@ a {
 </style>
 </head>
 <body onload="$('loading').style.visibility = 'hidden';">
-<div id="canvas"><div id="headline"><?php echo _('Invoice validation') ?></div>
+<div id="canvas"><div id="headline"><?php echo _('Invoice validation'); ?></div>
 <table style="width:100%;">
     <thead>
         <tr>
-            <td><?php echo _('ID') ?></td>
-            <td><?php echo _('Payment methode') ?></td>
-            <td><?php echo _('Pay date') ?></td>
-            <td><?php echo _('Responsible') ?></td>
-            <td><?php echo _('Amount') ?></td>
+            <td><?php echo _('ID'); ?></td>
+            <td><?php echo _('Payment methode'); ?></td>
+            <td><?php echo _('Pay date'); ?></td>
+            <td><?php echo _('Responsible'); ?></td>
+            <td><?php echo _('Amount'); ?></td>
             <td style="width:16px;"></td>
         </tr>
     </thead>
@@ -145,7 +145,7 @@ foreach ($fakturas as $i => $faktura) {
     }
 
     ?></a></td><td style="text-align:right"><a href="faktura.php?id=<?php echo $faktura['id'] ?>"><?php
-    echo date('j/m/y', $faktura['paydate'] ? $faktura['paydate'] : $faktura['date']) ?></a></td><td><a href="faktura.php?id=<?php echo $faktura['id'] ?>"><?php echo $faktura['clerk'] ?></a></td><td style="text-align:right"><a href="faktura.php?id=<?php echo $faktura['id'] ?>"><?php echo number_format($faktura['amount'], 2, ',', '.') ?></a></td><td style="text-align:center"><a onclick="return confirm_faktura_validate(<?php echo $faktura['id'] ?>);" href="?id=<?php echo $faktura['id'] ?>"><img src="/admin/images/tick.png" alt="<?php echo _('Approve') ?>" title="<?php echo _('Approve') ?>" /></a></td></tr><?php
+    echo date('j/m/y', $faktura['paydate'] ? $faktura['paydate'] : $faktura['date']); ?></a></td><td><a href="faktura.php?id=<?php echo $faktura['id'] ?>"><?php echo $faktura['clerk'] ?></a></td><td style="text-align:right"><a href="faktura.php?id=<?php echo $faktura['id'] ?>"><?php echo number_format($faktura['amount'], 2, ',', '.'); ?></a></td><td style="text-align:center"><a onclick="return confirm_faktura_validate(<?php echo $faktura['id'] ?>);" href="?id=<?php echo $faktura['id'] ?>"><img src="/admin/images/tick.png" alt="<?php echo _('Approve'); ?>" title="<?php echo _('Approve'); ?>" /></a></td></tr><?php
 }
 ?></tbody>
 </table>
