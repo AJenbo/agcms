@@ -8,9 +8,9 @@ textdomain("agcms");
 require_once $_SERVER['DOCUMENT_ROOT'].'/admin/inc/logon.php';
 
 if ($_GET['id'] > 0) {
-	$id = $_GET['id'];
+    $id = $_GET['id'];
 } else {
-	die(_('Wrong id.'));
+    die(_('Wrong id.'));
 }
 
 require_once '../inc/config.php';
@@ -19,7 +19,7 @@ $mysqli = new simple_mysqli($GLOBALS['_config']['mysql_server'], $GLOBALS['_conf
 
 $faktura = $mysqli->fetch_one("SELECT *, UNIX_TIMESTAMP(`date`) AS `date`, UNIX_TIMESTAMP(`paydate`) AS `paydate` FROM `fakturas` WHERE `id` = ".$id." AND `status` != 'new'");
 if (!$faktura) {
-	die(_('Can\'t print.'));
+    die(_('Can\'t print.'));
 }
 
 $faktura['quantities'] = explode('<', $faktura['quantities']);
@@ -27,22 +27,22 @@ $faktura['products'] = explode('<', $faktura['products']);
 $faktura['values'] = explode('<', $faktura['values']);
 
 if (!$faktura['premoms'] && $faktura['momssats']) {
-	//if numbers where aded with out vat but vat should be payed, then add it
-	foreach ($faktura['values'] as $key => $value) {
-		$faktura['values'][$key] = $value*(1.25);
-	}
+    //if numbers where aded with out vat but vat should be payed, then add it
+    foreach ($faktura['values'] as $key => $value) {
+        $faktura['values'][$key] = $value*(1.25);
+    }
 } elseif (!$faktura['momssats']) {
-	//if values where entered including vat, but no vat should be payed, then remove the vat
-	foreach ($faktura['values'] as $key => $value) {
-		$faktura['values'][$key] = $value/1.25;
-	}
+    //if values where entered including vat, but no vat should be payed, then remove the vat
+    foreach ($faktura['values'] as $key => $value) {
+        $faktura['values'][$key] = $value/1.25;
+    }
 }
 
 require_once '../inc/tcpdf/config/lang/dan.php';
 require_once '../inc/tcpdf/tcpdf.php';
 
 // create new PDF document
-$pdf = new TCPDF('P', 'mm', 'A4', true, 'UTF-8', false); 
+$pdf = new TCPDF('P', 'mm', 'A4', true, 'UTF-8', false);
 
 // set document information
 $pdf->SetCreator(PDF_CREATOR);
@@ -63,7 +63,7 @@ $pdf->SetMargins(8, 9, 8);
 $pdf->SetAutoPageBreak(true, PDF_MARGIN_BOTTOM);
 
 //set image scale factor
-$pdf->setImageScale(PDF_IMAGE_SCALE_RATIO); 
+$pdf->setImageScale(PDF_IMAGE_SCALE_RATIO);
 
 //set some language-dependent strings
 $pdf->setLanguageArray($l);
@@ -79,20 +79,20 @@ $pdf->Write(0, $GLOBALS['_config']['site_name']);
 $pdf->SetY(12);
 $pdf->SetFont('times', '', 10);
 $pdf->Write(
-	0, 
-	$GLOBALS['_config']['address']."\n".
-	$GLOBALS['_config']['postcode']." ".$GLOBALS['_config']['city']."\n".
-	"Fax: ".$GLOBALS['_config']['fax']."\n",
-	'',
-	0,
-	'R'
+    0,
+    $GLOBALS['_config']['address']."\n".
+    $GLOBALS['_config']['postcode']." ".$GLOBALS['_config']['city']."\n".
+    "Fax: ".$GLOBALS['_config']['fax']."\n",
+    '',
+    0,
+    'R'
 );
 $pdf->SetFont('times', 'B', 11);
 $pdf->Write(0, _('Phone:')." ".$GLOBALS['_config']['phone']."\n", '', 0, 'R');
 $pdf->SetFont('times', '', 10);
 
 if (empty($faktura['department'])) {
-	$faktura['department'] = $GLOBALS['_config']['email'][0];
+    $faktura['department'] = $GLOBALS['_config']['email'][0];
 }
 $domain = explode('/', $GLOBALS['_config']['base_url']);
 $domain = $domain[count($domain)-1];
@@ -115,22 +115,22 @@ $pdf->Line(152.5, 12, 152.5, 74.5);
 $address = '';
 $address .= $faktura['navn'];
 if ($faktura['att']) {
-	$address .= "\n"._('Attn.:').' '.$faktura['att'];
+    $address .= "\n"._('Attn.:').' '.$faktura['att'];
 }
 if ($faktura['adresse']) {
-	$address .= "\n".$faktura['adresse'];
+    $address .= "\n".$faktura['adresse'];
 }
 if ($faktura['postbox']) {
-	$address .= "\n".$faktura['postbox'];
+    $address .= "\n".$faktura['postbox'];
 }
 if ($faktura['postnr']) {
-	$address .= "\n".$faktura['postnr'].' '.$faktura['by'];
+    $address .= "\n".$faktura['postnr'].' '.$faktura['by'];
 } else {
-	$address .= "\n".$faktura['by'];
+    $address .= "\n".$faktura['by'];
 }
 if ($faktura['land'] && $faktura['land'] != 'DK') {
-	include_once '../inc/countries.php';
-	$address .= "\n"._($countries[$faktura['land']]);
+    include_once '../inc/countries.php';
+    $address .= "\n"._($countries[$faktura['land']]);
 }
 
 $pdf->SetMargins(19, 0, 0);
@@ -143,36 +143,36 @@ $pdf->Write(0, trim($address));
 $address = '';
 $address .= $faktura['postname'];
 if ($faktura['postatt']) {
-	$address .= "\n"._('Attn.:').' '.$faktura['postatt'];
+    $address .= "\n"._('Attn.:').' '.$faktura['postatt'];
 }
 if ($faktura['postaddress']) {
-	$address .= "\n".$faktura['postaddress'];
+    $address .= "\n".$faktura['postaddress'];
 }
 if ($faktura['postaddress2']) {
-	$address .= "\n".$faktura['postaddress2'];
+    $address .= "\n".$faktura['postaddress2'];
 }
 if ($faktura['postpostbox']) {
-	$address .= "\n".$faktura['postpostbox'];
+    $address .= "\n".$faktura['postpostbox'];
 }
 if ($faktura['postpostalcode']) {
-	$address .= "\n".$faktura['postpostalcode'].' '.$faktura['postcity'];
+    $address .= "\n".$faktura['postpostalcode'].' '.$faktura['postcity'];
 }
 } elseif ($faktura['postcity']) {
-	$address .= "\n".$faktura['postcity'];
+    $address .= "\n".$faktura['postcity'];
 }
 if ($faktura['land'] && $faktura['land'] != 'DK') {
-	include_once '../inc/countries.php';
-	$address .= "\n"._($countries[$faktura['land']]);
+    include_once '../inc/countries.php';
+    $address .= "\n"._($countries[$faktura['land']]);
 }
 
 if ($address) {
-	$pdf->SetMargins(110, 0, 0);
-	$pdf->Write(0, "\n");
-	$pdf->SetY(30.6);
-	$pdf->SetFont('times', 'BI', 10);
-	$pdf->Write(0, _('Delivery address:')."\n");
-	$pdf->SetFont('times', '', 11);
-	$pdf->Write(0, trim($address));
+    $pdf->SetMargins(110, 0, 0);
+    $pdf->Write(0, "\n");
+    $pdf->SetY(30.6);
+    $pdf->SetFont('times', 'BI', 10);
+    $pdf->Write(0, _('Delivery address:')."\n");
+    $pdf->SetFont('times', '', 11);
+    $pdf->Write(0, trim($address));
 }
 
 //Invoice info
@@ -182,10 +182,10 @@ $pdf->Write(0, "\n");
 $pdf->SetY(90.5);
 $info = '<strong>'._('Date').':</strong> '.date(_('m/d/Y'), $faktura['date']);
 if ($faktura['iref']) {
-	$info .= '       <strong>'._('Our ref.:').'</strong> '.$faktura['iref'];
+    $info .= '       <strong>'._('Our ref.:').'</strong> '.$faktura['iref'];
 }
 if ($faktura['eref']) {
-	$info .= '       <strong>'._('Their ref.:').'</strong> '.$faktura['eref'];
+    $info .= '       <strong>'._('Their ref.:').'</strong> '.$faktura['eref'];
 }
 $pdf->writeHTML($info);
 
@@ -211,23 +211,23 @@ $pdf->Cell(34, 5, _('Total'), 1, 1, 'R');
 $netto = 0;
 $extralines = 0;
 foreach ($faktura['values'] as $i => $value) {
-	
-	if ($lines > 1) {
-		$lines -= 1;
-		$extralines += $lines;
-		$pdf->Cell(24, 6*$lines, '', 'RL', 0);
-		$pdf->Cell(106, 6*$lines, '', 'RL', 0);
-		$pdf->Cell(29, 6*$lines, '', 'RL', 0);
-		$pdf->Cell(34, 6*$lines, '', 'RL', 1);
-	}
 
-	$netto += $value/(1+$faktura['momssats'])*$faktura['quantities'][$i];
+    if ($lines > 1) {
+        $lines -= 1;
+        $extralines += $lines;
+        $pdf->Cell(24, 6*$lines, '', 'RL', 0);
+        $pdf->Cell(106, 6*$lines, '', 'RL', 0);
+        $pdf->Cell(29, 6*$lines, '', 'RL', 0);
+        $pdf->Cell(34, 6*$lines, '', 'RL', 1);
+    }
 
-	$pdf->Cell(24, 6, $faktura['quantities'][$i], 'RL', 0, 'R');
-	$lines = $pdf->MultiCell(106, 6, html_entity_decode(htmlspecialchars_decode($faktura['products'][$i], ENT_QUOTES)), 'RL', '0', 0, 0, '', '', true, 0, false, true, 0);
-	//$pdf->Cell(106, 6, $faktura['products'][$i], 'RL', 0, 'L');
-	$pdf->Cell(29, 6, number_format($value, 2, ',', ''), 'RL', 0, 'R');
-	$pdf->Cell(34, 6, number_format($value*$faktura['quantities'][$i], 2, ',', ''), 'RL', 1, 'R');
+    $netto += $value/(1+$faktura['momssats'])*$faktura['quantities'][$i];
+
+    $pdf->Cell(24, 6, $faktura['quantities'][$i], 'RL', 0, 'R');
+    $lines = $pdf->MultiCell(106, 6, html_entity_decode(htmlspecialchars_decode($faktura['products'][$i], ENT_QUOTES)), 'RL', '0', 0, 0, '', '', true, 0, false, true, 0);
+    //$pdf->Cell(106, 6, $faktura['products'][$i], 'RL', 0, 'L');
+    $pdf->Cell(29, 6, number_format($value, 2, ',', ''), 'RL', 0, 'R');
+    $pdf->Cell(34, 6, number_format($value*$faktura['quantities'][$i], 2, ',', ''), 'RL', 1, 'R');
 }
 
 //Spacing
@@ -266,32 +266,32 @@ $pdf->Cell(34, 8, number_format($faktura['amount'], 2, ',', ''), 1, 1, 'R');
 //Note
 $note = '';
 if ($faktura['status'] == 'accepted') {
-	$note .= _('Paid online');
-	if ($faktura['paydate']) {
-		$note .= ' d. '.date(_('m/d/Y'), $faktura['paydate']);
-	}
-	$note .= "\n";
+    $note .= _('Paid online');
+    if ($faktura['paydate']) {
+        $note .= ' d. '.date(_('m/d/Y'), $faktura['paydate']);
+    }
+    $note .= "\n";
 } elseif ($faktura['status'] == 'giro') {
-	$note .= _('Paid via giro');
-	if ($faktura['paydate']) {
-		$note .= ' d. '.date(_('m/d/Y'), $faktura['paydate']);
-	}
-	$note .= "\n";
+    $note .= _('Paid via giro');
+    if ($faktura['paydate']) {
+        $note .= ' d. '.date(_('m/d/Y'), $faktura['paydate']);
+    }
+    $note .= "\n";
 } elseif ($faktura['status'] == 'cash') {
-	$note .= _('Paid in cash');
-	if ($faktura['paydate']) {
-		$note .= ' d. '.date(_('m/d/Y'), $faktura['paydate']);
-	}
-	$note .= "\n";
+    $note .= _('Paid in cash');
+    if ($faktura['paydate']) {
+        $note .= ' d. '.date(_('m/d/Y'), $faktura['paydate']);
+    }
+    $note .= "\n";
 }
 
 $note .= $faktura['note'];
 
 if ($note) {
-	$pdf->SetFont('times', 'B', 10);
-	$pdf->Write(0, "\n"._('Note:')."\n");
-	$pdf->SetFont('times', '', 10);
-	$pdf->Write(0, $note);
+    $pdf->SetFont('times', 'B', 10);
+    $pdf->Write(0, "\n"._('Note:')."\n");
+    $pdf->SetFont('times', '', 10);
+    $pdf->Write(0, $note);
 }
 
 //Sign off'.$GLOBALS['_config']['address'].'
@@ -307,6 +307,6 @@ $pdf->Write(0, _('Sincerely,')."\n\n\n".$faktura['clerk']."\n".$GLOBALS['_config
 $pdf->Output('Faktura-'.$faktura['id'].'.pdf', 'I');
 
 //============================================================+
-// END OF FILE                                                 
+// END OF FILE
 //============================================================+
 ?>

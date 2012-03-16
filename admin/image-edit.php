@@ -12,26 +12,26 @@ require_once 'inc/config.php';
 
 function saveImage($path, $cropX, $cropY, $cropW, $cropH, $maxW, $maxH, $flip, $rotate, $filename, $force)
 {
-	include_once 'inc/image-functions.php';
-	include_once 'inc/get_mime_type.php';
-	$mimeType = get_mime_type($path);
+    include_once 'inc/image-functions.php';
+    include_once 'inc/get_mime_type.php';
+    $mimeType = get_mime_type($path);
 
-	if ($mimeType == 'image/jpeg') {
-		$output['type'] = 'jpg';
-	} else {
-		$output['type'] = 'png';
-	}
-		
-	$output['filename'] = $filename;
-	$output['force'] = $force;
+    if ($mimeType == 'image/jpeg') {
+        $output['type'] = 'jpg';
+    } else {
+        $output['type'] = 'png';
+    }
 
-	return generateImage($path, $cropX, $cropY, $cropW, $cropH, $maxW, $maxH, $flip, $rotate, $output);
-	//TODO close and update image in explorer
+    $output['filename'] = $filename;
+    $output['force'] = $force;
+
+    return generateImage($path, $cropX, $cropY, $cropW, $cropH, $maxW, $maxH, $flip, $rotate, $output);
+    //TODO close and update image in explorer
 }
 
 //$sajax_debug_mode = 1;
 sajax_export(
-	array('name' => 'saveImage', 'method' => 'POST')
+    array('name' => 'saveImage', 'method' => 'POST')
 );
 //$sajax_remote_uri = "/ajax.php";
 sajax_handle_client_request();
@@ -53,23 +53,23 @@ JSON.parse = JSON.parse || function(jsonsring) { return jsonsring.evalJSON(true)
 <script src="javascript/lib/cropper/cropper.js" type="text/javascript"></script>
 <style type="text/css">
 #tools {
-	cursor:default;
-	text-align:center;
-	width:256px;
-	margin:auto;
+    cursor:default;
+    text-align:center;
+    width:256px;
+    margin:auto;
 }
 #tools img {
-	cursor:pointer;
+    cursor:pointer;
 }
 #ruler {
-	background-image:url('images/ruler.png');
-	background-position:left;
-	height:15px;
-	margin:auto;
+    background-image:url('images/ruler.png');
+    background-position:left;
+    height:15px;
+    margin:auto;
 }
 #textDiv {
-	position: relative;
-	margin:auto;
+    position: relative;
+    margin:auto;
 }
 </style>
 <script type="text/javascript" src="javascript/lib/php.min.js"></script>
@@ -83,8 +83,8 @@ var id = <?php echo($_GET['id']); ?>;
 var mode = '<?php echo($_GET['mode']); ?>';
 var filename = '<?php
 if ($_GET['mode'] == 'thb') {
-	$pathinfo = pathinfo($_GET['path']);
-	echo($pathinfo['filename'].'-thb');
+    $pathinfo = pathinfo($_GET['path']);
+    echo($pathinfo['filename'].'-thb');
 }
 ?>';
 var thumb_width = <?php echo($GLOBALS['_config']['thumb_width']); ?>;
@@ -108,9 +108,9 @@ var maxH = <?php echo($imagesize[1]); ?>;
 <div id="textDiv" style="width: <?php echo($GLOBALS['_config']['text_width']); ?>px;">
 <?php
 if (@$_GET['mode'] == 'thb') {
-	?><img id="preview" src="image.php?path=<?php echo($_GET['path']); ?>&amp;maxW=<?php echo($GLOBALS['_config']['thumb_width']); ?>&amp;maxH=<?php echo($GLOBALS['_config']['thumb_height']); ?>" alt="" onload="resize()" /><?php
+    ?><img id="preview" src="image.php?path=<?php echo($_GET['path']); ?>&amp;maxW=<?php echo($GLOBALS['_config']['thumb_width']); ?>&amp;maxH=<?php echo($GLOBALS['_config']['thumb_height']); ?>" alt="" onload="resize()" /><?php
 } else {
-	?><img id="preview" src="<?php echo($_GET['path']); ?>" alt="" onload="resize()" /><?php
+    ?><img id="preview" src="<?php echo($_GET['path']); ?>" alt="" onload="resize()" /><?php
 }
 ?><img id="resizeHandle" src="javascript/lib/cropper/resizehandle.gif" alt="" style="position: absolute; left: 16px; top: 16px; cursor: se-resize; margin:-16px 0 0 -16px; display:none">
 <img id="original" src="<?php echo($_GET['path']); ?>" alt="" style="display:none;" />

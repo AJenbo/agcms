@@ -7,14 +7,14 @@ date_default_timezone_set('Europe/Copenhagen');
 //Optimize trafic by serving proper http header
 function doConditionalGet($timestamp)
 {
-    // A PHP implementation of conditional get, see 
+    // A PHP implementation of conditional get, see
     // http://fishbowl.pastiche.org/archives/001132.html
     $last_modified = mb_substr(date('r', $timestamp), 0, -5).'GMT';
     $etag = '"'.$timestamp.'"';
     // Send the headers
-	
-	header("Cache-Control: max-age=0, must-revalidate");    // HTTP/1.1
-	header("Pragma: no-cache");    // HTTP/1.0
+
+    header("Cache-Control: max-age=0, must-revalidate");    // HTTP/1.1
+    header("Pragma: no-cache");    // HTTP/1.0
     header('Last-Modified: '.$last_modified);
     header('ETag: '.$etag);
     // See if the client has provided the required headers
@@ -22,7 +22,7 @@ function doConditionalGet($timestamp)
         stripslashes($_SERVER['HTTP_IF_MODIFIED_SINCE']) :
         false;
     $if_none_match = isset($_SERVER['HTTP_IF_NONE_MATCH']) ?
-        stripslashes($_SERVER['HTTP_IF_NONE_MATCH']) : 
+        stripslashes($_SERVER['HTTP_IF_NONE_MATCH']) :
         false;
     if (!$if_modified_since && !$if_none_match) {
         return;
@@ -34,11 +34,11 @@ function doConditionalGet($timestamp)
     if ($if_modified_since && $if_modified_since != $last_modified) {
         return; // if-modified-since is there but doesn't match
     }
-	//TODO One.com has broaken headers when sending 304
-	//Update one seams to have fixed this issue.
-	//return;
+    //TODO One.com has broaken headers when sending 304
+    //Update one seams to have fixed this issue.
+    //return;
     // Nothing has changed since their last request - serve a 304 and exit
-	ini_set('zlib.output_compression', '0');
+    ini_set('zlib.output_compression', '0');
     header("HTTP/1.1 304 Not Modified", true, 304);
     die();
 }

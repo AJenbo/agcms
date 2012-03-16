@@ -7,7 +7,7 @@ bind_textdomain_codeset("agcms", 'UTF-8');
 textdomain("agcms");
 
 require_once $_SERVER['DOCUMENT_ROOT'].'/admin/inc/logon.php';
-require_once '../inc/sajax.php'; 
+require_once '../inc/sajax.php';
 require_once '../inc/config.php';
 require_once '../inc/mysqli.php';
 require_once 'inc/file-functions.php';
@@ -15,7 +15,7 @@ $mysqli = new simple_mysqli($GLOBALS['_config']['mysql_server'], $GLOBALS['_conf
 
 //$sajax_debug_mode = 1;
 sajax_export(
-	array('name' => 'listdirs', 'method' => 'GET')
+    array('name' => 'listdirs', 'method' => 'GET')
 );
 //$sajax_remote_uri = "/ajax.php";
 sajax_handle_client_request();
@@ -44,78 +44,78 @@ var global_dir = '';
 
 function movefile(dir)
 {
-	global_dir = dir;
+    global_dir = dir;
 //TOdo issues with ie
-	window.opener.document.getElementById('loading').style.display = '';
-	window.opener.x_renamefile(<?php echo $_GET['id']; ?>,  '<?php echo $_GET['path']; ?>', dir,  '',        0,       movefile_r);
+    window.opener.document.getElementById('loading').style.display = '';
+    window.opener.x_renamefile(<?php echo $_GET['id']; ?>,  '<?php echo $_GET['path']; ?>', dir,  '',        0,       movefile_r);
 }
 
 //TODO Closes on mouse out???
 function movefile_r(data)
 {
 
-	window.opener.document.getElementById('loading').style.display = 'none';
-	
-	if (data['path'] == '<?php echo $_GET['path']; ?>')
-		return;
+    window.opener.document.getElementById('loading').style.display = 'none';
 
-	if (data['error']) {
-		alert(data['error']);
-		//Somthing prevents the FF from closing when hovering the link so we remove it
-		document.body.innerHTML = '';
-		window.close();
-	} else if (data['yesno']) {
-		if (eval(confirm(data['yesno']))==true){
-			document.getElementById('loading').style.display = '';
-			window.opener.x_renamefile(<?php echo $_GET['id']; ?>, '<?php echo $_GET['path']; ?>', global_dir, '', 1, movefile_r);
-		} else {
-			//Somthing prevents the FF from closing when hovering the link so we remove it
-			document.body.innerHTML = '';
-			window.close();
-		}
-	} else {
-		window.opener.document.getElementById('files').removeChild(window.opener.document.getElementById('tilebox'+data['id']));
-		//Somthing prevents FF from closing when hovering the link so we remove it
-		document.body.innerHTML = '';
-		window.close();
-	}
+    if (data['path'] == '<?php echo $_GET['path']; ?>')
+        return;
+
+    if (data['error']) {
+        alert(data['error']);
+        //Somthing prevents the FF from closing when hovering the link so we remove it
+        document.body.innerHTML = '';
+        window.close();
+    } else if (data['yesno']) {
+        if (eval(confirm(data['yesno']))==true){
+            document.getElementById('loading').style.display = '';
+            window.opener.x_renamefile(<?php echo $_GET['id']; ?>, '<?php echo $_GET['path']; ?>', global_dir, '', 1, movefile_r);
+        } else {
+            //Somthing prevents the FF from closing when hovering the link so we remove it
+            document.body.innerHTML = '';
+            window.close();
+        }
+    } else {
+        window.opener.document.getElementById('files').removeChild(window.opener.document.getElementById('tilebox'+data['id']));
+        //Somthing prevents FF from closing when hovering the link so we remove it
+        document.body.innerHTML = '';
+        window.close();
+    }
 }
 --></script><style type="text/css"><!--
 * {
-	font-family:Verdana, Arial, Helvetica, sans-serif;
+    font-family:Verdana, Arial, Helvetica, sans-serif;
 }
 body {
-	margin:18px;
-	font-size:10px;
+    margin:18px;
+    font-size:10px;
 }
 #dir {
-	overflow:auto;
-	overflow-y:scroll;
-	padding:5px;
-	background-color:Window;
-	font-size:11px;
-	border:2px inset;
-	position:absolute;
-	top:60px;
-	left:19px;
-	right:19px;
-	bottom:51px;
+    overflow:auto;
+    overflow-y:scroll;
+    padding:5px;
+    background-color:Window;
+    font-size:11px;
+    border:2px inset;
+    position:absolute;
+    top:60px;
+    left:19px;
+    right:19px;
+    bottom:51px;
 }
 #dir * {
-	vertical-align:middle;
+    vertical-align:middle;
 }
 #dir div div {
-	margin-left:8px
+    margin-left:8px
 }
 #dir a {
-	white-space:nowrap;
-	cursor:pointer;
+    white-space:nowrap;
+    cursor:pointer;
 }
 #dir a:hover {
-	text-decoration:underline;
+    text-decoration:underline;
 }
 #dir a:hover img {
-	text-decoration:none;
+    text-decoration:none;
 }
 --></style>
 </head>
@@ -134,14 +134,14 @@ if (!@$_COOKIE['/images']) { echo ' style="display:none"'; }
 ?> src="images/-.gif" onclick="dir_contract(this);" height="16" width="16" alt="" /><a onclick="movefile('/images')"><img src="images/folder.png" height="16" width="16" alt="" /> <?php echo(_('Pictures')); ?> </a>
 <div><?php
 if (@$_COOKIE['/images']) {
-	$listdirs = listdirs('/images', 1);
-	echo $listdirs['html'];
+    $listdirs = listdirs('/images', 1);
+    echo $listdirs['html'];
 }
 ?></div></div>
 <div id="dir_.files"><img<?php if (@$_COOKIE['/files']) { echo ' style="display:none"'; } ?> src="images/+.gif" onclick="dir_expand(this, 1);" height="16" width="16" alt="" /><img<?php if (!@$_COOKIE['/files']) { echo ' style="display:none"'; } ?> src="images/-.gif" onclick="dir_contract(this);" height="16" width="16" alt="" /><a onclick="movefile('/files')"><img src="images/folder.png" height="16" width="16" alt="" /> <?php echo(_('Files')); ?> </a>
 <div><?php
 if (@$_COOKIE['/files']) {
-	$listdirs = listdirs('/files', 1);
-	echo $listdirs['html'];
+    $listdirs = listdirs('/files', 1);
+    echo $listdirs['html'];
 }
 ?></div></div></div><p style="bottom:18px; position:absolute;"><?php echo(_('Click the plus sign above to see the subfolders.')); ?></p></body></html>

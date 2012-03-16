@@ -13,7 +13,7 @@ echo $_GET['url'];
 ?></title>
 <style type="text/css"><!--
 * {
-	margin:0;
+    margin:0;
 }
 --></style>
 </head>

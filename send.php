@@ -18,7 +18,7 @@ $mysqli = new simple_mysqli($GLOBALS['_config']['mysql_server'], $GLOBALS['_conf
 $emails = $mysqli->fetch_array("SELECT * FROM `emails`");
 
 if (!$emails) {
-	die(_('No e-mails to send.'));
+    die(_('No e-mails to send.'));
 }
 
 $emailsSendt = 0;
@@ -34,58 +34,58 @@ $PHPMailer->Host       = $GLOBALS['_config']['smtp'];
 $PHPMailer->Port       = $GLOBALS['_config']['smtpport'];
 $PHPMailer->CharSet    = 'utf-8';
 if ($GLOBALS['_config']['emailpassword'] !== false) {
-	$PHPMailer->SMTPAuth   = true; // enable SMTP authentication
-	$PHPMailer->Username   = $GLOBALS['_config']['email'][0];
-	$PHPMailer->Password   = $GLOBALS['_config']['emailpassword'];
+    $PHPMailer->SMTPAuth   = true; // enable SMTP authentication
+    $PHPMailer->Username   = $GLOBALS['_config']['email'][0];
+    $PHPMailer->Password   = $GLOBALS['_config']['emailpassword'];
 } else {
-	$PHPMailer->SMTPAuth   = false;
+    $PHPMailer->SMTPAuth   = false;
 }
 
 //Load the imap class, if imap is configured
 if ($GLOBALS['_config']['imap'] !== false) {
-	include_once "inc/imap.inc.php";
+    include_once "inc/imap.inc.php";
 }
 
 foreach ($emails as $email) {
-	$PHPMailer->ClearAddresses();
-	$PHPMailer->ClearCCs();
-	$PHPMailer->ClearReplyTos();
-	$PHPMailer->ClearAllRecipients();
-	$PHPMailer->ClearAttachments();
-	
-	$email['from'] = explode('<', $email['from']);
-	$email['from'][1] = substr($email['from'][1], 0, -1);
-	$PHPMailer->From       = $email['from'][1];
-	$PHPMailer->FromName   = $email['from'][0];
-	$PHPMailer->AddReplyTo($email['from'][1], $email['from'][0]);
-	
-	$email['to'] = explode(';', $email['to']);
-	foreach ($email['to'] as $key => $to) {
-		$email['to'][$key] = explode('<', $to);
-		$email['to'][$key][1] = substr($email['to'][$key][1], 0, -1);
-		$PHPMailer->AddAddress($email['to'][$key][1], $email['to'][$key][0]);
-	}
-	
-	$PHPMailer->Subject = $email['subject'];
-	$PHPMailer->MsgHTML($email['body'], $_SERVER['DOCUMENT_ROOT']);
-	
-	if (!$PHPMailer->Send()) {
-		continue;
-	}
-	
-	$emailsSendt++;
-	
-	$mysqli->query("DELETE FROM `emails` WHERE `id` = ".$email['id']);
-	
-	//Upload email to the sent folder via imap
-	if ($GLOBALS['_config']['imap'] !== false) {
-		$imap = new IMAPMAIL;
-		$imap->open($GLOBALS['_config']['imap'], $GLOBALS['_config']['imapport']);
-		$emailnr = array_search('', $GLOBALS['_config']['email']);
-		$imap->login($GLOBALS['_config']['email'][$emailnr ? $emailnr : 0], $GLOBALS['_config']['emailpasswords'][$emailnr ? $emailnr : 0]);
-		$imap->append_mail($GLOBALS['_config']['emailsent'], $PHPMailer->CreateHeader().$PHPMailer->CreateBody(), '\Seen');
-		$imap->close();
-	}
+    $PHPMailer->ClearAddresses();
+    $PHPMailer->ClearCCs();
+    $PHPMailer->ClearReplyTos();
+    $PHPMailer->ClearAllRecipients();
+    $PHPMailer->ClearAttachments();
+
+    $email['from'] = explode('<', $email['from']);
+    $email['from'][1] = substr($email['from'][1], 0, -1);
+    $PHPMailer->From       = $email['from'][1];
+    $PHPMailer->FromName   = $email['from'][0];
+    $PHPMailer->AddReplyTo($email['from'][1], $email['from'][0]);
+
+    $email['to'] = explode(';', $email['to']);
+    foreach ($email['to'] as $key => $to) {
+        $email['to'][$key] = explode('<', $to);
+        $email['to'][$key][1] = substr($email['to'][$key][1], 0, -1);
+        $PHPMailer->AddAddress($email['to'][$key][1], $email['to'][$key][0]);
+    }
+
+    $PHPMailer->Subject = $email['subject'];
+    $PHPMailer->MsgHTML($email['body'], $_SERVER['DOCUMENT_ROOT']);
+
+    if (!$PHPMailer->Send()) {
+        continue;
+    }
+
+    $emailsSendt++;
+
+    $mysqli->query("DELETE FROM `emails` WHERE `id` = ".$email['id']);
+
+    //Upload email to the sent folder via imap
+    if ($GLOBALS['_config']['imap'] !== false) {
+        $imap = new IMAPMAIL;
+        $imap->open($GLOBALS['_config']['imap'], $GLOBALS['_config']['imapport']);
+        $emailnr = array_search('', $GLOBALS['_config']['email']);
+        $imap->login($GLOBALS['_config']['email'][$emailnr ? $emailnr : 0], $GLOBALS['_config']['emailpasswords'][$emailnr ? $emailnr : 0]);
+        $imap->append_mail($GLOBALS['_config']['emailsent'], $PHPMailer->CreateHeader().$PHPMailer->CreateBody(), '\Seen');
+        $imap->close();
+    }
 }
 
 //Close SMTP connection

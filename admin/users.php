@@ -19,17 +19,17 @@ $mysqli = new simple_mysqli($GLOBALS['_config']['mysql_server'], $GLOBALS['_conf
 
 function deleteuser($id)
 {
-	if ($_SESSION['_user']['access'] == 1) {
-		global $mysqli;
-		$mysqli->query("DELETE FROM `users` WHERE `id` = ".$id);
-	}
+    if ($_SESSION['_user']['access'] == 1) {
+        global $mysqli;
+        $mysqli->query("DELETE FROM `users` WHERE `id` = ".$id);
+    }
 }
 
 $sajax_request_type = 'POST';
 
 //$sajax_debug_mode = 1;
 sajax_export(
-	array('name' => 'deleteuser', 'method' => 'POST')
+    array('name' => 'deleteuser', 'method' => 'POST')
 );
 //$sajax_remote_uri = '/ajax.php';
 sajax_handle_client_request();
@@ -55,16 +55,16 @@ JSON.parse = JSON.parse || function(jsonsring) { return jsonsring.evalJSON(true)
 
 function deleteuser(id, name)
 {
-	if (confirm('<?php echo(sprintf(addcslashes(_('Do you realy want to delete the user \'%s\'?'), "\\'"), "'+name+'")); ?>') == true) {
-		$('loading').style.visibility = 'hidden';
-		x_deleteuser(id, deleteuser_r);
-	}
+    if (confirm('<?php echo(sprintf(addcslashes(_('Do you realy want to delete the user \'%s\'?'), "\\'"), "'+name+'")); ?>') == true) {
+        $('loading').style.visibility = 'hidden';
+        x_deleteuser(id, deleteuser_r);
+    }
 }
 
 function deleteuser_r() {
-	if (data['error'])
-		alert(data['error']);
-	window.location.reload();
+    if (data['error'])
+        alert(data['error']);
+    window.location.reload();
 }
 
 //-->
@@ -74,39 +74,39 @@ function deleteuser_r() {
 <div id="canvas"><div id="headline"><?php echo(_('Users and Groups')); ?></div><table id="addressbook"><thead><tr><td></td><td><a href="?order=date"><a href="users.php"><?php echo(_('Name')); ?></a></td><td><a href="?order=date"><?php echo(_('Last online')); ?></a></td></tr></thead><tbody><?php
 
 if (empty($_GET['order'])) {
-	$users = $mysqli->fetch_array("SELECT *, UNIX_TIMESTAMP(`lastlogin`) AS 'lastlogin' FROM `users` ORDER BY `fullname` ASC");
+    $users = $mysqli->fetch_array("SELECT *, UNIX_TIMESTAMP(`lastlogin`) AS 'lastlogin' FROM `users` ORDER BY `fullname` ASC");
 } else {
-	$users = $mysqli->fetch_array("SELECT *, UNIX_TIMESTAMP(`lastlogin`) AS 'lastlogin' FROM `users` ORDER BY `lastlogin` DESC");
+    $users = $mysqli->fetch_array("SELECT *, UNIX_TIMESTAMP(`lastlogin`) AS 'lastlogin' FROM `users` ORDER BY `lastlogin` DESC");
 }
 
 foreach ($users as $key => $user) {
-	echo('<tr');
-	if ($key % 2) {
-		echo(' class="altrow"');
-	}
-	echo('><td>');
-	if ($_SESSION['_user']['access'] == 1) {
-		echo(' <img src="images/cross.png" alt="X" title="'._('Delete').'" onclick="deleteuser('.$user['id'].', \''.addcslashes($user['fullname'], "\\'").'\');" />');
-	}
-	echo('</td><td><a href="user.php?id='.$user['id'].'">'.$user['fullname'].'</a></td><td><a href="user.php?id='.$user['id'].'">');
-	if ($user['lastlogin'] == 0) {
-		echo(_('Never'));
-	} elseif ($user['lastlogin'] > time()-1800) {
-		echo(_('Online'));
-	} else {
-		$dayes = round((time()-$user['lastlogin'])/86400);
-		if ($dayes == 0) {
-			$houres = round((time()-$user['lastlogin'])/3600);
-			if ($houres == 0) {
-				echo(sprintf(_('%s minuts ago'), round((time()-$user['lastlogin'])/60)));
-			} else {
-				echo(sprintf(_('%s houres ago'), $houres));
-			}
-		} else {
-			echo(sprintf(_('%s dayes ago'), $dayes));
-		}
-	}
-	echo('</a></td></tr>');
+    echo('<tr');
+    if ($key % 2) {
+        echo(' class="altrow"');
+    }
+    echo('><td>');
+    if ($_SESSION['_user']['access'] == 1) {
+        echo(' <img src="images/cross.png" alt="X" title="'._('Delete').'" onclick="deleteuser('.$user['id'].', \''.addcslashes($user['fullname'], "\\'").'\');" />');
+    }
+    echo('</td><td><a href="user.php?id='.$user['id'].'">'.$user['fullname'].'</a></td><td><a href="user.php?id='.$user['id'].'">');
+    if ($user['lastlogin'] == 0) {
+        echo(_('Never'));
+    } elseif ($user['lastlogin'] > time()-1800) {
+        echo(_('Online'));
+    } else {
+        $dayes = round((time()-$user['lastlogin'])/86400);
+        if ($dayes == 0) {
+            $houres = round((time()-$user['lastlogin'])/3600);
+            if ($houres == 0) {
+                echo(sprintf(_('%s minuts ago'), round((time()-$user['lastlogin'])/60)));
+            } else {
+                echo(sprintf(_('%s houres ago'), $houres));
+            }
+        } else {
+            echo(sprintf(_('%s dayes ago'), $dayes));
+        }
+    }
+    echo('</a></td></tr>');
 }
 
 ?></tbody></table></div><?php

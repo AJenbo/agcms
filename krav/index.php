@@ -10,18 +10,18 @@ $krav = $mysqli->fetch_array("SELECT * FROM krav WHERE id = ".$_GET['id']);
 <head>
 <style type="text/css">
 * {
-	font-family:"Times New Roman", Times, serif;
-	font-size:13px;
+    font-family:"Times New Roman", Times, serif;
+    font-size:13px;
 }
 h1 {
-	color:#333333;
-	font-family:"Times New Roman",Times,serif;
-	font-size:17px;
-	font-weight:bold;
-	margin:0;
+    color:#333333;
+    font-family:"Times New Roman",Times,serif;
+    font-size:17px;
+    font-weight:bold;
+    margin:0;
 }
 body {
-	background-color:#FFFFFF;
+    background-color:#FFFFFF;
 }
 </style>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
