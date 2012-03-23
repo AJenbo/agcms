@@ -1,6 +1,19 @@
 <?php
+/**
+ * Declare common functions
+ *
+ * PHP version 5
+ *
+ * @category AGCMS
+ * @package  AGCMS
+ * @author   Anders Jenbo <anders@jenbo.dk>
+ * @license  GPLv2 http://www.gnu.org/licenses/gpl-2.0.html
+ * @link     http://www.arms-gallery.dk/
+ */
 
-//Get last update time for table
+/**
+ * Get last update time for table
+ */
 function getUpdateTime($table)
 {
     global $mysqli;
@@ -10,7 +23,9 @@ function getUpdateTime($table)
     }
 }
 
-//er der sider bundet til katagorien
+/**
+ * Er der sider bundet til katagorien
+ */
 function skriv($id)
 {
     global $mysqli;
@@ -29,7 +44,14 @@ function skriv($id)
     }
 
     //ellers kig om der er en under kattegori med en side
-    $kat = $mysqli->fetch_array("SELECT kat.id, bind.id as skriv FROM kat JOIN bind ON bind.kat = kat.id WHERE kat.bind = $id GROUP BY kat.id");
+    $kat = $mysqli->fetch_array(
+        "
+        SELECT kat.id, bind.id as skriv
+        FROM kat JOIN bind ON bind.kat = kat.id
+        WHERE kat.bind = $id
+        GROUP BY kat.id
+        "
+    );
 
     getUpdateTime('kat');
 
@@ -38,7 +60,7 @@ function skriv($id)
         if ($value['skriv']) {
             $GLOBALS['cache']['kats'][$value['id']]['skriv'] = true;
             $return = true;
-            //return true if there was a hit, but wait untill foreach is done so we don't risk more SQL if some of the fetched results will be needed.
+            //Load full result in to cache and return true if there was a hit
         }
     }
 
@@ -60,8 +82,9 @@ function skriv($id)
     }
 }
 
-//Har denne katagori under katagorier med indhould
-//Afhngi af skriv()
+/**
+ * Har denne katagori under katagorier med indhould
+ */
 function subs($kat)
 {
     global $mysqli;
@@ -147,20 +170,31 @@ function array_natsort($aryData, $strIndex, $strSortBy, $strSortType=false)
     return $aryResult;
 }
 
-function array_listsort($aryData, $strIndex, $strSortBy, $strSortType=false, $intSortingOrder)
+function array_listsort($aryData, $strIndex, $strSortBy, $strSortType = false, $intSortingOrder)
 {
     global $mysqli;
 
     //Open database
     if (!isset($mysqli)) {
-        $mysqli = new simple_mysqli($GLOBALS['_config']['mysql_server'], $GLOBALS['_config']['mysql_user'], $GLOBALS['_config']['mysql_password'], $GLOBALS['_config']['mysql_database']);
+        $mysqli = new simple_mysqli(
+            $GLOBALS['_config']['mysql_server'],
+            $GLOBALS['_config']['mysql_user'],
+            $GLOBALS['_config']['mysql_password'],
+            $GLOBALS['_config']['mysql_database']
+        );
     }
 
     if (!is_array($aryData) || !$strIndex || !$strSortBy) {
         return $aryData;
     }
 
-    if ($kaliber = $mysqli->fetch_array('SELECT text FROM `tablesort` WHERE id = '.$intSortingOrder)) {
+    $kaliber = $mysqli->fetch_array(
+        "
+        SELECT text
+        FROM `tablesort`
+        WHERE id = " . $intSortingOrder
+    );
+    if ($kaliber) {
         $kaliber = explode('<', $kaliber[0]['text']);
     }
 
@@ -198,7 +232,9 @@ function array_listsort($aryData, $strIndex, $strSortBy, $strSortType=false, $in
     return $aryResult;
 }
 
-//Quick function to trim arrays
+/**
+ * Quick function to trim arrays
+ */
 function trim_value(&$value)
 {
     $value = trim($value);
@@ -214,7 +250,9 @@ function trim_array($totrim)
     return $totrim;
 }
 
-//return html for a sorted table
+/**
+ * return html for a sorted table
+ */
 function get_table($listid, $bycell, $current_kat)
 {
     global $mysqli;
@@ -222,10 +260,16 @@ function get_table($listid, $bycell, $current_kat)
     $html = '';
 
     getUpdateTime('lists');
-    $lists = $mysqli->fetch_array('SELECT * FROM `lists` WHERE id = '.$listid);
+    $lists = $mysqli->fetch_array("SELECT * FROM `lists` WHERE id = " . $listid);
 
     getUpdateTime('list_rows');
-    if ($rows = $mysqli->fetch_array('SELECT * FROM `list_rows` WHERE `list_id` = '.$listid)) {
+    $rows = $mysqli->fetch_array(
+        "
+        SELECT *
+        FROM `list_rows`
+        WHERE `list_id` = " . $listid
+    );
+    if ($rows) {
 
         //Explode sorts
         $lists[0]['sorts'] = explode('<', $lists[0]['sorts']);
@@ -275,12 +319,19 @@ function get_table($listid, $bycell, $current_kat)
             if ($row['link']) {
                 getUpdateTime('sider');
                 getUpdateTime('kat');
-                $sider = $mysqli->fetch_array('SELECT `sider`.`navn`, `kat`.`navn` AS `kat_navn` FROM `sider` JOIN `kat` ON `kat`.`id` = '.$current_kat.' WHERE `sider`.`id` = '.$row['link'].' LIMIT 1');
+                $sider = $mysqli->fetch_array(
+                    "
+                    SELECT `sider`.`navn`, `kat`.`navn` AS `kat_navn`
+                    FROM `sider` JOIN `kat` ON `kat`.`id` = " . $current_kat . "
+                    WHERE `sider`.`id` = " . $row['link'] . "
+                    LIMIT 1
+                    "
+                );
                 $row['link'] = '<a href="/kat'.$current_kat.'-'.clear_file_name($sider[0]['kat_navn']).'/side'.$row['link'].'-'.clear_file_name($sider[0]['navn']).'.html">';
             }
             foreach ($lists[0]['cells'] as $key => $type) {
                 if (empty($row[$key])) {
-                	$row[$key] = '';
+                    $row[$key] = '';
                 }
 
                 switch ($type) {
@@ -359,7 +410,14 @@ function get_table($listid, $bycell, $current_kat)
                 case 5:
                     //image
                     $html .= '<td>';
-                    $files = $mysqli->fetch_array('SELECT * FROM `files` WHERE path = '.$row[$key].' LIMIT 1');
+                    $files = $mysqli->fetch_array(
+                        "
+                        SELECT *
+                        FROM `files`
+                        WHERE path = " . $row[$key] . "
+                        LIMIT 1
+                        "
+                    );
 
                     getUpdateTime('files');
 
@@ -402,7 +460,9 @@ function get_table($listid, $bycell, $current_kat)
     return array('id' => 'table'.$listid, 'html' => $html);
 }
 
-//print out the table
+/**
+ * Print out the table
+ */
 function echo_table($sideid, $mansort, $desc)
 {
     global $mysqli;
@@ -422,7 +482,12 @@ function echo_table($sideid, $mansort, $desc)
     }
     //----------------------------------
 
-    $lists = $mysqli->fetch_array('SELECT id FROM `lists` WHERE `page_id` = '.$sideid);
+    $lists = $mysqli->fetch_array(
+        "
+        SELECT id
+        FROM `lists`
+        WHERE `page_id` = " . $sideid
+    );
 
     getUpdateTime('lists');
 
@@ -441,7 +506,9 @@ function echo_table($sideid, $mansort, $desc)
     return $html;
 }
 
-//Find stien til katagorien
+/**
+ * Find stien til katagorien
+ */
 function kats($id)
 {
     global $mysqli;
@@ -466,13 +533,21 @@ function kats($id)
     return $kats;
 }
 
-//Search for root.
+/**
+ * Search for root.
+ */
 function binding($bind)
 {
     global $mysqli;
 
     if ($bind > 0) {
-        $sog_kat = $mysqli->fetch_array("SELECT `bind` FROM `kat` WHERE id = '".$bind."'");
+        $sog_kat = $mysqli->fetch_array(
+            "
+            SELECT `bind`
+            FROM `kat`
+            WHERE id = '" . $bind . "'
+            "
+        );
 
         getUpdateTime('kat');
 
@@ -482,7 +557,9 @@ function binding($bind)
     }
 }
 
-//Used with array_filter() to make a 2d array uniqe
+/**
+ * Used with array_filter() to make a 2d array uniqe
+ */
 function uniquecol($array)
 {
     static $idlist = array();

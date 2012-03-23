@@ -1,10 +1,29 @@
 <?php
+/**
+ * Set default values and declare earlie common functions
+ *
+ * PHP version 5
+ *
+ * @category AGCMS
+ * @package  AGCMS
+ * @author   Anders Jenbo <anders@jenbo.dk>
+ * @license  GPLv2 http://www.gnu.org/licenses/gpl-2.0.html
+ * @link     http://www.arms-gallery.dk/
+ */
+
 mb_language("uni");
 mb_detect_order("UTF-8, ISO-8859-1");
 mb_internal_encoding('UTF-8');
 date_default_timezone_set('Europe/Copenhagen');
 
-//Optimize trafic by serving proper http header
+/**
+ * Set Last-Modified and ETag http headers
+ * and use cache if no updates since last visit
+ *
+ * @param int $timestamp Unix time stamp of last update to content
+ *
+ * @return null
+ */
 function doConditionalGet($timestamp)
 {
     // A PHP implementation of conditional get, see
@@ -34,9 +53,7 @@ function doConditionalGet($timestamp)
     if ($if_modified_since && $if_modified_since != $last_modified) {
         return; // if-modified-since is there but doesn't match
     }
-    //TODO One.com has broaken headers when sending 304
-    //Update one seams to have fixed this issue.
-    //return;
+
     // Nothing has changed since their last request - serve a 304 and exit
     ini_set('zlib.output_compression', '0');
     header("HTTP/1.1 304 Not Modified", true, 304);

@@ -1,55 +1,116 @@
 <?php
+/**
+ * Functinos for manintaning and optimizing the database
+ *
+ * PHP version 5
+ *
+ * @category AGCMS
+ * @package  AGCMS
+ * @author   Anders Jenbo <anders@jenbo.dk>
+ * @license  GPLv2 http://www.gnu.org/licenses/gpl-2.0.html
+ * @link     http://www.arms-gallery.dk/
+ */
 
 require_once "inc/config.php";
 require_once "inc/mysqli.php";
 require_once 'inc/sajax.php';
 
 //Open database
-$mysqli = new simple_mysqli($GLOBALS['_config']['mysql_server'], $GLOBALS['_config']['mysql_user'], $GLOBALS['_config']['mysql_password'], $GLOBALS['_config']['mysql_database']);
+$mysqli = new simple_mysqli(
+    $GLOBALS['_config']['mysql_server'],
+    $GLOBALS['_config']['mysql_user'],
+    $GLOBALS['_config']['mysql_password'],
+    $GLOBALS['_config']['mysql_database']
+);
 
-function optimize_tables()
+/**
+ * Optimize all tables
+ *
+ * @return string Always empty
+ */
+function optimizeTables()
 {
     global $mysqli;
 
     $tables = $mysqli->fetch_array("SHOW TABLE STATUS");
     foreach ($tables as $table) {
-        $mysqli->query("OPTIMIZE TABLE `".$table['Name']."`");
+        $mysqli->query("OPTIMIZE TABLE `" . $table['Name'] . "`");
     }
     return '';
 }
 
-function remove_bad_submisions()
+/**
+ * Remove newletter submissions that are missing vital information
+ *
+ * @return string Always empty
+ */
+function removeBadSubmisions()
 {
     global $mysqli;
 
-    $mysqli->query("DELETE FROM `email` WHERE `email` = '' AND `adresse` = '' AND `tlf1` = '' AND `tlf2` = '';");
+    $mysqli->query(
+        "
+        DELETE FROM `email`
+        WHERE `email` = ''
+          AND `adresse` = ''
+          AND `tlf1` = ''
+          AND `tlf2` = '';
+        "
+    );
 
     //return $mysqli->affected_rows;
     return '';
 }
 
-function remove_bad_bindings()
+/**
+ * Delete bindings where either page or category is missing
+ *
+ * @return string Always empty
+ */
+function removeBadBindings()
 {
     global $mysqli;
 
-    $mysqli->query('DELETE FROM `bind` WHERE (kat != 0 AND kat != -1 AND kat NOT IN (SELECT id FROM kat)) OR side NOT IN ( SELECT id FROM sider );');
+    $mysqli->query(
+        "
+        DELETE FROM `bind`
+        WHERE (kat != 0 AND kat != -1
+             AND NOT EXISTS (SELECT id FROM kat   WHERE id = bind.kat)
+            ) OR NOT EXISTS (SELECT id FROM sider WHERE id = bind.side);
+        "
+    );
 
     //return $mysqli->affected_rows;
     return '';
 }
 
-function remove_bad_accessories()
+/**
+ * Remove bad tilbehor bindings
+ *
+ * @return string Always empty
+ */
+function removeBadAccessories()
 {
     global $mysqli;
 
-    //Remove bad tilbehor bindings
-    $mysqli->query('DELETE FROM `tilbehor` WHERE side NOT IN ( SELECT id FROM sider ) OR tilbehor NOT IN ( SELECT id FROM sider );');
+    $mysqli->query(
+        "
+        DELETE FROM `tilbehor`
+        WHERE NOT EXISTS (SELECT id FROM sider WHERE tilbehor.side)
+           OR NOT EXISTS (SELECT id FROM sider WHERE tilbehor.tilbehor);
+        "
+    );
 
     //return $mysqli->affected_rows;
     return '';
 }
 
-function remove_none_existing_files()
+/**
+ * Remove enteries for files that do no longer exist
+ *
+ * @return string Always empty
+ */
+function removeNoneExistingFiles()
 {
     global $mysqli;
     $files = $mysqli->fetch_array('SELECT id, path FROM `files`');
@@ -57,7 +118,7 @@ function remove_none_existing_files()
     $deleted = 0;
     foreach ($files as $files) {
         if (!is_file($_SERVER['DOCUMENT_ROOT'].$files['path'])) {
-            $mysqli->query("DELETE FROM `files` WHERE `id` = ".$files['id']);
+            $mysqli->query("DELETE FROM `files` WHERE `id` = " . $files['id']);
             $deleted++;
         }
     }
@@ -65,13 +126,18 @@ function remove_none_existing_files()
     return '';
 }
 
-function delete_tempfiles()
+/**
+ * Delete all temporary files
+ *
+ * @return string Always empty
+ */
+function deleteTempfiles()
 {
     $deleted = 0;
-    $files = scandir($_SERVER['DOCUMENT_ROOT'].'/upload/temp');
+    $files = scandir($_SERVER['DOCUMENT_ROOT'] . '/upload/temp');
     foreach ($files as $file) {
-        if (is_file($_SERVER['DOCUMENT_ROOT'].'/upload/temp/'.$file)) {
-            @unlink($_SERVER['DOCUMENT_ROOT'].'/upload/temp/'.$file);
+        if (is_file($_SERVER['DOCUMENT_ROOT'] . '/upload/temp/' . $file)) {
+            @unlink($_SERVER['DOCUMENT_ROOT'] . '/upload/temp/' . $file);
             $deleted++;
         }
     }
@@ -81,12 +147,36 @@ function delete_tempfiles()
 
 $sajax_debug_mode = 0;
 sajax_export(
-    array('name' => 'optimize_tables', 'method' => 'POST', "asynchronous" => false),
-    array('name' => 'remove_bad_submisions', 'method' => 'POST', "asynchronous" => false),
-    array('name' => 'remove_bad_bindings', 'method' => 'POST', "asynchronous" => false),
-    array('name' => 'remove_bad_accessories', 'method' => 'POST', "asynchronous" => false),
-    array('name' => 'remove_none_existing_files', 'method' => 'POST', "asynchronous" => false),
-    array('name' => 'delete_tempfiles', 'method' => 'POST', "asynchronous" => false)
+    array(
+        'name' => 'optimizeTables',
+        'method' => 'POST',
+        'asynchronous' => false
+    ),
+    array(
+        'name' => 'removeBadSubmisions',
+        'method' => 'POST',
+        'asynchronous' => false
+    ),
+    array(
+        'name' => 'removeBadBindings',
+        'method' => 'POST',
+        'asynchronous' => false
+    ),
+    array(
+        'name' => 'removeBadAccessories',
+        'method' => 'POST',
+        'asynchronous' => false
+    ),
+    array(
+        'name' => 'removeNoneExistingFiles',
+        'method' => 'POST',
+        'asynchronous' => false
+    ),
+    array(
+        'name' => 'deleteTempfiles',
+        'method' => 'POST',
+        'asynchronous' => false
+    )
 );
 sajax_handle_client_request();
 

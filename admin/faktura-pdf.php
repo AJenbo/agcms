@@ -1,9 +1,9 @@
 <?php
 date_default_timezone_set('Europe/Copenhagen');
 setlocale(LC_ALL, 'da_DK');
-bindtextdomain("agcms", $_SERVER['DOCUMENT_ROOT'].'/theme/locale');
-bind_textdomain_codeset("agcms", 'UTF-8');
-textdomain("agcms");
+bindtextdomain('agcms', $_SERVER['DOCUMENT_ROOT'].'/theme/locale');
+bind_textdomain_codeset('agcms', 'UTF-8');
+textdomain('agcms');
 
 require_once $_SERVER['DOCUMENT_ROOT'].'/admin/inc/logon.php';
 
@@ -15,7 +15,12 @@ if ($_GET['id'] > 0) {
 
 require_once '../inc/config.php';
 require_once '../inc/mysqli.php';
-$mysqli = new simple_mysqli($GLOBALS['_config']['mysql_server'], $GLOBALS['_config']['mysql_user'], $GLOBALS['_config']['mysql_password'], $GLOBALS['_config']['mysql_database']);
+$mysqli = new simple_mysqli(
+    $GLOBALS['_config']['mysql_server'],
+    $GLOBALS['_config']['mysql_user'],
+    $GLOBALS['_config']['mysql_password'],
+    $GLOBALS['_config']['mysql_database']
+);
 
 $faktura = $mysqli->fetch_one("SELECT *, UNIX_TIMESTAMP(`date`) AS `date`, UNIX_TIMESTAMP(`paydate`) AS `paydate` FROM `fakturas` WHERE `id` = ".$id." AND `status` != 'new'");
 if (!$faktura) {
@@ -81,14 +86,14 @@ $pdf->SetFont('times', '', 10);
 $pdf->Write(
     0,
     $GLOBALS['_config']['address']."\n".
-    $GLOBALS['_config']['postcode']." ".$GLOBALS['_config']['city']."\n".
-    "Fax: ".$GLOBALS['_config']['fax']."\n",
+    $GLOBALS['_config']['postcode'].' '.$GLOBALS['_config']['city']."\n".
+    'Fax: '.$GLOBALS['_config']['fax']."\n",
     '',
     0,
     'R'
 );
 $pdf->SetFont('times', 'B', 11);
-$pdf->Write(0, _('Phone:')." ".$GLOBALS['_config']['phone']."\n", '', 0, 'R');
+$pdf->Write(0, _('Phone:').' '.$GLOBALS['_config']['phone']."\n", '', 0, 'R');
 $pdf->SetFont('times', '', 10);
 
 if (empty($faktura['department'])) {
@@ -102,7 +107,7 @@ $pdf->Write(0, "Danske Bank (Giro)\nReg.: 9541 Kont.: 169 3336\n", '', 0, 'R');
 $pdf->SetFont('times', '', 10);
 $pdf->Write(0, "\nIBAN: DK693 000 000-1693336\nSWIFT BIC: DABADKKK\n\n", '', 0, 'R');
 $pdf->SetFont('times', 'B', 11);
-$pdf->Write(0, "CVR 1308 1387", '', 0, 'R');
+$pdf->Write(0, 'CVR 1308 1387', '', 0, 'R');
 
 //Seperation lines
 $pdf->SetLineWidth(0.5);
@@ -193,7 +198,7 @@ $pdf->writeHTML($info);
 $pdf->SetFont('times', '', 26);
 $pdf->Write(0, "\n");
 $pdf->SetY(85);
-$pdf->writeHTML("<strong>"._('Online Invoice')."</strong> ".$faktura['id'], false, false, false, false, 'R');
+$pdf->writeHTML('<strong>'._('Online Invoice').'</strong> '.$faktura['id'], false, false, false, false, 'R');
 
 //Invoice table
 $pdf->SetFont('times', '', 10);
@@ -305,8 +310,3 @@ $pdf->Write(0, _('Sincerely,')."\n\n\n".$faktura['clerk']."\n".$GLOBALS['_config
 
 //Close and output PDF document
 $pdf->Output('Faktura-'.$faktura['id'].'.pdf', 'I');
-
-//============================================================+
-// END OF FILE
-//============================================================+
-?>

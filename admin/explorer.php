@@ -6,9 +6,9 @@ error_reporting(-1);
 
 date_default_timezone_set('Europe/Copenhagen');
 setlocale(LC_ALL, 'da_DK');
-bindtextdomain("agcms", $_SERVER['DOCUMENT_ROOT'].'/theme/locale');
-bind_textdomain_codeset("agcms", 'UTF-8');
-textdomain("agcms");
+bindtextdomain('agcms', $_SERVER['DOCUMENT_ROOT'].'/theme/locale');
+bind_textdomain_codeset('agcms', 'UTF-8');
+textdomain('agcms');
 
 require_once $_SERVER['DOCUMENT_ROOT'].'/admin/inc/logon.php';
 //TODO update compleat source with doConditionalGet
@@ -128,7 +128,7 @@ function filejavascript($fileinfo)
     }
     $javascript .= '\'';
 
-    $javascript .= ', \''.addcslashes(@$fileinfo['alt'], "'").'\'';
+    $javascript .= ', \''.addcslashes(@$fileinfo['alt'], "\\'").'\'';
     $javascript .= ', '.($fileinfo['width'] ? $fileinfo['width'] : '0').'';
     $javascript .= ', '.($fileinfo['height'] ? $fileinfo['height'] : '0').'';
     $javascript .= ');';
@@ -164,9 +164,9 @@ $html .= '<div id="tilebox'.$fileinfo['id'].'" class="imagetile"><div class="ima
 $html .= '<div id="tilebox'.$fileinfo['id'].'" class="flvtile"><div class="image"';
             if ($_GET['return']=='rtef') {
                 if ($fileinfo['aspect'] == '4-3') {
-                    $html .= ' onclick="addflv('.$fileinfo['id'].", '".$fileinfo['aspect']."', ".max($fileinfo['width'], $fileinfo['height']/3*4).", ".ceil($fileinfo['width']/4*3*1.1975).")\"";
+                    $html .= ' onclick="addflv('.$fileinfo['id'].', \''.$fileinfo['aspect'].'\', '.max($fileinfo['width'], $fileinfo['height']/3*4).', '.ceil($fileinfo['width']/4*3*1.1975).')"';
                 } elseif ($fileinfo['aspect'] == '16-9') {
-                    $html .= ' onclick="addflv('.$fileinfo['id'].", '".$fileinfo['aspect']."', ".max($fileinfo['width'], $fileinfo['height']/9*16).", ".ceil($fileinfo['width']/16*9*1.2).")\"";
+                    $html .= ' onclick="addflv('.$fileinfo['id'].', \''.$fileinfo['aspect'].'\', '.max($fileinfo['width'], $fileinfo['height']/9*16).', '.ceil($fileinfo['width']/16*9*1.2).')"';
                 }
             } else {
                 $html .= ' onclick="files['.$fileinfo['id'].'].openfile();"';
@@ -177,7 +177,7 @@ $html .= '<div id="tilebox'.$fileinfo['id'].'" class="flvtile"><div class="image
         case 'application/futuresplash':
 $html .= '<div id="tilebox'.$fileinfo['id'].'" class="swftile"><div class="image"';
             if ($_GET['return']=='rtef') {
-                $html .= ' onclick="addswf('.$fileinfo['id'].", ".$fileinfo['width'].", ".$fileinfo['height'].")\"";
+                $html .= ' onclick="addswf('.$fileinfo['id'].', '.$fileinfo['width'].', '.$fileinfo['height'].')"';
             } else {
                 $html .= ' onclick="files['.$fileinfo['id'].'].openfile();"';
             }
@@ -195,15 +195,15 @@ $html .= '<div id="tilebox'.$fileinfo['id'].'" class="swftile"><div class="image
 $html .= '<div id="tilebox'.$fileinfo['id'].'" class="videotile"><div class="image"';
             //TODO make the actual functions
             if ($_GET['return']=='rtef')
-                $html .= " onclick=\"addmedia(".$fileinfo['id'].")\"";
+                $html .= ' onclick="addmedia('.$fileinfo['id'].')"';
             else
                 $html .= ' onclick="files['.$fileinfo['id'].'].openfile();"';
         break;
         default:
 $html .= '<div id="tilebox'.$fileinfo['id'].'" class="filetile"><div class="image"';
             if ($_GET['return']=='rtef') {
-                $html .= " onclick=\"addfile(".$fileinfo['id'].")\"";
-            } else/*if ($mode=="file")*/ {
+                $html .= ' onclick=\"addfile('.$fileinfo['id'].')"';
+            } else/*if ($mode=='file')*/ {
                 $html .= ' onclick="files['.$fileinfo['id'].'].openfile();"';
             }
         break;
@@ -301,10 +301,10 @@ function makedir($name)
 
     /*Kode til Scannet's server
     if (is_dir($_SERVER['DOCUMENT_ROOT'].@$_COOKIE['admin_dir'])) {
-        mkdir($_SERVER['DOCUMENT_ROOT'].@$_COOKIE['admin_dir']."/".$name, 0777); //ends up as 755 and apache as the owner
+        mkdir($_SERVER['DOCUMENT_ROOT'].@$_COOKIE['admin_dir'].'/'.$name, 0777); //ends up as 755 and apache as the owner
         system('aduxchown '.mb_substr(@$_COOKIE['admin_dir'], 1-mb_strlen(@$_COOKIE['admin_dir'], 'UTF-8'),, 'UTF-8').'/'); //remove the leading slash from the path and send it to the special scannet uid fixing scrip (dumb safe mode)
         system('aduxchown '.mb_substr(@$_COOKIE['admin_dir'], 1-mb_strlen(@$_COOKIE['admin_dir'], 'UTF-8'),, 'UTF-8').'/'.$name.'/'); //remove the leading slash from the path and send it to the special scannet uid fixing scrip (dumb safe mode)
-        chmod($_SERVER['DOCUMENT_ROOT'].@$_COOKIE['admin_dir']."/".$name, 0777);
+        chmod($_SERVER['DOCUMENT_ROOT'].@$_COOKIE['admin_dir'].'/'.$name, 0777);
         return true;
     }
 /**/
@@ -312,7 +312,7 @@ function makedir($name)
     //*
     if (!ini_get('safe_mode') || (ini_get('safe_mode') && ini_get('safe_mode_gid')) || !function_exists('ftp_mkdir')) {
         if (!is_dir($_SERVER['DOCUMENT_ROOT'].@$_COOKIE['admin_dir']) ||
-        !mkdir($_SERVER['DOCUMENT_ROOT'].@$_COOKIE['admin_dir']."/".$name, 0771))
+        !mkdir($_SERVER['DOCUMENT_ROOT'].@$_COOKIE['admin_dir'].'/'.$name, 0771))
             return array('error' => _('Could not create folder, you may not have sufficient rights to this folder.'));
     } else {
         require_once 'inc/config.php';
@@ -323,7 +323,7 @@ function makedir($name)
         if (!@ftp_login($FTP_Conn, $GLOBALS['_config']['ftp_User'], $GLOBALS['_config']['ftp_Pass']) ||
         !@ftp_chdir($FTP_Conn, $GLOBALS['_config']['ftp_Root'].@$_COOKIE['admin_dir']) ||
         !ftp_mkdir($FTP_Conn, $name) ||
-        !ftp_site($FTP_Conn, "CHMOD 0771 ".$name))
+        !ftp_site($FTP_Conn, 'CHMOD 0771 '.$name))
             return array('error' => _('An error occurred with the FTP connection.'));
 
         if (!is_dir($_SERVER['DOCUMENT_ROOT'].@$_COOKIE['admin_dir'].'/'.$name))
@@ -480,7 +480,12 @@ require_once '../inc/mysqli.php';
 require_once 'inc/file-functions.php';
 require_once 'inc/get_mime_type.php';
 
-$mysqli = new simple_mysqli($GLOBALS['_config']['mysql_server'], $GLOBALS['_config']['mysql_user'], $GLOBALS['_config']['mysql_password'], $GLOBALS['_config']['mysql_database']);
+$mysqli = new simple_mysqli(
+    $GLOBALS['_config']['mysql_server'],
+    $GLOBALS['_config']['mysql_user'],
+    $GLOBALS['_config']['mysql_password'],
+    $GLOBALS['_config']['mysql_database']
+);
 
 function deletefolder()
 {
@@ -490,22 +495,22 @@ function deletefolder()
         $nr = count($dirlist);
         for($i=0;$i<$nr;$i++) {
             if ($dirlist[$i] != '.' && $dirlist[$i] != '..') {
-                if (is_dir($_SERVER['DOCUMENT_ROOT'].$dir."/".$dirlist[$i])) {
-                    $deltree = deltree($dir."/".$dirlist[$i]);
+                if (is_dir($_SERVER['DOCUMENT_ROOT'].$dir.'/'.$dirlist[$i])) {
+                    $deltree = deltree($dir.'/'.$dirlist[$i]);
                     if ($deltree) return $deltree;
-                    @rmdir($_SERVER['DOCUMENT_ROOT'].$dir."/".$dirlist[$i]);
-                    @setcookie($dir."/".$dirlist[$i], false);
+                    @rmdir($_SERVER['DOCUMENT_ROOT'].$dir.'/'.$dirlist[$i]);
+                    @setcookie($dir.'/'.$dirlist[$i], false);
                 } else {
                     global $mysqli;
-                    if ($mysqli->fetch_array('SELECT id FROM `sider` WHERE `navn` LIKE \'%'.$dir."/".$dirlist[$i].'%\' OR `text` LIKE \'%'.$dir."/".$dirlist[$i].'%\' OR `beskrivelse` LIKE \'%'.$dir."/".$dirlist[$i].'%\' OR `billed` LIKE \'%'.$dir."/".$dirlist[$i].'%\' LIMIT 1')
-                    || $mysqli->fetch_array('SELECT id FROM `template` WHERE `navn` LIKE \'%'.$dir."/".$dirlist[$i].'%\' OR `text` LIKE \'%'.$dir."/".$dirlist[$i].'%\' OR `beskrivelse` LIKE \'%'.$dir."/".$dirlist[$i].'%\' OR `billed` LIKE \'%'.$dir."/".$dirlist[$i].'%\' LIMIT 1')
-                    || $mysqli->fetch_array('SELECT id FROM `special` WHERE `text` LIKE \'%'.$dir."/".$dirlist[$i].'%\' LIMIT 1')
-                    || $mysqli->fetch_array('SELECT id FROM `krav` WHERE `text` LIKE \'%'.$dir."/".$dirlist[$i].'%\' LIMIT 1')
-                    || $mysqli->fetch_array('SELECT id FROM `maerke` WHERE `ico` LIKE \'%'.$dir."/".$dirlist[$i].'%\' LIMIT 1')
-                    || $mysqli->fetch_array('SELECT id FROM `list_rows` WHERE `cells` LIKE \'%'.$dir."/".$dirlist[$i].'%\' LIMIT 1')
-                    || $mysqli->fetch_array('SELECT id FROM `kat` WHERE `navn` LIKE \'%'.$dir."/".$dirlist[$i].'%\' OR `icon` LIKE \'%'.$dir."/".$dirlist[$i].'%\' LIMIT 1'))
+                    if ($mysqli->fetch_array("SELECT id FROM `sider` WHERE `navn` LIKE '%".$dir."/".$dirlist[$i]."%' OR `text` LIKE '%".$dir."/".$dirlist[$i]."%' OR `beskrivelse` LIKE '%".$dir."/".$dirlist[$i]."%' OR `billed` LIKE "'%".$dir."/".$dirlist[$i]."%' LIMIT 1")
+                    || $mysqli->fetch_array("SELECT id FROM `template` WHERE `navn` LIKE '%".$dir."/".$dirlist[$i]."%' OR `text` LIKE '%".$dir."/".$dirlist[$i]."%' OR `beskrivelse` LIKE '%".$dir."/".$dirlist[$i]."%' OR `billed` LIKE '%".$dir."/".$dirlist[$i]."%' LIMIT 1")
+                    || $mysqli->fetch_array("SELECT id FROM `special` WHERE `text` LIKE '%".$dir."/".$dirlist[$i]."%' LIMIT 1")
+                    || $mysqli->fetch_array("SELECT id FROM `krav` WHERE `text` LIKE '%".$dir."/".$dirlist[$i]."%' LIMIT 1")
+                    || $mysqli->fetch_array("SELECT id FROM `maerke` WHERE `ico` LIKE '%".$dir."/".$dirlist[$i]."%' LIMIT 1")
+                    || $mysqli->fetch_array("SELECT id FROM `list_rows` WHERE `cells` LIKE '%".$dir."/".$dirlist[$i]."%' LIMIT 1")
+                    || $mysqli->fetch_array("SELECT id FROM `kat` WHERE `navn` LIKE '%".$dir."/".$dirlist[$i]."%' OR `icon` LIKE '%".$dir."/".$dirlist[$i]."%' LIMIT 1"))
                     return array('error' => _('A file could not be deleted because it is used on a site.'));
-                    @unlink($_SERVER['DOCUMENT_ROOT'].$dir."/".$dirlist[$i]);
+                    @unlink($_SERVER['DOCUMENT_ROOT'].$dir.'/'.$dirlist[$i]);
                 }
             }
         }
@@ -636,8 +641,8 @@ function edit_alt($id, $alt)
         foreach ($sider as $value) {
             //TODO move this to db fixer to test for missing alt="" in img
             /*preg_match_all('/<img[^>]+/?>/ui', $value, $matches);*/
-            $value['text'] = preg_replace('/(<img[^>]+src="'.addcslashes(str_replace('.', '[.]', $file[0]['path']), '/').'"[^>]+alt=)"[^"]*"([^>]*>)/iu', '\1"'.htmlspecialchars($alt).'"\2', $value['text']);
-            $value['text'] = preg_replace('/(<img[^>]+alt=)"[^"]*"([^>]+src="'.addcslashes(str_replace('.', '[.]', $file[0]['path']), '/').'"[^>]*>)/iu', '\1"'.htmlspecialchars($alt).'"\2', $value['text']);
+            $value['text'] = preg_replace('/(<img[^>]+src="'.addcslashes(str_replace('.', '[.]', $file[0]['path']), '/').'"[^>]+alt=)"[^"]*"([^>]*>)/iu', '\1"'.htmlspecialchars($alt, ENT_COMPAT | ENT_XHTML, 'UTF-8').'"\2', $value['text']);
+            $value['text'] = preg_replace('/(<img[^>]+alt=)"[^"]*"([^>]+src="'.addcslashes(str_replace('.', '[.]', $file[0]['path']), '/').'"[^>]*>)/iu', '\1"'.htmlspecialchars($alt, ENT_COMPAT | ENT_XHTML, 'UTF-8').'"\2', $value['text']);
             $mysqli->query("UPDATE `sider` SET `text` = '".$value['text']."' WHERE `id` = ".$value['id']." LIMIT 1");
         }
     return array('id' => $id, 'alt' => $alt);
@@ -656,7 +661,7 @@ sajax_export(
     array('name' => 'searchfiles', 'method' => 'GET'),
     array('name' => 'edit_alt', 'method' => 'POST')
 );
-//$sajax_remote_uri = "/ajax.php";
+//$sajax_remote_uri = '/ajax.php';
 sajax_handle_client_request();
 
 

@@ -2,9 +2,9 @@
 
 date_default_timezone_set('Europe/Copenhagen');
 setlocale(LC_ALL, 'da_DK');
-bindtextdomain("agcms", $_SERVER['DOCUMENT_ROOT'].'/theme/locale');
-bind_textdomain_codeset("agcms", 'UTF-8');
-textdomain("agcms");
+bindtextdomain('agcms', $_SERVER['DOCUMENT_ROOT'].'/theme/locale');
+bind_textdomain_codeset('agcms', 'UTF-8');
+textdomain('agcms');
 
 require_once $_SERVER['DOCUMENT_ROOT'].'/admin/inc/logon.php';
 require_once 'file-functions.php';
@@ -147,12 +147,12 @@ function generateImage($path, $cropX, $cropY, $cropW, $cropH, $maxW, $maxH, $fli
         imagejpeg($image, $_SERVER['DOCUMENT_ROOT'].$output['path'], 80);
 
     } elseif ($mimeType == 'image/jpeg') {
-        header("Content-Type: image/jpeg");
+        header('Content-Type: image/jpeg');
         imagejpeg($image, null, 80);
         die();
 
     } else {
-        header("Content-Type: image/png");
+        header('Content-Type: image/png');
         imagepng($image, null, 9);
         die();
     }
@@ -167,7 +167,12 @@ function generateImage($path, $cropX, $cropY, $cropW, $cropH, $maxW, $maxH, $fli
     include_once $_SERVER['DOCUMENT_ROOT'].'/inc/mysqli.php';
     global $mysqli;
     if (!$mysqli) {
-        $mysqli = new simple_mysqli($GLOBALS['_config']['mysql_server'], $GLOBALS['_config']['mysql_user'], $GLOBALS['_config']['mysql_password'], $GLOBALS['_config']['mysql_database']);
+        $mysqli = new simple_mysqli(
+            $GLOBALS['_config']['mysql_server'],
+            $GLOBALS['_config']['mysql_user'],
+            $GLOBALS['_config']['mysql_password'],
+            $GLOBALS['_config']['mysql_database']
+        );
     }
 
     if ($output['filename'] == $pathinfo['filename'] && $output['path'] != $path) {
@@ -180,9 +185,9 @@ function generateImage($path, $cropX, $cropY, $cropW, $cropH, $maxW, $maxH, $fli
     $id = @$id[0]['id'];
 
     if ($id) {
-        $mysqli->query('UPDATE files SET path = \''.$output['path'].'\', size = '.$filesize.', mime = \''.$mimeType.'\', width = \''.$width.'\', height = \''.$height.'\' WHERE id = '.$id);
+        $mysqli->query("UPDATE files SET path = '".$output['path']."', size = ".$filesize.", mime = '".$mimeType."', width = '".$width."', height = '".$height."' WHERE id = " . $id);
     } else {
-        $mysqli->query('INSERT INTO files (path, mime, width, height, size, aspect) VALUES (\''.$output['path']."', '".$mimeType."', '".$width."', '".$height."', '".$filesize."', NULL )");
+        $mysqli->query("INSERT INTO files (path, mime, width, height, size, aspect) VALUES ('".$output['path']."', '" . $mimeType . "', '".$width."', '".$height."', '".$filesize."', NULL )");
         $id = $mysqli->insert_id;
     }
 
@@ -336,4 +341,3 @@ function imagetrim($image, $bg, $fill)
     //if nothing need changeing then break here.
     return crop($image, $cropX, $cropY, $cropW, $cropH, $fill);
 }
-?>

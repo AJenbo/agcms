@@ -1,4 +1,15 @@
 <?php
+/**
+ * Declare the simple_mysqli class
+ *
+ * PHP version 5
+ *
+ * @category AGCMS
+ * @package  AGCMS
+ * @author   Anders Jenbo <anders@jenbo.dk>
+ * @license  GPLv2 http://www.gnu.org/licenses/gpl-2.0.html
+ * @link     http://www.arms-gallery.dk/
+ */
 
 //include the file
 require_once "firephp.class.php";
@@ -15,7 +26,10 @@ class simple_mysqli extends mysqli
 {
     function __construct()
     {
-        /* Pass all arguments passed to the constructor on to the parent's constructor */
+        /**
+         * Pass all arguments passed to the constructor on to the parent's
+         * constructor
+         */
         $args = func_get_args();
         parent::__construct($args[0], $args[1], $args[2], $args[3]);
 

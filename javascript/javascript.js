@@ -3,7 +3,7 @@ function x_get_table() {
 	return false;
 }
 
-function get_address(phonenumber, function_name) {
+function getAddress(phonenumber, function_name) {
 	phonenumber = phonenumber.replace('/\s/', '');
 	phonenumber = phonenumber.replace('/^[+]45/', '');
 	if(!phonenumber) {
@@ -14,16 +14,16 @@ function get_address(phonenumber, function_name) {
 		alert('Telefonnummeret skal være på 8 cifre!');
 		return false;
 	}
-	x_get_address(phonenumber, function_name);
+	x_getAddress(phonenumber, function_name);
 }
 
-function x_get_address() {
-	sajax_do_call('get_address', arguments, "GET", true, "/ajax.php");
+function x_getAddress() {
+	sajax_do_call('getAddress', arguments, "GET", true, "/ajax.php");
 	return false;
 }
 
-function x_get_kat() {
-	sajax_do_call('get_kat', arguments, "GET", true, "/ajax.php");
+function x_getKat() {
+	sajax_do_call('getKat', arguments, "GET", true, "/ajax.php");
 	return false;
 }
 

@@ -97,18 +97,23 @@ if ($_GET['sort'] == 'id') {
 </tr></thead><tbody><?php
 require_once '../inc/config.php';
 require_once '../inc/mysqli.php';
-$mysqli = new simple_mysqli($GLOBALS['_config']['mysql_server'], $GLOBALS['_config']['mysql_user'], $GLOBALS['_config']['mysql_password'], $GLOBALS['_config']['mysql_database']);
+$mysqli = new simple_mysqli(
+    $GLOBALS['_config']['mysql_server'],
+    $GLOBALS['_config']['mysql_user'],
+    $GLOBALS['_config']['mysql_password'],
+    $GLOBALS['_config']['mysql_database']
+);
 
 $maerker = $mysqli->fetch_array("SELECT id, navn FROM `maerke`");
 foreach ($maerker as $maerke) {
-    $temp[$maerke['id']] = htmlspecialchars($maerke['navn']);
+    $temp[$maerke['id']] = htmlspecialchars($maerke['navn'], ENT_COMPAT | ENT_XHTML, 'UTF-8');
 }
 $maerker = $temp;
 unset($temp);
 
 $krav = $mysqli->fetch_array("SELECT id, navn FROM `krav`");
 foreach ($krav as $element) {
-    $temp[$element['id']] = htmlspecialchars($element['navn']);
+    $temp[$element['id']] = htmlspecialchars($element['navn'], ENT_COMPAT | ENT_XHTML, 'UTF-8');
 }
 $krav = $temp;
 unset($temp);
@@ -118,9 +123,9 @@ function print_kat($bind, $path_name)
     global $mysqli;
     $kats = $mysqli->fetch_array("SELECT id, bind, navn FROM `kat` WHERE bind = ".$bind." ORDER BY navn");
     foreach ($kats as $kat) {
-        echo "\n".'  <tr class="path"><td colspan="8"><a href="?sort='.$_GET['sort'].'&amp;kat='.$kat['id'].'"><img src="images/find.png" alt="Vis" title="Vis kun denne kategori" /></a> '.$path_name.' &gt; <a href="/kat'.$kat['id'].'-">'.htmlspecialchars($kat['navn']).'</a></td></tr>'
+        echo "\n".'  <tr class="path"><td colspan="8"><a href="?sort='.$_GET['sort'].'&amp;kat='.$kat['id'].'"><img src="images/find.png" alt="Vis" title="Vis kun denne kategori" /></a> '.$path_name.' &gt; <a href="/kat'.$kat['id'].'-">'.htmlspecialchars($kat['navn'], ENT_COMPAT | ENT_XHTML, 'UTF-8').'</a></td></tr>'
         print_pages($kat['id']);
-        print_kat($kat['id'], $path_name.' &gt; '.htmlspecialchars($kat['navn']));
+        print_kat($kat['id'], $path_name.' &gt; '.htmlspecialchars($kat['navn'], ENT_COMPAT | ENT_XHTML, 'UTF-8'));
     }
 }
 
@@ -143,8 +148,8 @@ function print_pages($kat)
 
     echo '>
       <td class="tal"><a href="/admin/?side=redigerside&amp;id='.$side['id'].'">'.$side['id'].'</a></td>
-      <td><a href="/side'.$side['id'].'-">'.htmlspecialchars($side['navn']).'</a></td>
-      <td>'.htmlspecialchars($side['varenr']).'</td>
+      <td><a href="/side'.$side['id'].'-">'.htmlspecialchars($side['navn'], ENT_COMPAT | ENT_XHTML, 'UTF-8').'</a></td>
+      <td>'.htmlspecialchars($side['varenr'], ENT_COMPAT | ENT_XHTML, 'UTF-8').'</td>
       <td class="tal">'.number_format($side['for'], 2, ',', '.').'</td>
       <td class="tal">'.number_format($side['pris'], 2, ',', '.').'</td>
       <td class="tal">'.$side['dato'].'</td>
@@ -166,7 +171,7 @@ if (is_numeric($_GET['kat'])) {
     } else {
         $kat = array('id' => -1, 'navn' => 'Indaktiv');
     }
-    echo "\n".'  <tr class="path"><td colspan="8"><a href="?sort='.$_GET['sort'].'"><img src="images/find.png" alt="Vis" title="Vis alle kategorier" /></a> <a href="/kat'.$kat['id'].'-">'.htmlspecialchars($kat['navn']).'</a></td></tr>'
+    echo "\n".'  <tr class="path"><td colspan="8"><a href="?sort='.$_GET['sort'].'"><img src="images/find.png" alt="Vis" title="Vis alle kategorier" /></a> <a href="/kat'.$kat['id'].'-">'.htmlspecialchars($kat['navn'], ENT_COMPAT | ENT_XHTML, 'UTF-8').'</a></td></tr>'
     print_pages($_GET['kat']);
 } else {
     echo '<tr><td colspan="8" class="path"><a href="?sort='.$_GET['sort'].'&amp;kat=0"><img src="images/find.png" alt="Vis" title="Vis kun denne kategori" /></a> <a href="/">Forside</a></td></tr>'

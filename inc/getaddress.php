@@ -1,5 +1,24 @@
 <?php
-function getAddress($id)
+/**
+ * Function for getting user address
+ *
+ * PHP version 5
+ *
+ * @category AGCMS
+ * @package  AGCMS
+ * @author   Anders Jenbo <anders@jenbo.dk>
+ * @license  GPLv2 http://www.gnu.org/licenses/gpl-2.0.html
+ * @link     http://www.arms-gallery.dk/
+ */
+
+/**
+ * Get address from phone number
+ *
+ * @param string $phoneNumber Phone number
+ *
+ * @return array Array with address fitting the post table format
+ */
+function getAddress($phoneNumber)
 {
     $default['recName1'] = '';
     $default['recAddress1'] = '';
@@ -30,22 +49,46 @@ function getAddress($id)
     include_once $_SERVER['DOCUMENT_ROOT'].'/inc/mysqli.php';
 
     foreach ($dbs as $db) {
-        $mysqli_ext = new simple_mysqli($db['mysql_server'], $db['mysql_user'], $db['mysql_password'], $db['mysql_database']);
+        $mysqli_ext = new simple_mysqli(
+            $db['mysql_server'],
+            $db['mysql_user'],
+            $db['mysql_password'],
+            $db['mysql_database']
+        );
 
         //try packages
-        if ($user = $mysqli_ext->fetch_array('SELECT recName1, recAddress1, recZipCode FROM `post` WHERE `recipientID` LIKE \''.$id.'\' ORDER BY id DESC LIMIT 1')) {
-            $return = array_merge($default, $user[0]);
+        $post = $mysqli_ext->fetch_array(
+            "
+            SELECT recName1, recAddress1, recZipCode
+            FROM `post`
+            WHERE `recipientID` LIKE '" . $phoneNumber . "'
+            ORDER BY id DESC
+            LIMIT 1
+            "
+        );
+        if ($post) {
+            $return = array_merge($default, $post[0]);
             if ($return != $default) {
                 return $return;
             }
         }
 
         //Try katalog orders
-        if ($user = $mysqli_ext->fetch_array('SELECT navn, email, adresse, post FROM `email` WHERE `tlf1` LIKE \''.$id.'\' OR `tlf2` LIKE \''.$id.'\' ORDER BY id DESC LIMIT 1')) {
-            $return['recName1'] = $user[0]['navn'];
-            $return['recAddress1'] = $user[0]['adresse'];
-            $return['recZipCode'] = $user[0]['post'];
-            $return['email'] = $user[0]['email'];
+        $email = $mysqli_ext->fetch_array(
+            "
+            SELECT navn, email, adresse, post
+            FROM `email`
+            WHERE `tlf1` LIKE '" . $phoneNumber . "'
+               OR `tlf2` LIKE '" . $phoneNumber . "'
+            ORDER BY id DESC
+            LIMIT 1
+            "
+        );
+        if ($email) {
+            $return['recName1'] = $email[0]['navn'];
+            $return['recAddress1'] = $email[0]['adresse'];
+            $return['recZipCode'] = $email[0]['post'];
+            $return['email'] = $email[0]['email'];
             $return = array_merge($default, $return);
 
             if ($return != $default) {
@@ -54,13 +97,23 @@ function getAddress($id)
         }
 
         //Try fakturas
-        if ($user = $mysqli_ext->fetch_array('SELECT navn, email, att, adresse, postnr, postbox FROM `fakturas` WHERE `tlf1` LIKE \''.$id.'\' OR `tlf2` LIKE \''.$id.'\' ORDER BY id DESC LIMIT 1')) {
-            $return['recName1'] = $user[0]['navn'];
-            $return['recAddress1'] = $user[0]['adresse'];
-            $return['recZipCode'] = $user[0]['postnr'];
-            $return['recAttPerson'] = $user[0]['att'];
-            $return['recPostBox'] = $user[0]['postbox'];
-            $return['email'] = $user[0]['email'];
+        $fakturas = $mysqli_ext->fetch_array(
+            "
+            SELECT navn, email, att, adresse, postnr, postbox
+            FROM `fakturas`
+            WHERE `tlf1` LIKE '" . $phoneNumber . "'
+               OR `tlf2` LIKE '" . $phoneNumber . "'
+            ORDER BY id DESC
+            LIMIT 1
+            "
+        );
+        if ($fakturas) {
+            $return['recName1'] = $fakturas[0]['navn'];
+            $return['recAddress1'] = $fakturas[0]['adresse'];
+            $return['recZipCode'] = $fakturas[0]['postnr'];
+            $return['recAttPerson'] = $fakturas[0]['att'];
+            $return['recPostBox'] = $fakturas[0]['postbox'];
+            $return['email'] = $fakturas[0]['email'];
             $return = array_merge($default, $return);
 
             if ($return != $default) {
@@ -69,8 +122,8 @@ function getAddress($id)
         }
     }
 
-    include_once $_SERVER['DOCUMENT_ROOT'].'/krak/krak.php';
-    if ($return = getAddressKrak($id)) {
+    include_once $_SERVER['DOCUMENT_ROOT'] . '/krak/krak.php';
+    if ($return = getAddressKrak($phoneNumber)) {
         $return = array_merge($default, $return);
 
         if ($return != $default) {

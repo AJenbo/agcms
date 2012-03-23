@@ -2,7 +2,12 @@
 
 require_once '../inc/config.php';
 require_once '../inc/mysqli.php';
-$mysqli = new simple_mysqli($GLOBALS['_config']['mysql_server'], $GLOBALS['_config']['mysql_user'], $GLOBALS['_config']['mysql_password'], $GLOBALS['_config']['mysql_database']);
+$mysqli = new simple_mysqli(
+    $GLOBALS['_config']['mysql_server'],
+    $GLOBALS['_config']['mysql_user'],
+    $GLOBALS['_config']['mysql_password'],
+    $GLOBALS['_config']['mysql_database']
+);
 
 if($_GET['id'])
     $faktura = $mysqli->fetch_array("SELECT `text` FROM `sider` WHERE `id` = ".$_GET['id']);
@@ -27,4 +32,4 @@ $clean_html = $purifier->purify($faktura[0]['text']);
 echo '
 Efter:
 '.$clean_html;
-?>
+

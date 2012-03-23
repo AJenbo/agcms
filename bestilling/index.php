@@ -16,7 +16,12 @@ if (is_numeric(@$_GET['add']) || is_numeric(@$_GET['add_list_item'])) {
     include_once 'inc/config.php';
     include_once 'inc/mysqli.php';
     //Open database
-    $mysqli = new simple_mysqli($GLOBALS['_config']['mysql_server'], $GLOBALS['_config']['mysql_user'], $GLOBALS['_config']['mysql_password'], $GLOBALS['_config']['mysql_database']);
+    $mysqli = new simple_mysqli(
+        $GLOBALS['_config']['mysql_server'],
+        $GLOBALS['_config']['mysql_user'],
+        $GLOBALS['_config']['mysql_password'],
+        $GLOBALS['_config']['mysql_database']
+    );
 
     if ($_SERVER['HTTP_REFERER']) {
         $goto_uri = $_SERVER['HTTP_REFERER'];
@@ -317,7 +322,7 @@ if (!empty($_SESSION['faktura']['quantities'])) {
         if (empty($_SESSION['faktura']['note'])) {
             $_SESSION['faktura']['note'] = '';
         }
-        $GLOBALS['generatedcontent']['text'] .= '<p>'._('Note:').'<br /><textarea style="width:100%;" name="note">'.htmlspecialchars($_SESSION['faktura']['note']).'</textarea><p>';
+        $GLOBALS['generatedcontent']['text'] .= '<p>'._('Note:').'<br /><textarea style="width:100%;" name="note">'.htmlspecialchars($_SESSION['faktura']['note'], ENT_COMPAT | ENT_XHTML, 'UTF-8').'</textarea><p>';
 
         $GLOBALS['generatedcontent']['text'] .= '<input value="'._('Continue').'" type="submit" /></form>';
 
@@ -484,7 +489,7 @@ if (!empty($_SESSION['faktura']['quantities'])) {
             if ($_SESSION['faktura']['land'] == $code) {
                 $GLOBALS['generatedcontent']['text'] .= ' selected="selected"';
             }
-            $GLOBALS['generatedcontent']['text'] .= '>'.htmlspecialchars($country).'</option>';
+            $GLOBALS['generatedcontent']['text'] .= '>'.htmlspecialchars($country, ENT_COMPAT | ENT_XHTML, 'UTF-8').'</option>';
         }
         $GLOBALS['generatedcontent']['text'] .= '</select></td>
             <td>';
@@ -594,7 +599,7 @@ if (!empty($_SESSION['faktura']['quantities'])) {
             if ($_SESSION['faktura']['postcountry'] == $code) {
                 $GLOBALS['generatedcontent']['text'] .= ' selected="selected"';
             }
-            $GLOBALS['generatedcontent']['text'] .= '>'.htmlspecialchars($country).'</option>';
+            $GLOBALS['generatedcontent']['text'] .= '>'.htmlspecialchars($country, ENT_COMPAT | ENT_XHTML, 'UTF-8').'</option>';
         }
         $GLOBALS['generatedcontent']['text'] .= '</select></td><td>';
         if (!empty($rejected['postcountry'])) {

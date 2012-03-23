@@ -354,4 +354,3 @@ function get_mime_type($filepath)
 
     return $mime;
 }
-?>

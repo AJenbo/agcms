@@ -64,7 +64,7 @@ function refreshFolder()
 </head>
 <body onload="window.focus();" bgcolor="#ffffff"><?php
 
-function return_bytes($val)
+function returnBytes($val)
 {
     $last = mb_strtolower($val{mb_strlen($val, 'UTF-8')-1}, 'UTF-8');
     switch($last) {
@@ -78,7 +78,7 @@ function return_bytes($val)
     }
     return $val;
 }
-    $maxbyte = min(return_bytes(ini_get('post_max_size')), return_bytes(ini_get('upload_max_filesize')));
+    $maxbyte = min(returnBytes(ini_get('post_max_size')), returnBytes(ini_get('upload_max_filesize')));
 ?><form method="post" enctype="multipart/form-data" action="/upload/?<?php echo rawurlencode(session_name())."=".rawurlencode(session_id())."&amp;admin_dir=".rawurlencode(@$_COOKIE['admin_dir'])."&amp;alt=&amp;type=image"; ?>">
 <input type="file" name="Filedata" />
 <input type="submit" value="Send fil" />

@@ -63,9 +63,9 @@ class epaymentAdminService
         $this->Merchant_id = $Merchant_id;
         $this->Secret_word = $Secret_word;
         if ($test) {
-            $this->_soapClient = new SoapClient("https://test-epayment.auriganet.eu/webservice/AdminService?WSDL");
+            $this->_soapClient = new SoapClient('https://test-epayment.auriganet.eu/webservice/AdminService?WSDL');
         } else {
-            $this->_soapClient = new SoapClient("https://epayment.auriganet.eu/webservice/AdminService?WSDL");
+            $this->_soapClient = new SoapClient('https://epayment.auriganet.eu/webservice/AdminService?WSDL');
         }
     }
 
@@ -109,7 +109,7 @@ class epaymentAdminService
      * Confirm the transation and draw the amount from the users account
      *
      * @param int    $Transaction_id the epayment identifyer for the transation
-     * @param string $Delivery_date  the expected delivery date of the goods, Format "yyyymmdd"
+     * @param string $Delivery_date  the expected delivery date of the goods, Format 'yyyymmdd'
      *
      * @return \ref AdminResponse array
      */

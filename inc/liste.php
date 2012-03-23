@@ -1,5 +1,25 @@
 <?php
+/**
+ *
+ *
+ * PHP version 5
+ *
+ * @category AGCMS
+ * @package  AGCMS
+ * @author   Anders Jenbo <anders@jenbo.dk>
+ * @license  GPLv2 http://www.gnu.org/licenses/gpl-2.0.html
+ * @link     http://www.arms-gallery.dk/
+ */
 
+/**
+ *
+ *
+ * @param
+ * @param
+ * @param
+ *
+ * @return null
+ */
 function vare($side, $katnavn, $type)
 {
     global $mysqli;
@@ -26,7 +46,7 @@ function vare($side, $katnavn, $type)
         }
         $GLOBALS['generatedcontent']['list'][] = array(
             'id' => @$side['id'],
-            'name' => htmlspecialchars($side['navn']),
+            'name' => htmlspecialchars($side['navn'], ENT_COMPAT | ENT_XHTML, 'UTF-8'),
             'date' => @$side['dato'],
             'link' => '/kat'.$GLOBALS['generatedcontent']['activmenu'].'-'.clear_file_name($katnavn).'/side'.$side['id'].'-'.clear_file_name($side['navn']).'.html',
             'icon' => @$side['billed'],
@@ -39,7 +59,7 @@ function vare($side, $katnavn, $type)
     } else {
         $GLOBALS['generatedcontent']['list'][] = array(
             'id' => @$side['id'],
-            'name' => htmlspecialchars($side['navn']),
+            'name' => htmlspecialchars($side['navn'], ENT_COMPAT | ENT_XHTML, 'UTF-8'),
             'date' => @$side['dato'],
             'link' => '/kat'.$GLOBALS['generatedcontent']['activmenu'].'-'.clear_file_name($katnavn).'/side'.$side['id'].'-'.clear_file_name($side['navn']).'.html',
             'serial' => @$side['varenr'],
@@ -87,7 +107,7 @@ function liste()
 
 function kat_html($side, $kat_navn)
 {
-    $html = "<table class=\"tabel\"><thead><tr><td><a href=\"\" onclick=\"x_get_kat('".$GLOBALS['generatedcontent']['activmenu']."', 'navn', inject_html);return false;\">Titel</a></td><td><a href=\"\" onclick=\"x_get_kat('".$GLOBALS['generatedcontent']['activmenu']."', 'for', inject_html);return false;\">Før</a></td><td><a href=\"\" onclick=\"x_get_kat('".$GLOBALS['generatedcontent']['activmenu']."', 'pris', inject_html);return false;\">Pris</a></td><td><a href=\"\" onclick=\"x_get_kat('".$GLOBALS['generatedcontent']['activmenu']."', 'varenr', inject_html);return false;\">#</a></td></tr></thead><tbody><tr>";
+    $html = "<table class=\"tabel\"><thead><tr><td><a href=\"\" onclick=\"x_getKat('".$GLOBALS['generatedcontent']['activmenu']."', 'navn', inject_html);return false;\">Titel</a></td><td><a href=\"\" onclick=\"x_getKat('".$GLOBALS['generatedcontent']['activmenu']."', 'for', inject_html);return false;\">Før</a></td><td><a href=\"\" onclick=\"x_getKat('".$GLOBALS['generatedcontent']['activmenu']."', 'pris', inject_html);return false;\">Pris</a></td><td><a href=\"\" onclick=\"x_getKat('".$GLOBALS['generatedcontent']['activmenu']."', 'varenr', inject_html);return false;\">#</a></td></tr></thead><tbody><tr>";
     $i = 0;
     foreach ($side as $value) {
         if (!$value['for']) {
@@ -113,9 +133,17 @@ function kat_html($side, $kat_navn)
     return $html;
 }
 
-//TODO duplicate text with out html for better searching.
+/**
+ *
+ *
+ * @param
+ * @param
+ *
+ * @return null
+ */
 function search_liste($q, $wheresider)
 {
+    //TODO duplicate text with out html for better searching.
     global $qext;
     global $mysqli;
 
@@ -192,7 +220,7 @@ function search_liste($q, $wheresider)
 
         //remove inactive pages
         for ($i=0;$i<count($sider);$i++) {
-            if (is_inactive_page($sider[$i]['id'])) {
+            if (isInactivePage($sider[$i]['id'])) {
                 array_splice($sider, $i, 1);
                 $i--;
             }
@@ -229,4 +257,3 @@ function search_liste($q, $wheresider)
     }
     $GLOBALS['generatedcontent']['activmenu'] =  $temp_kat;
 }
-?>

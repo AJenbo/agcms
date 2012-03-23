@@ -19,7 +19,12 @@ require_once '../inc/config.php';
 require_once '../inc/mysqli.php';
 require_once '../inc/functions.php';
 require_once 'inc/emails.php';
-$mysqli = new simple_mysqli($GLOBALS['_config']['mysql_server'], $GLOBALS['_config']['mysql_user'], $GLOBALS['_config']['mysql_password'], $GLOBALS['_config']['mysql_database']);
+$mysqli = new simple_mysqli(
+    $GLOBALS['_config']['mysql_server'],
+    $GLOBALS['_config']['mysql_user'],
+    $GLOBALS['_config']['mysql_password'],
+    $GLOBALS['_config']['mysql_database']
+);
 $sajax_request_type = "POST";
 
 function rtefsafe($text)
@@ -178,10 +183,10 @@ function redigerside($id)
     $html = '<div id="headline">'._('Edit page #').$id.'</div><form action="" method="post" onsubmit="return updateSide('.$id.');"><input type="submit" accesskey="s" style="width:1px; height:1px; position:absolute; top: -20px; left:-20px;" /><div><script type="text/javascript"><!--
 //Usage: initRTE(imagesPath, includesPath, cssFile, genXHTML)
 initRTE("/admin/rtef/images/", "/admin/rtef/", "/theme/rtef-text.css", true);
-//--></script><input type="hidden" name="id" id="id" value="'.$id.'" /><input class="admin_name" type="text" name="navn" id="navn" value="'.htmlspecialchars($sider[0]['navn']).'" maxlength="127" size="127" style="width:'.$GLOBALS['_config']['text_width'].'px" /><script type="text/javascript"><!--
+//--></script><input type="hidden" name="id" id="id" value="'.$id.'" /><input class="admin_name" type="text" name="navn" id="navn" value="'.htmlspecialchars($sider[0]['navn'], ENT_COMPAT | ENT_XHTML, 'UTF-8').'" maxlength="127" size="127" style="width:'.$GLOBALS['_config']['text_width'].'px" /><script type="text/javascript"><!--
 writeRichText("text", \''.rtefsafe($sider[0]['text']).'\', "", '.($GLOBALS['_config']['text_width']+32).', 420, true, false, false);
 //--></script>';
-    $html .= _('Search word (separate search words with a comma \'Emergency Blanket, Emergency Blanket\'):').'<br /><textarea name="keywords" id="keywords" style="width:'.$GLOBALS['_config']['text_width'].'px;max-width:'.$GLOBALS['_config']['text_width'].'px" rows="2" cols="">'.htmlspecialchars($sider[0]['keywords']).'</textarea>';
+    $html .= _('Search word (separate search words with a comma \'Emergency Blanket, Emergency Blanket\'):').'<br /><textarea name="keywords" id="keywords" style="width:'.$GLOBALS['_config']['text_width'].'px;max-width:'.$GLOBALS['_config']['text_width'].'px" rows="2" cols="">'.htmlspecialchars($sider[0]['keywords'], ENT_COMPAT | ENT_XHTML, 'UTF-8').'</textarea>';
     //Beskrivelse start
     $html .= '<div class="toolbox"><a class="menuboxheader" id="beskrivelseboxheader" style="width:'.($GLOBALS['_config']['thumb_width']+14).'px" onclick="showhide(\'beskrivelsebox\',this);">'._('Description:').' </a><div style="text-align:center;width:'.($GLOBALS['_config']['thumb_width']+34).'px" id="beskrivelsebox"><br /><input type="hidden" value="';
     if ($sider[0]['billed']) {
@@ -245,7 +250,7 @@ writeRichText("beskrivelse", \''.rtefsafe($sider[0]['beskrivelse']).'\', "", '.(
     $html .= '</td></tr></table></div></div>';
     //Pris end
     //misc start
-    $html .= '<div class="toolbox"><a class="menuboxheader" id="miscboxheader" style="width:201px" onclick="showhide(\'miscbox\',this);">'._('Other:').' </a><div style="width:221px" id="miscbox">'._('SKU:').' <input type="text" name="varenr" id="varenr" maxlength="63" style="text-align:right;width:128px" value="'.htmlspecialchars($sider[0]['varenr']).'" /><br /><img src="images/page_white_key.png" width="16" height="16" alt="" /><select id="krav" name="krav"><option value="0">'._('None').'</option>';
+    $html .= '<div class="toolbox"><a class="menuboxheader" id="miscboxheader" style="width:201px" onclick="showhide(\'miscbox\',this);">'._('Other:').' </a><div style="width:221px" id="miscbox">'._('SKU:').' <input type="text" name="varenr" id="varenr" maxlength="63" style="text-align:right;width:128px" value="'.htmlspecialchars($sider[0]['varenr'], ENT_COMPAT | ENT_XHTML, 'UTF-8').'" /><br /><img src="images/page_white_key.png" width="16" height="16" alt="" /><select id="krav" name="krav"><option value="0">'._('None').'</option>';
     $krav = $mysqli->fetch_array('SELECT id, navn FROM `krav` ORDER BY navn');
     $krav_nr = count($krav);
     for ($i=0;$i<$krav_nr;$i++) {
@@ -253,7 +258,7 @@ writeRichText("beskrivelse", \''.rtefsafe($sider[0]['beskrivelse']).'\', "", '.(
         if ($sider[0]['krav'] == $krav[$i]['id']) {
             $html .= ' selected="selected"';
         }
-        $html .= '>'.htmlspecialchars($krav[$i]['navn']).'</option>';
+        $html .= '>'.htmlspecialchars($krav[$i]['navn'], ENT_COMPAT | ENT_XHTML, 'UTF-8').'</option>';
     }
     $html .= '</select><br /><img width="16" height="16" alt="" src="images/page_white_medal.png"/><select id="maerke" name="maerke" multiple="multiple" size="15"><option value="0">'._('All others').'</option>';
 
@@ -266,7 +271,7 @@ writeRichText("beskrivelse", \''.rtefsafe($sider[0]['beskrivelse']).'\', "", '.(
         if (in_array($maerke[$i]['id'], $maerker)) {
             $html .= ' selected="selected"';
         }
-        $html .= '>'.htmlspecialchars($maerke[$i]['navn']).'</option>';
+        $html .= '>'.htmlspecialchars($maerke[$i]['navn'], ENT_COMPAT | ENT_XHTML, 'UTF-8').'</option>';
     }
     $html .= '</select></div></div>';
     //misc end
@@ -706,13 +711,13 @@ function get_db_error()
             var starttime = new Date().getTime();
 
             $(\'status\').innerHTML = \''._('Removing news subscribers without contact information').'\';
-            x_remove_bad_submisions(set_db_errors);
+            x_removeBadSubmisions(set_db_errors);
 
             $(\'status\').innerHTML = \''._('Removing bindings to pages that do not exist').'\';
-            x_remove_bad_bindings(set_db_errors);
+            x_removeBadBindings(set_db_errors);
 
             $(\'status\').innerHTML = \''._('Removing accessories that do not exist').'\';
-            x_remove_bad_accessories(set_db_errors);
+            x_removeBadAccessories(set_db_errors);
 
             $(\'status\').innerHTML = \''._('Searching for pages without bindings').'\';
             x_get_orphan_pages(set_db_errors);
@@ -736,7 +741,7 @@ function get_db_error()
             x_get_subscriptions_with_bad_emails(set_db_errors);
 
             $(\'status\').innerHTML = \''._('Removes not existing files from the database').'\';
-            x_remove_none_existing_files(set_db_errors);
+            x_removeNoneExistingFiles(set_db_errors);
 
             $(\'status\').innerHTML = \''._('Checking the file names').'\';
             x_check_file_names(set_db_errors);
@@ -745,13 +750,13 @@ function get_db_error()
             x_check_file_paths(set_db_errors);
 
             $(\'status\').innerHTML = \''._('Deleting temporary files').'\';
-            x_delete_tempfiles(set_db_errors);
+            x_deleteTempfiles(set_db_errors);
 
             $(\'status\').innerHTML = \''._('Retrieving the size of the files').'\';
             x_get_size_of_files(function(){});
 
             $(\'status\').innerHTML = \''._('Optimizing the database').'\';
-            x_optimize_tables(set_db_errors);
+            x_optimizeTables(set_db_errors);
 
             $(\'status\').innerHTML = \''._('Getting Database Size').'\';
             x_get_db_size(function(){});
@@ -1105,14 +1110,14 @@ writeRichText("beskrivelse", \'\', "", '.($GLOBALS['_config']['thumb_width']+32)
     $krav_nr = count($krav);
     for ($i=0;$i<$krav_nr;$i++) {
         $html .= '<option value="'.$krav[$i]['id'].'"';
-        $html .= '>'.htmlspecialchars($krav[$i]['navn']).'</option>';
+        $html .= '>'.htmlspecialchars($krav[$i]['navn'], ENT_COMPAT | ENT_XHTML, 'UTF-8').'</option>';
     }
     $html .= '</select><br /><img width="16" height="16" alt="" src="images/page_white_medal.png"/><select id="maerke" name="maerke" multiple="multiple" size="10"><option value="0">'._('All others').'</option>';
     $maerke = $mysqli->fetch_array('SELECT id, navn FROM `maerke` ORDER BY navn');
     $maerke_nr = count($maerke);
     for ($i=0;$i<$maerke_nr;$i++) {
         $html .= '<option value="'.$maerke[$i]['id'].'"';
-        $html .= '>'.htmlspecialchars($maerke[$i]['navn']).'</option>';
+        $html .= '>'.htmlspecialchars($maerke[$i]['navn'], ENT_COMPAT | ENT_XHTML, 'UTF-8').'</option>';
     }
     $html .= '</select></div></div></div>';
     //misc end
@@ -1528,27 +1533,27 @@ function getmaerker()
     $html = '<div id="headline">'._('List of brands').'</div><form action="" id="maerkerform" onsubmit="x_save_ny_maerke(document.getElementById(\'navn\').value,document.getElementById(\'link\').value,document.getElementById(\'ico\').value,inject_html); return false;"><table cellspacing="0"><tr style="height:21px"><td>'._('Name:').' </td><td><input id="navn" style="width:256px;" maxlength="64" /></td><td rowspan="4"><img id="icoimage" src="" style="display:none" alt="" /></td></tr><tr style="height:21px"><td>'._('Link:').' </td><td><input id="link" style="width:256px;" maxlength="64" /></td></tr><tr style="height:21px"><td>'._('Logo:').' </td>
     <td style="text-align:center"><input type="hidden" value="'._('/images/web/intet-foto.jpg').'" id="ico" name="ico" /><img id="icothb" src="'._('/images/web/intet-foto.jpg').'" alt="" onclick="explorer(\'thb\', \'ico\')" /><br /><img onclick="explorer(\'thb\', \'ico\')" src="images/folder_image.png" width="16" height="16" alt="'._('Pictures').'" title="'._('Find image').'" /><img onclick="setThb(\'ico\', \'\', \''._('/images/web/intet-foto.jpg').'\')" src="images/cross.png" alt="X" title="'._('Remove picture').'" width="16" height="16" /></td>
     </tr><tr><td></td></tr></table><p><input value="'._('Add brand').'e" type="submit" accesskey="s" /><br /><br /></p><div id="imagelogo" style="display:none; position:absolute;"></div>';
-    $mærker = $mysqli->fetch_array('SELECT * FROM `maerke` ORDER BY navn');
-    $nr = count($mærker);
+    $brands = $mysqli->fetch_array('SELECT * FROM `maerke` ORDER BY navn');
+    $nr = count($brands);
     for ($i=0;$i<$nr;$i++) {
-        $html .= '<div id="maerke'.$mærker[$i]['id'].'"><a href="" onclick="slet(\'maerke\',\''.addslashes($mærker[$i]['navn']).'\','.$mærker[$i]['id'].');"><img src="images/cross.png" alt="X" title="'._('Delete').' '.htmlspecialchars($mærker[$i]['navn']).'!" width="16" height="16"';
-        if (!$mærker[$i]['link'] && !$mærker[$i]['ico']) {
+        $html .= '<div id="maerke'.$brands[$i]['id'].'"><a href="" onclick="slet(\'maerke\',\''.addslashes($brands[$i]['navn']).'\','.$brands[$i]['id'].');"><img src="images/cross.png" alt="X" title="'._('Delete').' '.htmlspecialchars($brands[$i]['navn'], ENT_COMPAT | ENT_XHTML, 'UTF-8').'!" width="16" height="16"';
+        if (!$brands[$i]['link'] && !$brands[$i]['ico']) {
             $html .= ' style="margin-right:32px"';
-        } elseif (!$mærker[$i]['link']) {
+        } elseif (!$brands[$i]['link']) {
             $html .= ' style="margin-right:16px"';
         }
-        $html .= ' /></a><a href="?side=updatemaerke&amp;id='.$mærker[$i]['id'].'">';
-        if ($mærker[$i]['link']) {
-            $html .= '<img src="images/link.png" alt="W" width="16" height="16" title="'.htmlspecialchars($mærker[$i]['link']).'"';
-            if (!$mærker[$i]['ico']) {
+        $html .= ' /></a><a href="?side=updatemaerke&amp;id='.$brands[$i]['id'].'">';
+        if ($brands[$i]['link']) {
+            $html .= '<img src="images/link.png" alt="W" width="16" height="16" title="'.htmlspecialchars($brands[$i]['link'], ENT_COMPAT | ENT_XHTML, 'UTF-8').'"';
+            if (!$brands[$i]['ico']) {
                 $html .= ' style="margin-right:16px"';
             }
             $html .= ' />';
         }
-        if ($mærker[$i]['ico']) {
-            $html .= '<img alt="icon" title="" src="images/picture.png" width="16" height="16" onmouseout="document.getElementById(\'imagelogo\').style.display = \'none\'" onmouseover="showimage(this,\''.addslashes($mærker[$i]['ico']).'\')" />';
+        if ($brands[$i]['ico']) {
+            $html .= '<img alt="icon" title="" src="images/picture.png" width="16" height="16" onmouseout="document.getElementById(\'imagelogo\').style.display = \'none\'" onmouseover="showimage(this,\''.addslashes($brands[$i]['ico']).'\')" />';
         }
-        $html .= ' '.htmlspecialchars($mærker[$i]['navn']).'</a></div>';
+        $html .= ' '.htmlspecialchars($brands[$i]['navn'], ENT_COMPAT | ENT_XHTML, 'UTF-8').'</a></div>';
     }
     $html .= '</form>';
     return $html;
@@ -1558,12 +1563,12 @@ function getupdatemaerke($id)
 {
     global $mysqli;
 
-    $mærker = $mysqli->fetch_array('SELECT navn, link, ico FROM `maerke` WHERE id = '.$id);
+    $brands = $mysqli->fetch_array('SELECT navn, link, ico FROM `maerke` WHERE id = '.$id);
 
-    $html = '<div id="headline">'.sprintf(_('Edit the brand %d'), $mærker[0]['navn']).'</div><form onsubmit="x_updatemaerke('.$id.',document.getElementById(\'navn\').value,document.getElementById(\'link\').value,document.getElementById(\'ico\').value,inject_html); return false;"><table cellspacing="0"><tr style="height:21px"><td>'._('Name:').' </td><td><input value="'.htmlspecialchars($mærker[0]['navn']).'" id="navn" style="width:256px;" maxlength="64" /></td></tr><tr style="height:21px"><td>Link: </td><td><input value="'.htmlspecialchars($mærker[0]['link']).'" id="link" style="width:256px;" maxlength="64" /></td></tr><tr style="height:21px"><td>'._('Logo:').' </td>
-    <td style="text-align:center"><input type="hidden" value="'.htmlspecialchars($mærker[0]['ico']).'" id="ico" name="ico" /><img id="icothb" src="';
-    if ($mærker[0]['ico']) {
-        $html .= $mærker[0]['ico'];
+    $html = '<div id="headline">'.sprintf(_('Edit the brand %d'), $brands[0]['navn']).'</div><form onsubmit="x_updatemaerke('.$id.',document.getElementById(\'navn\').value,document.getElementById(\'link\').value,document.getElementById(\'ico\').value,inject_html); return false;"><table cellspacing="0"><tr style="height:21px"><td>'._('Name:').' </td><td><input value="'.htmlspecialchars($brands[0]['navn'], ENT_COMPAT | ENT_XHTML, 'UTF-8').'" id="navn" style="width:256px;" maxlength="64" /></td></tr><tr style="height:21px"><td>Link: </td><td><input value="'.htmlspecialchars($brands[0]['link'], ENT_COMPAT | ENT_XHTML, 'UTF-8').'" id="link" style="width:256px;" maxlength="64" /></td></tr><tr style="height:21px"><td>'._('Logo:').' </td>
+    <td style="text-align:center"><input type="hidden" value="'.htmlspecialchars($brands[0]['ico'], ENT_COMPAT | ENT_XHTML, 'UTF-8').'" id="ico" name="ico" /><img id="icothb" src="';
+    if ($brands[0]['ico']) {
+        $html .= $brands[0]['ico'];
     } else {
         $html .= _('/images/web/intet-foto.jpg');
     }
@@ -1908,59 +1913,230 @@ $kattree = array();
 
 $sajax_debug_mode = 0;
 sajax_export(
-    array('name' => 'updateKat', 'method' => 'POST'),
-    array('name' => 'search', 'method' => 'GET'),
-    array('name' => 'sletSide', 'method' => 'POST'),
-    array('name' => 'updateSpecial', 'method' => 'POST'),
-    array('name' => 'movekat', 'method' => 'POST'),
-    array('name' => 'listRemoveRow', 'method' => 'POST'),
-    array('name' => 'listSavetRow', 'method' => 'POST'),
-    array('name' => 'updateForside', 'method' => 'POST'),
-    array('name' => 'makeNewList', 'method' => 'POST'),
-    array('name' => 'saveListOrder', 'method' => 'POST'),
-    array('name' => 'countEmailTo', 'method' => 'GET'),
-    array('name' => 'sendEmail', 'method' => 'POST'),
-    array('name' => 'saveEmail', 'method' => 'POST'),
-    array('name' => 'updateContact', 'method' => 'POST'),
-    array('name' => 'deleteContact', 'method' => 'POST'),
-    array('name' => 'bind', 'method' => 'POST'),
-    array('name' => 'sletbind', 'method' => 'POST'),
-    array('name' => 'renamekat', 'method' => 'POST'),
-    array('name' => 'opretSide', 'method' => 'POST'),
-    array('name' => 'sletkat', 'method' => 'POST'),
-    array('name' => 'opretSide', 'method' => 'POST'),
-    array('name' => 'updateSide', 'method' => 'POST'),
-    array('name' => 'updatemaerke', 'method' => 'POST'),
-    array('name' => 'save_ny_kat', 'method' => 'POST'),
-    array('name' => 'sogogerstat', 'method' => 'POST'),
-    array('name' => 'save_ny_maerke', 'method' => 'POST'),
-    array('name' => 'sletmaerke', 'method' => 'POST'),
-    array('name' => 'sletkrav', 'method' => 'POST'),
-    array('name' => 'savekrav', 'method' => 'POST'),
-    array('name' => 'getnykat', 'method' => 'GET'),
-    array('name' => 'katspath', 'method' => 'GET'),
-    array('name' => 'siteList_expand', 'method' => 'GET'),
-    array('name' => 'kat_expand', 'method' => 'GET'),
-    array('name' => 'getSiteTree', 'method' => 'GET'),
-    array('name' => 'get_db_size', 'method' => 'GET', "asynchronous" => false),
-    array('name' => 'optimize_tables', 'uri' => '/maintain.php', 'method' => 'POST', "asynchronous" => false),
-    array('name' => 'remove_bad_bindings', 'uri' => '/maintain.php', 'method' => 'POST', "asynchronous" => false),
-    array('name' => 'remove_bad_accessories', 'uri' => '/maintain.php', 'method' => 'POST', "asynchronous" => false),
-    array('name' => 'remove_bad_submisions', 'uri' => '/maintain.php', 'method' => 'POST', "asynchronous" => false),
-    array('name' => 'get_orphan_pages', 'method' => 'GET', "asynchronous" => false),
-    array('name' => 'get_pages_with_mismatch_bindings', 'method' => 'GET', "asynchronous" => false),
-    array('name' => 'get_orphan_lists', 'method' => 'GET', "asynchronous" => false),
-    array('name' => 'get_orphan_rows', 'method' => 'GET', "asynchronous" => false),
-    array('name' => 'get_orphan_cats', 'method' => 'GET', "asynchronous" => false),
-    array('name' => 'get_looping_cats', 'method' => 'GET', "asynchronous" => false),
-    array('name' => 'get_subscriptions_with_bad_emails', 'method' => 'GET', "asynchronous" => false),
-    array('name' => 'remove_none_existing_files', 'uri' => '/maintain.php', 'method' => 'POST', "asynchronous" => false),
-    array('name' => 'check_file_names', 'method' => 'GET', "asynchronous" => false),
-    array('name' => 'check_file_paths', 'method' => 'GET', "asynchronous" => false),
-    array('name' => 'delete_tempfiles', 'uri' => '/maintain.php', 'method' => 'POST', "asynchronous" => false),
-    array('name' => 'get_size_of_files', 'method' => 'GET', "asynchronous" => false),
-    array('name' => 'get_mailbox_list', 'method' => 'GET', "asynchronous" => false),
-    array('name' => 'get_mailbox_size', 'uri' => 'get_mailbox_size.php', 'method' => 'GET', "asynchronous" => false)
+    array(
+        'name' => 'updateKat',
+        'method' => 'POST'
+    ),
+    array(
+        'name' => 'search',
+        'method' => 'GET'
+    ),
+    array(
+        'name' => 'sletSide',
+        'method' => 'POST'
+    ),
+    array(
+        'name' => 'updateSpecial',
+        'method' => 'POST'
+    ),
+    array(
+        'name' => 'movekat',
+        'method' => 'POST'
+    ),
+    array(
+        'name' => 'listRemoveRow',
+        'method' => 'POST'
+    ),
+    array(
+        'name' => 'listSavetRow',
+        'method' => 'POST'
+    ),
+    array(
+        'name' => 'updateForside',
+        'method' => 'POST'
+    ),
+    array(
+        'name' => 'makeNewList',
+        'method' => 'POST'
+    ),
+    array(
+        'name' => 'saveListOrder',
+        'method' => 'POST'
+    ),
+    array(
+        'name' => 'countEmailTo',
+        'method' => 'GET'
+    ),
+    array(
+        'name' => 'sendEmail',
+        'method' => 'POST'
+    ),
+    array(
+        'name' => 'saveEmail',
+        'method' => 'POST'
+    ),
+    array(
+        'name' => 'updateContact',
+        'method' => 'POST'
+    ),
+    array(
+        'name' => 'deleteContact',
+        'method' => 'POST'
+    ),
+    array(
+        'name' => 'bind',
+        'method' => 'POST'
+    ),
+    array(
+        'name' => 'sletbind',
+        'method' => 'POST'
+    ),
+    array(
+        'name' => 'renamekat',
+        'method' => 'POST'
+    ),
+    array(
+        'name' => 'opretSide',
+        'method' => 'POST'
+    ),
+    array(
+        'name' => 'sletkat',
+        'method' => 'POST'
+    ),
+    array(
+        'name' => 'opretSide',
+        'method' => 'POST'
+    ),
+    array(
+        'name' => 'updateSide',
+        'method' => 'POST'
+    ),
+    array(
+        'name' => 'updatemaerke',
+        'method' => 'POST'
+    ),
+    array(
+        'name' => 'save_ny_kat',
+        'method' => 'POST'
+    ),
+    array(
+        'name' => 'sogogerstat',
+        'method' => 'POST'
+    ),
+    array(
+        'name' => 'save_ny_maerke',
+        'method' => 'POST'
+    ),
+    array(
+        'name' => 'sletmaerke',
+        'method' => 'POST'
+    ),
+    array(
+        'name' => 'sletkrav',
+        'method' => 'POST'
+    ),
+    array(
+        'name' => 'savekrav',
+        'method' => 'POST'
+    ),
+    array(
+        'name' => 'getnykat',
+        'method' => 'GET'
+    ),
+    array(
+        'name' => 'katspath',
+        'method' => 'GET'
+    ),
+    array(
+        'name' => 'siteList_expand',
+        'method' => 'GET'
+    ),
+    array(
+        'name' => 'kat_expand',
+        'method' => 'GET'
+    ),
+    array(
+        'name' => 'getSiteTree',
+        'method' => 'GET'
+    ),
+    array(
+        'name' => 'get_db_size',
+        'method' => 'GET',
+        'asynchronous' => false
+    ),
+    array(
+        'name' => 'optimizeTables',
+        'uri' => '/maintain.php',
+        'method' => 'POST',
+        'asynchronous' => false
+    ),
+    array(
+        'name' => 'removeBadBindings',
+        'uri' => '/maintain.php',
+        'method' => 'POST',
+        'asynchronous' => false
+    ),
+    array(
+        'name' => 'removeBadAccessories',
+        'uri' => '/maintain.php',
+        'method' => 'POST',
+        'asynchronous' => false
+    ),
+    array(
+        'name' => 'removeBadSubmisions',
+        'uri' => '/maintain.php',
+        'method' => 'POST',
+        'asynchronous' => false),
+    array(
+        'name' => 'get_orphan_pages',
+        'method' => 'GET',
+        'asynchronous' => false),
+    array(
+        'name' => 'get_pages_with_mismatch_bindings',
+        'method' => 'GET',
+        'asynchronous' => false),
+    array(
+        'name' => 'get_orphan_lists',
+        'method' => 'GET',
+        'asynchronous' => false),
+    array(
+        'name' => 'get_orphan_rows',
+        'method' => 'GET',
+        'asynchronous' => false),
+    array(
+        'name' => 'get_orphan_cats',
+        'method' => 'GET',
+        'asynchronous' => false),
+    array(
+        'name' => 'get_looping_cats',
+        'method' => 'GET',
+        'asynchronous' => false),
+    array(
+        'name' => 'get_subscriptions_with_bad_emails',
+        'method' => 'GET',
+        'asynchronous' => false),
+    array(
+        'name' => 'removeNoneExistingFiles',
+        'uri' => '/maintain.php',
+        'method' => 'POST',
+        "asynchronous" => false
+    ),
+    array(
+        'name' => 'check_file_names',
+        'method' => 'GET',
+        'asynchronous' => false),
+    array(
+        'name' => 'check_file_paths',
+        'method' => 'GET',
+        'asynchronous' => false),
+    array(
+        'name' => 'deleteTempfiles',
+         'uri' => '/maintain.php',
+        'method' => 'POST',
+        'asynchronous' => false),
+    array(
+        'name' => 'get_size_of_files',
+        'method' => 'GET',
+        'asynchronous' => false),
+    array(
+        'name' => 'get_mailbox_list',
+        'method' => 'GET',
+        'asynchronous' => false),
+    array(
+        'name' => 'get_mailbox_size',
+         'uri' => 'get_mailbox_size.php',
+        'method' => 'GET',
+        'asynchronous' => false)
 );
 //	$sajax_remote_uri = '/ajax.php';
 sajax_handle_client_request();

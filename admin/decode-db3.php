@@ -27,7 +27,12 @@ function removewidth($text)
 }
 
 //Open database
-$mysqli = new simple_mysqli($GLOBALS['_config']['mysql_server'], $GLOBALS['_config']['mysql_user'], $GLOBALS['_config']['mysql_password'], $GLOBALS['_config']['mysql_database']);
+$mysqli = new simple_mysqli(
+    $GLOBALS['_config']['mysql_server'],
+    $GLOBALS['_config']['mysql_user'],
+    $GLOBALS['_config']['mysql_password'],
+    $GLOBALS['_config']['mysql_database']
+);
 
 /*
 function unhtmlentitiesUtf8($string)
@@ -46,20 +51,25 @@ function unhtmlentitiesUtf8($string)
 }
 */
 
-$mysqli = new simple_mysqli($GLOBALS['_config']['mysql_server'], $GLOBALS['_config']['mysql_user'], $GLOBALS['_config']['mysql_password'], $GLOBALS['_config']['mysql_database']);
+$mysqli = new simple_mysqli(
+    $GLOBALS['_config']['mysql_server'],
+    $GLOBALS['_config']['mysql_user'],
+    $GLOBALS['_config']['mysql_password'],
+    $GLOBALS['_config']['mysql_database']
+);
 $sider = $mysqli->fetch_array("SELECT id, text, beskrivelse FROM `sider` WHERE text LIKE '%<img%width=%' OR beskrivelse LIKE '%<img%width=%'");
 
 foreach ($sider as $key => $side) {
     $mysqli->query("UPDATE `sider` SET `text` = '".removewidth($side['text'])."', `beskrivelse` = '".removewidth($side['beskrivelse'])."' WHERE `id` = ".$side['id']." LIMIT 1");
     unset($sider[$key]);
-    echo "$key - ";
+    echo $key . ' - ';
 }
 $sider = $mysqli->fetch_array("SELECT id, text FROM `special` WHERE text LIKE '%<img%width=%'");
 
 foreach ($sider as $key => $side) {
     $mysqli->query("UPDATE `special` SET `text` = '".removewidth($side['text'])."' WHERE `id` = ".$side['id']." LIMIT 1");
     unset($sider[$key]);
-    echo "$key - ";
+    echo $key . ' - ';
 }
 ?>Done!
 </body>

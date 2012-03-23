@@ -80,7 +80,12 @@ else
 if ($_GET['dato']) {
     require_once '../inc/config.php';
     require_once '../inc/mysqli.php';
-    $mysqli = new simple_mysqli($GLOBALS['_config']['mysql_server'], $GLOBALS['_config']['mysql_user'], $GLOBALS['_config']['mysql_password'], $GLOBALS['_config']['mysql_database']);
+    $mysqli = new simple_mysqli(
+        $GLOBALS['_config']['mysql_server'],
+        $GLOBALS['_config']['mysql_user'],
+        $GLOBALS['_config']['mysql_password'],
+        $GLOBALS['_config']['mysql_database']
+    );
     $email = $mysqli->fetch_array("SELECT `navn` , `adresse` , `land` , `post` , `by` FROM `email`
     WHERE `dato` > '".$_GET['dato']." 00:00:00'
     AND `navn` != '' AND `adresse` != '' AND `post` != '' AND `by` != '' AND `downloaded` = '0' ORDER BY dato");

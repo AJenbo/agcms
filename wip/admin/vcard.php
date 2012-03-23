@@ -44,9 +44,14 @@ require_once 'inc/config.php';
 require_once 'inc/mysqli.php';
 
 //Open database
-$mysqli = new simple_mysqli($GLOBALS['_config']['mysql_server'], $GLOBALS['_config']['mysql_user'], $GLOBALS['_config']['mysql_password'], $GLOBALS['_config']['mysql_database']);
+$mysqli = new simple_mysqli(
+    $GLOBALS['_config']['mysql_server'],
+    $GLOBALS['_config']['mysql_user'],
+    $GLOBALS['_config']['mysql_password'],
+    $GLOBALS['_config']['mysql_database']
+);
 
-foreach($contacts as $contact) {
+foreach ($contacts as $contact) {
     //TODO escape values
     $mysqli->query("INSERT INTO `email` (`navn`, `email`, `adresse`, `land`, `post`, `by`, `tlf1`, `tlf2`, `kartotek`, `interests`, `dato`) VALUES ('".$contact['navn']."', '".$contact['email']."', '".$contact['adresse']."', '".$contact['land']."', '".$contact['post']."', '".$contact['by']."', '".$contact['tlf1']."', '".$contact['tlf2']."', '1', 'Paintballbaner', NOW());");
 }

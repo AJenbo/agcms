@@ -1,11 +1,27 @@
 <?php
+/**
+ * Print feed for pricerunner.com
+ *
+ * PHP version 5
+ *
+ * @category AGCMS
+ * @package  AGCMS
+ * @author   Anders Jenbo <anders@jenbo.dk>
+ * @license  GPLv2 http://www.gnu.org/licenses/gpl-2.0.html
+ * @link     http://www.arms-gallery.dk/
+ */
 
 require_once 'inc/config.php';
 require_once 'inc/mysqli.php';
 require_once 'inc/functions.php';
 require_once 'inc/header.php';
 
-$mysqli = new simple_mysqli($GLOBALS['_config']['mysql_server'], $GLOBALS['_config']['mysql_user'], $GLOBALS['_config']['mysql_password'], $GLOBALS['_config']['mysql_database']);
+$mysqli = new simple_mysqli(
+    $GLOBALS['_config']['mysql_server'],
+    $GLOBALS['_config']['mysql_user'],
+    $GLOBALS['_config']['mysql_password'],
+    $GLOBALS['_config']['mysql_database']
+);
 
 $tabels = $mysqli->fetch_array("SHOW TABLE STATUS");
 $updatetime = 0;
@@ -70,7 +86,7 @@ require_once 'inc/config.php';
 
 echo '<?xml version="1.0" encoding="utf-8"?><products>';
 for ($i=0; $i<count($sider); $i++) {
-    if (!$sider[$i]['navn'] = trim(htmlspecialchars($sider[$i]['navn']))) {
+    if (!$sider[$i]['navn'] = trim(htmlspecialchars($sider[$i]['navn'], ENT_COMPAT | ENT_XML1, 'UTF-8'))) {
         continue;
     }
 
@@ -78,13 +94,21 @@ for ($i=0; $i<count($sider); $i++) {
     <product>
         <sku>'.$sider[$i]['id'].'</sku>
         <title>'.$sider[$i]['navn'].'</title>';
-    if ($sider[$i]['varenr'] = trim(htmlspecialchars($sider[$i]['varenr']))) {
+    if ($sider[$i]['varenr'] = trim(htmlspecialchars($sider[$i]['varenr'], ENT_COMPAT | ENT_XML1, 'UTF-8'))) {
         echo '<companysku>'.$sider[$i]['varenr'].'</companysku>';
     }
-    echo '<price>'.$sider[$i]['pris'].',00</price>
-    <img>'.$GLOBALS['_config']['base_url'].$sider[$i]['billed'].'</img>
-    <link>'.$GLOBALS['_config']['base_url'].'/kat'.$sider[$i]['kat_id'].'-'.rawurlencode(clear_file_name($sider[$i]['kat_navn'])).'/side'.$sider[$i]['id'].'-'.rawurlencode(clear_file_name($sider[$i]['navn'])).'.html</link>';
-    $bind = $mysqli->fetch_array("SELECT `kat` FROM bind WHERE side = ".$sider[$i]['id']);
+    echo '<price>' . $sider[$i]['pris'] . ',00</price>
+    <img>' . $GLOBALS['_config']['base_url'] . $sider[$i]['billed'] . '</img>
+    <link>' . $GLOBALS['_config']['base_url'] . '/kat' . $sider[$i]['kat_id'] . '-'
+    . rawurlencode(clear_file_name($sider[$i]['kat_navn'])) . '/side'
+    . $sider[$i]['id'] . '-' . rawurlencode(clear_file_name($sider[$i]['navn']))
+    . '.html</link>';
+    $bind = $mysqli->fetch_array(
+        "
+        SELECT `kat`
+        FROM bind
+        WHERE side = " . $sider[$i]['id']
+    );
 
     $category = array();
     if ($sider[$i]['maerke']) {
@@ -106,22 +130,38 @@ for ($i=0; $i<count($sider); $i++) {
         );
         $maerker_nr = count($maerker);
         for ($imaerker=0; $imaerker<$maerker_nr; $imaerker++) {
-            if ($category2 = trim(preg_replace($search, $replace, $maerker[$imaerker]['navn']))) {
-                $category[] = htmlspecialchars($category2, ENT_NOQUOTES);
+            $cleaned = preg_replace($search, $replace, $maerker[$imaerker]['navn']);
+            $cleaned = trim($cleaned);
+            if ($category2 = $cleaned) {
+                $category[] = htmlspecialchars($category2, ENT_NOQUOTES | ENT_XML1, 'UTF-8');
             }
         }
-        echo '<company>'.htmlspecialchars($category2, ENT_NOQUOTES).'</company>';
+        echo '<company>'.htmlspecialchars($category2, ENT_NOQUOTES | ENT_XML1, 'UTF-8').'</company>';
     }
 
     $kats = '';
     for ($ibind=0; $ibind<count($bind); $ibind++) {
         $kats[] = $bind[$ibind]['kat'];
 
-        $temp = $mysqli->fetch_array("SELECT bind FROM `kat` WHERE id = '".$bind[$ibind]['kat']."' LIMIT 1");
+        $temp = $mysqli->fetch_array(
+            "
+            SELECT bind
+            FROM `kat`
+            WHERE id = '" . $bind[$ibind]['kat'] . "'
+            LIMIT 1
+            "
+        );
         if (@$temp[0]) {
             while ($temp && !in_array($temp[0]['bind'], $kats)) {
                 $kats[] = $temp[0]['bind'];
-                $temp = $mysqli->fetch_array("SELECT bind FROM `kat` WHERE id = '".$temp[0]['bind']."' LIMIT 1");
+                $temp = $mysqli->fetch_array(
+                    "
+                    SELECT bind
+                    FROM `kat`
+                    WHERE id = '" . $temp[0]['bind'] . "'
+                    LIMIT 1
+                    "
+                );
             }
         }
     }
@@ -130,9 +170,18 @@ for ($i=0; $i<count($sider); $i++) {
 
     for ($icategory=0; $icategory<count($kats); $icategory++) {
         if ($kats[$icategory]) {
-            $kat = $mysqli->fetch_array("SELECT `navn` FROM kat WHERE id = ".$kats[$icategory]." LIMIT 1");
-            if ($category2 = trim(preg_replace($search, $replace, @$kat[0]['navn']))) {
-                $category[] = htmlspecialchars($category2, ENT_NOQUOTES);
+            $kat = $mysqli->fetch_array(
+                "
+                SELECT `navn`
+                FROM kat
+                WHERE id = " . $kats[$icategory] . "
+                LIMIT 1
+                "
+            );
+            $cleaned = preg_replace($search, $replace, @$kat[0]['navn']);
+            $cleaned = trim($cleaned);
+            if ($category2 = $cleaned) {
+                $category[] = htmlspecialchars($category2, ENT_NOQUOTES | ENT_XML1, 'UTF-8');
             }
         }
     }

@@ -1,6 +1,21 @@
 <?php
+/**
+ * Send emails that failed to send immediately
+ *
+ * PHP version 5
+ *
+ * @category AGCMS
+ * @package  AGCMS
+ * @author   Anders Jenbo <anders@jenbo.dk>
+ * @license  GPLv2 http://www.gnu.org/licenses/gpl-2.0.html
+ * @link     http://www.arms-gallery.dk/
+ */
 
-//INSERT INTO `emails` (`subject`, `from`, `to`, `body`, `date`) VALUES ('subject', 'from<t@f.dk>', 'to<t@f.dk>;to2<t2@f.dk>', '<div>test</div>', NOW());
+/*
+INSERT INTO `emails` (`subject`, `from`, `to`, `body`, `date`)
+VALUES
+    ('subject', 'from<t@f.dk>', 'to<t@f.dk>;to2<t2@f.dk>', '<div>test</div>', NOW());
+*/
 
 date_default_timezone_set('Europe/Copenhagen');
 setlocale(LC_ALL, 'da_DK');
@@ -12,7 +27,12 @@ require_once "inc/config.php";
 require_once "inc/mysqli.php";
 
 //Open database
-$mysqli = new simple_mysqli($GLOBALS['_config']['mysql_server'], $GLOBALS['_config']['mysql_user'], $GLOBALS['_config']['mysql_password'], $GLOBALS['_config']['mysql_database']);
+$mysqli = new simple_mysqli(
+    $GLOBALS['_config']['mysql_server'],
+    $GLOBALS['_config']['mysql_user'],
+    $GLOBALS['_config']['mysql_password'],
+    $GLOBALS['_config']['mysql_database']
+);
 
 //Get emails that needs sending
 $emails = $mysqli->fetch_array("SELECT * FROM `emails`");
@@ -75,15 +95,22 @@ foreach ($emails as $email) {
 
     $emailsSendt++;
 
-    $mysqli->query("DELETE FROM `emails` WHERE `id` = ".$email['id']);
+    $mysqli->query("DELETE FROM `emails` WHERE `id` = " . $email['id']);
 
     //Upload email to the sent folder via imap
     if ($GLOBALS['_config']['imap'] !== false) {
         $imap = new IMAPMAIL;
         $imap->open($GLOBALS['_config']['imap'], $GLOBALS['_config']['imapport']);
         $emailnr = array_search('', $GLOBALS['_config']['email']);
-        $imap->login($GLOBALS['_config']['email'][$emailnr ? $emailnr : 0], $GLOBALS['_config']['emailpasswords'][$emailnr ? $emailnr : 0]);
-        $imap->append_mail($GLOBALS['_config']['emailsent'], $PHPMailer->CreateHeader().$PHPMailer->CreateBody(), '\Seen');
+        $imap->login(
+            $GLOBALS['_config']['email'][$emailnr ? $emailnr : 0],
+            $GLOBALS['_config']['emailpasswords'][$emailnr ? $emailnr : 0]
+        );
+        $imap->append_mail(
+            $GLOBALS['_config']['emailsent'],
+            $PHPMailer->CreateHeader() . $PHPMailer->CreateBody(),
+            '\Seen'
+        );
         $imap->close();
     }
 }
@@ -91,5 +118,9 @@ foreach ($emails as $email) {
 //Close SMTP connection
 $PHPMailer->SmtpClose();
 
-printf(ngettext("%d e-mail was sent.", "%d e-mails was sent.", $emailsSendt), $emailsSendt);
-?>
+$msg = ngettext(
+    "%d e-mail was sent.",
+    "%d e-mails was sent.",
+    $emailsSendt
+);
+printf($msg, $emailsSendt);

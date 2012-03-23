@@ -6,9 +6,9 @@ error_reporting(-1);
 
 date_default_timezone_set('Europe/Copenhagen');
 setlocale(LC_ALL, 'da_DK');
-bindtextdomain("agcms", $_SERVER['DOCUMENT_ROOT'].'/theme/locale');
-bind_textdomain_codeset("agcms", 'UTF-8');
-textdomain("agcms");
+bindtextdomain('agcms', $_SERVER['DOCUMENT_ROOT'].'/theme/locale');
+bind_textdomain_codeset('agcms', 'UTF-8');
+textdomain('agcms');
 
 require_once $_SERVER['DOCUMENT_ROOT'].'/admin/inc/logon.php';
 
@@ -16,7 +16,12 @@ require_once '../inc/sajax.php';
 require_once '../inc/config.php';
 require_once '../inc/mysqli.php';
 require_once 'inc/epaymentAdminService.php';
-$mysqli = new simple_mysqli($GLOBALS['_config']['mysql_server'], $GLOBALS['_config']['mysql_user'], $GLOBALS['_config']['mysql_password'], $GLOBALS['_config']['mysql_database']);
+$mysqli = new simple_mysqli(
+    $GLOBALS['_config']['mysql_server'],
+    $GLOBALS['_config']['mysql_user'],
+    $GLOBALS['_config']['mysql_password'],
+    $GLOBALS['_config']['mysql_database']
+);
 
 function newfaktura()
 {
@@ -476,7 +481,7 @@ Tel. %s</p>'
 
         //Upload email to the sent folder via imap
         if ($GLOBALS['_config']['imap']) {
-            include_once "../inc/imap.inc.php";
+            include_once '../inc/imap.inc.php';
             $imap = new IMAPMAIL;
             $imap->open($GLOBALS['_config']['imap'], $GLOBALS['_config']['imapport']);
             $emailnr = array_search($faktura['department'], $GLOBALS['_config']['email']);
@@ -511,7 +516,7 @@ function sendReminder($id)
         $faktura['department'] = $GLOBALS['_config']['email'][0];
     }
 
-    include_once "../inc/phpMailer/class.phpmailer.php";
+    include_once '../inc/phpMailer/class.phpmailer.php';
 
     $msg = _(
         '<hr />
@@ -608,7 +613,7 @@ Fax: %s<br />
 
     //Upload email to the sent folder via imap
     if ($GLOBALS['_config']['imap']) {
-        include_once "../inc/imap.inc.php";
+        include_once '../inc/imap.inc.php';
         $imap = new IMAPMAIL;
         if (!$imap->open($GLOBALS['_config']['imap'], $GLOBALS['_config']['imapport'])) {
             $error .= "\n\n"._('The e-mail was not saved in the Sent box! (the server did not respond).');
@@ -1170,14 +1175,14 @@ foreach ($post as $pakke) {
         <p><strong><?php echo _('Note:'); ?></strong></p>
         <p class="note" style="width:350px"><?php
 if ($faktura['status'] != 'new') {
-    echo nl2br(htmlspecialchars($faktura['note']));
+    echo nl2br(htmlspecialchars($faktura['note'], ENT_COMPAT | ENT_XHTML, 'UTF-8'));
 }
 ?></p><?php
 $rows = count(explode("\n", $faktura['note']));
 $rows += 2;
 ?><textarea style="width:350px" name="note" id="note" rows="<?php echo $rows; ?>"><?php
 if ($faktura['status'] == 'new') {
-    echo htmlspecialchars($faktura['note']);
+    echo htmlspecialchars($faktura['note'], ENT_COMPAT | ENT_XHTML, 'UTF-8');
 }
 ?></textarea>
             </td>
@@ -1435,7 +1440,7 @@ if ($faktura['status'] == 'new') {
         if ($faktura['land'] == $code) {
             echo ' selected="selected"'
         }
-        ?>><?php echo htmlspecialchars($country); ?></option><?php
+        ?>><?php echo htmlspecialchars($country, ENT_COMPAT | ENT_XHTML, 'UTF-8'); ?></option><?php
     }
     ?></select><?php
 } else {
@@ -1564,7 +1569,7 @@ if (($faktura['status'] != 'new' && $faktura['altpost']) || $faktura['status'] =
                 echo ' selected="selected"'
             }
             ?>><?php
-            echo htmlspecialchars($country); ?></option><?php
+            echo htmlspecialchars($country, ENT_COMPAT | ENT_XHTML, 'UTF-8'); ?></option><?php
         }
         ?></select><?php
     } else {

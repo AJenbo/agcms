@@ -2,9 +2,9 @@
 
 date_default_timezone_set('Europe/Copenhagen');
 setlocale(LC_ALL, 'da_DK');
-bindtextdomain("agcms", $_SERVER['DOCUMENT_ROOT'].'/theme/locale');
-bind_textdomain_codeset("agcms", 'UTF-8');
-textdomain("agcms");
+bindtextdomain('agcms', $_SERVER['DOCUMENT_ROOT'].'/theme/locale');
+bind_textdomain_codeset('agcms', 'UTF-8');
+textdomain('agcms');
 
 require_once $_SERVER['DOCUMENT_ROOT'].'/admin/inc/logon.php';
 //TODO run countEmailTo() onload
@@ -53,14 +53,14 @@ function sendEmail($id, $from, $interests, $subject, $text)
     $body .= '</style>
     <meta http-equiv="content-language" content="da" />
     <meta name="Description" content="Alt du har brug for i frilufts livet" />
-    <meta name="Author" content="'.$GLOBALS['_config']['site_name'].'" />
+    <meta name="Author" content="' . $GLOBALS['_config']['site_name'] . '" />
     <meta name="Classification" content="" />
     <meta name="Reply-to" content="'.$from.'" />
     <meta http-equiv="imagetoolbar" content="no" />
     <meta name="distribution" content="Global" />
     <meta name="robots" content="index,follow" />
     </head><body><div>';
-    $body .= str_replace(' href="/', ' href="'.$GLOBALS['_config']['base_url'].'/', stripcslashes(htmlUrlDecode($text)));
+    $body .= str_replace(' href="/', ' href="' . $GLOBALS['_config']['base_url'] . '/', stripcslashes(htmlUrlDecode($text)));
     $body .= '</div></body></html>';
 
     $mail->MsgHTML($body, $_SERVER['DOCUMENT_ROOT']);
@@ -113,12 +113,12 @@ function sendEmail($id, $from, $interests, $subject, $text)
 
         if (!$mail->Send()) {
             //TODO upload if send fails
-            $error .= $mail->ErrorInfo."\n";
+            $error .= $mail->ErrorInfo . "\n";
         }
 
         //Upload email to the sent folder via imap
         if ($GLOBALS['_config']['imap']) {
-            include_once "../inc/imap.inc.php";
+            include_once '../inc/imap.inc.php';
             $imap = new IMAPMAIL;
             $imap->open($GLOBALS['_config']['imap'], $GLOBALS['_config']['imapport']);
             $emailnr = array_search($from, $GLOBALS['_config']['email']);
@@ -238,10 +238,10 @@ countEmailTo();
     if ($newsmails[0]['sendt'] == 1) {
         $html .= '<br />'._('Subject:').' '.$newsmails[0]['subject'].'<div style="width:'.$GLOBALS['_config']['text_width'].'px; border:1px solid #D2D2D2">'.$newsmails[0]['text'].'</div></div>';
     } else {
-        $html .= '<br />'._('Subject:').' <input class="admin_name" name="subject" id="subject" value="'.$newsmails[0]['subject'].'" size="127" style="width:'.($GLOBALS['_config']['text_width']-34).'px" /><script type="text/javascript"><!--
+        $html .= '<br />' . _('Subject:') . ' <input class="admin_name" name="subject" id="subject" value="' . $newsmails[0]['subject'] . '" size="127" style="width:' . ($GLOBALS['_config']['text_width'] - 34) . 'px" /><script type="text/javascript"><!--
 //Usage: initRTE(imagesPath, includesPath, cssFile, genXHTML)
-initRTE("/admin/rtef/images/", "/admin/rtef/", "/theme/email.css", true);
-writeRichText("text", \''.rtefsafe($newsmails[0]['text']).'\', "", '.($GLOBALS['_config']['text_width']+32).', 422, true, false, false);
+initRTE(\'/admin/rtef/images/\', \'/admin/rtef/\', \'/theme/email.css\', true);
+writeRichText(\'text\', \'' . rtefsafe($newsmails[0]['text']) . '\', \'\', ' . ($GLOBALS['_config']['text_width'] + 32) . ', 422, true, false, false);
 //--></script></div></form>';
     }
     return $html;

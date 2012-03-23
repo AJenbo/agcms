@@ -1,11 +1,27 @@
 <?php
+/**
+ * Print RSS feed contaning the 20 last changed pages
+ *
+ * PHP version 5
+ *
+ * @category AGCMS
+ * @package  AGCMS
+ * @author   Anders Jenbo <anders@jenbo.dk>
+ * @license  GPLv2 http://www.gnu.org/licenses/gpl-2.0.html
+ * @link     http://www.arms-gallery.dk/
+ */
 
 require_once 'inc/config.php';
 require_once 'inc/mysqli.php';
 require_once 'inc/functions.php';
 require_once 'inc/header.php';
 
-$mysqli = new simple_mysqli($GLOBALS['_config']['mysql_server'], $GLOBALS['_config']['mysql_user'], $GLOBALS['_config']['mysql_password'], $GLOBALS['_config']['mysql_database']);
+$mysqli = new simple_mysqli(
+    $GLOBALS['_config']['mysql_server'],
+    $GLOBALS['_config']['mysql_user'],
+    $GLOBALS['_config']['mysql_password'],
+    $GLOBALS['_config']['mysql_database']
+);
 
 $tabels = $mysqli->fetch_array("SHOW TABLE STATUS");
 $updatetime = 0;
@@ -25,8 +41,16 @@ if (isset($_SERVER['HTTP_IF_MODIFIED_SINCE'])) {
 }
 
 if ($time > 1000000000) {
-    //$mysqli->query("INSERT INTO `hack-trap` (`log` ,`date`) VALUES ('RSS last load time ".$time."', '".date('Y-m-d h:i:s',$time)."')");
-    $where = " WHERE `dato` > '".date('Y-m-d h:i:s', $time)."'";
+    /*
+    $mysqli->query(
+        "
+        INSERT INTO `hack-trap` (`log`, `date`)
+        VALUES ('RSS last load time " . $time . "', '" . date('Y-m-d h:i:s', $time)
+        . "')
+        "
+    );
+    */
+    $where = " WHERE `dato` > '" . date('Y-m-d h:i:s', $time) . "'";
 } else {
     $limit = ' LIMIT 20';
 }
@@ -43,9 +67,9 @@ $sider = $mysqli->fetch_array(
     FROM sider
     JOIN bind ON (side = sider.id)
     JOIN kat ON (kat.id = kat)
-    ".@$where."
+    " . @$where . "
     GROUP BY id
-    ORDER BY - dato" .@$limit
+    ORDER BY - dato" . @$limit
 );
 
 //check for inactive
@@ -80,54 +104,101 @@ require_once 'inc/config.php';
 echo '<?xml version="1.0" encoding="utf-8"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
 <channel>
-    <atom:link href="'.$GLOBALS['_config']['base_url'].'/rss.php" rel="self" type="application/rss+xml" />
+    <atom:link href="' . $GLOBALS['_config']['base_url']
+    . '/rss.php" rel="self" type="application/rss+xml" />
 
     <title>'.$GLOBALS['_config']['site_name'].'</title>
     <link>'.$GLOBALS['_config']['base_url'].'/</link>
     <description>De nyeste sider</description>
     <language>da</language>
-    <lastBuildDate>'.gmdate('D, d M Y H:i:s', $sider[0]['dato']).' GMT</lastBuildDate>
-    <managingEditor>'.$GLOBALS['_config']['email'][0].' ('.$GLOBALS['_config']['site_name'].')</managingEditor>';
-for ($i=0; $i<count($sider); $i++) {
-    if (!$sider[$i]['navn'] = trim(htmlspecialchars($sider[$i]['navn']))) {
+    <lastBuildDate>' . gmdate('D, d M Y H:i:s', $sider[0]['dato'])
+    . ' GMT</lastBuildDate>
+    <managingEditor>' . $GLOBALS['_config']['email'][0] . ' ('
+    . $GLOBALS['_config']['site_name'] . ')</managingEditor>';
+for ($i = 0; $i < count($sider); $i++) {
+    if (!$sider[$i]['navn'] = trim(htmlspecialchars($sider[$i]['navn'], ENT_COMPAT | ENT_XML1, 'UTF-8'))) {
         $sider[$i]['navn'] = $GLOBALS['_config']['site_name'];
     }
-    $sideText = $mysqli->fetch_array("SELECT text FROM sider WHERE id = ".$sider[$i]['id']);
+    $sideText = $mysqli->fetch_array(
+        "
+        SELECT text
+        FROM sider
+        WHERE id = " . $sider[$i]['id']
+    );
 
     echo '
     <item>
     <title>'.$sider[$i]['navn'].'</title>
-    <link>'.$GLOBALS['_config']['base_url'].'/kat'.$sider[$i]['kat_id'].'-'.rawurlencode(clear_file_name($sider[$i]['kat_navn'])).'/side'.$sider[$i]['id'].'-'.rawurlencode(clear_file_name($sider[$i]['navn'])).'.html</link>
+    <link>' . $GLOBALS['_config']['base_url'] . '/kat' . $sider[$i]['kat_id'] . '-'
+    . rawurlencode(clear_file_name($sider[$i]['kat_navn'])) . '/side'
+    . $sider[$i]['id'] . '-' . rawurlencode(clear_file_name($sider[$i]['navn']))
+    . '.html</link>
     <description>';
-    if ($sider[$i]['billed'] && $sider[$i]['billed'] != '/images/web/intet-foto.jpg') {
-        echo '&lt;img style="float:left;margin:0 10px 5px 0;" src="'.$GLOBALS['_config']['base_url'].$sider[$i]['billed'].'" &gt;&lt;p&gt;';
+    if ($sider[$i]['billed']
+        && $sider[$i]['billed'] != '/images/web/intet-foto.jpg'
+    ) {
+        echo '&lt;img style="float:left;margin:0 10px 5px 0;" src="'
+        . $GLOBALS['_config']['base_url'] . $sider[$i]['billed'] . '" &gt;&lt;p&gt;';
         //TODO limit to summery
     }
-    echo trim(htmlspecialchars(preg_replace($search, $replace, $sideText[0]['text']))).'</description>
-    <pubDate>'.gmdate('D, d M Y H:i:s', $sider[$i]['dato']).' GMT</pubDate>
-    <guid>'.$GLOBALS['_config']['base_url'].'/kat'.$sider[$i]['kat_id'].'-'.rawurlencode(clear_file_name($sider[$i]['kat_navn'])).'/side'.$sider[$i]['id'].'-'.rawurlencode(clear_file_name($sider[$i]['navn'])).'.html</guid>';
-    $bind = $mysqli->fetch_array("SELECT `kat` FROM bind WHERE side = ".$sider[$i]['id']);
+
+    $cleaned = trim(preg_replace($search, $replace, $sideText[0]['text']));
+    echo htmlspecialchars($cleaned, ENT_COMPAT | ENT_XML1, 'UTF-8') . '</description>
+    <pubDate>' . gmdate('D, d M Y H:i:s', $sider[$i]['dato']) . ' GMT</pubDate>
+    <guid>' . $GLOBALS['_config']['base_url'] . '/kat' . $sider[$i]['kat_id'] . '-'
+    . rawurlencode(clear_file_name($sider[$i]['kat_navn'])) . '/side'
+    . $sider[$i]['id'] . '-' . rawurlencode(clear_file_name($sider[$i]['navn']))
+    . '.html</guid>';
+    $bind = $mysqli->fetch_array(
+        "
+        SELECT `kat`
+        FROM bind
+        WHERE side = " . $sider[$i]['id']
+    );
 
     $kats = '';
-    for ($ibind=0; $ibind<count($bind); $ibind++) {
+    for ($ibind = 0; $ibind < count($bind); $ibind++) {
         $kats[] = $bind[$ibind]['kat'];
 
-        $temp = $mysqli->fetch_array("SELECT bind FROM `kat` WHERE id = '".$bind[$ibind]['kat']."' LIMIT 1");
+        $temp = $mysqli->fetch_array(
+            "
+            SELECT bind
+            FROM `kat`
+            WHERE id = '" . $bind[$ibind]['kat'] . "'
+            LIMIT 1
+            "
+        );
         if (@$temp[0]) {
             while ($temp && !in_array($temp[0]['bind'], $kats)) {
                 $kats[] = $temp[0]['bind'];
-                $temp = $mysqli->fetch_array("SELECT bind FROM `kat` WHERE id = '".$temp[0]['bind']."' LIMIT 1");
+                $temp = $mysqli->fetch_array(
+                    "
+                    SELECT bind
+                    FROM `kat`
+                    WHERE id = '" . $temp[0]['bind']."'
+                    LIMIT 1
+                    "
+                );
             }
         }
     }
 
     //$kats = array_unique($kats);
 
-    for ($icategory=0; $icategory<count($kats); $icategory++) {
+    for ($icategory = 0; $icategory < count($kats); $icategory++) {
         if ($kats[$icategory]) {
-            $kat = $mysqli->fetch_array("SELECT `navn` FROM kat WHERE id = ".$kats[$icategory]." LIMIT 1");
-            if ($category = trim(preg_replace($search, $replace, @$kat[0]['navn']))) {
-                echo '<category>'.htmlspecialchars($category, ENT_NOQUOTES).'</category>';
+            $kat = $mysqli->fetch_array(
+                "
+                SELECT `navn`
+                FROM kat
+                WHERE id = " . $kats[$icategory] . "
+                LIMIT 1
+                "
+            );
+            $cleaned = trim(preg_replace($search, $replace, @$kat[0]['navn']));
+            if ($category = $cleaned) {
+                echo '<category>' . htmlspecialchars($category, ENT_NOQUOTES | ENT_XML1, 'UTF-8')
+                . '</category>';
             }
         }
     }
@@ -141,11 +212,20 @@ for ($i=0; $i<count($sider); $i++) {
             }
             $where .= ' id = '.$maerker[$imaerker];
         }
-        $maerker = $mysqli->fetch_array("SELECT `navn` FROM maerke WHERE".$where." LIMIT ".$maerker_nr);
+        $maerker = $mysqli->fetch_array(
+            "
+            SELECT `navn`
+            FROM maerke
+            WHERE " . $where . "
+            LIMIT " . $maerker_nr
+        );
         $maerker_nr = count($maerker);
-        for ($imaerker=0;$imaerker<$maerker_nr;$imaerker++) {
-            if ($category = trim(preg_replace($search, $replace, $maerker[$imaerker]['navn']))) {
-                echo '<category>'.htmlspecialchars($category, ENT_NOQUOTES).'</category>';
+        for ($imaerker = 0; $imaerker < $maerker_nr; $imaerker++) {
+            $cleaned = preg_replace($search, $replace, $maerker[$imaerker]['navn']);
+            $cleaned = trim($cleanName);
+            if ($category = $cleaned) {
+                echo '<category>' . htmlspecialchars($category, ENT_NOQUOTES | ENT_XML1, 'UTF-8')
+                . '</category>';
             }
         }
     }

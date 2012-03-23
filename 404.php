@@ -17,7 +17,10 @@ $url = urldecode($_SERVER['REQUEST_URI']);
 $encoding = mb_detect_encoding($url, 'UTF-8, ISO-8859-1');
 if ($encoding != 'UTF-8') {
     //Firefox uses windows-1252 if it can get away with it
-    //We can't detect windows-1252 from iso-8859-1 but it's a superset of the secound so bouth should handle fine as windows-1252
+    /**
+     * We can't detect windows-1252 from iso-8859-1, but it's a superset, so bouth
+     * should handle fine as windows-1252
+     */
     if (!$encoding || $encoding == 'ISO-8859-1') {
         $encoding = 'windows-1252';
     }
@@ -41,17 +44,30 @@ if (preg_match('/(\=[^&].*)/u', $url)) {
     }
 }
 
-if (!$GLOBALS['generatedcontent']['activmenu'] = preg_replace('/.*\/kat([0-9]*)-.*|.*/u', '\1', $url)) {
-    if ($GLOBALS['generatedcontent']['activmenu'] = preg_replace('/.*kat=([0-9]+).*\s*|.*/u', '\1', $url)) {
+$GLOBALS['generatedcontent']['activmenu'] = preg_replace(
+    '/.*\/kat([0-9]*)-.*|.*/u',
+    '\1',
+    $url
+);
+if (!$GLOBALS['generatedcontent']['activmenu']) {
+    $katId = preg_replace('/.*kat=([0-9]+).*\s*|.*/u', '\1', $url);
+    if ($katId) {
+        $GLOBALS['generatedcontent']['activmenu'] = $katId;
         $redirect = 1;
     }
 }
 
 //Try old query sting methode
-if (!$GLOBALS['side']['id'] = preg_replace('/.*\/side([0-9]*)-.*|.*/u', '\1', $url)) {
-    if ($GLOBALS['side']['id'] = preg_replace('/.*side=([0-9]+).*\s*|.*/u', '\1', $url)
-        || $GLOBALS['side']['id'] = preg_replace('/.*id=([0-9]+).*\s*|.*/u', '\1', $url) //Try really old query sting methode
-    ) {
+$GLOBALS['side']['id'] = preg_replace('/.*\/side([0-9]*)-.*|.*/u', '\1', $url);
+if (!$GLOBALS['side']['id']) {
+    $sideId = preg_replace('/.*side=([0-9]+).*\s*|.*/u', '\1', $url);
+    //Try really old query sting methode
+    if (!$sideId) {
+        $sideId = preg_replace('/.*id=([0-9]+).*\s*|.*/u', '\1', $url)
+    }
+
+    if ($sideId) {
+        $GLOBALS['side']['id'] = $sideId;
         $redirect = 1;
     }
 }
@@ -71,30 +87,70 @@ if (@$redirect) {
     include_once 'inc/mysqli.php';
     include_once 'inc/functions.php';
 
-    $mysqli = new simple_mysqli($GLOBALS['_config']['mysql_server'], $GLOBALS['_config']['mysql_user'], $GLOBALS['_config']['mysql_password'], $GLOBALS['_config']['mysql_database']);
+    $mysqli = new simple_mysqli(
+        $GLOBALS['_config']['mysql_server'],
+        $GLOBALS['_config']['mysql_user'],
+        $GLOBALS['_config']['mysql_password'],
+        $GLOBALS['_config']['mysql_database']
+    );
 
     header('HTTP/1.1 301 Moved Permanently');
     if ($GLOBALS['side']['id']) {
         if (!$GLOBALS['generatedcontent']['activmenu']) {
-            $bind = $mysqli->fetch_array('SELECT kat FROM bind WHERE side = '.$GLOBALS['side']['id'].' LIMIT 1');
+            $bind = $mysqli->fetch_array(
+                "
+                SELECT kat
+                FROM bind
+                WHERE side = " . $GLOBALS['side']['id'] . "
+                LIMIT 1
+                "
+            );
             if (!$bind) {
-                header('Location: /?sog=1&q=&sogikke=&qext=&minpris=&maxpris=&maerke=');
+                $url = '/?sog=1&q=&sogikke=&qext=&minpris=&maxpris=&maerke=';
+                header('Location: ' . $url);
                 die();
             }
-            $kats = $mysqli->fetch_array('SELECT id, navn FROM kat WHERE id = '.$bind[0]['kat']);
+            $kats = $mysqli->fetch_array(
+                "
+                SELECT id, navn
+                FROM kat
+                WHERE id = " . $bind[0]['kat']
+            );
         } else {
-            $kats = $mysqli->fetch_array('SELECT id, navn FROM kat WHERE id = '.$GLOBALS['generatedcontent']['activmenu']);
+            $kats = $mysqli->fetch_array(
+                "
+                SELECT id, navn
+                FROM kat
+                WHERE id = " . $GLOBALS['generatedcontent']['activmenu']
+            );
         }
-        $sider = $mysqli->fetch_array('SELECT id, navn FROM sider WHERE id = '.$GLOBALS['side']['id']);
+        $sider = $mysqli->fetch_array(
+            "
+            SELECT id, navn
+            FROM sider
+            WHERE id = " . $GLOBALS['side']['id']
+        );
         if (!$sider) {
-            header('Location: /kat'.$kats[0]['id'].'-'.clear_file_name($kats[0]['navn']).'/');
+            $url = '/kat' . $kats[0]['id'] . '-' . clear_file_name($kats[0]['navn'])
+            . '/';
+            header('Location: ' . $url);
             die();
         }
-        header("Location: /kat".$kats[0]['id']."-".clear_file_name($kats[0]['navn'])."/side".$sider[0]['id']."-".clear_file_name($sider[0]['navn']).".html");
+        $url = '/kat' . $kats[0]['id'] . '-' . clear_file_name($kats[0]['navn'])
+        . '/side' . $sider[0]['id'] . '-' . clear_file_name($sider[0]['navn'])
+        . '.html';
+        header('Location: ' . $url);
         die();
     } elseif ($GLOBALS['generatedcontent']['activmenu']) {
-        $kats = $mysqli->fetch_array("SELECT id, navn FROM kat WHERE id = ".$GLOBALS['generatedcontent']['activmenu']);
-        header("Location: /kat".$kats[0]['id']."-".clear_file_name($kats[0]['navn'])."/");
+        $kats = $mysqli->fetch_array(
+            "
+            SELECT id, navn
+            FROM kat
+            WHERE id = " . $GLOBALS['generatedcontent']['activmenu']
+        );
+        $url = '/kat' . $kats[0]['id'] . "-" . clear_file_name($kats[0]['navn'])
+        . '/';
+        header('Location: ' . $url);
         die();
     }
 }

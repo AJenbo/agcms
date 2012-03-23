@@ -8,16 +8,21 @@
 
 date_default_timezone_set('Europe/Copenhagen');
 setlocale(LC_ALL, 'da_DK');
-bindtextdomain("agcms", $_SERVER['DOCUMENT_ROOT'].'/theme/locale');
-bind_textdomain_codeset("agcms", 'UTF-8');
-textdomain("agcms");
+bindtextdomain('agcms', $_SERVER['DOCUMENT_ROOT'].'/theme/locale');
+bind_textdomain_codeset('agcms', 'UTF-8');
+textdomain('agcms');
 
 require_once $_SERVER['DOCUMENT_ROOT'].'/inc/config.php';
 require_once $_SERVER['DOCUMENT_ROOT'].'/inc/mysqli.php';
 
 session_start();
 
-$mysqli = new simple_mysqli($GLOBALS['_config']['mysql_server'], $GLOBALS['_config']['mysql_user'], $GLOBALS['_config']['mysql_password'], $GLOBALS['_config']['mysql_database']);
+$mysqli = new simple_mysqli(
+    $GLOBALS['_config']['mysql_server'],
+    $GLOBALS['_config']['mysql_user'],
+    $GLOBALS['_config']['mysql_password'],
+    $GLOBALS['_config']['mysql_database']
+);
 
 if (empty($_SESSION['_user']) && !empty($_POST['username'])) {
 
@@ -58,4 +63,3 @@ if (empty($_SESSION['_user'])) {
 }
 
 $mysqli->query("UPDATE `users` SET `lastlogin` =  NOW() WHERE `id` = ".$_SESSION['_user']['id']." LIMIT 1");
-?>

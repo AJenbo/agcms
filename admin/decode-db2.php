@@ -27,7 +27,12 @@ function removeheight($text)
 }
 
 //Open database
-$mysqli = new simple_mysqli($GLOBALS['_config']['mysql_server'], $GLOBALS['_config']['mysql_user'], $GLOBALS['_config']['mysql_password'], $GLOBALS['_config']['mysql_database']);
+$mysqli = new simple_mysqli(
+    $GLOBALS['_config']['mysql_server'],
+    $GLOBALS['_config']['mysql_user'],
+    $GLOBALS['_config']['mysql_password'],
+    $GLOBALS['_config']['mysql_database']
+);
 
 /*
 function unhtmlentitiesUtf8($string)
@@ -52,14 +57,14 @@ $sider = $mysqli->fetch_array("SELECT id, text, beskrivelse FROM `sider` WHERE t
 foreach ($sider as $key => $side) {
     $mysqli->query("UPDATE `sider` SET `text` = '".removeheight($side['text'])."', `beskrivelse` = '".removeheight($side['beskrivelse'])."' WHERE `id` = ".$side['id']." LIMIT 1");
     unset($sider[$key]);
-    echo "$key - ";
+    echo $key . ' - ';
 }
 $sider = $mysqli->fetch_array("SELECT id, text FROM `special` WHERE text LIKE '%<img%height=%'");
 
 foreach ($sider as $key => $side) {
     $mysqli->query("UPDATE `special` SET `text` = '".removeheight($side['text'])."' WHERE `id` = ".$side['id']." LIMIT 1");
     unset($sider[$key]);
-    echo "$key - ";
+    echo $key . ' - ';
 }
 ?>Done!
 </body>

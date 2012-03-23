@@ -1,4 +1,16 @@
 <?php
+/**
+ * Handle file upload
+ *
+ * PHP version 5
+ *
+ * @category AGCMS
+ * @package  AGCMS
+ * @author   Anders Jenbo <anders@jenbo.dk>
+ * @license  GPLv2 http://www.gnu.org/licenses/gpl-2.0.html
+ * @link     http://www.arms-gallery.dk/
+ */
+
 /*
 ini_set('display_errors', 1);
 error_reporting(-1);
@@ -10,21 +22,28 @@ if (!empty($_COOKIE[session_name()])) {
 
 ini_set("session.use_only_cookies", 0);
 
-require_once $_SERVER['DOCUMENT_ROOT'].'/admin/inc/logon.php';
+require_once $_SERVER['DOCUMENT_ROOT'] . '/admin/inc/logon.php';
 //TODO support wbmp
+//TODO support bmp
 //TODO $_GET login
 header('HTTP/1.1 500 Internal Server Error');
-if (!empty($_FILES['Filedata']['tmp_name']) && is_uploaded_file($_FILES['Filedata']['tmp_name'])) {
+if (!empty($_FILES['Filedata']['tmp_name'])
+    && is_uploaded_file($_FILES['Filedata']['tmp_name'])
+) {
     //Mangler file-functions.php
     header('HTTP/1.1 501 Internal Server Error');
     include_once '../admin/inc/file-functions.php';
     $pathinfo = pathinfo($_FILES['Filedata']['name']);
     //Kunne ikke læse filnavn.
     header('HTTP/1.1 503 Internal Server Error');
-    $name = genfilename($pathinfo['filename']).'.'.mb_strtolower($pathinfo['extension'], 'UTF-8');
+    $name = genfilename($pathinfo['filename']) . '.'
+    . mb_strtolower($pathinfo['extension'], 'UTF-8');
     //Fejl under flytning af filen.
     header('HTTP/1.1 504 Internal Server Error');
-    move_uploaded_file($_FILES['Filedata']['tmp_name'], $_SERVER['DOCUMENT_ROOT'].'/upload/temp/'.$name);
+    move_uploaded_file(
+        $_FILES['Filedata']['tmp_name'],
+        $_SERVER['DOCUMENT_ROOT'] . '/upload/temp/' . $name
+    );
     //Kunne ikke give tilladelse til filen.
     header('HTTP/1.1 505 Internal Server Error');
     chmod($_SERVER['DOCUMENT_ROOT'].'/upload/temp/'.$name, 0644);
@@ -35,7 +54,12 @@ if (!empty($_FILES['Filedata']['tmp_name']) && is_uploaded_file($_FILES['Filedat
     //Kunne ikke finde billed størelsen.
     header('HTTP/1.1 512 Internal Server Error');
 
-    if ((!@$_GET['x'] || !@$_GET['y']) && ($mime == 'image/jpeg' || $mime == 'image/gif' || $mime == 'image/png' || $mime == 'image/vnd.wap.wbmp')) {
+    if ((!@$_GET['x'] || !@$_GET['y'])
+        && ($mime == 'image/jpeg'
+        || $mime == 'image/gif'
+        || $mime == 'image/png'
+        || $mime == 'image/vnd.wap.wbmp')
+    ) {
         $imagesize = getimagesize($_SERVER['DOCUMENT_ROOT'].'/upload/temp/'.$name);
     } else {
         $imagesize[0] = $_GET['x'];
@@ -61,26 +85,36 @@ if (!empty($_FILES['Filedata']['tmp_name']) && is_uploaded_file($_FILES['Filedat
     include_once '../admin/inc/config.php';
     //TODO test if trim, resize or recompression is needed
     if (($_GET['type'] == 'image' && $mime != 'image/jpeg')
-        || (($_GET['type'] == 'image' || $_GET['type'] == 'lineimage') && $imagesize[0] > $GLOBALS['_config']['text_width'])
-        || (($_GET['type'] == 'image' || $_GET['type'] == 'lineimage') && $_FILES['Filedata']['size']/($imagesize[0]*$imagesize[1]) > 0.7)
-        || ($_GET['type'] == 'lineimage' && $mime != 'image/png' && $mime != 'image/gif')
+        || (($_GET['type'] == 'image' || $_GET['type'] == 'lineimage')
+        && $imagesize[0] > $GLOBALS['_config']['text_width'])
+        || (($_GET['type'] == 'image' || $_GET['type'] == 'lineimage')
+        && $_FILES['Filedata']['size']/($imagesize[0]*$imagesize[1]) > 0.7)
+        || ($_GET['type'] == 'lineimage'
+        && $mime != 'image/png' && $mime != 'image/gif')
     ) {
 
-        function return_bytes($val)
+        /**
+         * Convert PHP size string to bytes
+         *
+         * @param string $val PHP size string (eg. '2M')
+         *
+         * @return int Byte size
+         */
+        function returnBytes($val)
         {
             $last = mb_strtolower($val{mb_strlen($val, 'UTF-8')-1}, 'UTF-8');
             switch($last) {
-                case 'g':
-                    $val *= 1024;
-                case 'm':
-                    $val *= 1024;
-                case 'k':
-                    $val *= 1024;
+            case 'g':
+                $val *= 1024;
+            case 'm':
+                $val *= 1024;
+            case 'k':
+                $val *= 1024;
             }
             return $val;
         }
 
-        $memory_limit = return_bytes(ini_get('memory_limit'))-270336;
+        $memory_limit = returnBytes(ini_get('memory_limit'))-270336;
 
         if ($imagesize[0]*$imagesize[1] > $memory_limit/9.92) {
 
@@ -109,7 +143,18 @@ if (!empty($_FILES['Filedata']['tmp_name']) && is_uploaded_file($_FILES['Filedat
 
         $output['force'] = true;
 
-        $newfiledata = generateImage('/upload/temp/'.$name, 0,      0,      $imagesize[0], $imagesize[1], $GLOBALS['_config']['text_width'], $imagesize[1], 0,     0,       $output);
+        $newfiledata = generateImage(
+            '/upload/temp/' . $name,
+            0,
+            0,
+            $imagesize[0],
+            $imagesize[1],
+            $GLOBALS['_config']['text_width'],
+            $imagesize[1],
+            0,
+            0,
+            $output
+        );
 
         $temppath = $newfiledata['path'];
         $width = $newfiledata['width'];
@@ -132,7 +177,12 @@ if (!empty($_FILES['Filedata']['tmp_name']) && is_uploaded_file($_FILES['Filedat
     include_once '../inc/mysqli.php';
     //Kunne ikke åbne database.
     header('HTTP/1.1 541 Internal Server Error');
-    $mysqli = new simple_mysqli($GLOBALS['_config']['mysql_server'], $GLOBALS['_config']['mysql_user'], $GLOBALS['_config']['mysql_password'], $GLOBALS['_config']['mysql_database']);
+    $mysqli = new simple_mysqli(
+        $GLOBALS['_config']['mysql_server'],
+        $GLOBALS['_config']['mysql_user'],
+        $GLOBALS['_config']['mysql_password'],
+        $GLOBALS['_config']['mysql_database']
+    );
     //MySQL DELETE fejl!
     header('HTTP/1.1 542 Internal Server Error');
     $mysqli->query('DELETE FROM files WHERE path = \''.$destpath."'");
@@ -144,7 +194,14 @@ if (!empty($_FILES['Filedata']['tmp_name']) && is_uploaded_file($_FILES['Filedat
     $alt = empty($_GET['alt']) ? '' : $_GET['alt'];
     $aspect = empty($_GET['aspect']) ? '' : $_GET['aspect'];
 
-    $mysqli->query('INSERT INTO files (path, mime, alt, width, height, size, aspect) VALUES (\''.$destpath."', '".$mime."', '".$alt."', '".$width."', '".$height."', '".filesize($_SERVER['DOCUMENT_ROOT'].$destpath)."', ".$aspect.")");
+    $mysqli->query(
+        "
+        INSERT INTO files (path, mime, alt, width, height, size, aspect)
+        VALUES ('" . $destpath . "', '" . $mime . "', '" . $alt . "', '" . $width
+        . "', '" . $height . "', '" . filesize($_SERVER['DOCUMENT_ROOT'] . $destpath)
+        . "', " . $aspect . ")
+        "
+    );
 
     header('HTTP/1.1 200 OK');
 } else {
