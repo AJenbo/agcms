@@ -481,13 +481,15 @@ Tel. %s</p>'
 
         //Upload email to the sent folder via imap
         if ($GLOBALS['_config']['imap']) {
-            include_once '../inc/imap.inc.php';
-            $imap = new IMAPMAIL;
-            $imap->open($GLOBALS['_config']['imap'], $GLOBALS['_config']['imapport']);
+            include_once '../inc/imap.php';
             $emailnr = array_search($faktura['department'], $GLOBALS['_config']['email']);
-            $imap->login($faktura['department'], $GLOBALS['_config']['emailpasswords'][$emailnr ? $emailnr : 0]);
-            $imap->append_mail($GLOBALS['_config']['emailsent'], $mail->CreateHeader().$mail->CreateBody(), '\Seen');
-            $imap->close();
+            $imap = new IMAP(
+                $faktura['department'],
+                $GLOBALS['_config']['emailpasswords'][$emailnr ? $emailnr : 0],
+                $GLOBALS['_config']['imap'],
+                $GLOBALS['_config']['imapport']
+            );
+            $imap->append($GLOBALS['_config']['emailsent'], $mail->CreateHeader().$mail->CreateBody(), '\Seen');
         }
 
         //Forece reload
@@ -613,19 +615,17 @@ Fax: %s<br />
 
     //Upload email to the sent folder via imap
     if ($GLOBALS['_config']['imap']) {
-        include_once '../inc/imap.inc.php';
-        $imap = new IMAPMAIL;
-        if (!$imap->open($GLOBALS['_config']['imap'], $GLOBALS['_config']['imapport'])) {
-            $error .= "\n\n"._('The e-mail was not saved in the Sent box! (the server did not respond).');
-        }
         $emailnr = array_search($faktura['department'], $GLOBALS['_config']['email']);
-        if (!$imap->login($faktura['department'], $GLOBALS['_config']['emailpasswords'][$emailnr ? $emailnr : 0])) {
-            $error .= "\n\n"._('The e-mail was not saved in the Sent box! (the code was rejected).');
-        }
-        if (!$imap->append_mail($GLOBALS['_config']['emailsent'], $mail->CreateHeader().$mail->CreateBody(), '\Seen')) {
+        include_once '../inc/imap.php';
+        $imap = new IMAP(
+            $faktura['department'],
+            $GLOBALS['_config']['emailpasswords'][$emailnr ? $emailnr : 0],
+            $GLOBALS['_config']['imap'],
+            $GLOBALS['_config']['imapport']
+        );
+        if (!$imap->append($GLOBALS['_config']['emailsent'], $mail->CreateHeader().$mail->CreateBody(), '\Seen')) {
             $error .= "\n\n".sprintf(_('The e-mail was not saved in the Sent box! (the folder %s was missing).'), $GLOBALS['_config']['emailsent']);
         }
-        $imap->close();
     }
 
     return array('error' => trim($error));

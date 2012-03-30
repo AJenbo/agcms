@@ -809,12 +809,15 @@ if (!empty($_SESSION['faktura']['quantities'])) {
 
             //Upload email to the sent folder via imap
             if ($GLOBALS['_config']['imap']) {
-                include_once $_SERVER['DOCUMENT_ROOT'].'/inc/imap.inc.php';
-                $imap = new IMAPMAIL;
-                $imap->open($GLOBALS['_config']['imap'], $GLOBALS['_config']['imapport']);
-                $imap->login($GLOBALS['_config']['email'][0], $GLOBALS['_config']['emailpasswords'][0]);
-                $imap->append_mail($GLOBALS['_config']['emailsent'], $mail->CreateHeader().$mail->CreateBody(), '\Seen');
-                $imap->close();
+                include_once $_SERVER['DOCUMENT_ROOT'].'/inc/imap.php';
+                $imap = new IMAP(
+                    $GLOBALS['_config']['email'][0],
+                    $GLOBALS['_config']['emailpasswords'][0],
+                    $GLOBALS['_config']['imap'],
+                    $GLOBALS['_config']['imapport']
+                );
+                $imap->append($GLOBALS['_config']['emailsent'], $mail->CreateHeader().$mail->CreateBody(), '\Seen');
+                unset($imap);
             }
         } else {
             //TODO secure this against injects and <; in the email and name

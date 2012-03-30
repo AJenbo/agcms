@@ -110,17 +110,18 @@ if ($_POST) {
     $mail->MsgHTML($emailbody, $_SERVER['DOCUMENT_ROOT']);
 
     $mail->AddAddress($GLOBALS['_config']['email'][0], $GLOBALS['_config']['site_name']);
-    if (!$mail->Send()) {
+    if ($mail->Send()) {
         //Upload email to the sent folder via imap
-        var_dump($mail->ErrorInfo);
         if ($GLOBALS['_config']['imap']) {
-            include_once $_SERVER['DOCUMENT_ROOT'].'/inc/imap.inc.php';
-            $imap = new IMAPMAIL;
-            $imap->open($GLOBALS['_config']['imap'], $GLOBALS['_config']['imapport']);
+            include_once $_SERVER['DOCUMENT_ROOT'].'/inc/imap.php';
             $emailnr = array_search($GLOBALS['_config']['email'][0], $GLOBALS['_config']['email']);
-            $imap->login($GLOBALS['_config']['email'][0], $GLOBALS['_config']['emailpasswords'][$emailnr ? $emailnr : 0]);
-            $imap->append_mail($GLOBALS['_config']['emailsent'], $mail->CreateHeader().$mail->CreateBody(), '\Seen');
-            $imap->close();
+            $imap = new IMAP(
+                $GLOBALS['_config']['email'][0],
+                $GLOBALS['_config']['emailpasswords'][$emailnr ? $emailnr : 0],
+                $GLOBALS['_config']['imap'],
+                $GLOBALS['_config']['imapport']
+            );
+            $imap->append($GLOBALS['_config']['emailsent'], $mail->CreateHeader().$mail->CreateBody(), '\Seen');
         }
     } else {
         //TODO secure this against injects and <; in the email and name

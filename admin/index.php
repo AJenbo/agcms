@@ -766,26 +766,13 @@ function get_db_error()
             $(\'errors\').innerHTML = $(\'errors\').innerHTML+\'<br />\'+(\''._('The scan took %d seconds.').'\'.replace(/[%]d/g, Math.round((new Date().getTime()-starttime)/1000).toString()));
         }
 
-
-        var mailbox_size = 0;
-        function get_mailbox_list_r(result)
+        function get_mail_size_r(size)
         {
-            for (mail=0; mail<result.length; mail++) {
-                for (mailbox=0; mailbox<result[mail].mailboxs.length; mailbox++) {
-                    $(\'status\').innerHTML = \'Læser indholdet i \'+result[mail].mailbox_names[mailbox];
-                    x_get_mailbox_size(mail, result[mail].mailboxs[mailbox], get_mailbox_size_r);
-                }
-            }
-            $(\'mailboxsize\').innerHTML = Math.round(mailbox_size/1024/1024)+\''._('MB').'\';
+            $(\'mailboxsize\').innerHTML = Math.round(size/1024/1024)+\''._('MB').'\';
             $(\'status\').innerHTML = \'\';
             $(\'loading\').style.visibility = \'hidden\';
         }
-
-        function get_mailbox_size_r(size)
-        {
-            mailbox_size += size;
-        }
-        --></script><div><b>'._('Server consumption').'</b> - '._('E-mail:').' <span id="mailboxsize"><button onclick="$(\'loading\').style.visibility = \'\'; x_get_mailbox_list(get_mailbox_list_r);">'._('Get e-mail consumption').'</button></span> '._('DB:').' <span id="dbsize">'.number_format(get_db_size(), 1, ',', '')._('MB').'</span> '._('WWW').': <span id="wwwsize">'.number_format(get_size_of_files(), 1, ',', '')._('MB').'</span></div><div id="status"></div><button onclick="scan_db();">'._('Scan database').'</button><div id="errors"></div>';
+        --></script><div><b>'._('Server consumption').'</b> - '._('E-mail:').' <span id="mailboxsize"><button onclick="$(\'loading\').style.visibility = \'\'; x_get_mail_size(get_mail_size_r);">'._('Get e-mail consumption').'</button></span> '._('DB:').' <span id="dbsize">'.number_format(get_db_size(), 1, ',', '')._('MB').'</span> '._('WWW').': <span id="wwwsize">'.number_format(get_size_of_files(), 1, ',', '')._('MB').'</span></div><div id="status"></div><button onclick="scan_db();">'._('Scan database').'</button><div id="errors"></div>';
 
     $emailsCount = $mysqli->fetch_one("SELECT count(*) as 'count' FROM `emails`");
     $emails = $mysqli->fetch_one("SHOW TABLE STATUS LIKE 'emails'");
@@ -946,61 +933,41 @@ function get_size_of_files()
     return $files[0]['filesize'];
 }
 
-function get_mailbox_list()
+function get_mail_size()
 {
     $mailboxes = array();
-    include_once "../inc/imap.inc.php";
-    $imap = new IMAPMAIL;
-    $imap->open($GLOBALS['_config']['imap'], $GLOBALS['_config']['imapport']);
-
-    $temp = array();
-    foreach ($GLOBALS['_config']['email'] as $i => $email) {
-        $imap->login($email, $GLOBALS['_config']['emailpasswords'][$i]);
-        $mailboxes[$i] = $imap->list_mailbox();
-        foreach ($mailboxes[$i] as $i2 => $mailbox) {
-            $temp['mailboxs'][$i2] = $mailbox;
-            $temp['mailbox_names'][$i2] = mb_convert_encoding($mailbox, "UTF-8", "UTF7-IMAP");
-        }
-        $mailboxes[$i] = $temp;
-    }
-    $imap->close();
-
-    return $mailboxes;
-}
-
-/*
-
-    //todo remove missing maerke from sider->maerke
-
-
-    //TODO test for missing alt="" in img under sider
-    //preg_match_all('/<img[^>]+/?>/ui', $value, $matches);
+    include_once "../inc/imap.php";
 
     $size = 0;
-    $mailsTotal = 0;
-
-    require_once "../inc/imap.inc.php";
-    $imap = new IMAPMAIL;
-    $imap->open($GLOBALS['_config']['imap'], $GLOBALS['_config']['imapport']);
 
     foreach ($GLOBALS['_config']['email'] as $i => $email) {
-        $imap->login($email, $GLOBALS['_config']['emailpasswords'][$i]);
+        $imap = new IMAP(
+            $email,
+            $GLOBALS['_config']['emailpasswords'][$i],
+            $GLOBALS['_config']['imap'],
+            $GLOBALS['_config']['imapport']
+        );
 
-        $mailboxList = $imap->list_mailbox();
-        foreach ($mailboxList as $mailbox) {
-            $mailboxStatus = $imap->open_mailbox($mailbox, true);
-            preg_match('/([0-9]+)\sEXISTS/', $mailboxStatus, $mails);
-            if (!empty($mails[1])) {
-                $mailsTotal += $mails[1];
-                preg_match_all('/SIZE\s([0-9]+)/', $imap->fetch_mail('1:'.$mails[1].'', 'FAST'), $mailSizes);
-                $size += array_sum($mailSizes[1]);
+        foreach ($imap->listMailboxes() as $mailbox) {
+            $mailboxStatus = $imap->select($mailbox['name'], true);
+            if (!$mailboxStatus['exists']) {
+                continue;
             }
+
+            $mails = $imap->fetch('1:*', 'RFC822.SIZE');
+            preg_match_all('/RFC822.SIZE\s([0-9]+)/', $mails['data'], $mailSizes);
+            $size += array_sum($mailSizes[1]);
         }
     }
-    $imap->close();
 
-    $html .= '<br /><b>Total forbrug '.number_format($siteSize, 1, ',', '').' MB / '.number_format(100/3000*$siteSize, 1, ',', '').'% </b></a><br />';
-        */
+    return $size;
+}
+
+//todo remove missing maerke from sider->maerke
+/*
+TODO test for missing alt="" in img under sider
+preg_match_all('/<img[^>]+/?>/ui', $value, $matches);
+*/
 
 
 function get_orphan_lists()
@@ -2076,35 +2043,43 @@ sajax_export(
         'name' => 'removeBadSubmisions',
         'uri' => '/maintain.php',
         'method' => 'POST',
-        'asynchronous' => false),
+        'asynchronous' => false
+    ),
     array(
         'name' => 'get_orphan_pages',
         'method' => 'GET',
-        'asynchronous' => false),
+        'asynchronous' => false
+    ),
     array(
         'name' => 'get_pages_with_mismatch_bindings',
         'method' => 'GET',
-        'asynchronous' => false),
+        'asynchronous' => false
+    ),
     array(
         'name' => 'get_orphan_lists',
         'method' => 'GET',
-        'asynchronous' => false),
+        'asynchronous' => false
+    ),
     array(
         'name' => 'get_orphan_rows',
         'method' => 'GET',
-        'asynchronous' => false),
+        'asynchronous' => false
+    ),
     array(
         'name' => 'get_orphan_cats',
         'method' => 'GET',
-        'asynchronous' => false),
+        'asynchronous' => false
+    ),
     array(
         'name' => 'get_looping_cats',
         'method' => 'GET',
-        'asynchronous' => false),
+        'asynchronous' => false
+    ),
     array(
         'name' => 'get_subscriptions_with_bad_emails',
         'method' => 'GET',
-        'asynchronous' => false),
+        'asynchronous' => false
+    ),
     array(
         'name' => 'removeNoneExistingFiles',
         'uri' => '/maintain.php',
@@ -2114,29 +2089,28 @@ sajax_export(
     array(
         'name' => 'check_file_names',
         'method' => 'GET',
-        'asynchronous' => false),
+        'asynchronous' => false
+    ),
     array(
         'name' => 'check_file_paths',
         'method' => 'GET',
-        'asynchronous' => false),
+        'asynchronous' => false
+    ),
     array(
         'name' => 'deleteTempfiles',
          'uri' => '/maintain.php',
         'method' => 'POST',
-        'asynchronous' => false),
+        'asynchronous' => false
+    ),
     array(
         'name' => 'get_size_of_files',
         'method' => 'GET',
-        'asynchronous' => false),
+        'asynchronous' => false
+    ),
     array(
-        'name' => 'get_mailbox_list',
-        'method' => 'GET',
-        'asynchronous' => false),
-    array(
-        'name' => 'get_mailbox_size',
-         'uri' => 'get_mailbox_size.php',
-        'method' => 'GET',
-        'asynchronous' => false)
+        'name' => 'get_mail_size',
+        'method' => 'GET'
+    )
 );
 //	$sajax_remote_uri = '/ajax.php';
 sajax_handle_client_request();

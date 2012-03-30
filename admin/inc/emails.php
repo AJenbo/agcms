@@ -118,13 +118,15 @@ function sendEmail($id, $from, $interests, $subject, $text)
 
         //Upload email to the sent folder via imap
         if ($GLOBALS['_config']['imap']) {
-            include_once '../inc/imap.inc.php';
-            $imap = new IMAPMAIL;
-            $imap->open($GLOBALS['_config']['imap'], $GLOBALS['_config']['imapport']);
+            include_once '../inc/imap.php';
             $emailnr = array_search($from, $GLOBALS['_config']['email']);
-            $imap->login($from, $GLOBALS['_config']['emailpasswords'][$emailnr ? $emailnr : 0]);
-            $imap->append_mail($GLOBALS['_config']['emailsent'], $mail->CreateHeader().$mail->CreateBody(), '\Seen');
-            $imap->close();
+            $imap = new IMAP(
+                $from,
+                $GLOBALS['_config']['emailpasswords'][$emailnr ? $emailnr : 0],
+                $GLOBALS['_config']['imap'],
+                $GLOBALS['_config']['imapport']
+            );
+            $imap->append($GLOBALS['_config']['emailsent'], $mail->CreateHeader().$mail->CreateBody(), '\Seen');
         }
     }
 

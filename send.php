@@ -63,7 +63,7 @@ if ($GLOBALS['_config']['emailpassword'] !== false) {
 
 //Load the imap class, if imap is configured
 if ($GLOBALS['_config']['imap'] !== false) {
-    include_once "inc/imap.inc.php";
+    include_once "inc/imap.php";
 }
 
 foreach ($emails as $email) {
@@ -99,19 +99,18 @@ foreach ($emails as $email) {
 
     //Upload email to the sent folder via imap
     if ($GLOBALS['_config']['imap'] !== false) {
-        $imap = new IMAPMAIL;
-        $imap->open($GLOBALS['_config']['imap'], $GLOBALS['_config']['imapport']);
         $emailnr = array_search('', $GLOBALS['_config']['email']);
-        $imap->login(
+        $imap = new IMAP(
             $GLOBALS['_config']['email'][$emailnr ? $emailnr : 0],
-            $GLOBALS['_config']['emailpasswords'][$emailnr ? $emailnr : 0]
+            $GLOBALS['_config']['emailpasswords'][$emailnr ? $emailnr : 0],
+            $GLOBALS['_config']['imap'],
+            $GLOBALS['_config']['imapport']
         );
-        $imap->append_mail(
+        $imap->append(
             $GLOBALS['_config']['emailsent'],
             $PHPMailer->CreateHeader() . $PHPMailer->CreateBody(),
             '\Seen'
         );
-        $imap->close();
     }
 }
 
