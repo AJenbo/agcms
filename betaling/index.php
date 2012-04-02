@@ -1021,37 +1021,58 @@ status.'
             break;
         case 96:
             $GLOBALS['generatedcontent']['text'] = _('Incorrect length for invoice parameters.');
-            $shopSubject = $_GET['Status'].$_GET['Status_code'].' '._('Incorrect length for invoice parameters.');
-            $shopBody = '<br />'._('Incorrect length for invoice parameters.').'<br />';
+            $shopSubject = $_GET['Status'] . $_GET['Status_code'] . ' ' . _('Incorrect length for invoice parameters.');
+            $shopBody = '<br />' . _('Incorrect length for invoice parameters.')
+            . '<br />';
             break;
         case 97:
             $GLOBALS['generatedcontent']['text'] = _('Incorrect guarantee parameter.');
-            $shopSubject = $_GET['Status'].$_GET['Status_code'].' '._('Incorrect guarantee parameter.');
-            $shopBody = '<br />'._('Incorrect guarantee parameter.').'<br />';
+            $shopSubject = $_GET['Status'] . $_GET['Status_code'] . ' '
+            . _('Incorrect guarantee parameter.');
+            $shopBody = '<br />' . _('Incorrect guarantee parameter.') . '<br />';
             break;
         case 98:
             $GLOBALS['generatedcontent']['text'] = _('Incorrect postal code.');
-            $shopSubject = $_GET['Status'].$_GET['Status_code'].' '._('Incorrect postal code.');
-            $shopBody = '<br />'._('Incorrect postal code.').'<br />';
+            $shopSubject = $_GET['Status'] . $_GET['Status_code'] . ' '
+            . _('Incorrect postal code.');
+            $shopBody = '<br />' . _('Incorrect postal code.') . '<br />';
             break;
         case 110:
             $GLOBALS['generatedcontent']['text'] = _('Invoice purchase: Invalid personal identity number or organisation number.');
-            $shopSubject = $_GET['Status'].$_GET['Status_code'].' '._('Invoice purchase: Invalid personal identity number or organisation number.');
-            $shopBody = '<br />'._('Invoice purchase: Invalid personal identity number or organisation number.').'<br />';
+            $shopSubject = $_GET['Status'] . $_GET['Status_code'] . ' '
+            . _('Invoice purchase: Invalid personal identity number or organisation number.');
+            $shopBody = '<br />' . _('Invoice purchase: Invalid personal identity number or organisation number.') . '<br />';
             break;
         }
 
         //TODO email error to us
         //TODO add better description for errors
     } elseif ($_GET['Status'] == 'A') {
-        $GLOBALS['generatedcontent']['crumbs'][1] = array('name' => _('Reciept'), 'link' => '#', 'icon' => null);
+        $GLOBALS['generatedcontent']['crumbs'][1] = array(
+            'name' => _('Reciept'),
+            'link' => '#',
+            'icon' => null
+        );
         $GLOBALS['generatedcontent']['title'] = _('Reciept');
         $GLOBALS['generatedcontent']['headline'] = _('Reciept');
         switch($_GET['Status_code']) {
         case 0:
-            $mysqli->query("UPDATE `fakturas` SET `cardtype` = '".$_GET['Card_type']."', `status` = 'pbsok', `paydate` = NOW() WHERE `status` IN('new', 'locked', 'pbserror') AND `id` = ".$id);
+            $mysqli->query(
+                "
+                UPDATE `fakturas`
+                SET `cardtype` = '" . $_GET['Card_type'] . "',
+                    `status` = 'pbsok',
+                    `paydate` = NOW()
+                WHERE `status` IN('new', 'locked', 'pbserror')
+                  AND `id` = " . $id
+            );
 
-            $faktura = $mysqli->fetch_one("SELECT * FROM `fakturas` WHERE `id` = ".$id);
+            $faktura = $mysqli->fetch_one(
+                "
+                SELECT *
+                FROM `fakturas`
+                WHERE `id` = " . $id
+            );
 
             $GLOBALS['generatedcontent']['text'] = _(
                 '<p style="text-align:center;"><img src="images/ok.png" alt="" /></p>
@@ -1079,87 +1100,133 @@ Remember to \'expedite\' the payment when the product is sent (The payment is fi
             ) .'<br />';
 
             include_once 'inc/countries.php';
-            $GLOBALS['generatedcontent']['track'] = ' pageTracker._addTrans("'.$faktura['id'].'", "", "'.$faktura['amount'].'", "'.(($faktura['amount']-$faktura['fragt'])*(1-(1/(1+$faktura['momssats'])))).'", "'.$faktura['fragt'].'", "'.$faktura['by'].'", "", "'.$countries[$faktura['land']].'");';
+            $withTax = $faktura['amount'] - $faktura['fragt'];
+            $tax = $withTax * (1 - (1 / (1 + $faktura['momssats'])))
+
+            $GLOBALS['generatedcontent']['track'] = ' pageTracker._addTrans("'
+            . $faktura['id'] . '", "", "' . $faktura['amount'] . '", "'
+            . $tax . '", "' . $faktura['fragt'] . '", "' . $faktura['by']
+            . '", "", "' . $countries[$faktura['land']] . '");';
             foreach ($faktura['products'] as $key => $product) {
-                $GLOBALS['generatedcontent']['track'] .= ' pageTracker._addItem("' .$faktura['id'] .'", "' .$faktura['id'] .$key .'", "' .$product.'", "", "'.($faktura['values'][$key]*(1+$faktura['momssats'])).'", "'.$faktura['quantities'][$key].'");';
+                $GLOBALS['generatedcontent']['track'] .= ' pageTracker._addItem("'
+                . $faktura['id'] . '", "' . $faktura['id'] . $key . '", "' . $product
+                . '", "", "'
+                . ($faktura['values'][$key] * (1 + $faktura['momssats'])) . '", "'
+                . $faktura['quantities'][$key] . '");';
             }
             $GLOBALS['generatedcontent']['track'] .= ' pageTracker._trackTrans(); ';
 
             //Mail to customer start
-            $emailbody = '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><meta http-equiv="Content-Type" content="text/html; charset=utf-8" /><title>';
+            $emailbody = '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"><head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" /><title>';
             $emailbody .= sprintf(_('Ordre %d - Payment complete'), $faktura['id']);
-            $emailbody .= '</title><style type="text/css">#faktura td { border:1px #000 solid; border-collapse:collapse; padding:2px; }</style></head><body>';
+            $emailbody .= '</title><style type="text/css">
+#faktura td { border:1px #000 solid; border-collapse:collapse; padding:2px; }
+</style></head><body>';
 
             //Generate the reseaving address
             $emailbody_address = '';
             if ($faktura['altpost']) {
-                $emailbody_address .= '<td>'._('Delivery address:').'</td>';
+                $emailbody_address .= '<td>' . _('Delivery address:') . '</td>';
             }
-            $emailbody_address .= '</tr><tr><td>'._('Name:').'</td><td>'.$faktura['navn'].'</td>';
+            $emailbody_address .= '</tr><tr><td>' . _('Name:') . '</td><td>'
+            . $faktura['navn'] . '</td>';
             if ($faktura['altpost']) {
-                $emailbody_address .= '<td>'.$faktura['postname'].'</td>';
+                $emailbody_address .= '<td>' . $faktura['postname'] . '</td>';
             }
             $emailbody_address .= '</tr>';
             if ($faktura['tlf1'] || ($faktura['altpost'] && $faktura['posttlf'])) {
-                $emailbody_address .= '<tr><td>'._('Phone:').'</td><td>'.$faktura['tlf1'].'</td>';
+                $emailbody_address .= '<tr><td>' . _('Phone:') . '</td><td>'
+                . $faktura['tlf1'] . '</td>';
                 if ($faktura['altpost']) {
-                    $emailbody_address .= '<td>'.$faktura['posttlf'].'</td>';
+                    $emailbody_address .= '<td>' . $faktura['posttlf'] . '</td>';
                 }
                 $emailbody_address .= '</tr>';
             }
             if ($faktura['att'] || ($faktura['altpost'] && $faktura['postatt'])) {
-                $emailbody_address .= '<tr><td>'._('Attn.:').'</td><td>'.$faktura['att'].'</td>';
+                $emailbody_address .= '<tr><td>' . _('Attn.:') . '</td><td>'
+                . $faktura['att'] . '</td>';
                 if ($faktura['altpost']) {
                     $emailbody_address .= '<td>'.$faktura['postatt'].'</td>';
                 }
                 $emailbody_address .= '</tr>';
             }
-            if ($faktura['adresse'] || ($faktura['adresse'] && ($faktura['postaddress'] || $faktura['postaddress2']))) {
-                $emailbody_address .= '<tr><td>'._('Address:').'</td><td>'.$faktura['adresse'].'</td>';
+            if ($faktura['adresse']
+                || ($faktura['adresse'] && ($faktura['postaddress'] || $faktura['postaddress2']))
+            ) {
+                $emailbody_address .= '<tr><td>' . _('Address:') . '</td><td>'
+                . $faktura['adresse'] . '</td>';
                 if ($faktura['altpost']) {
-                    $emailbody_address .= '<td>'.$faktura['postaddress'].'<br />'.$faktura['postaddress2'].'</td>';
+                    $emailbody_address .= '<td>' . $faktura['postaddress'] . '<br />'
+                    . $faktura['postaddress2'] . '</td>';
                 }
                 $emailbody_address .= '</tr>';
             }
-            if ($faktura['postbox'] || ($faktura['altpost'] && $faktura['postpostbox'])) {
-                $emailbody_address .= '<tr><td>'._('Postbox:').'</td><td>'.$faktura['postbox'].'</td>';
+            if ($faktura['postbox']
+                || ($faktura['altpost'] && $faktura['postpostbox'])
+            ) {
+                $emailbody_address .= '<tr><td>' . _('Postbox:') . '</td><td>'
+                . $faktura['postbox'] . '</td>';
                 if ($faktura['altpost']) {
-                    $emailbody_address .= '<td>'.$faktura['postpostbox'].'</td>';
+                    $emailbody_address .= '<td>' . $faktura['postpostbox'] . '</td>';
                 }
                 $emailbody_address .= '</tr>';
             }
 
-            $emailbody_address .= '<tr><td>'._('Zipcode:').'</td><td>'.$faktura['postnr'].'</td>';
+            $emailbody_address .= '<tr><td>' . _('Zipcode:') . '</td><td>'
+            . $faktura['postnr'] . '</td>';
             if ($faktura['altpost']) {
-                $emailbody_address .= '<td>'.$faktura['postpostalcode'].'</td>';
+                $emailbody_address .= '<td>' . $faktura['postpostalcode'] . '</td>';
             }
-            $emailbody_address .= '</tr><tr><td>'._('City:').'</td><td>'.$faktura['by'].'</td>';
+            $emailbody_address .= '</tr><tr><td>' . _('City:') . '</td><td>'
+            . $faktura['by'] . '</td>';
             if ($faktura['altpost']) {
-                $emailbody_address .= '<td>'.$faktura['postcity'].'</td>';
+                $emailbody_address .= '<td>' . $faktura['postcity'] . '</td>';
             }
-            $emailbody_address .= '</tr><tr><td>'._('Country:').'</td><td>'.$countries[$faktura['land']].'</td>';
+            $emailbody_address .= '</tr><tr><td>' . _('Country:') . '</td><td>'
+            . $countries[$faktura['land']] . '</td>';
             if ($faktura['altpost']) {
-                $emailbody_address .= '<td>'.$countries[$faktura['postcountry']].'</td>';
+                $emailbody_address .= '<td>' . $countries[$faktura['postcountry']]
+                . '</td>';
             }
             if ($faktura['tlf2']) {
-                $emailbody_address .= '</tr><tr><td>'._('Mobile:').'</td><td>'.$faktura['tlf2'].'</td>';
+                $emailbody_address .= '</tr><tr><td>' . _('Mobile:') . '</td><td>'
+                . $faktura['tlf2'].'</td>';
             }
             $netto = 0;
-            for ($i=0;$i<$productslines;$i++) {
-                $netto += $faktura['values'][$i]*$faktura['quantities'][$i];
+            for ($i = 0; $i < $productslines; $i++) {
+                $netto += $faktura['values'][$i] * $faktura['quantities'][$i];
             }
 
-            $productslines = max(count($faktura['quantities']), count($faktura['products']), count($faktura['values']));
+            $productslines = max(
+                count($faktura['quantities']),
+                count($faktura['products']),
+                count($faktura['values'])
+            );
 
             $emailbody_tablerows = '';
             for ($i=0; $i<$productslines; $i++) {
-                $emailbody_tablerows .= '<tr><td class="tal">'.$faktura['quantities'][$i].'</td><td>'.htmlspecialchars_decode($faktura['products'][$i]).'</td><td class="tal">'.number_format($faktura['values'][$i]*(1+$faktura['momssats']), 2, ',', '').'</td><td class="tal">'.number_format($faktura['values'][$i]*(1+$faktura['momssats'])*$faktura['quantities'][$i], 2, ',', '').'</td></tr>';
+                $plusTax = $faktura['values'][$i] * (1 + $faktura['momssats']);
+                $emailbody_tablerows .= '<tr><td class="tal">'
+                . $faktura['quantities'][$i] . '</td><td>'
+                . htmlspecialchars_decode($faktura['products'][$i])
+                . '</td><td class="tal">'
+                . number_format($plusTax, 2, ',', '') . '</td><td class="tal">'
+                . number_format($plusTax * $faktura['quantities'][$i], 2, ',', '')
+                . '</td></tr>';
             }
 
             $emailbody_nore = '';
             if ($faktura['note']) {
-                $emailbody_nore = '<br /><strong>'._('Note:').'</strong><br /><p class="note">';
-                $emailbody_nore .= nl2br(htmlspecialchars($faktura['note'])).'</p>';
+                $emailbody_nore = '<br /><strong>' . _('Note:')
+                . '</strong><br /><p class="note">';
+                $note = htmlspecialchars(
+                    $faktura['note'],
+                    ENT_COMPAT | ENT_XHTML,
+                    'UTF-8'
+                );
+                $emailbody_nore .= nl2br($note) . '</p>';
             }
 
             if (!validemail($faktura['department'])) {
@@ -1227,38 +1294,73 @@ Tel. %s<br />
             } else {
                 $mail->SMTPAuth   = false;
             }
-            $mail->Host       = $GLOBALS['_config']['smtp'];      // sets the SMTP server
-            $mail->Port       = $GLOBALS['_config']['smtpport'];                   // set the SMTP port for the server
+            $mail->Host       = $GLOBALS['_config']['smtp'];
+            $mail->Port       = $GLOBALS['_config']['smtpport'];
             $mail->CharSet    = 'utf-8';
-            $mail->AddReplyTo($faktura['department'], $GLOBALS['_config']['site_name']);
+            $mail->AddReplyTo(
+                $faktura['department'],
+                $GLOBALS['_config']['site_name']
+            );
             $mail->From       = $faktura['department'];
             $mail->FromName   = $GLOBALS['_config']['site_name'];
-            $mail->Subject    = sprintf(_('Order #%d - payment completed'), $faktura['id']);
+            $subject = _('Order #%d - payment completed');
+            $mail->Subject    = sprintf($subject, $faktura['id']);
             $mail->MsgHTML($emailbody, $_SERVER['DOCUMENT_ROOT']);
             $mail->AddAddress($faktura['email'], $GLOBALS['_config']['site_name']);
             if ($mail->Send()) {
                 //Upload email to the sent folder via imap
                 if ($GLOBALS['_config']['imap']) {
-                    include_once $_SERVER['DOCUMENT_ROOT'].'/inc/imap.php';
-                    $emailnr = array_search($faktura['department'], $GLOBALS['_config']['email']);
+                    include_once $_SERVER['DOCUMENT_ROOT'] . '/inc/imap.php';
+                    $emailnr = array_search(
+                        $faktura['department'],
+                        $GLOBALS['_config']['email']
+                    );
                     $imap = new IMAP(
                         $faktura['department'],
                         $GLOBALS['_config']['emailpasswords'][$emailnr ? $emailnr : 0],
                         $GLOBALS['_config']['imap'],
                         $GLOBALS['_config']['imapport']
                     );
-                    $imap->append($GLOBALS['_config']['emailsent'], $mail->CreateHeader().$mail->CreateBody(), '\Seen');
+                    $imap->append(
+                        $GLOBALS['_config']['emailsent'],
+                        $mail->CreateHeader() . $mail->CreateBody(),
+                        '\Seen'
+                    );
                     unset($imap);
                 }
             } else {
                 //TODO secure this against injects and <; in the email and name
-                $mysqli->query("INSERT INTO `emails` (`subject`, `from`, `to`, `body`, `date`) VALUES ('".'Ordre '.$faktura['id'].' - '._('Payment complete')."', '".$GLOBALS['_config']['site_name']."<".$faktura['department'].">', '".$GLOBALS['_config']['site_name']."<".$faktura['email'].">', '".$emailbody."', NOW());");
+                $mysqli->query(
+                    "
+                    INSERT INTO `emails` (
+                        `subject`,
+                        `from`,
+                        `to`,
+                        `body`,
+                        `date`
+                    )
+                    VALUES (
+                        'Ordre " . $faktura['id'] . " - " . _('Payment complete') . "',
+                        '" . $GLOBALS['_config']['site_name'] . "<" . $faktura['department'] . ">',
+                        '" . $GLOBALS['_config']['site_name'] . "<" . $faktura['email'] . ">',
+                        '" . $emailbody . "',
+                        NOW()
+                    )
+                    "
+                );
             }
             //Mail to customer end
             break;
         case 1:
             $GLOBALS['generatedcontent']['text'] = _('Denied/interrupted. The payment was denied or interrupted.');
-            $mysqli->query("UPDATE `fakturas` SET `status` = 'pbserror', `paydate` = NOW() WHERE `status` IN('new', 'locked') AND `id` = ".$id);
+            $mysqli->query(
+                "
+                UPDATE `fakturas`
+                SET `status` = 'pbserror',
+                    `paydate` = NOW()
+                WHERE `status` IN('new', 'locked')
+                  AND `id` = " . $id
+            );
             break;
         case 2:
             $GLOBALS['generatedcontent']['text'] = _('Ongoing. Payment awaiting an response from the bank.');
@@ -1302,7 +1404,7 @@ Tel. %s<br />
 
         if ($faktura['premoms']) {
             foreach ($faktura['values'] as $key => $value) {
-                $faktura['values'][$key] = $value/1.25;
+                $faktura['values'][$key] = $value / 1.25;
             }
         }
 
@@ -1318,8 +1420,26 @@ Tel. %s<br />
         }
 
         $emailbody_tablerows = '';
-        for ($i=0; $i<$productslines; $i++) {
-            $emailbody_tablerows .= '<tr><td class="tal">'.$faktura['quantities'][$i].'</td><td>'.htmlspecialchars_decode($faktura['products'][$i]).'</td><td class="tal">'.number_format($faktura['values'][$i]*(1+$faktura['momssats']), 2, ',', '').'</td><td class="tal">'.number_format($faktura['values'][$i]*(1+$faktura['momssats'])*$faktura['quantities'][$i], 2, ',', '').'</td></tr>';
+        for ($i = 0; $i < $productslines; $i++) {
+            $emailbody_tablerows .= '<tr><td class="tal">'
+            . $faktura['quantities'][$i] . '</td><td>'
+            . htmlspecialchars_decode($faktura['products'][$i])
+            . '</td><td class="tal">';
+            $plusTax = $faktura['values'][$i] * (1 + $faktura['momssats']);
+            $emailbody_tablerows .= number_format(
+                $plusTax,
+                2,
+                ',',
+                ''
+            );
+            $emailbody_tablerows .= '</td><td class="tal">';
+            $emailbody_tablerows .= number_format(
+                $plusTax * $faktura['quantities'][$i],
+                2,
+                ',',
+                ''
+            );
+            $emailbody_tablerows .= '</td></tr>';
         }
 
         //TODO make this a gettext
@@ -1343,12 +1463,7 @@ td {
 </style>
 </head>
 <body>';
-        /*
-        '<p>'.$faktura['navn'].'<br />'.
-        $faktura['adresse'].'<br />'.
-        $faktura['postnr'].' '.$faktura['by'].'<br />'.
-        $faktura['land'].'</p>'.
-        */
+
         $msg = _(
             '<p>%s<br />
 Click <a href="%s/admin/faktura.php?id=%d">here</a> to open the invoice page.</p>
@@ -1386,37 +1501,41 @@ Delivery phone: %s</p>
         $emailbody .= '</body></html>';
     } else {
         $emailbody = '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml"><head><meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<html xmlns="http://www.w3.org/1999/xhtml"><head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <title>'.sprintf(_('Online Invoice #%d: does\'t exist'), $id).'</title></head><body>
-'.$shopBody.'<br />'._('Status:').' '.$_GET['Status'].$_GET['Status_code'].'<p>'._('Sincerely the computer').'</p></body>
+' . $shopBody . '<br />' . _('Status:') . ' ' . $_GET['Status']
+        . $_GET['Status_code'] . '<p>' . _('Sincerely the computer') . '</p></body>
 </html>
 </body></html>';
     }
-
 
     if (!empty($faktura)) {
         $mail = new PHPMailer();
         $mail->SetLanguage('dk');
         $mail->IsSMTP();
         if ($GLOBALS['_config']['emailpassword'] !== false) {
-            $mail->SMTPAuth   = true; // enable SMTP authentication
+            $mail->SMTPAuth   = true;
             $mail->Username   = $GLOBALS['_config']['email'][0];
             $mail->Password   = $GLOBALS['_config']['emailpassword'];
         } else {
             $mail->SMTPAuth   = false;
         }
-        $mail->Host       = $GLOBALS['_config']['smtp'];      // sets the SMTP server
-        $mail->Port       = $GLOBALS['_config']['smtpport'];              //  password
+
+        $subject = _('Attn.: %s - Online invoice #%d : %s');
+        $subject = sprintf($subject, $faktura['clerk'], $id, $shopSubject);
+
+        $mail->Host       = $GLOBALS['_config']['smtp'];
+        $mail->Port       = $GLOBALS['_config']['smtpport'];
         $mail->CharSet    = 'utf-8';
         $mail->From       = $GLOBALS['_config']['email'][0];
         $mail->FromName   = $GLOBALS['_config']['site_name'];
-        $mail->Subject    = sprintf(_('Attn.: %s - Online invoice #%d : %s'), $faktura['clerk'], $id, $shopSubject);
+        $mail->Subject    = $subject;
         $mail->MsgHTML($emailbody, $_SERVER['DOCUMENT_ROOT']);
 
         $mail->AddAddress($faktura['department'], $GLOBALS['_config']['site_name']);
 
         if ($mail->Send()) {
-
             //Upload email to the sent folder via imap
             if ($GLOBALS['_config']['imap']) {
                 include_once $_SERVER['DOCUMENT_ROOT'].'/inc/imap.php';
@@ -1426,12 +1545,33 @@ Delivery phone: %s</p>
                     $GLOBALS['_config']['imap'],
                     $GLOBALS['_config']['imapport']
                 );
-                $imap->append($GLOBALS['_config']['emailsent'], $mail->CreateHeader().$mail->CreateBody(), '\Seen');
+                $imap->append(
+                    $GLOBALS['_config']['emailsent'],
+                    $mail->CreateHeader() . $mail->CreateBody(),
+                    '\Seen'
+                );
                 unset($imap);
             }
         } else {
             //TODO secure this against injects and <; in the email and name
-            $mysqli->query("INSERT INTO `emails` (`subject`, `from`, `to`, `body`, `date`) VALUES ('".'Att: '.$faktura['clerk'].' - Online faktura #'.$id.' : '.$shopSubject."', '".$GLOBALS['_config']['site_name']."<".$GLOBALS['_config']['email'][0].">', '".$GLOBALS['_config']['site_name']."<".$faktura['department'].">', '".$emailbody."', NOW());");
+            $mysqli->query(
+                "
+                INSERT INTO `emails` (
+                    `subject`,
+                    `from`,
+                    `to`,
+                    `body`,
+                    `date`
+                )
+                VALUES (
+                    '" . $subject . "',
+                    '" . $GLOBALS['_config']['site_name'] . "<" . $GLOBALS['_config']['email'][0] . ">',
+                    '" . $GLOBALS['_config']['site_name'] . "<" . $faktura['department'] . ">',
+                    '" . $emailbody . "',
+                    NOW()
+                )
+                "
+            );
         }
     }
 
