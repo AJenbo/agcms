@@ -99,7 +99,7 @@ $productslines = 0;
 
 if (!empty($_GET['id']) && @$_GET['checkid'] == getCheckid($_GET['id'])) {
     $rejected = array();
-    $faktura = $mysqli->fetch_one(
+    $faktura = $mysqli->fetchOne(
         "
         SELECT *
         FROM `fakturas`
@@ -495,7 +495,7 @@ if (!empty($_GET['id']) && @$_GET['checkid'] == getCheckid($_GET['id'])) {
             $GLOBALS['generatedcontent']['title'] = _('Trade Conditions');
             $GLOBALS['generatedcontent']['headline'] = _('Trade Conditions');
 
-            $special = $mysqli->fetch_array("SELECT `text` FROM `special` WHERE `id` = 3 LIMIT 1");
+            $special = $mysqli->fetchArray("SELECT `text` FROM `special` WHERE `id` = 3 LIMIT 1");
             $GLOBALS['generatedcontent']['text'] .= '<br />'.$special[0]['text'];
 
             $submit['Merchant_id'] = $GLOBALS['_config']['pbsid'];
@@ -539,7 +539,7 @@ if (!empty($_GET['id']) && @$_GET['checkid'] == getCheckid($_GET['id'])) {
             $GLOBALS['generatedcontent']['title'] = _('Status');
             $GLOBALS['generatedcontent']['headline'] = _('Status');
             $GLOBALS['generatedcontent']['text'] = _('The payment was received and the package is sent.');
-            $pakker = $mysqli->fetch_array("SELECT `STREGKODE` FROM `post` WHERE `deleted` = 0 AND `fakturaid` = ".$faktura['id']);
+            $pakker = $mysqli->fetchArray("SELECT `STREGKODE` FROM `post` WHERE `deleted` = 0 AND `fakturaid` = ".$faktura['id']);
 
             include_once 'inc/snoopy.class.php';
             include_once 'inc/htmlsql.class.php';
@@ -553,7 +553,7 @@ if (!empty($_GET['id']) && @$_GET['checkid'] == getCheckid($_GET['id'])) {
 
                     if ($wsql->query('SELECT text FROM div WHERE $id == "pdkTable"')) {
                         // show results:
-                        foreach ($wsql->fetch_array() as $row) {
+                        foreach ($wsql->fetchArray() as $row) {
                             $GLOBALS['generatedcontent']['text'] .= utf8_encode(
                                 preg_replace(
                                     array(
@@ -569,7 +569,7 @@ if (!empty($_GET['id']) && @$_GET['checkid'] == getCheckid($_GET['id'])) {
                     }
                 }
             }
-            $pakker = $mysqli->fetch_array("SELECT `packageId` FROM `PNL` WHERE `fakturaid` = ".$faktura['id']);
+            $pakker = $mysqli->fetchArray("SELECT `packageId` FROM `PNL` WHERE `fakturaid` = ".$faktura['id']);
             foreach ($pakker as $pakke) {
                 $GLOBALS['generatedcontent']['text'] .= '<br /><a href="http://online.pannordic.com/pn_logistics/index_tracking_email.jsp?id='.$pakke['packageId'].'&Search=search" target="_blank">'.$pakke['packageId'].'</a>';
             }
@@ -620,7 +620,7 @@ if (!empty($_GET['id']) && @$_GET['checkid'] == getCheckid($_GET['id'])) {
     }
     $shopBody = '<br />'.sprintf(_('There was an error on the payment page of online invoice #%d!'), $id).'<br />';
 
-    $faktura = $mysqli->fetch_one("SELECT * FROM `fakturas` WHERE `id` = ".$id);
+    $faktura = $mysqli->fetchOne("SELECT * FROM `fakturas` WHERE `id` = ".$id);
 
     if ($_GET['MAC'] != md5(implode('', $validate).$GLOBALS['_config']['pbspassword'])) {
         $GLOBALS['generatedcontent']['text'] = _('The communication could not be validated!');
@@ -1067,7 +1067,7 @@ status.'
                   AND `id` = " . $id
             );
 
-            $faktura = $mysqli->fetch_one(
+            $faktura = $mysqli->fetchOne(
                 "
                 SELECT *
                 FROM `fakturas`
@@ -1392,7 +1392,7 @@ Tel. %s<br />
     include_once "inc/phpMailer/class.phpmailer.php";
 
     //To shop
-    $faktura = $mysqli->fetch_one("SELECT * FROM `fakturas` WHERE `id` = ".$id);
+    $faktura = $mysqli->fetchOne("SELECT * FROM `fakturas` WHERE `id` = ".$id);
     if (!validemail($faktura['department'])) {
         $faktura['department'] = $GLOBALS['_config']['email'][0];
     }

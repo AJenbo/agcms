@@ -1,6 +1,6 @@
 <?php
 /**
- *
+ * Define the side() function
  *
  * PHP version 5
  *
@@ -12,7 +12,7 @@
  */
 
 /**
- *
+ * Populate the generatedcontent array with data relating to the page
  *
  * @return null
  */
@@ -21,7 +21,7 @@ function side()
     global $mysqli;
 
     if (!isset($GLOBALS['side']['navn'])) {
-        $sider = $mysqli->fetch_array(
+        $sider = $mysqli->fetchArray(
             "
             SELECT `navn`,
                 `burde`,
@@ -57,12 +57,12 @@ function side()
     }
 
     $GLOBALS['generatedcontent']['headline'] = $GLOBALS['side']['navn'];
-    $GLOBALS['generatedcontent']['serial'] = $GLOBALS['side']['varenr'];
+    $GLOBALS['generatedcontent']['serial']   = $GLOBALS['side']['varenr'];
     $GLOBALS['generatedcontent']['datetime'] = $GLOBALS['side']['dato'];
-    $GLOBALS['generatedcontent']['text'] = $GLOBALS['side']['text'];
+    $GLOBALS['generatedcontent']['text']     = $GLOBALS['side']['text'];
 
     if ($GLOBALS['side']['krav']) {
-        $krav = $mysqli->fetch_array(
+        $krav = $mysqli->fetchArray(
             "
             SELECT navn
             FROM krav
@@ -78,9 +78,9 @@ function side()
         . '.html';
     }
 
-    $GLOBALS['generatedcontent']['price']['befor'] = $GLOBALS['side']['for'];
-    $GLOBALS['generatedcontent']['price']['now'] = $GLOBALS['side']['pris'];
-    $GLOBALS['generatedcontent']['price']['from'] = $GLOBALS['side']['fra'];
+    $GLOBALS['generatedcontent']['price']['befor']  = $GLOBALS['side']['for'];
+    $GLOBALS['generatedcontent']['price']['now']    = $GLOBALS['side']['pris'];
+    $GLOBALS['generatedcontent']['price']['from']   = $GLOBALS['side']['fra'];
     $GLOBALS['generatedcontent']['price']['market'] = $GLOBALS['side']['burde'];
 
     unset($GLOBALS['side']['text']);
@@ -93,13 +93,13 @@ function side()
         'asc'
     );
 
-    $GLOBALS['generatedcontent']['price']['old'] = $GLOBALS['side']['for'];
+    $GLOBALS['generatedcontent']['price']['old']    = $GLOBALS['side']['for'];
     $GLOBALS['generatedcontent']['price']['market'] = $GLOBALS['side']['burde'];
-    $GLOBALS['generatedcontent']['price']['new'] = $GLOBALS['side']['pris'];
-    $GLOBALS['generatedcontent']['price']['from'] = $GLOBALS['side']['fra'];
+    $GLOBALS['generatedcontent']['price']['new']    = $GLOBALS['side']['pris'];
+    $GLOBALS['generatedcontent']['price']['from']   = $GLOBALS['side']['fra'];
 
     if (!@$GLOBALS['generatedcontent']['email']) {
-        $kat = $mysqli->fetch_array(
+        $kat = $mysqli->fetchArray(
             "
             SELECT `email`
             FROM `kat`
@@ -116,7 +116,7 @@ function side()
     }
 
     if ($GLOBALS['side']['maerke']) {
-        $maerker = $mysqli->fetch_array(
+        $maerker = $mysqli->fetchArray(
             "
             SELECT `id`, `navn`, `link`, `ico`
             FROM `maerke`
@@ -124,7 +124,7 @@ function side()
             ORDER BY `navn`
             "
         );
-        $temp = $mysqli->fetch_array(
+        $temp = $mysqli->fetchArray(
             "
             SELECT `id`, `navn`, `link`, `ico`
             FROM `maerke`
@@ -146,7 +146,7 @@ function side()
         }
     }
 
-    $tilbehor = $mysqli->fetch_array(
+    $tilbehor = $mysqli->fetchArray(
         "
         SELECT sider.id,
             `bind`.`kat`,
@@ -168,7 +168,7 @@ function side()
 
     foreach ($tilbehor as $value) {
         if ($value['kat']) {
-            $kat = $mysqli->fetch_array(
+            $kat = $mysqli->fetchArray(
                 "
                 SELECT id, navn
                 FROM kat

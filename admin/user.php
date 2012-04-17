@@ -15,7 +15,7 @@ require_once $_SERVER['DOCUMENT_ROOT'].'/admin/inc/logon.php';
 require_once '../inc/sajax.php';
 require_once '../inc/config.php';
 require_once '../inc/mysqli.php';
-$mysqli = new simple_mysqli(
+$mysqli = new Simple_Mysqli(
     $GLOBALS['_config']['mysql_server'],
     $GLOBALS['_config']['mysql_user'],
     $GLOBALS['_config']['mysql_password'],
@@ -37,7 +37,7 @@ function updateuser($id, $updates)
             if ($_SESSION['_user']['access'] == 1 && $_SESSION['_user']['id'] != $id) {
                 $updates['password'] = crypt($updates['password_new']);
             } elseif ($_SESSION['_user']['id'] == $id) {
-                $user = $mysqli->fetch_one("SELECT `password` FROM `users` WHERE id = ".$id);
+                $user = $mysqli->fetchOne("SELECT `password` FROM `users` WHERE id = ".$id);
                 if (mb_substr($user['password'], 0, 13) == mb_substr(crypt($updates['password'], $user['password']), 0, 13)) {
                     $updates['password'] = crypt($updates['password_new']);
                 } else {
@@ -77,7 +77,7 @@ sajax_export(
 //if this is a ajax call, this is where things end
 sajax_handle_client_request();
 
-$user = $mysqli->fetch_one("SELECT *, UNIX_TIMESTAMP(`lastlogin`) AS 'lastlogin' FROM `users` WHERE id = ".$_GET['id']);
+$user = $mysqli->fetchOne("SELECT *, UNIX_TIMESTAMP(`lastlogin`) AS 'lastlogin' FROM `users` WHERE id = ".$_GET['id']);
 
 ?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">

@@ -16,7 +16,7 @@ if (is_numeric(@$_GET['add']) || is_numeric(@$_GET['add_list_item'])) {
     include_once 'inc/config.php';
     include_once 'inc/mysqli.php';
     //Open database
-    $mysqli = new simple_mysqli(
+    $mysqli = new Simple_Mysqli(
         $GLOBALS['_config']['mysql_server'],
         $GLOBALS['_config']['mysql_user'],
         $GLOBALS['_config']['mysql_password'],
@@ -30,15 +30,15 @@ if (is_numeric(@$_GET['add']) || is_numeric(@$_GET['add_list_item'])) {
     }
 
     if (is_numeric(@$_GET['add_list_item'])) {
-        $list_row = $mysqli->fetch_one('SELECT * FROM `list_rows` WHERE id = '.$_GET['add_list_item']);
+        $list_row = $mysqli->fetchOne('SELECT * FROM `list_rows` WHERE id = '.$_GET['add_list_item']);
         if ($list_row['link']) {
-            $product = $mysqli->fetch_one('SELECT `navn`, `pris`, `fra` FROM `sider` WHERE id = '.$list_row['link']);
+            $product = $mysqli->fetchOne('SELECT `navn`, `pris`, `fra` FROM `sider` WHERE id = '.$list_row['link']);
 
             if (!$goto_uri) {
                 $goto_uri = '/?side='.$product['link'];
             }
         } else {
-            $list = $mysqli->fetch_one('SELECT `page_id`, `cells` FROM `lists` WHERE id = '.$list_row['list_id']);
+            $list = $mysqli->fetchOne('SELECT `page_id`, `cells` FROM `lists` WHERE id = '.$list_row['list_id']);
             $list['cells'] = explode('<', $list['cells']);
             $list_row['cells'] = explode('<', $list_row['cells']);
             $product['navn'] = '';
@@ -57,7 +57,7 @@ if (is_numeric(@$_GET['add']) || is_numeric(@$_GET['add_list_item'])) {
             }
         }
     } elseif (is_numeric(@$_GET['add'])) {
-        $product = $mysqli->fetch_one('SELECT `navn`, `pris`, `fra` FROM `sider` WHERE id = '.$_GET['add']);
+        $product = $mysqli->fetchOne(w'SELECT `navn`, `pris`, `fra` FROM `sider` WHERE id = '.$_GET['add']);
 
         if (!$goto_uri) {
             $goto_uri = '/?side='.$_GET['add'];

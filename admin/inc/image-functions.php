@@ -167,7 +167,7 @@ function generateImage($path, $cropX, $cropY, $cropW, $cropH, $maxW, $maxH, $fli
     include_once $_SERVER['DOCUMENT_ROOT'].'/inc/mysqli.php';
     global $mysqli;
     if (!$mysqli) {
-        $mysqli = new simple_mysqli(
+        $mysqli = new Simple_Mysqli(
             $GLOBALS['_config']['mysql_server'],
             $GLOBALS['_config']['mysql_user'],
             $GLOBALS['_config']['mysql_password'],
@@ -176,11 +176,11 @@ function generateImage($path, $cropX, $cropY, $cropW, $cropH, $maxW, $maxH, $fli
     }
 
     if ($output['filename'] == $pathinfo['filename'] && $output['path'] != $path) {
-        $id = $mysqli->fetch_array('SELECT id FROM files WHERE path = \''.$path.'\'');
+        $id = $mysqli->fetchArray('SELECT id FROM files WHERE path = \''.$path.'\'');
         @unlink($_SERVER['DOCUMENT_ROOT'].$path);
         $mysqli->query('DELETE FROM files WHERE path = \''.$output['path'].'\'');
     } else {
-        $id = $mysqli->fetch_array('SELECT id FROM files WHERE path = \''.$output['path'].'\'');
+        $id = $mysqli->fetchArray('SELECT id FROM files WHERE path = \''.$output['path'].'\'');
     }
     $id = @$id[0]['id'];
 

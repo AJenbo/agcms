@@ -19,7 +19,7 @@ require_once '../inc/config.php';
 require_once '../inc/mysqli.php';
 require_once '../inc/functions.php';
 require_once 'inc/emails.php';
-$mysqli = new simple_mysqli(
+$mysqli = new Simple_Mysqli(
     $GLOBALS['_config']['mysql_server'],
     $GLOBALS['_config']['mysql_user'],
     $GLOBALS['_config']['mysql_password'],
@@ -31,7 +31,7 @@ function kattree($id)
 {
     global $mysqli;
 
-    $kat = $mysqli->fetch_array('SELECT id, navn, bind FROM `kat` WHERE id = '.$id.' LIMIT 1');
+    $kat = $mysqli->fetchArray('SELECT id, navn, bind FROM `kat` WHERE id = '.$id.' LIMIT 1');
 
     if ($kat) {
         $id = $kat[0]['bind'];
@@ -40,7 +40,7 @@ function kattree($id)
     }
 
     while (@$kat[0]['bind'] > 0) {
-        $kat = $mysqli->fetch_array('SELECT id, navn, bind FROM `kat` WHERE id = \''.$kat[0]['bind'].'\' LIMIT 1');
+        $kat = $mysqli->fetchArray('SELECT id, navn, bind FROM `kat` WHERE id = \''.$kat[0]['bind'].'\' LIMIT 1');
         $id = $kat[0]['bind'];
         $kattree[]['id'] = $kat[0]['id'];
         $kattree[count($kattree)-1]['navn'] = $kat[0]['navn'];
@@ -91,7 +91,7 @@ function katlist($id)
     }
 
     $openkat = explode('<', @$_COOKIE['openkat']);
-    if ($mysqli->fetch_array('SELECT id FROM `kat` WHERE bind = -1 LIMIT 1')) {
+    if ($mysqli->fetchArray('SELECT id FROM `kat` WHERE bind = -1 LIMIT 1')) {
         $html .= '<img';
         if (array_search(-1, $openkat) || false !== array_search('-1', $kattree)) {
             $html .= ' style="display:none"';
@@ -114,7 +114,7 @@ function katlist($id)
         $html .= $temp['html'];
     }
     $html .= '</div></div><div>';
-    if ($mysqli->fetch_array('SELECT id FROM `kat` WHERE bind = 0 LIMIT 1')) {
+    if ($mysqli->fetchArray('SELECT id FROM `kat` WHERE bind = 0 LIMIT 1')) {
         $html .= '<img style="';
         if (array_search(0, $openkat) || false !== array_search('0', $kattree)) {
             $html .= 'display:none;';
@@ -156,7 +156,7 @@ function siteList($id)
     }
 
     $openkat = explode('<', @$_COOKIE['openkat']);
-    if ($mysqli->fetch_array('SELECT id FROM `kat` WHERE bind = -1 LIMIT 1') || $mysqli->fetch_array('SELECT id FROM `bind` WHERE kat = -1 LIMIT 1')) {
+    if ($mysqli->fetchArray('SELECT id FROM `kat` WHERE bind = -1 LIMIT 1') || $mysqli->fetchArray('SELECT id FROM `bind` WHERE kat = -1 LIMIT 1')) {
         $html .= '<img';
         if (array_search(-1, $openkat) || false !== array_search('-1', $kattree)) {
             $html .= ' style="display:none"';
@@ -175,7 +175,7 @@ function siteList($id)
         $html .= $temp['html'];
     }
     $html .= '</div></div><div>';
-    if ($mysqli->fetch_array('SELECT id FROM `kat` WHERE bind = 0 LIMIT 1') || $mysqli->fetch_array('SELECT id FROM `bind` WHERE kat = 0 LIMIT 1')) {
+    if ($mysqli->fetchArray('SELECT id FROM `kat` WHERE bind = 0 LIMIT 1') || $mysqli->fetchArray('SELECT id FROM `bind` WHERE kat = 0 LIMIT 1')) {
         $html .= '<img style="';
         if (array_search(0, $openkat) || false !== array_search('0', $kattree)) {
             $html .= 'display:none;';
@@ -204,7 +204,7 @@ function pages_expand($id)
 
     $temp = kat_expand($id, false);
     $html .= $temp['html'];
-    $sider = $mysqli->fetch_array('SELECT sider.id, sider.varenr, bind.id as bind, navn FROM `bind` LEFT JOIN sider on bind.side = sider.id WHERE `kat` = '.$id.' ORDER BY sider.navn');
+    $sider = $mysqli->fetchArray('SELECT sider.id, sider.varenr, bind.id as bind, navn FROM `bind` LEFT JOIN sider on bind.side = sider.id WHERE `kat` = '.$id.' ORDER BY sider.navn');
     $nr = count($sider);
     foreach ($sider as $side) {
         $html .= '<div id="bind'.$side['bind'].'" class="side'.$side['id'].'"><a style="margin-left:16px" class="side">
@@ -225,7 +225,7 @@ function siteList_expand($id)
 
     $temp = kat_expand($id, false);
     $html .= $temp['html'];
-    $sider = $mysqli->fetch_array('SELECT sider.id, sider.varenr, bind.id as bind, navn FROM `bind` LEFT JOIN sider on bind.side = sider.id WHERE `kat` = '.$id.' ORDER BY sider.navn');
+    $sider = $mysqli->fetchArray('SELECT sider.id, sider.varenr, bind.id as bind, navn FROM `bind` LEFT JOIN sider on bind.side = sider.id WHERE `kat` = '.$id.' ORDER BY sider.navn');
     $nr = count($sider);
     for ($i=0; $i<$nr; $i++) {
         $html .= '<div id="bind'.$sider[$i]['bind'].'" class="side'.$sider[$i]['id'].'"><a style="margin-left:16px" class="side" href="?side=redigerside&amp;id='.$sider[$i]['id'].'"><img src="images/page.png" width="16" height="16" alt="" /> '.strip_tags($sider[$i]['navn'], '<img>');
@@ -243,7 +243,7 @@ function getSiteTree()
     $html .= siteList(@$_COOKIE['activekat']);
 
     global $mysqli;
-    $specials = $mysqli->fetch_array('SELECT `id`, `navn` FROM `special` WHERE `id` > 1 ORDER BY `navn`');
+    $specials = $mysqli->fetchArray('SELECT `id`, `navn` FROM `special` WHERE `id` > 1 ORDER BY `navn`');
     foreach ($specials as $special) {
         $html .= '<div style="margin-left: 16px;"><a href="?side=redigerSpecial&id='.$special['id'].'"><img height="16" width="16" alt="" src="images/page.png"/> '.$special['navn'].'</a></div>';
     }
@@ -257,10 +257,10 @@ function kat_expand($id, $input=true)
     global $kattree;
     $html = '';
 
-    $kat = $mysqli->fetch_array('SELECT * FROM `kat` WHERE bind = '.$id.' ORDER BY `order`, `navn`');
+    $kat = $mysqli->fetchArray('SELECT * FROM `kat` WHERE bind = '.$id.' ORDER BY `order`, `navn`');
     $nr = count($kat);
     for ($i=0;$i<$nr;$i++) {
-        if ($mysqli->fetch_array('SELECT id FROM `kat` WHERE bind = '.$kat[$i]['id'].' LIMIT 1') || (!$input && $mysqli->fetch_array('SELECT id FROM `bind` WHERE kat = '.$kat[$i]['id'].' LIMIT 1'))) {
+        if ($mysqli->fetchArray('SELECT id FROM `kat` WHERE bind = '.$kat[$i]['id'].' LIMIT 1') || (!$input && $mysqli->fetchArray('SELECT id FROM `bind` WHERE kat = '.$kat[$i]['id'].' LIMIT 1'))) {
             $openkat = explode('<', @$_COOKIE['openkat']);
             $html .= '<div id="kat'.$kat[$i]['id'].'"><img style="display:';
             if (array_search($kat[$i]['id'], $openkat) || false !== array_search($kat[$i]['id'], $kattree)) {

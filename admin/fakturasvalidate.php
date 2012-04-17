@@ -11,7 +11,7 @@ require_once $_SERVER['DOCUMENT_ROOT'].'/admin/inc/logon.php';
 require_once '../inc/sajax.php';
 require_once '../inc/config.php';
 require_once '../inc/mysqli.php';
-$mysqli = new simple_mysqli(
+$mysqli = new Simple_Mysqli(
     $GLOBALS['_config']['mysql_server'],
     $GLOBALS['_config']['mysql_user'],
     $GLOBALS['_config']['mysql_password'],
@@ -26,7 +26,7 @@ if ($_SESSION['_user']['access'] == 1 && !empty($_GET['undoid'])) {
     $mysqli->query("UPDATE `fakturas` SET `transferred` =  '0' WHERE `id` = ".$_GET['undoid']);
 }
 
-$fakturas = $mysqli->fetch_array("SELECT `id`, `status`, `cardtype`, `clerk`, `amount`, UNIX_TIMESTAMP(`paydate`) AS `paydate`, UNIX_TIMESTAMP(`date`) AS `date` FROM `fakturas` WHERE  `transferred` = 0 AND `status` = 'accepted' ORDER BY `paydate` DESC , `id` DESC");
+$fakturas = $mysqli->fetchArray("SELECT `id`, `status`, `cardtype`, `clerk`, `amount`, UNIX_TIMESTAMP(`paydate`) AS `paydate`, UNIX_TIMESTAMP(`date`) AS `date` FROM `fakturas` WHERE  `transferred` = 0 AND `status` = 'accepted' ORDER BY `paydate` DESC , `id` DESC");
 
 ?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">

@@ -16,7 +16,7 @@ require_once '../inc/sajax.php';
 require_once '../inc/config.php';
 require_once '../inc/mysqli.php';
 require_once 'inc/epaymentAdminService.php';
-$mysqli = new simple_mysqli(
+$mysqli = new Simple_Mysqli(
     $GLOBALS['_config']['mysql_server'],
     $GLOBALS['_config']['mysql_user'],
     $GLOBALS['_config']['mysql_password'],
@@ -38,7 +38,7 @@ if (!empty($_GET['function']) && $_GET['function'] == 'new') {
 
 $sajax_request_type = 'POST';
 
-$faktura = $mysqli->fetch_one("SELECT *, UNIX_TIMESTAMP(`date`) AS `date`, UNIX_TIMESTAMP(`paydate`) AS `paydate` FROM `fakturas` WHERE `id` = ".$_GET['id']);
+$faktura = $mysqli->fetchOne("SELECT *, UNIX_TIMESTAMP(`date`) AS `date`, UNIX_TIMESTAMP(`paydate`) AS `paydate` FROM `fakturas` WHERE `id` = ".$_GET['id']);
 
 $faktura['quantities'] = explode('<', $faktura['quantities']);
 $faktura['products'] = explode('<', $faktura['products']);
@@ -283,7 +283,7 @@ function copytonew($id)
 {
     global $mysqli;
 
-    $faktura = $mysqli->fetch_one("SELECT * FROM `fakturas` WHERE `id` = ".$id);
+    $faktura = $mysqli->fetchOne("SELECT * FROM `fakturas` WHERE `id` = ".$id);
 
     unset($faktura['id']);
     unset($faktura['status']);
@@ -328,7 +328,7 @@ function save($id, $type, $updates)
     }
     unset($updates['paydate']);
 
-    $faktura = $mysqli->fetch_one("SELECT `status`, `note` FROM `fakturas` WHERE `id` = ".$id);
+    $faktura = $mysqli->fetchOne("SELECT `status`, `note` FROM `fakturas` WHERE `id` = ".$id);
 
     if ($faktura['status'] == 'locked' || $faktura['status'] == 'pbsok' || $faktura['status'] == 'pbserror' || $faktura['status'] == 'rejected') {
         $updates = array('note' => $updates['note'] ? trim($faktura['note']."\n".$updates['note']) : $faktura['note'], 'clerk' => $updates['clerk'], 'department' => $updates['department']);
@@ -386,7 +386,7 @@ function save($id, $type, $updates)
         $mysqli->query($sql);
     }
 
-    $faktura = $mysqli->fetch_one("SELECT * FROM `fakturas` WHERE `id` = ".$id);
+    $faktura = $mysqli->fetchOne("SELECT * FROM `fakturas` WHERE `id` = ".$id);
 
     if (empty($faktura['clerk'])) {
         $mysqli->query("UPDATE `fakturas` SET `clerk` = '".addcslashes($_SESSION['_user']['fullname'], '\'\\')."' WHERE `id` = ".$faktura['id']);
@@ -504,7 +504,7 @@ function sendReminder($id)
     $error = '';
 
     global $mysqli;
-    $faktura = $mysqli->fetch_one("SELECT * FROM `fakturas` WHERE `id` = ".$id);
+    $faktura = $mysqli->fetchOne("SELECT * FROM `fakturas` WHERE `id` = ".$id);
 
     if (!$faktura['status']) {
         return array('error' => _('You can not send a reminder until the invoice is sent!'));
@@ -670,7 +670,7 @@ function returnamount($id, $returnamount)
     global $mysqli;
     global $epaymentAdminService;
 
-    $faktura = $mysqli->fetch_array("SELECT `amount`, `momssats`, `discount` FROM `fakturas` WHERE `id` = ".$id);
+    $faktura = $mysqli->fetchArray("SELECT `amount`, `momssats`, `discount` FROM `fakturas` WHERE `id` = ".$id);
 
     $discount = $discount + $returnamount / ($faktura['momssats'] + 1);
     //TODO needs to be different then loweramount from here on down.
@@ -1158,13 +1158,13 @@ if ($faktura['status'] == 'accepted') {
         <td><input value="0,00" size="9" /></td>
     </tr><?php
 }
-$pnl = $mysqli->fetch_array("SELECT `packageId` FROM `PNL` WHERE `fakturaid` = ".$faktura['id']);
+$pnl = $mysqli->fetchArray("SELECT `packageId` FROM `PNL` WHERE `fakturaid` = ".$faktura['id']);
 foreach ($pnl as $pakke) {
     ?><tr>
     <td><a target="_blank" href="http://online.pannordic.com/pn_logistics/index_tracking_email.jsp?id=<?php echo $pakke['packageId']; ?>&amp;Search=search"><?php echo $pakke['packageId']; ?></a></td>
     </tr><?php
 }
-$post = $mysqli->fetch_array("SELECT `STREGKODE` FROM `post` WHERE `deleted` = 0 AND `fakturaid` = ".$faktura['id']);
+$post = $mysqli->fetchArray("SELECT `STREGKODE` FROM `post` WHERE `deleted` = 0 AND `fakturaid` = ".$faktura['id']);
 foreach ($post as $pakke) {
     ?><tr>
     <td><a href="http://www.postdanmark.dk/tracktrace/TrackTrace.do?i_lang=IND&amp;i_stregkode=<?php echo $pakke['STREGKODE']; ?>" target="_blank"><?php echo $pakke['STREGKODE']; ?></a></td>
@@ -1259,7 +1259,7 @@ if ($_SESSION['_user']['access'] == 1 && $faktura['transferred']) {
     echo date(_('m/d/Y'), $faktura['date']);
 }
 ?></td></tr><?php
-$users = $mysqli->fetch_array("SELECT `fullname`, `name` FROM `users` ORDER BY `fullname` ASC");
+$users = $mysqli->fetchArray("SELECT `fullname`, `name` FROM `users` ORDER BY `fullname` ASC");
 //TODO block save if ! admin
 ?><tr>
     <td>Ansvarlig:</td>

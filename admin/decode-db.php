@@ -98,7 +98,7 @@ function htmlUrlDecode($text)
 }
 
 //Open database
-$mysqli = new simple_mysqli(
+$mysqli = new Simple_Mysqli(
     $GLOBALS['_config']['mysql_server'],
     $GLOBALS['_config']['mysql_user'],
     $GLOBALS['_config']['mysql_password'],
@@ -122,15 +122,15 @@ function unhtmlentitiesUtf8($string)
 }
 */
 
-$mysqli = new simple_mysqli($GLOBALS['_config']['mysql_server'], $GLOBALS['_config']['mysql_user'], $GLOBALS['_config']['mysql_password'], $GLOBALS['_config']['mysql_database']);
-$sider = $mysqli->fetch_array("SELECT id, text, beskrivelse FROM `sider` WHERE text != '' OR beskrivelse != ''");
+$mysqli = new Simple_Mysqli($GLOBALS['_config']['mysql_server'], $GLOBALS['_config']['mysql_user'], $GLOBALS['_config']['mysql_password'], $GLOBALS['_config']['mysql_database']);
+$sider = $mysqli->fetchArray("SELECT id, text, beskrivelse FROM `sider` WHERE text != '' OR beskrivelse != ''");
 $sider_nr = count($sider);
 for ($i=0;$i<$sider_nr;$i++) {
     $mysqli->query("UPDATE `sider` SET `text` = '".htmlUrlDecode($sider[$i]['text'])."', `beskrivelse` = '".htmlUrlDecode($sider[$i]['beskrivelse'])."' WHERE `id` = ".$sider[$i]['id']." LIMIT 1");
     unset($sider[$i]);
     echo $i . ' - ';
 }
-$special = $mysqli->fetch_array("SELECT id, text FROM `special` WHERE text != ''");
+$special = $mysqli->fetchArray("SELECT id, text FROM `special` WHERE text != ''");
 $special_nr = count($special);
 for ($i=0;$i<$special_nr;$i++) {
     $mysqli->query("UPDATE `special` SET `text` = '".htmlUrlDecode($special[$i]['text'])."' WHERE `id` = ".$special[$i]['id']." LIMIT 1");

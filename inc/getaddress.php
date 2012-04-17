@@ -49,7 +49,7 @@ function getAddress($phoneNumber)
     include_once $_SERVER['DOCUMENT_ROOT'].'/inc/mysqli.php';
 
     foreach ($dbs as $db) {
-        $mysqli_ext = new simple_mysqli(
+        $mysqli_ext = new Simple_Mysqli(
             $db['mysql_server'],
             $db['mysql_user'],
             $db['mysql_password'],
@@ -57,7 +57,7 @@ function getAddress($phoneNumber)
         );
 
         //try packages
-        $post = $mysqli_ext->fetch_array(
+        $post = $mysqli_ext->fetchArray(
             "
             SELECT recName1, recAddress1, recZipCode
             FROM `post`
@@ -74,7 +74,7 @@ function getAddress($phoneNumber)
         }
 
         //Try katalog orders
-        $email = $mysqli_ext->fetch_array(
+        $email = $mysqli_ext->fetchArray(
             "
             SELECT navn, email, adresse, post
             FROM `email`
@@ -97,7 +97,7 @@ function getAddress($phoneNumber)
         }
 
         //Try fakturas
-        $fakturas = $mysqli_ext->fetch_array(
+        $fakturas = $mysqli_ext->fetchArray(
             "
             SELECT navn, email, att, adresse, postnr, postbox
             FROM `fakturas`

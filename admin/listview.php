@@ -97,21 +97,21 @@ if ($_GET['sort'] == 'id') {
 </tr></thead><tbody><?php
 require_once '../inc/config.php';
 require_once '../inc/mysqli.php';
-$mysqli = new simple_mysqli(
+$mysqli = new Simple_Mysqli(
     $GLOBALS['_config']['mysql_server'],
     $GLOBALS['_config']['mysql_user'],
     $GLOBALS['_config']['mysql_password'],
     $GLOBALS['_config']['mysql_database']
 );
 
-$maerker = $mysqli->fetch_array("SELECT id, navn FROM `maerke`");
+$maerker = $mysqli->fetchArray("SELECT id, navn FROM `maerke`");
 foreach ($maerker as $maerke) {
     $temp[$maerke['id']] = htmlspecialchars($maerke['navn'], ENT_COMPAT | ENT_XHTML, 'UTF-8');
 }
 $maerker = $temp;
 unset($temp);
 
-$krav = $mysqli->fetch_array("SELECT id, navn FROM `krav`");
+$krav = $mysqli->fetchArray("SELECT id, navn FROM `krav`");
 foreach ($krav as $element) {
     $temp[$element['id']] = htmlspecialchars($element['navn'], ENT_COMPAT | ENT_XHTML, 'UTF-8');
 }
@@ -121,7 +121,7 @@ unset($temp);
 function print_kat($bind, $path_name)
 {
     global $mysqli;
-    $kats = $mysqli->fetch_array("SELECT id, bind, navn FROM `kat` WHERE bind = ".$bind." ORDER BY navn");
+    $kats = $mysqli->fetchArray("SELECT id, bind, navn FROM `kat` WHERE bind = ".$bind." ORDER BY navn");
     foreach ($kats as $kat) {
         echo "\n".'  <tr class="path"><td colspan="8"><a href="?sort='.$_GET['sort'].'&amp;kat='.$kat['id'].'"><img src="images/find.png" alt="Vis" title="Vis kun denne kategori" /></a> '.$path_name.' &gt; <a href="/kat'.$kat['id'].'-">'.htmlspecialchars($kat['navn'], ENT_COMPAT | ENT_XHTML, 'UTF-8').'</a></td></tr>'
         print_pages($kat['id']);
@@ -135,7 +135,7 @@ function print_pages($kat)
     global $maerker;
     global $krav;
     global $sort;
-    $sider = $mysqli->fetch_array("SELECT sider.id, sider.navn, sider.varenr, sider.`for`, sider.pris, sider.dato, sider.maerke, sider.krav FROM `bind` JOIN sider ON bind.side = sider.id WHERE bind.kat = ".$kat." ORDER BY ".$sort);
+    $sider = $mysqli->fetchArray("SELECT sider.id, sider.navn, sider.varenr, sider.`for`, sider.pris, sider.dato, sider.maerke, sider.krav FROM `bind` JOIN sider ON bind.side = sider.id WHERE bind.kat = ".$kat." ORDER BY ".$sort);
     $altrow = 0;
     foreach ($sider as $side) {
         echo '<tr';
@@ -165,7 +165,7 @@ function print_pages($kat)
 
 if (is_numeric($_GET['kat'])) {
     if ($_GET['kat'] > 0) {
-        $kat = $mysqli->fetch_one("SELECT id, navn FROM `kat` WHERE id = ".$_GET['kat']);
+        $kat = $mysqli->fetchOne("SELECT id, navn FROM `kat` WHERE id = ".$_GET['kat']);
     } elseif ($_GET['kat'] == 0) {
         $kat = array('id' => 0, 'navn' => 'Forside');
     } else {

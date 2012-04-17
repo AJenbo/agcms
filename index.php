@@ -27,21 +27,6 @@ session_start();
 //ini_set('zlib.output_compression', 1);
 
 require_once 'inc/header.php';
-/*
-//include the file
-require_once("inc/firephp.class.php");
-//create the object
-if (!isset($firephp)) {
-    $firephp = FirePHP::getInstance(true);
-}
-/*
-if (!headers_sent()) {
-    foreach ($GLOBALS as $key => $value) {
-        $firephp->fb($key);
-    }
-}
-*/
-
 require_once 'inc/config.php';
 require_once 'inc/mysqli.php';
 
@@ -54,7 +39,7 @@ if (!empty($_SESSION['faktura']['quantities'])) {
 }
 
 //Open database
-$mysqli = new simple_mysqli(
+$mysqli = new Simple_Mysqli(
     $GLOBALS['_config']['mysql_server'],
     $GLOBALS['_config']['mysql_user'],
     $GLOBALS['_config']['mysql_password'],
@@ -65,20 +50,11 @@ $mysqli = new simple_mysqli(
 //WARNING: this results in the site not updating if new files are included later,
 //the remedy is to update the database when new cms files are added.
 if (!@$delayprint) {
-    $tabels = $mysqli->fetch_array("SHOW TABLE STATUS");
+    $tabels = $mysqli->fetchArray("SHOW TABLE STATUS");
     $updatetime = 0;
     foreach ($tabels as $tabel) {
         $updatetime = max($updatetime, strtotime($tabel['Update_time']));
     }
-    /*
-    if (!headers_sent()) {
-        $firephp->fb($updatetime);
-        foreach ($tabels as $tabel) {
-            $firephp->fb($tabel['Update_time']);
-            $firephp->fb(strtotime($tabel['Update_time']));
-        }
-    }
-    */
     $included_files = get_included_files();
     $GLOBALS['cache']['updatetime']['filemtime'] = 0;
     foreach ($included_files as $filename) {
@@ -90,15 +66,6 @@ if (!@$delayprint) {
     foreach ($GLOBALS['cache']['updatetime'] as $time) {
         $updatetime = max($updatetime, $time);
     }
-    /*
-    if (!headers_sent()) {
-        foreach ($GLOBALS['cache']['updatetime'] as $time) {
-            $firephp->fb(date(DATE_RFC822, $time));
-            $firephp->fb($time);
-        }
-        $firephp->fb($updatetime);
-    }
-    */
     if ($updatetime < 1) {
         $updatetime = time();
     }
@@ -116,7 +83,7 @@ require_once 'inc/functions.php';
  * @param bool $custom_sort_subs If set to false categories will be naturaly sorted
  *                               by title
  *
- * @return array 
+ * @return array
  */
 function menu($nr, $custom_sort_subs = false)
 {
@@ -127,7 +94,7 @@ function menu($nr, $custom_sort_subs = false)
      * eliminate empty catagorys
      */
 
-    $kat = $mysqli->fetch_array(
+    $kat = $mysqli->fetchArray(
         "
         SELECT kat.id,
             kat.navn,
@@ -155,7 +122,7 @@ function menu($nr, $custom_sort_subs = false)
         }
 
         if (!$GLOBALS['cache']['kats'][$GLOBALS['kats'][$nr]]['navn']) {
-            $katsnr_navn = $mysqli->fetch_array(
+            $katsnr_navn = $mysqli->fetchArray(
                 "
                 SELECT navn, vis, icon
                 FROM kat
@@ -228,7 +195,7 @@ function searchMenu($q, $wherekat)
     }
 
     if ($q) {
-        $kat = $mysqli->fetch_array(
+        $kat = $mysqli->fetchArray(
             "
             SELECT id, navn, icon, MATCH (navn) AGAINST ('".$q."'".$qext.") AS score
             FROM kat
@@ -241,7 +208,7 @@ function searchMenu($q, $wherekat)
             $qsearch = array ("/ /","/'/","//","/`/");
             $qreplace = array ("%","_","_","_");
             $simpleq = preg_replace($qsearch, $qreplace, $q);
-            $kat = $mysqli->fetch_array(
+            $kat = $mysqli->fetchArray(
                 "
                 SELECT id, navn, icon
                 FROM kat
@@ -251,7 +218,7 @@ function searchMenu($q, $wherekat)
                 "
             );
         }
-        $maerke = $mysqli->fetch_array(
+        $maerke = $mysqli->fetchArray(
             "
             SELECT id, navn
             FROM `maerke`
@@ -264,7 +231,7 @@ function searchMenu($q, $wherekat)
                 $qreplace = array ("%","_","_","_");
                 $simpleq = preg_replace($qsearch, $qreplace, $q);
             }
-            $maerke = $mysqli->fetch_array(
+            $maerke = $mysqli->fetchArray(
                 "
                 SELECT id, navn
                 FROM maerke
@@ -319,7 +286,7 @@ function searchMenu($q, $wherekat)
 function isInactivePage($id)
 {
     global $mysqli;
-    $bind = $mysqli->fetch_array(
+    $bind = $mysqli->fetchArray(
         "
         SELECT `kat`
         FROM `bind`
@@ -353,7 +320,7 @@ function fullMysqliEscape($s)
 
     global $mysqli;
 
-    return $mysqli->escape_wildcards($mysqli->real_escape_string($s));
+    return $mysqli->escapeWildcards($mysqli->real_escape_string($s));
 }
 
 $_GET = fullMysqliEscape($_GET);
@@ -367,7 +334,7 @@ if (@$_GET['kat'] || @$_GET['side']) {
 
     header('HTTP/1.1 301 Moved Permanently');
     if ($side_id) {
-        $bind = $mysqli->fetch_array(
+        $bind = $mysqli->fetchArray(
             "
             SELECT bind.kat, sider.navn AS side_navn, kat.navn AS kat_navn
             FROM bind
@@ -393,7 +360,7 @@ if (@$_GET['kat'] || @$_GET['side']) {
         $kat_id = fullMysqliEscape($_GET['kat']));
 
         if (!$GLOBALS['cache']['kats'][$kat_id]['navn']) {
-            $kats = $mysqli->fetch_array(
+            $kats = $mysqli->fetchArray(
                 "
                 SELECT navn, vis, icon
                 FROM kat
@@ -454,7 +421,7 @@ if (@$_GET['sog']
 
 //Handle none existing pages
 if (@$GLOBALS['side']['id'] > 0) {
-    if (!$mysqli->fetch_array(
+    if (!$mysqli->fetchArray(
         "
         SELECT id
         FROM sider
@@ -486,7 +453,7 @@ if (@$GLOBALS['side']['id'] > 0
     && !@$activMenu
     && !@$GLOBALS['side']['inactive']
 ) {
-    $bind = $mysqli->fetch_array(
+    $bind = $mysqli->fetchArray(
         "
         SELECT bind.kat,
             sider.navn,
@@ -524,7 +491,7 @@ if (@$GLOBALS['side']['id'] > 0
     unset($bind);
 } elseif (@$GLOBALS['side']['id'] > 0 && !@$GLOBALS['side']['inactive']) {
     //Hent side indhold
-    $sider = $mysqli->fetch_array(
+    $sider = $mysqli->fetchArray(
         "
         SELECT `navn`,
             `burde`,
@@ -572,7 +539,7 @@ if (@$activMenu > 0) {
     if ($GLOBALS['kats']) {
         foreach ($GLOBALS['kats'] as $value) {
             if (!@$GLOBALS['cache']['kats'][$value]['navn']) {
-                $temp = $mysqli->fetch_array(
+                $temp = $mysqli->fetchArray(
                     "
                     SELECT navn, vis, icon
                     FROM kat
@@ -602,7 +569,7 @@ if (@$activMenu > 0) {
 if (@$GLOBALS['kats']) {
     foreach ($GLOBALS['kats'] as $value) {
         if (!$GLOBALS['cache']['kats'][$value]['navn']) {
-            $katsnr_navn = $mysqli->fetch_array(
+            $katsnr_navn = $mysqli->fetchArray(
                 "
                 SELECT navn, vis, icon
                 FROM kat
@@ -632,7 +599,7 @@ if (@$GLOBALS['kats']) {
 //crumbs end
 
 //Get list of top categorys on the site.
-$kat_fpc = $mysqli->fetch_array(
+$kat_fpc = $mysqli->fetchArray(
     "
     SELECT id,
         navn,
@@ -679,7 +646,7 @@ unset($subs);
 unset($value);
 
 //Front page pages
-$kat_fpp = $mysqli->fetch_array(
+$kat_fpp = $mysqli->fetchArray(
     "
     SELECT sider.id, sider.navn
     FROM bind
@@ -741,7 +708,7 @@ if (@$_GET['sog'] || @$GLOBALS['side']['inactive']) {
     $text .= '><tr><td>'._('Brand:').'</td><td><select name="maerke">';
     $text .= '<option value="0">'._('All').'</option>';
 
-    $maerker = $mysqli->fetch_array(
+    $maerker = $mysqli->fetchArray(
         "
         SELECT `id`, `navn`
         FROM `maerke`
@@ -784,11 +751,11 @@ if (@$_GET['sog'] || @$GLOBALS['side']['inactive']) {
         if (@$_GET['maerke'] && !@$maerke) {
             $maerke = $_GET['maerke'];
         }
-        $maerkeet = $mysqli->fetch_array(
+        $maerkeet = $mysqli->fetchArray(
             "
             SELECT `id`, `navn`, `link`, ico
             FROM `maerke`
-            WHERE id = ".$maerke
+            WHERE id = " . $maerke
         );
 
         getUpdateTime('maerke');
@@ -808,7 +775,7 @@ if (@$_GET['sog'] || @$GLOBALS['side']['inactive']) {
             ."' OR `maerke` LIKE '" .$maerkeet[0]['id'].",%' OR `maerke` LIKE '%,"
             .$maerkeet[0]['id'] .",%' OR `maerke` LIKE '%,"
             .$maerkeet[0]['id'] ."')";
-        search_liste(false, $wheresider);
+        searchListe(false, $wheresider);
     } else {
         //Full search
         $wheresider = '';
@@ -849,7 +816,7 @@ if (@$_GET['sog'] || @$GLOBALS['side']['inactive']) {
 
     $limit =  ' LIMIT '.$start.' , '.$num;
     include_once 'inc/liste.php';
-    search_liste(@$_GET['q'], $wheresider);
+    searchListe(@$_GET['q'], $wheresider);
 
     $wherekat = '';
     if (@$_GET['sogikke']) {
@@ -877,7 +844,7 @@ if (@$_GET['sog'] || @$GLOBALS['side']['inactive']) {
         $GLOBALS['generatedcontent']['contenttype'] = 'tiles';
     }
 } else {
-    $special = $mysqli->fetch_array(
+    $special = $mysqli->fetchArray(
         "
         SELECT text, UNIX_TIMESTAMP(dato) AS dato
         FROM special
@@ -916,7 +883,7 @@ if (@$maerkeet) {
         );
     }
 } elseif (@$GLOBALS['side']['id'] && !@$GLOBALS['side']['inactive']) {
-    $sider_navn = $mysqli->fetch_array(
+    $sider_navn = $mysqli->fetchArray(
         "
         SELECT navn, UNIX_TIMESTAMP(dato) AS dato
         FROM sider
@@ -938,7 +905,7 @@ if (empty($GLOBALS['generatedcontent']['title'])
     && @$activMenu > 0
 ) {
     if (!$GLOBALS['cache']['kats'][$activMenu]['navn']) {
-        $kat_navn = $mysqli->fetch_array(
+        $kat_navn = $mysqli->fetchArray(
             "
             SELECT navn, vis
             FROM kat
@@ -960,7 +927,7 @@ if (empty($GLOBALS['generatedcontent']['title'])
 
     //TODO add to url
     if (!empty($GLOBALS['cache']['kats'][$activMenu]['icon'])) {
-        $icon = $mysqli->fetch_array(
+        $icon = $mysqli->fetchArray(
             "
             SELECT `alt`
             FROM `files`
@@ -1012,7 +979,7 @@ if (empty($GLOBALS['generatedcontent']['title'])) {
 //Get email
 $GLOBALS['generatedcontent']['email'] = $GLOBALS['_config']['email'][0];
 if (@$activMenu > 0) {
-    $email = $mysqli->fetch_array(
+    $email = $mysqli->fetchArray(
         "
         SELECT `email`
         FROM `kat`
@@ -1046,15 +1013,6 @@ if (!@$delayprint) {
     if ($updatetime < 1) {
         $updatetime = time();
     }
-    /*
-    if (!headers_sent()) {
-        foreach ($GLOBALS['cache']['updatetime'] as $time) {
-            //$firephp->fb(date(DATE_RFC822, $time));
-            $firephp->fb($time);
-        }
-        $firephp->fb($updatetime);
-    }
-    */
     doConditionalGet($updatetime);
     unset($updatetime);
 
@@ -1062,12 +1020,3 @@ if (!@$delayprint) {
 
     include_once 'theme/index.php';
 }
-/*
-?><!--
-<?php
-print_r($GLOBALS['generatedcontent']);
-print_r($GLOBALS['cache']['kats']);
-?>
---><?php
-/**/
-

@@ -60,7 +60,7 @@ function showfiles($temp_dir)
     }
 
     for($i=0; $i<$nummber_files; $i++){
-        $fileinfo = $mysqli->fetch_array('SELECT * FROM files WHERE path = \''.$dir.'/'.$files[$i]."'");
+        $fileinfo = $mysqli->fetchArray('SELECT * FROM files WHERE path = \''.$dir.'/'.$files[$i]."'");
 
         if (!$fileinfo) {
             //Save file info to db
@@ -480,7 +480,7 @@ require_once '../inc/mysqli.php';
 require_once 'inc/file-functions.php';
 require_once 'inc/get_mime_type.php';
 
-$mysqli = new simple_mysqli(
+$mysqli = new Simple_Mysqli(
     $GLOBALS['_config']['mysql_server'],
     $GLOBALS['_config']['mysql_user'],
     $GLOBALS['_config']['mysql_password'],
@@ -502,13 +502,13 @@ function deletefolder()
                     @setcookie($dir.'/'.$dirlist[$i], false);
                 } else {
                     global $mysqli;
-                    if ($mysqli->fetch_array("SELECT id FROM `sider` WHERE `navn` LIKE '%".$dir."/".$dirlist[$i]."%' OR `text` LIKE '%".$dir."/".$dirlist[$i]."%' OR `beskrivelse` LIKE '%".$dir."/".$dirlist[$i]."%' OR `billed` LIKE "'%".$dir."/".$dirlist[$i]."%' LIMIT 1")
-                    || $mysqli->fetch_array("SELECT id FROM `template` WHERE `navn` LIKE '%".$dir."/".$dirlist[$i]."%' OR `text` LIKE '%".$dir."/".$dirlist[$i]."%' OR `beskrivelse` LIKE '%".$dir."/".$dirlist[$i]."%' OR `billed` LIKE '%".$dir."/".$dirlist[$i]."%' LIMIT 1")
-                    || $mysqli->fetch_array("SELECT id FROM `special` WHERE `text` LIKE '%".$dir."/".$dirlist[$i]."%' LIMIT 1")
-                    || $mysqli->fetch_array("SELECT id FROM `krav` WHERE `text` LIKE '%".$dir."/".$dirlist[$i]."%' LIMIT 1")
-                    || $mysqli->fetch_array("SELECT id FROM `maerke` WHERE `ico` LIKE '%".$dir."/".$dirlist[$i]."%' LIMIT 1")
-                    || $mysqli->fetch_array("SELECT id FROM `list_rows` WHERE `cells` LIKE '%".$dir."/".$dirlist[$i]."%' LIMIT 1")
-                    || $mysqli->fetch_array("SELECT id FROM `kat` WHERE `navn` LIKE '%".$dir."/".$dirlist[$i]."%' OR `icon` LIKE '%".$dir."/".$dirlist[$i]."%' LIMIT 1"))
+                    if ($mysqli->fetchArray("SELECT id FROM `sider` WHERE `navn` LIKE '%".$dir."/".$dirlist[$i]."%' OR `text` LIKE '%".$dir."/".$dirlist[$i]."%' OR `beskrivelse` LIKE '%".$dir."/".$dirlist[$i]."%' OR `billed` LIKE "'%".$dir."/".$dirlist[$i]."%' LIMIT 1")
+                    || $mysqli->fetchArray("SELECT id FROM `template` WHERE `navn` LIKE '%".$dir."/".$dirlist[$i]."%' OR `text` LIKE '%".$dir."/".$dirlist[$i]."%' OR `beskrivelse` LIKE '%".$dir."/".$dirlist[$i]."%' OR `billed` LIKE '%".$dir."/".$dirlist[$i]."%' LIMIT 1")
+                    || $mysqli->fetchArray("SELECT id FROM `special` WHERE `text` LIKE '%".$dir."/".$dirlist[$i]."%' LIMIT 1")
+                    || $mysqli->fetchArray("SELECT id FROM `krav` WHERE `text` LIKE '%".$dir."/".$dirlist[$i]."%' LIMIT 1")
+                    || $mysqli->fetchArray("SELECT id FROM `maerke` WHERE `ico` LIKE '%".$dir."/".$dirlist[$i]."%' LIMIT 1")
+                    || $mysqli->fetchArray("SELECT id FROM `list_rows` WHERE `cells` LIKE '%".$dir."/".$dirlist[$i]."%' LIMIT 1")
+                    || $mysqli->fetchArray("SELECT id FROM `kat` WHERE `navn` LIKE '%".$dir."/".$dirlist[$i]."%' OR `icon` LIKE '%".$dir."/".$dirlist[$i]."%' LIMIT 1"))
                     return array('error' => _('A file could not be deleted because it is used on a site.'));
                     @unlink($_SERVER['DOCUMENT_ROOT'].$dir.'/'.$dirlist[$i]);
                 }
@@ -527,8 +527,8 @@ function searchfiles($qpath, $qalt, $qmime)
 {
     global $mysqli;
 
-    $qpath = $mysqli->escape_wildcards($mysqli->real_escape_string($qpath));
-    $qalt = $mysqli->escape_wildcards($mysqli->real_escape_string($qalt));
+    $qpath = $mysqli->escapeWildcards($mysqli->real_escape_string($qpath));
+    $qalt = $mysqli->escapeWildcards($mysqli->real_escape_string($qalt));
 
     $sql_mime = '';
     switch($qmime) {
@@ -580,7 +580,7 @@ function searchfiles($qpath, $qalt, $qmime)
             $sql .= $sql_mime;
     }
 
-    $filecount = $mysqli->fetch_array('SELECT count(id) AS count'.$sql);
+    $filecount = $mysqli->fetchArray('SELECT count(id) AS count'.$sql);
     $filecount = $filecount[0]['count'];
 
     $sql_select = '';
@@ -612,7 +612,7 @@ function searchfiles($qpath, $qalt, $qmime)
             $limit = 250;
         //TODO return error if befor time out or mem exceded
         //TODO set header() to internal error at the start of all ajax request and 200 (OK) at the end and make javascript display an error if the returned isn't 200;
-        $files = $mysqli->fetch_array('SELECT *'.$sql.' LIMIT '.$filenumber.', '.$limit);
+        $files = $mysqli->fetchArray('SELECT *'.$sql.' LIMIT '.$filenumber.', '.$limit);
         $filenumber += 250;
 
         foreach ($files as $key => $file) {
@@ -634,8 +634,8 @@ function edit_alt($id, $alt)
     $mysqli->query("UPDATE `files` SET `alt` = '".$mysqli->real_escape_string($alt)."' WHERE `id` = ".$id." LIMIT 1");
 
     //Update html with new alt...
-    $file = $mysqli->fetch_array('SELECT path FROM `files` WHERE `id` = '.$id.' LIMIT 1');
-    $sider = $mysqli->fetch_array('SELECT id, text FROM `sider` WHERE `text` LIKE \'%'.$file[0]['path'].'%\'');
+    $file = $mysqli->fetchArray('SELECT path FROM `files` WHERE `id` = '.$id.' LIMIT 1');
+    $sider = $mysqli->fetchArray('SELECT id, text FROM `sider` WHERE `text` LIKE \'%'.$file[0]['path'].'%\'');
 
     if ($sider)
         foreach ($sider as $value) {

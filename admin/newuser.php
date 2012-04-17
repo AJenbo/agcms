@@ -65,14 +65,14 @@ if ($_POST) {
     include_once $_SERVER['DOCUMENT_ROOT'].'/inc/mysqli.php';
 
     //Open database
-    $mysqli = new simple_mysqli(
+    $mysqli = new Simple_Mysqli(
         $GLOBALS['_config']['mysql_server'],
         $GLOBALS['_config']['mysql_user'],
         $GLOBALS['_config']['mysql_password'],
         $GLOBALS['_config']['mysql_database']
     );
 
-    if ($mysqli->fetch_array('SELECT id FROM users WHERE name = \''.addcslashes($_POST['name'], "'").'\'')) {
+    if ($mysqli->fetchArray('SELECT id FROM users WHERE name = \''.addcslashes($_POST['name'], "'").'\'')) {
         die('<p style="text-align: center; margin-top: 20px;">'._('Username already taken.').'</p></body></html>');
     }
 

@@ -177,7 +177,7 @@ if (!empty($_FILES['Filedata']['tmp_name'])
     include_once '../inc/mysqli.php';
     //Kunne ikke åbne database.
     header('HTTP/1.1 541 Internal Server Error');
-    $mysqli = new simple_mysqli(
+    $mysqli = new Simple_Mysqli(
         $GLOBALS['_config']['mysql_server'],
         $GLOBALS['_config']['mysql_user'],
         $GLOBALS['_config']['mysql_password'],

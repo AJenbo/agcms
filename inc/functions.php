@@ -18,7 +18,7 @@ function getUpdateTime($table)
 {
     global $mysqli;
     if (!@$GLOBALS['cache']['updatetime'][$table]) {
-        $updatetime = $mysqli->fetch_array("SHOW TABLE STATUS LIKE '".$table."'");
+        $updatetime = $mysqli->fetchArray("SHOW TABLE STATUS LIKE '".$table."'");
         $GLOBALS['cache']['updatetime'][$table] = strtotime($updatetime[0]['Update_time']);
     }
 }
@@ -37,14 +37,14 @@ function skriv($id)
     }
 
     //er der en side på denne kattegori
-    if ($sider = $mysqli->fetch_array('SELECT id FROM bind WHERE kat = '.$id)) {
+    if ($sider = $mysqli->fetchArray('SELECT id FROM bind WHERE kat = '.$id)) {
         getUpdateTime('bind');
         $GLOBALS['cache']['kats'][$id]['skriv'] = true;
         return true;
     }
 
     //ellers kig om der er en under kattegori med en side
-    $kat = $mysqli->fetch_array(
+    $kat = $mysqli->fetchArray(
         "
         SELECT kat.id, bind.id as skriv
         FROM kat JOIN bind ON bind.kat = kat.id
@@ -89,7 +89,7 @@ function subs($kat)
 {
     global $mysqli;
 
-    $sub = $mysqli->fetch_array(
+    $sub = $mysqli->fetchArray(
         "
         SELECT id
         FROM kat
@@ -176,7 +176,7 @@ function array_listsort($aryData, $strIndex, $strSortBy, $strSortType = false, $
 
     //Open database
     if (!isset($mysqli)) {
-        $mysqli = new simple_mysqli(
+        $mysqli = new Simple_Mysqli(
             $GLOBALS['_config']['mysql_server'],
             $GLOBALS['_config']['mysql_user'],
             $GLOBALS['_config']['mysql_password'],
@@ -188,7 +188,7 @@ function array_listsort($aryData, $strIndex, $strSortBy, $strSortType = false, $
         return $aryData;
     }
 
-    $kaliber = $mysqli->fetch_array(
+    $kaliber = $mysqli->fetchArray(
         "
         SELECT text
         FROM `tablesort`
@@ -260,10 +260,10 @@ function get_table($listid, $bycell, $current_kat)
     $html = '';
 
     getUpdateTime('lists');
-    $lists = $mysqli->fetch_array("SELECT * FROM `lists` WHERE id = " . $listid);
+    $lists = $mysqli->fetchArray("SELECT * FROM `lists` WHERE id = " . $listid);
 
     getUpdateTime('list_rows');
-    $rows = $mysqli->fetch_array(
+    $rows = $mysqli->fetchArray(
         "
         SELECT *
         FROM `list_rows`
@@ -319,7 +319,7 @@ function get_table($listid, $bycell, $current_kat)
             if ($row['link']) {
                 getUpdateTime('sider');
                 getUpdateTime('kat');
-                $sider = $mysqli->fetch_array(
+                $sider = $mysqli->fetchArray(
                     "
                     SELECT `sider`.`navn`, `kat`.`navn` AS `kat_navn`
                     FROM `sider` JOIN `kat` ON `kat`.`id` = " . $current_kat . "
@@ -410,7 +410,7 @@ function get_table($listid, $bycell, $current_kat)
                 case 5:
                     //image
                     $html .= '<td>';
-                    $files = $mysqli->fetch_array(
+                    $files = $mysqli->fetchArray(
                         "
                         SELECT *
                         FROM `files`
@@ -467,7 +467,7 @@ function echo_table($sideid, $mansort, $desc)
 {
     global $mysqli;
 
-    $tablesort = $mysqli->fetch_array(
+    $tablesort = $mysqli->fetchArray(
         "
         SELECT `navn`, `text`
         FROM `tablesort`
@@ -482,7 +482,7 @@ function echo_table($sideid, $mansort, $desc)
     }
     //----------------------------------
 
-    $lists = $mysqli->fetch_array(
+    $lists = $mysqli->fetchArray(
         "
         SELECT id
         FROM `lists`
@@ -513,7 +513,7 @@ function kats($id)
 {
     global $mysqli;
 
-    $kat = $mysqli->fetch_array('SELECT bind FROM kat WHERE id = '.$id);
+    $kat = $mysqli->fetchArray('SELECT bind FROM kat WHERE id = '.$id);
 
     getUpdateTime('kat');
 
@@ -541,7 +541,7 @@ function binding($bind)
     global $mysqli;
 
     if ($bind > 0) {
-        $sog_kat = $mysqli->fetch_array(
+        $sog_kat = $mysqli->fetchArray(
             "
             SELECT `bind`
             FROM `kat`

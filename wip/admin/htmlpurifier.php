@@ -2,7 +2,7 @@
 
 require_once '../inc/config.php';
 require_once '../inc/mysqli.php';
-$mysqli = new simple_mysqli(
+$mysqli = new Simple_Mysqli(
     $GLOBALS['_config']['mysql_server'],
     $GLOBALS['_config']['mysql_user'],
     $GLOBALS['_config']['mysql_password'],
@@ -10,7 +10,7 @@ $mysqli = new simple_mysqli(
 );
 
 if($_GET['id'])
-    $faktura = $mysqli->fetch_array("SELECT `text` FROM `sider` WHERE `id` = ".$_GET['id']);
+    $faktura = $mysqli->fetchArray("SELECT `text` FROM `sider` WHERE `id` = ".$_GET['id']);
 
 echo 'Før:
 ';

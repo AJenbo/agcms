@@ -16,7 +16,7 @@ require_once "inc/mysqli.php";
 require_once 'inc/sajax.php';
 
 //Open database
-$mysqli = new simple_mysqli(
+$mysqli = new Simple_Mysqli(
     $GLOBALS['_config']['mysql_server'],
     $GLOBALS['_config']['mysql_user'],
     $GLOBALS['_config']['mysql_password'],
@@ -32,7 +32,7 @@ function optimizeTables()
 {
     global $mysqli;
 
-    $tables = $mysqli->fetch_array("SHOW TABLE STATUS");
+    $tables = $mysqli->fetchArray("SHOW TABLE STATUS");
     foreach ($tables as $table) {
         $mysqli->query("OPTIMIZE TABLE `" . $table['Name'] . "`");
     }
@@ -113,7 +113,7 @@ function removeBadAccessories()
 function removeNoneExistingFiles()
 {
     global $mysqli;
-    $files = $mysqli->fetch_array('SELECT id, path FROM `files`');
+    $files = $mysqli->fetchArray('SELECT id, path FROM `files`');
 
     $deleted = 0;
     foreach ($files as $files) {

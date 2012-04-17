@@ -18,7 +18,7 @@ require_once 'inc/config.php';
 require_once 'inc/mysqli.php';
 require_once 'inc/getaddress.php';
 
-$mysqli = new simple_mysqli(
+$mysqli = new Simple_Mysqli(
     $GLOBALS['_config']['mysql_server'],
     $GLOBALS['_config']['mysql_user'],
     $GLOBALS['_config']['mysql_password'],
@@ -28,7 +28,7 @@ $mysqli = new simple_mysqli(
 //If the database is older then the users cache, send 304 not modified
 //WARNING: this results in the site not updating if new files are included later,
 //the remedy is to update the database when new cms files are added.
-$tables = $mysqli->fetch_array("SHOW TABLE STATUS");
+$tables = $mysqli->fetchArray("SHOW TABLE STATUS");
 $updatetime = 0;
 foreach ($tables as $table) {
     $updatetime = max($updatetime, strtotime($table['Update_time']));
@@ -82,7 +82,7 @@ function getKat($id, $sort)
     doConditionalGet($updatetime);
 
     //Get pages list
-    $bind = $mysqli->fetch_array(
+    $bind = $mysqli->fetchArray(
         "
         SELECT sider.id,
             sider.navn,
@@ -102,7 +102,7 @@ function getKat($id, $sort)
     $kat = @$GLOBALS['cache']['kats'][$GLOBALS['generatedcontent']['activmenu']];
     $name = $kat['navn'];
     if (!$name) {
-        $kat = $mysqli->fetch_array(
+        $kat = $mysqli->fetchArray(
             "
             SELECT navn, vis
             FROM kat

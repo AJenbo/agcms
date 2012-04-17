@@ -2,13 +2,13 @@
 require_once $_SERVER['DOCUMENT_ROOT'].'/admin/inc/logon.php';
 require_once '../inc/mysqli.php';
 require_once '../inc/config.php';
-$mysqli = new simple_mysqli(
+$mysqli = new Simple_Mysqli(
     $GLOBALS['_config']['mysql_server'],
     $GLOBALS['_config']['mysql_user'],
     $GLOBALS['_config']['mysql_password'],
     $GLOBALS['_config']['mysql_database']
 );
-$files = $mysqli->fetch_array('SELECT aspect, width, height FROM `files` WHERE `path` LIKE \''.$_GET['url'].'\' LIMIT 1');
+$files = $mysqli->fetchArray('SELECT aspect, width, height FROM `files` WHERE `path` LIKE \''.$_GET['url'].'\' LIMIT 1');
 ?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>

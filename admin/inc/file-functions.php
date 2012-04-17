@@ -14,7 +14,7 @@ function isinuse($path)
 {
     global $mysqli;
 
-    $result = $mysqli->fetch_array(
+    $result = $mysqli->fetchArray(
         "
         (SELECT id FROM `sider` WHERE `text` LIKE '%$path%' OR `beskrivelse` LIKE '%$path%' OR `billed` LIKE '$path' LIMIT 1)
         UNION (SELECT id FROM `template` WHERE `text` LIKE '%$path%' OR `beskrivelse` LIKE '%$path%' OR `billed` LIKE '$path' LIMIT 1)

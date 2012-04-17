@@ -19,7 +19,7 @@ require_once 'inc/mysqli.php';
 require_once 'inc/functions.php';
 
 //Open database
-$mysqli = new simple_mysqli(
+$mysqli = new Simple_Mysqli(
     $GLOBALS['_config']['mysql_server'],
     $GLOBALS['_config']['mysql_user'],
     $GLOBALS['_config']['mysql_password'],
@@ -37,7 +37,7 @@ function listKats($id)
 {
     global $mysqli;
 
-    $kats = $mysqli->fetch_array(
+    $kats = $mysqli->fetchArray(
         "
         SELECT id, navn
         FROM kat
@@ -71,9 +71,9 @@ function listPages($id, $katName)
 {
     global $mysqli;
 
-    $binds = $mysqli->fetch_array("SELECT side FROM bind WHERE kat = " . $id);
+    $binds = $mysqli->fetchArray("SELECT side FROM bind WHERE kat = " . $id);
     foreach ($binds as $bind) {
-        $sider = $mysqli->fetch_array(
+        $sider = $mysqli->fetchArray(
             "
             SELECT navn, dato
             FROM sider
@@ -96,7 +96,7 @@ function listPages($id, $katName)
 }
 
 
-$special = $mysqli->fetch_array("SELECT dato FROM special WHERE id = 1");
+$special = $mysqli->fetchArray("SELECT dato FROM special WHERE id = 1");
 ?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.sitemaps.org/schemas/sitemap/0.9 http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd">
     <url>

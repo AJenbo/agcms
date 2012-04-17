@@ -15,7 +15,7 @@ require_once $_SERVER['DOCUMENT_ROOT'].'/admin/inc/logon.php';
 require_once '../inc/sajax.php';
 require_once '../inc/config.php';
 require_once '../inc/mysqli.php';
-$mysqli = new simple_mysqli(
+$mysqli = new Simple_Mysqli(
     $GLOBALS['_config']['mysql_server'],
     $GLOBALS['_config']['mysql_user'],
     $GLOBALS['_config']['mysql_password'],
@@ -79,9 +79,9 @@ function deleteuser_r() {
 <div id="canvas"><div id="headline"><?php echo _('Users and Groups'); ?></div><table id="addressbook"><thead><tr><td></td><td><a href="?order=date"><a href="users.php"><?php echo _('Name'); ?></a></td><td><a href="?order=date"><?php echo _('Last online'); ?></a></td></tr></thead><tbody><?php
 
 if (empty($_GET['order'])) {
-    $users = $mysqli->fetch_array("SELECT *, UNIX_TIMESTAMP(`lastlogin`) AS 'lastlogin' FROM `users` ORDER BY `fullname` ASC");
+    $users = $mysqli->fetchArray("SELECT *, UNIX_TIMESTAMP(`lastlogin`) AS 'lastlogin' FROM `users` ORDER BY `fullname` ASC");
 } else {
-    $users = $mysqli->fetch_array("SELECT *, UNIX_TIMESTAMP(`lastlogin`) AS 'lastlogin' FROM `users` ORDER BY `lastlogin` DESC");
+    $users = $mysqli->fetchArray("SELECT *, UNIX_TIMESTAMP(`lastlogin`) AS 'lastlogin' FROM `users` ORDER BY `lastlogin` DESC");
 }
 
 foreach ($users as $key => $user) {

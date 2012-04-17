@@ -15,7 +15,7 @@ if (empty($_SESSION['_user'])) {
 require_once '../inc/sajax.php';
 require_once '../inc/config.php';
 require_once '../inc/mysqli.php';
-$mysqli = new simple_mysqli(
+$mysqli = new Simple_Mysqli(
     $GLOBALS['_config']['mysql_server'],
     $GLOBALS['_config']['mysql_user'],
     $GLOBALS['_config']['mysql_password'],
@@ -77,7 +77,7 @@ if (!empty($_POST['id'])) {
 }
 
 //echo "SELECT `momssats`, `premoms`, `values`, `quantities`, `fragt`, `id`, `status`, `clerk`, `amount`, `navn`, UNIX_TIMESTAMP(`date`) AS `date` FROM `fakturas` WHERE ".$where." ORDER BY `id` DESC"
-$fakturas = $mysqli->fetch_array("SELECT `id`, `status`, `sendt`, `clerk`, `amount`, `navn`, `att`, `land`, `adresse`, `postbox`, `postnr`, `by`, `email`, `tlf1`, `tlf2`, UNIX_TIMESTAMP(`date`) AS `date` FROM `fakturas` WHERE ".$where." ORDER BY `id` DESC");
+$fakturas = $mysqli->fetchArray("SELECT `id`, `status`, `sendt`, `clerk`, `amount`, `navn`, `att`, `land`, `adresse`, `postbox`, `postnr`, `by`, `email`, `tlf1`, `tlf2`, UNIX_TIMESTAMP(`date`) AS `date` FROM `fakturas` WHERE ".$where." ORDER BY `id` DESC");
 
 ?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
@@ -159,7 +159,7 @@ if (!empty($_POST['id'])) {
 ?>" size="4" /></td><td>
 
 <select name="y"><?php
-$oldest = $mysqli->fetch_array("SELECT UNIX_TIMESTAMP(`date`) AS `date` FROM `fakturas` ORDER BY `date` ASC LIMIT 1");
+$oldest = $mysqli->fetchArray("SELECT UNIX_TIMESTAMP(`date`) AS `date` FROM `fakturas` ORDER BY `date` ASC LIMIT 1");
 
 if ($oldest) {
     $oldest = date('Y', $oldest[0]['date']);
@@ -258,7 +258,7 @@ if (count($GLOBALS['_config']['email']) < 2)
 */
 
 
-$users = $mysqli->fetch_array("SELECT `fullname`, `name` FROM `users` ORDER BY `fullname` ASC");
+$users = $mysqli->fetchArray("SELECT `fullname`, `name` FROM `users` ORDER BY `fullname` ASC");
 
 if (count($users) < 2) {
     echo '<span style="display:none">'

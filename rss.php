@@ -1,4 +1,4 @@
-<?php
+    <?php
 /**
  * Print RSS feed contaning the 20 last changed pages
  *
@@ -16,14 +16,14 @@ require_once 'inc/mysqli.php';
 require_once 'inc/functions.php';
 require_once 'inc/header.php';
 
-$mysqli = new simple_mysqli(
+$mysqli = new Simple_Mysqli(
     $GLOBALS['_config']['mysql_server'],
     $GLOBALS['_config']['mysql_user'],
     $GLOBALS['_config']['mysql_password'],
     $GLOBALS['_config']['mysql_database']
 );
 
-$tabels = $mysqli->fetch_array("SHOW TABLE STATUS");
+$tabels = $mysqli->fetchArray("SHOW TABLE STATUS");
 $updatetime = 0;
 foreach ($tabels as $tabel) {
     $updatetime = max($updatetime, strtotime($tabel['Update_time']));
@@ -55,7 +55,7 @@ if ($time > 1000000000) {
     $limit = ' LIMIT 20';
 }
 
-$sider = $mysqli->fetch_array(
+$sider = $mysqli->fetchArray(
     "
     SELECT sider.id,
         sider.maerke,
@@ -116,10 +116,15 @@ echo '<?xml version="1.0" encoding="utf-8"?>
     <managingEditor>' . $GLOBALS['_config']['email'][0] . ' ('
     . $GLOBALS['_config']['site_name'] . ')</managingEditor>';
 for ($i = 0; $i < count($sider); $i++) {
-    if (!$sider[$i]['navn'] = trim(htmlspecialchars($sider[$i]['navn'], ENT_COMPAT | ENT_XML1, 'UTF-8'))) {
+    htmlspecialchars(
+        $sider[$i]['navn'],
+        ENT_COMPAT | ENT_XML1,
+        'UTF-8'
+    );
+    if (!$sider[$i]['navn'] = trim($name)) {
         $sider[$i]['navn'] = $GLOBALS['_config']['site_name'];
     }
-    $sideText = $mysqli->fetch_array(
+    $sideText = $mysqli->fetchArray(
         "
         SELECT text
         FROM sider
@@ -149,7 +154,7 @@ for ($i = 0; $i < count($sider); $i++) {
     . rawurlencode(clear_file_name($sider[$i]['kat_navn'])) . '/side'
     . $sider[$i]['id'] . '-' . rawurlencode(clear_file_name($sider[$i]['navn']))
     . '.html</guid>';
-    $bind = $mysqli->fetch_array(
+    $bind = $mysqli->fetchArray(
         "
         SELECT `kat`
         FROM bind
@@ -160,7 +165,7 @@ for ($i = 0; $i < count($sider); $i++) {
     for ($ibind = 0; $ibind < count($bind); $ibind++) {
         $kats[] = $bind[$ibind]['kat'];
 
-        $temp = $mysqli->fetch_array(
+        $temp = $mysqli->fetchArray(
             "
             SELECT bind
             FROM `kat`
@@ -171,7 +176,7 @@ for ($i = 0; $i < count($sider); $i++) {
         if (@$temp[0]) {
             while ($temp && !in_array($temp[0]['bind'], $kats)) {
                 $kats[] = $temp[0]['bind'];
-                $temp = $mysqli->fetch_array(
+                $temp = $mysqli->fetchArray(
                     "
                     SELECT bind
                     FROM `kat`
@@ -187,7 +192,7 @@ for ($i = 0; $i < count($sider); $i++) {
 
     for ($icategory = 0; $icategory < count($kats); $icategory++) {
         if ($kats[$icategory]) {
-            $kat = $mysqli->fetch_array(
+            $kat = $mysqli->fetchArray(
                 "
                 SELECT `navn`
                 FROM kat
@@ -197,8 +202,13 @@ for ($i = 0; $i < count($sider); $i++) {
             );
             $cleaned = trim(preg_replace($search, $replace, @$kat[0]['navn']));
             if ($category = $cleaned) {
-                echo '<category>' . htmlspecialchars($category, ENT_NOQUOTES | ENT_XML1, 'UTF-8')
-                . '</category>';
+                echo '<category>';
+                echo htmlspecialchars(
+                    $category,
+                    ENT_NOQUOTES | ENT_XML1,
+                    'UTF-8'
+                );
+                echo '</category>';
             }
         }
     }
@@ -212,7 +222,7 @@ for ($i = 0; $i < count($sider); $i++) {
             }
             $where .= ' id = '.$maerker[$imaerker];
         }
-        $maerker = $mysqli->fetch_array(
+        $maerker = $mysqli->fetchArray(
             "
             SELECT `navn`
             FROM maerke
@@ -224,8 +234,13 @@ for ($i = 0; $i < count($sider); $i++) {
             $cleaned = preg_replace($search, $replace, $maerker[$imaerker]['navn']);
             $cleaned = trim($cleanName);
             if ($category = $cleaned) {
-                echo '<category>' . htmlspecialchars($category, ENT_NOQUOTES | ENT_XML1, 'UTF-8')
-                . '</category>';
+                echo '<category>';
+                echo htmlspecialchars(
+                    $category,
+                    ENT_NOQUOTES | ENT_XML1,
+                    'UTF-8'
+                );
+                echo '</category>';
             }
         }
     }

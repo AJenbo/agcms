@@ -16,14 +16,14 @@ require_once 'inc/mysqli.php';
 require_once 'inc/functions.php';
 require_once 'inc/header.php';
 
-$mysqli = new simple_mysqli(
+$mysqli = new Simple_Mysqli(
     $GLOBALS['_config']['mysql_server'],
     $GLOBALS['_config']['mysql_user'],
     $GLOBALS['_config']['mysql_password'],
     $GLOBALS['_config']['mysql_database']
 );
 
-$tabels = $mysqli->fetch_array("SHOW TABLE STATUS");
+$tabels = $mysqli->fetchArray("SHOW TABLE STATUS");
 $updatetime = 0;
 foreach ($tabels as $tabel) {
     $updatetime = max($updatetime, strtotime($tabel['Update_time']));
@@ -35,7 +35,7 @@ if ($updatetime < 1) {
 
 doConditionalGet($updatetime);
 
-$sider = $mysqli->fetch_array(
+$sider = $mysqli->fetchArray(
     "
     SELECT sider.id,
         `pris`,
@@ -86,7 +86,8 @@ require_once 'inc/config.php';
 
 echo '<?xml version="1.0" encoding="utf-8"?><products>';
 for ($i=0; $i<count($sider); $i++) {
-    if (!$sider[$i]['navn'] = trim(htmlspecialchars($sider[$i]['navn'], ENT_COMPAT | ENT_XML1, 'UTF-8'))) {
+    $name = htmlspecialchars($sider[$i]['navn'], ENT_COMPAT | ENT_XML1, 'UTF-8');
+    if (!$sider[$i]['navn'] = trim($name)) {
         continue;
     }
 
@@ -94,8 +95,9 @@ for ($i=0; $i<count($sider); $i++) {
     <product>
         <sku>'.$sider[$i]['id'].'</sku>
         <title>'.$sider[$i]['navn'].'</title>';
-    if ($sider[$i]['varenr'] = trim(htmlspecialchars($sider[$i]['varenr'], ENT_COMPAT | ENT_XML1, 'UTF-8'))) {
-        echo '<companysku>'.$sider[$i]['varenr'].'</companysku>';
+    $varenr = htmlspecialchars($sider[$i]['varenr'], ENT_COMPAT | ENT_XML1, 'UTF-8');
+    if ($sider[$i]['varenr'] = trim($varenr)) {
+        echo '<companysku>' . $sider[$i]['varenr'] . '</companysku>';
     }
     echo '<price>' . $sider[$i]['pris'] . ',00</price>
     <img>' . $GLOBALS['_config']['base_url'] . $sider[$i]['billed'] . '</img>
@@ -103,7 +105,7 @@ for ($i=0; $i<count($sider); $i++) {
     . rawurlencode(clear_file_name($sider[$i]['kat_navn'])) . '/side'
     . $sider[$i]['id'] . '-' . rawurlencode(clear_file_name($sider[$i]['navn']))
     . '.html</link>';
-    $bind = $mysqli->fetch_array(
+    $bind = $mysqli->fetchArray(
         "
         SELECT `kat`
         FROM bind
@@ -121,7 +123,7 @@ for ($i=0; $i<count($sider); $i++) {
             }
             $where .= ' id = '.$maerker[$imaerker];
         }
-        $maerker = $mysqli->fetch_array(
+        $maerker = $mysqli->fetchArray(
             "
             SELECT `navn`
             FROM maerke
@@ -133,17 +135,27 @@ for ($i=0; $i<count($sider); $i++) {
             $cleaned = preg_replace($search, $replace, $maerker[$imaerker]['navn']);
             $cleaned = trim($cleaned);
             if ($category2 = $cleaned) {
-                $category[] = htmlspecialchars($category2, ENT_NOQUOTES | ENT_XML1, 'UTF-8');
+                $category[] = htmlspecialchars(
+                    $category2,
+                    ENT_NOQUOTES | ENT_XML1,
+                    'UTF-8'
+                );
             }
         }
-        echo '<company>'.htmlspecialchars($category2, ENT_NOQUOTES | ENT_XML1, 'UTF-8').'</company>';
+        echo '<company>';
+        echo htmlspecialchars(
+            $category2,
+            ENT_NOQUOTES | ENT_XML1,
+            'UTF-8'
+        );
+        echo '</company>';
     }
 
     $kats = '';
     for ($ibind=0; $ibind<count($bind); $ibind++) {
         $kats[] = $bind[$ibind]['kat'];
 
-        $temp = $mysqli->fetch_array(
+        $temp = $mysqli->fetchArray(
             "
             SELECT bind
             FROM `kat`
@@ -154,7 +166,7 @@ for ($i=0; $i<count($sider); $i++) {
         if (@$temp[0]) {
             while ($temp && !in_array($temp[0]['bind'], $kats)) {
                 $kats[] = $temp[0]['bind'];
-                $temp = $mysqli->fetch_array(
+                $temp = $mysqli->fetchArray(
                     "
                     SELECT bind
                     FROM `kat`
@@ -170,7 +182,7 @@ for ($i=0; $i<count($sider); $i++) {
 
     for ($icategory=0; $icategory<count($kats); $icategory++) {
         if ($kats[$icategory]) {
-            $kat = $mysqli->fetch_array(
+            $kat = $mysqli->fetchArray(
                 "
                 SELECT `navn`
                 FROM kat
@@ -181,7 +193,11 @@ for ($i=0; $i<count($sider); $i++) {
             $cleaned = preg_replace($search, $replace, @$kat[0]['navn']);
             $cleaned = trim($cleaned);
             if ($category2 = $cleaned) {
-                $category[] = htmlspecialchars($category2, ENT_NOQUOTES | ENT_XML1, 'UTF-8');
+                $category[] = htmlspecialchars(
+                    $category2,
+                    ENT_NOQUOTES | ENT_XML1,
+                    'UTF-8'
+                );
             }
         }
     }

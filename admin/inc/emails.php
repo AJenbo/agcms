@@ -12,7 +12,7 @@ require_once $_SERVER['DOCUMENT_ROOT'].'/admin/inc/logon.php';
 function sendEmail($id, $from, $interests, $subject, $text)
 {
     global $mysqli;
-    if (!$mysqli->fetch_array('SELECT `id` FROM `newsmails` WHERE `sendt` = 0')) {
+    if (!$mysqli->fetchArray('SELECT `id` FROM `newsmails` WHERE `sendt` = 0')) {
         //Nyhedsbrevet er allerede afsendt!
         return array('error' => _('The newsletter has already been sent!'));
     }
@@ -91,7 +91,7 @@ function sendEmail($id, $from, $interests, $subject, $text)
     $mail->AddAddress($from, $GLOBALS['_config']['site_name']);
 
     global $mysqli;
-    $emails = $mysqli->fetch_array(
+    $emails = $mysqli->fetchArray(
         'SELECT navn, email
         FROM `email`
         WHERE `email` NOT LIKE \'\'
@@ -166,7 +166,7 @@ function countEmailTo($interests)
         $andwhere .= ')';
     }
 
-    $emails = $mysqli->fetch_array('SELECT count(DISTINCT email) as \'count\' FROM `email` WHERE `email` NOT LIKE \'\' AND `kartotek` = \'1\''.$andwhere);
+    $emails = $mysqli->fetchArray('SELECT count(DISTINCT email) as \'count\' FROM `email` WHERE `email` NOT LIKE \'\' AND `kartotek` = \'1\''.$andwhere);
 
     return $emails[0]['count'];
 }
@@ -181,7 +181,7 @@ function getNewEmail()
 function getEmail($id)
 {
     global $mysqli;
-    $newsmails = $mysqli->fetch_array('SELECT * FROM `newsmails` WHERE `id` = '.$id);
+    $newsmails = $mysqli->fetchArray('SELECT * FROM `newsmails` WHERE `id` = '.$id);
 
     $html = '<div id="headline">'._('Edit newsletter').'</div>';
 
@@ -272,7 +272,7 @@ function saveEmail($id, $from, $interests, $subject, $text)
 function getEmailList()
 {
     global $mysqli;
-    $newsmails = $mysqli->fetch_array('SELECT `id`, `subject`, `sendt` FROM `newsmails`');
+    $newsmails = $mysqli->fetchArray('SELECT `id`, `subject`, `sendt` FROM `newsmails`');
 
     $html = '<div id="headline">'._('Newsletters').'</div><div><a href="?side=newemail"><img src="images/email_add.png" width="16" height="16" alt="" /> '._('Create new newsletter').'</a><br /><br />';
     foreach ($newsmails as $newemail) {

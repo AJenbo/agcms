@@ -27,7 +27,7 @@ require_once "inc/config.php";
 require_once "inc/mysqli.php";
 
 //Open database
-$mysqli = new simple_mysqli(
+$mysqli = new Simple_Mysqli(
     $GLOBALS['_config']['mysql_server'],
     $GLOBALS['_config']['mysql_user'],
     $GLOBALS['_config']['mysql_password'],
@@ -35,7 +35,7 @@ $mysqli = new simple_mysqli(
 );
 
 //Get emails that needs sending
-$emails = $mysqli->fetch_array("SELECT * FROM `emails`");
+$emails = $mysqli->fetchArray("SELECT * FROM `emails`");
 
 if (!$emails) {
     die(_('No e-mails to send.'));

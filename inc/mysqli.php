@@ -1,6 +1,6 @@
 <?php
 /**
- * Declare the simple_mysqli class
+ * Declare the Simple_Mysqli class
  *
  * PHP version 5
  *
@@ -11,19 +11,23 @@
  * @link     http://www.arms-gallery.dk/
  */
 
-//include the file
-require_once "firephp.class.php";
-//create the object
-global $firephp;
-$firephp = FirePHP::getInstance(true);
-
-/* Create custom exception classes */
-class QueryException extends Exception
+/**
+ * Helper classe to make it simple to makes querys to MySQL and get the results
+ *
+ * PHP version 5
+ *
+ * @category AGCMS
+ * @package  AGCMS
+ * @author   Anders Jenbo <anders@jenbo.dk>
+ * @license  GPLv2 http://www.gnu.org/licenses/gpl-2.0.html
+ * @link     http://www.arms-gallery.dk/
+ */
+class Simple_Mysqli extends mysqli
 {
-}
 
-class simple_mysqli extends mysqli
-{
+    /**
+     * Connect the database and set session to UTF-8 Danish
+     */
     function __construct()
     {
         /**
@@ -43,16 +47,18 @@ class simple_mysqli extends mysqli
         $this->query("SET collation_server=utf8_danish_ci");
     }
 
-    function fetch_array($query)
+    /**
+     * Performe query and return result as an array of associative arrays
+     *
+     * @param string $query The MySQL query to preforme
+     *
+     * @return array
+     */
+    public function fetchArray($query)
     {
-        //send information
-        //global $firephp;
-        //if (!headers_sent())
-        //$firephp->fb($query);
-
         $result = parent::query($query);
         if (mysqli_error($this)) {
-            throw new QueryException(mysqli_error($this), mysqli_errno($this));
+            throw new Exception(mysqli_error($this), mysqli_errno($this));
         }
         while ($row = $result->fetch_assoc()) {
             $rows[] = $row;
@@ -66,43 +72,49 @@ class simple_mysqli extends mysqli
         return $rows;
     }
 
-    function fetch_one($query)
+    /**
+     * Performe query and return the first result as an associative arrays
+     *
+     * @param string $query The MySQL query to preforme
+     *
+     * @return array
+     */
+    public function fetchOne($query)
     {
-        //send information
-        //global $firephp;
-        //if (!headers_sent())
-        //$firephp->fb($query);
+        $row = $this->fetchArray($query);
+        $row = $row[0];
 
-        $result = parent::query($query);
-        if (mysqli_error($this)) {
-            throw new QueryException(mysqli_error($this), mysqli_errno($this));
-        }
-        $row = $result->fetch_assoc();
-
-        $result->close();
-
-        if (!isset($row)) {
+        if (!isset($row])) {
             $row = array();
         }
 
         return $row;
     }
 
-    function query($query)
+    /**
+     * Performe query
+     *
+     * @param string $query The MySQL query to preforme
+     *
+     * @return null
+     */
+    public function query($query)
     {
-        //send information
-        //global $firephp;
-        //if (!headers_sent())
-        //$firephp->fb($query);
-
         $result = parent::query($query);
         if (mysqli_error($this)) {
-            throw new QueryException(mysqli_error($this), mysqli_errno($this));
+            throw new Exception(mysqli_error($this), mysqli_errno($this));
         }
         return true;
     }
 
-    function escape_wildcards($string)
+    /**
+     * Escape all MySQL wildcards
+     *
+     * @param string $string String to process
+     *
+     * @return string
+     */
+    public function escapeWildcards($string)
     {
         return preg_replace('/([%_])/u', '\\\\$1', $string);
     }
