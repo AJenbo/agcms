@@ -39,7 +39,7 @@ class Simple_Mysqli extends mysqli
 
         /* Throw an error if the connection fails */
         if (mysqli_connect_error()) {
-            throw new Exception('', mysqli_connect_errno());
+            throw new Exception('', 'Couldn\'t connect to database!');
         }
 
         $this->query("SET NAMES 'UTF8'");
