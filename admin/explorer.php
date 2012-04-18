@@ -502,7 +502,7 @@ function deletefolder()
                     @setcookie($dir.'/'.$dirlist[$i], false);
                 } else {
                     global $mysqli;
-                    if ($mysqli->fetchArray("SELECT id FROM `sider` WHERE `navn` LIKE '%".$dir."/".$dirlist[$i]."%' OR `text` LIKE '%".$dir."/".$dirlist[$i]."%' OR `beskrivelse` LIKE '%".$dir."/".$dirlist[$i]."%' OR `billed` LIKE "'%".$dir."/".$dirlist[$i]."%' LIMIT 1")
+                    if ($mysqli->fetchArray("SELECT id FROM `sider` WHERE `navn` LIKE '%" . $dir . "/" . $dirlist[$i] . "%' OR `text` LIKE '%" . $dir . "/" . $dirlist[$i] . "%' OR `beskrivelse` LIKE '%" . $dir . "/" . $dirlist[$i] . "%' OR `billed` LIKE '%" . $dir . "/" . $dirlist[$i] . "%' LIMIT 1")
                     || $mysqli->fetchArray("SELECT id FROM `template` WHERE `navn` LIKE '%".$dir."/".$dirlist[$i]."%' OR `text` LIKE '%".$dir."/".$dirlist[$i]."%' OR `beskrivelse` LIKE '%".$dir."/".$dirlist[$i]."%' OR `billed` LIKE '%".$dir."/".$dirlist[$i]."%' LIMIT 1")
                     || $mysqli->fetchArray("SELECT id FROM `special` WHERE `text` LIKE '%".$dir."/".$dirlist[$i]."%' LIMIT 1")
                     || $mysqli->fetchArray("SELECT id FROM `krav` WHERE `text` LIKE '%".$dir."/".$dirlist[$i]."%' LIMIT 1")

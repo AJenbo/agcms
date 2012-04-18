@@ -386,7 +386,7 @@ function searchListe($q, $wheresider)
         getUpdateTime('kat');
 
         //TODO rawurlencode $url (PIE doesn't do it buy it self :(
-        $url = ''
+        $url = '';
         if (!empty($kat[0]['id'])) {
             $url = '/kat'.$kat[0]['id'] . '-'
             . $folderName = rawurlencode(clear_file_name($kat[0]['navn']));

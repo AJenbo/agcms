@@ -67,7 +67,7 @@ p.line8 {
 </head>
 <body><?php
 
-if ($_GET['dato'])
+if (@$_GET['dato'])
     $dato = $_GET['dato'];
 else
     $dato = date('Y-m-d', time()-7*24*60*60);
@@ -77,7 +77,7 @@ else
   <input value="<?php echo $dato ?>" name="dato" />
 </form><?php
 
-if ($_GET['dato']) {
+if (@$_GET['dato']) {
     require_once '../inc/config.php';
     require_once '../inc/mysqli.php';
     $mysqli = new Simple_Mysqli(
@@ -86,16 +86,26 @@ if ($_GET['dato']) {
         $GLOBALS['_config']['mysql_password'],
         $GLOBALS['_config']['mysql_database']
     );
-    $email = $mysqli->fetchArray("SELECT `navn` , `adresse` , `land` , `post` , `by` FROM `email`
-    WHERE `dato` > '".$_GET['dato']." 00:00:00'
-    AND `navn` != '' AND `adresse` != '' AND `post` != '' AND `by` != '' AND `downloaded` = '0' ORDER BY dato");
+    $email = $mysqli->fetchArray(
+        "
+        SELECT `navn`, `adresse`, `land`, `post`, `by`
+        FROM `email`
+        WHERE `dato` > '" . $_GET['dato'] . " 00:00:00'
+          AND `navn` != ''
+          AND `adresse` != ''
+          AND `post` != ''
+          AND `by` != ''
+          AND `downloaded` = '0'
+        ORDER BY dato
+        "
+    );
 
     if ($email) {
         //Pad rows to fit on
         $email_nr = ceil(count($email)/21)*21;
-        echo '<h1 class="web">'.($email_nr/21).' sider</h1>'
+        echo '<h1 class="web">'.($email_nr/21).' sider</h1>';
 
-        for($i=0;$i<$email_nr;$i++) {
+        for ($i = 0; $i < $email_nr; $i++) {
 
             //Bigin new table
             if (!$i % 21 && !$i) {
@@ -115,8 +125,10 @@ if ($_GET['dato']) {
             echo '<table><tr><td>'.@$email[$i]['navn'].'<br />'
             .@$email[$i]['adresse'].'<br />'
             .@$email[$i]['post'].' '.@$email[$i]['by'];
-            if (@$email[$i]['land'] != 'Danmark') echo ('<br />'.@$email[$i]['land']);
-             ?></td></tr></table></div><?
+            if (@$email[$i]['land'] != 'Danmark') {
+                echo ('<br />'.@$email[$i]['land']);
+            }
+            ?></td></tr></table></div><?
             //end row
             if ($i % 3 == 2) {
                 ?></div><?php

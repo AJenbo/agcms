@@ -63,7 +63,7 @@ if (!$GLOBALS['side']['id']) {
     $sideId = preg_replace('/.*side=([0-9]+).*\s*|.*/u', '\1', $url);
     //Try really old query sting methode
     if (!$sideId) {
-        $sideId = preg_replace('/.*id=([0-9]+).*\s*|.*/u', '\1', $url)
+        $sideId = preg_replace('/.*id=([0-9]+).*\s*|.*/u', '\1', $url);
     }
 
     if ($sideId) {

@@ -85,33 +85,35 @@ if (empty($_GET['order'])) {
 }
 
 foreach ($users as $key => $user) {
-    echo '<tr'
+    echo '<tr';
     if ($key % 2) {
-        echo ' class="altrow"'
+        echo ' class="altrow"';
     }
-    echo '><td>'
+    echo '><td>';
     if ($_SESSION['_user']['access'] == 1) {
-        echo ' <img src="images/cross.png" alt="X" title="'._('Delete').'" onclick="deleteuser('.$user['id'].', \''.addcslashes($user['fullname'], "\\'").'\'" />');
+        echo ' <img src="images/cross.png" alt="X" title="' . _('Delete')
+        . '" onclick="deleteuser(' . $user['id'] . ', \''
+        . addcslashes($user['fullname'], "\\'") . '\'" />';
     }
-    echo '</td><td><a href="user.php?id='.$user['id'].'">'.$user['fullname'].'</a></td><td><a href="user.php?id='.$user['id'].'">'
+    echo '</td><td><a href="user.php?id='.$user['id'].'">'.$user['fullname'].'</a></td><td><a href="user.php?id='.$user['id'].'">';
     if ($user['lastlogin'] == 0) {
-        echo _('Never')
+        echo _('Never');
     } elseif ($user['lastlogin'] > time()-1800) {
-        echo _('Online')
+        echo _('Online');
     } else {
         $dayes = round((time()-$user['lastlogin'])/86400);
         if ($dayes == 0) {
             $houres = round((time()-$user['lastlogin'])/3600);
             if ($houres == 0) {
-                echo sprintf(_('%s minuts ago'), round((time()-$user['lastlogin'])/60))
+                echo sprintf(_('%s minuts ago'), round((time()-$user['lastlogin'])/60));
             } else {
-                echo sprintf(_('%s houres ago'), $houres)
+                echo sprintf(_('%s houres ago'), $houres);
             }
         } else {
-            echo sprintf(_('%s dayes ago'), $dayes)
+            echo sprintf(_('%s dayes ago'), $dayes);
         }
     }
-    echo '</a></td></tr>'
+    echo '</a></td></tr>';
 }
 
 ?></tbody></table></div><?php
