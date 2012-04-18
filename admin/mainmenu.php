@@ -40,12 +40,12 @@ if ($activityButtons) {
     ?><a class="menuboxheader" href="" onclick="showhide('Activity');"><?php echo _('Handlinger'); ?></a>
     <ul id="Activity"<?php
     if (!empty($_COOKIE['hideActivity'])) {
-        echo ' style="display:none"'
+        echo ' style="display:none"';
     }
     ?>><?php
 
     foreach ($activityButtons as $value) {
-        echo $value
+        echo $value;
     }
 
     ?><li><a href="./logout.php"><img src="images/door_in.png" width="16" height="16" alt="" /> <?php echo _('Log out'); ?></a></li></ul><?php
@@ -54,7 +54,7 @@ if ($activityButtons) {
   ?><a class="menuboxheader" href="" onclick="showhide('Indhold');"><?php echo _('Indhold'); ?></a>
   <ul id="Indhold"<?php
 if (!empty($_COOKIE['hideIndhold'])) {
-    echo ' style="display:none"'
+    echo ' style="display:none"';
 }
   ?>>
     <li><a href="./?side=nyside"><img src="images/page_add.png" width="16" height="16" alt="" /> <?php echo _('Create page'); ?></a></li>
@@ -74,7 +74,7 @@ if (!empty($_COOKIE['hideIndhold'])) {
   <a class="menuboxheader" href="" onclick="showhide('Suplemanger');"><?php echo _('Lists'); ?></a>
   <ul id="Suplemanger"<?php
 if (@$_COOKIE['hideSuplemanger']) {
-    echo ' style="display:none"'
+    echo ' style="display:none"';
 }
 ?>>
     <li><a href="./?side=krav"><img src="images/page_white_key.png" width="16" height="16" alt="" /> <?php echo _('Requirements'); ?></a></li>
@@ -84,7 +84,7 @@ if (@$_COOKIE['hideSuplemanger']) {
   <a class="menuboxheader" href="" onclick="showhide('Tools');"><?php echo _('Tools'); ?></a>
   <ul id="Tools"<?php
 if (@$_COOKIE['hideTools']) {
-    echo ' style="display:none"'
+    echo ' style="display:none"';
 }
   ?>>
     <li><a onclick="explorer('','');"><img src="images/folder_page_white.png" width="16" height="16" alt="" /> <?php echo _('Open file manager'); ?></a></li>

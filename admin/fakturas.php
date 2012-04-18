@@ -169,7 +169,7 @@ if ($oldest) {
 for ($i=$oldest;$i<date('Y')+1;$i++) {
     ?><option value="<?php echo $i; ?>"<?php
     if (@$_POST['y'] == $i || (@$_POST['y'] == '' && date('Y') == $i)) {
-        echo ' selected="selected"'
+        echo ' selected="selected"';
     }
     ?>><?php echo $i; ?></option><?php
 }
@@ -177,67 +177,67 @@ for ($i=$oldest;$i<date('Y')+1;$i++) {
 <select name="m">
     <option value=""<?php
 if (@!$_POST['m']) {
-    echo ' selected="selected"'
+    echo ' selected="selected"';
 }
 ?>><?php echo _('All'); ?></option>
     <option value="1"<?php
 if (@$_POST['m'] == '1') {
-    echo ' selected="selected"'
+    echo ' selected="selected"';
 }
 ?>><?php echo _('Jan'); ?></option>
     <option value="2"<?php
 if (@$_POST['m'] == '2') {
-    echo ' selected="selected"'
+    echo ' selected="selected"';
 }
 ?>><?php echo _('Feb'); ?></option>
     <option value="3"<?php
 if (@$_POST['m'] == '3') {
-    echo ' selected="selected"'
+    echo ' selected="selected"';
 }
 ?>><?php echo _('Mar'); ?></option>
     <option value="4"<?php
 if (@$_POST['m'] == '4') {
-    echo ' selected="selected"'
+    echo ' selected="selected"';
 }
 ?>><?php echo _('Apr'); ?></option>
     <option value="5"<?php
 if (@$_POST['m'] == '5') {
-    echo ' selected="selected"'
+    echo ' selected="selected"';
 }
 ?>><?php echo _('May'); ?></option>
     <option value="6"<?php
 if (@$_POST['m'] == '6') {
-    echo ' selected="selected"'
+    echo ' selected="selected"';
 }
 ?>><?php echo _('Jun'); ?></option>
     <option value="7"<?php
 if (@$_POST['m'] == '7') {
-    echo ' selected="selected"'
+    echo ' selected="selected"';
 }
 ?>><?php echo _('Jul'); ?></option>
     <option value="8"<?php
 if (@$_POST['m'] == '8') {
-    echo ' selected="selected"'
+    echo ' selected="selected"';
 }
 ?>><?php echo _('Aug'); ?></option>
     <option value="9"<?php
 if (@$_POST['m'] == '9') {
-    echo ' selected="selected"'
+    echo ' selected="selected"';
 }
 ?>><?php echo _('Sep'); ?></option>
     <option value="10"<?php
 if (@$_POST['m'] == '10') {
-    echo ' selected="selected"'
+    echo ' selected="selected"';
 }
 ?>><?php echo _('Oct'); ?></option>
     <option value="11"<?php
 if (@$_POST['m'] == '11') {
-    echo ' selected="selected"'
+    echo ' selected="selected"';
 }
 ?>><?php echo _('Nov'); ?></option>
     <option value="12"<?php
 if (@$_POST['m'] == '12') {
-    echo ' selected="selected"'
+    echo ' selected="selected"';
 }
 ?>><?php echo _('Dec'); ?></option>
 </select>
@@ -258,90 +258,96 @@ if (count($GLOBALS['_config']['email']) < 2)
 */
 
 
-$users = $mysqli->fetchArray("SELECT `fullname`, `name` FROM `users` ORDER BY `fullname` ASC");
+$users = $mysqli->fetchArray(
+    "
+    SELECT `fullname`, `name`
+    FROM `users`
+    ORDER BY `fullname` ASC
+    "
+);
 
 if (count($users) < 2) {
-    echo '<span style="display:none">'
+    echo '<span style="display:none">';
 }
 ?></td><td>
 <select name="clerk">
     <option value=""<?php
 if (!$_POST['clerk']) {
-    echo ' selected="selected"'
+    echo ' selected="selected"';
 }
 ?>><?php echo _('All'); ?></option><?php
 foreach ($users as $user) {
     //warning if a user name is a it could colide with all
     ?><option<?php
     if ($_POST['clerk'] == $user['fullname']) {
-        echo ' selected="selected"'
+        echo ' selected="selected"';
     }
     ?>><?php echo $user['fullname'] ?></option><?php
 }
 ?></select><?php
 if (count($users) < 2) {
-    echo '</span>'
+    echo '</span>';
 }
 ?></td><td>
 <select name="status">
     <option value=""<?php
 if (!$_POST['status']) {
-    echo ' selected="selected"'
+    echo ' selected="selected"';
 }
 ?>><?php echo _('All'); ?></option>
     <option value="activ"<?php
 if ($_POST['status'] == 'activ') {
-    echo ' selected="selected"'
+    echo ' selected="selected"';
 }
 ?>><?php echo _('Current'); ?></option>
     <option value="inactiv"<?php
 if ($_POST['status'] == 'inactiv') {
-    echo ' selected="selected"'
+    echo ' selected="selected"';
 }
 ?>><?php echo _('Completed'); ?></option>
     <option value="new"<?php
 if ($_POST['status'] == 'new') {
-    echo ' selected="selected"'
+    echo ' selected="selected"';
 }
 ?>><?php echo _('New'); ?></option>
     <option value="locked"<?php
 if ($_POST['status'] == 'locked') {
-    echo ' selected="selected"'
+    echo ' selected="selected"';
 }
 ?>><?php echo _('Locked'); ?></option>
     <option value="pbsok"<?php
 if ($_POST['status'] == 'pbsok') {
-    echo ' selected="selected"'
+    echo ' selected="selected"';
 }
 ?>><?php echo _('Ready'); ?></option>
     <option value="accepted"<?php
 if ($_POST['status'] == 'accepted') {
-    echo ' selected="selected"'
+    echo ' selected="selected"';
 }
 ?>><?php echo _('Expedited'); ?></option>
     <option value="giro"<?php
 if ($_POST['status'] == 'giro') {
-    echo ' selected="selected"'
+    echo ' selected="selected"';
 }
 ?>><?php echo _('Giro'); ?></option>
     <option value="cash"<?php
 if ($_POST['status'] == 'cash') {
-    echo ' selected="selected"'
+    echo ' selected="selected"';
 }
 ?>><?php echo _('Cash'); ?></option>
     <option value="pbserror"<?php
 if ($_POST['status'] == 'pbserror') {
-    echo ' selected="selected"'
+    echo ' selected="selected"';
 }
 ?>><?php echo _('Error'); ?></option>
     <option value="canceled"<?php
 if ($_POST['status'] == 'canceled') {
-    echo ' selected="selected"'
+    echo ' selected="selected"';
 }
 ?>><?php echo _('Canceled'); ?></option>
     <option value="rejected"<?php
 if ($_POST['status'] == 'rejected') {
-    echo ' selected="selected"'
+    echo ' selected="selected"';
 }
 ?>><?php echo _('Rejected'); ?></option>
 </select></td><td><input type="submit" value="Hent" /></td></tr></table>
@@ -366,30 +372,30 @@ if (empty($_POST['clerk'])) {
 foreach ($fakturas as $i => $faktura) {
     ?><tr<?php
     if ($i % 2 == 0) {
-        echo ' class="altbc"'
+        echo ' class="altbc"';
     }
     ?>>
     <td style="text-align:center"><a href="faktura.php?id=<?php echo $faktura['id'] ?>"><?php
     if ($faktura['status'] == 'new') {
-        echo '<img src="/admin/images/table.png" alt="'._('New').'" title="'._('New').'" />'
+        echo '<img src="/admin/images/table.png" alt="'._('New').'" title="'._('New').'" />';
     } elseif ($faktura['status'] == 'locked' && $faktura['sendt']) {
-        echo '<img src="/admin/images/email_go.png" alt="'._('Sent').'" title="'._('Sent to customer').'" />'
+        echo '<img src="/admin/images/email_go.png" alt="'._('Sent').'" title="'._('Sent to customer').'" />';
     } elseif ($faktura['status'] == 'locked') {
-        echo '<img src="/admin/images/lock.png" alt="'._('Locked').'" title="'._('Locked').'" />'
+        echo '<img src="/admin/images/lock.png" alt="'._('Locked').'" title="'._('Locked').'" />';
     } elseif ($faktura['status'] == 'pbsok') {
-        echo '<img src="/admin/images/money.png" alt="'._('Ready').'" title="'._('Ready').'" />'
+        echo '<img src="/admin/images/money.png" alt="'._('Ready').'" title="'._('Ready').'" />';
     } elseif ($faktura['status'] == 'accepted') {
-        echo '<img src="/admin/images/creditcards.png" alt="'._('Expedited').'" title="'._('Expedited').'" />'
+        echo '<img src="/admin/images/creditcards.png" alt="'._('Expedited').'" title="'._('Expedited').'" />';
     } elseif ($faktura['status'] == 'giro') {
-        echo '<img src="/admin/images/building.png" alt="'._('Giro').'" title="'._('Giro').'" />'
+        echo '<img src="/admin/images/building.png" alt="'._('Giro').'" title="'._('Giro').'" />';
     } elseif ($faktura['status'] == 'cash') {
-        echo '<img src="/admin/images/email.png" alt="'._('Cash').'" title="'._('Cash').'" />'
+        echo '<img src="/admin/images/email.png" alt="'._('Cash').'" title="'._('Cash').'" />';
     } elseif ($faktura['status'] == 'pbserror') {
-        echo '<img src="/admin/images/error.png" alt="'._('Error').'" title="'._('Error').'" />'
+        echo '<img src="/admin/images/error.png" alt="'._('Error').'" title="'._('Error').'" />';
     } elseif ($faktura['status'] == 'canceled') {
-        echo '<img src="/admin/images/bin.png" alt="'._('Canceled').'" title="'._('Canceled').'" />'
+        echo '<img src="/admin/images/bin.png" alt="'._('Canceled').'" title="'._('Canceled').'" />';
     } elseif ($faktura['status'] == 'rejected') {
-        echo '<img src="/admin/images/bin.png" alt="'._('Rejected').'" title="'._('Rejected').'" />'
+        echo '<img src="/admin/images/bin.png" alt="'._('Rejected').'" title="'._('Rejected').'" />';
     }
     //Efterkrav
     //Bank
@@ -400,16 +406,16 @@ foreach ($fakturas as $i => $faktura) {
     <?php
     if (!$_POST['clerk']) {
         ?><td><a href="faktura.php?id=<?php echo $faktura['id'] ?>"><?php
-        echo $faktura['clerk']
+        echo $faktura['clerk'];
         ?></a></td><?php
     }
     ?>
     <td style="text-align:right"><a href="faktura.php?id=<?php echo $faktura['id'] ?>"><?php echo number_format($faktura['amount'], 2, ',', '.'); ?></a></td>
     <td><a href="faktura.php?id=<?php echo $faktura['id']; ?>"><?php
     if (!$faktura['navn'] && $faktura['email']) {
-        echo $faktura['email']
+        echo $faktura['email'];
     } else {
-        echo $faktura['navn']
+        echo $faktura['navn'];
     }
     ?></a><div class="address"><?php
     echo $faktura['navn'].'<br/>'.

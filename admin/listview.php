@@ -1,5 +1,6 @@
 <?php
 require_once $_SERVER['DOCUMENT_ROOT'].'/admin/inc/logon.php';
+require_once $_SERVER['DOCUMENT_ROOT'].'/inc/header.php';
 ?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
@@ -48,37 +49,37 @@ img {
 --></style>
 </head><?php
 
-if ($_GET['sort'] == 'id') {
+if (@$_GET['sort'] == 'id') {
     $sort = 'id';
-} elseif ($_GET['sort'] == 'navn') {
+} elseif (@$_GET['sort'] == 'navn') {
     $sort = 'navn';
-} elseif ($_GET['sort'] == 'varenr') {
+} elseif (@$_GET['sort'] == 'varenr') {
     $sort = 'varenr';
-} elseif ($_GET['sort'] == 'for') {
+} elseif (@$_GET['sort'] == 'for') {
     $sort = '`for`';
-} elseif ($_GET['sort'] == 'pris') {
+} elseif (@$_GET['sort'] == 'pris') {
     $sort = 'pris';
-} elseif ($_GET['sort'] == 'dato') {
+} elseif (@$_GET['sort'] == 'dato') {
     $sort = 'dato';
-} elseif ($_GET['sort'] == 'maerke') {
+} elseif (@$_GET['sort'] == 'maerke') {
     $sort = 'maerke';
-} elseif ($_GET['sort'] == 'krav') {
+} elseif (@$_GET['sort'] == 'krav') {
     $sort = 'krav';
-} elseif ($_GET['sort'] == '-id') {
+} elseif (@$_GET['sort'] == '-id') {
     $sort = '-sider.`id`';
-} elseif ($_GET['sort'] == '-navn') {
+} elseif (@$_GET['sort'] == '-navn') {
     $sort = '-navn';
-} elseif ($_GET['sort'] == '-varenr') {
+} elseif (@$_GET['sort'] == '-varenr') {
     $sort = '-varenr';
-} elseif ($_GET['sort'] == '-for') {
+} elseif (@$_GET['sort'] == '-for') {
     $sort = '-`for`';
-} elseif ($_GET['sort'] == '-pris') {
+} elseif (@$_GET['sort'] == '-pris') {
     $sort = '-pris';
-} elseif ($_GET['sort'] == '-dato') {
+} elseif (@$_GET['sort'] == '-dato') {
     $sort = '-dato';
-} elseif ($_GET['sort'] == '-maerke') {
+} elseif (@$_GET['sort'] == '-maerke') {
     $sort = '-maerke';
-} elseif ($_GET['sort'] == '-krav') {
+} elseif (@$_GET['sort'] == '-krav') {
     $sort = '-krav';
 } else {
     $sort = 'navn';
@@ -108,14 +109,14 @@ $maerker = $mysqli->fetchArray("SELECT id, navn FROM `maerke`");
 foreach ($maerker as $maerke) {
     $temp[$maerke['id']] = htmlspecialchars($maerke['navn'], ENT_COMPAT | ENT_XHTML, 'UTF-8');
 }
-$maerker = $temp;
+$maerker = @$temp;
 unset($temp);
 
 $krav = $mysqli->fetchArray("SELECT id, navn FROM `krav`");
 foreach ($krav as $element) {
     $temp[$element['id']] = htmlspecialchars($element['navn'], ENT_COMPAT | ENT_XHTML, 'UTF-8');
 }
-$krav = $temp;
+$krav = @$temp;
 unset($temp);
 
 function print_kat($bind, $path_name)
@@ -123,7 +124,7 @@ function print_kat($bind, $path_name)
     global $mysqli;
     $kats = $mysqli->fetchArray("SELECT id, bind, navn FROM `kat` WHERE bind = ".$bind." ORDER BY navn");
     foreach ($kats as $kat) {
-        echo "\n".'  <tr class="path"><td colspan="8"><a href="?sort='.$_GET['sort'].'&amp;kat='.$kat['id'].'"><img src="images/find.png" alt="Vis" title="Vis kun denne kategori" /></a> '.$path_name.' &gt; <a href="/kat'.$kat['id'].'-">'.htmlspecialchars($kat['navn'], ENT_COMPAT | ENT_XHTML, 'UTF-8').'</a></td></tr>'
+        echo "\n".'  <tr class="path"><td colspan="8"><a href="?sort='.@$_GET['sort'].'&amp;kat='.$kat['id'].'"><img src="images/find.png" alt="Vis" title="Vis kun denne kategori" /></a> '.$path_name.' &gt; <a href="/kat'.$kat['id'].'-">'.htmlspecialchars($kat['navn'], ENT_COMPAT | ENT_XHTML, 'UTF-8').'</a></td></tr>';
         print_pages($kat['id']);
         print_kat($kat['id'], $path_name.' &gt; '.htmlspecialchars($kat['navn'], ENT_COMPAT | ENT_XHTML, 'UTF-8'));
     }
@@ -140,7 +141,7 @@ function print_pages($kat)
     foreach ($sider as $side) {
         echo '<tr';
     if ($altrow) {
-        echo ' class="altrow"'
+        echo ' class="altrow"';
         $altrow = 0;
     } else {
         $altrow = 1;
@@ -156,28 +157,25 @@ function print_pages($kat)
       <td>';
     $side['maerke'] = explode(',', $side['maerke']);
     foreach ($side['maerke'] as $maerke)
-        echo $maerker[$maerke].' '
-    echo '</td>
-      <td>'.$krav[$side['krav']].'</td>
-</tr>';
+        echo $maerker[$maerke].' </td><td>'.$krav[$side['krav']].'</td></tr>';
     }
 }
 
-if (is_numeric($_GET['kat'])) {
-    if ($_GET['kat'] > 0) {
+if (is_numeric(@$_GET['kat'])) {
+    if (@$_GET['kat'] > 0) {
         $kat = $mysqli->fetchOne("SELECT id, navn FROM `kat` WHERE id = ".$_GET['kat']);
-    } elseif ($_GET['kat'] == 0) {
+    } elseif (@$_GET['kat'] == 0) {
         $kat = array('id' => 0, 'navn' => 'Forside');
     } else {
         $kat = array('id' => -1, 'navn' => 'Indaktiv');
     }
-    echo "\n".'  <tr class="path"><td colspan="8"><a href="?sort='.$_GET['sort'].'"><img src="images/find.png" alt="Vis" title="Vis alle kategorier" /></a> <a href="/kat'.$kat['id'].'-">'.htmlspecialchars($kat['navn'], ENT_COMPAT | ENT_XHTML, 'UTF-8').'</a></td></tr>'
+    echo "\n".'  <tr class="path"><td colspan="8"><a href="?sort='.@$_GET['sort'].'"><img src="images/find.png" alt="Vis" title="Vis alle kategorier" /></a> <a href="/kat'.$kat['id'].'-">'.htmlspecialchars($kat['navn'], ENT_COMPAT | ENT_XHTML, 'UTF-8').'</a></td></tr>';
     print_pages($_GET['kat']);
 } else {
-    echo '<tr><td colspan="8" class="path"><a href="?sort='.$_GET['sort'].'&amp;kat=0"><img src="images/find.png" alt="Vis" title="Vis kun denne kategori" /></a> <a href="/">Forside</a></td></tr>'
+    echo '<tr><td colspan="8" class="path"><a href="?sort='.@$_GET['sort'].'&amp;kat=0"><img src="images/find.png" alt="Vis" title="Vis kun denne kategori" /></a> <a href="/">Forside</a></td></tr>';
     print_pages(0);
     print_kat(0, 'Forside');
-    echo '<tr><td colspan="8" class="path"><a href="?sort='.$_GET['sort'].'&amp;kat=-1"><img src="images/find.png" alt="Vis" title="Vis kun denne kategori" /></a> Indaktiv</td></tr>'
+    echo '<tr><td colspan="8" class="path"><a href="?sort='.@$_GET['sort'].'&amp;kat=-1"><img src="images/find.png" alt="Vis" title="Vis kun denne kategori" /></a> Indaktiv</td></tr>';
     print_pages(-1);
     print_kat(-1, 'Indaktiv');
 }
