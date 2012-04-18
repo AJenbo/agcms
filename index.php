@@ -139,7 +139,7 @@ function menu($nr, $custom_sort_subs = false)
             ) {
                 $GLOBALS['cache']['kats'][$value['id']]['skriv'] = true;
             } elseif ($value['sub']) {
-                null
+                $GLOBALS['cache']['kats'][$value['id']]['skriv'] = null;
             }
             $GLOBALS['cache']['kats'][$value['id']]['vis'] = $value['vis'];
 
@@ -357,7 +357,7 @@ if (@$_GET['kat'] || @$_GET['side']) {
          * Get kat navn hvis der ikke var en side eller
          * kat ikke var standard for siden.
          */
-        $kat_id = fullMysqliEscape($_GET['kat']));
+        $kat_id = fullMysqliEscape($_GET['kat']);
 
         if (!$GLOBALS['cache']['kats'][$kat_id]['navn']) {
             $kats = $mysqli->fetchArray(

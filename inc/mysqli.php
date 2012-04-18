@@ -84,7 +84,7 @@ class Simple_Mysqli extends mysqli
         $row = $this->fetchArray($query);
         $row = $row[0];
 
-        if (!isset($row])) {
+        if (!isset($row)) {
             $row = array();
         }
 
