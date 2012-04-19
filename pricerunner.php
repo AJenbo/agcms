@@ -66,7 +66,9 @@ if ($sider) {
 }
 
 header("Content-Type: application/xml");
-doConditionalGet($sider[0]['dato']);
+if ($sider) {
+    doConditionalGet($sider[0]['dato']);
+}
 
 $search = array (
     '@<script[^>]*?>.*?</script>@si', // Strip out javascript

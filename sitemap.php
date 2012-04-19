@@ -11,8 +11,8 @@
  * @link     http://www.arms-gallery.dk/
  */
 
-header("Content-Type:text/xml;charset=utf-8");
-echo '<?xml version="1.0" encoding="utf-8" ?>'
+header('Content-Type:text/xml;charset=utf-8');
+echo '<?xml version="1.0" encoding="utf-8" ?>';
 
 require_once 'inc/config.php';
 require_once 'inc/mysqli.php';

@@ -84,7 +84,7 @@ var mode = '<?php echo $_GET['mode'] ?>';
 var filename = '<?php
 if ($_GET['mode'] == 'thb') {
     $pathinfo = pathinfo($_GET['path']);
-    echo $pathinfo['filename'].'-thb'
+    echo $pathinfo['filename'] . '-thb';
 }
 ?>';
 var thumb_width = <?php echo $GLOBALS['_config']['thumb_width'] ?>;

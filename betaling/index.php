@@ -1101,7 +1101,7 @@ Remember to \'expedite\' the payment when the product is sent (The payment is fi
 
             include_once 'inc/countries.php';
             $withTax = $faktura['amount'] - $faktura['fragt'];
-            $tax = $withTax * (1 - (1 / (1 + $faktura['momssats'])))
+            $tax = $withTax * (1 - (1 / (1 + $faktura['momssats'])));
 
             $GLOBALS['generatedcontent']['track'] = ' pageTracker._addTrans("'
             . $faktura['id'] . '", "", "' . $faktura['amount'] . '", "'

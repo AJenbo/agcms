@@ -46,11 +46,11 @@ if (!empty($_FILES['Filedata']['tmp_name'])
     );
     //Kunne ikke give tilladelse til filen.
     header('HTTP/1.1 505 Internal Server Error');
-    chmod($_SERVER['DOCUMENT_ROOT'].'/upload/temp/'.$name, 0644);
+    chmod($_SERVER['DOCUMENT_ROOT'] . '/upload/temp/' . $name, 0644);
     //Mangler get_mime_type.php
     header('HTTP/1.1 510 Internal Server Error');
     include_once '../admin/inc/get_mime_type.php';
-    $mime = get_mime_type('/upload/temp/'.$name);
+    $mime = get_mime_type('/upload/temp/' . $name);
     //Kunne ikke finde billed størelsen.
     header('HTTP/1.1 512 Internal Server Error');
 
@@ -60,7 +60,7 @@ if (!empty($_FILES['Filedata']['tmp_name'])
         || $mime == 'image/png'
         || $mime == 'image/vnd.wap.wbmp')
     ) {
-        $imagesize = getimagesize($_SERVER['DOCUMENT_ROOT'].'/upload/temp/'.$name);
+        $imagesize = getimagesize($_SERVER['DOCUMENT_ROOT'] . '/upload/temp/' . $name);
     } else {
         $imagesize[0] = $_GET['x'];
         $imagesize[1] = $_GET['y'];

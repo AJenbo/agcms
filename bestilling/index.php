@@ -57,7 +57,7 @@ if (is_numeric(@$_GET['add']) || is_numeric(@$_GET['add_list_item'])) {
             }
         }
     } elseif (is_numeric(@$_GET['add'])) {
-        $product = $mysqli->fetchOne(w'SELECT `navn`, `pris`, `fra` FROM `sider` WHERE id = '.$_GET['add']);
+        $product = $mysqli->fetchOne('SELECT `navn`, `pris`, `fra` FROM `sider` WHERE id = '.$_GET['add']);
 
         if (!$goto_uri) {
             $goto_uri = '/?side='.$_GET['add'];

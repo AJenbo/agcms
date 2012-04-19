@@ -8,6 +8,7 @@ textdomain("agcms");
 
 require_once $_SERVER['DOCUMENT_ROOT'].'/admin/inc/logon.php';
 if (@$_POST['filename']) {
+    header('Content-Type: text/plain');
     include_once 'inc/file-functions.php';
     $pathinfo = pathinfo($_POST['filename']);
 

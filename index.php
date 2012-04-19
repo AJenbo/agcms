@@ -904,7 +904,7 @@ if (@$maerkeet) {
 if (empty($GLOBALS['generatedcontent']['title'])
     && @$activMenu > 0
 ) {
-    if (!$GLOBALS['cache']['kats'][$activMenu]['navn']) {
+    if (!@$GLOBALS['cache']['kats'][$activMenu]['navn']) {
         $kat_navn = $mysqli->fetchArray(
             "
             SELECT navn, vis
@@ -915,8 +915,7 @@ if (empty($GLOBALS['generatedcontent']['title'])
         );
 
         getUpdateTime('kat');
-
-        $GLOBALS['cache']['kats'][$activMenu] = $kat_navn[0];
+        $GLOBALS['cache']['kats'][$activMenu] = (int) @$kat_navn[0];
     }
 
     $GLOBALS['generatedcontent']['title'] = htmlspecialchars(
@@ -988,7 +987,7 @@ if (@$activMenu > 0) {
 
     getUpdateTime('kat');
 
-    if ($email[0]['email']) {
+    if (@$email[0]['email']) {
         $GLOBALS['generatedcontent']['email'] = $email[0]['email'];
     }
 }
