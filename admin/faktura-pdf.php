@@ -161,7 +161,6 @@ if ($faktura['postpostbox']) {
 }
 if ($faktura['postpostalcode']) {
     $address .= "\n".$faktura['postpostalcode'].' '.$faktura['postcity'];
-}
 } elseif ($faktura['postcity']) {
     $address .= "\n".$faktura['postcity'];
 }

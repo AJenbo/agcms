@@ -128,7 +128,7 @@ if ($_POST) {
         $mysqli->query("INSERT INTO `emails` (`subject`, `from`, `to`, `body`, `date`) VALUES ('".$mail->Subject."', '".$GLOBALS['_config']['site_name']."<".$GLOBALS['_config']['email'][0].">', '".$GLOBALS['_config']['site_name']."<".$GLOBALS['_config']['email'][0].">', '".$emailbody."', NOW());");
     }
 
-    echo '<p style="text-align: center; margin-top: 20px;">'._('Your account has been created. An administrator will evaluate it shortly.').'</p>'
+    echo '<p style="text-align: center; margin-top: 20px;">'._('Your account has been created. An administrator will evaluate it shortly.').'</p>';
 }
 ?>
 </body>
