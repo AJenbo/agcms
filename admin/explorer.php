@@ -75,7 +75,7 @@ function showfiles($temp_dir)
             $fileinfo[0]['size'] = $size;
             global $mysqli;
             $fileinfo[0]['id'] = $mysqli->insert_id;
-//			$fileinfo[0]['aspect'] = NULL;
+//          $fileinfo[0]['aspect'] = NULL;
             unset($imagesize);
             unset($mime);
         }
@@ -202,7 +202,7 @@ $html .= '<div id="tilebox'.$fileinfo['id'].'" class="videotile"><div class="ima
         default:
 $html .= '<div id="tilebox'.$fileinfo['id'].'" class="filetile"><div class="image"';
             if ($_GET['return']=='rtef') {
-                $html .= ' onclick=\"addfile('.$fileinfo['id'].')"';
+                $html .= ' onclick="addfile('.$fileinfo['id'].')"';
             } else/*if ($mode=='file')*/ {
                 $html .= ' onclick="files['.$fileinfo['id'].'].openfile();"';
             }
