@@ -151,7 +151,7 @@ if (count($_POST)) {
 /**
  * Checks if email an address looks valid and that an mx server is responding
  *
- * @param strin $email The email address to check
+ * @param string $email The email address to check
  *
  * @return bool
  */
@@ -166,7 +166,6 @@ function validemail($email)
         return false;
     }
 }
-
 
 /**
  * Checks that all nessesery contact information has been filled out correctly
@@ -893,7 +892,6 @@ if (!empty($_SESSION['faktura']['quantities'])) {
         );
 
         if ($mail->Send()) {
-
             //Upload email to the sent folder via imap
             if ($GLOBALS['_config']['imap']) {
                 include_once $_SERVER['DOCUMENT_ROOT'].'/inc/imap.php';

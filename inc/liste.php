@@ -34,12 +34,13 @@ function vare($side, $katnavn, $type)
         );
         $GLOBALS['generatedcontent']['activmenu'] = $bind[0]['kat'];
         if (!@$GLOBALS['cache']['kats'][$bind[0]['kat']]['navn']) {
-            if ($kat = $mysqli->fetchArray(
+            $kat = $mysqli->fetchArray(
                 "
                 SELECT navn, vis
                 FROM kat
-                WHERE id = " . $bind[0]['kat'])
-            ) {
+                WHERE id = " . $bind[0]['kat']
+            );
+            if ($kat) {
                 getUpdateTime('kat');
 
                 $GLOBALS['cache']['kats'][$bind[0]['kat']]['navn'] = $kat[0]['navn'];
@@ -87,6 +88,15 @@ function vare($side, $katnavn, $type)
     }
 }
 
+/**
+ * Crope a string to a given max lengt, round by word
+ *
+ * @param string $string String to crope
+ * @param int    $length Crope length
+ * @param string $ellipsis String to add at the end, with in the limit
+ *
+ * @return string
+ */
 function stringLimit($string, $length = 50, $ellipsis = '…')
 {
     if (mb_strlen($string) > $length) {

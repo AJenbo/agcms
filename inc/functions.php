@@ -13,6 +13,10 @@
 
 /**
  * Get last update time for table
+ *
+ * @param string $table Table name
+ *
+ * @return null
  */
 function getUpdateTime($table)
 {
@@ -24,7 +28,11 @@ function getUpdateTime($table)
 }
 
 /**
- * Er der sider bundet til katagorien
+ * Check if there are pages connected to a category
+ *
+ * @param int $id Category id
+ *
+ * @return bool
  */
 function skriv($id)
 {
@@ -83,7 +91,11 @@ function skriv($id)
 }
 
 /**
- * Har denne katagori under katagorier med indhould
+ * Test if category contain categories with content
+ *
+ * @param int $kat Category id
+ *
+ * @return bool
  */
 function subs($kat)
 {
@@ -103,11 +115,20 @@ function subs($kat)
     foreach ($sub as $value) {
         //er der sider bundet til katagorien
         if (skriv($value['id'])) {
-            return 1;
+            return true;
         }
     }
+
+    return false;
 }
 
+/**
+ * Generate safe file name
+ *
+ * @param string $name String to clean
+ *
+ * @return string
+ */
 function clear_file_name($name)
 {
     $search = array(
@@ -119,7 +140,17 @@ function clear_file_name($name)
     return preg_replace($search, $replace, $name);
 }
 
-function array_natsort($aryData, $strIndex, $strSortBy, $strSortType=false)
+/**
+ * Natsort an array
+ *
+ * @param array  $aryData     Array to sort
+ * @param string $strIndex    Key of unique id
+ * @param string $strSortBy   Key to sort by
+ * @param string $strSortType Revers sorting
+ *
+ * @return array
+ */
+function array_natsort($aryData, $strIndex, $strSortBy, $strSortType = false)
 {
     //Make sure the sort by is a string
     $strSortBy .= '';
@@ -142,7 +173,11 @@ function array_natsort($aryData, $strIndex, $strSortBy, $strSortType=false)
     //loop through the array
     foreach ($aryData as $aryRow) {
         //set up the value in the array
-        $arySort[$aryRow[$strIndex]] = str_replace($match, $replace, $aryRow[$strSortBy]);
+        $arySort[$aryRow[$strIndex]] = str_replace(
+            $match,
+            $replace,
+            $aryRow[$strSortBy]
+        );
     }
 
     //apply the natural sort
@@ -233,17 +268,16 @@ function array_listsort($aryData, $strIndex, $strSortBy, $strSortType = false, $
 }
 
 /**
- * Quick function to trim arrays
+ * Apply trim to a multi dimentional array
+ *
+ * @param array $totrim Array to trim
+ *
+ * @return array
  */
-function trim_value(&$value)
-{
-    $value = trim($value);
-}
-
-function trim_array($totrim)
+function trimArray($totrim)
 {
     if (is_array($totrim)) {
-        $totrim = array_map("trim_array", $totrim);
+        $totrim = array_map("trimArray", $totrim);
     } else {
         $totrim = trim($totrim);
     }
@@ -251,7 +285,7 @@ function trim_array($totrim)
 }
 
 /**
- * return html for a sorted table
+ * Return html for a sorted table
  */
 function get_table($listid, $bycell, $current_kat)
 {
@@ -296,7 +330,13 @@ function get_table($listid, $bycell, $current_kat)
         if ($lists[0]['sorts'][$bycell] < 1) {
             $rows = array_natsort($rows, 'id', $bycell);
         } else {
-            $rows = array_listsort($rows, 'id', $bycell, null, $lists[0]['sorts'][$bycell]);
+            $rows = array_listsort(
+                $rows,
+                'id',
+                $bycell,
+                null,
+                $lists[0]['sorts'][$bycell]
+            );
         }
 
         //unset temp holder for rows
@@ -327,7 +367,8 @@ function get_table($listid, $bycell, $current_kat)
                     LIMIT 1
                     "
                 );
-                $row['link'] = '<a href="/kat'.$current_kat.'-'.clear_file_name($sider[0]['kat_navn']).'/side'.$row['link'].'-'.clear_file_name($sider[0]['navn']).'.html">';
+                $row['link'] = '<a href="/kat'.$current_kat.'-'.clear_file_name($sider[0]['kat_navn'])
+                .'/side'.$row['link'].'-'.clear_file_name($sider[0]['navn']).'.html">';
             }
             foreach ($lists[0]['cells'] as $key => $type) {
                 if (empty($row[$key])) {
@@ -366,7 +407,11 @@ function get_table($listid, $bycell, $current_kat)
                         $html .= $row['link'];
                     }
                     if (is_numeric(@$row[$key])) {
-                        $html .= str_replace(',00', ',-', number_format($row[$key], 2, ',', '.'));
+                        $html .= str_replace(
+                            ',00',
+                            ',-',
+                            number_format($row[$key], 2, ',', '.')
+                        );
                     } else {
                         $html .= @$row[$key];
                     }
@@ -383,7 +428,11 @@ function get_table($listid, $bycell, $current_kat)
                         $html .= $row['link'];
                     }
                     if (is_numeric(@$row[$key])) {
-                        $html .= str_replace(',00', ',-', number_format($row[$key], 2, ',', '.'));
+                        $html .= str_replace(
+                            ',00',
+                            ',-',
+                            number_format($row[$key], 2, ',', '.')
+                        );
                     } else {
                         $html .= @$row[$key];
                     }
@@ -400,7 +449,11 @@ function get_table($listid, $bycell, $current_kat)
                         $html .= $row['link'];
                     }
                     if (is_numeric(@$row[$key])) {
-                        $html .= str_replace(',00', ',-', number_format($row[$key], 2, ',', '.'));
+                        $html .= str_replace(
+                            ',00',
+                            ',-',
+                            number_format($row[$key], 2, ',', '.')
+                        );
                     }
                     if ($row['link']) {
                         $html .= '</a>';
@@ -446,7 +499,10 @@ function get_table($listid, $bycell, $current_kat)
     $updatetime = 0;
     $included_files = get_included_files();
     foreach ($included_files as $filename) {
-        $GLOBALS['cache']['updatetime']['filemtime'] = max($GLOBALS['cache']['updatetime']['filemtime'], filemtime($filename));
+        $GLOBALS['cache']['updatetime']['filemtime'] = max(
+            $GLOBALS['cache']['updatetime']['filemtime'],
+            filemtime($filename)
+        );
     }
     foreach ($GLOBALS['cache']['updatetime'] as $time) {
         $updatetime = max($updatetime, $time);
@@ -478,7 +534,7 @@ function echo_table($sideid, $mansort, $desc)
 
     foreach ($tablesort as $value) {
         $GLOBALS['tablesort_navn'][] = $value['navn'];
-        $GLOBALS['tablesort'][] = trim_array(explode(',', $value['text']));
+        $GLOBALS['tablesort'][] = trimArray(explode(',', $value['text']));
     }
     //----------------------------------
 
@@ -494,7 +550,11 @@ function echo_table($sideid, $mansort, $desc)
     foreach ($lists as $list) {
         $html = '<div id="table'.$list['id'].'">';
 
-        $table_html = get_table($list['id'], null, $GLOBALS['generatedcontent']['activmenu']);
+        $table_html = get_table(
+            $list['id'],
+            null,
+            $GLOBALS['generatedcontent']['activmenu']
+        );
         $html .= $table_html['html'];
         $html .= '</div>';
     }
@@ -507,18 +567,29 @@ function echo_table($sideid, $mansort, $desc)
 }
 
 /**
- * Find stien til katagorien
+ * Get alle gategories leading up a given one
+ *
+ * @param int $id Id of the end category
+ *
+ * @return array Ids of all the categories leading up to $id
  */
 function kats($id)
 {
     global $mysqli;
 
-    $kat = $mysqli->fetchArray('SELECT bind FROM kat WHERE id = '.$id);
+    $kat = $mysqli->fetchOne(
+        "
+        SELECT bind
+        FROM kat
+        WHERE id = " . (int) $id . "
+        LIMIT 1
+        "
+    );
 
     getUpdateTime('kat');
 
     if ($kat) {
-        $data =  kats($kat[0]['bind']);
+        $data =  kats($kat['bind']);
         $nr = count($data);
         $kats[0] = $id;
         foreach ($data as $value) {
@@ -535,23 +606,28 @@ function kats($id)
 
 /**
  * Search for root.
+ *
+ * @param int $bind Kategory id
+ *
+ * @return int Kategory id of the root branch where $bind belongs to
  */
 function binding($bind)
 {
     global $mysqli;
 
     if ($bind > 0) {
-        $sog_kat = $mysqli->fetchArray(
+        $sog_kat = $mysqli->fetchOne(
             "
             SELECT `bind`
             FROM `kat`
             WHERE id = '" . $bind . "'
+            LIMIT 1
             "
         );
 
         getUpdateTime('kat');
 
-        return binding($sog_kat[0]['bind']);
+        return binding($sog_kat['bind']);
     } else {
         return $bind;
     }
@@ -559,6 +635,10 @@ function binding($bind)
 
 /**
  * Used with array_filter() to make a 2d array uniqe
+ *
+ * @param array $array Row with key id to make unique
+ *
+ * @return bool False if id is already seen
  */
 function uniquecol($array)
 {
