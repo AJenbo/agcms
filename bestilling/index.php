@@ -1,4 +1,16 @@
 <?php
+/**
+ * Page for sending an order request
+ *
+ * PHP version 5
+ *
+ * @category AGCMS
+ * @package  AGCMS
+ * @author   Anders Jenbo <anders@jenbo.dk>
+ * @license  GPLv2 http://www.gnu.org/licenses/gpl-2.0.html
+ * @link     http://www.arms-gallery.dk/
+ */
+
 /**/
 ini_set('display_errors', 1);
 error_reporting(-1);
@@ -30,15 +42,29 @@ if (is_numeric(@$_GET['add']) || is_numeric(@$_GET['add_list_item'])) {
     }
 
     if (is_numeric(@$_GET['add_list_item'])) {
-        $list_row = $mysqli->fetchOne('SELECT * FROM `list_rows` WHERE id = '.$_GET['add_list_item']);
+        $list_row = $mysqli->fetchOne(
+            "
+            SELECT *
+            FROM `list_rows`
+            WHERE id = " . (int) $_GET['add_list_item']
+        );
         if ($list_row['link']) {
-            $product = $mysqli->fetchOne('SELECT `navn`, `pris`, `fra` FROM `sider` WHERE id = '.$list_row['link']);
+            $product = $mysqli->fetchOne(
+                "
+                SELECT `navn`, `pris`, `fra`
+                FROM `sider`
+                WHERE id = " . (int) $list_row['link']
+            );
 
             if (!$goto_uri) {
                 $goto_uri = '/?side='.$product['link'];
             }
         } else {
-            $list = $mysqli->fetchOne('SELECT `page_id`, `cells` FROM `lists` WHERE id = '.$list_row['list_id']);
+            $list = $mysqli->fetchOne(
+                "
+                SELECT `page_id`, `cells`
+                FROM `lists` WHERE id = " . (int) $list_row['list_id']
+            );
             $list['cells'] = explode('<', $list['cells']);
             $list_row['cells'] = explode('<', $list_row['cells']);
             $product['navn'] = '';
@@ -57,10 +83,14 @@ if (is_numeric(@$_GET['add']) || is_numeric(@$_GET['add_list_item'])) {
             }
         }
     } elseif (is_numeric(@$_GET['add'])) {
-        $product = $mysqli->fetchOne('SELECT `navn`, `pris`, `fra` FROM `sider` WHERE id = '.$_GET['add']);
+        $product = $mysqli->fetchOne(
+            "SELECT `navn`, `pris`, `fra`
+            FROM `sider`
+            WHERE id = " . (int) $_GET['add']
+        );
 
         if (!$goto_uri) {
-            $goto_uri = '/?side='.$_GET['add'];
+            $goto_uri = '/?side=' . (int) $_GET['add'];
         }
     }
 
@@ -118,6 +148,13 @@ if (count($_POST)) {
     }
 }
 
+/**
+ * Checks if email an address looks valid and that an mx server is responding
+ *
+ * @param strin $email The email address to check
+ *
+ * @return bool
+ */
 function validemail($email)
 {
     if ($email
@@ -130,9 +167,18 @@ function validemail($email)
     }
 }
 
+
+/**
+ * Checks that all nessesery contact information has been filled out correctly
+ *
+ * @param array $values Keys are: email, navn, land, postbox, adresse, postnr, by,
+ *                      altpost (bool), postname, postpostbox, postaddress,
+ *                      postcountry, postpostalcode, postcity
+ *
+ * @return array Key with bool true for each faild feald
+ */
 function validate($values)
 {
-
     $rejected = array();
 
     if (!validemail(@$values['email'])) {
@@ -144,7 +190,9 @@ function validate($values)
     if (empty($values['land'])) {
         $rejected['land'] = true;
     }
-    if ((empty($values['adresse']) || ($values['land'] == 'DK' && !preg_match('/\s/ui', @$values['adresse']))) && empty($values['postbox'])) {
+    if (empty($values['postbox'])
+        && (empty($values['adresse']) || ($values['land'] == 'DK' && !preg_match('/\s/ui', @$values['adresse'])))
+    ) {
         $rejected['adresse'] = true;
     }
     if (empty($values['postnr'])) {
@@ -164,7 +212,9 @@ function validate($values)
         if (empty($values['land'])) {
             $rejected['land'] = true;
         }
-        if ((empty($values['postaddress']) || ($values['postcountry'] == 'DK' && !preg_match('/\s/ui', $values['postaddress']))) && empty($values['postpostbox'])) {
+        if (empty($values['postpostbox'])
+            && (empty($values['postaddress']) || ($values['postcountry'] == 'DK' && !preg_match('/\s/ui', $values['postaddress'])))
+        ) {
             $rejected['postaddress'] = true;
         }
         if (empty($values['postpostalcode'])) {
@@ -183,7 +233,11 @@ function validate($values)
 
 //Generate return page
 $GLOBALS['generatedcontent']['crumbs'] = array();
-$GLOBALS['generatedcontent']['crumbs'][0] = array('name' => _('Payment'), 'link' => '/', 'icon' => null);
+$GLOBALS['generatedcontent']['crumbs'][0] = array(
+    'name' => _('Payment'),
+    'link' => '/',
+    'icon' => null
+);
 
 $GLOBALS['generatedcontent']['contenttype'] = 'page';
 $GLOBALS['generatedcontent']['text'] = '';
@@ -206,17 +260,25 @@ if (!empty($_SESSION['faktura']['quantities'])) {
             $_SESSION['faktura']['products'] = array_values($_SESSION['faktura']['products']);
             $_SESSION['faktura']['values'] = array_values($_SESSION['faktura']['values']);
 
-            header('Location: '.$GLOBALS['_config']['base_url'].'/bestilling/?step=1', true, 303);
+            header(
+                'Location: '.$GLOBALS['_config']['base_url'].'/bestilling/?step=1',
+                true,
+                303
+            );
             exit;
         }
 
         $_SESSION['faktura']['amount'] = 0;
         foreach ($_SESSION['faktura']['quantities'] as $i => $quantity) {
-            $_SESSION['faktura']['amount'] += $_SESSION['faktura']['values'][$i]*$quantity;
+            $_SESSION['faktura']['amount'] += $_SESSION['faktura']['values'][$i] * $quantity;
         }
 
         $GLOBALS['generatedcontent']['crumbs'] = array();
-        $GLOBALS['generatedcontent']['crumbs'][1] = array('name' => _('Place order'), 'link' => '#', 'icon' => null);
+        $GLOBALS['generatedcontent']['crumbs'][1] = array(
+            'name' => _('Place order'),
+            'link' => '#',
+            'icon' => null
+        );
         $GLOBALS['generatedcontent']['title'] = _('Place order');
         $GLOBALS['generatedcontent']['headline'] = _('Place order');
 
@@ -258,7 +320,7 @@ if (!empty($_SESSION['faktura']['quantities'])) {
             }
             $GLOBALS['generatedcontent']['text'] .= '</td><td class="tal total">';
             if (is_numeric($_SESSION['faktura']['values'][$i])) {
-                $GLOBALS['generatedcontent']['text'] .= number_format($_SESSION['faktura']['values'][$i]*$quantity, 2, ',', '');
+                $GLOBALS['generatedcontent']['text'] .= number_format($_SESSION['faktura']['values'][$i] * $quantity, 2, ',', '');
             } else {
                 $GLOBALS['generatedcontent']['text'] .= '*';
             }
@@ -400,7 +462,11 @@ if (!empty($_SESSION['faktura']['quantities'])) {
                     );
                 }
 
-                header('Location: '.$GLOBALS['_config']['base_url'].'/bestilling/?step=2', true, 303);
+                header(
+                    'Location: '.$GLOBALS['_config']['base_url'].'/bestilling/?step=2',
+                    true,
+                    303
+                );
                 exit;
             }
         } else {
@@ -616,7 +682,11 @@ if (!empty($_SESSION['faktura']['quantities'])) {
         $GLOBALS['generatedcontent']['text'] .= '</tbody></table><input style="font-weight:bold;" type="submit" value="'._('Send order').'" /></form>';
     } elseif ($_GET['step'] == 2) {
         if (!$_SESSION['faktura'] || !$_SESSION['faktura']['email']) {
-            header('Location: '.$GLOBALS['_config']['base_url'].'/bestilling/', true, 303);
+            header(
+                'Location: '.$GLOBALS['_config']['base_url'].'/bestilling/',
+                true,
+                303
+            );
             exit;
         }
 
@@ -703,16 +773,17 @@ if (!empty($_SESSION['faktura']['quantities'])) {
             <tbody>';
         foreach ($_SESSION['faktura']['quantities'] as $i => $quantity) {
             $emailbody .= '<tr>
-                <td class="tal">'.$quantity.'</td>
-                <td>'.$_SESSION['faktura']['products'][$i].'</td>
-                <td class="tal">'.number_format($_SESSION['faktura']['values'][$i], 2, ',', '').'</td>
-                <td class="tal">'.number_format($_SESSION['faktura']['values'][$i]*$quantity, 2, ',', '').'</td>
+                <td class="tal">' . $quantity . '</td>
+                <td>' . $_SESSION['faktura']['products'][$i] . '</td>
+                <td class="tal">' . number_format($_SESSION['faktura']['values'][$i], 2, ',', '') . '</td>
+                <td class="tal">' . number_format($_SESSION['faktura']['values'][$i] * $quantity, 2, ',', '') . '</td>
             </tr>';
         }
         $emailbody .= '</tbody></table>';
 
         //Note
-        $emailbody .= '<p><b>'._('Note:').'</b><br />'.nl2br($_SESSION['faktura']['note'], true).'</p>';
+        $emailbody .= '<p><b>' . _('Note:') . '</b><br />'
+        . nl2br($_SESSION['faktura']['note'], true) . '</p>';
 
         //Address
         $emailbody .= '<p><b>' ._('Address:') .'</b>';
@@ -729,7 +800,8 @@ if (!empty($_SESSION['faktura']['quantities'])) {
             $emailbody .= '<br />'.$_SESSION['faktura']['postbox'];
         }
         if ($_SESSION['faktura']['by']) {
-            $emailbody .= '<br />'.$_SESSION['faktura']['postnr'].' '.$_SESSION['faktura']['by'];
+            $emailbody .= '<br />' . $_SESSION['faktura']['postnr']
+            . ' ' . $_SESSION['faktura']['by'];
         }
         if ($_SESSION['faktura']['land'] != 'DK') {
             include_once 'inc/countries.php';
@@ -756,27 +828,36 @@ if (!empty($_SESSION['faktura']['quantities'])) {
                 $emailbody .= '<br />'.$_SESSION['faktura']['postpostbox'];
             }
             if ($_SESSION['faktura']['postcity']) {
-                $emailbody .= '<br />'.$_SESSION['faktura']['postpostalcode'].' '.$_SESSION['faktura']['postcity'];
+                $emailbody .= '<br />' . $_SESSION['faktura']['postpostalcode']
+                . ' ' . $_SESSION['faktura']['postcity'];
             }
             if ($_SESSION['faktura']['postcountry'] != 'DK') {
                 include_once 'inc/countries.php';
-                $emailbody .= '<br />'._($countries[$_SESSION['faktura']['postcountry']]);
+                $emailbody .= '<br />'
+                . _($countries[$_SESSION['faktura']['postcountry']]);
             }
             $emailbody .= '</p>';
         }
 
         //Admin link
-        $emailbody .= '<p>'.sprintf(_('Click <a href="%s">here</a> to expedite the order.'), $GLOBALS['_config']['base_url'].'/admin/faktura.php?id='.$id).'</p>';
+        $msg = sprintf(
+            _('Click <a href="%s">here</a> to expedite the order.'),
+            $GLOBALS['_config']['base_url'] . '/admin/faktura.php?id=' . $id
+        );
+        $emailbody .= '<p>' . $msg . '</p>';
 
         //Contact
-        $emailbody .= '<p>'._('email:').' <a href="mailto:'.$_SESSION['faktura']['email'].'">'.$_SESSION['faktura']['email'].'</a>';
+        $emailbody .= '<p>' . _('email:') .
+        ' <a href="mailto:' . $_SESSION['faktura']['email'] . '">'
+        . $_SESSION['faktura']['email'] . '</a>';
         if ($_SESSION['faktura']['tlf1']) {
             $emailbody .= ' '._('Phone:').' '.$_SESSION['faktura']['tlf1'];
         }
         if ($_SESSION['faktura']['tlf2']) {
             $emailbody .= ' '._('Mobil:').' '.$_SESSION['faktura']['tlf2'];
         }
-        $emailbody .= '</p><p>'._('Sincerely the computer').'</p></body></html></body></html>';
+        $emailbody .= '</p><p>' . _('Sincerely the computer')
+        . '</p></body></html></body></html>';
 
         //Email headers
         include_once "inc/phpMailer/class.phpmailer.php";
@@ -791,19 +872,25 @@ if (!empty($_SESSION['faktura']['quantities'])) {
         } else {
             $mail->SMTPAuth   = false;
         }
-        $mail->Host       = $GLOBALS['_config']['smtp'];      // sets the SMTP server
-        $mail->Port       = $GLOBALS['_config']['smtpport'];              //  password
+        $mail->Host       = $GLOBALS['_config']['smtp'];
+        $mail->Port       = $GLOBALS['_config']['smtpport'];
         $mail->CharSet    = 'utf-8';
         $mail->From       = $GLOBALS['_config']['email'][0];
         $mail->FromName   = $GLOBALS['_config']['site_name'];
 
-        $mail->AddReplyTo($_SESSION['faktura']['email'], $_SESSION['faktura']['navn']);
+        $mail->AddReplyTo(
+            $_SESSION['faktura']['email'],
+            $_SESSION['faktura']['navn']
+        );
 
         $mail->Subject    = _('Online order #').$id;
         $mail->MsgHTML($emailbody, $_SERVER['DOCUMENT_ROOT']);
 
         //TODO allow other departments to revice orders
-        $mail->AddAddress($GLOBALS['_config']['email'][0], $GLOBALS['_config']['site_name']);
+        $mail->AddAddress(
+            $GLOBALS['_config']['email'][0],
+            $GLOBALS['_config']['site_name']
+        );
 
         if ($mail->Send()) {
 
@@ -816,12 +903,27 @@ if (!empty($_SESSION['faktura']['quantities'])) {
                     $GLOBALS['_config']['imap'],
                     $GLOBALS['_config']['imapport']
                 );
-                $imap->append($GLOBALS['_config']['emailsent'], $mail->CreateHeader().$mail->CreateBody(), '\Seen');
+                $imap->append(
+                    $GLOBALS['_config']['emailsent'],
+                    $mail->CreateHeader() . $mail->CreateBody(),
+                    '\Seen'
+                );
                 unset($imap);
             }
         } else {
             //TODO secure this against injects and <; in the email and name
-            $mysqli->query("INSERT INTO `emails` (`subject`, `from`, `to`, `body`, `date`) VALUES ('".$mail->Subject."', '".$GLOBALS['_config']['site_name']."<".$GLOBALS['_config']['email'][0].">', '".$GLOBALS['_config']['site_name']."<".$GLOBALS['_config']['email'][0].">', '".$emailbody."', NOW());");
+            $mysqli->query(
+                "
+                INSERT INTO `emails` (`subject`, `from`, `to`, `body`, `date`)
+                VALUES (
+                    '" . $mail->Subject . "',
+                    '" . $GLOBALS['_config']['site_name'] . "<" . $GLOBALS['_config']['email'][0] . ">',
+                    '" . $GLOBALS['_config']['site_name'] . "<" . $GLOBALS['_config']['email'][0] . ">',
+                    '" . $emailbody . "',
+                    NOW()
+                );
+                "
+            );
         }
 
         $GLOBALS['generatedcontent']['title'] = _('Order placed');
