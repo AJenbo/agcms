@@ -327,15 +327,18 @@ if (!empty($_SESSION['faktura']['quantities'])) {
         }
         $GLOBALS['generatedcontent']['text'] .= '</tbody></table>';
         $GLOBALS['generatedcontent']['text'] .= '<script type="text/javascript"><!--
-'.$javascript.'
---></script>';
+        ' . $javascript . '
+        --></script>';
         if ($unknownvalue) {
-            $GLOBALS['generatedcontent']['text'] .= '<small>'._('* The price cannot be determined automatically, please make sure to describe the exact type in the note field.').'</small></p>';
+            $GLOBALS['generatedcontent']['text'] .= '<small>'
+            . _('* The price cannot be determined automatically, please make sure to describe the exact type in the note field.')
+            . '</small></p>';
         }
         if (empty($_SESSION['faktura']['paymethod'])) {
             $_SESSION['faktura']['paymethod'] = '';
         }
-        $GLOBALS['generatedcontent']['text'] .= '<p>'._('Prefered payment method:').' <select name="paymethod" style="float:right;">
+        $GLOBALS['generatedcontent']['text'] .= '<p>' . _('Prefered payment method:')
+        . ' <select name="paymethod" style="float:right;">
             <option value="creditcard"';
         if ($_SESSION['faktura']['paymethod'] == 'creditcard') {
             $GLOBALS['generatedcontent']['text'] .= ' selected="selected"';
@@ -361,7 +364,8 @@ if (!empty($_SESSION['faktura']['quantities'])) {
         if (empty($_SESSION['faktura']['delevery'])) {
             $_SESSION['faktura']['delevery'] = '';
         }
-        $GLOBALS['generatedcontent']['text'] .= '<p>'._('Delevery:').' <select style="float:right;" name="delevery">
+        $GLOBALS['generatedcontent']['text'] .= '<p>' . _('Delevery:')
+        . ' <select style="float:right;" name="delevery">
             <option value="postal"';
         if ($_SESSION['faktura']['delevery'] == 'postal') {
             $GLOBALS['generatedcontent']['text'] .= ' selected="selected"';
@@ -377,15 +381,21 @@ if (!empty($_SESSION['faktura']['quantities'])) {
             $GLOBALS['generatedcontent']['text'] .= ' selected="selected"';
         }
         $GLOBALS['generatedcontent']['text'] .= '>'._('Pickup in store').'</option>
-        </select><small id="shipping"><br />'._('The excact shipping cost will be calculcated as the goods are packed.').'</small></p>';
+        </select><small id="shipping"><br />'
+        . _('The excact shipping cost will be calculcated as the goods are packed.')
+        . '</small></p>';
 
 
         if (empty($_SESSION['faktura']['note'])) {
             $_SESSION['faktura']['note'] = '';
         }
-        $GLOBALS['generatedcontent']['text'] .= '<p>'._('Note:').'<br /><textarea style="width:100%;" name="note">'.htmlspecialchars($_SESSION['faktura']['note'], ENT_COMPAT | ENT_XHTML, 'UTF-8').'</textarea><p>';
+        $GLOBALS['generatedcontent']['text'] .= '<p>' . _('Note:')
+        . '<br /><textarea style="width:100%;" name="note">'
+        . htmlspecialchars($_SESSION['faktura']['note'], ENT_COMPAT | ENT_XHTML, 'UTF-8')
+        . '</textarea><p>';
 
-        $GLOBALS['generatedcontent']['text'] .= '<input value="'._('Continue').'" type="submit" /></form>';
+        $GLOBALS['generatedcontent']['text'] .= '<input value="' . _('Continue')
+        . '" type="submit" /></form>';
 
     } elseif ($_GET['step'] == 1) {
 

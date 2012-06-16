@@ -660,7 +660,12 @@ if (!empty($_GET['id']) && @$_GET['checkid'] == getCheckid($_GET['id'])) {
                     }
                 }
             }
-            $pakker = $mysqli->fetchArray("SELECT `packageId` FROM `PNL` WHERE `fakturaid` = ".$faktura['id']);
+            $pakker = $mysqli->fetchArray(
+                "
+                SELECT `packageId`
+                FROM `PNL`
+                WHERE `fakturaid` = " . $faktura['id']
+            );
             foreach ($pakker as $pakke) {
                 $GLOBALS['generatedcontent']['text'] .= '<br /><a href="http://online.pannordic.com/pn_logistics/index_tracking_email.jsp?id='.$pakke['packageId'].'&Search=search" target="_blank">'.$pakke['packageId'].'</a>';
             }
@@ -677,7 +682,10 @@ if (!empty($_GET['id']) && @$_GET['checkid'] == getCheckid($_GET['id'])) {
         }
     }
 } elseif (!empty($_GET['Customer_refno'])) {
-    $id = mb_substr($_GET['Customer_refno'], mb_strlen($GLOBALS['_config']['pbsfix']));
+    $id = mb_substr(
+        $_GET['Customer_refno'],
+        mb_strlen($GLOBALS['_config']['pbsfix'])
+    );
 
     //Set the proper order for the values
     $validate['Merchant_id'] = '';
@@ -699,7 +707,11 @@ if (!empty($_GET['id']) && @$_GET['checkid'] == getCheckid($_GET['id'])) {
     unset($validate['MAC']);
 
     $GLOBALS['generatedcontent']['crumbs'] = array();
-    $GLOBALS['generatedcontent']['crumbs'][1] = array('name' => _('Error'), 'link' => '#', 'icon' => null);
+    $GLOBALS['generatedcontent']['crumbs'][1] = array(
+        'name' => _('Error'),
+        'link' => '#',
+        'icon' => null
+    );
     $GLOBALS['generatedcontent']['title'] = _('Error');
     $GLOBALS['generatedcontent']['headline'] = _('Error');
     $GLOBALS['generatedcontent']['text'] = _('An unknown error occured.');
@@ -716,8 +728,11 @@ if (!empty($_GET['id']) && @$_GET['checkid'] == getCheckid($_GET['id'])) {
     if ($_GET['MAC'] != md5(implode('', $validate).$GLOBALS['_config']['pbspassword'])) {
         $GLOBALS['generatedcontent']['text'] = _('The communication could not be validated!');
     } elseif (!$faktura) {
-        $GLOBALS['generatedcontent']['text'] = '<p>'._('The payment does not exist in our system.').'</p>';
-        $shopBody = '<br />'.sprintf(_('A user tried to pay online invoice #%d, which is not in the system!'), $id).'<br />';
+        $GLOBALS['generatedcontent']['text'] = '<p>' . _('The payment does not exist in our system.') . '</p>';
+        $shopBody = '<br />' . sprintf(
+            _('A user tried to pay online invoice #%d, which is not in the system!'),
+            $id
+        ) . '<br />';
     } elseif ($faktura['status'] == 'pbserror' || $faktura['status'] == 'canceled' || $faktura['status'] == 'rejected') {
         $GLOBALS['generatedcontent']['crumbs'][1] = array('name' => _('Reciept'), 'link' => '#', 'icon' => null);
         $GLOBALS['generatedcontent']['title'] = _('Reciept');
@@ -725,7 +740,11 @@ if (!empty($_GET['id']) && @$_GET['checkid'] == getCheckid($_GET['id'])) {
         $GLOBALS['generatedcontent']['text'] = '<p>'._('This trade has been canceled or refused.').'</p>';
         $shopBody = '<br />'.sprintf(_('A customer tried to see the status page for online invoice #%d which is canceled or rejected.'), $id).'<br />';
     } elseif ($faktura['status'] != 'locked' && $faktura['status'] != 'new') {
-        $GLOBALS['generatedcontent']['crumbs'][1] = array('name' => _('Reciept'), 'link' => '#', 'icon' => null);
+        $GLOBALS['generatedcontent']['crumbs'][1] = array(
+            'name' => _('Reciept'),
+            'link' => '#',
+            'icon' => null
+        );
         $GLOBALS['generatedcontent']['title'] = _('Reciept');
         $GLOBALS['generatedcontent']['headline'] = _('Reciept');
         $GLOBALS['generatedcontent']['text'] = '<p>'._('Payment is registered and you ought to have received a receipt by email.').'</p>';
@@ -742,7 +761,13 @@ if (!empty($_GET['id']) && @$_GET['checkid'] == getCheckid($_GET['id'])) {
 Error number:'
         );
         $GLOBALS['generatedcontent']['text'] .= ' ' .$_GET['Status_code'];
-        $mysqli->query("UPDATE `fakturas` SET `status` = 'pbserror', `paydate` = NOW() WHERE `status` IN('new', 'locked') AND `id` = ".$id);
+        $mysqli->query(
+            "
+            UPDATE `fakturas`
+            SET `status` = 'pbserror', `paydate` = NOW()
+            WHERE `status` IN('new', 'locked')
+              AND `id` = " . $id
+        );
         switch ($_GET['Status_code']) {
             //Theas has been seen IRL
         case 12:
