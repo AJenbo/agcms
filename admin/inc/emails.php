@@ -19,6 +19,9 @@ function sendEmail($id, $from, $interests, $subject, $text)
 
     saveEmail($id, $from, $interests, $subject, $text);
 
+    $text = purifyHTML($text);
+    $text = htmlUrlDecode($text);
+
     include '../inc/phpMailer/class.phpmailer.php';
 
     $mail             = new PHPMailer();
@@ -60,7 +63,7 @@ function sendEmail($id, $from, $interests, $subject, $text)
     <meta name="distribution" content="Global" />
     <meta name="robots" content="index,follow" />
     </head><body><div>';
-    $body .= str_replace(' href="/', ' href="' . $GLOBALS['_config']['base_url'] . '/', stripcslashes(htmlUrlDecode($text)));
+    $body .= str_replace(' href="/', ' href="' . $GLOBALS['_config']['base_url'] . '/', $text);
     $body .= '</div></body></html>';
 
     $mail->MsgHTML($body, $_SERVER['DOCUMENT_ROOT']);
@@ -252,6 +255,9 @@ writeRichText(\'text\', \'' . rtefsafe($newsmails[0]['text']) . '\', \'\', ' . (
 function saveEmail($id, $from, $interests, $subject, $text)
 {
     global $mysqli;
+
+    $text = purifyHTML($text);
+    $text = htmlUrlDecode($text);
 
     $from = $mysqli->real_escape_string($from);
     $interests = $mysqli->real_escape_string($interests);

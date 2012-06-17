@@ -27,6 +27,27 @@ $mysqli = new Simple_Mysqli(
 );
 $sajax_request_type = "POST";
 
+/**
+ * Use HTMLPurifier to clean HTML-code, preserves youtube videos
+ *
+ * @param string $string Sting to clean
+ *
+ * @return string Cleaned stirng
+ **/
+function purifyHTML($string) {
+    require_once 'inc/htmlpurifier/HTMLPurifier.auto.php';
+
+    $config = HTMLPurifier_Config::createDefault();
+    $config->set('HTML.SafeIframe', true);
+    $config->set('URI.SafeIframeRegexp', '%^http://www.youtube.com/embed/%u');
+    $config->set('HTML.SafeObject', true);
+    $config->set('Output.FlashCompat', true);
+    $config->set('HTML.Doctype', 'XHTML 1.0 Transitional');
+    $purifier = new HTMLPurifier($config);
+
+    return $purifier->purify($string);
+}
+
 function rtefsafe($text)
 {
     return str_replace(
@@ -1463,15 +1484,17 @@ function save_ny_kat($navn, $kat, $icon, $vis, $email)
 function savekrav($id, $navn, $text)
 {
     global $mysqli;
+    $text = purifyHTML($text);
+    $text = htmlUrlDecode($text);
+
 
     if ($navn != '' && $text != '') {
         if (!$id) {
-            $mysqli->query('INSERT INTO `krav` (`navn`, `text` ) VALUES (\''.$navn.'\', \''.$text.'\')');
+            $mysqli->query('INSERT INTO `krav` (`navn`, `text` ) VALUES (\''.addcslashes($navn, "'\\").'\', \''.addcslashes($text, "'\\").'\')');
         } else {
-            $mysqli->query('UPDATE krav SET navn = \''.$navn.'\', text = \''.$text.'\' WHERE id = '.$id);
+            $mysqli->query('UPDATE krav SET navn = \''.addcslashes($navn, "'\\").'\', text = \''.addcslashes($text, "'\\").'\' WHERE id = '.$id);
         }
 
-        $html = 'INSERT INTO `krav` (`navn`, `text` ) VALUES (\''.$navn.'\', \''.$text.'\')';
         return array('id' => 'canvas', 'html' => getkrav());
     } else {
         return array('error' => _('You must enter a name and a text of the requirement.'));
@@ -1783,7 +1806,34 @@ function htmlUrlDecode($text)
 function updateSide($id, $navn, $keywords, $pris, $billed, $beskrivelse, $for, $text, $varenr, $burde, $fra, $krav, $maerke)
 {
     global $mysqli;
-    $mysqli->query("UPDATE `sider` SET `dato` = now(), `navn` = '".addcslashes($navn, "'\\")."', `keywords` = '".addcslashes($keywords, "'\\")."', `pris` = '".addcslashes($pris, "'\\")."', `text` = '".htmlUrlDecode($text)."', `varenr` = '".addcslashes($varenr, "'\\")."', `for` = '".addcslashes($for, "'\\")."', `beskrivelse` = '".htmlUrlDecode($beskrivelse)."', `krav` = '".addcslashes($krav, "'\\")."', `maerke` = '".addcslashes($maerke, "'\\")."', `billed` = '".addcslashes($billed, "'\\")."', `fra` = ".addcslashes($fra, "'\\").", `burde` = ".addcslashes($burde, "'\\")." WHERE `id` = ".addcslashes($id, "'\\")." LIMIT 1");
+
+    $beskrivelse = purifyHTML($beskrivelse);
+    $beskrivelse = htmlUrlDecode($beskrivelse);
+    $text = purifyHTML($text);
+    $text = htmlUrlDecode($text);
+
+    $mysqli->query(
+        "
+        UPDATE `sider`
+        SET
+            `dato` = now(),
+            `navn` = '" . addcslashes($navn, "'\\") . "',
+            `keywords` = '".addcslashes($keywords, "'\\") . "',
+            `pris` = " . (int) $pris . ",
+            `text` = '" . addcslashes($text) . "',
+            `varenr` = '" . addcslashes($varenr, "'\\") . "',
+            `for` = " . (int) $for . ",
+            `beskrivelse` = '" . addcslashes($beskrivelse) . "',
+            `krav` = ". (int) $krav .",
+            `maerke` = '" . addcslashes($maerke, "'\\") . "',
+            `billed` = '" . addcslashes($billed, "'\\") . "',
+            `fra` = " . (int) $fra . ",
+            `burde` = " . (int) $burde . "
+
+        WHERE `id` = " . (int) $id . "
+        LIMIT 1
+        "
+    );
     return true;
 }
 
@@ -1835,7 +1885,9 @@ function updateSpecial($id, $text)
 {
     global $mysqli;
 
-    $mysqli->query('UPDATE `special` SET `dato` = now(), `text` = \''.htmlUrlDecode($text).'\' WHERE `id` = '.$id.' LIMIT 1');
+    $text = purifyHTML($text);
+    $text = htmlUrlDecode($text);
+    $mysqli->query('UPDATE `special` SET `dato` = now(), `text` = \''.addcslashes($text, "'\\").'\' WHERE `id` = '.$id.' LIMIT 1');
     return true;
 }
 
@@ -1843,7 +1895,42 @@ function opretSide($kat, $navn, $keywords, $pris, $billed, $beskrivelse, $for, $
 {
     global $mysqli;
 
-    $mysqli->query('INSERT INTO `sider` (`dato` ,`navn` ,`keywords` ,`pris` ,`text` ,`varenr` ,`for` ,`beskrivelse` ,`krav` ,`maerke` ,`billed` ,`fra` ,`burde` ) VALUES (now(), \''.addcslashes($navn, "'\\").'\', \''.addcslashes($keywords, "'\\").'\', \''.addcslashes($pris, "'\\").'\', \''.htmlUrlDecode($text).'\', \''.addcslashes($varenr, "'\\").'\', \''.addcslashes($for, "'\\").'\', \''.htmlUrlDecode($beskrivelse).'\', \''.addcslashes($krav, "'\\").'\', \''.addcslashes($maerke, "'\\").'\', \''.addcslashes($billed, "'\\").'\', '.addcslashes($fra, "'\\").', '.addcslashes($burde, "'\\").')');
+    $beskrivelse = purifyHTML($beskrivelse);
+    $beskrivelse = htmlUrlDecode($beskrivelse);
+    $text = purifyHTML($text);
+    $text = htmlUrlDecode($text);
+
+    $mysqli->query(
+        'INSERT INTO `sider` (
+            `dato`,
+            `navn`,
+            `keywords`,
+            `pris`,
+            `text`,
+            `varenr`,
+            `for`,
+            `beskrivelse`,
+            `krav`,
+            `maerke`,
+            `billed`,
+            `fra`,
+            `burde`
+        ) VALUES (
+            now(),
+            \''.addcslashes($navn, "'\\").'\',
+            \''.addcslashes($keywords, "'\\").'\',
+            ' . (int) $pris . ',
+            \''.addcslashes($text).'\',
+            \''.addcslashes($varenr, "'\\").'\',
+            ' . (int) $for . ',
+            \''.addcslashes($beskrivelse).'\',
+            ' . (int) $krav . ',
+            \''.addcslashes($maerke, "'\\").'\',
+            \''.addcslashes($billed, "'\\").'\',
+            ' . (int) $fra . ',
+            ' . (int) $burde . '
+        )'
+    );
 
     $id = $mysqli->insert_id;
     $mysqli->query('INSERT INTO `bind` (`side` ,`kat` ) VALUES (\''.$id.'\', \''.$kat.'\')');
