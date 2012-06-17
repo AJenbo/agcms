@@ -20,11 +20,8 @@ class HTMLPurifier_HTMLModule_SafeEmbed extends HTMLPurifier_HTMLModule
                 'height' => 'Pixels#' . $max,
                 'allowscriptaccess' => 'Enum#never',
                 'allownetworking' => 'Enum#internal',
-                'allowfullscreen' => 'Enum#true,false',
-                'quality' => 'Enum#low,high',
-                'bgcolor' => 'Text',
-                'pluginspage' => 'URL',
-                'wmode' => 'Enum#window',
+                'flashvars' => 'Text',
+                'wmode' => 'Enum#window,transparent,opaque',
                 'name' => 'ID',
             )
         );

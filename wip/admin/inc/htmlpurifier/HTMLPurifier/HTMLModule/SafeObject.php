@@ -28,9 +28,9 @@ class HTMLPurifier_HTMLModule_SafeObject extends HTMLPurifier_HTMLModule
                 'type'   => 'Enum#application/x-shockwave-flash',
                 'width'  => 'Pixels#' . $max,
                 'height' => 'Pixels#' . $max,
-                'data'   => 'URI#embedded'
-                'codebase'   => 'URI'
-                'classid'   => 'Text'
+                'data'   => 'URI#embedded',
+                'codebase' => new HTMLPurifier_AttrDef_Enum(array(
+                    'http://download.macromedia.com/pub/shockwave/cabs/flash/swflash.cab#version=6,0,40,0')),
             )
         );
         $object->attr_transform_post[] = new HTMLPurifier_AttrTransform_SafeObject();
