@@ -28,6 +28,7 @@ session_start();
 
 require_once 'inc/header.php';
 require_once 'inc/config.php';
+require_once 'inc/functions.php';
 require_once 'inc/mysqli.php';
 
 //primitive runtime cache

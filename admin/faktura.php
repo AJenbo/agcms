@@ -14,6 +14,7 @@ require_once $_SERVER['DOCUMENT_ROOT'].'/admin/inc/logon.php';
 
 require_once '../inc/sajax.php';
 require_once '../inc/config.php';
+require_once '../inc/functions.php';
 require_once '../inc/mysqli.php';
 require_once 'inc/epaymentAdminService.php';
 $mysqli = new Simple_Mysqli(
@@ -660,53 +661,6 @@ function annul($id)
         return true;
     } else {
         return array('error' => $annulStatus['Status'].$annulStatus['StatusCode']);
-    }
-}
-
-function returnamount($id, $returnamount)
-{
-    /*
-    //TODO only usable and visable to admins
-    global $mysqli;
-    global $epaymentAdminService;
-
-    $faktura = $mysqli->fetchArray("SELECT `amount`, `momssats`, `discount` FROM `fakturas` WHERE `id` = ".$id);
-
-    $discount = $discount + $returnamount / ($faktura['momssats'] + 1);
-    //TODO needs to be different then loweramount from here on down.
-
-    if ($discount < $faktura['discount'])
-        return array('error' => 'Beløbet skal være laver ind det nuværende.');
-
-    if ($discount == 0)
-        return true;
-
-    if ($discount > $faktura['amount']+($faktura['discount']*($faktura['momssats']+1)))
-        return array('error' => 'Beløbet må ikke være negativt.');
-
-    $epayment = $epaymentAdminService->query($id);
-    $authRevStatus = $epaymentAdminService->credit($epayment['TransactionId'], $newamount, $newamount*$faktura['momssats']);
-
-    if ($confirmstatus['Status'] == 'A' && $confirmstatus['StatusCode'] == '0') {
-        $mysqli->query("UPDATE `fakturas` SET `discount` = '".$discount."',  `amount` = '".$newamount."', `paydate` = NOW() WHERE `id` = 'pbsok' AND `id` = ".$id);
-        return true;
-    } else
-        return array('error' => $confirmstatus['Status'].$confirmstatus['StatusCode']);
-    */
-}
-
-function validemail($email)
-{
-    //TODO Is this to strict?
-    //_An-._E-mail@test-domain.test.dk
-    if (!empty($email)
-        && preg_match('/^([a-z0-9_-]+[a-z0-9_.-]*)*[a-z0-9_-]+@[a-z0-9-.]+[.][a-z]{2,4}$/ui', $email)
-        && !preg_match('/[.]{2}/u', $email)
-        && getmxrr(preg_replace('/.+?@(.?)/u', '$1', $email), $dummy)
-    ) {
-        return true;
-    } else {
-        return false;
     }
 }
 

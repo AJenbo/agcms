@@ -12,6 +12,27 @@
  */
 
 /**
+ * Checks if email an address looks valid and that an mx server is responding
+ *
+ * @param string $email The email address to check
+ *
+ * @return bool
+ */
+function validemail($email)
+{
+    //_An-._E-mail@test-domain.test.dk
+    if ($email
+        && preg_match('/^([a-z0-9-_]+[a-z0-9-_.]*)*[a-z0-9-_]+@([a-z0-9-]+[a-z0-9-.]*)*[a-z0-9-]+[.][a-z]{2,4}$/ui', $email)
+        && !preg_match('/[.]{2}/u', $email)
+        && getmxrr(preg_replace('/.+?@(.?)/u', '$1', $email), $dummy)
+    ) {
+        return true;
+    } else {
+        return false;
+    }
+}
+
+/**
  * Get last update time for table
  *
  * @param string $table Table name
