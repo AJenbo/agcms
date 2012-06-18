@@ -226,7 +226,18 @@ function arrayNatsort($aryData, $strIndex, $strSortBy, $strSortType = false)
     return $aryResult;
 }
 
-function arrayListsort($aryData, $strIndex, $strSortBy, $strSortType = false, $intSortingOrder)
+/**
+ * Sort a 2D array based on a custome sort order an array
+ *
+ * @param array  $aryData         Array to sort
+ * @param string $strIndex        Key of unique id
+ * @param string $strSortBy       Key to sort by
+ * @param int    $intSortingOrder Custome sorting to use
+ * @param string $strSortType     Revers sorting
+ *
+ * @return array
+ */
+function arrayListsort($aryData, $strIndex, $strSortBy, $intSortingOrder, $strSortType = false)
 {
     global $mysqli;
 
@@ -306,7 +317,13 @@ function trimArray($totrim)
 }
 
 /**
- * Return html for a sorted table
+ * Return html for a sorted list
+ *
+ * @param int $listid      Id of list
+ * @param int $bycell      What cell to sort by
+ * @param int $current_kat Id of current category
+ *
+ * @return string
  */
 function getTable($listid, $bycell, $current_kat)
 {
@@ -355,7 +372,6 @@ function getTable($listid, $bycell, $current_kat)
                 $rows,
                 'id',
                 $bycell,
-                null,
                 $lists[0]['sorts'][$bycell]
             );
         }
@@ -368,7 +384,9 @@ function getTable($listid, $bycell, $current_kat)
         }
         $html .= '<thead><tr>';
         foreach ($lists[0]['cell_names'] as $key => $cell_name) {
-            $html .= '<td><a href="" onclick="x_getTable(\''.$lists[0]['id'].'\', \''.$key.'\', '.$current_kat.', inject_html);return false;">'.$cell_name.'</a></td>';
+            $html .= '<td><a href="" onclick="x_getTable(\'' . $lists[0]['id']
+            . '\', \'' . $key . '\', ' . $current_kat
+            . ', inject_html);return false;">' . $cell_name . '</a></td>';
         }
         $html .= '</tr></thead><tbody>';
         foreach ($rows as $i => $row) {
@@ -388,8 +406,9 @@ function getTable($listid, $bycell, $current_kat)
                     LIMIT 1
                     "
                 );
-                $row['link'] = '<a href="/kat'.$current_kat.'-'.clearFileName($sider[0]['kat_navn'])
-                .'/side'.$row['link'].'-'.clearFileName($sider[0]['navn']).'.html">';
+                $row['link'] = '<a href="/kat' . $current_kat . '-'
+                . clearFileName($sider[0]['kat_navn']) . '/side' . $row['link']
+                . '-' . clearFileName($sider[0]['navn']) . '.html">';
             }
             foreach ($lists[0]['cells'] as $key => $type) {
                 if (empty($row[$key])) {
@@ -499,7 +518,9 @@ function getTable($listid, $bycell, $current_kat)
                     if ($row['link']) {
                         $html .= $row['link'];
                     }
-                    $html .= '<img src="'.$row[$key].'" alt="'.$files[0]['alt'].'" title="" width="'.$files[0]['width'].'" height="'.$files[0]['height'].'" />';
+                    $html .= '<img src="' . $row[$key] . '" alt="'
+                    . $files[0]['alt'] . '" title="" width="' . $files[0]['width']
+                    . '" height="' . $files[0]['height'] . '" />';
                     if ($row['link']) {
                         $html .= '</a>';
                     }
@@ -508,7 +529,9 @@ function getTable($listid, $bycell, $current_kat)
                 }
             }
             if (@$GLOBALS['generatedcontent']['has_product_table']) {
-                $html .= '<td class="addtocart"><a href="/bestilling/?add_list_item='.$row['id'].'"><img src="/theme/images/cart_add.png" title="'._('Add to shopping cart').'" alt="+" /></a></td>';
+                $html .= '<td class="addtocart"><a href="/bestilling/?add_list_item='
+                . $row['id'] . '"><img src="/theme/images/cart_add.png" title="'
+                . _('Add to shopping cart') . '" alt="+" /></a></td>';
             }
             $html .= '</tr>';
         }
@@ -538,9 +561,13 @@ function getTable($listid, $bycell, $current_kat)
 }
 
 /**
- * Print out the table
+ * Generate html code for lists associated with a page
+ *
+ * @param int $sideid Id of page
+ *
+ * @return string
  */
-function echoTable($sideid, $mansort, $desc)
+function echoTable($sideid)
 {
     global $mysqli;
 

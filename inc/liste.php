@@ -12,11 +12,11 @@
  */
 
 /**
+ * Populate the generated global list with a page
  *
- *
- * @param
- * @param
- * @param
+ * @param array  $side    A page
+ * @param string $katnavn Title of category
+ * @param int    $type    Display mode
  *
  * @return null
  */
@@ -24,7 +24,7 @@ function vare($side, $katnavn, $type)
 {
     global $mysqli;
 
-    //Soge katagori har ikke et fast nummer brug først faste per side.
+    //Search categories does not have a fixed number, use first fixed per page
     if (!$GLOBALS['generatedcontent']['activmenu']) {
         $bind = $mysqli->fetchArray(
             "
@@ -91,8 +91,8 @@ function vare($side, $katnavn, $type)
 /**
  * Crope a string to a given max lengt, round by word
  *
- * @param string $string String to crope
- * @param int    $length Crope length
+ * @param string $string   String to crope
+ * @param int    $length   Crope length
  * @param string $ellipsis String to add at the end, with in the limit
  *
  * @return string
@@ -110,6 +110,11 @@ function stringLimit($string, $length = 50, $ellipsis = '…')
     }
 }
 
+/**
+ * Figure out how to display the active category
+ *
+ * @return string
+ */
 function liste()
 {
     global $mysqli;
@@ -175,14 +180,14 @@ function liste()
 }
 
 /**
+ * Generate HTML of products for a category in list form
  *
- *
- * @param array $side
- * @param string $kat_navn
+ * @param array  $side     Array of products
+ * @param string $kat_navn Title of the category
  *
  * @return string
  */
-function kat_html($side, $kat_navn)
+function katHTML($side, $kat_navn)
 {
     $html = "<table class=\"tabel\"><thead><tr><td><a href=\"\" onclick=\"x_getKat('"
     . $GLOBALS['generatedcontent']['activmenu']

@@ -85,13 +85,8 @@ function side()
 
     unset($GLOBALS['side']['text']);
 
-    //TODO Pump all this in to an array instead of dumping a bunch of html
-    //TODO and figure out how to do the sorting ajax and js style
-    $GLOBALS['generatedcontent']['text'] .= echoTable(
-        $GLOBALS['side']['id'],
-        null,
-        'asc'
-    );
+    //TODO and figure out how to do the sorting using only js
+    $GLOBALS['generatedcontent']['text'] .= echoTable($GLOBALS['side']['id']);
 
     $GLOBALS['generatedcontent']['price']['old']    = $GLOBALS['side']['for'];
     $GLOBALS['generatedcontent']['price']['market'] = $GLOBALS['side']['burde'];

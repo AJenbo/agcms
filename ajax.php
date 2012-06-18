@@ -115,7 +115,7 @@ function getKat($id, $sort)
 
     return array(
         "id" => 'kat' . $GLOBALS['generatedcontent']['activmenu'],
-        "html" => kat_html($bind, $name)
+        "html" => katHTML($bind, $name)
     );
 }
 

@@ -361,7 +361,7 @@ writeRichText("beskrivelse", \''.rtefsafe($sider[0]['beskrivelse']).'\', "", '.(
             if (empty($bycell) || $lists[0]['sorts'][$bycell] < 1) {
                 $rows = arrayNatsort($rows, 'id', $lists[0]['sort']);
             } else {
-                $rows = arrayListsort($rows, 'id', $lists[0]['sort'], null, $list[0]['sorts'][$lists[0]['sort']]);
+                $rows = arrayListsort($rows, 'id', $lists[0]['sort'], $list[0]['sorts'][$lists[0]['sort']]);
             }
 
             foreach ($rows as $i => $row) {
