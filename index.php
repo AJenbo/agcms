@@ -118,7 +118,7 @@ function menu($nr, $custom_sort_subs = false)
 
     if ($kat) {
         if (!$custom_sort_subs) {
-            $kat = array_natsort($kat, 'id', 'navn', 'asc');
+            $kat = arrayNatsort($kat, 'id', 'navn', 'asc');
         }
 
         if (!$GLOBALS['cache']['kats'][$GLOBALS['kats'][$nr]]['navn']) {
@@ -161,7 +161,7 @@ function menu($nr, $custom_sort_subs = false)
                         'UTF-8'
                     ),
                     'link' => '/kat'.$value['id'].'-'
-                        .clear_file_name($value['navn']).'/',
+                        .clearFileName($value['navn']).'/',
                     'icon' => $value['icon'],
                     'sub' => $value['sub'] ? true : false,
                     'subs' => $subs);
@@ -252,7 +252,7 @@ function searchMenu($q, $wherekat)
                     'UTF-8'
                 ),
                 'link' => '/mærke'.$value['id']
-                    .'-' .clear_file_name($value['navn']) .'/');
+                    .'-' .clearFileName($value['navn']) .'/');
         }
     }
 
@@ -267,7 +267,7 @@ function searchMenu($q, $wherekat)
                         'UTF-8'
                     ),
                     'link' => '/kat'.$value['id']
-                        .'-' .clear_file_name($value['navn']) .'/',
+                        .'-' .clearFileName($value['navn']) .'/',
                     'icon' => $value['icon'],
                     'sub' => subs($value['id'])
                 );
@@ -378,8 +378,8 @@ if (@$_GET['kat'] || @$_GET['side']) {
     if ($side_navn) {
 
         //TODO rawurlencode $url (PIE doesn't do it buy it self :(
-        $url = '/kat' .$kat_id .'-' .rawurlencode(clear_file_name($kat_name))
-            .'/side' .$side_id .'-' .rawurlencode(clear_file_name($side_navn))
+        $url = '/kat' .$kat_id .'-' .rawurlencode(clearFileName($kat_name))
+            .'/side' .$side_id .'-' .rawurlencode(clearFileName($side_navn))
             .'.html';
 
         //redirect til en side
@@ -388,7 +388,7 @@ if (@$_GET['kat'] || @$_GET['side']) {
     } elseif ($kat_name) {
 
         //TODO rawurlencode $url (PIE doesn't do it buy it self :(
-        $url = '/kat'.$kat_id.'-'.rawurlencode(clear_file_name($kat_name)).'/';
+        $url = '/kat'.$kat_id.'-'.rawurlencode(clearFileName($kat_name)).'/';
 
         //redirect til en kategori
         header('Location: '.$url);
@@ -588,7 +588,7 @@ if (@$GLOBALS['kats']) {
                 'UTF-8'
             ),
             'link' => '/kat' . $value . '-'
-            . clear_file_name($GLOBALS['cache']['kats'][$value]['navn']) . '/',
+            . clearFileName($GLOBALS['cache']['kats'][$value]['navn']) . '/',
             'icon' => $GLOBALS['cache']['kats'][$value]['icon']
         );
     }
@@ -634,7 +634,7 @@ foreach ($kat_fpc as $value) {
 
         $GLOBALS['generatedcontent']['menu'][] = array('id' => $value['id'],
         'name' => htmlspecialchars($value['navn'], ENT_COMPAT | ENT_XHTML, 'UTF-8'),
-        'link' => '/kat'.$value['id'].'-'.clear_file_name($value['navn']).'/',
+        'link' => '/kat'.$value['id'].'-'.clearFileName($value['navn']).'/',
         'icon' => $value['icon'],
         'sub' => $value['sub'] ? true : false,
         'subs' => $subs);
@@ -664,7 +664,7 @@ foreach ($kat_fpp as $value) {
         'id' => $value['id'],
         'name' => htmlspecialchars($value['navn'], ENT_COMPAT | ENT_XHTML, 'UTF-8'),
         'link' => '/side' .$value['id'] .'-'
-            .clear_file_name($value['navn']) .'.html'
+            .clearFileName($value['navn']) .'.html'
     );
 }
 unset($kat_fpp);

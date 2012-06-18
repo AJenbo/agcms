@@ -97,7 +97,7 @@ function getKat($id, $sort)
         ORDER BY sider." . $sort . " ASC
         "
     );
-    $bind = array_natsort($bind, 'id', $sort);
+    $bind = arrayNatsort($bind, 'id', $sort);
 
     $kat = @$GLOBALS['cache']['kats'][$GLOBALS['generatedcontent']['activmenu']];
     $name = $kat['navn'];
@@ -120,7 +120,7 @@ function getKat($id, $sort)
 }
 
 sajax_export(
-    array('name' => 'get_table', 'method' => 'GET'),
+    array('name' => 'getTable', 'method' => 'GET'),
     array('name' => 'getKat', 'method' => 'GET'),
     array('name' => 'getAddress', 'method' => 'GET')
 );

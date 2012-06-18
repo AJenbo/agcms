@@ -1,5 +1,5 @@
-function x_get_table() {
-    sajax_do_call('get_table', arguments, "GET", true, "/ajax.php");
+function x_getTable() {
+    sajax_do_call('getTable', arguments, "GET", true, "/ajax.php");
     return false;
 }
 

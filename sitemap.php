@@ -48,12 +48,12 @@ function listKats($id)
         //print xml
         ?><url>
         <loc><?php echo $GLOBALS['_config']['base_url'] ?>/kat<?php
-        echo $kats[$ki]['id'] . '-' . clear_file_name($kats[$ki]['navn']);
+        echo $kats[$ki]['id'] . '-' . clearFileName($kats[$ki]['navn']);
         ?>/</loc>
         <changefreq>weekly</changefreq>
         <priority>0.5</priority>
         </url><?php
-        $url = '/kat' . $kats[$ki]['id'] . '-' . clear_file_name($kats[$ki]['navn']);
+        $url = '/kat' . $kats[$ki]['id'] . '-' . clearFileName($kats[$ki]['navn']);
         listPages($kats[$ki]['id'], $url);
         listKats($kats[$ki]['id']);
     }
@@ -84,7 +84,7 @@ function listPages($id, $katName)
         //print xml
         ?><url><loc><?php
         echo $GLOBALS['_config']['base_url'] . $katName . '/side'
-        . $bind['side'] . '-' . clear_file_name($sider[0]['navn']) . '.html';
+        . $bind['side'] . '-' . clearFileName($sider[0]['navn']) . '.html';
         ?></loc>
         <lastmod><?php
         echo mb_substr($sider[0]['dato'], 0, -9, 'UTF-8');

@@ -74,7 +74,7 @@ function side()
         $GLOBALS['generatedcontent']['requirement']['icon'] = '';
         $GLOBALS['generatedcontent']['requirement']['name'] = $krav[0]['navn'];
         $GLOBALS['generatedcontent']['requirement']['link'] = '/krav/'
-        . $GLOBALS['side']['krav'] . '/' . clear_file_name($krav[0]['navn'])
+        . $GLOBALS['side']['krav'] . '/' . clearFileName($krav[0]['navn'])
         . '.html';
     }
 
@@ -87,7 +87,7 @@ function side()
 
     //TODO Pump all this in to an array instead of dumping a bunch of html
     //TODO and figure out how to do the sorting ajax and js style
-    $GLOBALS['generatedcontent']['text'] .= echo_table(
+    $GLOBALS['generatedcontent']['text'] .= echoTable(
         $GLOBALS['side']['id'],
         null,
         'asc'
@@ -140,7 +140,7 @@ function side()
             $GLOBALS['generatedcontent']['brands'][] = array(
             'name' => $value['navn'],
             'link' => '/mærke' . $value['id'] . '-'
-                . clear_file_name($value['navn']) . '/',
+                . clearFileName($value['navn']) . '/',
             'xlink' => $value['link'],
             'icon' => $value['ico']);
         }
@@ -175,7 +175,7 @@ function side()
                 WHERE id = " . $value['kat']
             );
             getUpdateTime('kat');
-            $kat = '/kat'.$kat[0]['id'].'-'.clear_file_name($kat[0]['navn']);
+            $kat = '/kat'.$kat[0]['id'].'-'.clearFileName($kat[0]['navn']);
         } else {
             $kat = '';
         }
@@ -183,7 +183,7 @@ function side()
         $GLOBALS['generatedcontent']['accessories'][] = array(
             'name' => $value['navn'],
             'link' => $kat . '/side' . $value['id'] . '-'
-                . clear_file_name($value['navn']) . '.html',
+                . clearFileName($value['navn']) . '.html',
             'icon' => $value['billed'],
             'text' => '',
             'price' => array('befor' => $value['for'],

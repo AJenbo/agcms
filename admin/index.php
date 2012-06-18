@@ -359,9 +359,9 @@ writeRichText("beskrivelse", \''.rtefsafe($sider[0]['beskrivelse']).'\', "", '.(
 
             //Sort rows
             if (empty($bycell) || $lists[0]['sorts'][$bycell] < 1) {
-                $rows = array_natsort($rows, 'id', $lists[0]['sort']);
+                $rows = arrayNatsort($rows, 'id', $lists[0]['sort']);
             } else {
-                $rows = array_listsort($rows, 'id', $lists[0]['sort'], null, $list[0]['sorts'][$lists[0]['sort']]);
+                $rows = arrayListsort($rows, 'id', $lists[0]['sort'], null, $list[0]['sorts'][$lists[0]['sort']]);
             }
 
             foreach ($rows as $i => $row) {

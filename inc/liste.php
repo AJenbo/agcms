@@ -51,8 +51,8 @@ function vare($side, $katnavn, $type)
     }
 
     $link = '/kat' . $GLOBALS['generatedcontent']['activmenu'] . '-'
-    . clear_file_name($katnavn) . '/side' . $side['id'] . '-'
-    . clear_file_name($side['navn']) . '.html';
+    . clearFileName($katnavn) . '/side' . $side['id'] . '-'
+    . clearFileName($side['navn']) . '.html';
     $name = htmlspecialchars(
         $side['navn'],
         ENT_COMPAT | ENT_XHTML,
@@ -151,7 +151,7 @@ function liste()
             $GLOBALS['side']['id'] = $bind[0]['id'];
             side();
         } else {
-            $bind = array_natsort($bind, 'id', 'navn', 'asc');
+            $bind = arrayNatsort($bind, 'id', 'navn', 'asc');
             foreach ($bind as $value) {
                 //Add space around all tags, strip all tags,
                 //remove all unneded white space
@@ -206,8 +206,8 @@ function kat_html($side, $kat_navn)
             $value['pris'] = $value['pris'].',-';
         }
         $html .= '<td><a href="/kat' . $GLOBALS['generatedcontent']['activmenu']
-        . '-' . clear_file_name($kat_navn) . '/side' . $value['id'] . '-'
-        . clear_file_name($value['navn']) . '.html">' . $value['navn']
+        . '-' . clearFileName($kat_navn) . '/side' . $value['id'] . '-'
+        . clearFileName($value['navn']) . '.html">' . $value['navn']
         . '</a></td><td class="XPris" align="right">' . $value['for']
         . '</td><td class="Pris" align="right">' . $value['pris']
         . '</td><td align="right" style="font-size:11px">'
@@ -399,10 +399,10 @@ function searchListe($q, $wheresider)
         $url = '';
         if (!empty($kat[0]['id'])) {
             $url = '/kat'.$kat[0]['id'] . '-'
-            . $folderName = rawurlencode(clear_file_name($kat[0]['navn']));
+            . $folderName = rawurlencode(clearFileName($kat[0]['navn']));
         }
         $url .= '/side' . $sider[0]['id'] . '-'
-        . rawurlencode(clear_file_name($sider[0]['navn'])) . '.html';
+        . rawurlencode(clearFileName($sider[0]['navn'])) . '.html';
 
         //redirect til en side
         header('Location: '.$url);

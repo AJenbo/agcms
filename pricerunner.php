@@ -104,8 +104,8 @@ for ($i=0; $i<count($sider); $i++) {
     echo '<price>' . $sider[$i]['pris'] . ',00</price>
     <img>' . $GLOBALS['_config']['base_url'] . $sider[$i]['billed'] . '</img>
     <link>' . $GLOBALS['_config']['base_url'] . '/kat' . $sider[$i]['kat_id'] . '-'
-    . rawurlencode(clear_file_name($sider[$i]['kat_navn'])) . '/side'
-    . $sider[$i]['id'] . '-' . rawurlencode(clear_file_name($sider[$i]['navn']))
+    . rawurlencode(clearFileName($sider[$i]['kat_navn'])) . '/side'
+    . $sider[$i]['id'] . '-' . rawurlencode(clearFileName($sider[$i]['navn']))
     . '.html</link>';
     $bind = $mysqli->fetchArray(
         "

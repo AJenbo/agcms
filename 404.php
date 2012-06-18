@@ -131,13 +131,13 @@ if (@$redirect) {
             WHERE id = " . $GLOBALS['side']['id']
         );
         if (!$sider) {
-            $url = '/kat' . $kats[0]['id'] . '-' . clear_file_name($kats[0]['navn'])
+            $url = '/kat' . $kats[0]['id'] . '-' . clearFileName($kats[0]['navn'])
             . '/';
             header('Location: ' . $url);
             die();
         }
-        $url = '/kat' . $kats[0]['id'] . '-' . clear_file_name($kats[0]['navn'])
-        . '/side' . $sider[0]['id'] . '-' . clear_file_name($sider[0]['navn'])
+        $url = '/kat' . $kats[0]['id'] . '-' . clearFileName($kats[0]['navn'])
+        . '/side' . $sider[0]['id'] . '-' . clearFileName($sider[0]['navn'])
         . '.html';
         header('Location: ' . $url);
         die();
@@ -148,7 +148,7 @@ if (@$redirect) {
             FROM kat
             WHERE id = " . $GLOBALS['generatedcontent']['activmenu']
         );
-        $url = '/kat' . $kats[0]['id'] . "-" . clear_file_name($kats[0]['navn'])
+        $url = '/kat' . $kats[0]['id'] . "-" . clearFileName($kats[0]['navn'])
         . '/';
         header('Location: ' . $url);
         die();

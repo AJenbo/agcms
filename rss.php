@@ -135,8 +135,8 @@ for ($i = 0; $i < count($sider); $i++) {
     <item>
     <title>'.$sider[$i]['navn'].'</title>
     <link>' . $GLOBALS['_config']['base_url'] . '/kat' . $sider[$i]['kat_id'] . '-'
-    . rawurlencode(clear_file_name($sider[$i]['kat_navn'])) . '/side'
-    . $sider[$i]['id'] . '-' . rawurlencode(clear_file_name($sider[$i]['navn']))
+    . rawurlencode(clearFileName($sider[$i]['kat_navn'])) . '/side'
+    . $sider[$i]['id'] . '-' . rawurlencode(clearFileName($sider[$i]['navn']))
     . '.html</link>
     <description>';
     if ($sider[$i]['billed']
@@ -151,8 +151,8 @@ for ($i = 0; $i < count($sider); $i++) {
     echo htmlspecialchars($cleaned, ENT_COMPAT | ENT_XML1, 'UTF-8') . '</description>
     <pubDate>' . gmdate('D, d M Y H:i:s', $sider[$i]['dato']) . ' GMT</pubDate>
     <guid>' . $GLOBALS['_config']['base_url'] . '/kat' . $sider[$i]['kat_id'] . '-'
-    . rawurlencode(clear_file_name($sider[$i]['kat_navn'])) . '/side'
-    . $sider[$i]['id'] . '-' . rawurlencode(clear_file_name($sider[$i]['navn']))
+    . rawurlencode(clearFileName($sider[$i]['kat_navn'])) . '/side'
+    . $sider[$i]['id'] . '-' . rawurlencode(clearFileName($sider[$i]['navn']))
     . '.html</guid>';
     $bind = $mysqli->fetchArray(
         "

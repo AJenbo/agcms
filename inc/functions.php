@@ -129,7 +129,7 @@ function subs($kat)
  *
  * @return string
  */
-function clear_file_name($name)
+function clearFileName($name)
 {
     $search = array(
         '/[&?\/:*"<>|%\s-_#\\\\]+/u',
@@ -150,7 +150,7 @@ function clear_file_name($name)
  *
  * @return array
  */
-function array_natsort($aryData, $strIndex, $strSortBy, $strSortType = false)
+function arrayNatsort($aryData, $strIndex, $strSortBy, $strSortType = false)
 {
     //Make sure the sort by is a string
     $strSortBy .= '';
@@ -205,7 +205,7 @@ function array_natsort($aryData, $strIndex, $strSortBy, $strSortType = false)
     return $aryResult;
 }
 
-function array_listsort($aryData, $strIndex, $strSortBy, $strSortType = false, $intSortingOrder)
+function arrayListsort($aryData, $strIndex, $strSortBy, $strSortType = false, $intSortingOrder)
 {
     global $mysqli;
 
@@ -287,7 +287,7 @@ function trimArray($totrim)
 /**
  * Return html for a sorted table
  */
-function get_table($listid, $bycell, $current_kat)
+function getTable($listid, $bycell, $current_kat)
 {
     global $mysqli;
 
@@ -328,9 +328,9 @@ function get_table($listid, $bycell, $current_kat)
 
         //Sort rows
         if ($lists[0]['sorts'][$bycell] < 1) {
-            $rows = array_natsort($rows, 'id', $bycell);
+            $rows = arrayNatsort($rows, 'id', $bycell);
         } else {
-            $rows = array_listsort(
+            $rows = arrayListsort(
                 $rows,
                 'id',
                 $bycell,
@@ -347,7 +347,7 @@ function get_table($listid, $bycell, $current_kat)
         }
         $html .= '<thead><tr>';
         foreach ($lists[0]['cell_names'] as $key => $cell_name) {
-            $html .= '<td><a href="" onclick="x_get_table(\''.$lists[0]['id'].'\', \''.$key.'\', '.$current_kat.', inject_html);return false;">'.$cell_name.'</a></td>';
+            $html .= '<td><a href="" onclick="x_getTable(\''.$lists[0]['id'].'\', \''.$key.'\', '.$current_kat.', inject_html);return false;">'.$cell_name.'</a></td>';
         }
         $html .= '</tr></thead><tbody>';
         foreach ($rows as $i => $row) {
@@ -367,8 +367,8 @@ function get_table($listid, $bycell, $current_kat)
                     LIMIT 1
                     "
                 );
-                $row['link'] = '<a href="/kat'.$current_kat.'-'.clear_file_name($sider[0]['kat_navn'])
-                .'/side'.$row['link'].'-'.clear_file_name($sider[0]['navn']).'.html">';
+                $row['link'] = '<a href="/kat'.$current_kat.'-'.clearFileName($sider[0]['kat_navn'])
+                .'/side'.$row['link'].'-'.clearFileName($sider[0]['navn']).'.html">';
             }
             foreach ($lists[0]['cells'] as $key => $type) {
                 if (empty($row[$key])) {
@@ -519,7 +519,7 @@ function get_table($listid, $bycell, $current_kat)
 /**
  * Print out the table
  */
-function echo_table($sideid, $mansort, $desc)
+function echoTable($sideid, $mansort, $desc)
 {
     global $mysqli;
 
@@ -550,7 +550,7 @@ function echo_table($sideid, $mansort, $desc)
     foreach ($lists as $list) {
         $html = '<div id="table'.$list['id'].'">';
 
-        $table_html = get_table(
+        $table_html = getTable(
             $list['id'],
             null,
             $GLOBALS['generatedcontent']['activmenu']
