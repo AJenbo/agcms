@@ -51,10 +51,11 @@ var activeSideContextMenu = [
         className: 'edit',
         //TODO update to use getContextMenuTarget()
         callback: function(e) {
-            if(e.element().tagName.toLowerCase() == 'a')
+            if (e.element().tagName.toLowerCase() == 'a') {
                 location.href='?side=redigerside&id='+e.target.parentNode.className.replace(/^side/, '');
-            else
+            } else {
                 location.href='?side=redigerside&id='+e.target.parentNode.parentNode.className.replace(/^side/, '');
+            }
         }
     },
     {
@@ -62,12 +63,13 @@ var activeSideContextMenu = [
         className: 'unlink',
         callback: function(e) {
         //TODO update to use getContextMenuTarget()
-            if(e.element().tagName.toLowerCase() == 'a')
+            if (e.element().tagName.toLowerCase() == 'a') {
                 //todo the respoce woun't fit here
                 slet('bindtree', e.target.parentNode.parentNode.previousSibling.lastChild.nodeValue.replace(/^\s+/, ''), e.target.parentNode.id.replace(/^bind/, ''));
-            else
+            } else {
                 //todo the respoce woun't fit here
                 slet('bindtree', e.target.parentNode.parentNode.parentNode.previousSibling.lastChild.nodeValue.replace(/^\s+/, ''), e.target.parentNode.parentNode.id.replace(/^bind/, ''));
+            }
         }
     }
 ]
@@ -79,10 +81,11 @@ var inactiveSideContextMenu = [
         className: 'edit',
         callback: function(e) {
         //TODO update to use getContextMenuTarget()
-            if(e.element().tagName.toLowerCase() == 'a')
+            if (e.element().tagName.toLowerCase() == 'a') {
                 location.href='?side=redigerside&id='+e.target.parentNode.className.replace(/^side/, '');
-            else
+            } else {
                 location.href='?side=redigerside&id='+e.target.parentNode.parentNode.className.replace(/^side/, '');
+            }
         }
     },
     {
@@ -90,10 +93,11 @@ var inactiveSideContextMenu = [
         className: 'delete',
         callback: function(e) {
         //TODO update to use getContextMenuTarget()
-        if(e.element().tagName.toLowerCase() == 'a')
+        if (e.element().tagName.toLowerCase() == 'a') {
                 slet('side', e.target.lastChild.nodeValue.replace(/^\s+/, ''), e.target.parentNode.className.replace(/^side/, ''));
-            else
+            } else {
                 slet('side', e.target.parentNode.lastChild.nodeValue.replace(/^\s+/, ''), e.target.parentNode.parentNode.className.replace(/^side/, ''));
+            }
         }
     }
 ]
@@ -105,10 +109,11 @@ var activeKatContextMenu = [
         className: 'textfield_rename',
         callback: function(e) {
         //TODO update to use getContextMenuTarget()
-            if(e.element().tagName.toLowerCase() == 'a')
+            if (e.element().tagName.toLowerCase() == 'a') {
                 renamekat(e.target.parentNode.id.replace(/^kat/, ''), e.target.lastChild.nodeValue.replace(/^\s+/, ''));
-            else
+            } else {
                 renamekat(e.target.parentNode.parentNode.id.replace(/^kat/, ''), e.target.parentNode.lastChild.nodeValue.replace(/^\s+/, ''));
+            }
         }
     },
         {
@@ -116,10 +121,11 @@ var activeKatContextMenu = [
         className: 'edit',
         callback: function(e) {
         //TODO update to use getContextMenuTarget()
-            if(e.element().tagName.toLowerCase() == 'a')
+            if (e.element().tagName.toLowerCase() == 'a') {
                 location.href='?side=redigerkat&id='+e.target.parentNode.id.replace(/^kat/, '');
-            else
+            } else {
                 location.href='?side=redigerkat&id='+e.target.parentNode.parentNode.id.replace(/^kat/, '');
+            }
         }
     },
     {
@@ -127,10 +133,11 @@ var activeKatContextMenu = [
         className: 'unlink',
         callback: function(e) {
         //TODO update to use getContextMenuTarget()
-            if(e.element().tagName.toLowerCase() == 'a')
+            if (e.element().tagName.toLowerCase() == 'a') {
                 movekat(e.target.lastChild.nodeValue.replace(/^\s+/, ''), e.target.parentNode.id.replace(/^kat/, ''), -1, true);
-            else
+            } else {
                 movekat(e.target.parentNode.lastChild.nodeValue.replace(/^\s+/, ''), e.target.parentNode.parentNode.id.replace(/^kat/, ''), -1, true);
+            }
         }
     }
 ]
@@ -143,10 +150,11 @@ var inactiveKatContextMenu = [
         className: 'textfield_rename',
         callback: function(e) {
         //TODO update to use getContextMenuTarget()
-            if(e.element().tagName.toLowerCase() == 'a')
+            if (e.element().tagName.toLowerCase() == 'a') {
                 renamekat(e.target.parentNode.id.replace(/^kat/, ''), e.target.lastChild.nodeValue.replace(/^\s+/, ''));
-            else
+            } else {
                 renamekat(e.target.parentNode.parentNode.id.replace(/^kat/, ''), e.target.parentNode.lastChild.nodeValue.replace(/^\s+/, ''));
+            }
         }
     },
     {
@@ -154,10 +162,11 @@ var inactiveKatContextMenu = [
         className: 'edit',
         callback: function(e) {
         //TODO update to use getContextMenuTarget()
-            if(e.element().tagName.toLowerCase() == 'a')
+            if (e.element().tagName.toLowerCase() == 'a') {
                 location.href='?side=redigerkat&id='+e.target.parentNode.id.replace(/^kat/, '');
-            else
+            } else {
                 location.href='?side=redigerkat&id='+e.target.parentNode.parentNode.id.replace(/^kat/, '');
+            }
         }
     },
     {
@@ -165,10 +174,11 @@ var inactiveKatContextMenu = [
         className: 'delete',
         callback: function(e) {
         //TODO update to use getContextMenuTarget()
-            if(e.element().tagName.toLowerCase() == 'a')
+            if (e.element().tagName.toLowerCase() == 'a') {
                 slet('kat', e.target.lastChild.nodeValue.replace(/^\s+/, ''), e.target.parentNode.id.replace(/^kat/, ''));
-            else
+            } else {
                 slet('kat', e.target.parentNode.lastChild.nodeValue.replace(/^\s+/, ''), e.target.parentNode.parentNode.id.replace(/^kat/, ''));
+            }
         }
     }
 ]
@@ -185,7 +195,7 @@ var listOrderContextMenu = [
 ]
 
 function sogogerstat(sog, erstat) {
-    if(confirm('Dette vil søge og erstatte i al tekst på hele siden, vil du forsætte?')==true){
+    if (confirm('Dette vil søge og erstatte i al tekst på hele siden, vil du forsætte?')==true){
         $('loading').style.visibility = '';
         x_sogogerstat(sog, erstat, sogogerstat_r);
     }
@@ -197,10 +207,11 @@ function sogogerstat_r(affected_rows) {
 }
 
 function displaySubMenus(state) {
-    if(state == '1')
+    if (state == '1') {
         $('subMenus').style.display = '';
-    else
+    } else {
         $('subMenus').style.display = 'none';
+    }
 }
 
 
@@ -268,15 +279,16 @@ function save_ny_kat() {
 }
 
 function save_ny_kat_r(data) {
-    if(data['error'])
+    if (data['error']) {
         alert(data['error']);
-    else
+    } else {
         location.href = '?side=getSiteTree';
+    }
 }
 
 function addNewItem() {
     var text = $('newItem');
-    if(text.value != '') {
+    if (text.value != '') {
         var listOrder = $('listOrder');
         var li = document.createElement('li');
         li.id = 'item_'+items;
@@ -293,9 +305,10 @@ function addNewItem() {
 function saveListOrder(id) {
     var newListOrder = '';
     var listOrder = $('listOrder');
-    for(var i = 0; i<listOrder.childNodes.length; i++) {
-        if(i)
+    for (var i = 0; i<listOrder.childNodes.length; i++) {
+        if (i) {
             newListOrder += '<';
+        }
         newListOrder += listOrder.childNodes[i].innerHTML;
     }
     x_saveListOrder(id, $('listOrderNavn').value, newListOrder, generic_r);
@@ -303,7 +316,7 @@ function saveListOrder(id) {
 
 function makeNewList() {
     var name = prompt('Ny liste');
-    if(name != null) {
+    if (name != null) {
         $('loading').style.visibility = '';
         x_makeNewList(name, makeNewList_r);
     }
@@ -311,7 +324,7 @@ function makeNewList() {
 
 function makeNewList_r(data) {
     $('loading').style.visibility = 'hidden';
-    if(data['error']) {
+    if (data['error']) {
         alert(data['error']);
     } else {
         var obj = $('canvas').lastChild;
@@ -333,10 +346,11 @@ function countEmailTo() {
     sajax_cancel();
     var interestObjs = $('interests').getElementsByTagName('input');
     var interests = '';
-    for(var i=0; i<interestObjs.length; i++) {
-        if(interestObjs[i].checked) {
-            if(interests != '')
+    for (var i=0; i<interestObjs.length; i++) {
+        if (interestObjs[i].checked) {
+            if (interests != '') {
                 interests += '<';
+            }
             interests += interestObjs[i].value;
         }
     }
@@ -345,7 +359,7 @@ function countEmailTo() {
 
 function countEmailTo_r(data) {
     $('loading').style.visibility = 'hidden';
-    if(data['error']) {
+    if (data['error']) {
         alert(data['error']);
     }
     $('mailToCount').innerHTML = data;
@@ -356,10 +370,11 @@ function saveEmail() {
     updateRTEs();
     var interestObjs = $('interests').getElementsByTagName('input');
     var interests = '';
-    for(var i=0; i<interestObjs.length; i++) {
-        if(interestObjs[i].checked) {
-            if(interests != '')
+    for (var i=0; i<interestObjs.length; i++) {
+        if (interestObjs[i].checked) {
+            if (interests != '') {
                 interests += '<';
+            }
             interests += interestObjs[i].value;
         }
     }
@@ -371,10 +386,11 @@ function updateContact(id) {
     $('loading').style.visibility = '';
     var interestObjs = $('interests').getElementsByTagName('input');
     var interests = '';
-    for(var i=0; i<interestObjs.length; i++) {
-        if(interestObjs[i].checked) {
-            if(interests != '')
+    for (var i=0; i<interestObjs.length; i++) {
+        if (interestObjs[i].checked) {
+            if (interests != '') {
                 interests += '<';
+            }
             interests += interestObjs[i].value;
         }
     }
@@ -384,7 +400,7 @@ function updateContact(id) {
 
 function updateContact_r(data) {
     $('loading').style.visibility = 'hidden';
-    if(data['error']) {
+    if (data['error']) {
         alert(data['error']);
     } else {
         location.href = '?side=addressbook';
@@ -392,31 +408,33 @@ function updateContact_r(data) {
 }
 
 function sendEmail() {
-    if(!confirm('Ønsker du virkelig at sende denne nyhedsmail nu?'))
+    if (!confirm('Ønsker du virkelig at sende denne nyhedsmail nu?')) {
         return false;
+    }
     $('loading').style.visibility = '';
     updateRTEs();
-    if($('from').value == '') {
+    if ($('from').value == '') {
         $('loading').style.visibility = 'hidden';
         alert('Du skal vælge en afsender!');
         return false;
     }
-    if($('subject').value == '') {
+    if ($('subject').value == '') {
         $('loading').style.visibility = 'hidden';
         alert('Du skal skrive et emne!');
         return false;
     }
-    if($('text').value == '') {
+    if ($('text').value == '') {
         $('loading').style.visibility = 'hidden';
         alert('Du skal skrive et tekst!');
         return false;
     }
     var interestObjs = $('interests').getElementsByTagName('input');
     var interests = '';
-    for(var i=0; i<interestObjs.length; i++) {
-        if(interestObjs[i].checked) {
-            if(interests != '')
+    for (var i=0; i<interestObjs.length; i++) {
+        if (interestObjs[i].checked) {
+            if (interests != '') {
                 interests += '<';
+            }
             interests += interestObjs[i].value;
         }
     }
@@ -426,7 +444,7 @@ function sendEmail() {
 
 function sendEmail_r(data) {
     $('loading').style.visibility = 'hidden';
-    if(data['error']) {
+    if (data['error']) {
         alert(data['error']);
     } else {
         location.href = '?side=emaillist';

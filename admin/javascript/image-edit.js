@@ -5,8 +5,8 @@ function saveImage() {
     $('loading').style.visibility = '';
 
     //TODO doesn't work?
-    if(mode == 'thb') {
-        if(rotate) {
+    if (mode == 'thb') {
+        if (rotate) {
             var endW = Math.min(thumb_height,Math.round(maxW*scale));
             var endH = Math.min(thumb_width,Math.round(maxH*scale));
         } else {
@@ -24,13 +24,13 @@ function saveImage() {
 function saveImage_r(data) {
     $('loading').style.visibility = 'hidden';
     $('save').style.display = '';
-    if(data['error']) {
+    if (data['error']) {
         alert(data['error']);
-    } else if(data['yesno']) {
-        if(eval(confirm(data['yesno']))==true){
+    } else if (data['yesno']) {
+        if (eval(confirm(data['yesno']))==true){
 
-            if(mode == 'thb') {
-                if(rotate) {
+            if (mode == 'thb') {
+                if (rotate) {
                     var endW = Math.min(thumb_height,Math.round(maxW*scale));
                     var endH = Math.min(thumb_width,Math.round(maxH*scale));
                 } else {
@@ -46,15 +46,16 @@ function saveImage_r(data) {
             self.close();
         }
     } else {
-        if(window.opener.returnid && window.opener.returnid != 'undefined') {
+        if (window.opener.returnid && window.opener.returnid != 'undefined') {
             window.opener.opener.document.getElementById(window.opener.returnid).value = data['path'];
             window.opener.opener.document.getElementById(window.opener.returnid+'thb').src = data['path'];
-            if(window.opener.opener.window.location.href.indexOf('side=redigerside') > -1)
+            if (window.opener.opener.window.location.href.indexOf('side=redigerside') > -1) {
                 window.opener.opener.updateSide(window.opener.opener.$('id').value);
+            }
             //TODO make shure theas closes
             window.opener.close();
         } else {
-            if(window.opener.files[data['id']]) {
+            if (window.opener.files[data['id']]) {
                 window.opener.files[data['id']].width = data['width'];
                 window.opener.files[data['id']].height = data['height'];
                 window.opener.files[data['id']].refreshThumb();
@@ -77,14 +78,15 @@ var CropImageManager = {
 
     //Attaches/resets the image cropper
     attachCropper: function() {
-        if(resizeHandle != null)
+        if (resizeHandle != null) {
             resizeEnd();
+        }
         $('preview').style.display = 'none';
         $('original').style.display = '';
         $('resetCropper').style.display = 'none';
         $('removeCropper').style.display = '';
         $('preview').style.width = '';
-        if( this.curCrop != null ) this.curCrop.remove();
+        if ( this.curCrop != null ) this.curCrop.remove();
         this.curCrop = new Cropper.Img(
             'original',
             {
@@ -101,7 +103,7 @@ var CropImageManager = {
         $('removeCropper').style.display = 'none';
         $('resetCropper').style.display = '';
         preview();
-        if( this.curCrop != null ) {
+        if ( this.curCrop != null ) {
             this.curCrop.remove();
         }
     },
@@ -119,11 +121,12 @@ function onEndCrop(coords, dimensions) {
     maxW = dimensions.width;
     maxH = dimensions.height;
 
-    if(mode == 'thb') {
-        if(rotate)
+    if (mode == 'thb') {
+        if (rotate) {
             scale = Math.min(1,Math.max(thumb_height/maxW,thumb_width/maxH));
-        else
+        } else {
             scale = Math.min(1,Math.max(thumb_width/maxW,thumb_height/maxH));
+        }
     }
 }
 
@@ -146,35 +149,46 @@ var resizeHandle = null;
 function resize() {
     $('save').style.display = '';
     $('loading').style.visibility = 'hidden';
-    if(resizeHandle != null)
+    if (resizeHandle != null) {
         resizeHandle.destroy();
+    }
 
     $('resizeHandle').style.left = $('preview').width+'px';
     $('resizeHandle').style.top = $('preview').height+'px';
 
-    if(rotate)
+    if (rotate) {
         var maxWH = maxH;
-    else
+    } else {
         var maxWH = maxW;
+    }
 
-    if(mode == 'thb') {
-        if(rotate) {
+    if (mode == 'thb') {
+        if (rotate) {
             maxWH = maxWH*Math.min(1,Math.min(thumb_width/maxH,thumb_height/maxW));
         } else {
             maxWH = maxWH*Math.min(1,Math.min(thumb_width/maxW,thumb_height/maxH));
         }
     }
 
-    resizeHandle = new Draggable('resizeHandle',{constraint:'horizontal',boundary:[ [16,0], [maxWH,0] ],onDrag:function(obj,e) {
-        $('preview').style.width = obj.element.style.left;
-        $('resizeHandle').style.top = $('preview').height+'px';
-        if(rotate)
-            scale = (parseInt(obj.element.style.left)/maxH);
-        else
-            scale = (parseInt(obj.element.style.left)/maxW);
-    },onEnd:function(e) {
-        preview();
-    }});
+    resizeHandle = new Draggable(
+        'resizeHandle',
+        {
+            constraint:'horizontal',
+            boundary:[ [16,0], [maxWH,0] ],
+            onDrag:function(obj,e) {
+                $('preview').style.width = obj.element.style.left;
+                $('resizeHandle').style.top = $('preview').height+'px';
+                if (rotate) {
+                    scale = (parseInt(obj.element.style.left)/maxH);
+                } else {
+                    scale = (parseInt(obj.element.style.left)/maxW);
+                }
+            },
+            onEnd:function(e) {
+                preview();
+            }
+        }
+    );
     $('resizeHandle').style.display = '';
 }
 
@@ -379,8 +393,8 @@ function preview() {
     $('save').style.display = 'none';
     $('loading').style.visibility = '';
 
-    if(mode == 'thb') {
-        if(rotate) {
+    if (mode == 'thb') {
+        if (rotate) {
             var endW = Math.min(thumb_height,Math.round(maxW*scale));
             var endH = Math.min(thumb_width,Math.round(maxH*scale));
         } else {

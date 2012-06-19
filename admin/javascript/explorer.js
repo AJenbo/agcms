@@ -45,20 +45,23 @@ function file(id, path, name, type, alt, width, height) {
 
     this.alt = alt;
 
-    if(path)
+    if (path) {
         this.type = type;
-    else
+    } else {
         this.type = 'unknown';
+    }
 
-    if(width > 0)
+    if (width > 0) {
         this.width = width;
-    else
+    } else {
         this.width = screen.availWidth;
+    }
 
-    if(height > 0)
+    if (height > 0) {
         this.height = height;
-    else
+    } else {
         this.height = screen.availHeight;
+    }
 }
 
 file.prototype.openfile = function () {
@@ -225,7 +228,7 @@ var flvtileContextMenu = [
   }
 ]
 
-if(window.location.href.match(/return=rtef/g)) {
+if (window.location.href.match(/return=rtef/g)) {
     var imagetileContextMenu = [
       {
         name: 'Åbne',
@@ -356,7 +359,7 @@ if(window.location.href.match(/return=rtef/g)) {
 }
 
 function viewlFile(type, id, width, height) {
-    if(type == 'unknown') {
+    if (type == 'unknown') {
             var file = files[id].path;
     } else {
             var file = 'popup-'+type+'.php?url=' + encodeURIComponent(files[id].path);
@@ -366,7 +369,7 @@ function viewlFile(type, id, width, height) {
 
 function edit_alt(id) {
     var newalt = prompt('Billed beskrivelse', files[id].alt);
-    if(newalt != null && newalt != files[id].alt) {
+    if (newalt != null && newalt != files[id].alt) {
         $('loading').style.visibility = '';
         x_edit_alt(id, newalt, edit_alt_r);
     }
@@ -374,7 +377,7 @@ function edit_alt(id) {
 
 function edit_alt_r(data) {
     document.getElementById('loading').style.display = 'none';
-    if(data['error']) {
+    if (data['error']) {
         alert(data['error']);
     } else {
         files[data['id']].alt = data['alt'];
@@ -402,15 +405,16 @@ function getSelect(id) {
 
 function showfiles(dir, mode) {
     //TODO, scroll to top.
-    if(dir != '')
+    if (dir != '') {
         setCookie('admin_dir', dir, 360);
-    else
+    } else {
         dir = getCookie('admin_dir');
+    }
 
     document.getElementById('loading').style.display = '';
-    if(mode == 0) {
+    if (mode == 0) {
         dirlist = document.getElementById('dir').getElementsByTagName('a');
-        for(var i=0; i<dirlist.length; i++) {
+        for (var i=0; i<dirlist.length; i++) {
             dirlist[i].className = '';
         }
     }
@@ -449,13 +453,13 @@ function renamedir(newNameObj) {
 
 function renamedir_r(data) {
     document.getElementById('loading').style.display = 'none';
-    if(data['error']) {
+    if (data['error']) {
         var divdir = document.getElementById(dirToId(data['id']));
         var form = divdir.getElementsByTagName('form');
         form[0].firstChild.childNodes[1].value = form[0].previousSibling.title;
         alert(data['error']);
-    } else if(data['yesno']) {
-        if(confirm(data['yesno'])){
+    } else if (data['yesno']) {
+        if (confirm(data['yesno'])){
             document.getElementById('loading').style.display = '';
             x_renamefile(data['id'], document.getElementById('dir_'+data['id']+'form').lastChild.value, '', document.getElementById('dir_'+data['id']+'form').firstChild.value, 1, renamefile_r);
         } else {
@@ -474,11 +478,11 @@ function renamedir_r(data) {
 
 var popup=null;
 function popUpWin(url, win, options, width, height) {
-    if(popup != null) {
+    if (popup != null) {
         popup.close();
         popup=null;
     }
-    if(options != '') {
+    if (options != '') {
         options += ',';
     }
     popup = window.open(url, win, options + 'width=' + width + ',height=' + height + ',left=' + (screen.availWidth - width) / 2 + ',top=' + (screen.availHeight - height) / 2);
@@ -490,13 +494,13 @@ function open_file_move(id) {
 
 function deletefolder() {
     //TODO hvilket folder?
-    if(confirm('Er du sikker på du vil slette denne mappe og dens indhold?')) {
+    if (confirm('Er du sikker på du vil slette denne mappe og dens indhold?')) {
         x_deletefolder(deletefolder_r);
     }
 }
 
 function deletefolder_r(data) {
-    if(data['error']) {
+    if (data['error']) {
         alert(data['error']);
         window.location.reload();
     } else {
@@ -506,7 +510,7 @@ function deletefolder_r(data) {
 }
 
 function makedir() {
-    if(name = prompt('Hvad skal mappen hede?', 'Ny mappe')) {
+    if (name = prompt('Hvad skal mappen hede?', 'Ny mappe')) {
         document.getElementById('loading').style.display = '';
         x_makedir(name, makedir_r);
     }
@@ -514,7 +518,7 @@ function makedir() {
 
 function makedir_r(data) {
     document.getElementById('loading').style.display = 'none';
-    if(data['error']) {
+    if (data['error']) {
         alert(data['error']);
     } else {
         //TODO make sure current folder has +- and room for subs
@@ -534,7 +538,7 @@ function idToDir(id) {
 
 function dir_expand(dirdiv, mode) {
     dirdiv = dirdiv.parentNode;
-    if(dirdiv.lastChild.firstChild == null) {
+    if (dirdiv.lastChild.firstChild == null) {
         document.getElementById('loading').style.display = '';
         x_listdirs(idToDir(dirdiv.id), mode, dir_expand_r);
     } else {
@@ -547,7 +551,7 @@ function dir_expand(dirdiv, mode) {
 
 function dir_expand_r(data) {
     document.getElementById('loading').style.display = 'none';
-    if(data['error']) {
+    if (data['error']) {
         alert(data['error']);
     } else {
         var dirdiv = document.getElementById(dirToId(data['id']));
@@ -590,7 +594,7 @@ function open_file_upload() {
 function insertThumbnail(id) {
     window.opener.document.getElementById(returnid).value=files[id].path;
     window.opener.document.getElementById(returnid+'thb').src=files[id].path;
-    if(window.opener.window.location.href.indexOf('side=redigerside') > -1)
+    if (window.opener.window.location.href.indexOf('side=redigerside') > -1) {
         window.opener.updateSide(window.opener.$('id').value);
     window.close();
 }
@@ -604,11 +608,11 @@ function renamefile(id) {
 
 function renamefile_r(data) {
     document.getElementById('loading').style.display = 'none';
-    if(data['error']) {
+    if (data['error']) {
         document.getElementById('navn'+data['id']+'form').firstChild.firstChild.value = files[data['id']].name;
         alert(data['error']);
-    } else if(data['yesno']) {
-        if(confirm(data['yesno'])){
+    } else if (data['yesno']) {
+        if (confirm(data['yesno'])){
             document.getElementById('loading').style.display = '';
             x_renamefile(data['id'], files[data['id']].path, '', document.getElementById('navn'+data['id']+'form').firstChild.firstChild.value, 1, renamefile_r);
         } else {
@@ -624,7 +628,7 @@ function renamefile_r(data) {
 }
 
 function deletefile(id) {
-    if(confirm('vil du slette \''+files[id].name+'\'?')) {
+    if (confirm('vil du slette \''+files[id].name+'\'?')) {
         document.getElementById('loading').style.display = '';
         x_deletefile(id, files[id].path, deletefile_r);
     }
@@ -632,7 +636,7 @@ function deletefile(id) {
 
 function deletefile_r(data) {
     document.getElementById('loading').style.display = 'none';
-    if(data['error']) {
+    if (data['error']) {
         alert(data['error']);
     } else {
         removeTagById('tilebox'+data['id']);
@@ -642,29 +646,33 @@ function deletefile_r(data) {
 
 function addfile(id) {
     window.opener.insertHTML('<a href="' + files[id].path + '" target="_blank">Klik her</a>');
-    if(window.opener.window.location.href.indexOf('side=redigerside') > -1)
+    if (window.opener.window.location.href.indexOf('side=redigerside') > -1) {
         window.opener.updateSide(window.opener.$('id').value);
+    }
     window.close();
 }
 
 function addimg(id) {
     window.opener.insertHTML('<img src="'+files[id].path+'" alt="'+files[id].alt+'" title="" />');
-    if(window.opener.window.location.href.indexOf('side=redigerside') > -1)
+    if (window.opener.window.location.href.indexOf('side=redigerside') > -1) {
         window.opener.updateSide(window.opener.$('id').value);
+    }
     window.close();
 }
 
 function addflv(id, aspect, width, height) {
     window.opener.insertHTML('<img name="placeholder" class="object" src="/admin/rtef/images/placeholder.gif" width="'+width+'" height="'+height+'" alt="&lt;object width=&quot;'+width+'&quot; height=&quot;'+height+'&quot; classid=&quot;clsid:d27cdb6e-ae6d-11cf-96b8-444553540000&quot; codebase=&quot;http://download.macromedia.com/pub/shockwave/cabs/flash/swflash.cab#version=9,0,0,0&quot; align=&quot;middle&quot;&gt;&lt;param name=&quot;allowScriptAccess&quot; value=&quot;sameDomain&quot; /&gt;&lt;param name=&quot;movie&quot; value=&quot;/player'+aspect+'.swf?flvFilename='+files[id].path+'&quot; /&gt;&lt;param name=&quot;allowFullScreen&quot; value=&quot;true&quot; /&gt;&lt;param name=&quot;quality&quot; value=&quot;high&quot; /&gt;&lt;param name=&quot;bgcolor&quot; value=&quot;#FFFFFF&quot; /&gt;&lt;embed src=&quot;/player'+aspect+'.swf?flvFilename='+files[id].path+'&quot; width=&quot;'+width+'&quot; height=&quot;'+height+'&quot; bgcolor=&quot;#FFFFFF&quot; name=&quot;flash&quot; quality=&quot;high&quot; align=&quot;middle&quot; allowScriptAccess=&quot;sameDomain&quot; allowFullScreen=&quot;true&quot; type=&quot;application/x-shockwave-flash&quot; pluginspage=&quot;http://www.macromedia.com/go/getflashplayer&quot; /&gt;&lt;/object&gt;" />');
-    if(window.opener.window.location.href.indexOf('side=redigerside') > -1)
+    if (window.opener.window.location.href.indexOf('side=redigerside') > -1) {
         window.opener.updateSide(window.opener.$('id').value);
+    }
     window.close();
 }
 
 function addswf(id, width, height) {
     window.opener.insertHTML('<img name="placeholder" class="object" src="/admin/rtef/images/placeholder.gif" width="'+width+'" height="'+height+'" alt="&lt;object width=&quot;'+width+'&quot; height=&quot;'+height+'&quot; classid=&quot;clsid:d27cdb6e-ae6d-11cf-96b8-444553540000&quot; codebase=&quot;http://download.macromedia.com/pub/shockwave/cabs/flash/swflash.cab#version=9,0,0,0&quot; align=&quot;middle&quot;&gt;&lt;param name=&quot;allowScriptAccess&quot; value=&quot;sameDomain&quot; /&gt;&lt;param name=&quot;movie&quot; value=&quot;'+files[id].path+'&quot; /&gt;&lt;param name=&quot;allowFullScreen&quot; value=&quot;true&quot; /&gt;&lt;param name=&quot;quality&quot; value=&quot;high&quot; /&gt;&lt;param name=&quot;bgcolor&quot; value=&quot;#FFFFFF&quot; /&gt;&lt;embed src=&quot;'+files[id].path+'&quot; width=&quot;'+width+'&quot; height=&quot;'+height+'&quot; bgcolor=&quot;#FFFFFF&quot; name=&quot;flash&quot; quality=&quot;high&quot; align=&quot;middle&quot; allowScriptAccess=&quot;sameDomain&quot; allowFullScreen=&quot;true&quot; type=&quot;application/x-shockwave-flash&quot; pluginspage=&quot;http://www.macromedia.com/go/getflashplayer&quot; /&gt;&lt;/object&gt;" />');
-    if(window.opener.window.location.href.indexOf('side=redigerside') > -1)
+    if (window.opener.window.location.href.indexOf('side=redigerside') > -1) {
         window.opener.updateSide(window.opener.$('id').value);
+    }
     window.close();
 }
 
@@ -675,15 +683,16 @@ function showhide(id) {
 
 function swap_pannel(navn) {
     //Save what mode we are in and what was searched for
-    if(navn == 'search') {
+    if (navn == 'search') {
         document.getElementById('files').innerHTML = ''
         document.getElementById('dir_bn').className='';
         document.getElementById('dir').style.display='none';
         document.getElementById('search_bn').className='down';
         document.getElementById('search').style.display='';
-        if(document.getElementById('searchpath').value || document.getElementById('searchalt').value || getSelect('searchtype'))
+        if (document.getElementById('searchpath').value || document.getElementById('searchalt').value || getSelect('searchtype')) {
             searchfiles();
-    } else if(navn == 'dir') {
+        }
+    } else if (navn == 'dir') {
         document.getElementById('files').innerHTML = ''
         setCookie('qpath', 0, -1);
         setCookie('qalt', 0, -1);

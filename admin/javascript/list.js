@@ -4,17 +4,19 @@ function listInsertRow(listid) {
 
     var cells = '';
     var rowlink = 0;
-    if(listlink[listid] == 1) {
-        for(i=0; i<footer.childNodes.length-2; i++) {
-            if(cells)
+    if (listlink[listid] == 1) {
+        for (i=0; i<footer.childNodes.length-2; i++) {
+            if (cells) {
                 cells += '<';
+            }
             cells += htmlspecialchars(footer.childNodes[i].firstChild.value);
         }
         rowlink = footer.childNodes[footer.childNodes.length-2].firstChild.value;
     } else {
-        for(i=0; i<footer.childNodes.length-1; i++) {
-            if(cells)
+        for (i=0; i<footer.childNodes.length-1; i++) {
+            if (cells) {
                 cells += '<';
+            }
             cells += htmlspecialchars(footer.childNodes[i].firstChild.value);
         }
     }
@@ -24,7 +26,7 @@ function listInsertRow(listid) {
 
 function listInsertRow_r(data) {
     $('loading').style.visibility = 'hidden';
-    if(data['error']) {
+    if (data['error']) {
         alert(data['error']);
     }
 
@@ -36,7 +38,7 @@ function listInsertRow_r(data) {
     var td;
     var span;
     var input;
-    for(i=0; i<footer.childNodes.length-1; i++) {
+    for (i=0; i<footer.childNodes.length-1; i++) {
         td = document.createElement('td');
         td.style.textAlign = footer.childNodes[i].firstChild.style.textAlign;
         span = document.createElement('span');
@@ -58,8 +60,9 @@ function listInsertRow_r(data) {
     rows = $('list'+data['listid']+'rows');
     rows.appendChild(tr);
 
-    if(!(rows.childNodes.length % 2))
+    if (!(rows.childNodes.length % 2)) {
         rows.lastChild.className = 'altrow';
+    }
 }
 
 function listEditRow(listid, rowid) {
@@ -67,16 +70,16 @@ function listEditRow(listid, rowid) {
 
     var row = $('list_row'+rowid);
 
-    for(var i=0; i<row.childNodes.length-1; i++) {
+    for (var i=0; i<row.childNodes.length-1; i++) {
         row.childNodes[i].firstChild.style.width = row.childNodes[i].clientWidth-2+'px';
     }
-    for(i=0; i<row.childNodes.length-1; i++) {
+    for (i=0; i<row.childNodes.length-1; i++) {
         row.childNodes[i].lastChild.style.display = 'none';
         row.childNodes[i].firstChild.style.display = '';
     }
 
     rows = $('list'+listid+'rows');
-    for(i=0; i<rows.childNodes.length; i++) {
+    for (i=0; i<rows.childNodes.length; i++) {
         rows.childNodes[i].childNodes[row.childNodes.length-1].style.display = 'none';
     }
     row.childNodes[row.childNodes.length-1].style.display = '';
@@ -93,17 +96,19 @@ function listUpdateRow(listid, rowid) {
 
     var cells = '';
     var rowlink = 0;
-    if(listlink[listid] == 1) {
-        for(i=0; i<row.childNodes.length-2; i++) {
-            if(cells)
+    if (listlink[listid] == 1) {
+        for (i=0; i<row.childNodes.length-2; i++) {
+            if (cells) {
                 cells += '<';
+            }
             cells += htmlspecialchars(row.childNodes[i].firstChild.value);
         }
         rowlink = row.childNodes[row.childNodes.length-2].firstChild.value;
     } else {
-        for(i=0; i<row.childNodes.length-1; i++) {
-            if(cells)
+        for (i=0; i<row.childNodes.length-1; i++) {
+            if (cells) {
                 cells += '<';
+            }
             cells += htmlspecialchars(row.childNodes[i].firstChild.value);
         }
     }
@@ -112,13 +117,13 @@ function listUpdateRow(listid, rowid) {
 
 function listUpdateRow_r(data) {
     $('loading').style.visibility = 'hidden';
-    if(data['error']) {
+    if (data['error']) {
         alert(data['error']);
     }
     var row = $('list_row'+data['rowid']);
 
-    for(i=0; i<row.childNodes.length-1; i++) {
-        if(typeof(row.childNodes[i].lastChild.textContent) == 'string'){
+    for (i=0; i<row.childNodes.length-1; i++) {
+        if (typeof(row.childNodes[i].lastChild.textContent) == 'string'){
             row.childNodes[i].lastChild.textContent = row.childNodes[i].firstChild.value;
         } else{
             row.childNodes[i].lastChild.innerText = row.childNodes[i].firstChild.value;
@@ -133,7 +138,7 @@ function listUpdateRow_r(data) {
     row.childNodes[row.childNodes.length-1].childNodes[2].style.display = '';
 
     rows = $('list'+data['listid']+'rows');
-    for(i=0; i<rows.childNodes.length; i++) {
+    for (i=0; i<rows.childNodes.length; i++) {
         rows.childNodes[i].childNodes[row.childNodes.length-1].style.display = '';
     }
     $('list'+data['listid']+'footer').style.display = '';
@@ -142,17 +147,17 @@ function listUpdateRow_r(data) {
 function listSizeFooter(listid) {
     var row = $('list'+listid+'footer');
 
-    for(var i=0; i<row.childNodes.length-1; i++) {
+    for (var i=0; i<row.childNodes.length-1; i++) {
         row.childNodes[i].firstChild.style.width = row.childNodes[i].clientWidth+'px';
     }
-    for(i=0; i<row.childNodes.length-1; i++) {
+    for (i=0; i<row.childNodes.length-1; i++) {
         row.childNodes[i].lastChild.style.display = 'none';
         row.childNodes[i].firstChild.style.display = '';
     }
 }
 
 function listRemoveRow(listid, rowid) {
-    if(confirm('Vil du virkelig slette denne linje.')) {
+    if (confirm('Vil du virkelig slette denne linje.')) {
         x_listRemoveRow(listid, rowid, listRemoveRow_r);
         $('loading').style.visibility = '';
     }
@@ -160,17 +165,18 @@ function listRemoveRow(listid, rowid) {
 
 function listRemoveRow_r(data) {
     $('loading').style.visibility = 'hidden';
-    if(data['error']) {
+    if (data['error']) {
         alert(data['error']);
     }
 
     removeTagById($('list_row'+data['rowid']));
 
     rows = $('list'+data['listid']+'rows');
-    for(i=0;i<rows.childNodes.length;i++) {
-        if(i % 2)
+    for (i=0;i<rows.childNodes.length;i++) {
+        if (i % 2) {
             rows.childNodes[i].className = 'altrow';
-        else
+        } else {
             rows.childNodes[i].className = '';
+        }
     }
 }
