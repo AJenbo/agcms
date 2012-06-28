@@ -22,8 +22,8 @@ function validemail($email)
 {
     //_An-._E-mail@test-domain.test.dk
     if ($email
-        && preg_match('/^([a-z0-9-_]+[a-z0-9-_.]*)*[a-z0-9-_]+@([a-z0-9-]+[a-z0-9-.]*)*[a-z0-9-]+[.][a-z]{2,4}$/ui', $email)
-        && !preg_match('/[.]{2}/u', $email)
+        && preg_match('/^[[:word:]0-9-_.]+@([[:lower:]0-9-]+\.)+[[:lower:]0-9-]+$/u', $email)
+        && !preg_match('/@\S[.]{2}/u', $email)
         && getmxrr(preg_replace('/.+?@(.?)/u', '$1', $email), $dummy)
     ) {
         return true;

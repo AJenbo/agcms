@@ -808,13 +808,19 @@ function get_db_error()
 }
 
 /**
- * Check if an email address is valid
+ * Checks if email an address looks valid
+ *
+ * @param string $email The email address to check
  *
  * @return bool
  */
 function valide_mail($email)
 {
-    if (preg_match('/^([a-z0-9_\.\-])+\@(([a-z0-9\-])+\.)+([a-z0-9]{2,4})+$/i', $email) && getmxrr(preg_replace('/.+?@(.?)/u', '$1', $email), $dummy)) {
+    //_An-._E-mail@test-domain.test.dk
+    if ($email
+        && preg_match('/^[[:word:]0-9-_.]+@([[:lower:]0-9-]+\.)+[[:lower:]0-9-]+$/u', $email)
+        && !preg_match('/@\S[.]{2}/u', $email)
+    ) {
         return true;
     } else {
         return false;
