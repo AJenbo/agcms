@@ -163,14 +163,13 @@ if (!@$sog
 ) {
     if (get_magic_quotes_gpc()) {
         $url = stripslashes($url);
-        //TODO a %20 is inserted after ø
     }
     $q = trim(
         preg_replace(
             array (
                 '/\/|-|_|\.html|\.htm|\.php|\.gif|\.jpeg|\.jpg|\.png|\.php/u',
                 '/([0-9]+)/u',
-                '/([A-Z]?[a-z]+)/u',
+                '/([[:upper:]]?[[:lower:]]+)/u',
                 '/([\r\n])[\s]+/u'
             ),
             array (
