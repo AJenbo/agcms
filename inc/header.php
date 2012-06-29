@@ -57,6 +57,7 @@ function doConditionalGet($timestamp)
     }
 
     // Nothing has changed since their last request - serve a 304 and exit
+    apache_setenv('no-gzip', 1);
     ini_set('zlib.output_compression', '0');
     header("HTTP/1.1 304 Not Modified", true, 304);
     die();

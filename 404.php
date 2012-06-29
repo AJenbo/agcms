@@ -27,6 +27,9 @@ if ($encoding != 'UTF-8') {
     $url = mb_convert_encoding($url, 'UTF-8', $encoding);
     //TODO rawurlencode $url (PIE doesn't do it buy it self :(
     $url = implode("/", array_map("rawurlencode", explode("/", $url)));
+
+    apache_setenv('no-gzip', 1);
+    ini_set('zlib.output_compression', '0');
     header('HTTP/1.1 301 Moved Permanently');
     header('Location: '.$url);
     die();
@@ -94,6 +97,8 @@ if (@$redirect) {
         $GLOBALS['_config']['mysql_database']
     );
 
+    apache_setenv('no-gzip', 1);
+    ini_set('zlib.output_compression', '0');
     header('HTTP/1.1 301 Moved Permanently');
     if ($GLOBALS['side']['id']) {
         if (!$GLOBALS['generatedcontent']['activmenu']) {
@@ -185,6 +190,8 @@ if (!@$sog
         $q = addslashes($q);
     }
     $GLOBALS['generatedcontent']['activmenu'] = -1;
+    apache_setenv('no-gzip', 1);
+    ini_set('zlib.output_compression', '0');
     header("HTTP/1.1 301 Moved Permanently");
     header("Location: /?q=".rawurlencode($q)."&sogikke=&minpris=&maxpris=&maerke=0");
     die();
