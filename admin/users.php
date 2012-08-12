@@ -1,8 +1,15 @@
 <?php
-/*
-ini_set('display_errors', 1);
-error_reporting(-1);
-/**/
+/**
+ * List users
+ *
+ * PHP version 5
+ *
+ * @category AGCMS
+ * @package  AGCMS
+ * @author   Anders Jenbo <anders@jenbo.dk>
+ * @license  GPLv2 http://www.gnu.org/licenses/gpl-2.0.html
+ * @link     http://www.arms-gallery.dk/
+ */
 
 date_default_timezone_set('Europe/Copenhagen');
 setlocale(LC_ALL, 'da_DK');
@@ -22,6 +29,13 @@ $mysqli = new Simple_Mysqli(
     $GLOBALS['_config']['mysql_database']
 );
 
+/**
+ * Delete user
+ *
+ * @param int $id User id
+ *
+ * @return null
+ */
 function deleteuser($id)
 {
     if ($_SESSION['_user']['access'] == 1) {

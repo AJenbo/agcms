@@ -1,6 +1,6 @@
 <?php
 /**
- * Administrer users
+ * Edit a user
  *
  * PHP version 5
  *
