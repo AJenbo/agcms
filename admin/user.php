@@ -1,8 +1,15 @@
 <?php
-/*
-ini_set('display_errors', 1);
-error_reporting(-1);
-/**/
+/**
+ * Administrer users
+ *
+ * PHP version 5
+ *
+ * @category AGCMS
+ * @package  AGCMS
+ * @author   Anders Jenbo <anders@jenbo.dk>
+ * @license  GPLv2 http://www.gnu.org/licenses/gpl-2.0.html
+ * @link     http://www.arms-gallery.dk/
+ */
 
 date_default_timezone_set('Europe/Copenhagen');
 setlocale(LC_ALL, 'da_DK');
@@ -22,6 +29,21 @@ $mysqli = new Simple_Mysqli(
     $GLOBALS['_config']['mysql_database']
 );
 
+
+/**
+ * Update user
+ *
+ * @param int   $id      User id
+ * @param array $updates Array of values to change
+ *                       'access' int 0 = no acces, 1 = admin, 3 = priviliged, 4 = clerk
+ *                       'password' crypt(string)
+ *                       'password_new' string
+ *                       'fullname' string
+ *                       'name' string
+ *                       'lastlogin' MySQL time stamp
+ *
+ * @return mixed True on update, else array('error' => string)
+ */
 function updateuser($id, $updates)
 {
     global $mysqli;
