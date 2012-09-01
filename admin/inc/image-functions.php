@@ -299,9 +299,7 @@ function imagetrim($image, $bg, $fill)
                 $cropX = $ix;
                 //Not set in stone but may provide speed bump
                 $cropY = $iy;
-
-                $ix = $imageW;
-                $iy = $imageH;
+                break 2;
             }
         }
     }
@@ -310,8 +308,8 @@ function imagetrim($image, $bg, $fill)
     for ($iy=0; $iy<$cropY-1; $iy++) {
         for ($ix=0; $ix<$imageW; $ix++) {
             if ($bg != imagecolorat($image, $ix, $iy)) {
-                $ix = $imageW;
                 $cropY = $iy;
+                break 2;
             }
         }
     }
@@ -321,8 +319,7 @@ function imagetrim($image, $bg, $fill)
         for ($iy=$imageH-1; $iy>=0; $iy--) {
             if ($bg != imagecolorat($image, $ix, $iy)) {
                 $cropW = $ix - $cropX + 1;
-                $iy = 0;
-                $ix = 0;
+                break 2;
             }
         }
     }
@@ -332,8 +329,7 @@ function imagetrim($image, $bg, $fill)
         for ($ix=$imageW-1; $ix>=0; $ix--) {
             if ($bg != imagecolorat($image, $ix, $iy)) {
                 $cropH = $iy - $cropY + 1;
-                $iy = 0;
-                $ix = 0;
+                break 2;
             }
         }
     }
