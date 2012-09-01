@@ -97,9 +97,8 @@ for ($i=0; $i<count($sider); $i++) {
     <product>
         <sku>'.$sider[$i]['id'].'</sku>
         <title>'.$sider[$i]['navn'].'</title>';
-    $varenr = htmlspecialchars($sider[$i]['varenr'], ENT_COMPAT | ENT_XML1, 'UTF-8');
-    if ($sider[$i]['varenr'] = trim($varenr)) {
-        echo '<companysku>' . $sider[$i]['varenr'] . '</companysku>';
+    if (trim($sider[$i]['varenr'])) {
+        echo '<companysku>' . htmlspecialchars($sider[$i]['varenr'], ENT_COMPAT | ENT_XML1, 'UTF-8') . '</companysku>';
     }
     echo '<price>' . $sider[$i]['pris'] . ',00</price>
     <img>' . $GLOBALS['_config']['base_url'] . $sider[$i]['billed'] . '</img>
