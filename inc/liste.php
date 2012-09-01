@@ -99,15 +99,14 @@ function vare($side, $katnavn, $type)
  */
 function stringLimit($string, $length = 50, $ellipsis = '…')
 {
-    if (mb_strlen($string) > $length) {
-        return preg_replace(
-            '/\s*\S*$/',
-            '',
-            mb_substr($string, 0, $length - mb_strlen($ellipsis))
-        ) . $ellipsis;
-    } else {
+    if (!$length || mb_strlen($string) <= $length) {
         return $string;
     }
+
+    $string = mb_substr($string, 0, $length - mb_strlen($ellipsis));
+    $string = preg_replace('/\s+\S*$/u', '', $string);
+
+    return $string . $ellipsis;
 }
 
 /**
