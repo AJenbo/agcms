@@ -731,7 +731,7 @@ if (@$_GET['sog'] || @$GLOBALS['side']['inactive']) {
         ) . '</option>';
     }
     $text .= '</select></td></tr></table></form>';
-    $GLOBALS['generatedcontent']['text'] .= $text;
+    $GLOBALS['generatedcontent']['text'] = $text;
 } elseif (@$_GET['q']
     || @$_GET['varenr']
     || @$_GET['sogikke']
