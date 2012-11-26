@@ -82,7 +82,7 @@ class Simple_Mysqli extends mysqli
     public function fetchOne($query)
     {
         $row = $this->fetchArray($query);
-        $row = $row[0];
+        $row = array_shift($row);
 
         if (!isset($row)) {
             $row = array();
