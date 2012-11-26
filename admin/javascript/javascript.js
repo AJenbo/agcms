@@ -118,6 +118,7 @@ function getCookie(cookieName) {
                 end = document.cookie.length;
             }
             return decodeURIComponent(document.cookie.substring(begin, end));
+        }
     }
     return null;
 }
