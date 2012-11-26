@@ -302,7 +302,6 @@ if (!empty($_GET['id']) && @$_GET['checkid'] == getCheckid($_GET['id'])) {
                         );
                     }
 
-                    apache_setenv('no-gzip', 1);
                     ini_set('zlib.output_compression', '0');
                     header('Location: '.$GLOBALS['_config']['base_url'].'/betaling/?id='.$_GET['id'].'&checkid='.$_GET['checkid'].'&step=2', true, 303);
                     exit;
@@ -515,7 +514,6 @@ if (!empty($_GET['id']) && @$_GET['checkid'] == getCheckid($_GET['id'])) {
         } elseif ($_GET['step'] == 2) {
 
             if (count(validate($faktura))) {
-                apache_setenv('no-gzip', 1);
                 ini_set('zlib.output_compression', '0');
                 header(
                     'Location: '.$GLOBALS['_config']['base_url'].'/betaling/?id='.$_GET['id'].'&checkid='.$_GET['checkid'].'&step=1',
@@ -736,7 +734,6 @@ if (!empty($_GET['id']) && @$_GET['checkid'] == getCheckid($_GET['id'])) {
         $shopBody = '<br />'.sprintf(_('A customer tried to see the status page for online invoice #%d, which is already paid.'). $id).'<br />';
     } elseif (empty($_GET['Status'])) {
         //User pressed "back"
-        apache_setenv('no-gzip', 1);
         ini_set('zlib.output_compression', '0');
         header('Location: '.$GLOBALS['_config']['base_url'].'/betaling/?id='.$id.'&checkid='.$_GET['checkid'].'&step=2', true, 303);
         exit;

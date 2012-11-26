@@ -333,7 +333,6 @@ if (@$_GET['kat'] || @$_GET['side']) {
     $kat_id  = fullMysqliEscape($_GET['kat']);
     $side_id = fullMysqliEscape($_GET['side']);
 
-    apache_setenv('no-gzip', 1);
     ini_set('zlib.output_compression', '0');
     header('HTTP/1.1 301 Moved Permanently');
     if ($side_id) {

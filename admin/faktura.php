@@ -33,7 +33,6 @@ function newfaktura()
 }
 
 if (!empty($_GET['function']) && $_GET['function'] == 'new') {
-    apache_setenv('no-gzip', 1);
     ini_set('zlib.output_compression', '0');
     header('Location: faktura.php?id='.newfaktura(), true, 303);
     exit;

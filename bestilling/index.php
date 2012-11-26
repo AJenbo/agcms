@@ -115,7 +115,6 @@ if (is_numeric(@$_GET['add']) || is_numeric(@$_GET['add_list_item'])) {
         $_SESSION['faktura']['values'][] = $product['pris'];
     }
 
-    apache_setenv('no-gzip', 1);
     ini_set('zlib.output_compression', '0');
 
     if ($_SERVER['HTTP_REFERER']) {
@@ -243,7 +242,6 @@ if (!empty($_SESSION['faktura']['quantities'])) {
             $_SESSION['faktura']['products'] = array_values($_SESSION['faktura']['products']);
             $_SESSION['faktura']['values'] = array_values($_SESSION['faktura']['values']);
 
-            apache_setenv('no-gzip', 1);
             ini_set('zlib.output_compression', '0');
             header(
                 'Location: '.$GLOBALS['_config']['base_url'].'/bestilling/?step=1',
@@ -457,7 +455,6 @@ if (!empty($_SESSION['faktura']['quantities'])) {
                     );
                 }
 
-                apache_setenv('no-gzip', 1);
                 ini_set('zlib.output_compression', '0');
                 header(
                     'Location: '.$GLOBALS['_config']['base_url'].'/bestilling/?step=2',
@@ -679,7 +676,6 @@ if (!empty($_SESSION['faktura']['quantities'])) {
         $GLOBALS['generatedcontent']['text'] .= '</tbody></table><input style="font-weight:bold;" type="submit" value="'._('Send order').'" /></form>';
     } elseif ($_GET['step'] == 2) {
         if (!$_SESSION['faktura'] || !$_SESSION['faktura']['email']) {
-            apache_setenv('no-gzip', 1);
             ini_set('zlib.output_compression', '0');
             header(
                 'Location: '.$GLOBALS['_config']['base_url'].'/bestilling/',

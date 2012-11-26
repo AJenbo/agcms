@@ -383,7 +383,6 @@ function searchListe($q, $wheresider)
     if (count($sider) == 1
         && $GLOBALS['generatedcontent']['contenttype'] != 'brand'
     ) {
-        apache_setenv('no-gzip', 1);
         ini_set('zlib.output_compression', '0');
         header('HTTP/1.1 302 Found');
         $sider[0]['id'];
