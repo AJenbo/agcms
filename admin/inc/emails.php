@@ -17,10 +17,10 @@ function sendEmail($id, $from, $interests, $subject, $text)
         return array('error' => _('The newsletter has already been sent!'));
     }
 
-    saveEmail($id, $from, $interests, $subject, $text);
-
     $text = purifyHTML($text);
     $text = htmlUrlDecode($text);
+
+    saveEmail($id, $from, $interests, $subject, $text);
 
     include '../inc/phpMailer/class.phpmailer.php';
 
@@ -255,9 +255,6 @@ writeRichText(\'text\', \'' . rtefsafe($newsmails[0]['text']) . '\', \'\', ' . (
 function saveEmail($id, $from, $interests, $subject, $text)
 {
     global $mysqli;
-
-    $text = purifyHTML($text);
-    $text = htmlUrlDecode($text);
 
     $from = $mysqli->real_escape_string($from);
     $interests = $mysqli->real_escape_string($interests);
