@@ -34,23 +34,6 @@ $mysqli = new Simple_Mysqli(
     $GLOBALS['_config']['mysql_database']
 );
 
-/*
-function unhtmlentitiesUtf8($string)
-{
-    // replace numeric entities
-    $string = preg_replace('~&#x([0-9a-f]+);~ei', 'chr(hexdec("\\1"))', $string);
-    $string = preg_replace('~&#([0-9]+);~e', 'chr("\\1")', $string);
-    // replace literal entities
-    $trans_tbl = get_html_translation_table(HTML_ENTITIES);
-    $trans_tbl = array_flip($trans_tbl);
-    // changing translation table to UTF-8
-    foreach ( $trans_tbl as $key => $value ) {
-        $trans_tbl[$key] = utf8_encode($value);
-    }
-    return strtr($string, $trans_tbl);
-}
-*/
-
 $mysqli = new Simple_Mysqli(
     $GLOBALS['_config']['mysql_server'],
     $GLOBALS['_config']['mysql_user'],
