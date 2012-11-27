@@ -596,6 +596,7 @@ function insertThumbnail(id) {
     window.opener.document.getElementById(returnid+'thb').src=files[id].path;
     if (window.opener.window.location.href.indexOf('side=redigerside') > -1) {
         window.opener.updateSide(window.opener.$('id').value);
+    }
     window.close();
 }
 
@@ -641,7 +642,7 @@ function deletefile_r(data) {
     } else {
         removeTagById('tilebox'+data['id']);
         files[data['id']] = null;
-}
+    }
 }
 
 function addfile(id) {
