@@ -11,8 +11,6 @@
  * @link     http://www.arms-gallery.dk/
  */
 
-define('ENT_XHTML', 32);
-
 mb_language("uni");
 mb_detect_order("UTF-8, ISO-8859-1");
 mb_internal_encoding('UTF-8');
