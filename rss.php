@@ -1,4 +1,4 @@
-    <?php
+<?php
 /**
  * Print RSS feed contaning the 20 last changed pages
  *
