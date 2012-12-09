@@ -333,11 +333,6 @@ if (!empty($_SESSION['faktura']['quantities'])) {
             $GLOBALS['generatedcontent']['text'] .= ' selected="selected"';
         }
         $GLOBALS['generatedcontent']['text'] .= '>'._('Bank transaction').'</option>
-            <option value="mail"';
-        if ($_SESSION['faktura']['paymethod'] == 'mail') {
-            $GLOBALS['generatedcontent']['text'] .= ' selected="selected"';
-        }
-        $GLOBALS['generatedcontent']['text'] .= '>'._('Mail order').'</option>
             <option value="cash"';
         if ($_SESSION['faktura']['paymethod'] == 'cash') {
             $GLOBALS['generatedcontent']['text'] .= ' selected="selected"';
@@ -689,8 +684,6 @@ if (!empty($_SESSION['faktura']['quantities'])) {
             $_SESSION['faktura']['note'] = _('I would like to pay via credit card.')."\n".$_SESSION['faktura']['note'];
         } elseif ($_SESSION['faktura']['paymethod'] == 'bank') {
             $_SESSION['faktura']['note'] = _('I would like to pay via bank transaction.')."\n".$_SESSION['faktura']['note'];
-        } elseif ($_SESSION['faktura']['paymethod'] == 'mail') {
-            $_SESSION['faktura']['note'] = _('I would like to pay via mail order.')."\n".$_SESSION['faktura']['note'];
         } elseif ($_SESSION['faktura']['paymethod'] == 'cash') {
             $_SESSION['faktura']['note'] = _('I would like to pay via cash.')."\n".$_SESSION['faktura']['note'];
         }
