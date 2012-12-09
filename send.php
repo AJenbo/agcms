@@ -38,6 +38,7 @@ $mysqli = new Simple_Mysqli(
 $emails = $mysqli->fetchArray("SELECT * FROM `emails`");
 
 if (!$emails) {
+    $mysqli->query("UPDATE special SET dato = NOW() WHERE id = 0");
     die(_('No e-mails to send.'));
 }
 
@@ -113,6 +114,8 @@ foreach ($emails as $email) {
         );
     }
 }
+
+$mysqli->query("UPDATE special SET dato = NOW() WHERE id = 0");
 
 //Close SMTP connection
 $PHPMailer->SmtpClose();

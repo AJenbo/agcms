@@ -801,6 +801,10 @@ function get_db_error()
 
     $html .= '<div>'.sprintf(_('Delayed e-mails %d/%d'), $emailsCount['count'], $emails['Auto_increment'] - 1).'</div>';
 
+    $cron = $mysqli->fetchOne("SELECT UNIX_TIMESTAMP(dato) AS dato FROM `special` WHERE id = 0");
+
+    $html .= '<div>'.sprintf(_('Cron last run at %s'), date('d/m/Y', $cron['dato'])).'</div>';
+
     $html .= '</div>';
     $html .= '</div>';
 
