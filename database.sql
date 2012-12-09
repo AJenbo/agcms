@@ -23,14 +23,14 @@ CREATE TABLE IF NOT EXISTS `bind` (
 
 CREATE TABLE IF NOT EXISTS `email` (
   `id` smallint(5) unsigned NOT NULL AUTO_INCREMENT,
-  `navn` varchar(128) COLLATE utf8_danish_ci NOT NULL,
+  `navn` varchar(128) COLLATE utf8_danish_ci NOT NULL DEFAULT '',
   `email` varchar(64) COLLATE utf8_danish_ci NOT NULL,
-  `adresse` tinytext COLLATE utf8_danish_ci NOT NULL,
+  `adresse` varchar(128) COLLATE utf8_danish_ci NOT NULL DEFAULT '',
   `land` varchar(64) COLLATE utf8_danish_ci NOT NULL DEFAULT 'Danmark',
-  `post` varchar(8) COLLATE utf8_danish_ci NOT NULL,
-  `by` varchar(128) COLLATE utf8_danish_ci NOT NULL,
-  `tlf1` varchar(16) COLLATE utf8_danish_ci NOT NULL,
-  `tlf2` varchar(16) COLLATE utf8_danish_ci NOT NULL,
+  `post` varchar(8) COLLATE utf8_danish_ci NOT NULL DEFAULT '',
+  `by` varchar(128) COLLATE utf8_danish_ci NOT NULL DEFAULT '',
+  `tlf1` varchar(16) COLLATE utf8_danish_ci NOT NULL DEFAULT '',
+  `tlf2` varchar(16) COLLATE utf8_danish_ci NOT NULL DEFAULT '',
   `kartotek` enum('0','1') COLLATE utf8_danish_ci NOT NULL DEFAULT '0',
   `interests` varchar(256) COLLATE utf8_danish_ci NOT NULL,
   `dato` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
@@ -122,8 +122,8 @@ CREATE TABLE IF NOT EXISTS `files` (
   `path` varchar(255) COLLATE utf8_danish_ci NOT NULL,
   `mime` varchar(64) COLLATE utf8_danish_ci NOT NULL,
   `alt` varchar(128) COLLATE utf8_danish_ci NOT NULL,
-  `width` smallint(3) unsigned NOT NULL DEFAULT '0',
-  `height` smallint(4) unsigned NOT NULL DEFAULT '0',
+  `width` smallint(5) unsigned NOT NULL DEFAULT '0',
+  `height` smallint(5) unsigned NOT NULL DEFAULT '0',
   `size` int(10) unsigned NOT NULL DEFAULT '0',
   `aspect` enum('4-3','16-9') COLLATE utf8_danish_ci DEFAULT NULL,
   PRIMARY KEY (`id`),
@@ -140,16 +140,17 @@ CREATE TABLE IF NOT EXISTS `files` (
 
 CREATE TABLE IF NOT EXISTS `kat` (
   `id` smallint(5) unsigned NOT NULL AUTO_INCREMENT,
-  `navn` varchar(64) COLLATE utf8_danish_ci NOT NULL,
+  `navn` varchar(64) COLLATE utf8_danish_ci NOT NULL DEFAULT '',
   `bind` smallint(6) NOT NULL DEFAULT '-1',
-  `icon` varchar(128) COLLATE utf8_danish_ci NOT NULL,
+  `icon` varchar(128) COLLATE utf8_danish_ci NOT NULL DEFAULT '',
   `vis` enum('0','1','2') COLLATE utf8_danish_ci NOT NULL DEFAULT '1',
   `email` varchar(64) COLLATE utf8_danish_ci NOT NULL DEFAULT 'mail',
   `custom_sort_subs` enum('0','1') COLLATE utf8_danish_ci NOT NULL DEFAULT '0',
-  `order` tinyint(3) unsigned NOT NULL DEFAULT '0',
+  `order` tinyint(4) NOT NULL DEFAULT '0',
   `access` varchar(64) COLLATE utf8_danish_ci NOT NULL,
   PRIMARY KEY (`id`),
   KEY `bind` (`bind`),
+  KEY `navn_2` (`navn`),
   FULLTEXT KEY `navn` (`navn`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_danish_ci ;
 
@@ -161,7 +162,7 @@ CREATE TABLE IF NOT EXISTS `kat` (
 
 CREATE TABLE IF NOT EXISTS `krav` (
   `id` smallint(5) unsigned NOT NULL AUTO_INCREMENT,
-  `navn` varchar(32) COLLATE utf8_danish_ci NOT NULL,
+  `navn` varchar(32) COLLATE utf8_danish_ci NOT NULL DEFAULT '',
   `text` text COLLATE utf8_danish_ci NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_danish_ci ;
@@ -208,9 +209,9 @@ CREATE TABLE IF NOT EXISTS `list_rows` (
 
 CREATE TABLE IF NOT EXISTS `maerke` (
   `id` smallint(5) unsigned NOT NULL AUTO_INCREMENT,
-  `navn` varchar(32) COLLATE utf8_danish_ci NOT NULL,
-  `link` varchar(255) COLLATE utf8_danish_ci NOT NULL,
-  `ico` varchar(128) COLLATE utf8_danish_ci NOT NULL,
+  `navn` varchar(32) COLLATE utf8_danish_ci NOT NULL DEFAULT '',
+  `link` varchar(255) COLLATE utf8_danish_ci NOT NULL DEFAULT '',
+  `ico` varchar(128) COLLATE utf8_danish_ci NOT NULL DEFAULT '',
   PRIMARY KEY (`id`),
   FULLTEXT KEY `navn` (`navn`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_danish_ci ;
@@ -240,20 +241,22 @@ CREATE TABLE IF NOT EXISTS `newsmails` (
 CREATE TABLE IF NOT EXISTS `sider` (
   `id` smallint(5) unsigned NOT NULL AUTO_INCREMENT,
   `dato` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
-  `navn` varchar(127) COLLATE utf8_danish_ci NOT NULL,
-  `keywords` varchar(255) COLLATE utf8_danish_ci NOT NULL,
+  `navn` varchar(127) COLLATE utf8_danish_ci NOT NULL DEFAULT '',
+  `keywords` varchar(255) COLLATE utf8_danish_ci NOT NULL DEFAULT '',
   `pris` mediumint(8) unsigned NOT NULL DEFAULT '0',
   `text` mediumtext COLLATE utf8_danish_ci NOT NULL,
-  `varenr` varchar(63) COLLATE utf8_danish_ci NOT NULL,
+  `varenr` varchar(63) COLLATE utf8_danish_ci NOT NULL DEFAULT '',
   `for` mediumint(8) unsigned NOT NULL DEFAULT '0',
   `beskrivelse` text COLLATE utf8_danish_ci NOT NULL,
   `krav` smallint(5) unsigned NOT NULL DEFAULT '0',
-  `maerke` varchar(127) COLLATE utf8_danish_ci NOT NULL,
-  `billed` varchar(127) COLLATE utf8_danish_ci NOT NULL,
+  `maerke` smallint(5) unsigned NOT NULL DEFAULT '0',
+  `billed` varchar(255) COLLATE utf8_danish_ci NOT NULL DEFAULT '',
   `fra` tinyint(1) NOT NULL DEFAULT '0',
   `burde` tinyint(1) NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`),
   KEY `pris` (`pris`),
+  KEY `maerke` (`maerke`),
+  KEY `billed` (`billed`),
   KEY `varenr` (`varenr`),
   FULLTEXT KEY `navn` (`navn`,`text`,`beskrivelse`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_danish_ci ;
@@ -285,7 +288,7 @@ INSERT INTO `special` (`id`, `navn`) VALUES
 
 CREATE TABLE IF NOT EXISTS `tablesort` (
   `id` tinyint(3) unsigned NOT NULL AUTO_INCREMENT,
-  `navn` varchar(64) COLLATE utf8_danish_ci NOT NULL,
+  `navn` varchar(64) COLLATE utf8_danish_ci NOT NULL DEFAULT '',
   `text` text COLLATE utf8_danish_ci NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_danish_ci ;
@@ -298,12 +301,12 @@ CREATE TABLE IF NOT EXISTS `tablesort` (
 
 CREATE TABLE IF NOT EXISTS `template` (
   `id` smallint(5) unsigned NOT NULL AUTO_INCREMENT,
-  `varenr` varchar(63) COLLATE utf8_danish_ci NOT NULL,
-  `navn` varchar(127) COLLATE utf8_danish_ci NOT NULL,
-  `keywords` varchar(255) COLLATE utf8_danish_ci NOT NULL,
+  `varenr` varchar(63) COLLATE utf8_danish_ci NOT NULL DEFAULT '',
+  `navn` varchar(127) COLLATE utf8_danish_ci NOT NULL DEFAULT '',
+  `keywords` varchar(255) COLLATE utf8_danish_ci NOT NULL DEFAULT '',
   `beskrivelse` text COLLATE utf8_danish_ci NOT NULL,
   `text` mediumtext COLLATE utf8_danish_ci NOT NULL,
-  `billed` varchar(255) COLLATE utf8_danish_ci NOT NULL,
+  `billed` varchar(255) COLLATE utf8_danish_ci NOT NULL DEFAULT '',
   `pris` mediumint(8) unsigned NOT NULL DEFAULT '0',
   `burde` enum('0','1') COLLATE utf8_danish_ci NOT NULL DEFAULT '0',
   `for` mediumint(8) unsigned NOT NULL DEFAULT '0',
