@@ -41,15 +41,6 @@ if (isset($_SERVER['HTTP_IF_MODIFIED_SINCE'])) {
 }
 
 if ($time > 1000000000) {
-    /*
-    $mysqli->query(
-        "
-        INSERT INTO `hack-trap` (`log`, `date`)
-        VALUES ('RSS last load time " . $time . "', '" . date('Y-m-d h:i:s', $time)
-        . "')
-        "
-    );
-    */
     $where = " WHERE `dato` > '" . date('Y-m-d h:i:s', $time) . "'";
 } else {
     $limit = ' LIMIT 20';
