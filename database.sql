@@ -135,19 +135,6 @@ CREATE TABLE IF NOT EXISTS `files` (
 -- --------------------------------------------------------
 
 --
--- Table structure for table `hack-trap`
---
-
-CREATE TABLE IF NOT EXISTS `hack-trap` (
-  `id` tinyint(3) unsigned NOT NULL AUTO_INCREMENT,
-  `log` text COLLATE utf8_danish_ci NOT NULL,
-  `date` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
-  PRIMARY KEY (`id`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_danish_ci ;
-
--- --------------------------------------------------------
-
---
 -- Table structure for table `kat`
 --
 
@@ -212,24 +199,6 @@ CREATE TABLE IF NOT EXISTS `list_rows` (
   PRIMARY KEY (`id`),
   KEY `cells` (`cells`(333))
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_danish_ci ;
-
--- --------------------------------------------------------
-
---
--- Table structure for table `log`
---
-
-CREATE TABLE IF NOT EXISTS `log` (
-  `id` mediumint(8) unsigned NOT NULL AUTO_INCREMENT,
-  `navn` varchar(16) COLLATE utf8_danish_ci NOT NULL,
-  `ip` varchar(15) COLLATE utf8_danish_ci NOT NULL,
-  `dato` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
-  `tabel` varchar(16) COLLATE utf8_danish_ci NOT NULL,
-  `tabel-id` smallint(5) unsigned NOT NULL DEFAULT '0',
-  `action` varchar(64) COLLATE utf8_danish_ci NOT NULL,
-  `adgang` enum('0','1','2','3','4') COLLATE utf8_danish_ci NOT NULL DEFAULT '0',
-  PRIMARY KEY (`id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_danish_ci ;
 
 -- --------------------------------------------------------
 
@@ -380,15 +349,4 @@ CREATE TABLE IF NOT EXISTS `users` (
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_danish_ci ;
 
 -- --------------------------------------------------------
-
---
--- Table structure for table `user_groups`
---
-
-CREATE TABLE IF NOT EXISTS `user_groups` (
-  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `navn` varchar(64) COLLATE utf8_danish_ci NOT NULL,
-  `users` varchar(64) COLLATE utf8_danish_ci NOT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_danish_ci ;
 
