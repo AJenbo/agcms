@@ -344,7 +344,7 @@ CREATE TABLE IF NOT EXISTS `users` (
   `name` varchar(64) COLLATE utf8_danish_ci NOT NULL,
   `password` varchar(64) COLLATE utf8_danish_ci NOT NULL,
   `access` enum('0','1','2','3','4') COLLATE utf8_danish_ci NOT NULL DEFAULT '0',
-  `lastlogin` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `lastlogin` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
   UNIQUE KEY `name` (`name`),
   KEY `kode` (`password`),
