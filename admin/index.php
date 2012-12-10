@@ -782,6 +782,9 @@ function get_db_error()
             $(\'status\').innerHTML = \''._('Getting Database Size').'\';
             x_get_db_size(function(){});
 
+            $(\'status\').innerHTML = \''._('Sending delayed emails').'\';
+            x_sendDelayedEmail(function(){});
+
             $(\'status\').innerHTML = \'\';
             $(\'loading\').style.visibility = \'hidden\';
             $(\'errors\').innerHTML = $(\'errors\').innerHTML+\'<br />\'+(\''._('The scan took %d seconds.').'\'.replace(/[%]d/g, Math.round((new Date().getTime()-starttime)/1000).toString()));
@@ -2089,6 +2092,12 @@ sajax_export(
     array(
         'name' => 'optimizeTables',
         'uri' => '/maintain.php',
+        'method' => 'POST',
+        'asynchronous' => false
+    ),
+    array(
+        'name' => 'sendDelayedEmail',
+        'uri' => '/send.php',
         'method' => 'POST',
         'asynchronous' => false
     ),
