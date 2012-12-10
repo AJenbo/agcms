@@ -127,7 +127,7 @@ CREATE TABLE IF NOT EXISTS `files` (
   `size` int(10) unsigned NOT NULL DEFAULT '0',
   `aspect` enum('4-3','16-9') COLLATE utf8_danish_ci DEFAULT NULL,
   PRIMARY KEY (`id`),
-  UNIQUE KEY `id` (`path`),
+  UNIQUE KEY `path_2` (`path`),
   FULLTEXT KEY `alt` (`alt`),
   FULLTEXT KEY `path` (`path`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_danish_ci ;
@@ -181,7 +181,7 @@ CREATE TABLE IF NOT EXISTS `lists` (
   `cell_names` varchar(511) COLLATE utf8_danish_ci NOT NULL,
   `sort` tinyint(3) unsigned NOT NULL,
   `sorts` varchar(63) COLLATE utf8_danish_ci NOT NULL,
-  `link` tinyint(4) NOT NULL,
+  `link` tinyint(1) unsigned NOT NULL,
   PRIMARY KEY (`id`),
   KEY `page_id` (`page_id`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_danish_ci ;
@@ -350,6 +350,4 @@ CREATE TABLE IF NOT EXISTS `users` (
   KEY `kode` (`password`),
   KEY `adgang` (`access`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_danish_ci ;
-
--- --------------------------------------------------------
 
