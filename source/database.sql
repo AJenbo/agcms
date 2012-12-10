@@ -351,3 +351,90 @@ CREATE TABLE IF NOT EXISTS `users` (
   KEY `adgang` (`access`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_danish_ci ;
 
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `PNL`
+--
+
+CREATE TABLE IF NOT EXISTS `PNL` (
+  `id` smallint(5) unsigned NOT NULL AUTO_INCREMENT,
+  `fakturaid` smallint(5) unsigned NOT NULL,
+  `bookingDate` date NOT NULL,
+  `bookingTime` varchar(8) COLLATE utf8_danish_ci NOT NULL,
+  `shipmentId` varchar(17) COLLATE utf8_danish_ci NOT NULL,
+  `packageId` varchar(13) COLLATE utf8_danish_ci NOT NULL,
+  `labelType` varchar(3) COLLATE utf8_danish_ci NOT NULL,
+  `sender` varchar(2) COLLATE utf8_danish_ci NOT NULL,
+  `name` varchar(64) COLLATE utf8_danish_ci NOT NULL,
+  `att` varchar(64) COLLATE utf8_danish_ci NOT NULL,
+  `address` varchar(64) COLLATE utf8_danish_ci NOT NULL,
+  `address2` varchar(64) COLLATE utf8_danish_ci NOT NULL,
+  `postcode` varchar(16) COLLATE utf8_danish_ci NOT NULL,
+  `city` varchar(64) COLLATE utf8_danish_ci NOT NULL,
+  `country` varchar(2) COLLATE utf8_danish_ci NOT NULL,
+  `product` tinyint(3) unsigned NOT NULL,
+  `contens` varchar(3) COLLATE utf8_danish_ci NOT NULL,
+  `text` varchar(256) COLLATE utf8_danish_ci NOT NULL,
+  `kg` tinyint(3) unsigned NOT NULL,
+  `w` tinyint(3) unsigned NOT NULL,
+  `h` tinyint(3) unsigned NOT NULL,
+  `l` tinyint(3) unsigned NOT NULL,
+  `return` smallint(1) unsigned NOT NULL,
+  `ref` varchar(128) COLLATE utf8_danish_ci NOT NULL,
+  `insurance` int(10) unsigned NOT NULL,
+  `arrived` tinyint(1) NOT NULL DEFAULT '0',
+  `inmotion` tinyint(1) NOT NULL DEFAULT '0',
+  PRIMARY KEY (`id`)
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_danish_ci ;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `post`
+--
+
+CREATE TABLE IF NOT EXISTS `post` (
+  `id` smallint(5) unsigned NOT NULL AUTO_INCREMENT,
+  `fakturaid` smallint(5) unsigned NOT NULL,
+  `formSenderID` enum('11856','19462','11894','11861','19461','11865') COLLATE utf8_danish_ci NOT NULL DEFAULT '11856',
+  `recName1` varchar(34) COLLATE utf8_danish_ci NOT NULL,
+  `recAddress1` varchar(34) COLLATE utf8_danish_ci NOT NULL,
+  `recZipCode` smallint(4) unsigned NOT NULL,
+  `recPoValue` smallint(5) unsigned NOT NULL DEFAULT '0',
+  `recipientID` varchar(10) COLLATE utf8_danish_ci NOT NULL,
+  `formDate` date NOT NULL,
+  `optRecipType` enum('P','E','O') COLLATE utf8_danish_ci NOT NULL DEFAULT 'P',
+  `weight` float unsigned NOT NULL DEFAULT '0',
+  `ss1` enum('false','true') COLLATE utf8_danish_ci NOT NULL DEFAULT 'false',
+  `ss2` enum('false','true') COLLATE utf8_danish_ci NOT NULL DEFAULT 'false',
+  `ss46` enum('false','true') COLLATE utf8_danish_ci NOT NULL DEFAULT 'false',
+  `ss5amount` smallint(5) unsigned NOT NULL DEFAULT '0',
+  `height` tinyint(3) unsigned NOT NULL DEFAULT '0',
+  `width` tinyint(3) unsigned NOT NULL DEFAULT '0',
+  `length` tinyint(3) unsigned NOT NULL DEFAULT '0',
+  `porto` decimal(6,2) unsigned NOT NULL DEFAULT '0.00',
+  `token` mediumint(8) unsigned NOT NULL DEFAULT '0',
+  `STREGKODE` varchar(13) COLLATE utf8_danish_ci DEFAULT NULL,
+  `pd_weight` float unsigned NOT NULL DEFAULT '0',
+  `pd_length` float unsigned NOT NULL DEFAULT '0',
+  `pd_height` float unsigned NOT NULL DEFAULT '0',
+  `pd_width` float unsigned NOT NULL DEFAULT '0',
+  `pd_return` enum('false','true') COLLATE utf8_danish_ci NOT NULL DEFAULT 'false',
+  `pd_arrived` enum('false','true') COLLATE utf8_danish_ci NOT NULL DEFAULT 'false',
+  `reklmation` enum('false','true') COLLATE utf8_danish_ci NOT NULL DEFAULT 'false',
+  `ub` enum('false','true') COLLATE utf8_danish_ci NOT NULL DEFAULT 'false',
+  `deleted` tinyint(1) unsigned NOT NULL DEFAULT '0',
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `STREGKODE` (`STREGKODE`),
+  KEY `formSenderID` (`formSenderID`),
+  KEY `formDate` (`formDate`),
+  KEY `recipientID` (`recipientID`),
+  KEY `recName1` (`recName1`),
+  KEY `optRecipType` (`optRecipType`),
+  KEY `pd_return` (`pd_return`),
+  KEY `pd_arrived` (`pd_arrived`),
+  KEY `deleted` (`deleted`)
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_danish_ci ;
+
+
