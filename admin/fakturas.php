@@ -154,7 +154,13 @@ a {
 <body onload="$('loading').style.visibility = 'hidden';">
 <div id="canvas">
 <form action="" method="post"><table><tr>
-<td><?php echo _('ID:'); ?></td><td><?php echo _('Year:'); ?></td><td><?php echo _('Month:'); ?></td><td><?php echo _('Clerk:'); ?></td><td><?php echo _('Status:'); ?></td></tr><tr><td>
+<td><?php echo _('ID:'); ?></td>
+<td><?php echo _('Year:'); ?></td>
+<td><?php echo _('Month:'); ?></td>
+<td><?php echo _('Clerk:'); ?></td>
+<td><?php echo _('Status:'); ?></td>
+<td><?php echo _('Vat:'); ?></td>
+</tr><tr><td>
 
 <input name="id" value="<?php
 if (!empty($_POST['id'])) {
