@@ -62,7 +62,7 @@ if (!empty($_POST['tlf'])) {
     $where[] = "(`tlf1` LIKE '%".$_POST['tlf']."%' OR `tlf2` LIKE '%".$_POST['tlf']."%')";
 }
 if (isset($_POST['momssats']) && $_POST['momssats'] !== '') {
-    $where[] = "`navn` LIKE '%".$_POST['name']."%'";
+    $where[] = "`momssats` = '" . $_POST['momssats'] . "'";
 }
 
 
@@ -363,7 +363,7 @@ if ($_POST['momssats'] == 0.25) {
 }
 ?>>25%</option>
 <option value="0"<?php
-if ($faktura['momssats'] === '0') {
+if ($_POST['momssats'] === '0') {
     echo ' selected="selected"';
 }
 ?>>0%</option></select></td>
