@@ -61,6 +61,10 @@ if (!empty($_POST['name'])) {
 if (!empty($_POST['tlf'])) {
     $where[] = "(`tlf1` LIKE '%".$_POST['tlf']."%' OR `tlf2` LIKE '%".$_POST['tlf']."%')";
 }
+if (isset($_POST['momssats']) && !== '') {
+    $where[] = "`navn` LIKE '%".$_POST['name']."%'";
+}
+
 
 $where = implode(' AND ', $where);
 
@@ -350,7 +354,20 @@ if ($_POST['status'] == 'rejected') {
     echo ' selected="selected"';
 }
 ?>><?php echo _('Rejected'); ?></option>
-</select></td><td><input type="submit" value="Hent" /></td></tr></table>
+</select></td><td>
+<select name="momssats">
+<option value=""><?php echo _('All'); ?></option>
+<option value="0.25"<?php
+if ($_POST['momssats'] == 0.25) {
+    echo ' selected="selected"';
+}
+?>>25%</option>
+<option value="0"<?php
+if (!$faktura['momssats']) {
+    echo ' selected="selected"';
+}
+?>>0%</option></select></td>
+<td><input type="submit" value="Hent" /></td></tr></table>
 
 </form>
 <table style="width:100%; margin:0 0 113px 0">
