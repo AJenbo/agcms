@@ -367,7 +367,7 @@ function renamefile($id, $path, $dir, $filename, $force=0)
             $pathinfo['extension'] = 'wbmp';
     } else {
         //a folder with a . will mistakingly be seen as a file with extension
-        $pathinfo['filename'] .= '-'.$pathinfo['extension'];
+        $pathinfo['filename'] .= '-' . @$pathinfo['extension'];
         $pathinfo['extension'] = '';
     }
 
