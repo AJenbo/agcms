@@ -28,8 +28,11 @@ if (empty($_SESSION['_user']) && !empty($_POST['username'])) {
     $_SESSION['_user'] = $mysqli->fetchArray("SELECT * FROM `users` WHERE `name` = '".addcslashes($_POST['username'], "'\\")."' LIMIT 1");
     $_SESSION['_user'] = @$_SESSION['_user'][0];
 
-    if ($_SESSION['_user']['access'] < 1 || @$_SESSION['_user']['password'] != crypt(@$_POST['password'], $_SESSION['_user']['password']))
+    if ($_SESSION['_user']['access'] < 1
+        || @$_SESSION['_user']['password'] != crypt(@$_POST['password'], $_SESSION['_user']['password'])
+    ) {
         unset($_SESSION['_user']);
+    }
 
     unset($_POST);
 }
