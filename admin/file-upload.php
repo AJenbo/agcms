@@ -1,5 +1,7 @@
 <?php
 
+ini_set('display_errors', 1);
+error_reporting(-1);
 date_default_timezone_set('Europe/Copenhagen');
 setlocale(LC_ALL, 'da_DK');
 bindtextdomain("agcms", $_SERVER['DOCUMENT_ROOT'].'/theme/locale');
@@ -7,43 +9,39 @@ bind_textdomain_codeset("agcms", 'UTF-8');
 textdomain("agcms");
 
 require_once $_SERVER['DOCUMENT_ROOT'].'/admin/inc/logon.php';
-if (@$_POST['filename']) {
-    header('Content-Type: text/plain');
-    include_once 'inc/file-functions.php';
-    $pathinfo = pathinfo($_POST['filename']);
+require_once $_SERVER['DOCUMENT_ROOT'] . '/inc/sajax.php';
 
-    if ($_POST['type'] == 'image') {
-        //If it is being forced to .jpg
-        if (is_file($_SERVER['DOCUMENT_ROOT'].@$_COOKIE['admin_dir'].'/'.genfilename($pathinfo['filename']).'.jpg')) {
-            $isfile = 'true';
-        } else {
-            $isfile = 'false';
-        }
-    } elseif ($_POST['type'] == 'lineimage') {
-        //If it is being forced to .png
-        if (is_file($_SERVER['DOCUMENT_ROOT'].@$_COOKIE['admin_dir'].'/'.genfilename($pathinfo['filename']).'.png')) {
-            $isfile = 'true';
-        } else {
-            $isfile = 'false';
-        }
+function fileExists($filename, $type = '')
+{
+    include_once 'inc/file-functions.php';
+    $pathinfo = pathinfo($filename);
+    $filePath = $_SERVER['DOCUMENT_ROOT'] . @$_COOKIE['admin_dir'] . '/' . genfilename($pathinfo['filename']);
+
+    if ($type == 'image') {
+        $filePath .= '.jpg';
+    } elseif ($type == 'lineimage') {
+        $filePath .= '.png';
     } else {
-        //Test if file exists
-        if (is_file($_SERVER['DOCUMENT_ROOT'].@$_COOKIE['admin_dir'].'/'.genfilename($pathinfo['filename']).'.'.$pathinfo['extension'])) {
-            $isfile = 'true';
-        } else {
-            $isfile = 'false';
-        }
+        $filePath .= '.'.$pathinfo['extension'];
     }
 
-    die('isfile='.$isfile);
+    return (bool) is_file($filePath);
 }
+
+$sajax_request_type = 'GET';
+
+//$sajax_debug_mode = 1;
+sajax_export(array('name' => 'fileExists', "asynchronous" => false));
+$sajax_remote_uri = '/admin/file-upload.php';
+sajax_handle_client_request();
 
 if (!@$_COOKIE['admin_dir'] || !is_dir($_SERVER['DOCUMENT_ROOT'].@$_COOKIE['admin_dir'])) {
     @setcookie('admin_dir', '/images');
     @$_COOKIE['admin_dir'] = '/images';
 }
-// pass word transmit via html rathere then http here
-// else doConditionalGet(filemtime($_SERVER['PHP_SELF']));
+
+require_once $_SERVER['DOCUMENT_ROOT'] . '/inc/header.php';
+doConditionalGet(filemtime($_SERVER['DOCUMENT_ROOT'] . $_SERVER['PHP_SELF']));
 
 require_once 'inc/config.php';
 
@@ -52,19 +50,11 @@ require_once 'inc/config.php';
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <title><?php echo _('File upload'); ?></title>
-<style type="text/css"><!--
-* {
-    margin:0;
-}
---></style><script type="text/javascript"><!--
-function refreshFolder()
-{
-    window.opener.showfiles('', 1);
-}
---></script>
-</head>
-<body onload="window.focus();" bgcolor="#ffffff"><?php
+<script type="text/javascript" src="/javascript/sajax.js"></script>
+<script type="text/javascript"><!--
+<?php sajax_show_javascript(); ?>
 
+var maxbyte = <?php
 function returnBytes($val)
 {
     $last = mb_strtolower($val{mb_strlen($val, 'UTF-8')-1}, 'UTF-8');
@@ -79,14 +69,183 @@ function returnBytes($val)
     }
     return $val;
 }
-    $maxbyte = min(returnBytes(ini_get('post_max_size')), returnBytes(ini_get('upload_max_filesize')));
-?><object classid="clsid:d27cdb6e-ae6d-11cf-96b8-444553540000" codebase="http://fpdownload.macromedia.com/pub/shockwave/cabs/flash/swflash.cab#version=8,0,0,0" width="245" height="127" id="fileUpload" align="middle">
-    <param name="allowScriptAccess" value="sameDomain" />
-    <param name="movie" value="file-upload.swf?maxbyte=<?php echo $maxbyte; ?>&amp;admin_dir=<?php echo @$_COOKIE['admin_dir']; ?>&amp;text_width=<?php echo $GLOBALS['_config']['text_width']; ?>&amp;session_name=<?php echo session_name(); ?>&amp;session_id=<?php echo session_id(); ?>" />
-    <param name="quality" value="high" />
-    <param name="bgcolor" value="#ffffff" />
-    <embed src="file-upload.swf?maxbyte=<?php echo $maxbyte; ?>&amp;admin_dir=<?php echo @$_COOKIE['admin_dir']; ?>&amp;text_width=<?php echo $GLOBALS['_config']['text_width']; ?>&amp;session_name=<?php echo session_name(); ?>&amp;session_id=<?php echo session_id(); ?>" quality="high" bgcolor="#ffffff" width="245" height="127" name="fileUpload" align="middle" allowscriptaccess="sameDomain" type="application/x-shockwave-flash" pluginspage="http://www.macromedia.com/go/getflashplayer" />
-</object>
-<!--[if lt IE 8]><![if gte IE 6]><script type="text/javascript" src="javascript/ieupdate.js"></script><![endif]><![endif]-->
+$maxbyte = min(
+    returnBytes(ini_get('post_max_size')),
+    returnBytes(ini_get('upload_max_filesize'))
+);
+    echo $maxbyte;
+?>;
+
+function keepAspect(changed, change) {
+    var value = document.getElementById(changed).value;
+    value = parseInt(value);
+
+    if (document.getElementById('aspect').value = '4-3') {
+        if (change == 'x') {
+            value = value / 3 * 4;
+        } else {
+            value = value / 4 * 3;
+        }
+    } else if (document.getElementById('aspect').value = '16-9') {
+        if (change == 'x') {
+            value = value / 9 * 16;
+        } else {
+            value = value / 16 * 9;
+        }
+    }
+
+    document.getElementById(change).value = value;
+}
+
+function filetypeshow() {
+    var type = document.getElementById('type').value;
+    var description = document.getElementById('description');
+    var videooptions = document.getElementById('videooptions');
+    var file = document.getElementById('file');
+
+
+    if (type == 'image' || type == 'lineimage') {
+        videooptions.style.display = 'none';
+        description.style.display = '';
+        status('Vælg det billed du vil sende');
+    } else if (type == 'video') {
+        description.style.display = 'none';
+        videooptions.style.display = '';
+        status('Vælg den film du vil sende');
+    } else {
+        description.style.display = 'none';
+        videooptions.style.display = 'none';
+
+        if (type == '') {
+            status('Vælg den fil du vil sende');
+        } else {
+            status('Vælg en filtype');
+        }
+    }
+
+    if (type == '') {
+        file.disabled = true;
+    } else {
+        file.disabled = false;
+    }
+}
+
+function validate() {
+    var file = document.getElementById('file').files[0];
+    var button = document.getElementById('submit');
+
+    if (!file) {
+        button.disabled = true;
+        filetypeshow();
+        return false;
+    }
+
+    if (file.size > maxbyte) {
+        alert('Filen må max være på ' + Math.round(maxbyte/1024/1024*10)/10 + 'MB');
+        button.disabled = true;
+        return false;
+    }
+
+    x_fileExists(
+        file.name,
+        document.getElementById('type').value,
+        fileExists_r
+    );
+
+    status('Fil: ' + file.name);
+
+    button.disabled = false;
+    return true;
+}
+
+function fileExists_r(data) {
+    if (data['error']) {
+        alert(data['error']);
+    } else if (data) {
+        alert('En fil med samme navn eksistere allerede');
+    }
+    return data;
+}
+
+var x;
+function send() {
+    document.getElementById('description').style.display = 'none';
+    document.getElementById('videooptions').style.display = 'none';
+    document.getElementById('status').style.display = 'none';
+    var progress = document.getElementById('progress');
+    progress.style.display = 'block';
+    var file = document.getElementById('file').files[0];
+
+    var form = new FormData();
+    form.append('type', document.getElementById('type').value);
+    form.append('Filedata', file);
+    form.append('alt', document.getElementById('alt').value);
+    form.append('x', document.getElementById('x').value);
+    form.append('y', document.getElementById('y').value);
+    form.append('aspect', document.getElementById('aspect').value);
+
+    try {
+        x = new window.XMLHttpRequest();
+    } catch(e) {}
+    if(x === null || typeof x.readyState !== "number") {
+        return true;
+    }
+    x.onload = function() {
+        document.getElementById('file').value = '';
+        validate();
+        status('Filen er sendt');
+        document.getElementById('progress').style.display = 'none';
+        document.getElementById('status').style.display = '';
+        window.opener.showfiles('', 1);
+    };
+    x.upload.onprogress = function(evt) {
+        if (evt.lengthComputable) {
+            var pct = evt.loaded / evt.total;
+            if (pct < 1) {
+                progress.value = pct;
+                return;
+            }
+        }
+
+        progress.value = '';
+    };
+    x.open('POST', '/admin/upload/', true);
+    x.send(form);
+    return false;
+}
+
+function status(text) {
+    document.getElementById('status').innerHTML = text;
+}
+
+--></script>
+</head>
+<body onload="window.focus();" bgcolor="#ffffff">
+<form method="post" enctype="multipart/form-data" action="/admin/upload/" onsubmit="return send();">
+
+<select name="type" id="type" onchange="filetypeshow();">
+    <option value=""><?php echo _('File type'); ?></option>
+    <option value="image"><?php echo _('Image'); ?></option>
+    <option value="lineimage"><?php echo _('Illustration'); ?></option>
+    <option value="video"><?php echo _('Video'); ?></option>
+    <option value="other"><?php echo _('Other files'); ?></option>
+</select>
+<input id="file" size="1" onchange="validate();" disabled="disabled" type="file" name="Filedata" accept="image/jpeg|image/gif|image/png|image/vnd.wap.wbmp" accept="video/*" />
+<input type="submit" value="Send fil" id="submit" disabled="disabled" />
+
+<progress id="progress" style="display:none;width:100%;"><?php echo _('File is being uploaded'); ?></progress>
+<div id="status"><?php echo _('Select file type'); ?></div><br />
+
+<div id="description" style="display:none;"><?php echo _('Short description'); ?><br /><input type="text" name="alt" id="alt" /></div>
+
+<table id="videooptions" style="display:none;"><tr><td><?php echo _('Size'); ?><br />
+<input type="text" name="x" id="x" value="320" onkeyup="keepAspect('x', 'y')" size="1" />x<input type="text" name="y" id="y" value="240" size="1" /><!--180-->
+</td><td><?php echo _('Aspect'); ?><br />
+<select name="aspect" id="aspect">
+    <option value="4-3">4:3</option>
+    <option value="16-9">16:9</option>
+</select></td></tr></table>
+
+</form>
 </body>
 </html>

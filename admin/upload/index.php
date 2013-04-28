@@ -16,23 +16,15 @@ ini_set('display_errors', 1);
 error_reporting(-1);
 /**/
 
-if (!empty($_COOKIE[session_name()])) {
-    unset($_COOKIE[session_name()]);
-}
-
-ini_set("session.use_only_cookies", 0);
-
 require_once $_SERVER['DOCUMENT_ROOT'] . '/admin/inc/logon.php';
-//TODO support wbmp
 //TODO support bmp
-//TODO $_GET login
 header('HTTP/1.1 500 Internal Server Error');
 if (!empty($_FILES['Filedata']['tmp_name'])
     && is_uploaded_file($_FILES['Filedata']['tmp_name'])
 ) {
     //Mangler file-functions.php
     header('HTTP/1.1 501 Internal Server Error');
-    include_once '../admin/inc/file-functions.php';
+    include_once $_SERVER['DOCUMENT_ROOT'] . '/admin/inc/file-functions.php';
     $pathinfo = pathinfo($_FILES['Filedata']['name']);
     //Kunne ikke læse filnavn.
     header('HTTP/1.1 503 Internal Server Error');
@@ -42,54 +34,46 @@ if (!empty($_FILES['Filedata']['tmp_name'])
     header('HTTP/1.1 504 Internal Server Error');
     move_uploaded_file(
         $_FILES['Filedata']['tmp_name'],
-        $_SERVER['DOCUMENT_ROOT'] . '/upload/temp/' . $name
-    );
+        $_SERVER['DOCUMENT_ROOT'] . '/admin/upload/temp/' . $name
+    ) or exit;
     //Kunne ikke give tilladelse til filen.
     header('HTTP/1.1 505 Internal Server Error');
-    chmod($_SERVER['DOCUMENT_ROOT'] . '/upload/temp/' . $name, 0644);
+    chmod($_SERVER['DOCUMENT_ROOT'] . '/admin/upload/temp/' . $name, 0644);
     //Mangler get_mime_type.php
     header('HTTP/1.1 510 Internal Server Error');
-    include_once '../admin/inc/get_mime_type.php';
-    $mime = get_mime_type('/upload/temp/' . $name);
+    include_once $_SERVER['DOCUMENT_ROOT'] . '/admin/inc/get_mime_type.php';
+    $mime = get_mime_type('/admin/upload/temp/' . $name);
     //Kunne ikke finde billed størelsen.
     header('HTTP/1.1 512 Internal Server Error');
 
-    if ((!@$_GET['x'] || !@$_GET['y'])
-        && ($mime == 'image/jpeg'
+    $imagesize = array($_POST['x'], $_POST['y']);
+    if ($mime == 'image/jpeg'
         || $mime == 'image/gif'
         || $mime == 'image/png'
-        || $mime == 'image/vnd.wap.wbmp')
+        || $mime == 'image/vnd.wap.wbmp'
     ) {
-        $imagesize = getimagesize($_SERVER['DOCUMENT_ROOT'] . '/upload/temp/' . $name);
-    } else {
-        $imagesize[0] = $_GET['x'];
-        $imagesize[1] = $_GET['y'];
+        $imagesize = getimagesize($_SERVER['DOCUMENT_ROOT'] . '/admin/upload/temp/' . $name);
     }
     if (!$imagesize) {
-        die();
+        exit;
     }
 
-    //TODO BUG IN SWF FILE!!!
-    if (@$_GET['aspect'] == '4-9') {
-        $_GET['aspect'] = "'4-3'";
-    } elseif (@$_GET['aspect'] == '16-9') {
-        $_GET['aspect'] = "'16-9'";
-    } else {
-        $_GET['aspect'] = 'NULL';
+    if (empty($_POST['aspect'])) {
+        $_POST['aspect'] = null;
     }
 
-    if (empty($_GET['type'])) {
-        $_GET['type'] = '';
+    if (empty($_POST['type'])) {
+        $_POST['type'] = '';
     }
 
-    include_once '../admin/inc/config.php';
+    include_once $_SERVER['DOCUMENT_ROOT'] . '/admin/inc/config.php';
     //TODO test if trim, resize or recompression is needed
-    if (($_GET['type'] == 'image' && $mime != 'image/jpeg')
-        || (($_GET['type'] == 'image' || $_GET['type'] == 'lineimage')
+    if (($_POST['type'] == 'image' && $mime != 'image/jpeg')
+        || (($_POST['type'] == 'image' || $_POST['type'] == 'lineimage')
         && $imagesize[0] > $GLOBALS['_config']['text_width'])
-        || (($_GET['type'] == 'image' || $_GET['type'] == 'lineimage')
+        || (($_POST['type'] == 'image' || $_POST['type'] == 'lineimage')
         && $_FILES['Filedata']['size']/($imagesize[0]*$imagesize[1]) > 0.7)
-        || ($_GET['type'] == 'lineimage'
+        || ($_POST['type'] == 'lineimage'
         && $mime != 'image/png' && $mime != 'image/gif')
     ) {
 
@@ -121,7 +105,7 @@ if (!empty($_FILES['Filedata']['tmp_name'])
             //Kunne ikke slette filen.
             header('HTTP/1.1 520 Internal Server Error');
 
-            if (@unlink($_SERVER['DOCUMENT_ROOT'].'/upload/temp/'.$name)) {
+            if (@unlink($_SERVER['DOCUMENT_ROOT'].'/admin/upload/temp/'.$name)) {
                 //Billedet er for stor.
                 header('HTTP/1.1 521 Internal Server Error');
             }
@@ -131,11 +115,11 @@ if (!empty($_FILES['Filedata']['tmp_name'])
 
         //Mangler image-functions.php
         header('HTTP/1.1 560 Internal Server Error');
-        include_once '../admin/inc/image-functions.php';
+        include_once $_SERVER['DOCUMENT_ROOT'] . '/admin/inc/image-functions.php';
         //Fejl under billed behandling.
         header('HTTP/1.1 561 Internal Server Error');
 
-        if ($_GET['type'] == 'lineimage') {
+        if ($_POST['type'] == 'lineimage') {
             $output['type'] = 'png';
         } else {
             $output['type'] = 'jpg';
@@ -144,7 +128,7 @@ if (!empty($_FILES['Filedata']['tmp_name'])
         $output['force'] = true;
 
         $newfiledata = generateImage(
-            '/upload/temp/' . $name,
+            '/admin/upload/temp/' . $name,
             0,
             0,
             $imagesize[0],
@@ -160,21 +144,21 @@ if (!empty($_FILES['Filedata']['tmp_name'])
         $width = $newfiledata['width'];
         $height = $newfiledata['height'];
         $destpath = pathinfo($newfiledata['path']);
-        $destpath = $_GET['admin_dir'].'/'.$destpath['basename'];
+        $destpath = @$_COOKIE['admin_dir'].'/'.$destpath['basename'];
         $mime = get_mime_type($temppath);
     } else {
-        $temppath = '/upload/temp/'.$name;
+        $temppath = '/admin/upload/temp/'.$name;
         $width = $imagesize[0];
         $height = $imagesize[1];
-        $destpath = $_GET['admin_dir'].'/'.$name;
+        $destpath = @$_COOKIE['admin_dir'].'/'.$name;
     }
 
     rename($_SERVER['DOCUMENT_ROOT'].$temppath, $_SERVER['DOCUMENT_ROOT'].$destpath);
 
     //Mangler mysql-funktioner.php
     header('HTTP/1.1 540 Internal Server Error');
-    include_once '../inc/config.php';
-    include_once '../inc/mysqli.php';
+    include_once $_SERVER['DOCUMENT_ROOT'].'/inc/config.php';
+    include_once $_SERVER['DOCUMENT_ROOT'].'/inc/mysqli.php';
     //Kunne ikke åbne database.
     header('HTTP/1.1 541 Internal Server Error');
     $mysqli = new Simple_Mysqli(
@@ -191,8 +175,8 @@ if (!empty($_FILES['Filedata']['tmp_name'])
     //MySQL INSERT fejl!
     header('HTTP/1.1 543 Internal Server Error');
 
-    $alt = empty($_GET['alt']) ? '' : $_GET['alt'];
-    $aspect = empty($_GET['aspect']) ? '' : $_GET['aspect'];
+    $alt = empty($_POST['alt']) ? '' : $_POST['alt'];
+    $aspect = empty($_POST['aspect']) ? '' : $_POST['aspect'];
 
     $mysqli->query(
         "

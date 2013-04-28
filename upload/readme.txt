@@ -1,1 +1,0 @@
-Tragicaly Mac dosn't support password protection via flash.

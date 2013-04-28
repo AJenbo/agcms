@@ -7,7 +7,7 @@ bind_textdomain_codeset('agcms', 'UTF-8');
 textdomain('agcms');
 
 require_once $_SERVER['DOCUMENT_ROOT'].'/admin/inc/logon.php';
-require_once '../inc/header.php';
+require_once $_SERVER['DOCUMENT_ROOT'] . '/inc/header.php';
 
 //Check if file is in use
 function isinuse($path)
