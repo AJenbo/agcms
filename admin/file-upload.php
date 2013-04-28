@@ -103,7 +103,6 @@ function filetypeshow() {
     var videooptions = document.getElementById('videooptions');
     var file = document.getElementById('file');
 
-
     if (type == 'image' || type == 'lineimage') {
         videooptions.style.display = 'none';
         description.style.display = '';
@@ -170,7 +169,6 @@ function fileExists_r(data) {
     return data;
 }
 
-var x;
 function send() {
     document.getElementById('description').style.display = 'none';
     document.getElementById('videooptions').style.display = 'none';
@@ -188,16 +186,56 @@ function send() {
     form.append('aspect', document.getElementById('aspect').value);
 
     try {
-        x = new window.XMLHttpRequest();
+        var x = new window.XMLHttpRequest();
     } catch(e) {}
     if(x === null || typeof x.readyState !== "number") {
         return true;
     }
-    x.onload = function() {
+    x.onload = function(data) {
+        document.getElementById('progress').style.display = 'none';
+
+        if (x.status != 200) {
+            if (x.status == 401) {
+                alert('Session udløbet, logind igen for at fortsætte.');
+            } else if (x.status == 501) {
+                alert('Mangler filfunctioner.');
+            } else if (x.status == 503) {
+                alert('Kunne ikke læse filnavn.');
+            } else if (x.status == 504) {
+                alert('Fejl under flytning af filen.');
+            } else if (x.status == 505) {
+                alert('Kunne ikke give tilladelse til filen.');
+            } else if (x.status == 510) {
+                alert('Mangler get_mime_type.php');
+            } else if (x.status == 512) {
+                alert('Kunne ikke finde billed størelsen.');
+            } else if (x.status == 520) {
+                alert('Kunne ikke slette filen.');
+            } else if (x.status == 521) {
+                alert('Billedet er for stor.');
+            } else if (x.status == 560) {
+                alert('Mangler billedfunctioner');
+            } else if (x.status == 561) {
+                alert('Fejl under billed behandling.');
+            } else if (x.status == 540) {
+                alert('Mangler mysql-funktioner.php');
+            } else if (x.status == 541) {
+                alert('Kunne ikke åbne database.');
+            } else if (x.status == 542) {
+                alert('Slette fejl i databasen!');
+            } else if (x.status == 543) {
+                alert('Fejl ved indsætning i database!');
+            } else if (x.status == 404) {
+                alert('Fil ikke sendt!');
+            } else {
+                alert('Ukendt fejl: ' + x.status);
+            }
+            return;
+        }
+
         document.getElementById('file').value = '';
         validate();
         status('Filen er sendt');
-        document.getElementById('progress').style.display = 'none';
         document.getElementById('status').style.display = '';
         window.opener.showfiles('', 1);
     };
