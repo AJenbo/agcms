@@ -342,7 +342,7 @@ CREATE TABLE IF NOT EXISTS `users` (
   `id` tinyint(3) unsigned NOT NULL AUTO_INCREMENT,
   `fullname` varchar(128) COLLATE utf8_danish_ci NOT NULL,
   `name` varchar(64) COLLATE utf8_danish_ci NOT NULL,
-  `password` varchar(64) COLLATE utf8_danish_ci NOT NULL,
+  `password` varchar(102) COLLATE utf8_danish_ci NOT NULL,
   `access` enum('0','1','2','3','4') COLLATE utf8_danish_ci NOT NULL DEFAULT '0',
   `lastlogin` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
