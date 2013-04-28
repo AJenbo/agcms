@@ -588,7 +588,7 @@ function open_image_edit(id) {
 }
 
 function open_file_upload() {
-    popUpWin('file-upload.php','file_upload','resizable=0,status=0,toolbar=0,menubar=0,location=0,scrollbars=0', 377, 123)
+    popUpWin('file-upload.php','file_upload','resizable=0,status=0,toolbar=0,menubar=0,location=0,scrollbars=0', 377, 130)
 }
 
 function insertThumbnail(id) {

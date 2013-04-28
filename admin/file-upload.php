@@ -80,13 +80,13 @@ function keepAspect(changed, change) {
     var value = document.getElementById(changed).value;
     value = parseInt(value);
 
-    if (document.getElementById('aspect').value = '4-3') {
+    if (document.getElementById('aspect').value == '4-3') {
         if (change == 'x') {
             value = value / 3 * 4;
         } else {
             value = value / 4 * 3;
         }
-    } else if (document.getElementById('aspect').value = '16-9') {
+    } else if (document.getElementById('aspect').value == '16-9') {
         if (change == 'x') {
             value = value / 9 * 16;
         } else {
@@ -108,13 +108,16 @@ function filetypeshow() {
         videooptions.style.display = 'none';
         description.style.display = '';
         status('Vælg det billed du vil sende');
+        file.setAttribute('accept', 'image/*');
     } else if (type == 'video') {
         description.style.display = 'none';
         videooptions.style.display = '';
         status('Vælg den film du vil sende');
+        file.setAttribute('accept', 'video/*');
     } else {
         description.style.display = 'none';
         videooptions.style.display = 'none';
+        file.setAttribute('accept', '');
 
         if (type == '') {
             status('Vælg den fil du vil sende');
@@ -223,14 +226,15 @@ function status(text) {
 <body onload="window.focus();" bgcolor="#ffffff">
 <form method="post" enctype="multipart/form-data" action="/admin/upload/" onsubmit="return send();">
 
-<select name="type" id="type" onchange="filetypeshow();">
+<select name="type" id="type" onchange="filetypeshow();" onkeyup="filetypeshow();">
     <option value=""><?php echo _('File type'); ?></option>
     <option value="image"><?php echo _('Image'); ?></option>
     <option value="lineimage"><?php echo _('Illustration'); ?></option>
     <option value="video"><?php echo _('Video'); ?></option>
     <option value="other"><?php echo _('Other files'); ?></option>
 </select>
-<input id="file" size="1" onchange="validate();" disabled="disabled" type="file" name="Filedata" accept="image/jpeg|image/gif|image/png|image/vnd.wap.wbmp" accept="video/*" />
+<input id="file" size="1" onchange="validate();" disabled="disabled" type="file" name="Filedata" accept="image/*" />
+
 <input type="submit" value="Send fil" id="submit" disabled="disabled" />
 
 <progress id="progress" style="display:none;width:100%;"><?php echo _('File is being uploaded'); ?></progress>
@@ -239,7 +243,7 @@ function status(text) {
 <div id="description" style="display:none;"><?php echo _('Short description'); ?><br /><input type="text" name="alt" id="alt" /></div>
 
 <table id="videooptions" style="display:none;"><tr><td><?php echo _('Size'); ?><br />
-<input type="text" name="x" id="x" value="320" onkeyup="keepAspect('x', 'y')" onblur="keepAspect('x', 'y')" size="1" />x<input type="text" name="y" id="y" value="240" onkeyup="keepAspect('x', 'y')" onblur="keepAspect('x', 'y')" size="1" />
+<input type="text" name="x" id="x" value="320" onkeyup="keepAspect('x', 'y')" onblur="keepAspect('x', 'y')" size="1" />x<input type="text" name="y" id="y" value="240" onkeyup="keepAspect('y', 'x')" onblur="keepAspect('y', 'x')" size="1" />
 </td><td><?php echo _('Aspect'); ?><br />
 <select name="aspect" id="aspect" onchange="keepAspect('x', 'y')">
     <option value="4-3">4:3</option>
