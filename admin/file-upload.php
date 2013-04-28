@@ -94,7 +94,7 @@ function keepAspect(changed, change) {
         }
     }
 
-    document.getElementById(change).value = value;
+    document.getElementById(change).value = Math.round(value);
 }
 
 function filetypeshow() {
@@ -239,9 +239,9 @@ function status(text) {
 <div id="description" style="display:none;"><?php echo _('Short description'); ?><br /><input type="text" name="alt" id="alt" /></div>
 
 <table id="videooptions" style="display:none;"><tr><td><?php echo _('Size'); ?><br />
-<input type="text" name="x" id="x" value="320" onkeyup="keepAspect('x', 'y')" size="1" />x<input type="text" name="y" id="y" value="240" size="1" /><!--180-->
+<input type="text" name="x" id="x" value="320" onkeyup="keepAspect('x', 'y')" onblur="keepAspect('x', 'y')" size="1" />x<input type="text" name="y" id="y" value="240" onkeyup="keepAspect('x', 'y')" onblur="keepAspect('x', 'y')" size="1" />
 </td><td><?php echo _('Aspect'); ?><br />
-<select name="aspect" id="aspect">
+<select name="aspect" id="aspect" onchange="keepAspect('x', 'y')">
     <option value="4-3">4:3</option>
     <option value="16-9">16:9</option>
 </select></td></tr></table>
