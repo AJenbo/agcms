@@ -131,6 +131,7 @@ foreach ($users as $key => $user) {
 }
 
 ?></tbody></table></div><?php
+$activityButtons[] = '<li><a href="/admin/newuser.php"><img src="images/table_add.png" width="16" height="16" alt="" title="'._('Create new').'" /> '._('Create new').'</a></li>';
 require 'mainmenu.php';
 ?>
 </body>
