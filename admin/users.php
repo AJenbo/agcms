@@ -38,10 +38,13 @@ $mysqli = new Simple_Mysqli(
  */
 function deleteuser($id)
 {
-    if ($_SESSION['_user']['access'] == 1) {
-        global $mysqli;
-        $mysqli->query("DELETE FROM `users` WHERE `id` = ".$id);
+    if ($_SESSION['_user']['access'] != 1) {
+        return false;
     }
+
+    global $mysqli;
+    $mysqli->query("DELETE FROM `users` WHERE `id` = ".$id);
+    return true;
 }
 
 $sajax_request_type = 'POST';
@@ -80,9 +83,10 @@ function deleteuser(id, name)
     }
 }
 
-function deleteuser_r() {
-    if (data['error'])
+function deleteuser_r(data) {
+    if (data['error']) {
         alert(data['error']);
+    }
     window.location.reload();
 }
 
@@ -107,7 +111,7 @@ foreach ($users as $key => $user) {
     if ($_SESSION['_user']['access'] == 1) {
         echo ' <img src="images/cross.png" alt="X" title="' . _('Delete')
         . '" onclick="deleteuser(' . $user['id'] . ', \''
-        . addcslashes($user['fullname'], "\\'") . '\'" />';
+        . addcslashes($user['fullname'], "\\'") . '\')" />';
     }
     echo '</td><td><a href="user.php?id='.$user['id'].'">'.$user['fullname'].'</a></td><td><a href="user.php?id='.$user['id'].'">';
     if ($user['lastlogin'] == 0) {
