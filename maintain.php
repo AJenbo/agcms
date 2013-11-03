@@ -11,6 +11,8 @@
  * @link     http://www.arms-gallery.dk/
  */
 
+//TODO move to /admin and require password to avoid DoS
+
 require_once "inc/config.php";
 require_once "inc/mysqli.php";
 require_once 'inc/sajax.php';
