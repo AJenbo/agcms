@@ -134,10 +134,10 @@ function removeNoneExistingFiles()
 function deleteTempfiles()
 {
     $deleted = 0;
-    $files = scandir($_SERVER['DOCUMENT_ROOT'] . '/upload/temp');
+    $files = scandir($_SERVER['DOCUMENT_ROOT'] . '/admin/upload/temp');
     foreach ($files as $file) {
-        if (is_file($_SERVER['DOCUMENT_ROOT'] . '/upload/temp/' . $file)) {
-            @unlink($_SERVER['DOCUMENT_ROOT'] . '/upload/temp/' . $file);
+        if (is_file($_SERVER['DOCUMENT_ROOT'] . '/admin/upload/temp/' . $file)) {
+            @unlink($_SERVER['DOCUMENT_ROOT'] . '/admin/upload/temp/' . $file);
             $deleted++;
         }
     }
