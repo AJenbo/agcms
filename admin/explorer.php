@@ -42,7 +42,6 @@ function is_files($str_file)
 //display a list of files in the selected folder
 function showfiles($temp_dir)
 {
-    require_once 'inc/config.php';
     //temp_dir is needed to initialize dir as global
     //$dir needs to be global for other functions like is_files()
     global $dir;
@@ -89,7 +88,6 @@ function showfiles($temp_dir)
 
 function filejavascript($fileinfo)
 {
-    require_once 'inc/config.php';
     $pathinfo = pathinfo($fileinfo['path']);
 
     $javascript = '
@@ -138,7 +136,6 @@ function filejavascript($fileinfo)
 
 function filehtml($fileinfo)
 {
-    require_once 'inc/config.php';
     $pathinfo = pathinfo($fileinfo['path']);
 
     $html = '';
@@ -315,7 +312,6 @@ function makedir($name)
         !mkdir($_SERVER['DOCUMENT_ROOT'].@$_COOKIE['admin_dir'].'/'.$name, 0771))
             return array('error' => _('Could not create folder, you may not have sufficient rights to this folder.'));
     } else {
-        require_once 'inc/config.php';
         //FTP methode for server with secure mode On
         if (!is_dir($_SERVER['DOCUMENT_ROOT'].@$_COOKIE['admin_dir']) ||
         !$FTP_Conn = ftp_connect('localhost'))
@@ -665,12 +661,11 @@ sajax_export(
 sajax_handle_client_request();
 
 
-if (@$_COOKIE['qpath'] || @$_COOKIE['qalt'] || @$_COOKIE['qtype'])
+if (@$_COOKIE['qpath'] || @$_COOKIE['qalt'] || @$_COOKIE['qtype']) {
     $showfiles = searchfiles(@$_COOKIE['qpath'], @$_COOKIE['qalt'], @$_COOKIE['qtype']);
-else
+} else {
     $showfiles = showfiles(@$_COOKIE['admin_dir']);
-
-require_once 'inc/config.php';
+}
 
 ?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">

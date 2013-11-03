@@ -11,9 +11,6 @@ require_once 'file-functions.php';
 //TODO if (no changes and !$output) do redirect
 function generateImage($path, $cropX, $cropY, $cropW, $cropH, $maxW, $maxH, $flip, $rotate, $output)
 {
-
-    include_once $_SERVER['DOCUMENT_ROOT'].'/admin/inc/config.php';
-
     $imagesize = @getimagesize($_SERVER['DOCUMENT_ROOT'].$path);
     $pathinfo = pathinfo($path);
 

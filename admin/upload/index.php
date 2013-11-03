@@ -66,7 +66,6 @@ if (!empty($_FILES['Filedata']['tmp_name'])
         $_POST['type'] = '';
     }
 
-    include_once $_SERVER['DOCUMENT_ROOT'] . '/admin/inc/config.php';
     //TODO test if trim, resize or recompression is needed
     if (($_POST['type'] == 'image' && $mime != 'image/jpeg')
         || (($_POST['type'] == 'image' || $_POST['type'] == 'lineimage')

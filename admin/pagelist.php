@@ -13,7 +13,6 @@ ini_set('zlib.output_compression', 1);
 
 require_once $_SERVER['DOCUMENT_ROOT'].'/admin/inc/logon.php';
 date_default_timezone_set('Europe/Copenhagen');
-require_once 'inc/config.php';
 require_once '../inc/sajax.php';
 require_once '../inc/config.php';
 require_once '../inc/mysqli.php';
