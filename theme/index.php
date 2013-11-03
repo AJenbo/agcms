@@ -136,6 +136,13 @@ if (@$GLOBALS['generatedcontent']['crumbs']) {
         ?></li></ul><?php
     }
 }
+
+if (!empty($_SESSION['faktura']['quantities'])) {
+    ?><div class="bar" id="cart">
+    <ul><li><a href="/bestilling/">Shopping basket</a></li></ul>
+    </div><?php
+}
+
 ?></li></ul></div><div id="text"><a name="top"></a><?php
 
 if ($GLOBALS['generatedcontent']['contenttype'] == 'front') {
@@ -170,6 +177,14 @@ if ($GLOBALS['generatedcontent']['contenttype'] == 'front') {
 
     echo $GLOBALS['generatedcontent']['text'];
 
+    if (@$GLOBALS['generatedcontent']['requirement']['link']) {
+        ?><p><a href="<?php
+        echo $GLOBALS['generatedcontent']['requirement']['link'];
+        ?>" target="krav"><?php
+        echo $GLOBALS['generatedcontent']['requirement']['name'];
+        ?></a></p><?php
+    }
+
     ?><p style="text-align:center"><?php
     echoPrice(
         $GLOBALS['generatedcontent']['price']['now'],
@@ -177,6 +192,11 @@ if ($GLOBALS['generatedcontent']['contenttype'] == 'front') {
         $GLOBALS['generatedcontent']['price']['from'],
         $GLOBALS['generatedcontent']['price']['market']
     );
+    if ($GLOBALS['generatedcontent']['price']['now']) {
+        ?> <a href="/bestilling/?add=<?php
+        echo $GLOBALS['side']['id'];
+        ?>">+ Add to shopping cart</a> <?php
+    }
     ?><br /></p>
     </div><?php
 
