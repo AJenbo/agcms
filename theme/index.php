@@ -100,6 +100,7 @@ function echoMenu($menu)
 echo $GLOBALS['generatedcontent']['title'];
 ?></title>
 <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+<link href="/theme/style.css" rel="stylesheet" type="text/css" />
 <script src="/javascript/json2.stringify.js" type="text/javascript"></script>
 <script src="/javascript/json_stringify.js" type="text/javascript"></script>
 <script src="/javascript/json_parse_state.js" type="text/javascript"></script>

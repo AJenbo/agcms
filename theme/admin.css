@@ -1,0 +1,19 @@
+/* set edit elements to match onsite content */
+
+.nypris {
+	font-weight:bold;
+	color:#CC0000;
+}
+.pris {
+	font-weight:bold;
+}
+.xpris {
+	text-decoration:line-through;
+}
+.admin_name {
+	font-size:17px;
+	font-weight:bold;
+	color:#333333;
+	font-family:"Times New Roman", Times, serif;
+	margin:0;
+}
