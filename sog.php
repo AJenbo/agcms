@@ -12,8 +12,8 @@
  */
 
 require_once 'inc/header.php';
-header("Content-Type: application/rss+xml");
-doConditionalGet(filemtime($_SERVER['SCRIPT_FILENAME']));
+header("Content-Type: application/opensearchdescription+xml ");
+doConditionalGet(filemtime(__FILE__));
 echo '<?xml version="1.0" encoding="utf-8"?>';
 require_once 'inc/config.php';
 ?>
