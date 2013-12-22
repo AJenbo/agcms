@@ -557,25 +557,55 @@ if (!empty($_GET['id']) && @$_GET['checkid'] == getCheckid($_GET['id'])) {
             $GLOBALS['generatedcontent']['text'] .= '<br />'.$special[0]['text'];
 
             // New payment method - register request
-			$terminalObj = new Terminal(false, null, 'da_DK', 'Faktura', $submit['Response_URL'], $GLOBALS['_config']['base_url'].'/betaling/?id='.$_GET['id'].'&checkid='.$_GET['checkid'].'&step=2');
-			$environment = new Environment(null, null, 'PHP5');	
-			$order = new Order(number_format($faktura['amount'], 2, '', ''), 'DKK', false, null, $GLOBALS['_config']['pbsfix'].$faktura['id'], false);
-			
-			$registerRequest = new RegisterRequest(false, null, null, null, null, $environment, null, $order, false, 'B', $terminalObj, null, null);	
+			$client = new SoapClient(
+                'https://epayment.nets.eu/Netaxept.svc?wsdl',
+                array('trace' => true,'exceptions' => true)
+            );
+            $request = new stdClass;
+            $request->AvtaleGiro = false;
+            $request->CardInfo = null;
+            $request->Customer = null;
+            $request->Description = null;
+            $request->DnBNorDirectPayment = null;
+            $request->Environment = new stdClass;
+            $request->Environment->Language = 'da_DK';
+            $request->Environment->OS = php_uname('s');
+            $request->Environment->WebServicePlatform = 'PHP5';
+            $request->MicroPayment = null;
+            $request->Order = new stdClass;
+            $request->Order->Amount = number_format($faktura['amount'], 2, '', '');
+            $request->Order->CurrencyCode = 'DKK';
+            $request->Order->Force3DSecure = false;
+            $request->Order->Goods = null;
+            $request->Order->OrderNumber = $GLOBALS['_config']['pbsfix'].$faktura['id'];
+            $request->Order->UpdateStoredPaymentInfo = false;
+            $request->Recurring = false;
+            $request->ServiceType = 'B';
+            $request->Terminal = new stdClass;
+            $request->Terminal->AutoAuth = false;
+            $request->Terminal->PaymentMethodList = null;
+            $request->Terminal->Language = 'da_DK';
+            $request->Terminal->OrderDescription = 'Faktura';
+            $request->Terminal->RedirectOnError = $GLOBALS['_config']['base_url'] . '/betaling/?checkid=' . $_GET['checkid'] . '&Status=E';
+            $request->Terminal->RedirectUrl = $GLOBALS['_config']['base_url'] . '/betaling/?checkid=' . $_GET['checkid'];
+            $request->TransactionId = null;
+            $request->TransactionReconRef = null;
 
-			$inputParametersOfRegister = array
-			(
-				"token"  => $token,
-				"merchantId" => $merchantId,
-				"request" => $registerRequest
-			);
+			$result = $client->__call(
+                'Register',
+                array(
+                    array(
+                        "token"  => $GLOBALS['_config']['pbspassword'],
+                        "merchantId" => $GLOBALS['_config']['pbsid'],
+                        "request" => $request
+                    )
+                )
+            );
 
-			$client = new SoapClient($wsdl, array('trace' => true,'exceptions' => true));
-			$outputParametersOfRegister = $client->__call('Register' , array("parameters"=>$inputParametersOfRegister));
-			$registerResult = $outputParametersOfRegister->RegisterResult; 
-			$tmp_url = $terminal . "?merchantId=" . $merchantId . "&transactionId=" . $registerResult->TransactionId;
-			
-            $GLOBALS['generatedcontent']['text'] .= '<form style="text-align:center;" action="' . $tmp_url . '" method="post">';
+            $GLOBALS['generatedcontent']['text'] .= '<form style="text-align:center;" action="https://epayment.nets.eu/terminal/default.aspx?merchantId='
+                . $GLOBALS['_config']['pbsid']
+                . '&transactionId=' . $result->RegisterResult->TransactionId
+                . '" method="post">';
             $GLOBALS['generatedcontent']['text'] .= '<input class="web" type="submit" value="'._('I hereby agree to the terms of trade').'" /></form>';
         }
     } else {
