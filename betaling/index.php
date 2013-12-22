@@ -16,12 +16,6 @@ ini_set('display_errors', 1);
 error_reporting(-1);
 /**/
 
-require_once("../payment/Parameters.php");
-require_once("../payment/ClassOrder.php");
-require_once("../payment/ClassTerminal.php");
-require_once("../payment/ClassRegisterRequest.php");
-require_once("../payment/ClassEnvironment.php");
-
 date_default_timezone_set('Europe/Copenhagen');
 setlocale(LC_ALL, 'da_DK');
 bindtextdomain("agcms", $_SERVER['DOCUMENT_ROOT'].'/theme/locale');
