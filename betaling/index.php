@@ -556,35 +556,18 @@ if (!empty($_GET['id']) && @$_GET['checkid'] == getCheckid($_GET['id'])) {
                 array('trace' => true,'exceptions' => true)
             );
             $request = new stdClass;
-            $request->AvtaleGiro = false;
-            $request->CardInfo = null;
-            $request->Customer = null;
-            $request->Description = null;
-            $request->DnBNorDirectPayment = null;
             $request->Environment = new stdClass;
-            $request->Environment->Language = 'da_DK';
-            $request->Environment->OS = php_uname('s');
             $request->Environment->WebServicePlatform = 'PHP5';
-            $request->MicroPayment = null;
             $request->Order = new stdClass;
             $request->Order->Amount = number_format($faktura['amount'], 2, '', '');
             $request->Order->CurrencyCode = 'DKK';
             $request->Order->Force3DSecure = false;
-            $request->Order->Goods = null;
             $request->Order->OrderNumber = $GLOBALS['_config']['pbsfix'].$faktura['id'];
-            $request->Order->UpdateStoredPaymentInfo = false;
-            $request->Recurring = false;
-            $request->ServiceType = 'B';
             $request->Terminal = new stdClass;
-            $request->Terminal->AutoAuth = false;
-            $request->Terminal->PaymentMethodList = null;
             $request->Terminal->Language = 'da_DK';
-            $request->Terminal->OrderDescription = 'Faktura';
-            $request->Terminal->RedirectOnError = $GLOBALS['_config']['base_url'] . '/betaling/?checkid=' . $_GET['checkid'] . '&Status=E';
+            $request->Terminal->RedirectOnError = true;
             $request->Terminal->RedirectUrl = $GLOBALS['_config']['base_url'] . '/betaling/?checkid=' . $_GET['checkid'];
             $request->TransactionId = null;
-            $request->TransactionReconRef = null;
-
 			$result = $client->__call(
                 'Register',
                 array(
