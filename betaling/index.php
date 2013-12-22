@@ -16,6 +16,12 @@ ini_set('display_errors', 1);
 error_reporting(-1);
 /**/
 
+require_once("../payment/Parameters.php");
+require_once("../payment/ClassOrder.php");
+require_once("../payment/ClassTerminal.php");
+require_once("../payment/ClassRegisterRequest.php");
+require_once("../payment/ClassEnvironment.php");
+
 date_default_timezone_set('Europe/Copenhagen');
 setlocale(LC_ALL, 'da_DK');
 bindtextdomain("agcms", $_SERVER['DOCUMENT_ROOT'].'/theme/locale');
@@ -550,25 +556,26 @@ if (!empty($_GET['id']) && @$_GET['checkid'] == getCheckid($_GET['id'])) {
             );
             $GLOBALS['generatedcontent']['text'] .= '<br />'.$special[0]['text'];
 
-            $submit['Merchant_id'] = $GLOBALS['_config']['pbsid'];
-            $submit['Version'] = '2';
-            $submit['Customer_refno'] = $GLOBALS['_config']['pbsfix'].$faktura['id'];
-            $submit['Currency'] = 'DKK';
-            $submit['Amount'] = number_format($faktura['amount'], 2, '', '');
-            $submit['VAT'] = number_format($netto*$faktura['momssats'], 2, '', '');
-            $submit['Payment_method'] = 'KORTINDK';
-            $submit['Response_URL'] = $GLOBALS['_config']['base_url'].'/betaling/?checkid='.$_GET['checkid'];
-            $submit['Goods_description'] = '';
-            $submit['Language'] = 'DAN';
-            $submit['Comment'] = '';
-            $submit['Country'] = 'DK';
-            $submit['Cancel_URL'] = $submit['Response_URL'];
+            // New payment method - register request
+			$terminalObj = new Terminal(false, null, 'da_DK', 'Faktura', $submit['Response_URL'], $GLOBALS['_config']['base_url'].'/betaling/?id='.$_GET['id'].'&checkid='.$_GET['checkid'].'&step=2');
+			$environment = new Environment(null, null, 'PHP5');	
+			$order = new Order(number_format($faktura['amount'], 2, '', ''), 'DKK', false, null, $GLOBALS['_config']['pbsfix'].$faktura['id'], false);
+			
+			$registerRequest = new RegisterRequest(false, null, null, null, null, $environment, null, $order, false, 'B', $terminalObj, null, null);	
 
-            $GLOBALS['generatedcontent']['text'] .= '<form style="text-align:center;" action="https://epayment.auriganet.eu/paypagegw" method="post">';
-            foreach ($submit as $key => $value) {
-                $GLOBALS['generatedcontent']['text'] .= '<input type="hidden" name="'.$key.'" value="'.htmlspecialchars($value).'" />';
-            }
-            $GLOBALS['generatedcontent']['text'] .= '<input type="hidden" name="MAC" value="'.md5(implode('', $submit).$GLOBALS['_config']['pbspassword']).'" />';
+			$inputParametersOfRegister = array
+			(
+				"token"  => $token,
+				"merchantId" => $merchantId,
+				"request" => $registerRequest
+			);
+
+			$client = new SoapClient($wsdl, array('trace' => true,'exceptions' => true));
+			$outputParametersOfRegister = $client->__call('Register' , array("parameters"=>$inputParametersOfRegister));
+			$registerResult = $outputParametersOfRegister->RegisterResult; 
+			$tmp_url = $terminal . "?merchantId=" . $merchantId . "&transactionId=" . $registerResult->TransactionId;
+			
+            $GLOBALS['generatedcontent']['text'] .= '<form style="text-align:center;" action="' . $tmp_url . '" method="post">';
             $GLOBALS['generatedcontent']['text'] .= '<input class="web" type="submit" value="'._('I hereby agree to the terms of trade').'" /></form>';
         }
     } else {
