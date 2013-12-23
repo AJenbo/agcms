@@ -109,10 +109,10 @@ $id = isset($_GET['id']) ? (int) $_GET['id'] : null;
 
 //Generate return page
 $GLOBALS['generatedcontent']['crumbs'] = array();
-if (!empty($_GET['id'])) {
+if (!empty($id)) {
     $GLOBALS['generatedcontent']['crumbs'][0] = array(
         'name' => _('Payment'),
-        'link' => '/?id=' . $_GET['id'] . '&checkid=' . $_GET['checkid'],
+        'link' => '/?id=' . $id . '&checkid=' . $_GET['checkid'],
         'icon' => null
     );
 } else {
@@ -126,13 +126,13 @@ $GLOBALS['generatedcontent']['contenttype'] = 'page';
 $GLOBALS['generatedcontent']['text'] = '';
 $productslines = 0;
 
-if (!empty($_GET['id']) && @$_GET['checkid'] == getCheckid($_GET['id']) && !isset($_GET['responseCode'])) {
+if (!empty($id) && @$_GET['checkid'] == getCheckid($id) && !isset($_GET['responseCode'])) {
     $rejected = array();
     $faktura = $mysqli->fetchOne(
         "
         SELECT *
         FROM `fakturas`
-        WHERE `id` = ".$_GET['id']
+        WHERE `id` = ".$id
     );
 
     if ($faktura['status'] == 'new' || $faktura['status'] == 'locked') {
@@ -163,17 +163,17 @@ if (!empty($_GET['id']) && @$_GET['checkid'] == getCheckid($_GET['id']) && !isse
                 UPDATE `fakturas`
                 SET `status` = 'locked'
                 WHERE `status` IN('new', 'pbserror')
-                  AND `id` = " . (int) $_GET['id']
+                  AND `id` = " . $id
             );
 
             $GLOBALS['generatedcontent']['crumbs'] = array();
             $GLOBALS['generatedcontent']['crumbs'][1] = array(
-                'name' => _('Order #') . $_GET['id'],
+                'name' => _('Order #') . $id,
                 'link' => '#',
                 'icon' => null
             );
-            $GLOBALS['generatedcontent']['title'] = _('Order #').$_GET['id'];
-            $GLOBALS['generatedcontent']['headline'] = _('Order #').$_GET['id'];
+            $GLOBALS['generatedcontent']['title'] = _('Order #').$id;
+            $GLOBALS['generatedcontent']['headline'] = _('Order #').$id;
 
             $GLOBALS['generatedcontent']['text'] = '<table id="faktura" cellspacing="0">
                 <thead>
@@ -226,7 +226,11 @@ if (!empty($_GET['id']) && @$_GET['checkid'] == getCheckid($_GET['id']) && !isse
                 $GLOBALS['generatedcontent']['text'] .= '<br /><strong>'._('Note:').'</strong><br /><p class="note">';
                 $GLOBALS['generatedcontent']['text'] .= nl2br(htmlspecialchars($faktura['note'])).'</p>';
             }
-            $GLOBALS['generatedcontent']['text'] .= '<form action="" method="get"><input type="hidden" name="id" value="'.$_GET['id'].'" /><input type="hidden" name="checkid" value="'.$_GET['checkid'].'" /><input type="hidden" name="step" value="1" /><input type="hidden" name="checkid" value="'.$_GET['checkid'].'" /><input style="font-weight:bold;" type="submit" value="'._('Continue').'" /></form>';
+            $GLOBALS['generatedcontent']['text'] .= '<form action="" method="get"><input type="hidden" name="id" value="'.$id.'" /><input type="hidden" name="checkid" value="'
+	    . $_GET['checkid'] //FIXME html escape
+	    .'" /><input type="hidden" name="step" value="1" /><input type="hidden" name="checkid" value="'
+	    .$_GET['checkid'] //FIXME html escape
+	    .'" /><input style="font-weight:bold;" type="submit" value="'._('Continue').'" /></form>';
 
         } elseif ($_GET['step'] == 1) {
             if ($_POST) {
@@ -262,7 +266,7 @@ if (!empty($_GET['id']) && @$_GET['checkid'] == getCheckid($_GET['id']) && !isse
                 }
                 $sql = substr($sql, 0, -1);
 
-                $sql .= 'WHERE `id` = '.$_GET['id'];
+                $sql .= 'WHERE `id` = '.$id;
 
                 $mysqli->query($sql);
 
@@ -305,7 +309,7 @@ if (!empty($_GET['id']) && @$_GET['checkid'] == getCheckid($_GET['id']) && !isse
                     }
 
                     ini_set('zlib.output_compression', '0');
-                    header('Location: '.$GLOBALS['_config']['base_url'].'/betaling/?id='.$_GET['id'].'&checkid='.$_GET['checkid'].'&step=2', true, 303);
+                    header('Location: '.$GLOBALS['_config']['base_url'].'/betaling/?id='.$id.'&checkid='.$_GET['checkid'].'&step=2', true, 303);
                     exit;
                 }
             } else {
@@ -518,7 +522,7 @@ if (!empty($_GET['id']) && @$_GET['checkid'] == getCheckid($_GET['id']) && !isse
             if (count(validate($faktura))) {
                 ini_set('zlib.output_compression', '0');
                 header(
-                    'Location: '.$GLOBALS['_config']['base_url'].'/betaling/?id='.$_GET['id'].'&checkid='.$_GET['checkid'].'&step=1',
+                    'Location: '.$GLOBALS['_config']['base_url'].'/betaling/?id='.$id.'&checkid='.$_GET['checkid'].'&step=1',
                     true,
                     303
                 );
@@ -530,7 +534,7 @@ if (!empty($_GET['id']) && @$_GET['checkid'] == getCheckid($_GET['id']) && !isse
                 UPDATE `fakturas`
                 SET `status` = 'locked'
                 WHERE `status` IN('new', 'pbserror')
-                AND `id` = ".$_GET['id']
+                AND `id` = ".$id
             );
 
             $GLOBALS['generatedcontent']['crumbs'] = array();
@@ -569,7 +573,7 @@ if (!empty($_GET['id']) && @$_GET['checkid'] == getCheckid($_GET['id']) && !isse
                 $request->Terminal = new stdClass;
                 $request->Terminal->Language = 'da_DK';
                 $request->Terminal->RedirectOnError = true;
-                $request->Terminal->RedirectUrl = $GLOBALS['_config']['base_url'] . '/betaling/?id=' . $_GET['id'] . '&checkid=' . $_GET['checkid'];
+                $request->Terminal->RedirectUrl = $GLOBALS['_config']['base_url'] . '/betaling/?id=' . $id . '&checkid=' . $_GET['checkid'];
                 $request->TransactionId = $GLOBALS['_config']['pbsfix'] . $faktura['id'];
                 $result = $client->__call(
                     'Register',
@@ -1225,7 +1229,7 @@ Delivery phone: %s</p>
         <tbody>
           <tr>
             <td>'._('Order No:').'</td>
-            <td><input name="id" value="'.@$_GET['id'].'" /></td>
+            <td><input name="id" value="'.$id.'" /></td>
           </tr>
           <tr>
             <td>'._('Code:').'</td>
