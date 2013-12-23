@@ -105,6 +105,8 @@ function validate($values)
     return $rejected;
 }
 
+$id = isset($_GET['id']) ? (int) $_GET['id'] : null;
+
 //Generate return page
 $GLOBALS['generatedcontent']['crumbs'] = array();
 if (!empty($_GET['id'])) {
@@ -682,9 +684,7 @@ if (!empty($_GET['id']) && @$_GET['checkid'] == getCheckid($_GET['id']) && !isse
             $GLOBALS['generatedcontent']['text'] = _('An errror occured.');
         }
     }
-} elseif (!empty($_GET['responseCode'])) {
-    $id = (int) $_GET['id'];
-
+} elseif (isset($_GET['responseCode'])) {
     $GLOBALS['generatedcontent']['crumbs'] = array();
     $GLOBALS['generatedcontent']['crumbs'][1] = array(
         'name' => _('Error'),
@@ -726,7 +726,7 @@ if (!empty($_GET['id']) && @$_GET['checkid'] == getCheckid($_GET['id']) && !isse
         $GLOBALS['generatedcontent']['headline'] = _('Reciept');
         $GLOBALS['generatedcontent']['text'] = '<p>'._('Payment is registered and you ought to have received a receipt by email.').'</p>';
         $shopBody = '<br />'.sprintf(_('A customer tried to see the status page for online invoice #%d, which is already paid.'). $id).'<br />';
-    } elseif (empty($_GET['responseCode']) || $_GET['responseCode'] == 'Cancel') {
+    } elseif ($_GET['responseCode'] == 'Cancel') {
         //User pressed "back"
         ini_set('zlib.output_compression', '0');
         header('Location: '.$GLOBALS['_config']['base_url'].'/betaling/?id='.$id.'&checkid='.$_GET['checkid'].'&step=2', true, 303);
@@ -1147,8 +1147,7 @@ Delivery phone: %s</p>
 <html xmlns="http://www.w3.org/1999/xhtml"><head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <title>'.sprintf(_('Online Invoice #%d: does\'t exist'), $id).'</title></head><body>
-' . $shopBody . '<br />' . _('Status:') . ' ' . $_GET['Status']
-        . $_GET['Status_code'] . '<p>' . _('Sincerely the computer') . '</p></body>
+' . $shopBody . '<br />' . _('Status:') . ' ' . $_GET['responseCode'] . '<p>' . _('Sincerely the computer') . '</p></body>
 </html>
 </body></html>';
     }
