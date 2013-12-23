@@ -568,7 +568,7 @@ if (!empty($_GET['id']) && @$_GET['checkid'] == getCheckid($_GET['id']) && !isse
                 $request->Terminal->Language = 'da_DK';
                 $request->Terminal->RedirectOnError = true;
                 $request->Terminal->RedirectUrl = $GLOBALS['_config']['base_url'] . '/betaling/?id=' . $_GET['id'] . '&checkid=' . $_GET['checkid'];
-                $request->TransactionId = null;
+                $request->TransactionId = $GLOBALS['_config']['pbsfix'] . $faktura['id'];
                 $result = $client->__call(
                     'Register',
                     array(
