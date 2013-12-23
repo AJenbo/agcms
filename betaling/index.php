@@ -105,7 +105,7 @@ function validate($values)
     return $rejected;
 }
 
-$id = isset($_GET['id']) ? (int) $_GET['id'] : null;
+$id = !empty($_GET['id']) ? (int) $_GET['id'] : null;
 
 //Generate return page
 $GLOBALS['generatedcontent']['crumbs'] = array();
