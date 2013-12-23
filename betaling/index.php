@@ -742,8 +742,7 @@ if (!empty($_GET['id']) && @$_GET['checkid'] == getCheckid($_GET['id']) && !isse
 	$mysqli->query(
 	    "
 	    UPDATE `fakturas`
-	    SET `cardtype` = '" . $_GET['Card_type'] . "',
-		`status` = 'pbsok',
+	    SET `status` = 'pbsok',
 		`paydate` = NOW()
 	    WHERE `status` IN('new', 'locked', 'pbserror')
 	      AND `id` = " . $id
