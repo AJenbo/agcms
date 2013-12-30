@@ -689,7 +689,18 @@ if (!empty($id) && @$_GET['checkid'] == getCheckid($id) && !isset($_GET['respons
     }
     $shopBody = '<br />'.sprintf(_('There was an error on the payment page of online invoice #%d!'), $id).'<br />';
 
-    $faktura = $mysqli->fetchOne("SELECT * FROM `fakturas` WHERE `id` = ".$id);
+    $faktura = $mysqli->fetchOne("SELECT * FROM `fakturas` WHERE `id` = " . $id);
+
+    if ($faktura && $_GET['responseCode'] == 'Cancel') {
+	$mysqli->query(
+	    "
+	    UPDATE `fakturas`
+	    SET `status` = 'pbserror'
+	    WHERE `status` IN('new', 'locked')
+	      AND `id` = " . $id
+	);
+	$faktura['status'] = 'pbserror';
+    }
 
     if (!$faktura) {
         $GLOBALS['generatedcontent']['text'] = '<p>' . _('The payment does not exist in our system.') . '</p>';
@@ -713,11 +724,6 @@ if (!empty($id) && @$_GET['checkid'] == getCheckid($id) && !isset($_GET['respons
         $GLOBALS['generatedcontent']['headline'] = _('Reciept');
         $GLOBALS['generatedcontent']['text'] = '<p>'._('Payment is registered and you ought to have received a receipt by email.').'</p>';
         $shopBody = '<br />'.sprintf(_('A customer tried to see the status page for online invoice #%d, which is already paid.'). $id).'<br />';
-    } elseif ($_GET['responseCode'] == 'Cancel') {
-        //User pressed "back"
-        ini_set('zlib.output_compression', '0');
-        header('Location: ' . $GLOBALS['_config']['base_url'] . '/betaling/?id=' . $id . '&checkid=' . $_GET['checkid'] . '&step=2', true, 303);
-        exit;
     } elseif ($_GET['responseCode'] == 'OK') {
         $GLOBALS['generatedcontent']['crumbs'][1] = array(
             'name' => _('Reciept'),
