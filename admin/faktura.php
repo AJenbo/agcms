@@ -54,7 +54,7 @@ if ($faktura['premoms']) {
 
 if ($faktura['id']) {
 
-    $epaymentAdminService = new epaymentAdminService($GLOBALS['_config']['pbsid'], $GLOBALS['_config']['pbstoken']);
+    $epaymentAdminService = new epaymentAdminService($GLOBALS['_config']['pbsid'], $GLOBALS['_config']['pbspassword']);
     $epayment = $epaymentAdminService->query($GLOBALS['_config']['pbsfix'].$faktura['id']);
 	
 	print_r($epayment);
@@ -151,7 +151,7 @@ if ($faktura['id']) {
 
 function getCheckid($id)
 {
-    return substr(md5($id.$GLOBALS['_config']['pbstoken']), 3, 5);
+    return substr(md5($id.$GLOBALS['_config']['pbspassword']), 3, 5);
 }
 
 function copytonew($id)
