@@ -8,7 +8,7 @@ class epaymentAdminService
 {
     public $Merchant_id;
     public $Token;
-	private $_soapClient;
+    private $_soapClient;
 
     /**
      * Setup the class variables for initialization
@@ -21,7 +21,7 @@ class epaymentAdminService
     {
         $this->Merchant_id = $merchant_id;
         $this->Token = $token;
-		$this->_soapClient = new SoapClient('https://epayment.nets.eu/Netaxept.svc?wsdl');
+        $this->_soapClient = new SoapClient('https://epayment.nets.eu/Netaxept.svc?wsdl');
     }
 
     /**
@@ -34,14 +34,14 @@ class epaymentAdminService
     function annul($Transaction_id)
     {
         $annulRequest = array('Description' => '', 'Operation' => 'ANNUL', 'TransactionAmount' => '', 'TransactionId' => $Transaction_id, 'TransactionReconRef' => '');
-			
-		$request = array
-		(
-			"token"       => $this->Token,
-			"merchantId"  => $this->Merchant_id,
-			"request"     => $annulRequest 
-		);
-		
+
+        $request = array
+        (
+            "token"       => $this->Token,
+            "merchantId"  => $this->Merchant_id,
+            "request"     => $annulRequest
+        );
+
         $result = $this->_soapClient->__call('Process' , array('parameters'=>$request));
         return (array) $result->ProcessResult;
     }
@@ -56,15 +56,15 @@ class epaymentAdminService
      */
     function confirm($Transaction_id, $Delivery_date)
     {
-		$processRequest = array('Description' => '', 'Operation' => 'CAPTURE', 'TransactionAmount' => '', 'TransactionId' => $Transaction_id, 'TransactionReconRef' => '');
-			
-		$request = array
-		(
-			"token"       => $this->Token,
-			"merchantId"  => $this->Merchant_id,
-			"request"     => $processRequest 
-		);
-		
+        $processRequest = array('Description' => '', 'Operation' => 'CAPTURE', 'TransactionAmount' => '', 'TransactionId' => $Transaction_id, 'TransactionReconRef' => '');
+
+        $request = array
+        (
+            "token"       => $this->Token,
+            "merchantId"  => $this->Merchant_id,
+            "request"     => $processRequest
+        );
+
         $result = $this->_soapClient->__call('Process' , array('parameters'=>$request));
         return (array) $result->ProcessResult;
     }
@@ -76,15 +76,15 @@ class epaymentAdminService
      */
     function query($Customer_refno)
     {
-		$queryRequest = array('TransactionId' => $Customer_refno);
-			
-		$request = array
-		(
-			"token"       => $this->Token,
-			"merchantId"  => $this->Merchant_id,
-			"request"     => $queryRequest 
-		);
-		
+        $queryRequest = array('TransactionId' => $Customer_refno);
+
+        $request = array
+        (
+            "token"       => $this->Token,
+            "merchantId"  => $this->Merchant_id,
+            "request"     => $queryRequest
+        );
+
         $result = $this->_soapClient->__call('Query' , array('parameters'=>$request));
         return (array) $result->QueryResult;
     }

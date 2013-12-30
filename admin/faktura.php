@@ -56,14 +56,14 @@ if ($faktura['id']) {
 
     $epaymentAdminService = new epaymentAdminService($GLOBALS['_config']['pbsid'], $GLOBALS['_config']['pbspassword']);
     $epayment = $epaymentAdminService->query($GLOBALS['_config']['pbsfix'].$faktura['id']);
-	
+
 	print_r($epayment);
 	return;
-	
+
     if ($faktura['cardtype'] == '' && $epayment['CardInformation']->PaymentMethod != '') { // TODO: Check for null if necessary
         $mysqli->query("UPDATE `fakturas` SET `cardtype` = '".$epayment['CardType']."' WHERE `id` = ".$faktura['id']);
     }
-    
+
 	if ($epayment['Summary']->Authorized) {
 
         if ($epayment['Summary']->AmountCaptured/100 != $faktura['amount']) {
@@ -142,10 +142,10 @@ if ($faktura['id']) {
         case 11:
             break;
         }
-    } 
+    }
 	elseif (!$epayment['Summary']->Authorized) {
 		// The payment is not authorized, but there's not status code - how to continue??
-    
+
     }
 }
 
