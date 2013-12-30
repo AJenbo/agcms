@@ -48,7 +48,13 @@ if (!empty($_GET['function']) && $_GET['function'] == 'new') {
 
 $sajax_request_type = 'POST';
 
-$faktura = $mysqli->fetchOne("SELECT *, UNIX_TIMESTAMP(`date`) AS `date`, UNIX_TIMESTAMP(`paydate`) AS `paydate` FROM `fakturas` WHERE `id` = ".$_GET['id']);
+$faktura = $mysqli->fetchOne(
+    "
+    SELECT*,
+        UNIX_TIMESTAMP(`date`) AS `date`,
+        UNIX_TIMESTAMP(`paydate`) AS `paydate`
+    FROM `fakturas` WHERE `id` = " . (int) $_GET['id']
+);
 
 $faktura['quantities'] = explode('<', $faktura['quantities']);
 $faktura['products'] = explode('<', $faktura['products']);
@@ -71,7 +77,9 @@ if ($faktura['id']) {
             $GLOBALS['_config']['pbsfix'] . $faktura['id']
         );
 
-        if ($faktura['cardtype'] == '' && $epayment->CardInformation->PaymentMethod) {
+        if ($faktura['cardtype'] == ''
+            && $epayment->CardInformation->PaymentMethod
+        ) {
             $mysqli->query(
                 "
                 UPDATE `fakturas` SET
@@ -84,7 +92,11 @@ if ($faktura['id']) {
             //Annulled. The card payment has been deleted by the Merchant, prior to Acquisition.
             if (!in_array($faktura['status'], array('rejected', 'giro', 'cash', 'canceled'))) {
                 $faktura['status'] = 'rejected';
-                $mysqli->query("UPDATE `fakturas` SET `status` = 'rejected' WHERE `id` = ".$faktura['id']);
+                $mysqli->query(
+                    "
+                    UPDATE `fakturas` SET `status` = 'rejected'
+                    WHERE `id` = ".$faktura['id']
+                );
             } else {
                 //TODO warning
             }
@@ -94,7 +106,11 @@ if ($faktura['id']) {
                 //TODO 'Det betalte beløb er ikke svarende til det opkrævede beløb!';
             } elseif (!in_array($faktura['status'], array('accepted', 'giro', 'cash'))) {
                 $faktura['status'] = 'accepted';
-                $mysqli->query("UPDATE `fakturas` SET `status` = 'accepted' WHERE `id` = ".$faktura['id']);
+                $mysqli->query(
+                    "
+                    UPDATE `fakturas` SET `status` = 'accepted'
+                    WHERE `id` = ".$faktura['id']
+                );
             } else {
                 //TODO warning
             }
@@ -102,7 +118,11 @@ if ($faktura['id']) {
             //Authorised. The card payment is authorised and awaiting confirmation and Acquisition.
             if (!in_array($faktura['status'], array('pbsok', 'giro', 'cash'))) {
                 $faktura['status'] = 'pbsok';
-                $mysqli->query("UPDATE `fakturas` SET `status` = 'pbsok' WHERE `id` = ".$faktura['id']);
+                $mysqli->query(
+                    "
+                    UPDATE `fakturas` SET `status` = 'pbsok'
+                    WHERE `id` = " . $faktura['id']
+                );
             } else {
                 //TODO warning
             }

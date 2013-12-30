@@ -227,10 +227,10 @@ if (!empty($id) && @$_GET['checkid'] == getCheckid($id) && !isset($_GET['respons
                 $GLOBALS['generatedcontent']['text'] .= nl2br(htmlspecialchars($faktura['note'])).'</p>';
             }
             $GLOBALS['generatedcontent']['text'] .= '<form action="" method="get"><input type="hidden" name="id" value="'.$id.'" /><input type="hidden" name="checkid" value="'
-	    . $_GET['checkid'] //FIXME html escape
-	    .'" /><input type="hidden" name="step" value="1" /><input type="hidden" name="checkid" value="'
-	    .$_GET['checkid'] //FIXME html escape
-	    .'" /><input style="font-weight:bold;" type="submit" value="'._('Continue').'" /></form>';
+	    htmlspecialchars($_GET['checkid'])
+	    . '" /><input type="hidden" name="step" value="1" /><input type="hidden" name="checkid" value="'
+	    . htmlspecialchars($_GET['checkid'])
+	    . '" /><input style="font-weight:bold;" type="submit" value="'._('Continue').'" /></form>';
 
         } elseif ($_GET['step'] == 1) {
             if ($_POST) {
@@ -262,11 +262,11 @@ if (!empty($id) && @$_GET['checkid'] == getCheckid($id) && !isset($_GET['respons
 
                 $sql = "UPDATE `fakturas` SET";
                 foreach ($updates as $key => $value) {
-                    $sql .= " `".addcslashes($key, '`\\')."` = '".addcslashes($value, "'\\")."',";
+                    $sql .= " `" . addcslashes($key, '`\\') . "` = '" . addcslashes($value, "'\\") . "',";
                 }
                 $sql = substr($sql, 0, -1);
 
-                $sql .= 'WHERE `id` = '.$id;
+                $sql .= 'WHERE `id` = ' . $id;
 
                 $mysqli->query($sql);
 
@@ -309,7 +309,7 @@ if (!empty($id) && @$_GET['checkid'] == getCheckid($id) && !isset($_GET['respons
                     }
 
                     ini_set('zlib.output_compression', '0');
-                    header('Location: '.$GLOBALS['_config']['base_url'].'/betaling/?id='.$id.'&checkid='.$_GET['checkid'].'&step=2', true, 303);
+                    header('Location: ' . $GLOBALS['_config']['base_url'] . '/betaling/?id=' . $id . '&checkid=' . $_GET['checkid'] . '&step=2', true, 303);
                     exit;
                 }
             } else {
@@ -522,7 +522,7 @@ if (!empty($id) && @$_GET['checkid'] == getCheckid($id) && !isset($_GET['respons
             if (count(validate($faktura))) {
                 ini_set('zlib.output_compression', '0');
                 header(
-                    'Location: '.$GLOBALS['_config']['base_url'].'/betaling/?id='.$id.'&checkid='.$_GET['checkid'].'&step=1',
+                    'Location: ' . $GLOBALS['_config']['base_url'] . '/betaling/?id=' . $id . '&checkid=' . $_GET['checkid'] . '&step=1',
                     true,
                     303
                 );
@@ -534,7 +534,7 @@ if (!empty($id) && @$_GET['checkid'] == getCheckid($id) && !isset($_GET['respons
                 UPDATE `fakturas`
                 SET `status` = 'locked'
                 WHERE `status` IN('new', 'pbserror')
-                AND `id` = ".$id
+                AND `id` = " . $id
             );
 
             $GLOBALS['generatedcontent']['crumbs'] = array();
@@ -715,7 +715,7 @@ if (!empty($id) && @$_GET['checkid'] == getCheckid($id) && !isset($_GET['respons
     } elseif ($_GET['responseCode'] == 'Cancel') {
         //User pressed "back"
         ini_set('zlib.output_compression', '0');
-        header('Location: '.$GLOBALS['_config']['base_url'].'/betaling/?id='.$id.'&checkid='.$_GET['checkid'].'&step=2', true, 303);
+        header('Location: ' . $GLOBALS['_config']['base_url'] . '/betaling/?id=' . $id . '&checkid=' . $_GET['checkid'] . '&step=2', true, 303);
         exit;
     } elseif ($_GET['responseCode'] == 'OK') {
         $GLOBALS['generatedcontent']['crumbs'][1] = array(
@@ -1081,7 +1081,7 @@ Tel. %s<br />
             _('Attn.: %s - Online invoice #%d : %s'),
             $faktura['clerk'],
             $id,
-            $shopSubject
+            htmlspecialchars($shopSubject)
         );
         $emailbody .= '</title>
 <style type="text/css">
@@ -1133,7 +1133,7 @@ Delivery phone: %s</p>
 <html xmlns="http://www.w3.org/1999/xhtml"><head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <title>'.sprintf(_('Online Invoice #%d: does\'t exist'), $id).'</title></head><body>
-' . $shopBody . '<br />' . _('Status:') . ' ' . $_GET['responseCode'] . '<p>' . _('Sincerely the computer') . '</p></body>
+' . $shopBody . '<br />' . _('Status:') . ' ' . htmlspecialchars($_GET['responseCode']) . '<p>' . _('Sincerely the computer') . '</p></body>
 </html>
 </body></html>';
     }
@@ -1215,7 +1215,7 @@ Delivery phone: %s</p>
           </tr>
           <tr>
             <td>'._('Code:').'</td>
-            <td><input name="checkid" value="'.@$_GET['checkid'].'" /></td>
+            <td><input name="checkid" value="'.@htmlspecialchars(@$_GET['checkid']).'" /></td>
           </tr>
         </tbody>
       </table><input type="submit" value="'._('Continue').'" />
