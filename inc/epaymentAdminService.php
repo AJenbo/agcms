@@ -38,7 +38,7 @@ class epaymentAdminService
      *
      * @return Object
      */
-    function _call($call, array $request)
+    private function _call($call, stdClass $request)
     {
         return $this->_soapClient->__call(
             $call,
