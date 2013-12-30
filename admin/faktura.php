@@ -1058,7 +1058,7 @@ if ($faktura['status'] == 'new') {
             <td><?php echo getCheckid($faktura['id']); ?></td>
         </tr>
         <tr>
-            <td>Status:</td>
+            <td><?php echo _('Status:'); ?></td>
         <td><?php
 if ($faktura['status'] == 'new') {
     echo _('Newly created');
@@ -1082,6 +1082,11 @@ if ($faktura['status'] == 'new') {
     echo _('Paid in cash');
     if ($faktura['paydate']) {
         echo ' d. '.date(_('m/d/Y'), $faktura['paydate']);
+    }
+} elseif ($faktura['status'] == 'pbserror') {
+    echo _('Error during the payment');
+    if ($epayment->Error && $epayment->Error->ResponseCode == 17) {
+        echo _(', customer cancled.');
     }
 } elseif ($faktura['status'] == 'canceled') {
     echo _('Canceled');
