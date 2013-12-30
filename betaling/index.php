@@ -226,11 +226,12 @@ if (!empty($id) && @$_GET['checkid'] == getCheckid($id) && !isset($_GET['respons
                 $GLOBALS['generatedcontent']['text'] .= '<br /><strong>'._('Note:').'</strong><br /><p class="note">';
                 $GLOBALS['generatedcontent']['text'] .= nl2br(htmlspecialchars($faktura['note'])).'</p>';
             }
-            $GLOBALS['generatedcontent']['text'] .= '<form action="" method="get"><input type="hidden" name="id" value="'.$id.'" /><input type="hidden" name="checkid" value="'
-	    htmlspecialchars($_GET['checkid'])
-	    . '" /><input type="hidden" name="step" value="1" /><input type="hidden" name="checkid" value="'
-	    . htmlspecialchars($_GET['checkid'])
-	    . '" /><input style="font-weight:bold;" type="submit" value="'._('Continue').'" /></form>';
+            $GLOBALS['generatedcontent']['text'] .= '<form action="" method="get">
+	    <input type="hidden" name="id" value="' . $id . '" />
+	    <input type="hidden" name="checkid" value="' . htmlspecialchars($_GET['checkid']) . '" />
+	    <input type="hidden" name="step" value="1" />
+	    <input style="font-weight:bold;" type="submit" value="' . _('Continue') . '" />
+	    </form>';
 
         } elseif ($_GET['step'] == 1) {
             if ($_POST) {
