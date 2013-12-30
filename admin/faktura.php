@@ -56,66 +56,79 @@ $faktura['values'] = explode('<', $faktura['values']);
 
 if ($faktura['premoms']) {
     foreach ($faktura['values'] as $key => $value) {
-        $faktura['values'][$key] = $value/1.25;
+        $faktura['values'][$key] = $value / 1.25;
     }
 }
 
 if ($faktura['id']) {
-
-    $epaymentAdminService = new epaymentAdminService(
-        $GLOBALS['_config']['pbsid'],
-        $GLOBALS['_config']['pbspassword']
-    );
-    $epayment = $epaymentAdminService->query(
-        $GLOBALS['_config']['pbsfix'] . $faktura['id']
-    );
-
-    if ($faktura['cardtype'] == '' && $epayment->CardInformation->PaymentMethod) {
-        $mysqli->query(
-            "
-            UPDATE `fakturas` SET
-            `cardtype` = '" . $epayment->CardInformation->PaymentMethod . "'
-            WHERE `id` = " . $faktura['id']
+    try {
+        $epaymentAdminService = new epaymentAdminService(
+            $GLOBALS['_config']['pbsid'],
+            $GLOBALS['_config']['pbspassword']
         );
-    }
 
-    if ($epayment->Summary->Annulled) {
-        //Annulled. The card payment has been deleted by the Merchant, prior to Acquisition.
-        if ($faktura['status'] != 'rejected' && $faktura['status'] != 'giro' && $faktura['status'] != 'cash' && $faktura['status'] != 'canceled') {
-            $faktura['status'] = 'rejected';
-            $mysqli->query("UPDATE `fakturas` SET `status` = 'rejected' WHERE `id` = ".$faktura['id']);
-        } else {
-            //TODO warning
-        }
-    } elseif ($epayment->Summary->AmountCaptured) {
-        //The payment/order placement has been carried out: Paid.
-        if ($epayment->Summary->AmountCaptured / 100 != $faktura['amount']) {
-            //TODO 'Det betalte beløb er ikke svarende til det opkrævede beløb!';
-        } elseif ($faktura['status'] != 'accepted' && $faktura['status'] != 'giro' && $faktura['status'] != 'cash') {
-            $faktura['status'] = 'accepted';
-            $mysqli->query("UPDATE `fakturas` SET `status` = 'accepted' WHERE `id` = ".$faktura['id']);
-        } else {
-            //TODO warning
-        }
-    } elseif ($epayment->Summary->Authorized) {
-        //Authorised. The card payment is authorised and awaiting confirmation and Acquisition.
-        if ($faktura['status'] != 'pbsok' && $faktura['status'] != 'giro' && $faktura['status'] != 'cash') {
-            $faktura['status'] = 'pbsok';
-            $mysqli->query("UPDATE `fakturas` SET `status` = 'pbsok' WHERE `id` = ".$faktura['id']);
-        } else {
-            //TODO warning
-        }
-    } else {
-        //For Order Administration: The transaction does not exist.
-        if ($faktura['status'] == 'pbsok' || $faktura['status'] == 'accepted') {
-            /*
-            $faktura['status'] = 'locked';
+        $epayment = $epaymentAdminService->query(
+            $GLOBALS['_config']['pbsfix'] . $faktura['id']
+        );
+
+        if ($faktura['cardtype'] == '' && $epayment->CardInformation->PaymentMethod) {
             $mysqli->query(
                 "
-                UPDATE `fakturas` SET `status` = 'locked'
+                UPDATE `fakturas` SET
+                `cardtype` = '" . $epayment->CardInformation->PaymentMethod . "'
                 WHERE `id` = " . $faktura['id']
             );
-            */
+        }
+
+        if ($epayment->Summary->Annulled) {
+            //Annulled. The card payment has been deleted by the Merchant, prior to Acquisition.
+            if (!in_array($faktura['status'], array('rejected', 'giro', 'cash', 'canceled'))) {
+                $faktura['status'] = 'rejected';
+                $mysqli->query("UPDATE `fakturas` SET `status` = 'rejected' WHERE `id` = ".$faktura['id']);
+            } else {
+                //TODO warning
+            }
+        } elseif ($epayment->Summary->AmountCaptured) {
+            //The payment/order placement has been carried out: Paid.
+            if ($epayment->Summary->AmountCaptured / 100 != $faktura['amount']) {
+                //TODO 'Det betalte beløb er ikke svarende til det opkrævede beløb!';
+            } elseif (!in_array($faktura['status'], array('accepted', 'giro', 'cash'))) {
+                $faktura['status'] = 'accepted';
+                $mysqli->query("UPDATE `fakturas` SET `status` = 'accepted' WHERE `id` = ".$faktura['id']);
+            } else {
+                //TODO warning
+            }
+        } elseif ($epayment->Summary->Authorized) {
+            //Authorised. The card payment is authorised and awaiting confirmation and Acquisition.
+            if (!in_array($faktura['status'], array('pbsok', 'giro', 'cash'))) {
+                $faktura['status'] = 'pbsok';
+                $mysqli->query("UPDATE `fakturas` SET `status` = 'pbsok' WHERE `id` = ".$faktura['id']);
+            } else {
+                //TODO warning
+            }
+        } else {
+            //For Order Administration: The transaction does not exist.
+            if ($faktura['status'] == 'pbsok') {
+                $faktura['status'] = 'locked';
+                $mysqli->query(
+                    "
+                    UPDATE `fakturas` SET `status` = 'locked'
+                    WHERE `id` = " . $faktura['id']
+                );
+            }
+        }
+    } catch(SoapFault $e) {
+        if ($e->faultstring == 'Unable to find transaction') {
+            if ($faktura['status'] == 'pbsok') {
+                $faktura['status'] = 'locked';
+                $mysqli->query(
+                    "
+                    UPDATE `fakturas` SET `status` = 'locked'
+                    WHERE `id` = " . $faktura['id']
+                );
+            }
+        } else {
+            throw $e;
         }
     }
 }
@@ -176,7 +189,7 @@ function save($id, $type, $updates)
 
     $faktura = $mysqli->fetchOne("SELECT `status`, `note` FROM `fakturas` WHERE `id` = ".$id);
 
-    if ($faktura['status'] == 'locked' || $faktura['status'] == 'pbsok' || $faktura['status'] == 'rejected') {
+    if (in_array($faktura['status'], array('locked', 'pbsok', 'rejected'))) {
         $updates = array('note' => $updates['note'] ? trim($faktura['note']."\n".$updates['note']) : $faktura['note'], 'clerk' => $updates['clerk'], 'department' => $updates['department']);
         if ($faktura['status'] != 'pbsok') {
             if ($type == 'giro') {
@@ -186,7 +199,7 @@ function save($id, $type, $updates)
                 $updates['status'] = 'cash';
             }
         }
-    } elseif ($faktura['status'] == 'accepted' || $faktura['status'] == 'giro' || $faktura['status'] == 'cash' || $faktura['status'] == 'canceled') {
+    } elseif (in_array($faktura['status'], array('accepted', 'giro', 'cash', 'canceled'))) {
         if ($updates['note']) {
             $updates = array('note' => $faktura['note']."\n".$updates['note']);
         } else {
@@ -204,7 +217,9 @@ function save($id, $type, $updates)
         }
     }
 
-    if ($type == 'cancel' && $faktura['status'] != 'pbsok' && $faktura['status'] != 'accepted' && $faktura['status'] != 'giro' && $faktura['status'] != 'cash') {
+    if ($type == 'cancel'
+        && !in_array($faktura['status'], array('pbsok', 'accepted', 'giro', 'cash'))
+    ) {
         $updates['status'] = 'canceled';
     }
 
@@ -482,11 +497,15 @@ function pbsconfirm($id)
     global $mysqli;
     global $epaymentAdminService;
 
-    $confirmstatus = $epaymentAdminService->confirm(
-        $GLOBALS['_config']['pbsfix'] . $id
-    );
+    try {
+        $response = $epaymentAdminService->confirm(
+            $GLOBALS['_config']['pbsfix'] . $id
+        );
+    } catch(SoapFault $e) {
+        return array('error' => $e->faultstring);
+    }
 
-    if ($confirmstatus->ResponseCode == 'OK') {
+    if ($response->ResponseCode == 'OK') {
         $mysqli->query(
             "
             UPDATE `fakturas`
@@ -496,7 +515,7 @@ function pbsconfirm($id)
         return true;
     } else {
         return array(
-            'error' => $confirmstatus->ResponseSource . ': ' . $confirmstatus->ResponseText
+            'error' => $response->ResponseSource . ': ' . $response->ResponseText
         );
     }
 }
@@ -506,9 +525,15 @@ function annul($id)
     global $mysqli;
     global $epaymentAdminService;
 
-    $annulStatus = $epaymentAdminService->annul($GLOBALS['_config']['pbsfix'] . $id);
+    try {
+        $response = $epaymentAdminService->annul(
+            $GLOBALS['_config']['pbsfix'] . $id
+        );
+    } catch(SoapFault $e) {
+        return array('error' => $e->faultstring);
+    }
 
-    if ($confirmstatus->ResponseCode == 'OK') {
+    if ($response->ResponseCode == 'OK') {
         $mysqli->query(
             "
             UPDATE `fakturas`
@@ -520,7 +545,7 @@ function annul($id)
         return true;
     } else {
         return array(
-            'error' => $confirmstatus->ResponseSource . ': ' . $confirmstatus->ResponseText
+            'error' => $response->ResponseSource . ': ' . $response->ResponseText
         );
     }
 }
@@ -951,7 +976,7 @@ if ($faktura['status'] == 'new') {
 }
 echo '$(\'loading\').style.visibility = \'hidden\';">';
 ?><div id="canvas"><div id="web"><table style="float:right;"><?php
-if ($faktura['status'] != 'giro' && $faktura['status'] != 'cash' && $faktura['status'] != 'accepted' && $faktura['status'] != 'canceled' && $faktura['status'] != 'pbsok') {
+if (!in_array($faktura['status'], array('giro', 'cash', 'accepted', 'canceled', 'pbsok'))) {
     ?><tr>
     <td><input type="button" value="<?php echo _('Paid via giro'); ?>" onclick="save('giro');" /></td>
     <td><input maxlength="10" name="gdate" id="gdate" size="11" value="<?php echo date(_('m/d/Y')); ?>" />
@@ -1074,7 +1099,9 @@ $users = $mysqli->fetchArray("SELECT `fullname`, `name` FROM `users` ORDER BY `f
 ?><tr>
     <td>Ansvarlig:</td>
     <td><?php
-if (count($users) > 1 && $_SESSION['_user']['access'] == 1 && $faktura['status'] != 'giro' && $faktura['status'] != 'cash' && $faktura['status'] != 'accepted' && $faktura['status'] != 'canceled') {
+if (count($users) > 1 && $_SESSION['_user']['access'] == 1
+    && !in_array($faktura['status'], array('giro', 'cash', 'accepted', 'canceled'))
+) {
     ?><select name="clerk" id="clerk">
         <option value=""<?php
     if (!$faktura['clerk']) {
@@ -1103,7 +1130,7 @@ if (count($users) > 1 && $_SESSION['_user']['access'] == 1 && $faktura['status']
         <tr>
             <td>Afdeling:</td>
             <td><?php
-if ($faktura['status'] != 'giro' && $faktura['status'] != 'cash' && $faktura['status'] != 'accepted' && $faktura['status'] != 'canceled') {
+if (!in_array($faktura['status'], array('giro', 'cash', 'accepted', 'canceled'))) {
     if (count($GLOBALS['_config']['email']) > 1) {
         ?><select name="department" id="department">
             <option value=""<?php
@@ -1492,7 +1519,7 @@ if ($faktura['status'] == 'new') {
 </table>
 </div>
 </div><?php
-if ($faktura['status'] != 'canceled' && $faktura['status'] != 'new' && $faktura['status'] != 'accepted') {
+if (!in_array($faktura['status'], array('canceled', 'new', 'accepted'))) {
     if ((!$faktura['altpost'] && $faktura['land'] == 'DK') || ($faktura['postcountry'] == 'DK' && $faktura['altpost'])) {
         $activityButtons[] = '<li><a href="/post/?type='.($faktura['status'] == 'locked' ? 'O&amp;value='.number_format($faktura['amount'], 2, ',', '') : 'P').(!$faktura['altpost'] ? '&amp;tlf1='.rawurlencode($faktura['tlf1']).'&amp;postbox='.rawurlencode($faktura['postbox']).'&amp;tlf2='.rawurlencode($faktura['tlf2']).'&amp;name='.rawurlencode($faktura['navn']).'&amp;att='.rawurlencode($faktura['att']).'&amp;address='.rawurlencode($faktura['adresse']).'&amp;zipcode='.rawurlencode($faktura['postnr']) : '&amp;tlf1='.rawurlencode($faktura['posttlf']).'&amp;postbox='.rawurlencode($faktura['postpostbox']).'&amp;name='.rawurlencode($faktura['postname']).'&amp;att='.rawurlencode($faktura['postatt']).'&amp;address='.rawurlencode($faktura['postaddress']).'&amp;address2='.rawurlencode($faktura['postaddress2']).'&amp;zipcode='.rawurlencode($faktura['postpostalcode'])).'&amp;email='.rawurlencode($faktura['email']).'&amp;porto='.number_format($faktura['fragt'], 2, ',', '').'&amp;fakturaid='.$faktura['id'].'" target="_blank"><img src="images/package.png" alt="" title="Opret pakke lable" width="16" height="16" /> Opret pakke lable</a></li>';
     } else {
@@ -1523,17 +1550,11 @@ if ($faktura['status'] != 'new') {
 $activityButtons[] = '<li><a onclick="newfaktura(); return false;"><img src="images/table_add.png" alt="" width="16" height="16" /> '._('Create new').'</a></li>';
 $activityButtons[] = '<li><a onclick="copytonew(); return false;"><img src="images/table_multiple.png" alt="" width="16" height="16" /> '._('Copy to new').'</a></li>';
 
-if ($faktura['status'] != 'canceled' && $faktura['status'] != 'pbsok' && $faktura['status'] != 'accepted' && $faktura['status'] != 'giro' && $faktura['status'] != 'cash') {
+if (!in_array($faktura['status'], array('canceled', 'pbsok', 'accepted', 'giro', 'cash'))) {
     $activityButtons[] = '<li><a onclick="save(\'cancel\'); return false;" href="#"><img src="images/bin.png" alt="" width="16" height="16" /> '._('Cancel').'</a></li>';
 }
 
-if ($faktura['status'] != 'giro'
-    && $faktura['status'] != 'cash'
-    && $faktura['status'] != 'pbsok'
-    && $faktura['status'] != 'accepted'
-    && $faktura['status'] != 'canceled'
-    && $faktura['status'] != 'rejected'
-) {
+if (!in_array($faktura['status'], array('giro', 'cash', 'pbsok', 'accepted', 'canceled', 'rejected'))) {
     if (!$faktura['sendt']) {
         if (validemail($faktura['email'])) {
             $activityButtons[] = '<li id="emaillink"><a href="#" onclick="save(\'email\'); return false;"><img height="16" width="16" title="'._('Send to customer').'" alt="" src="images/email_go.png"/> '._('Send').'</a></li>';

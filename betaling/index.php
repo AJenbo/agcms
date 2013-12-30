@@ -135,7 +135,7 @@ if (!empty($id) && @$_GET['checkid'] == getCheckid($id) && !isset($_GET['respons
         WHERE `id` = ".$id
     );
 
-    if ($faktura['status'] == 'new' || $faktura['status'] == 'locked') {
+    if (in_array($faktura['status'], array('new', 'locked'))) {
         $faktura['quantities'] = explode('<', $faktura['quantities']);
         $faktura['products'] = explode('<', $faktura['products']);
         $faktura['values'] = explode('<', $faktura['values']);
@@ -696,13 +696,13 @@ if (!empty($id) && @$_GET['checkid'] == getCheckid($id) && !isset($_GET['respons
             _('A user tried to pay online invoice #%d, which is not in the system!'),
             $id
         ) . '<br />';
-    } elseif ($faktura['status'] == 'pbserror' || $faktura['status'] == 'canceled' || $faktura['status'] == 'rejected') {
+    } elseif (in_array($faktura['status'], array('pbserror', 'canceled', 'rejected'))) {
         $GLOBALS['generatedcontent']['crumbs'][1] = array('name' => _('Reciept'), 'link' => '#', 'icon' => null);
         $GLOBALS['generatedcontent']['title'] = _('Reciept');
         $GLOBALS['generatedcontent']['headline'] = _('Reciept');
         $GLOBALS['generatedcontent']['text'] = '<p>'._('This trade has been canceled or refused.').'</p>';
         $shopBody = '<br />'.sprintf(_('A customer tried to see the status page for online invoice #%d which is canceled or rejected.'), $id).'<br />';
-    } elseif ($faktura['status'] != 'locked' && $faktura['status'] != 'new') {
+    } elseif (!in_array($faktura['status'], array('locked', 'new'))) {
         $GLOBALS['generatedcontent']['crumbs'][1] = array(
             'name' => _('Reciept'),
             'link' => '#',
