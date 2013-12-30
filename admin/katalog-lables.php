@@ -67,10 +67,11 @@ p.line8 {
 </head>
 <body><?php
 
-if (@$_GET['dato'])
+if (@$_GET['dato']) {
     $dato = $_GET['dato'];
-else
+} else {
     $dato = date('Y-m-d', time()-7*24*60*60);
+}
 
 ?><form action="" method="get" style="text-align:center">
   <input type="submit" value="Vis nyere end" accesskey="f" />
@@ -126,9 +127,9 @@ if (@$_GET['dato']) {
             .@$email[$i]['adresse'].'<br />'
             .@$email[$i]['post'].' '.@$email[$i]['by'];
             if (@$email[$i]['land'] != 'Danmark') {
-                echo ('<br />'.@$email[$i]['land']);
+                echo '<br />' . @$email[$i]['land'];
             }
-            ?></td></tr></table></div><?
+            ?></td></tr></table></div><?php
             //end row
             if ($i % 3 == 2) {
                 ?></div><?php
