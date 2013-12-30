@@ -53,17 +53,24 @@ if ($faktura['premoms']) {
 }
 
 if ($faktura['id']) {
-    $epaymentAdminService = new epaymentAdminService($GLOBALS['_config']['pbsid'], $GLOBALS['_config']['pbspassword']);
+
+    $epaymentAdminService = new epaymentAdminService($GLOBALS['_config']['pbsid'], $GLOBALS['_config']['pbstoken']);
     $epayment = $epaymentAdminService->query($GLOBALS['_config']['pbsfix'].$faktura['id']);
-    if ($faktura['cardtype'] == '' && $epayment['CardType'] != '') {
+	
+	print_r($epayment);
+	return;
+	
+    if ($faktura['cardtype'] == '' && $epayment['CardInformation']->PaymentMethod != '') { // TODO: Check for null if necessary
         $mysqli->query("UPDATE `fakturas` SET `cardtype` = '".$epayment['CardType']."' WHERE `id` = ".$faktura['id']);
     }
-    if ($epayment['Status'] == 'A') {
+    
+	if ($epayment['Summary']->Authorized) {
 
-        if ($epayment['AuthorizedAmount']/100 != $faktura['amount']) {
+        if ($epayment['Summary']->AmountCaptured/100 != $faktura['amount']) {
             //TODO 'Det betalte beløb er ikke svarende til det opkrævede beløb!';
         }
 
+		// TODO: There's no status code from the API now - how to test the following??
         switch($epayment['StatusCode']) {
         case 0:
             //The payment/order placement has been carried out: Paid.
@@ -135,150 +142,16 @@ if ($faktura['id']) {
         case 11:
             break;
         }
-    } elseif ($epayment['Status'] == 'E') {
-        switch($epayment['StatusCode']) {
-        case 3:
-            break;
-        case 4:
-            break;
-        case 6:
-            break;
-        case 11:
-            break;
-        case 12:
-            break;
-        case 13:
-            break;
-        case 14:
-            break;
-        case 15:
-            break;
-        case 17:
-            break;
-        case 18:
-            break;
-        case 19:
-            break;
-        case 20:
-            break;
-        case 21:
-            break;
-        case 22:
-            break;
-        case 23:
-            break;
-        case 24:
-            break;
-        case 25:
-            break;
-        case 26:
-            break;
-        case 27:
-            break;
-        case 30:
-            break;
-        case 31:
-            break;
-        case 32:
-            break;
-        case 33:
-            break;
-        case 34:
-            break;
-        case 35:
-            break;
-        case 36:
-            break;
-        case 39:
-            break;
-        case 40:
-            break;
-        case 41:
-            break;
-        case 42:
-            break;
-        case 43:
-            break;
-        case 45:
-            break;
-        case 48:
-            //For Order Administration: The transaction does not exist.
-            if ($faktura['status'] == 'pbsok' || $faktura['status'] == 'accepted') {
-                //$faktura['status'] = 'locked';
-                //$mysqli->query("UPDATE `fakturas` SET `status` = 'locked' WHERE `id` = ".$faktura['id']);
-            }
-            break;
-        case 50:
-            break;
-        case 51:
-            break;
-        case 52:
-            break;
-        case 53:
-            break;
-        case 54:
-            break;
-        case 55:
-            break;
-        case 56:
-            break;
-        case 57:
-            break;
-        case 58:
-            break;
-        case 65:
-            break;
-        case 67:
-            break;
-        case 69:
-            break;
-        case 70:
-            break;
-        case 71:
-            break;
-        case 72:
-            break;
-        case 73:
-            break;
-        case 75:
-            break;
-        case 76:
-            break;
-        case 77:
-            break;
-        case 78:
-            break;
-        case 79:
-            break;
-        case 81:
-            break;
-        case 82:
-            break;
-        case 90:
-            break;
-        case 91:
-            break;
-        case 92:
-            break;
-        case 93:
-            break;
-        case 95:
-            break;
-        case 96:
-            break;
-        case 97:
-            break;
-        case 98:
-            break;
-        case 110:
-            break;
-        }
+    } 
+	elseif (!$epayment['Summary']->Authorized) {
+		// The payment is not authorized, but there's not status code - how to continue??
+    
     }
 }
 
 function getCheckid($id)
 {
-    return substr(md5($id.$GLOBALS['_config']['pbspassword']), 3, 5);
+    return substr(md5($id.$GLOBALS['_config']['pbstoken']), 3, 5);
 }
 
 function copytonew($id)
