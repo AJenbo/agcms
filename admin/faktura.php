@@ -16,7 +16,7 @@ require_once '../inc/sajax.php';
 require_once '../inc/config.php';
 require_once '../inc/functions.php';
 require_once '../inc/mysqli.php';
-require_once 'inc/epaymentAdminService.php';
+require_once '../inc/epaymentAdminService.php';
 $mysqli = new Simple_Mysqli(
     $GLOBALS['_config']['mysql_server'],
     $GLOBALS['_config']['mysql_user'],
@@ -28,7 +28,15 @@ function newfaktura()
 {
     global $mysqli;
 
-    $mysqli->query("INSERT INTO `fakturas` (`date`, `clerk`) VALUES (now(), '".addcslashes($_SESSION['_user']['fullname'], '\'\\')."');");
+    $mysqli->query(
+        "
+        INSERT INTO `fakturas` (`date`, `clerk`)
+        VALUES (
+            now(),
+            '" . addcslashes($_SESSION['_user']['fullname'], '\'\\') . "'
+        );
+        "
+    );
     return $mysqli->insert_id;
 }
 
@@ -54,98 +62,61 @@ if ($faktura['premoms']) {
 
 if ($faktura['id']) {
 
-    $epaymentAdminService = new epaymentAdminService($GLOBALS['_config']['pbsid'], $GLOBALS['_config']['pbspassword']);
-    $epayment = $epaymentAdminService->query($GLOBALS['_config']['pbsfix'].$faktura['id']);
+    $epaymentAdminService = new epaymentAdminService(
+        $GLOBALS['_config']['pbsid'],
+        $GLOBALS['_config']['pbspassword']
+    );
+    $epayment = $epaymentAdminService->query(
+        $GLOBALS['_config']['pbsfix'] . $faktura['id']
+    );
 
-	print_r($epayment);
-	return;
-
-    if ($faktura['cardtype'] == '' && $epayment['CardInformation']->PaymentMethod != '') { // TODO: Check for null if necessary
-        $mysqli->query("UPDATE `fakturas` SET `cardtype` = '".$epayment['CardType']."' WHERE `id` = ".$faktura['id']);
+    if ($faktura['cardtype'] == '' && $epayment->CardInformation->PaymentMethod) {
+        $mysqli->query(
+            "
+            UPDATE `fakturas` SET
+            `cardtype` = '" . $epayment->CardInformation->PaymentMethod . "'
+            WHERE `id` = " . $faktura['id']
+        );
     }
 
-	if ($epayment['Summary']->Authorized) {
-
-        if ($epayment['Summary']->AmountCaptured/100 != $faktura['amount']) {
+    if ($epayment->Summary->Annulled) {
+        //Annulled. The card payment has been deleted by the Merchant, prior to Acquisition.
+        if ($faktura['status'] != 'rejected' && $faktura['status'] != 'giro' && $faktura['status'] != 'cash' && $faktura['status'] != 'canceled') {
+            $faktura['status'] = 'rejected';
+            $mysqli->query("UPDATE `fakturas` SET `status` = 'rejected' WHERE `id` = ".$faktura['id']);
+        } else {
+            //TODO warning
+        }
+    } elseif ($epayment->Summary->AmountCaptured) {
+        //The payment/order placement has been carried out: Paid.
+        if ($epayment->Summary->AmountCaptured / 100 != $faktura['amount']) {
             //TODO 'Det betalte beløb er ikke svarende til det opkrævede beløb!';
+        } elseif ($faktura['status'] != 'accepted' && $faktura['status'] != 'giro' && $faktura['status'] != 'cash') {
+            $faktura['status'] = 'accepted';
+            $mysqli->query("UPDATE `fakturas` SET `status` = 'accepted' WHERE `id` = ".$faktura['id']);
+        } else {
+            //TODO warning
         }
-
-		// TODO: There's no status code from the API now - how to test the following??
-        switch($epayment['StatusCode']) {
-        case 0:
-            //The payment/order placement has been carried out: Paid.
-            if ($faktura['status'] != 'accepted' && $faktura['status'] != 'giro' && $faktura['status'] != 'cash') {
-                $faktura['status'] = 'accepted';
-                $mysqli->query("UPDATE `fakturas` SET `status` = 'accepted' WHERE `id` = ".$faktura['id']);
-            } else {
-                //TODO warning
-            }
-            break;
-        case 1:
-            //Denied/Discontinued. The payment has been denied or discontinued.
-            if ($faktura['status'] != 'pbserror' && $faktura['status'] != 'giro' && $faktura['status'] != 'cash' && $faktura['status'] != 'canceled') {
-                $faktura['status'] = 'pbserror';
-                $mysqli->query("UPDATE `fakturas` SET `status` = 'pbserror' WHERE `id` = ".$faktura['id']);
-            } else {
-                //TODO warning
-            }
-            break;
-        case 2:
-            break;
-        case 3:
-            //Annulled. The card payment has been deleted by the Merchant, prior to Acquisition.
-            if ($faktura['status'] != 'rejected' && $faktura['status'] != 'giro' && $faktura['status'] != 'cash' && $faktura['status'] != 'canceled') {
-                $faktura['status'] = 'rejected';
-                $mysqli->query("UPDATE `fakturas` SET `status` = 'rejected' WHERE `id` = ".$faktura['id']);
-            } else {
-                //TODO warning
-            }
-            break;
-        case 4:
-            //Initiated. The payment has been initiated by the purchaser.
-            if ($faktura['status'] != 'locked' && $faktura['status'] != 'giro' && $faktura['status'] != 'cash') {
-                $faktura['status'] = 'locked';
-                $mysqli->query("UPDATE `fakturas` SET `status` = 'locked' WHERE `id` = ".$faktura['id']);
-            } else {
-                //TODO warning
-            }
-            break;
-        case 6:
-            //Authorised. The card payment is authorised and awaiting confirmation and Acquisition.
-            if ($faktura['status'] != 'pbsok' && $faktura['status'] != 'giro' && $faktura['status'] != 'cash') {
-                $faktura['status'] = 'pbsok';
-                $mysqli->query("UPDATE `fakturas` SET `status` = 'pbsok' WHERE `id` = ".$faktura['id']);
-            } else {
-                //TODO warning
-            }
-            break;
-        case 7:
-            //Acquiring unsuccessful. It was not possible to acquire the payment.
-            if ($faktura['status'] != 'pbserror' && $faktura['status'] != 'giro' && $faktura['status'] != 'cash') {
-                $faktura['status'] = 'pbserror';
-                $mysqli->query("UPDATE `fakturas` SET `status` = 'pbserror' WHERE `id` = ".$faktura['id']);
-            } else {
-                //TODO warning
-            }
-            break;
-        case 8:
-            break;
-        case 9:
-            //Confirmed. The payment is confirmed and will be acquired.
-            if ($faktura['status'] != 'accepted' && $faktura['status'] != 'giro' && $faktura['status'] != 'cash') {
-                $faktura['status'] = 'accepted';
-                $mysqli->query("UPDATE `fakturas` SET `status` = 'accepted' WHERE `id` = ".$faktura['id']);
-            } else {
-                //TODO warning
-            }
-            break;
-        case 11:
-            break;
+    } elseif ($epayment->Summary->Authorized) {
+        //Authorised. The card payment is authorised and awaiting confirmation and Acquisition.
+        if ($faktura['status'] != 'pbsok' && $faktura['status'] != 'giro' && $faktura['status'] != 'cash') {
+            $faktura['status'] = 'pbsok';
+            $mysqli->query("UPDATE `fakturas` SET `status` = 'pbsok' WHERE `id` = ".$faktura['id']);
+        } else {
+            //TODO warning
         }
-    }
-	elseif (!$epayment['Summary']->Authorized) {
-		// The payment is not authorized, but there's not status code - how to continue??
-
+    } else {
+        //For Order Administration: The transaction does not exist.
+        if ($faktura['status'] == 'pbsok' || $faktura['status'] == 'accepted') {
+            /*
+            $faktura['status'] = 'locked';
+            $mysqli->query(
+                "
+                UPDATE `fakturas` SET `status` = 'locked'
+                WHERE `id` = " . $faktura['id']
+            );
+            */
+        }
     }
 }
 
@@ -205,7 +176,7 @@ function save($id, $type, $updates)
 
     $faktura = $mysqli->fetchOne("SELECT `status`, `note` FROM `fakturas` WHERE `id` = ".$id);
 
-    if ($faktura['status'] == 'locked' || $faktura['status'] == 'pbsok' || $faktura['status'] == 'pbserror' || $faktura['status'] == 'rejected') {
+    if ($faktura['status'] == 'locked' || $faktura['status'] == 'pbsok' || $faktura['status'] == 'rejected') {
         $updates = array('note' => $updates['note'] ? trim($faktura['note']."\n".$updates['note']) : $faktura['note'], 'clerk' => $updates['clerk'], 'department' => $updates['department']);
         if ($faktura['status'] != 'pbsok') {
             if ($type == 'giro') {
@@ -511,14 +482,22 @@ function pbsconfirm($id)
     global $mysqli;
     global $epaymentAdminService;
 
-    $epayment = $epaymentAdminService->query($GLOBALS['_config']['pbsfix'].$id);
-    $confirmstatus = $epaymentAdminService->confirm($epayment['TransactionId'], date('Ymd'));
+    $confirmstatus = $epaymentAdminService->confirm(
+        $GLOBALS['_config']['pbsfix'] . $id
+    );
 
-    if ($confirmstatus['Status'] == 'A' && $confirmstatus['StatusCode'] == '0') {
-        $mysqli->query("UPDATE `fakturas` SET `status` = 'accepted', `paydate` = NOW() WHERE `id` = ".$id);
+    if ($confirmstatus->ResponseCode == 'OK') {
+        $mysqli->query(
+            "
+            UPDATE `fakturas`
+            SET `status` = 'accepted', `paydate` = NOW()
+            WHERE `id` = " . $id
+        );
         return true;
     } else {
-        return array('error' => $confirmstatus['Status'].$confirmstatus['StatusCode']);
+        return array(
+            'error' => $confirmstatus->ResponseSource . ': ' . $confirmstatus->ResponseText
+        );
     }
 }
 
@@ -527,14 +506,22 @@ function annul($id)
     global $mysqli;
     global $epaymentAdminService;
 
-    $epayment = $epaymentAdminService->query($GLOBALS['_config']['pbsfix'].$id);
-    $annulStatus = $epaymentAdminService->annul($epayment['TransactionId']);
+    $annulStatus = $epaymentAdminService->annul($GLOBALS['_config']['pbsfix'] . $id);
 
-    if ($annulStatus['Status'] == 'A' && $annulStatus['StatusCode'] == '0') {
-        $mysqli->query("UPDATE `fakturas` SET `status` = 'rejected', `paydate` = NOW() WHERE `id` = 'pbsok' AND `id` = ".$id);
+    if ($confirmstatus->ResponseCode == 'OK') {
+        $mysqli->query(
+            "
+            UPDATE `fakturas`
+            SET `status`  = 'rejected',
+                `paydate` = NOW()
+            WHERE `id` = 'pbsok'
+              AND `id` = " . $id
+        );
         return true;
     } else {
-        return array('error' => $annulStatus['Status'].$annulStatus['StatusCode']);
+        return array(
+            'error' => $confirmstatus->ResponseSource . ': ' . $confirmstatus->ResponseText
+        );
     }
 }
 
@@ -1050,11 +1037,6 @@ if ($faktura['status'] == 'new') {
     echo _('Paid in cash');
     if ($faktura['paydate']) {
         echo ' d. '.date(_('m/d/Y'), $faktura['paydate']);
-    }
-} elseif ($faktura['status'] == 'pbserror') {
-    echo _('Error during the payment');
-    if ($epayment['Status'] == 'A' && $epayment['StatusCode'] = 1) {
-        echo _(', payment was interrupted.');
     }
 } elseif ($faktura['status'] == 'canceled') {
     echo _('Canceled');

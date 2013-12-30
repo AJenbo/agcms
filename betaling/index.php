@@ -557,38 +557,20 @@ if (!empty($id) && @$_GET['checkid'] == getCheckid($id) && !isset($_GET['respons
             $GLOBALS['generatedcontent']['text'] .= '<br />'.$special[0]['text'];
 
             try {
-                // New payment method - register request
-                $client = new SoapClient(
-                    'https://epayment.nets.eu/Netaxept.svc?wsdl',
-                    array('trace' => true,'exceptions' => true)
-                );
-                $request = new stdClass;
-                $request->Environment = new stdClass;
-                $request->Environment->WebServicePlatform = 'PHP5';
-                $request->Order = new stdClass;
-                $request->Order->Amount = number_format($faktura['amount'], 2, '', '');
-                $request->Order->CurrencyCode = 'DKK';
-                $request->Order->Force3DSecure = false;
-                $request->Order->OrderNumber = $GLOBALS['_config']['pbsfix'].$faktura['id'];
-                $request->Terminal = new stdClass;
-                $request->Terminal->Language = 'da_DK';
-                $request->Terminal->RedirectOnError = true;
-                $request->Terminal->RedirectUrl = $GLOBALS['_config']['base_url'] . '/betaling/?id=' . $id . '&checkid=' . $_GET['checkid'];
-                $request->TransactionId = $GLOBALS['_config']['pbsfix'] . $faktura['id'];
-                $result = $client->__call(
-                    'Register',
-                    array(
-                        array(
-                            "token"  => $GLOBALS['_config']['pbspassword'],
-                            "merchantId" => $GLOBALS['_config']['pbsid'],
-                            "request" => $request
-                        )
-                    )
-                );
+		include_once 'inc/epaymentAdminService.php';
+		$epaymentAdminService = new epaymentAdminService(
+		    $GLOBALS['_config']['pbsid'],
+		    $GLOBALS['_config']['pbspassword']
+		);
+		$result = $epaymentAdminService->register(
+		    $GLOBALS['_config']['pbsfix'] . $faktura['id'],
+		    number_format($faktura['amount'], 2, '', ''),
+		    $GLOBALS['_config']['base_url'] . '/betaling/?id=' . $id . '&checkid=' . $_GET['checkid']
+		);
 
                 $GLOBALS['generatedcontent']['text'] .= '<form style="text-align:center;" action="https://epayment.nets.eu/terminal/default.aspx?merchantId='
                 . $GLOBALS['_config']['pbsid']
-                . '&transactionId=' . $result->RegisterResult->TransactionId
+                . '&transactionId=' . $result->TransactionId
                 . '" method="post">';
                 $GLOBALS['generatedcontent']['text'] .= '<input class="web" type="submit" value="'._('I hereby agree to the terms of trade').'" /></form>';
             } catch(Exception $exp) {

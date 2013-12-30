@@ -77,7 +77,7 @@ CREATE TABLE IF NOT EXISTS `fakturas` (
   `premoms` tinyint(1) NOT NULL DEFAULT '1',
   `date` date NOT NULL DEFAULT '0000-00-00',
   `paydate` date NOT NULL,
-  `cardtype` varchar(20) COLLATE utf8_danish_ci NOT NULL,
+  `cardtype` varchar(64) COLLATE utf8_danish_ci NOT NULL,
   `iref` varchar(32) COLLATE utf8_danish_ci NOT NULL,
   `eref` varchar(64) COLLATE utf8_danish_ci NOT NULL,
   `navn` varchar(64) COLLATE utf8_danish_ci NOT NULL,
