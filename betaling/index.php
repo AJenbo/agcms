@@ -105,12 +105,14 @@ function validate($values)
     return $rejected;
 }
 
+$id = !empty($_GET['id']) ? (int) $_GET['id'] : null;
+
 //Generate return page
 $GLOBALS['generatedcontent']['crumbs'] = array();
-if (!empty($_GET['id'])) {
+if (!empty($id)) {
     $GLOBALS['generatedcontent']['crumbs'][0] = array(
         'name' => _('Payment'),
-        'link' => '/?id=' . $_GET['id'] . '&checkid=' . $_GET['checkid'],
+        'link' => '/?id=' . $id . '&checkid=' . $_GET['checkid'],
         'icon' => null
     );
 } else {
@@ -124,16 +126,16 @@ $GLOBALS['generatedcontent']['contenttype'] = 'page';
 $GLOBALS['generatedcontent']['text'] = '';
 $productslines = 0;
 
-if (!empty($_GET['id']) && @$_GET['checkid'] == getCheckid($_GET['id'])) {
+if (!empty($id) && @$_GET['checkid'] == getCheckid($id) && !isset($_GET['responseCode'])) {
     $rejected = array();
     $faktura = $mysqli->fetchOne(
         "
         SELECT *
         FROM `fakturas`
-        WHERE `id` = ".$_GET['id']
+        WHERE `id` = ".$id
     );
 
-    if ($faktura['status'] == 'new' || $faktura['status'] == 'locked') {
+    if (in_array($faktura['status'], array('new', 'locked'))) {
         $faktura['quantities'] = explode('<', $faktura['quantities']);
         $faktura['products'] = explode('<', $faktura['products']);
         $faktura['values'] = explode('<', $faktura['values']);
@@ -161,17 +163,17 @@ if (!empty($_GET['id']) && @$_GET['checkid'] == getCheckid($_GET['id'])) {
                 UPDATE `fakturas`
                 SET `status` = 'locked'
                 WHERE `status` IN('new', 'pbserror')
-                  AND `id` = " . (int) $_GET['id']
+                  AND `id` = " . $id
             );
 
             $GLOBALS['generatedcontent']['crumbs'] = array();
             $GLOBALS['generatedcontent']['crumbs'][1] = array(
-                'name' => _('Order #') . $_GET['id'],
+                'name' => _('Order #') . $id,
                 'link' => '#',
                 'icon' => null
             );
-            $GLOBALS['generatedcontent']['title'] = _('Order #').$_GET['id'];
-            $GLOBALS['generatedcontent']['headline'] = _('Order #').$_GET['id'];
+            $GLOBALS['generatedcontent']['title'] = _('Order #').$id;
+            $GLOBALS['generatedcontent']['headline'] = _('Order #').$id;
 
             $GLOBALS['generatedcontent']['text'] = '<table id="faktura" cellspacing="0">
                 <thead>
@@ -224,7 +226,12 @@ if (!empty($_GET['id']) && @$_GET['checkid'] == getCheckid($_GET['id'])) {
                 $GLOBALS['generatedcontent']['text'] .= '<br /><strong>'._('Note:').'</strong><br /><p class="note">';
                 $GLOBALS['generatedcontent']['text'] .= nl2br(htmlspecialchars($faktura['note'])).'</p>';
             }
-            $GLOBALS['generatedcontent']['text'] .= '<form action="" method="get"><input type="hidden" name="id" value="'.$_GET['id'].'" /><input type="hidden" name="checkid" value="'.$_GET['checkid'].'" /><input type="hidden" name="step" value="1" /><input type="hidden" name="checkid" value="'.$_GET['checkid'].'" /><input style="font-weight:bold;" type="submit" value="'._('Continue').'" /></form>';
+            $GLOBALS['generatedcontent']['text'] .= '<form action="" method="get">
+	    <input type="hidden" name="id" value="' . $id . '" />
+	    <input type="hidden" name="checkid" value="' . htmlspecialchars($_GET['checkid']) . '" />
+	    <input type="hidden" name="step" value="1" />
+	    <input style="font-weight:bold;" type="submit" value="' . _('Continue') . '" />
+	    </form>';
 
         } elseif ($_GET['step'] == 1) {
             if ($_POST) {
@@ -256,11 +263,11 @@ if (!empty($_GET['id']) && @$_GET['checkid'] == getCheckid($_GET['id'])) {
 
                 $sql = "UPDATE `fakturas` SET";
                 foreach ($updates as $key => $value) {
-                    $sql .= " `".addcslashes($key, '`\\')."` = '".addcslashes($value, "'\\")."',";
+                    $sql .= " `" . addcslashes($key, '`\\') . "` = '" . addcslashes($value, "'\\") . "',";
                 }
                 $sql = substr($sql, 0, -1);
 
-                $sql .= 'WHERE `id` = '.$_GET['id'];
+                $sql .= 'WHERE `id` = ' . $id;
 
                 $mysqli->query($sql);
 
@@ -303,7 +310,7 @@ if (!empty($_GET['id']) && @$_GET['checkid'] == getCheckid($_GET['id'])) {
                     }
 
                     ini_set('zlib.output_compression', '0');
-                    header('Location: '.$GLOBALS['_config']['base_url'].'/betaling/?id='.$_GET['id'].'&checkid='.$_GET['checkid'].'&step=2', true, 303);
+                    header('Location: ' . $GLOBALS['_config']['base_url'] . '/betaling/?id=' . $id . '&checkid=' . $_GET['checkid'] . '&step=2', true, 303);
                     exit;
                 }
             } else {
@@ -516,7 +523,7 @@ if (!empty($_GET['id']) && @$_GET['checkid'] == getCheckid($_GET['id'])) {
             if (count(validate($faktura))) {
                 ini_set('zlib.output_compression', '0');
                 header(
-                    'Location: '.$GLOBALS['_config']['base_url'].'/betaling/?id='.$_GET['id'].'&checkid='.$_GET['checkid'].'&step=1',
+                    'Location: ' . $GLOBALS['_config']['base_url'] . '/betaling/?id=' . $id . '&checkid=' . $_GET['checkid'] . '&step=1',
                     true,
                     303
                 );
@@ -528,7 +535,7 @@ if (!empty($_GET['id']) && @$_GET['checkid'] == getCheckid($_GET['id'])) {
                 UPDATE `fakturas`
                 SET `status` = 'locked'
                 WHERE `status` IN('new', 'pbserror')
-                AND `id` = ".$_GET['id']
+                AND `id` = " . $id
             );
 
             $GLOBALS['generatedcontent']['crumbs'] = array();
@@ -550,26 +557,26 @@ if (!empty($_GET['id']) && @$_GET['checkid'] == getCheckid($_GET['id'])) {
             );
             $GLOBALS['generatedcontent']['text'] .= '<br />'.$special[0]['text'];
 
-            $submit['Merchant_id'] = $GLOBALS['_config']['pbsid'];
-            $submit['Version'] = '2';
-            $submit['Customer_refno'] = $GLOBALS['_config']['pbsfix'].$faktura['id'];
-            $submit['Currency'] = 'DKK';
-            $submit['Amount'] = number_format($faktura['amount'], 2, '', '');
-            $submit['VAT'] = number_format($netto*$faktura['momssats'], 2, '', '');
-            $submit['Payment_method'] = 'KORTINDK';
-            $submit['Response_URL'] = $GLOBALS['_config']['base_url'].'/betaling/?checkid='.$_GET['checkid'];
-            $submit['Goods_description'] = '';
-            $submit['Language'] = 'DAN';
-            $submit['Comment'] = '';
-            $submit['Country'] = 'DK';
-            $submit['Cancel_URL'] = $submit['Response_URL'];
+            try {
+		include_once 'inc/epaymentAdminService.php';
+		$epaymentAdminService = new epaymentAdminService(
+		    $GLOBALS['_config']['pbsid'],
+		    $GLOBALS['_config']['pbspassword']
+		);
+		$result = $epaymentAdminService->register(
+		    $GLOBALS['_config']['pbsfix'] . $faktura['id'],
+		    number_format($faktura['amount'], 2, '', ''),
+		    $GLOBALS['_config']['base_url'] . '/betaling/?id=' . $id . '&checkid=' . $_GET['checkid']
+		);
 
-            $GLOBALS['generatedcontent']['text'] .= '<form style="text-align:center;" action="https://epayment.auriganet.eu/paypagegw" method="post">';
-            foreach ($submit as $key => $value) {
-                $GLOBALS['generatedcontent']['text'] .= '<input type="hidden" name="'.$key.'" value="'.htmlspecialchars($value).'" />';
+                $GLOBALS['generatedcontent']['text'] .= '<form style="text-align:center;" action="https://epayment.nets.eu/terminal/default.aspx?merchantId='
+                . $GLOBALS['_config']['pbsid']
+                . '&transactionId=' . $result->TransactionId
+                . '" method="post">';
+                $GLOBALS['generatedcontent']['text'] .= '<input class="web" type="submit" value="'._('I hereby agree to the terms of trade').'" /></form>';
+            } catch(Exception $exp) {
+                $GLOBALS['generatedcontent']['text'] .= 'An error occurred in the REGISTER method: ' . $exp->getMessage();
             }
-            $GLOBALS['generatedcontent']['text'] .= '<input type="hidden" name="MAC" value="'.md5(implode('', $submit).$GLOBALS['_config']['pbspassword']).'" />';
-            $GLOBALS['generatedcontent']['text'] .= '<input class="web" type="submit" value="'._('I hereby agree to the terms of trade').'" /></form>';
         }
     } else {
         $GLOBALS['generatedcontent']['crumbs'] = array();
@@ -664,31 +671,7 @@ if (!empty($_GET['id']) && @$_GET['checkid'] == getCheckid($_GET['id'])) {
             $GLOBALS['generatedcontent']['text'] = _('An errror occured.');
         }
     }
-} elseif (!empty($_GET['Customer_refno'])) {
-    $id = mb_substr(
-        $_GET['Customer_refno'],
-        mb_strlen($GLOBALS['_config']['pbsfix'])
-    );
-
-    //Set the proper order for the values
-    $validate['Merchant_id'] = '';
-    $validate['Version'] = '';
-    $validate['Customer_refno'] = '';
-    $validate['Transaction_id'] = '';
-    $validate['Status'] = '';
-    $validate['Status_code'] = '';
-    $validate['AuthCode'] = '';
-    $validate['3DSec'] = '';
-    $validate['Batch_id'] = '';
-    $validate['Payment_method'] = '';
-    $validate['Card_type'] = '';
-    $validate['Risk_score'] = '';
-    $validate['Authorized_amount'] = '';
-    $validate['Fee_amount'] = '';
-    $validate = array_merge($validate, $_GET);
-    unset($validate['checkid']);
-    unset($validate['MAC']);
-
+} elseif (isset($_GET['responseCode'])) {
     $GLOBALS['generatedcontent']['crumbs'] = array();
     $GLOBALS['generatedcontent']['crumbs'][1] = array(
         'name' => _('Error'),
@@ -699,8 +682,8 @@ if (!empty($_GET['id']) && @$_GET['checkid'] == getCheckid($_GET['id'])) {
     $GLOBALS['generatedcontent']['headline'] = _('Error');
     $GLOBALS['generatedcontent']['text'] = _('An unknown error occured.');
 
-    if (!empty($_GET['Status']) && !empty($_GET['Status_code'])) {
-        $shopSubject = $_GET['Status'].$_GET['Status_code'];
+    if (!empty($_GET['responseCode'])) {
+        $shopSubject = $_GET['responseCode'];
     } else {
         $shopSubject = _('No Status');
     }
@@ -708,21 +691,19 @@ if (!empty($_GET['id']) && @$_GET['checkid'] == getCheckid($_GET['id'])) {
 
     $faktura = $mysqli->fetchOne("SELECT * FROM `fakturas` WHERE `id` = ".$id);
 
-    if ($_GET['MAC'] != md5(implode('', $validate).$GLOBALS['_config']['pbspassword'])) {
-        $GLOBALS['generatedcontent']['text'] = _('The communication could not be validated!');
-    } elseif (!$faktura) {
+    if (!$faktura) {
         $GLOBALS['generatedcontent']['text'] = '<p>' . _('The payment does not exist in our system.') . '</p>';
         $shopBody = '<br />' . sprintf(
             _('A user tried to pay online invoice #%d, which is not in the system!'),
             $id
         ) . '<br />';
-    } elseif ($faktura['status'] == 'pbserror' || $faktura['status'] == 'canceled' || $faktura['status'] == 'rejected') {
+    } elseif (in_array($faktura['status'], array('pbserror', 'canceled', 'rejected'))) {
         $GLOBALS['generatedcontent']['crumbs'][1] = array('name' => _('Reciept'), 'link' => '#', 'icon' => null);
         $GLOBALS['generatedcontent']['title'] = _('Reciept');
         $GLOBALS['generatedcontent']['headline'] = _('Reciept');
         $GLOBALS['generatedcontent']['text'] = '<p>'._('This trade has been canceled or refused.').'</p>';
         $shopBody = '<br />'.sprintf(_('A customer tried to see the status page for online invoice #%d which is canceled or rejected.'), $id).'<br />';
-    } elseif ($faktura['status'] != 'locked' && $faktura['status'] != 'new') {
+    } elseif (!in_array($faktura['status'], array('locked', 'new'))) {
         $GLOBALS['generatedcontent']['crumbs'][1] = array(
             'name' => _('Reciept'),
             'link' => '#',
@@ -732,422 +713,12 @@ if (!empty($_GET['id']) && @$_GET['checkid'] == getCheckid($_GET['id'])) {
         $GLOBALS['generatedcontent']['headline'] = _('Reciept');
         $GLOBALS['generatedcontent']['text'] = '<p>'._('Payment is registered and you ought to have received a receipt by email.').'</p>';
         $shopBody = '<br />'.sprintf(_('A customer tried to see the status page for online invoice #%d, which is already paid.'). $id).'<br />';
-    } elseif (empty($_GET['Status'])) {
+    } elseif ($_GET['responseCode'] == 'Cancel') {
         //User pressed "back"
         ini_set('zlib.output_compression', '0');
-        header('Location: '.$GLOBALS['_config']['base_url'].'/betaling/?id='.$id.'&checkid='.$_GET['checkid'].'&step=2', true, 303);
+        header('Location: ' . $GLOBALS['_config']['base_url'] . '/betaling/?id=' . $id . '&checkid=' . $_GET['checkid'] . '&step=2', true, 303);
         exit;
-    } elseif ($_GET['Status'] == 'E') {
-        $GLOBALS['generatedcontent']['title'] = _('Error #').$_GET['Status_code'];
-        $GLOBALS['generatedcontent']['headline'] = _('Error #').$_GET['Status_code'];
-        $GLOBALS['generatedcontent']['text'] = _(
-            'An error occurred during the payment.<br />
-Error number:'
-        );
-        $GLOBALS['generatedcontent']['text'] .= ' ' .$_GET['Status_code'];
-        $mysqli->query(
-            "
-            UPDATE `fakturas`
-            SET `status` = 'pbserror', `paydate` = NOW()
-            WHERE `status` IN('new', 'locked')
-              AND `id` = " . $id
-        );
-        switch ($_GET['Status_code']) {
-            //Theas has been seen IRL
-        case 12:
-            $GLOBALS['generatedcontent']['text'] = _('The communication could not be validated!');
-            $shopSubject = $_GET['Status'].$_GET['Status_code'].' '._('Data was manipulated.');
-            $shopBody = '<br />'.sprintf(_('Communication could not be validated as %s was about to pay!'), $faktura['navn']).'<br />';
-            break;
-        case 18:
-            $GLOBALS['generatedcontent']['text'] = _('Payment page is not responding.');
-            $shopSubject = $_GET['Status'].$_GET['Status_code'].' '._('Payment page is not responding.');
-            $shopBody = '<br />'.sprintf(_('Payment page did not answer when %s was about to pay!'), $faktura['navn']).'<br />';
-            break;
-        case 19:
-            $GLOBALS['generatedcontent']['text'] = _('Payment was refused by the bank, the card has expired.');
-            $shopSubject = $_GET['Status'].$_GET['Status_code'].' '._('Payment was refused by the bank, the card has expired.');
-            $shopBody = '<br />'.sprintf(_('Payment was refused by the bank, %s\'s card has expired!'), $faktura['navn']).'<br />';
-            break;
-        case 20:
-            $GLOBALS['generatedcontent']['text'] = _('Payment was refused by the bank, contact your bank.');
-            $shopSubject = $_GET['Status'].$_GET['Status_code'].' '._('Payment was refused by the bank, contact your bank.');
-            $shopBody = '<br />'.sprintf(_('Payment was refused by the bank, %s must contact his or her bank.'), $faktura['navn']).'<br />';
-            break;
-        case 26:
-            $GLOBALS['generatedcontent']['text'] = _('Suspected fraud.');
-            $shopSubject = $_GET['Status'].$_GET['Status_code'].' '._('Suspected fraud.');
-            $shopBody = '<br />'._('Suspected fraud.').'<br />';
-            break;
-        case 28:
-            $GLOBALS['generatedcontent']['text'] = _('Denied due to too many payment attempts.');
-            $shopSubject = $_GET['Status'].$_GET['Status_code'].' '._('Payment was refused.');
-            $shopBody = $_GET['Status'].$_GET['Status_code'].' '._('Denied due to too many payment attempts.');
-            break;
-        case 56:
-            $GLOBALS['generatedcontent']['text'] = _('The payment was refused because the customer has already attempted to pay.');
-            $shopSubject = $_GET['Status'].$_GET['Status_code'].' '._('Payment was refused.');
-            $shopBody = '<br />'._('The payment was refused because the customer has already attempted to pay.').'<br />';
-            break;
-        //Theas havent
-        case 3:
-            $GLOBALS['generatedcontent']['text'] = _('An obligatory field is lacking or is incorrectly formatted.');
-            $shopSubject = $_GET['Status'].$_GET['Status_code'].' '._('Payment was refused.');
-            $shopBody = '<br />'._('An obligatory field is lacking or is incorrectly formatted.').'<br />';
-            break;
-        case 4:
-            $GLOBALS['generatedcontent']['text'] = _('Incorrect Merchant ID.');
-            $shopSubject = $_GET['Status'].$_GET['Status_code'].' '._('Incorrect Merchant ID.');
-            $shopBody = '<br />'._('Incorrect Merchant ID.').'<br />';
-            break;
-        case 5:
-            $GLOBALS['generatedcontent']['text'] = _('Incorrect amount.');
-            $shopSubject = $_GET['Status'].$_GET['Status_code'].' '._('Incorrect amount.');
-            $shopBody = '<br />'._('Incorrect amount.').'<br />';
-            break;
-        case 6:
-            $GLOBALS['generatedcontent']['text'] = _('Incorrect amount.');
-            $shopSubject = $_GET['Status'].$_GET['Status_code'].' '._('Incorrect amount.');
-            $shopBody = '<br />'._('Incorrect amount.').'<br />';
-            break;
-        case 11:
-            $GLOBALS['generatedcontent']['text'] = _('Was not possible to contact bank.');
-            $shopSubject = $_GET['Status'].$_GET['Status_code'].' '._('Was not possible to contact bank.');
-            $shopBody = '<br />'._('Was not possible to contact bank.').'<br />';
-            break;
-        case 13:
-            $GLOBALS['generatedcontent']['text'] = _('Amount too large.');
-            $shopSubject = $_GET['Status'].$_GET['Status_code'].' '._('Amount too large.');
-            $shopBody = '<br />'._('Amount too large.').'<br />';
-            break;
-        case 14:
-            $GLOBALS['generatedcontent']['text'] = _('Incorrect date/time format.');
-            $shopSubject = $_GET['Status'].$_GET['Status_code'].' '._('Incorrect date/time format.');
-            $shopBody = '<br />'._('Incorrect date/time format.').'<br />';
-            break;
-        case 15:
-            $GLOBALS['generatedcontent']['text'] = _('Incorrect purchase date.');
-            $shopSubject = $_GET['Status'].$_GET['Status_code'].' '._('Incorrect purchase date.');
-            $shopBody = '<br />'._('Incorrect purchase date.').'<br />';
-            break;
-        case 17:
-            $GLOBALS['generatedcontent']['text'] = _('Payment Type not configured for the Merchant.');
-            $shopSubject = $_GET['Status'].$_GET['Status_code'].' '._('Payment Type not configured for the Merchant.');
-            $shopBody = '<br />'._('Payment Type not configured for the Merchant.').'<br />';
-            break;
-        case 18:
-            $GLOBALS['generatedcontent']['text'] = _('Card Payment: Error upon Authorisation or no contact with the bank.');
-            $shopSubject = $_GET['Status'].$_GET['Status_code'].' '._('Card Payment: Error upon Authorisation or no contact with the bank.');
-            $shopBody = '<br />'._('Card Payment: Error upon Authorisation or no contact with the bank.').'<br />';
-            break;
-        case 19:
-            $GLOBALS['generatedcontent']['text'] = _(
-                'Card Payment: Purchase denied at the bank (the card\'s validity
-period has expired), contact the bank.
-'
-            );
-            $shopSubject = $_GET['Status'] .$_GET['Status_code'] .' ' ._(
-                'Card Payment: Purchase denied at the bank (the card\'s validity
-period has expired), contact the bank.
-'
-            );
-            $shopBody = '<br />' ._(
-                'Card Payment: Purchase denied at the bank (the card\'s validity
-period has expired), contact the bank.
-'
-            ) .'<br />';
-            break;
-        case 21:
-            $GLOBALS['generatedcontent']['text'] = _('Country for card-issuing bank is not permitted.');
-            $shopSubject = $_GET['Status'].$_GET['Status_code'].' '._('Country for card-issuing bank is not permitted.');
-            $shopBody = '<br />'._('Country for card-issuing bank is not permitted.').'<br />';
-            break;
-        case 22:
-            $GLOBALS['generatedcontent']['text'] = _('The risk assessment value for the transaction exceeds the permissible value.');
-            $shopSubject = $_GET['Status'].$_GET['Status_code'].' '._('The risk assessment value for the transaction exceeds the permissible value.');
-            $shopBody = '<br />'._('The risk assessment value for the transaction exceeds the permissible value.').'<br />';
-            break;
-        case 23:
-            $GLOBALS['generatedcontent']['text'] = _(
-                'Card Payment: Card saved/inactivated at the card-issuing bank. E.g.
-lost, stolen, too many incorrect PIN entry attempts, etc.'
-            );
-            $shopSubject = $_GET['Status'] .$_GET['Status_code'] .' ' ._(
-                'Card Payment: Card saved/inactivated at the card-issuing bank. E.g.
-lost, stolen, too many incorrect PIN entry attempts, etc.'
-            );
-            $shopBody = '<br />' ._(
-                'Card Payment: Card saved/inactivated at the card-issuing bank. E.g.
-lost, stolen, too many incorrect PIN entry attempts, etc.'
-            ) .'<br />';
-            break;
-        case 24:
-            $GLOBALS['generatedcontent']['text'] = _('Error Request_type in Order Administration call.');
-            $shopSubject = $_GET['Status'].$_GET['Status_code'].' '._('Error Request_type in Order Administration call.');
-            $shopBody = '<br />'._('Error Request_type in Order Administration call.').'<br />';
-            break;
-        case 25:
-            $GLOBALS['generatedcontent']['text'] = _('Amount too high: insufficient balance, card-issuing bank will not allow this amount on this card.');
-            $shopSubject = $_GET['Status'].$_GET['Status_code'].' '._('Amount too high: insufficient balance, card-issuing bank will not allow this amount on this card.');
-            $shopBody = '<br />'._('Amount too high: insufficient balance, card-issuing bank will not allow this amount on this card.').'<br />';
-            break;
-        case 27:
-            $GLOBALS['generatedcontent']['text'] = _('Purchase amount must be greater than zero.');
-            $shopSubject = $_GET['Status'].$_GET['Status_code'].' '._('Purchase amount must be greater than zero.');
-            $shopBody = '<br />'._('Purchase amount must be greater than zero.').'<br />';
-            break;
-        case 30:
-            $GLOBALS['generatedcontent']['text'] = _('Denied due to time-out, no response from bank');
-            $shopSubject = $_GET['Status'].$_GET['Status_code'].' '._('Denied due to time-out, no response from bank');
-            $shopBody = '<br />'._('Denied due to time-out, no response from bank').'<br />';
-            break;
-        case 31:
-            $GLOBALS['generatedcontent']['text'] = _('Purchase terminated (by the purchaser).');
-            $shopSubject = $_GET['Status'].$_GET['Status_code'].' '._('Purchase terminated (by the purchaser).');
-            $shopBody = '<br />'._('Purchase terminated (by the purchaser).').'<br />';
-            break;
-        case 32:
-            $GLOBALS['generatedcontent']['text'] = _(
-                'Error in order, transaction already registered and paid. This
-Customer_refno is already registered on another transaction.'
-            );
-            $shopSubject = $_GET['Status'] .$_GET['Status_code'] .' ' ._(
-                'Error in order, transaction already registered and paid. This
-Customer_refno is already registered on another transaction.'
-            );
-            $shopBody = '<br />' ._(
-                'Error in order, transaction already registered and paid. This
-Customer_refno is already registered on another transaction.'
-            ) .'<br />';
-            break;
-        case 33:
-            $GLOBALS['generatedcontent']['text'] = _(
-                'eKöp: Technical error in communication with Postgirot/Nordea.
-Please try again later.'
-            );
-            $shopSubject = $_GET['Status'].$_GET['Status_code'].' '._(
-                'eKöp: Technical error in communication with Postgirot/Nordea.
-Please try again later.'
-            );
-            $shopBody = '<br />' ._(
-                'eKöp: Technical error in communication with Postgirot/Nordea.
-Please try again later.'
-            ) .'<br />';
-            break;
-        case 34:
-            $GLOBALS['generatedcontent']['text'] = _('Provided recipient account incorrect.');
-            $shopSubject = $_GET['Status'].$_GET['Status_code'].' '._('Provided recipient account incorrect.');
-            $shopBody = '<br />'._('Provided recipient account incorrect.').'<br />';
-            break;
-        case 35:
-            $GLOBALS['generatedcontent']['text'] = _('Provided sending account incorrect.');
-            $shopSubject = $_GET['Status'].$_GET['Status_code'].' '._('Provided sending account incorrect.');
-            $shopBody = '<br />'._('Provided sending account incorrect.').'<br />';
-            break;
-        case 36:
-            $GLOBALS['generatedcontent']['text'] = _('eKöp: Provided sending account temporarily frozen.');
-            $shopSubject = $_GET['Status'].$_GET['Status_code'].' '._('eKöp: Provided sending account temporarily frozen.');
-            $shopBody = '<br />'._('eKöp: Provided sending account temporarily frozen.').'<br />';
-            break;
-        case 39:
-            $GLOBALS['generatedcontent']['text'] = _('eKöp: Provided certificate incorrect.');
-            $shopSubject = $_GET['Status'].$_GET['Status_code'].' '._('eKöp: Provided certificate incorrect.');
-            $shopBody = '<br />'._('eKöp: Provided certificate incorrect.').'<br />';
-            break;
-        case 40:
-            $GLOBALS['generatedcontent']['text'] = _('eKöp: Account not connected to the service.');
-            $shopSubject = $_GET['Status'].$_GET['Status_code'].' '._('eKöp: Account not connected to the service.');
-            $shopBody = '<br />'._('eKöp: Account not connected to the service.').'<br />';
-            break;
-        case 41:
-            $GLOBALS['generatedcontent']['text'] = _('Payment Selection Page/Card Payment Page: Merchant not connected to the service.');
-            $shopSubject = $_GET['Status'].$_GET['Status_code'].' '._('Payment Selection Page/Card Payment Page: Merchant not connected to the service.');
-            $shopBody = '<br />'._('Payment Selection Page/Card Payment Page: Merchant not connected to the service.').'<br />';
-            break;
-        case 42:
-            $GLOBALS['generatedcontent']['text'] = _('Bad Auth_null. Should be YES or NO.');
-            $shopSubject = $_GET['Status'].$_GET['Status_code'].' '._('Bad Auth_null. Should be YES or NO.');
-            $shopBody = '<br />'._('Bad Auth_null. Should be YES or NO.').'<br />';
-            break;
-        case 43:
-            $GLOBALS['generatedcontent']['text'] = _('Bad Capture_now. Should be YES or NO.');
-            $shopSubject = $_GET['Status'].$_GET['Status_code'].' '._('Bad Capture_now. Should be YES or NO.');
-            $shopBody = '<br />'._('Bad Capture_now. Should be YES or NO.').'<br />';
-            break;
-        case 45:
-            $GLOBALS['generatedcontent']['text'] = _('For Order Administration: The status of the transaction does not permit the operation.');
-            $shopSubject = $_GET['Status'].$_GET['Status_code'].' '._('For Order Administration: The status of the transaction does not permit the operation.');
-            $shopBody = '<br />'._('For Order Administration: The status of the transaction does not permit the operation.').'<br />';
-            break;
-        case 48:
-            $GLOBALS['generatedcontent']['text'] = _('For Order Administration: The transaction does not exist.');
-            $shopSubject = $_GET['Status'].$_GET['Status_code'].' '._('For Order Administration: The transaction does not exist.');
-            $shopBody = '<br />'._('For Order Administration: The transaction does not exist.').'<br />';
-            break;
-        case 50:
-            $GLOBALS['generatedcontent']['text'] = _(
-                'Card Payment: Merchant not configured for currency/card type combination... Card type not uploaded, incorrect card type
-or card-issuing bank declines the card.'
-            );
-            $shopSubject = $_GET['Status'] .$_GET['Status_code'] .' ' ._(
-                'Card Payment: Merchant not configured for currency/card type combination... Card type not uploaded, incorrect card type
-or card-issuing bank declines the card.'
-            );
-            $shopBody = '<br />' ._(
-                'Card Payment: Merchant not configured for currency/card type combination... Card type not uploaded, incorrect card type
-or card-issuing bank declines the card.'
-            ) .'<br />';
-            break;
-        case 54:
-            $GLOBALS['generatedcontent']['text'] = _('Bad Track2');
-            $shopSubject = $_GET['Status'].$_GET['Status_code'].' '._('Bad Track2');
-            $shopBody = '<br />'._('Bad Track2').'<br />';
-            break;
-        case 55:
-            $GLOBALS['generatedcontent']['text'] = _('Bad MOTO method. Should be PHONE or MAIL');
-            $shopSubject = $_GET['Status'].$_GET['Status_code'].' '._('Bad MOTO method. Should be PHONE or MAIL');
-            $shopBody = '<br />'._('Bad MOTO method. Should be PHONE or MAIL').'<br />';
-            break;
-        case 57:
-            $GLOBALS['generatedcontent']['text'] = _('Incorrect Customer_refno');
-            $shopSubject = $_GET['Status'].$_GET['Status_code'].' '._('Incorrect Customer_refno');
-            $shopBody = '<br />'._('Incorrect Customer_refno').'<br />';
-            break;
-        case 58:
-            $GLOBALS['generatedcontent']['text'] = _('Incorrect Version, incorrect format on the version parameters (should be Version=2).');
-            $shopSubject = $_GET['Status'].$_GET['Status_code'].' '._('Incorrect Version, incorrect format on the version parameters (should be Version=2).');
-            $shopBody = '<br />' ._(
-                'Incorrect Version, incorrect format on the version parameters
-(should be Version=2).'
-            ) .'<br />';
-            break;
-        case 65:
-            $GLOBALS['generatedcontent']['text'] = _('Transaction already registered and awaiting a response from the bank.');
-            $shopSubject = $_GET['Status'].$_GET['Status_code'].' '._('Transaction already registered and awaiting a response from the bank.');
-            $shopBody = '<br />'._('Transaction already registered and awaiting a response from the bank.').'<br />';
-            break;
-        case 67:
-            $GLOBALS['generatedcontent']['text'] = _('Crediting could not be carried out.');
-            $shopSubject = $_GET['Status'].$_GET['Status_code'].' '._('Crediting could not be carried out.');
-            $shopBody = '<br />'._('Crediting could not be carried out.').'<br />';
-            break;
-        case 69:
-            $GLOBALS['generatedcontent']['text'] = _('Technical error, Auriga ePayment');
-            $shopSubject = $_GET['Status'].$_GET['Status_code'].' '._('Technical error, Auriga ePayment');
-            $shopBody = '<br />'._('Technical error, Auriga ePayment').'<br />';
-            break;
-        case 70:
-            $GLOBALS['generatedcontent']['text'] = _('For Order Administration: The function is not supported.');
-            $shopSubject = $_GET['Status'].$_GET['Status_code'].' '._('For Order Administration: The function is not supported.');
-            $shopBody = '<br />'._('For Order Administration: The function is not supported.').'<br />';
-            break;
-        case 71:
-            $GLOBALS['generatedcontent']['text'] = _('Incorrect format or size on the Response URL.');
-            $shopSubject = $_GET['Status'].$_GET['Status_code'].' '._('Incorrect format or size on the Response URL.');
-            $shopBody = '<br />'._('Incorrect format or size on the Response URL.').'<br />';
-            break;
-        case 72:
-            $GLOBALS['generatedcontent']['text'] = _('Incorrect Currency code.');
-            $shopSubject = $_GET['Status'].$_GET['Status_code'].' '._('Incorrect Currency code.');
-            $shopBody = '<br />'._('Incorrect Currency code.').'<br />';
-            break;
-        case 73:
-            $GLOBALS['generatedcontent']['text'] = _('Incorrect Language Code.');
-            $shopSubject = $_GET['Status'].$_GET['Status_code'].' '._('Incorrect Language Code.');
-            $shopBody = '<br />'._('Incorrect Language Code.').'<br />';
-            break;
-        case 75:
-            $GLOBALS['generatedcontent']['text'] = _('Incorrect Comments.');
-            $shopSubject = $_GET['Status'].$_GET['Status_code'].' '._('Incorrect Comments.');
-            $shopBody = '<br />'._('Incorrect Comments.').'<br />';
-            break;
-        case 76:
-            $GLOBALS['generatedcontent']['text'] = _('Incorrect goods description.');
-            $shopSubject = $_GET['Status'].$_GET['Status_code'].' '._('Incorrect goods description.');
-            $shopBody = '<br />'._('Incorrect goods description.').'<br />';
-            break;
-        case 77:
-            $GLOBALS['generatedcontent']['text'] = _('Customer_refno does not match the Transaction_id.');
-            $shopSubject = $_GET['Status'].$_GET['Status_code'].' '._('Customer_refno does not match the Transaction_id.');
-            $shopBody = '<br />'._('Customer_refno does not match the Transaction_id.').'<br />';
-            break;
-        case 78:
-            $GLOBALS['generatedcontent']['text'] = _('Card Payment: Authorisation Reversal could not be carried out.');
-            $shopSubject = $_GET['Status'].$_GET['Status_code'].' '._('Card Payment: Authorisation Reversal could not be carried out.');
-            $shopBody = '<br />'._('Card Payment: Authorisation Reversal could not be carried out.').'<br />';
-            break;
-        case 79:
-            $GLOBALS['generatedcontent']['text'] = _('Card Payment: Acquiring could not be carried out (capture).');
-            $shopSubject = $_GET['Status'].$_GET['Status_code'].' '._('Card Payment: Acquiring could not be carried out (capture).');
-            $shopBody = '<br />'._('Card Payment: Acquiring could not be carried out (capture).').'<br />';
-            break;
-        case 81:
-            $GLOBALS['generatedcontent']['text'] = _('Card Payment: Unsuccessful 3-D Secure identification (for Verified by Visa or SecureCode). Card Authorisation is not carried out.');
-            $shopSubject = $_GET['Status'].$_GET['Status_code'].' '._('Card Payment: Unsuccessful 3-D Secure identification (for Verified by Visa or SecureCode). Card Authorisation is not carried out.');
-            $shopBody = '<br />'._('Card Payment: Unsuccessful 3-D Secure identification (for Verified by Visa or SecureCode). Card Authorisation is not carried out.').'<br />';
-            break;
-        case 82:
-            $GLOBALS['generatedcontent']['text'] = _('Card Payment: 3-D Secure identification denied due to timeout (for Verified by Visa or SecureCode). Occurs when the cardholder cannot identify themselves within approximately 5 minutes of the start of the transaction. Card Authorisation is not carried out.');
-            $shopSubject = $_GET['Status'].$_GET['Status_code'].' '._('Card Payment: 3-D Secure identification denied due to timeout (for Verified by Visa or SecureCode). Occurs when the cardholder cannot identify themselves within approximately 5 minutes of the start of the transaction. Card Authorisation is not carried out.');
-            $shopBody = '<br />'._('Card Payment: 3-D Secure identification denied due to timeout (for Verified by Visa or SecureCode). Occurs when the cardholder cannot identify themselves within approximately 5 minutes of the start of the transaction. Card Authorisation is not carried out.').'<br />';
-            break;
-        case 90:
-            $GLOBALS['generatedcontent']['text'] = _('Subscription has ended.');
-            $shopSubject = $_GET['Status'].$_GET['Status_code'].' '._('Subscription has ended.');
-            $shopBody = '<br />'._('Subscription has ended.').'<br />';
-            break;
-        case 91:
-            $GLOBALS['generatedcontent']['text'] = _('Subscription not found.');
-            $shopSubject = $_GET['Status'].$_GET['Status_code'].' '._('Subscription not found.');
-            $shopBody = '<br />'._('Subscription not found.').'<br />';
-            break;
-        case 92:
-            $GLOBALS['generatedcontent']['text'] = _('Subscription not captured, does not have Paid status.');
-            $shopSubject = $_GET['Status'].$_GET['Status_code'].' '._('Subscription not captured, does not have Paid status.');
-            $shopBody = '<br />' ._(
-                'Subscription not captured, does not have Paid
-status.'
-            ) .'<br />';
-            break;
-        case 93:
-            $GLOBALS['generatedcontent']['text'] = _('Payment Selection Page: Incorrect format or size for Cancel URL.');
-            $shopSubject = $_GET['Status'].$_GET['Status_code'].' '._('Payment Selection Page: Incorrect format or size for Cancel URL.');
-            $shopBody = '<br />'._('Payment Selection Page: Incorrect format or size for Cancel URL.').'<br />';
-            break;
-        case 95:
-            $GLOBALS['generatedcontent']['text'] = _('Invoice purchase: Incorrect OCR number, e.g. incorrect control digit.');
-            $shopSubject = $_GET['Status'].$_GET['Status_code'].' '._('Invoice purchase: Incorrect OCR number, e.g. incorrect control digit.');
-            $shopBody = '<br />'._('Invoice purchase: Incorrect OCR number, e.g. incorrect control digit.').'<br />';
-            break;
-        case 96:
-            $GLOBALS['generatedcontent']['text'] = _('Incorrect length for invoice parameters.');
-            $shopSubject = $_GET['Status'] . $_GET['Status_code'] . ' ' . _('Incorrect length for invoice parameters.');
-            $shopBody = '<br />' . _('Incorrect length for invoice parameters.')
-            . '<br />';
-            break;
-        case 97:
-            $GLOBALS['generatedcontent']['text'] = _('Incorrect guarantee parameter.');
-            $shopSubject = $_GET['Status'] . $_GET['Status_code'] . ' '
-            . _('Incorrect guarantee parameter.');
-            $shopBody = '<br />' . _('Incorrect guarantee parameter.') . '<br />';
-            break;
-        case 98:
-            $GLOBALS['generatedcontent']['text'] = _('Incorrect postal code.');
-            $shopSubject = $_GET['Status'] . $_GET['Status_code'] . ' '
-            . _('Incorrect postal code.');
-            $shopBody = '<br />' . _('Incorrect postal code.') . '<br />';
-            break;
-        case 110:
-            $GLOBALS['generatedcontent']['text'] = _('Invoice purchase: Invalid personal identity number or organisation number.');
-            $shopSubject = $_GET['Status'] . $_GET['Status_code'] . ' '
-            . _('Invoice purchase: Invalid personal identity number or organisation number.');
-            $shopBody = '<br />' . _('Invoice purchase: Invalid personal identity number or organisation number.') . '<br />';
-            break;
-        }
-
-        //TODO email error to us
-        //TODO add better description for errors
-    } elseif ($_GET['Status'] == 'A') {
+    } elseif ($_GET['responseCode'] == 'OK') {
         $GLOBALS['generatedcontent']['crumbs'][1] = array(
             'name' => _('Reciept'),
             'link' => '#',
@@ -1155,188 +726,185 @@ status.'
         );
         $GLOBALS['generatedcontent']['title'] = _('Reciept');
         $GLOBALS['generatedcontent']['headline'] = _('Reciept');
-        switch($_GET['Status_code']) {
-        case 0:
-            $mysqli->query(
-                "
-                UPDATE `fakturas`
-                SET `cardtype` = '" . $_GET['Card_type'] . "',
-                    `status` = 'pbsok',
-                    `paydate` = NOW()
-                WHERE `status` IN('new', 'locked', 'pbserror')
-                  AND `id` = " . $id
-            );
+	$mysqli->query(
+	    "
+	    UPDATE `fakturas`
+	    SET `status` = 'pbsok',
+		`paydate` = NOW()
+	    WHERE `status` IN('new', 'locked', 'pbserror')
+	      AND `id` = " . $id
+	);
 
-            $faktura = $mysqli->fetchOne(
-                "
-                SELECT *
-                FROM `fakturas`
-                WHERE `id` = " . $id
-            );
+	$faktura = $mysqli->fetchOne(
+	    "
+	    SELECT *
+	    FROM `fakturas`
+	    WHERE `id` = " . $id
+	);
 
-            $GLOBALS['generatedcontent']['text'] = _(
-                '<p style="text-align:center;"><img src="images/ok.png" alt="" /></p>
+	$GLOBALS['generatedcontent']['text'] = _(
+	    '<p style="text-align:center;"><img src="images/ok.png" alt="" /></p>
 
 <p>Payment is now accepted. We will send your goods by mail as soon as possible.</p>
 
 <p>A copy of your order is sent to your email.</p>'
-            );
+	);
 
-            $faktura['quantities'] = explode('<', $faktura['quantities']);
-            $faktura['products'] = explode('<', $faktura['products']);
-            $faktura['values'] = explode('<', $faktura['values']);
+	$faktura['quantities'] = explode('<', $faktura['quantities']);
+	$faktura['products'] = explode('<', $faktura['products']);
+	$faktura['values'] = explode('<', $faktura['values']);
 
-            if ($faktura['premoms']) {
-                foreach ($faktura['values'] as $key => $value) {
-                    $faktura['values'][$key] = $value/1.25;
-                }
-            }
+	if ($faktura['premoms']) {
+	    foreach ($faktura['values'] as $key => $value) {
+		$faktura['values'][$key] = $value/1.25;
+	    }
+	}
 
-            $shopSubject = _('Payment complete');
-            $shopBody = _(
-                'The customer has approved the payment and the following order must be shipped to the customer.<br />
+	$shopSubject = _('Payment complete');
+	$shopBody = _(
+	    'The customer has approved the payment and the following order must be shipped to the customer.<br />
 <br />
 Remember to \'expedite\' the payment when the product is sent (The payment is first transferred from the customer\'s account once we hit \'Expedite\').'
-            ) .'<br />';
+	) .'<br />';
 
-            include_once 'inc/countries.php';
-            $withTax = $faktura['amount'] - $faktura['fragt'];
-            $tax = $withTax * (1 - (1 / (1 + $faktura['momssats'])));
+	include_once 'inc/countries.php';
+	$withTax = $faktura['amount'] - $faktura['fragt'];
+	$tax = $withTax * (1 - (1 / (1 + $faktura['momssats'])));
 
-            $GLOBALS['generatedcontent']['track'] = ' pageTracker._addTrans("'
-            . $faktura['id'] . '", "", "' . $faktura['amount'] . '", "'
-            . $tax . '", "' . $faktura['fragt'] . '", "' . $faktura['by']
-            . '", "", "' . $countries[$faktura['land']] . '");';
-            foreach ($faktura['products'] as $key => $product) {
-                $GLOBALS['generatedcontent']['track'] .= ' pageTracker._addItem("'
-                . $faktura['id'] . '", "' . $faktura['id'] . $key . '", "' . $product
-                . '", "", "'
-                . ($faktura['values'][$key] * (1 + $faktura['momssats'])) . '", "'
-                . $faktura['quantities'][$key] . '");';
-            }
-            $GLOBALS['generatedcontent']['track'] .= ' pageTracker._trackTrans(); ';
+	$GLOBALS['generatedcontent']['track'] = ' pageTracker._addTrans("'
+	. $faktura['id'] . '", "", "' . $faktura['amount'] . '", "'
+	. $tax . '", "' . $faktura['fragt'] . '", "' . $faktura['by']
+	. '", "", "' . $countries[$faktura['land']] . '");';
+	foreach ($faktura['products'] as $key => $product) {
+	    $GLOBALS['generatedcontent']['track'] .= ' pageTracker._addItem("'
+	    . $faktura['id'] . '", "' . $faktura['id'] . $key . '", "' . $product
+	    . '", "", "'
+	    . ($faktura['values'][$key] * (1 + $faktura['momssats'])) . '", "'
+	    . $faktura['quantities'][$key] . '");';
+	}
+	$GLOBALS['generatedcontent']['track'] .= ' pageTracker._trackTrans(); ';
 
-            //Mail to customer start
-            $emailbody = '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+	//Mail to customer start
+	$emailbody = '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml"><head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" /><title>';
-            $emailbody .= sprintf(_('Ordre %d - Payment complete'), $faktura['id']);
-            $emailbody .= '</title><style type="text/css">
+	$emailbody .= sprintf(_('Ordre %d - Payment complete'), $faktura['id']);
+	$emailbody .= '</title><style type="text/css">
 #faktura td { border:1px #000 solid; border-collapse:collapse; padding:2px; }
 </style></head><body>';
 
-            //Generate the reseaving address
-            $emailbody_address = '';
-            if ($faktura['altpost']) {
-                $emailbody_address .= '<td>' . _('Delivery address:') . '</td>';
-            }
-            $emailbody_address .= '</tr><tr><td>' . _('Name:') . '</td><td>'
-            . $faktura['navn'] . '</td>';
-            if ($faktura['altpost']) {
-                $emailbody_address .= '<td>' . $faktura['postname'] . '</td>';
-            }
-            $emailbody_address .= '</tr>';
-            if ($faktura['tlf1'] || ($faktura['altpost'] && $faktura['posttlf'])) {
-                $emailbody_address .= '<tr><td>' . _('Phone:') . '</td><td>'
-                . $faktura['tlf1'] . '</td>';
-                if ($faktura['altpost']) {
-                    $emailbody_address .= '<td>' . $faktura['posttlf'] . '</td>';
-                }
-                $emailbody_address .= '</tr>';
-            }
-            if ($faktura['att'] || ($faktura['altpost'] && $faktura['postatt'])) {
-                $emailbody_address .= '<tr><td>' . _('Attn.:') . '</td><td>'
-                . $faktura['att'] . '</td>';
-                if ($faktura['altpost']) {
-                    $emailbody_address .= '<td>'.$faktura['postatt'].'</td>';
-                }
-                $emailbody_address .= '</tr>';
-            }
-            if ($faktura['adresse']
-                || ($faktura['adresse'] && ($faktura['postaddress'] || $faktura['postaddress2']))
-            ) {
-                $emailbody_address .= '<tr><td>' . _('Address:') . '</td><td>'
-                . $faktura['adresse'] . '</td>';
-                if ($faktura['altpost']) {
-                    $emailbody_address .= '<td>' . $faktura['postaddress'] . '<br />'
-                    . $faktura['postaddress2'] . '</td>';
-                }
-                $emailbody_address .= '</tr>';
-            }
-            if ($faktura['postbox']
-                || ($faktura['altpost'] && $faktura['postpostbox'])
-            ) {
-                $emailbody_address .= '<tr><td>' . _('Postbox:') . '</td><td>'
-                . $faktura['postbox'] . '</td>';
-                if ($faktura['altpost']) {
-                    $emailbody_address .= '<td>' . $faktura['postpostbox'] . '</td>';
-                }
-                $emailbody_address .= '</tr>';
-            }
+	//Generate the reseaving address
+	$emailbody_address = '';
+	if ($faktura['altpost']) {
+	    $emailbody_address .= '<td>' . _('Delivery address:') . '</td>';
+	}
+	$emailbody_address .= '</tr><tr><td>' . _('Name:') . '</td><td>'
+	. $faktura['navn'] . '</td>';
+	if ($faktura['altpost']) {
+	    $emailbody_address .= '<td>' . $faktura['postname'] . '</td>';
+	}
+	$emailbody_address .= '</tr>';
+	if ($faktura['tlf1'] || ($faktura['altpost'] && $faktura['posttlf'])) {
+	    $emailbody_address .= '<tr><td>' . _('Phone:') . '</td><td>'
+	    . $faktura['tlf1'] . '</td>';
+	    if ($faktura['altpost']) {
+		$emailbody_address .= '<td>' . $faktura['posttlf'] . '</td>';
+	    }
+	    $emailbody_address .= '</tr>';
+	}
+	if ($faktura['att'] || ($faktura['altpost'] && $faktura['postatt'])) {
+	    $emailbody_address .= '<tr><td>' . _('Attn.:') . '</td><td>'
+	    . $faktura['att'] . '</td>';
+	    if ($faktura['altpost']) {
+		$emailbody_address .= '<td>'.$faktura['postatt'].'</td>';
+	    }
+	    $emailbody_address .= '</tr>';
+	}
+	if ($faktura['adresse']
+	    || ($faktura['adresse'] && ($faktura['postaddress'] || $faktura['postaddress2']))
+	) {
+	    $emailbody_address .= '<tr><td>' . _('Address:') . '</td><td>'
+	    . $faktura['adresse'] . '</td>';
+	    if ($faktura['altpost']) {
+		$emailbody_address .= '<td>' . $faktura['postaddress'] . '<br />'
+		. $faktura['postaddress2'] . '</td>';
+	    }
+	    $emailbody_address .= '</tr>';
+	}
+	if ($faktura['postbox']
+	    || ($faktura['altpost'] && $faktura['postpostbox'])
+	) {
+	    $emailbody_address .= '<tr><td>' . _('Postbox:') . '</td><td>'
+	    . $faktura['postbox'] . '</td>';
+	    if ($faktura['altpost']) {
+		$emailbody_address .= '<td>' . $faktura['postpostbox'] . '</td>';
+	    }
+	    $emailbody_address .= '</tr>';
+	}
 
-            $emailbody_address .= '<tr><td>' . _('Zipcode:') . '</td><td>'
-            . $faktura['postnr'] . '</td>';
-            if ($faktura['altpost']) {
-                $emailbody_address .= '<td>' . $faktura['postpostalcode'] . '</td>';
-            }
-            $emailbody_address .= '</tr><tr><td>' . _('City:') . '</td><td>'
-            . $faktura['by'] . '</td>';
-            if ($faktura['altpost']) {
-                $emailbody_address .= '<td>' . $faktura['postcity'] . '</td>';
-            }
-            $emailbody_address .= '</tr><tr><td>' . _('Country:') . '</td><td>'
-            . $countries[$faktura['land']] . '</td>';
-            if ($faktura['altpost']) {
-                $emailbody_address .= '<td>' . $countries[$faktura['postcountry']]
-                . '</td>';
-            }
-            if ($faktura['tlf2']) {
-                $emailbody_address .= '</tr><tr><td>' . _('Mobile:') . '</td><td>'
-                . $faktura['tlf2'].'</td>';
-            }
-            $netto = 0;
-            for ($i = 0; $i < $productslines; $i++) {
-                $netto += $faktura['values'][$i] * $faktura['quantities'][$i];
-            }
+	$emailbody_address .= '<tr><td>' . _('Zipcode:') . '</td><td>'
+	. $faktura['postnr'] . '</td>';
+	if ($faktura['altpost']) {
+	    $emailbody_address .= '<td>' . $faktura['postpostalcode'] . '</td>';
+	}
+	$emailbody_address .= '</tr><tr><td>' . _('City:') . '</td><td>'
+	. $faktura['by'] . '</td>';
+	if ($faktura['altpost']) {
+	    $emailbody_address .= '<td>' . $faktura['postcity'] . '</td>';
+	}
+	$emailbody_address .= '</tr><tr><td>' . _('Country:') . '</td><td>'
+	. $countries[$faktura['land']] . '</td>';
+	if ($faktura['altpost']) {
+	    $emailbody_address .= '<td>' . $countries[$faktura['postcountry']]
+	    . '</td>';
+	}
+	if ($faktura['tlf2']) {
+	    $emailbody_address .= '</tr><tr><td>' . _('Mobile:') . '</td><td>'
+	    . $faktura['tlf2'].'</td>';
+	}
+	$netto = 0;
+	for ($i = 0; $i < $productslines; $i++) {
+	    $netto += $faktura['values'][$i] * $faktura['quantities'][$i];
+	}
 
-            $productslines = max(
-                count($faktura['quantities']),
-                count($faktura['products']),
-                count($faktura['values'])
-            );
+	$productslines = max(
+	    count($faktura['quantities']),
+	    count($faktura['products']),
+	    count($faktura['values'])
+	);
 
-            $emailbody_tablerows = '';
-            for ($i=0; $i<$productslines; $i++) {
-                $plusTax = $faktura['values'][$i] * (1 + $faktura['momssats']);
-                $emailbody_tablerows .= '<tr><td class="tal">'
-                . $faktura['quantities'][$i] . '</td><td>'
-                . htmlspecialchars_decode($faktura['products'][$i])
-                . '</td><td class="tal">'
-                . number_format($plusTax, 2, ',', '') . '</td><td class="tal">'
-                . number_format($plusTax * $faktura['quantities'][$i], 2, ',', '')
-                . '</td></tr>';
-            }
+	$emailbody_tablerows = '';
+	for ($i=0; $i<$productslines; $i++) {
+	    $plusTax = $faktura['values'][$i] * (1 + $faktura['momssats']);
+	    $emailbody_tablerows .= '<tr><td class="tal">'
+	    . $faktura['quantities'][$i] . '</td><td>'
+	    . htmlspecialchars_decode($faktura['products'][$i])
+	    . '</td><td class="tal">'
+	    . number_format($plusTax, 2, ',', '') . '</td><td class="tal">'
+	    . number_format($plusTax * $faktura['quantities'][$i], 2, ',', '')
+	    . '</td></tr>';
+	}
 
-            $emailbody_nore = '';
-            if ($faktura['note']) {
-                $emailbody_nore = '<br /><strong>' . _('Note:')
-                . '</strong><br /><p class="note">';
-                $note = htmlspecialchars(
-                    $faktura['note'],
-                    ENT_COMPAT | ENT_XHTML,
-                    'UTF-8'
-                );
-                $emailbody_nore .= nl2br($note) . '</p>';
-            }
+	$emailbody_nore = '';
+	if ($faktura['note']) {
+	    $emailbody_nore = '<br /><strong>' . _('Note:')
+	    . '</strong><br /><p class="note">';
+	    $note = htmlspecialchars(
+		$faktura['note'],
+		ENT_COMPAT | ENT_XHTML,
+		'UTF-8'
+	    );
+	    $emailbody_nore .= nl2br($note) . '</p>';
+	}
 
-            if (!validemail($faktura['department'])) {
-                $faktura['department'] = $GLOBALS['_config']['email'][0];
-            }
+	if (!validemail($faktura['department'])) {
+	    $faktura['department'] = $GLOBALS['_config']['email'][0];
+	}
 
-            //generate the actual email content
-            $emailbody .= sprintf(
-                _(
-                    '<p>Date: %s<br />
+	//generate the actual email content
+	$emailbody .= sprintf(
+	    _(
+		'<p>Date: %s<br />
 </p>
 <table><tr><td></td><td>customer:</td>%s</tr>
 <tr><td>Email:</td><td><a href="mailto:%s">%s</a></td></tr></table>
@@ -1357,136 +925,98 @@ Remember to \'expedite\' the payment when the product is sent (The payment is fi
 %s %s.<br />
 Tel. %s<br />
 <a href="mailto:%s">%s</a></p>'
-                ),
-                $faktura['paydate'],
-                $emailbody_address,
-                $faktura['email'],
-                $faktura['email'],
-                $faktura['id'],
-                number_format($netto, 2, ',', ''),
-                number_format($faktura['fragt'], 2, ',', ''),
-                $faktura['momssats']*100,
-                number_format($netto*$faktura['momssats'], 2, ',', ''),
-                number_format($faktura['amount'], 2, ',', ''),
-                $emailbody_tablerows,
-                $emailbody_nore,
-                $faktura['clerk'],
-                $GLOBALS['_config']['site_name'],
-                $GLOBALS['_config']['address'],
-                $GLOBALS['_config']['postcode'],
-                $GLOBALS['_config']['city'],
-                $GLOBALS['_config']['phone'],
-                $faktura['department'],
-                $faktura['department']
-            );
+	    ),
+	    $faktura['paydate'],
+	    $emailbody_address,
+	    $faktura['email'],
+	    $faktura['email'],
+	    $faktura['id'],
+	    number_format($netto, 2, ',', ''),
+	    number_format($faktura['fragt'], 2, ',', ''),
+	    $faktura['momssats']*100,
+	    number_format($netto*$faktura['momssats'], 2, ',', ''),
+	    number_format($faktura['amount'], 2, ',', ''),
+	    $emailbody_tablerows,
+	    $emailbody_nore,
+	    $faktura['clerk'],
+	    $GLOBALS['_config']['site_name'],
+	    $GLOBALS['_config']['address'],
+	    $GLOBALS['_config']['postcode'],
+	    $GLOBALS['_config']['city'],
+	    $GLOBALS['_config']['phone'],
+	    $faktura['department'],
+	    $faktura['department']
+	);
 
-            $emailbody .= '</body></html>';
+	$emailbody .= '</body></html>';
 
-            include_once "inc/phpMailer/class.phpmailer.php";
+	include_once "inc/phpMailer/class.phpmailer.php";
 
-            $mail             = new PHPMailer();
-            $mail->SetLanguage('dk');
-            $mail->IsSMTP();
-            if ($GLOBALS['_config']['emailpassword'] !== false) {
-                $mail->SMTPAuth   = true; // enable SMTP authentication
-                $mail->Username   = $GLOBALS['_config']['email'][0];
-                $mail->Password   = $GLOBALS['_config']['emailpassword'];
-            } else {
-                $mail->SMTPAuth   = false;
-            }
-            $mail->Host       = $GLOBALS['_config']['smtp'];
-            $mail->Port       = $GLOBALS['_config']['smtpport'];
-            $mail->CharSet    = 'utf-8';
-            $mail->AddReplyTo(
-                $faktura['department'],
-                $GLOBALS['_config']['site_name']
-            );
-            $mail->From       = $faktura['department'];
-            $mail->FromName   = $GLOBALS['_config']['site_name'];
-            $subject = _('Order #%d - payment completed');
-            $mail->Subject    = sprintf($subject, $faktura['id']);
-            $mail->MsgHTML($emailbody, $_SERVER['DOCUMENT_ROOT']);
-            $mail->AddAddress($faktura['email'], $GLOBALS['_config']['site_name']);
-            if ($mail->Send()) {
-                //Upload email to the sent folder via imap
-                if ($GLOBALS['_config']['imap']) {
-                    include_once $_SERVER['DOCUMENT_ROOT'] . '/inc/imap.php';
-                    $emailnr = array_search(
-                        $faktura['department'],
-                        $GLOBALS['_config']['email']
-                    );
-                    $imap = new IMAP(
-                        $faktura['department'],
-                        $GLOBALS['_config']['emailpasswords'][$emailnr ? $emailnr : 0],
-                        $GLOBALS['_config']['imap'],
-                        $GLOBALS['_config']['imapport']
-                    );
-                    $imap->append(
-                        $GLOBALS['_config']['emailsent'],
-                        $mail->CreateHeader() . $mail->CreateBody(),
-                        '\Seen'
-                    );
-                    unset($imap);
-                }
-            } else {
-                //TODO secure this against injects and <; in the email and name
-                $mysqli->query(
-                    "
-                    INSERT INTO `emails` (
-                        `subject`,
-                        `from`,
-                        `to`,
-                        `body`,
-                        `date`
-                    )
-                    VALUES (
-                        'Ordre " . $faktura['id'] . " - " . _('Payment complete') . "',
-                        '" . $GLOBALS['_config']['site_name'] . "<" . $faktura['department'] . ">',
-                        '" . $GLOBALS['_config']['site_name'] . "<" . $faktura['email'] . ">',
-                        '" . $emailbody . "',
-                        NOW()
-                    )
-                    "
-                );
-            }
-            //Mail to customer end
-            break;
-        case 1:
-            $GLOBALS['generatedcontent']['text'] = _('Denied/interrupted. The payment was denied or interrupted.');
-            $mysqli->query(
-                "
-                UPDATE `fakturas`
-                SET `status` = 'pbserror',
-                    `paydate` = NOW()
-                WHERE `status` IN('new', 'locked')
-                  AND `id` = " . $id
-            );
-            break;
-        case 2:
-            $GLOBALS['generatedcontent']['text'] = _('Ongoing. Payment awaiting an response from the bank.');
-            break;
-        case 3:
-            $GLOBALS['generatedcontent']['text'] = _('Canceled. The card payment is shredded by the store before cash in.');
-            break;
-        case 4:
-            $GLOBALS['generatedcontent']['text'] = _('Commenced. Payment is initiated by the customer.');
-            break;
-        case 6:
-            $GLOBALS['generatedcontent']['text'] = _('Authorized. Card payment is authorized; awaiting confirmation and cash in.');
-            break;
-        case 7:
-            $GLOBALS['generatedcontent']['text'] = _('Cash in failed. Card payments can not be cashed in.');
-            break;
-        case 8:
-            $GLOBALS['generatedcontent']['text'] = _('Cash-in in progress. Redeeming card payment is currently underway.');
-            break;
-        case 9:
-            $GLOBALS['generatedcontent']['text'] = _('Confirmed. The card payments is confirmed and will be cashed in.');
-            break;
-        case 11:
-            $GLOBALS['generatedcontent']['text'] = _('Sent to bank or Svea Ekonomi. Applies only to the Payment Method INVOICE');
-            break;
-        }
+	$mail             = new PHPMailer();
+	$mail->SetLanguage('dk');
+	$mail->IsSMTP();
+	if ($GLOBALS['_config']['emailpassword'] !== false) {
+	    $mail->SMTPAuth   = true; // enable SMTP authentication
+	    $mail->Username   = $GLOBALS['_config']['email'][0];
+	    $mail->Password   = $GLOBALS['_config']['emailpassword'];
+	} else {
+	    $mail->SMTPAuth   = false;
+	}
+	$mail->Host       = $GLOBALS['_config']['smtp'];
+	$mail->Port       = $GLOBALS['_config']['smtpport'];
+	$mail->CharSet    = 'utf-8';
+	$mail->AddReplyTo(
+	    $faktura['department'],
+	    $GLOBALS['_config']['site_name']
+	);
+	$mail->From       = $faktura['department'];
+	$mail->FromName   = $GLOBALS['_config']['site_name'];
+	$subject = _('Order #%d - payment completed');
+	$mail->Subject    = sprintf($subject, $faktura['id']);
+	$mail->MsgHTML($emailbody, $_SERVER['DOCUMENT_ROOT']);
+	$mail->AddAddress($faktura['email'], $GLOBALS['_config']['site_name']);
+	if ($mail->Send()) {
+	    //Upload email to the sent folder via imap
+	    if ($GLOBALS['_config']['imap']) {
+		include_once $_SERVER['DOCUMENT_ROOT'] . '/inc/imap.php';
+		$emailnr = array_search(
+		    $faktura['department'],
+		    $GLOBALS['_config']['email']
+		);
+		$imap = new IMAP(
+		    $faktura['department'],
+		    $GLOBALS['_config']['emailpasswords'][$emailnr ? $emailnr : 0],
+		    $GLOBALS['_config']['imap'],
+		    $GLOBALS['_config']['imapport']
+		);
+		$imap->append(
+		    $GLOBALS['_config']['emailsent'],
+		    $mail->CreateHeader() . $mail->CreateBody(),
+		    '\Seen'
+		);
+		unset($imap);
+	    }
+	} else {
+	    //TODO secure this against injects and <; in the email and name
+	    $mysqli->query(
+		"
+		INSERT INTO `emails` (
+		    `subject`,
+		    `from`,
+		    `to`,
+		    `body`,
+		    `date`
+		)
+		VALUES (
+		    'Ordre " . $faktura['id'] . " - " . _('Payment complete') . "',
+		    '" . $GLOBALS['_config']['site_name'] . "<" . $faktura['department'] . ">',
+		    '" . $GLOBALS['_config']['site_name'] . "<" . $faktura['email'] . ">',
+		    '" . $emailbody . "',
+		    NOW()
+		)
+		"
+	    );
+	}
     }
 
     include_once "inc/phpMailer/class.phpmailer.php";
@@ -1552,7 +1082,7 @@ Tel. %s<br />
             _('Attn.: %s - Online invoice #%d : %s'),
             $faktura['clerk'],
             $id,
-            $shopSubject
+            htmlspecialchars($shopSubject)
         );
         $emailbody .= '</title>
 <style type="text/css">
@@ -1604,8 +1134,7 @@ Delivery phone: %s</p>
 <html xmlns="http://www.w3.org/1999/xhtml"><head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <title>'.sprintf(_('Online Invoice #%d: does\'t exist'), $id).'</title></head><body>
-' . $shopBody . '<br />' . _('Status:') . ' ' . $_GET['Status']
-        . $_GET['Status_code'] . '<p>' . _('Sincerely the computer') . '</p></body>
+' . $shopBody . '<br />' . _('Status:') . ' ' . htmlspecialchars($_GET['responseCode']) . '<p>' . _('Sincerely the computer') . '</p></body>
 </html>
 </body></html>';
     }
@@ -1683,11 +1212,11 @@ Delivery phone: %s</p>
         <tbody>
           <tr>
             <td>'._('Order No:').'</td>
-            <td><input name="id" value="'.@$_GET['id'].'" /></td>
+            <td><input name="id" value="'.$id.'" /></td>
           </tr>
           <tr>
             <td>'._('Code:').'</td>
-            <td><input name="checkid" value="'.@$_GET['checkid'].'" /></td>
+            <td><input name="checkid" value="'.@htmlspecialchars(@$_GET['checkid']).'" /></td>
           </tr>
         </tbody>
       </table><input type="submit" value="'._('Continue').'" />
