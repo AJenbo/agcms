@@ -101,14 +101,16 @@ class epaymentAdminService
      * Confirm the transation and draw the amount from the users account
      *
      * @param int $transactionId The identifyer for the transation
+     * @param int $amount        The amount to draw from the customers account
      *
      * @return \ref AdminResponse array
      */
-    function confirm($transactionId)
+    function confirm($transactionId, $amount = null)
     {
         $request = new stdClass;
         $request->Operation = 'CAPTURE';
         $request->TransactionId = $transactionId;
+        $request->TransactionAmount = $amount;
         return $this->_call('Process', $request)->ProcessResult;
     }
 
