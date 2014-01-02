@@ -15,36 +15,36 @@
  * Print price and offers
  *
  * @param float $price  Current price
- * @param float $befor  Past price
+ * @param float $before Past price
  * @param int   $from   What type is the curren price
  * @param int   $should What type is the past price
  *
  * @return null
  */
-function echoPrice($price, $befor, $from, $should)
+function echoPrice($price, $before, $from, $should)
 {
-    if ($befor) {
+    if ($before) {
         if ($should == 1) {
             ?>Retail price: <span><?php
         } elseif ($should == 2) {
             ?>Should cost: <span><?php
         } else {
-            ?>Befor: <span class="XPris"><?php
+            ?>Before: <span class="XPris"><?php
         }
-        echo str_replace(',00', ',-', number_format($befor, 2, ',', '.'));
+        echo str_replace(',00', ',-', number_format($before, 2, ',', '.'));
         ?></span><?php
     }
 
     if ($price) {
-        if ($from == 1 && $for) {
+        if ($from == 1 && $before) {
             ?> <span class="NyPris">New price from: <?php
-        } elseif ($from == 2 && $for) {
+        } elseif ($from == 2 && $before) {
             ?> <span class="NyPris">Used: <?php
         } elseif ($from == 1) {
             ?> Price from: <span class="Pris"><?php
         } elseif ($from == 2) {
             ?> Used: <span class="Pris"><?php
-        } elseif ($for) {
+        } elseif ($before) {
             ?> <span class="NyPris">Now: <?php
         } else {
             ?> Price: <span class="Pris"><?php
@@ -188,7 +188,7 @@ if ($GLOBALS['generatedcontent']['contenttype'] == 'front') {
     ?><p style="text-align:center"><?php
     echoPrice(
         $GLOBALS['generatedcontent']['price']['now'],
-        $GLOBALS['generatedcontent']['price']['befor'],
+        $GLOBALS['generatedcontent']['price']['before'],
         $GLOBALS['generatedcontent']['price']['from'],
         $GLOBALS['generatedcontent']['price']['market']
     );
@@ -318,7 +318,7 @@ if ($GLOBALS['generatedcontent']['contenttype'] == 'front') {
                 ?><br /><?php
                 echoPrice(
                     $value['price']['now'],
-                    $value['price']['befor'],
+                    $value['price']['before'],
                     $value['price']['from'],
                     $value['price']['market']
                 );
@@ -359,8 +359,8 @@ if ($GLOBALS['generatedcontent']['contenttype'] == 'front') {
                 echo $value['name'];
                 ?></a></td><?php
                 ?><td class="XPris" align="right"><?php
-                if ($value['price']['befor']) {
-                    echo number_format($value['price']['befor'], 0, '', '.') . ',-';
+                if ($value['price']['before']) {
+                    echo number_format($value['price']['before'], 0, '', '.') . ',-';
                 }
                 ?></td><td class="Pris" align="right"><?php
                 if ($value['price']['now']) {

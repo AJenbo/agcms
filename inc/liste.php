@@ -71,7 +71,7 @@ function vare($side, $katnavn, $type)
             'icon' => @$side['billed'],
             'text' => @$side['beskrivelse'],
             'price' => array(
-                'befor' => @$side['for'],
+                'before' => @$side['for'],
                 'now' => @$side['pris'],
                 'from' => @$side['fra'],
                 'market' => @$side['burde']));
@@ -83,7 +83,7 @@ function vare($side, $katnavn, $type)
             'link' => $link,
             'serial' => @$side['varenr'],
             'price' => array(
-                'befor' => @$side['for'],
+                'before' => @$side['for'],
                 'now' => @$side['pris']));
     }
 }
