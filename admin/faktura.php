@@ -88,14 +88,26 @@ if ($faktura['id']) {
             );
         }
 
-        if ($epayment->Summary->Annulled) {
+        if ($epayment->Error) {
+            //An error occurred at PBS
+            if (!in_array($faktura['status'], array('accepted', 'rejected', 'giro', 'cash', 'canceled'))) {
+                $faktura['status'] = 'pbserror';
+                $mysqli->query(
+                    "
+                    UPDATE `fakturas` SET `status` = 'pbserror'
+                    WHERE `id` = " . $faktura['id']
+                );
+            } else {
+                //TODO warning
+            }
+        } elseif ($epayment->Summary->Annulled) {
             //Annulled. The card payment has been deleted by the Merchant, prior to Acquisition.
             if (!in_array($faktura['status'], array('rejected', 'giro', 'cash', 'canceled'))) {
                 $faktura['status'] = 'rejected';
                 $mysqli->query(
                     "
                     UPDATE `fakturas` SET `status` = 'rejected'
-                    WHERE `id` = ".$faktura['id']
+                    WHERE `id` = " . $faktura['id']
                 );
             } else {
                 //TODO warning
@@ -1084,9 +1096,11 @@ if ($faktura['status'] == 'new') {
         echo ' d. '.date(_('m/d/Y'), $faktura['paydate']);
     }
 } elseif ($faktura['status'] == 'pbserror') {
-    echo _('Error during the payment');
+    echo _('Payment error: ');
     if ($epayment->Error && $epayment->Error->ResponseCode == 17) {
-        echo _(', customer cancled.');
+        echo _(' customer canceled.');
+    } elseif ($epayment->Error) {
+        echo $epayment->Error->ResponseSource . ' - ' . $epayment->Error->ResponseText;
     }
 } elseif ($faktura['status'] == 'canceled') {
     echo _('Canceled');
@@ -1546,9 +1560,9 @@ if ($faktura['status'] == 'new') {
 </div><?php
 if (!in_array($faktura['status'], array('canceled', 'new', 'accepted'))) {
     if ((!$faktura['altpost'] && $faktura['land'] == 'DK') || ($faktura['postcountry'] == 'DK' && $faktura['altpost'])) {
-        $activityButtons[] = '<li><a href="/post/?type='.($faktura['status'] == 'locked' ? 'O&amp;value='.number_format($faktura['amount'], 2, ',', '') : 'P').(!$faktura['altpost'] ? '&amp;tlf1='.rawurlencode($faktura['tlf1']).'&amp;postbox='.rawurlencode($faktura['postbox']).'&amp;tlf2='.rawurlencode($faktura['tlf2']).'&amp;name='.rawurlencode($faktura['navn']).'&amp;att='.rawurlencode($faktura['att']).'&amp;address='.rawurlencode($faktura['adresse']).'&amp;zipcode='.rawurlencode($faktura['postnr']) : '&amp;tlf1='.rawurlencode($faktura['posttlf']).'&amp;postbox='.rawurlencode($faktura['postpostbox']).'&amp;name='.rawurlencode($faktura['postname']).'&amp;att='.rawurlencode($faktura['postatt']).'&amp;address='.rawurlencode($faktura['postaddress']).'&amp;address2='.rawurlencode($faktura['postaddress2']).'&amp;zipcode='.rawurlencode($faktura['postpostalcode'])).'&amp;email='.rawurlencode($faktura['email']).'&amp;porto='.number_format($faktura['fragt'], 2, ',', '').'&amp;fakturaid='.$faktura['id'].'" target="_blank"><img src="images/package.png" alt="" title="Opret pakke lable" width="16" height="16" /> Opret pakke lable</a></li>';
+        $activityButtons[] = '<li><a href="http://www.jagtogfiskerimagasinet.dk/post/?type='.($faktura['status'] == 'locked' ? 'O&amp;value='.number_format($faktura['amount'], 2, ',', '') : 'P').(!$faktura['altpost'] ? '&amp;tlf1='.rawurlencode($faktura['tlf1']).'&amp;postbox='.rawurlencode($faktura['postbox']).'&amp;tlf2='.rawurlencode($faktura['tlf2']).'&amp;name='.rawurlencode($faktura['navn']).'&amp;att='.rawurlencode($faktura['att']).'&amp;address='.rawurlencode($faktura['adresse']).'&amp;zipcode='.rawurlencode($faktura['postnr']) : '&amp;tlf1='.rawurlencode($faktura['posttlf']).'&amp;postbox='.rawurlencode($faktura['postpostbox']).'&amp;name='.rawurlencode($faktura['postname']).'&amp;att='.rawurlencode($faktura['postatt']).'&amp;address='.rawurlencode($faktura['postaddress']).'&amp;address2='.rawurlencode($faktura['postaddress2']).'&amp;zipcode='.rawurlencode($faktura['postpostalcode'])).'&amp;email='.rawurlencode($faktura['email']).'&amp;porto='.number_format($faktura['fragt'], 2, ',', '').'" target="_blank"><img src="images/package.png" alt="" title="Opret pakke lable" width="16" height="16" /> Opret pakke lable</a></li>';
     } else {
-        $activityButtons[] = '<li><a href="/pnl/?fakturaid='.$faktura['id'].'&amp;email='.rawurlencode($faktura['email']).(!$faktura['altpost'] ? '&amp;name='.rawurlencode($faktura['navn']).'&amp;att='.rawurlencode($faktura['att']).'&amp;address='.rawurlencode($faktura['adresse'] ? $faktura['adresse'] : $faktura['postbox']).'&amp;postcode='.rawurlencode($faktura['postnr']).'&amp;city='.rawurlencode($faktura['by']).'&amp;country='.rawurlencode($faktura['land']) : '&amp;name='.rawurlencode($faktura['postname']).'&amp;att='.rawurlencode($faktura['postatt']).'&amp;address='.rawurlencode($faktura['postaddress'] ? $faktura['postaddress'] : $faktura['postpostbox']).'&amp;address='.rawurlencode($faktura['postaddress2']).'&amp;postcode='.rawurlencode($faktura['postpostalcode']).'&amp;city='.rawurlencode($faktura['postcity']).'&amp;country='.rawurlencode($faktura['postcountry'])).'" target="_blank"><img src="images/package.png" alt="" title="Opret pakke lable" width="16" height="16" /> Opret pakke lable</a></li>';
+        $activityButtons[] = '<li><a href="http://www.jagtogfiskerimagasinet.dk/pnl/?email='.rawurlencode($faktura['email']).(!$faktura['altpost'] ? '&amp;name='.rawurlencode($faktura['navn']).'&amp;att='.rawurlencode($faktura['att']).'&amp;address='.rawurlencode($faktura['adresse'] ? $faktura['adresse'] : $faktura['postbox']).'&amp;postcode='.rawurlencode($faktura['postnr']).'&amp;city='.rawurlencode($faktura['by']).'&amp;country='.rawurlencode($faktura['land']) : '&amp;name='.rawurlencode($faktura['postname']).'&amp;att='.rawurlencode($faktura['postatt']).'&amp;address='.rawurlencode($faktura['postaddress'] ? $faktura['postaddress'] : $faktura['postpostbox']).'&amp;address='.rawurlencode($faktura['postaddress2']).'&amp;postcode='.rawurlencode($faktura['postpostalcode']).'&amp;city='.rawurlencode($faktura['postcity']).'&amp;country='.rawurlencode($faktura['postcountry'])).'" target="_blank"><img src="images/package.png" alt="" title="Opret pakke lable" width="16" height="16" /> Opret pakke lable</a></li>';
     }
 }
 

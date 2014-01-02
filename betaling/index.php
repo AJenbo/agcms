@@ -725,6 +725,7 @@ if (!empty($id) && @$_GET['checkid'] == getCheckid($id) && !isset($_GET['respons
         $GLOBALS['generatedcontent']['text'] = '<p>'._('Payment is registered and you ought to have received a receipt by email.').'</p>';
         $shopBody = '<br />'.sprintf(_('A customer tried to see the status page for online invoice #%d, which is already paid.'). $id).'<br />';
     } elseif ($_GET['responseCode'] == 'OK') {
+	//TODO validate the satatus
         $GLOBALS['generatedcontent']['crumbs'][1] = array(
             'name' => _('Reciept'),
             'link' => '#',
