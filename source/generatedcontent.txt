@@ -21,7 +21,7 @@ if('front') {
 	['list'][0]['link'] = string
 	['list'][0]['icon'] = string
 	['list'][0]['text'] = string
-	['list'][0]['price']['befor'] = int
+	['list'][0]['price']['before'] = int
 	['list'][0]['price']['now'] = int
 	['list'][0]['price']['from'] = int
 	['list'][0]['price']['market'] = int
@@ -29,7 +29,7 @@ if('front') {
 	['headline'] = string
 	['serial'] = string
 	['text'] = string
-	['price']['befor'] = int
+	['price']['before'] = int
 	['price']['now'] = int
 	['price']['from'] = int
 	['price']['market'] = int
@@ -43,7 +43,7 @@ if('front') {
 	['list'][0]['link'] = string
 	['list'][0]['icon'] = string
 	['list'][0]['text'] = string
-	['list'][0]['price']['befor'] = int
+	['list'][0]['price']['before'] = int
 	['list'][0]['price']['now'] = int
 	['list'][0]['price']['from'] = int
 	['list'][0]['price']['market'] = int
@@ -52,7 +52,7 @@ if('front') {
 	['list'][0]['link'] = string
 	['list'][0]['icon'] = string
 	['list'][0]['text'] = string
-	['list'][0]['price']['befor'] = int
+	['list'][0]['price']['before'] = int
 	['list'][0]['price']['now'] = int
 	['list'][0]['price']['from'] = int
 	['list'][0]['price']['market'] = int
@@ -60,7 +60,7 @@ if('front') {
 	['list'][0]['name'] = string
 	['list'][0]['link'] = string
 	['list'][0]['serial'] = string
-	['list'][0]['price']['befor'] = int
+	['list'][0]['price']['before'] = int
 	['list'][0]['price']['now'] = int
 }
 

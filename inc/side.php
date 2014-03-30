@@ -78,7 +78,7 @@ function side()
         . '.html';
     }
 
-    $GLOBALS['generatedcontent']['price']['befor']  = $GLOBALS['side']['for'];
+    $GLOBALS['generatedcontent']['price']['before']  = $GLOBALS['side']['for'];
     $GLOBALS['generatedcontent']['price']['now']    = $GLOBALS['side']['pris'];
     $GLOBALS['generatedcontent']['price']['from']   = $GLOBALS['side']['fra'];
     $GLOBALS['generatedcontent']['price']['market'] = $GLOBALS['side']['burde'];
@@ -181,7 +181,7 @@ function side()
                 . clearFileName($value['navn']) . '.html',
             'icon' => $value['billed'],
             'text' => '',
-            'price' => array('befor' => $value['for'],
+            'price' => array('before' => $value['for'],
             'now' => $value['pris'],
             'from' => $value['fra'],
             'market' => $value['burde']));
