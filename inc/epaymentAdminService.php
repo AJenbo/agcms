@@ -72,12 +72,12 @@ class epaymentAdminService
         $request->Order = new stdClass;
         $request->Order->Amount = $amount;
         $request->Order->CurrencyCode = $currencyCode;
-        $request->Order->Force3DSecure = false;
+        $request->Order->Force3DSecure = 'false';
         $request->Order->OrderNumber = $transactionId;
         $request->Terminal = new stdClass;
-        $request->Terminal->AutoAuth = true;
+        $request->Terminal->AutoAuth = 'true';
         $request->Terminal->Language = $language;
-        $request->Terminal->RedirectOnError = true;
+        $request->Terminal->RedirectOnError = 'true';
         $request->Terminal->RedirectUrl = $redirectUrl;
         $request->TransactionId = $transactionId;
         return $this->_call('Register', $request)->RegisterResult;
