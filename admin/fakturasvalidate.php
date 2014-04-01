@@ -128,23 +128,7 @@ foreach ($fakturas as $i => $faktura) {
     <td style="text-align:right"><a href="faktura.php?id=<?php echo $faktura['id'] ?>"><?php echo $faktura['id'] ?></a></td>
     <td style="text-align:right"><a href="faktura.php?id=<?php echo $faktura['id'] ?>"><?php
     if ($faktura['status'] == 'accepted') {
-        switch($faktura['cardtype']) {
-        case 'DANKORT':
-            echo _('Dankort');
-            break;
-        case 'MASTERCARD':
-            echo _('MasterCard');
-            break;
-        case 'AMEX':
-            echo _('American Express');
-            break;
-        case 'VISA':
-            echo _('VISA');
-            break;
-        default:
-            echo _('Unknown');
-            break;
-        }
+        echo $faktura['cardtype'] ? $faktura['cardtype'] : _('Unknown');
     } elseif ($faktura['status'] == 'giro') {
         echo _('Bank overførsel');
     }
