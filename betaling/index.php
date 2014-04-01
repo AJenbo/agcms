@@ -335,12 +335,12 @@ if (!empty($id) && @$_GET['checkid'] == getCheckid($id) && !isset($_GET['respons
             <tr>
                 <td> '._('Phone:').'</td>
                 <td colspan="2"><input name="tlf1" id="tlf1" style="width:157px" value="'.$faktura['tlf1'].'" /></td>
-                <td><input type="button" value="'._('Get address').'" onclick="get_address(document.getElementById(\'tlf1\').value, get_address_r1);" /></td>
+                <td><input type="button" value="'._('Get address').'" onclick="getAddress(document.getElementById(\'tlf1\').value, getAddress_r1);" /></td>
             </tr>
             <tr>
                 <td> '._('Mobile:').'</td>
                 <td colspan="2"><input name="tlf2" id="tlf2" style="width:157px" value="'.$faktura['tlf2'].'" /></td>
-                <td><input type="button" value="'._('Get address').'" onclick="get_address(document.getElementById(\'tlf2\').value, get_address_r1);" /></td>
+                <td><input type="button" value="'._('Get address').'" onclick="getAddress(document.getElementById(\'tlf2\').value, getAddress_r1);" /></td>
             </tr>
             <tr>
                 <td>'._('Name:').'</td>
@@ -425,7 +425,7 @@ if (!empty($id) && @$_GET['checkid'] == getCheckid($id) && !isset($_GET['respons
             $GLOBALS['generatedcontent']['text'] .= '>
                 <td> '._('Phone:').'</td>
                 <td colspan="2"><input name="posttlf" id="posttlf" style="width:157px" value="'.$faktura['posttlf'].'" /></td>
-                <td><input type="button" value="'._('Get address').'" onclick="get_address(document.getElementById(\'posttlf\').value, get_address_r2);" /></td>
+                <td><input type="button" value="'._('Get address').'" onclick="getAddress(document.getElementById(\'posttlf\').value, getAddress_r2);" /></td>
             </tr>
             <tr class="altpost"';
             if (empty($faktura['altpost'])) {

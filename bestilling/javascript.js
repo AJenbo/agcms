@@ -45,7 +45,7 @@ function showhidealtpost(status) {
     }
 }
 
-function get_address_r1(responce) {
+function getAddress_r1(responce) {
     if (responce['error']) {
         alert(responce['error']);
         return false;
@@ -73,7 +73,7 @@ function get_address_r1(responce) {
     }
 }
 
-function get_address_r2(responce) {
+function getAddress_r2(responce) {
     if (responce['error']) {
         alert(responce['error']);
         return false;
