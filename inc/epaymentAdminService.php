@@ -37,6 +37,7 @@ class epaymentAdminService
 
         $response = $this->_soapClient->gettransactionlist(
             array(
+                'pwd' => $GLOBALS['_config']['pbspwd'],
                 'merchantnumber' => $this->_merchantId,
                 'searchorderid' => $orderId,
                 'status' => 'PAYMENT_NEW',
@@ -49,6 +50,7 @@ class epaymentAdminService
         if (!(array) $response->transactionInformationAry) {
             $response = $this->_soapClient->gettransactionlist(
                 array(
+                    'pwd' => $GLOBALS['_config']['pbspwd'],
                     'merchantnumber' => $this->_merchantId,
                     'searchorderid' => $orderId,
                     'status' => 'PAYMENT_CAPTURED',
@@ -61,6 +63,7 @@ class epaymentAdminService
         if (!(array) $response->transactionInformationAry) {
             $response = $this->_soapClient->gettransactionlist(
                 array(
+                    'pwd' => $GLOBALS['_config']['pbspwd'],
                     'merchantnumber' => $this->_merchantId,
                     'searchorderid' => $orderId,
                     'status' => 'PAYMENT_DELETED',
@@ -98,6 +101,7 @@ class epaymentAdminService
     {
         $response = $this->_soapClient->delete(
             array(
+                'pwd' => $GLOBALS['_config']['pbspwd'],
                 'merchantnumber' => $this->_merchantId,
                 'transactionid' => $this->id,
                 'epayresponse' => true,
@@ -138,6 +142,7 @@ class epaymentAdminService
 
         $response = $this->_soapClient->capture(
             array(
+                'pwd' => $GLOBALS['_config']['pbspwd'],
                 'merchantnumber' => $this->_merchantId,
                 'transactionid' => $this->id,
                 'amount' => $amount,

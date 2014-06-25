@@ -568,6 +568,7 @@ if (!empty($id) && @$_GET['checkid'] == getCheckid($id) && !isset($_GET['txnid']
 		'accepturl'         => $GLOBALS['_config']['base_url'] . '/betaling/?id=' . $id . '&checkid=' . $_GET['checkid'],
 		'cancelurl'         => $GLOBALS['_config']['base_url'] . $_SERVER['REQUEST_URI'],
 		'windowstate'       => 3,
+		'windowid'          => $GLOBALS['_config']['pbswindow'],
 	    );
             foreach ($submit as $key => $value) {
                 $GLOBALS['generatedcontent']['text'] .= '<input type="hidden" name="'
