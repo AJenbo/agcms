@@ -124,7 +124,7 @@ if ($faktura['id'] && $faktura['status'] != 'new') {
 
 function getCheckid($id)
 {
-    return substr(md5($id.$GLOBALS['_config']['pbspassword']), 3, 5);
+    return substr(md5($id.$GLOBALS['_config']['pbssalt']), 3, 5);
 }
 
 function copytonew($id)

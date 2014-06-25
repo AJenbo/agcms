@@ -41,6 +41,7 @@ $GLOBALS['_config']['pbspassword'] = '';
 $GLOBALS['_config']['pbsfix'] = '';
 $GLOBALS['_config']['pbswindow'] = 0;
 $GLOBALS['_config']['pbspwd'] = '';
+$GLOBALS['_config']['pbssalt'] = '';
 
 $GLOBALS['_config']['mysql_server'] = 'localhost';
 $GLOBALS['_config']['mysql_user'] = '';
