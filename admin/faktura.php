@@ -1,5 +1,5 @@
 <?php
-/*
+/**/
 ini_set('display_errors', 1);
 error_reporting(-1);
 /**/
@@ -66,101 +66,58 @@ if ($faktura['premoms']) {
     }
 }
 
-if ($faktura['id']) {
-    try {
-        $epaymentAdminService = new epaymentAdminService(
-            $GLOBALS['_config']['pbsid'],
-            $GLOBALS['_config']['pbspassword']
-        );
+if ($faktura['id'] && $faktura['status'] != 'new') {
+    $epayment = new epaymentAdminService(
+        $GLOBALS['_config']['pbsid'],
+        $GLOBALS['_config']['pbsfix'] . $faktura['id']
+    );
 
-        $epayment = $epaymentAdminService->query(
-            $GLOBALS['_config']['pbsfix'] . $faktura['id']
-        );
-
-        if ($faktura['cardtype'] == ''
-            && $epayment->CardInformation->PaymentMethod
-        ) {
+    if ($epayment->Annulled) {
+        //Annulled. The card payment has been deleted by the Merchant, prior to Acquisition.
+        if (!in_array($faktura['status'], array('rejected', 'giro', 'cash', 'canceled'))) {
+            $faktura['status'] = 'rejected';
             $mysqli->query(
                 "
-                UPDATE `fakturas` SET
-                `cardtype` = '" . $epayment->CardInformation->PaymentMethod . "'
+                UPDATE `fakturas` SET `status` = 'rejected'
                 WHERE `id` = " . $faktura['id']
             );
-        }
-
-        if ($epayment->Error) {
-            //An error occurred at PBS
-            if (!in_array($faktura['status'], array('accepted', 'rejected', 'giro', 'cash', 'canceled'))) {
-                $faktura['status'] = 'pbserror';
-                $mysqli->query(
-                    "
-                    UPDATE `fakturas` SET `status` = 'pbserror'
-                    WHERE `id` = " . $faktura['id']
-                );
-            } else {
-                //TODO warning
-            }
-        } elseif ($epayment->Summary->Annulled) {
-            //Annulled. The card payment has been deleted by the Merchant, prior to Acquisition.
-            if (!in_array($faktura['status'], array('rejected', 'giro', 'cash', 'canceled'))) {
-                $faktura['status'] = 'rejected';
-                $mysqli->query(
-                    "
-                    UPDATE `fakturas` SET `status` = 'rejected'
-                    WHERE `id` = " . $faktura['id']
-                );
-            } else {
-                //TODO warning
-            }
-        } elseif ($epayment->Summary->AmountCaptured) {
-            //The payment/order placement has been carried out: Paid.
-            if ($epayment->Summary->AmountCaptured / 100 != $faktura['amount']) {
-                //TODO 'Det betalte beløb er ikke svarende til det opkrævede beløb!';
-            } elseif (!in_array($faktura['status'], array('accepted', 'giro', 'cash'))) {
-                $faktura['status'] = 'accepted';
-                $mysqli->query(
-                    "
-                    UPDATE `fakturas` SET `status` = 'accepted'
-                    WHERE `id` = ".$faktura['id']
-                );
-            } else {
-                //TODO warning
-            }
-        } elseif ($epayment->Summary->Authorized) {
-            //Authorised. The card payment is authorised and awaiting confirmation and Acquisition.
-            if (!in_array($faktura['status'], array('pbsok', 'giro', 'cash'))) {
-                $faktura['status'] = 'pbsok';
-                $mysqli->query(
-                    "
-                    UPDATE `fakturas` SET `status` = 'pbsok'
-                    WHERE `id` = " . $faktura['id']
-                );
-            } else {
-                //TODO warning
-            }
         } else {
-            //For Order Administration: The transaction does not exist.
-            if ($faktura['status'] == 'pbsok') {
-                $faktura['status'] = 'locked';
-                $mysqli->query(
-                    "
-                    UPDATE `fakturas` SET `status` = 'locked'
-                    WHERE `id` = " . $faktura['id']
-                );
-            }
+            //TODO warning
         }
-    } catch(SoapFault $e) {
-        if ($e->faultstring == 'Unable to find transaction') {
-            if ($faktura['status'] == 'pbsok') {
-                $faktura['status'] = 'locked';
-                $mysqli->query(
-                    "
-                    UPDATE `fakturas` SET `status` = 'locked'
-                    WHERE `id` = " . $faktura['id']
-                );
-            }
+    } elseif ($epayment->AmountCaptured) {
+        //The payment/order placement has been carried out: Paid.
+        if ($epayment->AmountCaptured / 100 != $faktura['amount']) {
+            //TODO 'Det betalte beløb er ikke svarende til det opkrævede beløb!';
+        } elseif (!in_array($faktura['status'], array('accepted', 'giro', 'cash'))) {
+            $faktura['status'] = 'accepted';
+            $mysqli->query(
+                "
+                UPDATE `fakturas` SET `status` = 'accepted'
+                WHERE `id` = ".$faktura['id']
+            );
         } else {
-            throw $e;
+            //TODO warning
+        }
+    } elseif ($epayment->Authorized) {
+        //Authorised. The card payment is authorised and awaiting confirmation and Acquisition.
+        if (!in_array($faktura['status'], array('pbsok', 'giro', 'cash'))) {
+            $faktura['status'] = 'pbsok';
+            $mysqli->query(
+                "
+                UPDATE `fakturas` SET `status` = 'pbsok'
+                WHERE `id` = " . $faktura['id']
+            );
+        } else {
+            //TODO warning
+        }
+    } elseif (!$epayment->id) {
+        if ($faktura['status'] == 'pbsok') {
+            $faktura['status'] = 'locked';
+            $mysqli->query(
+                "
+                UPDATE `fakturas` SET `status` = 'locked'
+                WHERE `id` = " . $faktura['id']
+            );
         }
     }
 }
@@ -212,6 +169,7 @@ function save($id, $type, $updates)
         $date = "STR_TO_DATE('".$updates['date']."', '%d/%m/%Y')";
         unset($updates['date']);
     }
+
     if (!empty($updates['paydate']) && ($type == 'giro' || $type == 'cash')) {
         $paydate = "STR_TO_DATE('".$updates['paydate']."', '%d/%m/%Y')";
     } elseif ($type == 'lock' || $type == 'cancel') {
@@ -222,7 +180,11 @@ function save($id, $type, $updates)
     $faktura = $mysqli->fetchOne("SELECT `status`, `note` FROM `fakturas` WHERE `id` = ".$id);
 
     if (in_array($faktura['status'], array('locked', 'pbsok', 'rejected'))) {
-        $updates = array('note' => $updates['note'] ? trim($faktura['note']."\n".$updates['note']) : $faktura['note'], 'clerk' => $updates['clerk'], 'department' => $updates['department']);
+        $updates = array(
+            'note' => $updates['note'] ? trim($faktura['note'] . "\n" . $updates['note']) : $faktura['note'],
+            'clerk' => isset($updates['clerk']) ? $updates['clerk'] : '',
+            'department' => $updates['department'],
+        );
         if ($faktura['status'] != 'pbsok') {
             if ($type == 'giro') {
                 $updates['status'] = 'giro';
@@ -259,8 +221,7 @@ function save($id, $type, $updates)
         unset($updates['clerk']);
     }
 
-    if (count($updates)) {
-
+    if (count($updates) || !empty($date) || !empty($paydate)) {
         $sql = "UPDATE `fakturas` SET";
         foreach ($updates as $key => $value) {
             $sql .= " `".addcslashes($key, '`\\')."` = '".addcslashes($value, "'\\")."',";
@@ -268,10 +229,10 @@ function save($id, $type, $updates)
         $sql = substr($sql, 0, -1);
 
         if (!empty($date)) {
-            $sql .= ", date = ".$date;
+            $sql .= ", `date` = ".$date;
         }
         if (!empty($paydate)) {
-            $sql .= ", paydate = ".$paydate;
+            $sql .= ", `paydate` = ".$paydate;
         }
 
         $sql .= ' WHERE `id` = '.$id;
@@ -527,17 +488,15 @@ Fax: %s<br />
 function pbsconfirm($id)
 {
     global $mysqli;
-    global $epaymentAdminService;
+    global $epayment;
 
     try {
-        $response = $epaymentAdminService->confirm(
-            $GLOBALS['_config']['pbsfix'] . $id
-        );
+        $epayment->confirm();
     } catch(SoapFault $e) {
         return array('error' => $e->faultstring);
     }
 
-    if ($response->ResponseCode == 'OK') {
+    if (!$epayment->Error) {
         $mysqli->query(
             "
             UPDATE `fakturas`
@@ -547,7 +506,7 @@ function pbsconfirm($id)
         return true;
     } else {
         return array(
-            'error' => $response->ResponseSource . ': ' . $response->ResponseText
+            'error' => _('An error occurred')
         );
     }
 }
@@ -555,17 +514,15 @@ function pbsconfirm($id)
 function annul($id)
 {
     global $mysqli;
-    global $epaymentAdminService;
+    global $epayment;
 
     try {
-        $response = $epaymentAdminService->annul(
-            $GLOBALS['_config']['pbsfix'] . $id
-        );
+        $epayment->annul();
     } catch(SoapFault $e) {
         return array('error' => $e->faultstring);
     }
 
-    if ($response->ResponseCode == 'OK') {
+    if (!$epayment->Error) {
         $mysqli->query(
             "
             UPDATE `fakturas`
@@ -577,7 +534,7 @@ function annul($id)
         return true;
     } else {
         return array(
-            'error' => $response->ResponseSource . ': ' . $response->ResponseText
+            'error' => _('An error occurred')
         );
     }
 }
@@ -1096,12 +1053,7 @@ if ($faktura['status'] == 'new') {
         echo ' d. '.date(_('m/d/Y'), $faktura['paydate']);
     }
 } elseif ($faktura['status'] == 'pbserror') {
-    echo _('Payment error: ');
-    if ($epayment->Error && $epayment->Error->ResponseCode == 17) {
-        echo _(' customer canceled.');
-    } elseif ($epayment->Error) {
-        echo $epayment->Error->ResponseSource . ' - ' . $epayment->Error->ResponseText;
-    }
+    echo _('An error occurred');
 } elseif ($faktura['status'] == 'canceled') {
     echo _('Canceled');
 } elseif ($faktura['status'] == 'rejected') {
@@ -1124,7 +1076,7 @@ if ($_SESSION['_user']['access'] == 1 && $faktura['transferred']) {
         <tr>
             <td>Oprettet:</td>
             <td><?php if ($faktura['status'] == 'new') { ?>
-                <input maxlength="10" name="date" id="date" size="11" value="<?php echo date(_('m/d/Y'), $faktura['date']); ?>" />
+                <input maxlength="10" name="date" id="date" size="11" value="<?php echo date(_('d/m/Y'), $faktura['date']); ?>" />
                 <script type="text/javascript"><!--
                 new tcal ({ 'controlid': 'date' });
                 --></script>

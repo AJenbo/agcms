@@ -126,7 +126,7 @@ $GLOBALS['generatedcontent']['contenttype'] = 'page';
 $GLOBALS['generatedcontent']['text'] = '';
 $productslines = 0;
 
-if (!empty($id) && @$_GET['checkid'] == getCheckid($id) && !isset($_GET['responseCode'])) {
+if (!empty($id) && @$_GET['checkid'] == getCheckid($id) && !isset($_GET['txnid'])) {
     $rejected = array();
     $faktura = $mysqli->fetchOne(
         "
@@ -135,7 +135,7 @@ if (!empty($id) && @$_GET['checkid'] == getCheckid($id) && !isset($_GET['respons
         WHERE `id` = ".$id
     );
 
-    if (in_array($faktura['status'], array('new', 'locked'))) {
+    if (in_array($faktura['status'], array('new', 'locked', 'pbserror'))) {
         $faktura['quantities'] = explode('<', $faktura['quantities']);
         $faktura['products'] = explode('<', $faktura['products']);
         $faktura['values'] = explode('<', $faktura['values']);
@@ -157,7 +157,7 @@ if (!empty($id) && @$_GET['checkid'] == getCheckid($id) && !isset($_GET['respons
             $netto += $faktura['values'][$i]*$faktura['quantities'][$i];
         }
 
-        if (empty($_GET['step'])) {
+        if (empty($_GET['step'])) { //Show order
             $mysqli->query(
                 "
                 UPDATE `fakturas`
@@ -233,7 +233,7 @@ if (!empty($id) && @$_GET['checkid'] == getCheckid($id) && !isset($_GET['respons
 	    <input style="font-weight:bold;" type="submit" value="' . _('Continue') . '" />
 	    </form>';
 
-        } elseif ($_GET['step'] == 1) {
+        } elseif ($_GET['step'] == 1) { //Fill out customer info
             if ($_POST) {
                 $updates = array();
                 $updates['navn'] = $_POST['navn'];
@@ -518,8 +518,7 @@ if (!empty($id) && @$_GET['checkid'] == getCheckid($id) && !isset($_GET['respons
             $GLOBALS['generatedcontent']['text'] .= ' /><label for="newsletter"> '._('Please send me your newsletter.').'</label></td>
             </tr>';
             $GLOBALS['generatedcontent']['text'] .= '</tbody></table><input style="font-weight:bold;" type="submit" value="'._('Proceed to the terms of trade').'" /></form>';
-        } elseif ($_GET['step'] == 2) {
-
+        } elseif ($_GET['step'] == 2) { //Accept terms and continue to payment
             if (count(validate($faktura))) {
                 ini_set('zlib.output_compression', '0');
                 header(
@@ -557,28 +556,30 @@ if (!empty($id) && @$_GET['checkid'] == getCheckid($id) && !isset($_GET['respons
             );
             $GLOBALS['generatedcontent']['text'] .= '<br />'.$special[0]['text'];
 
-            try {
-		include_once 'inc/epaymentAdminService.php';
-		$epaymentAdminService = new epaymentAdminService(
-		    $GLOBALS['_config']['pbsid'],
-		    $GLOBALS['_config']['pbspassword']
-		);
-		$result = $epaymentAdminService->register(
-		    $GLOBALS['_config']['pbsfix'] . $faktura['id'],
-		    number_format($faktura['amount'], 2, '', ''),
-		    $GLOBALS['_config']['base_url'] . '/betaling/?id=' . $id . '&checkid=' . $_GET['checkid']
-		);
+	    $GLOBALS['generatedcontent']['text'] .= '<form style="text-align:center;" action="https://ssl.ditonlinebetalingssystem.dk/integration/ewindow/Default.aspx" method="post">';
 
-                $GLOBALS['generatedcontent']['text'] .= '<form style="text-align:center;" action="https://epayment.nets.eu/terminal/default.aspx?merchantId='
-                . $GLOBALS['_config']['pbsid']
-                . '&transactionId=' . $result->TransactionId
-                . '" method="post">';
-                $GLOBALS['generatedcontent']['text'] .= '<input class="web" type="submit" value="'._('I hereby agree to the terms of trade').'" /></form>';
-            } catch(Exception $exp) {
-                $GLOBALS['generatedcontent']['text'] .= 'An error occurred in the REGISTER method: ' . $exp->getMessage();
+            $submit = array(
+		'group'             => $GLOBALS['_config']['pbsfix'],
+		'merchantnumber'    => $GLOBALS['_config']['pbsid'],
+		'orderid'           => $GLOBALS['_config']['pbsfix'].$faktura['id'],
+		'currency'          => 208,
+		'amount'            => number_format($faktura['amount'], 2, '', ''),
+		'ownreceipt'        => 1,
+		'accepturl'         => $GLOBALS['_config']['base_url'] . '/betaling/?id=' . $id . '&checkid=' . $_GET['checkid'],
+		'cancelurl'         => $GLOBALS['_config']['base_url'] . $_SERVER['REQUEST_URI'],
+		'windowstate'       => 3,
+	    );
+            foreach ($submit as $key => $value) {
+                $GLOBALS['generatedcontent']['text'] .= '<input type="hidden" name="'
+		    .$key.'" value="'.htmlspecialchars($value).'" />';
             }
+            $GLOBALS['generatedcontent']['text'] .= '<input type="hidden" name="hash" value="'
+		.md5(implode('', $submit).$GLOBALS['_config']['pbspassword']).'" />';
+
+	    $GLOBALS['generatedcontent']['text'] .= '<input class="web" type="submit" value="'._('I hereby agree to the terms of trade').'" />';
+	    $GLOBALS['generatedcontent']['text'] .= '</form>';
         }
-    } else {
+    } else { //Show order status
         $GLOBALS['generatedcontent']['crumbs'] = array();
         $GLOBALS['generatedcontent']['crumbs'][1] = array(
             'name' => _('Error'),
@@ -587,16 +588,7 @@ if (!empty($id) && @$_GET['checkid'] == getCheckid($id) && !isset($_GET['respons
         );
         $GLOBALS['generatedcontent']['title'] = _('Error');
         $GLOBALS['generatedcontent']['headline'] = _('Error');
-        if ($faktura['status'] == 'pbserror') {
-            $GLOBALS['generatedcontent']['crumbs'][1] = array(
-                'name' => _('Status'),
-                'link' => '#',
-                'icon' => null
-            );
-            $GLOBALS['generatedcontent']['title'] = _('Status');
-            $GLOBALS['generatedcontent']['headline'] = _('Status');
-            $GLOBALS['generatedcontent']['text'] = _('The payment was rejected at first attempt. Due to security measures at PBS, you must contact the store before you can try to pay again.');
-        } elseif ($faktura['status'] == 'pbsok') {
+        if ($faktura['status'] == 'pbsok') {
             $GLOBALS['generatedcontent']['crumbs'][1] = array(
                 'name' => _('Status'),
                 'link' => '#',
@@ -671,7 +663,7 @@ if (!empty($id) && @$_GET['checkid'] == getCheckid($id) && !isset($_GET['respons
             $GLOBALS['generatedcontent']['text'] = _('An errror occured.');
         }
     }
-} elseif (isset($_GET['responseCode'])) {
+} elseif (isset($_GET['txnid'])) {
     $GLOBALS['generatedcontent']['crumbs'] = array();
     $GLOBALS['generatedcontent']['crumbs'][1] = array(
         'name' => _('Error'),
@@ -682,25 +674,17 @@ if (!empty($id) && @$_GET['checkid'] == getCheckid($id) && !isset($_GET['respons
     $GLOBALS['generatedcontent']['headline'] = _('Error');
     $GLOBALS['generatedcontent']['text'] = _('An unknown error occured.');
 
-    if (!empty($_GET['responseCode'])) {
-        $shopSubject = $_GET['responseCode'];
-    } else {
-        $shopSubject = _('No Status');
-    }
+    $tid = (int) $_GET['txnid'];
+    $amount = (int) $_GET['amount'];
+
+    $params = $_GET;
+    unset($params['hash']);
+    $eKey = md5(implode('', $params) . $GLOBALS['_config']['pbspassword']);
+
+    $shopSubject = _('Payment code was tampered with!');
     $shopBody = '<br />'.sprintf(_('There was an error on the payment page of online invoice #%d!'), $id).'<br />';
 
     $faktura = $mysqli->fetchOne("SELECT * FROM `fakturas` WHERE `id` = " . $id);
-
-    if ($faktura && $_GET['responseCode'] == 'Cancel') {
-	$mysqli->query(
-	    "
-	    UPDATE `fakturas`
-	    SET `status` = 'pbserror'
-	    WHERE `status` IN('new', 'locked')
-	      AND `id` = " . $id
-	);
-	$faktura['status'] = 'pbserror';
-    }
 
     if (!$faktura) {
         $GLOBALS['generatedcontent']['text'] = '<p>' . _('The payment does not exist in our system.') . '</p>';
@@ -708,13 +692,13 @@ if (!empty($id) && @$_GET['checkid'] == getCheckid($id) && !isset($_GET['respons
             _('A user tried to pay online invoice #%d, which is not in the system!'),
             $id
         ) . '<br />';
-    } elseif (in_array($faktura['status'], array('pbserror', 'canceled', 'rejected'))) {
+    } elseif (in_array($faktura['status'], array('canceled', 'rejected'))) {
         $GLOBALS['generatedcontent']['crumbs'][1] = array('name' => _('Reciept'), 'link' => '#', 'icon' => null);
         $GLOBALS['generatedcontent']['title'] = _('Reciept');
         $GLOBALS['generatedcontent']['headline'] = _('Reciept');
         $GLOBALS['generatedcontent']['text'] = '<p>'._('This trade has been canceled or refused.').'</p>';
         $shopBody = '<br />'.sprintf(_('A customer tried to see the status page for online invoice #%d which is canceled or rejected.'), $id).'<br />';
-    } elseif (!in_array($faktura['status'], array('locked', 'new'))) {
+    } elseif (!in_array($faktura['status'], array('locked', 'new', 'pbserror'))) {
         $GLOBALS['generatedcontent']['crumbs'][1] = array(
             'name' => _('Reciept'),
             'link' => '#',
@@ -723,9 +707,11 @@ if (!empty($id) && @$_GET['checkid'] == getCheckid($id) && !isset($_GET['respons
         $GLOBALS['generatedcontent']['title'] = _('Reciept');
         $GLOBALS['generatedcontent']['headline'] = _('Reciept');
         $GLOBALS['generatedcontent']['text'] = '<p>'._('Payment is registered and you ought to have received a receipt by email.').'</p>';
-        $shopBody = '<br />'.sprintf(_('A customer tried to see the status page for online invoice #%d, which is already paid.'). $id).'<br />';
-    } elseif ($_GET['responseCode'] == 'OK') {
-	//TODO validate the satatus
+        $shopBody = '<br />' . sprintf(
+	    _('A customer tried to see the status page for online invoice #%d, which is already paid.'),
+	    $id
+	) . '<br />';
+    } elseif ($eKey == $_GET['hash']) {
         $GLOBALS['generatedcontent']['crumbs'][1] = array(
             'name' => _('Reciept'),
             'link' => '#',
@@ -733,10 +719,31 @@ if (!empty($id) && @$_GET['checkid'] == getCheckid($id) && !isset($_GET['respons
         );
         $GLOBALS['generatedcontent']['title'] = _('Reciept');
         $GLOBALS['generatedcontent']['headline'] = _('Reciept');
+
+	$cardtype = array(
+	    1  => 'Dankort/Visa-Dankort',
+	    2  => 'eDankort',
+	    3  => 'Visa / Visa Electron',
+	    4  => 'MastercCard',
+	    6  => 'JCB',
+	    7  => 'Maestro',
+	    8  => 'Diners Club',
+	    9  => 'American Express',
+	    11 => 'Forbrugsforeningen',
+	    12 => 'Nordea e-betaling',
+	    13 => 'Danske Netbetalinger',
+	    14 => 'PayPal',
+	    17 => 'Klarna',
+	    18 => 'SveaWebPay',
+	    23 => 'ViaBill',
+	    24 => 'NemPay',
+	);
+
 	$mysqli->query(
 	    "
 	    UPDATE `fakturas`
 	    SET `status` = 'pbsok',
+		`cardtype` = '" . $cardtype[$_GET['paymenttype']] . "',
 		`paydate` = NOW()
 	    WHERE `status` IN('new', 'locked', 'pbserror')
 	      AND `id` = " . $id
@@ -956,7 +963,7 @@ Tel. %s<br />
 	);
 
 	$emailbody .= '</body></html>';
-
+/*
 	include_once "inc/phpMailer/class.phpmailer.php";
 
 	$mail             = new PHPMailer();
@@ -1024,6 +1031,7 @@ Tel. %s<br />
 		"
 	    );
 	}
+	*/
     }
 
     include_once "inc/phpMailer/class.phpmailer.php";
@@ -1146,7 +1154,7 @@ Delivery phone: %s</p>
 </body></html>';
     }
 
-    if (!empty($faktura)) {
+    if (0 && !empty($faktura)) {
         $mail = new PHPMailer();
         $mail->SetLanguage('dk');
         $mail->IsSMTP();
