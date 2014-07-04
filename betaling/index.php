@@ -1155,7 +1155,7 @@ Delivery phone: %s</p>
 </body></html>';
     }
 
-    if (0 && !empty($faktura)) {
+    if (!empty($faktura)) {
         $mail = new PHPMailer();
         $mail->SetLanguage('dk');
         $mail->IsSMTP();
