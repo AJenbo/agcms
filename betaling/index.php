@@ -964,7 +964,7 @@ Tel. %s<br />
 	);
 
 	$emailbody .= '</body></html>';
-/*
+
 	include_once "inc/phpMailer/class.phpmailer.php";
 
 	$mail             = new PHPMailer();
@@ -1032,7 +1032,6 @@ Tel. %s<br />
 		"
 	    );
 	}
-	*/
     }
 
     include_once "inc/phpMailer/class.phpmailer.php";
