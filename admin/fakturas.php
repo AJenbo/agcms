@@ -21,63 +21,69 @@ $mysqli = new Simple_Mysqli(
     $GLOBALS['_config']['mysql_password'],
     $GLOBALS['_config']['mysql_database']
 );
-$sajax_request_type = 'POST';
+$sajax_request_type = 'GET';
 
 $where = array();
 
-if (!empty($_POST['m']) && !empty($_POST['y'])) {
-    $where[] = "`date` >= '".$_POST['y']."-".$_POST['m']."-01'";
-    $where[] = "`date` <= '".$_POST['y']."-".$_POST['m']."-31'";
-} elseif (!empty($_POST['y'])) {
-    $where[] = "`date` >= '".$_POST['y']."-01-01'";
-    $where[] = "`date` <= '".$_POST['y']."-12-31'";
+if (!empty($_GET['m']) && !empty($_GET['y'])) {
+    $where[] = "`date` >= '".$_GET['y']."-".$_GET['m']."-01'";
+    $where[] = "`date` <= '".$_GET['y']."-".$_GET['m']."-31'";
+} elseif (!empty($_GET['y'])) {
+    $where[] = "`date` >= '".$_GET['y']."-01-01'";
+    $where[] = "`date` <= '".$_GET['y']."-12-31'";
 }
 
-if (!empty($_POST['department'])) {
-    $where[] = "`department` = '".$_POST['department']."'";
+if (!empty($_GET['department'])) {
+    $where[] = "`department` = '".$_GET['department']."'";
 }
-if (empty($_POST) && $_SESSION['_user']['access'] != 1) {
+if (empty($_GET) && $_SESSION['_user']['access'] != 1) {
     //Non admin default viewz
     $where[] = "(`clerk` = '".$_SESSION['_user']['fullname']."' OR `clerk` = '')";
-} elseif (!empty($_POST['clerk']) && $_SESSION['_user']['fullname'] == $_POST['clerk']) {
+} elseif (!empty($_GET['clerk']) && $_SESSION['_user']['fullname'] == $_GET['clerk']) {
     //Viewing your self
-    $where[] = "(`clerk` = '".$_POST['clerk']."' OR `clerk` = '')";
-} elseif (!empty($_POST['clerk'])) {
+    $where[] = "(`clerk` = '".$_GET['clerk']."' OR `clerk` = '')";
+} elseif (!empty($_GET['clerk'])) {
     //Viewing some one else
-    $where[] = "(`clerk` = '".$_POST['clerk']."')";
+    $where[] = "(`clerk` = '".$_GET['clerk']."')";
 }
 
-if (empty($_POST) || (!empty($_POST['status']) && $_POST['status'] == 'activ')) {
+if (empty($_GET) || (!empty($_GET['status']) && $_GET['status'] == 'activ')) {
     $where[] = "(`status` = 'new' OR `status` = 'locked' OR `status` = 'pbsok' OR `status` = 'pbserror')";
-} elseif (!empty($_POST['status']) && $_POST['status'] == 'inactiv') {
+} elseif (!empty($_GET['status']) && $_GET['status'] == 'inactiv') {
     $where[] = "(`status` != 'new' AND `status` != 'locked' AND `status` != 'pbsok' AND `status` != 'pbserror')";
-} elseif (!empty($_POST['status']) && $_POST['status']) {
-    $where[] = "`status` = '".$_POST['status']."'";
-}
-if (!empty($_POST['name'])) {
-    $where[] = "`navn` LIKE '%".$_POST['name']."%'";
+} elseif (!empty($_GET['status']) && $_GET['status']) {
+    $where[] = "`status` = '".$_GET['status']."'";
 }
 
-if (!empty($_POST['tlf'])) {
-    $where[] = "(`tlf1` LIKE '%".$_POST['tlf']."%' OR `tlf2` LIKE '%".$_POST['tlf']."%')";
+if (!empty($_GET['name'])) {
+    $where[] = "`navn` LIKE '%".$_GET['name']."%'";
 }
-if (isset($_POST['momssats']) && $_POST['momssats'] !== '') {
-    $where[] = "`momssats` = '" . $_POST['momssats'] . "'";
+
+if (!empty($_GET['tlf'])) {
+    $where[] = "(`tlf1` LIKE '%".$_GET['tlf']."%' OR `tlf2` LIKE '%".$_GET['tlf']."%')";
+}
+
+if (!empty($_GET['email'])) {
+    $where[] = "`email` LIKE '%".$_GET['email']."%'";
+}
+
+if (isset($_GET['momssats']) && $_GET['momssats'] !== '') {
+    $where[] = "`momssats` = '" . $_GET['momssats'] . "'";
 }
 
 
 $where = implode(' AND ', $where);
 
-if (empty($_POST)) {
-    $_POST['y'] = date('Y');
+if (empty($_GET)) {
+    $_GET['y'] = date('Y');
     if ($_SESSION['_user']['access'] != 1) {
-    	$_POST['clerk'] = $_SESSION['_user']['fullname'];
+    	$_GET['clerk'] = $_SESSION['_user']['fullname'];
     }
-    $_POST['status'] = 'activ';
+    $_GET['status'] = 'activ';
 }
 
-if (!empty($_POST['id'])) {
-    $where = " `id` = '".$_POST['id']."'";
+if (!empty($_GET['id'])) {
+    $where = " `id` = '".$_GET['id']."'";
 }
 
 //echo "SELECT `momssats`, `premoms`, `values`, `quantities`, `fragt`, `id`, `status`, `clerk`, `amount`, `navn`, UNIX_TIMESTAMP(`date`) AS `date` FROM `fakturas` WHERE ".$where." ORDER BY `id` DESC"
@@ -153,7 +159,7 @@ a {
 </head>
 <body onload="$('loading').style.visibility = 'hidden';">
 <div id="canvas">
-<form action="" method="post"><table><tr>
+<form action="" method="get"><table><tr>
 <td><?php echo _('ID:'); ?></td>
 <td><?php echo _('Year:'); ?></td>
 <td><?php echo _('Month:'); ?></td>
@@ -163,8 +169,8 @@ a {
 </tr><tr><td>
 
 <input name="id" value="<?php
-if (!empty($_POST['id'])) {
-    echo $_POST['id'];
+if (!empty($_GET['id'])) {
+    echo $_GET['id'];
 }
 ?>" size="4" /></td><td>
 
@@ -178,7 +184,7 @@ if ($oldest) {
 }
 for ($i=$oldest;$i<date('Y')+1;$i++) {
     ?><option value="<?php echo $i; ?>"<?php
-    if (@$_POST['y'] == $i || (@$_POST['y'] == '' && date('Y') == $i)) {
+    if (@$_GET['y'] == $i || (@$_GET['y'] == '' && date('Y') == $i)) {
         echo ' selected="selected"';
     }
     ?>><?php echo $i; ?></option><?php
@@ -186,87 +192,71 @@ for ($i=$oldest;$i<date('Y')+1;$i++) {
 ?></select></td><td>
 <select name="m">
     <option value=""<?php
-if (@!$_POST['m']) {
+if (@!$_GET['m']) {
     echo ' selected="selected"';
 }
 ?>><?php echo _('All'); ?></option>
     <option value="1"<?php
-if (@$_POST['m'] == '1') {
+if (@$_GET['m'] == '1') {
     echo ' selected="selected"';
 }
 ?>><?php echo _('Jan'); ?></option>
     <option value="2"<?php
-if (@$_POST['m'] == '2') {
+if (@$_GET['m'] == '2') {
     echo ' selected="selected"';
 }
 ?>><?php echo _('Feb'); ?></option>
     <option value="3"<?php
-if (@$_POST['m'] == '3') {
+if (@$_GET['m'] == '3') {
     echo ' selected="selected"';
 }
 ?>><?php echo _('Mar'); ?></option>
     <option value="4"<?php
-if (@$_POST['m'] == '4') {
+if (@$_GET['m'] == '4') {
     echo ' selected="selected"';
 }
 ?>><?php echo _('Apr'); ?></option>
     <option value="5"<?php
-if (@$_POST['m'] == '5') {
+if (@$_GET['m'] == '5') {
     echo ' selected="selected"';
 }
 ?>><?php echo _('May'); ?></option>
     <option value="6"<?php
-if (@$_POST['m'] == '6') {
+if (@$_GET['m'] == '6') {
     echo ' selected="selected"';
 }
 ?>><?php echo _('Jun'); ?></option>
     <option value="7"<?php
-if (@$_POST['m'] == '7') {
+if (@$_GET['m'] == '7') {
     echo ' selected="selected"';
 }
 ?>><?php echo _('Jul'); ?></option>
     <option value="8"<?php
-if (@$_POST['m'] == '8') {
+if (@$_GET['m'] == '8') {
     echo ' selected="selected"';
 }
 ?>><?php echo _('Aug'); ?></option>
     <option value="9"<?php
-if (@$_POST['m'] == '9') {
+if (@$_GET['m'] == '9') {
     echo ' selected="selected"';
 }
 ?>><?php echo _('Sep'); ?></option>
     <option value="10"<?php
-if (@$_POST['m'] == '10') {
+if (@$_GET['m'] == '10') {
     echo ' selected="selected"';
 }
 ?>><?php echo _('Oct'); ?></option>
     <option value="11"<?php
-if (@$_POST['m'] == '11') {
+if (@$_GET['m'] == '11') {
     echo ' selected="selected"';
 }
 ?>><?php echo _('Nov'); ?></option>
     <option value="12"<?php
-if (@$_POST['m'] == '12') {
+if (@$_GET['m'] == '12') {
     echo ' selected="selected"';
 }
 ?>><?php echo _('Dec'); ?></option>
-</select>
-
-<?php
-/*
-if (count($GLOBALS['_config']['email']) < 2)
-    echo '<span style="display:none">'
-?></td><td>
-<select name="department">
-    <option value=""<?php if (!$_POST['department']) echo ' selected="selected"' ?>><?php echo _('All'); ?></option><?php
-    foreach ($GLOBALS['_config']['email'] as $email) {
-        ?><option<?php if ($_POST['department'] == $email) echo ' selected="selected"' ?>><?php echo $email ?></option><?php
-    }
-?></select><?php
-if (count($GLOBALS['_config']['email']) < 2)
-    echo '</span>'
-*/
-
+</select><?php
 
 $users = $mysqli->fetchArray(
     "
@@ -282,14 +272,14 @@ if (count($users) < 2) {
 ?></td><td>
 <select name="clerk">
     <option value=""<?php
-if (!$_POST['clerk']) {
+if (!$_GET['clerk']) {
     echo ' selected="selected"';
 }
 ?>><?php echo _('All'); ?></option><?php
 foreach ($users as $user) {
     //warning if a user name is a it could colide with all
     ?><option<?php
-    if ($_POST['clerk'] == $user['fullname']) {
+    if ($_GET['clerk'] == $user['fullname']) {
         echo ' selected="selected"';
     }
     ?>><?php echo $user['fullname'] ?></option><?php
@@ -301,62 +291,62 @@ if (count($users) < 2) {
 ?></td><td>
 <select name="status">
     <option value=""<?php
-if (!$_POST['status']) {
+if (!$_GET['status']) {
     echo ' selected="selected"';
 }
 ?>><?php echo _('All'); ?></option>
     <option value="activ"<?php
-if ($_POST['status'] == 'activ') {
+if ($_GET['status'] == 'activ') {
     echo ' selected="selected"';
 }
 ?>><?php echo _('Current'); ?></option>
     <option value="inactiv"<?php
-if ($_POST['status'] == 'inactiv') {
+if ($_GET['status'] == 'inactiv') {
     echo ' selected="selected"';
 }
 ?>><?php echo _('Completed'); ?></option>
     <option value="new"<?php
-if ($_POST['status'] == 'new') {
+if ($_GET['status'] == 'new') {
     echo ' selected="selected"';
 }
 ?>><?php echo _('New'); ?></option>
     <option value="locked"<?php
-if ($_POST['status'] == 'locked') {
+if ($_GET['status'] == 'locked') {
     echo ' selected="selected"';
 }
 ?>><?php echo _('Locked'); ?></option>
     <option value="pbsok"<?php
-if ($_POST['status'] == 'pbsok') {
+if ($_GET['status'] == 'pbsok') {
     echo ' selected="selected"';
 }
 ?>><?php echo _('Ready'); ?></option>
     <option value="accepted"<?php
-if ($_POST['status'] == 'accepted') {
+if ($_GET['status'] == 'accepted') {
     echo ' selected="selected"';
 }
 ?>><?php echo _('Expedited'); ?></option>
     <option value="giro"<?php
-if ($_POST['status'] == 'giro') {
+if ($_GET['status'] == 'giro') {
     echo ' selected="selected"';
 }
 ?>><?php echo _('Giro'); ?></option>
     <option value="cash"<?php
-if ($_POST['status'] == 'cash') {
+if ($_GET['status'] == 'cash') {
     echo ' selected="selected"';
 }
 ?>><?php echo _('Cash'); ?></option>
     <option value="pbserror"<?php
-if ($_POST['status'] == 'pbserror') {
+if ($_GET['status'] == 'pbserror') {
     echo ' selected="selected"';
 }
 ?>><?php echo _('Error'); ?></option>
     <option value="canceled"<?php
-if ($_POST['status'] == 'canceled') {
+if ($_GET['status'] == 'canceled') {
     echo ' selected="selected"';
 }
 ?>><?php echo _('Canceled'); ?></option>
     <option value="rejected"<?php
-if ($_POST['status'] == 'rejected') {
+if ($_GET['status'] == 'rejected') {
     echo ' selected="selected"';
 }
 ?>><?php echo _('Rejected'); ?></option>
@@ -364,16 +354,70 @@ if ($_POST['status'] == 'rejected') {
 <select name="momssats">
 <option value=""><?php echo _('All'); ?></option>
 <option value="0.25"<?php
-if ($_POST['momssats'] == 0.25) {
+if ($_GET['momssats'] == 0.25) {
     echo ' selected="selected"';
 }
 ?>>25%</option>
 <option value="0"<?php
-if ($_POST['momssats'] === '0') {
+if ($_GET['momssats'] === '0') {
     echo ' selected="selected"';
 }
 ?>>0%</option></select></td>
-<td><input type="submit" value="Hent" /></td></tr></table>
+</tr></table><table><tr>
+<td><?php
+echo _('Name');
+?></td>
+<td><?php
+echo _('Phone');
+?></td>
+<td><?php
+echo _('Email');
+?></td><?php
+if (count($GLOBALS['_config']['email']) > 1) {
+    ?><td><?php
+    echo _('Department');
+    ?></td><?php
+}
+?>
+<td></td>
+</tr><tr>
+<td><input name="name" value="<?php
+if (!empty($_GET['name'])) {
+    echo $_GET['name'];
+}
+?>" maxlength="64" /></td>
+<td><input name="tlf" value="<?php
+if (!empty($_GET['tlf'])) {
+    echo $_GET['tlf'];
+}
+?>" maxlength="16" /></td>
+<td><input name="email" value="<?php
+if (!empty($_GET['email'])) {
+    echo $_GET['email'];
+}
+?>" maxlength="64" /></td><?php
+if (count($GLOBALS['_config']['email']) > 1) {
+    ?><td><select name="department"><option value=""<?php
+    if (!$_GET['department']) {
+        echo ' selected="selected"';
+    }
+    ?>><?php
+    echo _('All');
+    ?></option><?php
+    foreach ($GLOBALS['_config']['email'] as $email) {
+        ?><option<?php
+        if ($_GET['department'] == $email) {
+            echo ' selected="selected"';
+        }
+        ?>><?php
+        echo $email;
+        ?></option><?php
+    }
+    ?></select></td><?php
+}
+?><td><input type="submit" value="Hent" /></td></tr>
+
+</table>
 
 </form>
 <table style="width:100%; margin:0 0 113px 0">
@@ -383,7 +427,7 @@ if ($_POST['momssats'] === '0') {
         <td><?php echo _('ID'); ?></td>
         <td><?php echo _('Created'); ?></td>
         <?php
-if (empty($_POST['clerk'])) {
+if (empty($_GET['clerk'])) {
     ?><td><?php echo _('Responsible'); ?></td><?php
 }
 ?>
@@ -427,7 +471,7 @@ foreach ($fakturas as $i => $faktura) {
     <td style="text-align:right"><a href="faktura.php?id=<?php echo $faktura['id'] ?>"><?php echo $faktura['id'] ?></a></td>
     <td style="text-align:right"><a href="faktura.php?id=<?php echo $faktura['id'] ?>"><?php echo date('j/m/y', $faktura['date']); ?></a></td>
     <?php
-    if (!$_POST['clerk']) {
+    if (!$_GET['clerk']) {
         ?><td><a href="faktura.php?id=<?php echo $faktura['id'] ?>"><?php
         echo $faktura['clerk'];
         ?></a></td><?php
@@ -461,7 +505,6 @@ foreach ($fakturas as $i => $faktura) {
 </div>
 <?php
 $activityButtons[] = '<li><a href="faktura.php?function=new"><img src="images/table_add.png" width="16" height="16" alt="" title="'._('Create new').'" /> '._('Create new').'</a></li>';
-$activityButtons[] = '<li><a href="fakturasearch.php"><img src="images/magnifier.png" width="16" height="16" alt="" title="'._('Advanced Search').'" /> '._('Search').'</a></li>';
 if ($_SESSION['_user']['access'] == 1) {
     $activityButtons[] = '<li><a href="fakturasvalidate.php"><img src="images/tick.png" width="16" height="16" alt="" title="'._('Validate').'" /> '._('Validate').'</a></li>';
 }

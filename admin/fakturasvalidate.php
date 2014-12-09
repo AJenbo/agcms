@@ -140,8 +140,6 @@ foreach ($fakturas as $i => $faktura) {
 </table>
 </div>
 <?php
-$activityButtons[] = '<li><a href="fakturasearch.php"><img src="images/magnifier.png" width="16" height="16" alt="" title="Advanceret '._('Search').'" /> '._('Search').'</a></li>';
-
 require 'mainmenu.php';
 ?>
 </body>
