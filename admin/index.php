@@ -34,7 +34,7 @@ $sajax_request_type = "POST";
  * @return string Cleaned stirng
  **/
 function purifyHTML($string) {
-    require_once 'inc/htmlpurifier/HTMLPurifier.auto.php';
+    include_once '../vendor/ezyang/htmlpurifier/library/HTMLPurifier.auto.php';
 
     $config = HTMLPurifier_Config::createDefault();
     $config->set('HTML.SafeIframe', true);

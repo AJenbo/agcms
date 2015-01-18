@@ -848,7 +848,9 @@ if (!empty($_SESSION['faktura']['quantities'])) {
         . '</p></body></html></body></html>';
 
         //Email headers
-        include_once "inc/phpMailer/class.phpmailer.php";
+        include_once $_SERVER['DOCUMENT_ROOT'].'/vendor/phpmailer/phpmailer/class.phpmailer.php';
+        include_once $_SERVER['DOCUMENT_ROOT'].'/vendor/phpmailer/phpmailer/language/phpmailer.lang-dk.php';
+        include_once $_SERVER['DOCUMENT_ROOT'].'/vendor/phpmailer/phpmailer/class.smtp.php';
 
         $mail = new PHPMailer();
         $mail->SetLanguage('dk');

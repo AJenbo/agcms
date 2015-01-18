@@ -22,7 +22,9 @@ function sendEmail($id, $from, $interests, $subject, $text)
 
     saveEmail($id, $from, $interests, $subject, $text);
 
-    include '../inc/phpMailer/class.phpmailer.php';
+    include_once $_SERVER['DOCUMENT_ROOT'].'/vendor/phpmailer/phpmailer/class.phpmailer.php';
+    include_once $_SERVER['DOCUMENT_ROOT'].'/vendor/phpmailer/phpmailer/language/phpmailer.lang-dk.php';
+    include_once $_SERVER['DOCUMENT_ROOT'].'/vendor/phpmailer/phpmailer/class.smtp.php';
 
     $mail             = new PHPMailer();
     $mail->SetLanguage('dk');

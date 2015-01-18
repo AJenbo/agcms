@@ -607,51 +607,6 @@ if (!empty($id) && @$_GET['checkid'] == getCheckid($id) && !isset($_GET['txnid']
             $GLOBALS['generatedcontent']['title'] = _('Status');
             $GLOBALS['generatedcontent']['headline'] = _('Status');
             $GLOBALS['generatedcontent']['text'] = _('The payment was received and the package is sent.');
-            $pakker = $mysqli->fetchArray(
-                "
-                SELECT `STREGKODE`
-                FROM `post`
-                WHERE `deleted` = 0
-                  AND `fakturaid` = " . (int) $faktura['id']
-            );
-
-            include_once 'inc/snoopy.class.php';
-            include_once 'inc/htmlsql.class.php';
-
-            $wsql = new htmlsql();
-
-            foreach ($pakker as $pakke) {
-                // connect to a URL
-                $GLOBALS['generatedcontent']['text'] .= '<br /><br />'._('Shipment Number:').' <strong>'.$pakke['STREGKODE'].'</strong><br /><br />';
-                if ($wsql->connect('url', 'http://www.postdanmark.dk/tracktrace/TrackTrace.do?i_lang=IND&i_stregkode='.$pakke['STREGKODE'])) {
-
-                    if ($wsql->query('SELECT text FROM div WHERE $id == "pdkTable"')) {
-                        // show results:
-                        foreach ($wsql->fetchArray() as $row) {
-                            $GLOBALS['generatedcontent']['text'] .= utf8_encode(
-                                preg_replace(
-                                    array(
-                                        '/\\sborder=0\\scellpadding=0/',
-                                        '/\\snowrap/',
-                                        '/&nbsp;/'
-                                    ),
-                                    '',
-                                    $row['text']
-                                )
-                            );
-                        }
-                    }
-                }
-            }
-            $pakker = $mysqli->fetchArray(
-                "
-                SELECT `packageId`
-                FROM `PNL`
-                WHERE `fakturaid` = " . $faktura['id']
-            );
-            foreach ($pakker as $pakke) {
-                $GLOBALS['generatedcontent']['text'] .= '<br /><a href="http://online.pannordic.com/pn_logistics/index_tracking_email.jsp?id='.$pakke['packageId'].'&Search=search" target="_blank">'.$pakke['packageId'].'</a>';
-            }
         } elseif ($faktura['status'] == 'giro') {
             $GLOBALS['generatedcontent']['text'] = _('The payment is already received in cash.');
         } elseif ($faktura['status'] == 'cash') {
@@ -965,7 +920,9 @@ Tel. %s<br />
 
 	$emailbody .= '</body></html>';
 
-	include_once "inc/phpMailer/class.phpmailer.php";
+        include_once $_SERVER['DOCUMENT_ROOT'].'/vendor/phpmailer/phpmailer/class.phpmailer.php';
+        include_once $_SERVER['DOCUMENT_ROOT'].'/vendor/phpmailer/phpmailer/language/phpmailer.lang-dk.php';
+        include_once $_SERVER['DOCUMENT_ROOT'].'/vendor/phpmailer/phpmailer/class.smtp.php';
 
 	$mail             = new PHPMailer();
 	$mail->SetLanguage('dk');
@@ -1034,7 +991,9 @@ Tel. %s<br />
 	}
     }
 
-    include_once "inc/phpMailer/class.phpmailer.php";
+    include_once $_SERVER['DOCUMENT_ROOT'].'/vendor/phpmailer/phpmailer/class.phpmailer.php';
+    include_once $_SERVER['DOCUMENT_ROOT'].'/vendor/phpmailer/phpmailer/language/phpmailer.lang-dk.php';
+    include_once $_SERVER['DOCUMENT_ROOT'].'/vendor/phpmailer/phpmailer/class.smtp.php';
 
     //To shop
     $faktura = $mysqli->fetchOne("SELECT * FROM `fakturas` WHERE `id` = ".$id);

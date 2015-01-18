@@ -88,7 +88,9 @@ if ($_POST) {
 <p>Sincerely the computer</p></body>
 </html>';
 
-    include_once $_SERVER['DOCUMENT_ROOT'].'/inc/phpMailer/class.phpmailer.php';
+    include_once $_SERVER['DOCUMENT_ROOT'].'/vendor/phpmailer/phpmailer/class.phpmailer.php';
+    include_once $_SERVER['DOCUMENT_ROOT'].'/vendor/phpmailer/phpmailer/language/phpmailer.lang-dk.php';
+    include_once $_SERVER['DOCUMENT_ROOT'].'/vendor/phpmailer/phpmailer/class.smtp.php';
     $mail = new PHPMailer();
     $mail->SetLanguage(_('en'));
     $mail->IsSMTP();

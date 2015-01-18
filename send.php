@@ -45,7 +45,9 @@ if (!$emails) {
 $emailsSendt = 0;
 
 //Load the PHPMailer class
-require_once "inc/phpMailer/class.phpmailer.php";
+include_once $_SERVER['DOCUMENT_ROOT'].'/vendor/phpmailer/phpmailer/class.phpmailer.php';
+include_once $_SERVER['DOCUMENT_ROOT'].'/vendor/phpmailer/phpmailer/language/phpmailer.lang-dk.php';
+include_once $_SERVER['DOCUMENT_ROOT'].'/vendor/phpmailer/phpmailer/class.smtp.php';
 
 //Set up PHPMailer
 $PHPMailer = new PHPMailer();

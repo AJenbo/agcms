@@ -43,8 +43,8 @@ if (!$faktura['premoms'] && $faktura['momssats']) {
     }
 }
 
-require_once '../inc/tcpdf/config/lang/dan.php';
-require_once '../inc/tcpdf/tcpdf.php';
+include_once '../vendor/tecnick.com/tcpdf/examples/lang/dan.php';
+require_once '../vendor/tecnick.com/tcpdf/tcpdf.php';
 
 // create new PDF document
 $pdf = new TCPDF('P', 'mm', 'A4', true, 'UTF-8', false);

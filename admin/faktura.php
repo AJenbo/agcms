@@ -260,7 +260,9 @@ function save($id, $type, $updates)
             return array('error' => _('The invoice must be of at at least 1 krone!'));
         }
 
-        include_once $_SERVER['DOCUMENT_ROOT'].'/inc/phpMailer/class.phpmailer.php';
+        include_once $_SERVER['DOCUMENT_ROOT'].'/vendor/phpmailer/phpmailer/class.phpmailer.php';
+        include_once $_SERVER['DOCUMENT_ROOT'].'/vendor/phpmailer/phpmailer/language/phpmailer.lang-dk.php';
+        include_once $_SERVER['DOCUMENT_ROOT'].'/vendor/phpmailer/phpmailer/class.smtp.php';
 
         $msg = _(
             '<p>Thank you for your order.</p>
@@ -372,7 +374,9 @@ function sendReminder($id)
         $faktura['department'] = $GLOBALS['_config']['email'][0];
     }
 
-    include_once '../inc/phpMailer/class.phpmailer.php';
+    include_once $_SERVER['DOCUMENT_ROOT'].'/vendor/phpmailer/phpmailer/class.phpmailer.php';
+    include_once $_SERVER['DOCUMENT_ROOT'].'/vendor/phpmailer/phpmailer/language/phpmailer.lang-dk.php';
+    include_once $_SERVER['DOCUMENT_ROOT'].'/vendor/phpmailer/phpmailer/class.smtp.php';
 
     $msg = _(
         '<hr />
@@ -985,18 +989,6 @@ if ($faktura['status'] == 'accepted') {
     ?><tr>
         <td><input type="button" value="Krediter beløb:" /></td>
         <td><input value="0,00" size="9" /></td>
-    </tr><?php
-}
-$pnl = $mysqli->fetchArray("SELECT `packageId` FROM `PNL` WHERE `fakturaid` = ".$faktura['id']);
-foreach ($pnl as $pakke) {
-    ?><tr>
-    <td><a target="_blank" href="http://online.pannordic.com/pn_logistics/index_tracking_email.jsp?id=<?php echo $pakke['packageId']; ?>&amp;Search=search"><?php echo $pakke['packageId']; ?></a></td>
-    </tr><?php
-}
-$post = $mysqli->fetchArray("SELECT `STREGKODE` FROM `post` WHERE `deleted` = 0 AND `fakturaid` = ".$faktura['id']);
-foreach ($post as $pakke) {
-    ?><tr>
-    <td><a href="http://www.postdanmark.dk/tracktrace/TrackTrace.do?i_lang=IND&amp;i_stregkode=<?php echo $pakke['STREGKODE']; ?>" target="_blank"><?php echo $pakke['STREGKODE']; ?></a></td>
     </tr><?php
 }
 ?><tr>

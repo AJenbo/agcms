@@ -1,0 +1,7 @@
+{
+    "require": {
+        "phpmailer/phpmailer":  ">=5.0.0",
+        "tecnick.com/tcpdf":    ">=5.3.008",
+        "ezyang/htmlpurifier":  ">=4.4"
+    }
+}
