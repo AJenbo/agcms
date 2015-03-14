@@ -737,22 +737,20 @@ if (!empty($id) && @$_GET['checkid'] == getCheckid($id) && !isset($_GET['txnid']
 Remember to \'expedite\' the payment when the product is sent (The payment is first transferred from the customer\'s account once we hit \'Expedite\').'
 	) .'<br />';
 
-	include_once 'inc/countries.php';
 	$withTax = $faktura['amount'] - $faktura['fragt'];
 	$tax = $withTax * (1 - (1 / (1 + $faktura['momssats'])));
 
-	$GLOBALS['generatedcontent']['track'] = ' pageTracker._addTrans("'
-	. $faktura['id'] . '", "", "' . $faktura['amount'] . '", "'
-	. $tax . '", "' . $faktura['fragt'] . '", "' . $faktura['by']
-	. '", "", "' . $countries[$faktura['land']] . '");';
+	$GLOBALS['generatedcontent']['track'] = "ga('ecommerce:addTransaction',{'id':'" . $faktura['id']
+	    . "','revenue':'" . $faktura['amount']
+	    . "','shipping':'" . $faktura['fragt']
+	    . "','tax':'" . $tax . "'});";
 	foreach ($faktura['products'] as $key => $product) {
-	    $GLOBALS['generatedcontent']['track'] .= ' pageTracker._addItem("'
-	    . $faktura['id'] . '", "' . $faktura['id'] . $key . '", "' . $product
-	    . '", "", "'
-	    . ($faktura['values'][$key] * (1 + $faktura['momssats'])) . '", "'
-	    . $faktura['quantities'][$key] . '");';
+	    $GLOBALS['generatedcontent']['track'] .= "ga('ecommerce:addItem',{'id':'" . $faktura['id']
+		. "','name':" . json_encode($product)
+		. ",'price': '" . ($faktura['values'][$key] * (1 + $faktura['momssats']))
+		. "','quantity': '" . $faktura['quantities'][$key] . "'});";
 	}
-	$GLOBALS['generatedcontent']['track'] .= ' pageTracker._trackTrans(); ';
+	$GLOBALS['generatedcontent']['track'] .= "ga('ecommerce:send');";
 
 	//Mail to customer start
 	$emailbody = '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
@@ -822,6 +820,7 @@ Remember to \'expedite\' the payment when the product is sent (The payment is fi
 	if ($faktura['altpost']) {
 	    $emailbody_address .= '<td>' . $faktura['postcity'] . '</td>';
 	}
+	include_once 'inc/countries.php';
 	$emailbody_address .= '</tr><tr><td>' . _('Country:') . '</td><td>'
 	. $countries[$faktura['land']] . '</td>';
 	if ($faktura['altpost']) {
