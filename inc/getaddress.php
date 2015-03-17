@@ -122,16 +122,7 @@ function getAddress($phoneNumber)
         }
     }
 
-    include_once $_SERVER['DOCUMENT_ROOT'] . '/krak/krak.php';
-    if ($return = getAddressKrak($phoneNumber)) {
-        $return = array_merge($default, $return);
-
-        if ($return != $default) {
-            return $return;
-        }
-    } else {
-        //Addressen kunde ikke findes.
-        return array('error' => _('The address could not be found.'));
-    }
+    //Addressen kunde ikke findes.
+    return array('error' => _('The address could not be found.'));
 }
 
