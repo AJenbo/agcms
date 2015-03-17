@@ -315,10 +315,6 @@ function fullMysqliEscape($s)
         return array_map('fullMysqliEscape', $s);
     }
 
-    if (get_magic_quotes_gpc()) {
-        $s = stripslashes($s);
-    }
-
     global $mysqli;
 
     return $mysqli->escapeWildcards($mysqli->real_escape_string($s));

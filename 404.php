@@ -41,9 +41,6 @@ if (preg_match('/(\=[^&].*)/u', $url)) {
     } else {
         $q = preg_replace('/.*q=(.*)$|.*/u', '\1', $url);
     }
-    if (get_magic_quotes_gpc()) {
-        $q = addslashes($q);
-    }
 }
 
 $GLOBALS['generatedcontent']['activmenu'] = preg_replace(
@@ -164,9 +161,6 @@ if (!@$sog
     && !@$q
     && !@$maerke
 ) {
-    if (get_magic_quotes_gpc()) {
-        $url = stripslashes($url);
-    }
     $q = trim(
         preg_replace(
             array (
@@ -184,9 +178,6 @@ if (!@$sog
             $url
         )
     );
-    if (get_magic_quotes_gpc()) {
-        $q = addslashes($q);
-    }
     $GLOBALS['generatedcontent']['activmenu'] = -1;
     ini_set('zlib.output_compression', '0');
     header("HTTP/1.1 301 Moved Permanently");

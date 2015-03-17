@@ -261,11 +261,11 @@ $pdf->Cell(29, 6, _('Shipping'), 'RL', 0, 'R');
 $pdf->Cell(34, 6, number_format($faktura['fragt'], 2, ',', ''), 'RL', 1, 'R');
 
 $pdf->SetFont('times', '', 10);
-$pdf->MultiCell(130, 8, '<strong>'._('Payment Terms:').'</strong> '._('Net cash at invoice reception.').'<small><br>'._('In case of payment later than the stated deadline, 2% interest will be added per. started months.').'</small>', 1, 'L', 0, 0, '', '', false, 1, true, false);
+$pdf->MultiCell(130, 9, '<strong>'._('Payment Terms:').'</strong> '._('Net cash at invoice reception.').'<small><br>'._('In case of payment later than the stated deadline, 2% interest will be added per. started months.').'</small>', 1, 'L', 0, 0, '', '', false, 8, true, fatruelse);
 $pdf->SetFont('times', 'B', 11);
-$pdf->Cell(29, 8, _('TO PAY'), 1, 0, 'C');
+$pdf->Cell(29, 9, _('TO PAY'), 1, 0, 'C');
 $pdf->SetFont('times', '', 11);
-$pdf->Cell(34, 8, number_format($faktura['amount'], 2, ',', ''), 1, 1, 'R');
+$pdf->Cell(34, 9, number_format($faktura['amount'], 2, ',', ''), 1, 1, 'R');
 
 //Note
 $note = '';

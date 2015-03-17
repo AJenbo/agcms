@@ -155,12 +155,6 @@ function save($id, $type, $updates)
 {
     global $mysqli;
 
-    if (!is_array($updates)) {
-        if (get_magic_quotes_gpc()) {
-            $updates = stripslashes($updates);
-        }
-    }
-
     if (empty($updates['department'])) {
         $updates['department'] = $GLOBALS['_config']['email'][0];
     }

@@ -37,22 +37,8 @@ if (!isset($SAJAX_INCLUDED)) {
                 $args = $_POST["rsargs"];
         }
 
-        if (! empty($args)) {
-            if (get_magic_quotes_gpc())
-                $args = stripslashes($args);
-
+        if (!empty($args)) {
             $args = json_decode($args, true);
-
-            if (get_magic_quotes_gpc()) {
-                function array_addslashes($value) {
-                    if (is_array($value))
-                        return array_map("array_addslashes", $value);
-                    else
-                        return addslashes($value);
-                }
-
-                $args = array_map("array_addslashes", $args);
-            }
         } else {
             $args = array();
         }

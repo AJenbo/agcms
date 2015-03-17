@@ -183,6 +183,7 @@ CREATE TABLE IF NOT EXISTS `lists` (
   `sorts` varchar(63) COLLATE utf8_danish_ci NOT NULL,
   `link` tinyint(1) unsigned NOT NULL,
   PRIMARY KEY (`id`),
+  KEY `sort` (`sort`),
   KEY `page_id` (`page_id`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_danish_ci ;
 
@@ -198,6 +199,7 @@ CREATE TABLE IF NOT EXISTS `list_rows` (
   `cells` varchar(512) COLLATE utf8_danish_ci NOT NULL,
   `link` smallint(5) unsigned NOT NULL,
   PRIMARY KEY (`id`),
+  KEY `list_id` (`list_id`),
   KEY `cells` (`cells`(333))
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_danish_ci ;
 
