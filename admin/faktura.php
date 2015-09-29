@@ -138,6 +138,7 @@ function copytonew($id)
     unset($faktura['date']);
     unset($faktura['paydate']);
     unset($faktura['sendt']);
+    unset($faktura['transferred']);
     $faktura['clerk'] = $_SESSION['_user']['fullname'];
 
     $sql = "INSERT INTO `fakturas` SET";
