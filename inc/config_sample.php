@@ -43,10 +43,10 @@ $GLOBALS['_config']['pbswindow'] = 0;
 $GLOBALS['_config']['pbspwd'] = '';
 $GLOBALS['_config']['pbssalt'] = '';
 
-$GLOBALS['_config']['mysql_server'] = 'localhost';
-$GLOBALS['_config']['mysql_user'] = '';
+$GLOBALS['_config']['mysql_server'] = 'mariadb';
+$GLOBALS['_config']['mysql_user'] = 'root';
 $GLOBALS['_config']['mysql_password'] = '';
-$GLOBALS['_config']['mysql_database'] = 'mydb';
+$GLOBALS['_config']['mysql_database'] = 'agcms';
 
 //Admin options
 
