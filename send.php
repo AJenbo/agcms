@@ -59,7 +59,7 @@ $PHPMailer->CharSet    = 'utf-8';
 if ($GLOBALS['_config']['emailpassword'] !== false) {
     $PHPMailer->SMTPAuth   = true; // enable SMTP authentication
     $PHPMailer->Username   = $GLOBALS['_config']['email'][0];
-    $PHPMailer->Password   = $GLOBALS['_config']['emailpassword'];
+    $PHPMailer->Password   = $GLOBALS['_config']['emailpasswords'][0];
 } else {
     $PHPMailer->SMTPAuth   = false;
 }

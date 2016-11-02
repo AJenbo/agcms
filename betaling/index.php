@@ -929,7 +929,7 @@ Tel. %s<br />
 	if ($GLOBALS['_config']['emailpassword'] !== false) {
 	    $mail->SMTPAuth   = true; // enable SMTP authentication
 	    $mail->Username   = $GLOBALS['_config']['email'][0];
-	    $mail->Password   = $GLOBALS['_config']['emailpassword'];
+	    $mail->Password   = $GLOBALS['_config']['emailpasswords'][0];
 	} else {
 	    $mail->SMTPAuth   = false;
 	}
@@ -1119,7 +1119,7 @@ Delivery phone: %s</p>
         if ($GLOBALS['_config']['emailpassword'] !== false) {
             $mail->SMTPAuth   = true;
             $mail->Username   = $GLOBALS['_config']['email'][0];
-            $mail->Password   = $GLOBALS['_config']['emailpassword'];
+            $mail->Password   = $GLOBALS['_config']['emailpasswords'][0];
         } else {
             $mail->SMTPAuth   = false;
         }
