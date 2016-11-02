@@ -28,18 +28,13 @@ class Simple_Mysqli extends mysqli
     /**
      * Connect the database and set session to UTF-8 Danish
      */
-    function __construct()
+    function __construct($host, $user, $pass, $db)
     {
-        /**
-         * Pass all arguments passed to the constructor on to the parent's
-         * constructor
-         */
-        $args = func_get_args();
-        parent::__construct($args[0], $args[1], $args[2], $args[3]);
+        parent::__construct($host, $user, $pass, $db);
 
         /* Throw an error if the connection fails */
         if (mysqli_connect_error()) {
-            throw new Exception('', 'Couldn\'t connect to database!');
+            throw new Exception('Couldn\'t connect to database!');
         }
 
         $this->query("SET NAMES 'UTF8'");
