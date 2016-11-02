@@ -28,8 +28,10 @@ if (!$faktura) {
 }
 
 $faktura['quantities'] = explode('<', $faktura['quantities']);
+$faktura['quantities'] = array_map('intval', $faktura['quantities']);
 $faktura['products'] = explode('<', $faktura['products']);
 $faktura['values'] = explode('<', $faktura['values']);
+$faktura['values'] = array_map('floatval', $faktura['values']);
 
 if (!$faktura['premoms'] && $faktura['momssats']) {
     //if numbers where aded with out vat but vat should be payed, then add it
@@ -261,7 +263,7 @@ $pdf->Cell(29, 6, _('Shipping'), 'RL', 0, 'R');
 $pdf->Cell(34, 6, number_format($faktura['fragt'], 2, ',', ''), 'RL', 1, 'R');
 
 $pdf->SetFont('times', '', 10);
-$pdf->MultiCell(130, 9, '<strong>'._('Payment Terms:').'</strong> '._('Net cash at invoice reception.').'<small><br>'._('In case of payment later than the stated deadline, 2% interest will be added per. started months.').'</small>', 1, 'L', 0, 0, '', '', false, 8, true, fatruelse);
+$pdf->MultiCell(130, 9, '<strong>'._('Payment Terms:').'</strong> '._('Net cash at invoice reception.').'<small><br>'._('In case of payment later than the stated deadline, 2% interest will be added per. started months.').'</small>', 1, 'L', false, 0, '', '', false, 8, true, false);
 $pdf->SetFont('times', 'B', 11);
 $pdf->Cell(29, 9, _('TO PAY'), 1, 0, 'C');
 $pdf->SetFont('times', '', 11);
