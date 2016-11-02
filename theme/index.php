@@ -116,7 +116,7 @@ if (@$GLOBALS['generatedcontent']['keywords']) {
 }
 ?>
 </head>
-<body onLoad="init();">
+<body>
 <div id="wrapper">
     <ul id="crumbs"><li><a href="/">Home</a><?php
 if (@$GLOBALS['generatedcontent']['crumbs']) {
