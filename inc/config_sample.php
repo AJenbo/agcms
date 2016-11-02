@@ -11,10 +11,10 @@
  * @link     http://www.arms-gallery.dk/
  */
 
-defined('ENT_XML1')    or define('ENT_XML1',     16);
-defined('ENT_XHTML')   or define('ENT_XHTML',    32);
-defined('ENT_HTML401') or define('ENT_HTML401',   0);
-defined('ENT_HTML5')   or define('ENT_HTML5', 16|32);
+defined('ENT_XML1')    || define('ENT_XML1',     16);
+defined('ENT_XHTML')   || define('ENT_XHTML',    32);
+defined('ENT_HTML401') || define('ENT_HTML401',   0);
+defined('ENT_HTML5')   || define('ENT_HTML5', 16|32);
 
 $GLOBALS['_config']['base_url'] = 'http://www.example.com';
 $GLOBALS['_config']['site_name'] = 'My store';
