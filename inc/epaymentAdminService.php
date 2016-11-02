@@ -47,7 +47,7 @@ class epaymentAdminService
             )
         );
 
-        if (!(array) $response->transactionInformationAry) {
+        if (empty($response->transactionInformationAry)) {
             $response = $this->_soapClient->gettransactionlist(
                 array(
                     'pwd' => $GLOBALS['_config']['pbspwd'],
@@ -59,8 +59,7 @@ class epaymentAdminService
                     'epayresponse' => true,
                 )
             );
-        }
-        if (!(array) $response->transactionInformationAry) {
+
             $response = $this->_soapClient->gettransactionlist(
                 array(
                     'pwd' => $GLOBALS['_config']['pbspwd'],
@@ -72,9 +71,7 @@ class epaymentAdminService
                     'epayresponse' => true,
                 )
             );
-        }
-
-        if ((array) $response->transactionInformationAry) {
+        } else {
             $info = $response->transactionInformationAry->TransactionInformationType;
 
             $this->id = $info->transactionid;
