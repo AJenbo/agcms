@@ -86,7 +86,7 @@ require_once 'inc/functions.php';
  *
  * @return array
  */
-function menu($nr, $custom_sort_subs = false)
+function menu(int $nr, bool $custom_sort_subs = false): array
 {
     global $mysqli;
 
@@ -184,7 +184,7 @@ function menu($nr, $custom_sort_subs = false)
  *
  * @return null
  */
-function searchMenu($q, $wherekat)
+function searchMenu(string $q, string $wherekat)
 {
     global $mysqli;
     global $qext;
@@ -284,7 +284,7 @@ function searchMenu($q, $wherekat)
  *
  * @return bool
  */
-function isInactivePage($id)
+function isInactivePage(int $id): bool
 {
     global $mysqli;
     $bind = $mysqli->fetchArray(

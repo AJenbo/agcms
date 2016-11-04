@@ -58,7 +58,7 @@ $updatetime = 0;
  *
  * @return array Apropriate for handeling with javascript function inject_html()
  */
-function getKat($id, $sort)
+function getKat(int $id, bool $sort): array
 {
     global $mysqli;
     include_once $_SERVER['DOCUMENT_ROOT'] . '/inc/liste.php';

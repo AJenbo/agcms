@@ -28,7 +28,7 @@ class epaymentAdminService
      * @param string $merchantId Id provided by PBS identifying the shop
      * @param string $orderId    The order id
      */
-    function __construct($merchantId, $orderId)
+    function __construct(string $merchantId, string $orderId)
     {
         $this->_merchantId = $merchantId;
         $this->_soapClient = new SoapClient(
@@ -94,7 +94,7 @@ class epaymentAdminService
      *
      * @return bool
      */
-    function annul()
+    function annul(): bool
     {
         $response = $this->_soapClient->delete(
             array(
@@ -123,7 +123,7 @@ class epaymentAdminService
      *
      * @return bool
      */
-    function confirm($amount = null)
+    function confirm(int $amount = null): bool
     {
         if (!$amount) {
             $amount = $this->_amount;

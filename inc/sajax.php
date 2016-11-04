@@ -98,8 +98,9 @@ if (!isset($SAJAX_INCLUDED)) {
         for ($i=0; $i<$num; $i++) {
             $function = func_get_arg($i);
 
-            if (!is_array($function))
+            if (!is_array($function)) {
                 $function = array("name" => $function);
+            }
 
             if (!isset($function["method"]))
                 $function["method"] = $sajax_request_type;

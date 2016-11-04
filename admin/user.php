@@ -44,7 +44,7 @@ $mysqli = new Simple_Mysqli(
  *
  * @return mixed True on update, else array('error' => string)
  */
-function updateuser($id, $updates)
+function updateuser(int $id, array $updates)
 {
     global $mysqli;
 

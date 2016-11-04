@@ -26,7 +26,12 @@ $mysqli = new Simple_Mysqli(
 );
 $sajax_request_type = "POST";
 
-function kattree($id)
+/**
+ * @parram int $id
+ *
+ * @return array
+ */
+function kattree(int $id): array
 {
     global $mysqli;
 
@@ -55,7 +60,12 @@ function kattree($id)
     return array_reverse($kattree);
 }
 
-function katspath($id)
+/**
+ * @parram int $id
+ *
+ * @return array
+ */
+function katspath(int $id): array
 {
     $kattree = kattree($id);
     $nr = count($kattree);
@@ -67,7 +77,12 @@ function katspath($id)
     return array('id' => 'katsheader', 'html' => $html);
 }
 
-function katlist($id)
+/**
+ * @parram int $id
+ *
+ * @return array
+ */
+function katlist(int $id): string
 {
     global $mysqli;
     global $kattree;
@@ -139,7 +154,12 @@ function katlist($id)
     return $html;
 }
 
-function siteList($id)
+/**
+ * @parram int $id
+ *
+ * @return string
+ */
+function siteList(int $id): string
 {
     global $mysqli;
     global $kattree;
@@ -196,7 +216,12 @@ function siteList($id)
     return $html;
 }
 
-function pages_expand($id)
+/**
+ * @parram int $id
+ *
+ * @return array
+ */
+function pages_expand(int $id): array
 {
     global $mysqli;
     $html = '';
@@ -217,7 +242,12 @@ function pages_expand($id)
     return array('id' => $id, 'html' => $html);
 }
 
-function siteList_expand($id)
+/**
+ * @parram int $id
+ *
+ * @return array
+ */
+function siteList_expand(int $id): array
 {
     global $mysqli;
     $html = '';
@@ -236,7 +266,10 @@ function siteList_expand($id)
     return array('id' => $id, 'html' => $html);
 }
 
-function getSiteTree()
+/**
+ * @return string
+ */
+function getSiteTree(): string
 {
     $html = '<div id="headline">'._('Overview').'</div><div>';
     $html .= siteList(@$_COOKIE['activekat']);
@@ -250,7 +283,13 @@ function getSiteTree()
     return $html.'</div>';
 }
 
-function kat_expand($id, $input=true)
+/**
+ * @param int $id 
+ * @param bool $input 
+ * 
+ * @return array
+ */
+function kat_expand(int $id, bool $input = true): array
 {
     global $mysqli;
     global $kattree;

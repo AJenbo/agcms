@@ -50,7 +50,7 @@ var global_dir = '';
 function movefile(dir)
 {
     global_dir = dir;
-//TOdo issues with ie
+    //TODO issues with ie
     window.opener.document.getElementById('loading').style.display = '';
     window.opener.x_renamefile(<?php echo $_GET['id']; ?>,  '<?php echo $_GET['path']; ?>', dir,  '',        0,       movefile_r);
 }

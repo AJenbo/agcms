@@ -9,8 +9,14 @@ textdomain('agcms');
 require_once $_SERVER['DOCUMENT_ROOT'] . '/admin/inc/logon.php';
 require_once $_SERVER['DOCUMENT_ROOT'] . '/inc/header.php';
 
-//Check if file is in use
-function isinuse($path)
+/**
+ * Check if file is in use
+ *
+ * @param string $path
+ *
+ * @return bool
+ */
+function isinuse(string $path): bool
 {
     global $mysqli;
 
@@ -29,9 +35,15 @@ function isinuse($path)
     return $result ? true : false;
 }
 
-
-//Delete unused file
-function deletefile($id, $path)
+/**
+ * Delete unused file
+ *
+ * @param int $id
+ * @param string $path
+ *
+ * @return bool
+ */
+function deletefile(int $id, string $path): array
 {
     global $mysqli;
 
@@ -46,9 +58,16 @@ function deletefile($id, $path)
     }
 }
 
-//Scan folder and get list of files and folders in it
 if (!function_exists('scandir')) {
-    function scandir($dir, $sortorder = 0)
+    /**
+     * Scan folder and get list of files and folders in it
+     * 
+     * @param string $dir 
+     * @param int $sortorder 
+     * 
+     * @return mixed
+     */
+    function scandir(string $dir, int $sortorder = 0)
     {
         if (is_dir($dir) && $listdirs = @opendir($dir)) {
             while (($file = readdir($listdirs)) !== false) {
@@ -66,7 +85,12 @@ if (!function_exists('scandir')) {
 //Takes a string and changes it to comply with file name restrictions in windows, linux, mac and urls (UTF8)
 // .|"'´`:%=#&\/+?*<>{}-_
 
-function genfilename($filename)
+/**
+ * @param string $filename 
+ * 
+ * @return string 
+ */
+function genfilename(string $filename): string
 {
     // .|"'´`:%=#&\/+?*<>{}-_
     $search = array('/[.&?\/:*"\'´`<>{}|%\s-_=+#\\\\]+/u', '/^\s+|\s+$/u', '/\s+/u');
@@ -74,8 +98,14 @@ function genfilename($filename)
     return mb_strtolower(preg_replace($search, $replace, $filename), 'UTF-8');
 }
 
-//return tru for directorys and fall for every thing else
-function is_dirs($str_file)
+/**
+ * return true for directorys and false for every thing else
+ * 
+ * @param string $str_file 
+ * 
+ * @return bool 
+ */
+function is_dirs(string $str_file): bool
 {
     global $temp;
     if (is_file($_SERVER['DOCUMENT_ROOT'] . $temp . '/' . $str_file)
@@ -87,8 +117,14 @@ function is_dirs($str_file)
     return true;
 }
 
-//return list of folders in a folder
-function sub_dirs($dir)
+/**
+ * return list of folders in a folder
+ * 
+ * @param string $dir 
+ * 
+ * @return mixed
+ */
+function sub_dirs(string $dir)
 {
     global $temp;
     $temp = $dir;
@@ -101,9 +137,15 @@ function sub_dirs($dir)
 }
 
 //TODO document type does not allow element "input" here; missing one of "p", "h1", "h2", "h3", "h4", "h5", "h6", "div", "pre", "address", "fieldset", "ins", "del" start-tag.
-//Display a list of directorys for the explorer
-
-function listdirs($dir, $mode=0)
+/**
+ * Display a list of directorys for the explorer
+ * 
+ * @param string $dir 
+ * @param int $mode 
+ * 
+ * @return array
+ */
+function listdirs(string $dir, int $mode = 0): array
 {
     $subdirs = sub_dirs($dir);
     $html = '';

@@ -33,7 +33,8 @@ $sajax_request_type = "POST";
  *
  * @return string Cleaned stirng
  **/
-function purifyHTML($string) {
+function purifyHTML(string $string): string
+{
     include_once '../vendor/ezyang/htmlpurifier/library/HTMLPurifier.auto.php';
 
     $config = HTMLPurifier_Config::createDefault();
@@ -47,7 +48,7 @@ function purifyHTML($string) {
     return $purifier->purify($string);
 }
 
-function rtefsafe($text)
+function rtefsafe(string $text): string
 {
     return str_replace(
         array("'", chr(10), chr(13), '?', '?'),
@@ -55,7 +56,7 @@ function rtefsafe($text)
     );
 }
 
-function search($text)
+function search(string $text): array
 {
     if (!@$text) {
         return array('error' => _('You must enter a search word.'));
@@ -96,7 +97,7 @@ function search($text)
     return array('id' => 'canvas', 'html' => $html);
 }
 
-function redigerkat($id)
+function redigerkat(int $id): string
 {
     global $mysqli;
 
@@ -189,7 +190,7 @@ $(\'subMenusOrder\').value = newOrder;
     return $html;
 }
 
-function redigerside($id)
+function redigerside(int $id): string
 {
     global $mysqli;
 
@@ -474,7 +475,7 @@ listlink['.$list['id'].'] = '.$list['link'].';
     return $html;
 }
 
-function listRemoveRow($list_id, $row_id)
+function listRemoveRow(int $list_id, int $row_id): array
 {
     global $mysqli;
 
@@ -483,7 +484,7 @@ function listRemoveRow($list_id, $row_id)
     return array('listid' => $list_id, 'rowid' => $row_id);
 }
 
-function listSavetRow($list_id, $cells, $link, $row_id)
+function listSavetRow(int $list_id, string $cells, string $link, int $row_id): array
 {
     global $mysqli;
 
@@ -497,7 +498,7 @@ function listSavetRow($list_id, $cells, $link, $row_id)
     return array('listid' => $list_id, 'rowid' => $row_id);
 }
 
-function redigerFrontpage()
+function redigerFrontpage(): string
 {
     global $mysqli;
 
@@ -548,7 +549,7 @@ writeRichText("text", \''.rtefsafe($special[0]['text']).'\', "", '.($GLOBALS['_c
     return $html;
 }
 
-function redigerSpecial($id)
+function redigerSpecial(int $id): string
 {
     global $mysqli;
 
@@ -581,7 +582,7 @@ writeRichText("text", "", "", '.$GLOBALS['_config']['text_width'].', 420, true, 
     return $html;
 }
 
-function listsort($id = null)
+function listsort(int $id = null): string
 {
     global $mysqli;
 
@@ -618,7 +619,7 @@ Sortable.create(\'listOrder\',{ghosting:false,constraint:false,hoverclass:\'over
     return $html;
 }
 
-function getaddressbook()
+function getaddressbook(): string
 {
     global $mysqli;
 
@@ -647,7 +648,7 @@ function getaddressbook()
     return $html;
 }
 
-function editContact($id)
+function editContact(int $id): string
 {
     global $mysqli;
 
@@ -682,35 +683,35 @@ function editContact($id)
     return $html;
 }
 
-function updateContact($id, $navn, $email, $adresse, $land, $post, $by, $tlf1, $tlf2, $kartotek, $interests)
+function updateContact(int $id, string $navn, string $email, string $adresse, string $land, string $post, string $by, string $tlf1, string $tlf2, string $kartotek, string $interests): bool
 {
     global $mysqli;
     $mysqli->query("UPDATE `email` SET `navn` = '".$navn."', `email` = '".$email."', `adresse` = '".$adresse."', `land` = '".$land."', `post` = '".$post."', `by` = '".$by."', `tlf1` = '".$tlf1."', `tlf2` = '".$tlf2."', `kartotek` = '".$kartotek."', `interests` = '".$interests."' WHERE id = ".$id);
     return true;
 }
 
-function deleteContact($id)
+function deleteContact(int $id): string
 {
     global $mysqli;
     $mysqli->query('DELETE FROM `email` WHERE `id` = '.$id);
     return 'contact'.$id;
 }
 
-function makeNewList($navn)
+function makeNewList(string $navn): array
 {
     global $mysqli;
     $mysqli->query('INSERT INTO `tablesort` (`navn`) VALUES (\''.$navn.'\')');
     return array('id' => $mysqli->insert_id, 'name' => $navn);
 }
 
-function saveListOrder($id, $navn, $text)
+function saveListOrder(int $id, string $navn, string $text): bool
 {
     global $mysqli;
     $mysqli->query('UPDATE `tablesort` SET navn = \''.$navn.'\', text = \''.$text.'\' WHERE id = '.$id);
     return true;
 }
 
-function get_db_error()
+function get_db_error(): string
 {
     global $mysqli;
 
@@ -820,7 +821,7 @@ function get_db_error()
  *
  * @return bool
  */
-function valide_mail($email)
+function valide_mail(string $email): bool
 {
     //_An-._E-mail@test-domain.test.dk
     if ($email
@@ -833,7 +834,7 @@ function valide_mail($email)
     }
 }
 
-function get_subscriptions_with_bad_emails()
+function get_subscriptions_with_bad_emails(): string
 {
     global $mysqli;
 
@@ -851,7 +852,7 @@ function get_subscriptions_with_bad_emails()
     return $html;
 }
 
-function get_orphan_rows()
+function get_orphan_rows(): string
 {
     global $mysqli;
 
@@ -869,7 +870,7 @@ function get_orphan_rows()
     return $html;
 }
 
-function get_orphan_cats()
+function get_orphan_cats(): string
 {
     global $mysqli;
 
@@ -887,7 +888,7 @@ function get_orphan_cats()
     return $html;
 }
 
-function get_looping_cats()
+function get_looping_cats(): string
 {
     global $mysqli;
 
@@ -913,7 +914,7 @@ function get_looping_cats()
     return $html;
 }
 
-function check_file_names()
+function check_file_names(): string
 {
     global $mysqli;
     $html = '';
@@ -935,7 +936,7 @@ function check_file_names()
     return $html;
 }
 
-function check_file_paths()
+function check_file_paths(): string
 {
     global $mysqli;
     $html = '';
@@ -958,7 +959,7 @@ function check_file_paths()
     return $html;
 }
 
-function get_size_of_files()
+function get_size_of_files(): int
 {
     global $mysqli;
     $files = $mysqli->fetchArray("SELECT count( * ) AS `count`, sum( `size` ) /1024 /1024 AS `filesize` FROM `files`");
@@ -966,7 +967,7 @@ function get_size_of_files()
     return $files[0]['filesize'];
 }
 
-function get_mail_size()
+function get_mail_size(): int
 {
     $mailboxes = array();
     include_once "../inc/imap.php";
@@ -1003,7 +1004,7 @@ preg_match_all('/<img[^>]+/?>/ui', $value, $matches);
 */
 
 
-function get_orphan_lists()
+function get_orphan_lists(): string
 {
     global $mysqli;
 
@@ -1021,7 +1022,7 @@ function get_orphan_lists()
     return $html;
 }
 
-function get_db_size()
+function get_db_size(): float
 {
     global $mysqli;
 
@@ -1034,7 +1035,7 @@ function get_db_size()
     return $dbsize/1024/1024;
 }
 
-function get_orphan_pages()
+function get_orphan_pages(): string
 {
     global $mysqli;
 
@@ -1050,7 +1051,7 @@ function get_orphan_pages()
     return $html;
 }
 
-function get_pages_with_mismatch_bindings()
+function get_pages_with_mismatch_bindings(): string
 {
     global $mysqli;
 
@@ -1084,7 +1085,7 @@ function get_pages_with_mismatch_bindings()
     return $html;
 }
 
-function getnyside()
+function getnyside(): string
 {
     global $mysqli;
 
@@ -1132,7 +1133,7 @@ writeRichText("beskrivelse", \'\', "", '.($GLOBALS['_config']['thumb_width']+32)
     return $html;
 }
 
-function kattree($id)
+function kattree(string $id): array
 {
     $id = $id;
     global $mysqli;
@@ -1162,7 +1163,7 @@ function kattree($id)
     return array_reverse($kattree);
 }
 
-function katspath($id)
+function katspath(string $id): array
 {
     $kattree = kattree($id);
     $nr = count($kattree);
@@ -1174,7 +1175,7 @@ function katspath($id)
     return array('id' => 'katsheader', 'html' => $html);
 }
 
-function katlist($id)
+function katlist(string $id): string
 {
     global $mysqli;
     global $kattree;
@@ -1246,7 +1247,7 @@ function katlist($id)
     return $html;
 }
 
-function siteList($id)
+function siteList(int $id): string
 {
     global $mysqli;
     global $kattree;
@@ -1303,7 +1304,7 @@ function siteList($id)
     return $html;
 }
 
-function pages_expand($id)
+function pages_expand(int $id): array
 {
     global $mysqli;
     $html = '';
@@ -1324,7 +1325,7 @@ function pages_expand($id)
     return array('id' => $id, 'html' => $html);
 }
 
-function siteList_expand($id)
+function siteList_expand(int $id): array
 {
     global $mysqli;
     $html = '';
@@ -1343,7 +1344,7 @@ function siteList_expand($id)
     return array('id' => $id, 'html' => $html);
 }
 
-function getnykat()
+function getnykat(): array
 {
     $html = '<div id="headline">'._('Create category').'</div><form action="" onsubmit="return save_ny_kat()"><input type="submit" accesskey="s" style="width:1px; height:1px; position:absolute; top: -20px; left:-20px;" /><div>'._('Name:').' <img style="cursor:pointer;vertical-align:bottom" onclick="explorer(\'thb\',\'icon\')" src="images/folder.png" title="" alt="'._('Pictures').'" id="iconthb" /> <input id="navn" style="width:256px;" maxlength="64" /> <br /> '._('Icon:').' <input id="icon" style="width:247px;" maxlength="128" type="hidden" /> <img style="cursor:pointer;vertical-align:bottom" onclick="explorer(\'thb\',\'icon\')" width="16" height="16" src="images/folder_image.png" title="'._('Find pictures').'" alt="'._('Pictures').'" /> <img style="cursor:pointer;vertical-align:bottom" onclick="setThb(\'icon\',\'\',\'images/folder.png\')" src="images/cross.png" alt="X" title="'._('Remove picture').'" height="16" width="16" /><br /><br />';
 
@@ -1368,7 +1369,7 @@ function getnykat()
     return array('id' => 'canvas', 'html' => $html);
 }
 
-function getSiteTree()
+function getSiteTree(): string
 {
     $html = '<div id="headline">'._('Overview').'</div><div>';
     $html .= siteList(@$_COOKIE['activekat']);
@@ -1382,7 +1383,7 @@ function getSiteTree()
     return $html.'</div>';
 }
 
-function kat_expand($id, $input=true)
+function kat_expand(int $id, bool $input = true): array
 {
     global $mysqli;
     global $kattree;
@@ -1479,7 +1480,7 @@ function kat_expand($id, $input=true)
     return array('id' => $id, 'html' => $html);
 }
 
-function save_ny_kat($navn, $kat, $icon, $vis, $email)
+function save_ny_kat(string $navn, string $kat, string $icon, string $vis, string $email)
 {
     global $mysqli;
 
@@ -1493,12 +1494,11 @@ function save_ny_kat($navn, $kat, $icon, $vis, $email)
     }
 }
 
-function savekrav($id, $navn, $text)
+function savekrav(int $id, string $navn, string $text): array
 {
     global $mysqli;
     $text = purifyHTML($text);
     $text = htmlUrlDecode($text);
-
 
     if ($navn != '' && $text != '') {
         if (!$id) {
@@ -1511,15 +1511,14 @@ function savekrav($id, $navn, $text)
     } else {
         return array('error' => _('You must enter a name and a text of the requirement.'));
     }
-
 }
 
-function getsogogerstat()
+function getsogogerstat(): string
 {
     echo '<div id="headline">'._('Find and replace').'</div><form onsubmit="sogogerstat(document.getElementById(\'sog\').value,document.getElementById(\'erstat\').value,inject_html); return false;"><img src="images/error.png" width="16" height="16" alt="" > '._('This function affects all pages.').'<table cellspacing="0"><tr><td>'._('Find:').' </td><td><input id="sog" style="width:256px;" maxlength="64" /></td></tr><tr><td>'._('Replace:').' </td><td><input id="erstat" style="width:256px;" maxlength="64" /></td></tr></table><br /><br /><input value="'._('Find and replace').'" type="submit" accesskey="r" /></form>';
 }
 
-function sogogerstat($sog, $erstat)
+function sogogerstat(string $sog, string $erstat): int
 {
     global $mysqli;
 
@@ -1528,7 +1527,7 @@ function sogogerstat($sog, $erstat)
     return $mysqli->affected_rows;
 }
 
-function getmaerker()
+function getmaerker(): string
 {
     global $mysqli;
 
@@ -1561,7 +1560,7 @@ function getmaerker()
     return $html;
 }
 
-function getupdatemaerke($id)
+function getupdatemaerke(int $id): string
 {
     global $mysqli;
 
@@ -1579,7 +1578,7 @@ function getupdatemaerke($id)
     return $html;
 }
 
-function updatemaerke($id, $navn, $link, $ico)
+function updatemaerke(int $id, string $navn, string $link, string $ico): array
 {
     global $mysqli;
 
@@ -1591,7 +1590,7 @@ function updatemaerke($id, $navn, $link, $ico)
     }
 }
 
-function save_ny_maerke($navn, $link, $ico)
+function save_ny_maerke(string $navn, string $link, string $ico): array
 {
     global $mysqli;
 
@@ -1603,7 +1602,7 @@ function save_ny_maerke($navn, $link, $ico)
     }
 }
 
-function getkrav()
+function getkrav(): string
 {
     global $mysqli;
 
@@ -1618,7 +1617,7 @@ function getkrav()
 }
 
 
-function editkrav($id)
+function editkrav(int $id): string
 {
     global $mysqli;
 
@@ -1633,7 +1632,7 @@ writeRichText("text", \''.rtefsafe($krav[0]['text']).'\', "", '.$GLOBALS['_confi
     return $html;
 }
 
-function sletmaerke($id)
+function sletmaerke(int $id): array
 {
     global $mysqli;
 
@@ -1641,7 +1640,7 @@ function sletmaerke($id)
     return array('node' => 'maerke'.$id);
 }
 
-function sletkrav($id)
+function sletkrav(int $id): array
 {
     global $mysqli;
 
@@ -1649,7 +1648,7 @@ function sletkrav($id)
     return array('id' => 'krav'.$id);
 }
 
-function sletkat($id)
+function sletkat(int $id): array
 {
     global $mysqli;
 
@@ -1670,7 +1669,7 @@ function sletkat($id)
     return array('id' => 'kat'.$id);
 }
 
-function movekat($id, $toId)
+function movekat(int $id, int $toId)
 {
     global $mysqli;
 
@@ -1683,7 +1682,7 @@ function movekat($id, $toId)
     }
 }
 
-function renamekat($id, $name)
+function renamekat(int $id, string $name): array
 {
     global $mysqli;
 
@@ -1691,7 +1690,7 @@ function renamekat($id, $name)
     return array('id' => 'kat'.$id, 'name' => $name);
 }
 
-function sletbind($id)
+function sletbind(string $id)
 {
     global $mysqli;
 
@@ -1714,7 +1713,7 @@ function sletbind($id)
     return array('deleted' => $delete, 'added' => $added);
 }
 
-function bind($id, $kat)
+function bind(int $id, int $kat): array
 {
     global $mysqli;
 
@@ -1758,7 +1757,7 @@ function bind($id, $kat)
     return array('deleted' => $delete, 'added' => $added);
 }
 
-function htmlUrlDecode($text)
+function htmlUrlDecode(string $text): string
 {
     global $mysqli;
 
@@ -1783,7 +1782,7 @@ function htmlUrlDecode($text)
     return $text;
 }
 
-function updateSide($id, $navn, $keywords, $pris, $billed, $beskrivelse, $for, $text, $varenr, $burde, $fra, $krav, $maerke)
+function updateSide(int $id, string $navn, string $keywords, int $pris, string $billed, string $beskrivelse, int $for, string $text, string $varenr, int $burde, int $fra, int $krav, string $maerke): bool
 {
     global $mysqli;
 
@@ -1799,25 +1798,25 @@ function updateSide($id, $navn, $keywords, $pris, $billed, $beskrivelse, $for, $
             `dato` = now(),
             `navn` = '" . addcslashes($navn, "'\\") . "',
             `keywords` = '" . addcslashes($keywords, "'\\") . "',
-            `pris` = " . (int) $pris . ",
+            `pris` = " . $pris . ",
             `text` = '" . addcslashes($text, "'\\") . "',
             `varenr` = '" . addcslashes($varenr, "'\\") . "',
-            `for` = " . (int) $for . ",
+            `for` = " . $for . ",
             `beskrivelse` = '" . addcslashes($beskrivelse, "'\\") . "',
-            `krav` = ". (int) $krav .",
+            `krav` = ". $krav .",
             `maerke` = '" . addcslashes($maerke, "'\\") . "',
             `billed` = '" . addcslashes($billed, "'\\") . "',
-            `fra` = " . (int) $fra . ",
-            `burde` = " . (int) $burde . "
+            `fra` = " . $fra . ",
+            `burde` = " . $burde . "
 
-        WHERE `id` = " . (int) $id . "
+        WHERE `id` = " . $id . "
         LIMIT 1
         "
     );
     return true;
 }
 
-function updateKat($id, $navn, $bind, $icon, $vis, $email, $custom_sort_subs, $subsorder)
+function updateKat(int $id, string $navn, string $bind, string $icon, string $vis, string $email, string $custom_sort_subs, string $subsorder): bool
 {
     $bindtree = kattree($bind);
     foreach ($bindtree as $bindbranch) {
@@ -1838,7 +1837,7 @@ function updateKat($id, $navn, $bind, $icon, $vis, $email, $custom_sort_subs, $s
     return true;
 }
 
-function updateKatOrder($subsorder)
+function updateKatOrder(string $subsorder)
 {
     global $mysqli;
 
@@ -1854,14 +1853,14 @@ function updateKatOrder($subsorder)
     $orderquery->close();
 }
 
-function updateForside($id, $text, $subsorder)
+function updateForside(int $id, string $text, string $subsorder): bool
 {
     updateSpecial($id, $text);
     updateKatOrder($subsorder);
     return true;
 }
 
-function updateSpecial($id, $text)
+function updateSpecial(int $id, string $text): bool
 {
     global $mysqli;
 
@@ -1871,7 +1870,7 @@ function updateSpecial($id, $text)
     return true;
 }
 
-function opretSide($kat, $navn, $keywords, $pris, $billed, $beskrivelse, $for, $text, $varenr, $burde, $fra, $krav, $maerke)
+function opretSide(string $kat, string $navn, string $keywords, int $pris, string $billed, string $beskrivelse, int $for, string $text, string $varenr, int $burde, int $fra, int $krav, string $maerke): array
 {
     global $mysqli;
 
@@ -1899,16 +1898,16 @@ function opretSide($kat, $navn, $keywords, $pris, $billed, $beskrivelse, $for, $
             now(),
             \''.addcslashes($navn, "'\\").'\',
             \''.addcslashes($keywords, "'\\").'\',
-            ' . (int) $pris . ',
+            ' . $pris . ',
             \''.addcslashes($text, "'\\").'\',
             \''.addcslashes($varenr, "'\\").'\',
-            ' . (int) $for . ',
+            ' . $for . ',
             \''.addcslashes($beskrivelse, "'\\").'\',
-            ' . (int) $krav . ',
+            ' . $krav . ',
             \''.addcslashes($maerke, "'\\").'\',
             \''.addcslashes($billed, "'\\").'\',
-            ' . (int) $fra . ',
-            ' . (int) $burde . '
+            ' . $fra . ',
+            ' . $burde . '
         )'
     );
 
@@ -1918,7 +1917,7 @@ function opretSide($kat, $navn, $keywords, $pris, $billed, $beskrivelse, $for, $
 }
 
 //Delete a page and all it's relations from the database
-function sletSide($sideId)
+function sletSide(int $sideId): array
 {
     global $mysqli;
 

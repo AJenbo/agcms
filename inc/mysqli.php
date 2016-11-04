@@ -49,7 +49,7 @@ class Simple_Mysqli extends mysqli
      *
      * @return array
      */
-    public function fetchArray($query)
+    public function fetchArray(string $query): array
     {
         $result = parent::query($query);
         if (mysqli_error($this)) {
@@ -74,7 +74,7 @@ class Simple_Mysqli extends mysqli
      *
      * @return array
      */
-    public function fetchOne($query)
+    public function fetchOne(string $query): array
     {
         $row = $this->fetchArray($query);
         $row = array_shift($row);
@@ -91,14 +91,15 @@ class Simple_Mysqli extends mysqli
      *
      * @param string $query The MySQL query to preforme
      *
-     * @return null
+     * @return bool
      */
-    public function query($query)
+    public function query($query): bool
     {
         $result = parent::query($query);
         if (mysqli_error($this)) {
             throw new Exception(mysqli_error($this), mysqli_errno($this));
         }
+
         return true;
     }
 
@@ -109,7 +110,7 @@ class Simple_Mysqli extends mysqli
      *
      * @return string
      */
-    public function escapeWildcards($string)
+    public function escapeWildcards(string $string): string
     {
         return preg_replace('/([%_])/u', '\\\\$1', $string);
     }

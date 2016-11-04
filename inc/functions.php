@@ -18,7 +18,7 @@
  *
  * @return bool
  */
-function validemail($email)
+function validemail(string $email): bool
 {
     //_An-._E-mail@test-domain.test.dk
     if ($email
@@ -39,7 +39,7 @@ function validemail($email)
  *
  * @return null
  */
-function getUpdateTime($table)
+function getUpdateTime(string $table)
 {
     global $mysqli;
     if (!@$GLOBALS['cache']['updatetime'][$table]) {
@@ -55,7 +55,7 @@ function getUpdateTime($table)
  *
  * @return bool
  */
-function skriv($id)
+function skriv(int $id): bool
 {
     global $mysqli;
 
@@ -118,7 +118,7 @@ function skriv($id)
  *
  * @return bool
  */
-function subs($kat)
+function subs(int $kat): bool
 {
     global $mysqli;
 
@@ -150,7 +150,7 @@ function subs($kat)
  *
  * @return string
  */
-function clearFileName($name)
+function clearFileName(string $name): string
 {
     $search = array(
         '/[&?\/:*"<>|%\s-_#\\\\]+/u',
@@ -171,7 +171,7 @@ function clearFileName($name)
  *
  * @return array
  */
-function arrayNatsort($aryData, $strIndex, $strSortBy, $strSortType = false)
+function arrayNatsort(array $aryData, string $strIndex, string $strSortBy, string $strSortType = 'asc'): array
 {
     //Make sure the sort by is a string
     $strSortBy .= '';
@@ -237,7 +237,7 @@ function arrayNatsort($aryData, $strIndex, $strSortBy, $strSortType = false)
  *
  * @return array
  */
-function arrayListsort($aryData, $strIndex, $strSortBy, $intSortingOrder, $strSortType = false)
+function arrayListsort(array $aryData, string $strIndex, string $strSortBy, int $intSortingOrder, string $strSortType = 'asc'): array
 {
     global $mysqli;
 
@@ -281,8 +281,6 @@ function arrayListsort($aryData, $strIndex, $strSortBy, $intSortingOrder, $strSo
 
     natcasesort($arySort);
 
-    echo $strSortType;
-
     if ($strSortType=="desc" || $strSortType=="-") {
         arsort($arySort);
     }
@@ -306,7 +304,7 @@ function arrayListsort($aryData, $strIndex, $strSortBy, $intSortingOrder, $strSo
  *
  * @return array
  */
-function trimArray($totrim)
+function trimArray(array $totrim): array
 {
     if (is_array($totrim)) {
         $totrim = array_map("trimArray", $totrim);
@@ -325,7 +323,7 @@ function trimArray($totrim)
  *
  * @return string
  */
-function getTable($listid, $bycell, $current_kat)
+function getTable(int $listid, int $bycell, int $current_kat): string
 {
     global $mysqli;
 
@@ -567,7 +565,7 @@ function getTable($listid, $bycell, $current_kat)
  *
  * @return string
  */
-function echoTable($sideid)
+function echoTable(int $sideid): string
 {
     global $mysqli;
 
@@ -621,7 +619,7 @@ function echoTable($sideid)
  *
  * @return array Ids of all the categories leading up to $id
  */
-function kats($id)
+function kats(int $id): array
 {
     global $mysqli;
 
@@ -659,7 +657,7 @@ function kats($id)
  *
  * @return int Kategory id of the root branch where $bind belongs to
  */
-function binding($bind)
+function binding(int $bind): int
 {
     global $mysqli;
 
@@ -688,7 +686,7 @@ function binding($bind)
  *
  * @return bool False if id is already seen
  */
-function uniquecol($array)
+function uniquecol(array $array): bool
 {
     static $idlist = array();
 

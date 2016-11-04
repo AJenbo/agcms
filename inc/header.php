@@ -24,7 +24,7 @@ date_default_timezone_set('Europe/Copenhagen');
  *
  * @return null
  */
-function doConditionalGet($timestamp)
+function doConditionalGet(int $timestamp)
 {
     // A PHP implementation of conditional get, see
     // http://fishbowl.pastiche.org/archives/001132.html

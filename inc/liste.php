@@ -20,7 +20,7 @@
  *
  * @return null
  */
-function vare($side, $katnavn, $type)
+function vare(array $side, string $katnavn, int $type)
 {
     global $mysqli;
 
@@ -97,7 +97,7 @@ function vare($side, $katnavn, $type)
  *
  * @return string
  */
-function stringLimit($string, $length = 50, $ellipsis = '…')
+function stringLimit(string $string, int $length = 50, string $ellipsis = '…'): string
 {
     if (!$length || mb_strlen($string) <= $length) {
         return $string;
@@ -111,8 +111,6 @@ function stringLimit($string, $length = 50, $ellipsis = '…')
 
 /**
  * Figure out how to display the active category
- *
- * @return string
  */
 function liste()
 {
@@ -186,7 +184,7 @@ function liste()
  *
  * @return string
  */
-function katHTML($side, $kat_navn)
+function katHTML(array $side, string $kat_navn): string
 {
     $html = "<table class=\"tabel\"><thead><tr><td><a href=\"\" onclick=\"x_getKat('"
     . $GLOBALS['generatedcontent']['activmenu']
@@ -236,7 +234,7 @@ function katHTML($side, $kat_navn)
  *
  * @return null
  */
-function searchListe($q, $wheresider)
+function searchListe(string $q, string $wheresider)
 {
     //TODO duplicate text with out html for better searching.
     global $qext;

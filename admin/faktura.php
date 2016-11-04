@@ -24,7 +24,10 @@ $mysqli = new Simple_Mysqli(
     $GLOBALS['_config']['mysql_database']
 );
 
-function newfaktura()
+/**
+ * @return int
+ */
+function newfaktura(): int
 {
     global $mysqli;
 
@@ -122,12 +125,22 @@ if ($faktura['id'] && $faktura['status'] != 'new') {
     }
 }
 
-function getCheckid($id)
+/**
+ * @param int $id
+ *
+ * @return string
+ */
+function getCheckid(int $id): string
 {
     return substr(md5($id.$GLOBALS['_config']['pbssalt']), 3, 5);
 }
 
-function copytonew($id)
+/**
+ * @param int $id
+ *
+ * @return int
+ */
+function copytonew(int $id): int
 {
     global $mysqli;
 
@@ -152,7 +165,14 @@ function copytonew($id)
     return $mysqli->insert_id;
 }
 
-function save($id, $type, $updates)
+/**
+ * @param int $id
+ * @param string $type
+ * @param array $updates
+ *
+ * @return array
+ */
+function save(int $id, string $type, array $updates): array
 {
     global $mysqli;
 
@@ -350,7 +370,12 @@ Tel. %s</p>'
     return array('type' => $type, 'status' => $faktura['status']);
 }
 
-function sendReminder($id)
+/**
+ * @param int $id
+ *
+ * @return array
+ */
+function sendReminder(int $id): array
 {
     $error = '';
 
@@ -484,7 +509,10 @@ Fax: %s<br />
     return array('error' => trim($error));
 }
 
-function pbsconfirm($id)
+/**
+ * @param int $id
+ */
+function pbsconfirm(int $id)
 {
     global $mysqli;
     global $epayment;
@@ -510,7 +538,10 @@ function pbsconfirm($id)
     }
 }
 
-function annul($id)
+/**
+ * @param int $id
+ */
+function annul(int $id)
 {
     global $mysqli;
     global $epayment;

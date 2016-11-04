@@ -33,7 +33,7 @@ $mysqli = new Simple_Mysqli(
  *
  * @return null
  */
-function listKats($id)
+function listKats(int $id)
 {
     global $mysqli;
 
@@ -67,7 +67,7 @@ function listKats($id)
  *
  * @return null
  */
-function listPages($id, $katName)
+function listPages(int $id, string $katName)
 {
     global $mysqli;
 

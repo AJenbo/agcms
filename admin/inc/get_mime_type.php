@@ -2,7 +2,12 @@
 require_once $_SERVER['DOCUMENT_ROOT'].'/admin/inc/logon.php';
 require_once 'file-functions.php';
 
-function get_mime_type($filepath)
+/**
+ * @param string $filepath 
+ * 
+ * @return string 
+ */
+function get_mime_type(string $filepath): string
 {
     $mime = '';
     if (function_exists('finfo_file')) {

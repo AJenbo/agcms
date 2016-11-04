@@ -9,7 +9,14 @@ textdomain('agcms');
 require_once $_SERVER['DOCUMENT_ROOT'].'/admin/inc/logon.php';
 //TODO run countEmailTo() onload
 
-function sendEmail($id, $from, $interests, $subject, $text)
+/**
+ * @param int $id
+ * @param string $from      From
+ * @param string $interests Interests
+ * @param string $subject   Subject
+ * @param string $text      Content
+ */
+function sendEmail(int $id, string $from, string $interests, string $subject, string $text)
 {
     global $mysqli;
     if (!$mysqli->fetchArray('SELECT `id` FROM `newsmails` WHERE `sendt` = 0')) {
@@ -143,7 +150,12 @@ function sendEmail($id, $from, $interests, $subject, $text)
     }
 }
 
-function countEmailTo($interests)
+/**
+ * @param string $interests Interests
+ *
+ * @return int
+ */
+function countEmailTo(string $interests): int
 {
     global $mysqli;
 
@@ -176,14 +188,22 @@ function countEmailTo($interests)
     return $emails[0]['count'];
 }
 
-function getNewEmail()
+/**
+ * @return string
+ */
+function getNewEmail(): string
 {
     global $mysqli;
     $mysqli->query('INSERT INTO `newsmails` () VALUES ()');
     return getEmail($mysqli->insert_id);
 }
 
-function getEmail($id)
+/**
+ * @param int $id The id
+ *
+ * @return string
+ */
+function getEmail(int $id): string
 {
     global $mysqli;
     $newsmails = $mysqli->fetchArray('SELECT * FROM `newsmails` WHERE `id` = '.$id);
@@ -254,7 +274,16 @@ writeRichText(\'text\', \'' . rtefsafe($newsmails[0]['text']) . '\', \'\', ' . (
     return $html;
 }
 
-function saveEmail($id, $from, $interests, $subject, $text)
+/**
+ * @param int    $id        The ID
+ * @param string $from      From
+ * @param string $interests Interests
+ * @param string $subject   Subject
+ * @param string $text      Content
+ *
+ * @return bool
+ */
+function saveEmail(int $id, string $from, string $interests, string $subject, string $text): bool
 {
     global $mysqli;
 
@@ -274,7 +303,10 @@ function saveEmail($id, $from, $interests, $subject, $text)
     return true;
 }
 
-function getEmailList()
+/**
+ * @return string 
+ */
+function getEmailList(): string
 {
     global $mysqli;
     $newsmails = $mysqli->fetchArray('SELECT `id`, `subject`, `sendt` FROM `newsmails`');
@@ -292,4 +324,3 @@ function getEmailList()
 
     return $html;
 }
-

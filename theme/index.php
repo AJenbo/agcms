@@ -21,7 +21,7 @@
  *
  * @return null
  */
-function echoPrice($price, $before, $from, $should)
+function echoPrice(float $price, float $before, int $from, int $should)
 {
     if ($before) {
         if ($should == 1) {
@@ -61,7 +61,7 @@ function echoPrice($price, $before, $from, $should)
  *
  * @return null
  */
-function echoMenu($menu)
+function echoMenu(array $menu)
 {
     if ($menu) {
         ?><ul><?php

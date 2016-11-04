@@ -18,7 +18,7 @@
  *
  * @return array Array with address fitting the post table format
  */
-function getAddress($phoneNumber)
+function getAddress(string $phoneNumber): array
 {
     $default['recName1'] = '';
     $default['recAddress1'] = '';

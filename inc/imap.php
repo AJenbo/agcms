@@ -46,7 +46,7 @@ class IMAP
      * @param string $host     Server to connect to.
      * @param int    $port     Default is 143.
      */
-    function __construct($user, $password, $host, $port = 143)
+    function __construct(string $user, string $password, string $host, int $port = 143)
     {
         $this->_host = $host;
         $this->_port = $port;
@@ -66,7 +66,7 @@ class IMAP
     }
 
     /**
-     * Open a connection to the server and authenticate 
+     * Open a connection to the server and authenticate
      *
      * @return null
      */
@@ -96,7 +96,7 @@ class IMAP
      *
      * @return null
      */
-    private function _writeLine($command, $literal = false)
+    private function _writeLine(string $command, bool $literal = false)
     {
         if (!$literal) {
             $this->_tag++;
@@ -116,7 +116,7 @@ class IMAP
      *
      * @return array Responce from server devided in to types
      */
-    private function _responce($literal = false)
+    private function _responce($literal = false): array
     {
         $responce = '';
         $return = array('message' => '', 'responce' => '', 'data' => '');
@@ -164,7 +164,7 @@ class IMAP
      *
      * @return null
      */
-    private function _capability($string = '')
+    private function _capability(string $string = '')
     {
         if (!$string) {
             $this->_writeLine('CAPABILITY');
@@ -214,7 +214,7 @@ class IMAP
      *
      * @return bool True if authenticated
      */
-    private function _authenticatePlain()
+    private function _authenticatePlain(): bool
     {
         if (!@$this->capabilities['AUTH']['PLAIN']) {
             return false;
@@ -250,7 +250,7 @@ class IMAP
      *
      * @return bool True if authenticated
      */
-    private function _authenticateLogin()
+    private function _authenticateLogin(): bool
     {
         //TODO onc.com supports this with out saying so, should we always try it?
         if (!@$this->capabilities['AUTH']['LOGIN']) {
@@ -327,7 +327,7 @@ class IMAP
      *
      * @return array Contaning array of flags, and other properties of the mailbox
      */
-    public function select($mailbox = 'INBOX', $readOnly = false)
+    public function select(string $mailbox = 'INBOX', bool $readOnly = false): array
     {
         $mailbox = mb_convert_encoding($mailbox, 'UTF7-IMAP', 'UTF-8');
 
@@ -433,7 +433,7 @@ class IMAP
      *
      * @return null
      */
-    public function create($mailbox)
+    public function create(string $mailbox)
     {
         $mailbox = mb_convert_encoding($mailbox, 'UTF7-IMAP', 'UTF-8');
         $this->_writeLine('CREATE "' . $mailbox . '"');
@@ -447,7 +447,7 @@ class IMAP
      *
      * @return null
      */
-    public function delete($mailbox)
+    public function delete(string $mailbox)
     {
         if ($this->_selected) {
             throw new Exception('Close mailbox first');
@@ -466,7 +466,7 @@ class IMAP
      *
      * @return null
      */
-    public function rename($mailbox, $mailboxNew)
+    public function rename(string $mailbox, string $mailboxNew)
     {
         if ($this->_selected) {
             throw new Exception('Close mailbox first');
@@ -485,7 +485,7 @@ class IMAP
      *
      * @return null
      */
-    public function subscribe($mailbox)
+    public function subscribe(string $mailbox)
     {
         $mailbox = mb_convert_encoding($mailbox, 'UTF7-IMAP', 'UTF-8');
         $this->_writeLine('SUBSCRIBE "' . $mailbox . '"');
@@ -499,7 +499,7 @@ class IMAP
      *
      * @return null
      */
-    public function unsubscribe($mailbox)
+    public function unsubscribe(string $mailbox)
     {
         $mailbox = mb_convert_encoding($mailbox, 'UTF7-IMAP', 'UTF-8');
         $this->_writeLine('UNSUBSCRIBE "' . $mailbox .'"');
@@ -516,7 +516,7 @@ class IMAP
      * @return array Array of mailboxes contaning array of attributes,
      *               delimiter charecter and name
      */
-    public function listMailboxes($mailbox = '', $search = '*', $lsub = false)
+    public function listMailboxes(string $mailbox = '', string $search = '*', bool $lsub = false): array
     {
         $type = 'LIST';
         if ($lsub) {
@@ -568,7 +568,7 @@ class IMAP
      *
      * @return array Key is item
      */
-    public function status($mailbox, $item)
+    public function status(string $mailbox, string $item): array
     {
         $mailbox = mb_convert_encoding($mailbox, 'UTF7-IMAP', 'UTF-8');
         $this->_writeLine('STATUS "' . $mailbox . '" (' . $item . ')');
@@ -633,7 +633,7 @@ class IMAP
      *
      * @return mixed Either the assinged message UID or true
      */
-    public function append($mailbox, $message, $flags = '')
+    public function append(string $mailbox, string $message, string $flags = '')
     {
         $mailbox = mb_convert_encoding($mailbox, 'UTF7-IMAP', 'UTF-8');
         $command = 'APPEND "' . $mailbox . '" ($flags) {' . strlen($message);
@@ -693,7 +693,7 @@ class IMAP
      *
      * @return array Message numbers that where deleted
      */
-    public function expunge()
+    public function expunge(): array
     {
         if (!$this->_selected) {
             throw new Exception('Open mailbox first');
@@ -719,7 +719,7 @@ class IMAP
      *
      * @return mixed Array of matching id's or false
      */
-    public function search($criteria, $uid = false)
+    public function search(string $criteria, bool $uid = false)
     {
         if (!$this->_selected) {
             throw new Exception('Open mailbox first');
@@ -750,7 +750,7 @@ class IMAP
      *
      * @return array Raw from _responce()
      */
-    public function fetch($msg_set, $data, $uid = false)
+    public function fetch(string $msg_set, string $data, bool $uid = false): array
     {
         if (!$this->_selected) {
             throw new Exception('Open mailbox first');
@@ -776,7 +776,7 @@ class IMAP
      * @return array Key is message id with the message flags as a sub array under
      * the flags key
      */
-    public function store($msg_set, $action, $flags, $uid = false)
+    public function store(string $msg_set, string $action, string $flags, bool $uid = false): array
     {
         if (!$this->_selected) {
             throw new Exception('Open mailbox first');
@@ -821,7 +821,7 @@ class IMAP
      *
      * @return array Raw from _responce()
      */
-    public function copy($msg_set, $mailbox, $uid = false)
+    public function copy(string $msg_set, string $mailbox, bool $uid = false): array
     {
         if (!$this->_selected) {
             throw new Exception('Open mailbox first');

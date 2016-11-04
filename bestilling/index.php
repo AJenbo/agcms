@@ -159,7 +159,7 @@ if (count($_POST)) {
  *
  * @return array Key with bool true for each faild feald
  */
-function validate($values)
+function validate(array $values): array
 {
     $rejected = array();
 

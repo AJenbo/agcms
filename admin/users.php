@@ -36,7 +36,7 @@ $mysqli = new Simple_Mysqli(
  *
  * @return null
  */
-function deleteuser($id)
+function deleteuser(int $id): bool
 {
     if ($_SESSION['_user']['access'] != 1) {
         return false;

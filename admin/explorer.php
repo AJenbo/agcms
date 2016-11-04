@@ -30,8 +30,14 @@ if (!@$_COOKIE['admin_dir'] || !is_dir($_SERVER['DOCUMENT_ROOT'].@$_COOKIE['admi
     @$_COOKIE['admin_dir'] = '/images';
 }
 
-//Returns false for files that the users shoudn't see in the files view
-function is_files($str_file)
+/**
+ * Returns false for files that the users shoudn't see in the files view
+ *
+ * @param string $str_file
+ *
+ * @return bool
+ */
+function is_files(string $str_file): bool
 {
     global $dir;
     if ($str_file == '.' || $str_file == '..' || $str_file == '.htaccess' || is_dir($_SERVER['DOCUMENT_ROOT'].$dir.'/'.$str_file))
@@ -39,8 +45,14 @@ function is_files($str_file)
     return true;
 }
 
-//display a list of files in the selected folder
-function showfiles($temp_dir)
+/**
+ * display a list of files in the selected folder
+ *
+ * @param string $temp_dir
+ *
+ * @return array
+ */
+function showfiles(string $temp_dir): array
 {
     //temp_dir is needed to initialize dir as global
     //$dir needs to be global for other functions like is_files()
@@ -86,7 +98,12 @@ function showfiles($temp_dir)
     return array('id' => 'files', 'html' => $html, 'javascript' => $javascript);
 }
 
-function filejavascript($fileinfo)
+/**
+ * @param array $fileinfo
+ *
+ * @return string
+ */
+function filejavascript(array $fileinfo): string
 {
     $pathinfo = pathinfo($fileinfo['path']);
 
@@ -134,7 +151,12 @@ function filejavascript($fileinfo)
     return $javascript;
 }
 
-function filehtml($fileinfo)
+/**
+ * @param array $fileinfo
+ *
+ * @return string
+ */
+function filehtml(array $fileinfo): string
 {
     $pathinfo = pathinfo($fileinfo['path']);
 
@@ -289,9 +311,13 @@ $html .= '<div id="tilebox'.$fileinfo['id'].'" class="filetile"><div class="imag
     return $html;
 }
 
-function makedir($name)
+/**
+ * @param string $name
+ *
+ * @return array
+ */
+function makedir(string $name): array
 {
-
     $name = genfilename($name);
     if (is_dir($_SERVER['DOCUMENT_ROOT'].@$_COOKIE['admin_dir'].'/'.$name))
         return array('error' => _('A file or folder with the same name already exists.'));
@@ -304,9 +330,8 @@ function makedir($name)
         chmod($_SERVER['DOCUMENT_ROOT'].@$_COOKIE['admin_dir'].'/'.$name, 0777);
         return true;
     }
-/**/
+    */
 
-    //*
     if (!ini_get('safe_mode') || (ini_get('safe_mode') && ini_get('safe_mode_gid')) || !function_exists('ftp_mkdir')) {
         if (!is_dir($_SERVER['DOCUMENT_ROOT'].@$_COOKIE['admin_dir']) ||
         !mkdir($_SERVER['DOCUMENT_ROOT'].@$_COOKIE['admin_dir'].'/'.$name, 0771))
@@ -326,54 +351,68 @@ function makedir($name)
             return array('error' => _('Could not create folder, you may not have sufficient rights to this folder.'));
     }
     return array('error' => false);
-    //*/
 }
 
-//rename or relocate a file/directory
 //TODO if force, refresh folder or we might have duplicates displaying in the folder.
 //TODO Error out if the files is being moved to it self
 //TODO moving two files to the same dire with no reload inbetwean = file exists?????????????
-function renamefile($id, $path, $dir, $filename, $force=0)
+/**
+ * Rename or relocate a file/directory
+ *
+ * @param int $id
+ * @param string $path
+ * @param string $dir
+ * @param string $filename
+ * @param bool $force
+ *
+ * @return array
+ */
+function renamefile(int $id, string $path, string $dir, string $filename, bool $force = false): array
 {
 //return array('error' => 'id='.id.' path='.$path.' dir='.$dir.' filename='.$filename.' force='.$force, 'id' => $id);
     global $mysqli;
 
     $pathinfo = pathinfo($path);
-    if ($pathinfo['dirname'] == '/')
+    if ($pathinfo['dirname'] == '/') {
         $pathinfo['dirname'] == '';
+    }
 
-    if (!$dir)
+    if (!$dir) {
         $dir = $pathinfo['dirname'];
-    elseif ($dir == '/')
+    } elseif ($dir == '/') {
         $dir == '';
+    }
 
     if (!is_dir($_SERVER['DOCUMENT_ROOT'].$path)) {
         $mime = get_mime_type($path);
-        if ($mime == 'image/jpeg')
+        if ($mime == 'image/jpeg') {
             $pathinfo['extension'] = 'jpg';
-        elseif ($mime == 'image/png')
+        } elseif ($mime == 'image/png') {
             $pathinfo['extension'] = 'png';
-        elseif ($mime == 'image/gif')
+        } elseif ($mime == 'image/gif') {
             $pathinfo['extension'] = 'gif';
-        elseif ($mime == 'application/pdf')
+        } elseif ($mime == 'application/pdf') {
             $pathinfo['extension'] = 'pdf';
-        elseif ($mime == 'video/x-flv')
+        } elseif ($mime == 'video/x-flv') {
             $pathinfo['extension'] = 'flv';
-        elseif ($mime == 'image/vnd.wap.wbmp')
+        } elseif ($mime == 'image/vnd.wap.wbmp') {
             $pathinfo['extension'] = 'wbmp';
+        }
     } else {
         //a folder with a . will mistakingly be seen as a file with extension
         $pathinfo['filename'] .= '-' . @$pathinfo['extension'];
         $pathinfo['extension'] = '';
     }
 
-    if (!$filename)
+    if (!$filename) {
         $filename = $pathinfo['filename'];
+    }
 
     $filename = genfilename($filename);
 
-    if (!$filename)
+    if (!$filename) {
         return array('error' => _('The name is invalid.'), 'id' => $id);
+    }
 
     //Destination folder doesn't exist
     if (!is_dir($_SERVER['DOCUMENT_ROOT'].$dir.'/')) {
@@ -398,8 +437,9 @@ Would you like to replace the existing file?'), 'id' => $id);
 
         //Rename/move or give an error
         if (@rename($_SERVER['DOCUMENT_ROOT'].$path, $_SERVER['DOCUMENT_ROOT'].$dir.'/'.$filename.'.'.$pathinfo['extension'])) {
-            if ($force)
+            if ($force) {
                 $mysqli->query("DELETE FROM files WHERE `path` = '".$dir.'/'.$filename.'.'.$pathinfo['extension']."' LIMIT 1");
+            }
 
             $mysqli->query("UPDATE `files` SET `path` = '".$dir.'/'.$filename.'.'.$pathinfo['extension']."' WHERE `path` = '".$path."' LIMIT 1");
 
@@ -485,7 +525,14 @@ $mysqli = new Simple_Mysqli(
 
 function deletefolder()
 {
-    function deltree($dir)
+    /**
+     * Rename or relocate a file/directory
+     *
+     * @param string $dir
+     *
+     * @return mixed
+     */
+    function deltree(string $dir)
     {
         $dirlist = scandir($_SERVER['DOCUMENT_ROOT'].$dir);
         $nr = count($dirlist);
@@ -519,7 +566,14 @@ function deletefolder()
     } else return array('error' => _('The folder could not be deleted, you may not have sufficient rights to this folder.'));
 }
 
-function searchfiles($qpath, $qalt, $qmime)
+/**
+ * @param string $qpath
+ * @param string $qalt
+ * @param string $qmime
+ *
+ * @return array
+ */
+function searchfiles(string $qpath, string $qalt, string $qmime): array
 {
     global $mysqli;
 
@@ -623,7 +677,13 @@ function searchfiles($qpath, $qalt, $qmime)
     return array('id' => 'files', 'html' => $html, 'javascript' => $javascript);
 }
 
-function edit_alt($id, $alt)
+/**
+ * @param int $qpath
+ * @param string $alt
+ *
+ * @return array
+ */
+function edit_alt(int $id, string $alt): array
 {
     global $mysqli;
 

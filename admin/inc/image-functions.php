@@ -9,7 +9,22 @@ textdomain('agcms');
 require_once $_SERVER['DOCUMENT_ROOT'].'/admin/inc/logon.php';
 require_once 'file-functions.php';
 //TODO if (no changes and !$output) do redirect
-function generateImage($path, $cropX, $cropY, $cropW, $cropH, $maxW, $maxH, $flip, $rotate, $output)
+
+/**
+ * @param string $path
+ * @param int $cropX
+ * @param int $cropY
+ * @param int $cropW
+ * @param int $cropH
+ * @param int $maxW
+ * @param int $maxH
+ * @param int $flip
+ * @param int $rotate
+ * @param array $output
+ *
+ * @return array
+ */
+function generateImage(string $path, int $cropX, int $cropY, int $cropW, int $cropH, int $maxW, int $maxH, int $flip, int $rotate, array $output): array
 {
     $imagesize = @getimagesize($_SERVER['DOCUMENT_ROOT'].$path);
     $pathinfo = pathinfo($path);
@@ -192,7 +207,11 @@ function generateImage($path, $cropX, $cropY, $cropW, $cropH, $maxW, $maxH, $fli
     /**/
 }
 
-function flip($image, $flip)
+/**
+ * @param resource $image 
+ * @param int $flip
+ */
+function flip($image, int $flip)
 {
     $width = imagesx($image);
     $height = imagesy($image);
@@ -213,7 +232,11 @@ function flip($image, $flip)
     return $temp;
 }
 
-function rotateImage($image, $degrees)
+/**
+ * @param resource $image 
+ * @param int $degrees 
+ */
+function rotateImage($image, int $degrees)
 {
     $width = imagesx($image);
     $height = imagesy($image);
@@ -230,9 +253,13 @@ function rotateImage($image, $degrees)
     return $image;
 }
 
-function resize($image, $maxW, $maxH)
+/**
+ * @param resource $image 
+ * @param int $maxW 
+ * @param int $maxH 
+ */
+function resize($image, int $maxW, int $maxH)
 {
-
     $imageW = imagesx($image);
     $imageH = imagesy($image);
 
@@ -258,7 +285,15 @@ function resize($image, $maxW, $maxH)
     }
 }
 
-function crop($image, $cropX, $cropY, $cropW, $cropH, $fill=true)
+/**
+ * @param resource $image 
+ * @param int $cropX 
+ * @param int $cropY 
+ * @param int $cropW 
+ * @param int $cropH 
+ * @param bool $fill 
+ */
+function crop($image, int $cropX, int $cropY, int $cropW, int $cropH, bool $fill = true)
 {
     //crop image and set background color
     if (!$cropW) {
@@ -283,7 +318,12 @@ function crop($image, $cropX, $cropY, $cropW, $cropH, $fill=true)
     }
 }
 
-function imagetrim($image, $bg, $fill)
+/**
+ * @param resource $image 
+ * @param int $bg 
+ * @param bool $fill 
+ */
+function imagetrim($image, int $bg, bool $fill)
 {
     // Get the image width and height.
     $imageW = imagesx($image);

@@ -36,7 +36,7 @@ $GLOBALS['generatedcontent']['datetime'] = time();
  *
  * @return string
  */
-function getCheckid($id)
+function getCheckid(int $id): string
 {
     return substr(md5($id . $GLOBALS['_config']['pbssalt']), 3, 5);
 }
@@ -50,7 +50,7 @@ function getCheckid($id)
  *
  * @return array Key with bool true for each faild feald
  */
-function validate($values)
+function validate(array $values): array
 {
     $rejected = array();
 

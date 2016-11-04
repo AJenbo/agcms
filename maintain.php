@@ -30,7 +30,7 @@ $mysqli = new Simple_Mysqli(
  *
  * @return string Always empty
  */
-function optimizeTables()
+function optimizeTables(): string
 {
     global $mysqli;
 
@@ -46,7 +46,7 @@ function optimizeTables()
  *
  * @return string Always empty
  */
-function removeBadSubmisions()
+function removeBadSubmisions(): string
 {
     global $mysqli;
 
@@ -69,7 +69,7 @@ function removeBadSubmisions()
  *
  * @return string Always empty
  */
-function removeBadBindings()
+function removeBadBindings(): string
 {
     global $mysqli;
 
@@ -91,7 +91,7 @@ function removeBadBindings()
  *
  * @return string Always empty
  */
-function removeBadAccessories()
+function removeBadAccessories(): string
 {
     global $mysqli;
 
@@ -112,7 +112,7 @@ function removeBadAccessories()
  *
  * @return string Always empty
  */
-function removeNoneExistingFiles()
+function removeNoneExistingFiles(): string
 {
     global $mysqli;
     $files = $mysqli->fetchArray('SELECT id, path FROM `files`');
@@ -133,7 +133,7 @@ function removeNoneExistingFiles()
  *
  * @return string Always empty
  */
-function deleteTempfiles()
+function deleteTempfiles(): string
 {
     $deleted = 0;
     $files = scandir($_SERVER['DOCUMENT_ROOT'] . '/admin/upload/temp');

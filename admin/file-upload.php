@@ -11,7 +11,13 @@ textdomain("agcms");
 require_once $_SERVER['DOCUMENT_ROOT'].'/admin/inc/logon.php';
 require_once $_SERVER['DOCUMENT_ROOT'] . '/inc/sajax.php';
 
-function fileExists($filename, $type = '')
+/**
+ * @param string $filename 
+ * @param string $type 
+ * 
+ * @return bool 
+ */
+function fileExists(string $filename, string $type = ''): bool
 {
     include_once 'inc/file-functions.php';
     $pathinfo = pathinfo($filename);
@@ -53,7 +59,13 @@ doConditionalGet(filemtime($_SERVER['DOCUMENT_ROOT'] . $_SERVER['PHP_SELF']));
 <?php sajax_show_javascript(); ?>
 
 var maxbyte = <?php
-function returnBytes($val)
+
+/**
+ * @param string $val 
+ * 
+ * @return int 
+ */
+function returnBytes(string $val): int
 {
     $last = mb_strtolower($val{mb_strlen($val, 'UTF-8')-1}, 'UTF-8');
     switch($last) {

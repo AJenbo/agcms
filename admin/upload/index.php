@@ -83,7 +83,7 @@ if (!empty($_FILES['Filedata']['tmp_name'])
          *
          * @return int Byte size
          */
-        function returnBytes($val)
+        function returnBytes(string $val): int
         {
             $last = mb_strtolower($val{mb_strlen($val, 'UTF-8')-1}, 'UTF-8');
             switch($last) {
