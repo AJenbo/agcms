@@ -205,7 +205,7 @@ function arrayNatsort(array $aryData, string $strIndex, string $strSortBy, strin
     natcasesort($arySort);
 
     //if the sort type is descending
-    if ($strSortType == 'desc' || $strSortType == '-' ) {
+    if ($strSortType == 'desc' || $strSortType == '-') {
         //reverse the array
         arsort($arySort);
     }
@@ -340,7 +340,6 @@ function getTable(int $listid, int $bycell, int $current_kat): string
         WHERE `list_id` = " . $listid
     );
     if ($rows) {
-
         //Explode sorts
         $lists[0]['sorts'] = explode('<', $lists[0]['sorts']);
         $lists[0]['cells'] = explode('<', $lists[0]['cells']);
@@ -414,116 +413,116 @@ function getTable(int $listid, int $bycell, int $current_kat): string
                 }
 
                 switch ($type) {
-                case 0:
-                    //Plain text
-                    $html .= '<td>';
-                    if ($row['link']) {
-                        $html .= $row['link'];
-                    }
-                    $html .= $row[$key];
-                    if ($row['link']) {
-                        $html .= '</a>';
-                    }
-                    $html .= '</td>';
-                    break;
-                case 1:
-                    //number
-                    $html .= '<td style="text-align:right;">';
-                    if ($row['link']) {
-                        $html .= $row['link'];
-                    }
-                    $html .= $row[$key];
-                    if ($row['link']) {
-                        $html .= '</a>';
-                    }
-                    $html .= '</td>';
-                    break;
-                case 2:
-                    //price
-                    $html .= '<td style="text-align:right;" class="Pris">';
-                    if ($row['link']) {
-                        $html .= $row['link'];
-                    }
-                    if (is_numeric(@$row[$key])) {
-                        $html .= str_replace(
-                            ',00',
-                            ',-',
-                            number_format($row[$key], 2, ',', '.')
-                        );
-                    } else {
-                        $html .= @$row[$key];
-                    }
-                    if ($row['link']) {
-                        $html .= '</a>';
-                    }
-                    $html .= '</td>';
-                    $GLOBALS['generatedcontent']['has_product_table'] = true;
-                    break;
-                case 3:
-                    //new price
-                    $html .= '<td style="text-align:right;" class="NyPris">';
-                    if ($row['link']) {
-                        $html .= $row['link'];
-                    }
-                    if (is_numeric(@$row[$key])) {
-                        $html .= str_replace(
-                            ',00',
-                            ',-',
-                            number_format($row[$key], 2, ',', '.')
-                        );
-                    } else {
-                        $html .= @$row[$key];
-                    }
-                    if ($row['link']) {
-                        $html .= '</a>';
-                    }
-                    $html .= '</td>';
-                    $GLOBALS['generatedcontent']['has_product_table'] = true;
-                    break;
-                case 4:
-                    //pold price
-                    $html .= '<td style="text-align:right;" class="XPris">';
-                    if ($row['link']) {
-                        $html .= $row['link'];
-                    }
-                    if (is_numeric(@$row[$key])) {
-                        $html .= str_replace(
-                            ',00',
-                            ',-',
-                            number_format($row[$key], 2, ',', '.')
-                        );
-                    }
-                    if ($row['link']) {
-                        $html .= '</a>';
-                    }
-                    $html .= '</td>';
-                    break;
-                case 5:
-                    //image
-                    $html .= '<td>';
-                    $files = $mysqli->fetchArray(
-                        "
+                    case 0:
+                        //Plain text
+                        $html .= '<td>';
+                        if ($row['link']) {
+                            $html .= $row['link'];
+                        }
+                        $html .= $row[$key];
+                        if ($row['link']) {
+                            $html .= '</a>';
+                        }
+                        $html .= '</td>';
+                        break;
+                    case 1:
+                        //number
+                        $html .= '<td style="text-align:right;">';
+                        if ($row['link']) {
+                            $html .= $row['link'];
+                        }
+                        $html .= $row[$key];
+                        if ($row['link']) {
+                            $html .= '</a>';
+                        }
+                        $html .= '</td>';
+                        break;
+                    case 2:
+                        //price
+                        $html .= '<td style="text-align:right;" class="Pris">';
+                        if ($row['link']) {
+                            $html .= $row['link'];
+                        }
+                        if (is_numeric(@$row[$key])) {
+                            $html .= str_replace(
+                                ',00',
+                                ',-',
+                                number_format($row[$key], 2, ',', '.')
+                            );
+                        } else {
+                            $html .= @$row[$key];
+                        }
+                        if ($row['link']) {
+                            $html .= '</a>';
+                        }
+                            $html .= '</td>';
+                            $GLOBALS['generatedcontent']['has_product_table'] = true;
+                        break;
+                    case 3:
+                        //new price
+                        $html .= '<td style="text-align:right;" class="NyPris">';
+                        if ($row['link']) {
+                            $html .= $row['link'];
+                        }
+                        if (is_numeric(@$row[$key])) {
+                            $html .= str_replace(
+                                ',00',
+                                ',-',
+                                number_format($row[$key], 2, ',', '.')
+                            );
+                        } else {
+                            $html .= @$row[$key];
+                        }
+                        if ($row['link']) {
+                            $html .= '</a>';
+                        }
+                            $html .= '</td>';
+                            $GLOBALS['generatedcontent']['has_product_table'] = true;
+                        break;
+                    case 4:
+                        //pold price
+                        $html .= '<td style="text-align:right;" class="XPris">';
+                        if ($row['link']) {
+                            $html .= $row['link'];
+                        }
+                        if (is_numeric(@$row[$key])) {
+                            $html .= str_replace(
+                                ',00',
+                                ',-',
+                                number_format($row[$key], 2, ',', '.')
+                            );
+                        }
+                        if ($row['link']) {
+                            $html .= '</a>';
+                        }
+                        $html .= '</td>';
+                        break;
+                    case 5:
+                        //image
+                        $html .= '<td>';
+                        $files = $mysqli->fetchArray(
+                            "
                         SELECT *
                         FROM `files`
                         WHERE path = " . $row[$key] . "
                         LIMIT 1
                         "
-                    );
+                        );
 
-                    getUpdateTime('files');
+                        getUpdateTime('files');
 
-                    //TODO make image tag
-                    if ($row['link']) {
-                        $html .= $row['link'];
-                    }
-                    $html .= '<img src="' . $row[$key] . '" alt="'
-                    . $files[0]['alt'] . '" title="" width="' . $files[0]['width']
-                    . '" height="' . $files[0]['height'] . '" />';
-                    if ($row['link']) {
-                        $html .= '</a>';
-                    }
-                    $html .= '</td>';
-                    break;
+                        //TODO make image tag
+                        if ($row['link']) {
+                            $html .= $row['link'];
+                        }
+                        $html .= '<img src="' . $row[$key] . '" alt="'
+                        . $files[0]['alt'] . '" title="" width="' . $files[0]['width']
+                        . '" height="' . $files[0]['height'] . '" />';
+                        if ($row['link']) {
+                            $html .= '</a>';
+                        }
+                        $html .= '</td>';
+                        break;
                 }
             }
             if (@$GLOBALS['generatedcontent']['has_product_table']) {
@@ -698,4 +697,3 @@ function uniquecol(array $array): bool
 
     return true;
 }
-

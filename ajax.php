@@ -126,4 +126,3 @@ sajax_export(
 );
 //	$sajax_remote_uri = "/ajax.php";
 sajax_handle_client_request();
-

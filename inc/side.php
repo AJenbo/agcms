@@ -41,17 +41,17 @@ function side()
             header('HTTP/1.1 404 Not Found');
             //TODO lav en søgning
         }
-        $GLOBALS['side']['navn']	= $sider[0]['navn'];
-        $GLOBALS['side']['burde']	= $sider[0]['burde'];
-        $GLOBALS['side']['fra']		= $sider[0]['fra'];
-        $GLOBALS['side']['text']	= $sider[0]['text'];
-        $GLOBALS['side']['pris']	= $sider[0]['pris'];
-        $GLOBALS['side']['for']		= $sider[0]['for'];
-        $GLOBALS['side']['krav']	= $sider[0]['krav'];
-        $GLOBALS['side']['maerke']	= $sider[0]['maerke'];
-        $GLOBALS['side']['varenr']	= $sider[0]['varenr'];
-        $GLOBALS['side']['dato']	= $sider[0]['dato'];
-        $GLOBALS['cache']['updatetime']['side']	= $sider[0]['dato'];
+        $GLOBALS['side']['navn']   = $sider[0]['navn'];
+        $GLOBALS['side']['burde']  = $sider[0]['burde'];
+        $GLOBALS['side']['fra']    = $sider[0]['fra'];
+        $GLOBALS['side']['text']   = $sider[0]['text'];
+        $GLOBALS['side']['pris']   = $sider[0]['pris'];
+        $GLOBALS['side']['for']    = $sider[0]['for'];
+        $GLOBALS['side']['krav']   = $sider[0]['krav'];
+        $GLOBALS['side']['maerke'] = $sider[0]['maerke'];
+        $GLOBALS['side']['varenr'] = $sider[0]['varenr'];
+        $GLOBALS['side']['dato']   = $sider[0]['dato'];
+        $GLOBALS['cache']['updatetime']['side'] = $sider[0]['dato'];
 
         unset($sider);
     }
@@ -187,4 +187,3 @@ function side()
             'market' => $value['burde']));
     }
 }
-

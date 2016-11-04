@@ -210,4 +210,3 @@ for ($i=0; $i<count($sider); $i++) {
 }
 $mysqli->close();
 echo '</products>';
-

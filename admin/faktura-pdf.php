@@ -217,7 +217,6 @@ $pdf->Cell(34, 5, _('Total'), 1, 1, 'R');
 $netto = 0;
 $extralines = 0;
 foreach ($faktura['values'] as $i => $value) {
-
     if ($lines > 1) {
         $lines -= 1;
         $extralines += $lines;

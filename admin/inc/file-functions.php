@@ -61,10 +61,10 @@ function deletefile(int $id, string $path): array
 if (!function_exists('scandir')) {
     /**
      * Scan folder and get list of files and folders in it
-     * 
-     * @param string $dir 
-     * @param int $sortorder 
-     * 
+     *
+     * @param string $dir
+     * @param int $sortorder
+     *
      * @return mixed
      */
     function scandir(string $dir, int $sortorder = 0)
@@ -86,9 +86,9 @@ if (!function_exists('scandir')) {
 // .|"'´`:%=#&\/+?*<>{}-_
 
 /**
- * @param string $filename 
- * 
- * @return string 
+ * @param string $filename
+ *
+ * @return string
  */
 function genfilename(string $filename): string
 {
@@ -100,10 +100,10 @@ function genfilename(string $filename): string
 
 /**
  * return true for directorys and false for every thing else
- * 
- * @param string $str_file 
- * 
- * @return bool 
+ *
+ * @param string $str_file
+ *
+ * @return bool
  */
 function is_dirs(string $str_file): bool
 {
@@ -119,9 +119,9 @@ function is_dirs(string $str_file): bool
 
 /**
  * return list of folders in a folder
- * 
- * @param string $dir 
- * 
+ *
+ * @param string $dir
+ *
  * @return mixed
  */
 function sub_dirs(string $dir)
@@ -139,10 +139,10 @@ function sub_dirs(string $dir)
 //TODO document type does not allow element "input" here; missing one of "p", "h1", "h2", "h3", "h4", "h5", "h6", "div", "pre", "address", "fieldset", "ins", "del" start-tag.
 /**
  * Display a list of directorys for the explorer
- * 
- * @param string $dir 
- * @param int $mode 
- * 
+ *
+ * @param string $dir
+ * @param int $mode
+ *
  * @return array
  */
 function listdirs(string $dir, int $mode = 0): array
@@ -192,7 +192,6 @@ function listdirs(string $dir, int $mode = 0): array
                 $html .= ' onclick="movefile(\''.$dir.'/'.$subdir.'\')" title="'.$subdir.'"><img src="images/folder.png" height="16" width="16" alt="" /> '.$subdir.' </a></div>';
             }
         }
-
     }
     return array('id' => $dir, 'html' => $html);
 }

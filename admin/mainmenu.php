@@ -44,19 +44,19 @@ if ($activityButtons) {
     }
     ?>><?php
 
-    foreach ($activityButtons as $value) {
-        echo $value;
-    }
+foreach ($activityButtons as $value) {
+    echo $value;
+}
 
     ?><li><a href="./logout.php"><img src="images/door_in.png" width="16" height="16" alt="" /> <?php echo _('Log out'); ?></a></li></ul><?php
 }
 
-  ?><a class="menuboxheader" href="" onclick="showhide('Indhold');"><?php echo _('Indhold'); ?></a>
+    ?><a class="menuboxheader" href="" onclick="showhide('Indhold');"><?php echo _('Indhold'); ?></a>
   <ul id="Indhold"<?php
-if (!empty($_COOKIE['hideIndhold'])) {
-    echo ' style="display:none"';
-}
-  ?>>
+    if (!empty($_COOKIE['hideIndhold'])) {
+        echo ' style="display:none"';
+    }
+    ?>>
     <li><a href="./?side=nyside"><img src="images/page_add.png" width="16" height="16" alt="" /> <?php echo _('Create page'); ?></a></li>
     <li><a href="./?side=nykat"><img src="images/folder_add.png" width="16" height="16" alt="" /> <?php echo _('Create category'); ?></a></li>
     <li><a href="./?side=getSiteTree"><img src="images/book_open.png" width="16" height="16" alt="" /> <?php echo _('Overview'); ?></a></li>
@@ -73,9 +73,9 @@ if (!empty($_COOKIE['hideIndhold'])) {
   </ul>
   <a class="menuboxheader" href="" onclick="showhide('Suplemanger');"><?php echo _('Lists'); ?></a>
   <ul id="Suplemanger"<?php
-if (@$_COOKIE['hideSuplemanger']) {
-    echo ' style="display:none"';
-}
+    if (@$_COOKIE['hideSuplemanger']) {
+        echo ' style="display:none"';
+    }
 ?>>
     <li><a href="./?side=krav"><img src="images/page_white_key.png" width="16" height="16" alt="" /> <?php echo _('Requirements'); ?></a></li>
     <li><a href="./?side=maerker"><img src="images/page_white_medal.png" width="16" height="16" alt="" /> <?php echo _('Brands'); ?></a></li>
@@ -83,10 +83,10 @@ if (@$_COOKIE['hideSuplemanger']) {
   </ul>
   <a class="menuboxheader" href="" onclick="showhide('Tools');"><?php echo _('Tools'); ?></a>
   <ul id="Tools"<?php
-if (@$_COOKIE['hideTools']) {
-    echo ' style="display:none"';
-}
-  ?>>
+    if (@$_COOKIE['hideTools']) {
+        echo ' style="display:none"';
+    }
+    ?>>
     <li><a onclick="explorer('','');"><img src="images/folder_page_white.png" width="16" height="16" alt="" /> <?php echo _('Open file manager'); ?></a></li>
     <li><a href="./?side=emaillist"><img src="images/email.png" width="16" height="16" alt="" /> <?php echo _('Newsletters'); ?></a></li>
     <li><a href="./?side=addressbook"><img src="images/book_addresses.png" width="16" height="16" alt="" /> <?php echo _('Address Book'); ?></a></li>

@@ -125,4 +125,3 @@ function getAddress(string $phoneNumber): array
     //Addressen kunde ikke findes.
     return array('error' => _('The address could not be found.'));
 }
-

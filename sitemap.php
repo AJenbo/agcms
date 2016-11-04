@@ -101,17 +101,17 @@ $special = $mysqli->fetchArray("SELECT dato FROM special WHERE id = 1");
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.sitemaps.org/schemas/sitemap/0.9 http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd">
     <url>
         <loc><?php
-echo $GLOBALS['_config']['base_url'];
+        echo $GLOBALS['_config']['base_url'];
 ?>/</loc>
         <lastmod><?php
-echo mb_substr($special[0]['dato'], 0, -9, 'UTF-8');
+        echo mb_substr($special[0]['dato'], 0, -9, 'UTF-8');
 ?></lastmod>
         <changefreq>monthly</changefreq>
         <priority>0.7</priority>
     </url>
     <url>
         <loc><?php
-echo $GLOBALS['_config']['base_url'];
+        echo $GLOBALS['_config']['base_url'];
 ?>/?sog=1&amp;q=&amp;sogikke=&amp;minpris=&amp;maxpris=&amp;maerke=</loc>
         <lastmod>2007-02-02</lastmod>
         <changefreq>monthly</changefreq>

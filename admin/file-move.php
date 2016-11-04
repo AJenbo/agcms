@@ -125,7 +125,7 @@ body {
 --></style>
 </head>
 
-<body style="background-color:ThreeDFace; border:0px #FF0000 none;"><p><?php printf(_('Click on the folder where you want to move the file \'%s\'.'),$pathinfo['filename']); ?></p>
+<body style="background-color:ThreeDFace; border:0px #FF0000 none;"><p><?php printf(_('Click on the folder where you want to move the file \'%s\'.'), $pathinfo['filename']); ?></p>
 <img id="loading" style="float:right; cursor:default; display:none; padding:4px" src="images/loading.gif" width="16" height="16" alt="<?php echo _('Loading'); ?>" />
 <div id="dir"><?php
 /*
@@ -133,9 +133,13 @@ $listdirs = listdirs('/images', 1);
 echo $listdirs['html'];
 */
 ?>
-<div id="dir_.images"><img<?php if (@$_COOKIE['/images']) { echo ' style="display:none"'; }
+<div id="dir_.images"><img<?php if (@$_COOKIE['/images']) {
+    echo ' style="display:none"';
+}
 ?> src="images/+.gif" onclick="dir_expand(this, 1);" height="16" width="16" alt="" /><img<?php
-if (!@$_COOKIE['/images']) { echo ' style="display:none"'; }
+if (!@$_COOKIE['/images']) {
+    echo ' style="display:none"';
+}
 ?> src="images/-.gif" onclick="dir_contract(this);" height="16" width="16" alt="" /><a onclick="movefile('/images')"><img src="images/folder.png" height="16" width="16" alt="" /> <?php echo _('Pictures'); ?> </a>
 <div><?php
 if (@$_COOKIE['/images']) {
@@ -143,7 +147,11 @@ if (@$_COOKIE['/images']) {
     echo $listdirs['html'];
 }
 ?></div></div>
-<div id="dir_.files"><img<?php if (@$_COOKIE['/files']) { echo ' style="display:none"'; } ?> src="images/+.gif" onclick="dir_expand(this, 1);" height="16" width="16" alt="" /><img<?php if (!@$_COOKIE['/files']) { echo ' style="display:none"'; } ?> src="images/-.gif" onclick="dir_contract(this);" height="16" width="16" alt="" /><a onclick="movefile('/files')"><img src="images/folder.png" height="16" width="16" alt="" /> <?php echo _('Files'); ?> </a>
+<div id="dir_.files"><img<?php if (@$_COOKIE['/files']) {
+    echo ' style="display:none"';
+} ?> src="images/+.gif" onclick="dir_expand(this, 1);" height="16" width="16" alt="" /><img<?php if (!@$_COOKIE['/files']) {
+    echo ' style="display:none"';
+} ?> src="images/-.gif" onclick="dir_contract(this);" height="16" width="16" alt="" /><a onclick="movefile('/files')"><img src="images/folder.png" height="16" width="16" alt="" /> <?php echo _('Files'); ?> </a>
 <div><?php
 if (@$_COOKIE['/files']) {
     $listdirs = listdirs('/files', 1);

@@ -304,7 +304,7 @@ function saveEmail(int $id, string $from, string $interests, string $subject, st
 }
 
 /**
- * @return string 
+ * @return string
  */
 function getEmailList(): string
 {

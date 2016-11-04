@@ -151,7 +151,7 @@ function updateuser_r(date)
 <body onload="$('loading').style.visibility = 'hidden';">
 <div id="canvas"><div id="headline"><?php
 echo _('Edit').' '.$user['fullname'];
- ?></div>
+    ?></div>
 <table><tbody>
 <tr<?php
 if ($_SESSION['_user']['access'] != 1
@@ -185,9 +185,9 @@ $accesslevels = array(
 foreach ($accesslevels as $level => $name) {
     //warning if a user name is a it could colide with all
     ?><option<?php
-    if ($user['access'] == $level) {
-        echo ' selected="selected"';
-    }
+if ($user['access'] == $level) {
+    echo ' selected="selected"';
+}
     ?> value="<?php echo $level ?>"><?php echo $name ?></option><?php
 }
 ?></select></td></tr>

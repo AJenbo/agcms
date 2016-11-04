@@ -248,7 +248,6 @@ function searchListe(string $q, string $wheresider)
     //Temporarly store the katalog number so it can be restored when search is over
     $temp_kat = $GLOBALS['generatedcontent']['activmenu'];
     if ($q) {
-
         $sider = $mysqli->fetchArray(
             "
             SELECT id,
@@ -349,7 +348,6 @@ function searchListe(string $q, string $wheresider)
                 $sider[] = $lists[0];
             }
         }
-
     } else {
         $sider = $mysqli->fetchArray(
             "
@@ -364,7 +362,6 @@ function searchListe(string $q, string $wheresider)
         getUpdateTime('sider');
     }
     if ($sider) {
-
         //erace duplicates
         $sider = array_merge(array_filter($sider, 'uniquecol'));
 

@@ -12,10 +12,10 @@ require_once $_SERVER['DOCUMENT_ROOT'].'/admin/inc/logon.php';
 require_once $_SERVER['DOCUMENT_ROOT'] . '/inc/sajax.php';
 
 /**
- * @param string $filename 
- * @param string $type 
- * 
- * @return bool 
+ * @param string $filename
+ * @param string $type
+ *
+ * @return bool
  */
 function fileExists(string $filename, string $type = ''): bool
 {
@@ -61,21 +61,21 @@ doConditionalGet(filemtime($_SERVER['DOCUMENT_ROOT'] . $_SERVER['PHP_SELF']));
 var maxbyte = <?php
 
 /**
- * @param string $val 
- * 
- * @return int 
+ * @param string $val
+ *
+ * @return int
  */
 function returnBytes(string $val): int
 {
     $last = mb_strtolower($val{mb_strlen($val, 'UTF-8')-1}, 'UTF-8');
-    switch($last) {
+    switch ($last) {
     // The 'G' modifier is available since PHP 5.1.0
-    case 'g':
-        $val *= 1024;
-    case 'm':
-        $val *= 1024;
-    case 'k':
-        $val *= 1024;
+        case 'g':
+            $val *= 1024;
+        case 'm':
+            $val *= 1024;
+        case 'k':
+            $val *= 1024;
     }
     return $val;
 }

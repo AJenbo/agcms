@@ -10,18 +10,18 @@ require_once $_SERVER['DOCUMENT_ROOT'].'/admin/inc/logon.php';
 require_once '../inc/sajax.php';
 
 /**
- * @param string $path 
- * @param \itn $cropX 
- * @param int $cropY 
- * @param int $cropW 
- * @param int $cropH 
- * @param int $maxW 
- * @param int $maxH 
- * @param int $flip 
- * @param int $rotate 
- * @param string $filename 
- * @param bool $force 
- * 
+ * @param string $path
+ * @param int $cropX
+ * @param int $cropY
+ * @param int $cropW
+ * @param int $cropH
+ * @param int $maxW
+ * @param int $maxH
+ * @param int $flip
+ * @param int $rotate
+ * @param string $filename
+ * @param bool $force
+ *
  * @return array
  */
 function saveImage(string $path, itn $cropX, int $cropY, int $cropW, int $cropH, int $maxW, int $maxH, int $flip, int $rotate, string $filename, bool $force): array

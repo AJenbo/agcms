@@ -519,7 +519,7 @@ function pbsconfirm(int $id)
 
     try {
         $epayment->confirm();
-    } catch(SoapFault $e) {
+    } catch (SoapFault $e) {
         return array('error' => $e->faultstring);
     }
 
@@ -548,7 +548,7 @@ function annul(int $id)
 
     try {
         $epayment->annul();
-    } catch(SoapFault $e) {
+    } catch (SoapFault $e) {
         return array('error' => $e->faultstring);
     }
 
@@ -1021,9 +1021,9 @@ if ($faktura['status'] == 'accepted') {
     <td colspan="2">
         <p><strong><?php echo _('Note:'); ?></strong></p>
         <p class="note" style="width:350px"><?php
-if ($faktura['status'] != 'new') {
-    echo nl2br(htmlspecialchars($faktura['note'], ENT_COMPAT | ENT_XHTML, 'UTF-8'));
-}
+        if ($faktura['status'] != 'new') {
+            echo nl2br(htmlspecialchars($faktura['note'], ENT_COMPAT | ENT_XHTML, 'UTF-8'));
+        }
 ?></p><?php
 $rows = count(explode("\n", $faktura['note']));
 $rows += 2;
@@ -1047,47 +1047,47 @@ if ($faktura['status'] == 'new') {
         <tr>
             <td><?php echo _('Status:'); ?></td>
         <td><?php
-if ($faktura['status'] == 'new') {
-    echo _('Newly created');
-} elseif ($faktura['status'] == 'locked' && $faktura['sendt']) {
-    echo _('Is sent to the Customer.');
-} elseif ($faktura['status'] == 'locked') {
-    echo _('Locked for editing');
-} elseif ($faktura['status'] == 'pbsok') {
-    echo _('Ready to expedite');
-} elseif ($faktura['status'] == 'accepted') {
-    echo _('Paid online');
-    if ($faktura['paydate']) {
-        echo' d. '.date(_('m/d/Y'), $faktura['paydate']);
-    }
-} elseif ($faktura['status'] == 'giro') {
-    echo _('Paid via giro');
-    if ($faktura['paydate']) {
-        echo ' d. '.date(_('m/d/Y'), $faktura['paydate']);
-    }
-} elseif ($faktura['status'] == 'cash') {
-    echo _('Paid in cash');
-    if ($faktura['paydate']) {
-        echo ' d. '.date(_('m/d/Y'), $faktura['paydate']);
-    }
-} elseif ($faktura['status'] == 'pbserror') {
-    echo _('An error occurred');
-} elseif ($faktura['status'] == 'canceled') {
-    echo _('Canceled');
-} elseif ($faktura['status'] == 'rejected') {
-    echo _('Payment declined');
-} else {
-    echo _('Does not exist in the system');
-}
+        if ($faktura['status'] == 'new') {
+            echo _('Newly created');
+        } elseif ($faktura['status'] == 'locked' && $faktura['sendt']) {
+            echo _('Is sent to the Customer.');
+        } elseif ($faktura['status'] == 'locked') {
+            echo _('Locked for editing');
+        } elseif ($faktura['status'] == 'pbsok') {
+            echo _('Ready to expedite');
+        } elseif ($faktura['status'] == 'accepted') {
+            echo _('Paid online');
+            if ($faktura['paydate']) {
+                echo' d. '.date(_('m/d/Y'), $faktura['paydate']);
+            }
+        } elseif ($faktura['status'] == 'giro') {
+            echo _('Paid via giro');
+            if ($faktura['paydate']) {
+                echo ' d. '.date(_('m/d/Y'), $faktura['paydate']);
+            }
+        } elseif ($faktura['status'] == 'cash') {
+            echo _('Paid in cash');
+            if ($faktura['paydate']) {
+                echo ' d. '.date(_('m/d/Y'), $faktura['paydate']);
+            }
+        } elseif ($faktura['status'] == 'pbserror') {
+            echo _('An error occurred');
+        } elseif ($faktura['status'] == 'canceled') {
+            echo _('Canceled');
+        } elseif ($faktura['status'] == 'rejected') {
+            echo _('Payment declined');
+        } else {
+            echo _('Does not exist in the system');
+        }
 ?></td>
         </tr>
         <tr>
             <td><?php echo _('Recived:'); ?></td>
             <td><?php echo $faktura['transferred'] ? _('Yes') : _('No'); ?>
             <?php
-if ($_SESSION['_user']['access'] == 1 && $faktura['transferred']) {
-    echo ' (<a href="fakturasvalidate.php?undoid='.$faktura['id'].'">'._('Remove').'</a>)';
-}
+            if ($_SESSION['_user']['access'] == 1 && $faktura['transferred']) {
+                echo ' (<a href="fakturasvalidate.php?undoid='.$faktura['id'].'">'._('Remove').'</a>)';
+            }
             ?>
             </td>
         </tr>
@@ -1108,60 +1108,60 @@ $users = $mysqli->fetchArray("SELECT `fullname`, `name` FROM `users` ORDER BY `f
 ?><tr>
     <td>Ansvarlig:</td>
     <td><?php
-if (count($users) > 1 && $_SESSION['_user']['access'] == 1
+    if (count($users) > 1 && $_SESSION['_user']['access'] == 1
     && !in_array($faktura['status'], array('giro', 'cash', 'accepted', 'canceled'))
-) {
-    ?><select name="clerk" id="clerk">
+    ) {
+        ?><select name="clerk" id="clerk">
         <option value=""<?php
-    if (!$faktura['clerk']) {
-        echo ' selected="selected"';
-    }
-    ?>><?php echo _('No one'); ?></option><?php
-    $userstest = array();
-    foreach ($users as $user) {
-        ?><option value="<?php echo $user['fullname']; ?>"<?php
-        if ($faktura['clerk'] == $user['fullname']) {
+        if (!$faktura['clerk']) {
             echo ' selected="selected"';
         }
-        ?>><?php echo $user['fullname']; ?></option><?php
-        $userstest[] = $user['fullname'];
-    }
-
-    if ($faktura['clerk'] && !in_array($faktura['clerk'], $userstest)) {
-        ?><option value="<?php echo $faktura['clerk'] ?>" selected="selected"><?php echo $faktura['clerk'] ?></option><?php
-    }
-    ?></select><?php
-} else {
-    echo $faktura['clerk'];
+        ?>><?php echo _('No one'); ?></option><?php
+    $userstest = array();
+foreach ($users as $user) {
+    ?><option value="<?php echo $user['fullname']; ?>"<?php
+if ($faktura['clerk'] == $user['fullname']) {
+    echo ' selected="selected"';
 }
+?>><?php echo $user['fullname']; ?></option><?php
+$userstest[] = $user['fullname'];
+}
+
+if ($faktura['clerk'] && !in_array($faktura['clerk'], $userstest)) {
+    ?><option value="<?php echo $faktura['clerk'] ?>" selected="selected"><?php echo $faktura['clerk'] ?></option><?php
+}
+    ?></select><?php
+    } else {
+        echo $faktura['clerk'];
+    }
 ?></td>
         </tr>
         <tr>
             <td>Afdeling:</td>
             <td><?php
-if (!in_array($faktura['status'], array('giro', 'cash', 'accepted', 'canceled'))) {
-    if (count($GLOBALS['_config']['email']) > 1) {
-        ?><select name="department" id="department">
-            <option value=""<?php
-        if (!$faktura['department']) {
-            echo ' selected="selected"';
-        }
-        ?>>Ikke valgt</option><?php
-        foreach ($GLOBALS['_config']['email'] as $department) {
-            ?><option<?php
-            if ($faktura['department'] == $department) {
-                echo ' selected="selected"';
-            }
-            ?>><?php echo $department ?></option><?php
-        }
-        ?></select><?php
-    } else {
-        echo $GLOBALS['_config']['email'][0]
-        ?><input name="department" id="department" type="hidden" value="<?php echo $GLOBALS['_config']['email'][0] ?>" /><?php
-    }
-} else {
-    echo $faktura['department'];
+            if (!in_array($faktura['status'], array('giro', 'cash', 'accepted', 'canceled'))) {
+                if (count($GLOBALS['_config']['email']) > 1) {
+                    ?><select name="department" id="department">
+                        <option value=""<?php
+                        if (!$faktura['department']) {
+                            echo ' selected="selected"';
+                        }
+                    ?>>Ikke valgt</option><?php
+foreach ($GLOBALS['_config']['email'] as $department) {
+    ?><option<?php
+if ($faktura['department'] == $department) {
+    echo ' selected="selected"';
 }
+?>><?php echo $department ?></option><?php
+}
+        ?></select><?php
+                } else {
+                    echo $GLOBALS['_config']['email'][0]
+                    ?><input name="department" id="department" type="hidden" value="<?php echo $GLOBALS['_config']['email'][0] ?>" /><?php
+                }
+            } else {
+                echo $faktura['department'];
+            }
 ?></td>
     </tr>
     <tr>
@@ -1274,39 +1274,39 @@ if (!in_array($faktura['status'], array('giro', 'cash', 'accepted', 'canceled'))
         <tr>
             <td><?php echo _('Country:'); ?></td>
             <td><?php
-if ($faktura['status'] == 'new') {
-        ?><select name="land" id="land" onblur="chnageZipCode($('postnr').value, 'land', 'by')" onkeyup="chnageZipCode($('postnr').value, 'land', 'by')" onchange="chnageZipCode($('postnr').value, 'land', 'by')">
-            <option value=""<?php
-    if (!$faktura['land']) {
-        echo ' selected="selected"';
-    }
-    ?>></option><?php
-    foreach ($countries as $code => $country) {
-        ?><option value="<?php echo $code ?>"<?php
-        if ($faktura['land'] == $code) {
-            echo ' selected="selected"';
-        }
-        ?>><?php echo htmlspecialchars($country, ENT_COMPAT | ENT_XHTML, 'UTF-8'); ?></option><?php
-    }
-    ?></select><?php
-} else {
-    echo $countries[$faktura['land']];
+            if ($faktura['status'] == 'new') {
+                    ?><select name="land" id="land" onblur="chnageZipCode($('postnr').value, 'land', 'by')" onkeyup="chnageZipCode($('postnr').value, 'land', 'by')" onchange="chnageZipCode($('postnr').value, 'land', 'by')">
+                        <option value=""<?php
+                        if (!$faktura['land']) {
+                            echo ' selected="selected"';
+                        }
+                            ?>></option><?php
+foreach ($countries as $code => $country) {
+    ?><option value="<?php echo $code ?>"<?php
+if ($faktura['land'] == $code) {
+    echo ' selected="selected"';
 }
+?>><?php echo htmlspecialchars($country, ENT_COMPAT | ENT_XHTML, 'UTF-8'); ?></option><?php
+}
+    ?></select><?php
+            } else {
+                echo $countries[$faktura['land']];
+            }
 ?></td></tr><?php
 if (($faktura['status'] != 'new' && $faktura['altpost']) || $faktura['status'] == 'new') {
     ?><tr>
     <td colspan="2"><?php
     if ($faktura['status'] == 'new') {
         ?><input onclick="showhidealtpost(this.checked);" name="altpost" id="altpost" type="checkbox"<?php
-        if ($faktura['altpost']) {
-            echo ' checked="checked"';
-        }
+if ($faktura['altpost']) {
+    echo ' checked="checked"';
+}
         ?> /><?php
     }
     ?><label for="altpost"> <strong><?php echo _('Other delivery address'); ?></strong></label></td></tr><tr class="altpost"<?php
-    if (!$faktura['altpost']) {
-        echo ' style="display:none;"';
-    }
+if (!$faktura['altpost']) {
+    echo ' style="display:none;"';
+}
     ?>>
     <td>Tlf:</td>
     <td><?php
@@ -1317,9 +1317,9 @@ if (($faktura['status'] != 'new' && $faktura['altpost']) || $faktura['status'] =
         echo $faktura['posttlf'];
     }
     ?></td></tr><tr class="altpost"<?php
-    if (!$faktura['altpost']) {
-        echo ' style="display:none;"';
-    }
+if (!$faktura['altpost']) {
+    echo ' style="display:none;"';
+}
     ?>>
     <td><?php echo _('Name:'); ?></td>
     <td><?php
@@ -1329,9 +1329,9 @@ if (($faktura['status'] != 'new' && $faktura['altpost']) || $faktura['status'] =
         echo $faktura['postname'];
     }
     ?></td></tr><tr class="altpost"<?php
-    if (!$faktura['altpost']) {
-        echo ' style="display:none;"';
-    }
+if (!$faktura['altpost']) {
+    echo ' style="display:none;"';
+}
     ?>>
     <td><?php echo _('Attn.:'); ?></td>
     <td><?php
@@ -1342,9 +1342,9 @@ if (($faktura['status'] != 'new' && $faktura['altpost']) || $faktura['status'] =
         echo $faktura['postatt'];
     }
     ?></td></tr><tr class="altpost"<?php
-    if (!$faktura['altpost']) {
-        echo ' style="display:none;"';
-    }
+if (!$faktura['altpost']) {
+    echo ' style="display:none;"';
+}
     ?>>
     <td><?php echo _('Address:'); ?></td>
     <td><?php
@@ -1354,9 +1354,9 @@ if (($faktura['status'] != 'new' && $faktura['altpost']) || $faktura['status'] =
         echo $faktura['postaddress'];
     }
     ?></td></tr><tr class="altpost"<?php
-    if (!$faktura['altpost']) {
-        echo ' style="display:none;"';
-    }
+if (!$faktura['altpost']) {
+    echo ' style="display:none;"';
+}
     ?>>
     <td></td>
     <td><?php
@@ -1366,21 +1366,21 @@ if (($faktura['status'] != 'new' && $faktura['altpost']) || $faktura['status'] =
         echo $faktura['postaddress2'];
     }
     ?></td></tr><tr class="altpost"<?php
-    if (!$faktura['altpost']) {
-        echo ' style="display:none;"';
-    }
+if (!$faktura['altpost']) {
+    echo ' style="display:none;"';
+}
     ?>><td><?php
     echo _('Postbox:');
     ?></td><td><?php
-    if ($faktura['status'] == 'new') {
-        ?><input name="postpostbox" id="postpostbox" value="<?php echo $faktura['postpostbox'] ?>" /><?php
-    } else {
-        echo $faktura['postpostbox'];
-    }
+if ($faktura['status'] == 'new') {
+    ?><input name="postpostbox" id="postpostbox" value="<?php echo $faktura['postpostbox'] ?>" /><?php
+} else {
+    echo $faktura['postpostbox'];
+}
     ?></td></tr><tr class="altpost"<?php
-    if (!$faktura['altpost']) {
-        echo ' style="display:none;"';
-    }
+if (!$faktura['altpost']) {
+    echo ' style="display:none;"';
+}
     ?>>
     <td><?php
     echo _('Zipcode:');
@@ -1405,18 +1405,18 @@ if (($faktura['status'] != 'new' && $faktura['altpost']) || $faktura['status'] =
     if ($faktura['status'] == 'new') {
         ?><select name="postcountry" id="postcountry" onblur="chnageZipCode($('postpostalcode').value, 'postcountry', 'postcity')" onkeyup="chnageZipCode($('postpostalcode').value, 'postcountry', 'postcity')" onchange="chnageZipCode($('postpostalcode').value, 'postcountry', 'postcity')">
             <option value=""<?php
-        if (!$faktura['postcountry']) {
-            echo ' selected="selected"';
-        }
-        ?>></option><?php
-        foreach ($countries as $code => $country) {
-            ?><option value="<?php echo $code ?>"<?php
-            if ($faktura['postcountry'] == $code) {
+            if (!$faktura['postcountry']) {
                 echo ' selected="selected"';
             }
-            ?>><?php
-            echo htmlspecialchars($country, ENT_COMPAT | ENT_XHTML, 'UTF-8'); ?></option><?php
-        }
+        ?>></option><?php
+foreach ($countries as $code => $country) {
+    ?><option value="<?php echo $code ?>"<?php
+if ($faktura['postcountry'] == $code) {
+    echo ' selected="selected"';
+}
+?>><?php
+echo htmlspecialchars($country, ENT_COMPAT | ENT_XHTML, 'UTF-8'); ?></option><?php
+}
         ?></select><?php
     } else {
         echo $countries[$faktura['postcountry']];
@@ -1426,9 +1426,9 @@ if (($faktura['status'] != 'new' && $faktura['altpost']) || $faktura['status'] =
 if ($faktura['status'] == 'new') {
     ?><tr>
         <td colspan="2"><input type="checkbox"<?php
-    if ($faktura['premoms']) {
-        echo ' checked="checked"';
-    }
+        if ($faktura['premoms']) {
+            echo ' checked="checked"';
+        }
     ?> id="premoms" onkeyup="prisUpdate()" onchange="prisUpdate()" onblur="prisUpdate()" onclick="prisUpdate()" />
     <label for="premoms"><?php echo _('Entered amount includes VAT'); ?></label></td>
     </tr><?php
@@ -1449,12 +1449,12 @@ if ($faktura['status'] == 'new') {
     <td>&nbsp;</td>
     <td class="tal"><?php echo _('Net Amount'); ?></td>
     <?php
-$productslines = max(count($faktura['quantities']), count($faktura['products']), count($faktura['values']));
+    $productslines = max(count($faktura['quantities']), count($faktura['products']), count($faktura['values']));
 
-$netto = 0;
-for ($i=0;$i<$productslines;$i++) {
-    $netto += $faktura['values'][$i]*$faktura['quantities'][$i];
-}
+    $netto = 0;
+    for ($i=0; $i<$productslines; $i++) {
+        $netto += $faktura['values'][$i]*$faktura['quantities'][$i];
+    }
 ?>
     <td class="tal" id="netto"><?php echo number_format($netto, 2, ',', ''); ?></td>
 </tr>
@@ -1463,32 +1463,32 @@ for ($i=0;$i<$productslines;$i++) {
     <td>&nbsp;</td>
     <td class="tal"><?php echo _('Freight'); ?></td>
     <td class="tal"><?php
-if ($faktura['status'] == 'new') {
-    ?><input maxlength="7" name="fragt" id="fragt" style="width:80px;" class="tal" value="<?php echo number_format($faktura['fragt'], 2, ',', ''); ?>" onkeyup="prisUpdate()" onchange="prisUpdate()" onblur="prisUpdate()" />
-    <?php
-} else {
-    echo number_format($faktura['fragt'], 2, ',', '');
-}
+    if ($faktura['status'] == 'new') {
+        ?><input maxlength="7" name="fragt" id="fragt" style="width:80px;" class="tal" value="<?php echo number_format($faktura['fragt'], 2, ',', ''); ?>" onkeyup="prisUpdate()" onchange="prisUpdate()" onblur="prisUpdate()" />
+        <?php
+    } else {
+        echo number_format($faktura['fragt'], 2, ',', '');
+    }
 ?></td>
 </tr>
 <tr>
     <td>&nbsp;</td>
     <td style="text-align:right"><?php
-if ($faktura['status'] == 'new') {
-    ?><select name="momssats" id="momssats" onkeyup="prisUpdate()" onchange="prisUpdate()" onblur="prisUpdate()">
-    <option value="0.25"<?php
-    if ($faktura['momssats'] == 0.25) {
-        echo ' selected="selected"';
-    }
-    ?>>25%</option>
-    <option value="0"<?php
-    if (!$faktura['momssats']) {
-        echo ' selected="selected"';
-    }
+    if ($faktura['status'] == 'new') {
+        ?><select name="momssats" id="momssats" onkeyup="prisUpdate()" onchange="prisUpdate()" onblur="prisUpdate()">
+        <option value="0.25"<?php
+        if ($faktura['momssats'] == 0.25) {
+            echo ' selected="selected"';
+        }
+        ?>>25%</option>
+        <option value="0"<?php
+        if (!$faktura['momssats']) {
+            echo ' selected="selected"';
+        }
     ?>>0%</option></select><?php
-} else {
-    echo ($faktura['momssats']*100).'%';
-}
+    } else {
+        echo ($faktura['momssats']*100).'%';
+    }
         ?></td>
     <td class="tal"><?php echo _('VAT Amount'); ?></td>
     <td class="tal" id="moms"><?php echo number_format($netto*$faktura['momssats'], 2, ',', ''); ?></td>

@@ -78,41 +78,41 @@ function generateImage(string $path, int $cropX, int $cropY, int $cropW, int $cr
         return array('yesno' => _('A file with the same name already exists.'."\n".'Would you like to replace the existing file?'), 'filename' => $output['filename']);
     }
 
-    switch($mimeType) {
-    case 'image/jpeg':
-        //TODO error if jpg > 1610361 pixel
-        $image = imagecreatefromjpeg($_SERVER['DOCUMENT_ROOT'].$path);
-        $fill = false;
-        break;
-    case 'image/png':
-        //TODO error if png > 804609 Pixels
-        $temp = imagecreatefrompng($_SERVER['DOCUMENT_ROOT'].$path);
+    switch ($mimeType) {
+        case 'image/jpeg':
+            //TODO error if jpg > 1610361 pixel
+            $image = imagecreatefromjpeg($_SERVER['DOCUMENT_ROOT'].$path);
+            $fill = false;
+            break;
+        case 'image/png':
+            //TODO error if png > 804609 Pixels
+            $temp = imagecreatefrompng($_SERVER['DOCUMENT_ROOT'].$path);
 
-        //Fill back ground
-        $image = imagecreatetruecolor(imagesx($temp), imagesy($temp)); // Create a blank image
-        imagealphablending($image, true);
-        $fill = true;
-        imagefilledrectangle($image, 0, 0, imagesx($temp), imagesy($temp), imagecolorallocate($image, $GLOBALS['_config']['bgcolorR'], $GLOBALS['_config']['bgcolorG'], $GLOBALS['_config']['bgcolorB']));
-        imagecopy($image, $temp, 0, 0, 0, 0, imagesx($temp), imagesy($temp));
-        imagedestroy($temp);
-        break;
-    case 'image/gif':
-        //TODO error if gif > 1149184 pixel
-        $temp = imagecreatefromgif($_SERVER['DOCUMENT_ROOT'].$path);
+            //Fill back ground
+            $image = imagecreatetruecolor(imagesx($temp), imagesy($temp)); // Create a blank image
+            imagealphablending($image, true);
+            $fill = true;
+            imagefilledrectangle($image, 0, 0, imagesx($temp), imagesy($temp), imagecolorallocate($image, $GLOBALS['_config']['bgcolorR'], $GLOBALS['_config']['bgcolorG'], $GLOBALS['_config']['bgcolorB']));
+            imagecopy($image, $temp, 0, 0, 0, 0, imagesx($temp), imagesy($temp));
+            imagedestroy($temp);
+            break;
+        case 'image/gif':
+            //TODO error if gif > 1149184 pixel
+            $temp = imagecreatefromgif($_SERVER['DOCUMENT_ROOT'].$path);
 
-        //Fill back ground
-        $image = imagecreatetruecolor(imagesx($temp), imagesy($temp)); // Create a blank image
-        imagealphablending($image, true);
-        $fill = true;
-        imagefilledrectangle($image, 0, 0, imagesx($temp), imagesy($temp), imagecolorallocate($image, $GLOBALS['_config']['bgcolorR'], $GLOBALS['_config']['bgcolorG'], $GLOBALS['_config']['bgcolorB']));
-        imagecopy($image, $temp, 0, 0, 0, 0, imagesx($temp), imagesy($temp));
-        imagedestroy($temp);
-        break;
-    case 'image/vnd.wap.wbmp':
-        //TODO error if gif > 1149184 pixel
-        $image = imagecreatefromwbmp($_SERVER['DOCUMENT_ROOT'].$path);
-        $fill = false;
-        break;
+            //Fill back ground
+            $image = imagecreatetruecolor(imagesx($temp), imagesy($temp)); // Create a blank image
+            imagealphablending($image, true);
+            $fill = true;
+            imagefilledrectangle($image, 0, 0, imagesx($temp), imagesy($temp), imagecolorallocate($image, $GLOBALS['_config']['bgcolorR'], $GLOBALS['_config']['bgcolorG'], $GLOBALS['_config']['bgcolorB']));
+            imagecopy($image, $temp, 0, 0, 0, 0, imagesx($temp), imagesy($temp));
+            imagedestroy($temp);
+            break;
+        case 'image/vnd.wap.wbmp':
+            //TODO error if gif > 1149184 pixel
+            $image = imagecreatefromwbmp($_SERVER['DOCUMENT_ROOT'].$path);
+            $fill = false;
+            break;
     }
 
     //Crop image
@@ -136,15 +136,15 @@ function generateImage(string $path, int $cropX, int $cropY, int $cropW, int $cr
         $image = flip($image, $flip);
     }
 
-    switch($rotate) {
-    case 180:
-        $image = imagerotate($image, $rotate, 0, 1);
-        break;
+    switch ($rotate) {
+        case 180:
+            $image = imagerotate($image, $rotate, 0, 1);
+            break;
 
-    case 90:
-    case 270:
-        $image = rotateImage($image, $rotate);
-        break;
+        case 90:
+        case 270:
+            $image = rotateImage($image, $rotate);
+            break;
     }
 
     $width = imagesx($image);
@@ -153,16 +153,13 @@ function generateImage(string $path, int $cropX, int $cropY, int $cropW, int $cr
     if (@$output['type'] == 'png') {
         $mimeType = 'image/png';
         imagepng($image, $_SERVER['DOCUMENT_ROOT'].$output['path'], 9);
-
     } elseif (@$output['type'] == 'jpg') {
         $mimeType = 'image/jpeg';
         imagejpeg($image, $_SERVER['DOCUMENT_ROOT'].$output['path'], 80);
-
     } elseif ($mimeType == 'image/jpeg') {
         header('Content-Type: image/jpeg');
         imagejpeg($image, null, 80);
         die();
-
     } else {
         header('Content-Type: image/png');
         imagepng($image, null, 9);
@@ -208,7 +205,7 @@ function generateImage(string $path, int $cropX, int $cropY, int $cropW, int $cr
 }
 
 /**
- * @param resource $image 
+ * @param resource $image
  * @param int $flip
  */
 function flip($image, int $flip)
@@ -233,8 +230,8 @@ function flip($image, int $flip)
 }
 
 /**
- * @param resource $image 
- * @param int $degrees 
+ * @param resource $image
+ * @param int $degrees
  */
 function rotateImage($image, int $degrees)
 {
@@ -254,9 +251,9 @@ function rotateImage($image, int $degrees)
 }
 
 /**
- * @param resource $image 
- * @param int $maxW 
- * @param int $maxH 
+ * @param resource $image
+ * @param int $maxW
+ * @param int $maxH
  */
 function resize($image, int $maxW, int $maxH)
 {
@@ -286,12 +283,12 @@ function resize($image, int $maxW, int $maxH)
 }
 
 /**
- * @param resource $image 
- * @param int $cropX 
- * @param int $cropY 
- * @param int $cropW 
- * @param int $cropH 
- * @param bool $fill 
+ * @param resource $image
+ * @param int $cropX
+ * @param int $cropY
+ * @param int $cropW
+ * @param int $cropH
+ * @param bool $fill
  */
 function crop($image, int $cropX, int $cropY, int $cropW, int $cropH, bool $fill = true)
 {
@@ -319,9 +316,9 @@ function crop($image, int $cropX, int $cropY, int $cropW, int $cropH, bool $fill
 }
 
 /**
- * @param resource $image 
- * @param int $bg 
- * @param bool $fill 
+ * @param resource $image
+ * @param int $bg
+ * @param bool $fill
  */
 function imagetrim($image, int $bg, bool $fill)
 {

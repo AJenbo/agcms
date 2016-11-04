@@ -59,4 +59,3 @@ function doConditionalGet(int $timestamp)
     header("HTTP/1.1 304 Not Modified", true, 304);
     die();
 }
-

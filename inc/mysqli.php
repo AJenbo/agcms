@@ -115,4 +115,3 @@ class Simple_Mysqli extends mysqli
         return preg_replace('/([%_])/u', '\\\\$1', $string);
     }
 }
-

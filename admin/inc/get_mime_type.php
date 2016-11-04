@@ -3,9 +3,9 @@ require_once $_SERVER['DOCUMENT_ROOT'].'/admin/inc/logon.php';
 require_once 'file-functions.php';
 
 /**
- * @param string $filepath 
- * 
- * @return string 
+ * @param string $filepath
+ *
+ * @return string
  */
 function get_mime_type(string $filepath): string
 {
@@ -352,7 +352,7 @@ function get_mime_type(string $filepath): string
            'gz'=>'application/x-gzip'
             );
             $mime = empty($mimes[mb_strtolower(@$pathinfo['extension'], 'UTF-8')]) ? 'application/octet-stream' : $mimes[mb_strtolower(@$pathinfo['extension'], 'UTF-8')];
-        }
+    }
 
     $mime = explode(';', $mime);
     $mime = $mime[0];

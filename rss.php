@@ -207,7 +207,7 @@ for ($i = 0; $i < count($sider); $i++) {
         $maerker = explode(',', $sider[$i]['maerke']);
         $maerker_nr = count($maerker);
         $where = '';
-        for ($imaerker=0;$imaerker<$maerker_nr;$imaerker++) {
+        for ($imaerker=0; $imaerker<$maerker_nr; $imaerker++) {
             if ($imaerker > 0) {
                 $where .= ' OR';
             }
@@ -240,4 +240,3 @@ for ($i = 0; $i < count($sider); $i++) {
 }
 $mysqli->close();
 echo '</channel></rss>';
-

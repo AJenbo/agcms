@@ -107,7 +107,6 @@ if (@$_GET['dato']) {
         echo '<h1 class="web">'.($email_nr/21).' sider</h1>';
 
         for ($i = 0; $i < $email_nr; $i++) {
-
             //Bigin new table
             if (!$i % 21 && !$i) {
                 ?><div class="table"><?php
@@ -131,14 +130,14 @@ if (@$_GET['dato']) {
             }
             ?></td></tr></table></div><?php
             //end row
-            if ($i % 3 == 2) {
-                ?></div><?php
-            }
+if ($i % 3 == 2) {
+    ?></div><?php
+}
 
             //end table
-            if ($i % 21 == 20) {
-                ?></div><?php
-            }
+if ($i % 21 == 20) {
+    ?></div><?php
+}
         }
     }
 }

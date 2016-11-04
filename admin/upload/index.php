@@ -26,7 +26,7 @@ if (!empty($_FILES['Filedata']['tmp_name'])
     header('HTTP/1.1 501 Internal Server Error');
     include_once $_SERVER['DOCUMENT_ROOT'] . '/admin/inc/file-functions.php';
     $pathinfo = pathinfo($_FILES['Filedata']['name']);
-    //Kunne ikke læse filnavn.
+    //Kunne ikke lÃ¦se filnavn.
     header('HTTP/1.1 503 Internal Server Error');
     $name = genfilename($pathinfo['filename']) . '.'
     . mb_strtolower($pathinfo['extension'], 'UTF-8');
@@ -43,7 +43,7 @@ if (!empty($_FILES['Filedata']['tmp_name'])
     header('HTTP/1.1 510 Internal Server Error');
     include_once $_SERVER['DOCUMENT_ROOT'] . '/admin/inc/get_mime_type.php';
     $mime = get_mime_type('/admin/upload/temp/' . $name);
-    //Kunne ikke finde billed størelsen.
+    //Kunne ikke finde billed stÃ¸relsen.
     header('HTTP/1.1 512 Internal Server Error');
 
     $imagesize = array($_POST['x'], $_POST['y']);
@@ -86,13 +86,13 @@ if (!empty($_FILES['Filedata']['tmp_name'])
         function returnBytes(string $val): int
         {
             $last = mb_strtolower($val{mb_strlen($val, 'UTF-8')-1}, 'UTF-8');
-            switch($last) {
-            case 'g':
-                $val *= 1024;
-            case 'm':
-                $val *= 1024;
-            case 'k':
-                $val *= 1024;
+            switch ($last) {
+                case 'g':
+                    $val *= 1024;
+                case 'm':
+                    $val *= 1024;
+                case 'k':
+                    $val *= 1024;
             }
             return $val;
         }
@@ -100,7 +100,6 @@ if (!empty($_FILES['Filedata']['tmp_name'])
         $memory_limit = returnBytes(ini_get('memory_limit'))-270336;
 
         if ($imagesize[0]*$imagesize[1] > $memory_limit/9.92) {
-
             //Kunne ikke slette filen.
             header('HTTP/1.1 520 Internal Server Error');
 
@@ -158,7 +157,7 @@ if (!empty($_FILES['Filedata']['tmp_name'])
     header('HTTP/1.1 540 Internal Server Error');
     include_once $_SERVER['DOCUMENT_ROOT'].'/inc/config.php';
     include_once $_SERVER['DOCUMENT_ROOT'].'/inc/mysqli.php';
-    //Kunne ikke åbne database.
+    //Kunne ikke Ã¥bne database.
     header('HTTP/1.1 541 Internal Server Error');
     $mysqli = new Simple_Mysqli(
         $GLOBALS['_config']['mysql_server'],
@@ -191,4 +190,3 @@ if (!empty($_FILES['Filedata']['tmp_name'])
     //Filen blev ikke sendt
     header('HTTP/1.1 404 Not Found');
 }
-

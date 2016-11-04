@@ -837,4 +837,3 @@ class IMAP
         $this->_responce();
     }
 }
-

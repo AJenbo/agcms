@@ -77,7 +77,7 @@ $where = implode(' AND ', $where);
 if (empty($_GET)) {
     $_GET['y'] = date('Y');
     if ($_SESSION['_user']['access'] != 1) {
-    	$_GET['clerk'] = $_SESSION['_user']['fullname'];
+        $_GET['clerk'] = $_SESSION['_user']['fullname'];
     }
     $_GET['status'] = 'activ';
 }
@@ -182,79 +182,79 @@ if ($oldest) {
 } else {
     $oldest = date('Y');
 }
-for ($i=$oldest;$i<date('Y')+1;$i++) {
+for ($i=$oldest; $i<date('Y')+1; $i++) {
     ?><option value="<?php echo $i; ?>"<?php
-    if (@$_GET['y'] == $i || (@$_GET['y'] == '' && date('Y') == $i)) {
-        echo ' selected="selected"';
-    }
+if (@$_GET['y'] == $i || (@$_GET['y'] == '' && date('Y') == $i)) {
+    echo ' selected="selected"';
+}
     ?>><?php echo $i; ?></option><?php
 }
 ?></select></td><td>
 <select name="m">
     <option value=""<?php
-if (@!$_GET['m']) {
-    echo ' selected="selected"';
-}
+    if (@!$_GET['m']) {
+        echo ' selected="selected"';
+    }
 ?>><?php echo _('All'); ?></option>
     <option value="1"<?php
-if (@$_GET['m'] == '1') {
-    echo ' selected="selected"';
-}
+    if (@$_GET['m'] == '1') {
+        echo ' selected="selected"';
+    }
 ?>><?php echo _('Jan'); ?></option>
     <option value="2"<?php
-if (@$_GET['m'] == '2') {
-    echo ' selected="selected"';
-}
+    if (@$_GET['m'] == '2') {
+        echo ' selected="selected"';
+    }
 ?>><?php echo _('Feb'); ?></option>
     <option value="3"<?php
-if (@$_GET['m'] == '3') {
-    echo ' selected="selected"';
-}
+    if (@$_GET['m'] == '3') {
+        echo ' selected="selected"';
+    }
 ?>><?php echo _('Mar'); ?></option>
     <option value="4"<?php
-if (@$_GET['m'] == '4') {
-    echo ' selected="selected"';
-}
+    if (@$_GET['m'] == '4') {
+        echo ' selected="selected"';
+    }
 ?>><?php echo _('Apr'); ?></option>
     <option value="5"<?php
-if (@$_GET['m'] == '5') {
-    echo ' selected="selected"';
-}
+    if (@$_GET['m'] == '5') {
+        echo ' selected="selected"';
+    }
 ?>><?php echo _('May'); ?></option>
     <option value="6"<?php
-if (@$_GET['m'] == '6') {
-    echo ' selected="selected"';
-}
+    if (@$_GET['m'] == '6') {
+        echo ' selected="selected"';
+    }
 ?>><?php echo _('Jun'); ?></option>
     <option value="7"<?php
-if (@$_GET['m'] == '7') {
-    echo ' selected="selected"';
-}
+    if (@$_GET['m'] == '7') {
+        echo ' selected="selected"';
+    }
 ?>><?php echo _('Jul'); ?></option>
     <option value="8"<?php
-if (@$_GET['m'] == '8') {
-    echo ' selected="selected"';
-}
+    if (@$_GET['m'] == '8') {
+        echo ' selected="selected"';
+    }
 ?>><?php echo _('Aug'); ?></option>
     <option value="9"<?php
-if (@$_GET['m'] == '9') {
-    echo ' selected="selected"';
-}
+    if (@$_GET['m'] == '9') {
+        echo ' selected="selected"';
+    }
 ?>><?php echo _('Sep'); ?></option>
     <option value="10"<?php
-if (@$_GET['m'] == '10') {
-    echo ' selected="selected"';
-}
+    if (@$_GET['m'] == '10') {
+        echo ' selected="selected"';
+    }
 ?>><?php echo _('Oct'); ?></option>
     <option value="11"<?php
-if (@$_GET['m'] == '11') {
-    echo ' selected="selected"';
-}
+    if (@$_GET['m'] == '11') {
+        echo ' selected="selected"';
+    }
 ?>><?php echo _('Nov'); ?></option>
     <option value="12"<?php
-if (@$_GET['m'] == '12') {
-    echo ' selected="selected"';
-}
+    if (@$_GET['m'] == '12') {
+        echo ' selected="selected"';
+    }
 ?>><?php echo _('Dec'); ?></option>
 </select><?php
 
@@ -272,16 +272,16 @@ if (count($users) < 2) {
 ?></td><td>
 <select name="clerk">
     <option value=""<?php
-if (!$_GET['clerk']) {
-    echo ' selected="selected"';
-}
+    if (!$_GET['clerk']) {
+        echo ' selected="selected"';
+    }
 ?>><?php echo _('All'); ?></option><?php
 foreach ($users as $user) {
     //warning if a user name is a it could colide with all
     ?><option<?php
-    if ($_GET['clerk'] == $user['fullname']) {
-        echo ' selected="selected"';
-    }
+if ($_GET['clerk'] == $user['fullname']) {
+    echo ' selected="selected"';
+}
     ?>><?php echo $user['fullname'] ?></option><?php
 }
 ?></select><?php
@@ -291,64 +291,64 @@ if (count($users) < 2) {
 ?></td><td>
 <select name="status">
     <option value=""<?php
-if (!$_GET['status']) {
-    echo ' selected="selected"';
-}
+    if (!$_GET['status']) {
+        echo ' selected="selected"';
+    }
 ?>><?php echo _('All'); ?></option>
     <option value="activ"<?php
-if ($_GET['status'] == 'activ') {
-    echo ' selected="selected"';
-}
+    if ($_GET['status'] == 'activ') {
+        echo ' selected="selected"';
+    }
 ?>><?php echo _('Current'); ?></option>
     <option value="inactiv"<?php
-if ($_GET['status'] == 'inactiv') {
-    echo ' selected="selected"';
-}
+    if ($_GET['status'] == 'inactiv') {
+        echo ' selected="selected"';
+    }
 ?>><?php echo _('Completed'); ?></option>
     <option value="new"<?php
-if ($_GET['status'] == 'new') {
-    echo ' selected="selected"';
-}
+    if ($_GET['status'] == 'new') {
+        echo ' selected="selected"';
+    }
 ?>><?php echo _('New'); ?></option>
     <option value="locked"<?php
-if ($_GET['status'] == 'locked') {
-    echo ' selected="selected"';
-}
+    if ($_GET['status'] == 'locked') {
+        echo ' selected="selected"';
+    }
 ?>><?php echo _('Locked'); ?></option>
     <option value="pbsok"<?php
-if ($_GET['status'] == 'pbsok') {
-    echo ' selected="selected"';
-}
+    if ($_GET['status'] == 'pbsok') {
+        echo ' selected="selected"';
+    }
 ?>><?php echo _('Ready'); ?></option>
     <option value="accepted"<?php
-if ($_GET['status'] == 'accepted') {
-    echo ' selected="selected"';
-}
+    if ($_GET['status'] == 'accepted') {
+        echo ' selected="selected"';
+    }
 ?>><?php echo _('Expedited'); ?></option>
     <option value="giro"<?php
-if ($_GET['status'] == 'giro') {
-    echo ' selected="selected"';
-}
+    if ($_GET['status'] == 'giro') {
+        echo ' selected="selected"';
+    }
 ?>><?php echo _('Giro'); ?></option>
     <option value="cash"<?php
-if ($_GET['status'] == 'cash') {
-    echo ' selected="selected"';
-}
+    if ($_GET['status'] == 'cash') {
+        echo ' selected="selected"';
+    }
 ?>><?php echo _('Cash'); ?></option>
     <option value="pbserror"<?php
-if ($_GET['status'] == 'pbserror') {
-    echo ' selected="selected"';
-}
+    if ($_GET['status'] == 'pbserror') {
+        echo ' selected="selected"';
+    }
 ?>><?php echo _('Error'); ?></option>
     <option value="canceled"<?php
-if ($_GET['status'] == 'canceled') {
-    echo ' selected="selected"';
-}
+    if ($_GET['status'] == 'canceled') {
+        echo ' selected="selected"';
+    }
 ?>><?php echo _('Canceled'); ?></option>
     <option value="rejected"<?php
-if ($_GET['status'] == 'rejected') {
-    echo ' selected="selected"';
-}
+    if ($_GET['status'] == 'rejected') {
+        echo ' selected="selected"';
+    }
 ?>><?php echo _('Rejected'); ?></option>
 </select></td><td>
 <select name="momssats">
@@ -398,21 +398,21 @@ if (!empty($_GET['email'])) {
 ?>" maxlength="64" /></td><?php
 if (count($GLOBALS['_config']['email']) > 1) {
     ?><td><select name="department"><option value=""<?php
-    if (!$_GET['department']) {
-        echo ' selected="selected"';
-    }
+if (!$_GET['department']) {
+    echo ' selected="selected"';
+}
     ?>><?php
     echo _('All');
     ?></option><?php
-    foreach ($GLOBALS['_config']['email'] as $email) {
-        ?><option<?php
-        if ($_GET['department'] == $email) {
-            echo ' selected="selected"';
-        }
-        ?>><?php
-        echo $email;
-        ?></option><?php
-    }
+foreach ($GLOBALS['_config']['email'] as $email) {
+    ?><option<?php
+if ($_GET['department'] == $email) {
+    echo ' selected="selected"';
+}
+?>><?php
+echo $email;
+?></option><?php
+}
     ?></select></td><?php
 }
 ?><td><input type="submit" value="Hent" /></td></tr>
@@ -427,9 +427,9 @@ if (count($GLOBALS['_config']['email']) > 1) {
         <td><?php echo _('ID'); ?></td>
         <td><?php echo _('Created'); ?></td>
         <?php
-if (empty($_GET['clerk'])) {
-    ?><td><?php echo _('Responsible'); ?></td><?php
-}
+        if (empty($_GET['clerk'])) {
+            ?><td><?php echo _('Responsible'); ?></td><?php
+        }
 ?>
         <td><?php echo _('Amount'); ?></td>
         <td><?php echo _('Recipient'); ?></td>
@@ -438,9 +438,9 @@ if (empty($_GET['clerk'])) {
 <tbody id="list"><?php
 foreach ($fakturas as $i => $faktura) {
     ?><tr<?php
-    if ($i % 2 == 0) {
-        echo ' class="altbc"';
-    }
+if ($i % 2 == 0) {
+    echo ' class="altbc"';
+}
     ?>>
     <td style="text-align:center"><a href="faktura.php?id=<?php echo $faktura['id'] ?>"><?php
     if ($faktura['status'] == 'new') {
@@ -490,10 +490,10 @@ foreach ($fakturas as $i => $faktura) {
     $faktura['adresse'].'<br/>'.
     $faktura['postbox'].'<br/>'.
     $faktura['postnr'].' '.$faktura['by'].'<br/>';
-    if ($faktura['land']) {
-        include_once '../inc/countries.php';
-        echo $countries[$faktura['land']].'<br/>';
-    }
+if ($faktura['land']) {
+    include_once '../inc/countries.php';
+    echo $countries[$faktura['land']].'<br/>';
+}
     echo $faktura['email'].'<br/>'.
     $faktura['tlf1'].'<br/>'.
     $faktura['tlf2'];

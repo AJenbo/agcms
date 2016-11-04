@@ -70,7 +70,7 @@ function katspath(int $id): array
     $kattree = kattree($id);
     $nr = count($kattree);
     $html = _('Select location:').' ';
-    for ($i=0;$i<$nr;$i++) {
+    for ($i=0; $i<$nr; $i++) {
         $html .= '/'.trim($kattree[$i]['navn']);
     }
     $html .= '/';
@@ -284,9 +284,9 @@ function getSiteTree(): string
 }
 
 /**
- * @param int $id 
- * @param bool $input 
- * 
+ * @param int $id
+ * @param bool $input
+ *
  * @return array
  */
 function kat_expand(int $id, bool $input = true): array
@@ -297,7 +297,7 @@ function kat_expand(int $id, bool $input = true): array
 
     $kat = $mysqli->fetchArray('SELECT * FROM `kat` WHERE bind = '.$id.' ORDER BY `order`, `navn`');
     $nr = count($kat);
-    for ($i=0;$i<$nr;$i++) {
+    for ($i=0; $i<$nr; $i++) {
         if ($mysqli->fetchArray('SELECT id FROM `kat` WHERE bind = '.$kat[$i]['id'].' LIMIT 1') || (!$input && $mysqli->fetchArray('SELECT id FROM `bind` WHERE kat = '.$kat[$i]['id'].' LIMIT 1'))) {
             $openkat = explode('<', @$_COOKIE['openkat']);
             $html .= '<div id="kat'.$kat[$i]['id'].'"><img style="display:';

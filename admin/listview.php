@@ -87,14 +87,46 @@ if (@$_GET['sort'] == 'id') {
 
 ?>
 <body><table><thead><tr>
-      <td><a href="?sort=<?php if ($sort == 'id') echo '-' ?>id<?php if (is_numeric($_GET['kat'])) echo '&amp;kat='.$_GET['kat'] ?>">ID</a></td>
-      <td><a href="?sort=<?php if ($sort == 'navn') echo '-' ?>navn<?php if (is_numeric($_GET['kat'])) echo '&amp;kat='.$_GET['kat'] ?>">Navn</a></td>
-      <td><a href="?sort=<?php if ($sort == 'varenr') echo '-' ?>varenr<?php if (is_numeric($_GET['kat'])) echo '&amp;kat='.$_GET['kat'] ?>">Varenummer</a></td>
-      <td><a href="?sort=<?php if ($sort == '`for`') echo '-' ?>for<?php if (is_numeric($_GET['kat'])) echo '&amp;kat='.$_GET['kat'] ?>">Før pris</a></td>
-      <td><a href="?sort=<?php if ($sort == 'pris') echo '-' ?>pris<?php if (is_numeric($_GET['kat'])) echo '&amp;kat='.$_GET['kat'] ?>">Nu Pris</a></td>
-      <td><a href="?sort=<?php if ($sort == 'dato') echo '-' ?>dato<?php if (is_numeric($_GET['kat'])) echo '&amp;kat='.$_GET['kat'] ?>">Sidst ændret</a></td>
-      <td><a href="?sort=<?php if ($sort == 'maerke') echo '-' ?>maerke<?php if (is_numeric($_GET['kat'])) echo '&amp;kat='.$_GET['kat'] ?>">Mærke</a></td>
-      <td><a href="?sort=<?php if ($sort == 'krav') echo '-' ?>krav<?php if (is_numeric($_GET['kat'])) echo '&amp;kat='.$_GET['kat'] ?>">Krav</a></td>
+      <td><a href="?sort=<?php if ($sort == 'id') {
+            echo '-';
+} ?>id<?php if (is_numeric($_GET['kat'])) {
+    echo '&amp;kat='.$_GET['kat'];
+} ?>">ID</a></td>
+      <td><a href="?sort=<?php if ($sort == 'navn') {
+            echo '-';
+} ?>navn<?php if (is_numeric($_GET['kat'])) {
+    echo '&amp;kat='.$_GET['kat'];
+} ?>">Navn</a></td>
+      <td><a href="?sort=<?php if ($sort == 'varenr') {
+            echo '-';
+} ?>varenr<?php if (is_numeric($_GET['kat'])) {
+    echo '&amp;kat='.$_GET['kat'];
+} ?>">Varenummer</a></td>
+      <td><a href="?sort=<?php if ($sort == '`for`') {
+            echo '-';
+} ?>for<?php if (is_numeric($_GET['kat'])) {
+    echo '&amp;kat='.$_GET['kat'];
+} ?>">Før pris</a></td>
+      <td><a href="?sort=<?php if ($sort == 'pris') {
+            echo '-';
+} ?>pris<?php if (is_numeric($_GET['kat'])) {
+    echo '&amp;kat='.$_GET['kat'];
+} ?>">Nu Pris</a></td>
+      <td><a href="?sort=<?php if ($sort == 'dato') {
+            echo '-';
+} ?>dato<?php if (is_numeric($_GET['kat'])) {
+    echo '&amp;kat='.$_GET['kat'];
+} ?>">Sidst ændret</a></td>
+      <td><a href="?sort=<?php if ($sort == 'maerke') {
+            echo '-';
+} ?>maerke<?php if (is_numeric($_GET['kat'])) {
+    echo '&amp;kat='.$_GET['kat'];
+} ?>">Mærke</a></td>
+      <td><a href="?sort=<?php if ($sort == 'krav') {
+            echo '-';
+} ?>krav<?php if (is_numeric($_GET['kat'])) {
+    echo '&amp;kat='.$_GET['kat'];
+} ?>">Krav</a></td>
 </tr></thead><tbody><?php
 require_once '../inc/config.php';
 require_once '../inc/mysqli.php';
@@ -120,8 +152,8 @@ $krav = @$temp;
 unset($temp);
 
 /**
- * @param int $bind 
- * @param string $path_name 
+ * @param int $bind
+ * @param string $path_name
  */
 function print_kat(int $bind, string $path_name)
 {
@@ -135,7 +167,7 @@ function print_kat(int $bind, string $path_name)
 }
 
 /**
- * @param int $kat 
+ * @param int $kat
  */
 function print_pages(int $kat)
 {
@@ -147,14 +179,14 @@ function print_pages(int $kat)
     $altrow = 0;
     foreach ($sider as $side) {
         echo '<tr';
-    if ($altrow) {
-        echo ' class="altrow"';
-        $altrow = 0;
-    } else {
-        $altrow = 1;
-    }
+        if ($altrow) {
+            echo ' class="altrow"';
+            $altrow = 0;
+        } else {
+            $altrow = 1;
+        }
 
-    echo '>
+        echo '>
       <td class="tal"><a href="/admin/?side=redigerside&amp;id='.$side['id'].'">'.$side['id'].'</a></td>
       <td><a href="/side'.$side['id'].'-">'.htmlspecialchars($side['navn'], ENT_COMPAT | ENT_XHTML, 'UTF-8').'</a></td>
       <td>'.htmlspecialchars($side['varenr'], ENT_COMPAT | ENT_XHTML, 'UTF-8').'</td>
@@ -162,9 +194,10 @@ function print_pages(int $kat)
       <td class="tal">'.number_format($side['pris'], 2, ',', '.').'</td>
       <td class="tal">'.$side['dato'].'</td>
       <td>';
-    $side['maerke'] = explode(',', $side['maerke']);
-    foreach ($side['maerke'] as $maerke)
-        echo $maerker[$maerke].' </td><td>'.$krav[$side['krav']].'</td></tr>';
+        $side['maerke'] = explode(',', $side['maerke']);
+        foreach ($side['maerke'] as $maerke) {
+            echo $maerker[$maerke].' </td><td>'.$krav[$side['krav']].'</td></tr>';
+        }
     }
 }
 

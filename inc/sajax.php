@@ -1,11 +1,6 @@
 <?php
 if (!isset($SAJAX_INCLUDED)) {
-
-    /*
-     * GLOBALS AND DEFAULTS
-     *
-     */
-    $GLOBALS['sajax_version'] = "0.13";
+    $GLOBALS['sajax_version'] = "0.14";
     $GLOBALS['sajax_debug_mode'] = false;
     $GLOBALS['sajax_export_array'] = array();
     $GLOBALS['sajax_export_list'] = array();
@@ -13,28 +8,27 @@ if (!isset($SAJAX_INCLUDED)) {
     $GLOBALS['sajax_failure_redirect'] = "";
     $GLOBALS['sajax_request_type'] = "GET";
 
-    /*
-     * CODE
-     *
-     */
-
-    function sajax_handle_client_request() {
-        if (empty($_GET["rs"]) && empty($_POST["rs"]))
+    function sajax_handle_client_request()
+    {
+        if (empty($_GET["rs"]) && empty($_POST["rs"])) {
             return;
+        }
 
         ob_start();
 
         if (!empty($_GET["rs"])) {
             // Always call server
-            header ("Cache-Control: max-age=0, must-revalidate");    // HTTP/1.1
-            header ("Pragma: no-cache");                            // HTTP/1.0
+            header("Cache-Control: max-age=0, must-revalidate");    // HTTP/1.1
+            header("Pragma: no-cache");                            // HTTP/1.0
             $func_name = $_GET["rs"];
-            if (! empty($_GET["rsargs"]))
+            if (! empty($_GET["rsargs"])) {
                 $args = $_GET["rsargs"];
+            }
         } else {
             $func_name = $_POST["rs"];
-            if (! empty($_POST["rsargs"]))
+            if (! empty($_POST["rsargs"])) {
                 $args = $_POST["rsargs"];
+            }
         }
 
         if (!empty($args)) {
@@ -76,19 +70,20 @@ if (!isset($SAJAX_INCLUDED)) {
     sajax_failure_redirect = "<?php echo $sajax_failure_redirect ?>";
 <?php
             global $sajax_export_array;
-            foreach($sajax_export_array as $function) {
+foreach ($sajax_export_array as $function) {
 ?>
-    function x_<?php echo $function["name"] ?>() {
-        return sajax_do_call("<?php echo $function["name"] ?>", arguments, "<?php echo $function["method"] ?>", <?php echo $function["asynchronous"] ? 'true' : 'false' ?>, "<?php echo $function["uri"] ?>");
-    }
+function x_<?php echo $function["name"] ?>() {
+return sajax_do_call("<?php echo $function["name"] ?>", arguments, "<?php echo $function["method"] ?>", <?php echo $function["asynchronous"] ? 'true' : 'false' ?>, "<?php echo $function["uri"] ?>");
+}
 <?php
-            }
+}
             $sajax_js_has_been_shown = true;
         }
 
     }
 
-    function sajax_export() {
+    function sajax_export()
+    {
         global $sajax_export_array;
         global $sajax_export_list;
         global $sajax_request_type;
@@ -102,14 +97,17 @@ if (!isset($SAJAX_INCLUDED)) {
                 $function = array("name" => $function);
             }
 
-            if (!isset($function["method"]))
+            if (!isset($function["method"])) {
                 $function["method"] = $sajax_request_type;
+            }
 
-            if (!isset($function["asynchronous"]))
+            if (!isset($function["asynchronous"])) {
                 $function["asynchronous"] = true;
+            }
 
-            if (!isset($function["uri"]))
+            if (!isset($function["uri"])) {
                 $function["uri"] = $sajax_remote_uri;
+            }
 
             $key = array_search($function["name"], $sajax_export_list);
             if ($key === false) {

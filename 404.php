@@ -189,4 +189,3 @@ if (!@$sog
 header("Status: 200", true, 200);
 header("HTTP/1.1 200 OK", true, 200);
 require 'index.php';
-

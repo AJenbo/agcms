@@ -119,11 +119,11 @@ a {
         </tr>
     </thead>
     <tbody id="list"><?php
-foreach ($fakturas as $i => $faktura) {
-    ?><tr<?php
-    if ($i%2==0) {
-        echo ' class="altbc"';
-    }
+    foreach ($fakturas as $i => $faktura) {
+        ?><tr<?php
+if ($i%2==0) {
+    echo ' class="altbc"';
+}
     ?>>
     <td style="text-align:right"><a href="faktura.php?id=<?php echo $faktura['id'] ?>"><?php echo $faktura['id'] ?></a></td>
     <td style="text-align:right"><a href="faktura.php?id=<?php echo $faktura['id'] ?>"><?php
@@ -133,9 +133,9 @@ foreach ($fakturas as $i => $faktura) {
         echo _('Bank overførsel');
     }
 
-    ?></a></td><td style="text-align:right"><a href="faktura.php?id=<?php echo $faktura['id'] ?>"><?php
+        ?></a></td><td style="text-align:right"><a href="faktura.php?id=<?php echo $faktura['id'] ?>"><?php
     echo date('j/m/y', $faktura['paydate'] ? $faktura['paydate'] : $faktura['date']); ?></a></td><td><a href="faktura.php?id=<?php echo $faktura['id'] ?>"><?php echo $faktura['clerk'] ?></a></td><td style="text-align:right"><a href="faktura.php?id=<?php echo $faktura['id'] ?>"><?php echo number_format($faktura['amount'], 2, ',', '.'); ?></a></td><td style="text-align:center"><a onclick="return confirm_faktura_validate(<?php echo $faktura['id'] ?>);" href="?id=<?php echo $faktura['id'] ?>"><img src="/admin/images/tick.png" alt="<?php echo _('Approve'); ?>" title="<?php echo _('Approve'); ?>" /></a></td></tr><?php
-}
+    }
 ?></tbody>
 </table>
 </div>

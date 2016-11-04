@@ -52,7 +52,7 @@ if (empty($_SESSION['_user'])) {
 <span id="width"><?php echo _('User:'); ?>
      <input name="username" />
      <br />
-     <?php echo _('Password:'); ?>
+        <?php echo _('Password:'); ?>
      <input type="password" name="password" style="margin-top: 5px;" />
      <br />
      <input type="submit" value="Log ind" style="margin-top: 5px;" /></span>

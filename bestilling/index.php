@@ -375,9 +375,7 @@ if (!empty($_SESSION['faktura']['quantities'])) {
 
         $GLOBALS['generatedcontent']['text'] .= '<input value="' . _('Continue')
         . '" type="submit" /></form>';
-
     } elseif ($_GET['step'] == 1) {
-
         if (empty($_SESSION['faktura']['postcountry'])) {
             $_SESSION['faktura']['postcountry'] = 'DK';
         }
@@ -414,9 +412,7 @@ if (!empty($_SESSION['faktura']['quantities'])) {
             $rejected = validate($updates);
 
             if (!count($rejected)) {
-
                 if (@$_POST['newsletter'] ? 1 : 0) {
-
                     include_once 'inc/countries.php';
                     $mysqli->query(
                         "
@@ -929,4 +925,3 @@ if (!empty($_SESSION['faktura']['quantities'])) {
 
 //Output page
 require_once 'theme/index.php';
-

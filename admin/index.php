@@ -52,7 +52,8 @@ function rtefsafe(string $text): string
 {
     return str_replace(
         array("'", chr(10), chr(13), '?', '?'),
-        array("&#39;", ' ', ' ', ' ', ' '), $text
+        array("&#39;", ' ', ' ', ' ', ' '),
+        $text
     );
 }
 
@@ -274,7 +275,7 @@ writeRichText("beskrivelse", \''.rtefsafe($sider[0]['beskrivelse']).'\', "", '.(
     $html .= '<div class="toolbox"><a class="menuboxheader" id="miscboxheader" style="width:201px" onclick="showhide(\'miscbox\',this);">'._('Other:').' </a><div style="width:221px" id="miscbox">'._('SKU:').' <input type="text" name="varenr" id="varenr" maxlength="63" style="text-align:right;width:128px" value="'.htmlspecialchars($sider[0]['varenr'], ENT_COMPAT | ENT_XHTML, 'UTF-8').'" /><br /><img src="images/page_white_key.png" width="16" height="16" alt="" /><select id="krav" name="krav"><option value="0">'._('None').'</option>';
     $krav = $mysqli->fetchArray('SELECT id, navn FROM `krav` ORDER BY navn');
     $krav_nr = count($krav);
-    for ($i=0;$i<$krav_nr;$i++) {
+    for ($i=0; $i<$krav_nr; $i++) {
         $html .= '<option value="'.$krav[$i]['id'].'"';
         if ($sider[0]['krav'] == $krav[$i]['id']) {
             $html .= ' selected="selected"';
@@ -287,7 +288,7 @@ writeRichText("beskrivelse", \''.rtefsafe($sider[0]['beskrivelse']).'\', "", '.(
 
     $maerke = $mysqli->fetchArray('SELECT id, navn FROM `maerke` ORDER BY navn');
     $maerke_nr = count($maerke);
-    for ($i=0;$i<$maerke_nr;$i++) {
+    for ($i=0; $i<$maerke_nr; $i++) {
         $html .= '<option value="'.$maerke[$i]['id'].'"';
         if (in_array($maerke[$i]['id'], $maerker)) {
             $html .= ' selected="selected"';
@@ -344,7 +345,6 @@ writeRichText("beskrivelse", \''.rtefsafe($sider[0]['beskrivelse']).'\', "", '.(
         $html .= '<tbody id="list'.$list['id'].'rows">';
 
         if ($rows = $mysqli->fetchArray('SELECT * FROM `list_rows` WHERE list_id = '.$list['id'])) {
-
             //Explode cells
             foreach ($rows as $row) {
                 $cells = explode('<', $row['cells']);
@@ -419,12 +419,12 @@ listlink['.$list['id'].'] = '.$list['link'].';
     <div class="toolbox"><a class="menuboxheader" id="bindingheader" style="width:593px;" onclick="showhide(\'binding\',this);">Bindinger: </a><div style="width:613pxpx;" id="binding"><div id="bindinger"><br />';
     $bind = $mysqli->fetchArray('SELECT id, kat FROM `bind` WHERE `side` = '.$id);
     $bind_nr = count($bind);
-    for ($i=0;$i<$bind_nr;$i++) {
+    for ($i=0; $i<$bind_nr; $i++) {
         if ($bind[$i]['id'] != -1) {
             $kattree = kattree((int) $bind[$i]['kat']);
             $kattree_nr = count($kattree);
             $kattree_html = '';
-            for ($kattree_i=0;$kattree_i<$kattree_nr;$kattree_i++) {
+            for ($kattree_i=0; $kattree_i<$kattree_nr; $kattree_i++) {
                 $kattree_html .= '/'.trim($kattree[$kattree_i]['navn']);
             }
             $kattree_html .= '/';
@@ -450,12 +450,12 @@ listlink['.$list['id'].'] = '.$list['link'].';
 <div class="toolbox"><a class="menuboxheader" id="tilbehorsheader" style="width:593px;" onclick="showhide(\'tilbehor\',this);">'._('Accessories:').' </a><div style="width:613pxpx;" id="tilbehor"><div id="tilbehore"><br />';
     $tilbehor = $mysqli->fetchArray('SELECT id, tilbehor FROM `tilbehor` WHERE `side` = '.$id);
     $tilbehor_nr = count($tilbehor);
-    for ($i=0;$i<$tilbehor_nr;$i++) {
+    for ($i=0; $i<$tilbehor_nr; $i++) {
         if ($tilbehor[$i]['id'] != null && $tilbehor[$i]['id'] != -1) {
             $kattree = kattree((int) $tilbehor[$i]['kat']);
             $kattree_nr = count($kattree);
             $kattree_html = '';
-            for ($kattree_i=0;$kattree_i<$kattree_nr;$kattree_i++) {
+            for ($kattree_i=0; $kattree_i<$kattree_nr; $kattree_i++) {
                 $kattree_html .= '/'.trim($kattree[$kattree_i]['navn']);
             }
             $kattree_html .= '/';
@@ -1009,7 +1009,7 @@ function get_orphan_lists(): string
     global $mysqli;
 
     $error = $mysqli->fetchArray('SELECT id FROM `lists` WHERE page_id NOT IN (SELECT id FROM sider);');
- 	$html = '';
+    $html = '';
     if ($error) {
         $html .= '<br /><b>'._('The following lists are orphans:').'</b><br />';
         foreach ($error as $value) {
@@ -1109,14 +1109,14 @@ writeRichText("beskrivelse", \'\', "", '.($GLOBALS['_config']['thumb_width']+32)
     $html .= '<div class="toolbox"><a class="menuboxheader" id="miscboxheader" style="width:201px" onclick="showhide(\'miscbox\',this);">'._('Other:').' </a><div style="width:221px" id="miscbox">'._('SKU:').' <input type="text" name="varenr" id="varenr" maxlength="63" style="text-align:right;width:128px" value="" /><br /><img src="images/page_white_key.png" width="16" height="16" alt="" /><select id="krav" name="krav"><option value="0">'._('None').'</option>';
     $krav = $mysqli->fetchArray('SELECT id, navn FROM `krav`');
     $krav_nr = count($krav);
-    for ($i=0;$i<$krav_nr;$i++) {
+    for ($i=0; $i<$krav_nr; $i++) {
         $html .= '<option value="'.$krav[$i]['id'].'"';
         $html .= '>'.htmlspecialchars($krav[$i]['navn'], ENT_COMPAT | ENT_XHTML, 'UTF-8').'</option>';
     }
     $html .= '</select><br /><img width="16" height="16" alt="" src="images/page_white_medal.png"/><select id="maerke" name="maerke" multiple="multiple" size="10"><option value="0">'._('All others').'</option>';
     $maerke = $mysqli->fetchArray('SELECT id, navn FROM `maerke` ORDER BY navn');
     $maerke_nr = count($maerke);
-    for ($i=0;$i<$maerke_nr;$i++) {
+    for ($i=0; $i<$maerke_nr; $i++) {
         $html .= '<option value="'.$maerke[$i]['id'].'"';
         $html .= '>'.htmlspecialchars($maerke[$i]['navn'], ENT_COMPAT | ENT_XHTML, 'UTF-8').'</option>';
     }
@@ -1168,7 +1168,7 @@ function katspath(string $id): array
     $kattree = kattree($id);
     $nr = count($kattree);
     $html = _('Select location:').' ';
-    for ($i=0;$i<$nr;$i++) {
+    for ($i=0; $i<$nr; $i++) {
         $html .= '/'.trim($kattree[$i]['navn']);
     }
     $html .= '/';
@@ -1334,7 +1334,7 @@ function siteList_expand(int $id): array
     $html .= $temp['html'];
     $sider = $mysqli->fetchArray('SELECT sider.id, sider.varenr, bind.id as bind, navn FROM `bind` LEFT JOIN sider on bind.side = sider.id WHERE `kat` = '.$id.' ORDER BY sider.navn');
     $nr = count($sider);
-    for ($i=0;$i<$nr;$i++) {
+    for ($i=0; $i<$nr; $i++) {
         $html .= '<div id="bind'.$sider[$i]['bind'].'" class="side'.$sider[$i]['id'].'"><a style="margin-left:16px" class="side" href="?side=redigerside&amp;id='.$sider[$i]['id'].'"><img src="images/page.png" width="16" height="16" alt="" /> '.strip_tags($sider[$i]['navn'], '<img>');
         if ($sider[$i]['varenr']) {
             $html .= ' <em>#:'.$sider[$i]['varenr'].'</em>';
@@ -1536,7 +1536,7 @@ function getmaerker(): string
     </tr><tr><td></td></tr></table><p><input value="'._('Add brand').'e" type="submit" accesskey="s" /><br /><br /></p><div id="imagelogo" style="display:none; position:absolute;"></div>';
     $brands = $mysqli->fetchArray('SELECT * FROM `maerke` ORDER BY navn');
     $nr = count($brands);
-    for ($i=0;$i<$nr;$i++) {
+    for ($i=0; $i<$nr; $i++) {
         $html .= '<div id="maerke'.$brands[$i]['id'].'"><a href="" onclick="slet(\'maerke\',\''.addslashes($brands[$i]['navn']).'\','.$brands[$i]['id'].');"><img src="images/cross.png" alt="X" title="'._('Delete').' '.htmlspecialchars($brands[$i]['navn'], ENT_COMPAT | ENT_XHTML, 'UTF-8').'!" width="16" height="16"';
         if (!$brands[$i]['link'] && !$brands[$i]['ico']) {
             $html .= ' style="margin-right:32px"';
@@ -1609,7 +1609,7 @@ function getkrav(): string
     $html = '<div id="headline">'._('Requirements list').'</div><div style="margin:16px;"><a href="?side=nykrav">Tilføj krav</a>';
     $krav = $mysqli->fetchArray('SELECT id, navn FROM `krav` ORDER BY navn');
     $nr = count($krav);
-    for ($i=0;$i<$nr;$i++) {
+    for ($i=0; $i<$nr; $i++) {
         $html .= '<div id="krav'.$krav[$i]['id'].'"><a href="" onclick="slet(\'krav\',\''.addslashes($krav[$i]['navn']).'\','.$krav[$i]['id'].');"><img src="images/cross.png" title="Slet '.$krav[$i]['navn'].'!" width="16" height="16" /></a><a href="?side=editkrav&amp;id='.$krav[$i]['id'].'">'.$krav[$i]['navn'].'</a></div>';
     }
     $html .= '</div>';
@@ -1749,7 +1749,7 @@ function bind(int $id, int $kat): array
 
     $kattree = kattree($kat);
     $kattree_nr = count($kattree);
-    for ($i=0;$i<$kattree_nr;$i++) {
+    for ($i=0; $i<$kattree_nr; $i++) {
         $added['path'] .= '/'.trim($kattree[$i]['navn']);
     }
     $added['path'] .= '/';
@@ -1923,7 +1923,7 @@ function sletSide(int $sideId): array
 
     $lists = $mysqli->fetchArray('SELECT id FROM `lists` WHERE `page_id` = '.$sideId);
     if ($lists) {
-        for ($i=0;$i<count($lists);$i++) {
+        for ($i=0; $i<count($lists); $i++) {
             if ($i) {
                 $tableWhere .= ' OR';
                 $listsWhere .= ' OR';
@@ -2219,75 +2219,75 @@ JSON.parse = JSON.parse || function(jsonsring) { return jsonsring.evalJSON(true)
 </head>
 <body onload="init()">
 <div id="canvas">
-  <?php
-switch(@$_GET['side']) {
-case 'emaillist':
-    echo getEmailList();
-    break;
-case 'newemail':
-    echo getNewEmail();
-    break;
-case 'viewemail':
-case 'editemail':
-    echo getEmail((int) $_GET['id']);
-    break;
-case 'sogogerstat':
-    echo getsogogerstat();
-    break;
-case 'maerker':
-    echo getmaerker();
-    break;
-case 'krav':
-    echo getkrav();
-    break;
-case 'nyside':
-    echo getnyside();
-    break;
-case 'nykat':
-    $temp = getnykat();
-    echo $temp['html'];
-    break;
-case 'search':
-    $temp = search($_GET['text']);
-    echo $temp['html'];
-    break;
-case 'editkrav':
-    echo editkrav((int) $_GET['id']);
-    break;
-case 'nykrav':
-    echo getnykrav();
-    break;
-case 'updatemaerke';
-    echo getupdatemaerke((int) $_GET['id']);
-    break;
-case 'redigerside';
-    echo redigerside((int) $_GET['id']);
-    break;
-case 'redigerkat';
-    echo redigerkat((int) $_GET['id']);
-    break;
-case 'getSiteTree';
-    echo getSiteTree();
-    break;
-case 'redigerSpecial';
-    echo redigerSpecial((int) $_GET['id']);
-    break;
-case 'redigerFrontpage';
-    echo redigerFrontpage();
-    break;
-case 'get_db_error';
-    echo get_db_error();
-    break;
-case 'listsort';
-    echo listsort((int) $_GET['id']);
-    break;
-case 'editContact';
-    echo editContact((int) $_GET['id']);
-    break;
-case 'addressbook';
-    echo getaddressbook();
-    break;
-}
+    <?php
+    switch (@$_GET['side']) {
+        case 'emaillist':
+            echo getEmailList();
+            break;
+        case 'newemail':
+            echo getNewEmail();
+            break;
+        case 'viewemail':
+        case 'editemail':
+            echo getEmail((int) $_GET['id']);
+            break;
+        case 'sogogerstat':
+            echo getsogogerstat();
+            break;
+        case 'maerker':
+            echo getmaerker();
+            break;
+        case 'krav':
+            echo getkrav();
+            break;
+        case 'nyside':
+            echo getnyside();
+            break;
+        case 'nykat':
+            $temp = getnykat();
+            echo $temp['html'];
+            break;
+        case 'search':
+            $temp = search($_GET['text']);
+            echo $temp['html'];
+            break;
+        case 'editkrav':
+            echo editkrav((int) $_GET['id']);
+            break;
+        case 'nykrav':
+            echo getnykrav();
+            break;
+        case 'updatemaerke';
+            echo getupdatemaerke((int) $_GET['id']);
+            break;
+        case 'redigerside';
+            echo redigerside((int) $_GET['id']);
+            break;
+        case 'redigerkat';
+            echo redigerkat((int) $_GET['id']);
+            break;
+        case 'getSiteTree';
+            echo getSiteTree();
+            break;
+        case 'redigerSpecial';
+            echo redigerSpecial((int) $_GET['id']);
+            break;
+        case 'redigerFrontpage';
+            echo redigerFrontpage();
+            break;
+        case 'get_db_error';
+            echo get_db_error();
+            break;
+        case 'listsort';
+            echo listsort((int) $_GET['id']);
+            break;
+        case 'editContact';
+            echo editContact((int) $_GET['id']);
+            break;
+        case 'addressbook';
+            echo getaddressbook();
+            break;
+    }
 ?>
 </div>
 <?php

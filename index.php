@@ -324,7 +324,6 @@ $_GET = fullMysqliEscape($_GET);
 
 //redirect af gamle urls
 if (@$_GET['kat'] || @$_GET['side']) {
-
     //secure input
     $kat_id  = fullMysqliEscape($_GET['kat']);
     $side_id = fullMysqliEscape($_GET['side']);
@@ -374,7 +373,6 @@ if (@$_GET['kat'] || @$_GET['side']) {
         $kat_name = $GLOBALS['cache']['kats'][$kat_id]['navn'];
     }
     if ($side_navn) {
-
         //TODO rawurlencode $url (PIE doesn't do it buy it self :(
         $url = '/kat' .$kat_id .'-' .rawurlencode(clearFileName($kat_name))
             .'/side' .$side_id .'-' .rawurlencode(clearFileName($side_navn))
@@ -384,7 +382,6 @@ if (@$_GET['kat'] || @$_GET['side']) {
         header('Location: ' .$url);
         die();
     } elseif ($kat_name) {
-
         //TODO rawurlencode $url (PIE doesn't do it buy it self :(
         $url = '/kat'.$kat_id.'-'.rawurlencode(clearFileName($kat_name)).'/';
 
@@ -428,7 +425,6 @@ if (@$GLOBALS['side']['id'] > 0) {
         "
     )
     ) {
-
         getUpdateTime('sider');
 
         $GLOBALS['side']['inactive'] = true;
@@ -474,18 +470,18 @@ if (@$GLOBALS['side']['id'] > 0
 
     getUpdateTime('bind');
 
-    $activMenu                  = $bind[0]['kat'];
-    $GLOBALS['side']['navn']    = $bind[0]['navn'];
-    $GLOBALS['side']['burde']   = $bind[0]['burde'];
-    $GLOBALS['side']['fra']     = $bind[0]['fra'];
-    $GLOBALS['side']['text']    = $bind[0]['text'];
-    $GLOBALS['side']['pris']    = $bind[0]['pris'];
-    $GLOBALS['side']['for']     = $bind[0]['for'];
-    $GLOBALS['side']['krav']    = $bind[0]['krav'];
-    $GLOBALS['side']['maerke']  = $bind[0]['maerke'];
-    $GLOBALS['side']['varenr']  = $bind[0]['varenr'];
-    $GLOBALS['side']['dato']    = $bind[0]['dato'];
-    $GLOBALS['cache']['updatetime']['side']	= $bind[0]['dato'];
+    $activMenu                 = $bind[0]['kat'];
+    $GLOBALS['side']['navn']   = $bind[0]['navn'];
+    $GLOBALS['side']['burde']  = $bind[0]['burde'];
+    $GLOBALS['side']['fra']    = $bind[0]['fra'];
+    $GLOBALS['side']['text']   = $bind[0]['text'];
+    $GLOBALS['side']['pris']   = $bind[0]['pris'];
+    $GLOBALS['side']['for']    = $bind[0]['for'];
+    $GLOBALS['side']['krav']   = $bind[0]['krav'];
+    $GLOBALS['side']['maerke'] = $bind[0]['maerke'];
+    $GLOBALS['side']['varenr'] = $bind[0]['varenr'];
+    $GLOBALS['side']['dato']   = $bind[0]['dato'];
+    $GLOBALS['cache']['updatetime']['side'] = $bind[0]['dato'];
     unset($bind);
 } elseif (@$GLOBALS['side']['id'] > 0 && !@$GLOBALS['side']['inactive']) {
     //Hent side indhold
@@ -506,17 +502,17 @@ if (@$GLOBALS['side']['id'] > 0
         LIMIT 1
         "
     );
-    $GLOBALS['side']['navn']	= $sider[0]['navn'];
-    $GLOBALS['side']['burde']	= $sider[0]['burde'];
-    $GLOBALS['side']['fra']		= $sider[0]['fra'];
-    $GLOBALS['side']['text']	= $sider[0]['text'];
-    $GLOBALS['side']['pris']	= $sider[0]['pris'];
-    $GLOBALS['side']['for']		= $sider[0]['for'];
-    $GLOBALS['side']['krav']	= $sider[0]['krav'];
-    $GLOBALS['side']['maerke']	= $sider[0]['maerke'];
-    $GLOBALS['side']['varenr']	= $sider[0]['varenr'];
-    $GLOBALS['side']['dato']	= $sider[0]['dato'];
-    $GLOBALS['cache']['updatetime']['side']	= $sider[0]['dato'];
+    $GLOBALS['side']['navn']   = $sider[0]['navn'];
+    $GLOBALS['side']['burde']  = $sider[0]['burde'];
+    $GLOBALS['side']['fra']    = $sider[0]['fra'];
+    $GLOBALS['side']['text']   = $sider[0]['text'];
+    $GLOBALS['side']['pris']   = $sider[0]['pris'];
+    $GLOBALS['side']['for']    = $sider[0]['for'];
+    $GLOBALS['side']['krav']   = $sider[0]['krav'];
+    $GLOBALS['side']['maerke'] = $sider[0]['maerke'];
+    $GLOBALS['side']['varenr'] = $sider[0]['varenr'];
+    $GLOBALS['side']['dato']   = $sider[0]['dato'];
+    $GLOBALS['cache']['updatetime']['side'] = $sider[0]['dato'];
 
     unset($sider);
 }
@@ -618,7 +614,6 @@ $kat_fpc = $mysqli->fetchArray(
 );
 getUpdateTime('kat');
 foreach ($kat_fpc as $value) {
-
     $GLOBALS['cache']['kats'][$value['id']]['navn'] = $value['navn'];
     $GLOBALS['cache']['kats'][$value['id']]['vis'] = $value['vis'];
     $GLOBALS['cache']['kats'][$value['id']]['skriv'] = $value['skriv'] ? true : null;
