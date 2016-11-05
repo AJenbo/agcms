@@ -17,14 +17,7 @@ if ($_GET['id'] > 0) {
     die(_('Wrong id.'));
 }
 
-$mysqli = new Simple_Mysqli(
-    $GLOBALS['_config']['mysql_server'],
-    $GLOBALS['_config']['mysql_user'],
-    $GLOBALS['_config']['mysql_password'],
-    $GLOBALS['_config']['mysql_database']
-);
-
-$faktura = $mysqli->fetchOne("SELECT *, UNIX_TIMESTAMP(`date`) AS `date`, UNIX_TIMESTAMP(`paydate`) AS `paydate` FROM `fakturas` WHERE `id` = ".$id." AND `status` != 'new'");
+$faktura = db()->fetchOne("SELECT *, UNIX_TIMESTAMP(`date`) AS `date`, UNIX_TIMESTAMP(`paydate`) AS `paydate` FROM `fakturas` WHERE `id` = ".$id." AND `status` != 'new'");
 if (!$faktura) {
     die(_('Can\'t print.'));
 }

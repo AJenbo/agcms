@@ -16,14 +16,6 @@ require_once $_SERVER['DOCUMENT_ROOT'] . '/inc/functions.php';
 header('Content-Type:text/xml;charset=utf-8');
 echo '<?xml version="1.0" encoding="utf-8" ?>';
 
-//Open database
-$mysqli = new Simple_Mysqli(
-    $GLOBALS['_config']['mysql_server'],
-    $GLOBALS['_config']['mysql_user'],
-    $GLOBALS['_config']['mysql_password'],
-    $GLOBALS['_config']['mysql_database']
-);
-
 /**
  * Print XML for content bellonging to a category
  *
@@ -33,9 +25,7 @@ $mysqli = new Simple_Mysqli(
  */
 function listKats(int $id)
 {
-    global $mysqli;
-
-    $kats = $mysqli->fetchArray(
+    $kats = db()->fetchArray(
         "
         SELECT id, navn
         FROM kat
@@ -67,11 +57,9 @@ function listKats(int $id)
  */
 function listPages(int $id, string $katName)
 {
-    global $mysqli;
-
-    $binds = $mysqli->fetchArray("SELECT side FROM bind WHERE kat = " . $id);
+    $binds = db()->fetchArray("SELECT side FROM bind WHERE kat = " . $id);
     foreach ($binds as $bind) {
-        $sider = $mysqli->fetchArray(
+        $sider = db()->fetchArray(
             "
             SELECT navn, dato
             FROM sider
@@ -94,7 +82,7 @@ function listPages(int $id, string $katName)
 }
 
 
-$special = $mysqli->fetchArray("SELECT dato FROM special WHERE id = 1");
+$special = db()->fetchArray("SELECT dato FROM special WHERE id = 1");
 ?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.sitemaps.org/schemas/sitemap/0.9 http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd">
     <url>

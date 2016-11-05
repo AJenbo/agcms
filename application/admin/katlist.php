@@ -10,12 +10,6 @@ require_once $_SERVER['DOCUMENT_ROOT'] . '/admin/inc/logon.php';
 require_once $_SERVER['DOCUMENT_ROOT'] . '/admin/inc/file-functions.php';
 require_once $_SERVER['DOCUMENT_ROOT'] . '/inc/functions.php';
 require_once $_SERVER['DOCUMENT_ROOT'] . '/inc/sajax.php';
-$mysqli = new Simple_Mysqli(
-    $GLOBALS['_config']['mysql_server'],
-    $GLOBALS['_config']['mysql_user'],
-    $GLOBALS['_config']['mysql_password'],
-    $GLOBALS['_config']['mysql_database']
-);
 
 //$sajax_debug_mode = 1;
 sajax_export(

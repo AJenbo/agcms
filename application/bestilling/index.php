@@ -32,14 +32,6 @@ require_once $_SERVER['DOCUMENT_ROOT'] . '/vendor/phpmailer/phpmailer/class.phpm
 chdir('../');
 
 if (is_numeric(@$_GET['add']) || is_numeric(@$_GET['add_list_item'])) {
-    //Open database
-    $mysqli = new Simple_Mysqli(
-        $GLOBALS['_config']['mysql_server'],
-        $GLOBALS['_config']['mysql_user'],
-        $GLOBALS['_config']['mysql_password'],
-        $GLOBALS['_config']['mysql_database']
-    );
-
     if ($_SERVER['HTTP_REFERER']) {
         $goto_uri = $_SERVER['HTTP_REFERER'];
     } else {
@@ -47,14 +39,14 @@ if (is_numeric(@$_GET['add']) || is_numeric(@$_GET['add_list_item'])) {
     }
 
     if (is_numeric(@$_GET['add_list_item'])) {
-        $list_row = $mysqli->fetchOne(
+        $list_row = db()->fetchOne(
             "
             SELECT *
             FROM `list_rows`
             WHERE id = " . (int) $_GET['add_list_item']
         );
         if ($list_row['link']) {
-            $product = $mysqli->fetchOne(
+            $product = db()->fetchOne(
                 "
                 SELECT `navn`, `pris`, `fra`
                 FROM `sider`
@@ -65,7 +57,7 @@ if (is_numeric(@$_GET['add']) || is_numeric(@$_GET['add_list_item'])) {
                 $goto_uri = '/?side='.$product['link'];
             }
         } else {
-            $list = $mysqli->fetchOne(
+            $list = db()->fetchOne(
                 "
                 SELECT `page_id`, `cells`
                 FROM `lists` WHERE id = " . (int) $list_row['list_id']
@@ -88,7 +80,7 @@ if (is_numeric(@$_GET['add']) || is_numeric(@$_GET['add_list_item'])) {
             }
         }
     } elseif (is_numeric(@$_GET['add'])) {
-        $product = $mysqli->fetchOne(
+        $product = db()->fetchOne(
             "SELECT `navn`, `pris`, `fra`
             FROM `sider`
             WHERE id = " . (int) $_GET['add']
@@ -418,7 +410,7 @@ if (!empty($_SESSION['faktura']['quantities'])) {
 
             if (!count($rejected)) {
                 if (@$_POST['newsletter'] ? 1 : 0) {
-                    $mysqli->query(
+                    db()->query(
                         "
                         INSERT INTO `email` (
                             `navn`,
@@ -729,8 +721,8 @@ if (!empty($_SESSION['faktura']['quantities'])) {
         $sql .= " `date` = NOW()";
 
         //save order
-        $mysqli->query($sql);
-        $id = $mysqli->insert_id;
+        db()->query($sql);
+        $id = db()->insert_id;
 
         //emailbody header
         $emailbody = '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
@@ -891,7 +883,7 @@ if (!empty($_SESSION['faktura']['quantities'])) {
             }
         } else {
             //TODO secure this against injects and <; in the email and name
-            $mysqli->query(
+            db()->query(
                 "
                 INSERT INTO `emails` (`subject`, `from`, `to`, `body`, `date`)
                 VALUES (

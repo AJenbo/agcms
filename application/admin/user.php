@@ -21,14 +21,6 @@ require_once $_SERVER['DOCUMENT_ROOT'] . '/admin/inc/logon.php';
 require_once $_SERVER['DOCUMENT_ROOT'] . '/inc/functions.php';
 require_once $_SERVER['DOCUMENT_ROOT'] . '/inc/sajax.php';
 
-$mysqli = new Simple_Mysqli(
-    $GLOBALS['_config']['mysql_server'],
-    $GLOBALS['_config']['mysql_user'],
-    $GLOBALS['_config']['mysql_password'],
-    $GLOBALS['_config']['mysql_database']
-);
-
-
 /**
  * Update user
  *
@@ -45,8 +37,6 @@ $mysqli = new Simple_Mysqli(
  */
 function updateuser(int $id, array $updates)
 {
-    global $mysqli;
-
     if ($_SESSION['_user']['access'] == 1 || $_SESSION['_user']['id'] == $id) {
         //Validate access lavel update
         if ($_SESSION['_user']['id'] == $id && $updates['access'] != $_SESSION['_user']['access']) {
@@ -58,7 +48,7 @@ function updateuser(int $id, array $updates)
             if ($_SESSION['_user']['access'] == 1 && $_SESSION['_user']['id'] != $id) {
                 $updates['password'] = crypt($updates['password_new']);
             } elseif ($_SESSION['_user']['id'] == $id) {
-                $user = $mysqli->fetchOne("SELECT `password` FROM `users` WHERE id = ".$id);
+                $user = db()->fetchOne("SELECT `password` FROM `users` WHERE id = ".$id);
                 if (mb_substr($user['password'], 0, 13) == mb_substr(crypt($updates['password'], $user['password']), 0, 13)) {
                     $updates['password'] = crypt($updates['password_new']);
                 } else {
@@ -81,7 +71,7 @@ function updateuser(int $id, array $updates)
         $sql .= ' WHERE `id` = '.$id;
 
         //Run SQL
-        $mysqli->query($sql);
+        db()->query($sql);
 
         return true;
     } else {
@@ -98,7 +88,7 @@ sajax_export(
 //if this is a ajax call, this is where things end
 sajax_handle_client_request();
 
-$user = $mysqli->fetchOne("SELECT *, UNIX_TIMESTAMP(`lastlogin`) AS 'lastlogin' FROM `users` WHERE id = ".$_GET['id']);
+$user = db()->fetchOne("SELECT *, UNIX_TIMESTAMP(`lastlogin`) AS 'lastlogin' FROM `users` WHERE id = ".$_GET['id']);
 
 ?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">

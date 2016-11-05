@@ -20,12 +20,6 @@ textdomain('agcms');
 require_once $_SERVER['DOCUMENT_ROOT'] . '/admin/inc/logon.php';
 require_once $_SERVER['DOCUMENT_ROOT'] . '/inc/functions.php';
 require_once $_SERVER['DOCUMENT_ROOT'] . '/inc/sajax.php';
-$mysqli = new Simple_Mysqli(
-    $GLOBALS['_config']['mysql_server'],
-    $GLOBALS['_config']['mysql_user'],
-    $GLOBALS['_config']['mysql_password'],
-    $GLOBALS['_config']['mysql_database']
-);
 
 /**
  * Delete user
@@ -40,8 +34,7 @@ function deleteuser(int $id): bool
         return false;
     }
 
-    global $mysqli;
-    $mysqli->query("DELETE FROM `users` WHERE `id` = ".$id);
+    db()->query("DELETE FROM `users` WHERE `id` = ".$id);
     return true;
 }
 
@@ -95,9 +88,9 @@ function deleteuser_r(data) {
 <div id="canvas"><div id="headline"><?php echo _('Users and Groups'); ?></div><table id="addressbook"><thead><tr><td></td><td><a href="?order=date"><a href="users.php"><?php echo _('Name'); ?></a></td><td><a href="?order=date"><?php echo _('Last online'); ?></a></td></tr></thead><tbody><?php
 
 if (empty($_GET['order'])) {
-    $users = $mysqli->fetchArray("SELECT *, UNIX_TIMESTAMP(`lastlogin`) AS 'lastlogin' FROM `users` ORDER BY `fullname` ASC");
+    $users = db()->fetchArray("SELECT *, UNIX_TIMESTAMP(`lastlogin`) AS 'lastlogin' FROM `users` ORDER BY `fullname` ASC");
 } else {
-    $users = $mysqli->fetchArray("SELECT *, UNIX_TIMESTAMP(`lastlogin`) AS 'lastlogin' FROM `users` ORDER BY `lastlogin` DESC");
+    $users = db()->fetchArray("SELECT *, UNIX_TIMESTAMP(`lastlogin`) AS 'lastlogin' FROM `users` ORDER BY `lastlogin` DESC");
 }
 
 foreach ($users as $key => $user) {

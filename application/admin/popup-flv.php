@@ -2,13 +2,7 @@
 require_once $_SERVER['DOCUMENT_ROOT'] . '/admin/inc/logon.php';
 require_once $_SERVER['DOCUMENT_ROOT'] . '/inc/functions.php';
 
-$mysqli = new Simple_Mysqli(
-    $GLOBALS['_config']['mysql_server'],
-    $GLOBALS['_config']['mysql_user'],
-    $GLOBALS['_config']['mysql_password'],
-    $GLOBALS['_config']['mysql_database']
-);
-$files = $mysqli->fetchArray(
+$files = db()->fetchArray(
     "
     SELECT aspect, width, height
     FROM `files`

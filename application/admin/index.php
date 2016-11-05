@@ -16,13 +16,8 @@ require_once $_SERVER['DOCUMENT_ROOT'] . '/admin/inc/emails.php';
 require_once $_SERVER['DOCUMENT_ROOT'] . '/inc/functions.php';
 require_once $_SERVER['DOCUMENT_ROOT'] . '/inc/sajax.php';
 require_once $_SERVER['DOCUMENT_ROOT'] . '/inc/imap.php';
-$mysqli = new Simple_Mysqli(
-    $GLOBALS['_config']['mysql_server'],
-    $GLOBALS['_config']['mysql_user'],
-    $GLOBALS['_config']['mysql_password'],
-    $GLOBALS['_config']['mysql_database']
-);
-$sajax_request_type = "POST";
+
+$sajax_request_type = 'POST';
 
 /**
  * Use HTMLPurifier to clean HTML-code, preserves youtube videos
@@ -61,15 +56,13 @@ function search(string $text): array
         return array('error' => _('You must enter a search word.'));
     }
 
-    global $mysqli;
-
-    $sider = $mysqli->fetchArray("SELECT id, navn, MATCH(navn, text, beskrivelse) AGAINST ('".$text."') AS score FROM sider WHERE MATCH (navn, text, beskrivelse) AGAINST('".$text."') > 0 ORDER BY `score` DESC");
+    $sider = db()->fetchArray("SELECT id, navn, MATCH(navn, text, beskrivelse) AGAINST ('".$text."') AS score FROM sider WHERE MATCH (navn, text, beskrivelse) AGAINST('".$text."') > 0 ORDER BY `score` DESC");
 
     //fulltext search dosn't catch things like 3 letter words and some other combos
     $qsearch = array ("/ /","/'/","/´/","/`/");
     $qreplace = array ("%","_","_","_");
     $simpleq = preg_replace($qsearch, $qreplace, $text);
-    $sidersimple = $mysqli->fetchArray("SELECT id, navn FROM `sider` WHERE (`navn` LIKE '%".$simpleq."%' OR `text` LIKE '%".$simpleq."%' OR `beskrivelse` LIKE '%".$simpleq."%')");
+    $sidersimple = db()->fetchArray("SELECT id, navn FROM `sider` WHERE (`navn` LIKE '%".$simpleq."%' OR `text` LIKE '%".$simpleq."%' OR `beskrivelse` LIKE '%".$simpleq."%')");
 
     //join $sidersimple to $sider
     foreach ($sidersimple as $value) {
@@ -98,10 +91,8 @@ function search(string $text): array
 
 function redigerkat(int $id): string
 {
-    global $mysqli;
-
     if ($id) {
-        $kat = $mysqli->fetchArray('SELECT * FROM `kat` WHERE id = '.$id.' LIMIT 1');
+        $kat = db()->fetchArray('SELECT * FROM `kat` WHERE id = '.$id.' LIMIT 1');
     }
 
     $html = '<div id="headline">'.('Rediger kategori').'</div><form action="" onsubmit="return updateKat('.$id.')"><input type="submit" accesskey="s" style="width:1px; height:1px; position:absolute; top: -20px; left:-20px;" />
@@ -115,7 +106,7 @@ function redigerkat(int $id): string
 
     $html .= '" title="" alt="Billeder" id="iconthb" /> <input id="navn" style="width:256px;" maxlength="64" value="'.$kat[0]['navn'].'" /> <br /> '._('Icon:').' <input id="icon" style="width:247px;" maxlength="128" type="hidden" value="'.$kat[0]['icon'].'" /> <img style="cursor:pointer;vertical-align:bottom" onclick="explorer(\'thb\',\'icon\')" width="16" height="16" src="images/folder_image.png" title="'._('Find pictures').'" alt="'._('Pictures').'" /> <img style="cursor:pointer;vertical-align:bottom" onclick="setThb(\'icon\',\'\',\'images/folder.png\')" src="images/cross.png" alt="X" title="'._('Remove picture').'" height="16" width="16" /><br /><br />';
 
-    if ($subkats = $mysqli->fetchArray('SELECT id, navn, icon FROM `kat` WHERE bind = '.$id.' ORDER BY `order`, `navn`')) {
+    if ($subkats = db()->fetchArray('SELECT id, navn, icon FROM `kat` WHERE bind = '.$id.' ORDER BY `order`, `navn`')) {
         $html .= _('Sort subcategories:').'<select id="custom_sort_subs" onchange="displaySubMenus(this.value);" onblur="displaySubMenus(this.value);"><option value="0">'._('Alphabetically').'</option><option value="1"';
         if ($kat[0]['custom_sort_subs']) {
             $html .= ' selected="selected"';
@@ -191,10 +182,8 @@ $(\'subMenusOrder\').value = newOrder;
 
 function redigerside(int $id): string
 {
-    global $mysqli;
-
     if ($id) {
-        $sider = $mysqli->fetchArray('SELECT * FROM `sider` WHERE id = '.$id.' LIMIT 1');
+        $sider = db()->fetchArray('SELECT * FROM `sider` WHERE id = '.$id.' LIMIT 1');
     }
     if (!$sider) {
         return '<div id="headline">'._('The page does not exist').'</div>';
@@ -271,7 +260,7 @@ writeRichText("beskrivelse", \''.rtefsafe($sider[0]['beskrivelse']).'\', "", '.(
     //Pris end
     //misc start
     $html .= '<div class="toolbox"><a class="menuboxheader" id="miscboxheader" style="width:201px" onclick="showhide(\'miscbox\',this);">'._('Other:').' </a><div style="width:221px" id="miscbox">'._('SKU:').' <input type="text" name="varenr" id="varenr" maxlength="63" style="text-align:right;width:128px" value="'.xhtmlEsc($sider[0]['varenr']).'" /><br /><img src="images/page_white_key.png" width="16" height="16" alt="" /><select id="krav" name="krav"><option value="0">'._('None').'</option>';
-    $krav = $mysqli->fetchArray('SELECT id, navn FROM `krav` ORDER BY navn');
+    $krav = db()->fetchArray('SELECT id, navn FROM `krav` ORDER BY navn');
     $krav_nr = count($krav);
     for ($i=0; $i<$krav_nr; $i++) {
         $html .= '<option value="'.$krav[$i]['id'].'"';
@@ -284,7 +273,7 @@ writeRichText("beskrivelse", \''.rtefsafe($sider[0]['beskrivelse']).'\', "", '.(
 
     $maerker = explode(',', $sider[0]['maerke']);
 
-    $maerke = $mysqli->fetchArray('SELECT id, navn FROM `maerke` ORDER BY navn');
+    $maerke = db()->fetchArray('SELECT id, navn FROM `maerke` ORDER BY navn');
     $maerke_nr = count($maerke);
     for ($i=0; $i<$maerke_nr; $i++) {
         $html .= '<option value="'.$maerke[$i]['id'].'"';
@@ -297,7 +286,7 @@ writeRichText("beskrivelse", \''.rtefsafe($sider[0]['beskrivelse']).'\', "", '.(
     //misc end
     //list start
     $html .= '<div class="toolbox"><a class="menuboxheader" id="listboxheader" style="width:'.($GLOBALS['_config']['text_width']-20+32).'px" onclick="showhide(\'listbox\',this);">'._('Lists:').' </a><div style="width:'.($GLOBALS['_config']['text_width']+32).'px" id="listbox">';
-    $lists = $mysqli->fetchArray('SELECT * FROM `lists` WHERE page_id = '.$id);
+    $lists = db()->fetchArray('SELECT * FROM `lists` WHERE page_id = '.$id);
     foreach ($lists as $list) {
         $html .= '<table>';
 
@@ -324,7 +313,7 @@ writeRichText("beskrivelse", \''.rtefsafe($sider[0]['beskrivelse']).'\', "", '.(
                 }
             } else {
                 if (!$options[$list['sorts'][$key]]) {
-                    $options[$list['sorts'][$key]] = $mysqli->fetchArray('SELECT `text` FROM `tablesort` WHERE id = '.$list['sorts'][$key]);
+                    $options[$list['sorts'][$key]] = db()->fetchArray('SELECT `text` FROM `tablesort` WHERE id = '.$list['sorts'][$key]);
                     $options[$list['sorts'][$key]] = explode('<', $options[$list['sorts'][$key]][0]['text']);
                 }
 
@@ -342,7 +331,7 @@ writeRichText("beskrivelse", \''.rtefsafe($sider[0]['beskrivelse']).'\', "", '.(
         $html .= '</tr></tfoot>';
         $html .= '<tbody id="list'.$list['id'].'rows">';
 
-        if ($rows = $mysqli->fetchArray('SELECT * FROM `list_rows` WHERE list_id = '.$list['id'])) {
+        if ($rows = db()->fetchArray('SELECT * FROM `list_rows` WHERE list_id = '.$list['id'])) {
             //Explode cells
             foreach ($rows as $row) {
                 $cells = explode('<', $row['cells']);
@@ -377,7 +366,7 @@ writeRichText("beskrivelse", \''.rtefsafe($sider[0]['beskrivelse']).'\', "", '.(
                         }
                     } else {
                         if (!$options[$list['sorts'][$key]]) {
-                            $options[$list['sorts'][$key]] = $mysqli->fetchArray('SELECT `text` FROM `tablesort` WHERE id = '.$list['sorts'][$key]);
+                            $options[$list['sorts'][$key]] = db()->fetchArray('SELECT `text` FROM `tablesort` WHERE id = '.$list['sorts'][$key]);
                             $options[$list['sorts'][$key]] = explode('<', $options[$list['sorts'][$key]][0]['text']);
                         }
 
@@ -415,7 +404,7 @@ listlink['.$list['id'].'] = '.$list['link'].';
     //bind start
         $html .= '<form action="" method="post" onsubmit="return bind('.$id.');">
     <div class="toolbox"><a class="menuboxheader" id="bindingheader" style="width:593px;" onclick="showhide(\'binding\',this);">Bindinger: </a><div style="width:613pxpx;" id="binding"><div id="bindinger"><br />';
-    $bind = $mysqli->fetchArray('SELECT id, kat FROM `bind` WHERE `side` = '.$id);
+    $bind = db()->fetchArray('SELECT id, kat FROM `bind` WHERE `side` = '.$id);
     $bind_nr = count($bind);
     for ($i=0; $i<$bind_nr; $i++) {
         if ($bind[$i]['id'] != -1) {
@@ -446,7 +435,7 @@ listlink['.$list['id'].'] = '.$list['link'].';
     //tilbehor start
     $html .= '<form action="" method="post" onsubmit="return tilbehor('.$id.');">
 <div class="toolbox"><a class="menuboxheader" id="tilbehorsheader" style="width:593px;" onclick="showhide(\'tilbehor\',this);">'._('Accessories:').' </a><div style="width:613pxpx;" id="tilbehor"><div id="tilbehore"><br />';
-    $tilbehor = $mysqli->fetchArray('SELECT id, tilbehor FROM `tilbehor` WHERE `side` = '.$id);
+    $tilbehor = db()->fetchArray('SELECT id, tilbehor FROM `tilbehor` WHERE `side` = '.$id);
     $tilbehor_nr = count($tilbehor);
     for ($i=0; $i<$tilbehor_nr; $i++) {
         if ($tilbehor[$i]['id'] != null && $tilbehor[$i]['id'] != -1) {
@@ -475,22 +464,18 @@ listlink['.$list['id'].'] = '.$list['link'].';
 
 function listRemoveRow(int $list_id, int $row_id): array
 {
-    global $mysqli;
-
-    $mysqli->query('DELETE FROM `list_rows` WHERE `id` = '.$row_id.' LIMIT 1');
+    db()->query('DELETE FROM `list_rows` WHERE `id` = '.$row_id.' LIMIT 1');
 
     return array('listid' => $list_id, 'rowid' => $row_id);
 }
 
 function listSavetRow(int $list_id, string $cells, string $link, int $row_id): array
 {
-    global $mysqli;
-
     if (!$row_id) {
-        $mysqli->query('INSERT INTO `list_rows`(`list_id`, `cells`, `link`) VALUES ('.$list_id.', \''.addcslashes($cells, "'\\").'\', \''.$link.'\')');
-        $row_id = $mysqli->insert_id;
+        db()->query('INSERT INTO `list_rows`(`list_id`, `cells`, `link`) VALUES ('.$list_id.', \''.addcslashes($cells, "'\\").'\', \''.$link.'\')');
+        $row_id = db()->insert_id;
     } else {
-        $mysqli->query('UPDATE `list_rows` SET `list_id` = \''.$list_id.'\', `cells` = \''.addcslashes($cells, "'\\").'\', `link` = \''.$link.'\' WHERE id = '.$row_id);
+        db()->query('UPDATE `list_rows` SET `list_id` = \''.$list_id.'\', `cells` = \''.addcslashes($cells, "'\\").'\', `link` = \''.$link.'\' WHERE id = '.$row_id);
     }
 
     return array('listid' => $list_id, 'rowid' => $row_id);
@@ -498,9 +483,7 @@ function listSavetRow(int $list_id, string $cells, string $link, int $row_id): a
 
 function redigerFrontpage(): string
 {
-    global $mysqli;
-
-    $special = $mysqli->fetchArray('SELECT `text` FROM `special` WHERE id = 1 LIMIT 1');
+    $special = db()->fetchArray('SELECT `text` FROM `special` WHERE id = 1 LIMIT 1');
     if (!$special) {
         return '<div id="headline">'._('The page does not exist').'</div>';
     }
@@ -508,7 +491,7 @@ function redigerFrontpage(): string
     $html = '';
     $html .= '<div id="headline">'._('Edit frontpage').'</div><form action="" method="post" onsubmit="return updateForside();"><input type="submit" accesskey="s" style="width:1px; height:1px; position:absolute; top: -20px; left:-20px;" />';
 
-    $subkats = $mysqli->fetchArray('SELECT id, navn, icon FROM `kat` WHERE bind = 0 ORDER BY `order`, `navn`');
+    $subkats = db()->fetchArray('SELECT id, navn, icon FROM `kat` WHERE bind = 0 ORDER BY `order`, `navn`');
 
     $html .= _('Sort maincategories:');
     $html .= '<ul id="subMenus" style="width:'.$GLOBALS['_config']['text_width'].'px;">';
@@ -549,9 +532,7 @@ writeRichText("text", \''.rtefsafe($special[0]['text']).'\', "", '.($GLOBALS['_c
 
 function redigerSpecial(int $id): string
 {
-    global $mysqli;
-
-    $special = $mysqli->fetchArray('SELECT * FROM `special` WHERE id = '.$id.' LIMIT 1');
+    $special = db()->fetchArray('SELECT * FROM `special` WHERE id = '.$id.' LIMIT 1');
     if (!$special) {
         return '<div id="headline">'._('The page does not exist').'</div>';
     }
@@ -582,10 +563,8 @@ writeRichText("text", "", "", '.$GLOBALS['_config']['text_width'].', 420, true, 
 
 function listsort(int $id = null): string
 {
-    global $mysqli;
-
     if ($id) {
-        $liste = $mysqli->fetchArray('SELECT * FROM `tablesort` WHERE `id` = '.$id);
+        $liste = db()->fetchArray('SELECT * FROM `tablesort` WHERE `id` = '.$id);
 
         $html = '<div id="headline">'.sprintf(_('Edit %s sorting'), $liste[0]['navn']).'</div><div>';
 
@@ -606,7 +585,7 @@ Sortable.create(\'listOrder\',{ghosting:false,constraint:false,hoverclass:\'over
         $html = '<div id="headline">'._('List sorting').'</div><div>';
         $html .= '<a href="#" onclick="makeNewList(); return false;">'._('Create new sorting').'</a><br /><br />';
 
-        $lists = $mysqli->fetchArray('SELECT id, navn FROM `tablesort`');
+        $lists = db()->fetchArray('SELECT id, navn FROM `tablesort`');
 
         foreach ($lists as $value) {
             $html .= '<a href="?side=listsort&amp;id='.$value['id'].'"><img src="images/shape_align_left.png" width="16" height="16" alt="" /> '.$value['navn'].'</a><br />';
@@ -619,9 +598,7 @@ Sortable.create(\'listOrder\',{ghosting:false,constraint:false,hoverclass:\'over
 
 function getaddressbook(): string
 {
-    global $mysqli;
-
-    $addresses = $mysqli->fetchArray('SELECT * FROM `email` ORDER BY `navn`');
+    $addresses = db()->fetchArray('SELECT * FROM `email` ORDER BY `navn`');
 
     $html = '<div id="headline">'._('Address Book').'</div><div>';
     $html .= '<table id="addressbook"><thead><tr><td></td><td>'._('Name').'</td><td>'._('E-mail').'</td><td>'._('Phone').'</td></tr></thead><tbody>';
@@ -648,9 +625,7 @@ function getaddressbook(): string
 
 function editContact(int $id): string
 {
-    global $mysqli;
-
-    $address = $mysqli->fetchArray('SELECT * FROM `email` WHERE `id` = '.$id);
+    $address = db()->fetchArray('SELECT * FROM `email` WHERE `id` = '.$id);
 
     $html = '<div id="headline">' ._('Edit contact person') .'</div>';
     $html .= '<form method="post" action="" onsubmit="updateContact(' .$id .'); return false;"><input type="submit" accesskey="s" style="width:1px; height:1px; position:absolute; top: -20px; left:-20px;" /><table border="0" cellspacing="0"><tbody><tr><td>'._('Name:').'</td><td colspan="2"><input value="'.
@@ -683,36 +658,30 @@ function editContact(int $id): string
 
 function updateContact(int $id, string $navn, string $email, string $adresse, string $land, string $post, string $by, string $tlf1, string $tlf2, string $kartotek, string $interests): bool
 {
-    global $mysqli;
-    $mysqli->query("UPDATE `email` SET `navn` = '".$navn."', `email` = '".$email."', `adresse` = '".$adresse."', `land` = '".$land."', `post` = '".$post."', `by` = '".$by."', `tlf1` = '".$tlf1."', `tlf2` = '".$tlf2."', `kartotek` = '".$kartotek."', `interests` = '".$interests."' WHERE id = ".$id);
+    db()->query("UPDATE `email` SET `navn` = '".$navn."', `email` = '".$email."', `adresse` = '".$adresse."', `land` = '".$land."', `post` = '".$post."', `by` = '".$by."', `tlf1` = '".$tlf1."', `tlf2` = '".$tlf2."', `kartotek` = '".$kartotek."', `interests` = '".$interests."' WHERE id = ".$id);
     return true;
 }
 
 function deleteContact(int $id): string
 {
-    global $mysqli;
-    $mysqli->query('DELETE FROM `email` WHERE `id` = '.$id);
+    db()->query('DELETE FROM `email` WHERE `id` = '.$id);
     return 'contact'.$id;
 }
 
 function makeNewList(string $navn): array
 {
-    global $mysqli;
-    $mysqli->query('INSERT INTO `tablesort` (`navn`) VALUES (\''.$navn.'\')');
-    return array('id' => $mysqli->insert_id, 'name' => $navn);
+    db()->query('INSERT INTO `tablesort` (`navn`) VALUES (\''.$navn.'\')');
+    return array('id' => db()->insert_id, 'name' => $navn);
 }
 
 function saveListOrder(int $id, string $navn, string $text): bool
 {
-    global $mysqli;
-    $mysqli->query('UPDATE `tablesort` SET navn = \''.$navn.'\', text = \''.$text.'\' WHERE id = '.$id);
+    db()->query('UPDATE `tablesort` SET navn = \''.$navn.'\', text = \''.$text.'\' WHERE id = '.$id);
     return true;
 }
 
 function get_db_error(): string
 {
-    global $mysqli;
-
     $html = '<div id="headline">'._('Maintenance').'</div><div>
     <div>';
         $html .= '<script type=""><!--
@@ -796,13 +765,13 @@ function get_db_error(): string
         }
         --></script><div><b>'._('Server consumption').'</b> - '._('E-mail:').' <span id="mailboxsize"><button onclick="$(\'loading\').style.visibility = \'\'; x_get_mail_size(get_mail_size_r);">'._('Get e-mail consumption').'</button></span> '._('DB:').' <span id="dbsize">'.number_format(get_db_size(), 1, ',', '')._('MB').'</span> '._('WWW').': <span id="wwwsize">'.number_format(get_size_of_files(), 1, ',', '')._('MB').'</span></div><div id="status"></div><button onclick="scan_db();">'._('Scan database').'</button><div id="errors"></div>';
 
-    $emailsCount = $mysqli->fetchOne("SELECT count(*) as 'count' FROM `emails`");
-    $emails = $mysqli->fetchOne("SHOW TABLE STATUS LIKE 'emails'");
+    $emailsCount = db()->fetchOne("SELECT count(*) as 'count' FROM `emails`");
+    $emails = db()->fetchOne("SHOW TABLE STATUS LIKE 'emails'");
 
 
     $html .= '<div>'.sprintf(_('Delayed e-mails %d/%d'), $emailsCount['count'], $emails['Auto_increment'] - 1).'</div>';
 
-    $cron = $mysqli->fetchOne("SELECT UNIX_TIMESTAMP(dato) AS dato FROM `special` WHERE id = 0");
+    $cron = db()->fetchOne("SELECT UNIX_TIMESTAMP(dato) AS dato FROM `special` WHERE id = 0");
 
     $html .= '<div>'.sprintf(_('Cron last run at %s'), date('d/m/Y', $cron['dato'])).'</div>';
 
@@ -834,11 +803,9 @@ function valide_mail(string $email): bool
 
 function get_subscriptions_with_bad_emails(): string
 {
-    global $mysqli;
-
     $html = '';
     $errors = 0;
-    $emails = $mysqli->fetchArray("SELECT `id`, `email` FROM `email` WHERE `email` != ''");
+    $emails = db()->fetchArray("SELECT `id`, `email` FROM `email` WHERE `email` != ''");
     foreach ($emails as $email) {
         if (!valide_mail($email['email'])) {
             $html .= '<a href="?side=editContact&id='.$email['id'].'">'.sprintf(_('E-mail: %s #%d is not valid'), $email['email'], $email['id']).'</a><br />';
@@ -852,10 +819,8 @@ function get_subscriptions_with_bad_emails(): string
 
 function get_orphan_rows(): string
 {
-    global $mysqli;
-
     $html = '';
-    $error = $mysqli->fetchArray('SELECT * FROM `list_rows` WHERE list_id NOT IN (SELECT id FROM lists);');
+    $error = db()->fetchArray('SELECT * FROM `list_rows` WHERE list_id NOT IN (SELECT id FROM lists);');
     if ($error) {
         $html .= '<br /><b>'._('The following rows have no lists:').'</b><br />';
         foreach ($error as $value) {
@@ -870,10 +835,8 @@ function get_orphan_rows(): string
 
 function get_orphan_cats(): string
 {
-    global $mysqli;
-
     $html = '';
-    $error = $mysqli->fetchArray('SELECT `id`, `navn` FROM `kat` WHERE `bind` != 0 AND `bind` != -1 AND `bind` NOT IN (SELECT `id` FROM `kat`);');
+    $error = db()->fetchArray('SELECT `id`, `navn` FROM `kat` WHERE `bind` != 0 AND `bind` != -1 AND `bind` NOT IN (SELECT `id` FROM `kat`);');
     if ($error) {
         $html .= '<br /><b>'._('The following categories are orphans:').'</b><br />';
         foreach ($error as $value) {
@@ -888,9 +851,7 @@ function get_orphan_cats(): string
 
 function get_looping_cats(): string
 {
-    global $mysqli;
-
-    $error = $mysqli->fetchArray('SELECT id, bind, navn FROM `kat` WHERE bind != 0 AND bind != -1;');
+    $error = db()->fetchArray('SELECT id, bind, navn FROM `kat` WHERE bind != 0 AND bind != -1;');
 
     $html = '';
     $temp_html = '';
@@ -914,12 +875,11 @@ function get_looping_cats(): string
 
 function check_file_names(): string
 {
-    global $mysqli;
     $html = '';
-    $error = $mysqli->fetchArray('SELECT path FROM `files` WHERE `path` COLLATE UTF8_bin REGEXP \'[A-Z|_"\\\'`:%=#&+?*<>{}\\]+[^/]+$\' ORDER BY `path` ASC');
+    $error = db()->fetchArray('SELECT path FROM `files` WHERE `path` COLLATE UTF8_bin REGEXP \'[A-Z|_"\\\'`:%=#&+?*<>{}\\]+[^/]+$\' ORDER BY `path` ASC');
     if ($error) {
-        if ($mysqli->affected_rows > 1) {
-            $html .= '<br /><b>'.sprintf(_('The following %d files must be renamed:'), $mysqli->affected_rows).'</b><br /><a onclick="explorer(\'\',\'\');">';
+        if (db()->affected_rows > 1) {
+            $html .= '<br /><b>'.sprintf(_('The following %d files must be renamed:'), db()->affected_rows).'</b><br /><a onclick="explorer(\'\',\'\');">';
         } else {
             $html .= '<br /><br /><a onclick="explorer(\'\',\'\');">';
         }
@@ -936,12 +896,11 @@ function check_file_names(): string
 
 function check_file_paths(): string
 {
-    global $mysqli;
     $html = '';
-    $error = $mysqli->fetchArray('SELECT path FROM `files` WHERE `path` COLLATE UTF8_bin REGEXP \'[A-Z|_"\\\'`:%=#&+?*<>{}\\]+.*[/]+\' ORDER BY `path` ASC');
+    $error = db()->fetchArray('SELECT path FROM `files` WHERE `path` COLLATE UTF8_bin REGEXP \'[A-Z|_"\\\'`:%=#&+?*<>{}\\]+.*[/]+\' ORDER BY `path` ASC');
     if ($error) {
-        if ($mysqli->affected_rows > 1) {
-            $html .= '<br /><b>'.sprintf(_('The following %d files are in a folder that needs to be renamed:'), $mysqli->affected_rows).'</b><br /><a onclick="explorer(\'\',\'\');">';
+        if (db()->affected_rows > 1) {
+            $html .= '<br /><b>'.sprintf(_('The following %d files are in a folder that needs to be renamed:'), db()->affected_rows).'</b><br /><a onclick="explorer(\'\',\'\');">';
         } else {
             $html .= '<br /><br /><a onclick="explorer(\'\',\'\');">';
         }
@@ -959,8 +918,7 @@ function check_file_paths(): string
 
 function get_size_of_files(): int
 {
-    global $mysqli;
-    $files = $mysqli->fetchArray("SELECT count( * ) AS `count`, sum( `size` ) /1024 /1024 AS `filesize` FROM `files`");
+    $files = db()->fetchArray("SELECT count( * ) AS `count`, sum( `size` ) /1024 /1024 AS `filesize` FROM `files`");
 
     return $files[0]['filesize'];
 }
@@ -1003,9 +961,7 @@ preg_match_all('/<img[^>]+/?>/ui', $value, $matches);
 
 function get_orphan_lists(): string
 {
-    global $mysqli;
-
-    $error = $mysqli->fetchArray('SELECT id FROM `lists` WHERE page_id NOT IN (SELECT id FROM sider);');
+    $error = db()->fetchArray('SELECT id FROM `lists` WHERE page_id NOT IN (SELECT id FROM sider);');
     $html = '';
     if ($error) {
         $html .= '<br /><b>'._('The following lists are orphans:').'</b><br />';
@@ -1021,9 +977,7 @@ function get_orphan_lists(): string
 
 function get_db_size(): float
 {
-    global $mysqli;
-
-    $tabels = $mysqli->fetchArray("SHOW TABLE STATUS");
+    $tabels = db()->fetchArray("SHOW TABLE STATUS");
     $dbsize = 0;
     foreach ($tabels as $tabel) {
         $dbsize += $tabel['Data_length'];
@@ -1034,10 +988,8 @@ function get_db_size(): float
 
 function get_orphan_pages(): string
 {
-    global $mysqli;
-
     $html = '';
-    $sider = $mysqli->fetchArray("SELECT `id`, `navn`, `varenr` FROM `sider` WHERE `id` NOT IN(SELECT `side` FROM `bind`);");
+    $sider = db()->fetchArray("SELECT `id`, `navn`, `varenr` FROM `sider` WHERE `id` NOT IN(SELECT `side` FROM `bind`);");
     foreach ($sider as $side) {
         $html .= '<a href="?side=redigerside&amp;id='.$side['id'].'">'.$side['id'].': '.$side['navn'].'</a><br />';
     }
@@ -1050,14 +1002,12 @@ function get_orphan_pages(): string
 
 function get_pages_with_mismatch_bindings(): string
 {
-    global $mysqli;
-
-    $sider = $mysqli->fetchArray("SELECT `id`, `navn`, `varenr` FROM `sider`;");
+    $sider = db()->fetchArray("SELECT `id`, `navn`, `varenr` FROM `sider`;");
     $html = '';
     foreach ($sider as $value) {
-        $bind = $mysqli->fetchArray("SELECT `kat` FROM `bind` WHERE `side` = ".$value['id']);
+        $bind = db()->fetchArray("SELECT `kat` FROM `bind` WHERE `side` = ".$value['id']);
         //Add active pages that has a list that links to this page
-        $listlinks = $mysqli->fetchArray("SELECT `bind`.`kat` FROM `list_rows` JOIN `lists` ON `list_rows`.`list_id` = `lists`.`id` JOIN `bind` ON `lists`.`page_id` = `bind`.`side` WHERE `list_rows`.`link` = ".$value['id']);
+        $listlinks = db()->fetchArray("SELECT `bind`.`kat` FROM `list_rows` JOIN `lists` ON `list_rows`.`list_id` = `lists`.`id` JOIN `bind` ON `lists`.`page_id` = `bind`.`side` WHERE `list_rows`.`link` = ".$value['id']);
         foreach ($listlinks as $listlink) {
             if (binding($listlink['kat']) == 0) {
                 $bind[]['kat'] = $listlink['kat'];
@@ -1084,8 +1034,6 @@ function get_pages_with_mismatch_bindings(): string
 
 function getnyside(): string
 {
-    global $mysqli;
-
     $html = '<div id="headline">Opret ny side</div><form action="" method="post" onsubmit="return opretSide();"><input type="submit" accesskey="s" style="width:1px; height:1px; position:absolute; top: -20px; left:-20px;" /><div><script type="text/javascript"><!--
 //Usage: initRTE(imagesPath, includesPath, cssFile, genXHTML)
 initRTE("/admin/rtef/images/", "/admin/rtef/", "/theme/rtef-text.css", true);
@@ -1104,14 +1052,14 @@ writeRichText("beskrivelse", \'\', "", '.($GLOBALS['_config']['thumb_width']+32)
     //Pris end
     //misc start
     $html .= '<div class="toolbox"><a class="menuboxheader" id="miscboxheader" style="width:201px" onclick="showhide(\'miscbox\',this);">'._('Other:').' </a><div style="width:221px" id="miscbox">'._('SKU:').' <input type="text" name="varenr" id="varenr" maxlength="63" style="text-align:right;width:128px" value="" /><br /><img src="images/page_white_key.png" width="16" height="16" alt="" /><select id="krav" name="krav"><option value="0">'._('None').'</option>';
-    $krav = $mysqli->fetchArray('SELECT id, navn FROM `krav`');
+    $krav = db()->fetchArray('SELECT id, navn FROM `krav`');
     $krav_nr = count($krav);
     for ($i=0; $i<$krav_nr; $i++) {
         $html .= '<option value="'.$krav[$i]['id'].'"';
         $html .= '>'.xhtmlEsc($krav[$i]['navn']).'</option>';
     }
     $html .= '</select><br /><img width="16" height="16" alt="" src="images/page_white_medal.png"/><select id="maerke" name="maerke" multiple="multiple" size="10"><option value="0">'._('All others').'</option>';
-    $maerke = $mysqli->fetchArray('SELECT id, navn FROM `maerke` ORDER BY navn');
+    $maerke = db()->fetchArray('SELECT id, navn FROM `maerke` ORDER BY navn');
     $maerke_nr = count($maerke);
     for ($i=0; $i<$maerke_nr; $i++) {
         $html .= '<option value="'.$maerke[$i]['id'].'"';
@@ -1132,10 +1080,7 @@ writeRichText("beskrivelse", \'\', "", '.($GLOBALS['_config']['thumb_width']+32)
 
 function kattree(string $id): array
 {
-    $id = $id;
-    global $mysqli;
-
-    $kat = $mysqli->fetchArray('SELECT id, navn, bind FROM `kat` WHERE id = ' .$id .' LIMIT 1');
+    $kat = db()->fetchArray('SELECT id, navn, bind FROM `kat` WHERE id = ' .$id .' LIMIT 1');
 
     if ($kat) {
         $id = $kat[0]['bind'];
@@ -1144,7 +1089,7 @@ function kattree(string $id): array
     }
 
     while (@$kat[0]['bind'] > 0) {
-        $kat = $mysqli->fetchArray('SELECT id, navn, bind FROM `kat` WHERE id = \''.$kat[0]['bind'].'\' LIMIT 1');
+        $kat = db()->fetchArray('SELECT id, navn, bind FROM `kat` WHERE id = \''.$kat[0]['bind'].'\' LIMIT 1');
         $id = $kat[0]['bind'];
         $kattree[]['id'] = $kat[0]['id'];
         $kattree[count($kattree)-1]['navn'] = $kat[0]['navn'];
@@ -1174,7 +1119,6 @@ function katspath(string $id): array
 
 function katlist(string $id): string
 {
-    global $mysqli;
     global $kattree;
 
     $html = '<a class="menuboxheader" id="katsheader" style="width:'.$GLOBALS['_config']['text_width'].'px;clear:both" onclick="showhidekats(\'kats\',this);">';
@@ -1195,7 +1139,7 @@ function katlist(string $id): string
     }
 
     $openkat = explode('<', @$_COOKIE['openkat']);
-    if ($mysqli->fetchArray('SELECT id FROM `kat` WHERE bind = -1 LIMIT 1')) {
+    if (db()->fetchArray('SELECT id FROM `kat` WHERE bind = -1 LIMIT 1')) {
         $html .= '<img';
         if (array_search(-1, $openkat) || false !== array_search('-1', $kattree)) {
             $html .= ' style="display:none"';
@@ -1218,7 +1162,7 @@ function katlist(string $id): string
         $html .= $temp['html'];
     }
     $html .= '</div></div><div>';
-    if ($mysqli->fetchArray('SELECT id FROM `kat` WHERE bind = 0 LIMIT 1')) {
+    if (db()->fetchArray('SELECT id FROM `kat` WHERE bind = 0 LIMIT 1')) {
         $html .= '<img style="';
         if (array_search(0, $openkat) || false !== array_search('0', $kattree)) {
             $html .= 'display:none;';
@@ -1246,7 +1190,6 @@ function katlist(string $id): string
 
 function siteList(int $id): string
 {
-    global $mysqli;
     global $kattree;
 
     $html = '<div>';
@@ -1260,7 +1203,7 @@ function siteList(int $id): string
     }
 
     $openkat = explode('<', @$_COOKIE['openkat']);
-    if ($mysqli->fetchArray('SELECT id FROM `kat` WHERE bind = -1 LIMIT 1') || $mysqli->fetchArray('SELECT id FROM `bind` WHERE kat = -1 LIMIT 1')) {
+    if (db()->fetchArray('SELECT id FROM `kat` WHERE bind = -1 LIMIT 1') || db()->fetchArray('SELECT id FROM `bind` WHERE kat = -1 LIMIT 1')) {
         $html .= '<img';
         if (array_search(-1, $openkat) || false !== array_search('-1', $kattree)) {
             $html .= ' style="display:none"';
@@ -1279,7 +1222,7 @@ function siteList(int $id): string
         $html .= $temp['html'];
     }
     $html .= '</div></div><div>';
-    if ($mysqli->fetchArray('SELECT id FROM `kat` WHERE bind = 0 LIMIT 1') || $mysqli->fetchArray('SELECT id FROM `bind` WHERE kat = 0 LIMIT 1')) {
+    if (db()->fetchArray('SELECT id FROM `kat` WHERE bind = 0 LIMIT 1') || db()->fetchArray('SELECT id FROM `bind` WHERE kat = 0 LIMIT 1')) {
         $html .= '<img style="';
         if (array_search(0, $openkat) || false !== array_search('0', $kattree)) {
             $html .= 'display:none;';
@@ -1303,12 +1246,11 @@ function siteList(int $id): string
 
 function pages_expand(int $id): array
 {
-    global $mysqli;
     $html = '';
 
     $temp = kat_expand($id, false);
     $html .= $temp['html'];
-    $sider = $mysqli->fetchArray('SELECT sider.id, sider.varenr, bind.id as bind, navn FROM `bind` LEFT JOIN sider on bind.side = sider.id WHERE `kat` = '.$id.' ORDER BY sider.navn');
+    $sider = db()->fetchArray('SELECT sider.id, sider.varenr, bind.id as bind, navn FROM `bind` LEFT JOIN sider on bind.side = sider.id WHERE `kat` = '.$id.' ORDER BY sider.navn');
     $nr = count($sider);
     foreach ($sider as $side) {
         $html .= '<div id="bind'.$side['bind'].'" class="side'.$side['id'].'"><a style="margin-left:16px" class="side">
@@ -1324,12 +1266,11 @@ function pages_expand(int $id): array
 
 function siteList_expand(int $id): array
 {
-    global $mysqli;
     $html = '';
 
     $temp = kat_expand($id, false);
     $html .= $temp['html'];
-    $sider = $mysqli->fetchArray('SELECT sider.id, sider.varenr, bind.id as bind, navn FROM `bind` LEFT JOIN sider on bind.side = sider.id WHERE `kat` = '.$id.' ORDER BY sider.navn');
+    $sider = db()->fetchArray('SELECT sider.id, sider.varenr, bind.id as bind, navn FROM `bind` LEFT JOIN sider on bind.side = sider.id WHERE `kat` = '.$id.' ORDER BY sider.navn');
     $nr = count($sider);
     for ($i=0; $i<$nr; $i++) {
         $html .= '<div id="bind'.$sider[$i]['bind'].'" class="side'.$sider[$i]['id'].'"><a style="margin-left:16px" class="side" href="?side=redigerside&amp;id='.$sider[$i]['id'].'"><img src="images/page.png" width="16" height="16" alt="" /> '.strip_tags($sider[$i]['navn'], '<img>');
@@ -1371,8 +1312,7 @@ function getSiteTree(): string
     $html = '<div id="headline">'._('Overview').'</div><div>';
     $html .= siteList(@$_COOKIE['activekat']);
 
-    global $mysqli;
-    $specials = $mysqli->fetchArray('SELECT `id`, `navn` FROM `special` WHERE `id` > 1 ORDER BY `navn`');
+    $specials = db()->fetchArray('SELECT `id`, `navn` FROM `special` WHERE `id` > 1 ORDER BY `navn`');
     foreach ($specials as $special) {
         $html .= '<div style="margin-left: 16px;"><a href="?side=redigerSpecial&id='.$special['id'].'"><img height="16" width="16" alt="" src="images/page.png"/> '.$special['navn'].'</a></div>';
     }
@@ -1382,11 +1322,10 @@ function getSiteTree(): string
 
 function kat_expand(int $id, bool $input = true): array
 {
-    global $mysqli;
     global $kattree;
     $html = '';
 
-    $kat = $mysqli->fetchArray(
+    $kat = db()->fetchArray(
         '
         SELECT *
         FROM `kat`
@@ -1396,7 +1335,7 @@ function kat_expand(int $id, bool $input = true): array
     );
     $nr = count($kat);
     for ($i=0; $i<$nr; $i++) {
-        $katExists = $mysqli->fetchArray(
+        $katExists = db()->fetchArray(
             '
             SELECT id
             FROM `kat`
@@ -1405,7 +1344,7 @@ function kat_expand(int $id, bool $input = true): array
             '
         );
         if ($katExists
-            || (!$input && $mysqli->fetchArray('SELECT id FROM `bind` WHERE kat = '.$kat[$i]['id'].' LIMIT 1'))
+            || (!$input && db()->fetchArray('SELECT id FROM `bind` WHERE kat = '.$kat[$i]['id'].' LIMIT 1'))
         ) {
             $openkat = explode('<', @$_COOKIE['openkat']);
             $html .= '<div id="kat'.$kat[$i]['id'].'"><img style="display:';
@@ -1479,10 +1418,8 @@ function kat_expand(int $id, bool $input = true): array
 
 function save_ny_kat(string $navn, string $kat, string $icon, string $vis, string $email)
 {
-    global $mysqli;
-
     if ($navn != '' && $kat != '') {
-        $mysqli->query('INSERT INTO `kat` (`navn`, `bind`, `icon`, `vis`, `email`) VALUES (\''.$navn.'\', \''.$kat.'\', \''.$icon.'\', \''.$vis.'\', \''.$email.'\')');
+        db()->query('INSERT INTO `kat` (`navn`, `bind`, `icon`, `vis`, `email`) VALUES (\''.$navn.'\', \''.$kat.'\', \''.$icon.'\', \''.$vis.'\', \''.$email.'\')');
 
         //$html = "INSERT INTO `kat` (`navn`, `bind`, `icon` ) VALUES ('$navn', '$kat', '$icon')".'side funktion';
         return true;
@@ -1493,15 +1430,14 @@ function save_ny_kat(string $navn, string $kat, string $icon, string $vis, strin
 
 function savekrav(int $id, string $navn, string $text): array
 {
-    global $mysqli;
     $text = purifyHTML($text);
     $text = htmlUrlDecode($text);
 
     if ($navn != '' && $text != '') {
         if (!$id) {
-            $mysqli->query('INSERT INTO `krav` (`navn`, `text` ) VALUES (\''.addcslashes($navn, "'\\").'\', \''.addcslashes($text, "'\\").'\')');
+            db()->query('INSERT INTO `krav` (`navn`, `text` ) VALUES (\''.addcslashes($navn, "'\\").'\', \''.addcslashes($text, "'\\").'\')');
         } else {
-            $mysqli->query('UPDATE krav SET navn = \''.addcslashes($navn, "'\\").'\', text = \''.addcslashes($text, "'\\").'\' WHERE id = '.$id);
+            db()->query('UPDATE krav SET navn = \''.addcslashes($navn, "'\\").'\', text = \''.addcslashes($text, "'\\").'\' WHERE id = '.$id);
         }
 
         return array('id' => 'canvas', 'html' => getkrav());
@@ -1517,21 +1453,17 @@ function getsogogerstat()
 
 function sogogerstat(string $sog, string $erstat): int
 {
-    global $mysqli;
+    db()->query('UPDATE sider SET text = REPLACE(text,\''.$sog.'\',\''.$erstat.'\')');
 
-    $mysqli->query('UPDATE sider SET text = REPLACE(text,\''.$sog.'\',\''.$erstat.'\')');
-
-    return $mysqli->affected_rows;
+    return db()->affected_rows;
 }
 
 function getmaerker(): string
 {
-    global $mysqli;
-
     $html = '<div id="headline">'._('List of brands').'</div><form action="" id="maerkerform" onsubmit="x_save_ny_maerke(document.getElementById(\'navn\').value,document.getElementById(\'link\').value,document.getElementById(\'ico\').value,inject_html); return false;"><table cellspacing="0"><tr style="height:21px"><td>'._('Name:').' </td><td><input id="navn" style="width:256px;" maxlength="64" /></td><td rowspan="4"><img id="icoimage" src="" style="display:none" alt="" /></td></tr><tr style="height:21px"><td>'._('Link:').' </td><td><input id="link" style="width:256px;" maxlength="64" /></td></tr><tr style="height:21px"><td>'._('Logo:').' </td>
     <td style="text-align:center"><input type="hidden" value="'._('/images/web/intet-foto.jpg').'" id="ico" name="ico" /><img id="icothb" src="'._('/images/web/intet-foto.jpg').'" alt="" onclick="explorer(\'thb\', \'ico\')" /><br /><img onclick="explorer(\'thb\', \'ico\')" src="images/folder_image.png" width="16" height="16" alt="'._('Pictures').'" title="'._('Find image').'" /><img onclick="setThb(\'ico\', \'\', \''._('/images/web/intet-foto.jpg').'\')" src="images/cross.png" alt="X" title="'._('Remove picture').'" width="16" height="16" /></td>
     </tr><tr><td></td></tr></table><p><input value="'._('Add brand').'e" type="submit" accesskey="s" /><br /><br /></p><div id="imagelogo" style="display:none; position:absolute;"></div>';
-    $brands = $mysqli->fetchArray('SELECT * FROM `maerke` ORDER BY navn');
+    $brands = db()->fetchArray('SELECT * FROM `maerke` ORDER BY navn');
     $nr = count($brands);
     for ($i=0; $i<$nr; $i++) {
         $html .= '<div id="maerke'.$brands[$i]['id'].'"><a href="" onclick="slet(\'maerke\',\''.addslashes($brands[$i]['navn']).'\','.$brands[$i]['id'].');"><img src="images/cross.png" alt="X" title="'._('Delete').' '.xhtmlEsc($brands[$i]['navn']).'!" width="16" height="16"';
@@ -1559,9 +1491,7 @@ function getmaerker(): string
 
 function getupdatemaerke(int $id): string
 {
-    global $mysqli;
-
-    $brands = $mysqli->fetchArray('SELECT navn, link, ico FROM `maerke` WHERE id = '.$id);
+    $brands = db()->fetchArray('SELECT navn, link, ico FROM `maerke` WHERE id = '.$id);
 
     $html = '<div id="headline">'.sprintf(_('Edit the brand %d'), $brands[0]['navn']).'</div><form onsubmit="x_updatemaerke('.$id.',document.getElementById(\'navn\').value,document.getElementById(\'link\').value,document.getElementById(\'ico\').value,inject_html); return false;"><table cellspacing="0"><tr style="height:21px"><td>'._('Name:').' </td><td><input value="'.xhtmlEsc($brands[0]['navn']).'" id="navn" style="width:256px;" maxlength="64" /></td></tr><tr style="height:21px"><td>Link: </td><td><input value="'.xhtmlEsc($brands[0]['link']).'" id="link" style="width:256px;" maxlength="64" /></td></tr><tr style="height:21px"><td>'._('Logo:').' </td>
     <td style="text-align:center"><input type="hidden" value="'.xhtmlEsc($brands[0]['ico']).'" id="ico" name="ico" /><img id="icothb" src="';
@@ -1577,10 +1507,8 @@ function getupdatemaerke(int $id): string
 
 function updatemaerke(int $id, string $navn, string $link, string $ico): array
 {
-    global $mysqli;
-
     if ($navn) {
-        $mysqli->query('UPDATE maerke SET navn = \''.$navn.'\', link = \''.$link.'\', ico = \''.$ico.'\' WHERE id = '.$id);
+        db()->query('UPDATE maerke SET navn = \''.$navn.'\', link = \''.$link.'\', ico = \''.$ico.'\' WHERE id = '.$id);
         return array('id' => 'canvas', 'html' => getmaerker());
     } else {
         return array('error' => _('You must enter a name.'));
@@ -1589,10 +1517,8 @@ function updatemaerke(int $id, string $navn, string $link, string $ico): array
 
 function save_ny_maerke(string $navn, string $link, string $ico): array
 {
-    global $mysqli;
-
     if ($navn) {
-        $mysqli->query('INSERT INTO `maerke` (`navn` , `link` , `ico` ) VALUES (\''.$navn.'\', \''.$link.'\', \''.$ico.'\')');
+        db()->query('INSERT INTO `maerke` (`navn` , `link` , `ico` ) VALUES (\''.$navn.'\', \''.$link.'\', \''.$ico.'\')');
         return array('id' => 'canvas', 'html' => getmaerker());
     } else {
         return array('error' => _('You must enter a name.'));
@@ -1601,10 +1527,8 @@ function save_ny_maerke(string $navn, string $link, string $ico): array
 
 function getkrav(): string
 {
-    global $mysqli;
-
     $html = '<div id="headline">'._('Requirements list').'</div><div style="margin:16px;"><a href="?side=nykrav">Tilføj krav</a>';
-    $krav = $mysqli->fetchArray('SELECT id, navn FROM `krav` ORDER BY navn');
+    $krav = db()->fetchArray('SELECT id, navn FROM `krav` ORDER BY navn');
     $nr = count($krav);
     for ($i=0; $i<$nr; $i++) {
         $html .= '<div id="krav'.$krav[$i]['id'].'"><a href="" onclick="slet(\'krav\',\''.addslashes($krav[$i]['navn']).'\','.$krav[$i]['id'].');"><img src="images/cross.png" title="Slet '.$krav[$i]['navn'].'!" width="16" height="16" /></a><a href="?side=editkrav&amp;id='.$krav[$i]['id'].'">'.$krav[$i]['navn'].'</a></div>';
@@ -1616,9 +1540,7 @@ function getkrav(): string
 
 function editkrav(int $id): string
 {
-    global $mysqli;
-
-    $krav = $mysqli->fetchArray('SELECT navn, text FROM `krav` WHERE id = '.$id);
+    $krav = db()->fetchArray('SELECT navn, text FROM `krav` WHERE id = '.$id);
 
     $html = '<div id="headline">'.sprintf(_('Edit %s'), $krav[0]['navn']).'</div><form action="" method="post" onsubmit="return savekrav();"><input type="submit" accesskey="s" style="width:1px; height:1px; position:absolute; top: -20px; left:-20px;" /><input type="hidden" name="id" id="id" value="'.$id.'" /><input class="admin_name" type="text" name="navn" id="navn" value="'.$krav[0]['navn'].'" maxlength="127" size="127" style="width:587px" /><script type="text/javascript"><!--
 //Usage: initRTE(imagesPath, includesPath, cssFile, genXHTML)
@@ -1631,34 +1553,28 @@ writeRichText("text", \''.rtefsafe($krav[0]['text']).'\', "", '.$GLOBALS['_confi
 
 function sletmaerke(int $id): array
 {
-    global $mysqli;
-
-    $mysqli->query('DELETE FROM `maerke` WHERE `id` = '.$id.' LIMIT 1');
+    db()->query('DELETE FROM `maerke` WHERE `id` = '.$id.' LIMIT 1');
     return array('node' => 'maerke'.$id);
 }
 
 function sletkrav(int $id): array
 {
-    global $mysqli;
-
-    $mysqli->query('DELETE FROM `krav` WHERE `id` = '.$id.' LIMIT 1');
+    db()->query('DELETE FROM `krav` WHERE `id` = '.$id.' LIMIT 1');
     return array('id' => 'krav'.$id);
 }
 
 function sletkat(int $id): array
 {
-    global $mysqli;
-
-    $mysqli->query('DELETE FROM `kat` WHERE `id` = '.$id.' LIMIT 1');
-    if ($kats = $mysqli->fetchArray('SELECT id FROM `kat` WHERE `bind` = '.$id)) {
+    db()->query('DELETE FROM `kat` WHERE `id` = '.$id.' LIMIT 1');
+    if ($kats = db()->fetchArray('SELECT id FROM `kat` WHERE `bind` = '.$id)) {
         foreach ($kats as $kat) {
             sletkat($kat['id']);
         }
     }
-    if ($bind = $mysqli->fetchArray('SELECT side FROM `bind` WHERE `kat` = '.$id)) {
-        $mysqli->query('DELETE FROM `bind` WHERE `kat` = '.$id);
+    if ($bind = db()->fetchArray('SELECT side FROM `bind` WHERE `kat` = '.$id)) {
+        db()->query('DELETE FROM `bind` WHERE `kat` = '.$id);
         foreach ($bind as $side) {
-            if (!$mysqli->fetchArray('SELECT id FROM `bind` WHERE `side` = '.$side['side'].' LIMIT 1')) {
+            if (!db()->fetchArray('SELECT id FROM `bind` WHERE `side` = '.$side['side'].' LIMIT 1')) {
                 sletSide($side['side']);
             }
         }
@@ -1668,11 +1584,9 @@ function sletkat(int $id): array
 
 function movekat(int $id, int $toId)
 {
-    global $mysqli;
+    db()->query('UPDATE `kat` SET `bind` = '.$toId.' WHERE `id` = '.$id.' LIMIT 1');
 
-    $mysqli->query('UPDATE `kat` SET `bind` = '.$toId.' WHERE `id` = '.$id.' LIMIT 1');
-
-    if ($mysqli->affected_rows) {
+    if (db()->affected_rows) {
         return array('id' => 'kat'.$id, 'update' => $toId);
     } else {
         return false;
@@ -1681,26 +1595,21 @@ function movekat(int $id, int $toId)
 
 function renamekat(int $id, string $name): array
 {
-    global $mysqli;
-
-    $mysqli->query('UPDATE `kat` SET `navn` = \''.$name.'\' WHERE `id` = '.$id.' LIMIT 1');
+    db()->query('UPDATE `kat` SET `navn` = \''.$name.'\' WHERE `id` = '.$id.' LIMIT 1');
     return array('id' => 'kat'.$id, 'name' => $name);
 }
 
 function sletbind(string $id)
 {
-    global $mysqli;
-
-    if (!$bind = $mysqli->fetchArray('SELECT side FROM `bind` WHERE `id` = '.$id.' LIMIT 1')) {
+    if (!$bind = db()->fetchArray('SELECT side FROM `bind` WHERE `id` = '.$id.' LIMIT 1')) {
         return array('error' => _('The binding does not exist.'));
     }
-    $mysqli->query('DELETE FROM `bind` WHERE `id` = '.$id.' LIMIT 1');
+    db()->query('DELETE FROM `bind` WHERE `id` = '.$id.' LIMIT 1');
     $delete[0]['id'] = $id;
-    if (!$mysqli->fetchArray('SELECT id FROM `bind` WHERE `side` = '.$bind[0]['side'].' LIMIT 1')) {
-        $mysqli->query('INSERT INTO `bind` (`side` ,`kat`) VALUES (\''.$bind[0]['side'].'\', \'-1\')');
+    if (!db()->fetchArray('SELECT id FROM `bind` WHERE `side` = '.$bind[0]['side'].' LIMIT 1')) {
+        db()->query('INSERT INTO `bind` (`side` ,`kat`) VALUES (\''.$bind[0]['side'].'\', \'-1\')');
 
-        global $mysqli;
-        $added['id'] = $mysqli->insert_id;
+        $added['id'] = db()->insert_id;
         $added['path'] = '/'._('Inactive').'/';
         $added['kat'] = -1;
         $added['side'] = $bind[0]['side'];
@@ -1712,35 +1621,33 @@ function sletbind(string $id)
 
 function bind(int $id, int $kat): array
 {
-    global $mysqli;
-
-    if ($mysqli->fetchArray('SELECT id FROM `bind` WHERE `side` = '.$id.' AND `kat` = '.$kat.' LIMIT 1')) {
+    if (db()->fetchArray('SELECT id FROM `bind` WHERE `side` = '.$id.' AND `kat` = '.$kat.' LIMIT 1')) {
         return array('error' => _('The binding already exists.'));
     }
 
     $katRoot = $kat;
     while ($katRoot > 0) {
-        $katRoot = $mysqli->fetchArray("SELECT bind FROM `kat` WHERE id = '".$katRoot."' LIMIT 1");
+        $katRoot = db()->fetchArray("SELECT bind FROM `kat` WHERE id = '".$katRoot."' LIMIT 1");
         $katRoot = $katRoot[0]['bind'];
     }
 
     //Delete any binding not under $katRoot
-    $binds = $mysqli->fetchArray('SELECT id, kat FROM `bind` WHERE `side` = '.$id);
+    $binds = db()->fetchArray('SELECT id, kat FROM `bind` WHERE `side` = '.$id);
     foreach ($binds as $bind) {
         $bindRoot = $bind['kat'];
         while ($bindRoot > 0) {
-            $bindRoot = $mysqli->fetchArray("SELECT bind FROM `kat` WHERE id = '".$bindRoot."' LIMIT 1");
+            $bindRoot = db()->fetchArray("SELECT bind FROM `kat` WHERE id = '".$bindRoot."' LIMIT 1");
             $bindRoot = $bindRoot[0]['bind'];
         }
         if ($bindRoot != $katRoot) {
-            $mysqli->query('DELETE FROM `bind` WHERE `id` = '.$bind['id'].' LIMIT 1');
+            db()->query('DELETE FROM `bind` WHERE `id` = '.$bind['id'].' LIMIT 1');
             $delete[] = $bind['id'];
         }
     }
 
-    $mysqli->query('INSERT INTO `bind` (`side` ,`kat`) VALUES (\''.$id.'\', \''.$kat.'\')');
+    db()->query('INSERT INTO `bind` (`side` ,`kat`) VALUES (\''.$id.'\', \''.$kat.'\')');
 
-    $added['id'] = $mysqli->insert_id;
+    $added['id'] = db()->insert_id;
     $added['kat'] = $kat;
     $added['side'] = $id;
 
@@ -1756,8 +1663,6 @@ function bind(int $id, int $kat): array
 
 function htmlUrlDecode(string $text): string
 {
-    global $mysqli;
-
     $text = trim($text);
 
     //Double encode importand encodings, to survive next step and remove white space
@@ -1781,14 +1686,12 @@ function htmlUrlDecode(string $text): string
 
 function updateSide(int $id, string $navn, string $keywords, int $pris, string $billed, string $beskrivelse, int $for, string $text, string $varenr, int $burde, int $fra, int $krav, string $maerke): bool
 {
-    global $mysqli;
-
     $beskrivelse = purifyHTML($beskrivelse);
     $beskrivelse = htmlUrlDecode($beskrivelse);
     $text = purifyHTML($text);
     $text = htmlUrlDecode($text);
 
-    $mysqli->query(
+    db()->query(
         "
         UPDATE `sider`
         SET
@@ -1822,23 +1725,19 @@ function updateKat(int $id, string $navn, string $bind, string $icon, string $vi
         }
     }
 
-    global $mysqli;
-
     //Set the order of the subs
     if ($custom_sort_subs) {
         updateKatOrder($subsorder);
     }
 
     //Update kat
-    $mysqli->query('UPDATE `kat` SET `navn` = \''.$navn.'\', `bind` = \''.$bind.'\', `icon` = \''.$icon.'\', `vis` = \''.$vis.'\', `email` = \''.$email.'\', `custom_sort_subs` = \''.$custom_sort_subs.'\' WHERE `id` = '.$id.' LIMIT 1');
+    db()->query('UPDATE `kat` SET `navn` = \''.$navn.'\', `bind` = \''.$bind.'\', `icon` = \''.$icon.'\', `vis` = \''.$vis.'\', `email` = \''.$email.'\', `custom_sort_subs` = \''.$custom_sort_subs.'\' WHERE `id` = '.$id.' LIMIT 1');
     return true;
 }
 
 function updateKatOrder(string $subsorder)
 {
-    global $mysqli;
-
-    $orderquery = $mysqli->prepare('UPDATE `kat` SET `order` = ? WHERE `id` = ? LIMIT 1');
+    $orderquery = db()->prepare('UPDATE `kat` SET `order` = ? WHERE `id` = ? LIMIT 1');
     $orderquery->bind_param('ii', $key, $value);
 
     $subsorder = explode(',', $subsorder);
@@ -1859,24 +1758,20 @@ function updateForside(int $id, string $text, string $subsorder): bool
 
 function updateSpecial(int $id, string $text): bool
 {
-    global $mysqli;
-
     $text = purifyHTML($text);
     $text = htmlUrlDecode($text);
-    $mysqli->query('UPDATE `special` SET `dato` = now(), `text` = \''.addcslashes($text, "'\\").'\' WHERE `id` = '.$id.' LIMIT 1');
+    db()->query('UPDATE `special` SET `dato` = now(), `text` = \''.addcslashes($text, "'\\").'\' WHERE `id` = '.$id.' LIMIT 1');
     return true;
 }
 
 function opretSide(string $kat, string $navn, string $keywords, int $pris, string $billed, string $beskrivelse, int $for, string $text, string $varenr, int $burde, int $fra, int $krav, string $maerke): array
 {
-    global $mysqli;
-
     $beskrivelse = purifyHTML($beskrivelse);
     $beskrivelse = htmlUrlDecode($beskrivelse);
     $text = purifyHTML($text);
     $text = htmlUrlDecode($text);
 
-    $mysqli->query(
+    db()->query(
         'INSERT INTO `sider` (
             `dato`,
             `navn`,
@@ -1908,17 +1803,15 @@ function opretSide(string $kat, string $navn, string $keywords, int $pris, strin
         )'
     );
 
-    $id = $mysqli->insert_id;
-    $mysqli->query('INSERT INTO `bind` (`side` ,`kat` ) VALUES (\''.$id.'\', \''.$kat.'\')');
+    $id = db()->insert_id;
+    db()->query('INSERT INTO `bind` (`side` ,`kat` ) VALUES (\''.$id.'\', \''.$kat.'\')');
     return array('id' => $id);
 }
 
 //Delete a page and all it's relations from the database
 function sletSide(int $sideId): array
 {
-    global $mysqli;
-
-    $lists = $mysqli->fetchArray('SELECT id FROM `lists` WHERE `page_id` = '.$sideId);
+    $lists = db()->fetchArray('SELECT id FROM `lists` WHERE `page_id` = '.$sideId);
     if ($lists) {
         for ($i=0; $i<count($lists); $i++) {
             if ($i) {
@@ -1928,13 +1821,13 @@ function sletSide(int $sideId): array
             $tableWhere .= ' list_id = '.$lists[$i]['id'];
             $listsWhere .= ' id = '.$lists[$i]['id'];
         }
-        $mysqli->query('DELETE FROM `list_rows` WHERE'.$tableWhere);
-        $mysqli->query('DELETE FROM `lists` WHERE `sideId` = '.$sideId);
+        db()->query('DELETE FROM `list_rows` WHERE'.$tableWhere);
+        db()->query('DELETE FROM `lists` WHERE `sideId` = '.$sideId);
     }
-    $mysqli->query('DELETE FROM `list_rows` WHERE `link` = '.$sideId);
-    $mysqli->query('DELETE FROM `bind` WHERE side = '.$sideId);
-    $mysqli->query('DELETE FROM `tilbehor` WHERE side = '.$sideId.' OR tilbehor ='.$sideId);
-    $mysqli->query('DELETE FROM `sider` WHERE id = '.$sideId);
+    db()->query('DELETE FROM `list_rows` WHERE `link` = '.$sideId);
+    db()->query('DELETE FROM `bind` WHERE side = '.$sideId);
+    db()->query('DELETE FROM `tilbehor` WHERE side = '.$sideId.' OR tilbehor ='.$sideId);
+    db()->query('DELETE FROM `sider` WHERE id = '.$sideId);
 
     return array('class' => 'side'.$sideId);
 }

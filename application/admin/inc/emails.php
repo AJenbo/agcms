@@ -22,8 +22,7 @@ require_once $_SERVER['DOCUMENT_ROOT'] . '/vendor/phpmailer/phpmailer/class.phpm
  */
 function sendEmail(int $id, string $from, string $interests, string $subject, string $text)
 {
-    global $mysqli;
-    if (!$mysqli->fetchArray('SELECT `id` FROM `newsmails` WHERE `sendt` = 0')) {
+    if (!db()->fetchArray('SELECT `id` FROM `newsmails` WHERE `sendt` = 0')) {
         //Nyhedsbrevet er allerede afsendt!
         return array('error' => _('The newsletter has already been sent!'));
     }
@@ -102,8 +101,7 @@ function sendEmail(int $id, string $from, string $interests, string $subject, st
 
     $mail->AddAddress($from, $GLOBALS['_config']['site_name']);
 
-    global $mysqli;
-    $emails = $mysqli->fetchArray(
+    $emails = db()->fetchArray(
         'SELECT navn, email
         FROM `email`
         WHERE `email` NOT LIKE \'\'
@@ -144,7 +142,7 @@ function sendEmail(int $id, string $from, string $interests, string $subject, st
     if ($error) {
         return array('error' => $error);
     } else {
-        $mysqli->query('UPDATE `newsmails` SET `sendt` = 1 WHERE `id` = '.$id.' LIMIT 1');
+        db()->query('UPDATE `newsmails` SET `sendt` = 1 WHERE `id` = '.$id.' LIMIT 1');
         return true;
     }
 }
@@ -156,8 +154,6 @@ function sendEmail(int $id, string $from, string $interests, string $subject, st
  */
 function countEmailTo(string $interests): int
 {
-    global $mysqli;
-
     $andwhere = '';
 
     //Colect interests
@@ -182,7 +178,7 @@ function countEmailTo(string $interests): int
         $andwhere .= ')';
     }
 
-    $emails = $mysqli->fetchArray('SELECT count(DISTINCT email) as \'count\' FROM `email` WHERE `email` NOT LIKE \'\' AND `kartotek` = \'1\''.$andwhere);
+    $emails = db()->fetchArray('SELECT count(DISTINCT email) as \'count\' FROM `email` WHERE `email` NOT LIKE \'\' AND `kartotek` = \'1\''.$andwhere);
 
     return $emails[0]['count'];
 }
@@ -192,9 +188,8 @@ function countEmailTo(string $interests): int
  */
 function getNewEmail(): string
 {
-    global $mysqli;
-    $mysqli->query('INSERT INTO `newsmails` () VALUES ()');
-    return getEmail($mysqli->insert_id);
+    db()->query('INSERT INTO `newsmails` () VALUES ()');
+    return getEmail(db()->insert_id);
 }
 
 /**
@@ -204,8 +199,7 @@ function getNewEmail(): string
  */
 function getEmail(int $id): string
 {
-    global $mysqli;
-    $newsmails = $mysqli->fetchArray('SELECT * FROM `newsmails` WHERE `id` = '.$id);
+    $newsmails = db()->fetchArray('SELECT * FROM `newsmails` WHERE `id` = '.$id);
 
     $html = '<div id="headline">'._('Edit newsletter').'</div>';
 
@@ -284,14 +278,12 @@ writeRichText(\'text\', \'' . rtefsafe($newsmails[0]['text']) . '\', \'\', ' . (
  */
 function saveEmail(int $id, string $from, string $interests, string $subject, string $text): bool
 {
-    global $mysqli;
+    $from = db()->real_escape_string($from);
+    $interests = db()->real_escape_string($interests);
+    $subject = db()->real_escape_string($subject);
+    $text = db()->real_escape_string($text);
 
-    $from = $mysqli->real_escape_string($from);
-    $interests = $mysqli->real_escape_string($interests);
-    $subject = $mysqli->real_escape_string($subject);
-    $text = $mysqli->real_escape_string($text);
-
-    $mysqli->query(
+    db()->query(
         "UPDATE `newsmails`
         SET `from` = '" .$from ."',
         `interests` = '" .$interests ."',
@@ -307,8 +299,7 @@ function saveEmail(int $id, string $from, string $interests, string $subject, st
  */
 function getEmailList(): string
 {
-    global $mysqli;
-    $newsmails = $mysqli->fetchArray('SELECT `id`, `subject`, `sendt` FROM `newsmails`');
+    $newsmails = db()->fetchArray('SELECT `id`, `subject`, `sendt` FROM `newsmails`');
 
     $html = '<div id="headline">'._('Newsletters').'</div><div><a href="?side=newemail"><img src="images/email_add.png" width="16" height="16" alt="" /> '._('Create new newsletter').'</a><br /><br />';
     foreach ($newsmails as $newemail) {

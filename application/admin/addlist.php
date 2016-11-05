@@ -13,15 +13,8 @@ textdomain('agcms');
 require_once $_SERVER['DOCUMENT_ROOT'] . '/admin/inc/logon.php';
 require_once $_SERVER['DOCUMENT_ROOT'] . '/inc/functions.php';
 
-$mysqli = new Simple_Mysqli(
-    $GLOBALS['_config']['mysql_server'],
-    $GLOBALS['_config']['mysql_user'],
-    $GLOBALS['_config']['mysql_password'],
-    $GLOBALS['_config']['mysql_database']
-);
-
 if (!empty($_POST)) {
-    $mysqli->query(
+    db()->query(
         "
         INSERT INTO `lists` (
             `page_id`,
@@ -53,7 +46,7 @@ if (!empty($_POST)) {
     exit;
 }
 
-$tablesorts = $mysqli->fetchArray("SELECT id, navn FROM `tablesort`");
+$tablesorts = db()->fetchArray("SELECT id, navn FROM `tablesort`");
 
 ?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">

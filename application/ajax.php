@@ -23,17 +23,10 @@ mb_internal_encoding('UTF-8');
 require_once $_SERVER['DOCUMENT_ROOT'] . '/inc/functions.php';
 require_once $_SERVER['DOCUMENT_ROOT'] . '/inc/sajax.php';
 
-$mysqli = new Simple_Mysqli(
-    $GLOBALS['_config']['mysql_server'],
-    $GLOBALS['_config']['mysql_user'],
-    $GLOBALS['_config']['mysql_password'],
-    $GLOBALS['_config']['mysql_database']
-);
-
 //If the database is older then the users cache, send 304 not modified
 //WARNING: this results in the site not updating if new files are included later,
 //the remedy is to update the database when new cms files are added.
-$tables = $mysqli->fetchArray("SHOW TABLE STATUS");
+$tables = db()->fetchArray("SHOW TABLE STATUS");
 $updatetime = 0;
 foreach ($tables as $table) {
     $updatetime = max($updatetime, strtotime($table['Update_time']));
@@ -65,7 +58,6 @@ $updatetime = 0;
  */
 function getKat(int $id, bool $sort): array
 {
-    global $mysqli;
     $GLOBALS['generatedcontent']['activmenu'] = $id;
 
     //check browser cache
@@ -86,7 +78,7 @@ function getKat(int $id, bool $sort): array
     doConditionalGet($updatetime);
 
     //Get pages list
-    $bind = $mysqli->fetchArray(
+    $bind = db()->fetchArray(
         "
         SELECT sider.id,
             sider.navn,
@@ -106,7 +98,7 @@ function getKat(int $id, bool $sort): array
     $kat = @$GLOBALS['cache']['kats'][$GLOBALS['generatedcontent']['activmenu']];
     $name = $kat['navn'];
     if (!$name) {
-        $kat = $mysqli->fetchArray(
+        $kat = db()->fetchArray(
             "
             SELECT navn, vis
             FROM kat

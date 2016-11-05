@@ -155,28 +155,18 @@ if (!empty($_FILES['Filedata']['tmp_name'])
 
     rename($_SERVER['DOCUMENT_ROOT'].$temppath, $_SERVER['DOCUMENT_ROOT'].$destpath);
 
-    //Mangler mysql-funktioner.php
-    header('HTTP/1.1 540 Internal Server Error');
-    //Kunne ikke åbne database.
-    header('HTTP/1.1 541 Internal Server Error');
-    $mysqli = new Simple_Mysqli(
-        $GLOBALS['_config']['mysql_server'],
-        $GLOBALS['_config']['mysql_user'],
-        $GLOBALS['_config']['mysql_password'],
-        $GLOBALS['_config']['mysql_database']
-    );
     //MySQL DELETE fejl!
     header('HTTP/1.1 542 Internal Server Error');
-    $mysqli->query('DELETE FROM files WHERE path = \''.$destpath."'");
+    db()->query('DELETE FROM files WHERE path = \''.$destpath."'");
     //If the image was edited it inserts it's info
-    $mysqli->query('DELETE FROM files WHERE path = \''.$temppath."'");
+    db()->query('DELETE FROM files WHERE path = \''.$temppath."'");
     //MySQL INSERT fejl!
     header('HTTP/1.1 543 Internal Server Error');
 
     $alt = empty($_POST['alt']) ? '' : $_POST['alt'];
     $aspect = empty($_POST['aspect']) ? '' : $_POST['aspect'];
 
-    $mysqli->query(
+    db()->query(
         "
         INSERT INTO files (path, mime, alt, width, height, size, aspect)
         VALUES ('" . $destpath . "', '" . $mime . "', '" . $alt . "', '" . $width

@@ -16,15 +16,8 @@ require_once $_SERVER['DOCUMENT_ROOT'] . '/inc/functions.php';
 
 session_start();
 
-$mysqli = new Simple_Mysqli(
-    $GLOBALS['_config']['mysql_server'],
-    $GLOBALS['_config']['mysql_user'],
-    $GLOBALS['_config']['mysql_password'],
-    $GLOBALS['_config']['mysql_database']
-);
-
 if (empty($_SESSION['_user']) && !empty($_POST['username'])) {
-    $_SESSION['_user'] = $mysqli->fetchArray("SELECT * FROM `users` WHERE `name` = '".addcslashes($_POST['username'], "'\\")."' LIMIT 1");
+    $_SESSION['_user'] = db()->fetchArray("SELECT * FROM `users` WHERE `name` = '".addcslashes($_POST['username'], "'\\")."' LIMIT 1");
     $_SESSION['_user'] = @$_SESSION['_user'][0];
 
     if ($_SESSION['_user']['access'] < 1
@@ -64,4 +57,4 @@ if (empty($_SESSION['_user'])) {
     die();
 }
 
-$mysqli->query("UPDATE `users` SET `lastlogin` =  NOW() WHERE `id` = ".$_SESSION['_user']['id']." LIMIT 1");
+db()->query("UPDATE `users` SET `lastlogin` =  NOW() WHERE `id` = ".$_SESSION['_user']['id']." LIMIT 1");

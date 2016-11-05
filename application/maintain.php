@@ -16,14 +16,6 @@
 require_once $_SERVER['DOCUMENT_ROOT'] . '/inc/functions.php';
 require_once $_SERVER['DOCUMENT_ROOT'] . '/inc/sajax.php';
 
-//Open database
-$mysqli = new Simple_Mysqli(
-    $GLOBALS['_config']['mysql_server'],
-    $GLOBALS['_config']['mysql_user'],
-    $GLOBALS['_config']['mysql_password'],
-    $GLOBALS['_config']['mysql_database']
-);
-
 /**
  * Optimize all tables
  *
@@ -31,11 +23,9 @@ $mysqli = new Simple_Mysqli(
  */
 function optimizeTables(): string
 {
-    global $mysqli;
-
-    $tables = $mysqli->fetchArray("SHOW TABLE STATUS");
+    $tables = db()->fetchArray("SHOW TABLE STATUS");
     foreach ($tables as $table) {
-        $mysqli->query("OPTIMIZE TABLE `" . $table['Name'] . "`");
+        db()->query("OPTIMIZE TABLE `" . $table['Name'] . "`");
     }
     return '';
 }
@@ -47,9 +37,7 @@ function optimizeTables(): string
  */
 function removeBadSubmisions(): string
 {
-    global $mysqli;
-
-    $mysqli->query(
+    db()->query(
         "
         DELETE FROM `email`
         WHERE `email` = ''
@@ -59,7 +47,6 @@ function removeBadSubmisions(): string
         "
     );
 
-    //return $mysqli->affected_rows;
     return '';
 }
 
@@ -70,9 +57,7 @@ function removeBadSubmisions(): string
  */
 function removeBadBindings(): string
 {
-    global $mysqli;
-
-    $mysqli->query(
+    db()->query(
         "
         DELETE FROM `bind`
         WHERE (kat != 0 AND kat != -1
@@ -81,7 +66,6 @@ function removeBadBindings(): string
         "
     );
 
-    //return $mysqli->affected_rows;
     return '';
 }
 
@@ -92,9 +76,7 @@ function removeBadBindings(): string
  */
 function removeBadAccessories(): string
 {
-    global $mysqli;
-
-    $mysqli->query(
+    db()->query(
         "
         DELETE FROM `tilbehor`
         WHERE NOT EXISTS (SELECT id FROM sider WHERE tilbehor.side)
@@ -102,7 +84,6 @@ function removeBadAccessories(): string
         "
     );
 
-    //return $mysqli->affected_rows;
     return '';
 }
 
@@ -113,13 +94,12 @@ function removeBadAccessories(): string
  */
 function removeNoneExistingFiles(): string
 {
-    global $mysqli;
-    $files = $mysqli->fetchArray('SELECT id, path FROM `files`');
+    $files = db()->fetchArray('SELECT id, path FROM `files`');
 
     $deleted = 0;
     foreach ($files as $files) {
         if (!is_file($_SERVER['DOCUMENT_ROOT'].$files['path'])) {
-            $mysqli->query("DELETE FROM `files` WHERE `id` = " . $files['id']);
+            db()->query("DELETE FROM `files` WHERE `id` = " . $files['id']);
             $deleted++;
         }
     }

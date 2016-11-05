@@ -22,14 +22,7 @@ mb_internal_encoding('UTF-8');
 
 require_once $_SERVER['DOCUMENT_ROOT'] . '/inc/functions.php';
 
-$mysqli = new Simple_Mysqli(
-    $GLOBALS['_config']['mysql_server'],
-    $GLOBALS['_config']['mysql_user'],
-    $GLOBALS['_config']['mysql_password'],
-    $GLOBALS['_config']['mysql_database']
-);
-
-$tabels = $mysqli->fetchArray("SHOW TABLE STATUS");
+$tabels = db()->fetchArray("SHOW TABLE STATUS");
 $updatetime = 0;
 foreach ($tabels as $tabel) {
     $updatetime = max($updatetime, strtotime($tabel['Update_time']));
@@ -53,7 +46,7 @@ if ($time > 1000000000) {
     $limit = ' LIMIT 20';
 }
 
-$sider = $mysqli->fetchArray(
+$sider = db()->fetchArray(
     "
     SELECT sider.id,
         sider.maerke,
@@ -116,7 +109,7 @@ for ($i = 0; $i < count($sider); $i++) {
     if (!$sider[$i]['navn'] = trim($name)) {
         $sider[$i]['navn'] = $GLOBALS['_config']['site_name'];
     }
-    $sideText = $mysqli->fetchArray(
+    $sideText = db()->fetchArray(
         "
         SELECT text
         FROM sider
@@ -146,7 +139,7 @@ for ($i = 0; $i < count($sider); $i++) {
     . rawurlencode(clearFileName($sider[$i]['kat_navn'])) . '/side'
     . $sider[$i]['id'] . '-' . rawurlencode(clearFileName($sider[$i]['navn']))
     . '.html</guid>';
-    $bind = $mysqli->fetchArray(
+    $bind = db()->fetchArray(
         "
         SELECT `kat`
         FROM bind
@@ -157,7 +150,7 @@ for ($i = 0; $i < count($sider); $i++) {
     for ($ibind = 0; $ibind < count($bind); $ibind++) {
         $kats[] = $bind[$ibind]['kat'];
 
-        $temp = $mysqli->fetchArray(
+        $temp = db()->fetchArray(
             "
             SELECT bind
             FROM `kat`
@@ -168,7 +161,7 @@ for ($i = 0; $i < count($sider); $i++) {
         if (@$temp[0]) {
             while ($temp && !in_array($temp[0]['bind'], $kats)) {
                 $kats[] = $temp[0]['bind'];
-                $temp = $mysqli->fetchArray(
+                $temp = db()->fetchArray(
                     "
                     SELECT bind
                     FROM `kat`
@@ -184,7 +177,7 @@ for ($i = 0; $i < count($sider); $i++) {
 
     for ($icategory = 0; $icategory < count($kats); $icategory++) {
         if ($kats[$icategory]) {
-            $kat = $mysqli->fetchArray(
+            $kat = db()->fetchArray(
                 "
                 SELECT `navn`
                 FROM kat
@@ -210,7 +203,7 @@ for ($i = 0; $i < count($sider); $i++) {
             }
             $where .= ' id = '.$maerker[$imaerker];
         }
-        $maerker = $mysqli->fetchArray(
+        $maerker = db()->fetchArray(
             "
             SELECT `navn`
             FROM maerke
@@ -231,5 +224,5 @@ for ($i = 0; $i < count($sider); $i++) {
 
     echo '</item>';
 }
-$mysqli->close();
+db()->close();
 echo '</channel></rss>';

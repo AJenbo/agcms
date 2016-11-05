@@ -20,21 +20,12 @@ include_once $_SERVER['DOCUMENT_ROOT'] . '/vendor/phpmailer/phpmailer/language/p
 require_once $_SERVER['DOCUMENT_ROOT'] . '/vendor/phpmailer/phpmailer/class.phpmailer.php';
 require_once $_SERVER['DOCUMENT_ROOT'] . '/vendor/phpmailer/phpmailer/class.smtp.php';
 
-$mysqli = new Simple_Mysqli(
-    $GLOBALS['_config']['mysql_server'],
-    $GLOBALS['_config']['mysql_user'],
-    $GLOBALS['_config']['mysql_password'],
-    $GLOBALS['_config']['mysql_database']
-);
-
 /**
  * @return int
  */
 function newfaktura(): int
 {
-    global $mysqli;
-
-    $mysqli->query(
+    db()->query(
         "
         INSERT INTO `fakturas` (`date`, `clerk`)
         VALUES (
@@ -43,7 +34,7 @@ function newfaktura(): int
         );
         "
     );
-    return $mysqli->insert_id;
+    return db()->insert_id;
 }
 
 if (!empty($_GET['function']) && $_GET['function'] == 'new') {
@@ -54,7 +45,7 @@ if (!empty($_GET['function']) && $_GET['function'] == 'new') {
 
 $sajax_request_type = 'POST';
 
-$faktura = $mysqli->fetchOne(
+$faktura = db()->fetchOne(
     "
     SELECT*,
         UNIX_TIMESTAMP(`date`) AS `date`,
@@ -83,7 +74,7 @@ if ($faktura['id'] && $faktura['status'] != 'new') {
         //Annulled. The card payment has been deleted by the Merchant, prior to Acquisition.
         if (!in_array($faktura['status'], array('rejected', 'giro', 'cash', 'canceled'))) {
             $faktura['status'] = 'rejected';
-            $mysqli->query(
+            db()->query(
                 "
                 UPDATE `fakturas` SET `status` = 'rejected'
                 WHERE `id` = " . $faktura['id']
@@ -97,7 +88,7 @@ if ($faktura['id'] && $faktura['status'] != 'new') {
             //TODO 'Det betalte beløb er ikke svarende til det opkrævede beløb!';
         } elseif (!in_array($faktura['status'], array('accepted', 'giro', 'cash'))) {
             $faktura['status'] = 'accepted';
-            $mysqli->query(
+            db()->query(
                 "
                 UPDATE `fakturas` SET `status` = 'accepted'
                 WHERE `id` = ".$faktura['id']
@@ -109,7 +100,7 @@ if ($faktura['id'] && $faktura['status'] != 'new') {
         //Authorised. The card payment is authorised and awaiting confirmation and Acquisition.
         if (!in_array($faktura['status'], array('pbsok', 'giro', 'cash'))) {
             $faktura['status'] = 'pbsok';
-            $mysqli->query(
+            db()->query(
                 "
                 UPDATE `fakturas` SET `status` = 'pbsok'
                 WHERE `id` = " . $faktura['id']
@@ -120,7 +111,7 @@ if ($faktura['id'] && $faktura['status'] != 'new') {
     } elseif (!$epayment->getId()) {
         if ($faktura['status'] == 'pbsok') {
             $faktura['status'] = 'locked';
-            $mysqli->query(
+            db()->query(
                 "
                 UPDATE `fakturas` SET `status` = 'locked'
                 WHERE `id` = " . $faktura['id']
@@ -146,9 +137,7 @@ function getCheckid(int $id): string
  */
 function copytonew(int $id): int
 {
-    global $mysqli;
-
-    $faktura = $mysqli->fetchOne("SELECT * FROM `fakturas` WHERE `id` = ".$id);
+    $faktura = db()->fetchOne("SELECT * FROM `fakturas` WHERE `id` = ".$id);
 
     unset($faktura['id']);
     unset($faktura['status']);
@@ -164,9 +153,9 @@ function copytonew(int $id): int
     }
     $sql .= " `date` = NOW();";
 
-    $mysqli->query($sql);
+    db()->query($sql);
 
-    return $mysqli->insert_id;
+    return db()->insert_id;
 }
 
 /**
@@ -178,8 +167,6 @@ function copytonew(int $id): int
  */
 function save(int $id, string $type, array $updates): array
 {
-    global $mysqli;
-
     if (empty($updates['department'])) {
         $updates['department'] = $GLOBALS['_config']['email'][0];
     }
@@ -196,7 +183,7 @@ function save(int $id, string $type, array $updates): array
     }
     unset($updates['paydate']);
 
-    $faktura = $mysqli->fetchOne("SELECT `status`, `note` FROM `fakturas` WHERE `id` = ".$id);
+    $faktura = db()->fetchOne("SELECT `status`, `note` FROM `fakturas` WHERE `id` = ".$id);
 
     if (in_array($faktura['status'], array('locked', 'pbsok', 'rejected'))) {
         $updates = array(
@@ -256,13 +243,13 @@ function save(int $id, string $type, array $updates): array
 
         $sql .= ' WHERE `id` = '.$id;
 
-        $mysqli->query($sql);
+        db()->query($sql);
     }
 
-    $faktura = $mysqli->fetchOne("SELECT * FROM `fakturas` WHERE `id` = ".$id);
+    $faktura = db()->fetchOne("SELECT * FROM `fakturas` WHERE `id` = ".$id);
 
     if (empty($faktura['clerk'])) {
-        $mysqli->query("UPDATE `fakturas` SET `clerk` = '".addcslashes($_SESSION['_user']['fullname'], '\'\\')."' WHERE `id` = ".$faktura['id']);
+        db()->query("UPDATE `fakturas` SET `clerk` = '".addcslashes($_SESSION['_user']['fullname'], '\'\\')."' WHERE `id` = ".$faktura['id']);
         $faktura['clerk'] = $_SESSION['_user']['fullname'];
     }
 
@@ -347,8 +334,8 @@ Tel. %s</p>'
         if (!$mail->Send()) {
             return array('error' => _('Unable to sendt e-mail!')."\n".$mail->ErrorInfo);
         }
-        $mysqli->query("UPDATE `fakturas` SET `status` = 'locked' WHERE `status` = 'new' && `id` = ".$faktura['id']);
-        $mysqli->query("UPDATE `fakturas` SET `sendt` = 1, `department` = '".$faktura['department']."' WHERE `id` = ".$faktura['id']);
+        db()->query("UPDATE `fakturas` SET `status` = 'locked' WHERE `status` = 'new' && `id` = ".$faktura['id']);
+        db()->query("UPDATE `fakturas` SET `sendt` = 1, `department` = '".$faktura['department']."' WHERE `id` = ".$faktura['id']);
 
         //Upload email to the sent folder via imap
         if ($GLOBALS['_config']['imap']) {
@@ -378,8 +365,7 @@ function sendReminder(int $id): array
 {
     $error = '';
 
-    global $mysqli;
-    $faktura = $mysqli->fetchOne("SELECT * FROM `fakturas` WHERE `id` = ".$id);
+    $faktura = db()->fetchOne("SELECT * FROM `fakturas` WHERE `id` = ".$id);
 
     if (!$faktura['status']) {
         return array('error' => _('You can not send a reminder until the invoice is sent!'));
@@ -508,7 +494,6 @@ Fax: %s<br />
  */
 function pbsconfirm(int $id)
 {
-    global $mysqli;
     global $epayment;
 
     try {
@@ -518,7 +503,7 @@ function pbsconfirm(int $id)
     }
 
     if (!$epayment->hasError() || !$success) {
-        $mysqli->query(
+        db()->query(
             "
             UPDATE `fakturas`
             SET `status` = 'accepted', `paydate` = NOW()
@@ -537,7 +522,6 @@ function pbsconfirm(int $id)
  */
 function annul(int $id)
 {
-    global $mysqli;
     global $epayment;
 
     try {
@@ -547,7 +531,7 @@ function annul(int $id)
     }
 
     if (!$epayment->hasError() || !$success) {
-        $mysqli->query(
+        db()->query(
             "
             UPDATE `fakturas`
             SET `status`  = 'rejected',
@@ -1093,7 +1077,7 @@ if ($faktura['status'] == 'new') {
     echo date(_('m/d/Y'), $faktura['date']);
 }
 ?></td></tr><?php
-$users = $mysqli->fetchArray("SELECT `fullname`, `name` FROM `users` ORDER BY `fullname` ASC");
+$users = db()->fetchArray("SELECT `fullname`, `name` FROM `users` ORDER BY `fullname` ASC");
 //TODO block save if ! admin
 ?><tr>
     <td>Ansvarlig:</td>

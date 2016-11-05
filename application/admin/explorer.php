@@ -64,7 +64,6 @@ function showfiles(string $temp_dir): array
     global $dir;
     $dir = $temp_dir;
     unset($temp_dir);
-    global $mysqli;
     $html = '';
     $javascript = '';
 
@@ -76,21 +75,20 @@ function showfiles(string $temp_dir): array
     }
 
     for ($i=0; $i<$nummber_files; $i++) {
-        $fileinfo = $mysqli->fetchArray('SELECT * FROM files WHERE path = \''.$dir.'/'.$files[$i]."'");
+        $fileinfo = db()->fetchArray('SELECT * FROM files WHERE path = \''.$dir.'/'.$files[$i]."'");
 
         if (!$fileinfo) {
             //Save file info to db
             $mime = get_mime_type($dir.'/'.$files[$i]);
             $imagesize = @getimagesize($_SERVER['DOCUMENT_ROOT'].$dir.'/'.$files[$i]);
             $size = filesize($_SERVER['DOCUMENT_ROOT'].$dir.'/'.$files[$i]);
-            $mysqli->query('INSERT INTO files (path, mime, width, height, size, aspect) VALUES (\''.$dir.'/'.$files[$i]."', '".$mime."', '".$imagesize[0]."', '".$imagesize[1]."', '".$size."', NULL )");
+            db()->query('INSERT INTO files (path, mime, width, height, size, aspect) VALUES (\''.$dir.'/'.$files[$i]."', '".$mime."', '".$imagesize[0]."', '".$imagesize[1]."', '".$size."', NULL )");
             $fileinfo[0]['path'] = $dir.'/'.$files[$i];
             $fileinfo[0]['mime'] = $mime;
             $fileinfo[0]['width'] = $imagesize[0];
             $fileinfo[0]['height'] = $imagesize[1];
             $fileinfo[0]['size'] = $size;
-            global $mysqli;
-            $fileinfo[0]['id'] = $mysqli->insert_id;
+            $fileinfo[0]['id'] = db()->insert_id;
 //          $fileinfo[0]['aspect'] = NULL;
             unset($imagesize);
             unset($mime);
@@ -380,8 +378,6 @@ function makedir(string $name): array
 function renamefile(int $id, string $path, string $dir, string $filename, bool $force = false): array
 {
 //return array('error' => 'id='.id.' path='.$path.' dir='.$dir.' filename='.$filename.' force='.$force, 'id' => $id);
-    global $mysqli;
-
     $pathinfo = pathinfo($path);
     if ($pathinfo['dirname'] == '/') {
         $pathinfo['dirname'] == '';
@@ -448,18 +444,18 @@ Would you like to replace the existing file?'), 'id' => $id);
         //Rename/move or give an error
         if (@rename($_SERVER['DOCUMENT_ROOT'].$path, $_SERVER['DOCUMENT_ROOT'].$dir.'/'.$filename.'.'.$pathinfo['extension'])) {
             if ($force) {
-                $mysqli->query("DELETE FROM files WHERE `path` = '".$dir.'/'.$filename.'.'.$pathinfo['extension']."' LIMIT 1");
+                db()->query("DELETE FROM files WHERE `path` = '".$dir.'/'.$filename.'.'.$pathinfo['extension']."' LIMIT 1");
             }
 
-            $mysqli->query("UPDATE `files` SET `path` = '".$dir.'/'.$filename.'.'.$pathinfo['extension']."' WHERE `path` = '".$path."' LIMIT 1");
+            db()->query("UPDATE `files` SET `path` = '".$dir.'/'.$filename.'.'.$pathinfo['extension']."' WHERE `path` = '".$path."' LIMIT 1");
 
-            $mysqli->query("UPDATE sider SET navn = REPLACE(navn, '$path', '".$dir.'/'.$filename.'.'.$pathinfo['extension']."'), text = REPLACE(text, '$path', '".$dir.'/'.$filename.'.'.$pathinfo['extension']."'), beskrivelse = REPLACE(beskrivelse, '$path', '".$dir.'/'.$filename.'.'.$pathinfo['extension']."'), billed = REPLACE(billed, '$path', '".$dir.'/'.$filename.'.'.$pathinfo['extension']."')");
-            $mysqli->query("UPDATE template SET navn = REPLACE(navn, '$path', '".$dir.'/'.$filename.'.'.$pathinfo['extension']."'), text = REPLACE(text, '$path', '".$dir.'/'.$filename.'.'.$pathinfo['extension']."'), beskrivelse = REPLACE(beskrivelse, '$path', '".$dir.'/'.$filename.'.'.$pathinfo['extension']."'), billed = REPLACE(billed, '$path', '".$dir.'/'.$filename.'.'.$pathinfo['extension']."')");
-            $mysqli->query("UPDATE special SET text = REPLACE(text, '$path', '".$dir.'/'.$filename.'.'.$pathinfo['extension']."')");
-            $mysqli->query("UPDATE krav SET text = REPLACE(text, '$path', '".$dir.'/'.$filename.'.'.$pathinfo['extension']."')");
-            $mysqli->query("UPDATE maerke SET ico = REPLACE(ico, '$path', '".$dir.'/'.$filename.'.'.$pathinfo['extension']."')");
-            $mysqli->query("UPDATE list_rows SET cells = REPLACE(cells, '$path', '".$dir.'/'.$filename.'.'.$pathinfo['extension']."')");
-            $mysqli->query("UPDATE kat SET navn = REPLACE(navn, '$path', '".$dir.'/'.$filename.'.'.$pathinfo['extension']."'), icon = REPLACE(icon, '$path', '".$dir.'/'.$filename.'.'.$pathinfo['extension']."')");
+            db()->query("UPDATE sider SET navn = REPLACE(navn, '$path', '".$dir.'/'.$filename.'.'.$pathinfo['extension']."'), text = REPLACE(text, '$path', '".$dir.'/'.$filename.'.'.$pathinfo['extension']."'), beskrivelse = REPLACE(beskrivelse, '$path', '".$dir.'/'.$filename.'.'.$pathinfo['extension']."'), billed = REPLACE(billed, '$path', '".$dir.'/'.$filename.'.'.$pathinfo['extension']."')");
+            db()->query("UPDATE template SET navn = REPLACE(navn, '$path', '".$dir.'/'.$filename.'.'.$pathinfo['extension']."'), text = REPLACE(text, '$path', '".$dir.'/'.$filename.'.'.$pathinfo['extension']."'), beskrivelse = REPLACE(beskrivelse, '$path', '".$dir.'/'.$filename.'.'.$pathinfo['extension']."'), billed = REPLACE(billed, '$path', '".$dir.'/'.$filename.'.'.$pathinfo['extension']."')");
+            db()->query("UPDATE special SET text = REPLACE(text, '$path', '".$dir.'/'.$filename.'.'.$pathinfo['extension']."')");
+            db()->query("UPDATE krav SET text = REPLACE(text, '$path', '".$dir.'/'.$filename.'.'.$pathinfo['extension']."')");
+            db()->query("UPDATE maerke SET ico = REPLACE(ico, '$path', '".$dir.'/'.$filename.'.'.$pathinfo['extension']."')");
+            db()->query("UPDATE list_rows SET cells = REPLACE(cells, '$path', '".$dir.'/'.$filename.'.'.$pathinfo['extension']."')");
+            db()->query("UPDATE kat SET navn = REPLACE(navn, '$path', '".$dir.'/'.$filename.'.'.$pathinfo['extension']."'), icon = REPLACE(icon, '$path', '".$dir.'/'.$filename.'.'.$pathinfo['extension']."')");
 
             return array('id' => $id, 'filename' => $filename, 'path' => $dir.'/'.$filename.'.'.$pathinfo['extension']);
         } else {
@@ -494,17 +490,17 @@ Would you like to replace the existing file?'), 'id' => $id);
         //TODO prepared query
         if (@rename($_SERVER['DOCUMENT_ROOT'].$path, $_SERVER['DOCUMENT_ROOT'].$dir.'/'.$filename)) {
             if ($force) {
-                $mysqli->query("DELETE FROM files WHERE `path` = '".$dir.'/'.$filename."%'");
+                db()->query("DELETE FROM files WHERE `path` = '".$dir.'/'.$filename."%'");
                 //TODO insert new file data (width, alt, height, aspect)
             }
-            $mysqli->query("UPDATE files    SET path = REPLACE(path, '".$path."', '".$dir.'/'.$filename."')");
-            $mysqli->query("UPDATE sider    SET navn = REPLACE(navn, '".$path."', '".$dir.'/'.$filename."'), text = REPLACE(text, '$path', '".$dir.'/'.$filename."'), beskrivelse = REPLACE(beskrivelse, '$path', '".$dir.'/'.$filename."'), billed = REPLACE(billed, '$path', '".$dir.'/'.$filename."')");
-            $mysqli->query("UPDATE template SET navn = REPLACE(navn, '".$path."', '".$dir.'/'.$filename."'), text = REPLACE(text, '$path', '".$dir.'/'.$filename."'), beskrivelse = REPLACE(beskrivelse, '$path', '".$dir.'/'.$filename."'), billed = REPLACE(billed, '$path', '".$dir.'/'.$filename."')");
-            $mysqli->query("UPDATE special  SET text = REPLACE(text, '".$path."', '".$dir.'/'.$filename."')");
-            $mysqli->query("UPDATE krav     SET text = REPLACE(text, '".$path."', '".$dir.'/'.$filename."')");
-            $mysqli->query("UPDATE maerke   SET ico  = REPLACE( ico, '".$path."', '".$dir.'/'.$filename."')");
-            $mysqli->query("UPDATE list_rows  SET cells  = REPLACE(cells, '".$path."', '".$dir.'/'.$filename."')");
-            $mysqli->query("UPDATE kat      SET navn = REPLACE(navn, '".$path."', '".$dir.'/'.$filename."'), icon = REPLACE(icon, '$path', '".$dir.'/'.$filename."')");
+            db()->query("UPDATE files    SET path = REPLACE(path, '".$path."', '".$dir.'/'.$filename."')");
+            db()->query("UPDATE sider    SET navn = REPLACE(navn, '".$path."', '".$dir.'/'.$filename."'), text = REPLACE(text, '$path', '".$dir.'/'.$filename."'), beskrivelse = REPLACE(beskrivelse, '$path', '".$dir.'/'.$filename."'), billed = REPLACE(billed, '$path', '".$dir.'/'.$filename."')");
+            db()->query("UPDATE template SET navn = REPLACE(navn, '".$path."', '".$dir.'/'.$filename."'), text = REPLACE(text, '$path', '".$dir.'/'.$filename."'), beskrivelse = REPLACE(beskrivelse, '$path', '".$dir.'/'.$filename."'), billed = REPLACE(billed, '$path', '".$dir.'/'.$filename."')");
+            db()->query("UPDATE special  SET text = REPLACE(text, '".$path."', '".$dir.'/'.$filename."')");
+            db()->query("UPDATE krav     SET text = REPLACE(text, '".$path."', '".$dir.'/'.$filename."')");
+            db()->query("UPDATE maerke   SET ico  = REPLACE( ico, '".$path."', '".$dir.'/'.$filename."')");
+            db()->query("UPDATE list_rows  SET cells  = REPLACE(cells, '".$path."', '".$dir.'/'.$filename."')");
+            db()->query("UPDATE kat      SET navn = REPLACE(navn, '".$path."', '".$dir.'/'.$filename."'), icon = REPLACE(icon, '$path', '".$dir.'/'.$filename."')");
 
             if (is_dir($_SERVER['DOCUMENT_ROOT'].$dir.'/'.$filename)) {
                 if (@$_COOKIE[@$_COOKIE['admin_dir']]) {
@@ -520,13 +516,6 @@ Would you like to replace the existing file?'), 'id' => $id);
         }
     }
 }
-
-$mysqli = new Simple_Mysqli(
-    $GLOBALS['_config']['mysql_server'],
-    $GLOBALS['_config']['mysql_user'],
-    $GLOBALS['_config']['mysql_password'],
-    $GLOBALS['_config']['mysql_database']
-);
 
 function deletefolder()
 {
@@ -551,14 +540,13 @@ function deletefolder()
                     @rmdir($_SERVER['DOCUMENT_ROOT'].$dir.'/'.$dirlist[$i]);
                     @setcookie($dir.'/'.$dirlist[$i], false);
                 } else {
-                    global $mysqli;
-                    if ($mysqli->fetchArray("SELECT id FROM `sider` WHERE `navn` LIKE '%" . $dir . "/" . $dirlist[$i] . "%' OR `text` LIKE '%" . $dir . "/" . $dirlist[$i] . "%' OR `beskrivelse` LIKE '%" . $dir . "/" . $dirlist[$i] . "%' OR `billed` LIKE '%" . $dir . "/" . $dirlist[$i] . "%' LIMIT 1")
-                    || $mysqli->fetchArray("SELECT id FROM `template` WHERE `navn` LIKE '%".$dir."/".$dirlist[$i]."%' OR `text` LIKE '%".$dir."/".$dirlist[$i]."%' OR `beskrivelse` LIKE '%".$dir."/".$dirlist[$i]."%' OR `billed` LIKE '%".$dir."/".$dirlist[$i]."%' LIMIT 1")
-                    || $mysqli->fetchArray("SELECT id FROM `special` WHERE `text` LIKE '%".$dir."/".$dirlist[$i]."%' LIMIT 1")
-                    || $mysqli->fetchArray("SELECT id FROM `krav` WHERE `text` LIKE '%".$dir."/".$dirlist[$i]."%' LIMIT 1")
-                    || $mysqli->fetchArray("SELECT id FROM `maerke` WHERE `ico` LIKE '%".$dir."/".$dirlist[$i]."%' LIMIT 1")
-                    || $mysqli->fetchArray("SELECT id FROM `list_rows` WHERE `cells` LIKE '%".$dir."/".$dirlist[$i]."%' LIMIT 1")
-                    || $mysqli->fetchArray("SELECT id FROM `kat` WHERE `navn` LIKE '%".$dir."/".$dirlist[$i]."%' OR `icon` LIKE '%".$dir."/".$dirlist[$i]."%' LIMIT 1")) {
+                    if (db()->fetchArray("SELECT id FROM `sider` WHERE `navn` LIKE '%" . $dir . "/" . $dirlist[$i] . "%' OR `text` LIKE '%" . $dir . "/" . $dirlist[$i] . "%' OR `beskrivelse` LIKE '%" . $dir . "/" . $dirlist[$i] . "%' OR `billed` LIKE '%" . $dir . "/" . $dirlist[$i] . "%' LIMIT 1")
+                    || db()->fetchArray("SELECT id FROM `template` WHERE `navn` LIKE '%".$dir."/".$dirlist[$i]."%' OR `text` LIKE '%".$dir."/".$dirlist[$i]."%' OR `beskrivelse` LIKE '%".$dir."/".$dirlist[$i]."%' OR `billed` LIKE '%".$dir."/".$dirlist[$i]."%' LIMIT 1")
+                    || db()->fetchArray("SELECT id FROM `special` WHERE `text` LIKE '%".$dir."/".$dirlist[$i]."%' LIMIT 1")
+                    || db()->fetchArray("SELECT id FROM `krav` WHERE `text` LIKE '%".$dir."/".$dirlist[$i]."%' LIMIT 1")
+                    || db()->fetchArray("SELECT id FROM `maerke` WHERE `ico` LIKE '%".$dir."/".$dirlist[$i]."%' LIMIT 1")
+                    || db()->fetchArray("SELECT id FROM `list_rows` WHERE `cells` LIKE '%".$dir."/".$dirlist[$i]."%' LIMIT 1")
+                    || db()->fetchArray("SELECT id FROM `kat` WHERE `navn` LIKE '%".$dir."/".$dirlist[$i]."%' OR `icon` LIKE '%".$dir."/".$dirlist[$i]."%' LIMIT 1")) {
                         return array('error' => _('A file could not be deleted because it is used on a site.'));
                     }
                     @unlink($_SERVER['DOCUMENT_ROOT'].$dir.'/'.$dirlist[$i]);
@@ -587,10 +575,8 @@ function deletefolder()
  */
 function searchfiles(string $qpath, string $qalt, string $qmime): array
 {
-    global $mysqli;
-
-    $qpath = $mysqli->escapeWildcards($mysqli->real_escape_string($qpath));
-    $qalt = $mysqli->escapeWildcards($mysqli->real_escape_string($qalt));
+    $qpath = db()->escapeWildcards(db()->real_escape_string($qpath));
+    $qalt = db()->escapeWildcards(db()->real_escape_string($qalt));
 
     $sql_mime = '';
     switch ($qmime) {
@@ -651,7 +637,7 @@ function searchfiles(string $qpath, string $qalt, string $qmime): array
         }
     }
 
-    $filecount = $mysqli->fetchArray('SELECT count(id) AS count'.$sql);
+    $filecount = db()->fetchArray('SELECT count(id) AS count'.$sql);
     $filecount = $filecount[0]['count'];
 
     $sql_select = '';
@@ -688,7 +674,7 @@ function searchfiles(string $qpath, string $qalt, string $qmime): array
         }
         //TODO return error if befor time out or mem exceded
         //TODO set header() to internal error at the start of all ajax request and 200 (OK) at the end and make javascript display an error if the returned isn't 200;
-        $files = $mysqli->fetchArray('SELECT *'.$sql.' LIMIT '.$filenumber.', '.$limit);
+        $files = db()->fetchArray('SELECT *'.$sql.' LIMIT '.$filenumber.', '.$limit);
         $filenumber += 250;
 
         foreach ($files as $key => $file) {
@@ -711,13 +697,11 @@ function searchfiles(string $qpath, string $qalt, string $qmime): array
  */
 function edit_alt(int $id, string $alt): array
 {
-    global $mysqli;
-
-    $mysqli->query("UPDATE `files` SET `alt` = '".$mysqli->real_escape_string($alt)."' WHERE `id` = ".$id." LIMIT 1");
+    db()->query("UPDATE `files` SET `alt` = '".db()->real_escape_string($alt)."' WHERE `id` = ".$id." LIMIT 1");
 
     //Update html with new alt...
-    $file = $mysqli->fetchArray('SELECT path FROM `files` WHERE `id` = '.$id.' LIMIT 1');
-    $sider = $mysqli->fetchArray('SELECT id, text FROM `sider` WHERE `text` LIKE \'%'.$file[0]['path'].'%\'');
+    $file = db()->fetchArray('SELECT path FROM `files` WHERE `id` = '.$id.' LIMIT 1');
+    $sider = db()->fetchArray('SELECT id, text FROM `sider` WHERE `text` LIKE \'%'.$file[0]['path'].'%\'');
 
     if ($sider) {
         foreach ($sider as $value) {
@@ -725,7 +709,7 @@ function edit_alt(int $id, string $alt): array
             /*preg_match_all('/<img[^>]+/?>/ui', $value, $matches);*/
             $value['text'] = preg_replace('/(<img[^>]+src="'.addcslashes(str_replace('.', '[.]', $file[0]['path']), '/').'"[^>]+alt=)"[^"]*"([^>]*>)/iu', '\1"'.xhtmlEsc($alt).'"\2', $value['text']);
             $value['text'] = preg_replace('/(<img[^>]+alt=)"[^"]*"([^>]+src="'.addcslashes(str_replace('.', '[.]', $file[0]['path']), '/').'"[^>]*>)/iu', '\1"'.xhtmlEsc($alt).'"\2', $value['text']);
-            $mysqli->query("UPDATE `sider` SET `text` = '".$value['text']."' WHERE `id` = ".$value['id']." LIMIT 1");
+            db()->query("UPDATE `sider` SET `text` = '".$value['text']."' WHERE `id` = ".$value['id']." LIMIT 1");
         }
     }
     return array('id' => $id, 'alt' => $alt);

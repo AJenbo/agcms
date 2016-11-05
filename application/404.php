@@ -84,18 +84,11 @@ if (!$maerke) {
 
 //Old url detected and redirect needed.
 if (@$redirect) {
-    $mysqli = new Simple_Mysqli(
-        $GLOBALS['_config']['mysql_server'],
-        $GLOBALS['_config']['mysql_user'],
-        $GLOBALS['_config']['mysql_password'],
-        $GLOBALS['_config']['mysql_database']
-    );
-
     ini_set('zlib.output_compression', '0');
     header('HTTP/1.1 301 Moved Permanently');
     if ($GLOBALS['side']['id']) {
         if (!$GLOBALS['generatedcontent']['activmenu']) {
-            $bind = $mysqli->fetchArray(
+            $bind = db()->fetchArray(
                 "
                 SELECT kat
                 FROM bind
@@ -108,21 +101,21 @@ if (@$redirect) {
                 header('Location: ' . $url);
                 die();
             }
-            $kats = $mysqli->fetchArray(
+            $kats = db()->fetchArray(
                 "
                 SELECT id, navn
                 FROM kat
                 WHERE id = " . $bind[0]['kat']
             );
         } else {
-            $kats = $mysqli->fetchArray(
+            $kats = db()->fetchArray(
                 "
                 SELECT id, navn
                 FROM kat
                 WHERE id = " . $GLOBALS['generatedcontent']['activmenu']
             );
         }
-        $sider = $mysqli->fetchArray(
+        $sider = db()->fetchArray(
             "
             SELECT id, navn
             FROM sider
@@ -140,7 +133,7 @@ if (@$redirect) {
         header('Location: ' . $url);
         die();
     } elseif ($GLOBALS['generatedcontent']['activmenu']) {
-        $kats = $mysqli->fetchArray(
+        $kats = db()->fetchArray(
             "
             SELECT id, navn
             FROM kat

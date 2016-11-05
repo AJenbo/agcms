@@ -29,19 +29,11 @@ include_once $_SERVER['DOCUMENT_ROOT'] . '/vendor/phpmailer/phpmailer/language/p
 require_once $_SERVER['DOCUMENT_ROOT'] . '/vendor/phpmailer/phpmailer/class.smtp.php';
 require_once $_SERVER['DOCUMENT_ROOT'] . '/vendor/phpmailer/phpmailer/class.phpmailer.php';
 
-//Open database
-$mysqli = new Simple_Mysqli(
-    $GLOBALS['_config']['mysql_server'],
-    $GLOBALS['_config']['mysql_user'],
-    $GLOBALS['_config']['mysql_password'],
-    $GLOBALS['_config']['mysql_database']
-);
-
 //Get emails that needs sending
-$emails = $mysqli->fetchArray("SELECT * FROM `emails`");
+$emails = db()->fetchArray("SELECT * FROM `emails`");
 
 if (!$emails) {
-    $mysqli->query("UPDATE special SET dato = NOW() WHERE id = 0");
+    db()->query("UPDATE special SET dato = NOW() WHERE id = 0");
     die(_('No e-mails to send.'));
 }
 
@@ -91,7 +83,7 @@ foreach ($emails as $email) {
 
     $emailsSendt++;
 
-    $mysqli->query("DELETE FROM `emails` WHERE `id` = " . $email['id']);
+    db()->query("DELETE FROM `emails` WHERE `id` = " . $email['id']);
 
     //Upload email to the sent folder via imap
     if ($GLOBALS['_config']['imap'] !== false) {
@@ -110,7 +102,7 @@ foreach ($emails as $email) {
     }
 }
 
-$mysqli->query("UPDATE special SET dato = NOW() WHERE id = 0");
+db()->query("UPDATE special SET dato = NOW() WHERE id = 0");
 
 //Close SMTP connection
 $PHPMailer->SmtpClose();

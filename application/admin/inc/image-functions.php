@@ -183,30 +183,20 @@ function generateImage(
 
 
     //save or output image
-    global $mysqli;
-    if (!$mysqli) {
-        $mysqli = new Simple_Mysqli(
-            $GLOBALS['_config']['mysql_server'],
-            $GLOBALS['_config']['mysql_user'],
-            $GLOBALS['_config']['mysql_password'],
-            $GLOBALS['_config']['mysql_database']
-        );
-    }
-
     if ($output['filename'] == $pathinfo['filename'] && $output['path'] != $path) {
-        $id = $mysqli->fetchArray('SELECT id FROM files WHERE path = \''.$path.'\'');
+        $id = db()->fetchArray('SELECT id FROM files WHERE path = \''.$path.'\'');
         @unlink($_SERVER['DOCUMENT_ROOT'].$path);
-        $mysqli->query('DELETE FROM files WHERE path = \''.$output['path'].'\'');
+        db()->query('DELETE FROM files WHERE path = \''.$output['path'].'\'');
     } else {
-        $id = $mysqli->fetchArray('SELECT id FROM files WHERE path = \''.$output['path'].'\'');
+        $id = db()->fetchArray('SELECT id FROM files WHERE path = \''.$output['path'].'\'');
     }
     $id = @$id[0]['id'];
 
     if ($id) {
-        $mysqli->query("UPDATE files SET path = '".$output['path']."', size = ".$filesize.", mime = '".$mimeType."', width = '".$width."', height = '".$height."' WHERE id = " . $id);
+        db()->query("UPDATE files SET path = '".$output['path']."', size = ".$filesize.", mime = '".$mimeType."', width = '".$width."', height = '".$height."' WHERE id = " . $id);
     } else {
-        $mysqli->query("INSERT INTO files (path, mime, width, height, size, aspect) VALUES ('".$output['path']."', '" . $mimeType . "', '".$width."', '".$height."', '".$filesize."', NULL )");
-        $id = $mysqli->insert_id;
+        db()->query("INSERT INTO files (path, mime, width, height, size, aspect) VALUES ('".$output['path']."', '" . $mimeType . "', '".$width."', '".$height."', '".$filesize."', NULL )");
+        $id = db()->insert_id;
     }
 
     return array('id' => $id, 'path' => $output['path'], 'width' => $width, 'height' => $height);

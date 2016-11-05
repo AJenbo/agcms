@@ -21,9 +21,7 @@ require_once $_SERVER['DOCUMENT_ROOT'] . '/inc/functions.php';
  */
 function isinuse(string $path): bool
 {
-    global $mysqli;
-
-    $result = $mysqli->fetchArray(
+    $result = db()->fetchArray(
         "
         (SELECT id FROM `sider` WHERE `text` LIKE '%$path%' OR `beskrivelse` LIKE '%$path%' OR `billed` LIKE '$path' LIMIT 1)
         UNION (SELECT id FROM `template` WHERE `text` LIKE '%$path%' OR `beskrivelse` LIKE '%$path%' OR `billed` LIKE '$path' LIMIT 1)
@@ -48,13 +46,11 @@ function isinuse(string $path): bool
  */
 function deletefile(int $id, string $path): array
 {
-    global $mysqli;
-
     if (isinuse($path)) {
         return array('error' => _('The file can not be deleted because it is used on a page.'));
     }
     if (@unlink($_SERVER['DOCUMENT_ROOT'].$path)) {
-            $mysqli->query("DELETE FROM files WHERE `path` = '".$path."'");
+            db()->query("DELETE FROM files WHERE `path` = '".$path."'");
         return array('id' => $id);
     } else {
         return array('error' => _('There was an error deleting the file, the file may be in use.'));

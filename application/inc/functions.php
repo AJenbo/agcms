@@ -14,6 +14,19 @@
 require_once __DIR__ . '/mysqli.php';
 require_once __DIR__ . '/config.php';
 
+function db()
+{
+    static $mysqli;
+    if (!$mysqli) {
+        $mysqli = new Simple_Mysqli(
+            $GLOBALS['_config']['mysql_server'],
+            $GLOBALS['_config']['mysql_user'],
+            $GLOBALS['_config']['mysql_password'],
+            $GLOBALS['_config']['mysql_database']
+        );
+    }
+    return $mysqli;
+}
 
 /**
  * Checks if email an address looks valid and that an mx server is responding
@@ -48,9 +61,8 @@ function validemail(string $email): bool
  */
 function getUpdateTime(string $table)
 {
-    global $mysqli;
     if (empty($GLOBALS['cache']['updatetime'][$table])) {
-        $updatetime = $mysqli->fetchArray("SHOW TABLE STATUS LIKE '".$table."'");
+        $updatetime = db()->fetchArray("SHOW TABLE STATUS LIKE '".$table."'");
         $GLOBALS['cache']['updatetime'][$table] = strtotime($updatetime[0]['Update_time']);
     }
 }
@@ -64,21 +76,19 @@ function getUpdateTime(string $table)
  */
 function skriv(int $id): bool
 {
-    global $mysqli;
-
     if (isset($GLOBALS['cache']['kats'][$id]['skriv'])) {
         return $GLOBALS['cache']['kats'][$id]['skriv'];
     }
 
     //er der en side på denne kattegori
-    if ($sider = $mysqli->fetchArray('SELECT id FROM bind WHERE kat = '.$id)) {
+    if ($sider = db()->fetchArray('SELECT id FROM bind WHERE kat = '.$id)) {
         getUpdateTime('bind');
         $GLOBALS['cache']['kats'][$id]['skriv'] = true;
         return true;
     }
 
     //ellers kig om der er en under kattegori med en side
-    $kat = $mysqli->fetchArray(
+    $kat = db()->fetchArray(
         "
         SELECT kat.id, bind.id as skriv
         FROM kat JOIN bind ON bind.kat = kat.id
@@ -127,9 +137,7 @@ function skriv(int $id): bool
  */
 function subs(int $kat): bool
 {
-    global $mysqli;
-
-    $sub = $mysqli->fetchArray(
+    $sub = db()->fetchArray(
         "
         SELECT id
         FROM kat
@@ -236,23 +244,11 @@ function arrayNatsort(array $aryData, string $strIndex, string $strSortBy, strin
  */
 function arrayListsort(array $aryData, string $strIndex, string $strSortBy, int $intSortingOrder, string $strSortType = 'asc'): array
 {
-    global $mysqli;
-
-    //Open database
-    if (!isset($mysqli)) {
-        $mysqli = new Simple_Mysqli(
-            $GLOBALS['_config']['mysql_server'],
-            $GLOBALS['_config']['mysql_user'],
-            $GLOBALS['_config']['mysql_password'],
-            $GLOBALS['_config']['mysql_database']
-        );
-    }
-
     if (!is_array($aryData) || !$strIndex || !$strSortBy) {
         return $aryData;
     }
 
-    $kaliber = $mysqli->fetchArray(
+    $kaliber = db()->fetchArray(
         "
         SELECT text
         FROM `tablesort`
@@ -305,15 +301,13 @@ function arrayListsort(array $aryData, string $strIndex, string $strSortBy, int 
  */
 function getTable(int $listid, int $bycell = null, int $current_kat = null): array
 {
-    global $mysqli;
-
     $html = '';
 
     getUpdateTime('lists');
-    $lists = $mysqli->fetchArray("SELECT * FROM `lists` WHERE id = " . $listid);
+    $lists = db()->fetchArray("SELECT * FROM `lists` WHERE id = " . $listid);
 
     getUpdateTime('list_rows');
-    $rows = $mysqli->fetchArray(
+    $rows = db()->fetchArray(
         "
         SELECT *
         FROM `list_rows`
@@ -375,7 +369,7 @@ function getTable(int $listid, int $bycell = null, int $current_kat = null): arr
             if ($row['link']) {
                 getUpdateTime('sider');
                 getUpdateTime('kat');
-                $sider = $mysqli->fetchArray(
+                $sider = db()->fetchArray(
                     "
                     SELECT `sider`.`navn`, `kat`.`navn` AS `kat_navn`
                     FROM `sider` JOIN `kat` ON `kat`.`id` = " . $current_kat . "
@@ -480,7 +474,7 @@ function getTable(int $listid, int $bycell = null, int $current_kat = null): arr
                     case 5:
                         //image
                         $html .= '<td>';
-                        $files = $mysqli->fetchArray(
+                        $files = db()->fetchArray(
                             "
                         SELECT *
                         FROM `files`
@@ -546,9 +540,7 @@ function getTable(int $listid, int $bycell = null, int $current_kat = null): arr
  */
 function echoTable(int $sideid): string
 {
-    global $mysqli;
-
-    $tablesort = $mysqli->fetchArray(
+    $tablesort = db()->fetchArray(
         "
         SELECT `navn`, `text`
         FROM `tablesort`
@@ -563,7 +555,7 @@ function echoTable(int $sideid): string
     }
     //----------------------------------
 
-    $lists = $mysqli->fetchArray(
+    $lists = db()->fetchArray(
         "
         SELECT id
         FROM `lists`
@@ -600,9 +592,7 @@ function echoTable(int $sideid): string
  */
 function kats(int $id): array
 {
-    global $mysqli;
-
-    $kat = $mysqli->fetchOne(
+    $kat = db()->fetchOne(
         "
         SELECT bind
         FROM kat
@@ -638,10 +628,8 @@ function kats(int $id): array
  */
 function binding(int $bind): int
 {
-    global $mysqli;
-
     if ($bind > 0) {
-        $sog_kat = $mysqli->fetchOne(
+        $sog_kat = db()->fetchOne(
             "
             SELECT `bind`
             FROM `kat`
@@ -677,11 +665,9 @@ function xhtmlEsc(string $string): string
  */
 function vare(array $side, string $katnavn, int $type)
 {
-    global $mysqli;
-
     //Search categories does not have a fixed number, use first fixed per page
     if (!$GLOBALS['generatedcontent']['activmenu']) {
-        $bind = $mysqli->fetchArray(
+        $bind = db()->fetchArray(
             "
             SELECT kat
             FROM bind
@@ -689,7 +675,7 @@ function vare(array $side, string $katnavn, int $type)
         );
         $GLOBALS['generatedcontent']['activmenu'] = $bind[0]['kat'];
         if (empty($GLOBALS['cache']['kats'][$bind[0]['kat']]['navn'])) {
-            $kat = $mysqli->fetchArray(
+            $kat = db()->fetchArray(
                 "
                 SELECT navn, vis
                 FROM kat
@@ -769,9 +755,7 @@ function stringLimit(string $string, int $length = 50, string $ellipsis = '…')
  */
 function liste()
 {
-    global $mysqli;
-
-    $bind = $mysqli->fetchArray(
+    $bind = db()->fetchArray(
         "
         SELECT sider.id,
             UNIX_TIMESTAMP(dato) AS dato,
@@ -793,7 +777,7 @@ function liste()
     getUpdateTime('bind');
     getUpdateTime('sider');
 
-    $kat = $mysqli->fetchArray(
+    $kat = db()->fetchArray(
         "
         SELECT navn, vis
         FROM kat
@@ -892,7 +876,6 @@ function searchListe(string $q, string $wheresider)
 {
     //TODO duplicate text with out html for better searching.
     global $qext;
-    global $mysqli;
     $pages = [];
 
     if ($qext) {
@@ -902,7 +885,7 @@ function searchListe(string $q, string $wheresider)
     }
 
     if ($q) {
-        $sider = $mysqli->fetchArray(
+        $sider = db()->fetchArray(
             "
             SELECT *, MATCH(navn, text, beskrivelse) AGAINST ('$q'$qext) AS score
             FROM sider
@@ -920,7 +903,7 @@ function searchListe(string $q, string $wheresider)
         $qsearch = array ("/ /", "/'/", "/´/", "/`/");
         $qreplace = array ("%", "_", "_", "_");
         $simpleq = preg_replace($qsearch, $qreplace, $q);
-        $sider = $mysqli->fetchArray(
+        $sider = db()->fetchArray(
             "
             SELECT * FROM `sider`
             WHERE (
@@ -936,7 +919,7 @@ function searchListe(string $q, string $wheresider)
         }
         unset($sider);
 
-        $sider = $mysqli->fetchArray(
+        $sider = db()->fetchArray(
             "
             SELECT sider.* FROM `list_rows`
             JOIN lists ON list_rows.list_id = lists.id
@@ -953,7 +936,7 @@ function searchListe(string $q, string $wheresider)
         getUpdateTime('list_rows');
         getUpdateTime('lists');
     } else {
-        $sider = $mysqli->fetchArray(
+        $sider = db()->fetchArray(
             "
             SELECT * FROM `sider` WHERE 1
             $wheresider
@@ -1141,10 +1124,8 @@ function doConditionalGet(int $timestamp)
  */
 function side()
 {
-    global $mysqli;
-
     if (!isset($GLOBALS['side']['navn'])) {
-        $sider = $mysqli->fetchArray(
+        $sider = db()->fetchArray(
             "
             SELECT `navn`,
                 `burde`,
@@ -1185,7 +1166,7 @@ function side()
     $GLOBALS['generatedcontent']['text']     = $GLOBALS['side']['text'];
 
     if ($GLOBALS['side']['krav']) {
-        $krav = $mysqli->fetchArray(
+        $krav = db()->fetchArray(
             "
             SELECT navn
             FROM krav
@@ -1217,7 +1198,7 @@ function side()
     $GLOBALS['generatedcontent']['price']['from']   = $GLOBALS['side']['fra'];
 
     if (empty($GLOBALS['generatedcontent']['email'])) {
-        $kat = $mysqli->fetchArray(
+        $kat = db()->fetchArray(
             "
             SELECT `email`
             FROM `kat`
@@ -1234,7 +1215,7 @@ function side()
     }
 
     if ($GLOBALS['side']['maerke']) {
-        $maerker = $mysqli->fetchArray(
+        $maerker = db()->fetchArray(
             "
             SELECT `id`, `navn`, `link`, `ico`
             FROM `maerke`
@@ -1242,7 +1223,7 @@ function side()
             ORDER BY `navn`
             "
         );
-        $temp = $mysqli->fetchArray(
+        $temp = db()->fetchArray(
             "
             SELECT `id`, `navn`, `link`, `ico`
             FROM `maerke`
@@ -1264,7 +1245,7 @@ function side()
         }
     }
 
-    $tilbehor = $mysqli->fetchArray(
+    $tilbehor = db()->fetchArray(
         "
         SELECT sider.id,
             `bind`.`kat`,
@@ -1286,7 +1267,7 @@ function side()
 
     foreach ($tilbehor as $value) {
         if ($value['kat']) {
-            $kat = $mysqli->fetchArray(
+            $kat = db()->fetchArray(
                 "
                 SELECT id, navn
                 FROM kat

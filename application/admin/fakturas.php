@@ -15,12 +15,6 @@ if (empty($_SESSION['_user'])) {
     //TDODO No login !!!
     $_SESSION['_user']['fullname'] = _('No one');
 }
-$mysqli = new Simple_Mysqli(
-    $GLOBALS['_config']['mysql_server'],
-    $GLOBALS['_config']['mysql_user'],
-    $GLOBALS['_config']['mysql_password'],
-    $GLOBALS['_config']['mysql_database']
-);
 $sajax_request_type = 'GET';
 
 $where = array();
@@ -87,7 +81,7 @@ if (!empty($_GET['id'])) {
 }
 
 //echo "SELECT `momssats`, `premoms`, `values`, `quantities`, `fragt`, `id`, `status`, `clerk`, `amount`, `navn`, UNIX_TIMESTAMP(`date`) AS `date` FROM `fakturas` WHERE ".$where." ORDER BY `id` DESC"
-$fakturas = $mysqli->fetchArray("SELECT `id`, `status`, `sendt`, `clerk`, `amount`, `navn`, `att`, `land`, `adresse`, `postbox`, `postnr`, `by`, `email`, `tlf1`, `tlf2`, UNIX_TIMESTAMP(`date`) AS `date` FROM `fakturas` WHERE ".$where." ORDER BY `id` DESC");
+$fakturas = db()->fetchArray("SELECT `id`, `status`, `sendt`, `clerk`, `amount`, `navn`, `att`, `land`, `adresse`, `postbox`, `postnr`, `by`, `email`, `tlf1`, `tlf2`, UNIX_TIMESTAMP(`date`) AS `date` FROM `fakturas` WHERE ".$where." ORDER BY `id` DESC");
 
 ?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
@@ -175,7 +169,7 @@ if (!empty($_GET['id'])) {
 ?>" size="4" /></td><td>
 
 <select name="y"><?php
-$oldest = $mysqli->fetchArray("SELECT UNIX_TIMESTAMP(`date`) AS `date` FROM `fakturas` ORDER BY `date` ASC LIMIT 1");
+$oldest = db()->fetchArray("SELECT UNIX_TIMESTAMP(`date`) AS `date` FROM `fakturas` ORDER BY `date` ASC LIMIT 1");
 
 if ($oldest) {
     $oldest = date('Y', $oldest[0]['date']);
@@ -258,7 +252,7 @@ if (@$_GET['y'] == $i || (@$_GET['y'] == '' && date('Y') == $i)) {
 ?>><?php echo _('Dec'); ?></option>
 </select><?php
 
-$users = $mysqli->fetchArray(
+$users = db()->fetchArray(
     "
     SELECT `fullname`, `name`
     FROM `users`

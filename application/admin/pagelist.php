@@ -15,13 +15,8 @@ require_once $_SERVER['DOCUMENT_ROOT'] . '/admin/inc/logon.php';
 require_once $_SERVER['DOCUMENT_ROOT'] . '/admin/inc/emails.php';
 require_once $_SERVER['DOCUMENT_ROOT'] . '/inc/functions.php';
 require_once $_SERVER['DOCUMENT_ROOT'] . '/inc/sajax.php';
-$mysqli = new Simple_Mysqli(
-    $GLOBALS['_config']['mysql_server'],
-    $GLOBALS['_config']['mysql_user'],
-    $GLOBALS['_config']['mysql_password'],
-    $GLOBALS['_config']['mysql_database']
-);
-$sajax_request_type = "POST";
+
+$sajax_request_type = 'POST';
 
 /**
  * @parram int $id
@@ -30,9 +25,7 @@ $sajax_request_type = "POST";
  */
 function kattree(int $id): array
 {
-    global $mysqli;
-
-    $kat = $mysqli->fetchArray('SELECT id, navn, bind FROM `kat` WHERE id = '.$id.' LIMIT 1');
+    $kat = db()->fetchArray('SELECT id, navn, bind FROM `kat` WHERE id = '.$id.' LIMIT 1');
 
     if ($kat) {
         $id = $kat[0]['bind'];
@@ -41,7 +34,7 @@ function kattree(int $id): array
     }
 
     while (@$kat[0]['bind'] > 0) {
-        $kat = $mysqli->fetchArray('SELECT id, navn, bind FROM `kat` WHERE id = \''.$kat[0]['bind'].'\' LIMIT 1');
+        $kat = db()->fetchArray('SELECT id, navn, bind FROM `kat` WHERE id = \''.$kat[0]['bind'].'\' LIMIT 1');
         $id = $kat[0]['bind'];
         $kattree[]['id'] = $kat[0]['id'];
         $kattree[count($kattree)-1]['navn'] = $kat[0]['navn'];
@@ -81,7 +74,6 @@ function katspath(int $id): array
  */
 function katlist(int $id): string
 {
-    global $mysqli;
     global $kattree;
 
     $html = '<a class="menuboxheader" id="katsheader" style="width:'.$GLOBALS['_config']['text_width'].'px;clear:both" onclick="showhidekats(\'kats\',this);">';
@@ -102,7 +94,7 @@ function katlist(int $id): string
     }
 
     $openkat = explode('<', @$_COOKIE['openkat']);
-    if ($mysqli->fetchArray('SELECT id FROM `kat` WHERE bind = -1 LIMIT 1')) {
+    if (db()->fetchArray('SELECT id FROM `kat` WHERE bind = -1 LIMIT 1')) {
         $html .= '<img';
         if (array_search(-1, $openkat) || false !== array_search('-1', $kattree)) {
             $html .= ' style="display:none"';
@@ -125,7 +117,7 @@ function katlist(int $id): string
         $html .= $temp['html'];
     }
     $html .= '</div></div><div>';
-    if ($mysqli->fetchArray('SELECT id FROM `kat` WHERE bind = 0 LIMIT 1')) {
+    if (db()->fetchArray('SELECT id FROM `kat` WHERE bind = 0 LIMIT 1')) {
         $html .= '<img style="';
         if (array_search(0, $openkat) || false !== array_search('0', $kattree)) {
             $html .= 'display:none;';
@@ -158,7 +150,6 @@ function katlist(int $id): string
  */
 function siteList(int $id = null): string
 {
-    global $mysqli;
     global $kattree;
 
     $html = '<div>';
@@ -172,7 +163,7 @@ function siteList(int $id = null): string
     }
 
     $openkat = explode('<', @$_COOKIE['openkat']);
-    if ($mysqli->fetchArray('SELECT id FROM `kat` WHERE bind = -1 LIMIT 1') || $mysqli->fetchArray('SELECT id FROM `bind` WHERE kat = -1 LIMIT 1')) {
+    if (db()->fetchArray('SELECT id FROM `kat` WHERE bind = -1 LIMIT 1') || db()->fetchArray('SELECT id FROM `bind` WHERE kat = -1 LIMIT 1')) {
         $html .= '<img';
         if (array_search(-1, $openkat) || false !== array_search('-1', $kattree)) {
             $html .= ' style="display:none"';
@@ -191,7 +182,7 @@ function siteList(int $id = null): string
         $html .= $temp['html'];
     }
     $html .= '</div></div><div>';
-    if ($mysqli->fetchArray('SELECT id FROM `kat` WHERE bind = 0 LIMIT 1') || $mysqli->fetchArray('SELECT id FROM `bind` WHERE kat = 0 LIMIT 1')) {
+    if (db()->fetchArray('SELECT id FROM `kat` WHERE bind = 0 LIMIT 1') || db()->fetchArray('SELECT id FROM `bind` WHERE kat = 0 LIMIT 1')) {
         $html .= '<img style="';
         if (array_search(0, $openkat) || false !== array_search('0', $kattree)) {
             $html .= 'display:none;';
@@ -220,12 +211,11 @@ function siteList(int $id = null): string
  */
 function pages_expand(int $id): array
 {
-    global $mysqli;
     $html = '';
 
     $temp = kat_expand($id, false);
     $html .= $temp['html'];
-    $sider = $mysqli->fetchArray('SELECT sider.id, sider.varenr, bind.id as bind, navn FROM `bind` LEFT JOIN sider on bind.side = sider.id WHERE `kat` = '.$id.' ORDER BY sider.navn');
+    $sider = db()->fetchArray('SELECT sider.id, sider.varenr, bind.id as bind, navn FROM `bind` LEFT JOIN sider on bind.side = sider.id WHERE `kat` = '.$id.' ORDER BY sider.navn');
     $nr = count($sider);
     foreach ($sider as $side) {
         $html .= '<div id="bind'.$side['bind'].'" class="side'.$side['id'].'"><a style="margin-left:16px" class="side">
@@ -246,12 +236,11 @@ function pages_expand(int $id): array
  */
 function siteList_expand(int $id): array
 {
-    global $mysqli;
     $html = '';
 
     $temp = kat_expand($id, false);
     $html .= $temp['html'];
-    $sider = $mysqli->fetchArray('SELECT sider.id, sider.varenr, bind.id as bind, navn FROM `bind` LEFT JOIN sider on bind.side = sider.id WHERE `kat` = '.$id.' ORDER BY sider.navn');
+    $sider = db()->fetchArray('SELECT sider.id, sider.varenr, bind.id as bind, navn FROM `bind` LEFT JOIN sider on bind.side = sider.id WHERE `kat` = '.$id.' ORDER BY sider.navn');
     $nr = count($sider);
     for ($i=0; $i<$nr; $i++) {
         $html .= '<div id="bind'.$sider[$i]['bind'].'" class="side'.$sider[$i]['id'].'"><a style="margin-left:16px" class="side" href="?side=redigerside&amp;id='.$sider[$i]['id'].'"><img src="images/page.png" width="16" height="16" alt="" /> '.strip_tags($sider[$i]['navn'], '<img>');
@@ -271,8 +260,7 @@ function getSiteTree(): string
     $html = '<div id="headline">'._('Overview').'</div><div>';
     $html .= siteList($_COOKIE['activekat'] ?? null);
 
-    global $mysqli;
-    $specials = $mysqli->fetchArray('SELECT `id`, `navn` FROM `special` WHERE `id` > 1 ORDER BY `navn`');
+    $specials = db()->fetchArray('SELECT `id`, `navn` FROM `special` WHERE `id` > 1 ORDER BY `navn`');
     foreach ($specials as $special) {
         $html .= '<div style="margin-left: 16px;"><a href="?side=redigerSpecial&id='.$special['id'].'"><img height="16" width="16" alt="" src="images/page.png"/> '.$special['navn'].'</a></div>';
     }
@@ -288,14 +276,13 @@ function getSiteTree(): string
  */
 function kat_expand(int $id, bool $input = true): array
 {
-    global $mysqli;
     global $kattree;
     $html = '';
 
-    $kat = $mysqli->fetchArray('SELECT * FROM `kat` WHERE bind = '.$id.' ORDER BY `order`, `navn`');
+    $kat = db()->fetchArray('SELECT * FROM `kat` WHERE bind = '.$id.' ORDER BY `order`, `navn`');
     $nr = count($kat);
     for ($i=0; $i<$nr; $i++) {
-        if ($mysqli->fetchArray('SELECT id FROM `kat` WHERE bind = '.$kat[$i]['id'].' LIMIT 1') || (!$input && $mysqli->fetchArray('SELECT id FROM `bind` WHERE kat = '.$kat[$i]['id'].' LIMIT 1'))) {
+        if (db()->fetchArray('SELECT id FROM `kat` WHERE bind = '.$kat[$i]['id'].' LIMIT 1') || (!$input && db()->fetchArray('SELECT id FROM `bind` WHERE kat = '.$kat[$i]['id'].' LIMIT 1'))) {
             $openkat = explode('<', @$_COOKIE['openkat']);
             $html .= '<div id="kat'.$kat[$i]['id'].'"><img style="display:';
             if (array_search($kat[$i]['id'], $openkat) || false !== array_search($kat[$i]['id'], $kattree)) {

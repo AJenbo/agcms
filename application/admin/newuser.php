@@ -67,19 +67,11 @@ if ($_POST) {
         die('<p style="text-align: center; margin-top: 20px;">'._('The passwords does not match.').'</p></body></html>');
     }
 
-    //Open database
-    $mysqli = new Simple_Mysqli(
-        $GLOBALS['_config']['mysql_server'],
-        $GLOBALS['_config']['mysql_user'],
-        $GLOBALS['_config']['mysql_password'],
-        $GLOBALS['_config']['mysql_database']
-    );
-
-    if ($mysqli->fetchArray('SELECT id FROM users WHERE name = \''.addcslashes($_POST['name'], "'").'\'')) {
+    if (db()->fetchArray('SELECT id FROM users WHERE name = \''.addcslashes($_POST['name'], "'").'\'')) {
         die('<p style="text-align: center; margin-top: 20px;">'._('Username already taken.').'</p></body></html>');
     }
 
-    $mysqli->query('INSERT INTO users SET name = \''.addcslashes($_POST['name'], "'").'\', password = \''.addcslashes(crypt($_POST['password']), "'").'\', fullname = \''.addcslashes($_POST['fullname'], "'").'\'');
+    db()->query('INSERT INTO users SET name = \''.addcslashes($_POST['name'], "'").'\', password = \''.addcslashes(crypt($_POST['password']), "'").'\', fullname = \''.addcslashes($_POST['fullname'], "'").'\'');
 
     $emailbody = '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
@@ -126,7 +118,7 @@ if ($_POST) {
         }
     } else {
         //TODO secure this against injects and <; in the email and name
-        $mysqli->query("INSERT INTO `emails` (`subject`, `from`, `to`, `body`, `date`) VALUES ('".$mail->Subject."', '".$GLOBALS['_config']['site_name']."<".$GLOBALS['_config']['email'][0].">', '".$GLOBALS['_config']['site_name']."<".$GLOBALS['_config']['email'][0].">', '".$emailbody."', NOW());");
+        db()->query("INSERT INTO `emails` (`subject`, `from`, `to`, `body`, `date`) VALUES ('".$mail->Subject."', '".$GLOBALS['_config']['site_name']."<".$GLOBALS['_config']['email'][0].">', '".$GLOBALS['_config']['site_name']."<".$GLOBALS['_config']['email'][0].">', '".$emailbody."', NOW());");
     }
 
     echo '<p style="text-align: center; margin-top: 20px;">'._('Your account has been created. An administrator will evaluate it shortly.').'</p>';

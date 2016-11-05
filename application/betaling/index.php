@@ -134,7 +134,7 @@ $productslines = 0;
 
 if (!empty($id) && @$_GET['checkid'] == getCheckid($id) && !isset($_GET['txnid'])) {
     $rejected = array();
-    $faktura = $mysqli->fetchOne(
+    $faktura = db()->fetchOne(
         "
         SELECT *
         FROM `fakturas`
@@ -164,7 +164,7 @@ if (!empty($id) && @$_GET['checkid'] == getCheckid($id) && !isset($_GET['txnid']
         }
 
         if (empty($_GET['step'])) { //Show order
-            $mysqli->query(
+            db()->query(
                 "
                 UPDATE `fakturas`
                 SET `status` = 'locked'
@@ -274,14 +274,14 @@ if (!empty($id) && @$_GET['checkid'] == getCheckid($id) && !isset($_GET['txnid']
 
                 $sql .= 'WHERE `id` = ' . $id;
 
-                $mysqli->query($sql);
+                db()->query($sql);
 
                 $faktura = array_merge($faktura, $updates);
 
                 //TODO move down to skip address page if valid
                 if (!count($rejected)) {
                     if (@$_POST['newsletter'] ? 1 : 0) {
-                        $mysqli->query(
+                        db()->query(
                             "
                             INSERT INTO `email` (
                                 `navn`,
@@ -532,7 +532,7 @@ if (!empty($id) && @$_GET['checkid'] == getCheckid($id) && !isset($_GET['txnid']
                 exit;
             }
 
-            $mysqli->query(
+            db()->query(
                 "
                 UPDATE `fakturas`
                 SET `status` = 'locked'
@@ -549,7 +549,7 @@ if (!empty($id) && @$_GET['checkid'] == getCheckid($id) && !isset($_GET['txnid']
             $GLOBALS['generatedcontent']['title'] = _('Trade Conditions');
             $GLOBALS['generatedcontent']['headline'] = _('Trade Conditions');
 
-            $special = $mysqli->fetchArray(
+            $special = db()->fetchArray(
                 "
                 SELECT `text`
                 FROM `special`
@@ -643,7 +643,7 @@ if (!empty($id) && @$_GET['checkid'] == getCheckid($id) && !isset($_GET['txnid']
     $shopSubject = _('Payment code was tampered with!');
     $shopBody = '<br />'.sprintf(_('There was an error on the payment page of online invoice #%d!'), $id).'<br />';
 
-    $faktura = $mysqli->fetchOne("SELECT * FROM `fakturas` WHERE `id` = " . $id);
+    $faktura = db()->fetchOne("SELECT * FROM `fakturas` WHERE `id` = " . $id);
 
     if (!$faktura) {
         $GLOBALS['generatedcontent']['text'] = '<p>' . _('The payment does not exist in our system.') . '</p>';
@@ -698,7 +698,7 @@ if (!empty($id) && @$_GET['checkid'] == getCheckid($id) && !isset($_GET['txnid']
         24 => 'NemPay',
         );
 
-        $mysqli->query(
+        db()->query(
             "
 	    UPDATE `fakturas`
 	    SET `status` = 'pbsok',
@@ -708,7 +708,7 @@ if (!empty($id) && @$_GET['checkid'] == getCheckid($id) && !isset($_GET['txnid']
 	      AND `id` = " . $id
         );
 
-        $faktura = $mysqli->fetchOne(
+        $faktura = db()->fetchOne(
             "
 	    SELECT *
 	    FROM `fakturas`
@@ -966,7 +966,7 @@ Tel. %s<br />
             }
         } else {
             //TODO secure this against injects and <; in the email and name
-            $mysqli->query(
+            db()->query(
                 "
         INSERT INTO `emails` (
             `subject`,
@@ -988,7 +988,7 @@ Tel. %s<br />
     }
 
     //To shop
-    $faktura = $mysqli->fetchOne("SELECT * FROM `fakturas` WHERE `id` = ".$id);
+    $faktura = db()->fetchOne("SELECT * FROM `fakturas` WHERE `id` = ".$id);
     if (!validemail($faktura['department'])) {
         $faktura['department'] = $GLOBALS['_config']['email'][0];
     }
@@ -1147,7 +1147,7 @@ Delivery phone: %s</p>
             }
         } else {
             //TODO secure this against injects and <; in the email and name
-            $mysqli->query(
+            db()->query(
                 "
                 INSERT INTO `emails` (
                     `subject`,
