@@ -14,7 +14,6 @@
 //TODO move to /admin and require password to avoid DoS
 
 require_once $_SERVER['DOCUMENT_ROOT'] . '/inc/functions.php';
-require_once $_SERVER['DOCUMENT_ROOT'] . '/inc/sajax.php';
 
 /**
  * Optimize all tables
@@ -126,37 +125,14 @@ function deleteTempfiles(): string
     return '';
 }
 
-$sajax_debug_mode = 0;
-sajax_export(
-    array(
-        'name' => 'optimizeTables',
-        'method' => 'POST',
-        'asynchronous' => false
-    ),
-    array(
-        'name' => 'removeBadSubmisions',
-        'method' => 'POST',
-        'asynchronous' => false
-    ),
-    array(
-        'name' => 'removeBadBindings',
-        'method' => 'POST',
-        'asynchronous' => false
-    ),
-    array(
-        'name' => 'removeBadAccessories',
-        'method' => 'POST',
-        'asynchronous' => false
-    ),
-    array(
-        'name' => 'removeNoneExistingFiles',
-        'method' => 'POST',
-        'asynchronous' => false
-    ),
-    array(
-        'name' => 'deleteTempfiles',
-        'method' => 'POST',
-        'asynchronous' => false
-    )
+SAJAX::export(
+    [
+        'optimizeTables'          => ['method' => 'POST', 'asynchronous' => false],
+        'removeBadSubmisions'     => ['method' => 'POST', 'asynchronous' => false],
+        'removeBadBindings'       => ['method' => 'POST', 'asynchronous' => false],
+        'removeBadAccessories'    => ['method' => 'POST', 'asynchronous' => false],
+        'removeNoneExistingFiles' => ['method' => 'POST', 'asynchronous' => false],
+        'deleteTempfiles'         => ['method' => 'POST', 'asynchronous' => false],
+    ]
 );
-sajax_handle_client_request();
+SAJAX::handleClientRequest();

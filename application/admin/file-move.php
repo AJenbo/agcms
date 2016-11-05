@@ -9,14 +9,9 @@ textdomain('agcms');
 require_once $_SERVER['DOCUMENT_ROOT'] . '/admin/inc/logon.php';
 require_once $_SERVER['DOCUMENT_ROOT'] . '/admin/inc/file-functions.php';
 require_once $_SERVER['DOCUMENT_ROOT'] . '/inc/functions.php';
-require_once $_SERVER['DOCUMENT_ROOT'] . '/inc/sajax.php';
 
-//$sajax_debug_mode = 1;
-sajax_export(
-    array('name' => 'listdirs', 'method' => 'GET')
-);
-//$sajax_remote_uri = "/ajax.php";
-sajax_handle_client_request();
+SAJAX::export(['listdirs' => ['method' => 'GET']]);
+SAJAX::handleClientRequest();
 
 $pathinfo = pathinfo($_GET['path']);
 
@@ -36,7 +31,7 @@ JSON.parse = JSON.parse || function(jsonsring) { return jsonsring.evalJSON(true)
 </script>
 <script type="text/javascript" src="/javascript/sajax.js"></script>
 <script type="text/javascript"><!--
-<?php sajax_show_javascript(); ?>
+<?php SAJAX::showJavascript(); ?>
 
 var global_dir = '';
 

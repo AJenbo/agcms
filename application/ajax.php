@@ -21,7 +21,6 @@ mb_detect_order('UTF-8, ISO-8859-1');
 mb_internal_encoding('UTF-8');
 
 require_once $_SERVER['DOCUMENT_ROOT'] . '/inc/functions.php';
-require_once $_SERVER['DOCUMENT_ROOT'] . '/inc/sajax.php';
 
 //If the database is older then the users cache, send 304 not modified
 //WARNING: this results in the site not updating if new files are included later,
@@ -115,10 +114,11 @@ function getKat(int $id, bool $sort): array
     );
 }
 
-sajax_export(
-    array('name' => 'getTable', 'method' => 'GET'),
-    array('name' => 'getKat', 'method' => 'GET'),
-    array('name' => 'getAddress', 'method' => 'GET')
+SAJAX::export(
+    [
+        'getTable'   => ['method' => 'GET'],
+        'getKat'     => ['method' => 'GET'],
+        'getAddress' => ['method' => 'GET'],
+    ]
 );
-//	$sajax_remote_uri = "/ajax.php";
-sajax_handle_client_request();
+SAJAX::handleClientRequest();

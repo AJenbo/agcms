@@ -15,7 +15,6 @@ require_once $_SERVER['DOCUMENT_ROOT'] . '/inc/functions.php';
 require_once $_SERVER['DOCUMENT_ROOT'] . '/inc/imap.php';
 include_once $_SERVER['DOCUMENT_ROOT'] . '/inc/countries.php';
 require_once $_SERVER['DOCUMENT_ROOT'] . '/inc/epaymentAdminService.php';
-require_once $_SERVER['DOCUMENT_ROOT'] . '/inc/sajax.php';
 include_once $_SERVER['DOCUMENT_ROOT'] . '/vendor/phpmailer/phpmailer/language/phpmailer.lang-dk.php';
 require_once $_SERVER['DOCUMENT_ROOT'] . '/vendor/phpmailer/phpmailer/class.phpmailer.php';
 require_once $_SERVER['DOCUMENT_ROOT'] . '/vendor/phpmailer/phpmailer/class.smtp.php';
@@ -42,8 +41,6 @@ if (!empty($_GET['function']) && $_GET['function'] == 'new') {
     header('Location: faktura.php?id='.newfaktura(), true, 303);
     exit;
 }
-
-$sajax_request_type = 'POST';
 
 $faktura = db()->fetchOne(
     "
@@ -547,20 +544,21 @@ function annul(int $id)
     }
 }
 
-//$sajax_debug_mode = 1;
-sajax_export(
-    array('name' => 'validemail', 'method' => 'GET'),
-    array('name' => 'pbsconfirm', 'method' => 'POST'),
-    array('name' => 'annul', 'method' => 'POST'),
-    array('name' => 'loweramount', 'method' => 'POST'),
-    array('name' => 'newfaktura', 'method' => 'POST'),
-    array('name' => 'save', 'method' => 'POST'),
-    array('name' => 'copytonew', 'method' => 'POST'),
-    array('name' => 'getAddress', 'method' => 'GET'),
-    array('name' => 'sendReminder', 'method' => 'GET')
+SAJAX::$requestType = 'POST';
+SAJAX::export(
+    [
+        'annul'        => ['method' => 'POST'],
+        'copytonew'    => ['method' => 'POST'],
+        'getAddress'   => ['method' => 'GET'],
+        'loweramount'  => ['method' => 'POST'],
+        'newfaktura'   => ['method' => 'POST'],
+        'pbsconfirm'   => ['method' => 'POST'],
+        'save'         => ['method' => 'POST'],
+        'sendReminder' => ['method' => 'GET'],
+        'validemail'   => ['method' => 'GET'],
+    ]
 );
-//$sajax_remote_uri = '/ajax.php';
-sajax_handle_client_request();
+SAJAX::handleClientRequest();
 
 ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
@@ -584,7 +582,7 @@ JSON.parse = JSON.parse || function(jsonsring) { return jsonsring.evalJSON(true)
 <script type="text/javascript" src="javascript/javascript.js"></script>
 <script type="text/javascript" src="/javascript/sajax.js"></script>
 <script type="text/javascript"><!--
-<?php sajax_show_javascript(); ?>
+<?php SAJAX::showJavascript(); ?>
 var id = <?php echo $faktura['id']; ?>;
 
 function newfaktura()

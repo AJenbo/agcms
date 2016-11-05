@@ -14,10 +14,7 @@ ini_set('zlib.output_compression', 1);
 require_once $_SERVER['DOCUMENT_ROOT'] . '/admin/inc/logon.php';
 require_once $_SERVER['DOCUMENT_ROOT'] . '/admin/inc/emails.php';
 require_once $_SERVER['DOCUMENT_ROOT'] . '/inc/functions.php';
-require_once $_SERVER['DOCUMENT_ROOT'] . '/inc/sajax.php';
 require_once $_SERVER['DOCUMENT_ROOT'] . '/inc/imap.php';
-
-$sajax_request_type = 'POST';
 
 /**
  * Use HTMLPurifier to clean HTML-code, preserves youtube videos
@@ -1834,248 +1831,63 @@ function sletSide(int $sideId): array
 
 $kattree = array();
 
-$sajax_debug_mode = 0;
-sajax_export(
-    array(
-        'name' => 'updateKat',
-        'method' => 'POST'
-    ),
-    array(
-        'name' => 'search',
-        'method' => 'GET'
-    ),
-    array(
-        'name' => 'sletSide',
-        'method' => 'POST'
-    ),
-    array(
-        'name' => 'updateSpecial',
-        'method' => 'POST'
-    ),
-    array(
-        'name' => 'movekat',
-        'method' => 'POST'
-    ),
-    array(
-        'name' => 'listRemoveRow',
-        'method' => 'POST'
-    ),
-    array(
-        'name' => 'listSavetRow',
-        'method' => 'POST'
-    ),
-    array(
-        'name' => 'updateForside',
-        'method' => 'POST'
-    ),
-    array(
-        'name' => 'makeNewList',
-        'method' => 'POST'
-    ),
-    array(
-        'name' => 'saveListOrder',
-        'method' => 'POST'
-    ),
-    array(
-        'name' => 'countEmailTo',
-        'method' => 'GET'
-    ),
-    array(
-        'name' => 'sendEmail',
-        'method' => 'POST'
-    ),
-    array(
-        'name' => 'saveEmail',
-        'method' => 'POST'
-    ),
-    array(
-        'name' => 'updateContact',
-        'method' => 'POST'
-    ),
-    array(
-        'name' => 'deleteContact',
-        'method' => 'POST'
-    ),
-    array(
-        'name' => 'bind',
-        'method' => 'POST'
-    ),
-    array(
-        'name' => 'sletbind',
-        'method' => 'POST'
-    ),
-    array(
-        'name' => 'renamekat',
-        'method' => 'POST'
-    ),
-    array(
-        'name' => 'opretSide',
-        'method' => 'POST'
-    ),
-    array(
-        'name' => 'sletkat',
-        'method' => 'POST'
-    ),
-    array(
-        'name' => 'opretSide',
-        'method' => 'POST'
-    ),
-    array(
-        'name' => 'updateSide',
-        'method' => 'POST'
-    ),
-    array(
-        'name' => 'updatemaerke',
-        'method' => 'POST'
-    ),
-    array(
-        'name' => 'save_ny_kat',
-        'method' => 'POST'
-    ),
-    array(
-        'name' => 'sogogerstat',
-        'method' => 'POST'
-    ),
-    array(
-        'name' => 'save_ny_maerke',
-        'method' => 'POST'
-    ),
-    array(
-        'name' => 'sletmaerke',
-        'method' => 'POST'
-    ),
-    array(
-        'name' => 'sletkrav',
-        'method' => 'POST'
-    ),
-    array(
-        'name' => 'savekrav',
-        'method' => 'POST'
-    ),
-    array(
-        'name' => 'getnykat',
-        'method' => 'GET'
-    ),
-    array(
-        'name' => 'katspath',
-        'method' => 'GET'
-    ),
-    array(
-        'name' => 'siteList_expand',
-        'method' => 'GET'
-    ),
-    array(
-        'name' => 'kat_expand',
-        'method' => 'GET'
-    ),
-    array(
-        'name' => 'getSiteTree',
-        'method' => 'GET'
-    ),
-    array(
-        'name' => 'get_db_size',
-        'method' => 'GET',
-        'asynchronous' => false
-    ),
-    array(
-        'name' => 'optimizeTables',
-        'uri' => '/maintain.php',
-        'method' => 'POST',
-        'asynchronous' => false
-    ),
-    array(
-        'name' => 'sendDelayedEmail',
-        'uri' => '/send.php',
-        'method' => 'POST',
-        'asynchronous' => false
-    ),
-    array(
-        'name' => 'removeBadBindings',
-        'uri' => '/maintain.php',
-        'method' => 'POST',
-        'asynchronous' => false
-    ),
-    array(
-        'name' => 'removeBadAccessories',
-        'uri' => '/maintain.php',
-        'method' => 'POST',
-        'asynchronous' => false
-    ),
-    array(
-        'name' => 'removeBadSubmisions',
-        'uri' => '/maintain.php',
-        'method' => 'POST',
-        'asynchronous' => false
-    ),
-    array(
-        'name' => 'get_orphan_pages',
-        'method' => 'GET',
-        'asynchronous' => false
-    ),
-    array(
-        'name' => 'get_pages_with_mismatch_bindings',
-        'method' => 'GET',
-        'asynchronous' => false
-    ),
-    array(
-        'name' => 'get_orphan_lists',
-        'method' => 'GET',
-        'asynchronous' => false
-    ),
-    array(
-        'name' => 'get_orphan_rows',
-        'method' => 'GET',
-        'asynchronous' => false
-    ),
-    array(
-        'name' => 'get_orphan_cats',
-        'method' => 'GET',
-        'asynchronous' => false
-    ),
-    array(
-        'name' => 'get_looping_cats',
-        'method' => 'GET',
-        'asynchronous' => false
-    ),
-    array(
-        'name' => 'get_subscriptions_with_bad_emails',
-        'method' => 'GET',
-        'asynchronous' => false
-    ),
-    array(
-        'name' => 'removeNoneExistingFiles',
-        'uri' => '/maintain.php',
-        'method' => 'POST',
-        "asynchronous" => false
-    ),
-    array(
-        'name' => 'check_file_names',
-        'method' => 'GET',
-        'asynchronous' => false
-    ),
-    array(
-        'name' => 'check_file_paths',
-        'method' => 'GET',
-        'asynchronous' => false
-    ),
-    array(
-        'name' => 'deleteTempfiles',
-         'uri' => '/maintain.php',
-        'method' => 'POST',
-        'asynchronous' => false
-    ),
-    array(
-        'name' => 'get_size_of_files',
-        'method' => 'GET',
-        'asynchronous' => false
-    ),
-    array(
-        'name' => 'get_mail_size',
-        'method' => 'GET'
-    )
+SAJAX::$requestType = 'POST';
+SAJAX::export(
+    [
+        'countEmailTo'                     => ['method' => 'GET'],
+        'get_mail_size'                    => ['method' => 'GET'],
+        'getnykat'                         => ['method' => 'GET'],
+        'getSiteTree'                      => ['method' => 'GET'],
+        'kat_expand'                       => ['method' => 'GET'],
+        'katspath'                         => ['method' => 'GET'],
+        'search'                           => ['method' => 'GET'],
+        'siteList_expand'                  => ['method' => 'GET'],
+        'check_file_names'                 => ['method' => 'GET', 'asynchronous' => false],
+        'check_file_paths'                 => ['method' => 'GET', 'asynchronous' => false],
+        'get_db_size'                      => ['method' => 'GET', 'asynchronous' => false],
+        'get_looping_cats'                 => ['method' => 'GET', 'asynchronous' => false],
+        'get_orphan_cats'                  => ['method' => 'GET', 'asynchronous' => false],
+        'get_orphan_lists'                 => ['method' => 'GET', 'asynchronous' => false],
+        'get_orphan_pages'                 => ['method' => 'GET', 'asynchronous' => false],
+        'get_orphan_rows'                  => ['method' => 'GET', 'asynchronous' => false],
+        'get_pages_with_mismatch_bindings' => ['method' => 'GET', 'asynchronous' => false],
+        'get_size_of_files'                => ['method' => 'GET', 'asynchronous' => false],
+        'bind'                             => ['method' => 'POST'],
+        'deleteContact'                    => ['method' => 'POST'],
+        'listRemoveRow'                    => ['method' => 'POST'],
+        'listSavetRow'                     => ['method' => 'POST'],
+        'makeNewList'                      => ['method' => 'POST'],
+        'movekat'                          => ['method' => 'POST'],
+        'opretSide'                        => ['method' => 'POST'],
+        'renamekat'                        => ['method' => 'POST'],
+        'saveEmail'                        => ['method' => 'POST'],
+        'savekrav'                         => ['method' => 'POST'],
+        'saveListOrder'                    => ['method' => 'POST'],
+        'save_ny_kat'                      => ['method' => 'POST'],
+        'save_ny_maerke'                   => ['method' => 'POST'],
+        'sendEmail'                        => ['method' => 'POST'],
+        'sletbind'                         => ['method' => 'POST'],
+        'sletkat'                          => ['method' => 'POST'],
+        'sletkrav'                         => ['method' => 'POST'],
+        'sletmaerke'                       => ['method' => 'POST'],
+        'sletSide'                         => ['method' => 'POST'],
+        'sogogerstat'                      => ['method' => 'POST'],
+        'updateContact'                    => ['method' => 'POST'],
+        'updateForside'                    => ['method' => 'POST'],
+        'updateKat'                        => ['method' => 'POST'],
+        'updatemaerke'                     => ['method' => 'POST'],
+        'updateSide'                       => ['method' => 'POST'],
+        'updateSpecial'                    => ['method' => 'POST'],
+        'deleteTempfiles'                  => ['method' => 'POST', 'asynchronous' => false, 'uri' => '/maintain.php'],
+        'optimizeTables'                   => ['method' => 'POST', 'asynchronous' => false, 'uri' => '/maintain.php'],
+        'removeBadAccessories'             => ['method' => 'POST', 'asynchronous' => false, 'uri' => '/maintain.php'],
+        'removeBadBindings'                => ['method' => 'POST', 'asynchronous' => false, 'uri' => '/maintain.php'],
+        'removeBadSubmisions'              => ['method' => 'POST', 'asynchronous' => false, 'uri' => '/maintain.php'],
+        'removeNoneExistingFiles'          => ['method' => 'POST', 'asynchronous' => false, 'uri' => '/maintain.php'],
+        'sendDelayedEmail'                 => ['method' => 'POST', 'asynchronous' => false, 'uri' => '/send.php'],
+    ]
 );
-//	$sajax_remote_uri = '/ajax.php';
-sajax_handle_client_request();
+SAJAX::handleClientRequest();
 
 ?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
@@ -2085,7 +1897,7 @@ sajax_handle_client_request();
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <title>Administrator menu</title>
 <script type="text/javascript"><!--
-<?php sajax_show_javascript(); ?>
+<?php SAJAX::showJavascript(); ?>
 --></script>
 <script type="text/javascript" src="javascript/lib/php.min.js"></script>
 <script type="text/javascript" src="javascript/lib/prototype.js"></script>

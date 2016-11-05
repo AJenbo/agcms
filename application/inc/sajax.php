@@ -1,126 +1,110 @@
 <?php
-if (!isset($SAJAX_INCLUDED)) {
-    $GLOBALS['sajax_version'] = "0.14";
-    $GLOBALS['sajax_debug_mode'] = false;
-    $GLOBALS['sajax_export_array'] = array();
-    $GLOBALS['sajax_export_list'] = array();
-    $GLOBALS['sajax_remote_uri'] = "";
-    $GLOBALS['sajax_failure_redirect'] = "";
-    $GLOBALS['sajax_request_type'] = "GET";
+/**
+ * Declare the SAJAX class
+ *
+ * PHP version 5
+ *
+ * @version  1.14
+ * @category SAJAX
+ * @package  SAJAX
+ * @author   Anders Jenbo <anders@jenbo.dk>
+ * @license  LGPLv3 https://www.gnu.org/licenses/lgpl-3.0.en.html
+ * @link     https://github.com/AJenbo/Sajax
+ */
 
-    function sajax_handle_client_request()
+/**
+ * Simple AJAX handeling
+ *
+ * PHP version 5
+ *
+ * @category SAJAX
+ * @package  SAJAX
+ * @author   Anders Jenbo <anders@jenbo.dk>
+ * @license  LGPLv3 https://www.gnu.org/licenses/lgpl-3.0.en.html
+ * @link     https://github.com/AJenbo/PHP-imap
+ */
+class SAJAX
+{
+    public static $debugMode = false;
+    public static $remoteUri = '';
+    public static $failureRedirect = '';
+    public static $requestType = 'GET';
+    private static $functions = [];
+
+    public static function handleClientRequest()
     {
-        if (empty($_GET["rs"]) && empty($_POST["rs"])) {
+        if (empty($_GET['rs']) && empty($_POST['rs'])) {
             return;
         }
 
         ob_start();
 
-        if (!empty($_GET["rs"])) {
+        $args = [];
+        if (!empty($_GET['rs'])) {
             // Always call server
-            header("Cache-Control: max-age=0, must-revalidate");    // HTTP/1.1
-            header("Pragma: no-cache");                            // HTTP/1.0
-            $func_name = $_GET["rs"];
-            if (! empty($_GET["rsargs"])) {
-                $args = $_GET["rsargs"];
+            header('Cache-Control: max-age=0, must-revalidate'); // HTTP/1.1
+            header('Pragma: no-cache');                          // HTTP/1.0
+            $funcName = $_GET['rs'];
+            if (!empty($_GET['rsargs'])) {
+                $args = $_GET['rsargs'];
             }
         } else {
-            $func_name = $_POST["rs"];
-            if (! empty($_POST["rsargs"])) {
-                $args = $_POST["rsargs"];
+            $funcName = $_POST['rs'];
+            if (!empty($_POST['rsargs'])) {
+                $args = $_POST['rsargs'];
             }
         }
-
-        if (!empty($args)) {
+        if ($args) {
             $args = json_decode($args, true);
-        } else {
-            $args = array();
         }
 
-        global $sajax_export_list;
-
-        if (! in_array($func_name, $sajax_export_list)) {
-            $error = $func_name." not callable";
+        $error = '';
+        if (empty(self::$functions[$funcName])) {
+            $error = $funcName . ' not callable';
         } else {
-            $result = call_user_func_array($func_name, $args);
+            $result = call_user_func_array($funcName, $args);
 
             $error = ob_get_contents();
             ob_end_clean();
         }
 
         header('Content-Type: text/plain; charset=UTF-8');
-        if (!empty($error)) {
-            echo '-:'.$error;
-        } else {
-            echo "+:".json_encode($result);
-        }
+        echo $error ? '-:' . $error : '+:' . json_encode($result);
         exit;
     }
 
-    $sajax_js_has_been_shown = false;
-    function sajax_show_javascript()
+    public static function showJavascript()
     {
-        global $sajax_js_has_been_shown;
-        global $sajax_debug_mode;
-        global $sajax_failure_redirect;
-
-        if (! $sajax_js_has_been_shown) {
-?>
-    sajax_debug_mode = <?php echo $sajax_debug_mode ? "true" : "false" ?>;
-    sajax_failure_redirect = "<?php echo $sajax_failure_redirect ?>";
-<?php
-            global $sajax_export_array;
-foreach ($sajax_export_array as $function) {
-?>
-function x_<?php echo $function["name"] ?>() {
-return sajax_do_call("<?php echo $function["name"] ?>", arguments, "<?php echo $function["method"] ?>", <?php echo $function["asynchronous"] ? 'true' : 'false' ?>, "<?php echo $function["uri"] ?>");
-}
-<?php
-}
-            $sajax_js_has_been_shown = true;
-        }
-
-    }
-
-    function sajax_export()
-    {
-        global $sajax_export_array;
-        global $sajax_export_list;
-        global $sajax_request_type;
-        global $sajax_remote_uri;
-
-        $num = func_num_args();
-        for ($i=0; $i<$num; $i++) {
-            $function = func_get_arg($i);
-
-            if (!is_array($function)) {
-                $function = array("name" => $function);
+        static $jsHasBeenShown = false;
+        if (!$jsHasBeenShown) {
+            echo 'sajax_debug_mode = ' . (self::$debugMode ? 'true' : 'false') . ';sajax_failure_redirect = \'' . self::$failureRedirect . '\';';
+            foreach (self::$functions as $function => $options) {
+                echo 'function x_' . $function . '() {return sajax_do_call(\'' . $function . '\', arguments, \'' . $options['method'] . '\', ' . ($options['asynchronous'] ? 'true' : 'false') . ', \'' . $options['uri'] . '\');}';
             }
-
-            if (!isset($function["method"])) {
-                $function["method"] = $sajax_request_type;
-            }
-
-            if (!isset($function["asynchronous"])) {
-                $function["asynchronous"] = true;
-            }
-
-            if (!isset($function["uri"])) {
-                $function["uri"] = $sajax_remote_uri;
-            }
-
-            $key = array_search($function["name"], $sajax_export_list);
-            if ($key === false) {
-                $sajax_export_array[] = $function;
-                $sajax_export_list[] = $function["name"];
-            } else {
-                //Overwrite old function
-                $sajax_export_array[$key] = $function;
-                $sajax_export_list[$key] = $function["name"];
-            }
+            $jsHasBeenShown = true;
         }
     }
 
-    $SAJAX_INCLUDED = 1;
+    public static function export(array $functions)
+    {
+        foreach ($functions as $function => $options) {
+            if (!function_exists($function)) {
+                throw new Exception('SAJAX: Cannot export function that doesn\'t exists!');
+            }
+
+            if (empty($options['method'])) {
+                $options['method'] = self::$requestType;
+            }
+
+            if (!isset($options['asynchronous'])) {
+                $options['asynchronous'] = true;
+            }
+
+            if (empty($options['uri'])) {
+                $options['uri'] = self::$remoteUri;
+            }
+
+            self::$functions[$function] = $options;
+        }
+    }
 }
-?>

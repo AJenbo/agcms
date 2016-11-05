@@ -11,7 +11,6 @@ textdomain('agcms');
 require_once $_SERVER['DOCUMENT_ROOT'] . '/admin/inc/logon.php';
 require_once $_SERVER['DOCUMENT_ROOT'] . '/admin/inc/file-functions.php';
 require_once $_SERVER['DOCUMENT_ROOT'] . '/inc/functions.php';
-require_once $_SERVER['DOCUMENT_ROOT'] . '/inc/sajax.php';
 
 /**
  * @param string $filename
@@ -35,12 +34,10 @@ function fileExists(string $filename, string $type = ''): bool
     return (bool) is_file($filePath);
 }
 
-$sajax_request_type = 'GET';
-
-//$sajax_debug_mode = 1;
-sajax_export(array('name' => 'fileExists', 'asynchronous' => false));
-$sajax_remote_uri = '/admin/file-upload.php';
-sajax_handle_client_request();
+SAJAX::$requestType = 'GET';
+SAJAX::$remoteUri = '/admin/file-upload.php';
+SAJAX::export(['fileExists' => ['asynchronous' => false]]);
+SAJAX::handleClientRequest();
 
 if (empty($_COOKIE['admin_dir']) || !is_dir($_SERVER['DOCUMENT_ROOT'].@$_COOKIE['admin_dir'])) {
     @setcookie('admin_dir', '/images');
@@ -56,7 +53,7 @@ doConditionalGet(filemtime($_SERVER['DOCUMENT_ROOT'] . $_SERVER['PHP_SELF']));
 <title><?php echo _('File upload'); ?></title>
 <script type="text/javascript" src="/javascript/sajax.js"></script>
 <script type="text/javascript"><!--
-<?php sajax_show_javascript(); ?>
+<?php SAJAX::showJavascript(); ?>
 
 var maxbyte = <?php
 

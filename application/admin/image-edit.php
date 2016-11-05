@@ -9,7 +9,7 @@ textdomain('agcms');
 require_once $_SERVER['DOCUMENT_ROOT'] . '/admin/inc/logon.php';
 require_once $_SERVER['DOCUMENT_ROOT'] . '/admin/inc/get_mime_type.php';
 require_once $_SERVER['DOCUMENT_ROOT'] . '/admin/inc/image-functions.php';
-require_once $_SERVER['DOCUMENT_ROOT'] . '/inc/sajax.php';
+require_once $_SERVER['DOCUMENT_ROOT'] . '/inc/function.php';
 
 /**
  * @param string $path
@@ -43,12 +43,8 @@ function saveImage(string $path, itn $cropX, int $cropY, int $cropW, int $cropH,
     //TODO close and update image in explorer
 }
 
-//$sajax_debug_mode = 1;
-sajax_export(
-    array('name' => 'saveImage', 'method' => 'POST')
-);
-//$sajax_remote_uri = "/ajax.php";
-sajax_handle_client_request();
+SAJAX::export(['saveImage' => ['method' => 'POST']]);
+SAJAX::handleClientRequest();
 
 ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
@@ -89,7 +85,7 @@ JSON.parse = JSON.parse || function(jsonsring) { return jsonsring.evalJSON(true)
 <script type="text/javascript" src="javascript/lib/php.min.js"></script>
 <script type="text/javascript" src="/javascript/sajax.js"></script>
 <script type="text/javascript"><!--
-<?php sajax_show_javascript();
+<?php SAJAX::showJavascript();
 $imagesize = @getimagesize($_SERVER['DOCUMENT_ROOT'].$_GET['path']);
 
 ?>

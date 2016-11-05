@@ -12,6 +12,7 @@
  */
 
 require_once __DIR__ . '/mysqli.php';
+require_once __DIR__ . '/sajax.php';
 require_once __DIR__ . '/config.php';
 
 function db()

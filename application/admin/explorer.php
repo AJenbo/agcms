@@ -14,7 +14,6 @@ require_once $_SERVER['DOCUMENT_ROOT'] . '/admin/inc/logon.php';
 require_once $_SERVER['DOCUMENT_ROOT'] . '/admin/inc/file-functions.php';
 require_once $_SERVER['DOCUMENT_ROOT'] . '/admin/inc/get_mime_type.php';
 require_once $_SERVER['DOCUMENT_ROOT'] . '/inc/functions.php';
-require_once $_SERVER['DOCUMENT_ROOT'] . '/inc/sajax.php';
 //TODO update compleat source with doConditionalGet
 
 /*
@@ -715,21 +714,20 @@ function edit_alt(int $id, string $alt): array
     return array('id' => $id, 'alt' => $alt);
 }
 
-$sajax_request_type = 'POST';
-
-//$sajax_debug_mode = 1;
-sajax_export(
-    array('name' => 'renamefile', 'method' => 'POST'),
-    array('name' => 'deletefolder', 'method' => 'POST'),
-    array('name' => 'deletefile', 'method' => 'POST'),
-    array('name' => 'showfiles', 'method' => 'GET'),
-    array('name' => 'listdirs', 'method' => 'GET'),
-    array('name' => 'makedir', 'method' => 'POST'),
-    array('name' => 'searchfiles', 'method' => 'GET'),
-    array('name' => 'edit_alt', 'method' => 'POST')
+SAJAX::$requestType = 'POST';
+SAJAX::export(
+    [
+        'deletefile'   => ['method' => 'POST'],
+        'deletefolder' => ['method' => 'POST'],
+        'edit_alt'     => ['method' => 'POST'],
+        'listdirs'     => ['method' => 'GET'],
+        'makedir'      => ['method' => 'POST'],
+        'renamefile'   => ['method' => 'POST'],
+        'searchfiles'  => ['method' => 'GET'],
+        'showfiles'    => ['method' => 'GET'],
+    ]
 );
-//$sajax_remote_uri = '/ajax.php';
-sajax_handle_client_request();
+SAJAX::handleClientRequest();
 
 
 if (@$_COOKIE['qpath'] || @$_COOKIE['qalt'] || @$_COOKIE['qtype']) {
@@ -762,7 +760,7 @@ JSON.parse = JSON.parse || function(jsonsring) { return jsonsring.evalJSON(true)
 <script type="text/javascript"><!--
 var rte = '<?php echo @$_GET['rte']; ?>';
 var returnid = '<?php echo @$_GET['returnid']; ?>';
-<?php sajax_show_javascript(); ?>
+<?php SAJAX::showJavascript(); ?>
 
 <?php echo $showfiles['javascript']; ?>
 

@@ -19,7 +19,6 @@ textdomain('agcms');
 
 require_once $_SERVER['DOCUMENT_ROOT'] . '/admin/inc/logon.php';
 require_once $_SERVER['DOCUMENT_ROOT'] . '/inc/functions.php';
-require_once $_SERVER['DOCUMENT_ROOT'] . '/inc/sajax.php';
 
 /**
  * Update user
@@ -79,14 +78,9 @@ function updateuser(int $id, array $updates)
     }
 }
 
-$sajax_request_type = 'POST';
-
-//$sajax_debug_mode = 1;
-sajax_export(
-    array('name' => 'updateuser', 'method' => 'POST')
-);
+SAJAX::export(['updateuser' => ['method' => 'POST']]);
 //if this is a ajax call, this is where things end
-sajax_handle_client_request();
+SAJAX::handleClientRequest();
 
 $user = db()->fetchOne("SELECT *, UNIX_TIMESTAMP(`lastlogin`) AS 'lastlogin' FROM `users` WHERE id = ".$_GET['id']);
 
@@ -107,7 +101,7 @@ JSON.parse = JSON.parse || function(jsonsring) { return jsonsring.evalJSON(true)
 <script type="text/javascript"><!--
 id = <?php echo $_GET['id'] ?>;
 
-<?php sajax_show_javascript(); ?>
+<?php SAJAX::showJavascript(); ?>
 
 function updateuser() {
     if ($('password_new').value != $('password2').value) {

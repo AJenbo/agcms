@@ -14,9 +14,6 @@ ini_set('zlib.output_compression', 1);
 require_once $_SERVER['DOCUMENT_ROOT'] . '/admin/inc/logon.php';
 require_once $_SERVER['DOCUMENT_ROOT'] . '/admin/inc/emails.php';
 require_once $_SERVER['DOCUMENT_ROOT'] . '/inc/functions.php';
-require_once $_SERVER['DOCUMENT_ROOT'] . '/inc/sajax.php';
-
-$sajax_request_type = 'POST';
 
 /**
  * @parram int $id
@@ -352,15 +349,16 @@ function kat_expand(int $id, bool $input = true): array
 
 $kattree = array();
 
-$sajax_debug_mode = 0;
-sajax_export(
-    array('name' => 'katspath', 'method' => 'GET'),
-    array('name' => 'siteList_expand', 'method' => 'GET'),
-    array('name' => 'kat_expand', 'method' => 'GET'),
-    array('name' => 'getSiteTree', 'method' => 'GET')
+SAJAX::$requestType = 'POST';
+SAJAX::export(
+    [
+        'katspath'        => ['method' => 'GET'],
+        'siteList_expand' => ['method' => 'GET'],
+        'kat_expand'      => ['method' => 'GET'],
+        'getSiteTree'     => ['method' => 'GET'],
+    ]
 );
-//	$sajax_remote_uri = '/ajax.php';
-sajax_handle_client_request();
+SAJAX::handleClientRequest();
 
 ?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
@@ -370,7 +368,7 @@ sajax_handle_client_request();
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <title>Liste af sider</title>
 <script type="text/javascript"><!--
-<?php sajax_show_javascript(); ?>
+<?php SAJAX::showJavascript(); ?>
 --></script>
 <script type="text/javascript" src="javascript/lib/php.min.js"></script>
 <script type="text/javascript" src="javascript/lib/prototype.js"></script>

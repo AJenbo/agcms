@@ -8,14 +8,14 @@ textdomain('agcms');
 
 require_once $_SERVER['DOCUMENT_ROOT'] . '/admin/inc/logon.php';
 require_once $_SERVER['DOCUMENT_ROOT'] . '/inc/functions.php';
-require_once $_SERVER['DOCUMENT_ROOT'] . '/inc/sajax.php';
 require_once $_SERVER['DOCUMENT_ROOT'] . '/inc/countries.php';
 
 if (empty($_SESSION['_user'])) {
     //TDODO No login !!!
     $_SESSION['_user']['fullname'] = _('No one');
 }
-$sajax_request_type = 'GET';
+
+SAJAX::$requestType = 'GET';
 
 $where = array();
 

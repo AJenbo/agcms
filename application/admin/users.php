@@ -19,7 +19,6 @@ textdomain('agcms');
 
 require_once $_SERVER['DOCUMENT_ROOT'] . '/admin/inc/logon.php';
 require_once $_SERVER['DOCUMENT_ROOT'] . '/inc/functions.php';
-require_once $_SERVER['DOCUMENT_ROOT'] . '/inc/sajax.php';
 
 /**
  * Delete user
@@ -38,14 +37,9 @@ function deleteuser(int $id): bool
     return true;
 }
 
-$sajax_request_type = 'POST';
-
-//$sajax_debug_mode = 1;
-sajax_export(
-    array('name' => 'deleteuser', 'method' => 'POST')
-);
-//$sajax_remote_uri = '/ajax.php';
-sajax_handle_client_request();
+SAJAX::$requestType = 'POST';
+SAJAX::export(['deleteuser' => ['method' => 'POST']]);
+SAJAX::handleClientRequest();
 
 ?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
@@ -64,7 +58,7 @@ JSON.parse = JSON.parse || function(jsonsring) { return jsonsring.evalJSON(true)
 <link href="style/mainmenu.css" rel="stylesheet" type="text/css" />
 <link href="style/style.css" rel="stylesheet" type="text/css" />
 <script type="text/javascript"><!--
-<?php sajax_show_javascript(); ?>
+<?php SAJAX::showJavascript(); ?>
 
 function deleteuser(id, name)
 {

@@ -24,7 +24,6 @@
  */
 class Simple_Mysqli extends mysqli
 {
-
     /**
      * Connect the database and set session to UTF-8 Danish
      */
