@@ -72,7 +72,7 @@ if (!$GLOBALS['side']['id']) {
 }
 
 //Get maerke
-if (!@$maerke) {
+if (empty($maerke)) {
     $maerke = preg_replace('/.*\/mærke([0-9]*)-.*|.*/u', '\1', $url);
 }
 if (!$maerke) {
