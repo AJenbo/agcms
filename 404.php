@@ -155,11 +155,11 @@ if (@$redirect) {
     }
 }
 
-if (!@$sog
+if (empty($sog)
     && !$GLOBALS['generatedcontent']['activmenu']
     && !$GLOBALS['side']['id']
-    && !@$q
-    && !@$maerke
+    && empty($q)
+    && empty($maerke)
 ) {
     $q = trim(
         preg_replace(

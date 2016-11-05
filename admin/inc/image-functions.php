@@ -24,12 +24,22 @@ require_once 'file-functions.php';
  *
  * @return array
  */
-function generateImage(string $path, int $cropX, int $cropY, int $cropW, int $cropH, int $maxW, int $maxH, int $flip, int $rotate, array $output): array
-{
+function generateImage(
+    string $path,
+    int $cropX,
+    int $cropY,
+    int $cropW,
+    int $cropH,
+    int $maxW,
+    int $maxH,
+    int $flip,
+    int $rotate,
+    array $output = null
+): array {
     $imagesize = @getimagesize($_SERVER['DOCUMENT_ROOT'].$path);
     $pathinfo = pathinfo($path);
 
-    if (!@$output['filename']) {
+    if (empty($output['filename'])) {
         $output['filename'] = $pathinfo['filename'];
     }
 

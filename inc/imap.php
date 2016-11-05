@@ -103,7 +103,7 @@ class IMAP
             $command = $this->_tag . ' ' . $command;
         }
 
-        if (!@fputs($this->_socket, $command . "\r\n")) {
+        if (empty(fputs($this->_socket, $command . "\r\n"))) {
             $error = error_get_last();
             throw new Exception($error['message']);
         }
@@ -177,7 +177,7 @@ class IMAP
         $string = explode(' ', $string);
         foreach ($string as $capability) {
             if (strpos($capability, '=') === false) {
-                if (!@$this->capabilities[$capability]) {
+                if (empty($this->capabilities[$capability])) {
                     $this->capabilities[$capability] = true;
                 }
             } else {
@@ -216,7 +216,7 @@ class IMAP
      */
     private function _authenticatePlain(): bool
     {
-        if (!@$this->capabilities['AUTH']['PLAIN']) {
+        if (empty($this->capabilities['AUTH']['PLAIN'])) {
             return false;
         }
 
@@ -253,7 +253,7 @@ class IMAP
     private function _authenticateLogin(): bool
     {
         //TODO onc.com supports this with out saying so, should we always try it?
-        if (!@$this->capabilities['AUTH']['LOGIN']) {
+        if (empty($this->capabilities['AUTH']['LOGIN'])) {
             return false;
         }
 

@@ -93,7 +93,7 @@ function side()
     $GLOBALS['generatedcontent']['price']['new']    = $GLOBALS['side']['pris'];
     $GLOBALS['generatedcontent']['price']['from']   = $GLOBALS['side']['fra'];
 
-    if (!@$GLOBALS['generatedcontent']['email']) {
+    if (empty($GLOBALS['generatedcontent']['email'])) {
         $kat = $mysqli->fetchArray(
             "
             SELECT `email`
@@ -104,7 +104,7 @@ function side()
 
     getUpdateTime('kat');
 
-    if (!@$kat[0]['email']) {
+    if (empty($kat[0]['email'])) {
         $GLOBALS['generatedcontent']['email'] = $GLOBALS['_config']['email'];
     } else {
         $GLOBALS['generatedcontent']['email'] = $kat[0]['email'];

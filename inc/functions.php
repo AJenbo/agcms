@@ -42,7 +42,7 @@ function validemail(string $email): bool
 function getUpdateTime(string $table)
 {
     global $mysqli;
-    if (!@$GLOBALS['cache']['updatetime'][$table]) {
+    if (empty($GLOBALS['cache']['updatetime'][$table])) {
         $updatetime = $mysqli->fetchArray("SHOW TABLE STATUS LIKE '".$table."'");
         $GLOBALS['cache']['updatetime'][$table] = strtotime($updatetime[0]['Update_time']);
     }
@@ -59,10 +59,8 @@ function skriv(int $id): bool
 {
     global $mysqli;
 
-    if (@$GLOBALS['cache']['kats'][$id]['skriv']) {
-        return true;
-    } elseif (@$GLOBALS['cache']['kats'][$id]['skriv'] === false) {
-        return false;
+    if (isset($GLOBALS['cache']['kats'][$id]['skriv'])) {
+        return $GLOBALS['cache']['kats'][$id]['skriv'];
     }
 
     //er der en side på denne kattegori
@@ -109,6 +107,8 @@ function skriv(int $id): bool
             return false;
         }
     }
+
+    return false;
 }
 
 /**
@@ -295,23 +295,6 @@ function arrayListsort(array $aryData, string $strIndex, string $strSortBy, int 
     }
 
     return $aryResult;
-}
-
-/**
- * Apply trim to a multi dimentional array
- *
- * @param array $totrim Array to trim
- *
- * @return array
- */
-function trimArray(array $totrim): array
-{
-    if (is_array($totrim)) {
-        $totrim = array_map("trimArray", $totrim);
-    } else {
-        $totrim = trim($totrim);
-    }
-    return $totrim;
 }
 
 /**
@@ -579,7 +562,7 @@ function echoTable(int $sideid): string
 
     foreach ($tablesort as $value) {
         $GLOBALS['tablesort_navn'][] = $value['navn'];
-        $GLOBALS['tablesort'][] = trimArray(explode(',', $value['text']));
+        $GLOBALS['tablesort'][] = array_map('trim', explode(',', $value['text']));
     }
     //----------------------------------
 

@@ -138,7 +138,7 @@ if (@$_COOKIE['/images']) {
     echo ' style="display:none"';
 }
 ?> src="images/+.gif" onclick="dir_expand(this, 1);" height="16" width="16" alt="" /><img<?php
-if (!@$_COOKIE['/images']) {
+if (empty($_COOKIE['/images'])) {
     echo ' style="display:none"';
 }
 ?> src="images/-.gif" onclick="dir_contract(this);" height="16" width="16" alt="" /><a onclick="movefile('/images')"><img src="images/folder.png" height="16" width="16" alt="" /> <?php echo _('Pictures'); ?> </a>
@@ -152,7 +152,7 @@ if (@$_COOKIE['/files']) {
     echo ' style="display:none"';
 }
 ?> src="images/+.gif" onclick="dir_expand(this, 1);" height="16" width="16" alt="" /><img<?php
-if (!@$_COOKIE['/files']) {
+if (empty($_COOKIE['/files'])) {
     echo ' style="display:none"';
 }
 ?> src="images/-.gif" onclick="dir_contract(this);" height="16" width="16" alt="" /><a onclick="movefile('/files')"><img src="images/folder.png" height="16" width="16" alt="" /> <?php

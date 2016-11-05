@@ -41,7 +41,7 @@ sajax_export(array('name' => 'fileExists', "asynchronous" => false));
 $sajax_remote_uri = '/admin/file-upload.php';
 sajax_handle_client_request();
 
-if (!@$_COOKIE['admin_dir'] || !is_dir($_SERVER['DOCUMENT_ROOT'].@$_COOKIE['admin_dir'])) {
+if (empty($_COOKIE['admin_dir']) || !is_dir($_SERVER['DOCUMENT_ROOT'].@$_COOKIE['admin_dir'])) {
     @setcookie('admin_dir', '/images');
     @$_COOKIE['admin_dir'] = '/images';
 }

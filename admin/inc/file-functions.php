@@ -160,7 +160,7 @@ function listdirs(string $dir, int $mode = 0): array
             $html .= ' src="images/+.gif"';
             $html .= ' onclick="dir_expand(this,'.$mode.');"';
             $html .= ' height="16" width="16" alt="+" title="" /><img';
-            if (!@$_COOKIE[$dir.'/'.$subdir]) {
+            if (empty($_COOKIE[$dir.'/'.$subdir])) {
                 $html .= ' style="display:none"';
             }
             $html .= ' src="images/-.gif"';

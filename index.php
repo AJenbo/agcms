@@ -50,7 +50,7 @@ $mysqli = new Simple_Mysqli(
 //If the database is older then the users cache, send 304 not modified
 //WARNING: this results in the site not updating if new files are included later,
 //the remedy is to update the database when new cms files are added.
-if (!@$delayprint) {
+if (empty($delayprint)) {
     $tabels = $mysqli->fetchArray("SHOW TABLE STATUS");
     $updatetime = 0;
     foreach ($tabels as $tabel) {
@@ -227,7 +227,7 @@ function searchMenu(string $q, string $wherekat)
             "
         );
         if (!$maerke) {
-            if (!@$simpleq) {
+            if (empty($simpleq)) {
                 $qsearch = array ("/ /","/'/","//","/`/");
                 $qreplace = array ("%","_","_","_");
                 $simpleq = preg_replace($qsearch, $qreplace, $q);
@@ -444,8 +444,8 @@ if (@$GLOBALS['side']['id'] > 0 && isInactivePage($GLOBALS['side']['id'])) {
  * katagori, hent også side indholdet.
  */
 if (@$GLOBALS['side']['id'] > 0
-    && !@$activMenu
-    && !@$GLOBALS['side']['inactive']
+    && empty($activMenu)
+    && empty($GLOBALS['side']['inactive'])
 ) {
     $bind = $mysqli->fetchArray(
         "
@@ -483,7 +483,7 @@ if (@$GLOBALS['side']['id'] > 0
     $GLOBALS['side']['dato']   = $bind[0]['dato'];
     $GLOBALS['cache']['updatetime']['side'] = $bind[0]['dato'];
     unset($bind);
-} elseif (@$GLOBALS['side']['id'] > 0 && !@$GLOBALS['side']['inactive']) {
+} elseif (@$GLOBALS['side']['id'] > 0 && empty($GLOBALS['side']['inactive'])) {
     //Hent side indhold
     $sider = $mysqli->fetchArray(
         "
@@ -532,7 +532,7 @@ if (@$activMenu > 0) {
     //Key words
     if ($GLOBALS['kats']) {
         foreach ($GLOBALS['kats'] as $value) {
-            if (!@$GLOBALS['cache']['kats'][$value]['navn']) {
+            if (empty($GLOBALS['cache']['kats'][$value]['navn'])) {
                 $temp = $mysqli->fetchArray(
                     "
                     SELECT navn, vis, icon
@@ -733,15 +733,15 @@ if (@$_GET['sog'] || @$GLOBALS['side']['inactive']) {
     $GLOBALS['generatedcontent']['contenttype'] = 'tiles';
 
     if ((@$_GET['maerke'] || @$maerke)
-        && !@$_GET['q']
-        && !@$_GET['varenr']
-        && !@$_GET['sogikke']
-        && !@$_GET['minpris']
-        && !@$_GET['maxpris']
+        && empty($_GET['q'])
+        && empty($_GET['varenr'])
+        && empty($_GET['sogikke'])
+        && empty($_GET['minpris'])
+        && empty($_GET['maxpris'])
     ) {
         //Brand only search
         $GLOBALS['generatedcontent']['contenttype'] = 'brand';
-        if (@$_GET['maerke'] && !@$maerke) {
+        if (@$_GET['maerke'] && empty($maerke)) {
             $maerke = $_GET['maerke'];
         }
         $maerkeet = $mysqli->fetchArray(
@@ -799,11 +799,11 @@ if (@$_GET['sog'] || @$GLOBALS['side']['inactive']) {
         }
     }
 
-    if (!@$start) {
+    if (empty($start)) {
         $start = "0";
     }
 
-    if (!@$num) {
+    if (empty($num)) {
         $num = "10";
     }
 
@@ -817,8 +817,8 @@ if (@$_GET['sog'] || @$GLOBALS['side']['inactive']) {
     }
     searchMenu(@$_GET['q'], $wherekat);
 
-    if (!@$GLOBALS['generatedcontent']['list']
-        && !@$GLOBALS['generatedcontent']['search_menu']
+    if (empty($GLOBALS['generatedcontent']['list'])
+        && empty($GLOBALS['generatedcontent']['search_menu'])
     ) {
         header('HTTP/1.1 404 Not Found');
     }
@@ -875,7 +875,7 @@ if (@$maerkeet) {
             'UTF-8'
         );
     }
-} elseif (@$GLOBALS['side']['id'] && !@$GLOBALS['side']['inactive']) {
+} elseif (@$GLOBALS['side']['id'] && empty($GLOBALS['side']['inactive'])) {
     $sider_navn = $mysqli->fetchArray(
         "
         SELECT navn, UNIX_TIMESTAMP(dato) AS dato
@@ -897,7 +897,7 @@ if (@$maerkeet) {
 if (empty($GLOBALS['generatedcontent']['title'])
     && @$activMenu > 0
 ) {
-    if (!@$GLOBALS['cache']['kats'][$activMenu]['navn']) {
+    if (empty($GLOBALS['cache']['kats'][$activMenu]['navn'])) {
         $kat_navn = $mysqli->fetchArray(
             "
             SELECT navn, vis
@@ -985,7 +985,7 @@ if (@$activMenu > 0) {
     }
 }
 
-if (!@$delayprint) {
+if (empty($delayprint)) {
     $updatetime = 0;
 
     $included_files = get_included_files();

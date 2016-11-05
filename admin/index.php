@@ -59,7 +59,7 @@ function rtefsafe(string $text): string
 
 function search(string $text): array
 {
-    if (!@$text) {
+    if (empty($text)) {
         return array('error' => _('You must enter a search word.'));
     }
 
@@ -1513,7 +1513,7 @@ function savekrav(int $id, string $navn, string $text): array
     }
 }
 
-function getsogogerstat(): string
+function getsogogerstat()
 {
     echo '<div id="headline">'._('Find and replace').'</div><form onsubmit="sogogerstat(document.getElementById(\'sog\').value,document.getElementById(\'erstat\').value,inject_html); return false;"><img src="images/error.png" width="16" height="16" alt="" > '._('This function affects all pages.').'<table cellspacing="0"><tr><td>'._('Find:').' </td><td><input id="sog" style="width:256px;" maxlength="64" /></td></tr><tr><td>'._('Replace:').' </td><td><input id="erstat" style="width:256px;" maxlength="64" /></td></tr></table><br /><br /><input value="'._('Find and replace').'" type="submit" accesskey="r" /></form>';
 }

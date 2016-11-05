@@ -25,7 +25,7 @@ icon = returnid.value, returnid+'thb'.src, 16x16 limit.
 */
 
 //load path from cookie, else default to /images
-if (!@$_COOKIE['admin_dir'] || !is_dir($_SERVER['DOCUMENT_ROOT'].@$_COOKIE['admin_dir'])) {
+if (empty($_COOKIE['admin_dir']) || !is_dir($_SERVER['DOCUMENT_ROOT'].@$_COOKIE['admin_dir'])) {
     @setcookie('admin_dir', '/images');
     @$_COOKIE['admin_dir'] = '/images';
 }
@@ -795,7 +795,7 @@ var returnid = '<?php echo @$_GET['returnid']; ?>';
 <body scroll="auto">
 picture_error
 <div id="menu"><img id="loading" src="images/loading.gif" width="16" height="16" alt="<?php echo _('Loading'); ?>" title="<?php echo _('Loading'); ?>" /><a id="dir_bn" class="<?php
-if (!@$_COOKIE['qpath'] && !@$_COOKIE['qalt'] && !@$_COOKIE['qtype']) {
+if (empty($_COOKIE['qpath'], $_COOKIE['qalt'], $_COOKIE['qtype'])) {
     echo 'down';
 } ?>" title="<?php echo _('Folders'); ?>" onclick="return swap_pannel('dir');"><img width="16" height="16" src="images/folder.png" alt="" /> Mapper</a> <a id="search_bn" title="Søg" class="<?php if (@$_COOKIE['qpath'] || @$_COOKIE['qalt'] || @$_COOKIE['qtype']) {
     echo 'down';
@@ -805,7 +805,7 @@ if (!@$_COOKIE['qpath'] && !@$_COOKIE['qalt'] && !@$_COOKIE['qtype']) {
 } ?>>
   <div id="dir_.images"><img<?php if (@$_COOKIE['/images']) {
         echo ' style="display:none"';
-} ?> src="images/+.gif" onclick="dir_expand(this, 0);" height="16" width="16" alt="+" title="" /><img<?php if (!@$_COOKIE['/images']) {
+} ?> src="images/+.gif" onclick="dir_expand(this, 0);" height="16" width="16" alt="+" title="" /><img<?php if (empty($_COOKIE['/images'])) {
     echo ' style="display:none"';
 } ?> src="images/-.gif" onclick="dir_contract(this);" height="16" width="16" alt="-" title="" /><a<?php
 if ('/images' == @$_COOKIE['admin_dir']) {
@@ -820,7 +820,7 @@ if ('/images' == @$_COOKIE['admin_dir']) {
     ?></div></div>
   <div id="dir_.files"><img<?php if (@$_COOKIE['/files']) {
         echo ' style="display:none"';
-} ?> src="images/+.gif" onclick="dir_expand(this, 0);" height="16" width="16" alt="+" title="" /><img<?php if (!@$_COOKIE['/files']) {
+} ?> src="images/+.gif" onclick="dir_expand(this, 0);" height="16" width="16" alt="+" title="" /><img<?php if (empty($_COOKIE['/files'])) {
     echo ' style="display:none"';
 } ?> src="images/-.gif" onclick="dir_contract(this);" height="16" width="16" alt="-" title="" /><a<?php
 if ('/files' == @$_COOKIE['admin_dir']) {
@@ -832,7 +832,7 @@ if (@$_COOKIE['/files']) {
     echo $listdirs['html'];
 } ?></div></div>
 </div>
-<form id="search"<?php if (!@$_COOKIE['qpath'] && !@$_COOKIE['qalt'] && !@$_COOKIE['qtype']) {
+<form id="search"<?php if (empty($_COOKIE['qpath'], $_COOKIE['qalt'], $_COOKIE['qtype'])) {
     echo ' style="display:none"';
 } ?> action="" onsubmit="searchfiles();return false;"><div>
     <?php echo _('Name:'); ?><br />

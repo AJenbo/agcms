@@ -159,7 +159,7 @@ function katlist(int $id): string
  *
  * @return string
  */
-function siteList(int $id): string
+function siteList(int $id = null): string
 {
     global $mysqli;
     global $kattree;
@@ -272,7 +272,7 @@ function siteList_expand(int $id): array
 function getSiteTree(): string
 {
     $html = '<div id="headline">'._('Overview').'</div><div>';
-    $html .= siteList(@$_COOKIE['activekat']);
+    $html .= siteList($_COOKIE['activekat'] ?? null);
 
     global $mysqli;
     $specials = $mysqli->fetchArray('SELECT `id`, `navn` FROM `special` WHERE `id` > 1 ORDER BY `navn`');

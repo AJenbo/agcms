@@ -33,7 +33,7 @@ function vare(array $side, string $katnavn, int $type)
             WHERE side = " . $side['id']
         );
         $GLOBALS['generatedcontent']['activmenu'] = $bind[0]['kat'];
-        if (!@$GLOBALS['cache']['kats'][$bind[0]['kat']]['navn']) {
+        if (empty($GLOBALS['cache']['kats'][$bind[0]['kat']]['navn'])) {
             $kat = $mysqli->fetchArray(
                 "
                 SELECT navn, vis
@@ -47,7 +47,7 @@ function vare(array $side, string $katnavn, int $type)
                 $GLOBALS['cache']['kats'][$bind[0]['kat']]['vis'] = $kat[0]['vis'];
             }
         }
-        $katnavn = @$GLOBALS['cache']['kats'][$bind[0]['kat']]['navn'];
+        $katnavn = $GLOBALS['cache']['kats'][$bind[0]['kat']]['navn'] ?? '';
     }
 
     $link = '/kat' . $GLOBALS['generatedcontent']['activmenu'] . '-'
@@ -411,7 +411,7 @@ function searchListe(string $q, string $wheresider)
         foreach ($sider as $value) {
             $GLOBALS['generatedcontent']['activmenu'] = 0;
             $value['text'] = strip_tags($value['text']);
-            vare($value, 0, 1);
+            vare($value, $value['navn'], 1);
         }
     }
     $GLOBALS['generatedcontent']['activmenu'] =  $temp_kat;
