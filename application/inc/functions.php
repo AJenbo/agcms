@@ -20,16 +20,19 @@
  */
 function validemail(string $email): bool
 {
-    //_An-._E-mail@test-domain.test.dk
-    if ($email
-        && preg_match('/^[[:word:]0-9-_.]+@([[:lower:]0-9-]+\.)+[[:lower:]0-9-]+$/u', $email)
-        && !preg_match('/@\S[.]{2}/u', $email)
-        && getmxrr(preg_replace('/.+?@(.?)/u', '$1', $email), $dummy)
+    $user = preg_replace('/@.+$/u', '', $email);
+    $domain = preg_replace('/^.+?@/u', '', $email);
+    if (function_exists('idn_to_ascii')) {
+        $domain = idn_to_ascii($domain);
+    }
+
+    if (filter_var($user . '@' . $domain, FILTER_VALIDATE_EMAIL)
+        && getmxrr($domain, $dummy)
     ) {
         return true;
-    } else {
-        return false;
     }
+
+    return false;
 }
 
 /**
@@ -101,11 +104,11 @@ function skriv(int $id): bool
         if (skriv($value['id'])) {
             $GLOBALS['cache']['kats'][$value['id']]['skriv'] = true;
             return true;
-        } else {
-            //This category is empty or only contains empty categorys
-            $GLOBALS['cache']['kats'][$value['id']]['skriv'] = false;
-            return false;
         }
+
+        //This category is empty or only contains empty categorys
+        $GLOBALS['cache']['kats'][$value['id']]['skriv'] = false;
+        return false;
     }
 
     return false;
@@ -152,13 +155,12 @@ function subs(int $kat): bool
  */
 function clearFileName(string $name): string
 {
-    $search = array(
-        '/[&?\/:*"<>|%\s-_#\\\\]+/u',
-        '/^\s+|\s+$/u',
-        '/\s+/u'
-    );
-    $replace = array(' ', '', '-');
-    return preg_replace($search, $replace, $name);
+    $replace = [
+        '/[&?\/:*"<>|%\s-_#\\\\]+/u' => ' ',
+        '/^\s+|\s+$/u'               => '', // trim
+        '/\s+/u'                     => '-',
+    ];
+    return preg_replace(array_keys($replace), $replace, $name);
 }
 
 /**
@@ -183,22 +185,13 @@ function arrayNatsort(array $aryData, string $strIndex, string $strSortBy, strin
         return $aryData;
     }
 
-    //ignore
-    $match = array();
-    $replace = '';
-
     //create our temporary arrays
-    $arySort = $aryResult = array();
-    //print_r($aryData);
+    $arySort = $aryResult = [];
 
     //loop through the array
     foreach ($aryData as $aryRow) {
         //set up the value in the array
-        $arySort[$aryRow[$strIndex]] = str_replace(
-            $match,
-            $replace,
-            $aryRow[$strSortBy]
-        );
+        $arySort[$aryRow[$strIndex]] = $aryRow[$strSortBy];
     }
 
     //apply the natural sort
@@ -304,9 +297,9 @@ function arrayListsort(array $aryData, string $strIndex, string $strSortBy, int 
  * @param int $bycell      What cell to sort by
  * @param int $current_kat Id of current category
  *
- * @return string
+ * @return array
  */
-function getTable(int $listid, int $bycell, int $current_kat): string
+function getTable(int $listid, int $bycell = null, int $current_kat = null): array
 {
     global $mysqli;
 
@@ -633,7 +626,7 @@ function kats(int $id): array
 }
 
 /**
- * Search for root.
+ * Search for root
  *
  * @param int $bind Kategory id
  *
@@ -648,35 +641,494 @@ function binding(int $bind): int
             "
             SELECT `bind`
             FROM `kat`
-            WHERE id = '" . $bind . "'
-            LIMIT 1
-            "
+            WHERE id = '" . $bind . "'"
         );
 
         getUpdateTime('kat');
 
         return binding($sog_kat['bind']);
+    }
+
+    return $bind;
+}
+
+/**
+ * @param string $string
+ *
+ * @return string
+ */
+function xhtmlEsc(string $string): string
+{
+    return htmlspecialchars($string, ENT_COMPAT | ENT_XHTML);
+}
+
+/**
+ * Populate the generated global list with a page
+ *
+ * @param array  $side    A page
+ * @param string $katnavn Title of category
+ * @param int    $type    Display mode
+ *
+ * @return null
+ */
+function vare(array $side, string $katnavn, int $type)
+{
+    global $mysqli;
+
+    //Search categories does not have a fixed number, use first fixed per page
+    if (!$GLOBALS['generatedcontent']['activmenu']) {
+        $bind = $mysqli->fetchArray(
+            "
+            SELECT kat
+            FROM bind
+            WHERE side = " . $side['id']
+        );
+        $GLOBALS['generatedcontent']['activmenu'] = $bind[0]['kat'];
+        if (empty($GLOBALS['cache']['kats'][$bind[0]['kat']]['navn'])) {
+            $kat = $mysqli->fetchArray(
+                "
+                SELECT navn, vis
+                FROM kat
+                WHERE id = " . $bind[0]['kat']
+            );
+            if ($kat) {
+                getUpdateTime('kat');
+
+                $GLOBALS['cache']['kats'][$bind[0]['kat']]['navn'] = $kat[0]['navn'];
+                $GLOBALS['cache']['kats'][$bind[0]['kat']]['vis'] = $kat[0]['vis'];
+            }
+        }
+        $katnavn = $GLOBALS['cache']['kats'][$bind[0]['kat']]['navn'] ?? '';
+    }
+
+    $link = '/kat' . $GLOBALS['generatedcontent']['activmenu'] . '-'
+    . clearFileName($katnavn) . '/side' . $side['id'] . '-'
+    . clearFileName($side['navn']) . '.html';
+    $name = xhtmlEsc($side['navn']);
+
+    if ($type == 1) {
+        if (!$side['beskrivelse'] && $side['text']) {
+            $side['beskrivelse'] = stringLimit($side['text'], 100);
+        }
+        $GLOBALS['generatedcontent']['list'][] = array(
+            'id' => @$side['id'],
+            'name' => $name,
+            'date' => @$side['dato'],
+            'link' => $link,
+            'icon' => @$side['billed'],
+            'text' => @$side['beskrivelse'],
+            'price' => array(
+                'before' => @$side['for'],
+                'now' => @$side['pris'],
+                'from' => @$side['fra'],
+                'market' => @$side['burde']));
     } else {
-        return $bind;
+        $GLOBALS['generatedcontent']['list'][] = array(
+            'id' => @$side['id'],
+            'name' => $name,
+            'date' => @$side['dato'],
+            'link' => $link,
+            'serial' => @$side['varenr'],
+            'price' => array(
+                'before' => @$side['for'],
+                'now' => @$side['pris']));
     }
 }
 
 /**
- * Used with array_filter() to make a 2d array uniqe
+ * Crope a string to a given max lengt, round by word
  *
- * @param array $array Row with key id to make unique
+ * @param string $string   String to crope
+ * @param int    $length   Crope length
+ * @param string $ellipsis String to add at the end, with in the limit
  *
- * @return bool False if id is already seen
+ * @return string
  */
-function uniquecol(array $array): bool
+function stringLimit(string $string, int $length = 50, string $ellipsis = '…'): string
 {
-    static $idlist = array();
-
-    if (in_array($array['id'], $idlist)) {
-        return false;
+    if (!$length || mb_strlen($string) <= $length) {
+        return $string;
     }
 
-    $idlist[] = $array['id'];
+    $length -= mb_strlen($ellipsis);
+    $string = mb_substr($string, 0, $length);
+    $string = trim($string);
+    if (mb_strlen($string) >= $length) {
+        $string = preg_replace('/\s+\S+$/u', '', $string);
+    }
 
-    return true;
+    return $string . (mb_strlen($string) === $length ? '' : ' ') . $ellipsis;
+}
+
+/**
+ * Figure out how to display the active category
+ */
+function liste()
+{
+    global $mysqli;
+
+    $bind = $mysqli->fetchArray(
+        "
+        SELECT sider.id,
+            UNIX_TIMESTAMP(dato) AS dato,
+            sider.navn,
+            sider.beskrivelse,
+            sider.text,
+            sider.pris,
+            sider.for,
+            sider.burde,
+            sider.fra,
+            sider.varenr,
+            sider.billed
+        FROM bind JOIN sider ON bind.side = sider.id
+        WHERE bind.kat = " . $GLOBALS['generatedcontent']['activmenu'] . "
+        ORDER BY sider.navn ASC
+        "
+    );
+
+    getUpdateTime('bind');
+    getUpdateTime('sider');
+
+    $kat = $mysqli->fetchArray(
+        "
+        SELECT navn, vis
+        FROM kat
+        WHERE id = " . $GLOBALS['generatedcontent']['activmenu']
+    );
+
+    getUpdateTime('kat');
+
+    if ($bind) {
+        if (count($bind) == 1) {
+            include_once 'inc/side.php';
+            $GLOBALS['side']['id'] = $bind[0]['id'];
+            side();
+        } else {
+            $bind = arrayNatsort($bind, 'id', 'navn', 'asc');
+            foreach ($bind as $value) {
+                //Add space around all tags, strip all tags,
+                //remove all unneded white space
+                if ($kat[0]['vis'] == 1) {
+                    $value['text'] = preg_replace(
+                        '/\s+/',
+                        ' ',
+                        strip_tags(
+                            preg_replace(
+                                array('/</', '/>/', '/\s+/'),
+                                array(' <', '> ', ' '),
+                                $value['text']
+                            )
+                        )
+                    );
+                }
+                vare($value, $kat[0]['navn'], $kat[0]['vis']);
+            }
+        }
+    }
+}
+
+/**
+ * Generate HTML of products for a category in list form
+ *
+ * @param array  $pages         Array of products
+ * @param string $categoryTitle Title of the category
+ * @param int    $categoryId    Id of the category
+ *
+ * @return string
+ */
+function katHTML(array $pages, string $categoryTitle, int $categoryId): string
+{
+    $html = '<table class="tabel"><thead><tr><td><a href="" onclick="x_getKat(\''
+    . $categoryId
+    . '\', \'navn\', inject_html);return false">Titel</a></td><td><a href="" onclick="x_getKat(\''
+    . $categoryId
+    . '\', \'for\', inject_html);return false">Før</a></td><td><a href="" onclick="x_getKat(\''
+    . $categoryId
+    . '\', \'pris\', inject_html);return false">Pris</a></td><td><a href="" onclick="x_getKat(\''
+    . $categoryId
+    . '\', \'varenr\', inject_html);return false">#</a></td></tr></thead><tbody>';
+
+    $isEven = false;
+    foreach ($pages as $page) {
+        if (!$page['for']) {
+            $page['for'] = '';
+        } else {
+            $page['for'] = $page['for'].',-';
+        }
+
+        if (!$page['pris']) {
+            $page['pris'] = '';
+        } else {
+            $page['pris'] = $page['pris'].',-';
+        }
+
+        $html .= '<tr' . ($isEven ? ' class="altrow"' : '')
+        . '><td><a href="/kat' . $categoryId . '-'
+        . clearFileName($categoryTitle) . '/side' . $page['id'] . '-'
+        . clearFileName($page['navn']) . '.html">' . $page['navn']
+        . '</a></td><td class="XPris" align="right">' . $page['for']
+        . '</td><td class="Pris" align="right">' . $page['pris']
+        . '</td><td align="right" style="font-size:11px">'
+        . $page['varenr'] . '</td></tr>';
+
+        $isEven = !$isEven;
+    }
+
+    return $html . '</tbody></table>';
+}
+
+/**
+ * Search for pages and generate a list or redirect if only one was found
+ *
+ * @param string $q          Tekst to search for
+ * @param string $wheresider Additional sql where clause
+ *
+ * @return null
+ */
+function searchListe(string $q, string $wheresider)
+{
+    //TODO duplicate text with out html for better searching.
+    global $qext;
+    global $mysqli;
+    $pages = [];
+
+    if ($qext) {
+        $qext = ' WITH QUERY EXPANSION';
+    } else {
+        $qext = '';
+    }
+
+    if ($q) {
+        $sider = $mysqli->fetchArray(
+            "
+            SELECT *, MATCH(navn, text, beskrivelse) AGAINST ('$q'$qext) AS score
+            FROM sider
+            WHERE MATCH (navn, text, beskrivelse) AGAINST('$q'$qext) > 0
+            $wheresider
+            ORDER BY `score` DESC
+            "
+        );
+        foreach ($sider as $page) {
+            $pages[$page['id']] = $page;
+        }
+        unset($sider);
+
+        // Fulltext search doesn't catch things like 3 letter words etc.
+        $qsearch = array ("/ /", "/'/", "/´/", "/`/");
+        $qreplace = array ("%", "_", "_", "_");
+        $simpleq = preg_replace($qsearch, $qreplace, $q);
+        $sider = $mysqli->fetchArray(
+            "
+            SELECT * FROM `sider`
+            WHERE (
+                `navn` LIKE '%$simpleq%'
+                OR `text` LIKE '%$simpleq%'
+                OR `beskrivelse` LIKE '%$simpleq%'
+            ) "
+            . ($pages ? ("AND id NOT IN (" . implode(',', array_keys($pages)) . ") ") : "")
+            . $wheresider
+        );
+        foreach ($sider as $page) {
+            $pages[$page['id']] = $page;
+        }
+        unset($sider);
+
+        $sider = $mysqli->fetchArray(
+            "
+            SELECT sider.* FROM `list_rows`
+            JOIN lists ON list_rows.list_id = lists.id
+            JOIN sider ON lists.page_id = sider.id
+            WHERE list_rows.`cells` LIKE '%$simpleq%'"
+            . ($pages ? (" AND sider.id NOT IN (" . implode(',', array_keys($pages)) . ") ") : "")
+        );
+        foreach ($sider as $page) {
+            $pages[$page['id']] = $page;
+        }
+        unset($sider);
+
+        getUpdateTime('sider');
+        getUpdateTime('list_rows');
+        getUpdateTime('lists');
+    } else {
+        $sider = $mysqli->fetchArray(
+            "
+            SELECT * FROM `sider` WHERE 1
+            $wheresider
+            ORDER BY `navn` ASC
+            "
+        );
+        foreach ($sider as $page) {
+            $pages[$page['id']] = $page;
+        }
+        unset($sider);
+
+        getUpdateTime('sider');
+    }
+    // Remove inactive pages
+    foreach ($pages as $key => $side) {
+        if (isInactivePage($side['id'])) {
+            unset($pages[$key]);
+        }
+    }
+
+    return $pages;
+}
+
+/**
+ * Get address from phone number
+ *
+ * @param string $phoneNumber Phone number
+ *
+ * @return array Array with address fitting the post table format
+ */
+function getAddress(string $phoneNumber): array
+{
+    $default['recName1'] = '';
+    $default['recAddress1'] = '';
+    $default['recZipCode'] = '';
+    $default['recCVR'] = '';
+    $default['recAttPerson'] = '';
+    $default['recAddress2'] = '';
+    $default['recPostBox'] = '';
+    $default['email'] = '';
+
+    $dbs[0]['mysql_server'] = 'jagtogfiskerimagasinet.dk.mysql';
+    $dbs[0]['mysql_user'] = 'jagtogfiskerima';
+    $dbs[0]['mysql_password'] = 'GxYqj5EX';
+    $dbs[0]['mysql_database'] = 'jagtogfiskerima';
+    $dbs[1]['mysql_server'] = 'huntershouse.dk.mysql';
+    $dbs[1]['mysql_user'] = 'huntershouse_dk';
+    $dbs[1]['mysql_password'] = 'sabbBFab';
+    $dbs[1]['mysql_database'] = 'huntershouse_dk';
+    $dbs[2]['mysql_server'] = 'arms-gallery.dk.mysql';
+    $dbs[2]['mysql_user'] = 'arms_gallery_dk';
+    $dbs[2]['mysql_password'] = 'hSKe3eDZ';
+    $dbs[2]['mysql_database'] = 'arms_gallery_dk';
+    $dbs[3]['mysql_server'] = 'geoffanderson.com.mysql';
+    $dbs[3]['mysql_user'] = 'geoffanderson_c';
+    $dbs[3]['mysql_password'] = '2iEEXLMM';
+    $dbs[3]['mysql_database'] = 'geoffanderson_c';
+
+    include_once $_SERVER['DOCUMENT_ROOT'].'/inc/mysqli.php';
+
+    foreach ($dbs as $db) {
+        $mysqli_ext = new Simple_Mysqli(
+            $db['mysql_server'],
+            $db['mysql_user'],
+            $db['mysql_password'],
+            $db['mysql_database']
+        );
+
+        //try packages
+        $post = $mysqli_ext->fetchArray(
+            "
+            SELECT recName1, recAddress1, recZipCode
+            FROM `post`
+            WHERE `recipientID` LIKE '" . $phoneNumber . "'
+            ORDER BY id DESC
+            LIMIT 1
+            "
+        );
+        if ($post) {
+            $return = array_merge($default, $post[0]);
+            if ($return != $default) {
+                return $return;
+            }
+        }
+
+        //Try katalog orders
+        $email = $mysqli_ext->fetchArray(
+            "
+            SELECT navn, email, adresse, post
+            FROM `email`
+            WHERE `tlf1` LIKE '" . $phoneNumber . "'
+               OR `tlf2` LIKE '" . $phoneNumber . "'
+            ORDER BY id DESC
+            LIMIT 1
+            "
+        );
+        if ($email) {
+            $return['recName1'] = $email[0]['navn'];
+            $return['recAddress1'] = $email[0]['adresse'];
+            $return['recZipCode'] = $email[0]['post'];
+            $return['email'] = $email[0]['email'];
+            $return = array_merge($default, $return);
+
+            if ($return != $default) {
+                return $return;
+            }
+        }
+
+        //Try fakturas
+        $fakturas = $mysqli_ext->fetchArray(
+            "
+            SELECT navn, email, att, adresse, postnr, postbox
+            FROM `fakturas`
+            WHERE `tlf1` LIKE '" . $phoneNumber . "'
+               OR `tlf2` LIKE '" . $phoneNumber . "'
+            ORDER BY id DESC
+            LIMIT 1
+            "
+        );
+        if ($fakturas) {
+            $return['recName1'] = $fakturas[0]['navn'];
+            $return['recAddress1'] = $fakturas[0]['adresse'];
+            $return['recZipCode'] = $fakturas[0]['postnr'];
+            $return['recAttPerson'] = $fakturas[0]['att'];
+            $return['recPostBox'] = $fakturas[0]['postbox'];
+            $return['email'] = $fakturas[0]['email'];
+            $return = array_merge($default, $return);
+
+            if ($return != $default) {
+                return $return;
+            }
+        }
+    }
+
+    //Addressen kunde ikke findes.
+    return array('error' => _('The address could not be found.'));
+}
+
+/**
+ * Set Last-Modified and ETag http headers
+ * and use cache if no updates since last visit
+ *
+ * @param int $timestamp Unix time stamp of last update to content
+ *
+ * @return null
+ */
+function doConditionalGet(int $timestamp)
+{
+    // A PHP implementation of conditional get, see
+    // http://fishbowl.pastiche.org/archives/001132.html
+    $last_modified = mb_substr(date('r', $timestamp), 0, -5).'GMT';
+    $etag = '"'.$timestamp.'"';
+    // Send the headers
+
+    header("Cache-Control: max-age=0, must-revalidate");    // HTTP/1.1
+    header("Pragma: no-cache");    // HTTP/1.0
+    header('Last-Modified: '.$last_modified);
+    header('ETag: '.$etag);
+    // See if the client has provided the required headers
+    $if_modified_since = isset($_SERVER['HTTP_IF_MODIFIED_SINCE']) ?
+        stripslashes($_SERVER['HTTP_IF_MODIFIED_SINCE']) :
+        false;
+    $if_none_match = isset($_SERVER['HTTP_IF_NONE_MATCH']) ?
+        stripslashes($_SERVER['HTTP_IF_NONE_MATCH']) :
+        false;
+    if (!$if_modified_since && !$if_none_match) {
+        return;
+    }
+    // At least one of the headers is there - check them
+    if ($if_none_match && $if_none_match != $etag) {
+        return; // etag is there but doesn't match
+    }
+    if ($if_modified_since && $if_modified_since != $last_modified) {
+        return; // if-modified-since is there but doesn't match
+    }
+
+    // Nothing has changed since their last request - serve a 304 and exit
+    ini_set('zlib.output_compression', '0');
+    header("HTTP/1.1 304 Not Modified", true, 304);
+    die();
 }

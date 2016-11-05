@@ -11,8 +11,13 @@
  * @link     http://www.arms-gallery.dk/
  */
 
-require_once 'inc/header.php';
-header("Content-Type: application/opensearchdescription+xml ");
+mb_language('uni');
+mb_detect_order('UTF-8, ISO-8859-1');
+mb_internal_encoding('UTF-8');
+date_default_timezone_set('Europe/Copenhagen');
+
+require_once 'inc/functions.php';
+header('Content-Type: application/opensearchdescription+xml');
 doConditionalGet(filemtime(__FILE__));
 echo '<?xml version="1.0" encoding="utf-8"?>';
 require_once 'inc/config.php';

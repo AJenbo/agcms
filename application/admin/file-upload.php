@@ -4,12 +4,13 @@ ini_set('display_errors', 1);
 error_reporting(-1);
 date_default_timezone_set('Europe/Copenhagen');
 setlocale(LC_ALL, 'da_DK');
-bindtextdomain("agcms", $_SERVER['DOCUMENT_ROOT'].'/theme/locale');
-bind_textdomain_codeset("agcms", 'UTF-8');
-textdomain("agcms");
+bindtextdomain('agcms', $_SERVER['DOCUMENT_ROOT'].'/theme/locale');
+bind_textdomain_codeset('agcms', 'UTF-8');
+textdomain('agcms');
 
 require_once $_SERVER['DOCUMENT_ROOT'].'/admin/inc/logon.php';
 require_once $_SERVER['DOCUMENT_ROOT'] . '/inc/sajax.php';
+require_once $_SERVER['DOCUMENT_ROOT'] . '/inc/functions.php';
 
 /**
  * @param string $filename
@@ -37,7 +38,7 @@ function fileExists(string $filename, string $type = ''): bool
 $sajax_request_type = 'GET';
 
 //$sajax_debug_mode = 1;
-sajax_export(array('name' => 'fileExists', "asynchronous" => false));
+sajax_export(array('name' => 'fileExists', 'asynchronous' => false));
 $sajax_remote_uri = '/admin/file-upload.php';
 sajax_handle_client_request();
 
@@ -46,7 +47,6 @@ if (empty($_COOKIE['admin_dir']) || !is_dir($_SERVER['DOCUMENT_ROOT'].@$_COOKIE[
     @$_COOKIE['admin_dir'] = '/images';
 }
 
-require_once $_SERVER['DOCUMENT_ROOT'] . '/inc/header.php';
 doConditionalGet(filemtime($_SERVER['DOCUMENT_ROOT'] . $_SERVER['PHP_SELF']));
 
 ?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">

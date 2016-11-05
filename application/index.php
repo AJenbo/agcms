@@ -18,9 +18,9 @@ error_reporting(-1);
 
 date_default_timezone_set('Europe/Copenhagen');
 setlocale(LC_ALL, 'da_DK');
-bindtextdomain("agcms", $_SERVER['DOCUMENT_ROOT'].'/theme/locale');
-bind_textdomain_codeset("agcms", 'UTF-8');
-textdomain("agcms");
+bindtextdomain('agcms', $_SERVER['DOCUMENT_ROOT'] . '/theme/locale');
+bind_textdomain_codeset('agcms', 'UTF-8');
+textdomain('agcms');
 
 session_start();
 
@@ -156,11 +156,7 @@ function menu(int $nr, bool $custom_sort_subs = false): array
 
                 //tegn under punkter
                 $menu[] = array('id' => $value['id'],
-                    'name' => htmlspecialchars(
-                        $value['navn'],
-                        ENT_COMPAT | ENT_XHTML,
-                        'UTF-8'
-                    ),
+                    'name' => xhtmlEsc($value['navn']),
                     'link' => '/kat'.$value['id'].'-'
                         .clearFileName($value['navn']).'/',
                     'icon' => $value['icon'],
@@ -195,6 +191,8 @@ function searchMenu(string $q, string $wherekat)
         $qext = '';
     }
 
+    $kat = [];
+    $maerke = [];
     if ($q) {
         $kat = $mysqli->fetchArray(
             "
@@ -244,35 +242,23 @@ function searchMenu(string $q, string $wherekat)
         }
     }
 
-    if (@$maerke) {
-        foreach ($maerke as $value) {
-            $GLOBALS['generatedcontent']['search_menu'][] = array('id' => 0,
-                'name' => htmlspecialchars(
-                    $value['navn'],
-                    ENT_COMPAT | ENT_XHTML,
-                    'UTF-8'
-                ),
-                'link' => '/mærke'.$value['id']
-                    .'-' .clearFileName($value['navn']) .'/');
-        }
+    foreach ($maerke as $value) {
+        $GLOBALS['generatedcontent']['search_menu'][] = [
+            'id' => 0,
+            'name' => xhtmlEsc($value['navn']),
+            'link' => '/mærke' . $value['id'] . '-' .clearFileName($value['navn']) . '/'
+        ];
     }
 
-    if (@$kat) {
-        foreach ($kat as $value) {
-            if (skriv($value['id'])) {
-                $GLOBALS['generatedcontent']['search_menu'][] = array(
-                    'id' => $value['id'],
-                    'name' => htmlspecialchars(
-                        $value['navn'],
-                        ENT_COMPAT | ENT_XHTML,
-                        'UTF-8'
-                    ),
-                    'link' => '/kat'.$value['id']
-                        .'-' .clearFileName($value['navn']) .'/',
-                    'icon' => $value['icon'],
-                    'sub' => subs($value['id'])
-                );
-            }
+    foreach ($kat as $value) {
+        if (skriv($value['id'])) {
+            $GLOBALS['generatedcontent']['search_menu'][] = [
+                'id' => $value['id'],
+                'name' => xhtmlEsc($value['navn']),
+                'link' => '/kat'.$value['id'] . '-' . clearFileName($value['navn']) . '/',
+                'icon' => $value['icon'],
+                'sub' => subs($value['id'])
+            ];
         }
     }
 }
@@ -287,15 +273,13 @@ function searchMenu(string $q, string $wherekat)
 function isInactivePage(int $id): bool
 {
     global $mysqli;
-    $bind = $mysqli->fetchArray(
+    $bind = $mysqli->fetchOne(
         "
         SELECT `kat`
         FROM `bind`
-        WHERE `side` = ".$id."
-        LIMIT 1
-        "
+        WHERE `side` = " . $id
     );
-    if (binding($bind[0]['kat']) == -1) {
+    if (!$bind || binding($bind['kat']) == -1) {
         return true;
     }
 
@@ -547,11 +531,7 @@ if (@$activMenu > 0) {
                 $GLOBALS['cache']['kats'][$value] = $temp[0];
             }
 
-            $keyword = htmlspecialchars(
-                $GLOBALS['cache']['kats'][$value]['navn'],
-                ENT_COMPAT | ENT_XHTML,
-                'UTF-8'
-            );
+            $keyword = xhtmlEsc($GLOBALS['cache']['kats'][$value]['navn']);
             $keyword = trim($keyword);
             $keywords[] = $keyword;
         }
@@ -576,11 +556,7 @@ if (@$GLOBALS['kats']) {
         }
 
         $GLOBALS['generatedcontent']['crumbs'][] = array(
-            'name' => htmlspecialchars(
-                $GLOBALS['cache']['kats'][$value]['navn'],
-                ENT_COMPAT | ENT_XHTML,
-                'UTF-8'
-            ),
+            'name' => xhtmlEsc($GLOBALS['cache']['kats'][$value]['navn']),
             'link' => '/kat' . $value . '-'
             . clearFileName($GLOBALS['cache']['kats'][$value]['navn']) . '/',
             'icon' => $GLOBALS['cache']['kats'][$value]['icon']
@@ -626,7 +602,7 @@ foreach ($kat_fpc as $value) {
         }
 
         $GLOBALS['generatedcontent']['menu'][] = array('id' => $value['id'],
-        'name' => htmlspecialchars($value['navn'], ENT_COMPAT | ENT_XHTML, 'UTF-8'),
+        'name' => xhtmlEsc($value['navn']),
         'link' => '/kat'.$value['id'].'-'.clearFileName($value['navn']).'/',
         'icon' => $value['icon'],
         'sub' => $value['sub'] ? true : false,
@@ -655,7 +631,7 @@ getUpdateTime('sider');
 foreach ($kat_fpp as $value) {
     $GLOBALS['generatedcontent']['sider'][] = array(
         'id' => $value['id'],
-        'name' => htmlspecialchars($value['navn'], ENT_COMPAT | ENT_XHTML, 'UTF-8'),
+        'name' => xhtmlEsc($value['navn']),
         'link' => '/side' .$value['id'] .'-'
             .clearFileName($value['navn']) .'.html'
     );
@@ -684,7 +660,7 @@ if (@$_GET['sog'] || @$GLOBALS['side']['inactive']) {
             array(' ', '\1'),
             urldecode($_SERVER['REQUEST_URI'])
         );
-        $text = htmlspecialchars($text, ENT_COMPAT | ENT_XHTML, 'UTF-8');
+        $text = xhtmlEsc($text);
     }
     $text .= '" /></td>';
     $text .= '<td><input type="submit" value="'._('Search').'" /></td></tr>';
@@ -714,11 +690,7 @@ if (@$_GET['sog'] || @$GLOBALS['side']['inactive']) {
     $maerker_nr = count($maerker);
     foreach ($maerker as $value) {
         $text .= '<option value="'.$value['id'].'">';
-        $text .= htmlspecialchars(
-            $value['navn'],
-            ENT_COMPAT | ENT_XHTML,
-            'UTF-8'
-        ) . '</option>';
+        $text .= xhtmlEsc($value['navn']) . '</option>';
     }
     $text .= '</select></td></tr></table></form>';
     $GLOBALS['generatedcontent']['text'] = $text;
@@ -732,6 +704,10 @@ if (@$_GET['sog'] || @$GLOBALS['side']['inactive']) {
 ) {
     $GLOBALS['generatedcontent']['contenttype'] = 'tiles';
 
+    //Temporarly store the katalog number so it can be restored when search is over
+    $temp_kat = $GLOBALS['generatedcontent']['activmenu'];
+
+    $sider = [];
     if ((@$_GET['maerke'] || @$maerke)
         && empty($_GET['q'])
         && empty($_GET['varenr'])
@@ -754,32 +730,26 @@ if (@$_GET['sog'] || @$GLOBALS['side']['inactive']) {
         getUpdateTime('maerke');
 
         $GLOBALS['generatedcontent']['brand'] = array('id' => $maerkeet[0]['id'],
-        'name' => htmlspecialchars(
-            $maerkeet[0]['navn'],
-            ENT_COMPAT | ENT_XHTML,
-            'UTF-8'
-        ),
+        'name' => xhtmlEsc($maerkeet[0]['navn']),
         'xlink' => $maerkeet[0]['link'],
         'icon' => $maerkeet[0]['ico']);
-
-        include_once 'inc/liste.php';
 
         $wheresider = "AND (`maerke` LIKE '". $maerkeet[0]['id']
             ."' OR `maerke` LIKE '" .$maerkeet[0]['id'].",%' OR `maerke` LIKE '%,"
             .$maerkeet[0]['id'] .",%' OR `maerke` LIKE '%,"
             .$maerkeet[0]['id'] ."')";
-        searchListe(false, $wheresider);
+        $sider = searchListe(false, $wheresider);
     } else {
         //Full search
-        $wheresider = '';
+        $wheresider = "";
         if (@$_GET['varenr']) {
-            $wheresider .= ' AND varenr LIKE \''.$_GET['varenr'].'%\'';
+            $wheresider .= " AND varenr LIKE '".$_GET['varenr']."%'";
         }
         if (@$_GET['minpris']) {
-            $wheresider .= ' AND pris > '.$_GET['minpris'];
+            $wheresider .= " AND pris > ".$_GET['minpris'];
         }
         if (@$_GET['maxpris']) {
-            $wheresider .= ' AND pris < '.$_GET['maxpris'];
+            $wheresider .= " AND pris < ".$_GET['maxpris'];
         }
         if (@$_GET['maerke']) {
             $wheresider .= " AND (`maerke` LIKE '%," .$_GET['maerke']
@@ -798,18 +768,51 @@ if (@$_GET['sog'] || @$GLOBALS['side']['inactive']) {
             ."') > 0";
         }
     }
+    $sider += searchListe(@$_GET['q'], $wheresider);
+    $sider = array_values($sider);
 
-    if (empty($start)) {
-        $start = "0";
+
+    //Draw the list
+    if (count($sider) === 1
+        && $GLOBALS['generatedcontent']['contenttype'] != 'brand'
+    ) {
+        ini_set('zlib.output_compression', '0');
+        header('HTTP/1.1 302 Found');
+
+        //TODO cache
+        $kat = $mysqli->fetchArray(
+            "
+            SELECT kat.id, kat.navn
+            FROM bind
+            JOIN kat ON kat.id = bind.kat
+            WHERE bind.`side` = " . $sider[0]['id'] . "
+            LIMIT 1
+            "
+        );
+
+        getUpdateTime('bind');
+        getUpdateTime('kat');
+
+        //TODO rawurlencode $url (PIE doesn't do it buy it self :(
+        $url = '';
+        if (!empty($kat[0]['id'])) {
+            $url = '/kat'.$kat[0]['id'] . '-'
+            . $folderName = rawurlencode(clearFileName($kat[0]['navn']));
+        }
+        $url .= '/side' . $sider[0]['id'] . '-'
+        . rawurlencode(clearFileName($sider[0]['navn'])) . '.html';
+
+        //redirect til en side
+        header('Location: ' . $url);
+        die();
+    } else {
+        foreach ($sider as $value) {
+            $GLOBALS['generatedcontent']['activmenu'] = 0;
+            $value['text'] = strip_tags($value['text']);
+            vare($value, $value['navn'], 1);
+        }
     }
-
-    if (empty($num)) {
-        $num = "10";
-    }
-
-    $limit =  ' LIMIT '.$start.' , '.$num;
-    include_once 'inc/liste.php';
-    searchListe(@$_GET['q'], $wheresider);
+    $GLOBALS['generatedcontent']['activmenu'] =  $temp_kat;
 
     $wherekat = '';
     if (@$_GET['sogikke']) {
@@ -827,7 +830,6 @@ if (@$_GET['sog'] || @$GLOBALS['side']['inactive']) {
     include_once 'inc/side.php';
     side();
 } elseif (@$activMenu > 0) {
-    include_once 'inc/liste.php';
     liste();
     if (@$GLOBALS['side']['id'] > 0) {
         $GLOBALS['generatedcontent']['contenttype'] = 'product';
@@ -856,24 +858,12 @@ if (@$_GET['sog'] || @$GLOBALS['side']['inactive']) {
 if (@$maerkeet) {
     $GLOBALS['generatedcontent']['title'] = $maerkeet[0]['navn'];
 } elseif (isset($GLOBALS['side']['navn'])) {
-    $GLOBALS['generatedcontent']['title'] = htmlspecialchars(
-        $GLOBALS['side']['navn'],
-        ENT_COMPAT | ENT_XHTML,
-        'UTF-8'
-    );
+    $GLOBALS['generatedcontent']['title'] = xhtmlEsc($GLOBALS['side']['navn']);
     //Add page title to keywords
     if (@$GLOBALS['generatedcontent']['keywords']) {
-        $GLOBALS['generatedcontent']['keywords'] .= "," . htmlspecialchars(
-            $GLOBALS['side']['navn'],
-            ENT_COMPAT | ENT_XHTML,
-            'UTF-8'
-        );
+        $GLOBALS['generatedcontent']['keywords'] .= "," . xhtmlEsc($GLOBALS['side']['navn']);
     } else {
-        $GLOBALS['generatedcontent']['keywords'] = htmlspecialchars(
-            $GLOBALS['side']['navn'],
-            ENT_COMPAT | ENT_XHTML,
-            'UTF-8'
-        );
+        $GLOBALS['generatedcontent']['keywords'] = xhtmlEsc($GLOBALS['side']['navn']);
     }
 } elseif (@$GLOBALS['side']['id'] && empty($GLOBALS['side']['inactive'])) {
     $sider_navn = $mysqli->fetchArray(
@@ -887,11 +877,7 @@ if (@$maerkeet) {
 
     $GLOBALS['cache']['updatetime']['sider'] = $sider_navn[0]['dato'];
 
-    $GLOBALS['generatedcontent']['title'] = htmlspecialchars(
-        $sider_navn[0]['navn'],
-        ENT_COMPAT | ENT_XHTML,
-        'UTF-8'
-    );
+    $GLOBALS['generatedcontent']['title'] = xhtmlEsc($sider_navn[0]['navn']);
 }
 
 if (empty($GLOBALS['generatedcontent']['title'])
@@ -911,11 +897,7 @@ if (empty($GLOBALS['generatedcontent']['title'])
         $GLOBALS['cache']['kats'][$activMenu] = (int) @$kat_navn[0];
     }
 
-    $GLOBALS['generatedcontent']['title'] = htmlspecialchars(
-        $GLOBALS['cache']['kats'][$activMenu]['navn'],
-        ENT_COMPAT | ENT_XHTML,
-        'UTF-8'
-    );
+    $GLOBALS['generatedcontent']['title'] = xhtmlEsc($GLOBALS['cache']['kats'][$activMenu]['navn']);
 
     //TODO add to url
     if (!empty($GLOBALS['cache']['kats'][$activMenu]['icon'])) {
@@ -930,41 +912,23 @@ if (empty($GLOBALS['generatedcontent']['title'])
     }
 
     if (!empty($icon[0]['alt']) && $GLOBALS['generatedcontent']['title']) {
-        $GLOBALS['generatedcontent']['title'] .= ' ' . htmlspecialchars(
-            $icon[0]['alt'],
-            ENT_COMPAT | ENT_XHTML,
-            'UTF-8'
-        );
+        $GLOBALS['generatedcontent']['title'] .= ' ' . xhtmlEsc($icon[0]['alt']);
     } elseif (!empty($icon[0]['alt'])) {
-        $GLOBALS['generatedcontent']['title'] = htmlspecialchars(
-            $icon[0]['alt'],
-            ENT_COMPAT | ENT_XHTML,
-            'UTF-8'
-        );
+        $GLOBALS['generatedcontent']['title'] = xhtmlEsc($icon[0]['alt']);
     } elseif (!$GLOBALS['generatedcontent']['title']) {
         $icon[0]['path'] = pathinfo($GLOBALS['cache']['kats'][$activMenu]['icon']);
-        $GLOBALS['generatedcontent']['title'] = htmlspecialchars(
+        $GLOBALS['generatedcontent']['title'] = xhtmlEsc(
             ucfirst(
                 preg_replace('/-/ui', ' ', $icon[0]['path']['filename'])
-            ),
-            ENT_COMPAT | ENT_XHTML,
-            'UTF-8'
+            )
         );
     }
 } elseif (empty($GLOBALS['generatedcontent']['title']) && @$_GET['sog'] == 1) {
-    $GLOBALS['generatedcontent']['title'] = 'Søg på ' . htmlspecialchars(
-        $GLOBALS['_config']['site_name'],
-        ENT_COMPAT | ENT_XHTML,
-        'UTF-8'
-    );
+    $GLOBALS['generatedcontent']['title'] = 'Søg på ' . xhtmlEsc($GLOBALS['_config']['site_name']);
 }
 
 if (empty($GLOBALS['generatedcontent']['title'])) {
-    $GLOBALS['generatedcontent']['title'] = htmlspecialchars(
-        $GLOBALS['_config']['site_name'],
-        ENT_COMPAT | ENT_XHTML,
-        'UTF-8'
-    );
+    $GLOBALS['generatedcontent']['title'] = xhtmlEsc($GLOBALS['_config']['site_name']);
 }
 //end title
 

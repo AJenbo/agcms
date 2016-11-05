@@ -684,10 +684,9 @@ function searchfiles(string $qpath, string $qalt, string $qmime): array
     $html = '';
     $javascript = '';
     while ($filenumber < $filecount) {
+        $limit = 250;
         if ($filecount-$filenumber<250) {
             $limit = $filecount-$filenumber;
-        } else {
-            $limit = 250;
         }
         //TODO return error if befor time out or mem exceded
         //TODO set header() to internal error at the start of all ajax request and 200 (OK) at the end and make javascript display an error if the returned isn't 200;
@@ -726,8 +725,8 @@ function edit_alt(int $id, string $alt): array
         foreach ($sider as $value) {
             //TODO move this to db fixer to test for missing alt="" in img
             /*preg_match_all('/<img[^>]+/?>/ui', $value, $matches);*/
-            $value['text'] = preg_replace('/(<img[^>]+src="'.addcslashes(str_replace('.', '[.]', $file[0]['path']), '/').'"[^>]+alt=)"[^"]*"([^>]*>)/iu', '\1"'.htmlspecialchars($alt, ENT_COMPAT | ENT_XHTML, 'UTF-8').'"\2', $value['text']);
-            $value['text'] = preg_replace('/(<img[^>]+alt=)"[^"]*"([^>]+src="'.addcslashes(str_replace('.', '[.]', $file[0]['path']), '/').'"[^>]*>)/iu', '\1"'.htmlspecialchars($alt, ENT_COMPAT | ENT_XHTML, 'UTF-8').'"\2', $value['text']);
+            $value['text'] = preg_replace('/(<img[^>]+src="'.addcslashes(str_replace('.', '[.]', $file[0]['path']), '/').'"[^>]+alt=)"[^"]*"([^>]*>)/iu', '\1"'.xhtmlEsc($alt).'"\2', $value['text']);
+            $value['text'] = preg_replace('/(<img[^>]+alt=)"[^"]*"([^>]+src="'.addcslashes(str_replace('.', '[.]', $file[0]['path']), '/').'"[^>]*>)/iu', '\1"'.xhtmlEsc($alt).'"\2', $value['text']);
             $mysqli->query("UPDATE `sider` SET `text` = '".$value['text']."' WHERE `id` = ".$value['id']." LIMIT 1");
         }
     }

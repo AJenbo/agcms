@@ -370,7 +370,7 @@ if (!empty($_SESSION['faktura']['quantities'])) {
         }
         $GLOBALS['generatedcontent']['text'] .= '<p>' . _('Note:')
         . '<br /><textarea style="width:100%;" name="note">'
-        . htmlspecialchars($_SESSION['faktura']['note'], ENT_COMPAT | ENT_XHTML, 'UTF-8')
+        . xhtmlEsc($_SESSION['faktura']['note'])
         . '</textarea><p>';
 
         $GLOBALS['generatedcontent']['text'] .= '<input value="' . _('Continue')
@@ -540,7 +540,7 @@ if (!empty($_SESSION['faktura']['quantities'])) {
             if ($_SESSION['faktura']['land'] == $code) {
                 $GLOBALS['generatedcontent']['text'] .= ' selected="selected"';
             }
-            $GLOBALS['generatedcontent']['text'] .= '>'.htmlspecialchars($country, ENT_COMPAT | ENT_XHTML, 'UTF-8').'</option>';
+            $GLOBALS['generatedcontent']['text'] .= '>'.xhtmlEsc($country).'</option>';
         }
         $GLOBALS['generatedcontent']['text'] .= '</select></td>
             <td>';
@@ -650,7 +650,7 @@ if (!empty($_SESSION['faktura']['quantities'])) {
             if ($_SESSION['faktura']['postcountry'] == $code) {
                 $GLOBALS['generatedcontent']['text'] .= ' selected="selected"';
             }
-            $GLOBALS['generatedcontent']['text'] .= '>'.htmlspecialchars($country, ENT_COMPAT | ENT_XHTML, 'UTF-8').'</option>';
+            $GLOBALS['generatedcontent']['text'] .= '>'.xhtmlEsc($country).'</option>';
         }
         $GLOBALS['generatedcontent']['text'] .= '</select></td><td>';
         if (!empty($rejected['postcountry'])) {
@@ -691,9 +691,9 @@ if (!empty($_SESSION['faktura']['quantities'])) {
             $_SESSION['faktura']['note'] = _('Please send the order to by mail express.')."\n".$_SESSION['faktura']['note'];
         }
 
-        $quantities = array_map('htmlspecialchars', $_SESSION['faktura']['quantities']);
-        $products = array_map('htmlspecialchars', $_SESSION['faktura']['products']);
-        $values = array_map('htmlspecialchars', $_SESSION['faktura']['values']);
+        $quantities = array_map('xhtmlEsc', $_SESSION['faktura']['quantities']);
+        $products = array_map('xhtmlEsc', $_SESSION['faktura']['products']);
+        $values = array_map('xhtmlEsc', $_SESSION['faktura']['values']);
 
         $sql = "INSERT `fakturas` SET";
         $sql .= " `quantities` = '".addcslashes(implode('<', $_SESSION['faktura']['quantities']), "'\\")."',";

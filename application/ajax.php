@@ -11,12 +11,15 @@
  * @link     http://www.arms-gallery.dk/
  */
 
+mb_language('uni');
+mb_detect_order('UTF-8, ISO-8859-1');
+mb_internal_encoding('UTF-8');
+date_default_timezone_set('Europe/Copenhagen');
+
 require_once 'inc/sajax.php';
-require_once 'inc/header.php';
 require_once 'inc/functions.php';
 require_once 'inc/config.php';
 require_once 'inc/mysqli.php';
-require_once 'inc/getaddress.php';
 
 $mysqli = new Simple_Mysqli(
     $GLOBALS['_config']['mysql_server'],
@@ -61,7 +64,6 @@ $updatetime = 0;
 function getKat(int $id, bool $sort): array
 {
     global $mysqli;
-    include_once $_SERVER['DOCUMENT_ROOT'] . '/inc/liste.php';
     $GLOBALS['generatedcontent']['activmenu'] = $id;
 
     //check browser cache
@@ -114,8 +116,8 @@ function getKat(int $id, bool $sort): array
     }
 
     return array(
-        "id" => 'kat' . $GLOBALS['generatedcontent']['activmenu'],
-        "html" => katHTML($bind, $name)
+        'id' => 'kat' . $GLOBALS['generatedcontent']['activmenu'],
+        'html' => katHTML($bind, $name, $GLOBALS['generatedcontent']['activmenu'])
     );
 }
 

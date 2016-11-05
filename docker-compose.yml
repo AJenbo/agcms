@@ -7,7 +7,7 @@ php:
   links:
   - mariadb
   volumes:
-  - ./:/var/www/html
+  - ./application:/var/www/html
   - ./docker/php:/usr/local/etc/php
 
 mariadb:

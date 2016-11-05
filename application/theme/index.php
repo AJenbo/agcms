@@ -155,7 +155,7 @@ echo date('d-m-Y H:i:s', $GLOBALS['generatedcontent']['datetime']);
 ?></div><?php
 }
     ?><h1><?php
-    echo htmlspecialchars($GLOBALS['generatedcontent']['headline']);
+    echo xhtmlEsc($GLOBALS['generatedcontent']['headline']);
     ?></h1><?php
 
     echo $GLOBALS['generatedcontent']['text'];
@@ -164,7 +164,7 @@ echo date('d-m-Y H:i:s', $GLOBALS['generatedcontent']['datetime']);
     ?><div id="innercontainer"><div id="date"><?php
     echo date('d-m-Y H:i:s', $GLOBALS['generatedcontent']['datetime']);
     ?></div><h1><?php
-    echo htmlspecialchars($GLOBALS['generatedcontent']['headline']);
+    echo xhtmlEsc($GLOBALS['generatedcontent']['headline']);
 if ($GLOBALS['generatedcontent']['serial']) {
     ?> <span style="font-weight:normal; font-size:13px">SKU: <?php
 echo $GLOBALS['generatedcontent']['serial'];
@@ -215,7 +215,7 @@ if ($value['icon']) {
     ?><br /><img src="<?php
 echo $value['icon'];
 ?>" alt="<?php
-echo htmlspecialchars($value['name'], null, 'UTF-8');
+echo xhtmlEsc($value['name']);
 ?>" title="" /><?php
 }
             ?></a><?php
@@ -246,7 +246,7 @@ if ($value['icon']) {
     ?><br /><img src="<?php
 echo $value['icon'];
 ?>" alt="<?php
-echo htmlspecialchars($value['name'], null, 'UTF-8');
+echo xhtmlEsc($value['name']);
 ?>" title="" /><?php
 }
 
@@ -276,11 +276,7 @@ if ($GLOBALS['generatedcontent']['brand']['icon']) {
     ?><br /><img src="<?php
 echo $GLOBALS['generatedcontent']['brand']['icon'];
 ?>" alt="<?php
-echo htmlspecialchars(
-    $GLOBALS['generatedcontent']['brand']['name'],
-    null,
-    'UTF-8'
-);
+echo xhtmlEsc($GLOBALS['generatedcontent']['brand']['name']);
 ?>" title="" /><?php
 }
 if ($GLOBALS['generatedcontent']['brand']['xlink']) {
@@ -307,7 +303,7 @@ if ($value['icon']) {
     ?><img src="<?php
 echo $value['icon'];
 ?>" alt="<?php
-echo htmlspecialchars($value['name'], null, 'UTF-8');
+echo xhtmlEsc($value['name']);
 ?>" title="" /><br /><?php
 }
 echo $value['name'];

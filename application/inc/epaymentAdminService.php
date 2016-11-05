@@ -16,11 +16,11 @@ class epaymentAdminService
     private $_merchantId;
     private $_amount;
     private $_soapClient;
-    public $id = 0;
-    public $Authorized = false;
-    public $Error = false;
-    public $Annulled = false;
-    public $AmountCaptured = 0;
+    private $id = 0;
+    private $Authorized = false;
+    private $Error = false;
+    private $Annulled = false;
+    private $AmountCaptured = 0;
 
     /**
      * Setup the class variables for initialization
@@ -28,50 +28,53 @@ class epaymentAdminService
      * @param string $merchantId Id provided by PBS identifying the shop
      * @param string $orderId    The order id
      */
-    function __construct(string $merchantId, string $orderId)
+    function __construct(string $merchantId, string $password, string $orderId)
     {
         $this->_merchantId = $merchantId;
+        $this->_password = $password;
         $this->_soapClient = new SoapClient(
             'https://ssl.ditonlinebetalingssystem.dk/remote/payment.asmx?WSDL'
         );
 
         $response = $this->_soapClient->gettransactionlist(
-            array(
-                'pwd' => $GLOBALS['_config']['pbspwd'],
+            [
+                'pwd' => $this->_password,
                 'merchantnumber' => $this->_merchantId,
                 'searchorderid' => $orderId,
                 'status' => 'PAYMENT_NEW',
                 'searchdatestart' => '2014-06-19T00:00:00+02:00',
                 'searchdateend' => date('c'),
                 'epayresponse' => true,
-            )
+            ]
         );
-
         if (empty($response->transactionInformationAry)) {
             $response = $this->_soapClient->gettransactionlist(
-                array(
-                    'pwd' => $GLOBALS['_config']['pbspwd'],
+                [
+                    'pwd' => $this->_password,
                     'merchantnumber' => $this->_merchantId,
                     'searchorderid' => $orderId,
                     'status' => 'PAYMENT_CAPTURED',
                     'searchdatestart' => '2014-06-19T00:00:00+02:00',
                     'searchdateend' => date('c'),
                     'epayresponse' => true,
-                )
+                ]
             );
-
+        }
+        if (empty($response->transactionInformationAry)) {
             $response = $this->_soapClient->gettransactionlist(
-                array(
-                    'pwd' => $GLOBALS['_config']['pbspwd'],
+                [
+                    'pwd' => $this->_password,
                     'merchantnumber' => $this->_merchantId,
                     'searchorderid' => $orderId,
                     'status' => 'PAYMENT_DELETED',
                     'searchdatestart' => '2014-06-19T00:00:00+02:00',
                     'searchdateend' => date('c'),
                     'epayresponse' => true,
-                )
+                ]
             );
-        } else {
+        }
+
+        if (!empty($response->transactionInformationAry)) {
             $info = $response->transactionInformationAry->TransactionInformationType;
 
             $this->id = $info->transactionid;
@@ -88,6 +91,46 @@ class epaymentAdminService
     }
 
     /**
+     * @return int
+     */
+    function getId(): int
+    {
+        return $this->id;
+    }
+
+    /**
+     * @return bool
+     */
+    function isAuthorized(): bool
+    {
+        return $this->Authorized;
+    }
+
+    /**
+     * @return bool
+     */
+    function hasError(): bool
+    {
+        return $this->Error;
+    }
+
+    /**
+     * @return bool
+     */
+    function isAnnulled(): bool
+    {
+        return $this->Annulled;
+    }
+
+    /**
+     * @return int
+     */
+    function getAmountCaptured(): int
+    {
+        return $this->AmountCaptured;
+    }
+
+    /**
      * Canncels a payment transation
      *
      * @param int $transactionId The identifyer for the transation
@@ -97,12 +140,12 @@ class epaymentAdminService
     function annul(): bool
     {
         $response = $this->_soapClient->delete(
-            array(
-                'pwd' => $GLOBALS['_config']['pbspwd'],
+            [
+                'pwd' => $this->_password,
                 'merchantnumber' => $this->_merchantId,
                 'transactionid' => $this->id,
                 'epayresponse' => true,
-            )
+            ]
         );
 
         if (!$response->deleteResult) {
@@ -130,7 +173,7 @@ class epaymentAdminService
         }
 
         if ($this->AmountCaptured) {
-            return true;
+            return true; // TODO can we not capture multiple times, should substract it form $amount?
         }
 
         if ($this->_amount < $amount || !$this->Authorized) {
@@ -138,14 +181,14 @@ class epaymentAdminService
         }
 
         $response = $this->_soapClient->capture(
-            array(
-                'pwd' => $GLOBALS['_config']['pbspwd'],
+            [
+                'pwd' => $this->_password,
                 'merchantnumber' => $this->_merchantId,
                 'transactionid' => $this->id,
                 'amount' => $amount,
                 'epayresponse' => true,
                 'pbsResponse' => true,
-            )
+            ]
         );
 
         if (!$response->captureResult) {

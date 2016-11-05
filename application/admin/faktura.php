@@ -72,10 +72,11 @@ if ($faktura['premoms']) {
 if ($faktura['id'] && $faktura['status'] != 'new') {
     $epayment = new epaymentAdminService(
         $GLOBALS['_config']['pbsid'],
+        $GLOBALS['_config']['pbspwd'],
         $GLOBALS['_config']['pbsfix'] . $faktura['id']
     );
 
-    if ($epayment->Annulled) {
+    if ($epayment->isAnnulled()) {
         //Annulled. The card payment has been deleted by the Merchant, prior to Acquisition.
         if (!in_array($faktura['status'], array('rejected', 'giro', 'cash', 'canceled'))) {
             $faktura['status'] = 'rejected';
@@ -87,9 +88,9 @@ if ($faktura['id'] && $faktura['status'] != 'new') {
         } else {
             //TODO warning
         }
-    } elseif ($epayment->AmountCaptured) {
+    } elseif ($epayment->getAmountCaptured()) {
         //The payment/order placement has been carried out: Paid.
-        if ($epayment->AmountCaptured / 100 != $faktura['amount']) {
+        if ($epayment->getAmountCaptured() / 100 != $faktura['amount']) {
             //TODO 'Det betalte beløb er ikke svarende til det opkrævede beløb!';
         } elseif (!in_array($faktura['status'], array('accepted', 'giro', 'cash'))) {
             $faktura['status'] = 'accepted';
@@ -101,7 +102,7 @@ if ($faktura['id'] && $faktura['status'] != 'new') {
         } else {
             //TODO warning
         }
-    } elseif ($epayment->Authorized) {
+    } elseif ($epayment->isAuthorized()) {
         //Authorised. The card payment is authorised and awaiting confirmation and Acquisition.
         if (!in_array($faktura['status'], array('pbsok', 'giro', 'cash'))) {
             $faktura['status'] = 'pbsok';
@@ -113,7 +114,7 @@ if ($faktura['id'] && $faktura['status'] != 'new') {
         } else {
             //TODO warning
         }
-    } elseif (!$epayment->id) {
+    } elseif (!$epayment->getId()) {
         if ($faktura['status'] == 'pbsok') {
             $faktura['status'] = 'locked';
             $mysqli->query(
@@ -518,12 +519,12 @@ function pbsconfirm(int $id)
     global $epayment;
 
     try {
-        $epayment->confirm();
+        $success = $epayment->confirm();
     } catch (SoapFault $e) {
         return array('error' => $e->faultstring);
     }
 
-    if (!$epayment->Error) {
+    if (!$epayment->hasError() || !$success) {
         $mysqli->query(
             "
             UPDATE `fakturas`
@@ -547,12 +548,12 @@ function annul(int $id)
     global $epayment;
 
     try {
-        $epayment->annul();
+        $success = $epayment->annul();
     } catch (SoapFault $e) {
         return array('error' => $e->faultstring);
     }
 
-    if (!$epayment->Error) {
+    if (!$epayment->hasError() || !$success) {
         $mysqli->query(
             "
             UPDATE `fakturas`
@@ -568,8 +569,6 @@ function annul(int $id)
         );
     }
 }
-
-require_once '../inc/getaddress.php';
 
 //$sajax_debug_mode = 1;
 sajax_export(
@@ -1022,14 +1021,14 @@ if ($faktura['status'] == 'accepted') {
         <p><strong><?php echo _('Note:'); ?></strong></p>
         <p class="note" style="width:350px"><?php
         if ($faktura['status'] != 'new') {
-            echo nl2br(htmlspecialchars($faktura['note'], ENT_COMPAT | ENT_XHTML, 'UTF-8'));
+            echo nl2br(xhtmlEsc($faktura['note']));
         }
 ?></p><?php
 $rows = count(explode("\n", $faktura['note']));
 $rows += 2;
 ?><textarea style="width:350px" name="note" id="note" rows="<?php echo $rows; ?>"><?php
 if ($faktura['status'] == 'new') {
-    echo htmlspecialchars($faktura['note'], ENT_COMPAT | ENT_XHTML, 'UTF-8');
+    echo xhtmlEsc($faktura['note']);
 }
 ?></textarea>
             </td>
@@ -1286,7 +1285,7 @@ foreach ($countries as $code => $country) {
 if ($faktura['land'] == $code) {
     echo ' selected="selected"';
 }
-?>><?php echo htmlspecialchars($country, ENT_COMPAT | ENT_XHTML, 'UTF-8'); ?></option><?php
+?>><?php echo xhtmlEsc($country); ?></option><?php
 }
     ?></select><?php
             } else {
@@ -1415,7 +1414,7 @@ if ($faktura['postcountry'] == $code) {
     echo ' selected="selected"';
 }
 ?>><?php
-echo htmlspecialchars($country, ENT_COMPAT | ENT_XHTML, 'UTF-8'); ?></option><?php
+echo xhtmlEsc($country); ?></option><?php
 }
         ?></select><?php
     } else {

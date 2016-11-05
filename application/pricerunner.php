@@ -11,10 +11,14 @@
  * @link     http://www.arms-gallery.dk/
  */
 
+mb_language('uni');
+mb_detect_order('UTF-8, ISO-8859-1');
+mb_internal_encoding('UTF-8');
+date_default_timezone_set('Europe/Copenhagen');
+
 require_once 'inc/config.php';
 require_once 'inc/mysqli.php';
 require_once 'inc/functions.php';
-require_once 'inc/header.php';
 
 $mysqli = new Simple_Mysqli(
     $GLOBALS['_config']['mysql_server'],
@@ -88,7 +92,7 @@ require_once 'inc/config.php';
 
 echo '<?xml version="1.0" encoding="utf-8"?><products>';
 for ($i=0; $i<count($sider); $i++) {
-    $name = htmlspecialchars($sider[$i]['navn'], ENT_COMPAT | ENT_XML1, 'UTF-8');
+    $name = htmlspecialchars($sider[$i]['navn'], ENT_COMPAT | ENT_XML1);
     if (!$sider[$i]['navn'] = trim($name)) {
         continue;
     }
@@ -98,7 +102,7 @@ for ($i=0; $i<count($sider); $i++) {
         <sku>'.$sider[$i]['id'].'</sku>
         <title>'.$sider[$i]['navn'].'</title>';
     if (trim($sider[$i]['varenr'])) {
-        echo '<companysku>' . htmlspecialchars($sider[$i]['varenr'], ENT_COMPAT | ENT_XML1, 'UTF-8') . '</companysku>';
+        echo '<companysku>' . htmlspecialchars($sider[$i]['varenr'], ENT_COMPAT | ENT_XML1) . '</companysku>';
     }
     echo '<price>' . $sider[$i]['pris'] . ',00</price>
     <img>' . $GLOBALS['_config']['base_url'] . $sider[$i]['billed'] . '</img>
@@ -136,19 +140,11 @@ for ($i=0; $i<count($sider); $i++) {
             $cleaned = preg_replace($search, $replace, $maerker[$imaerker]['navn']);
             $cleaned = trim($cleaned);
             if ($category2 = $cleaned) {
-                $category[] = htmlspecialchars(
-                    $category2,
-                    ENT_NOQUOTES | ENT_XML1,
-                    'UTF-8'
-                );
+                $category[] = htmlspecialchars($category2, ENT_NOQUOTES | ENT_XML1);
             }
         }
         echo '<company>';
-        echo htmlspecialchars(
-            $category2,
-            ENT_NOQUOTES | ENT_XML1,
-            'UTF-8'
-        );
+        echo htmlspecialchars($category2, ENT_NOQUOTES | ENT_XML1);
         echo '</company>';
     }
 
@@ -194,11 +190,7 @@ for ($i=0; $i<count($sider); $i++) {
             $cleaned = preg_replace($search, $replace, @$kat[0]['navn']);
             $cleaned = trim($cleaned);
             if ($category2 = $cleaned) {
-                $category[] = htmlspecialchars(
-                    $category2,
-                    ENT_NOQUOTES | ENT_XML1,
-                    'UTF-8'
-                );
+                $category[] = htmlspecialchars($category2, ENT_NOQUOTES | ENT_XML1);
             }
         }
     }

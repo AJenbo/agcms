@@ -11,10 +11,14 @@
  * @link     http://www.arms-gallery.dk/
  */
 
+mb_language('uni');
+mb_detect_order('UTF-8, ISO-8859-1');
+mb_internal_encoding('UTF-8');
+date_default_timezone_set('Europe/Copenhagen');
+
 require_once 'inc/config.php';
 require_once 'inc/mysqli.php';
 require_once 'inc/functions.php';
-require_once 'inc/header.php';
 
 $mysqli = new Simple_Mysqli(
     $GLOBALS['_config']['mysql_server'],
@@ -40,6 +44,7 @@ if (isset($_SERVER['HTTP_IF_MODIFIED_SINCE'])) {
     $time = strtotime(stripslashes($_SERVER['HTTP_IF_MODIFIED_SINCE']));
 }
 
+$limit = '';
 if ($time > 1000000000) {
     $where = " WHERE `dato` > '" . date('Y-m-d h:i:s', $time) . "'";
 } else {
@@ -60,7 +65,7 @@ $sider = $mysqli->fetchArray(
     JOIN kat ON (kat.id = kat)
     " . @$where . "
     GROUP BY id
-    ORDER BY - dato" . @$limit
+    ORDER BY - dato" . $limit
 );
 
 //check for inactive
@@ -107,11 +112,7 @@ echo '<?xml version="1.0" encoding="utf-8"?>
     <managingEditor>' . $GLOBALS['_config']['email'][0] . ' ('
     . $GLOBALS['_config']['site_name'] . ')</managingEditor>';
 for ($i = 0; $i < count($sider); $i++) {
-    htmlspecialchars(
-        $sider[$i]['navn'],
-        ENT_COMPAT | ENT_XML1,
-        'UTF-8'
-    );
+    htmlspecialchars($sider[$i]['navn'], ENT_COMPAT | ENT_XML1);
     if (!$sider[$i]['navn'] = trim($name)) {
         $sider[$i]['navn'] = $GLOBALS['_config']['site_name'];
     }
@@ -139,7 +140,7 @@ for ($i = 0; $i < count($sider); $i++) {
     }
 
     $cleaned = trim(preg_replace($search, $replace, $sideText[0]['text']));
-    echo htmlspecialchars($cleaned, ENT_COMPAT | ENT_XML1, 'UTF-8') . '</description>
+    echo htmlspecialchars($cleaned, ENT_COMPAT | ENT_XML1) . '</description>
     <pubDate>' . gmdate('D, d M Y H:i:s', $sider[$i]['dato']) . ' GMT</pubDate>
     <guid>' . $GLOBALS['_config']['base_url'] . '/kat' . $sider[$i]['kat_id'] . '-'
     . rawurlencode(clearFileName($sider[$i]['kat_navn'])) . '/side'
@@ -194,11 +195,7 @@ for ($i = 0; $i < count($sider); $i++) {
             $cleaned = trim(preg_replace($search, $replace, @$kat[0]['navn']));
             if ($category = $cleaned) {
                 echo '<category>';
-                echo htmlspecialchars(
-                    $category,
-                    ENT_NOQUOTES | ENT_XML1,
-                    'UTF-8'
-                );
+                echo htmlspecialchars($category, ENT_NOQUOTES | ENT_XML1);
                 echo '</category>';
             }
         }
@@ -226,11 +223,7 @@ for ($i = 0; $i < count($sider); $i++) {
             $cleaned = trim($cleanName);
             if ($category = $cleaned) {
                 echo '<category>';
-                echo htmlspecialchars(
-                    $category,
-                    ENT_NOQUOTES | ENT_XML1,
-                    'UTF-8'
-                );
+                echo htmlspecialchars($category, ENT_NOQUOTES | ENT_XML1);
                 echo '</category>';
             }
         }
