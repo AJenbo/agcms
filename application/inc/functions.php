@@ -36,7 +36,7 @@ function db()
  *
  * @return bool
  */
-function validemail(string $email): bool
+function valideMail(string $email): bool
 {
     $user = preg_replace('/@.+$/u', '', $email);
     $domain = preg_replace('/^.+?@/u', '', $email);

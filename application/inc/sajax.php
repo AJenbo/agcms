@@ -77,9 +77,9 @@ class SAJAX
     {
         static $jsHasBeenShown = false;
         if (!$jsHasBeenShown) {
-            echo 'sajax_debug_mode = ' . (self::$debugMode ? 'true' : 'false') . ';sajax_failure_redirect = \'' . self::$failureRedirect . '\';';
+            echo 'sajax_debug_mode=' . (self::$debugMode ? 'true' : 'false') . ';sajax_failure_redirect = "' . self::$failureRedirect . '";';
             foreach (self::$functions as $function => $options) {
-                echo 'function x_' . $function . '() {return sajax_do_call(\'' . $function . '\', arguments, \'' . $options['method'] . '\', ' . ($options['asynchronous'] ? 'true' : 'false') . ', \'' . $options['uri'] . '\');}';
+                echo 'function x_' . $function . '() {return sajax_do_call("' . $function . '", arguments, "' . $options['method'] . '", ' . ($options['asynchronous'] ? 'true' : 'false') . ', "' . $options['uri'] . '");}';
             }
             $jsHasBeenShown = true;
         }
@@ -89,7 +89,7 @@ class SAJAX
     {
         foreach ($functions as $function => $options) {
             if (!function_exists($function)) {
-                throw new Exception('SAJAX: Cannot export function that doesn\'t exists!');
+                throw new Exception('SAJAX: Cannot export "' . $function . '" as it doesn\'t exists!');
             }
 
             if (empty($options['method'])) {

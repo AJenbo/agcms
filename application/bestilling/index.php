@@ -160,7 +160,7 @@ function validate(array $values): array
 {
     $rejected = array();
 
-    if (!validemail(@$values['email'])) {
+    if (!valideMail(@$values['email'])) {
         $rejected['email'] = true;
     }
     if (empty($values['navn'])) {

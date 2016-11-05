@@ -46,6 +46,8 @@ function saveImage(string $path, itn $cropX, int $cropY, int $cropW, int $cropH,
 SAJAX::export(['saveImage' => ['method' => 'POST']]);
 SAJAX::handleClientRequest();
 
+$imagesize = @getimagesize($_SERVER['DOCUMENT_ROOT'].$_GET['path']);
+
 ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
@@ -85,10 +87,8 @@ JSON.parse = JSON.parse || function(jsonsring) { return jsonsring.evalJSON(true)
 <script type="text/javascript" src="javascript/lib/php.min.js"></script>
 <script type="text/javascript" src="/javascript/sajax.js"></script>
 <script type="text/javascript"><!--
-<?php SAJAX::showJavascript();
-$imagesize = @getimagesize($_SERVER['DOCUMENT_ROOT'].$_GET['path']);
+<?php SAJAX::showJavascript(); ?>
 
-?>
 var id = <?php echo $_GET['id'] ?>;
 var mode = '<?php echo $_GET['mode'] ?>';
 var filename = '<?php

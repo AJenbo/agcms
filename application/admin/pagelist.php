@@ -369,6 +369,7 @@ SAJAX::handleClientRequest();
 <title>Liste af sider</title>
 <script type="text/javascript"><!--
 <?php SAJAX::showJavascript(); ?>
+
 --></script>
 <script type="text/javascript" src="javascript/lib/php.min.js"></script>
 <script type="text/javascript" src="javascript/lib/prototype.js"></script>

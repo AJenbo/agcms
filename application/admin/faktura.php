@@ -251,7 +251,7 @@ function save(int $id, string $type, array $updates): array
     }
 
     if ($type == 'email') {
-        if (!validemail($faktura['email'])) {
+        if (!valideMail($faktura['email'])) {
             return array('error' => _('E-mail address is not valid!'));
         }
         if (!$faktura['department'] && count($GLOBALS['_config']['email']) > 1) {
@@ -368,7 +368,7 @@ function sendReminder(int $id): array
         return array('error' => _('You can not send a reminder until the invoice is sent!'));
     }
 
-    if (!validemail($faktura['email'])) {
+    if (!valideMail($faktura['email'])) {
         return array('error' => _('E-mail address is not valid!'));
     }
 
@@ -550,12 +550,11 @@ SAJAX::export(
         'annul'        => ['method' => 'POST'],
         'copytonew'    => ['method' => 'POST'],
         'getAddress'   => ['method' => 'GET'],
-        'loweramount'  => ['method' => 'POST'],
         'newfaktura'   => ['method' => 'POST'],
         'pbsconfirm'   => ['method' => 'POST'],
         'save'         => ['method' => 'POST'],
         'sendReminder' => ['method' => 'GET'],
-        'validemail'   => ['method' => 'GET'],
+        'valideMail'   => ['method' => 'GET'],
     ]
 );
 SAJAX::handleClientRequest();
@@ -583,6 +582,7 @@ JSON.parse = JSON.parse || function(jsonsring) { return jsonsring.evalJSON(true)
 <script type="text/javascript" src="/javascript/sajax.js"></script>
 <script type="text/javascript"><!--
 <?php SAJAX::showJavascript(); ?>
+
 var id = <?php echo $faktura['id']; ?>;
 
 function newfaktura()
@@ -779,13 +779,6 @@ function annul()
     x_annul(id, reload_r);
 }
 
-function loweramount()
-{
-    $('loading').style.visibility = '';
-    //TODO save comment
-    x_loweramount(id, $('newamount').value, reload_r);
-}
-
 function reload_r(date)
 {
     if (date['error']) {
@@ -901,7 +894,7 @@ function save_r(date)
 var validemailajaxcall;
 var lastemail;
 
-function validemail()
+function valideMail()
 {
     if ($('emaillink')) {
         if ($('email').value.match('^[A-z0-9_.-]+@([A-z0-9-]+\.)+[A-z0-9-]+$')) {
@@ -910,18 +903,18 @@ function validemail()
                 if (validemailajaxcall)
                     sajax_cancel(validemailajaxcall);
                 $('loading').style.visibility = '';
-                validemail_r(false);
-                validemailajaxcall = x_validemail($('email').value, validemail_r);
+                valideMail_r(false);
+                validemailajaxcall = x_valideMail($('email').value, valideMail_r);
             }
         } else {
-            validemail_r(false);
+            valideMail_r(false);
         }
     }
 }
 
-function validemail_r(validemail)
+function valideMail_r(valideMail)
 {
-    if (validemail) {
+    if (valideMail) {
         $('emaillink').style.display = '';
     } else {
         $('emaillink').style.display = 'none';
@@ -963,7 +956,7 @@ var status = '<?php echo $faktura['status']; ?>';
 </head><?php
 echo '<body onload="';
 if ($faktura['status'] == 'new') {
-    echo 'showhidealtpost($(\'altpost\').checked); prisUpdate(); validemail();';
+    echo 'showhidealtpost($(\'altpost\').checked); prisUpdate(); valideMail();';
 }
 echo '$(\'loading\').style.visibility = \'hidden\';">';
 ?><div id="canvas"><div id="web"><table style="float:right;"><?php
@@ -1184,7 +1177,7 @@ if ($faktura['department'] == $department) {
         <tr>
             <td><?php echo _('E-mail:'); ?></td>
             <td><?php if ($faktura['status'] == 'new') { ?>
-                <input name="email" id="email" onchange="validemail();" onkeyup="validemail();" value="<?php echo $faktura['email'] ?>" />
+                <input name="email" id="email" onchange="valideMail();" onkeyup="valideMail();" value="<?php echo $faktura['email'] ?>" />
                 <?php
 } else {
     echo '<a href="mailto:'.$faktura['email'].'">'.$faktura['email'].'</a>';
@@ -1511,14 +1504,6 @@ if (!in_array($faktura['status'], array('canceled', 'new', 'accepted'))) {
 if ($faktura['status'] == 'pbsok') {
     $activityButtons[] = '<li><a onclick="pbsconfirm(); return false;"><img src="images/money.png" alt="" width="16" height="16" /> '._('Expedite').'</a></li>';
     $activityButtons[] = '<li><a onclick="annul(); return false;"><img src="images/bin.png" alt="" width="16" height="16" /> '._('Reject').'</a></li>';
-    /*
-    TODO
-        ?><tr>
-            <td><input type="button" value="<?php echo _('Koriger beløb:'); ?>" onclick="loweramount();" /></td>
-            <td><input name="newamount" id="newamount" value="<?php echo number_format(max(0, $faktura['amount']), 2, ',', ''); ?>" size="9" /></td>
-        </tr>
-    <?php
-    */
 }
 $activityButtons[] = '<li><a onclick="save(); return false;"><img src="images/table_save.png" alt="" width="16" height="16" /> '._('Save').'</a></li>';
 if ($faktura['status'] == 'new') {
@@ -1537,7 +1522,7 @@ if (!in_array($faktura['status'], array('canceled', 'pbsok', 'accepted', 'giro',
 
 if (!in_array($faktura['status'], array('giro', 'cash', 'pbsok', 'accepted', 'canceled', 'rejected'))) {
     if (!$faktura['sendt']) {
-        if (validemail($faktura['email'])) {
+        if (valideMail($faktura['email'])) {
             $activityButtons[] = '<li id="emaillink"><a href="#" onclick="save(\'email\'); return false;"><img height="16" width="16" title="'._('Send to customer').'" alt="" src="images/email_go.png"/> '._('Send').'</a></li>';
         } else {
             $activityButtons[] = '<li id="emaillink" style="display:none;"><a href="#" onclick="save(\'email\'); return false;"><img height="16" width="16" title="'._('Send to customer').'" alt="" src="images/email_go.png"/> '._('Send').'</a></li>';

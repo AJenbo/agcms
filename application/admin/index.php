@@ -12,8 +12,8 @@ textdomain('agcms');
 ini_set('zlib.output_compression', 1);
 
 require_once $_SERVER['DOCUMENT_ROOT'] . '/admin/inc/logon.php';
+require_once $_SERVER['DOCUMENT_ROOT'] . '/admin/inc/functions.php';
 require_once $_SERVER['DOCUMENT_ROOT'] . '/admin/inc/emails.php';
-require_once $_SERVER['DOCUMENT_ROOT'] . '/inc/functions.php';
 require_once $_SERVER['DOCUMENT_ROOT'] . '/inc/imap.php';
 
 /**
@@ -778,33 +778,13 @@ function get_db_error(): string
     return $html;
 }
 
-/**
- * Checks if email an address looks valid
- *
- * @param string $email The email address to check
- *
- * @return bool
- */
-function valide_mail(string $email): bool
-{
-    //_An-._E-mail@test-domain.test.dk
-    if ($email
-        && preg_match('/^[[:word:]0-9-_.]+@([[:lower:]0-9-]+\.)+[[:lower:]0-9-]+$/u', $email)
-        && !preg_match('/@\S[.]{2}/u', $email)
-    ) {
-        return true;
-    } else {
-        return false;
-    }
-}
-
 function get_subscriptions_with_bad_emails(): string
 {
     $html = '';
     $errors = 0;
     $emails = db()->fetchArray("SELECT `id`, `email` FROM `email` WHERE `email` != ''");
     foreach ($emails as $email) {
-        if (!valide_mail($email['email'])) {
+        if (!valideMail($email['email'])) {
             $html .= '<a href="?side=editContact&id='.$email['id'].'">'.sprintf(_('E-mail: %s #%d is not valid'), $email['email'], $email['id']).'</a><br />';
         }
     }
@@ -1834,57 +1814,58 @@ $kattree = array();
 SAJAX::$requestType = 'POST';
 SAJAX::export(
     [
-        'countEmailTo'                     => ['method' => 'GET'],
-        'get_mail_size'                    => ['method' => 'GET'],
-        'getnykat'                         => ['method' => 'GET'],
-        'getSiteTree'                      => ['method' => 'GET'],
-        'kat_expand'                       => ['method' => 'GET'],
-        'katspath'                         => ['method' => 'GET'],
-        'search'                           => ['method' => 'GET'],
-        'siteList_expand'                  => ['method' => 'GET'],
-        'check_file_names'                 => ['method' => 'GET', 'asynchronous' => false],
-        'check_file_paths'                 => ['method' => 'GET', 'asynchronous' => false],
-        'get_db_size'                      => ['method' => 'GET', 'asynchronous' => false],
-        'get_looping_cats'                 => ['method' => 'GET', 'asynchronous' => false],
-        'get_orphan_cats'                  => ['method' => 'GET', 'asynchronous' => false],
-        'get_orphan_lists'                 => ['method' => 'GET', 'asynchronous' => false],
-        'get_orphan_pages'                 => ['method' => 'GET', 'asynchronous' => false],
-        'get_orphan_rows'                  => ['method' => 'GET', 'asynchronous' => false],
-        'get_pages_with_mismatch_bindings' => ['method' => 'GET', 'asynchronous' => false],
-        'get_size_of_files'                => ['method' => 'GET', 'asynchronous' => false],
-        'bind'                             => ['method' => 'POST'],
-        'deleteContact'                    => ['method' => 'POST'],
-        'listRemoveRow'                    => ['method' => 'POST'],
-        'listSavetRow'                     => ['method' => 'POST'],
-        'makeNewList'                      => ['method' => 'POST'],
-        'movekat'                          => ['method' => 'POST'],
-        'opretSide'                        => ['method' => 'POST'],
-        'renamekat'                        => ['method' => 'POST'],
-        'saveEmail'                        => ['method' => 'POST'],
-        'savekrav'                         => ['method' => 'POST'],
-        'saveListOrder'                    => ['method' => 'POST'],
-        'save_ny_kat'                      => ['method' => 'POST'],
-        'save_ny_maerke'                   => ['method' => 'POST'],
-        'sendEmail'                        => ['method' => 'POST'],
-        'sletbind'                         => ['method' => 'POST'],
-        'sletkat'                          => ['method' => 'POST'],
-        'sletkrav'                         => ['method' => 'POST'],
-        'sletmaerke'                       => ['method' => 'POST'],
-        'sletSide'                         => ['method' => 'POST'],
-        'sogogerstat'                      => ['method' => 'POST'],
-        'updateContact'                    => ['method' => 'POST'],
-        'updateForside'                    => ['method' => 'POST'],
-        'updateKat'                        => ['method' => 'POST'],
-        'updatemaerke'                     => ['method' => 'POST'],
-        'updateSide'                       => ['method' => 'POST'],
-        'updateSpecial'                    => ['method' => 'POST'],
-        'deleteTempfiles'                  => ['method' => 'POST', 'asynchronous' => false, 'uri' => '/maintain.php'],
-        'optimizeTables'                   => ['method' => 'POST', 'asynchronous' => false, 'uri' => '/maintain.php'],
-        'removeBadAccessories'             => ['method' => 'POST', 'asynchronous' => false, 'uri' => '/maintain.php'],
-        'removeBadBindings'                => ['method' => 'POST', 'asynchronous' => false, 'uri' => '/maintain.php'],
-        'removeBadSubmisions'              => ['method' => 'POST', 'asynchronous' => false, 'uri' => '/maintain.php'],
-        'removeNoneExistingFiles'          => ['method' => 'POST', 'asynchronous' => false, 'uri' => '/maintain.php'],
-        'sendDelayedEmail'                 => ['method' => 'POST', 'asynchronous' => false, 'uri' => '/send.php'],
+        'countEmailTo'                      => ['method' => 'GET'],
+        'get_mail_size'                     => ['method' => 'GET'],
+        'getnykat'                          => ['method' => 'GET'],
+        'getSiteTree'                       => ['method' => 'GET'],
+        'kat_expand'                        => ['method' => 'GET'],
+        'katspath'                          => ['method' => 'GET'],
+        'search'                            => ['method' => 'GET'],
+        'siteList_expand'                   => ['method' => 'GET'],
+        'check_file_names'                  => ['method' => 'GET', 'asynchronous' => false],
+        'check_file_paths'                  => ['method' => 'GET', 'asynchronous' => false],
+        'get_db_size'                       => ['method' => 'GET', 'asynchronous' => false],
+        'get_looping_cats'                  => ['method' => 'GET', 'asynchronous' => false],
+        'get_orphan_cats'                   => ['method' => 'GET', 'asynchronous' => false],
+        'get_orphan_lists'                  => ['method' => 'GET', 'asynchronous' => false],
+        'get_orphan_pages'                  => ['method' => 'GET', 'asynchronous' => false],
+        'get_orphan_rows'                   => ['method' => 'GET', 'asynchronous' => false],
+        'get_pages_with_mismatch_bindings'  => ['method' => 'GET', 'asynchronous' => false],
+        'get_size_of_files'                 => ['method' => 'GET', 'asynchronous' => false],
+        'get_subscriptions_with_bad_emails' => ['method' => 'GET', 'asynchronous' => false],
+        'bind'                              => ['method' => 'POST'],
+        'deleteContact'                     => ['method' => 'POST'],
+        'listRemoveRow'                     => ['method' => 'POST'],
+        'listSavetRow'                      => ['method' => 'POST'],
+        'makeNewList'                       => ['method' => 'POST'],
+        'movekat'                           => ['method' => 'POST'],
+        'opretSide'                         => ['method' => 'POST'],
+        'renamekat'                         => ['method' => 'POST'],
+        'saveEmail'                         => ['method' => 'POST'],
+        'savekrav'                          => ['method' => 'POST'],
+        'saveListOrder'                     => ['method' => 'POST'],
+        'save_ny_kat'                       => ['method' => 'POST'],
+        'save_ny_maerke'                    => ['method' => 'POST'],
+        'sendEmail'                         => ['method' => 'POST'],
+        'sletbind'                          => ['method' => 'POST'],
+        'sletkat'                           => ['method' => 'POST'],
+        'sletkrav'                          => ['method' => 'POST'],
+        'sletmaerke'                        => ['method' => 'POST'],
+        'sletSide'                          => ['method' => 'POST'],
+        'sogogerstat'                       => ['method' => 'POST'],
+        'updateContact'                     => ['method' => 'POST'],
+        'updateForside'                     => ['method' => 'POST'],
+        'updateKat'                         => ['method' => 'POST'],
+        'updatemaerke'                      => ['method' => 'POST'],
+        'updateSide'                        => ['method' => 'POST'],
+        'updateSpecial'                     => ['method' => 'POST'],
+        'deleteTempfiles'                   => ['method' => 'POST', 'asynchronous' => false, 'uri' => '/maintain.php'],
+        'optimizeTables'                    => ['method' => 'POST', 'asynchronous' => false, 'uri' => '/maintain.php'],
+        'removeBadAccessories'              => ['method' => 'POST', 'asynchronous' => false, 'uri' => '/maintain.php'],
+        'removeBadBindings'                 => ['method' => 'POST', 'asynchronous' => false, 'uri' => '/maintain.php'],
+        'removeBadSubmisions'               => ['method' => 'POST', 'asynchronous' => false, 'uri' => '/maintain.php'],
+        'removeNoneExistingFiles'           => ['method' => 'POST', 'asynchronous' => false, 'uri' => '/maintain.php'],
+        'sendDelayedEmail'                  => ['method' => 'POST', 'asynchronous' => false, 'uri' => '/maintain.php'],
     ]
 );
 SAJAX::handleClientRequest();
@@ -1898,6 +1879,7 @@ SAJAX::handleClientRequest();
 <title>Administrator menu</title>
 <script type="text/javascript"><!--
 <?php SAJAX::showJavascript(); ?>
+
 --></script>
 <script type="text/javascript" src="javascript/lib/php.min.js"></script>
 <script type="text/javascript" src="javascript/lib/prototype.js"></script>

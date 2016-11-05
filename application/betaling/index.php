@@ -60,7 +60,7 @@ function validate(array $values): array
 {
     $rejected = array();
 
-    if (!validemail(@$values['email'])) {
+    if (!valideMail(@$values['email'])) {
         $rejected['email'] = true;
     }
 
@@ -868,7 +868,7 @@ Remember to \'expedite\' the payment when the product is sent (The payment is fi
             $emailbody_nore .= nl2br($note) . '</p>';
         }
 
-        if (!validemail($faktura['department'])) {
+        if (!valideMail($faktura['department'])) {
             $faktura['department'] = $GLOBALS['_config']['email'][0];
         }
 
@@ -989,7 +989,7 @@ Tel. %s<br />
 
     //To shop
     $faktura = db()->fetchOne("SELECT * FROM `fakturas` WHERE `id` = ".$id);
-    if (!validemail($faktura['department'])) {
+    if (!valideMail($faktura['department'])) {
         $faktura['department'] = $GLOBALS['_config']['email'][0];
     }
     if ($faktura) {
