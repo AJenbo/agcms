@@ -21,15 +21,15 @@ setlocale(LC_ALL, 'da_DK');
 bindtextdomain('agcms', $_SERVER['DOCUMENT_ROOT'] . '/theme/locale');
 bind_textdomain_codeset('agcms', 'UTF-8');
 textdomain('agcms');
+mb_language('uni');
+mb_detect_order('UTF-8, ISO-8859-1');
+mb_internal_encoding('UTF-8');
 
 session_start();
 
 //ini_set('zlib.output_compression', 1);
 
-require_once 'inc/header.php';
-require_once 'inc/config.php';
-require_once 'inc/functions.php';
-require_once 'inc/mysqli.php';
+require_once $_SERVER['DOCUMENT_ROOT'] . '/inc/functions.php';
 
 //primitive runtime cache
 $GLOBALS['cache'] = array();
@@ -74,8 +74,6 @@ if (empty($delayprint)) {
     doConditionalGet($updatetime);
     $updatetime = 0;
 }
-
-require_once 'inc/functions.php';
 
 /**
  * Get list of sub categories in format fitting the generatedcontent structure
@@ -827,7 +825,6 @@ if (@$_GET['sog'] || @$GLOBALS['side']['inactive']) {
     }
 } elseif (@$GLOBALS['side']['id'] > 0) {
     $GLOBALS['generatedcontent']['contenttype'] = 'product';
-    include_once 'inc/side.php';
     side();
 } elseif (@$activMenu > 0) {
     liste();

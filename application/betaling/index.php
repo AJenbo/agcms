@@ -18,9 +18,15 @@ error_reporting(-1);
 
 date_default_timezone_set('Europe/Copenhagen');
 setlocale(LC_ALL, 'da_DK');
-bindtextdomain("agcms", $_SERVER['DOCUMENT_ROOT'].'/theme/locale');
-bind_textdomain_codeset("agcms", 'UTF-8');
-textdomain("agcms");
+bindtextdomain('agcms', $_SERVER['DOCUMENT_ROOT'].'/theme/locale');
+bind_textdomain_codeset('agcms', 'UTF-8');
+textdomain('agcms');
+
+require_once $_SERVER['DOCUMENT_ROOT'] . '/inc/imap.php';
+include_once $_SERVER['DOCUMENT_ROOT'] . '/inc/countries.php';
+include_once $_SERVER['DOCUMENT_ROOT'] . '/vendor/phpmailer/phpmailer/language/phpmailer.lang-dk.php';
+require_once $_SERVER['DOCUMENT_ROOT'] . '/vendor/phpmailer/phpmailer/class.smtp.php';
+require_once $_SERVER['DOCUMENT_ROOT'] . '/vendor/phpmailer/phpmailer/class.phpmailer.php';
 
 chdir('../');
 
@@ -275,7 +281,6 @@ if (!empty($id) && @$_GET['checkid'] == getCheckid($id) && !isset($_GET['txnid']
                 //TODO move down to skip address page if valid
                 if (!count($rejected)) {
                     if (@$_POST['newsletter'] ? 1 : 0) {
-                        include_once 'inc/countries.php';
                         $mysqli->query(
                             "
                             INSERT INTO `email` (
@@ -386,7 +391,7 @@ if (!empty($id) && @$_GET['checkid'] == getCheckid($id) && !isset($_GET['txnid']
             <tr>
                 <td> '._('Country:').'</td>
                 <td colspan="2"><select name="land" id="land" style="width:157px" onblur="chnageZipCode($(\'postnr\').value, \'land\', \'by\')" onkeyup="chnageZipCode($(\'postnr\').value, \'land\', \'by\')" onchange="chnageZipCode($(\'postnr\').value, \'land\', \'by\')">';
-            include_once 'inc/countries.php';
+
             foreach ($countries as $code => $country) {
                 $GLOBALS['generatedcontent']['text'] .= '<option value="'.$code.'"';
                 if ($faktura['land'] == $code) {
@@ -496,7 +501,6 @@ if (!empty($id) && @$_GET['checkid'] == getCheckid($id) && !isset($_GET['txnid']
                 <td> '._('Country:').'</td>
                 <td colspan="2"><select name="postcountry" id="postcountry" style="width:157px" onblur="chnageZipCode($(\'postpostalcode\').value, \'postcountry\', \'postcity\')" onkeyup="chnageZipCode($(\'postpostalcode\').value, \'postcountry\', \'postcity\')" onchange="chnageZipCode($(\'postpostalcode\').value, \'postcountry\', \'postcity\')">';
 
-            include_once 'inc/countries.php';
             foreach ($countries as $code => $country) {
                 $GLOBALS['generatedcontent']['text'] .= '<option value="'.$code.'"';
                 if ($faktura['postcountry'] == $code) {
@@ -819,7 +823,6 @@ Remember to \'expedite\' the payment when the product is sent (The payment is fi
         if ($faktura['altpost']) {
             $emailbody_address .= '<td>' . $faktura['postcity'] . '</td>';
         }
-        include_once 'inc/countries.php';
         $emailbody_address .= '</tr><tr><td>' . _('Country:') . '</td><td>'
         . $countries[$faktura['land']] . '</td>';
         if ($faktura['altpost']) {
@@ -918,10 +921,6 @@ Tel. %s<br />
 
         $emailbody .= '</body></html>';
 
-        include_once $_SERVER['DOCUMENT_ROOT'].'/vendor/phpmailer/phpmailer/class.phpmailer.php';
-        include_once $_SERVER['DOCUMENT_ROOT'].'/vendor/phpmailer/phpmailer/language/phpmailer.lang-dk.php';
-        include_once $_SERVER['DOCUMENT_ROOT'].'/vendor/phpmailer/phpmailer/class.smtp.php';
-
         $mail             = new PHPMailer();
         $mail->SetLanguage('dk');
         $mail->IsSMTP();
@@ -948,7 +947,6 @@ Tel. %s<br />
         if ($mail->Send()) {
             //Upload email to the sent folder via imap
             if ($GLOBALS['_config']['imap']) {
-                include_once $_SERVER['DOCUMENT_ROOT'] . '/inc/imap.php';
                 $emailnr = array_search(
                     $faktura['department'],
                     $GLOBALS['_config']['email']
@@ -970,28 +968,24 @@ Tel. %s<br />
             //TODO secure this against injects and <; in the email and name
             $mysqli->query(
                 "
-		INSERT INTO `emails` (
-		    `subject`,
-		    `from`,
-		    `to`,
-		    `body`,
-		    `date`
-		)
-		VALUES (
-		    'Ordre " . $faktura['id'] . " - " . _('Payment complete') . "',
-		    '" . $GLOBALS['_config']['site_name'] . "<" . $faktura['department'] . ">',
-		    '" . $GLOBALS['_config']['site_name'] . "<" . $faktura['email'] . ">',
-		    '" . $emailbody . "',
-		    NOW()
-		)
-		"
+        INSERT INTO `emails` (
+            `subject`,
+            `from`,
+            `to`,
+            `body`,
+            `date`
+        )
+        VALUES (
+            'Ordre " . $faktura['id'] . " - " . _('Payment complete') . "',
+            '" . $GLOBALS['_config']['site_name'] . "<" . $faktura['department'] . ">',
+            '" . $GLOBALS['_config']['site_name'] . "<" . $faktura['email'] . ">',
+            '" . $emailbody . "',
+            NOW()
+        )
+        "
             );
         }
     }
-
-    include_once $_SERVER['DOCUMENT_ROOT'].'/vendor/phpmailer/phpmailer/class.phpmailer.php';
-    include_once $_SERVER['DOCUMENT_ROOT'].'/vendor/phpmailer/phpmailer/language/phpmailer.lang-dk.php';
-    include_once $_SERVER['DOCUMENT_ROOT'].'/vendor/phpmailer/phpmailer/class.smtp.php';
 
     //To shop
     $faktura = $mysqli->fetchOne("SELECT * FROM `fakturas` WHERE `id` = ".$id);
@@ -1138,7 +1132,6 @@ Delivery phone: %s</p>
         if ($mail->Send()) {
             //Upload email to the sent folder via imap
             if ($GLOBALS['_config']['imap']) {
-                include_once $_SERVER['DOCUMENT_ROOT'].'/inc/imap.php';
                 $imap = new IMAP(
                     $GLOBALS['_config']['email'][0],
                     $GLOBALS['_config']['emailpasswords'][0],

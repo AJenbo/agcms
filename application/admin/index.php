@@ -5,19 +5,17 @@ error_reporting(-1);
 /**/
 date_default_timezone_set('Europe/Copenhagen');
 setlocale(LC_ALL, 'da_DK');
-bindtextdomain("agcms", $_SERVER['DOCUMENT_ROOT'].'/theme/locale');
-bind_textdomain_codeset("agcms", 'UTF-8');
-textdomain("agcms");
+bindtextdomain('agcms', $_SERVER['DOCUMENT_ROOT'].'/theme/locale');
+bind_textdomain_codeset('agcms', 'UTF-8');
+textdomain('agcms');
 
 ini_set('zlib.output_compression', 1);
 
-require_once $_SERVER['DOCUMENT_ROOT'].'/admin/inc/logon.php';
-date_default_timezone_set('Europe/Copenhagen');
-require_once '../inc/sajax.php';
-require_once '../inc/config.php';
-require_once '../inc/mysqli.php';
-require_once '../inc/functions.php';
-require_once 'inc/emails.php';
+require_once $_SERVER['DOCUMENT_ROOT'] . '/admin/inc/logon.php';
+require_once $_SERVER['DOCUMENT_ROOT'] . '/admin/inc/emails.php';
+require_once $_SERVER['DOCUMENT_ROOT'] . '/inc/functions.php';
+require_once $_SERVER['DOCUMENT_ROOT'] . '/inc/sajax.php';
+require_once $_SERVER['DOCUMENT_ROOT'] . '/inc/imap.php';
 $mysqli = new Simple_Mysqli(
     $GLOBALS['_config']['mysql_server'],
     $GLOBALS['_config']['mysql_user'],
@@ -35,7 +33,7 @@ $sajax_request_type = "POST";
  **/
 function purifyHTML(string $string): string
 {
-    include_once '../vendor/ezyang/htmlpurifier/library/HTMLPurifier.auto.php';
+    require_once '../vendor/ezyang/htmlpurifier/library/HTMLPurifier.auto.php';
 
     $config = HTMLPurifier_Config::createDefault();
     $config->set('HTML.SafeIframe', true);
@@ -970,7 +968,6 @@ function get_size_of_files(): int
 function get_mail_size(): int
 {
     $mailboxes = array();
-    include_once "../inc/imap.php";
 
     $size = 0;
 

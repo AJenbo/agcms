@@ -2,9 +2,15 @@
 
 date_default_timezone_set('Europe/Copenhagen');
 setlocale(LC_ALL, 'da_DK');
-bindtextdomain("agcms", $_SERVER['DOCUMENT_ROOT'].'/theme/locale');
-bind_textdomain_codeset("agcms", 'UTF-8');
-textdomain("agcms");
+bindtextdomain('agcms', $_SERVER['DOCUMENT_ROOT'].'/theme/locale');
+bind_textdomain_codeset('agcms', 'UTF-8');
+textdomain('agcms');
+
+require_once $_SERVER['DOCUMENT_ROOT'] . '/inc/functions.php';
+require_once $_SERVER['DOCUMENT_ROOT'] . '/inc/imap.php';
+include_once $_SERVER['DOCUMENT_ROOT'] . '/vendor/phpmailer/phpmailer/language/phpmailer.lang-dk.php';
+require_once $_SERVER['DOCUMENT_ROOT'] . '/vendor/phpmailer/phpmailer/class.smtp.php';
+require_once $_SERVER['DOCUMENT_ROOT'] . '/vendor/phpmailer/phpmailer/class.phpmailer.php';
 
 ?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
@@ -61,9 +67,6 @@ if ($_POST) {
         die('<p style="text-align: center; margin-top: 20px;">'._('The passwords does not match.').'</p></body></html>');
     }
 
-    include_once $_SERVER['DOCUMENT_ROOT'].'/inc/config.php';
-    include_once $_SERVER['DOCUMENT_ROOT'].'/inc/mysqli.php';
-
     //Open database
     $mysqli = new Simple_Mysqli(
         $GLOBALS['_config']['mysql_server'],
@@ -88,9 +91,6 @@ if ($_POST) {
 <p>Sincerely the computer</p></body>
 </html>';
 
-    include_once $_SERVER['DOCUMENT_ROOT'].'/vendor/phpmailer/phpmailer/class.phpmailer.php';
-    include_once $_SERVER['DOCUMENT_ROOT'].'/vendor/phpmailer/phpmailer/language/phpmailer.lang-dk.php';
-    include_once $_SERVER['DOCUMENT_ROOT'].'/vendor/phpmailer/phpmailer/class.smtp.php';
     $mail = new PHPMailer();
     $mail->SetLanguage(_('en'));
     $mail->IsSMTP();
@@ -115,7 +115,6 @@ if ($_POST) {
     if ($mail->Send()) {
         //Upload email to the sent folder via imap
         if ($GLOBALS['_config']['imap']) {
-            include_once $_SERVER['DOCUMENT_ROOT'].'/inc/imap.php';
             $emailnr = array_search($GLOBALS['_config']['email'][0], $GLOBALS['_config']['email']);
             $imap = new IMAP(
                 $GLOBALS['_config']['email'][0],

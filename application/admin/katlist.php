@@ -2,15 +2,14 @@
 
 date_default_timezone_set('Europe/Copenhagen');
 setlocale(LC_ALL, 'da_DK');
-bindtextdomain("agcms", $_SERVER['DOCUMENT_ROOT'].'/theme/locale');
-bind_textdomain_codeset("agcms", 'UTF-8');
-textdomain("agcms");
+bindtextdomain('agcms', $_SERVER['DOCUMENT_ROOT'].'/theme/locale');
+bind_textdomain_codeset('agcms', 'UTF-8');
+textdomain('agcms');
 
-require_once $_SERVER['DOCUMENT_ROOT'].'/admin/inc/logon.php';
-require_once '../inc/sajax.php';
-require_once '../inc/config.php';
-require_once '../inc/mysqli.php';
-require_once 'inc/file-functions.php';
+require_once $_SERVER['DOCUMENT_ROOT'] . '/admin/inc/logon.php';
+require_once $_SERVER['DOCUMENT_ROOT'] . '/admin/inc/file-functions.php';
+require_once $_SERVER['DOCUMENT_ROOT'] . '/inc/functions.php';
+require_once $_SERVER['DOCUMENT_ROOT'] . '/inc/sajax.php';
 $mysqli = new Simple_Mysqli(
     $GLOBALS['_config']['mysql_server'],
     $GLOBALS['_config']['mysql_user'],

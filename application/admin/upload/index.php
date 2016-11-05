@@ -17,6 +17,11 @@ error_reporting(-1);
 /**/
 
 require_once $_SERVER['DOCUMENT_ROOT'] . '/admin/inc/logon.php';
+require_once $_SERVER['DOCUMENT_ROOT'] . '/admin/inc/get_mime_type.php';
+require_once $_SERVER['DOCUMENT_ROOT'] . '/admin/inc/image-functions.php';
+require_once $_SERVER['DOCUMENT_ROOT'] . '/admin/inc/file-functions.php';
+require_once $_SERVER['DOCUMENT_ROOT'] . '/inc/functions.php';
+
 //TODO support bmp
 header('HTTP/1.1 500 Internal Server Error');
 if (!empty($_FILES['Filedata']['tmp_name'])
@@ -24,7 +29,6 @@ if (!empty($_FILES['Filedata']['tmp_name'])
 ) {
     //Mangler file-functions.php
     header('HTTP/1.1 501 Internal Server Error');
-    include_once $_SERVER['DOCUMENT_ROOT'] . '/admin/inc/file-functions.php';
     $pathinfo = pathinfo($_FILES['Filedata']['name']);
     //Kunne ikke læse filnavn.
     header('HTTP/1.1 503 Internal Server Error');
@@ -41,7 +45,6 @@ if (!empty($_FILES['Filedata']['tmp_name'])
     chmod($_SERVER['DOCUMENT_ROOT'] . '/admin/upload/temp/' . $name, 0644);
     //Mangler get_mime_type.php
     header('HTTP/1.1 510 Internal Server Error');
-    include_once $_SERVER['DOCUMENT_ROOT'] . '/admin/inc/get_mime_type.php';
     $mime = get_mime_type('/admin/upload/temp/' . $name);
     //Kunne ikke finde billed størelsen.
     header('HTTP/1.1 512 Internal Server Error');
@@ -113,7 +116,6 @@ if (!empty($_FILES['Filedata']['tmp_name'])
 
         //Mangler image-functions.php
         header('HTTP/1.1 560 Internal Server Error');
-        include_once $_SERVER['DOCUMENT_ROOT'] . '/admin/inc/image-functions.php';
         //Fejl under billed behandling.
         header('HTTP/1.1 561 Internal Server Error');
 
@@ -155,8 +157,6 @@ if (!empty($_FILES['Filedata']['tmp_name'])
 
     //Mangler mysql-funktioner.php
     header('HTTP/1.1 540 Internal Server Error');
-    include_once $_SERVER['DOCUMENT_ROOT'].'/inc/config.php';
-    include_once $_SERVER['DOCUMENT_ROOT'].'/inc/mysqli.php';
     //Kunne ikke åbne database.
     header('HTTP/1.1 541 Internal Server Error');
     $mysqli = new Simple_Mysqli(

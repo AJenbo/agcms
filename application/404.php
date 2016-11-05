@@ -11,6 +11,8 @@
  * @link     http://www.arms-gallery.dk/
  */
 
+require_once $_SERVER['DOCUMENT_ROOT'] . '/inc/functions.php';
+
 //If url !utf-8 make it fucking utf-8 and try again
 $url = urldecode($_SERVER['REQUEST_URI']);
 //can't detect windows-1252
@@ -82,10 +84,6 @@ if (!$maerke) {
 
 //Old url detected and redirect needed.
 if (@$redirect) {
-    include_once 'inc/config.php';
-    include_once 'inc/mysqli.php';
-    include_once 'inc/functions.php';
-
     $mysqli = new Simple_Mysqli(
         $GLOBALS['_config']['mysql_server'],
         $GLOBALS['_config']['mysql_user'],

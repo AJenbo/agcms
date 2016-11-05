@@ -10,13 +10,16 @@ bindtextdomain('agcms', $_SERVER['DOCUMENT_ROOT'].'/theme/locale');
 bind_textdomain_codeset('agcms', 'UTF-8');
 textdomain('agcms');
 
-require_once $_SERVER['DOCUMENT_ROOT'].'/admin/inc/logon.php';
+require_once $_SERVER['DOCUMENT_ROOT'] . '/admin/inc/logon.php';
+require_once $_SERVER['DOCUMENT_ROOT'] . '/inc/functions.php';
+require_once $_SERVER['DOCUMENT_ROOT'] . '/inc/imap.php';
+include_once $_SERVER['DOCUMENT_ROOT'] . '/inc/countries.php';
+require_once $_SERVER['DOCUMENT_ROOT'] . '/inc/epaymentAdminService.php';
+require_once $_SERVER['DOCUMENT_ROOT'] . '/inc/sajax.php';
+include_once $_SERVER['DOCUMENT_ROOT'] . '/vendor/phpmailer/phpmailer/language/phpmailer.lang-dk.php';
+require_once $_SERVER['DOCUMENT_ROOT'] . '/vendor/phpmailer/phpmailer/class.phpmailer.php';
+require_once $_SERVER['DOCUMENT_ROOT'] . '/vendor/phpmailer/phpmailer/class.smtp.php';
 
-require_once '../inc/sajax.php';
-require_once '../inc/config.php';
-require_once '../inc/functions.php';
-require_once '../inc/mysqli.php';
-require_once '../inc/epaymentAdminService.php';
 $mysqli = new Simple_Mysqli(
     $GLOBALS['_config']['mysql_server'],
     $GLOBALS['_config']['mysql_user'],
@@ -276,10 +279,6 @@ function save(int $id, string $type, array $updates): array
             return array('error' => _('The invoice must be of at at least 1 krone!'));
         }
 
-        include_once $_SERVER['DOCUMENT_ROOT'].'/vendor/phpmailer/phpmailer/class.phpmailer.php';
-        include_once $_SERVER['DOCUMENT_ROOT'].'/vendor/phpmailer/phpmailer/language/phpmailer.lang-dk.php';
-        include_once $_SERVER['DOCUMENT_ROOT'].'/vendor/phpmailer/phpmailer/class.smtp.php';
-
         $msg = _(
             '<p>Thank you for your order.</p>
 
@@ -353,7 +352,6 @@ Tel. %s</p>'
 
         //Upload email to the sent folder via imap
         if ($GLOBALS['_config']['imap']) {
-            include_once '../inc/imap.php';
             $emailnr = array_search($faktura['department'], $GLOBALS['_config']['email']);
             $imap = new IMAP(
                 $faktura['department'],
@@ -394,10 +392,6 @@ function sendReminder(int $id): array
     if (empty($faktura['department'])) {
         $faktura['department'] = $GLOBALS['_config']['email'][0];
     }
-
-    include_once $_SERVER['DOCUMENT_ROOT'].'/vendor/phpmailer/phpmailer/class.phpmailer.php';
-    include_once $_SERVER['DOCUMENT_ROOT'].'/vendor/phpmailer/phpmailer/language/phpmailer.lang-dk.php';
-    include_once $_SERVER['DOCUMENT_ROOT'].'/vendor/phpmailer/phpmailer/class.smtp.php';
 
     $msg = _(
         '<hr />
@@ -495,7 +489,6 @@ Fax: %s<br />
     //Upload email to the sent folder via imap
     if ($GLOBALS['_config']['imap']) {
         $emailnr = array_search($faktura['department'], $GLOBALS['_config']['email']);
-        include_once '../inc/imap.php';
         $imap = new IMAP(
             $faktura['department'],
             $GLOBALS['_config']['emailpasswords'][$emailnr ? $emailnr : 0],
@@ -584,8 +577,6 @@ sajax_export(
 );
 //$sajax_remote_uri = '/ajax.php';
 sajax_handle_client_request();
-
-require_once '../inc/countries.php';
 
 ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">

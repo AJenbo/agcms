@@ -13,9 +13,8 @@
 
 //TODO move to /admin and require password to avoid DoS
 
-require_once "inc/config.php";
-require_once "inc/mysqli.php";
-require_once 'inc/sajax.php';
+require_once $_SERVER['DOCUMENT_ROOT'] . '/inc/functions.php';
+require_once $_SERVER['DOCUMENT_ROOT'] . '/inc/sajax.php';
 
 //Open database
 $mysqli = new Simple_Mysqli(

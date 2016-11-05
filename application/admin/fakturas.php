@@ -6,15 +6,15 @@ bindtextdomain('agcms', $_SERVER['DOCUMENT_ROOT'].'/theme/locale');
 bind_textdomain_codeset('agcms', 'UTF-8');
 textdomain('agcms');
 
-require_once $_SERVER['DOCUMENT_ROOT'].'/admin/inc/logon.php';
+require_once $_SERVER['DOCUMENT_ROOT'] . '/admin/inc/logon.php';
+require_once $_SERVER['DOCUMENT_ROOT'] . '/inc/functions.php';
+require_once $_SERVER['DOCUMENT_ROOT'] . '/inc/sajax.php';
+require_once $_SERVER['DOCUMENT_ROOT'] . '/inc/countries.php';
 
 if (empty($_SESSION['_user'])) {
     //TDODO No login !!!
     $_SESSION['_user']['fullname'] = _('No one');
 }
-require_once '../inc/sajax.php';
-require_once '../inc/config.php';
-require_once '../inc/mysqli.php';
 $mysqli = new Simple_Mysqli(
     $GLOBALS['_config']['mysql_server'],
     $GLOBALS['_config']['mysql_user'],
@@ -491,7 +491,6 @@ if ($i % 2 == 0) {
     $faktura['postbox'].'<br/>'.
     $faktura['postnr'].' '.$faktura['by'].'<br/>';
 if ($faktura['land']) {
-    include_once '../inc/countries.php';
     echo $countries[$faktura['land']].'<br/>';
 }
     echo $faktura['email'].'<br/>'.

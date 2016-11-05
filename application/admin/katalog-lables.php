@@ -1,5 +1,6 @@
 <?php
-require_once $_SERVER['DOCUMENT_ROOT'].'/admin/inc/logon.php';
+require_once $_SERVER['DOCUMENT_ROOT'] . '/admin/inc/logon.php';
+require_once $_SERVER['DOCUMENT_ROOT'] . '/inc/functions.php';
 ?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
@@ -79,8 +80,6 @@ if (@$_GET['dato']) {
 </form><?php
 
 if (@$_GET['dato']) {
-    require_once '../inc/config.php';
-    require_once '../inc/mysqli.php';
     $mysqli = new Simple_Mysqli(
         $GLOBALS['_config']['mysql_server'],
         $GLOBALS['_config']['mysql_user'],

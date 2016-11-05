@@ -6,7 +6,11 @@ bindtextdomain('agcms', $_SERVER['DOCUMENT_ROOT'].'/theme/locale');
 bind_textdomain_codeset('agcms', 'UTF-8');
 textdomain('agcms');
 
-require_once $_SERVER['DOCUMENT_ROOT'].'/admin/inc/logon.php';
+require_once $_SERVER['DOCUMENT_ROOT'] . '/admin/inc/logon.php';
+require_once $_SERVER['DOCUMENT_ROOT'] . '/inc/imap.php';
+include_once $_SERVER['DOCUMENT_ROOT'] . '/vendor/phpmailer/phpmailer/language/phpmailer.lang-dk.php';
+require_once $_SERVER['DOCUMENT_ROOT'] . '/vendor/phpmailer/phpmailer/class.smtp.php';
+require_once $_SERVER['DOCUMENT_ROOT'] . '/vendor/phpmailer/phpmailer/class.phpmailer.php';
 //TODO run countEmailTo() onload
 
 /**
@@ -28,10 +32,6 @@ function sendEmail(int $id, string $from, string $interests, string $subject, st
     $text = htmlUrlDecode($text);
 
     saveEmail($id, $from, $interests, $subject, $text);
-
-    include_once $_SERVER['DOCUMENT_ROOT'].'/vendor/phpmailer/phpmailer/class.phpmailer.php';
-    include_once $_SERVER['DOCUMENT_ROOT'].'/vendor/phpmailer/phpmailer/language/phpmailer.lang-dk.php';
-    include_once $_SERVER['DOCUMENT_ROOT'].'/vendor/phpmailer/phpmailer/class.smtp.php';
 
     $mail             = new PHPMailer();
     $mail->SetLanguage('dk');
@@ -130,7 +130,6 @@ function sendEmail(int $id, string $from, string $interests, string $subject, st
 
         //Upload email to the sent folder via imap
         if ($GLOBALS['_config']['imap']) {
-            include_once '../inc/imap.php';
             $emailnr = array_search($from, $GLOBALS['_config']['email']);
             $imap = new IMAP(
                 $from,

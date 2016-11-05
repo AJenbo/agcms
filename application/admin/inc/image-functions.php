@@ -6,8 +6,9 @@ bindtextdomain('agcms', $_SERVER['DOCUMENT_ROOT'].'/theme/locale');
 bind_textdomain_codeset('agcms', 'UTF-8');
 textdomain('agcms');
 
-require_once $_SERVER['DOCUMENT_ROOT'].'/admin/inc/logon.php';
-require_once 'file-functions.php';
+require_once $_SERVER['DOCUMENT_ROOT'] . '/admin/inc/logon.php';
+require_once $_SERVER['DOCUMENT_ROOT'] . '/admin/inc/file-functions.php';
+require_once $_SERVER['DOCUMENT_ROOT'] . '/inc/functions.php';
 //TODO if (no changes and !$output) do redirect
 
 /**
@@ -182,8 +183,6 @@ function generateImage(
 
 
     //save or output image
-    include_once $_SERVER['DOCUMENT_ROOT'].'/inc/config.php';
-    include_once $_SERVER['DOCUMENT_ROOT'].'/inc/mysqli.php';
     global $mysqli;
     if (!$mysqli) {
         $mysqli = new Simple_Mysqli(

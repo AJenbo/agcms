@@ -8,9 +8,10 @@ bindtextdomain('agcms', $_SERVER['DOCUMENT_ROOT'].'/theme/locale');
 bind_textdomain_codeset('agcms', 'UTF-8');
 textdomain('agcms');
 
-require_once $_SERVER['DOCUMENT_ROOT'].'/admin/inc/logon.php';
-require_once $_SERVER['DOCUMENT_ROOT'] . '/inc/sajax.php';
+require_once $_SERVER['DOCUMENT_ROOT'] . '/admin/inc/logon.php';
+require_once $_SERVER['DOCUMENT_ROOT'] . '/admin/inc/file-functions.php';
 require_once $_SERVER['DOCUMENT_ROOT'] . '/inc/functions.php';
+require_once $_SERVER['DOCUMENT_ROOT'] . '/inc/sajax.php';
 
 /**
  * @param string $filename
@@ -20,7 +21,6 @@ require_once $_SERVER['DOCUMENT_ROOT'] . '/inc/functions.php';
  */
 function fileExists(string $filename, string $type = ''): bool
 {
-    include_once 'inc/file-functions.php';
     $pathinfo = pathinfo($filename);
     $filePath = $_SERVER['DOCUMENT_ROOT'] . @$_COOKIE['admin_dir'] . '/' . genfilename($pathinfo['filename']);
 

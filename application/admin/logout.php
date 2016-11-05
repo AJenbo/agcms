@@ -6,7 +6,7 @@ bindtextdomain("agcms", $_SERVER['DOCUMENT_ROOT'].'/theme/locale');
 bind_textdomain_codeset("agcms", 'UTF-8');
 textdomain("agcms");
 
-require_once $_SERVER['DOCUMENT_ROOT'].'/admin/inc/logon.php';
+require_once $_SERVER['DOCUMENT_ROOT'] . '/admin/inc/logon.php';
 
 session_destroy();
 

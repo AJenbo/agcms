@@ -19,12 +19,15 @@ VALUES
 
 date_default_timezone_set('Europe/Copenhagen');
 setlocale(LC_ALL, 'da_DK');
-bindtextdomain("agcms", $_SERVER['DOCUMENT_ROOT'].'/theme/locale');
-bind_textdomain_codeset("agcms", 'UTF-8');
-textdomain("agcms");
+bindtextdomain('agcms', $_SERVER['DOCUMENT_ROOT'] . '/theme/locale');
+bind_textdomain_codeset('agcms', 'UTF-8');
+textdomain('agcms');
 
-require_once "inc/config.php";
-require_once "inc/mysqli.php";
+require_once $_SERVER['DOCUMENT_ROOT'] . '/inc/functions.php';
+require_once $_SERVER['DOCUMENT_ROOT'] . '/inc/imap.php';
+include_once $_SERVER['DOCUMENT_ROOT'] . '/vendor/phpmailer/phpmailer/language/phpmailer.lang-dk.php';
+require_once $_SERVER['DOCUMENT_ROOT'] . '/vendor/phpmailer/phpmailer/class.smtp.php';
+require_once $_SERVER['DOCUMENT_ROOT'] . '/vendor/phpmailer/phpmailer/class.phpmailer.php';
 
 //Open database
 $mysqli = new Simple_Mysqli(
@@ -44,11 +47,6 @@ if (!$emails) {
 
 $emailsSendt = 0;
 
-//Load the PHPMailer class
-include_once $_SERVER['DOCUMENT_ROOT'].'/vendor/phpmailer/phpmailer/class.phpmailer.php';
-include_once $_SERVER['DOCUMENT_ROOT'].'/vendor/phpmailer/phpmailer/language/phpmailer.lang-dk.php';
-include_once $_SERVER['DOCUMENT_ROOT'].'/vendor/phpmailer/phpmailer/class.smtp.php';
-
 //Set up PHPMailer
 $PHPMailer = new PHPMailer();
 $PHPMailer->SetLanguage('dk');
@@ -62,11 +60,6 @@ if ($GLOBALS['_config']['emailpassword'] !== false) {
     $PHPMailer->Password   = $GLOBALS['_config']['emailpasswords'][0];
 } else {
     $PHPMailer->SMTPAuth   = false;
-}
-
-//Load the imap class, if imap is configured
-if ($GLOBALS['_config']['imap'] !== false) {
-    include_once "inc/imap.php";
 }
 
 foreach ($emails as $email) {

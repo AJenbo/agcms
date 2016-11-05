@@ -11,12 +11,10 @@
  * @link     http://www.arms-gallery.dk/
  */
 
+require_once $_SERVER['DOCUMENT_ROOT'] . '/inc/functions.php';
+
 header('Content-Type:text/xml;charset=utf-8');
 echo '<?xml version="1.0" encoding="utf-8" ?>';
-
-require_once 'inc/config.php';
-require_once 'inc/mysqli.php';
-require_once 'inc/functions.php';
 
 //Open database
 $mysqli = new Simple_Mysqli(

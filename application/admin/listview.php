@@ -1,12 +1,17 @@
 <?php
 
+date_default_timezone_set('Europe/Copenhagen');
+setlocale(LC_ALL, 'da_DK');
+bindtextdomain('agcms', $_SERVER['DOCUMENT_ROOT'] . '/theme/locale');
+bind_textdomain_codeset('agcms', 'UTF-8');
+textdomain('agcms');
 mb_language('uni');
 mb_detect_order('UTF-8, ISO-8859-1');
 mb_internal_encoding('UTF-8');
-date_default_timezone_set('Europe/Copenhagen');
 
-require_once $_SERVER['DOCUMENT_ROOT'].'/admin/inc/logon.php';
-require_once $_SERVER['DOCUMENT_ROOT'].'/inc/functions.php';
+require_once $_SERVER['DOCUMENT_ROOT'] . '/admin/inc/logon.php';
+require_once $_SERVER['DOCUMENT_ROOT'] . '/inc/functions.php';
+
 ?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
@@ -134,8 +139,6 @@ if (@$_GET['sort'] == 'id') {
     echo '&amp;kat='.$_GET['kat'];
 } ?>">Krav</a></td>
 </tr></thead><tbody><?php
-require_once '../inc/config.php';
-require_once '../inc/mysqli.php';
 $mysqli = new Simple_Mysqli(
     $GLOBALS['_config']['mysql_server'],
     $GLOBALS['_config']['mysql_user'],

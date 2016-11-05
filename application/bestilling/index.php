@@ -18,15 +18,20 @@ error_reporting(-1);
 
 date_default_timezone_set('Europe/Copenhagen');
 setlocale(LC_ALL, 'da_DK');
-bindtextdomain("agcms", $_SERVER['DOCUMENT_ROOT'].'/theme/locale');
-bind_textdomain_codeset("agcms", 'UTF-8');
-textdomain("agcms");
+bindtextdomain('agcms', $_SERVER['DOCUMENT_ROOT'].'/theme/locale');
+bind_textdomain_codeset('agcms', 'UTF-8');
+textdomain('agcms');
+
+require_once $_SERVER['DOCUMENT_ROOT'] . '/inc/functions.php';
+require_once $_SERVER['DOCUMENT_ROOT'] . '/inc/imap.php';
+include_once $_SERVER['DOCUMENT_ROOT'] . '/inc/countries.php';
+include_once $_SERVER['DOCUMENT_ROOT'] . '/vendor/phpmailer/phpmailer/language/phpmailer.lang-dk.php';
+require_once $_SERVER['DOCUMENT_ROOT'] . '/vendor/phpmailer/phpmailer/class.smtp.php';
+require_once $_SERVER['DOCUMENT_ROOT'] . '/vendor/phpmailer/phpmailer/class.phpmailer.php';
 
 chdir('../');
 
 if (is_numeric(@$_GET['add']) || is_numeric(@$_GET['add_list_item'])) {
-    include_once 'inc/config.php';
-    include_once 'inc/mysqli.php';
     //Open database
     $mysqli = new Simple_Mysqli(
         $GLOBALS['_config']['mysql_server'],
@@ -413,7 +418,6 @@ if (!empty($_SESSION['faktura']['quantities'])) {
 
             if (!count($rejected)) {
                 if (@$_POST['newsletter'] ? 1 : 0) {
-                    include_once 'inc/countries.php';
                     $mysqli->query(
                         "
                         INSERT INTO `email` (
@@ -534,7 +538,6 @@ if (!empty($_SESSION['faktura']['quantities'])) {
         <tr>
             <td> '._('Country:').'</td>
             <td colspan="2"><select name="land" id="land" style="width:157px" onblur="chnageZipCode($(\'postnr\').value, \'land\', \'by\')" onkeyup="chnageZipCode($(\'postnr\').value, \'land\', \'by\')" onchange="chnageZipCode($(\'postnr\').value, \'land\', \'by\')">';
-        include_once 'inc/countries.php';
         foreach ($countries as $code => $country) {
             $GLOBALS['generatedcontent']['text'] .= '<option value="'.$code.'"';
             if ($_SESSION['faktura']['land'] == $code) {
@@ -644,7 +647,6 @@ if (!empty($_SESSION['faktura']['quantities'])) {
             <td> '._('Country:').'</td>
             <td colspan="2"><select name="postcountry" id="postcountry" style="width:157px" onblur="chnageZipCode($(\'postpostalcode\').value, \'postcountry\', \'postcity\')" onkeyup="chnageZipCode($(\'postpostalcode\').value, \'postcountry\', \'postcity\')" onchange="chnageZipCode($(\'postpostalcode\').value, \'postcountry\', \'postcity\')">';
 
-        include_once 'inc/countries.php';
         foreach ($countries as $code => $country) {
             $GLOBALS['generatedcontent']['text'] .= '<option value="'.$code.'"';
             if ($_SESSION['faktura']['postcountry'] == $code) {
@@ -788,7 +790,6 @@ if (!empty($_SESSION['faktura']['quantities'])) {
             . ' ' . $_SESSION['faktura']['by'];
         }
         if ($_SESSION['faktura']['land'] != 'DK') {
-            include_once 'inc/countries.php';
             $emailbody .= '<br />'._($countries[$_SESSION['faktura']['land']]);
         }
         $emailbody .= '</p>';
@@ -816,7 +817,6 @@ if (!empty($_SESSION['faktura']['quantities'])) {
                 . ' ' . $_SESSION['faktura']['postcity'];
             }
             if ($_SESSION['faktura']['postcountry'] != 'DK') {
-                include_once 'inc/countries.php';
                 $emailbody .= '<br />'
                 . _($countries[$_SESSION['faktura']['postcountry']]);
             }
@@ -842,11 +842,6 @@ if (!empty($_SESSION['faktura']['quantities'])) {
         }
         $emailbody .= '</p><p>' . _('Sincerely the computer')
         . '</p></body></html></body></html>';
-
-        //Email headers
-        include_once $_SERVER['DOCUMENT_ROOT'].'/vendor/phpmailer/phpmailer/class.phpmailer.php';
-        include_once $_SERVER['DOCUMENT_ROOT'].'/vendor/phpmailer/phpmailer/language/phpmailer.lang-dk.php';
-        include_once $_SERVER['DOCUMENT_ROOT'].'/vendor/phpmailer/phpmailer/class.smtp.php';
 
         $mail = new PHPMailer();
         $mail->SetLanguage('dk');
@@ -881,7 +876,6 @@ if (!empty($_SESSION['faktura']['quantities'])) {
         if ($mail->Send()) {
             //Upload email to the sent folder via imap
             if ($GLOBALS['_config']['imap']) {
-                include_once $_SERVER['DOCUMENT_ROOT'].'/inc/imap.php';
                 $imap = new IMAP(
                     $GLOBALS['_config']['email'][0],
                     $GLOBALS['_config']['emailpasswords'][0],

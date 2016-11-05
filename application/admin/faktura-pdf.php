@@ -5,7 +5,11 @@ bindtextdomain('agcms', $_SERVER['DOCUMENT_ROOT'].'/theme/locale');
 bind_textdomain_codeset('agcms', 'UTF-8');
 textdomain('agcms');
 
-require_once $_SERVER['DOCUMENT_ROOT'].'/admin/inc/logon.php';
+require_once $_SERVER['DOCUMENT_ROOT'] . '/admin/inc/logon.php';
+require_once $_SERVER['DOCUMENT_ROOT'] . '/inc/functions.php';
+include_once $_SERVER['DOCUMENT_ROOT'] . '/inc/countries.php';
+include_once $_SERVER['DOCUMENT_ROOT'] . '/vendor/tecnick.com/tcpdf/examples/lang/dan.php';
+require_once $_SERVER['DOCUMENT_ROOT'] . '/vendor/tecnick.com/tcpdf/tcpdf.php';
 
 if ($_GET['id'] > 0) {
     $id = $_GET['id'];
@@ -13,8 +17,6 @@ if ($_GET['id'] > 0) {
     die(_('Wrong id.'));
 }
 
-require_once '../inc/config.php';
-require_once '../inc/mysqli.php';
 $mysqli = new Simple_Mysqli(
     $GLOBALS['_config']['mysql_server'],
     $GLOBALS['_config']['mysql_user'],
@@ -44,9 +46,6 @@ if (!$faktura['premoms'] && $faktura['momssats']) {
         $faktura['values'][$key] = $value/1.25;
     }
 }
-
-include_once '../vendor/tecnick.com/tcpdf/examples/lang/dan.php';
-require_once '../vendor/tecnick.com/tcpdf/tcpdf.php';
 
 // create new PDF document
 $pdf = new TCPDF('P', 'mm', 'A4', true, 'UTF-8', false);
@@ -136,7 +135,6 @@ if ($faktura['postnr']) {
     $address .= "\n".$faktura['by'];
 }
 if ($faktura['land'] && $faktura['land'] != 'DK') {
-    include_once '../inc/countries.php';
     $address .= "\n"._($countries[$faktura['land']]);
 }
 
@@ -167,7 +165,6 @@ if ($faktura['postpostalcode']) {
     $address .= "\n".$faktura['postcity'];
 }
 if ($faktura['land'] && $faktura['land'] != 'DK') {
-    include_once '../inc/countries.php';
     $address .= "\n"._($countries[$faktura['land']]);
 }
 

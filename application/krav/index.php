@@ -11,8 +11,7 @@
  * @link     http://www.arms-gallery.dk/
  */
 
-require_once '../inc/config.php';
-require_once '../inc/mysqli.php';
+require_once $_SERVER['DOCUMENT_ROOT'] . '/inc/functions.php';
 
 //Open database
 $mysqli = new Simple_Mysqli(

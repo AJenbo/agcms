@@ -12,8 +12,7 @@ bindtextdomain('agcms', $_SERVER['DOCUMENT_ROOT'].'/theme/locale');
 bind_textdomain_codeset('agcms', 'UTF-8');
 textdomain('agcms');
 
-require_once $_SERVER['DOCUMENT_ROOT'].'/inc/config.php';
-require_once $_SERVER['DOCUMENT_ROOT'].'/inc/mysqli.php';
+require_once $_SERVER['DOCUMENT_ROOT'] . '/inc/functions.php';
 
 session_start();
 
