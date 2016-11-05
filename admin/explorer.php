@@ -795,7 +795,7 @@ var returnid = '<?php echo @$_GET['returnid']; ?>';
 <body scroll="auto">
 picture_error
 <div id="menu"><img id="loading" src="images/loading.gif" width="16" height="16" alt="<?php echo _('Loading'); ?>" title="<?php echo _('Loading'); ?>" /><a id="dir_bn" class="<?php
-if (empty($_COOKIE['qpath'], $_COOKIE['qalt'], $_COOKIE['qtype'])) {
+if (empty($_COOKIE['qpath']) && empty($_COOKIE['qalt']) && empty($_COOKIE['qtype'])) {
     echo 'down';
 } ?>" title="<?php echo _('Folders'); ?>" onclick="return swap_pannel('dir');"><img width="16" height="16" src="images/folder.png" alt="" /> Mapper</a> <a id="search_bn" title="Søg" class="<?php if (@$_COOKIE['qpath'] || @$_COOKIE['qalt'] || @$_COOKIE['qtype']) {
     echo 'down';
@@ -832,7 +832,7 @@ if (@$_COOKIE['/files']) {
     echo $listdirs['html'];
 } ?></div></div>
 </div>
-<form id="search"<?php if (empty($_COOKIE['qpath'], $_COOKIE['qalt'], $_COOKIE['qtype'])) {
+<form id="search"<?php if (empty($_COOKIE['qpath']) && empty($_COOKIE['qalt']) && empty($_COOKIE['qtype'])) {
     echo ' style="display:none"';
 } ?> action="" onsubmit="searchfiles();return false;"><div>
     <?php echo _('Name:'); ?><br />

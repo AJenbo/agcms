@@ -103,7 +103,7 @@ class IMAP
             $command = $this->_tag . ' ' . $command;
         }
 
-        if (empty(fputs($this->_socket, $command . "\r\n"))) {
+        if (!@fputs($this->_socket, $command . "\r\n")) {
             $error = error_get_last();
             throw new Exception($error['message']);
         }
