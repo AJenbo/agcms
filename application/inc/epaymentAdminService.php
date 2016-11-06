@@ -14,6 +14,7 @@
 class epaymentAdminService
 {
     private $_merchantId;
+    private $_password;
     private $_amount;
     private $_soapClient;
     private $id = 0;
@@ -47,7 +48,7 @@ class epaymentAdminService
                 'epayresponse' => true,
             ]
         );
-        if (empty($response->transactionInformationAry)) {
+        if (empty($response->transactionInformationAry) && !(array) $response->transactionInformationAry) {
             $response = $this->_soapClient->gettransactionlist(
                 [
                     'pwd' => $this->_password,
@@ -60,7 +61,7 @@ class epaymentAdminService
                 ]
             );
         }
-        if (empty($response->transactionInformationAry)) {
+        if (empty($response->transactionInformationAry) && !(array) $response->transactionInformationAry) {
             $response = $this->_soapClient->gettransactionlist(
                 [
                     'pwd' => $this->_password,
@@ -74,7 +75,7 @@ class epaymentAdminService
             );
         }
 
-        if (!empty($response->transactionInformationAry)) {
+        if (!empty($response->transactionInformationAry) && (array) $response->transactionInformationAry) {
             $info = $response->transactionInformationAry->TransactionInformationType;
 
             $this->id = $info->transactionid;
