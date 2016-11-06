@@ -136,15 +136,15 @@ function sendDelayedEmail(): string
     $PHPMailer = new PHPMailer();
     $PHPMailer->SetLanguage('dk');
     $PHPMailer->IsSMTP();
-    $PHPMailer->Host       = $GLOBALS['_config']['smtp'];
-    $PHPMailer->Port       = $GLOBALS['_config']['smtpport'];
-    $PHPMailer->CharSet    = 'utf-8';
+    $PHPMailer->Host    = $GLOBALS['_config']['smtp'];
+    $PHPMailer->Port    = $GLOBALS['_config']['smtpport'];
+    $PHPMailer->CharSet = 'utf-8';
     if ($GLOBALS['_config']['emailpassword'] !== false) {
-        $PHPMailer->SMTPAuth   = true; // enable SMTP authentication
-        $PHPMailer->Username   = $GLOBALS['_config']['email'][0];
-        $PHPMailer->Password   = $GLOBALS['_config']['emailpasswords'][0];
+        $PHPMailer->SMTPAuth = true; // enable SMTP authentication
+        $PHPMailer->Username = $GLOBALS['_config']['email'][0];
+        $PHPMailer->Password = $GLOBALS['_config']['emailpasswords'][0];
     } else {
-        $PHPMailer->SMTPAuth   = false;
+        $PHPMailer->SMTPAuth = false;
     }
 
     $imap = new IMAP(
@@ -607,23 +607,23 @@ function sendEmail(int $id, string $from, string $interests, string $subject, st
 
     $mail->IsSMTP();
     if ($GLOBALS['_config']['emailpassword'] !== false) {
-        $mail->SMTPAuth   = true; // enable SMTP authentication
-        $mail->Username   = $GLOBALS['_config']['email'][0];
-        $mail->Password   = $GLOBALS['_config']['emailpasswords'][0];
+        $mail->SMTPAuth = true; // enable SMTP authentication
+        $mail->Username = $GLOBALS['_config']['email'][0];
+        $mail->Password = $GLOBALS['_config']['emailpasswords'][0];
     } else {
-        $mail->SMTPAuth   = false;
+        $mail->SMTPAuth = false;
     }
-    $mail->Host       = $GLOBALS['_config']['smtp'];      // sets the SMTP server
-    $mail->Port       = $GLOBALS['_config']['smtpport'];                   // set the SMTP port for the server
+    $mail->Host = $GLOBALS['_config']['smtp'];      // sets the SMTP server
+    $mail->Port = $GLOBALS['_config']['smtpport'];                   // set the SMTP port for the server
 
     $mail->AddReplyTo($from, $GLOBALS['_config']['site_name']);
 
-    $mail->From       = $from;
-    $mail->FromName   = $GLOBALS['_config']['site_name'];
+    $mail->From     = $from;
+    $mail->FromName = $GLOBALS['_config']['site_name'];
 
-    $mail->CharSet    = 'utf-8';
+    $mail->CharSet  = 'utf-8';
 
-    $mail->Subject    = $subject;
+    $mail->Subject  = $subject;
     $body = '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
     <html xmlns="http://www.w3.org/1999/xhtml">
     <head>
@@ -748,9 +748,9 @@ function countEmailTo(string $interests): int
         $andwhere .= ')';
     }
 
-    $emails = db()->fetchArray('SELECT count(DISTINCT email) as \'count\' FROM `email` WHERE `email` NOT LIKE \'\' AND `kartotek` = \'1\''.$andwhere);
+    $emails = db()->fetchOne("SELECT count(DISTINCT email) as 'count' FROM `email` WHERE `email` NOT LIKE '' AND `kartotek` = '1'" . $andwhere);
 
-    return $emails[0]['count'];
+    return $emails['count'];
 }
 
 /**
@@ -769,11 +769,11 @@ function getNewEmail(): string
  */
 function getEmail(int $id): string
 {
-    $newsmails = db()->fetchArray('SELECT * FROM `newsmails` WHERE `id` = '.$id);
+    $newsmail = db()->fetchOne('SELECT * FROM `newsmails` WHERE `id` = '.$id);
 
     $html = '<div id="headline">'._('Edit newsletter').'</div>';
 
-    if ($newsmails[0]['sendt'] == 0) {
+    if ($newsmail['sendt'] == 0) {
         $html .= '<form action="" method="post" onsubmit="return sendNews();"><input type="submit" accesskey="m" style="width:1px; height:1px; position:absolute; top: -20px; left:-20px;" />';
         $html .= '<input value="'.$id.'" id="id" type="hidden" />';
     }
@@ -781,7 +781,7 @@ function getEmail(int $id): string
     $html .= '<div>';
 
     //TODO error if value = ''
-    if ($newsmails[0]['sendt'] == 0) {
+    if ($newsmail['sendt'] == 0) {
         if (count($GLOBALS['_config']['email']) > 1) {
             $html .= _('Sender:').' <select id="from">';
             $html .= '<option value="">'._('Select sender').'</option>';
@@ -793,23 +793,23 @@ function getEmail(int $id): string
             $html .= '<input value="'.$GLOBALS['_config']['email'][0].'" id="from" style="display:none;" />';
         }
     } else {
-        $html .= _('Sender:').' '.$newsmails[0]['from'];
+        $html .= _('Sender:') . ' ' . $newsmail['from'];
     }
 
     //Modtager
-    if ($newsmails[0]['sendt'] == 1) {
+    if ($newsmail['sendt'] == 1) {
         $html .= '<br /><br />'._('Recipient:');
     } else {
         $html .= '<br />'._('Restrict recipients to:');
     }
     $html .= '<div id="interests">';
-    $newsmails[0]['interests_array'] = explode('<', $newsmails[0]['interests']);
+    $newsmail['interests_array'] = explode('<', $newsmail['interests']);
     foreach ($GLOBALS['_config']['interests'] as $interest) {
         $html .= '<input';
-        if (false !== array_search($interest, $newsmails[0]['interests_array'])) {
+        if (false !== array_search($interest, $newsmail['interests_array'])) {
             $html .= ' checked="checked"';
         }
-        if ($newsmails[0]['sendt'] == 1) {
+        if ($newsmail['sendt'] == 1) {
             $html .= ' disabled="disabled"';
         } else {
             $html .= ' onchange="countEmailTo()" onclick="countEmailTo()"';
@@ -821,17 +821,17 @@ countEmailTo();
 --></script>';
     $html .= '</div>';
 
-    if ($newsmails[0]['sendt'] == 0) {
-        $html .= '<br />'._('Number of recipients:').' <span id="mailToCount">'.countEmailTo($newsmails[0]['interests']).'</span><br />';
+    if ($newsmail['sendt'] == 0) {
+        $html .= '<br />'._('Number of recipients:').' <span id="mailToCount">'.countEmailTo($newsmail['interests']).'</span><br />';
     }
 
-    if ($newsmails[0]['sendt'] == 1) {
-        $html .= '<br />'._('Subject:').' '.$newsmails[0]['subject'].'<div style="width:'.$GLOBALS['_config']['text_width'].'px; border:1px solid #D2D2D2">'.$newsmails[0]['text'].'</div></div>';
+    if ($newsmail['sendt'] == 1) {
+        $html .= '<br />'._('Subject:').' '.$newsmail['subject'].'<div style="width:'.$GLOBALS['_config']['text_width'].'px; border:1px solid #D2D2D2">'.$newsmail['text'].'</div></div>';
     } else {
-        $html .= '<br />' . _('Subject:') . ' <input class="admin_name" name="subject" id="subject" value="' . $newsmails[0]['subject'] . '" size="127" style="width:' . ($GLOBALS['_config']['text_width'] - 34) . 'px" /><script type="text/javascript"><!--
+        $html .= '<br />' . _('Subject:') . ' <input class="admin_name" name="subject" id="subject" value="' . $newsmail['subject'] . '" size="127" style="width:' . ($GLOBALS['_config']['text_width'] - 34) . 'px" /><script type="text/javascript"><!--
 //Usage: initRTE(imagesPath, includesPath, cssFile, genXHTML)
 initRTE(\'/admin/rtef/images/\', \'/admin/rtef/\', \'/theme/email.css\', true);
-writeRichText(\'text\', \'' . rtefsafe($newsmails[0]['text']) . '\', \'\', ' . ($GLOBALS['_config']['text_width'] + 32) . ', 422, true, false, false);
+writeRichText(\'text\', \'' . rtefsafe($newsmail['text']) . '\', \'\', ' . ($GLOBALS['_config']['text_width'] + 32) . ', 422, true, false, false);
 //--></script></div></form>';
     }
     return $html;
@@ -894,11 +894,14 @@ function kattree(int $id): array
 {
     $kat = db()->fetchOne("SELECT id, navn, bind FROM `kat` WHERE id = " . $id);
 
+    $kattree = [];
     $id = null;
     if ($kat) {
         $id = $kat['bind'];
-        $kattree[0]['id'] = $kat['id'];
-        $kattree[0]['navn'] = $kat['navn'];
+        $kattree[] = [
+            'id' => $kat['id'],
+            'navn' => $kat['navn'],
+        ];
 
         while ($kat['bind'] > 0) {
             $kat = db()->fetchOne("SELECT id, navn, bind FROM `kat` WHERE id = '" . $kat['bind']);
@@ -1654,7 +1657,7 @@ function showfiles(string $temp_dir): array
     }
 
     for ($i=0; $i<$nummber_files; $i++) {
-        $fileinfo = db()->fetchArray('SELECT * FROM files WHERE path = \''.$dir.'/'.$files[$i]."'");
+        $fileinfo = db()->fetchOne("SELECT * FROM files WHERE path = '" . $dir . "'" . $files[$i] . "'");
 
         if (!$fileinfo) {
             //Save file info to db
@@ -1662,20 +1665,20 @@ function showfiles(string $temp_dir): array
             $imagesize = @getimagesize(_ROOT_ . $dir . '/' . $files[$i]);
             $size = filesize(_ROOT_ . $dir . '/' . $files[$i]);
             db()->query('INSERT INTO files (path, mime, width, height, size, aspect) VALUES (\''.$dir.'/'.$files[$i]."', '".$mime."', '".$imagesize[0]."', '".$imagesize[1]."', '".$size."', NULL )");
-            $fileinfo[0]['path'] = $dir.'/'.$files[$i];
-            $fileinfo[0]['mime'] = $mime;
-            $fileinfo[0]['width'] = $imagesize[0];
-            $fileinfo[0]['height'] = $imagesize[1];
-            $fileinfo[0]['size'] = $size;
-            $fileinfo[0]['id'] = db()->insert_id;
-//          $fileinfo[0]['aspect'] = NULL;
+            $fileinfo['path'] = $dir.'/'.$files[$i];
+            $fileinfo['mime'] = $mime;
+            $fileinfo['width'] = $imagesize[0];
+            $fileinfo['height'] = $imagesize[1];
+            $fileinfo['size'] = $size;
+            $fileinfo['id'] = db()->insert_id;
+//          $fileinfo['aspect'] = NULL;
             unset($imagesize);
             unset($mime);
         }
 
-        $html .= filehtml($fileinfo[0]);
+        $html .= filehtml($fileinfo);
         //TODO reduce net to javascript
-        $javascript .= filejavascript($fileinfo[0]);
+        $javascript .= filejavascript($fileinfo);
     }
     return ['id' => 'files', 'html' => $html, 'javascript' => $javascript];
 }
@@ -2205,8 +2208,8 @@ function searchfiles(string $qpath, string $qalt, string $qmime): array
         }
     }
 
-    $filecount = db()->fetchArray('SELECT count(id) AS count'.$sql);
-    $filecount = $filecount[0]['count'];
+    $filecount = db()->fetchOne("SELECT count(id) AS count" . $sql);
+    $filecount = $filecount['count'];
 
     $sql_select = '';
     if ($qpath || $qalt) {
@@ -2445,74 +2448,74 @@ $(\'subMenusOrder\').value = newOrder;
 function redigerside(int $id): string
 {
     if ($id) {
-        $sider = db()->fetchOne("SELECT * FROM `sider` WHERE id = " . $id);
+        $page = db()->fetchOne("SELECT * FROM `sider` WHERE id = " . $id);
     }
-    if (!$sider) {
+    if (!$page) {
         return '<div id="headline">'._('The page does not exist').'</div>';
     }
 
     $html = '<div id="headline">'._('Edit page #').$id.'</div><form action="" method="post" onsubmit="return updateSide('.$id.');"><input type="submit" accesskey="s" style="width:1px; height:1px; position:absolute; top: -20px; left:-20px;" /><div><script type="text/javascript"><!--
 //Usage: initRTE(imagesPath, includesPath, cssFile, genXHTML)
 initRTE("/admin/rtef/images/", "/admin/rtef/", "/theme/rtef-text.css", true);
-//--></script><input type="hidden" name="id" id="id" value="'.$id.'" /><input class="admin_name" type="text" name="navn" id="navn" value="'.xhtmlEsc($sider[0]['navn']).'" maxlength="127" size="127" style="width:'.$GLOBALS['_config']['text_width'].'px" /><script type="text/javascript"><!--
-writeRichText("text", \''.rtefsafe($sider[0]['text']).'\', "", '.($GLOBALS['_config']['text_width']+32).', 420, true, false, false);
+//--></script><input type="hidden" name="id" id="id" value="'.$id.'" /><input class="admin_name" type="text" name="navn" id="navn" value="'.xhtmlEsc($page['navn']).'" maxlength="127" size="127" style="width:'.$GLOBALS['_config']['text_width'].'px" /><script type="text/javascript"><!--
+writeRichText("text", \''.rtefsafe($page['text']).'\', "", '.($GLOBALS['_config']['text_width']+32).', 420, true, false, false);
 //--></script>';
-    $html .= _('Search word (separate search words with a comma \'Emergency Blanket, Emergency Blanket\'):').'<br /><textarea name="keywords" id="keywords" style="width:'.$GLOBALS['_config']['text_width'].'px;max-width:'.$GLOBALS['_config']['text_width'].'px" rows="2" cols="">'.xhtmlEsc($sider[0]['keywords']).'</textarea>';
+    $html .= _('Search word (separate search words with a comma \'Emergency Blanket, Emergency Blanket\'):').'<br /><textarea name="keywords" id="keywords" style="width:'.$GLOBALS['_config']['text_width'].'px;max-width:'.$GLOBALS['_config']['text_width'].'px" rows="2" cols="">'.xhtmlEsc($page['keywords']).'</textarea>';
     //Beskrivelse start
     $html .= '<div class="toolbox"><a class="menuboxheader" id="beskrivelseboxheader" style="width:'.($GLOBALS['_config']['thumb_width']+14).'px" onclick="showhide(\'beskrivelsebox\',this);">'._('Description:').' </a><div style="text-align:center;width:'.($GLOBALS['_config']['thumb_width']+34).'px" id="beskrivelsebox"><br /><input type="hidden" value="';
-    if ($sider[0]['billed']) {
-        $html .= $sider[0]['billed'];
+    if ($page['billed']) {
+        $html .= $page['billed'];
     } else {
         $html .= _('/images/web/intet-foto.jpg');
     }
     $html .= '" id="billed" name="billed" /><img id="billedthb" src="';
 
-    if ($sider[0]['billed']) {
-        $html .= $sider[0]['billed'];
+    if ($page['billed']) {
+        $html .= $page['billed'];
     } else {
         $html .= _('/images/web/intet-foto.jpg');
     }
     $html .= '" alt="" onclick="explorer(\'thb\', \'billed\')" /><br /><img onclick="explorer(\'thb\', \'billed\')" src="images/folder_image.png" width="16" height="16" alt="'._('Pictures').'" title="'._('Find image').'" /><a onclick="setThb(\'billed\',\'\',\''._('/images/web/intet-foto.jpg').'\')"><img src="images/cross.png" alt="X" title="'._('Remove picture').'" width="16" height="16" /></a>';
     $html .= '<script type="text/javascript"><!--
-writeRichText("beskrivelse", \''.rtefsafe($sider[0]['beskrivelse']).'\', "", '.($GLOBALS['_config']['thumb_width']+32).', 115, false, false, false);
+writeRichText("beskrivelse", \''.rtefsafe($page['beskrivelse']).'\', "", '.($GLOBALS['_config']['thumb_width']+32).', 115, false, false, false);
 //--></script>';
     $html .= '</div></div>';
     //Beskrivelse end
     //Pris start
     $html .= '<div class="toolbox"><a class="menuboxheader" id="priserheader" style="width:230px" onclick="showhide(\'priser\',this);">'._('Price:').' </a><div style="width:250px;" id="priser"><table style="width:100%"><tr><td><select name="burde" id="burde">
     <option value="0"';
-    if ($sider[0]['burde'] == 0) {
+    if ($page['burde'] == 0) {
         $html .= ' selected="selected"';
     }
     $html .= '>'._('Before').'</option>
     <option value="1"';
-    if ($sider[0]['burde'] == 1) {
+    if ($page['burde'] == 1) {
         $html .= ' selected="selected"';
     }
     $html .= '>'._('Indicative price').'</option>
     <option value="2"';
-    if ($sider[0]['burde'] == 2) {
+    if ($page['burde'] == 2) {
         $html .= ' selected="selected"';
     }
     $html .= '>'._('Should cost').'</option>
-    </select></td><td style="text-align:right"><input class="XPris" onkeypress="return checkForInt(event)" onchange="prisHighlight()" value="'.$sider[0]['for'].'" name="for" id="for" size="11" maxlength="11" style="width:100px;text-align:right" />,-</td></tr>';
+    </select></td><td style="text-align:right"><input class="XPris" onkeypress="return checkForInt(event)" onchange="prisHighlight()" value="'.$page['for'].'" name="for" id="for" size="11" maxlength="11" style="width:100px;text-align:right" />,-</td></tr>';
     $html .= '<tr><td><select name="fra" id="fra">
     <option value="0"';
-    if ($sider[0]['fra'] == 0) {
+    if ($page['fra'] == 0) {
         $html .= ' selected="selected"';
     }
     $html .= '>'._('Price').'</option>
     <option value="1"';
-    if ($sider[0]['fra'] == 1) {
+    if ($page['fra'] == 1) {
         $html .= ' selected="selected"';
     }
     $html .= '>'._('From').'</option>
     <option value="2"';
-    if ($sider[0]['fra'] == 2) {
+    if ($page['fra'] == 2) {
         $html .= ' selected="selected"';
     }
-    $html .= '>'._('Used').'</option></select></td><td style="text-align:right"><input value="'.$sider[0]['pris'].'" class="';
-    if ($sider[0]['for']) {
+    $html .= '>'._('Used').'</option></select></td><td style="text-align:right"><input value="'.$page['pris'].'" class="';
+    if ($page['for']) {
         $html .= 'NyPris';
     } else {
         $html .= 'Pris';
@@ -2521,19 +2524,19 @@ writeRichText("beskrivelse", \''.rtefsafe($sider[0]['beskrivelse']).'\', "", '.(
     $html .= '</td></tr></table></div></div>';
     //Pris end
     //misc start
-    $html .= '<div class="toolbox"><a class="menuboxheader" id="miscboxheader" style="width:201px" onclick="showhide(\'miscbox\',this);">'._('Other:').' </a><div style="width:221px" id="miscbox">'._('SKU:').' <input type="text" name="varenr" id="varenr" maxlength="63" style="text-align:right;width:128px" value="'.xhtmlEsc($sider[0]['varenr']).'" /><br /><img src="images/page_white_key.png" width="16" height="16" alt="" /><select id="krav" name="krav"><option value="0">'._('None').'</option>';
+    $html .= '<div class="toolbox"><a class="menuboxheader" id="miscboxheader" style="width:201px" onclick="showhide(\'miscbox\',this);">'._('Other:').' </a><div style="width:221px" id="miscbox">'._('SKU:').' <input type="text" name="varenr" id="varenr" maxlength="63" style="text-align:right;width:128px" value="'.xhtmlEsc($page['varenr']).'" /><br /><img src="images/page_white_key.png" width="16" height="16" alt="" /><select id="krav" name="krav"><option value="0">'._('None').'</option>';
     $krav = db()->fetchArray('SELECT id, navn FROM `krav` ORDER BY navn');
     $krav_nr = count($krav);
     for ($i=0; $i<$krav_nr; $i++) {
         $html .= '<option value="'.$krav[$i]['id'].'"';
-        if ($sider[0]['krav'] == $krav[$i]['id']) {
+        if ($page['krav'] == $krav[$i]['id']) {
             $html .= ' selected="selected"';
         }
         $html .= '>'.xhtmlEsc($krav[$i]['navn']).'</option>';
     }
     $html .= '</select><br /><img width="16" height="16" alt="" src="images/page_white_medal.png"/><select id="maerke" name="maerke" multiple="multiple" size="15"><option value="0">'._('All others').'</option>';
 
-    $maerker = explode(',', $sider[0]['maerke']);
+    $maerker = explode(',', $page['maerke']);
 
     $maerke = db()->fetchArray('SELECT id, navn FROM `maerke` ORDER BY navn');
     $maerke_nr = count($maerke);
@@ -2548,7 +2551,9 @@ writeRichText("beskrivelse", \''.rtefsafe($sider[0]['beskrivelse']).'\', "", '.(
     //misc end
     //list start
     $html .= '<div class="toolbox"><a class="menuboxheader" id="listboxheader" style="width:'.($GLOBALS['_config']['text_width']-20+32).'px" onclick="showhide(\'listbox\',this);">'._('Lists:').' </a><div style="width:'.($GLOBALS['_config']['text_width']+32).'px" id="listbox">';
-    $lists = db()->fetchArray('SELECT * FROM `lists` WHERE page_id = '.$id);
+    $lists = db()->fetchArray('SELECT * FROM `lists` WHERE page_id = ' . $id);
+    $firstRow = reset($lists);
+    $options = [];
     foreach ($lists as $list) {
         $html .= '<table>';
 
@@ -2574,9 +2579,9 @@ writeRichText("beskrivelse", \''.rtefsafe($sider[0]['beskrivelse']).'\', "", '.(
                     $html .= '<td><input style="display:none;" /></td>';
                 }
             } else {
-                if (!$options[$list['sorts'][$key]]) {
-                    $options[$list['sorts'][$key]] = db()->fetchArray('SELECT `text` FROM `tablesort` WHERE id = '.$list['sorts'][$key]);
-                    $options[$list['sorts'][$key]] = explode('<', $options[$list['sorts'][$key]][0]['text']);
+                if (empty($options[$list['sorts'][$key]])) {
+                    $temp = db()->fetchOne("SELECT `text` FROM `tablesort` WHERE id = " . $list['sorts'][$key]);
+                    $options[$list['sorts'][$key]] = explode('<', $temp['text']);
                 }
 
                 $html .= '<td><select style="display:none;"><option value=""></option>';
@@ -2607,10 +2612,10 @@ writeRichText("beskrivelse", \''.rtefsafe($sider[0]['beskrivelse']).'\', "", '.(
             unset($rows_cells);
 
             //Sort rows
-            if (empty($bycell) || $lists[0]['sorts'][$bycell] < 1) {
-                $rows = arrayNatsort($rows, 'id', $lists[0]['sort']);
+            if (empty($bycell) || $firstRow['sorts'][$bycell] < 1) {
+                $rows = arrayNatsort($rows, 'id', $firstRow['sort']);
             } else {
-                $rows = arrayListsort($rows, 'id', $lists[0]['sort'], $list[0]['sorts'][$lists[0]['sort']]);
+                $rows = arrayListsort($rows, 'id', $firstRow['sort'], $firstRow['sorts'][$firstRow['sort']]);
             }
 
             foreach ($rows as $i => $row) {
@@ -2627,9 +2632,9 @@ writeRichText("beskrivelse", \''.rtefsafe($sider[0]['beskrivelse']).'\', "", '.(
                             $html .= '<td><input value="'.$row[$key].'" style="display:none;" /><span>'.$row[$key].'</span></td>';
                         }
                     } else {
-                        if (!$options[$list['sorts'][$key]]) {
-                            $options[$list['sorts'][$key]] = db()->fetchArray('SELECT `text` FROM `tablesort` WHERE id = '.$list['sorts'][$key]);
-                            $options[$list['sorts'][$key]] = explode('<', $options[$list['sorts'][$key]][0]['text']);
+                        if (empty($options[$list['sorts'][$key]])) {
+                            $temp = db()->fetchOne("SELECT `text` FROM `tablesort` WHERE id = " . $list['sorts'][$key]);
+                            $options[$list['sorts'][$key]] = explode('<', $temp['text']);
                         }
 
                         $html .= '<td><select style="display:none"><option value=""></option>';
@@ -2826,21 +2831,21 @@ writeRichText("text", "", "", '.$GLOBALS['_config']['text_width'].', 420, true, 
 function listsort(int $id = null): string
 {
     if ($id) {
-        $liste = db()->fetchArray('SELECT * FROM `tablesort` WHERE `id` = '.$id);
+        $liste = db()->fetchOne("SELECT * FROM `tablesort` WHERE `id` = " . $id);
 
-        $html = '<div id="headline">'.sprintf(_('Edit %s sorting'), $liste[0]['navn']).'</div><div>';
+        $html = '<div id="headline">'.sprintf(_('Edit %s sorting'), $liste['navn']) . '</div><div>';
 
-        $html .= _('Name:').' <input id="listOrderNavn" value="'.$liste[0]['navn'].'"><form action="" method="post" onsubmit="addNewItem(); return false;">'._('New Item:').' <input id="newItem"> <input type="submit" value="tilføj" accesskey="t"></form>';
+        $html .= _('Name:').' <input id="listOrderNavn" value="' . $liste['navn'] . '"><form action="" method="post" onsubmit="addNewItem(); return false;">'._('New Item:').' <input id="newItem"> <input type="submit" value="tilføj" accesskey="t"></form>';
 
         $html .= '<ul id="listOrder" style="width:'.$GLOBALS['_config']['text_width'].'px;">';
-        $liste[0]['text'] = explode('<', $liste[0]['text']);
+        $liste['text'] = explode('<', $liste['text']);
 
-        foreach ($liste[0]['text'] as $key => $value) {
+        foreach ($liste['text'] as $key => $value) {
             $html .= '<li id="item_'.$key.'">'.$value.'</li>';
         }
 
         $html .= '</ul><input type="hidden" id="listOrderValue" value="" /><script type="text/javascript"><!--
-var items = '.count($liste[0]['text']).';
+var items = ' . count($liste['text']) . ';
 Sortable.create(\'listOrder\',{ghosting:false,constraint:false,hoverclass:\'over\'});
 --></script></div>';
     } else {
@@ -2887,28 +2892,28 @@ function getaddressbook(): string
 
 function editContact(int $id): string
 {
-    $address = db()->fetchArray('SELECT * FROM `email` WHERE `id` = '.$id);
+    $address = db()->fetchOne('SELECT * FROM `email` WHERE `id` = ' . $id);
 
     $html = '<div id="headline">' ._('Edit contact person') .'</div>';
     $html .= '<form method="post" action="" onsubmit="updateContact(' .$id .'); return false;"><input type="submit" accesskey="s" style="width:1px; height:1px; position:absolute; top: -20px; left:-20px;" /><table border="0" cellspacing="0"><tbody><tr><td>'._('Name:').'</td><td colspan="2"><input value="'.
-    $address[0]['navn'].'" id="navn" /></td></tr><tr><td>'._('E-mail:').'</td><td colspan="2"><input value="'.
-    $address[0]['email'].'" id="email" /></td></tr><tr><td>'._('Address:').'</td><td colspan="2"><input value="'.
-    $address[0]['adresse'].'" id="adresse" /></td></tr><tr><td>'._('Country:').'</td><td colspan="2"><input value="'.
-    $address[0]['land'].'" id="land" /></td></tr><tr><td width="1%">'._('Postal Code:').'</td><td width="1%"><input maxlength="8" size="8" id="post" value="'.
-    $address[0]['post'].'" /></td><td align="left" nowrap="nowrap">'._('City:').'<input size="8" id="by" value="'.
-    $address[0]['by'].'" /></td></tr><tr><td nowrap="nowrap">'._('Private phone:').'</td><td colspan="2"><input maxlength="11" size="15" id="tlf1" value="'.
-    $address[0]['tlf1'].'" /></td></tr><tr><td nowrap="nowrap">'._('Mobile phone:').'</td><td colspan="2"><input maxlength="11" size="15" id="tlf2" value="'.
-    $address[0]['tlf2'].'" /></td></tr><tr><td colspan="5"><br /><label for="kartotek"><input value="1" id="kartotek" type="checkbox"';
-    if ($address[0]['kartotek']) {
+    $address['navn'].'" id="navn" /></td></tr><tr><td>'._('E-mail:').'</td><td colspan="2"><input value="'.
+    $address['email'].'" id="email" /></td></tr><tr><td>'._('Address:').'</td><td colspan="2"><input value="'.
+    $address['adresse'].'" id="adresse" /></td></tr><tr><td>'._('Country:').'</td><td colspan="2"><input value="'.
+    $address['land'].'" id="land" /></td></tr><tr><td width="1%">'._('Postal Code:').'</td><td width="1%"><input maxlength="8" size="8" id="post" value="'.
+    $address['post'].'" /></td><td align="left" nowrap="nowrap">'._('City:').'<input size="8" id="by" value="'.
+    $address['by'].'" /></td></tr><tr><td nowrap="nowrap">'._('Private phone:').'</td><td colspan="2"><input maxlength="11" size="15" id="tlf1" value="'.
+    $address['tlf1'].'" /></td></tr><tr><td nowrap="nowrap">'._('Mobile phone:').'</td><td colspan="2"><input maxlength="11" size="15" id="tlf2" value="'.
+    $address['tlf2'].'" /></td></tr><tr><td colspan="5"><br /><label for="kartotek"><input value="1" id="kartotek" type="checkbox"';
+    if ($address['kartotek']) {
         $html .= ' checked="checked"';
     }
     $html .= ' />'._('Receive newsletters.').'</label><br />
     <strong>'._('Interests:').'</strong>';
     $html .= '<div id="interests">';
-    $address[0]['interests_array'] = explode('<', $address[0]['interests']);
+    $address['interests_array'] = explode('<', $address['interests']);
     foreach ($GLOBALS['_config']['interests'] as $interest) {
         $html .= '<label for="'.$interest.'"><input';
-        if (false !== array_search($interest, $address[0]['interests_array'])) {
+        if (false !== array_search($interest, $address['interests_array'])) {
             $html .= ' checked="checked"';
         }
         $html .= ' type="checkbox" value="'.$interest.'" id="'.$interest.'" /> '.$interest.'</label> ';
@@ -3160,9 +3165,9 @@ function check_file_paths(): string
 
 function get_size_of_files(): int
 {
-    $files = db()->fetchArray("SELECT count( * ) AS `count`, sum( `size` ) /1024 /1024 AS `filesize` FROM `files`");
+    $files = db()->fetchOne("SELECT count( * ) AS `count`, sum( `size` ) /1024 /1024 AS `filesize` FROM `files`");
 
-    return $files[0]['filesize'];
+    return $files['filesize'];
 }
 
 function get_mail_size(): int
@@ -3247,7 +3252,7 @@ function get_pages_with_mismatch_bindings(): string
     $sider = db()->fetchArray("SELECT `id`, `navn`, `varenr` FROM `sider`;");
     $html = '';
     foreach ($sider as $value) {
-        $bind = db()->fetchArray("SELECT `kat` FROM `bind` WHERE `side` = ".$value['id']);
+        $bind = db()->fetchArray("SELECT `kat` FROM `bind` WHERE `side` = " . $value['id']);
         //Add active pages that has a list that links to this page
         $listlinks = db()->fetchArray("SELECT `bind`.`kat` FROM `list_rows` JOIN `lists` ON `list_rows`.`list_id` = `lists`.`id` JOIN `bind` ON `lists`.`page_id` = `bind`.`side` WHERE `list_rows`.`link` = ".$value['id']);
         foreach ($listlinks as $listlink) {
@@ -3258,7 +3263,7 @@ function get_pages_with_mismatch_bindings(): string
 
         //Is there any mismatches of the root bindings
         if (count($bind) > 1) {
-            $binding = binding($bind[0]['kat']);
+            $binding = binding(reset($bind)['kat']);
             foreach ($bind as $enbind) {
                 if ($binding != binding($enbind['kat'])) {
                     $html .= '<a href="?side=redigerside&amp;id='.$value['id'].'">'.$value['id'].': '.$value['navn'].'</a><br />';
@@ -3420,12 +3425,12 @@ function getmaerker(): string
 
 function getupdatemaerke(int $id): string
 {
-    $brands = db()->fetchArray('SELECT navn, link, ico FROM `maerke` WHERE id = '.$id);
+    $brand = db()->fetchOne("SELECT navn, link, ico FROM `maerke` WHERE id = " . $id);
 
-    $html = '<div id="headline">'.sprintf(_('Edit the brand %d'), $brands[0]['navn']).'</div><form onsubmit="x_updatemaerke('.$id.',document.getElementById(\'navn\').value,document.getElementById(\'link\').value,document.getElementById(\'ico\').value,inject_html); return false;"><table cellspacing="0"><tr style="height:21px"><td>'._('Name:').' </td><td><input value="'.xhtmlEsc($brands[0]['navn']).'" id="navn" style="width:256px;" maxlength="64" /></td></tr><tr style="height:21px"><td>Link: </td><td><input value="'.xhtmlEsc($brands[0]['link']).'" id="link" style="width:256px;" maxlength="64" /></td></tr><tr style="height:21px"><td>'._('Logo:').' </td>
-    <td style="text-align:center"><input type="hidden" value="'.xhtmlEsc($brands[0]['ico']).'" id="ico" name="ico" /><img id="icothb" src="';
-    if ($brands[0]['ico']) {
-        $html .= $brands[0]['ico'];
+    $html = '<div id="headline">'.sprintf(_('Edit the brand %d'), $brand['navn']).'</div><form onsubmit="x_updatemaerke('.$id.',document.getElementById(\'navn\').value,document.getElementById(\'link\').value,document.getElementById(\'ico\').value,inject_html); return false;"><table cellspacing="0"><tr style="height:21px"><td>'._('Name:').' </td><td><input value="'.xhtmlEsc($brand['navn']).'" id="navn" style="width:256px;" maxlength="64" /></td></tr><tr style="height:21px"><td>Link: </td><td><input value="'.xhtmlEsc($brand['link']).'" id="link" style="width:256px;" maxlength="64" /></td></tr><tr style="height:21px"><td>'._('Logo:').' </td>
+    <td style="text-align:center"><input type="hidden" value="'.xhtmlEsc($brand['ico']).'" id="ico" name="ico" /><img id="icothb" src="';
+    if ($brand['ico']) {
+        $html .= $brand['ico'];
     } else {
         $html .= _('/images/web/intet-foto.jpg');
     }
@@ -3468,12 +3473,12 @@ function getkrav(): string
 
 function editkrav(int $id): string
 {
-    $krav = db()->fetchArray('SELECT navn, text FROM `krav` WHERE id = '.$id);
+    $krav = db()->fetchOne('SELECT navn, text FROM `krav` WHERE id = '.$id);
 
-    $html = '<div id="headline">'.sprintf(_('Edit %s'), $krav[0]['navn']).'</div><form action="" method="post" onsubmit="return savekrav();"><input type="submit" accesskey="s" style="width:1px; height:1px; position:absolute; top: -20px; left:-20px;" /><input type="hidden" name="id" id="id" value="'.$id.'" /><input class="admin_name" type="text" name="navn" id="navn" value="'.$krav[0]['navn'].'" maxlength="127" size="127" style="width:587px" /><script type="text/javascript"><!--
+    $html = '<div id="headline">'.sprintf(_('Edit %s'), $krav['navn']).'</div><form action="" method="post" onsubmit="return savekrav();"><input type="submit" accesskey="s" style="width:1px; height:1px; position:absolute; top: -20px; left:-20px;" /><input type="hidden" name="id" id="id" value="'.$id.'" /><input class="admin_name" type="text" name="navn" id="navn" value="'.$krav['navn'].'" maxlength="127" size="127" style="width:587px" /><script type="text/javascript"><!--
 //Usage: initRTE(imagesPath, includesPath, cssFile, genXHTML)
 initRTE("/admin/rtef/images/", "/admin/rtef/", "/theme/rtef-text.css", true);
-writeRichText("text", \''.rtefsafe($krav[0]['text']).'\', "", '.$GLOBALS['_config']['text_width'].', 420, true, false, false);
+writeRichText("text", \''.rtefsafe($krav['text']).'\', "", ' . $GLOBALS['_config']['text_width'] . ', 420, true, false, false);
 //--></script></form>';
 
     return $html;

@@ -17,40 +17,15 @@ session_start();
 
 require_once $_SERVER['DOCUMENT_ROOT'] . '/inc/functions.php';
 
-//primitive runtime cache
-$GLOBALS['cache'] = [];
-$GLOBALS['cache']['updatetime'] = [];
-
 if (!empty($_SESSION['faktura']['quantities'])) {
-    $GLOBALS['cache']['updatetime'][] = time();
+    Cache::addUpdateTime(time());
 }
 
 //If the database is older then the users cache, send 304 not modified
 //WARNING: this results in the site not updating if new files are included later,
 //the remedy is to update the database when new cms files are added.
 if (empty($delayprint)) {
-    $tabels = db()->fetchArray("SHOW TABLE STATUS");
-    $updatetime = 0;
-    foreach ($tabels as $tabel) {
-        $updatetime = max($updatetime, strtotime($tabel['Update_time']));
-    }
-    $included_files = get_included_files();
-    $GLOBALS['cache']['updatetime']['filemtime'] = 0;
-    foreach ($included_files as $filename) {
-        $t = max($GLOBALS['cache']['updatetime']['filemtime'], filemtime($filename));
-        $GLOBALS['cache']['updatetime']['filemtime'] = $t;
-    }
-    unset($included_files);
-    unset($filename);
-    foreach ($GLOBALS['cache']['updatetime'] as $time) {
-        $updatetime = max($updatetime, $time);
-    }
-    if ($updatetime < 1) {
-        $updatetime = time();
-    }
-
-    doConditionalGet($updatetime);
-    $updatetime = 0;
+    doConditionalGet(Cache::getUpdateTime());
 }
 
 $_GET = fullMysqliEscape($_GET);
@@ -87,18 +62,20 @@ if (@$_GET['kat'] || @$_GET['side']) {
          */
         $kat_id = fullMysqliEscape($_GET['kat']);
 
-        if (!$GLOBALS['cache']['kats'][$kat_id]['navn']) {
-            $kats = db()->fetchOne(
+        if (Cache::get('kat' . $kat_id . 'name') === null) {
+            $kat = db()->fetchOne(
                 "
                 SELECT navn, vis, icon
                 FROM kat
                 WHERE id = " . $kat_id
             );
-            getUpdateTime('kat');
+            Cache::addLoadedTable('kat');
 
-            $GLOBALS['cache']['kats'][$kat_id] = $kats;
+            Cache::set('kat' . $kat_id . 'name', $kat['navn']);
+            Cache::set('kat' . $kat_id . 'type', $kat['vis']);
+            Cache::set('kat' . $kat_id . 'type', $kat['icon']);
         }
-        $kat_name = $GLOBALS['cache']['kats'][$kat_id]['navn'];
+        $kat_name = Cache::get('kat' . $kat_id . 'name');
     }
     if ($side_navn) {
         //TODO rawurlencode $url (PIE doesn't do it buy it self :(
@@ -122,9 +99,6 @@ if (@$_GET['kat'] || @$_GET['side']) {
         die();
     }
 }
-
-//primitive runtime cache
-$GLOBALS['cache']['kats'] = [];
 
 $activMenu =& $GLOBALS['generatedcontent']['activmenu'];
 
@@ -151,7 +125,7 @@ if (@$GLOBALS['side']['id'] > 0) {
         WHERE id = " .$GLOBALS['side']['id']
     )
     ) {
-        getUpdateTime('sider');
+        Cache::addLoadedTable('sider');
 
         $GLOBALS['side']['inactive'] = true;
         unset($GLOBALS['side']['id']);
@@ -191,8 +165,7 @@ if (@$GLOBALS['side']['id'] > 0
         ON bind.side = sider.id
         WHERE side = ".$GLOBALS['side']['id']
     );
-
-    getUpdateTime('bind');
+    Cache::addUpdateTime($bind['dato']);
 
     $activMenu                 = $bind['kat'];
     $GLOBALS['side']['navn']   = $bind['navn'];
@@ -205,7 +178,6 @@ if (@$GLOBALS['side']['id'] > 0
     $GLOBALS['side']['maerke'] = $bind['maerke'];
     $GLOBALS['side']['varenr'] = $bind['varenr'];
     $GLOBALS['side']['dato']   = $bind['dato'];
-    $GLOBALS['cache']['updatetime']['side'] = $bind['dato'];
     unset($bind);
 } elseif (@$GLOBALS['side']['id'] > 0 && empty($GLOBALS['side']['inactive'])) {
     //Hent side indhold
@@ -224,6 +196,12 @@ if (@$GLOBALS['side']['id'] > 0
         FROM sider
         WHERE id = " . $GLOBALS['side']['id']
     );
+    if ($page['dato']) {
+        Cache::addUpdateTime($page['dato']);
+    } else {
+        Cache::addLoadedTable('sider');
+    }
+
     $GLOBALS['side']['navn']   = $page['navn'];
     $GLOBALS['side']['burde']  = $page['burde'];
     $GLOBALS['side']['fra']    = $page['fra'];
@@ -234,7 +212,6 @@ if (@$GLOBALS['side']['id'] > 0
     $GLOBALS['side']['maerke'] = $page['maerke'];
     $GLOBALS['side']['varenr'] = $page['varenr'];
     $GLOBALS['side']['dato']   = $page['dato'];
-    $GLOBALS['cache']['updatetime']['side'] = $page['dato'];
     unset($sider);
 }
 
@@ -247,17 +224,20 @@ if (@$activMenu > 0) {
     //Key words
     if ($GLOBALS['kats']) {
         foreach ($GLOBALS['kats'] as $value) {
-            if (empty($GLOBALS['cache']['kats'][$value]['navn'])) {
-                $GLOBALS['cache']['kats'][$value] = db()->fetchOne(
+            if (Cache::get('kat' . $value . 'name') === null) {
+                $kat = db()->fetchOne(
                     "
                     SELECT navn, vis, icon
                     FROM kat
                     WHERE id = " . $value
                 );
-                getUpdateTime('kat');
+                Cache::addLoadedTable('kat');
+                Cache::set('kat' . $value . 'name', $kat['navn']);
+                Cache::set('kat' . $value . 'type', $kat['vis']);
+                Cache::set('kat' . $value . 'icon', $kat['icon']);
             }
 
-            $keyword = xhtmlEsc($GLOBALS['cache']['kats'][$value]['navn']);
+            $keyword = xhtmlEsc(Cache::get('kat' . $value . 'name'));
             $keyword = trim($keyword);
             $keywords[] = $keyword;
         }
@@ -268,24 +248,26 @@ if (@$activMenu > 0) {
 //crumbs start
 if (@$GLOBALS['kats']) {
     foreach ($GLOBALS['kats'] as $value) {
-        if (!$GLOBALS['cache']['kats'][$value]['navn']) {
+        if (Cache::get('kat' . $value . 'name') === null
+            || Cache::get('kat' . $value . 'icon') === null
+        ) {
             $katsnr_navn = db()->fetchArray(
                 "
                 SELECT navn, vis, icon
                 FROM kat
-                WHERE id = ".$value
+                WHERE id = " . $value
             );
-
-            getUpdateTime('kat');
-
-            $GLOBALS['cache']['kats'][$value] = $katsnr_navn[0];
+            Cache::addLoadedTable('kat');
+            Cache::set('kat' . $value . 'name', $katsnr_navn['navn']);
+            Cache::set('kat' . $value . 'type', $katsnr_navn['vis']);
+            Cache::set('kat' . $value . 'icon', $katsnr_navn['icon']);
         }
 
         $GLOBALS['generatedcontent']['crumbs'][] = [
-            'name' => xhtmlEsc($GLOBALS['cache']['kats'][$value]['navn']),
+            'name' => xhtmlEsc(Cache::get('kat' . $value . 'name')),
             'link' => '/kat' . $value . '-'
-            . clearFileName($GLOBALS['cache']['kats'][$value]['navn']) . '/',
-            'icon' => $GLOBALS['cache']['kats'][$value]['icon'],
+            . clearFileName(Cache::get('kat' . $value . 'name')) . '/',
+            'icon' => Cache::get('kat' . $value . 'icon'),
         ];
     }
     $GLOBALS['generatedcontent']['crumbs'] = array_reverse(
@@ -314,16 +296,18 @@ $kat_fpc = db()->fetchArray(
     ORDER BY `order`, navn ASC
     "
 );
-getUpdateTime('kat');
+Cache::addLoadedTable('kat');
 foreach ($kat_fpc as $value) {
-    $GLOBALS['cache']['kats'][$value['id']]['navn'] = $value['navn'];
-    $GLOBALS['cache']['kats'][$value['id']]['vis'] = $value['vis'];
-    $GLOBALS['cache']['kats'][$value['id']]['skriv'] = $value['skriv'] ? true : null;
+    Cache::set('kat' . $value['id'] . 'name', $value['navn']);
+    Cache::set('kat' . $value['id'] . 'type', $value['vis']);
+    Cache::set('kat' . $value['id'] . 'icon', $value['icon']);
+    Cache::set('kat' . $value['id'] . 'show', $value['skriv'] ? true : null);
 
     //TODO think about adding parent folders to url
     if (skriv($value['id'])) {
         $subs = null;
-        if ($value['id'] == @$GLOBALS['kats'][0]) {
+        $kats = $GLOBALS['kats'] ?? [];
+        if ($value['id'] === reset($kats) ?: null) {
             $subs = menu(0, $value['custom_sort_subs']);
         }
 
@@ -353,8 +337,8 @@ $kat_fpp = db()->fetchArray(
     "
 );
 
-getUpdateTime('bind');
-getUpdateTime('sider');
+Cache::addLoadedTable('bind');
+Cache::addLoadedTable('sider');
 
 foreach ($kat_fpp as $value) {
     $GLOBALS['generatedcontent']['sider'][] = [
@@ -413,7 +397,7 @@ if (@$_GET['sog'] || @$GLOBALS['side']['inactive']) {
         "
     );
 
-    getUpdateTime('maerke');
+    Cache::addLoadedTable('maerke');
 
     $maerker_nr = count($maerker);
     foreach ($maerker as $value) {
@@ -448,26 +432,26 @@ if (@$_GET['sog'] || @$GLOBALS['side']['inactive']) {
         if (@$_GET['maerke'] && empty($maerke)) {
             $maerke = $_GET['maerke'];
         }
-        $maerkeet = db()->fetchArray(
+        $maerkeet = db()->fetchOne(
             "
             SELECT `id`, `navn`, `link`, ico
             FROM `maerke`
             WHERE id = " . $maerke
         );
 
-        getUpdateTime('maerke');
+        Cache::addLoadedTable('maerke');
 
         $GLOBALS['generatedcontent']['brand'] = [
-            'id' => $maerkeet[0]['id'],
-            'name' => xhtmlEsc($maerkeet[0]['navn']),
-            'xlink' => $maerkeet[0]['link'],
-            'icon' => $maerkeet[0]['ico'],
+            'id' => $maerkeet['id'],
+            'name' => xhtmlEsc($maerkeet['navn']),
+            'xlink' => $maerkeet['link'],
+            'icon' => $maerkeet['ico'],
         ];
 
-        $wheresider = "AND (`maerke` LIKE '". $maerkeet[0]['id']
-            ."' OR `maerke` LIKE '" .$maerkeet[0]['id'].",%' OR `maerke` LIKE '%,"
-            .$maerkeet[0]['id'] .",%' OR `maerke` LIKE '%,"
-            .$maerkeet[0]['id'] ."')";
+        $wheresider = "AND (`maerke` LIKE '". $maerkeet['id']
+            ."' OR `maerke` LIKE '" .$maerkeet['id'].",%' OR `maerke` LIKE '%,"
+            .$maerkeet['id'] .",%' OR `maerke` LIKE '%,"
+            .$maerkeet['id'] ."')";
         $sider = searchListe(false, $wheresider);
     } else {
         //Full search
@@ -508,6 +492,7 @@ if (@$_GET['sog'] || @$GLOBALS['side']['inactive']) {
     ) {
         ini_set('zlib.output_compression', '0');
         header('HTTP/1.1 302 Found');
+        $side = array_shift($sider);
 
         //TODO cache
         $kat = db()->fetchOne(
@@ -515,19 +500,19 @@ if (@$_GET['sog'] || @$GLOBALS['side']['inactive']) {
             SELECT kat.id, kat.navn
             FROM bind
             JOIN kat ON kat.id = bind.kat
-            WHERE bind.`side` = " . $sider[0]['id']
+            WHERE bind.`side` = " . $side['id']
         );
 
-        getUpdateTime('bind');
-        getUpdateTime('kat');
+        Cache::addLoadedTable('bind');
+        Cache::addLoadedTable('kat');
 
         //TODO rawurlencode $url (PIE doesn't do it buy it self :(
         $url = '';
         if ($kat) {
             $url = '/kat'.$kat['id'] . '-' . $folderName = rawurlencode(clearFileName($kat['navn']));
         }
-        $url .= '/side' . $sider[0]['id'] . '-'
-        . rawurlencode(clearFileName($sider[0]['navn'])) . '.html';
+        $url .= '/side' . $side['id'] . '-'
+        . rawurlencode(clearFileName($side['navn'])) . '.html';
 
         //redirect til en side
         header('Location: ' . $url);
@@ -559,9 +544,9 @@ if (@$_GET['sog'] || @$GLOBALS['side']['inactive']) {
     liste();
     if (@$GLOBALS['side']['id'] > 0) {
         $GLOBALS['generatedcontent']['contenttype'] = 'product';
-    } elseif (@$GLOBALS['cache']['kats'][$activMenu]['vis'] == 2) {
+    } elseif (Cache::get('kat' . $activMenu . 'type') == 2) {
         $GLOBALS['generatedcontent']['contenttype'] = 'list';
-    } elseif (@$GLOBALS['cache']['kats'][$activMenu]['vis'] == 1) {
+    } elseif (Cache::get('kat' . $activMenu . 'type') == 1) {
         $GLOBALS['generatedcontent']['contenttype'] = 'tiles';
     }
 } else {
@@ -572,7 +557,11 @@ if (@$_GET['sog'] || @$GLOBALS['side']['inactive']) {
         WHERE id = 1
         "
     );
-    $GLOBALS['cache']['updatetime']['special_1'] = $special['dato'];
+    if ($special['dato']) {
+        Cache::addUpdateTime($special['dato']);
+    } else {
+        Cache::addLoadedTable('special');
+    }
 
     $GLOBALS['generatedcontent']['contenttype'] = 'front';
     $GLOBALS['generatedcontent']['text'] = $special['text'];
@@ -581,7 +570,7 @@ if (@$_GET['sog'] || @$GLOBALS['side']['inactive']) {
 
 //Extract title for current page.
 if (@$maerkeet) {
-    $GLOBALS['generatedcontent']['title'] = $maerkeet[0]['navn'];
+    $GLOBALS['generatedcontent']['title'] = $maerkeet['navn'];
 } elseif (isset($GLOBALS['side']['navn'])) {
     $GLOBALS['generatedcontent']['title'] = xhtmlEsc($GLOBALS['side']['navn']);
     //Add page title to keywords
@@ -598,8 +587,7 @@ if (@$maerkeet) {
         WHERE id = ".$GLOBALS['side']['id']."
         "
     );
-
-    $GLOBALS['cache']['updatetime']['sider'] = $sider_navn['dato'];
+    Cache::addUpdateTime($sider_navn['dato']);
 
     $GLOBALS['generatedcontent']['title'] = xhtmlEsc($sider_navn['navn']);
 }
@@ -607,27 +595,29 @@ if (@$maerkeet) {
 if (empty($GLOBALS['generatedcontent']['title'])
     && @$activMenu > 0
 ) {
-    if (empty($GLOBALS['cache']['kats'][$activMenu]['navn'])) {
+    if (Cache::get('kat' . $activMenu . 'name')) {
         $kat_navn = db()->fetchOne(
             "
-            SELECT navn, vis
+            SELECT navn, vis, icon
             FROM kat
             WHERE id = " . $activMenu
         );
 
-        getUpdateTime('kat');
-        $GLOBALS['cache']['kats'][$activMenu] = $kat_navn;
+        Cache::addLoadedTable('kat');
+        Cache::set('kat' . $activMenu . 'name', $kat_navn['navn']);
+        Cache::set('kat' . $activMenu . 'type', $kat_navn['vis']);
+        Cache::set('kat' . $activMenu . 'icon', $kat_navn['icon']);
     }
 
-    $GLOBALS['generatedcontent']['title'] = xhtmlEsc($GLOBALS['cache']['kats'][$activMenu]['navn']);
+    $GLOBALS['generatedcontent']['title'] = xhtmlEsc(Cache::get('kat' . $activMenu . 'name'));
 
     //TODO add to url
-    if (!empty($GLOBALS['cache']['kats'][$activMenu]['icon'])) {
+    if (Cache::get('kat' . $activMenu . 'icon')) {
         $icon = db()->fetchOne(
             "
             SELECT `alt`
             FROM `files`
-            WHERE path = '" . $GLOBALS['cache']['kats'][$activMenu]['icon']
+            WHERE path = '" . Cache::get('kat' . $activMenu . 'icon')
         );
     }
 
@@ -636,7 +626,7 @@ if (empty($GLOBALS['generatedcontent']['title'])
     } elseif (!empty($icon['alt'])) {
         $GLOBALS['generatedcontent']['title'] = xhtmlEsc($icon['alt']);
     } elseif (!$GLOBALS['generatedcontent']['title']) {
-        $icon['path'] = pathinfo($GLOBALS['cache']['kats'][$activMenu]['icon']);
+        $icon['path'] = pathinfo(Cache::get('kat' . $activMenu . 'icon'));
         $GLOBALS['generatedcontent']['title'] = xhtmlEsc(
             ucfirst(
                 preg_replace('/-/ui', ' ', $icon['path']['filename'])
@@ -653,46 +643,24 @@ if (empty($GLOBALS['generatedcontent']['title'])) {
 //end title
 
 //Get email
-$GLOBALS['generatedcontent']['email'] = $GLOBALS['_config']['email'][0];
+$GLOBALS['generatedcontent']['email'] = array_shift($GLOBALS['_config']['email']);
 if (@$activMenu > 0) {
-    $email = db()->fetchArray(
+    $email = db()->fetchOne(
         "
         SELECT `email`
         FROM `kat`
         WHERE id = " .$activMenu
     );
 
-    getUpdateTime('kat');
+    Cache::addLoadedTable('kat');
 
-    if (@$email[0]['email']) {
-        $GLOBALS['generatedcontent']['email'] = $email[0]['email'];
+    if (@$email['email']) {
+        $GLOBALS['generatedcontent']['email'] = $email['email'];
     }
 }
 
 if (empty($delayprint)) {
-    $updatetime = 0;
-
-    $included_files = get_included_files();
-
-    $time = $GLOBALS['cache']['updatetime']['filemtime'];
-    foreach ($included_files as $filename) {
-        $time = max($time, filemtime($filename));
-    }
-    $GLOBALS['cache']['updatetime']['filemtime'] = $time;
-
-    unset($included_files);
-    unset($filename);
-    foreach ($GLOBALS['cache']['updatetime'] as $time) {
-        $updatetime = max($updatetime, $time);
-    }
-    unset($time);
-    if ($updatetime < 1) {
-        $updatetime = time();
-    }
-    doConditionalGet($updatetime);
-    unset($updatetime);
-
-    unset($cache);
+    doConditionalGet(Cache::getUpdateTime());
 
     require_once 'theme/index.php';
 }

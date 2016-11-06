@@ -175,13 +175,13 @@ function generateImage(
 
     //save or output image
     if ($output['filename'] == $pathinfo['filename'] && $output['path'] != $path) {
-        $id = db()->fetchArray('SELECT id FROM files WHERE path = \''.$path.'\'');
+        $id = db()->fetchOne("SELECT id FROM files WHERE path = '" . $path . "'");
         @unlink(_ROOT_ . $path);
-        db()->query('DELETE FROM files WHERE path = \''.$output['path'].'\'');
+        db()->query("DELETE FROM files WHERE path = '" .$output['path'] . "'");
     } else {
-        $id = db()->fetchArray('SELECT id FROM files WHERE path = \''.$output['path'].'\'');
+        $id = db()->fetchOne("SELECT id FROM files WHERE path = '" . $output['path'] . "'");
     }
-    $id = @$id[0]['id'];
+    $id = $id['id'] ?? null;
 
     if ($id) {
         db()->query("UPDATE files SET path = '".$output['path']."', size = ".$filesize.", mime = '".$mimeType."', width = '".$width."', height = '".$height."' WHERE id = " . $id);

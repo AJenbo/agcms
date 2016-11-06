@@ -14,7 +14,7 @@
 require_once $_SERVER['DOCUMENT_ROOT'] . '/inc/functions.php';
 
 header('Content-Type: application/opensearchdescription+xml');
-doConditionalGet(filemtime(__FILE__));
+doConditionalGet(Cache::getUpdateTime(false));
 echo '<?xml version="1.0" encoding="utf-8"?>';
 ?>
 <OpenSearchDescription xmlns="http://a9.com/-/spec/opensearch/1.1/">

@@ -2,6 +2,8 @@
 
 require_once $_SERVER['DOCUMENT_ROOT'] . '/admin/inc/logon.php';
 
+doConditionalGet(Cache::getUpdateTime());
+
 SAJAX::export(['fileExists' => ['method' => 'GET', 'asynchronous' => false, 'uri' => '/admin/file-upload.php']]);
 SAJAX::handleClientRequest();
 
@@ -9,8 +11,6 @@ if (empty($_COOKIE['admin_dir']) || !is_dir(_ROOT_ . @$_COOKIE['admin_dir'])) {
     @setcookie('admin_dir', '/images');
     @$_COOKIE['admin_dir'] = '/images';
 }
-
-doConditionalGet(filemtime(_ROOT_ . $_SERVER['PHP_SELF']));
 
 ?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">

@@ -13,17 +13,13 @@
 
 require_once $_SERVER['DOCUMENT_ROOT'] . '/inc/functions.php';
 
-$tabels = db()->fetchArray("SHOW TABLE STATUS");
-$updatetime = 0;
-foreach ($tabels as $tabel) {
-    $updatetime = max($updatetime, strtotime($tabel['Update_time']));
-}
-
-if ($updatetime < 1) {
-    $updatetime = time();
-}
-
-doConditionalGet($updatetime);
+Cache::addLoadedTable('sider');
+Cache::addLoadedTable('bind');
+Cache::addLoadedTable('kat');
+Cache::addLoadedTable('maerke');
+Cache::addLoadedTable('bind');
+$timestamp = Cache::getUpdateTime();
+doConditionalGet($timestamp);
 
 $time = 0;
 if (isset($_SERVER['HTTP_IF_MODIFIED_SINCE'])) {
@@ -64,8 +60,7 @@ if ($sider) {
     }
 }
 
-header("Content-Type: application/rss+xml");
-doConditionalGet($sider[0]['dato']);
+header('Content-Type: application/rss+xml');
 
 $search = array (
     '@<script[^>]*?>.*?</script>@si', // Strip out javascript
@@ -91,7 +86,7 @@ echo '<?xml version="1.0" encoding="utf-8"?>
     <link>'.$GLOBALS['_config']['base_url'].'/</link>
     <description>De nyeste sider</description>
     <language>da</language>
-    <lastBuildDate>' . gmdate('D, d M Y H:i:s', $sider[0]['dato'])
+    <lastBuildDate>' . gmdate('D, d M Y H:i:s', $timestamp)
     . ' GMT</lastBuildDate>
     <managingEditor>' . $GLOBALS['_config']['email'][0] . ' ('
     . $GLOBALS['_config']['site_name'] . ')</managingEditor>';
@@ -100,7 +95,7 @@ for ($i = 0; $i < count($sider); $i++) {
     if (!$sider[$i]['navn'] = trim($name)) {
         $sider[$i]['navn'] = $GLOBALS['_config']['site_name'];
     }
-    $sideText = db()->fetchArray(
+    $sideText = db()->fetchOne(
         "
         SELECT text
         FROM sider
@@ -123,7 +118,7 @@ for ($i = 0; $i < count($sider); $i++) {
         //TODO limit to summery
     }
 
-    $cleaned = trim(preg_replace($search, $replace, $sideText[0]['text']));
+    $cleaned = trim(preg_replace($search, $replace, $sideText['text']));
     echo htmlspecialchars($cleaned, ENT_COMPAT | ENT_XML1) . '</description>
     <pubDate>' . gmdate('D, d M Y H:i:s', $sider[$i]['dato']) . ' GMT</pubDate>
     <guid>' . $GLOBALS['_config']['base_url'] . '/kat' . $sider[$i]['kat_id'] . '-'

@@ -13,17 +13,12 @@
 
 require_once $_SERVER['DOCUMENT_ROOT'] . '/inc/functions.php';
 
-$tabels = db()->fetchArray("SHOW TABLE STATUS");
-$updatetime = 0;
-foreach ($tabels as $tabel) {
-    $updatetime = max($updatetime, strtotime($tabel['Update_time']));
-}
-
-if ($updatetime < 1) {
-    $updatetime = time();
-}
-
-doConditionalGet($updatetime);
+Cache::addLoadedTable('sider');
+Cache::addLoadedTable('bind');
+Cache::addLoadedTable('kat');
+Cache::addLoadedTable('maerke');
+Cache::addLoadedTable('bind');
+doConditionalGet(Cache::getUpdateTime());
 
 $sider = db()->fetchArray(
     "
@@ -55,10 +50,7 @@ if ($sider) {
     }
 }
 
-header("Content-Type: application/xml");
-if ($sider) {
-    doConditionalGet($sider[0]['dato']);
-}
+header('Content-Type: application/xml');
 
 $search = array (
     '@<script[^>]*?>.*?</script>@si', // Strip out javascript

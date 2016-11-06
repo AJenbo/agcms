@@ -47,17 +47,9 @@ foreach ($vcards[0] as $vcard) {
 require_once 'inc/config.php';
 require_once 'inc/mysqli.php';
 
-//Open database
-$mysqli = new simple_mysqli(
-    $GLOBALS['_config']['mysql_server'],
-    $GLOBALS['_config']['mysql_user'],
-    $GLOBALS['_config']['mysql_password'],
-    $GLOBALS['_config']['mysql_database']
-);
-
 foreach ($contacts as $contact) {
     //TODO escape values
-    $mysqli->query(
+    db()->query(
         "
         INSERT INTO `email` (
             `navn`,

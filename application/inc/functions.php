@@ -24,6 +24,7 @@ mb_language('uni');
 mb_detect_order('UTF-8, ISO-8859-1');
 mb_internal_encoding('UTF-8');
 
+require_once __DIR__ . '/cache.php';
 require_once __DIR__ . '/mysqli.php';
 require_once __DIR__ . '/sajax.php';
 require_once __DIR__ . '/config.php';
@@ -79,21 +80,6 @@ function checkMx(string $domain): bool {
 }
 
 /**
- * Get last update time for table
- *
- * @param string $table Table name
- *
- * @return null
- */
-function getUpdateTime(string $table)
-{
-    if (empty($GLOBALS['cache']['updatetime'][$table])) {
-        $updatetime = db()->fetchArray("SHOW TABLE STATUS LIKE '".$table."'");
-        $GLOBALS['cache']['updatetime'][$table] = strtotime($updatetime[0]['Update_time']);
-    }
-}
-
-/**
  * Check if there are pages connected to a category
  *
  * @param int $id Category id
@@ -102,56 +88,47 @@ function getUpdateTime(string $table)
  */
 function skriv(int $id): bool
 {
-    if (isset($GLOBALS['cache']['kats'][$id]['skriv'])) {
-        return $GLOBALS['cache']['kats'][$id]['skriv'];
-    }
-
-    //er der en side på denne kattegori
-    if (db()->fetchOne("SELECT id FROM bind WHERE kat = " . $id)) {
-        getUpdateTime('bind');
-        $GLOBALS['cache']['kats'][$id]['skriv'] = true;
-        return true;
-    }
-
-    //ellers kig om der er en under kattegori med en side
-    $kat = db()->fetchArray(
-        "
-        SELECT kat.id, bind.id as skriv
-        FROM kat JOIN bind ON bind.kat = kat.id
-        WHERE kat.bind = $id
-        GROUP BY kat.id
-        "
-    );
-
-    getUpdateTime('kat');
-
-    //cache all results
-    foreach ($kat as $value) {
-        if ($value['skriv']) {
-            $GLOBALS['cache']['kats'][$value['id']]['skriv'] = true;
-            $return = true;
-            //Load full result in to cache and return true if there was a hit
-        }
-    }
-
-    if ($return = false) {
-        $GLOBALS['cache']['kats'][$id]['skriv'] = true;
-        return true;
-    }
-
-    //Search deeper if a result wasn't found yet
-    foreach ($kat as $value) {
-        if (skriv($value['id'])) {
-            $GLOBALS['cache']['kats'][$value['id']]['skriv'] = true;
+    Cache::addLoadedTable('bind');
+    if (Cache::get('kat' . $id . 'show') === null) {
+        //er der en side på denne kattegori
+        if ($kat = db()->fetchOne("SELECT id FROM bind WHERE kat = " . $id)) {
+            Cache::set('kat' . $id . 'show', true);
             return true;
         }
 
-        //This category is empty or only contains empty categorys
-        $GLOBALS['cache']['kats'][$value['id']]['skriv'] = false;
-        return false;
+        //ellers kig om der er en under kattegori med en side
+        $kat = db()->fetchArray(
+            "
+            SELECT kat.id, bind.id as skriv, vis, icon, name
+            FROM kat JOIN bind ON bind.kat = kat.id
+            WHERE kat.bind = $id
+            GROUP BY kat.id
+            "
+        );
+        Cache::addLoadedTable('kat');
+
+        //cache all results first
+        foreach ($kat as $value) {
+            if ($value['skriv']) {
+                Cache::set('kat' . $value['id'] . 'show', true);
+                Cache::set('kat' . $value['id'] . 'name', $value['navn']);
+                Cache::set('kat' . $value['id'] . 'type', $value['vis']);
+                Cache::set('kat' . $value['id'] . 'icon', $value['icon']);
+            }
+        }
+
+        //Search deeper
+        foreach ($kat as $value) {
+            if (skriv($value['id'])) {
+                Cache::set('kat' . $id . 'show', true);
+                return true;
+            }
+        }
+
+        Cache::set('kat' . $id . 'show', false);
     }
 
-    return false;
+    return Cache::get('kat' . $id . 'show');
 }
 
 /**
@@ -172,7 +149,7 @@ function subs(int $kat): bool
         "
     );
 
-    getUpdateTime('kat');
+    Cache::addLoadedTable('kat');
 
     foreach ($sub as $value) {
         //er der sider bundet til katagorien
@@ -274,17 +251,17 @@ function arrayListsort(array $aryData, string $strIndex, string $strSortBy, int 
         return $aryData;
     }
 
-    $kaliber = db()->fetchArray(
+    $kaliber = db()->fetchOne(
         "
         SELECT text
         FROM `tablesort`
         WHERE id = " . $intSortingOrder
     );
     if ($kaliber) {
-        $kaliber = explode('<', $kaliber[0]['text']);
+        $kaliber = explode('<', $kaliber['text']);
     }
 
-    getUpdateTime('tablesort');
+    Cache::addLoadedTable('tablesort');
 
     $arySort = $aryResult = [];
 
@@ -329,10 +306,10 @@ function getTable(int $listid, int $bycell = null, int $current_kat = null): arr
 {
     $html = '';
 
-    getUpdateTime('lists');
-    $lists = db()->fetchArray("SELECT * FROM `lists` WHERE id = " . $listid);
+    Cache::addLoadedTable('lists');
+    $list = db()->fetchOne("SELECT * FROM `lists` WHERE id = " . $listid);
 
-    getUpdateTime('list_rows');
+    Cache::addLoadedTable('list_rows');
     $rows = db()->fetchArray(
         "
         SELECT *
@@ -341,12 +318,12 @@ function getTable(int $listid, int $bycell = null, int $current_kat = null): arr
     );
     if ($rows) {
         //Explode sorts
-        $lists[0]['sorts'] = explode('<', $lists[0]['sorts']);
-        $lists[0]['cells'] = explode('<', $lists[0]['cells']);
-        $lists[0]['cell_names'] = explode('<', $lists[0]['cell_names']);
+        $list['sorts'] = explode('<', $list['sorts']);
+        $list['cells'] = explode('<', $list['cells']);
+        $list['cell_names'] = explode('<', $list['cell_names']);
 
         if (!$bycell && $bycell !== '0') {
-            $bycell = $lists[0]['sort'];
+            $bycell = $list['sort'];
         }
 
         //Explode cells
@@ -362,26 +339,26 @@ function getTable(int $listid, int $bycell = null, int $current_kat = null): arr
         unset($rows_cells);
 
         //Sort rows
-        if ($lists[0]['sorts'][$bycell] < 1) {
+        if ($list['sorts'][$bycell] < 1) {
             $rows = arrayNatsort($rows, 'id', $bycell);
         } else {
             $rows = arrayListsort(
                 $rows,
                 'id',
                 $bycell,
-                $lists[0]['sorts'][$bycell]
+                $list['sorts'][$bycell]
             );
         }
 
         //unset temp holder for rows
 
         $html .= '<table class="tabel">';
-        if ($lists[0]['title']) {
-            $html .= '<caption>'.$lists[0]['title'].'</caption>';
+        if ($list['title']) {
+            $html .= '<caption>'.$list['title'].'</caption>';
         }
         $html .= '<thead><tr>';
-        foreach ($lists[0]['cell_names'] as $key => $cell_name) {
-            $html .= '<td><a href="" onclick="x_getTable(\'' . $lists[0]['id']
+        foreach ($list['cell_names'] as $key => $cell_name) {
+            $html .= '<td><a href="" onclick="x_getTable(\'' . $list['id']
             . '\', \'' . $key . '\', ' . $current_kat
             . ', inject_html);return false;">' . $cell_name . '</a></td>';
         }
@@ -393,8 +370,8 @@ function getTable(int $listid, int $bycell = null, int $current_kat = null): arr
             }
             $html .= '>';
             if ($row['link']) {
-                getUpdateTime('sider');
-                getUpdateTime('kat');
+                Cache::addLoadedTable('sider');
+                Cache::addLoadedTable('kat');
                 $sider = db()->fetchOne(
                     "
                     SELECT `sider`.`navn`, `kat`.`navn` AS `kat_navn`
@@ -405,7 +382,7 @@ function getTable(int $listid, int $bycell = null, int $current_kat = null): arr
                 . clearFileName($sider['kat_navn']) . '/side' . $row['link']
                 . '-' . clearFileName($sider['navn']) . '.html">';
             }
-            foreach ($lists[0]['cells'] as $key => $type) {
+            foreach ($list['cells'] as $key => $type) {
                 if (empty($row[$key])) {
                     $row[$key] = '';
                 }
@@ -504,8 +481,7 @@ function getTable(int $listid, int $bycell = null, int $current_kat = null): arr
                             FROM `files`
                             WHERE path = " . $row[$key]
                         );
-
-                        getUpdateTime('files');
+                        Cache::addLoadedTable('files');
 
                         //TODO make image tag
                         if ($row['link']) {
@@ -532,23 +508,7 @@ function getTable(int $listid, int $bycell = null, int $current_kat = null): arr
         $html .= '</tbody></table>';
     }
 
-
-    $updatetime = 0;
-    $included_files = get_included_files();
-    foreach ($included_files as $filename) {
-        $GLOBALS['cache']['updatetime']['filemtime'] = max(
-            $GLOBALS['cache']['updatetime']['filemtime'],
-            filemtime($filename)
-        );
-    }
-    foreach ($GLOBALS['cache']['updatetime'] as $time) {
-        $updatetime = max($updatetime, $time);
-    }
-    if ($updatetime < 1) {
-        $updatetime = time();
-    }
-
-    doConditionalGet($updatetime);
+    doConditionalGet(Cache::getUpdateTime());
 
     return ['id' => 'table'.$listid, 'html' => $html];
 }
@@ -568,8 +528,7 @@ function echoTable(int $sideid): string
         FROM `tablesort`
         ORDER BY `id`"
     );
-
-    getUpdateTime('tablesort');
+    Cache::addLoadedTable('tablesort');
 
     foreach ($tablesort as $value) {
         $GLOBALS['tablesort_navn'][] = $value['navn'];
@@ -583,8 +542,7 @@ function echoTable(int $sideid): string
         FROM `lists`
         WHERE `page_id` = " . $sideid
     );
-
-    getUpdateTime('lists');
+    Cache::addLoadedTable('lists');
 
     foreach ($lists as $list) {
         $html = '<div id="table'.$list['id'].'">';
@@ -620,20 +578,14 @@ function kats(int $id): array
         FROM kat
         WHERE id = " . $id
     );
+    Cache::addLoadedTable('kat');
 
-    getUpdateTime('kat');
-
+    $kats = [];
     if ($kat) {
-        $data =  kats($kat['bind']);
-        $nr = count($data);
-        $kats[0] = $id;
-        foreach ($data as $value) {
+        $kats[] = $id;
+        foreach (kats($kat['bind']) as $value) {
             $kats[] = $value;
         }
-    }
-
-    if (!isset($kats)) {
-        $kats = [];
     }
 
     return $kats;
@@ -655,8 +607,7 @@ function binding(int $bind): int
             FROM `kat`
             WHERE id = '" . $bind . "'"
         );
-
-        getUpdateTime('kat');
+        Cache::addLoadedTable('kat');
 
         return binding($sog_kat['bind']);
     }
@@ -687,28 +638,29 @@ function vare(array $side, string $katnavn, int $type)
 {
     //Search categories does not have a fixed number, use first fixed per page
     if (!$GLOBALS['generatedcontent']['activmenu']) {
-        $bind = db()->fetchArray(
+        $bind = db()->fetchOne(
             "
             SELECT kat
             FROM bind
             WHERE side = " . $side['id']
         );
-        $GLOBALS['generatedcontent']['activmenu'] = $bind[0]['kat'];
-        if (empty($GLOBALS['cache']['kats'][$bind[0]['kat']]['navn'])) {
-            $kat = db()->fetchArray(
+        Cache::addLoadedTable('bind');
+        $GLOBALS['generatedcontent']['activmenu'] = $bind['kat'];
+        if (Cache::get('kat' . $bind['kat'] . 'name') === null) {
+            $kat = db()->fetchOne(
                 "
-                SELECT navn, vis
+                SELECT navn, vis, icon
                 FROM kat
-                WHERE id = " . $bind[0]['kat']
+                WHERE id = " . $bind['kat']
             );
+            Cache::addLoadedTable('kat');
             if ($kat) {
-                getUpdateTime('kat');
-
-                $GLOBALS['cache']['kats'][$bind[0]['kat']]['navn'] = $kat[0]['navn'];
-                $GLOBALS['cache']['kats'][$bind[0]['kat']]['vis'] = $kat[0]['vis'];
+                Cache::set('kat' . $bind['kat'] . 'name', $kat['navn']);
+                Cache::set('kat' . $bind['kat'] . 'type', $kat['vis']);
+                Cache::set('kat' . $bind['kat'] . 'icon', $kat['icon']);
             }
         }
-        $katnavn = $GLOBALS['cache']['kats'][$bind[0]['kat']]['navn'] ?? '';
+        $katnavn = Cache::get('kat' . $bind['kat'] . 'name') ?: '';
     }
 
     $link = '/kat' . $GLOBALS['generatedcontent']['activmenu'] . '-'
@@ -797,29 +749,27 @@ function liste()
         ORDER BY sider.navn ASC
         "
     );
+    Cache::addLoadedTable('bind');
+    Cache::addLoadedTable('sider');
 
-    getUpdateTime('bind');
-    getUpdateTime('sider');
-
-    $kat = db()->fetchArray(
+    $kat = db()->fetchOne(
         "
         SELECT navn, vis
         FROM kat
         WHERE id = " . $GLOBALS['generatedcontent']['activmenu']
     );
-
-    getUpdateTime('kat');
+    Cache::addLoadedTable('kat');
 
     if ($bind) {
-        if (count($bind) == 1) {
-            $GLOBALS['side']['id'] = $bind[0]['id'];
+        if (count($bind) === 1) {
+            $GLOBALS['side']['id'] = reset($bind)['id'];
             side();
         } else {
             $bind = arrayNatsort($bind, 'id', 'navn', 'asc');
             foreach ($bind as $value) {
                 //Add space around all tags, strip all tags,
                 //remove all unneded white space
-                if ($kat[0]['vis'] == 1) {
+                if ($kat['vis'] == 1) {
                     $value['text'] = preg_replace(
                         '/\s+/',
                         ' ',
@@ -832,7 +782,7 @@ function liste()
                         )
                     );
                 }
-                vare($value, $kat[0]['navn'], $kat[0]['vis']);
+                vare($value, $kat['navn'], $kat['vis']);
             }
         }
     }
@@ -918,6 +868,7 @@ function searchListe(string $q, string $wheresider)
             ORDER BY `score` DESC
             "
         );
+        Cache::addLoadedTable('sider');
         foreach ($sider as $page) {
             $pages[$page['id']] = $page;
         }
@@ -938,6 +889,7 @@ function searchListe(string $q, string $wheresider)
             . ($pages ? ("AND id NOT IN (" . implode(',', array_keys($pages)) . ") ") : "")
             . $wheresider
         );
+        Cache::addLoadedTable('sider');
         foreach ($sider as $page) {
             $pages[$page['id']] = $page;
         }
@@ -951,14 +903,14 @@ function searchListe(string $q, string $wheresider)
             WHERE list_rows.`cells` LIKE '%$simpleq%'"
             . ($pages ? (" AND sider.id NOT IN (" . implode(',', array_keys($pages)) . ") ") : "")
         );
+        Cache::addLoadedTable('sider');
+        Cache::addLoadedTable('list_rows');
+        Cache::addLoadedTable('lists');
         foreach ($sider as $page) {
             $pages[$page['id']] = $page;
         }
         unset($sider);
 
-        getUpdateTime('sider');
-        getUpdateTime('list_rows');
-        getUpdateTime('lists');
     } else {
         $sider = db()->fetchArray(
             "
@@ -967,12 +919,13 @@ function searchListe(string $q, string $wheresider)
             ORDER BY `navn` ASC
             "
         );
+        Cache::addLoadedTable('sider');
         foreach ($sider as $page) {
             $pages[$page['id']] = $page;
         }
         unset($sider);
 
-        getUpdateTime('sider');
+        Cache::addLoadedTable('sider');
     }
     // Remove inactive pages
     foreach ($pages as $key => $side) {
@@ -993,31 +946,43 @@ function searchListe(string $q, string $wheresider)
  */
 function getAddress(string $phoneNumber): array
 {
-    $default['recName1'] = '';
-    $default['recAddress1'] = '';
-    $default['recZipCode'] = '';
-    $default['recCVR'] = '';
-    $default['recAttPerson'] = '';
-    $default['recAddress2'] = '';
-    $default['recPostBox'] = '';
-    $default['email'] = '';
+    $default = [
+        'recName1'     => '',
+        'recAddress1'  => '',
+        'recZipCode'   => '',
+        'recCVR'       => '',
+        'recAttPerson' => '',
+        'recAddress2'  => '',
+        'recPostBox'   => '',
+        'email'        => '',
+    ];
 
-    $dbs[0]['mysql_server'] = 'jagtogfiskerimagasinet.dk.mysql';
-    $dbs[0]['mysql_user'] = 'jagtogfiskerima';
-    $dbs[0]['mysql_password'] = 'GxYqj5EX';
-    $dbs[0]['mysql_database'] = 'jagtogfiskerima';
-    $dbs[1]['mysql_server'] = 'huntershouse.dk.mysql';
-    $dbs[1]['mysql_user'] = 'huntershouse_dk';
-    $dbs[1]['mysql_password'] = 'sabbBFab';
-    $dbs[1]['mysql_database'] = 'huntershouse_dk';
-    $dbs[2]['mysql_server'] = 'arms-gallery.dk.mysql';
-    $dbs[2]['mysql_user'] = 'arms_gallery_dk';
-    $dbs[2]['mysql_password'] = 'hSKe3eDZ';
-    $dbs[2]['mysql_database'] = 'arms_gallery_dk';
-    $dbs[3]['mysql_server'] = 'geoffanderson.com.mysql';
-    $dbs[3]['mysql_user'] = 'geoffanderson_c';
-    $dbs[3]['mysql_password'] = '2iEEXLMM';
-    $dbs[3]['mysql_database'] = 'geoffanderson_c';
+    $dbs = [
+        [
+            'mysql_server'   => 'jagtogfiskerimagasinet.dk.mysql',
+            'mysql_user'     => 'jagtogfiskerima',
+            'mysql_password' => 'GxYqj5EX',
+            'mysql_database' => 'jagtogfiskerima',
+        ],
+        [
+            'mysql_server'   => 'huntershouse.dk.mysql',
+            'mysql_user'     => 'huntershouse_dk',
+            'mysql_password' => 'sabbBFab',
+            'mysql_database' => 'huntershouse_dk',
+        ],
+        [
+            'mysql_server'   => 'arms-gallery.dk.mysql',
+            'mysql_user'     => 'arms_gallery_dk',
+            'mysql_password' => 'hSKe3eDZ',
+            'mysql_database' => 'arms_gallery_dk',
+        ],
+        [
+            'mysql_server'   => 'geoffanderson.com.mysql',
+            'mysql_user'     => 'geoffanderson_c',
+            'mysql_password' => '2iEEXLMM',
+            'mysql_database' => 'geoffanderson_c',
+        ],
+    ];
 
     foreach ($dbs as $db) {
         $mysqli_ext = new Simple_Mysqli(
@@ -1110,8 +1075,8 @@ function doConditionalGet(int $timestamp)
     $etag = '"'.$timestamp.'"';
     // Send the headers
 
-    header("Cache-Control: max-age=0, must-revalidate");    // HTTP/1.1
-    header("Pragma: no-cache");    // HTTP/1.0
+    header('Cache-Control: max-age=0, must-revalidate');    // HTTP/1.1
+    header('Pragma: no-cache');    // HTTP/1.0
     header('Last-Modified: '.$last_modified);
     header('ETag: '.$etag);
     // See if the client has provided the required headers
@@ -1134,7 +1099,7 @@ function doConditionalGet(int $timestamp)
 
     // Nothing has changed since their last request - serve a 304 and exit
     ini_set('zlib.output_compression', '0');
-    header("HTTP/1.1 304 Not Modified", true, 304);
+    header('HTTP/1.1 304 Not Modified', true, 304);
     die();
 }
 
@@ -1146,7 +1111,7 @@ function doConditionalGet(int $timestamp)
 function side()
 {
     if (!isset($GLOBALS['side']['navn'])) {
-        $sider = db()->fetchArray(
+        $sider = db()->fetchOne(
             "
             SELECT `navn`,
                 `burde`,
@@ -1165,19 +1130,21 @@ function side()
         if (!$sider) {
             header('HTTP/1.1 404 Not Found');
             //TODO lav en søgning
+            Cache::addLoadedTable('sider');
+        } elseif ($sider['dato']) {
+            Cache::addUpdateTime($sider['dato']);
         }
-        $GLOBALS['side']['navn']   = $sider[0]['navn'];
-        $GLOBALS['side']['burde']  = $sider[0]['burde'];
-        $GLOBALS['side']['fra']    = $sider[0]['fra'];
-        $GLOBALS['side']['text']   = $sider[0]['text'];
-        $GLOBALS['side']['pris']   = $sider[0]['pris'];
-        $GLOBALS['side']['for']    = $sider[0]['for'];
-        $GLOBALS['side']['krav']   = $sider[0]['krav'];
-        $GLOBALS['side']['maerke'] = $sider[0]['maerke'];
-        $GLOBALS['side']['varenr'] = $sider[0]['varenr'];
-        $GLOBALS['side']['dato']   = $sider[0]['dato'];
-        $GLOBALS['cache']['updatetime']['side'] = $sider[0]['dato'];
 
+        $GLOBALS['side']['navn']   = $sider['navn'];
+        $GLOBALS['side']['burde']  = $sider['burde'];
+        $GLOBALS['side']['fra']    = $sider['fra'];
+        $GLOBALS['side']['text']   = $sider['text'];
+        $GLOBALS['side']['pris']   = $sider['pris'];
+        $GLOBALS['side']['for']    = $sider['for'];
+        $GLOBALS['side']['krav']   = $sider['krav'];
+        $GLOBALS['side']['maerke'] = $sider['maerke'];
+        $GLOBALS['side']['varenr'] = $sider['varenr'];
+        $GLOBALS['side']['dato']   = $sider['dato'];
         unset($sider);
     }
 
@@ -1187,19 +1154,18 @@ function side()
     $GLOBALS['generatedcontent']['text']     = $GLOBALS['side']['text'];
 
     if ($GLOBALS['side']['krav']) {
-        $krav = db()->fetchArray(
+        $krav = db()->fetchOne(
             "
             SELECT navn
             FROM krav
             WHERE id = " . $GLOBALS['side']['krav']
         );
-
-        getUpdateTime('krav');
+        Cache::addLoadedTable('krav');
 
         $GLOBALS['generatedcontent']['requirement']['icon'] = '';
-        $GLOBALS['generatedcontent']['requirement']['name'] = $krav[0]['navn'];
+        $GLOBALS['generatedcontent']['requirement']['name'] = $krav['navn'];
         $GLOBALS['generatedcontent']['requirement']['link'] = '/krav/'
-        . $GLOBALS['side']['krav'] . '/' . clearFileName($krav[0]['navn'])
+        . $GLOBALS['side']['krav'] . '/' . clearFileName($krav['navn'])
         . '.html';
     }
 
@@ -1219,20 +1185,19 @@ function side()
     $GLOBALS['generatedcontent']['price']['from']   = $GLOBALS['side']['fra'];
 
     if (empty($GLOBALS['generatedcontent']['email'])) {
-        $kat = db()->fetchArray(
+        $kat = db()->fetchOne(
             "
             SELECT `email`
             FROM `kat`
             WHERE id = " . $GLOBALS['generatedcontent']['activmenu']
         );
     }
+    Cache::addLoadedTable('kat');
 
-    getUpdateTime('kat');
-
-    if (empty($kat[0]['email'])) {
+    if (empty($kat['email'])) {
         $GLOBALS['generatedcontent']['email'] = $GLOBALS['_config']['email'];
     } else {
-        $GLOBALS['generatedcontent']['email'] = $kat[0]['email'];
+        $GLOBALS['generatedcontent']['email'] = $kat['email'];
     }
 
     if ($GLOBALS['side']['maerke']) {
@@ -1252,9 +1217,10 @@ function side()
             ORDER BY `navn`
             "
         );
+        Cache::addLoadedTable('maerke');
         $maerker = array_merge($maerker, $temp);
 
-        getUpdateTime('maerke');
+        Cache::addLoadedTable('maerke');
 
         foreach ($maerker as $value) {
             $GLOBALS['generatedcontent']['brands'][] = [
@@ -1282,20 +1248,19 @@ function side()
             JOIN bind ON bind.side = sider.id
         WHERE tilbehor.`side` = " . $GLOBALS['side']['id']
     );
-
-    getUpdateTime('tilbehor');
-    getUpdateTime('sider');
+    Cache::addLoadedTable('tilbehor');
+    Cache::addLoadedTable('sider');
 
     foreach ($tilbehor as $value) {
         if ($value['kat']) {
-            $kat = db()->fetchArray(
+            $kat = db()->fetchOne(
                 "
                 SELECT id, navn
                 FROM kat
                 WHERE id = " . $value['kat']
             );
-            getUpdateTime('kat');
-            $kat = '/kat'.$kat[0]['id'].'-'.clearFileName($kat[0]['navn']);
+            Cache::addLoadedTable('kat');
+            $kat = '/kat'.$kat['id'].'-'.clearFileName($kat['navn']);
         } else {
             $kat = '';
         }
@@ -1331,7 +1296,7 @@ function menu(int $nr, bool $custom_sort_subs = false): array
      * eliminate empty catagorys
      */
 
-    $kat = db()->fetchArray(
+    $kats = db()->fetchArray(
         "
         SELECT kat.id,
             kat.navn,
@@ -1352,33 +1317,35 @@ function menu(int $nr, bool $custom_sort_subs = false): array
         ORDER BY kat.`order`, kat.navn
         "
     );
+    Cache::addLoadedTable('kat');
+    Cache::addLoadedTable('bind');
 
-    if ($kat) {
+    if ($kats) {
         if (!$custom_sort_subs) {
-            $kat = arrayNatsort($kat, 'id', 'navn', 'asc');
+            $kats = arrayNatsort($kats, 'id', 'navn', 'asc');
         }
 
-        if (!$GLOBALS['cache']['kats'][$GLOBALS['kats'][$nr]]['navn']) {
-            $katsnr_navn = db()->fetchArray(
+        if (Cache::get('kat' . $GLOBALS['kats'][$nr] . 'name') === null) {
+            $katsnr_navn = db()->fetchOne(
                 "
                 SELECT navn, vis, icon
                 FROM kat
-                WHERE id = ".$GLOBALS['kats'][$nr]
+                WHERE id = " . $GLOBALS['kats'][$nr]
             );
-            $GLOBALS['cache']['kats'][$GLOBALS['kats'][$nr]] = $katsnr_navn[0];
+            Cache::addLoadedTable('kat');
+            Cache::set('kat' . $GLOBALS['kats'][$nr] . 'name', $katsnr_navn['navn']);
+            Cache::set('kat' . $GLOBALS['kats'][$nr] . 'type', $katsnr_navn['vis']);
+            Cache::set('kat' . $GLOBALS['kats'][$nr] . 'name', $katsnr_navn['icon']);
         }
 
-        foreach ($kat as $value) {
+        foreach ($kats as $value) {
             $subs = null;
-            $GLOBALS['cache']['kats'][$value['id']]['skriv'] = false;
-            if (@$GLOBALS['cache']['kats'][$value['id']]['skriv']
-                || $value['skriv']
-            ) {
-                $GLOBALS['cache']['kats'][$value['id']]['skriv'] = true;
-            } elseif ($value['sub']) {
-                $GLOBALS['cache']['kats'][$value['id']]['skriv'] = null;
+            if (Cache::get('kat' . $value['id'] . 'show') === null) {
+                Cache::set('kat' . $value['id'] . 'show', (bool) $value['sub']);
             }
-            $GLOBALS['cache']['kats'][$value['id']]['vis'] = $value['vis'];
+            Cache::set('kat' . $value['id'] . 'name', $value['navn']);
+            Cache::set('kat' . $value['id'] . 'type', $value['vis']);
+            Cache::set('kat' . $value['id'] . 'icon', $value['icon']);
 
             /**
              * skriv() viser kun om kategorien skal krives, ikke om den ikke
@@ -1427,10 +1394,10 @@ function searchMenu(string $q, string $wherekat)
         $qext = '';
     }
 
-    $kat = [];
+    $kats = [];
     $maerke = [];
     if ($q) {
-        $kat = db()->fetchArray(
+        $kats = db()->fetchArray(
             "
             SELECT id, navn, icon, MATCH (navn) AGAINST ('".$q."'".$qext.") AS score
             FROM kat
@@ -1439,11 +1406,12 @@ function searchMenu(string $q, string $wherekat)
             ORDER BY score, navn
             "
         );
-        if (!$kat) {
+        Cache::addLoadedTable('kat');
+        if (!$kats) {
             $qsearch = array ("/ /","/'/","//","/`/");
             $qreplace = array ("%","_","_","_");
             $simpleq = preg_replace($qsearch, $qreplace, $q);
-            $kat = db()->fetchArray(
+            $kats = db()->fetchArray(
                 "
                 SELECT id, navn, icon
                 FROM kat
@@ -1460,6 +1428,7 @@ function searchMenu(string $q, string $wherekat)
             WHERE MATCH (navn) AGAINST ('".$q."'".$qext.") >  0
             "
         );
+        Cache::addLoadedTable('maerke');
         if (!$maerke) {
             if (empty($simpleq)) {
                 $qsearch = array ("/ /","/'/","//","/`/");
@@ -1486,7 +1455,7 @@ function searchMenu(string $q, string $wherekat)
         ];
     }
 
-    foreach ($kat as $value) {
+    foreach ($kats as $value) {
         if (skriv($value['id'])) {
             $GLOBALS['generatedcontent']['search_menu'][] = [
                 'id' => $value['id'],
@@ -1514,6 +1483,7 @@ function isInactivePage(int $id): bool
         FROM `bind`
         WHERE `side` = " . $id
     );
+    Cache::addLoadedTable('bind');
     if (!$bind || binding($bind['kat']) == -1) {
         return true;
     }
@@ -1552,6 +1522,7 @@ function listKats(int $id)
         FROM kat
         WHERE bind = " . $id
     );
+    Cache::addLoadedTable('kat');
 
     for ($ki=0; $ki<count($kats); $ki++) {
         //print xml
@@ -1579,6 +1550,7 @@ function listKats(int $id)
 function listPages(int $id, string $katName)
 {
     $binds = db()->fetchArray("SELECT side FROM bind WHERE kat = " . $id);
+    Cache::addLoadedTable('side');
     foreach ($binds as $bind) {
         $sider = db()->fetchOne(
             "
@@ -1612,23 +1584,6 @@ function getKat(int $id, bool $sort): array
 {
     $GLOBALS['generatedcontent']['activmenu'] = $id;
 
-    //check browser cache
-    $updatetime = 0;
-    $included_files = get_included_files();
-    foreach ($included_files as $filename) {
-        $filemtime = filemtime($filename);
-        $filemtime = max($GLOBALS['cache']['updatetime']['filemtime'], $filemtime);
-        $GLOBALS['cache']['updatetime']['filemtime'] = $filemtime;
-    }
-    foreach ($GLOBALS['cache']['updatetime'] as $time) {
-        $updatetime = max($updatetime, $time);
-    }
-    if ($updatetime < 1) {
-        $updatetime = time();
-    }
-
-    doConditionalGet($updatetime);
-
     //Get pages list
     $bind = db()->fetchArray(
         "
@@ -1645,19 +1600,26 @@ function getKat(int $id, bool $sort): array
         ORDER BY sider." . $sort . " ASC
         "
     );
+    Cache::addLoadedTable('sider');
+    Cache::addLoadedTable('bind');
     $bind = arrayNatsort($bind, 'id', $sort);
 
-    $kat = @$GLOBALS['cache']['kats'][$GLOBALS['generatedcontent']['activmenu']];
-    $name = $kat['navn'];
-    if (!$name) {
+    if (Cache::get('kat' . $GLOBALS['generatedcontent']['activmenu'] . 'name') === null) {
         $kat = db()->fetchOne(
             "
-            SELECT navn, vis
+            SELECT navn, vis, icon
             FROM kat
             WHERE id = " . $GLOBALS['generatedcontent']['activmenu']
         );
-        $name = $kat['navn'];
+        Cache::addLoadedTable('kat');
+        Cache::set('kat' . $GLOBALS['generatedcontent']['activmenu'] . 'name', $kat['navn']);
+        Cache::set('kat' . $GLOBALS['generatedcontent']['activmenu'] . 'type', $kat['vis']);
+        Cache::set('kat' . $GLOBALS['generatedcontent']['activmenu'] . 'icon', $kat['icon']);
     }
+    $name = Cache::get('kat' . $GLOBALS['generatedcontent']['activmenu'] . 'name');
+
+    //check browser cache
+    doConditionalGet(Cache::getUpdateTime());
 
     return [
         'id' => 'kat' . $GLOBALS['generatedcontent']['activmenu'],
