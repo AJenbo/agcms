@@ -1,7 +1,9 @@
 <?php
+
 require_once $_SERVER['DOCUMENT_ROOT'] . '/admin/inc/logon.php';
-require_once $_SERVER['DOCUMENT_ROOT'] . '/admin/inc/image-functions.php';
-doConditionalGet(filemtime($_SERVER['DOCUMENT_ROOT'] . $_GET['path']));
+require_once _ROOT_ . '/admin/inc/image-functions.php';
+
+doConditionalGet(filemtime(_ROOT_ . $_GET['path']));
 generateImage(
     $_GET['path'],
     $_GET['cropX'] ?? 0,

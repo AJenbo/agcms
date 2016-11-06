@@ -1,16 +1,6 @@
 <?php
 
-date_default_timezone_set('Europe/Copenhagen');
-setlocale(LC_ALL, 'da_DK');
-bindtextdomain('agcms', $_SERVER['DOCUMENT_ROOT'].'/theme/locale');
-bind_textdomain_codeset('agcms', 'UTF-8');
-textdomain('agcms');
-
 require_once $_SERVER['DOCUMENT_ROOT'] . '/inc/functions.php';
-require_once $_SERVER['DOCUMENT_ROOT'] . '/inc/imap.php';
-include_once $_SERVER['DOCUMENT_ROOT'] . '/vendor/phpmailer/phpmailer/language/phpmailer.lang-dk.php';
-require_once $_SERVER['DOCUMENT_ROOT'] . '/vendor/phpmailer/phpmailer/class.smtp.php';
-require_once $_SERVER['DOCUMENT_ROOT'] . '/vendor/phpmailer/phpmailer/class.phpmailer.php';
 
 ?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
@@ -101,7 +91,7 @@ if ($_POST) {
     $mail->FromName   = $GLOBALS['_config']['site_name'];
     $mail->Subject    = _('New user');
 
-    $mail->MsgHTML($emailbody, $_SERVER['DOCUMENT_ROOT']);
+    $mail->MsgHTML($emailbody, _ROOT_);
 
     $mail->AddAddress($GLOBALS['_config']['email'][0], $GLOBALS['_config']['site_name']);
     if ($mail->Send()) {

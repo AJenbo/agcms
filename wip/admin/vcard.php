@@ -32,7 +32,7 @@ foreach ($vcards[0] as $vcard) {
 
     $adresse = explode(';', $adresse[1]);
     $adresse = array_map('stripcslashes', $adresse);
-    $contacts[] = array(
+    $contacts[] = [
         'navn' => $navn[1],
         'email' => $email,
         'tlf1' => $tlfs[1][0],
@@ -41,7 +41,7 @@ foreach ($vcards[0] as $vcard) {
         'by' => $adresse[3],
         'post' => $adresse[5],
         'land' => $adresse[6]
-    );
+    ];
 }
 
 require_once 'inc/config.php';

@@ -11,25 +11,8 @@
  * @link     http://www.arms-gallery.dk/
  */
 
-/**/
-ini_set('display_errors', 1);
-error_reporting(-1);
-/**/
-
-date_default_timezone_set('Europe/Copenhagen');
-setlocale(LC_ALL, 'da_DK');
-bindtextdomain('agcms', $_SERVER['DOCUMENT_ROOT'].'/theme/locale');
-bind_textdomain_codeset('agcms', 'UTF-8');
-textdomain('agcms');
-
 require_once $_SERVER['DOCUMENT_ROOT'] . '/inc/functions.php';
-require_once $_SERVER['DOCUMENT_ROOT'] . '/inc/imap.php';
-include_once $_SERVER['DOCUMENT_ROOT'] . '/inc/countries.php';
-include_once $_SERVER['DOCUMENT_ROOT'] . '/vendor/phpmailer/phpmailer/language/phpmailer.lang-dk.php';
-require_once $_SERVER['DOCUMENT_ROOT'] . '/vendor/phpmailer/phpmailer/class.smtp.php';
-require_once $_SERVER['DOCUMENT_ROOT'] . '/vendor/phpmailer/phpmailer/class.phpmailer.php';
-
-chdir('../');
+include_once _ROOT_ . '/inc/countries.php';
 
 if (is_numeric(@$_GET['add']) || is_numeric(@$_GET['add_list_item'])) {
     if ($_SERVER['HTTP_REFERER']) {
@@ -147,82 +130,19 @@ if (count($_POST)) {
     }
 }
 
-/**
- * Checks that all nessesery contact information has been filled out correctly
- *
- * @param array $values Keys are: email, navn, land, postbox, adresse, postnr, by,
- *                      altpost (bool), postname, postpostbox, postaddress,
- *                      postcountry, postpostalcode, postcity
- *
- * @return array Key with bool true for each faild feald
- */
-function validate(array $values): array
-{
-    $rejected = array();
-
-    if (!valideMail(@$values['email'])) {
-        $rejected['email'] = true;
-    }
-    if (empty($values['navn'])) {
-        $rejected['navn'] = true;
-    }
-    if (empty($values['land'])) {
-        $rejected['land'] = true;
-    }
-    if (empty($values['postbox'])
-        && (empty($values['adresse']) || ($values['land'] == 'DK' && !preg_match('/\s/ui', @$values['adresse'])))
-    ) {
-        $rejected['adresse'] = true;
-    }
-    if (empty($values['postnr'])) {
-        $rejected['postnr'] = true;
-    }
-    //TODO if land = DK and postnr != by
-    if (empty($values['by'])) {
-        $rejected['by'] = true;
-    }
-    if (!$values['land']) {
-        $rejected['land'] = true;
-    }
-    if (!empty($values['altpost'])) {
-        if (empty($values['postname'])) {
-            $rejected['postname'] = true;
-        }
-        if (empty($values['land'])) {
-            $rejected['land'] = true;
-        }
-        if (empty($values['postpostbox'])
-            && (empty($values['postaddress']) || ($values['postcountry'] == 'DK' && !preg_match('/\s/ui', $values['postaddress'])))
-        ) {
-            $rejected['postaddress'] = true;
-        }
-        if (empty($values['postpostalcode'])) {
-            $rejected['postpostalcode'] = true;
-        }
-        //TODO if postcountry = DK and postpostalcode != postcity
-        if (empty($values['postcity'])) {
-            $rejected['postcity'] = true;
-        }
-        if (empty($values['postcountry'])) {
-            $rejected['postcountry'] = true;
-        }
-    }
-    return $rejected;
-}
-
 //Generate return page
-$GLOBALS['generatedcontent']['crumbs'] = array();
-$GLOBALS['generatedcontent']['crumbs'][0] = array(
+$GLOBALS['generatedcontent']['crumbs'] = [];
+$GLOBALS['generatedcontent']['crumbs'][0] = [
     'name' => _('Payment'),
     'link' => '/',
-    'icon' => null
-);
+    'icon' => null,
+];
 
 $GLOBALS['generatedcontent']['contenttype'] = 'page';
 $GLOBALS['generatedcontent']['text'] = '';
 
 if (!empty($_SESSION['faktura']['quantities'])) {
-    $rejected = array();
+    $rejected = [];
 
     if (empty($_GET['step'])) {
         if ($_POST) {
@@ -253,12 +173,12 @@ if (!empty($_SESSION['faktura']['quantities'])) {
             $_SESSION['faktura']['amount'] += $_SESSION['faktura']['values'][$i] * $quantity;
         }
 
-        $GLOBALS['generatedcontent']['crumbs'] = array();
-        $GLOBALS['generatedcontent']['crumbs'][1] = array(
+        $GLOBALS['generatedcontent']['crumbs'] = [];
+        $GLOBALS['generatedcontent']['crumbs'][1] = [
             'name' => _('Place order'),
             'link' => '#',
-            'icon' => null
-        );
+            'icon' => null,
+        ];
         $GLOBALS['generatedcontent']['title'] = _('Place order');
         $GLOBALS['generatedcontent']['headline'] = _('Place order');
 
@@ -381,7 +301,7 @@ if (!empty($_SESSION['faktura']['quantities'])) {
         }
 
         if ($_POST) {
-            $updates = array();
+            $updates = [];
             $updates['navn'] = $_POST['navn'];
             $updates['att'] = $_POST['att'] != $_POST['navn'] ? $_POST['att'] : '';
             $updates['adresse'] = $_POST['adresse'];
@@ -457,12 +377,12 @@ if (!empty($_SESSION['faktura']['quantities'])) {
         //TODO set land to DK by default
 
         //TODO add enote
-        $GLOBALS['generatedcontent']['crumbs'] = array();
-        $GLOBALS['generatedcontent']['crumbs'][1] = array(
+        $GLOBALS['generatedcontent']['crumbs'] = [];
+        $GLOBALS['generatedcontent']['crumbs'][1] = [
             'name' => _('Recipient'),
             'link' => '#',
-            'icon' => null
-        );
+            'icon' => null,
+        ];
         $GLOBALS['generatedcontent']['title'] = _('Recipient');
         $GLOBALS['generatedcontent']['headline'] = _('Recipient');
 
@@ -857,7 +777,7 @@ if (!empty($_SESSION['faktura']['quantities'])) {
         );
 
         $mail->Subject    = _('Online order #').$id;
-        $mail->MsgHTML($emailbody, $_SERVER['DOCUMENT_ROOT']);
+        $mail->MsgHTML($emailbody, _ROOT_);
 
         //TODO allow other departments to revice orders
         $mail->AddAddress(

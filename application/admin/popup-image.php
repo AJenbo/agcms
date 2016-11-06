@@ -1,8 +1,13 @@
 <?php
-require_once $_SERVER['DOCUMENT_ROOT'] . '/admin/inc/logon.php';
-require_once $_SERVER['DOCUMENT_ROOT'] . '/inc/functions.php';
 
-$files = db()->fetchArray('SELECT alt, width, height FROM `files` WHERE `path` LIKE \''.$_GET['url'].'\' LIMIT 1');
+require_once $_SERVER['DOCUMENT_ROOT'] . '/admin/inc/logon.php';
+
+$file = db()->fetchOne(
+    "
+    SELECT alt, width, height
+    FROM `files`
+    WHERE `path` = '" . $_GET['url'] . "'"
+);
 ?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
@@ -13,5 +18,5 @@ body {margin:0}
 --></style>
 </head>
 
-<body><div><img src="<?php echo $_GET['url'] ?>" alt="<?php echo $files[0]['alt'] ?>" title="<?php echo $files[0]['alt'] ?>" width="<?php echo $files[0]['width'] ?>" height="<?php echo $files[0]['height'] ?>" /></div></body>
+<body><div><img src="<?php echo $_GET['url'] ?>" alt="<?php echo $file['alt'] ?>" title="<?php echo $file['alt'] ?>" width="<?php echo $file['width'] ?>" height="<?php echo $file['height'] ?>" /></div></body>
 </html>

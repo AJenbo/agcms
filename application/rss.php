@@ -11,15 +11,6 @@
  * @link     http://www.arms-gallery.dk/
  */
 
-date_default_timezone_set('Europe/Copenhagen');
-setlocale(LC_ALL, 'da_DK');
-bindtextdomain('agcms', $_SERVER['DOCUMENT_ROOT'] . '/theme/locale');
-bind_textdomain_codeset('agcms', 'UTF-8');
-textdomain('agcms');
-mb_language('uni');
-mb_detect_order('UTF-8, ISO-8859-1');
-mb_internal_encoding('UTF-8');
-
 require_once $_SERVER['DOCUMENT_ROOT'] . '/inc/functions.php';
 
 $tabels = db()->fetchArray("SHOW TABLE STATUS");
@@ -150,42 +141,34 @@ for ($i = 0; $i < count($sider); $i++) {
     for ($ibind = 0; $ibind < count($bind); $ibind++) {
         $kats[] = $bind[$ibind]['kat'];
 
-        $temp = db()->fetchArray(
+        $temp = db()->fetchOne(
             "
             SELECT bind
             FROM `kat`
-            WHERE id = '" . $bind[$ibind]['kat'] . "'
-            LIMIT 1
-            "
+            WHERE id = " . $bind[$ibind]['kat']
         );
-        if (@$temp[0]) {
-            while ($temp && !in_array($temp[0]['bind'], $kats)) {
-                $kats[] = $temp[0]['bind'];
-                $temp = db()->fetchArray(
+        if ($temp) {
+            while ($temp && !in_array($temp['bind'], $kats)) {
+                $kats[] = $temp['bind'];
+                $temp = db()->fetchOne(
                     "
                     SELECT bind
                     FROM `kat`
-                    WHERE id = '" . $temp[0]['bind']."'
-                    LIMIT 1
-                    "
+                    WHERE id = " . $temp['bind']
                 );
             }
         }
     }
 
-    //$kats = array_unique($kats);
-
     for ($icategory = 0; $icategory < count($kats); $icategory++) {
         if ($kats[$icategory]) {
-            $kat = db()->fetchArray(
+            $kat = db()->fetchOne(
                 "
                 SELECT `navn`
                 FROM kat
-                WHERE id = " . $kats[$icategory] . "
-                LIMIT 1
-                "
+                WHERE id = " . $kats[$icategory]
             );
-            $cleaned = trim(preg_replace($search, $replace, @$kat[0]['navn']));
+            $cleaned = trim(preg_replace($search, $replace, $kat['navn'] ?? ''));
             if ($category = $cleaned) {
                 echo '<category>';
                 echo htmlspecialchars($category, ENT_NOQUOTES | ENT_XML1);

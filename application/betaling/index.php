@@ -11,129 +11,36 @@
  * @link     http://www.arms-gallery.dk/
  */
 
-/**/
-ini_set('display_errors', 1);
-error_reporting(-1);
-/**/
-
-date_default_timezone_set('Europe/Copenhagen');
-setlocale(LC_ALL, 'da_DK');
-bindtextdomain('agcms', $_SERVER['DOCUMENT_ROOT'].'/theme/locale');
-bind_textdomain_codeset('agcms', 'UTF-8');
-textdomain('agcms');
-
-require_once $_SERVER['DOCUMENT_ROOT'] . '/inc/imap.php';
-include_once $_SERVER['DOCUMENT_ROOT'] . '/inc/countries.php';
-include_once $_SERVER['DOCUMENT_ROOT'] . '/vendor/phpmailer/phpmailer/language/phpmailer.lang-dk.php';
-require_once $_SERVER['DOCUMENT_ROOT'] . '/vendor/phpmailer/phpmailer/class.smtp.php';
-require_once $_SERVER['DOCUMENT_ROOT'] . '/vendor/phpmailer/phpmailer/class.phpmailer.php';
-
-chdir('../');
-
 //Generate default $GLOBALS['generatedcontent']
 $delayprint = true;
-require_once 'index.php';
+require_once $_SERVER['DOCUMENT_ROOT'] . '/index.php';
+include_once _ROOT_ . '/inc/countries.php';
+
 $GLOBALS['generatedcontent']['datetime'] = time();
-
-/**
- * Generate a 5 didget code from the order id
- *
- * @param int $id Order id to generate code from
- *
- * @return string
- */
-function getCheckid(int $id): string
-{
-    return substr(md5($id . $GLOBALS['_config']['pbssalt']), 3, 5);
-}
-
-/**
- * Checks that all nessesery contact information has been filled out correctly
- *
- * @param array $values Keys are: email, navn, land, postbox, adresse, postnr, by,
- *                      altpost (bool), postname, postpostbox, postaddress,
- *                      postcountry, postpostalcode, postcity
- *
- * @return array Key with bool true for each faild feald
- */
-function validate(array $values): array
-{
-    $rejected = array();
-
-    if (!valideMail(@$values['email'])) {
-        $rejected['email'] = true;
-    }
-
-    if (empty($values['navn'])) {
-        $rejected['navn'] = true;
-    }
-    if (empty($values['land'])) {
-        $rejected['land'] = true;
-    }
-    if (empty($values['postbox'])
-        && (empty($values['adresse']) || ($values['land'] == 'DK' && !preg_match('/\s/ui', @$values['adresse'])))
-    ) {
-        $rejected['adresse'] = true;
-    }
-    if (empty($values['postnr'])) {
-        $rejected['postnr'] = true;
-    }
-    //TODO if land = DK and postnr != by
-    if (empty($values['by'])) {
-        $rejected['by'] = true;
-    }
-    if (!$values['land']) {
-        $rejected['land'] = true;
-    }
-    if (!empty($values['altpost'])) {
-        if (empty($values['postname'])) {
-            $rejected['postname'] = true;
-        }
-        if (empty($values['land'])) {
-            $rejected['land'] = true;
-        }
-        if (empty($values['postpostbox'])
-            && (empty($values['postaddress']) || ($values['postcountry'] == 'DK' && !preg_match('/\s/ui', $values['postaddress'])))
-        ) {
-            $rejected['postaddress'] = true;
-        }
-        if (empty($values['postpostalcode'])) {
-            $rejected['postpostalcode'] = true;
-        }
-        //TODO if postcountry = DK and postpostalcode != postcity
-        if (empty($values['postcity'])) {
-            $rejected['postcity'] = true;
-        }
-        if (empty($values['postcountry'])) {
-            $rejected['postcountry'] = true;
-        }
-    }
-    return $rejected;
-}
 
 $id = !empty($_GET['id']) ? (int) $_GET['id'] : null;
 
 //Generate return page
-$GLOBALS['generatedcontent']['crumbs'] = array();
+$GLOBALS['generatedcontent']['crumbs'] = [];
 if (!empty($id)) {
-    $GLOBALS['generatedcontent']['crumbs'][0] = array(
+    $GLOBALS['generatedcontent']['crumbs'][0] = [
         'name' => _('Payment'),
         'link' => '/?id=' . $id . '&checkid=' . $_GET['checkid'],
-        'icon' => null
-    );
+        'icon' => null,
+    ];
 } else {
-    $GLOBALS['generatedcontent']['crumbs'][0] = array(
+    $GLOBALS['generatedcontent']['crumbs'][0] = [
         'name' => _('Payment'),
         'link' => '/',
-        'icon' => null
-    );
+        'icon' => null,
+    ];
 }
 $GLOBALS['generatedcontent']['contenttype'] = 'page';
 $GLOBALS['generatedcontent']['text'] = '';
 $productslines = 0;
 
 if (!empty($id) && @$_GET['checkid'] == getCheckid($id) && !isset($_GET['txnid'])) {
-    $rejected = array();
+    $rejected = [];
     $faktura = db()->fetchOne(
         "
         SELECT *
@@ -141,7 +48,7 @@ if (!empty($id) && @$_GET['checkid'] == getCheckid($id) && !isset($_GET['txnid']
         WHERE `id` = ".$id
     );
 
-    if (in_array($faktura['status'], array('new', 'locked', 'pbserror'))) {
+    if (in_array($faktura['status'], ['new', 'locked', 'pbserror'])) {
         $faktura['quantities'] = explode('<', $faktura['quantities']);
         $faktura['products'] = explode('<', $faktura['products']);
         $faktura['values'] = explode('<', $faktura['values']);
@@ -172,12 +79,12 @@ if (!empty($id) && @$_GET['checkid'] == getCheckid($id) && !isset($_GET['txnid']
                   AND `id` = " . $id
             );
 
-            $GLOBALS['generatedcontent']['crumbs'] = array();
-            $GLOBALS['generatedcontent']['crumbs'][1] = array(
+            $GLOBALS['generatedcontent']['crumbs'] = [];
+            $GLOBALS['generatedcontent']['crumbs'][1] = [
                 'name' => _('Order #') . $id,
                 'link' => '#',
-                'icon' => null
-            );
+                'icon' => null,
+            ];
             $GLOBALS['generatedcontent']['title'] = _('Order #').$id;
             $GLOBALS['generatedcontent']['headline'] = _('Order #').$id;
 
@@ -233,14 +140,14 @@ if (!empty($id) && @$_GET['checkid'] == getCheckid($id) && !isset($_GET['txnid']
                 $GLOBALS['generatedcontent']['text'] .= nl2br(htmlspecialchars($faktura['note'])).'</p>';
             }
             $GLOBALS['generatedcontent']['text'] .= '<form action="" method="get">
-	    <input type="hidden" name="id" value="' . $id . '" />
-	    <input type="hidden" name="checkid" value="' . htmlspecialchars($_GET['checkid']) . '" />
-	    <input type="hidden" name="step" value="1" />
-	    <input style="font-weight:bold;" type="submit" value="' . _('Continue') . '" />
-	    </form>';
+        <input type="hidden" name="id" value="' . $id . '" />
+        <input type="hidden" name="checkid" value="' . htmlspecialchars($_GET['checkid']) . '" />
+        <input type="hidden" name="step" value="1" />
+        <input style="font-weight:bold;" type="submit" value="' . _('Continue') . '" />
+        </form>';
         } elseif ($_GET['step'] == 1) { //Fill out customer info
             if ($_POST) {
-                $updates = array();
+                $updates = [];
                 $updates['navn'] = $_POST['navn'];
                 $updates['att'] = $_POST['att'] != $_POST['navn'] ? $_POST['att'] : '';
                 $updates['adresse'] = $_POST['adresse'];
@@ -322,8 +229,8 @@ if (!empty($id) && @$_GET['checkid'] == getCheckid($id) && !isset($_GET['txnid']
             }
 
             //TODO add enote
-            $GLOBALS['generatedcontent']['crumbs'] = array();
-            $GLOBALS['generatedcontent']['crumbs'][1] = array('name' => _('Recipient'), 'link' => '#', 'icon' => null);
+            $GLOBALS['generatedcontent']['crumbs'] = [];
+            $GLOBALS['generatedcontent']['crumbs'][1] = ['name' => _('Recipient'), 'link' => '#', 'icon' => null];
             $GLOBALS['generatedcontent']['title'] = _('Recipient');
             $GLOBALS['generatedcontent']['headline'] = _('Recipient');
 
@@ -540,39 +447,38 @@ if (!empty($id) && @$_GET['checkid'] == getCheckid($id) && !isset($_GET['txnid']
                 AND `id` = " . $id
             );
 
-            $GLOBALS['generatedcontent']['crumbs'] = array();
-            $GLOBALS['generatedcontent']['crumbs'][1] = array(
+            $GLOBALS['generatedcontent']['crumbs'] = [];
+            $GLOBALS['generatedcontent']['crumbs'][1] = [
                 'name' => _('Trade Conditions'),
                 'link' => '#',
-                'icon' => null
-            );
+                'icon' => null,
+            ];
             $GLOBALS['generatedcontent']['title'] = _('Trade Conditions');
             $GLOBALS['generatedcontent']['headline'] = _('Trade Conditions');
 
-            $special = db()->fetchArray(
+            $special = db()->fetchOne(
                 "
                 SELECT `text`
                 FROM `special`
                 WHERE `id` = 3
-                LIMIT 1
                 "
             );
-            $GLOBALS['generatedcontent']['text'] .= '<br />'.$special[0]['text'];
+            $GLOBALS['generatedcontent']['text'] .= '<br />'.$special['text'];
 
             $GLOBALS['generatedcontent']['text'] .= '<form style="text-align:center;" action="https://ssl.ditonlinebetalingssystem.dk/integration/ewindow/Default.aspx" method="post">';
 
-            $submit = array(
-            'group'             => $GLOBALS['_config']['pbsfix'],
-            'merchantnumber'    => $GLOBALS['_config']['pbsid'],
-            'orderid'           => $GLOBALS['_config']['pbsfix'].$faktura['id'],
-            'currency'          => 208,
-            'amount'            => number_format($faktura['amount'], 2, '', ''),
-            'ownreceipt'        => 1,
-            'accepturl'         => $GLOBALS['_config']['base_url'] . '/betaling/?id=' . $id . '&checkid=' . $_GET['checkid'],
-            'cancelurl'         => $GLOBALS['_config']['base_url'] . $_SERVER['REQUEST_URI'],
-            'windowstate'       => 3,
-            'windowid'          => $GLOBALS['_config']['pbswindow'],
-            );
+            $submit = [
+                'group'             => $GLOBALS['_config']['pbsfix'],
+                'merchantnumber'    => $GLOBALS['_config']['pbsid'],
+                'orderid'           => $GLOBALS['_config']['pbsfix'].$faktura['id'],
+                'currency'          => 208,
+                'amount'            => number_format($faktura['amount'], 2, '', ''),
+                'ownreceipt'        => 1,
+                'accepturl'         => $GLOBALS['_config']['base_url'] . '/betaling/?id=' . $id . '&checkid=' . $_GET['checkid'],
+                'cancelurl'         => $GLOBALS['_config']['base_url'] . $_SERVER['REQUEST_URI'],
+                'windowstate'       => 3,
+                'windowid'          => $GLOBALS['_config']['pbswindow'],
+            ];
             foreach ($submit as $key => $value) {
                 $GLOBALS['generatedcontent']['text'] .= '<input type="hidden" name="'
                 .$key.'" value="'.htmlspecialchars($value).'" />';
@@ -584,29 +490,29 @@ if (!empty($id) && @$_GET['checkid'] == getCheckid($id) && !isset($_GET['txnid']
             $GLOBALS['generatedcontent']['text'] .= '</form>';
         }
     } else { //Show order status
-        $GLOBALS['generatedcontent']['crumbs'] = array();
-        $GLOBALS['generatedcontent']['crumbs'][1] = array(
+        $GLOBALS['generatedcontent']['crumbs'] = [];
+        $GLOBALS['generatedcontent']['crumbs'][1] = [
             'name' => _('Error'),
             'link' => '#',
-            'icon' => null
-        );
+            'icon' => null,
+        ];
         $GLOBALS['generatedcontent']['title'] = _('Error');
         $GLOBALS['generatedcontent']['headline'] = _('Error');
         if ($faktura['status'] == 'pbsok') {
-            $GLOBALS['generatedcontent']['crumbs'][1] = array(
+            $GLOBALS['generatedcontent']['crumbs'][1] = [
                 'name' => _('Status'),
                 'link' => '#',
-                'icon' => null
-            );
+                'icon' => null,
+            ];
             $GLOBALS['generatedcontent']['title'] = _('Status');
             $GLOBALS['generatedcontent']['headline'] = _('Status');
             $GLOBALS['generatedcontent']['text'] = _('Payment received.');
         } elseif ($faktura['status'] == 'accepted') {
-            $GLOBALS['generatedcontent']['crumbs'][1] = array(
+            $GLOBALS['generatedcontent']['crumbs'][1] = [
                 'name' => _('Status'),
                 'link' => '#',
-                'icon' => null
-            );
+                'icon' => null,
+            ];
             $GLOBALS['generatedcontent']['title'] = _('Status');
             $GLOBALS['generatedcontent']['headline'] = _('Status');
             $GLOBALS['generatedcontent']['text'] = _('The payment was received and the package is sent.');
@@ -623,12 +529,12 @@ if (!empty($id) && @$_GET['checkid'] == getCheckid($id) && !isset($_GET['txnid']
         }
     }
 } elseif (isset($_GET['txnid'])) {
-    $GLOBALS['generatedcontent']['crumbs'] = array();
-    $GLOBALS['generatedcontent']['crumbs'][1] = array(
+    $GLOBALS['generatedcontent']['crumbs'] = [];
+    $GLOBALS['generatedcontent']['crumbs'][1] = [
         'name' => _('Error'),
         'link' => '#',
-        'icon' => null
-    );
+        'icon' => null,
+    ];
     $GLOBALS['generatedcontent']['title'] = _('Error');
     $GLOBALS['generatedcontent']['headline'] = _('Error');
     $GLOBALS['generatedcontent']['text'] = _('An unknown error occured.');
@@ -651,18 +557,18 @@ if (!empty($id) && @$_GET['checkid'] == getCheckid($id) && !isset($_GET['txnid']
             _('A user tried to pay online invoice #%d, which is not in the system!'),
             $id
         ) . '<br />';
-    } elseif (in_array($faktura['status'], array('canceled', 'rejected'))) {
-        $GLOBALS['generatedcontent']['crumbs'][1] = array('name' => _('Reciept'), 'link' => '#', 'icon' => null);
+    } elseif (in_array($faktura['status'], ['canceled', 'rejected'])) {
+        $GLOBALS['generatedcontent']['crumbs'][1] = ['name' => _('Reciept'), 'link' => '#', 'icon' => null];
         $GLOBALS['generatedcontent']['title'] = _('Reciept');
         $GLOBALS['generatedcontent']['headline'] = _('Reciept');
         $GLOBALS['generatedcontent']['text'] = '<p>'._('This trade has been canceled or refused.').'</p>';
         $shopBody = '<br />'.sprintf(_('A customer tried to see the status page for online invoice #%d which is canceled or rejected.'), $id).'<br />';
-    } elseif (!in_array($faktura['status'], array('locked', 'new', 'pbserror'))) {
-        $GLOBALS['generatedcontent']['crumbs'][1] = array(
+    } elseif (!in_array($faktura['status'], ['locked', 'new', 'pbserror'])) {
+        $GLOBALS['generatedcontent']['crumbs'][1] = [
             'name' => _('Reciept'),
             'link' => '#',
-            'icon' => null
-        );
+            'icon' => null,
+        ];
         $GLOBALS['generatedcontent']['title'] = _('Reciept');
         $GLOBALS['generatedcontent']['headline'] = _('Reciept');
         $GLOBALS['generatedcontent']['text'] = '<p>'._('Payment is registered and you ought to have received a receipt by email.').'</p>';
@@ -671,32 +577,32 @@ if (!empty($id) && @$_GET['checkid'] == getCheckid($id) && !isset($_GET['txnid']
             $id
         ) . '<br />';
     } elseif ($eKey == $_GET['hash']) {
-        $GLOBALS['generatedcontent']['crumbs'][1] = array(
+        $GLOBALS['generatedcontent']['crumbs'][1] = [
             'name' => _('Reciept'),
             'link' => '#',
-            'icon' => null
-        );
+            'icon' => null,
+        ];
         $GLOBALS['generatedcontent']['title'] = _('Reciept');
         $GLOBALS['generatedcontent']['headline'] = _('Reciept');
 
-        $cardtype = array(
-        1  => 'Dankort/Visa-Dankort',
-        2  => 'eDankort',
-        3  => 'Visa / Visa Electron',
-        4  => 'MastercCard',
-        6  => 'JCB',
-        7  => 'Maestro',
-        8  => 'Diners Club',
-        9  => 'American Express',
-        11 => 'Forbrugsforeningen',
-        12 => 'Nordea e-betaling',
-        13 => 'Danske Netbetalinger',
-        14 => 'PayPal',
-        17 => 'Klarna',
-        18 => 'SveaWebPay',
-        23 => 'ViaBill',
-        24 => 'NemPay',
-        );
+        $cardtype = [
+            1  => 'Dankort/Visa-Dankort',
+            2  => 'eDankort',
+            3  => 'Visa / Visa Electron',
+            4  => 'MastercCard',
+            6  => 'JCB',
+            7  => 'Maestro',
+            8  => 'Diners Club',
+            9  => 'American Express',
+            11 => 'Forbrugsforeningen',
+            12 => 'Nordea e-betaling',
+            13 => 'Danske Netbetalinger',
+            14 => 'PayPal',
+            17 => 'Klarna',
+            18 => 'SveaWebPay',
+            23 => 'ViaBill',
+            24 => 'NemPay',
+        ];
 
         db()->query(
             "
@@ -942,7 +848,7 @@ Tel. %s<br />
         $mail->FromName   = $GLOBALS['_config']['site_name'];
         $subject = _('Order #%d - payment completed');
         $mail->Subject    = sprintf($subject, $faktura['id']);
-        $mail->MsgHTML($emailbody, $_SERVER['DOCUMENT_ROOT']);
+        $mail->MsgHTML($emailbody, _ROOT_);
         $mail->AddAddress($faktura['email'], $GLOBALS['_config']['site_name']);
         if ($mail->Send()) {
             //Upload email to the sent folder via imap
@@ -1125,7 +1031,7 @@ Delivery phone: %s</p>
         $mail->From       = $GLOBALS['_config']['email'][0];
         $mail->FromName   = $GLOBALS['_config']['site_name'];
         $mail->Subject    = $subject;
-        $mail->MsgHTML($emailbody, $_SERVER['DOCUMENT_ROOT']);
+        $mail->MsgHTML($emailbody, _ROOT_);
 
         $mail->AddAddress($faktura['department'], $GLOBALS['_config']['site_name']);
 

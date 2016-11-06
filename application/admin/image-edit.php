@@ -1,52 +1,12 @@
 <?php
 
-date_default_timezone_set('Europe/Copenhagen');
-setlocale(LC_ALL, 'da_DK');
-bindtextdomain('agcms', $_SERVER['DOCUMENT_ROOT'].'/theme/locale');
-bind_textdomain_codeset('agcms', 'UTF-8');
-textdomain('agcms');
-
 require_once $_SERVER['DOCUMENT_ROOT'] . '/admin/inc/logon.php';
-require_once $_SERVER['DOCUMENT_ROOT'] . '/admin/inc/get_mime_type.php';
-require_once $_SERVER['DOCUMENT_ROOT'] . '/admin/inc/image-functions.php';
-require_once $_SERVER['DOCUMENT_ROOT'] . '/inc/function.php';
-
-/**
- * @param string $path
- * @param int $cropX
- * @param int $cropY
- * @param int $cropW
- * @param int $cropH
- * @param int $maxW
- * @param int $maxH
- * @param int $flip
- * @param int $rotate
- * @param string $filename
- * @param bool $force
- *
- * @return array
- */
-function saveImage(string $path, itn $cropX, int $cropY, int $cropW, int $cropH, int $maxW, int $maxH, int $flip, int $rotate, string $filename, bool $force): array
-{
-    $mimeType = get_mime_type($path);
-
-    if ($mimeType == 'image/jpeg') {
-        $output['type'] = 'jpg';
-    } else {
-        $output['type'] = 'png';
-    }
-
-    $output['filename'] = $filename;
-    $output['force'] = $force;
-
-    return generateImage($path, $cropX, $cropY, $cropW, $cropH, $maxW, $maxH, $flip, $rotate, $output);
-    //TODO close and update image in explorer
-}
+require_once _ROOT_ . '/admin/inc/image-functions.php';
 
 SAJAX::export(['saveImage' => ['method' => 'POST']]);
 SAJAX::handleClientRequest();
 
-$imagesize = @getimagesize($_SERVER['DOCUMENT_ROOT'].$_GET['path']);
+$imagesize = @getimagesize(_ROOT_ . $_GET['path']);
 
 ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">

@@ -88,13 +88,11 @@ if (@$redirect) {
     header('HTTP/1.1 301 Moved Permanently');
     if ($GLOBALS['side']['id']) {
         if (!$GLOBALS['generatedcontent']['activmenu']) {
-            $bind = db()->fetchArray(
+            $bind = db()->fetchOne(
                 "
                 SELECT kat
                 FROM bind
-                WHERE side = " . $GLOBALS['side']['id'] . "
-                LIMIT 1
-                "
+                WHERE side = " . $GLOBALS['side']['id']
             );
             if (!$bind) {
                 $url = '/?sog=1&q=&sogikke=&qext=&minpris=&maxpris=&maerke=';
@@ -105,7 +103,7 @@ if (@$redirect) {
                 "
                 SELECT id, navn
                 FROM kat
-                WHERE id = " . $bind[0]['kat']
+                WHERE id = " . $bind['kat']
             );
         } else {
             $kats = db()->fetchArray(

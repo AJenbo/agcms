@@ -11,9 +11,26 @@
  * @link     http://www.arms-gallery.dk/
  */
 
+defined('_ROOT_') || define('_ROOT_', realpath(__DIR__ . '/..' ));
+
+ini_set('display_errors', 1);
+error_reporting(-1);
+date_default_timezone_set('Europe/Copenhagen');
+setlocale(LC_ALL, 'da_DK');
+bindtextdomain('agcms', __DIR__ . '/../theme/locale');
+bind_textdomain_codeset('agcms', 'UTF-8');
+textdomain('agcms');
+mb_language('uni');
+mb_detect_order('UTF-8, ISO-8859-1');
+mb_internal_encoding('UTF-8');
+
 require_once __DIR__ . '/mysqli.php';
 require_once __DIR__ . '/sajax.php';
 require_once __DIR__ . '/config.php';
+require_once __DIR__ . '/imap.php';
+include_once __DIR__ . '/../vendor/phpmailer/phpmailer/language/phpmailer.lang-dk.php';
+require_once __DIR__ . '/../vendor/phpmailer/phpmailer/class.smtp.php';
+require_once __DIR__ . '/../vendor/phpmailer/phpmailer/class.phpmailer.php';
 
 function db()
 {
@@ -90,7 +107,7 @@ function skriv(int $id): bool
     }
 
     //er der en side på denne kattegori
-    if ($sider = db()->fetchArray('SELECT id FROM bind WHERE kat = '.$id)) {
+    if (db()->fetchOne("SELECT id FROM bind WHERE kat = " . $id)) {
         getUpdateTime('bind');
         $GLOBALS['cache']['kats'][$id]['skriv'] = true;
         return true;
@@ -269,7 +286,7 @@ function arrayListsort(array $aryData, string $strIndex, string $strSortBy, int 
 
     getUpdateTime('tablesort');
 
-    $arySort = $aryResult = array();
+    $arySort = $aryResult = [];
 
     foreach ($aryData as $aryRow) {
         $arySort[$aryRow[$strIndex]] = -1;
@@ -378,17 +395,15 @@ function getTable(int $listid, int $bycell = null, int $current_kat = null): arr
             if ($row['link']) {
                 getUpdateTime('sider');
                 getUpdateTime('kat');
-                $sider = db()->fetchArray(
+                $sider = db()->fetchOne(
                     "
                     SELECT `sider`.`navn`, `kat`.`navn` AS `kat_navn`
                     FROM `sider` JOIN `kat` ON `kat`.`id` = " . $current_kat . "
-                    WHERE `sider`.`id` = " . $row['link'] . "
-                    LIMIT 1
-                    "
+                    WHERE `sider`.`id` = " . $row['link']
                 );
                 $row['link'] = '<a href="/kat' . $current_kat . '-'
-                . clearFileName($sider[0]['kat_navn']) . '/side' . $row['link']
-                . '-' . clearFileName($sider[0]['navn']) . '.html">';
+                . clearFileName($sider['kat_navn']) . '/side' . $row['link']
+                . '-' . clearFileName($sider['navn']) . '.html">';
             }
             foreach ($lists[0]['cells'] as $key => $type) {
                 if (empty($row[$key])) {
@@ -483,13 +498,11 @@ function getTable(int $listid, int $bycell = null, int $current_kat = null): arr
                     case 5:
                         //image
                         $html .= '<td>';
-                        $files = db()->fetchArray(
+                        $files = db()->fetchOne(
                             "
-                        SELECT *
-                        FROM `files`
-                        WHERE path = " . $row[$key] . "
-                        LIMIT 1
-                        "
+                            SELECT *
+                            FROM `files`
+                            WHERE path = " . $row[$key]
                         );
 
                         getUpdateTime('files');
@@ -499,8 +512,8 @@ function getTable(int $listid, int $bycell = null, int $current_kat = null): arr
                             $html .= $row['link'];
                         }
                         $html .= '<img src="' . $row[$key] . '" alt="'
-                        . $files[0]['alt'] . '" title="" width="' . $files[0]['width']
-                        . '" height="' . $files[0]['height'] . '" />';
+                        . $files['alt'] . '" title="" width="' . $files['width']
+                        . '" height="' . $files['height'] . '" />';
                         if ($row['link']) {
                             $html .= '</a>';
                         }
@@ -537,7 +550,7 @@ function getTable(int $listid, int $bycell = null, int $current_kat = null): arr
 
     doConditionalGet($updatetime);
 
-    return array('id' => 'table'.$listid, 'html' => $html);
+    return ['id' => 'table'.$listid, 'html' => $html];
 }
 
 /**
@@ -605,9 +618,7 @@ function kats(int $id): array
         "
         SELECT bind
         FROM kat
-        WHERE id = " . (int) $id . "
-        LIMIT 1
-        "
+        WHERE id = " . $id
     );
 
     getUpdateTime('kat');
@@ -622,7 +633,7 @@ function kats(int $id): array
     }
 
     if (!isset($kats)) {
-        $kats = array();
+        $kats = [];
     }
 
     return $kats;
@@ -709,28 +720,32 @@ function vare(array $side, string $katnavn, int $type)
         if (!$side['beskrivelse'] && $side['text']) {
             $side['beskrivelse'] = stringLimit($side['text'], 100);
         }
-        $GLOBALS['generatedcontent']['list'][] = array(
+        $GLOBALS['generatedcontent']['list'][] = [
             'id' => @$side['id'],
             'name' => $name,
             'date' => @$side['dato'],
             'link' => $link,
             'icon' => @$side['billed'],
             'text' => @$side['beskrivelse'],
-            'price' => array(
+            'price' => [
                 'before' => @$side['for'],
                 'now' => @$side['pris'],
                 'from' => @$side['fra'],
-                'market' => @$side['burde']));
+                'market' => @$side['burde']
+            ]
+        ];
     } else {
-        $GLOBALS['generatedcontent']['list'][] = array(
+        $GLOBALS['generatedcontent']['list'][] = [
             'id' => @$side['id'],
             'name' => $name,
             'date' => @$side['dato'],
             'link' => $link,
             'serial' => @$side['varenr'],
-            'price' => array(
+            'price' => [
                 'before' => @$side['for'],
-                'now' => @$side['pris']));
+                'now' => @$side['pris'],
+            ]
+        ];
     }
 }
 
@@ -810,8 +825,8 @@ function liste()
                         ' ',
                         strip_tags(
                             preg_replace(
-                                array('/</', '/>/', '/\s+/'),
-                                array(' <', '> ', ' '),
+                                ['/</', '/>/', '/\s+/'],
+                                [' <', '> ', ' '],
                                 $value['text']
                             )
                         )
@@ -1013,38 +1028,36 @@ function getAddress(string $phoneNumber): array
         );
 
         //try packages
-        $post = $mysqli_ext->fetchArray(
+        $post = $mysqli_ext->fetchOne(
             "
             SELECT recName1, recAddress1, recZipCode
             FROM `post`
             WHERE `recipientID` LIKE '" . $phoneNumber . "'
             ORDER BY id DESC
-            LIMIT 1
             "
         );
         if ($post) {
-            $return = array_merge($default, $post[0]);
+            $return = array_merge($default, $post);
             if ($return != $default) {
                 return $return;
             }
         }
 
         //Try katalog orders
-        $email = $mysqli_ext->fetchArray(
+        $email = $mysqli_ext->fetchOne(
             "
             SELECT navn, email, adresse, post
             FROM `email`
             WHERE `tlf1` LIKE '" . $phoneNumber . "'
                OR `tlf2` LIKE '" . $phoneNumber . "'
             ORDER BY id DESC
-            LIMIT 1
             "
         );
         if ($email) {
-            $return['recName1'] = $email[0]['navn'];
-            $return['recAddress1'] = $email[0]['adresse'];
-            $return['recZipCode'] = $email[0]['post'];
-            $return['email'] = $email[0]['email'];
+            $return['recName1'] = $email['navn'];
+            $return['recAddress1'] = $email['adresse'];
+            $return['recZipCode'] = $email['post'];
+            $return['email'] = $email['email'];
             $return = array_merge($default, $return);
 
             if ($return != $default) {
@@ -1053,23 +1066,22 @@ function getAddress(string $phoneNumber): array
         }
 
         //Try fakturas
-        $fakturas = $mysqli_ext->fetchArray(
+        $fakturas = $mysqli_ext->fetchOne(
             "
             SELECT navn, email, att, adresse, postnr, postbox
             FROM `fakturas`
             WHERE `tlf1` LIKE '" . $phoneNumber . "'
                OR `tlf2` LIKE '" . $phoneNumber . "'
             ORDER BY id DESC
-            LIMIT 1
             "
         );
         if ($fakturas) {
-            $return['recName1'] = $fakturas[0]['navn'];
-            $return['recAddress1'] = $fakturas[0]['adresse'];
-            $return['recZipCode'] = $fakturas[0]['postnr'];
-            $return['recAttPerson'] = $fakturas[0]['att'];
-            $return['recPostBox'] = $fakturas[0]['postbox'];
-            $return['email'] = $fakturas[0]['email'];
+            $return['recName1'] = $fakturas['navn'];
+            $return['recAddress1'] = $fakturas['adresse'];
+            $return['recZipCode'] = $fakturas['postnr'];
+            $return['recAttPerson'] = $fakturas['att'];
+            $return['recPostBox'] = $fakturas['postbox'];
+            $return['email'] = $fakturas['email'];
             $return = array_merge($default, $return);
 
             if ($return != $default) {
@@ -1079,7 +1091,7 @@ function getAddress(string $phoneNumber): array
     }
 
     //Addressen kunde ikke findes.
-    return array('error' => _('The address could not be found.'));
+    return ['error' => _('The address could not be found.')];
 }
 
 /**
@@ -1245,12 +1257,12 @@ function side()
         getUpdateTime('maerke');
 
         foreach ($maerker as $value) {
-            $GLOBALS['generatedcontent']['brands'][] = array(
-            'name' => $value['navn'],
-            'link' => '/mærke' . $value['id'] . '-'
-                . clearFileName($value['navn']) . '/',
-            'xlink' => $value['link'],
-            'icon' => $value['ico']);
+            $GLOBALS['generatedcontent']['brands'][] = [
+                'name' => $value['navn'],
+                'link' => '/mærke' . $value['id'] . '-' . clearFileName($value['navn']) . '/',
+                'xlink' => $value['link'],
+                'icon' => $value['ico']
+            ];
         }
     }
 
@@ -1288,15 +1300,442 @@ function side()
             $kat = '';
         }
         //TODO beskrivelse
-        $GLOBALS['generatedcontent']['accessories'][] = array(
+        $GLOBALS['generatedcontent']['accessories'][] = [
             'name' => $value['navn'],
-            'link' => $kat . '/side' . $value['id'] . '-'
-                . clearFileName($value['navn']) . '.html',
+            'link' => $kat . '/side' . $value['id'] . '-' . clearFileName($value['navn']) . '.html',
             'icon' => $value['billed'],
             'text' => '',
-            'price' => array('before' => $value['for'],
-            'now' => $value['pris'],
-            'from' => $value['fra'],
-            'market' => $value['burde']));
+            'price' => [
+                'before' => $value['for'],
+                'now' => $value['pris'],
+                'from' => $value['fra'],
+                'market' => $value['burde']
+            ]
+        ];
     }
+}
+
+/**
+ * Get list of sub categories in format fitting the generatedcontent structure
+ *
+ * @param int  $nr               Id of categorie to look under
+ * @param bool $custom_sort_subs If set to false categories will be naturaly sorted
+ *                               by title
+ *
+ * @return array
+ */
+function menu(int $nr, bool $custom_sort_subs = false): array
+{
+    /**
+     * TODO inner join or HAVING COUNT(pb.id) > 0 posible way to
+     * eliminate empty catagorys
+     */
+
+    $kat = db()->fetchArray(
+        "
+        SELECT kat.id,
+            kat.navn,
+            kat.vis,
+            kat.icon,
+            kat.custom_sort_subs,
+            MAX(bind.side) AS skriv,
+            subkat.id AS sub
+        FROM kat
+        LEFT JOIN kat AS subkat
+        ON kat.id = subkat.bind
+            AND  subkat.vis != '0'
+        LEFT JOIN bind
+        ON kat.id = bind.kat
+        WHERE kat.vis != '0'
+            AND kat.bind = ".$GLOBALS['kats'][$nr]."
+        GROUP BY kat.id
+        ORDER BY kat.`order`, kat.navn
+        "
+    );
+
+    if ($kat) {
+        if (!$custom_sort_subs) {
+            $kat = arrayNatsort($kat, 'id', 'navn', 'asc');
+        }
+
+        if (!$GLOBALS['cache']['kats'][$GLOBALS['kats'][$nr]]['navn']) {
+            $katsnr_navn = db()->fetchArray(
+                "
+                SELECT navn, vis, icon
+                FROM kat
+                WHERE id = ".$GLOBALS['kats'][$nr]
+            );
+            $GLOBALS['cache']['kats'][$GLOBALS['kats'][$nr]] = $katsnr_navn[0];
+        }
+
+        foreach ($kat as $value) {
+            $subs = null;
+            $GLOBALS['cache']['kats'][$value['id']]['skriv'] = false;
+            if (@$GLOBALS['cache']['kats'][$value['id']]['skriv']
+                || $value['skriv']
+            ) {
+                $GLOBALS['cache']['kats'][$value['id']]['skriv'] = true;
+            } elseif ($value['sub']) {
+                $GLOBALS['cache']['kats'][$value['id']]['skriv'] = null;
+            }
+            $GLOBALS['cache']['kats'][$value['id']]['vis'] = $value['vis'];
+
+            /**
+             * skriv() viser kun om kategorien skal krives, ikke om den ikke
+             * skal så hvis siden har subs skal de undersøges nermer
+             */
+            if (skriv($value['id'])) {
+                //Er katagorien aaben
+                if (@$GLOBALS['kats'][$nr+1] == $value['id']) {
+                    $subs = menu($nr+1, $value['custom_sort_subs']);
+                }
+
+                //tegn under punkter
+                $menu[] = [
+                    'id' => $value['id'],
+                    'name' => xhtmlEsc($value['navn']),
+                    'link' => '/kat'.$value['id'].'-' .clearFileName($value['navn']).'/',
+                    'icon' => $value['icon'],
+                    'sub' => $value['sub'] ? true : false,
+                    'subs' => $subs,
+                ];
+            }
+        }
+    }
+    if (!isset($menu)) {
+        $menu = [];
+    }
+
+    return $menu;
+}
+
+/**
+ * Search for categories and populate generatedcontent with results
+ *
+ * @param string $q        Seach string
+ * @param string $wherekat Additional SQL for WHERE clause
+ *
+ * @return null
+ */
+function searchMenu(string $q, string $wherekat)
+{
+    global $qext;
+
+    if ($qext) {
+        $qext = ' WITH QUERY EXPANSION';
+    } else {
+        $qext = '';
+    }
+
+    $kat = [];
+    $maerke = [];
+    if ($q) {
+        $kat = db()->fetchArray(
+            "
+            SELECT id, navn, icon, MATCH (navn) AGAINST ('".$q."'".$qext.") AS score
+            FROM kat
+            WHERE MATCH (navn) AGAINST('".$q."'".$qext.") > 0 " . $wherekat . "
+                AND `vis` != '0'
+            ORDER BY score, navn
+            "
+        );
+        if (!$kat) {
+            $qsearch = array ("/ /","/'/","//","/`/");
+            $qreplace = array ("%","_","_","_");
+            $simpleq = preg_replace($qsearch, $qreplace, $q);
+            $kat = db()->fetchArray(
+                "
+                SELECT id, navn, icon
+                FROM kat
+                WHERE navn
+                LIKE '%".$simpleq."%' " . $wherekat . "
+                ORDER BY navn
+                "
+            );
+        }
+        $maerke = db()->fetchArray(
+            "
+            SELECT id, navn
+            FROM `maerke`
+            WHERE MATCH (navn) AGAINST ('".$q."'".$qext.") >  0
+            "
+        );
+        if (!$maerke) {
+            if (empty($simpleq)) {
+                $qsearch = array ("/ /","/'/","//","/`/");
+                $qreplace = array ("%","_","_","_");
+                $simpleq = preg_replace($qsearch, $qreplace, $q);
+            }
+            $maerke = db()->fetchArray(
+                "
+                SELECT id, navn
+                FROM maerke
+                WHERE navn
+                LIKE '%" .$simpleq ."%'
+                ORDER BY navn
+                "
+            );
+        }
+    }
+
+    foreach ($maerke as $value) {
+        $GLOBALS['generatedcontent']['search_menu'][] = [
+            'id' => 0,
+            'name' => xhtmlEsc($value['navn']),
+            'link' => '/mærke' . $value['id'] . '-' .clearFileName($value['navn']) . '/'
+        ];
+    }
+
+    foreach ($kat as $value) {
+        if (skriv($value['id'])) {
+            $GLOBALS['generatedcontent']['search_menu'][] = [
+                'id' => $value['id'],
+                'name' => xhtmlEsc($value['navn']),
+                'link' => '/kat'.$value['id'] . '-' . clearFileName($value['navn']) . '/',
+                'icon' => $value['icon'],
+                'sub' => subs($value['id'])
+            ];
+        }
+    }
+}
+
+/**
+ * Check if page is inactive
+ *
+ * @param int $id Page id
+ *
+ * @return bool
+ */
+function isInactivePage(int $id): bool
+{
+    $bind = db()->fetchOne(
+        "
+        SELECT `kat`
+        FROM `bind`
+        WHERE `side` = " . $id
+    );
+    if (!$bind || binding($bind['kat']) == -1) {
+        return true;
+    }
+
+    return false;
+}
+
+/**
+ * MySQL escape strin(s), including whildcards
+ *
+ * @param mixed $s String or array that should be escapted
+ *
+ * @return mixed The ecaped string or array
+ */
+function fullMysqliEscape($s)
+{
+    if (is_array($s)) {
+        return array_map('fullMysqliEscape', $s);
+    }
+
+    return db()->escapeWildcards(db()->real_escape_string($s));
+}
+
+/**
+ * Print XML for content bellonging to a category
+ *
+ * @param int $id Id of category
+ *
+ * @return null
+ */
+function listKats(int $id)
+{
+    $kats = db()->fetchArray(
+        "
+        SELECT id, navn
+        FROM kat
+        WHERE bind = " . $id
+    );
+
+    for ($ki=0; $ki<count($kats); $ki++) {
+        //print xml
+        ?><url>
+        <loc><?php echo $GLOBALS['_config']['base_url'] ?>/kat<?php
+        echo $kats[$ki]['id'] . '-' . clearFileName($kats[$ki]['navn']);
+        ?>/</loc>
+        <changefreq>weekly</changefreq>
+        <priority>0.5</priority>
+        </url><?php
+        $url = '/kat' . $kats[$ki]['id'] . '-' . clearFileName($kats[$ki]['navn']);
+        listPages($kats[$ki]['id'], $url);
+        listKats($kats[$ki]['id']);
+    }
+}
+
+/**
+ * Print XML for pages bellonging to a category
+ *
+ * @param int    $id      Id of category
+ * @param string $katName Url of category
+ *
+ * @return null
+ */
+function listPages(int $id, string $katName)
+{
+    $binds = db()->fetchArray("SELECT side FROM bind WHERE kat = " . $id);
+    foreach ($binds as $bind) {
+        $sider = db()->fetchOne(
+            "
+            SELECT navn, dato
+            FROM sider
+            WHERE id = " . $bind['side']
+        );
+        //print xml
+        ?><url><loc><?php
+        echo $GLOBALS['_config']['base_url'] . $katName . '/side'
+        . $bind['side'] . '-' . clearFileName($sider['navn']) . '.html';
+        ?></loc>
+        <lastmod><?php
+        echo mb_substr($sider['dato'], 0, -9, 'UTF-8');
+        ?></lastmod>
+        <changefreq>monthly</changefreq>
+        <priority>0.6</priority>
+        </url><?php
+    }
+}
+
+/**
+ * Get the html for content bellonging to a category
+ *
+ * @param int  $id   Id of activ category
+ * @param bool $sort What column to sort by
+ *
+ * @return array Apropriate for handeling with javascript function inject_html()
+ */
+function getKat(int $id, bool $sort): array
+{
+    $GLOBALS['generatedcontent']['activmenu'] = $id;
+
+    //check browser cache
+    $updatetime = 0;
+    $included_files = get_included_files();
+    foreach ($included_files as $filename) {
+        $filemtime = filemtime($filename);
+        $filemtime = max($GLOBALS['cache']['updatetime']['filemtime'], $filemtime);
+        $GLOBALS['cache']['updatetime']['filemtime'] = $filemtime;
+    }
+    foreach ($GLOBALS['cache']['updatetime'] as $time) {
+        $updatetime = max($updatetime, $time);
+    }
+    if ($updatetime < 1) {
+        $updatetime = time();
+    }
+
+    doConditionalGet($updatetime);
+
+    //Get pages list
+    $bind = db()->fetchArray(
+        "
+        SELECT sider.id,
+            sider.navn,
+            sider.burde,
+            sider.fra,
+            sider.pris,
+            sider.for,
+            sider.varenr
+        FROM bind
+        JOIN sider ON bind.side = sider.id
+        WHERE bind.kat = " . $GLOBALS['generatedcontent']['activmenu'] . "
+        ORDER BY sider." . $sort . " ASC
+        "
+    );
+    $bind = arrayNatsort($bind, 'id', $sort);
+
+    $kat = @$GLOBALS['cache']['kats'][$GLOBALS['generatedcontent']['activmenu']];
+    $name = $kat['navn'];
+    if (!$name) {
+        $kat = db()->fetchOne(
+            "
+            SELECT navn, vis
+            FROM kat
+            WHERE id = " . $GLOBALS['generatedcontent']['activmenu']
+        );
+        $name = $kat['navn'];
+    }
+
+    return [
+        'id' => 'kat' . $GLOBALS['generatedcontent']['activmenu'],
+        'html' => katHTML($bind, $name, $GLOBALS['generatedcontent']['activmenu']),
+    ];
+}
+
+/**
+ * Generate a 5 didget code from the order id
+ *
+ * @param int $id Order id to generate code from
+ *
+ * @return string
+ */
+function getCheckid(int $id): string
+{
+    return substr(md5($id . $GLOBALS['_config']['pbssalt']), 3, 5);
+}
+
+/**
+ * Checks that all nessesery contact information has been filled out correctly
+ *
+ * @param array $values Keys are: email, navn, land, postbox, adresse, postnr, by,
+ *                      altpost (bool), postname, postpostbox, postaddress,
+ *                      postcountry, postpostalcode, postcity
+ *
+ * @return array Key with bool true for each faild feald
+ */
+function validate(array $values): array
+{
+    $rejected = [];
+
+    if (!valideMail(@$values['email'])) {
+        $rejected['email'] = true;
+    }
+    if (empty($values['navn'])) {
+        $rejected['navn'] = true;
+    }
+    if (empty($values['land'])) {
+        $rejected['land'] = true;
+    }
+    if (empty($values['postbox'])
+        && (empty($values['adresse']) || ($values['land'] == 'DK' && !preg_match('/\s/ui', @$values['adresse'])))
+    ) {
+        $rejected['adresse'] = true;
+    }
+    if (empty($values['postnr'])) {
+        $rejected['postnr'] = true;
+    }
+    //TODO if land = DK and postnr != by
+    if (empty($values['by'])) {
+        $rejected['by'] = true;
+    }
+    if (!$values['land']) {
+        $rejected['land'] = true;
+    }
+    if (!empty($values['altpost'])) {
+        if (empty($values['postname'])) {
+            $rejected['postname'] = true;
+        }
+        if (empty($values['land'])) {
+            $rejected['land'] = true;
+        }
+        if (empty($values['postpostbox'])
+            && (empty($values['postaddress']) || ($values['postcountry'] == 'DK' && !preg_match('/\s/ui', $values['postaddress'])))
+        ) {
+            $rejected['postaddress'] = true;
+        }
+        if (empty($values['postpostalcode'])) {
+            $rejected['postpostalcode'] = true;
+        }
+        //TODO if postcountry = DK and postpostalcode != postcity
+        if (empty($values['postcity'])) {
+            $rejected['postcity'] = true;
+        }
+        if (empty($values['postcountry'])) {
+            $rejected['postcountry'] = true;
+        }
+    }
+    return $rejected;
 }

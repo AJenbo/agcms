@@ -1,16 +1,6 @@
 <?php
 
-date_default_timezone_set('Europe/Copenhagen');
-setlocale(LC_ALL, 'da_DK');
-bindtextdomain('agcms', $_SERVER['DOCUMENT_ROOT'] . '/theme/locale');
-bind_textdomain_codeset('agcms', 'UTF-8');
-textdomain('agcms');
-mb_language('uni');
-mb_detect_order('UTF-8, ISO-8859-1');
-mb_internal_encoding('UTF-8');
-
 require_once $_SERVER['DOCUMENT_ROOT'] . '/admin/inc/logon.php';
-require_once $_SERVER['DOCUMENT_ROOT'] . '/inc/functions.php';
 
 ?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
@@ -154,61 +144,13 @@ foreach ($krav as $element) {
 $krav = @$temp;
 unset($temp);
 
-/**
- * @param int $bind
- * @param string $path_name
- */
-function print_kat(int $bind, string $path_name)
-{
-    $kats = db()->fetchArray("SELECT id, bind, navn FROM `kat` WHERE bind = ".$bind." ORDER BY navn");
-    foreach ($kats as $kat) {
-        echo "\n".'  <tr class="path"><td colspan="8"><a href="?sort='.@$_GET['sort'].'&amp;kat='.$kat['id'].'"><img src="images/find.png" alt="Vis" title="Vis kun denne kategori" /></a> '.$path_name.' &gt; <a href="/kat'.$kat['id'].'-">'.xhtmlEsc($kat['navn']).'</a></td></tr>';
-        print_pages($kat['id']);
-        print_kat($kat['id'], $path_name.' &gt; '.xhtmlEsc($kat['navn']));
-    }
-}
-
-/**
- * @param int $kat
- */
-function print_pages(int $kat)
-{
-    global $maerker;
-    global $krav;
-    global $sort;
-    $sider = db()->fetchArray("SELECT sider.id, sider.navn, sider.varenr, sider.`for`, sider.pris, sider.dato, sider.maerke, sider.krav FROM `bind` JOIN sider ON bind.side = sider.id WHERE bind.kat = ".$kat." ORDER BY ".$sort);
-    $altrow = 0;
-    foreach ($sider as $side) {
-        echo '<tr';
-        if ($altrow) {
-            echo ' class="altrow"';
-            $altrow = 0;
-        } else {
-            $altrow = 1;
-        }
-
-        echo '>
-      <td class="tal"><a href="/admin/?side=redigerside&amp;id='.$side['id'].'">'.$side['id'].'</a></td>
-      <td><a href="/side'.$side['id'].'-">'.xhtmlEsc($side['navn']).'</a></td>
-      <td>'.xhtmlEsc($side['varenr']).'</td>
-      <td class="tal">'.number_format($side['for'], 2, ',', '.').'</td>
-      <td class="tal">'.number_format($side['pris'], 2, ',', '.').'</td>
-      <td class="tal">'.$side['dato'].'</td>
-      <td>';
-        $side['maerke'] = explode(',', $side['maerke']);
-        foreach ($side['maerke'] as $maerke) {
-            echo $maerker[$maerke].' </td><td>'.$krav[$side['krav']].'</td></tr>';
-        }
-    }
-}
-
 if (is_numeric(@$_GET['kat'])) {
     if (@$_GET['kat'] > 0) {
         $kat = db()->fetchOne("SELECT id, navn FROM `kat` WHERE id = ".$_GET['kat']);
     } elseif (@$_GET['kat'] == 0) {
-        $kat = array('id' => 0, 'navn' => 'Forside');
+        $kat = ['id' => 0, 'navn' => 'Forside'];
     } else {
-        $kat = array('id' => -1, 'navn' => 'Indaktiv');
+        $kat = ['id' => -1, 'navn' => 'Indaktiv'];
     }
     echo "\n".'  <tr class="path"><td colspan="8"><a href="?sort='.@$_GET['sort'].'"><img src="images/find.png" alt="Vis" title="Vis alle kategorier" /></a> <a href="/kat'.$kat['id'].'-">'.xhtmlEsc($kat['navn']).'</a></td></tr>';
     print_pages($_GET['kat']);

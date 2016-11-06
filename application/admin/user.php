@@ -11,75 +11,9 @@
  * @link     http://www.arms-gallery.dk/
  */
 
-date_default_timezone_set('Europe/Copenhagen');
-setlocale(LC_ALL, 'da_DK');
-bindtextdomain('agcms', $_SERVER['DOCUMENT_ROOT'].'/theme/locale');
-bind_textdomain_codeset('agcms', 'UTF-8');
-textdomain('agcms');
-
 require_once $_SERVER['DOCUMENT_ROOT'] . '/admin/inc/logon.php';
-require_once $_SERVER['DOCUMENT_ROOT'] . '/inc/functions.php';
-
-/**
- * Update user
- *
- * @param int   $id      User id
- * @param array $updates Array of values to change
- *                       'access' int 0 = no acces, 1 = admin, 3 = priviliged, 4 = clerk
- *                       'password' crypt(string)
- *                       'password_new' string
- *                       'fullname' string
- *                       'name' string
- *                       'lastlogin' MySQL time stamp
- *
- * @return mixed True on update, else array('error' => string)
- */
-function updateuser(int $id, array $updates)
-{
-    if ($_SESSION['_user']['access'] == 1 || $_SESSION['_user']['id'] == $id) {
-        //Validate access lavel update
-        if ($_SESSION['_user']['id'] == $id && $updates['access'] != $_SESSION['_user']['access']) {
-            return array('error' => _('You can\'t change your own access level'));
-        }
-
-        //Validate password update
-        if (!empty($updates['password_new'])) {
-            if ($_SESSION['_user']['access'] == 1 && $_SESSION['_user']['id'] != $id) {
-                $updates['password'] = crypt($updates['password_new']);
-            } elseif ($_SESSION['_user']['id'] == $id) {
-                $user = db()->fetchOne("SELECT `password` FROM `users` WHERE id = ".$id);
-                if (mb_substr($user['password'], 0, 13) == mb_substr(crypt($updates['password'], $user['password']), 0, 13)) {
-                    $updates['password'] = crypt($updates['password_new']);
-                } else {
-                    return array('error' => _('Incorrect password.'));
-                }
-            } else {
-                return array('error' => _('You do not have the requred access level to change the password for other users.'));
-            }
-        } else {
-            unset($updates['password']);
-        }
-        unset($updates['password_new']);
-
-        //Generate SQL command
-        $sql = "UPDATE `users` SET";
-        foreach ($updates as $key => $value) {
-            $sql .= " `".addcslashes($key, '`\\')."` = '".addcslashes($value, "'\\")."',";
-        }
-        $sql = substr($sql, 0, -1);
-        $sql .= ' WHERE `id` = '.$id;
-
-        //Run SQL
-        db()->query($sql);
-
-        return true;
-    } else {
-        return array('error' => _('You do not have the requred access level to change this user.'));
-    }
-}
 
 SAJAX::export(['updateuser' => ['method' => 'POST']]);
-//if this is a ajax call, this is where things end
 SAJAX::handleClientRequest();
 
 $user = db()->fetchOne("SELECT *, UNIX_TIMESTAMP(`lastlogin`) AS 'lastlogin' FROM `users` WHERE id = ".$_GET['id']);
@@ -158,12 +92,12 @@ if ($_SESSION['_user']['id'] == $_GET['id']
 <tr><td><?php echo _('Last online:'); ?></td><td><?php echo date(_('d/m/Y H:i'), $user['lastlogin']); ?></td></tr>
 <tr><td><?php echo _('Access level:'); ?></td><td><select name="access" id="access"><?php
 
-$accesslevels = array(
- 0 => _('No access'),
- 1 => _('Administrator'),
- 3 => _('Non administrator'),
- 4 => _('User')
-);
+$accesslevels = [
+    0 => _('No access'),
+    1 => _('Administrator'),
+    3 => _('Non administrator'),
+    4 => _('User')
+];
 
 foreach ($accesslevels as $level => $name) {
     //warning if a user name is a it could colide with all

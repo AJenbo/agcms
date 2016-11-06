@@ -1,40 +1,8 @@
 <?php
-/**/
-ini_set('display_errors', 1);
-error_reporting(-1);
-/**/
-
-date_default_timezone_set('Europe/Copenhagen');
-setlocale(LC_ALL, 'da_DK');
-bindtextdomain('agcms', $_SERVER['DOCUMENT_ROOT'].'/theme/locale');
-bind_textdomain_codeset('agcms', 'UTF-8');
-textdomain('agcms');
 
 require_once $_SERVER['DOCUMENT_ROOT'] . '/admin/inc/logon.php';
-require_once $_SERVER['DOCUMENT_ROOT'] . '/inc/functions.php';
-require_once $_SERVER['DOCUMENT_ROOT'] . '/inc/imap.php';
-include_once $_SERVER['DOCUMENT_ROOT'] . '/inc/countries.php';
-require_once $_SERVER['DOCUMENT_ROOT'] . '/inc/epaymentAdminService.php';
-include_once $_SERVER['DOCUMENT_ROOT'] . '/vendor/phpmailer/phpmailer/language/phpmailer.lang-dk.php';
-require_once $_SERVER['DOCUMENT_ROOT'] . '/vendor/phpmailer/phpmailer/class.phpmailer.php';
-require_once $_SERVER['DOCUMENT_ROOT'] . '/vendor/phpmailer/phpmailer/class.smtp.php';
-
-/**
- * @return int
- */
-function newfaktura(): int
-{
-    db()->query(
-        "
-        INSERT INTO `fakturas` (`date`, `clerk`)
-        VALUES (
-            now(),
-            '" . addcslashes($_SESSION['_user']['fullname'], '\'\\') . "'
-        );
-        "
-    );
-    return db()->insert_id;
-}
+include_once _ROOT_ . '/inc/countries.php';
+require_once _ROOT_ . '/inc/epaymentAdminService.php';
 
 if (!empty($_GET['function']) && $_GET['function'] == 'new') {
     ini_set('zlib.output_compression', '0');
@@ -69,7 +37,7 @@ if ($faktura['id'] && $faktura['status'] != 'new') {
 
     if ($epayment->isAnnulled()) {
         //Annulled. The card payment has been deleted by the Merchant, prior to Acquisition.
-        if (!in_array($faktura['status'], array('rejected', 'giro', 'cash', 'canceled'))) {
+        if (!in_array($faktura['status'], ['rejected', 'giro', 'cash', 'canceled'])) {
             $faktura['status'] = 'rejected';
             db()->query(
                 "
@@ -83,7 +51,7 @@ if ($faktura['id'] && $faktura['status'] != 'new') {
         //The payment/order placement has been carried out: Paid.
         if ($epayment->getAmountCaptured() / 100 != $faktura['amount']) {
             //TODO 'Det betalte beløb er ikke svarende til det opkrævede beløb!';
-        } elseif (!in_array($faktura['status'], array('accepted', 'giro', 'cash'))) {
+        } elseif (!in_array($faktura['status'], ['accepted', 'giro', 'cash'])) {
             $faktura['status'] = 'accepted';
             db()->query(
                 "
@@ -95,7 +63,7 @@ if ($faktura['id'] && $faktura['status'] != 'new') {
         }
     } elseif ($epayment->isAuthorized()) {
         //Authorised. The card payment is authorised and awaiting confirmation and Acquisition.
-        if (!in_array($faktura['status'], array('pbsok', 'giro', 'cash'))) {
+        if (!in_array($faktura['status'], ['pbsok', 'giro', 'cash'])) {
             $faktura['status'] = 'pbsok';
             db()->query(
                 "
@@ -117,444 +85,16 @@ if ($faktura['id'] && $faktura['status'] != 'new') {
     }
 }
 
-/**
- * @param int $id
- *
- * @return string
- */
-function getCheckid(int $id): string
-{
-    return substr(md5($id.$GLOBALS['_config']['pbssalt']), 3, 5);
-}
-
-/**
- * @param int $id
- *
- * @return int
- */
-function copytonew(int $id): int
-{
-    $faktura = db()->fetchOne("SELECT * FROM `fakturas` WHERE `id` = ".$id);
-
-    unset($faktura['id']);
-    unset($faktura['status']);
-    unset($faktura['date']);
-    unset($faktura['paydate']);
-    unset($faktura['sendt']);
-    unset($faktura['transferred']);
-    $faktura['clerk'] = $_SESSION['_user']['fullname'];
-
-    $sql = "INSERT INTO `fakturas` SET";
-    foreach ($faktura as $key => $value) {
-        $sql .= " `".addcslashes($key, '`\\')."` = '".addcslashes($value, "'\\")."',";
-    }
-    $sql .= " `date` = NOW();";
-
-    db()->query($sql);
-
-    return db()->insert_id;
-}
-
-/**
- * @param int $id
- * @param string $type
- * @param array $updates
- *
- * @return array
- */
-function save(int $id, string $type, array $updates): array
-{
-    if (empty($updates['department'])) {
-        $updates['department'] = $GLOBALS['_config']['email'][0];
-    }
-
-    if (!empty($updates['date'])) {
-        $date = "STR_TO_DATE('".$updates['date']."', '%d/%m/%Y')";
-        unset($updates['date']);
-    }
-
-    if (!empty($updates['paydate']) && ($type == 'giro' || $type == 'cash')) {
-        $paydate = "STR_TO_DATE('".$updates['paydate']."', '%d/%m/%Y')";
-    } elseif ($type == 'lock' || $type == 'cancel') {
-        $paydate = 'NOW()';
-    }
-    unset($updates['paydate']);
-
-    $faktura = db()->fetchOne("SELECT `status`, `note` FROM `fakturas` WHERE `id` = ".$id);
-
-    if (in_array($faktura['status'], array('locked', 'pbsok', 'rejected'))) {
-        $updates = array(
-            'note' => $updates['note'] ? trim($faktura['note'] . "\n" . $updates['note']) : $faktura['note'],
-            'clerk' => isset($updates['clerk']) ? $updates['clerk'] : '',
-            'department' => $updates['department'],
-        );
-        if ($faktura['status'] != 'pbsok') {
-            if ($type == 'giro') {
-                $updates['status'] = 'giro';
-            }
-            if ($type == 'cash') {
-                $updates['status'] = 'cash';
-            }
-        }
-    } elseif (in_array($faktura['status'], array('accepted', 'giro', 'cash', 'canceled'))) {
-        if ($updates['note']) {
-            $updates = array('note' => $faktura['note']."\n".$updates['note']);
-        } else {
-            $updates = array();
-        }
-    } elseif ($faktura['status'] == 'new') {
-        unset($updates['id']);
-        unset($updates['status']);
-        if ($type == 'lock') {
-            $updates['status'] = 'locked';
-        } elseif ($type == 'giro') {
-            $updates['status'] = 'giro';
-        } elseif ($type == 'cash') {
-            $updates['status'] = 'cash';
-        }
-    }
-
-    if ($type == 'cancel'
-        && !in_array($faktura['status'], array('pbsok', 'accepted', 'giro', 'cash'))
-    ) {
-        $updates['status'] = 'canceled';
-    }
-
-    if ($_SESSION['_user']['access'] != 1) {
-        unset($updates['clerk']);
-    }
-
-    if (count($updates) || !empty($date) || !empty($paydate)) {
-        $sql = "UPDATE `fakturas` SET";
-        foreach ($updates as $key => $value) {
-            $sql .= " `".addcslashes($key, '`\\')."` = '".addcslashes($value, "'\\")."',";
-        }
-        $sql = substr($sql, 0, -1);
-
-        if (!empty($date)) {
-            $sql .= ", `date` = ".$date;
-        }
-        if (!empty($paydate)) {
-            $sql .= ", `paydate` = ".$paydate;
-        }
-
-        $sql .= ' WHERE `id` = '.$id;
-
-        db()->query($sql);
-    }
-
-    $faktura = db()->fetchOne("SELECT * FROM `fakturas` WHERE `id` = ".$id);
-
-    if (empty($faktura['clerk'])) {
-        db()->query("UPDATE `fakturas` SET `clerk` = '".addcslashes($_SESSION['_user']['fullname'], '\'\\')."' WHERE `id` = ".$faktura['id']);
-        $faktura['clerk'] = $_SESSION['_user']['fullname'];
-    }
-
-    if ($type == 'email') {
-        if (!valideMail($faktura['email'])) {
-            return array('error' => _('E-mail address is not valid!'));
-        }
-        if (!$faktura['department'] && count($GLOBALS['_config']['email']) > 1) {
-            return array('error' => _('You have not selected a sender!'));
-        } elseif (!$faktura['department']) {
-                $faktura['department'] = $GLOBALS['_config']['email'][0];
-        }
-        if ($faktura['amount'] < 1) {
-            return array('error' => _('The invoice must be of at at least 1 krone!'));
-        }
-
-        $msg = _(
-            '<p>Thank you for your order.</p>
-
-<p>your online invoice no %d is approved and ready for shipment once the payment is complete.</p>
-
-<p>Payment with credit card, is performed by clicking on the link below.</p>
-
-<p>Link to payment:<br />
-<a href="%s/betaling/?id=%d&amp;checkid=%s">%s/betaling/?id=%d&amp;checkid=%s</a></p>
-<p>Do you have questions about your order, do not hesitate to contact us.</p>
-
-<p>Sincerely,</p>
-
-<p>%s<br />
-<br />%s
-<br />%s
-%s %s<br />
-Tel. %s</p>'
-        );
-        $msg = sprintf(
-            $msg,
-            $faktura['id'],
-            $GLOBALS['_config']['base_url'],
-            $faktura['id'],
-            getCheckid($faktura['id']),
-            $GLOBALS['_config']['base_url'],
-            $faktura['id'],
-            getCheckid($faktura['id']),
-            $faktura['clerk'],
-            $GLOBALS['_config']['site_name'],
-            $GLOBALS['_config']['address'],
-            $GLOBALS['_config']['postcode'],
-            $GLOBALS['_config']['city'],
-            $GLOBALS['_config']['phone']
-        );
-
-        $emailBody = '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml"><head><meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-<title>'. sprintf(_('Online payment to %s'), $GLOBALS['_config']['site_name']).'</title>
-</head><body>' .$msg .'</body></html>';
-
-        $mail             = new PHPMailer();
-        $mail->SetLanguage('dk');
-        $mail->IsSMTP();
-        if ($GLOBALS['_config']['emailpassword'] !== false) {
-            $mail->SMTPAuth   = true; // enable SMTP authentication
-            $mail->Username   = $GLOBALS['_config']['email'][0];
-            $mail->Password   = $GLOBALS['_config']['emailpasswords'][0];
-        } else {
-            $mail->SMTPAuth   = false;
-        }
-        $mail->Host       = $GLOBALS['_config']['smtp'];      // sets the SMTP server
-        $mail->Port       = $GLOBALS['_config']['smtpport'];  // set the SMTP port for the server
-        $mail->CharSet    = 'utf-8';
-        $mail->AddReplyTo($faktura['department'], $GLOBALS['_config']['site_name']);
-        $mail->From       = $faktura['department'];
-        $mail->FromName   = $GLOBALS['_config']['site_name'];
-        $mail->Subject    = _('Online payment for ').$GLOBALS['_config']['site_name'];
-        $mail->MsgHTML($emailBody, $_SERVER['DOCUMENT_ROOT']);
-
-        if (empty($faktura['navn'])) {
-            $faktura['navn'] = $faktura['email'];
-        }
-
-        $mail->AddAddress($faktura['email'], $faktura['navn']);
-        if (!$mail->Send()) {
-            return array('error' => _('Unable to sendt e-mail!')."\n".$mail->ErrorInfo);
-        }
-        db()->query("UPDATE `fakturas` SET `status` = 'locked' WHERE `status` = 'new' && `id` = ".$faktura['id']);
-        db()->query("UPDATE `fakturas` SET `sendt` = 1, `department` = '".$faktura['department']."' WHERE `id` = ".$faktura['id']);
-
-        //Upload email to the sent folder via imap
-        if ($GLOBALS['_config']['imap']) {
-            $emailnr = array_search($faktura['department'], $GLOBALS['_config']['email']);
-            $imap = new IMAP(
-                $faktura['department'],
-                $GLOBALS['_config']['emailpasswords'][$emailnr ? $emailnr : 0],
-                $GLOBALS['_config']['imap'],
-                $GLOBALS['_config']['imapport']
-            );
-            $imap->append($GLOBALS['_config']['emailsent'], $mail->CreateHeader().$mail->CreateBody(), '\Seen');
-        }
-
-        //Forece reload
-        $faktura['status'] = 'sendt';
-    }
-
-    return array('type' => $type, 'status' => $faktura['status']);
-}
-
-/**
- * @param int $id
- *
- * @return array
- */
-function sendReminder(int $id): array
-{
-    $error = '';
-
-    $faktura = db()->fetchOne("SELECT * FROM `fakturas` WHERE `id` = ".$id);
-
-    if (!$faktura['status']) {
-        return array('error' => _('You can not send a reminder until the invoice is sent!'));
-    }
-
-    if (!valideMail($faktura['email'])) {
-        return array('error' => _('E-mail address is not valid!'));
-    }
-
-    if (empty($faktura['department'])) {
-        $faktura['department'] = $GLOBALS['_config']['email'][0];
-    }
-
-    $msg = _(
-        '<hr />
-
-<p style="text-align:center;"> <img src="/images/logoer/jagt-og-fiskermagasinet.png" alt="%s" /> </p>
-
-<hr />
-
-<p>This is an automatically generated email reminder:</p>
-
-<p>Your goods are ready for delivery / pick-up - but we have not yet <br />
-registred, that the payment can be accepted - therefore we are <br />
-sending a you a new link to the credit card invoice system <br />
-<br />
-<a href="%s/betaling/?id=%d&amp;checkid=%s">%s/betaling/?id=%d&amp;checkid=%s</a><br />
-</p>
-
-<p>When entering your credit card information, - errors may occure <br />
- preventing us from noticing the payment - thus causing unnecessary <br />
- delays - therefore we include the following notice. </p>
-
- <p>It is very helpful and results in a shorter expedite time - if you could <br />
- please send us an email when the payment is made. </p>n
- <p>We would also welcome an email or phone call - if you: <br />
- * Experiencing problems with our payment system <br />
- * Wish to cancel the order <br />
- * Wish to change the order <br />
- * Wish to pay by other means - for example, by transfering the amount via home banking. </p>
-
- <p>Kind regards <br />
-<br />
-%s<br />
-%s<br />
-%s %s<br />
-Tel: %s<br />
-Fax: %s<br />
-<a href="mailto:%s">%s</a></p>'
-    );
-
-    $msg = sprintf(
-        $msg,
-        $GLOBALS['_config']['site_name'],
-        $GLOBALS['_config']['base_url'],
-        $faktura['id'],
-        getCheckid($faktura['id']),
-        $GLOBALS['_config']['base_url'],
-        $faktura['id'],
-        getCheckid($faktura['id']),
-        $GLOBALS['_config']['site_name'],
-        $GLOBALS['_config']['address'],
-        $GLOBALS['_config']['postcode'],
-        $GLOBALS['_config']['city'],
-        $GLOBALS['_config']['phone'],
-        $GLOBALS['_config']['fax'],
-        $faktura['department'],
-        $faktura['department']
-    );
-
-    $emailBody = '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml">
-<head><meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-<title>'._('Electronic Invoice concerning order #').$faktura['id'].'</title>
-</head><body>' .$msg .'</body></html>';
-
-    $mail             = new PHPMailer();
-    $mail->SetLanguage('dk');
-    $mail->IsSMTP();
-    if ($GLOBALS['_config']['emailpassword'] !== false) {
-        $mail->SMTPAuth   = true; // enable SMTP authentication
-        $mail->Username   = $GLOBALS['_config']['email'][0];
-        $mail->Password   = $GLOBALS['_config']['emailpasswords'][0];
-    } else {
-        $mail->SMTPAuth   = false;
-    }
-    $mail->Host       = $GLOBALS['_config']['smtp'];      // sets the SMTP server
-    $mail->Port       = $GLOBALS['_config']['smtpport'];  // set the SMTP port for the server
-    $mail->CharSet    = 'utf-8';
-    $mail->AddReplyTo($faktura['department'], $GLOBALS['_config']['site_name']);
-    $mail->From       = $faktura['department'];
-    $mail->FromName   = $GLOBALS['_config']['site_name'];
-    $mail->Subject    = 'Elektronisk faktura vedr. ordre';
-    $mail->MsgHTML($emailBody, $_SERVER['DOCUMENT_ROOT']);
-
-    if (empty($faktura['navn'])) {
-        $faktura['navn'] = $faktura['email'];
-    }
-
-    $mail->AddAddress($faktura['email'], $faktura['navn']);
-    if (!$mail->Send()) {
-        return array('error' => 'Mailen kunde ikke sendes!
-'.$mail->ErrorInfo);
-    }
-    $error .= "\n\n"._('A Reminder was sent to the customer.');
-
-    //Upload email to the sent folder via imap
-    if ($GLOBALS['_config']['imap']) {
-        $emailnr = array_search($faktura['department'], $GLOBALS['_config']['email']);
-        $imap = new IMAP(
-            $faktura['department'],
-            $GLOBALS['_config']['emailpasswords'][$emailnr ? $emailnr : 0],
-            $GLOBALS['_config']['imap'],
-            $GLOBALS['_config']['imapport']
-        );
-        if (!$imap->append($GLOBALS['_config']['emailsent'], $mail->CreateHeader().$mail->CreateBody(), '\Seen')) {
-            $error .= "\n\n".sprintf(_('The e-mail was not saved in the Sent box! (the folder %s was missing).'), $GLOBALS['_config']['emailsent']);
-        }
-    }
-
-    return array('error' => trim($error));
-}
-
-/**
- * @param int $id
- */
-function pbsconfirm(int $id)
-{
-    global $epayment;
-
-    try {
-        $success = $epayment->confirm();
-    } catch (SoapFault $e) {
-        return array('error' => $e->faultstring);
-    }
-
-    if (!$epayment->hasError() || !$success) {
-        db()->query(
-            "
-            UPDATE `fakturas`
-            SET `status` = 'accepted', `paydate` = NOW()
-            WHERE `id` = " . $id
-        );
-        return true;
-    } else {
-        return array(
-            'error' => _('An error occurred')
-        );
-    }
-}
-
-/**
- * @param int $id
- */
-function annul(int $id)
-{
-    global $epayment;
-
-    try {
-        $success = $epayment->annul();
-    } catch (SoapFault $e) {
-        return array('error' => $e->faultstring);
-    }
-
-    if (!$epayment->hasError() || !$success) {
-        db()->query(
-            "
-            UPDATE `fakturas`
-            SET `status`  = 'rejected',
-                `paydate` = NOW()
-            WHERE `id` = 'pbsok'
-              AND `id` = " . $id
-        );
-        return true;
-    } else {
-        return array(
-            'error' => _('An error occurred')
-        );
-    }
-}
-
-SAJAX::$requestType = 'POST';
 SAJAX::export(
     [
+        'getAddress'   => ['method' => 'GET'],
+        'sendReminder' => ['method' => 'GET'],
+        'valideMail'   => ['method' => 'GET'],
         'annul'        => ['method' => 'POST'],
         'copytonew'    => ['method' => 'POST'],
-        'getAddress'   => ['method' => 'GET'],
         'newfaktura'   => ['method' => 'POST'],
         'pbsconfirm'   => ['method' => 'POST'],
         'save'         => ['method' => 'POST'],
-        'sendReminder' => ['method' => 'GET'],
-        'valideMail'   => ['method' => 'GET'],
     ]
 );
 SAJAX::handleClientRequest();
@@ -960,7 +500,7 @@ if ($faktura['status'] == 'new') {
 }
 echo '$(\'loading\').style.visibility = \'hidden\';">';
 ?><div id="canvas"><div id="web"><table style="float:right;"><?php
-if (!in_array($faktura['status'], array('giro', 'cash', 'accepted', 'canceled', 'pbsok'))) {
+if (!in_array($faktura['status'], ['giro', 'cash', 'accepted', 'canceled', 'pbsok'])) {
     ?><tr>
     <td><input type="button" value="<?php echo _('Paid via giro'); ?>" onclick="save('giro');" /></td>
     <td><input maxlength="10" name="gdate" id="gdate" size="11" value="<?php echo date(_('m/d/Y')); ?>" />
@@ -1074,7 +614,7 @@ $users = db()->fetchArray("SELECT `fullname`, `name` FROM `users` ORDER BY `full
     <td>Ansvarlig:</td>
     <td><?php
     if (count($users) > 1 && $_SESSION['_user']['access'] == 1
-    && !in_array($faktura['status'], array('giro', 'cash', 'accepted', 'canceled'))
+    && !in_array($faktura['status'], ['giro', 'cash', 'accepted', 'canceled'])
     ) {
         ?><select name="clerk" id="clerk">
         <option value=""<?php
@@ -1082,7 +622,7 @@ $users = db()->fetchArray("SELECT `fullname`, `name` FROM `users` ORDER BY `full
             echo ' selected="selected"';
         }
         ?>><?php echo _('No one'); ?></option><?php
-    $userstest = array();
+    $userstest = [];
 foreach ($users as $user) {
     ?><option value="<?php echo $user['fullname']; ?>"<?php
 if ($faktura['clerk'] == $user['fullname']) {
@@ -1104,7 +644,7 @@ if ($faktura['clerk'] && !in_array($faktura['clerk'], $userstest)) {
         <tr>
             <td>Afdeling:</td>
             <td><?php
-            if (!in_array($faktura['status'], array('giro', 'cash', 'accepted', 'canceled'))) {
+            if (!in_array($faktura['status'], ['giro', 'cash', 'accepted', 'canceled'])) {
                 if (count($GLOBALS['_config']['email']) > 1) {
                     ?><select name="department" id="department">
                         <option value=""<?php
@@ -1493,7 +1033,7 @@ if ($faktura['status'] == 'new') {
 </table>
 </div>
 </div><?php
-if (!in_array($faktura['status'], array('canceled', 'new', 'accepted'))) {
+if (!in_array($faktura['status'], ['canceled', 'new', 'accepted'])) {
     if ((!$faktura['altpost'] && $faktura['land'] == 'DK') || ($faktura['postcountry'] == 'DK' && $faktura['altpost'])) {
         $activityButtons[] = '<li><a href="http://www.jagtogfiskerimagasinet.dk/post/?type='.($faktura['status'] == 'locked' ? 'O&amp;value='.number_format($faktura['amount'], 2, ',', '') : 'P').(!$faktura['altpost'] ? '&amp;tlf1='.rawurlencode($faktura['tlf1']).'&amp;postbox='.rawurlencode($faktura['postbox']).'&amp;tlf2='.rawurlencode($faktura['tlf2']).'&amp;name='.rawurlencode($faktura['navn']).'&amp;att='.rawurlencode($faktura['att']).'&amp;address='.rawurlencode($faktura['adresse']).'&amp;zipcode='.rawurlencode($faktura['postnr']) : '&amp;tlf1='.rawurlencode($faktura['posttlf']).'&amp;postbox='.rawurlencode($faktura['postpostbox']).'&amp;name='.rawurlencode($faktura['postname']).'&amp;att='.rawurlencode($faktura['postatt']).'&amp;address='.rawurlencode($faktura['postaddress']).'&amp;address2='.rawurlencode($faktura['postaddress2']).'&amp;zipcode='.rawurlencode($faktura['postpostalcode'])).'&amp;email='.rawurlencode($faktura['email']).'&amp;porto='.number_format($faktura['fragt'], 2, ',', '').'" target="_blank"><img src="images/package.png" alt="" title="Opret pakke lable" width="16" height="16" /> Opret pakke lable</a></li>';
     } else {
@@ -1516,11 +1056,11 @@ if ($faktura['status'] != 'new') {
 $activityButtons[] = '<li><a onclick="newfaktura(); return false;"><img src="images/table_add.png" alt="" width="16" height="16" /> '._('Create new').'</a></li>';
 $activityButtons[] = '<li><a onclick="copytonew(); return false;"><img src="images/table_multiple.png" alt="" width="16" height="16" /> '._('Copy to new').'</a></li>';
 
-if (!in_array($faktura['status'], array('canceled', 'pbsok', 'accepted', 'giro', 'cash'))) {
+if (!in_array($faktura['status'], ['canceled', 'pbsok', 'accepted', 'giro', 'cash'])) {
     $activityButtons[] = '<li><a onclick="save(\'cancel\'); return false;" href="#"><img src="images/bin.png" alt="" width="16" height="16" /> '._('Cancel').'</a></li>';
 }
 
-if (!in_array($faktura['status'], array('giro', 'cash', 'pbsok', 'accepted', 'canceled', 'rejected'))) {
+if (!in_array($faktura['status'], ['giro', 'cash', 'pbsok', 'accepted', 'canceled', 'rejected'])) {
     if (!$faktura['sendt']) {
         if (valideMail($faktura['email'])) {
             $activityButtons[] = '<li id="emaillink"><a href="#" onclick="save(\'email\'); return false;"><img height="16" width="16" title="'._('Send to customer').'" alt="" src="images/email_go.png"/> '._('Send').'</a></li>';

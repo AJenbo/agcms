@@ -1,14 +1,6 @@
 <?php
 
-date_default_timezone_set('Europe/Copenhagen');
-setlocale(LC_ALL, 'da_DK');
-bindtextdomain('agcms', $_SERVER['DOCUMENT_ROOT'] . '/theme/locale');
-bind_textdomain_codeset('agcms', 'UTF-8');
-textdomain('agcms');
-
 require_once $_SERVER['DOCUMENT_ROOT'] . '/admin/inc/logon.php';
-require_once $_SERVER['DOCUMENT_ROOT'] . '/admin/inc/file-functions.php';
-require_once $_SERVER['DOCUMENT_ROOT'] . '/inc/functions.php';
 
 SAJAX::export(['listdirs' => ['method' => 'GET']]);
 SAJAX::handleClientRequest();
@@ -46,7 +38,6 @@ function movefile(dir)
 //TODO Closes on mouse out???
 function movefile_r(data)
 {
-
     window.opener.document.getElementById('loading').style.display = 'none';
 
     if (data['path'] == '<?php echo $_GET['path']; ?>')

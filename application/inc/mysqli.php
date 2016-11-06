@@ -60,7 +60,7 @@ class Simple_Mysqli extends mysqli
         $result->close();
 
         if (!isset($rows)) {
-            $rows = array();
+            $rows = [];
         }
 
         return $rows;
@@ -75,11 +75,11 @@ class Simple_Mysqli extends mysqli
      */
     public function fetchOne(string $query): array
     {
-        $row = $this->fetchArray($query);
+        $row = $this->fetchArray($query . " LIMIT 1");
         $row = array_shift($row);
 
         if (!$row) {
-            $row = array();
+            $row = [];
         }
 
         return $row;

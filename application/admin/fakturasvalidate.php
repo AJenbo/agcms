@@ -1,15 +1,6 @@
 <?php
 
-date_default_timezone_set('Europe/Copenhagen');
-setlocale(LC_ALL, 'da_DK');
-bindtextdomain('agcms', $_SERVER['DOCUMENT_ROOT'].'/theme/locale');
-bind_textdomain_codeset('agcms', 'UTF-8');
-textdomain('agcms');
-
 require_once $_SERVER['DOCUMENT_ROOT'] . '/admin/inc/logon.php';
-require_once $_SERVER['DOCUMENT_ROOT'] . '/inc/functions.php';
-
-SAJAX::$requestType = 'POST';
 
 if ($_SESSION['_user']['access'] == 1 && !empty($_GET['id'])) {
     db()->query("UPDATE `fakturas` SET `transferred` =  '1' WHERE `id` = ".$_GET['id']);

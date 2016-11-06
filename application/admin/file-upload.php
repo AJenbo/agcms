@@ -1,50 +1,16 @@
 <?php
 
-ini_set('display_errors', 1);
-error_reporting(-1);
-date_default_timezone_set('Europe/Copenhagen');
-setlocale(LC_ALL, 'da_DK');
-bindtextdomain('agcms', $_SERVER['DOCUMENT_ROOT'].'/theme/locale');
-bind_textdomain_codeset('agcms', 'UTF-8');
-textdomain('agcms');
-
 require_once $_SERVER['DOCUMENT_ROOT'] . '/admin/inc/logon.php';
-require_once $_SERVER['DOCUMENT_ROOT'] . '/admin/inc/file-functions.php';
-require_once $_SERVER['DOCUMENT_ROOT'] . '/inc/functions.php';
 
-/**
- * @param string $filename
- * @param string $type
- *
- * @return bool
- */
-function fileExists(string $filename, string $type = ''): bool
-{
-    $pathinfo = pathinfo($filename);
-    $filePath = $_SERVER['DOCUMENT_ROOT'] . @$_COOKIE['admin_dir'] . '/' . genfilename($pathinfo['filename']);
-
-    if ($type == 'image') {
-        $filePath .= '.jpg';
-    } elseif ($type == 'lineimage') {
-        $filePath .= '.png';
-    } else {
-        $filePath .= '.'.$pathinfo['extension'];
-    }
-
-    return (bool) is_file($filePath);
-}
-
-SAJAX::$requestType = 'GET';
-SAJAX::$remoteUri = '/admin/file-upload.php';
-SAJAX::export(['fileExists' => ['asynchronous' => false]]);
+SAJAX::export(['fileExists' => ['method' => 'GET', 'asynchronous' => false, 'uri' => '/admin/file-upload.php']]);
 SAJAX::handleClientRequest();
 
-if (empty($_COOKIE['admin_dir']) || !is_dir($_SERVER['DOCUMENT_ROOT'].@$_COOKIE['admin_dir'])) {
+if (empty($_COOKIE['admin_dir']) || !is_dir(_ROOT_ . @$_COOKIE['admin_dir'])) {
     @setcookie('admin_dir', '/images');
     @$_COOKIE['admin_dir'] = '/images';
 }
 
-doConditionalGet(filemtime($_SERVER['DOCUMENT_ROOT'] . $_SERVER['PHP_SELF']));
+doConditionalGet(filemtime(_ROOT_ . $_SERVER['PHP_SELF']));
 
 ?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
@@ -57,25 +23,6 @@ doConditionalGet(filemtime($_SERVER['DOCUMENT_ROOT'] . $_SERVER['PHP_SELF']));
 
 var maxbyte = <?php
 
-/**
- * @param string $val
- *
- * @return int
- */
-function returnBytes(string $val): int
-{
-    $last = mb_strtolower($val{mb_strlen($val, 'UTF-8')-1}, 'UTF-8');
-    switch ($last) {
-    // The 'G' modifier is available since PHP 5.1.0
-        case 'g':
-            $val *= 1024;
-        case 'm':
-            $val *= 1024;
-        case 'k':
-            $val *= 1024;
-    }
-    return $val;
-}
 $maxbyte = min(
     returnBytes(ini_get('post_max_size')),
     returnBytes(ini_get('upload_max_filesize'))
@@ -213,7 +160,7 @@ function send() {
             } else if (x.status == 505) {
                 alert('Kunne ikke give tilladelse til filen.');
             } else if (x.status == 510) {
-                alert('Mangler get_mime_type.php');
+                alert('Mangler get_mime_type()');
             } else if (x.status == 512) {
                 alert('Kunne ikke finde billed størelsen.');
             } else if (x.status == 520) {
@@ -224,10 +171,6 @@ function send() {
                 alert('Mangler billedfunctioner');
             } else if (x.status == 561) {
                 alert('Fejl under billed behandling.');
-            } else if (x.status == 540) {
-                alert('Mangler mysql-funktioner.php');
-            } else if (x.status == 541) {
-                alert('Kunne ikke åbne database.');
             } else if (x.status == 542) {
                 alert('Slette fejl i databasen!');
             } else if (x.status == 543) {

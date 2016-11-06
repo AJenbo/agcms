@@ -1,23 +1,14 @@
 <?php
 
-date_default_timezone_set('Europe/Copenhagen');
-setlocale(LC_ALL, 'da_DK');
-bindtextdomain('agcms', $_SERVER['DOCUMENT_ROOT'].'/theme/locale');
-bind_textdomain_codeset('agcms', 'UTF-8');
-textdomain('agcms');
-
 require_once $_SERVER['DOCUMENT_ROOT'] . '/admin/inc/logon.php';
-require_once $_SERVER['DOCUMENT_ROOT'] . '/inc/functions.php';
-require_once $_SERVER['DOCUMENT_ROOT'] . '/inc/countries.php';
+require_once _ROOT_ . '/inc/countries.php';
 
 if (empty($_SESSION['_user'])) {
     //TDODO No login !!!
     $_SESSION['_user']['fullname'] = _('No one');
 }
 
-SAJAX::$requestType = 'GET';
-
-$where = array();
+$where = [];
 
 if (!empty($_GET['m']) && !empty($_GET['y'])) {
     $where[] = "`date` >= '".$_GET['y']."-".$_GET['m']."-01'";
@@ -169,14 +160,14 @@ if (!empty($_GET['id'])) {
 ?>" size="4" /></td><td>
 
 <select name="y"><?php
-$oldest = db()->fetchArray("SELECT UNIX_TIMESTAMP(`date`) AS `date` FROM `fakturas` ORDER BY `date` ASC LIMIT 1");
+$oldest = db()->fetchOne("SELECT UNIX_TIMESTAMP(`date`) AS `date` FROM `fakturas` ORDER BY `date` ASC");
 
 if ($oldest) {
-    $oldest = date('Y', $oldest[0]['date']);
+    $oldest = date('Y', $oldest['date']);
 } else {
     $oldest = date('Y');
 }
-for ($i=$oldest; $i<date('Y')+1; $i++) {
+for ($i = $oldest; $i < date('Y') + 1; $i++) {
     ?><option value="<?php echo $i; ?>"<?php
 if (@$_GET['y'] == $i || (@$_GET['y'] == '' && date('Y') == $i)) {
     echo ' selected="selected"';

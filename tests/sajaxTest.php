@@ -2,8 +2,6 @@
 
 class sajaxTest extends TestCase
 {
-    private $epaymentAdminService;
-
     public function test_handleClientRequest()
     {
         SAJAX::handleClientRequest();

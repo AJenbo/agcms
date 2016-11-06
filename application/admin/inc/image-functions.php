@@ -1,14 +1,6 @@
 <?php
 
-date_default_timezone_set('Europe/Copenhagen');
-setlocale(LC_ALL, 'da_DK');
-bindtextdomain('agcms', $_SERVER['DOCUMENT_ROOT'].'/theme/locale');
-bind_textdomain_codeset('agcms', 'UTF-8');
-textdomain('agcms');
-
-require_once $_SERVER['DOCUMENT_ROOT'] . '/admin/inc/logon.php';
-require_once $_SERVER['DOCUMENT_ROOT'] . '/admin/inc/file-functions.php';
-require_once $_SERVER['DOCUMENT_ROOT'] . '/inc/functions.php';
+require_once __DIR__ . '/logon.php';
 //TODO if (no changes and !$output) do redirect
 
 /**
@@ -37,7 +29,7 @@ function generateImage(
     int $rotate,
     array $output = null
 ): array {
-    $imagesize = @getimagesize($_SERVER['DOCUMENT_ROOT'].$path);
+    $imagesize = @getimagesize(_ROOT_ . $path);
     $pathinfo = pathinfo($path);
 
     if (empty($output['filename'])) {
@@ -82,22 +74,21 @@ function generateImage(
         $height = $maxH;
     }
 
-    include_once 'get_mime_type.php';
     $mimeType = get_mime_type($path);
 
-    if (@$output['type'] && !$output['force'] && is_file($_SERVER['DOCUMENT_ROOT'].$output['path'])) {
-        return array('yesno' => _('A file with the same name already exists.'."\n".'Would you like to replace the existing file?'), 'filename' => $output['filename']);
+    if (@$output['type'] && !$output['force'] && is_file(_ROOT_ . $output['path'])) {
+        return ['yesno' => _('A file with the same name already exists.'."\n".'Would you like to replace the existing file?'), 'filename' => $output['filename']];
     }
 
     switch ($mimeType) {
         case 'image/jpeg':
             //TODO error if jpg > 1610361 pixel
-            $image = imagecreatefromjpeg($_SERVER['DOCUMENT_ROOT'].$path);
+            $image = imagecreatefromjpeg(_ROOT_ . $path);
             $fill = false;
             break;
         case 'image/png':
             //TODO error if png > 804609 Pixels
-            $temp = imagecreatefrompng($_SERVER['DOCUMENT_ROOT'].$path);
+            $temp = imagecreatefrompng(_ROOT_ . $path);
 
             //Fill back ground
             $image = imagecreatetruecolor(imagesx($temp), imagesy($temp)); // Create a blank image
@@ -109,7 +100,7 @@ function generateImage(
             break;
         case 'image/gif':
             //TODO error if gif > 1149184 pixel
-            $temp = imagecreatefromgif($_SERVER['DOCUMENT_ROOT'].$path);
+            $temp = imagecreatefromgif(_ROOT_ . $path);
 
             //Fill back ground
             $image = imagecreatetruecolor(imagesx($temp), imagesy($temp)); // Create a blank image
@@ -121,7 +112,7 @@ function generateImage(
             break;
         case 'image/vnd.wap.wbmp':
             //TODO error if gif > 1149184 pixel
-            $image = imagecreatefromwbmp($_SERVER['DOCUMENT_ROOT'].$path);
+            $image = imagecreatefromwbmp(_ROOT_ . $path);
             $fill = false;
             break;
     }
@@ -163,10 +154,10 @@ function generateImage(
 
     if (@$output['type'] == 'png') {
         $mimeType = 'image/png';
-        imagepng($image, $_SERVER['DOCUMENT_ROOT'].$output['path'], 9);
+        imagepng($image, _ROOT_ . $output['path'], 9);
     } elseif (@$output['type'] == 'jpg') {
         $mimeType = 'image/jpeg';
-        imagejpeg($image, $_SERVER['DOCUMENT_ROOT'].$output['path'], 80);
+        imagejpeg($image, _ROOT_ . $output['path'], 80);
     } elseif ($mimeType == 'image/jpeg') {
         header('Content-Type: image/jpeg');
         imagejpeg($image, null, 80);
@@ -179,13 +170,13 @@ function generateImage(
 
     imagedestroy($image);
 
-    $filesize = filesize($_SERVER['DOCUMENT_ROOT'].$output['path']);
+    $filesize = filesize(_ROOT_ . $output['path']);
 
 
     //save or output image
     if ($output['filename'] == $pathinfo['filename'] && $output['path'] != $path) {
         $id = db()->fetchArray('SELECT id FROM files WHERE path = \''.$path.'\'');
-        @unlink($_SERVER['DOCUMENT_ROOT'].$path);
+        @unlink(_ROOT_ . $path);
         db()->query('DELETE FROM files WHERE path = \''.$output['path'].'\'');
     } else {
         $id = db()->fetchArray('SELECT id FROM files WHERE path = \''.$output['path'].'\'');
@@ -199,8 +190,7 @@ function generateImage(
         $id = db()->insert_id;
     }
 
-    return array('id' => $id, 'path' => $output['path'], 'width' => $width, 'height' => $height);
-    /**/
+    return ['id' => $id, 'path' => $output['path'], 'width' => $width, 'height' => $height];
 }
 
 /**

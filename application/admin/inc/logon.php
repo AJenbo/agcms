@@ -1,4 +1,7 @@
 <?php
+
+require_once $_SERVER['DOCUMENT_ROOT'] . '/admin/inc/functions.php';
+
 //access
 //0:ny, ingen ratigheder.
 //1:supper admin.
@@ -6,30 +9,17 @@
 //3:klader.
 //4:gaest, ikke gemme.
 
-date_default_timezone_set('Europe/Copenhagen');
-setlocale(LC_ALL, 'da_DK');
-bindtextdomain('agcms', $_SERVER['DOCUMENT_ROOT'].'/theme/locale');
-bind_textdomain_codeset('agcms', 'UTF-8');
-textdomain('agcms');
-
-require_once $_SERVER['DOCUMENT_ROOT'] . '/inc/functions.php';
-
 session_start();
 
-if (empty($_SESSION['_user']) && !empty($_POST['username'])) {
-    $_SESSION['_user'] = db()->fetchArray("SELECT * FROM `users` WHERE `name` = '".addcslashes($_POST['username'], "'\\")."' LIMIT 1");
-    $_SESSION['_user'] = @$_SESSION['_user'][0];
-
-    if ($_SESSION['_user']['access'] < 1
-        || @$_SESSION['_user']['password'] != crypt(@$_POST['password'], $_SESSION['_user']['password'])
-    ) {
-        unset($_SESSION['_user']);
+if (empty($_SESSION['_user'])) {
+    if (!empty($_POST['username'])) {
+        $user = db()->fetchOne("SELECT * FROM `users` WHERE `name` = '" . addcslashes($_POST['username'] . "'"));
+        if ($user & $user['access'] => 1 || crypt($_POST['password'] ?? '', $user['password']) === $user['password']) {
+            $_SESSION['_user'] = $user;
+        }
+        unset($_POST);
     }
 
-    unset($_POST);
-}
-
-if (empty($_SESSION['_user'])) {
     sleep(1);
     header('HTTP/1.0 401 Unauthorized');
     ?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
@@ -57,4 +47,4 @@ if (empty($_SESSION['_user'])) {
     die();
 }
 
-db()->query("UPDATE `users` SET `lastlogin` =  NOW() WHERE `id` = ".$_SESSION['_user']['id']." LIMIT 1");
+db()->query("UPDATE `users` SET `lastlogin` =  NOW() WHERE `id` = " . $_SESSION['_user']['id']);
