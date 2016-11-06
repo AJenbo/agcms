@@ -76,15 +76,7 @@ class Cache
      */
     public static function addUpdateTime(int $timeStamp)
     {
-        if (!isset(self::$updateTime[$key])) {
-            self::$updateTime[$key] = 0;
-        }
-
-        if (!is_numeric(self::$updateTime[$key])) {
-            throw new Exception('Cache: Existing value is not numeric!');
-        }
-
-        self::$updateTime[$key] = max(self::$updateTime[$key], $value);
+        self::$updateTime = max(self::$updateTime, $timeStamp);
     }
 
     /**

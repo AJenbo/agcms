@@ -147,13 +147,6 @@ function sendDelayedEmail(): string
         $PHPMailer->SMTPAuth = false;
     }
 
-    $imap = new IMAP(
-        $GLOBALS['_config']['email'][$emailnr ? $emailnr : 0],
-        $GLOBALS['_config']['emailpasswords'][$emailnr ? $emailnr : 0],
-        $GLOBALS['_config']['imap'],
-        $GLOBALS['_config']['imapport']
-    );
-
     foreach ($emails as $email) {
         $PHPMailer->ClearAddresses();
         $PHPMailer->ClearCCs();
@@ -188,6 +181,12 @@ function sendDelayedEmail(): string
         //Upload email to the sent folder via imap
         if ($GLOBALS['_config']['imap'] !== false) {
             $emailnr = array_search('', $GLOBALS['_config']['email']);
+            $imap = new IMAP(
+                $GLOBALS['_config']['email'][$emailnr ?: 0],
+                $GLOBALS['_config']['emailpasswords'][$emailnr ? $emailnr : 0],
+                $GLOBALS['_config']['imap'],
+                $GLOBALS['_config']['imapport']
+            );
             $imap->append(
                 $GLOBALS['_config']['emailsent'],
                 $PHPMailer->CreateHeader() . $PHPMailer->CreateBody(),
@@ -904,7 +903,7 @@ function kattree(int $id): array
         ];
 
         while ($kat['bind'] > 0) {
-            $kat = db()->fetchOne("SELECT id, navn, bind FROM `kat` WHERE id = '" . $kat['bind']);
+            $kat = db()->fetchOne("SELECT id, navn, bind FROM `kat` WHERE id = " . $kat['bind']);
             $id = $kat['bind'];
             $kattree[]['id'] = $kat['id'];
             $kattree[count($kattree) - 1]['navn'] = $kat['navn'];
@@ -1495,7 +1494,7 @@ function updateuser(int $id, array $updates)
  *
  * @return array
  */
-function saveImage(string $path, itn $cropX, int $cropY, int $cropW, int $cropH, int $maxW, int $maxH, int $flip, int $rotate, string $filename, bool $force): array
+function saveImage(string $path, int $cropX, int $cropY, int $cropW, int $cropH, int $maxW, int $maxH, int $flip, int $rotate, string $filename, bool $force): array
 {
     $mimeType = get_mime_type($path);
 
@@ -1611,7 +1610,7 @@ function print_pages(int $kat)
       <td>';
         $side['maerke'] = explode(',', $side['maerke']);
         foreach ($side['maerke'] as $maerke) {
-            echo $maerker[$maerke].' </td><td>'.$krav[$side['krav']].'</td></tr>';
+            echo ($maerke ? $maerker[$maerke] : '') . ' </td><td>' . $krav[$side['krav']] . '</td></tr>';
         }
     }
 }
@@ -1652,20 +1651,24 @@ function showfiles(string $temp_dir): array
     if ($files = scandir(_ROOT_ . $dir)) {
         $files = array_filter($files, 'is_files');
         natcasesort($files);
-        $files = array_values($files);
-        $nummber_files = count($files);
+    } else {
+        $files = [];
     }
 
-    for ($i=0; $i<$nummber_files; $i++) {
-        $fileinfo = db()->fetchOne("SELECT * FROM files WHERE path = '" . $dir . "'" . $files[$i] . "'");
+    foreach ($files as $file) {
+        $fileinfo = db()->fetchOne(
+            "
+            SELECT * FROM files
+            WHERE path = '" . db()->real_escape_string($dir . "/" . $file) . "'"
+        );
 
         if (!$fileinfo) {
             //Save file info to db
-            $mime = get_mime_type($dir . '/' . $files[$i]);
-            $imagesize = @getimagesize(_ROOT_ . $dir . '/' . $files[$i]);
-            $size = filesize(_ROOT_ . $dir . '/' . $files[$i]);
-            db()->query('INSERT INTO files (path, mime, width, height, size, aspect) VALUES (\''.$dir.'/'.$files[$i]."', '".$mime."', '".$imagesize[0]."', '".$imagesize[1]."', '".$size."', NULL )");
-            $fileinfo['path'] = $dir.'/'.$files[$i];
+            $mime = get_mime_type($dir . '/' . $file);
+            $imagesize = @getimagesize(_ROOT_ . $dir . '/' . $file);
+            $size = filesize(_ROOT_ . $dir . '/' . $file);
+            db()->query('INSERT INTO files (path, mime, width, height, size, aspect) VALUES (\''.$dir.'/'.$file."', '".$mime."', '".$imagesize[0]."', '".$imagesize[1]."', '".$size."', NULL )");
+            $fileinfo['path'] = $dir.'/'.$file;
             $fileinfo['mime'] = $mime;
             $fileinfo['width'] = $imagesize[0];
             $fileinfo['height'] = $imagesize[1];
@@ -2804,7 +2807,7 @@ function redigerSpecial(int $id): string
         return '<div id="headline">'._('The page does not exist').'</div>';
     }
 
-    $html .= '<div id="headline">'.sprintf(_('Edit %s'), $special['navn']).'</div><form action="" method="post" onsubmit="return updateSpecial('.$id.');"><input type="submit" accesskey="s" style="width:1px; height:1px; position:absolute; top: -20px; left:-20px;" />';
+    $html = '<div id="headline">' . sprintf(_('Edit %s'), $special['navn']).'</div><form action="" method="post" onsubmit="return updateSpecial('.$id.');"><input type="submit" accesskey="s" style="width:1px; height:1px; position:absolute; top: -20px; left:-20px;" />';
 
     $html .= '<input type="hidden" id="id" />';
 
@@ -3033,8 +3036,8 @@ function get_db_error(): string
         --></script><div><b>'._('Server consumption').'</b> - '._('E-mail:').' <span id="mailboxsize"><button onclick="$(\'loading\').style.visibility = \'\'; x_get_mail_size(get_mail_size_r);">'._('Get e-mail consumption').'</button></span> '._('DB:').' <span id="dbsize">'.number_format(get_db_size(), 1, ',', '')._('MB').'</span> '._('WWW').': <span id="wwwsize">'.number_format(get_size_of_files(), 1, ',', '')._('MB').'</span></div><div id="status"></div><button onclick="scan_db();">'._('Scan database').'</button><div id="errors"></div>';
 
     $emailsCount = db()->fetchOne("SELECT count(*) as 'count' FROM `emails`");
-    $emails = db()->fetchOne("SHOW TABLE STATUS LIKE 'emails'");
-
+    $emails = db()->fetchArray("SHOW TABLE STATUS LIKE 'emails'");
+    $emails = reset($emails);
 
     $html .= '<div>'.sprintf(_('Delayed e-mails %d/%d'), $emailsCount['count'], $emails['Auto_increment'] - 1).'</div>';
 
@@ -3098,7 +3101,7 @@ function get_orphan_cats(): string
 
 function get_looping_cats(): string
 {
-    $error = db()->fetchArray('SELECT id, bind, navn FROM `kat` WHERE bind != 0 AND bind != -1;');
+    $error = db()->fetchArray("SELECT id, bind, navn FROM `kat` WHERE bind != 0 AND bind != -1");
 
     $html = '';
     $temp_html = '';
@@ -3185,15 +3188,17 @@ function get_mail_size(): int
         );
 
         foreach ($imap->listMailboxes() as $mailbox) {
-            $mailboxStatus = $imap->select($mailbox['name'], true);
-            if (!$mailboxStatus['exists']) {
-                continue;
-            }
+            try {
+                $mailboxStatus = $imap->select($mailbox['name'], true);
+                if (!$mailboxStatus['exists']) {
+                    continue;
+                }
 
-            $mails = $imap->fetch('1:*', 'RFC822.SIZE');
-            preg_match_all('/RFC822.SIZE\s([0-9]+)/', $mails['data'], $mailSizes);
-            $size += array_sum($mailSizes[1]);
-        }
+                $mails = $imap->fetch('1:*', 'RFC822.SIZE');
+                preg_match_all('/RFC822.SIZE\s([0-9]+)/', $mails['data'], $mailSizes);
+                $size += array_sum($mailSizes[1]);
+            } catch (Exception $e) {}
+            }
     }
 
     return $size;
@@ -3776,16 +3781,6 @@ function sletSide(int $sideId): array
     db()->query('DELETE FROM `sider` WHERE id = '.$sideId);
 
     return ['class' => 'side' . $sideId];
-}
-
-/**
- * @param int $id
- *
- * @return string
- */
-function getCheckid(int $id): string
-{
-    return substr(md5($id.$GLOBALS['_config']['pbssalt']), 3, 5);
 }
 
 /**

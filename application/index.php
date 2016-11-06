@@ -307,7 +307,7 @@ foreach ($kat_fpc as $value) {
     if (skriv($value['id'])) {
         $subs = null;
         $kats = $GLOBALS['kats'] ?? [];
-        if ($value['id'] === reset($kats) ?: null) {
+        if ($value['id'] == reset($kats) ?: null) {
             $subs = menu(0, $value['custom_sort_subs']);
         }
 

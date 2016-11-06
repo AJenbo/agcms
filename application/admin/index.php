@@ -157,7 +157,7 @@ JSON.parse = JSON.parse || function(jsonsring) { return jsonsring.evalJSON(true)
             echo get_db_error();
             break;
         case 'listsort';
-            echo listsort((int) $_GET['id']);
+            echo listsort(intval($_GET['id'] ?? 0));
             break;
         case 'editContact';
             echo editContact((int) $_GET['id']);

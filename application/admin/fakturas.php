@@ -456,7 +456,7 @@ if ($i % 2 == 0) {
     <td style="text-align:right"><a href="faktura.php?id=<?php echo $faktura['id'] ?>"><?php echo $faktura['id'] ?></a></td>
     <td style="text-align:right"><a href="faktura.php?id=<?php echo $faktura['id'] ?>"><?php echo date('j/m/y', $faktura['date']); ?></a></td>
     <?php
-    if (!$_GET['clerk']) {
+    if (empty($_GET['clerk'])) {
         ?><td><a href="faktura.php?id=<?php echo $faktura['id'] ?>"><?php
         echo $faktura['clerk'];
         ?></a></td><?php

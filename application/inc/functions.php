@@ -99,7 +99,7 @@ function skriv(int $id): bool
         //ellers kig om der er en under kattegori med en side
         $kat = db()->fetchArray(
             "
-            SELECT kat.id, bind.id as skriv, vis, icon, name
+            SELECT kat.id, bind.id as skriv, vis, icon, navn
             FROM kat JOIN bind ON bind.kat = kat.id
             WHERE kat.bind = $id
             GROUP BY kat.id
@@ -1312,7 +1312,7 @@ function menu(int $nr, bool $custom_sort_subs = false): array
         LEFT JOIN bind
         ON kat.id = bind.kat
         WHERE kat.vis != '0'
-            AND kat.bind = ".$GLOBALS['kats'][$nr]."
+            AND kat.bind = " . $GLOBALS['kats'][$nr] . "
         GROUP BY kat.id
         ORDER BY kat.`order`, kat.navn
         "
@@ -1320,6 +1320,7 @@ function menu(int $nr, bool $custom_sort_subs = false): array
     Cache::addLoadedTable('kat');
     Cache::addLoadedTable('bind');
 
+    $menu = [];
     if ($kats) {
         if (!$custom_sort_subs) {
             $kats = arrayNatsort($kats, 'id', 'navn', 'asc');
@@ -1363,14 +1364,11 @@ function menu(int $nr, bool $custom_sort_subs = false): array
                     'name' => xhtmlEsc($value['navn']),
                     'link' => '/kat'.$value['id'].'-' .clearFileName($value['navn']).'/',
                     'icon' => $value['icon'],
-                    'sub' => $value['sub'] ? true : false,
+                    'sub' => (bool) $value['sub'],
                     'subs' => $subs,
                 ];
             }
         }
-    }
-    if (!isset($menu)) {
-        $menu = [];
     }
 
     return $menu;

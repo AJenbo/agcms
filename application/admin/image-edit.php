@@ -50,9 +50,9 @@ JSON.parse = JSON.parse || function(jsonsring) { return jsonsring.evalJSON(true)
 <?php SAJAX::showJavascript(); ?>
 
 var id = <?php echo $_GET['id'] ?>;
-var mode = '<?php echo $_GET['mode'] ?>';
+var mode = '<?php echo $_GET['mode'] ?? '' ?>';
 var filename = '<?php
-if ($_GET['mode'] == 'thb') {
+if ($_GET['mode'] ?? '' == 'thb') {
     $pathinfo = pathinfo($_GET['path']);
     echo $pathinfo['filename'] . '-thb';
 }
@@ -77,7 +77,7 @@ var maxH = <?php echo $imagesize[1] ?>;
 <div id="ruler" style="width: <?php echo $GLOBALS['_config']['text_width'] ?>px;"><div style="width: <?php echo $GLOBALS['_config']['text_width']-1 ?>px; border-right:1px #FF0000 solid"><div style="width: <?php echo $GLOBALS['_config']['thumb_width']-1 ?>px; border-right:1px #0000FF solid"><div style="width: <?php echo $imagesize[0]-1 ?>px; border-right:1px #00FF00 solid">&nbsp;</div></div></div></div>
 <div id="textDiv" style="width: <?php echo $GLOBALS['_config']['text_width'] ?>px;">
 <?php
-if (@$_GET['mode'] == 'thb') {
+if ($_GET['mode'] ?? '' == 'thb') {
     ?><img id="preview" src="image.php?path=<?php echo $_GET['path'] ?>&amp;maxW=<?php echo $GLOBALS['_config']['thumb_width'] ?>&amp;maxH=<?php echo $GLOBALS['_config']['thumb_height'] ?>" alt="" onload="resize()" /><?php
 } else {
     ?><img id="preview" src="<?php echo $_GET['path'] ?>" alt="" onload="resize()" /><?php

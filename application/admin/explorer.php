@@ -38,7 +38,7 @@ SAJAX::handleClientRequest();
 if (@$_COOKIE['qpath'] || @$_COOKIE['qalt'] || @$_COOKIE['qtype']) {
     $showfiles = searchfiles(@$_COOKIE['qpath'], @$_COOKIE['qalt'], @$_COOKIE['qtype']);
 } else {
-    $showfiles = showfiles(@$_COOKIE['admin_dir']);
+    $showfiles = showfiles($_COOKIE['admin_dir'] ?? '');
 }
 
 ?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">

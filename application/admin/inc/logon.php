@@ -13,8 +13,12 @@ session_start();
 
 if (empty($_SESSION['_user'])) {
     if (!empty($_POST['username'])) {
-        $user = db()->fetchOne("SELECT * FROM `users` WHERE `name` = '" . addcslashes($_POST['username'] . "'"));
-        if ($user & $user['access'] => 1 || crypt($_POST['password'] ?? '', $user['password']) === $user['password']) {
+        $user = db()->fetchOne(
+            "
+            SELECT * FROM `users`
+            WHERE `name` = '" . db()->real_escape_string($_POST['username']) . "'"
+        );
+        if ($user && $user['access'] >= 1 && crypt($_POST['password'] ?? '', $user['password']) === $user['password']) {
             $_SESSION['_user'] = $user;
         }
         unset($_POST);

@@ -21,7 +21,7 @@ if (!empty($_GET['side'])) {
         $activityButtons[] = '<li><a onclick="save_ny_kat();"><img src="images/disk.png" width="16" height="16" alt="" /> '._('Save category').'</a></li>';
     } elseif ($_GET['side'] == 'nykrav' || $_GET['side'] == 'editkrav') {
         $activityButtons[] = '<li><a onclick="save_krav();"><img src="images/disk.png" width="16" height="16" alt="" /> '._('Save requirement').'</a></li>';
-    } elseif ($_GET['side'] == 'listsort' && $_GET['id']) {
+    } elseif ($_GET['side'] == 'listsort' && isset($_GET['id'])) {
         $activityButtons[] = '<li><a onclick="saveListOrder('.$_GET['id'].');"><img src="images/disk.png" width="16" height="16" alt="" /> '._('Save list').'</a></li>';
     } elseif ($_GET['side'] == 'newemail' || $_GET['side'] == 'editemail') {
         $activityButtons[] = '<li><a onclick="saveEmail();"><img src="images/disk.png" width="16" height="16" alt="" /> '._('Save e-mail').'</a></li>';
