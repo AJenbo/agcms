@@ -44,13 +44,21 @@ function valideMail(string $email): bool
         $domain = idn_to_ascii($domain);
     }
 
-    if (filter_var($user . '@' . $domain, FILTER_VALIDATE_EMAIL)
-        && getmxrr($domain, $dummy)
-    ) {
+    if (filter_var($user . '@' . $domain, FILTER_VALIDATE_EMAIL) && checkMx($domain)) {
         return true;
     }
 
     return false;
+}
+
+function checkMx(string $domain): bool {
+    static $ceche = [];
+
+    if (!isset($ceche[$domain])) {
+        $ceche[$domain] = getmxrr($domain, $dummy);
+    }
+
+    return $ceche[$domain];
 }
 
 /**
