@@ -65,8 +65,7 @@ SAJAX::export(
 SAJAX::handleClientRequest();
 
 ?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml">
-<head>
+<html xmlns="http://www.w3.org/1999/xhtml"><head>
 <link href="style/style.css" rel="stylesheet" type="text/css" />
 <link href="/theme/admin.css" rel="stylesheet" type="text/css" />
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
@@ -94,82 +93,75 @@ JSON.parse = JSON.parse || function(jsonsring) { return jsonsring.evalJSON(true)
 <script type="text/javascript" src="rtef/lang/dk.js"></script>
 <script type="text/javascript" src="rtef/xhtml.js"></script>
 <script type="text/javascript" src="rtef/richtext.js"></script>
-</head>
-<body onload="init()">
-<div id="canvas">
-    <?php
-    switch (@$_GET['side']) {
-        case 'emaillist':
-            echo getEmailList();
-            break;
-        case 'newemail':
-            echo getNewEmail();
-            break;
-        case 'viewemail':
-        case 'editemail':
-            echo getEmail((int) $_GET['id']);
-            break;
-        case 'sogogerstat':
-            echo getsogogerstat();
-            break;
-        case 'maerker':
-            echo getmaerker();
-            break;
-        case 'krav':
-            echo getkrav();
-            break;
-        case 'nyside':
-            echo getnyside();
-            break;
-        case 'nykat':
-            $temp = getnykat();
-            echo $temp['html'];
-            break;
-        case 'search':
-            $temp = search($_GET['text']);
-            echo $temp['html'];
-            break;
-        case 'editkrav':
-            echo editkrav((int) $_GET['id']);
-            break;
-        case 'nykrav':
-            echo getnykrav();
-            break;
-        case 'updatemaerke';
-            echo getupdatemaerke((int) $_GET['id']);
-            break;
-        case 'redigerside';
-            echo redigerside((int) $_GET['id']);
-            break;
-        case 'redigerkat';
-            echo redigerkat((int) $_GET['id']);
-            break;
-        case 'getSiteTree';
-            echo getSiteTree();
-            break;
-        case 'redigerSpecial';
-            echo redigerSpecial((int) $_GET['id']);
-            break;
-        case 'redigerFrontpage';
-            echo redigerFrontpage();
-            break;
-        case 'get_db_error';
-            echo get_db_error();
-            break;
-        case 'listsort';
-            echo listsort(intval($_GET['id'] ?? 0));
-            break;
-        case 'editContact';
-            echo editContact((int) $_GET['id']);
-            break;
-        case 'addressbook';
-            echo getaddressbook();
-            break;
-    }
-?>
-</div>
-<?php
+</head><body onload="init()"><div id="canvas"><?php
+switch (@$_GET['side']) {
+    case 'emaillist':
+        echo getEmailList();
+        break;
+    case 'newemail':
+        echo getNewEmail();
+        break;
+    case 'viewemail':
+    case 'editemail':
+        echo getEmail((int) $_GET['id']);
+        break;
+    case 'sogogerstat':
+        echo getsogogerstat();
+        break;
+    case 'maerker':
+        echo getmaerker();
+        break;
+    case 'krav':
+        echo getkrav();
+        break;
+    case 'nyside':
+        echo getnyside();
+        break;
+    case 'nykat':
+        $temp = getnykat();
+        echo $temp['html'];
+        break;
+    case 'search':
+        $temp = search($_GET['text']);
+        echo $temp['html'];
+        break;
+    case 'editkrav':
+        echo editkrav((int) $_GET['id']);
+        break;
+    case 'nykrav':
+        echo getnykrav();
+        break;
+    case 'updatemaerke';
+        echo getupdatemaerke((int) $_GET['id']);
+        break;
+    case 'redigerside';
+        echo redigerside((int) $_GET['id']);
+        break;
+    case 'redigerkat';
+        echo redigerkat((int) $_GET['id']);
+        break;
+    case 'getSiteTree';
+        echo getSiteTree();
+        break;
+    case 'redigerSpecial';
+        echo redigerSpecial((int) $_GET['id']);
+        break;
+    case 'redigerFrontpage';
+        echo redigerFrontpage();
+        break;
+    case 'get_db_error';
+        echo get_db_error();
+        break;
+    case 'listsort';
+        echo listsort(intval($_GET['id'] ?? 0));
+        break;
+    case 'editContact';
+        echo editContact((int) $_GET['id']);
+        break;
+    case 'addressbook';
+        echo getaddressbook();
+        break;
+}
+?></div><?php
 require 'mainmenu.php';
-?>
-</body>
-</html>
+?></body></html>

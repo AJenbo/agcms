@@ -3622,7 +3622,7 @@ function htmlUrlDecode(string $text): string
     return $text;
 }
 
-function updateSide(int $id, string $navn, string $keywords, int $pris, string $billed, string $beskrivelse, int $for, string $text, string $varenr, int $burde, int $fra, int $krav, string $maerke): bool
+function updateSide(int $id, string $navn, string $keywords, int $pris, string $billed, string $beskrivelse, int $for, string $text, string $varenr, int $burde, int $fra, int $krav, int $maerke): bool
 {
     $beskrivelse = purifyHTML($beskrivelse);
     $beskrivelse = htmlUrlDecode($beskrivelse);
@@ -3642,7 +3642,7 @@ function updateSide(int $id, string $navn, string $keywords, int $pris, string $
             `for` = " . $for . ",
             `beskrivelse` = '" . addcslashes($beskrivelse, "'\\") . "',
             `krav` = ". $krav .",
-            `maerke` = '" . addcslashes($maerke, "'\\") . "',
+            `maerke` = " . $maerke . ",
             `billed` = '" . addcslashes($billed, "'\\") . "',
             `fra` = " . $fra . ",
             `burde` = " . $burde . "
@@ -3715,7 +3715,7 @@ function updateSpecial(int $id, string $text): bool
     return true;
 }
 
-function opretSide(string $kat, string $navn, string $keywords, int $pris, string $billed, string $beskrivelse, int $for, string $text, string $varenr, int $burde, int $fra, int $krav, string $maerke): array
+function opretSide(int $kat, string $navn, string $keywords, int $pris, string $billed, string $beskrivelse, int $for, string $text, string $varenr, int $burde, int $fra, int $krav, int $maerke): array
 {
     $beskrivelse = purifyHTML($beskrivelse);
     $beskrivelse = htmlUrlDecode($beskrivelse);
@@ -3747,7 +3747,7 @@ function opretSide(string $kat, string $navn, string $keywords, int $pris, strin
             ' . $for . ',
             \''.addcslashes($beskrivelse, "'\\").'\',
             ' . $krav . ',
-            \''.addcslashes($maerke, "'\\").'\',
+            ' . $maerke . ',
             \''.addcslashes($billed, "'\\").'\',
             ' . $fra . ',
             ' . $burde . '
@@ -3755,7 +3755,7 @@ function opretSide(string $kat, string $navn, string $keywords, int $pris, strin
     );
 
     $id = db()->insert_id;
-    db()->query('INSERT INTO `bind` (`side` ,`kat` ) VALUES (\''.$id.'\', \''.$kat.'\')');
+    db()->query('INSERT INTO `bind` (`side` ,`kat` ) VALUES ('.$id.', '.$kat.')');
     return ['id' => $id];
 }
 

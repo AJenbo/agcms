@@ -235,16 +235,16 @@ function updateSide(id) {
     x_updateSide(id,
         $('navn').value,
         $('keywords').value,
-        $('pris').value,
+        $('pris').value ? parseInt($('pris').value) : 0,
         $('billed').value,
         $('beskrivelse').value,
-        $('for').value,
+        $('for').value ? parseInt($('for').value) : 0,
         $('text').value,
         $('varenr').value,
-        getSelectValue('burde'),
-        getSelectValue('fra'),
-        getSelectValue('krav'),
-        getSelectMultiValues('maerke'),
+        parseInt(getSelectValue('burde')),
+        parseInt(getSelectValue('fra')),
+        parseInt(getSelectValue('krav')),
+        getSelectMultiValues('maerke') ? parseInt(getSelectMultiValues('maerke')) : 0,
         generic_r);
     return false;
 }
