@@ -27,17 +27,21 @@ mb_language('uni');
 mb_detect_order('UTF-8, ISO-8859-1');
 mb_internal_encoding('UTF-8');
 
-require_once __DIR__ . '/Cache.php';
-require_once __DIR__ . '/DB.php';
-require_once __DIR__ . '/ORM.php';
-require_once __DIR__ . '/Entity/Category.php';
-require_once __DIR__ . '/Entity/Page.php';
-require_once __DIR__ . '/sajax.php';
 require_once __DIR__ . '/config.php';
-require_once __DIR__ . '/imap.php';
-include_once __DIR__ . '/../vendor/phpmailer/phpmailer/language/phpmailer.lang-dk.php';
-require_once __DIR__ . '/../vendor/phpmailer/phpmailer/class.smtp.php';
-require_once __DIR__ . '/../vendor/phpmailer/phpmailer/class.phpmailer.php';
+require_once __DIR__ . '/../vendor/autoload.php';
+
+
+spl_autoload_register(function ($class_name) {
+    $classMap = [
+        'Category' => 'Entity/Category',
+        'Page' => 'Entity/Page',
+    ];
+    if (isset($classMap[$class_name])) {
+        $class_name = $classMap[$class_name];
+    }
+
+    require_once __DIR__ . '/' . $class_name . '.php';
+});
 
 function db()
 {
