@@ -51,36 +51,19 @@ $_GET = fullMysqliEscape($_GET);
 
 $activMenu =& $GLOBALS['generatedcontent']['activmenu'];
 
-if (!empty($GLOBALS['side']['id'])) {
-    //Hent side indhold
-    $page = ORM::getOne(Page::class, $GLOBALS['side']['id']);
-    $GLOBALS['side'] = [
-        'navn'   => $page->getTitle(),
-        'burde'  => $page->getOldPriceType(),
-        'fra'    => $page->getPriceType(),
-        'text'   => $page->getHtml(),
-        'pris'   => $page->getPrice(),
-        'for'    => $page->getOldPrice(),
-        'krav'   => $page->getRequirementId(),
-        'maerke' => $page->getBrandId(),
-        'varenr' => $page->getSku(),
-        'dato'   => $page->getTimeStamp(),
-    ];
-    Cache::addUpdateTime($page->getTimeStamp());
-}
+if ($activMenu) {
+    $category = ORM::getOne(Category::class, $activMenu);
 
-if ($activMenu > 0) {
     //get category branch and keywords
     $categoryIds = [];
     $keywords = [];
-    $category = ORM::getOne(Category::class, $activMenu);
-    do {
-        $categoryIds[] = $category->getId();
-        $keyword = xhtmlEsc($category->getTitle());
+    foreach ($category->getBranch() as $node) {
+        $categoryIds[] = $node->getId();
+        $keyword = xhtmlEsc($node->getTitle());
         $keywords[] = trim($keyword);
-    } while ($category = $category->getParent());
-    $GLOBALS['kats'] = array_reverse($categoryIds);
-    $GLOBALS['generatedcontent']['keywords'] = implode(',', array_reverse($keywords));
+    };
+    $GLOBALS['kats'] = $categoryIds;
+    $GLOBALS['generatedcontent']['keywords'] = implode(',', $keywords);
 }
 
 //crumbs start
@@ -93,9 +76,7 @@ if (!empty($GLOBALS['kats'])) {
             'icon' => $category->getIconPath(),
         ];
     }
-    $GLOBALS['generatedcontent']['crumbs'] = array_reverse(
-        array_values($GLOBALS['generatedcontent']['crumbs'])
-    );
+    $GLOBALS['generatedcontent']['crumbs'] = array_values($GLOBALS['generatedcontent']['crumbs']);
 }
 //crumbs end
 
@@ -105,9 +86,9 @@ $categories = ORM::getByQuery(
     "
     SELECT *
     FROM `kat`
-    WHERE kat.vis != " . CATEGORY_HIDDEN . "
+    WHERE kat.vis != " . Category::HIDDEN . "
         AND kat.bind = 0
-        AND (id IN (SELECT bind FROM kat WHERE vis != " . CATEGORY_HIDDEN . ")
+        AND (id IN (SELECT bind FROM kat WHERE vis != " . Category::HIDDEN . ")
             OR id IN (SELECT kat FROM bind)
         )
     ORDER BY `order`, navn ASC
@@ -149,7 +130,7 @@ Cache::addLoadedTable('bind');
 
 foreach ($pages as $page) {
     $GLOBALS['generatedcontent']['sider'][] = [
-        'id' => $page->getId(),
+        'id'   => $page->getId(),
         'name' => xhtmlEsc($page->getTitle()),
         'link' => '/' . $page->getSlug(),
     ];
@@ -207,20 +188,14 @@ if (!empty($_GET['sog'])) {
     }
     $text .= '</select></td></tr></table></form>';
     $GLOBALS['generatedcontent']['text'] = $text;
-} elseif (isset($_GET['q']) || !empty($maerke)) {
+} elseif (isset($_GET['q'])) {
     $GLOBALS['generatedcontent']['contenttype'] = 'tiles';
 
     //Temporarly store the katalog number so it can be restored when search is over
     $temp_kat = $activMenu;
 
     $pages = [];
-    if ((!empty($_GET['maerke']) || !empty($maerke))
-        && empty($_GET['q'])
-        && empty($_GET['varenr'])
-        && empty($_GET['sogikke'])
-        && empty($_GET['minpris'])
-        && empty($_GET['maxpris'])
-    ) {
+    if (!empty($maerke)) {
         //Brand only search
         $GLOBALS['generatedcontent']['contenttype'] = 'brand';
         if (!empty($_GET['maerke'])) {
@@ -280,10 +255,9 @@ if (!empty($_GET['sog'])) {
                 $category = ORM::getOne(Category::class, $activMenu);
             }
 
-            vare($page, CATEGORY_GALLERY, $category);
+            vare($page, $category);
         }
     }
-    $activMenu = $temp_kat;
 
     $wherekat = '';
     if (!empty($_GET['sogikke'])) {
@@ -292,39 +266,50 @@ if (!empty($_GET['sog'])) {
     searchMenu($_GET['q'] ?? '', $wherekat);
 } else {
     $category = null;
-    if ($activMenu > 0) {
+    if ($activMenu && empty($GLOBALS['side']['id'])) {
         $category = ORM::getOne(Category::class, $activMenu);
         $pages = $category->getPages();
         if (count($pages) === 1) {
             $GLOBALS['side']['id'] = reset($pages)->getId();
         } elseif ($pages) {
-            $pages = arrayNatsort($pages, 'id', 'navn', 'asc');
+
+            $pageArray = [];
             foreach ($pages as $page) {
-                vare($value, $category->getRenderMode());
+                $pageArray[] = [
+                    'id'     => $page->getId(),
+                    'navn'   => $page->getTitle(),
+                    'object' => $page,
+                ];
+            }
+            $pageArray = arrayNatsort($pageArray, 'id', 'navn', 'asc');
+            $pages = [];
+            foreach ($pageArray as $item) {
+                $pages[] = $item['object'];
+            }
+
+            foreach ($pages as $page) {
+                vare($page, $category);
             }
         }
     }
 
     if (!empty($GLOBALS['side']['id'])) {
         $GLOBALS['generatedcontent']['contenttype'] = 'product';
-        if (!isset($GLOBALS['side']['navn'])) {
-            $page = ORM::getOne(Page::class, $GLOBALS['side']['id']);
-            Cache::addUpdateTime($page->getTimeStamp());
-
-            $GLOBALS['side'] = [
-                'id'     => $page->getId(),
-                'navn'   => $page->getTitle(),
-                'burde'  => $page->getOldPriceType(),
-                'fra'    => $page->getPriceType(),
-                'text'   => $page->getHtml(),
-                'pris'   => $page->getPrice(),
-                'for'    => $page->getOldPrice(),
-                'krav'   => $page->getRequirementId(),
-                'maerke' => $page->getBrandId(),
-                'varenr' => $page->getSku(),
-                'dato'   => $page->getTimeStamp(),
-            ];
-        }
+        $page = ORM::getOne(Page::class, $GLOBALS['side']['id']);
+        $GLOBALS['side'] = [
+            'id'     => $page->getId(),
+            'navn'   => $page->getTitle(),
+            'burde'  => $page->getOldPriceType(),
+            'fra'    => $page->getPriceType(),
+            'text'   => $page->getHtml(),
+            'pris'   => $page->getPrice(),
+            'for'    => $page->getOldPrice(),
+            'krav'   => $page->getRequirementId(),
+            'maerke' => $page->getBrandId(),
+            'varenr' => $page->getSku(),
+            'dato'   => $page->getTimeStamp(),
+        ];
+        Cache::addUpdateTime($page->getTimeStamp());
 
         $GLOBALS['generatedcontent']['headline'] = $GLOBALS['side']['navn'];
         $GLOBALS['generatedcontent']['serial']   = $GLOBALS['side']['varenr'];
@@ -417,9 +402,9 @@ if (!empty($_GET['sog'])) {
                 ],
             ];
         }
-    } elseif ($category && $category->getRenderMode == CATEGORY_LIST) {
+    } elseif ($category && $category->getRenderMode() == Category::LIST) {
         $GLOBALS['generatedcontent']['contenttype'] = 'list';
-    } elseif ($category && $category->getRenderMode == CATEGORY_GALLERY) {
+    } elseif ($category && $category->getRenderMode() == Category::GALLERY) {
         $GLOBALS['generatedcontent']['contenttype'] = 'tiles';
     } else {
         $special = db()->fetchOne(
@@ -503,5 +488,5 @@ if ($category && $category->getEmail()) {
 if (empty($delayprint)) {
     doConditionalGet(Cache::getUpdateTime());
 
-    require_once 'theme/index.php';
+    require_once _ROOT_ . '/theme/index.php';
 }

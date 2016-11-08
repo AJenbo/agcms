@@ -3,6 +3,9 @@
 class Category
 {
     const TABLE_NAME = 'kat';
+    const HIDDEN = 0;
+    const GALLERY = 1;
+    const LIST = 2;
 
     // Backed by DB
     private $id;
@@ -39,7 +42,7 @@ class Category
             'title'             => $data['navn'] ?: '',
             'parent_id'         => $data['bind'] ?: -1,
             'icon_path'         => $data['icon'] ?: '',
-            'render_mode'       => $data['vis'] ?: CATEGORY_GALLERY,
+            'render_mode'       => $data['vis'] ?: Category::GALLERY,
             'email'             => $data['email'] ?: '',
             'oredered_children' => $data['custom_sort_subs'] ?: false,
             'order'             => $data['order'] ?: 0,
@@ -150,7 +153,7 @@ class Category
     // General methodes
     public function isVisable(): bool
     {
-        if ($this->renderMode === CATEGORY_HIDDEN) {
+        if ($this->renderMode === Category::HIDDEN) {
             return false;
         }
 
@@ -201,8 +204,10 @@ class Category
     public function getParent()
     {
         if ($this->parentId > 0) {
-            ORM::getOne(self::class, $this->parentId);
+            return ORM::getOne(self::class, $this->parentId);
         }
+
+        return null;
     }
 
     public function getChildren(bool $onlyVisable = false)
@@ -246,12 +251,19 @@ class Category
 
     public function isInactive(): bool
     {
-        $trunk = $this;
-        while ($trunk->getParent()) {
-            $trunk = $category->getParent();
-        }
+        $branch = $this->getBranch();
+        return !reset($branch)->getParentId();
+    }
 
-        return !$trunk->getParentId();
+    public function getBranch(): array
+    {
+        $nodes = [];
+        $category = $this;
+        do {
+            $nodes[] = $category;
+        } while ($category = $category->getParent());
+
+        return array_reverse($nodes);
     }
 
     // ORM related functions

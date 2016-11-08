@@ -1581,7 +1581,7 @@ function print_pages(int $kat)
     global $maerker;
     global $krav;
     global $sort;
-    $sider = db()->fetchArray("SELECT sider.id, sider.navn, sider.varenr, sider.`for`, sider.pris, sider.dato, sider.maerke, sider.krav FROM `bind` JOIN sider ON bind.side = sider.id WHERE bind.kat = ".$kat." ORDER BY ".$sort);
+    $sider = db()->fetchArray("SELECT sider.* FROM `bind` JOIN sider ON bind.side = sider.id WHERE bind.kat = ".$kat." ORDER BY " . $sort);
     $altrow = 0;
     foreach ($sider as $side) {
         echo '<tr';
@@ -2288,8 +2288,6 @@ function edit_alt(int $id, string $alt): array
  **/
 function purifyHTML(string $string): string
 {
-    require_once '../vendor/ezyang/htmlpurifier/library/HTMLPurifier.auto.php';
-
     $config = HTMLPurifier_Config::createDefault();
     $config->set('HTML.SafeIframe', true);
     $config->set('URI.SafeIframeRegexp', '%^http://www.youtube.com/embed/%u');
@@ -3271,7 +3269,7 @@ function get_pages_with_mismatch_bindings(): string
 
         //Is there any mismatches of the root bindings
         if (count($categories) > 1) {
-            $categories = reset($categories)->isInactive();
+            $binding = reset($categories)->isInactive();
             foreach ($categories as $category) {
                 if ($binding !== $category->isInactive()) {
                     $html .= '<a href="?side=redigerside&amp;id='.$page['id'].'">'.$page['id'].': '.$page['navn'].'</a><br />';

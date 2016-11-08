@@ -2,7 +2,7 @@
 
 class Page
 {
-    const TABLE_NAME = 'side';
+    const TABLE_NAME = 'sider';
 
     // Backed by DB
     private $id;
@@ -264,10 +264,10 @@ class Page
             $url .= $category->getSlug(false);
         }
 
-        return $url .= $this->getSlug(false);
+        return $url . $this->getSlug(false);
     }
 
-    public function getPrimaryCategory(): Category
+    public function getPrimaryCategory()
     {
         $bind = db()->fetchOne("SELECT kat FROM bind WHERE side = " . $this->getId());
         Cache::addLoadedTable('bind');

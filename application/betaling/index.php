@@ -1092,4 +1092,4 @@ Delivery phone: %s</p>
 }
 
 //Output page
-require_once 'theme/index.php';
+require_once _ROOT_ . '/theme/index.php';

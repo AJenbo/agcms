@@ -2,8 +2,6 @@
 
 require_once $_SERVER['DOCUMENT_ROOT'] . '/admin/inc/logon.php';
 include_once _ROOT_ . '/inc/countries.php';
-include_once _ROOT_ . '/vendor/tecnick.com/tcpdf/examples/lang/dan.php';
-require_once _ROOT_ . '/vendor/tecnick.com/tcpdf/tcpdf.php';
 
 if ($_GET['id'] > 0) {
     $id = $_GET['id'];
@@ -200,6 +198,7 @@ $pdf->Cell(34, 5, _('Total'), 1, 1, 'R');
 //Cells
 $netto = 0;
 $extralines = 0;
+$lines = count($faktura['values']);
 foreach ($faktura['values'] as $i => $value) {
     if ($lines > 1) {
         $lines -= 1;

@@ -92,7 +92,7 @@ if (is_numeric(@$_GET['add']) || is_numeric(@$_GET['add_list_item'])) {
         if ($productOldPrice == 1) {
             $productPrice = null;
         }
-        $_SESSION['faktura']['values'][] = $productPris;
+        $_SESSION['faktura']['values'][] = $productPrice;
     }
 
     if (!empty($_SERVER['HTTP_REFERER'])) {
@@ -117,7 +117,7 @@ if (!$_SESSION['faktura'] && empty($_GET['step'])) {
 
 //Generate default $GLOBALS['generatedcontent']
 $delayprint = true;
-require_once 'index.php';
+require_once $_SERVER['DOCUMENT_ROOT'] . '/index.php';
 $GLOBALS['generatedcontent']['datetime'] = time();
 
 unset($_POST['values']);
@@ -810,4 +810,4 @@ if (!empty($_SESSION['faktura']['quantities'])) {
 }
 
 //Output page
-require_once 'theme/index.php';
+require_once _ROOT_ . '/theme/index.php';

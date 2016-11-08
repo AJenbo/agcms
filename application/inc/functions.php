@@ -12,9 +12,6 @@
  */
 
 defined('_ROOT_') || define('_ROOT_', realpath(__DIR__ . '/..'));
-define('CATEGORY_HIDDEN', 0);
-define('CATEGORY_GALLERY', 1);
-define('CATEGORY_LIST', 2);
 
 ini_set('display_errors', 1);
 error_reporting(-1);
@@ -509,9 +506,9 @@ function xhtmlEsc(string $string): string
  *
  * @return null
  */
-function vare(Page $page, int $renderMode, Category $category = null)
+function vare(Page $page, Category $category)
 {
-    if ($renderMode === CATEGORY_GALLERY) {
+    if ($category->getRenderMode() === Category::GALLERY) {
         $GLOBALS['generatedcontent']['list'][] = [
             'id' => $page->getId(),
             'name' => xhtmlEsc($page->getTitle()),
@@ -833,7 +830,7 @@ function menu(int $nr, bool $custom_sort_subs = false): array
         "
         SELECT *
         FROM kat
-        WHERE kat.vis != " . CATEGORY_HIDDEN . "
+        WHERE kat.vis != " . Category::HIDDEN . "
             AND kat.bind = " . $GLOBALS['kats'][$nr] . "
         ORDER BY kat.`order`, kat.navn
         "
@@ -841,7 +838,19 @@ function menu(int $nr, bool $custom_sort_subs = false): array
 
     $menu = [];
     if (!$custom_sort_subs) {
-        $categories = arrayNatsort($categories, 'id', 'navn', 'asc');
+        $objectArray = [];
+        foreach ($categories as $categorie) {
+            $objectArray[] = [
+                'id' => $categorie->getId(),
+                'navn' => $categorie->getTitle(),
+                'object' => $categorie,
+            ];
+        }
+        $objectArray = arrayNatsort($objectArray, 'id', 'navn', 'asc');
+        $categories = [];
+        foreach ($objectArray as $row) {
+            $categories[] = $row['object'];
+        }
     }
 
     foreach ($categories as $category) {
@@ -852,7 +861,7 @@ function menu(int $nr, bool $custom_sort_subs = false): array
         //Er katagorien aaben
         $subs = [];
         if (@$GLOBALS['kats'][$nr+1] === $category->getId()) {
-            $subs = menu($nr+1, $categoryId->getRenderMode());
+            $subs = menu($nr+1, $category->getRenderMode());
         }
 
         //tegn under punkter
@@ -1009,12 +1018,32 @@ echo htmlspecialchars(mb_substr($page->getTimeStamp(), 0, -9, 'UTF-8'), ENT_COMP
  *
  * @return array Apropriate for handeling with javascript function inject_html()
  */
-function getKat(int $categoryId, bool $sort): array
+function getKat(int $categoryId, string $sort): array
 {
+    if (!in_array($sort, ['navn', 'for', 'pris', 'varenr'])) {
+        $sort = 'navn';
+    }
+
     //Get pages list
     $category = ORM::getOne(Category::class, $categoryId);
     $pages = $category->getPages($sort);
-    $pages = arrayNatsort($pages, 'id', $sort);
+
+    $objectArray = [];
+    foreach ($pages as $page) {
+        $objectArray[] = [
+            'id' => $page->getId(),
+            'navn' => $page->getTitle(),
+            'for' => $page->getOldPrice(),
+            'pris' => $page->getPrice(),
+            'varenr' => $page->getSku(),
+            'object' => $page,
+        ];
+    }
+    $objectArray = arrayNatsort($objectArray, 'id', $sort);
+    $pages = [];
+    foreach ($objectArray as $item) {
+        $pages[] = $item['object'];
+    }
 
     //check browser cache
     doConditionalGet(Cache::getUpdateTime());
