@@ -1081,16 +1081,12 @@ function siteList(int $id = null): string
  */
 function pages_expand(int $id): array
 {
-    $html = '';
-
-    $temp = kat_expand($id, false);
-    $html .= $temp['html'];
+    $html = kat_expand($id, false)['html'];
     $sider = db()->fetchArray('SELECT sider.id, sider.varenr, bind.id as bind, navn FROM `bind` LEFT JOIN sider on bind.side = sider.id WHERE `kat` = '.$id.' ORDER BY sider.navn');
-    $nr = count($sider);
     foreach ($sider as $side) {
         $html .= '<div id="bind'.$side['bind'].'" class="side'.$side['id'].'"><a style="margin-left:16px" class="side">
         <a class="kat" onclick="this.firstChild.checked=true;"><input name="side" type="radio" value="'.$side['id'].'" />
-        <img src="images/page.png" width="16" height="16" alt="" /> '.strip_tags($side['navn'], '<img>');
+        <img src="images/page.png" width="16" height="16" alt="" /> ' . strip_tags($side['navn'], '<img>');
         if ($side['varenr']) {
             $html .= ' <em>#:'.$side['varenr'].'</em>';
         }
@@ -1106,16 +1102,12 @@ function pages_expand(int $id): array
  */
 function siteList_expand(int $id): array
 {
-    $html = '';
-
-    $temp = kat_expand($id, false);
-    $html .= $temp['html'];
+    $html = kat_expand($id, false)['html'];
     $sider = db()->fetchArray('SELECT sider.id, sider.varenr, bind.id as bind, navn FROM `bind` LEFT JOIN sider on bind.side = sider.id WHERE `kat` = '.$id.' ORDER BY sider.navn');
-    $nr = count($sider);
-    for ($i=0; $i<$nr; $i++) {
-        $html .= '<div id="bind'.$sider[$i]['bind'].'" class="side'.$sider[$i]['id'].'"><a style="margin-left:16px" class="side" href="?side=redigerside&amp;id='.$sider[$i]['id'].'"><img src="images/page.png" width="16" height="16" alt="" /> '.strip_tags($sider[$i]['navn'], '<img>');
-        if ($sider[$i]['varenr']) {
-            $html .= ' <em>#:'.$sider[$i]['varenr'].'</em>';
+    foreach ($sider as $side) {
+        $html .= '<div id="bind'.$side['bind'].'" class="side'.$side['id'].'"><a style="margin-left:16px" class="side" href="?side=redigerside&amp;id='.$side['id'].'"><img src="images/page.png" width="16" height="16" alt="" /> ' . strip_tags($side['navn'], '<img>');
+        if ($side['varenr']) {
+            $html .= ' <em>#:'.$side['varenr'].'</em>';
         }
         $html .= '</a></div>';
     }
@@ -1206,7 +1198,7 @@ function kat_expand(int $id, bool $input = true): array
             } else {
                 $html .= 'images/folder.png';
             }
-            $html .= '" alt="" /> ' . strip_tags($kat[$i]['navn'], '<img>').'</a><div id="kat'.$kat[$i]['id'].'content" style="margin-left:16px">';
+            $html .= '" alt="" /> ' . strip_tags($kat[$i]['navn'], '<img>') . '</a><div id="kat' . $kat[$i]['id'] . 'content" style="margin-left:16px">';
             if (array_search($kat[$i]['id'], $openkat) || false !== array_search($kat[$i]['id'], $kattree)) {
                 if ($input) {
                     $temp = kat_expand($kat[$i]['id'], true);
@@ -1233,7 +1225,7 @@ function kat_expand(int $id, bool $input = true): array
             } else {
                 $html .= 'images/folder.png';
             }
-            $html .= '" alt="" /> '.strip_tags($kat[$i]['navn'], '<img>').'</a></div>';
+            $html .= '" alt="" /> ' . strip_tags($kat[$i]['navn'], '<img>') . '</a></div>';
         }
     }
     return ['id' => $id, 'html' => $html];
@@ -2540,8 +2532,8 @@ writeRichText("beskrivelse", \''.rtefsafe($page['beskrivelse']).'\', "", '.($GLO
     $html .= '</select><br /><img width="16" height="16" alt="" src="images/page_white_medal.png"/><select id="maerke" name="maerke" size="15"><option' . ($page['maerke'] ? ' selected="selected"' : '') . ' value="0">'._('All others').'</option>';
 
     $maerker = db()->fetchArray('SELECT id, navn FROM `maerke` ORDER BY navn');
-    for ($maerker as $maerke) {
-        $html .= '<option value="'.$maerke['id'].'"';
+    foreach ($maerker as $maerke) {
+        $html .= '<option value="' . $maerke['id'].'"';
         if ($maerke['id'] == $page['maerke']) {
             $html .= ' selected="selected"';
         }
@@ -3322,9 +3314,9 @@ writeRichText("beskrivelse", \'\', "", '.($GLOBALS['_config']['thumb_width']+32)
     }
     $html .= '</select><br /><img width="16" height="16" alt="" src="images/page_white_medal.png"/><select id="maerke" name="maerke" size="10"><option selected="selected" value="0">'._('All others').'</option>';
     $maerker = db()->fetchArray('SELECT id, navn FROM `maerke` ORDER BY navn');
-    for ($maerker as $maerke) {
-        $html .= '<option value="'.$maerke['id'].'"';
-        $html .= '>'.xhtmlEsc($maerke['navn']).'</option>';
+    foreach ($maerker as $maerke) {
+        $html .= '<option value="' . $maerke['id'] . '"';
+        $html .= '>' . xhtmlEsc($maerke['navn']) . '</option>';
     }
     $html .= '</select></div></div></div>';
     //misc end

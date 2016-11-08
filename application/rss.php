@@ -66,87 +66,57 @@ if ($time > 1000000000) {
     $limit = " LIMIT 20";
 }
 
-$sider = db()->fetchArray(
-    "
-    SELECT sider.id,
-        sider.maerke,
-        sider.navn,
-        sider.text,
-        UNIX_TIMESTAMP(dato) AS dato,
-        billed,
-        kat.id AS kat_id
-    FROM sider
-    JOIN bind ON (side = sider.id)
-    JOIN kat ON (kat.id = kat)
-    " . $where . "
-    GROUP BY id
-    ORDER BY - dato" . $limit
+$pages = ORM::getByQuery(
+    Page::class,
+    "SELECT * FROM sider"
+    . $where
+    . "ORDER BY dato DESC"
+    . $limit
 );
-foreach ($sider as $page) {
-    $category = ORM::getOne(Category::class, $page['kat_id']);
-    if ($category->isInactive()) {
+foreach ($pages as $page) {
+    if ($pages->isInactive()) {
         continue;
     }
 
-    htmlspecialchars($page['navn'], ENT_COMPAT | ENT_XML1);
-    if (!$page['navn'] = trim($name)) {
-        $page['navn'] = $GLOBALS['_config']['site_name'];
+    $title = trim($page->getTitle());
+    if (!$title) {
+        $title = $GLOBALS['_config']['site_name'];
     }
-
-    echo '
-    <item>
-    <title>'.$page['navn'].'</title>
-    <link>' . $GLOBALS['_config']['base_url'] . '/' . $category->getSlug(true)
-    . 'side' . $page['id'] . '-' . rawurlencode(clearFileName($page['navn']))
-    . '.html</link>
-    <description>';
-    if ($page['billed']
-        && $page['billed'] != '/images/web/intet-foto.jpg'
-    ) {
+    echo '<item><title>' . htmlspecialchars($title, ENT_COMPAT | ENT_XML1) . '</title><link>'
+    . $GLOBALS['_config']['base_url'] . $page->getCanonicalLink(true) . '</link><description>';
+    if ($page->getImagePath() && $page->getImagePath() != '/images/web/intet-foto.jpg') {
         echo '&lt;img style="float:left;margin:0 10px 5px 0;" src="'
-        . $GLOBALS['_config']['base_url'] . $page['billed'] . '" &gt;&lt;p&gt;';
+        . $GLOBALS['_config']['base_url'] . $page->getImagePath() . '" &gt;&lt;p&gt;';
         //TODO limit to summery
     }
 
-    $cleaned = trim(preg_replace($search, $replace, $page['text']));
-    echo htmlspecialchars($cleaned, ENT_COMPAT | ENT_XML1) . '</description>
-    <pubDate>' . gmdate('D, d M Y H:i:s', $page['dato']) . ' GMT</pubDate>
-    <guid>' . $GLOBALS['_config']['base_url'] . '/' . $category->getSlug(true)
-    . 'side' . $page['id'] . '-' . rawurlencode(clearFileName($page['navn']))
-    . '.html</guid>';
-
-    $categories = ORM::getByQuery(
-        Category::class,
-        "
-        SELECT kat.*
-        FROM `bind`
-        JOIN kat ON kat.id = bind.kat
-        WHERE bind.side = " . $page['id']
-    );
+    $cleaned = trim(preg_replace($search, $replace, $page->getHtml()));
+    echo htmlspecialchars($cleaned, ENT_COMPAT | ENT_XML1) . '</description><pubDate>'
+    . gmdate('D, d M Y H:i:s', $page->getTimeStamp()) . ' GMT</pubDate><guid>'
+    . $GLOBALS['_config']['base_url'] . $page->getCanonicalLink(true) . '</guid>';
 
     $categoryIds = [];
-    foreach ($categories as $category) {
+    foreach ($page->getCategories() as $category) {
         do {
             $categoryIds[] = $category->getId();
         } while ($category = $category->getParent());
     }
-    $categoryIds = array_unique($categoryIds);
-
-    foreach ($categoryIds as $categoryId) {
+    foreach (array_unique($categoryIds) as $categoryId) {
         $category = ORM::getOne(Category::class, $categoryId);
-        $cleaned = trim(preg_replace($search, $replace, $category->getTitle()));
+        $cleaned = preg_replace($search, $replace, $category->getTitle());
+        $cleaned = trim($cleanName);
         if ($cleaned) {
             echo '<category>';
             echo htmlspecialchars($cleaned, ENT_NOQUOTES | ENT_XML1);
             echo '</category>';
         }
     }
-    if ($page['maerke']) {
+    if ($page->getBrandId()) {
         $maerker = db()->fetchOne(
             "
             SELECT `navn`
             FROM maerke
-            WHERE id = " . $page['maerke']
+            WHERE id = " . $page->getBrandId()
         );
         $cleaned = preg_replace($search, $replace, $maerker['navn']);
         $cleaned = trim($cleanName);

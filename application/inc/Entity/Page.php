@@ -34,7 +34,7 @@ class Page
         return [
             'id'             => $data['id'] ?: null,
             'sku'            => $data['varenr'] ?: '',
-            'timestamp'      => $data['dato'] ? strtotim($data['dato']) : 0,
+            'timestamp'      => $data['dato'] ? strtotime($data['dato']) : 0,
             'title'          => $data['navn'] ?: '',
             'keywords'       => $data['keywords'] ?: '',
             'html'           => $data['text'] ?: '',
@@ -135,6 +135,13 @@ class Page
 
     public function getExcerpt(): string
     {
+        if (!$this->excerpt) {
+            $excerpt = preg_replace(['/</', '/>/', '/\s+/'], [' <', '> ', ' '], $this->html);
+            $excerpt = strip_tags($excerpt);
+            $excerpt = preg_replace('/\s+/', ' ', $excerpt);
+            return stringLimit($excerpt, 100);
+        }
+
         return $this->excerpt;
     }
 
@@ -257,6 +264,18 @@ class Page
         }
 
         return ORM::getOne(Category::class, $bind['kat']);
+    }
+
+    public function getCategories(): array
+    {
+        return ORM::getByQuery(
+            Category::class,
+            "
+            SELECT kat.*
+            FROM `bind`
+            JOIN kat ON kat.id = bind.kat
+            WHERE bind.side = " . $this->getId()
+        );
     }
 
     public function isInactive(): bool

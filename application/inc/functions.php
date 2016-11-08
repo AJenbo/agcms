@@ -31,6 +31,7 @@ require_once __DIR__ . '/Cache.php';
 require_once __DIR__ . '/DB.php';
 require_once __DIR__ . '/ORM.php';
 require_once __DIR__ . '/Entity/Category.php';
+require_once __DIR__ . '/Entity/Page.php';
 require_once __DIR__ . '/sajax.php';
 require_once __DIR__ . '/config.php';
 require_once __DIR__ . '/imap.php';
@@ -301,10 +302,8 @@ function getTable(int $listid, int $bycell = null, int $categoryId = null): arra
             }
             $html .= '>';
             if ($row['link']) {
-                $sider = db()->fetchOne("SELECT * FROM `sider` WHERE `sider`.`id` = " . $row['link']);
-                Cache::addLoadedTable('sider');
-                $row['link'] = '<a href="/' . ($category ? $category->getSlug() : '') . 'side' . $row['link']
-                . '-' . clearFileName($sider['navn']) . '.html">';
+                $page = ORM::getOne(Page::class, $row['link']);
+                $row['link'] = '<a href="' . xhtmlEsc($page->getCanonicalLink($category)) . '">';
             }
             foreach ($list['cells'] as $key => $type) {
                 if (empty($row[$key])) {
@@ -440,11 +439,11 @@ function getTable(int $listid, int $bycell = null, int $categoryId = null): arra
 /**
  * Generate html code for lists associated with a page
  *
- * @param int $sideid Id of page
+ * @param int $pageId Id of page
  *
  * @return string
  */
-function echoTable(int $sideid): string
+function echoTable(int $pageId): string
 {
     $tablesort = db()->fetchArray(
         "
@@ -458,13 +457,12 @@ function echoTable(int $sideid): string
         $GLOBALS['tablesort_navn'][] = $value['navn'];
         $GLOBALS['tablesort'][] = array_map('trim', explode(',', $value['text']));
     }
-    //----------------------------------
 
     $lists = db()->fetchArray(
         "
         SELECT id
         FROM `lists`
-        WHERE `page_id` = " . $sideid
+        WHERE `page_id` = " . $pageId
     );
     Cache::addLoadedTable('lists');
 
@@ -500,61 +498,39 @@ function xhtmlEsc(string $string): string
 /**
  * Populate the generated global list with a page
  *
- * @param array $side A page
- * @param int   $type Display mode
+ * @param Page     $page       A page
+ * @param int      $renderMode Display mode
+ * @param Category $category   Category
  *
  * @return null
  */
-function vare(array $side, int $type)
+function vare(Page $page, int $renderMode, Category $category = null)
 {
-    //Search categories does not have a fixed number, use first fixed per page
-    $category = null;
-    if (!$GLOBALS['generatedcontent']['activmenu']) {
-        $category = ORM::getOneByQuery(
-            Category::class,
-            "
-            SELECT `kat`.*
-            FROM `bind` JOIN `kat` ON `kat`.id = `bind`.`kat`
-            WHERE side = " . $side['id']
-        );
-        Cache::addLoadedTable('bind');
-        $GLOBALS['generatedcontent']['activmenu'] = $category ? $category->getId() : 0;
-    } else {
-        $category = ORM::getOne(Category::class, $GLOBALS['generatedcontent']['activmenu']);
-    }
-
-    $link = '/' . ($category ? $category->getSlug() : '')
-    . 'side' . $side['id'] . '-' . clearFileName($side['navn']) . '.html';
-    $name = xhtmlEsc($side['navn']);
-
-    if ($type === CATEGORY_GALLERY) {
-        if (!$side['beskrivelse'] && $side['text']) {
-            $side['beskrivelse'] = stringLimit($side['text'], 100);
-        }
+    if ($renderMode === CATEGORY_GALLERY) {
         $GLOBALS['generatedcontent']['list'][] = [
-            'id' => @$side['id'],
-            'name' => $name,
-            'date' => @$side['dato'],
-            'link' => $link,
-            'icon' => @$side['billed'],
-            'text' => @$side['beskrivelse'],
+            'id' => $page->getId(),
+            'name' => xhtmlEsc($page->getTitle()),
+            'date' => $page->getTimeStamp(),
+            'link' => $page->getCanonicalLink(false, $category),
+            'icon' => $page->getImagePath(),
+            'text' => $page->getExcerpt(),
             'price' => [
-                'before' => @$side['for'],
-                'now' => @$side['pris'],
-                'from' => @$side['fra'],
-                'market' => @$side['burde']
+                'before' => $page->getOldPrice(),
+                'now' => $page->getPrice(),
+                'from' => $page->getPriceType(),
+                'market' => $page->getOldPriceType(),
             ]
         ];
     } else {
         $GLOBALS['generatedcontent']['list'][] = [
-            'id' => @$side['id'],
-            'name' => $name,
-            'date' => @$side['dato'],
-            'link' => $link,
-            'serial' => @$side['varenr'],
+            'id' => $page->getId(),
+            'name' => xhtmlEsc($page->getTitle()),
+            'date' => $page->getTimeStamp(),
+            'link' => $page->getCanonicalLink(false, $category),
+            'serial' => $page->getSku(),
             'price' => [
-                'before' => @$side['for'],
-                'now' => @$side['pris'],
+                'before' => $page->getOldPrice(),
+                'now' => $page->getPrice(),
             ]
         ];
     }
@@ -588,56 +564,20 @@ function stringLimit(string $string, int $length = 50, string $ellipsis = '…')
 /**
  * Figure out how to display the active category
  */
-function liste()
+function liste(Category $category)
 {
-    $bind = db()->fetchArray(
-        "
-        SELECT sider.id,
-            UNIX_TIMESTAMP(dato) AS dato,
-            sider.navn,
-            sider.beskrivelse,
-            sider.text,
-            sider.pris,
-            sider.for,
-            sider.burde,
-            sider.fra,
-            sider.varenr,
-            sider.billed
-        FROM bind JOIN sider ON bind.side = sider.id
-        WHERE bind.kat = " . $GLOBALS['generatedcontent']['activmenu'] . "
-        ORDER BY sider.navn ASC
-        "
-    );
-    Cache::addLoadedTable('bind');
-    Cache::addLoadedTable('sider');
-
-    $category = ORM::getOne(Category::class, $GLOBALS['generatedcontent']['activmenu']);
-    Cache::addLoadedTable('kat');
-
-    if ($bind) {
-        if (count($bind) === 1) {
-            $GLOBALS['side']['id'] = reset($bind)['id'];
-            side();
-        } else {
-            $bind = arrayNatsort($bind, 'id', 'navn', 'asc');
-            foreach ($bind as $value) {
-                //Add space around all tags, strip all tags,
-                //remove all unneded white space
-                if ($category->getRenderMode() !== CATEGORY_HIDDEN) {
-                    $value['text'] = preg_replace(
-                        '/\s+/',
-                        ' ',
-                        strip_tags(
-                            preg_replace(
-                                ['/</', '/>/', '/\s+/'],
-                                [' <', '> ', ' '],
-                                $value['text']
-                            )
-                        )
-                    );
-                }
-                vare($value, $category->getRenderMode());
+    $pages = $category->getPages();
+    if (count($pages) === 1) {
+        $GLOBALS['side']['id'] = reset($pages)->getId();
+        side();
+    } elseif ($pages) {
+        $pages = arrayNatsort($pages, 'id', 'navn', 'asc');
+        foreach ($pages as $page) {
+            //Add space around all tags, strip all tags,
+            //remove all unneded white space
+            if ($category->getRenderMode() !== CATEGORY_HIDDEN) {
             }
+            vare($value, $category->getRenderMode());
         }
     }
 }
@@ -720,7 +660,7 @@ function searchListe(string $q, string $wheresider)
         }
 
         // Fulltext search doesn't catch things like 3 letter words etc.
-        $qsearch = ['/\s+/u', "/'/u", '/´/u', '/`/u');
+        $qsearch = ['/\s+/u', "/'/u", '/´/u', '/`/u'];
         $qreplace = ['%', '_', '_', '_'];
         $simpleq = preg_replace($qsearch, $qreplace, $q);
         $pages = ORM::getByQuery(
@@ -767,14 +707,15 @@ function searchListe(string $q, string $wheresider)
             $pages[$page->getId()] = $page;
         }
     }
+
     // Remove inactive pages
-    foreach ($pages as $key => $side) {
-        if (isInactivePage($side['id'])) {
+    foreach ($pages as $key => $page) {
+        if ($page->isInactive()) {
             unset($pages[$key]);
         }
     }
 
-    return $pages;
+    return array_values($pages);
 }
 
 /**
@@ -951,41 +892,21 @@ function doConditionalGet(int $timestamp)
 function side()
 {
     if (!isset($GLOBALS['side']['navn'])) {
-        $sider = db()->fetchOne(
-            "
-            SELECT `navn`,
-                `burde`,
-                `fra`,
-                `text`,
-                `pris`,
-                `for`,
-                `krav`,
-                `maerke`,
-                varenr,
-                UNIX_TIMESTAMP(dato) AS dato
-            FROM sider
-            WHERE id = " . $GLOBALS['side']['id']
-        );
+        $page = ORM::getOne(Page::class, $GLOBALS['side']['id']);
+        Cache::addUpdateTime($page->getTimeStamp());
 
-        if (!$sider) {
-            header('HTTP/1.1 404 Not Found');
-            //TODO lav en søgning
-            Cache::addLoadedTable('sider');
-        } elseif ($sider['dato']) {
-            Cache::addUpdateTime($sider['dato']);
-        }
-
-        $GLOBALS['side']['navn']   = $sider['navn'];
-        $GLOBALS['side']['burde']  = $sider['burde'];
-        $GLOBALS['side']['fra']    = $sider['fra'];
-        $GLOBALS['side']['text']   = $sider['text'];
-        $GLOBALS['side']['pris']   = $sider['pris'];
-        $GLOBALS['side']['for']    = $sider['for'];
-        $GLOBALS['side']['krav']   = $sider['krav'];
-        $GLOBALS['side']['maerke'] = $sider['maerke'];
-        $GLOBALS['side']['varenr'] = $sider['varenr'];
-        $GLOBALS['side']['dato']   = $sider['dato'];
-        unset($sider);
+        $GLOBALS['side'] = [
+            'navn'   => $page->getTitle(),
+            'burde'  => $page->getOldPriceType(),
+            'fra'    => $page->getPriceType(),
+            'text'   => $page->getHtml(),
+            'pris'   => $page->getPrice(),
+            'for'    => $page->getOldPrice(),
+            'krav'   => $page->getRequirementId(),
+            'maerke' => $page->getBrandId(),
+            'varenr' => $page->getSku(),
+            'dato'   => $page->getTimeStamp(),
+        ];
     }
 
     $GLOBALS['generatedcontent']['headline'] = $GLOBALS['side']['navn'];
@@ -1271,7 +1192,7 @@ function isInactivePage(int $id): bool
 function fullMysqliEscape($s)
 {
     if (is_array($s)) {
-        return array_map('App\fullMysqliEscape', $s);
+        return array_map('fullMysqliEscape', $s);
     }
 
     return db()->escapeWildcards(db()->esc($s));
@@ -1299,47 +1220,19 @@ function listKats(Category $category = null)
 
     foreach ($categories as $category) {
         //print xml
-        ?><url>
-        <loc><?php
-        echo $GLOBALS['_config']['base_url'];
-        $url = '/' . $category->getSlug();
-        echo $url;
-        ?></loc><changefreq>weekly</changefreq><priority>0.5</priority></url><?php
-        listPages($category->getId(), $url);
-        listKats($category);
-    }
-}
-
-/**
- * Print XML for pages bellonging to a category
- *
- * @param int    $id      Id of category
- * @param string $urlBase Url of category
- *
- * @return null
- */
-function listPages(int $id, string $urlBase)
-{
-    $binds = db()->fetchArray("SELECT side FROM bind WHERE kat = " . $id);
-    Cache::addLoadedTable('bind');
-    foreach ($binds as $bind) {
-        $sider = db()->fetchOne(
-            "
-            SELECT navn, dato
-            FROM sider
-            WHERE id = " . $bind['side']
-        );
-        //print xml
         ?><url><loc><?php
-        echo $GLOBALS['_config']['base_url'] . $urlBase . '/side'
-        . $bind['side'] . '-' . clearFileName($sider['navn']) . '.html';
-        ?></loc>
-        <lastmod><?php
-        echo mb_substr($sider['dato'], 0, -9, 'UTF-8');
-        ?></lastmod>
-        <changefreq>monthly</changefreq>
-        <priority>0.6</priority>
-        </url><?php
+        echo htmlspecialchars($GLOBALS['_config']['base_url'] . '/' . $category->getSlug(), ENT_COMPAT | ENT_XML1);
+        ?></loc><changefreq>weekly</changefreq><priority>0.5</priority></url><?php
+        foreach ($category->getPages() as $page) {
+            //print xml
+            ?><url><loc><?php
+            echo htmlspecialchars($GLOBALS['_config']['base_url'] . $page->getCanonicalLink(false, $category), ENT_COMPAT | ENT_XML1);
+            ?></loc><lastmod><?php
+            echo htmlspecialchars(mb_substr($page->getTimeStamp(), 0, -9, 'UTF-8'), ENT_COMPAT | ENT_XML1);
+            ?></lastmod><changefreq>monthly</changefreq><priority>0.6</priority></url><?php
+        }
+
+        listKats($category);
     }
 }
 

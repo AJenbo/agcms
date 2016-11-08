@@ -32,48 +32,46 @@ if ($encoding != 'UTF-8') {
     redirect($url);
 }
 
+$category = null;
+$page = null;
+
 if (!isset($_GET['q'])) {
     $redirectUrl = '/?sog=1&q=&sogikke=&minpris=&maxpris=&maerke=';
-    $q = trim(
-        preg_replace(
-            [
-                '/\/|-|_|\.html|\.htm|\.php|\.gif|\.jpeg|\.jpg|\.png|kat-|side-|\.php/u',
-                '/[^\w0-9]/u',
-                '/([0-9]+)/u',
-                '/([[:upper:]]?[[:lower:]]+)/u',
-                '/\s+/u'
-            ],
-            [
-                ' ',
-                ' ',
-                ' \1 ',
-                ' \1',
-                ' '
-            ],
-            $url
-        )
+    $q = preg_replace(
+        [
+            '/\/|-|_|\.html|\.htm|\.php|\.gif|\.jpeg|\.jpg|\.png|kat-|side-|\.php/u',
+            '/[^\w0-9]/u',
+            '/([0-9]+)/u',
+            '/([[:upper:]]?[[:lower:]]+)/u',
+            '/\s+/u'
+        ],
+        [
+            ' ',
+            ' ',
+            ' \1 ',
+            ' \1',
+            ' '
+        ],
+        $url
     );
     $q = trim($q);
     if ($q) {
         $redirectUrl = '/?q=' . rawurlencode($q) . '&sogikke=&minpris=&maxpris=&maerke=0';
     }
 
-    $category = null;
-    $page = null;
-
     // Detect and redirect old urls
     $categoryId = (int) preg_replace('/.*kat=([0-9]+).*\s*|.*/u', '\1', $url);
-    $sideId = (int) preg_replace('/.*side=([0-9]+).*\s*|.*/u', '\1', $url);
-    if (!$sideId && isset($_GET['id'])) {
-        $sideId = (int) $_GET['id'];
+    $pageId = (int) preg_replace('/.*side=([0-9]+).*\s*|.*/u', '\1', $url);
+    if (!$pageId && isset($_GET['id'])) {
+        $pageId = (int) $_GET['id'];
     }
     $maerkeId = (int) preg_replace('/.*\/maerke([0-9]*)-.*|.*/u', '\1', $url);
-    if ($maerkeId || $categoryId || $sideId) {
+    if ($maerkeId || $categoryId || $pageId) {
         if ($categoryId) {
             $category = ORM::getOne(Category::class, $categoryId);
         }
-        if ($sideId) {
-            $page = ORM::getOne(Page::class, $sideId);
+        if ($pageId) {
+            $page = ORM::getOne(Page::class, $pageId);
             if ($page && !$category) {
                 $category = $page->getPrimaryCategory();
             }
@@ -106,39 +104,41 @@ if (!isset($_GET['q'])) {
         );
         if (!$maerkeet) {
             $_GET['sog'] = 1;
-            $GLOBALS['side']['404'] = true:
+            $GLOBALS['side']['404'] = true;
         }
     }
 
-    $GLOBALS['generatedcontent']['activmenu'] = 0;
-    $GLOBALS['side']['id'] = 0;
-    $sideId = (int) preg_replace('/.*\/side([0-9]*)-.*|.*/u', '\1', $url);
     $categoryId = (int) preg_replace('/.*\/kat([0-9]*)-.*|.*/u', '\1', $url);
+    $pageId = (int) preg_replace('/.*\/side([0-9]*)-.*|.*/u', '\1', $url);
+    $redirect = !$categoryId && !$pageId;
     if ($categoryId) {
         $category = ORM::getOne(Category::class, $categoryId);
-        if ($category && !$category->isInactive()) {
-            $GLOBALS['generatedcontent']['activmenu'] = $category->getId();
-        } else {
+        if (!$category || $category->isInactive()) {
             $category = null;
         }
     }
-    if ($sideId) {
-        $page = ORM::getOne(Page::class, $sideId);
+    if ($pageId) {
+        $page = ORM::getOne(Page::class, $pageId);
         if (!$page || $page->isInactive()) {
-            $redirect = true;
+            $page = null;
         }
-        $GLOBALS['side']['id'] = $page->getId();
     }
-    if ($redirect) {
-        if ($category || $page) {
-            if (!$category) {
-                $category = $page->getPrimaryCategory();
-            }
-            $redirectUrl = '/' . ($category ? $category->getSlug(true) : '') . ($page ? $page->getSlug(true) : '');
+    if (($categoryId && !$category)
+        || ($pageId && !$page)
+        || (!$category && !$page)
+    ) {
+        if ($page) {
+            $redirectUrl = $page->getCanonicalLink(true, $category);
+        } elseif ($category) {
+            $redirectUrl = '/' . $category->getSlug(true);
         }
+
         redirect($redirectUrl);
     }
 }
+
+$GLOBALS['generatedcontent']['activmenu'] = $category ? $category->getId() : 0;
+$GLOBALS['side']['id'] = $page ? $page->getId() : 0;
 
 //TODO stop space efter æøå
 header('Status: 200', true, 200);

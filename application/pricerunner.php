@@ -38,56 +38,38 @@ $replace = [
     ' '
 ];
 
-$sider = db()->fetchArray(
+$pages = ORM::getByQuery(
+    Page::class,
     "
-    SELECT sider.id,
-        `pris`,
-        varenr,
-        sider.maerke,
-        sider.navn,
-        billed,
-        kat.id AS kat_id
-    FROM sider
-    JOIN bind ON (side = sider.id)
-    JOIN kat ON (kat.id = kat)
-    WHERE `pris` >0
-      AND sider.`navn` != ''
-    GROUP BY id
-    ORDER BY `sider`.`varenr` DESC
+    SELECT * FROM sider
+    WHERE `pris` > 0 AND `navn` != ''
+    ORDER BY ``varenr` DESC
     "
 );
-foreach ($sider as $key => $page) {
-    $category = ORM::getOne(Category::class, $page['kat_id']);
-    if ($category->isInactive()) {
+foreach ($pages as $page) {
+    if ($page->isInactive()) {
         continue;
     }
 
-    $name = htmlspecialchars($page['navn'], ENT_COMPAT | ENT_XML1);
-    if (!$page['navn'] = trim($name)) {
-        continue;
+    echo '<product><sku>' . $page->getId() . '</sku><title>'
+    . htmlspecialchars(trim($page->getTitle()), ENT_COMPAT | ENT_XML1) . '</title>';
+    if (trim($page->getSku())) {
+        echo '<companysku>' . htmlspecialchars(trim($page->getSku()), ENT_COMPAT | ENT_XML1) . '</companysku>';
     }
-
-    echo '
-    <product>
-        <sku>'.$page['id'].'</sku>
-        <title>'.$page['navn'].'</title>';
-    if (trim($page['varenr'])) {
-        echo '<companysku>' . htmlspecialchars($page['varenr'], ENT_COMPAT | ENT_XML1) . '</companysku>';
-    }
-    echo '<price>' . $page['pris'] . ',00</price>
-    <img>' . $GLOBALS['_config']['base_url'] . $page['billed'] . '</img>
-    <link>' . $GLOBALS['_config']['base_url'] . '/' . $category->getSlug(true)
-    . 'side' . $page['id'] . '-' . rawurlencode(clearFileName($page['navn'])) . '.html</link>';
+    echo '<price>' . $page->getPrice() . ',00</price><img>'
+    . $GLOBALS['_config']['base_url'] . $page->getImagePath() . '</img><link>'
+    . $GLOBALS['_config']['base_url'] . $page->getCanonicalLink(true) . '</link>';
 
     $categoryTitles = [];
-    if ($page['maerke']) {
+    if ($page->getBrandId()) {
         $maerker = db()->fetchOne(
             "
             SELECT `navn`
             FROM maerke
-            WHERE id = " . $page['maerke']
+            WHERE id = " . $page->getBrandId()
         );
-        $cleaned = trim(preg_replace($search, $replace, $maerker['navn']));
+        $cleaned = preg_replace($search, $replace, $maerker['navn']);
+        $cleaned = trim($cleaned);
         if ($cleaned) {
             $categoryTitles[] = htmlspecialchars($cleaned, ENT_NOQUOTES | ENT_XML1);
         }
@@ -96,24 +78,15 @@ foreach ($sider as $key => $page) {
         echo '</company>';
     }
 
-    $categories = ORM::getByQuery(
-        Category::class,
-        "
-        SELECT kat.*
-        FROM `bind`
-        JOIN kat ON kat.id = bind.kat
-        WHERE bind.side = " . $page['id']
-    );
-    foreach ($categories as $category) {
+    $categoryIds = [];
+    foreach ($page->getCategories() as $category) {
         do {
             $categoryIds[] = $category->getId();
         } while ($category = $category->getParent());
     }
-    $categoryIds = array_unique($categoryIds);
-
-    foreach ($categoryIds as $categoryId) {
+    foreach (array_unique($categoryIds) as $categoryId) {
         $category = ORM::getOne(Category::class, $categoryId);
-        $cleaned = trim(preg_replace($search, $replace, $category->getTitle()));
+        $cleaned = preg_replace($search, $replace, $category->getTitle());
         $cleaned = trim($cleaned);
         if ($cleaned) {
             $categoryTitles[] = htmlspecialchars($cleaned, ENT_NOQUOTES | ENT_XML1);
@@ -122,7 +95,7 @@ foreach ($sider as $key => $page) {
 
     $categoryTitles = array_unique(array_reverse($categoryTitles));
 
-    echo '<category>'.implode(' &gt; ', $categoryTitles).'</category>';
+    echo '<category>' . implode(' &gt; ', $categoryTitles) . '</category>';
     echo '</product>';
 }
 db()->close();

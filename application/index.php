@@ -251,10 +251,8 @@ if (!empty($_GET['sog'])) {
         ORDER BY `navn` ASC
         "
     );
-
     Cache::addLoadedTable('maerke');
 
-    $maerker_nr = count($maerker);
     foreach ($maerker as $value) {
         $text .= '<option value="'.$value['id'].'">';
         $text .= xhtmlEsc($value['navn']) . '</option>';
@@ -302,7 +300,7 @@ if (!empty($_GET['sog'])) {
         //Full search
         $wheresider = "";
         if (!empty($_GET['varenr'])) {
-            $wheresider .= " AND varenr LIKE '" . $_GET['varenr']."%'";
+            $wheresider .= " AND varenr LIKE '" . db()->esc($_GET['varenr']) . "%'";
         }
         if (!empty($_GET['minpris'])) {
             $wheresider .= " AND pris > " . (int) $_GET['minpris'];
@@ -314,40 +312,27 @@ if (!empty($_GET['sog'])) {
             $wheresider = " AND `maerke` = '" . (int) $_GET['maerke'] . "'";
         }
         if (!empty($_GET['sogikke'])) {
-            $wheresider .= " AND !MATCH (navn, text) AGAINST('" . $_GET['sogikke'] ."') > 0";
+            $wheresider .= " AND !MATCH (navn, text) AGAINST('" . db()->esc($_GET['sogikke']) ."') > 0";
         }
+        $pages = searchListe(@$_GET['q'], $wheresider);
     }
-    $pages += searchListe(@$_GET['q'], $wheresider);
-    $sider = array_values($pages);
 
     //Draw the list
-    if (count($sider) === 1
+    if (count($pages) === 1
         && $GLOBALS['generatedcontent']['contenttype'] != 'brand'
     ) {
-        $side = array_shift($sider);
-
-        $category = ORM::getOneByQuery(
-            Category::class,
-            "
-            SELECT kat.*
-            FROM bind
-            JOIN kat ON kat.id = bind.kat
-            WHERE bind.`side` = " . $side['id']
-        );
-        Cache::addLoadedTable('bind');
-
-        $url = '/';
-        if ($category) {
-            $url = $category->getSlug(true);
-        }
-        $url .= 'side' . $side['id'] . '-' . rawurlencode(clearFileName($side['navn'])) . '.html';
-
+        $page = array_shift($pages);
+        $url = $page->getCanonicalLink(true, $category);
         redirect($url, 302);
     } else {
-        foreach ($sider as $value) {
-            $activMenu = 0;
-            $value['text'] = strip_tags($value['text']);
-            vare($value, 1);
+        foreach ($pages as $page) {
+            //Search categories does not have a fixed number, use first fixed per page
+            $category = null;
+            if ($GLOBALS['generatedcontent']['activmenu']) {
+                $category = ORM::getOne(Category::class, $GLOBALS['generatedcontent']['activmenu']);
+            }
+
+            vare($page, CATEGORY_GALLERY, $category);
         }
     }
     $activMenu = $temp_kat;
@@ -361,7 +346,8 @@ if (!empty($_GET['sog'])) {
     $GLOBALS['generatedcontent']['contenttype'] = 'product';
     side();
 } elseif ($activMenu > 0) {
-    liste();
+    $category = ORM::getOne(Category::class, $GLOBALS['generatedcontent']['activmenu']);
+    liste($category);
     if (@$GLOBALS['side']['id'] > 0) {
         $GLOBALS['generatedcontent']['contenttype'] = 'product';
     } elseif (Cache::get('kat' . $activMenu . 'type') == 2) {
@@ -400,16 +386,9 @@ if (!empty($maerkeet)) {
         $GLOBALS['generatedcontent']['keywords'] = xhtmlEsc($GLOBALS['side']['navn']);
     }
 } elseif (!empty($GLOBALS['side']['id'])) {
-    $sider_navn = db()->fetchOne(
-        "
-        SELECT navn, UNIX_TIMESTAMP(dato) AS dato
-        FROM sider
-        WHERE id = ".$GLOBALS['side']['id']."
-        "
-    );
-    Cache::addUpdateTime($sider_navn['dato']);
-
-    $GLOBALS['generatedcontent']['title'] = xhtmlEsc($sider_navn['navn']);
+    $page = ORM::getOne(Page::class, $GLOBALS['side']['id']);
+    Cache::addUpdateTime($page->getTimeStamp());
+    $GLOBALS['generatedcontent']['title'] = xhtmlEsc($page->getTitle());
 }
 
 $category = null;

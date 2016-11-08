@@ -230,6 +230,20 @@ class Category
         return array_values($children);
     }
 
+    public function getPages()
+    {
+        Cache::addLoadedTable('bind');
+        return ORM::getByQuery(
+            Page::class,
+            "
+            SELECT sider.*
+            FROM bind JOIN sider ON bind.side = sider.id
+            WHERE bind.kat = " . $this->getId() . "
+            ORDER BY sider.navn ASC
+            "
+        );
+    }
+
     public function isInactive(): bool
     {
         $trunk = $this;
