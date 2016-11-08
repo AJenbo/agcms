@@ -225,13 +225,56 @@ class Page
     // General methodes
     public function getSlug(bool $raw = false): string
     {
-        $slug = 'side' . $kat->getId() . '-';
+        $slug = 'side' . $this->getId() . '-';
         if ($raw) {
             $slug .= rawurlencode(clearFileName($this->getTitle()));
         } else {
             $slug .= clearFileName($this->getTitle());
         }
-        return $slug .= '/';
+        return $slug .= '.html';
+    }
+
+    public function getCanonicalLink(bool $raw = false, Category $category = null): string
+    {
+        $url = '/';
+
+        if (!$category) {
+            $category = $this->getPrimaryCategory();
+        }
+        if ($category) {
+            $url .= $category->getSlug(false);
+        }
+
+        return $url .= $this->getSlug(false);
+    }
+
+    public function getPrimaryCategory(): Category
+    {
+        $bind = db()->fetchOne("SELECT kat FROM bind WHERE side = " . $this->getId());
+        Cache::addLoadedTable('bind');
+        if (!$bind || $bind['kat'] >= 0) {
+            return null;
+        }
+
+        return ORM::getOne(Category::class, $bind['kat']);
+    }
+
+    public function isInactive(): bool
+    {
+        $trunk = $this->getPrimaryCategory();
+        if (!$trunk) {
+            $bind = db()->fetchOne("SELECT kat FROM bind WHERE side = " . $this->getId());
+            if ($bind) {
+                return !$bind['kat'];
+            }
+            return false;
+        }
+
+        while ($trunk->getParent()) {
+            $trunk = $category->getParent();
+        }
+
+        return !$trunk->getParentId();
     }
 
     // ORM related functions

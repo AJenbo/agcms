@@ -5,9 +5,7 @@ include_once _ROOT_ . '/inc/countries.php';
 require_once _ROOT_ . '/inc/epaymentAdminService.php';
 
 if (!empty($_GET['function']) && $_GET['function'] == 'new') {
-    ini_set('zlib.output_compression', '0');
-    header('Location: faktura.php?id='.newfaktura(), true, 303);
-    exit;
+    redirect('faktura.php?id='.newfaktura(), 303);
 }
 
 $faktura = db()->fetchOne(

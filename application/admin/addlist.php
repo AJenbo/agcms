@@ -32,7 +32,7 @@ if (!empty($_POST)) {
     window.opener.location.reload();
     window.close();
     --></script></head><body></body></html><?php
-    exit;
+    die();
 }
 
 $tablesorts = db()->fetchArray("SELECT id, navn FROM `tablesort`");

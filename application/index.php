@@ -13,8 +13,6 @@
 
 session_start();
 
-//ini_set('zlib.output_compression', 1);
-
 require_once $_SERVER['DOCUMENT_ROOT'] . '/inc/functions.php';
 
 if (!empty($_SESSION['faktura']['quantities'])) {
@@ -30,29 +28,23 @@ if (empty($delayprint)) {
 
 // Redirect old urls
 if (isset($_GET['kat']) || isset($_GET['side'])) {
-    ini_set('zlib.output_compression', '0');
-    header('HTTP/1.1 301 Moved Permanently');
+    $category = null;
     if (isset($_GET['kat'])) {
         $category = ORM::getOne(Category::class, $_GET['kat']);
     }
     if (isset($_GET['side'])) {
-        $side = db()->fetchOne("SELECT * FROM sider WHERE id = " . (int) $_GET['side']);
-        if (!$category) {
-            $bind = db()->fetchOne("SELECT kat FROM sider WHERE side = " . $side['id']);
-            unset($bind);
-            $category = ORM::getOne(Category::class, $bind['kat']);
+        $page = ORM::getOne(Page::class, $_GET['side']);
+        if ($page && !$category) {
+            $category = $page->getPrimaryCategory();
         }
     }
-    $newUrl = '/' . ($category ? $category->getSlug(true) : '');
-    if ($side) {
-        $url .= 'side' . $side['id'] . '-' .rawurlencode(clearFileName($side['navn'])) .'.html';
-    }
+    $newUrl = '/' . ($category ? $category->getSlug(true) : '')
+    . ($page ? $page->getSlug(true) : '');
     if ($newUrl === '/') {
         $newUrl .= '?sog=1&q=&varenr=&sogikke=&minpris=&maxpris=&maerke=';
     }
 
-    header('Location: ' . $newUrl);
-    die();
+    redirect($newUrl);
 }
 
 $_GET = fullMysqliEscape($_GET);
@@ -72,38 +64,11 @@ if (@$_GET['sog']
     $activMenu = -1;
 }
 
-
-//Handle none existing pages
-if (@$GLOBALS['side']['id'] > 0) {
-    if (!db()->fetchOne(
-        "
-        SELECT id
-        FROM sider
-        WHERE id = " .$GLOBALS['side']['id']
-    )
-    ) {
-        Cache::addLoadedTable('sider');
-
-        $GLOBALS['side']['inactive'] = true;
-        unset($GLOBALS['side']['id']);
-        header('HTTP/1.1 404 Not Found');
-    }
-}
-
-//Block inactive pages
-if (@$GLOBALS['side']['id'] > 0 && isInactivePage($GLOBALS['side']['id'])) {
-    $GLOBALS['side']['inactive'] = true;
-    header('HTTP/1.1 404 Not Found');
-}
-
 /**
  * Hvis siden er kendt men katagorien ikke så find den første passende
  * katagori, hent også side indholdet.
  */
-if (@$GLOBALS['side']['id'] > 0
-    && $activMenu
-    && empty($GLOBALS['side']['inactive'])
-) {
+if (@$GLOBALS['side']['id'] > 0 && $activMenu) {
     $bind = db()->fetchOne(
         "
         SELECT bind.kat,
@@ -141,40 +106,23 @@ if (@$GLOBALS['side']['id'] > 0
     $GLOBALS['side']['varenr'] = $bind['varenr'];
     $GLOBALS['side']['dato']   = $bind['dato'];
     unset($bind);
-} elseif (@$GLOBALS['side']['id'] > 0 && empty($GLOBALS['side']['inactive'])) {
+} elseif (@$GLOBALS['side']['id'] > 0) {
     //Hent side indhold
-    $page = db()->fetchOne(
-        "
-        SELECT `navn`,
-            `burde`,
-            `fra`,
-            `text`,
-            `pris`,
-            `for`,
-            `krav`,
-            `maerke`,
-            varenr,
-            UNIX_TIMESTAMP(dato) AS dato
-        FROM sider
-        WHERE id = " . $GLOBALS['side']['id']
-    );
-    if ($page['dato']) {
-        Cache::addUpdateTime($page['dato']);
-    } else {
-        Cache::addLoadedTable('sider');
+    $page = ORM::getOne(Page::class, $GLOBALS['side']['id']);
+    if ($page->getTimeStamp()) {
+        Cache::addUpdateTime($page->getTimeStamp());
     }
 
-    $GLOBALS['side']['navn']   = $page['navn'];
-    $GLOBALS['side']['burde']  = $page['burde'];
-    $GLOBALS['side']['fra']    = $page['fra'];
-    $GLOBALS['side']['text']   = $page['text'];
-    $GLOBALS['side']['pris']   = $page['pris'];
-    $GLOBALS['side']['for']    = $page['for'];
-    $GLOBALS['side']['krav']   = $page['krav'];
-    $GLOBALS['side']['maerke'] = $page['maerke'];
-    $GLOBALS['side']['varenr'] = $page['varenr'];
-    $GLOBALS['side']['dato']   = $page['dato'];
-    unset($sider);
+    $GLOBALS['side']['navn']   = $page->getTitle();
+    $GLOBALS['side']['burde']  = $page->getOldPriceType();
+    $GLOBALS['side']['fra']    = $page->getPriceType();
+    $GLOBALS['side']['text']   = $page->getHtml();
+    $GLOBALS['side']['pris']   = $page->getPrice();
+    $GLOBALS['side']['for']    = $page->getOldPrice();
+    $GLOBALS['side']['krav']   = $page->getRequirementId();
+    $GLOBALS['side']['maerke'] = $page->getBrandId();
+    $GLOBALS['side']['varenr'] = $page->getSku();
+    $GLOBALS['side']['dato']   = $page->getTimestamp();
 }
 
 if ($activMenu > 0) {
@@ -241,9 +189,9 @@ foreach ($categories as $category) {
 }
 
 //Front page pages
-$pages = db()->fetchArray(
+$pages = ORM::getByQuery(Page::class,
     "
-    SELECT sider.id, sider.navn
+    SELECT *
     FROM bind
     JOIN sider
     ON bind.side = sider.id
@@ -251,38 +199,37 @@ $pages = db()->fetchArray(
     "
 );
 Cache::addLoadedTable('bind');
-Cache::addLoadedTable('sider');
 
 foreach ($pages as $page) {
     $GLOBALS['generatedcontent']['sider'][] = [
-        'id' => $page['id'],
-        'name' => xhtmlEsc($page['navn']),
-        'link' => '/side' . $page['id'] . '-' . clearFileName($page['navn']) .'.html'
+        'id' => $page->getId(),
+        'name' => xhtmlEsc($page->getTitle()),
+        'link' => '/' . $page->getSlug(),
     ];
 }
 
 //TODO catch none existing kats
 //Get page content and type
-if (@$_GET['sog'] || @$GLOBALS['side']['inactive']) {
+if (!empty($_GET['sog'])) {
     $GLOBALS['generatedcontent']['contenttype'] = 'search';
 
     $text = '';
 
-    if (@$GLOBALS['side']['inactive']) {
-        $text .= '<p>'
-            ._('Page could not be found. Try searching for a similar page.') .'</p>';
+    if (@$GLOBALS['side']['404']) {
+        header('HTTP/1.1 404 Not Found');
+        $text .= '<p>' . _('Page could not be found. Try searching for a similar page.') . '</p>';
     }
 
     $text .= '<form action="/" method="get"><table>';
     $text .= '<tr><td>'._('Contains').'</td><td>';
     $text .= '<input name="q" size="31" value="';
-    if (@$GLOBALS['side']['inactive']) {
+    if (@$GLOBALS['side']['404']) {
         $text = preg_replace(
-            ['/-/u', '/.*?side[0-9]+\s(.*?)[.]html/u'],
-            [' ', '\1'],
+            ['/-/u', '/\/kat[0-9]+-(.*?)\//u', '/\/side[0-9]+-(.*?)[.]html/u'],
+            [' ', ' \1 ', ' \1 '],
             urldecode($_SERVER['REQUEST_URI'])
         );
-        $text = xhtmlEsc($text);
+        $text = xhtmlEsc(trim($text));
     }
     $text .= '" /></td>';
     $text .= '<td><input type="submit" value="'._('Search').'" /></td></tr>';
@@ -314,21 +261,14 @@ if (@$_GET['sog'] || @$GLOBALS['side']['inactive']) {
     }
     $text .= '</select></td></tr></table></form>';
     $GLOBALS['generatedcontent']['text'] = $text;
-} elseif (@$_GET['q']
-    || @$_GET['varenr']
-    || @$_GET['sogikke']
-    || @$_GET['minpris']
-    || @$_GET['maxpris']
-    || @$_GET['maerke']
-    || @$maerke
-) {
+} elseif (isset($_GET['q']) || !empty($maerke)) {
     $GLOBALS['generatedcontent']['contenttype'] = 'tiles';
 
     //Temporarly store the katalog number so it can be restored when search is over
     $temp_kat = $activMenu;
 
-    $sider = [];
-    if ((@$_GET['maerke'] || @$maerke)
+    $pages = [];
+    if ((!empty($_GET['maerke']) || @$maerke)
         && empty($_GET['q'])
         && empty($_GET['varenr'])
         && empty($_GET['sogikke'])
@@ -356,49 +296,34 @@ if (@$_GET['sog'] || @$GLOBALS['side']['inactive']) {
             'icon' => $maerkeet['ico'],
         ];
 
-        $wheresider = "AND (`maerke` LIKE '". $maerkeet['id']
-            ."' OR `maerke` LIKE '" .$maerkeet['id'].",%' OR `maerke` LIKE '%,"
-            .$maerkeet['id'] .",%' OR `maerke` LIKE '%,"
-            .$maerkeet['id'] ."')";
-        $sider = searchListe(false, $wheresider);
+        $wheresider = " AND `maerke` = '" . $maerkeet['id'] . "'";
+        $pages = searchListe(false, $wheresider);
     } else {
         //Full search
         $wheresider = "";
-        if (@$_GET['varenr']) {
-            $wheresider .= " AND varenr LIKE '".$_GET['varenr']."%'";
+        if (!empty($_GET['varenr'])) {
+            $wheresider .= " AND varenr LIKE '" . $_GET['varenr']."%'";
         }
-        if (@$_GET['minpris']) {
-            $wheresider .= " AND pris > ".$_GET['minpris'];
+        if (!empty($_GET['minpris'])) {
+            $wheresider .= " AND pris > " . (int) $_GET['minpris'];
         }
-        if (@$_GET['maxpris']) {
-            $wheresider .= " AND pris < ".$_GET['maxpris'];
+        if (!empty($_GET['maxpris'])) {
+            $wheresider .= " AND pris < " . (int) $_GET['maxpris'];
         }
-        if (@$_GET['maerke']) {
-            $wheresider .= " AND (`maerke` LIKE '%," .$_GET['maerke']
-                .",%' OR `maerke` LIKE '" .$_GET['maerke']
-                .",%' OR `maerke` LIKE '%," .$_GET['maerke']
-                ."' OR `maerke` LIKE '" .$_GET['maerke'] ."')";
+        if (!empty($_GET['maerke'])) {
+            $wheresider = " AND `maerke` = '" . (int) $_GET['maerke'] . "'";
         }
-        if (@$nmaerke) {
-            $wheresider .= " AND (`maerke` NOT LIKE '%," .$nmaerke
-                .",%' AND `maerke` NOT LIKE '" .$nmaerke
-                .",%' AND `maerke` NOT LIKE '%," .$nmaerke
-                ."' AND `maerke` NOT LIKE '" .$nmaerke ."')";
-        }
-        if (@$_GET['sogikke']) {
-            $wheresider .= " AND !MATCH (navn,text) AGAINST('" .$_GET['sogikke']
-            ."') > 0";
+        if (!empty($_GET['sogikke'])) {
+            $wheresider .= " AND !MATCH (navn, text) AGAINST('" . $_GET['sogikke'] ."') > 0";
         }
     }
-    $sider += searchListe(@$_GET['q'], $wheresider);
-    $sider = array_values($sider);
+    $pages += searchListe(@$_GET['q'], $wheresider);
+    $sider = array_values($pages);
 
     //Draw the list
     if (count($sider) === 1
         && $GLOBALS['generatedcontent']['contenttype'] != 'brand'
     ) {
-        ini_set('zlib.output_compression', '0');
-        header('HTTP/1.1 302 Found');
         $side = array_shift($sider);
 
         $category = ORM::getOneByQuery(
@@ -417,9 +342,7 @@ if (@$_GET['sog'] || @$GLOBALS['side']['inactive']) {
         }
         $url .= 'side' . $side['id'] . '-' . rawurlencode(clearFileName($side['navn'])) . '.html';
 
-        //redirect til en side
-        header('Location: ' . $url);
-        die();
+        redirect($url, 302);
     } else {
         foreach ($sider as $value) {
             $activMenu = 0;
@@ -434,12 +357,6 @@ if (@$_GET['sog'] || @$GLOBALS['side']['inactive']) {
         $wherekat .= ' AND !MATCH (navn) AGAINST(\''.$_GET['sogikke'].'\') > 0';
     }
     searchMenu(@$_GET['q'], $wherekat);
-
-    if (empty($GLOBALS['generatedcontent']['list'])
-        && empty($GLOBALS['generatedcontent']['search_menu'])
-    ) {
-        header('HTTP/1.1 404 Not Found');
-    }
 } elseif (@$GLOBALS['side']['id'] > 0) {
     $GLOBALS['generatedcontent']['contenttype'] = 'product';
     side();
@@ -472,17 +389,17 @@ if (@$_GET['sog'] || @$GLOBALS['side']['inactive']) {
 }
 
 //Extract title for current page.
-if (@$maerkeet) {
+if (!empty($maerkeet)) {
     $GLOBALS['generatedcontent']['title'] = $maerkeet['navn'];
 } elseif (isset($GLOBALS['side']['navn'])) {
     $GLOBALS['generatedcontent']['title'] = xhtmlEsc($GLOBALS['side']['navn']);
     //Add page title to keywords
-    if (@$GLOBALS['generatedcontent']['keywords']) {
+    if (!empty($GLOBALS['generatedcontent']['keywords'])) {
         $GLOBALS['generatedcontent']['keywords'] .= "," . xhtmlEsc($GLOBALS['side']['navn']);
     } else {
         $GLOBALS['generatedcontent']['keywords'] = xhtmlEsc($GLOBALS['side']['navn']);
     }
-} elseif (@$GLOBALS['side']['id'] && empty($GLOBALS['side']['inactive'])) {
+} elseif (!empty($GLOBALS['side']['id'])) {
     $sider_navn = db()->fetchOne(
         "
         SELECT navn, UNIX_TIMESTAMP(dato) AS dato

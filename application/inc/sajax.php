@@ -70,7 +70,7 @@ class SAJAX
 
         header('Content-Type: text/plain; charset=UTF-8');
         echo $error ? '-:' . $error : '+:' . json_encode($result);
-        exit;
+        die();
     }
 
     public static function showJavascript()

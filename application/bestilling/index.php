@@ -95,14 +95,12 @@ if (is_numeric(@$_GET['add']) || is_numeric(@$_GET['add_list_item'])) {
         $_SESSION['faktura']['values'][] = $product['pris'];
     }
 
-    ini_set('zlib.output_compression', '0');
-
-    if ($_SERVER['HTTP_REFERER']) {
-        header('Location: '.$_SERVER['HTTP_REFERER'], true, 303);
+    if (!empty($_SERVER['HTTP_REFERER'])) {
+        $url = $_SERVER['HTTP_REFERER'];
     } else {
-        header('Location: /?side='.$_GET['add'], true, 303);
+        $url = '/?side=' . $_GET['add'];
     }
-    exit;
+    redirect($url, 303);
 }
 
 /*fake basket content*/
@@ -159,13 +157,7 @@ if (!empty($_SESSION['faktura']['quantities'])) {
             $_SESSION['faktura']['products'] = array_values($_SESSION['faktura']['products']);
             $_SESSION['faktura']['values'] = array_values($_SESSION['faktura']['values']);
 
-            ini_set('zlib.output_compression', '0');
-            header(
-                'Location: '.$GLOBALS['_config']['base_url'].'/bestilling/?step=1',
-                true,
-                303
-            );
-            exit;
+            redirect($GLOBALS['_config']['base_url'].'/bestilling/?step=1', 303);
         }
 
         $_SESSION['faktura']['amount'] = 0;
@@ -362,13 +354,7 @@ if (!empty($_SESSION['faktura']['quantities'])) {
                     );
                 }
 
-                ini_set('zlib.output_compression', '0');
-                header(
-                    'Location: '.$GLOBALS['_config']['base_url'].'/bestilling/?step=2',
-                    true,
-                    303
-                );
-                exit;
+                redirect($GLOBALS['_config']['base_url'].'/bestilling/?step=2', 303);
             }
         } else {
             $rejected = validate($_SESSION['faktura']);
@@ -581,13 +567,7 @@ if (!empty($_SESSION['faktura']['quantities'])) {
         $GLOBALS['generatedcontent']['text'] .= '</tbody></table><input style="font-weight:bold;" type="submit" value="'._('Send order').'" /></form>';
     } elseif ($_GET['step'] == 2) {
         if (!$_SESSION['faktura'] || !$_SESSION['faktura']['email']) {
-            ini_set('zlib.output_compression', '0');
-            header(
-                'Location: '.$GLOBALS['_config']['base_url'].'/bestilling/',
-                true,
-                303
-            );
-            exit;
+            redirect($GLOBALS['_config']['base_url'].'/bestilling/', 303);
         }
 
         if ($_SESSION['faktura']['paymethod'] == 'creditcard') {

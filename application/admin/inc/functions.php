@@ -2327,8 +2327,8 @@ function search(string $text): array
     $sider = db()->fetchArray("SELECT id, navn, MATCH(navn, text, beskrivelse) AGAINST ('".$text."') AS score FROM sider WHERE MATCH (navn, text, beskrivelse) AGAINST('".$text."') > 0 ORDER BY `score` DESC");
 
     //fulltext search dosn't catch things like 3 letter words and some other combos
-    $qsearch = array ("/ /","/'/","/´/","/`/");
-    $qreplace = array ("%","_","_","_");
+    $qsearch = ['/\s+/u', "/'/u", '/´/u', '/`/u'];
+    $qreplace = ['%', '_', '_', '_'];
     $simpleq = preg_replace($qsearch, $qreplace, $text);
     $sidersimple = db()->fetchArray("SELECT id, navn FROM `sider` WHERE (`navn` LIKE '%".$simpleq."%' OR `text` LIKE '%".$simpleq."%' OR `beskrivelse` LIKE '%".$simpleq."%')");
 

@@ -31,7 +31,7 @@ if (!empty($_FILES['Filedata']['tmp_name'])
     move_uploaded_file(
         $_FILES['Filedata']['tmp_name'],
         _ROOT_ . '/admin/upload/temp/' . $name
-    ) or exit;
+    ) || die();
     //Kunne ikke give tilladelse til filen.
     header('HTTP/1.1 505 Internal Server Error');
     chmod(_ROOT_ . '/admin/upload/temp/' . $name, 0644);
@@ -50,7 +50,7 @@ if (!empty($_FILES['Filedata']['tmp_name'])
         $imagesize = getimagesize(_ROOT_ . '/admin/upload/temp/' . $name);
     }
     if (!$imagesize) {
-        exit;
+        die();
     }
 
     if (empty($_POST['aspect'])) {
@@ -80,7 +80,6 @@ if (!empty($_FILES['Filedata']['tmp_name'])
                 //Billedet er for stor.
                 header('HTTP/1.1 521 Internal Server Error');
             }
-
             die();
         }
 

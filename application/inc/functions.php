@@ -52,6 +52,13 @@ function db()
     return $db;
 }
 
+function redirect(string $url, int $code = 301)
+{
+    ini_set('zlib.output_compression', '0');
+    header('Location: ' . $url, true, $code);
+    die();
+}
+
 /**
  * Checks if email an address looks valid and that an mx server is responding
  *
@@ -698,7 +705,8 @@ function searchListe(string $q, string $wheresider)
     $pages = [];
 
     if ($q) {
-        $sider = db()->fetchArray(
+        $pages = ORM::getByQuery(
+            Page::class,
             "
             SELECT *, MATCH(navn, text, beskrivelse) AGAINST ('$q') AS score
             FROM sider
@@ -707,17 +715,16 @@ function searchListe(string $q, string $wheresider)
             ORDER BY `score` DESC
             "
         );
-        Cache::addLoadedTable('sider');
-        foreach ($sider as $page) {
-            $pages[$page['id']] = $page;
+        foreach ($pages as $page) {
+            $pages[$page->getId()] = $page;
         }
-        unset($sider);
 
         // Fulltext search doesn't catch things like 3 letter words etc.
-        $qsearch = array ("/ /", "/'/", "/´/", "/`/");
-        $qreplace = array ("%", "_", "_", "_");
+        $qsearch = ['/\s+/u', "/'/u", '/´/u', '/`/u');
+        $qreplace = ['%', '_', '_', '_'];
         $simpleq = preg_replace($qsearch, $qreplace, $q);
-        $sider = db()->fetchArray(
+        $pages = ORM::getByQuery(
+            Page::class,
             "
             SELECT * FROM `sider`
             WHERE (
@@ -728,13 +735,12 @@ function searchListe(string $q, string $wheresider)
             . ($pages ? ("AND id NOT IN (" . implode(',', array_keys($pages)) . ") ") : "")
             . $wheresider
         );
-        Cache::addLoadedTable('sider');
-        foreach ($sider as $page) {
-            $pages[$page['id']] = $page;
+        foreach ($pages as $page) {
+            $pages[$page->getId()] = $page;
         }
-        unset($sider);
 
-        $sider = db()->fetchArray(
+        $pages = ORM::getByQuery(
+            Page::class,
             "
             SELECT sider.* FROM `list_rows`
             JOIN lists ON list_rows.list_id = lists.id
@@ -742,29 +748,24 @@ function searchListe(string $q, string $wheresider)
             WHERE list_rows.`cells` LIKE '%$simpleq%'"
             . ($pages ? (" AND sider.id NOT IN (" . implode(',', array_keys($pages)) . ") ") : "")
         );
-        Cache::addLoadedTable('sider');
         Cache::addLoadedTable('list_rows');
         Cache::addLoadedTable('lists');
-        foreach ($sider as $page) {
-            $pages[$page['id']] = $page;
+        foreach ($pages as $page) {
+            $pages[$page->getId()] = $page;
         }
-        unset($sider);
 
     } else {
-        $sider = db()->fetchArray(
+        $pages = ORM::getByQuery(
+            Page::class,
             "
             SELECT * FROM `sider` WHERE 1
             $wheresider
             ORDER BY `navn` ASC
             "
         );
-        Cache::addLoadedTable('sider');
-        foreach ($sider as $page) {
-            $pages[$page['id']] = $page;
+        foreach ($pages as $page) {
+            $pages[$page->getId()] = $page;
         }
-        unset($sider);
-
-        Cache::addLoadedTable('sider');
     }
     // Remove inactive pages
     foreach ($pages as $key => $side) {
@@ -1180,10 +1181,10 @@ function searchMenu(string $q, string $wherekat)
             ORDER BY score, navn
             "
         );
+        $qsearch = ['/\s+/u', "/'/u", '//u', '/`/u'];
+        $qreplace = ['%', '_', '_', '_'];
+        $simpleq = preg_replace($qsearch, $qreplace, $q);
         if (!$categories) {
-            $qsearch = array ("/ /","/'/","//","/`/");
-            $qreplace = array ("%","_","_","_");
-            $simpleq = preg_replace($qsearch, $qreplace, $q);
             $categories = ORM::getByQuery(
                 Category::class,
                 "
@@ -1202,11 +1203,6 @@ function searchMenu(string $q, string $wherekat)
         );
         Cache::addLoadedTable('maerke');
         if (!$maerke) {
-            if (empty($simpleq)) {
-                $qsearch = array ("/ /","/'/","//","/`/");
-                $qreplace = array ("%","_","_","_");
-                $simpleq = preg_replace($qsearch, $qreplace, $q);
-            }
             $maerke = db()->fetchArray(
                 "
                 SELECT id, navn

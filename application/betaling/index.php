@@ -220,9 +220,7 @@ if (!empty($id) && @$_GET['checkid'] == getCheckid($id) && !isset($_GET['txnid']
                         );
                     }
 
-                    ini_set('zlib.output_compression', '0');
-                    header('Location: ' . $GLOBALS['_config']['base_url'] . '/betaling/?id=' . $id . '&checkid=' . $_GET['checkid'] . '&step=2', true, 303);
-                    exit;
+                    redirect($GLOBALS['_config']['base_url'] . '/betaling/?id=' . $id . '&checkid=' . $_GET['checkid'] . '&step=2', 303);
                 }
             } else {
                 $rejected = validate($faktura);
@@ -430,13 +428,10 @@ if (!empty($id) && @$_GET['checkid'] == getCheckid($id) && !isset($_GET['txnid']
             $GLOBALS['generatedcontent']['text'] .= '</tbody></table><input style="font-weight:bold;" type="submit" value="'._('Proceed to the terms of trade').'" /></form>';
         } elseif ($_GET['step'] == 2) { //Accept terms and continue to payment
             if (count(validate($faktura))) {
-                ini_set('zlib.output_compression', '0');
-                header(
-                    'Location: ' . $GLOBALS['_config']['base_url'] . '/betaling/?id=' . $id . '&checkid=' . $_GET['checkid'] . '&step=1',
-                    true,
+                redirect(
+                    $GLOBALS['_config']['base_url'] . '/betaling/?id=' . $id . '&checkid=' . $_GET['checkid'] . '&step=1',
                     303
                 );
-                exit;
             }
 
             db()->query(

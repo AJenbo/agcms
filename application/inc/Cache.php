@@ -2,39 +2,8 @@
 
 class Cache
 {
-    private static $cache = [];
     private static $updateTime = 0;
     private static $loadedTables = [];
-
-    /**
-     * @param string $key The cache key
-     *
-     * @return mixed
-     */
-    public static function get(string $key)
-    {
-        if (isset(self::$cache[$key])) {
-            return self::$cache[$key];
-        }
-
-        return null;
-    }
-
-    /**
-     * @param string $key The cache key
-     * @param mixed  $key The value to store, null will unset the key
-     *
-     * @return mixed
-     */
-    public static function set(string $key, $value)
-    {
-        if ($value === null) {
-            unset(self::$cache[$key]);
-            return;
-        }
-
-        self::$cache[$key] = $value;
-    }
 
     /**
      * @param string $key The cache key

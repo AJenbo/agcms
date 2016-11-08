@@ -1,7 +1,5 @@
 <?php
 
-ini_set('zlib.output_compression', 1);
-
 require_once $_SERVER['DOCUMENT_ROOT'] . '/admin/inc/logon.php';
 
 //TODO run countEmailTo() onload
