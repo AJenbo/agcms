@@ -268,6 +268,7 @@ class Page
 
     public function getCategories(): array
     {
+        Cache::addLoadedTable('bind');
         return ORM::getByQuery(
             Category::class,
             "
@@ -275,6 +276,22 @@ class Page
             FROM `bind`
             JOIN kat ON kat.id = bind.kat
             WHERE bind.side = " . $this->getId()
+        );
+    }
+
+    public function getAccessory()
+    {
+        Cache::addLoadedTable('tilbehor');
+        return ORM::getByQuery(
+            Page::class,
+            "
+            SELECT sider.*
+            FROM tilbehor
+            JOIN sider ON tilbehor.tilbehor = sider.id
+            JOIN bind ON bind.side = sider.id
+            WHERE tilbehor.`side` = " . $this->getId() . "
+            ORDER BY sider.navn ASC
+            "
         );
     }
 

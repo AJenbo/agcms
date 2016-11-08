@@ -230,7 +230,7 @@ class Category
         return array_values($children);
     }
 
-    public function getPages()
+    public function getPages(string $order = 'navn')
     {
         Cache::addLoadedTable('bind');
         return ORM::getByQuery(
@@ -239,7 +239,7 @@ class Category
             SELECT sider.*
             FROM bind JOIN sider ON bind.side = sider.id
             WHERE bind.kat = " . $this->getId() . "
-            ORDER BY sider.navn ASC
+            ORDER BY sider.`" . db()->esc($sort) . "` ASC
             "
         );
     }

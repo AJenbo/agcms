@@ -3187,8 +3187,9 @@ function get_mail_size(): int
                 $mails = $imap->fetch('1:*', 'RFC822.SIZE');
                 preg_match_all('/RFC822.SIZE\s([0-9]+)/', $mails['data'], $mailSizes);
                 $size += array_sum($mailSizes[1]);
-            } catch (Exception $e) {}
+            } catch (Exception $e) {
             }
+        }
     }
 
     return $size;
@@ -3677,7 +3678,8 @@ function updateKat(int $id, string $navn, string $bind, string $icon, string $vi
         . "', `vis` = '" . $vis
         . "', `email` = '" . $email
         . "', `custom_sort_subs` = '" . $custom_sort_subs
-        . "' WHERE `id` = " .$id);
+        . "' WHERE `id` = " .$id
+    );
     return true;
 }
 

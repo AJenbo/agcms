@@ -11,7 +11,7 @@
  * @link     http://www.arms-gallery.dk/
  */
 
-defined('_ROOT_') || define('_ROOT_', realpath(__DIR__ . '/..' ));
+defined('_ROOT_') || define('_ROOT_', realpath(__DIR__ . '/..'));
 define('CATEGORY_HIDDEN', 0);
 define('CATEGORY_GALLERY', 1);
 define('CATEGORY_LIST', 2);
@@ -86,7 +86,8 @@ function valideMail(string $email): bool
     return false;
 }
 
-function checkMx(string $domain): bool {
+function checkMx(string $domain): bool
+{
     static $ceche = [];
 
     if (!isset($ceche[$domain])) {
@@ -587,64 +588,14 @@ function liste(Category $category)
 }
 
 /**
- * Generate HTML of products for a category in list form
- *
- * @param array  $pages         Array of products
- * @param string $categoryTitle Title of the category
- * @param int    $categoryId    Id of the category
- *
- * @return string
- */
-function katHTML(array $pages, string $categoryTitle, int $categoryId): string
-{
-    $html = '<table class="tabel"><thead><tr><td><a href="" onclick="x_getKat(\''
-    . $categoryId
-    . '\', \'navn\', inject_html);return false">Titel</a></td><td><a href="" onclick="x_getKat(\''
-    . $categoryId
-    . '\', \'for\', inject_html);return false">Før</a></td><td><a href="" onclick="x_getKat(\''
-    . $categoryId
-    . '\', \'pris\', inject_html);return false">Pris</a></td><td><a href="" onclick="x_getKat(\''
-    . $categoryId
-    . '\', \'varenr\', inject_html);return false">#</a></td></tr></thead><tbody>';
-
-    $isEven = false;
-    foreach ($pages as $page) {
-        if (!$page['for']) {
-            $page['for'] = '';
-        } else {
-            $page['for'] = $page['for'].',-';
-        }
-
-        if (!$page['pris']) {
-            $page['pris'] = '';
-        } else {
-            $page['pris'] = $page['pris'].',-';
-        }
-
-        $html .= '<tr' . ($isEven ? ' class="altrow"' : '')
-        . '><td><a href="/kat' . $categoryId . '-'
-        . clearFileName($categoryTitle) . '/side' . $page['id'] . '-'
-        . clearFileName($page['navn']) . '.html">' . $page['navn']
-        . '</a></td><td class="XPris" align="right">' . $page['for']
-        . '</td><td class="Pris" align="right">' . $page['pris']
-        . '</td><td align="right" style="font-size:11px">'
-        . $page['varenr'] . '</td></tr>';
-
-        $isEven = !$isEven;
-    }
-
-    return $html . '</tbody></table>';
-}
-
-/**
  * Search for pages and generate a list or redirect if only one was found
  *
- * @param string $q          Tekst to search for
- * @param string $wheresider Additional sql where clause
+ * @param string $q     Tekst to search for
+ * @param string $where Additional sql where clause
  *
  * @return null
  */
-function searchListe(string $q, string $wheresider)
+function searchListe(string $q, string $where)
 {
     $pages = [];
 
@@ -655,7 +606,7 @@ function searchListe(string $q, string $wheresider)
             SELECT *, MATCH(navn, text, beskrivelse) AGAINST ('$q') AS score
             FROM sider
             WHERE MATCH (navn, text, beskrivelse) AGAINST('$q') > 0
-            $wheresider
+            $where
             ORDER BY `score` DESC
             "
         );
@@ -677,7 +628,7 @@ function searchListe(string $q, string $wheresider)
                 OR `beskrivelse` LIKE '%$simpleq%'
             ) "
             . ($pages ? ("AND id NOT IN (" . implode(',', array_keys($pages)) . ") ") : "")
-            . $wheresider
+            . $where
         );
         foreach ($pages as $page) {
             $pages[$page->getId()] = $page;
@@ -697,13 +648,12 @@ function searchListe(string $q, string $wheresider)
         foreach ($pages as $page) {
             $pages[$page->getId()] = $page;
         }
-
     } else {
         $pages = ORM::getByQuery(
             Page::class,
             "
             SELECT * FROM `sider` WHERE 1
-            $wheresider
+            $where
             ORDER BY `navn` ASC
             "
         );
@@ -989,44 +939,19 @@ function side()
         }
     }
 
-    $tilbehor = db()->fetchArray(
-        "
-        SELECT sider.id,
-            `bind`.`kat`,
-            `sider`.`navn`,
-            `billed`,
-            `burde`,
-            `fra`,
-            `pris`,
-            `for`,
-            UNIX_TIMESTAMP(`dato`) AS dato
-        FROM tilbehor
-            JOIN sider ON tilbehor.tilbehor = sider.id
-            JOIN bind ON bind.side = sider.id
-        WHERE tilbehor.`side` = " . $GLOBALS['side']['id']
-    );
-    Cache::addLoadedTable('tilbehor');
-    Cache::addLoadedTable('sider');
-
-    foreach ($tilbehor as $value) {
-        $url = '/';
-        if ($value['kat']) {
-            $category = ORM::getOne(Category::class, $value['kat']);
-            $url .= $category ? $category->getSlug() : '';
-        } else {
-        }
-        //TODO beskrivelse
+    $accessories = ORM::getOne(Page::class, $GLOBALS['side']['id'])->getAccessories();
+    foreach ($accessories as $page) {
         $GLOBALS['generatedcontent']['accessories'][] = [
-            'name' => $value['navn'],
-            'link' => $url . 'side' . $value['id'] . '-' . clearFileName($value['navn']) . '.html',
-            'icon' => $value['billed'],
-            'text' => '',
+            'name' => $page->getTitle(),
+            'link' => $page->getCanonicalLink(),
+            'icon' => $page->getImagePath(),
+            'text' => $page->getExcerpt(),
             'price' => [
-                'before' => $value['for'],
-                'now' => $value['pris'],
-                'from' => $value['fra'],
-                'market' => $value['burde']
-            ]
+                'before' => $page->getOldPrice(),
+                'now' => $page->getPrice(),
+                'from' => $page->getPriceType(),
+                'market' => $page->getOldPriceType(),
+            ],
         ];
     }
 }
@@ -1162,31 +1087,6 @@ function searchMenu(string $q, string $wherekat)
 }
 
 /**
- * Check if page is inactive
- *
- * @param int $id Page id
- *
- * @return bool
- */
-function isInactivePage(int $id): bool
-{
-    $categoryId = ORM::getOneByQuery(
-        Category::class,
-        "
-        SELECT `kat`.*
-        FROM `bind`
-        JOIN `kat` ON `kat`.id = `bind`.`kat`
-        WHERE `side` = " . $id
-    );
-    Cache::addLoadedTable('bind');
-    if (!$categoryId || $categoryId->isInactive()) {
-        return true;
-    }
-
-    return false;
-}
-
-/**
  * MySQL escape strin(s), including whildcards
  *
  * @param mixed $s String or array that should be escapted
@@ -1227,14 +1127,14 @@ function listKats(Category $category = null)
         ?><url><loc><?php
         echo htmlspecialchars($GLOBALS['_config']['base_url'] . '/' . $category->getSlug(), ENT_COMPAT | ENT_XML1);
         ?></loc><changefreq>weekly</changefreq><priority>0.5</priority></url><?php
-        foreach ($category->getPages() as $page) {
-            //print xml
-            ?><url><loc><?php
-            echo htmlspecialchars($GLOBALS['_config']['base_url'] . $page->getCanonicalLink(false, $category), ENT_COMPAT | ENT_XML1);
-            ?></loc><lastmod><?php
-            echo htmlspecialchars(mb_substr($page->getTimeStamp(), 0, -9, 'UTF-8'), ENT_COMPAT | ENT_XML1);
-            ?></lastmod><changefreq>monthly</changefreq><priority>0.6</priority></url><?php
-        }
+foreach ($category->getPages() as $page) {
+    //print xml
+    ?><url><loc><?php
+echo htmlspecialchars($GLOBALS['_config']['base_url'] . $page->getCanonicalLink(false, $category), ENT_COMPAT | ENT_XML1);
+?></loc><lastmod><?php
+echo htmlspecialchars(mb_substr($page->getTimeStamp(), 0, -9, 'UTF-8'), ENT_COMPAT | ENT_XML1);
+?></lastmod><changefreq>monthly</changefreq><priority>0.6</priority></url><?php
+}
 
         listKats($category);
     }
@@ -1248,38 +1148,53 @@ function listKats(Category $category = null)
  *
  * @return array Apropriate for handeling with javascript function inject_html()
  */
-function getKat(int $id, bool $sort): array
+function getKat(int $categoryId, bool $sort): array
 {
-    $GLOBALS['generatedcontent']['activmenu'] = $id;
-
     //Get pages list
-    $bind = db()->fetchArray(
-        "
-        SELECT sider.id,
-            sider.navn,
-            sider.burde,
-            sider.fra,
-            sider.pris,
-            sider.for,
-            sider.varenr
-        FROM bind
-        JOIN sider ON bind.side = sider.id
-        WHERE bind.kat = " . $GLOBALS['generatedcontent']['activmenu'] . "
-        ORDER BY sider." . $sort . " ASC
-        "
-    );
-    Cache::addLoadedTable('sider');
-    Cache::addLoadedTable('bind');
-    $bind = arrayNatsort($bind, 'id', $sort);
-
-    $category = ORM::getOne(Category::class, $GLOBALS['generatedcontent']['activmenu']);
+    $category = ORM::getOne(Category::class, $categoryId);
+    $pages = $category->getPages($sort);
+    $pages = arrayNatsort($pages, 'id', $sort);
 
     //check browser cache
     doConditionalGet(Cache::getUpdateTime());
 
+    $html = '<table class="tabel"><thead><tr><td><a href="" onclick="x_getKat(\''
+    . $categoryId
+    . '\', \'navn\', inject_html);return false">Titel</a></td><td><a href="" onclick="x_getKat(\''
+    . $categoryId
+    . '\', \'for\', inject_html);return false">Før</a></td><td><a href="" onclick="x_getKat(\''
+    . $categoryId
+    . '\', \'pris\', inject_html);return false">Pris</a></td><td><a href="" onclick="x_getKat(\''
+    . $categoryId
+    . '\', \'varenr\', inject_html);return false">#</a></td></tr></thead><tbody>';
+
+    $isEven = false;
+    foreach ($pages as $page) {
+        $oldPrice = '';
+        if ($page->getOldPrice()) {
+            $oldPrice = $page->getOldPrice() . ',-';
+        }
+
+        $price = '';
+        if ($page->getPrice()) {
+            $price = $page->getPrice() . ',-';
+        }
+
+        $html .= '<tr' . ($isEven ? ' class="altrow"' : '')
+        . '><td><a href="' . xhtmlEsc($page->getCanonicalLink(false, $category)) . '">'
+        . xhtmlEsc($page->getTitle())
+        . '</a></td><td class="XPris" align="right">' . $oldPrice
+        . '</td><td class="Pris" align="right">' . $price
+        . '</td><td align="right" style="font-size:11px">'
+        . xhtmlEsc($page->getSku()) . '</td></tr>';
+
+        $isEven = !$isEven;
+    }
+    $html .= '</tbody></table>';
+
     return [
-        'id' => 'kat' . $GLOBALS['generatedcontent']['activmenu'],
-        'html' => katHTML($bind, $category->getTitle(), $GLOBALS['generatedcontent']['activmenu']),
+        'id' => 'kat' . $categoryId,
+        'html' => $html,
     ];
 }
 

@@ -51,78 +51,22 @@ $_GET = fullMysqliEscape($_GET);
 
 $activMenu =& $GLOBALS['generatedcontent']['activmenu'];
 
-//Always blank kads
-if (@$_GET['sog']
-    || @$_GET['q']
-    || @$_GET['varenr']
-    || @$_GET['sogikke']
-    || @$_GET['minpris']
-    || @$_GET['maxpris']
-    || @$_GET['maerke']
-    || @$_GET['brod']
-) {
-    $activMenu = -1;
-}
-
-/**
- * Hvis siden er kendt men katagorien ikke så find den første passende
- * katagori, hent også side indholdet.
- */
-if (@$GLOBALS['side']['id'] > 0 && $activMenu) {
-    $bind = db()->fetchOne(
-        "
-        SELECT bind.kat,
-            sider.navn,
-            sider.burde,
-            sider.fra,
-            sider.text,
-            sider.pris,
-            sider.for,
-            sider.krav,
-            sider.maerke,
-            sider.varenr,
-            UNIX_TIMESTAMP(sider.dato) AS dato
-        FROM bind
-        JOIN sider
-        ON bind.side = sider.id
-        WHERE side = ".$GLOBALS['side']['id']
-    );
-    if ($bind['dato']) {
-        Cache::addUpdateTime($bind['dato']);
-    } else {
-        Cache::addLoadedTable('sider');
-    }
-    Cache::addLoadedTable('bind');
-
-    $activMenu                 = $bind['kat'];
-    $GLOBALS['side']['navn']   = $bind['navn'];
-    $GLOBALS['side']['burde']  = $bind['burde'];
-    $GLOBALS['side']['fra']    = $bind['fra'];
-    $GLOBALS['side']['text']   = $bind['text'];
-    $GLOBALS['side']['pris']   = $bind['pris'];
-    $GLOBALS['side']['for']    = $bind['for'];
-    $GLOBALS['side']['krav']   = $bind['krav'];
-    $GLOBALS['side']['maerke'] = $bind['maerke'];
-    $GLOBALS['side']['varenr'] = $bind['varenr'];
-    $GLOBALS['side']['dato']   = $bind['dato'];
-    unset($bind);
-} elseif (@$GLOBALS['side']['id'] > 0) {
+if (!empty($GLOBALS['side']['id'])) {
     //Hent side indhold
     $page = ORM::getOne(Page::class, $GLOBALS['side']['id']);
-    if ($page->getTimeStamp()) {
-        Cache::addUpdateTime($page->getTimeStamp());
-    }
-
-    $GLOBALS['side']['navn']   = $page->getTitle();
-    $GLOBALS['side']['burde']  = $page->getOldPriceType();
-    $GLOBALS['side']['fra']    = $page->getPriceType();
-    $GLOBALS['side']['text']   = $page->getHtml();
-    $GLOBALS['side']['pris']   = $page->getPrice();
-    $GLOBALS['side']['for']    = $page->getOldPrice();
-    $GLOBALS['side']['krav']   = $page->getRequirementId();
-    $GLOBALS['side']['maerke'] = $page->getBrandId();
-    $GLOBALS['side']['varenr'] = $page->getSku();
-    $GLOBALS['side']['dato']   = $page->getTimestamp();
+    $GLOBALS['side'] = [
+        'navn'   => $page->getTitle(),
+        'burde'  => $page->getOldPriceType(),
+        'fra'    => $page->getPriceType(),
+        'text'   => $page->getHtml(),
+        'pris'   => $page->getPrice(),
+        'for'    => $page->getOldPrice(),
+        'krav'   => $page->getRequirementId(),
+        'maerke' => $page->getBrandId(),
+        'varenr' => $page->getSku(),
+        'dato'   => $page->getTimeStamp(),
+    ];
+    Cache::addUpdateTime($page->getTimeStamp());
 }
 
 if ($activMenu > 0) {
@@ -156,7 +100,8 @@ if (@$GLOBALS['kats']) {
 //crumbs end
 
 //Get list of top categorys on the site.
-$categories = ORM::getByQuery(Category::class,
+$categories = ORM::getByQuery(
+    Category::class,
     "
     SELECT *
     FROM `kat`
@@ -189,13 +134,15 @@ foreach ($categories as $category) {
 }
 
 //Front page pages
-$pages = ORM::getByQuery(Page::class,
+$pages = ORM::getByQuery(
+    Page::class,
     "
     SELECT *
     FROM bind
     JOIN sider
     ON bind.side = sider.id
     WHERE kat = 0
+    ORDER BY sider.`navn` ASC
     "
 );
 Cache::addLoadedTable('bind');
@@ -211,6 +158,7 @@ foreach ($pages as $page) {
 //TODO catch none existing kats
 //Get page content and type
 if (!empty($_GET['sog'])) {
+    $GLOBALS['generatedcontent']['activmenu'] = -1;
     $GLOBALS['generatedcontent']['contenttype'] = 'search';
 
     $text = '';
@@ -294,27 +242,27 @@ if (!empty($_GET['sog'])) {
             'icon' => $maerkeet['ico'],
         ];
 
-        $wheresider = " AND `maerke` = '" . $maerkeet['id'] . "'";
-        $pages = searchListe(false, $wheresider);
+        $where = " AND `maerke` = '" . $maerkeet['id'] . "'";
+        $pages = searchListe(false, $where);
     } else {
         //Full search
-        $wheresider = "";
+        $where = "";
         if (!empty($_GET['varenr'])) {
-            $wheresider .= " AND varenr LIKE '" . db()->esc($_GET['varenr']) . "%'";
+            $where .= " AND varenr LIKE '" . db()->esc($_GET['varenr']) . "%'";
         }
         if (!empty($_GET['minpris'])) {
-            $wheresider .= " AND pris > " . (int) $_GET['minpris'];
+            $where .= " AND pris > " . (int) $_GET['minpris'];
         }
         if (!empty($_GET['maxpris'])) {
-            $wheresider .= " AND pris < " . (int) $_GET['maxpris'];
+            $where .= " AND pris < " . (int) $_GET['maxpris'];
         }
         if (!empty($_GET['maerke'])) {
-            $wheresider = " AND `maerke` = '" . (int) $_GET['maerke'] . "'";
+            $where = " AND `maerke` = '" . (int) $_GET['maerke'] . "'";
         }
         if (!empty($_GET['sogikke'])) {
-            $wheresider .= " AND !MATCH (navn, text) AGAINST('" . db()->esc($_GET['sogikke']) ."') > 0";
+            $where .= " AND !MATCH (navn, text) AGAINST('" . db()->esc($_GET['sogikke']) ."') > 0";
         }
-        $pages = searchListe(@$_GET['q'], $wheresider);
+        $pages = searchListe(@$_GET['q'], $where);
     }
 
     //Draw the list

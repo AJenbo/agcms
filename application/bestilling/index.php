@@ -21,6 +21,9 @@ if (is_numeric(@$_GET['add']) || is_numeric(@$_GET['add_list_item'])) {
         $goto_uri = '';
     }
 
+    $productTitle = '';
+    $productPrice = null;
+    $productOldPrice = 0;
     if (is_numeric(@$_GET['add_list_item'])) {
         $list_row = db()->fetchOne(
             "
@@ -29,15 +32,14 @@ if (is_numeric(@$_GET['add']) || is_numeric(@$_GET['add_list_item'])) {
             WHERE id = " . (int) $_GET['add_list_item']
         );
         if ($list_row['link']) {
-            $product = db()->fetchOne(
-                "
-                SELECT `navn`, `pris`, `fra`
-                FROM `sider`
-                WHERE id = " . (int) $list_row['link']
-            );
-
+            $product = ORM::getOne(Page::class, $list_row['link']);
+            if ($product) {
+                $productTitle = $product->getTitle();
+                $productPrice = $product->getPrice();
+                $productOldPrice = $product->getOldPrice();
+            }
             if (!$goto_uri) {
-                $goto_uri = '/?side='.$product['link'];
+                $goto_uri = '/?side=' . (int) $_GET['add'];
             }
         } else {
             $list = db()->fetchOne(
@@ -47,14 +49,11 @@ if (is_numeric(@$_GET['add']) || is_numeric(@$_GET['add_list_item'])) {
             );
             $list['cells'] = explode('<', $list['cells']);
             $list_row['cells'] = explode('<', $list_row['cells']);
-            $product['navn'] = '';
-            $product['pris'] = null;
-            $product['fra'] = 0;
             foreach ($list['cells'] as $i => $celltype) {
                 if ($celltype == 0 || $celltype == 1) {
-                    $product['navn'] .= ' '.@$list_row['cells'][$i];
+                    $productTitle .= ' '.@$list_row['cells'][$i];
                 } elseif ($celltype == 2 || $celltype == 3) {
-                    $product['pris'] = @$list_row['cells'][$i];
+                    $productPrice = @$list_row['cells'][$i];
                 }
             }
 
@@ -63,11 +62,12 @@ if (is_numeric(@$_GET['add']) || is_numeric(@$_GET['add_list_item'])) {
             }
         }
     } elseif (is_numeric(@$_GET['add'])) {
-        $product = db()->fetchOne(
-            "SELECT `navn`, `pris`, `fra`
-            FROM `sider`
-            WHERE id = " . (int) $_GET['add']
-        );
+        $product = ORM::getOne(Page::class, $_GET['add']);
+        if ($product) {
+            $productTitle = $product->getTitle();
+            $productPrice = $product->getPrice();
+            $productOldPrice = $product->getOldPrice();
+        }
 
         if (!$goto_uri) {
             $goto_uri = '/?side=' . (int) $_GET['add'];
@@ -79,7 +79,7 @@ if (is_numeric(@$_GET['add']) || is_numeric(@$_GET['add_list_item'])) {
     $product_exists = false;
     if (!empty($_SESSION['faktura']['quantities'])) {
         foreach ($_SESSION['faktura']['products'] as $i => $product_name) {
-            if ($product_name == $product['navn']) {
+            if ($product_name == $productTitle) {
                 $_SESSION['faktura']['quantities'][$i]++;
                 $product_exists = true;
                 break;
@@ -88,11 +88,11 @@ if (is_numeric(@$_GET['add']) || is_numeric(@$_GET['add_list_item'])) {
     }
     if (!$product_exists) {
         $_SESSION['faktura']['quantities'][] = 1;
-        $_SESSION['faktura']['products'][] = $product['navn'];
-        if ($product['fra'] == 1) {
-            $product['pris'] = null;
+        $_SESSION['faktura']['products'][] = $productTitle;
+        if ($productOldPrice == 1) {
+            $productPrice = null;
         }
-        $_SESSION['faktura']['values'][] = $product['pris'];
+        $_SESSION['faktura']['values'][] = $productPris;
     }
 
     if (!empty($_SERVER['HTTP_REFERER'])) {

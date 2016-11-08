@@ -35,106 +35,104 @@ if ($encoding != 'UTF-8') {
 $category = null;
 $page = null;
 
-if (!isset($_GET['q'])) {
-    $redirectUrl = '/?sog=1&q=&sogikke=&minpris=&maxpris=&maerke=';
-    $q = preg_replace(
-        [
-            '/\/|-|_|\.html|\.htm|\.php|\.gif|\.jpeg|\.jpg|\.png|kat-|side-|\.php/u',
-            '/[^\w0-9]/u',
-            '/([0-9]+)/u',
-            '/([[:upper:]]?[[:lower:]]+)/u',
-            '/\s+/u'
-        ],
-        [
-            ' ',
-            ' ',
-            ' \1 ',
-            ' \1',
-            ' '
-        ],
-        $url
-    );
-    $q = trim($q);
-    if ($q) {
-        $redirectUrl = '/?q=' . rawurlencode($q) . '&sogikke=&minpris=&maxpris=&maerke=0';
-    }
+$redirectUrl = '/?sog=1&q=&sogikke=&minpris=&maxpris=&maerke=';
+$q = preg_replace(
+    [
+        '/\/|-|_|\.html|\.htm|\.php|\.gif|\.jpeg|\.jpg|\.png|kat-|side-|\.php/u',
+        '/[^\w0-9]/u',
+        '/([0-9]+)/u',
+        '/([[:upper:]]?[[:lower:]]+)/u',
+        '/\s+/u'
+    ],
+    [
+        ' ',
+        ' ',
+        ' \1 ',
+        ' \1',
+        ' '
+    ],
+    $url
+);
+$q = trim($q);
+if ($q) {
+    $redirectUrl = '/?q=' . rawurlencode($q) . '&sogikke=&minpris=&maxpris=&maerke=0';
+}
 
-    // Detect and redirect old urls
-    $categoryId = (int) preg_replace('/.*kat=([0-9]+).*\s*|.*/u', '\1', $url);
-    $pageId = (int) preg_replace('/.*side=([0-9]+).*\s*|.*/u', '\1', $url);
-    if (!$pageId && isset($_GET['id'])) {
-        $pageId = (int) $_GET['id'];
+// Detect and redirect old urls
+$categoryId = (int) preg_replace('/.*kat=([0-9]+).*\s*|.*/u', '\1', $url);
+$pageId = (int) preg_replace('/.*side=([0-9]+).*\s*|.*/u', '\1', $url);
+if (!$pageId && isset($_GET['id'])) {
+    $pageId = (int) $_GET['id'];
+}
+$maerkeId = (int) preg_replace('/.*\/maerke([0-9]*)-.*|.*/u', '\1', $url);
+if ($maerkeId || $categoryId || $pageId) {
+    if ($categoryId) {
+        $category = ORM::getOne(Category::class, $categoryId);
     }
-    $maerkeId = (int) preg_replace('/.*\/maerke([0-9]*)-.*|.*/u', '\1', $url);
-    if ($maerkeId || $categoryId || $pageId) {
-        if ($categoryId) {
-            $category = ORM::getOne(Category::class, $categoryId);
+    if ($pageId) {
+        $page = ORM::getOne(Page::class, $pageId);
+        if ($page && !$category) {
+            $category = $page->getPrimaryCategory();
         }
-        if ($pageId) {
-            $page = ORM::getOne(Page::class, $pageId);
-            if ($page && !$category) {
-                $category = $page->getPrimaryCategory();
-            }
-        }
-        if ($maerkeId) {
-            $maerkeet = db()->fetchOne(
-                "
-                SELECT `id`, `navn`
-                FROM `maerke`
-                WHERE id = " . $maerkeId
-            );
-            if ($maerkeet) {
-                $redirectUrl = '/m%C3%A6rke' . $maerkeet['id'] . '-' . rawurlencode(clearFileName($maerkeet['navn'])) . '/';
-            }
-        } elseif ($category || $page) {
-            $redirectUrl = '/' . ($category ? $category->getSlug(true) : '') . ($page ? $page->getSlug(true) : '');
-        }
-
-        redirect($redirectUrl);
     }
-
-    //Get maerke
-    $maerke = (int) preg_replace('/.*\/mærke([0-9]*)-.*|.*/u', '\1', $url);
-    if ($maerke) {
+    if ($maerkeId) {
         $maerkeet = db()->fetchOne(
             "
             SELECT `id`, `navn`
             FROM `maerke`
-            WHERE id = " . $maerke
+            WHERE id = " . $maerkeId
         );
-        if (!$maerkeet) {
-            $_GET['sog'] = 1;
-            $GLOBALS['side']['404'] = true;
+        if ($maerkeet) {
+            $redirectUrl = '/m%C3%A6rke' . $maerkeet['id'] . '-' . rawurlencode(clearFileName($maerkeet['navn'])) . '/';
         }
+    } elseif ($category || $page) {
+        $redirectUrl = '/' . ($category ? $category->getSlug(true) : '') . ($page ? $page->getSlug(true) : '');
     }
 
-    $categoryId = (int) preg_replace('/.*\/kat([0-9]*)-.*|.*/u', '\1', $url);
-    $pageId = (int) preg_replace('/.*\/side([0-9]*)-.*|.*/u', '\1', $url);
-    $redirect = !$categoryId && !$pageId;
-    if ($categoryId) {
-        $category = ORM::getOne(Category::class, $categoryId);
-        if (!$category || $category->isInactive()) {
-            $category = null;
-        }
-    }
-    if ($pageId) {
-        $page = ORM::getOne(Page::class, $pageId);
-        if (!$page || $page->isInactive()) {
-            $page = null;
-        }
-    }
-    if (($categoryId && !$category)
-        || ($pageId && !$page)
-        || (!$category && !$page)
-    ) {
-        if ($page) {
-            $redirectUrl = $page->getCanonicalLink(true, $category);
-        } elseif ($category) {
-            $redirectUrl = '/' . $category->getSlug(true);
-        }
+    redirect($redirectUrl);
+}
 
-        redirect($redirectUrl);
+//Get maerke
+$maerke = (int) preg_replace('/.*\/mærke([0-9]*)-.*|.*/u', '\1', $url);
+if ($maerke) {
+    $maerkeet = db()->fetchOne(
+        "
+        SELECT `id`, `navn`
+        FROM `maerke`
+        WHERE id = " . $maerke
+    );
+    if (!$maerkeet) {
+        $_GET['sog'] = 1;
+        $GLOBALS['side']['404'] = true;
     }
+}
+
+$categoryId = (int) preg_replace('/.*\/kat([0-9]*)-.*|.*/u', '\1', $url);
+$pageId = (int) preg_replace('/.*\/side([0-9]*)-.*|.*/u', '\1', $url);
+$redirect = !$categoryId && !$pageId;
+if ($categoryId) {
+    $category = ORM::getOne(Category::class, $categoryId);
+    if (!$category || $category->isInactive()) {
+        $category = null;
+    }
+}
+if ($pageId) {
+    $page = ORM::getOne(Page::class, $pageId);
+    if (!$page || $page->isInactive()) {
+        $page = null;
+    }
+}
+if (($categoryId && !$category)
+    || ($pageId && !$page)
+    || (!$category && !$page)
+) {
+    if ($page) {
+        $redirectUrl = $page->getCanonicalLink(true, $category);
+    } elseif ($category) {
+        $redirectUrl = '/' . $category->getSlug(true);
+    }
+
+    redirect($redirectUrl);
 }
 
 $GLOBALS['generatedcontent']['activmenu'] = $category ? $category->getId() : 0;
