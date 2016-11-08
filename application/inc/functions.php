@@ -498,9 +498,10 @@ function xhtmlEsc(string $string): string
  *
  * @return null
  */
-function vare(array $side,int $type)
+function vare(array $side, int $type)
 {
     //Search categories does not have a fixed number, use first fixed per page
+    $category = null;
     if (!$GLOBALS['generatedcontent']['activmenu']) {
         $category = ORM::getOneByQuery(
             Category::class,
@@ -511,13 +512,15 @@ function vare(array $side,int $type)
         );
         Cache::addLoadedTable('bind');
         $GLOBALS['generatedcontent']['activmenu'] = $category ? $category->getId() : 0;
+    } else {
+        $category = ORM::getOne(Category::class, $GLOBALS['generatedcontent']['activmenu']);
     }
 
     $link = '/' . ($category ? $category->getSlug() : '')
     . 'side' . $side['id'] . '-' . clearFileName($side['navn']) . '.html';
     $name = xhtmlEsc($side['navn']);
 
-    if ($type == 1) {
+    if ($type === CATEGORY_GALLERY) {
         if (!$side['beskrivelse'] && $side['text']) {
             $side['beskrivelse'] = stringLimit($side['text'], 100);
         }
