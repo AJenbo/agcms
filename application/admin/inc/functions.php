@@ -2537,18 +2537,15 @@ writeRichText("beskrivelse", \''.rtefsafe($page['beskrivelse']).'\', "", '.($GLO
         }
         $html .= '>'.xhtmlEsc($krav[$i]['navn']).'</option>';
     }
-    $html .= '</select><br /><img width="16" height="16" alt="" src="images/page_white_medal.png"/><select id="maerke" name="maerke" multiple="multiple" size="15"><option value="0">'._('All others').'</option>';
+    $html .= '</select><br /><img width="16" height="16" alt="" src="images/page_white_medal.png"/><select id="maerke" name="maerke" size="15"><option' . ($page['maerke'] ? ' selected="selected"' : '') . ' value="0">'._('All others').'</option>';
 
-    $maerker = explode(',', $page['maerke']);
-
-    $maerke = db()->fetchArray('SELECT id, navn FROM `maerke` ORDER BY navn');
-    $maerke_nr = count($maerke);
-    for ($i=0; $i<$maerke_nr; $i++) {
-        $html .= '<option value="'.$maerke[$i]['id'].'"';
-        if (in_array($maerke[$i]['id'], $maerker)) {
+    $maerker = db()->fetchArray('SELECT id, navn FROM `maerke` ORDER BY navn');
+    for ($maerker as $maerke) {
+        $html .= '<option value="'.$maerke['id'].'"';
+        if ($maerke['id'] == $page['maerke']) {
             $html .= ' selected="selected"';
         }
-        $html .= '>'.xhtmlEsc($maerke[$i]['navn']).'</option>';
+        $html .= '>'.xhtmlEsc($maerke['navn']).'</option>';
     }
     $html .= '</select></div></div>';
     //misc end
@@ -3323,12 +3320,11 @@ writeRichText("beskrivelse", \'\', "", '.($GLOBALS['_config']['thumb_width']+32)
         $html .= '<option value="'.$krav[$i]['id'].'"';
         $html .= '>'.xhtmlEsc($krav[$i]['navn']).'</option>';
     }
-    $html .= '</select><br /><img width="16" height="16" alt="" src="images/page_white_medal.png"/><select id="maerke" name="maerke" multiple="multiple" size="10"><option value="0">'._('All others').'</option>';
-    $maerke = db()->fetchArray('SELECT id, navn FROM `maerke` ORDER BY navn');
-    $maerke_nr = count($maerke);
-    for ($i=0; $i<$maerke_nr; $i++) {
-        $html .= '<option value="'.$maerke[$i]['id'].'"';
-        $html .= '>'.xhtmlEsc($maerke[$i]['navn']).'</option>';
+    $html .= '</select><br /><img width="16" height="16" alt="" src="images/page_white_medal.png"/><select id="maerke" name="maerke" size="10"><option selected="selected" value="0">'._('All others').'</option>';
+    $maerker = db()->fetchArray('SELECT id, navn FROM `maerke` ORDER BY navn');
+    for ($maerker as $maerke) {
+        $html .= '<option value="'.$maerke['id'].'"';
+        $html .= '>'.xhtmlEsc($maerke['navn']).'</option>';
     }
     $html .= '</select></div></div></div>';
     //misc end

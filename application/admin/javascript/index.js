@@ -244,7 +244,7 @@ function updateSide(id) {
         parseInt(getSelectValue('burde')),
         parseInt(getSelectValue('fra')),
         parseInt(getSelectValue('krav')),
-        getSelectMultiValues('maerke') ? parseInt(getSelectMultiValues('maerke')) : 0,
+        parseInt(getSelectValue('maerke')),
         generic_r);
     return false;
 }

@@ -51,7 +51,7 @@ function opretSide() {
         parseInt(getSelectValue('burde')),
         parseInt(getSelectValue('fra')),
         parseInt(getSelectValue('krav')),
-        getSelectMultiValues('maerke') ? parseInt(getSelectMultiValues('maerke')) : 0,
+        parseInt(getSelectValue('maerke')),
         opretSide_r);
     return false;
 }
@@ -166,21 +166,6 @@ function getSelectValue(id) {
         }
     }
     return null;
-}
-
-function getSelectMultiValues(id) {
-    var value = '';
-    var objs = $(id).getElementsByTagName('option');
-    for (var i=0; i < objs.length; i++) {
-        if (objs[i].selected) {
-            if (!value) {
-                value = objs[i].value;
-            } else {
-                value = value+','+objs[i].value;
-            }
-        }
-    }
-    return value;
 }
 
 function showimage(obj,img) {
