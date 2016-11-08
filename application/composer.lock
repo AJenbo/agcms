@@ -4,8 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "beea93b1ff9c99d09a6822585413c290",
-    "content-hash": "b32d9facefc118ff41827f18b4b8500c",
+    "content-hash": "3743377224f3a631aad261c2438a34a6",
     "packages": [
         {
             "name": "ezyang/htmlpurifier",
@@ -182,6 +181,12 @@
     "stability-flags": [],
     "prefer-stable": false,
     "prefer-lowest": false,
-    "platform": [],
+    "platform": {
+        "php": ">=7.0.0",
+        "ext-mbstring": "*",
+        "ext-mysqli": "*",
+        "ext-gettext": "*",
+        "ext-soap": "*"
+    },
     "platform-dev": []
 }
