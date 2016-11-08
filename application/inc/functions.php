@@ -1138,6 +1138,7 @@ function menu(int $nr, bool $custom_sort_subs = false): array
         }
 
         //Er katagorien aaben
+        $subs = [];
         if (@$GLOBALS['kats'][$nr+1] === $category->getId()) {
             $subs = menu($nr+1, $categoryId->getRenderMode());
         }
