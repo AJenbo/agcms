@@ -1,17 +1,13 @@
 <?php
 
 /**
- * Implement epaymentAdminService
- */
-
-/**
  * A helper class for communication with ePay
  *
  * See http://www.betalingsterminal.no/Netthandel-forside/Teknisk-veiledning/API/ for
  * a description of the returned objects
  */
 
-class epaymentAdminService
+class EpaymentAdminService
 {
     private $_merchantId;
     private $_password;
@@ -48,7 +44,7 @@ class epaymentAdminService
                 'epayresponse' => true,
             ]
         );
-        if (empty($response->transactionInformationAry) && !(array) $response->transactionInformationAry) {
+        if (empty($response->transactionInformationAry) || !(array) $response->transactionInformationAry) {
             $response = $this->_soapClient->gettransactionlist(
                 [
                     'pwd' => $this->_password,
@@ -61,7 +57,7 @@ class epaymentAdminService
                 ]
             );
         }
-        if (empty($response->transactionInformationAry) && !(array) $response->transactionInformationAry) {
+        if (empty($response->transactionInformationAry) || !(array) $response->transactionInformationAry) {
             $response = $this->_soapClient->gettransactionlist(
                 [
                     'pwd' => $this->_password,

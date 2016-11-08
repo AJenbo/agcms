@@ -2,7 +2,6 @@
 
 require_once $_SERVER['DOCUMENT_ROOT'] . '/admin/inc/logon.php';
 include_once _ROOT_ . '/inc/countries.php';
-require_once _ROOT_ . '/inc/epaymentAdminService.php';
 
 if (!empty($_GET['function']) && $_GET['function'] == 'new') {
     redirect('faktura.php?id='.newfaktura(), 303);
@@ -27,7 +26,7 @@ if ($faktura['premoms']) {
 }
 
 if ($faktura['id'] && $faktura['status'] != 'new') {
-    $epayment = new epaymentAdminService(
+    $epayment = new EpaymentAdminService(
         $GLOBALS['_config']['pbsid'],
         $GLOBALS['_config']['pbspwd'],
         $GLOBALS['_config']['pbsfix'] . $faktura['id']

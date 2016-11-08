@@ -239,7 +239,7 @@ class Category
             SELECT sider.*
             FROM bind JOIN sider ON bind.side = sider.id
             WHERE bind.kat = " . $this->getId() . "
-            ORDER BY sider.`" . db()->esc($sort) . "` ASC
+            ORDER BY sider.`" . db()->esc($order) . "` ASC
             "
         );
     }

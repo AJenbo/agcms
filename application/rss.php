@@ -25,10 +25,10 @@ doConditionalGet($timestamp);
 header('Content-Type: application/rss+xml');
 
 $search = [
-    '@<script[^>]*?>.*?</script>@si', // Strip out javascript
-    '@<[\/\!]*?[^<>]*?>@si',          // Strip out HTML tags
-    '@([\r\n])[\s]+@',                // Strip out white space
-    '@&(&|#197);@i'
+    '@<script[^>]*?>.*?</script>@siu', // Strip out javascript
+    '@<[\/\!]*?[^<>]*?>@sui',          // Strip out HTML tags
+    '@([\r\n])[\s]+@u',                // Strip out white space
+    '@&(&|#197);@iu'
 ];
 
 $replace = [

@@ -1,6 +1,6 @@
 <?php
 
-class sajaxTest extends TestCase
+class SajaxTest extends TestCase
 {
     public function test_handleClientRequest()
     {
@@ -26,7 +26,7 @@ class sajaxTest extends TestCase
         SAJAX::showJavascript();
         $output = ob_get_clean();
 
-        $expected = 'sajax_debug_mode = false;sajax_failure_redirect = \'\';function x_validemail() {return sajax_do_call(\'validemail\', arguments, \'GET\', true, \'\');}';
+        $expected = 'sajax_debug_mode=false;sajax_failure_redirect = "";function x_validemail() {return sajax_do_call("validemail", arguments, "GET", true, "");}';
         $this->assertEquals($expected, $output);
     }
 }

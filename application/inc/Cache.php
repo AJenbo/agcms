@@ -7,16 +7,6 @@ class Cache
 
     /**
      * @param string $key The cache key
-     *
-     * @return mixed
-     */
-    public static function del(string $key)
-    {
-        unset(self::$cache[$key]);
-    }
-
-    /**
-     * @param string $key The cache key
      * @param mixed  $key The value to store
      *
      * @return mixed

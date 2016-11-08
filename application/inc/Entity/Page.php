@@ -26,7 +26,19 @@ class Page
     public function __construct(array $data)
     {
         $this->setId($data['id'] ?? null)
-            ->setTitle($data['title']);
+            ->setSku($data['sku'])
+            ->setTimeStamp($data['timestamp'])
+            ->setTitle($data['title'])
+            ->setKeywords($data['keywords'])
+            ->setHtml($data['html'])
+            ->setExcerpt($data['excerpt'])
+            ->setImagePath($data['image_path'])
+            ->setRequirementId($data['requirement_id'])
+            ->setBrandId($data['brand_id'])
+            ->setPrice($data['price'])
+            ->setOldPrice($data['old_price'])
+            ->setPriceType($data['price_type'])
+            ->setOldPriceType($data['old_price_type']);
     }
 
     public static function mapFromDB(array $data): array
@@ -279,7 +291,7 @@ class Page
         );
     }
 
-    public function getAccessory()
+    public function getAccessories()
     {
         Cache::addLoadedTable('tilbehor');
         return ORM::getByQuery(

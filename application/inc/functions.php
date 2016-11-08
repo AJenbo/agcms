@@ -567,27 +567,6 @@ function stringLimit(string $string, int $length = 50, string $ellipsis = '…')
 }
 
 /**
- * Figure out how to display the active category
- */
-function liste(Category $category)
-{
-    $pages = $category->getPages();
-    if (count($pages) === 1) {
-        $GLOBALS['side']['id'] = reset($pages)->getId();
-        side();
-    } elseif ($pages) {
-        $pages = arrayNatsort($pages, 'id', 'navn', 'asc');
-        foreach ($pages as $page) {
-            //Add space around all tags, strip all tags,
-            //remove all unneded white space
-            if ($category->getRenderMode() !== CATEGORY_HIDDEN) {
-            }
-            vare($value, $category->getRenderMode());
-        }
-    }
-}
-
-/**
  * Search for pages and generate a list or redirect if only one was found
  *
  * @param string $q     Tekst to search for
@@ -836,124 +815,6 @@ function doConditionalGet(int $timestamp)
     ini_set('zlib.output_compression', '0');
     header('HTTP/1.1 304 Not Modified', true, 304);
     die();
-}
-
-/**
- * Populate the generatedcontent array with data relating to the page
- *
- * @return null
- */
-function side()
-{
-    if (!isset($GLOBALS['side']['navn'])) {
-        $page = ORM::getOne(Page::class, $GLOBALS['side']['id']);
-        Cache::addUpdateTime($page->getTimeStamp());
-
-        $GLOBALS['side'] = [
-            'navn'   => $page->getTitle(),
-            'burde'  => $page->getOldPriceType(),
-            'fra'    => $page->getPriceType(),
-            'text'   => $page->getHtml(),
-            'pris'   => $page->getPrice(),
-            'for'    => $page->getOldPrice(),
-            'krav'   => $page->getRequirementId(),
-            'maerke' => $page->getBrandId(),
-            'varenr' => $page->getSku(),
-            'dato'   => $page->getTimeStamp(),
-        ];
-    }
-
-    $GLOBALS['generatedcontent']['headline'] = $GLOBALS['side']['navn'];
-    $GLOBALS['generatedcontent']['serial']   = $GLOBALS['side']['varenr'];
-    $GLOBALS['generatedcontent']['datetime'] = $GLOBALS['side']['dato'];
-    $GLOBALS['generatedcontent']['text']     = $GLOBALS['side']['text'];
-
-    if ($GLOBALS['side']['krav']) {
-        $krav = db()->fetchOne(
-            "
-            SELECT navn
-            FROM krav
-            WHERE id = " . $GLOBALS['side']['krav']
-        );
-        Cache::addLoadedTable('krav');
-
-        $GLOBALS['generatedcontent']['requirement']['icon'] = '';
-        $GLOBALS['generatedcontent']['requirement']['name'] = $krav['navn'];
-        $GLOBALS['generatedcontent']['requirement']['link'] = '/krav/'
-        . $GLOBALS['side']['krav'] . '/' . clearFileName($krav['navn'])
-        . '.html';
-    }
-
-    $GLOBALS['generatedcontent']['price']['before']  = $GLOBALS['side']['for'];
-    $GLOBALS['generatedcontent']['price']['now']    = $GLOBALS['side']['pris'];
-    $GLOBALS['generatedcontent']['price']['from']   = $GLOBALS['side']['fra'];
-    $GLOBALS['generatedcontent']['price']['market'] = $GLOBALS['side']['burde'];
-
-    unset($GLOBALS['side']['text']);
-
-    //TODO and figure out how to do the sorting using only js
-    $GLOBALS['generatedcontent']['text'] .= echoTable($GLOBALS['side']['id']);
-
-    $GLOBALS['generatedcontent']['price']['old']    = $GLOBALS['side']['for'];
-    $GLOBALS['generatedcontent']['price']['market'] = $GLOBALS['side']['burde'];
-    $GLOBALS['generatedcontent']['price']['new']    = $GLOBALS['side']['pris'];
-    $GLOBALS['generatedcontent']['price']['from']   = $GLOBALS['side']['fra'];
-
-    Cache::addLoadedTable('kat');
-
-    $GLOBALS['generatedcontent']['email'] = $GLOBALS['_config']['email'];
-    $category = ORM::getOne(Category::class, $GLOBALS['generatedcontent']['activmenu']);
-    if ($category) {
-        $GLOBALS['generatedcontent']['email'] = $category->getEmail();
-    }
-
-    if ($GLOBALS['side']['maerke']) {
-        $maerker = db()->fetchArray(
-            "
-            SELECT `id`, `navn`, `link`, `ico`
-            FROM `maerke`
-            WHERE `id` IN(" . $GLOBALS['side']['maerke'] . ") AND `ico` != ''
-            ORDER BY `navn`
-            "
-        );
-        $temp = db()->fetchArray(
-            "
-            SELECT `id`, `navn`, `link`, `ico`
-            FROM `maerke`
-            WHERE `id` IN(" . $GLOBALS['side']['maerke'] . ") AND `ico` = ''
-            ORDER BY `navn`
-            "
-        );
-        Cache::addLoadedTable('maerke');
-        $maerker = array_merge($maerker, $temp);
-
-        Cache::addLoadedTable('maerke');
-
-        foreach ($maerker as $value) {
-            $GLOBALS['generatedcontent']['brands'][] = [
-                'name' => $value['navn'],
-                'link' => '/mærke' . $value['id'] . '-' . clearFileName($value['navn']) . '/',
-                'xlink' => $value['link'],
-                'icon' => $value['ico']
-            ];
-        }
-    }
-
-    $accessories = ORM::getOne(Page::class, $GLOBALS['side']['id'])->getAccessories();
-    foreach ($accessories as $page) {
-        $GLOBALS['generatedcontent']['accessories'][] = [
-            'name' => $page->getTitle(),
-            'link' => $page->getCanonicalLink(),
-            'icon' => $page->getImagePath(),
-            'text' => $page->getExcerpt(),
-            'price' => [
-                'before' => $page->getOldPrice(),
-                'now' => $page->getPrice(),
-                'from' => $page->getPriceType(),
-                'market' => $page->getOldPriceType(),
-            ],
-        ];
-    }
 }
 
 /**
@@ -1223,7 +1084,7 @@ function validate(array $values): array
 {
     $rejected = [];
 
-    if (!valideMail(@$values['email'])) {
+    if (empty($values['navn']) || !valideMail($values['email'])) {
         $rejected['email'] = true;
     }
     if (empty($values['navn'])) {

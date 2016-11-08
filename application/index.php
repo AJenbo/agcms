@@ -84,7 +84,7 @@ if ($activMenu > 0) {
 }
 
 //crumbs start
-if (@$GLOBALS['kats']) {
+if (!empty($GLOBALS['kats'])) {
     foreach ($GLOBALS['kats'] as $categoryId) {
         $category = ORM::getOne(Category::class, $categoryId);
         $GLOBALS['generatedcontent']['crumbs'][] = [
@@ -163,7 +163,7 @@ if (!empty($_GET['sog'])) {
 
     $text = '';
 
-    if (@$GLOBALS['side']['404']) {
+    if (!empty($GLOBALS['side']['404'])) {
         header('HTTP/1.1 404 Not Found');
         $text .= '<p>' . _('Page could not be found. Try searching for a similar page.') . '</p>';
     }
@@ -171,7 +171,7 @@ if (!empty($_GET['sog'])) {
     $text .= '<form action="/" method="get"><table>';
     $text .= '<tr><td>'._('Contains').'</td><td>';
     $text .= '<input name="q" size="31" value="';
-    if (@$GLOBALS['side']['404']) {
+    if (!empty($GLOBALS['side']['404'])) {
         $text = preg_replace(
             ['/-/u', '/\/kat[0-9]+-(.*?)\//u', '/\/side[0-9]+-(.*?)[.]html/u'],
             [' ', ' \1 ', ' \1 '],
@@ -214,7 +214,7 @@ if (!empty($_GET['sog'])) {
     $temp_kat = $activMenu;
 
     $pages = [];
-    if ((!empty($_GET['maerke']) || @$maerke)
+    if ((!empty($_GET['maerke']) || !empty($maerke))
         && empty($_GET['q'])
         && empty($_GET['varenr'])
         && empty($_GET['sogikke'])
@@ -223,8 +223,8 @@ if (!empty($_GET['sog'])) {
     ) {
         //Brand only search
         $GLOBALS['generatedcontent']['contenttype'] = 'brand';
-        if (@$_GET['maerke'] && empty($maerke)) {
-            $maerke = $_GET['maerke'];
+        if (!empty($_GET['maerke'])) {
+            $maerke = (int) $_GET['maerke'];
         }
         $maerkeet = db()->fetchOne(
             "
@@ -262,7 +262,7 @@ if (!empty($_GET['sog'])) {
         if (!empty($_GET['sogikke'])) {
             $where .= " AND !MATCH (navn, text) AGAINST('" . db()->esc($_GET['sogikke']) ."') > 0";
         }
-        $pages = searchListe(@$_GET['q'], $where);
+        $pages = searchListe($_GET['q'] ?? '', $where);
     }
 
     //Draw the list
@@ -276,8 +276,8 @@ if (!empty($_GET['sog'])) {
         foreach ($pages as $page) {
             //Search categories does not have a fixed number, use first fixed per page
             $category = null;
-            if ($GLOBALS['generatedcontent']['activmenu']) {
-                $category = ORM::getOne(Category::class, $GLOBALS['generatedcontent']['activmenu']);
+            if ($activMenu) {
+                $category = ORM::getOne(Category::class, $activMenu);
             }
 
             vare($page, CATEGORY_GALLERY, $category);
@@ -286,40 +286,159 @@ if (!empty($_GET['sog'])) {
     $activMenu = $temp_kat;
 
     $wherekat = '';
-    if (@$_GET['sogikke']) {
-        $wherekat .= ' AND !MATCH (navn) AGAINST(\''.$_GET['sogikke'].'\') > 0';
+    if (!empty($_GET['sogikke'])) {
+        $wherekat .= " AND !MATCH (navn) AGAINST('" . db()->esc($_GET['sogikke']) . "') > 0";
     }
-    searchMenu(@$_GET['q'], $wherekat);
-} elseif (@$GLOBALS['side']['id'] > 0) {
-    $GLOBALS['generatedcontent']['contenttype'] = 'product';
-    side();
-} elseif ($activMenu > 0) {
-    $category = ORM::getOne(Category::class, $GLOBALS['generatedcontent']['activmenu']);
-    liste($category);
-    if (@$GLOBALS['side']['id'] > 0) {
-        $GLOBALS['generatedcontent']['contenttype'] = 'product';
-    } elseif (Cache::get('kat' . $activMenu . 'type') == 2) {
-        $GLOBALS['generatedcontent']['contenttype'] = 'list';
-    } elseif (Cache::get('kat' . $activMenu . 'type') == 1) {
-        $GLOBALS['generatedcontent']['contenttype'] = 'tiles';
-    }
+    searchMenu($_GET['q'] ?? '', $wherekat);
 } else {
-    $special = db()->fetchOne(
-        "
-        SELECT text, UNIX_TIMESTAMP(dato) AS dato
-        FROM special
-        WHERE id = 1
-        "
-    );
-    if ($special['dato']) {
-        Cache::addUpdateTime($special['dato']);
-    } else {
-        Cache::addLoadedTable('special');
+    $category = null;
+    if ($activMenu > 0) {
+        $category = ORM::getOne(Category::class, $activMenu);
+        $pages = $category->getPages();
+        if (count($pages) === 1) {
+            $GLOBALS['side']['id'] = reset($pages)->getId();
+        } elseif ($pages) {
+            $pages = arrayNatsort($pages, 'id', 'navn', 'asc');
+            foreach ($pages as $page) {
+                vare($value, $category->getRenderMode());
+            }
+        }
     }
 
-    $GLOBALS['generatedcontent']['contenttype'] = 'front';
-    $GLOBALS['generatedcontent']['text'] = $special['text'];
-    unset($special);
+    if (!empty($GLOBALS['side']['id'])) {
+        $GLOBALS['generatedcontent']['contenttype'] = 'product';
+        if (!isset($GLOBALS['side']['navn'])) {
+            $page = ORM::getOne(Page::class, $GLOBALS['side']['id']);
+            Cache::addUpdateTime($page->getTimeStamp());
+
+            $GLOBALS['side'] = [
+                'id'     => $page->getId(),
+                'navn'   => $page->getTitle(),
+                'burde'  => $page->getOldPriceType(),
+                'fra'    => $page->getPriceType(),
+                'text'   => $page->getHtml(),
+                'pris'   => $page->getPrice(),
+                'for'    => $page->getOldPrice(),
+                'krav'   => $page->getRequirementId(),
+                'maerke' => $page->getBrandId(),
+                'varenr' => $page->getSku(),
+                'dato'   => $page->getTimeStamp(),
+            ];
+        }
+
+        $GLOBALS['generatedcontent']['headline'] = $GLOBALS['side']['navn'];
+        $GLOBALS['generatedcontent']['serial']   = $GLOBALS['side']['varenr'];
+        $GLOBALS['generatedcontent']['datetime'] = $GLOBALS['side']['dato'];
+        $GLOBALS['generatedcontent']['text']     = $GLOBALS['side']['text'];
+
+        if ($GLOBALS['side']['krav']) {
+            $krav = db()->fetchOne(
+                "
+                SELECT navn
+                FROM krav
+                WHERE id = " . $GLOBALS['side']['krav']
+            );
+            Cache::addLoadedTable('krav');
+
+            $GLOBALS['generatedcontent']['requirement']['icon'] = '';
+            $GLOBALS['generatedcontent']['requirement']['name'] = $krav['navn'];
+            $GLOBALS['generatedcontent']['requirement']['link'] = '/krav/'
+            . $GLOBALS['side']['krav'] . '/' . clearFileName($krav['navn'])
+            . '.html';
+        }
+
+        $GLOBALS['generatedcontent']['price']['before']  = $GLOBALS['side']['for'];
+        $GLOBALS['generatedcontent']['price']['now']    = $GLOBALS['side']['pris'];
+        $GLOBALS['generatedcontent']['price']['from']   = $GLOBALS['side']['fra'];
+        $GLOBALS['generatedcontent']['price']['market'] = $GLOBALS['side']['burde'];
+
+        unset($GLOBALS['side']['text']);
+
+        //TODO and figure out how to do the sorting using only js
+        $GLOBALS['generatedcontent']['text'] .= echoTable($GLOBALS['side']['id']);
+
+        $GLOBALS['generatedcontent']['price']['old']    = $GLOBALS['side']['for'];
+        $GLOBALS['generatedcontent']['price']['market'] = $GLOBALS['side']['burde'];
+        $GLOBALS['generatedcontent']['price']['new']    = $GLOBALS['side']['pris'];
+        $GLOBALS['generatedcontent']['price']['from']   = $GLOBALS['side']['fra'];
+
+        Cache::addLoadedTable('kat');
+
+        $GLOBALS['generatedcontent']['email'] = $GLOBALS['_config']['email'];
+        $category = ORM::getOne(Category::class, $activMenu);
+        if ($category) {
+            $GLOBALS['generatedcontent']['email'] = $category->getEmail();
+        }
+
+        if ($GLOBALS['side']['maerke']) {
+            $maerker = db()->fetchArray(
+                "
+                SELECT `id`, `navn`, `link`, `ico`
+                FROM `maerke`
+                WHERE `id` IN(" . $GLOBALS['side']['maerke'] . ") AND `ico` != ''
+                ORDER BY `navn`
+                "
+            );
+            $temp = db()->fetchArray(
+                "
+                SELECT `id`, `navn`, `link`, `ico`
+                FROM `maerke`
+                WHERE `id` IN(" . $GLOBALS['side']['maerke'] . ") AND `ico` = ''
+                ORDER BY `navn`
+                "
+            );
+            Cache::addLoadedTable('maerke');
+            $maerker = array_merge($maerker, $temp);
+
+            Cache::addLoadedTable('maerke');
+
+            foreach ($maerker as $value) {
+                $GLOBALS['generatedcontent']['brands'][] = [
+                    'name' => $value['navn'],
+                    'link' => '/mærke' . $value['id'] . '-' . clearFileName($value['navn']) . '/',
+                    'xlink' => $value['link'],
+                    'icon' => $value['ico']
+                ];
+            }
+        }
+
+        $accessories = ORM::getOne(Page::class, $GLOBALS['side']['id'])->getAccessories();
+        foreach ($accessories as $page) {
+            $GLOBALS['generatedcontent']['accessories'][] = [
+                'name' => $page->getTitle(),
+                'link' => $page->getCanonicalLink(),
+                'icon' => $page->getImagePath(),
+                'text' => $page->getExcerpt(),
+                'price' => [
+                    'before' => $page->getOldPrice(),
+                    'now' => $page->getPrice(),
+                    'from' => $page->getPriceType(),
+                    'market' => $page->getOldPriceType(),
+                ],
+            ];
+        }
+    } elseif ($category && $category->getRenderMode == CATEGORY_LIST) {
+        $GLOBALS['generatedcontent']['contenttype'] = 'list';
+    } elseif ($category && $category->getRenderMode == CATEGORY_GALLERY) {
+        $GLOBALS['generatedcontent']['contenttype'] = 'tiles';
+    } else {
+        $special = db()->fetchOne(
+            "
+            SELECT text, UNIX_TIMESTAMP(dato) AS dato
+            FROM special
+            WHERE id = 1
+            "
+        );
+        if ($special['dato']) {
+            Cache::addUpdateTime($special['dato']);
+        } else {
+            Cache::addLoadedTable('special');
+        }
+
+        $GLOBALS['generatedcontent']['contenttype'] = 'front';
+        $GLOBALS['generatedcontent']['text'] = $special['text'];
+        unset($special);
+    }
 }
 
 //Extract title for current page.
@@ -368,7 +487,7 @@ if (empty($GLOBALS['generatedcontent']['title']) && $category) {
             )
         );
     }
-} elseif (empty($GLOBALS['generatedcontent']['title']) && @$_GET['sog'] == 1) {
+} elseif (empty($GLOBALS['generatedcontent']['title']) && !empty($_GET['sog'])) {
     $GLOBALS['generatedcontent']['title'] = 'Søg på ' . xhtmlEsc($GLOBALS['_config']['site_name']);
 }
 if (empty($GLOBALS['generatedcontent']['title'])) {

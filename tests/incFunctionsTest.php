@@ -85,16 +85,4 @@ class incFunctionsTest extends TestCase
     {
         $this->assertEquals('Lon…', stringLimit('Long tekst here', 4));
     }
-
-    public function test_katHTML()
-    {
-        $GLOBALS['generatedcontent']['activmenu'] = 0;
-        $pages = [
-            ['id' => 0, 'navn' => 'Page 1', 'varenr' => 'ProdNo', 'for' => 0, 'pris' => 0],
-            ['id' => 0, 'navn' => 'Page 1', 'varenr' => 'ProdNo', 'for' => 1, 'pris' => 1],
-        ];
-
-        $expected = '<table class="tabel"><thead><tr><td><a href="" onclick="x_getKat(\'0\', \'navn\', inject_html);return false">Titel</a></td><td><a href="" onclick="x_getKat(\'0\', \'for\', inject_html);return false">Før</a></td><td><a href="" onclick="x_getKat(\'0\', \'pris\', inject_html);return false">Pris</a></td><td><a href="" onclick="x_getKat(\'0\', \'varenr\', inject_html);return false">#</a></td></tr></thead><tbody><tr><td><a href="/kat0-Cateogry/side0-Page-1.html">Page 1</a></td><td class="XPris" align="right"></td><td class="Pris" align="right"></td><td align="right" style="font-size:11px">ProdNo</td></tr><tr class="altrow"><td><a href="/kat0-Cateogry/side0-Page-1.html">Page 1</a></td><td class="XPris" align="right">1,-</td><td class="Pris" align="right">1,-</td><td align="right" style="font-size:11px">ProdNo</td></tr></tbody></table>';
-        $this->assertEquals($expected, katHTML($pages, 'Cateogry', 0));
-    }
 }

@@ -304,7 +304,7 @@ if (!empty($_SESSION['faktura']['quantities'])) {
             $updates['email'] = $_POST['email'];
             $updates['tlf1'] = $_POST['tlf1'] != $_POST['tlf2'] ? $_POST['tlf1'] : '';
             $updates['tlf2'] = $_POST['tlf2'];
-            $updates['altpost'] = @$_POST['altpost'] ? 1 : 0;
+            $updates['altpost'] = (int) !empty($_POST['altpost']);
             $updates['posttlf'] = $_POST['posttlf'];
             $updates['postname'] = $_POST['postname'];
             $updates['postatt'] = $_POST['postatt'] != $_POST['postname'] ? $_POST['postatt'] : '';
@@ -314,14 +314,14 @@ if (!empty($_SESSION['faktura']['quantities'])) {
             $updates['postpostalcode'] = $_POST['postpostalcode'];
             $updates['postcity'] = $_POST['postcity'];
             $updates['postcountry'] = $_POST['postcountry'];
-            $updates['enote'] = @$_POST['enote'];
+            $updates['enote'] = $_POST['enote'] ?? '';
             $updates = array_map('trim', $updates);
 
             $_SESSION['faktura'] = array_merge($_SESSION['faktura'], $updates);
             $rejected = validate($updates);
 
             if (!count($rejected)) {
-                if (@$_POST['newsletter'] ? 1 : 0) {
+                if (!empty($_POST['newsletter'])) {
                     db()->query(
                         "
                         INSERT INTO `email` (
