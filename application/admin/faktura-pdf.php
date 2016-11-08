@@ -1,6 +1,7 @@
 <?php
 
 require_once $_SERVER['DOCUMENT_ROOT'] . '/admin/inc/logon.php';
+include_once _ROOT_ . '/vendor/tecnick.com/tcpdf/examples/lang/dan.php';
 include_once _ROOT_ . '/inc/countries.php';
 
 if ($_GET['id'] > 0) {
