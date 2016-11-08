@@ -12,6 +12,9 @@
  */
 
 defined('_ROOT_') || define('_ROOT_', realpath(__DIR__ . '/..' ));
+define('CATEGORY_HIDDEN', 0);
+define('CATEGORY_GALLERY', 1);
+define('CATEGORY_LIST', 2);
 
 ini_set('display_errors', 1);
 error_reporting(-1);
@@ -24,8 +27,10 @@ mb_language('uni');
 mb_detect_order('UTF-8, ISO-8859-1');
 mb_internal_encoding('UTF-8');
 
-require_once __DIR__ . '/cache.php';
-require_once __DIR__ . '/mysqli.php';
+require_once __DIR__ . '/Cache.php';
+require_once __DIR__ . '/DB.php';
+require_once __DIR__ . '/ORM.php';
+require_once __DIR__ . '/Entity/Category.php';
 require_once __DIR__ . '/sajax.php';
 require_once __DIR__ . '/config.php';
 require_once __DIR__ . '/imap.php';
@@ -35,16 +40,16 @@ require_once __DIR__ . '/../vendor/phpmailer/phpmailer/class.phpmailer.php';
 
 function db()
 {
-    static $mysqli;
-    if (!$mysqli) {
-        $mysqli = new Simple_Mysqli(
+    static $db;
+    if (!$db) {
+        $db = new DB(
             $GLOBALS['_config']['mysql_server'],
             $GLOBALS['_config']['mysql_user'],
             $GLOBALS['_config']['mysql_password'],
             $GLOBALS['_config']['mysql_database']
         );
     }
-    return $mysqli;
+    return $db;
 }
 
 /**
@@ -77,88 +82,6 @@ function checkMx(string $domain): bool {
     }
 
     return $ceche[$domain];
-}
-
-/**
- * Check if there are pages connected to a category
- *
- * @param int $id Category id
- *
- * @return bool
- */
-function skriv(int $id): bool
-{
-    Cache::addLoadedTable('bind');
-    if (Cache::get('kat' . $id . 'show') === null) {
-        //er der en side på denne kattegori
-        if ($kat = db()->fetchOne("SELECT id FROM bind WHERE kat = " . $id)) {
-            Cache::set('kat' . $id . 'show', true);
-            return true;
-        }
-
-        //ellers kig om der er en under kattegori med en side
-        $kat = db()->fetchArray(
-            "
-            SELECT kat.id, bind.id as skriv, vis, icon, navn
-            FROM kat JOIN bind ON bind.kat = kat.id
-            WHERE kat.bind = $id
-            GROUP BY kat.id
-            "
-        );
-        Cache::addLoadedTable('kat');
-
-        //cache all results first
-        foreach ($kat as $value) {
-            if ($value['skriv']) {
-                Cache::set('kat' . $value['id'] . 'show', true);
-                Cache::set('kat' . $value['id'] . 'name', $value['navn']);
-                Cache::set('kat' . $value['id'] . 'type', $value['vis']);
-                Cache::set('kat' . $value['id'] . 'icon', $value['icon']);
-            }
-        }
-
-        //Search deeper
-        foreach ($kat as $value) {
-            if (skriv($value['id'])) {
-                Cache::set('kat' . $id . 'show', true);
-                return true;
-            }
-        }
-
-        Cache::set('kat' . $id . 'show', false);
-    }
-
-    return Cache::get('kat' . $id . 'show');
-}
-
-/**
- * Test if category contain categories with content
- *
- * @param int $kat Category id
- *
- * @return bool
- */
-function subs(int $kat): bool
-{
-    $sub = db()->fetchArray(
-        "
-        SELECT id
-        FROM kat
-        WHERE bind = $kat
-        ORDER BY navn
-        "
-    );
-
-    Cache::addLoadedTable('kat');
-
-    foreach ($sub as $value) {
-        //er der sider bundet til katagorien
-        if (skriv($value['id'])) {
-            return true;
-        }
-    }
-
-    return false;
 }
 
 /**
@@ -296,14 +219,15 @@ function arrayListsort(array $aryData, string $strIndex, string $strSortBy, int 
 /**
  * Return html for a sorted list
  *
- * @param int $listid      Id of list
- * @param int $bycell      What cell to sort by
- * @param int $current_kat Id of current category
+ * @param int $listid     Id of list
+ * @param int $bycell     What cell to sort by
+ * @param int $categoryId Id of current category
  *
  * @return array
  */
-function getTable(int $listid, int $bycell = null, int $current_kat = null): array
+function getTable(int $listid, int $bycell = null, int $categoryId = null): array
 {
+    $category = $categoryId ? ORM::getOne(Category::class, $categoryId) : null;
     $html = '';
 
     Cache::addLoadedTable('lists');
@@ -359,7 +283,7 @@ function getTable(int $listid, int $bycell = null, int $current_kat = null): arr
         $html .= '<thead><tr>';
         foreach ($list['cell_names'] as $key => $cell_name) {
             $html .= '<td><a href="" onclick="x_getTable(\'' . $list['id']
-            . '\', \'' . $key . '\', ' . $current_kat
+            . '\', \'' . $key . '\', ' . ($category ? $category->getId() : '')
             . ', inject_html);return false;">' . $cell_name . '</a></td>';
         }
         $html .= '</tr></thead><tbody>';
@@ -370,16 +294,9 @@ function getTable(int $listid, int $bycell = null, int $current_kat = null): arr
             }
             $html .= '>';
             if ($row['link']) {
+                $sider = db()->fetchOne("SELECT * FROM `sider` WHERE `sider`.`id` = " . $row['link']);
                 Cache::addLoadedTable('sider');
-                Cache::addLoadedTable('kat');
-                $sider = db()->fetchOne(
-                    "
-                    SELECT `sider`.`navn`, `kat`.`navn` AS `kat_navn`
-                    FROM `sider` JOIN `kat` ON `kat`.`id` = " . $current_kat . "
-                    WHERE `sider`.`id` = " . $row['link']
-                );
-                $row['link'] = '<a href="/kat' . $current_kat . '-'
-                . clearFileName($sider['kat_navn']) . '/side' . $row['link']
+                $row['link'] = '<a href="/' . ($category ? $category->getSlug() : '') . 'side' . $row['link']
                 . '-' . clearFileName($sider['navn']) . '.html">';
             }
             foreach ($list['cells'] as $key => $type) {
@@ -564,58 +481,6 @@ function echoTable(int $sideid): string
 }
 
 /**
- * Get alle gategories leading up a given one
- *
- * @param int $id Id of the end category
- *
- * @return array Ids of all the categories leading up to $id
- */
-function kats(int $id): array
-{
-    $kat = db()->fetchOne(
-        "
-        SELECT bind
-        FROM kat
-        WHERE id = " . $id
-    );
-    Cache::addLoadedTable('kat');
-
-    $kats = [];
-    if ($kat) {
-        $kats[] = $id;
-        foreach (kats($kat['bind']) as $value) {
-            $kats[] = $value;
-        }
-    }
-
-    return $kats;
-}
-
-/**
- * Search for root
- *
- * @param int $bind Kategory id
- *
- * @return int Kategory id of the root branch where $bind belongs to
- */
-function binding(int $bind): int
-{
-    if ($bind > 0) {
-        $sog_kat = db()->fetchOne(
-            "
-            SELECT `bind`
-            FROM `kat`
-            WHERE id = '" . $bind . "'"
-        );
-        Cache::addLoadedTable('kat');
-
-        return binding($sog_kat['bind']);
-    }
-
-    return $bind;
-}
-
-/**
  * @param string $string
  *
  * @return string
@@ -628,44 +493,28 @@ function xhtmlEsc(string $string): string
 /**
  * Populate the generated global list with a page
  *
- * @param array  $side    A page
- * @param string $katnavn Title of category
- * @param int    $type    Display mode
+ * @param array $side A page
+ * @param int   $type Display mode
  *
  * @return null
  */
-function vare(array $side, string $katnavn, int $type)
+function vare(array $side,int $type)
 {
     //Search categories does not have a fixed number, use first fixed per page
     if (!$GLOBALS['generatedcontent']['activmenu']) {
-        $bind = db()->fetchOne(
+        $category = ORM::getOneByQuery(
+            Category::class,
             "
-            SELECT kat
-            FROM bind
+            SELECT `kat`.*
+            FROM `bind` JOIN `kat` ON `kat`.id = `bind`.`kat`
             WHERE side = " . $side['id']
         );
         Cache::addLoadedTable('bind');
-        $GLOBALS['generatedcontent']['activmenu'] = $bind['kat'];
-        if (Cache::get('kat' . $bind['kat'] . 'name') === null) {
-            $kat = db()->fetchOne(
-                "
-                SELECT navn, vis, icon
-                FROM kat
-                WHERE id = " . $bind['kat']
-            );
-            Cache::addLoadedTable('kat');
-            if ($kat) {
-                Cache::set('kat' . $bind['kat'] . 'name', $kat['navn']);
-                Cache::set('kat' . $bind['kat'] . 'type', $kat['vis']);
-                Cache::set('kat' . $bind['kat'] . 'icon', $kat['icon']);
-            }
-        }
-        $katnavn = Cache::get('kat' . $bind['kat'] . 'name') ?: '';
+        $GLOBALS['generatedcontent']['activmenu'] = $category ? $category->getId() : 0;
     }
 
-    $link = '/kat' . $GLOBALS['generatedcontent']['activmenu'] . '-'
-    . clearFileName($katnavn) . '/side' . $side['id'] . '-'
-    . clearFileName($side['navn']) . '.html';
+    $link = '/' . ($category ? $category->getSlug() : '')
+    . 'side' . $side['id'] . '-' . clearFileName($side['navn']) . '.html';
     $name = xhtmlEsc($side['navn']);
 
     if ($type == 1) {
@@ -752,12 +601,7 @@ function liste()
     Cache::addLoadedTable('bind');
     Cache::addLoadedTable('sider');
 
-    $kat = db()->fetchOne(
-        "
-        SELECT navn, vis
-        FROM kat
-        WHERE id = " . $GLOBALS['generatedcontent']['activmenu']
-    );
+    $category = ORM::getOne(Category::class, $GLOBALS['generatedcontent']['activmenu']);
     Cache::addLoadedTable('kat');
 
     if ($bind) {
@@ -769,7 +613,7 @@ function liste()
             foreach ($bind as $value) {
                 //Add space around all tags, strip all tags,
                 //remove all unneded white space
-                if ($kat['vis'] == 1) {
+                if ($category->getRenderMode() !== CATEGORY_HIDDEN) {
                     $value['text'] = preg_replace(
                         '/\s+/',
                         ' ',
@@ -782,7 +626,7 @@ function liste()
                         )
                     );
                 }
-                vare($value, $kat['navn'], $kat['vis']);
+                vare($value, $category->getRenderMode());
             }
         }
     }
@@ -848,22 +692,14 @@ function katHTML(array $pages, string $categoryTitle, int $categoryId): string
  */
 function searchListe(string $q, string $wheresider)
 {
-    //TODO duplicate text with out html for better searching.
-    global $qext;
     $pages = [];
-
-    if ($qext) {
-        $qext = ' WITH QUERY EXPANSION';
-    } else {
-        $qext = '';
-    }
 
     if ($q) {
         $sider = db()->fetchArray(
             "
-            SELECT *, MATCH(navn, text, beskrivelse) AGAINST ('$q'$qext) AS score
+            SELECT *, MATCH(navn, text, beskrivelse) AGAINST ('$q') AS score
             FROM sider
-            WHERE MATCH (navn, text, beskrivelse) AGAINST('$q'$qext) > 0
+            WHERE MATCH (navn, text, beskrivelse) AGAINST('$q') > 0
             $wheresider
             ORDER BY `score` DESC
             "
@@ -985,7 +821,7 @@ function getAddress(string $phoneNumber): array
     ];
 
     foreach ($dbs as $db) {
-        $mysqli_ext = new Simple_Mysqli(
+        $db = new DB(
             $db['mysql_server'],
             $db['mysql_user'],
             $db['mysql_password'],
@@ -993,7 +829,7 @@ function getAddress(string $phoneNumber): array
         );
 
         //try packages
-        $post = $mysqli_ext->fetchOne(
+        $post = $db->fetchOne(
             "
             SELECT recName1, recAddress1, recZipCode
             FROM `post`
@@ -1009,7 +845,7 @@ function getAddress(string $phoneNumber): array
         }
 
         //Try katalog orders
-        $email = $mysqli_ext->fetchOne(
+        $email = $db->fetchOne(
             "
             SELECT navn, email, adresse, post
             FROM `email`
@@ -1031,7 +867,7 @@ function getAddress(string $phoneNumber): array
         }
 
         //Try fakturas
-        $fakturas = $mysqli_ext->fetchOne(
+        $fakturas = $db->fetchOne(
             "
             SELECT navn, email, att, adresse, postnr, postbox
             FROM `fakturas`
@@ -1184,20 +1020,12 @@ function side()
     $GLOBALS['generatedcontent']['price']['new']    = $GLOBALS['side']['pris'];
     $GLOBALS['generatedcontent']['price']['from']   = $GLOBALS['side']['fra'];
 
-    if (empty($GLOBALS['generatedcontent']['email'])) {
-        $kat = db()->fetchOne(
-            "
-            SELECT `email`
-            FROM `kat`
-            WHERE id = " . $GLOBALS['generatedcontent']['activmenu']
-        );
-    }
     Cache::addLoadedTable('kat');
 
-    if (empty($kat['email'])) {
-        $GLOBALS['generatedcontent']['email'] = $GLOBALS['_config']['email'];
-    } else {
-        $GLOBALS['generatedcontent']['email'] = $kat['email'];
+    $GLOBALS['generatedcontent']['email'] = $GLOBALS['_config']['email'];
+    $category = ORM::getOne(Category::class, $GLOBALS['generatedcontent']['activmenu']);
+    if ($category) {
+        $GLOBALS['generatedcontent']['email'] = $category->getEmail();
     }
 
     if ($GLOBALS['side']['maerke']) {
@@ -1252,22 +1080,16 @@ function side()
     Cache::addLoadedTable('sider');
 
     foreach ($tilbehor as $value) {
+        $url = '/';
         if ($value['kat']) {
-            $kat = db()->fetchOne(
-                "
-                SELECT id, navn
-                FROM kat
-                WHERE id = " . $value['kat']
-            );
-            Cache::addLoadedTable('kat');
-            $kat = '/kat'.$kat['id'].'-'.clearFileName($kat['navn']);
+            $category = ORM::getOne(Category::class, $value['kat']);
+            $url .= $category ? $category->getSlug() : '';
         } else {
-            $kat = '';
         }
         //TODO beskrivelse
         $GLOBALS['generatedcontent']['accessories'][] = [
             'name' => $value['navn'],
-            'link' => $kat . '/side' . $value['id'] . '-' . clearFileName($value['navn']) . '.html',
+            'link' => $url . 'side' . $value['id'] . '-' . clearFileName($value['navn']) . '.html',
             'icon' => $value['billed'],
             'text' => '',
             'price' => [
@@ -1291,84 +1113,41 @@ function side()
  */
 function menu(int $nr, bool $custom_sort_subs = false): array
 {
-    /**
-     * TODO inner join or HAVING COUNT(pb.id) > 0 posible way to
-     * eliminate empty catagorys
-     */
-
-    $kats = db()->fetchArray(
+    $categories = ORM::getByQuery(
+        Category::class,
         "
-        SELECT kat.id,
-            kat.navn,
-            kat.vis,
-            kat.icon,
-            kat.custom_sort_subs,
-            MAX(bind.side) AS skriv,
-            subkat.id AS sub
+        SELECT *
         FROM kat
-        LEFT JOIN kat AS subkat
-        ON kat.id = subkat.bind
-            AND  subkat.vis != '0'
-        LEFT JOIN bind
-        ON kat.id = bind.kat
-        WHERE kat.vis != '0'
+        WHERE kat.vis != " . CATEGORY_HIDDEN . "
             AND kat.bind = " . $GLOBALS['kats'][$nr] . "
-        GROUP BY kat.id
         ORDER BY kat.`order`, kat.navn
         "
     );
-    Cache::addLoadedTable('kat');
-    Cache::addLoadedTable('bind');
 
     $menu = [];
-    if ($kats) {
-        if (!$custom_sort_subs) {
-            $kats = arrayNatsort($kats, 'id', 'navn', 'asc');
+    if (!$custom_sort_subs) {
+        $categories = arrayNatsort($categories, 'id', 'navn', 'asc');
+    }
+
+    foreach ($categories as $category) {
+        if (!$category->isVisable()) {
+            continue;
         }
 
-        if (Cache::get('kat' . $GLOBALS['kats'][$nr] . 'name') === null) {
-            $katsnr_navn = db()->fetchOne(
-                "
-                SELECT navn, vis, icon
-                FROM kat
-                WHERE id = " . $GLOBALS['kats'][$nr]
-            );
-            Cache::addLoadedTable('kat');
-            Cache::set('kat' . $GLOBALS['kats'][$nr] . 'name', $katsnr_navn['navn']);
-            Cache::set('kat' . $GLOBALS['kats'][$nr] . 'type', $katsnr_navn['vis']);
-            Cache::set('kat' . $GLOBALS['kats'][$nr] . 'name', $katsnr_navn['icon']);
+        //Er katagorien aaben
+        if (@$GLOBALS['kats'][$nr+1] === $category->getId()) {
+            $subs = menu($nr+1, $categoryId->getRenderMode());
         }
 
-        foreach ($kats as $value) {
-            $subs = null;
-            if (Cache::get('kat' . $value['id'] . 'show') === null) {
-                Cache::set('kat' . $value['id'] . 'show', (bool) $value['sub']);
-            }
-            Cache::set('kat' . $value['id'] . 'name', $value['navn']);
-            Cache::set('kat' . $value['id'] . 'type', $value['vis']);
-            Cache::set('kat' . $value['id'] . 'icon', $value['icon']);
-
-            /**
-             * skriv() viser kun om kategorien skal krives, ikke om den ikke
-             * skal så hvis siden har subs skal de undersøges nermer
-             */
-            if (skriv($value['id'])) {
-                //Er katagorien aaben
-                if (@$GLOBALS['kats'][$nr+1] == $value['id']) {
-                    $subs = menu($nr+1, $value['custom_sort_subs']);
-                }
-
-                //tegn under punkter
-                $menu[] = [
-                    'id' => $value['id'],
-                    'name' => xhtmlEsc($value['navn']),
-                    'link' => '/kat'.$value['id'].'-' .clearFileName($value['navn']).'/',
-                    'icon' => $value['icon'],
-                    'sub' => (bool) $value['sub'],
-                    'subs' => $subs,
-                ];
-            }
-        }
+        //tegn under punkter
+        $menu[] = [
+            'id' => $category->getId(),
+            'name' => xhtmlEsc($category->getTitle()),
+            'link' => '/' . $category->getSlug(),
+            'icon' => $category->getIconPath(),
+            'sub' => $category->getChildren(true),
+            'subs' => $subs,
+        ];
     }
 
     return $menu;
@@ -1384,36 +1163,27 @@ function menu(int $nr, bool $custom_sort_subs = false): array
  */
 function searchMenu(string $q, string $wherekat)
 {
-    global $qext;
-
-    if ($qext) {
-        $qext = ' WITH QUERY EXPANSION';
-    } else {
-        $qext = '';
-    }
-
-    $kats = [];
+    $categories = [];
     $maerke = [];
     if ($q) {
-        $kats = db()->fetchArray(
+        $categories = ORM::getByQuery(
+            Category::class,
             "
-            SELECT id, navn, icon, MATCH (navn) AGAINST ('".$q."'".$qext.") AS score
+            SELECT *, MATCH (navn) AGAINST ('$q') AS score
             FROM kat
-            WHERE MATCH (navn) AGAINST('".$q."'".$qext.") > 0 " . $wherekat . "
+            WHERE MATCH (navn) AGAINST('$q') > 0 " . $wherekat . "
                 AND `vis` != '0'
             ORDER BY score, navn
             "
         );
-        Cache::addLoadedTable('kat');
-        if (!$kats) {
+        if (!$categories) {
             $qsearch = array ("/ /","/'/","//","/`/");
             $qreplace = array ("%","_","_","_");
             $simpleq = preg_replace($qsearch, $qreplace, $q);
-            $kats = db()->fetchArray(
+            $categories = ORM::getByQuery(
+                Category::class,
                 "
-                SELECT id, navn, icon
-                FROM kat
-                WHERE navn
+                SELECT * FROM kat WHERE navn
                 LIKE '%".$simpleq."%' " . $wherekat . "
                 ORDER BY navn
                 "
@@ -1423,7 +1193,7 @@ function searchMenu(string $q, string $wherekat)
             "
             SELECT id, navn
             FROM `maerke`
-            WHERE MATCH (navn) AGAINST ('".$q."'".$qext.") >  0
+            WHERE MATCH (navn) AGAINST ('$q') >  0
             "
         );
         Cache::addLoadedTable('maerke');
@@ -1453,14 +1223,14 @@ function searchMenu(string $q, string $wherekat)
         ];
     }
 
-    foreach ($kats as $value) {
-        if (skriv($value['id'])) {
+    foreach ($categories as $category) {
+        if ($category->isVisable()) {
             $GLOBALS['generatedcontent']['search_menu'][] = [
-                'id' => $value['id'],
-                'name' => xhtmlEsc($value['navn']),
-                'link' => '/kat'.$value['id'] . '-' . clearFileName($value['navn']) . '/',
-                'icon' => $value['icon'],
-                'sub' => subs($value['id'])
+                'id' => $category->getId(),
+                'name' => xhtmlEsc($category->getTitle()),
+                'link' => '/' . $category->getSlug(),
+                'icon' => $category->getIconPath(),
+                'sub' => (bool) $category->getChildren(true),
             ];
         }
     }
@@ -1475,14 +1245,16 @@ function searchMenu(string $q, string $wherekat)
  */
 function isInactivePage(int $id): bool
 {
-    $bind = db()->fetchOne(
+    $categoryId = ORM::getOneByQuery(
+        Category::class,
         "
-        SELECT `kat`
+        SELECT `kat`.*
         FROM `bind`
+        JOIN `kat` ON `kat`.id = `bind`.`kat`
         WHERE `side` = " . $id
     );
     Cache::addLoadedTable('bind');
-    if (!$bind || binding($bind['kat']) == -1) {
+    if (!$categoryId || $categoryId->isInactive()) {
         return true;
     }
 
@@ -1499,10 +1271,10 @@ function isInactivePage(int $id): bool
 function fullMysqliEscape($s)
 {
     if (is_array($s)) {
-        return array_map('fullMysqliEscape', $s);
+        return array_map('App\fullMysqliEscape', $s);
     }
 
-    return db()->escapeWildcards(db()->real_escape_string($s));
+    return db()->escapeWildcards(db()->esc($s));
 }
 
 /**
@@ -1512,28 +1284,29 @@ function fullMysqliEscape($s)
  *
  * @return null
  */
-function listKats(int $id)
+function listKats(Category $category = null)
 {
-    $kats = db()->fetchArray(
-        "
-        SELECT id, navn
-        FROM kat
-        WHERE bind = " . $id
-    );
-    Cache::addLoadedTable('kat');
+    if (!$category) {
+        $categories = ORM::getByQuery(Category::class, "SELECT * FROM kat WHERE bind = 0");
+        foreach ($categories as $key => $category) {
+            if (!$category->isVisable()) {
+                unset($categories[$key]);
+            }
+        }
+    } else {
+        $categories = $category->getChildren(true);
+    }
 
-    for ($ki=0; $ki<count($kats); $ki++) {
+    foreach ($categories as $category) {
         //print xml
         ?><url>
-        <loc><?php echo $GLOBALS['_config']['base_url'] ?>/kat<?php
-        echo $kats[$ki]['id'] . '-' . clearFileName($kats[$ki]['navn']);
-        ?>/</loc>
-        <changefreq>weekly</changefreq>
-        <priority>0.5</priority>
-        </url><?php
-        $url = '/kat' . $kats[$ki]['id'] . '-' . clearFileName($kats[$ki]['navn']);
-        listPages($kats[$ki]['id'], $url);
-        listKats($kats[$ki]['id']);
+        <loc><?php
+        echo $GLOBALS['_config']['base_url'];
+        $url = '/' . $category->getSlug();
+        echo $url;
+        ?></loc><changefreq>weekly</changefreq><priority>0.5</priority></url><?php
+        listPages($category->getId(), $url);
+        listKats($category);
     }
 }
 
@@ -1541,14 +1314,14 @@ function listKats(int $id)
  * Print XML for pages bellonging to a category
  *
  * @param int    $id      Id of category
- * @param string $katName Url of category
+ * @param string $urlBase Url of category
  *
  * @return null
  */
-function listPages(int $id, string $katName)
+function listPages(int $id, string $urlBase)
 {
     $binds = db()->fetchArray("SELECT side FROM bind WHERE kat = " . $id);
-    Cache::addLoadedTable('side');
+    Cache::addLoadedTable('bind');
     foreach ($binds as $bind) {
         $sider = db()->fetchOne(
             "
@@ -1558,7 +1331,7 @@ function listPages(int $id, string $katName)
         );
         //print xml
         ?><url><loc><?php
-        echo $GLOBALS['_config']['base_url'] . $katName . '/side'
+        echo $GLOBALS['_config']['base_url'] . $urlBase . '/side'
         . $bind['side'] . '-' . clearFileName($sider['navn']) . '.html';
         ?></loc>
         <lastmod><?php
@@ -1602,26 +1375,14 @@ function getKat(int $id, bool $sort): array
     Cache::addLoadedTable('bind');
     $bind = arrayNatsort($bind, 'id', $sort);
 
-    if (Cache::get('kat' . $GLOBALS['generatedcontent']['activmenu'] . 'name') === null) {
-        $kat = db()->fetchOne(
-            "
-            SELECT navn, vis, icon
-            FROM kat
-            WHERE id = " . $GLOBALS['generatedcontent']['activmenu']
-        );
-        Cache::addLoadedTable('kat');
-        Cache::set('kat' . $GLOBALS['generatedcontent']['activmenu'] . 'name', $kat['navn']);
-        Cache::set('kat' . $GLOBALS['generatedcontent']['activmenu'] . 'type', $kat['vis']);
-        Cache::set('kat' . $GLOBALS['generatedcontent']['activmenu'] . 'icon', $kat['icon']);
-    }
-    $name = Cache::get('kat' . $GLOBALS['generatedcontent']['activmenu'] . 'name');
+    $category = ORM::getOne(Category::class, $GLOBALS['generatedcontent']['activmenu']);
 
     //check browser cache
     doConditionalGet(Cache::getUpdateTime());
 
     return [
         'id' => 'kat' . $GLOBALS['generatedcontent']['activmenu'],
-        'html' => katHTML($bind, $name, $GLOBALS['generatedcontent']['activmenu']),
+        'html' => katHTML($bind, $category->getTitle(), $GLOBALS['generatedcontent']['activmenu']),
     ];
 }
 

@@ -44,9 +44,6 @@ foreach ($vcards[0] as $vcard) {
     ];
 }
 
-require_once 'inc/config.php';
-require_once 'inc/mysqli.php';
-
 foreach ($contacts as $contact) {
     //TODO escape values
     db()->query(

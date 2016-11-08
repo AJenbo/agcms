@@ -18,7 +18,25 @@ Cache::addLoadedTable('bind');
 Cache::addLoadedTable('kat');
 Cache::addLoadedTable('maerke');
 Cache::addLoadedTable('bind');
+Cache::addLoadedTable('files');
 doConditionalGet(Cache::getUpdateTime());
+
+header('Content-Type: application/xml');
+echo '<?xml version="1.0" encoding="utf-8"?><products>';
+
+$search = [
+    '@<script[^>]*?>.*?</script>@si', // Strip out javascript
+    '@<[\/\!]*?[^<>]*?>@si',          // Strip out HTML tags
+    '@([\r\n])[\s]+@',                // Strip out white space
+    '@&(&|#197);@i'
+];
+
+$replace = [
+    ' ',
+    ' ',
+    '\1',
+    ' '
+];
 
 $sider = db()->fetchArray(
     "
@@ -28,8 +46,7 @@ $sider = db()->fetchArray(
         sider.maerke,
         sider.navn,
         billed,
-        kat.id AS kat_id,
-        kat.navn AS kat_navn
+        kat.id AS kat_id
     FROM sider
     JOIN bind ON (side = sider.id)
     JOIN kat ON (kat.id = kat)
@@ -39,133 +56,73 @@ $sider = db()->fetchArray(
     ORDER BY `sider`.`varenr` DESC
     "
 );
-
-//check for inactive
-if ($sider) {
-    for ($i=0; $i<count($sider); $i++) {
-        if (binding($sider[$i]['kat_id']) == -1) {
-            array_splice($sider, $i, 1);
-            $i--;
-        }
+foreach ($sider as $key => $page) {
+    $category = ORM::getOne(Category::class, $page['kat_id']);
+    if ($category->isInactive()) {
+        continue;
     }
-}
 
-header('Content-Type: application/xml');
-
-$search = array (
-    '@<script[^>]*?>.*?</script>@si', // Strip out javascript
-    '@<[\/\!]*?[^<>]*?>@si',          // Strip out HTML tags
-    '@([\r\n])[\s]+@',                // Strip out white space
-    '@&(&|#197);@i'
-);
-
-$replace = array (
-    ' ',
-    ' ',
-    '\1',
-    ' '
-);
-
-echo '<?xml version="1.0" encoding="utf-8"?><products>';
-for ($i=0; $i<count($sider); $i++) {
-    $name = htmlspecialchars($sider[$i]['navn'], ENT_COMPAT | ENT_XML1);
-    if (!$sider[$i]['navn'] = trim($name)) {
+    $name = htmlspecialchars($page['navn'], ENT_COMPAT | ENT_XML1);
+    if (!$page['navn'] = trim($name)) {
         continue;
     }
 
     echo '
     <product>
-        <sku>'.$sider[$i]['id'].'</sku>
-        <title>'.$sider[$i]['navn'].'</title>';
-    if (trim($sider[$i]['varenr'])) {
-        echo '<companysku>' . htmlspecialchars($sider[$i]['varenr'], ENT_COMPAT | ENT_XML1) . '</companysku>';
+        <sku>'.$page['id'].'</sku>
+        <title>'.$page['navn'].'</title>';
+    if (trim($page['varenr'])) {
+        echo '<companysku>' . htmlspecialchars($page['varenr'], ENT_COMPAT | ENT_XML1) . '</companysku>';
     }
-    echo '<price>' . $sider[$i]['pris'] . ',00</price>
-    <img>' . $GLOBALS['_config']['base_url'] . $sider[$i]['billed'] . '</img>
-    <link>' . $GLOBALS['_config']['base_url'] . '/kat' . $sider[$i]['kat_id'] . '-'
-    . rawurlencode(clearFileName($sider[$i]['kat_navn'])) . '/side'
-    . $sider[$i]['id'] . '-' . rawurlencode(clearFileName($sider[$i]['navn']))
-    . '.html</link>';
-    $bind = db()->fetchArray(
-        "
-        SELECT `kat`
-        FROM bind
-        WHERE side = " . $sider[$i]['id']
-    );
+    echo '<price>' . $page['pris'] . ',00</price>
+    <img>' . $GLOBALS['_config']['base_url'] . $page['billed'] . '</img>
+    <link>' . $GLOBALS['_config']['base_url'] . '/' . $category->getSlug(true)
+    . 'side' . $page['id'] . '-' . rawurlencode(clearFileName($page['navn'])) . '.html</link>';
 
-    $category = [];
-    if ($sider[$i]['maerke']) {
-        $maerker = explode(',', $sider[$i]['maerke']);
-        $maerker_nr = count($maerker);
-        $where = '';
-        for ($imaerker=0; $imaerker<$maerker_nr; $imaerker++) {
-            if ($imaerker > 0) {
-                $where .= ' OR';
-            }
-            $where .= ' id = '.$maerker[$imaerker];
-        }
-        $maerker = db()->fetchArray(
+    $categoryTitles = [];
+    if ($page['maerke']) {
+        $maerker = db()->fetchOne(
             "
             SELECT `navn`
             FROM maerke
-            WHERE".$where."
-            LIMIT ".$maerker_nr
+            WHERE id = " . $page['maerke']
         );
-        $maerker_nr = count($maerker);
-        for ($imaerker=0; $imaerker<$maerker_nr; $imaerker++) {
-            $cleaned = preg_replace($search, $replace, $maerker[$imaerker]['navn']);
-            $cleaned = trim($cleaned);
-            if ($category2 = $cleaned) {
-                $category[] = htmlspecialchars($category2, ENT_NOQUOTES | ENT_XML1);
-            }
+        $cleaned = trim(preg_replace($search, $replace, $maerker['navn']));
+        if ($cleaned) {
+            $categoryTitles[] = htmlspecialchars($cleaned, ENT_NOQUOTES | ENT_XML1);
         }
         echo '<company>';
-        echo htmlspecialchars($category2, ENT_NOQUOTES | ENT_XML1);
+        echo htmlspecialchars($cleaned, ENT_NOQUOTES | ENT_XML1);
         echo '</company>';
     }
 
-    $kats = '';
-    for ($ibind=0; $ibind<count($bind); $ibind++) {
-        $kats[] = $bind[$ibind]['kat'];
+    $categories = ORM::getByQuery(
+        Category::class,
+        "
+        SELECT kat.*
+        FROM `bind`
+        JOIN kat ON kat.id = bind.kat
+        WHERE bind.side = " . $page['id']
+    );
+    foreach ($categories as $category) {
+        do {
+            $categoryIds[] = $category->getId();
+        } while ($category = $category->getParent());
+    }
+    $categoryIds = array_unique($categoryIds);
 
-        $temp = db()->fetchArray(
-            "
-            SELECT bind
-            FROM `kat`
-            WHERE id = " . $bind[$ibind]['kat']
-        );
-        if ($temp) {
-            while ($temp && !in_array($temp['bind'], $kats)) {
-                $kats[] = $temp['bind'];
-                $temp = db()->fetchOne(
-                    "
-                    SELECT bind
-                    FROM `kat`
-                    WHERE id = " . $temp['bind']
-                );
-            }
+    foreach ($categoryIds as $categoryId) {
+        $category = ORM::getOne(Category::class, $categoryId);
+        $cleaned = trim(preg_replace($search, $replace, $category->getTitle()));
+        $cleaned = trim($cleaned);
+        if ($cleaned) {
+            $categoryTitles[] = htmlspecialchars($cleaned, ENT_NOQUOTES | ENT_XML1);
         }
     }
 
-    for ($icategory=0; $icategory<count($kats); $icategory++) {
-        if ($kats[$icategory]) {
-            $kat = db()->fetchOne(
-                "
-                SELECT `navn`
-                FROM kat
-                WHERE id = " . $kats[$icategory]
-            );
-            $cleaned = preg_replace($search, $replace, $kat['navn'] ?? '');
-            $cleaned = trim($cleaned);
-            if ($category2 = $cleaned) {
-                $category[] = htmlspecialchars($category2, ENT_NOQUOTES | ENT_XML1);
-            }
-        }
-    }
+    $categoryTitles = array_unique(array_reverse($categoryTitles));
 
-    $category = array_unique(array_reverse($category));
-
-    echo '<category>'.implode(' &gt; ', $category).'</category>';
+    echo '<category>'.implode(' &gt; ', $categoryTitles).'</category>';
     echo '</product>';
 }
 db()->close();

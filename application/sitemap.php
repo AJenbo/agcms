@@ -39,6 +39,6 @@ $special = db()->fetchOne("SELECT dato FROM special WHERE id = 1");
         <priority>0.8</priority>
     </url>
 <?php
-    listKats("0");
+listKats();
 ?>
 </urlset>

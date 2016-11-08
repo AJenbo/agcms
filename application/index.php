@@ -28,77 +28,34 @@ if (empty($delayprint)) {
     doConditionalGet(Cache::getUpdateTime());
 }
 
-$_GET = fullMysqliEscape($_GET);
-
-//redirect af gamle urls
-if (@$_GET['kat'] || @$_GET['side']) {
-    //secure input
-    $kat_id  = fullMysqliEscape($_GET['kat']);
-    $side_id = fullMysqliEscape($_GET['side']);
-
+// Redirect old urls
+if (isset($_GET['kat']) || isset($_GET['side'])) {
     ini_set('zlib.output_compression', '0');
     header('HTTP/1.1 301 Moved Permanently');
-    if ($side_id) {
-        $bind = db()->fetchOne(
-            "
-            SELECT bind.kat, sider.navn AS side_navn, kat.navn AS kat_navn
-            FROM bind
-            JOIN sider
-            ON bind.side = sider.id
-            JOIN kat
-            ON bind.kat = kat.id
-            WHERE side =" . $side_id
-        );
-        $side_navn = $bind['side_navn'];
-        $kat_id = $bind['kat'];
-        $kat_name = $bind['kat_navn'];
-        unset($bind);
+    if (isset($_GET['kat'])) {
+        $category = ORM::getOne(Category::class, $_GET['kat']);
     }
-
-    if (($kat_id && !$kat_name) || ($_GET['kat'] && $_GET['kat'] != $kat_id)) {
-        /**
-         * Get kat navn hvis der ikke var en side eller
-         * kat ikke var standard for siden.
-         */
-        $kat_id = fullMysqliEscape($_GET['kat']);
-
-        if (Cache::get('kat' . $kat_id . 'name') === null) {
-            $kat = db()->fetchOne(
-                "
-                SELECT navn, vis, icon
-                FROM kat
-                WHERE id = " . $kat_id
-            );
-            Cache::addLoadedTable('kat');
-
-            Cache::set('kat' . $kat_id . 'name', $kat['navn']);
-            Cache::set('kat' . $kat_id . 'type', $kat['vis']);
-            Cache::set('kat' . $kat_id . 'type', $kat['icon']);
+    if (isset($_GET['side'])) {
+        $side = db()->fetchOne("SELECT * FROM sider WHERE id = " . (int) $_GET['side']);
+        if (!$category) {
+            $bind = db()->fetchOne("SELECT kat FROM sider WHERE side = " . $side['id']);
+            unset($bind);
+            $category = ORM::getOne(Category::class, $bind['kat']);
         }
-        $kat_name = Cache::get('kat' . $kat_id . 'name');
     }
-    if ($side_navn) {
-        //TODO rawurlencode $url (PIE doesn't do it buy it self :(
-        $url = '/kat' .$kat_id .'-' .rawurlencode(clearFileName($kat_name))
-            .'/side' .$side_id .'-' .rawurlencode(clearFileName($side_navn))
-            .'.html';
-
-        //redirect til en side
-        header('Location: ' .$url);
-        die();
-    } elseif ($kat_name) {
-        //TODO rawurlencode $url (PIE doesn't do it buy it self :(
-        $url = '/kat'.$kat_id.'-'.rawurlencode(clearFileName($kat_name)).'/';
-
-        //redirect til en kategori
-        header('Location: '.$url);
-        die();
-    } else {
-        //inted fundet redirect til søge siden
-        header('Location: /?sog=1&q=&varenr=&sogikke=&minpris=&maxpris=&maerke=');
-        die();
+    $newUrl = '/' . ($category ? $category->getSlug(true) : '');
+    if ($side) {
+        $url .= 'side' . $side['id'] . '-' .rawurlencode(clearFileName($side['navn'])) .'.html';
     }
+    if ($newUrl === '/') {
+        $newUrl .= '?sog=1&q=&varenr=&sogikke=&minpris=&maxpris=&maerke=';
+    }
+
+    header('Location: ' . $newUrl);
+    die();
 }
+
+$_GET = fullMysqliEscape($_GET);
 
 $activMenu =& $GLOBALS['generatedcontent']['activmenu'];
 
@@ -144,7 +101,7 @@ if (@$GLOBALS['side']['id'] > 0 && isInactivePage($GLOBALS['side']['id'])) {
  * katagori, hent også side indholdet.
  */
 if (@$GLOBALS['side']['id'] > 0
-    && empty($activMenu)
+    && $activMenu
     && empty($GLOBALS['side']['inactive'])
 ) {
     $bind = db()->fetchOne(
@@ -165,7 +122,12 @@ if (@$GLOBALS['side']['id'] > 0
         ON bind.side = sider.id
         WHERE side = ".$GLOBALS['side']['id']
     );
-    Cache::addUpdateTime($bind['dato']);
+    if ($bind['dato']) {
+        Cache::addUpdateTime($bind['dato']);
+    } else {
+        Cache::addLoadedTable('sider');
+    }
+    Cache::addLoadedTable('bind');
 
     $activMenu                 = $bind['kat'];
     $GLOBALS['side']['navn']   = $bind['navn'];
@@ -215,59 +177,28 @@ if (@$GLOBALS['side']['id'] > 0
     unset($sider);
 }
 
-if (@$activMenu > 0) {
+if ($activMenu > 0) {
+    //get category branch and keywords
+    $categoryIds = [];
     $keywords = [];
-
-    //get kat tree
-    $GLOBALS['kats'] = array_reverse(kats($activMenu));
-
-    //Key words
-    if ($GLOBALS['kats']) {
-        foreach ($GLOBALS['kats'] as $value) {
-            if (Cache::get('kat' . $value . 'name') === null) {
-                $kat = db()->fetchOne(
-                    "
-                    SELECT navn, vis, icon
-                    FROM kat
-                    WHERE id = " . $value
-                );
-                Cache::addLoadedTable('kat');
-                Cache::set('kat' . $value . 'name', $kat['navn']);
-                Cache::set('kat' . $value . 'type', $kat['vis']);
-                Cache::set('kat' . $value . 'icon', $kat['icon']);
-            }
-
-            $keyword = xhtmlEsc(Cache::get('kat' . $value . 'name'));
-            $keyword = trim($keyword);
-            $keywords[] = $keyword;
-        }
-    }
-    $GLOBALS['generatedcontent']['keywords'] = implode(',', $keywords);
+    $category = ORM::getOne(Category::class, $activMenu);
+    do {
+        $categoryIds[] = $category->getId();
+        $keyword = xhtmlEsc($category->getTitle());
+        $keywords[] = trim($keyword);
+    } while ($category = $category->getParent());
+    $GLOBALS['kats'] = array_reverse($categoryIds);
+    $GLOBALS['generatedcontent']['keywords'] = implode(',', array_reverse($keywords));
 }
 
 //crumbs start
 if (@$GLOBALS['kats']) {
-    foreach ($GLOBALS['kats'] as $value) {
-        if (Cache::get('kat' . $value . 'name') === null
-            || Cache::get('kat' . $value . 'icon') === null
-        ) {
-            $katsnr_navn = db()->fetchArray(
-                "
-                SELECT navn, vis, icon
-                FROM kat
-                WHERE id = " . $value
-            );
-            Cache::addLoadedTable('kat');
-            Cache::set('kat' . $value . 'name', $katsnr_navn['navn']);
-            Cache::set('kat' . $value . 'type', $katsnr_navn['vis']);
-            Cache::set('kat' . $value . 'icon', $katsnr_navn['icon']);
-        }
-
+    foreach ($GLOBALS['kats'] as $categoryId) {
+        $category = ORM::getOne(Category::class, $categoryId);
         $GLOBALS['generatedcontent']['crumbs'][] = [
-            'name' => xhtmlEsc(Cache::get('kat' . $value . 'name')),
-            'link' => '/kat' . $value . '-'
-            . clearFileName(Cache::get('kat' . $value . 'name')) . '/',
-            'icon' => Cache::get('kat' . $value . 'icon'),
+            'name' => xhtmlEsc($category->getTitle()),
+            'link' => '/' . $category->getSlug(),
+            'icon' => $category->getIconPath(),
         ];
     }
     $GLOBALS['generatedcontent']['crumbs'] = array_reverse(
@@ -277,57 +208,40 @@ if (@$GLOBALS['kats']) {
 //crumbs end
 
 //Get list of top categorys on the site.
-$kat_fpc = db()->fetchArray(
+$categories = ORM::getByQuery(Category::class,
     "
-    SELECT id,
-        navn,
-        vis,
-        icon,
-        custom_sort_subs,
-        id IN (SELECT bind FROM kat WHERE vis != '0') AS sub,
-        id IN (SELECT kat FROM bind) AS skriv
+    SELECT *
     FROM `kat`
-    WHERE kat.vis != '0'
+    WHERE kat.vis != " . CATEGORY_HIDDEN . "
         AND kat.bind = 0
-        AND (
-            id IN (SELECT bind FROM kat WHERE vis != '0')
+        AND (id IN (SELECT bind FROM kat WHERE vis != " . CATEGORY_HIDDEN . ")
             OR id IN (SELECT kat FROM bind)
         )
     ORDER BY `order`, navn ASC
     "
 );
-Cache::addLoadedTable('kat');
-foreach ($kat_fpc as $value) {
-    Cache::set('kat' . $value['id'] . 'name', $value['navn']);
-    Cache::set('kat' . $value['id'] . 'type', $value['vis']);
-    Cache::set('kat' . $value['id'] . 'icon', $value['icon']);
-    Cache::set('kat' . $value['id'] . 'show', $value['skriv'] ? true : null);
-
-    //TODO think about adding parent folders to url
-    if (skriv($value['id'])) {
+Cache::addLoadedTable('bind');
+foreach ($categories as $category) {
+    if ($category->isVisable()) {
         $subs = null;
         $kats = $GLOBALS['kats'] ?? [];
-        if ($value['id'] == reset($kats) ?: null) {
-            $subs = menu(0, $value['custom_sort_subs']);
+        if ($category->getId() === (int) reset($kats) ?: null) {
+            $subs = menu(0, $category->getWeightedChildren());
         }
 
         $GLOBALS['generatedcontent']['menu'][] = [
-            'id' => $value['id'],
-            'name' => xhtmlEsc($value['navn']),
-            'link' => '/kat'.$value['id'].'-'.clearFileName($value['navn']).'/',
-            'icon' => $value['icon'],
-            'sub' => $value['sub'] ? true : false,
+            'id' => $category->getId(),
+            'name' => xhtmlEsc($category->getTitle()),
+            'link' => '/' . $category->getSlug(),
+            'icon' => $category->getIconPath(),
+            'sub' => $category->getChildren(true) ? true : false,
             'subs' => $subs
         ];
     }
 }
 
-unset($kat_fpc);
-unset($subs);
-unset($value);
-
 //Front page pages
-$kat_fpp = db()->fetchArray(
+$pages = db()->fetchArray(
     "
     SELECT sider.id, sider.navn
     FROM bind
@@ -336,20 +250,16 @@ $kat_fpp = db()->fetchArray(
     WHERE kat = 0
     "
 );
-
 Cache::addLoadedTable('bind');
 Cache::addLoadedTable('sider');
 
-foreach ($kat_fpp as $value) {
+foreach ($pages as $page) {
     $GLOBALS['generatedcontent']['sider'][] = [
-        'id' => $value['id'],
-        'name' => xhtmlEsc($value['navn']),
-        'link' => '/side' .$value['id'] .'-'
-            .clearFileName($value['navn']) .'.html'
+        'id' => $page['id'],
+        'name' => xhtmlEsc($page['navn']),
+        'link' => '/side' . $page['id'] . '-' . clearFileName($page['navn']) .'.html'
     ];
 }
-unset($kat_fpp);
-unset($value);
 
 //TODO catch none existing kats
 //Get page content and type
@@ -380,8 +290,6 @@ if (@$_GET['sog'] || @$GLOBALS['side']['inactive']) {
     $text .= '<td><input name="varenr" size="31" value="" maxlength="63" /></td>';
     $text .= '</tr><tr><td>'._('Without the words').'</td><td>';
     $text .= '<input name="sogikke" size="31" value="" /></td></tr>';
-    $text .= '<tr><td>'._('Enhanced:').'</td>';
-    $text .= '<td><input name="qext" type="checkbox" value="1" /></td></tr>';
     $text .= '<tr><td>'._('Min price').'</td><td>';
     $text .= '<input name="minpris" size="5" maxlength="11" value="" />,-</td></tr>';
     $text .= '<tr><td>'._('Max price').'&nbsp;</td><td>';
@@ -417,7 +325,7 @@ if (@$_GET['sog'] || @$GLOBALS['side']['inactive']) {
     $GLOBALS['generatedcontent']['contenttype'] = 'tiles';
 
     //Temporarly store the katalog number so it can be restored when search is over
-    $temp_kat = $GLOBALS['generatedcontent']['activmenu'];
+    $temp_kat = $activMenu;
 
     $sider = [];
     if ((@$_GET['maerke'] || @$maerke)
@@ -485,7 +393,6 @@ if (@$_GET['sog'] || @$GLOBALS['side']['inactive']) {
     $sider += searchListe(@$_GET['q'], $wheresider);
     $sider = array_values($sider);
 
-
     //Draw the list
     if (count($sider) === 1
         && $GLOBALS['generatedcontent']['contenttype'] != 'brand'
@@ -494,37 +401,33 @@ if (@$_GET['sog'] || @$GLOBALS['side']['inactive']) {
         header('HTTP/1.1 302 Found');
         $side = array_shift($sider);
 
-        //TODO cache
-        $kat = db()->fetchOne(
+        $category = ORM::getOneByQuery(
+            Category::class,
             "
-            SELECT kat.id, kat.navn
+            SELECT kat.*
             FROM bind
             JOIN kat ON kat.id = bind.kat
             WHERE bind.`side` = " . $side['id']
         );
-
         Cache::addLoadedTable('bind');
-        Cache::addLoadedTable('kat');
 
-        //TODO rawurlencode $url (PIE doesn't do it buy it self :(
-        $url = '';
-        if ($kat) {
-            $url = '/kat'.$kat['id'] . '-' . $folderName = rawurlencode(clearFileName($kat['navn']));
+        $url = '/';
+        if ($category) {
+            $url = $category->getSlug(true);
         }
-        $url .= '/side' . $side['id'] . '-'
-        . rawurlencode(clearFileName($side['navn'])) . '.html';
+        $url .= 'side' . $side['id'] . '-' . rawurlencode(clearFileName($side['navn'])) . '.html';
 
         //redirect til en side
         header('Location: ' . $url);
         die();
     } else {
         foreach ($sider as $value) {
-            $GLOBALS['generatedcontent']['activmenu'] = 0;
+            $activMenu = 0;
             $value['text'] = strip_tags($value['text']);
-            vare($value, $value['navn'], 1);
+            vare($value, 1);
         }
     }
-    $GLOBALS['generatedcontent']['activmenu'] =  $temp_kat;
+    $activMenu = $temp_kat;
 
     $wherekat = '';
     if (@$_GET['sogikke']) {
@@ -540,7 +443,7 @@ if (@$_GET['sog'] || @$GLOBALS['side']['inactive']) {
 } elseif (@$GLOBALS['side']['id'] > 0) {
     $GLOBALS['generatedcontent']['contenttype'] = 'product';
     side();
-} elseif (@$activMenu > 0) {
+} elseif ($activMenu > 0) {
     liste();
     if (@$GLOBALS['side']['id'] > 0) {
         $GLOBALS['generatedcontent']['contenttype'] = 'product';
@@ -592,33 +495,21 @@ if (@$maerkeet) {
     $GLOBALS['generatedcontent']['title'] = xhtmlEsc($sider_navn['navn']);
 }
 
-if (empty($GLOBALS['generatedcontent']['title'])
-    && @$activMenu > 0
-) {
-    if (Cache::get('kat' . $activMenu . 'name')) {
-        $kat_navn = db()->fetchOne(
-            "
-            SELECT navn, vis, icon
-            FROM kat
-            WHERE id = " . $activMenu
-        );
+$category = null;
+if ($activMenu) {
+    $category = ORM::getOne(Category::class, $activMenu);
+}
+if (empty($GLOBALS['generatedcontent']['title']) && $category) {
+    $GLOBALS['generatedcontent']['title'] = xhtmlEsc($category->getTitle());
 
-        Cache::addLoadedTable('kat');
-        Cache::set('kat' . $activMenu . 'name', $kat_navn['navn']);
-        Cache::set('kat' . $activMenu . 'type', $kat_navn['vis']);
-        Cache::set('kat' . $activMenu . 'icon', $kat_navn['icon']);
-    }
-
-    $GLOBALS['generatedcontent']['title'] = xhtmlEsc(Cache::get('kat' . $activMenu . 'name'));
-
-    //TODO add to url
-    if (Cache::get('kat' . $activMenu . 'icon')) {
+    if ($category->getIconPath()) {
         $icon = db()->fetchOne(
             "
             SELECT `alt`
             FROM `files`
-            WHERE path = '" . Cache::get('kat' . $activMenu . 'icon')
+            WHERE path = '" . db()->esc($category->getIconPath()) . "'"
         );
+        Cache::addLoadedTable('files');
     }
 
     if (!empty($icon['alt']) && $GLOBALS['generatedcontent']['title']) {
@@ -626,7 +517,7 @@ if (empty($GLOBALS['generatedcontent']['title'])
     } elseif (!empty($icon['alt'])) {
         $GLOBALS['generatedcontent']['title'] = xhtmlEsc($icon['alt']);
     } elseif (!$GLOBALS['generatedcontent']['title']) {
-        $icon['path'] = pathinfo(Cache::get('kat' . $activMenu . 'icon'));
+        $icon['path'] = pathinfo($category->getIconPath());
         $GLOBALS['generatedcontent']['title'] = xhtmlEsc(
             ucfirst(
                 preg_replace('/-/ui', ' ', $icon['path']['filename'])
@@ -636,27 +527,14 @@ if (empty($GLOBALS['generatedcontent']['title'])
 } elseif (empty($GLOBALS['generatedcontent']['title']) && @$_GET['sog'] == 1) {
     $GLOBALS['generatedcontent']['title'] = 'Søg på ' . xhtmlEsc($GLOBALS['_config']['site_name']);
 }
-
 if (empty($GLOBALS['generatedcontent']['title'])) {
     $GLOBALS['generatedcontent']['title'] = xhtmlEsc($GLOBALS['_config']['site_name']);
 }
-//end title
 
 //Get email
 $GLOBALS['generatedcontent']['email'] = array_shift($GLOBALS['_config']['email']);
-if (@$activMenu > 0) {
-    $email = db()->fetchOne(
-        "
-        SELECT `email`
-        FROM `kat`
-        WHERE id = " .$activMenu
-    );
-
-    Cache::addLoadedTable('kat');
-
-    if (@$email['email']) {
-        $GLOBALS['generatedcontent']['email'] = $email['email'];
-    }
+if ($category && $category->getEmail()) {
+    $GLOBALS['generatedcontent']['email'] = $category->getEmail();
 }
 
 if (empty($delayprint)) {

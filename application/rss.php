@@ -18,47 +18,9 @@ Cache::addLoadedTable('bind');
 Cache::addLoadedTable('kat');
 Cache::addLoadedTable('maerke');
 Cache::addLoadedTable('bind');
+Cache::addLoadedTable('files');
 $timestamp = Cache::getUpdateTime();
 doConditionalGet($timestamp);
-
-$time = 0;
-if (isset($_SERVER['HTTP_IF_MODIFIED_SINCE'])) {
-    $time = strtotime(stripslashes($_SERVER['HTTP_IF_MODIFIED_SINCE']));
-}
-
-$limit = '';
-if ($time > 1000000000) {
-    $where = " WHERE `dato` > '" . date('Y-m-d h:i:s', $time) . "'";
-} else {
-    $limit = ' LIMIT 20';
-}
-
-$sider = db()->fetchArray(
-    "
-    SELECT sider.id,
-        sider.maerke,
-        sider.navn,
-        UNIX_TIMESTAMP(dato) AS dato,
-        billed,
-        kat.id AS kat_id,
-        kat.navn AS kat_navn
-    FROM sider
-    JOIN bind ON (side = sider.id)
-    JOIN kat ON (kat.id = kat)
-    " . @$where . "
-    GROUP BY id
-    ORDER BY - dato" . $limit
-);
-
-//check for inactive
-if ($sider) {
-    for ($i=0; $i<count($sider); $i++) {
-        if (binding($sider[$i]['kat_id']) == -1) {
-            array_splice($sider, $i, 1);
-            $i--;
-        }
-    }
-}
 
 header('Content-Type: application/rss+xml');
 
@@ -90,113 +52,108 @@ echo '<?xml version="1.0" encoding="utf-8"?>
     . ' GMT</lastBuildDate>
     <managingEditor>' . $GLOBALS['_config']['email'][0] . ' ('
     . $GLOBALS['_config']['site_name'] . ')</managingEditor>';
-for ($i = 0; $i < count($sider); $i++) {
-    htmlspecialchars($sider[$i]['navn'], ENT_COMPAT | ENT_XML1);
-    if (!$sider[$i]['navn'] = trim($name)) {
-        $sider[$i]['navn'] = $GLOBALS['_config']['site_name'];
+
+$time = 0;
+if (isset($_SERVER['HTTP_IF_MODIFIED_SINCE'])) {
+    $time = strtotime(stripslashes($_SERVER['HTTP_IF_MODIFIED_SINCE']));
+}
+
+$limit = '';
+$where = '';
+if ($time > 1000000000) {
+    $where = " WHERE `dato` > '" . date('Y-m-d h:i:s', $time) . "'";
+} else {
+    $limit = " LIMIT 20";
+}
+
+$sider = db()->fetchArray(
+    "
+    SELECT sider.id,
+        sider.maerke,
+        sider.navn,
+        sider.text,
+        UNIX_TIMESTAMP(dato) AS dato,
+        billed,
+        kat.id AS kat_id
+    FROM sider
+    JOIN bind ON (side = sider.id)
+    JOIN kat ON (kat.id = kat)
+    " . $where . "
+    GROUP BY id
+    ORDER BY - dato" . $limit
+);
+foreach ($sider as $page) {
+    $category = ORM::getOne(Category::class, $page['kat_id']);
+    if ($category->isInactive()) {
+        continue;
     }
-    $sideText = db()->fetchOne(
-        "
-        SELECT text
-        FROM sider
-        WHERE id = " . $sider[$i]['id']
-    );
+
+    htmlspecialchars($page['navn'], ENT_COMPAT | ENT_XML1);
+    if (!$page['navn'] = trim($name)) {
+        $page['navn'] = $GLOBALS['_config']['site_name'];
+    }
 
     echo '
     <item>
-    <title>'.$sider[$i]['navn'].'</title>
-    <link>' . $GLOBALS['_config']['base_url'] . '/kat' . $sider[$i]['kat_id'] . '-'
-    . rawurlencode(clearFileName($sider[$i]['kat_navn'])) . '/side'
-    . $sider[$i]['id'] . '-' . rawurlencode(clearFileName($sider[$i]['navn']))
+    <title>'.$page['navn'].'</title>
+    <link>' . $GLOBALS['_config']['base_url'] . '/' . $category->getSlug(true)
+    . 'side' . $page['id'] . '-' . rawurlencode(clearFileName($page['navn']))
     . '.html</link>
     <description>';
-    if ($sider[$i]['billed']
-        && $sider[$i]['billed'] != '/images/web/intet-foto.jpg'
+    if ($page['billed']
+        && $page['billed'] != '/images/web/intet-foto.jpg'
     ) {
         echo '&lt;img style="float:left;margin:0 10px 5px 0;" src="'
-        . $GLOBALS['_config']['base_url'] . $sider[$i]['billed'] . '" &gt;&lt;p&gt;';
+        . $GLOBALS['_config']['base_url'] . $page['billed'] . '" &gt;&lt;p&gt;';
         //TODO limit to summery
     }
 
-    $cleaned = trim(preg_replace($search, $replace, $sideText['text']));
+    $cleaned = trim(preg_replace($search, $replace, $page['text']));
     echo htmlspecialchars($cleaned, ENT_COMPAT | ENT_XML1) . '</description>
-    <pubDate>' . gmdate('D, d M Y H:i:s', $sider[$i]['dato']) . ' GMT</pubDate>
-    <guid>' . $GLOBALS['_config']['base_url'] . '/kat' . $sider[$i]['kat_id'] . '-'
-    . rawurlencode(clearFileName($sider[$i]['kat_navn'])) . '/side'
-    . $sider[$i]['id'] . '-' . rawurlencode(clearFileName($sider[$i]['navn']))
+    <pubDate>' . gmdate('D, d M Y H:i:s', $page['dato']) . ' GMT</pubDate>
+    <guid>' . $GLOBALS['_config']['base_url'] . '/' . $category->getSlug(true)
+    . 'side' . $page['id'] . '-' . rawurlencode(clearFileName($page['navn']))
     . '.html</guid>';
-    $bind = db()->fetchArray(
+
+    $categories = ORM::getByQuery(
+        Category::class,
         "
-        SELECT `kat`
-        FROM bind
-        WHERE side = " . $sider[$i]['id']
+        SELECT kat.*
+        FROM `bind`
+        JOIN kat ON kat.id = bind.kat
+        WHERE bind.side = " . $page['id']
     );
 
-    $kats = '';
-    for ($ibind = 0; $ibind < count($bind); $ibind++) {
-        $kats[] = $bind[$ibind]['kat'];
+    $categoryIds = [];
+    foreach ($categories as $category) {
+        do {
+            $categoryIds[] = $category->getId();
+        } while ($category = $category->getParent());
+    }
+    $categoryIds = array_unique($categoryIds);
 
-        $temp = db()->fetchOne(
-            "
-            SELECT bind
-            FROM `kat`
-            WHERE id = " . $bind[$ibind]['kat']
-        );
-        if ($temp) {
-            while ($temp && !in_array($temp['bind'], $kats)) {
-                $kats[] = $temp['bind'];
-                $temp = db()->fetchOne(
-                    "
-                    SELECT bind
-                    FROM `kat`
-                    WHERE id = " . $temp['bind']
-                );
-            }
+    foreach ($categoryIds as $categoryId) {
+        $category = ORM::getOne(Category::class, $categoryId);
+        $cleaned = trim(preg_replace($search, $replace, $category->getTitle()));
+        if ($cleaned) {
+            echo '<category>';
+            echo htmlspecialchars($cleaned, ENT_NOQUOTES | ENT_XML1);
+            echo '</category>';
         }
     }
-
-    for ($icategory = 0; $icategory < count($kats); $icategory++) {
-        if ($kats[$icategory]) {
-            $kat = db()->fetchOne(
-                "
-                SELECT `navn`
-                FROM kat
-                WHERE id = " . $kats[$icategory]
-            );
-            $cleaned = trim(preg_replace($search, $replace, $kat['navn'] ?? ''));
-            if ($category = $cleaned) {
-                echo '<category>';
-                echo htmlspecialchars($category, ENT_NOQUOTES | ENT_XML1);
-                echo '</category>';
-            }
-        }
-    }
-    if ($sider[$i]['maerke']) {
-        $maerker = explode(',', $sider[$i]['maerke']);
-        $maerker_nr = count($maerker);
-        $where = '';
-        for ($imaerker=0; $imaerker<$maerker_nr; $imaerker++) {
-            if ($imaerker > 0) {
-                $where .= ' OR';
-            }
-            $where .= ' id = '.$maerker[$imaerker];
-        }
-        $maerker = db()->fetchArray(
+    if ($page['maerke']) {
+        $maerker = db()->fetchOne(
             "
             SELECT `navn`
             FROM maerke
-            WHERE " . $where . "
-            LIMIT " . $maerker_nr
+            WHERE id = " . $page['maerke']
         );
-        $maerker_nr = count($maerker);
-        for ($imaerker = 0; $imaerker < $maerker_nr; $imaerker++) {
-            $cleaned = preg_replace($search, $replace, $maerker[$imaerker]['navn']);
-            $cleaned = trim($cleanName);
-            if ($category = $cleaned) {
-                echo '<category>';
-                echo htmlspecialchars($category, ENT_NOQUOTES | ENT_XML1);
-                echo '</category>';
-            }
+        $cleaned = preg_replace($search, $replace, $maerker['navn']);
+        $cleaned = trim($cleanName);
+        if ($cleaned) {
+            echo '<category>';
+            echo htmlspecialchars($cleaned, ENT_NOQUOTES | ENT_XML1);
+            echo '</category>';
         }
     }
 

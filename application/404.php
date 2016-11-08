@@ -45,16 +45,17 @@ if (preg_match('/(\=[^&].*)/u', $url)) {
     }
 }
 
-$GLOBALS['generatedcontent']['activmenu'] = preg_replace(
+$GLOBALS['generatedcontent']['activmenu'] = (int) preg_replace(
     '/.*\/kat([0-9]*)-.*|.*/u',
     '\1',
     $url
 );
+$redirect = false;
 if (!$GLOBALS['generatedcontent']['activmenu']) {
-    $katId = preg_replace('/.*kat=([0-9]+).*\s*|.*/u', '\1', $url);
-    if ($katId) {
-        $GLOBALS['generatedcontent']['activmenu'] = $katId;
-        $redirect = 1;
+    $categoryId = preg_replace('/.*kat=([0-9]+).*\s*|.*/u', '\1', $url);
+    if ($categoryId) {
+        $GLOBALS['generatedcontent']['activmenu'] = $categoryId;
+        $redirect = true;
     }
 }
 
@@ -69,7 +70,7 @@ if (!$GLOBALS['side']['id']) {
 
     if ($sideId) {
         $GLOBALS['side']['id'] = $sideId;
-        $redirect = 1;
+        $redirect = true;
     }
 }
 
@@ -83,7 +84,7 @@ if (!$maerke) {
 }
 
 //Old url detected and redirect needed.
-if (@$redirect) {
+if ($redirect) {
     ini_set('zlib.output_compression', '0');
     header('HTTP/1.1 301 Moved Permanently');
     if ($GLOBALS['side']['id']) {
@@ -95,23 +96,13 @@ if (@$redirect) {
                 WHERE side = " . $GLOBALS['side']['id']
             );
             if (!$bind) {
-                $url = '/?sog=1&q=&sogikke=&qext=&minpris=&maxpris=&maerke=';
+                $url = '/?sog=1&q=&sogikke=&minpris=&maxpris=&maerke=';
                 header('Location: ' . $url);
                 die();
             }
-            $kat = db()->fetchOne(
-                "
-                SELECT id, navn
-                FROM kat
-                WHERE id = " . $bind['kat']
-            );
+            $categoryId = ORM::getOne(Category::class, $bind['kat']);
         } else {
-            $kat = db()->fetchOne(
-                "
-                SELECT id, navn
-                FROM kat
-                WHERE id = " . $GLOBALS['generatedcontent']['activmenu']
-            );
+            $categoryId = ORM::getOne(Category::class, $GLOBALS['generatedcontent']['activmenu']);
         }
         $page = db()->fetchOne(
             "
@@ -120,25 +111,15 @@ if (@$redirect) {
             WHERE id = " . $GLOBALS['side']['id']
         );
         if (!$page) {
-            $url = '/kat' . $kat['id'] . '-' . clearFileName($kat['navn'])
-            . '/';
-            header('Location: ' . $url);
+            header('Location: /' . $categoryId->getSlug());
             die();
         }
-        $url = '/kat' . $kat['id'] . '-' . clearFileName($kat['navn'])
-        . '/side' . $page['id'] . '-' . clearFileName($page['navn'])
-        . '.html';
+        $url = '/' . $categoryId->getSlug() . 'side' . $page['id'] . '-' . clearFileName($page['navn']) . '.html';
         header('Location: ' . $url);
         die();
     } elseif ($GLOBALS['generatedcontent']['activmenu']) {
-        $kat = db()->fetchArray(
-            "
-            SELECT id, navn
-            FROM kat
-            WHERE id = " . $GLOBALS['generatedcontent']['activmenu']
-        );
-        $url = '/kat' . $kat['id'] . "-" . clearFileName($kat['navn']) . '/';
-        header('Location: ' . $url);
+        $categoryId = ORM::getOne(Category::class, $GLOBALS['generatedcontent']['activmenu']);
+        header('Location: /' . $categoryId->getSlug());
         die();
     }
 }

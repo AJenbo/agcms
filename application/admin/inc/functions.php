@@ -2676,6 +2676,7 @@ listlink['.$list['id'].'] = '.$list['link'].';
     <div class="toolbox"><a class="menuboxheader" id="bindingheader" style="width:593px;" onclick="showhide(\'binding\',this);">Bindinger: </a><div style="width:613pxpx;" id="binding"><div id="bindinger"><br />';
     $bind = db()->fetchArray('SELECT id, kat FROM `bind` WHERE `side` = '.$id);
     $bind_nr = count($bind);
+    $kattree = [];
     for ($i=0; $i<$bind_nr; $i++) {
         if ($bind[$i]['id'] != -1) {
             $kattree = kattree($bind[$i]['kat']);
@@ -3254,24 +3255,36 @@ function get_orphan_pages(): string
 
 function get_pages_with_mismatch_bindings(): string
 {
-    $sider = db()->fetchArray("SELECT `id`, `navn`, `varenr` FROM `sider`;");
+    $sider = db()->fetchArray("SELECT `id`, `navn`, `varenr` FROM `sider`");
     $html = '';
-    foreach ($sider as $value) {
-        $bind = db()->fetchArray("SELECT `kat` FROM `bind` WHERE `side` = " . $value['id']);
+    foreach ($sider as $page) {
+        $categories = ORM::getByQuery(
+            Category::class,
+            "SELECT `kat`.* FROM `bind` JOIN `kat` ON `kat`.id = `bind`.id WHERE `side` = " . $page['id']
+        );
         //Add active pages that has a list that links to this page
-        $listlinks = db()->fetchArray("SELECT `bind`.`kat` FROM `list_rows` JOIN `lists` ON `list_rows`.`list_id` = `lists`.`id` JOIN `bind` ON `lists`.`page_id` = `bind`.`side` WHERE `list_rows`.`link` = ".$value['id']);
-        foreach ($listlinks as $listlink) {
-            if (binding($listlink['kat']) == 0) {
-                $bind[]['kat'] = $listlink['kat'];
+        $temp = ORM::getByQuery(
+            Category::class,
+            "
+            SELECT `kat`.*
+            FROM `list_rows`
+            JOIN `lists` ON `list_rows`.`list_id` = `lists`.`id`
+            JOIN `bind` ON `lists`.`page_id` = `bind`.`side`
+            JOIN `kat` ON `kat`.`id` = `bind`.`kat`
+            WHERE `list_rows`.`link` = " . $page['id']
+        );
+        foreach ($temp as $category) {
+            if (!$category->isInactive()) {
+                $categories[] = $category;
             }
         }
 
         //Is there any mismatches of the root bindings
-        if (count($bind) > 1) {
-            $binding = binding(reset($bind)['kat']);
-            foreach ($bind as $enbind) {
-                if ($binding != binding($enbind['kat'])) {
-                    $html .= '<a href="?side=redigerside&amp;id='.$value['id'].'">'.$value['id'].': '.$value['navn'].'</a><br />';
+        if (count($categories) > 1) {
+            $categories = reset($categories)->isInactive();
+            foreach ($categories as $category) {
+                if ($binding !== $category->isInactive()) {
+                    $html .= '<a href="?side=redigerside&amp;id='.$page['id'].'">'.$page['id'].': '.$page['navn'].'</a><br />';
                     continue 2;
                 }
             }

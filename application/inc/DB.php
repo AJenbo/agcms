@@ -1,33 +1,11 @@
 <?php
-/**
- * Declare the Simple_Mysqli class
- *
- * PHP version 5
- *
- * @category AGCMS
- * @package  AGCMS
- * @author   Anders Jenbo <anders@jenbo.dk>
- * @license  GPLv2 http://www.gnu.org/licenses/gpl-2.0.html
- * @link     http://www.arms-gallery.dk/
- */
 
-/**
- * Helper classe to make it simple to makes querys to MySQL and get the results
- *
- * PHP version 5
- *
- * @category AGCMS
- * @package  AGCMS
- * @author   Anders Jenbo <anders@jenbo.dk>
- * @license  GPLv2 http://www.gnu.org/licenses/gpl-2.0.html
- * @link     http://www.arms-gallery.dk/
- */
-class Simple_Mysqli extends mysqli
+class DB extends mysqli
 {
     /**
      * Connect the database and set session to UTF-8 Danish
      */
-    function __construct($host, $user, $pass, $db)
+    public function __construct($host, $user, $pass, $db)
     {
         parent::__construct($host, $user, $pass, $db);
 
@@ -112,5 +90,10 @@ class Simple_Mysqli extends mysqli
     public function escapeWildcards(string $string): string
     {
         return preg_replace('/([%_])/u', '\\\\$1', $string);
+    }
+
+    public function esc(string $string): string
+    {
+        return parent::real_escape_string($string);
     }
 }
