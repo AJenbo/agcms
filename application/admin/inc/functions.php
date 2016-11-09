@@ -200,7 +200,7 @@ function sendDelayedEmail(): string
     //Close SMTP connection
     $PHPMailer->SmtpClose();
 
-    return printf($msg, $emailsSendt);
+    return '<b>' . sprintf($msg, $emailsSendt) . '</b>';
 }
 
 /**
@@ -3230,39 +3230,35 @@ function get_orphan_pages(): string
 
 function get_pages_with_mismatch_bindings(): string
 {
-    $sider = db()->fetchArray("SELECT `id`, `navn`, `varenr` FROM `sider`");
+    $pages = ORM::getByQuery(Page::class, "SELECT * FROM `sider`");
     $html = '';
-    foreach ($sider as $page) {
-        $categories = ORM::getByQuery(
-            Category::class,
-            "SELECT `kat`.* FROM `bind` JOIN `kat` ON `kat`.id = `bind`.id WHERE `side` = " . $page['id']
-        );
-        //Add active pages that has a list that links to this page
-        $temp = ORM::getByQuery(
-            Category::class,
-            "
-            SELECT `kat`.*
-            FROM `list_rows`
-            JOIN `lists` ON `list_rows`.`list_id` = `lists`.`id`
-            JOIN `bind` ON `lists`.`page_id` = `bind`.`side`
-            JOIN `kat` ON `kat`.`id` = `bind`.`kat`
-            WHERE `list_rows`.`link` = " . $page['id']
-        );
-        foreach ($temp as $category) {
-            if (!$category->isInactive()) {
-                $categories[] = $category;
+    foreach ($pages as $page) {
+        $missMatch = false;
+        $isInactive = $page->isInactive();
+        foreach ($page->getCategories() as $category) {
+            if ($isInactive !== $category->isInactive()) {
+                $missMatch = true;
+                continue 2;
             }
         }
-
-        //Is there any mismatches of the root bindings
-        if (count($categories) > 1) {
-            $binding = reset($categories)->isInactive();
-            foreach ($categories as $category) {
-                if ($binding !== $category->isInactive()) {
-                    $html .= '<a href="?side=redigerside&amp;id='.$page['id'].'">'.$page['id'].': '.$page['navn'].'</a><br />';
-                    continue 2;
-                }
+        //Add active pages that has a list that links to this page
+        $listPages = ORM::getByQuery(
+            Page::class,
+            "
+            SELECT `sider`.*
+            FROM `list_rows`
+            JOIN `lists` ON `list_rows`.`list_id` = `lists`.`id`
+            JOIN `sider` ON `lists`.`page_id` = `sider`.id
+            WHERE `list_rows`.`link` = " . $page->getId()
+        );
+        foreach ($listPages as $listPage) {
+            if ($isInactive !== $listPage->isInactive()) {
+                $missMatch = true;
+                continue 2;
             }
+        }
+        if ($missMatch) {
+            $html .= '<a href="?side=redigerside&amp;id='.$page->getId().'">'.$page->getId().': '.$page->getTitle().'</a><br />';
         }
     }
 

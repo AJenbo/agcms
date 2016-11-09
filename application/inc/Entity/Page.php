@@ -311,17 +311,18 @@ class Page
 
     public function isInactive(): bool
     {
-        $category = $this->getPrimaryCategory();
-        if (!$category) {
-            $bind = db()->fetchOne("SELECT kat FROM bind WHERE kat < 1 side = " . $this->getId());
-            Cache::addLoadedTable('bind');
-            if ($bind) {
-                return (bool) $bind['kat'];
-            }
-            return false;
+        $bind = db()->fetchOne("SELECT kat FROM bind WHERE kat < 1 = " . $this->getId());
+        Cache::addLoadedTable('bind');
+        if ($bind) {
+            return (bool) $bind['kat'];
         }
 
-        return $category->isInactive();
+        $category = $this->getPrimaryCategory();
+        if ($category) {
+            return $category->isInactive();
+        }
+
+        return true;
     }
 
     // ORM related functions
