@@ -272,7 +272,6 @@ if (!empty($_GET['sog'])) {
         if (count($pages) === 1) {
             $GLOBALS['side']['id'] = reset($pages)->getId();
         } elseif ($pages) {
-
             $pageArray = [];
             foreach ($pages as $page) {
                 $pageArray[] = [

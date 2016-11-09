@@ -309,20 +309,17 @@ class Page
 
     public function isInactive(): bool
     {
-        $trunk = $this->getPrimaryCategory();
-        if (!$trunk) {
+        $category = $this->getPrimaryCategory();
+        if (!$category) {
             $bind = db()->fetchOne("SELECT kat FROM bind WHERE side = " . $this->getId());
+            Cache::addLoadedTable('bind');
             if ($bind) {
                 return !$bind['kat'];
             }
             return false;
         }
 
-        while ($trunk->getParent()) {
-            $trunk = $category->getParent();
-        }
-
-        return !$trunk->getParentId();
+        return $category->isInactive();
     }
 
     // ORM related functions

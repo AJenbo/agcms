@@ -33,11 +33,15 @@ spl_autoload_register(function ($class_name) {
         'Category' => 'Entity/Category',
         'Page' => 'Entity/Page',
     ];
+
     if (isset($classMap[$class_name])) {
         $class_name = $classMap[$class_name];
     }
 
-    require_once __DIR__ . '/' . $class_name . '.php';
+    $file = __DIR__ . '/' . $class_name . '.php';
+    if (file_exists($file)) {
+        require_once __DIR__ . '/' . $class_name . '.php';
+    }
 });
 
 function db()
