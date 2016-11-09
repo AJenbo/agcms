@@ -269,13 +269,15 @@ class Page
 
     public function getPrimaryCategory()
     {
-        $bind = db()->fetchOne("SELECT kat FROM bind WHERE side = " . $this->getId());
         Cache::addLoadedTable('bind');
-        if (!$bind || $bind['kat'] >= 0) {
-            return null;
-        }
-
-        return ORM::getOne(Category::class, $bind['kat']);
+        return ORM::getOneByQuery(
+            Category::class,
+            "
+            SELECT kat.*
+            FROM `bind`
+            JOIN kat ON kat.id = bind.kat
+            WHERE bind.side = " . $this->getId()
+        );
     }
 
     public function getCategories(): array
@@ -311,10 +313,10 @@ class Page
     {
         $category = $this->getPrimaryCategory();
         if (!$category) {
-            $bind = db()->fetchOne("SELECT kat FROM bind WHERE side = " . $this->getId());
+            $bind = db()->fetchOne("SELECT kat FROM bind WHERE kat < 1 side = " . $this->getId());
             Cache::addLoadedTable('bind');
             if ($bind) {
-                return !$bind['kat'];
+                return (bool) $bind['kat'];
             }
             return false;
         }

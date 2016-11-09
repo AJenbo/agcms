@@ -1598,10 +1598,7 @@ function print_pages(int $kat)
       <td class="tal">'.number_format($side['pris'], 2, ',', '.').'</td>
       <td class="tal">'.$side['dato'].'</td>
       <td>';
-        $side['maerke'] = explode(',', $side['maerke']);
-        foreach ($side['maerke'] as $maerke) {
-            echo ($maerke ? $maerker[$maerke] : '') . ' </td><td>' . $krav[$side['krav']] . '</td></tr>';
-        }
+      echo (!empty($side['maerke']) ? $maerker[$side['maerke']] : '') . ' </td><td>' . (!empty($side['krav']) ? $krav[$side['krav']] : '') . '</td></tr>';
     }
 }
 

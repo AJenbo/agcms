@@ -40,9 +40,9 @@ class Category
         return [
             'id'                => $data['id'] ?: null,
             'title'             => $data['navn'] ?: '',
-            'parent_id'         => $data['bind'] ?: -1,
+            'parent_id'         => $data['bind'] ?: 0,
             'icon_path'         => $data['icon'] ?: '',
-            'render_mode'       => $data['vis'] ?: Category::GALLERY,
+            'render_mode'       => $data['vis'] ?: Category::HIDDEN,
             'email'             => $data['email'] ?: '',
             'oredered_children' => $data['custom_sort_subs'] ?: false,
             'order'             => $data['order'] ?: 0,
@@ -252,7 +252,7 @@ class Category
     public function isInactive(): bool
     {
         $branch = $this->getBranch();
-        return !reset($branch)->getParentId();
+        return (bool) reset($branch)->getParentId();
     }
 
     public function getBranch(): array
