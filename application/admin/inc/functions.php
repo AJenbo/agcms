@@ -927,13 +927,12 @@ function kattree(int $id): array
  */
 function katspath(int $id): array
 {
-    $kattree = kattree($id);
-    $nr = count($kattree);
     $html = _('Select location:').' ';
-    for ($i=0; $i<$nr; $i++) {
-        $html .= '/'.trim($kattree[$i]['navn']);
+    foreach (kattree($id) as $kat) {
+        $html .= '/'.trim($kat['navn']);
     }
     $html .= '/';
+
     return ['id' => 'katsheader', 'html' => $html];
 }
 
@@ -1141,7 +1140,7 @@ function kat_expand(int $id, bool $input = true): array
     global $kattree;
     $html = '';
 
-    $kat = db()->fetchArray(
+    $kats = db()->fetchArray(
         '
         SELECT *
         FROM `kat`
@@ -1149,83 +1148,82 @@ function kat_expand(int $id, bool $input = true): array
         ORDER BY `order`, `navn`
         '
     );
-    $nr = count($kat);
-    for ($i=0; $i<$nr; $i++) {
+    foreach ($kats as $kat) {
         $katExists = db()->fetchOne(
             '
             SELECT id
             FROM `kat`
-            WHERE bind = '.$kat[$i]['id']
+            WHERE bind = ' . $kat['id']
         );
         if ($katExists
-            || (!$input && db()->fetchOne("SELECT id FROM `bind` WHERE kat = " . $kat[$i]['id']))
+            || (!$input && db()->fetchOne("SELECT id FROM `bind` WHERE kat = " . $kat['id']))
         ) {
             $openkat = explode('<', @$_COOKIE['openkat']);
-            $html .= '<div id="kat'.$kat[$i]['id'].'"><img style="display:';
-            if (array_search($kat[$i]['id'], $openkat)
-                || false !== array_search($kat[$i]['id'], $kattree)
+            $html .= '<div id="kat'.$kat['id'].'"><img style="display:';
+            if (array_search($kat['id'], $openkat)
+                || false !== array_search($kat['id'], $kattree)
             ) {
                 $html .= 'none';
             }
-            $html .= '" src="images/+.gif" id="kat'.$kat[$i]['id'].'expand" onclick="';
+            $html .= '" src="images/+.gif" id="kat'.$kat['id'].'expand" onclick="';
             if ($input) {
-                $html .= 'kat_expand('.$kat[$i]['id'].', \'true\'';
+                $html .= 'kat_expand('.$kat['id'].', \'true\'';
             } else {
-                $html .= 'siteList_expand('.$kat[$i]['id'];
+                $html .= 'siteList_expand('.$kat['id'];
             }
             $html .= ', kat_expand_r);" height="16" width="16" alt="+" title="" /><img style="display:';
 
-            if (!array_search($kat[$i]['id'], $openkat)
-                && false === array_search($kat[$i]['id'], $kattree)
+            if (!array_search($kat['id'], $openkat)
+                && false === array_search($kat['id'], $kattree)
             ) {
                 $html .= 'none';
             }
-            $html .= '" src="images/-.gif" id="kat'.$kat[$i]['id'].'contract" onclick="kat_contract('.$kat[$i]['id'].');" height="16" width="16" alt="-" title="" /><a class="kat"';
+            $html .= '" src="images/-.gif" id="kat'.$kat['id'].'contract" onclick="kat_contract('.$kat['id'].');" height="16" width="16" alt="-" title="" /><a class="kat"';
 
             if ($input) {
-                $html .= ' onclick="this.firstChild.checked=true;setCookie(\'activekat\', '.$kat[$i]['id'].', 360);"><input name="kat" type="radio" value="'.$kat[$i]['id'].'"';
-                if (@$kattree[count($kattree)-1] == $kat[$i]['id']) {
+                $html .= ' onclick="this.firstChild.checked=true;setCookie(\'activekat\', '.$kat['id'].', 360);"><input name="kat" type="radio" value="'.$kat['id'].'"';
+                if (@$kattree[count($kattree)-1] == $kat['id']) {
                     $html .= ' checked="checked"';
                 }
                 $html .= ' />';
             } else {
-                $html .= ' href="?side=redigerkat&id='.$kat[$i]['id'].'">';
+                $html .= ' href="?side=redigerkat&id='.$kat['id'].'">';
             }
 
             $html .= '<img src="';
-            if ($kat[$i]['icon']) {
-                $html .= $kat[$i]['icon'];
+            if ($kat['icon']) {
+                $html .= $kat['icon'];
             } else {
                 $html .= 'images/folder.png';
             }
-            $html .= '" alt="" /> ' . strip_tags($kat[$i]['navn'], '<img>') . '</a><div id="kat' . $kat[$i]['id'] . 'content" style="margin-left:16px">';
-            if (array_search($kat[$i]['id'], $openkat) || false !== array_search($kat[$i]['id'], $kattree)) {
+            $html .= '" alt="" /> ' . strip_tags($kat['navn'], '<img>') . '</a><div id="kat' . $kat['id'] . 'content" style="margin-left:16px">';
+            if (array_search($kat['id'], $openkat) || false !== array_search($kat['id'], $kattree)) {
                 if ($input) {
-                    $temp = kat_expand($kat[$i]['id'], true);
+                    $temp = kat_expand($kat['id'], true);
                 } else {
-                    $temp = siteList_expand($kat[$i]['id']);
+                    $temp = siteList_expand($kat['id']);
                 }
                 $html .= $temp['html'];
             }
             $html .= '</div></div>';
         } else {
-            $html .= '<div id="kat'.$kat[$i]['id'].'"><a class="kat" style="margin-left:16px"';
+            $html .= '<div id="kat'.$kat['id'].'"><a class="kat" style="margin-left:16px"';
             if ($input) {
-                $html .= ' onclick="this.firstChild.checked=true;setCookie(\'activekat\', '.$kat[$i]['id'].', 360);"><input type="radio" name="kat" value="'.$kat[$i]['id'].'"';
-                if (@$kattree[count($kattree)-1] == $kat[$i]['id']) {
+                $html .= ' onclick="this.firstChild.checked=true;setCookie(\'activekat\', '.$kat['id'].', 360);"><input type="radio" name="kat" value="'.$kat['id'].'"';
+                if (@$kattree[count($kattree)-1] == $kat['id']) {
                     $html .= ' checked="checked"';
                 }
                 $html .= ' />';
             } else {
-                $html .= ' href="?side=redigerkat&id='.$kat[$i]['id'].'">';
+                $html .= ' href="?side=redigerkat&id='.$kat['id'].'">';
             }
             $html .= '<img src="';
-            if ($kat[$i]['icon']) {
-                $html .= $kat[$i]['icon'];
+            if ($kat['icon']) {
+                $html .= $kat['icon'];
             } else {
                 $html .= 'images/folder.png';
             }
-            $html .= '" alt="" /> ' . strip_tags($kat[$i]['navn'], '<img>') . '</a></div>';
+            $html .= '" alt="" /> ' . strip_tags($kat['navn'], '<img>') . '</a></div>';
         }
     }
     return ['id' => $id, 'html' => $html];
@@ -2094,28 +2092,27 @@ function deletefolder()
      */
     function deltree(string $dir)
     {
-        $dirlist = scandir(_ROOT_ . $dir);
-        $nr = count($dirlist);
-        for ($i=0; $i<$nr; $i++) {
-            if ($dirlist[$i] != '.' && $dirlist[$i] != '..') {
-                if (is_dir(_ROOT_ . $dir . '/' . $dirlist[$i])) {
-                    $deltree = deltree($dir . '/' . $dirlist[$i]);
+        $dirlists = scandir(_ROOT_ . $dir);
+        foreach ($dirlists as $dirlist) {
+            if ($dirlist != '.' && $dirlist != '..') {
+                if (is_dir(_ROOT_ . $dir . '/' . $dirlist)) {
+                    $deltree = deltree($dir . '/' . $dirlist);
                     if ($deltree) {
                         return $deltree;
                     }
-                    @rmdir(_ROOT_ . $dir . '/' . $dirlist[$i]);
-                    @setcookie($dir . '/' .$dirlist[$i], false);
+                    @rmdir(_ROOT_ . $dir . '/' . $dirlist);
+                    @setcookie($dir . '/' .$dirlist, false);
                 } else {
-                    if (db()->fetchOne("SELECT id FROM `sider` WHERE `navn` LIKE '%" . $dir . "/" . $dirlist[$i] . "%' OR `text` LIKE '%" . $dir . "/" . $dirlist[$i] . "%' OR `beskrivelse` LIKE '%" . $dir . "/" . $dirlist[$i] . "%' OR `billed` LIKE '%" . $dir . "/" . $dirlist[$i] . "%'")
-                    || db()->fetchOne("SELECT id FROM `template` WHERE `navn` LIKE '%".$dir."/".$dirlist[$i]."%' OR `text` LIKE '%".$dir."/".$dirlist[$i]."%' OR `beskrivelse` LIKE '%".$dir."/".$dirlist[$i]."%' OR `billed` LIKE '%".$dir."/".$dirlist[$i]."%'")
-                    || db()->fetchOne("SELECT id FROM `special` WHERE `text` LIKE '%".$dir."/".$dirlist[$i]."%'")
-                    || db()->fetchOne("SELECT id FROM `krav` WHERE `text` LIKE '%".$dir."/".$dirlist[$i]."%'")
-                    || db()->fetchOne("SELECT id FROM `maerke` WHERE `ico` LIKE '%".$dir."/".$dirlist[$i]."%'")
-                    || db()->fetchOne("SELECT id FROM `list_rows` WHERE `cells` LIKE '%".$dir."/".$dirlist[$i]."%'")
-                    || db()->fetchOne("SELECT id FROM `kat` WHERE `navn` LIKE '%".$dir."/".$dirlist[$i]."%' OR `icon` LIKE '%".$dir."/".$dirlist[$i]."%'")) {
+                    if (db()->fetchOne("SELECT id FROM `sider` WHERE `navn` LIKE '%" . $dir . "/" . $dirlist . "%' OR `text` LIKE '%" . $dir . "/" . $dirlist . "%' OR `beskrivelse` LIKE '%" . $dir . "/" . $dirlist . "%' OR `billed` LIKE '%" . $dir . "/" . $dirlist . "%'")
+                    || db()->fetchOne("SELECT id FROM `template` WHERE `navn` LIKE '%".$dir."/".$dirlist."%' OR `text` LIKE '%".$dir."/".$dirlist."%' OR `beskrivelse` LIKE '%".$dir."/".$dirlist."%' OR `billed` LIKE '%".$dir."/".$dirlist."%'")
+                    || db()->fetchOne("SELECT id FROM `special` WHERE `text` LIKE '%".$dir."/".$dirlist."%'")
+                    || db()->fetchOne("SELECT id FROM `krav` WHERE `text` LIKE '%".$dir."/".$dirlist."%'")
+                    || db()->fetchOne("SELECT id FROM `maerke` WHERE `ico` LIKE '%".$dir."/".$dirlist."%'")
+                    || db()->fetchOne("SELECT id FROM `list_rows` WHERE `cells` LIKE '%".$dir."/".$dirlist."%'")
+                    || db()->fetchOne("SELECT id FROM `kat` WHERE `navn` LIKE '%".$dir."/".$dirlist."%' OR `icon` LIKE '%".$dir."/".$dirlist."%'")) {
                         return ['error' => _('A file could not be deleted because it is used on a site.')];
                     }
-                    @unlink(_ROOT_ . $dir . '/' . $dirlist[$i]);
+                    @unlink(_ROOT_ . $dir . '/' . $dirlist);
                 }
             }
         }
@@ -2518,14 +2515,13 @@ writeRichText("beskrivelse", \''.rtefsafe($page['beskrivelse']).'\', "", '.($GLO
     //Pris end
     //misc start
     $html .= '<div class="toolbox"><a class="menuboxheader" id="miscboxheader" style="width:201px" onclick="showhide(\'miscbox\',this);">'._('Other:').' </a><div style="width:221px" id="miscbox">'._('SKU:').' <input type="text" name="varenr" id="varenr" maxlength="63" style="text-align:right;width:128px" value="'.xhtmlEsc($page['varenr']).'" /><br /><img src="images/page_white_key.png" width="16" height="16" alt="" /><select id="krav" name="krav"><option value="0">'._('None').'</option>';
-    $krav = db()->fetchArray('SELECT id, navn FROM `krav` ORDER BY navn');
-    $krav_nr = count($krav);
-    for ($i=0; $i<$krav_nr; $i++) {
-        $html .= '<option value="'.$krav[$i]['id'].'"';
-        if ($page['krav'] == $krav[$i]['id']) {
+    $kravs = db()->fetchArray('SELECT id, navn FROM `krav` ORDER BY navn');
+    foreach ($kravs as $krav) {
+        $html .= '<option value="'.$krav['id'].'"';
+        if ($page['krav'] == $krav['id']) {
             $html .= ' selected="selected"';
         }
-        $html .= '>'.xhtmlEsc($krav[$i]['navn']).'</option>';
+        $html .= '>'.xhtmlEsc($krav['navn']).'</option>';
     }
     $html .= '</select><br /><img width="16" height="16" alt="" src="images/page_white_medal.png"/><select id="maerke" name="maerke" size="15"><option' . ($page['maerke'] ? ' selected="selected"' : '') . ' value="0">'._('All others').'</option>';
 
@@ -2661,20 +2657,17 @@ listlink['.$list['id'].'] = '.$list['link'].';
     //bind start
         $html .= '<form action="" method="post" onsubmit="return bind('.$id.');">
     <div class="toolbox"><a class="menuboxheader" id="bindingheader" style="width:593px;" onclick="showhide(\'binding\',this);">Bindinger: </a><div style="width:613pxpx;" id="binding"><div id="bindinger"><br />';
-    $bind = db()->fetchArray('SELECT id, kat FROM `bind` WHERE `side` = '.$id);
-    $bind_nr = count($bind);
+    $binds = db()->fetchArray('SELECT id, kat FROM `bind` WHERE `side` = '.$id);
     $kattree = [];
-    for ($i=0; $i<$bind_nr; $i++) {
-        if ($bind[$i]['id'] != -1) {
-            $kattree = kattree($bind[$i]['kat']);
-            $kattree_nr = count($kattree);
+    foreach ($binds as $bind) {
+        if ($bind['id'] != -1) {
             $kattree_html = '';
-            for ($kattree_i=0; $kattree_i<$kattree_nr; $kattree_i++) {
-                $kattree_html .= '/'.trim($kattree[$kattree_i]['navn']);
+            foreach (kattree($bind['kat']) as $kattree) {
+                $kattree_html .= '/'.trim($kattree['navn']);
             }
             $kattree_html .= '/';
 
-            $html .= '<p id="bind'.$bind[$i]['id'].'"> <img onclick="slet(\'bind\', \''.addslashes($kattree_html).'\', '.$bind[$i]['id'].')" src="images/cross.png" alt="X" title="'._('Remove binding').'" width="16" height="16" /> ';
+            $html .= '<p id="bind'.$bind['id'].'"> <img onclick="slet(\'bind\', \''.addslashes($kattree_html).'\', '.$bind['id'].')" src="images/cross.png" alt="X" title="'._('Remove binding').'" width="16" height="16" /> ';
             $html .= $kattree_html.'</p>';
         }
     }
@@ -2693,19 +2686,16 @@ listlink['.$list['id'].'] = '.$list['link'].';
     //tilbehor start
     $html .= '<form action="" method="post" onsubmit="return tilbehor('.$id.');">
 <div class="toolbox"><a class="menuboxheader" id="tilbehorsheader" style="width:593px;" onclick="showhide(\'tilbehor\',this);">'._('Accessories:').' </a><div style="width:613pxpx;" id="tilbehor"><div id="tilbehore"><br />';
-    $tilbehor = db()->fetchArray('SELECT id, tilbehor FROM `tilbehor` WHERE `side` = '.$id);
-    $tilbehor_nr = count($tilbehor);
-    for ($i=0; $i<$tilbehor_nr; $i++) {
-        if ($tilbehor[$i]['id'] != null && $tilbehor[$i]['id'] != -1) {
-            $kattree = kattree($tilbehor[$i]['kat']);
-            $kattree_nr = count($kattree);
+    $tilbehors = db()->fetchArray('SELECT id, tilbehor FROM `tilbehor` WHERE `side` = '.$id);
+    foreach ($tilbehors as $tilbehor) {
+        if ($tilbehor['id'] != null && $tilbehor['id'] != -1) {
             $kattree_html = '';
-            for ($kattree_i=0; $kattree_i<$kattree_nr; $kattree_i++) {
-                $kattree_html .= '/'.trim($kattree[$kattree_i]['navn']);
+            foreach (kattree($tilbehor['kat']) as $kattree) {
+                $kattree_html .= '/'.trim($kattree['navn']);
             }
             $kattree_html .= '/';
 
-            $html .= '<p id="tilbehor'.$tilbehor[$i]['id'].'"> <img onclick="slet(\'tilbehor\', \''.addslashes($kattree_html).'\', '.$tilbehor[$i]['id'].')" src="images/cross.png" alt="X" title="'._('Remove binding').'" width="16" height="16" /> ';
+            $html .= '<p id="tilbehor'.$tilbehor['id'].'"> <img onclick="slet(\'tilbehor\', \''.addslashes($kattree_html).'\', '.$tilbehor['id'].')" src="images/cross.png" alt="X" title="'._('Remove binding').'" width="16" height="16" /> ';
             $html .= $kattree_html.'</p>';
         }
     }
@@ -3305,11 +3295,10 @@ writeRichText("beskrivelse", \'\', "", '.($GLOBALS['_config']['thumb_width']+32)
     //Pris end
     //misc start
     $html .= '<div class="toolbox"><a class="menuboxheader" id="miscboxheader" style="width:201px" onclick="showhide(\'miscbox\',this);">'._('Other:').' </a><div style="width:221px" id="miscbox">'._('SKU:').' <input type="text" name="varenr" id="varenr" maxlength="63" style="text-align:right;width:128px" value="" /><br /><img src="images/page_white_key.png" width="16" height="16" alt="" /><select id="krav" name="krav"><option value="0">'._('None').'</option>';
-    $krav = db()->fetchArray('SELECT id, navn FROM `krav`');
-    $krav_nr = count($krav);
-    for ($i=0; $i<$krav_nr; $i++) {
-        $html .= '<option value="'.$krav[$i]['id'].'"';
-        $html .= '>'.xhtmlEsc($krav[$i]['navn']).'</option>';
+    $kravs = db()->fetchArray('SELECT id, navn FROM `krav`');
+    foreach ($kravs as $krav) {
+        $html .= '<option value="'.$krav['id'].'"';
+        $html .= '>'.xhtmlEsc($krav['navn']).'</option>';
     }
     $html .= '</select><br /><img width="16" height="16" alt="" src="images/page_white_medal.png"/><select id="maerke" name="maerke" size="10"><option selected="selected" value="0">'._('All others').'</option>';
     $maerker = db()->fetchArray('SELECT id, navn FROM `maerke` ORDER BY navn');
@@ -3403,26 +3392,25 @@ function getmaerker(): string
     <td style="text-align:center"><input type="hidden" value="'._('/images/web/intet-foto.jpg').'" id="ico" name="ico" /><img id="icothb" src="'._('/images/web/intet-foto.jpg').'" alt="" onclick="explorer(\'thb\', \'ico\')" /><br /><img onclick="explorer(\'thb\', \'ico\')" src="images/folder_image.png" width="16" height="16" alt="'._('Pictures').'" title="'._('Find image').'" /><img onclick="setThb(\'ico\', \'\', \''._('/images/web/intet-foto.jpg').'\')" src="images/cross.png" alt="X" title="'._('Remove picture').'" width="16" height="16" /></td>
     </tr><tr><td></td></tr></table><p><input value="'._('Add brand').'e" type="submit" accesskey="s" /><br /><br /></p><div id="imagelogo" style="display:none; position:absolute;"></div>';
     $brands = db()->fetchArray('SELECT * FROM `maerke` ORDER BY navn');
-    $nr = count($brands);
-    for ($i=0; $i<$nr; $i++) {
-        $html .= '<div id="maerke'.$brands[$i]['id'].'"><a href="" onclick="slet(\'maerke\',\''.addslashes($brands[$i]['navn']).'\','.$brands[$i]['id'].');"><img src="images/cross.png" alt="X" title="'._('Delete').' '.xhtmlEsc($brands[$i]['navn']).'!" width="16" height="16"';
-        if (!$brands[$i]['link'] && !$brands[$i]['ico']) {
+    foreach ($brands as $brand) {
+        $html .= '<div id="maerke'.$brand['id'].'"><a href="" onclick="slet(\'maerke\',\''.addslashes($brand['navn']).'\','.$brand['id'].');"><img src="images/cross.png" alt="X" title="'._('Delete').' '.xhtmlEsc($brand['navn']).'!" width="16" height="16"';
+        if (!$brand['link'] && !$brand['ico']) {
             $html .= ' style="margin-right:32px"';
-        } elseif (!$brands[$i]['link']) {
+        } elseif (!$brand['link']) {
             $html .= ' style="margin-right:16px"';
         }
-        $html .= ' /></a><a href="?side=updatemaerke&amp;id='.$brands[$i]['id'].'">';
-        if ($brands[$i]['link']) {
-            $html .= '<img src="images/link.png" alt="W" width="16" height="16" title="'.xhtmlEsc($brands[$i]['link']).'"';
-            if (!$brands[$i]['ico']) {
+        $html .= ' /></a><a href="?side=updatemaerke&amp;id='.$brand['id'].'">';
+        if ($brand['link']) {
+            $html .= '<img src="images/link.png" alt="W" width="16" height="16" title="'.xhtmlEsc($brand['link']).'"';
+            if (!$brand['ico']) {
                 $html .= ' style="margin-right:16px"';
             }
             $html .= ' />';
         }
-        if ($brands[$i]['ico']) {
-            $html .= '<img alt="icon" title="" src="images/picture.png" width="16" height="16" onmouseout="document.getElementById(\'imagelogo\').style.display = \'none\'" onmouseover="showimage(this,\''.addslashes($brands[$i]['ico']).'\')" />';
+        if ($brand['ico']) {
+            $html .= '<img alt="icon" title="" src="images/picture.png" width="16" height="16" onmouseout="document.getElementById(\'imagelogo\').style.display = \'none\'" onmouseover="showimage(this,\''.addslashes($brand['ico']).'\')" />';
         }
-        $html .= ' '.xhtmlEsc($brands[$i]['navn']).'</a></div>';
+        $html .= ' '.xhtmlEsc($brand['navn']).'</a></div>';
     }
     $html .= '</form>';
     return $html;
@@ -3467,10 +3455,9 @@ function save_ny_maerke(string $navn, string $link, string $ico): array
 function getkrav(): string
 {
     $html = '<div id="headline">'._('Requirements list').'</div><div style="margin:16px;"><a href="?side=nykrav">Tilføj krav</a>';
-    $krav = db()->fetchArray('SELECT id, navn FROM `krav` ORDER BY navn');
-    $nr = count($krav);
-    for ($i=0; $i<$nr; $i++) {
-        $html .= '<div id="krav'.$krav[$i]['id'].'"><a href="" onclick="slet(\'krav\',\''.addslashes($krav[$i]['navn']).'\','.$krav[$i]['id'].');"><img src="images/cross.png" title="Slet '.$krav[$i]['navn'].'!" width="16" height="16" /></a><a href="?side=editkrav&amp;id='.$krav[$i]['id'].'">'.$krav[$i]['navn'].'</a></div>';
+    $kravs = db()->fetchArray('SELECT id, navn FROM `krav` ORDER BY navn');
+    foreach ($kravs as $krav) {
+        $html .= '<div id="krav'.$krav['id'].'"><a href="" onclick="slet(\'krav\',\''.addslashes($krav['navn']).'\','.$krav['id'].');"><img src="images/cross.png" title="Slet '.$krav['navn'].'!" width="16" height="16" /></a><a href="?side=editkrav&amp;id='.$krav['id'].'">'.$krav['navn'].'</a></div>';
     }
     $html .= '</div>';
     return $html;
@@ -3570,6 +3557,7 @@ function bind(int $id, int $kat): array
     }
 
     //Delete any binding not under $katRoot
+    $delete = [];
     $binds = db()->fetchArray('SELECT id, kat FROM `bind` WHERE `side` = '.$id);
     foreach ($binds as $bind) {
         $bindRoot = $bind['kat'];
@@ -3589,10 +3577,8 @@ function bind(int $id, int $kat): array
     $added['kat'] = $kat;
     $added['side'] = $id;
 
-    $kattree = kattree($kat);
-    $kattree_nr = count($kattree);
-    for ($i=0; $i<$kattree_nr; $i++) {
-        $added['path'] .= '/'.trim($kattree[$i]['navn']);
+    foreach (kattree($kat) as $kat) {
+        $added['path'] .= '/'.trim($kat['navn']);
     }
     $added['path'] .= '/';
 
@@ -3765,16 +3751,13 @@ function sletSide(int $sideId): array
 {
     $lists = db()->fetchArray('SELECT id FROM `lists` WHERE `page_id` = '.$sideId);
     if ($lists) {
-        for ($i=0; $i<count($lists); $i++) {
-            if ($i) {
-                $tableWhere .= ' OR';
-                $listsWhere .= ' OR';
-            }
-            $tableWhere .= ' list_id = '.$lists[$i]['id'];
-            $listsWhere .= ' id = '.$lists[$i]['id'];
+        $listIds = [];
+        foreach ($lists as $list) {
+            $listIds[] = $list['id'];
         }
-        db()->query('DELETE FROM `list_rows` WHERE'.$tableWhere);
-        db()->query('DELETE FROM `lists` WHERE `sideId` = '.$sideId);
+
+        db()->query('DELETE FROM `list_rows` WHERE list_id IN(' . implode('', $listIds) . ')');
+        db()->query('DELETE FROM `lists` WHERE `sideId` = ' . $sideId);
     }
     db()->query('DELETE FROM `list_rows` WHERE `link` = '.$sideId);
     db()->query('DELETE FROM `bind` WHERE side = '.$sideId);
