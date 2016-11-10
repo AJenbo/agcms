@@ -2995,7 +2995,7 @@ function get_db_error(): string
             x_get_db_size(function(){});
 
             $(\'status\').innerHTML = \''._('Sending delayed emails').'\';
-            x_sendDelayedEmail(function(){});
+            x_sendDelayedEmail(set_db_errors);
 
             $(\'status\').innerHTML = \'\';
             $(\'loading\').style.visibility = \'hidden\';
