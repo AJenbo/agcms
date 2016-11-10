@@ -1,16 +1,11 @@
-#TODO need to run:
-# apt update
-# apt install libxml2-dev
-# docker-php-ext-install mysqli gettext soap
 php:
-  image: php:fpm
+  build: ./docker
   links:
-  - mariadb
+  - db
   volumes:
   - ./application:/var/www/html
-  - ./docker/php:/usr/local/etc/php
 
-mariadb:
+db:
   image: mariadb
   environment:
     MYSQL_DATABASE: agcms
