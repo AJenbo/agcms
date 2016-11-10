@@ -117,89 +117,45 @@ function deleteTempfiles(): string
  */
 function sendDelayedEmail(): string
 {
-    $emailsSendt = 0;
-    $msg = ngettext(
-        "%d e-mail was sent.",
-        "%d e-mails was sent.",
-        $emailsSendt
-    );
-
     //Get emails that needs sending
     $emails = db()->fetchArray("SELECT * FROM `emails`");
-
     if (!$emails) {
         db()->query("UPDATE special SET dato = NOW() WHERE id = 0");
         return '';
     }
 
-    //Set up PHPMailer
-    $PHPMailer = new PHPMailer();
-    $PHPMailer->SetLanguage('dk');
-    $PHPMailer->IsSMTP();
-    $PHPMailer->Host    = $GLOBALS['_config']['smtp'];
-    $PHPMailer->Port    = $GLOBALS['_config']['smtpport'];
-    $PHPMailer->CharSet = 'utf-8';
-    if ($GLOBALS['_config']['emailpassword'] !== false) {
-        $PHPMailer->SMTPAuth = true; // enable SMTP authentication
-        $PHPMailer->Username = $GLOBALS['_config']['email'][0];
-        $PHPMailer->Password = $GLOBALS['_config']['emailpasswords'][0];
-    } else {
-        $PHPMailer->SMTPAuth = false;
-    }
-
+    $emailsSendt = 0;
     foreach ($emails as $email) {
-        $PHPMailer->ClearAddresses();
-        $PHPMailer->ClearCCs();
-        $PHPMailer->ClearReplyTos();
-        $PHPMailer->ClearAllRecipients();
-        $PHPMailer->ClearAttachments();
-
         $email['from'] = explode('<', $email['from']);
         $email['from'][1] = substr($email['from'][1], 0, -1);
-        $PHPMailer->From       = $email['from'][1];
-        $PHPMailer->FromName   = $email['from'][0];
-        $PHPMailer->AddReplyTo($email['from'][1], $email['from'][0]);
+        $email['to'] = explode('<', $email['to']);
+        $email['to'][1] = substr($email['to'][1], 0, -1);
 
-        $email['to'] = explode(';', $email['to']);
-        foreach ($email['to'] as $key => $to) {
-            $email['to'][$key] = explode('<', $to);
-            $email['to'][$key][1] = substr($email['to'][$key][1], 0, -1);
-            $PHPMailer->AddAddress($email['to'][$key][1], $email['to'][$key][0]);
-        }
-
-        $PHPMailer->Subject = $email['subject'];
-        $PHPMailer->MsgHTML($email['body'], _ROOT_);
-
-        if (!$PHPMailer->Send()) {
+        $success = sendEmail(
+            $email['subject'],
+            $email['body'],
+            $email['from'][1],
+            $email['from'][0],
+            $email['to'][1],
+            $email['to'][0],
+            false
+        );
+        if (!$success) {
             continue;
         }
 
         $emailsSendt++;
 
         db()->query("DELETE FROM `emails` WHERE `id` = " . $email['id']);
-
-        //Upload email to the sent folder via imap
-        if ($GLOBALS['_config']['imap'] !== false) {
-            $emailnr = array_search('', $GLOBALS['_config']['email']);
-            $imap = new IMAP(
-                $GLOBALS['_config']['email'][$emailnr ?: 0],
-                $GLOBALS['_config']['emailpasswords'][$emailnr ? $emailnr : 0],
-                $GLOBALS['_config']['imap'],
-                $GLOBALS['_config']['imapport']
-            );
-            $imap->append(
-                $GLOBALS['_config']['emailsent'],
-                $PHPMailer->CreateHeader() . $PHPMailer->CreateBody(),
-                '\Seen'
-            );
-        }
     }
 
     db()->query("UPDATE special SET dato = NOW() WHERE id = 0");
 
-    //Close SMTP connection
-    $PHPMailer->SmtpClose();
-
+    $msg = ngettext(
+        "%d e-mail was sent.",
+        "%d e-mails was sent.",
+        $emailsSendt
+    );
     return '<b>' . sprintf($msg, $emailsSendt) . '</b>';
 }
 
@@ -601,28 +557,6 @@ function sendEmail(int $id, string $from, string $interests, string $subject, st
 
     saveEmail($id, $from, $interests, $subject, $text);
 
-    $mail             = new PHPMailer();
-    $mail->SetLanguage('dk');
-
-    $mail->IsSMTP();
-    if ($GLOBALS['_config']['emailpassword'] !== false) {
-        $mail->SMTPAuth = true; // enable SMTP authentication
-        $mail->Username = $GLOBALS['_config']['email'][0];
-        $mail->Password = $GLOBALS['_config']['emailpasswords'][0];
-    } else {
-        $mail->SMTPAuth = false;
-    }
-    $mail->Host = $GLOBALS['_config']['smtp'];      // sets the SMTP server
-    $mail->Port = $GLOBALS['_config']['smtpport'];                   // set the SMTP port for the server
-
-    $mail->AddReplyTo($from, $GLOBALS['_config']['site_name']);
-
-    $mail->From     = $from;
-    $mail->FromName = $GLOBALS['_config']['site_name'];
-
-    $mail->CharSet  = 'utf-8';
-
-    $mail->Subject  = $subject;
     $body = '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
     <html xmlns="http://www.w3.org/1999/xhtml">
     <head>
@@ -642,9 +576,6 @@ function sendEmail(int $id, string $from, string $interests, string $subject, st
     </head><body><div>';
     $body .= str_replace(' href="/', ' href="' . $GLOBALS['_config']['base_url'] . '/', $text);
     $body .= '</div></body></html>';
-
-    $mail->MsgHTML($body, _ROOT_);
-
 
     //Colect interests
     if ($interests) {
@@ -668,8 +599,6 @@ function sendEmail(int $id, string $from, string $interests, string $subject, st
         $andwhere .= ')';
     }
 
-    $mail->AddAddress($from, $GLOBALS['_config']['site_name']);
-
     $emails = db()->fetchArray(
         'SELECT navn, email
         FROM `email`
@@ -677,39 +606,31 @@ function sendEmail(int $id, string $from, string $interests, string $subject, st
           AND `kartotek` = \'1\' '.$andwhere.'
         GROUP BY `email`'
     );
-
     foreach ($emails as $x => $email) {
-        $emails_group[floor($x/99)][] = $email;
+        $emails_group[floor($x/99)+1][] = $email;
     }
 
     $error = '';
+    foreach ($emails_group as $of => $emails) {
+        $success = sendEmail(
+            $subject,
+            $body,
+            $from,
+            '',
+            '',
+            '',
+            true,
+            $emails
+        );
 
-    foreach ($emails_group as $emails) {
-        $mail->ClearBCCs();
-        foreach ($emails as $email) {
-            $mail->AddBCC($email['email'], $email['navn']);
-        }
-
-        if (!$mail->Send()) {
+        if (!$success) {
             //TODO upload if send fails
-            $error .= $mail->ErrorInfo . "\n";
-        }
-
-        //Upload email to the sent folder via imap
-        if ($GLOBALS['_config']['imap']) {
-            $emailnr = array_search($from, $GLOBALS['_config']['email']);
-            $imap = new IMAP(
-                $from,
-                $GLOBALS['_config']['emailpasswords'][$emailnr ? $emailnr : 0],
-                $GLOBALS['_config']['imap'],
-                $GLOBALS['_config']['imapport']
-            );
-            $imap->append($GLOBALS['_config']['emailsent'], $mail->CreateHeader().$mail->CreateBody(), '\Seen');
+            $error .= 'Email ' . $of . '/' . count($emails) . ' failed to be sent.' . "\n";
         }
     }
 
     if ($error) {
-        return ['error' => $error];
+        return ['error' => trim($error)];
     } else {
         db()->query("UPDATE `newsmails` SET `sendt` = 1 WHERE `id` = " . $id);
         return true;
@@ -3937,47 +3858,20 @@ Tel. %s</p>'
 <title>'. sprintf(_('Online payment to %s'), $GLOBALS['_config']['site_name']).'</title>
 </head><body>' .$msg .'</body></html>';
 
-        $mail             = new PHPMailer();
-        $mail->SetLanguage('dk');
-        $mail->IsSMTP();
-        if ($GLOBALS['_config']['emailpassword'] !== false) {
-            $mail->SMTPAuth   = true; // enable SMTP authentication
-            $mail->Username   = $GLOBALS['_config']['email'][0];
-            $mail->Password   = $GLOBALS['_config']['emailpasswords'][0];
-        } else {
-            $mail->SMTPAuth   = false;
-        }
-        $mail->Host       = $GLOBALS['_config']['smtp'];      // sets the SMTP server
-        $mail->Port       = $GLOBALS['_config']['smtpport'];  // set the SMTP port for the server
-        $mail->CharSet    = 'utf-8';
-        $mail->AddReplyTo($faktura['department'], $GLOBALS['_config']['site_name']);
-        $mail->From       = $faktura['department'];
-        $mail->FromName   = $GLOBALS['_config']['site_name'];
-        $mail->Subject    = _('Online payment for ').$GLOBALS['_config']['site_name'];
-        $mail->MsgHTML($emailBody, _ROOT_);
-
-        if (empty($faktura['navn'])) {
-            $faktura['navn'] = $faktura['email'];
-        }
-
-        $mail->AddAddress($faktura['email'], $faktura['navn']);
-        if (!$mail->Send()) {
+        $success = sendEmail(
+            _('Online payment for ').$GLOBALS['_config']['site_name'],
+            $emailBody,
+            $faktura['department'],
+            '',
+            $faktura['email'],
+            $faktura['navn'],
+            false
+        );
+        if (!$success) {
             return ['error' => _('Unable to sendt e-mail!')."\n".$mail->ErrorInfo];
         }
         db()->query("UPDATE `fakturas` SET `status` = 'locked' WHERE `status` = 'new' && `id` = ".$faktura['id']);
         db()->query("UPDATE `fakturas` SET `sendt` = 1, `department` = '".$faktura['department']."' WHERE `id` = ".$faktura['id']);
-
-        //Upload email to the sent folder via imap
-        if ($GLOBALS['_config']['imap']) {
-            $emailnr = array_search($faktura['department'], $GLOBALS['_config']['email']);
-            $imap = new IMAP(
-                $faktura['department'],
-                $GLOBALS['_config']['emailpasswords'][$emailnr ? $emailnr : 0],
-                $GLOBALS['_config']['imap'],
-                $GLOBALS['_config']['imapport']
-            );
-            $imap->append($GLOBALS['_config']['emailsent'], $mail->CreateHeader().$mail->CreateBody(), '\Seen');
-        }
 
         //Forece reload
         $faktura['status'] = 'sendt';
@@ -4072,49 +3966,21 @@ Fax: %s<br />
 <title>'._('Electronic Invoice concerning order #').$faktura['id'].'</title>
 </head><body>' .$msg .'</body></html>';
 
-    $mail             = new PHPMailer();
-    $mail->SetLanguage('dk');
-    $mail->IsSMTP();
-    if ($GLOBALS['_config']['emailpassword'] !== false) {
-        $mail->SMTPAuth   = true; // enable SMTP authentication
-        $mail->Username   = $GLOBALS['_config']['email'][0];
-        $mail->Password   = $GLOBALS['_config']['emailpasswords'][0];
-    } else {
-        $mail->SMTPAuth   = false;
-    }
-    $mail->Host       = $GLOBALS['_config']['smtp'];      // sets the SMTP server
-    $mail->Port       = $GLOBALS['_config']['smtpport'];  // set the SMTP port for the server
-    $mail->CharSet    = 'utf-8';
-    $mail->AddReplyTo($faktura['department'], $GLOBALS['_config']['site_name']);
-    $mail->From       = $faktura['department'];
-    $mail->FromName   = $GLOBALS['_config']['site_name'];
-    $mail->Subject    = 'Elektronisk faktura vedr. ordre';
-    $mail->MsgHTML($emailBody, _ROOT_);
 
-    if (empty($faktura['navn'])) {
-        $faktura['navn'] = $faktura['email'];
-    }
+    $success = sendEmail(
+        'Elektronisk faktura vedr. ordre',
+        $emailBody,
+        $faktura['department'],
+        '',
+        $faktura['email'],
+        $faktura['navn'],
+        false
+    );
 
-    $mail->AddAddress($faktura['email'], $faktura['navn']);
-    if (!$mail->Send()) {
-        return ['error' => 'Mailen kunde ikke sendes!
-'.$mail->ErrorInfo];
+    if (!$success) {
+        return ['error' => 'Mailen kunde ikke sendes!' . "\n" . $mail->ErrorInfo];
     }
     $error .= "\n\n"._('A Reminder was sent to the customer.');
-
-    //Upload email to the sent folder via imap
-    if ($GLOBALS['_config']['imap']) {
-        $emailnr = array_search($faktura['department'], $GLOBALS['_config']['email']);
-        $imap = new IMAP(
-            $faktura['department'],
-            $GLOBALS['_config']['emailpasswords'][$emailnr ? $emailnr : 0],
-            $GLOBALS['_config']['imap'],
-            $GLOBALS['_config']['imapport']
-        );
-        if (!$imap->append($GLOBALS['_config']['emailsent'], $mail->CreateHeader().$mail->CreateBody(), '\Seen')) {
-            $error .= "\n\n".sprintf(_('The e-mail was not saved in the Sent box! (the folder %s was missing).'), $GLOBALS['_config']['emailsent']);
-        }
-    }
 
     return ['error' => trim($error)];
 }

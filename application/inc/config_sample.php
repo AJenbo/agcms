@@ -19,15 +19,16 @@ $GLOBALS['_config']['city'] = '';
 $GLOBALS['_config']['phone'] = '';
 $GLOBALS['_config']['fax'] = '';
 
-$GLOBALS['_config']['email'][] = 'mail@example.com';
-$GLOBALS['_config']['emailpasswords'][] = 'password';
-$GLOBALS['_config']['emailsent'] = 'INBOX.Sent';
-$GLOBALS['_config']['imap'] = 'imap.example.dk';
-$GLOBALS['_config']['imapport'] = '143';
-
-$GLOBALS['_config']['smtp'] = 'smtp.example.com';
-$GLOBALS['_config']['smtpport'] = 25;
-$GLOBALS['_config']['emailpassword'] = false;
+$GLOBALS['_config']['emails']['mail@example.com'] = [
+    'address'  => 'mail@example.com',
+    'password' => 'password',
+    'sentBox'  => 'INBOX.Sent',
+    'imapHost' => 'imap.example.dk',
+    'imapPort' => 143,
+    'smtpHost' => 'smtp.example.com',
+    'smtpPort' => '25',
+    'smtpAuth' => true,
+];
 
 $GLOBALS['_config']['interests'][] = 'Stuff';
 

@@ -1054,3 +1054,91 @@ function validate(array $values): array
     }
     return $rejected;
 }
+
+function sendEmail(
+    string $subject,
+    string $htmlBody,
+    string $from = '',
+    string $fromName = '',
+    string $to = '',
+    string $toName = '',
+    bool $retry = true,
+    array $bcc = []
+): bool {
+    $emailConfig = reset($GLOBALS['_config']['emails']);
+    if (isset($GLOBALS['_config']['emails'][$from])) {
+        $emailConfig = $GLOBALS['_config']['emails'][$from];
+    }
+    if (!$from || !valideMail($from)) {
+        $from = $emailConfig['address'];
+    }
+    if (!$fromName) {
+        $fromName = $GLOBALS['_config']['site_name'];
+    }
+    if (!$to) {
+        $to = $emailConfig['address'];
+        $toName = $GLOBALS['_config']['site_name'];
+    } elseif (!$toName) {
+        $toName = $to;
+    }
+
+    $PHPMailer = new PHPMailer();
+    $PHPMailer->SetLanguage('dk');
+    $PHPMailer->IsSMTP();
+    $PHPMailer->SMTPAuth = false;
+    if ($emailConfig['smptAuth']) {
+        $PHPMailer->SMTPAuth = true;
+        $PHPMailer->Username = $emailConfig['address'];
+        $PHPMailer->Password = $emailConfig['password'];
+    }
+    $PHPMailer->Host     = $emailConfig['smtpHost'];
+    $PHPMailer->Port     = $emailConfig['smtpPort'];
+    $PHPMailer->CharSet  = 'utf-8';
+    $PHPMailer->From     = $emailConfig['address'];
+    $PHPMailer->FromName = $GLOBALS['_config']['site_name'];
+
+    if ($from !== $emailConfig['address']) {
+        $PHPMailer->AddReplyTo($from, $fromName);
+    }
+
+    foreach ($bcc as $email) {
+        $PHPMailer->AddBCC($email['email'], $email['navn']);
+    }
+
+    $PHPMailer->Subject = $subject;
+    $PHPMailer->MsgHTML($htmlBody, _ROOT_);
+    $PHPMailer->AddAddress($to, $toName);
+
+    $success = $PHPMailer->Send();
+    if ($success) {
+        //Upload email to the sent folder via imap
+        if ($emailConfig['imapHost']) {
+            $imap = new IMAP(
+                $emailConfig['address'],
+                $emailConfig['password'],
+                $emailConfig['imapHost'],
+                $emailConfig['imapPort']
+            );
+            $imap->append(
+                $emailConfig['sentBox'],
+                $PHPMailer->CreateHeader() . $PHPMailer->CreateBody(),
+                '\Seen'
+            );
+        }
+    } elseif ($retry) {
+        db()->query(
+            "
+            INSERT INTO `emails` (`subject`, `from`, `to`, `body`, `date`)
+            VALUES (
+                '" . db()->esc($subject) . "',
+                '" . db()->esc($from . "<" . $fromName) . ">',
+                '" . db()->esc($to . "<" . $toName) . ">',
+                '" . db()->esc($htmlBody) . "',
+                NOW()
+            );
+            "
+        );
+    }
+
+    return $success;
+}

@@ -733,67 +733,12 @@ if (!empty($_SESSION['faktura']['quantities'])) {
         $emailbody .= '</p><p>' . _('Sincerely the computer')
         . '</p></body></html></body></html>';
 
-        $mail = new PHPMailer();
-        $mail->SetLanguage('dk');
-        $mail->IsSMTP();
-        if ($GLOBALS['_config']['emailpassword'] !== false) {
-            $mail->SMTPAuth   = true; // enable SMTP authentication
-            $mail->Username   = $GLOBALS['_config']['email'][0];
-            $mail->Password   = $GLOBALS['_config']['emailpasswords'][0];
-        } else {
-            $mail->SMTPAuth   = false;
-        }
-        $mail->Host       = $GLOBALS['_config']['smtp'];
-        $mail->Port       = $GLOBALS['_config']['smtpport'];
-        $mail->CharSet    = 'utf-8';
-        $mail->From       = $GLOBALS['_config']['email'][0];
-        $mail->FromName   = $GLOBALS['_config']['site_name'];
-
-        $mail->AddReplyTo(
+        sendEmail(
+            _('Online order #') . $id,
+            $emailbody,
             $_SESSION['faktura']['email'],
             $_SESSION['faktura']['navn']
         );
-
-        $mail->Subject    = _('Online order #').$id;
-        $mail->MsgHTML($emailbody, _ROOT_);
-
-        //TODO allow other departments to revice orders
-        $mail->AddAddress(
-            $GLOBALS['_config']['email'][0],
-            $GLOBALS['_config']['site_name']
-        );
-
-        if ($mail->Send()) {
-            //Upload email to the sent folder via imap
-            if ($GLOBALS['_config']['imap']) {
-                $imap = new IMAP(
-                    $GLOBALS['_config']['email'][0],
-                    $GLOBALS['_config']['emailpasswords'][0],
-                    $GLOBALS['_config']['imap'],
-                    $GLOBALS['_config']['imapport']
-                );
-                $imap->append(
-                    $GLOBALS['_config']['emailsent'],
-                    $mail->CreateHeader() . $mail->CreateBody(),
-                    '\Seen'
-                );
-                unset($imap);
-            }
-        } else {
-            //TODO secure this against injects and <; in the email and name
-            db()->query(
-                "
-                INSERT INTO `emails` (`subject`, `from`, `to`, `body`, `date`)
-                VALUES (
-                    '" . db()->esc($mail->Subject) . "',
-                    '" . db()->esc($GLOBALS['_config']['site_name'] . "<" . $GLOBALS['_config']['email'][0]) . ">',
-                    '" . db()->esc($GLOBALS['_config']['site_name'] . "<" . $GLOBALS['_config']['email'][0]) . ">',
-                    '" . db()->esc($emailbody) . "',
-                    NOW()
-                );
-                "
-            );
-        }
 
         $GLOBALS['generatedcontent']['title'] = _('Order placed');
         $GLOBALS['generatedcontent']['headline'] = _('Order placed');

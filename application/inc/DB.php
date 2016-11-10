@@ -11,8 +11,6 @@ class DB extends mysqli
 
         /* Throw an error if the connection fails */
         if (mysqli_connect_error()) {
-            header('HTTP/1.1 500 Internal Server Error', true, 500);
-            echo mysqli_connect_error();
             die();
         }
 

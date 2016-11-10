@@ -822,70 +822,14 @@ Tel. %s<br />
 
         $emailbody .= '</body></html>';
 
-        $mail             = new PHPMailer();
-        $mail->SetLanguage('dk');
-        $mail->IsSMTP();
-        if ($GLOBALS['_config']['emailpassword'] !== false) {
-            $mail->SMTPAuth   = true; // enable SMTP authentication
-            $mail->Username   = $GLOBALS['_config']['email'][0];
-            $mail->Password   = $GLOBALS['_config']['emailpasswords'][0];
-        } else {
-            $mail->SMTPAuth   = false;
-        }
-        $mail->Host       = $GLOBALS['_config']['smtp'];
-        $mail->Port       = $GLOBALS['_config']['smtpport'];
-        $mail->CharSet    = 'utf-8';
-        $mail->AddReplyTo(
+        sendEmail(
+            sprintf(_('Order #%d - payment completed'), $faktura['id']),
+            $emailbody,
             $faktura['department'],
-            $GLOBALS['_config']['site_name']
+            '',
+            $faktura['email'],
+            $faktura['navn']
         );
-        $mail->From       = $faktura['department'];
-        $mail->FromName   = $GLOBALS['_config']['site_name'];
-        $subject = _('Order #%d - payment completed');
-        $mail->Subject    = sprintf($subject, $faktura['id']);
-        $mail->MsgHTML($emailbody, _ROOT_);
-        $mail->AddAddress($faktura['email'], $GLOBALS['_config']['site_name']);
-        if ($mail->Send()) {
-            //Upload email to the sent folder via imap
-            if ($GLOBALS['_config']['imap']) {
-                $emailnr = array_search(
-                    $faktura['department'],
-                    $GLOBALS['_config']['email']
-                );
-                $imap = new IMAP(
-                    $faktura['department'],
-                    $GLOBALS['_config']['emailpasswords'][$emailnr ? $emailnr : 0],
-                    $GLOBALS['_config']['imap'],
-                    $GLOBALS['_config']['imapport']
-                );
-                $imap->append(
-                    $GLOBALS['_config']['emailsent'],
-                    $mail->CreateHeader() . $mail->CreateBody(),
-                    '\Seen'
-                );
-                unset($imap);
-            }
-        } else {
-            //TODO secure this against injects and <; in the email and name
-            db()->query(
-                "
-        INSERT INTO `emails` (
-            `subject`,
-            `from`,
-            `to`,
-            `body`,
-            `date`
-        )
-        VALUES (
-            'Ordre " . db()->esc($faktura['id'] . " - " . _('Payment complete')) . "',
-            '" . db()->esc($GLOBALS['_config']['site_name'] . "<" . $faktura['department']) . ">',
-            '" . db()->esc($GLOBALS['_config']['site_name'] . "<" . $faktura['email']) . ">',
-            '" . db()->esc($emailbody) . "',
-            NOW()
-        )
-        "
-            );
-        }
     }
 
     //To shop
@@ -1007,67 +951,13 @@ Delivery phone: %s</p>
     }
 
     if (!empty($faktura)) {
-        $mail = new PHPMailer();
-        $mail->SetLanguage('dk');
-        $mail->IsSMTP();
-        if ($GLOBALS['_config']['emailpassword'] !== false) {
-            $mail->SMTPAuth   = true;
-            $mail->Username   = $GLOBALS['_config']['email'][0];
-            $mail->Password   = $GLOBALS['_config']['emailpasswords'][0];
-        } else {
-            $mail->SMTPAuth   = false;
-        }
-
-        $subject = _('Attn.: %s - Online invoice #%d : %s');
-        $subject = sprintf($subject, $faktura['clerk'], $id, $shopSubject);
-
-        $mail->Host       = $GLOBALS['_config']['smtp'];
-        $mail->Port       = $GLOBALS['_config']['smtpport'];
-        $mail->CharSet    = 'utf-8';
-        $mail->From       = $GLOBALS['_config']['email'][0];
-        $mail->FromName   = $GLOBALS['_config']['site_name'];
-        $mail->Subject    = $subject;
-        $mail->MsgHTML($emailbody, _ROOT_);
-
-        $mail->AddAddress($faktura['department'], $GLOBALS['_config']['site_name']);
-
-        if ($mail->Send()) {
-            //Upload email to the sent folder via imap
-            if ($GLOBALS['_config']['imap']) {
-                $imap = new IMAP(
-                    $GLOBALS['_config']['email'][0],
-                    $GLOBALS['_config']['emailpasswords'][0],
-                    $GLOBALS['_config']['imap'],
-                    $GLOBALS['_config']['imapport']
-                );
-                $imap->append(
-                    $GLOBALS['_config']['emailsent'],
-                    $mail->CreateHeader() . $mail->CreateBody(),
-                    '\Seen'
-                );
-                unset($imap);
-            }
-        } else {
-            //TODO secure this against injects and <; in the email and name
-            db()->query(
-                "
-                INSERT INTO `emails` (
-                    `subject`,
-                    `from`,
-                    `to`,
-                    `body`,
-                    `date`
-                )
-                VALUES (
-                    '" . db()->esc($subject) . "',
-                    '" . db()->esc($GLOBALS['_config']['site_name'] . "<" . $GLOBALS['_config']['email'][0]) . ">',
-                    '" . db()->esc($GLOBALS['_config']['site_name'] . "<" . $faktura['department']). ">',
-                    '" . db()->esc($emailbody) . "',
-                    NOW()
-                )
-                "
-            );
-        }
+        sendEmail(
+            sprintf(_('Attn.: %s - Online invoice #%d : %s'), $faktura['clerk'], $id, $shopSubject),
+            $emailbody,
+            $faktura['department'],
+            '',
+            $faktura['department']
+        );
     }
 } else {
     $GLOBALS['generatedcontent']['title'] = _('Payment');

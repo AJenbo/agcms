@@ -73,43 +73,7 @@ if ($_POST) {
 <p>Sincerely the computer</p></body>
 </html>';
 
-    $mail = new PHPMailer();
-    $mail->SetLanguage(_('en'));
-    $mail->IsSMTP();
-    if ($GLOBALS['_config']['emailpassword'] !== false) {
-        $mail->SMTPAuth   = true; // enable SMTP authentication
-        $mail->Username   = $GLOBALS['_config']['email'][0];
-        $mail->Password   = $GLOBALS['_config']['emailpasswords'][0];
-    } else {
-        $mail->SMTPAuth   = false;
-    }
-    $mail->Host       = $GLOBALS['_config']['smtp'];      // sets the SMTP server
-    $mail->Port       = $GLOBALS['_config']['smtpport'];  // set the SMTP port for the server
-    $mail->CharSet    = 'utf-8';
-    $mail->AddReplyTo($GLOBALS['_config']['email'][0], $GLOBALS['_config']['site_name']);
-    $mail->From       = $GLOBALS['_config']['email'][0];
-    $mail->FromName   = $GLOBALS['_config']['site_name'];
-    $mail->Subject    = _('New user');
-
-    $mail->MsgHTML($emailbody, _ROOT_);
-
-    $mail->AddAddress($GLOBALS['_config']['email'][0], $GLOBALS['_config']['site_name']);
-    if ($mail->Send()) {
-        //Upload email to the sent folder via imap
-        if ($GLOBALS['_config']['imap']) {
-            $emailnr = array_search($GLOBALS['_config']['email'][0], $GLOBALS['_config']['email']);
-            $imap = new IMAP(
-                $GLOBALS['_config']['email'][0],
-                $GLOBALS['_config']['emailpasswords'][$emailnr ? $emailnr : 0],
-                $GLOBALS['_config']['imap'],
-                $GLOBALS['_config']['imapport']
-            );
-            $imap->append($GLOBALS['_config']['emailsent'], $mail->CreateHeader().$mail->CreateBody(), '\Seen');
-        }
-    } else {
-        //TODO secure this against injects and <; in the email and name
-        db()->query("INSERT INTO `emails` (`subject`, `from`, `to`, `body`, `date`) VALUES ('".$mail->Subject."', '".$GLOBALS['_config']['site_name']."<".$GLOBALS['_config']['email'][0].">', '".$GLOBALS['_config']['site_name']."<".$GLOBALS['_config']['email'][0].">', '".$emailbody."', NOW());");
-    }
+    sendEmail(_('New user'), $emailbody);
 
     echo '<p style="text-align: center; margin-top: 20px;">'._('Your account has been created. An administrator will evaluate it shortly.').'</p>';
 }

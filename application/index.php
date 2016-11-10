@@ -383,6 +383,7 @@ if ($pageType === 'front') {
     }
 
     $keywords[] = $activePage->getTitle();
+    $GLOBALS['side']['id'] = $activePage->getId(); // Compatible with templates
 }
 
 $GLOBALS['generatedcontent']['keywords'] = xhtmlEsc(implode(',', $keywords));
