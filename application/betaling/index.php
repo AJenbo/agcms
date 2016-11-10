@@ -19,13 +19,14 @@ include_once _ROOT_ . '/inc/countries.php';
 $GLOBALS['generatedcontent']['datetime'] = time();
 
 $id = !empty($_GET['id']) ? (int) $_GET['id'] : null;
+$checkid = !empty($_GET['checkid']) ? $_GET['checkid'] : '';
 
 //Generate return page
 $GLOBALS['generatedcontent']['crumbs'] = [];
 if (!empty($id)) {
     $GLOBALS['generatedcontent']['crumbs'][0] = [
         'name' => _('Payment'),
-        'link' => '/?id=' . $id . '&checkid=' . $_GET['checkid'],
+        'link' => '/?id=' . $id . '&checkid=' . $checkid,
         'icon' => null,
     ];
 } else {
@@ -39,7 +40,7 @@ $GLOBALS['generatedcontent']['contenttype'] = 'page';
 $GLOBALS['generatedcontent']['text'] = '';
 $productslines = 0;
 
-if (!empty($id) && @$_GET['checkid'] == getCheckid($id) && !isset($_GET['txnid'])) {
+if (!empty($id) && $checkid === getCheckid($id) && !isset($_GET['txnid'])) {
     $rejected = [];
     $faktura = db()->fetchOne(
         "
@@ -51,6 +52,7 @@ if (!empty($id) && @$_GET['checkid'] == getCheckid($id) && !isset($_GET['txnid']
     if (in_array($faktura['status'], ['new', 'locked', 'pbserror'])) {
         $faktura['quantities'] = explode('<', $faktura['quantities']);
         $faktura['products'] = explode('<', $faktura['products']);
+        $faktura['products'] = array_map('htmlspecialchars_decode', $faktura['products']);
         $faktura['values'] = explode('<', $faktura['values']);
 
         if ($faktura['premoms']) {
@@ -127,7 +129,7 @@ if (!empty($id) && @$_GET['checkid'] == getCheckid($id) && !isset($_GET['txnid']
             for ($i=0; $i<$productslines; $i++) {
                 $GLOBALS['generatedcontent']['text'] .= '<tr>
                     <td class="tal">'.$faktura['quantities'][$i].'</td>
-                    <td>'.htmlspecialchars_decode($faktura['products'][$i]).'</td>
+                    <td>'.xhtmlEsc($faktura['products'][$i]).'</td>
                     <td class="tal">'.number_format($faktura['values'][$i]*(1+$faktura['momssats']), 2, ',', '').'</td>
                     <td class="tal">'.number_format($faktura['values'][$i]*(1+$faktura['momssats'])*$faktura['quantities'][$i], 2, ',', '').'</td>
                 </tr>';
@@ -141,7 +143,7 @@ if (!empty($id) && @$_GET['checkid'] == getCheckid($id) && !isset($_GET['txnid']
             }
             $GLOBALS['generatedcontent']['text'] .= '<form action="" method="get">
         <input type="hidden" name="id" value="' . $id . '" />
-        <input type="hidden" name="checkid" value="' . htmlspecialchars($_GET['checkid']) . '" />
+        <input type="hidden" name="checkid" value="' . htmlspecialchars($checkid) . '" />
         <input type="hidden" name="step" value="1" />
         <input style="font-weight:bold;" type="submit" value="' . _('Continue') . '" />
         </form>';
@@ -187,7 +189,7 @@ if (!empty($id) && @$_GET['checkid'] == getCheckid($id) && !isset($_GET['txnid']
 
                 //TODO move down to skip address page if valid
                 if (!count($rejected)) {
-                    if (@$_POST['newsletter'] ? 1 : 0) {
+                    if (!empty($_POST['newsletter']) ? 1 : 0) {
                         db()->query(
                             "
                             INSERT INTO `email` (
@@ -220,7 +222,7 @@ if (!empty($id) && @$_GET['checkid'] == getCheckid($id) && !isset($_GET['txnid']
                         );
                     }
 
-                    redirect($GLOBALS['_config']['base_url'] . '/betaling/?id=' . $id . '&checkid=' . $_GET['checkid'] . '&step=2', 303);
+                    redirect($GLOBALS['_config']['base_url'] . '/betaling/?id=' . $id . '&checkid=' . $checkid . '&step=2', 303);
                 }
             } else {
                 $rejected = validate($faktura);
@@ -243,17 +245,17 @@ if (!empty($id) && @$_GET['checkid'] == getCheckid($id) && !isset($_GET['txnid']
         <tbody>
             <tr>
                 <td> '._('Phone:').'</td>
-                <td colspan="2"><input name="tlf1" id="tlf1" style="width:157px" value="'.$faktura['tlf1'].'" /></td>
+                <td colspan="2"><input name="tlf1" id="tlf1" style="width:157px" value="'.xhtmlEsc($faktura['tlf1']).'" /></td>
                 <td><input type="button" value="'._('Get address').'" onclick="getAddress(document.getElementById(\'tlf1\').value, getAddress_r1);" /></td>
             </tr>
             <tr>
                 <td> '._('Mobile:').'</td>
-                <td colspan="2"><input name="tlf2" id="tlf2" style="width:157px" value="'.$faktura['tlf2'].'" /></td>
+                <td colspan="2"><input name="tlf2" id="tlf2" style="width:157px" value="'.xhtmlEsc($faktura['tlf2']).'" /></td>
                 <td><input type="button" value="'._('Get address').'" onclick="getAddress(document.getElementById(\'tlf2\').value, getAddress_r1);" /></td>
             </tr>
             <tr>
                 <td>'._('Name:').'</td>
-                <td colspan="2"><input name="navn" id="navn" style="width:157px" value="'.$faktura['navn'].'" /></td>
+                <td colspan="2"><input name="navn" id="navn" style="width:157px" value="'.xhtmlEsc($faktura['navn']).'" /></td>
                 <td>';
             if (!empty($rejected['navn'])) {
                 $GLOBALS['generatedcontent']['text'] .= '<img src="images/error.png" alt="" title="" >';
@@ -262,12 +264,12 @@ if (!empty($id) && @$_GET['checkid'] == getCheckid($id) && !isset($_GET['txnid']
             </tr>
             <tr>
                 <td> '._('Name:').'</td>
-                <td colspan="2"><input name="att" id="att" style="width:157px" value="'.$faktura['att'].'" /></td>
+                <td colspan="2"><input name="att" id="att" style="width:157px" value="'.xhtmlEsc($faktura['att']).'" /></td>
                 <td></td>
             </tr>
             <tr>
                 <td> '._('Address:').'</td>
-                <td colspan="2"><input name="adresse" id="adresse" style="width:157px" value="'.$faktura['adresse'].'" /></td>
+                <td colspan="2"><input name="adresse" id="adresse" style="width:157px" value="'.xhtmlEsc($faktura['adresse']).'" /></td>
                 <td>';
             if (!empty($rejected['adresse'])) {
                 $GLOBALS['generatedcontent']['text'] .= '<img src="images/error.png" alt="" title="" >';
@@ -276,14 +278,14 @@ if (!empty($id) && @$_GET['checkid'] == getCheckid($id) && !isset($_GET['txnid']
             </tr>
             <tr>
                 <td> '._('Postbox:').'</td>
-                <td colspan="2"><input name="postbox" id="postbox" style="width:157px" value="'.$faktura['postbox'].'" /></td>
+                <td colspan="2"><input name="postbox" id="postbox" style="width:157px" value="'.xhtmlEsc($faktura['postbox']).'" /></td>
                 <td></td>
             </tr>
             <tr>
                 <td> '._('Zipcode:').'</td>
-                <td><input name="postnr" id="postnr" style="width:35px" value="'.$faktura['postnr'].'" onblur="chnageZipCode(this.value, \'land\', \'by\')" onkeyup="chnageZipCode(this.value, \'land\', \'by\')" onchange="chnageZipCode(this.value, \'land\', \'by\')" /></td>
+                <td><input name="postnr" id="postnr" style="width:35px" value="'.xhtmlEsc($faktura['postnr']).'" onblur="chnageZipCode(this.value, \'land\', \'by\')" onkeyup="chnageZipCode(this.value, \'land\', \'by\')" onchange="chnageZipCode(this.value, \'land\', \'by\')" /></td>
                 <td align="right">'._('City:').'
-                    <input name="by" id="by" style="width:90px" value="'.$faktura['by'].'" /></td>
+                    <input name="by" id="by" style="width:90px" value="'.xhtmlEsc($faktura['by']).'" /></td>
                 <td>';
             if (!empty($rejected['postnr'])) {
                 $GLOBALS['generatedcontent']['text'] .= '<img src="images/error.png" alt="" title="" >';
@@ -313,7 +315,7 @@ if (!empty($id) && @$_GET['checkid'] == getCheckid($id) && !isset($_GET['txnid']
             </tr>
             <tr>
                 <td> '._('E-mail:').'</td>
-                <td colspan="2"><input name="email" id="email" style="width:157px" value="'.$faktura['email'].'" /></td>
+                <td colspan="2"><input name="email" id="email" style="width:157px" value="'.xhtmlEsc($faktura['email']).'" /></td>
                 <td>';
             if (!empty($rejected['email'])) {
                 $GLOBALS['generatedcontent']['text'] .= '<img src="images/error.png" alt="" title="" >';
@@ -333,7 +335,7 @@ if (!empty($id) && @$_GET['checkid'] == getCheckid($id) && !isset($_GET['txnid']
             }
             $GLOBALS['generatedcontent']['text'] .= '>
                 <td> '._('Phone:').'</td>
-                <td colspan="2"><input name="posttlf" id="posttlf" style="width:157px" value="'.$faktura['posttlf'].'" /></td>
+                <td colspan="2"><input name="posttlf" id="posttlf" style="width:157px" value="'.xhtmlEsc($faktura['posttlf']).'" /></td>
                 <td><input type="button" value="'._('Get address').'" onclick="getAddress(document.getElementById(\'posttlf\').value, getAddress_r2);" /></td>
             </tr>
             <tr class="altpost"';
@@ -342,7 +344,7 @@ if (!empty($id) && @$_GET['checkid'] == getCheckid($id) && !isset($_GET['txnid']
             }
             $GLOBALS['generatedcontent']['text'] .= '>
                 <td>'._('Name:').'</td>
-                <td colspan="2"><input name="postname" id="postname" style="width:157px" value="'.$faktura['postname'].'" /></td>
+                <td colspan="2"><input name="postname" id="postname" style="width:157px" value="'.xhtmlEsc($faktura['postname']).'" /></td>
                 <td>';
             if (!empty($rejected['postname'])) {
                 $GLOBALS['generatedcontent']['text'] .= '<img src="images/error.png" alt="" title="" >';
@@ -355,7 +357,7 @@ if (!empty($id) && @$_GET['checkid'] == getCheckid($id) && !isset($_GET['txnid']
             }
             $GLOBALS['generatedcontent']['text'] .= '>
                 <td> '._('Attn.:').'</td>
-                <td colspan="2"><input name="postatt" id="postatt" style="width:157px" value="'.$faktura['postatt'].'" /></td>
+                <td colspan="2"><input name="postatt" id="postatt" style="width:157px" value="'.xhtmlEsc($faktura['postatt']).'" /></td>
                 <td></td>
             </tr>
             <tr class="altpost"';
@@ -364,7 +366,7 @@ if (!empty($id) && @$_GET['checkid'] == getCheckid($id) && !isset($_GET['txnid']
             }
             $GLOBALS['generatedcontent']['text'] .= '>
             <td> '._('Address:').'</td>
-            <td colspan="2"><input name="postaddress" id="postaddress" style="width:157px" value="'.$faktura['postaddress'].'" /><br /><input name="postaddress2" id="postaddress2" style="width:157px" value="'.$faktura['postaddress2'].'" /></td>
+            <td colspan="2"><input name="postaddress" id="postaddress" style="width:157px" value="'.xhtmlEsc($faktura['postaddress']).'" /><br /><input name="postaddress2" id="postaddress2" style="width:157px" value="'.xhtmlEsc($faktura['postaddress2']).'" /></td>
             <td>';
             if (!empty($rejected['postaddress'])) {
                 $GLOBALS['generatedcontent']['text'] .= '<img src="images/error.png" alt="" title="" >';
@@ -377,7 +379,7 @@ if (!empty($id) && @$_GET['checkid'] == getCheckid($id) && !isset($_GET['txnid']
             }
             $GLOBALS['generatedcontent']['text'] .= '>
                 <td> '._('Postbox:').'</td>
-                <td colspan="2"><input name="postpostbox" id="postpostbox" style="width:157px" value="'.$faktura['postpostbox'].'" /></td>
+                <td colspan="2"><input name="postpostbox" id="postpostbox" style="width:157px" value="'.xhtmlEsc($faktura['postpostbox']).'" /></td>
                 <td></td>
             </tr>
             <tr class="altpost"';
@@ -386,9 +388,9 @@ if (!empty($id) && @$_GET['checkid'] == getCheckid($id) && !isset($_GET['txnid']
             }
             $GLOBALS['generatedcontent']['text'] .= '>
                 <td> '._('Zipcode:').'</td>
-                <td><input name="postpostalcode" id="postpostalcode" style="width:35px" value="'.$faktura['postpostalcode'].'" onblur="chnageZipCode(this.value, \'postcountry\', \'postcity\')" onkeyup="chnageZipCode(this.value, \'postcountry\', \'postcity\')" onchange="chnageZipCode(this.value, \'postcountry\', \'postcity\')" /></td>
+                <td><input name="postpostalcode" id="postpostalcode" style="width:35px" value="'.xhtmlEsc($faktura['postpostalcode']).'" onblur="chnageZipCode(this.value, \'postcountry\', \'postcity\')" onkeyup="chnageZipCode(this.value, \'postcountry\', \'postcity\')" onchange="chnageZipCode(this.value, \'postcountry\', \'postcity\')" /></td>
                 <td align="right">'._('City:').'
-                    <input name="postcity" id="postcity" style="width:90px" value="'.$faktura['postcity'].'" /></td>
+                    <input name="postcity" id="postcity" style="width:90px" value="'.xhtmlEsc($faktura['postcity']).'" /></td>
                 <td>';
             if (!empty($rejected['postpostalcode'])) {
                 $GLOBALS['generatedcontent']['text'] .= '<img src="images/error.png" alt="" title="" >';
@@ -429,7 +431,7 @@ if (!empty($id) && @$_GET['checkid'] == getCheckid($id) && !isset($_GET['txnid']
         } elseif ($_GET['step'] == 2) { //Accept terms and continue to payment
             if (count(validate($faktura))) {
                 redirect(
-                    $GLOBALS['_config']['base_url'] . '/betaling/?id=' . $id . '&checkid=' . $_GET['checkid'] . '&step=1',
+                    $GLOBALS['_config']['base_url'] . '/betaling/?id=' . $id . '&checkid=' . $checkid . '&step=1',
                     303
                 );
             }
@@ -469,14 +471,14 @@ if (!empty($id) && @$_GET['checkid'] == getCheckid($id) && !isset($_GET['txnid']
                 'currency'          => 208,
                 'amount'            => number_format($faktura['amount'], 2, '', ''),
                 'ownreceipt'        => 1,
-                'accepturl'         => $GLOBALS['_config']['base_url'] . '/betaling/?id=' . $id . '&checkid=' . $_GET['checkid'],
+                'accepturl'         => $GLOBALS['_config']['base_url'] . '/betaling/?id=' . $id . '&checkid=' . $checkid,
                 'cancelurl'         => $GLOBALS['_config']['base_url'] . $_SERVER['REQUEST_URI'],
                 'windowstate'       => 3,
                 'windowid'          => $GLOBALS['_config']['pbswindow'],
             ];
             foreach ($submit as $key => $value) {
                 $GLOBALS['generatedcontent']['text'] .= '<input type="hidden" name="'
-                .$key.'" value="'.htmlspecialchars($value).'" />';
+                .$key.'" value="'.xhtmlEsc($value).'" />';
             }
             $GLOBALS['generatedcontent']['text'] .= '<input type="hidden" name="hash" value="'
             .md5(implode('', $submit).$GLOBALS['_config']['pbspassword']).'" />';
@@ -540,6 +542,7 @@ if (!empty($id) && @$_GET['checkid'] == getCheckid($id) && !isset($_GET['txnid']
     $params = $_GET;
     unset($params['hash']);
     $eKey = md5(implode('', $params) . $GLOBALS['_config']['pbspassword']);
+    unset($params);
 
     $shopSubject = _('Payment code was tampered with!');
     $shopBody = '<br />'.sprintf(_('There was an error on the payment page of online invoice #%d!'), $id).'<br />';
@@ -626,11 +629,12 @@ if (!empty($id) && @$_GET['checkid'] == getCheckid($id) && !isset($_GET['txnid']
 
         $faktura['quantities'] = explode('<', $faktura['quantities']);
         $faktura['products'] = explode('<', $faktura['products']);
+        $faktura['products'] = array_map('htmlspecialchars_decode', $faktura['products']);
         $faktura['values'] = explode('<', $faktura['values']);
 
         if ($faktura['premoms']) {
             foreach ($faktura['values'] as $key => $value) {
-                $faktura['values'][$key] = $value/1.25;
+                $faktura['values'][(int) $key] = $value/1.25;
             }
         }
 
@@ -644,7 +648,7 @@ Remember to \'expedite\' the payment when the product is sent (The payment is fi
         $withTax = $faktura['amount'] - $faktura['fragt'];
         $tax = $withTax * (1 - (1 / (1 + $faktura['momssats'])));
 
-        $GLOBALS['generatedcontent']['track'] = "ga('ecommerce:addTransaction',{'id':'" . $faktura['id']
+        $GLOBALS['generatedcontent']['track'] = "ga('ecommerce:addTransaction',{'id':'" . (int) $faktura['id']
         . "','revenue':'" . $faktura['amount']
         . "','shipping':'" . $faktura['fragt']
         . "','tax':'" . $tax . "'});";
@@ -671,24 +675,24 @@ Remember to \'expedite\' the payment when the product is sent (The payment is fi
             $emailbody_address .= '<td>' . _('Delivery address:') . '</td>';
         }
         $emailbody_address .= '</tr><tr><td>' . _('Name:') . '</td><td>'
-        . $faktura['navn'] . '</td>';
+        . xhtmlEsc($faktura['navn']) . '</td>';
         if ($faktura['altpost']) {
-            $emailbody_address .= '<td>' . $faktura['postname'] . '</td>';
+            $emailbody_address .= '<td>' . xhtmlEsc($faktura['postname']) . '</td>';
         }
         $emailbody_address .= '</tr>';
         if ($faktura['tlf1'] || ($faktura['altpost'] && $faktura['posttlf'])) {
             $emailbody_address .= '<tr><td>' . _('Phone:') . '</td><td>'
-            . $faktura['tlf1'] . '</td>';
+            . xhtmlEsc($faktura['tlf1']) . '</td>';
             if ($faktura['altpost']) {
-                $emailbody_address .= '<td>' . $faktura['posttlf'] . '</td>';
+                $emailbody_address .= '<td>' . xhtmlEsc($faktura['posttlf']) . '</td>';
             }
             $emailbody_address .= '</tr>';
         }
         if ($faktura['att'] || ($faktura['altpost'] && $faktura['postatt'])) {
             $emailbody_address .= '<tr><td>' . _('Attn.:') . '</td><td>'
-            . $faktura['att'] . '</td>';
+            . xhtmlEsc($faktura['att']) . '</td>';
             if ($faktura['altpost']) {
-                $emailbody_address .= '<td>'.$faktura['postatt'].'</td>';
+                $emailbody_address .= '<td>'.xhtmlEsc($faktura['postatt']).'</td>';
             }
             $emailbody_address .= '</tr>';
         }
@@ -696,10 +700,10 @@ Remember to \'expedite\' the payment when the product is sent (The payment is fi
         || ($faktura['adresse'] && ($faktura['postaddress'] || $faktura['postaddress2']))
         ) {
             $emailbody_address .= '<tr><td>' . _('Address:') . '</td><td>'
-            . $faktura['adresse'] . '</td>';
+            . xhtmlEsc($faktura['adresse']) . '</td>';
             if ($faktura['altpost']) {
-                $emailbody_address .= '<td>' . $faktura['postaddress'] . '<br />'
-                . $faktura['postaddress2'] . '</td>';
+                $emailbody_address .= '<td>' . xhtmlEsc($faktura['postaddress']) . '<br />'
+                . xhtmlEsc($faktura['postaddress2']) . '</td>';
             }
             $emailbody_address .= '</tr>';
         }
@@ -707,9 +711,9 @@ Remember to \'expedite\' the payment when the product is sent (The payment is fi
         || ($faktura['altpost'] && $faktura['postpostbox'])
         ) {
             $emailbody_address .= '<tr><td>' . _('Postbox:') . '</td><td>'
-            . $faktura['postbox'] . '</td>';
+            . xhtmlEsc($faktura['postbox']) . '</td>';
             if ($faktura['altpost']) {
-                $emailbody_address .= '<td>' . $faktura['postpostbox'] . '</td>';
+                $emailbody_address .= '<td>' . xhtmlEsc($faktura['postpostbox']) . '</td>';
             }
             $emailbody_address .= '</tr>';
         }
@@ -717,12 +721,12 @@ Remember to \'expedite\' the payment when the product is sent (The payment is fi
         $emailbody_address .= '<tr><td>' . _('Zipcode:') . '</td><td>'
         . $faktura['postnr'] . '</td>';
         if ($faktura['altpost']) {
-            $emailbody_address .= '<td>' . $faktura['postpostalcode'] . '</td>';
+            $emailbody_address .= '<td>' . xhtmlEsc($faktura['postpostalcode']) . '</td>';
         }
         $emailbody_address .= '</tr><tr><td>' . _('City:') . '</td><td>'
-        . $faktura['by'] . '</td>';
+        . xhtmlEsc($faktura['by']) . '</td>';
         if ($faktura['altpost']) {
-            $emailbody_address .= '<td>' . $faktura['postcity'] . '</td>';
+            $emailbody_address .= '<td>' . xhtmlEsc($faktura['postcity']) . '</td>';
         }
         $emailbody_address .= '</tr><tr><td>' . _('Country:') . '</td><td>'
         . $countries[$faktura['land']] . '</td>';
@@ -732,7 +736,7 @@ Remember to \'expedite\' the payment when the product is sent (The payment is fi
         }
         if ($faktura['tlf2']) {
             $emailbody_address .= '</tr><tr><td>' . _('Mobile:') . '</td><td>'
-            . $faktura['tlf2'].'</td>';
+            . xhtmlEsc($faktura['tlf2']).'</td>';
         }
         $netto = 0;
         for ($i = 0; $i < $productslines; $i++) {
@@ -749,8 +753,8 @@ Remember to \'expedite\' the payment when the product is sent (The payment is fi
         for ($i=0; $i<$productslines; $i++) {
             $plusTax = $faktura['values'][$i] * (1 + $faktura['momssats']);
             $emailbody_tablerows .= '<tr><td class="tal">'
-            . $faktura['quantities'][$i] . '</td><td>'
-            . htmlspecialchars_decode($faktura['products'][$i])
+            . xhtmlEsc($faktura['quantities'][$i]) . '</td><td>'
+            . xhtmlEsc($faktura['products'][$i])
             . '</td><td class="tal">'
             . number_format($plusTax, 2, ',', '') . '</td><td class="tal">'
             . number_format($plusTax * $faktura['quantities'][$i], 2, ',', '')
@@ -761,11 +765,7 @@ Remember to \'expedite\' the payment when the product is sent (The payment is fi
         if ($faktura['note']) {
             $emailbody_nore = '<br /><strong>' . _('Note:')
             . '</strong><br /><p class="note">';
-            $note = htmlspecialchars(
-                $faktura['note'],
-                ENT_COMPAT | ENT_XHTML,
-                'UTF-8'
-            );
+            $note = xhtmlEsc($faktura['note']);
             $emailbody_nore .= nl2br($note) . '</p>';
         }
 
@@ -798,11 +798,11 @@ Remember to \'expedite\' the payment when the product is sent (The payment is fi
 Tel. %s<br />
 <a href="mailto:%s">%s</a></p>'
             ),
-            $faktura['paydate'],
+            xhtmlEsc($faktura['paydate']),
             $emailbody_address,
-            $faktura['email'],
-            $faktura['email'],
-            $faktura['id'],
+            xhtmlEsc($faktura['email']),
+            xhtmlEsc($faktura['email']),
+            xhtmlEsc($faktura['id']),
             number_format($netto, 2, ',', ''),
             number_format($faktura['fragt'], 2, ',', ''),
             $faktura['momssats']*100,
@@ -810,14 +810,14 @@ Tel. %s<br />
             number_format($faktura['amount'], 2, ',', ''),
             $emailbody_tablerows,
             $emailbody_nore,
-            $faktura['clerk'],
-            $GLOBALS['_config']['site_name'],
-            $GLOBALS['_config']['address'],
-            $GLOBALS['_config']['postcode'],
-            $GLOBALS['_config']['city'],
-            $GLOBALS['_config']['phone'],
-            $faktura['department'],
-            $faktura['department']
+            xhtmlEsc($faktura['clerk']),
+            xhtmlEsc($GLOBALS['_config']['site_name']),
+            xhtmlEsc($GLOBALS['_config']['address']),
+            xhtmlEsc($GLOBALS['_config']['postcode']),
+            xhtmlEsc($GLOBALS['_config']['city']),
+            xhtmlEsc($GLOBALS['_config']['phone']),
+            xhtmlEsc($faktura['department']),
+            xhtmlEsc($faktura['department'])
         );
 
         $emailbody .= '</body></html>';
@@ -877,10 +877,10 @@ Tel. %s<br />
             `date`
         )
         VALUES (
-            'Ordre " . $faktura['id'] . " - " . _('Payment complete') . "',
-            '" . $GLOBALS['_config']['site_name'] . "<" . $faktura['department'] . ">',
-            '" . $GLOBALS['_config']['site_name'] . "<" . $faktura['email'] . ">',
-            '" . $emailbody . "',
+            'Ordre " . db()->esc($faktura['id'] . " - " . _('Payment complete')) . "',
+            '" . db()->esc($GLOBALS['_config']['site_name'] . "<" . $faktura['department']) . ">',
+            '" . db()->esc($GLOBALS['_config']['site_name'] . "<" . $faktura['email']) . ">',
+            '" . db()->esc($emailbody) . "',
             NOW()
         )
         "
@@ -896,6 +896,7 @@ Tel. %s<br />
     if ($faktura) {
         $faktura['quantities'] = explode('<', $faktura['quantities']);
         $faktura['products'] = explode('<', $faktura['products']);
+        $faktura['products'] = array_map('htmlspecialchars_decode', $faktura['products']);
         $faktura['values'] = explode('<', $faktura['values']);
 
         if ($faktura['premoms']) {
@@ -918,8 +919,8 @@ Tel. %s<br />
         $emailbody_tablerows = '';
         for ($i = 0; $i < $productslines; $i++) {
             $emailbody_tablerows .= '<tr><td class="tal">'
-            . $faktura['quantities'][$i] . '</td><td>'
-            . htmlspecialchars_decode($faktura['products'][$i])
+            . (int) $faktura['quantities'][$i] . '</td><td>'
+            . xhtmlEsc($faktura['products'][$i])
             . '</td><td class="tal">';
             $plusTax = $faktura['values'][$i] * (1 + $faktura['momssats']);
             $emailbody_tablerows .= number_format(
@@ -946,9 +947,9 @@ Tel. %s<br />
 <title>';
         $emailbody .= sprintf(
             _('Attn.: %s - Online invoice #%d : %s'),
-            $faktura['clerk'],
+            xhtmlEsc($faktura['clerk']),
             $id,
-            htmlspecialchars($shopSubject)
+            xhtmlEsc($shopSubject)
         );
         $emailbody .= '</title>
 <style type="text/css">
@@ -979,13 +980,13 @@ Delivery phone: %s</p>
         $emailbody .= sprintf(
             $msg,
             $shopBody,
-            $GLOBALS['_config']['base_url'],
+            xhtmlEsc($GLOBALS['_config']['base_url']),
             $id,
-            $faktura['email'],
-            $faktura['email'],
-            $faktura['tlf2'],
-            $faktura['tlf1'],
-            $faktura['posttlf'],
+            xhtmlEsc($faktura['email']),
+            xhtmlEsc($faktura['email']),
+            xhtmlEsc($faktura['tlf2']),
+            xhtmlEsc($faktura['tlf1']),
+            xhtmlEsc($faktura['posttlf']),
             number_format($netto, 2, ',', ''),
             number_format($faktura['fragt'], 2, ',', ''),
             $faktura['momssats']*100,
@@ -1058,10 +1059,10 @@ Delivery phone: %s</p>
                     `date`
                 )
                 VALUES (
-                    '" . $subject . "',
-                    '" . $GLOBALS['_config']['site_name'] . "<" . $GLOBALS['_config']['email'][0] . ">',
-                    '" . $GLOBALS['_config']['site_name'] . "<" . $faktura['department'] . ">',
-                    '" . $emailbody . "',
+                    '" . db()->esc($subject) . "',
+                    '" . db()->esc($GLOBALS['_config']['site_name'] . "<" . $GLOBALS['_config']['email'][0]) . ">',
+                    '" . db()->esc($GLOBALS['_config']['site_name'] . "<" . $faktura['department']). ">',
+                    '" . db()->esc($emailbody) . "',
                     NOW()
                 )
                 "
@@ -1081,12 +1082,12 @@ Delivery phone: %s</p>
           </tr>
           <tr>
             <td>'._('Code:').'</td>
-            <td><input name="checkid" value="'.@htmlspecialchars(@$_GET['checkid']).'" /></td>
+            <td><input name="checkid" value="'.xhtmlEsc($checkid).'" /></td>
           </tr>
         </tbody>
       </table><input type="submit" value="'._('Continue').'" />
     </form>';
-    if (!empty($_GET['checkid'])) {
+    if ($checkid) {
         $GLOBALS['generatedcontent']['text'] = _('The code is not correct!');
     }
 }

@@ -98,7 +98,7 @@ if (is_numeric(@$_GET['add']) || is_numeric(@$_GET['add_list_item'])) {
     if (!empty($_SERVER['HTTP_REFERER'])) {
         $url = $_SERVER['HTTP_REFERER'];
     } else {
-        $url = '/?side=' . $_GET['add'];
+        $url = '/?side=' . (int) $_GET['add'];
     }
     redirect($url, 303);
 }
@@ -124,7 +124,7 @@ unset($_POST['values']);
 unset($_POST['products']);
 if (count($_POST)) {
     foreach ($_POST as $key => $value) {
-        $_SESSION['faktura'][$key] = $value;
+        $_SESSION['faktura'][(int) $key] = $value;
     }
 }
 
@@ -143,21 +143,21 @@ if (!empty($_SESSION['faktura']['quantities'])) {
     $rejected = [];
 
     if (empty($_GET['step'])) {
-        if ($_POST) {
+        if (!empty($_POST['quantity'])) {
             foreach ($_POST['quantity'] as $i => $quantiy) {
                 if ($quantiy < 1) {
                     unset($_SESSION['faktura']['quantities'][$i]);
                     unset($_SESSION['faktura']['products'][$i]);
                     unset($_SESSION['faktura']['values'][$i]);
                 } else {
-                    $_SESSION['faktura']['quantities'][$i] = $quantiy;
+                    $_SESSION['faktura']['quantities'][$i] = (int) $quantiy;
                 }
             }
             $_SESSION['faktura']['quantities'] = array_values($_SESSION['faktura']['quantities']);
             $_SESSION['faktura']['products'] = array_values($_SESSION['faktura']['products']);
             $_SESSION['faktura']['values'] = array_values($_SESSION['faktura']['values']);
 
-            redirect($GLOBALS['_config']['base_url'].'/bestilling/?step=1', 303);
+            redirect('/bestilling/?step=1', 303);
         }
 
         $_SESSION['faktura']['amount'] = 0;
@@ -200,7 +200,7 @@ if (!empty($_SESSION['faktura']['quantities'])) {
         foreach ($_SESSION['faktura']['quantities'] as $i => $quantity) {
             $GLOBALS['generatedcontent']['text'] .= '<tr>
                 <td class="tal"><input onkeyup="updateprice();" onchange="updateprice();" class="tal" value="'.$quantity.'" name="quantity[ ]" size="3" /></td>
-                <td>'.$_SESSION['faktura']['products'][$i].'</td>
+                <td>'.xhtmlEsc($_SESSION['faktura']['products'][$i]).'</td>
                 <td class="tal">';
             if (is_numeric($_SESSION['faktura']['values'][$i])) {
                 $GLOBALS['generatedcontent']['text'] .= number_format($_SESSION['faktura']['values'][$i], 2, ',', '');
@@ -354,7 +354,7 @@ if (!empty($_SESSION['faktura']['quantities'])) {
                     );
                 }
 
-                redirect($GLOBALS['_config']['base_url'].'/bestilling/?step=2', 303);
+                redirect('/bestilling/?step=2', 303);
             }
         } else {
             $rejected = validate($_SESSION['faktura']);
@@ -383,17 +383,17 @@ if (!empty($_SESSION['faktura']['quantities'])) {
     <tbody>
         <tr>
             <td> '._('Phone:').'</td>
-            <td colspan="2"><input name="tlf1" id="tlf1" style="width:157px" value="'.@$_SESSION['faktura']['tlf1'].'" /></td>
+            <td colspan="2"><input name="tlf1" id="tlf1" style="width:157px" value="'.xhtmlEsc($_SESSION['faktura']['tlf1'] ?? '').'" /></td>
             <td><input type="button" value="'._('Get address').'" onclick="getAddress(document.getElementById(\'tlf1\').value, getAddress_r1);" /></td>
         </tr>
         <tr>
             <td> '._('Mobile:').'</td>
-            <td colspan="2"><input name="tlf2" id="tlf2" style="width:157px" value="'.@$_SESSION['faktura']['tlf2'].'" /></td>
+            <td colspan="2"><input name="tlf2" id="tlf2" style="width:157px" value="'.xhtmlEsc($_SESSION['faktura']['tlf2'] ?? '').'" /></td>
             <td><input type="button" value="'._('Get address').'" onclick="getAddress(document.getElementById(\'tlf2\').value, getAddress_r1);" /></td>
         </tr>
         <tr>
             <td>'._('Name:').'</td>
-            <td colspan="2"><input name="navn" id="navn" style="width:157px" value="'.@$_SESSION['faktura']['navn'].'" /></td>
+            <td colspan="2"><input name="navn" id="navn" style="width:157px" value="'.xhtmlEsc($_SESSION['faktura']['navn'] ?? '').'" /></td>
             <td>';
         if (!empty($rejected['navn'])) {
             $GLOBALS['generatedcontent']['text'] .= '<img src="images/error.png" alt="" title="" >';
@@ -402,12 +402,12 @@ if (!empty($_SESSION['faktura']['quantities'])) {
         </tr>
         <tr>
             <td> '._('Name:').'</td>
-            <td colspan="2"><input name="att" id="att" style="width:157px" value="'.@$_SESSION['faktura']['att'].'" /></td>
+            <td colspan="2"><input name="att" id="att" style="width:157px" value="'.xhtmlEsc($_SESSION['faktura']['att'] ?? '').'" /></td>
             <td></td>
         </tr>
         <tr>
             <td> '._('Address:').'</td>
-            <td colspan="2"><input name="adresse" id="adresse" style="width:157px" value="'.@$_SESSION['faktura']['adresse'].'" /></td>
+            <td colspan="2"><input name="adresse" id="adresse" style="width:157px" value="'.xhtmlEsc($_SESSION['faktura']['adresse'] ?? '').'" /></td>
             <td>';
         if (!empty($rejected['adresse'])) {
             $GLOBALS['generatedcontent']['text'] .= '<img src="images/error.png" alt="" title="" >';
@@ -416,14 +416,14 @@ if (!empty($_SESSION['faktura']['quantities'])) {
         </tr>
         <tr>
             <td> '._('Postbox:').'</td>
-            <td colspan="2"><input name="postbox" id="postbox" style="width:157px" value="'.@$_SESSION['faktura']['postbox'].'" /></td>
+            <td colspan="2"><input name="postbox" id="postbox" style="width:157px" value="'.xhtmlEsc($_SESSION['faktura']['postbox'] ?? '').'" /></td>
             <td></td>
         </tr>
         <tr>
             <td> '._('Zipcode:').'</td>
-            <td><input name="postnr" id="postnr" style="width:35px" value="'.@$_SESSION['faktura']['postnr'].'" onblur="chnageZipCode(this.value, \'land\', \'by\')" onkeyup="chnageZipCode(this.value, \'land\', \'by\')" onchange="chnageZipCode(this.value, \'land\', \'by\')" /></td>
+            <td><input name="postnr" id="postnr" style="width:35px" value="'.xhtmlEsc($_SESSION['faktura']['postnr'] ?? '').'" onblur="chnageZipCode(this.value, \'land\', \'by\')" onkeyup="chnageZipCode(this.value, \'land\', \'by\')" onchange="chnageZipCode(this.value, \'land\', \'by\')" /></td>
             <td align="right">'._('City:').'
-                <input name="by" id="by" style="width:90px" value="'.@$_SESSION['faktura']['by'].'" /></td>
+                <input name="by" id="by" style="width:90px" value="'.xhtmlEsc($_SESSION['faktura']['by'] ?? '').'" /></td>
             <td>';
         if (!empty($rejected['postnr'])) {
             $GLOBALS['generatedcontent']['text'] .= '<img src="images/error.png" alt="" title="" >';
@@ -452,7 +452,7 @@ if (!empty($_SESSION['faktura']['quantities'])) {
         </tr>
         <tr>
             <td> '._('E-mail:').'</td>
-            <td colspan="2"><input name="email" id="email" style="width:157px" value="'.@$_SESSION['faktura']['email'].'" /></td>
+            <td colspan="2"><input name="email" id="email" style="width:157px" value="'.xhtmlEsc($_SESSION['faktura']['email'] ?? '').'" /></td>
             <td>';
         if (!empty($rejected['email'])) {
             $GLOBALS['generatedcontent']['text'] .= '<img src="images/error.png" alt="" title="" >';
@@ -472,7 +472,7 @@ if (!empty($_SESSION['faktura']['quantities'])) {
         }
         $GLOBALS['generatedcontent']['text'] .= '>
             <td> '._('Phone:').'</td>
-            <td colspan="2"><input name="posttlf" id="posttlf" style="width:157px" value="'.@$_SESSION['faktura']['posttlf'].'" /></td>
+            <td colspan="2"><input name="posttlf" id="posttlf" style="width:157px" value="'.xhtmlEsc($_SESSION['faktura']['posttlf'] ?? '').'" /></td>
             <td><input type="button" value="'._('Get address').'" onclick="getAddress(document.getElementById(\'posttlf\').value, getAddress_r2);" /></td>
         </tr>
         <tr class="altpost"';
@@ -481,7 +481,7 @@ if (!empty($_SESSION['faktura']['quantities'])) {
         }
         $GLOBALS['generatedcontent']['text'] .= '>
             <td>'._('Name:').'</td>
-            <td colspan="2"><input name="postname" id="postname" style="width:157px" value="'.@$_SESSION['faktura']['postname'].'" /></td>
+            <td colspan="2"><input name="postname" id="postname" style="width:157px" value="'.xhtmlEsc($_SESSION['faktura']['postname'] ?? '').'" /></td>
             <td>';
         if (!empty($rejected['postname'])) {
             $GLOBALS['generatedcontent']['text'] .= '<img src="images/error.png" alt="" title="" >';
@@ -494,7 +494,7 @@ if (!empty($_SESSION['faktura']['quantities'])) {
         }
         $GLOBALS['generatedcontent']['text'] .= '>
             <td> '._('Attn.:').'</td>
-            <td colspan="2"><input name="postatt" id="postatt" style="width:157px" value="'.@$_SESSION['faktura']['postatt'].'" /></td>
+            <td colspan="2"><input name="postatt" id="postatt" style="width:157px" value="'.xhtmlEsc($_SESSION['faktura']['postatt'] ?? '').'" /></td>
             <td></td>
         </tr>
         <tr class="altpost"';
@@ -503,7 +503,7 @@ if (!empty($_SESSION['faktura']['quantities'])) {
         }
         $GLOBALS['generatedcontent']['text'] .= '>
             <td> '._('Address:').'</td>
-            <td colspan="2"><input name="postaddress" id="postaddress" style="width:157px" value="'.@$_SESSION['faktura']['postaddress'].'" /><br /><input name="postaddress2" id="postaddress2" style="width:157px" value="'.@$_SESSION['faktura']['postaddress2'].'" /></td>
+            <td colspan="2"><input name="postaddress" id="postaddress" style="width:157px" value="'.xhtmlEsc($_SESSION['faktura']['postaddress'] ?? '').'" /><br /><input name="postaddress2" id="postaddress2" style="width:157px" value="'.xhtmlEsc($_SESSION['faktura']['postaddress2'] ?? '').'" /></td>
             <td>';
         if (!empty($rejected['postaddress'])) {
             $GLOBALS['generatedcontent']['text'] .= '<img src="images/error.png" alt="" title="" >';
@@ -516,7 +516,7 @@ if (!empty($_SESSION['faktura']['quantities'])) {
         }
         $GLOBALS['generatedcontent']['text'] .= '>
             <td> '._('Postbox:').'</td>
-            <td colspan="2"><input name="postpostbox" id="postpostbox" style="width:157px" value="'.@$_SESSION['faktura']['postpostbox'].'" /></td>
+            <td colspan="2"><input name="postpostbox" id="postpostbox" style="width:157px" value="'.xhtmlEsc($_SESSION['faktura']['postpostbox'] ?? '').'" /></td>
             <td></td>
         </tr>
         <tr class="altpost"';
@@ -525,9 +525,9 @@ if (!empty($_SESSION['faktura']['quantities'])) {
         }
         $GLOBALS['generatedcontent']['text'] .= '>
             <td> '._('Zipcode:').'</td>
-            <td><input name="postpostalcode" id="postpostalcode" style="width:35px" value="'.@$_SESSION['faktura']['postpostalcode'].'" onblur="chnageZipCode(this.value, \'postcountry\', \'postcity\')" onkeyup="chnageZipCode(this.value, \'postcountry\', \'postcity\')" onchange="chnageZipCode(this.value, \'postcountry\', \'postcity\')" /></td>
+            <td><input name="postpostalcode" id="postpostalcode" style="width:35px" value="'.xhtmlEsc($_SESSION['faktura']['postpostalcode'] ?? '').'" onblur="chnageZipCode(this.value, \'postcountry\', \'postcity\')" onkeyup="chnageZipCode(this.value, \'postcountry\', \'postcity\')" onchange="chnageZipCode(this.value, \'postcountry\', \'postcity\')" /></td>
             <td align="right">'._('City:').'
-                <input name="postcity" id="postcity" style="width:90px" value="'.@$_SESSION['faktura']['postcity'].'" /></td>
+                <input name="postcity" id="postcity" style="width:90px" value="'.xhtmlEsc($_SESSION['faktura']['postcity'] ?? '').'" /></td>
             <td>';
         if (!empty($rejected['postpostalcode'])) {
             $GLOBALS['generatedcontent']['text'] .= '<img src="images/error.png" alt="" title="" >';
@@ -567,7 +567,7 @@ if (!empty($_SESSION['faktura']['quantities'])) {
         $GLOBALS['generatedcontent']['text'] .= '</tbody></table><input style="font-weight:bold;" type="submit" value="'._('Send order').'" /></form>';
     } elseif ($_GET['step'] == 2) {
         if (!$_SESSION['faktura'] || !$_SESSION['faktura']['email']) {
-            redirect($GLOBALS['_config']['base_url'].'/bestilling/', 303);
+            redirect('/bestilling/', 303);
         }
 
         if ($_SESSION['faktura']['paymethod'] == 'creditcard') {
@@ -636,7 +636,7 @@ if (!empty($_SESSION['faktura']['quantities'])) {
           text-align:right;
         }
         --></style></head><body><p>
-        '.$_SESSION['faktura']['navn']._(' has placed an order for the following:').'</p>';
+        '.xhtmlEsc($_SESSION['faktura']['navn']._(' has placed an order for the following:')).'</p>';
 
         //Table of goods
         $emailbody .= '<table id="faktura" cellspacing="0">
@@ -651,8 +651,8 @@ if (!empty($_SESSION['faktura']['quantities'])) {
             <tbody>';
         foreach ($_SESSION['faktura']['quantities'] as $i => $quantity) {
             $emailbody .= '<tr>
-                <td class="tal">' . $quantity . '</td>
-                <td>' . $_SESSION['faktura']['products'][$i] . '</td>
+                <td class="tal">' . (int) $quantity . '</td>
+                <td>' . xhtmlEsc($_SESSION['faktura']['products'][$i]) . '</td>
                 <td class="tal">' . number_format($_SESSION['faktura']['values'][$i], 2, ',', '') . '</td>
                 <td class="tal">' . number_format($_SESSION['faktura']['values'][$i] * $quantity, 2, ',', '') . '</td>
             </tr>';
@@ -666,20 +666,19 @@ if (!empty($_SESSION['faktura']['quantities'])) {
         //Address
         $emailbody .= '<p><b>' ._('Address:') .'</b>';
         if ($_SESSION['faktura']['navn']) {
-            $emailbody .= '<br />'.$_SESSION['faktura']['navn'];
+            $emailbody .= '<br />'.xhtmlEsc($_SESSION['faktura']['navn']);
         }
         if ($_SESSION['faktura']['att']) {
-            $emailbody .= '<br />'.$_SESSION['faktura']['att'];
+            $emailbody .= '<br />'.xhtmlEsc($_SESSION['faktura']['att']);
         }
         if ($_SESSION['faktura']['adresse']) {
-            $emailbody .= '<br />'.$_SESSION['faktura']['adresse'];
+            $emailbody .= '<br />'.xhtmlEsc($_SESSION['faktura']['adresse']);
         }
         if ($_SESSION['faktura']['postbox']) {
-            $emailbody .= '<br />'.$_SESSION['faktura']['postbox'];
+            $emailbody .= '<br />'.xhtmlEsc($_SESSION['faktura']['postbox']);
         }
         if ($_SESSION['faktura']['by']) {
-            $emailbody .= '<br />' . $_SESSION['faktura']['postnr']
-            . ' ' . $_SESSION['faktura']['by'];
+            $emailbody .= '<br />' . xhtmlEsc($_SESSION['faktura']['postnr'] . ' ' . $_SESSION['faktura']['by']);
         }
         if ($_SESSION['faktura']['land'] != 'DK') {
             $emailbody .= '<br />'._($countries[$_SESSION['faktura']['land']]);
@@ -690,23 +689,22 @@ if (!empty($_SESSION['faktura']['quantities'])) {
         if ($_SESSION['faktura']['altpost']) {
             $emailbody .= '<p><b>'._('Delivery address:').'</b>';
             if ($_SESSION['faktura']['postname']) {
-                $emailbody .= '<br />'.$_SESSION['faktura']['postname'];
+                $emailbody .= '<br />'.xhtmlEsc($_SESSION['faktura']['postname']);
             }
             if ($_SESSION['faktura']['postatt']) {
-                $emailbody .= '<br />'.$_SESSION['faktura']['postatt'];
+                $emailbody .= '<br />'.xhtmlEsc($_SESSION['faktura']['postatt']);
             }
             if ($_SESSION['faktura']['postaddress']) {
-                $emailbody .= '<br />'.$_SESSION['faktura']['postaddress'];
+                $emailbody .= '<br />'.xhtmlEsc($_SESSION['faktura']['postaddress']);
             }
             if ($_SESSION['faktura']['postaddress2']) {
-                $emailbody .= '<br />'.$_SESSION['faktura']['postaddress2'];
+                $emailbody .= '<br />'.xhtmlEsc($_SESSION['faktura']['postaddress2']);
             }
             if ($_SESSION['faktura']['postpostbox']) {
-                $emailbody .= '<br />'.$_SESSION['faktura']['postpostbox'];
+                $emailbody .= '<br />'.xhtmlEsc($_SESSION['faktura']['postpostbox']);
             }
             if ($_SESSION['faktura']['postcity']) {
-                $emailbody .= '<br />' . $_SESSION['faktura']['postpostalcode']
-                . ' ' . $_SESSION['faktura']['postcity'];
+                $emailbody .= '<br />' . xhtmlEsc($_SESSION['faktura']['postpostalcode'] . ' ' . $_SESSION['faktura']['postcity']);
             }
             if ($_SESSION['faktura']['postcountry'] != 'DK') {
                 $emailbody .= '<br />'
@@ -724,13 +722,13 @@ if (!empty($_SESSION['faktura']['quantities'])) {
 
         //Contact
         $emailbody .= '<p>' . _('email:') .
-        ' <a href="mailto:' . $_SESSION['faktura']['email'] . '">'
-        . $_SESSION['faktura']['email'] . '</a>';
+        ' <a href="mailto:' . xhtmlEsc($_SESSION['faktura']['email']) . '">'
+        . xhtmlEsc($_SESSION['faktura']['email']) . '</a>';
         if ($_SESSION['faktura']['tlf1']) {
-            $emailbody .= ' '._('Phone:').' '.$_SESSION['faktura']['tlf1'];
+            $emailbody .= ' '.xhtmlEsc(_('Phone:')).' '.xhtmlEsc($_SESSION['faktura']['tlf1']);
         }
         if ($_SESSION['faktura']['tlf2']) {
-            $emailbody .= ' '._('Mobil:').' '.$_SESSION['faktura']['tlf2'];
+            $emailbody .= ' '._('Mobil:').' '.xhtmlEsc($_SESSION['faktura']['tlf2']);
         }
         $emailbody .= '</p><p>' . _('Sincerely the computer')
         . '</p></body></html></body></html>';
@@ -787,10 +785,10 @@ if (!empty($_SESSION['faktura']['quantities'])) {
                 "
                 INSERT INTO `emails` (`subject`, `from`, `to`, `body`, `date`)
                 VALUES (
-                    '" . $mail->Subject . "',
-                    '" . $GLOBALS['_config']['site_name'] . "<" . $GLOBALS['_config']['email'][0] . ">',
-                    '" . $GLOBALS['_config']['site_name'] . "<" . $GLOBALS['_config']['email'][0] . ">',
-                    '" . $emailbody . "',
+                    '" . db()->esc($mail->Subject) . "',
+                    '" . db()->esc($GLOBALS['_config']['site_name'] . "<" . $GLOBALS['_config']['email'][0]) . ">',
+                    '" . db()->esc($GLOBALS['_config']['site_name'] . "<" . $GLOBALS['_config']['email'][0]) . ">',
+                    '" . db()->esc($emailbody) . "',
                     NOW()
                 );
                 "

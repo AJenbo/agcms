@@ -864,22 +864,6 @@ function searchMenu(string $q, string $wherekat)
 }
 
 /**
- * MySQL escape strin(s), including whildcards
- *
- * @param mixed $s String or array that should be escapted
- *
- * @return mixed The ecaped string or array
- */
-function fullMysqliEscape($s)
-{
-    if (is_array($s)) {
-        return array_map('fullMysqliEscape', $s);
-    }
-
-    return db()->escapeWildcards(db()->esc($s));
-}
-
-/**
  * Print XML for content bellonging to a category
  *
  * @param int $id Id of category
