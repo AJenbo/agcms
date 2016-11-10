@@ -50,7 +50,7 @@ echo '<?xml version="1.0" encoding="utf-8"?>
     <language>da</language>
     <lastBuildDate>' . gmdate('D, d M Y H:i:s', $timestamp)
     . ' GMT</lastBuildDate>
-    <managingEditor>' . $GLOBALS['_config']['email'][0] . ' ('
+    <managingEditor>' . reset(array_keys($GLOBALS['_config']['emails'])) . ' ('
     . $GLOBALS['_config']['site_name'] . ')</managingEditor>';
 
 $time = 0;

@@ -642,14 +642,14 @@ if ($faktura['clerk'] && !in_array($faktura['clerk'], $userstest)) {
             <td>Afdeling:</td>
             <td><?php
             if (!in_array($faktura['status'], ['giro', 'cash', 'accepted', 'canceled'])) {
-                if (count($GLOBALS['_config']['email']) > 1) {
+                if (count($GLOBALS['_config']['emails']) > 1) {
                     ?><select name="department" id="department">
                         <option value=""<?php
                         if (!$faktura['department']) {
                             echo ' selected="selected"';
                         }
                     ?>>Ikke valgt</option><?php
-foreach ($GLOBALS['_config']['email'] as $department) {
+foreach ($GLOBALS['_config']['emails'] as $department => $dummy) {
     ?><option<?php
 if ($faktura['department'] == $department) {
     echo ' selected="selected"';
@@ -658,8 +658,8 @@ if ($faktura['department'] == $department) {
 }
         ?></select><?php
                 } else {
-                    echo $GLOBALS['_config']['email'][0]
-                    ?><input name="department" id="department" type="hidden" value="<?php echo $GLOBALS['_config']['email'][0] ?>" /><?php
+                    echo reset(array_keys($GLOBALS['_config']['emails']))
+                    ?><input name="department" id="department" type="hidden" value="<?php echo reset(array_keys($GLOBALS['_config']['emails'])); ?>" /><?php
                 }
             } else {
                 echo $faktura['department'];

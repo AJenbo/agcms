@@ -702,15 +702,15 @@ function getEmail(int $id): string
 
     //TODO error if value = ''
     if ($newsmail['sendt'] == 0) {
-        if (count($GLOBALS['_config']['email']) > 1) {
+        if (count($GLOBALS['_config']['emails']) > 1) {
             $html .= _('Sender:').' <select id="from">';
             $html .= '<option value="">'._('Select sender').'</option>';
-            foreach ($GLOBALS['_config']['email'] as $email) {
+            foreach ($GLOBALS['_config']['emails'] as $email) {
                 $html .= '<option value="'.$email.'">'.$email.'</option>';
             }
             $html .= '</select>';
         } else {
-            $html .= '<input value="'.$GLOBALS['_config']['email'][0].'" id="from" style="display:none;" />';
+            $html .= '<input value="' . reset(array_keys($GLOBALS['_config']['emails'])) . '" id="from" style="display:none;" />';
         }
     } else {
         $html .= _('Sender:') . ' ' . $newsmail['from'];
@@ -1519,7 +1519,7 @@ function print_pages(int $kat)
       <td class="tal">'.number_format($side['pris'], 2, ',', '.').'</td>
       <td class="tal">'.$side['dato'].'</td>
       <td>';
-      echo (!empty($side['maerke']) ? $maerker[$side['maerke']] : '') . ' </td><td>' . (!empty($side['krav']) ? $krav[$side['krav']] : '') . '</td></tr>';
+        echo (!empty($side['maerke']) ? $maerker[$side['maerke']] : '') . ' </td><td>' . (!empty($side['krav']) ? $krav[$side['krav']] : '') . '</td></tr>';
     }
 }
 
@@ -1819,28 +1819,12 @@ function makedir(string $name): array
         return ['error' => _('A file or folder with the same name already exists.')];
     }
 
-    if (!ini_get('safe_mode') || (ini_get('safe_mode') && ini_get('safe_mode_gid')) || !function_exists('ftp_mkdir')) {
-        if (!is_dir(_ROOT_ . @$_COOKIE['admin_dir']) ||
-        !mkdir(_ROOT_ . @$_COOKIE['admin_dir'] . '/' . $name, 0771)) {
-            return ['error' => _('Could not create folder, you may not have sufficient rights to this folder.')];
-        }
-    } else {
-        //FTP methode for server with secure mode On
-        if (!is_dir(_ROOT_ . @$_COOKIE['admin_dir']) ||
-        !$FTP_Conn = ftp_connect('localhost')) {
-            return ['error' => _('An error occurred with the FTP connection.')];
-        }
-        if (!@ftp_login($FTP_Conn, $GLOBALS['_config']['ftp_User'], $GLOBALS['_config']['ftp_Pass']) ||
-        !@ftp_chdir($FTP_Conn, $GLOBALS['_config']['ftp_Root'].@$_COOKIE['admin_dir']) ||
-        !ftp_mkdir($FTP_Conn, $name) ||
-        !ftp_site($FTP_Conn, 'CHMOD 0771 '.$name)) {
-            return ['error' => _('An error occurred with the FTP connection.')];
-        }
-
-        if (!is_dir(_ROOT_ . @$_COOKIE['admin_dir'] . '/' . $name)) {
-            return ['error' => _('Could not create folder, you may not have sufficient rights to this folder.')];
-        }
+    if (!is_dir(_ROOT_ . @$_COOKIE['admin_dir'])
+        || !mkdir(_ROOT_ . @$_COOKIE['admin_dir'] . '/' . $name, 0771)
+    ) {
+        return ['error' => _('Could not create folder, you may not have sufficient rights to this folder.')];
     }
+
     return ['error' => false];
 }
 
@@ -2320,7 +2304,7 @@ $(\'subMenusOrder\').value = newOrder;
 
     //Email
     $html .= _('Contact:').' <select id="email">';
-    foreach ($GLOBALS['_config']['email'] as $value) {
+    foreach ($GLOBALS['_config']['emails'] as $value => $dummy) {
         $html .= '<option value="'.$value.'"';
         if ($kat['email'] == $value) {
             $html .= ' selected="selected"';
@@ -3075,12 +3059,12 @@ function get_mail_size(): int
 
     $size = 0;
 
-    foreach ($GLOBALS['_config']['email'] as $i => $email) {
+    foreach ($GLOBALS['_config']['emails'] as $email) {
         $imap = new IMAP(
-            $email,
-            $GLOBALS['_config']['emailpasswords'][$i],
-            $GLOBALS['_config']['imap'],
-            $GLOBALS['_config']['imapport']
+            $email['address'],
+            $email['password'],
+            $email['imapHost'],
+            $email['imapPort']
         );
 
         foreach ($imap->listMailboxes() as $mailbox) {
@@ -3239,7 +3223,7 @@ function getnykat(): array
 
     //Email
     $html .= _('Contact:').' <select id="email">';
-    foreach ($GLOBALS['_config']['email'] as $email) {
+    foreach ($GLOBALS['_config']['emails'] as $email => $dummy) {
         $html .= '<option value="'.$email.'">'.$email.'</option>';
     }
     $html .= '</select>';
@@ -3719,7 +3703,7 @@ function copytonew(int $id): int
 function save(int $id, string $type, array $updates): array
 {
     if (empty($updates['department'])) {
-        $updates['department'] = $GLOBALS['_config']['email'][0];
+        $updates['department'] = reset(array_keys($GLOBALS['_config']['emails']));
     }
 
     if (!empty($updates['date'])) {
@@ -3808,10 +3792,10 @@ function save(int $id, string $type, array $updates): array
         if (!valideMail($faktura['email'])) {
             return ['error' => _('E-mail address is not valid!')];
         }
-        if (!$faktura['department'] && count($GLOBALS['_config']['email']) > 1) {
+        if (!$faktura['department'] && count($GLOBALS['_config']['emails']) > 1) {
             return ['error' => _('You have not selected a sender!')];
         } elseif (!$faktura['department']) {
-                $faktura['department'] = $GLOBALS['_config']['email'][0];
+                $faktura['department'] = reset(array_keys($GLOBALS['_config']['emails']));
         }
         if ($faktura['amount'] < 1) {
             return ['error' => _('The invoice must be of at at least 1 krone!')];
@@ -3900,7 +3884,7 @@ function sendReminder(int $id): array
     }
 
     if (empty($faktura['department'])) {
-        $faktura['department'] = $GLOBALS['_config']['email'][0];
+        $faktura['department'] = reset(array_keys($GLOBALS['_config']['emails']));
     }
 
     $msg = _(

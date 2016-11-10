@@ -84,7 +84,7 @@ $pdf->Write(0, _('Phone:').' '.$GLOBALS['_config']['phone']."\n", '', 0, 'R');
 $pdf->SetFont('times', '', 10);
 
 if (empty($faktura['department'])) {
-    $faktura['department'] = $GLOBALS['_config']['email'][0];
+    $faktura['department'] = reset(array_keys($GLOBALS['_config']['emails']));
 }
 $domain = explode('/', $GLOBALS['_config']['base_url']);
 $domain = $domain[count($domain)-1];

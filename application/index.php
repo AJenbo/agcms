@@ -50,7 +50,7 @@ foreach ($pages as $page) {
 
 $GLOBALS['generatedcontent']['crumbs'] = [];
 $GLOBALS['generatedcontent']['title'] = xhtmlEsc($GLOBALS['_config']['site_name']);
-$GLOBALS['generatedcontent']['email'] = array_shift($GLOBALS['_config']['email']);
+$GLOBALS['generatedcontent']['email'] = reset(array_keys($GLOBALS['_config']['emails']));
 $GLOBALS['generatedcontent']['activmenu'] = -1;
 
 $maerkeId = $maerkeId ?? null;
