@@ -311,7 +311,7 @@ class Page
 
     public function isInactive(): bool
     {
-        $bind = db()->fetchOne("SELECT kat FROM bind WHERE kat < 1 = " . $this->getId());
+        $bind = db()->fetchOne("SELECT kat FROM bind WHERE kat < 1 AND side = " . $this->getId());
         Cache::addLoadedTable('bind');
         if ($bind) {
             return (bool) $bind['kat'];

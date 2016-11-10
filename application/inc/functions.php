@@ -443,55 +443,6 @@ function getTable(int $listid, int $bycell = null, int $categoryId = null): arra
 }
 
 /**
- * Generate html code for lists associated with a page
- *
- * @param int $pageId Id of page
- *
- * @return string
- */
-function echoTable(int $pageId): string
-{
-    $tablesort = db()->fetchArray(
-        "
-        SELECT `navn`, `text`
-        FROM `tablesort`
-        ORDER BY `id`"
-    );
-    Cache::addLoadedTable('tablesort');
-
-    foreach ($tablesort as $value) {
-        $GLOBALS['tablesort_navn'][] = $value['navn'];
-        $GLOBALS['tablesort'][] = array_map('trim', explode(',', $value['text']));
-    }
-
-    $lists = db()->fetchArray(
-        "
-        SELECT id
-        FROM `lists`
-        WHERE `page_id` = " . $pageId
-    );
-    Cache::addLoadedTable('lists');
-
-    foreach ($lists as $list) {
-        $html = '<div id="table'.$list['id'].'">';
-
-        $table_html = getTable(
-            $list['id'],
-            null,
-            $GLOBALS['generatedcontent']['activmenu']
-        );
-        $html .= $table_html['html'];
-        $html .= '</div>';
-    }
-
-    if (!isset($html)) {
-        $html = '';
-    }
-
-    return $html;
-}
-
-/**
  * @param string $string
  *
  * @return string
@@ -499,47 +450,6 @@ function echoTable(int $pageId): string
 function xhtmlEsc(string $string): string
 {
     return htmlspecialchars($string, ENT_COMPAT | ENT_XHTML);
-}
-
-/**
- * Populate the generated global list with a page
- *
- * @param Page     $page       A page
- * @param int      $renderMode Display mode
- * @param Category $category   Category
- *
- * @return null
- */
-function vare(Page $page, Category $category)
-{
-    if ($category->getRenderMode() === Category::GALLERY) {
-        $GLOBALS['generatedcontent']['list'][] = [
-            'id' => $page->getId(),
-            'name' => xhtmlEsc($page->getTitle()),
-            'date' => $page->getTimeStamp(),
-            'link' => $page->getCanonicalLink(false, $category),
-            'icon' => $page->getImagePath(),
-            'text' => $page->getExcerpt(),
-            'price' => [
-                'before' => $page->getOldPrice(),
-                'now' => $page->getPrice(),
-                'from' => $page->getPriceType(),
-                'market' => $page->getOldPriceType(),
-            ]
-        ];
-    } else {
-        $GLOBALS['generatedcontent']['list'][] = [
-            'id' => $page->getId(),
-            'name' => xhtmlEsc($page->getTitle()),
-            'date' => $page->getTimeStamp(),
-            'link' => $page->getCanonicalLink(false, $category),
-            'serial' => $page->getSku(),
-            'price' => [
-                'before' => $page->getOldPrice(),
-                'now' => $page->getPrice(),
-            ]
-        ];
-    }
 }
 
 /**
@@ -821,32 +731,21 @@ function doConditionalGet(int $timestamp)
 /**
  * Get list of sub categories in format fitting the generatedcontent structure
  *
- * @param int  $nr               Id of categorie to look under
- * @param bool $custom_sort_subs If set to false categories will be naturaly sorted
- *                               by title
+ * @param array $categories       Categories
+ * @param array $categoryIds      Ids in active category trunk
+ * @param array $weightedChildren Are the categories the list custome sorted
  *
  * @return array
  */
-function menu(int $nr, bool $custom_sort_subs = false): array
+function menu(array $categories, array $categoryIds, bool $weightedChildren = false): array
 {
-    $categories = ORM::getByQuery(
-        Category::class,
-        "
-        SELECT *
-        FROM kat
-        WHERE kat.vis != " . Category::HIDDEN . "
-            AND kat.bind = " . $GLOBALS['kats'][$nr] . "
-        ORDER BY kat.`order`, kat.navn
-        "
-    );
-
     $menu = [];
-    if (!$custom_sort_subs) {
+    if (!$weightedChildren) {
         $objectArray = [];
         foreach ($categories as $categorie) {
             $objectArray[] = [
-                'id' => $categorie->getId(),
-                'navn' => $categorie->getTitle(),
+                'id'     => $categorie->getId(),
+                'navn'   => $categorie->getTitle(),
                 'object' => $categorie,
             ];
         }
@@ -864,17 +763,21 @@ function menu(int $nr, bool $custom_sort_subs = false): array
 
         //Er katagorien aaben
         $subs = [];
-        if (@$GLOBALS['kats'][$nr+1] === $category->getId()) {
-            $subs = menu($nr+1, $category->getRenderMode());
+        if (in_array($category->getId(), $categoryIds, true)) {
+            $subs = menu(
+                $category->getChildren(),
+                $categoryIds,
+                $category->getWeightedChildren()
+            );
         }
 
         //tegn under punkter
         $menu[] = [
-            'id' => $category->getId(),
+            'id'   => $category->getId(),
             'name' => xhtmlEsc($category->getTitle()),
             'link' => '/' . $category->getSlug(),
             'icon' => $category->getIconPath(),
-            'sub' => $category->getChildren(true),
+            'sub'  => $category->getChildren(true),
             'subs' => $subs,
         ];
     }

@@ -59,7 +59,7 @@ class SAJAX
         }
 
         $error = '';
-        if (empty(self::$functions[$funcName])) {
+        if (!isset(self::$functions[$funcName])) {
             $error = $funcName . ' not callable';
         } else {
             $result = call_user_func_array($funcName, $args);

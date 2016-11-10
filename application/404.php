@@ -32,111 +32,66 @@ if ($encoding != 'UTF-8') {
     redirect($url);
 }
 
-$category = null;
-$page = null;
+$activeCategory = null;
+$activePage = null;
 
-$redirectUrl = '/?sog=1&q=&sogikke=&minpris=&maxpris=&maerke=';
-$q = preg_replace(
-    [
-        '/\/|-|_|\.html|\.htm|\.php|\.gif|\.jpeg|\.jpg|\.png|kat-|side-|\.php/u',
-        '/[^\w0-9]/u',
-        '/([0-9]+)/u',
-        '/([[:upper:]]?[[:lower:]]+)/u',
-        '/\s+/u'
-    ],
-    [
-        ' ',
-        ' ',
-        ' \1 ',
-        ' \1',
-        ' '
-    ],
-    $url
-);
-$q = trim($q);
-if ($q) {
-    $redirectUrl = '/?q=' . rawurlencode($q) . '&sogikke=&minpris=&maxpris=&maerke=0';
-}
-
-// Detect and redirect old urls
-$categoryId = (int) preg_replace('/.*kat=([0-9]+).*\s*|.*/u', '\1', $url);
-$pageId = (int) preg_replace('/.*side=([0-9]+).*\s*|.*/u', '\1', $url);
-if (!$pageId && isset($_GET['id'])) {
-    $pageId = (int) $_GET['id'];
-}
-$maerkeId = (int) preg_replace('/.*\/maerke([0-9]*)-.*|.*/u', '\1', $url);
-if ($maerkeId || $categoryId || $pageId) {
-    if ($categoryId) {
-        $category = ORM::getOne(Category::class, $categoryId);
-    }
-    if ($pageId) {
-        $page = ORM::getOne(Page::class, $pageId);
-        if ($page && !$category) {
-            $category = $page->getPrimaryCategory();
-        }
-    }
-    if ($maerkeId) {
-        $maerkeet = db()->fetchOne(
-            "
-            SELECT `id`, `navn`
-            FROM `maerke`
-            WHERE id = " . $maerkeId
-        );
-        if ($maerkeet) {
-            $redirectUrl = '/m%C3%A6rke' . $maerkeet['id'] . '-' . rawurlencode(clearFileName($maerkeet['navn'])) . '/';
-        }
-    } elseif ($category || $page) {
-        $redirectUrl = '/' . ($category ? $category->getSlug(true) : '') . ($page ? $page->getSlug(true) : '');
-    }
-
-    redirect($redirectUrl);
-}
+// Routing
+$redirect = false;
 
 //Get maerke
-$maerke = (int) preg_replace('/.*\/mærke([0-9]*)-.*|.*/u', '\1', $url);
-if ($maerke) {
-    $maerkeet = db()->fetchOne(
-        "
-        SELECT `id`, `navn`
-        FROM `maerke`
-        WHERE id = " . $maerke
-    );
-    if (!$maerkeet) {
-        $_GET['sog'] = 1;
-        $GLOBALS['side']['404'] = true;
-    }
+$maerkeId = (int) preg_replace('/.*\/mærke([0-9]*)-.*|.*/u', '\1', $url);
+if ($maerkeId && !db()->fetchOne("SELECT `id` FROM `maerke` WHERE id = " . $maerkeId)) {
+    $redirect = true;
 }
 
 $categoryId = (int) preg_replace('/.*\/kat([0-9]*)-.*|.*/u', '\1', $url);
 $pageId = (int) preg_replace('/.*\/side([0-9]*)-.*|.*/u', '\1', $url);
-$redirect = !$categoryId && !$pageId;
 if ($categoryId) {
-    $category = ORM::getOne(Category::class, $categoryId);
-    if (!$category || $category->isInactive()) {
-        $category = null;
+    $activeCategory = ORM::getOne(Category::class, $categoryId);
+    if (!$activeCategory || $activeCategory->isInactive()) {
+        $activeCategory = null;
+        $redirect = true;
     }
 }
 if ($pageId) {
-    $page = ORM::getOne(Page::class, $pageId);
-    if (!$page || $page->isInactive()) {
-        $page = null;
+    $activePage = ORM::getOne(Page::class, $pageId);
+    if (!$activePage || $activePage->isInactive()) {
+        $activePage = null;
+        $redirect = true;
     }
 }
-if (($categoryId && !$category)
-    || ($pageId && !$page)
-    || (!$category && !$page)
-) {
-    if ($page) {
-        $redirectUrl = $page->getCanonicalLink(true, $category);
-    } elseif ($category) {
-        $redirectUrl = '/' . $category->getSlug(true);
+if ($redirect) {
+    $redirectUrl = '/?sog=1&q=&sogikke=&minpris=&maxpris=&maerke=';
+    $q = preg_replace(
+        [
+            '/\/|-|_|\.html|\.htm|\.php|\.gif|\.jpeg|\.jpg|\.png|kat-|side-|\.php/u',
+            '/[^\w0-9]/u',
+            '/([0-9]+)/u',
+            '/([[:upper:]]?[[:lower:]]+)/u',
+            '/\s+/u'
+        ],
+        [
+            ' ',
+            ' ',
+            ' \1 ',
+            ' \1',
+            ' '
+        ],
+        $url
+    );
+    $q = trim($q);
+
+    if ($q) {
+        $redirectUrl = '/?q=' . rawurlencode($q) . '&sogikke=&minpris=&maxpris=&maerke=0';
+    }
+    if ($activePage) {
+        $redirectUrl = $activePage->getCanonicalLink(true, $activeCategory);
+    } elseif ($activeCategory) {
+        $redirectUrl = '/' . $activeCategory->getSlug(true);
     }
 
     redirect($redirectUrl);
 }
-
-$GLOBALS['generatedcontent']['activmenu'] = $category ? $category->getId() : 0;
-$GLOBALS['side']['id'] = $page ? $page->getId() : 0;
 
 //TODO stop space efter æøå
 header('Status: 200', true, 200);

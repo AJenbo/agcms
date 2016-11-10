@@ -218,7 +218,7 @@ class Category
             SELECT *
             FROM kat
             WHERE bind = " . $this->getId() . "
-            ORDER BY navn
+            ORDER BY `order`, navn
             "
         );
 
