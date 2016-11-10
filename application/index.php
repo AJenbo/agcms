@@ -302,7 +302,6 @@ if ($pageType === 'front') {
     $GLOBALS['generatedcontent']['headline']        = $activePage->getTitle();
     $GLOBALS['generatedcontent']['serial']          = $activePage->getSku();
     $GLOBALS['generatedcontent']['datetime']        = $activePage->getTimestamp();
-    $GLOBALS['generatedcontent']['text']            = $activePage->getHtml();
     $GLOBALS['generatedcontent']['price']['now']    = $activePage->getPrice();
     $GLOBALS['generatedcontent']['price']['new']    = $activePage->getPrice();
     $GLOBALS['generatedcontent']['price']['from']   = $activePage->getPriceType();
@@ -313,7 +312,7 @@ if ($pageType === 'front') {
         $GLOBALS['generatedcontent']['email'] = $activeCategory->getEmail();
     }
 
-    $html = '';
+    $html = $activePage->getHtml();
     $lists = db()->fetchArray(
         "
         SELECT id
