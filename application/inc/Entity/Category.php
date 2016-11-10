@@ -159,7 +159,7 @@ class Category
 
         if ($this->visable === null) {
             Cache::addLoadedTable('bind');
-            if (db()->fetchOne("SELECT `id` FROM `bind` WHERE `kat` = " . $this->getId())) {
+            if (db()->fetchOne("SELECT id FROM `bind` WHERE `kat` = " . $this->getId())) {
                 $this->visable = true;
                 return $this->visable;
             }
@@ -170,7 +170,6 @@ class Category
                     return $this->visable;
                 }
             }
-
             $this->visable = false;
         }
 
@@ -233,6 +232,24 @@ class Category
         }
 
         return array_values($children);
+    }
+
+    public function hasChildren(bool $onlyVisable = false): bool
+    {
+        $children = $this->getChildren();
+        if (!$onlyVisable) {
+            return (bool) $children;
+        }
+
+        foreach ($children as $key => $child) {
+            if ($child->isVisable()) {
+                $this->visable = true;
+                return true;
+            }
+        }
+
+        $this->visable = false;
+        return false;
     }
 
     public function getPages(string $order = 'navn')

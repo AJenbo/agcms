@@ -765,11 +765,12 @@ function menu(array $categories, array $categoryIds, bool $weightedChildren = fa
         $subs = [];
         if (in_array($category->getId(), $categoryIds, true)) {
             $subs = menu(
-                $category->getChildren(),
+                $category->getChildren(true),
                 $categoryIds,
                 $category->getWeightedChildren()
             );
         }
+
 
         //tegn under punkter
         $menu[] = [
@@ -777,7 +778,7 @@ function menu(array $categories, array $categoryIds, bool $weightedChildren = fa
             'name' => xhtmlEsc($category->getTitle()),
             'link' => '/' . $category->getSlug(),
             'icon' => $category->getIconPath(),
-            'sub'  => $category->getChildren(true),
+            'sub'  => $subs ? true : $category->hasChildren(true),
             'subs' => $subs,
         ];
     }

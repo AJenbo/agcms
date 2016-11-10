@@ -847,10 +847,10 @@ writeRichText(\'text\', \'' . rtefsafe($newsmail['text']) . '\', \'\', ' . ($GLO
  */
 function saveEmail(int $id, string $from, string $interests, string $subject, string $text): bool
 {
-    $from = db()->real_escape_string($from);
-    $interests = db()->real_escape_string($interests);
-    $subject = db()->real_escape_string($subject);
-    $text = db()->real_escape_string($text);
+    $from = db()->esc($from);
+    $interests = db()->esc($interests);
+    $subject = db()->esc($subject);
+    $text = db()->esc($text);
 
     db()->query(
         "UPDATE `newsmails`
@@ -1646,7 +1646,7 @@ function showfiles(string $temp_dir): array
         $fileinfo = db()->fetchOne(
             "
             SELECT * FROM files
-            WHERE path = '" . db()->real_escape_string($dir . "/" . $file) . "'"
+            WHERE path = '" . db()->esc($dir . "/" . $file) . "'"
         );
 
         if (!$fileinfo) {
@@ -2135,8 +2135,8 @@ function deletefolder()
  */
 function searchfiles(string $qpath, string $qalt, string $qmime): array
 {
-    $qpath = db()->escapeWildcards(db()->real_escape_string($qpath));
-    $qalt = db()->escapeWildcards(db()->real_escape_string($qalt));
+    $qpath = db()->escapeWildcards(db()->esc($qpath));
+    $qalt = db()->escapeWildcards(db()->esc($qalt));
 
     $sql_mime = '';
     switch ($qmime) {
@@ -2257,7 +2257,7 @@ function searchfiles(string $qpath, string $qalt, string $qmime): array
  */
 function edit_alt(int $id, string $alt): array
 {
-    db()->query("UPDATE `files` SET `alt` = '" . db()->real_escape_string($alt) . "' WHERE `id` = " . $id);
+    db()->query("UPDATE `files` SET `alt` = '" . db()->esc($alt) . "' WHERE `id` = " . $id);
 
     //Update html with new alt...
     $file = db()->fetchOne("SELECT path FROM `files` WHERE `id` = " . $id);

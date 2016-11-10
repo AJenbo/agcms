@@ -16,38 +16,46 @@ if (empty($_SESSION['_user'])) {
         $user = db()->fetchOne(
             "
             SELECT * FROM `users`
-            WHERE `name` = '" . db()->real_escape_string($_POST['username']) . "'"
+            WHERE `name` = '" . db()->esc($_POST['username']) . "'
+            AND `access` >= 1
+            "
         );
-        if ($user && $user['access'] >= 1 && crypt($_POST['password'] ?? '', $user['password']) === $user['password']) {
+        if ($user && crypt($_POST['password'] ?? '', $user['password']) === $user['password']) {
             $_SESSION['_user'] = $user;
         }
-        unset($_POST);
+        redirect($_SERVER['REQUEST_URI'], 302);
     }
 
     sleep(1);
-    header('HTTP/1.0 401 Unauthorized');
-    ?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-    <html xmlns="http://www.w3.org/1999/xhtml">
-    <head>
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title><?php echo _('Login'); ?></title>
-    <link type="text/css" rel="stylesheet" href="style/style.css">
-    </head>
-    <body style="margin:20px;" onload="document.getElementById('form').style.width = document.getElementById('width').offsetWidth+'px';">
-    <form id="form" action="" method="post" style="margin: auto; text-align: right; background-color: #DDDDDD; border: 1px solid #AAAAAA; padding: 10px;">
-<span id="width"><?php echo _('User:'); ?>
-     <input name="username" />
-     <br />
-        <?php echo _('Password:'); ?>
-     <input type="password" name="password" style="margin-top: 5px;" />
-     <br />
-     <input type="submit" value="Log ind" style="margin-top: 5px;" /></span>
-    </form>
-<p style="text-align: center; margin-top: 20px;"><a href="#" onclick="alert('Ring til Ole og forklar din situation!');"><?php echo _('Lost password?'); ?></a>
- &nbsp;
-<a href="/admin/newuser.php"><?php echo _('Create account'); ?></a></p>
-    </body>
-    </html><?php
+    header('HTTP/1.0 401 Unauthorized', true, 401);
+
+    if (empty($_GET['rs']) && empty($_POST['rs'])) {
+        ?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+        <html xmlns="http://www.w3.org/1999/xhtml">
+        <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+        <title><?php echo _('Login'); ?></title>
+        <link type="text/css" rel="stylesheet" href="style/style.css">
+        </head>
+        <body style="margin:20px;" onload="document.getElementById('form').style.width = document.getElementById('width').offsetWidth+'px';">
+        <form id="form" action="" method="post" style="margin: auto; text-align: right; background-color: #DDDDDD; border: 1px solid #AAAAAA; padding: 10px;">
+    <span id="width"><?php echo _('User:'); ?>
+         <input name="username" />
+         <br />
+            <?php echo _('Password:'); ?>
+         <input type="password" name="password" style="margin-top: 5px;" />
+         <br />
+         <input type="submit" value="Log ind" style="margin-top: 5px;" /></span>
+        </form>
+    <p style="text-align: center; margin-top: 20px;"><a href="#" onclick="alert('Ring til Ole og forklar din situation!');"><?php echo _('Lost password?'); ?></a>
+     &nbsp;
+    <a href="/admin/newuser.php"><?php echo _('Create account'); ?></a></p>
+        </body>
+        </html><?php
+        die();
+    }
+
+    echo _('Your login has expired, please reload the page and login again.');
     die();
 }
 
