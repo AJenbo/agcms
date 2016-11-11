@@ -73,7 +73,7 @@ if ($_POST) {
 <p>Sincerely the computer</p></body>
 </html>';
 
-    sendEmail(_('New user'), $emailbody);
+    sendEmails(_('New user'), $emailbody);
 
     echo '<p style="text-align: center; margin-top: 20px;">'._('Your account has been created. An administrator will evaluate it shortly.').'</p>';
 }

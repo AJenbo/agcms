@@ -1055,7 +1055,7 @@ function validate(array $values): array
     return $rejected;
 }
 
-function sendEmail(
+function sendEmails(
     string $subject,
     string $htmlBody,
     string $from = '',

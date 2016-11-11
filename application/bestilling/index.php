@@ -733,7 +733,7 @@ if (!empty($_SESSION['faktura']['quantities'])) {
         $emailbody .= '</p><p>' . _('Sincerely the computer')
         . '</p></body></html></body></html>';
 
-        sendEmail(
+        sendEmails(
             _('Online order #') . $id,
             $emailbody,
             $_SESSION['faktura']['email'],

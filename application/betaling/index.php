@@ -822,7 +822,7 @@ Tel. %s<br />
 
         $emailbody .= '</body></html>';
 
-        sendEmail(
+        sendEmails(
             sprintf(_('Order #%d - payment completed'), $faktura['id']),
             $emailbody,
             $faktura['department'],
@@ -951,7 +951,7 @@ Delivery phone: %s</p>
     }
 
     if (!empty($faktura)) {
-        sendEmail(
+        sendEmails(
             sprintf(_('Attn.: %s - Online invoice #%d : %s'), $faktura['clerk'], $id, $shopSubject),
             $emailbody,
             $faktura['department'],

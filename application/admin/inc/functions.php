@@ -131,7 +131,7 @@ function sendDelayedEmail(): string
         $email['to'] = explode('<', $email['to']);
         $email['to'][1] = substr($email['to'][1], 0, -1);
 
-        $success = sendEmail(
+        $success = sendEmails(
             $email['subject'],
             $email['body'],
             $email['from'][1],
@@ -612,7 +612,7 @@ function sendEmail(int $id, string $from, string $interests, string $subject, st
 
     $error = '';
     foreach ($emails_group as $of => $emails) {
-        $success = sendEmail(
+        $success = sendEmails(
             $subject,
             $body,
             $from,
@@ -3842,7 +3842,7 @@ Tel. %s</p>'
 <title>'. sprintf(_('Online payment to %s'), $GLOBALS['_config']['site_name']).'</title>
 </head><body>' .$msg .'</body></html>';
 
-        $success = sendEmail(
+        $success = sendEmails(
             _('Online payment for ').$GLOBALS['_config']['site_name'],
             $emailBody,
             $faktura['department'],
@@ -3951,7 +3951,7 @@ Fax: %s<br />
 </head><body>' .$msg .'</body></html>';
 
 
-    $success = sendEmail(
+    $success = sendEmails(
         'Elektronisk faktura vedr. ordre',
         $emailBody,
         $faktura['department'],
