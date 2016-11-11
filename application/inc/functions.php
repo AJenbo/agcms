@@ -24,14 +24,17 @@ mb_language('uni');
 mb_detect_order('UTF-8, ISO-8859-1');
 mb_internal_encoding('UTF-8');
 
-require_once __DIR__ . '/config.php';
+@include_once __DIR__ . '/config.php';
 require_once __DIR__ . '/../vendor/autoload.php';
 
 
 spl_autoload_register(function ($class_name) {
     $classMap = [
         'Category' => 'Entity/Category',
-        'Page' => 'Entity/Page',
+        'Page' =>  'Entity/Page',
+        'IMAP' =>  '../vendor/libs/IMAP',
+        'SAJAX' => '../vendor/libs/SAJAX',
+        'Image' =>  '../vendor/libs/Image',
     ];
 
     if (isset($classMap[$class_name])) {
@@ -205,11 +208,11 @@ function arrayListsort(array $aryData, string $strIndex, string $strSortBy, int 
         FROM `tablesort`
         WHERE id = " . $intSortingOrder
     );
+    Cache::addLoadedTable('tablesort');
+
     if ($kaliber) {
         $kaliber = explode('<', $kaliber['text']);
     }
-
-    Cache::addLoadedTable('tablesort');
 
     $arySort = $aryResult = [];
 
@@ -255,16 +258,16 @@ function getTable(int $listid, int $bycell = null, int $categoryId = null): arra
     $category = $categoryId ? ORM::getOne(Category::class, $categoryId) : null;
     $html = '';
 
-    Cache::addLoadedTable('lists');
     $list = db()->fetchOne("SELECT * FROM `lists` WHERE id = " . $listid);
+    Cache::addLoadedTable('lists');
 
-    Cache::addLoadedTable('list_rows');
     $rows = db()->fetchArray(
         "
         SELECT *
         FROM `list_rows`
         WHERE `list_id` = " . $listid
     );
+    Cache::addLoadedTable('list_rows');
     if ($rows) {
         //Explode sorts
         $list['sorts'] = explode('<', $list['sorts']);
@@ -840,7 +843,6 @@ function searchMenu(string $q, string $wherekat)
             WHERE MATCH (navn) AGAINST ('$q') >  0
             "
         );
-        Cache::addLoadedTable('maerke');
         if (!$maerke) {
             $maerke = db()->fetchArray(
                 "
@@ -852,6 +854,7 @@ function searchMenu(string $q, string $wherekat)
                 "
             );
         }
+        Cache::addLoadedTable('maerke');
     }
 
     foreach ($maerke as $value) {
@@ -1111,6 +1114,7 @@ function sendEmails(
             );
             "
         );
+        Cache::addLoadedTable('emails');
     }
 
     return $success;

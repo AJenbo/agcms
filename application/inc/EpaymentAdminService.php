@@ -9,10 +9,10 @@
 
 class EpaymentAdminService
 {
-    private $_merchantId;
-    private $_password;
-    private $_amount;
-    private $_soapClient;
+    private $merchantId;
+    private $password;
+    private $amount;
+    private $soapClient;
     private $id = 0;
     private $Authorized = false;
     private $Error = false;
@@ -25,18 +25,18 @@ class EpaymentAdminService
      * @param string $merchantId Id provided by PBS identifying the shop
      * @param string $orderId    The order id
      */
-    function __construct(string $merchantId, string $password, string $orderId)
+    public function __construct(string $merchantId, string $password, string $orderId)
     {
-        $this->_merchantId = $merchantId;
-        $this->_password = $password;
-        $this->_soapClient = new SoapClient(
+        $this->merchantId = $merchantId;
+        $this->password = $password;
+        $this->soapClient = new SoapClient(
             'https://ssl.ditonlinebetalingssystem.dk/remote/payment.asmx?WSDL'
         );
 
-        $response = $this->_soapClient->gettransactionlist(
+        $response = $this->soapClient->gettransactionlist(
             [
-                'pwd' => $this->_password,
-                'merchantnumber' => $this->_merchantId,
+                'pwd' => $this->password,
+                'merchantnumber' => $this->merchantId,
                 'searchorderid' => $orderId,
                 'status' => 'PAYMENT_NEW',
                 'searchdatestart' => '2014-06-19T00:00:00+02:00',
@@ -45,10 +45,10 @@ class EpaymentAdminService
             ]
         );
         if (empty($response->transactionInformationAry) || !(array) $response->transactionInformationAry) {
-            $response = $this->_soapClient->gettransactionlist(
+            $response = $this->soapClient->gettransactionlist(
                 [
-                    'pwd' => $this->_password,
-                    'merchantnumber' => $this->_merchantId,
+                    'pwd' => $this->password,
+                    'merchantnumber' => $this->merchantId,
                     'searchorderid' => $orderId,
                     'status' => 'PAYMENT_CAPTURED',
                     'searchdatestart' => '2014-06-19T00:00:00+02:00',
@@ -58,10 +58,10 @@ class EpaymentAdminService
             );
         }
         if (empty($response->transactionInformationAry) || !(array) $response->transactionInformationAry) {
-            $response = $this->_soapClient->gettransactionlist(
+            $response = $this->soapClient->gettransactionlist(
                 [
-                    'pwd' => $this->_password,
-                    'merchantnumber' => $this->_merchantId,
+                    'pwd' => $this->password,
+                    'merchantnumber' => $this->merchantId,
                     'searchorderid' => $orderId,
                     'status' => 'PAYMENT_DELETED',
                     'searchdatestart' => '2014-06-19T00:00:00+02:00',
@@ -75,7 +75,7 @@ class EpaymentAdminService
             $info = $response->transactionInformationAry->TransactionInformationType;
 
             $this->id = $info->transactionid;
-            $this->_amount = (int) $info->authamount;
+            $this->amount = (int) $info->authamount;
 
             if ($info->status == 'PAYMENT_NEW') {
                 $this->Authorized = true;
@@ -90,7 +90,7 @@ class EpaymentAdminService
     /**
      * @return int
      */
-    function getId(): int
+    public function getId(): int
     {
         return $this->id;
     }
@@ -98,7 +98,7 @@ class EpaymentAdminService
     /**
      * @return bool
      */
-    function isAuthorized(): bool
+    public function isAuthorized(): bool
     {
         return $this->Authorized;
     }
@@ -106,7 +106,7 @@ class EpaymentAdminService
     /**
      * @return bool
      */
-    function hasError(): bool
+    public function hasError(): bool
     {
         return $this->Error;
     }
@@ -114,7 +114,7 @@ class EpaymentAdminService
     /**
      * @return bool
      */
-    function isAnnulled(): bool
+    public function isAnnulled(): bool
     {
         return $this->Annulled;
     }
@@ -122,7 +122,7 @@ class EpaymentAdminService
     /**
      * @return int
      */
-    function getAmountCaptured(): int
+    public function getAmountCaptured(): int
     {
         return $this->AmountCaptured;
     }
@@ -134,12 +134,12 @@ class EpaymentAdminService
      *
      * @return bool
      */
-    function annul(): bool
+    public function annul(): bool
     {
-        $response = $this->_soapClient->delete(
+        $response = $this->soapClient->delete(
             [
-                'pwd' => $this->_password,
-                'merchantnumber' => $this->_merchantId,
+                'pwd' => $this->password,
+                'merchantnumber' => $this->merchantId,
                 'transactionid' => $this->id,
                 'epayresponse' => true,
             ]
@@ -163,24 +163,24 @@ class EpaymentAdminService
      *
      * @return bool
      */
-    function confirm(int $amount = null): bool
+    public function confirm(int $amount = null): bool
     {
         if (!$amount) {
-            $amount = $this->_amount;
+            $amount = $this->amount;
         }
 
         if ($this->AmountCaptured) {
             return true; // TODO can we not capture multiple times, should substract it form $amount?
         }
 
-        if ($this->_amount < $amount || !$this->Authorized) {
+        if ($this->amount < $amount || !$this->Authorized) {
             return false;
         }
 
-        $response = $this->_soapClient->capture(
+        $response = $this->soapClient->capture(
             [
-                'pwd' => $this->_password,
-                'merchantnumber' => $this->_merchantId,
+                'pwd' => $this->password,
+                'merchantnumber' => $this->merchantId,
                 'transactionid' => $this->id,
                 'amount' => $amount,
                 'epayresponse' => true,

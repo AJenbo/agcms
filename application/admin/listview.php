@@ -1,6 +1,6 @@
 <?php
 
-require_once $_SERVER['DOCUMENT_ROOT'] . '/admin/inc/logon.php';
+require_once $_SERVER['DOCUMENT_ROOT'] . '/admin/logon.php';
 
 Cache::addLoadedTable('maerke');
 Cache::addLoadedTable('krav');

@@ -139,6 +139,8 @@ if (!empty($_GET['sog'])) {
             FROM `maerke`
             WHERE id = " . (int) $_GET['maerke']
         );
+        Cache::addLoadedTable('maerke');
+
         if ($maerkeet) {
             $redirectUrl = '/m%C3%A6rke' . $maerkeet['id'] . '-' . rawurlencode(clearFileName($maerkeet['navn'])) . '/';
             redirect($redirectUrl, 301);

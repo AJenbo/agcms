@@ -31,6 +31,7 @@ if (is_numeric(@$_GET['add']) || is_numeric(@$_GET['add_list_item'])) {
             FROM `list_rows`
             WHERE id = " . (int) $_GET['add_list_item']
         );
+        Cache::addLoadedTable('list_rows');
         if ($list_row['link']) {
             $product = ORM::getOne(Page::class, $list_row['link']);
             if ($product) {
@@ -47,6 +48,7 @@ if (is_numeric(@$_GET['add']) || is_numeric(@$_GET['add_list_item'])) {
                 SELECT `page_id`, `cells`
                 FROM `lists` WHERE id = " . (int) $list_row['list_id']
             );
+            Cache::addLoadedTable('lists');
             $list['cells'] = explode('<', $list['cells']);
             $list_row['cells'] = explode('<', $list_row['cells']);
             foreach ($list['cells'] as $i => $celltype) {
@@ -352,6 +354,7 @@ if (!empty($_SESSION['faktura']['quantities'])) {
                         )
                         "
                     );
+                    Cache::addLoadedTable('emails');
                 }
 
                 redirect('/bestilling/?step=2');
@@ -622,6 +625,7 @@ if (!empty($_SESSION['faktura']['quantities'])) {
 
         //save order
         db()->query($sql);
+        Cache::addLoadedTable('fakturas');
         $id = db()->insert_id;
 
         //emailbody header

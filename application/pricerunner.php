@@ -68,6 +68,7 @@ foreach ($pages as $page) {
             FROM maerke
             WHERE id = " . $page->getBrandId()
         );
+        Cache::addLoadedTable('maerke');
         $cleaned = preg_replace($search, $replace, $maerker['navn']);
         $cleaned = trim($cleaned);
         if ($cleaned) {

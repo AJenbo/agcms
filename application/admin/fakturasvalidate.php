@@ -1,6 +1,6 @@
 <?php
 
-require_once $_SERVER['DOCUMENT_ROOT'] . '/admin/inc/logon.php';
+require_once $_SERVER['DOCUMENT_ROOT'] . '/admin/logon.php';
 
 if ($_SESSION['_user']['access'] == 1 && !empty($_GET['id'])) {
     db()->query("UPDATE `fakturas` SET `transferred` =  '1' WHERE `id` = ".$_GET['id']);

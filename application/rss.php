@@ -17,7 +17,6 @@ Cache::addLoadedTable('sider');
 Cache::addLoadedTable('bind');
 Cache::addLoadedTable('kat');
 Cache::addLoadedTable('maerke');
-Cache::addLoadedTable('bind');
 Cache::addLoadedTable('files');
 $timestamp = Cache::getUpdateTime();
 doConditionalGet($timestamp);

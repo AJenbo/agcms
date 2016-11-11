@@ -1,7 +1,7 @@
 <?php
 
-require_once $_SERVER['DOCUMENT_ROOT'] . '/admin/inc/logon.php';
-include_once _ROOT_ . '/inc/countries.php';
+require_once $_SERVER['DOCUMENT_ROOT'] . '/admin/logon.php';
+include_once _ROOT_ . '/vendor/libs/countries.php';
 
 if (!empty($_GET['function']) && $_GET['function'] == 'new') {
     redirect('faktura.php?id='.newfaktura());

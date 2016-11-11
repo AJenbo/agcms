@@ -48,6 +48,7 @@ if (!empty($id) && $checkid === getCheckid($id) && !isset($_GET['txnid'])) {
         FROM `fakturas`
         WHERE `id` = ".$id
     );
+    Cache::addLoadedTable('fakturas');
 
     if (in_array($faktura['status'], ['new', 'locked', 'pbserror'])) {
         $faktura['quantities'] = explode('<', $faktura['quantities']);
@@ -80,6 +81,7 @@ if (!empty($id) && $checkid === getCheckid($id) && !isset($_GET['txnid'])) {
                 WHERE `status` IN('new', 'pbserror')
                   AND `id` = " . $id
             );
+            Cache::addLoadedTable('fakturas');
 
             $GLOBALS['generatedcontent']['crumbs'] = [];
             $GLOBALS['generatedcontent']['crumbs'][1] = [
@@ -184,6 +186,7 @@ if (!empty($id) && $checkid === getCheckid($id) && !isset($_GET['txnid'])) {
                 $sql .= 'WHERE `id` = ' . $id;
 
                 db()->query($sql);
+                Cache::addLoadedTable('fakturas');
 
                 $faktura = array_merge($faktura, $updates);
 
@@ -220,6 +223,7 @@ if (!empty($id) && $checkid === getCheckid($id) && !isset($_GET['txnid'])) {
                             )
                             "
                         );
+                        Cache::addLoadedTable('email');
                     }
 
                     redirect('/betaling/?id=' . $id . '&checkid=' . $checkid . '&step=2');
@@ -440,6 +444,7 @@ if (!empty($id) && $checkid === getCheckid($id) && !isset($_GET['txnid'])) {
                 WHERE `status` IN('new', 'pbserror')
                 AND `id` = " . $id
             );
+            Cache::addLoadedTable('fakturas');
 
             $GLOBALS['generatedcontent']['crumbs'] = [];
             $GLOBALS['generatedcontent']['crumbs'][1] = [
@@ -457,6 +462,7 @@ if (!empty($id) && $checkid === getCheckid($id) && !isset($_GET['txnid'])) {
                 WHERE `id` = 3
                 "
             );
+            Cache::addLoadedTable('special');
             $GLOBALS['generatedcontent']['text'] .= '<br />'.$special['text'];
 
             $GLOBALS['generatedcontent']['text'] .= '<form style="text-align:center;" action="https://ssl.ditonlinebetalingssystem.dk/integration/ewindow/Default.aspx" method="post">';
@@ -545,6 +551,7 @@ if (!empty($id) && $checkid === getCheckid($id) && !isset($_GET['txnid'])) {
     $shopBody = '<br />'.sprintf(_('There was an error on the payment page of online invoice #%d!'), $id).'<br />';
 
     $faktura = db()->fetchOne("SELECT * FROM `fakturas` WHERE `id` = " . $id);
+    Cache::addLoadedTable('fakturas');
 
     if (!$faktura) {
         $GLOBALS['generatedcontent']['text'] = '<p>' . _('The payment does not exist in our system.') . '</p>';
@@ -601,20 +608,22 @@ if (!empty($id) && $checkid === getCheckid($id) && !isset($_GET['txnid'])) {
 
         db()->query(
             "
-	    UPDATE `fakturas`
-	    SET `status` = 'pbsok',
-		`cardtype` = '" . $cardtype[$_GET['paymenttype']] . "',
-		`paydate` = NOW()
-	    WHERE `status` IN('new', 'locked', 'pbserror')
-	      AND `id` = " . $id
+            UPDATE `fakturas`
+            SET `status` = 'pbsok',
+            `cardtype` = '" . $cardtype[$_GET['paymenttype']] . "',
+            `paydate` = NOW()
+            WHERE `status` IN('new', 'locked', 'pbserror')
+              AND `id` = " . $id
         );
+        Cache::addLoadedTable('fakturas');
 
         $faktura = db()->fetchOne(
             "
-	    SELECT *
-	    FROM `fakturas`
-	    WHERE `id` = " . $id
+            SELECT *
+            FROM `fakturas`
+            WHERE `id` = " . $id
         );
+        Cache::addLoadedTable('fakturas');
 
         $GLOBALS['generatedcontent']['text'] = _(
             '<p style="text-align:center;"><img src="images/ok.png" alt="" /></p>
@@ -831,6 +840,7 @@ Tel. %s<br />
 
     //To shop
     $faktura = db()->fetchOne("SELECT * FROM `fakturas` WHERE `id` = ".$id);
+    Cache::addLoadedTable('fakturas');
     if (!valideMail($faktura['department'])) {
         $faktura['department'] = $GLOBALS['generatedcontent']['email'];
     }

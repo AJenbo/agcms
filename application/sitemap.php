@@ -13,6 +13,11 @@
 
 require_once $_SERVER['DOCUMENT_ROOT'] . '/inc/functions.php';
 
+Cache::addLoadedTable('sider');
+Cache::addLoadedTable('bind');
+Cache::addLoadedTable('kat');
+Cache::addLoadedTable('files');
+Cache::addLoadedTable('special');
 doConditionalGet(Cache::getUpdateTime());
 header('Content-Type:text/xml;charset=utf-8');
 echo '<?xml version="1.0" encoding="utf-8" ?>';

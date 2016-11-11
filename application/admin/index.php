@@ -1,6 +1,6 @@
 <?php
 
-require_once $_SERVER['DOCUMENT_ROOT'] . '/admin/inc/logon.php';
+require_once $_SERVER['DOCUMENT_ROOT'] . '/admin/logon.php';
 
 $kattree = [];
 
@@ -129,34 +129,34 @@ switch (@$_GET['side']) {
     case 'nykrav':
         echo getnykrav();
         break;
-    case 'updatemaerke';
+    case 'updatemaerke':
         echo getupdatemaerke((int) $_GET['id']);
         break;
-    case 'redigerside';
+    case 'redigerside':
         echo redigerside((int) $_GET['id']);
         break;
-    case 'redigerkat';
+    case 'redigerkat':
         echo redigerkat((int) $_GET['id']);
         break;
-    case 'getSiteTree';
+    case 'getSiteTree':
         echo getSiteTree();
         break;
-    case 'redigerSpecial';
+    case 'redigerSpecial':
         echo redigerSpecial((int) $_GET['id']);
         break;
-    case 'redigerFrontpage';
+    case 'redigerFrontpage':
         echo redigerFrontpage();
         break;
-    case 'get_db_error';
+    case 'get_db_error':
         echo get_db_error();
         break;
-    case 'listsort';
+    case 'listsort':
         echo listsort(intval($_GET['id'] ?? 0));
         break;
-    case 'editContact';
+    case 'editContact':
         echo editContact((int) $_GET['id']);
         break;
-    case 'addressbook';
+    case 'addressbook':
         echo getaddressbook();
         break;
 }

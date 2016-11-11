@@ -1,6 +1,6 @@
 <?php
 
-require_once $_SERVER['DOCUMENT_ROOT'] . '/admin/inc/logon.php';
+require_once $_SERVER['DOCUMENT_ROOT'] . '/admin/logon.php';
 
 SAJAX::export(['listdirs' => ['method' => 'GET']]);
 SAJAX::handleClientRequest();

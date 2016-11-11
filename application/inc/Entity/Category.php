@@ -191,7 +191,7 @@ class Category
             $title = $icon['alt'];
         }
 
-        return 'kat' . $this->getId() . '-' $slug .= clearFileName($title) . '/';
+        return 'kat' . $this->getId() . '-' . clearFileName($title) . '/';
     }
 
     public function getParent()

@@ -11,7 +11,7 @@
  * @link     http://www.arms-gallery.dk/
  */
 
-require_once $_SERVER['DOCUMENT_ROOT'] . '/admin/inc/logon.php';
+require_once $_SERVER['DOCUMENT_ROOT'] . '/admin/logon.php';
 require_once _ROOT_ . '/admin/inc/image-functions.php';
 
 //TODO support bmp
