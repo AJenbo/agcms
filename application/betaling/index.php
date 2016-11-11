@@ -770,7 +770,7 @@ Remember to \'expedite\' the payment when the product is sent (The payment is fi
         }
 
         if (!valideMail($faktura['department'])) {
-            $faktura['department'] = reset(array_keys($GLOBALS['_config']['emails']));
+            $faktura['department'] = $GLOBALS['generatedcontent']['email'];
         }
 
     //generate the actual email content
@@ -835,7 +835,7 @@ Tel. %s<br />
     //To shop
     $faktura = db()->fetchOne("SELECT * FROM `fakturas` WHERE `id` = ".$id);
     if (!valideMail($faktura['department'])) {
-        $faktura['department'] = reset(array_keys($GLOBALS['_config']['emails']));
+        $faktura['department'] = $GLOBALS['generatedcontent']['email'];
     }
     if ($faktura) {
         $faktura['quantities'] = explode('<', $faktura['quantities']);

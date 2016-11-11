@@ -710,7 +710,8 @@ function getEmail(int $id): string
             }
             $html .= '</select>';
         } else {
-            $html .= '<input value="' . reset(array_keys($GLOBALS['_config']['emails'])) . '" id="from" style="display:none;" />';
+            $emails = array_keys($GLOBALS['_config']['emails']);
+            $html .= '<input value="' . reset($emails) . '" id="from" style="display:none;" />';
         }
     } else {
         $html .= _('Sender:') . ' ' . $newsmail['from'];
@@ -3703,7 +3704,8 @@ function copytonew(int $id): int
 function save(int $id, string $type, array $updates): array
 {
     if (empty($updates['department'])) {
-        $updates['department'] = reset(array_keys($GLOBALS['_config']['emails']));
+        $emails = array_keys($GLOBALS['_config']['emails']);
+        $updates['department'] = reset($emails);
     }
 
     if (!empty($updates['date'])) {
@@ -3795,7 +3797,8 @@ function save(int $id, string $type, array $updates): array
         if (!$faktura['department'] && count($GLOBALS['_config']['emails']) > 1) {
             return ['error' => _('You have not selected a sender!')];
         } elseif (!$faktura['department']) {
-                $faktura['department'] = reset(array_keys($GLOBALS['_config']['emails']));
+            $emails = array_keys($GLOBALS['_config']['emails']);
+            $updates['department'] = reset($emails);
         }
         if ($faktura['amount'] < 1) {
             return ['error' => _('The invoice must be of at at least 1 krone!')];
@@ -3884,7 +3887,8 @@ function sendReminder(int $id): array
     }
 
     if (empty($faktura['department'])) {
-        $faktura['department'] = reset(array_keys($GLOBALS['_config']['emails']));
+        $emails = array_keys($GLOBALS['_config']['emails']);
+        $faktura['department'] = reset($emails);
     }
 
     $msg = _(

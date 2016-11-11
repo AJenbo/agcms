@@ -47,10 +47,10 @@ foreach ($pages as $page) {
         'link' => '/' . $page->getSlug(),
     ];
 }
-
+$emails = array_keys($GLOBALS['_config']['emails']);
+$GLOBALS['generatedcontent']['email'] = reset($emails);
 $GLOBALS['generatedcontent']['crumbs'] = [];
 $GLOBALS['generatedcontent']['title'] = xhtmlEsc($GLOBALS['_config']['site_name']);
-$GLOBALS['generatedcontent']['email'] = reset(array_keys($GLOBALS['_config']['emails']));
 $GLOBALS['generatedcontent']['activmenu'] = -1;
 
 $maerkeId = $maerkeId ?? null;
