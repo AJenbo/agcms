@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "content-hash": "3743377224f3a631aad261c2438a34a6",
+    "content-hash": "360c4b1fa31ca635a383724268a571b3",
     "packages": [
         {
             "name": "ezyang/htmlpurifier",
@@ -111,17 +111,17 @@
             "time": "2016-06-06 09:09:37"
         },
         {
-            "name": "tecnick.com/tcpdf",
-            "version": "6.2.11",
+            "name": "tecnickcom/tcpdf",
+            "version": "6.2.12",
             "source": {
                 "type": "git",
                 "url": "https://github.com/tecnickcom/TCPDF.git",
-                "reference": "354433a33946ae7497c3eab291eaaf814bccbfab"
+                "reference": "2f732eaa91b5665274689b1d40b285a7bacdc37f"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/tecnickcom/TCPDF/zipball/354433a33946ae7497c3eab291eaaf814bccbfab",
-                "reference": "354433a33946ae7497c3eab291eaaf814bccbfab",
+                "url": "https://api.github.com/repos/tecnickcom/TCPDF/zipball/2f732eaa91b5665274689b1d40b285a7bacdc37f",
+                "reference": "2f732eaa91b5665274689b1d40b285a7bacdc37f",
                 "shasum": ""
             },
             "require": {
@@ -171,8 +171,7 @@
                 "pdf417",
                 "qrcode"
             ],
-            "abandoned": "tecnickcom/tcpdf",
-            "time": "2015-08-02 12:30:27"
+            "time": "2015-09-12 10:08:34"
         }
     ],
     "packages-dev": [],
