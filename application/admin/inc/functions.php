@@ -2426,7 +2426,7 @@ writeRichText("beskrivelse", \''.rtefsafe($page['beskrivelse']).'\', "", '.($GLO
         }
         $html .= '>'.xhtmlEsc($krav['navn']).'</option>';
     }
-    $html .= '</select><br /><img width="16" height="16" alt="" src="images/page_white_medal.png"/><select id="maerke" name="maerke" size="15"><option' . ($page['maerke'] ? ' selected="selected"' : '') . ' value="0">'._('All others').'</option>';
+    $html .= '</select><br /><img width="16" height="16" alt="" src="images/page_white_medal.png"/><select id="maerke" name="maerke" size="15"><option' . (!$page['maerke'] ? ' selected="selected"' : '') . ' value="0">'._('All others').'</option>';
 
     $maerker = db()->fetchArray('SELECT id, navn FROM `maerke` ORDER BY navn');
     foreach ($maerker as $maerke) {
@@ -3507,8 +3507,21 @@ function htmlUrlDecode(string $text): string
     return $text;
 }
 
-function updateSide(int $id, string $navn, string $keywords, int $pris, string $billed, string $beskrivelse, int $for, string $text, string $varenr, int $burde, int $fra, int $krav, int $maerke): bool
-{
+function updateSide(
+    int $id,
+    string $navn,
+    string $keywords,
+    int $pris,
+    string $billed,
+    string $beskrivelse,
+    int $for,
+    string $text,
+    string $varenr,
+    int $burde,
+    int $fra,
+    int $krav,
+    int $maerke
+): bool {
     $beskrivelse = purifyHTML($beskrivelse);
     $beskrivelse = htmlUrlDecode($beskrivelse);
     $text = purifyHTML($text);
