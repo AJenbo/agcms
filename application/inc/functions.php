@@ -1086,7 +1086,7 @@ function sendEmails(
     $PHPMailer->SetLanguage('dk');
     $PHPMailer->IsSMTP();
     $PHPMailer->SMTPAuth = false;
-    if ($emailConfig['smptAuth']) {
+    if ($emailConfig['smtpAuth']) {
         $PHPMailer->SMTPAuth = true;
         $PHPMailer->Username = $emailConfig['address'];
         $PHPMailer->Password = $emailConfig['password'];
