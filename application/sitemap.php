@@ -39,6 +39,47 @@ $special = db()->fetchOne("SELECT dato FROM special WHERE id = 1");
         <priority>0.8</priority>
     </url>
 <?php
-listKats();
+
+$activeCategoryIds = [];
+$categories = ORM::getByQuery(Category::class, "SELECT * FROM kat WHERE bind != -1");
+foreach ($categories as $category) {
+    if ($category->isInactive()) {
+        continue;
+    }
+    $activeCategoryIds[] = $category->getId();
+
+    //print xml
+    ?><url><loc><?php
+    echo htmlspecialchars(
+        $GLOBALS['_config']['base_url'] . '/' . $category->getSlug(),
+        ENT_COMPAT | ENT_XML1
+    );
+    ?></loc><changefreq>weekly</changefreq><priority>0.5</priority></url><?php
+}
+
+if ($activeCategoryIds) {
+    $pages = ORM::getByQuery(
+        Page::class,
+        "
+        SELECT sider.* FROM bind
+        JOIN sider ON sider.id = bind.side
+        WHERE bind.kat IN(" . implode(",", $activeCategoryIds) . ")
+        "
+    );
+    foreach ($pages as $page) {
+        //print xml
+        ?><url><loc><?php
+        echo htmlspecialchars(
+            $GLOBALS['_config']['base_url'] . $page->getCanonicalLink(),
+            ENT_COMPAT | ENT_XML1
+        );
+        ?></loc><lastmod><?php
+        echo htmlspecialchars(
+            mb_substr($page->getTimeStamp(), 0, -9),
+            ENT_COMPAT | ENT_XML1
+        );
+        ?></lastmod><changefreq>monthly</changefreq><priority>0.6</priority></url><?php
+    }
+}
 ?>
 </urlset>

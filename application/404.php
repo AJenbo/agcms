@@ -27,9 +27,8 @@ if ($encoding != 'UTF-8') {
         $encoding = 'windows-1252';
     }
     $url = mb_convert_encoding($url, 'UTF-8', $encoding);
-    //TODO rawurlencode $url (PIE doesn't do it buy it self :(
     $url = implode('/', array_map('rawurlencode', explode('/', $url)));
-    redirect($url);
+    redirect($url, 301);
 }
 
 $activeCategory = null;
@@ -41,7 +40,7 @@ $redirect = false;
 //Get maerke
 $maerkeId = (int) preg_replace('/.*\/mærke([0-9]*)-.*|.*/u', '\1', $url);
 if ($maerkeId && !db()->fetchOne("SELECT `id` FROM `maerke` WHERE id = " . $maerkeId)) {
-    $redirect = true;
+    $redirect = 301;
 }
 
 $categoryId = (int) preg_replace('/.*\/kat([0-9]*)-.*|.*/u', '\1', $url);
@@ -49,19 +48,20 @@ $pageId = (int) preg_replace('/.*\/side([0-9]*)-.*|.*/u', '\1', $url);
 if ($categoryId) {
     $activeCategory = ORM::getOne(Category::class, $categoryId);
     if (!$activeCategory || $activeCategory->isInactive()) {
+        $redirect = $activeCategory ? 302 : 301;
         $activeCategory = null;
-        $redirect = true;
     }
 }
 if ($pageId) {
     $activePage = ORM::getOne(Page::class, $pageId);
     if (!$activePage || $activePage->isInactive()) {
+        $redirect = $activePage ? 302 : 301;
         $activePage = null;
-        $redirect = true;
     }
 }
 if ($redirect) {
     $redirectUrl = '/?sog=1&q=&sogikke=&minpris=&maxpris=&maerke=';
+    //TODO stop space efter æøå
     $q = preg_replace(
         [
             '/\/|-|_|\.html|\.htm|\.php|\.gif|\.jpeg|\.jpg|\.png|kat-|side-|\.php/u',
@@ -85,15 +85,14 @@ if ($redirect) {
         $redirectUrl = '/?q=' . rawurlencode($q) . '&sogikke=&minpris=&maxpris=&maerke=0';
     }
     if ($activePage) {
-        $redirectUrl = $activePage->getCanonicalLink(true, $activeCategory);
+        $redirectUrl = $activePage->getCanonicalLink($activeCategory);
     } elseif ($activeCategory) {
-        $redirectUrl = '/' . $activeCategory->getSlug(true);
+        $redirectUrl = '/' . $activeCategory->getSlug();
     }
 
-    redirect($redirectUrl);
+    redirect($redirectUrl, $redirect);
 }
 
-//TODO stop space efter æøå
 header('Status: 200', true, 200);
 header('HTTP/1.1 200 OK', true, 200);
 require 'index.php';

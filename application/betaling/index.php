@@ -222,7 +222,7 @@ if (!empty($id) && $checkid === getCheckid($id) && !isset($_GET['txnid'])) {
                         );
                     }
 
-                    redirect($GLOBALS['_config']['base_url'] . '/betaling/?id=' . $id . '&checkid=' . $checkid . '&step=2', 303);
+                    redirect('/betaling/?id=' . $id . '&checkid=' . $checkid . '&step=2');
                 }
             } else {
                 $rejected = validate($faktura);
@@ -430,10 +430,7 @@ if (!empty($id) && $checkid === getCheckid($id) && !isset($_GET['txnid'])) {
             $GLOBALS['generatedcontent']['text'] .= '</tbody></table><input style="font-weight:bold;" type="submit" value="'._('Proceed to the terms of trade').'" /></form>';
         } elseif ($_GET['step'] == 2) { //Accept terms and continue to payment
             if (count(validate($faktura))) {
-                redirect(
-                    $GLOBALS['_config']['base_url'] . '/betaling/?id=' . $id . '&checkid=' . $checkid . '&step=1',
-                    303
-                );
+                redirect('/betaling/?id=' . $id . '&checkid=' . $checkid . '&step=1');
             }
 
             db()->query(

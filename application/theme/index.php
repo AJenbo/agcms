@@ -107,8 +107,11 @@ echo $GLOBALS['generatedcontent']['title'];
 <script src="/javascript/sajax.js" type="text/javascript"></script>
 <script src="/javascript/javascript.js" type="text/javascript"></script>
 <link rel="alternate" type="application/rss+xml" title="News" href="/rss.php" />
-<link title="Search" type="application/opensearchdescription+xml" rel="search" href="/sog.php" />
-<meta name="author" content="Anders Jenbo" />
+<link title="Search" type="application/opensearchdescription+xml" rel="search" href="/sog.php" /><?php
+if (!empty($GLOBALS['generatedcontent']['canonical'])) {
+    echo '<link rel="canonical" href="'. xhtmlEsc($GLOBALS['generatedcontent']['canonical']) .'" />';
+}
+?><meta name="author" content="Anders Jenbo" />
 <?php
 if (@$GLOBALS['generatedcontent']['keywords']) {
     echo '<meta name="Keywords" content="' . $GLOBALS['generatedcontent']['keywords']

@@ -52,6 +52,7 @@ $GLOBALS['generatedcontent']['email'] = reset($emails);
 $GLOBALS['generatedcontent']['crumbs'] = [];
 $GLOBALS['generatedcontent']['title'] = xhtmlEsc($GLOBALS['_config']['site_name']);
 $GLOBALS['generatedcontent']['activmenu'] = -1;
+$GLOBALS['generatedcontent']['canonical'] = '';
 
 $maerkeId = $maerkeId ?? null;
 $activeCategory = $activeCategory ?? null;
@@ -116,9 +117,7 @@ if (!empty($_GET['sog'])) {
 
     $where = " AND `maerke` = '" . $maerkeet['id'] . "'";
     $listedPages = searchListe($_GET['q'] ?? '', $where);
-} elseif ($activePage) {
-    $pageType = 'product';
-} elseif ($activeCategory) {
+} elseif ($activeCategory && !$activePage) {
     $pageType = $activeCategory->getRenderMode() == Category::GALLERY ? 'tiles' : 'list';
     $listedPages = $activeCategory->getPages();
     if (count($listedPages) === 1) {
@@ -142,7 +141,7 @@ if (!empty($_GET['sog'])) {
         );
         if ($maerkeet) {
             $redirectUrl = '/m%C3%A6rke' . $maerkeet['id'] . '-' . rawurlencode(clearFileName($maerkeet['navn'])) . '/';
-            redirect($redirectUrl);
+            redirect($redirectUrl, 301);
         }
     }
 
@@ -166,7 +165,7 @@ if (!empty($_GET['sog'])) {
     $listedPages = searchListe($_GET['q'] ?? '', $where);
     if (count($listedPages) === 1) {
         $page = array_shift($listedPages);
-        redirect($page->getCanonicalLink());
+        redirect($page->getCanonicalLink(), 302);
     }
 
     $wherekat = '';
@@ -197,7 +196,7 @@ if ($listedPages) {
                 'id' => $page->getId(),
                 'name' => xhtmlEsc($page->getTitle()),
                 'date' => $page->getTimeStamp(),
-                'link' => $page->getCanonicalLink(false, $activeCategory),
+                'link' => $page->getCanonicalLink($activeCategory),
                 'icon' => $page->getImagePath(),
                 'text' => $page->getExcerpt(),
                 'price' => [
@@ -212,7 +211,7 @@ if ($listedPages) {
                 'id' => $page->getId(),
                 'name' => xhtmlEsc($page->getTitle()),
                 'date' => $page->getTimeStamp(),
-                'link' => $page->getCanonicalLink(false, $activeCategory),
+                'link' => $page->getCanonicalLink($activeCategory),
                 'serial' => $page->getSku(),
                 'price' => [
                     'before' => $page->getOldPrice(),
@@ -245,7 +244,6 @@ if ($activeCategory && empty($GLOBALS['generatedcontent']['title'])) {
     $GLOBALS['generatedcontent']['title'] = xhtmlEsc($title);
 }
 
-//TODO catch none existing kats
 //Get page content and type
 if ($pageType === 'front') {
     $special = db()->fetchOne(
@@ -261,7 +259,6 @@ if ($pageType === 'front') {
         Cache::addLoadedTable('special');
     }
 
-    $GLOBALS['generatedcontent']['contenttype'] = 'front';
     $GLOBALS['generatedcontent']['text'] = $special['text'];
 } elseif ($pageType === 'search') {
     $GLOBALS['generatedcontent']['title'] = 'Søg på ' . xhtmlEsc($GLOBALS['_config']['site_name']);
@@ -296,8 +293,9 @@ if ($pageType === 'front') {
     }
     $text .= '</select></td></tr></table></form>';
     $GLOBALS['generatedcontent']['text'] = $text;
-} elseif ($pageType === 'product') {
-    $GLOBALS['generatedcontent']['contenttype']     = 'product';
+} elseif ($activePage) {
+    $pageType = 'product';
+    $GLOBALS['generatedcontent']['canonical']       = $activePage->getCanonicalLink();
     $GLOBALS['generatedcontent']['title']           = xhtmlEsc($activePage->getTitle());
     $GLOBALS['generatedcontent']['headline']        = $activePage->getTitle();
     $GLOBALS['generatedcontent']['serial']          = $activePage->getSku();

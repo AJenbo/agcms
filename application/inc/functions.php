@@ -58,11 +58,22 @@ function db()
     return $db;
 }
 
-function redirect(string $url, int $code = 301)
+function redirect(string $url, int $code = 303)
 {
+    if (mb_substr($url, 0, 1) === '/') {
+        $url .= $GLOBALS['_config']['base_url'];
+    }
+
     ini_set('zlib.output_compression', '0');
-    header('Location: ' . $url, true, $code);
+    header('Location: ' . encodeUrl($url), true, $code);
     die();
+}
+
+function encodeUrl(string $url): string
+{
+    $url = explode('/', $url);
+    $url = array_map('rawurlencode', $url);
+    return implode('/', $url);
 }
 
 /**
@@ -414,12 +425,12 @@ function getTable(int $listid, int $bycell = null, int $categoryId = null): arra
 
                         //TODO make image tag
                         if ($row['link']) {
-                            $html .= $row['link'];
+                            $html .= xhtmlEsc($row['link']);
                         }
-                        $html .= '<img src="' . $row[$key] . '" alt="'
-                        . $files['alt'] . '" title="" width="' . $files['width']
+                        $html .= '<img src="' . xhtmlEsc($row[$key]) . '" alt="'
+                        . xhtmlEsc($files['alt']) . '" title="" width="' . $files['width']
                         . '" height="' . $files['height'] . '" />';
-                        if ($row['link']) {
+                        if (xhtmlEsc($row['link'])) {
                             $html .= '</a>';
                         }
                         $html .= '</td>';
@@ -865,44 +876,6 @@ function searchMenu(string $q, string $wherekat)
 }
 
 /**
- * Print XML for content bellonging to a category
- *
- * @param int $id Id of category
- *
- * @return null
- */
-function listKats(Category $category = null)
-{
-    if (!$category) {
-        $categories = ORM::getByQuery(Category::class, "SELECT * FROM kat WHERE bind = 0");
-        foreach ($categories as $key => $category) {
-            if (!$category->isVisable()) {
-                unset($categories[$key]);
-            }
-        }
-    } else {
-        $categories = $category->getChildren(true);
-    }
-
-    foreach ($categories as $category) {
-        //print xml
-        ?><url><loc><?php
-        echo htmlspecialchars($GLOBALS['_config']['base_url'] . '/' . $category->getSlug(), ENT_COMPAT | ENT_XML1);
-        ?></loc><changefreq>weekly</changefreq><priority>0.5</priority></url><?php
-foreach ($category->getPages() as $page) {
-    //print xml
-    ?><url><loc><?php
-echo htmlspecialchars($GLOBALS['_config']['base_url'] . $page->getCanonicalLink(false, $category), ENT_COMPAT | ENT_XML1);
-?></loc><lastmod><?php
-echo htmlspecialchars(mb_substr($page->getTimeStamp(), 0, -9, 'UTF-8'), ENT_COMPAT | ENT_XML1);
-?></lastmod><changefreq>monthly</changefreq><priority>0.6</priority></url><?php
-}
-
-        listKats($category);
-    }
-}
-
-/**
  * Get the html for content bellonging to a category
  *
  * @param int  $id   Id of activ category
@@ -963,7 +936,7 @@ function getKat(int $categoryId, string $sort): array
         }
 
         $html .= '<tr' . ($isEven ? ' class="altrow"' : '')
-        . '><td><a href="' . xhtmlEsc($page->getCanonicalLink(false, $category)) . '">'
+        . '><td><a href="' . xhtmlEsc($page->getCanonicalLink($category)) . '">'
         . xhtmlEsc($page->getTitle())
         . '</a></td><td class="XPris" align="right">' . $oldPrice
         . '</td><td class="Pris" align="right">' . $price

@@ -242,18 +242,12 @@ class Page
     }
 
     // General methodes
-    public function getSlug(bool $raw = false): string
+    public function getSlug(): string
     {
-        $slug = 'side' . $this->getId() . '-';
-        if ($raw) {
-            $slug .= rawurlencode(clearFileName($this->getTitle()));
-        } else {
-            $slug .= clearFileName($this->getTitle());
-        }
-        return $slug .= '.html';
+        return 'side' . $this->getId() . '-' . clearFileName($this->getTitle()) . '.html';
     }
 
-    public function getCanonicalLink(bool $raw = false, Category $category = null): string
+    public function getCanonicalLink(Category $category = null): string
     {
         $url = '/';
 
@@ -261,10 +255,10 @@ class Page
             $category = $this->getPrimaryCategory();
         }
         if ($category) {
-            $url .= $category->getSlug(false);
+            $url .= $category->getSlug();
         }
 
-        return $url . $this->getSlug(false);
+        return $url . $this->getSlug();
     }
 
     public function getPrimaryCategory()

@@ -23,7 +23,7 @@ if (empty($_SESSION['_user'])) {
         if ($user && crypt($_POST['password'] ?? '', $user['password']) === $user['password']) {
             $_SESSION['_user'] = $user;
         }
-        redirect($_SERVER['REQUEST_URI'], 302);
+        redirect($_SERVER['REQUEST_URI']);
     }
 
     sleep(1);

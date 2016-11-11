@@ -100,7 +100,7 @@ if (is_numeric(@$_GET['add']) || is_numeric(@$_GET['add_list_item'])) {
     } else {
         $url = '/?side=' . (int) $_GET['add'];
     }
-    redirect($url, 303);
+    redirect($url);
 }
 
 /*fake basket content*/
@@ -157,7 +157,7 @@ if (!empty($_SESSION['faktura']['quantities'])) {
             $_SESSION['faktura']['products'] = array_values($_SESSION['faktura']['products']);
             $_SESSION['faktura']['values'] = array_values($_SESSION['faktura']['values']);
 
-            redirect('/bestilling/?step=1', 303);
+            redirect('/bestilling/?step=1');
         }
 
         $_SESSION['faktura']['amount'] = 0;
@@ -354,7 +354,7 @@ if (!empty($_SESSION['faktura']['quantities'])) {
                     );
                 }
 
-                redirect('/bestilling/?step=2', 303);
+                redirect('/bestilling/?step=2');
             }
         } else {
             $rejected = validate($_SESSION['faktura']);
@@ -567,7 +567,7 @@ if (!empty($_SESSION['faktura']['quantities'])) {
         $GLOBALS['generatedcontent']['text'] .= '</tbody></table><input style="font-weight:bold;" type="submit" value="'._('Send order').'" /></form>';
     } elseif ($_GET['step'] == 2) {
         if (!$_SESSION['faktura'] || !$_SESSION['faktura']['email']) {
-            redirect('/bestilling/', 303);
+            redirect('/bestilling/');
         }
 
         if ($_SESSION['faktura']['paymethod'] == 'creditcard') {

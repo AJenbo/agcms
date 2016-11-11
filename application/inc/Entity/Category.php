@@ -176,7 +176,7 @@ class Category
         return $this->visable;
     }
 
-    public function getSlug(bool $raw = false): string
+    public function getSlug(): string
     {
         $title = $this->getTitle();
         if (!$title && $this->getIconPath()) {
@@ -191,13 +191,7 @@ class Category
             $title = $icon['alt'];
         }
 
-        $slug = 'kat' . $this->getId() . '-';
-        if ($raw) {
-            $slug .= rawurlencode(clearFileName($title));
-        } else {
-            $slug .= clearFileName($title);
-        }
-        return $slug .= '/';
+        return 'kat' . $this->getId() . '-' $slug .= clearFileName($title) . '/';
     }
 
     public function getParent()
