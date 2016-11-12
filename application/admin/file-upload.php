@@ -4,8 +4,8 @@ require_once $_SERVER['DOCUMENT_ROOT'] . '/admin/inc/logon.php';
 
 doConditionalGet(Cache::getUpdateTime());
 
-SAJAX::export(['fileExists' => ['method' => 'GET', 'asynchronous' => false, 'uri' => '/admin/file-upload.php']]);
-SAJAX::handleClientRequest();
+Sajax\Sajax::export(['fileExists' => ['method' => 'GET', 'asynchronous' => false, 'uri' => '/admin/file-upload.php']]);
+Sajax\Sajax::handleClientRequest();
 
 if (empty($_COOKIE['admin_dir']) || !is_dir(_ROOT_ . @$_COOKIE['admin_dir'])) {
     @setcookie('admin_dir', '/images');
@@ -19,7 +19,7 @@ if (empty($_COOKIE['admin_dir']) || !is_dir(_ROOT_ . @$_COOKIE['admin_dir'])) {
 <title><?php echo _('File upload'); ?></title>
 <script type="text/javascript" src="/javascript/sajax.js"></script>
 <script type="text/javascript"><!--
-<?php SAJAX::showJavascript(); ?>
+<?php Sajax\Sajax::showJavascript(); ?>
 
 var maxbyte = <?php
 

@@ -18,11 +18,11 @@ require_once $_SERVER['DOCUMENT_ROOT'] . '/inc/functions.php';
 //the remedy is to update the database when new cms files are added.
 doConditionalGet(Cache::getUpdateTime());
 
-SAJAX::export(
+Sajax\Sajax::export(
     [
         'getTable'   => ['method' => 'GET'],
         'getKat'     => ['method' => 'GET'],
         'getAddress' => ['method' => 'GET'],
     ]
 );
-SAJAX::handleClientRequest();
+Sajax\Sajax::handleClientRequest();

@@ -4,8 +4,38 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "content-hash": "360c4b1fa31ca635a383724268a571b3",
+    "content-hash": "ad462e1dc7b6e1908f2e182ee6f326db",
     "packages": [
+        {
+            "name": "ajenbo/sajax",
+            "version": "0.14.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/AJenbo/Sajax.git",
+                "reference": "684d36c49cfff75c0df7eeb922465513efdc2c3b"
+            },
+            "dist": {
+                "type": "vcs",
+                "url": "https://github.com/AJenbo/Sajax",
+                "reference": "684d36c49cfff75c0df7eeb922465513efdc2c3b",
+                "shasum": null
+            },
+            "require": {
+                "php": ">=5.3.3"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Sajax\\": "php/"
+                }
+            },
+            "description": "Simple Ajax Toolkit",
+            "support": {
+                "source": "https://github.com/AJenbo/Sajax/tree/master",
+                "issues": "https://github.com/AJenbo/Sajax/issues"
+            },
+            "time": "2016-11-12 19:58:14"
+        },
         {
             "name": "ezyang/htmlpurifier",
             "version": "v4.8.0",

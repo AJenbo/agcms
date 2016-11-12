@@ -21,7 +21,7 @@ if (empty($_COOKIE['admin_dir']) || !is_dir(_ROOT_ . @$_COOKIE['admin_dir'])) {
     @$_COOKIE['admin_dir'] = '/images';
 }
 
-SAJAX::export(
+Sajax\Sajax::export(
     [
         'listdirs'     => ['method' => 'GET'],
         'searchfiles'  => ['method' => 'GET'],
@@ -33,7 +33,7 @@ SAJAX::export(
         'renamefile'   => ['method' => 'POST'],
     ]
 );
-SAJAX::handleClientRequest();
+Sajax\Sajax::handleClientRequest();
 
 if (@$_COOKIE['qpath'] || @$_COOKIE['qalt'] || @$_COOKIE['qtype']) {
     $showfiles = searchfiles(@$_COOKIE['qpath'], @$_COOKIE['qalt'], @$_COOKIE['qtype']);
@@ -65,7 +65,7 @@ JSON.parse = JSON.parse || function(jsonsring) { return jsonsring.evalJSON(true)
 <script type="text/javascript"><!--
 var rte = '<?php echo @$_GET['rte']; ?>';
 var returnid = '<?php echo @$_GET['returnid']; ?>';
-<?php SAJAX::showJavascript(); ?>
+<?php Sajax\Sajax::showJavascript(); ?>
 
 <?php echo $showfiles['javascript']; ?>
 

@@ -1,4 +1,10 @@
 {
+    "repositories": [
+        {
+            "type": "vcs",
+            "url": "https://github.com/AJenbo/Sajax"
+        }
+    ],
     "require": {
         "php": ">=7.0.0",
         "ext-mbstring": "*",
@@ -7,6 +13,7 @@
         "ext-soap": "*",
         "phpmailer/phpmailer":  ">=5.0.0",
         "ezyang/htmlpurifier":  ">=4.4",
-        "tecnickcom/tcpdf": "^6.2"
+        "tecnickcom/tcpdf": "^6.2",
+        "ajenbo/sajax" : "0.14.*"
     }
 }

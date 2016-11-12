@@ -2,8 +2,8 @@
 
 require_once $_SERVER['DOCUMENT_ROOT'] . '/admin/inc/logon.php';
 
-SAJAX::export(['listdirs' => ['method' => 'GET']]);
-SAJAX::handleClientRequest();
+Sajax\Sajax::export(['listdirs' => ['method' => 'GET']]);
+Sajax\Sajax::handleClientRequest();
 
 $pathinfo = pathinfo($_GET['path']);
 
@@ -23,7 +23,7 @@ JSON.parse = JSON.parse || function(jsonsring) { return jsonsring.evalJSON(true)
 </script>
 <script type="text/javascript" src="/javascript/sajax.js"></script>
 <script type="text/javascript"><!--
-<?php SAJAX::showJavascript(); ?>
+<?php Sajax\Sajax::showJavascript(); ?>
 
 var global_dir = '';
 

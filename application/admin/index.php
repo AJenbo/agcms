@@ -4,7 +4,7 @@ require_once $_SERVER['DOCUMENT_ROOT'] . '/admin/inc/logon.php';
 
 $kattree = [];
 
-SAJAX::export(
+Sajax\Sajax::export(
     [
         'countEmailTo'                      => ['method' => 'GET'],
         'get_mail_size'                     => ['method' => 'GET'],
@@ -60,7 +60,7 @@ SAJAX::export(
         'sendDelayedEmail'                  => ['method' => 'POST', 'asynchronous' => false],
     ]
 );
-SAJAX::handleClientRequest();
+Sajax\Sajax::handleClientRequest();
 
 ?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml"><head>
@@ -69,7 +69,7 @@ SAJAX::handleClientRequest();
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <title>Administrator menu</title>
 <script type="text/javascript"><!--
-<?php SAJAX::showJavascript(); ?>
+<?php Sajax\Sajax::showJavascript(); ?>
 
 --></script>
 <script type="text/javascript" src="javascript/lib/php.min.js"></script>

@@ -82,7 +82,7 @@ if ($faktura['id'] && $faktura['status'] != 'new') {
     }
 }
 
-SAJAX::export(
+Sajax\Sajax::export(
     [
         'getAddress'   => ['method' => 'GET'],
         'sendReminder' => ['method' => 'GET'],
@@ -94,7 +94,7 @@ SAJAX::export(
         'save'         => ['method' => 'POST'],
     ]
 );
-SAJAX::handleClientRequest();
+Sajax\Sajax::handleClientRequest();
 
 ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
@@ -118,7 +118,7 @@ JSON.parse = JSON.parse || function(jsonsring) { return jsonsring.evalJSON(true)
 <script type="text/javascript" src="javascript/javascript.js"></script>
 <script type="text/javascript" src="/javascript/sajax.js"></script>
 <script type="text/javascript"><!--
-<?php SAJAX::showJavascript(); ?>
+<?php Sajax\Sajax::showJavascript(); ?>
 
 var id = <?php echo $faktura['id']; ?>;
 

@@ -3,8 +3,8 @@
 require_once $_SERVER['DOCUMENT_ROOT'] . '/admin/inc/logon.php';
 require_once _ROOT_ . '/admin/inc/image-functions.php';
 
-SAJAX::export(['saveImage' => ['method' => 'POST']]);
-SAJAX::handleClientRequest();
+Sajax\Sajax::export(['saveImage' => ['method' => 'POST']]);
+Sajax\Sajax::handleClientRequest();
 
 $imagesize = @getimagesize(_ROOT_ . $_GET['path']);
 
@@ -47,7 +47,7 @@ JSON.parse = JSON.parse || function(jsonsring) { return jsonsring.evalJSON(true)
 <script type="text/javascript" src="javascript/lib/php.min.js"></script>
 <script type="text/javascript" src="/javascript/sajax.js"></script>
 <script type="text/javascript"><!--
-<?php SAJAX::showJavascript(); ?>
+<?php Sajax\Sajax::showJavascript(); ?>
 
 var id = <?php echo $_GET['id'] ?>;
 var mode = '<?php echo $_GET['mode'] ?? '' ?>';
