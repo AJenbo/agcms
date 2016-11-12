@@ -46,7 +46,7 @@ class Page
         return [
             'id'             => $data['id'] ?: null,
             'sku'            => $data['varenr'] ?: '',
-            'timestamp'      => $data['dato'] ? strtotime($data['dato']) : 0,
+            'timestamp'      => $data['dato'] ? strtotime($data['dato']) + db()->getTimeOffset() : 0,
             'title'          => $data['navn'] ?: '',
             'keywords'       => $data['keywords'] ?: '',
             'html'           => $data['text'] ?: '',

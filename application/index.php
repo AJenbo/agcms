@@ -261,7 +261,7 @@ if ($pageType === 'front') {
         "
     );
     if ($special['dato']) {
-        Cache::addUpdateTime($special['dato']);
+        Cache::addUpdateTime(strtotime($special['dato']) + db()->getTimeOffset());
     } else {
         Cache::addLoadedTable('special');
     }

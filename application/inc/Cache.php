@@ -34,9 +34,10 @@ class Cache
         }
 
         if ($checkDb) {
+            $timeOffset = db()->getTimeOffset();
             $tables = db()->fetchArray("SHOW TABLE STATUS" . (self::$loadedTables ? " WHERE Name IN('" . implode("', '", array_keys(self::$loadedTables)) . "')" : ""));
             foreach ($tables as $table) {
-                self::$updateTime = max(self::$updateTime, strtotime($table['Update_time']));
+                self::$updateTime = max(self::$updateTime, strtotime($table['Update_time']) + $timeOffset);
             }
         }
 

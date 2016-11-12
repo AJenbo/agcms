@@ -700,7 +700,7 @@ function getAddress(string $phoneNumber): array
 
         $tables = db()->fetchArray("SHOW TABLE STATUS WHERE Name IN('fakturas', 'email', 'post')");
         foreach ($tables as $table) {
-            Cache::addUpdateTime(strtotime($table['Update_time']));
+            Cache::addUpdateTime(strtotime($table['Update_time'])) + db()->getTimeOffset();
         }
 
         //Try katalog orders
