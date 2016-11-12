@@ -75,7 +75,7 @@ if ($activeCategoryIds) {
         );
         ?></loc><lastmod><?php
         echo htmlspecialchars(
-            mb_substr($page->getTimeStamp(), 0, -9),
+            date('c', $page->getTimeStamp()),
             ENT_COMPAT | ENT_XML1
         );
         ?></lastmod><changefreq>monthly</changefreq><priority>0.6</priority></url><?php

@@ -3522,9 +3522,12 @@ function bind(int $id, int $kat): array
 
     db()->query('INSERT INTO `bind` (`side` ,`kat`) VALUES (\''.$id.'\', \''.$kat.'\')');
 
-    $added['id'] = db()->insert_id;
-    $added['kat'] = $kat;
-    $added['side'] = $id;
+    $added = [
+        'id' => db()->insert_id,
+        'kat' => $kat,
+        'side' => $id,
+        'path' => '',
+    ];
 
     foreach (kattree($kat) as $kat) {
         $added['path'] .= '/'.trim($kat['navn']);

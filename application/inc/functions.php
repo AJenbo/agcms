@@ -60,16 +60,68 @@ function db(DB $overwrite = null)
     return $db;
 }
 
-function redirect(string $url, int $code = 303)
+function redirect(string $url, int $status = 303)
 {
-    $url = encodeUrl($url);
-    if (mb_substr($url, 0, 1) === '/') {
-        $url = $GLOBALS['_config']['base_url'] . $url;
+    if (headers_sent()) {
+        throw new Exception(_('Header already sent!'));
     }
 
-    ini_set('zlib.output_compression', '0');
-    header('Location: ' . $url, true, $code);
+    $url = parse_url($url);
+    if (empty($url['scheme'])) {
+        $url['scheme'] = !empty($_SERVER['HTTPS']) && mb_strtolower($_SERVER['HTTPS']) !== 'off' ? 'https' : 'http';
+    }
+    if (empty($url['host'])) {
+        if (!empty($_SERVER['HTTP_HOST'])) {
+            // Browser
+            $url['host'] = $_SERVER['HTTP_HOST'];
+        } elseif (!empty($_SERVER['SERVER_NAME'])) {
+            // Can both be from Browser and server (virtual) config
+            $url['host'] = $_SERVER['SERVER_NAME'];
+        } else {
+            // IP
+            $url['host'] = $_SERVER['SERVER_ADDR'];
+        }
+    }
+    if (empty($url['path'])) {
+        $url['path'] = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
+    } elseif (mb_substr($url['path'], 0, 1) !== '/') {
+        //The redirect is relative to current path
+        $path = [];
+        $requestPath = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
+        preg_match('#^\S+/#u', $requestPath, $path);
+        $url['path'] = $path[0] . $url['path'];
+    }
+    $url['path'] = encodeUrl($url['path']);
+    $url = unparseUrl($url);
+
+    if (function_exists('apache_setenv')) {
+        apache_setenv('no-gzip', 1);
+    }
+    ini_set('zlib.output_compression', 0);
+
+    header('Location: ' . $url, true, $status);
     die();
+}
+
+/**
+ * Build a url string from an array
+ *
+ * @param array $parsed_url Array as returned by parse_url()
+ *
+ * @return string The URL
+ */
+function unparseUrl(array $parsed_url): string
+{
+    $scheme   = !empty($parsed_url['scheme']) ? $parsed_url['scheme'] . '://' : '';
+    $host     = !empty($parsed_url['host']) ? $parsed_url['host'] : '';
+    $port     = !empty($parsed_url['port']) ? ':' . $parsed_url['port'] : '';
+    $user     = !empty($parsed_url['user']) ? $parsed_url['user'] : '';
+    $pass     = !empty($parsed_url['pass']) ? ':' . $parsed_url['pass'] : '';
+    $pass     .= ($user || $pass) ? '@' : '';
+    $path     = !empty($parsed_url['path']) ? $parsed_url['path'] : '';
+    $query    = !empty($parsed_url['query']) ? '?' . $parsed_url['query'] : '';
+    $fragment = !empty($parsed_url['fragment']) ? '#' . $parsed_url['fragment'] : '';
+    return $scheme . $user . $pass . $host . $port . $path . $query . $fragment;
 }
 
 function encodeUrl(string $url): string
@@ -504,54 +556,41 @@ function searchListe(string $q, string $where)
     $pages = [];
 
     if ($q) {
+        //TODO match on keywords
+        $columns = [];
+        foreach (db()->fetchArray("SHOW COLUMNS FROM sider") as $column) {
+            $columns[] = $column['Field'];
+        }
+        $simpleq = preg_replace('/\s+/u', '%', $q);
         $pages = ORM::getByQuery(
             Page::class,
             "
-            SELECT *, MATCH(navn, text, beskrivelse) AGAINST ('$q') AS score
+            SELECT `" . implode("`, `", $columns) . "` FROM (SELECT sider.*, MATCH(navn, text, beskrivelse) AGAINST ('$q') AS score
             FROM sider
+            JOIN bind ON sider.id = bind.side AND bind.kat != -1
             WHERE MATCH (navn, text, beskrivelse) AGAINST('$q') > 0
             $where
-            ORDER BY `score` DESC
-            "
-        );
-        foreach ($pages as $page) {
-            $pages[$page->getId()] = $page;
-        }
-
-        // Fulltext search doesn't catch things like 3 letter words etc.
-        $qsearch = ['/\s+/u', "/'/u", '/´/u', '/`/u'];
-        $qreplace = ['%', '_', '_', '_'];
-        $simpleq = preg_replace($qsearch, $qreplace, $q);
-        $pages = ORM::getByQuery(
-            Page::class,
-            "
-            SELECT * FROM `sider`
+            ORDER BY `score` DESC) x
+            UNION
+            SELECT sider.* FROM `list_rows`
+            JOIN lists ON list_rows.list_id = lists.id
+            JOIN sider ON lists.page_id = sider.id
+            JOIN bind ON sider.id = bind.side AND bind.kat != -1
+            WHERE list_rows.`cells` LIKE '%$simpleq%'"
+            . $where
+            . "
+            UNION
+            SELECT sider.* FROM `sider`
+            JOIN bind ON sider.id = bind.side AND bind.kat != -1
             WHERE (
                 `navn` LIKE '%$simpleq%'
                 OR `text` LIKE '%$simpleq%'
                 OR `beskrivelse` LIKE '%$simpleq%'
             ) "
-            . ($pages ? ("AND id NOT IN (" . implode(',', array_keys($pages)) . ") ") : "")
             . $where
-        );
-        foreach ($pages as $page) {
-            $pages[$page->getId()] = $page;
-        }
-
-        $pages = ORM::getByQuery(
-            Page::class,
-            "
-            SELECT sider.* FROM `list_rows`
-            JOIN lists ON list_rows.list_id = lists.id
-            JOIN sider ON lists.page_id = sider.id
-            WHERE list_rows.`cells` LIKE '%$simpleq%'"
-            . ($pages ? (" AND sider.id NOT IN (" . implode(',', array_keys($pages)) . ") ") : "")
         );
         Cache::addLoadedTable('list_rows');
         Cache::addLoadedTable('lists');
-        foreach ($pages as $page) {
-            $pages[$page->getId()] = $page;
-        }
     } else {
         $pages = ORM::getByQuery(
             Page::class,
@@ -751,7 +790,7 @@ function doConditionalGet(int $timestamp)
  *
  * @return array
  */
-function menu(array $categories, array $categoryIds, bool $weightedChildren = false): array
+function menu(array $categories, array $categoryIds, bool $weightedChildren = true): array
 {
     $menu = [];
     if (!$weightedChildren) {

@@ -87,7 +87,7 @@ $categories = ORM::getByQuery(
         AND (id IN (SELECT bind FROM kat WHERE vis != " . Category::HIDDEN . ")
             OR id IN (SELECT kat FROM bind)
         )
-    ORDER BY `order`, navn ASC
+    ORDER BY `order`, navn
     "
 );
 Cache::addLoadedTable('bind');
@@ -116,7 +116,7 @@ if (!empty($_GET['sog'])) {
     ];
 
     $where = " AND `maerke` = '" . $maerkeet['id'] . "'";
-    $listedPages = searchListe($_GET['q'] ?? '', $where);
+    $listedPages = searchListe('', $where);
 } elseif ($activePage) {
     $pageType = 'product';
 } elseif ($activeCategory) {
@@ -127,13 +127,20 @@ if (!empty($_GET['sog'])) {
         $pageType = 'product';
         $listedPages = [];
     }
-} elseif (isset($_GET['q'])) {
+} elseif (!empty($_GET['q'])
+    || !empty($_GET['varenr'])
+    || !empty($_GET['minpris'])
+    || !empty($_GET['maxpris'])
+    || !empty($_GET['sogikke'])
+    || !empty($_GET['maerke'])
+) {
     // Brand search
-    if (empty($_GET['varenr'])
+    if (empty($_GET['q'])
+        && empty($_GET['varenr'])
         && empty($_GET['minpris'])
         && empty($_GET['maxpris'])
-        && !empty($_GET['maerke'])
         && empty($_GET['sogikke'])
+        && !empty($_GET['maerke'])
     ) {
         $maerkeet = db()->fetchOne(
             "
@@ -142,13 +149,14 @@ if (!empty($_GET['sog'])) {
             WHERE id = " . (int) $_GET['maerke']
         );
         if ($maerkeet) {
-            $redirectUrl = '/m%C3%A6rke' . $maerkeet['id'] . '-' . rawurlencode(clearFileName($maerkeet['navn'])) . '/';
+            $redirectUrl = '/mærke' . $maerkeet['id'] . '-' . clearFileName($maerkeet['navn']) . '/';
             redirect($redirectUrl, 301);
         }
     }
 
     //Full search
     $where = "";
+    $wherekat = "";
     if (!empty($_GET['varenr'])) {
         $where .= " AND varenr LIKE '" . db()->esc($_GET['varenr']) . "%'";
     }
@@ -162,7 +170,8 @@ if (!empty($_GET['sog'])) {
         $where = " AND `maerke` = '" . (int) $_GET['maerke'] . "'";
     }
     if (!empty($_GET['sogikke'])) {
-        $where .= " AND !MATCH (navn, text) AGAINST('" . db()->esc($_GET['sogikke']) ."') > 0";
+        $where .= " AND !MATCH (navn, text, beskrivelse) AGAINST('" . db()->esc($_GET['sogikke']) ."') > 0";
+        $wherekat .= " AND !MATCH (navn) AGAINST('" . db()->esc($_GET['sogikke']) . "') > 0";
     }
     $listedPages = searchListe($_GET['q'] ?? '', $where);
     if (count($listedPages) === 1) {
@@ -170,10 +179,6 @@ if (!empty($_GET['sog'])) {
         redirect($page->getCanonicalLink(), 302);
     }
 
-    $wherekat = '';
-    if (!empty($_GET['sogikke'])) {
-        $wherekat .= " AND !MATCH (navn) AGAINST('" . db()->esc($_GET['sogikke']) . "') > 0";
-    }
     searchMenu($_GET['q'] ?? '', $wherekat);
 
     $GLOBALS['generatedcontent']['title'] = 'Søg på ' . xhtmlEsc($GLOBALS['_config']['site_name']);
@@ -321,7 +326,7 @@ if ($pageType === 'front') {
     Cache::addLoadedTable('lists');
 
     foreach ($lists as $list) {
-        $html = '<div id="table' . $list['id'] . '">';
+        $html .= '<div id="table' . $list['id'] . '">';
         $table_html = getTable(
             $list['id'],
             null,
