@@ -2876,12 +2876,6 @@ function get_db_error(): string
             $(\'status\').innerHTML = \''._('Searching for cirkalur linked categories').'\';
             x_get_looping_cats(set_db_errors);
 
-            $(\'status\').innerHTML = \''._('Searching for illegal e-mail adresses').'\';
-            x_get_subscriptions_with_bad_emails(set_db_errors);
-
-            $(\'status\').innerHTML = \''._('Removes not existing files from the database').'\';
-            x_removeNoneExistingFiles(set_db_errors);
-
             $(\'status\').innerHTML = \''._('Checking the file names').'\';
             x_check_file_names(set_db_errors);
 
@@ -2897,9 +2891,6 @@ function get_db_error(): string
             $(\'status\').innerHTML = \''._('Optimizing the database').'\';
             x_optimizeTables(set_db_errors);
 
-            $(\'status\').innerHTML = \''._('Getting Database Size').'\';
-            x_get_db_size(function(){});
-
             $(\'status\').innerHTML = \''._('Sending delayed emails').'\';
             x_sendDelayedEmail(set_db_errors);
 
@@ -2908,13 +2899,45 @@ function get_db_error(): string
             $(\'errors\').innerHTML = $(\'errors\').innerHTML+\'<br />\'+(\''._('The scan took %d seconds.').'\'.replace(/[%]d/g, Math.round((new Date().getTime()-starttime)/1000).toString()));
         }
 
+        function get_subscriptions_with_bad_emails()
+        {
+            $(\'loading\').style.visibility = \'\';
+            $(\'errors\').innerHTML = \'\';
+
+            var starttime = new Date().getTime();
+
+            $(\'status\').innerHTML = \''._('Searching for illegal e-mail adresses').'\';
+            x_get_subscriptions_with_bad_emails(set_db_errors);
+
+            $(\'status\').innerHTML = \'\';
+            $(\'loading\').style.visibility = \'hidden\';
+            $(\'errors\').innerHTML = $(\'errors\').innerHTML+\'<br />\'+(\''._('The scan took %d seconds.').'\'.replace(/[%]d/g, Math.round((new Date().getTime()-starttime)/1000).toString()));
+        }
+
+        function removeNoneExistingFiles()
+        {
+            $(\'loading\').style.visibility = \'\';
+            $(\'status\').innerHTML = \''._('Removes not existing files from the database').'\';
+            x_removeNoneExistingFiles(function (dummy) {});
+            $(\'status\').innerHTML = \''._('Getting Database Size').'\';
+            x_get_db_size(get_db_size_r);
+            $(\'status\').innerHTML = \'\';
+            $(\'loading\').style.visibility = \'hidden\';
+        }
+
         function get_mail_size_r(size)
         {
             $(\'mailboxsize\').innerHTML = Math.round(size/1024/1024)+\''._('MB').'\';
             $(\'status\').innerHTML = \'\';
             $(\'loading\').style.visibility = \'hidden\';
         }
-        --></script><div><b>'._('Server consumption').'</b> - '._('E-mail:').' <span id="mailboxsize"><button onclick="$(\'loading\').style.visibility = \'\'; x_get_mail_size(get_mail_size_r);">'._('Get e-mail consumption').'</button></span> '._('DB:').' <span id="dbsize">'.number_format(get_db_size(), 1, ',', '')._('MB').'</span> '._('WWW').': <span id="wwwsize">'.number_format(get_size_of_files(), 1, ',', '')._('MB').'</span></div><div id="status"></div><button onclick="scan_db();">'._('Scan database').'</button><div id="errors"></div>';
+
+        function get_db_size_r(size)
+        {
+            $(\'dbsize\').innerHTML = Math.round(size/1024/1024)+\''._('MB').'\';
+        }
+
+        --></script><div><b>'._('Server consumption').'</b> - '._('E-mail:').' <span id="mailboxsize"><button onclick="$(\'loading\').style.visibility = \'\'; x_get_mail_size(get_mail_size_r);">'._('Get e-mail consumption').'</button></span> '._('DB:').' <span id="dbsize">'.number_format(get_db_size(), 1, ',', '')._('MB').'</span> '._('WWW').': <span id="wwwsize">'.number_format(get_size_of_files(), 1, ',', '')._('MB').'</span></div><div id="status"></div><button onclick="scan_db();">'._('Scan database').'</button> <button onclick="get_subscriptions_with_bad_emails();">'._('Check emails in the address book').'</button> <button onclick="removeNoneExistingFiles();">'._('Clean up files').'</button><div id="errors"></div>';
 
     $emailsCount = db()->fetchOne("SELECT count(*) as 'count' FROM `emails`");
     $emails = db()->fetchArray("SHOW TABLE STATUS LIKE 'emails'");
@@ -3136,41 +3159,68 @@ function get_orphan_pages(): string
 
 function get_pages_with_mismatch_bindings(): string
 {
-    $pages = ORM::getByQuery(Page::class, "SELECT * FROM `sider`");
     $html = '';
-    foreach ($pages as $page) {
-        $missMatch = false;
-        $isInactive = $page->isInactive();
-        foreach ($page->getCategories() as $category) {
-            if ($isInactive !== $category->isInactive()) {
-                $missMatch = true;
-                continue 2;
-            }
-        }
-        //Add active pages that has a list that links to this page
-        $listPages = ORM::getByQuery(
-            Page::class,
-            "
-            SELECT `sider`.*
-            FROM `list_rows`
-            JOIN `lists` ON `list_rows`.`list_id` = `lists`.`id`
-            JOIN `sider` ON `lists`.`page_id` = `sider`.id
-            WHERE `list_rows`.`link` = " . $page->getId()
-        );
-        foreach ($listPages as $listPage) {
-            if ($isInactive !== $listPage->isInactive()) {
-                $missMatch = true;
-                continue 2;
-            }
-        }
-        if ($missMatch) {
-            $html .= '<a href="?side=redigerside&amp;id='.$page->getId().'">'.$page->getId().': '.$page->getTitle().'</a><br />';
+
+    // Map out active / inactive
+    $categoryActiveMaps = [[0], [-1]];
+    $categories = ORM::getByQuery(Category::class, "SELECT * FROM `kat`");
+    foreach ($categories as $category) {
+        $categoryActiveMaps[(int) $category->isInactive()][] = $category->getId();
+    }
+
+    $pages = ORM::getByQuery(
+        Page::class,
+        "
+        SELECT * FROM `sider`
+        WHERE EXISTS (
+            SELECT * FROM bind
+            WHERE side = sider.id
+            AND kat IN (" . implode(",", $categoryActiveMaps[0]) . ")
+        )
+        AND EXISTS (
+            SELECT * FROM bind
+            WHERE side = sider.id
+            AND kat IN (" . implode(",", $categoryActiveMaps[1]) . ")
+        )
+        ORDER BY id
+        "
+    );
+    if ($pages) {
+        $html .= '<b>'._('The following pages are both active and inactive').'</b><br />';
+        foreach ($pages as $page) {
+            $html .= '<a href="?side=redigerside&amp;id=' . $page->getId() . '">' . $page->getId() . ': ' . $page->getTitle() . '</a><br />';
         }
     }
 
-    if ($html) {
-        $html = '<b>'._('The following pages are both active and inactive').'</b><br />'.$html;
+    //Add active pages that has a list that links to this page
+    $pages = db()->fetchArray(
+        "
+        SELECT `sider`.*, `lists`.`page_id`
+        FROM `list_rows`
+        JOIN `lists` ON `list_rows`.`list_id` = `lists`.`id`
+        JOIN `sider` ON `list_rows`.`link` = `sider`.id
+        WHERE EXISTS (
+            SELECT * FROM bind
+            WHERE side = `lists`.`page_id`
+            AND kat IN (" . implode(",", $categoryActiveMaps[0]) . ")
+        )
+        AND EXISTS (
+            SELECT * FROM bind
+            WHERE side = sider.id
+            AND kat IN (" . implode(",", $categoryActiveMaps[1]) . ")
+        )
+        ORDER BY `lists`.`page_id`
+        "
+    );
+    if ($pages) {
+        $html .= '<b>'._('The following inactive pages appears in list on active pages').'</b><br />';
+        foreach ($pages as $page) {
+            $listPage = ORM::getOne(Page::class, $page['page_id']);
+            $page = new Page(Page::mapFromDB($page));
+            $html .= '<a href="?side=redigerside&amp;id=' . $listPage->getId() . '">' . $listPage->getId() . ': ' . $listPage->getTitle() . '</a> -&gt; <a href="?side=redigerside&amp;id=' . $page->getId() . '">' . $page->getId() . ': ' . $page->getTitle() . '</a><br />';
+        }
     }
+
     return $html;
 }
 

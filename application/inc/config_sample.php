@@ -12,7 +12,7 @@
  */
 
 $GLOBALS['_config'] = [
-    'base_url' => 'http://www.example.com',
+    'base_url' => 'http://localhost',
     'site_name' => 'My store',
     'address' => '',
     'postcode' => '',

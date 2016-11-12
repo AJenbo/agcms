@@ -44,10 +44,12 @@ spl_autoload_register(function ($class_name) {
     }
 });
 
-function db()
+function db(DB $overwrite = null)
 {
     static $db;
-    if (!$db) {
+    if ($overwrite) {
+        $db = $overwrite;
+    } elseif (!$db) {
         $db = new DB(
             $GLOBALS['_config']['mysql_server'],
             $GLOBALS['_config']['mysql_user'],
@@ -60,12 +62,13 @@ function db()
 
 function redirect(string $url, int $code = 303)
 {
+    $url = encodeUrl($url);
     if (mb_substr($url, 0, 1) === '/') {
-        $url .= $GLOBALS['_config']['base_url'];
+        $url = $GLOBALS['_config']['base_url'] . $url;
     }
 
     ini_set('zlib.output_compression', '0');
-    header('Location: ' . encodeUrl($url), true, $code);
+    header('Location: ' . $url, true, $code);
     die();
 }
 

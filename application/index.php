@@ -117,7 +117,9 @@ if (!empty($_GET['sog'])) {
 
     $where = " AND `maerke` = '" . $maerkeet['id'] . "'";
     $listedPages = searchListe($_GET['q'] ?? '', $where);
-} elseif ($activeCategory && !$activePage) {
+} elseif ($activePage) {
+    $pageType = 'product';
+} elseif ($activeCategory) {
     $pageType = $activeCategory->getRenderMode() == Category::GALLERY ? 'tiles' : 'list';
     $listedPages = $activeCategory->getPages();
     if (count($listedPages) === 1) {
@@ -293,8 +295,7 @@ if ($pageType === 'front') {
     }
     $text .= '</select></td></tr></table></form>';
     $GLOBALS['generatedcontent']['text'] = $text;
-} elseif ($activePage) {
-    $pageType = 'product';
+} elseif ($pageType === 'product') {
     $GLOBALS['generatedcontent']['canonical']       = $activePage->getCanonicalLink();
     $GLOBALS['generatedcontent']['title']           = xhtmlEsc($activePage->getTitle());
     $GLOBALS['generatedcontent']['headline']        = $activePage->getTitle();

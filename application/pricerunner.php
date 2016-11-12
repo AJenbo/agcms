@@ -57,8 +57,8 @@ foreach ($pages as $page) {
         echo '<companysku>' . htmlspecialchars(trim($page->getSku()), ENT_COMPAT | ENT_XML1) . '</companysku>';
     }
     echo '<price>' . $page->getPrice() . ',00</price><img>'
-    . encodeUrl($GLOBALS['_config']['base_url'] . $page->getImagePath()) . '</img><link>'
-    . encodeUrl($GLOBALS['_config']['base_url'] . $page->getCanonicalLink()) . '</link>';
+    . $GLOBALS['_config']['base_url'] . encodeUrl($page->getImagePath()) . '</img><link>'
+    . $GLOBALS['_config']['base_url'] . encodeUrl($page->getCanonicalLink()) . '</link>';
 
     $categoryTitles = [];
     if ($page->getBrandId()) {

@@ -85,16 +85,16 @@ foreach ($pages as $page) {
         $title = $GLOBALS['_config']['site_name'];
     }
     echo '<item><title>' . htmlspecialchars($title, ENT_COMPAT | ENT_XML1) . '</title><link>'
-    . encodeUrl($GLOBALS['_config']['base_url'] . $page->getCanonicalLink()) . '</link><description>';
+    . $GLOBALS['_config']['base_url'] . encodeUrl($page->getCanonicalLink()) . '</link><description>';
     if ($page->getImagePath() && $page->getImagePath() !== '/images/web/intet-foto.jpg') {
         echo '&lt;img style="float:left;margin:0 10px 5px 0;" src="'
-        . encodeUrl($GLOBALS['_config']['base_url'] . $page->getImagePath()) . '" &gt;&lt;p&gt;';
+        . $GLOBALS['_config']['base_url'] . encodeUrl($page->getImagePath()) . '" &gt;&lt;p&gt;';
     }
 
     $cleaned = trim(preg_replace($search, $replace, $page->getExcerpt()));
     echo htmlspecialchars($cleaned, ENT_COMPAT | ENT_XML1) . '</description><pubDate>'
     . gmdate('D, d M Y H:i:s', $page->getTimeStamp()) . ' GMT</pubDate><guid>'
-    . encodeUrl($GLOBALS['_config']['base_url'] . $page->getCanonicalLink()) . '</guid>';
+    . $GLOBALS['_config']['base_url'] . encodeUrl($page->getCanonicalLink()) . '</guid>';
 
     $categoryIds = [];
     foreach ($page->getCategories() as $category) {
