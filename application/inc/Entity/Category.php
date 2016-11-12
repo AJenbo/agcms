@@ -187,8 +187,9 @@ class Category
                 WHERE path = '" . db()->esc($this->getIconPath()) . "'"
             );
             Cache::addLoadedTable('files');
-
-            $title = $icon['alt'];
+            if ($icon) {
+                $title = $icon['alt'];
+            }
         }
 
         return 'kat' . $this->getId() . '-' . clearFileName($title) . '/';
