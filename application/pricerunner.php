@@ -43,7 +43,7 @@ $pages = ORM::getByQuery(
     "
     SELECT * FROM sider
     WHERE `pris` > 0 AND `navn` != ''
-    ORDER BY ``varenr` DESC
+    ORDER BY `varenr` DESC
     "
 );
 foreach ($pages as $page) {

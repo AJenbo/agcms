@@ -184,7 +184,7 @@ class Category
                 "
                 SELECT `alt`
                 FROM `files`
-                WHERE path = '" . db()->esc($category->getIconPath()) . "'"
+                WHERE path = '" . db()->esc($this->getIconPath()) . "'"
             );
             Cache::addLoadedTable('files');
 

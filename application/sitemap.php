@@ -40,7 +40,7 @@ $special = db()->fetchOne("SELECT dato FROM special WHERE id = 1");
     </url>
 <?php
 
-$activeCategoryIds = [];
+$activeCategoryIds = [0];
 $categories = ORM::getByQuery(Category::class, "SELECT * FROM kat WHERE bind != -1");
 foreach ($categories as $category) {
     if ($category->isInactive()) {

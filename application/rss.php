@@ -72,11 +72,11 @@ $pages = ORM::getByQuery(
     Page::class,
     "SELECT * FROM sider"
     . $where
-    . "ORDER BY dato DESC"
+    . " ORDER BY dato DESC"
     . $limit
 );
 foreach ($pages as $page) {
-    if ($pages->isInactive()) {
+    if ($page->isInactive()) {
         continue;
     }
 
@@ -105,7 +105,7 @@ foreach ($pages as $page) {
     foreach (array_unique($categoryIds) as $categoryId) {
         $category = ORM::getOne(Category::class, $categoryId);
         $cleaned = preg_replace($search, $replace, $category->getTitle());
-        $cleaned = trim($cleanName);
+        $cleaned = trim($cleaned);
         if ($cleaned) {
             echo '<category>';
             echo htmlspecialchars($cleaned, ENT_NOQUOTES | ENT_XML1);
@@ -120,7 +120,7 @@ foreach ($pages as $page) {
             WHERE id = " . $page->getBrandId()
         );
         $cleaned = preg_replace($search, $replace, $maerker['navn']);
-        $cleaned = trim($cleanName);
+        $cleaned = trim($cleaned);
         if ($cleaned) {
             echo '<category>';
             echo htmlspecialchars($cleaned, ENT_NOQUOTES | ENT_XML1);
