@@ -15,6 +15,7 @@ require_once $_SERVER['DOCUMENT_ROOT'] . '/inc/functions.php';
 
 //If url !utf-8 make it fucking utf-8 and try again
 $url = urldecode($_SERVER['REQUEST_URI']);
+
 //can't detect windows-1252
 $encoding = mb_detect_encoding($url, 'UTF-8, ISO-8859-1');
 if ($encoding != 'UTF-8') {
@@ -35,16 +36,15 @@ $activeCategory = null;
 $activePage = null;
 
 // Routing
-$redirect = false;
-
-//Get maerke
 $maerkeId = (int) preg_replace('/.*\/mærke([0-9]*)-.*|.*/u', '\1', $url);
+$categoryId = (int) preg_replace('/.*\/kat([0-9]*)-.*|.*/u', '\1', $url);
+$pageId = (int) preg_replace('/.*\/side([0-9]*)-.*|.*/u', '\1', $url);
+
+$redirect = !$maerkeId && !$categoryId && !$pageId ? 302 : false;
 if ($maerkeId && !db()->fetchOne("SELECT `id` FROM `maerke` WHERE id = " . $maerkeId)) {
     $redirect = 301;
 }
 
-$categoryId = (int) preg_replace('/.*\/kat([0-9]*)-.*|.*/u', '\1', $url);
-$pageId = (int) preg_replace('/.*\/side([0-9]*)-.*|.*/u', '\1', $url);
 if ($categoryId) {
     $activeCategory = ORM::getOne(Category::class, $categoryId);
     if (!$activeCategory || $activeCategory->isInactive()) {
@@ -64,7 +64,7 @@ if ($redirect) {
     //TODO stop space efter æøå
     $q = preg_replace(
         [
-            '/\/|-|_|\.html|\.htm|\.php|\.gif|\.jpeg|\.jpg|\.png|kat-|side-|\.php/u',
+            '/\/|-|_|\.html|\.htm|\.php|\.gif|\.jpeg|\.jpg|\.png|mærke[0-9]+-|kat[0-9]+-|side[0-9]+-|\.php/u',
             '/[^\w0-9]/u',
             '/([0-9]+)/u',
             '/([[:upper:]]?[[:lower:]]+)/u',
@@ -80,7 +80,7 @@ if ($redirect) {
         $url
     );
     $q = trim($q);
-
+    var_dump($q);exit;
     if ($q) {
         $redirectUrl = '/?q=' . rawurlencode($q) . '&sogikke=&minpris=&maxpris=&maerke=0';
     }
