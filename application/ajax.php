@@ -25,4 +25,4 @@ Sajax\Sajax::export(
         'getAddress' => ['method' => 'GET'],
     ]
 );
-Sajax\Sajax::handleClientRequest();
+Sajax\Sajax::handleClientRequest(false);
