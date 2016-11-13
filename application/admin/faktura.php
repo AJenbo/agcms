@@ -658,8 +658,7 @@ if ($faktura['department'] == $department) {
 }
         ?></select><?php
                 } else {
-                    $email = array_keys($GLOBALS['_config']['emails']);
-                    $email = reset($email);
+                    $email = reset($GLOBALS['_config']['emails'])['address'];
                     echo $email;
                     ?><input name="department" id="department" type="hidden" value="<?php echo $email; ?>" /><?php
                 }

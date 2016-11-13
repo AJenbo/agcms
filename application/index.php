@@ -47,8 +47,8 @@ foreach ($pages as $page) {
         'link' => '/' . $page->getSlug(),
     ];
 }
-$emails = array_keys($GLOBALS['_config']['emails']);
-$GLOBALS['generatedcontent']['email'] = reset($emails);
+$emails = reset($GLOBALS['_config']['emails'])['address'];
+$GLOBALS['generatedcontent']['email'] = $emails;
 $GLOBALS['generatedcontent']['crumbs'] = [];
 $GLOBALS['generatedcontent']['title'] = xhtmlEsc($GLOBALS['_config']['site_name']);
 $GLOBALS['generatedcontent']['activmenu'] = -1;

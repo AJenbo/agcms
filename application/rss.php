@@ -38,8 +38,7 @@ $replace = [
     ' '
 ];
 
-$email = array_keys($GLOBALS['_config']['emails']);
-$email = reset($email);
+$email = reset($GLOBALS['_config']['emails'])['address'];
 echo '<?xml version="1.0" encoding="utf-8"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
 <channel>
