@@ -256,15 +256,11 @@ if (count($users) < 2) {
 }
 ?></td><td>
 <select name="clerk">
-    <option value=""<?php
-    if (!$_GET['clerk']) {
-        echo ' selected="selected"';
-    }
-?>><?php echo _('All'); ?></option><?php
+    <option value=""><?php echo _('All'); ?></option><?php
 foreach ($users as $user) {
     //warning if a user name is a it could colide with all
     ?><option<?php
-if ($_GET['clerk'] == $user['fullname']) {
+if (isset($_GET['clerk']) && $_GET['clerk'] === $user['fullname']) {
     echo ' selected="selected"';
 }
     ?>><?php echo $user['fullname'] ?></option><?php
@@ -339,12 +335,12 @@ if (count($users) < 2) {
 <select name="momssats">
 <option value=""><?php echo _('All'); ?></option>
 <option value="0.25"<?php
-if ($_GET['momssats'] == 0.25) {
+if (isset($_GET['momssats']) && $_GET['momssats'] == 0.25) {
     echo ' selected="selected"';
 }
 ?>>25%</option>
 <option value="0"<?php
-if ($_GET['momssats'] === '0') {
+if (isset($_GET['momssats']) && $_GET['momssats'] === '0') {
     echo ' selected="selected"';
 }
 ?>>0%</option></select></td>
@@ -382,16 +378,12 @@ if (!empty($_GET['email'])) {
 }
 ?>" maxlength="64" /></td><?php
 if (count($GLOBALS['_config']['emails']) > 1) {
-    ?><td><select name="department"><option value=""<?php
-if (!$_GET['department']) {
-    echo ' selected="selected"';
-}
-    ?>><?php
+    ?><td><select name="department"><option value=""><?php
     echo _('All');
     ?></option><?php
 foreach ($GLOBALS['_config']['emails'] as $email => $dummy) {
     ?><option<?php
-if ($_GET['department'] == $email) {
+if (isset($_GET['department']) && $_GET['department'] === $email) {
     echo ' selected="selected"';
 }
 ?>><?php
