@@ -106,7 +106,6 @@ if (!empty($_FILES['Filedata']['tmp_name'])
         $height = $newfiledata['height'];
         $destpath = pathinfo($newfiledata['path']);
         $destpath = @$_COOKIE['admin_dir'].'/'.$destpath['basename'];
-        $mime = get_mime_type($temppath);
     } else {
         $temppath = '/admin/upload/temp/'.$name;
         $width = $imagesize[0];
