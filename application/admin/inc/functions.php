@@ -1410,7 +1410,8 @@ function saveImage(string $path, int $cropX, int $cropY, int $cropW, int $cropH,
 {
     $mimeType = get_mime_type($path);
 
-    if ($mimeType == 'image/jpeg') {
+    $output = [];
+    if ($mimeType === 'image/jpeg') {
         $output['type'] = 'jpg';
     } else {
         $output['type'] = 'png';
@@ -4091,4 +4092,161 @@ function annul(int $id)
     } else {
         return ['error' => _('An error occurred')];
     }
+}
+
+/**
+ * @param string $path
+ * @param int $cropX
+ * @param int $cropY
+ * @param int $cropW
+ * @param int $cropH
+ * @param int $maxW
+ * @param int $maxH
+ * @param int $flip
+ * @param int $rotate
+ * @param array $output
+ *
+ * @return array
+ */
+function generateImage(
+    string $path,
+    int $cropX,
+    int $cropY,
+    int $cropW,
+    int $cropH,
+    int $maxW,
+    int $maxH,
+    int $flip,
+    int $rotate,
+    array $output = []
+): array {
+    $outputPath = $path;
+    if (!empty($output['type'])) {
+        $pathinfo = pathinfo($path);
+        if (empty($output['filename'])) {
+            $output['filename'] = $pathinfo['filename'];
+        }
+
+        $outputPath = $pathinfo['dirname'] . '/' . $output['filename'];
+        $outputPath .= !empty($output['type']) && $output['type'] === 'png' ? '.png' : '.jpg';
+
+        if (!empty($output['type']) && empty($output['force']) && file_exists(_ROOT_ . $outputPath)) {
+            return ['yesno' => _('A file with the same name already exists.'."\n".'Would you like to replace the existing file?'), 'filename' => $output['filename']];
+        }
+    }
+
+    $image = new AJenbo\Image(_ROOT_ . $path);
+    $orginalWidth = $image->getWidth();
+    $orginalHeight = $image->getHeight();
+
+    //$GLOBALS['_config']['bgcolorR'], $GLOBALS['_config']['bgcolorG'], $GLOBALS['_config']['bgcolorB']
+
+    // Crop image
+    $cropW = $cropW ?: $image->getWidth();
+    $cropH = $cropH ?: $image->getHeight();
+    $cropW = min($image->getWidth(), $cropW);
+    $cropH = min($image->getHeight(), $cropH);
+    $cropX = $cropW !== $image->getWidth() ? $cropX : 0;
+    $cropY = $cropH !== $image->getHeight() ? $cropY : 0;
+    $image->crop($cropX, $cropY, $cropW, $cropH);
+
+    // Trim image whitespace
+    $imageContent = $image->findContent(0);
+
+    $maxW = min($maxW, $imageContent['width']);
+    $maxH = min($maxH, $imageContent['height']);
+
+    if (empty($output['type'])
+        && !$flip
+        && !$rotate
+        && $maxW === $orginalWidth
+        && $maxH === $orginalHeight
+    ) {
+        redirect($path, 301);
+    }
+
+    $image->crop(
+        $imageContent['x'],
+        $imageContent['y'],
+        $imageContent['width'],
+        $imageContent['height']
+    );
+
+    // Resize
+    $image->resize($maxW, $maxH);
+
+    // Flip / mirror
+    if ($flip) {
+        $image->flip($flip === 1 ? 'x' : 'y');
+    }
+
+    $image->rotate($rotate);
+
+    // Output image or save
+    if (empty($output['type'])) {
+        $mimeType = get_mime_type($path);
+        if ($mimeType !== 'image/png') {
+            $mimeType = 'image/jpeg';
+        }
+        header('Content-Type: ' . $mimeType);
+        $image->save(null, $mimeType === 'image/png' ? 'png' : 'jpeg');
+        die();
+    } elseif ($output['type'] === 'png') {
+        $mimeType = 'image/png';
+        $image->save(_ROOT_ . $outputPath, 'png');
+    } else {
+        $mimeType = 'image/jpeg';
+        $image->save(_ROOT_ . $outputPath, 'jpeg');
+    }
+
+    $width = $image->getWidth();
+    $height = $image->getHeight();
+    unset($image);
+
+    $filesize = filesize(_ROOT_ . $outputPath);
+
+    $id = null;
+    if ($output['filename'] === $pathinfo['filename'] && $outputPath !== $path) {
+        @unlink(_ROOT_ . $path);
+        db()->query("DELETE FROM files WHERE path = '" . db()->esc($outputPath) . "'");
+    } else {
+        $id = db()->fetchOne("SELECT id FROM files WHERE path = '" . db()->esc($outputPath) . "'");
+        $id = $id ? (int) $id['id'] : null;
+    }
+
+    if ($id) {
+        db()->query(
+            "
+            UPDATE files SET
+            path = '" . db()->esc($outputPath) . "',
+            mime = '" . db()->esc($mimeType) . "',
+            width = '" . $width . "',
+            height = '" . $height . "'
+            size = " . $filesize . ",
+            WHERE id = " . $id
+        );
+    } else {
+        db()->query(
+            "
+            INSERT INTO files (
+                path,
+                mime,
+                width,
+                height,
+                size,
+                aspect
+            ) VALUES (
+                '" . db()->esc($outputPath) . "',
+                '" . db()->esc($mimeType) . "',
+                '" . $width . "',
+                '" . $height . "',
+                '" . $filesize . "',
+                NULL
+            )
+            "
+        );
+        $id = db()->insert_id;
+    }
+
+    return ['id' => $id, 'path' => $outputPath, 'width' => $width, 'height' => $height];
 }

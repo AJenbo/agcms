@@ -1,7 +1,6 @@
 <?php
 
 require_once $_SERVER['DOCUMENT_ROOT'] . '/admin/inc/logon.php';
-require_once _ROOT_ . '/admin/inc/image-functions.php';
 
 Sajax\Sajax::export(['saveImage' => ['method' => 'POST']]);
 Sajax\Sajax::handleClientRequest();

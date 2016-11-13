@@ -3,6 +3,10 @@
         {
             "type": "vcs",
             "url": "https://github.com/AJenbo/Sajax"
+        },
+        {
+            "type": "vcs",
+            "url": "https://github.com/AJenbo/Image.php"
         }
     ],
     "require": {
@@ -14,6 +18,7 @@
         "phpmailer/phpmailer":  ">=5.0.0",
         "ezyang/htmlpurifier":  ">=4.4",
         "tecnickcom/tcpdf": "^6.2",
-        "ajenbo/sajax" : "0.14.*"
+        "ajenbo/sajax" : "dev-master",
+        "ajenbo/image.php" : "dev-master"
     }
 }

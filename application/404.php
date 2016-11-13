@@ -80,7 +80,6 @@ if ($redirect) {
         $url
     );
     $q = trim($q);
-    var_dump($q);exit;
     if ($q) {
         $redirectUrl = '/?q=' . rawurlencode($q) . '&sogikke=&minpris=&maxpris=&maerke=0';
     }

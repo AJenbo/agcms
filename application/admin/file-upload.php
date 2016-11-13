@@ -167,8 +167,6 @@ function send() {
                 alert('Kunne ikke slette filen.');
             } else if (x.status == 521) {
                 alert('Billedet er for stor.');
-            } else if (x.status == 560) {
-                alert('Mangler billedfunctioner');
             } else if (x.status == 561) {
                 alert('Fejl under billed behandling.');
             } else if (x.status == 542) {
