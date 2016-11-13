@@ -14,32 +14,19 @@
 require_once $_SERVER['DOCUMENT_ROOT'] . '/inc/functions.php';
 include_once _ROOT_ . '/inc/countries.php';
 
-Render::$pageType = 'custome';
-
-$GLOBALS['generatedcontent']['datetime'] = time();
-
 $id = !empty($_GET['id']) ? (int) $_GET['id'] : null;
 $checkid = !empty($_GET['checkid']) ? $_GET['checkid'] : '';
 
-//Generate return page
-$GLOBALS['generatedcontent']['crumbs'] = [];
-if (!empty($id)) {
-    $GLOBALS['generatedcontent']['crumbs'][0] = [
+Render::$pageType = 'custome';
+Render::$crumbs = [
+    [
         'name' => _('Payment'),
-        'link' => '/?id=' . $id . '&checkid=' . $checkid,
+        'link' => '/betaling/' . ($id ? '?id=' . $id . '&checkid=' . rawurlencode($checkid) : ''),
         'icon' => null,
-    ];
-} else {
-    $GLOBALS['generatedcontent']['crumbs'][0] = [
-        'name' => _('Payment'),
-        'link' => '/',
-        'icon' => null,
-    ];
-}
-$GLOBALS['generatedcontent']['contenttype'] = 'page';
-$GLOBALS['generatedcontent']['text'] = '';
-$productslines = 0;
+    ]
+];
 
+$productslines = 0;
 if (!empty($id) && $checkid === getCheckid($id) && !isset($_GET['txnid'])) {
     $rejected = [];
     $faktura = db()->fetchOne(
@@ -81,16 +68,17 @@ if (!empty($id) && $checkid === getCheckid($id) && !isset($_GET['txnid'])) {
                   AND `id` = " . $id
             );
 
-            $GLOBALS['generatedcontent']['crumbs'] = [];
-            $GLOBALS['generatedcontent']['crumbs'][1] = [
-                'name' => _('Order #') . $id,
-                'link' => '#',
-                'icon' => null,
+            Render::$crumbs = [
+                [
+                    'name' => _('Order #') . $id,
+                    'link' => urldecode($_SERVER['REQUEST_URI']),
+                    'icon' => null,
+                ]
             ];
-            $GLOBALS['generatedcontent']['title'] = _('Order #').$id;
-            $GLOBALS['generatedcontent']['headline'] = _('Order #').$id;
+            Render::$title = _('Order #') . $id;
+            Render::$headline = _('Order #').$id;
 
-            $GLOBALS['generatedcontent']['text'] = '<table id="faktura" cellspacing="0">
+            Render::$bodyHtml = '<table id="faktura" cellspacing="0">
                 <thead>
                     <tr>
                         <td class="td1">'._('Quantity').'</td>
@@ -105,7 +93,7 @@ if (!empty($id) && $checkid === getCheckid($id) && !isset($_GET['txnid'])) {
                         <td>&nbsp;</td>
                         <td class="tal">'._('Net Amount').'</td>';
 
-            $GLOBALS['generatedcontent']['text'] .= '<td class="tal">'.number_format($netto, 2, ',', '').'</td>
+            Render::$bodyHtml .= '<td class="tal">'.number_format($netto, 2, ',', '').'</td>
                 </tr>
                 <tr>
                     <td>&nbsp;</td>
@@ -127,7 +115,7 @@ if (!empty($id) && $checkid === getCheckid($id) && !isset($_GET['txnid'])) {
             </tfoot>
             <tbody>';
             for ($i=0; $i<$productslines; $i++) {
-                $GLOBALS['generatedcontent']['text'] .= '<tr>
+                Render::$bodyHtml .= '<tr>
                     <td class="tal">'.$faktura['quantities'][$i].'</td>
                     <td>'.xhtmlEsc($faktura['products'][$i]).'</td>
                     <td class="tal">'.number_format($faktura['values'][$i]*(1+$faktura['momssats']), 2, ',', '').'</td>
@@ -135,13 +123,13 @@ if (!empty($id) && $checkid === getCheckid($id) && !isset($_GET['txnid'])) {
                 </tr>';
             }
 
-            $GLOBALS['generatedcontent']['text'] .= '</tbody></table>';
+            Render::$bodyHtml .= '</tbody></table>';
 
             if ($faktura['note']) {
-                $GLOBALS['generatedcontent']['text'] .= '<br /><strong>'._('Note:').'</strong><br /><p class="note">';
-                $GLOBALS['generatedcontent']['text'] .= nl2br(htmlspecialchars($faktura['note'])).'</p>';
+                Render::$bodyHtml .= '<br /><strong>'._('Note:').'</strong><br /><p class="note">';
+                Render::$bodyHtml .= nl2br(htmlspecialchars($faktura['note'])).'</p>';
             }
-            $GLOBALS['generatedcontent']['text'] .= '<form action="" method="get">
+            Render::$bodyHtml .= '<form action="" method="get">
         <input type="hidden" name="id" value="' . $id . '" />
         <input type="hidden" name="checkid" value="' . htmlspecialchars($checkid) . '" />
         <input type="hidden" name="step" value="1" />
@@ -229,12 +217,15 @@ if (!empty($id) && $checkid === getCheckid($id) && !isset($_GET['txnid'])) {
             }
 
             //TODO add enote
-            $GLOBALS['generatedcontent']['crumbs'] = [];
-            $GLOBALS['generatedcontent']['crumbs'][1] = ['name' => _('Recipient'), 'link' => '#', 'icon' => null];
-            $GLOBALS['generatedcontent']['title'] = _('Recipient');
-            $GLOBALS['generatedcontent']['headline'] = _('Recipient');
+            Render::$crumbs[] = [
+                'name' => _('Recipient'),
+                'link' => urldecode($_SERVER['REQUEST_URI']),
+                'icon' => null,
+            ];
+            Render::$title = _('Recipient');
+            Render::$headline = _('Recipient');
 
-            $GLOBALS['generatedcontent']['text'] = '
+            Render::$bodyHtml = '
             <script type="text/javascript"><!--
             window.history.forward(1);
             --></script>
@@ -258,9 +249,9 @@ if (!empty($id) && $checkid === getCheckid($id) && !isset($_GET['txnid'])) {
                 <td colspan="2"><input name="navn" id="navn" style="width:157px" value="'.xhtmlEsc($faktura['navn']).'" /></td>
                 <td>';
             if (!empty($rejected['navn'])) {
-                $GLOBALS['generatedcontent']['text'] .= '<img src="images/error.png" alt="" title="" >';
+                Render::$bodyHtml .= '<img src="images/error.png" alt="" title="" >';
             }
-            $GLOBALS['generatedcontent']['text'] .= '</td>
+            Render::$bodyHtml .= '</td>
             </tr>
             <tr>
                 <td> '._('Name:').'</td>
@@ -272,9 +263,9 @@ if (!empty($id) && $checkid === getCheckid($id) && !isset($_GET['txnid'])) {
                 <td colspan="2"><input name="adresse" id="adresse" style="width:157px" value="'.xhtmlEsc($faktura['adresse']).'" /></td>
                 <td>';
             if (!empty($rejected['adresse'])) {
-                $GLOBALS['generatedcontent']['text'] .= '<img src="images/error.png" alt="" title="" >';
+                Render::$bodyHtml .= '<img src="images/error.png" alt="" title="" >';
             }
-            $GLOBALS['generatedcontent']['text'] .= '</td>
+            Render::$bodyHtml .= '</td>
             </tr>
             <tr>
                 <td> '._('Postbox:').'</td>
@@ -288,146 +279,146 @@ if (!empty($id) && $checkid === getCheckid($id) && !isset($_GET['txnid'])) {
                     <input name="by" id="by" style="width:90px" value="'.xhtmlEsc($faktura['by']).'" /></td>
                 <td>';
             if (!empty($rejected['postnr'])) {
-                $GLOBALS['generatedcontent']['text'] .= '<img src="images/error.png" alt="" title="" >';
+                Render::$bodyHtml .= '<img src="images/error.png" alt="" title="" >';
             }
             if (!empty($rejected['by'])) {
-                $GLOBALS['generatedcontent']['text'] .= '<img src="images/error.png" alt="" title="" >';
+                Render::$bodyHtml .= '<img src="images/error.png" alt="" title="" >';
             }
-            $GLOBALS['generatedcontent']['text'] .= '</td>
+            Render::$bodyHtml .= '</td>
             </tr>
             <tr>
                 <td> '._('Country:').'</td>
                 <td colspan="2"><select name="land" id="land" style="width:157px" onblur="chnageZipCode($(\'postnr\').value, \'land\', \'by\')" onkeyup="chnageZipCode($(\'postnr\').value, \'land\', \'by\')" onchange="chnageZipCode($(\'postnr\').value, \'land\', \'by\')">';
 
             foreach ($countries as $code => $country) {
-                $GLOBALS['generatedcontent']['text'] .= '<option value="'.$code.'"';
+                Render::$bodyHtml .= '<option value="'.$code.'"';
                 if ($faktura['land'] == $code) {
-                    $GLOBALS['generatedcontent']['text'] .= ' selected="selected"';
+                    Render::$bodyHtml .= ' selected="selected"';
                 }
-                $GLOBALS['generatedcontent']['text'] .= '>'.htmlspecialchars($country).'</option>';
+                Render::$bodyHtml .= '>'.htmlspecialchars($country).'</option>';
             }
-            $GLOBALS['generatedcontent']['text'] .= '</select></td>
+            Render::$bodyHtml .= '</select></td>
                 <td>';
             if (!empty($rejected['land'])) {
-                $GLOBALS['generatedcontent']['text'] .= '<img src="images/error.png" alt="" title="" >';
+                Render::$bodyHtml .= '<img src="images/error.png" alt="" title="" >';
             }
-            $GLOBALS['generatedcontent']['text'] .= '</td>
+            Render::$bodyHtml .= '</td>
             </tr>
             <tr>
                 <td> '._('E-mail:').'</td>
                 <td colspan="2"><input name="email" id="email" style="width:157px" value="'.xhtmlEsc($faktura['email']).'" /></td>
                 <td>';
             if (!empty($rejected['email'])) {
-                $GLOBALS['generatedcontent']['text'] .= '<img src="images/error.png" alt="" title="" >';
+                Render::$bodyHtml .= '<img src="images/error.png" alt="" title="" >';
             }
-            $GLOBALS['generatedcontent']['text'] .= '</td>
+            Render::$bodyHtml .= '</td>
             </tr>
             <tr>
                 <td colspan="4"><input onclick="showhidealtpost(this.checked);" name="altpost" id="altpost" type="checkbox"';
             if (!empty($faktura['altpost'])) {
-                $GLOBALS['generatedcontent']['text'] .= ' checked="checked"';
+                Render::$bodyHtml .= ' checked="checked"';
             }
-            $GLOBALS['generatedcontent']['text'] .= ' /><label for="altpost"> '._('Other delivery address').'</label></td>
+            Render::$bodyHtml .= ' /><label for="altpost"> '._('Other delivery address').'</label></td>
             </tr>
             <tr class="altpost"';
             if (empty($faktura['altpost'])) {
-                $GLOBALS['generatedcontent']['text'] .= ' style="display:none;"';
+                Render::$bodyHtml .= ' style="display:none;"';
             }
-            $GLOBALS['generatedcontent']['text'] .= '>
+            Render::$bodyHtml .= '>
                 <td> '._('Phone:').'</td>
                 <td colspan="2"><input name="posttlf" id="posttlf" style="width:157px" value="'.xhtmlEsc($faktura['posttlf']).'" /></td>
                 <td><input type="button" value="'._('Get address').'" onclick="getAddress(document.getElementById(\'posttlf\').value, getAddress_r2);" /></td>
             </tr>
             <tr class="altpost"';
             if (empty($faktura['altpost'])) {
-                $GLOBALS['generatedcontent']['text'] .= ' style="display:none;"';
+                Render::$bodyHtml .= ' style="display:none;"';
             }
-            $GLOBALS['generatedcontent']['text'] .= '>
+            Render::$bodyHtml .= '>
                 <td>'._('Name:').'</td>
                 <td colspan="2"><input name="postname" id="postname" style="width:157px" value="'.xhtmlEsc($faktura['postname']).'" /></td>
                 <td>';
             if (!empty($rejected['postname'])) {
-                $GLOBALS['generatedcontent']['text'] .= '<img src="images/error.png" alt="" title="" >';
+                Render::$bodyHtml .= '<img src="images/error.png" alt="" title="" >';
             }
-            $GLOBALS['generatedcontent']['text'] .= '</td>
+            Render::$bodyHtml .= '</td>
             </tr>
             <tr class="altpost"';
             if (empty($faktura['altpost'])) {
-                $GLOBALS['generatedcontent']['text'] .= ' style="display:none;"';
+                Render::$bodyHtml .= ' style="display:none;"';
             }
-            $GLOBALS['generatedcontent']['text'] .= '>
+            Render::$bodyHtml .= '>
                 <td> '._('Attn.:').'</td>
                 <td colspan="2"><input name="postatt" id="postatt" style="width:157px" value="'.xhtmlEsc($faktura['postatt']).'" /></td>
                 <td></td>
             </tr>
             <tr class="altpost"';
             if (empty($faktura['altpost'])) {
-                $GLOBALS['generatedcontent']['text'] .= ' style="display:none;"';
+                Render::$bodyHtml .= ' style="display:none;"';
             }
-            $GLOBALS['generatedcontent']['text'] .= '>
+            Render::$bodyHtml .= '>
             <td> '._('Address:').'</td>
             <td colspan="2"><input name="postaddress" id="postaddress" style="width:157px" value="'.xhtmlEsc($faktura['postaddress']).'" /><br /><input name="postaddress2" id="postaddress2" style="width:157px" value="'.xhtmlEsc($faktura['postaddress2']).'" /></td>
             <td>';
             if (!empty($rejected['postaddress'])) {
-                $GLOBALS['generatedcontent']['text'] .= '<img src="images/error.png" alt="" title="" >';
+                Render::$bodyHtml .= '<img src="images/error.png" alt="" title="" >';
             }
-            $GLOBALS['generatedcontent']['text'] .= '</td>
+            Render::$bodyHtml .= '</td>
             </tr>
             <tr class="altpost"';
             if (empty($faktura['altpost'])) {
-                $GLOBALS['generatedcontent']['text'] .= ' style="display:none;"';
+                Render::$bodyHtml .= ' style="display:none;"';
             }
-            $GLOBALS['generatedcontent']['text'] .= '>
+            Render::$bodyHtml .= '>
                 <td> '._('Postbox:').'</td>
                 <td colspan="2"><input name="postpostbox" id="postpostbox" style="width:157px" value="'.xhtmlEsc($faktura['postpostbox']).'" /></td>
                 <td></td>
             </tr>
             <tr class="altpost"';
             if (empty($faktura['altpost'])) {
-                $GLOBALS['generatedcontent']['text'] .= ' style="display:none;"';
+                Render::$bodyHtml .= ' style="display:none;"';
             }
-            $GLOBALS['generatedcontent']['text'] .= '>
+            Render::$bodyHtml .= '>
                 <td> '._('Zipcode:').'</td>
                 <td><input name="postpostalcode" id="postpostalcode" style="width:35px" value="'.xhtmlEsc($faktura['postpostalcode']).'" onblur="chnageZipCode(this.value, \'postcountry\', \'postcity\')" onkeyup="chnageZipCode(this.value, \'postcountry\', \'postcity\')" onchange="chnageZipCode(this.value, \'postcountry\', \'postcity\')" /></td>
                 <td align="right">'._('City:').'
                     <input name="postcity" id="postcity" style="width:90px" value="'.xhtmlEsc($faktura['postcity']).'" /></td>
                 <td>';
             if (!empty($rejected['postpostalcode'])) {
-                $GLOBALS['generatedcontent']['text'] .= '<img src="images/error.png" alt="" title="" >';
+                Render::$bodyHtml .= '<img src="images/error.png" alt="" title="" >';
             }
             if (!empty($rejected['postcity'])) {
-                $GLOBALS['generatedcontent']['text'] .= '<img src="images/error.png" alt="" title="" >';
+                Render::$bodyHtml .= '<img src="images/error.png" alt="" title="" >';
             }
-            $GLOBALS['generatedcontent']['text'] .= '</td>
+            Render::$bodyHtml .= '</td>
             </tr>
             <tr class="altpost"';
             if (empty($faktura['altpost'])) {
-                $GLOBALS['generatedcontent']['text'] .= ' style="display:none;"';
+                Render::$bodyHtml .= ' style="display:none;"';
             }
-            $GLOBALS['generatedcontent']['text'] .= '>
+            Render::$bodyHtml .= '>
                 <td> '._('Country:').'</td>
                 <td colspan="2"><select name="postcountry" id="postcountry" style="width:157px" onblur="chnageZipCode($(\'postpostalcode\').value, \'postcountry\', \'postcity\')" onkeyup="chnageZipCode($(\'postpostalcode\').value, \'postcountry\', \'postcity\')" onchange="chnageZipCode($(\'postpostalcode\').value, \'postcountry\', \'postcity\')">';
 
             foreach ($countries as $code => $country) {
-                $GLOBALS['generatedcontent']['text'] .= '<option value="'.$code.'"';
+                Render::$bodyHtml .= '<option value="'.$code.'"';
                 if ($faktura['postcountry'] == $code) {
-                    $GLOBALS['generatedcontent']['text'] .= ' selected="selected"';
+                    Render::$bodyHtml .= ' selected="selected"';
                 }
-                $GLOBALS['generatedcontent']['text'] .= '>'.htmlspecialchars($country).'</option>';
+                Render::$bodyHtml .= '>'.htmlspecialchars($country).'</option>';
             }
-            $GLOBALS['generatedcontent']['text'] .= '</select></td><td>';
+            Render::$bodyHtml .= '</select></td><td>';
             if (!empty($rejected['postcountry'])) {
-                $GLOBALS['generatedcontent']['text'] .= '<img src="images/error.png" alt="" title="" >';
+                Render::$bodyHtml .= '<img src="images/error.png" alt="" title="" >';
             }
-            $GLOBALS['generatedcontent']['text'] .= '</td></tr>';
-            $GLOBALS['generatedcontent']['text'] .= '<tr>
+            Render::$bodyHtml .= '</td></tr>';
+            Render::$bodyHtml .= '<tr>
                 <td colspan="4"><input name="newsletter" id="newsletter" type="checkbox"';
             if (!empty($_POST['newsletter'])) {
-                $GLOBALS['generatedcontent']['text'] .= ' checked="checked"';
+                Render::$bodyHtml .= ' checked="checked"';
             }
-            $GLOBALS['generatedcontent']['text'] .= ' /><label for="newsletter"> '._('Please send me your newsletter.').'</label></td>
+            Render::$bodyHtml .= ' /><label for="newsletter"> '._('Please send me your newsletter.').'</label></td>
             </tr>';
-            $GLOBALS['generatedcontent']['text'] .= '</tbody></table><input style="font-weight:bold;" type="submit" value="'._('Proceed to the terms of trade').'" /></form>';
+            Render::$bodyHtml .= '</tbody></table><input style="font-weight:bold;" type="submit" value="'._('Proceed to the terms of trade').'" /></form>';
         } elseif ($_GET['step'] == 2) { //Accept terms and continue to payment
             if (count(validate($faktura))) {
                 redirect('/betaling/?id=' . $id . '&checkid=' . $checkid . '&step=1');
@@ -441,14 +432,13 @@ if (!empty($id) && $checkid === getCheckid($id) && !isset($_GET['txnid'])) {
                 AND `id` = " . $id
             );
 
-            $GLOBALS['generatedcontent']['crumbs'] = [];
-            $GLOBALS['generatedcontent']['crumbs'][1] = [
+            Render::$crumbs[] = [
                 'name' => _('Trade Conditions'),
-                'link' => '#',
+                'link' => urldecode($_SERVER['REQUEST_URI']),
                 'icon' => null,
             ];
-            $GLOBALS['generatedcontent']['title'] = _('Trade Conditions');
-            $GLOBALS['generatedcontent']['headline'] = _('Trade Conditions');
+            Render::$title = _('Trade Conditions');
+            Render::$headline = _('Trade Conditions');
 
             $special = db()->fetchOne(
                 "
@@ -457,9 +447,9 @@ if (!empty($id) && $checkid === getCheckid($id) && !isset($_GET['txnid'])) {
                 WHERE `id` = 3
                 "
             );
-            $GLOBALS['generatedcontent']['text'] .= '<br />'.$special['text'];
+            Render::$bodyHtml .= '<br />'.$special['text'];
 
-            $GLOBALS['generatedcontent']['text'] .= '<form style="text-align:center;" action="https://ssl.ditonlinebetalingssystem.dk/integration/ewindow/Default.aspx" method="post">';
+            Render::$bodyHtml .= '<form style="text-align:center;" action="https://ssl.ditonlinebetalingssystem.dk/integration/ewindow/Default.aspx" method="post">';
 
             $submit = [
                 'group'             => Config::get('pbsfix'),
@@ -474,64 +464,62 @@ if (!empty($id) && $checkid === getCheckid($id) && !isset($_GET['txnid'])) {
                 'windowid'          => Config::get('pbswindow'),
             ];
             foreach ($submit as $key => $value) {
-                $GLOBALS['generatedcontent']['text'] .= '<input type="hidden" name="'
+                Render::$bodyHtml .= '<input type="hidden" name="'
                 .$key.'" value="'.xhtmlEsc($value).'" />';
             }
-            $GLOBALS['generatedcontent']['text'] .= '<input type="hidden" name="hash" value="'
+            Render::$bodyHtml .= '<input type="hidden" name="hash" value="'
             .md5(implode('', $submit).Config::get('pbspassword')).'" />';
 
-            $GLOBALS['generatedcontent']['text'] .= '<input class="web" type="submit" value="'._('I hereby agree to the terms of trade').'" />';
-            $GLOBALS['generatedcontent']['text'] .= '</form>';
+            Render::$bodyHtml .= '<input class="web" type="submit" value="'._('I hereby agree to the terms of trade').'" />';
+            Render::$bodyHtml .= '</form>';
         }
     } else { //Show order status
-        $GLOBALS['generatedcontent']['crumbs'] = [];
-        $GLOBALS['generatedcontent']['crumbs'][1] = [
-            'name' => _('Error'),
-            'link' => '#',
-            'icon' => null,
-        ];
-        $GLOBALS['generatedcontent']['title'] = _('Error');
-        $GLOBALS['generatedcontent']['headline'] = _('Error');
-        if ($faktura['status'] == 'pbsok') {
-            $GLOBALS['generatedcontent']['crumbs'][1] = [
+        if (in_array($faktura['status'], ['pbsok', 'accepted'], true)) {
+            Render::$crumbs[] = [
                 'name' => _('Status'),
-                'link' => '#',
+                'link' => urldecode($_SERVER['REQUEST_URI']),
                 'icon' => null,
             ];
-            $GLOBALS['generatedcontent']['title'] = _('Status');
-            $GLOBALS['generatedcontent']['headline'] = _('Status');
-            $GLOBALS['generatedcontent']['text'] = _('Payment received.');
-        } elseif ($faktura['status'] == 'accepted') {
-            $GLOBALS['generatedcontent']['crumbs'][1] = [
-                'name' => _('Status'),
-                'link' => '#',
-                'icon' => null,
-            ];
-            $GLOBALS['generatedcontent']['title'] = _('Status');
-            $GLOBALS['generatedcontent']['headline'] = _('Status');
-            $GLOBALS['generatedcontent']['text'] = _('The payment was received and the package is sent.');
-        } elseif ($faktura['status'] == 'giro') {
-            $GLOBALS['generatedcontent']['text'] = _('The payment is already received in cash.');
-        } elseif ($faktura['status'] == 'cash') {
-            $GLOBALS['generatedcontent']['text'] = _('The payment is already received in cash.');
-        } elseif ($faktura['status'] == 'canceled') {
-            $GLOBALS['generatedcontent']['text'] = _('The transaction is canceled.');
-        } elseif ($faktura['status'] == 'rejected') {
-            $GLOBALS['generatedcontent']['text'] = _('Payment rejected.');
         } else {
-            $GLOBALS['generatedcontent']['text'] = _('An errror occured.');
+            Render::$crumbs[] = [
+                'name' => _('Error'),
+                'link' => urldecode($_SERVER['REQUEST_URI']),
+                'icon' => null,
+            ];
+        }
+        Render::$title = _('Error');
+        Render::$headline = _('Error');
+        if ($faktura['status'] == 'pbsok') {
+            Render::$title = _('Status');
+            Render::$headline = _('Status');
+            Render::$bodyHtml = _('Payment received.');
+        } elseif ($faktura['status'] == 'accepted') {
+            Render::$title = _('Status');
+            Render::$headline = _('Status');
+            Render::$bodyHtml = _('The payment was received and the package is sent.');
+        } elseif ($faktura['status'] == 'giro') {
+            Render::$bodyHtml = _('The payment is already received in cash.');
+        } elseif ($faktura['status'] == 'cash') {
+            Render::$bodyHtml = _('The payment is already received in cash.');
+        } elseif ($faktura['status'] == 'canceled') {
+            Render::$bodyHtml = _('The transaction is canceled.');
+        } elseif ($faktura['status'] == 'rejected') {
+            Render::$bodyHtml = _('Payment rejected.');
+        } else {
+            Render::$bodyHtml = _('An errror occured.');
         }
     }
 } elseif (isset($_GET['txnid'])) {
-    $GLOBALS['generatedcontent']['crumbs'] = [];
-    $GLOBALS['generatedcontent']['crumbs'][1] = [
-        'name' => _('Error'),
-        'link' => '#',
-        'icon' => null,
+    Render::$crumbs = [
+        [
+            'name' => _('Error'),
+            'link' => urldecode($_SERVER['REQUEST_URI']),
+            'icon' => null,
+        ]
     ];
-    $GLOBALS['generatedcontent']['title'] = _('Error');
-    $GLOBALS['generatedcontent']['headline'] = _('Error');
-    $GLOBALS['generatedcontent']['text'] = _('An unknown error occured.');
+    Render::$title = _('Error');
+    Render::$headline = _('Error');
+    Render::$bodyHtml = _('An unknown error occured.');
 
     $tid = (int) $_GET['txnid'];
     $amount = (int) $_GET['amount'];
@@ -547,38 +535,42 @@ if (!empty($id) && $checkid === getCheckid($id) && !isset($_GET['txnid'])) {
     $faktura = db()->fetchOne("SELECT * FROM `fakturas` WHERE `id` = " . $id);
 
     if (!$faktura) {
-        $GLOBALS['generatedcontent']['text'] = '<p>' . _('The payment does not exist in our system.') . '</p>';
+        Render::$bodyHtml = '<p>' . _('The payment does not exist in our system.') . '</p>';
         $shopBody = '<br />' . sprintf(
             _('A user tried to pay online invoice #%d, which is not in the system!'),
             $id
         ) . '<br />';
     } elseif (in_array($faktura['status'], ['canceled', 'rejected'])) {
-        $GLOBALS['generatedcontent']['crumbs'][1] = ['name' => _('Reciept'), 'link' => '#', 'icon' => null];
-        $GLOBALS['generatedcontent']['title'] = _('Reciept');
-        $GLOBALS['generatedcontent']['headline'] = _('Reciept');
-        $GLOBALS['generatedcontent']['text'] = '<p>'._('This trade has been canceled or refused.').'</p>';
-        $shopBody = '<br />'.sprintf(_('A customer tried to see the status page for online invoice #%d which is canceled or rejected.'), $id).'<br />';
-    } elseif (!in_array($faktura['status'], ['locked', 'new', 'pbserror'])) {
-        $GLOBALS['generatedcontent']['crumbs'][1] = [
+        Render::$crumbs[] = [
             'name' => _('Reciept'),
-            'link' => '#',
+            'link' => urldecode($_SERVER['REQUEST_URI']),
             'icon' => null,
         ];
-        $GLOBALS['generatedcontent']['title'] = _('Reciept');
-        $GLOBALS['generatedcontent']['headline'] = _('Reciept');
-        $GLOBALS['generatedcontent']['text'] = '<p>'._('Payment is registered and you ought to have received a receipt by email.').'</p>';
+        Render::$title = _('Reciept');
+        Render::$headline = _('Reciept');
+        Render::$bodyHtml = '<p>'._('This trade has been canceled or refused.').'</p>';
+        $shopBody = '<br />'.sprintf(_('A customer tried to see the status page for online invoice #%d which is canceled or rejected.'), $id).'<br />';
+    } elseif (!in_array($faktura['status'], ['locked', 'new', 'pbserror'])) {
+        Render::$crumbs[] = [
+            'name' => _('Reciept'),
+            'link' => urldecode($_SERVER['REQUEST_URI']),
+            'icon' => null,
+        ];
+        Render::$title = _('Reciept');
+        Render::$headline = _('Reciept');
+        Render::$bodyHtml = '<p>'._('Payment is registered and you ought to have received a receipt by email.').'</p>';
         $shopBody = '<br />' . sprintf(
             _('A customer tried to see the status page for online invoice #%d, which is already paid.'),
             $id
         ) . '<br />';
     } elseif ($eKey == $_GET['hash']) {
-        $GLOBALS['generatedcontent']['crumbs'][1] = [
+        Render::$crumbs[] = [
             'name' => _('Reciept'),
-            'link' => '#',
+            'link' => urldecode($_SERVER['REQUEST_URI']),
             'icon' => null,
         ];
-        $GLOBALS['generatedcontent']['title'] = _('Reciept');
-        $GLOBALS['generatedcontent']['headline'] = _('Reciept');
+        Render::$title = _('Reciept');
+        Render::$headline = _('Reciept');
 
         $cardtype = [
             1  => 'Dankort/Visa-Dankort',
@@ -601,22 +593,22 @@ if (!empty($id) && $checkid === getCheckid($id) && !isset($_GET['txnid'])) {
 
         db()->query(
             "
-	    UPDATE `fakturas`
-	    SET `status` = 'pbsok',
-		`cardtype` = '" . $cardtype[$_GET['paymenttype']] . "',
-		`paydate` = NOW()
-	    WHERE `status` IN('new', 'locked', 'pbserror')
-	      AND `id` = " . $id
-        );
+            UPDATE `fakturas`
+            SET `status` = 'pbsok',
+            `cardtype` = '" . $cardtype[$_GET['paymenttype']] . "',
+            `paydate` = NOW()
+            WHERE `status` IN('new', 'locked', 'pbserror')
+            AND `id` = " . $id
+            );
 
-        $faktura = db()->fetchOne(
+            $faktura = db()->fetchOne(
             "
-	    SELECT *
-	    FROM `fakturas`
-	    WHERE `id` = " . $id
+            SELECT *
+            FROM `fakturas`
+            WHERE `id` = " . $id
         );
 
-        $GLOBALS['generatedcontent']['text'] = _(
+        Render::$bodyHtml = _(
             '<p style="text-align:center;"><img src="images/ok.png" alt="" /></p>
 
 <p>Payment is now accepted. We will send your goods by mail as soon as possible.</p>
@@ -645,17 +637,17 @@ Remember to \'expedite\' the payment when the product is sent (The payment is fi
         $withTax = $faktura['amount'] - $faktura['fragt'];
         $tax = $withTax * (1 - (1 / (1 + $faktura['momssats'])));
 
-        $GLOBALS['generatedcontent']['track'] = "ga('ecommerce:addTransaction',{'id':'" . (int) $faktura['id']
+        Render::$track = "ga('ecommerce:addTransaction',{'id':'" . (int) $faktura['id']
         . "','revenue':'" . $faktura['amount']
         . "','shipping':'" . $faktura['fragt']
         . "','tax':'" . $tax . "'});";
         foreach ($faktura['products'] as $key => $product) {
-            $GLOBALS['generatedcontent']['track'] .= "ga('ecommerce:addItem',{'id':'" . $faktura['id']
+            Render::$track .= "ga('ecommerce:addItem',{'id':'" . $faktura['id']
             . "','name':" . json_encode($product)
             . ",'price': '" . ($faktura['values'][$key] * (1 + $faktura['momssats']))
             . "','quantity': '" . $faktura['quantities'][$key] . "'});";
         }
-        $GLOBALS['generatedcontent']['track'] .= "ga('ecommerce:send');";
+        Render::$track .= "ga('ecommerce:send');";
 
     //Mail to customer start
         $emailbody = '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
@@ -767,7 +759,7 @@ Remember to \'expedite\' the payment when the product is sent (The payment is fi
         }
 
         if (!valideMail($faktura['department'])) {
-            $faktura['department'] = $GLOBALS['generatedcontent']['email'];
+            $faktura['department'] = first(Config::get('emails'))['address'];
         }
 
     //generate the actual email content
@@ -832,7 +824,7 @@ Tel. %s<br />
     //To shop
     $faktura = db()->fetchOne("SELECT * FROM `fakturas` WHERE `id` = ".$id);
     if (!valideMail($faktura['department'])) {
-        $faktura['department'] = $GLOBALS['generatedcontent']['email'];
+        $faktura['department'] = first(Config::get('emails'))['address'];
     }
     if ($faktura) {
         $faktura['quantities'] = explode('<', $faktura['quantities']);
@@ -957,10 +949,10 @@ Delivery phone: %s</p>
         );
     }
 } else {
-    $GLOBALS['generatedcontent']['title'] = _('Payment');
-    $GLOBALS['generatedcontent']['headline'] = _('Payment');
+    Render::$title = _('Payment');
+    Render::$headline = _('Payment');
 
-    $GLOBALS['generatedcontent']['text'] = '<form action="" method="get">
+    Render::$bodyHtml = '<form action="" method="get">
       <table>
         <tbody>
           <tr>
@@ -975,7 +967,7 @@ Delivery phone: %s</p>
       </table><input type="submit" value="'._('Continue').'" />
     </form>';
     if ($checkid) {
-        $GLOBALS['generatedcontent']['text'] = _('The code is not correct!');
+        Render::$bodyHtml = _('The code is not correct!');
     }
 }
 

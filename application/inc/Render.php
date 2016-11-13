@@ -2,12 +2,31 @@
 
 class Render
 {
-    private static $updateTime = 0;
+    private static $accessories = [];
+    private static $brand = [];
+    private static $canonical = '';
+    private static $email = '';
+    private static $keywords = [];
     private static $loadedTables = [];
-    public static $pageType = 'front';
+    private static $menu = [];
+    private static $pageList = [];
+    private static $pages = [];
+    private static $price = [];
+    private static $requirement = [];
+    private static $searchMenu = [];
+    private static $serial = '';
+    private static $timeStamp = 0;
+    private static $updateTime = 0;
     public static $activeCategory;
     public static $activePage;
+    public static $bodyHtml = '';
+    public static $crumbs = [];
+    public static $has_product_table = false;
+    public static $headline = '';
     public static $maerkeId;
+    public static $pageType = 'front';
+    public static $title = '';
+    public static $track = '';
 
     /**
      * @param string $key The cache key
@@ -39,7 +58,11 @@ class Render
 
         if ($checkDb) {
             $timeOffset = db()->getTimeOffset();
-            $tables = db()->fetchArray("SHOW TABLE STATUS" . (self::$loadedTables ? " WHERE Name IN('" . implode("', '", array_keys(self::$loadedTables)) . "')" : ""));
+            $where = "";
+            if (self::$loadedTables) {
+                $where = " WHERE Name IN('" . implode("', '", array_keys(self::$loadedTables)) . "')";
+            }
+            $tables = db()->fetchArray("SHOW TABLE STATUS" . $where);
             foreach ($tables as $table) {
                 self::$updateTime = max(self::$updateTime, strtotime($table['Update_time']) + $timeOffset);
             }
@@ -60,8 +83,11 @@ class Render
      */
     public static function sendCacheHeader(int $timestamp = null)
     {
+        header('Cache-Control: max-age=0, must-revalidate'); // HTTP/1.1
+        header('Pragma: no-cache');                          // HTTP/1.0
+
         if (!empty($_SESSION['faktura']['quantities'])) {
-            $timestamp = time();
+            return;
         }
         if (!$timestamp) {
             $timestamp = self::getUpdateTime();
@@ -76,8 +102,6 @@ class Render
         $etag = (string) $timestamp;
 
         // Send the headers
-        header('Cache-Control: max-age=0, must-revalidate'); // HTTP/1.1
-        header('Pragma: no-cache');                          // HTTP/1.0
         header('Last-Modified: ' . $last_modified);
         header('ETag: ' . $etag);
 
@@ -96,6 +120,9 @@ class Render
         }
 
         // Nothing has changed since their last request - serve a 304 and exit
+        if (function_exists('apache_setenv')) {
+            apache_setenv('no-gzip', 1);
+        }
         ini_set('zlib.output_compression', 0);
         header('HTTP/1.1 304 Not Modified', true, 304);
         die();
@@ -103,6 +130,13 @@ class Render
 
     public static function prepareData()
     {
+        // TODO only grab relevant variables (Especially test custom pages)
+        self::$title = Config::get('site_name');
+        self::$email = first(Config::get('emails'))['address'];
+        if (self::$activeCategory) {
+            self::$email = self::$activeCategory->getEmail();
+        }
+
         //Front page pages
         $pages = ORM::getByQuery(
             Page::class,
@@ -118,35 +152,25 @@ class Render
         self::addLoadedTable('bind');
 
         foreach ($pages as $page) {
-            $GLOBALS['generatedcontent']['sider'][] = [
+            self::$pages[] = [
                 'id'   => $page->getId(),
                 'name' => $page->getTitle(),
                 'link' => '/' . $page->getSlug(),
             ];
         }
-        $emails = first(Config::get('emails'))['address'];
-        $GLOBALS['generatedcontent']['email'] = $emails;
-        $GLOBALS['generatedcontent']['crumbs'] = [];
-        $GLOBALS['generatedcontent']['title'] = Config::get('site_name');
-        $GLOBALS['generatedcontent']['activmenu'] = -1;
-        $GLOBALS['generatedcontent']['canonical'] = '';
 
-        $keywords = [];
         $categoryIds = [];
         if (self::$activeCategory) {
-            $crumbs = [];
+            self::$crumbs = [];
             foreach (self::$activeCategory->getBranch() as $category) {
                 $categoryIds[] = $category->getId();
-                $keywords[] = trim($category->getTitle());
-                $crumbs[] = [
+                self::$keywords[] = trim($category->getTitle());
+                self::$crumbs[] = [
                     'name' => $category->getTitle(),
                     'link' => '/' . $category->getSlug(),
                     'icon' => $category->getIconPath(),
                 ];
             };
-
-            $GLOBALS['generatedcontent']['crumbs'] = $crumbs;
-            $GLOBALS['generatedcontent']['activmenu'] = self::$activeCategory->getId();
         }
 
         //Get list of top categorys on the site.
@@ -164,7 +188,7 @@ class Render
             "
         );
         self::addLoadedTable('bind');
-        $GLOBALS['generatedcontent']['menu'] = menu($categories, $categoryIds);
+        self::$menu = menu($categories, $categoryIds);
 
         $listedPages = [];
         if (!empty($_GET['sog'])) {
@@ -179,16 +203,15 @@ class Render
             );
             self::addLoadedTable('maerke');
 
-            $GLOBALS['generatedcontent']['title'] = $maerkeet['navn'];
-            $GLOBALS['generatedcontent']['brand'] = [
-                'id' => $maerkeet['id'],
+            self::$title = $maerkeet['navn'];
+            self::$brand = [
+                'link' => '/mærke' . $maerkeet['id'] . '-' . clearFileName($maerkeet['navn']) . '/',
                 'name' => $maerkeet['navn'],
                 'xlink' => $maerkeet['link'],
                 'icon' => $maerkeet['ico'],
             ];
 
-            $where = " AND `maerke` = '" . $maerkeet['id'] . "'";
-            $listedPages = searchListe('', $where);
+            $listedPages = searchListe('', $maerkeet['id']);
         } elseif (self::$activePage) {
             self::$pageType = 'product';
         } elseif (self::$activeCategory) {
@@ -226,34 +249,24 @@ class Render
                 }
             }
 
-            //Full search
-            $where = "";
-            if (!empty($_GET['varenr'])) {
-                $where .= " AND varenr LIKE '" . db()->esc($_GET['varenr']) . "%'";
-            }
-            if (!empty($_GET['minpris'])) {
-                $where .= " AND pris > " . (int) $_GET['minpris'];
-            }
-            if (!empty($_GET['maxpris'])) {
-                $where .= " AND pris < " . (int) $_GET['maxpris'];
-            }
-            if (!empty($_GET['maerke'])) {
-                $where = " AND `maerke` = '" . (int) $_GET['maerke'] . "'";
-            }
-            if (!empty($_GET['sogikke'])) {
-                $where .= " AND !MATCH (navn, text, beskrivelse) AGAINST('" . db()->esc($_GET['sogikke']) ."') > 0";
-            }
-            $listedPages = searchListe($_GET['q'] ?? '', $where);
+            $listedPages = searchListe(
+                $_GET['q'] ?? '',
+                (int) $_GET['maerke'] ?? 0,
+                $_GET['varenr'] ?? '',
+                (int) $_GET['minpris'] ?? 0,
+                (int) $_GET['maxpris'] ?? 0,
+                $_GET['sogikke'] ?? ''
+            );
             if (count($listedPages) === 1) {
                 $page = array_shift($listedPages);
                 redirect($page->getCanonicalLink(), 302);
             }
 
-            $GLOBALS['generatedcontent']['search_menu'] = self::getSearchMenu(
+            self::$searchMenu = self::getSearchMenu(
                 $_GET['q'] ?? '',
                 $_GET['sogikke'] ?? ''
             );
-            $GLOBALS['generatedcontent']['title'] = 'Søg på ' . Config::get('site_name');
+            self::$title = 'Søg på ' . Config::get('site_name');
             self::$pageType = 'tiles';
         }
 
@@ -271,7 +284,7 @@ class Render
                 $page = $item['object'];
 
                 if (!self::$activeCategory || self::$activeCategory->getRenderMode() === Category::GALLERY) {
-                    $GLOBALS['generatedcontent']['list'][] = [
+                    self::$pageList[] = [
                         'id' => $page->getId(),
                         'name' => $page->getTitle(),
                         'date' => $page->getTimeStamp(),
@@ -286,7 +299,7 @@ class Render
                         ]
                     ];
                 } else {
-                    $GLOBALS['generatedcontent']['list'][] = [
+                    self::$pageList[] = [
                         'id' => $page->getId(),
                         'name' => $page->getTitle(),
                         'date' => $page->getTimeStamp(),
@@ -301,8 +314,8 @@ class Render
             }
         }
 
-        if (self::$activeCategory && empty($GLOBALS['generatedcontent']['title'])) {
-            $title = trim(self::$activeCategory->getTitle());
+        if (self::$activeCategory && empty(self::$title)) {
+            self::$title = trim(self::$activeCategory->getTitle());
 
             if (self::$activeCategory->getIconPath()) {
                 $icon = db()->fetchOne(
@@ -313,14 +326,12 @@ class Render
                 );
                 self::addLoadedTable('files');
                 if (!empty($icon['alt'])) {
-                    $title .= ($title ? ' ' : '') . $icon['alt'];
-                } elseif (!$title) {
+                    self::$title .= (self::$title ? ' ' : '') . $icon['alt'];
+                } elseif (!self::$title) {
                     $path = pathinfo(self::$activeCategory->getIconPath());
-                    $title = ucfirst(preg_replace('/-/ui', ' ', $path['filename']));
+                    self::$title = ucfirst(preg_replace('/-/ui', ' ', $path['filename']));
                 }
             }
-
-            $GLOBALS['generatedcontent']['title'] = $title;
         }
 
         //Get page content and type
@@ -338,11 +349,11 @@ class Render
                 self::addLoadedTable('special');
             }
 
-            $GLOBALS['generatedcontent']['text'] = $special['text'];
+            self::$bodyHtml = $special['text'];
         } elseif (self::$pageType === 'search') {
-            $GLOBALS['generatedcontent']['title'] = 'Søg på ' . Config::get('site_name');
+            self::$title = 'Søg på ' . Config::get('site_name');
 
-            $html = '<form action="/" method="get"><table><tr><td>' . _('Contains')
+            self::$bodyHtml = '<form action="/" method="get"><table><tr><td>' . _('Contains')
                 . '</td><td><input name="q" size="31" /></td><td><input type="submit" value="' . _('Search')
                 . '" /></td></tr><tr><td>' . _('Part No.')
                 . '</td><td><input name="varenr" size="31" value="" maxlength="63" /></td></tr><tr><td>'
@@ -363,27 +374,25 @@ class Render
             self::addLoadedTable('maerke');
 
             foreach ($maerker as $value) {
-                $html .= '<option value="'.$value['id'].'">' . xhtmlEsc($value['navn']) . '</option>';
+                self::$bodyHtml .= '<option value="'.$value['id'].'">' . xhtmlEsc($value['navn']) . '</option>';
             }
-            $html .= '</select></td></tr></table></form>';
-            $GLOBALS['generatedcontent']['text'] = $html;
+            self::$bodyHtml .= '</select></td></tr></table></form>';
         } elseif (self::$pageType === 'product') {
-            $GLOBALS['generatedcontent']['canonical']       = self::$activePage->getCanonicalLink();
-            $GLOBALS['generatedcontent']['title']           = self::$activePage->getTitle();
-            $GLOBALS['generatedcontent']['headline']        = self::$activePage->getTitle();
-            $GLOBALS['generatedcontent']['serial']          = self::$activePage->getSku();
-            $GLOBALS['generatedcontent']['datetime']        = self::$activePage->getTimestamp();
-            $GLOBALS['generatedcontent']['price']['now']    = self::$activePage->getPrice();
-            $GLOBALS['generatedcontent']['price']['new']    = self::$activePage->getPrice();
-            $GLOBALS['generatedcontent']['price']['from']   = self::$activePage->getPriceType();
-            $GLOBALS['generatedcontent']['price']['before'] = self::$activePage->getOldPrice();
-            $GLOBALS['generatedcontent']['price']['old']    = self::$activePage->getOldPrice();
-            $GLOBALS['generatedcontent']['price']['market'] = self::$activePage->getOldPriceType();
-            if (self::$activeCategory) {
-                $GLOBALS['generatedcontent']['email'] = self::$activeCategory->getEmail();
-            }
+            self::$canonical = self::$activePage->getCanonicalLink();
+            self::$title = self::$activePage->getTitle();
+            self::$headline = self::$activePage->getTitle();
+            self::$serial = self::$activePage->getSku();
+            self::$timeStamp = self::$activePage->getTimestamp();
+            self::$price = [
+                'now'    => self::$activePage->getPrice(),
+                'new'    => self::$activePage->getPrice(),
+                'from'   => self::$activePage->getPriceType(),
+                'before' => self::$activePage->getOldPrice(),
+                'old'    => self::$activePage->getOldPrice(),
+                'market' => self::$activePage->getOldPriceType(),
+            ];
 
-            $html = self::$activePage->getHtml();
+            self::$bodyHtml = self::$activePage->getHtml();
             $lists = db()->fetchArray(
                 "
                 SELECT id
@@ -393,11 +402,10 @@ class Render
             self::addLoadedTable('lists');
 
             foreach ($lists as $list) {
-                $html .= '<div id="table' . $list['id'] . '">';
-                $html .= getTableHtml($list['id'], null, self::$activeCategory);
-                $html .= '</div>';
+                self::$bodyHtml .= '<div id="table' . $list['id'] . '">';
+                self::$bodyHtml .= getTableHtml($list['id'], null, self::$activeCategory);
+                self::$bodyHtml .= '</div>';
             }
-            $GLOBALS['generatedcontent']['text'] = $html;
 
             if (self::$activePage->getRequirementId()) {
                 $krav = db()->fetchOne(
@@ -408,10 +416,11 @@ class Render
                 );
                 self::addLoadedTable('krav');
 
-                $GLOBALS['generatedcontent']['requirement']['icon'] = '';
-                $GLOBALS['generatedcontent']['requirement']['name'] = $krav['navn'];
-                $GLOBALS['generatedcontent']['requirement']['link'] = '/krav/'
-                . $krav['id'] . '/' . clearFileName($krav['navn']) . '.html';
+                self::$requirement = [
+                    'icon' => '',
+                    'name' => $krav['navn'],
+                    'link' => '/krav/' . $krav['id'] . '/' . clearFileName($krav['navn']) . '.html',
+                ];
             }
 
             if (self::$activePage->getBrandId()) {
@@ -425,7 +434,7 @@ class Render
                 );
                 self::addLoadedTable('maerke');
 
-                $GLOBALS['generatedcontent']['brands'][] = [
+                self::$brand = [
                     'name' => $brand['navn'],
                     'link' => '/mærke' . $brand['id'] . '-' . clearFileName($brand['navn']) . '/',
                     'xlink' => $brand['link'],
@@ -434,7 +443,7 @@ class Render
             }
 
             foreach (self::$activePage->getAccessories() as $page) {
-                $GLOBALS['generatedcontent']['accessories'][] = [
+                self::$accessories[] = [
                     'name' => $page->getTitle(),
                     'link' => $page->getCanonicalLink(),
                     'icon' => $page->getImagePath(),
@@ -448,12 +457,8 @@ class Render
                 ];
             }
 
-            $keywords[] = self::$activePage->getTitle();
-            $GLOBALS['side']['id'] = self::$activePage->getId(); // Compatible with templates
+            self::$keywords[] = self::$activePage->getTitle();
         }
-
-        $GLOBALS['generatedcontent']['keywords'] = implode(',', $keywords);
-        $GLOBALS['generatedcontent']['contenttype'] = self::$pageType;
     }
 
     /**
@@ -525,9 +530,309 @@ class Render
         return $searchMenu;
     }
 
-    public static function outputPage() {
+    /**
+     * Return html for a sorted list
+     *
+     * @param int      $listid   Id of list
+     * @param int      $bycell   What cell to sort by
+     * @param Category $category Id of current category
+     *
+     * @return array
+     */
+    public function getTableHtml(int $listid, int $bycell = null, Category $category = null): string
+    {
+        $html = '';
+
+        $list = db()->fetchOne("SELECT * FROM `lists` WHERE id = " . $listid);
+        $rows = db()->fetchArray(
+            "
+            SELECT *
+            FROM `list_rows`
+            WHERE `list_id` = " . $listid
+        );
+        if (!$rows) {
+            Render::sendCacheHeader();
+            return ['id' => 'table' . $listid, 'html' => $html];
+        }
+
+        // Eager load data
+        $pageIds = [];
+        foreach ($rows as $row) {
+            if ($row['link']) {
+                $pageIds[] = $row['link'];
+            }
+        }
+        if ($pageIds) {
+            $pages = ORM::getByQuery(
+                Page::class,
+                "
+                SELECT * FROM sider WHERE id IN (" . implode(",", $pageIds) . ")
+                "
+            );
+        }
+
+        //Explode sorts
+        $list['sorts'] = explode('<', $list['sorts']);
+        $list['cells'] = explode('<', $list['cells']);
+        $list['cell_names'] = explode('<', $list['cell_names']);
+
+        if (!$bycell && $bycell !== '0') {
+            $bycell = $list['sort'];
+        }
+
+        //Explode cells
+        foreach ($rows as $row) {
+            $cells = explode('<', $row['cells']);
+            $cells['id'] = $row['id'];
+            $cells['link'] = $row['link'];
+            $rows_cells[] = $cells;
+        }
+        $rows = $rows_cells;
+        unset($row);
+        unset($cells);
+        unset($rows_cells);
+
+        //Sort rows
+        if ($list['sorts'][$bycell] < 1) {
+            $rows = arrayNatsort($rows, 'id', $bycell);
+        } else {
+            $rows = arrayListsort(
+                $rows,
+                'id',
+                $bycell,
+                $list['sorts'][$bycell]
+            );
+        }
+
+        //unset temp holder for rows
+
+        $html .= '<table class="tabel">';
+        if ($list['title']) {
+            $html .= '<caption>'.$list['title'].'</caption>';
+        }
+        $html .= '<thead><tr>';
+        foreach ($list['cell_names'] as $key => $cell_name) {
+            $html .= '<td><a href="" onclick="x_getTable(\'' . $list['id']
+            . '\', \'' . $key . '\', ' . ($category ? $category->getId() : '')
+            . ', inject_html);return false;">' . $cell_name . '</a></td>';
+        }
+        $html .= '</tr></thead><tbody>';
+        foreach ($rows as $i => $row) {
+            $html .= '<tr';
+            if ($i % 2) {
+                $html .= ' class="altrow"';
+            }
+            $html .= '>';
+            if ($row['link']) {
+                $page = ORM::getOne(Page::class, $row['link']);
+                $row['link'] = '<a href="' . xhtmlEsc($page->getCanonicalLink($category)) . '">';
+            }
+            foreach ($list['cells'] as $key => $type) {
+                if (empty($row[$key])) {
+                    $row[$key] = '';
+                }
+
+                switch ($type) {
+                    case 0:
+                        //Plain text
+                        $html .= '<td>';
+                        if ($row['link']) {
+                            $html .= $row['link'];
+                        }
+                        $html .= $row[$key];
+                        if ($row['link']) {
+                            $html .= '</a>';
+                        }
+                        $html .= '</td>';
+                        break;
+                    case 1:
+                        //number
+                        $html .= '<td style="text-align:right;">';
+                        if ($row['link']) {
+                            $html .= $row['link'];
+                        }
+                        $html .= $row[$key];
+                        if ($row['link']) {
+                            $html .= '</a>';
+                        }
+                        $html .= '</td>';
+                        break;
+                    case 2:
+                        //price
+                        $html .= '<td style="text-align:right;" class="Pris">';
+                        if ($row['link']) {
+                            $html .= $row['link'];
+                        }
+                        if (is_numeric(@$row[$key])) {
+                            $html .= str_replace(
+                                ',00',
+                                ',-',
+                                number_format($row[$key], 2, ',', '.')
+                            );
+                        } else {
+                            $html .= @$row[$key];
+                        }
+                        if ($row['link']) {
+                            $html .= '</a>';
+                        }
+                            $html .= '</td>';
+                            Render::$has_product_table = true;
+                        break;
+                    case 3:
+                        //new price
+                        $html .= '<td style="text-align:right;" class="NyPris">';
+                        if ($row['link']) {
+                            $html .= $row['link'];
+                        }
+                        if (is_numeric(@$row[$key])) {
+                            $html .= str_replace(
+                                ',00',
+                                ',-',
+                                number_format($row[$key], 2, ',', '.')
+                            );
+                        } else {
+                            $html .= @$row[$key];
+                        }
+                        if ($row['link']) {
+                            $html .= '</a>';
+                        }
+                            $html .= '</td>';
+                            Render::$has_product_table = true;
+                        break;
+                    case 4:
+                        //pold price
+                        $html .= '<td style="text-align:right;" class="XPris">';
+                        if ($row['link']) {
+                            $html .= $row['link'];
+                        }
+                        if (is_numeric(@$row[$key])) {
+                            $html .= str_replace(
+                                ',00',
+                                ',-',
+                                number_format($row[$key], 2, ',', '.')
+                            );
+                        }
+                        if ($row['link']) {
+                            $html .= '</a>';
+                        }
+                        $html .= '</td>';
+                        break;
+                    case 5:
+                        //image
+                        $html .= '<td>';
+                        $files = db()->fetchOne(
+                            "
+                            SELECT *
+                            FROM `files`
+                            WHERE path = " . $row[$key]
+                        );
+                        Render::addLoadedTable('files');
+
+                        //TODO make image tag
+                        if ($row['link']) {
+                            $html .= xhtmlEsc($row['link']);
+                        }
+                        $html .= '<img src="' . xhtmlEsc($row[$key]) . '" alt="'
+                        . xhtmlEsc($files['alt']) . '" title="" width="' . $files['width']
+                        . '" height="' . $files['height'] . '" />';
+                        if (xhtmlEsc($row['link'])) {
+                            $html .= '</a>';
+                        }
+                        $html .= '</td>';
+                        break;
+                }
+            }
+            if (Render::$has_product_table) {
+                $html .= '<td class="addtocart"><a href="/bestilling/?add_list_item='
+                . $row['id'] . '"><img src="/theme/images/cart_add.png" title="'
+                . _('Add to shopping cart') . '" alt="+" /></a></td>';
+            }
+            $html .= '</tr>';
+        }
+
+        $html .= '</tbody></table>';
+
+        return $html;
+    }
+
+    /**
+     * Get the html for content bellonging to a category
+     *
+     * @param int  $id   Id of activ category
+     * @param bool $sort What column to sort by
+     *
+     * @return array Apropriate for handeling with javascript function inject_html()
+     */
+    public function getKatHtml(Category $category, string $sort): array
+    {
+        if (!in_array($sort, ['navn', 'for', 'pris', 'varenr'])) {
+            $sort = 'navn';
+        }
+
+        //Get pages list
+        $pages = $category->getPages($sort);
+
+        $objectArray = [];
+        foreach ($pages as $page) {
+            $objectArray[] = [
+                'id' => $page->getId(),
+                'navn' => $page->getTitle(),
+                'for' => $page->getOldPrice(),
+                'pris' => $page->getPrice(),
+                'varenr' => $page->getSku(),
+                'object' => $page,
+            ];
+        }
+        $objectArray = arrayNatsort($objectArray, 'id', $sort);
+        $pages = [];
+        foreach ($objectArray as $item) {
+            $pages[] = $item['object'];
+        }
+
+        $html = '<table class="tabel"><thead><tr><td><a href="" onclick="x_getKat(\''
+        . $category->getId()
+        . '\', \'navn\', inject_html);return false">Titel</a></td><td><a href="" onclick="x_getKat(\''
+        . $category->getId()
+        . '\', \'for\', inject_html);return false">Før</a></td><td><a href="" onclick="x_getKat(\''
+        . $category->getId()
+        . '\', \'pris\', inject_html);return false">Pris</a></td><td><a href="" onclick="x_getKat(\''
+        . $category->getId()
+        . '\', \'varenr\', inject_html);return false">#</a></td></tr></thead><tbody>';
+
+        $isEven = false;
+        foreach ($pages as $page) {
+            $oldPrice = '';
+            if ($page->getOldPrice()) {
+                $oldPrice = $page->getOldPrice() . ',-';
+            }
+
+            $price = '';
+            if ($page->getPrice()) {
+                $price = $page->getPrice() . ',-';
+            }
+
+            $html .= '<tr' . ($isEven ? ' class="altrow"' : '')
+            . '><td><a href="' . xhtmlEsc($page->getCanonicalLink($category)) . '">'
+            . xhtmlEsc($page->getTitle())
+            . '</a></td><td class="XPris" align="right">' . $oldPrice
+            . '</td><td class="Pris" align="right">' . $price
+            . '</td><td align="right" style="font-size:11px">'
+            . xhtmlEsc($page->getSku()) . '</td></tr>';
+
+            $isEven = !$isEven;
+        }
+        $html .= '</tbody></table>';
+
+        return $html;
+    }
+
+    public static function outputPage()
+    {
         self::prepareData();
         if ($_SERVER['REQUEST_METHOD'] === 'HEAD') {
+            if (function_exists('apache_setenv')) {
+                apache_setenv('no-gzip', 1);
+            }
             ini_set('zlib.output_compression', 0);
             return;
         }
