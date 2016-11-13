@@ -7,7 +7,10 @@ class Config
     public static function get(string $key, $default = null)
     {
         if (!self::$config) {
-            include_once _ROOT_ . '/inc/config.php';
+            $success = @include_once _ROOT_ . '/inc/config.php';
+            if (!$success) {
+                include_once _ROOT_ . '/inc/config_sample.php';
+            }
             self::$config = $GLOBALS['_config'] ?? [];
             unset($GLOBALS['_config']);
         }

@@ -4,7 +4,10 @@ class Render
 {
     private static $updateTime = 0;
     private static $loadedTables = [];
-    private static $pageType = 'front';
+    public static $pageType = 'front';
+    public static $activeCategory;
+    public static $activePage;
+    public static $maerkeId;
 
     /**
      * @param string $key The cache key
@@ -128,15 +131,11 @@ class Render
         $GLOBALS['generatedcontent']['activmenu'] = -1;
         $GLOBALS['generatedcontent']['canonical'] = '';
 
-        $maerkeId = $maerkeId ?? null;
-        $activeCategory = $activeCategory ?? null;
-        $activePage = $activePage ?? null;
-
         $keywords = [];
         $categoryIds = [];
-        if ($activeCategory) {
+        if (self::$activeCategory) {
             $crumbs = [];
-            foreach ($activeCategory->getBranch() as $category) {
+            foreach (self::$activeCategory->getBranch() as $category) {
                 $categoryIds[] = $category->getId();
                 $keywords[] = trim(xhtmlEsc($category->getTitle()));
                 $crumbs[] = [
@@ -147,7 +146,7 @@ class Render
             };
 
             $GLOBALS['generatedcontent']['crumbs'] = $crumbs;
-            $GLOBALS['generatedcontent']['activmenu'] = $activeCategory->getId();
+            $GLOBALS['generatedcontent']['activmenu'] = self::$activeCategory->getId();
         }
 
         //Get list of top categorys on the site.
@@ -170,13 +169,13 @@ class Render
         $listedPages = [];
         if (!empty($_GET['sog'])) {
             self::$pageType = 'search';
-        } elseif ($maerkeId) {
+        } elseif (self::$maerkeId) {
             self::$pageType = 'brand';
             $maerkeet = db()->fetchOne(
                 "
                 SELECT `id`, `navn`, `link`, ico
                 FROM `maerke`
-                WHERE id = " . $maerkeId
+                WHERE id = " . self::$maerkeId
             );
             self::addLoadedTable('maerke');
 
@@ -190,13 +189,13 @@ class Render
 
             $where = " AND `maerke` = '" . $maerkeet['id'] . "'";
             $listedPages = searchListe('', $where);
-        } elseif ($activePage) {
+        } elseif (self::$activePage) {
             self::$pageType = 'product';
-        } elseif ($activeCategory) {
-            self::$pageType = $activeCategory->getRenderMode() == Category::GALLERY ? 'tiles' : 'list';
-            $listedPages = $activeCategory->getPages();
+        } elseif (self::$activeCategory) {
+            self::$pageType = self::$activeCategory->getRenderMode() == Category::GALLERY ? 'tiles' : 'list';
+            $listedPages = self::$activeCategory->getPages();
             if (count($listedPages) === 1) {
-                $activePage = array_shift($listedPages);
+                self::$activePage = array_shift($listedPages);
                 self::$pageType = 'product';
                 $listedPages = [];
             }
@@ -252,8 +251,7 @@ class Render
                 redirect($page->getCanonicalLink(), 302);
             }
 
-            searchMenu($_GET['q'] ?? '', $wherekat);
-
+            $GLOBALS['generatedcontent']['search_menu'] = getSearchMenu($_GET['q'] ?? '', $wherekat);
             $GLOBALS['generatedcontent']['title'] = 'Søg på ' . xhtmlEsc(Config::get('site_name'));
             self::$pageType = 'tiles';
         }
@@ -271,12 +269,12 @@ class Render
             foreach ($pageArray as $item) {
                 $page = $item['object'];
 
-                if (!$activeCategory || $activeCategory->getRenderMode() === Category::GALLERY) {
+                if (!self::$activeCategory || self::$activeCategory->getRenderMode() === Category::GALLERY) {
                     $GLOBALS['generatedcontent']['list'][] = [
                         'id' => $page->getId(),
                         'name' => xhtmlEsc($page->getTitle()),
                         'date' => $page->getTimeStamp(),
-                        'link' => $page->getCanonicalLink($activeCategory),
+                        'link' => $page->getCanonicalLink(self::$activeCategory),
                         'icon' => $page->getImagePath(),
                         'text' => $page->getExcerpt(),
                         'price' => [
@@ -291,7 +289,7 @@ class Render
                         'id' => $page->getId(),
                         'name' => xhtmlEsc($page->getTitle()),
                         'date' => $page->getTimeStamp(),
-                        'link' => $page->getCanonicalLink($activeCategory),
+                        'link' => $page->getCanonicalLink(self::$activeCategory),
                         'serial' => $page->getSku(),
                         'price' => [
                             'before' => $page->getOldPrice(),
@@ -302,21 +300,21 @@ class Render
             }
         }
 
-        if ($activeCategory && empty($GLOBALS['generatedcontent']['title'])) {
-            $title = trim($activeCategory->getTitle());
+        if (self::$activeCategory && empty($GLOBALS['generatedcontent']['title'])) {
+            $title = trim(self::$activeCategory->getTitle());
 
-            if ($activeCategory->getIconPath()) {
+            if (self::$activeCategory->getIconPath()) {
                 $icon = db()->fetchOne(
                     "
                     SELECT `alt`
                     FROM `files`
-                    WHERE path = '" . db()->esc($activeCategory->getIconPath()) . "'"
+                    WHERE path = '" . db()->esc(self::$activeCategory->getIconPath()) . "'"
                 );
                 self::addLoadedTable('files');
                 if (!empty($icon['alt'])) {
                     $title .= ($title ? ' ' : '') . $icon['alt'];
                 } elseif (!$title) {
-                    $path = pathinfo($activeCategory->getIconPath());
+                    $path = pathinfo(self::$activeCategory->getIconPath());
                     $title = ucfirst(preg_replace('/-/ui', ' ', $path['filename']));
                 }
             }
@@ -374,48 +372,43 @@ class Render
             $text .= '</select></td></tr></table></form>';
             $GLOBALS['generatedcontent']['text'] = $text;
         } elseif (self::$pageType === 'product') {
-            $GLOBALS['generatedcontent']['canonical']       = $activePage->getCanonicalLink();
-            $GLOBALS['generatedcontent']['title']           = xhtmlEsc($activePage->getTitle());
-            $GLOBALS['generatedcontent']['headline']        = $activePage->getTitle();
-            $GLOBALS['generatedcontent']['serial']          = $activePage->getSku();
-            $GLOBALS['generatedcontent']['datetime']        = $activePage->getTimestamp();
-            $GLOBALS['generatedcontent']['price']['now']    = $activePage->getPrice();
-            $GLOBALS['generatedcontent']['price']['new']    = $activePage->getPrice();
-            $GLOBALS['generatedcontent']['price']['from']   = $activePage->getPriceType();
-            $GLOBALS['generatedcontent']['price']['before'] = $activePage->getOldPrice();
-            $GLOBALS['generatedcontent']['price']['old']    = $activePage->getOldPrice();
-            $GLOBALS['generatedcontent']['price']['market'] = $activePage->getOldPriceType();
-            if ($activeCategory) {
-                $GLOBALS['generatedcontent']['email'] = $activeCategory->getEmail();
+            $GLOBALS['generatedcontent']['canonical']       = self::$activePage->getCanonicalLink();
+            $GLOBALS['generatedcontent']['title']           = xhtmlEsc(self::$activePage->getTitle());
+            $GLOBALS['generatedcontent']['headline']        = self::$activePage->getTitle();
+            $GLOBALS['generatedcontent']['serial']          = self::$activePage->getSku();
+            $GLOBALS['generatedcontent']['datetime']        = self::$activePage->getTimestamp();
+            $GLOBALS['generatedcontent']['price']['now']    = self::$activePage->getPrice();
+            $GLOBALS['generatedcontent']['price']['new']    = self::$activePage->getPrice();
+            $GLOBALS['generatedcontent']['price']['from']   = self::$activePage->getPriceType();
+            $GLOBALS['generatedcontent']['price']['before'] = self::$activePage->getOldPrice();
+            $GLOBALS['generatedcontent']['price']['old']    = self::$activePage->getOldPrice();
+            $GLOBALS['generatedcontent']['price']['market'] = self::$activePage->getOldPriceType();
+            if (self::$activeCategory) {
+                $GLOBALS['generatedcontent']['email'] = self::$activeCategory->getEmail();
             }
 
-            $html = $activePage->getHtml();
+            $html = self::$activePage->getHtml();
             $lists = db()->fetchArray(
                 "
                 SELECT id
                 FROM `lists`
-                WHERE `page_id` = " . $activePage->getId()
+                WHERE `page_id` = " . self::$activePage->getId()
             );
             self::addLoadedTable('lists');
 
             foreach ($lists as $list) {
                 $html .= '<div id="table' . $list['id'] . '">';
-                $table_html = getTable(
-                    $list['id'],
-                    null,
-                    $activeCategory ? $activeCategory->getId() : null
-                );
-                $html .= $table_html['html'];
+                $html .= getTableHtml($list['id'], null, self::$activeCategory);
                 $html .= '</div>';
             }
             $GLOBALS['generatedcontent']['text'] = $html;
 
-            if ($activePage->getRequirementId()) {
+            if (self::$activePage->getRequirementId()) {
                 $krav = db()->fetchOne(
                     "
                     SELECT id, navn
                     FROM krav
-                    WHERE id = " . $activePage->getRequirementId()
+                    WHERE id = " . self::$activePage->getRequirementId()
                 );
                 self::addLoadedTable('krav');
 
@@ -425,12 +418,12 @@ class Render
                 . $krav['id'] . '/' . clearFileName($krav['navn']) . '.html';
             }
 
-            if ($activePage->getBrandId()) {
+            if (self::$activePage->getBrandId()) {
                 $brand = db()->fetchOne(
                     "
                     SELECT `id`, `navn`, `link`, `ico`
                     FROM `maerke`
-                    WHERE `id` = " . $activePage->getBrandId() . "
+                    WHERE `id` = " . self::$activePage->getBrandId() . "
                     ORDER BY `navn`
                     "
                 );
@@ -444,7 +437,7 @@ class Render
                 ];
             }
 
-            foreach ($activePage->getAccessories() as $page) {
+            foreach (self::$activePage->getAccessories() as $page) {
                 $GLOBALS['generatedcontent']['accessories'][] = [
                     'name' => $page->getTitle(),
                     'link' => $page->getCanonicalLink(),
@@ -459,12 +452,93 @@ class Render
                 ];
             }
 
-            $keywords[] = $activePage->getTitle();
-            $GLOBALS['side']['id'] = $activePage->getId(); // Compatible with templates
+            $keywords[] = self::$activePage->getTitle();
+            $GLOBALS['side']['id'] = self::$activePage->getId(); // Compatible with templates
         }
 
         $GLOBALS['generatedcontent']['keywords'] = xhtmlEsc(implode(',', $keywords));
         $GLOBALS['generatedcontent']['contenttype'] = self::$pageType;
+    }
+
+    /**
+     * Search for categories and populate generatedcontent with results
+     *
+     * @param string $q        Seach string
+     * @param string $wherekat Additional SQL for WHERE clause
+     *
+     * @return null
+     */
+    public static function getSearchMenu(string $q, string $wherekat): array
+    {
+        $searchMenu = [];
+        $categories = [];
+        $maerke = [];
+        if ($q) {
+            $categories = ORM::getByQuery(
+                Category::class,
+                "
+                SELECT *, MATCH (navn) AGAINST ('$q') AS score
+                FROM kat
+                WHERE MATCH (navn) AGAINST('$q') > 0 " . $wherekat . "
+                    AND `vis` != '0'
+                ORDER BY score, navn
+                "
+            );
+            $qsearch = ['/\s+/u', "/'/u", '//u', '/`/u'];
+            $qreplace = ['%', '_', '_', '_'];
+            $simpleq = preg_replace($qsearch, $qreplace, $q);
+            if (!$categories) {
+                $categories = ORM::getByQuery(
+                    Category::class,
+                    "
+                    SELECT * FROM kat WHERE navn
+                    LIKE '%".$simpleq."%' " . $wherekat . "
+                    ORDER BY navn
+                    "
+                );
+            }
+            $maerke = db()->fetchArray(
+                "
+                SELECT id, navn
+                FROM `maerke`
+                WHERE MATCH (navn) AGAINST ('$q') >  0
+                "
+            );
+            Render::addLoadedTable('maerke');
+            if (!$maerke) {
+                $maerke = db()->fetchArray(
+                    "
+                    SELECT id, navn
+                    FROM maerke
+                    WHERE navn
+                    LIKE '%" .$simpleq ."%'
+                    ORDER BY navn
+                    "
+                );
+            }
+        }
+
+        foreach ($maerke as $value) {
+            $searchMenu[] = [
+                'id' => 0,
+                'name' => xhtmlEsc($value['navn']),
+                'link' => '/mærke' . $value['id'] . '-' .clearFileName($value['navn']) . '/'
+            ];
+        }
+
+        foreach ($categories as $category) {
+            if ($category->isVisable()) {
+                $searchMenu[] = [
+                    'id' => $category->getId(),
+                    'name' => xhtmlEsc($category->getTitle()),
+                    'link' => '/' . $category->getSlug(),
+                    'icon' => $category->getIconPath(),
+                    'sub' => (bool) $category->getChildren(true),
+                ];
+            }
+        }
+
+        return $searchMenu;
     }
 
     public static function outputPage() {

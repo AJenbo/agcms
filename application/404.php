@@ -91,6 +91,9 @@ if ($redirect) {
 
     redirect($redirectUrl, $redirect);
 }
+Render::$activeCategory = $activeCategory;
+Render::$activePage = $activePage;
+Render::$maerkeId = $maerkeId;
 
 header('Status: 200', true, 200);
 header('HTTP/1.1 200 OK', true, 200);

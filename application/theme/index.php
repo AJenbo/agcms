@@ -202,172 +202,138 @@ echo $GLOBALS['generatedcontent']['requirement']['name'];
     </div><?php
 
     if (@$GLOBALS['generatedcontent']['accessories']) {
-        ?><p align="center" style="clear:both">Accessories</p>
-        <table cellspacing="0" id="liste"><?php
+        echo '<p align="center" style="clear:both">Accessories</p><table cellspacing="0" id="liste">';
         $i = 0;
         $nr = count($GLOBALS['generatedcontent']['accessories']) - 1;
         foreach ($GLOBALS['generatedcontent']['accessories'] as $value) {
             if ($i % 2 == 0) {
-                ?><tr><?php
+                echo '<tr>';
             }
-            ?><td><a href="<?php
-            echo $value['link'];
-            ?>"><?php
-            echo $value['name'];
-if ($value['icon']) {
-    ?><br /><img src="<?php
-echo $value['icon'];
-?>" alt="<?php
-echo xhtmlEsc($value['name']);
-?>" title="" /><?php
-}
-            ?></a><?php
-            ?></td><?php
-if ($i % 2 || $i == $nr) {
-    ?></tr><?php
-}
+            echo '<td><a href="' . $value['link'] . '">' . $value['name'];
+            if ($value['icon']) {
+                echo '<br /><img src="' . $value['icon'] . '" alt="' . xhtmlEsc($value['name']) . '" title="" />';
+            }
+            echo '</a></td>';
+            if ($i % 2 || $i == $nr) {
+                echo '</tr>';
+            }
             $i++;
         }
-        ?></table><?php
+        echo '</table>';
     }
 
     if (isset($GLOBALS['generatedcontent']['brands'])) {
-        ?><p align="center" style="clear:both">View other product from the same brand</p>
-        <table cellspacing="0" id="liste"><?php
+        echo '<p align="center" style="clear:both">View other product from the same brand</p><table cellspacing="0" id="liste">';
         $i = 0;
         $nr = count($GLOBALS['generatedcontent']['brands'])-1;
         foreach ($GLOBALS['generatedcontent']['brands'] as $value) {
-            if ($i % 2 == 0) {
-                ?><tr><?php
+            if ($i % 2 === 0) {
+                echo '<tr>';
             }
 
-            ?><td><a href="<?php
-            echo $value['link'];
-            ?>"><?php
-            echo $value['name'];
-if ($value['icon']) {
-    ?><br /><img src="<?php
-echo $value['icon'];
-?>" alt="<?php
-echo xhtmlEsc($value['name']);
-?>" title="" /><?php
-}
+            echo '<td><a href="' . $value['link'] . '">'. $value['name'];
+            if ($value['icon']) {
+                echo '<br /><img src="' . $value['icon'] . '" alt="' . xhtmlEsc($value['name']) . '" title="" />';
+            }
 
-            ?></a><?php
-            ?></td><?php
-
-if ($i % 2 || $i == $nr) {
-    ?></tr><?php
-}
+            echo '</a></td>';
+            if ($i % 2 || $i == $nr) {
+                echo '</tr>';
+            }
             $i++;
         }
-        ?></table><?php
+        echo '</table>';
     }
-} elseif ($GLOBALS['generatedcontent']['contenttype'] == 'tiles'
-    || $GLOBALS['generatedcontent']['contenttype'] == 'list'
-    || $GLOBALS['generatedcontent']['contenttype'] == 'brand'
+} elseif ($GLOBALS['generatedcontent']['contenttype'] === 'tiles'
+    || $GLOBALS['generatedcontent']['contenttype'] === 'list'
+    || $GLOBALS['generatedcontent']['contenttype'] === 'brand'
 ) {
-    if ($GLOBALS['generatedcontent']['contenttype'] == 'brand') {
-        ?><p align="center"><?php
-if ($GLOBALS['generatedcontent']['brand']['xlink']) {
-    ?><a rel="nofollow" target="_blank" href="<?php
-echo $GLOBALS['generatedcontent']['brand']['xlink'];
-?>">Read more about <?php
-}
+    if ($GLOBALS['generatedcontent']['contenttype'] === 'brand') {
+        echo '<p align="center">';
+        if ($GLOBALS['generatedcontent']['brand']['xlink']) {
+            echo '<a rel="nofollow" target="_blank" href="' . $GLOBALS['generatedcontent']['brand']['xlink'] . '">Read more about ';
+        }
         echo $GLOBALS['generatedcontent']['brand']['name'];
-if ($GLOBALS['generatedcontent']['brand']['icon']) {
-    ?><br /><img src="<?php
-echo $GLOBALS['generatedcontent']['brand']['icon'];
-?>" alt="<?php
-echo xhtmlEsc($GLOBALS['generatedcontent']['brand']['name']);
-?>" title="" /><?php
-}
-if ($GLOBALS['generatedcontent']['brand']['xlink']) {
-    ?></a><?php
-}
-        ?></p><?php
+        if ($GLOBALS['generatedcontent']['brand']['icon']) {
+            echo '<br /><img src="' . $GLOBALS['generatedcontent']['brand']['icon'] . '" alt="'
+                . xhtmlEsc($GLOBALS['generatedcontent']['brand']['name']) . '" title="" />';
+        }
+        if ($GLOBALS['generatedcontent']['brand']['xlink']) {
+            echo '</a>';
+        }
+        echo '</p>';
     }
 
     if (@$GLOBALS['generatedcontent']['list']) {
-        ?><p align="center" class="web">Click on the product for additional information</p><?php
+        echo '<p align="center" class="web">Click on the product for additional information</p>';
 
-if ($GLOBALS['generatedcontent']['contenttype'] == 'tiles') {
-    ?><table cellspacing="0" id="liste"><?php
-$i = 0;
-$nr = count($GLOBALS['generatedcontent']['list'])-1;
-foreach ($GLOBALS['generatedcontent']['list'] as $value) {
-    if ($i % 2 == 0) {
-        ?><tr><?php
-    }
-    ?><td><a href="<?php
-echo $value['link'];
-?>"><?php
-if ($value['icon']) {
-    ?><img src="<?php
-echo $value['icon'];
-?>" alt="<?php
-echo xhtmlEsc($value['name']);
-?>" title="" /><br /><?php
-}
-echo $value['name'];
-?><br /><?php
-echoPrice(
-    $value['price']['now'],
-    $value['price']['before'],
-    $value['price']['from'],
-    $value['price']['market']
-);
-?></a></td><?php
-
-if ($i % 2 || $i == $nr) {
-    ?></tr><?php
-}
-$i++;
-}
-?></table><?php
-} else {
-    ?><div id="kat<?php
-echo $GLOBALS['generatedcontent']['activmenu'];
-?>"><table class="tabel"><thead><tr>
-<td><a href="#" onClick="x_get_kat('<?php
-    echo $GLOBALS['generatedcontent']['activmenu'];
-    ?>', 'navn', inject_html);">Title</a></td>
-    <td><a href="#" onClick="x_get_kat('<?php
-            echo $GLOBALS['generatedcontent']['activmenu'];
-            ?>', 'for', inject_html);">Previously</a></td>
-            <td><a href="#" onClick="x_get_kat('<?php
-            echo $GLOBALS['generatedcontent']['activmenu'];
-            ?>', 'pris', inject_html);">Price</a></td>
-            <td><a href="#" onClick="x_get_kat('<?php
-            echo $GLOBALS['generatedcontent']['activmenu'];
-            ?>', 'varenr', inject_html);">#</a></td>
-            </tr></thead><tbody><?php
+        if ($GLOBALS['generatedcontent']['contenttype'] === 'list') {
+            echo '<div id="kat' . $GLOBALS['generatedcontent']['activmenu']
+                . '"><table class="tabel"><thead><tr><td><a href="#" onClick="x_get_kat("'
+                . $GLOBALS['generatedcontent']['activmenu']
+                . ', \'navn\', inject_html);">Title</a></td><td><a href="#" onClick="x_get_kat(\''
+                . $GLOBALS['generatedcontent']['activmenu'];
+                    ?>', 'for', inject_html);">Previously</a></td>
+                    <td><a href="#" onClick="x_get_kat('<?php
+                    echo $GLOBALS['generatedcontent']['activmenu'];
+                    ?>', 'pris', inject_html);">Price</a></td>
+                    <td><a href="#" onClick="x_get_kat('<?php
+                    echo $GLOBALS['generatedcontent']['activmenu'];
+                    ?>', 'varenr', inject_html);">#</a></td>
+                    </tr></thead><tbody><?php
+                    $i = 0;
+                    foreach ($GLOBALS['generatedcontent']['list'] as $value) {
+                        ?><tr<?php
+                        if ($i % 2) {
+                            echo ' class="altrow"';
+                        }
+                        ?>><td><a href="<?php
+                        echo $value['link'];
+                        ?>"><?php
+                        echo $value['name'];
+                        ?></a></td><?php
+                        ?><td class="XPris" align="right"><?php
+                        if ($value['price']['before']) {
+                            echo number_format($value['price']['before'], 0, '', '.') . ',-';
+                        }
+                        ?></td><td class="Pris" align="right"><?php
+                        if ($value['price']['now']) {
+                            echo number_format($value['price']['now'], 0, '', '.') . ',-';
+                        }
+                        ?></td><td align="right" style="font-size:11px"><?php
+                        echo $value['serial'];
+                        ?></td></tr><?php
+                        $i++;
+                    }
+                    ?></tbody></table></div><?php
+        } else {
+            echo '<table cellspacing="0" id="liste">';
             $i = 0;
+            $nr = count($GLOBALS['generatedcontent']['list'])-1;
             foreach ($GLOBALS['generatedcontent']['list'] as $value) {
-                ?><tr<?php
-if ($i % 2) {
-    echo ' class="altrow"';
-}
-                ?>><td><a href="<?php
-                echo $value['link'];
-                ?>"><?php
-                echo $value['name'];
-                ?></a></td><?php
-                ?><td class="XPris" align="right"><?php
-if ($value['price']['before']) {
-    echo number_format($value['price']['before'], 0, '', '.') . ',-';
-}
-                ?></td><td class="Pris" align="right"><?php
-if ($value['price']['now']) {
-    echo number_format($value['price']['now'], 0, '', '.') . ',-';
-}
-                ?></td><td align="right" style="font-size:11px"><?php
-                echo $value['serial'];
-                ?></td></tr><?php
+                if ($i % 2 == 0) {
+                    echo '<tr>';
+                }
+                echo '<td><a href="' . $value['link'] . '">';
+                if ($value['icon']) {
+                    echo '<img src="' . $value['icon'] . '" alt="' . xhtmlEsc($value['name']) . '" title="" /><br />';
+                }
+                echo $value['name'] . '<br />';
+                echoPrice(
+                    $value['price']['now'],
+                    $value['price']['before'],
+                    $value['price']['from'],
+                    $value['price']['market']
+                );
+                echo '</a></td>';
+
+                if ($i % 2 || $i == $nr) {
+                    echo '</tr>';
+                }
                 $i++;
             }
-            ?></tbody></table></div><?php
-}
+            echo '</table>';
+        }
     } else {
         ?><p align="center" class="web">The search did not return any results</p><?php
     }

@@ -326,6 +326,26 @@ function getTable(int $listid, int $bycell = null, int $categoryId = null): arra
     Render::addLoadedTable('kat');
     Render::sendCacheHeader();
 
+    $html = getTableHtml(
+        $listid,
+        $bycell,
+        $categoryId ? ORM::getOne(Category::class, $categoryId) : null
+    );
+
+    return ['id' => 'table' . $listid, 'html' => $html];
+}
+
+/**
+ * Return html for a sorted list
+ *
+ * @param int      $listid   Id of list
+ * @param int      $bycell   What cell to sort by
+ * @param Category $category Id of current category
+ *
+ * @return array
+ */
+function getTableHtml(int $listid, int $bycell = null, Category $category = null): string
+{
     $html = '';
 
     $list = db()->fetchOne("SELECT * FROM `lists` WHERE id = " . $listid);
@@ -339,8 +359,6 @@ function getTable(int $listid, int $bycell = null, int $categoryId = null): arra
         Render::sendCacheHeader();
         return ['id' => 'table' . $listid, 'html' => $html];
     }
-
-    $category = $categoryId ? ORM::getOne(Category::class, $categoryId) : null;
 
     // Eager load data
     $pageIds = [];
@@ -529,7 +547,7 @@ function getTable(int $listid, int $bycell = null, int $categoryId = null): arra
                     break;
             }
         }
-        if (@$GLOBALS['generatedcontent']['has_product_table']) {
+        if (!empty($GLOBALS['generatedcontent']['has_product_table'])) {
             $html .= '<td class="addtocart"><a href="/bestilling/?add_list_item='
             . $row['id'] . '"><img src="/theme/images/cart_add.png" title="'
             . _('Add to shopping cart') . '" alt="+" /></a></td>';
@@ -539,9 +557,7 @@ function getTable(int $listid, int $bycell = null, int $categoryId = null): arra
 
     $html .= '</tbody></table>';
 
-    Render::sendCacheHeader();
-
-    return ['id' => 'table' . $listid, 'html' => $html];
+    return $html;
 }
 
 /**
@@ -836,84 +852,6 @@ function menu(array $categories, array $categoryIds, bool $weightedChildren = tr
     }
 
     return $menu;
-}
-
-/**
- * Search for categories and populate generatedcontent with results
- *
- * @param string $q        Seach string
- * @param string $wherekat Additional SQL for WHERE clause
- *
- * @return null
- */
-function searchMenu(string $q, string $wherekat)
-{
-    $categories = [];
-    $maerke = [];
-    if ($q) {
-        $categories = ORM::getByQuery(
-            Category::class,
-            "
-            SELECT *, MATCH (navn) AGAINST ('$q') AS score
-            FROM kat
-            WHERE MATCH (navn) AGAINST('$q') > 0 " . $wherekat . "
-                AND `vis` != '0'
-            ORDER BY score, navn
-            "
-        );
-        $qsearch = ['/\s+/u', "/'/u", '//u', '/`/u'];
-        $qreplace = ['%', '_', '_', '_'];
-        $simpleq = preg_replace($qsearch, $qreplace, $q);
-        if (!$categories) {
-            $categories = ORM::getByQuery(
-                Category::class,
-                "
-                SELECT * FROM kat WHERE navn
-                LIKE '%".$simpleq."%' " . $wherekat . "
-                ORDER BY navn
-                "
-            );
-        }
-        $maerke = db()->fetchArray(
-            "
-            SELECT id, navn
-            FROM `maerke`
-            WHERE MATCH (navn) AGAINST ('$q') >  0
-            "
-        );
-        Render::addLoadedTable('maerke');
-        if (!$maerke) {
-            $maerke = db()->fetchArray(
-                "
-                SELECT id, navn
-                FROM maerke
-                WHERE navn
-                LIKE '%" .$simpleq ."%'
-                ORDER BY navn
-                "
-            );
-        }
-    }
-
-    foreach ($maerke as $value) {
-        $GLOBALS['generatedcontent']['search_menu'][] = [
-            'id' => 0,
-            'name' => xhtmlEsc($value['navn']),
-            'link' => '/mærke' . $value['id'] . '-' .clearFileName($value['navn']) . '/'
-        ];
-    }
-
-    foreach ($categories as $category) {
-        if ($category->isVisable()) {
-            $GLOBALS['generatedcontent']['search_menu'][] = [
-                'id' => $category->getId(),
-                'name' => xhtmlEsc($category->getTitle()),
-                'link' => '/' . $category->getSlug(),
-                'icon' => $category->getIconPath(),
-                'sub' => (bool) $category->getChildren(true),
-            ];
-        }
-    }
 }
 
 /**
