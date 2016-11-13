@@ -38,7 +38,7 @@ $pdf = new TCPDF('P', 'mm', 'A4', true, 'UTF-8', false);
 
 // set document information
 $pdf->SetCreator(PDF_CREATOR);
-$pdf->SetAuthor($GLOBALS['_config']['site_name']);
+$pdf->SetAuthor(Config::get('site_name'));
 $pdf->SetTitle('Online faktura #'.$faktura['id']);
 
 // remove default header/footer
@@ -65,28 +65,28 @@ $pdf->AddPage();
 
 //Site title
 $pdf->SetFont('times', 'B', 37.5);
-$pdf->Write(0, $GLOBALS['_config']['site_name']);
+$pdf->Write(0, Config::get('site_name'));
 
 //Contact info
 $pdf->SetY(12);
 $pdf->SetFont('times', '', 10);
 $pdf->Write(
     0,
-    $GLOBALS['_config']['address']."\n".
-    $GLOBALS['_config']['postcode'].' '.$GLOBALS['_config']['city']."\n".
-    'Fax: '.$GLOBALS['_config']['fax']."\n",
+    Config::get('address') . "\n".
+    Config::get('postcode') . ' ' . Config::get('city') . "\n".
+    'Fax: ' . Config::get('fax') . "\n",
     '',
     0,
     'R'
 );
 $pdf->SetFont('times', 'B', 11);
-$pdf->Write(0, _('Phone:').' '.$GLOBALS['_config']['phone']."\n", '', 0, 'R');
+$pdf->Write(0, _('Phone:') . ' ' . Config::get('phone') . "\n", '', 0, 'R');
 $pdf->SetFont('times', '', 10);
 
 if (empty($faktura['department'])) {
-    $faktura['department'] = reset($GLOBALS['_config']['emails'])['address'];
+    $faktura['department'] = first(Config::get('emails'))['address'];
 }
-$domain = explode('/', $GLOBALS['_config']['base_url']);
+$domain = explode('/', Config::get('base_url'));
 $domain = $domain[count($domain)-1];
 $pdf->Write(0, $faktura['department']."\n".$domain."\n\n", '', 0, 'R');
 $pdf->SetFont('times', '', 11);
@@ -283,12 +283,11 @@ if ($note) {
     $pdf->Write(0, $note);
 }
 
-//Sign off'.$GLOBALS['_config']['address'].'
 $pdf->SetFont('times', 'B', 12);
 $pdf->SetMargins(137, 0, 0);
 $pdf->Write(0, "\n");
 $pdf->SetY(-52);
-$pdf->Write(0, _('Sincerely,')."\n\n\n".$faktura['clerk']."\n".$GLOBALS['_config']['site_name']);
+$pdf->Write(0, _('Sincerely,') . "\n\n\n" . $faktura['clerk'] . "\n" . Config::get('site_name'));
 
 // ---------------------------------------------------------
 

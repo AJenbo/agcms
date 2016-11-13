@@ -37,21 +37,21 @@ $replace = [
     ' '
 ];
 
-$email = reset($GLOBALS['_config']['emails'])['address'];
+$email = first(Config::get('emails'))['address'];
 echo '<?xml version="1.0" encoding="utf-8"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
 <channel>
-    <atom:link href="' . $GLOBALS['_config']['base_url']
+    <atom:link href="' . Config::get('base_url')
     . '/rss.php" rel="self" type="application/rss+xml" />
 
-    <title>'.$GLOBALS['_config']['site_name'].'</title>
-    <link>'.$GLOBALS['_config']['base_url'].'/</link>
+    <title>' . Config::get('site_name') . '</title>
+    <link>' . Config::get('base_url') . '/</link>
     <description>De nyeste sider</description>
     <language>da</language>
     <lastBuildDate>' . gmdate('D, d M Y H:i:s', $timestamp)
     . ' GMT</lastBuildDate>
     <managingEditor>' . $email . ' ('
-    . $GLOBALS['_config']['site_name'] . ')</managingEditor>';
+    . Config::get('site_name') . ')</managingEditor>';
 
 $time = 0;
 if (isset($_SERVER['HTTP_IF_MODIFIED_SINCE'])) {
@@ -80,19 +80,19 @@ foreach ($pages as $page) {
 
     $title = trim($page->getTitle());
     if (!$title) {
-        $title = $GLOBALS['_config']['site_name'];
+        $title = Config::get('site_name');
     }
     echo '<item><title>' . htmlspecialchars($title, ENT_COMPAT | ENT_XML1) . '</title><link>'
-    . $GLOBALS['_config']['base_url'] . encodeUrl($page->getCanonicalLink()) . '</link><description>';
+    . Config::get('base_url') . encodeUrl($page->getCanonicalLink()) . '</link><description>';
     if ($page->getImagePath() && $page->getImagePath() !== '/images/web/intet-foto.jpg') {
         echo '&lt;img style="float:left;margin:0 10px 5px 0;" src="'
-        . $GLOBALS['_config']['base_url'] . encodeUrl($page->getImagePath()) . '" &gt;&lt;p&gt;';
+        . Config::get('base_url') . encodeUrl($page->getImagePath()) . '" &gt;&lt;p&gt;';
     }
 
     $cleaned = trim(preg_replace($search, $replace, $page->getExcerpt()));
     echo htmlspecialchars($cleaned, ENT_COMPAT | ENT_XML1) . '</description><pubDate>'
     . gmdate('D, d M Y H:i:s', $page->getTimeStamp()) . ' GMT</pubDate><guid>'
-    . $GLOBALS['_config']['base_url'] . encodeUrl($page->getCanonicalLink()) . '</guid>';
+    . Config::get('base_url') . encodeUrl($page->getCanonicalLink()) . '</guid>';
 
     $categoryIds = [];
     foreach ($page->getCategories() as $category) {

@@ -18,11 +18,11 @@ Render::sendCacheHeader(Render::getUpdateTime(false));
 echo '<?xml version="1.0" encoding="utf-8"?>';
 ?>
 <OpenSearchDescription xmlns="http://a9.com/-/spec/opensearch/1.1/">
-    <ShortName><?php echo $GLOBALS['_config']['site_name'] ?></ShortName>
+    <ShortName><?php echo Config::get('site_name'); ?></ShortName>
     <Description><?php
-    printf(_('Find in %s'), $GLOBALS['_config']['site_name']);
+    printf(_('Find in %s'), Config::get('site_name'));
     ?></Description><?php
-    echo '<Url type="text/html" template="' .$GLOBALS['_config']['base_url']
+    echo '<Url type="text/html" template="' .Config::get('base_url')
     .'/?q={searchTerms}" />';
 ?></OpenSearchDescription>
 

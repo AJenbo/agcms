@@ -354,7 +354,7 @@ echo _('Phone');
 <td><?php
 echo _('Email');
 ?></td><?php
-if (count($GLOBALS['_config']['emails']) > 1) {
+if (count(Config::get('emails')) > 1) {
     ?><td><?php
     echo _('Department');
     ?></td><?php
@@ -377,11 +377,11 @@ if (!empty($_GET['email'])) {
     echo $_GET['email'];
 }
 ?>" maxlength="64" /></td><?php
-if (count($GLOBALS['_config']['emails']) > 1) {
+if (count(Config::get('emails')) > 1) {
     ?><td><select name="department"><option value=""><?php
     echo _('All');
     ?></option><?php
-foreach ($GLOBALS['_config']['emails'] as $email => $dummy) {
+foreach (Config::get('emails', []) as $email => $dummy) {
     ?><option<?php
 if (isset($_GET['department']) && $_GET['department'] === $email) {
     echo ' selected="selected"';

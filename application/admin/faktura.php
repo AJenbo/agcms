@@ -27,9 +27,9 @@ if ($faktura['premoms']) {
 
 if ($faktura['id'] && $faktura['status'] != 'new') {
     $epayment = new EpaymentAdminService(
-        $GLOBALS['_config']['pbsid'],
-        $GLOBALS['_config']['pbspwd'],
-        $GLOBALS['_config']['pbsfix'] . $faktura['id']
+        Config::get('pbsid'),
+        Config::get('pbspwd'),
+        Config::get('pbsfix') . $faktura['id']
     );
 
     if ($epayment->isAnnulled()) {
@@ -642,14 +642,14 @@ if ($faktura['clerk'] && !in_array($faktura['clerk'], $userstest)) {
             <td>Afdeling:</td>
             <td><?php
             if (!in_array($faktura['status'], ['giro', 'cash', 'accepted', 'canceled'])) {
-                if (count($GLOBALS['_config']['emails']) > 1) {
+                if (count(Config::get('emails')) > 1) {
                     ?><select name="department" id="department">
                         <option value=""<?php
                         if (!$faktura['department']) {
                             echo ' selected="selected"';
                         }
                     ?>>Ikke valgt</option><?php
-foreach ($GLOBALS['_config']['emails'] as $department => $dummy) {
+foreach (Config::get('emails', []) as $department => $dummy) {
     ?><option<?php
 if ($faktura['department'] == $department) {
     echo ' selected="selected"';
@@ -658,7 +658,7 @@ if ($faktura['department'] == $department) {
 }
         ?></select><?php
                 } else {
-                    $email = reset($GLOBALS['_config']['emails'])['address'];
+                    $email = first(Config::get('emails'))['address'];
                     echo $email;
                     ?><input name="department" id="department" type="hidden" value="<?php echo $email; ?>" /><?php
                 }

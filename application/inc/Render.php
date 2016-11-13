@@ -121,10 +121,10 @@ class Render
                 'link' => '/' . $page->getSlug(),
             ];
         }
-        $emails = reset($GLOBALS['_config']['emails'])['address'];
+        $emails = first(Config::get('emails'))['address'];
         $GLOBALS['generatedcontent']['email'] = $emails;
         $GLOBALS['generatedcontent']['crumbs'] = [];
-        $GLOBALS['generatedcontent']['title'] = xhtmlEsc($GLOBALS['_config']['site_name']);
+        $GLOBALS['generatedcontent']['title'] = xhtmlEsc(Config::get('site_name'));
         $GLOBALS['generatedcontent']['activmenu'] = -1;
         $GLOBALS['generatedcontent']['canonical'] = '';
 
@@ -254,7 +254,7 @@ class Render
 
             searchMenu($_GET['q'] ?? '', $wherekat);
 
-            $GLOBALS['generatedcontent']['title'] = 'Søg på ' . xhtmlEsc($GLOBALS['_config']['site_name']);
+            $GLOBALS['generatedcontent']['title'] = 'Søg på ' . xhtmlEsc(Config::get('site_name'));
             self::$pageType = 'tiles';
         }
 
@@ -341,7 +341,7 @@ class Render
 
             $GLOBALS['generatedcontent']['text'] = $special['text'];
         } elseif (self::$pageType === 'search') {
-            $GLOBALS['generatedcontent']['title'] = 'Søg på ' . xhtmlEsc($GLOBALS['_config']['site_name']);
+            $GLOBALS['generatedcontent']['title'] = 'Søg på ' . xhtmlEsc(Config::get('site_name'));
 
             $text = '<form action="/" method="get"><table>';
             $text .= '<tr><td>'._('Contains').'</td><td>';

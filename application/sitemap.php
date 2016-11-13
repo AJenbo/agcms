@@ -26,7 +26,7 @@ $special = db()->fetchOne("SELECT dato FROM special WHERE id = 1");
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.sitemaps.org/schemas/sitemap/0.9 http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd">
     <url>
         <loc><?php
-        echo $GLOBALS['_config']['base_url'];
+        echo Config::get('base_url');
 ?>/</loc>
         <lastmod><?php
         echo mb_substr($special['dato'], 0, -9, 'UTF-8');
@@ -36,7 +36,7 @@ $special = db()->fetchOne("SELECT dato FROM special WHERE id = 1");
     </url>
     <url>
         <loc><?php
-        echo $GLOBALS['_config']['base_url'];
+        echo Config::get('base_url');
 ?>/?sog=1&amp;q=&amp;sogikke=&amp;minpris=&amp;maxpris=&amp;maerke=</loc>
         <lastmod>2007-02-02</lastmod>
         <changefreq>monthly</changefreq>
@@ -55,7 +55,7 @@ foreach ($categories as $category) {
     //print xml
     ?><url><loc><?php
     echo htmlspecialchars(
-        $GLOBALS['_config']['base_url'] . '/' . $category->getSlug(),
+        Config::get('base_url') . '/' . $category->getSlug(),
         ENT_COMPAT | ENT_XML1
     );
     ?></loc><changefreq>weekly</changefreq><priority>0.5</priority></url><?php
@@ -74,7 +74,7 @@ if ($activeCategoryIds) {
         //print xml
         ?><url><loc><?php
         echo htmlspecialchars(
-            $GLOBALS['_config']['base_url'] . $page->getCanonicalLink(),
+            Config::get('base_url') . $page->getCanonicalLink(),
             ENT_COMPAT | ENT_XML1
         );
         ?></loc><lastmod><?php

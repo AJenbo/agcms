@@ -462,23 +462,23 @@ if (!empty($id) && $checkid === getCheckid($id) && !isset($_GET['txnid'])) {
             $GLOBALS['generatedcontent']['text'] .= '<form style="text-align:center;" action="https://ssl.ditonlinebetalingssystem.dk/integration/ewindow/Default.aspx" method="post">';
 
             $submit = [
-                'group'             => $GLOBALS['_config']['pbsfix'],
-                'merchantnumber'    => $GLOBALS['_config']['pbsid'],
-                'orderid'           => $GLOBALS['_config']['pbsfix'].$faktura['id'],
+                'group'             => Config::get('pbsfix'),
+                'merchantnumber'    => Config::get('pbsid'),
+                'orderid'           => Config::get('pbsfix') . $faktura['id'],
                 'currency'          => 208,
                 'amount'            => number_format($faktura['amount'], 2, '', ''),
                 'ownreceipt'        => 1,
-                'accepturl'         => $GLOBALS['_config']['base_url'] . '/betaling/?id=' . $id . '&checkid=' . $checkid,
-                'cancelurl'         => $GLOBALS['_config']['base_url'] . $_SERVER['REQUEST_URI'],
+                'accepturl'         => Config::get('base_url') . '/betaling/?id=' . $id . '&checkid=' . $checkid,
+                'cancelurl'         => Config::get('base_url') . $_SERVER['REQUEST_URI'],
                 'windowstate'       => 3,
-                'windowid'          => $GLOBALS['_config']['pbswindow'],
+                'windowid'          => Config::get('pbswindow'),
             ];
             foreach ($submit as $key => $value) {
                 $GLOBALS['generatedcontent']['text'] .= '<input type="hidden" name="'
                 .$key.'" value="'.xhtmlEsc($value).'" />';
             }
             $GLOBALS['generatedcontent']['text'] .= '<input type="hidden" name="hash" value="'
-            .md5(implode('', $submit).$GLOBALS['_config']['pbspassword']).'" />';
+            .md5(implode('', $submit).Config::get('pbspassword')).'" />';
 
             $GLOBALS['generatedcontent']['text'] .= '<input class="web" type="submit" value="'._('I hereby agree to the terms of trade').'" />';
             $GLOBALS['generatedcontent']['text'] .= '</form>';
@@ -538,7 +538,7 @@ if (!empty($id) && $checkid === getCheckid($id) && !isset($_GET['txnid'])) {
 
     $params = $_GET;
     unset($params['hash']);
-    $eKey = md5(implode('', $params) . $GLOBALS['_config']['pbspassword']);
+    $eKey = md5(implode('', $params) . Config::get('pbspassword'));
     unset($params);
 
     $shopSubject = _('Payment code was tampered with!');
@@ -808,11 +808,11 @@ Tel. %s<br />
             $emailbody_tablerows,
             $emailbody_nore,
             xhtmlEsc($faktura['clerk']),
-            xhtmlEsc($GLOBALS['_config']['site_name']),
-            xhtmlEsc($GLOBALS['_config']['address']),
-            xhtmlEsc($GLOBALS['_config']['postcode']),
-            xhtmlEsc($GLOBALS['_config']['city']),
-            xhtmlEsc($GLOBALS['_config']['phone']),
+            xhtmlEsc(Config::get('site_name')),
+            xhtmlEsc(Config::get('address')),
+            xhtmlEsc(Config::get('postcode')),
+            xhtmlEsc(Config::get('city')),
+            xhtmlEsc(Config::get('phone')),
             xhtmlEsc($faktura['department']),
             xhtmlEsc($faktura['department'])
         );
@@ -921,7 +921,7 @@ Delivery phone: %s</p>
         $emailbody .= sprintf(
             $msg,
             $shopBody,
-            xhtmlEsc($GLOBALS['_config']['base_url']),
+            xhtmlEsc(Config::get('base_url')),
             $id,
             xhtmlEsc($faktura['email']),
             xhtmlEsc($faktura['email']),

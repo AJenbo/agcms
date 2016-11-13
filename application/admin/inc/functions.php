@@ -294,20 +294,20 @@ function sendEmail(int $id, string $from, string $interests, string $subject, st
     <html xmlns="http://www.w3.org/1999/xhtml">
     <head>
     <meta http-equiv="content-type" content="text/html; charset=utf-8" />
-    <title>'.$GLOBALS['_config']['site_name'].'</title>
+    <title>' . Config::get('site_name') . '</title>
     <style type="text/css">';
     $body .= file_get_contents(_ROOT_ . '/theme/email.css');
     $body .= '</style>
     <meta http-equiv="content-language" content="da" />
     <meta name="Description" content="Alt du har brug for i frilufts livet" />
-    <meta name="Author" content="' . $GLOBALS['_config']['site_name'] . '" />
+    <meta name="Author" content="' . Config::get('site_name') . '" />
     <meta name="Classification" content="" />
     <meta name="Reply-to" content="'.$from.'" />
     <meta http-equiv="imagetoolbar" content="no" />
     <meta name="distribution" content="Global" />
     <meta name="robots" content="index,follow" />
     </head><body><div>';
-    $body .= str_replace(' href="/', ' href="' . $GLOBALS['_config']['base_url'] . '/', $text);
+    $body .= str_replace(' href="/', ' href="' . Config::get('base_url') . '/', $text);
     $body .= '</div></body></html>';
 
     //Colect interests
@@ -435,15 +435,15 @@ function getEmail(int $id): string
 
     //TODO error if value = ''
     if ($newsmail['sendt'] == 0) {
-        if (count($GLOBALS['_config']['emails']) > 1) {
+        if (count(Config::get('emails')) > 1) {
             $html .= _('Sender:').' <select id="from">';
             $html .= '<option value="">'._('Select sender').'</option>';
-            foreach ($GLOBALS['_config']['emails'] as $email => $dummy) {
+            foreach (Config::get('emails', []) as $email => $dummy) {
                 $html .= '<option value="'.$email.'">'.$email.'</option>';
             }
             $html .= '</select>';
         } else {
-            $email = reset($GLOBALS['_config']['emails'])['address'];
+            $email = first(Config::get('emails'))['address'];
             $html .= '<input value="' . $email . '" id="from" style="display:none;" />';
         }
     } else {
@@ -458,7 +458,7 @@ function getEmail(int $id): string
     }
     $html .= '<div id="interests">';
     $newsmail['interests_array'] = explode('<', $newsmail['interests']);
-    foreach ($GLOBALS['_config']['interests'] as $interest) {
+    foreach (Config::get('interests', []) as $interest) {
         $html .= '<input';
         if (false !== array_search($interest, $newsmail['interests_array'])) {
             $html .= ' checked="checked"';
@@ -480,12 +480,12 @@ countEmailTo();
     }
 
     if ($newsmail['sendt'] == 1) {
-        $html .= '<br />'._('Subject:').' '.$newsmail['subject'].'<div style="width:'.$GLOBALS['_config']['text_width'].'px; border:1px solid #D2D2D2">'.$newsmail['text'].'</div></div>';
+        $html .= '<br />' . _('Subject:') . ' ' . $newsmail['subject'] . '<div style="width:' . Config::get('text_width') . 'px; border:1px solid #D2D2D2">' . $newsmail['text'] . '</div></div>';
     } else {
-        $html .= '<br />' . _('Subject:') . ' <input class="admin_name" name="subject" id="subject" value="' . $newsmail['subject'] . '" size="127" style="width:' . ($GLOBALS['_config']['text_width'] - 34) . 'px" /><script type="text/javascript"><!--
+        $html .= '<br />' . _('Subject:') . ' <input class="admin_name" name="subject" id="subject" value="' . $newsmail['subject'] . '" size="127" style="width:' . (Config::get('text_width') - 34) . 'px" /><script type="text/javascript"><!--
 //Usage: initRTE(imagesPath, includesPath, cssFile, genXHTML)
 initRTE(\'/admin/rtef/images/\', \'/admin/rtef/\', \'/theme/email.css\', true);
-writeRichText(\'text\', \'' . rtefsafe($newsmail['text']) . '\', \'\', ' . ($GLOBALS['_config']['text_width'] + 32) . ', 422, true, false, false);
+writeRichText(\'text\', \'' . rtefsafe($newsmail['text']) . '\', \'\', ' . (Config::get('text_width') + 32) . ', 422, true, false, false);
 //--></script></div></form>';
     }
     return $html;
@@ -600,14 +600,14 @@ function katlist(int $id): string
 {
     global $kattree;
 
-    $html = '<a class="menuboxheader" id="katsheader" style="width:'.$GLOBALS['_config']['text_width'].'px;clear:both" onclick="showhidekats(\'kats\',this);">';
+    $html = '<a class="menuboxheader" id="katsheader" style="width:' . Config::get('text_width') . 'px;clear:both" onclick="showhidekats(\'kats\',this);">';
     if (@$_COOKIE['hidekats']) {
         $temp = katspath($id);
         $html .= $temp['html'];
     } else {
         $html .= _('Select location:').' ';
     }
-    $html .= '</a><div style="width:'.($GLOBALS['_config']['text_width']+24).'px;';
+    $html .= '</a><div style="width:' . (Config::get('text_width') + 24) . 'px;';
     if (@$_COOKIE['hidekats']) {
         $html .= 'display:none;';
     }
@@ -1401,7 +1401,7 @@ function filehtml(array $fileinfo): string
             if ($_GET['return']=='rtef') {
                 $html .= ' onclick="addimg('.$fileinfo['id'].')"';
             } elseif ($_GET['return']=='thb') {
-                if ($fileinfo['width'] <= $GLOBALS['_config']['thumb_width'] && $fileinfo['height'] <= $GLOBALS['_config']['thumb_height']) {
+                if ($fileinfo['width'] <= Config::get('thumb_width') && $fileinfo['height'] <= Config::get('thumb_height')) {
                     $html .= ' onclick="insertThumbnail('.$fileinfo['id'].')"';
                 } else {
                     $html .= ' onclick="open_image_thumbnail('.$fileinfo['id'].')"';
@@ -1998,7 +1998,7 @@ function redigerkat(int $id): string
         if ($kat['custom_sort_subs']) {
             $html .= ' selected="selected"';
         }
-        $html .= '>'._('Manually').'</option></select><br /><ul id="subMenus" style="width:'.$GLOBALS['_config']['text_width'].'px;';
+        $html .= '>'._('Manually').'</option></select><br /><ul id="subMenus" style="width:' . Config::get('text_width') . 'px;';
         if (!$kat['custom_sort_subs']) {
             $html .= 'display:none;';
         }
@@ -2034,7 +2034,7 @@ $(\'subMenusOrder\').value = newOrder;
 
     //Email
     $html .= _('Contact:').' <select id="email">';
-    foreach ($GLOBALS['_config']['emails'] as $value => $dummy) {
+    foreach (Config::get('emails', []) as $value => $dummy) {
         $html .= '<option value="'.$value.'"';
         if ($kat['email'] == $value) {
             $html .= ' selected="selected"';
@@ -2079,12 +2079,12 @@ function redigerside(int $id): string
     $html = '<div id="headline">'._('Edit page #').$id.'</div><form action="" method="post" onsubmit="return updateSide('.$id.');"><input type="submit" accesskey="s" style="width:1px; height:1px; position:absolute; top: -20px; left:-20px;" /><div><script type="text/javascript"><!--
 //Usage: initRTE(imagesPath, includesPath, cssFile, genXHTML)
 initRTE("/admin/rtef/images/", "/admin/rtef/", "/theme/rtef-text.css", true);
-//--></script><input type="hidden" name="id" id="id" value="'.$id.'" /><input class="admin_name" type="text" name="navn" id="navn" value="'.xhtmlEsc($page['navn']).'" maxlength="127" size="127" style="width:'.$GLOBALS['_config']['text_width'].'px" /><script type="text/javascript"><!--
-writeRichText("text", \''.rtefsafe($page['text']).'\', "", '.($GLOBALS['_config']['text_width']+32).', 420, true, false, false);
+//--></script><input type="hidden" name="id" id="id" value="'.$id.'" /><input class="admin_name" type="text" name="navn" id="navn" value="'.xhtmlEsc($page['navn']).'" maxlength="127" size="127" style="width:' . Config::get('text_width') . 'px" /><script type="text/javascript"><!--
+writeRichText("text", \'' . rtefsafe($page['text']) . '\', "", ' . (Config::get('text_width') + 32) . ', 420, true, false, false);
 //--></script>';
-    $html .= _('Search word (separate search words with a comma \'Emergency Blanket, Emergency Blanket\'):').'<br /><textarea name="keywords" id="keywords" style="width:'.$GLOBALS['_config']['text_width'].'px;max-width:'.$GLOBALS['_config']['text_width'].'px" rows="2" cols="">'.xhtmlEsc($page['keywords']).'</textarea>';
+    $html .= _('Search word (separate search words with a comma \'Emergency Blanket, Emergency Blanket\'):').'<br /><textarea name="keywords" id="keywords" style="width:' . Config::get('text_width') . 'px;max-width:' . Config::get('text_width') . 'px" rows="2" cols="">'.xhtmlEsc($page['keywords']).'</textarea>';
     //Beskrivelse start
-    $html .= '<div class="toolbox"><a class="menuboxheader" id="beskrivelseboxheader" style="width:'.($GLOBALS['_config']['thumb_width']+14).'px" onclick="showhide(\'beskrivelsebox\',this);">'._('Description:').' </a><div style="text-align:center;width:'.($GLOBALS['_config']['thumb_width']+34).'px" id="beskrivelsebox"><br /><input type="hidden" value="';
+    $html .= '<div class="toolbox"><a class="menuboxheader" id="beskrivelseboxheader" style="width:'.(Config::get('thumb_width') + 14).'px" onclick="showhide(\'beskrivelsebox\',this);">'._('Description:').' </a><div style="text-align:center;width:'.(Config::get('thumb_width') + 34).'px" id="beskrivelsebox"><br /><input type="hidden" value="';
     if ($page['billed']) {
         $html .= $page['billed'];
     } else {
@@ -2099,7 +2099,7 @@ writeRichText("text", \''.rtefsafe($page['text']).'\', "", '.($GLOBALS['_config'
     }
     $html .= '" alt="" onclick="explorer(\'thb\', \'billed\')" /><br /><img onclick="explorer(\'thb\', \'billed\')" src="images/folder_image.png" width="16" height="16" alt="'._('Pictures').'" title="'._('Find image').'" /><a onclick="setThb(\'billed\',\'\',\''._('/images/web/intet-foto.jpg').'\')"><img src="images/cross.png" alt="X" title="'._('Remove picture').'" width="16" height="16" /></a>';
     $html .= '<script type="text/javascript"><!--
-writeRichText("beskrivelse", \''.rtefsafe($page['beskrivelse']).'\', "", '.($GLOBALS['_config']['thumb_width']+32).', 115, false, false, false);
+writeRichText("beskrivelse", \''.rtefsafe($page['beskrivelse']).'\', "", '.(Config::get('thumb_width') + 32).', 115, false, false, false);
 //--></script>';
     $html .= '</div></div>';
     //Beskrivelse end
@@ -2168,7 +2168,7 @@ writeRichText("beskrivelse", \''.rtefsafe($page['beskrivelse']).'\', "", '.($GLO
     $html .= '</select></div></div>';
     //misc end
     //list start
-    $html .= '<div class="toolbox"><a class="menuboxheader" id="listboxheader" style="width:'.($GLOBALS['_config']['text_width']-20+32).'px" onclick="showhide(\'listbox\',this);">'._('Lists:').' </a><div style="width:'.($GLOBALS['_config']['text_width']+32).'px" id="listbox">';
+    $html .= '<div class="toolbox"><a class="menuboxheader" id="listboxheader" style="width:'.(Config::get('text_width') - 20 + 32).'px" onclick="showhide(\'listbox\',this);">'._('Lists:').' </a><div style="width:'.(Config::get('text_width') + 32).'px" id="listbox">';
     $lists = db()->fetchArray('SELECT * FROM `lists` WHERE page_id = ' . $id);
     $firstRow = reset($lists);
     $options = [];
@@ -2374,7 +2374,7 @@ function redigerFrontpage(): string
     $subkats = db()->fetchArray('SELECT id, navn, icon FROM `kat` WHERE bind = 0 ORDER BY `order`, `navn`');
 
     $html .= _('Sort maincategories:');
-    $html .= '<ul id="subMenus" style="width:'.$GLOBALS['_config']['text_width'].'px;">';
+    $html .= '<ul id="subMenus" style="width:' . Config::get('text_width') .'px;">';
 
     foreach ($subkats as $value) {
         $html .= '<li id="item_'.$value['id'].'"><img src="';
@@ -2404,7 +2404,7 @@ $(\'subMenusOrder\').value = newOrder;
     $html .= '<script type="text/javascript"><!--
 //Usage: initRTE(imagesPath, includesPath, cssFile, genXHTML)
 initRTE("/admin/rtef/images/", "/admin/rtef/", "/theme/rtef-text.css", true);
-writeRichText("text", \''.rtefsafe($special['text']).'\', "", '.($GLOBALS['_config']['frontpage_width']+32).', 572, true, false, false);
+writeRichText("text", \''.rtefsafe($special['text']).'\', "", '.(Config::get('frontpage_width') + 32).', 572, true, false, false);
 //--></script></form>';
 
     return $html;
@@ -2424,7 +2424,7 @@ function redigerSpecial(int $id): string
     $html .= '<script type="text/javascript"><!--
 //Usage: initRTE(imagesPath, includesPath, cssFile, genXHTML)
 initRTE("/admin/rtef/images/", "/admin/rtef/", "/theme/rtef-text.css", true);
-writeRichText("text", \''.rtefsafe($special['text']).'\', "", '.($GLOBALS['_config']['text_width']+32).', 572, true, false, false);
+writeRichText("text", \''.rtefsafe($special['text']).'\', "", '.(Config::get('text_width') + 32).', 572, true, false, false);
 //--></script></form>';
 
     return $html;
@@ -2432,10 +2432,10 @@ writeRichText("text", \''.rtefsafe($special['text']).'\', "", '.($GLOBALS['_conf
 
 function getnykrav()
 {
-    $html = '<div id="headline">'._('Create new requirement').'</div><form action="" method="post" onsubmit="return savekrav();"><input type="submit" accesskey="s" style="width:1px; height:1px; position:absolute; top: -20px; left:-20px;" /><input type="hidden" name="id" id="id" value="" /><input class="admin_name" type="text" name="navn" id="navn" value="" maxlength="127" size="127" style="width:'.$GLOBALS['_config']['text_width'].'px" /><script type="text/javascript"><!--
+    $html = '<div id="headline">'._('Create new requirement').'</div><form action="" method="post" onsubmit="return savekrav();"><input type="submit" accesskey="s" style="width:1px; height:1px; position:absolute; top: -20px; left:-20px;" /><input type="hidden" name="id" id="id" value="" /><input class="admin_name" type="text" name="navn" id="navn" value="" maxlength="127" size="127" style="width:' . Config::get('text_width') . 'px" /><script type="text/javascript"><!--
 //Usage: initRTE(imagesPath, includesPath, cssFile, genXHTML)
 initRTE("/admin/rtef/images/", "/admin/rtef/", "/theme/rtef-text.css", true);
-writeRichText("text", "", "", '.$GLOBALS['_config']['text_width'].', 420, true, false, false);
+writeRichText("text", "", "", ' . Config::get('text_width') . ', 420, true, false, false);
 //--></script></form>';
 
     return $html;
@@ -2450,7 +2450,7 @@ function listsort(int $id = null): string
 
         $html .= _('Name:').' <input id="listOrderNavn" value="' . $liste['navn'] . '"><form action="" method="post" onsubmit="addNewItem(); return false;">'._('New Item:').' <input id="newItem"> <input type="submit" value="tilføj" accesskey="t"></form>';
 
-        $html .= '<ul id="listOrder" style="width:'.$GLOBALS['_config']['text_width'].'px;">';
+        $html .= '<ul id="listOrder" style="width:' . Config::get('text_width') . 'px;">';
         $liste['text'] = explode('<', $liste['text']);
 
         foreach ($liste['text'] as $key => $value) {
@@ -2524,7 +2524,7 @@ function editContact(int $id): string
     <strong>'._('Interests:').'</strong>';
     $html .= '<div id="interests">';
     $address['interests_array'] = explode('<', $address['interests']);
-    foreach ($GLOBALS['_config']['interests'] as $interest) {
+    foreach (Config::get('interests', []) as $interest) {
         $html .= '<label for="'.$interest.'"><input';
         if (false !== array_search($interest, $address['interests_array'])) {
             $html .= ' checked="checked"';
@@ -2812,7 +2812,7 @@ function get_mail_size(): int
 
     $size = 0;
 
-    foreach ($GLOBALS['_config']['emails'] as $email) {
+    foreach (Config::get('emails', []) as $email) {
         $imap = new AJenbo\Imap(
             $email['address'],
             $email['password'],
@@ -2958,14 +2958,14 @@ function getnyside(): string
     $html = '<div id="headline">Opret ny side</div><form action="" method="post" onsubmit="return opretSide();"><input type="submit" accesskey="s" style="width:1px; height:1px; position:absolute; top: -20px; left:-20px;" /><div><script type="text/javascript"><!--
 //Usage: initRTE(imagesPath, includesPath, cssFile, genXHTML)
 initRTE("/admin/rtef/images/", "/admin/rtef/", "/theme/rtef-text.css", true);
-//--></script><input type="hidden" name="id" id="id" value="" /><input class="admin_name" type="text" name="navn" id="navn" value="" maxlength="127" size="127" style="width:'.$GLOBALS['_config']['text_width'].'px" /><script type="text/javascript"><!--
-writeRichText("text", \'\', "", '.($GLOBALS['_config']['text_width']+32).', 420, true, false, false);
+//--></script><input type="hidden" name="id" id="id" value="" /><input class="admin_name" type="text" name="navn" id="navn" value="" maxlength="127" size="127" style="width:' . Config::get('text_width') . 'px" /><script type="text/javascript"><!--
+writeRichText("text", \'\', "", ' . (Config::get('text_width') + 32) .', 420, true, false, false);
 //--></script>';
     //Søge ord (separere søge ord med et komma "Emergency Blanket, Redningstæppe"):
-    $html .= _('Search word (separate search words with a comma \'Emergency Blanket, Rescue Blanket\'):').'<br /><textarea name="keywords" id="keywords" style="width:'.$GLOBALS['_config']['text_width'].'px;max-width:'.$GLOBALS['_config']['text_width'].'px" rows="2" cols=""></textarea>';
+    $html .= _('Search word (separate search words with a comma \'Emergency Blanket, Rescue Blanket\'):').'<br /><textarea name="keywords" id="keywords" style="width:' . Config::get('text_width') . 'px;max-width:' . Config::get('text_width') . 'px" rows="2" cols=""></textarea>';
     //Beskrivelse start
-    $html .= '<div class="toolbox"><a class="menuboxheader" id="beskrivelseboxheader" style="width:'.($GLOBALS['_config']['thumb_width']+14).'px" onclick="showhide(\'beskrivelsebox\',this);">'._('Description:').' </a><div style="text-align:center;width:'.($GLOBALS['_config']['thumb_width']+34).'px" id="beskrivelsebox"><br /><input type="hidden" value="'._('/images/web/intet-foto.jpg').'" id="billed" name="billed" /><img id="billedthb" src="'._('/images/web/intet-foto.jpg').'" alt="" onclick="explorer(\'thb\', \'billed\')" /><br /><img onclick="explorer(\'thb\', \'billed\')" src="images/folder_image.png" width="16" height="16" alt="'._('Pictures').'" title="'._('Find image').'" /><img onclick="setThb(\'billed\', \'\', \''._('/images/web/intet-foto.jpg').'\')" src="images/cross.png" alt="X" title="'._('Remove picture').'" width="16" height="16" /><script type="text/javascript"><!--
-writeRichText("beskrivelse", \'\', "", '.($GLOBALS['_config']['thumb_width']+32).', 115, false, false, false);
+    $html .= '<div class="toolbox"><a class="menuboxheader" id="beskrivelseboxheader" style="width:' . (Config::get('thumb_width') + 14).'px" onclick="showhide(\'beskrivelsebox\',this);">'._('Description:').' </a><div style="text-align:center;width:' . (Config::get('thumb_width') + 34) . 'px" id="beskrivelsebox"><br /><input type="hidden" value="'._('/images/web/intet-foto.jpg').'" id="billed" name="billed" /><img id="billedthb" src="'._('/images/web/intet-foto.jpg').'" alt="" onclick="explorer(\'thb\', \'billed\')" /><br /><img onclick="explorer(\'thb\', \'billed\')" src="images/folder_image.png" width="16" height="16" alt="'._('Pictures').'" title="'._('Find image').'" /><img onclick="setThb(\'billed\', \'\', \''._('/images/web/intet-foto.jpg').'\')" src="images/cross.png" alt="X" title="'._('Remove picture').'" width="16" height="16" /><script type="text/javascript"><!--
+writeRichText("beskrivelse", \'\', "", ' . (Config::get('thumb_width') + 32) . ', 115, false, false, false);
 //--></script></div></div>';
     //Beskrivelse end
     //Pris start
@@ -3003,8 +3003,8 @@ function getnykat(): array
 
     //Email
     $html .= _('Contact:').' <select id="email">';
-    foreach ($GLOBALS['_config']['emails'] as $email => $dummy) {
-        $html .= '<option value="'.$email.'">'.$email.'</option>';
+    foreach (Config::get('emails', []) as $email => $dummy) {
+        $html .= '<option value="' . $email . '">' . $email . '</option>';
     }
     $html .= '</select>';
 
@@ -3148,7 +3148,7 @@ function editkrav(int $id): string
     $html = '<div id="headline">'.sprintf(_('Edit %s'), $krav['navn']).'</div><form action="" method="post" onsubmit="return savekrav();"><input type="submit" accesskey="s" style="width:1px; height:1px; position:absolute; top: -20px; left:-20px;" /><input type="hidden" name="id" id="id" value="'.$id.'" /><input class="admin_name" type="text" name="navn" id="navn" value="'.$krav['navn'].'" maxlength="127" size="127" style="width:587px" /><script type="text/javascript"><!--
 //Usage: initRTE(imagesPath, includesPath, cssFile, genXHTML)
 initRTE("/admin/rtef/images/", "/admin/rtef/", "/theme/rtef-text.css", true);
-writeRichText("text", \''.rtefsafe($krav['text']).'\', "", ' . $GLOBALS['_config']['text_width'] . ', 420, true, false, false);
+writeRichText("text", \''.rtefsafe($krav['text']).'\', "", ' . Config::get('text_width') . ', 420, true, false, false);
 //--></script></form>';
 
     return $html;
@@ -3499,7 +3499,7 @@ function copytonew(int $id): int
 function save(int $id, string $type, array $updates): array
 {
     if (empty($updates['department'])) {
-        $email = reset($GLOBALS['_config']['emails'])['address'];
+        $email = first(Config::get('emails'))['address'];
         $updates['department'] = $email;
     }
 
@@ -3589,10 +3589,10 @@ function save(int $id, string $type, array $updates): array
         if (!valideMail($faktura['email'])) {
             return ['error' => _('E-mail address is not valid!')];
         }
-        if (!$faktura['department'] && count($GLOBALS['_config']['emails']) > 1) {
+        if (!$faktura['department'] && count(Config::get('emails')) > 1) {
             return ['error' => _('You have not selected a sender!')];
         } elseif (!$faktura['department']) {
-            $email = reset($GLOBALS['_config']['emails'])['address'];
+            $email = first(Config::get('emails'))['address'];
             $updates['department'] = $email;
         }
         if ($faktura['amount'] < 1) {
@@ -3621,27 +3621,27 @@ Tel. %s</p>'
         $msg = sprintf(
             $msg,
             $faktura['id'],
-            $GLOBALS['_config']['base_url'],
+            Config::get('base_url'),
             $faktura['id'],
             getCheckid($faktura['id']),
-            $GLOBALS['_config']['base_url'],
+            Config::get('base_url'),
             $faktura['id'],
             getCheckid($faktura['id']),
             $faktura['clerk'],
-            $GLOBALS['_config']['site_name'],
-            $GLOBALS['_config']['address'],
-            $GLOBALS['_config']['postcode'],
-            $GLOBALS['_config']['city'],
-            $GLOBALS['_config']['phone']
+            Config::get('site_name'),
+            Config::get('address'),
+            Config::get('postcode'),
+            Config::get('city'),
+            Config::get('phone')
         );
 
         $emailBody = '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml"><head><meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-<title>'. sprintf(_('Online payment to %s'), $GLOBALS['_config']['site_name']).'</title>
+<title>' . sprintf(_('Online payment to %s'), Config::get('site_name')) . '</title>
 </head><body>' .$msg .'</body></html>';
 
         $success = sendEmails(
-            _('Online payment for ').$GLOBALS['_config']['site_name'],
+            _('Online payment for ').Config::get('site_name'),
             $emailBody,
             $faktura['department'],
             '',
@@ -3682,7 +3682,7 @@ function sendReminder(int $id): array
     }
 
     if (empty($faktura['department'])) {
-        $email = reset($GLOBALS['_config']['emails'])['address'];
+        $email = first(Config::get('emails'))['address'];
         $faktura['department'] = $email;
     }
 
@@ -3726,19 +3726,19 @@ Fax: %s<br />
 
     $msg = sprintf(
         $msg,
-        $GLOBALS['_config']['site_name'],
-        $GLOBALS['_config']['base_url'],
+        Config::get('site_name'),
+        Config::get('base_url'),
         $faktura['id'],
         getCheckid($faktura['id']),
-        $GLOBALS['_config']['base_url'],
+        Config::get('base_url'),
         $faktura['id'],
         getCheckid($faktura['id']),
-        $GLOBALS['_config']['site_name'],
-        $GLOBALS['_config']['address'],
-        $GLOBALS['_config']['postcode'],
-        $GLOBALS['_config']['city'],
-        $GLOBALS['_config']['phone'],
-        $GLOBALS['_config']['fax'],
+        Config::get('site_name'),
+        Config::get('address'),
+        Config::get('postcode'),
+        Config::get('city'),
+        Config::get('phone'),
+        Config::get('fax'),
         $faktura['department'],
         $faktura['department']
     );
@@ -3867,7 +3867,7 @@ function generateImage(
     $orginalWidth = $image->getWidth();
     $orginalHeight = $image->getHeight();
 
-    //$GLOBALS['_config']['bgcolorR'], $GLOBALS['_config']['bgcolorG'], $GLOBALS['_config']['bgcolorB']
+    //Config::get('bgcolorR'), Config::get('bgcolorG'), Config::get('bgcolorB')
 
     // Crop image
     $cropW = $cropW ?: $image->getWidth();

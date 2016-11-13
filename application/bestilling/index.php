@@ -702,7 +702,7 @@ if (!empty($_SESSION['faktura']['quantities'])) {
         //Admin link
         $msg = sprintf(
             _('Click <a href="%s">here</a> to expedite the order.'),
-            $GLOBALS['_config']['base_url'] . '/admin/faktura.php?id=' . $id
+            Config::get('base_url') . '/admin/faktura.php?id=' . $id
         );
         $emailbody .= '<p>' . $msg . '</p>';
 

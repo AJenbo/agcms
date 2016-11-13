@@ -56,8 +56,8 @@ if ($_GET['mode'] ?? '' == 'thb') {
     echo $pathinfo['filename'] . '-thb';
 }
 ?>';
-var thumb_width = <?php echo $GLOBALS['_config']['thumb_width'] ?>;
-var thumb_height = <?php echo $GLOBALS['_config']['thumb_height'] ?>;
+var thumb_width = <?php echo Config::get('thumb_width') ?>;
+var thumb_height = <?php echo Config::get('thumb_height') ?>;
 var scale = 1;
 var path = '<?php echo $_GET['path'] ?>';
 var maxW = <?php echo $imagesize[0] ?>;
@@ -73,11 +73,11 @@ var maxH = <?php echo $imagesize[1] ?>;
 <img id="flipV" onclick="flipVertical()" src="images/shape_flip_vertical.png" alt="-" title="<?php echo _('Flip Vertically'); ?>" width="16" height="16" />
 <img id="resetCropper" src="images/cut.png" alt="X" title="<?php echo _('Clip'); ?>" width="16" height="16" /><img id="removeCropper" src="images/cut.png" alt="X" title="<?php echo _('Clip'); ?>" width="16" height="16" style="display:none" />
 <img id="save" onclick="saveImage();" src="images/disk.png" alt="<?php echo _('Save'); ?>" title="<?php echo _('Save'); ?>" width="16" height="16" style="display:none" /><img id="loading" src="images/loading.gif" width="16" height="16" alt="<?php echo _('Loading'); ?>" title="<?php echo _('Loading'); ?>" /></div>
-<div id="ruler" style="width: <?php echo $GLOBALS['_config']['text_width'] ?>px;"><div style="width: <?php echo $GLOBALS['_config']['text_width']-1 ?>px; border-right:1px #FF0000 solid"><div style="width: <?php echo $GLOBALS['_config']['thumb_width']-1 ?>px; border-right:1px #0000FF solid"><div style="width: <?php echo $imagesize[0]-1 ?>px; border-right:1px #00FF00 solid">&nbsp;</div></div></div></div>
-<div id="textDiv" style="width: <?php echo $GLOBALS['_config']['text_width'] ?>px;">
+<div id="ruler" style="width: <?php echo Config::get('text_width'); ?>px;"><div style="width: <?php echo Config::get('text_width') - 1; ?>px; border-right:1px #FF0000 solid"><div style="width: <?php echo Config::get('thumb_width') - 1; ?>px; border-right:1px #0000FF solid"><div style="width: <?php echo $imagesize[0]-1 ?>px; border-right:1px #00FF00 solid">&nbsp;</div></div></div></div>
+<div id="textDiv" style="width: <?php echo Config::get('text_width'); ?>px;">
 <?php
 if ($_GET['mode'] ?? '' == 'thb') {
-    ?><img id="preview" src="image.php?path=<?php echo $_GET['path'] ?>&amp;maxW=<?php echo $GLOBALS['_config']['thumb_width'] ?>&amp;maxH=<?php echo $GLOBALS['_config']['thumb_height'] ?>" alt="" onload="resize()" /><?php
+    ?><img id="preview" src="image.php?path=<?php echo $_GET['path'] ?>&amp;maxW=<?php echo Config::get('thumb_width'); ?>&amp;maxH=<?php echo Config::get('thumb_height'); ?>" alt="" onload="resize()" /><?php
 } else {
     ?><img id="preview" src="<?php echo $_GET['path'] ?>" alt="" onload="resize()" /><?php
 }

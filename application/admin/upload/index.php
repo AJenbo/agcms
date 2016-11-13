@@ -58,7 +58,7 @@ if (!empty($_FILES['Filedata']['tmp_name'])
     //TODO test if trim, resize or recompression is needed
     if (($type === 'image' && $mime !== 'image/jpeg')
         || (($type === 'image' || $type === 'lineimage')
-        && $imagesize[0] > $GLOBALS['_config']['text_width'])
+        && $imagesize[0] > Config::get('text_width'))
         || (($type === 'image' || $type === 'lineimage')
         && $_FILES['Filedata']['size'] / ($imagesize[0] * $imagesize[1]) > 0.7)
         || ($type === 'lineimage'
@@ -95,7 +95,7 @@ if (!empty($_FILES['Filedata']['tmp_name'])
             0,
             $imagesize[0],
             $imagesize[1],
-            $GLOBALS['_config']['text_width'],
+            Config::get('text_width'),
             $imagesize[1],
             0,
             0,

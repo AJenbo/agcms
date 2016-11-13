@@ -72,7 +72,7 @@ var returnid = '<?php echo @$_GET['returnid']; ?>';
 //--></script>
 <style type="text/css">
 #files .filetile div, #files .videotile div, #files .swftile div, #files .flvtile div, #files .imagetile div {
-    background-color:#<?php echo $GLOBALS['_config']['bgcolor']; ?>;
+    background-color:#<?php echo Config::get('bgcolor'); ?>;
 }
 </style>
 </head>

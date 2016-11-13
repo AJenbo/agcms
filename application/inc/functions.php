@@ -24,11 +24,10 @@ mb_language('uni');
 mb_detect_order('UTF-8, ISO-8859-1');
 mb_internal_encoding('UTF-8');
 
-require_once __DIR__ . '/config.php';
 require_once __DIR__ . '/../vendor/autoload.php';
 
 
-spl_autoload_register(function ($class_name) {
+spl_autoload_register(function (string $class_name) {
     $classMap = [
         'Category' => 'Entity/Category',
         'Page' => 'Entity/Page',
@@ -44,17 +43,17 @@ spl_autoload_register(function ($class_name) {
     }
 });
 
-function db(DB $overwrite = null)
+function db(DB $overwrite = null): DB
 {
     static $db;
     if ($overwrite) {
         $db = $overwrite;
     } elseif (!$db) {
         $db = new DB(
-            $GLOBALS['_config']['mysql_server'],
-            $GLOBALS['_config']['mysql_user'],
-            $GLOBALS['_config']['mysql_password'],
-            $GLOBALS['_config']['mysql_database']
+            Config::get('mysql_server'),
+            Config::get('mysql_user'),
+            Config::get('mysql_password'),
+            Config::get('mysql_database')
         );
     }
     return $db;
@@ -129,6 +128,14 @@ function encodeUrl(string $url): string
     $url = explode('/', $url);
     $url = array_map('rawurlencode', $url);
     return implode('/', $url);
+}
+
+/**
+ * Get first element from an array that can't be referenced
+ */
+function first(array $array)
+{
+    return reset($array);
 }
 
 /**
@@ -248,8 +255,13 @@ function arrayNatsort(array $aryData, string $strIndex, string $strSortBy, strin
  *
  * @return array
  */
-function arrayListsort(array $aryData, string $strIndex, string $strSortBy, int $intSortingOrder, string $strSortType = 'asc'): array
-{
+function arrayListsort(
+    array $aryData,
+    string $strIndex,
+    string $strSortBy,
+    int $intSortingOrder,
+    string $strSortType = 'asc'
+): array {
     if (!is_array($aryData) || !$strIndex || !$strSortBy) {
         return $aryData;
     }
@@ -589,7 +601,8 @@ function searchListe(string $q, string $where)
         $pages = ORM::getByQuery(
             Page::class,
             "
-            SELECT `" . implode("`, `", $columns) . "` FROM (SELECT sider.*, MATCH(navn, text, beskrivelse) AGAINST ('$q') AS score
+            SELECT `" . implode("`, `", $columns) . "`
+            FROM (SELECT sider.*, MATCH(navn, text, beskrivelse) AGAINST ('$q') AS score
             FROM sider
             JOIN bind ON sider.id = bind.side AND bind.kat != -1
             WHERE MATCH (navn, text, beskrivelse) AGAINST('$q') > 0
@@ -707,7 +720,13 @@ function getAddress(string $phoneNumber): array
         $address = $db->fetchOne(
             "
             SELECT * FROM (
-                SELECT navn recName1, att recAttPerson, adresse recAddress1, postnr recZipCode, postbox recPostBox, email
+                SELECT
+                    navn recName1,
+                    att recAttPerson,
+                    adresse recAddress1,
+                    postnr recZipCode,
+                    postbox recPostBox,
+                    email
                 FROM `fakturas`
                 WHERE `tlf1` LIKE '" . $phoneNumber . "'
                    OR `tlf2` LIKE '" . $phoneNumber . "'
@@ -716,7 +735,13 @@ function getAddress(string $phoneNumber): array
             ) x
             UNION
             SELECT * FROM (
-                SELECT navn recName1, '' recAttPerson, adresse recAddress1, post recZipCode, '' email, email
+                SELECT
+                    navn recName1,
+                    '' recAttPerson,
+                    adresse recAddress1,
+                    post recZipCode,
+                    '' email,
+                    email
                 FROM `email`
                 WHERE `tlf1` LIKE '" . $phoneNumber . "'
                    OR `tlf2` LIKE '" . $phoneNumber . "'
@@ -725,7 +750,13 @@ function getAddress(string $phoneNumber): array
             ) x
             UNION
             SELECT * FROM (
-                SELECT recName1, '' recAttPerson, recAddress1, recZipCode, '' recPostBox, '' email
+                SELECT
+                    recName1,
+                    '' recAttPerson,
+                    recAddress1,
+                    recZipCode,
+                    '' recPostBox,
+                    '' email
                 FROM `post`
                 WHERE `recipientID` LIKE '" . $phoneNumber . "'
                 ORDER BY id DESC
@@ -974,7 +1005,7 @@ function getKat(int $categoryId, string $sort): array
  */
 function getCheckid(int $id): string
 {
-    return substr(md5($id . $GLOBALS['_config']['pbssalt']), 3, 5);
+    return substr(md5($id . Config::get('pbssalt')), 3, 5);
 }
 
 /**
@@ -1050,19 +1081,19 @@ function sendEmails(
     bool $retry = true,
     array $bcc = []
 ): bool {
-    $emailConfig = reset($GLOBALS['_config']['emails']);
-    if (isset($GLOBALS['_config']['emails'][$from])) {
-        $emailConfig = $GLOBALS['_config']['emails'][$from];
+    $emailConfig = first(Config::get('emails'));
+    if (isset(Config::get('emails')[$from])) {
+        $emailConfig = Config::get('emails')[$from];
     }
     if (!$from || !valideMail($from)) {
         $from = $emailConfig['address'];
     }
     if (!$fromName) {
-        $fromName = $GLOBALS['_config']['site_name'];
+        $fromName = Config::get('site_name');
     }
     if (!$to) {
         $to = $emailConfig['address'];
-        $toName = $GLOBALS['_config']['site_name'];
+        $toName = Config::get('site_name');
     } elseif (!$toName) {
         $toName = $to;
     }
@@ -1080,7 +1111,7 @@ function sendEmails(
     $PHPMailer->Port     = $emailConfig['smtpPort'];
     $PHPMailer->CharSet  = 'utf-8';
     $PHPMailer->From     = $emailConfig['address'];
-    $PHPMailer->FromName = $GLOBALS['_config']['site_name'];
+    $PHPMailer->FromName = Config::get('site_name');
 
     if ($from !== $emailConfig['address']) {
         $PHPMailer->AddReplyTo($from, $fromName);
