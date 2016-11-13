@@ -120,14 +120,14 @@ class Render
         foreach ($pages as $page) {
             $GLOBALS['generatedcontent']['sider'][] = [
                 'id'   => $page->getId(),
-                'name' => xhtmlEsc($page->getTitle()),
+                'name' => $page->getTitle(),
                 'link' => '/' . $page->getSlug(),
             ];
         }
         $emails = first(Config::get('emails'))['address'];
         $GLOBALS['generatedcontent']['email'] = $emails;
         $GLOBALS['generatedcontent']['crumbs'] = [];
-        $GLOBALS['generatedcontent']['title'] = xhtmlEsc(Config::get('site_name'));
+        $GLOBALS['generatedcontent']['title'] = Config::get('site_name');
         $GLOBALS['generatedcontent']['activmenu'] = -1;
         $GLOBALS['generatedcontent']['canonical'] = '';
 
@@ -137,9 +137,9 @@ class Render
             $crumbs = [];
             foreach (self::$activeCategory->getBranch() as $category) {
                 $categoryIds[] = $category->getId();
-                $keywords[] = trim(xhtmlEsc($category->getTitle()));
+                $keywords[] = trim($category->getTitle());
                 $crumbs[] = [
-                    'name' => xhtmlEsc($category->getTitle()),
+                    'name' => $category->getTitle(),
                     'link' => '/' . $category->getSlug(),
                     'icon' => $category->getIconPath(),
                 ];
@@ -179,10 +179,10 @@ class Render
             );
             self::addLoadedTable('maerke');
 
-            $GLOBALS['generatedcontent']['title'] = xhtmlEsc($maerkeet['navn']);
+            $GLOBALS['generatedcontent']['title'] = $maerkeet['navn'];
             $GLOBALS['generatedcontent']['brand'] = [
                 'id' => $maerkeet['id'],
-                'name' => xhtmlEsc($maerkeet['navn']),
+                'name' => $maerkeet['navn'],
                 'xlink' => $maerkeet['link'],
                 'icon' => $maerkeet['ico'],
             ];
@@ -228,7 +228,6 @@ class Render
 
             //Full search
             $where = "";
-            $wherekat = "";
             if (!empty($_GET['varenr'])) {
                 $where .= " AND varenr LIKE '" . db()->esc($_GET['varenr']) . "%'";
             }
@@ -243,7 +242,6 @@ class Render
             }
             if (!empty($_GET['sogikke'])) {
                 $where .= " AND !MATCH (navn, text, beskrivelse) AGAINST('" . db()->esc($_GET['sogikke']) ."') > 0";
-                $wherekat .= " AND !MATCH (navn) AGAINST('" . db()->esc($_GET['sogikke']) . "') > 0";
             }
             $listedPages = searchListe($_GET['q'] ?? '', $where);
             if (count($listedPages) === 1) {
@@ -251,8 +249,11 @@ class Render
                 redirect($page->getCanonicalLink(), 302);
             }
 
-            $GLOBALS['generatedcontent']['search_menu'] = getSearchMenu($_GET['q'] ?? '', $wherekat);
-            $GLOBALS['generatedcontent']['title'] = 'Søg på ' . xhtmlEsc(Config::get('site_name'));
+            $GLOBALS['generatedcontent']['search_menu'] = self::getSearchMenu(
+                $_GET['q'] ?? '',
+                $_GET['sogikke'] ?? ''
+            );
+            $GLOBALS['generatedcontent']['title'] = 'Søg på ' . Config::get('site_name');
             self::$pageType = 'tiles';
         }
 
@@ -272,7 +273,7 @@ class Render
                 if (!self::$activeCategory || self::$activeCategory->getRenderMode() === Category::GALLERY) {
                     $GLOBALS['generatedcontent']['list'][] = [
                         'id' => $page->getId(),
-                        'name' => xhtmlEsc($page->getTitle()),
+                        'name' => $page->getTitle(),
                         'date' => $page->getTimeStamp(),
                         'link' => $page->getCanonicalLink(self::$activeCategory),
                         'icon' => $page->getImagePath(),
@@ -287,7 +288,7 @@ class Render
                 } else {
                     $GLOBALS['generatedcontent']['list'][] = [
                         'id' => $page->getId(),
-                        'name' => xhtmlEsc($page->getTitle()),
+                        'name' => $page->getTitle(),
                         'date' => $page->getTimeStamp(),
                         'link' => $page->getCanonicalLink(self::$activeCategory),
                         'serial' => $page->getSku(),
@@ -319,7 +320,7 @@ class Render
                 }
             }
 
-            $GLOBALS['generatedcontent']['title'] = xhtmlEsc($title);
+            $GLOBALS['generatedcontent']['title'] = $title;
         }
 
         //Get page content and type
@@ -339,22 +340,18 @@ class Render
 
             $GLOBALS['generatedcontent']['text'] = $special['text'];
         } elseif (self::$pageType === 'search') {
-            $GLOBALS['generatedcontent']['title'] = 'Søg på ' . xhtmlEsc(Config::get('site_name'));
+            $GLOBALS['generatedcontent']['title'] = 'Søg på ' . Config::get('site_name');
 
-            $text = '<form action="/" method="get"><table>';
-            $text .= '<tr><td>'._('Contains').'</td><td>';
-            $text .= '<input name="q" size="31" /></td>';
-            $text .= '<td><input type="submit" value="'._('Search').'" /></td></tr>';
-            $text .= '<tr><td>'._('Part No.').'</td>';
-            $text .= '<td><input name="varenr" size="31" value="" maxlength="63" /></td>';
-            $text .= '</tr><tr><td>'._('Without the words').'</td><td>';
-            $text .= '<input name="sogikke" size="31" value="" /></td></tr>';
-            $text .= '<tr><td>'._('Min price').'</td><td>';
-            $text .= '<input name="minpris" size="5" maxlength="11" value="" />,-</td></tr>';
-            $text .= '<tr><td>'._('Max price').'&nbsp;</td><td>';
-            $text .= '<input name="maxpris" size="5" maxlength="11" value="" />,-</td></tr';
-            $text .= '><tr><td>'._('Brand:').'</td><td><select name="maerke">';
-            $text .= '<option value="0">'._('All').'</option>';
+            $html = '<form action="/" method="get"><table><tr><td>' . _('Contains')
+                . '</td><td><input name="q" size="31" /></td><td><input type="submit" value="' . _('Search')
+                . '" /></td></tr><tr><td>' . _('Part No.')
+                . '</td><td><input name="varenr" size="31" value="" maxlength="63" /></td></tr><tr><td>'
+                . _('Without the words') . '</td><td><input name="sogikke" size="31" value="" /></td></tr><tr><td>'
+                . _('Min price')
+                . '</td><td><input name="minpris" size="5" maxlength="11" value="" />,-</td></tr><tr><td>'
+                . _('Max price')
+                . '&nbsp;</td><td><input name="maxpris" size="5" maxlength="11" value="" />,-</td></tr><tr><td>'
+                . _('Brand:') . '</td><td><select name="maerke"><option value="0">' . _('All') . '</option>';
 
             $maerker = db()->fetchArray(
                 "
@@ -366,14 +363,13 @@ class Render
             self::addLoadedTable('maerke');
 
             foreach ($maerker as $value) {
-                $text .= '<option value="'.$value['id'].'">';
-                $text .= xhtmlEsc($value['navn']) . '</option>';
+                $html .= '<option value="'.$value['id'].'">' . xhtmlEsc($value['navn']) . '</option>';
             }
-            $text .= '</select></td></tr></table></form>';
-            $GLOBALS['generatedcontent']['text'] = $text;
+            $html .= '</select></td></tr></table></form>';
+            $GLOBALS['generatedcontent']['text'] = $html;
         } elseif (self::$pageType === 'product') {
             $GLOBALS['generatedcontent']['canonical']       = self::$activePage->getCanonicalLink();
-            $GLOBALS['generatedcontent']['title']           = xhtmlEsc(self::$activePage->getTitle());
+            $GLOBALS['generatedcontent']['title']           = self::$activePage->getTitle();
             $GLOBALS['generatedcontent']['headline']        = self::$activePage->getTitle();
             $GLOBALS['generatedcontent']['serial']          = self::$activePage->getSku();
             $GLOBALS['generatedcontent']['datetime']        = self::$activePage->getTimestamp();
@@ -456,72 +452,60 @@ class Render
             $GLOBALS['side']['id'] = self::$activePage->getId(); // Compatible with templates
         }
 
-        $GLOBALS['generatedcontent']['keywords'] = xhtmlEsc(implode(',', $keywords));
+        $GLOBALS['generatedcontent']['keywords'] = implode(',', $keywords);
         $GLOBALS['generatedcontent']['contenttype'] = self::$pageType;
     }
 
     /**
      * Search for categories and populate generatedcontent with results
      *
-     * @param string $q        Seach string
-     * @param string $wherekat Additional SQL for WHERE clause
+     * @param string $searchString Seach string
+     * @param string $wherekat     Additional SQL for WHERE clause
      *
      * @return null
      */
-    public static function getSearchMenu(string $q, string $wherekat): array
+    public static function getSearchMenu(string $searchString, string $antiWords): array
     {
         $searchMenu = [];
         $categories = [];
         $maerke = [];
-        if ($q) {
+        if ($searchString) {
+            $simpleSearchString = '%' . preg_replace('/\s+/u', '%', $searchString) . '%';
+            $simpleAntiWords = '%' . preg_replace('/\s+/u', '%', $antiWords) . '%';
             $categories = ORM::getByQuery(
                 Category::class,
                 "
-                SELECT *, MATCH (navn) AGAINST ('$q') AS score
+                SELECT *, MATCH (navn) AGAINST ('" . db()->esc($searchString) . "') AS score
                 FROM kat
-                WHERE MATCH (navn) AGAINST('$q') > 0 " . $wherekat . "
-                    AND `vis` != '0'
+                WHERE (
+                    MATCH (navn) AGAINST('" . db()->esc($searchString) . "') > 0
+                    OR navn LIKE '" . db()->esc($simpleSearchString) . "'
+                )
+                AND !MATCH (navn) AGAINST('" . db()->esc($antiWords) . "') > 0
+                AND navn NOT LIKE '" . db()->esc($simpleAntiWords) . "'
+                AND `vis` != '0'
                 ORDER BY score, navn
                 "
             );
-            $qsearch = ['/\s+/u', "/'/u", '//u', '/`/u'];
-            $qreplace = ['%', '_', '_', '_'];
-            $simpleq = preg_replace($qsearch, $qreplace, $q);
-            if (!$categories) {
-                $categories = ORM::getByQuery(
-                    Category::class,
-                    "
-                    SELECT * FROM kat WHERE navn
-                    LIKE '%".$simpleq."%' " . $wherekat . "
-                    ORDER BY navn
-                    "
-                );
-            }
             $maerke = db()->fetchArray(
                 "
                 SELECT id, navn
                 FROM `maerke`
-                WHERE MATCH (navn) AGAINST ('$q') >  0
+                WHERE (
+                    MATCH (navn) AGAINST('" . db()->esc($searchString) . "') > 0
+                    OR navn LIKE '" . db()->esc($simpleSearchString) . "'
+                )
+                AND !MATCH (navn) AGAINST('" . db()->esc($antiWords) . "') > 0
+                AND navn NOT LIKE '" . db()->esc($simpleAntiWords) . "'
                 "
             );
             Render::addLoadedTable('maerke');
-            if (!$maerke) {
-                $maerke = db()->fetchArray(
-                    "
-                    SELECT id, navn
-                    FROM maerke
-                    WHERE navn
-                    LIKE '%" .$simpleq ."%'
-                    ORDER BY navn
-                    "
-                );
-            }
         }
 
         foreach ($maerke as $value) {
             $searchMenu[] = [
                 'id' => 0,
-                'name' => xhtmlEsc($value['navn']),
+                'name' => $value['navn'],
                 'link' => '/mærke' . $value['id'] . '-' .clearFileName($value['navn']) . '/'
             ];
         }
@@ -530,7 +514,7 @@ class Render
             if ($category->isVisable()) {
                 $searchMenu[] = [
                     'id' => $category->getId(),
-                    'name' => xhtmlEsc($category->getTitle()),
+                    'name' => $category->getTitle(),
                     'link' => '/' . $category->getSlug(),
                     'icon' => $category->getIconPath(),
                     'sub' => (bool) $category->getChildren(true),

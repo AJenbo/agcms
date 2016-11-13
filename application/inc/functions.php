@@ -843,7 +843,7 @@ function menu(array $categories, array $categoryIds, bool $weightedChildren = tr
         //tegn under punkter
         $menu[] = [
             'id'   => $category->getId(),
-            'name' => xhtmlEsc($category->getTitle()),
+            'name' => $category->getTitle(),
             'link' => '/' . $category->getSlug(),
             'icon' => $category->getIconPath(),
             'sub'  => $subs ? true : $category->hasChildren(true),

@@ -622,7 +622,7 @@ if (!empty($_SESSION['faktura']['quantities'])) {
           text-align:right;
         }
         --></style></head><body><p>
-        '.xhtmlEsc($_SESSION['faktura']['navn']._(' has placed an order for the following:')).'</p>';
+        '.xhtmlEsc($_SESSION['faktura']['navn'] . _(' has placed an order for the following:')) . '</p>';
 
         //Table of goods
         $emailbody .= '<table id="faktura" cellspacing="0">
