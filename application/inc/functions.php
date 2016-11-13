@@ -1142,7 +1142,7 @@ function sendEmails(
     if ($success) {
         //Upload email to the sent folder via imap
         if ($emailConfig['imapHost']) {
-            $imap = new IMAP(
+            $imap = new AJenbo\Imap(
                 $emailConfig['address'],
                 $emailConfig['password'],
                 $emailConfig['imapHost'],

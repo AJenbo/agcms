@@ -3085,7 +3085,7 @@ function get_mail_size(): int
     $size = 0;
 
     foreach ($GLOBALS['_config']['emails'] as $email) {
-        $imap = new IMAP(
+        $imap = new AJenbo\Imap(
             $email['address'],
             $email['password'],
             $email['imapHost'],

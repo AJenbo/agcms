@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "content-hash": "28249ec2cb33a652233a41a37dd62bb4",
+    "content-hash": "7d5897ee819a5abe96eb06ab2e13bb8d",
     "packages": [
         {
             "name": "ajenbo/image.php",
@@ -36,6 +36,36 @@
                 "issues": "https://github.com/AJenbo/Image.php/issues"
             },
             "time": "2016-11-13 03:39:58"
+        },
+        {
+            "name": "ajenbo/imap",
+            "version": "dev-master",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/AJenbo/PHP-imap.git",
+                "reference": "31ab8cac53cee2a89f0f9bf9af05aeb751f7179f"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/AJenbo/PHP-imap/zipball/31ab8cac53cee2a89f0f9bf9af05aeb751f7179f",
+                "reference": "31ab8cac53cee2a89f0f9bf9af05aeb751f7179f",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.4"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "AJenbo\\": "./"
+                }
+            },
+            "description": "IMAP over socket",
+            "support": {
+                "source": "https://github.com/AJenbo/PHP-imap/tree/master",
+                "issues": "https://github.com/AJenbo/PHP-imap/issues"
+            },
+            "time": "2016-11-13 03:52:22"
         },
         {
             "name": "ajenbo/sajax",
@@ -240,7 +270,8 @@
     "minimum-stability": "stable",
     "stability-flags": {
         "ajenbo/sajax": 20,
-        "ajenbo/image.php": 20
+        "ajenbo/image.php": 20,
+        "ajenbo/imap": 20
     },
     "prefer-stable": false,
     "prefer-lowest": false,
