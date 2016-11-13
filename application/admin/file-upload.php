@@ -2,7 +2,7 @@
 
 require_once $_SERVER['DOCUMENT_ROOT'] . '/admin/inc/logon.php';
 
-doConditionalGet(Cache::getUpdateTime());
+Render::sendCacheHeader();
 
 Sajax\Sajax::export(['fileExists' => ['method' => 'GET', 'asynchronous' => false, 'uri' => '/admin/file-upload.php']]);
 Sajax\Sajax::handleClientRequest();

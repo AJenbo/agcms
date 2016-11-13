@@ -2,10 +2,10 @@
 
 require_once $_SERVER['DOCUMENT_ROOT'] . '/admin/inc/logon.php';
 
-Cache::addLoadedTable('maerke');
-Cache::addLoadedTable('krav');
-Cache::addLoadedTable('kat');
-doConditionalGet(Cache::getUpdateTime());
+Render::addLoadedTable('maerke');
+Render::addLoadedTable('krav');
+Render::addLoadedTable('kat');
+Render::sendCacheHeader();
 
 ?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">

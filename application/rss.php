@@ -13,14 +13,13 @@
 
 require_once $_SERVER['DOCUMENT_ROOT'] . '/inc/functions.php';
 
-Cache::addLoadedTable('sider');
-Cache::addLoadedTable('bind');
-Cache::addLoadedTable('kat');
-Cache::addLoadedTable('maerke');
-Cache::addLoadedTable('bind');
-Cache::addLoadedTable('files');
-$timestamp = Cache::getUpdateTime();
-doConditionalGet($timestamp);
+Render::addLoadedTable('bind');
+Render::addLoadedTable('files');
+Render::addLoadedTable('kat');
+Render::addLoadedTable('maerke');
+Render::addLoadedTable('sider');
+$timestamp = Render::getUpdateTime();
+Render::sendCacheHeader($timestamp);
 
 header('Content-Type: application/rss+xml');
 

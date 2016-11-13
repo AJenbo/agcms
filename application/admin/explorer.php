@@ -2,7 +2,7 @@
 
 require_once $_SERVER['DOCUMENT_ROOT'] . '/admin/inc/logon.php';
 
-doConditionalGet(Cache::getUpdateTime());
+Render::sendCacheHeader();
 
 /*
 $mode

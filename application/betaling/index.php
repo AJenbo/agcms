@@ -11,10 +11,10 @@
  * @link     http://www.arms-gallery.dk/
  */
 
-//Generate default $GLOBALS['generatedcontent']
-$delayprint = true;
-require_once $_SERVER['DOCUMENT_ROOT'] . '/index.php';
+require_once $_SERVER['DOCUMENT_ROOT'] . '/inc/functions.php';
 include_once _ROOT_ . '/inc/countries.php';
+
+Render::$pageType = 'custome';
 
 $GLOBALS['generatedcontent']['datetime'] = time();
 
@@ -979,5 +979,4 @@ Delivery phone: %s</p>
     }
 }
 
-//Output page
-require_once _ROOT_ . '/theme/index.php';
+Render::outputPage();

@@ -264,7 +264,7 @@ function arrayListsort(array $aryData, string $strIndex, string $strSortBy, int 
         $kaliber = explode('<', $kaliber['text']);
     }
 
-    Cache::addLoadedTable('tablesort');
+    Render::addLoadedTable('tablesort');
 
     $arySort = $aryResult = [];
 
@@ -307,12 +307,12 @@ function arrayListsort(array $aryData, string $strIndex, string $strSortBy, int 
  */
 function getTable(int $listid, int $bycell = null, int $categoryId = null): array
 {
-    Cache::addLoadedTable('lists');
-    Cache::addLoadedTable('list_rows');
-    Cache::addLoadedTable('sider');
-    Cache::addLoadedTable('bind');
-    Cache::addLoadedTable('kat');
-    doConditionalGet(Cache::getUpdateTime());
+    Render::addLoadedTable('lists');
+    Render::addLoadedTable('list_rows');
+    Render::addLoadedTable('sider');
+    Render::addLoadedTable('bind');
+    Render::addLoadedTable('kat');
+    Render::sendCacheHeader();
 
     $html = '';
 
@@ -324,7 +324,7 @@ function getTable(int $listid, int $bycell = null, int $categoryId = null): arra
         WHERE `list_id` = " . $listid
     );
     if (!$rows) {
-        doConditionalGet(Cache::getUpdateTime());
+        Render::sendCacheHeader();
         return ['id' => 'table' . $listid, 'html' => $html];
     }
 
@@ -501,7 +501,7 @@ function getTable(int $listid, int $bycell = null, int $categoryId = null): arra
                         FROM `files`
                         WHERE path = " . $row[$key]
                     );
-                    Cache::addLoadedTable('files');
+                    Render::addLoadedTable('files');
 
                     //TODO make image tag
                     if ($row['link']) {
@@ -527,7 +527,7 @@ function getTable(int $listid, int $bycell = null, int $categoryId = null): arra
 
     $html .= '</tbody></table>';
 
-    doConditionalGet(Cache::getUpdateTime());
+    Render::sendCacheHeader();
 
     return ['id' => 'table' . $listid, 'html' => $html];
 }
@@ -613,8 +613,8 @@ function searchListe(string $q, string $where)
             ) "
             . $where
         );
-        Cache::addLoadedTable('list_rows');
-        Cache::addLoadedTable('lists');
+        Render::addLoadedTable('list_rows');
+        Render::addLoadedTable('lists');
     } else {
         $pages = ORM::getByQuery(
             Page::class,
@@ -700,7 +700,7 @@ function getAddress(string $phoneNumber): array
 
         $tables = db()->fetchArray("SHOW TABLE STATUS WHERE Name IN('fakturas', 'email', 'post')");
         foreach ($tables as $table) {
-            Cache::addUpdateTime(strtotime($table['Update_time'])) + db()->getTimeOffset();
+            Render::addUpdateTime(strtotime($table['Update_time'])) + db()->getTimeOffset();
         }
 
         //Try katalog orders
@@ -737,60 +737,16 @@ function getAddress(string $phoneNumber): array
         if ($address) {
             $address = array_merge($default, $address);
             if ($address !== $default) {
-                doConditionalGet($updateTime);
+                Render::sendCacheHeader($updateTime);
                 return $address;
             }
         }
     }
 
-    doConditionalGet($updateTime);
+    Render::sendCacheHeader($updateTime);
 
     //Addressen kunde ikke findes.
     return ['error' => _('The address could not be found.')];
-}
-
-/**
- * Set Last-Modified and ETag http headers
- * and use cache if no updates since last visit
- *
- * @param int $timestamp Unix time stamp of last update to content
- *
- * @return null
- */
-function doConditionalGet(int $timestamp)
-{
-    // A PHP implementation of conditional get, see
-    // http://fishbowl.pastiche.org/archives/001132.html
-    $last_modified = mb_substr(date('r', $timestamp), 0, -5).'GMT';
-    $etag = '"'.$timestamp.'"';
-    // Send the headers
-
-    header('Cache-Control: max-age=0, must-revalidate');    // HTTP/1.1
-    header('Pragma: no-cache');    // HTTP/1.0
-    header('Last-Modified: '.$last_modified);
-    header('ETag: '.$etag);
-    // See if the client has provided the required headers
-    $if_modified_since = isset($_SERVER['HTTP_IF_MODIFIED_SINCE']) ?
-        stripslashes($_SERVER['HTTP_IF_MODIFIED_SINCE']) :
-        false;
-    $if_none_match = isset($_SERVER['HTTP_IF_NONE_MATCH']) ?
-        stripslashes($_SERVER['HTTP_IF_NONE_MATCH']) :
-        false;
-    if (!$if_modified_since && !$if_none_match) {
-        return;
-    }
-    // At least one of the headers is there - check them
-    if ($if_none_match && $if_none_match != $etag) {
-        return; // etag is there but doesn't match
-    }
-    if ($if_modified_since && $if_modified_since != $last_modified) {
-        return; // if-modified-since is there but doesn't match
-    }
-
-    // Nothing has changed since their last request - serve a 304 and exit
-    ini_set('zlib.output_compression', '0');
-    header('HTTP/1.1 304 Not Modified', true, 304);
-    die();
 }
 
 /**
@@ -894,7 +850,7 @@ function searchMenu(string $q, string $wherekat)
             WHERE MATCH (navn) AGAINST ('$q') >  0
             "
         );
-        Cache::addLoadedTable('maerke');
+        Render::addLoadedTable('maerke');
         if (!$maerke) {
             $maerke = db()->fetchArray(
                 "
@@ -939,10 +895,10 @@ function searchMenu(string $q, string $wherekat)
  */
 function getKat(int $categoryId, string $sort): array
 {
-    Cache::addLoadedTable('sider');
-    Cache::addLoadedTable('bind');
-    Cache::addLoadedTable('kat');
-    doConditionalGet(Cache::getUpdateTime());
+    Render::addLoadedTable('sider');
+    Render::addLoadedTable('bind');
+    Render::addLoadedTable('kat');
+    Render::sendCacheHeader();
 
     if (!in_array($sort, ['navn', 'for', 'pris', 'varenr'])) {
         $sort = 'navn';

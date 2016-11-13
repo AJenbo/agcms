@@ -158,7 +158,7 @@ class Category
         }
 
         if ($this->visable === null) {
-            Cache::addLoadedTable('bind');
+            Render::addLoadedTable('bind');
             if (db()->fetchOne("SELECT id FROM `bind` WHERE `kat` = " . $this->getId())) {
                 $this->visable = true;
                 return $this->visable;
@@ -186,7 +186,7 @@ class Category
                 FROM `files`
                 WHERE path = '" . db()->esc($this->getIconPath()) . "'"
             );
-            Cache::addLoadedTable('files');
+            Render::addLoadedTable('files');
             if ($icon) {
                 $title = $icon['alt'];
             }
@@ -249,7 +249,7 @@ class Category
 
     public function getPages(string $order = 'navn')
     {
-        Cache::addLoadedTable('bind');
+        Render::addLoadedTable('bind');
         return ORM::getByQuery(
             Page::class,
             "
@@ -317,6 +317,6 @@ class Category
                 . " WHERE `id` = " . $this->id
             );
         }
-        Cache::addLoadedTable(self::TABLE_NAME);
+        Render::addLoadedTable(self::TABLE_NAME);
     }
 }

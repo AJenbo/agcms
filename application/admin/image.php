@@ -2,7 +2,7 @@
 
 require_once $_SERVER['DOCUMENT_ROOT'] . '/admin/inc/logon.php';
 
-doConditionalGet(filemtime(_ROOT_ . $_GET['path']));
+Render::sendCacheHeader(filemtime(_ROOT_ . $_GET['path']));
 generateImage(
     $_GET['path'],
     $_GET['cropX'] ?? 0,

@@ -13,13 +13,12 @@
 
 require_once $_SERVER['DOCUMENT_ROOT'] . '/inc/functions.php';
 
-Cache::addLoadedTable('sider');
-Cache::addLoadedTable('bind');
-Cache::addLoadedTable('kat');
-Cache::addLoadedTable('maerke');
-Cache::addLoadedTable('bind');
-Cache::addLoadedTable('files');
-doConditionalGet(Cache::getUpdateTime());
+Render::addLoadedTable('bind');
+Render::addLoadedTable('files');
+Render::addLoadedTable('kat');
+Render::addLoadedTable('maerke');
+Render::addLoadedTable('sider');
+Render::sendCacheHeader();
 
 header('Content-Type: application/xml');
 echo '<?xml version="1.0" encoding="utf-8"?><products>';

@@ -38,6 +38,7 @@ if (!empty($_FILES['Filedata']['tmp_name'])
     header('HTTP/1.1 510 Internal Server Error');
     $mime = get_mime_type('/admin/upload/temp/' . $name);
     //Kunne ikke finde billed størelsen.
+
     header('HTTP/1.1 512 Internal Server Error');
 
     $imagesize = [$_POST['x'], $_POST['y']];

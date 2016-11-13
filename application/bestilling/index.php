@@ -75,7 +75,6 @@ if (is_numeric(@$_GET['add']) || is_numeric(@$_GET['add_list_item'])) {
     }
 
     session_start();
-
     $product_exists = false;
     if (!empty($_SESSION['faktura']['quantities'])) {
         foreach ($_SESSION['faktura']['products'] as $i => $product_name) {
@@ -103,21 +102,8 @@ if (is_numeric(@$_GET['add']) || is_numeric(@$_GET['add_list_item'])) {
     redirect($url);
 }
 
-/*fake basket content*/
-/*
-if (!$_SESSION['faktura'] && empty($_GET['step'])) {
-    $_SESSION['faktura']['quantities'][0] = 1;
-    $_SESSION['faktura']['products'][0] = 'Garmin 720 s';
-    $_SESSION['faktura']['values'][0] = 10499;
-    $_SESSION['faktura']['quantities'][1] = 1;
-    $_SESSION['faktura']['products'][1] = 'Amb. Eon Sport 3601 - UDSALG!';
-    $_SESSION['faktura']['values'][1] = 699;
-}
-/**/
-
-//Generate default $GLOBALS['generatedcontent']
-$delayprint = true;
-require_once $_SERVER['DOCUMENT_ROOT'] . '/index.php';
+session_start();
+Render::$pageType = 'custome';
 $GLOBALS['generatedcontent']['datetime'] = time();
 
 unset($_POST['values']);
@@ -752,5 +738,4 @@ if (!empty($_SESSION['faktura']['quantities'])) {
     $GLOBALS['generatedcontent']['text'] = _('Ther is no content in the basket!');
 }
 
-//Output page
-require_once _ROOT_ . '/theme/index.php';
+Render::outputPage();
