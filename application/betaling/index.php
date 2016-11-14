@@ -436,17 +436,7 @@ if (!empty($id) && $checkid === getCheckid($id) && !isset($_GET['txnid'])) {
             ];
             Render::$title = _('Trade Conditions');
             Render::$headline = _('Trade Conditions');
-
-            $special = db()->fetchOne(
-                "
-                SELECT `text`
-                FROM `special`
-                WHERE `id` = 3
-                "
-            );
-            Cache::addLoadedTable('special');
-
-            Render::$bodyHtml .= '<br />' . $special['text']
+            Render::$bodyHtml .= '<br />' . ORM::getOne(CustomPage::class, 3)->getHtml()
                 . '<form style="text-align:center;" action="https://ssl.ditonlinebetalingssystem.dk/integration/ewindow/Default.aspx" method="post">';
 
             $submit = [

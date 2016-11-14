@@ -20,9 +20,7 @@ spl_autoload_register(function (string $className) {
     $classMap = [
         'Category' => 'Entity/Category',
         'Page' =>  'Entity/Page',
-        'IMAP' =>  '../vendor/libs/IMAP',
-        'SAJAX' => '../vendor/libs/SAJAX',
-        'Image' =>  '../vendor/libs/Image',
+        'CustomPage' =>  'Entity/CustomPage',
     ];
 
     if (isset($classMap[$className])) {

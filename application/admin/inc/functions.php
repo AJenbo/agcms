@@ -120,7 +120,7 @@ function sendDelayedEmail(): string
     //Get emails that needs sending
     $emails = db()->fetchArray("SELECT * FROM `emails`");
     if (!$emails) {
-        db()->query("UPDATE special SET dato = NOW() WHERE id = 0");
+        ORM::getOne(CustomPage::class, 0)->save();
         return '';
     }
 
@@ -149,7 +149,7 @@ function sendDelayedEmail(): string
         db()->query("DELETE FROM `emails` WHERE `id` = " . $email['id']);
     }
 
-    db()->query("UPDATE special SET dato = NOW() WHERE id = 0");
+    ORM::getOne(CustomPage::class, 0)->save();
 
     $msg = ngettext(
         "%d e-mail was sent.",
@@ -778,12 +778,20 @@ function getSiteTree(): string
     $html = '<div id="headline">'._('Overview').'</div><div>';
     $html .= siteList($_COOKIE['activekat'] ?? null);
 
-    $specials = db()->fetchArray('SELECT `id`, `navn` FROM `special` WHERE `id` > 1 ORDER BY `navn`');
-    foreach ($specials as $special) {
-        $html .= '<div style="margin-left: 16px;"><a href="?side=redigerSpecial&id='.$special['id'].'"><img height="16" width="16" alt="" src="images/page.png"/> '.$special['navn'].'</a></div>';
+    $customPages = ORM::getByQuery(
+        CustomPage::class,
+        "
+        SELECT * FROM `special`
+        WHERE `id` > 1
+        ORDER BY `navn`
+        "
+    );
+    foreach ($customPages as $customPage) {
+        $html .= '<div style="margin-left: 16px;"><a href="?side=redigerSpecial&id=' . $customPage->getId()
+            . '"><img height="16" width="16" alt="" src="images/page.png"/> ' . $customPage->getTitle . '</a></div>';
     }
 
-    return $html.'</div>';
+    return $html . '</div>';
 }
 
 /**
@@ -2365,8 +2373,8 @@ function listSavetRow(int $list_id, string $cells, string $link, int $row_id): a
 
 function redigerFrontpage(): string
 {
-    $special = db()->fetchOne("SELECT `text` FROM `special` WHERE id = 1");
-    if (!$special) {
+    $customPage = ORM::getOne(CustomPage::class, 1);
+    if (!$customPage) {
         return '<div id="headline">'._('The page does not exist').'</div>';
     }
 
@@ -2406,7 +2414,7 @@ $(\'subMenusOrder\').value = newOrder;
     $html .= '<script type="text/javascript"><!--
 //Usage: initRTE(imagesPath, includesPath, cssFile, genXHTML)
 initRTE("/admin/rtef/images/", "/admin/rtef/", "/theme/rtef-text.css", true);
-writeRichText("text", \''.rtefsafe($special['text']).'\', "", '.(Config::get('frontpage_width') + 32).', 572, true, false, false);
+writeRichText("text", \''.rtefsafe($customPage->getHtml()).'\', "", '.(Config::get('frontpage_width') + 32).', 572, true, false, false);
 //--></script></form>';
 
     return $html;
@@ -2414,22 +2422,21 @@ writeRichText("text", \''.rtefsafe($special['text']).'\', "", '.(Config::get('fr
 
 function redigerSpecial(int $id): string
 {
-    $special = db()->fetchOne("SELECT * FROM `special` WHERE id = " . $id);
-    if (!$special) {
-        return '<div id="headline">'._('The page does not exist').'</div>';
+    $customPage = ORM::getOne(CustomPage::class, $id);
+    if (!$customPage) {
+        return '<div id="headline">' . _('The page does not exist') . '</div>';
     }
 
-    $html = '<div id="headline">' . sprintf(_('Edit %s'), $special['navn']).'</div><form action="" method="post" onsubmit="return updateSpecial('.$id.');"><input type="submit" accesskey="s" style="width:1px; height:1px; position:absolute; top: -20px; left:-20px;" />';
-
-    $html .= '<input type="hidden" id="id" />';
-
-    $html .= '<script type="text/javascript"><!--
+    return '<div id="headline">' . sprintf(_('Edit %s'), $customPage->getTitle())
+        . '</div><form action="" method="post" onsubmit="return updateSpecial(' . $customPage->getId()
+        . ');"><input type="submit" accesskey="s" style="width:1px; height:1px; position:absolute; top: -20px; left:-20px;" />'
+        . '<input type="hidden" id="id" /><script type="text/javascript"><!--
 //Usage: initRTE(imagesPath, includesPath, cssFile, genXHTML)
 initRTE("/admin/rtef/images/", "/admin/rtef/", "/theme/rtef-text.css", true);
-writeRichText("text", \''.rtefsafe($special['text']).'\', "", '.(Config::get('text_width') + 32).', 572, true, false, false);
+writeRichText("text", \''
+        . rtefsafe($customPage->getHtml()) . '\', "", ' . (Config::get('text_width') + 32)
+        . ', 572, true, false, false);
 //--></script></form>';
-
-    return $html;
 }
 
 function getnykrav()
@@ -2674,16 +2681,10 @@ function get_db_error(): string
     $emails = db()->fetchArray("SHOW TABLE STATUS LIKE 'emails'");
     $emails = reset($emails);
 
-    $html .= '<div>'.sprintf(_('Delayed e-mails %d/%d'), $emailsCount['count'], $emails['Auto_increment'] - 1).'</div>';
-
-    $cron = db()->fetchOne("SELECT UNIX_TIMESTAMP(dato) AS dato FROM `special` WHERE id = 0");
-
-    $html .= '<div>'.sprintf(_('Cron last run at %s'), date('d/m/Y', $cron['dato'])).'</div>';
-
-    $html .= '</div>';
-    $html .= '</div>';
-
-    return $html;
+    return $html . '<div>' . sprintf(_('Delayed e-mails %d/%d'), $emailsCount['count'], $emails['Auto_increment'] - 1)
+        . '</div><div>'
+        . sprintf(_('Cron last run at %s'), date('d/m/Y', ORM::getOne(CustomPage::class, 0)->getTimestamp()))
+        . '</div></div></div>';
 }
 
 function get_subscriptions_with_bad_emails(): string
@@ -3384,17 +3385,11 @@ function updateForside(int $id, string $text, string $subsorder): bool
     return true;
 }
 
-function updateSpecial(int $id, string $text): bool
+function updateSpecial(int $id, string $html): bool
 {
-    $text = purifyHTML($text);
-    $text = htmlUrlDecode($text);
-    db()->query(
-        "
-        UPDATE `special`
-        SET `dato` = now(),
-        `text` = '" . addcslashes($text, "'\\") . "'
-        WHERE `id` = " . $id
-    );
+    $html = purifyHTML($html);
+    $html = htmlUrlDecode($html);
+    ORM::getOne(CustomPage::class, $id)->setHtml($html)->save();
     return true;
 }
 

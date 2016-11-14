@@ -20,9 +20,6 @@ class Category
     // Runtime
     private $visable;
 
-    /**
-     * Connect the database and set session to UTF-8 Danish
-     */
     public function __construct(array $data)
     {
         $this->setId($data['id'] ?? null)

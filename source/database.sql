@@ -277,10 +277,10 @@ CREATE TABLE IF NOT EXISTS `special` (
   PRIMARY KEY (`id`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_danish_ci ;
 
-INSERT INTO `special` (`id`, `navn`) VALUES
-(0, 'Cron status'),
-(1, 'Forsiden'),
-(3, 'Handelsbetingelser');
+INSERT INTO `special` (`id`, `navn`, `dato`) VALUES
+(0, 'Cron status', NOW()),
+(1, 'Forsiden', NOW()),
+(3, 'Handelsbetingelser', NOW());
 
 -- --------------------------------------------------------
 

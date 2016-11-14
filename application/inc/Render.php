@@ -411,20 +411,7 @@ class Render
 
         //Get page content and type
         if (self::$pageType === 'front') {
-            $special = db()->fetchOne(
-                "
-                SELECT text, UNIX_TIMESTAMP(dato) AS dato
-                FROM special
-                WHERE id = 1
-                "
-            );
-            if ($special['dato']) {
-                self::addUpdateTime(strtotime($special['dato']) + db()->getTimeOffset());
-            } else {
-                self::addLoadedTable('special');
-            }
-
-            self::$bodyHtml = $special['text'];
+            self::$bodyHtml = ORM::getOne(CustomPage::class, 1)->getHtml();
         } elseif (self::$pageType === 'search') {
             self::$title = 'Søg på ' . Config::get('site_name');
 
