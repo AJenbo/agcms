@@ -1,14 +1,6 @@
 <?php
 /**
  * Theme file, responsible for outputting the generated content
- *
- * PHP version 5
- *
- * @category AGCMS
- * @package  AGCMS
- * @author   Anders Jenbo <anders@jenbo.dk>
- * @license  MIT http://opensource.org/licenses/MIT
- * @link     http://www.arms-gallery.dk/
  */
 
 /**
