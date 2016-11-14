@@ -437,24 +437,16 @@ class Render
             self::addLoadedTable('lists');
 
             foreach ($lists as $list) {
-                self::$bodyHtml .= '<div id="table' . $list['id'] . '">';
-                self::$bodyHtml .= getTableHtml($list['id'], null, self::$activeCategory);
-                self::$bodyHtml .= '</div>';
+                self::$bodyHtml .= '<div id="table' . $list['id'] . '">'
+                    . getTableHtml($list['id'], null, self::$activeCategory) . '</div>';
             }
 
-            if (self::$activePage->getRequirementId()) {
-                $krav = db()->fetchOne(
-                    "
-                    SELECT id, navn
-                    FROM krav
-                    WHERE id = " . self::$activePage->getRequirementId()
-                );
-                self::addLoadedTable('krav');
-
+            $requirement = self::$activePage->getRequirement();
+            if ($requirement) {
                 self::$requirement = [
                     'icon' => '',
-                    'name' => $krav['navn'],
-                    'link' => '/krav/' . $krav['id'] . '/' . clearFileName($krav['navn']) . '.html',
+                    'name' => $requirement->getTitle(),
+                    'link' => '/' . $requirement->getSlug(),
                 ];
             }
 

@@ -1,12 +1,12 @@
 <?php
+
 /**
  * Popup displaying user requirements for the customer
  */
 
 require_once $_SERVER['DOCUMENT_ROOT'] . '/inc/functions.php';
 
-$krav = db()->fetchOne("SELECT * FROM krav WHERE id = " . (int) $_GET['id']);
-Cache::addLoadedTable('krav');
+$requirement = ORM::getOne(Requirement::class, $_GET['id']);
 ?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
@@ -27,12 +27,12 @@ body {
 }
 </style>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-<title><?php echo $krav['navn'] ?></title>
+<title><?php echo xhtmlEsc($requirement->getTitle()); ?></title>
 </head>
 
 <body><h1><?php
-echo $krav['navn'];
+echo xhtmlEsc($requirement->getTitle());
 ?></h1><div id="text"><?php
-echo $krav['text'];
+echo $requirement->getHtml();
 ?></div></body>
 </html>

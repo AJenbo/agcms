@@ -18,10 +18,11 @@ mb_internal_encoding('UTF-8');
 
 spl_autoload_register(function (string $className) {
     $classMap = [
-        'Brand'      => 'Entity/Brand',
-        'Category'   => 'Entity/Category',
-        'CustomPage' => 'Entity/CustomPage',
-        'Page'       => 'Entity/Page',
+        'Brand'       => 'Entity/Brand',
+        'Category'    => 'Entity/Category',
+        'CustomPage'  => 'Entity/CustomPage',
+        'Page'        => 'Entity/Page',
+        'Requirement' => 'Entity/Requirement',
     ];
 
     if (isset($classMap[$className])) {

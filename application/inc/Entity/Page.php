@@ -173,21 +173,11 @@ class Page
         return $this;
     }
 
-    public function getRequirementId(): int
-    {
-        return $this->requirementId;
-    }
-
     public function setBrandId(int $brandId): self
     {
         $this->brandId = $brandId;
 
         return $this;
-    }
-
-    public function getBrandId(): int
-    {
-        return $this->brandId;
     }
 
     public function setPrice(int $price): self
@@ -284,11 +274,6 @@ class Page
         );
     }
 
-    public function getBrand()
-    {
-        return $this->brandId ? ORM::getOne(Brand::class, $this->brandId) : null;
-    }
-
     public function getAccessories()
     {
         Render::addLoadedTable('tilbehor');
@@ -303,6 +288,16 @@ class Page
             ORDER BY sider.navn ASC
             "
         );
+    }
+
+    public function getBrand()
+    {
+        return $this->brandId ? ORM::getOne(Brand::class, $this->brandId) : null;
+    }
+
+    public function getRequirement(): Requirement
+    {
+        return $this->requirementId ? ORM::getOne(Requirement::class, $this->requirementId) : null;
     }
 
     public function isInactive(): bool
@@ -350,8 +345,8 @@ class Page
                     '" . db()->esc($this->sku) . "',
                     " . $this->oldPrice . ",
                     '" . db()->esc($this->excerpt) . "',
-                    " . $this->requirementId . ",
-                    " . $this->brandId . ",
+                    " . ($this->getRequirement() ? $this->requirementId : 0) . ",
+                    " . ($this->getBrand() ? $this->brandId : 0) . ",
                     '" . db()->esc($this->imagePath) . "',
                     " . $this->priceType . ",
                     " . $this->oldPriceType . "
@@ -370,8 +365,8 @@ class Page
                     `text` = '" . db()->esc($this->html) . "',
                     `beskrivelse` = '" . db()->esc($this->excerpt) . "',
                     `billed` = '" . db()->esc($this->imagePath) . "',
-                    `krav` = " . $this->requirementId . ",
-                    `maerke` = " . $this->brandId . ",
+                    `krav` = " . ($this->getRequirement() ? $this->requirementId : 0) . ",
+                    `maerke` = " . ($this->getBrand() ? $this->brandId : 0) . ",
                     `pris` = " . $this->price . ",
                     `for` = " . $this->oldPrice . ",
                     `fra` = " . $this->priceType . ",
