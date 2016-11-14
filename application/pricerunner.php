@@ -1,25 +1,16 @@
 <?php
 /**
  * Print feed for pricerunner.com
- *
- * PHP version 5
- *
- * @category AGCMS
- * @package  AGCMS
- * @author   Anders Jenbo <anders@jenbo.dk>
- * @license  GPLv2 http://www.gnu.org/licenses/gpl-2.0.html
- * @link     http://www.arms-gallery.dk/
  */
 
 require_once $_SERVER['DOCUMENT_ROOT'] . '/inc/functions.php';
 
-Cache::addLoadedTable('sider');
-Cache::addLoadedTable('bind');
-Cache::addLoadedTable('kat');
-Cache::addLoadedTable('maerke');
-Cache::addLoadedTable('bind');
-Cache::addLoadedTable('files');
-doConditionalGet(Cache::getUpdateTime());
+Render::addLoadedTable('bind');
+Render::addLoadedTable('files');
+Render::addLoadedTable('kat');
+Render::addLoadedTable('maerke');
+Render::addLoadedTable('sider');
+Render::sendCacheHeader();
 
 header('Content-Type: application/xml');
 echo '<?xml version="1.0" encoding="utf-8"?><products>';
@@ -43,7 +34,7 @@ $pages = ORM::getByQuery(
     "
     SELECT * FROM sider
     WHERE `pris` > 0 AND `navn` != ''
-    ORDER BY ``varenr` DESC
+    ORDER BY `varenr` DESC
     "
 );
 foreach ($pages as $page) {
@@ -57,8 +48,8 @@ foreach ($pages as $page) {
         echo '<companysku>' . htmlspecialchars(trim($page->getSku()), ENT_COMPAT | ENT_XML1) . '</companysku>';
     }
     echo '<price>' . $page->getPrice() . ',00</price><img>'
-    . encodeUrl($GLOBALS['_config']['base_url'] . $page->getImagePath()) . '</img><link>'
-    . encodeUrl($GLOBALS['_config']['base_url'] . $page->getCanonicalLink()) . '</link>';
+    . Config::get('base_url') . encodeUrl($page->getImagePath()) . '</img><link>'
+    . Config::get('base_url') . encodeUrl($page->getCanonicalLink()) . '</link>';
 
     $categoryTitles = [];
     if ($page->getBrandId()) {

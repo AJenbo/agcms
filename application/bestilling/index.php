@@ -1,14 +1,6 @@
 <?php
 /**
  * Page for sending an order request
- *
- * PHP version 5
- *
- * @category AGCMS
- * @package  AGCMS
- * @author   Anders Jenbo <anders@jenbo.dk>
- * @license  GPLv2 http://www.gnu.org/licenses/gpl-2.0.html
- * @link     http://www.arms-gallery.dk/
  */
 
 require_once $_SERVER['DOCUMENT_ROOT'] . '/inc/functions.php';
@@ -77,7 +69,6 @@ if (is_numeric(@$_GET['add']) || is_numeric(@$_GET['add_list_item'])) {
     }
 
     session_start();
-
     $product_exists = false;
     if (!empty($_SESSION['faktura']['quantities'])) {
         foreach ($_SESSION['faktura']['products'] as $i => $product_name) {
@@ -105,22 +96,8 @@ if (is_numeric(@$_GET['add']) || is_numeric(@$_GET['add_list_item'])) {
     redirect($url);
 }
 
-/*fake basket content*/
-/*
-if (!$_SESSION['faktura'] && empty($_GET['step'])) {
-    $_SESSION['faktura']['quantities'][0] = 1;
-    $_SESSION['faktura']['products'][0] = 'Garmin 720 s';
-    $_SESSION['faktura']['values'][0] = 10499;
-    $_SESSION['faktura']['quantities'][1] = 1;
-    $_SESSION['faktura']['products'][1] = 'Amb. Eon Sport 3601 - UDSALG!';
-    $_SESSION['faktura']['values'][1] = 699;
-}
-/**/
-
-//Generate default $GLOBALS['generatedcontent']
-$delayprint = true;
-require_once $_SERVER['DOCUMENT_ROOT'] . '/index.php';
-$GLOBALS['generatedcontent']['datetime'] = time();
+session_start();
+Render::$pageType = 'custome';
 
 unset($_POST['values']);
 unset($_POST['products']);
@@ -131,15 +108,15 @@ if (count($_POST)) {
 }
 
 //Generate return page
-$GLOBALS['generatedcontent']['crumbs'] = [];
-$GLOBALS['generatedcontent']['crumbs'][0] = [
-    'name' => _('Payment'),
-    'link' => '/',
-    'icon' => null,
+Render::$crumbs = [
+    [
+        'name' => _('Payment'),
+        'link' => '/',
+        'icon' => null,
+    ]
 ];
 
-$GLOBALS['generatedcontent']['contenttype'] = 'page';
-$GLOBALS['generatedcontent']['text'] = '';
+Render::$pageType = 'custome';
 
 if (!empty($_SESSION['faktura']['quantities'])) {
     $rejected = [];
@@ -167,17 +144,18 @@ if (!empty($_SESSION['faktura']['quantities'])) {
             $_SESSION['faktura']['amount'] += $_SESSION['faktura']['values'][$i] * $quantity;
         }
 
-        $GLOBALS['generatedcontent']['crumbs'] = [];
-        $GLOBALS['generatedcontent']['crumbs'][1] = [
-            'name' => _('Place order'),
-            'link' => '#',
-            'icon' => null,
+        Render::$crumbs = [
+            [
+                'name' => _('Place order'),
+                'link' => '#',
+                'icon' => null,
+            ]
         ];
-        $GLOBALS['generatedcontent']['title'] = _('Place order');
-        $GLOBALS['generatedcontent']['headline'] = _('Place order');
+        Render::$title = _('Place order');
+        Render::$headline = _('Place order');
 
 
-        $GLOBALS['generatedcontent']['text'] = '<script type="text/javascript" src="javascript.js"></script>
+        Render::$bodyHtml = '<script type="text/javascript" src="javascript.js"></script>
         <form action="" method="post"><p><table style="border-bottom:1px solid;" id="faktura" cellspacing="0">
             <thead>
                 <tr>
@@ -200,77 +178,77 @@ if (!empty($_SESSION['faktura']['quantities'])) {
         $unknownvalue = false;
         $javascript = 'var values = [];';
         foreach ($_SESSION['faktura']['quantities'] as $i => $quantity) {
-            $GLOBALS['generatedcontent']['text'] .= '<tr>
+            Render::$bodyHtml .= '<tr>
                 <td class="tal"><input onkeyup="updateprice();" onchange="updateprice();" class="tal" value="'.$quantity.'" name="quantity[ ]" size="3" /></td>
                 <td>'.xhtmlEsc($_SESSION['faktura']['products'][$i]).'</td>
                 <td class="tal">';
             if (is_numeric($_SESSION['faktura']['values'][$i])) {
-                $GLOBALS['generatedcontent']['text'] .= number_format($_SESSION['faktura']['values'][$i], 2, ',', '');
+                Render::$bodyHtml .= number_format($_SESSION['faktura']['values'][$i], 2, ',', '');
                 $javascript .= "\n".'values['.$i.'] = '.$_SESSION['faktura']['values'][$i].';';
             } else {
-                $GLOBALS['generatedcontent']['text'] .= '*';
+                Render::$bodyHtml .= '*';
                 $javascript .= "\n".'values['.$i.'] = 0;';
                 $unknownvalue = true;
             }
-            $GLOBALS['generatedcontent']['text'] .= '</td><td class="tal total">';
+            Render::$bodyHtml .= '</td><td class="tal total">';
             if (is_numeric($_SESSION['faktura']['values'][$i])) {
-                $GLOBALS['generatedcontent']['text'] .= number_format($_SESSION['faktura']['values'][$i] * $quantity, 2, ',', '');
+                Render::$bodyHtml .= number_format($_SESSION['faktura']['values'][$i] * $quantity, 2, ',', '');
             } else {
-                $GLOBALS['generatedcontent']['text'] .= '*';
+                Render::$bodyHtml .= '*';
             }
-            $GLOBALS['generatedcontent']['text'] .= '</td></tr>';
+            Render::$bodyHtml .= '</td></tr>';
         }
-        $GLOBALS['generatedcontent']['text'] .= '</tbody></table>';
-        $GLOBALS['generatedcontent']['text'] .= '<script type="text/javascript"><!--
+        Render::$bodyHtml .= '</tbody></table>';
+        Render::$bodyHtml .= '<script type="text/javascript"><!--
         ' . $javascript . '
         --></script>';
         if ($unknownvalue) {
-            $GLOBALS['generatedcontent']['text'] .= '<small>'
+            Render::$bodyHtml .= '<small>'
             . _('* The price cannot be determined automatically, please make sure to describe the exact type in the note field.')
             . '</small></p>';
         }
         if (empty($_SESSION['faktura']['paymethod'])) {
             $_SESSION['faktura']['paymethod'] = '';
         }
-        $GLOBALS['generatedcontent']['text'] .= '<p>' . _('Prefered payment method:')
+        Render::$bodyHtml .= '<p>' . _('Prefered payment method:')
         . ' <select name="paymethod" style="float:right;">
             <option value="creditcard"';
         if ($_SESSION['faktura']['paymethod'] == 'creditcard') {
-            $GLOBALS['generatedcontent']['text'] .= ' selected="selected"';
+            Render::$bodyHtml .= ' selected="selected"';
         }
-        $GLOBALS['generatedcontent']['text'] .= '>'._('Credit Card').'</option>
+        Render::$bodyHtml .= '>'._('Credit Card').'</option>
             <option value="bank"';
         if ($_SESSION['faktura']['paymethod'] == 'bank') {
-            $GLOBALS['generatedcontent']['text'] .= ' selected="selected"';
+            Render::$bodyHtml .= ' selected="selected"';
         }
-        $GLOBALS['generatedcontent']['text'] .= '>'._('Bank transaction').'</option>
+        Render::$bodyHtml .= '>'._('Bank transaction').'</option>
             <option value="cash"';
         if ($_SESSION['faktura']['paymethod'] == 'cash') {
-            $GLOBALS['generatedcontent']['text'] .= ' selected="selected"';
+            Render::$bodyHtml .= ' selected="selected"';
         }
-        $GLOBALS['generatedcontent']['text'] .= '>'._('Cash').'</option>
+        Render::$bodyHtml .= '>'._('Cash').'</option>
         </select></p>';
 
         if (empty($_SESSION['faktura']['delevery'])) {
             $_SESSION['faktura']['delevery'] = '';
         }
-        $GLOBALS['generatedcontent']['text'] .= '<p>' . _('Delevery:')
+        Render::$bodyHtml .= '<p>' . _('Delevery:')
         . ' <select style="float:right;" name="delevery">
             <option value="postal"';
         if ($_SESSION['faktura']['delevery'] == 'postal') {
-            $GLOBALS['generatedcontent']['text'] .= ' selected="selected"';
+            Render::$bodyHtml .= ' selected="selected"';
         }
-        $GLOBALS['generatedcontent']['text'] .= '>'._('Mail').'</option>
+        Render::$bodyHtml .= '>'._('Mail').'</option>
             <option value="express"';
         if ($_SESSION['faktura']['delevery'] == 'express') {
-            $GLOBALS['generatedcontent']['text'] .= ' selected="selected"';
+            Render::$bodyHtml .= ' selected="selected"';
         }
-        $GLOBALS['generatedcontent']['text'] .= '>'._('Mail express').'</option>
+        Render::$bodyHtml .= '>'._('Mail express').'</option>
             <option value="pickup"';
         if ($_SESSION['faktura']['delevery'] == 'pickup') {
-            $GLOBALS['generatedcontent']['text'] .= ' selected="selected"';
+            Render::$bodyHtml .= ' selected="selected"';
         }
-        $GLOBALS['generatedcontent']['text'] .= '>'._('Pickup in store').'</option>
+        Render::$bodyHtml .= '>'._('Pickup in store').'</option>
         </select><small id="shipping"><br />'
         . _('The excact shipping cost will be calculcated as the goods are packed.')
         . '</small></p>';
@@ -279,12 +257,12 @@ if (!empty($_SESSION['faktura']['quantities'])) {
         if (empty($_SESSION['faktura']['note'])) {
             $_SESSION['faktura']['note'] = '';
         }
-        $GLOBALS['generatedcontent']['text'] .= '<p>' . _('Note:')
+        Render::$bodyHtml .= '<p>' . _('Note:')
         . '<br /><textarea style="width:100%;" name="note">'
         . xhtmlEsc($_SESSION['faktura']['note'])
         . '</textarea><p>';
 
-        $GLOBALS['generatedcontent']['text'] .= '<input value="' . _('Continue')
+        Render::$bodyHtml .= '<input value="' . _('Continue')
         . '" type="submit" /></form>';
     } elseif ($_GET['step'] == 1) {
         if (empty($_SESSION['faktura']['postcountry'])) {
@@ -366,16 +344,17 @@ if (!empty($_SESSION['faktura']['quantities'])) {
         //TODO set land to DK by default
 
         //TODO add enote
-        $GLOBALS['generatedcontent']['crumbs'] = [];
-        $GLOBALS['generatedcontent']['crumbs'][1] = [
-            'name' => _('Recipient'),
-            'link' => '#',
-            'icon' => null,
+        Render::$crumbs = [
+            [
+                'name' => _('Recipient'),
+                'link' => urldecode($_SERVER['REQUEST_URI']),
+                'icon' => null,
+            ]
         ];
-        $GLOBALS['generatedcontent']['title'] = _('Recipient');
-        $GLOBALS['generatedcontent']['headline'] = _('Recipient');
+        Render::$title = _('Recipient');
+        Render::$headline = _('Recipient');
 
-        $GLOBALS['generatedcontent']['text'] = '
+        Render::$bodyHtml = '
         <script type="text/javascript"><!--
         window.history.forward(1);
         --></script>
@@ -399,12 +378,12 @@ if (!empty($_SESSION['faktura']['quantities'])) {
             <td colspan="2"><input name="navn" id="navn" style="width:157px" value="'.xhtmlEsc($_SESSION['faktura']['navn'] ?? '').'" /></td>
             <td>';
         if (!empty($rejected['navn'])) {
-            $GLOBALS['generatedcontent']['text'] .= '<img src="images/error.png" alt="" title="" >';
+            Render::$bodyHtml .= '<img src="images/error.png" alt="" title="" >';
         }
-        $GLOBALS['generatedcontent']['text'] .= '</td>
+        Render::$bodyHtml .= '</td>
         </tr>
         <tr>
-            <td> '._('Name:').'</td>
+            <td> '._('Attn:').'</td>
             <td colspan="2"><input name="att" id="att" style="width:157px" value="'.xhtmlEsc($_SESSION['faktura']['att'] ?? '').'" /></td>
             <td></td>
         </tr>
@@ -413,9 +392,9 @@ if (!empty($_SESSION['faktura']['quantities'])) {
             <td colspan="2"><input name="adresse" id="adresse" style="width:157px" value="'.xhtmlEsc($_SESSION['faktura']['adresse'] ?? '').'" /></td>
             <td>';
         if (!empty($rejected['adresse'])) {
-            $GLOBALS['generatedcontent']['text'] .= '<img src="images/error.png" alt="" title="" >';
+            Render::$bodyHtml .= '<img src="images/error.png" alt="" title="" >';
         }
-        $GLOBALS['generatedcontent']['text'] .= '</td>
+        Render::$bodyHtml .= '</td>
         </tr>
         <tr>
             <td> '._('Postbox:').'</td>
@@ -429,145 +408,145 @@ if (!empty($_SESSION['faktura']['quantities'])) {
                 <input name="by" id="by" style="width:90px" value="'.xhtmlEsc($_SESSION['faktura']['by'] ?? '').'" /></td>
             <td>';
         if (!empty($rejected['postnr'])) {
-            $GLOBALS['generatedcontent']['text'] .= '<img src="images/error.png" alt="" title="" >';
+            Render::$bodyHtml .= '<img src="images/error.png" alt="" title="" >';
         }
         if (!empty($rejected['by'])) {
-            $GLOBALS['generatedcontent']['text'] .= '<img src="images/error.png" alt="" title="" >';
+            Render::$bodyHtml .= '<img src="images/error.png" alt="" title="" >';
         }
-        $GLOBALS['generatedcontent']['text'] .= '</td>
+        Render::$bodyHtml .= '</td>
         </tr>
         <tr>
             <td> '._('Country:').'</td>
             <td colspan="2"><select name="land" id="land" style="width:157px" onblur="chnageZipCode($(\'postnr\').value, \'land\', \'by\')" onkeyup="chnageZipCode($(\'postnr\').value, \'land\', \'by\')" onchange="chnageZipCode($(\'postnr\').value, \'land\', \'by\')">';
         foreach ($countries as $code => $country) {
-            $GLOBALS['generatedcontent']['text'] .= '<option value="'.$code.'"';
+            Render::$bodyHtml .= '<option value="'.$code.'"';
             if ($_SESSION['faktura']['land'] == $code) {
-                $GLOBALS['generatedcontent']['text'] .= ' selected="selected"';
+                Render::$bodyHtml .= ' selected="selected"';
             }
-            $GLOBALS['generatedcontent']['text'] .= '>'.xhtmlEsc($country).'</option>';
+            Render::$bodyHtml .= '>'.xhtmlEsc($country).'</option>';
         }
-        $GLOBALS['generatedcontent']['text'] .= '</select></td>
+        Render::$bodyHtml .= '</select></td>
             <td>';
         if (!empty($rejected['land'])) {
-            $GLOBALS['generatedcontent']['text'] .= '<img src="images/error.png" alt="" title="" >';
+            Render::$bodyHtml .= '<img src="images/error.png" alt="" title="" >';
         }
-        $GLOBALS['generatedcontent']['text'] .= '</td>
+        Render::$bodyHtml .= '</td>
         </tr>
         <tr>
             <td> '._('E-mail:').'</td>
             <td colspan="2"><input name="email" id="email" style="width:157px" value="'.xhtmlEsc($_SESSION['faktura']['email'] ?? '').'" /></td>
             <td>';
         if (!empty($rejected['email'])) {
-            $GLOBALS['generatedcontent']['text'] .= '<img src="images/error.png" alt="" title="" >';
+            Render::$bodyHtml .= '<img src="images/error.png" alt="" title="" >';
         }
-        $GLOBALS['generatedcontent']['text'] .= '</td>
+        Render::$bodyHtml .= '</td>
         </tr>
         <tr>
             <td colspan="4"><input onclick="showhidealtpost(this.checked);" name="altpost" id="altpost" type="checkbox"';
         if (!empty($_SESSION['faktura']['altpost'])) {
-            $GLOBALS['generatedcontent']['text'] .= ' checked="checked"';
+            Render::$bodyHtml .= ' checked="checked"';
         }
-        $GLOBALS['generatedcontent']['text'] .= ' /><label for="altpost"> '._('Other delivery address').'</label></td>
+        Render::$bodyHtml .= ' /><label for="altpost"> '._('Other delivery address').'</label></td>
         </tr>
         <tr class="altpost"';
         if (empty($_SESSION['faktura']['altpost'])) {
-            $GLOBALS['generatedcontent']['text'] .= ' style="display:none;"';
+            Render::$bodyHtml .= ' style="display:none;"';
         }
-        $GLOBALS['generatedcontent']['text'] .= '>
+        Render::$bodyHtml .= '>
             <td> '._('Phone:').'</td>
             <td colspan="2"><input name="posttlf" id="posttlf" style="width:157px" value="'.xhtmlEsc($_SESSION['faktura']['posttlf'] ?? '').'" /></td>
             <td><input type="button" value="'._('Get address').'" onclick="getAddress(document.getElementById(\'posttlf\').value, getAddress_r2);" /></td>
         </tr>
         <tr class="altpost"';
         if (empty($_SESSION['faktura']['altpost'])) {
-            $GLOBALS['generatedcontent']['text'] .= ' style="display:none;"';
+            Render::$bodyHtml .= ' style="display:none;"';
         }
-        $GLOBALS['generatedcontent']['text'] .= '>
+        Render::$bodyHtml .= '>
             <td>'._('Name:').'</td>
             <td colspan="2"><input name="postname" id="postname" style="width:157px" value="'.xhtmlEsc($_SESSION['faktura']['postname'] ?? '').'" /></td>
             <td>';
         if (!empty($rejected['postname'])) {
-            $GLOBALS['generatedcontent']['text'] .= '<img src="images/error.png" alt="" title="" >';
+            Render::$bodyHtml .= '<img src="images/error.png" alt="" title="" >';
         }
-        $GLOBALS['generatedcontent']['text'] .= '</td>
+        Render::$bodyHtml .= '</td>
         </tr>
         <tr class="altpost"';
         if (empty($_SESSION['faktura']['altpost'])) {
-            $GLOBALS['generatedcontent']['text'] .= ' style="display:none;"';
+            Render::$bodyHtml .= ' style="display:none;"';
         }
-        $GLOBALS['generatedcontent']['text'] .= '>
+        Render::$bodyHtml .= '>
             <td> '._('Attn.:').'</td>
             <td colspan="2"><input name="postatt" id="postatt" style="width:157px" value="'.xhtmlEsc($_SESSION['faktura']['postatt'] ?? '').'" /></td>
             <td></td>
         </tr>
         <tr class="altpost"';
         if (empty($_SESSION['faktura']['altpost'])) {
-            $GLOBALS['generatedcontent']['text'] .= ' style="display:none;"';
+            Render::$bodyHtml .= ' style="display:none;"';
         }
-        $GLOBALS['generatedcontent']['text'] .= '>
+        Render::$bodyHtml .= '>
             <td> '._('Address:').'</td>
             <td colspan="2"><input name="postaddress" id="postaddress" style="width:157px" value="'.xhtmlEsc($_SESSION['faktura']['postaddress'] ?? '').'" /><br /><input name="postaddress2" id="postaddress2" style="width:157px" value="'.xhtmlEsc($_SESSION['faktura']['postaddress2'] ?? '').'" /></td>
             <td>';
         if (!empty($rejected['postaddress'])) {
-            $GLOBALS['generatedcontent']['text'] .= '<img src="images/error.png" alt="" title="" >';
+            Render::$bodyHtml .= '<img src="images/error.png" alt="" title="" >';
         }
-        $GLOBALS['generatedcontent']['text'] .= '</td>
+        Render::$bodyHtml .= '</td>
         </tr>
         <tr class="altpost"';
         if (empty($_SESSION['faktura']['altpost'])) {
-            $GLOBALS['generatedcontent']['text'] .= ' style="display:none;"';
+            Render::$bodyHtml .= ' style="display:none;"';
         }
-        $GLOBALS['generatedcontent']['text'] .= '>
+        Render::$bodyHtml .= '>
             <td> '._('Postbox:').'</td>
             <td colspan="2"><input name="postpostbox" id="postpostbox" style="width:157px" value="'.xhtmlEsc($_SESSION['faktura']['postpostbox'] ?? '').'" /></td>
             <td></td>
         </tr>
         <tr class="altpost"';
         if (empty($_SESSION['faktura']['altpost'])) {
-            $GLOBALS['generatedcontent']['text'] .= ' style="display:none;"';
+            Render::$bodyHtml .= ' style="display:none;"';
         }
-        $GLOBALS['generatedcontent']['text'] .= '>
+        Render::$bodyHtml .= '>
             <td> '._('Zipcode:').'</td>
             <td><input name="postpostalcode" id="postpostalcode" style="width:35px" value="'.xhtmlEsc($_SESSION['faktura']['postpostalcode'] ?? '').'" onblur="chnageZipCode(this.value, \'postcountry\', \'postcity\')" onkeyup="chnageZipCode(this.value, \'postcountry\', \'postcity\')" onchange="chnageZipCode(this.value, \'postcountry\', \'postcity\')" /></td>
             <td align="right">'._('City:').'
                 <input name="postcity" id="postcity" style="width:90px" value="'.xhtmlEsc($_SESSION['faktura']['postcity'] ?? '').'" /></td>
             <td>';
         if (!empty($rejected['postpostalcode'])) {
-            $GLOBALS['generatedcontent']['text'] .= '<img src="images/error.png" alt="" title="" >';
+            Render::$bodyHtml .= '<img src="images/error.png" alt="" title="" >';
         }
         if (!empty($rejected['postcity'])) {
-            $GLOBALS['generatedcontent']['text'] .= '<img src="images/error.png" alt="" title="" >';
+            Render::$bodyHtml .= '<img src="images/error.png" alt="" title="" >';
         }
-        $GLOBALS['generatedcontent']['text'] .= '</td>
+        Render::$bodyHtml .= '</td>
         </tr>
         <tr class="altpost"';
         if (empty($_SESSION['faktura']['altpost'])) {
-            $GLOBALS['generatedcontent']['text'] .= ' style="display:none;"';
+            Render::$bodyHtml .= ' style="display:none;"';
         }
-        $GLOBALS['generatedcontent']['text'] .= '>
+        Render::$bodyHtml .= '>
             <td> '._('Country:').'</td>
             <td colspan="2"><select name="postcountry" id="postcountry" style="width:157px" onblur="chnageZipCode($(\'postpostalcode\').value, \'postcountry\', \'postcity\')" onkeyup="chnageZipCode($(\'postpostalcode\').value, \'postcountry\', \'postcity\')" onchange="chnageZipCode($(\'postpostalcode\').value, \'postcountry\', \'postcity\')">';
 
         foreach ($countries as $code => $country) {
-            $GLOBALS['generatedcontent']['text'] .= '<option value="'.$code.'"';
+            Render::$bodyHtml .= '<option value="'.$code.'"';
             if ($_SESSION['faktura']['postcountry'] == $code) {
-                $GLOBALS['generatedcontent']['text'] .= ' selected="selected"';
+                Render::$bodyHtml .= ' selected="selected"';
             }
-            $GLOBALS['generatedcontent']['text'] .= '>'.xhtmlEsc($country).'</option>';
+            Render::$bodyHtml .= '>'.xhtmlEsc($country).'</option>';
         }
-        $GLOBALS['generatedcontent']['text'] .= '</select></td><td>';
+        Render::$bodyHtml .= '</select></td><td>';
         if (!empty($rejected['postcountry'])) {
-            $GLOBALS['generatedcontent']['text'] .= '<img src="images/error.png" alt="" title="" >';
+            Render::$bodyHtml .= '<img src="images/error.png" alt="" title="" >';
         }
-        $GLOBALS['generatedcontent']['text'] .= '</td></tr>';
-        $GLOBALS['generatedcontent']['text'] .= '<tr>
+        Render::$bodyHtml .= '</td></tr>';
+        Render::$bodyHtml .= '<tr>
             <td colspan="4"><input name="newsletter" id="newsletter" type="checkbox"';
         if (!empty($_POST['newsletter'])) {
-            $GLOBALS['generatedcontent']['text'] .= ' checked="checked"';
+            Render::$bodyHtml .= ' checked="checked"';
         }
-        $GLOBALS['generatedcontent']['text'] .= ' /><label for="newsletter"> '._('Please send me your newsletter.').'</label></td>
+        Render::$bodyHtml .= ' /><label for="newsletter"> '._('Please send me your newsletter.').'</label></td>
         </tr>';
-        $GLOBALS['generatedcontent']['text'] .= '</tbody></table><input style="font-weight:bold;" type="submit" value="'._('Send order').'" /></form>';
+        Render::$bodyHtml .= '</tbody></table><input style="font-weight:bold;" type="submit" value="'._('Send order').'" /></form>';
     } elseif ($_GET['step'] == 2) {
         if (!$_SESSION['faktura'] || !$_SESSION['faktura']['email']) {
             redirect('/bestilling/');
@@ -640,7 +619,7 @@ if (!empty($_SESSION['faktura']['quantities'])) {
           text-align:right;
         }
         --></style></head><body><p>
-        '.xhtmlEsc($_SESSION['faktura']['navn']._(' has placed an order for the following:')).'</p>';
+        '.xhtmlEsc($_SESSION['faktura']['navn'] . _(' has placed an order for the following:')) . '</p>';
 
         //Table of goods
         $emailbody .= '<table id="faktura" cellspacing="0">
@@ -720,7 +699,7 @@ if (!empty($_SESSION['faktura']['quantities'])) {
         //Admin link
         $msg = sprintf(
             _('Click <a href="%s">here</a> to expedite the order.'),
-            $GLOBALS['_config']['base_url'] . '/admin/faktura.php?id=' . $id
+            Config::get('base_url') . '/admin/faktura.php?id=' . $id
         );
         $emailbody .= '<p>' . $msg . '</p>';
 
@@ -744,17 +723,16 @@ if (!empty($_SESSION['faktura']['quantities'])) {
             $_SESSION['faktura']['navn']
         );
 
-        $GLOBALS['generatedcontent']['title'] = _('Order placed');
-        $GLOBALS['generatedcontent']['headline'] = _('Order placed');
-        $GLOBALS['generatedcontent']['text'] = _('Thank you for your order, you will recive an email with instructions on how to perform the payment as soon as we have validated that all goods are in stock.');
+        Render::$title = _('Order placed');
+        Render::$headline = _('Order placed');
+        Render::$bodyHtml = _('Thank you for your order, you will recive an email with instructions on how to perform the payment as soon as we have validated that all goods are in stock.');
 
         session_destroy();
     }
 } else {
-    $GLOBALS['generatedcontent']['title'] = _('Place order');
-    $GLOBALS['generatedcontent']['headline'] = _('Place order');
-    $GLOBALS['generatedcontent']['text'] = _('Ther is no content in the basket!');
+    Render::$title = _('Place order');
+    Render::$headline = _('Place order');
+    Render::$bodyHtml = _('Ther is no content in the basket!');
 }
 
-//Output page
-require_once _ROOT_ . '/theme/index.php';
+Render::outputPage();

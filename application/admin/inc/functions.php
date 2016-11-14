@@ -199,343 +199,76 @@ function get_mime_type(string $filepath): string
     }
 
     //Some types can't be trusted, and finding them via extension seams to give better resutls.
-    if (!$mime || $mime == 'text/plain' || $mime == 'application/msword') {
-        $pathinfo = pathinfo($filepath);
+    $unknown = ['text/plain', 'application/msword', 'application/octet-stream'];
+    if (!$mime || in_array($mime, $unknown, true)) {
         $mimes = [
-           'ez'=>'application/andrew-inset',
-           'csm'=>'application/cu-seeme',
-           'cu'=>'application/cu-seeme',
-           'tsp'=>'application/dsptype',
-           'spl'=>'application/x-futuresplash',
-           'hta'=>'application/hta',
-           'cpt'=>'image/x-corelphotopaint',
-           'hqx'=>'application/mac-binhex40',
-           'nb'=>'application/mathematica',
-           'mdb'=>'application/msaccess',
-           'doc'=>'application/msword',
-           'dot'=>'application/msword',
-           'bin'=>'application/octet-stream',
-           'oda'=>'application/oda',
-           'ogg'=>'application/ogg',
-           'prf'=>'application/pics-rules',
-           'key'=>'application/pgp-keys',
-           'pdf'=>'application/pdf',
-           'pgp'=>'application/pgp-signature',
-           'ps'=>'application/postscript',
-           'ai'=>'application/postscript',
-           'eps'=>'application/postscript',
-           'rar'=>'application/rar',
-           'rdf'=>'application/rdf+xml',
-           'rss'=>'application/rss+xml',
-           'rtf'=>'text/rtf',
-           'smi'=>'application/smil',
-           'smil'=>'application/smil',
-           'wp5'=>'application/wordperfect5.1',
-           'xht'=>'application/xhtml+xml',
-           'xhtml'=>'application/xhtml+xml',
-           'xml'=>'application/xml',
-           'xsl'=>'application/xml',
-           'zip'=>'application/zip',
-           'cdy'=>'application/vnd.cinderella',
-           'mif'=>'application/x-mif',
-           'xul'=>'application/vnd.mozilla.xul+xml',
-           'xls'=>'application/vnd.ms-excel',
-           'xlb'=>'application/vnd.ms-excel',
-           'xlt'=>'application/vnd.ms-excel',
-           'cat'=>'application/vnd.ms-pki.seccat',
-           'stl'=>'application/vnd.ms-pki.stl',
-           'ppt'=>'application/vnd.ms-powerpoint',
-           'pps'=>'application/vnd.ms-powerpoint',
-           'mmf'=>'application/vnd.smaf',
-           'sdc'=>'application/vnd.stardivision.calc',
-           'sda'=>'application/vnd.stardivision.draw',
-           'sdd'=>'application/vnd.stardivision.impress',
-           'sdp'=>'application/vnd.stardivision.impress',
-           'smf'=>'application/vnd.stardivision.math',
-           'sdw'=>'application/vnd.stardivision.writer',
-           'vor'=>'application/vnd.stardivision.writer',
-           'sgl'=>'application/vnd.stardivision.writer-global',
-           'sxc'=>'application/vnd.sun.xml.calc',
-           'stc'=>'application/vnd.sun.xml.calc.template',
-           'sxd'=>'application/vnd.sun.xml.draw',
-           'std'=>'application/vnd.sun.xml.draw.template',
-           'sxi'=>'application/vnd.sun.xml.impress',
-           'sti'=>'application/vnd.sun.xml.impress.template',
-           'sxm'=>'application/vnd.sun.xml.math',
-           'sxw'=>'application/vnd.sun.xml.writer',
-           'sxg'=>'application/vnd.sun.xml.writer.global',
-           'stw'=>'application/vnd.sun.xml.writer.template',
-           'sis'=>'application/vnd.symbian.install',
-           'vsd'=>'application/vnd.visio',
-           'wbxml'=>'application/vnd.wap.wbxml',
-           'wmlc'=>'application/vnd.wap.wmlc',
-           'wmlsc'=>'application/vnd.wap.wmlscriptc',
-           'wk'=>'application/x-123',
-           'dmg'=>'application/x-apple-diskimage',
-           'bcpio'=>'application/x-bcpio',
-           'torrent'=>'application/x-bittorrent',
-           'cdf'=>'application/x-cdf',
-           'vcd'=>'application/x-cdlink',
-           'pgn'=>'application/x-chess-pgn',
-           'chm'=>'application/x-chm',
-           'cpio'=>'application/x-cpio',
-           'csh'=>'text/x-csh',
-           'deb'=>'application/x-debian-package',
-           'dcr'=>'application/x-director',
-           'dir'=>'application/x-director',
-           'dxr'=>'application/x-director',
-           'wad'=>'application/x-doom',
-           'dms'=>'application/x-dms',
-           'dvi'=>'application/x-dvi',
-           'flac'=>'application/x-flac',
-           'pfa'=>'application/x-font',
-           'pfb'=>'application/x-font',
-           'gsf'=>'application/x-font',
-           'pcf'=>'application/x-font',
-           'pcf.Z'=>'application/x-font',
-           'gnumeric'=>'application/x-gnumeric',
-           'sgf'=>'application/x-go-sgf',
-           'gcf'=>'application/x-graphing-calculator',
-           'gtar'=>'application/x-gtar',
-           'tgz'=>'application/x-gtar',
-           'taz'=>'application/x-gtar',
-           'hdf'=>'application/x-hdf',
-           'phtml'=>'application/x-httpd-php',
-           'pht'=>'application/x-httpd-php',
-           'php'=>'application/x-httpd-php',
-           'phps'=>'application/x-httpd-php-source',
-           'php3'=>'application/x-httpd-php3',
-           'php3p'=>'application/x-httpd-php3-preprocessed',
-           'php4'=>'application/x-httpd-php4',
-           'ica'=>'application/x-ica',
-           'ins'=>'application/x-internet-signup',
-           'isp'=>'application/x-internet-signup',
-           'iii'=>'application/x-iphone',
-           'jar'=>'application/x-java-archive',
-           'jnlp'=>'application/x-java-jnlp-file',
-           'ser'=>'application/x-java-serialized-object',
-           'class'=>'application/x-java-vm',
-           'js'=>'application/x-javascript',
-           'chrt'=>'application/x-kchart',
-           'kil'=>'application/x-killustrator',
-           'kpr'=>'application/x-kpresenter',
-           'kpt'=>'application/x-kpresenter',
-           'skp'=>'application/x-koan',
-           'skd'=>'application/x-koan',
-           'skt'=>'application/x-koan',
-           'skm'=>'application/x-koan',
-           'ksp'=>'application/x-kspread',
-           'kwd'=>'application/x-kword',
-           'kwt'=>'application/x-kword',
-           'latex'=>'application/x-latex',
-           'lha'=>'application/x-lha',
-           'lzh'=>'application/x-lzh',
-           'lzx'=>'application/x-lzx',
-           'frm'=>'application/x-maker',
-           'maker'=>'application/x-maker',
-           'frame'=>'application/x-maker',
-           'fm'=>'application/x-maker',
-           'fb'=>'application/x-maker',
-           'book'=>'application/x-maker',
-           'fbdoc'=>'application/x-maker',
-           'wmz'=>'application/x-ms-wmz',
-           'wmd'=>'application/x-ms-wmd',
-           'com'=>'application/x-msdos-program',
-           'exe'=>'application/x-msdos-program',
-           'bat'=>'application/x-msdos-program',
-           'dll'=>'application/x-msdos-program',
-           'msi'=>'application/x-msi',
-           'nc'=>'application/x-netcdf',
-           'pac'=>'application/x-ns-proxy-autoconfig',
-           'nwc'=>'application/x-nwc',
-           'o'=>'application/x-object',
-           'oza'=>'application/x-oz-application',
-           'p7r'=>'application/x-pkcs7-certreqresp',
-           'crl'=>'application/x-pkcs7-crl',
-           'pyc'=>'application/x-python-code',
-           'pyo'=>'application/x-python-code',
-           'qtl'=>'application/x-quicktimeplayer',
-           'rpm'=>'application/x-redhat-package-manager',
-           'shar'=>'application/x-shar',
-           'fla'=>'application/octet-stream',
-           'swf'=>'application/x-shockwave-flash',
-           'swfl'=>'application/x-shockwave-flash',
-           'sh'=>'text/x-sh',
-           'sit'=>'application/x-stuffit',
-           'sv4cpio'=>'application/x-sv4cpio',
-           'sv4crc'=>'application/x-sv4crc',
-           'tar'=>'application/x-tar',
-           'tcl'=>'text/x-tcl',
-           'gf'=>'application/x-tex-gf',
-           'pk'=>'application/x-tex-pk',
-           'texinfo'=>'application/x-texinfo',
-           'texi'=>'application/x-texinfo',
-           '~'=>'application/x-trash',
-           '%'=>'application/x-trash',
-           'bak'=>'application/x-trash',
-           'old'=>'application/x-trash',
-           'sik'=>'application/x-trash',
-           't'=>'application/x-troff',
-           'tr'=>'application/x-troff',
-           'roff'=>'application/x-troff',
-           'man'=>'application/x-troff-man',
-           'me'=>'application/x-troff-me',
-           'ms'=>'application/x-troff-ms',
-           'ustar'=>'application/x-ustar',
-           'src'=>'application/x-wais-source',
-           'wz'=>'application/x-wingz',
-           'crt'=>'application/x-x509-ca-cert',
-           'xcf'=>'application/x-xcf',
-           'fig'=>'application/x-xfig',
-           'au'=>'audio/basic',
-           'snd'=>'audio/basic',
-           'mid'=>'audio/midi',
-           'midi'=>'audio/midi',
-           'kar'=>'audio/midi',
-           'mpga'=>'audio/mpeg',
-           'mpega'=>'audio/mpeg',
-           'mp2'=>'audio/mpeg',
-           'mp3'=>'audio/mpeg',
-           'm4a'=>'audio/mpeg',
-           'm3u'=>'audio/x-mpegurl',
-           'sid'=>'audio/prs.sid',
-           'aif'=>'audio/x-aiff',
-           'aiff'=>'audio/x-aiff',
-           'aifc'=>'audio/x-aiff',
-           'gsm'=>'audio/x-gsm',
-           'wma'=>'audio/x-ms-wma',
-           'wax'=>'audio/x-ms-wax',
-           'ra'=>'audio/x-realaudio',
-           'rm'=>'audio/x-pn-realaudio',
-           'ram'=>'audio/x-pn-realaudio',
-           'pls'=>'audio/x-scpls',
-           'sd2'=>'audio/x-sd2',
-           'wav'=>'audio/x-wav',
-           'pdb'=>'chemical/x-pdb',
-           'xyz'=>'chemical/x-xyz',
-           'gif'=>'image/gif',
-           'ief'=>'image/ief',
-           'jpeg'=>'image/jpeg',
-           'jpg'=>'image/jpeg',
-           'jpe'=>'image/jpeg',
-           'pcx'=>'image/pcx',
-           'png'=>'image/png',
-           'svg'=>'image/svg+xml',
-           'svgz'=>'image/svg+xml',
-           'tiff'=>'image/tiff',
-           'tif'=>'image/tiff',
-           'djvu'=>'image/vnd.djvu',
-           'djv'=>'image/vnd.djvu',
-           'wbmp'=>'image/vnd.wap.wbmp',
-           'wbm'=>'image/vnd.wap.wbmp',
-           'ras'=>'image/x-cmu-raster',
-           'cdr'=>'image/x-coreldraw',
-           'pat'=>'image/x-coreldrawpattern',
-           'cdt'=>'image/x-coreldrawtemplate',
-           'ico'=>'image/x-icon',
-           'art'=>'image/x-jg',
-           'jng'=>'image/x-jng',
-           'bmp'=>'image/x-ms-bmp',
-           'psd'=>'image/x-photoshop',
-           'pnm'=>'image/x-portable-anymap',
-           'pbm'=>'image/x-portable-bitmap',
-           'pgm'=>'image/x-portable-graymap',
-           'ppm'=>'image/x-portable-pixmap',
-           'rgb'=>'image/x-rgb',
-           'xbm'=>'image/x-xbitmap',
-           'xpm'=>'image/x-xpixmap',
-           'xwd'=>'image/x-xwindowdump',
-           'igs'=>'model/iges',
-           'iges'=>'model/iges',
-           'msh'=>'model/mesh',
-           'mesh'=>'model/mesh',
-           'silo'=>'model/mesh',
-           'wrl'=>'x-world/x-vrml',
-           'vrml'=>'x-world/x-vrml',
-           'ics'=>'text/calendar',
-           'icz'=>'text/calendar',
-           'csv'=>'text/comma-separated-values',
-           'css'=>'text/css',
-           '323'=>'text/h323',
-           'htm'=>'text/html',
-           'html'=>'text/html',
-           'shtml'=>'text/html',
-           'uls'=>'text/iuls',
-           'mml'=>'text/mathml',
-           'asc'=>'text/plain',
-           'txt'=>'text/plain',
-           'text'=>'text/plain',
-           'diff'=>'text/plain',
-           'pot'=>'text/plain',
-           'rtx'=>'text/richtext',
-           'sct'=>'text/scriptlet',
-           'wsc'=>'text/scriptlet',
-           'tm'=>'text/texmacs',
-           'ts'=>'text/texmacs',
-           'tsv'=>'text/tab-separated-values',
-           'jad'=>'text/vnd.sun.j2me.app-descriptor',
-           'wml'=>'text/vnd.wap.wml',
-           'wmls'=>'text/vnd.wap.wmlscript',
-           'h++'=>'text/x-c++hdr',
-           'hpp'=>'text/x-c++hdr',
-           'hxx'=>'text/x-c++hdr',
-           'hh'=>'text/x-c++hdr',
-           'c++'=>'text/x-c++src',
-           'cpp'=>'text/x-c++src',
-           'cxx'=>'text/x-c++src',
-           'cc'=>'text/x-c++src',
-           'h'=>'text/x-chdr',
-           'c'=>'text/x-csrc',
-           'java'=>'text/x-java',
-           'moc'=>'text/x-moc',
-           'p'=>'text/x-pascal',
-           'pas'=>'text/x-pascal',
-           'gcd'=>'text/x-pcs-gcd',
-           'pl'=>'text/x-perl',
-           'pm'=>'text/x-perl',
-           'py'=>'text/x-python',
-           'etx'=>'text/x-setext',
-           'tk'=>'text/x-tcl',
-           'tex'=>'text/x-tex',
-           'ltx'=>'text/x-tex',
-           'sty'=>'text/x-tex',
-           'cls'=>'text/x-tex',
-           'vcs'=>'text/x-vcalendar',
-           'vcf'=>'text/x-vcard',
-           'dl'=>'video/dl',
-           'fli'=>'video/fli',
-           'gl'=>'video/gl',
-           'mpeg'=>'video/mpeg',
-           'mpg'=>'video/mpeg',
-           'mpe'=>'video/mpeg',
-           'mp4'=>'video/mp4',
-           'qt'=>'video/quicktime',
-           'mov'=>'video/quicktime',
-           'mxu'=>'video/vnd.mpegurl',
-           'dif'=>'video/x-dv',
-           'dv'=>'video/x-dv',
-           'lsf'=>'video/x-la-asf',
-           'lsx'=>'video/x-la-asf',
-           'mng'=>'video/x-mng',
-           'asf'=>'video/x-ms-asf',
-           'asx'=>'video/x-ms-asf',
-           'wm'=>'video/x-ms-wm',
-           'wmv'=>'video/x-ms-wmv',
-           'wmx'=>'video/x-ms-wmx',
-           'wvx'=>'video/x-ms-wvx',
-           'avi'=>'video/x-msvideo',
-           'movie'=>'video/x-sgi-movie',
-           'flv'=>'video/x-flv',
-           'ice'=>'x-conference/x-cooltalk',
-           'vrm'=>'x-world/x-vrml',
-           '7z'=>'application/x-7z-compressed',
-           'gz'=>'application/x-gzip',
+            'doc'   => 'application/msword',
+            'dot'   => 'application/msword',
+            'eps'   => 'application/postscript',
+            'hqx'   => 'application/mac-binhex40',
+            'pdf'   => 'application/pdf',
+            'ai'    => 'application/postscript',
+            'ps'    => 'application/postscript',
+            'pps'   => 'application/vnd.ms-powerpoint',
+            'ppt'   => 'application/vnd.ms-powerpoint',
+            'xlb'   => 'application/vnd.ms-excel',
+            'xls'   => 'application/vnd.ms-excel',
+            'xlt'   => 'application/vnd.ms-excel',
+            'zip'   => 'application/zip',
+            '7z'    => 'application/x-7z-compressed',
+            'sit'   => 'application/x-stuffit',
+            'swf'   => 'application/x-shockwave-flash',
+            'swfl'  => 'application/x-shockwave-flash',
+            'tar'   => 'application/x-tar',
+            'taz'   => 'application/x-gtar',
+            'tgz'   => 'application/x-gtar',
+            'gtar'  => 'application/x-gtar',
+            'gz'    => 'application/x-gzip',
+            'kar'   => 'audio/midi',
+            'mid'   => 'audio/midi',
+            'midi'  => 'audio/midi',
+            'm4a'   => 'audio/mpeg',
+            'mp2'   => 'audio/mpeg',
+            'mp3'   => 'audio/mpeg',
+            'mpega' => 'audio/mpeg',
+            'mpga'  => 'audio/mpeg',
+            'wav'   => 'audio/x-wav',
+            'wma'   => 'audio/x-ms-wma',
+            'bmp'   => 'image/x-ms-bmp',
+            'psd'   => 'image/x-photoshop',
+            'tiff'  => 'image/tiff',
+            'tif'   => 'image/tiff',
+            'css'   => 'text/css',
+            'asc'   => 'text/plain',
+            'diff'  => 'text/plain',
+            'pot'   => 'text/plain',
+            'text'  => 'text/plain',
+            'txt'   => 'text/plain',
+            'html'  => 'text/html',
+            'htm'   => 'text/html',
+            'shtml' => 'text/html',
+            'rtf'   => 'text/rtf',
+            'asf'   => 'video/x-ms-asf',
+            'asx'   => 'video/x-ms-asf',
+            'avi'   => 'video/x-msvideo',
+            'flv'   => 'video/x-flv',
+            'mov'   => 'video/quicktime',
+            'mpeg'  => 'video/mpeg',
+            'mpe'   => 'video/mpeg',
+            'mpg'   => 'video/mpeg',
+            'qt'    => 'video/quicktime',
+            'wm'    => 'video/x-ms-wm',
+            'wmv'   => 'video/x-ms-wmv',
         ];
-        $mime = empty($mimes[mb_strtolower(@$pathinfo['extension'], 'UTF-8')]) ? 'application/octet-stream' : $mimes[mb_strtolower(@$pathinfo['extension'], 'UTF-8')];
+        $mime = 'application/octet-stream';
+        $pathinfo = pathinfo($filepath);
+        if (isset($mimes[mb_strtolower($pathinfo['extension'] ?? '')])) {
+            $mime = $mimes[mb_strtolower($pathinfo['extension'] ?? '')];
+        }
     }
 
     $mime = explode(';', $mime);
-    $mime = $mime[0];
+    $mime = array_shift($mime);
 
     return $mime;
 }
@@ -563,20 +296,20 @@ function sendEmail(int $id, string $from, string $interests, string $subject, st
     <html xmlns="http://www.w3.org/1999/xhtml">
     <head>
     <meta http-equiv="content-type" content="text/html; charset=utf-8" />
-    <title>'.$GLOBALS['_config']['site_name'].'</title>
+    <title>' . Config::get('site_name') . '</title>
     <style type="text/css">';
     $body .= file_get_contents(_ROOT_ . '/theme/email.css');
     $body .= '</style>
     <meta http-equiv="content-language" content="da" />
     <meta name="Description" content="Alt du har brug for i frilufts livet" />
-    <meta name="Author" content="' . $GLOBALS['_config']['site_name'] . '" />
+    <meta name="Author" content="' . Config::get('site_name') . '" />
     <meta name="Classification" content="" />
     <meta name="Reply-to" content="'.$from.'" />
     <meta http-equiv="imagetoolbar" content="no" />
     <meta name="distribution" content="Global" />
     <meta name="robots" content="index,follow" />
     </head><body><div>';
-    $body .= str_replace(' href="/', ' href="' . $GLOBALS['_config']['base_url'] . '/', $text);
+    $body .= str_replace(' href="/', ' href="' . Config::get('base_url') . '/', $text);
     $body .= '</div></body></html>';
 
     //Colect interests
@@ -704,16 +437,16 @@ function getEmail(int $id): string
 
     //TODO error if value = ''
     if ($newsmail['sendt'] == 0) {
-        if (count($GLOBALS['_config']['emails']) > 1) {
+        if (count(Config::get('emails')) > 1) {
             $html .= _('Sender:').' <select id="from">';
             $html .= '<option value="">'._('Select sender').'</option>';
-            foreach ($GLOBALS['_config']['emails'] as $email) {
+            foreach (Config::get('emails', []) as $email => $dummy) {
                 $html .= '<option value="'.$email.'">'.$email.'</option>';
             }
             $html .= '</select>';
         } else {
-            $emails = array_keys($GLOBALS['_config']['emails']);
-            $html .= '<input value="' . reset($emails) . '" id="from" style="display:none;" />';
+            $email = first(Config::get('emails'))['address'];
+            $html .= '<input value="' . $email . '" id="from" style="display:none;" />';
         }
     } else {
         $html .= _('Sender:') . ' ' . $newsmail['from'];
@@ -727,7 +460,7 @@ function getEmail(int $id): string
     }
     $html .= '<div id="interests">';
     $newsmail['interests_array'] = explode('<', $newsmail['interests']);
-    foreach ($GLOBALS['_config']['interests'] as $interest) {
+    foreach (Config::get('interests', []) as $interest) {
         $html .= '<input';
         if (false !== array_search($interest, $newsmail['interests_array'])) {
             $html .= ' checked="checked"';
@@ -749,12 +482,12 @@ countEmailTo();
     }
 
     if ($newsmail['sendt'] == 1) {
-        $html .= '<br />'._('Subject:').' '.$newsmail['subject'].'<div style="width:'.$GLOBALS['_config']['text_width'].'px; border:1px solid #D2D2D2">'.$newsmail['text'].'</div></div>';
+        $html .= '<br />' . _('Subject:') . ' ' . $newsmail['subject'] . '<div style="width:' . Config::get('text_width') . 'px; border:1px solid #D2D2D2">' . $newsmail['text'] . '</div></div>';
     } else {
-        $html .= '<br />' . _('Subject:') . ' <input class="admin_name" name="subject" id="subject" value="' . $newsmail['subject'] . '" size="127" style="width:' . ($GLOBALS['_config']['text_width'] - 34) . 'px" /><script type="text/javascript"><!--
+        $html .= '<br />' . _('Subject:') . ' <input class="admin_name" name="subject" id="subject" value="' . $newsmail['subject'] . '" size="127" style="width:' . (Config::get('text_width') - 34) . 'px" /><script type="text/javascript"><!--
 //Usage: initRTE(imagesPath, includesPath, cssFile, genXHTML)
 initRTE(\'/admin/rtef/images/\', \'/admin/rtef/\', \'/theme/email.css\', true);
-writeRichText(\'text\', \'' . rtefsafe($newsmail['text']) . '\', \'\', ' . ($GLOBALS['_config']['text_width'] + 32) . ', 422, true, false, false);
+writeRichText(\'text\', \'' . rtefsafe($newsmail['text']) . '\', \'\', ' . (Config::get('text_width') + 32) . ', 422, true, false, false);
 //--></script></div></form>';
     }
     return $html;
@@ -869,14 +602,14 @@ function katlist(int $id): string
 {
     global $kattree;
 
-    $html = '<a class="menuboxheader" id="katsheader" style="width:'.$GLOBALS['_config']['text_width'].'px;clear:both" onclick="showhidekats(\'kats\',this);">';
+    $html = '<a class="menuboxheader" id="katsheader" style="width:' . Config::get('text_width') . 'px;clear:both" onclick="showhidekats(\'kats\',this);">';
     if (@$_COOKIE['hidekats']) {
         $temp = katspath($id);
         $html .= $temp['html'];
     } else {
         $html .= _('Select location:').' ';
     }
-    $html .= '</a><div style="width:'.($GLOBALS['_config']['text_width']+24).'px;';
+    $html .= '</a><div style="width:' . (Config::get('text_width') + 24) . 'px;';
     if (@$_COOKIE['hidekats']) {
         $html .= 'display:none;';
     }
@@ -1412,7 +1145,8 @@ function saveImage(string $path, int $cropX, int $cropY, int $cropW, int $cropH,
 {
     $mimeType = get_mime_type($path);
 
-    if ($mimeType == 'image/jpeg') {
+    $output = [];
+    if ($mimeType === 'image/jpeg') {
         $output['type'] = 'jpg';
     } else {
         $output['type'] = 'png';
@@ -1662,14 +1396,14 @@ function filehtml(array $fileinfo): string
     $html = '';
 
     switch ($fileinfo['mime']) {
+        case 'image/gif':
         case 'image/jpeg':
         case 'image/png':
-        case 'image/gif':
             $html .= '<div id="tilebox'.$fileinfo['id'].'" class="imagetile"><div class="image"';
             if ($_GET['return']=='rtef') {
                 $html .= ' onclick="addimg('.$fileinfo['id'].')"';
             } elseif ($_GET['return']=='thb') {
-                if ($fileinfo['width'] <= $GLOBALS['_config']['thumb_width'] && $fileinfo['height'] <= $GLOBALS['_config']['thumb_height']) {
+                if ($fileinfo['width'] <= Config::get('thumb_width') && $fileinfo['height'] <= Config::get('thumb_height')) {
                     $html .= ' onclick="insertThumbnail('.$fileinfo['id'].')"';
                 } else {
                     $html .= ' onclick="open_image_thumbnail('.$fileinfo['id'].')"';
@@ -1690,9 +1424,9 @@ function filehtml(array $fileinfo): string
                 $html .= ' onclick="files['.$fileinfo['id'].'].openfile();"';
             }
             break;
-        case 'video/x-shockwave-flash':
-        case 'application/x-shockwave-flash':
         case 'application/futuresplash':
+        case 'application/x-shockwave-flash':
+        case 'video/x-shockwave-flash':
             $html .= '<div id="tilebox'.$fileinfo['id'].'" class="swftile"><div class="image"';
             if ($_GET['return']=='rtef') {
                 $html .= ' onclick="addswf('.$fileinfo['id'].', '.$fileinfo['width'].', '.$fileinfo['height'].')"';
@@ -1700,16 +1434,16 @@ function filehtml(array $fileinfo): string
                 $html .= ' onclick="files['.$fileinfo['id'].'].openfile();"';
             }
             break;
-        case 'video/avi':
-        case 'video/x-msvideo':
-        case 'video/mpeg':
+        case 'audio/midi':
         case 'audio/mpeg':
+        case 'audio/x-ms-wma':
+        case 'audio/x-wav':
+        case 'video/avi':
+        case 'video/mpeg':
         case 'video/quicktime':
         case 'video/x-ms-asf':
+        case 'video/x-msvideo':
         case 'video/x-ms-wmv':
-        case 'audio/x-wav':
-        case 'audio/midi':
-        case 'audio/x-ms-wma':
             $html .= '<div id="tilebox'.$fileinfo['id'].'" class="videotile"><div class="image"';
             //TODO make the actual functions
             if ($_GET['return']=='rtef') {
@@ -1722,7 +1456,7 @@ function filehtml(array $fileinfo): string
             $html .= '<div id="tilebox'.$fileinfo['id'].'" class="filetile"><div class="image"';
             if ($_GET['return']=='rtef') {
                 $html .= ' onclick="addfile('.$fileinfo['id'].')"';
-            } else /*if ($mode=='file')*/ {
+            } else {
                 $html .= ' onclick="files['.$fileinfo['id'].'].openfile();"';
             }
             break;
@@ -1730,75 +1464,70 @@ function filehtml(array $fileinfo): string
 
     $html .='> <img src="';
 
+    $type = 'bin';
     switch ($fileinfo['mime']) {
+        case 'image/gif':
         case 'image/jpeg':
         case 'image/png':
-        case 'image/gif':
         case 'image/vnd.wap.wbmp':
-            //$url_file_name = rawurlencode($pathinfo['basename']);
-            $html .= 'image.php?path='.rawurlencode($pathinfo['dirname'].'/'.$pathinfo['basename']).'&amp;maxW=128&amp;maxH=96';
+            $type = 'image-native';
             break;
         case 'application/pdf':
-            $html .= 'images/file-pdf.gif';
+            $type = 'pdf';
             break;
-        case 'image/x-psd':
-        case 'image/x-photoshop':
-        case 'image/tiff':
-        case 'image/x-eps':
-        case 'image/bmp':
-        case 'image/x-ms-bmp':
         case 'application/postscript':
-            $html .= 'images/file-image.gif';
+            $type = 'image';
             break;
-        case 'video/avi':
-        case 'video/x-msvideo':
-        case 'video/mpeg':
-        case 'video/quicktime':
-        case 'video/x-shockwave-flash':
-        case 'application/x-shockwave-flash':
-        case 'application/futuresplash': //missing spl
-        case 'video/x-flv':
-        case 'video/x-ms-asf': //missing asf
-        case 'video/x-ms-wmv':
+        case 'application/futuresplash':
         case 'application/vnd.ms-powerpoint':
-        case 'video/vnd.rn-realvideo': //missing rv
         case 'application/vnd.rn-realmedia':
-            $html .= 'images/file-video.gif';
+        case 'application/x-shockwave-flash':
+            $type = 'video';
             break;
-        case 'audio/x-wav':
-        case 'audio/mpeg':
-        case 'audio/midi':
-        case 'audio/x-ms-wma':
-        case 'audio/vnd.rn-realaudio': //missing rma / ra
-            $html .= 'images/file-audio.gif';
-            break;
-        case 'text/plain':
-        case 'application/rtf':
-        case 'text/rtf':
         case 'application/msword':
-        case 'application/vnd.ms-works': //missing wps
+        case 'application/rtf':
         case 'application/vnd.ms-excel':
-            $html .= 'images/file-text.gif';
+        case 'application/vnd.ms-works':
+            $type = 'text';
             break;
-        case 'text/html':
         case 'text/css':
-            $html .= 'images/file-sys.gif';
+        case 'text/html':
+            $type = 'sys';
             break;
-        case 'application/x-gzip':
-        case 'application/x-gtar':
-        case 'application/x-tar':
-        case 'application/x-stuffit':
-        case 'application/x-stuffitx':
-        case 'application/zip':
-        case 'application/x-zip':
+        case 'application/mac-binhex40':
+        case 'application/x-7z-compressed':
+        case 'application/x-bzip2':
         case 'application/x-compressed': //missing
         case 'application/x-compress': //missing
-        case 'application/mac-binhex40':
-        case 'application/x-rar-compressed':
+        case 'application/x-gtar':
+        case 'application/x-gzip':
         case 'application/x-rar':
-        case 'application/x-bzip2':
-        case 'application/x-7z-compressed':
-            $html .= 'images/file-zip.gif';
+        case 'application/x-rar-compressed':
+        case 'application/x-stuffit':
+        case 'application/x-stuffitx':
+        case 'application/x-tar':
+        case 'application/x-zip':
+        case 'application/zip':
+            $type = 'zip';
+            break;
+        default:
+            $type = explode('/', $fileinfo['mime']);
+            $type = array_shift($type);
+            break;
+    }
+
+    switch ($type) {
+        case 'image-native':
+            $html .= 'image.php?path=' . rawurlencode($pathinfo['dirname'] . '/' . $pathinfo['basename']) . '&amp;maxW=128&amp;maxH=96';
+            break;
+        case 'pdf':
+        case 'image':
+        case 'video':
+        case 'audio':
+        case 'text':
+        case 'sys':
+        case 'zip':
+            $html .= 'images/file-' . $type . '.gif';
             break;
         default:
             $html .= 'images/file-bin.gif';
@@ -2271,7 +2000,7 @@ function redigerkat(int $id): string
         if ($kat['custom_sort_subs']) {
             $html .= ' selected="selected"';
         }
-        $html .= '>'._('Manually').'</option></select><br /><ul id="subMenus" style="width:'.$GLOBALS['_config']['text_width'].'px;';
+        $html .= '>'._('Manually').'</option></select><br /><ul id="subMenus" style="width:' . Config::get('text_width') . 'px;';
         if (!$kat['custom_sort_subs']) {
             $html .= 'display:none;';
         }
@@ -2307,7 +2036,7 @@ $(\'subMenusOrder\').value = newOrder;
 
     //Email
     $html .= _('Contact:').' <select id="email">';
-    foreach ($GLOBALS['_config']['emails'] as $value => $dummy) {
+    foreach (Config::get('emails', []) as $value => $dummy) {
         $html .= '<option value="'.$value.'"';
         if ($kat['email'] == $value) {
             $html .= ' selected="selected"';
@@ -2352,12 +2081,12 @@ function redigerside(int $id): string
     $html = '<div id="headline">'._('Edit page #').$id.'</div><form action="" method="post" onsubmit="return updateSide('.$id.');"><input type="submit" accesskey="s" style="width:1px; height:1px; position:absolute; top: -20px; left:-20px;" /><div><script type="text/javascript"><!--
 //Usage: initRTE(imagesPath, includesPath, cssFile, genXHTML)
 initRTE("/admin/rtef/images/", "/admin/rtef/", "/theme/rtef-text.css", true);
-//--></script><input type="hidden" name="id" id="id" value="'.$id.'" /><input class="admin_name" type="text" name="navn" id="navn" value="'.xhtmlEsc($page['navn']).'" maxlength="127" size="127" style="width:'.$GLOBALS['_config']['text_width'].'px" /><script type="text/javascript"><!--
-writeRichText("text", \''.rtefsafe($page['text']).'\', "", '.($GLOBALS['_config']['text_width']+32).', 420, true, false, false);
+//--></script><input type="hidden" name="id" id="id" value="'.$id.'" /><input class="admin_name" type="text" name="navn" id="navn" value="'.xhtmlEsc($page['navn']).'" maxlength="127" size="127" style="width:' . Config::get('text_width') . 'px" /><script type="text/javascript"><!--
+writeRichText("text", \'' . rtefsafe($page['text']) . '\', "", ' . (Config::get('text_width') + 32) . ', 420, true, false, false);
 //--></script>';
-    $html .= _('Search word (separate search words with a comma \'Emergency Blanket, Emergency Blanket\'):').'<br /><textarea name="keywords" id="keywords" style="width:'.$GLOBALS['_config']['text_width'].'px;max-width:'.$GLOBALS['_config']['text_width'].'px" rows="2" cols="">'.xhtmlEsc($page['keywords']).'</textarea>';
+    $html .= _('Search word (separate search words with a comma \'Emergency Blanket, Emergency Blanket\'):').'<br /><textarea name="keywords" id="keywords" style="width:' . Config::get('text_width') . 'px;max-width:' . Config::get('text_width') . 'px" rows="2" cols="">'.xhtmlEsc($page['keywords']).'</textarea>';
     //Beskrivelse start
-    $html .= '<div class="toolbox"><a class="menuboxheader" id="beskrivelseboxheader" style="width:'.($GLOBALS['_config']['thumb_width']+14).'px" onclick="showhide(\'beskrivelsebox\',this);">'._('Description:').' </a><div style="text-align:center;width:'.($GLOBALS['_config']['thumb_width']+34).'px" id="beskrivelsebox"><br /><input type="hidden" value="';
+    $html .= '<div class="toolbox"><a class="menuboxheader" id="beskrivelseboxheader" style="width:'.(Config::get('thumb_width') + 14).'px" onclick="showhide(\'beskrivelsebox\',this);">'._('Description:').' </a><div style="text-align:center;width:'.(Config::get('thumb_width') + 34).'px" id="beskrivelsebox"><br /><input type="hidden" value="';
     if ($page['billed']) {
         $html .= $page['billed'];
     } else {
@@ -2372,7 +2101,7 @@ writeRichText("text", \''.rtefsafe($page['text']).'\', "", '.($GLOBALS['_config'
     }
     $html .= '" alt="" onclick="explorer(\'thb\', \'billed\')" /><br /><img onclick="explorer(\'thb\', \'billed\')" src="images/folder_image.png" width="16" height="16" alt="'._('Pictures').'" title="'._('Find image').'" /><a onclick="setThb(\'billed\',\'\',\''._('/images/web/intet-foto.jpg').'\')"><img src="images/cross.png" alt="X" title="'._('Remove picture').'" width="16" height="16" /></a>';
     $html .= '<script type="text/javascript"><!--
-writeRichText("beskrivelse", \''.rtefsafe($page['beskrivelse']).'\', "", '.($GLOBALS['_config']['thumb_width']+32).', 115, false, false, false);
+writeRichText("beskrivelse", \''.rtefsafe($page['beskrivelse']).'\', "", '.(Config::get('thumb_width') + 32).', 115, false, false, false);
 //--></script>';
     $html .= '</div></div>';
     //Beskrivelse end
@@ -2441,7 +2170,7 @@ writeRichText("beskrivelse", \''.rtefsafe($page['beskrivelse']).'\', "", '.($GLO
     $html .= '</select></div></div>';
     //misc end
     //list start
-    $html .= '<div class="toolbox"><a class="menuboxheader" id="listboxheader" style="width:'.($GLOBALS['_config']['text_width']-20+32).'px" onclick="showhide(\'listbox\',this);">'._('Lists:').' </a><div style="width:'.($GLOBALS['_config']['text_width']+32).'px" id="listbox">';
+    $html .= '<div class="toolbox"><a class="menuboxheader" id="listboxheader" style="width:'.(Config::get('text_width') - 20 + 32).'px" onclick="showhide(\'listbox\',this);">'._('Lists:').' </a><div style="width:'.(Config::get('text_width') + 32).'px" id="listbox">';
     $lists = db()->fetchArray('SELECT * FROM `lists` WHERE page_id = ' . $id);
     $firstRow = reset($lists);
     $options = [];
@@ -2647,7 +2376,7 @@ function redigerFrontpage(): string
     $subkats = db()->fetchArray('SELECT id, navn, icon FROM `kat` WHERE bind = 0 ORDER BY `order`, `navn`');
 
     $html .= _('Sort maincategories:');
-    $html .= '<ul id="subMenus" style="width:'.$GLOBALS['_config']['text_width'].'px;">';
+    $html .= '<ul id="subMenus" style="width:' . Config::get('text_width') .'px;">';
 
     foreach ($subkats as $value) {
         $html .= '<li id="item_'.$value['id'].'"><img src="';
@@ -2677,7 +2406,7 @@ $(\'subMenusOrder\').value = newOrder;
     $html .= '<script type="text/javascript"><!--
 //Usage: initRTE(imagesPath, includesPath, cssFile, genXHTML)
 initRTE("/admin/rtef/images/", "/admin/rtef/", "/theme/rtef-text.css", true);
-writeRichText("text", \''.rtefsafe($special['text']).'\', "", '.($GLOBALS['_config']['frontpage_width']+32).', 572, true, false, false);
+writeRichText("text", \''.rtefsafe($special['text']).'\', "", '.(Config::get('frontpage_width') + 32).', 572, true, false, false);
 //--></script></form>';
 
     return $html;
@@ -2697,7 +2426,7 @@ function redigerSpecial(int $id): string
     $html .= '<script type="text/javascript"><!--
 //Usage: initRTE(imagesPath, includesPath, cssFile, genXHTML)
 initRTE("/admin/rtef/images/", "/admin/rtef/", "/theme/rtef-text.css", true);
-writeRichText("text", \''.rtefsafe($special['text']).'\', "", '.($GLOBALS['_config']['text_width']+32).', 572, true, false, false);
+writeRichText("text", \''.rtefsafe($special['text']).'\', "", '.(Config::get('text_width') + 32).', 572, true, false, false);
 //--></script></form>';
 
     return $html;
@@ -2705,10 +2434,10 @@ writeRichText("text", \''.rtefsafe($special['text']).'\', "", '.($GLOBALS['_conf
 
 function getnykrav()
 {
-    $html = '<div id="headline">'._('Create new requirement').'</div><form action="" method="post" onsubmit="return savekrav();"><input type="submit" accesskey="s" style="width:1px; height:1px; position:absolute; top: -20px; left:-20px;" /><input type="hidden" name="id" id="id" value="" /><input class="admin_name" type="text" name="navn" id="navn" value="" maxlength="127" size="127" style="width:'.$GLOBALS['_config']['text_width'].'px" /><script type="text/javascript"><!--
+    $html = '<div id="headline">'._('Create new requirement').'</div><form action="" method="post" onsubmit="return savekrav();"><input type="submit" accesskey="s" style="width:1px; height:1px; position:absolute; top: -20px; left:-20px;" /><input type="hidden" name="id" id="id" value="" /><input class="admin_name" type="text" name="navn" id="navn" value="" maxlength="127" size="127" style="width:' . Config::get('text_width') . 'px" /><script type="text/javascript"><!--
 //Usage: initRTE(imagesPath, includesPath, cssFile, genXHTML)
 initRTE("/admin/rtef/images/", "/admin/rtef/", "/theme/rtef-text.css", true);
-writeRichText("text", "", "", '.$GLOBALS['_config']['text_width'].', 420, true, false, false);
+writeRichText("text", "", "", ' . Config::get('text_width') . ', 420, true, false, false);
 //--></script></form>';
 
     return $html;
@@ -2723,7 +2452,7 @@ function listsort(int $id = null): string
 
         $html .= _('Name:').' <input id="listOrderNavn" value="' . $liste['navn'] . '"><form action="" method="post" onsubmit="addNewItem(); return false;">'._('New Item:').' <input id="newItem"> <input type="submit" value="tilføj" accesskey="t"></form>';
 
-        $html .= '<ul id="listOrder" style="width:'.$GLOBALS['_config']['text_width'].'px;">';
+        $html .= '<ul id="listOrder" style="width:' . Config::get('text_width') . 'px;">';
         $liste['text'] = explode('<', $liste['text']);
 
         foreach ($liste['text'] as $key => $value) {
@@ -2797,7 +2526,7 @@ function editContact(int $id): string
     <strong>'._('Interests:').'</strong>';
     $html .= '<div id="interests">';
     $address['interests_array'] = explode('<', $address['interests']);
-    foreach ($GLOBALS['_config']['interests'] as $interest) {
+    foreach (Config::get('interests', []) as $interest) {
         $html .= '<label for="'.$interest.'"><input';
         if (false !== array_search($interest, $address['interests_array'])) {
             $html .= ' checked="checked"';
@@ -2878,12 +2607,6 @@ function get_db_error(): string
             $(\'status\').innerHTML = \''._('Searching for cirkalur linked categories').'\';
             x_get_looping_cats(set_db_errors);
 
-            $(\'status\').innerHTML = \''._('Searching for illegal e-mail adresses').'\';
-            x_get_subscriptions_with_bad_emails(set_db_errors);
-
-            $(\'status\').innerHTML = \''._('Removes not existing files from the database').'\';
-            x_removeNoneExistingFiles(set_db_errors);
-
             $(\'status\').innerHTML = \''._('Checking the file names').'\';
             x_check_file_names(set_db_errors);
 
@@ -2899,9 +2622,6 @@ function get_db_error(): string
             $(\'status\').innerHTML = \''._('Optimizing the database').'\';
             x_optimizeTables(set_db_errors);
 
-            $(\'status\').innerHTML = \''._('Getting Database Size').'\';
-            x_get_db_size(function(){});
-
             $(\'status\').innerHTML = \''._('Sending delayed emails').'\';
             x_sendDelayedEmail(set_db_errors);
 
@@ -2910,13 +2630,45 @@ function get_db_error(): string
             $(\'errors\').innerHTML = $(\'errors\').innerHTML+\'<br />\'+(\''._('The scan took %d seconds.').'\'.replace(/[%]d/g, Math.round((new Date().getTime()-starttime)/1000).toString()));
         }
 
+        function get_subscriptions_with_bad_emails()
+        {
+            $(\'loading\').style.visibility = \'\';
+            $(\'errors\').innerHTML = \'\';
+
+            var starttime = new Date().getTime();
+
+            $(\'status\').innerHTML = \''._('Searching for illegal e-mail adresses').'\';
+            x_get_subscriptions_with_bad_emails(set_db_errors);
+
+            $(\'status\').innerHTML = \'\';
+            $(\'loading\').style.visibility = \'hidden\';
+            $(\'errors\').innerHTML = $(\'errors\').innerHTML+\'<br />\'+(\''._('The scan took %d seconds.').'\'.replace(/[%]d/g, Math.round((new Date().getTime()-starttime)/1000).toString()));
+        }
+
+        function removeNoneExistingFiles()
+        {
+            $(\'loading\').style.visibility = \'\';
+            $(\'status\').innerHTML = \''._('Removes not existing files from the database').'\';
+            x_removeNoneExistingFiles(function (dummy) {});
+            $(\'status\').innerHTML = \''._('Getting Database Size').'\';
+            x_get_db_size(get_db_size_r);
+            $(\'status\').innerHTML = \'\';
+            $(\'loading\').style.visibility = \'hidden\';
+        }
+
         function get_mail_size_r(size)
         {
             $(\'mailboxsize\').innerHTML = Math.round(size/1024/1024)+\''._('MB').'\';
             $(\'status\').innerHTML = \'\';
             $(\'loading\').style.visibility = \'hidden\';
         }
-        --></script><div><b>'._('Server consumption').'</b> - '._('E-mail:').' <span id="mailboxsize"><button onclick="$(\'loading\').style.visibility = \'\'; x_get_mail_size(get_mail_size_r);">'._('Get e-mail consumption').'</button></span> '._('DB:').' <span id="dbsize">'.number_format(get_db_size(), 1, ',', '')._('MB').'</span> '._('WWW').': <span id="wwwsize">'.number_format(get_size_of_files(), 1, ',', '')._('MB').'</span></div><div id="status"></div><button onclick="scan_db();">'._('Scan database').'</button><div id="errors"></div>';
+
+        function get_db_size_r(size)
+        {
+            $(\'dbsize\').innerHTML = Math.round(size/1024/1024)+\''._('MB').'\';
+        }
+
+        --></script><div><b>'._('Server consumption').'</b> - '._('E-mail:').' <span id="mailboxsize"><button onclick="$(\'loading\').style.visibility = \'\'; x_get_mail_size(get_mail_size_r);">'._('Get e-mail consumption').'</button></span> '._('DB:').' <span id="dbsize">'.number_format(get_db_size(), 1, ',', '')._('MB').'</span> '._('WWW').': <span id="wwwsize">'.number_format(get_size_of_files(), 1, ',', '')._('MB').'</span></div><div id="status"></div><button onclick="scan_db();">'._('Scan database').'</button> <button onclick="get_subscriptions_with_bad_emails();">'._('Check emails in the address book').'</button> <button onclick="removeNoneExistingFiles();">'._('Clean up files').'</button><div id="errors"></div>';
 
     $emailsCount = db()->fetchOne("SELECT count(*) as 'count' FROM `emails`");
     $emails = db()->fetchArray("SHOW TABLE STATUS LIKE 'emails'");
@@ -3062,8 +2814,8 @@ function get_mail_size(): int
 
     $size = 0;
 
-    foreach ($GLOBALS['_config']['emails'] as $email) {
-        $imap = new IMAP(
+    foreach (Config::get('emails', []) as $email) {
+        $imap = new AJenbo\Imap(
             $email['address'],
             $email['password'],
             $email['imapHost'],
@@ -3138,41 +2890,68 @@ function get_orphan_pages(): string
 
 function get_pages_with_mismatch_bindings(): string
 {
-    $pages = ORM::getByQuery(Page::class, "SELECT * FROM `sider`");
     $html = '';
-    foreach ($pages as $page) {
-        $missMatch = false;
-        $isInactive = $page->isInactive();
-        foreach ($page->getCategories() as $category) {
-            if ($isInactive !== $category->isInactive()) {
-                $missMatch = true;
-                continue 2;
-            }
-        }
-        //Add active pages that has a list that links to this page
-        $listPages = ORM::getByQuery(
-            Page::class,
-            "
-            SELECT `sider`.*
-            FROM `list_rows`
-            JOIN `lists` ON `list_rows`.`list_id` = `lists`.`id`
-            JOIN `sider` ON `lists`.`page_id` = `sider`.id
-            WHERE `list_rows`.`link` = " . $page->getId()
-        );
-        foreach ($listPages as $listPage) {
-            if ($isInactive !== $listPage->isInactive()) {
-                $missMatch = true;
-                continue 2;
-            }
-        }
-        if ($missMatch) {
-            $html .= '<a href="?side=redigerside&amp;id='.$page->getId().'">'.$page->getId().': '.$page->getTitle().'</a><br />';
+
+    // Map out active / inactive
+    $categoryActiveMaps = [[0], [-1]];
+    $categories = ORM::getByQuery(Category::class, "SELECT * FROM `kat`");
+    foreach ($categories as $category) {
+        $categoryActiveMaps[(int) $category->isInactive()][] = $category->getId();
+    }
+
+    $pages = ORM::getByQuery(
+        Page::class,
+        "
+        SELECT * FROM `sider`
+        WHERE EXISTS (
+            SELECT * FROM bind
+            WHERE side = sider.id
+            AND kat IN (" . implode(",", $categoryActiveMaps[0]) . ")
+        )
+        AND EXISTS (
+            SELECT * FROM bind
+            WHERE side = sider.id
+            AND kat IN (" . implode(",", $categoryActiveMaps[1]) . ")
+        )
+        ORDER BY id
+        "
+    );
+    if ($pages) {
+        $html .= '<b>'._('The following pages are both active and inactive').'</b><br />';
+        foreach ($pages as $page) {
+            $html .= '<a href="?side=redigerside&amp;id=' . $page->getId() . '">' . $page->getId() . ': ' . $page->getTitle() . '</a><br />';
         }
     }
 
-    if ($html) {
-        $html = '<b>'._('The following pages are both active and inactive').'</b><br />'.$html;
+    //Add active pages that has a list that links to this page
+    $pages = db()->fetchArray(
+        "
+        SELECT `sider`.*, `lists`.`page_id`
+        FROM `list_rows`
+        JOIN `lists` ON `list_rows`.`list_id` = `lists`.`id`
+        JOIN `sider` ON `list_rows`.`link` = `sider`.id
+        WHERE EXISTS (
+            SELECT * FROM bind
+            WHERE side = `lists`.`page_id`
+            AND kat IN (" . implode(",", $categoryActiveMaps[0]) . ")
+        )
+        AND EXISTS (
+            SELECT * FROM bind
+            WHERE side = sider.id
+            AND kat IN (" . implode(",", $categoryActiveMaps[1]) . ")
+        )
+        ORDER BY `lists`.`page_id`
+        "
+    );
+    if ($pages) {
+        $html .= '<b>'._('The following inactive pages appears in list on active pages').'</b><br />';
+        foreach ($pages as $page) {
+            $listPage = ORM::getOne(Page::class, $page['page_id']);
+            $page = new Page(Page::mapFromDB($page));
+            $html .= '<a href="?side=redigerside&amp;id=' . $listPage->getId() . '">' . $listPage->getId() . ': ' . $listPage->getTitle() . '</a> -&gt; <a href="?side=redigerside&amp;id=' . $page->getId() . '">' . $page->getId() . ': ' . $page->getTitle() . '</a><br />';
+        }
     }
+
     return $html;
 }
 
@@ -3181,14 +2960,14 @@ function getnyside(): string
     $html = '<div id="headline">Opret ny side</div><form action="" method="post" onsubmit="return opretSide();"><input type="submit" accesskey="s" style="width:1px; height:1px; position:absolute; top: -20px; left:-20px;" /><div><script type="text/javascript"><!--
 //Usage: initRTE(imagesPath, includesPath, cssFile, genXHTML)
 initRTE("/admin/rtef/images/", "/admin/rtef/", "/theme/rtef-text.css", true);
-//--></script><input type="hidden" name="id" id="id" value="" /><input class="admin_name" type="text" name="navn" id="navn" value="" maxlength="127" size="127" style="width:'.$GLOBALS['_config']['text_width'].'px" /><script type="text/javascript"><!--
-writeRichText("text", \'\', "", '.($GLOBALS['_config']['text_width']+32).', 420, true, false, false);
+//--></script><input type="hidden" name="id" id="id" value="" /><input class="admin_name" type="text" name="navn" id="navn" value="" maxlength="127" size="127" style="width:' . Config::get('text_width') . 'px" /><script type="text/javascript"><!--
+writeRichText("text", \'\', "", ' . (Config::get('text_width') + 32) .', 420, true, false, false);
 //--></script>';
     //Søge ord (separere søge ord med et komma "Emergency Blanket, Redningstæppe"):
-    $html .= _('Search word (separate search words with a comma \'Emergency Blanket, Rescue Blanket\'):').'<br /><textarea name="keywords" id="keywords" style="width:'.$GLOBALS['_config']['text_width'].'px;max-width:'.$GLOBALS['_config']['text_width'].'px" rows="2" cols=""></textarea>';
+    $html .= _('Search word (separate search words with a comma \'Emergency Blanket, Rescue Blanket\'):').'<br /><textarea name="keywords" id="keywords" style="width:' . Config::get('text_width') . 'px;max-width:' . Config::get('text_width') . 'px" rows="2" cols=""></textarea>';
     //Beskrivelse start
-    $html .= '<div class="toolbox"><a class="menuboxheader" id="beskrivelseboxheader" style="width:'.($GLOBALS['_config']['thumb_width']+14).'px" onclick="showhide(\'beskrivelsebox\',this);">'._('Description:').' </a><div style="text-align:center;width:'.($GLOBALS['_config']['thumb_width']+34).'px" id="beskrivelsebox"><br /><input type="hidden" value="'._('/images/web/intet-foto.jpg').'" id="billed" name="billed" /><img id="billedthb" src="'._('/images/web/intet-foto.jpg').'" alt="" onclick="explorer(\'thb\', \'billed\')" /><br /><img onclick="explorer(\'thb\', \'billed\')" src="images/folder_image.png" width="16" height="16" alt="'._('Pictures').'" title="'._('Find image').'" /><img onclick="setThb(\'billed\', \'\', \''._('/images/web/intet-foto.jpg').'\')" src="images/cross.png" alt="X" title="'._('Remove picture').'" width="16" height="16" /><script type="text/javascript"><!--
-writeRichText("beskrivelse", \'\', "", '.($GLOBALS['_config']['thumb_width']+32).', 115, false, false, false);
+    $html .= '<div class="toolbox"><a class="menuboxheader" id="beskrivelseboxheader" style="width:' . (Config::get('thumb_width') + 14).'px" onclick="showhide(\'beskrivelsebox\',this);">'._('Description:').' </a><div style="text-align:center;width:' . (Config::get('thumb_width') + 34) . 'px" id="beskrivelsebox"><br /><input type="hidden" value="'._('/images/web/intet-foto.jpg').'" id="billed" name="billed" /><img id="billedthb" src="'._('/images/web/intet-foto.jpg').'" alt="" onclick="explorer(\'thb\', \'billed\')" /><br /><img onclick="explorer(\'thb\', \'billed\')" src="images/folder_image.png" width="16" height="16" alt="'._('Pictures').'" title="'._('Find image').'" /><img onclick="setThb(\'billed\', \'\', \''._('/images/web/intet-foto.jpg').'\')" src="images/cross.png" alt="X" title="'._('Remove picture').'" width="16" height="16" /><script type="text/javascript"><!--
+writeRichText("beskrivelse", \'\', "", ' . (Config::get('thumb_width') + 32) . ', 115, false, false, false);
 //--></script></div></div>';
     //Beskrivelse end
     //Pris start
@@ -3226,8 +3005,8 @@ function getnykat(): array
 
     //Email
     $html .= _('Contact:').' <select id="email">';
-    foreach ($GLOBALS['_config']['emails'] as $email => $dummy) {
-        $html .= '<option value="'.$email.'">'.$email.'</option>';
+    foreach (Config::get('emails', []) as $email => $dummy) {
+        $html .= '<option value="' . $email . '">' . $email . '</option>';
     }
     $html .= '</select>';
 
@@ -3371,7 +3150,7 @@ function editkrav(int $id): string
     $html = '<div id="headline">'.sprintf(_('Edit %s'), $krav['navn']).'</div><form action="" method="post" onsubmit="return savekrav();"><input type="submit" accesskey="s" style="width:1px; height:1px; position:absolute; top: -20px; left:-20px;" /><input type="hidden" name="id" id="id" value="'.$id.'" /><input class="admin_name" type="text" name="navn" id="navn" value="'.$krav['navn'].'" maxlength="127" size="127" style="width:587px" /><script type="text/javascript"><!--
 //Usage: initRTE(imagesPath, includesPath, cssFile, genXHTML)
 initRTE("/admin/rtef/images/", "/admin/rtef/", "/theme/rtef-text.css", true);
-writeRichText("text", \''.rtefsafe($krav['text']).'\', "", ' . $GLOBALS['_config']['text_width'] . ', 420, true, false, false);
+writeRichText("text", \''.rtefsafe($krav['text']).'\', "", ' . Config::get('text_width') . ', 420, true, false, false);
 //--></script></form>';
 
     return $html;
@@ -3474,9 +3253,12 @@ function bind(int $id, int $kat): array
 
     db()->query('INSERT INTO `bind` (`side` ,`kat`) VALUES (\''.$id.'\', \''.$kat.'\')');
 
-    $added['id'] = db()->insert_id;
-    $added['kat'] = $kat;
-    $added['side'] = $id;
+    $added = [
+        'id' => db()->insert_id,
+        'kat' => $kat,
+        'side' => $id,
+        'path' => '',
+    ];
 
     foreach (kattree($kat) as $kat) {
         $added['path'] .= '/'.trim($kat['navn']);
@@ -3719,8 +3501,8 @@ function copytonew(int $id): int
 function save(int $id, string $type, array $updates): array
 {
     if (empty($updates['department'])) {
-        $emails = array_keys($GLOBALS['_config']['emails']);
-        $updates['department'] = reset($emails);
+        $email = first(Config::get('emails'))['address'];
+        $updates['department'] = $email;
     }
 
     if (!empty($updates['date'])) {
@@ -3809,11 +3591,11 @@ function save(int $id, string $type, array $updates): array
         if (!valideMail($faktura['email'])) {
             return ['error' => _('E-mail address is not valid!')];
         }
-        if (!$faktura['department'] && count($GLOBALS['_config']['emails']) > 1) {
+        if (!$faktura['department'] && count(Config::get('emails')) > 1) {
             return ['error' => _('You have not selected a sender!')];
         } elseif (!$faktura['department']) {
-            $emails = array_keys($GLOBALS['_config']['emails']);
-            $updates['department'] = reset($emails);
+            $email = first(Config::get('emails'))['address'];
+            $updates['department'] = $email;
         }
         if ($faktura['amount'] < 1) {
             return ['error' => _('The invoice must be of at at least 1 krone!')];
@@ -3841,27 +3623,27 @@ Tel. %s</p>'
         $msg = sprintf(
             $msg,
             $faktura['id'],
-            $GLOBALS['_config']['base_url'],
+            Config::get('base_url'),
             $faktura['id'],
             getCheckid($faktura['id']),
-            $GLOBALS['_config']['base_url'],
+            Config::get('base_url'),
             $faktura['id'],
             getCheckid($faktura['id']),
             $faktura['clerk'],
-            $GLOBALS['_config']['site_name'],
-            $GLOBALS['_config']['address'],
-            $GLOBALS['_config']['postcode'],
-            $GLOBALS['_config']['city'],
-            $GLOBALS['_config']['phone']
+            Config::get('site_name'),
+            Config::get('address'),
+            Config::get('postcode'),
+            Config::get('city'),
+            Config::get('phone')
         );
 
         $emailBody = '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml"><head><meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-<title>'. sprintf(_('Online payment to %s'), $GLOBALS['_config']['site_name']).'</title>
+<title>' . sprintf(_('Online payment to %s'), Config::get('site_name')) . '</title>
 </head><body>' .$msg .'</body></html>';
 
         $success = sendEmails(
-            _('Online payment for ').$GLOBALS['_config']['site_name'],
+            _('Online payment for ').Config::get('site_name'),
             $emailBody,
             $faktura['department'],
             '',
@@ -3902,8 +3684,8 @@ function sendReminder(int $id): array
     }
 
     if (empty($faktura['department'])) {
-        $emails = array_keys($GLOBALS['_config']['emails']);
-        $faktura['department'] = reset($emails);
+        $email = first(Config::get('emails'))['address'];
+        $faktura['department'] = $email;
     }
 
     $msg = _(
@@ -3946,19 +3728,19 @@ Fax: %s<br />
 
     $msg = sprintf(
         $msg,
-        $GLOBALS['_config']['site_name'],
-        $GLOBALS['_config']['base_url'],
+        Config::get('site_name'),
+        Config::get('base_url'),
         $faktura['id'],
         getCheckid($faktura['id']),
-        $GLOBALS['_config']['base_url'],
+        Config::get('base_url'),
         $faktura['id'],
         getCheckid($faktura['id']),
-        $GLOBALS['_config']['site_name'],
-        $GLOBALS['_config']['address'],
-        $GLOBALS['_config']['postcode'],
-        $GLOBALS['_config']['city'],
-        $GLOBALS['_config']['phone'],
-        $GLOBALS['_config']['fax'],
+        Config::get('site_name'),
+        Config::get('address'),
+        Config::get('postcode'),
+        Config::get('city'),
+        Config::get('phone'),
+        Config::get('fax'),
         $faktura['department'],
         $faktura['department']
     );
@@ -4042,8 +3824,6 @@ function annul(int $id)
     }
 }
 
-//TODO if (no changes and !$output) do redirect
-
 /**
  * @param string $path
  * @param int $cropX
@@ -4068,168 +3848,135 @@ function generateImage(
     int $maxH,
     int $flip,
     int $rotate,
-    array $output = null
+    array $output = []
 ): array {
-    $imagesize = @getimagesize(_ROOT_ . $path);
-    $pathinfo = pathinfo($path);
+    $outputPath = $path;
+    if (!empty($output['type'])) {
+        $pathinfo = pathinfo($path);
+        if (empty($output['filename'])) {
+            $output['filename'] = $pathinfo['filename'];
+        }
 
-    if (empty($output['filename'])) {
-        $output['filename'] = $pathinfo['filename'];
+        $outputPath = $pathinfo['dirname'] . '/' . $output['filename'];
+        $outputPath .= !empty($output['type']) && $output['type'] === 'png' ? '.png' : '.jpg';
+
+        if (!empty($output['type']) && empty($output['force']) && file_exists(_ROOT_ . $outputPath)) {
+            return ['yesno' => _('A file with the same name already exists.'."\n".'Would you like to replace the existing file?'), 'filename' => $output['filename']];
+        }
     }
 
-    if (@$output['type'] == 'jpg') {
-        $output['path'] = $pathinfo['dirname'].'/'.$output['filename'].'.jpg';
-    } elseif (@$output['type'] == 'png') {
-        $output['path'] = $pathinfo['dirname'].'/'.$output['filename'].'.png';
+    $image = new AJenbo\Image(_ROOT_ . $path);
+    $orginalWidth = $image->getWidth();
+    $orginalHeight = $image->getHeight();
+
+    //Config::get('bgcolorR'), Config::get('bgcolorG'), Config::get('bgcolorB')
+
+    // Crop image
+    $cropW = $cropW ?: $image->getWidth();
+    $cropH = $cropH ?: $image->getHeight();
+    $cropW = min($image->getWidth(), $cropW);
+    $cropH = min($image->getHeight(), $cropH);
+    $cropX = $cropW !== $image->getWidth() ? $cropX : 0;
+    $cropY = $cropH !== $image->getHeight() ? $cropY : 0;
+    $image->crop($cropX, $cropY, $cropW, $cropH);
+
+    // Trim image whitespace
+    $imageContent = $image->findContent(0);
+
+    $maxW = min($maxW, $imageContent['width']);
+    $maxH = min($maxH, $imageContent['height']);
+
+    if (empty($output['type'])
+        && !$flip
+        && !$rotate
+        && $maxW === $orginalWidth
+        && $maxH === $orginalHeight
+    ) {
+        redirect($path, 301);
     }
 
-    if (!$cropW) {
-        $cropW = $imagesize[0];
-    }
-    if (!$cropH) {
-        $cropH = $imagesize[1];
-    }
+    $image->crop(
+        $imageContent['x'],
+        $imageContent['y'],
+        $imageContent['width'],
+        $imageContent['height']
+    );
 
-    $cropW = min($imagesize[0], $cropW);
-    $cropH = min($imagesize[1], $cropH);
+    // Resize
+    $image->resize($maxW, $maxH);
 
-    if ($cropW == $imagesize[0]) {
-        $cropX = 0;
-    }
-    if ($cropH == $imagesize[1]) {
-        $cropY = 0;
+    // Flip / mirror
+    if ($flip) {
+        $image->flip($flip === 1 ? 'x' : 'y');
     }
 
-    $maxW = min($cropW, $maxW);
-    $maxH = min($cropH, $maxH);
+    $image->rotate($rotate);
 
-    //used by scale and rotate
-    $ratio = $cropW/$cropH;
-
-    //witch side exceads the bounds the most
-    if ($cropW/$maxW > $cropH/$maxH) {
-        $width = $maxW;
-        $height = round($maxW / $ratio);
-    } else {
-        $width = round($maxH * $ratio);
-        $height = $maxH;
-    }
-
-    $mimeType = get_mime_type($path);
-
-    if (@$output['type'] && !$output['force'] && is_file(_ROOT_ . $output['path'])) {
-        return ['yesno' => _('A file with the same name already exists.'."\n".'Would you like to replace the existing file?'), 'filename' => $output['filename']];
-    }
-
-    switch ($mimeType) {
-        case 'image/jpeg':
-            //TODO error if jpg > 1610361 pixel
-            $image = imagecreatefromjpeg(_ROOT_ . $path);
-            $fill = false;
-            break;
-        case 'image/png':
-            //TODO error if png > 804609 Pixels
-            $temp = imagecreatefrompng(_ROOT_ . $path);
-
-            //Fill back ground
-            $image = imagecreatetruecolor(imagesx($temp), imagesy($temp)); // Create a blank image
-            imagealphablending($image, true);
-            $fill = true;
-            imagefilledrectangle($image, 0, 0, imagesx($temp), imagesy($temp), imagecolorallocate($image, $GLOBALS['_config']['bgcolorR'], $GLOBALS['_config']['bgcolorG'], $GLOBALS['_config']['bgcolorB']));
-            imagecopy($image, $temp, 0, 0, 0, 0, imagesx($temp), imagesy($temp));
-            imagedestroy($temp);
-            break;
-        case 'image/gif':
-            //TODO error if gif > 1149184 pixel
-            $temp = imagecreatefromgif(_ROOT_ . $path);
-
-            //Fill back ground
-            $image = imagecreatetruecolor(imagesx($temp), imagesy($temp)); // Create a blank image
-            imagealphablending($image, true);
-            $fill = true;
-            imagefilledrectangle($image, 0, 0, imagesx($temp), imagesy($temp), imagecolorallocate($image, $GLOBALS['_config']['bgcolorR'], $GLOBALS['_config']['bgcolorG'], $GLOBALS['_config']['bgcolorB']));
-            imagecopy($image, $temp, 0, 0, 0, 0, imagesx($temp), imagesy($temp));
-            imagedestroy($temp);
-            break;
-        case 'image/vnd.wap.wbmp':
-            //TODO error if gif > 1149184 pixel
-            $image = imagecreatefromwbmp(_ROOT_ . $path);
-            $fill = false;
-            break;
-    }
-
-    //Crop image
-    $image = crop($image, $cropX, $cropY, $cropW, $cropH, $fill);
-
-    $fill = false;
-
-    //trim image whitespace
-    $image = imagetrim($image, imagecolorallocate($image, $GLOBALS['_config']['bgcolorR'], $GLOBALS['_config']['bgcolorG'], $GLOBALS['_config']['bgcolorB']), $fill);
-
-    //TODO grab 0x0's color and trim by it
-    //Most images has a white background so trim that even if it isn't the normal site color
-    if ($GLOBALS['_config']['bgcolor'] != 'FFFFFF') {
-        $image = imagetrim($image, imagecolorallocate($image, 255, 255, 255), $fill);
-    }
-
-    $image = resize($image, $maxW, $maxH);
-
-    //flip/mirror
-    if ($flip == 1 || $flip == 2) {
-        $image = flip($image, $flip);
-    }
-
-    switch ($rotate) {
-        case 180:
-            $image = imagerotate($image, $rotate, 0, 1);
-            break;
-
-        case 90:
-        case 270:
-            $image = rotateImage($image, $rotate);
-            break;
-    }
-
-    $width = imagesx($image);
-    $height = imagesy($image);
-
-    if (@$output['type'] == 'png') {
+    // Output image or save
+    if (empty($output['type'])) {
+        $mimeType = get_mime_type($path);
+        if ($mimeType !== 'image/png') {
+            $mimeType = 'image/jpeg';
+        }
+        header('Content-Type: ' . $mimeType);
+        $image->save(null, $mimeType === 'image/png' ? 'png' : 'jpeg');
+        die();
+    } elseif ($output['type'] === 'png') {
         $mimeType = 'image/png';
-        imagepng($image, _ROOT_ . $output['path'], 9);
-    } elseif (@$output['type'] == 'jpg') {
+        $image->save(_ROOT_ . $outputPath, 'png');
+    } else {
         $mimeType = 'image/jpeg';
-        imagejpeg($image, _ROOT_ . $output['path'], 80);
-    } elseif ($mimeType == 'image/jpeg') {
-        header('Content-Type: image/jpeg');
-        imagejpeg($image, null, 80);
-        die();
-    } else {
-        header('Content-Type: image/png');
-        imagepng($image, null, 9);
-        die();
+        $image->save(_ROOT_ . $outputPath, 'jpeg');
     }
 
-    imagedestroy($image);
+    $width = $image->getWidth();
+    $height = $image->getHeight();
+    unset($image);
 
-    $filesize = filesize(_ROOT_ . $output['path']);
+    $filesize = filesize(_ROOT_ . $outputPath);
 
-
-    //save or output image
-    if ($output['filename'] == $pathinfo['filename'] && $output['path'] != $path) {
-        $id = db()->fetchOne("SELECT id FROM files WHERE path = '" . $path . "'");
+    $id = null;
+    if ($output['filename'] === $pathinfo['filename'] && $outputPath !== $path) {
         @unlink(_ROOT_ . $path);
-        db()->query("DELETE FROM files WHERE path = '" .$output['path'] . "'");
+        db()->query("DELETE FROM files WHERE path = '" . db()->esc($outputPath) . "'");
     } else {
-        $id = db()->fetchOne("SELECT id FROM files WHERE path = '" . $output['path'] . "'");
+        $id = db()->fetchOne("SELECT id FROM files WHERE path = '" . db()->esc($outputPath) . "'");
+        $id = $id ? (int) $id['id'] : null;
     }
-    $id = $id['id'] ?? null;
 
     if ($id) {
-        db()->query("UPDATE files SET path = '".$output['path']."', size = ".$filesize.", mime = '".$mimeType."', width = '".$width."', height = '".$height."' WHERE id = " . $id);
+        db()->query(
+            "
+            UPDATE files SET
+            path = '" . db()->esc($outputPath) . "',
+            mime = '" . db()->esc($mimeType) . "',
+            width = '" . $width . "',
+            height = '" . $height . "'
+            size = " . $filesize . ",
+            WHERE id = " . $id
+        );
     } else {
-        db()->query("INSERT INTO files (path, mime, width, height, size, aspect) VALUES ('".$output['path']."', '" . $mimeType . "', '".$width."', '".$height."', '".$filesize."', NULL )");
+        db()->query(
+            "
+            INSERT INTO files (
+                path,
+                mime,
+                width,
+                height,
+                size,
+                aspect
+            ) VALUES (
+                '" . db()->esc($outputPath) . "',
+                '" . db()->esc($mimeType) . "',
+                '" . $width . "',
+                '" . $height . "',
+                '" . $filesize . "',
+                NULL
+            )
+            "
+        );
         $id = db()->insert_id;
     }
 
-    return ['id' => $id, 'path' => $output['path'], 'width' => $width, 'height' => $height];
+    return ['id' => $id, 'path' => $outputPath, 'width' => $width, 'height' => $height];
 }

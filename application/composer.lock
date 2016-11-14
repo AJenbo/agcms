@@ -4,8 +4,99 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "content-hash": "360c4b1fa31ca635a383724268a571b3",
+    "content-hash": "7d5897ee819a5abe96eb06ab2e13bb8d",
     "packages": [
+        {
+            "name": "ajenbo/image.php",
+            "version": "dev-master",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/AJenbo/Image.php.git",
+                "reference": "227137196bb11fa9493f7789e874251e5d571b57"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/AJenbo/Image.php/zipball/227137196bb11fa9493f7789e874251e5d571b57",
+                "reference": "227137196bb11fa9493f7789e874251e5d571b57",
+                "shasum": ""
+            },
+            "require": {
+                "ext-gd": "*",
+                "php": ">=7.0.0"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "AJenbo\\": "./"
+                }
+            },
+            "description": "Helper function for simple image manipulation using GD functions.",
+            "support": {
+                "source": "https://github.com/AJenbo/Image.php/tree/master",
+                "issues": "https://github.com/AJenbo/Image.php/issues"
+            },
+            "time": "2016-11-13 03:39:58"
+        },
+        {
+            "name": "ajenbo/imap",
+            "version": "dev-master",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/AJenbo/PHP-imap.git",
+                "reference": "31ab8cac53cee2a89f0f9bf9af05aeb751f7179f"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/AJenbo/PHP-imap/zipball/31ab8cac53cee2a89f0f9bf9af05aeb751f7179f",
+                "reference": "31ab8cac53cee2a89f0f9bf9af05aeb751f7179f",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.4"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "AJenbo\\": "./"
+                }
+            },
+            "description": "IMAP over socket",
+            "support": {
+                "source": "https://github.com/AJenbo/PHP-imap/tree/master",
+                "issues": "https://github.com/AJenbo/PHP-imap/issues"
+            },
+            "time": "2016-11-13 03:52:22"
+        },
+        {
+            "name": "ajenbo/sajax",
+            "version": "dev-master",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/AJenbo/Sajax.git",
+                "reference": "9b906ab0f31156b424c93ce1f52ad80b0a4f2943"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/AJenbo/Sajax/zipball/9b906ab0f31156b424c93ce1f52ad80b0a4f2943",
+                "reference": "9b906ab0f31156b424c93ce1f52ad80b0a4f2943",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.3.3"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Sajax\\": "php/"
+                }
+            },
+            "description": "Simple Ajax Toolkit",
+            "support": {
+                "source": "https://github.com/AJenbo/Sajax/tree/master",
+                "issues": "https://github.com/AJenbo/Sajax/issues"
+            },
+            "time": "2016-11-12 22:34:05"
+        },
         {
             "name": "ezyang/htmlpurifier",
             "version": "v4.8.0",
@@ -177,7 +268,11 @@
     "packages-dev": [],
     "aliases": [],
     "minimum-stability": "stable",
-    "stability-flags": [],
+    "stability-flags": {
+        "ajenbo/sajax": 20,
+        "ajenbo/image.php": 20,
+        "ajenbo/imap": 20
+    },
     "prefer-stable": false,
     "prefer-lowest": false,
     "platform": {

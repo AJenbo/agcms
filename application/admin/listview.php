@@ -2,10 +2,10 @@
 
 require_once $_SERVER['DOCUMENT_ROOT'] . '/admin/logon.php';
 
-Cache::addLoadedTable('maerke');
-Cache::addLoadedTable('krav');
-Cache::addLoadedTable('kat');
-doConditionalGet(Cache::getUpdateTime());
+Render::addLoadedTable('maerke');
+Render::addLoadedTable('krav');
+Render::addLoadedTable('kat');
+Render::sendCacheHeader();
 
 ?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
@@ -135,19 +135,15 @@ if (@$_GET['sort'] == 'id') {
 } ?>">Krav</a></td>
 </tr></thead><tbody><?php
 
-$maerker = db()->fetchArray("SELECT id, navn FROM `maerke`");
-foreach ($maerker as $maerke) {
-    $temp[$maerke['id']] = xhtmlEsc($maerke['navn']);
+$maerker = [];
+foreach (db()->fetchArray("SELECT id, navn FROM `maerke`") as $maerke) {
+    $maerker[$maerke['id']] = $maerke['navn'];
 }
-$maerker = @$temp;
-unset($temp);
 
-$krav = db()->fetchArray("SELECT id, navn FROM `krav`");
-foreach ($krav as $element) {
-    $temp[$element['id']] = xhtmlEsc($element['navn']);
+$krav = [];
+foreach (db()->fetchArray("SELECT id, navn FROM `krav`") as $element) {
+    $krav[$element['id']] = $element['navn'];
 }
-$krav = @$temp;
-unset($temp);
 
 if (is_numeric(@$_GET['kat'])) {
     if (@$_GET['kat'] > 0) {

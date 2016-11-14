@@ -46,7 +46,7 @@ class Page
         return [
             'id'             => $data['id'] ?: null,
             'sku'            => $data['varenr'] ?: '',
-            'timestamp'      => $data['dato'] ? strtotime($data['dato']) : 0,
+            'timestamp'      => $data['dato'] ? strtotime($data['dato']) + db()->getTimeOffset() : 0,
             'title'          => $data['navn'] ?: '',
             'keywords'       => $data['keywords'] ?: '',
             'html'           => $data['text'] ?: '',
@@ -263,7 +263,7 @@ class Page
 
     public function getPrimaryCategory()
     {
-        Cache::addLoadedTable('bind');
+        Render::addLoadedTable('bind');
         return ORM::getOneByQuery(
             Category::class,
             "
@@ -276,7 +276,7 @@ class Page
 
     public function getCategories(): array
     {
-        Cache::addLoadedTable('bind');
+        Render::addLoadedTable('bind');
         return ORM::getByQuery(
             Category::class,
             "
@@ -289,7 +289,7 @@ class Page
 
     public function getAccessories()
     {
-        Cache::addLoadedTable('tilbehor');
+        Render::addLoadedTable('tilbehor');
         return ORM::getByQuery(
             Page::class,
             "
@@ -306,7 +306,7 @@ class Page
     public function isInactive(): bool
     {
         $bind = db()->fetchOne("SELECT kat FROM bind WHERE kat < 1 AND side = " . $this->getId());
-        Cache::addLoadedTable('bind');
+        Render::addLoadedTable('bind');
         if ($bind) {
             return (bool) $bind['kat'];
         }
@@ -377,6 +377,6 @@ class Page
                 . " WHERE `id` = " . $this->id
             );
         }
-        Cache::addLoadedTable(self::TABLE_NAME);
+        Render::addLoadedTable(self::TABLE_NAME);
     }
 }

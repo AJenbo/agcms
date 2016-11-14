@@ -13,8 +13,8 @@
 
 require_once $_SERVER['DOCUMENT_ROOT'] . '/admin/logon.php';
 
-SAJAX::export(['updateuser' => ['method' => 'POST']]);
-SAJAX::handleClientRequest();
+Sajax\Sajax::export(['updateuser' => ['method' => 'POST']]);
+Sajax\Sajax::handleClientRequest();
 
 $user = db()->fetchOne("SELECT *, UNIX_TIMESTAMP(`lastlogin`) AS 'lastlogin' FROM `users` WHERE id = ".$_GET['id']);
 
@@ -35,7 +35,7 @@ JSON.parse = JSON.parse || function(jsonsring) { return jsonsring.evalJSON(true)
 <script type="text/javascript"><!--
 id = <?php echo $_GET['id'] ?>;
 
-<?php SAJAX::showJavascript(); ?>
+<?php Sajax\Sajax::showJavascript(); ?>
 
 function updateuser() {
     if ($('password_new').value != $('password2').value) {

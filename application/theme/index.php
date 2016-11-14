@@ -1,14 +1,6 @@
 <?php
 /**
  * Theme file, responsible for outputting the generated content
- *
- * PHP version 5
- *
- * @category AGCMS
- * @package  AGCMS
- * @author   Anders Jenbo <anders@jenbo.dk>
- * @license  MIT http://opensource.org/licenses/MIT
- * @link     http://www.arms-gallery.dk/
  */
 
 /**
@@ -25,32 +17,30 @@ function echoPrice(float $price, float $before, int $from, int $should)
 {
     if ($before) {
         if ($should == 1) {
-            ?>Retail price: <span><?php
+            echo 'Retail price: <span>';
         } elseif ($should == 2) {
-            ?>Should cost: <span><?php
+            echo 'Should cost: <span>';
         } else {
-            ?>Before: <span class="XPris"><?php
+            echo 'Before: <span class="XPris">';
         }
-        echo str_replace(',00', ',-', number_format($before, 2, ',', '.'));
-        ?></span><?php
+        echo str_replace(',00', ',-', number_format($before, 2, ',', '.')) . '</span>';
     }
 
     if ($price) {
         if ($from == 1 && $before) {
-            ?> <span class="NyPris">New price from: <?php
+            echo ' <span class="NyPris">New price from: ';
         } elseif ($from == 2 && $before) {
-            ?> <span class="NyPris">Used: <?php
+            echo ' <span class="NyPris">Used: ';
         } elseif ($from == 1) {
-            ?> Price from: <span class="Pris"><?php
+            echo ' Price from: <span class="Pris">';
         } elseif ($from == 2) {
-            ?> Used: <span class="Pris"><?php
+            echo ' Used: <span class="Pris">';
         } elseif ($before) {
-            ?> <span class="NyPris">Now: <?php
+            echo ' <span class="NyPris">Now: ';
         } else {
-            ?> Price: <span class="Pris"><?php
+            echo ' Price: <span class="Pris">';
         }
-        echo str_replace(',00', ',-', number_format($price, 2, ',', '.'));
-        ?></span><?php
+        echo str_replace(',00', ',-', number_format($price, 2, ',', '.')) . '</span>';
     }
 }
 
@@ -61,43 +51,36 @@ function echoPrice(float $price, float $before, int $from, int $should)
  *
  * @return null
  */
-function echoMenu(array $menu)
+function echoMenu(array $menu, Category $activeCategory = null)
 {
     if ($menu) {
-        ?><ul><?php
-foreach ($menu as $value) {
-    ?><li><?php
-if ($value['id'] == @$GLOBALS['generatedcontent']['activmenu']) {
-    ?><h4 id="activmenu"><?php
-}
-?><a href="<?php
-echo $value['link'];
-?>"><?php
-echo $value['name'];
-if ($value['icon']) {
-    ?> <img src="<?php
-echo $value['icon'];
-?>" alt="" /><?php
-}
-?></a><?php
+        echo '<ul>';
+        foreach ($menu as $value) {
+            echo '<li>';
+            if ($activeCategory && $value['id'] == $activeCategory->getId()) {
+                echo '<h4 id="activmenu">';
+            }
+            echo '<a href="' . xhtmlEsc($value['link']) . '">' . $value['name'];
+            if ($value['icon']) {
+                echo ' <img src="' . xhtmlEsc($value['icon']) . '" alt="" />';
+            }
+            echo '</a>';
 
-if ($value['id'] == @$GLOBALS['generatedcontent']['activmenu']) {
-    ?></h4><?php
-}
-if (!empty($value['subs'])) {
-    echoMenu($value['subs']);
-}
-?></li><?php
-}
-        ?></ul><?php
+            if ($activeCategory && $value['id'] == $activeCategory->getId()) {
+                echo '</h4>';
+            }
+            if (!empty($value['subs'])) {
+                echoMenu($value['subs']);
+            }
+            echo '</li>';
+        }
+        echo '</ul>';
     }
 }
 
 ?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml">
-<head>
-<title><?php
-echo $GLOBALS['generatedcontent']['title'];
+<html xmlns="http://www.w3.org/1999/xhtml"><head><title><?php
+echo xhtmlEsc(self::$title);
 ?></title>
 <meta http-equiv="content-type" content="text/html; charset=utf-8" />
 <link href="/theme/style.css" rel="stylesheet" type="text/css" />
@@ -108,286 +91,181 @@ echo $GLOBALS['generatedcontent']['title'];
 <script src="/javascript/javascript.js" type="text/javascript"></script>
 <link rel="alternate" type="application/rss+xml" title="News" href="/rss.php" />
 <link title="Search" type="application/opensearchdescription+xml" rel="search" href="/sog.php" /><?php
-if (!empty($GLOBALS['generatedcontent']['canonical'])) {
-    echo '<link rel="canonical" href="'. xhtmlEsc($GLOBALS['generatedcontent']['canonical']) .'" />';
+if (self::$canonical) {
+    echo '<link rel="canonical" href="' . xhtmlEsc(self::$canonical) . '" />';
 }
-?><meta name="author" content="Anders Jenbo" />
-<?php
-if (@$GLOBALS['generatedcontent']['keywords']) {
-    echo '<meta name="Keywords" content="' . $GLOBALS['generatedcontent']['keywords']
-        . '" />';
+if (self::$keywords) {
+    echo '<meta name="Keywords" content="' . xhtmlEsc(implode(', ', self::$keywords)) . '" />';
 }
-?>
-</head>
-<body>
-<div id="wrapper">
-    <ul id="crumbs"><li><a href="/">Home</a><?php
-    if (@$GLOBALS['generatedcontent']['crumbs']) {
-        foreach ($GLOBALS['generatedcontent']['crumbs'] as $value) {
-            ?><ul><li><b style="font-size:16px">-&gt;</b><a href="<?php
-        echo $value['link'];
-        ?>"> <?php
-        echo $value['name'];
-if ($value['icon']) {
-    ?> <img src="<?php
-echo $value['icon'];
-?>" alt="" /><?php
-}
-        ?></a><?php
-        }
-        foreach ($GLOBALS['generatedcontent']['crumbs'] as $value) {
-            ?></li></ul><?php
-        }
-    }
+?></head><body><div id="wrapper"><ul id="crumbs"><li><a href="/">Home</a><?php
 
-    if (!empty($_SESSION['faktura']['quantities'])) {
-        ?><div class="bar" id="cart">
-        <ul><li><a href="/bestilling/">Shopping basket</a></li></ul>
-        </div><?php
+foreach (self::$crumbs as $crumb) {
+    echo '<ul><li><b style="font-size:16px">-&gt;</b><a href="' . xhtmlEsc($crumb['link']) . '"> ' . xhtmlEsc($crumb['name']);
+    if ($crumb['icon']) {
+        echo '<img src="' . xhtmlEsc($crumb['icon']) . '" alt="" />';
     }
+    echo '</a>';
+}
+foreach (self::$crumbs as $crumb) {
+    echo '</li></ul>';
+}
+
+if (!empty($_SESSION['faktura']['quantities'])) {
+    echo '<div class="bar" id="cart"><ul><li><a href="/bestilling/">Shopping basket</a></li></ul></div>';
+}
 
 ?></li></ul></div><div id="text"><a name="top"></a><?php
 
-if ($GLOBALS['generatedcontent']['contenttype'] == 'front') {
-    echo $GLOBALS['generatedcontent']['text'];
-} elseif ($GLOBALS['generatedcontent']['contenttype'] == 'page') {
-    ?><div id="innercontainer"><?php
-if ($GLOBALS['generatedcontent']['datetime']) {
-    ?><div id="date"><?php
-echo date('d-m-Y H:i:s', $GLOBALS['generatedcontent']['datetime']);
-?></div><?php
-}
-    ?><h1><?php
-    echo xhtmlEsc($GLOBALS['generatedcontent']['headline']);
-    ?></h1><?php
+if (in_array(self::$pageType, ['front', 'custome'], true)) {
+    echo self::$bodyHtml;
+} elseif (self::$pageType === 'page') {
+    echo '<div id="innercontainer">';
+    if (self::$timeStamp) {
+        echo '<div id="date">' . date('d-m-Y H:i:s', self::$timeStamp) . '</div>';
+    }
+    echo '<h1>' . xhtmlEsc(self::$headline) . '</h1>' . self::$bodyHtml . '</div>';
+} elseif (self::$pageType === 'product') {
+    echo '<div id="innercontainer"><div id="date">'
+        . date('d-m-Y H:i:s', self::$timeStamp)
+        . '</div><h1>' . xhtmlEsc(self::$headline);
+    if (self::$serial) {
+        echo ' <span style="font-weight:normal; font-size:13px">SKU: ' . xhtmlEsc(self::$serial) . '</span>';
+    }
+    echo '</h1>' . self::$bodyHtml;
 
-    echo $GLOBALS['generatedcontent']['text'];
-    ?></div><?php
-} elseif ($GLOBALS['generatedcontent']['contenttype'] == 'product') {
-    ?><div id="innercontainer"><div id="date"><?php
-    echo date('d-m-Y H:i:s', $GLOBALS['generatedcontent']['datetime']);
-    ?></div><h1><?php
-    echo xhtmlEsc($GLOBALS['generatedcontent']['headline']);
-if ($GLOBALS['generatedcontent']['serial']) {
-    ?> <span style="font-weight:normal; font-size:13px">SKU: <?php
-echo $GLOBALS['generatedcontent']['serial'];
-?></span><?php
-}
-    ?></h1><?php
-
-
-    echo $GLOBALS['generatedcontent']['text'];
-
-if (@$GLOBALS['generatedcontent']['requirement']['link']) {
-    ?><p><a href="<?php
-echo $GLOBALS['generatedcontent']['requirement']['link'];
-?>" target="krav"><?php
-echo $GLOBALS['generatedcontent']['requirement']['name'];
-?></a></p><?php
-}
-
-    ?><p style="text-align:center"><?php
+    if (!empty(self::$requirement['link'])) {
+        echo '<p><a href="' . xhtmlEsc(self::$requirement['link']) . '" target="krav">'
+            . xhtmlEsc(self::$requirement['name']) . '</a></p>';
+    }
+    echo '<p style="text-align:center">';
     echoPrice(
-        $GLOBALS['generatedcontent']['price']['now'],
-        $GLOBALS['generatedcontent']['price']['before'],
-        $GLOBALS['generatedcontent']['price']['from'],
-        $GLOBALS['generatedcontent']['price']['market']
+        self::$price['now'],
+        self::$price['before'],
+        self::$price['from'],
+        self::$price['market']
     );
-    if ($GLOBALS['generatedcontent']['price']['now']) {
-        ?> <a href="/bestilling/?add=<?php
-        echo $GLOBALS['side']['id'];
-        ?>">+ Add to shopping cart</a> <?php
+    if (self::$price['now']) {
+        echo ' <a href="/bestilling/?add=' . self::$activePage->getId() . '">+ Add to shopping cart</a> ';
     }
-    ?><br /></p>
-    </div><?php
+    echo '<br /></p></div>';
 
-    if (@$GLOBALS['generatedcontent']['accessories']) {
-        ?><p align="center" style="clear:both">Accessories</p>
-        <table cellspacing="0" id="liste"><?php
+    if (self::$accessories) {
+        echo '<p align="center" style="clear:both">Accessories</p><table cellspacing="0" id="liste">';
         $i = 0;
-        $nr = count($GLOBALS['generatedcontent']['accessories']) - 1;
-        foreach ($GLOBALS['generatedcontent']['accessories'] as $value) {
+        $nr = count(self::$accessories) - 1;
+        foreach (self::$accessories as $value) {
             if ($i % 2 == 0) {
-                ?><tr><?php
+                echo '<tr>';
             }
-            ?><td><a href="<?php
-            echo $value['link'];
-            ?>"><?php
-            echo $value['name'];
-if ($value['icon']) {
-    ?><br /><img src="<?php
-echo $value['icon'];
-?>" alt="<?php
-echo xhtmlEsc($value['name']);
-?>" title="" /><?php
-}
-            ?></a><?php
-            ?></td><?php
-if ($i % 2 || $i == $nr) {
-    ?></tr><?php
-}
+            echo '<td><a href="' . xhtmlEsc($value['link']) . '">' . xhtmlEsc($value['name']);
+            if ($value['icon']) {
+                echo '<br /><img src="' . xhtmlEsc($value['icon']) . '" alt="' . xhtmlEsc($value['name']) . '" title="" />';
+            }
+            echo '</a></td>';
+            if ($i % 2 || $i == $nr) {
+                echo '</tr>';
+            }
             $i++;
         }
-        ?></table><?php
+        echo '</table>';
     }
 
-    if (isset($GLOBALS['generatedcontent']['brands'])) {
-        ?><p align="center" style="clear:both">View other product from the same brand</p>
-        <table cellspacing="0" id="liste"><?php
-        $i = 0;
-        $nr = count($GLOBALS['generatedcontent']['brands'])-1;
-        foreach ($GLOBALS['generatedcontent']['brands'] as $value) {
-            if ($i % 2 == 0) {
-                ?><tr><?php
-            }
-
-            ?><td><a href="<?php
-            echo $value['link'];
-            ?>"><?php
-            echo $value['name'];
-if ($value['icon']) {
-    ?><br /><img src="<?php
-echo $value['icon'];
-?>" alt="<?php
-echo xhtmlEsc($value['name']);
-?>" title="" /><?php
-}
-
-            ?></a><?php
-            ?></td><?php
-
-if ($i % 2 || $i == $nr) {
-    ?></tr><?php
-}
-            $i++;
+    if (self::$brand) {
+        echo '<p align="center" style="clear:both">View other product from the same brand</p><a href="'
+            . xhtmlEsc(self::$brand['link']) . '">'. xhtmlEsc(self::$brand['name']);
+        if (self::$brand['icon']) {
+            echo '<br /><img src="' . xhtmlEsc(self::$brand['icon']) . '" alt="' . xhtmlEsc(self::$brand['name']) . '" title="" />';
         }
-        ?></table><?php
+        echo '</a>';
     }
-} elseif ($GLOBALS['generatedcontent']['contenttype'] == 'tiles'
-    || $GLOBALS['generatedcontent']['contenttype'] == 'list'
-    || $GLOBALS['generatedcontent']['contenttype'] == 'brand'
-) {
-    if ($GLOBALS['generatedcontent']['contenttype'] == 'brand') {
-        ?><p align="center"><?php
-if ($GLOBALS['generatedcontent']['brand']['xlink']) {
-    ?><a rel="nofollow" target="_blank" href="<?php
-echo $GLOBALS['generatedcontent']['brand']['xlink'];
-?>">Read more about <?php
-}
-        echo $GLOBALS['generatedcontent']['brand']['name'];
-if ($GLOBALS['generatedcontent']['brand']['icon']) {
-    ?><br /><img src="<?php
-echo $GLOBALS['generatedcontent']['brand']['icon'];
-?>" alt="<?php
-echo xhtmlEsc($GLOBALS['generatedcontent']['brand']['name']);
-?>" title="" /><?php
-}
-if ($GLOBALS['generatedcontent']['brand']['xlink']) {
-    ?></a><?php
-}
-        ?></p><?php
+} elseif (in_array(self::$pageType, ['tiles', 'list', 'brand'], true)) {
+    if (self::$pageType === 'brand') {
+        echo '<p align="center">';
+        if (self::$brand['xlink']) {
+            echo '<a rel="nofollow" target="_blank" href="' . xhtmlEsc(self::$brand['xlink']) . '">Read more about ';
+        }
+        echo xhtmlEsc(self::$brand['name']);
+        if (self::$brand['icon']) {
+            echo '<br /><img src="' . xhtmlEsc(self::$brand['icon']) . '" alt="'
+                . xhtmlEsc(self::$brand['name']) . '" title="" />';
+        }
+        if (self::$brand['xlink']) {
+            echo '</a>';
+        }
+        echo '</p>';
     }
 
-    if (@$GLOBALS['generatedcontent']['list']) {
-        ?><p align="center" class="web">Click on the product for additional information</p><?php
+    if (self::$pageList) {
+        echo '<p align="center" class="web">Click on the product for additional information</p>';
 
-if ($GLOBALS['generatedcontent']['contenttype'] == 'tiles') {
-    ?><table cellspacing="0" id="liste"><?php
-$i = 0;
-$nr = count($GLOBALS['generatedcontent']['list'])-1;
-foreach ($GLOBALS['generatedcontent']['list'] as $value) {
-    if ($i % 2 == 0) {
-        ?><tr><?php
-    }
-    ?><td><a href="<?php
-echo $value['link'];
-?>"><?php
-if ($value['icon']) {
-    ?><img src="<?php
-echo $value['icon'];
-?>" alt="<?php
-echo xhtmlEsc($value['name']);
-?>" title="" /><br /><?php
-}
-echo $value['name'];
-?><br /><?php
-echoPrice(
-    $value['price']['now'],
-    $value['price']['before'],
-    $value['price']['from'],
-    $value['price']['market']
-);
-?></a></td><?php
-
-if ($i % 2 || $i == $nr) {
-    ?></tr><?php
-}
-$i++;
-}
-?></table><?php
-} else {
-    ?><div id="kat<?php
-echo $GLOBALS['generatedcontent']['activmenu'];
-?>"><table class="tabel"><thead><tr>
-<td><a href="#" onClick="x_get_kat('<?php
-    echo $GLOBALS['generatedcontent']['activmenu'];
-    ?>', 'navn', inject_html);">Title</a></td>
-    <td><a href="#" onClick="x_get_kat('<?php
-            echo $GLOBALS['generatedcontent']['activmenu'];
-            ?>', 'for', inject_html);">Previously</a></td>
-            <td><a href="#" onClick="x_get_kat('<?php
-            echo $GLOBALS['generatedcontent']['activmenu'];
-            ?>', 'pris', inject_html);">Price</a></td>
-            <td><a href="#" onClick="x_get_kat('<?php
-            echo $GLOBALS['generatedcontent']['activmenu'];
-            ?>', 'varenr', inject_html);">#</a></td>
-            </tr></thead><tbody><?php
+        if (self::$pageType === 'list') {
+            echo '<div id="kat' . self::$activeCategory->getId()
+                . '"><table class="tabel"><thead><tr><td><a href="#" onClick="x_get_kat("'
+                . self::$activeCategory->getId()
+                . ', \'navn\', inject_html);">Title</a></td><td><a href="#" onClick="x_get_kat(\''
+                . self::$activeCategory->getId()
+                . '\', \'for\', inject_html);">Previously</a></td><td><a href="#" onClick="x_get_kat(\''
+                . self::$activeCategory->getId()
+                . '\', \'pris\', inject_html);">Price</a></td><td><a href="#" onClick="x_get_kat(\''
+                . self::$activeCategory->getId()
+                . '\', \'varenr\', inject_html);">#</a></td></tr></thead><tbody>';
+            $altRow = false;
+            foreach (self::$pageList as $items) {
+                echo '<tr';
+                if ($altRow) {
+                    echo ' class="altrow"';
+                }
+                echo '><td><a href="' . xhtmlEsc($items['link']) . '">' . xhtmlEsc($items['name'])
+                    . '</a></td><td class="XPris" align="right">';
+                if ($items['price']['before']) {
+                    echo number_format($items['price']['before'], 0, '', '.') . ',-';
+                }
+                echo '</td><td class="Pris" align="right">';
+                if ($items['price']['now']) {
+                    echo number_format($items['price']['now'], 0, '', '.') . ',-';
+                }
+                echo '</td><td align="right" style="font-size:11px">' . xhtmlEsc($items['serial']) . '</td></tr>';
+                $altRow = !$altRow;
+            }
+            echo '</tbody></table></div>';
+        } else {
+            echo '<table cellspacing="0" id="liste">';
             $i = 0;
-            foreach ($GLOBALS['generatedcontent']['list'] as $value) {
-                ?><tr<?php
-if ($i % 2) {
-    echo ' class="altrow"';
-}
-                ?>><td><a href="<?php
-                echo $value['link'];
-                ?>"><?php
-                echo $value['name'];
-                ?></a></td><?php
-                ?><td class="XPris" align="right"><?php
-if ($value['price']['before']) {
-    echo number_format($value['price']['before'], 0, '', '.') . ',-';
-}
-                ?></td><td class="Pris" align="right"><?php
-if ($value['price']['now']) {
-    echo number_format($value['price']['now'], 0, '', '.') . ',-';
-}
-                ?></td><td align="right" style="font-size:11px"><?php
-                echo $value['serial'];
-                ?></td></tr><?php
+            $nr = count(self::$pageList) - 1;
+            foreach (self::$pageList as $items) {
+                if ($i % 2 === 0) {
+                    echo '<tr>';
+                }
+                echo '<td><a href="' . xhtmlEsc($items['link']) . '">';
+                if ($items['icon']) {
+                    echo '<img src="' . xhtmlEsc($items['icon']) . '" alt="' . xhtmlEsc($items['name']) . '" title="" /><br />';
+                }
+                echo $items['name'] . '<br />';
+                echoPrice(
+                    $items['price']['now'],
+                    $items['price']['before'],
+                    $items['price']['from'],
+                    $items['price']['market']
+                );
+                echo '</a></td>';
+
+                if ($i % 2 || $i == $nr) {
+                    echo '</tr>';
+                }
                 $i++;
             }
-            ?></tbody></table></div><?php
-}
+            echo '</table>';
+        }
     } else {
-        ?><p align="center" class="web">The search did not return any results</p><?php
+        echo '<p align="center" class="web">The search did not return any results</p>';
     }
-} elseif ($GLOBALS['generatedcontent']['contenttype'] == 'search') {
-    ?><div id="innercontainer"><h1>Search</h1><?php
-    echo $GLOBALS['generatedcontent']['text'];
-    ?></div><?php
+} elseif (self::$pageType === 'search') {
+    echo '<div id="innercontainer"><h1>Search</h1>' . self::$bodyHtml . '</div>';
 }
 
-?></div>
-<div id="menu"><?php
+?></div><div id="menu"><?php
 
-if (isset($GLOBALS['generatedcontent']['menu'])) {
-    echoMenu($GLOBALS['generatedcontent']['menu']);
-}
+echoMenu(self::$menu, self::$activeCategory);
+echoMenu(self::$searchMenu);
 
-if (isset($GLOBALS['generatedcontent']['search_menu'])) {
-    echoMenu($GLOBALS['generatedcontent']['search_menu']);
-}
-
-?></div>
-</body>
-</html>
+?></div></body></html>

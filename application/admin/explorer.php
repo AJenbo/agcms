@@ -2,7 +2,7 @@
 
 require_once $_SERVER['DOCUMENT_ROOT'] . '/admin/logon.php';
 
-doConditionalGet(Cache::getUpdateTime());
+Render::sendCacheHeader();
 
 /*
 $mode
@@ -21,7 +21,7 @@ if (empty($_COOKIE['admin_dir']) || !is_dir(_ROOT_ . @$_COOKIE['admin_dir'])) {
     @$_COOKIE['admin_dir'] = '/images';
 }
 
-SAJAX::export(
+Sajax\Sajax::export(
     [
         'listdirs'     => ['method' => 'GET'],
         'searchfiles'  => ['method' => 'GET'],
@@ -33,7 +33,7 @@ SAJAX::export(
         'renamefile'   => ['method' => 'POST'],
     ]
 );
-SAJAX::handleClientRequest();
+Sajax\Sajax::handleClientRequest();
 
 if (@$_COOKIE['qpath'] || @$_COOKIE['qalt'] || @$_COOKIE['qtype']) {
     $showfiles = searchfiles(@$_COOKIE['qpath'], @$_COOKIE['qalt'], @$_COOKIE['qtype']);
@@ -65,14 +65,14 @@ JSON.parse = JSON.parse || function(jsonsring) { return jsonsring.evalJSON(true)
 <script type="text/javascript"><!--
 var rte = '<?php echo @$_GET['rte']; ?>';
 var returnid = '<?php echo @$_GET['returnid']; ?>';
-<?php SAJAX::showJavascript(); ?>
+<?php Sajax\Sajax::showJavascript(); ?>
 
 <?php echo $showfiles['javascript']; ?>
 
 //--></script>
 <style type="text/css">
 #files .filetile div, #files .videotile div, #files .swftile div, #files .flvtile div, #files .imagetile div {
-    background-color:#<?php echo $GLOBALS['_config']['bgcolor']; ?>;
+    background-color:#<?php echo Config::get('bgcolor'); ?>;
 }
 </style>
 </head>

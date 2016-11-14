@@ -14,7 +14,7 @@ class ORM
             if ($data) {
                 self::$byId[$class][$id] = new $class($class::mapFromDB($data));
             }
-            Cache::addLoadedTable($class::TABLE_NAME);
+            Render::addLoadedTable($class::TABLE_NAME);
         }
 
         return self::$byId[$class][$id];
@@ -31,7 +31,7 @@ class ORM
                 self::$oneBySql[$class][$query] = $entity;
                 self::$byId[$class][$entity->getId()] = $entity;
             }
-            Cache::addLoadedTable($class::TABLE_NAME);
+            Render::addLoadedTable($class::TABLE_NAME);
         }
 
         return self::$oneBySql[$class][$query];
@@ -47,7 +47,7 @@ class ORM
                 self::$bySql[$class][$query][] = $entity;
                 self::$byId[$class][$entity->getId()] = $entity;
             }
-            Cache::addLoadedTable($class::TABLE_NAME);
+            Render::addLoadedTable($class::TABLE_NAME);
         }
 
         return self::$bySql[$class][$query];

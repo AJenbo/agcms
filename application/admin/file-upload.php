@@ -2,10 +2,10 @@
 
 require_once $_SERVER['DOCUMENT_ROOT'] . '/admin/logon.php';
 
-doConditionalGet(Cache::getUpdateTime());
+Render::sendCacheHeader();
 
-SAJAX::export(['fileExists' => ['method' => 'GET', 'asynchronous' => false, 'uri' => '/admin/file-upload.php']]);
-SAJAX::handleClientRequest();
+Sajax\Sajax::export(['fileExists' => ['method' => 'GET', 'asynchronous' => false, 'uri' => '/admin/file-upload.php']]);
+Sajax\Sajax::handleClientRequest();
 
 if (empty($_COOKIE['admin_dir']) || !is_dir(_ROOT_ . @$_COOKIE['admin_dir'])) {
     @setcookie('admin_dir', '/images');
@@ -19,7 +19,7 @@ if (empty($_COOKIE['admin_dir']) || !is_dir(_ROOT_ . @$_COOKIE['admin_dir'])) {
 <title><?php echo _('File upload'); ?></title>
 <script type="text/javascript" src="/javascript/sajax.js"></script>
 <script type="text/javascript"><!--
-<?php SAJAX::showJavascript(); ?>
+<?php Sajax\Sajax::showJavascript(); ?>
 
 var maxbyte = <?php
 
@@ -167,8 +167,6 @@ function send() {
                 alert('Kunne ikke slette filen.');
             } else if (x.status == 521) {
                 alert('Billedet er for stor.');
-            } else if (x.status == 560) {
-                alert('Mangler billedfunctioner');
             } else if (x.status == 561) {
                 alert('Fejl under billed behandling.');
             } else if (x.status == 542) {

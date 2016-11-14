@@ -2,6 +2,8 @@
 
 class DB extends mysqli
 {
+    private static $timeOffset = null;
+
     /**
      * Connect the database and set session to UTF-8 Danish
      */
@@ -95,5 +97,14 @@ class DB extends mysqli
     public function esc(string $string): string
     {
         return parent::real_escape_string($string);
+    }
+
+    public function getTimeOffset(): string
+    {
+        if (self::$timeOffset === null) {
+            self::$timeOffset = time() - strtotime(self::fetchOne("SELECT NOW() date")['date']);
+        }
+
+        return self::$timeOffset;
     }
 }

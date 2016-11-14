@@ -12,7 +12,6 @@
  */
 
 require_once $_SERVER['DOCUMENT_ROOT'] . '/admin/logon.php';
-require_once _ROOT_ . '/admin/inc/image-functions.php';
 
 //TODO support bmp
 header('HTTP/1.1 500 Internal Server Error');
@@ -39,13 +38,14 @@ if (!empty($_FILES['Filedata']['tmp_name'])
     header('HTTP/1.1 510 Internal Server Error');
     $mime = get_mime_type('/admin/upload/temp/' . $name);
     //Kunne ikke finde billed størelsen.
+
     header('HTTP/1.1 512 Internal Server Error');
 
     $imagesize = [$_POST['x'], $_POST['y']];
-    if ($mime == 'image/jpeg'
-        || $mime == 'image/gif'
-        || $mime == 'image/png'
-        || $mime == 'image/vnd.wap.wbmp'
+    if ($mime === 'image/jpeg'
+        || $mime === 'image/gif'
+        || $mime === 'image/png'
+        || $mime === 'image/vnd.wap.wbmp'
     ) {
         $imagesize = getimagesize(_ROOT_ . '/admin/upload/temp/' . $name);
     }
@@ -53,42 +53,35 @@ if (!empty($_FILES['Filedata']['tmp_name'])
         die();
     }
 
-    if (empty($_POST['aspect'])) {
-        $_POST['aspect'] = null;
-    }
-
-    if (empty($_POST['type'])) {
-        $_POST['type'] = '';
-    }
+    $type = !empty($_POST['type']) ? $_POST['type'] : '';
 
     //TODO test if trim, resize or recompression is needed
-    if (($_POST['type'] == 'image' && $mime != 'image/jpeg')
-        || (($_POST['type'] == 'image' || $_POST['type'] == 'lineimage')
-        && $imagesize[0] > $GLOBALS['_config']['text_width'])
-        || (($_POST['type'] == 'image' || $_POST['type'] == 'lineimage')
-        && $_FILES['Filedata']['size']/($imagesize[0]*$imagesize[1]) > 0.7)
-        || ($_POST['type'] == 'lineimage'
-        && $mime != 'image/png' && $mime != 'image/gif')
+    if (($type === 'image' && $mime !== 'image/jpeg')
+        || (($type === 'image' || $type === 'lineimage')
+        && $imagesize[0] > Config::get('text_width'))
+        || (($type === 'image' || $type === 'lineimage')
+        && $_FILES['Filedata']['size'] / ($imagesize[0] * $imagesize[1]) > 0.7)
+        || ($type === 'lineimage'
+        && $mime !== 'image/png' && $mime !== 'image/gif')
     ) {
-        $memory_limit = returnBytes(ini_get('memory_limit'))-270336;
+        $memory_limit = returnBytes(ini_get('memory_limit')) - 270336;
 
-        if ($imagesize[0]*$imagesize[1] > $memory_limit/9.92) {
+        if ($imagesize[0] * $imagesize[1] > $memory_limit/9.92) {
             //Kunne ikke slette filen.
             header('HTTP/1.1 520 Internal Server Error');
 
-            if (@unlink(_ROOT_ . '/admin/upload/temp/'.$name)) {
+            if (@unlink(_ROOT_ . '/admin/upload/temp/' . $name)) {
                 //Billedet er for stor.
                 header('HTTP/1.1 521 Internal Server Error');
             }
             die();
         }
 
-        //Mangler image-functions.php
-        header('HTTP/1.1 560 Internal Server Error');
         //Fejl under billed behandling.
         header('HTTP/1.1 561 Internal Server Error');
 
-        if ($_POST['type'] == 'lineimage') {
+        $output = [];
+        if ($_POST['type'] === 'lineimage') {
             $output['type'] = 'png';
         } else {
             $output['type'] = 'jpg';
@@ -102,7 +95,7 @@ if (!empty($_FILES['Filedata']['tmp_name'])
             0,
             $imagesize[0],
             $imagesize[1],
-            $GLOBALS['_config']['text_width'],
+            Config::get('text_width'),
             $imagesize[1],
             0,
             0,
@@ -114,7 +107,6 @@ if (!empty($_FILES['Filedata']['tmp_name'])
         $height = $newfiledata['height'];
         $destpath = pathinfo($newfiledata['path']);
         $destpath = @$_COOKIE['admin_dir'].'/'.$destpath['basename'];
-        $mime = get_mime_type($temppath);
     } else {
         $temppath = '/admin/upload/temp/'.$name;
         $width = $imagesize[0];

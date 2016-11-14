@@ -1,24 +1,16 @@
 <?php
 /**
  * Print a Google sitemap
- *
- * PHP version 5
- *
- * @category AGCMS
- * @package  AGCMS
- * @author   Anders Jenbo <anders@jenbo.dk>
- * @license  GPLv2 http://www.gnu.org/licenses/gpl-2.0.html
- * @link     http://www.arms-gallery.dk/
  */
 
 require_once $_SERVER['DOCUMENT_ROOT'] . '/inc/functions.php';
 
-Cache::addLoadedTable('sider');
-Cache::addLoadedTable('bind');
-Cache::addLoadedTable('kat');
-Cache::addLoadedTable('files');
-Cache::addLoadedTable('special');
-doConditionalGet(Cache::getUpdateTime());
+Render::addLoadedTable('bind');
+Render::addLoadedTable('files');
+Render::addLoadedTable('kat');
+Render::addLoadedTable('sider');
+Render::addLoadedTable('special');
+Render::sendCacheHeader();
 header('Content-Type:text/xml;charset=utf-8');
 echo '<?xml version="1.0" encoding="utf-8" ?>';
 
@@ -27,7 +19,7 @@ $special = db()->fetchOne("SELECT dato FROM special WHERE id = 1");
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.sitemaps.org/schemas/sitemap/0.9 http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd">
     <url>
         <loc><?php
-        echo $GLOBALS['_config']['base_url'];
+        echo Config::get('base_url');
 ?>/</loc>
         <lastmod><?php
         echo mb_substr($special['dato'], 0, -9, 'UTF-8');
@@ -37,7 +29,7 @@ $special = db()->fetchOne("SELECT dato FROM special WHERE id = 1");
     </url>
     <url>
         <loc><?php
-        echo $GLOBALS['_config']['base_url'];
+        echo Config::get('base_url');
 ?>/?sog=1&amp;q=&amp;sogikke=&amp;minpris=&amp;maxpris=&amp;maerke=</loc>
         <lastmod>2007-02-02</lastmod>
         <changefreq>monthly</changefreq>
@@ -45,7 +37,7 @@ $special = db()->fetchOne("SELECT dato FROM special WHERE id = 1");
     </url>
 <?php
 
-$activeCategoryIds = [];
+$activeCategoryIds = [0];
 $categories = ORM::getByQuery(Category::class, "SELECT * FROM kat WHERE bind != -1");
 foreach ($categories as $category) {
     if ($category->isInactive()) {
@@ -56,7 +48,7 @@ foreach ($categories as $category) {
     //print xml
     ?><url><loc><?php
     echo htmlspecialchars(
-        $GLOBALS['_config']['base_url'] . '/' . $category->getSlug(),
+        Config::get('base_url') . '/' . $category->getSlug(),
         ENT_COMPAT | ENT_XML1
     );
     ?></loc><changefreq>weekly</changefreq><priority>0.5</priority></url><?php
@@ -75,12 +67,12 @@ if ($activeCategoryIds) {
         //print xml
         ?><url><loc><?php
         echo htmlspecialchars(
-            $GLOBALS['_config']['base_url'] . $page->getCanonicalLink(),
+            Config::get('base_url') . $page->getCanonicalLink(),
             ENT_COMPAT | ENT_XML1
         );
         ?></loc><lastmod><?php
         echo htmlspecialchars(
-            mb_substr($page->getTimeStamp(), 0, -9),
+            date('c', $page->getTimeStamp()),
             ENT_COMPAT | ENT_XML1
         );
         ?></lastmod><changefreq>monthly</changefreq><priority>0.6</priority></url><?php

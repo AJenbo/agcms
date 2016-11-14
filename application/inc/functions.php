@@ -1,14 +1,6 @@
 <?php
 /**
  * Declare common functions
- *
- * PHP version 5
- *
- * @category AGCMS
- * @package  AGCMS
- * @author   Anders Jenbo <anders@jenbo.dk>
- * @license  GPLv2 http://www.gnu.org/licenses/gpl-2.0.html
- * @link     http://www.arms-gallery.dk/
  */
 
 defined('_ROOT_') || define('_ROOT_', realpath(__DIR__ . '/..'));
@@ -24,11 +16,7 @@ mb_language('uni');
 mb_detect_order('UTF-8, ISO-8859-1');
 mb_internal_encoding('UTF-8');
 
-@include_once __DIR__ . '/config.php';
-require_once __DIR__ . '/../vendor/autoload.php';
-
-
-spl_autoload_register(function ($class_name) {
+spl_autoload_register(function (string $className) {
     $classMap = [
         'Category' => 'Entity/Category',
         'Page' =>  'Entity/Page',
@@ -37,39 +25,96 @@ spl_autoload_register(function ($class_name) {
         'Image' =>  '../vendor/libs/Image',
     ];
 
-    if (isset($classMap[$class_name])) {
-        $class_name = $classMap[$class_name];
+    if (isset($classMap[$className])) {
+        $className = $classMap[$className];
     }
 
-    $file = __DIR__ . '/' . $class_name . '.php';
+    $file = __DIR__ . '/' . $className . '.php';
     if (file_exists($file)) {
-        require_once __DIR__ . '/' . $class_name . '.php';
+        require_once __DIR__ . '/' . $className . '.php';
     }
 });
 
-function db()
+require_once __DIR__ . '/../vendor/autoload.php';
+
+function db(DB $overwrite = null): DB
 {
     static $db;
-    if (!$db) {
+    if ($overwrite) {
+        $db = $overwrite;
+    } elseif (!$db) {
         $db = new DB(
-            $GLOBALS['_config']['mysql_server'],
-            $GLOBALS['_config']['mysql_user'],
-            $GLOBALS['_config']['mysql_password'],
-            $GLOBALS['_config']['mysql_database']
+            Config::get('mysql_server'),
+            Config::get('mysql_user'),
+            Config::get('mysql_password'),
+            Config::get('mysql_database')
         );
     }
     return $db;
 }
 
-function redirect(string $url, int $code = 303)
+function redirect(string $url, int $status = 303)
 {
-    if (mb_substr($url, 0, 1) === '/') {
-        $url .= $GLOBALS['_config']['base_url'];
+    if (headers_sent()) {
+        throw new Exception(_('Header already sent!'));
     }
 
-    ini_set('zlib.output_compression', '0');
-    header('Location: ' . encodeUrl($url), true, $code);
+    $url = parse_url($url);
+    if (empty($url['scheme'])) {
+        $url['scheme'] = !empty($_SERVER['HTTPS']) && mb_strtolower($_SERVER['HTTPS']) !== 'off' ? 'https' : 'http';
+    }
+    if (empty($url['host'])) {
+        if (!empty($_SERVER['HTTP_HOST'])) {
+            // Browser
+            $url['host'] = $_SERVER['HTTP_HOST'];
+        } elseif (!empty($_SERVER['SERVER_NAME'])) {
+            // Can both be from Browser and server (virtual) config
+            $url['host'] = $_SERVER['SERVER_NAME'];
+        } else {
+            // IP
+            $url['host'] = $_SERVER['SERVER_ADDR'];
+        }
+    }
+    if (empty($url['path'])) {
+        $url['path'] = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
+    } elseif (mb_substr($url['path'], 0, 1) !== '/') {
+        //The redirect is relative to current path
+        $path = [];
+        $requestPath = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
+        preg_match('#^\S+/#u', $requestPath, $path);
+        $url['path'] = $path[0] . $url['path'];
+    }
+    $url['path'] = encodeUrl($url['path']);
+    $url = unparseUrl($url);
+
+    if (function_exists('apache_setenv')) {
+        apache_setenv('no-gzip', 1);
+    }
+    ini_set('zlib.output_compression', 0);
+
+    header('Location: ' . $url, true, $status);
     die();
+}
+
+/**
+ * Build a url string from an array
+ *
+ * @param array $parsed_url Array as returned by parse_url()
+ *
+ * @return string The URL
+ */
+function unparseUrl(array $parsed_url): string
+{
+    $scheme   = !empty($parsed_url['scheme']) ? $parsed_url['scheme'] . '://' : '';
+    $host     = !empty($parsed_url['host']) ? $parsed_url['host'] : '';
+    $port     = !empty($parsed_url['port']) ? ':' . $parsed_url['port'] : '';
+    $user     = !empty($parsed_url['user']) ? $parsed_url['user'] : '';
+    $pass     = !empty($parsed_url['pass']) ? ':' . $parsed_url['pass'] : '';
+    $pass     .= ($user || $pass) ? '@' : '';
+    $path     = !empty($parsed_url['path']) ? $parsed_url['path'] : '';
+    $query    = !empty($parsed_url['query']) ? '?' . $parsed_url['query'] : '';
+    $fragment = !empty($parsed_url['fragment']) ? '#' . $parsed_url['fragment'] : '';
+    return $scheme . $user . $pass . $host . $port . $path . $query . $fragment;
 }
 
 function encodeUrl(string $url): string
@@ -80,36 +125,11 @@ function encodeUrl(string $url): string
 }
 
 /**
- * Checks if email an address looks valid and that an mx server is responding
- *
- * @param string $email The email address to check
- *
- * @return bool
+ * Get first element from an array that can't be referenced
  */
-function valideMail(string $email): bool
+function first(array $array)
 {
-    $user = preg_replace('/@.+$/u', '', $email);
-    $domain = preg_replace('/^.+?@/u', '', $email);
-    if (function_exists('idn_to_ascii')) {
-        $domain = idn_to_ascii($domain);
-    }
-
-    if (filter_var($user . '@' . $domain, FILTER_VALIDATE_EMAIL) && checkMx($domain)) {
-        return true;
-    }
-
-    return false;
-}
-
-function checkMx(string $domain): bool
-{
-    static $ceche = [];
-
-    if (!isset($ceche[$domain])) {
-        $ceche[$domain] = getmxrr($domain, $dummy);
-    }
-
-    return $ceche[$domain];
+    return reset($array);
 }
 
 /**
@@ -196,8 +216,13 @@ function arrayNatsort(array $aryData, string $strIndex, string $strSortBy, strin
  *
  * @return array
  */
-function arrayListsort(array $aryData, string $strIndex, string $strSortBy, int $intSortingOrder, string $strSortType = 'asc'): array
-{
+function arrayListsort(
+    array $aryData,
+    string $strIndex,
+    string $strSortBy,
+    int $intSortingOrder,
+    string $strSortType = 'asc'
+): array {
     if (!is_array($aryData) || !$strIndex || !$strSortBy) {
         return $aryData;
     }
@@ -255,205 +280,20 @@ function arrayListsort(array $aryData, string $strIndex, string $strSortBy, int 
  */
 function getTable(int $listid, int $bycell = null, int $categoryId = null): array
 {
-    $category = $categoryId ? ORM::getOne(Category::class, $categoryId) : null;
-    $html = '';
+    Render::addLoadedTable('lists');
+    Render::addLoadedTable('list_rows');
+    Render::addLoadedTable('sider');
+    Render::addLoadedTable('bind');
+    Render::addLoadedTable('kat');
+    Render::sendCacheHeader();
 
-    $list = db()->fetchOne("SELECT * FROM `lists` WHERE id = " . $listid);
-    Cache::addLoadedTable('lists');
-
-    $rows = db()->fetchArray(
-        "
-        SELECT *
-        FROM `list_rows`
-        WHERE `list_id` = " . $listid
+    $html = Render::getTableHtml(
+        $listid,
+        $bycell,
+        $categoryId ? ORM::getOne(Category::class, $categoryId) : null
     );
-    Cache::addLoadedTable('list_rows');
-    if ($rows) {
-        //Explode sorts
-        $list['sorts'] = explode('<', $list['sorts']);
-        $list['cells'] = explode('<', $list['cells']);
-        $list['cell_names'] = explode('<', $list['cell_names']);
 
-        if (!$bycell && $bycell !== '0') {
-            $bycell = $list['sort'];
-        }
-
-        //Explode cells
-        foreach ($rows as $row) {
-            $cells = explode('<', $row['cells']);
-            $cells['id'] = $row['id'];
-            $cells['link'] = $row['link'];
-            $rows_cells[] = $cells;
-        }
-        $rows = $rows_cells;
-        unset($row);
-        unset($cells);
-        unset($rows_cells);
-
-        //Sort rows
-        if ($list['sorts'][$bycell] < 1) {
-            $rows = arrayNatsort($rows, 'id', $bycell);
-        } else {
-            $rows = arrayListsort(
-                $rows,
-                'id',
-                $bycell,
-                $list['sorts'][$bycell]
-            );
-        }
-
-        //unset temp holder for rows
-
-        $html .= '<table class="tabel">';
-        if ($list['title']) {
-            $html .= '<caption>'.$list['title'].'</caption>';
-        }
-        $html .= '<thead><tr>';
-        foreach ($list['cell_names'] as $key => $cell_name) {
-            $html .= '<td><a href="" onclick="x_getTable(\'' . $list['id']
-            . '\', \'' . $key . '\', ' . ($category ? $category->getId() : '')
-            . ', inject_html);return false;">' . $cell_name . '</a></td>';
-        }
-        $html .= '</tr></thead><tbody>';
-        foreach ($rows as $i => $row) {
-            $html .= '<tr';
-            if ($i % 2) {
-                $html .= ' class="altrow"';
-            }
-            $html .= '>';
-            if ($row['link']) {
-                $page = ORM::getOne(Page::class, $row['link']);
-                $row['link'] = '<a href="' . xhtmlEsc($page->getCanonicalLink($category)) . '">';
-            }
-            foreach ($list['cells'] as $key => $type) {
-                if (empty($row[$key])) {
-                    $row[$key] = '';
-                }
-
-                switch ($type) {
-                    case 0:
-                        //Plain text
-                        $html .= '<td>';
-                        if ($row['link']) {
-                            $html .= $row['link'];
-                        }
-                        $html .= $row[$key];
-                        if ($row['link']) {
-                            $html .= '</a>';
-                        }
-                        $html .= '</td>';
-                        break;
-                    case 1:
-                        //number
-                        $html .= '<td style="text-align:right;">';
-                        if ($row['link']) {
-                            $html .= $row['link'];
-                        }
-                        $html .= $row[$key];
-                        if ($row['link']) {
-                            $html .= '</a>';
-                        }
-                        $html .= '</td>';
-                        break;
-                    case 2:
-                        //price
-                        $html .= '<td style="text-align:right;" class="Pris">';
-                        if ($row['link']) {
-                            $html .= $row['link'];
-                        }
-                        if (is_numeric(@$row[$key])) {
-                            $html .= str_replace(
-                                ',00',
-                                ',-',
-                                number_format($row[$key], 2, ',', '.')
-                            );
-                        } else {
-                            $html .= @$row[$key];
-                        }
-                        if ($row['link']) {
-                            $html .= '</a>';
-                        }
-                            $html .= '</td>';
-                            $GLOBALS['generatedcontent']['has_product_table'] = true;
-                        break;
-                    case 3:
-                        //new price
-                        $html .= '<td style="text-align:right;" class="NyPris">';
-                        if ($row['link']) {
-                            $html .= $row['link'];
-                        }
-                        if (is_numeric(@$row[$key])) {
-                            $html .= str_replace(
-                                ',00',
-                                ',-',
-                                number_format($row[$key], 2, ',', '.')
-                            );
-                        } else {
-                            $html .= @$row[$key];
-                        }
-                        if ($row['link']) {
-                            $html .= '</a>';
-                        }
-                            $html .= '</td>';
-                            $GLOBALS['generatedcontent']['has_product_table'] = true;
-                        break;
-                    case 4:
-                        //pold price
-                        $html .= '<td style="text-align:right;" class="XPris">';
-                        if ($row['link']) {
-                            $html .= $row['link'];
-                        }
-                        if (is_numeric(@$row[$key])) {
-                            $html .= str_replace(
-                                ',00',
-                                ',-',
-                                number_format($row[$key], 2, ',', '.')
-                            );
-                        }
-                        if ($row['link']) {
-                            $html .= '</a>';
-                        }
-                        $html .= '</td>';
-                        break;
-                    case 5:
-                        //image
-                        $html .= '<td>';
-                        $files = db()->fetchOne(
-                            "
-                            SELECT *
-                            FROM `files`
-                            WHERE path = " . $row[$key]
-                        );
-                        Cache::addLoadedTable('files');
-
-                        //TODO make image tag
-                        if ($row['link']) {
-                            $html .= xhtmlEsc($row['link']);
-                        }
-                        $html .= '<img src="' . xhtmlEsc($row[$key]) . '" alt="'
-                        . xhtmlEsc($files['alt']) . '" title="" width="' . $files['width']
-                        . '" height="' . $files['height'] . '" />';
-                        if (xhtmlEsc($row['link'])) {
-                            $html .= '</a>';
-                        }
-                        $html .= '</td>';
-                        break;
-                }
-            }
-            if (@$GLOBALS['generatedcontent']['has_product_table']) {
-                $html .= '<td class="addtocart"><a href="/bestilling/?add_list_item='
-                . $row['id'] . '"><img src="/theme/images/cart_add.png" title="'
-                . _('Add to shopping cart') . '" alt="+" /></a></td>';
-            }
-            $html .= '</tr>';
-        }
-
-        $html .= '</tbody></table>';
-    }
-
-    doConditionalGet(Cache::getUpdateTime());
-
-    return ['id' => 'table'.$listid, 'html' => $html];
+    return ['id' => 'table' . $listid, 'html' => $html];
 }
 
 /**
@@ -492,91 +332,6 @@ function stringLimit(string $string, int $length = 50, string $ellipsis = '…')
 }
 
 /**
- * Search for pages and generate a list or redirect if only one was found
- *
- * @param string $q     Tekst to search for
- * @param string $where Additional sql where clause
- *
- * @return null
- */
-function searchListe(string $q, string $where)
-{
-    $pages = [];
-
-    if ($q) {
-        $pages = ORM::getByQuery(
-            Page::class,
-            "
-            SELECT *, MATCH(navn, text, beskrivelse) AGAINST ('$q') AS score
-            FROM sider
-            WHERE MATCH (navn, text, beskrivelse) AGAINST('$q') > 0
-            $where
-            ORDER BY `score` DESC
-            "
-        );
-        foreach ($pages as $page) {
-            $pages[$page->getId()] = $page;
-        }
-
-        // Fulltext search doesn't catch things like 3 letter words etc.
-        $qsearch = ['/\s+/u', "/'/u", '/´/u', '/`/u'];
-        $qreplace = ['%', '_', '_', '_'];
-        $simpleq = preg_replace($qsearch, $qreplace, $q);
-        $pages = ORM::getByQuery(
-            Page::class,
-            "
-            SELECT * FROM `sider`
-            WHERE (
-                `navn` LIKE '%$simpleq%'
-                OR `text` LIKE '%$simpleq%'
-                OR `beskrivelse` LIKE '%$simpleq%'
-            ) "
-            . ($pages ? ("AND id NOT IN (" . implode(',', array_keys($pages)) . ") ") : "")
-            . $where
-        );
-        foreach ($pages as $page) {
-            $pages[$page->getId()] = $page;
-        }
-
-        $pages = ORM::getByQuery(
-            Page::class,
-            "
-            SELECT sider.* FROM `list_rows`
-            JOIN lists ON list_rows.list_id = lists.id
-            JOIN sider ON lists.page_id = sider.id
-            WHERE list_rows.`cells` LIKE '%$simpleq%'"
-            . ($pages ? (" AND sider.id NOT IN (" . implode(',', array_keys($pages)) . ") ") : "")
-        );
-        Cache::addLoadedTable('list_rows');
-        Cache::addLoadedTable('lists');
-        foreach ($pages as $page) {
-            $pages[$page->getId()] = $page;
-        }
-    } else {
-        $pages = ORM::getByQuery(
-            Page::class,
-            "
-            SELECT * FROM `sider` WHERE 1
-            $where
-            ORDER BY `navn` ASC
-            "
-        );
-        foreach ($pages as $page) {
-            $pages[$page->getId()] = $page;
-        }
-    }
-
-    // Remove inactive pages
-    foreach ($pages as $key => $page) {
-        if ($page->isInactive()) {
-            unset($pages[$key]);
-        }
-    }
-
-    return array_values($pages);
-}
-
-/**
  * Get address from phone number
  *
  * @param string $phoneNumber Phone number
@@ -585,297 +340,105 @@ function searchListe(string $q, string $where)
  */
 function getAddress(string $phoneNumber): array
 {
+    $updateTime = 0;
     $default = [
         'recName1'     => '',
-        'recAddress1'  => '',
-        'recZipCode'   => '',
-        'recCVR'       => '',
         'recAttPerson' => '',
+        'recAddress1'  => '',
         'recAddress2'  => '',
+        'recZipCode'   => '',
         'recPostBox'   => '',
+        'recCVR'       => '',
         'email'        => '',
     ];
 
-    $dbs = [
-        [
-            'mysql_server'   => 'jagtogfiskerimagasinet.dk.mysql',
-            'mysql_user'     => 'jagtogfiskerima',
-            'mysql_password' => 'GxYqj5EX',
-            'mysql_database' => 'jagtogfiskerima',
-        ],
-        [
-            'mysql_server'   => 'huntershouse.dk.mysql',
-            'mysql_user'     => 'huntershouse_dk',
-            'mysql_password' => 'sabbBFab',
-            'mysql_database' => 'huntershouse_dk',
-        ],
-        [
-            'mysql_server'   => 'arms-gallery.dk.mysql',
-            'mysql_user'     => 'arms_gallery_dk',
-            'mysql_password' => 'hSKe3eDZ',
-            'mysql_database' => 'arms_gallery_dk',
-        ],
-        [
-            'mysql_server'   => 'geoffanderson.com.mysql',
-            'mysql_user'     => 'geoffanderson_c',
-            'mysql_password' => '2iEEXLMM',
-            'mysql_database' => 'geoffanderson_c',
-        ],
+    $dbs = Config::get('altDBs', []);
+    $dbs[] = [
+        'mysql_server'   => Config::get('mysql_server'),
+        'mysql_user'     => Config::get('mysql_user'),
+        'mysql_password' => Config::get('mysql_password'),
+        'mysql_database' => Config::get('mysql_database'),
     ];
 
     foreach ($dbs as $db) {
-        $db = new DB(
-            $db['mysql_server'],
-            $db['mysql_user'],
-            $db['mysql_password'],
-            $db['mysql_database']
-        );
-
-        //try packages
-        $post = $db->fetchOne(
-            "
-            SELECT recName1, recAddress1, recZipCode
-            FROM `post`
-            WHERE `recipientID` LIKE '" . $phoneNumber . "'
-            ORDER BY id DESC
-            "
-        );
-        if ($post) {
-            $return = array_merge($default, $post);
-            if ($return != $default) {
-                return $return;
-            }
-        }
-
-        //Try katalog orders
-        $email = $db->fetchOne(
-            "
-            SELECT navn, email, adresse, post
-            FROM `email`
-            WHERE `tlf1` LIKE '" . $phoneNumber . "'
-               OR `tlf2` LIKE '" . $phoneNumber . "'
-            ORDER BY id DESC
-            "
-        );
-        if ($email) {
-            $return['recName1'] = $email['navn'];
-            $return['recAddress1'] = $email['adresse'];
-            $return['recZipCode'] = $email['post'];
-            $return['email'] = $email['email'];
-            $return = array_merge($default, $return);
-
-            if ($return != $default) {
-                return $return;
-            }
-        }
-
-        //Try fakturas
-        $fakturas = $db->fetchOne(
-            "
-            SELECT navn, email, att, adresse, postnr, postbox
-            FROM `fakturas`
-            WHERE `tlf1` LIKE '" . $phoneNumber . "'
-               OR `tlf2` LIKE '" . $phoneNumber . "'
-            ORDER BY id DESC
-            "
-        );
-        if ($fakturas) {
-            $return['recName1'] = $fakturas['navn'];
-            $return['recAddress1'] = $fakturas['adresse'];
-            $return['recZipCode'] = $fakturas['postnr'];
-            $return['recAttPerson'] = $fakturas['att'];
-            $return['recPostBox'] = $fakturas['postbox'];
-            $return['email'] = $fakturas['email'];
-            $return = array_merge($default, $return);
-
-            if ($return != $default) {
-                return $return;
-            }
-        }
-    }
-
-    //Addressen kunde ikke findes.
-    return ['error' => _('The address could not be found.')];
-}
-
-/**
- * Set Last-Modified and ETag http headers
- * and use cache if no updates since last visit
- *
- * @param int $timestamp Unix time stamp of last update to content
- *
- * @return null
- */
-function doConditionalGet(int $timestamp)
-{
-    // A PHP implementation of conditional get, see
-    // http://fishbowl.pastiche.org/archives/001132.html
-    $last_modified = mb_substr(date('r', $timestamp), 0, -5).'GMT';
-    $etag = '"'.$timestamp.'"';
-    // Send the headers
-
-    header('Cache-Control: max-age=0, must-revalidate');    // HTTP/1.1
-    header('Pragma: no-cache');    // HTTP/1.0
-    header('Last-Modified: '.$last_modified);
-    header('ETag: '.$etag);
-    // See if the client has provided the required headers
-    $if_modified_since = isset($_SERVER['HTTP_IF_MODIFIED_SINCE']) ?
-        stripslashes($_SERVER['HTTP_IF_MODIFIED_SINCE']) :
-        false;
-    $if_none_match = isset($_SERVER['HTTP_IF_NONE_MATCH']) ?
-        stripslashes($_SERVER['HTTP_IF_NONE_MATCH']) :
-        false;
-    if (!$if_modified_since && !$if_none_match) {
-        return;
-    }
-    // At least one of the headers is there - check them
-    if ($if_none_match && $if_none_match != $etag) {
-        return; // etag is there but doesn't match
-    }
-    if ($if_modified_since && $if_modified_since != $last_modified) {
-        return; // if-modified-since is there but doesn't match
-    }
-
-    // Nothing has changed since their last request - serve a 304 and exit
-    ini_set('zlib.output_compression', '0');
-    header('HTTP/1.1 304 Not Modified', true, 304);
-    die();
-}
-
-/**
- * Get list of sub categories in format fitting the generatedcontent structure
- *
- * @param array $categories       Categories
- * @param array $categoryIds      Ids in active category trunk
- * @param array $weightedChildren Are the categories the list custome sorted
- *
- * @return array
- */
-function menu(array $categories, array $categoryIds, bool $weightedChildren = false): array
-{
-    $menu = [];
-    if (!$weightedChildren) {
-        $objectArray = [];
-        foreach ($categories as $categorie) {
-            $objectArray[] = [
-                'id'     => $categorie->getId(),
-                'navn'   => $categorie->getTitle(),
-                'object' => $categorie,
-            ];
-        }
-        $objectArray = arrayNatsort($objectArray, 'id', 'navn', 'asc');
-        $categories = [];
-        foreach ($objectArray as $row) {
-            $categories[] = $row['object'];
-        }
-    }
-
-    foreach ($categories as $category) {
-        if (!$category->isVisable()) {
+        try {
+            $db = new DB(
+                $db['mysql_server'],
+                $db['mysql_user'],
+                $db['mysql_password'],
+                $db['mysql_database']
+            );
+        } catch (Exception $e) {
             continue;
         }
 
-        //Er katagorien aaben
-        $subs = [];
-        if (in_array($category->getId(), $categoryIds, true)) {
-            $subs = menu(
-                $category->getChildren(true),
-                $categoryIds,
-                $category->getWeightedChildren()
-            );
+        $tables = db()->fetchArray("SHOW TABLE STATUS WHERE Name IN('fakturas', 'email', 'post')");
+        foreach ($tables as $table) {
+            $updateTime = max($updateTime, strtotime($table['Update_time']) + db()->getTimeOffset());
         }
 
-
-        //tegn under punkter
-        $menu[] = [
-            'id'   => $category->getId(),
-            'name' => xhtmlEsc($category->getTitle()),
-            'link' => '/' . $category->getSlug(),
-            'icon' => $category->getIconPath(),
-            'sub'  => $subs ? true : $category->hasChildren(true),
-            'subs' => $subs,
-        ];
-    }
-
-    return $menu;
-}
-
-/**
- * Search for categories and populate generatedcontent with results
- *
- * @param string $q        Seach string
- * @param string $wherekat Additional SQL for WHERE clause
- *
- * @return null
- */
-function searchMenu(string $q, string $wherekat)
-{
-    $categories = [];
-    $maerke = [];
-    if ($q) {
-        $categories = ORM::getByQuery(
-            Category::class,
+        //Try katalog orders
+        $address = $db->fetchOne(
             "
-            SELECT *, MATCH (navn) AGAINST ('$q') AS score
-            FROM kat
-            WHERE MATCH (navn) AGAINST('$q') > 0 " . $wherekat . "
-                AND `vis` != '0'
-            ORDER BY score, navn
-            "
-        );
-        $qsearch = ['/\s+/u', "/'/u", '//u', '/`/u'];
-        $qreplace = ['%', '_', '_', '_'];
-        $simpleq = preg_replace($qsearch, $qreplace, $q);
-        if (!$categories) {
-            $categories = ORM::getByQuery(
-                Category::class,
-                "
-                SELECT * FROM kat WHERE navn
-                LIKE '%".$simpleq."%' " . $wherekat . "
-                ORDER BY navn
-                "
-            );
-        }
-        $maerke = db()->fetchArray(
-            "
-            SELECT id, navn
-            FROM `maerke`
-            WHERE MATCH (navn) AGAINST ('$q') >  0
+            SELECT * FROM (
+                SELECT
+                    navn recName1,
+                    att recAttPerson,
+                    adresse recAddress1,
+                    postnr recZipCode,
+                    postbox recPostBox,
+                    email
+                FROM `fakturas`
+                WHERE `tlf1` LIKE '" . $phoneNumber . "'
+                   OR `tlf2` LIKE '" . $phoneNumber . "'
+                ORDER BY id DESC
+                LIMIT 1
+            ) x
+            UNION
+            SELECT * FROM (
+                SELECT
+                    navn recName1,
+                    '' recAttPerson,
+                    adresse recAddress1,
+                    post recZipCode,
+                    '' recPostBox,
+                    email
+                FROM `email`
+                WHERE `tlf1` LIKE '" . $phoneNumber . "'
+                   OR `tlf2` LIKE '" . $phoneNumber . "'
+                ORDER BY id DESC
+                LIMIT 1
+            ) x
+            UNION
+            SELECT * FROM (
+                SELECT
+                    recName1,
+                    '' recAttPerson,
+                    recAddress1,
+                    recZipCode,
+                    '' recPostBox,
+                    '' email
+                FROM `post`
+                WHERE `recipientID` LIKE '" . $phoneNumber . "'
+                ORDER BY id DESC
+                LIMIT 1
+            ) x
             "
         );
-        if (!$maerke) {
-            $maerke = db()->fetchArray(
-                "
-                SELECT id, navn
-                FROM maerke
-                WHERE navn
-                LIKE '%" .$simpleq ."%'
-                ORDER BY navn
-                "
-            );
-        }
-        Cache::addLoadedTable('maerke');
-    }
 
-    foreach ($maerke as $value) {
-        $GLOBALS['generatedcontent']['search_menu'][] = [
-            'id' => 0,
-            'name' => xhtmlEsc($value['navn']),
-            'link' => '/mærke' . $value['id'] . '-' .clearFileName($value['navn']) . '/'
-        ];
-    }
-
-    foreach ($categories as $category) {
-        if ($category->isVisable()) {
-            $GLOBALS['generatedcontent']['search_menu'][] = [
-                'id' => $category->getId(),
-                'name' => xhtmlEsc($category->getTitle()),
-                'link' => '/' . $category->getSlug(),
-                'icon' => $category->getIconPath(),
-                'sub' => (bool) $category->getChildren(true),
-            ];
+        if ($address) {
+            $address = array_merge($default, $address);
+            if ($address !== $default) {
+                Render::sendCacheHeader($updateTime);
+                return $address;
+            }
         }
     }
+
+    Render::sendCacheHeader($updateTime);
+
+    //Addressen kunde ikke findes.
+    return ['error' => _('The address could not be found.')];
 }
 
 /**
@@ -888,67 +451,13 @@ function searchMenu(string $q, string $wherekat)
  */
 function getKat(int $categoryId, string $sort): array
 {
-    if (!in_array($sort, ['navn', 'for', 'pris', 'varenr'])) {
-        $sort = 'navn';
-    }
+    Render::addLoadedTable('sider');
+    Render::addLoadedTable('bind');
+    Render::addLoadedTable('kat');
+    Render::sendCacheHeader();
 
-    //Get pages list
     $category = ORM::getOne(Category::class, $categoryId);
-    $pages = $category->getPages($sort);
-
-    $objectArray = [];
-    foreach ($pages as $page) {
-        $objectArray[] = [
-            'id' => $page->getId(),
-            'navn' => $page->getTitle(),
-            'for' => $page->getOldPrice(),
-            'pris' => $page->getPrice(),
-            'varenr' => $page->getSku(),
-            'object' => $page,
-        ];
-    }
-    $objectArray = arrayNatsort($objectArray, 'id', $sort);
-    $pages = [];
-    foreach ($objectArray as $item) {
-        $pages[] = $item['object'];
-    }
-
-    //check browser cache
-    doConditionalGet(Cache::getUpdateTime());
-
-    $html = '<table class="tabel"><thead><tr><td><a href="" onclick="x_getKat(\''
-    . $categoryId
-    . '\', \'navn\', inject_html);return false">Titel</a></td><td><a href="" onclick="x_getKat(\''
-    . $categoryId
-    . '\', \'for\', inject_html);return false">Før</a></td><td><a href="" onclick="x_getKat(\''
-    . $categoryId
-    . '\', \'pris\', inject_html);return false">Pris</a></td><td><a href="" onclick="x_getKat(\''
-    . $categoryId
-    . '\', \'varenr\', inject_html);return false">#</a></td></tr></thead><tbody>';
-
-    $isEven = false;
-    foreach ($pages as $page) {
-        $oldPrice = '';
-        if ($page->getOldPrice()) {
-            $oldPrice = $page->getOldPrice() . ',-';
-        }
-
-        $price = '';
-        if ($page->getPrice()) {
-            $price = $page->getPrice() . ',-';
-        }
-
-        $html .= '<tr' . ($isEven ? ' class="altrow"' : '')
-        . '><td><a href="' . xhtmlEsc($page->getCanonicalLink($category)) . '">'
-        . xhtmlEsc($page->getTitle())
-        . '</a></td><td class="XPris" align="right">' . $oldPrice
-        . '</td><td class="Pris" align="right">' . $price
-        . '</td><td align="right" style="font-size:11px">'
-        . xhtmlEsc($page->getSku()) . '</td></tr>';
-
-        $isEven = !$isEven;
-    }
-    $html .= '</tbody></table>';
+    $html = Render::getKatHtml($category, $sort);
 
     return [
         'id' => 'kat' . $categoryId,
@@ -965,7 +474,40 @@ function getKat(int $categoryId, string $sort): array
  */
 function getCheckid(int $id): string
 {
-    return substr(md5($id . $GLOBALS['_config']['pbssalt']), 3, 5);
+    return substr(md5($id . Config::get('pbssalt')), 3, 5);
+}
+
+/**
+ * Checks if email an address looks valid and that an mx server is responding
+ *
+ * @param string $email The email address to check
+ *
+ * @return bool
+ */
+function valideMail(string $email): bool
+{
+    $user = preg_replace('/@.+$/u', '', $email);
+    $domain = preg_replace('/^.+?@/u', '', $email);
+    if (function_exists('idn_to_ascii')) {
+        $domain = idn_to_ascii($domain);
+    }
+
+    if (filter_var($user . '@' . $domain, FILTER_VALIDATE_EMAIL) && checkMx($domain)) {
+        return true;
+    }
+
+    return false;
+}
+
+function checkMx(string $domain): bool
+{
+    static $ceche = [];
+
+    if (!isset($ceche[$domain])) {
+        $ceche[$domain] = getmxrr($domain, $dummy);
+    }
+
+    return $ceche[$domain];
 }
 
 /**
@@ -1041,19 +583,19 @@ function sendEmails(
     bool $retry = true,
     array $bcc = []
 ): bool {
-    $emailConfig = reset($GLOBALS['_config']['emails']);
-    if (isset($GLOBALS['_config']['emails'][$from])) {
-        $emailConfig = $GLOBALS['_config']['emails'][$from];
+    $emailConfig = first(Config::get('emails'));
+    if (isset(Config::get('emails')[$from])) {
+        $emailConfig = Config::get('emails')[$from];
     }
     if (!$from || !valideMail($from)) {
         $from = $emailConfig['address'];
     }
     if (!$fromName) {
-        $fromName = $GLOBALS['_config']['site_name'];
+        $fromName = Config::get('site_name');
     }
     if (!$to) {
         $to = $emailConfig['address'];
-        $toName = $GLOBALS['_config']['site_name'];
+        $toName = Config::get('site_name');
     } elseif (!$toName) {
         $toName = $to;
     }
@@ -1071,7 +613,7 @@ function sendEmails(
     $PHPMailer->Port     = $emailConfig['smtpPort'];
     $PHPMailer->CharSet  = 'utf-8';
     $PHPMailer->From     = $emailConfig['address'];
-    $PHPMailer->FromName = $GLOBALS['_config']['site_name'];
+    $PHPMailer->FromName = Config::get('site_name');
 
     if ($from !== $emailConfig['address']) {
         $PHPMailer->AddReplyTo($from, $fromName);
@@ -1089,7 +631,7 @@ function sendEmails(
     if ($success) {
         //Upload email to the sent folder via imap
         if ($emailConfig['imapHost']) {
-            $imap = new IMAP(
+            $imap = new AJenbo\Imap(
                 $emailConfig['address'],
                 $emailConfig['password'],
                 $emailConfig['imapHost'],

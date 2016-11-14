@@ -1,18 +1,10 @@
 <?php
 /**
  * Configuration of site
- *
- * PHP version 5
- *
- * @category AGCMS
- * @package  AGCMS
- * @author   Anders Jenbo <anders@jenbo.dk>
- * @license  MIT http://opensource.org/licenses/MIT
- * @link     http://www.arms-gallery.dk/
  */
 
 $GLOBALS['_config'] = [
-    'base_url' => 'http://www.example.com',
+    'base_url' => 'http://localhost',
     'site_name' => 'My store',
     'address' => '',
     'postcode' => '',

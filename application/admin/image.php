@@ -1,9 +1,8 @@
 <?php
 
 require_once $_SERVER['DOCUMENT_ROOT'] . '/admin/logon.php';
-require_once _ROOT_ . '/admin/inc/image-functions.php';
 
-doConditionalGet(filemtime(_ROOT_ . $_GET['path']));
+Render::sendCacheHeader(filemtime(_ROOT_ . $_GET['path']));
 generateImage(
     $_GET['path'],
     $_GET['cropX'] ?? 0,
@@ -13,6 +12,5 @@ generateImage(
     $_GET['maxW'] ?? 0,
     $_GET['maxH'] ?? 0,
     $_GET['flip'] ?? 0,
-    $_GET['rotate'] ?? 0,
-    null
+    $_GET['rotate'] ?? 0
 );
