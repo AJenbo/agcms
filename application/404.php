@@ -13,22 +13,16 @@
 
 require_once $_SERVER['DOCUMENT_ROOT'] . '/inc/functions.php';
 
-//If url !utf-8 make it fucking utf-8 and try again
 $url = urldecode($_SERVER['REQUEST_URI']);
 
-//can't detect windows-1252
+// If url !utf-8 make it utf-8 and try again
 $encoding = mb_detect_encoding($url, 'UTF-8, ISO-8859-1');
-if ($encoding != 'UTF-8') {
-    //Firefox uses windows-1252 if it can get away with it
-    /**
-     * We can't detect windows-1252 from iso-8859-1, but it's a superset, so bouth
-     * should handle fine as windows-1252
-     */
+if ($encoding !== 'UTF-8') {
+    // Windows-1252 is a superset of iso-8859-1
     if (!$encoding || $encoding == 'ISO-8859-1') {
         $encoding = 'windows-1252';
     }
     $url = mb_convert_encoding($url, 'UTF-8', $encoding);
-    $url = implode('/', array_map('rawurlencode', explode('/', $url)));
     redirect($url, 301);
 }
 
