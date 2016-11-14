@@ -90,11 +90,11 @@ class CustomPage
                 INSERT INTO `" . self::TABLE_NAME . "` (
                     `dato`,
                     `navn`,
-                    `text`,
+                    `text`
                 ) VALUES (
                     NOW(),
                     '" . db()->esc($this->name) . "',
-                    '" . db()->esc($this->html) . "',
+                    '" . db()->esc($this->html) . "'
                 )
                 "
             );
@@ -102,10 +102,10 @@ class CustomPage
         } else {
             db()->query(
                 "
-                UPDATE `" . self::TABLE_NAME ."`
-                SET `dato` = NOW(),
-                `navn` = '" . db()->esc($this->title) . "',
-                `text` = '" . db()->esc($this->html) . "'
+                UPDATE `" . self::TABLE_NAME . "` SET
+                    `dato` = NOW(),
+                    `navn` = '" . db()->esc($this->title) . "',
+                    `text` = '" . db()->esc($this->html) . "'
                 WHERE `id` = " . $this->id
             );
         }

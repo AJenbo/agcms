@@ -94,27 +94,16 @@ foreach ($pages as $page) {
     }
     foreach (array_unique($categoryIds) as $categoryId) {
         $category = ORM::getOne(Category::class, $categoryId);
-        $cleaned = preg_replace($search, $replace, $category->getTitle());
-        $cleaned = trim($cleaned);
+        $cleaned = trim(preg_replace($search, $replace, $category->getTitle()));
         if ($cleaned) {
-            echo '<category>';
-            echo htmlspecialchars($cleaned, ENT_NOQUOTES | ENT_XML1);
-            echo '</category>';
+            echo '<category>' . htmlspecialchars($cleaned, ENT_NOQUOTES | ENT_XML1) . '</category>';
         }
     }
-    if ($page->getBrandId()) {
-        $maerker = db()->fetchOne(
-            "
-            SELECT `navn`
-            FROM maerke
-            WHERE id = " . $page->getBrandId()
-        );
-        $cleaned = preg_replace($search, $replace, $maerker['navn']);
-        $cleaned = trim($cleaned);
+    $brand = $page->getBrand();
+    if ($brand) {
+        $cleaned = trim(preg_replace($search, $replace, $brand->getTitle()));
         if ($cleaned) {
-            echo '<category>';
-            echo htmlspecialchars($cleaned, ENT_NOQUOTES | ENT_XML1);
-            echo '</category>';
+            echo '<category>' . htmlspecialchars($cleaned, ENT_NOQUOTES | ENT_XML1) . '</category>';
         }
     }
 

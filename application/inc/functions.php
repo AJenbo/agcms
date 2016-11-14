@@ -18,9 +18,10 @@ mb_internal_encoding('UTF-8');
 
 spl_autoload_register(function (string $className) {
     $classMap = [
-        'Category' => 'Entity/Category',
-        'Page' =>  'Entity/Page',
-        'CustomPage' =>  'Entity/CustomPage',
+        'Brand'      => 'Entity/Brand',
+        'Category'   => 'Entity/Category',
+        'CustomPage' => 'Entity/CustomPage',
+        'Page'       => 'Entity/Page',
     ];
 
     if (isset($classMap[$className])) {
@@ -370,7 +371,7 @@ function getAddress(string $phoneNumber): array
             continue;
         }
 
-        $tables = db()->fetchArray("SHOW TABLE STATUS WHERE Name IN('fakturas', 'email', 'post')");
+        $tables = $db->fetchArray("SHOW TABLE STATUS WHERE Name IN('fakturas', 'email', 'post')");
         foreach ($tables as $table) {
             $updateTime = max($updateTime, strtotime($table['Update_time']) + db()->getTimeOffset());
         }

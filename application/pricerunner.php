@@ -52,16 +52,9 @@ foreach ($pages as $page) {
     . Config::get('base_url') . encodeUrl($page->getCanonicalLink()) . '</link>';
 
     $categoryTitles = [];
-    if ($page->getBrandId()) {
-        $maerker = db()->fetchOne(
-            "
-            SELECT `navn`
-            FROM maerke
-            WHERE id = " . $page->getBrandId()
-        );
-        Cache::addLoadedTable('maerke');
-        $cleaned = preg_replace($search, $replace, $maerker['navn']);
-        $cleaned = trim($cleaned);
+    $brand = $page->getBrand();
+    if ($brand) {
+        $cleaned = trim(preg_replace($search, $replace, $brand->getTitle()));
         if ($cleaned) {
             $categoryTitles[] = htmlspecialchars($cleaned, ENT_NOQUOTES | ENT_XML1);
         }

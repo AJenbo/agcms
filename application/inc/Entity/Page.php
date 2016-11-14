@@ -284,6 +284,11 @@ class Page
         );
     }
 
+    public function getBrand()
+    {
+        return $this->brandId ? ORM::getOne(Brand::class, $this->brandId) : null;
+    }
+
     public function getAccessories()
     {
         Render::addLoadedTable('tilbehor');
@@ -357,20 +362,20 @@ class Page
         } else {
             db()->query(
                 "
-                UPDATE `" . self::TABLE_NAME ."`
-                SET `dato` = NOW(),
-                `navn` = '" . db()->esc($this->title)
-                . "', `varenr` = '" . db()->esc($this->sku)
-                . "', `keywords` = '" . db()->esc($this->keywords)
-                . "', `text` = '" . db()->esc($this->html)
-                . "', `beskrivelse` = '" . db()->esc($this->excerpt)
-                . "', `billed` = '" . db()->esc($this->imagePath)
-                . "', `krav` = " . $this->requirementId
-                . ", `maerke` = " . $this->brandId
-                . ", `pris` = " . $this->price
-                . ", `for` = " . $this->oldPrice
-                . ", `fra` = " . $this->priceType
-                . ", `burde` = " . $this->old_priceType
+                UPDATE `" . self::TABLE_NAME . "` SET
+                    `dato` = NOW(),
+                    `navn` = '" . db()->esc($this->title) . "',
+                    `varenr` = '" . db()->esc($this->sku) . "',
+                    `keywords` = '" . db()->esc($this->keywords) . "',
+                    `text` = '" . db()->esc($this->html) . "',
+                    `beskrivelse` = '" . db()->esc($this->excerpt) . "',
+                    `billed` = '" . db()->esc($this->imagePath) . "',
+                    `krav` = " . $this->requirementId . ",
+                    `maerke` = " . $this->brandId . ",
+                    `pris` = " . $this->price . ",
+                    `for` = " . $this->oldPrice . ",
+                    `fra` = " . $this->priceType . ",
+                    `burde` = " . $this->old_priceType
                 . " WHERE `id` = " . $this->id
             );
         }

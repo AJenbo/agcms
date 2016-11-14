@@ -17,13 +17,13 @@ class Render
     private static $serial = '';
     private static $timeStamp = 0;
     private static $updateTime = 0;
+    public static $activeBrand;
     public static $activeCategory;
     public static $activePage;
     public static $bodyHtml = '';
     public static $crumbs = [];
     public static $has_product_table = false;
     public static $headline = '';
-    public static $maerkeId;
     public static $pageType = 'front';
     public static $title = '';
     public static $track = '';
@@ -31,13 +31,17 @@ class Render
     public static function doRouting(string $url)
     {
         // Routing
-        self::$maerkeId = (int) preg_replace('/.*\/mærke([0-9]*)-.*|.*/u', '\1', $url);
+        $brandId = (int) preg_replace('/.*\/mærke([0-9]*)-.*|.*/u', '\1', $url);
         $categoryId = (int) preg_replace('/.*\/kat([0-9]*)-.*|.*/u', '\1', $url);
         $pageId = (int) preg_replace('/.*\/side([0-9]*)-.*|.*/u', '\1', $url);
+        $redirect = !$brandId && !$categoryId && !$pageId ? 302 : false;
 
-        $redirect = !self::$maerkeId && !$categoryId && !$pageId ? 302 : false;
-        if (self::$maerkeId && !db()->fetchOne("SELECT `id` FROM `maerke` WHERE id = " . self::$maerkeId)) {
-            $redirect = 301;
+        if ($brandId) {
+            self::$activeBrand = ORM::getOne(Brand::class, $brandId);
+            if (!self::$activeBrand) {
+                $redirect = 301;
+                self::$activeBrand = null;
+            }
         }
 
         if ($categoryId) {
@@ -54,6 +58,7 @@ class Render
                 self::$activePage = null;
             }
         }
+
         if ($redirect) {
             $redirectUrl = '/?sog=1&q=&sogikke=&minpris=&maxpris=&maerke=';
             $q = preg_replace(
@@ -252,35 +257,18 @@ class Render
         $listedPages = [];
         if (!empty($_GET['sog'])) {
             self::$pageType = 'search';
-        } elseif (self::$maerkeId) {
+        } elseif (self::$activeBrand) {
             self::$pageType = 'brand';
-            $maerkeet = db()->fetchOne(
-                "
-                SELECT `id`, `navn`, `link`, ico
-                FROM `maerke`
-                WHERE id = " . self::$maerkeId
-            );
-            self::addLoadedTable('maerke');
-
-            self::$title = $maerkeet['navn'];
+            self::$title = self::$activeBrand->getTitle();
             self::$brand = [
-                'link' => '/mærke' . $maerkeet['id'] . '-' . clearFileName($maerkeet['navn']) . '/',
-                'name' => $maerkeet['navn'],
-                'xlink' => $maerkeet['link'],
-                'icon' => $maerkeet['ico'],
+                'link'  => '/' . self::$activeBrand->getSlug(),
+                'name'  => self::$activeBrand->getTitle(),
+                'xlink' => self::$activeBrand->getLink(),
+                'icon'  => self::$activeBrand->getIconPath(),
             ];
 
-            $pages = ORM::getByQuery(
-                Page::class,
-                "
-                SELECT * FROM `sider`
-                WHERE `maerke` = " . self::$maerkeId . "
-                ORDER BY `navn` ASC
-                "
-            );
             $listedPages = [];
-            // Remove inactive pages
-            foreach ($pages as $key => $page) {
+            foreach (self::$activeBrand->getPages() as $page) {
                 if (!$page->isInactive()) {
                     $listedPages[] = $page;
                 }
@@ -310,17 +298,9 @@ class Render
                 && empty($_GET['sogikke'])
                 && !empty($_GET['maerke'])
             ) {
-                $maerkeet = db()->fetchOne(
-                    "
-                    SELECT `id`, `navn`
-                    FROM `maerke`
-                    WHERE id = " . (int) $_GET['maerke']
-                );
-                self::addLoadedTable('maerke');
-
-                if ($maerkeet) {
-                    $redirectUrl = '/mærke' . $maerkeet['id'] . '-' . clearFileName($maerkeet['navn']) . '/';
-                    redirect($redirectUrl, 301);
+                $brand = ORM::getOne(Brand::class, $_GET['maerke']);
+                if ($brand) {
+                    redirect('/' . $brand->getSlug(), 301);
                 }
             }
 
@@ -426,17 +406,10 @@ class Render
                 . '&nbsp;</td><td><input name="maxpris" size="5" maxlength="11" value="" />,-</td></tr><tr><td>'
                 . _('Brand:') . '</td><td><select name="maerke"><option value="0">' . _('All') . '</option>';
 
-            $maerker = db()->fetchArray(
-                "
-                SELECT `id`, `navn`
-                FROM `maerke`
-                ORDER BY `navn` ASC
-                "
-            );
-            self::addLoadedTable('maerke');
-
-            foreach ($maerker as $value) {
-                self::$bodyHtml .= '<option value="'.$value['id'].'">' . xhtmlEsc($value['navn']) . '</option>';
+            $brands = ORM::getOne(Brand::class, "SELECT * FROM `maerke` ORDER BY `navn`");
+            foreach ($brands as $brand) {
+                self::$bodyHtml .= '<option value="' . $brand->getId() . '">'
+                    . xhtmlEsc($brand->getTitle()) . '</option>';
             }
             self::$bodyHtml .= '</select></td></tr></table></form>';
         } elseif (self::$pageType === 'product') {
@@ -485,24 +458,14 @@ class Render
                 ];
             }
 
-            if (self::$activePage->getBrandId()) {
-                $brand = db()->fetchOne(
-                    "
-                    SELECT `id`, `navn`, `link`, `ico`
-                    FROM `maerke`
-                    WHERE `id` = " . self::$activePage->getBrandId() . "
-                    ORDER BY `navn`
-                    "
-                );
-                self::addLoadedTable('maerke');
-                if ($brand) {
-                    self::$brand = [
-                        'name' => $brand['navn'],
-                        'link' => '/mærke' . $brand['id'] . '-' . clearFileName($brand['navn']) . '/',
-                        'xlink' => $brand['link'],
-                        'icon' => $brand['ico']
-                    ];
-                }
+            $brand = self::$activePage->getBrand();
+            if ($brand) {
+                self::$brand = [
+                    'name'  => $brand->getTitle(),
+                    'link'  => '/' . $brand->getSlug(),
+                    'xlink' => $brand->getLink(),
+                    'icon'  => $brand->getIconPath(),
+                ];
             }
 
             foreach (self::$activePage->getAccessories() as $page) {
@@ -590,14 +553,14 @@ class Render
      *
      * @return null
      */
-    public static function searchListe(string $q, int $maerke, string $varenr = '', int $minpris = 0, int $maxpris = 0, string $antiWords)
+    public static function searchListe(string $q, int $brandId, string $varenr = '', int $minpris = 0, int $maxpris = 0, string $antiWords)
     {
         $pages = [];
 
         //Full search
         $where = "";
-        if ($maerke) {
-            $where = " AND `maerke` = " . $maerke;
+        if ($brandId) {
+            $where = " AND `maerke` = " . $brandId;
         }
         if ($varenr) {
             $where .= " AND varenr LIKE '" . db()->esc($varenr) . "%'";
@@ -672,51 +635,49 @@ class Render
     public static function getSearchMenu(string $searchString, string $antiWords): array
     {
         $searchMenu = [];
-        $categories = [];
-        $maerke = [];
-        if ($searchString) {
-            $simpleSearchString = $antiWords ? '%' . preg_replace('/\s+/u', '%', $searchString) . '%' : '';
-            $simpleAntiWords = $antiWords ? '%' . preg_replace('/\s+/u', '%', $antiWords) . '%' : '';
-            $categories = ORM::getByQuery(
-                Category::class,
-                "
-                SELECT *, MATCH (navn) AGAINST ('" . db()->esc($searchString) . "') AS score
-                FROM kat
-                WHERE (
-                    MATCH (navn) AGAINST('" . db()->esc($searchString) . "') > 0
-                    OR navn LIKE '" . db()->esc($simpleSearchString) . "'
-                )
-                AND !MATCH (navn) AGAINST('" . db()->esc($antiWords) . "') > 0
-                AND navn NOT LIKE '" . db()->esc($simpleAntiWords) . "'
-                AND `vis` != '0'
-                ORDER BY score, navn
-                "
-            );
-            $maerke = db()->fetchArray(
-                "
-                SELECT id, navn
-                FROM `maerke`
-                WHERE (
-                    MATCH (navn) AGAINST('" . db()->esc($searchString) . "') > 0
-                    OR navn LIKE '" . db()->esc($simpleSearchString) . "'
-                )
-                AND !MATCH (navn) AGAINST('" . db()->esc($antiWords) . "') > 0
-                AND navn NOT LIKE '" . db()->esc($simpleAntiWords) . "'
-                "
-            );
-            Render::addLoadedTable('maerke');
+        if (!$searchString) {
+            return $searchMenu;
         }
 
-        foreach ($maerke as $value) {
+        $brands = ORM::getByQuery(
+            Brand::class,
+            "
+            SELECT * FROM `maerke`
+            WHERE (
+                MATCH (navn) AGAINST('" . db()->esc($searchString) . "') > 0
+                OR navn LIKE '" . db()->esc($simpleSearchString) . "'
+            )
+            AND !MATCH (navn) AGAINST('" . db()->esc($antiWords) . "') > 0
+            AND navn NOT LIKE '" . db()->esc($simpleAntiWords) . "'
+            "
+        );
+        foreach ($brands as $brand) {
             $searchMenu[] = [
-                'id' => 0,
-                'name' => $value['navn'],
-                'link' => '/mærke' . $value['id'] . '-' .clearFileName($value['navn']) . '/'
+                'id'   => $brand->getId(),
+                'name' => $brand->getTitle(),
+                'link' => '/' . $brand->getSlug(),
             ];
         }
 
+        $simpleSearchString = $searchString ? '%' . preg_replace('/\s+/u', '%', $searchString) . '%' : '';
+        $simpleAntiWords = $antiWords ? '%' . preg_replace('/\s+/u', '%', $antiWords) . '%' : '';
+        $categories = ORM::getByQuery(
+            Category::class,
+            "
+            SELECT *, MATCH (navn) AGAINST ('" . db()->esc($searchString) . "') AS score
+            FROM kat
+            WHERE (
+                MATCH (navn) AGAINST('" . db()->esc($searchString) . "') > 0
+                OR navn LIKE '" . db()->esc($simpleSearchString) . "'
+            )
+            AND !MATCH (navn) AGAINST('" . db()->esc($antiWords) . "') > 0
+            AND navn NOT LIKE '" . db()->esc($simpleAntiWords) . "'
+            AND `vis` != '0'
+            ORDER BY score, navn
+            "
+        );
         foreach ($categories as $category) {
-            if ($category->isVisable()) {
+            if ($category->isVisable() && !$category->isInactive()) {
                 $searchMenu[] = [
                     'id' => $category->getId(),
                     'name' => $category->getTitle(),

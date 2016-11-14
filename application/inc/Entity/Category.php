@@ -289,28 +289,28 @@ class Category
                     `email`,
                     `custom_sort_subs`,
                     `order`
-                ) VALUES ('"
-                    . db()->esc($this->title) . "', "
-                    . $this->parentId . ", '"
-                    . db()->esc($this->iconPath) . "', "
-                    . $this->renderMode . ", '"
-                    . db()->esc($this->email) . "', "
-                    . $this->weightedChildren . ", "
-                    . $this->weight
+                ) VALUES (
+                    '" . db()->esc($this->title) . "',
+                    " . $this->parentId . ",
+                    '" . db()->esc($this->iconPath) . "',
+                    " . $this->renderMode . ",
+                    '" . db()->esc($this->email) . "',
+                    " . $this->weightedChildren . ",
+                    " . $this->weight
                 . ")"
             );
             $this->setId(db()->insert_id);
         } else {
             db()->query(
                 "
-                UPDATE `" . self::TABLE_NAME ."`
-                SET `navn` = '" . db()->esc($this->title)
-                . "', `bind` = " . $this->parentId
-                . ", `icon` = '" . db()->esc($this->iconPath)
-                . "', `vis` = " . $this->renderMode
-                . ", `email` = '" . db()->esc($this->email)
-                . "', `custom_sort_subs` = " . $this->weightedChildren
-                . ", `order` = " . $this->weight
+                UPDATE `" . self::TABLE_NAME . "` SET
+                    `navn` = '" . db()->esc($this->title) . "',
+                    `bind` = " . $this->parentId . ",
+                    `icon` = '" . db()->esc($this->iconPath) . "',
+                    `vis` = " . $this->renderMode . ",
+                    `email` = '" . db()->esc($this->email) . "',
+                    `custom_sort_subs` = " . $this->weightedChildren . ",
+                    `order` = " . $this->weight
                 . " WHERE `id` = " . $this->id
             );
         }

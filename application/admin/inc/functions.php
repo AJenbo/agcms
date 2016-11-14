@@ -3113,20 +3113,20 @@ function getupdatemaerke(int $id): string
     return $html;
 }
 
-function updatemaerke(int $id, string $navn, string $link, string $ico): array
-{
-    if ($navn) {
-        db()->query('UPDATE maerke SET navn = \''.$navn.'\', link = \''.$link.'\', ico = \''.$ico.'\' WHERE id = '.$id);
-        return ['id' => 'canvas', 'html' => getmaerker()];
-    } else {
-        return ['error' => _('You must enter a name.')];
-    }
-}
-
 function save_ny_maerke(string $navn, string $link, string $ico): array
 {
+    return updatemaerke(null, $navn, $link, $ico);
+}
+
+function updatemaerke(int $id = null, string $navn = '', string $link = '', string $ico = ''): array
+{
     if ($navn) {
-        db()->query('INSERT INTO `maerke` (`navn` , `link` , `ico` ) VALUES (\''.$navn.'\', \''.$link.'\', \''.$ico.'\')');
+        if ($id) {
+            $brand = new Brand(['title' => $navn, 'link' => $link, 'icon_path' => $ico]);
+            $brand->save();
+        } else {
+            ORM::getOne(Brand::class, $id)->setTitle($navn)->setLink($link)->setIconPath($ico)->save();
+        }
         return ['id' => 'canvas', 'html' => getmaerker()];
     } else {
         return ['error' => _('You must enter a name.')];
