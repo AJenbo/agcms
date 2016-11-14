@@ -24,9 +24,6 @@ mb_language('uni');
 mb_detect_order('UTF-8, ISO-8859-1');
 mb_internal_encoding('UTF-8');
 
-require_once __DIR__ . '/../vendor/autoload.php';
-
-
 spl_autoload_register(function (string $class_name) {
     $classMap = [
         'Category' => 'Entity/Category',
@@ -42,6 +39,8 @@ spl_autoload_register(function (string $class_name) {
         require_once __DIR__ . '/' . $class_name . '.php';
     }
 });
+
+require_once __DIR__ . '/../vendor/autoload.php';
 
 function db(DB $overwrite = null): DB
 {
@@ -136,39 +135,6 @@ function encodeUrl(string $url): string
 function first(array $array)
 {
     return reset($array);
-}
-
-/**
- * Checks if email an address looks valid and that an mx server is responding
- *
- * @param string $email The email address to check
- *
- * @return bool
- */
-function valideMail(string $email): bool
-{
-    $user = preg_replace('/@.+$/u', '', $email);
-    $domain = preg_replace('/^.+?@/u', '', $email);
-    if (function_exists('idn_to_ascii')) {
-        $domain = idn_to_ascii($domain);
-    }
-
-    if (filter_var($user . '@' . $domain, FILTER_VALIDATE_EMAIL) && checkMx($domain)) {
-        return true;
-    }
-
-    return false;
-}
-
-function checkMx(string $domain): bool
-{
-    static $ceche = [];
-
-    if (!isset($ceche[$domain])) {
-        $ceche[$domain] = getmxrr($domain, $dummy);
-    }
-
-    return $ceche[$domain];
 }
 
 /**
@@ -371,94 +337,6 @@ function stringLimit(string $string, int $length = 50, string $ellipsis = '…')
 }
 
 /**
- * Search for pages and generate a list or redirect if only one was found
- *
- * @param string $q     Tekst to search for
- * @param string $where Additional sql where clause
- *
- * @return null
- */
-function searchListe(string $q, int $maerke, string $varenr = '', int $minpris = 0, int $maxpris = 0, string $antiWords)
-{
-    $pages = [];
-
-    //Full search
-    $where = "";
-    if ($maerke) {
-        $where = " AND `maerke` = " . $maerke;
-    }
-    if ($varenr) {
-        $where .= " AND varenr LIKE '" . db()->esc($varenr) . "%'";
-    }
-    if ($minpris) {
-        $where .= " AND pris > " . $minpris;
-    }
-    if ($maxpris) {
-        $where .= " AND pris < " . $maxpris;
-    }
-    if ($antiWords) {
-        $where .= " AND !MATCH (navn, text, beskrivelse) AGAINST('" . db()->esc($antiWords) ."') > 0";
-    }
-
-    if ($q) {
-        //TODO match on keywords
-        $columns = [];
-        foreach (db()->fetchArray("SHOW COLUMNS FROM sider") as $column) {
-            $columns[] = $column['Field'];
-        }
-        $simpleq = preg_replace('/\s+/u', '%', $q);
-        $pages = ORM::getByQuery(
-            Page::class,
-            "
-            SELECT `" . implode("`, `", $columns) . "`
-            FROM (SELECT sider.*, MATCH(navn, text, beskrivelse) AGAINST ('$q') AS score
-            FROM sider
-            JOIN bind ON sider.id = bind.side AND bind.kat != -1
-            WHERE MATCH (navn, text, beskrivelse) AGAINST('$q') > 0
-            $where
-            ORDER BY `score` DESC) x
-            UNION
-            SELECT sider.* FROM `list_rows`
-            JOIN lists ON list_rows.list_id = lists.id
-            JOIN sider ON lists.page_id = sider.id
-            JOIN bind ON sider.id = bind.side AND bind.kat != -1
-            WHERE list_rows.`cells` LIKE '%$simpleq%'"
-            . $where
-            . "
-            UNION
-            SELECT sider.* FROM `sider`
-            JOIN bind ON sider.id = bind.side AND bind.kat != -1
-            WHERE (
-                `navn` LIKE '%$simpleq%'
-                OR `text` LIKE '%$simpleq%'
-                OR `beskrivelse` LIKE '%$simpleq%'
-            ) "
-            . $where
-        );
-        Render::addLoadedTable('list_rows');
-        Render::addLoadedTable('lists');
-    } else {
-        $pages = ORM::getByQuery(
-            Page::class,
-            "
-            SELECT * FROM `sider` WHERE 1
-            $where
-            ORDER BY `navn` ASC
-            "
-        );
-    }
-
-    // Remove inactive pages
-    foreach ($pages as $key => $page) {
-        if ($page->isInactive()) {
-            unset($pages[$key]);
-        }
-    }
-
-    return array_values($pages);
-}
-
-/**
  * Get address from phone number
  *
  * @param string $phoneNumber Phone number
@@ -569,64 +447,6 @@ function getAddress(string $phoneNumber): array
 }
 
 /**
- * Get list of sub categories in format fitting the generatedcontent structure
- *
- * @param array $categories       Categories
- * @param array $categoryIds      Ids in active category trunk
- * @param array $weightedChildren Are the categories the list custome sorted
- *
- * @return array
- */
-function menu(array $categories, array $categoryIds, bool $weightedChildren = true): array
-{
-    $menu = [];
-    if (!$weightedChildren) {
-        $objectArray = [];
-        foreach ($categories as $categorie) {
-            $objectArray[] = [
-                'id'     => $categorie->getId(),
-                'navn'   => $categorie->getTitle(),
-                'object' => $categorie,
-            ];
-        }
-        $objectArray = arrayNatsort($objectArray, 'id', 'navn', 'asc');
-        $categories = [];
-        foreach ($objectArray as $row) {
-            $categories[] = $row['object'];
-        }
-    }
-
-    foreach ($categories as $category) {
-        if (!$category->isVisable()) {
-            continue;
-        }
-
-        //Er katagorien aaben
-        $subs = [];
-        if (in_array($category->getId(), $categoryIds, true)) {
-            $subs = menu(
-                $category->getChildren(true),
-                $categoryIds,
-                $category->getWeightedChildren()
-            );
-        }
-
-
-        //tegn under punkter
-        $menu[] = [
-            'id'   => $category->getId(),
-            'name' => $category->getTitle(),
-            'link' => '/' . $category->getSlug(),
-            'icon' => $category->getIconPath(),
-            'sub'  => $subs ? true : $category->hasChildren(true),
-            'subs' => $subs,
-        ];
-    }
-
-    return $menu;
-}
-
-/**
  * Get the html for content bellonging to a category
  *
  * @param int  $id   Id of activ category
@@ -660,6 +480,39 @@ function getKat(int $categoryId, string $sort): array
 function getCheckid(int $id): string
 {
     return substr(md5($id . Config::get('pbssalt')), 3, 5);
+}
+
+/**
+ * Checks if email an address looks valid and that an mx server is responding
+ *
+ * @param string $email The email address to check
+ *
+ * @return bool
+ */
+function valideMail(string $email): bool
+{
+    $user = preg_replace('/@.+$/u', '', $email);
+    $domain = preg_replace('/^.+?@/u', '', $email);
+    if (function_exists('idn_to_ascii')) {
+        $domain = idn_to_ascii($domain);
+    }
+
+    if (filter_var($user . '@' . $domain, FILTER_VALIDATE_EMAIL) && checkMx($domain)) {
+        return true;
+    }
+
+    return false;
+}
+
+function checkMx(string $domain): bool
+{
+    static $ceche = [];
+
+    if (!isset($ceche[$domain])) {
+        $ceche[$domain] = getmxrr($domain, $dummy);
+    }
+
+    return $ceche[$domain];
 }
 
 /**

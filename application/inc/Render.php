@@ -28,6 +28,65 @@ class Render
     public static $title = '';
     public static $track = '';
 
+    public static function doRouting(string $url)
+    {
+        // Routing
+        self::$maerkeId = (int) preg_replace('/.*\/mærke([0-9]*)-.*|.*/u', '\1', $url);
+        $categoryId = (int) preg_replace('/.*\/kat([0-9]*)-.*|.*/u', '\1', $url);
+        $pageId = (int) preg_replace('/.*\/side([0-9]*)-.*|.*/u', '\1', $url);
+
+        $redirect = !self::$maerkeId && !$categoryId && !$pageId ? 302 : false;
+        if (self::$maerkeId && !db()->fetchOne("SELECT `id` FROM `maerke` WHERE id = " . self::$maerkeId)) {
+            $redirect = 301;
+        }
+
+        if ($categoryId) {
+            self::$activeCategory = ORM::getOne(Category::class, $categoryId);
+            if (!self::$activeCategory || self::$activeCategory->isInactive()) {
+                $redirect = self::$activeCategory ? 302 : 301;
+                self::$activeCategory = null;
+            }
+        }
+        if ($pageId) {
+            self::$activePage = ORM::getOne(Page::class, $pageId);
+            if (!self::$activePage || self::$activePage->isInactive()) {
+                $redirect = self::$activePage ? 302 : 301;
+                self::$activePage = null;
+            }
+        }
+        if ($redirect) {
+            $redirectUrl = '/?sog=1&q=&sogikke=&minpris=&maxpris=&maerke=';
+            $q = preg_replace(
+                [
+                    '/\/|-|_|\.html|\.htm|\.php|\.gif|\.jpeg|\.jpg|\.png|mærke[0-9]+-|kat[0-9]+-|side[0-9]+-|\.php/u',
+                    '/[^\w0-9]/u',
+                    '/([0-9]+)/u',
+                    '/([[:upper:]]?[[:lower:]]+)/u',
+                    '/\s+/u'
+                ],
+                [
+                    ' ',
+                    ' ',
+                    ' \1 ',
+                    ' \1',
+                    ' '
+                ],
+                $url
+            );
+            $q = trim($q);
+            if ($q) {
+                $redirectUrl = '/?q=' . rawurlencode($q) . '&sogikke=&minpris=&maxpris=&maerke=0';
+            }
+            if (self::$activePage) {
+                $redirectUrl = self::$activePage->getCanonicalLink(self::$activeCategory);
+            } elseif (self::$activeCategory) {
+                $redirectUrl = '/' . self::$activeCategory->getSlug();
+            }
+
+            redirect($redirectUrl, $redirect);
+        }
+    }
+
     /**
      * @param string $key The cache key
      * @param mixed  $key The value to store
@@ -188,7 +247,7 @@ class Render
             "
         );
         self::addLoadedTable('bind');
-        self::$menu = menu($categories, $categoryIds);
+        self::$menu = self::menu($categories, $categoryIds);
 
         $listedPages = [];
         if (!empty($_GET['sog'])) {
@@ -211,7 +270,21 @@ class Render
                 'icon' => $maerkeet['ico'],
             ];
 
-            $listedPages = searchListe('', $maerkeet['id']);
+            $pages = ORM::getByQuery(
+                Page::class,
+                "
+                SELECT * FROM `sider`
+                WHERE `maerke` = " . self::$maerkeId . "
+                ORDER BY `navn` ASC
+                "
+            );
+            $listedPages = [];
+            // Remove inactive pages
+            foreach ($pages as $key => $page) {
+                if (!$page->isInactive()) {
+                    $listedPages[] = $page;
+                }
+            }
         } elseif (self::$activePage) {
             self::$pageType = 'product';
         } elseif (self::$activeCategory) {
@@ -249,7 +322,7 @@ class Render
                 }
             }
 
-            $listedPages = searchListe(
+            $listedPages = self::searchListe(
                 $_GET['q'] ?? '',
                 (int) $_GET['maerke'] ?? 0,
                 $_GET['varenr'] ?? '',
@@ -433,13 +506,14 @@ class Render
                     "
                 );
                 self::addLoadedTable('maerke');
-
-                self::$brand = [
-                    'name' => $brand['navn'],
-                    'link' => '/mærke' . $brand['id'] . '-' . clearFileName($brand['navn']) . '/',
-                    'xlink' => $brand['link'],
-                    'icon' => $brand['ico']
-                ];
+                if ($brand) {
+                    self::$brand = [
+                        'name' => $brand['navn'],
+                        'link' => '/mærke' . $brand['id'] . '-' . clearFileName($brand['navn']) . '/',
+                        'xlink' => $brand['link'],
+                        'icon' => $brand['ico']
+                    ];
+                }
             }
 
             foreach (self::$activePage->getAccessories() as $page) {
@@ -462,6 +536,143 @@ class Render
     }
 
     /**
+     * Get list of sub categories in format fitting the generatedcontent structure
+     *
+     * @param array $categories       Categories
+     * @param array $categoryIds      Ids in active category trunk
+     * @param array $weightedChildren Are the categories the list custome sorted
+     *
+     * @return array
+     */
+    public static function menu(array $categories, array $categoryIds, bool $weightedChildren = true): array
+    {
+        $menu = [];
+        if (!$weightedChildren) {
+            $objectArray = [];
+            foreach ($categories as $categorie) {
+                $objectArray[] = [
+                    'id'     => $categorie->getId(),
+                    'navn'   => $categorie->getTitle(),
+                    'object' => $categorie,
+                ];
+            }
+            $objectArray = arrayNatsort($objectArray, 'id', 'navn', 'asc');
+            $categories = [];
+            foreach ($objectArray as $row) {
+                $categories[] = $row['object'];
+            }
+        }
+
+        foreach ($categories as $category) {
+            if (!$category->isVisable()) {
+                continue;
+            }
+
+            //Er katagorien aaben
+            $subs = [];
+            if (in_array($category->getId(), $categoryIds, true)) {
+                $subs = self::menu(
+                    $category->getChildren(true),
+                    $categoryIds,
+                    $category->getWeightedChildren()
+                );
+            }
+
+
+            //tegn under punkter
+            $menu[] = [
+                'id'   => $category->getId(),
+                'name' => $category->getTitle(),
+                'link' => '/' . $category->getSlug(),
+                'icon' => $category->getIconPath(),
+                'sub'  => $subs ? true : $category->hasChildren(true),
+                'subs' => $subs,
+            ];
+        }
+
+        return $menu;
+    }
+
+    /**
+     * Search for pages and generate a list or redirect if only one was found
+     *
+     * @param string $q     Tekst to search for
+     * @param string $where Additional sql where clause
+     *
+     * @return null
+     */
+    public static function searchListe(string $q, int $maerke, string $varenr = '', int $minpris = 0, int $maxpris = 0, string $antiWords)
+    {
+        $pages = [];
+
+        //Full search
+        $where = "";
+        if ($maerke) {
+            $where = " AND `maerke` = " . $maerke;
+        }
+        if ($varenr) {
+            $where .= " AND varenr LIKE '" . db()->esc($varenr) . "%'";
+        }
+        if ($minpris) {
+            $where .= " AND pris > " . $minpris;
+        }
+        if ($maxpris) {
+            $where .= " AND pris < " . $maxpris;
+        }
+        if ($antiWords) {
+            $where .= " AND !MATCH (navn, text, beskrivelse) AGAINST('" . db()->esc($antiWords) ."') > 0
+            AND `navn` NOT LIKE '%$simpleq%'
+            AND `text` NOT LIKE '%$simpleq%'
+            AND `beskrivelse` NOT LIKE '%$simpleq%'
+            ";
+        }
+
+        $simpleSearchString = $antiWords ? '%' . preg_replace('/\s+/u', '%', $searchString) . '%' : '';
+        $simpleAntiWords = $antiWords ? '%' . preg_replace('/\s+/u', '%', $antiWords) . '%' : '';
+
+        //TODO match on keywords
+        $columns = [];
+        foreach (db()->fetchArray("SHOW COLUMNS FROM sider") as $column) {
+            $columns[] = $column['Field'];
+        }
+        $simpleq = "%" . preg_replace('/\s+/u', "%", $q) . "%";
+        $pages = ORM::getByQuery(
+            Page::class,
+            "
+            SELECT `" . implode("`, `", $columns) . "`
+            FROM (SELECT sider.*, MATCH(navn, text, beskrivelse) AGAINST ('" . db()->esc($q) . "') AS score
+            FROM sider
+            JOIN bind ON sider.id = bind.side AND bind.kat != -1
+            WHERE (
+                MATCH (navn, text, beskrivelse) AGAINST('" . db()->esc($q) . "') > 0
+                OR `navn` LIKE '%$simpleq%'
+                OR `text` LIKE '%$simpleq%'
+                OR `beskrivelse` LIKE '%$simpleq%'
+            )
+            $where
+            ORDER BY `score` DESC) x
+            UNION
+            SELECT sider.* FROM `list_rows`
+            JOIN lists ON list_rows.list_id = lists.id
+            JOIN sider ON lists.page_id = sider.id
+            JOIN bind ON sider.id = bind.side AND bind.kat != -1
+            WHERE list_rows.`cells` LIKE '%$simpleq%'"
+            . $where
+        );
+        Render::addLoadedTable('list_rows');
+        Render::addLoadedTable('lists');
+
+        // Remove inactive pages
+        foreach ($pages as $key => $page) {
+            if ($page->isInactive()) {
+                unset($pages[$key]);
+            }
+        }
+
+        return array_values($pages);
+    }
+
+    /**
      * Search for categories and populate generatedcontent with results
      *
      * @param string $searchString Seach string
@@ -475,8 +686,8 @@ class Render
         $categories = [];
         $maerke = [];
         if ($searchString) {
-            $simpleSearchString = '%' . preg_replace('/\s+/u', '%', $searchString) . '%';
-            $simpleAntiWords = '%' . preg_replace('/\s+/u', '%', $antiWords) . '%';
+            $simpleSearchString = $antiWords ? '%' . preg_replace('/\s+/u', '%', $searchString) . '%' : '';
+            $simpleAntiWords = $antiWords ? '%' . preg_replace('/\s+/u', '%', $antiWords) . '%' : '';
             $categories = ORM::getByQuery(
                 Category::class,
                 "
@@ -539,7 +750,7 @@ class Render
      *
      * @return array
      */
-    public function getTableHtml(int $listid, int $bycell = null, Category $category = null): string
+    public static function getTableHtml(int $listid, int $bycell = null, Category $category = null): string
     {
         $html = '';
 
