@@ -1,7 +1,7 @@
 <?php
 
 require_once $_SERVER['DOCUMENT_ROOT'] . '/admin/logon.php';
-include_once _ROOT_ . '/vendor/libs/countries.php';
+@include_once _ROOT_ . '/inc/countries.php';
 
 if (!empty($_GET['function']) && $_GET['function'] == 'new') {
     redirect('faktura.php?id='.newfaktura());
@@ -12,7 +12,7 @@ $faktura = db()->fetchOne(
     SELECT*,
         UNIX_TIMESTAMP(`date`) AS `date`,
         UNIX_TIMESTAMP(`paydate`) AS `paydate`
-    FROM `fakturas` WHERE `id` = " . (int) $_GET['id']
+    FROM `fakturas` WHERE `id` = " . intval($_GET['id'] ?? 0)
 );
 
 $faktura['quantities'] = explode('<', $faktura['quantities']);

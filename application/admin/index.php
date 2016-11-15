@@ -101,7 +101,7 @@ switch (@$_GET['side']) {
         break;
     case 'viewemail':
     case 'editemail':
-        echo getEmail((int) $_GET['id']);
+        echo getEmail(intval($_GET['id'] ?? 0));
         break;
     case 'sogogerstat':
         echo getsogogerstat();
@@ -124,25 +124,25 @@ switch (@$_GET['side']) {
         echo $temp['html'];
         break;
     case 'editkrav':
-        echo editkrav((int) $_GET['id']);
+        echo editkrav(intval($_GET['id'] ?? 0));
         break;
     case 'nykrav':
         echo getnykrav();
         break;
     case 'updatemaerke':
-        echo getupdatemaerke((int) $_GET['id']);
+        echo getupdatemaerke(intval($_GET['id'] ?? 0));
         break;
     case 'redigerside':
-        echo redigerside((int) $_GET['id']);
+        echo redigerside(intval($_GET['id'] ?? 0));
         break;
     case 'redigerkat':
-        echo redigerkat((int) $_GET['id']);
+        echo redigerkat(intval($_GET['id'] ?? 0));
         break;
     case 'getSiteTree':
         echo getSiteTree();
         break;
     case 'redigerSpecial':
-        echo redigerSpecial((int) $_GET['id']);
+        echo redigerSpecial(intval($_GET['id'] ?? 0));
         break;
     case 'redigerFrontpage':
         echo redigerFrontpage();
@@ -154,7 +154,7 @@ switch (@$_GET['side']) {
         echo listsort(intval($_GET['id'] ?? 0));
         break;
     case 'editContact':
-        echo editContact((int) $_GET['id']);
+        echo editContact(intval($_GET['id'] ?? 0));
         break;
     case 'addressbook':
         echo getaddressbook();

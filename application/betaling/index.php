@@ -4,10 +4,10 @@
  */
 
 require_once $_SERVER['DOCUMENT_ROOT'] . '/inc/functions.php';
-include_once _ROOT_ . '/inc/countries.php';
+@include_once _ROOT_ . '/inc/countries.php';
 
-$id = !empty($_GET['id']) ? (int) $_GET['id'] : null;
-$checkid = !empty($_GET['checkid']) ? $_GET['checkid'] : '';
+$id = intval($_GET['id'] ?? null);
+$checkid = $_GET['checkid'] ?? '';
 
 Render::$pageType = 'custome';
 Render::$crumbs = [
@@ -27,7 +27,7 @@ if (!empty($id) && $checkid === getCheckid($id) && !isset($_GET['txnid'])) {
         FROM `fakturas`
         WHERE `id` = ".$id
     );
-    Cache::addLoadedTable('fakturas');
+    Render::addLoadedTable('fakturas');
 
     if (in_array($faktura['status'], ['new', 'locked', 'pbserror'])) {
         $faktura['quantities'] = explode('<', $faktura['quantities']);
@@ -60,7 +60,7 @@ if (!empty($id) && $checkid === getCheckid($id) && !isset($_GET['txnid'])) {
                 WHERE `status` IN('new', 'pbserror')
                   AND `id` = " . $id
             );
-            Cache::addLoadedTable('fakturas');
+            Render::addLoadedTable('fakturas');
 
             Render::$crumbs = [
                 [
@@ -166,7 +166,7 @@ if (!empty($id) && $checkid === getCheckid($id) && !isset($_GET['txnid'])) {
                 $sql .= 'WHERE `id` = ' . $id;
 
                 db()->query($sql);
-                Cache::addLoadedTable('fakturas');
+                Render::addLoadedTable('fakturas');
 
                 $faktura = array_merge($faktura, $updates);
 
@@ -203,7 +203,7 @@ if (!empty($id) && $checkid === getCheckid($id) && !isset($_GET['txnid'])) {
                             )
                             "
                         );
-                        Cache::addLoadedTable('email');
+                        Render::addLoadedTable('email');
                     }
 
                     redirect('/betaling/?id=' . $id . '&checkid=' . $checkid . '&step=2');
@@ -427,7 +427,7 @@ if (!empty($id) && $checkid === getCheckid($id) && !isset($_GET['txnid'])) {
                 WHERE `status` IN('new', 'pbserror')
                 AND `id` = " . $id
             );
-            Cache::addLoadedTable('fakturas');
+            Render::addLoadedTable('fakturas');
 
             Render::$crumbs[] = [
                 'name' => _('Trade Conditions'),
@@ -509,8 +509,8 @@ if (!empty($id) && $checkid === getCheckid($id) && !isset($_GET['txnid'])) {
     Render::$headline = _('Error');
     Render::$bodyHtml = _('An unknown error occured.');
 
-    $tid = (int) $_GET['txnid'];
-    $amount = (int) $_GET['amount'];
+    $tid = intval($_GET['txnid'] ?? 0);
+    $amount = intval($_GET['amount'] ?? 0);
 
     $params = $_GET;
     unset($params['hash']);
@@ -521,7 +521,7 @@ if (!empty($id) && $checkid === getCheckid($id) && !isset($_GET['txnid'])) {
     $shopBody = '<br />'.sprintf(_('There was an error on the payment page of online invoice #%d!'), $id).'<br />';
 
     $faktura = db()->fetchOne("SELECT * FROM `fakturas` WHERE `id` = " . $id);
-    Cache::addLoadedTable('fakturas');
+    Render::addLoadedTable('fakturas');
 
     if (!$faktura) {
         Render::$bodyHtml = '<p>' . _('The payment does not exist in our system.') . '</p>';
@@ -589,7 +589,7 @@ if (!empty($id) && $checkid === getCheckid($id) && !isset($_GET['txnid'])) {
             WHERE `status` IN('new', 'locked', 'pbserror')
             AND `id` = " . $id
             );
-            Cache::addLoadedTable('fakturas');
+            Render::addLoadedTable('fakturas');
 
             $faktura = db()->fetchOne(
             "
@@ -597,7 +597,7 @@ if (!empty($id) && $checkid === getCheckid($id) && !isset($_GET['txnid'])) {
             FROM `fakturas`
             WHERE `id` = " . $id
         );
-        Cache::addLoadedTable('fakturas');
+        Render::addLoadedTable('fakturas');
 
         Render::$bodyHtml = _(
             '<p style="text-align:center;"><img src="images/ok.png" alt="" /></p>
@@ -814,7 +814,7 @@ Tel. %s<br />
 
     //To shop
     $faktura = db()->fetchOne("SELECT * FROM `fakturas` WHERE `id` = ".$id);
-    Cache::addLoadedTable('fakturas');
+    Render::addLoadedTable('fakturas');
     if (!valideMail($faktura['department'])) {
         $faktura['department'] = first(Config::get('emails'))['address'];
     }
@@ -949,7 +949,7 @@ Delivery phone: %s</p>
         <tbody>
           <tr>
             <td>'._('Order No:').'</td>
-            <td><input name="id" value="'.$id.'" /></td>
+            <td><input name="id" value="' . ($id ?: '') . '" /></td>
           </tr>
           <tr>
             <td>'._('Code:').'</td>

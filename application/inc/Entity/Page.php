@@ -295,7 +295,7 @@ class Page
         return $this->brandId ? ORM::getOne(Brand::class, $this->brandId) : null;
     }
 
-    public function getRequirement(): Requirement
+    public function getRequirement()
     {
         return $this->requirementId ? ORM::getOne(Requirement::class, $this->requirementId) : null;
     }

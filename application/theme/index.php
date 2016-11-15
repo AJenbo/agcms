@@ -133,9 +133,10 @@ if (in_array(self::$pageType, ['front', 'custome'], true)) {
     }
     echo '</h1>' . self::$bodyHtml;
 
-    if (!empty(self::$requirement['link'])) {
-        echo '<p><a href="' . xhtmlEsc(self::$requirement['link']) . '" target="krav">'
-            . xhtmlEsc(self::$requirement['name']) . '</a></p>';
+    $requirement = self::$activePage->getRequirement();
+    if ($requirement) {
+        echo '<p><a href="/' . xhtmlEsc($requirement->getSlug()) . '" target="krav">'
+            . xhtmlEsc($requirement->getTitle()) . '</a></p>';
     }
     echo '<p style="text-align:center">';
     echoPrice(

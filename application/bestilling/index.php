@@ -4,7 +4,7 @@
  */
 
 require_once $_SERVER['DOCUMENT_ROOT'] . '/inc/functions.php';
-include_once _ROOT_ . '/inc/countries.php';
+@include_once _ROOT_ . '/inc/countries.php';
 
 if (is_numeric(@$_GET['add']) || is_numeric(@$_GET['add_list_item'])) {
     if ($_SERVER['HTTP_REFERER']) {
@@ -21,9 +21,9 @@ if (is_numeric(@$_GET['add']) || is_numeric(@$_GET['add_list_item'])) {
             "
             SELECT *
             FROM `list_rows`
-            WHERE id = " . (int) $_GET['add_list_item']
+            WHERE id = " . intval($_GET['add_list_item'] ?? 0)
         );
-        Cache::addLoadedTable('list_rows');
+        Render::addLoadedTable('list_rows');
         if ($list_row['link']) {
             $product = ORM::getOne(Page::class, $list_row['link']);
             if ($product) {
@@ -32,7 +32,7 @@ if (is_numeric(@$_GET['add']) || is_numeric(@$_GET['add_list_item'])) {
                 $productOldPrice = $product->getOldPrice();
             }
             if (!$goto_uri) {
-                $goto_uri = '/?side=' . (int) $_GET['add'];
+                $goto_uri = '/?side=' . intval($_GET['add'] ?? 0);
             }
         } else {
             $list = db()->fetchOne(
@@ -40,7 +40,7 @@ if (is_numeric(@$_GET['add']) || is_numeric(@$_GET['add_list_item'])) {
                 SELECT `page_id`, `cells`
                 FROM `lists` WHERE id = " . (int) $list_row['list_id']
             );
-            Cache::addLoadedTable('lists');
+            Render::addLoadedTable('lists');
             $list['cells'] = explode('<', $list['cells']);
             $list_row['cells'] = explode('<', $list_row['cells']);
             foreach ($list['cells'] as $i => $celltype) {
@@ -64,7 +64,7 @@ if (is_numeric(@$_GET['add']) || is_numeric(@$_GET['add_list_item'])) {
         }
 
         if (!$goto_uri) {
-            $goto_uri = '/?side=' . (int) $_GET['add'];
+            $goto_uri = '/?side=' . intval($_GET['add'] ?? 0);
         }
     }
 
@@ -91,7 +91,7 @@ if (is_numeric(@$_GET['add']) || is_numeric(@$_GET['add_list_item'])) {
     if (!empty($_SERVER['HTTP_REFERER'])) {
         $url = $_SERVER['HTTP_REFERER'];
     } else {
-        $url = '/?side=' . (int) $_GET['add'];
+        $url = '/?side=' . intval($_GET['add'] ?? 0);
     }
     redirect($url);
 }
@@ -332,7 +332,7 @@ if (!empty($_SESSION['faktura']['quantities'])) {
                         )
                         "
                     );
-                    Cache::addLoadedTable('emails');
+                    Render::addLoadedTable('emails');
                 }
 
                 redirect('/bestilling/?step=2');
@@ -604,7 +604,7 @@ if (!empty($_SESSION['faktura']['quantities'])) {
 
         //save order
         db()->query($sql);
-        Cache::addLoadedTable('fakturas');
+        Render::addLoadedTable('fakturas');
         $id = db()->insert_id;
 
         //emailbody header

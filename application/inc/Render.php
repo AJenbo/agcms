@@ -3,29 +3,29 @@
 class Render
 {
     private static $accessories = [];
+    private static $activeBrand;
+    private static $activeCategory;
+    private static $activePage;
     private static $brand = [];
     private static $canonical = '';
     private static $email = '';
+    private static $has_product_table = false;
     private static $keywords = [];
     private static $loadedTables = [];
     private static $menu = [];
     private static $pageList = [];
-    private static $pages = [];
     private static $price = [];
     private static $requirement = [];
     private static $searchMenu = [];
     private static $serial = '';
     private static $timeStamp = 0;
     private static $updateTime = 0;
-    public static $activeBrand;
-    public static $activeCategory;
-    public static $activePage;
-    public static $bodyHtml = '';
-    public static $crumbs = [];
-    public static $has_product_table = false;
-    public static $headline = '';
+
     public static $pageType = 'front';
     public static $title = '';
+    public static $headline = '';
+    public static $crumbs = [];
+    public static $bodyHtml = '';
     public static $track = '';
 
     public static function doRouting(string $url)
@@ -34,7 +34,7 @@ class Render
         $brandId = (int) preg_replace('/.*\/mærke([0-9]*)-.*|.*/u', '\1', $url);
         $categoryId = (int) preg_replace('/.*\/kat([0-9]*)-.*|.*/u', '\1', $url);
         $pageId = (int) preg_replace('/.*\/side([0-9]*)-.*|.*/u', '\1', $url);
-        $redirect = !$brandId && !$categoryId && !$pageId ? 302 : false;
+        $redirect = !$brandId && !$categoryId && !$pageId ? 302 : 0;
 
         if ($brandId) {
             self::$activeBrand = ORM::getOne(Brand::class, $brandId);
@@ -59,37 +59,58 @@ class Render
             }
         }
 
-        if ($redirect) {
-            $redirectUrl = '/?sog=1&q=&sogikke=&minpris=&maxpris=&maerke=';
-            $q = preg_replace(
-                [
-                    '/\/|-|_|\.html|\.htm|\.php|\.gif|\.jpeg|\.jpg|\.png|mærke[0-9]+-|kat[0-9]+-|side[0-9]+-|\.php/u',
-                    '/[^\w0-9]/u',
-                    '/([0-9]+)/u',
-                    '/([[:upper:]]?[[:lower:]]+)/u',
-                    '/\s+/u'
-                ],
-                [
-                    ' ',
-                    ' ',
-                    ' \1 ',
-                    ' \1',
-                    ' '
-                ],
-                $url
-            );
-            $q = trim($q);
-            if ($q) {
-                $redirectUrl = '/?q=' . rawurlencode($q) . '&sogikke=&minpris=&maxpris=&maerke=0';
-            }
-            if (self::$activePage) {
-                $redirectUrl = self::$activePage->getCanonicalLink(self::$activeCategory);
-            } elseif (self::$activeCategory) {
-                $redirectUrl = '/' . self::$activeCategory->getSlug();
-            }
+        self::doRedirects($redirect, $url);
+    }
 
-            redirect($redirectUrl, $redirect);
+    private static function doRedirects(int $redirect, string $url)
+    {
+        // Brand only search
+        if (!empty($_GET['maerke'])
+            && empty($_GET['q'])
+            && empty($_GET['varenr'])
+            && empty($_GET['minpris'])
+            && empty($_GET['maxpris'])
+            && empty($_GET['sogikke'])
+        ) {
+            $brand = ORM::getOne(Brand::class, $_GET['maerke']);
+            if ($brand) {
+                redirect('/' . $brand->getSlug(), 301);
+            }
         }
+
+        if (!$redirect) {
+            return;
+        }
+
+        $redirectUrl = '/?sog=1&q=&sogikke=&minpris=&maxpris=&maerke=';
+        $q = preg_replace(
+            [
+                '/\/|-|_|\.html|\.htm|\.php|\.gif|\.jpeg|\.jpg|\.png|mærke[0-9]+-|kat[0-9]+-|side[0-9]+-|\.php/u',
+                '/[^\w0-9]/u',
+                '/([0-9]+)/u',
+                '/([[:upper:]]?[[:lower:]]+)/u',
+                '/\s+/u'
+            ],
+            [
+                ' ',
+                ' ',
+                ' \1 ',
+                ' \1',
+                ' '
+            ],
+            $url
+        );
+        $q = trim($q);
+        if ($q) {
+            $redirectUrl = '/?q=' . rawurlencode($q) . '&sogikke=&minpris=&maxpris=&maerke=0';
+        }
+        if (self::$activePage) {
+            $redirectUrl = self::$activePage->getCanonicalLink(self::$activeCategory);
+        } elseif (self::$activeCategory) {
+            $redirectUrl = '/' . self::$activeCategory->getSlug();
+        }
+
+        redirect($redirectUrl, $redirect);
     }
 
     /**
@@ -194,34 +215,8 @@ class Render
 
     public static function prepareData()
     {
-        // TODO only grab relevant variables (Especially test custom pages)
-        self::$title = Config::get('site_name');
         self::$email = first(Config::get('emails'))['address'];
-        if (self::$activeCategory) {
-            self::$email = self::$activeCategory->getEmail();
-        }
-
-        //Front page pages
-        $pages = ORM::getByQuery(
-            Page::class,
-            "
-            SELECT *
-            FROM bind
-            JOIN sider
-            ON bind.side = sider.id
-            WHERE kat = 0
-            ORDER BY sider.`navn` ASC
-            "
-        );
-        self::addLoadedTable('bind');
-
-        foreach ($pages as $page) {
-            self::$pages[] = [
-                'id'   => $page->getId(),
-                'name' => $page->getTitle(),
-                'link' => '/' . $page->getSlug(),
-            ];
-        }
+        self::$title = self::$title ?: Config::get('site_name');
 
         $categoryIds = [];
         if (self::$activeCategory) {
@@ -237,164 +232,59 @@ class Render
             };
         }
 
-        //Get list of top categorys on the site.
-        $categories = ORM::getByQuery(
-            Category::class,
-            "
-            SELECT *
-            FROM `kat`
-            WHERE kat.vis != " . Category::HIDDEN . "
-                AND kat.bind = 0
-                AND (id IN (SELECT bind FROM kat WHERE vis != " . Category::HIDDEN . ")
-                    OR id IN (SELECT kat FROM bind)
-                )
-            ORDER BY `order`, navn
-            "
-        );
-        self::addLoadedTable('bind');
-        self::$menu = self::menu($categories, $categoryIds);
+        if (!isset($_GET['q'])) {
+            //Get list of top categorys on the site.
+            $categories = ORM::getByQuery(
+                Category::class,
+                "
+                SELECT *
+                FROM `kat`
+                WHERE kat.vis != " . Category::HIDDEN . "
+                    AND kat.bind = 0
+                    AND (id IN (SELECT bind FROM kat WHERE vis != " . Category::HIDDEN . ")
+                        OR id IN (SELECT kat FROM bind)
+                    )
+                ORDER BY `order`, navn
+                "
+            );
+            self::addLoadedTable('bind');
+            self::$menu = self::menu($categories, $categoryIds);
+        }
 
-        $listedPages = [];
-        if (!empty($_GET['sog'])) {
-            self::$pageType = 'search';
-        } elseif (self::$activeBrand) {
-            self::$pageType = 'brand';
-            self::$title = self::$activeBrand->getTitle();
-            self::$brand = [
-                'link'  => '/' . self::$activeBrand->getSlug(),
-                'name'  => self::$activeBrand->getTitle(),
-                'xlink' => self::$activeBrand->getLink(),
-                'icon'  => self::$activeBrand->getIconPath(),
-            ];
+        self::loadBrandData(self::$activeBrand);
+        self::loadCategoryData(self::$activeCategory);
+        self::loadPageData(self::$activePage);
 
-            $listedPages = [];
-            foreach (self::$activeBrand->getPages() as $page) {
-                if (!$page->isInactive()) {
-                    $listedPages[] = $page;
-                }
-            }
-        } elseif (self::$activePage) {
-            self::$pageType = 'product';
-        } elseif (self::$activeCategory) {
-            self::$pageType = self::$activeCategory->getRenderMode() == Category::GALLERY ? 'tiles' : 'list';
-            $listedPages = self::$activeCategory->getPages();
-            if (count($listedPages) === 1) {
-                self::$activePage = array_shift($listedPages);
-                self::$pageType = 'product';
-                $listedPages = [];
-            }
-        } elseif (!empty($_GET['q'])
+        if (isset($_GET['q'])
             || !empty($_GET['varenr'])
             || !empty($_GET['minpris'])
             || !empty($_GET['maxpris'])
             || !empty($_GET['sogikke'])
             || !empty($_GET['maerke'])
         ) {
-            // Brand search
-            if (empty($_GET['q'])
-                && empty($_GET['varenr'])
-                && empty($_GET['minpris'])
-                && empty($_GET['maxpris'])
-                && empty($_GET['sogikke'])
-                && !empty($_GET['maerke'])
-            ) {
-                $brand = ORM::getOne(Brand::class, $_GET['maerke']);
-                if ($brand) {
-                    redirect('/' . $brand->getSlug(), 301);
-                }
-            }
-
-            $listedPages = self::searchListe(
+            $pages = self::searchListe(
                 $_GET['q'] ?? '',
-                (int) $_GET['maerke'] ?? 0,
+                intval($_GET['maerke'] ?? 0),
                 $_GET['varenr'] ?? '',
-                (int) $_GET['minpris'] ?? 0,
-                (int) $_GET['maxpris'] ?? 0,
+                intval($_GET['minpris'] ?? 0),
+                intval($_GET['maxpris'] ?? 0),
                 $_GET['sogikke'] ?? ''
             );
-            if (count($listedPages) === 1) {
-                $page = array_shift($listedPages);
+            if (count($pages) === 1) {
+                $page = array_shift($pages);
                 redirect($page->getCanonicalLink(), 302);
             }
+            self::loadPagesData($pages);
 
+            self::$pageType = 'tiles';
+            self::$title = 'Søg på ' . Config::get('site_name');
             self::$searchMenu = self::getSearchMenu(
                 $_GET['q'] ?? '',
                 $_GET['sogikke'] ?? ''
             );
+        } elseif (!empty($_GET['sog'])) {
+            self::$pageType = 'search';
             self::$title = 'Søg på ' . Config::get('site_name');
-            self::$pageType = 'tiles';
-        }
-
-        if ($listedPages) {
-            $pageArray = [];
-            foreach ($listedPages as $page) {
-                $pageArray[] = [
-                    'id'     => $page->getId(),
-                    'navn'   => $page->getTitle(),
-                    'object' => $page,
-                ];
-            }
-            $pageArray = arrayNatsort($pageArray, 'id', 'navn', 'asc');
-            foreach ($pageArray as $item) {
-                $page = $item['object'];
-
-                if (!self::$activeCategory || self::$activeCategory->getRenderMode() === Category::GALLERY) {
-                    self::$pageList[] = [
-                        'id' => $page->getId(),
-                        'name' => $page->getTitle(),
-                        'date' => $page->getTimeStamp(),
-                        'link' => $page->getCanonicalLink(self::$activeCategory),
-                        'icon' => $page->getImagePath(),
-                        'text' => $page->getExcerpt(),
-                        'price' => [
-                            'before' => $page->getOldPrice(),
-                            'now' => $page->getPrice(),
-                            'from' => $page->getPriceType(),
-                            'market' => $page->getOldPriceType(),
-                        ]
-                    ];
-                } else {
-                    self::$pageList[] = [
-                        'id' => $page->getId(),
-                        'name' => $page->getTitle(),
-                        'date' => $page->getTimeStamp(),
-                        'link' => $page->getCanonicalLink(self::$activeCategory),
-                        'serial' => $page->getSku(),
-                        'price' => [
-                            'before' => $page->getOldPrice(),
-                            'now' => $page->getPrice(),
-                        ]
-                    ];
-                }
-            }
-        }
-
-        if (self::$activeCategory && empty(self::$title)) {
-            self::$title = trim(self::$activeCategory->getTitle());
-
-            if (self::$activeCategory->getIconPath()) {
-                $icon = db()->fetchOne(
-                    "
-                    SELECT `alt`
-                    FROM `files`
-                    WHERE path = '" . db()->esc(self::$activeCategory->getIconPath()) . "'"
-                );
-                self::addLoadedTable('files');
-                if (!empty($icon['alt'])) {
-                    self::$title .= (self::$title ? ' ' : '') . $icon['alt'];
-                } elseif (!self::$title) {
-                    $path = pathinfo(self::$activeCategory->getIconPath());
-                    self::$title = ucfirst(preg_replace('/-/ui', ' ', $path['filename']));
-                }
-            }
-        }
-
-        //Get page content and type
-        if (self::$pageType === 'front') {
-            self::$bodyHtml = ORM::getOne(CustomPage::class, 1)->getHtml();
-        } elseif (self::$pageType === 'search') {
-            self::$title = 'Søg på ' . Config::get('site_name');
-
             self::$bodyHtml = '<form action="/" method="get"><table><tr><td>' . _('Contains')
                 . '</td><td><input name="q" size="31" /></td><td><input type="submit" value="' . _('Search')
                 . '" /></td></tr><tr><td>' . _('Part No.')
@@ -405,78 +295,223 @@ class Render
                 . _('Max price')
                 . '&nbsp;</td><td><input name="maxpris" size="5" maxlength="11" value="" />,-</td></tr><tr><td>'
                 . _('Brand:') . '</td><td><select name="maerke"><option value="0">' . _('All') . '</option>';
-
-            $brands = ORM::getOne(Brand::class, "SELECT * FROM `maerke` ORDER BY `navn`");
-            foreach ($brands as $brand) {
+            foreach (ORM::getByQuery(Brand::class, "SELECT * FROM `maerke` ORDER BY `navn`") as $brand) {
                 self::$bodyHtml .= '<option value="' . $brand->getId() . '">'
                     . xhtmlEsc($brand->getTitle()) . '</option>';
             }
             self::$bodyHtml .= '</select></td></tr></table></form>';
-        } elseif (self::$pageType === 'product') {
-            self::$canonical = self::$activePage->getCanonicalLink();
-            self::$title = self::$activePage->getTitle();
-            self::$headline = self::$activePage->getTitle();
-            self::$serial = self::$activePage->getSku();
-            self::$timeStamp = self::$activePage->getTimestamp();
-            self::$price = [
-                'now'    => self::$activePage->getPrice(),
-                'new'    => self::$activePage->getPrice(),
-                'from'   => self::$activePage->getPriceType(),
-                'before' => self::$activePage->getOldPrice(),
-                'old'    => self::$activePage->getOldPrice(),
-                'market' => self::$activePage->getOldPriceType(),
-            ];
+        } elseif (self::$pageType === 'front') {
+            self::$bodyHtml = ORM::getOne(CustomPage::class, 1)->getHtml();
+        }
 
-            self::$bodyHtml = self::$activePage->getHtml();
-            $lists = db()->fetchArray(
+        self::cleanData();
+    }
+
+    private static function cleanData()
+    {
+        self::$keywords = array_filter(self::$keywords);
+    }
+
+    private static function loadBrandData(Brand $brand = null)
+    {
+        if (!$brand) {
+            return;
+        }
+
+        self::$pageType = 'brand';
+        self::$title = $brand->getTitle();
+        self::$brand = [
+            'link'  => '/' . $brand->getSlug(),
+            'name'  => $brand->getTitle(),
+            'xlink' => $brand->getLink(),
+            'icon'  => $brand->getIconPath(),
+        ];
+
+        $pages = [];
+        foreach (self::$activeBrand->getPages() as $page) {
+            if (!$page->isInactive()) {
+                $pages[] = $page;
+            }
+        }
+        self::loadPagesData($pages);
+    }
+
+    private static function loadCategoryData(Category $category = null)
+    {
+        if (!$category) {
+            return;
+        }
+
+        $title = trim($category->getTitle());
+        if ($category->getIconPath()) {
+            $icon = db()->fetchOne(
                 "
-                SELECT id
-                FROM `lists`
-                WHERE `page_id` = " . self::$activePage->getId()
+                SELECT `alt`
+                FROM `files`
+                WHERE path = '" . db()->esc($category->getIconPath()) . "'"
             );
-            self::addLoadedTable('lists');
-
-            foreach ($lists as $list) {
-                self::$bodyHtml .= '<div id="table' . $list['id'] . '">'
-                    . getTableHtml($list['id'], null, self::$activeCategory) . '</div>';
+            self::addLoadedTable('files');
+            if (!empty($icon['alt'])) {
+                $title .= trim(($title ? ' ' : '') . $icon['alt']);
+            } elseif (!$title) {
+                $path = pathinfo($category->getIconPath());
+                $title = trim(ucfirst(preg_replace('/-/ui', ' ', $path['filename'])));
             }
+        }
+        self::$title = $title ?: self::$title;
+        self::$email = self::$activeCategory->getEmail();
 
-            $requirement = self::$activePage->getRequirement();
-            if ($requirement) {
-                self::$requirement = [
-                    'icon' => '',
-                    'name' => $requirement->getTitle(),
-                    'link' => '/' . $requirement->getSlug(),
-                ];
+        $pages = [];
+        foreach ($category->getPages() as $page) {
+            if (!$page->isInactive()) {
+                $pages[] = $page;
             }
+        }
+        if (count($pages) === 1) {
+            self::$activePage = array_shift($pages);
+            return;
+        }
 
-            $brand = self::$activePage->getBrand();
-            if ($brand) {
-                self::$brand = [
-                    'name'  => $brand->getTitle(),
-                    'link'  => '/' . $brand->getSlug(),
-                    'xlink' => $brand->getLink(),
-                    'icon'  => $brand->getIconPath(),
-                ];
-            }
+        self::$pageType = $category->getRenderMode() === Category::GALLERY ? 'tiles' : 'list';
+        self::loadPagesData($pages);
+    }
 
-            foreach (self::$activePage->getAccessories() as $page) {
-                self::$accessories[] = [
+    private static function loadPagesData(array $pages = null)
+    {
+        if (!$pages) {
+            return;
+        }
+
+        $pageArray = [];
+        foreach ($pages as $page) {
+            $pageArray[] = [
+                'id'     => $page->getId(),
+                'navn'   => $page->getTitle(),
+                'object' => $page,
+            ];
+        }
+        $pageArray = arrayNatsort($pageArray, 'id', 'navn', 'asc');
+        foreach ($pageArray as $item) {
+            $page = $item['object'];
+
+            if (!self::$activeCategory || self::$activeCategory->getRenderMode() === Category::GALLERY) {
+                self::$pageList[] = [
+                    'id' => $page->getId(),
                     'name' => $page->getTitle(),
-                    'link' => $page->getCanonicalLink(),
+                    'date' => $page->getTimeStamp(),
+                    'link' => $page->getCanonicalLink(self::$activeCategory),
                     'icon' => $page->getImagePath(),
                     'text' => $page->getExcerpt(),
                     'price' => [
+                        'before' => $page->getOldPrice(),
                         'now' => $page->getPrice(),
                         'from' => $page->getPriceType(),
-                        'before' => $page->getOldPrice(),
                         'market' => $page->getOldPriceType(),
-                    ],
+                    ]
+                ];
+            } else {
+                self::$pageList[] = [
+                    'id' => $page->getId(),
+                    'name' => $page->getTitle(),
+                    'date' => $page->getTimeStamp(),
+                    'link' => $page->getCanonicalLink(self::$activeCategory),
+                    'serial' => $page->getSku(),
+                    'price' => [
+                        'before' => $page->getOldPrice(),
+                        'now' => $page->getPrice(),
+                    ]
                 ];
             }
-
-            self::$keywords[] = self::$activePage->getTitle();
         }
+    }
+
+    private static function loadPageData(Page $page = null)
+    {
+        if (!$page) {
+            return;
+        }
+
+        self::$pageType   = 'product';
+        self::$canonical  = $page->getCanonicalLink();
+        self::$headline   = $page->getTitle();
+        self::$keywords[] = $page->getTitle();
+        self::$serial     = $page->getSku();
+        self::$timeStamp  = $page->getTimestamp();
+        self::$title      = trim($page->getTitle()) ?: self::$title;
+
+        self::$bodyHtml = $page->getHtml();
+        $lists = db()->fetchArray(
+            "
+            SELECT id
+            FROM `lists`
+            WHERE `page_id` = " . $page->getId()
+        );
+        self::addLoadedTable('lists');
+        foreach ($lists as $list) {
+            self::$bodyHtml .= '<div id="table' . $list['id'] . '">'
+                . self::getTableHtml($list['id'], null, self::$activeCategory) . '</div>';
+        }
+
+        self::$price = [
+            'now'    => $page->getPrice(),
+            'new'    => $page->getPrice(),
+            'from'   => $page->getPriceType(),
+            'before' => $page->getOldPrice(),
+            'old'    => $page->getOldPrice(),
+            'market' => $page->getOldPriceType(),
+        ];
+
+        $brand = $page->getBrand();
+        if ($brand) {
+            self::$brand = [
+                'name'  => $brand->getTitle(),
+                'link'  => '/' . $brand->getSlug(),
+                'xlink' => $brand->getLink(),
+                'icon'  => $brand->getIconPath(),
+            ];
+        }
+
+        foreach ($page->getAccessories() as $accessory) {
+            self::$accessories[] = [
+                'name' => $accessory->getTitle(),
+                'link' => $accessory->getCanonicalLink(),
+                'icon' => $accessory->getImagePath(),
+                'text' => $accessory->getExcerpt(),
+                'price' => [
+                    'now' => $accessory->getPrice(),
+                    'from' => $accessory->getPriceType(),
+                    'before' => $accessory->getOldPrice(),
+                    'market' => $accessory->getOldPriceType(),
+                ],
+            ];
+        }
+
+    }
+
+    private static function getRootPages(): array
+    {
+        $return = [];
+        $pages = ORM::getByQuery(
+            Page::class,
+            "
+            SELECT *
+            FROM bind
+            JOIN sider
+            ON bind.side = sider.id
+            WHERE kat = 0
+            ORDER BY sider.`navn` ASC
+            "
+        );
+        self::addLoadedTable('bind');
+        foreach ($pages as $page) {
+            $return[] = [
+                'id'   => $page->getId(),
+                'name' => $page->getTitle(),
+                'link' => '/' . $page->getSlug(),
+            ];
+        }
+
+        return $return;
     }
 
     /**
@@ -631,6 +666,9 @@ class Render
             return $searchMenu;
         }
 
+        $simpleSearchString = $searchString ? '%' . preg_replace('/\s+/u', '%', $searchString) . '%' : '';
+        $simpleAntiWords = $antiWords ? '%' . preg_replace('/\s+/u', '%', $antiWords) . '%' : '';
+
         $brands = ORM::getByQuery(
             Brand::class,
             "
@@ -651,8 +689,6 @@ class Render
             ];
         }
 
-        $simpleSearchString = $searchString ? '%' . preg_replace('/\s+/u', '%', $searchString) . '%' : '';
-        $simpleAntiWords = $antiWords ? '%' . preg_replace('/\s+/u', '%', $antiWords) . '%' : '';
         $categories = ORM::getByQuery(
             Category::class,
             "
@@ -704,8 +740,7 @@ class Render
             WHERE `list_id` = " . $listid
         );
         if (!$rows) {
-            Render::sendCacheHeader();
-            return ['id' => 'table' . $listid, 'html' => $html];
+            return $html;
         }
 
         // Eager load data
@@ -982,6 +1017,7 @@ class Render
     public static function outputPage()
     {
         self::prepareData();
+
         if ($_SERVER['REQUEST_METHOD'] === 'HEAD') {
             if (function_exists('apache_setenv')) {
                 apache_setenv('no-gzip', 1);

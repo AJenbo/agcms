@@ -233,7 +233,7 @@ function arrayListsort(
         FROM `tablesort`
         WHERE id = " . $intSortingOrder
     );
-    Cache::addLoadedTable('tablesort');
+    Render::addLoadedTable('tablesort');
 
     if ($kaliber) {
         $kaliber = explode('<', $kaliber['text']);
@@ -656,7 +656,7 @@ function sendEmails(
             );
             "
         );
-        Cache::addLoadedTable('emails');
+        Render::addLoadedTable('emails');
     }
 
     return $success;

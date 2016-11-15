@@ -1,8 +1,8 @@
 <?php
 
 require_once $_SERVER['DOCUMENT_ROOT'] . '/admin/logon.php';
-include_once _ROOT_ . '/vendor/tecnickcom/tcpdf/examples/lang/dan.php';
-include_once _ROOT_ . '/vendor/libs/countries.php';
+@include_once _ROOT_ . '/vendor/tecnickcom/tcpdf/examples/lang/dan.php';
+@include_once _ROOT_ . '/inc/countries.php';
 
 if ($_GET['id'] > 0) {
     $id = $_GET['id'];
