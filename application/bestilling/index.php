@@ -98,6 +98,9 @@ if (is_numeric(@$_GET['add']) || is_numeric(@$_GET['add_list_item'])) {
 
 session_start();
 Render::$pageType = 'custome';
+if (empty($_SESSION['faktura']['note'])) {
+    $_SESSION['faktura']['note'] = '';
+}
 
 unset($_POST['values']);
 unset($_POST['products']);
@@ -105,6 +108,7 @@ if (count($_POST)) {
     foreach ($_POST as $key => $value) {
         $_SESSION['faktura'][(int) $key] = $value;
     }
+    $_SESSION['faktura']['note'] = $_POST['note'] ?? $_SESSION['faktura']['note'];
 }
 
 //Generate return page
@@ -253,10 +257,6 @@ if (!empty($_SESSION['faktura']['quantities'])) {
         . _('The excact shipping cost will be calculcated as the goods are packed.')
         . '</small></p>';
 
-
-        if (empty($_SESSION['faktura']['note'])) {
-            $_SESSION['faktura']['note'] = '';
-        }
         Render::$bodyHtml .= '<p>' . _('Note:')
         . '<br /><textarea style="width:100%;" name="note">'
         . xhtmlEsc($_SESSION['faktura']['note'])
@@ -552,20 +552,24 @@ if (!empty($_SESSION['faktura']['quantities'])) {
             redirect('/bestilling/');
         }
 
-        if ($_SESSION['faktura']['paymethod'] == 'creditcard') {
-            $_SESSION['faktura']['note'] = _('I would like to pay via credit card.')."\n".$_SESSION['faktura']['note'];
-        } elseif ($_SESSION['faktura']['paymethod'] == 'bank') {
-            $_SESSION['faktura']['note'] = _('I would like to pay via bank transaction.')."\n".$_SESSION['faktura']['note'];
-        } elseif ($_SESSION['faktura']['paymethod'] == 'cash') {
-            $_SESSION['faktura']['note'] = _('I would like to pay via cash.')."\n".$_SESSION['faktura']['note'];
+        $note = '';
+        if ($_SESSION['faktura']['paymethod'] === 'creditcard') {
+            $note .= _('I would like to pay via credit card.');
+        } elseif ($_SESSION['faktura']['paymethod'] === 'bank') {
+            $note .= _('I would like to pay via bank transaction.');
+        } elseif ($_SESSION['faktura']['paymethod'] === 'cash') {
+            $note .= _('I would like to pay via cash.');
         }
-        if ($_SESSION['faktura']['delevery'] == 'pickup') {
-            $_SESSION['faktura']['note'] = _('I will pick up the goods in your shop.')."\n".$_SESSION['faktura']['note'];
-        } elseif ($_SESSION['faktura']['delevery'] == 'postal') {
-            $_SESSION['faktura']['note'] = _('Please send the goods by mail.')."\n".$_SESSION['faktura']['note'];
-        } elseif ($_SESSION['faktura']['delevery'] == 'express') {
-            $_SESSION['faktura']['note'] = _('Please send the order to by mail express.')."\n".$_SESSION['faktura']['note'];
+        $note .= "\n";
+        if ($_SESSION['faktura']['delevery'] === 'pickup') {
+            $note .= _('I will pick up the goods in your shop.');
+        } elseif ($_SESSION['faktura']['delevery'] === 'postal') {
+            $note .= _('Please send the goods by mail.');
+        } elseif ($_SESSION['faktura']['delevery'] === 'express') {
+            $note .= _('Please send the order to by mail express.');
         }
+        $note .= "\n" . $_SESSION['faktura']['note'];
+        $note = trim($note);
 
         $quantities = array_map('xhtmlEsc', $_SESSION['faktura']['quantities']);
         $products = array_map('xhtmlEsc', $_SESSION['faktura']['products']);
@@ -598,7 +602,7 @@ if (!empty($_SESSION['faktura']['quantities'])) {
         $sql .= " `postpostalcode` = '".addcslashes($_SESSION['faktura']['postpostalcode'], "'\\")."',";
         $sql .= " `postcity` = '".addcslashes($_SESSION['faktura']['postcity'], "'\\")."',";
         $sql .= " `postcountry` = '".addcslashes($_SESSION['faktura']['postcountry'], "'\\")."',";
-        $sql .= " `note` = '".addcslashes($_SESSION['faktura']['note'], "'\\")."',";
+        $sql .= " `note` = '".addcslashes($note, "'\\")."',";
 
         $sql .= " `date` = NOW()";
 
