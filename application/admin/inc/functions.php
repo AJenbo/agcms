@@ -3639,7 +3639,7 @@ Tel. %s</p>'
 </head><body>' .$msg .'</body></html>';
 
         $success = sendEmails(
-            _('Online payment for ').Config::get('site_name'),
+            _('Online payment for ') . Config::get('site_name'),
             $emailBody,
             $faktura['department'],
             '',
@@ -3745,7 +3745,7 @@ Fax: %s<br />
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head><meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <title>'._('Electronic Invoice concerning order #').$faktura['id'].'</title>
-</head><body>' .$msg .'</body></html>';
+</head><body>' . $msg .'</body></html>';
 
 
     $success = sendEmails(

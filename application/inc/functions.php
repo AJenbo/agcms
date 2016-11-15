@@ -646,13 +646,12 @@ function sendEmails(
     } elseif ($retry) {
         db()->query(
             "
-            INSERT INTO `emails` (`subject`, `from`, `to`, `body`, `date`)
-            VALUES (
+            INSERT INTO `emails` (`date`, `subject`, `body`, `from`, `to`)
+            VALUES (NOW(),
                 '" . db()->esc($subject) . "',
-                '" . db()->esc($from . "<" . $fromName) . ">',
-                '" . db()->esc($to . "<" . $toName) . ">',
                 '" . db()->esc($htmlBody) . "',
-                NOW()
+                '" . db()->esc($from . "<" . $fromName) . ">',
+                '" . db()->esc($to . "<" . $toName) . ">'
             );
             "
         );
