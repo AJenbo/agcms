@@ -151,7 +151,7 @@ class Page
             return stringLimit($excerpt, 100);
         }
 
-        return $this->excerpt;
+        return strip_tags($this->excerpt);
     }
 
     public function setImagePath(string $imagePath): self

@@ -153,7 +153,9 @@ if (is_numeric(@$_GET['kat'])) {
     } else {
         $kat = ['id' => -1, 'navn' => 'Indaktiv'];
     }
-    echo "\n".'  <tr class="path"><td colspan="8"><a href="?sort='.@$_GET['sort'].'"><img src="images/find.png" alt="Vis" title="Vis alle kategorier" /></a> <a href="/kat'.$kat['id'].'-">'.xhtmlEsc($kat['navn']).'</a></td></tr>';
+    echo "\n".'  <tr class="path"><td colspan="8"><a href="?sort='
+        . @$_GET['sort'] . '"><img src="images/find.png" alt="Vis" title="Vis alle kategorier" /></a> <a href="/kat'
+        . $kat['id'] . '-">' . xhtmlEsc($kat['navn']) . '</a></td></tr>';
     print_pages($_GET['kat']);
 } else {
     echo '<tr><td colspan="8" class="path"><a href="?sort='.@$_GET['sort'].'&amp;kat=0"><img src="images/find.png" alt="Vis" title="Vis kun denne kategori" /></a> <a href="/">Forside</a></td></tr>';
