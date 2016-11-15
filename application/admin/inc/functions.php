@@ -80,14 +80,16 @@ function removeBadAccessories(): string
  */
 function removeNoneExistingFiles(): string
 {
-    $files = db()->fetchArray('SELECT id, path FROM `files`');
+    $files = db()->fetchArray("SELECT id, path FROM `files`");
 
-    $deleted = 0;
+    $missing = [];
     foreach ($files as $files) {
         if (!is_file(_ROOT_ . $files['path'])) {
-            db()->query("DELETE FROM `files` WHERE `id` = " . $files['id']);
-            $deleted++;
+            $missing[] = (int) $files['id'];
         }
+    }
+    if ($missing) {
+        db()->query("DELETE FROM `files` WHERE `id` IN(" . implode(",", $missing) . ")");
     }
 
     return '';
