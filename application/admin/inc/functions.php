@@ -125,6 +125,7 @@ function sendDelayedEmail(): string
     }
 
     $emailsSendt = 0;
+    $emailCount = count($emails);
     foreach ($emails as $email) {
         $email['from'] = explode('<', $email['from']);
         $email['from'][1] = substr($email['from'][1], 0, -1);
@@ -152,11 +153,11 @@ function sendDelayedEmail(): string
     ORM::getOne(CustomPage::class, 0)->save();
 
     $msg = ngettext(
-        "%d e-mail was sent.",
-        "%d e-mails was sent.",
+        "%d of %d e-mail was sent.",
+        "%d of %d e-mails was sent.",
         $emailsSendt
     );
-    return '<b>' . sprintf($msg, $emailsSendt) . '</b>';
+    return '<b>' . sprintf($msg, $emailsSendt, $emailCount) . '</b>';
 }
 
 /**

@@ -93,7 +93,7 @@ class CustomPage
                     `text`
                 ) VALUES (
                     NOW(),
-                    '" . db()->esc($this->name) . "',
+                    '" . db()->esc($this->title) . "',
                     '" . db()->esc($this->html) . "'
                 )
                 "
