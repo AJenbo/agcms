@@ -21,6 +21,7 @@ spl_autoload_register(function (string $className) {
         'Brand'       => 'Entity/Brand',
         'Category'    => 'Entity/Category',
         'CustomPage'  => 'Entity/CustomPage',
+        'File'        => 'Entity/File',
         'Page'        => 'Entity/Page',
         'Requirement' => 'Entity/Requirement',
     ];

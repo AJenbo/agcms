@@ -1,6 +1,6 @@
 <?php
 
-class Brand
+class File
 {
     const TABLE_NAME = 'files';
 
@@ -127,6 +127,18 @@ class Brand
     public function getHeight(): int
     {
         return $this->height;
+    }
+
+    public function setAspect(string $aspect = null): self
+    {
+        $this->aspect = $aspect;
+
+        return $this;
+    }
+
+    public function getAspect()
+    {
+        return $this->aspect;
     }
 
     // ORM related functions
