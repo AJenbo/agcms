@@ -639,7 +639,7 @@ function sendEmails(
             );
             $imap->append(
                 $emailConfig['sentBox'],
-                $PHPMailer->CreateHeader() . $PHPMailer->CreateBody(),
+                $PHPMailer->getSentMIMEMessage(),
                 '\Seen'
             );
         }
