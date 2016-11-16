@@ -19,7 +19,16 @@ class Render
     private static $searchMenu = [];
     private static $serial = '';
     private static $timeStamp = 0;
-    private static $updateTime = 0;
+    private static $adminOnlyTables = [
+        'email',
+        'emails',
+        'fakturas',
+        'newsmails',
+        'PNL',
+        'post',
+        'template',
+        'users',
+    ];
 
     public static $pageType = 'front';
     public static $title = '';
@@ -104,17 +113,6 @@ class Render
     }
 
     /**
-     * @param string $key The cache key
-     * @param mixed  $key The value to store
-     *
-     * @return mixed
-     */
-    public static function addUpdateTime(int $timeStamp)
-    {
-        self::$updateTime = max(self::$updateTime, $timeStamp);
-    }
-
-    /**
      * @param string $tableName The table name
      */
     public static function addLoadedTable(string $tableName)
@@ -127,27 +125,31 @@ class Render
      */
     public static function getUpdateTime(bool $checkDb = true): int
     {
+        $updateTime = 0;
         foreach (get_included_files() as $filename) {
-            self::$updateTime = max(self::$updateTime, filemtime($filename));
+            $updateTime = max($updateTime, filemtime($filename));
         }
 
         if ($checkDb) {
             $timeOffset = db()->getTimeOffset();
-            $where = "";
+            $where = " WHERE 1";
+            if (self::$adminOnlyTables) {
+                $where .= " AND Name NOT IN('" . implode("', '", self::$adminOnlyTables) . "')";
+            }
             if (self::$loadedTables) {
-                $where = " WHERE Name IN('" . implode("', '", array_keys(self::$loadedTables)) . "')";
+                $where .= " AND Name IN('" . implode("', '", array_keys(self::$loadedTables)) . "')";
             }
             $tables = db()->fetchArray("SHOW TABLE STATUS" . $where);
             foreach ($tables as $table) {
-                self::$updateTime = max(self::$updateTime, strtotime($table['Update_time']) + $timeOffset);
+                $updateTime = max($updateTime, strtotime($table['Update_time']) + $timeOffset);
             }
         }
 
-        if (self::$updateTime <= 0) {
+        if ($updateTime <= 0) {
             return time();
         }
 
-        return self::$updateTime;
+        return $updateTime;
     }
 
     /**
@@ -173,7 +175,10 @@ class Render
 
         // A PHP implementation of conditional get, see
         // http://fishbowl.pastiche.org/archives/001132.html
+        $timeZone = date_default_timezone_get();
+        date_default_timezone_set('GMT');
         $last_modified = mb_substr(date('r', $timestamp), 0, -5) . 'GMT';
+        date_default_timezone_set($timeZone);
         $etag = (string) $timestamp;
 
         // Send the headers
