@@ -2675,7 +2675,7 @@ function get_db_error(): string
 
         function get_db_size_r(size)
         {
-            $(\'dbsize\').innerHTML = Math.round(size/1024/1024)+\''._('MB').'\';
+            $(\'dbsize\').innerHTML = Math.round(size)+\''._('MB').'\';
         }
 
         --></script><div><b>'._('Server consumption').'</b> - '._('E-mail:').' <span id="mailboxsize"><button onclick="$(\'loading\').style.visibility = \'\'; x_get_mail_size(get_mail_size_r);">'._('Get e-mail consumption').'</button></span> '._('DB:').' <span id="dbsize">'.number_format(get_db_size(), 1, ',', '')._('MB').'</span> '._('WWW').': <span id="wwwsize">'.number_format(get_size_of_files(), 1, ',', '')._('MB').'</span></div><div id="status"></div><button onclick="scan_db();">'._('Scan database').'</button> <button onclick="get_subscriptions_with_bad_emails();">'._('Check emails in the address book').'</button> <button onclick="removeNoneExistingFiles();">'._('Clean up files').'</button><div id="errors"></div>';
