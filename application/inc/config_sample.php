@@ -43,6 +43,8 @@ $GLOBALS['_config'] = [
     'mysql_password' => '',
     'mysql_database' => 'agcms',
 
+    'altDBs' => [],
+
     //Admin options
 
     // Site color settings

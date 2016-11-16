@@ -64,20 +64,6 @@ class Render
 
     private static function doRedirects(int $redirect, string $url)
     {
-        // Brand only search
-        if (!empty($_GET['maerke'])
-            && empty($_GET['q'])
-            && empty($_GET['varenr'])
-            && empty($_GET['minpris'])
-            && empty($_GET['maxpris'])
-            && empty($_GET['sogikke'])
-        ) {
-            $brand = ORM::getOne(Brand::class, $_GET['maerke']);
-            if ($brand) {
-                redirect('/' . $brand->getSlug(), 301);
-            }
-        }
-
         if (!$redirect) {
             return;
         }
@@ -215,6 +201,20 @@ class Render
 
     public static function prepareData()
     {
+        // Brand only search
+        if (!empty($_GET['maerke'])
+            && empty($_GET['q'])
+            && empty($_GET['varenr'])
+            && empty($_GET['minpris'])
+            && empty($_GET['maxpris'])
+            && empty($_GET['sogikke'])
+        ) {
+            $brand = ORM::getOne(Brand::class, $_GET['maerke']);
+            if ($brand) {
+                redirect('/' . $brand->getSlug(), 301);
+            }
+        }
+
         self::$email = first(Config::get('emails'))['address'];
         self::$title = self::$title ?: Config::get('site_name');
 
@@ -255,9 +255,7 @@ class Render
         self::loadCategoryData(self::$activeCategory);
         self::loadPageData(self::$activePage);
 
-        if (self::$pageType === 'front') {
-            self::$bodyHtml = ORM::getOne(CustomPage::class, 1)->getHtml();
-        } elseif (!empty($_GET['sog'])) {
+        if (!empty($_GET['sog'])) {
             self::$pageType = 'search';
             self::$title = 'Søg på ' . Config::get('site_name');
             self::$bodyHtml = '<form action="/" method="get"><table><tr><td>' . _('Contains')
@@ -302,6 +300,8 @@ class Render
                 $_GET['q'] ?? '',
                 $_GET['sogikke'] ?? ''
             );
+        } elseif (self::$pageType === 'front') {
+            self::$bodyHtml = ORM::getOne(CustomPage::class, 1)->getHtml();
         }
 
         self::cleanData();
