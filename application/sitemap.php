@@ -36,6 +36,7 @@ foreach ($categories as $category) {
         . '</loc><changefreq>weekly</changefreq><priority>0.5</priority></url>';
 }
 
+$brandIds = [];
 $pages = ORM::getByQuery(
     Page::class,
     "
@@ -45,9 +46,24 @@ $pages = ORM::getByQuery(
     "
 );
 foreach ($pages as $page) {
+    $brandIds[$page->getBrandId()] = true;
     echo '<url><loc>' . htmlspecialchars(Config::get('base_url') . $page->getCanonicalLink(), ENT_COMPAT | ENT_XML1)
         . '</loc><lastmod>' . htmlspecialchars(date('c', $page->getTimeStamp()), ENT_COMPAT | ENT_XML1)
         . '</lastmod><changefreq>monthly</changefreq><priority>0.6</priority></url>';
+}
+
+if ($brandIds) {
+    $brands = ORM::getByQuery(
+        Brand::class,
+        "
+        SELECT * FROM maerke
+        WHERE id IN(" . implode(",", array_keys($brandIds)) . ")
+        "
+    );
+    foreach ($brands as $brand) {
+    echo '<url><loc>' . htmlspecialchars(Config::get('base_url') . '/' . $brand->getSlug(), ENT_COMPAT | ENT_XML1)
+        . '</loc><changefreq>weekly</changefreq><priority>0.4</priority></url>';
+    }
 }
 
 ?></urlset>

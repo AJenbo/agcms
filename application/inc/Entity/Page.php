@@ -180,6 +180,11 @@ class Page
         return $this;
     }
 
+    public function getBrandId(): int
+    {
+        return $this->brandId;
+    }
+
     public function setPrice(int $price): self
     {
         $this->price = $price;
