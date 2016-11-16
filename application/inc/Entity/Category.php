@@ -35,14 +35,14 @@ class Category
     public static function mapFromDB(array $data): array
     {
         return [
-            'id'                => $data['id'] ?: null,
-            'title'             => $data['navn'] ?: '',
-            'parent_id'         => $data['bind'] ?: 0,
-            'icon_path'         => $data['icon'] ?: '',
-            'render_mode'       => $data['vis'] ?: Category::HIDDEN,
-            'email'             => $data['email'] ?: '',
-            'oredered_children' => $data['custom_sort_subs'] ?: false,
-            'order'             => $data['order'] ?: 0,
+            'id'                => $data['id'],
+            'title'             => $data['navn'],
+            'parent_id'         => $data['bind'],
+            'icon_path'         => $data['icon'],
+            'render_mode'       => $data['vis'],
+            'email'             => $data['email'],
+            'oredered_children' => $data['custom_sort_subs'],
+            'order'             => $data['order'],
         ];
     }
 
@@ -56,7 +56,7 @@ class Category
 
     public function getId(): int
     {
-        if (!$this->id) {
+        if ($this->id === null) {
             $this->save();
         }
 
@@ -281,7 +281,7 @@ class Category
     // ORM related functions
     public function save()
     {
-        if (!$this->id) {
+        if ($this->id === null) {
             db()->query(
                 "
                 INSERT INTO `" . self::TABLE_NAME . "` (

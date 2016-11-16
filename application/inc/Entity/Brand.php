@@ -21,10 +21,10 @@ class Brand
     public static function mapFromDB(array $data): array
     {
         return [
-            'id'        => $data['id'] ?: null,
-            'title'     => $data['navn'] ?: '',
-            'link'      => $data['link'] ?: '',
-            'icon_path' => $data['ico'] ?: '',
+            'id'        => $data['id'],
+            'title'     => $data['navn'],
+            'link'      => $data['link'],
+            'icon_path' => $data['ico'],
         ];
     }
 
@@ -38,7 +38,7 @@ class Brand
 
     public function getId(): int
     {
-        if (!$this->id) {
+        if ($this->id === null) {
             $this->save();
         }
 
@@ -112,7 +112,7 @@ class Brand
     // ORM related functions
     public function save()
     {
-        if (!$this->id) {
+        if ($this->id === null) {
             db()->query(
                 "
                 INSERT INTO `" . self::TABLE_NAME . "` (

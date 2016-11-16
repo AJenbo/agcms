@@ -41,20 +41,20 @@ class Page
     public static function mapFromDB(array $data): array
     {
         return [
-            'id'             => $data['id'] ?: null,
-            'sku'            => $data['varenr'] ?: '',
-            'timestamp'      => $data['dato'] ? strtotime($data['dato']) + db()->getTimeOffset() : 0,
-            'title'          => $data['navn'] ?: '',
-            'keywords'       => $data['keywords'] ?: '',
-            'html'           => $data['text'] ?: '',
-            'excerpt'        => $data['beskrivelse'] ?: '',
-            'image_path'     => $data['billed'] ?: '',
-            'requirement_id' => $data['krav'] ?: 0,
-            'brand_id'       => $data['maerke'] ?: 0,
-            'price'          => $data['pris'] ?: 0,
-            'old_price'      => $data['for'] ?: 0,
-            'price_type'     => $data['fra'] ?: 0,
-            'old_price_type' => $data['burde'] ?: 0,
+            'id'             => $data['id'],
+            'sku'            => $data['varenr'],
+            'timestamp'      => strtotime($data['dato']) + db()->getTimeOffset(),
+            'title'          => $data['navn'],
+            'keywords'       => $data['keywords'],
+            'html'           => $data['text'],
+            'excerpt'        => $data['beskrivelse'],
+            'image_path'     => $data['billed'],
+            'requirement_id' => $data['krav'],
+            'brand_id'       => $data['maerke'],
+            'price'          => $data['pris'],
+            'old_price'      => $data['for'],
+            'price_type'     => $data['fra'],
+            'old_price_type' => $data['burde'],
         ];
     }
 
@@ -68,7 +68,7 @@ class Page
 
     public function getId(): int
     {
-        if (!$this->id) {
+        if ($this->id === null) {
             $this->save();
         }
 
@@ -335,7 +335,7 @@ class Page
     // ORM related functions
     public function save()
     {
-        if (!$this->id) {
+        if ($this->id === null) {
             db()->query(
                 "
                 INSERT INTO `" . self::TABLE_NAME . "` (
@@ -390,6 +390,7 @@ class Page
                 . " WHERE `id` = " . $this->id
             );
         }
+        $this->setTimeStamp(time());
         Render::addLoadedTable(self::TABLE_NAME);
     }
 }

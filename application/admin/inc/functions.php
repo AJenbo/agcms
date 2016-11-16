@@ -121,8 +121,9 @@ function sendDelayedEmail(): string
 {
     //Get emails that needs sending
     $emails = db()->fetchArray("SELECT * FROM `emails`");
+    $cronStatus = ORM::getOne(CustomPage::class, 0);
     if (!$emails) {
-        ORM::getOne(CustomPage::class, 0)->save();
+        $cronStatus->save();
         return '';
     }
 
@@ -152,7 +153,7 @@ function sendDelayedEmail(): string
         db()->query("DELETE FROM `emails` WHERE `id` = " . $email['id']);
     }
 
-    ORM::getOne(CustomPage::class, 0)->save();
+    $cronStatus->save();
 
     $msg = ngettext(
         "%d of %d e-mail was sent.",

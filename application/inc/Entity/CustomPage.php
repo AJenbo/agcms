@@ -21,10 +21,10 @@ class CustomPage
     public static function mapFromDB(array $data): array
     {
         return [
-            'id'        => $data['id'] ?: null,
-            'timestamp' => $data['dato'] ? strtotime($data['dato']) + db()->getTimeOffset() : 0,
-            'title'     => $data['navn'] ?: '',
-            'html'      => $data['text'] ?: '',
+            'id'        => $data['id'],
+            'timestamp' => strtotime($data['dato']) + db()->getTimeOffset(),
+            'title'     => $data['navn'],
+            'html'      => $data['text'],
         ];
     }
 
@@ -38,7 +38,7 @@ class CustomPage
 
     public function getId(): int
     {
-        if (!$this->id) {
+        if ($this->id === null) {
             $this->save();
         }
 
@@ -84,7 +84,7 @@ class CustomPage
     // ORM related functions
     public function save()
     {
-        if (!$this->id) {
+        if ($this->id === null) {
             db()->query(
                 "
                 INSERT INTO `" . self::TABLE_NAME . "` (
@@ -109,6 +109,7 @@ class CustomPage
                 WHERE `id` = " . $this->id
             );
         }
+        $this->setTimeStamp(time());
         Render::addLoadedTable(self::TABLE_NAME);
     }
 }

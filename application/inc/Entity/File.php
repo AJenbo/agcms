@@ -29,13 +29,13 @@ class File
     public static function mapFromDB(array $data): array
     {
         return [
-            'id'          => $data['id'] ?: null,
-            'path'        => $data['path'] ?: '',
-            'mime'        => $data['mime'] ?: '',
-            'size'        => $data['size'] ?: 0,
-            'description' => $data['alt'] ?: '',
-            'width'       => $data['width'] ?: 0,
-            'height'      => $data['height'] ?: 0,
+            'id'          => $data['id'],
+            'path'        => $data['path'],
+            'mime'        => $data['mime'],
+            'size'        => $data['size'],
+            'description' => $data['alt'],
+            'width'       => $data['width'],
+            'height'      => $data['height'],
             'aspect'      => $data['aspect'] ?: null,
         ];
     }
@@ -50,7 +50,7 @@ class File
 
     public function getId(): int
     {
-        if (!$this->id) {
+        if ($this->id === null) {
             $this->save();
         }
 
@@ -144,7 +144,7 @@ class File
     // ORM related functions
     public function save()
     {
-        if (!$this->id) {
+        if ($this->id === null) {
             db()->query(
                 "
                 INSERT INTO `" . self::TABLE_NAME . "` (

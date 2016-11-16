@@ -19,9 +19,9 @@ class Requirement
     public static function mapFromDB(array $data): array
     {
         return [
-            'id'    => $data['id'] ?: null,
-            'title' => $data['navn'] ?: '',
-            'html'  => $data['text'] ?: '',
+            'id'    => $data['id'],
+            'title' => $data['navn'],
+            'html'  => $data['text'],
         ];
     }
 
@@ -35,7 +35,7 @@ class Requirement
 
     public function getId(): int
     {
-        if (!$this->id) {
+        if ($this->id === null) {
             $this->save();
         }
 
@@ -75,7 +75,7 @@ class Requirement
     // ORM related functions
     public function save()
     {
-        if (!$this->id) {
+        if ($this->id === null) {
             db()->query(
                 "
                 INSERT INTO `" . self::TABLE_NAME . "` (
