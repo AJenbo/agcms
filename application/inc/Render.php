@@ -967,9 +967,9 @@ class Render
      * @param int  $id   Id of activ category
      * @param bool $sort What column to sort by
      *
-     * @return array Apropriate for handeling with javascript function inject_html()
+     * @return string
      */
-    public function getKatHtml(Category $category, string $sort): array
+    public function getKatHtml(Category $category, string $sort): string
     {
         if (!in_array($sort, ['navn', 'for', 'pris', 'varenr'])) {
             $sort = 'navn';

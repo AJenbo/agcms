@@ -791,7 +791,7 @@ function getSiteTree(): string
     );
     foreach ($customPages as $customPage) {
         $html .= '<div style="margin-left: 16px;"><a href="?side=redigerSpecial&id=' . $customPage->getId()
-            . '"><img height="16" width="16" alt="" src="images/page.png"/> ' . $customPage->getTitle . '</a></div>';
+            . '"><img height="16" width="16" alt="" src="images/page.png"/> ' . $customPage->getTitle() . '</a></div>';
     }
 
     return $html . '</div>';
