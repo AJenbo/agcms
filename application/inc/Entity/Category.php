@@ -94,11 +94,6 @@ class Category
         return $this;
     }
 
-    public function getIconPath(): string
-    {
-        return $this->iconPath;
-    }
-
     public function setRenderMode(int $renderMode): self
     {
         $this->renderMode = $renderMode;
@@ -176,16 +171,10 @@ class Category
     public function getSlug(): string
     {
         $title = $this->getTitle();
-        if (!$title && $this->getIconPath()) {
-            $icon = db()->fetchOne(
-                "
-                SELECT `alt`
-                FROM `files`
-                WHERE path = '" . db()->esc($this->getIconPath()) . "'"
-            );
-            Render::addLoadedTable('files');
-            if ($icon) {
-                $title = $icon['alt'];
+        if (!$title && $icon = $this->getIcon()) {
+            $title = $icon->getDescription();
+            if (!$title) {
+                $title = pathinfo($icon->getPath(), PATHINFO_FILENAME);
             }
         }
 
@@ -275,6 +264,20 @@ class Category
         return array_reverse($nodes);
     }
 
+    public function getIcon()
+    {
+        if (!$this->iconPath) {
+            return null;
+        }
+        return ORM::getOneByQuery(
+            File::class,
+            "
+            SELECT *
+            FROM `files`
+            WHERE path = '" . db()->esc($this->iconPath) . "'"
+        );
+    }
+
     // ORM related functions
     public function save()
     {
@@ -292,7 +295,7 @@ class Category
                 ) VALUES (
                     '" . db()->esc($this->title) . "',
                     " . $this->parentId . ",
-                    '" . db()->esc($this->iconPath) . "',
+                    '" . db()->esc($this->getIcon() ? $this->getIcon()->getPath() : '') . "',
                     " . $this->renderMode . ",
                     '" . db()->esc($this->email) . "',
                     " . $this->weightedChildren . ",
@@ -306,7 +309,7 @@ class Category
                 UPDATE `" . self::TABLE_NAME . "` SET
                     `navn` = '" . db()->esc($this->title) . "',
                     `bind` = " . $this->parentId . ",
-                    `icon` = '" . db()->esc($this->iconPath) . "',
+                    `icon` = '" . db()->esc($this->getIcon() ? $this->getIcon()->getPath() : '') . "',
                     `vis` = " . $this->renderMode . ",
                     `email` = '" . db()->esc($this->email) . "',
                     `custom_sort_subs` = " . $this->weightedChildren . ",

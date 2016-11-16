@@ -234,7 +234,7 @@ class Render
                 self::$crumbs[] = [
                     'name' => $category->getTitle(),
                     'link' => '/' . $category->getSlug(),
-                    'icon' => $category->getIconPath(),
+                    'icon' => $category->getIcon() ? $category->getIcon()->getPath() : '',
                 ];
             };
         }
@@ -329,7 +329,7 @@ class Render
             'link'  => '/' . $brand->getSlug(),
             'name'  => $brand->getTitle(),
             'xlink' => $brand->getLink(),
-            'icon'  => $brand->getIconPath(),
+            'icon'  => $brand->getIcon() ? $brand->getIcon()->getPath() : '',
         ];
 
         $pages = [];
@@ -348,19 +348,11 @@ class Render
         }
 
         $title = trim($category->getTitle());
-        if ($category->getIconPath()) {
-            $icon = db()->fetchOne(
-                "
-                SELECT `alt`
-                FROM `files`
-                WHERE path = '" . db()->esc($category->getIconPath()) . "'"
-            );
-            self::addLoadedTable('files');
-            if (!empty($icon['alt'])) {
-                $title .= trim(($title ? ' ' : '') . $icon['alt']);
-            } elseif (!$title) {
-                $path = pathinfo($category->getIconPath());
-                $title = trim(ucfirst(preg_replace('/-/ui', ' ', $path['filename'])));
+        if ($category->getIcon()) {
+            $title = ($title ? ' ' : '') . $category->getIcon()->getDescription();
+            if (!$title) {
+                $title = pathinfo($category->getIcon() ? $category->getIcon()->getPath() : '', PATHINFO_FILENAME);
+                $title = trim(ucfirst(preg_replace('/-/ui', ' ', $title)));
             }
         }
         self::$title = $title ?: self::$title;
@@ -472,7 +464,7 @@ class Render
                 'name'  => $brand->getTitle(),
                 'link'  => '/' . $brand->getSlug(),
                 'xlink' => $brand->getLink(),
-                'icon'  => $brand->getIconPath(),
+                'icon'  => $brand->getIcon() ? $brand->getIcon()->getPath() : '',
             ];
         }
 
@@ -568,7 +560,7 @@ class Render
                 'id'   => $category->getId(),
                 'name' => $category->getTitle(),
                 'link' => '/' . $category->getSlug(),
-                'icon' => $category->getIconPath(),
+                'icon' => $category->getIcon() ? $category->getIcon()->getPath() : '',
                 'sub'  => $subs ? true : $category->hasChildren(true),
                 'subs' => $subs,
             ];
@@ -715,7 +707,7 @@ class Render
                     'id' => $category->getId(),
                     'name' => $category->getTitle(),
                     'link' => '/' . $category->getSlug(),
-                    'icon' => $category->getIconPath(),
+                    'icon' => $category->getIcon() ? $category->getIcon()->getPath() : '',
                     'sub' => (bool) $category->getChildren(true),
                 ];
             }
@@ -856,14 +848,14 @@ class Render
                         if ($row['link']) {
                             $html .= $row['link'];
                         }
-                        if (is_numeric(@$row[$key])) {
+                        if (is_numeric($row[$key])) {
                             $html .= str_replace(
                                 ',00',
                                 ',-',
                                 number_format($row[$key], 2, ',', '.')
                             );
                         } else {
-                            $html .= @$row[$key];
+                            $html .= $row[$key];
                         }
                         if ($row['link']) {
                             $html .= '</a>';
@@ -877,14 +869,14 @@ class Render
                         if ($row['link']) {
                             $html .= $row['link'];
                         }
-                        if (is_numeric(@$row[$key])) {
+                        if (is_numeric($row[$key])) {
                             $html .= str_replace(
                                 ',00',
                                 ',-',
                                 number_format($row[$key], 2, ',', '.')
                             );
                         } else {
-                            $html .= @$row[$key];
+                            $html .= $row[$key];
                         }
                         if ($row['link']) {
                             $html .= '</a>';
@@ -893,12 +885,12 @@ class Render
                             Render::$has_product_table = true;
                         break;
                     case 4:
-                        //pold price
+                        //old price
                         $html .= '<td style="text-align:right;" class="XPris">';
                         if ($row['link']) {
                             $html .= $row['link'];
                         }
-                        if (is_numeric(@$row[$key])) {
+                        if (is_numeric($row[$key])) {
                             $html .= str_replace(
                                 ',00',
                                 ',-',
@@ -913,21 +905,21 @@ class Render
                     case 5:
                         //image
                         $html .= '<td>';
-                        $files = db()->fetchOne(
+                        $file = ORM::getOneByQuery(
+                            File::class,
                             "
                             SELECT *
                             FROM `files`
-                            WHERE path = " . $row[$key]
+                            WHERE path = '" . db()->esc($row[$key]) . "'"
                         );
-                        Render::addLoadedTable('files');
 
                         //TODO make image tag
                         if ($row['link']) {
                             $html .= xhtmlEsc($row['link']);
                         }
                         $html .= '<img src="' . xhtmlEsc($row[$key]) . '" alt="'
-                        . xhtmlEsc($files['alt']) . '" title="" width="' . $files['width']
-                        . '" height="' . $files['height'] . '" />';
+                        . xhtmlEsc($file->description()) . '" title="" width="' . $file->width()
+                        . '" height="' . $file->height() . '" />';
                         if (xhtmlEsc($row['link'])) {
                             $html .= '</a>';
                         }

@@ -10,9 +10,6 @@ class Brand
     private $link;
     private $iconPath;
 
-    // Runtime
-    private $visable;
-
     public function __construct(array $data)
     {
         $this->setId($data['id'] ?? null)
@@ -79,9 +76,18 @@ class Brand
         return $this;
     }
 
-    public function getIconPath(): string
+    public function getIcon()
     {
-        return $this->iconPath;
+        if (!$this->iconPath) {
+            return null;
+        }
+        return ORM::getOneByQuery(
+            File::class,
+            "
+            SELECT *
+            FROM `files`
+            WHERE path = '" . db()->esc($this->iconPath) . "'"
+        );
     }
 
     // General methodes
@@ -116,7 +122,7 @@ class Brand
                 ) VALUES (
                     '" . db()->esc($this->title) . "',
                     '" . db()->esc($this->link) . "',
-                    '" . db()->esc($this->iconPath) . "'
+                    '" . db()->esc($this->getIcon() ? $this->getIcon()->getPath() : '') . "'
                 )"
             );
             $this->setId(db()->insert_id);
@@ -126,7 +132,7 @@ class Brand
                 UPDATE `" . self::TABLE_NAME ."` SET
                     `navn` = '" . db()->esc($this->title) . "',
                     `email` = '" . db()->esc($this->email) . "',
-                    `icon` = '" . db()->esc($this->iconPath) . "'
+                    `icon` = '" . db()->esc($this->getIcon() ? $this->getIcon()->getPath() : '') . "'
                 WHERE `id` = " . $this->id
             );
         }
