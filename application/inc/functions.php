@@ -600,7 +600,7 @@ function sendEmails(
         $toName = $to;
     }
 
-    $PHPMailer = new PHPMailer();
+    $PHPMailer = new PHPMailer(true);
     $PHPMailer->SetLanguage('dk');
     $PHPMailer->IsSMTP();
     $PHPMailer->SMTPAuth = false;
