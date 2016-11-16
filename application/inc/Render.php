@@ -255,7 +255,27 @@ class Render
         self::loadCategoryData(self::$activeCategory);
         self::loadPageData(self::$activePage);
 
-        if (isset($_GET['q'])
+        if (self::$pageType === 'front') {
+            self::$bodyHtml = ORM::getOne(CustomPage::class, 1)->getHtml();
+        } elseif (!empty($_GET['sog'])) {
+            self::$pageType = 'search';
+            self::$title = 'Søg på ' . Config::get('site_name');
+            self::$bodyHtml = '<form action="/" method="get"><table><tr><td>' . _('Contains')
+                . '</td><td><input name="q" size="31" /></td><td><input type="submit" value="' . _('Search')
+                . '" /></td></tr><tr><td>' . _('Part No.')
+                . '</td><td><input name="varenr" size="31" value="" maxlength="63" /></td></tr><tr><td>'
+                . _('Without the words') . '</td><td><input name="sogikke" size="31" value="" /></td></tr><tr><td>'
+                . _('Min price')
+                . '</td><td><input name="minpris" size="5" maxlength="11" value="" />,-</td></tr><tr><td>'
+                . _('Max price')
+                . '&nbsp;</td><td><input name="maxpris" size="5" maxlength="11" value="" />,-</td></tr><tr><td>'
+                . _('Brand:') . '</td><td><select name="maerke"><option value="0">' . _('All') . '</option>';
+            foreach (ORM::getByQuery(Brand::class, "SELECT * FROM `maerke` ORDER BY `navn`") as $brand) {
+                self::$bodyHtml .= '<option value="' . $brand->getId() . '">'
+                    . xhtmlEsc($brand->getTitle()) . '</option>';
+            }
+            self::$bodyHtml .= '</select></td></tr></table></form>';
+        } elseif (isset($_GET['q'])
             || !empty($_GET['varenr'])
             || !empty($_GET['minpris'])
             || !empty($_GET['maxpris'])
@@ -282,26 +302,6 @@ class Render
                 $_GET['q'] ?? '',
                 $_GET['sogikke'] ?? ''
             );
-        } elseif (!empty($_GET['sog'])) {
-            self::$pageType = 'search';
-            self::$title = 'Søg på ' . Config::get('site_name');
-            self::$bodyHtml = '<form action="/" method="get"><table><tr><td>' . _('Contains')
-                . '</td><td><input name="q" size="31" /></td><td><input type="submit" value="' . _('Search')
-                . '" /></td></tr><tr><td>' . _('Part No.')
-                . '</td><td><input name="varenr" size="31" value="" maxlength="63" /></td></tr><tr><td>'
-                . _('Without the words') . '</td><td><input name="sogikke" size="31" value="" /></td></tr><tr><td>'
-                . _('Min price')
-                . '</td><td><input name="minpris" size="5" maxlength="11" value="" />,-</td></tr><tr><td>'
-                . _('Max price')
-                . '&nbsp;</td><td><input name="maxpris" size="5" maxlength="11" value="" />,-</td></tr><tr><td>'
-                . _('Brand:') . '</td><td><select name="maerke"><option value="0">' . _('All') . '</option>';
-            foreach (ORM::getByQuery(Brand::class, "SELECT * FROM `maerke` ORDER BY `navn`") as $brand) {
-                self::$bodyHtml .= '<option value="' . $brand->getId() . '">'
-                    . xhtmlEsc($brand->getTitle()) . '</option>';
-            }
-            self::$bodyHtml .= '</select></td></tr></table></form>';
-        } elseif (self::$pageType === 'front') {
-            self::$bodyHtml = ORM::getOne(CustomPage::class, 1)->getHtml();
         }
 
         self::cleanData();
