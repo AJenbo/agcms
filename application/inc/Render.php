@@ -53,8 +53,9 @@ class Render
         }
         if ($pageId) {
             self::$activePage = ORM::getOne(Page::class, $pageId);
-            if (!self::$activePage->isInCategory($categoryId)) {
+            if (self::$activePage && !self::$activePage->isInCategory($categoryId)) {
                 $redirect = 301;
+                self::$activeCategory = null;
             }
             if (!self::$activePage || self::$activePage->isInactive()) {
                 $redirect = self::$activePage ? 302 : 301;
