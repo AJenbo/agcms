@@ -751,12 +751,14 @@ class Render
         $html = '';
 
         $list = db()->fetchOne("SELECT * FROM `lists` WHERE id = " . $listid);
+        self::addLoadedTable('lists');
         $rows = db()->fetchArray(
             "
             SELECT *
             FROM `list_rows`
             WHERE `list_id` = " . $listid
         );
+        self::addLoadedTable('list_rows');
         if (!$rows) {
             return $html;
         }
