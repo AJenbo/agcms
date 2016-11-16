@@ -179,8 +179,8 @@ if (in_array(self::$pageType, ['front', 'custome'], true)) {
         }
         echo '</a>';
     }
-} elseif (in_array(self::$pageType, ['tiles', 'list', 'brand'], true)) {
-    if (self::$pageType === 'brand') {
+} elseif (in_array(self::$pageType, ['tiles', 'list'], true)) {
+    if (self::$brand) {
         echo '<p align="center">';
         if (self::$brand['xlink']) {
             echo '<a rel="nofollow" target="_blank" href="' . xhtmlEsc(self::$brand['xlink']) . '">Read more about ';

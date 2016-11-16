@@ -202,16 +202,19 @@ class Render
     public static function prepareData()
     {
         // Brand only search
-        if (!empty($_GET['maerke'])
-            && empty($_GET['q'])
+        if (empty($_GET['q'])
             && empty($_GET['varenr'])
             && empty($_GET['minpris'])
             && empty($_GET['maxpris'])
             && empty($_GET['sogikke'])
         ) {
-            $brand = ORM::getOne(Brand::class, $_GET['maerke']);
-            if ($brand) {
-                redirect('/' . $brand->getSlug(), 301);
+            if (!empty($_GET['maerke'])) {
+                $brand = ORM::getOne(Brand::class, $_GET['maerke']);
+                if ($brand) {
+                    redirect('/' . $brand->getSlug(), 301);
+                }
+            } elseif (isset($_GET['q']) && empty($_GET['sog'])) {
+                redirect('/?sog=1&q=&sogikke=&minpris=&maxpris=&maerke=', 301);
             }
         }
 
@@ -232,24 +235,22 @@ class Render
             };
         }
 
-        if (!isset($_GET['q'])) {
-            //Get list of top categorys on the site.
-            $categories = ORM::getByQuery(
-                Category::class,
-                "
-                SELECT *
-                FROM `kat`
-                WHERE kat.vis != " . Category::HIDDEN . "
-                    AND kat.bind = 0
-                    AND (id IN (SELECT bind FROM kat WHERE vis != " . Category::HIDDEN . ")
-                        OR id IN (SELECT kat FROM bind)
-                    )
-                ORDER BY `order`, navn
-                "
-            );
-            self::addLoadedTable('bind');
-            self::$menu = self::menu($categories, $categoryIds);
-        }
+        //Get list of top categorys on the site.
+        $categories = ORM::getByQuery(
+            Category::class,
+            "
+            SELECT *
+            FROM `kat`
+            WHERE kat.vis != " . Category::HIDDEN . "
+                AND kat.bind = 0
+                AND (id IN (SELECT bind FROM kat WHERE vis != " . Category::HIDDEN . ")
+                    OR id IN (SELECT kat FROM bind)
+                )
+            ORDER BY `order`, navn
+            "
+        );
+        self::addLoadedTable('bind');
+        self::$menu = self::menu($categories, $categoryIds);
 
         self::loadBrandData(self::$activeBrand);
         self::loadCategoryData(self::$activeCategory);
@@ -318,7 +319,7 @@ class Render
             return;
         }
 
-        self::$pageType = 'brand';
+        self::$pageType = 'tiles';
         self::$title = $brand->getTitle();
         self::$brand = [
             'link'  => '/' . $brand->getSlug(),
