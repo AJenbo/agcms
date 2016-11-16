@@ -2,10 +2,10 @@
 
 require_once $_SERVER['DOCUMENT_ROOT'] . '/admin/logon.php';
 
-Render::sendCacheHeader();
-
 Sajax\Sajax::export(['fileExists' => ['method' => 'GET', 'asynchronous' => false, 'uri' => '/admin/file-upload.php']]);
 Sajax\Sajax::handleClientRequest();
+
+Render::sendCacheHeader(Render::getUpdateTime(false));
 
 if (empty($_COOKIE['admin_dir']) || !is_dir(_ROOT_ . @$_COOKIE['admin_dir'])) {
     @setcookie('admin_dir', '/images');

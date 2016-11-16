@@ -43,12 +43,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/AJenbo/PHP-imap.git",
-                "reference": "31ab8cac53cee2a89f0f9bf9af05aeb751f7179f"
+                "reference": "ea153e2120b4fddd77df0a7996cf647887eb0154"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/AJenbo/PHP-imap/zipball/31ab8cac53cee2a89f0f9bf9af05aeb751f7179f",
-                "reference": "31ab8cac53cee2a89f0f9bf9af05aeb751f7179f",
+                "url": "https://api.github.com/repos/AJenbo/PHP-imap/zipball/ea153e2120b4fddd77df0a7996cf647887eb0154",
+                "reference": "ea153e2120b4fddd77df0a7996cf647887eb0154",
                 "shasum": ""
             },
             "require": {
@@ -65,7 +65,7 @@
                 "source": "https://github.com/AJenbo/PHP-imap/tree/master",
                 "issues": "https://github.com/AJenbo/PHP-imap/issues"
             },
-            "time": "2016-11-13 03:52:22"
+            "time": "2016-11-16 21:48:26"
         },
         {
             "name": "ajenbo/sajax",
