@@ -248,6 +248,17 @@ class Page
         return $url . $this->getSlug();
     }
 
+    public function isInCategory(int $categoryId): bool
+    {
+        Render::addLoadedTable('bind');
+        return (bool) db()->fetchOne(
+            "
+            SELECT id FROM `bind`
+            WHERE side = " . $this->getId() . "
+            AND kat = " . $categoryId
+        );
+    }
+
     public function getPrimaryCategory()
     {
         Render::addLoadedTable('bind');
