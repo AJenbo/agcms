@@ -971,7 +971,7 @@ class Render
      *
      * @return string
      */
-    public function getKatHtml(Category $category, string $sort): string
+    public static function getKatHtml(Category $category, string $sort): string
     {
         if (!in_array($sort, ['navn', 'for', 'pris', 'varenr'])) {
             $sort = 'navn';
