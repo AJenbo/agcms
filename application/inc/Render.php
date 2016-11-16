@@ -274,13 +274,13 @@ class Render
                 . '&nbsp;</td><td><input name="maxpris" size="5" maxlength="11" value="" />,-</td></tr><tr><td>'
                 . _('Brand:') . '</td><td><select name="maerke"><option value="0">' . _('All') . '</option>';
 
-            $activeCategoryIds = [0];
+            $categoryIds = [0];
             $categories = ORM::getByQuery(Category::class, "SELECT * FROM kat");
             foreach ($categories as $category) {
                 if ($category->isInactive()) {
                     continue;
                 }
-                $activeCategoryIds[] = $category->getId();
+                $categoryIds[] = $category->getId();
             }
             $brands = ORM::getByQuery(
                 Brand::class,
@@ -289,7 +289,7 @@ class Render
                 WHERE id IN(
                     SELECT DISTINCT sider.maerke FROM bind
                     JOIN sider ON sider.id = bind.side
-                    WHERE bind.kat IN(" . implode(",", $activeCategoryIds) . ")
+                    WHERE bind.kat IN(" . implode(",", $categoryIds) . ")
                 ) ORDER BY `navn`
                 "
             );
@@ -389,8 +389,8 @@ class Render
             }
         }
         self::$title     = $title ?: self::$title;
-        self::$email     = $activeCategory->getEmail();
-        self::$canonical = '/' . $activeCategory->getSlug();
+        self::$email     = $category->getEmail();
+        self::$canonical = '/' . $category->getSlug();
         self::$pageType  = $category->getRenderMode() === Category::GALLERY ? 'tiles' : 'list';
     }
 
