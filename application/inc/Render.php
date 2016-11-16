@@ -273,7 +273,27 @@ class Render
                 . _('Max price')
                 . '&nbsp;</td><td><input name="maxpris" size="5" maxlength="11" value="" />,-</td></tr><tr><td>'
                 . _('Brand:') . '</td><td><select name="maerke"><option value="0">' . _('All') . '</option>';
-            foreach (ORM::getByQuery(Brand::class, "SELECT * FROM `maerke` ORDER BY `navn`") as $brand) {
+
+            $activeCategoryIds = [0];
+            $categories = ORM::getByQuery(Category::class, "SELECT * FROM kat");
+            foreach ($categories as $category) {
+                if ($category->isInactive()) {
+                    continue;
+                }
+                $activeCategoryIds[] = $category->getId();
+            }
+            $brands = ORM::getByQuery(
+                Brand::class,
+                "
+                SELECT * FROM `maerke`
+                WHERE id IN(
+                    SELECT DISTINCT sider.maerke FROM bind
+                    JOIN sider ON sider.id = bind.side
+                    WHERE bind.kat IN(" . implode(",", $activeCategoryIds) . ")
+                ) ORDER BY `navn`
+                "
+            );
+            foreach ($brands as $brand) {
                 self::$bodyHtml .= '<option value="' . $brand->getId() . '">'
                     . xhtmlEsc($brand->getTitle()) . '</option>';
             }
@@ -324,6 +344,7 @@ class Render
         }
 
         self::$pageType = 'tiles';
+        self::$canonical = '/' . $brand->getSlug();
         self::$title = $brand->getTitle();
         self::$brand = [
             'link'  => '/' . $brand->getSlug(),
@@ -333,7 +354,7 @@ class Render
         ];
 
         $pages = [];
-        foreach (self::$activeBrand->getPages() as $page) {
+        foreach ($brand->getPages() as $page) {
             if (!$page->isInactive()) {
                 $pages[] = $page;
             }
@@ -347,17 +368,6 @@ class Render
             return;
         }
 
-        $title = trim($category->getTitle());
-        if ($category->getIcon()) {
-            $title = ($title ? ' ' : '') . $category->getIcon()->getDescription();
-            if (!$title) {
-                $title = pathinfo($category->getIcon() ? $category->getIcon()->getPath() : '', PATHINFO_FILENAME);
-                $title = trim(ucfirst(preg_replace('/-/ui', ' ', $title)));
-            }
-        }
-        self::$title = $title ?: self::$title;
-        self::$email = self::$activeCategory->getEmail();
-
         $pages = [];
         foreach ($category->getPages() as $page) {
             if (!$page->isInactive()) {
@@ -368,9 +378,20 @@ class Render
             self::$activePage = array_shift($pages);
             return;
         }
-
-        self::$pageType = $category->getRenderMode() === Category::GALLERY ? 'tiles' : 'list';
         self::loadPagesData($pages);
+
+        $title = trim($category->getTitle());
+        if ($category->getIcon()) {
+            $title = ($title ? ' ' : '') . $category->getIcon()->getDescription();
+            if (!$title) {
+                $title = pathinfo($category->getIcon() ? $category->getIcon()->getPath() : '', PATHINFO_FILENAME);
+                $title = trim(ucfirst(preg_replace('/-/ui', ' ', $title)));
+            }
+        }
+        self::$title     = $title ?: self::$title;
+        self::$email     = $activeCategory->getEmail();
+        self::$canonical = '/' . $activeCategory->getSlug();
+        self::$pageType  = $category->getRenderMode() === Category::GALLERY ? 'tiles' : 'list';
     }
 
     private static function loadPagesData(array $pages = null)
