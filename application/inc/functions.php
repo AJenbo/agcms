@@ -24,6 +24,7 @@ spl_autoload_register(function (string $className) {
         'File'        => 'Entity/File',
         'Page'        => 'Entity/Page',
         'Requirement' => 'Entity/Requirement',
+        'Table'       => 'Entity/Table',
     ];
 
     if (isset($classMap[$className])) {

@@ -6,96 +6,70 @@
 require_once $_SERVER['DOCUMENT_ROOT'] . '/inc/functions.php';
 @include_once _ROOT_ . '/inc/countries.php';
 
-if (is_numeric(@$_GET['add']) || is_numeric(@$_GET['add_list_item'])) {
+// Add item to basket
+$rowId = 0;
+if (($pageId = intval($_GET['add'] ?? 0)) || ($rowId = intval($_GET['add_list_item'] ?? 0))) {
+    $redirectUrl = '/';
     if ($_SERVER['HTTP_REFERER']) {
-        $goto_uri = $_SERVER['HTTP_REFERER'];
-    } else {
-        $goto_uri = '';
+        $redirectUrl = $_SERVER['HTTP_REFERER'];
     }
 
     $productTitle = '';
     $productPrice = null;
-    $productOldPrice = 0;
-    if (is_numeric(@$_GET['add_list_item'])) {
-        $list_row = db()->fetchOne(
+    if ($rowId) {
+        $listRow = db()->fetchOne(
             "
             SELECT *
             FROM `list_rows`
-            WHERE id = " . intval($_GET['add_list_item'] ?? 0)
+            WHERE id = " . $rowId
         );
         Render::addLoadedTable('list_rows');
-        if ($list_row['link']) {
-            $product = ORM::getOne(Page::class, $list_row['link']);
-            if ($product) {
-                $productTitle = $product->getTitle();
-                $productPrice = $product->getPrice();
-                $productOldPrice = $product->getOldPrice();
-            }
-            if (!$goto_uri) {
-                $goto_uri = '/?side=' . intval($_GET['add'] ?? 0);
-            }
-        } else {
-            $list = db()->fetchOne(
-                "
-                SELECT `page_id`, `cells`
-                FROM `lists` WHERE id = " . (int) $list_row['list_id']
-            );
-            Render::addLoadedTable('lists');
-            $list['cells'] = explode('<', $list['cells']);
-            $list_row['cells'] = explode('<', $list_row['cells']);
-            foreach ($list['cells'] as $i => $celltype) {
-                if ($celltype == 0 || $celltype == 1) {
-                    $productTitle .= ' '.@$list_row['cells'][$i];
-                } elseif ($celltype == 2 || $celltype == 3) {
-                    $productPrice = @$list_row['cells'][$i];
-                }
-            }
-
-            if (!$goto_uri) {
-                $goto_uri = '/?side='.$list['page_id'];
-            }
-        }
-    } elseif (is_numeric(@$_GET['add'])) {
-        $product = ORM::getOne(Page::class, $_GET['add']);
-        if ($product) {
-            $productTitle = $product->getTitle();
-            $productPrice = $product->getPrice();
-            $productOldPrice = $product->getOldPrice();
+        if (!$listRow) {
+            redirect($redirectUrl);
         }
 
-        if (!$goto_uri) {
-            $goto_uri = '/?side=' . intval($_GET['add'] ?? 0);
+        $cells = explode('<', $listRow['cells']);
+        $cells = array_map('html_entity_decode', $cells);
+
+        $table = ORM::getOne(Table::class, $listRow['list_id']);
+        if (!$table) {
+            redirect($redirectUrl);
         }
+        foreach ($table->getColumns() as $i => $column) {
+            if (in_array($column['type'], [Table::COLUMN_TYPE_STRING, Table::COLUMN_TYPE_INT], true)) {
+                $productTitle .= ' ' . ($cells[$i] ?? '');
+            } elseif (in_array($column['type'], [Table::COLUMN_TYPE_PRICE, Table::COLUMN_TYPE_PRICE_NEW], true)) {
+                $productPrice = intval($cells[$i] ?? 0)?: $productPrice;
+            }
+        }
+        $productTitle = trim($productTitle);
+        $pageId = $pageId ?: $table->getPage()->getId();
+    }
+
+    if ($pageId) {
+        $page = ORM::getOne(Page::class, $pageId);
+        if (!$page || $page->isInactive()) {
+            redirect($redirectUrl);
+        }
+
+        $productTitle = $productTitle ?: $page->getTitle();
+        $productPrice = $productPrice ?: $page->getPrice();
+        $redirectUrl = $page->getCanonicalLink();
     }
 
     session_start();
-    $product_exists = false;
-    if (!empty($_SESSION['faktura']['quantities'])) {
-        foreach ($_SESSION['faktura']['products'] as $i => $product_name) {
-            if ($product_name == $productTitle) {
-                $_SESSION['faktura']['quantities'][$i]++;
-                $product_exists = true;
-                break;
-            }
-        }
-    }
-    if (!$product_exists) {
+    $_SESSION['faktura']['products'] = $_SESSION['faktura']['products'] ?? [];
+    if (($productId = array_search($productTitle, $_SESSION['faktura']['products'])) !== FALSE) {
+        $_SESSION['faktura']['quantities'][$productId]++;
+    } else {
         $_SESSION['faktura']['quantities'][] = 1;
         $_SESSION['faktura']['products'][] = $productTitle;
-        if ($productOldPrice == 1) {
-            $productPrice = null;
-        }
         $_SESSION['faktura']['values'][] = $productPrice;
     }
-
-    if (!empty($_SERVER['HTTP_REFERER'])) {
-        $url = $_SERVER['HTTP_REFERER'];
-    } else {
-        $url = '/?side=' . intval($_GET['add'] ?? 0);
-    }
-    redirect($url);
+    redirect($redirectUrl);
 }
 
+// Shopping process
 session_start();
 Render::$pageType = 'custome';
 if (empty($_SESSION['faktura']['note'])) {
@@ -258,7 +232,7 @@ if (!empty($_SESSION['faktura']['quantities'])) {
         . '</small></p>';
 
         Render::$bodyHtml .= '<p>' . _('Note:')
-        . '<br /><textarea style="width:100%;" name="note">'
+        . '<br /><textarea style="width:100%;box-sizing:border-box;" name="note">'
         . xhtmlEsc($_SESSION['faktura']['note'])
         . '</textarea><p>';
 

@@ -463,16 +463,9 @@ class Render
         self::$title      = trim($page->getTitle()) ?: self::$title;
 
         self::$bodyHtml = $page->getHtml();
-        $lists = db()->fetchArray(
-            "
-            SELECT id
-            FROM `lists`
-            WHERE `page_id` = " . $page->getId()
-        );
-        self::addLoadedTable('lists');
-        foreach ($lists as $list) {
-            self::$bodyHtml .= '<div id="table' . $list['id'] . '">'
-                . self::getTableHtml($list['id'], null, self::$activeCategory) . '</div>';
+        foreach ($page->getTables() as $table) {
+            self::$bodyHtml .= '<div id="table' . $table->getId() . '">'
+                . self::getTableHtml($table->getId(), null, self::$activeCategory) . '</div>';
         }
 
         self::$price = [
@@ -603,8 +596,14 @@ class Render
      *
      * @return null
      */
-    public static function searchListe(string $q, int $brandId, string $varenr = '', int $minpris = 0, int $maxpris = 0, string $antiWords)
-    {
+    public static function searchListe(
+        string $q,
+        int $brandId,
+        string $varenr = '',
+        int $minpris = 0,
+        int $maxpris = 0,
+        string $antiWords = ''
+    ) {
         $pages = [];
 
         //Full search
@@ -661,8 +660,8 @@ class Render
             WHERE list_rows.`cells` LIKE '%$simpleq%'"
             . $where
         );
-        Render::addLoadedTable('list_rows');
-        Render::addLoadedTable('lists');
+        self::addLoadedTable('list_rows');
+        self::addLoadedTable('lists');
 
         // Remove inactive pages
         foreach ($pages as $key => $page) {
@@ -745,27 +744,22 @@ class Render
     /**
      * Return html for a sorted list
      *
-     * @param int      $listid   Id of list
-     * @param int      $bycell   What cell to sort by
+     * @param int      $tableId  Id of list
+     * @param int      $orderBy  What column to sort by
      * @param Category $category Id of current category
      *
      * @return array
      */
-    public static function getTableHtml(int $listid, int $bycell = null, Category $category = null): string
+    public static function getTableHtml(int $tableId, int $orderBy = null, Category $category = null): string
     {
-        $html = '';
+        $table = ORM::getOne(Table::class, $tableId);
+        if (!$table || !$rows = $table->getRows()) {
+            return '';
+        }
+        $columns = $table->getColumns();
 
-        $list = db()->fetchOne("SELECT * FROM `lists` WHERE id = " . $listid);
-        self::addLoadedTable('lists');
-        $rows = db()->fetchArray(
-            "
-            SELECT *
-            FROM `list_rows`
-            WHERE `list_id` = " . $listid
-        );
-        self::addLoadedTable('list_rows');
-        if (!$rows) {
-            return $html;
+        if ($orderBy === null) {
+            $orderBy = (int) $table->getOrderBy();
         }
 
         // Eager load data
@@ -776,189 +770,107 @@ class Render
             }
         }
         if ($pageIds) {
-            $pages = ORM::getByQuery(
+            ORM::getByQuery(
                 Page::class,
                 "
-                SELECT * FROM sider WHERE id IN (" . implode(",", $pageIds) . ")
+                SELECT * FROM sider WHERE id IN(" . implode(",", $pageIds) . ")
                 "
             );
         }
 
-        //Explode sorts
-        $list['sorts'] = explode('<', $list['sorts']);
-        $list['cells'] = explode('<', $list['cells']);
-        $list['cell_names'] = explode('<', $list['cell_names']);
-
-        if (!$bycell && $bycell !== '0') {
-            $bycell = $list['sort'];
-        }
-
-        //Explode cells
-        foreach ($rows as $row) {
-            $cells = explode('<', $row['cells']);
-            $cells['id'] = $row['id'];
-            $cells['link'] = $row['link'];
-            $rows_cells[] = $cells;
-        }
-        $rows = $rows_cells;
-        unset($row);
-        unset($cells);
-        unset($rows_cells);
-
         //Sort rows
-        if ($list['sorts'][$bycell] < 1) {
-            $rows = arrayNatsort($rows, 'id', $bycell);
+        if (empty($columns[$orderBy]['sorting'])) {
+            $rows = arrayNatsort($rows, 'id', $orderBy);
         } else {
             $rows = arrayListsort(
                 $rows,
                 'id',
-                $bycell,
-                $list['sorts'][$bycell]
+                $orderBy,
+                $columns[$orderBy]['sorting']
             );
         }
 
-        //unset temp holder for rows
-
-        $html .= '<table class="tabel">';
-        if ($list['title']) {
-            $html .= '<caption>'.$list['title'].'</caption>';
+        $html = '<table class="tabel">';
+        if ($table->getTitle()) {
+            $html .= '<caption>' . xhtmlEsc($table->getTitle()) . '</caption>';
         }
         $html .= '<thead><tr>';
-        foreach ($list['cell_names'] as $key => $cell_name) {
-            $html .= '<td><a href="" onclick="x_getTable(\'' . $list['id']
-            . '\', \'' . $key . '\', ' . ($category ? $category->getId() : '')
-            . ', inject_html);return false;">' . $cell_name . '</a></td>';
+        foreach ($columns as $columnId => $column) {
+            if (in_array($column['type'], [Table::COLUMN_TYPE_PRICE, Table::COLUMN_TYPE_PRICE_NEW], true)) {
+                self::$has_product_table = true;
+            }
+
+            $html .= '<td><a href="" onclick="x_getTable(' . $table->getId()
+            . ', ' . $columnId . ', ' . ($category ? $category->getId() : '0')
+            . ', inject_html);return false;">' . xhtmlEsc($column['title']) . '</a></td>';
+        }
+        if (self::$has_product_table) {
+            $html .= '<td></td>';
         }
         $html .= '</tr></thead><tbody>';
-        foreach ($rows as $i => $row) {
+
+        $altRow = false;
+        foreach ($rows as $row) {
             $html .= '<tr';
-            if ($i % 2) {
+            if ($altRow) {
                 $html .= ' class="altrow"';
             }
+            $altRow = !$altRow;
             $html .= '>';
+
+            $linkTag = '';
+            $page = null;
             if ($row['link']) {
                 $page = ORM::getOne(Page::class, $row['link']);
-                $row['link'] = '<a href="' . xhtmlEsc($page->getCanonicalLink($category)) . '">';
+                $linkTag = '<a href="' . xhtmlEsc($page->getCanonicalLink($category)) . '">';
             }
-            foreach ($list['cells'] as $key => $type) {
-                if (empty($row[$key])) {
-                    $row[$key] = '';
-                }
-
-                switch ($type) {
-                    case 0:
-                        //Plain text
+            foreach ($columns as $columnId => $column) {
+                switch ($column['type']) {
+                    case Table::COLUMN_TYPE_STRING:
                         $html .= '<td>';
-                        if ($row['link']) {
-                            $html .= $row['link'];
-                        }
-                        $html .= $row[$key];
-                        if ($row['link']) {
-                            $html .= '</a>';
-                        }
-                        $html .= '</td>';
                         break;
-                    case 1:
-                        //number
+                    case Table::COLUMN_TYPE_INT:
                         $html .= '<td style="text-align:right;">';
-                        if ($row['link']) {
-                            $html .= $row['link'];
-                        }
-                        $html .= $row[$key];
-                        if ($row['link']) {
-                            $html .= '</a>';
-                        }
-                        $html .= '</td>';
                         break;
-                    case 2:
-                        //price
+                    case Table::COLUMN_TYPE_PRICE:
                         $html .= '<td style="text-align:right;" class="Pris">';
-                        if ($row['link']) {
-                            $html .= $row['link'];
-                        }
-                        if (is_numeric($row[$key])) {
-                            $html .= str_replace(
-                                ',00',
-                                ',-',
-                                number_format($row[$key], 2, ',', '.')
-                            );
-                        } else {
-                            $html .= $row[$key];
-                        }
-                        if ($row['link']) {
-                            $html .= '</a>';
-                        }
-                            $html .= '</td>';
-                            Render::$has_product_table = true;
                         break;
-                    case 3:
-                        //new price
+                    case Table::COLUMN_TYPE_PRICE_NEW:
                         $html .= '<td style="text-align:right;" class="NyPris">';
-                        if ($row['link']) {
-                            $html .= $row['link'];
-                        }
-                        if (is_numeric($row[$key])) {
-                            $html .= str_replace(
-                                ',00',
-                                ',-',
-                                number_format($row[$key], 2, ',', '.')
-                            );
-                        } else {
-                            $html .= $row[$key];
-                        }
-                        if ($row['link']) {
-                            $html .= '</a>';
-                        }
-                            $html .= '</td>';
-                            Render::$has_product_table = true;
                         break;
-                    case 4:
-                        //old price
+                    case Table::COLUMN_TYPE_PRICE_OLD:
                         $html .= '<td style="text-align:right;" class="XPris">';
-                        if ($row['link']) {
-                            $html .= $row['link'];
-                        }
-                        if (is_numeric($row[$key])) {
-                            $html .= str_replace(
-                                ',00',
-                                ',-',
-                                number_format($row[$key], 2, ',', '.')
-                            );
-                        }
-                        if ($row['link']) {
-                            $html .= '</a>';
-                        }
-                        $html .= '</td>';
-                        break;
-                    case 5:
-                        //image
-                        $html .= '<td>';
-                        $file = ORM::getOneByQuery(
-                            File::class,
-                            "
-                            SELECT *
-                            FROM `files`
-                            WHERE path = '" . db()->esc($row[$key]) . "'"
-                        );
-
-                        //TODO make image tag
-                        if ($row['link']) {
-                            $html .= xhtmlEsc($row['link']);
-                        }
-                        $html .= '<img src="' . xhtmlEsc($row[$key]) . '" alt="'
-                        . xhtmlEsc($file->description()) . '" title="" width="' . $file->width()
-                        . '" height="' . $file->height() . '" />';
-                        if (xhtmlEsc($row['link'])) {
-                            $html .= '</a>';
-                        }
-                        $html .= '</td>';
                         break;
                 }
+
+                if ($linkTag) {
+                    $html .= $linkTag;
+                }
+
+                switch ($column['type']) {
+                    case Table::COLUMN_TYPE_STRING:
+                    case Table::COLUMN_TYPE_INT:
+                        $html .= xhtmlEsc($row[$columnId]);
+                        break;
+                    case Table::COLUMN_TYPE_PRICE:
+                    case Table::COLUMN_TYPE_PRICE_NEW:
+                    case Table::COLUMN_TYPE_PRICE_OLD:
+                        if ($row[$columnId]) {
+                            $html .= str_replace(',00', ',-', number_format($row[$columnId], 2, ',', '.'));
+                        }
+                        break;
+                }
+                if ($linkTag) {
+                    $html .= '</a>';
+                }
+                $html .= '</td>';
             }
-            if (Render::$has_product_table) {
-                $html .= '<td class="addtocart"><a href="/bestilling/?add_list_item='
-                . $row['id'] . '"><img src="/theme/images/cart_add.png" title="'
+            if (self::$has_product_table) {
+                $html .= '<td class="addtocart"><a href="/bestilling/?'
+                . ($page ? ('add=' . $page->getId()) : ('add_list_item=' . $row['id']))
+                . '"><img src="/theme/images/cart_add.png" title="'
                 . _('Add to shopping cart') . '" alt="+" /></a></td>';
+
             }
             $html .= '</tr>';
         }

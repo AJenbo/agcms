@@ -306,6 +306,14 @@ class Page
         );
     }
 
+    public function getTables()
+    {
+        return ORM::getByQuery(
+            Table::class,
+            "SELECT * FROM `lists` WHERE page_id = " . $this->getId()
+        );
+    }
+
     public function getBrand()
     {
         return $this->brandId ? ORM::getOne(Brand::class, $this->brandId) : null;

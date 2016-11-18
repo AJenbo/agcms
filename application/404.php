@@ -18,10 +18,10 @@ if ($encoding !== 'UTF-8') {
     redirect($url, 301);
 }
 
-header('Status: 200', true, 200);
-header('HTTP/1.1 200 OK', true, 200);
 session_start();
-
 Render::sendCacheHeader();
 Render::doRouting($url);
+
+header('Status: 200', true, 200);
+header('HTTP/1.1 200 OK', true, 200);
 Render::outputPage();
