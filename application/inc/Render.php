@@ -779,6 +779,7 @@ class Render
         }
 
         //Sort rows
+        $orderBy = min($orderBy, count($columns) - 1);
         if (empty($columns[$orderBy]['sorting'])) {
             $rows = arrayNatsort($rows, 'id', $orderBy);
         } else {

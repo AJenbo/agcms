@@ -2184,13 +2184,13 @@ writeRichText("beskrivelse", \''.rtefsafe($page['beskrivelse']).'\', "", '.(Conf
     //list start
     $html .= '<div class="toolbox"><a class="menuboxheader" id="listboxheader" style="width:'.(Config::get('text_width') - 20 + 32).'px" onclick="showhide(\'listbox\',this);">'._('Lists:').' </a><div style="width:'.(Config::get('text_width') + 32).'px" id="listbox">';
     $lists = db()->fetchArray('SELECT * FROM `lists` WHERE page_id = ' . $id);
-    $firstRow = reset($lists);
     $options = [];
     foreach ($lists as $list) {
         $html .= '<table>';
 
         $list['cells'] = explode('<', $list['cells']);
         $list['cell_names'] = explode('<', $list['cell_names']);
+        $list['cell_names'] = array_map('html_entity_decode', $list['cell_names']);
         $list['sorts'] = explode('<', $list['sorts']);
 
 
@@ -2234,6 +2234,7 @@ writeRichText("beskrivelse", \''.rtefsafe($page['beskrivelse']).'\', "", '.(Conf
             //Explode cells
             foreach ($rows as $row) {
                 $cells = explode('<', $row['cells']);
+                $cells = array_map('html_entity_decode', $cells);
                 $cells['id'] = $row['id'];
                 $cells['link'] = $row['link'];
                 $rows_cells[] = $cells;
@@ -2244,10 +2245,11 @@ writeRichText("beskrivelse", \''.rtefsafe($page['beskrivelse']).'\', "", '.(Conf
             unset($rows_cells);
 
             //Sort rows
-            if (empty($bycell) || $firstRow['sorts'][$bycell] < 1) {
-                $rows = arrayNatsort($rows, 'id', $firstRow['sort']);
+            $bycell = min($list['sort'], count($list['cells']) - 1);
+            if (empty($list['sorts'][$bycell])) {
+                $rows = arrayNatsort($rows, 'id', $bycell);
             } else {
-                $rows = arrayListsort($rows, 'id', $firstRow['sort'], $firstRow['sorts'][$firstRow['sort']]);
+                $rows = arrayListsort($rows, 'id', $bycell, $list['sorts'][$list['sort']]);
             }
 
             foreach ($rows as $i => $row) {
