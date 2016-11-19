@@ -450,8 +450,3 @@ function sendEmail_r(data) {
         location.href = '?side=emaillist';
     }
 }
-
-function makeNewList(id) {
-    $('loading').style.visibility = '';
-    x_updateSpecial(id, $('text').value, generic_r);
-}
