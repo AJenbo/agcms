@@ -1,6 +1,7 @@
 <?php
 /**
  * Theme file, responsible for outputting the generated content
+ * @license  MIT http://opensource.org/licenses/MIT
  */
 
 /**

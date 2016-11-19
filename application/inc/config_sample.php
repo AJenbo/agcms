@@ -1,6 +1,7 @@
 <?php
 /**
  * Configuration of site
+ * @license  MIT http://opensource.org/licenses/MIT
  */
 
 $GLOBALS['_config'] = [
