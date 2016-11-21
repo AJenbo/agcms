@@ -52,4 +52,9 @@ class ORM
 
         return self::$bySql[$class][$query];
     }
+
+    public static function forget(string $class, int $id)
+    {
+        unset(self::$byId[$class][$id]);
+    }
 }

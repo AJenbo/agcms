@@ -57,7 +57,7 @@ class File
         return $this->id;
     }
 
-    public function setPath(string $path): self
+    private function setPath(string $path): self
     {
         $this->path = $path;
 
@@ -81,7 +81,7 @@ class File
         return $this->mime;
     }
 
-    private function setSize(int $size): self
+    public function setSize(int $size): self
     {
         $this->size = $size;
 
@@ -105,7 +105,7 @@ class File
         return $this->description;
     }
 
-    private function setWidth(int $width): self
+    public function setWidth(int $width): self
     {
         $this->width = $width;
 
@@ -117,7 +117,7 @@ class File
         return $this->width;
     }
 
-    private function setHeight(int $height): self
+    public function setHeight(int $height): self
     {
         $this->height = $height;
 
@@ -181,5 +181,38 @@ class File
             );
         }
         Render::addLoadedTable(self::TABLE_NAME);
+    }
+
+    public static function fromPath(string $path)
+    {
+        $imagesize = @getimagesize(_ROOT_ . $path);
+
+        $file = new self();
+        $file->setPath($path)
+            ->setMime(get_mime_type($path))
+            ->setSize(filesize(_ROOT_ . $path))
+            ->setWidth($imagesize[0] ?? 0)
+            ->setHeight($imagesize[1] ?? 0);
+
+        return $file;
+    }
+
+    public function delete(): bool
+    {
+        if (@unlink(_ROOT_ . $this->path)) {
+            db()->query("DELETE FROM `" . self::TABLE_NAME . "` WHERE `id` = " . $this->id);
+            ORM::forget(self::class, $this->id);
+            return true;
+        }
+
+        return false;
+    }
+
+    public static function getByPath(string $path)
+    {
+        return ORM::getOneByQuery(
+            File::class,
+            "SELECT * FROM `" . self::TABLE_NAME . "` WHERE path = '" . db()->esc($path) . "'"
+        );
     }
 }

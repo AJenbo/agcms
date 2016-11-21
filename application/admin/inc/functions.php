@@ -935,8 +935,8 @@ function deletefile(int $id, string $path): array
     if (isinuse($path)) {
         return ['error' => _('The file can not be deleted because it is used on a page.')];
     }
-    if (@unlink(_ROOT_ . $path)) {
-            db()->query("DELETE FROM files WHERE `path` = '".$path."'");
+    $file = File::getByPath($path);
+    if ($file && $file->delete()) {
         return ['id' => $id];
     } else {
         return ['error' => _('There was an error deleting the file, the file may be in use.')];
@@ -1313,50 +1313,32 @@ function showfiles(string $temp_dir): array
     }
 
     foreach ($files as $file) {
-        $fileinfo = db()->fetchOne(
-            "
-            SELECT * FROM files
-            WHERE path = '" . db()->esc($dir . "/" . $file) . "'"
-        );
-
-        if (!$fileinfo) {
-            //Save file info to db
-            $mime = get_mime_type($dir . '/' . $file);
-            $imagesize = @getimagesize(_ROOT_ . $dir . '/' . $file);
-            $size = filesize(_ROOT_ . $dir . '/' . $file);
-            db()->query('INSERT INTO files (path, mime, width, height, size, aspect) VALUES (\''.$dir.'/'.$file."', '".$mime."', '".$imagesize[0]."', '".$imagesize[1]."', '".$size."', NULL )");
-            $fileinfo['path'] = $dir.'/'.$file;
-            $fileinfo['mime'] = $mime;
-            $fileinfo['width'] = $imagesize[0];
-            $fileinfo['height'] = $imagesize[1];
-            $fileinfo['size'] = $size;
-            $fileinfo['id'] = db()->insert_id;
-//          $fileinfo['aspect'] = NULL;
-            unset($imagesize);
-            unset($mime);
+        $file = File::getByPath($dir . '/' . $file);
+        if (!$file) {
+            $file = File::fromPath($dir . '/' . $file)->save();
         }
 
-        $html .= filehtml($fileinfo);
+        $html .= filehtml($file);
         //TODO reduce net to javascript
-        $javascript .= filejavascript($fileinfo);
+        $javascript .= filejavascript($file);
     }
     return ['id' => 'files', 'html' => $html, 'javascript' => $javascript];
 }
 
 /**
- * @param array $fileinfo
+ * @param File $file
  *
  * @return string
  */
-function filejavascript(array $fileinfo): string
+function filejavascript(File $file): string
 {
-    $pathinfo = pathinfo($fileinfo['path']);
+    $pathinfo = pathinfo($file->getPath());
 
     $javascript = '
-    files['.$fileinfo['id'].'] = new file('.$fileinfo['id'].', \''.$fileinfo['path'].'\', \''.$pathinfo['filename'].'\'';
+    files['.$file->getId().'] = new file('.$file->getId().', \''.$file->getPath().'\', \''.$pathinfo['filename'].'\'';
 
     $javascript .= ', \'';
-    switch ($fileinfo['mime']) {
+    switch ($file->getMime()) {
         case 'image/jpeg':
         case 'image/png':
         case 'image/gif':
@@ -1388,62 +1370,62 @@ function filejavascript(array $fileinfo): string
     }
     $javascript .= '\'';
 
-    $javascript .= ', \''.addcslashes(@$fileinfo['alt'], "\\'").'\'';
-    $javascript .= ', '.($fileinfo['width'] ? $fileinfo['width'] : '0').'';
-    $javascript .= ', '.($fileinfo['height'] ? $fileinfo['height'] : '0').'';
+    $javascript .= ', \''.addcslashes(@$file->getDescription(), "\\'").'\'';
+    $javascript .= ', '.($file->getWidth() ?: '0').'';
+    $javascript .= ', '.($file->getHeight() ?: '0').'';
     $javascript .= ');';
 
     return $javascript;
 }
 
 /**
- * @param array $fileinfo
+ * @param File $file
  *
  * @return string
  */
-function filehtml(array $fileinfo): string
+function filehtml(File $file): string
 {
-    $pathinfo = pathinfo($fileinfo['path']);
+    $pathinfo = pathinfo($file->getPath());
 
     $html = '';
 
-    switch ($fileinfo['mime']) {
+    switch ($file->getMime()) {
         case 'image/gif':
         case 'image/jpeg':
         case 'image/png':
-            $html .= '<div id="tilebox'.$fileinfo['id'].'" class="imagetile"><div class="image"';
+            $html .= '<div id="tilebox'.$file->getId().'" class="imagetile"><div class="image"';
             if ($_GET['return']=='rtef') {
-                $html .= ' onclick="addimg('.$fileinfo['id'].')"';
+                $html .= ' onclick="addimg('.$file->getId().')"';
             } elseif ($_GET['return']=='thb') {
-                if ($fileinfo['width'] <= Config::get('thumb_width') && $fileinfo['height'] <= Config::get('thumb_height')) {
-                    $html .= ' onclick="insertThumbnail('.$fileinfo['id'].')"';
+                if ($file->getWidth() <= Config::get('thumb_width') && $file->getHeight() <= Config::get('thumb_height')) {
+                    $html .= ' onclick="insertThumbnail('.$file->getId().')"';
                 } else {
-                    $html .= ' onclick="open_image_thumbnail('.$fileinfo['id'].')"';
+                    $html .= ' onclick="open_image_thumbnail('.$file->getId().')"';
                 }
             } else {
-                $html .= ' onclick="files['.$fileinfo['id'].'].openfile();"';
+                $html .= ' onclick="files['.$file->getId().'].openfile();"';
             }
             break;
         case 'video/x-flv':
-            $html .= '<div id="tilebox'.$fileinfo['id'].'" class="flvtile"><div class="image"';
+            $html .= '<div id="tilebox'.$file->getId().'" class="flvtile"><div class="image"';
             if ($_GET['return']=='rtef') {
-                if ($fileinfo['aspect'] == '4-3') {
-                    $html .= ' onclick="addflv('.$fileinfo['id'].', \''.$fileinfo['aspect'].'\', '.max($fileinfo['width'], $fileinfo['height']/3*4).', '.ceil($fileinfo['width']/4*3*1.1975).')"';
-                } elseif ($fileinfo['aspect'] == '16-9') {
-                    $html .= ' onclick="addflv('.$fileinfo['id'].', \''.$fileinfo['aspect'].'\', '.max($fileinfo['width'], $fileinfo['height']/9*16).', '.ceil($fileinfo['width']/16*9*1.2).')"';
+                if ($file->getAspect() == '4-3') {
+                    $html .= ' onclick="addflv('.$file->getId().', \''.$file->getAspect().'\', '.max($file->getWidth(), $file->getHeight()/3*4).', '.ceil($file->getWidth()/4*3*1.1975).')"';
+                } elseif ($file->getAspect() == '16-9') {
+                    $html .= ' onclick="addflv('.$file->getId().', \''.$file->getAspect().'\', '.max($file->getWidth(), $file->getHeight()/9*16).', '.ceil($file->getWidth()/16*9*1.2).')"';
                 }
             } else {
-                $html .= ' onclick="files['.$fileinfo['id'].'].openfile();"';
+                $html .= ' onclick="files['.$file->getId().'].openfile();"';
             }
             break;
         case 'application/futuresplash':
         case 'application/x-shockwave-flash':
         case 'video/x-shockwave-flash':
-            $html .= '<div id="tilebox'.$fileinfo['id'].'" class="swftile"><div class="image"';
+            $html .= '<div id="tilebox'.$file->getId().'" class="swftile"><div class="image"';
             if ($_GET['return']=='rtef') {
-                $html .= ' onclick="addswf('.$fileinfo['id'].', '.$fileinfo['width'].', '.$fileinfo['height'].')"';
+                $html .= ' onclick="addswf('.$file->getId().', '.$file->getWidth().', '.$file->getHeight().')"';
             } else {
-                $html .= ' onclick="files['.$fileinfo['id'].'].openfile();"';
+                $html .= ' onclick="files['.$file->getId().'].openfile();"';
             }
             break;
         case 'audio/midi':
@@ -1456,20 +1438,20 @@ function filehtml(array $fileinfo): string
         case 'video/x-ms-asf':
         case 'video/x-msvideo':
         case 'video/x-ms-wmv':
-            $html .= '<div id="tilebox'.$fileinfo['id'].'" class="videotile"><div class="image"';
+            $html .= '<div id="tilebox'.$file->getId().'" class="videotile"><div class="image"';
             //TODO make the actual functions
             if ($_GET['return']=='rtef') {
-                $html .= ' onclick="addmedia('.$fileinfo['id'].')"';
+                $html .= ' onclick="addmedia('.$file->getId().')"';
             } else {
-                $html .= ' onclick="files['.$fileinfo['id'].'].openfile();"';
+                $html .= ' onclick="files['.$file->getId().'].openfile();"';
             }
             break;
         default:
-            $html .= '<div id="tilebox'.$fileinfo['id'].'" class="filetile"><div class="image"';
+            $html .= '<div id="tilebox'.$file->getId().'" class="filetile"><div class="image"';
             if ($_GET['return']=='rtef') {
-                $html .= ' onclick="addfile('.$fileinfo['id'].')"';
+                $html .= ' onclick="addfile('.$file->getId().')"';
             } else {
-                $html .= ' onclick="files['.$fileinfo['id'].'].openfile();"';
+                $html .= ' onclick="files['.$file->getId().'].openfile();"';
             }
             break;
     }
@@ -1477,7 +1459,7 @@ function filehtml(array $fileinfo): string
     $html .='> <img src="';
 
     $type = 'bin';
-    switch ($fileinfo['mime']) {
+    switch ($file->getMime()) {
         case 'image/gif':
         case 'image/jpeg':
         case 'image/png':
@@ -1523,7 +1505,7 @@ function filehtml(array $fileinfo): string
             $type = 'zip';
             break;
         default:
-            $type = explode('/', $fileinfo['mime']);
+            $type = explode('/', $file->getMime());
             $type = array_shift($type);
             break;
     }
@@ -1546,7 +1528,7 @@ function filehtml(array $fileinfo): string
             break;
     }
 
-    $html .= '" alt="" title="" /> </div><div ondblclick="showfilename('.$fileinfo['id'].')" class="navn" id="navn'.$fileinfo['id'].'div" title="'.$pathinfo['filename'].'"> '.$pathinfo['filename'].'</div><form action="" method="get" onsubmit="document.getElementById(\'files\').focus();return false;" style="display:none" id="navn'.$fileinfo['id'].'form"><p><input onblur="renamefile(\''.$fileinfo['id'].'\');" maxlength="'.(251-mb_strlen($pathinfo['dirname'], 'UTF-8')).'" value="'.$pathinfo['filename'].'" name="" /></p></form>';
+    $html .= '" alt="" title="" /> </div><div ondblclick="showfilename('.$file->getId().')" class="navn" id="navn'.$file->getId().'div" title="'.$pathinfo['filename'].'"> '.$pathinfo['filename'].'</div><form action="" method="get" onsubmit="document.getElementById(\'files\').focus();return false;" style="display:none" id="navn'.$file->getId().'form"><p><input onblur="renamefile(\''.$file->getId().'\');" maxlength="'.(251-mb_strlen($pathinfo['dirname'], 'UTF-8')).'" value="'.$pathinfo['filename'].'" name="" /></p></form>';
     $html .= '</div>';
     return $html;
 }
@@ -1813,12 +1795,11 @@ function searchfiles(string $qpath, string $qalt, string $qmime): array
     }
 
     //Generate search query
-    $sql = '';
-    $sql .= ' FROM `files`';
+    $sql = " FROM `files`";
     if ($qpath || $qalt || $sql_mime) {
-        $sql .= ' WHERE ';
+        $sql .= " WHERE ";
         if ($qpath || $qalt) {
-            $sql .= '(';
+            $sql .= "(";
         }
         if ($qpath) {
             $sql .= "MATCH(path) AGAINST('".$qpath."')>0";
@@ -1846,9 +1827,6 @@ function searchfiles(string $qpath, string $qalt, string $qmime): array
         }
     }
 
-    $filecount = db()->fetchOne("SELECT count(id) AS count" . $sql);
-    $filecount = $filecount['count'];
-
     $sql_select = '';
     if ($qpath || $qalt) {
         $sql_select .= ', ';
@@ -1872,26 +1850,12 @@ function searchfiles(string $qpath, string $qalt, string $qmime): array
         $sql .= ' ORDER BY `score` DESC';
     }
 
-
-    $filenumber = 0;
     $html = '';
     $javascript = '';
-    while ($filenumber < $filecount) {
-        $limit = 250;
-        if ($filecount-$filenumber<250) {
-            $limit = $filecount-$filenumber;
-        }
-        //TODO return error if befor time out or mem exceded
-        //TODO set header() to internal error at the start of all ajax request and 200 (OK) at the end and make javascript display an error if the returned isn't 200;
-        $files = db()->fetchArray('SELECT *'.$sql.' LIMIT '.$filenumber.', '.$limit);
-        $filenumber += 250;
-
-        foreach ($files as $key => $file) {
-            if ($qmime != 'unused' || !isinuse($file['path'])) {
-                $html .= filehtml($file);
-                $javascript .= filejavascript($file);
-            }
-            unset($files[$key]);
+    foreach (ORM::getByQuery(File::class, "SELECT *" . $sql) as $file) {
+        if ($qmime !== 'unused' || !isinuse($file->getPath())) {
+            $html .= filehtml($file);
+            $javascript .= filejavascript($file);
         }
     }
 
@@ -1900,26 +1864,26 @@ function searchfiles(string $qpath, string $qalt, string $qmime): array
 
 /**
  * @param int $qpath
- * @param string $alt
+ * @param string $description
  *
  * @return array
  */
-function edit_alt(int $id, string $alt): array
+function edit_alt(int $id, string $description): array
 {
-    db()->query("UPDATE `files` SET `alt` = '" . db()->esc($alt) . "' WHERE `id` = " . $id);
+    $file = ORM::getOne(File::class, $id);
+    $file->setDescription($description)->save();
 
     //Update html with new alt...
-    $file = db()->fetchOne("SELECT path FROM `files` WHERE `id` = " . $id);
-    $sider = db()->fetchArray("SELECT id, text FROM `sider` WHERE `text` LIKE '%" . $file['path'] . "%'");
+    $sider = db()->fetchArray("SELECT id, text FROM `sider` WHERE `text` LIKE '%" . $file->getPath() . "%'");
 
     foreach ($sider as $value) {
         //TODO move this to db fixer to test for missing alt="" in img
         /*preg_match_all('/<img[^>]+/?>/ui', $value, $matches);*/
-        $value['text'] = preg_replace('/(<img[^>]+src="'.addcslashes(str_replace('.', '[.]', $file['path']), '/').'"[^>]+alt=)"[^"]*"([^>]*>)/iu', '\1"'.xhtmlEsc($alt).'"\2', $value['text']);
-        $value['text'] = preg_replace('/(<img[^>]+alt=)"[^"]*"([^>]+src="'.addcslashes(str_replace('.', '[.]', $file['path']), '/').'"[^>]*>)/iu', '\1"'.xhtmlEsc($alt).'"\2', $value['text']);
+        $value['text'] = preg_replace('/(<img[^>]+src="'.addcslashes(str_replace('.', '[.]', $file['path']), '/').'"[^>]+alt=)"[^"]*"([^>]*>)/iu', '\1"'.xhtmlEsc($description).'"\2', $value['text']);
+        $value['text'] = preg_replace('/(<img[^>]+alt=)"[^"]*"([^>]+src="'.addcslashes(str_replace('.', '[.]', $file['path']), '/').'"[^>]*>)/iu', '\1"'.xhtmlEsc($description).'"\2', $value['text']);
         db()->query("UPDATE `sider` SET `text` = '" . $value['text'] . "' WHERE `id` = " . $value['id']);
     }
-    return ['id' => $id, 'alt' => $alt];
+    return ['id' => $id, 'alt' => $description];
 }
 
 /**
@@ -3936,48 +3900,20 @@ function generateImage(
 
     $filesize = filesize(_ROOT_ . $outputPath);
 
-    $id = null;
-    if ($output['filename'] === $pathinfo['filename'] && $outputPath !== $path) {
-        @unlink(_ROOT_ . $path);
-        db()->query("DELETE FROM files WHERE path = '" . db()->esc($outputPath) . "'");
-    } else {
-        $id = db()->fetchOne("SELECT id FROM files WHERE path = '" . db()->esc($outputPath) . "'");
-        $id = $id ? (int) $id['id'] : null;
+    $file = File::getByPath($outputPath);
+    if ($file && $output['filename'] === $pathinfo['filename'] && $outputPath !== $path) {
+        $file->delete();
+        $file = null;
+    }
+    if (!$file) {
+        $file = File::fromPath($outputPath);
     }
 
-    if ($id) {
-        db()->query(
-            "
-            UPDATE files SET
-            path = '" . db()->esc($outputPath) . "',
-            mime = '" . db()->esc($mimeType) . "',
-            width = '" . $width . "',
-            height = '" . $height . "'
-            size = " . $filesize . ",
-            WHERE id = " . $id
-        );
-    } else {
-        db()->query(
-            "
-            INSERT INTO files (
-                path,
-                mime,
-                width,
-                height,
-                size,
-                aspect
-            ) VALUES (
-                '" . db()->esc($outputPath) . "',
-                '" . db()->esc($mimeType) . "',
-                '" . $width . "',
-                '" . $height . "',
-                '" . $filesize . "',
-                NULL
-            )
-            "
-        );
-        $id = db()->insert_id;
-    }
+    $file->setMime($mimeType)
+        ->setWidth($width)
+        ->setHeight($height)
+        ->setSize($filesize)
+        ->save();
 
-    return ['id' => $id, 'path' => $outputPath, 'width' => $width, 'height' => $height];
+    return ['id' => $file->getId(), 'path' => $outputPath, 'width' => $width, 'height' => $height];
 }

@@ -269,13 +269,7 @@ class Category
         if (!$this->iconPath) {
             return null;
         }
-        return ORM::getOneByQuery(
-            File::class,
-            "
-            SELECT *
-            FROM `files`
-            WHERE path = '" . db()->esc($this->iconPath) . "'"
-        );
+        return File::getByPath($this->iconPath);
     }
 
     // ORM related functions
