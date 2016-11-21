@@ -2,12 +2,7 @@
 
 require_once $_SERVER['DOCUMENT_ROOT'] . '/admin/logon.php';
 
-$file = db()->fetchOne(
-    "
-    SELECT aspect, width, height
-    FROM `files`
-    WHERE `path` = '" . $_GET['url'] . "'"
-);
+$file = File::getByPath($_GET['url']);
 ?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
@@ -23,10 +18,10 @@ echo $_GET['url'];
 </head>
 
 <body><embed src="<?php
-echo $_GET['url'];
+echo xhtmlEsc($file->getPath());
 ?>" width="<?php
-echo $file['width'];
+echo $file->getWidth();
 ?>" height="<?php
-echo $file['height'];
+echo $file->getHeight();
 ?>" /></body>
 </html>

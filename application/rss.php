@@ -109,5 +109,4 @@ foreach ($pages as $page) {
 
     echo '</item>';
 }
-db()->close();
 echo '</channel></rss>';

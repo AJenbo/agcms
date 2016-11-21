@@ -83,5 +83,4 @@ foreach ($pages as $page) {
     echo '<category>' . implode(' &gt; ', $categoryTitles) . '</category>';
     echo '</product>';
 }
-db()->close();
 echo '</products>';
