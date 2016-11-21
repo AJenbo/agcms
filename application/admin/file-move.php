@@ -14,13 +14,7 @@ $pathinfo = pathinfo($_GET['path']);
 <title><?php echo _('Move file'); ?></title>
 <script type="text/javascript" src="javascript/javascript.js"></script>
 <script type="text/javascript" src="javascript/explorer.js"></script>
-<script type="text/javascript" src="javascript/lib/prototype.js"></script>
-<script type="text/javascript"><!--
-var JSON = JSON || {};
-JSON.stringify = function(value) { return value.toJSON(); };
-JSON.parse = JSON.parse || function(jsonsring) { return jsonsring.evalJSON(true); };
-//-->
-</script>
+<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/prototype/1.7.3.0/prototype.js"></script>
 <script type="text/javascript" src="/javascript/sajax.js"></script>
 <script type="text/javascript"><!--
 <?php Sajax\Sajax::showJavascript(); ?>

@@ -17,12 +17,15 @@
 function echoPrice(float $price, float $before, int $from, int $should)
 {
     if ($before) {
-        if ($should == 1) {
-            echo 'Retail price: <span>';
-        } elseif ($should == 2) {
-            echo 'Should cost: <span>';
-        } else {
-            echo 'Before: <span class="XPris">';
+        switch ($should) {
+            case 1:
+                echo 'Retail price: <span>';
+                break;
+            case 2:
+                echo 'Should cost: <span>';
+                break;
+            default;
+                echo 'Before: <span class="XPris">';
         }
         echo str_replace(',00', ',-', number_format($before, 2, ',', '.')) . '</span>';
     }
@@ -101,7 +104,8 @@ if (self::$keywords) {
 ?></head><body><div id="wrapper"><ul id="crumbs"><li><a href="/">Home</a><?php
 
 foreach (self::$crumbs as $crumb) {
-    echo '<ul><li><b style="font-size:16px">-&gt;</b><a href="' . xhtmlEsc($crumb['link']) . '"> ' . xhtmlEsc($crumb['name']);
+    echo '<ul><li><b style="font-size:16px">-&gt;</b><a href="'
+        . xhtmlEsc($crumb['link']) . '"> ' . xhtmlEsc($crumb['name']);
     if ($crumb['icon']) {
         echo '<img src="' . xhtmlEsc($crumb['icon']) . '" alt="" />';
     }
@@ -161,7 +165,8 @@ if (in_array(self::$pageType, ['front', 'custome'], true)) {
             }
             echo '<td><a href="' . xhtmlEsc($value['link']) . '">' . xhtmlEsc($value['name']);
             if ($value['icon']) {
-                echo '<br /><img src="' . xhtmlEsc($value['icon']) . '" alt="' . xhtmlEsc($value['name']) . '" title="" />';
+                echo '<br /><img src="' . xhtmlEsc($value['icon'])
+                    . '" alt="' . xhtmlEsc($value['name']) . '" title="" />';
             }
             echo '</a></td>';
             if ($i % 2 || $i == $nr) {
@@ -176,7 +181,8 @@ if (in_array(self::$pageType, ['front', 'custome'], true)) {
         echo '<p align="center" style="clear:both">View other product from the same brand</p><a href="'
             . xhtmlEsc(self::$brand['link']) . '">'. xhtmlEsc(self::$brand['name']);
         if (self::$brand['icon']) {
-            echo '<br /><img src="' . xhtmlEsc(self::$brand['icon']) . '" alt="' . xhtmlEsc(self::$brand['name']) . '" title="" />';
+            echo '<br /><img src="' . xhtmlEsc(self::$brand['icon'])
+                . '" alt="' . xhtmlEsc(self::$brand['name']) . '" title="" />';
         }
         echo '</a>';
     }
@@ -240,7 +246,8 @@ if (in_array(self::$pageType, ['front', 'custome'], true)) {
                 }
                 echo '<td><a href="' . xhtmlEsc($items['link']) . '">';
                 if ($items['icon']) {
-                    echo '<img src="' . xhtmlEsc($items['icon']) . '" alt="' . xhtmlEsc($items['name']) . '" title="" /><br />';
+                    echo '<img src="' . xhtmlEsc($items['icon'])
+                        . '" alt="' . xhtmlEsc($items['name']) . '" title="" /><br />';
                 }
                 echo $items['name'] . '<br />';
                 echoPrice(

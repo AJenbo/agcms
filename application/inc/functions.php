@@ -41,18 +41,18 @@ require_once __DIR__ . '/../vendor/autoload.php';
 
 function db(DB $overwrite = null): DB
 {
-    static $db;
+    static $connection;
     if ($overwrite) {
-        $db = $overwrite;
-    } elseif (!$db) {
-        $db = new DB(
+        $connection = $overwrite;
+    } elseif (!$connection) {
+        $connection = new DB(
             Config::get('mysql_server'),
             Config::get('mysql_user'),
             Config::get('mysql_password'),
             Config::get('mysql_database')
         );
     }
-    return $db;
+    return $connection;
 }
 
 function redirect(string $url, int $status = 303)
@@ -66,15 +66,14 @@ function redirect(string $url, int $status = 303)
         $url['scheme'] = !empty($_SERVER['HTTPS']) && mb_strtolower($_SERVER['HTTPS']) !== 'off' ? 'https' : 'http';
     }
     if (empty($url['host'])) {
+        // IP
+        $url['host'] = $_SERVER['SERVER_ADDR'];
         if (!empty($_SERVER['HTTP_HOST'])) {
             // Browser
             $url['host'] = $_SERVER['HTTP_HOST'];
         } elseif (!empty($_SERVER['SERVER_NAME'])) {
             // Can both be from Browser and server (virtual) config
             $url['host'] = $_SERVER['SERVER_NAME'];
-        } else {
-            // IP
-            $url['host'] = $_SERVER['SERVER_ADDR'];
         }
     }
     if (empty($url['path'])) {
@@ -95,7 +94,7 @@ function redirect(string $url, int $status = 303)
     ini_set('zlib.output_compression', 0);
 
     header('Location: ' . $url, true, $status);
-    die();
+    exit;
 }
 
 /**
@@ -105,17 +104,17 @@ function redirect(string $url, int $status = 303)
  *
  * @return string The URL
  */
-function unparseUrl(array $parsed_url): string
+function unparseUrl(array $parsedUrl): string
 {
-    $scheme   = !empty($parsed_url['scheme']) ? $parsed_url['scheme'] . '://' : '';
-    $host     = !empty($parsed_url['host']) ? $parsed_url['host'] : '';
-    $port     = !empty($parsed_url['port']) ? ':' . $parsed_url['port'] : '';
-    $user     = !empty($parsed_url['user']) ? $parsed_url['user'] : '';
-    $pass     = !empty($parsed_url['pass']) ? ':' . $parsed_url['pass'] : '';
+    $scheme   = !empty($parsedUrl['scheme']) ? $parsedUrl['scheme'] . '://' : '';
+    $host     = !empty($parsedUrl['host']) ? $parsedUrl['host'] : '';
+    $port     = !empty($parsedUrl['port']) ? ':' . $parsedUrl['port'] : '';
+    $user     = !empty($parsedUrl['user']) ? $parsedUrl['user'] : '';
+    $pass     = !empty($parsedUrl['pass']) ? ':' . $parsedUrl['pass'] : '';
     $pass     .= ($user || $pass) ? '@' : '';
-    $path     = !empty($parsed_url['path']) ? $parsed_url['path'] : '';
-    $query    = !empty($parsed_url['query']) ? '?' . $parsed_url['query'] : '';
-    $fragment = !empty($parsed_url['fragment']) ? '#' . $parsed_url['fragment'] : '';
+    $path     = !empty($parsedUrl['path']) ? $parsedUrl['path'] : '';
+    $query    = !empty($parsedUrl['query']) ? '?' . $parsedUrl['query'] : '';
+    $fragment = !empty($parsedUrl['fragment']) ? '#' . $parsedUrl['fragment'] : '';
     return $scheme . $user . $pass . $host . $port . $path . $query . $fragment;
 }
 
@@ -163,13 +162,8 @@ function clearFileName(string $name): string
  */
 function arrayNatsort(array $aryData, string $strIndex, string $strSortBy, string $strSortType = 'asc'): array
 {
-    //Make sure the sort by is a string
-    $strSortBy .= '';
-    //Make sure the index is a string
-    $strIndex .= '';
-
     //if the parameters are invalid
-    if (!is_array($aryData) || $strIndex === '' || $strSortBy === '') {
+    if (!$strIndex || !$strSortBy) {
         return $aryData;
     }
 
@@ -186,18 +180,18 @@ function arrayNatsort(array $aryData, string $strIndex, string $strSortBy, strin
     natcasesort($arySort);
 
     //if the sort type is descending
-    if ($strSortType == 'desc' || $strSortType == '-') {
+    if (in_array($strSortType, ['desc', '-'], true)) {
         //reverse the array
         arsort($arySort);
     }
 
     //loop through the sorted and original data
-    foreach ($arySort as $arySortKey => $arySorted) {
+    foreach ($arySort as $arySortKey => $dummy) {
         foreach ($aryData as $aryOriginal) {
             //if the key matches
-            if ($aryOriginal[$strIndex]==$arySortKey) {
+            if ($aryOriginal[$strIndex] === $arySortKey) {
                 //add it to the output array
-                array_push($aryResult, $aryOriginal);
+                $aryResult[] = $aryOriginal;
                 break;
             }
         }
@@ -225,7 +219,7 @@ function arrayListsort(
     int $intSortingOrder,
     string $strSortType = 'asc'
 ): array {
-    if (!is_array($aryData) || !$strIndex || !$strSortBy) {
+    if (!$strIndex || !$strSortBy) {
         return $aryData;
     }
 
@@ -255,14 +249,14 @@ function arrayListsort(
 
     natcasesort($arySort);
 
-    if ($strSortType=="desc" || $strSortType=="-") {
+    if (in_array($strSortType, ['desc', '-'], true)) {
         arsort($arySort);
     }
 
-    foreach ($arySort as $arySortKey => $arySorted) {
+    foreach ($arySort as $arySortKey => $dummy) {
         foreach ($aryData as $aryOriginal) {
-            if ($aryOriginal[$strIndex]==$arySortKey) {
-                array_push($aryResult, $aryOriginal);
+            if ($aryOriginal[$strIndex] === $arySortKey) {
+                $aryResult[] = $aryOriginal;
                 break;
             }
         }
@@ -470,13 +464,13 @@ function getKat(int $categoryId, string $sort): array
 /**
  * Generate a 5 didget code from the order id
  *
- * @param int $id Order id to generate code from
+ * @param int $orderId Order id to generate code from
  *
  * @return string
  */
-function getCheckid(int $id): string
+function getCheckid(int $orderId): string
 {
-    return substr(md5($id . Config::get('pbssalt')), 3, 5);
+    return substr(md5($orderId . Config::get('pbssalt')), 3, 5);
 }
 
 /**
@@ -557,7 +551,9 @@ function validate(array $values): array
             $rejected['land'] = true;
         }
         if (empty($values['postpostbox'])
-            && (empty($values['postaddress']) || ($values['postcountry'] == 'DK' && !preg_match('/\s/ui', $values['postaddress'])))
+            && (empty($values['postaddress'])
+                || ($values['postcountry'] == 'DK' && !preg_match('/\s/ui', $values['postaddress']))
+            )
         ) {
             $rejected['postaddress'] = true;
         }
@@ -580,8 +576,8 @@ function sendEmails(
     string $htmlBody,
     string $from = '',
     string $fromName = '',
-    string $to = '',
-    string $toName = '',
+    string $recipient = '',
+    string $recipientName = '',
     bool $retry = true,
     array $bcc = []
 ): bool {
@@ -595,41 +591,41 @@ function sendEmails(
     if (!$fromName) {
         $fromName = Config::get('site_name');
     }
-    if (!$to) {
-        $to = $emailConfig['address'];
-        $toName = Config::get('site_name');
-    } elseif (!$toName) {
-        $toName = $to;
+    if (!$recipient) {
+        $recipient = $emailConfig['address'];
+        $recipientName = Config::get('site_name');
+    } elseif (!$recipientName) {
+        $recipientName = $recipient;
     }
 
-    $PHPMailer = new PHPMailer(true);
-    $PHPMailer->SetLanguage('dk');
-    $PHPMailer->IsSMTP();
-    $PHPMailer->SMTPAuth = false;
+    $mailer = new PHPMailer(true);
+    $mailer->SetLanguage('dk');
+    $mailer->IsSMTP();
+    $mailer->SMTPAuth = false;
     if ($emailConfig['smtpAuth']) {
-        $PHPMailer->SMTPAuth = true;
-        $PHPMailer->Username = $emailConfig['address'];
-        $PHPMailer->Password = $emailConfig['password'];
+        $mailer->SMTPAuth = true;
+        $mailer->Username = $emailConfig['address'];
+        $mailer->Password = $emailConfig['password'];
     }
-    $PHPMailer->Host     = $emailConfig['smtpHost'];
-    $PHPMailer->Port     = $emailConfig['smtpPort'];
-    $PHPMailer->CharSet  = 'utf-8';
-    $PHPMailer->From     = $emailConfig['address'];
-    $PHPMailer->FromName = Config::get('site_name');
+    $mailer->Host     = $emailConfig['smtpHost'];
+    $mailer->Port     = $emailConfig['smtpPort'];
+    $mailer->CharSet  = 'utf-8';
+    $mailer->From     = $emailConfig['address'];
+    $mailer->FromName = Config::get('site_name');
 
     if ($from !== $emailConfig['address']) {
-        $PHPMailer->AddReplyTo($from, $fromName);
+        $mailer->AddReplyTo($from, $fromName);
     }
 
     foreach ($bcc as $email) {
-        $PHPMailer->AddBCC($email['email'], $email['navn']);
+        $mailer->AddBCC($email['email'], $email['navn']);
     }
 
-    $PHPMailer->Subject = $subject;
-    $PHPMailer->MsgHTML($htmlBody, _ROOT_);
-    $PHPMailer->AddAddress($to, $toName);
+    $mailer->Subject = $subject;
+    $mailer->MsgHTML($htmlBody, _ROOT_);
+    $mailer->AddAddress($recipient, $recipientName);
 
-    $success = $PHPMailer->Send();
+    $success = $mailer->Send();
     if ($success) {
         //Upload email to the sent folder via imap
         if ($emailConfig['imapHost']) {
@@ -641,7 +637,7 @@ function sendEmails(
             );
             $imap->append(
                 $emailConfig['sentBox'],
-                $PHPMailer->getSentMIMEMessage(),
+                $mailer->getSentMIMEMessage(),
                 '\Seen'
             );
         }
@@ -653,7 +649,7 @@ function sendEmails(
                 '" . db()->esc($subject) . "',
                 '" . db()->esc($htmlBody) . "',
                 '" . db()->esc($from . "<" . $fromName) . ">',
-                '" . db()->esc($to . "<" . $toName) . ">'
+                '" . db()->esc($recipient . "<" . $recipientName) . ">'
             );
             "
         );

@@ -73,15 +73,9 @@ Sajax\Sajax::handleClientRequest();
 
 --></script>
 <script type="text/javascript" src="javascript/lib/php.min.js"></script>
-<script type="text/javascript" src="javascript/lib/prototype.js"></script>
-<script type="text/javascript"><!--
-var JSON = JSON || {};
-JSON.stringify = function(value) { return value.toJSON(); };
-JSON.parse = JSON.parse || function(jsonsring) { return jsonsring.evalJSON(true); };
-//-->
-</script>
+<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/prototype/1.7.3.0/prototype.js"></script>
 <script type="text/javascript" src="/javascript/sajax.js"></script>
-<script type="text/javascript" src="javascript/lib/scriptaculous.js"></script>
+<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/scriptaculous/1.9.0/scriptaculous.js"></script>
 <script type="text/javascript" src="javascript/lib/protomenu/proto.menu.js"></script>
 <link rel="stylesheet" href="style/proto.menu.css" type="text/css" media="screen" />
 <script type="text/javascript" src="javascript/javascript.js"></script>

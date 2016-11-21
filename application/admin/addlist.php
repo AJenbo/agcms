@@ -42,7 +42,7 @@ $tablesorts = db()->fetchArray("SELECT id, navn FROM `tablesort`");
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <title><?php echo _('Add list'); ?></title>
-<script type="text/javascript" src="javascript/lib/prototype.js"></script>
+<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/prototype/1.7.3.0/prototype.js"></script>
 <script type="text/javascript" src="javascript/lib/php.min.js"></script>
 <script type="text/javascript" src="javascript/javascript.js"></script>
 <script type="text/javascript"><!--

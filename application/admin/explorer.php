@@ -46,13 +46,7 @@ if (@$_COOKIE['qpath'] || @$_COOKIE['qalt'] || @$_COOKIE['qtype']) {
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <title><?php echo _('Explorer'); ?></title>
 <script type="text/javascript" src="javascript/lib/php.min.js"></script>
-<script type="text/javascript" src="javascript/lib/prototype.js"></script>
-<script type="text/javascript"><!--
-var JSON = JSON || {};
-JSON.stringify = function(value) { return value.toJSON(); };
-JSON.parse = JSON.parse || function(jsonsring) { return jsonsring.evalJSON(true); };
-//-->
-</script>
+<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/prototype/1.7.3.0/prototype.js"></script>
 <script type="text/javascript" src="javascript/lib/protomenu/proto.menu.js"></script>
 <link rel="stylesheet" href="style/proto.menu.css" type="text/css" media="screen" />
 

@@ -102,13 +102,7 @@ Sajax\Sajax::handleClientRequest();
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <link  href="style/calendar.css" rel="stylesheet" type="text/css" />
-<script type="text/javascript" src="javascript/lib/prototype.js"></script>
-<script type="text/javascript"><!--
-var JSON = JSON || {};
-JSON.stringify = function(value) { return value.toJSON(); };
-JSON.parse = JSON.parse || function(jsonsring) { return jsonsring.evalJSON(true); };
-//-->
-</script>
+<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/prototype/1.7.3.0/prototype.js"></script>
 <script type="text/javascript" src="javascript/lib/php.min.js"></script>
 <script type="text/javascript" src="/javascript/zipcodedk.js"></script>
 <script type="text/javascript" src="javascript/calendar.js"></script>

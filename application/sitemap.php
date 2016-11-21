@@ -61,8 +61,8 @@ if ($brandIds) {
         "
     );
     foreach ($brands as $brand) {
-    echo '<url><loc>' . htmlspecialchars(Config::get('base_url') . '/' . $brand->getSlug(), ENT_COMPAT | ENT_XML1)
-        . '</loc><changefreq>weekly</changefreq><priority>0.4</priority></url>';
+        echo '<url><loc>' . htmlspecialchars(Config::get('base_url') . '/' . $brand->getSlug(), ENT_COMPAT | ENT_XML1)
+            . '</loc><changefreq>weekly</changefreq><priority>0.4</priority></url>';
     }
 }
 

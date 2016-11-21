@@ -13,7 +13,7 @@ class EpaymentAdminService
     private $password;
     private $amount;
     private $soapClient;
-    private $id = 0;
+    private $transactionId = 0;
     private $Authorized = false;
     private $Error = false;
     private $Annulled = false;
@@ -33,6 +33,26 @@ class EpaymentAdminService
             'https://ssl.ditonlinebetalingssystem.dk/remote/payment.asmx?WSDL'
         );
 
+        $transactionData = $this->getTransactionData($orderId);
+
+        if (!$transactionData) {
+            return;
+        }
+
+        $this->transactionId = $transactionData->transactionid;
+        $this->amount = (int) $transactionData->authamount;
+
+        if ($transactionData->status == 'PAYMENT_NEW') {
+            $this->Authorized = true;
+        } elseif ($transactionData->status == 'PAYMENT_CAPTURED') {
+            $this->AmountCaptured = (int) $transactionData->capturedamount;
+        } elseif ($transactionData->status == 'PAYMENT_DELETED') {
+            $this->Annulled = true;
+        }
+    }
+
+    private function getTransactionData(string $orderId)
+    {
         $response = $this->soapClient->gettransactionlist(
             [
                 'pwd' => $this->password,
@@ -44,47 +64,41 @@ class EpaymentAdminService
                 'epayresponse' => true,
             ]
         );
-        if (empty($response->transactionInformationAry) || !(array) $response->transactionInformationAry) {
-            $response = $this->soapClient->gettransactionlist(
-                [
-                    'pwd' => $this->password,
-                    'merchantnumber' => $this->merchantId,
-                    'searchorderid' => $orderId,
-                    'status' => 'PAYMENT_CAPTURED',
-                    'searchdatestart' => '2014-06-19T00:00:00+02:00',
-                    'searchdateend' => date('c'),
-                    'epayresponse' => true,
-                ]
-            );
-        }
-        if (empty($response->transactionInformationAry) || !(array) $response->transactionInformationAry) {
-            $response = $this->soapClient->gettransactionlist(
-                [
-                    'pwd' => $this->password,
-                    'merchantnumber' => $this->merchantId,
-                    'searchorderid' => $orderId,
-                    'status' => 'PAYMENT_DELETED',
-                    'searchdatestart' => '2014-06-19T00:00:00+02:00',
-                    'searchdateend' => date('c'),
-                    'epayresponse' => true,
-                ]
-            );
-        }
-
         if (!empty($response->transactionInformationAry) && (array) $response->transactionInformationAry) {
-            $info = $response->transactionInformationAry->TransactionInformationType;
-
-            $this->id = $info->transactionid;
-            $this->amount = (int) $info->authamount;
-
-            if ($info->status == 'PAYMENT_NEW') {
-                $this->Authorized = true;
-            } elseif ($info->status == 'PAYMENT_CAPTURED') {
-                $this->AmountCaptured = (int) $info->capturedamount;
-            } elseif ($info->status == 'PAYMENT_DELETED') {
-                $this->Annulled = true;
-            }
+            return $response->transactionInformationAry->TransactionInformationType;
         }
+
+        $response = $this->soapClient->gettransactionlist(
+            [
+                'pwd' => $this->password,
+                'merchantnumber' => $this->merchantId,
+                'searchorderid' => $orderId,
+                'status' => 'PAYMENT_CAPTURED',
+                'searchdatestart' => '2014-06-19T00:00:00+02:00',
+                'searchdateend' => date('c'),
+                'epayresponse' => true,
+            ]
+        );
+        if (!empty($response->transactionInformationAry) && (array) $response->transactionInformationAry) {
+            return $response->transactionInformationAry->TransactionInformationType;
+        }
+
+        $response = $this->soapClient->gettransactionlist(
+            [
+                'pwd' => $this->password,
+                'merchantnumber' => $this->merchantId,
+                'searchorderid' => $orderId,
+                'status' => 'PAYMENT_DELETED',
+                'searchdatestart' => '2014-06-19T00:00:00+02:00',
+                'searchdateend' => date('c'),
+                'epayresponse' => true,
+            ]
+        );
+        if (!empty($response->transactionInformationAry) && (array) $response->transactionInformationAry) {
+            return $response->transactionInformationAry->TransactionInformationType;
+        }
+
+        return null;
     }
 
     /**
@@ -92,7 +106,7 @@ class EpaymentAdminService
      */
     public function getId(): int
     {
-        return $this->id;
+        return $this->transactionId;
     }
 
     /**
@@ -140,7 +154,7 @@ class EpaymentAdminService
             [
                 'pwd' => $this->password,
                 'merchantnumber' => $this->merchantId,
-                'transactionid' => $this->id,
+                'transactionid' => $this->transactionId,
                 'epayresponse' => true,
             ]
         );
@@ -181,7 +195,7 @@ class EpaymentAdminService
             [
                 'pwd' => $this->password,
                 'merchantnumber' => $this->merchantId,
-                'transactionid' => $this->id,
+                'transactionid' => $this->transactionId,
                 'amount' => $amount,
                 'epayresponse' => true,
                 'pbsResponse' => true,

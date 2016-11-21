@@ -22,5 +22,11 @@ echo $_GET['url'];
 --></style>
 </head>
 
-<body><embed src="<?php echo $_GET['url']; ?>" width="<?php echo $file['width']; ?>" height="<?php echo $file['height']; ?>" /></body>
+<body><embed src="<?php
+echo $_GET['url'];
+?>" width="<?php
+echo $file['width'];
+?>" height="<?php
+echo $file['height'];
+?>" /></body>
 </html>

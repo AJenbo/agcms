@@ -13,14 +13,8 @@ $imagesize = @getimagesize(_ROOT_ . $_GET['path']);
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <title><?php echo _('Edit picture'); ?></title>
-<script src="javascript/lib/prototype.js" type="text/javascript"></script>
-<script type="text/javascript"><!--
-var JSON = JSON || {};
-JSON.stringify = function(value) { return value.toJSON(); };
-JSON.parse = JSON.parse || function(jsonsring) { return jsonsring.evalJSON(true); };
-//-->
-</script>
-<script src="javascript/lib/scriptaculous.js?load=effects,builder,dragdrop" type="text/javascript"></script>
+<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/prototype/1.7.3.0/prototype.js"></script>
+<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/scriptaculous/1.9.0/scriptaculous.js?load=effects,builder,dragdrop" type="text/javascript"></script>
 <script src="javascript/lib/cropper/cropper.js" type="text/javascript"></script>
 <style type="text/css">
 #tools {

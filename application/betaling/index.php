@@ -72,63 +72,37 @@ if (!empty($id) && $checkid === getCheckid($id) && !isset($_GET['txnid'])) {
             Render::$title = _('Order #') . $id;
             Render::$headline = _('Order #').$id;
 
-            Render::$bodyHtml = '<table id="faktura" cellspacing="0">
-                <thead>
-                    <tr>
-                        <td class="td1">'._('Quantity').'</td>
-                        <td>'._('Title').'</td>
-                        <td class="td3 tal">'._('unit price').'</td>
-                        <td class="td4 tal">'._('Total').'</td>
-                    </tr>
-                </thead>
-                <tfoot>
-                    <tr style="height:auto;min-height:auto;max-height:auto;">
-                        <td>&nbsp;</td>
-                        <td>&nbsp;</td>
-                        <td class="tal">'._('Net Amount').'</td>';
-
-            Render::$bodyHtml .= '<td class="tal">'.number_format($netto, 2, ',', '').'</td>
-                </tr>
-                <tr>
-                    <td>&nbsp;</td>
-                    <td>&nbsp;</td>
-                    <td class="tal">'._('Freight').'</td>
-                    <td class="tal">'.number_format($faktura['fragt'], 2, ',', '').'</td>
-                </tr>
-                <tr>
-                    <td>&nbsp;</td>
-                    <td style="text-align:right" class="tal">'.($faktura['momssats']*100).'%</td>
-                    <td class="tal">'._('VAT Amount').'</td>
-                    <td class="tal">'.number_format($netto*$faktura['momssats'], 2, ',', '').'</td>
-                </tr>
-                <tr class="border">
-                    <td colspan="2">'._('All figures are in DKK').'</td>
-                    <td style="text-align:center; font-weight:bold;">'._('TO PAY').'</td>
-                    <td class="tal"><big>'.number_format($faktura['amount'], 2, ',', '').'</big></td>
-                </tr>
-            </tfoot>
-            <tbody>';
+            Render::$bodyHtml = '<table id="faktura" cellspacing="0"><thead><tr><td class="td1">' . _('Quantity')
+                . '</td><td>' . _('Title') . '</td><td class="td3 tal">' . _('unit price') . '</td><td class="td4 tal">'
+                . _('Total') . '</td></tr></thead><tfoot><tr style="height:auto;min-height:auto;max-height:auto;"><td>&nbsp;</td><td>&nbsp;</td><td class="tal">'
+                . _('Net Amount') . '</td><td class="tal">' . number_format($netto, 2, ',', '')
+                . '</td></tr><tr><td>&nbsp;</td><td>&nbsp;</td><td class="tal">' . _('Freight')
+                . '</td><td class="tal">' . number_format($faktura['fragt'], 2, ',', '')
+                . '</td></tr><tr><td>&nbsp;</td><td style="text-align:right" class="tal">' . ($faktura['momssats']*100)
+                . '%</td><td class="tal">' . _('VAT Amount') . '</td><td class="tal">'
+                . number_format($netto*$faktura['momssats'], 2, ',', '')
+                . '</td></tr><tr class="border"><td colspan="2">' . _('All figures are in DKK')
+                . '</td><td style="text-align:center; font-weight:bold;">' . _('TO PAY') . '</td><td class="tal"><big>'
+                . number_format($faktura['amount'], 2, ',', '') . '</big></td></tr></tfoot><tbody>';
             for ($i=0; $i<$productslines; $i++) {
-                Render::$bodyHtml .= '<tr>
-                    <td class="tal">'.$faktura['quantities'][$i].'</td>
-                    <td>'.xhtmlEsc($faktura['products'][$i]).'</td>
-                    <td class="tal">'.number_format($faktura['values'][$i]*(1+$faktura['momssats']), 2, ',', '').'</td>
-                    <td class="tal">'.number_format($faktura['values'][$i]*(1+$faktura['momssats'])*$faktura['quantities'][$i], 2, ',', '').'</td>
-                </tr>';
+                Render::$bodyHtml .= '<tr><td class="tal">' . $faktura['quantities'][$i] . '</td><td>'
+                    . xhtmlEsc($faktura['products'][$i]) . '</td><td class="tal">'
+                    . number_format($faktura['values'][$i]*(1+$faktura['momssats']), 2, ',', '')
+                    . '</td><td class="tal">'
+                    . number_format($faktura['values'][$i]*(1+$faktura['momssats'])*$faktura['quantities'][$i], 2, ',', '')
+                    . '</td></tr>';
             }
 
             Render::$bodyHtml .= '</tbody></table>';
 
             if ($faktura['note']) {
                 Render::$bodyHtml .= '<br /><strong>'._('Note:').'</strong><br /><p class="note">';
-                Render::$bodyHtml .= nl2br(htmlspecialchars($faktura['note'])).'</p>';
+                Render::$bodyHtml .= nl2br(xhtmlEsc($faktura['note'])).'</p>';
             }
-            Render::$bodyHtml .= '<form action="" method="get">
-        <input type="hidden" name="id" value="' . $id . '" />
-        <input type="hidden" name="checkid" value="' . htmlspecialchars($checkid) . '" />
-        <input type="hidden" name="step" value="1" />
-        <input style="font-weight:bold;" type="submit" value="' . _('Continue') . '" />
-        </form>';
+            Render::$bodyHtml .= '<form action="" method="get"><input type="hidden" name="id" value="' . $id
+                . '" /><input type="hidden" name="checkid" value="' . xhtmlEsc($checkid)
+                . '" /><input type="hidden" name="step" value="1" /><input style="font-weight:bold;" type="submit" value="'
+                . _('Continue') . '" /></form>';
         } elseif ($_GET['step'] == 1) { //Fill out customer info
             if ($_POST) {
                 $updates = [];
@@ -221,200 +195,149 @@ if (!empty($id) && $checkid === getCheckid($id) && !isset($_GET['txnid'])) {
             Render::$title = _('Recipient');
             Render::$headline = _('Recipient');
 
-            Render::$bodyHtml = '
-            <script type="text/javascript"><!--
-            window.history.forward(1);
-            --></script>
-            <script type="text/javascript" src="javascript.js"></script>
-            <script type="text/javascript" src="/javascript/zipcodedk.js"></script>
-            <form action="" method="post" onsubmit="return validateaddres()">
-    <table>
-        <tbody>
-            <tr>
-                <td> '._('Phone:').'</td>
-                <td colspan="2"><input name="tlf1" id="tlf1" style="width:157px" value="'.xhtmlEsc($faktura['tlf1']).'" /></td>
-                <td><input type="button" value="'._('Get address').'" onclick="getAddress(document.getElementById(\'tlf1\').value, getAddress_r1);" /></td>
-            </tr>
-            <tr>
-                <td> '._('Mobile:').'</td>
-                <td colspan="2"><input name="tlf2" id="tlf2" style="width:157px" value="'.xhtmlEsc($faktura['tlf2']).'" /></td>
-                <td><input type="button" value="'._('Get address').'" onclick="getAddress(document.getElementById(\'tlf2\').value, getAddress_r1);" /></td>
-            </tr>
-            <tr>
-                <td>'._('Name:').'</td>
-                <td colspan="2"><input name="navn" id="navn" style="width:157px" value="'.xhtmlEsc($faktura['navn']).'" /></td>
-                <td>';
+            Render::$bodyHtml = '<script type="text/javascript"><!--
+window.history.forward(1);
+--></script><script type="text/javascript" src="javascript.js"></script><script type="text/javascript" src="/javascript/zipcodedk.js"></script><form action="" method="post" onsubmit="return validateaddres()"><table><tbody><tr><td> '
+                . _('Phone:') . '</td><td colspan="2"><input name="tlf1" id="tlf1" style="width:157px" value="'
+                . xhtmlEsc($faktura['tlf1']) . '" /></td><td><input type="button" value="' . _('Get address')
+                . '" onclick="getAddress(document.getElementById(\'tlf1\').value, getAddress_r1);" /></td></tr><tr><td> '
+                . _('Mobile:') . '</td><td colspan="2"><input name="tlf2" id="tlf2" style="width:157px" value="'
+                . xhtmlEsc($faktura['tlf2']) . '" /></td><td><input type="button" value="' . _('Get address')
+                . '" onclick="getAddress(document.getElementById(\'tlf2\').value, getAddress_r1);" /></td></tr><tr><td>'
+                . _('Name:') . '</td><td colspan="2"><input name="navn" id="navn" style="width:157px" value="'
+                .xhtmlEsc($faktura['navn']) . '" /></td><td>';
             if (!empty($rejected['navn'])) {
                 Render::$bodyHtml .= '<img src="images/error.png" alt="" title="" >';
             }
-            Render::$bodyHtml .= '</td>
-            </tr>
-            <tr>
-                <td> '._('Name:').'</td>
-                <td colspan="2"><input name="att" id="att" style="width:157px" value="'.xhtmlEsc($faktura['att']).'" /></td>
-                <td></td>
-            </tr>
-            <tr>
-                <td> '._('Address:').'</td>
-                <td colspan="2"><input name="adresse" id="adresse" style="width:157px" value="'.xhtmlEsc($faktura['adresse']).'" /></td>
-                <td>';
+            Render::$bodyHtml .= '</td></tr><tr><td> ' . _('Name:')
+                . '</td><td colspan="2"><input name="att" id="att" style="width:157px" value="'
+                . xhtmlEsc($faktura['att']) . '" /></td><td></td></tr><tr><td> ' ._('Address:')
+                . '</td><td colspan="2"><input name="adresse" id="adresse" style="width:157px" value="'
+                . xhtmlEsc($faktura['adresse']) . '" /></td><td>';
             if (!empty($rejected['adresse'])) {
                 Render::$bodyHtml .= '<img src="images/error.png" alt="" title="" >';
             }
-            Render::$bodyHtml .= '</td>
-            </tr>
-            <tr>
-                <td> '._('Postbox:').'</td>
-                <td colspan="2"><input name="postbox" id="postbox" style="width:157px" value="'.xhtmlEsc($faktura['postbox']).'" /></td>
-                <td></td>
-            </tr>
-            <tr>
-                <td> '._('Zipcode:').'</td>
-                <td><input name="postnr" id="postnr" style="width:35px" value="'.xhtmlEsc($faktura['postnr']).'" onblur="chnageZipCode(this.value, \'land\', \'by\')" onkeyup="chnageZipCode(this.value, \'land\', \'by\')" onchange="chnageZipCode(this.value, \'land\', \'by\')" /></td>
-                <td align="right">'._('City:').'
-                    <input name="by" id="by" style="width:90px" value="'.xhtmlEsc($faktura['by']).'" /></td>
-                <td>';
+            Render::$bodyHtml .= '</td></tr><tr><td> ' . _('Postbox:')
+                . '</td><td colspan="2"><input name="postbox" id="postbox" style="width:157px" value="'
+                . xhtmlEsc($faktura['postbox']) . '" /></td><td></td></tr><tr><td> ' . _('Zipcode:')
+                . '</td><td><input name="postnr" id="postnr" style="width:35px" value="' . xhtmlEsc($faktura['postnr'])
+                . '" onblur="chnageZipCode(this.value, \'land\', \'by\')" onkeyup="chnageZipCode(this.value, \'land\', \'by\')" onchange="chnageZipCode(this.value, \'land\', \'by\')" /></td><td align="right">'
+                . _('City:') . '<input name="by" id="by" style="width:90px" value="'
+                . xhtmlEsc($faktura['by']) . '" /></td><td>';
             if (!empty($rejected['postnr'])) {
                 Render::$bodyHtml .= '<img src="images/error.png" alt="" title="" >';
             }
             if (!empty($rejected['by'])) {
                 Render::$bodyHtml .= '<img src="images/error.png" alt="" title="" >';
             }
-            Render::$bodyHtml .= '</td>
-            </tr>
-            <tr>
-                <td> '._('Country:').'</td>
-                <td colspan="2"><select name="land" id="land" style="width:157px" onblur="chnageZipCode($(\'postnr\').value, \'land\', \'by\')" onkeyup="chnageZipCode($(\'postnr\').value, \'land\', \'by\')" onchange="chnageZipCode($(\'postnr\').value, \'land\', \'by\')">';
+            Render::$bodyHtml .= '</td></tr><tr><td> ' . _('Country:')
+                . '</td><td colspan="2"><select name="land" id="land" style="width:157px" onblur="chnageZipCode($(\'postnr\').value, \'land\', \'by\')" onkeyup="chnageZipCode($(\'postnr\').value, \'land\', \'by\')" onchange="chnageZipCode($(\'postnr\').value, \'land\', \'by\')">';
 
             foreach ($countries as $code => $country) {
                 Render::$bodyHtml .= '<option value="'.$code.'"';
                 if ($faktura['land'] == $code) {
                     Render::$bodyHtml .= ' selected="selected"';
                 }
-                Render::$bodyHtml .= '>'.htmlspecialchars($country).'</option>';
+                Render::$bodyHtml .= '>' . xhtmlEsc($country).'</option>';
             }
-            Render::$bodyHtml .= '</select></td>
-                <td>';
+            Render::$bodyHtml .= '</select></td><td>';
             if (!empty($rejected['land'])) {
                 Render::$bodyHtml .= '<img src="images/error.png" alt="" title="" >';
             }
-            Render::$bodyHtml .= '</td>
-            </tr>
-            <tr>
-                <td> '._('E-mail:').'</td>
-                <td colspan="2"><input name="email" id="email" style="width:157px" value="'.xhtmlEsc($faktura['email']).'" /></td>
-                <td>';
+            Render::$bodyHtml .= '</td></tr><tr><td> ' . _('E-mail:')
+                . '</td><td colspan="2"><input name="email" id="email" style="width:157px" value="'
+                . xhtmlEsc($faktura['email']) . '" /></td><td>';
             if (!empty($rejected['email'])) {
                 Render::$bodyHtml .= '<img src="images/error.png" alt="" title="" >';
             }
-            Render::$bodyHtml .= '</td>
-            </tr>
-            <tr>
-                <td colspan="4"><input onclick="showhidealtpost(this.checked);" name="altpost" id="altpost" type="checkbox"';
+            Render::$bodyHtml .= '</td></tr><tr><td colspan="4"><input onclick="showhidealtpost(this.checked);" name="altpost" id="altpost" type="checkbox"';
             if (!empty($faktura['altpost'])) {
                 Render::$bodyHtml .= ' checked="checked"';
             }
-            Render::$bodyHtml .= ' /><label for="altpost"> '._('Other delivery address').'</label></td>
-            </tr>
-            <tr class="altpost"';
+            Render::$bodyHtml .= ' /><label for="altpost"> ' . _('Other delivery address')
+                . '</label></td></tr><tr class="altpost"';
             if (empty($faktura['altpost'])) {
                 Render::$bodyHtml .= ' style="display:none;"';
             }
-            Render::$bodyHtml .= '>
-                <td> '._('Phone:').'</td>
-                <td colspan="2"><input name="posttlf" id="posttlf" style="width:157px" value="'.xhtmlEsc($faktura['posttlf']).'" /></td>
-                <td><input type="button" value="'._('Get address').'" onclick="getAddress(document.getElementById(\'posttlf\').value, getAddress_r2);" /></td>
-            </tr>
-            <tr class="altpost"';
+            Render::$bodyHtml .= '><td> ' . _('Phone:')
+                . '</td><td colspan="2"><input name="posttlf" id="posttlf" style="width:157px" value="'
+                . xhtmlEsc($faktura['posttlf']) . '" /></td><td><input type="button" value="' . _('Get address')
+                . '" onclick="getAddress(document.getElementById(\'posttlf\').value, getAddress_r2);" /></td></tr><tr class="altpost"';
             if (empty($faktura['altpost'])) {
                 Render::$bodyHtml .= ' style="display:none;"';
             }
-            Render::$bodyHtml .= '>
-                <td>'._('Name:').'</td>
-                <td colspan="2"><input name="postname" id="postname" style="width:157px" value="'.xhtmlEsc($faktura['postname']).'" /></td>
-                <td>';
+            Render::$bodyHtml .= '><td>' . _('Name:')
+                . '</td><td colspan="2"><input name="postname" id="postname" style="width:157px" value="'
+                . xhtmlEsc($faktura['postname']) . '" /></td><td>';
             if (!empty($rejected['postname'])) {
                 Render::$bodyHtml .= '<img src="images/error.png" alt="" title="" >';
             }
-            Render::$bodyHtml .= '</td>
-            </tr>
-            <tr class="altpost"';
+            Render::$bodyHtml .= '</td></tr><tr class="altpost"';
             if (empty($faktura['altpost'])) {
                 Render::$bodyHtml .= ' style="display:none;"';
             }
-            Render::$bodyHtml .= '>
-                <td> '._('Attn.:').'</td>
-                <td colspan="2"><input name="postatt" id="postatt" style="width:157px" value="'.xhtmlEsc($faktura['postatt']).'" /></td>
-                <td></td>
-            </tr>
-            <tr class="altpost"';
+            Render::$bodyHtml .= '><td> ' . _('Attn.:')
+                . '</td><td colspan="2"><input name="postatt" id="postatt" style="width:157px" value="'
+                . xhtmlEsc($faktura['postatt']) . '" /></td><td></td></tr><tr class="altpost"';
             if (empty($faktura['altpost'])) {
                 Render::$bodyHtml .= ' style="display:none;"';
             }
-            Render::$bodyHtml .= '>
-            <td> '._('Address:').'</td>
-            <td colspan="2"><input name="postaddress" id="postaddress" style="width:157px" value="'.xhtmlEsc($faktura['postaddress']).'" /><br /><input name="postaddress2" id="postaddress2" style="width:157px" value="'.xhtmlEsc($faktura['postaddress2']).'" /></td>
-            <td>';
+            Render::$bodyHtml .= '><td> ' . _('Address:')
+                . '</td><td colspan="2"><input name="postaddress" id="postaddress" style="width:157px" value="'
+                . xhtmlEsc($faktura['postaddress'])
+                . '" /><br /><input name="postaddress2" id="postaddress2" style="width:157px" value="'
+                . xhtmlEsc($faktura['postaddress2']) . '" /></td><td>';
             if (!empty($rejected['postaddress'])) {
                 Render::$bodyHtml .= '<img src="images/error.png" alt="" title="" >';
             }
-            Render::$bodyHtml .= '</td>
-            </tr>
-            <tr class="altpost"';
+            Render::$bodyHtml .= '</td></tr><tr class="altpost"';
             if (empty($faktura['altpost'])) {
                 Render::$bodyHtml .= ' style="display:none;"';
             }
-            Render::$bodyHtml .= '>
-                <td> '._('Postbox:').'</td>
-                <td colspan="2"><input name="postpostbox" id="postpostbox" style="width:157px" value="'.xhtmlEsc($faktura['postpostbox']).'" /></td>
-                <td></td>
-            </tr>
-            <tr class="altpost"';
+            Render::$bodyHtml .= '><td> ' . _('Postbox:')
+                . '</td><td colspan="2"><input name="postpostbox" id="postpostbox" style="width:157px" value="'
+                . xhtmlEsc($faktura['postpostbox']) . '" /></td><td></td></tr><tr class="altpost"';
             if (empty($faktura['altpost'])) {
                 Render::$bodyHtml .= ' style="display:none;"';
             }
-            Render::$bodyHtml .= '>
-                <td> '._('Zipcode:').'</td>
-                <td><input name="postpostalcode" id="postpostalcode" style="width:35px" value="'.xhtmlEsc($faktura['postpostalcode']).'" onblur="chnageZipCode(this.value, \'postcountry\', \'postcity\')" onkeyup="chnageZipCode(this.value, \'postcountry\', \'postcity\')" onchange="chnageZipCode(this.value, \'postcountry\', \'postcity\')" /></td>
-                <td align="right">'._('City:').'
-                    <input name="postcity" id="postcity" style="width:90px" value="'.xhtmlEsc($faktura['postcity']).'" /></td>
-                <td>';
+            Render::$bodyHtml .= '><td> ' . _('Zipcode:')
+                . '</td><td><input name="postpostalcode" id="postpostalcode" style="width:35px" value="'
+                . xhtmlEsc($faktura['postpostalcode'])
+                . '" onblur="chnageZipCode(this.value, \'postcountry\', \'postcity\')" onkeyup="chnageZipCode(this.value, \'postcountry\', \'postcity\')" onchange="chnageZipCode(this.value, \'postcountry\', \'postcity\')" /></td><td align="right">'
+                . _('City:') . '<input name="postcity" id="postcity" style="width:90px" value="'
+                . xhtmlEsc($faktura['postcity']) . '" /></td><td>';
             if (!empty($rejected['postpostalcode'])) {
                 Render::$bodyHtml .= '<img src="images/error.png" alt="" title="" >';
             }
             if (!empty($rejected['postcity'])) {
                 Render::$bodyHtml .= '<img src="images/error.png" alt="" title="" >';
             }
-            Render::$bodyHtml .= '</td>
-            </tr>
-            <tr class="altpost"';
+            Render::$bodyHtml .= '</td></tr><tr class="altpost"';
             if (empty($faktura['altpost'])) {
                 Render::$bodyHtml .= ' style="display:none;"';
             }
-            Render::$bodyHtml .= '>
-                <td> '._('Country:').'</td>
-                <td colspan="2"><select name="postcountry" id="postcountry" style="width:157px" onblur="chnageZipCode($(\'postpostalcode\').value, \'postcountry\', \'postcity\')" onkeyup="chnageZipCode($(\'postpostalcode\').value, \'postcountry\', \'postcity\')" onchange="chnageZipCode($(\'postpostalcode\').value, \'postcountry\', \'postcity\')">';
+            Render::$bodyHtml .= '><td> '. _('Country:')
+                . '</td><td colspan="2"><select name="postcountry" id="postcountry" style="width:157px" onblur="chnageZipCode($(\'postpostalcode\').value, \'postcountry\', \'postcity\')" onkeyup="chnageZipCode($(\'postpostalcode\').value, \'postcountry\', \'postcity\')" onchange="chnageZipCode($(\'postpostalcode\').value, \'postcountry\', \'postcity\')">';
 
             foreach ($countries as $code => $country) {
                 Render::$bodyHtml .= '<option value="'.$code.'"';
                 if ($faktura['postcountry'] == $code) {
                     Render::$bodyHtml .= ' selected="selected"';
                 }
-                Render::$bodyHtml .= '>'.htmlspecialchars($country).'</option>';
+                Render::$bodyHtml .= '>'.xhtmlEsc($country).'</option>';
             }
             Render::$bodyHtml .= '</select></td><td>';
             if (!empty($rejected['postcountry'])) {
                 Render::$bodyHtml .= '<img src="images/error.png" alt="" title="" >';
             }
-            Render::$bodyHtml .= '</td></tr>';
-            Render::$bodyHtml .= '<tr>
+            Render::$bodyHtml .= '</td></tr><tr>
                 <td colspan="4"><input name="newsletter" id="newsletter" type="checkbox"';
             if (!empty($_POST['newsletter'])) {
                 Render::$bodyHtml .= ' checked="checked"';
             }
-            Render::$bodyHtml .= ' /><label for="newsletter"> '._('Please send me your newsletter.').'</label></td>
-            </tr>';
-            Render::$bodyHtml .= '</tbody></table><input style="font-weight:bold;" type="submit" value="'._('Proceed to the terms of trade').'" /></form>';
+            Render::$bodyHtml .= ' /><label for="newsletter"> ' . _('Please send me your newsletter.')
+                . '</label></td></tr></tbody></table><input style="font-weight:bold;" type="submit" value="'
+                ._('Proceed to the terms of trade') . '" /></form>';
         } elseif ($_GET['step'] == 2) { //Accept terms and continue to payment
             if (count(validate($faktura))) {
                 redirect('/betaling/?id=' . $id . '&checkid=' . $checkid . '&step=1');
@@ -458,7 +381,8 @@ if (!empty($id) && $checkid === getCheckid($id) && !isset($_GET['txnid'])) {
             Render::$bodyHtml .= '<input type="hidden" name="hash" value="'
             .md5(implode('', $submit).Config::get('pbspassword')).'" />';
 
-            Render::$bodyHtml .= '<input class="web" type="submit" value="'._('I hereby agree to the terms of trade').'" />';
+            Render::$bodyHtml .= '<input class="web" type="submit" value="' . _('I hereby agree to the terms of trade')
+                . '" />';
             Render::$bodyHtml .= '</form>';
         }
     } else { //Show order status
@@ -538,7 +462,12 @@ if (!empty($id) && $checkid === getCheckid($id) && !isset($_GET['txnid'])) {
         Render::$title = _('Reciept');
         Render::$headline = _('Reciept');
         Render::$bodyHtml = '<p>'._('This trade has been canceled or refused.').'</p>';
-        $shopBody = '<br />'.sprintf(_('A customer tried to see the status page for online invoice #%d which is canceled or rejected.'), $id).'<br />';
+        $shopBody = '<br />'
+            . sprintf(
+                _('A customer tried to see the status page for online invoice #%d which is canceled or rejected.'),
+                $id
+            )
+            . '<br />';
     } elseif (!in_array($faktura['status'], ['locked', 'new', 'pbserror'])) {
         Render::$crumbs[] = [
             'name' => _('Reciept'),
@@ -588,10 +517,10 @@ if (!empty($id) && $checkid === getCheckid($id) && !isset($_GET['txnid'])) {
             `paydate` = NOW()
             WHERE `status` IN('new', 'locked', 'pbserror')
             AND `id` = " . $id
-            );
-            Render::addLoadedTable('fakturas');
+        );
+        Render::addLoadedTable('fakturas');
 
-            $faktura = db()->fetchOne(
+        $faktura = db()->fetchOne(
             "
             SELECT *
             FROM `fakturas`
@@ -641,9 +570,7 @@ Remember to \'expedite\' the payment when the product is sent (The payment is fi
         Render::$track .= "ga('ecommerce:send');";
 
     //Mail to customer start
-        $emailbody = '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml"><head>
-<meta http-equiv="Content-Type" content="text/html; charset=utf-8" /><title>';
+        $emailbody = '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><meta http-equiv="Content-Type" content="text/html; charset=utf-8" /><title>';
         $emailbody .= sprintf(_('Ordre %d - Payment complete'), $faktura['id']);
         $emailbody .= '</title><style type="text/css">
 #faktura td { border:1px #000 solid; border-collapse:collapse; padding:2px; }
@@ -865,26 +792,19 @@ Tel. %s<br />
         }
 
         //TODO make this a gettext
-        $emailbody = '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml">
-<head>
-<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-<title>';
+        $emailbody = '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><meta http-equiv="Content-Type" content="text/html; charset=utf-8" /><title>';
         $emailbody .= sprintf(
             _('Attn.: %s - Online invoice #%d : %s'),
             xhtmlEsc($faktura['clerk']),
             $id,
             xhtmlEsc($shopSubject)
         );
-        $emailbody .= '</title>
-<style type="text/css">
+        $emailbody .= '</title><style type="text/css">
 td {
     border:1px solid #000;
     border-collapse:collapse;
 }
-</style>
-</head>
-<body>';
+</style></head><body>';
 
         $msg = _(
             '<p>%s<br />
@@ -922,13 +842,10 @@ Delivery phone: %s</p>
 
         $emailbody .= '</body></html>';
     } else {
-        $emailbody = '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml"><head>
-<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-<title>'.sprintf(_('Online Invoice #%d: does\'t exist'), $id).'</title></head><body>
-' . $shopBody . '<br />' . _('Status:') . ' ' . htmlspecialchars($_GET['responseCode']) . '<p>' . _('Sincerely the computer') . '</p></body>
-</html>
-</body></html>';
+        $emailbody = '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><meta http-equiv="Content-Type" content="text/html; charset=utf-8" /><title>'
+            . sprintf(_('Online Invoice #%d: does\'t exist'), $id) . '</title></head><body>' . $shopBody . '<br />'
+            . _('Status:') . ' ' . xhtmlEsc($_GET['responseCode'])
+            . '<p>' . _('Sincerely the computer') . '</p></body></html></body></html>';
     }
 
     if (!empty($faktura)) {

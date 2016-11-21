@@ -7,13 +7,13 @@ class DB extends mysqli
     /**
      * Connect the database and set session to UTF-8 Danish
      */
-    public function __construct($host, $user, $pass, $db)
+    public function __construct($host, $user, $password, $schema)
     {
-        parent::__construct($host, $user, $pass, $db);
+        parent::__construct($host, $user, $password, $schema);
 
         /* Throw an error if the connection fails */
         if (mysqli_connect_error()) {
-            die();
+            return;
         }
 
         $this->query("SET NAMES 'UTF8'");
@@ -74,7 +74,7 @@ class DB extends mysqli
      */
     public function query($query): bool
     {
-        $result = parent::query($query);
+        parent::query($query);
         if (mysqli_error($this)) {
             throw new Exception(mysqli_error($this), mysqli_errno($this));
         }

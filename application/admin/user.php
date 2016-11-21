@@ -25,13 +25,7 @@ $user = db()->fetchOne("SELECT *, UNIX_TIMESTAMP(`lastlogin`) AS 'lastlogin' FRO
 <title><?php
 echo _('Edit').' '.$user['fullname'];
 ?></title>
-<script type="text/javascript" src="javascript/lib/prototype.js"></script>
-<script type="text/javascript"><!--
-var JSON = JSON || {};
-JSON.stringify = function(value) { return value.toJSON(); };
-JSON.parse = JSON.parse || function(jsonsring) { return jsonsring.evalJSON(true); };
-//-->
-</script>
+<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/prototype/1.7.3.0/prototype.js"></script>
 <script type="text/javascript"><!--
 id = <?php echo $_GET['id'] ?>;
 
@@ -117,17 +111,18 @@ if ($_SESSION['_user']['id'] != $_GET['id']) {
 if ($_SESSION['_user']['access'] != 1 && $_SESSION['_user']['id'] != $_GET['id']) {
     echo ' style="display:none"';
 }
-?>><td><?php echo _('New password:'); ?></td><td><input type="password" id="password_new" name="password_new" /></td></tr>
+?>><td><?php
+echo _('New password:');
+?></td><td><input type="password" id="password_new" name="password_new" /></td></tr>
 <tr<?php
 if ($_SESSION['_user']['access'] != 1 && $_SESSION['_user']['id'] != $_GET['id']) {
     echo ' style="display:none"';
 }
-?>><td><?php echo _('Repeat password:'); ?></td><td><input type="password" id="password2" name="password2" /></td></tr>
+?>><td><?php
+echo _('Repeat password:');
+?></td><td><input type="password" id="password2" name="password2" /></td></tr></tbody></table></div><?php
 
-</tbody></table></div><?php
-
-$activityButtons[] = '<li><a onclick="updateuser(); return false;"><img src="images/disk.png" alt="" width="16" height="16" /> '._('Save').'</a></li>';
+$activityButtons[] = '<li><a onclick="updateuser(); return false;"><img src="images/disk.png" alt="" width="16" height="16" /> '
+    ._('Save') . '</a></li>';
 require 'mainmenu.php';
-?>
-</body>
-</html>
+?></body></html>
