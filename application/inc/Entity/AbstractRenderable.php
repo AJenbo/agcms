@@ -1,27 +1,11 @@
 <?php
 
-class AbstractRenderable extends AbstractEntity
+abstract class AbstractRenderable extends AbstractEntity
 {
     /**
      * The title
      */
     protected $title;
-
-    /**
-     * Construct the entity
-     *
-     * @param array $data The entity data
-     */
-    abstract public function __construct(array $data);
-
-    /**
-     * Map data from DB table to entity
-     *
-     * @param array The data from the database
-     *
-     * @return array
-     */
-    abstract public static function mapFromDB(array $data): array;
 
     /**
      * Set the title
@@ -63,9 +47,4 @@ class AbstractRenderable extends AbstractEntity
     {
         return '/' . $this->getSlug();
     }
-
-    /**
-     * Save entity to database
-     */
-    abstract public function save();
 }

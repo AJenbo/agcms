@@ -1,10 +1,14 @@
 <?php
 
-class CustomPage extends AbstractRenderable
+class CustomPage extends AbstractEntity
 {
     const TABLE_NAME = 'special';
 
     // Backed by DB
+    /**
+     * The title
+     */
+    private $title;
     private $timeStamp;
     private $html;
 
@@ -49,6 +53,30 @@ class CustomPage extends AbstractRenderable
     public function getTimeStamp(): int
     {
         return $this->timeStamp;
+    }
+
+    /**
+     * Set the title
+     *
+     * @param string $title The title
+     *
+     * @return self
+     */
+    public function setTitle(string $title): self
+    {
+        $this->title = $title;
+
+        return $this;
+    }
+
+    /**
+     * Get the title
+     *
+     * @return string
+     */
+    public function getTitle(): string
+    {
+        return $this->title;
     }
 
     public function setHtml(string $html): self

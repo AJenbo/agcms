@@ -3,11 +3,6 @@
 interface InterfaceEntity
 {
     /**
-     * Table name in database
-     */
-    const TABLE_NAME = '';
-
-    /**
      * Construct the entity
      *
      * @param array $data The entity data

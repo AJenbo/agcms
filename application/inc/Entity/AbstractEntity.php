@@ -3,11 +3,6 @@
 abstract class AbstractEntity implements InterfaceEntity
 {
     /**
-     * Table name in database
-     */
-    const TABLE_NAME = '';
-
-    /**
      * The entity ID
      */
     protected $id;
