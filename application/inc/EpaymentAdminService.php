@@ -51,6 +51,13 @@ class EpaymentAdminService
         }
     }
 
+    /**
+     * Fetch the transation data
+     *
+     * @param string $orderId Shop order id
+     *
+     * @return stdClass
+     */
     private function getTransactionData(string $orderId)
     {
         $response = $this->soapClient->gettransactionlist(

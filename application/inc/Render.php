@@ -37,6 +37,11 @@ class Render
     public static $bodyHtml = '';
     public static $track = '';
 
+    /**
+     * Do routing
+     *
+     * @param string $url The requested url
+     */
     public static function doRouting(string $url)
     {
         // Routing
@@ -75,6 +80,12 @@ class Render
         self::doRedirects($redirect, $url);
     }
 
+    /**
+     * Do redirects for routing
+     *
+     * @param int $redirect redirect code
+     * @param string $url   Requested url
+     */
     private static function doRedirects(int $redirect, string $url)
     {
         if (!$redirect) {
@@ -113,6 +124,8 @@ class Render
     }
 
     /**
+     * Remember what tabels where read during page load
+     *
      * @param string $tableName The table name
      */
     public static function addLoadedTable(string $tableName)
@@ -121,6 +134,8 @@ class Render
     }
 
     /**
+     * Figure out when the data for this page was last touched
+     *
      * @param string $tableName The table name
      */
     public static function getUpdateTime(bool $checkDb = true): int
@@ -208,6 +223,9 @@ class Render
         die();
     }
 
+    /**
+     * Prepare data for render
+     */
     public static function prepareData()
     {
         // Brand only search
@@ -337,11 +355,19 @@ class Render
         self::cleanData();
     }
 
+    /**
+     * Clean gathered data
+     */
     private static function cleanData()
     {
         self::$keywords = array_filter(self::$keywords);
     }
 
+    /**
+     * Load data from a brand
+     *
+     * @param \Brand $brand The brand
+     */
     private static function loadBrandData(Brand $brand = null)
     {
         if (!$brand) {
@@ -367,6 +393,11 @@ class Render
         self::loadPagesData($pages);
     }
 
+    /**
+     * Load data from a category
+     *
+     * @param \Category $category The category
+     */
     private static function loadCategoryData(Category $category = null)
     {
         if (!$category) {
@@ -399,6 +430,11 @@ class Render
         self::$pageType  = $category->getRenderMode() === Category::GALLERY ? 'tiles' : 'list';
     }
 
+    /**
+     * Load data from pages
+     *
+     * @param array $pages The pages
+     */
     private static function loadPagesData(array $pages = null)
     {
         if (!$pages) {
@@ -448,6 +484,11 @@ class Render
         }
     }
 
+    /**
+     * Load data from a page
+     *
+     * @param \Page $page The page
+     */
     private static function loadPageData(Page $page = null)
     {
         if (!$page) {
@@ -504,6 +545,11 @@ class Render
 
     }
 
+    /**
+     * Fetch pages attached to the site root
+     *
+     * @return array
+     */
     private static function getRootPages(): array
     {
         $return = [];
@@ -952,6 +998,9 @@ class Render
         return $html;
     }
 
+    /**
+     * Output the page to the browser
+     */
     public static function outputPage()
     {
         self::prepareData();

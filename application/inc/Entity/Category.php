@@ -1,25 +1,72 @@
 <?php
 
-class Category
+/**
+ * Category class
+ */
+class Category extends AbstractRenderable
 {
+    /**
+     * Table name in database
+     */
     const TABLE_NAME = 'kat';
+
+    /**
+     * Do not show category
+     */
     const HIDDEN = 0;
+
+    /**
+     * Gallery rendering of pages
+     */
     const GALLERY = 1;
+
+    /**
+     * List rendering of pages
+     */
     const LIST = 2;
 
     // Backed by DB
-    private $id;
-    private $title;
+    /**
+     * Parent id
+     */
     private $parentId;
+
+    /**
+     * Icon file path
+     */
     private $iconPath;
+
+    /**
+     * Render mode for page list
+     */
     private $renderMode;
+
+    /**
+     * Contact email
+     */
     private $email;
+
+    /**
+     * Are children to be fetched by weight
+     */
     private $weightedChildren;
+
+    /**
+     * Sorting weight
+     */
     private $weight;
 
     // Runtime
+    /**
+     * Cache if category is visible or not
+     */
     private $visable;
 
+    /**
+     * Construct the entity
+     *
+     * @param array $data The entity data
+     */
     public function __construct(array $data)
     {
         $this->setId($data['id'] ?? null)
@@ -32,6 +79,13 @@ class Category
             ->setWeight($data['order']);
     }
 
+    /**
+     * Map data from DB table to entity
+     *
+     * @param array The data from the database
+     *
+     * @return array
+     */
     public static function mapFromDB(array $data): array
     {
         return [
@@ -47,34 +101,11 @@ class Category
     }
 
     // Getters and setters
-    private function setId(int $id = null): self
-    {
-        $this->id = $id;
-
-        return $this;
-    }
-
-    public function getId(): int
-    {
-        if ($this->id === null) {
-            $this->save();
-        }
-
-        return $this->id;
-    }
-
-    public function setTitle(string $title): self
-    {
-        $this->title = $title;
-
-        return $this;
-    }
-
-    public function getTitle(): string
-    {
-        return $this->title;
-    }
-
+    /**
+     * Set parent id
+     *
+     * @return self
+     */
     public function setParentId(int $parentId): self
     {
         $this->parentId = $parentId;
@@ -82,11 +113,21 @@ class Category
         return $this;
     }
 
-    public function getParentId(): int
+    /**
+     * Get the parent category id
+     *
+     * @return int
+     */
+    protected function getParentId(): int
     {
         return $this->parentId;
     }
 
+    /**
+     * Set icon file path
+     *
+     * @return self
+     */
     public function setIconPath(string $iconPath): self
     {
         $this->iconPath = $iconPath;
@@ -94,6 +135,11 @@ class Category
         return $this;
     }
 
+    /**
+     * Set render mode
+     *
+     * @return self
+     */
     public function setRenderMode(int $renderMode): self
     {
         $this->renderMode = $renderMode;
@@ -101,11 +147,21 @@ class Category
         return $this;
     }
 
+    /**
+     * Get the page list rendermode for this category
+     *
+     * @return int
+     */
     public function getRenderMode(): int
     {
         return $this->renderMode;
     }
 
+    /**
+     * Set contact email
+     *
+     * @return self
+     */
     public function setEmail(string $email): self
     {
         $this->email = $email;
@@ -113,11 +169,21 @@ class Category
         return $this;
     }
 
+    /**
+     * Get the contact email address for pages in this category
+     *
+     * @return string
+     */
     public function getEmail(): string
     {
         return $this->email;
     }
 
+    /**
+     * Set if children should be manually ordered
+     *
+     * @return self
+     */
     public function setWeightedChildren(bool $weightedChildren): self
     {
         $this->weightedChildren = (int) $weightedChildren;
@@ -125,11 +191,21 @@ class Category
         return $this;
     }
 
+    /**
+     * Are the children of this category be manually ordered
+     *
+     * @return bool
+     */
     public function getWeightedChildren(): bool
     {
         return (bool) $this->weightedChildren;
     }
 
+    /**
+     * Set weight
+     *
+     * @return self
+     */
     public function setWeight(int $weight): self
     {
         $this->weight = $weight;
@@ -137,12 +213,22 @@ class Category
         return $this;
     }
 
+    /**
+     * Get category sorting weight
+     *
+     * @return int
+     */
     public function getWeight(): int
     {
         return $this->weight;
     }
 
     // General methodes
+    /**
+     * Should the category be visible on the website (is it empty or hidden)
+     *
+     * @return bool
+     */
     public function isVisable(): bool
     {
         if ($this->renderMode === Category::HIDDEN) {
@@ -168,6 +254,11 @@ class Category
         return $this->visable;
     }
 
+    /**
+     * Get the url slug
+     *
+     * @return string
+     */
     public function getSlug(): string
     {
         $title = $this->getTitle();
@@ -181,6 +272,11 @@ class Category
         return 'kat' . $this->getId() . '-' . clearFileName($title) . '/';
     }
 
+    /**
+     * Get parent category
+     *
+     * @return ?self
+     */
     public function getParent()
     {
         if ($this->parentId > 0) {
@@ -190,7 +286,14 @@ class Category
         return null;
     }
 
-    public function getChildren(bool $onlyVisable = false)
+    /**
+     * Get attached categories
+     *
+     * @param bool $onlyVisable Only return visible
+     *
+     * @return array
+     */
+    public function getChildren(bool $onlyVisable = false): array
     {
         $children = ORM::getByQuery(
             self::class,
@@ -215,6 +318,13 @@ class Category
         return array_values($children);
     }
 
+    /**
+     * Check if it has attached categories
+     *
+     * @param bool $onlyVisable Only check visible
+     *
+     * @return bool
+     */
     public function hasChildren(bool $onlyVisable = false): bool
     {
         $children = $this->getChildren();
@@ -233,7 +343,14 @@ class Category
         return false;
     }
 
-    public function getPages(string $order = 'navn')
+    /**
+     * Return attache pages
+     *
+     * @param string $order What column to order by
+     *
+     * @return array
+     */
+    public function getPages(string $order = 'navn'): array
     {
         Render::addLoadedTable('bind');
         return ORM::getByQuery(
@@ -247,12 +364,22 @@ class Category
         );
     }
 
+    /**
+     * Is page currently not placed on the website
+     *
+     * @return bool
+     */
     public function isInactive(): bool
     {
         $branch = $this->getBranch();
         return (bool) reset($branch)->getParentId();
     }
 
+    /**
+     * Get the full list of categories leading to the root element
+     *
+     * @return array
+     */
     public function getBranch(): array
     {
         $nodes = [];
@@ -264,6 +391,11 @@ class Category
         return array_reverse($nodes);
     }
 
+    /**
+     * Get the file that is being used as an icon
+     *
+     * @return ?\File
+     */
     public function getIcon()
     {
         if (!$this->iconPath) {
@@ -273,6 +405,9 @@ class Category
     }
 
     // ORM related functions
+    /**
+     * Save entity to database
+     */
     public function save()
     {
         if ($this->id === null) {

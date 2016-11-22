@@ -1,11 +1,10 @@
 <?php
 
-class File
+class File extends AbstractEntity
 {
     const TABLE_NAME = 'files';
 
     // Backed by DB
-    private $id;
     private $path;
     private $mime;
     private $size;
@@ -14,6 +13,11 @@ class File
     private $height;
     private $aspect;
 
+    /**
+     * Construct the entity
+     *
+     * @param array $data The entity data
+     */
     public function __construct(array $data)
     {
         $this->setId($data['id'] ?? null)
@@ -26,6 +30,13 @@ class File
             ->setAspect($data['aspect']);
     }
 
+    /**
+     * Map data from DB table to entity
+     *
+     * @param array The data from the database
+     *
+     * @return array
+     */
     public static function mapFromDB(array $data): array
     {
         return [
@@ -41,22 +52,6 @@ class File
     }
 
     // Getters and setters
-    private function setId(int $id = null): self
-    {
-        $this->id = $id;
-
-        return $this;
-    }
-
-    public function getId(): int
-    {
-        if ($this->id === null) {
-            $this->save();
-        }
-
-        return $this->id;
-    }
-
     private function setPath(string $path): self
     {
         $this->path = $path;
@@ -142,6 +137,9 @@ class File
     }
 
     // ORM related functions
+    /**
+     * Save entity to database
+     */
     public function save()
     {
         if ($this->id === null) {

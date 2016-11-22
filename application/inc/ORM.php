@@ -2,10 +2,29 @@
 
 class ORM
 {
+    /**
+     * Cache entity by id
+     */
     private static $byId = [];
+
+    /**
+     * Cache multiple entity by query
+     */
     private static $bySql = [];
+
+    /**
+     * Cache entity by query
+     */
     private static $oneBySql = [];
 
+    /**
+     * Get a single entitly by id
+     *
+     * @param string $class Class name
+     * @param int    $id    Id of the entity
+     *
+     * @return ?\Enity
+     */
     public static function getOne(string $class, int $id)
     {
         if (!isset(self::$byId[$class][$id])) {
@@ -20,6 +39,14 @@ class ORM
         return self::$byId[$class][$id];
     }
 
+    /**
+     * Find a single entity from a SQL query string
+     *
+     * @param string $class Class name
+     * @param string $query The query
+     *
+     * @return ?\Enity
+     */
     public static function getOneByQuery(string $class, string $query)
     {
         $query = trim(preg_replace('/\s+/u', ' ', $query));
@@ -37,6 +64,14 @@ class ORM
         return self::$oneBySql[$class][$query];
     }
 
+    /**
+     * Find multiple entities from a SQL query string
+     *
+     * @param string $class Class name
+     * @param string $query The query
+     *
+     * @return array
+     */
     public static function getByQuery(string $class, string $query): array
     {
         $query = trim(preg_replace('/\s+/u', ' ', $query));

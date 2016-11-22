@@ -94,11 +94,23 @@ class DB extends mysqli
         return preg_replace('/([%_])/u', '\\\\$1', $string);
     }
 
+    /**
+     * Escape a string for concatting in squery string
+     *
+     * @param string $string The sting to escape
+     *
+     * @return string
+     */
     public function esc(string $string): string
     {
         return parent::real_escape_string($string);
     }
 
+    /**
+     * Find out what offset the on the time database has form UTC
+     *
+     * @return string
+     */
     public function getTimeOffset(): string
     {
         if (self::$timeOffset === null) {

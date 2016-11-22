@@ -18,13 +18,16 @@ mb_internal_encoding('UTF-8');
 
 spl_autoload_register(function (string $className) {
     $classMap = [
-        'Brand'       => 'Entity/Brand',
-        'Category'    => 'Entity/Category',
-        'CustomPage'  => 'Entity/CustomPage',
-        'File'        => 'Entity/File',
-        'Page'        => 'Entity/Page',
-        'Requirement' => 'Entity/Requirement',
-        'Table'       => 'Entity/Table',
+        'AbstractEntity'     => 'Entity/AbstractEntity',
+        'AbstractRenderable' => 'Entity/AbstractRenderable',
+        'Brand'              => 'Entity/Brand',
+        'Category'           => 'Entity/Category',
+        'CustomPage'         => 'Entity/CustomPage',
+        'File'               => 'Entity/File',
+        'InterfaceEntity'    => 'Entity/InterfaceEntity',
+        'Page'               => 'Entity/Page',
+        'Requirement'        => 'Entity/Requirement',
+        'Table'              => 'Entity/Table',
     ];
 
     if (isset($classMap[$className])) {

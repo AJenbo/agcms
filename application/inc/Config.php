@@ -2,8 +2,19 @@
 
 class Config
 {
+    /**
+     * Store the configurations
+     */
     private static $config = [];
 
+    /**
+     * Fetch a setting
+     *
+     * @param string $key     The name of the configuration to fetch
+     * @param mixed  $default What to return if key does not exists
+     *
+     * @return mixed
+     */
     public static function get(string $key, $default = null)
     {
         if (!self::$config) {

@@ -1,6 +1,6 @@
 <?php
 
-class Table
+class Table extends AbstractEntity
 {
     const TABLE_NAME = 'lists';
     const COLUMN_TYPE_STRING = 0;
@@ -10,7 +10,6 @@ class Table
     const COLUMN_TYPE_PRICE_OLD = 4;
 
     // Backed by DB
-    private $id;
     private $pageId;
     private $title;
     private $columnData;
@@ -19,6 +18,11 @@ class Table
     // Runtime
     private $columns;
 
+    /**
+     * Construct the entity
+     *
+     * @param array $data The entity data
+     */
     public function __construct(array $data)
     {
         $this->setId($data['id'] ?? null)
@@ -28,6 +32,13 @@ class Table
             ->setOrderBy($data['order_by']);
     }
 
+    /**
+     * Map data from DB table to entity
+     *
+     * @param array The data from the database
+     *
+     * @return array
+     */
     public static function mapFromDB(array $data): array
     {
         $columnSortings = explode('<', $data['sorts']);
@@ -57,22 +68,6 @@ class Table
     }
 
     // Getters and setters
-    private function setId(int $id = null): self
-    {
-        $this->id = $id;
-
-        return $this;
-    }
-
-    public function getId(): int
-    {
-        if ($this->id === null) {
-            $this->save();
-        }
-
-        return $this->id;
-    }
-
     private function setPageId(int $pageId): self
     {
         $this->pageId = $pageId;
@@ -110,6 +105,7 @@ class Table
         return $this->columns;
     }
 
+    /**
     private function setOrderBy(int $orderBy): self
     {
         $this->orderBy = $orderBy;
@@ -117,13 +113,23 @@ class Table
         return $this;
     }
 
+    /**
+     * Get the default sort by column (zero index)
+     *
+     * @return int
+     */
     public function getOrderBy(): int
     {
         return $this->orderBy;
     }
 
     // ORM related functions
-    public function getRows()
+    /**
+     * Get table rows
+     *
+     * @return array
+     */
+    public function getRows(): array
     {
         $rows = db()->fetchArray(
             "
@@ -154,11 +160,19 @@ class Table
         return $rows;
     }
 
+    /**
+     * Get the page this table belongs to
+     *
+     * @return \Page
+     */
     public function getPage(): Page
     {
         return ORM::getOne(Page::class, $this->pageId);
     }
 
+    /**
+     * Save entity to database
+     */
     public function save()
     {
         $columnSortings = [];

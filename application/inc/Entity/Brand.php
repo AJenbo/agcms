@@ -1,15 +1,25 @@
 <?php
 
-class Brand
+class Brand extends AbstractRenderable
 {
     const TABLE_NAME = 'maerke';
 
     // Backed by DB
-    private $id;
-    private $title;
+    /**
+     * The external link for this brand
+     */
     private $link;
+
+    /**
+     * The path for the brand icon
+     */
     private $iconPath;
 
+    /**
+     * Construct the entity
+     *
+     * @param array $data The entity data
+     */
     public function __construct(array $data)
     {
         $this->setId($data['id'] ?? null)
@@ -18,6 +28,13 @@ class Brand
             ->setIconPath($data['icon_path']);
     }
 
+    /**
+     * Map data from DB table to entity
+     *
+     * @param array The data from the database
+     *
+     * @return array
+     */
     public static function mapFromDB(array $data): array
     {
         return [
@@ -29,34 +46,6 @@ class Brand
     }
 
     // Getters and setters
-    private function setId(int $id = null): self
-    {
-        $this->id = $id;
-
-        return $this;
-    }
-
-    public function getId(): int
-    {
-        if ($this->id === null) {
-            $this->save();
-        }
-
-        return $this->id;
-    }
-
-    public function setTitle(string $title): self
-    {
-        $this->title = $title;
-
-        return $this;
-    }
-
-    public function getTitle(): string
-    {
-        return $this->title;
-    }
-
     public function setLink(string $link): self
     {
         $this->link = $link;
@@ -64,6 +53,11 @@ class Brand
         return $this;
     }
 
+    /**
+     * Get the external link for this brand
+     *
+     * @return string
+     */
     public function getLink(): string
     {
         return $this->link;
@@ -76,6 +70,11 @@ class Brand
         return $this;
     }
 
+    /**
+     * Get the file that is used as an icon
+     *
+     * @return ?\File
+     */
     public function getIcon()
     {
         if (!$this->iconPath) {
@@ -85,12 +84,24 @@ class Brand
     }
 
     // General methodes
+    /**
+     * Get the url slug
+     *
+     * @return string
+     */
     public function getSlug(): string
     {
         return 'mærke' . $this->getId() . '-' . clearFileName($this->getTitle()) . '/';
     }
 
-    public function getPages(string $order = 'navn')
+    /**
+     * Get all pages under this brand
+     *
+     * @param string $order How to order the pages
+     *
+     * @return array
+     */
+    public function getPages(string $order = 'navn'): array
     {
         return ORM::getByQuery(
             Page::class,
@@ -104,6 +115,9 @@ class Brand
     }
 
     // ORM related functions
+    /**
+     * Save entity to database
+     */
     public function save()
     {
         if ($this->id === null) {
