@@ -2,15 +2,45 @@
 
 class File extends AbstractEntity
 {
+    /**
+     * Table name in database
+     */
     const TABLE_NAME = 'files';
 
     // Backed by DB
+    /**
+     * File path
+     */
     private $path;
+
+    /**
+     * File mime
+     */
     private $mime;
+
+    /**
+     * File byte size
+     */
     private $size;
+
+    /**
+     * Text description of file
+     */
     private $description;
+
+    /**
+     * Object width in px
+     */
     private $width;
+
+    /**
+     * Object height in px
+     */
     private $height;
+
+    /**
+     * Video aspect (4-3, 16-9)
+     */
     private $aspect;
 
     /**
@@ -52,6 +82,13 @@ class File extends AbstractEntity
     }
 
     // Getters and setters
+    /**
+     * Set path
+     *
+     * @param string $path The file path
+     *
+     * @return self
+     */
     private function setPath(string $path): self
     {
         $this->path = $path;
@@ -59,11 +96,23 @@ class File extends AbstractEntity
         return $this;
     }
 
+    /**
+     * Return the file path
+     *
+     * @return string
+     */
     public function getPath(): string
     {
         return $this->path;
     }
 
+    /**
+     * Set the mime type
+     *
+     * @param string $mime The mime type
+     *
+     * @return self
+     */
     public function setMime(string $mime): self
     {
         $this->mime = $mime;
@@ -71,11 +120,23 @@ class File extends AbstractEntity
         return $this;
     }
 
+    /**
+     * Get the mime type
+     *
+     * @return string
+     */
     public function getMime(): string
     {
         return $this->mime;
     }
 
+    /**
+     * Set the file size
+     *
+     * @param int $size The file size in bytes
+     *
+     * @return self
+     */
     public function setSize(int $size): self
     {
         $this->size = $size;
@@ -83,11 +144,23 @@ class File extends AbstractEntity
         return $this;
     }
 
+    /**
+     * Get the file size
+     *
+     * @return int
+     */
     public function getSize(): int
     {
         return $this->size;
     }
 
+    /**
+     * Set the file text description
+     *
+     * @param string $description Text description
+     *
+     * @return self
+     */
     public function setDescription(string $description): self
     {
         $this->description = $description;
@@ -95,11 +168,23 @@ class File extends AbstractEntity
         return $this;
     }
 
+    /**
+     * Get the text description
+     *
+     * @return string
+     */
     public function getDescription(): string
     {
         return $this->description;
     }
 
+    /**
+     * Set width
+     *
+     * @param int $width The object width
+     *
+     * @return self
+     */
     public function setWidth(int $width): self
     {
         $this->width = $width;
@@ -107,11 +192,23 @@ class File extends AbstractEntity
         return $this;
     }
 
+    /**
+     * Get width
+     *
+     * @return int
+     */
     public function getWidth(): int
     {
         return $this->width;
     }
 
+    /**
+     * Set height
+     *
+     * @param int $width The object height
+     *
+     * @return self
+     */
     public function setHeight(int $height): self
     {
         $this->height = $height;
@@ -119,11 +216,23 @@ class File extends AbstractEntity
         return $this;
     }
 
+    /**
+     * Get height
+     *
+     * @return int
+     */
     public function getHeight(): int
     {
         return $this->height;
     }
 
+    /**
+     * Set video aspect
+     *
+     * @param string $aspect In the format of 16-9
+     *
+     * @return self
+     */
     public function setAspect(string $aspect = null): self
     {
         $this->aspect = $aspect;
@@ -131,6 +240,11 @@ class File extends AbstractEntity
         return $this;
     }
 
+    /**
+     * Get the asspect
+     *
+     * @return ?string
+     */
     public function getAspect()
     {
         return $this->aspect;
@@ -181,7 +295,14 @@ class File extends AbstractEntity
         Render::addLoadedTable(self::TABLE_NAME);
     }
 
-    public static function fromPath(string $path)
+    /**
+     * Create new File from a file path
+     *
+     * @param string $path The file path
+     *
+     * @return self
+     */
+    public static function fromPath(string $path): self
     {
         $imagesize = @getimagesize(_ROOT_ . $path);
 
@@ -195,6 +316,11 @@ class File extends AbstractEntity
         return $file;
     }
 
+    /**
+     * Delete entity and file
+     *
+     * @return bool
+     */
     public function delete(): bool
     {
         if (@unlink(_ROOT_ . $this->path)) {
@@ -206,6 +332,13 @@ class File extends AbstractEntity
         return false;
     }
 
+    /**
+     * Find entity by file path
+     *
+     * @param string $path The file path
+     *
+     * @return ?self
+     */
     public static function getByPath(string $path)
     {
         return ORM::getOneByQuery(

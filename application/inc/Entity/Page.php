@@ -2,20 +2,70 @@
 
 class Page extends AbstractRenderable
 {
+    /**
+     * Table name in database
+     */
     const TABLE_NAME = 'sider';
 
     // Backed by DB
+    /**
+     * Stock keeping unit
+     */
     private $sku;
+
+    /**
+     * Latest save time
+     */
     private $timeStamp;
+
+    /**
+     * Page keywords, coma seporated
+     */
     private $keywords;
+
+    /**
+     * HTML body
+     */
     private $html;
+
+    /**
+     * Short text description
+     */
     private $excerpt;
+
+    /**
+     * Thumbnail path
+     */
     private $imagePath;
+
+    /**
+     * Id of requirement page
+     */
     private $requirementId;
+
+    /**
+     * Id of brand
+     */
     private $brandId;
+
+    /**
+     * Current price
+     */
     private $price;
+
+    /**
+     * Previous price
+     */
     private $oldPrice;
+
+    /**
+     * What type of price is the current (from, specific)
+     */
     private $priceType;
+
+    /**
+     * What type of price is the previous (from, specific)
+     */
     private $oldPriceType;
 
     /**
@@ -69,6 +119,13 @@ class Page extends AbstractRenderable
     }
 
     // Getters and setters
+    /**
+     * Set the Stock Keeping Unit identifyer
+     *
+     * @param string $sku Stock product number
+     *
+     * @return self
+     */
     public function setSku(string $sku): self
     {
         $this->sku = $sku;
@@ -76,11 +133,23 @@ class Page extends AbstractRenderable
         return $this;
     }
 
+    /**
+     * Get the Stock Keeping Unity
+     *
+     * @return string
+     */
     public function getSku(): string
     {
         return $this->sku;
     }
 
+    /**
+     * Set the last modefied time stamp
+     *
+     * @param int $timeStamp Last modefied
+     *
+     * @return self
+     */
     public function setTimeStamp(int $timeStamp): self
     {
         $this->timeStamp = $timeStamp;
@@ -88,11 +157,23 @@ class Page extends AbstractRenderable
         return $this;
     }
 
+    /**
+     * Get last modefied
+     *
+     * @return int
+     */
     public function getTimeStamp(): int
     {
         return $this->timeStamp;
     }
 
+    /**
+     * Set keywords
+     *
+     * @param string $keywords Comma seporated
+     *
+     * @return self
+     */
     public function setKeywords(string $keywords): self
     {
         $this->keywords = $keywords;
@@ -100,11 +181,23 @@ class Page extends AbstractRenderable
         return $this;
     }
 
+    /**
+     * Get keywords
+     *
+     * @return string
+     */
     public function getKeywords(): string
     {
         return $this->keywords;
     }
 
+    /**
+     * Set HTML body
+     *
+     * @param string $html The HTML body
+     *
+     * @return self
+     */
     public function setHtml(string $html): self
     {
         $this->html = $html;
@@ -112,11 +205,23 @@ class Page extends AbstractRenderable
         return $this;
     }
 
+    /**
+     * Get the HTML body
+     *
+     * @return string
+     */
     public function getHtml(): string
     {
         return $this->html;
     }
 
+    /**
+     * Set the breaf description
+     *
+     * @param string $excerpt Short text
+     *
+     * @return self
+     */
     public function setExcerpt(string $excerpt): self
     {
         $this->excerpt = $excerpt;
@@ -124,6 +229,11 @@ class Page extends AbstractRenderable
         return $this;
     }
 
+    /**
+     * Get the short description
+     *
+     * @return string
+     */
     public function getExcerpt(): string
     {
         if (!$this->excerpt) {
@@ -136,6 +246,13 @@ class Page extends AbstractRenderable
         return strip_tags($this->excerpt);
     }
 
+    /**
+     * Set the image file path
+     *
+     * @param strig $imagePath Thumbnail file path
+     *
+     * @return self
+     */
     public function setImagePath(string $imagePath): self
     {
         $this->imagePath = $imagePath;
@@ -143,11 +260,23 @@ class Page extends AbstractRenderable
         return $this;
     }
 
+    /**
+     * Get image file path
+     *
+     * @return string
+     */
     public function getImagePath(): string
     {
         return $this->imagePath;
     }
 
+    /**
+     * Set the Requirement id
+     *
+     * @param int Requirement id
+     *
+     * @return self
+     */
     public function setRequirementId(int $requirementId): self
     {
         $this->requirementId = $requirementId;
@@ -155,6 +284,13 @@ class Page extends AbstractRenderable
         return $this;
     }
 
+    /**
+     * Set the Brand id
+     *
+     * @param int Brand id
+     *
+     * @return self
+     */
     public function setBrandId(int $brandId): self
     {
         $this->brandId = $brandId;
@@ -162,11 +298,23 @@ class Page extends AbstractRenderable
         return $this;
     }
 
+    /**
+     * Get the Brand Id
+     *
+     * @return int
+     */
     public function getBrandId(): int
     {
         return $this->brandId;
     }
 
+    /**
+     * Set the price
+     *
+     * @param int $price Price
+     *
+     * @return self
+     */
     public function setPrice(int $price): self
     {
         $this->price = $price;
@@ -174,11 +322,23 @@ class Page extends AbstractRenderable
         return $this;
     }
 
+    /**
+     * Get the price
+     *
+     * @return int
+     */
     public function getPrice(): int
     {
         return $this->price;
     }
 
+    /**
+     * Set the old price
+     *
+     * @param int $oldPrice The previous price
+     *
+     * @return self
+     */
     public function setOldPrice(int $oldPrice): self
     {
         $this->oldPrice = $oldPrice;
@@ -186,11 +346,23 @@ class Page extends AbstractRenderable
         return $this;
     }
 
+    /**
+     * Get the previous price
+     *
+     * @return int
+     */
     public function getOldPrice(): int
     {
         return $this->oldPrice;
     }
 
+    /**
+     * Set the price type
+     *
+     * @param int $priceType The price type
+     *
+     * @return self
+     */
     public function setPriceType(int $priceType): self
     {
         $this->priceType = $priceType;
@@ -198,11 +370,23 @@ class Page extends AbstractRenderable
         return $this;
     }
 
+    /**
+     * Get the price Type
+     *
+     * @return int
+     */
     public function getPriceType(): int
     {
         return $this->priceType;
     }
 
+    /**
+     * Set the previous price type
+     *
+     * @param int $priceType The previous price type
+     *
+     * @return self
+     */
     public function setOldPriceType(int $oldPriceType): self
     {
         $this->oldPriceType = $oldPriceType;
@@ -210,17 +394,34 @@ class Page extends AbstractRenderable
         return $this;
     }
 
+    /**
+     * Get the previous price Type
+     *
+     * @return int
+     */
     public function getOldPriceType(): int
     {
         return $this->oldPriceType;
     }
 
     // General methodes
+    /**
+     * Get the url slug
+     *
+     * @return string
+     */
     public function getSlug(): string
     {
         return 'side' . $this->getId() . '-' . clearFileName($this->getTitle()) . '.html';
     }
 
+    /**
+     * Get canonical url for this entity
+     *
+     * @param \Category $category Category to base the url on
+     *
+     * @return string
+     */
     public function getCanonicalLink(Category $category = null): string
     {
         $url = '/';
@@ -235,6 +436,13 @@ class Page extends AbstractRenderable
         return $url . $this->getSlug();
     }
 
+    /**
+     * Is the page in the given category
+     *
+     * @param int $categoryId Id of category to check in
+     *
+     * @return bool
+     */
     public function isInCategory(int $categoryId): bool
     {
         Render::addLoadedTable('bind');
@@ -246,6 +454,11 @@ class Page extends AbstractRenderable
         );
     }
 
+    /**
+     * Get the primery category for this page
+     *
+     * @return ?Category
+     */
     public function getPrimaryCategory()
     {
         Render::addLoadedTable('bind');
@@ -259,6 +472,11 @@ class Page extends AbstractRenderable
         );
     }
 
+    /**
+     * Get all categories
+     *
+     * @return array
+     */
     public function getCategories(): array
     {
         Render::addLoadedTable('bind');
@@ -272,7 +490,12 @@ class Page extends AbstractRenderable
         );
     }
 
-    public function getAccessories()
+    /**
+     * Get accessory pages
+     *
+     * @return array
+     */
+    public function getAccessories(): array
     {
         Render::addLoadedTable('tilbehor');
         return ORM::getByQuery(
@@ -288,7 +511,12 @@ class Page extends AbstractRenderable
         );
     }
 
-    public function getTables()
+    /**
+     * Get tabels
+     *
+     * @return array
+     */
+    public function getTables(): array
     {
         return ORM::getByQuery(
             Table::class,
@@ -296,16 +524,31 @@ class Page extends AbstractRenderable
         );
     }
 
+    /**
+     * Get product brand
+     *
+     * @return ?Brand
+     */
     public function getBrand()
     {
         return $this->brandId ? ORM::getOne(Brand::class, $this->brandId) : null;
     }
 
+    /**
+     * Get product requirement
+     *
+     * @return ?Requirement
+     */
     public function getRequirement()
     {
         return $this->requirementId ? ORM::getOne(Requirement::class, $this->requirementId) : null;
     }
 
+    /**
+     * Is the product not on the website
+     *
+     * @return bool
+     */
     public function isInactive(): bool
     {
         $bind = db()->fetchOne("SELECT kat FROM bind WHERE kat < 1 AND side = " . $this->getId());

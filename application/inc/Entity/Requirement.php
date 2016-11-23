@@ -1,11 +1,16 @@
 <?php
 
-class Requirement extends AbstractEntity
+class Requirement extends AbstractRenderable
 {
+    /**
+     * Table name in database
+     */
     const TABLE_NAME = 'krav';
 
     // Backed by DB
-    private $title;
+    /**
+     * The body HTML
+     */
     private $html;
 
     /**
@@ -44,24 +49,12 @@ class Requirement extends AbstractEntity
         return $this;
     }
 
-    public function getTitle(): string
-    {
-        return $this->title;
-    }
-
-    public function setHtml(string $html): self
-    {
-        $this->html = $html;
-
-        return $this;
-    }
-
-    public function getHtml(): string
-    {
-        return $this->html;
-    }
-
     // General methodes
+    /**
+     * Get the url slug
+     *
+     * @return string
+     */
     public function getSlug(): string
     {
         return 'krav/' . $this->getId() . '/' . clearFileName($this->getTitle()) . '.html';

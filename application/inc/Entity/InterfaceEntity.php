@@ -30,4 +30,9 @@ interface InterfaceEntity
      * Save entity to database
      */
     public function save();
+
+    /**
+     * Delete entity
+     */
+    public function delete();
 }

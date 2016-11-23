@@ -2,6 +2,9 @@
 
 class CustomPage extends AbstractEntity
 {
+    /**
+     * Table name in database
+     */
     const TABLE_NAME = 'special';
 
     // Backed by DB
@@ -9,7 +12,15 @@ class CustomPage extends AbstractEntity
      * The title
      */
     private $title;
+
+    /**
+     * The time of last save
+     */
     private $timeStamp;
+
+    /**
+     * HTML body
+     */
     private $html;
 
     /**
@@ -43,6 +54,13 @@ class CustomPage extends AbstractEntity
     }
 
     // Getters and setters
+    /**
+     * Set last update time
+     *
+     * @param int $timeStamp UnixTimeStamp
+     *
+     * @return self
+     */
     public function setTimeStamp(int $timeStamp): self
     {
         $this->timeStamp = $timeStamp;
@@ -50,6 +68,11 @@ class CustomPage extends AbstractEntity
         return $this;
     }
 
+    /**
+     * Get last update time
+     *
+     * @return int
+     */
     public function getTimeStamp(): int
     {
         return $this->timeStamp;
@@ -79,6 +102,13 @@ class CustomPage extends AbstractEntity
         return $this->title;
     }
 
+    /**
+     * Set the HTML body
+     *
+     * @param string $html HTML body
+     *
+     * @return self
+     */
     public function setHtml(string $html): self
     {
         $this->html = $html;
@@ -86,6 +116,11 @@ class CustomPage extends AbstractEntity
         return $this;
     }
 
+    /**
+     * Set the HTML body
+     *
+     * @return string
+     */
     public function getHtml(): string
     {
         return $this->html;

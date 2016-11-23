@@ -55,4 +55,16 @@ abstract class AbstractEntity implements InterfaceEntity
      * Save entity to database
      */
     abstract public function save();
+
+    /**
+     * Delete entity
+     *
+     * @return bool
+     */
+    public function delete(): bool
+    {
+        db()->query("DELETE FROM `" . self::TABLE_NAME . "` WHERE `id` = " . $this->id);
+        ORM::forget(self::class, $this->id);
+        return true;
+    }
 }

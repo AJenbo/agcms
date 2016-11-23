@@ -639,8 +639,6 @@ class Render
      *
      * @param string $q     Tekst to search for
      * @param string $where Additional sql where clause
-     *
-     * @return null
      */
     public static function searchListe(
         string $q,
@@ -724,8 +722,6 @@ class Render
      *
      * @param string $searchString Seach string
      * @param string $wherekat     Additional SQL for WHERE clause
-     *
-     * @return null
      */
     public static function getSearchMenu(string $searchString, string $antiWords): array
     {

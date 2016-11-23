@@ -23,7 +23,7 @@ class ORM
      * @param string $class Class name
      * @param int    $id    Id of the entity
      *
-     * @return ?\Enity
+     * @return ?AbstractEntity
      */
     public static function getOne(string $class, int $id)
     {
@@ -45,7 +45,7 @@ class ORM
      * @param string $class Class name
      * @param string $query The query
      *
-     * @return ?\Enity
+     * @return ?AbstractEntity
      */
     public static function getOneByQuery(string $class, string $query)
     {
@@ -88,8 +88,16 @@ class ORM
         return self::$bySql[$class][$query];
     }
 
+    /**
+     * Remove an entity from the caches
+     *
+     * @param string $class
+     * @param int $id
+     *
+     * @return
+     */
     public static function forget(string $class, int $id)
     {
-        unset(self::$byId[$class][$id]);
+        unset(self::$byId[$class][$id], self::$bySql, self::$oneBySql);
     }
 }

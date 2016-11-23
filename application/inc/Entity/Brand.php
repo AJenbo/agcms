@@ -2,6 +2,9 @@
 
 class Brand extends AbstractRenderable
 {
+    /**
+     * Table name in database
+     */
     const TABLE_NAME = 'maerke';
 
     // Backed by DB
@@ -46,6 +49,13 @@ class Brand extends AbstractRenderable
     }
 
     // Getters and setters
+    /**
+     * Set external url link
+     *
+     * @param string $link The url
+     *
+     * @return self
+     */
     public function setLink(string $link): self
     {
         $this->link = $link;
@@ -63,6 +73,13 @@ class Brand extends AbstractRenderable
         return $this->link;
     }
 
+    /**
+     * Set external url link
+     *
+     * @param string $link The url
+     *
+     * @return self
+     */
     public function setIconPath(string $iconPath): self
     {
         $this->iconPath = $iconPath;

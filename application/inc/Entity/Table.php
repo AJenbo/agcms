@@ -2,6 +2,9 @@
 
 class Table extends AbstractEntity
 {
+    /**
+     * Table name in database
+     */
     const TABLE_NAME = 'lists';
     const COLUMN_TYPE_STRING = 0;
     const COLUMN_TYPE_INT = 1;
@@ -10,12 +13,30 @@ class Table extends AbstractEntity
     const COLUMN_TYPE_PRICE_OLD = 4;
 
     // Backed by DB
+    /**
+     * Parent page id
+     */
     private $pageId;
+
+    /**
+     * Table caption
+     */
     private $title;
+
+    /**
+     * Column data as JSON
+     */
     private $columnData;
+
+    /**
+     * The default column to order by, starting from 0
+     */
     private $orderBy;
 
     // Runtime
+    /**
+     * Decoded column data
+     */
     private $columns;
 
     /**
@@ -68,6 +89,13 @@ class Table extends AbstractEntity
     }
 
     // Getters and setters
+    /**
+     * Set parent page id
+     *
+     * @param int $pageId The page the table belongs on
+     *
+     * @return self
+     */
     private function setPageId(int $pageId): self
     {
         $this->pageId = $pageId;
@@ -75,11 +103,23 @@ class Table extends AbstractEntity
         return $this;
     }
 
+    /**
+     * Get page id
+     *
+     * @return int
+     */
     public function getPageId(): int
     {
         return $this->pageId;
     }
 
+    /**
+     * Set the table caption
+     *
+     * @param string $title The caption
+     *
+     * @return self
+     */
     public function setTitle(string $title): self
     {
         $this->title = $title;
@@ -87,11 +127,23 @@ class Table extends AbstractEntity
         return $this;
     }
 
+    /**
+     * Get the table caption
+     *
+     * @return string
+     */
     public function getTitle(): string
     {
         return $this->title;
     }
 
+    /**
+     * Set the column data
+     *
+     * @param string $columnData Array encoded as JSON
+     *
+     * @return self
+     */
     public function setColumnData(string $columnData): self
     {
         $this->columnData = $columnData;
@@ -100,12 +152,23 @@ class Table extends AbstractEntity
         return $this;
     }
 
+    /**
+     * Get tabel colum structure
+     *
+     * @return array
+     */
     public function getColumns(): array
     {
         return $this->columns;
     }
 
     /**
+     * Set the default sorting column
+     *
+     * @param int $orderBy First column = 0
+     *
+     * @return self
+     */
     private function setOrderBy(int $orderBy): self
     {
         $this->orderBy = $orderBy;
