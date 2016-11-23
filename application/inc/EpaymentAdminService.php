@@ -9,20 +9,56 @@
 
 class EpaymentAdminService
 {
+    /**
+     * Shops merchant id
+     */
     private $merchantId;
+
+    /**
+     * Service password
+     */
     private $password;
-    private $amount;
+
+    /**
+     * Service connection
+     */
     private $soapClient;
+
+    /**
+     * Id of transaction
+     */
     private $transactionId = 0;
-    private $Authorized = false;
-    private $Error = false;
-    private $Annulled = false;
-    private $AmountCaptured = 0;
+
+    /**
+     * Transaction ammount
+     */
+    private $amount;
+
+    /**
+     * Amount that was transfered to the shop
+     */
+    private $amountCaptured = 0;
+
+    /**
+     * Is the transaction authorized and ready to transfer the amount
+     */
+    private $authorized = false;
+
+    /**
+     * Has the transaction been cancled
+     */
+    private $annulled = false;
+
+    /**
+     * Did an error occure on the last action
+     */
+    private $error = false;
 
     /**
      * Setup the class variables for initialization
      *
      * @param string $merchantId Id provided by PBS identifying the shop
+     * @param string $password   Password for service
      * @param string $orderId    The order id
      */
     public function __construct(string $merchantId, string $password, string $orderId)
@@ -43,11 +79,11 @@ class EpaymentAdminService
         $this->amount = (int) $transactionData->authamount;
 
         if ($transactionData->status == 'PAYMENT_NEW') {
-            $this->Authorized = true;
+            $this->authorized = true;
         } elseif ($transactionData->status == 'PAYMENT_CAPTURED') {
-            $this->AmountCaptured = (int) $transactionData->capturedamount;
+            $this->amountCaptured = (int) $transactionData->capturedamount;
         } elseif ($transactionData->status == 'PAYMENT_DELETED') {
-            $this->Annulled = true;
+            $this->annulled = true;
         }
     }
 
@@ -109,6 +145,8 @@ class EpaymentAdminService
     }
 
     /**
+     * Get transaction id
+     *
      * @return int
      */
     public function getId(): int
@@ -117,35 +155,43 @@ class EpaymentAdminService
     }
 
     /**
+     * Is the transaction ready to be captured
+     *
      * @return bool
      */
     public function isAuthorized(): bool
     {
-        return $this->Authorized;
+        return $this->authorized;
     }
 
     /**
+     * Did an error occure on the last action
+     *
      * @return bool
      */
     public function hasError(): bool
     {
-        return $this->Error;
+        return $this->error;
     }
 
     /**
+     * Has the transaction been cancled
+     *
      * @return bool
      */
     public function isAnnulled(): bool
     {
-        return $this->Annulled;
+        return $this->annulled;
     }
 
     /**
+     * Transfer an amount to the shop
+     *
      * @return int
      */
     public function getAmountCaptured(): int
     {
-        return $this->AmountCaptured;
+        return $this->amountCaptured;
     }
 
     /**
@@ -167,12 +213,12 @@ class EpaymentAdminService
         );
 
         if (!$response->deleteResult) {
-            $this->Error = true;
+            $this->error = true;
             return false;
         }
 
-        $this->Authorized = false;
-        $this->Annulled = true;
+        $this->authorized = false;
+        $this->annulled = true;
 
         return true;
     }
@@ -190,11 +236,11 @@ class EpaymentAdminService
             $amount = $this->amount;
         }
 
-        if ($this->AmountCaptured) {
+        if ($this->amountCaptured) {
             return true; // TODO can we not capture multiple times, should substract it form $amount?
         }
 
-        if ($this->amount < $amount || !$this->Authorized) {
+        if ($this->amount < $amount || !$this->authorized) {
             return false;
         }
 
@@ -210,12 +256,12 @@ class EpaymentAdminService
         );
 
         if (!$response->captureResult) {
-            $this->Error = true;
+            $this->error = true;
             return false;
         }
 
-        $this->AmountCaptured = $amount;
-        $this->Authorized = false;
+        $this->amountCaptured = $amount;
+        $this->authorized = false;
 
         return true;
     }

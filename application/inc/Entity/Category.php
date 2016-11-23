@@ -104,6 +104,8 @@ class Category extends AbstractRenderable
     /**
      * Set parent id
      *
+     * @param int $parentId Id of parent category
+     *
      * @return self
      */
     public function setParentId(int $parentId): self
@@ -126,6 +128,8 @@ class Category extends AbstractRenderable
     /**
      * Set icon file path
      *
+     * @param string $iconPath Icon file path
+     *
      * @return self
      */
     public function setIconPath(string $iconPath): self
@@ -137,6 +141,8 @@ class Category extends AbstractRenderable
 
     /**
      * Set render mode
+     *
+     * @param int $renderMode The render mode for displaying pages
      *
      * @return self
      */
@@ -160,6 +166,8 @@ class Category extends AbstractRenderable
     /**
      * Set contact email
      *
+     * @param string $email Contact email
+     *
      * @return self
      */
     public function setEmail(string $email): self
@@ -182,6 +190,7 @@ class Category extends AbstractRenderable
     /**
      * Set if children should be manually ordered
      *
+     * @param bool $weightedChildren Weather child categories should be ordered by weight
      * @return self
      */
     public function setWeightedChildren(bool $weightedChildren): self
@@ -203,6 +212,8 @@ class Category extends AbstractRenderable
 
     /**
      * Set weight
+     *
+     * @param int $weight Order-by weight
      *
      * @return self
      */
