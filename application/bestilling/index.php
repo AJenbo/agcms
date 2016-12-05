@@ -84,6 +84,12 @@ if (count($_POST)) {
     }
     $_SESSION['faktura']['note'] = $_POST['note'] ?? $_SESSION['faktura']['note'];
 }
+if (!empty($_POST['paymethod'])) {
+    $_SESSION['faktura']['paymethod'] = $_POST['paymethod'];
+}
+if (!empty($_POST['delevery'])) {
+    $_SESSION['faktura']['delevery'] = $_POST['delevery'];
+}
 
 //Generate return page
 Render::$crumbs = [
@@ -176,15 +182,15 @@ if (!empty($_SESSION['faktura']['quantities'])) {
         }
         Render::$bodyHtml .= '<p>' . _('Prefered payment method:')
             . ' <select name="paymethod" style="float:right;"><option value="creditcard"';
-        if ($_SESSION['faktura']['paymethod'] == 'creditcard') {
+        if ($_SESSION['faktura']['paymethod'] === 'creditcard') {
             Render::$bodyHtml .= ' selected="selected"';
         }
         Render::$bodyHtml .= '>'._('Credit Card').'</option><option value="bank"';
-        if ($_SESSION['faktura']['paymethod'] == 'bank') {
+        if ($_SESSION['faktura']['paymethod'] === 'bank') {
             Render::$bodyHtml .= ' selected="selected"';
         }
         Render::$bodyHtml .= '>'._('Bank transaction').'</option><option value="cash"';
-        if ($_SESSION['faktura']['paymethod'] == 'cash') {
+        if ($_SESSION['faktura']['paymethod'] === 'cash') {
             Render::$bodyHtml .= ' selected="selected"';
         }
         Render::$bodyHtml .= '>' . _('Cash') . '</option></select></p>';
@@ -475,8 +481,8 @@ window.history.forward(1);
         } elseif ($_SESSION['faktura']['delevery'] === 'express') {
             $note .= _('Please send the order to by mail express.');
         }
-        $note .= "\n" . $_SESSION['faktura']['note'];
         $note = trim($note);
+        $note .= "\n" . trim($_SESSION['faktura']['note']);
 
         $quantities = array_map('xhtmlEsc', $_SESSION['faktura']['quantities']);
         $products = array_map('xhtmlEsc', $_SESSION['faktura']['products']);
