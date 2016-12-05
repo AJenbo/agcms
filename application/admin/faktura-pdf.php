@@ -199,10 +199,10 @@ $pdf->Cell(34, 5, _('Total'), 1, 1, 'R');
 //Cells
 $netto = 0;
 $extralines = 0;
-$lines = count($faktura['values']);
+$lines = 0;
 foreach ($faktura['values'] as $i => $value) {
     if ($lines > 1) {
-        $lines -= 1;
+        $lines--;
         $extralines += $lines;
         $pdf->Cell(24, 6*$lines, '', 'RL', 0);
         $pdf->Cell(106, 6*$lines, '', 'RL', 0);
