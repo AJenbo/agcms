@@ -170,10 +170,8 @@ function arrayNatsort(array $aryData, string $strIndex, string $strSortBy, strin
         return $aryData;
     }
 
-    //create our temporary arrays
-    $arySort = $aryResult = [];
-
     //loop through the array
+    $arySort = [];
     foreach ($aryData as $aryRow) {
         //set up the value in the array
         $arySort[$aryRow[$strIndex]] = $aryRow[$strSortBy];
@@ -189,12 +187,11 @@ function arrayNatsort(array $aryData, string $strIndex, string $strSortBy, strin
     }
 
     //loop through the sorted and original data
+    $aryResult = [];
     foreach ($arySort as $arySortKey => $dummy) {
-        foreach ($aryData as $aryOriginal) {
-            //if the key matches
-            if ($aryOriginal[$strIndex] === $arySortKey) {
-                //add it to the output array
-                $aryResult[] = $aryOriginal;
+        foreach ($aryData as $aryRow) {
+            if ($aryRow[$strIndex] == $arySortKey) {
+                $aryResult[] = $aryRow;
                 break;
             }
         }
@@ -238,8 +235,7 @@ function arrayListsort(
         $kaliber = explode('<', $kaliber['text']);
     }
 
-    $arySort = $aryResult = [];
-
+    $arySort = [];
     foreach ($aryData as $aryRow) {
         $arySort[$aryRow[$strIndex]] = -1;
         foreach ($kaliber as $kalKey => $kalSort) {
@@ -256,10 +252,11 @@ function arrayListsort(
         arsort($arySort);
     }
 
+    $aryResult = [];
     foreach ($arySort as $arySortKey => $dummy) {
-        foreach ($aryData as $aryOriginal) {
-            if ($aryOriginal[$strIndex] === $arySortKey) {
-                $aryResult[] = $aryOriginal;
+        foreach ($aryData as $aryRow) {
+            if ($aryRow[$strIndex] == $arySortKey) {
+                $aryResult[] = $aryRow;
                 break;
             }
         }
