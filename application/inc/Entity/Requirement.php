@@ -42,6 +42,13 @@ class Requirement extends AbstractRenderable
     }
 
     // Getters and setters
+    /**
+     * Set title
+     *
+     * @param string $title The title
+     *
+     * @return self
+     */
     public function setTitle(string $title): self
     {
         $this->title = $title;
