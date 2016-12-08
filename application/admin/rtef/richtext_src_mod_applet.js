@@ -297,9 +297,7 @@ function writeRichText(rte, html, css, width, height, buttons, resizable, fullsc
 		rtehtml += '<input type="hidden" value="" name="'+rte+'" id="'+rte+'" />';
 		rtehtml += '</div>';
 		document.write(rtehtml);
-
 		enableDesignMode(rte, html, rte_css);
-		//while(document.getElementById(rte) == null);
 		document.getElementById(rte).value = html;
 	} else {
 		buttons = false;
@@ -765,15 +763,6 @@ function dlgLaunch(rte, command, width, height) {
 		case "word":
 			dlgPasteWord = popUpWin(includesPath + 'paste_word.htm', 'dlgPasteWord', width, height, 'status=yes,');
 		break;
-/*TPOST MODIFICATION - applet*/
-/*
-		case "applet":
-			setRange(rte);
-			parseRTE(rte);
-			InsertApplet = popUpWin(includesPath + 'insert_applet.htm','AddApplet', width, height, 'status=yes,');
-		break;
-*/
-/*END TPOST MODIFICATION*/
 	}
 }
 

@@ -121,16 +121,16 @@ if (@$_GET['dato']) {
             if (@$email[$i]['land'] != 'Danmark') {
                 echo '<br />' . @$email[$i]['land'];
             }
-            ?></td></tr></table></div><?php
+            echo '</td></tr></table></div>';
             //end row
-if ($i % 3 == 2) {
-    ?></div><?php
-}
+            if ($i % 3 == 2) {
+                '</div>';
+            }
 
             //end table
-if ($i % 21 == 20) {
-    ?></div><?php
-}
+            if ($i % 21 == 20) {
+                '</div>';
+            }
         }
     }
 }
