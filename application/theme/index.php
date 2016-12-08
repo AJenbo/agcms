@@ -140,7 +140,7 @@ if (in_array(self::$pageType, ['front', 'custome'], true)) {
 
     $requirement = self::$activePage->getRequirement();
     if ($requirement) {
-        echo '<p><a href="/' . xhtmlEsc($requirement->getSlug()) . '" target="krav">'
+        echo '<p><a href="' . xhtmlEsc($requirement->getCanonicalLink()) . '" target="krav">'
             . xhtmlEsc($requirement->getTitle()) . '</a></p>';
     }
     echo '<p style="text-align:center">';

@@ -32,7 +32,7 @@ foreach ($categories as $category) {
     }
     $activeCategoryIds[] = $category->getId();
 
-    echo '<url><loc>' . htmlspecialchars(Config::get('base_url') . '/' . $category->getSlug(), ENT_COMPAT | ENT_XML1)
+    echo '<url><loc>' . htmlspecialchars(Config::get('base_url') . $category->getCanonicalLink(), ENT_COMPAT | ENT_XML1)
         . '</loc><changefreq>weekly</changefreq><priority>0.5</priority></url>';
 }
 
@@ -61,7 +61,7 @@ if ($brandIds) {
         "
     );
     foreach ($brands as $brand) {
-        echo '<url><loc>' . htmlspecialchars(Config::get('base_url') . '/' . $brand->getSlug(), ENT_COMPAT | ENT_XML1)
+        echo '<url><loc>' . htmlspecialchars(Config::get('base_url') . $brand->getCanonicalLink(), ENT_COMPAT | ENT_XML1)
             . '</loc><changefreq>weekly</changefreq><priority>0.4</priority></url>';
     }
 }

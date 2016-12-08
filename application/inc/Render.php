@@ -3,8 +3,13 @@
 class Render
 {
     private static $accessories = [];
+    private static $activeRequirement;
     private static $activeBrand;
     private static $activeCategory;
+
+    /**
+     * @var Page
+     */
     private static $activePage;
     private static $brand = [];
     private static $canonical = '';
@@ -42,13 +47,25 @@ class Render
      *
      * @param string $url The requested url
      */
-    public static function doRouting(string $url)
+    public static function doRouting()
     {
+        $url = urldecode($_SERVER['REQUEST_URI']);
+        self::makeUrlUtf8($url);
+
         // Routing
+        $requirementId = (int) preg_replace('/\/krav\/([0-9]*)\/.*/u', '\1', $url);
         $brandId = (int) preg_replace('/.*\/mærke([0-9]*)-.*|.*/u', '\1', $url);
         $categoryId = (int) preg_replace('/.*\/kat([0-9]*)-.*|.*/u', '\1', $url);
         $pageId = (int) preg_replace('/.*\/side([0-9]*)-.*|.*/u', '\1', $url);
-        $redirect = !$brandId && !$categoryId && !$pageId ? 302 : 0;
+        $redirect = !$brandId && !$categoryId && !$pageId && !$requirementId ? 302 : 0;
+
+        if ($requirementId) {
+            self::$activeRequirement = ORM::getOne(Requirement::class, $requirementId);
+            if (!self::$activeRequirement) {
+                $redirect = 301;
+                self::$activeRequirement = null;
+            }
+        }
 
         if ($brandId) {
             self::$activeBrand = ORM::getOne(Brand::class, $brandId);
@@ -78,6 +95,24 @@ class Render
         }
 
         self::doRedirects($redirect, $url);
+    }
+
+    /**
+     * Make sure URL is UTF8 and redirect if nessesery
+     *
+     * @param string $url Requested url
+     */
+    private static function makeUrlUtf8(string $url)
+    {
+        $encoding = mb_detect_encoding($url, 'UTF-8, ISO-8859-1');
+        if ($encoding !== 'UTF-8') {
+            // Windows-1252 is a superset of iso-8859-1
+            if (!$encoding || $encoding == 'ISO-8859-1') {
+                $encoding = 'windows-1252';
+            }
+            $url = mb_convert_encoding($url, 'UTF-8', $encoding);
+            redirect($url, 301);
+        }
     }
 
     /**
@@ -117,7 +152,11 @@ class Render
         if (self::$activePage) {
             $redirectUrl = self::$activePage->getCanonicalLink(self::$activeCategory);
         } elseif (self::$activeCategory) {
-            $redirectUrl = '/' . self::$activeCategory->getSlug();
+            $redirectUrl = self::$activeCategory->getCanonicalLink();
+        } elseif (self::$activeBrand) {
+            $redirectUrl = self::$activeBrand->getCanonicalLink();
+        } elseif (self::$activeRequirement) {
+            $redirectUrl = self::$activeRequirement->getCanonicalLink();
         }
 
         redirect($redirectUrl, $redirect);
@@ -238,7 +277,7 @@ class Render
             if (!empty($_GET['maerke'])) {
                 $brand = ORM::getOne(Brand::class, $_GET['maerke']);
                 if ($brand) {
-                    redirect('/' . $brand->getSlug(), 301);
+                    redirect($brand->getCanonicalLink(), 301);
                 }
             } elseif (isset($_GET['q']) && empty($_GET['sog'])) {
                 redirect('/?sog=1&q=&sogikke=&minpris=&maxpris=&maerke=', 301);
@@ -256,7 +295,7 @@ class Render
                 self::$keywords[] = trim($category->getTitle());
                 self::$crumbs[] = [
                     'name' => $category->getTitle(),
-                    'link' => '/' . $category->getSlug(),
+                    'link' => $category->getCanonicalLink(),
                     'icon' => $category->getIcon() ? $category->getIcon()->getPath() : '',
                 ];
             };
@@ -375,10 +414,10 @@ class Render
         }
 
         self::$pageType = 'tiles';
-        self::$canonical = '/' . $brand->getSlug();
+        self::$canonical = $brand->getCanonicalLink();
         self::$title = $brand->getTitle();
         self::$brand = [
-            'link'  => '/' . $brand->getSlug(),
+            'link'  => $brand->getCanonicalLink(),
             'name'  => $brand->getTitle(),
             'xlink' => $brand->getLink(),
             'icon'  => $brand->getIcon() ? $brand->getIcon()->getPath() : '',
@@ -426,7 +465,7 @@ class Render
         }
         self::$title     = $title ?: self::$title;
         self::$email     = $category->getEmail();
-        self::$canonical = '/' . $category->getSlug();
+        self::$canonical = $category->getCanonicalLink();
         self::$pageType  = $category->getRenderMode() === Category::GALLERY ? 'tiles' : 'list';
     }
 
@@ -522,7 +561,7 @@ class Render
         if ($brand) {
             self::$brand = [
                 'name'  => $brand->getTitle(),
-                'link'  => '/' . $brand->getSlug(),
+                'link'  => $brand->getCanonicalLink(),
                 'xlink' => $brand->getLink(),
                 'icon'  => $brand->getIcon() ? $brand->getIcon()->getPath() : '',
             ];
@@ -569,7 +608,7 @@ class Render
             $return[] = [
                 'id'   => $page->getId(),
                 'name' => $page->getTitle(),
-                'link' => '/' . $page->getSlug(),
+                'link' => $page->getCanonicalLink(),
             ];
         }
 
@@ -624,7 +663,7 @@ class Render
             $menu[] = [
                 'id'   => $category->getId(),
                 'name' => $category->getTitle(),
-                'link' => '/' . $category->getSlug(),
+                'link' => $category->getCanonicalLink(),
                 'icon' => $category->getIcon() ? $category->getIcon()->getPath() : '',
                 'sub'  => $subs ? true : $category->hasChildren(true),
                 'subs' => $subs,
@@ -749,7 +788,7 @@ class Render
             $searchMenu[] = [
                 'id'   => $brand->getId(),
                 'name' => $brand->getTitle(),
-                'link' => '/' . $brand->getSlug(),
+                'link' => $brand->getCanonicalLink(),
             ];
         }
 
@@ -773,7 +812,7 @@ class Render
                 $searchMenu[] = [
                     'id' => $category->getId(),
                     'name' => $category->getTitle(),
-                    'link' => '/' . $category->getSlug(),
+                    'link' => $category->getCanonicalLink(),
                     'icon' => $category->getIcon() ? $category->getIcon()->getPath() : '',
                     'sub' => (bool) $category->getChildren(true),
                 ];
@@ -1006,6 +1045,11 @@ class Render
                 apache_setenv('no-gzip', 1);
             }
             ini_set('zlib.output_compression', 0);
+            return;
+        }
+
+        if (self::$activeRequirement) {
+            require_once _ROOT_ . '/theme/requirement.php';
             return;
         }
 

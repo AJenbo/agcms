@@ -42,18 +42,29 @@ class Requirement extends AbstractRenderable
     }
 
     // Getters and setters
+
     /**
-     * Set title
+     * Set HTML body
      *
-     * @param string $title The title
+     * @param string $html The HTML body
      *
      * @return self
      */
-    public function setTitle(string $title): self
+    public function setHtml(string $html): self
     {
-        $this->title = $title;
+        $this->html = $html;
 
         return $this;
+    }
+
+    /**
+     * Get the HTML body
+     *
+     * @return string
+     */
+    public function getHtml(): string
+    {
+        return $this->html;
     }
 
     // General methodes
