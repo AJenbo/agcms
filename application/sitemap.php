@@ -35,6 +35,7 @@ foreach ($categories as $category) {
     echo '<url><loc>' . htmlspecialchars(Config::get('base_url') . $category->getCanonicalLink(), ENT_COMPAT | ENT_XML1)
         . '</loc><changefreq>weekly</changefreq><priority>0.5</priority></url>';
 }
+unset($categories, $category);
 
 $brandIds = [];
 $pages = ORM::getByQuery(
@@ -45,12 +46,14 @@ $pages = ORM::getByQuery(
     WHERE bind.kat IN(" . implode(",", $activeCategoryIds) . ")
     "
 );
+unset($activeCategoryIds);
 foreach ($pages as $page) {
     $brandIds[$page->getBrandId()] = true;
     echo '<url><loc>' . htmlspecialchars(Config::get('base_url') . $page->getCanonicalLink(), ENT_COMPAT | ENT_XML1)
         . '</loc><lastmod>' . htmlspecialchars(date('c', $page->getTimeStamp()), ENT_COMPAT | ENT_XML1)
         . '</lastmod><changefreq>monthly</changefreq><priority>0.6</priority></url>';
 }
+unset($pages, $page);
 
 if ($brandIds) {
     $brands = ORM::getByQuery(
@@ -64,6 +67,15 @@ if ($brandIds) {
         echo '<url><loc>' . htmlspecialchars(Config::get('base_url') . $brand->getCanonicalLink(), ENT_COMPAT | ENT_XML1)
             . '</loc><changefreq>weekly</changefreq><priority>0.4</priority></url>';
     }
+    unset($brands, $brand);
 }
+unset($brandIds);
+
+$requirements = ORM::getByQuery(Requirement::class, "SELECT * FROM krav");
+foreach ($requirements as $requirement) {
+    echo '<url><loc>' . htmlspecialchars(Config::get('base_url') . $requirement->getCanonicalLink(), ENT_COMPAT | ENT_XML1)
+        . '</loc><changefreq>monthly</changefreq><priority>0.2</priority></url>';
+}
+unset($requirements, $requirement);
 
 ?></urlset>
