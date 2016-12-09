@@ -61,7 +61,7 @@ if ($_POST) {
         die('<p style="text-align: center; margin-top: 20px;">'._('Username already taken.').'</p></body></html>');
     }
 
-    db()->query('INSERT INTO users SET name = \''.addcslashes($_POST['name'], "'").'\', password = \''.addcslashes(@crypt($_POST['password']), "'").'\', fullname = \''.addcslashes($_POST['fullname'], "'").'\'');
+    db()->query("INSERT INTO users SET name = '" . db()->esc($_POST['name']) . "', password = '" . db()->esc(@crypt($_POST['password'])) . "', fullname = '" . db()->esc($_POST['fullname']) . "'");
 
     $emailbody = '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">

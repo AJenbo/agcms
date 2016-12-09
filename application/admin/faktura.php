@@ -39,7 +39,7 @@ if ($faktura['id'] && $faktura['status'] != 'new') {
             db()->query(
                 "
                 UPDATE `fakturas` SET `status` = 'rejected'
-                WHERE `id` = " . $faktura['id']
+                WHERE `id` = " . (int) $faktura['id']
             );
         } else {
             //TODO warning
@@ -53,7 +53,7 @@ if ($faktura['id'] && $faktura['status'] != 'new') {
             db()->query(
                 "
                 UPDATE `fakturas` SET `status` = 'accepted'
-                WHERE `id` = ".$faktura['id']
+                WHERE `id` = " . (int) $faktura['id']
             );
         } else {
             //TODO warning
@@ -65,7 +65,7 @@ if ($faktura['id'] && $faktura['status'] != 'new') {
             db()->query(
                 "
                 UPDATE `fakturas` SET `status` = 'pbsok'
-                WHERE `id` = " . $faktura['id']
+                WHERE `id` = " . (int) $faktura['id']
             );
         } else {
             //TODO warning
@@ -76,7 +76,7 @@ if ($faktura['id'] && $faktura['status'] != 'new') {
             db()->query(
                 "
                 UPDATE `fakturas` SET `status` = 'locked'
-                WHERE `id` = " . $faktura['id']
+                WHERE `id` = " . (int) $faktura['id']
             );
         }
     }

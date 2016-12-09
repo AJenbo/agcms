@@ -3,28 +3,31 @@
 require_once $_SERVER['DOCUMENT_ROOT'] . '/admin/logon.php';
 
 if (!empty($_POST)) {
-    db()->query(
-        "
-        INSERT INTO `lists` (
-            `page_id`,
-            `title`,
-            `cells`,
-            `cell_names`,
-            `sort`,
-            `sorts`,
-            `link`
-        )
-        VALUES (
-            '".$_POST['id']."',
-            '".$_POST['title']."',
-            '".$_POST['cells']."',
-            '".$_POST['cell_names']."',
-            '".$_POST['dsort']."',
-            '".$_POST['sorts']."',
-            ".($_POST['link'] ? 1 : 0)."
-        );
-        "
-    );
+    //TODO Send JSON directly from the client
+    $columnSortings = explode('<', $_POST['sorts']);
+    $columnSortings = array_map('intval', $columnSortings);
+    $columnTypes = explode('<', $_POST['cells']);
+    $columnTypes = array_map('intval', $columnTypes);
+    $columnTitles = explode('<', $_POST['cell_names']);
+    $columnTitles = array_map('html_entity_decode', $columnTitles);
+
+    $columns = [];
+    foreach ($columnTitles as $key => $title) {
+        $columns[] = [
+            'title'   => $title,
+            'type'    => $columnTypes[$key] ?? 0,
+            'sorting' => $columnSortings[$key] ?? 0,
+        ];
+    }
+
+    $table = new Table([
+        'page_id'     => $_POST['id'],
+        'title'       => $_POST['title'],
+        'column_data' => json_encode($columns),
+        'order_by'    => $_POST['dsort'],
+        'has_links'   => (bool) $_POST['link'],
+    ]);
+    $table->save();
 
     ?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><meta http-equiv="Content-Type" content="text/html; charset=utf-8" /><title><?php
     echo _('Add list');

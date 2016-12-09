@@ -75,8 +75,8 @@ class Category extends AbstractRenderable
             ->setIconPath($data['icon_path'])
             ->setRenderMode($data['render_mode'])
             ->setEmail($data['email'])
-            ->setWeightedChildren($data['oredered_children'])
-            ->setWeight($data['order']);
+            ->setWeightedChildren($data['weighted_children'])
+            ->setWeight($data['weight']);
     }
 
     /**
@@ -95,8 +95,8 @@ class Category extends AbstractRenderable
             'icon_path'         => $data['icon'],
             'render_mode'       => $data['vis'],
             'email'             => $data['email'],
-            'oredered_children' => $data['custom_sort_subs'],
-            'order'             => $data['order'],
+            'weighted_children' => $data['custom_sort_subs'],
+            'weight'            => $data['order'],
         ];
     }
 

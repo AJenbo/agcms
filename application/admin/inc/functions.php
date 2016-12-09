@@ -131,7 +131,7 @@ function sendDelayedEmail(): string
 
         $emailsSendt++;
 
-        db()->query("DELETE FROM `emails` WHERE `id` = " . $email['id']);
+        db()->query("DELETE FROM `emails` WHERE `id` = " . (int) $email['id']);
     }
 
     $cronStatus->save();
@@ -350,7 +350,7 @@ function sendEmail(int $id, string $from, string $interests, string $subject, st
     if ($error) {
         return ['error' => trim($error)];
     } else {
-        db()->query("UPDATE `newsmails` SET `sendt` = 1 WHERE `id` = " . $id);
+        db()->query("UPDATE `newsmails` SET `sendt` = 1 WHERE `id` = " . (int) $id);
         return true;
     }
 }
@@ -487,17 +487,12 @@ writeRichText(\'text\', \'' . rtefsafe($newsmail['text']) . '\', \'\', ' . (Conf
  */
 function saveEmail(int $id, string $from, string $interests, string $subject, string $text): bool
 {
-    $from = db()->esc($from);
-    $interests = db()->esc($interests);
-    $subject = db()->esc($subject);
-    $text = db()->esc($text);
-
     db()->query(
         "UPDATE `newsmails`
-        SET `from` = '" . $from . "',
-        `interests` = '" . $interests . "',
-        `subject` = '" . $subject . "',
-        `text` = '" . $text . "'
+        SET `from` = '" . db()->esc($from) . "',
+        `interests` = '" . db()->esc($interests) . "',
+        `subject` = '" . db()->esc($subject) . "',
+        `text` = '" . db()->esc($text) . "'
         WHERE `id` = " . $id
     );
     return true;
@@ -1103,10 +1098,10 @@ function updateuser(int $id, array $updates)
         //Generate SQL command
         $sql = "UPDATE `users` SET";
         foreach ($updates as $key => $value) {
-            $sql .= " `".addcslashes($key, '`\\')."` = '".addcslashes($value, "'\\")."',";
+            $sql .= " `".addcslashes($key, '`\\')."` = '".db()->esc($value)."',";
         }
         $sql = substr($sql, 0, -1);
-        $sql .= ' WHERE `id` = '.$id;
+        $sql .= " WHERE `id` = " . (int) $id;
 
         //Run SQL
         db()->query($sql);
@@ -1163,7 +1158,7 @@ function deleteuser(int $id): bool
         return false;
     }
 
-    db()->query("DELETE FROM `users` WHERE `id` = ".$id);
+    db()->query("DELETE FROM `users` WHERE `id` = " . (int) $id);
     return true;
 }
 
@@ -1199,7 +1194,7 @@ function newfaktura(): int
         INSERT INTO `fakturas` (`date`, `clerk`)
         VALUES (
             now(),
-            '" . addcslashes($_SESSION['_user']['fullname'], '\'\\') . "'
+            '" . db()->esc($_SESSION['_user']['fullname']) . "'
         );
         "
     );
@@ -1597,46 +1592,41 @@ function renamefile(int $id, string $path, string $dir, string $filename, bool $
     }
     if ($pathinfo['extension']) {
         //No changes was requested.
-        if ($path == $dir.'/'.$filename.'.'.$pathinfo['extension']) {
+        $newPath = $dir . '/' . $filename . '.' . $pathinfo['extension'];
+        if ($path === $newPath) {
             return ['id' => $id, 'filename' => $filename, 'path' => $path];
         }
 
         //if file path more then 255 erturn error
-        if (mb_strlen($dir.'/'.$filename.'.'.$pathinfo['extension'], 'UTF-8') > 255) {
+        if (mb_strlen($newPath, 'UTF-8') > 255) {
             return ['error' => _('The filename is too long.'), 'id' => $id];
         }
 
         //File already exists, but are we trying to force a overwrite?
-        if (is_file(_ROOT_ . $dir . '/' . $filename . '.' . $pathinfo['extension']) && !$force) {
+        if (is_file(_ROOT_ . $newPath) && !$force) {
             return ['yesno' => _('A file with the same name already exists.
 Would you like to replace the existing file?'), 'id' => $id];
         }
 
         //Rename/move or give an error
-        if (@rename(_ROOT_ . $path, _ROOT_ . $dir . '/' . $filename . '.' . $pathinfo['extension'])) {
+        if (@rename(_ROOT_ . $path, _ROOT_ . $newPath)) {
             if ($force) {
-                db()->query("DELETE FROM files WHERE `path` = '" . $dir . "/" . $filename . "." . $pathinfo['extension'] . "'");
+                db()->query("DELETE FROM files WHERE `path` = '" . db()->esc($newPath) . "'");
             }
 
-            db()->query("UPDATE `files` SET `path` = '" . $dir . "/" . $filename . "." . $pathinfo['extension'] . "' WHERE `path` = '" . $path . "'");
+            db()->query("UPDATE files     SET path = '" . db()->esc($newPath) . "' WHERE `path` = '" . db()->esc($path) . "'");
+            replacePaths($path, $newPath);
 
-            db()->query("UPDATE sider SET navn = REPLACE(navn, '$path', '".$dir.'/'.$filename.'.'.$pathinfo['extension']."'), text = REPLACE(text, '$path', '".$dir.'/'.$filename.'.'.$pathinfo['extension']."'), beskrivelse = REPLACE(beskrivelse, '$path', '".$dir.'/'.$filename.'.'.$pathinfo['extension']."'), billed = REPLACE(billed, '$path', '".$dir.'/'.$filename.'.'.$pathinfo['extension']."')");
-            db()->query("UPDATE template SET navn = REPLACE(navn, '$path', '".$dir.'/'.$filename.'.'.$pathinfo['extension']."'), text = REPLACE(text, '$path', '".$dir.'/'.$filename.'.'.$pathinfo['extension']."'), beskrivelse = REPLACE(beskrivelse, '$path', '".$dir.'/'.$filename.'.'.$pathinfo['extension']."'), billed = REPLACE(billed, '$path', '".$dir.'/'.$filename.'.'.$pathinfo['extension']."')");
-            db()->query("UPDATE special SET text = REPLACE(text, '$path', '".$dir.'/'.$filename.'.'.$pathinfo['extension']."')");
-            db()->query("UPDATE krav SET text = REPLACE(text, '$path', '".$dir.'/'.$filename.'.'.$pathinfo['extension']."')");
-            db()->query("UPDATE maerke SET ico = REPLACE(ico, '$path', '".$dir.'/'.$filename.'.'.$pathinfo['extension']."')");
-            db()->query("UPDATE list_rows SET cells = REPLACE(cells, '$path', '".$dir.'/'.$filename.'.'.$pathinfo['extension']."')");
-            db()->query("UPDATE kat SET navn = REPLACE(navn, '$path', '".$dir.'/'.$filename.'.'.$pathinfo['extension']."'), icon = REPLACE(icon, '$path', '".$dir.'/'.$filename.'.'.$pathinfo['extension']."')");
-
-            return ['id' => $id, 'filename' => $filename, 'path' => $dir.'/'.$filename.'.'.$pathinfo['extension']];
+            return ['id' => $id, 'filename' => $filename, 'path' => $newPath];
         } else {
             return ['error' => _('An error occurred with the file operations.'), 'id' => $id];
         }
     } else {
     //Dir or file with no extension
     //TODO ajax rename folder
+        $newPath = $dir . '/' . $filename . '.' . $pathinfo['extension'];
         //No changes was requested.
-        if ($path == $dir.'/'.$filename) {
+        if ($path == $newPath) {
             return ['id' => $id, 'filename' => $filename, 'path' => $path];
         }
 
@@ -1647,7 +1637,7 @@ Would you like to replace the existing file?'), 'id' => $id];
         }
 
         //if file path more then 255 erturn error
-        if (mb_strlen($dir.'/'.$filename, 'UTF-8') > 255) {
+        if (mb_strlen($newPath, 'UTF-8') > 255) {
             return ['error' => _('The filename is too long.'), 'id' => $id];
         }
 
@@ -1661,17 +1651,12 @@ Would you like to replace the existing file?'), 'id' => $id];
         //TODO prepared query
         if (@rename(_ROOT_ . $path, _ROOT_ . $dir . '/' . $filename)) {
             if ($force) {
-                db()->query("DELETE FROM files WHERE `path` = '".$dir.'/'.$filename."%'");
+                db()->query("DELETE FROM files WHERE `path` = '" . db()->esc($newPath) . "%'");
                 //TODO insert new file data (width, alt, height, aspect)
             }
-            db()->query("UPDATE files    SET path = REPLACE(path, '".$path."', '".$dir.'/'.$filename."')");
-            db()->query("UPDATE sider    SET navn = REPLACE(navn, '".$path."', '".$dir.'/'.$filename."'), text = REPLACE(text, '$path', '".$dir.'/'.$filename."'), beskrivelse = REPLACE(beskrivelse, '$path', '".$dir.'/'.$filename."'), billed = REPLACE(billed, '$path', '".$dir.'/'.$filename."')");
-            db()->query("UPDATE template SET navn = REPLACE(navn, '".$path."', '".$dir.'/'.$filename."'), text = REPLACE(text, '$path', '".$dir.'/'.$filename."'), beskrivelse = REPLACE(beskrivelse, '$path', '".$dir.'/'.$filename."'), billed = REPLACE(billed, '$path', '".$dir.'/'.$filename."')");
-            db()->query("UPDATE special  SET text = REPLACE(text, '".$path."', '".$dir.'/'.$filename."')");
-            db()->query("UPDATE krav     SET text = REPLACE(text, '".$path."', '".$dir.'/'.$filename."')");
-            db()->query("UPDATE maerke   SET ico  = REPLACE( ico, '".$path."', '".$dir.'/'.$filename."')");
-            db()->query("UPDATE list_rows  SET cells  = REPLACE(cells, '".$path."', '".$dir.'/'.$filename."')");
-            db()->query("UPDATE kat      SET navn = REPLACE(navn, '".$path."', '".$dir.'/'.$filename."'), icon = REPLACE(icon, '$path', '".$dir.'/'.$filename."')");
+
+            db()->query("UPDATE files     SET path  = REPLACE(path, '" . db()->esc($path) . "', '" . db()->esc($newPath) . "')");
+            replacePaths($path, $newPath);
 
             if (is_dir(_ROOT_ . $dir . '/' . $filename)) {
                 if (@$_COOKIE[@$_COOKIE['admin_dir']]) {
@@ -1686,6 +1671,19 @@ Would you like to replace the existing file?'), 'id' => $id];
             return ['error' => _('An error occurred with the file operations.'), 'id' => $id];
         }
     }
+}
+
+function replacePaths($path, $newPath)
+{
+    $newPathEsc = db()->esc($newPath);
+    $pathEsc = db()->esc($path);
+    db()->query("UPDATE sider     SET navn  = REPLACE(navn, '" . $pathEsc . "', '" . $newPathEsc . "'), text = REPLACE(text, '" . $pathEsc . "', '" . $newPathEsc . "'), beskrivelse = REPLACE(beskrivelse, '" . $pathEsc . "', '" . $newPathEsc . "'), billed = REPLACE(billed, '" . $pathEsc . "', '" . $newPathEsc . "')");
+    db()->query("UPDATE template  SET navn  = REPLACE(navn, '" . $pathEsc . "', '" . $newPathEsc . "'), text = REPLACE(text, '" . $pathEsc . "', '" . $newPathEsc . "'), beskrivelse = REPLACE(beskrivelse, '" . $pathEsc . "', '" . $newPathEsc . "'), billed = REPLACE(billed, '" . $pathEsc . "', '" . $newPathEsc . "')");
+    db()->query("UPDATE special   SET text  = REPLACE(text, '" . $pathEsc . "', '" . $newPathEsc . "')");
+    db()->query("UPDATE krav      SET text  = REPLACE(text, '" . $pathEsc . "', '" . $newPathEsc . "')");
+    db()->query("UPDATE maerke    SET ico   = REPLACE(ico, '" . $pathEsc . "', '" . $newPathEsc . "')");
+    db()->query("UPDATE list_rows SET cells = REPLACE(cells, '" . $pathEsc . "', '" . $newPathEsc . "')");
+    db()->query("UPDATE kat       SET navn  = REPLACE(navn, '" . $pathEsc . "', '" . $newPathEsc . "'), icon = REPLACE(icon, '" . $pathEsc . "', '" . $newPathEsc . "')");
 }
 
 function deletefolder()
@@ -1853,14 +1851,14 @@ function edit_alt(int $id, string $description): array
     $file->setDescription($description)->save();
 
     //Update html with new alt...
-    $sider = db()->fetchArray("SELECT id, text FROM `sider` WHERE `text` LIKE '%" . $file->getPath() . "%'");
-
-    foreach ($sider as $value) {
+    $pages = ORM::getByQuery(Page::class, "SELECT * FROM `sider` WHERE `text` LIKE '%" . db()->esc($file->getPath()) . "%'");
+    foreach ($pages as $page) {
         //TODO move this to db fixer to test for missing alt="" in img
         /*preg_match_all('/<img[^>]+/?>/ui', $value, $matches);*/
-        $value['text'] = preg_replace('/(<img[^>]+src="'.addcslashes(str_replace('.', '[.]', $file['path']), '/').'"[^>]+alt=)"[^"]*"([^>]*>)/iu', '\1"'.xhtmlEsc($description).'"\2', $value['text']);
-        $value['text'] = preg_replace('/(<img[^>]+alt=)"[^"]*"([^>]+src="'.addcslashes(str_replace('.', '[.]', $file['path']), '/').'"[^>]*>)/iu', '\1"'.xhtmlEsc($description).'"\2', $value['text']);
-        db()->query("UPDATE `sider` SET `text` = '" . $value['text'] . "' WHERE `id` = " . $value['id']);
+        $html = $page->getHtml();
+        $html = preg_replace('/(<img[^>]+src="'.addcslashes(str_replace('.', '[.]', $file->getPath()), '/').'"[^>]+alt=)"[^"]*"([^>]*>)/iu', '\1"'.xhtmlEsc($description).'"\2', $html);
+        $html = preg_replace('/(<img[^>]+alt=)"[^"]*"([^>]+src="'.addcslashes(str_replace('.', '[.]', $file->getPath()), '/').'"[^>]*>)/iu', '\1"'.xhtmlEsc($description).'"\2', $html);
+        $page->setHtml($html)->save();
     }
     return ['id' => $id, 'alt' => $description];
 }
@@ -2311,10 +2309,10 @@ function listRemoveRow(int $list_id, int $row_id): array
 function listSavetRow(int $list_id, string $cells, string $link, int $row_id): array
 {
     if (!$row_id) {
-        db()->query('INSERT INTO `list_rows`(`list_id`, `cells`, `link`) VALUES ('.$list_id.', \''.addcslashes($cells, "'\\").'\', \''.$link.'\')');
+        db()->query('INSERT INTO `list_rows`(`list_id`, `cells`, `link`) VALUES (' . $list_id . ', \'' . db()->esc($cells).'\', \''.db()->esc($link).'\')');
         $row_id = db()->insert_id;
     } else {
-        db()->query('UPDATE `list_rows` SET `list_id` = \''.$list_id.'\', `cells` = \''.addcslashes($cells, "'\\").'\', `link` = \''.$link.'\' WHERE id = '.$row_id);
+        db()->query('UPDATE `list_rows` SET `list_id` = '.$list_id.', `cells` = \''.db()->esc($cells).'\', `link` = \''.db()->esc($link).'\' WHERE id = '.$row_id);
     }
 
     return ['listid' => $list_id, 'rowid' => $row_id];
@@ -2496,7 +2494,7 @@ function editContact(int $id): string
 
 function updateContact(int $id, string $navn, string $email, string $adresse, string $land, string $post, string $by, string $tlf1, string $tlf2, string $kartotek, string $interests): bool
 {
-    db()->query("UPDATE `email` SET `navn` = '".$navn."', `email` = '".$email."', `adresse` = '".$adresse."', `land` = '".$land."', `post` = '".$post."', `by` = '".$by."', `tlf1` = '".$tlf1."', `tlf2` = '".$tlf2."', `kartotek` = '".$kartotek."', `interests` = '".$interests."' WHERE id = ".$id);
+    db()->query("UPDATE `email` SET `navn` = '".db()->esc($navn)."', `email` = '".db()->esc($email)."', `adresse` = '".db()->esc($adresse)."', `land` = '".db()->esc($land)."', `post` = '".db()->esc($post)."', `by` = '".db()->esc($by)."', `tlf1` = '".db()->esc($tlf1)."', `tlf2` = '".db()->esc($tlf2)."', `kartotek` = '".db()->esc($kartotek)."', `interests` = '".db()->esc($interests)."' WHERE id = ".$id);
     return true;
 }
 
@@ -2508,13 +2506,13 @@ function deleteContact(int $id): string
 
 function makeNewList(string $navn): array
 {
-    db()->query('INSERT INTO `tablesort` (`navn`) VALUES (\''.$navn.'\')');
+    db()->query('INSERT INTO `tablesort` (`navn`) VALUES (\''.db()->esc($navn).'\')');
     return ['id' => db()->insert_id, 'name' => $navn];
 }
 
 function saveListOrder(int $id, string $navn, string $text): bool
 {
-    db()->query('UPDATE `tablesort` SET navn = \''.$navn.'\', text = \''.$text.'\' WHERE id = '.$id);
+    db()->query('UPDATE `tablesort` SET navn = \''.db()->esc($navn).'\', text = \''.db()->esc($text).'\' WHERE id = '.$id);
     return true;
 }
 
@@ -2974,9 +2972,16 @@ function getnykat(): array
 function save_ny_kat(string $navn, string $kat, string $icon, string $vis, string $email)
 {
     if ($navn != '' && $kat != '') {
-        db()->query('INSERT INTO `kat` (`navn`, `bind`, `icon`, `vis`, `email`) VALUES (\''.$navn.'\', \''.$kat.'\', \''.$icon.'\', \''.$vis.'\', \''.$email.'\')');
-
-        //$html = "INSERT INTO `kat` (`navn`, `bind`, `icon` ) VALUES ('$navn', '$kat', '$icon')".'side funktion';
+        $category = new Category([
+            'title'             => $navn,
+            'parent_id'         => $kat,
+            'icon_path'         => $icon,
+            'render_mode'       => $vis,
+            'email'             => $email,
+            'weighted_children' => 0,
+            'weight'            => 0,
+        ]);
+        $category->save();
         return true;
     } else {
         return ['error' => _('You must enter a name and choose a location for the new category.')];
@@ -2990,10 +2995,15 @@ function savekrav(int $id, string $navn, string $text): array
 
     if ($navn != '' && $text != '') {
         if (!$id) {
-            db()->query('INSERT INTO `krav` (`navn`, `text` ) VALUES (\''.addcslashes($navn, "'\\").'\', \''.addcslashes($text, "'\\").'\')');
+            $requirement = new Requirement([
+                'title' => $navn,
+                'html'  => $text,
+            ]);
         } else {
-            db()->query('UPDATE krav SET navn = \''.addcslashes($navn, "'\\").'\', text = \''.addcslashes($text, "'\\").'\' WHERE id = '.$id);
+            $requirement = ORM::getOne(Requirement::class, $id);
+            $requirement->setTitle($navn)->setHtml($text);
         }
+        $requirement->save();
 
         return ['id' => 'canvas', 'html' => getkrav()];
     } else {
@@ -3008,7 +3018,7 @@ function getsogogerstat()
 
 function sogogerstat(string $sog, string $erstat): int
 {
-    db()->query('UPDATE sider SET text = REPLACE(text,\''.$sog.'\',\''.$erstat.'\')');
+    db()->query('UPDATE sider SET text = REPLACE(text,\''.db()->esc($sog).'\',\''.db()->esc($erstat).'\')');
 
     return db()->affected_rows;
 }
@@ -3146,7 +3156,7 @@ function movekat(int $id, int $toId)
 
 function renamekat(int $id, string $name): array
 {
-    db()->query("UPDATE `kat` SET `navn` = '" . $name . "' WHERE `id` = " . $id);
+    db()->query("UPDATE `kat` SET `navn` = '" . db()->esc($name) . "' WHERE `id` = " . $id);
     return ['id' => 'kat' . $id, 'name' => $name];
 }
 
@@ -3197,7 +3207,7 @@ function bind(int $id, int $kat): array
         }
     }
 
-    db()->query('INSERT INTO `bind` (`side` ,`kat`) VALUES (\''.$id.'\', \''.$kat.'\')');
+    db()->query('INSERT INTO `bind` (`side` ,`kat`) VALUES ('.$id.', '.$kat.')');
 
     $added = [
         'id' => db()->insert_id,
@@ -3257,26 +3267,21 @@ function updateSide(
     $text = purifyHTML($text);
     $text = htmlUrlDecode($text);
 
-    db()->query(
-        "
-        UPDATE `sider`
-        SET
-            `dato` = now(),
-            `navn` = '" . addcslashes($navn, "'\\") . "',
-            `keywords` = '" . addcslashes($keywords, "'\\") . "',
-            `pris` = " . $pris . ",
-            `text` = '" . addcslashes($text, "'\\") . "',
-            `varenr` = '" . addcslashes($varenr, "'\\") . "',
-            `for` = " . $for . ",
-            `beskrivelse` = '" . addcslashes($beskrivelse, "'\\") . "',
-            `krav` = ". $krav .",
-            `maerke` = " . $maerke . ",
-            `billed` = '" . addcslashes($billed, "'\\") . "',
-            `fra` = " . $fra . ",
-            `burde` = " . $burde . "
+    ORM::getOne(Page::class, $id)
+        ->setTitle($navn)
+        ->setKeywords($keywords)
+        ->setPrice($pris)
+        ->setHtml($text)
+        ->setSku($varenr)
+        ->setOldPrice($for)
+        ->setExcerpt($beskrivelse)
+        ->setRequirementId($krav)
+        ->setBrandId($maerke)
+        ->setImagePath($billed)
+        ->setPriceType($fra)
+        ->setOldPriceType($burde)
+        ->save();
 
-        WHERE `id` = " . $id
-    );
     return true;
 }
 
@@ -3295,17 +3300,15 @@ function updateKat(int $id, string $navn, string $bind, string $icon, string $vi
     }
 
     //Update kat
-    db()->query(
-        "
-        UPDATE `kat`
-        SET `navn` = '" . $navn
-        . "', `bind` = '" . $bind
-        . "', `icon` = '" . $icon
-        . "', `vis` = '" . $vis
-        . "', `email` = '" . $email
-        . "', `custom_sort_subs` = '" . $custom_sort_subs
-        . "' WHERE `id` = " .$id
-    );
+    ORM::getOne(Category::class, $id)
+        ->setTitle($navn)
+        ->setParentId($bind)
+        ->setIconPath($icon)
+        ->setRenderMode($vis)
+        ->setEmail($email)
+        ->setWeightedChildren($custom_sort_subs)
+        ->save();
+
     return true;
 }
 
@@ -3345,41 +3348,25 @@ function opretSide(int $kat, string $navn, string $keywords, int $pris, string $
     $text = purifyHTML($text);
     $text = htmlUrlDecode($text);
 
-    db()->query(
-        'INSERT INTO `sider` (
-            `dato`,
-            `navn`,
-            `keywords`,
-            `pris`,
-            `text`,
-            `varenr`,
-            `for`,
-            `beskrivelse`,
-            `krav`,
-            `maerke`,
-            `billed`,
-            `fra`,
-            `burde`
-        ) VALUES (
-            now(),
-            \''.addcslashes($navn, "'\\").'\',
-            \''.addcslashes($keywords, "'\\").'\',
-            ' . $pris . ',
-            \''.addcslashes($text, "'\\").'\',
-            \''.addcslashes($varenr, "'\\").'\',
-            ' . $for . ',
-            \''.addcslashes($beskrivelse, "'\\").'\',
-            ' . $krav . ',
-            ' . $maerke . ',
-            \''.addcslashes($billed, "'\\").'\',
-            ' . $fra . ',
-            ' . $burde . '
-        )'
-    );
+    $page = new Page([
+        'timestamp'      => 0,
+        'title'          => $navn,
+        'keywords'       => $keywords,
+        'excerpt'        => $beskrivelse,
+        'html'           => $text,
+        'sku'            => $varenr,
+        'image_path'     => $billed,
+        'requirement_id' => $krav,
+        'brand_id'       => $maerke,
+        'price'          => $pris,
+        'old_price'      => $for,
+        'price_type'     => $fra,
+        'old_price_type' => $burde,
+    ]);
+    $page->save();
 
-    $id = db()->insert_id;
-    db()->query('INSERT INTO `bind` (`side` ,`kat` ) VALUES ('.$id.', '.$kat.')');
-    return ['id' => $id];
+    db()->query('INSERT INTO `bind` (`side` ,`kat` ) VALUES (' . $page->getId() . ', ' . $kat . ')');
+    return ['id' => $page->getId()];
 }
 
 //Delete a page and all it's relations from the database
@@ -3395,10 +3382,10 @@ function sletSide(int $sideId): array
         db()->query('DELETE FROM `list_rows` WHERE list_id IN(' . implode('', $listIds) . ')');
         db()->query('DELETE FROM `lists` WHERE `sideId` = ' . $sideId);
     }
-    db()->query('DELETE FROM `list_rows` WHERE `link` = '.$sideId);
-    db()->query('DELETE FROM `bind` WHERE side = '.$sideId);
-    db()->query('DELETE FROM `tilbehor` WHERE side = '.$sideId.' OR tilbehor ='.$sideId);
-    db()->query('DELETE FROM `sider` WHERE id = '.$sideId);
+    db()->query('DELETE FROM `list_rows` WHERE `link` = ' . $sideId);
+    db()->query('DELETE FROM `bind` WHERE side = ' . $sideId);
+    db()->query('DELETE FROM `tilbehor` WHERE side = ' . $sideId . ' OR tilbehor =' . $sideId);
+    db()->query('DELETE FROM `sider` WHERE id = ' . $sideId);
 
     return ['class' => 'side' . $sideId];
 }
@@ -3412,17 +3399,19 @@ function copytonew(int $id): int
 {
     $faktura = db()->fetchOne("SELECT * FROM `fakturas` WHERE `id` = ".$id);
 
-    unset($faktura['id']);
-    unset($faktura['status']);
-    unset($faktura['date']);
-    unset($faktura['paydate']);
-    unset($faktura['sendt']);
-    unset($faktura['transferred']);
+    unset(
+        $faktura['id'],
+        $faktura['status'],
+        $faktura['date'],
+        $faktura['paydate'],
+        $faktura['sendt'],
+        $faktura['transferred']
+    );
     $faktura['clerk'] = $_SESSION['_user']['fullname'];
 
     $sql = "INSERT INTO `fakturas` SET";
     foreach ($faktura as $key => $value) {
-        $sql .= " `".addcslashes($key, '`\\')."` = '".addcslashes($value, "'\\")."',";
+        $sql .= " `".addcslashes($key, '`\\')."` = '".db()->esc($value)."',";
     }
     $sql .= " `date` = NOW();";
 
@@ -3523,7 +3512,7 @@ function save(int $id, string $type, array $updates): array
     $faktura = db()->fetchOne("SELECT * FROM `fakturas` WHERE `id` = ".$id);
 
     if (empty($faktura['clerk'])) {
-        db()->query("UPDATE `fakturas` SET `clerk` = '".addcslashes($_SESSION['_user']['fullname'], '\'\\')."' WHERE `id` = ".$faktura['id']);
+        db()->query("UPDATE `fakturas` SET `clerk` = '".db()->esc($_SESSION['_user']['fullname'])."' WHERE `id` = ".$faktura['id']);
         $faktura['clerk'] = $_SESSION['_user']['fullname'];
     }
 
@@ -3595,7 +3584,7 @@ Tel. %s</p>'
             return ['error' => _('Unable to sendt e-mail!')."\n".$mail->ErrorInfo];
         }
         db()->query("UPDATE `fakturas` SET `status` = 'locked' WHERE `status` = 'new' && `id` = ".$faktura['id']);
-        db()->query("UPDATE `fakturas` SET `sendt` = 1, `department` = '".$faktura['department']."' WHERE `id` = ".$faktura['id']);
+        db()->query("UPDATE `fakturas` SET `sendt` = 1, `department` = '".db()->esc($faktura['department'])."' WHERE `id` = ".$faktura['id']);
 
         //Forece reload
         $faktura['status'] = 'sendt';

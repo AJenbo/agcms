@@ -33,6 +33,11 @@ class Table extends AbstractEntity
      */
     private $orderBy;
 
+    /**
+     * If rows can be linked to pages
+     */
+    private $hasLinks;
+
     // Runtime
     /**
      * Decoded column data
@@ -50,7 +55,8 @@ class Table extends AbstractEntity
             ->setPageId($data['page_id'])
             ->setTitle($data['title'])
             ->setColumnData($data['column_data'])
-            ->setOrderBy($data['order_by']);
+            ->setOrderBy($data['order_by'])
+            ->setHasLinks($data['has_links']);
     }
 
     /**
@@ -85,6 +91,7 @@ class Table extends AbstractEntity
             'title'       => $data['title'],
             'column_data' => $columns,
             'order_by'    => $data['sort'],
+            'has_links'   => (bool) $data['link'],
         ];
     }
 
@@ -186,6 +193,30 @@ class Table extends AbstractEntity
         return $this->orderBy;
     }
 
+    /**
+     * Allow rows to link to pages
+     *
+     * @param bool $hasLinks
+     *
+     * @return self
+     */
+    private function setHasLinks(bool $hasLinks): self
+    {
+        $this->hasLinks = $hasLinks;
+
+        return $this;
+    }
+
+    /**
+     * Allow rows to link to pages
+     *
+     * @return bool
+     */
+    public function getHasLinks(): bool
+    {
+        return $this->hasLinks;
+    }
+
     // ORM related functions
     /**
      * Get table rows
@@ -205,7 +236,7 @@ class Table extends AbstractEntity
         // Cells are indexed by id, this is needed for sorting the rows
         foreach ($rows as &$row) {
             $row['id'] = (int) $row['id'];
-            $row['link'] = (int) $row['link'];
+            $row['link'] = $this->getHasLinks() ? (int) $row['link'] : 0;
             $cells = explode('<', $row['cells']);
             $cells = array_map('html_entity_decode', $cells);
             unset($row['cells']);
@@ -261,14 +292,16 @@ class Table extends AbstractEntity
                     `sorts`,
                     `cells`,
                     `cell_names`,
-                    `sort`
+                    `sort`,
+                    `link`
                 ) VALUES (
                     " . $this->pageId . ",
                     '" . db()->esc($this->title) . "',
                     '" . db()->esc($columnSortings) . "',
                     '" . db()->esc($columnTypes) . "',
                     '" . db()->esc($columnTitles) . "',
-                    " . $this->orderBy
+                    " . $this->orderBy . ",
+                    " . ($this->hasLinks ? 1 : 0)
                 . ")"
             );
             $this->setId(db()->insert_id);
@@ -281,7 +314,8 @@ class Table extends AbstractEntity
                     `sorts` = '" . db()->esc($columnSortings) . "',
                     `cells` = '" . db()->esc($columnTypes) . "',
                     `cell_names` = '" . db()->esc($columnTitles) . "',
-                    `sort` = " . $this->orderBy
+                    `sort` = " . $this->orderBy . ",
+                    `link` = " . ($this->hasLinks ? 1 : 0)
                 . " WHERE `id` = " . $this->id
             );
         }

@@ -3,10 +3,10 @@
 require_once $_SERVER['DOCUMENT_ROOT'] . '/admin/logon.php';
 
 if ($_SESSION['_user']['access'] == 1 && !empty($_GET['id'])) {
-    db()->query("UPDATE `fakturas` SET `transferred` =  '1' WHERE `id` = ".$_GET['id']);
+    db()->query("UPDATE `fakturas` SET `transferred` =  '1' WHERE `id` = " . (int) $_GET['id']);
 }
 if ($_SESSION['_user']['access'] == 1 && !empty($_GET['undoid'])) {
-    db()->query("UPDATE `fakturas` SET `transferred` =  '0' WHERE `id` = ".$_GET['undoid']);
+    db()->query("UPDATE `fakturas` SET `transferred` =  '0' WHERE `id` = " . (int) $_GET['undoid']);
 }
 
 $fakturas = db()->fetchArray("SELECT `id`, `status`, `cardtype`, `clerk`, `amount`, UNIX_TIMESTAMP(`paydate`) AS `paydate`, UNIX_TIMESTAMP(`date`) AS `date` FROM `fakturas` WHERE  `transferred` = 0 AND `status` = 'accepted' ORDER BY `paydate` DESC , `id` DESC");
