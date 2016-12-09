@@ -3067,9 +3067,8 @@ function save_ny_maerke(string $navn, string $link, string $ico): array
 function updatemaerke(int $id = null, string $navn = '', string $link = '', string $ico = ''): array
 {
     if ($navn) {
-        if ($id) {
-            $brand = new Brand(['title' => $navn, 'link' => $link, 'icon_path' => $ico]);
-            $brand->save();
+        if ($id === null) {
+            (new Brand(['title' => $navn, 'link' => $link, 'icon_path' => $ico]))->save();
         } else {
             ORM::getOne(Brand::class, $id)->setTitle($navn)->setLink($link)->setIconPath($ico)->save();
         }

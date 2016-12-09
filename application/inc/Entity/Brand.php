@@ -143,7 +143,7 @@ class Brand extends AbstractRenderable
                 INSERT INTO `" . self::TABLE_NAME . "` (
                     `navn`,
                     `link`,
-                    `icon`
+                    `ico`
                 ) VALUES (
                     '" . db()->esc($this->title) . "',
                     '" . db()->esc($this->link) . "',
@@ -157,7 +157,7 @@ class Brand extends AbstractRenderable
                 UPDATE `" . self::TABLE_NAME ."` SET
                     `navn` = '" . db()->esc($this->title) . "',
                     `email` = '" . db()->esc($this->email) . "',
-                    `icon` = '" . db()->esc($this->getIcon() ? $this->getIcon()->getPath() : '') . "'
+                    `ico` = '" . db()->esc($this->getIcon() ? $this->getIcon()->getPath() : '') . "'
                 WHERE `id` = " . $this->id
             );
         }
