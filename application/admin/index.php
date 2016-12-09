@@ -51,7 +51,6 @@ Sajax\Sajax::export(
         'updatemaerke'                      => ['method' => 'POST'],
         'updateSide'                        => ['method' => 'POST'],
         'updateSpecial'                     => ['method' => 'POST'],
-        'deleteTempfiles'                   => ['method' => 'POST', 'asynchronous' => false],
         'optimizeTables'                    => ['method' => 'POST', 'asynchronous' => false],
         'removeBadAccessories'              => ['method' => 'POST', 'asynchronous' => false],
         'removeBadBindings'                 => ['method' => 'POST', 'asynchronous' => false],

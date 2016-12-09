@@ -4,7 +4,7 @@ require_once $_SERVER['DOCUMENT_ROOT'] . '/admin/logon.php';
 
 Render::sendCacheHeader(filemtime(_ROOT_ . $_GET['path']));
 generateImage(
-    $_GET['path'],
+    _ROOT_ . $_GET['path'],
     $_GET['cropX'] ?? 0,
     $_GET['cropY'] ?? 0,
     $_GET['cropW'] ?? 0,

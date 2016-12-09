@@ -159,8 +159,6 @@ function send() {
                 alert('Fejl under flytning af filen.');
             } else if (x.status == 505) {
                 alert('Kunne ikke give tilladelse til filen.');
-            } else if (x.status == 510) {
-                alert('Mangler get_mime_type()');
             } else if (x.status == 512) {
                 alert('Kunne ikke finde billed størelsen.');
             } else if (x.status == 520) {

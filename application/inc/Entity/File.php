@@ -270,10 +270,10 @@ class File extends AbstractEntity
                 ) VALUES (
                     '" . db()->esc($this->path) . "',
                     '" . db()->esc($this->mime) . "',
-                    '" . $this->size . ",
+                    " . $this->size . ",
                     '" . db()->esc($this->description) . "',
-                    '" . $this->width . ",
-                    '" . $this->height . ",
+                    " . $this->width . ",
+                    " . $this->height . ",
                     " . ($this->aspect ? ("'" . db()->esc($this->aspect) . "'") : "NULL") . "
                 )"
             );
@@ -306,12 +306,15 @@ class File extends AbstractEntity
     {
         $imagesize = @getimagesize(_ROOT_ . $path);
 
-        $file = new self();
-        $file->setPath($path)
-            ->setMime(get_mime_type($path))
-            ->setSize(filesize(_ROOT_ . $path))
-            ->setWidth($imagesize[0] ?? 0)
-            ->setHeight($imagesize[1] ?? 0);
+        $file = new self([
+            'path' => $path,
+            'mime' => get_mime_type(_ROOT_ . $path),
+            'size' => filesize(_ROOT_ . $path),
+            'description' => '',
+            'width' => $imagesize[0] ?? 0,
+            'height' => $imagesize[1] ?? 0,
+            'aspect' => '',
+        ]);
 
         return $file;
     }

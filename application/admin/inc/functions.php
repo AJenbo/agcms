@@ -96,25 +96,6 @@ function removeNoneExistingFiles(): string
 }
 
 /**
- * Delete all temporary files
- *
- * @return string Always empty
- */
-function deleteTempfiles(): string
-{
-    $deleted = 0;
-    $files = scandir(_ROOT_ . '/admin/upload/temp');
-    foreach ($files as $file) {
-        if (is_file(_ROOT_ . '/admin/upload/temp/' . $file)) {
-            @unlink(_ROOT_ . '/admin/upload/temp/' . $file);
-            $deleted++;
-        }
-    }
-
-    return '';
-}
-
-/**
  * @return array
  */
 function sendDelayedEmail(): string
@@ -195,11 +176,11 @@ function get_mime_type(string $filepath): string
 {
     $mime = '';
     if (function_exists('finfo_file')) {
-        $mime = finfo_file($finfo = finfo_open(FILEINFO_MIME), _ROOT_ . $filepath);
+        $mime = finfo_file($finfo = finfo_open(FILEINFO_MIME), $filepath);
         finfo_close($finfo);
     }
     if (!$mime && function_exists('mime_content_type')) {
-        $mime = mime_content_type(_ROOT_ . $filepath);
+        $mime = mime_content_type($filepath);
     }
 
     //Some types can't be trusted, and finding them via extension seams to give better resutls.
@@ -265,16 +246,14 @@ function get_mime_type(string $filepath): string
             'wmv'   => 'video/x-ms-wmv',
         ];
         $mime = 'application/octet-stream';
-        $pathinfo = pathinfo($filepath);
-        if (isset($mimes[mb_strtolower($pathinfo['extension'] ?? '')])) {
-            $mime = $mimes[mb_strtolower($pathinfo['extension'] ?? '')];
+        $extension = mb_strtolower(pathinfo($filepath, PATHINFO_EXTENSION));
+        if (isset($mimes[$extension])) {
+            $mime = $mimes[$extension];
         }
     }
 
     $mime = explode(';', $mime);
-    $mime = array_shift($mime);
-
-    return $mime;
+    return array_shift($mime);
 }
 
 /**
@@ -1155,7 +1134,7 @@ function updateuser(int $id, array $updates)
  */
 function saveImage(string $path, int $cropX, int $cropY, int $cropW, int $cropH, int $maxW, int $maxH, int $flip, int $rotate, string $filename, bool $force): array
 {
-    $mimeType = get_mime_type($path);
+    $mimeType = get_mime_type(_ROOT_ . $path);
 
     $output = [];
     if ($mimeType === 'image/jpeg') {
@@ -1167,7 +1146,7 @@ function saveImage(string $path, int $cropX, int $cropY, int $cropW, int $cropH,
     $output['filename'] = $filename;
     $output['force'] = $force;
 
-    return generateImage($path, $cropX, $cropY, $cropW, $cropH, $maxW, $maxH, $flip, $rotate, $output);
+    return generateImage(_ROOT_ . $path, $cropX, $cropY, $cropW, $cropH, $maxW, $maxH, $flip, $rotate, $output);
     //TODO close and update image in explorer
 }
 
@@ -1582,7 +1561,7 @@ function renamefile(int $id, string $path, string $dir, string $filename, bool $
     }
 
     if (!is_dir(_ROOT_ . $path)) {
-        $mime = get_mime_type($path);
+        $mime = get_mime_type(_ROOT_ . $path);
         if ($mime == 'image/jpeg') {
             $pathinfo['extension'] = 'jpg';
         } elseif ($mime == 'image/png') {
@@ -2589,9 +2568,6 @@ function get_db_error(): string
 
             $(\'status\').innerHTML = \''._('Checking the folder names').'\';
             x_check_file_paths(set_db_errors);
-
-            $(\'status\').innerHTML = \''._('Deleting temporary files').'\';
-            x_deleteTempfiles(set_db_errors);
 
             $(\'status\').innerHTML = \''._('Retrieving the size of the files').'\';
             x_get_size_of_files(function(){});
@@ -3825,12 +3801,12 @@ function generateImage(
         $outputPath = $pathinfo['dirname'] . '/' . $output['filename'];
         $outputPath .= !empty($output['type']) && $output['type'] === 'png' ? '.png' : '.jpg';
 
-        if (!empty($output['type']) && empty($output['force']) && file_exists(_ROOT_ . $outputPath)) {
+        if (!empty($output['type']) && empty($output['force']) && file_exists($outputPath)) {
             return ['yesno' => _('A file with the same name already exists.'."\n".'Would you like to replace the existing file?'), 'filename' => $output['filename']];
         }
     }
 
-    $image = new AJenbo\Image(_ROOT_ . $path);
+    $image = new AJenbo\Image($path);
     $orginalWidth = $image->getWidth();
     $orginalHeight = $image->getHeight();
 
@@ -3856,8 +3832,9 @@ function generateImage(
         && !$rotate
         && $maxW === $orginalWidth
         && $maxH === $orginalHeight
+        && mb_strpos($path, _ROOT_) === 0
     ) {
-        redirect($path, 301);
+        redirect(mb_substr($path, mb_strlen(_ROOT_)), 301);
     }
 
     $image->crop(
@@ -3888,32 +3865,34 @@ function generateImage(
         die();
     } elseif ($output['type'] === 'png') {
         $mimeType = 'image/png';
-        $image->save(_ROOT_ . $outputPath, 'png');
+        $image->save($outputPath, 'png');
     } else {
         $mimeType = 'image/jpeg';
-        $image->save(_ROOT_ . $outputPath, 'jpeg');
+        $image->save($outputPath, 'jpeg');
     }
 
     $width = $image->getWidth();
     $height = $image->getHeight();
     unset($image);
 
-    $filesize = filesize(_ROOT_ . $outputPath);
+    $file = null;
+    if (mb_strpos($outputPath, _ROOT_) === 0) {
+        $localFile = mb_substr($path, mb_strlen(_ROOT_));
+        $file = File::getByPath($localFile);
+        if ($file && $output['filename'] === $pathinfo['filename'] && $outputPath !== $path) {
+            $file->delete();
+            $file = null;
+        }
+        if (!$file) {
+            $file = File::fromPath($localFile);
+        }
 
-    $file = File::getByPath($outputPath);
-    if ($file && $output['filename'] === $pathinfo['filename'] && $outputPath !== $path) {
-        $file->delete();
-        $file = null;
+        $file->setMime($mimeType)
+            ->setWidth($width)
+            ->setHeight($height)
+            ->setSize(filesize($outputPath))
+            ->save();
     }
-    if (!$file) {
-        $file = File::fromPath($outputPath);
-    }
 
-    $file->setMime($mimeType)
-        ->setWidth($width)
-        ->setHeight($height)
-        ->setSize($filesize)
-        ->save();
-
-    return ['id' => $file->getId(), 'path' => $outputPath, 'width' => $width, 'height' => $height];
+    return ['id' => $file ? $file->getId() : null, 'path' => $outputPath, 'width' => $width, 'height' => $height];
 }

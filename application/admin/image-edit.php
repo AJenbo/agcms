@@ -44,12 +44,14 @@ $imagesize = @getimagesize(_ROOT_ . $_GET['path']);
 
 var id = <?php echo $_GET['id'] ?>;
 var mode = '<?php echo $_GET['mode'] ?? '' ?>';
-var filename = '<?php
+var filename = <?php
+$fileName = '';
 if ($_GET['mode'] ?? '' == 'thb') {
     $pathinfo = pathinfo($_GET['path']);
-    echo $pathinfo['filename'] . '-thb';
+    $fileName = $pathinfo['filename'] . '-thb';
 }
-?>';
+echo json_encode($fileName);
+?>;
 var thumb_width = <?php echo Config::get('thumb_width') ?>;
 var thumb_height = <?php echo Config::get('thumb_height') ?>;
 var scale = 1;
