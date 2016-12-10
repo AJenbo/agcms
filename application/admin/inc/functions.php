@@ -3865,8 +3865,8 @@ function generateImage(
     unset($image);
 
     $file = null;
+    $localFile = mb_substr($outputPath, mb_strlen(_ROOT_));
     if (mb_strpos($outputPath, _ROOT_) === 0) {
-        $localFile = mb_substr($outputPath, mb_strlen(_ROOT_));
         $file = File::getByPath($localFile);
         if ($file && $output['filename'] === $pathinfo['filename'] && $outputPath !== $path) {
             $file->delete();
@@ -3883,5 +3883,5 @@ function generateImage(
             ->save();
     }
 
-    return ['id' => $file ? $file->getId() : null, 'path' => $outputPath, 'width' => $width, 'height' => $height];
+    return ['id' => $file ? $file->getId() : null, 'path' => $localFile, 'width' => $width, 'height' => $height];
 }

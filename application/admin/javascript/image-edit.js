@@ -28,7 +28,6 @@ function saveImage_r(data) {
         alert(data['error']);
     } else if (data['yesno']) {
         if (eval(confirm(data['yesno']))==true){
-
             if (mode == 'thb') {
                 if (rotate) {
                     var endW = Math.min(thumb_height,Math.round(maxW*scale));
@@ -42,30 +41,28 @@ function saveImage_r(data) {
                 var endH = Math.round(maxH*scale);
             }
             x_saveImage(path, cropX, cropY, maxW, maxH, endW, endH, flip, rotate, data['filename'], 1, saveImage_r);
-        } else {
-            self.close();
+            return true;
         }
+
+        self.close();
+    } else if (window.opener.returnid && window.opener.returnid != 'undefined') {
+        window.opener.opener.document.getElementById(window.opener.returnid).value = data['path'];
+        window.opener.opener.document.getElementById(window.opener.returnid+'thb').src = data['path'];
+        if (window.opener.opener.window.location.href.indexOf('side=redigerside') > -1) {
+            window.opener.opener.updateSide(window.opener.opener.$('id').value);
+        }
+        //TODO make shure theas closes
+        window.opener.close();
+    } else if (window.opener.files[data['id']]) {
+        window.opener.files[data['id']].width = data['width'];
+        window.opener.files[data['id']].height = data['height'];
+        window.opener.files[data['id']].refreshThumb();
     } else {
-        if (window.opener.returnid && window.opener.returnid != 'undefined') {
-            window.opener.opener.document.getElementById(window.opener.returnid).value = data['path'];
-            window.opener.opener.document.getElementById(window.opener.returnid+'thb').src = data['path'];
-            if (window.opener.opener.window.location.href.indexOf('side=redigerside') > -1) {
-                window.opener.opener.updateSide(window.opener.opener.$('id').value);
-            }
-            //TODO make shure theas closes
-            window.opener.close();
-        } else {
-            if (window.opener.files[data['id']]) {
-                window.opener.files[data['id']].width = data['width'];
-                window.opener.files[data['id']].height = data['height'];
-                window.opener.files[data['id']].refreshThumb();
-            } else {
-                location.reload(true);
-            }
-        }
-        window.close();
-        return true;
+        window.opener.location.reload(true);
     }
+
+    window.close();
+    return true;
 }
 
 var CropImageManager = {
