@@ -54,7 +54,7 @@ abstract class AbstractEntity implements InterfaceEntity
     /**
      * Save entity to database
      */
-    abstract public function save();
+    abstract public function save(): InterfaceEntity;
 
     /**
      * Delete entity

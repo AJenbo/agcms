@@ -81,8 +81,10 @@ class Requirement extends AbstractRenderable
     // ORM related functions
     /**
      * Save entity to database
+     *
+     * @return self
      */
-    public function save()
+    public function save(): InterfaceEntity
     {
         if ($this->id === null) {
             db()->query(
@@ -108,5 +110,7 @@ class Requirement extends AbstractRenderable
             );
         }
         Render::addLoadedTable(self::TABLE_NAME);
+
+        return $this;
     }
 }

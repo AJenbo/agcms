@@ -266,8 +266,10 @@ class Table extends AbstractEntity
 
     /**
      * Save entity to database
+     *
+     * @return self
      */
-    public function save()
+    public function save(): InterfaceEntity
     {
         $columnSortings = [];
         $columnTypes = [];
@@ -320,5 +322,7 @@ class Table extends AbstractEntity
             );
         }
         Render::addLoadedTable(self::TABLE_NAME);
+
+        return $this;
     }
 }

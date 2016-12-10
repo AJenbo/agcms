@@ -959,16 +959,16 @@ function genfilename(string $filename): string
 /**
  * return true for directorys and false for every thing else
  *
- * @param string $str_file
+ * @param string $fileName
  *
  * @return bool
  */
-function is_dirs(string $str_file): bool
+function is_dirs(string $fileName): bool
 {
     global $temp;
-    if (is_file(_ROOT_ . $temp . '/' . $str_file)
-        || $str_file == '.'
-        || $str_file == '..'
+    if (is_file(_ROOT_ . $temp . '/' . $fileName)
+        || $fileName == '.'
+        || $fileName == '..'
     ) {
         return false;
     }
@@ -1249,14 +1249,14 @@ function print_pages(int $kat)
 /**
  * Returns false for files that the users shoudn't see in the files view
  *
- * @param string $str_file
+ * @param string $fileName
  *
  * @return bool
  */
-function is_files(string $str_file): bool
+function isVisableFile(string $fileName): bool
 {
     global $dir;
-    if ($str_file == '.' || $str_file == '..' || $str_file == '.htaccess' || is_dir(_ROOT_ . $dir . '/' . $str_file)) {
+    if (mb_substr($fileName, 0, 1) === '.' || is_dir(_ROOT_ . $dir . '/' . $fileName)) {
         return false;
     }
     return true;
@@ -1272,30 +1272,31 @@ function is_files(string $str_file): bool
 function showfiles(string $temp_dir): array
 {
     //temp_dir is needed to initialize dir as global
-    //$dir needs to be global for other functions like is_files()
+    //$dir needs to be global for other functions like isVisableFiles()
     global $dir;
     $dir = $temp_dir;
     unset($temp_dir);
     $html = '';
     $javascript = '';
 
+    $files = [];
     if ($files = scandir(_ROOT_ . $dir)) {
-        $files = array_filter($files, 'is_files');
+        $files = array_filter($files, 'isVisableFile');
         natcasesort($files);
-    } else {
-        $files = [];
     }
 
-    foreach ($files as $file) {
-        $file = File::getByPath($dir . '/' . $file);
+    foreach ($files as $fileName) {
+        $filePath = $dir . '/' . $fileName;
+        $file = File::getByPath($filePath);
         if (!$file) {
-            $file = File::fromPath($dir . '/' . $file)->save();
+            $file = File::fromPath($filePath)->save();
         }
 
         $html .= filehtml($file);
         //TODO reduce net to javascript
         $javascript .= filejavascript($file);
     }
+
     return ['id' => 'files', 'html' => $html, 'javascript' => $javascript];
 }
 
@@ -3865,7 +3866,7 @@ function generateImage(
 
     $file = null;
     if (mb_strpos($outputPath, _ROOT_) === 0) {
-        $localFile = mb_substr($path, mb_strlen(_ROOT_));
+        $localFile = mb_substr($outputPath, mb_strlen(_ROOT_));
         $file = File::getByPath($localFile);
         if ($file && $output['filename'] === $pathinfo['filename'] && $outputPath !== $path) {
             $file->delete();

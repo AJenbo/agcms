@@ -253,8 +253,10 @@ class File extends AbstractEntity
     // ORM related functions
     /**
      * Save entity to database
+     *
+     * @return self
      */
-    public function save()
+    public function save(): InterfaceEntity
     {
         if ($this->id === null) {
             db()->query(
@@ -293,6 +295,8 @@ class File extends AbstractEntity
             );
         }
         Render::addLoadedTable(self::TABLE_NAME);
+
+        return $this;
     }
 
     /**

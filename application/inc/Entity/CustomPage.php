@@ -129,8 +129,10 @@ class CustomPage extends AbstractEntity
     // ORM related functions
     /**
      * Save entity to database
+     *
+     * @return self
      */
-    public function save()
+    public function save(): InterfaceEntity
     {
         if ($this->id === null) {
             db()->query(
@@ -159,5 +161,7 @@ class CustomPage extends AbstractEntity
         }
         $this->setTimeStamp(time());
         Render::addLoadedTable(self::TABLE_NAME);
+
+        return $this;
     }
 }

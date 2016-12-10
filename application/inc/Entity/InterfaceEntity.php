@@ -25,11 +25,12 @@ interface InterfaceEntity
      */
     public function getId(): int;
 
-
     /**
      * Save entity to database
+     *
+     * @return self
      */
-    public function save();
+    public function save(): self;
 
     /**
      * Delete entity
