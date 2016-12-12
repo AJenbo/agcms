@@ -591,7 +591,7 @@ class Page extends AbstractRenderable
                     `burde`
                 ) VALUES (
                     NOW(),
-                    '" . db()->esc($this->name) . "',
+                    '" . db()->esc($this->title) . "',
                     '" . db()->esc($this->keywords) . "',
                     " . $this->price . ",
                     '" . db()->esc($this->html) . "',
