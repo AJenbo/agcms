@@ -94,9 +94,10 @@ if (!empty($_FILES['Filedata']['tmp_name'])
         if ($_POST['type'] === 'lineimage') {
             $ext = 'png';
         }
-        $output = ['type' => $ext];
-
-        $output['force'] = true;
+        $output = [
+            'type' => $ext,
+            'overwrite' => true,
+        ];
 
         $newfiledata = generateImage(
             $tempPath,

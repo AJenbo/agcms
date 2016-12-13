@@ -3784,7 +3784,7 @@ function generateImage(
     array $output = []
 ): array {
     $outputPath = $path;
-    if (!empty($output['type'])) {
+    if (!empty($output['type']) && empty($output['overwrite'])) {
         $pathinfo = pathinfo($path);
         if (empty($output['filename'])) {
             $output['filename'] = $pathinfo['filename'];
@@ -3868,8 +3868,9 @@ function generateImage(
     unset($image);
 
     $file = null;
-    $localFile = mb_substr($outputPath, mb_strlen(_ROOT_));
+    $localFile = $outputPath;
     if (mb_strpos($outputPath, _ROOT_) === 0) {
+        $localFile = mb_substr($outputPath, mb_strlen(_ROOT_));
         $file = File::getByPath($localFile);
         if ($file && $output['filename'] === $pathinfo['filename'] && $outputPath !== $path) {
             $file->delete();
