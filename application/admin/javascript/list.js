@@ -6,7 +6,7 @@ function listInsertRow(listid) {
     var rowlink = 0;
     if (listlink[listid] == 1) {
         for (i=0; i<footer.childNodes.length-2; i++) {
-            if (cells) {
+            if (i) {
                 cells += '<';
             }
             cells += htmlspecialchars(footer.childNodes[i].firstChild.value);
@@ -14,7 +14,7 @@ function listInsertRow(listid) {
         rowlink = footer.childNodes[footer.childNodes.length-2].firstChild.value;
     } else {
         for (i=0; i<footer.childNodes.length-1; i++) {
-            if (cells) {
+            if (i) {
                 cells += '<';
             }
             cells += htmlspecialchars(footer.childNodes[i].firstChild.value);
@@ -98,7 +98,7 @@ function listUpdateRow(listid, rowid) {
     var rowlink = 0;
     if (listlink[listid] == 1) {
         for (i=0; i<row.childNodes.length-2; i++) {
-            if (cells) {
+            if (i) {
                 cells += '<';
             }
             cells += htmlspecialchars(row.childNodes[i].firstChild.value);
@@ -106,7 +106,7 @@ function listUpdateRow(listid, rowid) {
         rowlink = row.childNodes[row.childNodes.length-2].firstChild.value;
     } else {
         for (i=0; i<row.childNodes.length-1; i++) {
-            if (cells) {
+            if (i) {
                 cells += '<';
             }
             cells += htmlspecialchars(row.childNodes[i].firstChild.value);

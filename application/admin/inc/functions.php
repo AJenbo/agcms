@@ -2194,7 +2194,9 @@ writeRichText("beskrivelse", \''.rtefsafe($page['beskrivelse']).'\', "", '.(Conf
                 $rows = arrayListsort($rows, 'id', $bycell, $list['sorts'][$list['sort']]);
             }
 
+            $defaultRow = array_fill(0, count($list['cells']) - 1, '');
             foreach ($rows as $i => $row) {
+                $row = $row + $defaultRow;
                 if ($i % 2) {
                     $html .= '<tr id="list_row'.$row['id'].'" class="altrow">';
                 } else {
@@ -2207,22 +2209,23 @@ writeRichText("beskrivelse", \''.rtefsafe($page['beskrivelse']).'\', "", '.(Conf
                         } else {
                             $html .= '<td><input value="'.$row[$key].'" style="display:none;" /><span>'.$row[$key].'</span></td>';
                         }
-                    } else {
-                        if (empty($options[$list['sorts'][$key]])) {
-                            $temp = db()->fetchOne("SELECT `text` FROM `tablesort` WHERE id = " . $list['sorts'][$key]);
-                            $options[$list['sorts'][$key]] = explode('<', $temp['text']);
-                        }
-
-                        $html .= '<td><select style="display:none"><option value=""></option>';
-                        foreach ($options[$list['sorts'][$key]] as $option) {
-                            $html .= '<option value="'.$option.'"';
-                            if ($row[$key] == $option) {
-                                $html .= ' selected="selected"';
-                            }
-                            $html .= '>'.$option.'</option>';
-                        }
-                        $html .= '</select><span>'.$row[$key].'</span></td>';
+                        continue;
                     }
+
+                    if (empty($options[$list['sorts'][$key]])) {
+                        $temp = db()->fetchOne("SELECT `text` FROM `tablesort` WHERE id = " . $list['sorts'][$key]);
+                        $options[$list['sorts'][$key]] = explode('<', $temp['text']);
+                    }
+
+                    $html .= '<td><select style="display:none"><option value=""></option>';
+                    foreach ($options[$list['sorts'][$key]] as $option) {
+                        $html .= '<option value="'.$option.'"';
+                        if ($row[$key] == $option) {
+                            $html .= ' selected="selected"';
+                        }
+                        $html .= '>'.$option.'</option>';
+                    }
+                    $html .= '</select><span>'.$row[$key].'</span></td>';
                 }
                 if ($list['link']) {
                     $html .= '<td style="text-align:right;"><input value="'.$row['link'].'" style="display:none;text-align:right;" /><span>'.$row['link'].'</span></td>';
