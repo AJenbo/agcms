@@ -158,7 +158,7 @@ class Brand extends AbstractRenderable
                 "
                 UPDATE `" . self::TABLE_NAME ."` SET
                     `navn` = '" . db()->esc($this->title) . "',
-                    `email` = '" . db()->esc($this->email) . "',
+                    `link` = '" . db()->esc($this->link) . "',
                     `ico` = '" . db()->esc($this->getIcon() ? $this->getIcon()->getPath() : '') . "'
                 WHERE `id` = " . $this->id
             );
