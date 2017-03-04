@@ -26,11 +26,8 @@ if ($faktura['premoms']) {
 }
 
 if ($faktura['id'] && $faktura['status'] != 'new') {
-    $epayment = new EpaymentAdminService(
-        Config::get('pbsid'),
-        Config::get('pbspwd'),
-        Config::get('pbsfix') . $faktura['id']
-    );
+    $epaymentService = new EpaymentAdminService(Config::get('pbsid'), Config::get('pbspwd'));
+    $epayment = $epaymentService->getPayment(Config::get('pbsfix') . $faktura['id']);
 
     if ($epayment->isAnnulled()) {
         //Annulled. The card payment has been deleted by the Merchant, prior to Acquisition.

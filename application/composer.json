@@ -14,7 +14,7 @@
         }
     ],
     "require": {
-        "php": ">=7.0.0",
+        "php": ">=7.1.0",
         "ext-mbstring": "*",
         "ext-mysqli": "*",
         "ext-gettext": "*",
@@ -25,5 +25,8 @@
         "ajenbo/sajax" : "dev-master",
         "ajenbo/image.php" : "dev-master",
         "ajenbo/imap" : "dev-master"
+    },
+    "require-dev": {
+        "mockery/mockery": "^0.9.9"
     }
 }
