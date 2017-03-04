@@ -937,8 +937,10 @@ class Render
                     case Table::COLUMN_TYPE_PRICE:
                     case Table::COLUMN_TYPE_PRICE_NEW:
                     case Table::COLUMN_TYPE_PRICE_OLD:
-                        if ($row[$columnId]) {
+                        if ($row[$columnId] >= 0) {
                             $html .= str_replace(',00', ',-', number_format($row[$columnId], 2, ',', '.'));
+                        } else {
+                            $html .= xhtmlEsc(_('Sold out'));
                         }
                         break;
                 }
@@ -948,11 +950,14 @@ class Render
                 $html .= '</td>';
             }
             if (self::$has_product_table) {
-                $html .= '<td class="addtocart"><a href="/bestilling/?'
-                . ($page ? ('add=' . $page->getId()) : ('add_list_item=' . $row['id']))
-                . '"><img src="/theme/images/cart_add.png" title="'
-                . _('Add to shopping cart') . '" alt="+" /></a></td>';
-
+                $html .= '<td class="addtocart">';
+                if ($row[$columnId] >= 0) {
+                    $html .= '<a href="/bestilling/?'
+                        . ($page ? ('add=' . $page->getId()) : ('add_list_item=' . $row['id']))
+                        . '"><img src="/theme/images/cart_add.png" title="'
+                        . _('Add to shopping cart') . '" alt="+" /></a>';
+                }
+                $html .= '</td>';
             }
             $html .= '</tr>';
         }
