@@ -39,14 +39,13 @@ class EpaymentAdminService
     /**
      * @param string $orderId The order id
      *
-     * @return ?Epayment
+     * @return Epayment
      */
-    public function getPayment(string $orderId)
+    public function getPayment(string $orderId): Epayment
     {
+        $this->openConnection();
+
         $transactionData = $this->getTransactionData($orderId);
-        if (!$transactionData) {
-            return null;
-        }
 
         return new Epayment($this, $transactionData);
     }
@@ -72,10 +71,8 @@ class EpaymentAdminService
      *
      * @return stdClass
      */
-    private function getTransactionData(string $orderId)
+    private function getTransactionData(string $orderId): stdClass
     {
-        $this->openConnection();
-
         $response = $this->soapClient->gettransactionlist(
             [
                 'pwd' => $this->password,
@@ -121,7 +118,12 @@ class EpaymentAdminService
             return $response->transactionInformationAry->TransactionInformationType;
         }
 
-        return null;
+        $transactionData = new stdClass();
+        $transactionData->status = '';
+        $transactionData->transactionid = 0;
+        $transactionData->authamount = 0;
+
+        return $transactionData;
     }
 
     /**
