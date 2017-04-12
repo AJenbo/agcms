@@ -23,10 +23,13 @@
         "ezyang/htmlpurifier":  ">=4.4",
         "tecnickcom/tcpdf": "^6.2",
         "ajenbo/sajax" : "dev-master",
-        "ajenbo/image.php" : "dev-master",
+        "ajenbo/image.php": "^0.9.1",
         "ajenbo/imap" : "dev-master"
     },
     "require-dev": {
         "mockery/mockery": "^0.9.9"
+    },
+    "suggest": {
+        "ext-intl": "Support international domains in email addresses"
     }
 }
