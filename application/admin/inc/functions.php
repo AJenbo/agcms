@@ -325,11 +325,11 @@ function sendEmail(int $id, string $from, string $interests, string $subject, st
         GROUP BY `email`'
     );
     foreach ($emails as $x => $email) {
-        $emails_group[floor($x/99)+1][] = $email;
+        $emailsGroup[floor($x/99)+1][] = $email;
     }
 
     $error = '';
-    foreach ($emails_group as $of => $emails) {
+    foreach ($emailsGroup as $of => $emails) {
         $success = sendEmails(
             $subject,
             $body,
@@ -349,10 +349,10 @@ function sendEmail(int $id, string $from, string $interests, string $subject, st
 
     if ($error) {
         return ['error' => trim($error)];
-    } else {
-        db()->query("UPDATE `newsmails` SET `sendt` = 1 WHERE `id` = " . (int) $id);
-        return true;
     }
+
+    db()->query("UPDATE `newsmails` SET `sendt` = 1 WHERE `id` = " . (int) $id);
+    return true;
 }
 
 /**
@@ -423,7 +423,7 @@ function getEmail(int $id): string
         if (count(Config::get('emails')) > 1) {
             $html .= _('Sender:').' <select id="from">';
             $html .= '<option value="">'._('Select sender').'</option>';
-            foreach (Config::get('emails', []) as $email => $dummy) {
+            foreach (array_keys(Config::get('emails', [])) as $email) {
                 $html .= '<option value="'.$email.'">'.$email.'</option>';
             }
             $html .= '</select>';
@@ -545,13 +545,8 @@ function kattree(int $id): array
         }
     }
 
-    if (!$id) {
-        $kattree[]['id'] = 0;
-        $kattree[count($kattree)-1]['navn'] = _('Frontpage');
-    } else {
-        $kattree[]['id'] = -1;
-        $kattree[count($kattree)-1]['navn'] = _('Inactive');
-    }
+    $kattree[]['id'] = $id ? 1 : 0;
+    $kattree[count($kattree)-1]['navn'] = $id ? _('Inactive') : _('Frontpage');
     return array_reverse($kattree);
 }
 
@@ -579,16 +574,16 @@ function katspath(int $id): array
 function katlist(int $id): string
 {
     global $kattree;
-
     $html = '<a class="menuboxheader" id="katsheader" style="width:' . Config::get('text_width') . 'px;clear:both" onclick="showhidekats(\'kats\',this);">';
-    if (@$_COOKIE['hidekats']) {
+    $hideKats = $_COOKIE['hidekats'] ?? 0
+    if ($hideKats) {
         $temp = katspath($id);
         $html .= $temp['html'];
     } else {
         $html .= _('Select location:').' ';
     }
     $html .= '</a><div style="width:' . (Config::get('text_width') + 24) . 'px;';
-    if (@$_COOKIE['hidekats']) {
+    if ($hideKats) {
         $html .= 'display:none;';
     }
     $html .= '" id="kats"><div>';
@@ -597,7 +592,7 @@ function katlist(int $id): string
         $kattree[$i] = $value['id'];
     }
 
-    $openkat = explode('<', @$_COOKIE['openkat']);
+    $openkat = explode('<', $_COOKIE['openkat'] ?? '');
     if (db()->fetchOne("SELECT id FROM `kat` WHERE bind = -1")) {
         $html .= '<img';
         if (array_search(-1, $openkat) || false !== array_search('-1', $kattree)) {
@@ -666,7 +661,7 @@ function siteList(int $id = null): string
         }
     }
 
-    $openkat = explode('<', @$_COOKIE['openkat']);
+    $openkat = explode('<', $_COOKIE['openkat'] ?? '');
     if (db()->fetchOne("SELECT id FROM `kat` WHERE bind = -1") || db()->fetchOne("SELECT id FROM `bind` WHERE kat = -1")) {
         $html .= '<img';
         if (array_search(-1, $openkat) || false !== array_search('-1', $kattree)) {
@@ -801,7 +796,7 @@ function kat_expand(int $id, bool $input = true): array
         if ($katExists
             || (!$input && db()->fetchOne("SELECT id FROM `bind` WHERE kat = " . $kat['id']))
         ) {
-            $openkat = explode('<', @$_COOKIE['openkat']);
+            $openkat = explode('<', $_COOKIE['openkat'] ?? '');
             $html .= '<div id="kat'.$kat['id'].'"><img style="display:';
             if (array_search($kat['id'], $openkat)
                 || false !== array_search($kat['id'], $kattree)
@@ -912,9 +907,9 @@ function deletefile(int $id, string $path): array
     $file = File::getByPath($path);
     if ($file && $file->delete()) {
         return ['id' => $id];
-    } else {
-        return ['error' => _('There was an error deleting the file, the file may be in use.')];
     }
+
+    return ['error' => _('There was an error deleting the file, the file may be in use.')];
 }
 
 if (!function_exists('scandir')) {
@@ -935,9 +930,9 @@ if (!function_exists('scandir')) {
             closedir($listdirs);
             ($sortorder == 0) ? asort($files) : rsort($files); // arsort was replaced with rsort
             return $files;
-        } else {
-            return false;
         }
+
+        return false;
     }
 }
 
@@ -1012,7 +1007,7 @@ function listdirs(string $dir, int $mode = 0): array
         . '">';
         if (sub_dirs($dir.'/'.$subdir)) {
             $html .= '<img';
-            if (@$_COOKIE[$dir.'/'.$subdir]) {
+            if (!empty($_COOKIE[$dir.'/'.$subdir])) {
                 $html .= ' style="display:none"';
             }
             $html .= ' src="images/+.gif"';
@@ -1024,7 +1019,7 @@ function listdirs(string $dir, int $mode = 0): array
             $html .= ' src="images/-.gif"';
             $html .= ' onclick="dir_contract(this);"';
             $html .= ' height="16" width="16" alt="-" title="" /><a';
-            if ($dir.'/'.$subdir == @$_COOKIE['admin_dir']) {
+            if ($dir.'/'.$subdir == ($_COOKIE['admin_dir'] ?? '')) {
                 $html .= ' class="active"';
             }
             if ($mode == 0) {
@@ -1034,14 +1029,14 @@ function listdirs(string $dir, int $mode = 0): array
             }
 
             $html .= '<div>';
-            if (@$_COOKIE[$dir.'/'.$subdir]) {
+            if (!empty($_COOKIE[$dir.'/'.$subdir])) {
                 $listdirs = listdirs($dir.'/'.$subdir, $mode);
                 $html .= $listdirs['html'];
             }
             $html .= '</div></div>';
         } else {
             $html .= '<a style="margin-left:16px"';
-            if ($dir.'/'.$subdir == @$_COOKIE['admin_dir']) {
+            if ($dir.'/'.$subdir == ($_COOKIE['admin_dir'] ?? '')) {
                 $html .= ' class="active"';
             }
             if ($mode == 0) {
@@ -1082,11 +1077,10 @@ function updateuser(int $id, array $updates)
                 $updates['password'] = crypt($updates['password_new']);
             } elseif ($_SESSION['_user']['id'] == $id) {
                 $user = db()->fetchOne("SELECT `password` FROM `users` WHERE id = ".$id);
-                if (mb_substr($user['password'], 0, 13) == mb_substr(crypt($updates['password'], $user['password']), 0, 13)) {
-                    $updates['password'] = crypt($updates['password_new']);
-                } else {
+                if (mb_substr($user['password'], 0, 13) !== mb_substr(crypt($updates['password'], $user['password']), 0, 13)) {
                     return ['error' => _('Incorrect password.')];
                 }
+                $updates['password'] = crypt($updates['password_new']);
             } else {
                 return ['error' => _('You do not have the requred access level to change the password for other users.')];
             }
@@ -1107,9 +1101,9 @@ function updateuser(int $id, array $updates)
         db()->query($sql);
 
         return true;
-    } else {
-        return ['error' => _('You do not have the requred access level to change this user.')];
     }
+
+    return ['error' => _('You do not have the requred access level to change this user.')];
 }
 
 /**
@@ -1131,11 +1125,9 @@ function saveImage(string $path, int $cropX, int $cropY, int $cropW, int $cropH,
 {
     $mimeType = get_mime_type(_ROOT_ . $path);
 
-    $output = [];
+    $output = ['type' => 'png'];
     if ($mimeType === 'image/jpeg') {
         $output['type'] = 'jpg';
-    } else {
-        $output['type'] = 'png';
     }
 
     $output['filename'] = $filename;
@@ -1171,7 +1163,7 @@ function deleteuser(int $id): bool
 function fileExists(string $filename, string $type = ''): bool
 {
     $pathinfo = pathinfo($filename);
-    $filePath = _ROOT_ . @$_COOKIE['admin_dir'] . '/' . genfilename($pathinfo['filename']);
+    $filePath = _ROOT_ . ($_COOKIE['admin_dir'] ?? '') . '/' . genfilename($pathinfo['filename']);
 
     if ($type == 'image') {
         $filePath .= '.jpg';
@@ -1203,15 +1195,15 @@ function newfaktura(): int
 
 /**
  * @param int $bind
- * @param string $path_name
+ * @param string $pathName
  */
-function print_kat(int $bind, string $path_name)
+function print_kat(int $bind, string $pathName)
 {
     $kats = db()->fetchArray("SELECT id, bind, navn FROM `kat` WHERE bind = ".$bind." ORDER BY navn");
     foreach ($kats as $kat) {
-        echo "\n".'  <tr class="path"><td colspan="8"><a href="?sort='.@$_GET['sort'].'&amp;kat='.$kat['id'].'"><img src="images/find.png" alt="Vis" title="Vis kun denne kategori" /></a> '.$path_name.' &gt; <a href="/kat'.$kat['id'].'-">'.xhtmlEsc($kat['navn']).'</a></td></tr>';
+        echo "\n".'  <tr class="path"><td colspan="8"><a href="?sort='.@$_GET['sort'].'&amp;kat='.$kat['id'].'"><img src="images/find.png" alt="Vis" title="Vis kun denne kategori" /></a> '.$pathName.' &gt; <a href="/kat'.$kat['id'].'-">'.xhtmlEsc($kat['navn']).'</a></td></tr>';
         print_pages($kat['id']);
-        print_kat($kat['id'], $path_name.' &gt; '.xhtmlEsc($kat['navn']));
+        print_kat($kat['id'], $pathName.' &gt; '.xhtmlEsc($kat['navn']));
     }
 }
 
@@ -1224,15 +1216,13 @@ function print_pages(int $kat)
     global $krav;
     global $sort;
     $sider = db()->fetchArray("SELECT sider.* FROM `bind` JOIN sider ON bind.side = sider.id WHERE bind.kat = ".$kat." ORDER BY " . $sort);
-    $altrow = 0;
+    $altrow = false;
     foreach ($sider as $side) {
         echo '<tr';
         if ($altrow) {
             echo ' class="altrow"';
-            $altrow = 0;
-        } else {
-            $altrow = 1;
         }
+        $altrow = !$altrow;
 
         echo '>
       <td class="tal"><a href="/admin/?side=redigerside&amp;id='.$side['id'].'">'.$side['id'].'</a></td>
@@ -1265,17 +1255,17 @@ function isVisableFile(string $fileName): bool
 /**
  * display a list of files in the selected folder
  *
- * @param string $temp_dir
+ * @param string $tempDir
  *
  * @return array
  */
-function showfiles(string $temp_dir): array
+function showfiles(string $tempDir): array
 {
     //temp_dir is needed to initialize dir as global
     //$dir needs to be global for other functions like isVisableFiles()
     global $dir;
-    $dir = $temp_dir;
-    unset($temp_dir);
+    $dir = $tempDir;
+    unset($tempDir);
     $html = '';
     $javascript = '';
 
@@ -1516,12 +1506,13 @@ function filehtml(File $file): string
 function makedir(string $name): array
 {
     $name = genfilename($name);
-    if (is_dir(_ROOT_ . @$_COOKIE['admin_dir'] . '/' . $name)) {
+    $adminDir = $_COOKIE['admin_dir'] ?? '';
+    if (is_dir(_ROOT_ . $adminDir . '/' . $name)) {
         return ['error' => _('A file or folder with the same name already exists.')];
     }
 
-    if (!is_dir(_ROOT_ . @$_COOKIE['admin_dir'])
-        || !mkdir(_ROOT_ . @$_COOKIE['admin_dir'] . '/' . $name, 0771)
+    if (!is_dir(_ROOT_ . $adminDir)
+        || !mkdir(_ROOT_ . $adminDir . '/' . $name, 0771)
     ) {
         return ['error' => _('Could not create folder, you may not have sufficient rights to this folder.')];
     }
@@ -1556,6 +1547,7 @@ function renamefile(int $id, string $path, string $dir, string $filename, bool $
         $dir == '';
     }
 
+    $pathinfo['extension'] = '';
     if (!is_dir(_ROOT_ . $path)) {
         $mime = get_mime_type(_ROOT_ . $path);
         if ($mime == 'image/jpeg') {
@@ -1574,7 +1566,6 @@ function renamefile(int $id, string $path, string $dir, string $filename, bool $
     } else {
         //a folder with a . will mistakingly be seen as a file with extension
         $pathinfo['filename'] .= '-' . @$pathinfo['extension'];
-        $pathinfo['extension'] = '';
     }
 
     if (!$filename) {
@@ -1619,59 +1610,59 @@ Would you like to replace the existing file?'), 'id' => $id];
             replacePaths($path, $newPath);
 
             return ['id' => $id, 'filename' => $filename, 'path' => $newPath];
-        } else {
-            return ['error' => _('An error occurred with the file operations.'), 'id' => $id];
         }
-    } else {
+
+        return ['error' => _('An error occurred with the file operations.'), 'id' => $id];
+    }
+
     //Dir or file with no extension
     //TODO ajax rename folder
-        $newPath = $dir . '/' . $filename . '.' . $pathinfo['extension'];
-        //No changes was requested.
-        if ($path == $newPath) {
-            return ['id' => $id, 'filename' => $filename, 'path' => $path];
-        }
-
-
-        //folder already exists
-        if (is_dir(_ROOT_ . $dir . '/' . $filename)) {
-            return ['error' => _('A folder with the same name already exists.'), 'id' => $id];
-        }
-
-        //if file path more then 255 erturn error
-        if (mb_strlen($newPath, 'UTF-8') > 255) {
-            return ['error' => _('The filename is too long.'), 'id' => $id];
-        }
-
-        //File already exists, but are we trying to force a overwrite?
-        if (is_file(_ROOT_ . $path) && !$force) {
-            return ['yesno' => _('A file with the same name already exists.
-Would you like to replace the existing file?'), 'id' => $id];
-        }
-
-        //Rename/move or give an error
-        //TODO prepared query
-        if (@rename(_ROOT_ . $path, _ROOT_ . $dir . '/' . $filename)) {
-            if ($force) {
-                db()->query("DELETE FROM files WHERE `path` = '" . db()->esc($newPath) . "%'");
-                //TODO insert new file data (width, alt, height, aspect)
-            }
-
-            db()->query("UPDATE files     SET path  = REPLACE(path, '" . db()->esc($path) . "', '" . db()->esc($newPath) . "')");
-            replacePaths($path, $newPath);
-
-            if (is_dir(_ROOT_ . $dir . '/' . $filename)) {
-                if (@$_COOKIE[@$_COOKIE['admin_dir']]) {
-                    @setcookie($dir.'/'.$filename, @$_COOKIE[@$_COOKIE['admin_dir']]);
-                }
-                @setcookie(@$_COOKIE['admin_dir'], false);
-                @setcookie('admin_dir', $dir.'/'.$filename);
-            }
-
-            return ['id' => $id, 'filename' => $filename, 'path' => $dir . '/' . $filename];
-        } else {
-            return ['error' => _('An error occurred with the file operations.'), 'id' => $id];
-        }
+    $newPath = $dir . '/' . $filename . '.' . $pathinfo['extension'];
+    //No changes was requested.
+    if ($path == $newPath) {
+        return ['id' => $id, 'filename' => $filename, 'path' => $path];
     }
+
+
+    //folder already exists
+    if (is_dir(_ROOT_ . $dir . '/' . $filename)) {
+        return ['error' => _('A folder with the same name already exists.'), 'id' => $id];
+    }
+
+    //if file path more then 255 erturn error
+    if (mb_strlen($newPath, 'UTF-8') > 255) {
+        return ['error' => _('The filename is too long.'), 'id' => $id];
+    }
+
+    //File already exists, but are we trying to force a overwrite?
+    if (is_file(_ROOT_ . $path) && !$force) {
+        return ['yesno' => _('A file with the same name already exists.
+Would you like to replace the existing file?'), 'id' => $id];
+    }
+
+    //Rename/move or give an error
+    //TODO prepared query
+    if (rename(_ROOT_ . $path, _ROOT_ . $dir . '/' . $filename)) {
+        if ($force) {
+            db()->query("DELETE FROM files WHERE `path` = '" . db()->esc($newPath) . "%'");
+            //TODO insert new file data (width, alt, height, aspect)
+        }
+
+        db()->query("UPDATE files     SET path  = REPLACE(path, '" . db()->esc($path) . "', '" . db()->esc($newPath) . "')");
+        replacePaths($path, $newPath);
+
+        if (is_dir(_ROOT_ . $dir . '/' . $filename)) {
+            if (!empty($_COOKIE[$_COOKIE['admin_dir']])) {
+                setcookie($dir.'/'.$filename, ($_COOKIE[$_COOKIE['admin_dir']]) ?? '');
+            }
+            setcookie($_COOKIE['admin_dir'] ?? '', false);
+            setcookie('admin_dir', $dir.'/'.$filename);
+        }
+
+        return ['id' => $id, 'filename' => $filename, 'path' => $dir . '/' . $filename];
+    }
+
+    return ['error' => _('An error occurred with the file operations.'), 'id' => $id];
 }
 
 function replacePaths($path, $newPath)
@@ -1723,16 +1714,16 @@ function deletefolder()
             }
         }
     }
-    $deltree = deltree(@$_COOKIE['admin_dir']);
+    $deltree = deltree($_COOKIE['admin_dir'] ?? '');
     if ($deltree) {
         return $deltree;
     }
-    if (@rmdir(_ROOT_ . @$_COOKIE['admin_dir'])) {
-        @setcookie(@$_COOKIE['admin_dir'], false);
+    if (@rmdir(_ROOT_ . ($_COOKIE['admin_dir'] ?? ''))) {
+        @setcookie($_COOKIE['admin_dir'] ?? '', false);
         return true;
-    } else {
-        return ['error' => _('The folder could not be deleted, you may not have sufficient rights to this folder.')];
     }
+
+    return ['error' => _('The folder could not be deleted, you may not have sufficient rights to this folder.')];
 }
 
 /**
@@ -1747,34 +1738,34 @@ function searchfiles(string $qpath, string $qalt, string $qmime): array
     $qpath = db()->escapeWildcards(db()->esc($qpath));
     $qalt = db()->escapeWildcards(db()->esc($qalt));
 
-    $sql_mime = '';
+    $sqlMime = '';
     switch ($qmime) {
         case 'image':
-            $sql_mime = "(mime = 'image/jpeg' OR mime = 'image/png' OR mime = 'image/gif' OR mime = 'image/vnd.wap.wbmp')";
+            $sqlMime = "(mime = 'image/jpeg' OR mime = 'image/png' OR mime = 'image/gif' OR mime = 'image/vnd.wap.wbmp')";
             break;
         case 'imagefile':
-            $sql_mime = "(mime = 'application/postscript' OR mime = 'image/x-ms-bmp' OR mime = 'image/x-psd' OR mime = 'image/x-photoshop' OR mime = 'image/tiff' OR mime = 'image/x-eps' OR mime = 'image/bmp')";
+            $sqlMime = "(mime = 'application/postscript' OR mime = 'image/x-ms-bmp' OR mime = 'image/x-psd' OR mime = 'image/x-photoshop' OR mime = 'image/tiff' OR mime = 'image/x-eps' OR mime = 'image/bmp')";
             break;
         case 'video':
-            $sql_mime = "(mime = 'video/avi' OR mime = 'video/x-msvideo' OR mime = 'video/mpeg' OR mime = 'video/quicktime' OR mime = 'video/x-shockwave-flash' OR mime = 'application/futuresplash' OR mime = 'application/x-shockwave-flash' OR mime = 'video/x-flv' OR mime = 'video/x-ms-asf' OR mime = 'video/x-ms-wmv' OR mime = 'application/vnd.ms-powerpoint' OR mime = 'video/vnd.rn-realvideo' OR mime = 'application/vnd.rn-realmedia')";
+            $sqlMime = "(mime = 'video/avi' OR mime = 'video/x-msvideo' OR mime = 'video/mpeg' OR mime = 'video/quicktime' OR mime = 'video/x-shockwave-flash' OR mime = 'application/futuresplash' OR mime = 'application/x-shockwave-flash' OR mime = 'video/x-flv' OR mime = 'video/x-ms-asf' OR mime = 'video/x-ms-wmv' OR mime = 'application/vnd.ms-powerpoint' OR mime = 'video/vnd.rn-realvideo' OR mime = 'application/vnd.rn-realmedia')";
             break;
         case 'audio':
-            $sql_mime = "(mime = 'audio/vnd.rn-realaudio' OR mime = 'audio/x-wav' OR mime = 'audio/mpeg' OR mime = 'audio/midi' OR mime = 'audio/x-ms-wma')";
+            $sqlMime = "(mime = 'audio/vnd.rn-realaudio' OR mime = 'audio/x-wav' OR mime = 'audio/mpeg' OR mime = 'audio/midi' OR mime = 'audio/x-ms-wma')";
             break;
         case 'text':
-            $sql_mime = "(mime = 'application/pdf' OR mime = 'text/plain' OR mime = 'application/rtf' OR mime = 'text/rtf' OR mime = 'application/msword' OR mime = 'application/vnd.ms-works' OR mime = 'application/vnd.ms-excel')";
+            $sqlMime = "(mime = 'application/pdf' OR mime = 'text/plain' OR mime = 'application/rtf' OR mime = 'text/rtf' OR mime = 'application/msword' OR mime = 'application/vnd.ms-works' OR mime = 'application/vnd.ms-excel')";
             break;
         case 'sysfile':
-            $sql_mime = "(mime = 'text/html' OR mime = 'text/css')";
+            $sqlMime = "(mime = 'text/html' OR mime = 'text/css')";
             break;
         case 'compressed':
-            $sql_mime = "(mime = 'application/x-gzip' OR mime = 'application/x-gtar' OR mime = 'application/x-tar' OR mime = 'application/x-stuffit' OR mime = 'application/x-stuffitx' OR mime = 'application/zip' OR mime = 'application/x-zip' OR mime = 'application/x-compressed' OR mime = 'application/x-compress' OR mime = 'application/mac-binhex40' OR mime = 'application/x-rar-compressed' OR mime = 'application/x-rar' OR mime = 'application/x-bzip2' OR mime = 'application/x-7z-compressed')";
+            $sqlMime = "(mime = 'application/x-gzip' OR mime = 'application/x-gtar' OR mime = 'application/x-tar' OR mime = 'application/x-stuffit' OR mime = 'application/x-stuffitx' OR mime = 'application/zip' OR mime = 'application/x-zip' OR mime = 'application/x-compressed' OR mime = 'application/x-compress' OR mime = 'application/mac-binhex40' OR mime = 'application/x-rar-compressed' OR mime = 'application/x-rar' OR mime = 'application/x-bzip2' OR mime = 'application/x-7z-compressed')";
             break;
     }
 
     //Generate search query
     $sql = " FROM `files`";
-    if ($qpath || $qalt || $sql_mime) {
+    if ($qpath || $qalt || $sqlMime) {
         $sql .= " WHERE ";
         if ($qpath || $qalt) {
             $sql .= "(";
@@ -1797,34 +1788,34 @@ function searchfiles(string $qpath, string $qalt, string $qmime): array
         if ($qpath || $qalt) {
             $sql .= ")";
         }
-        if (($qpath || $qalt) && !empty($sql_mime)) {
+        if (($qpath || $qalt) && !empty($sqlMime)) {
             $sql .= " AND ";
         }
-        if (!empty($sql_mime)) {
-            $sql .= $sql_mime;
+        if (!empty($sqlMime)) {
+            $sql .= $sqlMime;
         }
     }
 
-    $sql_select = '';
+    $sqlSelect = '';
     if ($qpath || $qalt) {
-        $sql_select .= ', ';
+        $sqlSelect .= ', ';
         if ($qpath && $qalt) {
-            $sql_select .= '(';
+            $sqlSelect .= '(';
         }
         if ($qpath) {
-            $sql_select .= 'MATCH(path) AGAINST(\''.$qpath.'\')';
+            $sqlSelect .= 'MATCH(path) AGAINST(\''.$qpath.'\')';
         }
         if ($qpath && $qalt) {
-            $sql_select .= ' + ';
+            $sqlSelect .= ' + ';
         }
         if ($qalt) {
-            $sql_select .= 'MATCH(alt) AGAINST(\''.$qalt.'\')';
+            $sqlSelect .= 'MATCH(alt) AGAINST(\''.$qalt.'\')';
         }
         if ($qpath && $qalt) {
-            $sql_select .= ')';
+            $sqlSelect .= ')';
         }
-        $sql_select .= ' AS score';
-        $sql = $sql_select.$sql;
+        $sqlSelect .= ' AS score';
+        $sql = $sqlSelect.$sql;
         $sql .= ' ORDER BY `score` DESC';
     }
 
@@ -1911,13 +1902,13 @@ function search(string $text): array
     foreach ($sidersimple as $value) {
         $match = false;
 
-        foreach ($sider as $sider_value) {
-            if (@$sider_value['side'] == $value['id']) {
+        foreach ($sider as $siderValue) {
+            if (@$siderValue['side'] == $value['id']) {
                 $match = true;
                 break;
             }
         }
-        unset($sider_value);
+        unset($siderValue);
         if (!$match) {
             $sider[] = $value;
         }
@@ -1941,11 +1932,7 @@ function redigerkat(int $id): string
     $html = '<div id="headline">'.('Rediger kategori').'</div><form action="" onsubmit="return updateKat('.$id.')"><input type="submit" accesskey="s" style="width:1px; height:1px; position:absolute; top: -20px; left:-20px;" />
     <div>'._('Name:').' <img style="cursor:pointer;vertical-align:bottom" onclick="explorer(\'thb\',\'icon\')" src="';
 
-    if (empty($kat['icon'])) {
-        $html .= 'images/folder.png';
-    } else {
-        $html .= $kat['icon'];
-    }
+    $html .= $kat['icon'] ?? '' ?: 'images/folder.png';
 
     $html .= '" title="" alt="Billeder" id="iconthb" /> <input id="navn" style="width:256px;" maxlength="64" value="'. $kat['navn'] . '" /> <br /> '._('Icon:').' <input id="icon" style="width:247px;" maxlength="128" type="hidden" value="'.$kat['icon'].'" /> <img style="cursor:pointer;vertical-align:bottom" onclick="explorer(\'thb\',\'icon\')" width="16" height="16" src="images/folder_image.png" title="'._('Find pictures').'" alt="'._('Pictures').'" /> <img style="cursor:pointer;vertical-align:bottom" onclick="setThb(\'icon\',\'\',\'images/folder.png\')" src="images/cross.png" alt="X" title="'._('Remove picture').'" height="16" width="16" /><br /><br />';
 
@@ -1990,7 +1977,7 @@ $(\'subMenusOrder\').value = newOrder;
 
     //Email
     $html .= _('Contact:').' <select id="email">';
-    foreach (Config::get('emails', []) as $value => $dummy) {
+    foreach (array_keys(Config::get('emails', [])) as $value) {
         $html .= '<option value="'.$value.'"';
         if ($kat['email'] == $value) {
             $html .= ' selected="selected"';
@@ -2179,12 +2166,12 @@ writeRichText("beskrivelse", \''.rtefsafe($page['beskrivelse']).'\', "", '.(Conf
                 $cells = array_map('html_entity_decode', $cells);
                 $cells['id'] = $row['id'];
                 $cells['link'] = $row['link'];
-                $rows_cells[] = $cells;
+                $rowsCells[] = $cells;
             }
-            $rows = $rows_cells;
+            $rows = $rowsCells;
             unset($row);
             unset($cells);
-            unset($rows_cells);
+            unset($rowsCells);
 
             //Sort rows
             $bycell = min($list['sort'], count($list['cells']) - 1);
@@ -2197,11 +2184,11 @@ writeRichText("beskrivelse", \''.rtefsafe($page['beskrivelse']).'\', "", '.(Conf
             $defaultRow = array_fill(0, count($list['cells']) - 1, '');
             foreach ($rows as $i => $row) {
                 $row = $row + $defaultRow;
+                $html .= '<tr id="list_row'.$row['id'].'"';
                 if ($i % 2) {
-                    $html .= '<tr id="list_row'.$row['id'].'" class="altrow">';
-                } else {
-                    $html .= '<tr id="list_row'.$row['id'].'">';
+                    $html .= ' class="altrow"';
                 }
+                $html .= '>';
                 foreach ($list['cells'] as $key => $type) {
                     if ($list['sorts'][$key] == 0) {
                         if ($type != 0) {
@@ -2254,23 +2241,21 @@ listlink['.$list['id'].'] = '.$list['link'].';
     $kattree = [];
     foreach ($binds as $bind) {
         if ($bind['id'] != -1) {
-            $kattree_html = '';
+            $kattreeHtml = '';
             foreach (kattree($bind['kat']) as $kattree) {
-                $kattree_html .= '/'.trim($kattree['navn']);
+                $kattreeHtml .= '/'.trim($kattree['navn']);
             }
-            $kattree_html .= '/';
+            $kattreeHtml .= '/';
 
-            $html .= '<p id="bind'.$bind['id'].'"> <img onclick="slet(\'bind\', \''.addslashes($kattree_html).'\', '.$bind['id'].')" src="images/cross.png" alt="X" title="'._('Remove binding').'" width="16" height="16" /> ';
-            $html .= $kattree_html.'</p>';
+            $html .= '<p id="bind'.$bind['id'].'"> <img onclick="slet(\'bind\', \''.addslashes($kattreeHtml).'\', '.$bind['id'].')" src="images/cross.png" alt="X" title="'._('Remove binding').'" width="16" height="16" /> ';
+            $html .= $kattreeHtml.'</p>';
         }
     }
     $html .= '</div>';
 
-    if (@$_COOKIE['activekat'] >= -1) {
-        $html .= katlist(@$_COOKIE['activekat']);
-    } else {
-        $html .= katlist(-1);
-    }
+    $activeCategoryId = $_COOKIE['activekat'] ?? -1;
+    $activeCategoryId = $activeCategoryId >= -1 ? $activeCategoryId : -1;
+    $html .= katlist($activeCategoryId);
     $html .= '<br /><input type="submit" value="'._('Create binding').'" accesskey="b" />';
 
     $html .= '</div></div></form>';
@@ -2282,14 +2267,14 @@ listlink['.$list['id'].'] = '.$list['link'].';
     $tilbehors = db()->fetchArray('SELECT id, tilbehor FROM `tilbehor` WHERE `side` = '.$id);
     foreach ($tilbehors as $tilbehor) {
         if ($tilbehor['id'] != null && $tilbehor['id'] != -1) {
-            $kattree_html = '';
+            $kattreeHtml = '';
             foreach (kattree($tilbehor['kat']) as $kattree) {
-                $kattree_html .= '/'.trim($kattree['navn']);
+                $kattreeHtml .= '/'.trim($kattree['navn']);
             }
-            $kattree_html .= '/';
+            $kattreeHtml .= '/';
 
-            $html .= '<p id="tilbehor'.$tilbehor['id'].'"> <img onclick="slet(\'tilbehor\', \''.addslashes($kattree_html).'\', '.$tilbehor['id'].')" src="images/cross.png" alt="X" title="'._('Remove binding').'" width="16" height="16" /> ';
-            $html .= $kattree_html.'</p>';
+            $html .= '<p id="tilbehor'.$tilbehor['id'].'"> <img onclick="slet(\'tilbehor\', \''.addslashes($kattreeHtml).'\', '.$tilbehor['id'].')" src="images/cross.png" alt="X" title="'._('Remove binding').'" width="16" height="16" /> ';
+            $html .= $kattreeHtml.'</p>';
         }
     }
     $html .= '</div>';
@@ -2303,23 +2288,23 @@ listlink['.$list['id'].'] = '.$list['link'].';
     return $html;
 }
 
-function listRemoveRow(int $list_id, int $row_id): array
+function listRemoveRow(int $listid, int $rowId): array
 {
-    db()->query("DELETE FROM `list_rows` WHERE `id` = " . $row_id);
+    db()->query("DELETE FROM `list_rows` WHERE `id` = " . $rowId);
 
-    return ['listid' => $list_id, 'rowid' => $row_id];
+    return ['listid' => $listid, 'rowid' => $rowId];
 }
 
-function listSavetRow(int $list_id, string $cells, string $link, int $row_id): array
+function listSavetRow(int $listid, string $cells, string $link, int $rowId): array
 {
-    if (!$row_id) {
-        db()->query('INSERT INTO `list_rows`(`list_id`, `cells`, `link`) VALUES (' . $list_id . ', \'' . db()->esc($cells).'\', \''.db()->esc($link).'\')');
-        $row_id = db()->insert_id;
+    if (!$rowId) {
+        db()->query('INSERT INTO `list_rows`(`list_id`, `cells`, `link`) VALUES (' . $listid . ', \'' . db()->esc($cells).'\', \''.db()->esc($link).'\')');
+        $rowId = db()->insert_id;
     } else {
-        db()->query('UPDATE `list_rows` SET `list_id` = '.$list_id.', `cells` = \''.db()->esc($cells).'\', `link` = \''.db()->esc($link).'\' WHERE id = '.$row_id);
+        db()->query('UPDATE `list_rows` SET `list_id` = '.$listid.', `cells` = \''.db()->esc($cells).'\', `link` = \''.db()->esc($link).'\' WHERE id = '.$rowId);
     }
 
-    return ['listid' => $list_id, 'rowid' => $row_id];
+    return ['listid' => $listid, 'rowid' => $rowId];
 }
 
 function redigerFrontpage(): string
@@ -2421,17 +2406,19 @@ function listsort(int $id = null): string
 var items = ' . count($liste['text']) . ';
 Sortable.create(\'listOrder\',{ghosting:false,constraint:false,hoverclass:\'over\'});
 --></script></div>';
-    } else {
-        $html = '<div id="headline">'._('List sorting').'</div><div>';
-        $html .= '<a href="#" onclick="makeNewList(); return false;">'._('Create new sorting').'</a><br /><br />';
 
-        $lists = db()->fetchArray('SELECT id, navn FROM `tablesort`');
-
-        foreach ($lists as $value) {
-            $html .= '<a href="?side=listsort&amp;id='.$value['id'].'"><img src="images/shape_align_left.png" width="16" height="16" alt="" /> '.$value['navn'].'</a><br />';
-        }
-        $html .= '</div>';
+        return $html;
     }
+
+    $html = '<div id="headline">'._('List sorting').'</div><div>';
+    $html .= '<a href="#" onclick="makeNewList(); return false;">'._('Create new sorting').'</a><br /><br />';
+
+    $lists = db()->fetchArray('SELECT id, navn FROM `tablesort`');
+
+    foreach ($lists as $value) {
+        $html .= '<a href="?side=listsort&amp;id='.$value['id'].'"><img src="images/shape_align_left.png" width="16" height="16" alt="" /> '.$value['navn'].'</a><br />';
+    }
+    $html .= '</div>';
 
     return $html;
 }
@@ -2496,9 +2483,9 @@ function editContact(int $id): string
     return $html;
 }
 
-function updateContact(int $id, string $navn, string $email, string $adresse, string $land, string $post, string $by, string $tlf1, string $tlf2, string $kartotek, string $interests): bool
+function updateContact(int $id, string $navn, string $email, string $adresse, string $land, string $post, string $city, string $tlf1, string $tlf2, string $kartotek, string $interests): bool
 {
-    db()->query("UPDATE `email` SET `navn` = '".db()->esc($navn)."', `email` = '".db()->esc($email)."', `adresse` = '".db()->esc($adresse)."', `land` = '".db()->esc($land)."', `post` = '".db()->esc($post)."', `by` = '".db()->esc($by)."', `tlf1` = '".db()->esc($tlf1)."', `tlf2` = '".db()->esc($tlf2)."', `kartotek` = '".db()->esc($kartotek)."', `interests` = '".db()->esc($interests)."' WHERE id = ".$id);
+    db()->query("UPDATE `email` SET `navn` = '".db()->esc($navn)."', `email` = '".db()->esc($email)."', `adresse` = '".db()->esc($adresse)."', `land` = '".db()->esc($land)."', `post` = '".db()->esc($post)."', `by` = '".db()->esc($city)."', `tlf1` = '".db()->esc($tlf1)."', `tlf2` = '".db()->esc($tlf2)."', `kartotek` = '".db()->esc($kartotek)."', `interests` = '".db()->esc($interests)."' WHERE id = ".$id);
     return true;
 }
 
@@ -2638,7 +2625,6 @@ function get_db_error(): string
 function get_subscriptions_with_bad_emails(): string
 {
     $html = '';
-    $errors = 0;
     $emails = db()->fetchArray("SELECT `id`, `email` FROM `email` WHERE `email` != ''");
     foreach ($emails as $email) {
         if (!valideMail($email['email'])) {
@@ -2688,18 +2674,18 @@ function get_looping_cats(): string
     $error = db()->fetchArray("SELECT id, bind, navn FROM `kat` WHERE bind != 0 AND bind != -1");
 
     $html = '';
-    $temp_html = '';
+    $tempHtml = '';
     foreach ($error as $kat) {
         $bindtree = kattree($kat['bind']);
         foreach ($bindtree as $bindbranch) {
             if ($kat['id'] == $bindbranch['id']) {
-                $temp_html .= '<a href="?side=redigerkat&id='.$kat['id'].'">'.$kat['id'].': '.$kat['navn'].'</a><br />';
+                $tempHtml .= '<a href="?side=redigerkat&id='.$kat['id'].'">'.$kat['id'].': '.$kat['navn'].'</a><br />';
                 continue;
             }
         }
     }
-    if ($temp_html) {
-        $html .= '<br /><b>'._('The following categories are tied in itself:').'</b><br />'.$temp_html;
+    if ($tempHtml) {
+        $html .= '<br /><b>'._('The following categories are tied in itself:').'</b><br />'.$tempHtml;
     }
     if ($html) {
         $html = '<b>'._('The following categories are tied in itself:').'</b><br />'.$html;
@@ -2759,8 +2745,6 @@ function get_size_of_files(): int
 
 function get_mail_size(): int
 {
-    $mailboxes = [];
-
     $size = 0;
 
     foreach (Config::get('emails', []) as $email) {
@@ -2938,11 +2922,9 @@ writeRichText("beskrivelse", \'\', "", ' . (Config::get('thumb_width') + 32) . '
     $html .= '</select></div></div></div>';
     //misc end
     //bind start
-    if (@$_COOKIE['activekat'] >= -1) {
-        $html .= katlist(@$_COOKIE['activekat']);
-    } else {
-        $html .= katlist(-1);
-    }
+    $activeKat = $_COOKIE['activekat'] ?? -1;
+    $activeKat = $activeKat >= -1 ? $activeKat : -1
+    $html .= katlist($activeKat);
 
     $html .= '</form>';
     return $html;
@@ -2954,7 +2936,7 @@ function getnykat(): array
 
     //Email
     $html .= _('Contact:').' <select id="email">';
-    foreach (Config::get('emails', []) as $email => $dummy) {
+    foreach (array_keys(Config::get('emails', [])) as $email) {
         $html .= '<option value="' . $email . '">' . $email . '</option>';
     }
     $html .= '</select>';
@@ -2963,11 +2945,9 @@ function getnykat(): array
     $html .= '<br />'._('Display:').' <select id="vis"><option value="0">'._('Hide').'</option><option value="1" selected="selected">'._('Gallery').'</option><option value="2">'._('List').'</option></select>';
 
     //binding
-    if (@$_COOKIE['activekat'] >= -1) {
-        $html .= katlist(@$_COOKIE['activekat']);
-    } else {
-        $html .= katlist(-1);
-    }
+    $activeKat = $_COOKIE['activekat'] ?? -1;
+    $activeKat = $activeKat >= -1 ? $activeKat : -1
+    $html .= katlist($activeKat);
 
     $html .= '<br /></div></form>';
     return ['id' => 'canvas', 'html' => $html];
@@ -2987,9 +2967,9 @@ function save_ny_kat(string $navn, string $kat, string $icon, string $vis, strin
         ]);
         $category->save();
         return true;
-    } else {
-        return ['error' => _('You must enter a name and choose a location for the new category.')];
     }
+
+    return ['error' => _('You must enter a name and choose a location for the new category.')];
 }
 
 function savekrav(int $id, string $navn, string $text): array
@@ -3010,9 +2990,9 @@ function savekrav(int $id, string $navn, string $text): array
         $requirement->save();
 
         return ['id' => 'canvas', 'html' => getkrav()];
-    } else {
-        return ['error' => _('You must enter a name and a text of the requirement.')];
     }
+
+    return ['error' => _('You must enter a name and a text of the requirement.')];
 }
 
 function getsogogerstat()
@@ -3087,9 +3067,9 @@ function updatemaerke(int $id = null, string $navn = '', string $link = '', stri
             ORM::getOne(Brand::class, $id)->setTitle($navn)->setLink($link)->setIconPath($ico)->save();
         }
         return ['id' => 'canvas', 'html' => getmaerker()];
-    } else {
-        return ['error' => _('You must enter a name.')];
     }
+
+    return ['error' => _('You must enter a name.')];
 }
 
 function getkrav(): string
@@ -3153,9 +3133,9 @@ function movekat(int $id, int $toId)
 
     if (db()->affected_rows) {
         return ['id' => 'kat'.$id, 'update' => $toId];
-    } else {
-        return false;
     }
+
+    return false;
 }
 
 function renamekat(int $id, string $name): array
@@ -3171,15 +3151,16 @@ function sletbind(string $id)
     }
     db()->query("DELETE FROM `bind` WHERE `id` = " . $id);
     $delete[0]['id'] = $id;
+    $added = false;
     if (!db()->fetchOne("SELECT id FROM `bind` WHERE `side` = " . $bind['side'])) {
         db()->query('INSERT INTO `bind` (`side` ,`kat`) VALUES (\''.$bind['side'].'\', \'-1\')');
 
-        $added['id'] = db()->insert_id;
-        $added['path'] = '/'._('Inactive').'/';
-        $added['kat'] = -1;
-        $added['side'] = $bind['side'];
-    } else {
-        $added = false;
+        $added = [
+            'id' => db()->insert_id,
+            'path' => '/'._('Inactive').'/',
+            'kat' => -1,
+            'side' => $bind['side'],
+        ];
     }
     return ['deleted' => $delete, 'added' => $added];
 }
@@ -3289,7 +3270,7 @@ function updateSide(
     return true;
 }
 
-function updateKat(int $id, string $navn, string $bind, string $icon, string $vis, string $email, string $custom_sort_subs, string $subsorder): bool
+function updateKat(int $id, string $navn, string $bind, string $icon, string $vis, string $email, string $customSortSubs, string $subsorder): bool
 {
     $bindtree = kattree($bind);
     foreach ($bindtree as $bindbranch) {
@@ -3299,7 +3280,7 @@ function updateKat(int $id, string $navn, string $bind, string $icon, string $vi
     }
 
     //Set the order of the subs
-    if ($custom_sort_subs) {
+    if ($customSortSubs) {
         updateKatOrder($subsorder);
     }
 
@@ -3310,7 +3291,7 @@ function updateKat(int $id, string $navn, string $bind, string $icon, string $vi
         ->setIconPath($icon)
         ->setRenderMode($vis)
         ->setEmail($email)
-        ->setWeightedChildren($custom_sort_subs)
+        ->setWeightedChildren($customSortSubs)
         ->save();
 
     return true;
@@ -3585,7 +3566,7 @@ Tel. %s</p>'
             false
         );
         if (!$success) {
-            return ['error' => _('Unable to sendt e-mail!')."\n".$mail->ErrorInfo];
+            return ['error' => _('Unable to sendt e-mail!')."\n"];
         }
         db()->query("UPDATE `fakturas` SET `status` = 'locked' WHERE `status` = 'new' && `id` = ".$faktura['id']);
         db()->query("UPDATE `fakturas` SET `sendt` = 1, `department` = '".db()->esc($faktura['department'])."' WHERE `id` = ".$faktura['id']);
@@ -3621,8 +3602,7 @@ function sendReminder(int $id): array
         $faktura['department'] = $email;
     }
 
-    $msg = _(
-        '<hr />
+    $msg = _('<hr />
 
 <p style="text-align:center;"> <img src="/images/logoer/jagt-og-fiskermagasinet.png" alt="%s" /> </p>
 
@@ -3656,8 +3636,7 @@ sending a you a new link to the credit card invoice system <br />
 %s %s<br />
 Tel: %s<br />
 Fax: %s<br />
-<a href="mailto:%s">%s</a></p>'
-    );
+<a href="mailto:%s">%s</a></p>');
 
     $msg = sprintf(
         $msg,
@@ -3696,7 +3675,7 @@ Fax: %s<br />
     );
 
     if (!$success) {
-        return ['error' => 'Mailen kunde ikke sendes!' . "\n" . $mail->ErrorInfo];
+        return ['error' => 'Mailen kunde ikke sendes!' . "\n"];
     }
     $error .= "\n\n"._('A Reminder was sent to the customer.');
 
@@ -3724,9 +3703,9 @@ function pbsconfirm(int $id)
             WHERE `id` = " . $id
         );
         return true;
-    } else {
-        return ['error' => _('An error occurred')];
     }
+
+    return ['error' => _('An error occurred')];
 }
 
 /**
@@ -3752,9 +3731,9 @@ function annul(int $id)
               AND `id` = " . $id
         );
         return true;
-    } else {
-        return ['error' => _('An error occurred')];
     }
+
+    return ['error' => _('An error occurred')];
 }
 
 /**
@@ -3847,6 +3826,8 @@ function generateImage(
     $image->rotate($rotate);
 
     // Output image or save
+	$mimeType = 'image/jpeg';
+	$type = 'jpeg';
     if (empty($output['type'])) {
         $mimeType = get_mime_type($path);
         if ($mimeType !== 'image/png') {
@@ -3857,11 +3838,9 @@ function generateImage(
         die();
     } elseif ($output['type'] === 'png') {
         $mimeType = 'image/png';
-        $image->save($outputPath, 'png');
-    } else {
-        $mimeType = 'image/jpeg';
-        $image->save($outputPath, 'jpeg');
+		$type = 'png';
     }
+	$image->save($outputPath, $type);
 
     $width = $image->getWidth();
     $height = $image->getHeight();

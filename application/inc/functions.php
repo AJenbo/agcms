@@ -188,7 +188,7 @@ function arrayNatsort(array $aryData, string $strIndex, string $strSortBy, strin
 
     //loop through the sorted and original data
     $aryResult = [];
-    foreach ($arySort as $arySortKey => $dummy) {
+    foreach (array_keys($arySort) as $arySortKey) {
         foreach ($aryData as $aryRow) {
             if ($aryRow[$strIndex] == $arySortKey) {
                 $aryResult[] = $aryRow;
@@ -241,7 +241,7 @@ function arrayListsort(
         foreach ($kaliber as $kalKey => $kalSort) {
             if ($aryRow[$strSortBy]==$kalSort) {
                 $arySort[$aryRow[$strIndex]] = $kalKey;
-                    break;
+                break;
             }
         }
     }
@@ -253,7 +253,7 @@ function arrayListsort(
     }
 
     $aryResult = [];
-    foreach ($arySort as $arySortKey => $dummy) {
+    foreach (array_keys($arySort) as $arySortKey) {
         foreach ($aryData as $aryRow) {
             if ($aryRow[$strIndex] == $arySortKey) {
                 $aryResult[] = $aryRow;
@@ -500,6 +500,7 @@ function checkMx(string $domain): bool
     static $ceche = [];
 
     if (!isset($ceche[$domain])) {
+        $dummy = [];
         $ceche[$domain] = getmxrr($domain, $dummy);
     }
 
