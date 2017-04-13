@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "content-hash": "d9862a6f7cb3f9d24beeefeb7cca914b",
+    "content-hash": "09ef76bbc68d996a4c567a7c031cd432",
     "packages": [
         {
             "name": "ajenbo/image.php",
@@ -59,16 +59,16 @@
         },
         {
             "name": "ajenbo/sajax",
-            "version": "dev-master",
+            "version": "0.15.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/AJenbo/Sajax.git",
-                "reference": "82e3934751a4dab93dbbf61341f8f3cef9066aa8"
+                "reference": "4b9eafc052fbc3ff8e581b7caa04caec1562e797"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/AJenbo/Sajax/zipball/82e3934751a4dab93dbbf61341f8f3cef9066aa8",
-                "reference": "82e3934751a4dab93dbbf61341f8f3cef9066aa8",
+                "url": "https://api.github.com/repos/AJenbo/Sajax/zipball/4b9eafc052fbc3ff8e581b7caa04caec1562e797",
+                "reference": "4b9eafc052fbc3ff8e581b7caa04caec1562e797",
                 "shasum": ""
             },
             "require": {
@@ -82,10 +82,10 @@
             },
             "description": "Simple Ajax Toolkit",
             "support": {
-                "source": "https://github.com/AJenbo/Sajax/tree/master",
+                "source": "https://github.com/AJenbo/Sajax/tree/0.15.0",
                 "issues": "https://github.com/AJenbo/Sajax/issues"
             },
-            "time": "2016-11-23 21:29:04"
+            "time": "2017-04-13T02:38:26+00:00"
         },
         {
             "name": "ezyang/htmlpurifier",
@@ -389,7 +389,6 @@
     "aliases": [],
     "minimum-stability": "stable",
     "stability-flags": {
-        "ajenbo/sajax": 20,
         "ajenbo/imap": 20
     },
     "prefer-stable": false,

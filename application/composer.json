@@ -22,7 +22,7 @@
         "phpmailer/phpmailer":  ">=5.0.0",
         "ezyang/htmlpurifier":  ">=4.4",
         "tecnickcom/tcpdf": "^6.2",
-        "ajenbo/sajax" : "dev-master",
+        "ajenbo/sajax" : "^0.15.0",
         "ajenbo/image.php": "^0.9.1",
         "ajenbo/imap" : "dev-master"
     },
