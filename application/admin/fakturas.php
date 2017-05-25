@@ -251,14 +251,14 @@ if (count($users) < 2) {
 ?></td><td>
 <select name="clerk">
     <option value=""><?php echo _('All'); ?></option><?php
-foreach ($users as $user) {
-    //warning if a user name is a it could colide with all
-    ?><option<?php
+    foreach ($users as $user) {
+        //warning if a user name is a it could colide with all
+        ?><option<?php
 if (isset($_GET['clerk']) && $_GET['clerk'] === $user['fullname']) {
     echo ' selected="selected"';
 }
-    ?>><?php echo $user['fullname'] ?></option><?php
-}
+        ?>><?php echo $user['fullname'] ?></option><?php
+    }
 ?></select><?php
 if (count($users) < 2) {
     echo '</span>';

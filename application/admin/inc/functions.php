@@ -386,7 +386,13 @@ function countEmailTo(string $interests): int
         $andwhere .= ')';
     }
 
-    $emails = db()->fetchOne("SELECT count(DISTINCT email) as 'count' FROM `email` WHERE `email` NOT LIKE '' AND `kartotek` = '1'" . $andwhere);
+    $emails = db()->fetchOne(
+        "
+        SELECT count(DISTINCT email) as 'count'
+        FROM `email`
+        WHERE `email` NOT LIKE '' AND `kartotek` = '1'
+        " . $andwhere
+    );
 
     return $emails['count'];
 }
@@ -505,7 +511,7 @@ function getEmailList(): string
 {
     $newsmails = db()->fetchArray('SELECT `id`, `subject`, `sendt` FROM `newsmails`');
 
-    $html = '<div id="headline">'._('Newsletters').'</div><div><a href="?side=newemail"><img src="images/email_add.png" width="16" height="16" alt="" /> '._('Create new newsletter').'</a><br /><br />';
+    $html = '<div id="headline">' . _('Newsletters').'</div><div><a href="?side=newemail"><img src="images/email_add.png" width="16" height="16" alt="" /> '._('Create new newsletter').'</a><br /><br />';
     foreach ($newsmails as $newemail) {
         if ($newemail['sendt'] == 0) {
             $html .= '<a href="?side=editemail&amp;id='.$newemail['id'].'"><img src="images/email_edit';
