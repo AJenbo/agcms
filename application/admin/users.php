@@ -1,4 +1,5 @@
 <?php
+
 /**
  * List users
  *
@@ -32,7 +33,7 @@ Sajax\Sajax::handleClientRequest();
 function deleteuser(id, name)
 {
     if (confirm('<?php
-echo sprintf(addcslashes(_('Do you realy want to delete the user \'%s\'?'), "\\'"), "'+name+'");
+    echo sprintf(addcslashes(_('Do you realy want to delete the user \'%s\'?'), "\\'"), "'+name+'");
 ?>') == true) {
         $('loading').style.visibility = 'hidden';
         x_deleteuser(id, deleteuser_r);

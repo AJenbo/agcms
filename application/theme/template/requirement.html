@@ -18,12 +18,8 @@ body {
 }
 </style>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-<title><?php echo xhtmlEsc(self::$activeRequirement->getTitle()); ?></title>
+<title>{{title}}</title>
 </head>
 
-<body><h1><?php
-echo xhtmlEsc(self::$activeRequirement->getTitle());
-?></h1><div id="text"><?php
-echo self::$activeRequirement->getHtml();
-?></div></body>
+<body><h1>{{title}}</h1><div id="text">{{content|raw}}</div></body>
 </html>

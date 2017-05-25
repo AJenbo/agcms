@@ -24,7 +24,8 @@
         "tecnickcom/tcpdf": "^6.2",
         "ajenbo/sajax" : "dev-master",
         "ajenbo/image.php" : "dev-master",
-        "ajenbo/imap" : "dev-master"
+        "ajenbo/imap" : "dev-master",
+        "twig/twig": "^2.0"
     },
     "require-dev": {
         "mockery/mockery": "^0.9.9"

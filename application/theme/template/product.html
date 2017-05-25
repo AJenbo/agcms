@@ -1,0 +1,28 @@
+{% extends "index.html" %}
+
+{% block content %}
+<div id="innercontainer"><div id="date">{{timeStamp|date('d-m-Y H:i:s')}}</div>
+    <h1>
+        {{headline}}
+        {% if serial %} <span style="font-weight:normal; font-size:13px">SKU: {{serial}}</span>{% endif %}
+    </h1>
+    {{content|raw}}
+    {% if requirement %}<p><a href="{{requirement.link}}" target="krav">{{requirement.name}}</a></p>{% endif %}
+    <p style="text-align:center">
+        {% include 'price.html' with {'price': price} %}
+        {% if price.now and not hasProductList %}<a href="/bestilling/?add={{pageId}}">+ Add to shopping cart</a>{% endif %}
+        <br />
+    </p>
+</div>
+
+{% if accessories %}
+    <p align="center" style="clear:both">Accessories</p>
+    {% include 'productTiles.html' with {'products': accessories} %}
+{% endif %}
+
+{% if brand %}
+    <p align="center" style="clear:both">View other product from the same brand</p><a href="{{brand.link}}">{{brand.name}}
+    {% if brand.icon %}<br /><img src="{{brand.icon}}" alt="{{brand.name}}" title="" />{% endif %}
+    </a>
+{% endif %}
+{% endblock %}

@@ -1,0 +1,18 @@
+{% if menu %}
+<ul>
+    {% for menuItem in menu %}
+    <li>
+        {% if menuItem.id == categoryId %}<h4 id="activmenu">{% endif %}
+        <a href="{{menuItem.link}}">
+            {{menuItem.name}}
+            {% if menuItem.icon %}<img src="{{menuItem.icon}}" alt="" />{% endif %}
+        </a>
+
+        {% if menuItem.id == categoryId %}</h4>{% endif %}
+        {% if menuItem.subs %}
+            {% include 'menu.html' with {'menu': menuItem.subs, 'categoryId': categoryId} %}
+        {% endif %}
+    </li>
+    {% endfor %}
+</ul>
+{% endif %}

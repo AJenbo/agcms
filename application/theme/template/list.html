@@ -1,0 +1,50 @@
+{% extends "index.html" %}
+
+{% block content %}
+{% if brand %}
+<p align="center">
+    {% if brand.xlink %}<a rel="nofollow" target="_blank" href="{{brand.xlink}}">Read more about {% endif %}
+    {{brand.name}}
+    {% if brand.icon %}<br /><img src="{{brand.icon}}" alt="{{brand.name}}" title="" />{% endif %}
+    {% if brand.xlink %}</a>{% endif %}
+</p>
+{% endif %}
+
+{% if pageList %}
+    <p align="center" class="web">Click on the product for additional information</p>
+        {% block products %}
+        <div id="kat{{categoryId}}">
+            <table class="tabel">
+                <thead>
+                    <tr>
+                        <td><a href="#" onClick="x_get_kat({{categoryId}}, 'navn', inject_html);">Title</a></td>
+                        <td><a href="#" onClick="x_get_kat({{categoryId}}, 'for', inject_html);">Previously</a></td>
+                        <td><a href="#" onClick="x_get_kat({{categoryId}}, 'pris', inject_html);">Price</a></td>
+                        <td><a href="#" onClick="x_get_kat({{categoryId}}, 'varenr', inject_html);">#</a></td>
+                    </tr>
+                </thead>
+            <tbody>
+                {% for item in pageList %}
+                <tr{% if loop.index is odd %} class="altrow"{% endif %}>
+                    <td><a href="{{item.link}}">{{item.name}}</a></td>
+                    <td class="XPris" align="right">
+                        {% if item.price.before %}
+                        {{ item.price.before|number_format(0, '.', ',') }},-
+                        {% endif %}
+                    </td>
+                    <td class="Pris" align="right">
+                        {% if item.price.now %}
+                        {{ item.price.now|number_format(0, '.', ',') }},-
+                        {% endif %}
+                    </td>
+                    <td align="right" style="font-size:11px">{{item.serial}}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    {% endblock %}
+{% else %}
+    <p align="center" class="web">The search did not return any results</p>
+{% endif %}
+{% endblock %}

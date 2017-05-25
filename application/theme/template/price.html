@@ -1,0 +1,27 @@
+{% if price.before %}
+    {% if price.market == 1 %}
+        Retail price: <span>
+    {% elseif price.market == 2 %}
+        Should cost: <span>
+    {% else %}
+        Before: <span class="XPris">
+    {% endif %}
+    {{price.before|number_format(0, ',', '.')}},-</span>
+{% endif %}
+
+{% if price.now %}
+    {% if price.from == 1 and price.before %}
+        <span class="NyPris">New price from:
+    {% elseif price.from == 2 and price.before %}
+        <span class="NyPris">Used:
+    {% elseif price.from == 1 %}
+        Price from: <span class="Pris">
+    {% elseif price.from == 2 %}
+        Used: <span class="Pris">
+    {% elseif price.before %}
+        <span class="NyPris">Now:
+    {% else %}
+        Price: <span class="Pris">
+    {% endif %}
+    {{price.now|number_format(0, ',', '.')}},-</span>
+{% endif %}

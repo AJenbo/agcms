@@ -1,0 +1,9 @@
+{% extends "index.html" %}
+
+{% block content %}
+<div id="innercontainer">
+    {% if ltimeStamp %}
+    <div id="date">{{ ltimeStamp|date('d-m-Y H:i:s') }}</div>
+    {% endif %}
+<h1>{{headline}}</h1>{{content|raw}}</div>
+{% endblock %}

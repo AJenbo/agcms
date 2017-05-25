@@ -14,7 +14,7 @@ class Render
     private static $brand = [];
     private static $canonical = '';
     private static $email = '';
-    private static $has_product_table = false;
+    private static $hasProductList = false;
     private static $keywords = [];
     private static $loadedTables = [];
     private static $menu = [];
@@ -35,7 +35,7 @@ class Render
         'users',
     ];
 
-    public static $pageType = 'front';
+    public static $pageType = 'index';
     public static $title = '';
     public static $headline = '';
     public static $crumbs = [];
@@ -231,25 +231,25 @@ class Render
         // http://fishbowl.pastiche.org/archives/001132.html
         $timeZone = date_default_timezone_get();
         date_default_timezone_set('GMT');
-        $last_modified = mb_substr(date('r', $timestamp), 0, -5) . 'GMT';
+        $lastModified = mb_substr(date('r', $timestamp), 0, -5) . 'GMT';
         date_default_timezone_set($timeZone);
         $etag = (string) $timestamp;
 
         // Send the headers
-        header('Last-Modified: ' . $last_modified);
+        header('Last-Modified: ' . $lastModified);
         header('ETag: ' . $etag);
 
         // See if the client has provided the required headers
-        $if_modified_since = $_SERVER['HTTP_IF_MODIFIED_SINCE'] ?? false;
-        $if_none_match = $_SERVER['HTTP_IF_NONE_MATCH'] ?? false;
-        if (!$if_modified_since && !$if_none_match) {
+        $iFmodifiedSince = $_SERVER['HTTP_IF_MODIFIED_SINCE'] ?? false;
+        $ifNoneMatch = $_SERVER['HTTP_IF_NONE_MATCH'] ?? false;
+        if (!$iFmodifiedSince && !$ifNoneMatch) {
             return;
         }
         // At least one of the headers is there - check them
-        if ($if_none_match && $if_none_match !== $etag) {
+        if ($ifNoneMatch && $ifNoneMatch !== $etag) {
             return; // etag is there but doesn't match
         }
-        if ($if_modified_since && $if_modified_since !== $last_modified) {
+        if ($iFmodifiedSince && $iFmodifiedSince !== $lastModified) {
             return; // if-modified-since is there but doesn't match
         }
 
@@ -387,7 +387,11 @@ class Render
                 $_GET['q'] ?? '',
                 $_GET['sogikke'] ?? ''
             );
-        } elseif (self::$pageType === 'front') {
+        } elseif (self::$activeRequirement) {
+            self::$pageType = 'requirement';
+            self::$title = self::$activeRequirement->getTitle();
+            self::$bodyHtml = self::$activeRequirement->getHtml();
+        } elseif (self::$pageType === 'index') {
             self::$bodyHtml = ORM::getOne(CustomPage::class, 1)->getHtml();
         }
 
@@ -879,14 +883,14 @@ class Render
         $html .= '<thead><tr>';
         foreach ($columns as $columnId => $column) {
             if (in_array($column['type'], [Table::COLUMN_TYPE_PRICE, Table::COLUMN_TYPE_PRICE_NEW], true)) {
-                self::$has_product_table = true;
+                self::$hasProductList = true;
             }
 
             $html .= '<td><a href="" onclick="x_getTable(' . $table->getId()
             . ', ' . $columnId . ', ' . ($category ? $category->getId() : '0')
             . ', inject_html);return false;">' . xhtmlEsc($column['title']) . '</a></td>';
         }
-        if (self::$has_product_table) {
+        if (self::$hasProductList) {
             $html .= '<td></td>';
         }
         $html .= '</tr></thead><tbody>';
@@ -949,7 +953,7 @@ class Render
                 }
                 $html .= '</td>';
             }
-            if (self::$has_product_table) {
+            if (self::$hasProductList) {
                 $html .= '<td class="addtocart">';
                 if ($row[$columnId] >= 0) {
                     $html .= '<a href="/bestilling/?'
@@ -1053,11 +1057,45 @@ class Render
             return;
         }
 
-        if (self::$activeRequirement) {
-            require_once _ROOT_ . '/theme/requirement.php';
-            return;
+        $loader = new \Twig_Loader_Filesystem(
+            realpath(__DIR__ . '/../theme/template/')
+        );
+        $twig = new \Twig_Environment($loader);
+
+        $requirement = null;
+        if (self::$activePage) {
+            $requirement = self::$activePage->getRequirement();
+            if ($requirement) {
+                $requirement = [
+                    'link' => $requirement->getCanonicalLink(),
+                    'name' => $requirement->getTitle(),
+                ];
+            }
         }
 
-        require_once _ROOT_ . '/theme/index.php';
+        echo $twig->render(
+            self::$pageType . '.html',
+            [
+                'brand'          => self::$brand,
+                'hasProductList' => self::$hasProductList,
+                'price'          => self::$price,
+                'pageList'       => self::$pageList,
+                'title'          => self::$title,
+                'canonical'      => self::$canonical,
+                'keywords'       => self::$keywords,
+                'crumbs'         => self::$crumbs,
+                'content'        => self::$bodyHtml,
+                'brand'          => self::$brand,
+                'categoryId'     => self::$activeCategory ? self::$activeCategory->getId() : 0,
+                'pageId'         => self::$activePage ? self::$activePage->getId() : 0,
+                'headline'       => self::$headline,
+                'timeStamp'      => self::$timeStamp,
+                'serial'         => self::$serial,
+                'menu'           => self::$menu,
+                'searchMenu'     => self::$searchMenu,
+                'hasItemsInCart' => !empty($_SESSION['faktura']['quantities']),
+                'requirement'    => $requirement,
+            ]
+        );
     }
 }
