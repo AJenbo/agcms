@@ -215,7 +215,7 @@ class Table extends AbstractEntity
      *
      * @return bool
      */
-    public function getHasLinks(): bool
+    public function hasLinks(): bool
     {
         return $this->hasLinks;
     }
@@ -239,7 +239,7 @@ class Table extends AbstractEntity
         // Cells are indexed by id, this is needed for sorting the rows
         foreach ($rows as &$row) {
             $row['id'] = (int) $row['id'];
-            $row['link'] = $this->getHasLinks() ? (int) $row['link'] : 0;
+            $row['link'] = $this->hasLinks() ? (int) $row['link'] : 0;
             $cells = explode('<', $row['cells']);
             $cells = array_map('html_entity_decode', $cells);
             unset($row['cells']);

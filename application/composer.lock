@@ -4,11 +4,11 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "content-hash": "de7890b422eca96206371ef6d22b0d54",
+    "content-hash": "93e1f81369377b1d221523db5e18c0b6",
     "packages": [
         {
             "name": "ajenbo/image.php",
-            "version": "dev-master",
+            "version": "0.9.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/AJenbo/Image.php.git",
@@ -69,7 +69,7 @@
         },
         {
             "name": "ajenbo/sajax",
-            "version": "dev-master",
+            "version": "0.15.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/AJenbo/Sajax.git",
@@ -521,8 +521,6 @@
     "aliases": [],
     "minimum-stability": "stable",
     "stability-flags": {
-        "ajenbo/sajax": 20,
-        "ajenbo/image.php": 20,
         "ajenbo/imap": 20
     },
     "prefer-stable": false,

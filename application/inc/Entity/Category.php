@@ -208,7 +208,7 @@ class Category extends AbstractRenderable
      *
      * @return bool
      */
-    public function getWeightedChildren(): bool
+    public function hasWeightedChildren(): bool
     {
         return (bool) $this->weightedChildren;
     }
@@ -346,7 +346,7 @@ class Category extends AbstractRenderable
             return (bool) $children;
         }
 
-        foreach ($children as $key => $child) {
+        foreach ($children as $child) {
             if ($child->isVisable()) {
                 $this->visable = true;
                 return true;

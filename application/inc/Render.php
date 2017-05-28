@@ -27,7 +27,6 @@ class Render
     private static $menu = [];
     private static $pageList = [];
     private static $price = [];
-    private static $requirement = [];
     private static $searchMenu = [];
     private static $serial = '';
     private static $timeStamp = 0;
@@ -135,7 +134,7 @@ class Render
         }
 
         $redirectUrl = '/?sog=1&q=&sogikke=&minpris=&maxpris=&maerke=';
-        $q = preg_replace(
+        $query = preg_replace(
             [
                 '/\/|-|_|\.html|\.htm|\.php|\.gif|\.jpeg|\.jpg|\.png|mærke[0-9]+-|kat[0-9]+-|side[0-9]+-|\.php/u',
                 '/[^\w0-9]/u',
@@ -152,9 +151,9 @@ class Render
             ],
             $url
         );
-        $q = trim($q);
-        if ($q) {
-            $redirectUrl = '/?q=' . rawurlencode($q) . '&sogikke=&minpris=&maxpris=&maerke=0';
+        $query = trim($query);
+        if ($query) {
+            $redirectUrl = '/?q=' . rawurlencode($query) . '&sogikke=&minpris=&maxpris=&maerke=0';
         }
         if (self::$activePage) {
             $redirectUrl = self::$activePage->getCanonicalLink(self::$activeCategory);
@@ -247,16 +246,16 @@ class Render
         header('ETag: ' . $etag);
 
         // See if the client has provided the required headers
-        $iFmodifiedSince = $_SERVER['HTTP_IF_MODIFIED_SINCE'] ?? false;
+        $ifModifiedSince = $_SERVER['HTTP_IF_MODIFIED_SINCE'] ?? false;
         $ifNoneMatch = $_SERVER['HTTP_IF_NONE_MATCH'] ?? false;
-        if (!$iFmodifiedSince && !$ifNoneMatch) {
+        if (!$ifModifiedSince && !$ifNoneMatch) {
             return;
         }
         // At least one of the headers is there - check them
         if ($ifNoneMatch && $ifNoneMatch !== $etag) {
             return; // etag is there but doesn't match
         }
-        if ($iFmodifiedSince && $iFmodifiedSince !== $lastModified) {
+        if ($ifModifiedSince && $ifModifiedSince !== $lastModified) {
             return; // if-modified-since is there but doesn't match
         }
 
@@ -598,6 +597,8 @@ class Render
     /**
      * Fetch pages attached to the site root
      *
+     * Used by some themes
+     *
      * @return array
      */
     private static function getRootPages(): array
@@ -629,16 +630,16 @@ class Render
     /**
      * Get list of sub categories in format fitting the generatedcontent structure
      *
-     * @param array $categories       Categories
-     * @param array $categoryIds      Ids in active category trunk
-     * @param array $weightedChildren Are the categories the list custome sorted
+     * @param array $categories          Categories
+     * @param array $categoryIds         Ids in active category trunk
+     * @param array $hasWeightedChildren Are the categories the list custome sorted
      *
      * @return array
      */
-    public static function menu(array $categories, array $categoryIds, bool $weightedChildren = true): array
+    public static function menu(array $categories, array $categoryIds, bool $hasWeightedChildren = true): array
     {
         $menu = [];
-        if (!$weightedChildren) {
+        if (!$hasWeightedChildren) {
             $objectArray = [];
             foreach ($categories as $categorie) {
                 $objectArray[] = [
@@ -665,7 +666,7 @@ class Render
                 $subs = self::menu(
                     $category->getChildren(true),
                     $categoryIds,
-                    $category->getWeightedChildren()
+                    $category->hasWeightedChildren()
                 );
             }
 
@@ -687,11 +688,11 @@ class Render
     /**
      * Search for pages and generate a list or redirect if only one was found
      *
-     * @param string $q     Tekst to search for
+     * @param string $query     Tekst to search for
      * @param string $where Additional sql where clause
      */
     public static function searchListe(
-        string $q,
+        string $queryuery,
         int $brandId,
         string $varenr = '',
         int $minpris = 0,
@@ -699,6 +700,7 @@ class Render
         string $antiWords = ''
     ) {
         $pages = [];
+        $simpleQuery = "%" . preg_replace('/\s+/u', "%", $queryuery) . "%";
 
         //Full search
         $where = "";
@@ -716,33 +718,29 @@ class Render
         }
         if ($antiWords) {
             $where .= " AND !MATCH (navn, text, beskrivelse) AGAINST('" . db()->esc($antiWords) ."') > 0
-            AND `navn` NOT LIKE '%$simpleq%'
-            AND `text` NOT LIKE '%$simpleq%'
-            AND `beskrivelse` NOT LIKE '%$simpleq%'
+            AND `navn` NOT LIKE '%$simpleQuery%'
+            AND `text` NOT LIKE '%$simpleQuery%'
+            AND `beskrivelse` NOT LIKE '%$simpleQuery%'
             ";
         }
-
-        $simpleSearchString = $antiWords ? '%' . preg_replace('/\s+/u', '%', $searchString) . '%' : '';
-        $simpleAntiWords = $antiWords ? '%' . preg_replace('/\s+/u', '%', $antiWords) . '%' : '';
 
         //TODO match on keywords
         $columns = [];
         foreach (db()->fetchArray("SHOW COLUMNS FROM sider") as $column) {
             $columns[] = $column['Field'];
         }
-        $simpleq = "%" . preg_replace('/\s+/u', "%", $q) . "%";
         $pages = ORM::getByQuery(
             Page::class,
             "
             SELECT `" . implode("`, `", $columns) . "`
-            FROM (SELECT sider.*, MATCH(navn, text, beskrivelse) AGAINST ('" . db()->esc($q) . "') AS score
+            FROM (SELECT sider.*, MATCH(navn, text, beskrivelse) AGAINST ('" . db()->esc($queryuery) . "') AS score
             FROM sider
             JOIN bind ON sider.id = bind.side AND bind.kat != -1
             WHERE (
-                MATCH (navn, text, beskrivelse) AGAINST('" . db()->esc($q) . "') > 0
-                OR `navn` LIKE '%$simpleq%'
-                OR `text` LIKE '%$simpleq%'
-                OR `beskrivelse` LIKE '%$simpleq%'
+                MATCH (navn, text, beskrivelse) AGAINST('" . db()->esc($queryuery) . "') > 0
+                OR `navn` LIKE '%$simpleQuery%'
+                OR `text` LIKE '%$simpleQuery%'
+                OR `beskrivelse` LIKE '%$simpleQuery%'
             )
             $where
             ORDER BY `score` DESC) x
@@ -751,7 +749,7 @@ class Render
             JOIN lists ON list_rows.list_id = lists.id
             JOIN sider ON lists.page_id = sider.id
             JOIN bind ON sider.id = bind.side AND bind.kat != -1
-            WHERE list_rows.`cells` LIKE '%$simpleq%'"
+            WHERE list_rows.`cells` LIKE '%$simpleQuery%'"
             . $where
         );
         self::addLoadedTable('list_rows');
