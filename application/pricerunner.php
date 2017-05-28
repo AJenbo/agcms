@@ -1,6 +1,10 @@
 <?php
 
 use AGCMS\Render;
+use AGCMS\ORM;
+use AGCMS\Config;
+use AGCMS\Entity\Page;
+use AGCMS\Entity\Category;
 
 /**
  * Print feed for pricerunner.com
@@ -15,22 +19,8 @@ Render::addLoadedTable('maerke');
 Render::addLoadedTable('sider');
 Render::sendCacheHeader();
 
-header('Content-Type: application/xml');
-echo '<?xml version="1.0" encoding="utf-8"?><products>';
 
-$search = [
-    '@<script[^>]*?>.*?</script>@si', // Strip out javascript
-    '@<[\/\!]*?[^<>]*?>@si',          // Strip out HTML tags
-    '@([\r\n])[\s]+@',                // Strip out white space
-    '@&(&|#197);@i'
-];
-
-$replace = [
-    ' ',
-    ' ',
-    '\1',
-    ' '
-];
+$products = [];
 
 $pages = ORM::getByQuery(
     Page::class,
@@ -45,45 +35,37 @@ foreach ($pages as $page) {
         continue;
     }
 
-    echo '<product><sku>' . $page->getId() . '</sku><title>'
-    . htmlspecialchars(trim($page->getTitle()), ENT_COMPAT | ENT_XML1) . '</title>';
-    if (trim($page->getSku())) {
-        echo '<companysku>' . htmlspecialchars(trim($page->getSku()), ENT_COMPAT | ENT_XML1) . '</companysku>';
-    }
-    echo '<price>' . $page->getPrice() . ',00</price><img>'
-    . Config::get('base_url') . encodeUrl($page->getImagePath()) . '</img><link>'
-    . Config::get('base_url') . encodeUrl($page->getCanonicalLink()) . '</link>';
-
-    $categoryTitles = [];
+    $categories = [];
     $brand = $page->getBrand();
     if ($brand) {
-        $cleaned = trim(preg_replace($search, $replace, $brand->getTitle()));
-        if ($cleaned) {
-            $categoryTitles[] = htmlspecialchars($cleaned, ENT_NOQUOTES | ENT_XML1);
-        }
-        echo '<company>';
-        echo htmlspecialchars($cleaned, ENT_NOQUOTES | ENT_XML1);
-        echo '</company>';
+        $brand = $brand->getTitle();
+        $categories[] = $brand;
     }
+    $product = [
+        'sku' => $page->getId(),
+        'title' => $page->getTitle(),
+        'price' => $page->getPrice() . ',00',
+        'imageUrl' => Config::get('base_url') . encodeUrl($page->getImagePath()),
+        'link' => Config::get('base_url') . encodeUrl($page->getCanonicalLink()),
+        'manufacture' => $brand,
+        'manufactureSku' => $page->getSku(),
+    ];
+    $product = array_map('trim', $product);
 
-    $categoryIds = [];
+
     foreach ($page->getCategories() as $category) {
         do {
-            $categoryIds[] = $category->getId();
+            $categories[] = $category->getTitle();
         } while ($category = $category->getParent());
     }
-    foreach (array_unique($categoryIds) as $categoryId) {
-        $category = ORM::getOne(Category::class, $categoryId);
-        $cleaned = preg_replace($search, $replace, $category->getTitle());
-        $cleaned = trim($cleaned);
-        if ($cleaned) {
-            $categoryTitles[] = htmlspecialchars($cleaned, ENT_NOQUOTES | ENT_XML1);
-        }
-    }
 
-    $categoryTitles = array_unique(array_reverse($categoryTitles));
+    $categories = array_map('trim', $categories);
+    $categories = array_filter($categories);
+    $categories = array_unique(array_reverse($categories));
+    $product['categories'] = $categories;
 
-    echo '<category>' . implode(' &gt; ', $categoryTitles) . '</category>';
-    echo '</product>';
+    $products[] = $product;
 }
-echo '</products>';
+
+header('Content-Type: application/xml');
+Render::render('pricerunner', compact('products'));

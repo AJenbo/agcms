@@ -1,6 +1,10 @@
 <?php
 
 use AGCMS\Render;
+use AGCMS\ORM;
+use AGCMS\Config;
+use AGCMS\Entity\Page;
+use AGCMS\Entity\Category;
 
 /**
  * Print RSS feed contaning the 20 last changed pages
@@ -16,8 +20,6 @@ Render::addLoadedTable('sider');
 $timestamp = Render::getUpdateTime();
 Render::sendCacheHeader($timestamp);
 
-header('Content-Type: application/rss+xml');
-
 $search = [
     '@<script[^>]*?>.*?</script>@siu', // Strip out javascript
     '@<[\/\!]*?[^<>]*?>@sui',          // Strip out HTML tags
@@ -32,21 +34,15 @@ $replace = [
     ' '
 ];
 
-$email = first(Config::get('emails'))['address'];
-echo '<?xml version="1.0" encoding="utf-8"?>
-<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
-<channel>
-    <atom:link href="' . Config::get('base_url')
-    . '/rss.php" rel="self" type="application/rss+xml" />
-
-    <title>' . Config::get('site_name') . '</title>
-    <link>' . Config::get('base_url') . '/</link>
-    <description>De nyeste sider</description>
-    <language>da</language>
-    <lastBuildDate>' . gmdate('D, d M Y H:i:s', $timestamp)
-    . ' GMT</lastBuildDate>
-    <managingEditor>' . $email . ' ('
-    . Config::get('site_name') . ')</managingEditor>';
+$data = [
+    'url' => Config::get('base_url') . '/rss.php',
+    'title' => Config::get('site_name'),
+    'siteUrl' => Config::get('base_url') . '/',
+    'lastBuildDate' => gmdate('D, d M Y H:i:s', $timestamp) . ' GMT',
+    'email' => first(Config::get('emails'))['address'],
+    'siteName' => Config::get('site_name'),
+    'items' => [],
+];
 
 $time = 0;
 if (isset($_SERVER['HTTP_IF_MODIFIED_SINCE'])) {
@@ -73,43 +69,35 @@ foreach ($pages as $page) {
         continue;
     }
 
-    $title = trim($page->getTitle());
-    if (!$title) {
-        $title = Config::get('site_name');
-    }
-    echo '<item><title>' . htmlspecialchars($title, ENT_COMPAT | ENT_XML1) . '</title><link>'
-    . Config::get('base_url') . encodeUrl($page->getCanonicalLink()) . '</link><description>';
+    $decription = '';
     if ($page->getImagePath() && $page->getImagePath() !== '/images/web/intet-foto.jpg') {
-        echo '&lt;img style="float:left;margin:0 10px 5px 0;" src="'
-        . Config::get('base_url') . encodeUrl($page->getImagePath()) . '" &gt;&lt;p&gt;';
+        $decription .= '<img style="float:left;margin:0 10px 5px 0;" src="'
+            . Config::get('base_url') . encodeUrl($page->getImagePath()) . '" ><p>';
     }
+    $decription .= trim(preg_replace($search, $replace, $page->getExcerpt())) . '</p>';
 
-    $cleaned = trim(preg_replace($search, $replace, $page->getExcerpt()));
-    echo htmlspecialchars($cleaned, ENT_COMPAT | ENT_XML1) . '</description><pubDate>'
-    . gmdate('D, d M Y H:i:s', $page->getTimeStamp()) . ' GMT</pubDate><guid>'
-    . Config::get('base_url') . encodeUrl($page->getCanonicalLink()) . '</guid>';
-
-    $categoryIds = [];
+    $categories = [];
     foreach ($page->getCategories() as $category) {
         do {
-            $categoryIds[] = $category->getId();
+            $categories[] = $category->getTitle();
         } while ($category = $category->getParent());
-    }
-    foreach (array_unique($categoryIds) as $categoryId) {
-        $category = ORM::getOne(Category::class, $categoryId);
-        $cleaned = trim(preg_replace($search, $replace, $category->getTitle()));
-        if ($cleaned) {
-            echo '<category>' . htmlspecialchars($cleaned, ENT_NOQUOTES | ENT_XML1) . '</category>';
-        }
     }
     $brand = $page->getBrand();
     if ($brand) {
-        $cleaned = trim(preg_replace($search, $replace, $brand->getTitle()));
-        if ($cleaned) {
-            echo '<category>' . htmlspecialchars($cleaned, ENT_NOQUOTES | ENT_XML1) . '</category>';
-        }
+        $categories[] = $brand->getTitle();
     }
+    $categories = array_map('trim', $categories);
+    $categories = array_filter($categories);
+    $categories = array_unique($categories);
 
-    echo '</item>';
+    $data['items'][] = [
+        'title' => trim($page->getTitle()) ?: Config::get('site_name'),
+        'link' => Config::get('base_url') . encodeUrl($page->getCanonicalLink()),
+        'description' => $decription,
+        'pubDate' => gmdate('D, d M Y H:i:s', $page->getTimeStamp()) . ' GMT',
+        'categories' => $categories,
+    ];
 }
-echo '</channel></rss>';
+
+header('Content-Type: application/rss+xml');
+Render::render('rss', $data);

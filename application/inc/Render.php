@@ -23,6 +23,8 @@ class Render
     private static $email = '';
     private static $hasProductList = false;
     private static $keywords = [];
+
+    private static $requirement;
     private static $loadedTables = [];
     private static $menu = [];
     private static $pageList = [];
@@ -399,6 +401,16 @@ class Render
             self::$bodyHtml = self::$activeRequirement->getHtml();
         } elseif (self::$pageType === 'index') {
             self::$bodyHtml = ORM::getOne(CustomPage::class, 1)->getHtml();
+        }
+
+        if (self::$activePage) {
+            $requirement = self::$activePage->getRequirement();
+            if ($requirement) {
+                self::$requirement = [
+                    'link' => $requirement->getCanonicalLink(),
+                    'name' => $requirement->getTitle(),
+                ];
+            }
         }
 
         self::cleanData();
@@ -1050,36 +1062,12 @@ class Render
     /**
      * Output the page to the browser
      */
-    public static function outputPage()
+    public static function outputPage(): void
     {
         self::prepareData();
 
-        if ($_SERVER['REQUEST_METHOD'] === 'HEAD') {
-            if (function_exists('apache_setenv')) {
-                apache_setenv('no-gzip', 1);
-            }
-            ini_set('zlib.output_compression', 0);
-            return;
-        }
-
-        $loader = new \Twig_Loader_Filesystem(
-            realpath(__DIR__ . '/../theme/template/')
-        );
-        $twig = new \Twig_Environment($loader);
-
-        $requirement = null;
-        if (self::$activePage) {
-            $requirement = self::$activePage->getRequirement();
-            if ($requirement) {
-                $requirement = [
-                    'link' => $requirement->getCanonicalLink(),
-                    'name' => $requirement->getTitle(),
-                ];
-            }
-        }
-
-        echo $twig->render(
-            self::$pageType . '.html',
+        echo self::render(
+            self::$pageType,
             [
                 'brand'          => self::$brand,
                 'hasProductList' => self::$hasProductList,
@@ -1099,8 +1087,28 @@ class Render
                 'menu'           => self::$menu,
                 'searchMenu'     => self::$searchMenu,
                 'hasItemsInCart' => !empty($_SESSION['faktura']['quantities']),
-                'requirement'    => $requirement,
-            ]
+                'requirement'    => self::$requirement,
+            ],
+            realpath(__DIR__ . '/../theme/templates/')
         );
+    }
+
+    /**
+     * Output the page to the browser
+     */
+    public static function render(string $template = 'index', array $data = [], string $templatePath = ''): void
+    {
+        if ($_SERVER['REQUEST_METHOD'] === 'HEAD') {
+            if (function_exists('apache_setenv')) {
+                apache_setenv('no-gzip', 1);
+            }
+            ini_set('zlib.output_compression', 0);
+            return;
+        }
+
+        $loader = new \Twig_Loader_Filesystem($templatePath ?: __DIR__ . '/templates/');
+        $twig = new \Twig_Environment($loader);
+
+        echo $twig->render($template . '.html', $data);
     }
 }
