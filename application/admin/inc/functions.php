@@ -580,7 +580,7 @@ function katlist(int $id): string
 {
     global $kattree;
     $html = '<a class="menuboxheader" id="katsheader" style="width:' . Config::get('text_width') . 'px;clear:both" onclick="showhidekats(\'kats\',this);">';
-    $hideKats = $_COOKIE['hidekats'] ?? 0
+    $hideKats = $_COOKIE['hidekats'] ?? 0;
     if ($hideKats) {
         $temp = katspath($id);
         $html .= $temp['html'];
@@ -2928,7 +2928,7 @@ writeRichText("beskrivelse", \'\', "", ' . (Config::get('thumb_width') + 32) . '
     //misc end
     //bind start
     $activeKat = $_COOKIE['activekat'] ?? -1;
-    $activeKat = $activeKat >= -1 ? $activeKat : -1
+    $activeKat = $activeKat >= -1 ? $activeKat : -1;
     $html .= katlist($activeKat);
 
     $html .= '</form>';
@@ -2951,7 +2951,7 @@ function getnykat(): array
 
     //binding
     $activeKat = $_COOKIE['activekat'] ?? -1;
-    $activeKat = $activeKat >= -1 ? $activeKat : -1
+    $activeKat = $activeKat >= -1 ? $activeKat : -1;
     $html .= katlist($activeKat);
 
     $html .= '<br /></div></form>';
@@ -3831,8 +3831,8 @@ function generateImage(
     $image->rotate($rotate);
 
     // Output image or save
-	$mimeType = 'image/jpeg';
-	$type = 'jpeg';
+    $mimeType = 'image/jpeg';
+    $type = 'jpeg';
     if (empty($output['type'])) {
         $mimeType = get_mime_type($path);
         if ($mimeType !== 'image/png') {
@@ -3843,9 +3843,9 @@ function generateImage(
         die();
     } elseif ($output['type'] === 'png') {
         $mimeType = 'image/png';
-		$type = 'png';
+        $type = 'png';
     }
-	$image->save($outputPath, $type);
+    $image->save($outputPath, $type);
 
     $width = $image->getWidth();
     $height = $image->getHeight();
