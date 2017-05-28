@@ -1,15 +1,18 @@
 <?php
+
+use Sajax\Sajax;
+
 /**
  * Handle AJAX requests
  */
 
-require_once $_SERVER['DOCUMENT_ROOT'] . '/inc/functions.php';
+require_once __DIR__ . '/inc/Bootstrap.php';
 
-Sajax\Sajax::export(
+Sajax::export(
     [
         'getTable'   => ['method' => 'GET'],
         'getKat'     => ['method' => 'GET'],
         'getAddress' => ['method' => 'GET'],
     ]
 );
-Sajax\Sajax::handleClientRequest(false);
+Sajax::handleClientRequest(false);

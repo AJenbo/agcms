@@ -1,6 +1,6 @@
 <?php
 
-require_once $_SERVER['DOCUMENT_ROOT'] . '/admin/logon.php';
+require_once __DIR__ . '/logon.php';
 
 ?><div id="mainmenu"> <?php
 

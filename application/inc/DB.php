@@ -1,4 +1,7 @@
-<?php
+<?php namespace AGCMS;
+
+use mysqli;
+use Exception;
 
 class DB extends mysqli
 {

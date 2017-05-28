@@ -1,4 +1,4 @@
-<?php
+<?php namespace AGCMS;
 
 class ORM
 {

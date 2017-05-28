@@ -1,4 +1,9 @@
 {
+    "autoload": {
+        "psr-0": {
+            "AGCMS": "inc/"
+        }
+    },
     "repositories": [
         {
             "type": "vcs",

@@ -1,4 +1,6 @@
-<?php
+<?php namespace AGCMS\Entity;
+
+use AGCMS\ORM;
 
 abstract class AbstractEntity implements InterfaceEntity
 {

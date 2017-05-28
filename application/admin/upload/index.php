@@ -11,7 +11,7 @@
  * @link     http://www.arms-gallery.dk/
  */
 
-require_once $_SERVER['DOCUMENT_ROOT'] . '/admin/logon.php';
+require_once __DIR__ . '/../admin/logon.php';
 
 //TODO support bmp
 header('HTTP/1.1 500 Internal Server Error');

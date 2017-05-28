@@ -1,4 +1,11 @@
-<?php
+<?php namespace AGCMS;
+
+use AGCMS\Entity\Category;
+use AGCMS\Entity\CustomPage;
+use AGCMS\Entity\Page;
+use AGCMS\Entity\Table;
+use AGCMS\Entity\Requirement;
+use AGCMS\Entity\Brand;
 
 class Render
 {

@@ -1,9 +1,12 @@
 <?php
+
+use AGCMS\Render;
+
 /**
  * Print an OpenSearch xml file
  */
 
-require_once $_SERVER['DOCUMENT_ROOT'] . '/inc/functions.php';
+require_once __DIR__ . '/inc/Bootstrap.php';
 
 header('Content-Type: application/opensearchdescription+xml');
 Render::sendCacheHeader(Render::getUpdateTime(false));
@@ -17,4 +20,3 @@ echo '<?xml version="1.0" encoding="utf-8"?>';
     echo '<Url type="text/html" template="' .Config::get('base_url')
     .'/?q={searchTerms}" />';
 ?></OpenSearchDescription>
-

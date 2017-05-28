@@ -1,9 +1,14 @@
 <?php
+
+use AGCMS\Entity\CustomPage;
+use AGCMS\ORM;
+use AGCMS\Render;
+
 /**
  * Pages for taking the user thew the payment process
  */
 
-require_once $_SERVER['DOCUMENT_ROOT'] . '/inc/functions.php';
+require_once __DIR__ . '/../inc/Bootstrap.php';
 @include_once _ROOT_ . '/inc/countries.php';
 
 $id = intval($_GET['id'] ?? null);
@@ -842,7 +847,11 @@ Delivery phone: %s</p>
 
         $emailbody .= '</body></html>';
     } else {
-        $emailbody = '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><meta http-equiv="Content-Type" content="text/html; charset=utf-8" /><title>'
+        $emailbody = '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0'
+            . ' Transitional//EN"'
+            . ' "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"><html'
+            . ' xmlns="http://www.w3.org/1999/xhtml"><head>'
+            . '<meta http-equiv="Content-Type" content="text/html; charset=utf-8" /><title>'
             . sprintf(_('Online Invoice #%d: does\'t exist'), $id) . '</title></head><body>' . $shopBody . '<br />'
             . _('Status:') . ' ' . xhtmlEsc($_GET['responseCode'])
             . '<p>' . _('Sincerely the computer') . '</p></body></html></body></html>';

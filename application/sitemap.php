@@ -1,10 +1,12 @@
 <?php
 
+use AGCMS\Render;
+
 /**
  * Print a Google sitemap
  */
 
-require_once $_SERVER['DOCUMENT_ROOT'] . '/inc/functions.php';
+require_once __DIR__ . '/inc/Bootstrap.php';
 
 Render::addLoadedTable('bind');
 Render::addLoadedTable('files');
@@ -15,7 +17,10 @@ Render::sendCacheHeader();
 header('Content-Type:text/xml;charset=utf-8');
 echo '<?xml version="1.0" encoding="utf-8" ?>';
 
-echo '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.sitemaps.org/schemas/sitemap/0.9 http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd"><url><loc>'
+echo '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"'
+    . ' xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"'
+    . ' xsi:schemaLocation="http://www.sitemaps.org/schemas/sitemap/0.9'
+    . ' http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd"><url><loc>'
     . Config::get('base_url')
     . '/</loc><lastmod>' .  date('c', ORM::getOne(CustomPage::class, 1)->getTimeStamp())
     . '</lastmod><changefreq>monthly</changefreq><priority>0.7</priority></url><url><loc>'
@@ -64,7 +69,8 @@ if ($brandIds) {
         "
     );
     foreach ($brands as $brand) {
-        echo '<url><loc>' . htmlspecialchars(Config::get('base_url') . $brand->getCanonicalLink(), ENT_COMPAT | ENT_XML1)
+        echo '<url><loc>' . htmlspecialchars(Config::get('base_url')
+            . $brand->getCanonicalLink(), ENT_COMPAT | ENT_XML1)
             . '</loc><changefreq>weekly</changefreq><priority>0.4</priority></url>';
     }
     unset($brands, $brand);
@@ -73,7 +79,8 @@ unset($brandIds);
 
 $requirements = ORM::getByQuery(Requirement::class, "SELECT * FROM krav");
 foreach ($requirements as $requirement) {
-    echo '<url><loc>' . htmlspecialchars(Config::get('base_url') . $requirement->getCanonicalLink(), ENT_COMPAT | ENT_XML1)
+    echo '<url><loc>' . htmlspecialchars(Config::get('base_url')
+        . $requirement->getCanonicalLink(), ENT_COMPAT | ENT_XML1)
         . '</loc><changefreq>monthly</changefreq><priority>0.2</priority></url>';
 }
 unset($requirements, $requirement);

@@ -1,6 +1,6 @@
 <?php
 
-require_once $_SERVER['DOCUMENT_ROOT'] . '/admin/logon.php';
+require_once __DIR__ . '/logon.php';
 
 Render::sendCacheHeader(filemtime(_ROOT_ . $_GET['path']));
 generateImage(

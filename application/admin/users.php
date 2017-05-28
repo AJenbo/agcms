@@ -12,7 +12,7 @@
  * @link     http://www.arms-gallery.dk/
  */
 
-require_once $_SERVER['DOCUMENT_ROOT'] . '/admin/logon.php';
+require_once __DIR__ . '/logon.php';
 
 Sajax\Sajax::export(['deleteuser' => ['method' => 'POST']]);
 Sajax\Sajax::handleClientRequest();

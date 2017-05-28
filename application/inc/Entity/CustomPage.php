@@ -1,4 +1,7 @@
-<?php
+<?php namespace AGCMS\Entity;
+
+use AGCMS\ORM;
+use AGCMS\Render;
 
 class CustomPage extends AbstractEntity
 {

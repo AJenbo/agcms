@@ -1,4 +1,4 @@
-<?php
+<?php namespace AGCMS;
 
 /**
  * A helper class for communication with ePay
@@ -44,7 +44,6 @@ class EpaymentAdminService
     public function getPayment(string $orderId): Epayment
     {
         $this->openConnection();
-
         $transactionData = $this->getTransactionData($orderId);
 
         return new Epayment($this, $transactionData);

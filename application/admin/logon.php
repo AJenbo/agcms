@@ -1,6 +1,11 @@
 <?php
 
-require_once $_SERVER['DOCUMENT_ROOT'] . '/admin/inc/functions.php';
+require_once __DIR__ . '/../inc/functions.php';
+bootStrap();
+
+// Load admin functions
+require_once _ROOT_ . '/admin/inc/functions.php';
+
 
 //access
 //0:ny, ingen ratigheder.

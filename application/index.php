@@ -1,9 +1,12 @@
 <?php
+
+use AGCMS\Render;
+
 /**
  * Handle request for the site and decide on how to generate the page
  */
 
-require_once $_SERVER['DOCUMENT_ROOT'] . '/inc/functions.php';
+require_once __DIR__ . '/inc/Bootstrap.php';
 
 session_start();
 Render::sendCacheHeader();

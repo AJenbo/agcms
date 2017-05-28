@@ -1,9 +1,12 @@
 <?php
+
+use AGCMS\Render;
+
 /**
  * Print RSS feed contaning the 20 last changed pages
  */
 
-require_once $_SERVER['DOCUMENT_ROOT'] . '/inc/functions.php';
+require_once __DIR__ . '/inc/Bootstrap.php';
 
 Render::addLoadedTable('bind');
 Render::addLoadedTable('files');

@@ -1,9 +1,14 @@
 <?php
+
+use AGCMS\Entity\Page;
+use AGCMS\ORM;
+use AGCMS\Render;
+
 /**
  * Page for sending an order request
  */
 
-require_once $_SERVER['DOCUMENT_ROOT'] . '/inc/functions.php';
+require_once __DIR__ . '/../inc/Bootstrap.php';
 @include_once _ROOT_ . '/inc/countries.php';
 
 // Add item to basket

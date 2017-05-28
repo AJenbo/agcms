@@ -1,46 +1,31 @@
 <?php
+
+use AGCMS\DB;
+use AGCMS\Config;
+use AGCMS\Render;
+use AGCMS\ORM;
+use AGCMS\Entity\Category;
+
+function bootStrap()
+{
+    require_once __DIR__ . '/../vendor/autoload.php';
+
+    defined('_ROOT_') || define('_ROOT_', realpath(__DIR__ . '/..'));
+    ini_set('display_errors', 1);
+    error_reporting(-1);
+    date_default_timezone_set('Europe/Copenhagen');
+    setlocale(LC_ALL, 'da_DK');
+    bindtextdomain('agcms', __DIR__ . '/../theme/locale');
+    bind_textdomain_codeset('agcms', 'UTF-8');
+    textdomain('agcms');
+    mb_language('uni');
+    mb_detect_order('UTF-8, ISO-8859-1');
+    mb_internal_encoding('UTF-8');
+}
+
 /**
  * Declare common functions
  */
-
-defined('_ROOT_') || define('_ROOT_', realpath(__DIR__ . '/..'));
-
-ini_set('display_errors', 1);
-error_reporting(-1);
-date_default_timezone_set('Europe/Copenhagen');
-setlocale(LC_ALL, 'da_DK');
-bindtextdomain('agcms', __DIR__ . '/../theme/locale');
-bind_textdomain_codeset('agcms', 'UTF-8');
-textdomain('agcms');
-mb_language('uni');
-mb_detect_order('UTF-8, ISO-8859-1');
-mb_internal_encoding('UTF-8');
-
-spl_autoload_register(function (string $className) {
-    $classMap = [
-        'AbstractEntity'     => 'Entity/AbstractEntity',
-        'AbstractRenderable' => 'Entity/AbstractRenderable',
-        'Brand'              => 'Entity/Brand',
-        'Category'           => 'Entity/Category',
-        'CustomPage'         => 'Entity/CustomPage',
-        'File'               => 'Entity/File',
-        'InterfaceEntity'    => 'Entity/InterfaceEntity',
-        'Page'               => 'Entity/Page',
-        'Requirement'        => 'Entity/Requirement',
-        'Table'              => 'Entity/Table',
-    ];
-
-    if (isset($classMap[$className])) {
-        $className = $classMap[$className];
-    }
-
-    $file = __DIR__ . '/' . $className . '.php';
-    if (file_exists($file)) {
-        require_once __DIR__ . '/' . $className . '.php';
-    }
-});
-
-require_once __DIR__ . '/../vendor/autoload.php';
 
 function db(DB $overwrite = null): DB
 {
