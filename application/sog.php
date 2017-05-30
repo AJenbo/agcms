@@ -17,4 +17,4 @@ $data = [
 ];
 
 header('Content-Type: application/opensearchdescription+xml');
-Render::render('search', $data);
+Render::output('search', $data);

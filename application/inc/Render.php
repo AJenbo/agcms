@@ -1066,7 +1066,7 @@ class Render
     {
         self::prepareData();
 
-        echo self::render(
+        echo self::output(
             self::$pageType,
             [
                 'brand'          => self::$brand,
@@ -1096,7 +1096,7 @@ class Render
     /**
      * Output the page to the browser
      */
-    public static function render(string $template = 'index', array $data = [], string $templatePath = ''): void
+    public static function output(string $template = 'index', array $data = [], string $templatePath = ''): void
     {
         if ($_SERVER['REQUEST_METHOD'] === 'HEAD') {
             if (function_exists('apache_setenv')) {
@@ -1106,9 +1106,14 @@ class Render
             return;
         }
 
+        echo self::render($template, $data, $templatePath);
+    }
+
+    public static function render(string $template = 'index', array $data = [], string $templatePath = ''): string
+    {
         $loader = new \Twig_Loader_Filesystem($templatePath ?: __DIR__ . '/templates/');
         $twig = new \Twig_Environment($loader);
 
-        echo $twig->render($template . '.html', $data);
+        return $twig->render($template . '.html', $data);
     }
 }

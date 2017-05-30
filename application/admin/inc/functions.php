@@ -1,5 +1,37 @@
 <?php
 
+use AGCMS\Render;
+
+function checkUserLoggedIn()
+{
+    if (empty($_SESSION['_user'])) {
+        if (!empty($_POST['username'])) {
+            $user = db()->fetchOne(
+                "
+                SELECT * FROM `users`
+                WHERE `name` = '" . db()->esc($_POST['username']) . "'
+                AND `access` >= 1
+                "
+            );
+            if ($user && crypt($_POST['password'] ?? '', $user['password']) === $user['password']) {
+                $_SESSION['_user'] = $user;
+            }
+            redirect($_SERVER['REQUEST_URI']);
+        }
+
+        sleep(1);
+        header('HTTP/1.0 401 Unauthorized', true, 401);
+
+        if (empty($_GET['rs']) && empty($_POST['rs'])) {
+            echo Render::render('admin-login');
+            die();
+        }
+
+        echo _('Your login has expired, please reload the page and login again.');
+        die();
+    }
+}
+
 /**
  * Optimize all tables
  *

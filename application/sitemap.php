@@ -102,4 +102,4 @@ foreach ($requirements as $requirement) {
 unset($requirements, $requirement);
 
 header('Content-Type:text/xml;charset=utf-8');
-Render::render('sitemap', compact('urls'));
+Render::output('sitemap', compact('urls'));

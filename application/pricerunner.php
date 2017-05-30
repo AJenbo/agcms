@@ -68,4 +68,4 @@ foreach ($pages as $page) {
 }
 
 header('Content-Type: application/xml');
-Render::render('pricerunner', compact('products'));
+Render::output('pricerunner', compact('products'));

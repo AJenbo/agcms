@@ -1,0 +1,22 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+        <title>Login</title>
+        <link type="text/css" rel="stylesheet" href="style/style.css">
+    </head>
+    <body style="margin:20px;" onload="document.getElementById('form').style.width = document.getElementById('width').offsetWidth+'px';">
+        <form id="form" action="" method="post" style="margin: auto; text-align: right; background-color: #DDDDDD; border: 1px solid #AAAAAA; padding: 10px;">
+            <span id="width">
+                User: <input name="username" /><br />
+                Password: <input type="password" name="password" style="margin-top: 5px;" /><br />
+                <input type="submit" value="Log ind" style="margin-top: 5px;" />
+            </span>
+        </form>
+        <p style="text-align: center; margin-top: 20px;">
+            <a href="#" onclick="alert('Ring til Ole og forklar din situation!');">Lost password?</a>
+            &nbsp;
+            <a href="/admin/newuser.php">Create account</a>
+        </p>
+    </body>
+</html>

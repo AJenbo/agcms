@@ -100,4 +100,4 @@ foreach ($pages as $page) {
 }
 
 header('Content-Type: application/rss+xml');
-Render::render('rss', $data);
+Render::output('rss', $data);
