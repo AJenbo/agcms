@@ -1,5 +1,7 @@
 <?php
 
+use AGCMS\Entity\File;
+
 require_once __DIR__ . '/logon.php';
 
 $file = File::getByPath($_GET['url']);

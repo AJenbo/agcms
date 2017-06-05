@@ -1,10 +1,14 @@
 <?php
 
+use AGCMS\Config;
+use AGCMS\EpaymentAdminService;
+use Sajax\Sajax;
+
 require_once __DIR__ . '/logon.php';
 @include_once _ROOT_ . '/inc/countries.php';
 
 if (!empty($_GET['function']) && $_GET['function'] == 'new') {
-    redirect('faktura.php?id='.newfaktura());
+    redirect('faktura.php?id=' . newfaktura());
 }
 
 $faktura = db()->fetchOne(
@@ -79,7 +83,7 @@ if ($faktura['id'] && $faktura['status'] != 'new') {
     }
 }
 
-Sajax\Sajax::export(
+Sajax::export(
     [
         'getAddress'   => ['method' => 'GET'],
         'sendReminder' => ['method' => 'GET'],
@@ -91,8 +95,7 @@ Sajax\Sajax::export(
         'save'         => ['method' => 'POST'],
     ]
 );
-Sajax\Sajax::handleClientRequest();
-
+Sajax::handleClientRequest();
 ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
@@ -103,13 +106,13 @@ Sajax\Sajax::handleClientRequest();
 <script type="text/javascript" src="javascript/lib/php.min.js"></script>
 <script type="text/javascript" src="/javascript/zipcodedk.js"></script>
 <script type="text/javascript" src="javascript/calendar.js"></script>
-<title><?php echo _('Online Invoice #').$faktura['id']; ?></title>
+<title><?php echo _('Online Invoice #') . $faktura['id']; ?></title>
 <link href="style/mainmenu.css" rel="stylesheet" type="text/css" />
 <link href="style/faktura.css" rel="stylesheet" type="text/css" media="screen" />
 <script type="text/javascript" src="javascript/javascript.js"></script>
 <script type="text/javascript" src="/javascript/sajax.js"></script>
 <script type="text/javascript"><!--
-<?php Sajax\Sajax::showJavascript(); ?>
+<?php Sajax::showJavascript(); ?>
 
 var id = <?php echo $faktura['id']; ?>;
 

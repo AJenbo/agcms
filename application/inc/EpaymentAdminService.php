@@ -1,5 +1,8 @@
 <?php namespace AGCMS;
 
+use SoapClient;
+use stdClass;
+
 /**
  * A helper class for communication with ePay
  *
@@ -72,49 +75,11 @@ class EpaymentAdminService
      */
     private function getTransactionData(string $orderId): stdClass
     {
-        $response = $this->soapClient->gettransactionlist(
-            [
-                'pwd' => $this->password,
-                'merchantnumber' => $this->merchantId,
-                'searchorderid' => $orderId,
-                'status' => 'PAYMENT_NEW',
-                'searchdatestart' => '2014-06-19T00:00:00+02:00',
-                'searchdateend' => date('c'),
-                'epayresponse' => true,
-            ]
-        );
-        if (!empty($response->transactionInformationAry) && (array) $response->transactionInformationAry) {
-            return $response->transactionInformationAry->TransactionInformationType;
-        }
-
-        $response = $this->soapClient->gettransactionlist(
-            [
-                'pwd' => $this->password,
-                'merchantnumber' => $this->merchantId,
-                'searchorderid' => $orderId,
-                'status' => 'PAYMENT_CAPTURED',
-                'searchdatestart' => '2014-06-19T00:00:00+02:00',
-                'searchdateend' => date('c'),
-                'epayresponse' => true,
-            ]
-        );
-        if (!empty($response->transactionInformationAry) && (array) $response->transactionInformationAry) {
-            return $response->transactionInformationAry->TransactionInformationType;
-        }
-
-        $response = $this->soapClient->gettransactionlist(
-            [
-                'pwd' => $this->password,
-                'merchantnumber' => $this->merchantId,
-                'searchorderid' => $orderId,
-                'status' => 'PAYMENT_DELETED',
-                'searchdatestart' => '2014-06-19T00:00:00+02:00',
-                'searchdateend' => date('c'),
-                'epayresponse' => true,
-            ]
-        );
-        if (!empty($response->transactionInformationAry) && (array) $response->transactionInformationAry) {
-            return $response->transactionInformationAry->TransactionInformationType;
+        foreach (['PAYMENT_NEW', 'PAYMENT_CAPTURED', 'PAYMENT_DELETED'] as $status) {
+            $response = $this->soapClient->gettransactionlist($this->getSearchData($orderId, $status));
+            if (!empty($response->transactionInformationAry) && (array) $response->transactionInformationAry) {
+                return $response->transactionInformationAry->TransactionInformationType;
+            }
         }
 
         $transactionData = new stdClass();
@@ -123,6 +88,19 @@ class EpaymentAdminService
         $transactionData->authamount = 0;
 
         return $transactionData;
+    }
+
+    private function getSearchData(string $orderId, string $status): array
+    {
+        return [
+            'pwd' => $this->password,
+            'merchantnumber' => $this->merchantId,
+            'searchorderid' => $orderId,
+            'status' => $status,
+            'searchdatestart' => '2014-06-19T00:00:00+02:00',
+            'searchdateend' => date('c'),
+            'epayresponse' => true,
+        ];
     }
 
     /**
@@ -160,16 +138,14 @@ class EpaymentAdminService
      */
     public function confirm(Epayment $epayment, int $amount): bool
     {
-        $response = $this->soapClient->capture(
-            [
-                'pwd' => $this->password,
-                'merchantnumber' => $this->merchantId,
-                'transactionid' => $epayment->getId(),
-                'amount' => $amount,
-                'epayresponse' => true,
-                'pbsResponse' => true,
-            ]
-        );
+        $response = $this->soapClient->capture([
+            'pwd' => $this->password,
+            'merchantnumber' => $this->merchantId,
+            'transactionid' => $epayment->getId(),
+            'amount' => $amount,
+            'epayresponse' => true,
+            'pbsResponse' => true,
+        ]);
 
         if ($response->captureResult) {
             return true;

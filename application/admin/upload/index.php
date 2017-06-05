@@ -1,4 +1,8 @@
 <?php
+
+use AGCMS\Config;
+use AGCMS\Entity\File;
+
 /**
  * Handle file upload
  *

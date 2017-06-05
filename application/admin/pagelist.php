@@ -1,12 +1,14 @@
 <?php
 
+use Sajax\Sajax;
+
 require_once __DIR__ . '/logon.php';
 
 //TODO run countEmailTo() onload
 
 $kattree = [];
 
-Sajax\Sajax::export(
+Sajax::export(
     [
         'katspath'        => ['method' => 'GET'],
         'siteList_expand' => ['method' => 'GET'],
@@ -14,8 +16,7 @@ Sajax\Sajax::export(
         'getSiteTree'     => ['method' => 'GET'],
     ]
 );
-Sajax\Sajax::handleClientRequest();
-
+Sajax::handleClientRequest();
 ?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
@@ -24,7 +25,7 @@ Sajax\Sajax::handleClientRequest();
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <title>Liste af sider</title>
 <script type="text/javascript"><!--
-<?php Sajax\Sajax::showJavascript(); ?>
+    <?php Sajax::showJavascript(); ?>
 
 --></script>
 <script type="text/javascript" src="javascript/lib/php.min.js"></script>

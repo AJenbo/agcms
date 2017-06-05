@@ -1,5 +1,7 @@
 <?php
 
+use AGCMS\Render;
+
 require_once __DIR__ . '/logon.php';
 
 Render::sendCacheHeader(filemtime(_ROOT_ . $_GET['path']));

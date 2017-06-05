@@ -1,5 +1,8 @@
 <?php
 
+use AGCMS\EpaymentAdminService;
+use TestCase;
+
 class EpaymentAdminServiceTest extends TestCase
 {
     private $epaymentAdminService;

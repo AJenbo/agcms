@@ -1,12 +1,14 @@
 <?php
 
+use AGCMS\Config;
+use Sajax\Sajax;
+
 require_once __DIR__ . '/logon.php';
 
-Sajax\Sajax::export(['saveImage' => ['method' => 'POST']]);
-Sajax\Sajax::handleClientRequest();
+Sajax::export(['saveImage' => ['method' => 'POST']]);
+Sajax::handleClientRequest();
 
 $imagesize = @getimagesize(_ROOT_ . $_GET['path']);
-
 ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
@@ -40,7 +42,7 @@ $imagesize = @getimagesize(_ROOT_ . $_GET['path']);
 <script type="text/javascript" src="javascript/lib/php.min.js"></script>
 <script type="text/javascript" src="/javascript/sajax.js"></script>
 <script type="text/javascript"><!--
-<?php Sajax\Sajax::showJavascript(); ?>
+    <?php Sajax::showJavascript(); ?>
 
 var id = <?php echo $_GET['id'] ?>;
 var mode = '<?php echo $_GET['mode'] ?? '' ?>';

@@ -1,12 +1,13 @@
 <?php
 
-use AGCMS\Render;
 use AGCMS\Config;
-use AGCMS\ORM;
-use AGCMS\Entity\CustomPage;
+use AGCMS\Entity\Brand;
 use AGCMS\Entity\Category;
+use AGCMS\Entity\CustomPage;
 use AGCMS\Entity\Page;
 use AGCMS\Entity\Requirement;
+use AGCMS\ORM;
+use AGCMS\Render;
 
 /**
  * Print a Google sitemap

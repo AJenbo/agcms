@@ -1,5 +1,7 @@
 <?php
 
+use AGCMS\Render;
+
 require_once __DIR__ . '/logon.php';
 
 Render::addLoadedTable('bind');
@@ -149,7 +151,7 @@ foreach (db()->fetchArray("SELECT id, navn FROM `krav`") as $element) {
 
 if (is_numeric(@$_GET['kat'])) {
     if (@$_GET['kat'] > 0) {
-        $kat = db()->fetchOne("SELECT id, navn FROM `kat` WHERE id = ".$_GET['kat']);
+        $kat = db()->fetchOne("SELECT id, navn FROM `kat` WHERE id = " . $_GET['kat']);
     } elseif (@$_GET['kat'] == 0) {
         $kat = ['id' => 0, 'navn' => 'Forside'];
     } else {

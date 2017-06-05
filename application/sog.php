@@ -1,7 +1,7 @@
 <?php
 
-use AGCMS\Render;
 use AGCMS\Config;
+use AGCMS\Render;
 
 /**
  * Print an OpenSearch xml file

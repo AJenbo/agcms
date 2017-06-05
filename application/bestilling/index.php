@@ -1,6 +1,8 @@
 <?php
 
+use AGCMS\Config;
 use AGCMS\Entity\Page;
+use AGCMS\Entity\Table;
 use AGCMS\ORM;
 use AGCMS\Render;
 

@@ -1,9 +1,11 @@
 <?php
 
+use Sajax\Sajax;
+
 require_once __DIR__ . '/logon.php';
 
-Sajax\Sajax::export(['listdirs' => ['method' => 'GET']]);
-Sajax\Sajax::handleClientRequest();
+Sajax::export(['listdirs' => ['method' => 'GET']]);
+Sajax::handleClientRequest();
 
 $pathinfo = pathinfo($_GET['path']);
 
@@ -17,7 +19,7 @@ $pathinfo = pathinfo($_GET['path']);
 <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/prototype/1.7.3.0/prototype.js"></script>
 <script type="text/javascript" src="/javascript/sajax.js"></script>
 <script type="text/javascript"><!--
-<?php Sajax\Sajax::showJavascript(); ?>
+    <?php Sajax::showJavascript(); ?>
 
 var global_dir = '';
 

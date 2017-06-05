@@ -1,5 +1,6 @@
 <?php
 
+use AGCMS\Config;
 use AGCMS\Entity\CustomPage;
 use AGCMS\ORM;
 use AGCMS\Render;

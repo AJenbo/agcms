@@ -1,4 +1,7 @@
 <?php
+
+use Sajax\Sajax;
+
 /**
  * Edit a user
  *
@@ -13,11 +16,10 @@
 
 require_once __DIR__ . '/logon.php';
 
-Sajax\Sajax::export(['updateuser' => ['method' => 'POST']]);
-Sajax\Sajax::handleClientRequest();
+Sajax::export(['updateuser' => ['method' => 'POST']]);
+Sajax::handleClientRequest();
 
-$user = db()->fetchOne("SELECT *, UNIX_TIMESTAMP(`lastlogin`) AS 'lastlogin' FROM `users` WHERE id = ".$_GET['id']);
-
+$user = db()->fetchOne("SELECT *, UNIX_TIMESTAMP(`lastlogin`) AS 'lastlogin' FROM `users` WHERE id = " . $_GET['id']);
 ?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
@@ -29,7 +31,7 @@ echo _('Edit').' '.$user['fullname'];
 <script type="text/javascript"><!--
 id = <?php echo $_GET['id'] ?>;
 
-<?php Sajax\Sajax::showJavascript(); ?>
+    <?php Sajax::showJavascript(); ?>
 
 function updateuser() {
     if ($('password_new').value != $('password2').value) {

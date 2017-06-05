@@ -1,5 +1,7 @@
 <?php namespace AGCMS;
 
+use stdClass;
+
 class Epayment
 {
     /**
@@ -150,9 +152,7 @@ class Epayment
      */
     public function confirm(int $amount = null): bool
     {
-        if (!$amount) {
-            $amount = $this->amount;
-        }
+        $amount = $amount === null ? $amount : $this->amount;
 
         if ($this->amountCaptured) {
             return true; // TODO can we not capture multiple times, should substract it form $amount?
@@ -162,6 +162,11 @@ class Epayment
             return false;
         }
 
+        $this->doCapture($amount);
+    }
+
+    private function doCapture(int $amount): bool
+    {
         $success = $this->service->confirm($this, $amount);
         if (!$success) {
             $this->error = true;

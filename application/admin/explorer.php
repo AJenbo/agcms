@@ -1,5 +1,8 @@
 <?php
 
+use AGCMS\Config;
+use Sajax\Sajax;
+
 require_once __DIR__ . '/logon.php';
 
 
@@ -20,8 +23,8 @@ if (empty($_COOKIE['admin_dir']) || !is_dir(_ROOT_ . @$_COOKIE['admin_dir'])) {
     @$_COOKIE['admin_dir'] = '/images';
 }
 
-Sajax\Sajax::export(
-    [
+Sajax::export(
+        [
         'listdirs'     => ['method' => 'GET'],
         'searchfiles'  => ['method' => 'GET'],
         'showfiles'    => ['method' => 'GET'],
@@ -32,7 +35,7 @@ Sajax\Sajax::export(
         'renamefile'   => ['method' => 'POST'],
     ]
 );
-Sajax\Sajax::handleClientRequest();
+Sajax::handleClientRequest();
 
 if (@$_COOKIE['qpath'] || @$_COOKIE['qalt'] || @$_COOKIE['qtype']) {
     $showfiles = searchfiles(@$_COOKIE['qpath'], @$_COOKIE['qalt'], @$_COOKIE['qtype']);
@@ -58,7 +61,7 @@ if (@$_COOKIE['qpath'] || @$_COOKIE['qalt'] || @$_COOKIE['qtype']) {
 <script type="text/javascript"><!--
 var rte = '<?php echo @$_GET['rte']; ?>';
 var returnid = '<?php echo @$_GET['returnid']; ?>';
-<?php Sajax\Sajax::showJavascript(); ?>
+<?php Sajax::showJavascript(); ?>
 
 <?php echo $showfiles['javascript']; ?>
 

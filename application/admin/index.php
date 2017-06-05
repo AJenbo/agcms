@@ -1,10 +1,14 @@
 <?php
 
+use AGCMS\Config;
+use AGCMS\Render;
+use Sajax\Sajax;
+
 require_once __DIR__ . '/logon.php';
 
 $kattree = [];
 
-Sajax\Sajax::export(
+Sajax::export(
     [
         'countEmailTo'                      => ['method' => 'GET'],
         'get_mail_size'                     => ['method' => 'GET'],

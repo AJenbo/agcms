@@ -1,5 +1,8 @@
 <?php
 
+use AGCMS\Config;
+use TCPDF;
+
 require_once __DIR__ . '/logon.php';
 @include_once _ROOT_ . '/vendor/tecnickcom/tcpdf/examples/lang/dan.php';
 @include_once _ROOT_ . '/inc/countries.php';
@@ -10,7 +13,7 @@ if ($_GET['id'] > 0) {
     die(_('Wrong id.'));
 }
 
-$faktura = db()->fetchOne("SELECT *, UNIX_TIMESTAMP(`date`) AS `date`, UNIX_TIMESTAMP(`paydate`) AS `paydate` FROM `fakturas` WHERE `id` = ".$id." AND `status` != 'new'");
+$faktura = db()->fetchOne("SELECT *, UNIX_TIMESTAMP(`date`) AS `date`, UNIX_TIMESTAMP(`paydate`) AS `paydate` FROM `fakturas` WHERE `id` = " . $id . " AND `status` != 'new'");
 if (!$faktura) {
     die(_('Can\'t print.'));
 }
@@ -107,7 +110,7 @@ $pdf->Line(152.5, 12, 152.5, 74.5);
 $address = '';
 $address .= $faktura['navn'];
 if ($faktura['att']) {
-    $address .= "\n"._('Attn.:').' '.$faktura['att'];
+    $address .= "\n" . _('Attn.:') . ' ' . $faktura['att'];
 }
 if ($faktura['adresse']) {
     $address .= "\n".$faktura['adresse'];
@@ -121,7 +124,7 @@ if ($faktura['postnr']) {
     $address .= "\n".$faktura['by'];
 }
 if ($faktura['land'] && $faktura['land'] != 'DK') {
-    $address .= "\n"._($countries[$faktura['land']]);
+    $address .= "\n" . _($countries[$faktura['land']]);
 }
 
 $pdf->SetMargins(19, 0, 0);
@@ -134,7 +137,7 @@ $pdf->Write(0, trim($address));
 $address = '';
 $address .= $faktura['postname'];
 if ($faktura['postatt']) {
-    $address .= "\n"._('Attn.:').' '.$faktura['postatt'];
+    $address .= "\n" . _('Attn.:') . ' ' . $faktura['postatt'];
 }
 if ($faktura['postaddress']) {
     $address .= "\n".$faktura['postaddress'];
@@ -151,7 +154,7 @@ if ($faktura['postpostalcode']) {
     $address .= "\n".$faktura['postcity'];
 }
 if ($faktura['land'] && $faktura['land'] != 'DK') {
-    $address .= "\n"._($countries[$faktura['land']]);
+    $address .= "\n" . _($countries[$faktura['land']]);
 }
 
 if ($address) {
@@ -159,7 +162,7 @@ if ($address) {
     $pdf->Write(0, "\n");
     $pdf->SetY(30.6);
     $pdf->SetFont('times', 'BI', 10);
-    $pdf->Write(0, _('Delivery address:')."\n");
+    $pdf->Write(0, _('Delivery address:') . "\n");
     $pdf->SetFont('times', '', 11);
     $pdf->Write(0, trim($address));
 }
@@ -169,12 +172,12 @@ $pdf->SetFont('times', '', 10);
 $pdf->SetMargins(8, 9, 8);
 $pdf->Write(0, "\n");
 $pdf->SetY(90.5);
-$info = '<strong>'._('Date').':</strong> '.date(_('m/d/Y'), $faktura['date']);
+$info = '<strong>' . _('Date') . ':</strong> ' . date(_('m/d/Y'), $faktura['date']);
 if ($faktura['iref']) {
-    $info .= '       <strong>'._('Our ref.:').'</strong> '.$faktura['iref'];
+    $info .= '       <strong>' . _('Our ref.:') . '</strong> ' . $faktura['iref'];
 }
 if ($faktura['eref']) {
-    $info .= '       <strong>'._('Their ref.:').'</strong> '.$faktura['eref'];
+    $info .= '       <strong>' . _('Their ref.:') . '</strong> ' . $faktura['eref'];
 }
 $pdf->writeHTML($info);
 
@@ -182,7 +185,7 @@ $pdf->writeHTML($info);
 $pdf->SetFont('times', '', 26);
 $pdf->Write(0, "\n");
 $pdf->SetY(85);
-$pdf->writeHTML('<strong>'._('Online Invoice').'</strong> '.$faktura['id'], false, false, false, false, 'R');
+$pdf->writeHTML('<strong>' . _('Online Invoice') . '</strong> ' . $faktura['id'], false, false, false, false, 'R');
 
 //Invoice table
 $pdf->SetFont('times', '', 10);
@@ -240,13 +243,13 @@ $pdf->Cell( 29, 6, _('VAT Amount'), 'RL', 0, 'R');
 $pdf->Cell( 34, 6, number_format($netto*$faktura['momssats'], 2, ',', ''), 'RL', 1, 'R');
 */
 $pdf->Cell(24, 6, '', 'RL', 0);
-$pdf->Cell(106, 6, ($faktura['momssats']*100)._('% VAT is: ').number_format($netto*$faktura['momssats'], 2, ',', ''), 'RL', 0);
+$pdf->Cell(106, 6, ($faktura['momssats'] * 100) . _('% VAT is: ') . number_format($netto * $faktura['momssats'], 2, ',', ''), 'RL', 0);
 //Forsendelse
 $pdf->Cell(29, 6, _('Shipping'), 'RL', 0, 'R');
 $pdf->Cell(34, 6, number_format($faktura['fragt'], 2, ',', ''), 'RL', 1, 'R');
 
 $pdf->SetFont('times', '', 10);
-$pdf->MultiCell(130, 9, '<strong>'._('Payment Terms:').'</strong> '._('Net cash at invoice reception.').'<small><br>'._('In case of payment later than the stated deadline, 2% interest will be added per. started months.').'</small>', 1, 'L', false, 0, '', '', false, 8, true, false);
+$pdf->MultiCell(130, 9, '<strong>' . _('Payment Terms:') . '</strong> ' . _('Net cash at invoice reception.') . '<small><br>' . _('In case of payment later than the stated deadline, 2% interest will be added per. started months.') . '</small>', 1, 'L', false, 0, '', '', false, 8, true, false);
 $pdf->SetFont('times', 'B', 11);
 $pdf->Cell(29, 9, _('TO PAY'), 1, 0, 'C');
 $pdf->SetFont('times', '', 11);
@@ -257,19 +260,19 @@ $note = '';
 if ($faktura['status'] == 'accepted') {
     $note .= _('Paid online');
     if ($faktura['paydate']) {
-        $note .= ' d. '.date(_('m/d/Y'), $faktura['paydate']);
+        $note .= ' d. ' . date(_('m/d/Y'), $faktura['paydate']);
     }
     $note .= "\n";
 } elseif ($faktura['status'] == 'giro') {
     $note .= _('Paid via giro');
     if ($faktura['paydate']) {
-        $note .= ' d. '.date(_('m/d/Y'), $faktura['paydate']);
+        $note .= ' d. ' . date(_('m/d/Y'), $faktura['paydate']);
     }
     $note .= "\n";
 } elseif ($faktura['status'] == 'cash') {
     $note .= _('Paid in cash');
     if ($faktura['paydate']) {
-        $note .= ' d. '.date(_('m/d/Y'), $faktura['paydate']);
+        $note .= ' d. ' . date(_('m/d/Y'), $faktura['paydate']);
     }
     $note .= "\n";
 }
@@ -278,7 +281,7 @@ $note .= $faktura['note'];
 
 if ($note) {
     $pdf->SetFont('times', 'B', 10);
-    $pdf->Write(0, "\n"._('Note:')."\n");
+    $pdf->Write(0, "\n" . _('Note:') . "\n");
     $pdf->SetFont('times', '', 10);
     $pdf->Write(0, $note);
 }

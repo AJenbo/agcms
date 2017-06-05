@@ -1,9 +1,12 @@
 <?php
 
+use AGCMS\Render;
+use Sajax\Sajax;
+
 require_once __DIR__ . '/logon.php';
 
-Sajax\Sajax::export(['fileExists' => ['method' => 'GET', 'asynchronous' => false, 'uri' => '/admin/file-upload.php']]);
-Sajax\Sajax::handleClientRequest();
+Sajax::export(['fileExists' => ['method' => 'GET', 'asynchronous' => false, 'uri' => '/admin/file-upload.php']]);
+Sajax::handleClientRequest();
 
 Render::sendCacheHeader(Render::getUpdateTime(false));
 
@@ -19,7 +22,7 @@ if (empty($_COOKIE['admin_dir']) || !is_dir(_ROOT_ . @$_COOKIE['admin_dir'])) {
 <title><?php echo _('File upload'); ?></title>
 <script type="text/javascript" src="/javascript/sajax.js"></script>
 <script type="text/javascript"><!--
-<?php Sajax\Sajax::showJavascript(); ?>
+    <?php Sajax::showJavascript(); ?>
 
 var maxbyte = <?php
 

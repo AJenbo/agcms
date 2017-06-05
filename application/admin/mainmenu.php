@@ -6,30 +6,30 @@ require_once __DIR__ . '/logon.php';
 
 if (!empty($_GET['side'])) {
     if ($_GET['side'] == 'redigerside') {
-        $activityButtons[] = '<li><a onclick="updateSide('.$_GET['id'].');"><img src="images/disk.png" width="16" height="16" alt="" /> '._('Save page').'</a></li>';
+        $activityButtons[] = '<li><a onclick="updateSide(' . $_GET['id'] . ');"><img src="images/disk.png" width="16" height="16" alt="" /> ' . _('Save page') . '</a></li>';
     } elseif ($_GET['side'] == 'redigerkat') {
-        $activityButtons[] = '<li><a onclick="updateKat('.$_GET['id'].');"><img src="images/disk.png" width="16" height="16" alt="" /> '._('Save category').'</a></li>';
+        $activityButtons[] = '<li><a onclick="updateKat(' . $_GET['id'] . ');"><img src="images/disk.png" width="16" height="16" alt="" /> ' . _('Save category') . '</a></li>';
     } elseif ($_GET['side'] == 'redigerFrontpage') {
-        $activityButtons[] = '<li><a onclick="updateForside();"><img src="images/disk.png" width="16" height="16" alt="" /> '._('Save page').'</a></li>';
+        $activityButtons[] = '<li><a onclick="updateForside();"><img src="images/disk.png" width="16" height="16" alt="" /> ' . _('Save page') . '</a></li>';
     } elseif ($_GET['side'] == 'redigerSpecial') {
-        $activityButtons[] = '<li><a onclick="updateSpecial('.$_GET['id'].');"><img src="images/disk.png" width="16" height="16" alt="" /> '._('Save page').'</a></li>';
+        $activityButtons[] = '<li><a onclick="updateSpecial(' . $_GET['id'] . ');"><img src="images/disk.png" width="16" height="16" alt="" /> ' . _('Save page') . '</a></li>';
     } elseif ($_GET['side'] == 'editContact') {
         $activityButtons[] = '<li><a onclick="updateContact('.$_GET['id'].');"><img src="images/disk.png" width="16" height="16" alt="" /> '._('Save contact').'</a></li>';
     } elseif ($_GET['side'] == 'nyside') {
         $activityButtons[] = '<li><a onclick="opretSide();"><img src="images/disk.png" width="16" height="16" alt="" /> '._('Save page').'</a></li>';
     } elseif ($_GET['side'] == 'nykat') {
-        $activityButtons[] = '<li><a onclick="save_ny_kat();"><img src="images/disk.png" width="16" height="16" alt="" /> '._('Save category').'</a></li>';
+        $activityButtons[] = '<li><a onclick="save_ny_kat();"><img src="images/disk.png" width="16" height="16" alt="" /> ' . _('Save category') . '</a></li>';
     } elseif ($_GET['side'] == 'nykrav' || $_GET['side'] == 'editkrav') {
-        $activityButtons[] = '<li><a onclick="save_krav();"><img src="images/disk.png" width="16" height="16" alt="" /> '._('Save requirement').'</a></li>';
+        $activityButtons[] = '<li><a onclick="save_krav();"><img src="images/disk.png" width="16" height="16" alt="" /> ' . _('Save requirement') . '</a></li>';
     } elseif ($_GET['side'] == 'listsort' && isset($_GET['id'])) {
-        $activityButtons[] = '<li><a onclick="saveListOrder('.$_GET['id'].');"><img src="images/disk.png" width="16" height="16" alt="" /> '._('Save list').'</a></li>';
+        $activityButtons[] = '<li><a onclick="saveListOrder(' . $_GET['id'] . ');"><img src="images/disk.png" width="16" height="16" alt="" /> ' . _('Save list') . '</a></li>';
     } elseif ($_GET['side'] == 'newemail' || $_GET['side'] == 'editemail') {
-        $activityButtons[] = '<li><a onclick="saveEmail();"><img src="images/disk.png" width="16" height="16" alt="" /> '._('Save e-mail').'</a></li>';
-        $activityButtons[] = '<li><a onclick="sendEmail();"><img src="images/email_go.png" width="16" height="16" alt="" /> '._('Send e-mail').'</a></li>';
+        $activityButtons[] = '<li><a onclick="saveEmail();"><img src="images/disk.png" width="16" height="16" alt="" /> ' . _('Save e-mail') . '</a></li>';
+        $activityButtons[] = '<li><a onclick="sendEmail();"><img src="images/email_go.png" width="16" height="16" alt="" /> ' . _('Send e-mail') . '</a></li>';
     }
 }
 
-$activityButtons[] = '<li id="loading" style="cursor:default;"><img src="images/loading.gif" width="16" height="16" alt="Processing" /> '._('Loading').'</li>';
+$activityButtons[] = '<li id="loading" style="cursor:default;"><img src="images/loading.gif" width="16" height="16" alt="Processing" /> ' . _('Loading') . '</li>';
 
 if ($activityButtons) {
     ?><a class="menuboxheader" href="" onclick="showhide('Activity');"><?php echo _('Handlinger'); ?></a>

@@ -1,6 +1,18 @@
 <?php
 
+use AGCMS\Config;
+use AGCMS\Entity\Brand;
+use AGCMS\Entity\Category;
+use AGCMS\Entity\CustomPage;
+use AGCMS\Entity\File;
+use AGCMS\Entity\Page;
+use AGCMS\Entity\Requirement;
+use AGCMS\ORM;
 use AGCMS\Render;
+use AJenbo\Imap;
+use AJenbo\Image;
+use HTMLPurifier_Config;
+use HTMLPurifier;
 
 function checkUserLoggedIn()
 {
@@ -444,9 +456,9 @@ function getNewEmail(): string
  */
 function getEmail(int $id): string
 {
-    $newsmail = db()->fetchOne('SELECT * FROM `newsmails` WHERE `id` = '.$id);
+    $newsmail = db()->fetchOne('SELECT * FROM `newsmails` WHERE `id` = ' . $id);
 
-    $html = '<div id="headline">'._('Edit newsletter').'</div>';
+    $html = '<div id="headline">' . _('Edit newsletter') . '</div>';
 
     if ($newsmail['sendt'] == 0) {
         $html .= '<form action="" method="post" onsubmit="return sendNews();"><input type="submit" accesskey="m" style="width:1px; height:1px; position:absolute; top: -20px; left:-20px;" />';
@@ -458,8 +470,8 @@ function getEmail(int $id): string
     //TODO error if value = ''
     if ($newsmail['sendt'] == 0) {
         if (count(Config::get('emails')) > 1) {
-            $html .= _('Sender:').' <select id="from">';
-            $html .= '<option value="">'._('Select sender').'</option>';
+            $html .= _('Sender:') . ' <select id="from">';
+            $html .= '<option value="">' . _('Select sender') . '</option>';
             foreach (array_keys(Config::get('emails', [])) as $email) {
                 $html .= '<option value="'.$email.'">'.$email.'</option>';
             }
@@ -474,9 +486,9 @@ function getEmail(int $id): string
 
     //Modtager
     if ($newsmail['sendt'] == 1) {
-        $html .= '<br /><br />'._('Recipient:');
+        $html .= '<br /><br />' . _('Recipient:');
     } else {
-        $html .= '<br />'._('Restrict recipients to:');
+        $html .= '<br />' . _('Restrict recipients to:');
     }
     $html .= '<div id="interests">';
     $newsmail['interests_array'] = explode('<', $newsmail['interests']);
@@ -915,8 +927,16 @@ function isinuse(string $path): bool
 {
     $result = db()->fetchOne(
         "
-        (SELECT id FROM `sider` WHERE `text` LIKE '%$path%' OR `beskrivelse` LIKE '%$path%' OR `billed` LIKE '$path' LIMIT 1)
-        UNION (SELECT id FROM `template` WHERE `text` LIKE '%$path%' OR `beskrivelse` LIKE '%$path%' OR `billed` LIKE '$path' LIMIT 1)
+        (
+            SELECT id FROM `sider`
+            WHERE `text` LIKE '%$path%' OR `beskrivelse` LIKE '%$path%' OR `billed`
+            LIKE '$path' LIMIT 1
+        )
+        UNION (
+            SELECT id FROM `template`
+            WHERE `text` LIKE '%$path%' OR `beskrivelse` LIKE '%$path%' OR `billed`
+            LIKE '$path' LIMIT 1
+        )
         UNION (SELECT id FROM `special` WHERE `text` LIKE '%$path%' LIMIT 1)
         UNION (SELECT id FROM `krav` WHERE `text` LIKE '%$path%' LIMIT 1)
         UNION (SELECT id FROM `maerke` WHERE `ico` LIKE '$path' LIMIT 1)

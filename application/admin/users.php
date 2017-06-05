@@ -1,5 +1,7 @@
 <?php
 
+use Sajax\Sajax;
+
 /**
  * List users
  *
@@ -14,9 +16,8 @@
 
 require_once __DIR__ . '/logon.php';
 
-Sajax\Sajax::export(['deleteuser' => ['method' => 'POST']]);
-Sajax\Sajax::handleClientRequest();
-
+Sajax::export(['deleteuser' => ['method' => 'POST']]);
+Sajax::handleClientRequest();
 ?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
@@ -28,7 +29,7 @@ Sajax\Sajax::handleClientRequest();
 <link href="style/mainmenu.css" rel="stylesheet" type="text/css" />
 <link href="style/style.css" rel="stylesheet" type="text/css" />
 <script type="text/javascript"><!--
-<?php Sajax\Sajax::showJavascript(); ?>
+    <?php Sajax::showJavascript(); ?>
 
 function deleteuser(id, name)
 {

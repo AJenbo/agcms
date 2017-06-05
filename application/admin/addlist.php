@@ -1,5 +1,7 @@
 <?php
 
+use AGCMS\Entity\Table;
+
 require_once __DIR__ . '/logon.php';
 
 if (!empty($_POST)) {

@@ -1,10 +1,9 @@
 <?php
 
-use AGCMS\Render;
-use AGCMS\ORM;
 use AGCMS\Config;
 use AGCMS\Entity\Page;
-use AGCMS\Entity\Category;
+use AGCMS\ORM;
+use AGCMS\Render;
 
 /**
  * Print RSS feed contaning the 20 last changed pages

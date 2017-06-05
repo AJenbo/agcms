@@ -1,11 +1,15 @@
 <?php namespace AGCMS;
 
+use AGCMS\Config;
+use AGCMS\Entity\Brand;
 use AGCMS\Entity\Category;
 use AGCMS\Entity\CustomPage;
 use AGCMS\Entity\Page;
-use AGCMS\Entity\Table;
 use AGCMS\Entity\Requirement;
-use AGCMS\Entity\Brand;
+use AGCMS\Entity\Table;
+use AGCMS\ORM;
+use Twig_Loader_Filesystem;
+use Twig_Environment;
 
 class Render
 {
@@ -52,8 +56,6 @@ class Render
 
     /**
      * Do routing
-     *
-     * @param string $url The requested url
      */
     public static function doRouting()
     {
@@ -193,22 +195,29 @@ class Render
         }
 
         if ($checkDb) {
-            $timeOffset = db()->getTimeOffset();
-            $where = " WHERE 1";
-            if (self::$adminOnlyTables) {
-                $where .= " AND Name NOT IN('" . implode("', '", self::$adminOnlyTables) . "')";
-            }
-            if (self::$loadedTables) {
-                $where .= " AND Name IN('" . implode("', '", array_keys(self::$loadedTables)) . "')";
-            }
-            $tables = db()->fetchArray("SHOW TABLE STATUS" . $where);
-            foreach ($tables as $table) {
-                $updateTime = max($updateTime, strtotime($table['Update_time']) + $timeOffset);
-            }
+            $updateTime = self::checkDbUpdate($updateTime);
         }
 
         if ($updateTime <= 0) {
             return time();
+        }
+
+        return $updateTime;
+    }
+
+    private static function checkDbUpdate($updateTime)
+    {
+        $timeOffset = db()->getTimeOffset();
+        $where = " WHERE 1";
+        if (self::$adminOnlyTables) {
+            $where .= " AND Name NOT IN('" . implode("', '", self::$adminOnlyTables) . "')";
+        }
+        if (self::$loadedTables) {
+            $where .= " AND Name IN('" . implode("', '", array_keys(self::$loadedTables)) . "')";
+        }
+        $tables = db()->fetchArray("SHOW TABLE STATUS" . $where);
+        foreach ($tables as $table) {
+            $updateTime = max($updateTime, strtotime($table['Update_time']) + $timeOffset);
         }
 
         return $updateTime;
@@ -729,7 +738,7 @@ class Render
             $where .= " AND pris < " . $maxpris;
         }
         if ($antiWords) {
-            $where .= " AND !MATCH (navn, text, beskrivelse) AGAINST('" . db()->esc($antiWords) ."') > 0
+            $where .= " AND !MATCH (navn, text, beskrivelse) AGAINST('" . db()->esc($antiWords) . "') > 0
             AND `navn` NOT LIKE '%$simpleQuery%'
             AND `text` NOT LIKE '%$simpleQuery%'
             AND `beskrivelse` NOT LIKE '%$simpleQuery%'
@@ -1066,7 +1075,7 @@ class Render
     {
         self::prepareData();
 
-        echo self::output(
+        self::output(
             self::$pageType,
             [
                 'brand'          => self::$brand,
@@ -1078,7 +1087,6 @@ class Render
                 'keywords'       => self::$keywords,
                 'crumbs'         => self::$crumbs,
                 'content'        => self::$bodyHtml,
-                'brand'          => self::$brand,
                 'categoryId'     => self::$activeCategory ? self::$activeCategory->getId() : 0,
                 'pageId'         => self::$activePage ? self::$activePage->getId() : 0,
                 'headline'       => self::$headline,
@@ -1111,8 +1119,8 @@ class Render
 
     public static function render(string $template = 'index', array $data = [], string $templatePath = ''): string
     {
-        $loader = new \Twig_Loader_Filesystem($templatePath ?: __DIR__ . '/templates/');
-        $twig = new \Twig_Environment($loader);
+        $loader = new Twig_Loader_Filesystem($templatePath ?: __DIR__ . '/templates/');
+        $twig = new Twig_Environment($loader);
 
         return $twig->render($template . '.html', $data);
     }
