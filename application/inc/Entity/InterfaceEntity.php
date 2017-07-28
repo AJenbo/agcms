@@ -3,14 +3,14 @@
 interface InterfaceEntity
 {
     /**
-     * Construct the entity
+     * Construct the entity.
      *
      * @param array $data The entity data
      */
     public function __construct(array $data);
 
     /**
-     * Map data from DB table to entity
+     * Map data from DB table to entity.
      *
      * @param array The data from the database
      *
@@ -19,21 +19,21 @@ interface InterfaceEntity
     public static function mapFromDB(array $data): array;
 
     /**
-     * Get the entity ID
+     * Get the entity ID.
      *
      * @return int
      */
     public function getId(): int;
 
     /**
-     * Save entity to database
+     * Save entity to database.
      *
      * @return self
      */
     public function save(): self;
 
     /**
-     * Delete entity
+     * Delete entity.
      */
-    public function delete();
+    public function delete(): bool;
 }

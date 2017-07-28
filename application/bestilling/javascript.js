@@ -1,6 +1,7 @@
 document.getElementsByClassName = getElementsByClassName;
 
-function getElementsByClassName(name) {
+function getElementsByClassName(name)
+{
     var allelems, retary, i;
     retary = new Array();
     allelems = document.getElementsByTagName("*");

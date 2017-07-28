@@ -3,12 +3,12 @@
 abstract class AbstractRenderable extends AbstractEntity
 {
     /**
-     * The title
+     * The title.
      */
     protected $title;
 
     /**
-     * Set the title
+     * Set the title.
      *
      * @param string $title The title
      *
@@ -22,7 +22,7 @@ abstract class AbstractRenderable extends AbstractEntity
     }
 
     /**
-     * Get the title
+     * Get the title.
      *
      * @return string
      */
@@ -32,14 +32,14 @@ abstract class AbstractRenderable extends AbstractEntity
     }
 
     /**
-     * Get the url slug
+     * Get the url slug.
      *
      * @return string
      */
     abstract public function getSlug(): string;
 
     /**
-     * Get canonical url for this entity
+     * Get canonical url for this entity.
      *
      * @return string
      */

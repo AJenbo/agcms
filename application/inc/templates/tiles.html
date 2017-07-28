@@ -1,0 +1,17 @@
+{% extends "list.html" %}
+
+{% block products %}
+<table cellspacing="0" id="liste">
+{% for item in pageList %}
+{% if loop.index is even %}<tr>{% endif %}
+<td>
+    <a href="{{item.link}}">
+        {% if item.icon %}<img src="{{item.icon}}" alt="{{item.name}}" title="" /><br />{% endif %}
+        {{item.name}}<br />
+        {% include 'price.html' with {'price': item.price} %}
+    </a>
+</td>
+{% if loop.index is odd or loop.last %}</tr>{% endif %}
+{% endfor %}
+</table>
+{% endblock %}

@@ -331,7 +331,7 @@ CREATE TABLE IF NOT EXISTS `tilbehor` (
   `side` smallint(5) unsigned NOT NULL DEFAULT '0',
   `tilbehor` smallint(5) unsigned NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`),
-  KEY `side` (`side`),
+  UNIQUE KEY `name` (`name`, `tilbehor`),
   KEY `tilbehor` (`tilbehor`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_danish_ci ;
 

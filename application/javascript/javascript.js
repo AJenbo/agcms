@@ -1,11 +1,13 @@
-function x_getTable() {
+function x_getTable()
+{
     sajax_do_call('getTable', arguments, "GET", true, "/ajax.php");
     return false;
 }
 
-function getAddress(phonenumber, function_name) {
-    phonenumber = phonenumber.replace('/\s/', '');
-    phonenumber = phonenumber.replace('/^[+]45/', '');
+function getAddress(phonenumber, function_name)
+{
+    phonenumber= phonenumber.replace('/\s/', '');
+    phonenumber= phonenumber.replace('/^[+]45/', '');
     if(!phonenumber) {
         alert('De skal udfylde telefon nummeret først.');
         return false;
@@ -17,17 +19,20 @@ function getAddress(phonenumber, function_name) {
     x_getAddress(phonenumber, function_name);
 }
 
-function x_getAddress() {
+function x_getAddress()
+{
     sajax_do_call('getAddress', arguments, "GET", true, "/ajax.php");
     return false;
 }
 
-function x_getKat() {
+function x_getKat()
+{
     sajax_do_call('getKat', arguments, "GET", true, "/ajax.php");
     return false;
 }
 
-function inject_html(data) {
+function inject_html(data)
+{
     if(data['error'] || !data) {
         alert(data['error']);
     } else {

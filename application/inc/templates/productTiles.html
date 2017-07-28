@@ -1,0 +1,16 @@
+<table cellspacing="0" id="liste">
+{% for product in products %}
+{% if loop.index is even %}
+<tr>
+{% endif %}
+    <td>
+        <a href="{{product.link}}">
+            {% if product.icon %}<img src="{{product.icon}}" alt="{{product.name}}" title="" /><br />{% endif %}
+            {{product.name}}<br />
+            {% include 'price.html' with {'price': product.price} %}
+        </a>
+    </td>
+{% if loop.index is not divisibleby(3) or loop.last %}
+</tr>
+{% endif %}
+</table>

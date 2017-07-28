@@ -1,28 +1,27 @@
 <?php namespace AGCMS\Entity;
 
 use AGCMS\ORM;
-use AGCMS\Render;
 
 class Brand extends AbstractRenderable
 {
     /**
-     * Table name in database
+     * Table name in database.
      */
     const TABLE_NAME = 'maerke';
 
     // Backed by DB
     /**
-     * The external link for this brand
+     * The external link for this brand.
      */
     private $link;
 
     /**
-     * The path for the brand icon
+     * The path for the brand icon.
      */
     private $iconPath;
 
     /**
-     * Construct the entity
+     * Construct the entity.
      *
      * @param array $data The entity data
      */
@@ -35,7 +34,7 @@ class Brand extends AbstractRenderable
     }
 
     /**
-     * Map data from DB table to entity
+     * Map data from DB table to entity.
      *
      * @param array The data from the database
      *
@@ -52,8 +51,9 @@ class Brand extends AbstractRenderable
     }
 
     // Getters and setters
+
     /**
-     * Set external url link
+     * Set external url link.
      *
      * @param string $link The url
      *
@@ -67,7 +67,7 @@ class Brand extends AbstractRenderable
     }
 
     /**
-     * Get the external link for this brand
+     * Get the external link for this brand.
      *
      * @return string
      */
@@ -77,7 +77,7 @@ class Brand extends AbstractRenderable
     }
 
     /**
-     * Set external url link
+     * Set external url link.
      *
      * @param string $link The url
      *
@@ -91,21 +91,21 @@ class Brand extends AbstractRenderable
     }
 
     /**
-     * Get the file that is used as an icon
-     *
-     * @return ?\File
+     * Get the file that is used as an icon.
      */
-    public function getIcon()
+    public function getIcon(): ?File
     {
         if (!$this->iconPath) {
             return null;
         }
+
         return File::getByPath($this->iconPath);
     }
 
     // General methodes
+
     /**
-     * Get the url slug
+     * Get the url slug.
      *
      * @return string
      */
@@ -115,7 +115,7 @@ class Brand extends AbstractRenderable
     }
 
     /**
-     * Get all pages under this brand
+     * Get all pages under this brand.
      *
      * @param string $order How to order the pages
      *
@@ -135,39 +135,18 @@ class Brand extends AbstractRenderable
     }
 
     // ORM related functions
-    /**
-     * Save entity to database
-     *
-     * @return self
-     */
-    public function save(): InterfaceEntity
-    {
-        if ($this->id === null) {
-            db()->query(
-                "
-                INSERT INTO `" . self::TABLE_NAME . "` (
-                    `navn`,
-                    `link`,
-                    `ico`
-                ) VALUES (
-                    '" . db()->esc($this->title) . "',
-                    '" . db()->esc($this->link) . "',
-                    '" . db()->esc($this->getIcon() ? $this->getIcon()->getPath() : '') . "'
-                )"
-            );
-            $this->setId(db()->insert_id);
-        } else {
-            db()->query(
-                "
-                UPDATE `" . self::TABLE_NAME ."` SET
-                    `navn` = '" . db()->esc($this->title) . "',
-                    `link` = '" . db()->esc($this->link) . "',
-                    `ico` = '" . db()->esc($this->getIcon() ? $this->getIcon()->getPath() : '') . "'
-                WHERE `id` = " . $this->id
-            );
-        }
-        Render::addLoadedTable(self::TABLE_NAME);
 
-        return $this;
+    /**
+     * Get data in array format for the database.
+     *
+     * @return array
+     */
+    public function getDbArray(): array
+    {
+        return [
+            'navn' => db()->eandq($this->title),
+            'link' => db()->eandq($this->link),
+            'ico'  => db()->eandq($this->getIcon() ? $this->getIcon()->getPath() : ''),
+        ];
     }
 }

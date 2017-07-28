@@ -1,0 +1,8 @@
+{% spaceless %}
+<a class="menuboxheader" id="katsheader" style="width:360px;clear:both" onclick="showhidekats('kats',this);">
+    {{categoryPath}}
+</a>
+<div style="width:384px;{% if hide.categories %}display:none;{% endif %}" id="kats">
+    {% include 'partial-admin-kat_expand.html' %}
+</div>
+{% endspaceless %}

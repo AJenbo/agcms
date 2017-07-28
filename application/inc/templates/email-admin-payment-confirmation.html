@@ -1,0 +1,32 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+        <title></title>
+        <style type="text/css">
+            #faktura td {
+                border:1px solid #000;
+                border-collapse:collapse; padding:2px;
+            }
+            .tal {
+                text-align:right;
+            }
+        </style>
+    </head>
+    <body>
+        {% block info %}
+        <p>The customer has approved the payment and the following order must be shipped to the customer.</p>
+        <p>Remember to 'expedite' the payment when the product is sent (The payment is first transferred from the customer's account once we hit 'Expedite').</p>
+        {% endblock %}
+        <p>Click <a href="{{invoice.adminLink}}">here</a> to open the invoice page.</p>
+        <p>
+            <a href="mailto:{{invoice.email}}">{{invoice.email}}</a><br />
+            Mobile: {{invoice.phone2}}<br />
+            Phone: {{invoice.phone1}}<br />
+            Delivery phone: {{invoice.shippingPhone}}
+        </p>
+        {% include 'partial-payment-invoice.html' %}
+        <p>Sincerely, the computer</p>
+    </body>
+</html>
+

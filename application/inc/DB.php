@@ -8,7 +8,7 @@ class DB extends mysqli
     private static $timeOffset = null;
 
     /**
-     * Connect the database and set session to UTF-8 Danish
+     * Connect the database and set session to UTF-8 Danish.
      */
     public function __construct($host, $user, $password, $schema)
     {
@@ -25,7 +25,7 @@ class DB extends mysqli
     }
 
     /**
-     * Performe query and return result as an array of associative arrays
+     * Performe query and return result as an array of associative arrays.
      *
      * @param string $query The MySQL query to preforme
      *
@@ -50,7 +50,7 @@ class DB extends mysqli
     }
 
     /**
-     * Performe query and return the first result as an associative arrays
+     * Performe query and return the first result as an associative arrays.
      *
      * @param string $query The MySQL query to preforme
      *
@@ -69,13 +69,14 @@ class DB extends mysqli
     }
 
     /**
-     * Performe query
+     * Performe query.
      *
-     * @param string $query The MySQL query to preforme
+     * @param string $query       The query string
+     * @param int    $resultmode
      *
      * @return bool
      */
-    public function query($query): bool
+    public function query($query, $resultmode = null): bool
     {
         parent::query($query);
         if (mysqli_error($this)) {
@@ -86,7 +87,7 @@ class DB extends mysqli
     }
 
     /**
-     * Escape all MySQL wildcards
+     * Escape all MySQL wildcards.
      *
      * @param string $string String to process
      *
@@ -98,7 +99,7 @@ class DB extends mysqli
     }
 
     /**
-     * Escape a string for concatting in squery string
+     * Escape a string for concatting in squery string.
      *
      * @param string $string The sting to escape
      *
@@ -110,7 +111,19 @@ class DB extends mysqli
     }
 
     /**
-     * Find out what offset the on the time database has form UTC
+     * Escape and quate a string.
+     *
+     * @param string $string
+     *
+     * @return string
+     */
+    public function eandq(string $string): string
+    {
+        return '"' . $this->esc($string) . '"';
+    }
+
+    /**
+     * Find out what offset the on the time database has form UTC.
      *
      * @return string
      */

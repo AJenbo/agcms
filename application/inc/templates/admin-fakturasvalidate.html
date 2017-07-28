@@ -1,0 +1,41 @@
+{% extends "admin-index.html" %}
+
+{% block canvas %}
+<div id="headline">{{title}}</div>
+<table style="width:100%; margin:0 0 113px 0">
+    <thead>
+        <tr>
+            <td>ID</td>
+            <td>Payment methode</td>
+            <td>Pay date</td>
+            <td>Responsible</td>
+            <td>Amount</td>
+            <td style="width:16px;"></td>
+        </tr>
+    </thead>
+    <tbody id="list">
+        {% for invoice in invoices %}
+        <tr{% if loop.index is even %} class="altbc"{% endif %}>
+            <td style="text-align:right"><a href="faktura.php?id={{invoice.id}}">{{invoice.id}}</a></td>
+            <td style="text-align:right">
+                <a href="faktura.php?id={{invoice.id}}">
+                    {% if invoice.status == 'accepted' %}{{invoice.cardType}}{% elseif invoice.status == 'giro' %}Bank overførsel{% endif %}
+                </a>
+            </td>
+            <td style="text-align:right">
+                <a href="faktura.php?id={{invoice.id}}">{{invoice.timestampPay|date('j/m/y')}}</a>
+            </td>
+            <td><a href="faktura.php?id={{invoice.id}}">{{invoice.clerk}}</a></td>
+            <td style="text-align:right">
+                <a href="faktura.php?id={{invoice.id}}">{{invoice.amount|number_format(2, '.', ',')}}</a>
+            </td>
+            <td style="text-align:center">
+                <a onclick="return confirm_faktura_validate({{invoice.id}});" href="?id={{invoice.id}}">
+                    <img src="/admin/images/tick.png" alt="Approve" title="Approve" />
+                </a>
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock %}

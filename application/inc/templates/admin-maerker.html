@@ -1,0 +1,28 @@
+{% extends "admin-index.html" %}
+
+{% block canvas %}
+{% spaceless %}
+<div id="headline">List of brands</div>
+<form action="" id="maerkerform" onsubmit="x_updatemaerke(null, document.getElementById('navn').value,document.getElementById('link').value,document.getElementById('ico').value,updatemaerke_r); return false;">
+    {% include 'partial-admin-maerker.html' %}
+    <div id="imagelogo" style="display:none; position:absolute;"></div>
+    {% for brand in brands %}
+        <div id="maerke{{brand.id}}">
+            <a href="" onclick="slet('maerke',{{brand.title|json_encode()}},{{brand.id}});">
+                <img src="images/cross.png" alt="X" title="Delete {{brand.title}}!" width="16" height="16" />
+            </a>
+            <a href="?side=updatemaerke&amp;id={{brand.id}}"{% if not brand.link %} style="margin-left:{% if not brand.icon %}32{% else %}16{% endif %}px"{% endif %}>
+                {% if brand.link %}
+                <img src="images/link.png" alt="W" width="16" height="16" title="{{brand.link}}"{% if not brand.icon %} style="margin-right:16px"{% endif %} />
+                {% endif %}
+
+                {% if brand.icon %}
+                <img alt="icon" title="" src="images/picture.png" width="16" height="16" onmouseout="document.getElementById('imagelogo').style.display = 'none'" onmouseover="showimage(this,{{brand.icon|json_encode()}})" />
+                {% endif %}
+                {{brand.title}}
+            </a>
+        </div>
+    {% endfor %}
+    </form>
+{% endspaceless %}
+{% endblock %}

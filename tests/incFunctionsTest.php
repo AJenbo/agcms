@@ -85,4 +85,9 @@ class incFunctionsTest extends TestCase
     {
         $this->assertEquals('Lon…', stringLimit('Long tekst here', 4));
     }
+
+    public function test_stringLimit_noop()
+    {
+        $this->assertEquals('Long tekst here', stringLimit('Long tekst here', 15));
+    }
 }

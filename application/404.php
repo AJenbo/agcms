@@ -3,11 +3,9 @@
 use AGCMS\Render;
 
 /**
- * Handle SEO frindly urls
+ * Handle SEO frindly urls.
  */
-
 require_once __DIR__ . '/inc/Bootstrap.php';
-
 
 session_start();
 Render::sendCacheHeader();

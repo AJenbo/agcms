@@ -1,0 +1,24 @@
+<tr class="path">
+    <td colspan="8">
+        <a href="?sort={{sort}}&amp;kat={{category.id}}">
+            <img src="images/find.png" alt="Vis" title="Begræns visning til denne sektion" />
+        </a>
+        {% if pathPrefix %}{{pathPrefix}}{% endif %}<a href="{{category.canonicalLink}}">{{category.title}}</a>
+    </td>
+</tr>
+{% for page in category.pages(sort, reverseOrder) %}
+<tr{% if loop.index is even %} class="altrow"{% endif %}>
+    <td class="tal"><a href="/admin/?side=redigerside&amp;id={{page.id}}">{{page.id}}</a></td>
+    <td><a href="{{page.canonicalLink}}">{{page.title}}</a></td>
+    <td>{{page.sku}}</td>
+    <td class="tal">{% if page.oldPrice %}{{page.oldPrice|number_format(2, ',', '.')}}{% endif %}</td>
+    <td class="tal">{% if page.price %}{{page.price|number_format(2, ',', '.')}}{% endif %}</td>
+    <td class="tal">{{page.timeStamp|date('Y-m-d H:i:s')}}</td>
+    <td>{% if page.brandId %}{{attribute(brands, page.brandId)}}{% endif %}</td>
+    <td>{{page.requirement.title}}</td>
+</tr>
+{% endfor %}
+{% set pathPrefix = pathPrefix ~ category.title ~ ' > ' %}
+{% for category in category.children %}
+    {% include 'partial-admin-listview.html' %}
+{% endfor %}

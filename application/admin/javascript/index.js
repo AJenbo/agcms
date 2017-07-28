@@ -32,11 +32,13 @@ function attachContextMenus() {
     })
 }
 
-function htmlspecialchars(string) {
+function htmlspecialchars(string)
+{
     return string.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
 }
 
-function reattachContextMenus() {
+function reattachContextMenus()
+{
     contextMenuActiveSide.reattach();
     contextMenuInactiveSide.reattach();
     contextMenuActiveKatContextMenu.reattach();
@@ -62,7 +64,7 @@ var activeSideContextMenu = [
         name: 'Fjern',
         className: 'unlink',
         callback: function(e) {
-        //TODO update to use getContextMenuTarget()
+            //TODO update to use getContextMenuTarget()
             if (e.element().tagName.toLowerCase() == 'a') {
                 //todo the respoce woun't fit here
                 slet('bindtree', e.target.parentNode.parentNode.previousSibling.lastChild.nodeValue.replace(/^\s+/, ''), e.target.parentNode.id.replace(/^bind/, ''));
@@ -214,9 +216,19 @@ function displaySubMenus(state) {
     }
 }
 
-
 function updateKat(id) {
     $('loading').style.visibility = '';
+
+    if (!id) {
+        x_save_ny_kat($('navn').value,
+            getRadio('kat'),
+            $('icon').value,
+            $('vis').value,
+            $('email').value,
+            save_ny_kat_r);
+        return false;
+    }
+
     x_updateKat(id,
         $('navn').value,
         getRadio('kat'),
@@ -232,6 +244,27 @@ function updateKat(id) {
 function updateSide(id) {
     $('loading').style.visibility = '';
     updateRTEs();
+
+    if (!id) {
+        x_opretSide(
+            parseInt(getRadio("kat")),
+            $("navn").value,
+            $("keywords").value,
+            $("pris").value ? parseInt($("pris").value) : 0,
+            $("billed").value,
+            $("beskrivelse").value,
+            $("for").value ? parseInt($("for").value) : 0,
+            $("text").value,
+            $("varenr").value,
+            parseInt(getSelectValue("burde")),
+            parseInt(getSelectValue("fra")),
+            parseInt(getSelectValue("krav")),
+            parseInt(getSelectValue("maerke")),
+            opretSide_r
+        );
+        return false;
+    }
+
     x_updateSide(id,
         $('navn').value,
         $('keywords').value,
@@ -249,33 +282,22 @@ function updateSide(id) {
     return false;
 }
 
+function opretSide_r(data) {
+    if (!generic_r(data)) {
+        return;
+    }
+
+    window.location.href = "?side=redigerside&id=" + data["id"];
+}
+
 function updateSpecial(id) {
     $('loading').style.visibility = '';
+    if($('subMenusOrder')) {
+        x_updateKatOrder($('subMenusOrder').value, generic_r);
+    }
     updateRTEs();
-    x_updateSpecial(id,
-        $('text').value,
-        generic_r);
+    x_updateSpecial(id, $('text').value, generic_r);
     return false;
-}
-
-function updateForside() {
-    $('loading').style.visibility = '';
-    updateRTEs();
-    x_updateForside(1,
-        $('text').value,
-        $('subMenusOrder').value,
-        generic_r);
-    return false;
-}
-
-function save_ny_kat() {
-    x_save_ny_kat($('navn').value,
-        getRadio('kat'),
-        $('icon').value,
-        $('vis').value,
-        $('email').value,
-        save_ny_kat_r);
-    return false
 }
 
 function save_ny_kat_r(data) {
@@ -326,32 +348,22 @@ function makeNewList_r(data) {
     $('loading').style.visibility = 'hidden';
     if (data['error']) {
         alert(data['error']);
-    } else {
-        var obj = $('canvas').lastChild;
-        var newobj = document.createElement('a');
-        newobj.href = 'http://www.huntershouse.dk/admin/?side=listsort&id='+data['id'];
-        var img = document.createElement('img');
-        img.src = 'images/shape_align_left.png';
-        newobj.appendChild(img);
-        newobj.appendChild(document.createTextNode(' '+data['name']));
-        obj.appendChild(newobj);
-        obj.appendChild(document.createElement('br'));
+        return;
     }
+
+    location.href = '/admin/?side=listsort-edit&id=' + data['id'];
 }
 
 function countEmailTo() {
     $('loading').style.visibility = '';
     //Cancle all othere ajax requests to avoide reponce order mix up
     //TODO only cancle requests relating to countEmailTo
-    sajax_cancel();
+    sajax.cancel();
     var interestObjs = $('interests').getElementsByTagName('input');
-    var interests = '';
+    var interests = [];
     for (var i=0; i<interestObjs.length; i++) {
         if (interestObjs[i].checked) {
-            if (interests != '') {
-                interests += '<';
-            }
-            interests += interestObjs[i].value;
+            interests.push(interestObjs[i].value);
         }
     }
     x_countEmailTo(interests, countEmailTo_r)
@@ -379,7 +391,6 @@ function saveEmail() {
         }
     }
     x_saveEmail($('id').value, $('from').value, interests, $('subject').value, $('text').value, generic_r);
-    $('loading').style.visibility = '';
 }
 
 function updateContact(id) {
@@ -395,7 +406,6 @@ function updateContact(id) {
         }
     }
     x_updateContact(id, $('navn').value, $('email').value, $('adresse').value, $('land').value, $('post').value, $('by').value, $('tlf1').value, $('tlf2').value, $('kartotek').value, interests, updateContact_r);
-    $('loading').style.visibility = '';
 }
 
 function updateContact_r(data) {
@@ -439,14 +449,43 @@ function sendEmail() {
         }
     }
     x_sendEmail($('id').value, $('from').value, interests, $('subject').value, $('text').value, sendEmail_r);
-    $('loading').style.visibility = '';
 }
 
 function sendEmail_r(data) {
-    $('loading').style.visibility = 'hidden';
     if (data['error']) {
         alert(data['error']);
-    } else {
-        location.href = '?side=emaillist';
+        $('loading').style.visibility = 'hidden';
+        return;
     }
+
+    location.href = '?side=emaillist';
+}
+
+function deleteuser(id, name)
+{
+    if (confirm('Do you want to delete the user \'' + name + '\'?') == true) {
+        x_deleteuser(id, reload_r);
+    }
+}
+
+function reload_r(data) {
+    if (data['error']) {
+        alert(data['error']);
+    }
+    window.location.reload();
+}
+function updateuser(id) {
+    if ($('password_new') && $('password_new').value != $('password2').value) {
+        alert("The passwords doesn't match.");
+        return false;
+    }
+
+    $('loading').style.visibility = '';
+    var update = {};
+    update.access = getSelectValue('access');
+    update.fullname = $('fullname') ? $('fullname').value : '';
+    update.password = $('password') ? $('password').value : '';
+    update.password_new = $('password_new') ? $('password_new').value : '';
+    x_updateuser(id, update, reload_r);
+    return false;
 }

@@ -1,0 +1,126 @@
+<script type="text/javascript"><!--
+window.history.forward(1);
+--></script>
+<script type="text/javascript" src="javascript.js"></script>
+<script type="text/javascript" src="/javascript/zipcodedk.js"></script>
+<form action="" method="post" onsubmit="return validateaddres()">
+    <table>
+        <tbody>
+            <tr>
+                <td>Phone: </td>
+                <td colspan="2"><input name="tlf1" id="tlf1" style="width:157px" value="{{invoice.phone1}}" /></td>
+                <td><input type="button" value="Get address" onclick="getAddress(document.getElementById('tlf1').value, getAddress_r1);" /></td>
+            </tr>
+            <tr>
+                <td>Mobile: </td>
+                <td colspan="2"><input name="tlf2" id="tlf2" style="width:157px" value="{{invoice.phone2}}" /></td>
+                <td><input type="button" value="Get address" onclick="getAddress(document.getElementById('tlf2').value, getAddress_r1);" /></td>
+            </tr>
+            <tr>
+                <td> Name:</td>
+                <td colspan="2"><input name="navn" id="navn" style="width:157px" value="{{invoice.name}}" /></td>
+                <td>{% if invalid.name %}<img src="images/error.png" alt="" title="" >{% endif %}</td>
+            </tr>
+            <tr>
+                <td> Attn:</td>
+                <td colspan="2"><input name="att" id="att" style="width:157px" value="{{invoice.att}}" /></td>
+                <td></td>
+            </tr>
+            <tr>
+                <td> Address:</td>
+                <td colspan="2"><input name="adresse" id="adresse" style="width:157px" value="{{invoice.address}}" /></td>
+                <td>{% if invalid.address %}<img src="images/error.png" alt="" title="" >{% endif %}</td>
+            </tr>
+            <tr>
+                <td> Postbox:</td>
+                <td colspan="2"><input name="postbox" id="postbox" style="width:157px" value="{{invoice.postbox}}" /></td>
+                <td></td>
+            </tr>
+            <tr>
+                <td> Zipcode:</td>
+                <td><input name="postnr" id="postnr" style="width:35px" value="{{invoice.postcode}}" onblur="chnageZipCode(this.value, 'land', 'by')" onkeyup="chnageZipCode(this.value, 'land', 'by')" onchange="chnageZipCode(this.value, 'land', 'by')" /></td>
+                <td align="right"> City:<input name="by" id="by" style="width:90px" value="{{invoice.city}}" /></td>
+                <td>
+                    {% if invalid.postcode %}<img src="images/error.png" alt="" title="" >{% endif %}
+                    {% if invalid.city %}<img src="images/error.png" alt="" title="" >{% endif %}
+                </td>
+            </tr>
+            <tr>
+                <td> Country:</td>
+                <td colspan="2">
+                    <select name="land" id="land" style="width:157px" onblur="chnageZipCode($('postnr').value, 'land', 'by')" onkeyup="chnageZipCode($('postnr').value, 'land', 'by')" onchange="chnageZipCode($('postnr').value, 'land', 'by')" />
+                        {% for code, country in countries %}
+                        <option value="{{code}}"{% if invoice.country == code %} selected="selected"{% endif %}>{{country}}</option>
+                        {% endfor %}
+                    </select>
+                </td>
+                <td>{% if invalid.country %}<img src="images/error.png" alt="" title="" >{% endif %}</td>
+            </tr>
+            <tr>
+                <td> E-mail:</td>
+                <td colspan="2"><input name="email" id="email" style="width:157px" value="{{invoice.email}}" /></td>
+                <td>{% if invalid.email %}<img src="images/error.png" alt="" title="" >{% endif %}</td>
+            </tr>
+            <tr>
+                <td colspan="4">
+                    <input onclick="showhidealtpost(this.checked);" name="altpost" id="altpost" type="checkbox"{% if invoice.hasShippingAddress %} checked="checked"{% endif %} />
+                    <label for="altpost"> Other delivery address</label>
+                </td>
+            </tr>
+            <tr class="altpost"{% if not invoice.hasShippingAddress %} style="display:none;"{% endif %}>
+                <td> Phone:</td>
+                <td colspan="2"><input name="posttlf" id="posttlf" style="width:157px" value="{{invoice.shippingPhone}}" /></td>
+                <td><input type="button" value="Get address" onclick="getAddress(document.getElementById('posttlf').value, getAddress_r2);" /></td>
+            </tr>
+            <tr class="altpost"{% if not invoice.hasShippingAddress %} style="display:none;"{% endif %}>
+                <td>Name:</td>
+                <td colspan="2"><input name="postname" id="postname" style="width:157px" value="{{invoice.shippingName}}" /></td>
+                <td>{% if invalid.shippingName %}<img src="images/error.png" alt="" title="" >{% endif %}</td>
+            </tr>
+            <tr class="altpost"{% if not invoice.hasShippingAddress %} style="display:none;"{% endif %}>
+                <td> Attn.:</td>
+                <td colspan="2"><input name="postatt" id="postatt" style="width:157px" value="{{invoice.shippingAtt}}" /></td>
+                <td></td>
+            </tr>
+            <tr class="altpost"{% if not invoice.hasShippingAddress %} style="display:none;"{% endif %}>
+                <td> Address:</td>
+                <td colspan="2">
+                    <input name="postaddress" id="postaddress" style="width:157px" value="{{invoice.shippingAddress}}" /><br />
+                    <input name="postaddress2" id="postaddress2" style="width:157px" value="{{invoice.shippingAddress2}}" />
+                </td>
+                <td>{% if invalid.shippingAddress %}<img src="images/error.png" alt="" title="" >{% endif %}</td>
+            </tr>
+            <tr class="altpost"{% if not invoice.hasShippingAddress %} style="display:none;"{% endif %}>
+                <td> Postbox:</td>
+                <td colspan="2"><input name="postpostbox" id="postpostbox" style="width:157px" value="{{invoice.shippingPostbox}}" /></td>
+                <td></td>
+            </tr>
+            <tr class="altpost"{% if not invoice.hasShippingAddress %} style="display:none;"{% endif %}>
+                <td> Zipcode:</td>
+                <td><input name="postpostalcode" id="postpostalcode" style="width:35px" value="{{invoice.shippingPostalcode}}" onblur="chnageZipCode(this.value, 'postcountry', 'postcity')" onkeyup="chnageZipCode(this.value, 'postcountry', 'postcity')" onchange="chnageZipCode(this.value, 'postcountry', 'postcity')" /></td>
+                <td align="right"> City: <input name="postcity" id="postcity" style="width:90px" value="{{invoice.shippingCity}}" /></td>
+                <td>
+                    {% if invalid.shippingPostcode %}<img src="images/error.png" alt="" title="" >{% endif %}
+                    {% if invalid.shippingCity %}<img src="images/error.png" alt="" title="" >{% endif %}
+                </td>
+            </tr>
+            <tr class="altpost"{% if not invoice.hasShippingAddress %} style="display:none;"{% endif %}>
+                <td> Country:</td>
+                <td colspan="2">
+                    <select name="postcountry" id="postcountry" style="width:157px" onblur="chnageZipCode($('postpostalcode').value, 'postcountry', 'postcity')" onkeyup="chnageZipCode($('postpostalcode').value, 'postcountry', 'postcity')" onchange="chnageZipCode($('postpostalcode').value, 'postcountry', 'postcity')">
+                        {% for code, country in countries %}
+                        <option value="{{code}}"{% if invoice.shippingCountry == code %} selected="selected"{% endif %}>{{country}}</option>
+                        {% endfor %}
+                    </select>
+                </td>
+                <td>{% if invalid.shippingCountry %}<img src="images/error.png" alt="" title="" >{% endif %}</td>
+            </tr>
+            <tr>
+                <td colspan="4"><input name="newsletter" id="newsletter" type="checkbox"{% if newsletter %}checked="checked"{% endif %} />
+                    <label for="newsletter"> Please send me your newsletter.</label>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <input style="font-weight:bold;" type="submit" value="{{submitLabel}}" />
+</form>

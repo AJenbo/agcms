@@ -1,8 +1,9 @@
-//TODO avoide overscaling when triming has been in affect
+// TODO avoide overscaling when triming has been in affect
 
-function saveImage() {
-    $('save').style.display = 'none';
-    $('loading').style.visibility = '';
+function saveImage()
+{
+    $('save').style.display= 'none';
+    $('loading').style.visibility= '';
 
     //TODO doesn't work?
     if (mode == 'thb') {

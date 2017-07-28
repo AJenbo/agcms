@@ -6,7 +6,7 @@ use AGCMS\Render;
 class Table extends AbstractEntity
 {
     /**
-     * Table name in database
+     * Table name in database.
      */
     const TABLE_NAME = 'lists';
     const COLUMN_TYPE_STRING = 0;
@@ -17,38 +17,33 @@ class Table extends AbstractEntity
 
     // Backed by DB
     /**
-     * Parent page id
+     * Parent page id.
      */
     private $pageId;
 
     /**
-     * Table caption
+     * Table caption.
      */
     private $title;
 
     /**
-     * Column data as JSON
-     */
-    private $columnData;
-
-    /**
-     * The default column to order by, starting from 0
+     * The default column to order by, starting from 0.
      */
     private $orderBy;
 
     /**
-     * If rows can be linked to pages
+     * If rows can be linked to pages.
      */
     private $hasLinks;
 
     // Runtime
     /**
-     * Decoded column data
+     * Decoded column data.
      */
     private $columns;
 
     /**
-     * Construct the entity
+     * Construct the entity.
      *
      * @param array $data The entity data
      */
@@ -63,7 +58,7 @@ class Table extends AbstractEntity
     }
 
     /**
-     * Map data from DB table to entity
+     * Map data from DB table to entity.
      *
      * @param array The data from the database
      *
@@ -80,10 +75,19 @@ class Table extends AbstractEntity
 
         $columns = [];
         foreach ($columnTitles as $key => $title) {
+            $sorting = $columnSortings[$key] ?? 0;
+            $options = [];
+            if ($sorting) {
+                $options = db()->fetchOne("SELECT `text` FROM `tablesort` WHERE id = " . $sorting);
+                $options = explode('<', $options['text']);
+                $options = array_map('html_entity_decode', $options);
+            }
+
             $columns[] = [
                 'title'   => $title,
                 'type'    => $columnTypes[$key] ?? 0,
-                'sorting' => $columnSortings[$key] ?? 0,
+                'sorting' => $sorting,
+                'options' => $options,
             ];
         }
         $columns = json_encode($columns);
@@ -99,8 +103,9 @@ class Table extends AbstractEntity
     }
 
     // Getters and setters
+
     /**
-     * Set parent page id
+     * Set parent page id.
      *
      * @param int $pageId The page the table belongs on
      *
@@ -114,7 +119,7 @@ class Table extends AbstractEntity
     }
 
     /**
-     * Get page id
+     * Get page id.
      *
      * @return int
      */
@@ -124,7 +129,7 @@ class Table extends AbstractEntity
     }
 
     /**
-     * Set the table caption
+     * Set the table caption.
      *
      * @param string $title The caption
      *
@@ -138,7 +143,7 @@ class Table extends AbstractEntity
     }
 
     /**
-     * Get the table caption
+     * Get the table caption.
      *
      * @return string
      */
@@ -148,7 +153,7 @@ class Table extends AbstractEntity
     }
 
     /**
-     * Set the column data
+     * Set the column data.
      *
      * @param string $columnData Array encoded as JSON
      *
@@ -156,14 +161,13 @@ class Table extends AbstractEntity
      */
     public function setColumnData(string $columnData): self
     {
-        $this->columnData = $columnData;
         $this->columns = json_decode($columnData, true);
 
         return $this;
     }
 
     /**
-     * Get tabel colum structure
+     * Get tabel colum structure.
      *
      * @return array
      */
@@ -173,7 +177,7 @@ class Table extends AbstractEntity
     }
 
     /**
-     * Set the default sorting column
+     * Set the default sorting column.
      *
      * @param int $orderBy First column = 0
      *
@@ -187,7 +191,7 @@ class Table extends AbstractEntity
     }
 
     /**
-     * Get the default sort by column (zero index)
+     * Get the default sort by column (zero index).
      *
      * @return int
      */
@@ -197,7 +201,7 @@ class Table extends AbstractEntity
     }
 
     /**
-     * Allow rows to link to pages
+     * Allow rows to link to pages.
      *
      * @param bool $hasLinks
      *
@@ -211,7 +215,7 @@ class Table extends AbstractEntity
     }
 
     /**
-     * Allow rows to link to pages
+     * Allow rows to link to pages.
      *
      * @return bool
      */
@@ -221,12 +225,13 @@ class Table extends AbstractEntity
     }
 
     // ORM related functions
+
     /**
-     * Get table rows
+     * Get table rows.
      *
      * @return array
      */
-    public function getRows(): array
+    public function getRows(int $orderBy = null): array
     {
         $rows = db()->fetchArray(
             "
@@ -242,8 +247,8 @@ class Table extends AbstractEntity
             $row['link'] = $this->hasLinks() ? (int) $row['link'] : 0;
             $cells = explode('<', $row['cells']);
             $cells = array_map('html_entity_decode', $cells);
-            unset($row['cells']);
-            unset($row['list_id']);
+            unset($row['cells'], $row['list_id']);
+
             foreach ($this->columns as $key => $column) {
                 $row[$key] = $cells[$key] ?? '';
                 if (!empty($column['type'])) {
@@ -251,14 +256,59 @@ class Table extends AbstractEntity
                 }
             }
         }
-
         unset($row);
 
-        return $rows;
+        return $this->orderRows($rows, $orderBy);
     }
 
     /**
-     * Get the page this table belongs to
+     * Sort a 2D array based on a custome sort order.
+     *
+     * @param array  $rows    Array to sort
+     * @param string $orderBy Key to sort by
+     *
+     * @return array
+     */
+    private function orderRows(array $rows, int $orderBy = null): array
+    {
+        $orderBy = $orderBy ?? $this->orderBy;
+        $orderBy = max($orderBy, 0);
+        $orderBy = min($orderBy, count($this->columns) - 1);
+
+        if (!$this->columns[$orderBy]['sorting']) {
+            return arrayNatsort($rows, 'id', $orderBy); // Alpha numeric
+        }
+
+        $options = $this->columns[$orderBy]['options'];
+
+        $arySort = [];
+        foreach ($rows as $aryRow) {
+            $arySort[$aryRow[$strIndex]] = -1;
+            foreach ($options as $kalKey => $kalSort) {
+                if ($aryRow[$orderBy] == $kalSort) {
+                    $arySort[$aryRow[$strIndex]] = $kalKey;
+                    break;
+                }
+            }
+        }
+
+        natcasesort($arySort);
+
+        $aryResult = [];
+        foreach (array_keys($arySort) as $arySortKey) {
+            foreach ($rows as $aryRow) {
+                if ($aryRow[$strIndex] == $arySortKey) {
+                    $aryResult[] = $aryRow;
+                    break;
+                }
+            }
+        }
+
+        return $aryResult;
+    }
+
+    /**
+     * Get the page this table belongs to.
      *
      * @return \Page
      */
@@ -268,11 +318,11 @@ class Table extends AbstractEntity
     }
 
     /**
-     * Save entity to database
+     * Get data in array format for the database.
      *
-     * @return self
+     * @return array
      */
-    public function save(): InterfaceEntity
+    public function getDbArray(): array
     {
         $columnSortings = [];
         $columnTypes = [];
@@ -288,44 +338,14 @@ class Table extends AbstractEntity
         $columnTitles = array_map('htmlspecialchars', $columnTitles);
         $columnTitles = implode('<', $columnTitles);
 
-        if ($this->id === null) {
-            db()->query(
-                "
-                INSERT INTO `" . self::TABLE_NAME . "` (
-                    `page_id`,
-                    `title`,
-                    `sorts`,
-                    `cells`,
-                    `cell_names`,
-                    `sort`,
-                    `link`
-                ) VALUES (
-                    " . $this->pageId . ",
-                    '" . db()->esc($this->title) . "',
-                    '" . db()->esc($columnSortings) . "',
-                    '" . db()->esc($columnTypes) . "',
-                    '" . db()->esc($columnTitles) . "',
-                    " . $this->orderBy . ",
-                    " . ($this->hasLinks ? 1 : 0)
-                . ")"
-            );
-            $this->setId(db()->insert_id);
-        } else {
-            db()->query(
-                "
-                UPDATE `" . self::TABLE_NAME . "` SET
-                    `page_id` = " . $this->pageId . ",
-                    `title` = '" . db()->esc($this->title) . "',
-                    `sorts` = '" . db()->esc($columnSortings) . "',
-                    `cells` = '" . db()->esc($columnTypes) . "',
-                    `cell_names` = '" . db()->esc($columnTitles) . "',
-                    `sort` = " . $this->orderBy . ",
-                    `link` = " . ($this->hasLinks ? 1 : 0)
-                . " WHERE `id` = " . $this->id
-            );
-        }
-        Render::addLoadedTable(self::TABLE_NAME);
-
-        return $this;
+        return [
+            'page_id'    => $this->pageId,
+            'title'      => db()->eandq($this->title),
+            'sorts'      => db()->eandq($columnSortings),
+            'cells'      => db()->eandq($columnTypes),
+            'cell_names' => db()->eandq($columnTitles),
+            'sort'       => $this->orderBy,
+            'link'       => $this->hasLinks ? 1 : 0,
+        ];
     }
 }

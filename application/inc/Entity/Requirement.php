@@ -1,23 +1,20 @@
 <?php namespace AGCMS\Entity;
 
-use AGCMS\ORM;
-use AGCMS\Render;
-
 class Requirement extends AbstractRenderable
 {
     /**
-     * Table name in database
+     * Table name in database.
      */
     const TABLE_NAME = 'krav';
 
     // Backed by DB
     /**
-     * The body HTML
+     * The body HTML.
      */
     private $html;
 
     /**
-     * Construct the entity
+     * Construct the entity.
      *
      * @param array $data The entity data
      */
@@ -29,7 +26,7 @@ class Requirement extends AbstractRenderable
     }
 
     /**
-     * Map data from DB table to entity
+     * Map data from DB table to entity.
      *
      * @param array The data from the database
      *
@@ -47,7 +44,7 @@ class Requirement extends AbstractRenderable
     // Getters and setters
 
     /**
-     * Set HTML body
+     * Set HTML body.
      *
      * @param string $html The HTML body
      *
@@ -61,7 +58,7 @@ class Requirement extends AbstractRenderable
     }
 
     /**
-     * Get the HTML body
+     * Get the HTML body.
      *
      * @return string
      */
@@ -71,8 +68,9 @@ class Requirement extends AbstractRenderable
     }
 
     // General methodes
+
     /**
-     * Get the url slug
+     * Get the url slug.
      *
      * @return string
      */
@@ -82,38 +80,17 @@ class Requirement extends AbstractRenderable
     }
 
     // ORM related functions
-    /**
-     * Save entity to database
-     *
-     * @return self
-     */
-    public function save(): InterfaceEntity
-    {
-        if ($this->id === null) {
-            db()->query(
-                "
-                INSERT INTO `" . self::TABLE_NAME . "` (
-                    `navn`,
-                    `text`
-                ) VALUES (
-                    NOW(),
-                    '" . db()->esc($this->name) . "',
-                    '" . db()->esc($this->html) . "'
-                )
-                "
-            );
-            $this->setId(db()->insert_id);
-        } else {
-            db()->query(
-                "
-                UPDATE `" . self::TABLE_NAME . "` SET
-                    `navn` = '" . db()->esc($this->title) . "',
-                    `text` = '" . db()->esc($this->html) . "'
-                WHERE `id` = " . $this->id
-            );
-        }
-        Render::addLoadedTable(self::TABLE_NAME);
 
-        return $this;
+    /**
+     * Get data in array format for the database.
+     *
+     * @return array
+     */
+    public function getDbArray(): array
+    {
+        return [
+            'navn' => db()->eandq($this->title),
+            'text' => db()->eandq($this->html),
+        ];
     }
 }

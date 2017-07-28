@@ -394,7 +394,7 @@ function searchfiles() {
     setCookie('qalt', qalt, 360);
     setCookie('qtype', qtype, 360);
     //TODO only cancle requests relating to searchfiles
-    sajax_cancel();
+    sajax.cancel();
     x_searchfiles(qpath, qalt, qtype, showfiles_r);
 }
 
@@ -419,7 +419,7 @@ function showfiles(dir, mode) {
         }
     }
     //TODO only cancle requests relating to showfiles
-    sajax_cancel();
+    sajax.cancel();
     x_showfiles(dir, showfiles_r);
 }
 
@@ -540,7 +540,7 @@ function dir_expand(dirdiv, mode) {
     dirdiv = dirdiv.parentNode;
     if (dirdiv.lastChild.firstChild == null) {
         document.getElementById('loading').style.display = '';
-        x_listdirs(idToDir(dirdiv.id), mode, dir_expand_r);
+        x_listdirs(idToDir(dirdiv.id), !!mode, dir_expand_r);
     } else {
         dirdiv.lastChild.style.display = '';
         dirdiv.firstChild.style.display = 'none';

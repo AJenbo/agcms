@@ -1,33 +1,30 @@
 <?php namespace AGCMS\Entity;
 
-use AGCMS\ORM;
-use AGCMS\Render;
-
 class CustomPage extends AbstractEntity
 {
     /**
-     * Table name in database
+     * Table name in database.
      */
     const TABLE_NAME = 'special';
 
     // Backed by DB
     /**
-     * The title
+     * The title.
      */
     private $title;
 
     /**
-     * The time of last save
+     * The time of last save.
      */
     private $timeStamp;
 
     /**
-     * HTML body
+     * HTML body.
      */
     private $html;
 
     /**
-     * Construct the entity
+     * Construct the entity.
      *
      * @param array $data The entity data
      */
@@ -40,7 +37,7 @@ class CustomPage extends AbstractEntity
     }
 
     /**
-     * Map data from DB table to entity
+     * Map data from DB table to entity.
      *
      * @param array The data from the database
      *
@@ -57,8 +54,9 @@ class CustomPage extends AbstractEntity
     }
 
     // Getters and setters
+
     /**
-     * Set last update time
+     * Set last update time.
      *
      * @param int $timeStamp UnixTimeStamp
      *
@@ -72,7 +70,7 @@ class CustomPage extends AbstractEntity
     }
 
     /**
-     * Get last update time
+     * Get last update time.
      *
      * @return int
      */
@@ -82,7 +80,7 @@ class CustomPage extends AbstractEntity
     }
 
     /**
-     * Set the title
+     * Set the title.
      *
      * @param string $title The title
      *
@@ -96,7 +94,7 @@ class CustomPage extends AbstractEntity
     }
 
     /**
-     * Get the title
+     * Get the title.
      *
      * @return string
      */
@@ -106,7 +104,7 @@ class CustomPage extends AbstractEntity
     }
 
     /**
-     * Set the HTML body
+     * Set the HTML body.
      *
      * @param string $html HTML body
      *
@@ -120,7 +118,7 @@ class CustomPage extends AbstractEntity
     }
 
     /**
-     * Set the HTML body
+     * Set the HTML body.
      *
      * @return string
      */
@@ -130,41 +128,20 @@ class CustomPage extends AbstractEntity
     }
 
     // ORM related functions
-    /**
-     * Save entity to database
-     *
-     * @return self
-     */
-    public function save(): InterfaceEntity
-    {
-        if ($this->id === null) {
-            db()->query(
-                "
-                INSERT INTO `" . self::TABLE_NAME . "` (
-                    `dato`,
-                    `navn`,
-                    `text`
-                ) VALUES (
-                    NOW(),
-                    '" . db()->esc($this->title) . "',
-                    '" . db()->esc($this->html) . "'
-                )
-                "
-            );
-            $this->setId(db()->insert_id);
-        } else {
-            db()->query(
-                "
-                UPDATE `" . self::TABLE_NAME . "` SET
-                    `dato` = NOW(),
-                    `navn` = '" . db()->esc($this->title) . "',
-                    `text` = '" . db()->esc($this->html) . "'
-                WHERE `id` = " . $this->id
-            );
-        }
-        $this->setTimeStamp(time());
-        Render::addLoadedTable(self::TABLE_NAME);
 
-        return $this;
+    /**
+     * Get data in array format for the database.
+     *
+     * @return array
+     */
+    public function getDbArray(): array
+    {
+        $this->setTimeStamp(time());
+
+        return [
+            'dato' => "NOW()",
+            'navn' => db()->eandq($this->title),
+            'text' => db()->eandq($this->html),
+        ];
     }
 }

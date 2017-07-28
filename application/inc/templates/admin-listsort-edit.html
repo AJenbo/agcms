@@ -1,0 +1,28 @@
+{% extends "admin-index.html" %}
+
+{% block actions %}
+    <li>
+        <a onclick="saveListOrder({{id}});"><img src="images/disk.png" width="16" height="16" alt="" /> Save list</a>
+    </li>
+{% endblock %}
+
+{% block canvas %}
+<div id="headline">Edit {{name}} sorting</div>
+<div>
+    Name: <input id="listOrderNavn" value="{{name}}">
+    <form action="" method="post" onsubmit="addNewItem(); return false;">
+        New Item: <input id="newItem"> <input type="submit" value="tilføj" accesskey="t">
+    </form>
+
+    <ul id="listOrder" style="width:{{textWidth}}px;">
+    {% for row in rows %}
+        <li id="item_{{loop.index}}">{{row}}</li>
+    {% endfor %}
+    </ul>
+    <input type="hidden" id="listOrderValue" value="" />
+    <script type="text/javascript"><!--
+    var items = {{rows|length|raw}};
+    Sortable.create('listOrder',{ghosting:false,constraint:false,hoverclass:'over'});
+    --></script>
+</div>
+{% endblock %}

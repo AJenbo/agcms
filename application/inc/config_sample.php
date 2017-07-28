@@ -1,10 +1,10 @@
 <?php
 
 /**
- * Configuration of site
+ * Configuration of site.
+ *
  * @license  MIT http://opensource.org/licenses/MIT
  */
-
 $GLOBALS['_config'] = [
     'base_url' => 'http://localhost',
     'site_name' => 'My store',
@@ -50,7 +50,7 @@ $GLOBALS['_config'] = [
     //Admin options
 
     // Site color settings
-    'bgcolor' => "FFFFFF",
+    'bgcolor' => 'FFFFFF',
     'bgcolorR' => 255,
     'bgcolorG' => 255,
     'bgcolorB' => 255,

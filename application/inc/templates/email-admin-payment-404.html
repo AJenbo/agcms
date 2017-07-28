@@ -1,0 +1,5 @@
+{% extends "email-admin-payment-confirmation.html" %}
+
+{% block info %}
+<p>A user tried to pay online invoice #{{invoice.id}}, which is not in the system!</p>
+{% endblock %}

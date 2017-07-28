@@ -10,7 +10,7 @@ if ($_POST) {
         $message = _('All fields must be filled.');
     } elseif ($_POST['password'] !== $_POST['password2']) {
         $message = _('The passwords does not match.');
-    } elseif (db()->fetchArray('SELECT id FROM users WHERE name = \'' . addcslashes($_POST['name'], "'") . '\'')) {
+    } elseif (db()->fetchArray('SELECT id FROM users WHERE name = ' . db()->eandq($_POST['name']))) {
         $message = _('Username already taken.');
     } else {
         db()->query(

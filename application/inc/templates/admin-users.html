@@ -1,0 +1,31 @@
+{% extends "admin-index.html" %}
+
+{% block actions %}
+<li><a href="/admin/newuser.php"><img src="images/table_add.png" width="16" height="16" alt="" title="Create new" /> Create new</a></li>
+{% endblock %}
+
+{% block canvas %}
+<div id="headline">Users and Groups</div>
+<table id="addressbook">
+    <thead>
+        <tr>
+            <td></td>
+            <td><a href="?order=date"><a href="users.php">Name</a></td>
+            <td><a href="?order=date">Last online</a></td>
+        </tr>
+    </thead>
+    <tbody>
+        {% for user in users %}
+        <tr{% if loop.index is even %} class="altrow"{% endif %}>
+            <td>
+            {% if userSession.access %}
+                <img src="images/cross.png" alt="X" title="Delete" onclick="deleteuser({{user.id}}, {{user.fullName|json_encode()}})" />
+            {% endif %}
+            </td>
+            <td><a href="user.php?id={{user.id}}">{{user.fullName}}</a></td>
+            <td><a href="user.php?id={{user.id}}">{{user.lastLoginText}}</a></td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock %}

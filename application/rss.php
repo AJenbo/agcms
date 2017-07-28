@@ -6,9 +6,8 @@ use AGCMS\ORM;
 use AGCMS\Render;
 
 /**
- * Print RSS feed contaning the 20 last changed pages
+ * Print RSS feed contaning the 20 last changed pages.
  */
-
 require_once __DIR__ . '/inc/Bootstrap.php';
 
 Render::addLoadedTable('bind');
@@ -23,14 +22,14 @@ $search = [
     '@<script[^>]*?>.*?</script>@siu', // Strip out javascript
     '@<[\/\!]*?[^<>]*?>@sui',          // Strip out HTML tags
     '@([\r\n])[\s]+@u',                // Strip out white space
-    '@&(&|#197);@iu'
+    '@&(&|#197);@iu',
 ];
 
 $replace = [
     ' ',
     ' ',
     '\1',
-    ' '
+    ' ',
 ];
 
 $data = [

@@ -1,0 +1,102 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+        <title></title>
+        <style type="text/css">
+            #faktura td {
+                border:1px solid #000;
+                border-collapse:collapse; padding:2px;
+            }
+            .tal {
+                text-align:right;
+            }
+        </style>
+    </head>
+    <body>
+        <p>Date: {{invoice.timeStampPay|date('d-m-Y')}}<br />
+        </p>
+        <table>
+            <tr>
+                <td></td>
+                <td>customer:</td>
+                {% if invoice.hasShippingAddress %}<td>Delivery address:</td>{% endif %}
+            </tr>
+            <tr>
+                <td>Name:</td>
+                <td>{{invoice.name}}</td>
+                {% if invoice.hasShippingAddress %}<td>{{invoice.shippingName}}</td>{% endif %}
+            </tr>
+            {% if and invoice.hasShippingAddress %}
+            {% if invoice.phone1 or (invoice.hasShippingAddress and invoice.shippingPhone) %}
+            <tr>
+                <td>Phone:</td>
+                <td>{{invoice.phone1}}</td>
+                {% if invoice.hasShippingAddress %}<td>{{invoice.shippingPhone}}</td>{% endif %}
+            </tr>
+            {% endif %}
+            {% if invoice.att or (invoice.hasShippingAddress and invoice.shippingAtt) %}
+            <tr>
+                <td>Attn.:</td>
+                <td>{{invoice.att}}</td>
+                {% if invoice.hasShippingAddress %}<td>{{invoice.att}}</td>{% endif %}
+            </tr>
+            {% endif %}
+            {% if invoice.address or (invoice.hasShippingAddress and (invoice.shippingAddress or invoice.shippingAddress2)) %}
+            <tr>
+                <td>Address:</td>
+                <td>invoice.address</td>
+                {% if invoice.hasShippingAddress %}<td>{{invoice.shippingAddress}}<br />
+                {{invoice.shippingAddress}}</td>{% endif %}
+            </tr>
+            {% endif %}
+            {% if invoice.postbox or (invoice.hasShippingAddress and invoice.shippingPostbox) %}
+            <tr>
+                <td>Postbox:</td>
+                <td>{{invoice.postbox}}</td>
+                {% if invoice.hasShippingAddress %}<td>{{invoice.shippingPostbox}}</td>{% endif %}
+            </tr>
+            {% endif %}
+            <tr>
+                <td>Zipcode:</td>
+                <td>{{invoice.postcode}}</td>
+                {% if invoice.hasShippingAddress %}<td>{{invoice.shippingPostcode}}</td>{% endif %}
+            </tr>
+            <tr>
+                <td>City:</td>
+                <td>{{invoice.city}}</td>
+                {% if invoice.hasShippingAddress %}<td>{{invoice.shippingCity}}</td>{% endif %}
+            </tr>
+            <tr>
+                <td>Country:</td>
+                <td>{{invoice.country}}</td>
+                {% if invoice.hasShippingAddress %}<td>{{invoice.shippingCountry}}</td>{% endif %}
+            </tr>
+            {% if invoice.phone2 %}
+            <tr>
+                <td>Mobile:</td>
+                <td>{{invoice.phone2}}</td>
+            </tr>
+            {% endif %}
+            <tr>
+                <td>Email:</td>
+                <td><a href="mailto:{{invoice.email}}">{{invoice.email}}</a></td>
+            </tr>
+        </table>
+        <p>Payment for your order no. {{invoice.id}} is now approved. Your product will be shipped as soon as possible. There will automatically be sent an email with a Track &amp; Trace link where they can follow the package.<br />
+        </p>
+
+        {% include 'partial-payment-invoice.html' %}
+        <p>Sincerely the computer<br />
+        </p>
+
+        <p>
+            {{invoice.clerk}}<br />
+            {{siteName}}<br />
+            {{address}}<br />
+            {{postcode}} {{city}}.<br />
+            Tel. {{phone}}<br />
+            <a href="mailto:{{invoice.department}}">{{invoice.department}}</a>
+        </p>
+    </body>
+</html>

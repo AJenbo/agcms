@@ -10,9 +10,8 @@ use AGCMS\ORM;
 use AGCMS\Render;
 
 /**
- * Print a Google sitemap
+ * Print a Google sitemap.
  */
-
 require_once __DIR__ . '/inc/Bootstrap.php';
 
 Render::addLoadedTable('bind');
@@ -25,13 +24,13 @@ Render::sendCacheHeader();
 $urls = [
     [
         'loc' => Config::get('base_url') . '/',
-        'lastmod' =>  ORM::getOne(CustomPage::class, 1)->getTimeStamp(),
+        'lastmod' => ORM::getOne(CustomPage::class, 1)->getTimeStamp(),
         'changefreq' => 'monthly',
         'priority' => '0.7',
     ],
     [
         'loc' => Config::get('base_url') . '/?sog=1&amp;q=&amp;sogikke=&amp;minpris=&amp;maxpris=&amp;maerke=',
-        'lastmod' =>  Render::getUpdateTime(false),
+        'lastmod' => Render::getUpdateTime(false),
         'changefreq' => 'monthly',
         'priority' => '0.8',
     ],
@@ -66,7 +65,7 @@ unset($activeCategoryIds);
 foreach ($pages as $page) {
     $urls[] = [
         'loc' => Config::get('base_url') . $page->getCanonicalLink(),
-        'lastmod' =>  $page->getTimeStamp(),
+        'lastmod' => $page->getTimeStamp(),
         'changefreq' => 'monthly',
         'priority' => '0.6',
     ];

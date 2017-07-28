@@ -1,0 +1,81 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+        <title>Explorer</title>
+        <script type="text/javascript" src="javascript/lib/php.min.js"></script>
+        <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/prototype/1.7.3.0/prototype.js"></script>
+        <script type="text/javascript" src="javascript/lib/protomenu/proto.menu.js"></script>
+        <link rel="stylesheet" href="style/proto.menu.css" type="text/css" media="screen" />
+        <link href="style/explorer.css" rel="stylesheet" type="text/css" />
+        <!--[if IE]><link href="style/explorer-ie.css" rel="stylesheet" type="text/css" /><![endif]-->
+        <script type="text/javascript" src="javascript/javascript.js"></script>
+        <script type="text/javascript" src="javascript/explorer.js"></script>
+        <script type="text/javascript" src="/javascript/sajax.js"></script>
+        <script type="text/javascript"><!--
+        var rte = {{rte|json_encode|raw}};
+        var returnid = {{returnid|json_encode|raw}};
+        {{javascript|raw}}
+        --></script>
+        <style type="text/css">
+        #files .filetile div, #files .videotile div, #files .swftile div, #files .flvtile div, #files .imagetile div {
+            background-color:#{{bgcolor}};
+        }
+        </style>
+    </head>
+    <body scroll="auto">
+        picture_error
+        <div id="menu">
+            <img id="loading" src="images/loading.gif" width="16" height="16" alt="Loading" title="Loading" />
+            <a id="dir_bn" class="{% if not hasSearch %}down{% endif %}" title="Folders" onclick="return swap_pannel('dir');">
+                <img width="16" height="16" src="images/folder.png" alt="" /> Mapper
+            </a>
+            <a id="search_bn" title="Søg" class="{% if hasSearch %}down{% endif %}" onclick="return swap_pannel('search');">
+                <img width="16" height="16" src="images/magnifier.png" alt="" /> Search
+            </a>
+            <a title="New folder" onclick="makedir();return false">
+                <img width="16" height="16" src="images/folder_add.png" alt="" /> New folder
+            </a>
+            <a title="Delete folder" onclick="deletefolder();return false">
+                <img width="16" height="16" src="images/folder_delete.png" alt="" /> Delete folder
+            </a>
+            <a title="Add File" onclick="open_file_upload();return false;">
+                <img width="16" height="16" src="images/folder_page_white.png" alt="" /> Add File
+            </a>
+        </div>
+        <div id="dir"{% if hasSearch %} style="display:none"{% endif %}>
+            {% include 'partial-admin-listDirs.html' %}
+        </div>
+        <form id="search"{% if not hasSearch %} style="display:none"{% endif %} action="" onsubmit="searchfiles();return false;">
+            <div>
+                Name:<br />
+                <input name="searchpath" id="searchpath" value="{{qpath}}" />
+                <br />
+                <br />
+                Description:<br />
+                <input name="searchalt" id="searchalt" value="{{qalt}}" />
+                <br />
+                <br />
+                Type:<br />
+                <select name="searchtype" id="searchtype">
+                    <option value="" selected="selected">alle</option>
+                    <option value="image"{% if qtype == 'image' %} selected="selected"{% endif %}>Pictures</option>
+                    <option value="imagefile"{% if qtype == 'imagefile' %} selected="selected"{% endif %}>Image files</option>
+                    <option value="video"{% if qtype == 'video' %} selected="selected"{% endif %}>Videos</option>
+                    <option value="audio"{% if qtype == 'audio' %} selected="selected"{% endif %}>Sounds</option>
+                    <option value="text"{% if qtype == 'text' %} selected="selected"{% endif %}>Documents</option>
+                    <option value="sysfile"{% if qtype == 'sysfile' %} selected="selected"{% endif %}>System files</option>
+                    <option value="compressed"{% if qtype == 'compressed' %} selected="selected"{% endif %}>Compressed files</option>
+                    <option value="unused"{% if qtype == 'unused' %} selected="selected"{% endif %}>Unused files</option>
+                </select>
+                <br />
+                <br />
+                <input type="submit" value="Søg nu" accesskey="f" />
+            </div>
+        </form>
+        <div id="files">{{filesHtml|raw}}</div>
+        <script type="text/javascript"><!--
+        init();
+        --></script>
+    </body>
+</html>

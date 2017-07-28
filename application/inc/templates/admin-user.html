@@ -1,0 +1,59 @@
+{% extends "admin-index.html" %}
+
+{% block actions %}
+<li><a onclick="updateuser({{user.id}})"><img src="images/disk.png" alt="" width="16" height="16" /> Save</a></li>
+{% endblock %}
+
+{% block canvas %}
+<div id="headline">Edit {{user.fullName}}</div>
+<table>
+    <tbody>
+        <tr>
+            <td>Full name:</td>
+            <td>
+                {% if userSession.access == user.id or userSession.access == 1 %}
+                <input value="{{user.fullName}}" id="fullname" name="fullname" />
+                {% else %}
+                {{user.fullName}}
+                {% endif %}
+            </td>
+        </tr>
+        <tr>
+            <td>User name:</td>
+            <td>{{user.nickname}}</td>
+        </tr>
+        <tr>
+            <td>Last online:</td>
+            <td>{{user.lastLogin|date('d-m-Y H:i:s')}}</td>
+        </tr>
+        <tr>
+            <td>Access level:</td>
+            <td>
+                <select name="access" id="access">
+                    {% for level, name in accessLevels %}
+                    <option{% if user.accessLevel == level %} selected="selected"{% endif %} value="{{level}}">
+                        {{name}}
+                    </option>
+                    {% endfor %}
+                </select>
+            </td>
+        </tr>
+        {% if userSession.access == user.id %}
+        <tr>
+            <td>Password:</td>
+            <td><input type="password" id="password" name="password" /></td>
+        </tr>
+        {% endif %}
+        {% if userSession.access == user.id or userSession.access == 1 %}
+        <tr>
+            <td>New password:</td>
+            <td><input type="password" id="password_new" name="password_new" /></td>
+        </tr>
+        <tr>
+            <td>Repeat password:</td>
+            <td><input type="password" id="password2" name="password2" /></td>
+        </tr>
+        {% endif %}
+    </tbody>
+</table>
+{% endblock %}

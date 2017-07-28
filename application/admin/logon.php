@@ -6,7 +6,6 @@ bootStrap();
 // Load admin functions
 require_once _ROOT_ . '/admin/inc/functions.php';
 
-
 //access
 //0:ny, ingen ratigheder.
 //1:supper admin.

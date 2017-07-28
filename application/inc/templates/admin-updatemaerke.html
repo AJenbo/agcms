@@ -1,0 +1,9 @@
+{% extends "admin-index.html" %}
+
+{% block canvas %}
+<div id="headline">Edit the brand {{brand.title}}</div>
+<form onsubmit="x_updatemaerke({{brand.id}},document.getElementById('navn').value,document.getElementById('link').value,document.getElementById('ico').value,inject_html); return false;">
+    {% include 'partial-admin-maerker.html' %}
+    <div id="imagelogo" style="display:none; position:absolute;"></div>
+</form>
+{% endblock %}

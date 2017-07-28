@@ -5,52 +5,59 @@ use stdClass;
 class Epayment
 {
     /**
-     * The manager for handeling service communication
+     * The manager for handeling service communication.
+     *
      * @var EpaymentAdminService
      */
     private $service;
 
     /**
-     * Id of transaction
+     * Id of transaction.
+     *
      * @var int
      */
     private $transactionId = 0;
 
     /**
-     * Transaction ammount
+     * Transaction ammount.
+     *
      * @var int
      */
     private $amount = 0;
 
     /**
-     * Amount that was transfered to the shop
+     * Amount that was transfered to the shop.
+     *
      * @var int
      */
     private $amountCaptured = 0;
 
     /**
-     * Is the transaction authorized and ready to transfer the amount
+     * Is the transaction authorized and ready to transfer the amount.
+     *
      * @var bool
      */
     private $authorized = false;
 
     /**
-     * Has the transaction been cancled
+     * Has the transaction been cancled.
+     *
      * @var bool
      */
     private $annulled = false;
 
     /**
-     * Did an error occure on the last action
+     * Did an error occure on the last action.
+     *
      * @var bool
      */
     private $error = false;
 
     /**
-     * Setup the class variables for initialization
+     * Setup the class variables for initialization.
      *
-     * @param EpaymentAdminService $service The manager for handeling service communication
-     * @param stdClass $transactionData
+     * @param EpaymentAdminService $service         The manager for handeling service communication
+     * @param stdClass             $transactionData
      */
     public function __construct(EpaymentAdminService $service, stdClass $transactionData)
     {
@@ -69,7 +76,7 @@ class Epayment
     }
 
     /**
-     * Get transaction id
+     * Get transaction id.
      *
      * @return int
      */
@@ -79,7 +86,7 @@ class Epayment
     }
 
     /**
-     * Is the transaction ready to be captured
+     * Is the transaction ready to be captured.
      *
      * @return bool
      */
@@ -89,7 +96,7 @@ class Epayment
     }
 
     /**
-     * Did an error occure on the last action
+     * Did an error occure on the last action.
      *
      * @return bool
      */
@@ -99,7 +106,7 @@ class Epayment
     }
 
     /**
-     * Has the transaction been cancled
+     * Has the transaction been cancled.
      *
      * @return bool
      */
@@ -109,7 +116,7 @@ class Epayment
     }
 
     /**
-     * Transfer an amount to the shop
+     * Transfer an amount to the shop.
      *
      * @return int
      */
@@ -119,7 +126,7 @@ class Epayment
     }
 
     /**
-     * Canncels a payment transation
+     * Canncels a payment transation.
      *
      * @param int $transactionId The identifyer for the transation
      *
@@ -134,6 +141,7 @@ class Epayment
         $success = $this->service->annul($this);
         if (!$success) {
             $this->error = true;
+
             return false;
         }
 
@@ -144,7 +152,7 @@ class Epayment
     }
 
     /**
-     * Confirm the transation and draw the amount from the users account
+     * Confirm the transation and draw the amount from the users account.
      *
      * @param int $amount The amount to draw from the customers account
      *
@@ -152,7 +160,7 @@ class Epayment
      */
     public function confirm(int $amount = null): bool
     {
-        $amount = $amount === null ? $amount : $this->amount;
+        $amount = $amount ?? $this->amount;
 
         if ($this->amountCaptured) {
             return true; // TODO can we not capture multiple times, should substract it form $amount?
@@ -162,7 +170,7 @@ class Epayment
             return false;
         }
 
-        $this->doCapture($amount);
+        return $this->doCapture($amount);
     }
 
     private function doCapture(int $amount): bool
@@ -170,6 +178,7 @@ class Epayment
         $success = $this->service->confirm($this, $amount);
         if (!$success) {
             $this->error = true;
+
             return false;
         }
 

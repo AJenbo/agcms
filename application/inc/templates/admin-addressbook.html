@@ -1,0 +1,35 @@
+{% extends "admin-index.html" %}
+
+{% block canvas %}
+<div id="headline">Address Book</div>
+<div>
+    <a href="?side=editContact"><img src="images/group_add.png" width="16" height="16" alt="" /> Add new contact</a>
+    <br />
+    <br />
+    <table id="addressbook">
+        <thead>
+            <tr>
+                <td></td>
+                <td>Name</td>
+                <td>E-mail</td>
+                <td>Phone</td>
+            </tr>
+        </thead>
+        <tbody>
+            {% for address in addresses %}
+            <tr id="contact{{address.id}}"{% if loop.index is even %} class="altrow"{% endif %}>
+                <td>
+                    <a href="?side=editContact&id={{address.id}}">
+                        <img width="16" height="16" src="images/vcard_edit.png" alt="R" title="Edit" />
+                    </a>
+                    <img onclick="x_deleteContact({{address.id}}, removeTagById)" width="16" height="16" src="images/cross.png" alt="X" title="Delete" />
+                </td>
+                <td>{{address.name}}</td>
+                <td>{{address.email}}</td>
+                <td>{{address.phone}}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

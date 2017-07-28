@@ -6,10 +6,8 @@ use AGCMS\Entity\Category;
 use AGCMS\ORM;
 use AGCMS\Render;
 use AJenbo\Imap;
-use Exception;
-use PHPMailer;
 
-function bootStrap()
+function bootStrap(): void
 {
     require_once __DIR__ . '/../vendor/autoload.php';
 
@@ -27,9 +25,8 @@ function bootStrap()
 }
 
 /**
- * Declare common functions
+ * Declare common functions.
  */
-
 function db(DB $overwrite = null): DB
 {
     static $connection;
@@ -43,10 +40,11 @@ function db(DB $overwrite = null): DB
             Config::get('mysql_database')
         );
     }
+
     return $connection;
 }
 
-function redirect(string $url, int $status = 303)
+function redirect(string $url, int $status = 303): void
 {
     if (headers_sent()) {
         throw new Exception(_('Header already sent!'));
@@ -89,7 +87,7 @@ function redirect(string $url, int $status = 303)
 }
 
 /**
- * Build a url string from an array
+ * Build a url string from an array.
  *
  * @param array $parsed_url Array as returned by parse_url()
  *
@@ -106,6 +104,7 @@ function unparseUrl(array $parsedUrl): string
     $path     = !empty($parsedUrl['path']) ? $parsedUrl['path'] : '';
     $query    = !empty($parsedUrl['query']) ? '?' . $parsedUrl['query'] : '';
     $fragment = !empty($parsedUrl['fragment']) ? '#' . $parsedUrl['fragment'] : '';
+
     return $scheme . $user . $pass . $host . $port . $path . $query . $fragment;
 }
 
@@ -113,11 +112,14 @@ function encodeUrl(string $url): string
 {
     $url = explode('/', $url);
     $url = array_map('rawurlencode', $url);
+
     return implode('/', $url);
 }
 
 /**
- * Get first element from an array that can't be referenced
+ * Get first element from an array that can't be referenced.
+ *
+ * @return mixed
  */
 function first(array $array)
 {
@@ -125,7 +127,7 @@ function first(array $array)
 }
 
 /**
- * Generate safe file name
+ * Generate safe file name.
  *
  * @param string $name String to clean
  *
@@ -138,11 +140,12 @@ function clearFileName(string $name): string
         '/^\s+|\s+$/u'               => '', // trim
         '/\s+/u'                     => '-',
     ];
+
     return preg_replace(array_keys($replace), $replace, $name);
 }
 
 /**
- * Natsort an array
+ * Natsort an array.
  *
  * @param array  $aryData     Array to sort
  * @param string $strIndex    Key of unique id
@@ -190,71 +193,7 @@ function arrayNatsort(array $aryData, string $strIndex, string $strSortBy, strin
 }
 
 /**
- * Sort a 2D array based on a custome sort order an array
- *
- * @param array  $aryData         Array to sort
- * @param string $strIndex        Key of unique id
- * @param string $strSortBy       Key to sort by
- * @param int    $intSortingOrder Custome sorting to use
- * @param string $strSortType     Revers sorting
- *
- * @return array
- */
-function arrayListsort(
-    array $aryData,
-    string $strIndex,
-    string $strSortBy,
-    int $intSortingOrder,
-    string $strSortType = 'asc'
-): array {
-    if (!$strIndex || !$strSortBy) {
-        return $aryData;
-    }
-
-    $kaliber = db()->fetchOne(
-        "
-        SELECT text
-        FROM `tablesort`
-        WHERE id = " . $intSortingOrder
-    );
-    Render::addLoadedTable('tablesort');
-
-    if ($kaliber) {
-        $kaliber = explode('<', $kaliber['text']);
-    }
-
-    $arySort = [];
-    foreach ($aryData as $aryRow) {
-        $arySort[$aryRow[$strIndex]] = -1;
-        foreach ($kaliber as $kalKey => $kalSort) {
-            if ($aryRow[$strSortBy]==$kalSort) {
-                $arySort[$aryRow[$strIndex]] = $kalKey;
-                break;
-            }
-        }
-    }
-
-    natcasesort($arySort);
-
-    if (in_array($strSortType, ['desc', '-'], true)) {
-        arsort($arySort);
-    }
-
-    $aryResult = [];
-    foreach (array_keys($arySort) as $arySortKey) {
-        foreach ($aryData as $aryRow) {
-            if ($aryRow[$strIndex] == $arySortKey) {
-                $aryResult[] = $aryRow;
-                break;
-            }
-        }
-    }
-
-    return $aryResult;
-}
-
-/**
- * Return html for a sorted list
+ * Return html for a sorted list.
  *
  * @param int $listid     Id of list
  * @param int $bycell     What cell to sort by
@@ -291,7 +230,7 @@ function xhtmlEsc(string $string): string
 }
 
 /**
- * Crope a string to a given max lengt, round by word
+ * Crope a string to a given max lengt, round by word.
  *
  * @param string $string   String to crope
  * @param int    $length   Crope length
@@ -316,7 +255,7 @@ function stringLimit(string $string, int $length = 50, string $ellipsis = '…')
 }
 
 /**
- * Get address from phone number
+ * Get address from phone number.
  *
  * @param string $phoneNumber Phone number
  *
@@ -414,6 +353,7 @@ function getAddress(string $phoneNumber): array
             $address = array_merge($default, $address);
             if ($address !== $default) {
                 Render::sendCacheHeader($updateTime);
+
                 return $address;
             }
         }
@@ -426,7 +366,7 @@ function getAddress(string $phoneNumber): array
 }
 
 /**
- * Get the html for content bellonging to a category
+ * Get the html for content bellonging to a category.
  *
  * @param int  $id   Id of activ category
  * @param bool $sort What column to sort by
@@ -450,19 +390,7 @@ function getKat(int $categoryId, string $sort): array
 }
 
 /**
- * Generate a 5 didget code from the order id
- *
- * @param int $orderId Order id to generate code from
- *
- * @return string
- */
-function getCheckid(int $orderId): string
-{
-    return substr(md5($orderId . Config::get('pbssalt')), 3, 5);
-}
-
-/**
- * Checks if email an address looks valid and that an mx server is responding
+ * Checks if email an address looks valid and that an mx server is responding.
  *
  * @param string $email The email address to check
  *
@@ -493,71 +421,6 @@ function checkMx(string $domain): bool
     }
 
     return $ceche[$domain];
-}
-
-/**
- * Checks that all nessesery contact information has been filled out correctly
- *
- * @param array $values Keys are: email, navn, land, postbox, adresse, postnr, by,
- *                      altpost (bool), postname, postpostbox, postaddress,
- *                      postcountry, postpostalcode, postcity
- *
- * @return array Key with bool true for each faild feald
- */
-function validate(array $values): array
-{
-    $rejected = [];
-
-    if (empty($values['navn']) || !valideMail($values['email'])) {
-        $rejected['email'] = true;
-    }
-    if (empty($values['navn'])) {
-        $rejected['navn'] = true;
-    }
-    if (empty($values['land'])) {
-        $rejected['land'] = true;
-    }
-    if (empty($values['postbox'])
-        && (empty($values['adresse']) || ($values['land'] == 'DK' && !preg_match('/\s/ui', @$values['adresse'])))
-    ) {
-        $rejected['adresse'] = true;
-    }
-    if (empty($values['postnr'])) {
-        $rejected['postnr'] = true;
-    }
-    //TODO if land = DK and postnr != by
-    if (empty($values['by'])) {
-        $rejected['by'] = true;
-    }
-    if (!$values['land']) {
-        $rejected['land'] = true;
-    }
-    if (!empty($values['altpost'])) {
-        if (empty($values['postname'])) {
-            $rejected['postname'] = true;
-        }
-        if (empty($values['land'])) {
-            $rejected['land'] = true;
-        }
-        if (empty($values['postpostbox'])
-            && (empty($values['postaddress'])
-                || ($values['postcountry'] == 'DK' && !preg_match('/\s/ui', $values['postaddress']))
-            )
-        ) {
-            $rejected['postaddress'] = true;
-        }
-        if (empty($values['postpostalcode'])) {
-            $rejected['postpostalcode'] = true;
-        }
-        //TODO if postcountry = DK and postpostalcode != postcity
-        if (empty($values['postcity'])) {
-            $rejected['postcity'] = true;
-        }
-        if (empty($values['postcountry'])) {
-            $rejected['postcountry'] = true;
-        }
-    }
-    return $rejected;
 }
 
 function sendEmails(
@@ -635,10 +498,10 @@ function sendEmails(
             "
             INSERT INTO `emails` (`date`, `subject`, `body`, `from`, `to`)
             VALUES (NOW(),
-                '" . db()->esc($subject) . "',
-                '" . db()->esc($htmlBody) . "',
-                '" . db()->esc($from . "<" . $fromName) . ">',
-                '" . db()->esc($recipient . "<" . $recipientName) . ">'
+                " . db()->eandq($subject) . ",
+                " . db()->eandq($htmlBody) . ",
+                " . db()->eandq($from . '<' . $fromName . '>') . ",
+                " . db()->eandq($recipient . '<' . $recipientName . '>') . "
             );
             "
         );

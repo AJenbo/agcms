@@ -1,53 +1,52 @@
 <?php namespace AGCMS\Entity;
 
 use AGCMS\ORM;
-use AGCMS\Render;
 
 class File extends AbstractEntity
 {
     /**
-     * Table name in database
+     * Table name in database.
      */
     const TABLE_NAME = 'files';
 
     // Backed by DB
     /**
-     * File path
+     * File path.
      */
     private $path;
 
     /**
-     * File mime
+     * File mime.
      */
     private $mime;
 
     /**
-     * File byte size
+     * File byte size.
      */
     private $size;
 
     /**
-     * Text description of file
+     * Text description of file.
      */
     private $description;
 
     /**
-     * Object width in px
+     * Object width in px.
      */
     private $width;
 
     /**
-     * Object height in px
+     * Object height in px.
      */
     private $height;
 
     /**
-     * Video aspect (4-3, 16-9)
+     * Video aspect (4-3, 16-9).
      */
     private $aspect;
 
     /**
-     * Construct the entity
+     * Construct the entity.
      *
      * @param array $data The entity data
      */
@@ -64,7 +63,7 @@ class File extends AbstractEntity
     }
 
     /**
-     * Map data from DB table to entity
+     * Map data from DB table to entity.
      *
      * @param array The data from the database
      *
@@ -85,8 +84,9 @@ class File extends AbstractEntity
     }
 
     // Getters and setters
+
     /**
-     * Set path
+     * Set path.
      *
      * @param string $path The file path
      *
@@ -100,7 +100,7 @@ class File extends AbstractEntity
     }
 
     /**
-     * Return the file path
+     * Return the file path.
      *
      * @return string
      */
@@ -110,7 +110,7 @@ class File extends AbstractEntity
     }
 
     /**
-     * Set the mime type
+     * Set the mime type.
      *
      * @param string $mime The mime type
      *
@@ -124,7 +124,7 @@ class File extends AbstractEntity
     }
 
     /**
-     * Get the mime type
+     * Get the mime type.
      *
      * @return string
      */
@@ -134,7 +134,7 @@ class File extends AbstractEntity
     }
 
     /**
-     * Set the file size
+     * Set the file size.
      *
      * @param int $size The file size in bytes
      *
@@ -148,7 +148,7 @@ class File extends AbstractEntity
     }
 
     /**
-     * Get the file size
+     * Get the file size.
      *
      * @return int
      */
@@ -158,7 +158,7 @@ class File extends AbstractEntity
     }
 
     /**
-     * Set the file text description
+     * Set the file text description.
      *
      * @param string $description Text description
      *
@@ -172,7 +172,7 @@ class File extends AbstractEntity
     }
 
     /**
-     * Get the text description
+     * Get the text description.
      *
      * @return string
      */
@@ -182,7 +182,7 @@ class File extends AbstractEntity
     }
 
     /**
-     * Set width
+     * Set width.
      *
      * @param int $width The object width
      *
@@ -196,7 +196,7 @@ class File extends AbstractEntity
     }
 
     /**
-     * Get width
+     * Get width.
      *
      * @return int
      */
@@ -206,7 +206,7 @@ class File extends AbstractEntity
     }
 
     /**
-     * Set height
+     * Set height.
      *
      * @param int $width The object height
      *
@@ -220,7 +220,7 @@ class File extends AbstractEntity
     }
 
     /**
-     * Get height
+     * Get height.
      *
      * @return int
      */
@@ -230,7 +230,7 @@ class File extends AbstractEntity
     }
 
     /**
-     * Set video aspect
+     * Set video aspect.
      *
      * @param string $aspect In the format of 16-9
      *
@@ -244,66 +244,35 @@ class File extends AbstractEntity
     }
 
     /**
-     * Get the asspect
-     *
-     * @return ?string
+     * Get the asspect.
      */
-    public function getAspect()
+    public function getAspect(): ?string
     {
         return $this->aspect;
     }
 
     // ORM related functions
-    /**
-     * Save entity to database
-     *
-     * @return self
-     */
-    public function save(): InterfaceEntity
-    {
-        if ($this->id === null) {
-            db()->query(
-                "
-                INSERT INTO `" . self::TABLE_NAME . "` (
-                    `path`,
-                    `mime`,
-                    `size`,
-                    `alt`,
-                    `width`,
-                    `height`,
-                    `aspect`
-                ) VALUES (
-                    '" . db()->esc($this->path) . "',
-                    '" . db()->esc($this->mime) . "',
-                    " . $this->size . ",
-                    '" . db()->esc($this->description) . "',
-                    " . $this->width . ",
-                    " . $this->height . ",
-                    " . ($this->aspect ? ("'" . db()->esc($this->aspect) . "'") : "NULL") . "
-                )"
-            );
-            $this->setId(db()->insert_id);
-        } else {
-            db()->query(
-                "
-                UPDATE `" . self::TABLE_NAME ."` SET
-                    `path` = '" . db()->esc($this->path) . "',
-                    `mime` = '" . db()->esc($this->mime) . "',
-                    `size` = " . $this->size . ",
-                    `alt` = '" . db()->esc($this->description) . "',
-                    `width` = " . $this->width . ",
-                    `height` = " . $this->height . ",
-                    `aspect` = " . ($this->aspect ? ("'" . db()->esc($this->aspect) . "'") : "NULL") . "
-                WHERE `id` = " . $this->id
-            );
-        }
-        Render::addLoadedTable(self::TABLE_NAME);
 
-        return $this;
+    /**
+     * Get data in array format for the database.
+     *
+     * @return array
+     */
+    public function getDbArray(): array
+    {
+        return [
+            'path' => db()->eandq($this->path),
+            'mime' => db()->eandq($this->mime),
+            'size' => $this->size,
+            'alt' => db()->eandq($this->description),
+            'width' => $this->width,
+            'height' => $this->height,
+            'aspect' => $this->aspect ? (db()->eandq($this->aspect)) : "NULL",
+        ];
     }
 
     /**
-     * Create new File from a file path
+     * Create new File from a file path.
      *
      * @param string $path The file path
      *
@@ -327,7 +296,7 @@ class File extends AbstractEntity
     }
 
     /**
-     * Delete entity and file
+     * Delete entity and file.
      *
      * @return bool
      */
@@ -336,6 +305,7 @@ class File extends AbstractEntity
         if (@unlink(_ROOT_ . $this->path)) {
             db()->query("DELETE FROM `" . self::TABLE_NAME . "` WHERE `id` = " . $this->id);
             ORM::forget(self::class, $this->id);
+
             return true;
         }
 
@@ -343,16 +313,14 @@ class File extends AbstractEntity
     }
 
     /**
-     * Find entity by file path
+     * Find entity by file path.
      *
      * @param string $path The file path
-     *
-     * @return ?self
      */
-    public static function getByPath(string $path)
+    public static function getByPath(string $path): ?self
     {
         return ORM::getOneByQuery(
-            File::class,
+            self::class,
             "SELECT * FROM `" . self::TABLE_NAME . "` WHERE path = '" . db()->esc($path) . "'"
         );
     }

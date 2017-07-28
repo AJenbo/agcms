@@ -1,0 +1,192 @@
+{% extends "admin-index.html" %}
+
+{% block actions %}
+<li>
+    <a href="faktura.php?function=new">
+        <img src="images/table_add.png" width="16" height="16" alt="" title="Create new" /> Create new
+    </a>
+</li>
+{% if userSession.access == 1 %}
+<li>
+    <a href="fakturasvalidate.php">
+        <img src="images/tick.png" width="16" height="16" alt="" title="Validate" /> Validate
+    </a>
+</li>
+{% endif %}
+{% endblock %}
+
+{% block canvas %}
+<div id="headline">{{title}}</div>
+<form action="" method="get">
+    <table>
+        <tr>
+            <td>ID:</td>
+            <td>Year:</td>
+            <td>Month:</td>
+            <td>Clerk:</td>
+            <td>Status:</td>
+            <td>Vat:</td>
+        </tr>
+        <tr>
+            <td>
+                <input name="id" value="{{selected.id}}" size="4" /></td><td>
+                <select name="y">
+                    {% for year in years %}
+                    <option value="{{year}}"{% if selected.year == year %} selected="selected"{% endif %}>
+                        {{year}}
+                    </option>
+                    {% endfor %}
+                </select>
+            </td>
+            <td>
+                <select name="m">
+                    <option value=""{% if selected.month == 0 %} selected="selected"{% endif %}>All</option>
+                    <option value="1"{% if selected.month == 1 %} selected="selected"{% endif %}>Jan</option>
+                    <option value="2"{% if selected.month == 2 %} selected="selected"{% endif %}>Feb</option>
+                    <option value="3"{% if selected.month == 3 %} selected="selected"{% endif %}>Mar</option>
+                    <option value="4"{% if selected.month == 4 %} selected="selected"{% endif %}>Apr</option>
+                    <option value="5"{% if selected.month == 5 %} selected="selected"{% endif %}>May</option>
+                    <option value="6"{% if selected.month == 6 %} selected="selected"{% endif %}>Jun</option>
+                    <option value="7"{% if selected.month == 7 %} selected="selected"{% endif %}>Jul</option>
+                    <option value="8"{% if selected.month == 8 %} selected="selected"{% endif %}>Aug</option>
+                    <option value="9"{% if selected.month == 9 %} selected="selected"{% endif %}>Sep</option>
+                    <option value="10"{% if selected.month == 10 %} selected="selected"{% endif %}>Oct</option>
+                    <option value="11"{% if selected.month == 11 %} selected="selected"{% endif %}>Nov</option>
+                    <option value="12"{% if selected.month == 12 %} selected="selected"{% endif %}>Dec</option>
+                </select>
+            </td>
+            <td>
+                {% if users|length < 2 %}<span style="display:none">{% endif %}
+                <select name="clerk">
+                    <option value=""{% if not selected.clerk %} selected="selected"{% endif %}>All</option>
+                    {% for user in users %}
+                    <option value="{{user.fullName}}"{% if selected.clerk == user.fullName %} selected="selected"{% endif %}>
+                        {{user.fullName}}
+                    </option>
+                    {% endfor %}
+                </select>
+                {% if users|length < 2 %}</span>{% endif %}
+            </td>
+            <td>
+                <select name="status">
+                    {% for value, name in statusOptions %}
+                    <option value="{{value}}"{% if selected.status == value %} selected="selected"{% endif %}>
+                        {{name}}
+                    </option>
+                    {% endfor %}
+                </select>
+            </td>
+            <td>
+                <select name="momssats">
+                    <option value=""{% if selected.momssats is null %} selected="selected"{% endif %}>All</option>
+                    <option value="0.25"{% if selected.momssats == '0.25' %} selected="selected"{% endif %}>25%</option>
+                    <option value="0"{% if selected.momssats == '0' %} selected="selected"{% endif %}>0%</option>
+                </select>
+            </td>
+        </tr>
+    </table>
+    <table>
+        <tr>
+            <td>Name</td>
+            <td>Phone</td>
+            <td>Email</td>
+            {% if departments|length > 1 %}<td>Department</td>{% endif %}
+            <td></td>
+        </tr>
+        <tr>
+            <td><input name="name" value="{{selected.name}}" maxlength="64" /></td>
+            <td><input name="tlf" value="{{selected.tlf}}" maxlength="16" /></td>
+            <td><input name="email" value="{{selected.email}}" maxlength="64" /></td>
+            {% if departments|length > 1 %}
+            <td>
+                <select name="department">
+                    <option value="">All</option>
+                    {% for department in departments %}
+                    <option{% if selected.department == department %} selected="selected"{% endif %}>{{department}}</option>
+                    {% endfor %}
+                </select>
+            </td>
+            {% endif %}
+            <td><input type="submit" value="Hent" /></td>
+        </tr>
+    </table>
+</form>
+<table style="width:100%; margin:0 0 113px 0">
+    <thead>
+        <tr>
+            <td style="width:16px;"></td>
+            <td>ID</td>
+            <td>Created</td>
+            {% if not selected.clerk %}<td>Responsible</td>{% endif %}
+            <td>Amount</td>
+            <td>Recipient</td>
+        </tr>
+    </thead>
+    <tbody id="list">
+    {% for invoice in invoices %}
+        <tr{% if loop.index is even %} class="altbc"{% endif %}>
+            <td style="text-align:center">
+                <a href="faktura.php?id={{invoice.id}}">
+                    {% if invoice.status == 'new' %}
+                    <img src="/admin/images/table.png" alt="New" title="New" />
+                    {% endif %}
+                    {% if invoice.status == 'locked' and invoice.sent %}
+                    <img src="/admin/images/email_go.png" alt="Sent" title="Sent to customer" />
+                    {% endif %}
+                    {% if invoice.status == 'locked' %}
+                    <img src="/admin/images/lock.png" alt="Locked" title="Locked" />
+                    {% endif %}
+                    {% if invoice.status == 'pbsok' %}
+                    <img src="/admin/images/money.png" alt="Ready" title="Ready" />
+                    {% endif %}
+                    {% if invoice.status == 'accepted' %}
+                    <img src="/admin/images/creditcards.png" alt="Expedited" title="Expedited" />
+                    {% endif %}
+                    {% if invoice.status == 'giro' %}
+                    <img src="/admin/images/building.png" alt="Giro" title="Giro" />
+                    {% endif %}
+                    {% if invoice.status == 'cash' %}
+                    <img src="/admin/images/email.png" alt="Cash" title="Cash" />
+                    {% endif %}
+                    {% if invoice.status == 'pbserror' %}
+                    <img src="/admin/images/error.png" alt="Error" title="Error" />
+                    {% endif %}
+                    {% if invoice.status == 'canceled' %}
+                    <img src="/admin/images/bin.png" alt="Canceled" title="Canceled" />
+                    {% endif %}
+                    {% if invoice.status == 'rejected' %}
+                    <img src="/admin/images/bin.png" alt="Rejected" title="Rejected" />
+                    {% endif %}
+                </a>
+            </td>
+            <td style="text-align:right">
+                <a href="faktura.php?id={{invoice.id}}">{{invoice.id}}</a>
+            </td>
+            <td style="text-align:right">
+                <a href="faktura.php?id={{invoice.id}}">{{invoice.timestamp|date('j/m/y')}}</a>
+            </td>
+            {% if not selected.clerk %}<td><a href="faktura.php?id={{invoice.id}}">{{invoice.clerk}}</a></td>{% endif %}
+            <td style="text-align:right">
+                <a href="faktura.php?id={{invoice.id}}">{{invoice.amount|number_format(2, '.', ',')}}</a>
+            </td>
+            <td>
+                <a href="faktura.php?id={{invoice.id}}">
+                    {% if not invoice.name and invoice.email %}{{invoice.email}}{% else %}{{invoice.name}}{% endif %}
+                </a>
+                <div class="address">
+                    {{invoice.name}}<br/>
+                    Att.: {{invoice.att}}<br/>
+                    {{invoice.address}}<br/>
+                    {{invoice.postbox}}<br/>
+                    {{invoice.postcode}} {{invoice.city}}<br/>
+                    {% if selected.country %}{{countries[selected.country]}}<br/>
+                    {% endif %}{{invoice.email}}<br/>
+                    {{invoice.phone1}}<br/>
+                    {{invoice.phone2}}
+                </div>
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock %}

@@ -4,31 +4,30 @@ use SoapClient;
 use stdClass;
 
 /**
- * A helper class for communication with ePay
+ * A helper class for communication with ePay.
  *
  * See http://www.betalingsterminal.no/Netthandel-forside/Teknisk-veiledning/API/ for
  * a description of the returned objects
  */
-
 class EpaymentAdminService
 {
     /**
-     * Shops merchant id
+     * Shops merchant id.
      */
     private $merchantId;
 
     /**
-     * Service password
+     * Service password.
      */
     private $password;
 
     /**
-     * Service connection
+     * Service connection.
      */
     private $soapClient;
 
     /**
-     * Setup the class variables for initialization
+     * Setup the class variables for initialization.
      *
      * @param string $merchantId Id provided by PBS identifying the shop
      * @param string $password   Password for service
@@ -52,10 +51,7 @@ class EpaymentAdminService
         return new Epayment($this, $transactionData);
     }
 
-    /**
-     * @return void
-     */
-    private function openConnection()
+    private function openConnection(): void
     {
         if ($this->soapClient) {
             return;
@@ -67,7 +63,7 @@ class EpaymentAdminService
     }
 
     /**
-     * Fetch the transation data
+     * Fetch the transation data.
      *
      * @param string $orderId Shop order id
      *
@@ -104,7 +100,7 @@ class EpaymentAdminService
     }
 
     /**
-     * Canncels a payment transation
+     * Canncels a payment transation.
      *
      * @param Epayment $epayment
      *
@@ -129,10 +125,10 @@ class EpaymentAdminService
     }
 
     /**
-     * Confirm the transation and draw the amount from the users account
+     * Confirm the transation and draw the amount from the users account.
      *
      * @param Epayment $epayment
-     * @param int $amount The amount to draw from the customers account
+     * @param int      $amount   The amount to draw from the customers account
      *
      * @return bool
      */

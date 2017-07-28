@@ -25,7 +25,7 @@
                 </thead>
             <tbody>
                 {% for item in pageList %}
-                <tr{% if loop.index is odd %} class="altrow"{% endif %}>
+                <tr{% if loop.index is even %} class="altrow"{% endif %}>
                     <td><a href="{{item.link}}">{{item.name}}</a></td>
                     <td class="XPris" align="right">
                         {% if item.price.before %}

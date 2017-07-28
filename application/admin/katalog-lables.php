@@ -71,7 +71,7 @@ p.line8 {
 if (@$_GET['dato']) {
     $dato = $_GET['dato'];
 } else {
-    $dato = date('Y-m-d', time()-7*24*60*60);
+    $dato = date('Y-m-d', time() - 7 * 24 * 60 * 60);
 }
 
 ?><form action="" method="get" style="text-align:center">
@@ -84,7 +84,7 @@ if (@$_GET['dato']) {
         "
         SELECT `navn`, `adresse`, `land`, `post`, `by`
         FROM `email`
-        WHERE `dato` > '" . $_GET['dato'] . " 00:00:00'
+        WHERE `dato` > '" . db()->esc($_GET['dato']) . " 00:00:00'
           AND `navn` != ''
           AND `adresse` != ''
           AND `post` != ''
@@ -96,10 +96,10 @@ if (@$_GET['dato']) {
 
     if ($email) {
         //Pad rows to fit on
-        $email_nr = ceil(count($email)/21)*21;
-        echo '<h1 class="web">'.($email_nr/21).' sider</h1>';
+        $email_nr = ceil(count($email) / 21) * 21;
+        echo '<h1 class="web">' . ($email_nr / 21) . ' sider</h1>';
 
-        for ($i = 0; $i < $email_nr; $i++) {
+        for ($i = 0; $i < $email_nr; ++$i) {
             //Bigin new table
             if (!$i % 21 && !$i) {
                 ?><div class="table"><?php
@@ -115,9 +115,9 @@ if (@$_GET['dato']) {
             } elseif ($i % 3 == 2) {
                 ?><div class="td right"><?php
             }
-            echo '<table><tr><td>'.@$email[$i]['navn'].'<br />'
-            .@$email[$i]['adresse'].'<br />'
-            .@$email[$i]['post'].' '.@$email[$i]['by'];
+            echo '<table><tr><td>' . @$email[$i]['navn'] . '<br />'
+            . @$email[$i]['adresse'] . '<br />'
+            . @$email[$i]['post'] . ' ' . @$email[$i]['by'];
             if (@$email[$i]['land'] != 'Danmark') {
                 echo '<br />' . @$email[$i]['land'];
             }

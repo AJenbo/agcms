@@ -6,9 +6,8 @@ use AGCMS\ORM;
 use AGCMS\Render;
 
 /**
- * Print feed for pricerunner.com
+ * Print feed for pricerunner.com.
  */
-
 require_once __DIR__ . '/inc/Bootstrap.php';
 
 Render::addLoadedTable('bind');
@@ -17,7 +16,6 @@ Render::addLoadedTable('kat');
 Render::addLoadedTable('maerke');
 Render::addLoadedTable('sider');
 Render::sendCacheHeader();
-
 
 $products = [];
 
@@ -50,7 +48,6 @@ foreach ($pages as $page) {
         'manufactureSku' => $page->getSku(),
     ];
     $product = array_map('trim', $product);
-
 
     foreach ($page->getCategories() as $category) {
         do {

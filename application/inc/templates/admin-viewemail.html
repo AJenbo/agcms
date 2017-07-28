@@ -1,0 +1,57 @@
+{% extends "admin-index.html" %}
+
+{% block actions %}
+{% if not newsletter.sent %}
+<li><a onclick="saveEmail();"><img src="images/disk.png" width="16" height="16" alt="" /> Save e-mail</a></li>
+<li><a onclick="sendEmail();"><img src="images/email_go.png" width="16" height="16" alt="" /> Send e-mail</a></li>
+{% endif %}
+{% endblock %}
+
+{% block canvas %}
+<div id="headline">{% if newsletter.sent %}View{% else %}Edit{% endif %} newsletter</div>
+{% if not newsletter.sent %}
+<form action="" method="post" onsubmit="return sendNews();">
+    <input type="submit" accesskey="m" style="width:1px; height:1px;position:absolute;top:-20px;left:-20px;" />
+    <input value="{{newsletter.id}}" id="id" type="hidden" />
+{% endif %}
+    <div>
+        {% if newsletter.sent %}
+        Sender: {{newsletter.from}}
+        <br /><br />Recipient:
+        {% else %}
+        {% if emails|length > 1 %}
+        Sender: <select id="from">
+        <option value="">Select sender</option>
+            {% for email in emails %}
+            <option value="{{email}}">{{email}}</option>
+            {% endfor %}
+        </select>
+        {% else %}
+        <input value="{{emails|first}}" id="from" style="display:none;" />
+        {% endif %}
+        <br />Restrict recipients to:
+        {% endif %}
+
+        <div id="interests">
+            {% for interest in interests %}
+            <input{% if interest in newsletter.interests %} checked="checked"{% endif %}{% if newsletter.sent %} disabled="disabled"{% else %} onchange="countEmailTo()" onclick="countEmailTo()"{% endif %} type="checkbox" value="{{interest}}" id="{{interest}}" />
+            <label for="{{interest}}"> {{interest}}</label>
+            {% endfor %}
+        </div>
+        {% if not newsletter.sent %}
+        <br />Number of recipients: <span id="mailToCount">{{recipientCount}}</span><br />
+        <br />Subject:
+        <input class="admin_name" name="subject" id="subject" value="{{newsletter.subject}}" size="127" style="width:{{textWidth - 34}}px" />
+        <script type="text/javascript"><!--
+        initRTE('/admin/rtef/images/', '/admin/rtef/', '/theme/email.css', true);
+        writeRichText('text', {{newsletter.html|json_encode()|raw}}, '', {{textWidth + 32}}, 422, true, false, false);
+        //--></script>
+        {% else %}
+        <br />Subject: {{newsletter.subject}}
+        <div style="width:{{textWidth}}px; border:1px solid #D2D2D2">{{newsletter.html|raw}}</div>
+        {% endif %}
+    </div>
+{% if not newsletter.sent %}
+</form>
+{% endif %}
+{% endblock %}

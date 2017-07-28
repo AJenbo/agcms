@@ -4,18 +4,18 @@ use AGCMS\Config;
 use AGCMS\Entity\File;
 
 /**
- * Handle file upload
+ * Handle file upload.
  *
  * PHP version 5
  *
  * @category AGCMS
- * @package  AGCMS
+ *
  * @author   Anders Jenbo <anders@jenbo.dk>
  * @license  GPLv2 http://www.gnu.org/licenses/gpl-2.0.html
- * @link     http://www.arms-gallery.dk/
+ *
+ * @see     http://www.arms-gallery.dk/
  */
-
-require_once __DIR__ . '/../admin/logon.php';
+require_once __DIR__ . '/../logon.php';
 
 //TODO support bmp
 header('HTTP/1.1 500 Internal Server Error');
@@ -80,7 +80,7 @@ if (!empty($_FILES['Filedata']['tmp_name'])
     ) {
         $memory_limit = returnBytes(ini_get('memory_limit')) - 270336;
 
-        if ($imagesize[0] * $imagesize[1] > $memory_limit/10) {
+        if ($imagesize[0] * $imagesize[1] > $memory_limit / 10) {
             //Kunne ikke slette filen.
             header('HTTP/1.1 520 Internal Server Error');
 
@@ -99,7 +99,7 @@ if (!empty($_FILES['Filedata']['tmp_name'])
             $ext = 'png';
         }
         $output = [
-            'type' => $ext,
+            'type'      => $ext,
             'overwrite' => true,
         ];
 

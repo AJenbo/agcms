@@ -3,7 +3,6 @@
 use AGCMS\EpaymentAdminService;
 use AGCMS\Epayment;
 use Mockery as M;
-use TestCase;
 
 class EpaymentTest extends TestCase
 {

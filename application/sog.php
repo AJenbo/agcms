@@ -4,9 +4,8 @@ use AGCMS\Config;
 use AGCMS\Render;
 
 /**
- * Print an OpenSearch xml file
+ * Print an OpenSearch xml file.
  */
-
 require_once __DIR__ . '/inc/Bootstrap.php';
 
 Render::sendCacheHeader(Render::getUpdateTime(false));
@@ -17,4 +16,4 @@ $data = [
 ];
 
 header('Content-Type: application/opensearchdescription+xml');
-Render::output('search', $data);
+Render::output('opensearch', $data);

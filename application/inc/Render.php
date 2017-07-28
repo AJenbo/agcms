@@ -1,13 +1,11 @@
 <?php namespace AGCMS;
 
-use AGCMS\Config;
 use AGCMS\Entity\Brand;
 use AGCMS\Entity\Category;
 use AGCMS\Entity\CustomPage;
 use AGCMS\Entity\Page;
 use AGCMS\Entity\Requirement;
 use AGCMS\Entity\Table;
-use AGCMS\ORM;
 use Twig_Loader_Filesystem;
 use Twig_Environment;
 
@@ -55,9 +53,9 @@ class Render
     public static $track = '';
 
     /**
-     * Do routing
+     * Do routing.
      */
-    public static function doRouting()
+    public static function doRouting(): void
     {
         $url = urldecode($_SERVER['REQUEST_URI']);
         self::makeUrlUtf8($url);
@@ -108,11 +106,11 @@ class Render
     }
 
     /**
-     * Make sure URL is UTF8 and redirect if nessesery
+     * Make sure URL is UTF8 and redirect if nessesery.
      *
      * @param string $url Requested url
      */
-    private static function makeUrlUtf8(string $url)
+    private static function makeUrlUtf8(string $url): void
     {
         $encoding = mb_detect_encoding($url, 'UTF-8, ISO-8859-1');
         if ($encoding !== 'UTF-8') {
@@ -126,12 +124,12 @@ class Render
     }
 
     /**
-     * Do redirects for routing
+     * Do redirects for routing.
      *
-     * @param int $redirect redirect code
-     * @param string $url   Requested url
+     * @param int    $redirect redirect code
+     * @param string $url      Requested url
      */
-    private static function doRedirects(int $redirect, string $url)
+    private static function doRedirects(int $redirect, string $url): void
     {
         if (!$redirect) {
             return;
@@ -144,14 +142,14 @@ class Render
                 '/[^\w0-9]/u',
                 '/([0-9]+)/u',
                 '/([[:upper:]]?[[:lower:]]+)/u',
-                '/\s+/u'
+                '/\s+/u',
             ],
             [
                 ' ',
                 ' ',
                 ' \1 ',
                 ' \1',
-                ' '
+                ' ',
             ],
             $url
         );
@@ -173,17 +171,17 @@ class Render
     }
 
     /**
-     * Remember what tabels where read during page load
+     * Remember what tabels where read during page load.
      *
      * @param string $tableName The table name
      */
-    public static function addLoadedTable(string $tableName)
+    public static function addLoadedTable(string $tableName): void
     {
         self::$loadedTables[$tableName] = true;
     }
 
     /**
-     * Figure out when the data for this page was last touched
+     * Figure out when the data for this page was last touched.
      *
      * @param string $tableName The table name
      */
@@ -205,7 +203,7 @@ class Render
         return $updateTime;
     }
 
-    private static function checkDbUpdate($updateTime)
+    private static function checkDbUpdate(int $updateTime): int
     {
         $timeOffset = db()->getTimeOffset();
         $where = " WHERE 1";
@@ -225,11 +223,11 @@ class Render
 
     /**
      * Set Last-Modified and ETag http headers
-     * and use cache if no updates since last visit
+     * and use cache if no updates since last visit.
      *
      * @param int $timestamp Unix time stamp of last update to content
      */
-    public static function sendCacheHeader(int $timestamp = null)
+    public static function sendCacheHeader(int $timestamp = null): void
     {
         header('Cache-Control: max-age=0, must-revalidate'); // HTTP/1.1
         header('Pragma: no-cache');                          // HTTP/1.0
@@ -280,9 +278,9 @@ class Render
     }
 
     /**
-     * Prepare data for render
+     * Prepare data for render.
      */
-    public static function prepareData()
+    public static function prepareData(): void
     {
         // Brand only search
         if (empty($_GET['q'])
@@ -315,7 +313,7 @@ class Render
                     'link' => $category->getCanonicalLink(),
                     'icon' => $category->getIcon() ? $category->getIcon()->getPath() : '',
                 ];
-            };
+            }
         }
 
         //Get list of top categorys on the site.
@@ -426,19 +424,19 @@ class Render
     }
 
     /**
-     * Clean gathered data
+     * Clean gathered data.
      */
-    private static function cleanData()
+    private static function cleanData(): void
     {
         self::$keywords = array_filter(self::$keywords);
     }
 
     /**
-     * Load data from a brand
+     * Load data from a brand.
      *
      * @param \Brand $brand The brand
      */
-    private static function loadBrandData(Brand $brand = null)
+    private static function loadBrandData(Brand $brand = null): void
     {
         if (!$brand) {
             return;
@@ -464,11 +462,11 @@ class Render
     }
 
     /**
-     * Load data from a category
+     * Load data from a category.
      *
      * @param \Category $category The category
      */
-    private static function loadCategoryData(Category $category = null)
+    private static function loadCategoryData(Category $category = null): void
     {
         if (!$category) {
             return;
@@ -482,6 +480,7 @@ class Render
         }
         if (count($pages) === 1) {
             self::$activePage = array_shift($pages);
+
             return;
         }
         self::loadPagesData($pages);
@@ -501,11 +500,11 @@ class Render
     }
 
     /**
-     * Load data from pages
+     * Load data from pages.
      *
      * @param array $pages The pages
      */
-    private static function loadPagesData(array $pages = null)
+    private static function loadPagesData(array $pages = null): void
     {
         if (!$pages) {
             return;
@@ -536,7 +535,7 @@ class Render
                         'now' => $page->getPrice(),
                         'from' => $page->getPriceType(),
                         'market' => $page->getOldPriceType(),
-                    ]
+                    ],
                 ];
             } else {
                 self::$pageList[] = [
@@ -548,18 +547,18 @@ class Render
                     'price' => [
                         'before' => $page->getOldPrice(),
                         'now' => $page->getPrice(),
-                    ]
+                    ],
                 ];
             }
         }
     }
 
     /**
-     * Load data from a page
+     * Load data from a page.
      *
      * @param \Page $page The page
      */
-    private static function loadPageData(Page $page = null)
+    private static function loadPageData(Page $page = null): void
     {
         if (!$page) {
             return;
@@ -612,11 +611,10 @@ class Render
                 ],
             ];
         }
-
     }
 
     /**
-     * Fetch pages attached to the site root
+     * Fetch pages attached to the site root.
      *
      * Used by some themes
      *
@@ -649,7 +647,7 @@ class Render
     }
 
     /**
-     * Get list of sub categories in format fitting the generatedcontent structure
+     * Get list of sub categories in format fitting the generatedcontent structure.
      *
      * @param array $categories          Categories
      * @param array $categoryIds         Ids in active category trunk
@@ -691,7 +689,6 @@ class Render
                 );
             }
 
-
             //tegn under punkter
             $menu[] = [
                 'id'   => $category->getId(),
@@ -707,9 +704,9 @@ class Render
     }
 
     /**
-     * Search for pages and generate a list or redirect if only one was found
+     * Search for pages and generate a list or redirect if only one was found.
      *
-     * @param string $query     Tekst to search for
+     * @param string $query Tekst to search for
      * @param string $where Additional sql where clause
      */
     public static function searchListe(
@@ -719,7 +716,7 @@ class Render
         int $minpris = 0,
         int $maxpris = 0,
         string $antiWords = ''
-    ) {
+    ): array {
         $pages = [];
         $simpleQuery = "%" . preg_replace('/\s+/u', "%", $queryuery) . "%";
 
@@ -787,7 +784,7 @@ class Render
     }
 
     /**
-     * Search for categories and populate generatedcontent with results
+     * Search for categories and populate generatedcontent with results.
      *
      * @param string $searchString Seach string
      * @param string $wherekat     Additional SQL for WHERE clause
@@ -853,7 +850,7 @@ class Render
     }
 
     /**
-     * Return html for a sorted list
+     * Return html for a sorted list.
      *
      * @param int      $tableId  Id of list
      * @param int      $orderBy  What column to sort by
@@ -864,7 +861,7 @@ class Render
     public static function getTableHtml(int $tableId, int $orderBy = null, Category $category = null): string
     {
         $table = ORM::getOne(Table::class, $tableId);
-        if (!$table || !$rows = $table->getRows()) {
+        if (!$table || !$rows = $table->getRows($orderBy)) {
             return '';
         }
         $columns = $table->getColumns();
@@ -886,19 +883,6 @@ class Render
                 "
                 SELECT * FROM sider WHERE id IN(" . implode(",", $pageIds) . ")
                 "
-            );
-        }
-
-        //Sort rows
-        $orderBy = min($orderBy, count($columns) - 1);
-        if (empty($columns[$orderBy]['sorting'])) {
-            $rows = arrayNatsort($rows, 'id', $orderBy);
-        } else {
-            $rows = arrayListsort(
-                $rows,
-                'id',
-                $orderBy,
-                $columns[$orderBy]['sorting']
             );
         }
 
@@ -998,7 +982,7 @@ class Render
     }
 
     /**
-     * Get the html for content bellonging to a category
+     * Get the html for content bellonging to a category.
      *
      * @param int  $id   Id of activ category
      * @param bool $sort What column to sort by
@@ -1069,7 +1053,7 @@ class Render
     }
 
     /**
-     * Output the page to the browser
+     * Output the page to the browser.
      */
     public static function outputPage(): void
     {
@@ -1096,30 +1080,30 @@ class Render
                 'searchMenu'     => self::$searchMenu,
                 'hasItemsInCart' => !empty($_SESSION['faktura']['quantities']),
                 'requirement'    => self::$requirement,
-            ],
-            realpath(__DIR__ . '/../theme/templates/')
+            ]
         );
     }
 
     /**
-     * Output the page to the browser
+     * Output the page to the browser.
      */
-    public static function output(string $template = 'index', array $data = [], string $templatePath = ''): void
+    public static function output(string $template = 'index', array $data = []): void
     {
         if ($_SERVER['REQUEST_METHOD'] === 'HEAD') {
             if (function_exists('apache_setenv')) {
                 apache_setenv('no-gzip', 1);
             }
             ini_set('zlib.output_compression', 0);
+
             return;
         }
 
-        echo self::render($template, $data, $templatePath);
+        echo self::render($template, $data);
     }
 
-    public static function render(string $template = 'index', array $data = [], string $templatePath = ''): string
+    public static function render(string $template = 'index', array $data = []): string
     {
-        $loader = new Twig_Loader_Filesystem($templatePath ?: __DIR__ . '/templates/');
+        $loader = new Twig_Loader_Filesystem(__DIR__ . '/templates/');
         $twig = new Twig_Environment($loader);
 
         return $twig->render($template . '.html', $data);

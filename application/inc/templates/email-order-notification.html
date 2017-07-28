@@ -1,0 +1,68 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+        <title></title>
+        <style type="text/css">
+            #faktura td {
+                border: 1px solid #000;
+                border-collapse:collapse; padding:2px;
+            }
+            .tal {
+                text-align:right;
+            }
+        </style>
+    </head>
+    <body>
+        <p>{{invoice.name}} has placed an order for the following:</p>
+        <table id="faktura" cellspacing="0">
+            <thead>
+                <tr>
+                    <td class="td1">Quantity</td>
+                    <td>Title</td>
+                    <td class="td3 tal">unit price</td>
+                    <td class="td4 tal">Total</td>
+                </tr>
+            </thead>
+            <tbody>
+                {% for item in invoice.items %}
+                <tr>
+                    <td class="tal">{{item.quantity}}</td>
+                    <td>{{item.title}}</td>
+                    <td class="tal">{{item.value|number_format(2, ',', '')}}</td>
+                    <td class="tal">{{item.value * item.quantity|number_format(2, ',', '')}}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        <p><b>Note:</b><br />{{invoice.note|nl2br}}</p>
+        <p>
+            <b>Address:</b>
+            {% if invoice.name %}<br />{{invoice.name}}{% endif %}
+            {% if invoice.att %}<br />{{invoice.att}}{% endif %}
+            {% if invoice.address %}<br />{{invoice.address}}{% endif %}
+            {% if invoice.postbox %}<br />{{invoice.postbox}}{% endif %}
+            {% if invoice.city %}<br />{{invoice.postcode}} {{invoice.city}}{% endif %}
+            {% if invoice.country != 'DK' %}<br />{{invoice.country}}{% endif %}
+        </p>
+        {% if invoice.hasShippingAddress %}
+        <p>
+            <b>Delivery address:</b>
+            {% if invoice.shippingName %}<br />{{invoice.shippingName}}{% endif %}
+            {% if invoice.shippingAtt %}<br />{{invoice.shippingAtt}}{% endif %}
+            {% if invoice.shippingAddress %}<br />{{invoice.shippingAddress}}{% endif %}
+            {% if invoice.shippingAddress2 %}<br />{{invoice.shippingAddress2}}{% endif %}
+            {% if invoice.shippingPostbox %}<br />{{invoice.shippingPostbox}}{% endif %}
+            {% if invoice.shippingCity %}<br />{{invoice.shippingPostcode}} {{invoiceCity}}{% endif %}
+            {% if invoice.shippingCountry != 'DK' %}<br />{{invoice.shippingCountry}}{% endif %}
+        </p>
+        {% endif %}
+        <p>Click <a href="{{invoice.adminLink}}">here</a> to expedite the order.</p>
+        <p>
+            email: <a href="mailto:{{invoice.email}}">{{invoice.email}}</a>
+            {% if invoice.phone1 %}Phone:{{invoice.phone1}}{% endif %}
+            {% if invoice.phone2 %}Mobil:{{invoice.phone2}}{% endif %}
+        </p>
+        <p>Sincerely the computer</p>
+    </body>
+</html>

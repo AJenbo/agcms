@@ -4,69 +4,69 @@ use AGCMS\ORM;
 use AGCMS\Render;
 
 /**
- * Category class
+ * Category class.
  */
 class Category extends AbstractRenderable
 {
     /**
-     * Table name in database
+     * Table name in database.
      */
     const TABLE_NAME = 'kat';
 
     /**
-     * Do not show category
+     * Do not show category.
      */
     const HIDDEN = 0;
 
     /**
-     * Gallery rendering of pages
+     * Gallery rendering of pages.
      */
     const GALLERY = 1;
 
     /**
-     * List rendering of pages
+     * List rendering of pages.
      */
     const LIST = 2;
 
     // Backed by DB
     /**
-     * Parent id
+     * Parent id.
      */
     private $parentId;
 
     /**
-     * Icon file path
+     * Icon file path.
      */
     private $iconPath;
 
     /**
-     * Render mode for page list
+     * Render mode for page list.
      */
     private $renderMode;
 
     /**
-     * Contact email
+     * Contact email.
      */
     private $email;
 
     /**
-     * Are children to be fetched by weight
+     * Are children to be fetched by weight.
      */
     private $weightedChildren;
 
     /**
-     * Sorting weight
+     * Sorting weight.
      */
     private $weight;
 
     // Runtime
     /**
-     * Cache if category is visible or not
+     * Cache if category is visible or not.
      */
     private $visable;
 
     /**
-     * Construct the entity
+     * Construct the entity.
      *
      * @param array $data The entity data
      */
@@ -83,7 +83,7 @@ class Category extends AbstractRenderable
     }
 
     /**
-     * Map data from DB table to entity
+     * Map data from DB table to entity.
      *
      * @param array The data from the database
      *
@@ -104,8 +104,9 @@ class Category extends AbstractRenderable
     }
 
     // Getters and setters
+
     /**
-     * Set parent id
+     * Set parent id.
      *
      * @param int $parentId Id of parent category
      *
@@ -119,7 +120,7 @@ class Category extends AbstractRenderable
     }
 
     /**
-     * Get the parent category id
+     * Get the parent category id.
      *
      * @return int
      */
@@ -129,7 +130,7 @@ class Category extends AbstractRenderable
     }
 
     /**
-     * Set icon file path
+     * Set icon file path.
      *
      * @param string $iconPath Icon file path
      *
@@ -143,7 +144,7 @@ class Category extends AbstractRenderable
     }
 
     /**
-     * Set render mode
+     * Set render mode.
      *
      * @param int $renderMode The render mode for displaying pages
      *
@@ -157,7 +158,7 @@ class Category extends AbstractRenderable
     }
 
     /**
-     * Get the page list rendermode for this category
+     * Get the page list rendermode for this category.
      *
      * @return int
      */
@@ -167,7 +168,7 @@ class Category extends AbstractRenderable
     }
 
     /**
-     * Set contact email
+     * Set contact email.
      *
      * @param string $email Contact email
      *
@@ -181,7 +182,7 @@ class Category extends AbstractRenderable
     }
 
     /**
-     * Get the contact email address for pages in this category
+     * Get the contact email address for pages in this category.
      *
      * @return string
      */
@@ -191,9 +192,10 @@ class Category extends AbstractRenderable
     }
 
     /**
-     * Set if children should be manually ordered
+     * Set if children should be manually ordered.
      *
      * @param bool $weightedChildren Weather child categories should be ordered by weight
+     *
      * @return self
      */
     public function setWeightedChildren(bool $weightedChildren): self
@@ -204,7 +206,7 @@ class Category extends AbstractRenderable
     }
 
     /**
-     * Are the children of this category be manually ordered
+     * Are the children of this category be manually ordered.
      *
      * @return bool
      */
@@ -214,7 +216,7 @@ class Category extends AbstractRenderable
     }
 
     /**
-     * Set weight
+     * Set weight.
      *
      * @param int $weight Order-by weight
      *
@@ -228,7 +230,7 @@ class Category extends AbstractRenderable
     }
 
     /**
-     * Get category sorting weight
+     * Get category sorting weight.
      *
      * @return int
      */
@@ -238,14 +240,15 @@ class Category extends AbstractRenderable
     }
 
     // General methodes
+
     /**
-     * Should the category be visible on the website (is it empty or hidden)
+     * Should the category be visible on the website (is it empty or hidden).
      *
      * @return bool
      */
     public function isVisable(): bool
     {
-        if ($this->renderMode === Category::HIDDEN) {
+        if ($this->renderMode === self::HIDDEN) {
             return false;
         }
 
@@ -253,12 +256,14 @@ class Category extends AbstractRenderable
             Render::addLoadedTable('bind');
             if (db()->fetchOne("SELECT id FROM `bind` WHERE `kat` = " . $this->getId())) {
                 $this->visable = true;
+
                 return $this->visable;
             }
 
             foreach ($this->getChildren() as $child) {
                 if ($child->isVisable()) {
                     $this->visable = true;
+
                     return $this->visable;
                 }
             }
@@ -269,7 +274,7 @@ class Category extends AbstractRenderable
     }
 
     /**
-     * Get the url slug
+     * Get the url slug.
      *
      * @return string
      */
@@ -287,11 +292,9 @@ class Category extends AbstractRenderable
     }
 
     /**
-     * Get parent category
-     *
-     * @return ?self
+     * Get parent category.
      */
-    public function getParent()
+    public function getParent(): ?self
     {
         if ($this->parentId > 0) {
             return ORM::getOne(self::class, $this->parentId);
@@ -301,7 +304,7 @@ class Category extends AbstractRenderable
     }
 
     /**
-     * Get attached categories
+     * Get attached categories.
      *
      * @param bool $onlyVisable Only return visible
      *
@@ -333,7 +336,7 @@ class Category extends AbstractRenderable
     }
 
     /**
-     * Check if it has attached categories
+     * Check if it has attached categories.
      *
      * @param bool $onlyVisable Only check visible
      *
@@ -349,48 +352,51 @@ class Category extends AbstractRenderable
         foreach ($children as $child) {
             if ($child->isVisable()) {
                 $this->visable = true;
+
                 return true;
             }
         }
 
         $this->visable = false;
+
         return false;
     }
 
     /**
-     * Return attache pages
+     * Return attache pages.
      *
      * @param string $order What column to order by
      *
      * @return array
      */
-    public function getPages(string $order = 'navn'): array
+    public function getPages(string $order = 'navn', bool $reverseOrder = false): array
     {
         Render::addLoadedTable('bind');
+
         return ORM::getByQuery(
             Page::class,
             "
             SELECT sider.*
             FROM bind JOIN sider ON bind.side = sider.id
             WHERE bind.kat = " . $this->getId() . "
-            ORDER BY sider.`" . db()->esc($order) . "` ASC
-            "
+            ORDER BY sider.`" . db()->esc($order) . "` " . ($reverseOrder ? "DESC" : "ASC")
         );
     }
 
     /**
-     * Is page currently not placed on the website
+     * Is page currently not placed on the website.
      *
      * @return bool
      */
     public function isInactive(): bool
     {
         $branch = $this->getBranch();
+
         return (bool) reset($branch)->getParentId();
     }
 
     /**
-     * Get the full list of categories leading to the root element
+     * Get the full list of categories leading to the root element.
      *
      * @return array
      */
@@ -406,64 +412,34 @@ class Category extends AbstractRenderable
     }
 
     /**
-     * Get the file that is being used as an icon
-     *
-     * @return ?\File
+     * Get the file that is being used as an icon.
      */
-    public function getIcon()
+    public function getIcon(): ?File
     {
         if (!$this->iconPath) {
             return null;
         }
+
         return File::getByPath($this->iconPath);
     }
 
     // ORM related functions
-    /**
-     * Save entity to database
-     *
-     * @return self
-     */
-    public function save(): InterfaceEntity
-    {
-        if ($this->id === null) {
-            db()->query(
-                "
-                INSERT INTO `" . self::TABLE_NAME . "` (
-                    `navn`,
-                    `bind`,
-                    `icon`,
-                    `vis`,
-                    `email`,
-                    `custom_sort_subs`,
-                    `order`
-                ) VALUES (
-                    '" . db()->esc($this->title) . "',
-                    " . $this->parentId . ",
-                    '" . db()->esc($this->getIcon() ? $this->getIcon()->getPath() : '') . "',
-                    " . $this->renderMode . ",
-                    '" . db()->esc($this->email) . "',
-                    " . $this->weightedChildren . ",
-                    " . $this->weight
-                . ")"
-            );
-            $this->setId(db()->insert_id);
-        } else {
-            db()->query(
-                "
-                UPDATE `" . self::TABLE_NAME . "` SET
-                    `navn` = '" . db()->esc($this->title) . "',
-                    `bind` = " . $this->parentId . ",
-                    `icon` = '" . db()->esc($this->getIcon() ? $this->getIcon()->getPath() : '') . "',
-                    `vis` = " . $this->renderMode . ",
-                    `email` = '" . db()->esc($this->email) . "',
-                    `custom_sort_subs` = " . $this->weightedChildren . ",
-                    `order` = " . $this->weight
-                . " WHERE `id` = " . $this->id
-            );
-        }
-        Render::addLoadedTable(self::TABLE_NAME);
 
-        return $this;
+    /**
+     * Get data in array format for the database.
+     *
+     * @return array
+     */
+    public function getDbArray(): array
+    {
+        return [
+            'navn'             => db()->eandq($this->title),
+            'bind'             => $this->parentId,
+            'icon'             => db()->eandq($this->getIcon() ? $this->getIcon()->getPath() : ''),
+            'vis'              => $this->renderMode,
+            'email'            => db()->eandq($this->email),
+            'custom_sort_subs' => $this->weightedChildren,
+            'order'            => $this->weight,
+        ];
     }
 }

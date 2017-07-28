@@ -13,8 +13,6 @@ h2 {
     vertical-align:bottom;
 }
 table, td, tr {
-    font-size:12px;
-    border-collapse:collapse;
     border:0;
     padding:0;
     margin:0;
@@ -179,4 +177,43 @@ a:hover {
     list-style:none;
     padding:0;
     margin:0;
+}
+
+#list td thead * {
+    font-weight:bold;
+}
+
+#list .altbc {
+    background-color:#e6eff4;
+}
+
+#list tr:hover {
+    background-color:#6CC;
+}
+
+#list td {
+    padding:0;
+}
+
+#list td a {
+    color:#000;
+    text-decoration:none;
+    display:block;
+    padding:1px;
+}
+
+#list td .address {
+    display:none;
+    position:absolute;
+    background-color:#FFF;
+    padding:3px 7px;
+    border:1px solid #CCC;
+}
+
+#list td:hover .address {
+    display:block;
+}
+
+#list td .address:hover {
+    display:none;
 }

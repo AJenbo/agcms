@@ -1,6 +1,8 @@
-<?xml version="1.0" encoding="utf-8"?>
-<OpenSearchDescription xmlns="http://a9.com/-/spec/opensearch/1.1/">
-    <ShortName>{{shortName}}</ShortName>
-    <Description>{{description}}</Description>
-    <Url type="text/html" template="{{url}}" />
-</OpenSearchDescription>
+{% extends "index.html" %}
+
+{% block content %}
+<div id="innercontainer">
+    <h1>Search</h1>
+    {{content|raw}}
+</div>
+{% endblock %}

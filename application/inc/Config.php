@@ -3,12 +3,12 @@
 class Config
 {
     /**
-     * Store the configurations
+     * Store the configurations.
      */
     private static $config = [];
 
     /**
-     * Fetch a setting
+     * Fetch a setting.
      *
      * @param string $key     The name of the configuration to fetch
      * @param mixed  $default What to return if key does not exists

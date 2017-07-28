@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Array with key in ISO 3166-1 alpha-2 and value as contry name, sorted by name
+ * Array with key in ISO 3166-1 alpha-2 and value as contry name, sorted by name.
  */
 $countries = [
     'DK' => _('Denmark'),

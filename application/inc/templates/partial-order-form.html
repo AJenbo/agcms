@@ -1,0 +1,67 @@
+<script type="text/javascript" src="javascript.js"></script>
+<form action="" method="post">
+    <p>
+        <table style="border-bottom:1px solid;" id="faktura" cellspacing="0">
+            <thead>
+                <tr>
+                    <td class="td1">Quantity</td>
+                    <td>Title</td>
+                    <td class="td3 tal" style="width:64px">unit price</td>
+                    <td class="td4 tal" style="width:72px">Total</td>
+                </tr>
+            </thead>
+            <tfoot>
+                <tr style="border:1px solid #000">
+                    <td class="td1"></td>
+                    <td></td>
+                    <td class="td3 tal">Total</td>
+                    <td class="td4 tal" id="total">{{invoice.amount|number_format(2, ',', '')}}</td>
+                </tr>
+            </tfoot>
+            <tbody>
+                {% for item in invoice.items %}
+                <tr>
+                    <td class="tal">
+                        <input onkeyup="updateprice();" onchange="updateprice();" class="tal" value="{{item.quantity}}" name="quantity[]" size="3" />
+                    </td>
+                    <td>{{item.title}}</td>
+                    <td class="tal">
+                        {% if not item.value %}{{item.value|number_format(2, ',', '')}}{% eles %}*{% endif %}
+                    </td>
+                    <td class="tal total">
+                        {% if not item.value %}{{item.value * item.quantity|number_format(2, ',', '')}}{% eles %}*{% endif %}
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        <script type="text/javascript"><!--
+        var values = [{% for item in invoice.items %}{{item.value}}{% if not loop.last %},{% endif %}{% endfor %}];
+        --></script>
+        {% if invoice.hasUnknownPrice %}
+        <small>* The price cannot be determined automatically, please make sure to describe the exact type in the note field.</small></p>
+        {% endif %}
+    </p>
+    <p>
+        Prefered payment method:
+        <select name="paymethod" style="float:right;">
+            <option value="creditcard"{% if payMethod == 'creditcard' %} selected="selected"{% endif %}>Credit Card</option>
+            <option value="bank"{% if payMethod == 'bank' %} selected="selected"{% endif %}>Bank transaction</option>
+            <option value="cash"{% if payMethod == 'cash' %} selected="selected"{% endif %}>Cash</option>
+        </select>
+    </p>
+    <p>
+        Delevery:
+        <select style="float:right;" name="delevery">
+            <option value="postal"{% if deleveryMethode == 'postal' %} selected="selected"{% endif %}>Mail</option>
+            <option value="express"{% if deleveryMethode == 'express' %} selected="selected"{% endif %}>Mail express</option>
+            <option value="pickup"{% if deleveryMethode == 'pickup' %} selected="selected"{% endif %}>Pickup in store</option>
+        </select>
+        <small id="shipping"><br />The excact shipping cost will be calculcated as the goods are packed.</small>
+    </p>
+    <p>
+        Note:<br />
+        <textarea style="width:100%;box-sizing:border-box;" name="note">{{invoice.note}}</textarea>
+    </p>
+    <p><input value="Continue" type="submit" /></p>
+</form>

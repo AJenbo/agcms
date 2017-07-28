@@ -3,49 +3,52 @@
 use AGCMS\Config;
 use AGCMS\Entity\Brand;
 use AGCMS\Entity\Category;
+use AGCMS\Entity\Contact;
 use AGCMS\Entity\CustomPage;
 use AGCMS\Entity\File;
 use AGCMS\Entity\Page;
 use AGCMS\Entity\Requirement;
+use AGCMS\Entity\RootCategory;
+use AGCMS\Entity\Invoice;
 use AGCMS\ORM;
 use AGCMS\Render;
-use AJenbo\Imap;
 use AJenbo\Image;
-use HTMLPurifier_Config;
-use HTMLPurifier;
+use Sajax\Sajax;
 
-function checkUserLoggedIn()
+function checkUserLoggedIn(): void
 {
-    if (empty($_SESSION['_user'])) {
-        if (!empty($_POST['username'])) {
-            $user = db()->fetchOne(
-                "
-                SELECT * FROM `users`
-                WHERE `name` = '" . db()->esc($_POST['username']) . "'
-                AND `access` >= 1
-                "
-            );
-            if ($user && crypt($_POST['password'] ?? '', $user['password']) === $user['password']) {
-                $_SESSION['_user'] = $user;
-            }
-            redirect($_SERVER['REQUEST_URI']);
-        }
+    if (!empty($_SESSION['_user'])) {
+        return;
+    }
 
+    if (empty($_POST['username'])) {
         sleep(1);
         header('HTTP/1.0 401 Unauthorized', true, 401);
 
-        if (empty($_GET['rs']) && empty($_POST['rs'])) {
-            echo Render::render('admin-login');
-            die();
+        if (!empty($_GET['rs']) || !empty($_POST['rs'])) {
+            exit(_('Your login has expired, please reload the page and login again.'));
         }
 
-        echo _('Your login has expired, please reload the page and login again.');
-        die();
+        Render::output('admin-login');
+        exit;
     }
+
+    $user = db()->fetchOne(
+        "
+        SELECT * FROM `users`
+        WHERE `name` = '" . db()->esc($_POST['username']) . "'
+        AND `access` >= 1
+        "
+    );
+    if ($user && crypt($_POST['password'] ?? '', $user['password']) === $user['password']) {
+        $_SESSION['_user'] = $user;
+    }
+
+    redirect($_SERVER['REQUEST_URI']);
 }
 
 /**
- * Optimize all tables
+ * Optimize all tables.
  *
  * @return string Always empty
  */
@@ -55,11 +58,12 @@ function optimizeTables(): string
     foreach ($tables as $table) {
         db()->query("OPTIMIZE TABLE `" . $table['Name'] . "`");
     }
+
     return '';
 }
 
 /**
- * Remove newletter submissions that are missing vital information
+ * Remove newletter submissions that are missing vital information.
  *
  * @return string Always empty
  */
@@ -79,7 +83,7 @@ function removeBadSubmisions(): string
 }
 
 /**
- * Delete bindings where either page or category is missing
+ * Delete bindings where either page or category is missing.
  *
  * @return string Always empty
  */
@@ -98,7 +102,7 @@ function removeBadBindings(): string
 }
 
 /**
- * Remove bad tilbehor bindings
+ * Remove bad tilbehor bindings.
  *
  * @return string Always empty
  */
@@ -116,7 +120,7 @@ function removeBadAccessories(): string
 }
 
 /**
- * Remove enteries for files that do no longer exist
+ * Remove enteries for files that do no longer exist.
  *
  * @return string Always empty
  */
@@ -137,9 +141,6 @@ function removeNoneExistingFiles(): string
     return '';
 }
 
-/**
- * @return array
- */
 function sendDelayedEmail(): string
 {
     //Get emails that needs sending
@@ -147,6 +148,7 @@ function sendDelayedEmail(): string
     $cronStatus = ORM::getOne(CustomPage::class, 0);
     if (!$emails) {
         $cronStatus->save();
+
         return '';
     }
 
@@ -154,9 +156,9 @@ function sendDelayedEmail(): string
     $emailCount = count($emails);
     foreach ($emails as $email) {
         $email['from'] = explode('<', $email['from']);
-        $email['from'][1] = substr($email['from'][1], 0, -1);
+        $email['from'][1] = mb_substr($email['from'][1], 0, -1);
         $email['to'] = explode('<', $email['to']);
-        $email['to'][1] = substr($email['to'][1], 0, -1);
+        $email['to'][1] = mb_substr($email['to'][1], 0, -1);
 
         $success = sendEmails(
             $email['subject'],
@@ -171,7 +173,7 @@ function sendDelayedEmail(): string
             continue;
         }
 
-        $emailsSendt++;
+        ++$emailsSendt;
 
         db()->query("DELETE FROM `emails` WHERE `id` = " . (int) $email['id']);
     }
@@ -179,15 +181,16 @@ function sendDelayedEmail(): string
     $cronStatus->save();
 
     $msg = ngettext(
-        "%d of %d e-mail was sent.",
-        "%d of %d e-mails was sent.",
+        '%d of %d e-mail was sent.',
+        '%d of %d e-mails was sent.',
         $emailsSendt
     );
-    return '<b>' . sprintf($msg, $emailsSendt, $emailCount) . '</b>';
+
+    return sprintf($msg, $emailsSendt, $emailCount);
 }
 
 /**
- * Convert PHP size string to bytes
+ * Convert PHP size string to bytes.
  *
  * @param string $val PHP size string (eg. '2M')
  *
@@ -195,7 +198,9 @@ function sendDelayedEmail(): string
  */
 function returnBytes(string $val): int
 {
-    $last = mb_strtolower($val{mb_strlen($val, 'UTF-8')-1}, 'UTF-8');
+    $last = mb_substr($val, -1);
+    $last = mb_strtolower($last);
+    $val = mb_substr($val, 0, -1);
     switch ($last) {
         case 'g':
             $val *= 1024;
@@ -206,14 +211,10 @@ function returnBytes(string $val): int
         case 'k':
             $val *= 1024;
     }
+
     return $val;
 }
 
-/**
- * @param string $filepath
- *
- * @return string
- */
 function get_mime_type(string $filepath): string
 {
     $mime = '';
@@ -295,15 +296,12 @@ function get_mime_type(string $filepath): string
     }
 
     $mime = explode(';', $mime);
+
     return array_shift($mime);
 }
 
 /**
- * @param int $id
- * @param string $from      From
- * @param string $interests Interests
- * @param string $subject   Subject
- * @param string $text      Content
+ * @return array|true
  */
 function sendEmail(int $id, string $from, string $interests, string $subject, string $text)
 {
@@ -316,27 +314,6 @@ function sendEmail(int $id, string $from, string $interests, string $subject, st
     $text = htmlUrlDecode($text);
 
     saveEmail($id, $from, $interests, $subject, $text);
-
-    $body = '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"'
-        . ' "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-    <html xmlns="http://www.w3.org/1999/xhtml">
-    <head>
-    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
-    <title>' . Config::get('site_name') . '</title>
-    <style type="text/css">';
-    $body .= file_get_contents(_ROOT_ . '/theme/email.css');
-    $body .= '</style>
-    <meta http-equiv="content-language" content="da" />
-    <meta name="Description" content="Alt du har brug for i frilufts livet" />
-    <meta name="Author" content="' . Config::get('site_name') . '" />
-    <meta name="Classification" content="" />
-    <meta name="Reply-to" content="'.$from.'" />
-    <meta http-equiv="imagetoolbar" content="no" />
-    <meta name="distribution" content="Global" />
-    <meta name="robots" content="index,follow" />
-    </head><body><div>';
-    $body .= str_replace(' href="/', ' href="' . Config::get('base_url') . '/', $text);
-    $body .= '</div></body></html>';
 
     //Colect interests
     if ($interests) {
@@ -356,7 +333,7 @@ function sendEmail(int $id, string $from, string $interests, string $subject, st
             $andwhere .= $interest;
             $andwhere .= '<%\'';
         }
-        $andwhere = ' AND ('.$andwhere;
+        $andwhere = ' AND (' . $andwhere;
         $andwhere .= ')';
     }
 
@@ -364,18 +341,24 @@ function sendEmail(int $id, string $from, string $interests, string $subject, st
         'SELECT navn, email
         FROM `email`
         WHERE `email` NOT LIKE \'\'
-          AND `kartotek` = \'1\' '.$andwhere.'
+          AND `kartotek` = \'1\' ' . $andwhere . '
         GROUP BY `email`'
     );
     foreach ($emails as $x => $email) {
-        $emailsGroup[floor($x/99)+1][] = $email;
+        $emailsGroup[floor($x / 99) + 1][] = $email;
     }
+
+    $data = [
+        'siteName' => Config::get('site_name'),
+        'css' => file_get_contents(_ROOT_ . '/theme/email.css'),
+        'body' => str_replace(' href="/', ' href="' . Config::get('base_url') . '/', $text),
+    ];
 
     $error = '';
     foreach ($emailsGroup as $of => $emails) {
         $success = sendEmails(
             $subject,
-            $body,
+            Render::render('email-newsletter', $data),
             $from,
             '',
             '',
@@ -395,22 +378,15 @@ function sendEmail(int $id, string $from, string $interests, string $subject, st
     }
 
     db()->query("UPDATE `newsmails` SET `sendt` = 1 WHERE `id` = " . (int) $id);
+
     return true;
 }
 
-/**
- * @param string $interests Interests
- *
- * @return int
- */
-function countEmailTo(string $interests): int
+function countEmailTo(array $interests): int
 {
-    $andwhere = '';
-
     //Colect interests
+    $andwhere = '';
     if ($interests) {
-        $interests = explode('<', $interests);
-        $andwhere = '';
         foreach ($interests as $interest) {
             if ($andwhere) {
                 $andwhere .= ' OR ';
@@ -425,8 +401,7 @@ function countEmailTo(string $interests): int
             $andwhere .= $interest;
             $andwhere .= '<%\'';
         }
-        $andwhere = ' AND ('.$andwhere;
-        $andwhere .= ')';
+        $andwhere = ' AND (' . $andwhere . ')';
     }
 
     $emails = db()->fetchOne(
@@ -440,102 +415,24 @@ function countEmailTo(string $interests): int
     return $emails['count'];
 }
 
-/**
- * @return string
- */
-function getNewEmail(): string
-{
-    db()->query('INSERT INTO `newsmails` () VALUES ()');
-    return getEmail(db()->insert_id);
-}
-
-/**
- * @param int $id The id
- *
- * @return string
- */
-function getEmail(int $id): string
-{
-    $newsmail = db()->fetchOne('SELECT * FROM `newsmails` WHERE `id` = ' . $id);
-
-    $html = '<div id="headline">' . _('Edit newsletter') . '</div>';
-
-    if ($newsmail['sendt'] == 0) {
-        $html .= '<form action="" method="post" onsubmit="return sendNews();"><input type="submit" accesskey="m" style="width:1px; height:1px; position:absolute; top: -20px; left:-20px;" />';
-        $html .= '<input value="'.$id.'" id="id" type="hidden" />';
-    }
-
-    $html .= '<div>';
-
-    //TODO error if value = ''
-    if ($newsmail['sendt'] == 0) {
-        if (count(Config::get('emails')) > 1) {
-            $html .= _('Sender:') . ' <select id="from">';
-            $html .= '<option value="">' . _('Select sender') . '</option>';
-            foreach (array_keys(Config::get('emails', [])) as $email) {
-                $html .= '<option value="'.$email.'">'.$email.'</option>';
-            }
-            $html .= '</select>';
-        } else {
-            $email = first(Config::get('emails'))['address'];
-            $html .= '<input value="' . $email . '" id="from" style="display:none;" />';
-        }
-    } else {
-        $html .= _('Sender:') . ' ' . $newsmail['from'];
-    }
-
-    //Modtager
-    if ($newsmail['sendt'] == 1) {
-        $html .= '<br /><br />' . _('Recipient:');
-    } else {
-        $html .= '<br />' . _('Restrict recipients to:');
-    }
-    $html .= '<div id="interests">';
-    $newsmail['interests_array'] = explode('<', $newsmail['interests']);
-    foreach (Config::get('interests', []) as $interest) {
-        $html .= '<input';
-        if (false !== array_search($interest, $newsmail['interests_array'])) {
-            $html .= ' checked="checked"';
-        }
-        if ($newsmail['sendt'] == 1) {
-            $html .= ' disabled="disabled"';
-        } else {
-            $html .= ' onchange="countEmailTo()" onclick="countEmailTo()"';
-        }
-        $html .= ' type="checkbox" value="'.$interest.'" id="'.$interest.'" /><label for="'.$interest.'"> '.$interest.'</label> ';
-    }
-    $html .= '<script type="text/javascript"><!--
-countEmailTo();
---></script>';
-    $html .= '</div>';
-
-    if ($newsmail['sendt'] == 0) {
-        $html .= '<br />'._('Number of recipients:').' <span id="mailToCount">'.countEmailTo($newsmail['interests']).'</span><br />';
-    }
-
-    if ($newsmail['sendt'] == 1) {
-        $html .= '<br />' . _('Subject:') . ' ' . $newsmail['subject'] . '<div style="width:' . Config::get('text_width') . 'px; border:1px solid #D2D2D2">' . $newsmail['text'] . '</div></div>';
-    } else {
-        $html .= '<br />' . _('Subject:') . ' <input class="admin_name" name="subject" id="subject" value="' . $newsmail['subject'] . '" size="127" style="width:' . (Config::get('text_width') - 34) . 'px" /><script type="text/javascript"><!--
-//Usage: initRTE(imagesPath, includesPath, cssFile, genXHTML)
-initRTE(\'/admin/rtef/images/\', \'/admin/rtef/\', \'/theme/email.css\', true);
-writeRichText(\'text\', \'' . rtefsafe($newsmail['text']) . '\', \'\', ' . (Config::get('text_width') + 32) . ', 422, true, false, false);
-//--></script></div></form>';
-    }
-    return $html;
-}
-
-/**
- * @param int    $id        The ID
- * @param string $from      From
- * @param string $interests Interests
- * @param string $subject   Subject
- * @param string $text      Content
- *
- * @return bool
- */
 function saveEmail(int $id, string $from, string $interests, string $subject, string $text): bool
 {
+    if (!$id) {
+        db()->query(
+            "
+            INSERT INTO `newsmails` (`from`, `interests`, `subject`, `text`)
+            VALUES (
+                '" . db()->esc($from) . "',
+                '" . db()->esc($interests) . "',
+                '" . db()->esc($subject) . "',
+                '" . db()->esc($text) . "'
+            )
+            "
+        );
+
+        return true;
+    }
+
     db()->query(
         "UPDATE `newsmails`
         SET `from` = '" . db()->esc($from) . "',
@@ -544,35 +441,10 @@ function saveEmail(int $id, string $from, string $interests, string $subject, st
         `text` = '" . db()->esc($text) . "'
         WHERE `id` = " . $id
     );
+
     return true;
 }
 
-/**
- * @return string
- */
-function getEmailList(): string
-{
-    $newsmails = db()->fetchArray('SELECT `id`, `subject`, `sendt` FROM `newsmails`');
-
-    $html = '<div id="headline">' . _('Newsletters').'</div><div><a href="?side=newemail"><img src="images/email_add.png" width="16" height="16" alt="" /> '._('Create new newsletter').'</a><br /><br />';
-    foreach ($newsmails as $newemail) {
-        if ($newemail['sendt'] == 0) {
-            $html .= '<a href="?side=editemail&amp;id='.$newemail['id'].'"><img src="images/email_edit';
-        } else {
-            $html .= '<a href="?side=viewemail&amp;id='.$newemail['id'].'"><img src="images/email_open';
-        }
-        $html .= '.png" width="16" height="16" alt="" /> '.$newemail['subject'].'</a><br />';
-    }
-    $html .= '</div>';
-
-    return $html;
-}
-
-/**
- * @parram int $id
- *
- * @return array
- */
 function kattree(int $id): array
 {
     $kat = db()->fetchOne("SELECT id, navn, bind FROM `kat` WHERE id = " . $id);
@@ -595,337 +467,126 @@ function kattree(int $id): array
     }
 
     $kattree[]['id'] = $id ? 1 : 0;
-    $kattree[count($kattree)-1]['navn'] = $id ? _('Inactive') : _('Frontpage');
+    $kattree[count($kattree) - 1]['navn'] = $id ? _('Inactive') : _('Frontpage');
+
     return array_reverse($kattree);
 }
 
-/**
- * @parram int $id
- *
- * @return array
- */
 function katspath(int $id): array
 {
-    $html = _('Select location:').' ';
+    $html = _('Select location:') . ' ';
     foreach (kattree($id) as $kat) {
-        $html .= '/'.trim($kat['navn']);
+        $html .= '/' . trim($kat['navn']);
     }
     $html .= '/';
 
     return ['id' => 'katsheader', 'html' => $html];
 }
 
-/**
- * @parram int $id
- *
- * @return array
- */
-function katlist(int $id): string
+function getOpenCategories(): array
 {
-    global $kattree;
-    $html = '<a class="menuboxheader" id="katsheader" style="width:' . Config::get('text_width') . 'px;clear:both" onclick="showhidekats(\'kats\',this);">';
-    $hideKats = $_COOKIE['hidekats'] ?? 0;
-    if ($hideKats) {
-        $temp = katspath($id);
-        $html .= $temp['html'];
-    } else {
-        $html .= _('Select location:').' ';
-    }
-    $html .= '</a><div style="width:' . (Config::get('text_width') + 24) . 'px;';
-    if ($hideKats) {
-        $html .= 'display:none;';
-    }
-    $html .= '" id="kats"><div>';
-    $kattree = kattree($id);
-    foreach ($kattree as $i => $value) {
-        $kattree[$i] = $value['id'];
+    $activeCategoryId = max($_COOKIE['activekat'] ?? -1, -1);
+    $openCategories = explode('<', $_COOKIE['openkat'] ?? '');
+    $openCategories = array_map('intval', $openCategories);
+    $openCategories = array_flip($openCategories);
+    foreach (kattree($activeCategoryId) as $i => $value) {
+        $openCategories[$value['id']] = true;
     }
 
-    $openkat = explode('<', $_COOKIE['openkat'] ?? '');
-    if (db()->fetchOne("SELECT id FROM `kat` WHERE bind = -1")) {
-        $html .= '<img';
-        if (array_search(-1, $openkat) || false !== array_search('-1', $kattree)) {
-            $html .= ' style="display:none"';
-        }
-        $html .= ' src="images/+.gif" id="kat-1expand" onclick="kat_expand(-1, true, kat_expand_r);" height="16" width="16" alt="+" title="" /><img';
-        if (!array_search(-1, $openkat) && false === array_search('-1', $kattree)) {
-            $html .= ' style="display:none"';
-        }
-        $html .= ' src="images/-.gif" id="kat-1contract" onclick="kat_contract(-1);" height="16" width="16" alt="-" title="" /><a';
-    } else {
-        $html .= '<a style="margin-left:16px"';
-    }
-    $html .= ' onclick="this.firstChild.checked=true;setCookie(\'activekat\', -1, 360);"><input name="kat" type="radio" value="-1"';
-    if ($kattree[count($kattree)-1] == -1) {
-        $html .= ' checked="checked"';
-    }
-    $html .= ' /><img src="images/folder.png" width="16" height="16" alt="" /> '._('Inactive').'</a><div id="kat-1content" style="margin-left:16px">';
-    if (array_search(-1, $openkat) || false !== array_search('-1', $kattree)) {
-        $temp = kat_expand(-1, true);
-        $html .= $temp['html'];
-    }
-    $html .= '</div></div><div>';
-    if (db()->fetchOne("SELECT id FROM `kat` WHERE bind = 0")) {
-        $html .= '<img style="';
-        if (array_search(0, $openkat) || false !== array_search('0', $kattree)) {
-            $html .= 'display:none;';
-        }
-        $html .= '" src="images/+.gif" id="kat0expand" onclick="kat_expand(0, true, kat_expand_r);" height="16" width="16" alt="+" title="" /><img style="';
-        if (!array_search(0, $openkat) && false === array_search('0', $kattree)) {
-            $html .= 'display:none;';
-        }
-        $html .= '" src="images/-.gif" id="kat0contract" onclick="kat_contract(\'0\');" height="16" width="16" alt="-" title="" /><a';
-    } else {
-        $html .= '<a style="margin-left:16px"';
-    }
-    $html .= ' onclick="this.firstChild.checked=true;setCookie(\'activekat\', 0, 360);"><input type="radio" name="kat" value="0"';
-    if (!$kattree[count($kattree)-1]) {
-        $html .= ' checked="checked"';
-    }
-    $html .= ' /><img src="images/folder.png" width="16" height="16" alt="" /> '._('Frontpage').'</a><div id="kat0content" style="margin-left:16px">';
-    if (array_search(0, $openkat) || false !== array_search('0', $kattree)) {
-        $temp = kat_expand(0, true);
-        $html .= $temp['html'];
-    }
-    $html .= '</div></div></div>';
-    return $html;
+    return $openCategories;
 }
 
-/**
- * @parram int $id
- *
- * @return string
- */
-function siteList(int $id = null): string
+function getCategoryRootStructure(bool $includePages = false): array
 {
-    global $kattree;
+    $openCategories = getOpenCategories();
+    $categories = [];
+    foreach ([-1 => _('Inactive'), 0 => _('Frontpage')] as $id => $name) {
+        $pageSql = "";
+        if ($includePages) {
+            $pageSql = " UNION SELECT id FROM `bind` WHERE kat = " . $id;
+        }
 
-    $html = '<div>';
+        $subs = [];
+        $pages = [];
+        if (isset($openCategories[$id])) {
+            $subs = getCategoryStructure($id, $openCategories, $includePages);
+            if ($includePages) {
+                $pages = getCategoryStructurePages($id);
+            }
+        }
 
-    $kattree = [];
-    if ($id !== null) {
-        $kattree = kattree($id);
-        foreach ($kattree as $i => $value) {
-            $kattree[$i] = $value['id'];
-        }
+        $categories[] = [
+            'id'         => $id,
+            'hasContent' => (bool) db()->fetchOne("SELECT id FROM `kat` WHERE bind = " . $id . $pageSql),
+            'subs'       => $subs,
+            'pages'      => $pages,
+            'icon'       => '',
+            'title'      => $name,
+        ];
     }
 
-    $openkat = explode('<', $_COOKIE['openkat'] ?? '');
-    if (db()->fetchOne("SELECT id FROM `kat` WHERE bind = -1") || db()->fetchOne("SELECT id FROM `bind` WHERE kat = -1")) {
-        $html .= '<img';
-        if (array_search(-1, $openkat) || false !== array_search('-1', $kattree)) {
-            $html .= ' style="display:none"';
-        }
-         $html .= ' src="images/+.gif" id="kat-1expand" onclick="siteList_expand(-1, kat_expand_r);" height="16" width="16" alt="+" title="" /><img';
-        if (!array_search(-1, $openkat) && false === array_search('-1', $kattree)) {
-            $html .= ' style="display:none"';
-        }
-        $html .= ' src="images/-.gif" id="kat-1contract" onclick="kat_contract(-1);" height="16" width="16" alt="-" title="" /><a';
-    } else {
-        $html .= '<a style="margin-left:16px"';
-    }
-    $html .= '><img src="images/folder.png" width="16" height="16" alt="" /> '._('Inactive').'</a><div id="kat-1content" style="margin-left:16px">';
-    if (array_search(-1, $openkat) || false !== array_search('-1', $kattree)) {
-        $temp = siteList_expand(-1);
-        $html .= $temp['html'];
-    }
-    $html .= '</div></div><div>';
-    if (db()->fetchOne("SELECT id FROM `kat` WHERE bind = 0") || db()->fetchOne("SELECT id FROM `bind` WHERE kat = 0")) {
-        $html .= '<img style="';
-        if (array_search(0, $openkat) || false !== array_search('0', $kattree)) {
-            $html .= 'display:none;';
-        }
-        $html .= '" src="images/+.gif" id="kat0expand" onclick="siteList_expand(0, kat_expand_r);" height="16" width="16" alt="+" title="" /><img style="';
-        if (!array_search(0, $openkat) && false === array_search('0', $kattree)) {
-            $html .= 'display:none;';
-        }
-        $html .= '" src="images/-.gif" id="kat0contract" onclick="kat_contract(\'0\');" height="16" width="16" alt="-" title="" /><a';
-    } else {
-        $html .= '<a style="margin-left:16px"';
-    }
-    $html .= ' href="?side=redigerFrontpage"><img src="images/page.png" width="16" height="16" alt="" /> '._('Frontpage').'</a><div id="kat0content" style="margin-left:16px">';
-    if (array_search(0, $openkat) || false !== array_search('0', $kattree)) {
-        $temp = siteList_expand(0);
-        $html .= $temp['html'];
-    }
-    $html .= '</div></div>';
-    return $html;
+    return $categories;
 }
 
-/**
- * @parram int $id
- *
- * @return array
- */
-function pages_expand(int $id): array
+function getCategoryStructure(int $id, array $openCategories = [], bool $includePages = false): array
 {
-    $html = kat_expand($id, false)['html'];
-    $sider = db()->fetchArray('SELECT sider.id, sider.varenr, bind.id as bind, navn FROM `bind` LEFT JOIN sider on bind.side = sider.id WHERE `kat` = '.$id.' ORDER BY sider.navn');
-    foreach ($sider as $side) {
-        $html .= '<div id="bind'.$side['bind'].'" class="side'.$side['id'].'"><a style="margin-left:16px" class="side">
-        <a class="kat" onclick="this.firstChild.checked=true;"><input name="side" type="radio" value="'.$side['id'].'" />
-        <img src="images/page.png" width="16" height="16" alt="" /> ' . strip_tags($side['navn'], '<img>');
-        if ($side['varenr']) {
-            $html .= ' <em>#:'.$side['varenr'].'</em>';
-        }
-        $html .= '</a></div>';
+    $pageSql = "'0'";
+    if ($includePages) {
+        $pageSql = "EXISTS(SELECT * FROM `bind` WHERE kat = kat.id)";
     }
-    return ['id' => $id, 'html' => $html];
-}
-
-/**
- * @parram int $id
- *
- * @return array
- */
-function siteList_expand(int $id): array
-{
-    $html = kat_expand($id, false)['html'];
-    $sider = db()->fetchArray('SELECT sider.id, sider.varenr, bind.id as bind, navn FROM `bind` LEFT JOIN sider on bind.side = sider.id WHERE `kat` = '.$id.' ORDER BY sider.navn');
-    foreach ($sider as $side) {
-        $html .= '<div id="bind'.$side['bind'].'" class="side'.$side['id'].'"><a style="margin-left:16px" class="side" href="?side=redigerside&amp;id='.$side['id'].'"><img src="images/page.png" width="16" height="16" alt="" /> ' . strip_tags($side['navn'], '<img>');
-        if ($side['varenr']) {
-            $html .= ' <em>#:'.$side['varenr'].'</em>';
-        }
-        $html .= '</a></div>';
-    }
-    return ['id' => $id, 'html' => $html];
-}
-
-/**
- * @return string
- */
-function getSiteTree(): string
-{
-    $html = '<div id="headline">'._('Overview').'</div><div>';
-    $html .= siteList($_COOKIE['activekat'] ?? null);
-
-    $customPages = ORM::getByQuery(
-        CustomPage::class,
+    $categories = db()->fetchArray(
         "
-        SELECT * FROM `special`
-        WHERE `id` > 1
-        ORDER BY `navn`
+        SELECT kat.id,
+            kat.icon,
+            kat.navn title,
+            EXISTS(SELECT * FROM `kat` child WHERE kat.id = child.bind) or $pageSql hasContent
+        FROM `kat` WHERE bind = " . $id . " ORDER BY `order`, `navn`
         "
     );
-    foreach ($customPages as $customPage) {
-        $html .= '<div style="margin-left: 16px;"><a href="?side=redigerSpecial&id=' . $customPage->getId()
-            . '"><img height="16" width="16" alt="" src="images/page.png"/> ' . $customPage->getTitle() . '</a></div>';
-    }
 
-    return $html . '</div>';
-}
-
-/**
- * @param int $id
- * @param bool $input
- *
- * @return array
- */
-function kat_expand(int $id, bool $input = true): array
-{
-    global $kattree;
-    $html = '';
-
-    $kats = db()->fetchArray(
-        '
-        SELECT *
-        FROM `kat`
-        WHERE bind = ' . $id . '
-        ORDER BY `order`, `navn`
-        '
-    );
-    foreach ($kats as $kat) {
-        $katExists = db()->fetchOne(
-            '
-            SELECT id
-            FROM `kat`
-            WHERE bind = ' . $kat['id']
-        );
-        if ($katExists
-            || (!$input && db()->fetchOne("SELECT id FROM `bind` WHERE kat = " . $kat['id']))
-        ) {
-            $openkat = explode('<', $_COOKIE['openkat'] ?? '');
-            $html .= '<div id="kat'.$kat['id'].'"><img style="display:';
-            if (array_search($kat['id'], $openkat)
-                || false !== array_search($kat['id'], $kattree)
-            ) {
-                $html .= 'none';
-            }
-            $html .= '" src="images/+.gif" id="kat'.$kat['id'].'expand" onclick="';
-            if ($input) {
-                $html .= 'kat_expand('.$kat['id'].', \'true\'';
-            } else {
-                $html .= 'siteList_expand('.$kat['id'];
-            }
-            $html .= ', kat_expand_r);" height="16" width="16" alt="+" title="" /><img style="display:';
-
-            if (!array_search($kat['id'], $openkat)
-                && false === array_search($kat['id'], $kattree)
-            ) {
-                $html .= 'none';
-            }
-            $html .= '" src="images/-.gif" id="kat'.$kat['id'].'contract" onclick="kat_contract('.$kat['id'].');" height="16" width="16" alt="-" title="" /><a class="kat"';
-
-            if ($input) {
-                $html .= ' onclick="this.firstChild.checked=true;setCookie(\'activekat\', '.$kat['id'].', 360);"><input name="kat" type="radio" value="'.$kat['id'].'"';
-                if (@$kattree[count($kattree)-1] == $kat['id']) {
-                    $html .= ' checked="checked"';
-                }
-                $html .= ' />';
-            } else {
-                $html .= ' href="?side=redigerkat&id='.$kat['id'].'">';
-            }
-
-            $html .= '<img src="';
-            if ($kat['icon']) {
-                $html .= $kat['icon'];
-            } else {
-                $html .= 'images/folder.png';
-            }
-            $html .= '" alt="" /> ' . strip_tags($kat['navn'], '<img>') . '</a><div id="kat' . $kat['id'] . 'content" style="margin-left:16px">';
-            if (array_search($kat['id'], $openkat) || false !== array_search($kat['id'], $kattree)) {
-                if ($input) {
-                    $temp = kat_expand($kat['id'], true);
-                } else {
-                    $temp = siteList_expand($kat['id']);
-                }
-                $html .= $temp['html'];
-            }
-            $html .= '</div></div>';
-        } else {
-            $html .= '<div id="kat'.$kat['id'].'"><a class="kat" style="margin-left:16px"';
-            if ($input) {
-                $html .= ' onclick="this.firstChild.checked=true;setCookie(\'activekat\', '.$kat['id'].', 360);"><input type="radio" name="kat" value="'.$kat['id'].'"';
-                if (@$kattree[count($kattree)-1] == $kat['id']) {
-                    $html .= ' checked="checked"';
-                }
-                $html .= ' />';
-            } else {
-                $html .= ' href="?side=redigerkat&id='.$kat['id'].'">';
-            }
-            $html .= '<img src="';
-            if ($kat['icon']) {
-                $html .= $kat['icon'];
-            } else {
-                $html .= 'images/folder.png';
-            }
-            $html .= '" alt="" /> ' . strip_tags($kat['navn'], '<img>') . '</a></div>';
+    foreach ($categories as $index => $category) {
+        if (isset($openCategories[$category['id']])) {
+            $categories[$index]['subs'] = getCategoryStructure($category['id'], $openCategories, $includePages);
+            $categories[$index]['pages'] = $includePages ? getCategoryStructurePages($category['id']) : [];
         }
     }
+
+    return $categories;
+}
+
+function getCategoryStructurePages(int $categoryId, string $orderBy = 'sider.navn'): array
+{
+    return db()->fetchArray(
+        "
+        SELECT sider.*, bind.id as bind
+        FROM `bind` LEFT JOIN sider on bind.side = sider.id
+        WHERE `kat` = " . $categoryId . " ORDER BY " . $orderBy
+    );
+}
+
+function kat_expand(int $id, bool $includePages = false, string $input = ''): array
+{
+    $openCategories = getOpenCategories();
+    $data = [
+        'categories'        => getCategoryStructure($id, $openCategories, $includePages),
+        'pages'             => $includePages ? getCategoryStructurePages($id) : [],
+        'categoryBranchIds' => [],
+        'openCategories'    => explode('<', $_COOKIE['openkat'] ?? ''),
+        'input'             => $input,
+        'includePages'      => $includePages,
+    ];
+
+    $html = Render::render('partial-admin-kat_expand', $data);
+
     return ['id' => $id, 'html' => $html];
 }
 
 /**
- * Check if file is in use
- *
- * @param string $path
- *
- * @return bool
+ * Check if file is in use.
  */
 function isinuse(string $path): bool
 {
-    $result = db()->fetchOne(
+    return (bool) db()->fetchOne(
         "
         (
             SELECT id FROM `sider`
@@ -944,17 +605,10 @@ function isinuse(string $path): bool
         UNION (SELECT id FROM `kat` WHERE `navn` LIKE '%$path%' OR `icon` LIKE '$path' LIMIT 1)
         "
     );
-
-    return $result ? true : false;
 }
 
 /**
- * Delete unused file
- *
- * @param int $id
- * @param string $path
- *
- * @return bool
+ * Delete unused file.
  */
 function deletefile(int $id, string $path): array
 {
@@ -969,145 +623,118 @@ function deletefile(int $id, string $path): array
     return ['error' => _('There was an error deleting the file, the file may be in use.')];
 }
 
-if (!function_exists('scandir')) {
-    /**
-     * Scan folder and get list of files and folders in it
-     *
-     * @param string $dir
-     * @param int $sortorder
-     *
-     * @return mixed
-     */
-    function scandir(string $dir, int $sortorder = 0)
-    {
-        if (is_dir($dir) && $listdirs = @opendir($dir)) {
-            while (($file = readdir($listdirs)) !== false) {
-                $files[] = $file;
-            }
-            closedir($listdirs);
-            ($sortorder == 0) ? asort($files) : rsort($files); // arsort was replaced with rsort
-            return $files;
-        }
-
-        return false;
-    }
-}
-
 /**
  * Takes a string and changes it to comply with file name restrictions in windows, linux, mac and urls (UTF8)
- * .|"'´`:%=#&\/+?*<>{}-_
- *
- * @param string $filename
- *
- * @return string
+ * .|"'´`:%=#&\/+?*<>{}-_.
  */
 function genfilename(string $filename): string
 {
     $search = ['/[.&?\/:*"\'´`<>{}|%\s-_=+#\\\\]+/u', '/^\s+|\s+$/u', '/\s+/u'];
     $replace = [' ', '', '-'];
+
     return mb_strtolower(preg_replace($search, $replace, $filename), 'UTF-8');
 }
 
 /**
- * return true for directorys and false for every thing else
- *
- * @param string $fileName
- *
- * @return bool
+ * return true for directorys and false for every thing else.
  */
-function is_dirs(string $fileName): bool
+function is_dirs(string $path): bool
 {
-    global $temp;
-    if (is_file(_ROOT_ . $temp . '/' . $fileName)
-        || $fileName == '.'
-        || $fileName == '..'
+    if (is_file(_ROOT_ . $path)
+        || $path == '.'
+        || $path == '..'
     ) {
         return false;
     }
+
     return true;
 }
 
 /**
- * return list of folders in a folder
- *
- * @param string $dir
- *
- * @return mixed
+ * return list of folders in a folder.
  */
-function sub_dirs(string $dir)
+function getSubDirs(string $path): array
 {
-    global $temp;
-    $temp = $dir;
-    if ($dirs = scandir(_ROOT_ . $dir)) {
-        $dirs = array_filter($dirs, 'is_dirs');
-        natcasesort($dirs);
-        $dirs = array_values($dirs);
+    $dirs = [];
+    $iterator = new DirectoryIterator(_ROOT_ . $path);
+    foreach ($iterator as $fileinfo) {
+        if ($fileinfo->isDot() || !$fileinfo->isDir()) {
+            continue;
+        }
+        $dirs[] = $fileinfo->getFilename();
     }
+
+    natcasesort($dirs);
+    $dirs = array_values($dirs);
+
+    foreach ($dirs as $index => $dir) {
+        $dirs[$index] = formatDir($path . '/' . $dir, $dir);
+    }
+
     return $dirs;
+}
+
+function hasSubsDirs(string $path): bool
+{
+    $iterator = new DirectoryIterator(_ROOT_ . $path);
+    foreach ($iterator as $fileinfo) {
+        if (!$fileinfo->isDot() && $fileinfo->isDir()) {
+            return true;
+        }
+    }
+
+    return false;
+}
+
+function getRootDirs(): array
+{
+    $dirs = [];
+    foreach (['/images' => _('Images'), '/files' => _('Files')] as $path => $name) {
+        $dirs[] = formatDir($path, $name);
+    }
+
+    return $dirs;
+}
+
+function formatDir(string $path, string $name): array
+{
+    $subs = [];
+    $hassubs = false;
+    if (empty($_COOKIE[$path])) {
+        $hassubs = hasSubsDirs($path);
+    } else {
+        $subs = getSubDirs($path);
+        $hassubs = (bool) $subs;
+    }
+
+    return [
+        'id'      => preg_replace('#/#u', '.', $path),
+        'path'    => $path,
+        'name'    => $name,
+        'hassubs' => $hassubs,
+        'subs'    => $subs,
+    ];
 }
 
 //TODO document type does not allow element "input" here; missing one of "p", "h1", "h2", "h3", "h4", "h5", "h6", "div", "pre", "address", "fieldset", "ins", "del" start-tag.
 /**
- * Display a list of directorys for the explorer
- *
- * @param string $dir
- * @param int $mode
- *
- * @return array
+ * Display a list of directorys for the explorer.
  */
-function listdirs(string $dir, int $mode = 0): array
+function listdirs(string $path, bool $move = false): array
 {
-    $subdirs = sub_dirs($dir);
-    $html = '';
-    foreach ($subdirs as $subdir) {
-        $html .= '<div id="dir_' . preg_replace('#/#u', '.', $dir . '/' . $subdir)
-        . '">';
-        if (sub_dirs($dir.'/'.$subdir)) {
-            $html .= '<img';
-            if (!empty($_COOKIE[$dir.'/'.$subdir])) {
-                $html .= ' style="display:none"';
-            }
-            $html .= ' src="images/+.gif"';
-            $html .= ' onclick="dir_expand(this,'.$mode.');"';
-            $html .= ' height="16" width="16" alt="+" title="" /><img';
-            if (empty($_COOKIE[$dir.'/'.$subdir])) {
-                $html .= ' style="display:none"';
-            }
-            $html .= ' src="images/-.gif"';
-            $html .= ' onclick="dir_contract(this);"';
-            $html .= ' height="16" width="16" alt="-" title="" /><a';
-            if ($dir.'/'.$subdir == ($_COOKIE['admin_dir'] ?? '')) {
-                $html .= ' class="active"';
-            }
-            if ($mode == 0) {
-                $html .= ' onclick="showfiles(\''.$dir.'/'.$subdir.'\', 0);this.className=\'active\'" ondblclick="showdirname(this)" title="'.$subdir.'"><img src="images/folder.png" height="16" width="16" alt="" /> <span>'.$subdir.'</span></a><form action="" method="get" onsubmit="document.getElementById(\'files\').focus();return false;" style="display:none"><p style="display: inline; margin-left: 3px;"><img width="16" height="16" alt="" src="images/folder.png"/><input style="display:inline;" onblur="renamedir(this);" maxlength="'.(254-mb_strlen($dir, 'UTF-8')).'" value="'.$subdir.'" name="'.$dir.'/'.$subdir.'" /></p></form>';
-            } elseif ($mode == 1) {
-                $html .= ' onclick="movefile(\''.$dir.'/'.$subdir.'\')" title="'.$subdir.'"><img src="images/folder.png" height="16" width="16" alt="" /> '.$subdir.' </a>';
-            }
+    $html = Render::render(
+        'partial-admin-listDirs',
+        [
+            'dirs' => getSubDirs($path),
+            'move' => $move,
+        ]
+    );
 
-            $html .= '<div>';
-            if (!empty($_COOKIE[$dir.'/'.$subdir])) {
-                $listdirs = listdirs($dir.'/'.$subdir, $mode);
-                $html .= $listdirs['html'];
-            }
-            $html .= '</div></div>';
-        } else {
-            $html .= '<a style="margin-left:16px"';
-            if ($dir.'/'.$subdir == ($_COOKIE['admin_dir'] ?? '')) {
-                $html .= ' class="active"';
-            }
-            if ($mode == 0) {
-                $html .= ' onclick="showfiles(\''.$dir.'/'.$subdir.'\', 0);this.className=\'active\'" ondblclick="showdirname(this)" title="'.$subdir.'"><img src="images/folder.png" height="16" width="16" alt="" /> <span>'.$subdir.'</span></a><form action="" method="get" onsubmit="document.getElementById(\'files\').focus();return false;" style="display:none"><p style="display: inline; margin-left: 19px;"><img width="16" height="16" alt="" src="images/folder.png"/><input style="display:inline;" onblur="renamedir(this);" maxlength="'.(254-mb_strlen($dir, 'UTF-8')).'" value="'.$subdir.'" name="'.$dir.'/'.$subdir.'" /></p></form></div>';
-            } elseif ($mode == 1) {
-                $html .= ' onclick="movefile(\''.$dir.'/'.$subdir.'\')" title="'.$subdir.'"><img src="images/folder.png" height="16" width="16" alt="" /> '.$subdir.' </a></div>';
-            }
-        }
-    }
-    return ['id' => $dir, 'html' => $html];
+    return ['id' => $path, 'html' => $html];
 }
 
 /**
- * Update user
+ * Update user.
  *
  * @param int   $id      User id
  * @param array $updates Array of values to change
@@ -1118,68 +745,66 @@ function listdirs(string $dir, int $mode = 0): array
  *                       'name' string
  *                       'lastlogin' MySQL time stamp
  *
- * @return mixed True on update, else ['error' => string]
+ * @return array|true True on update, else ['error' => string]
  */
 function updateuser(int $id, array $updates)
 {
-    if ($_SESSION['_user']['access'] == 1 || $_SESSION['_user']['id'] == $id) {
-        //Validate access lavel update
-        if ($_SESSION['_user']['id'] == $id && $updates['access'] != $_SESSION['_user']['access']) {
-            return ['error' => _('You can\'t change your own access level')];
-        }
-
-        //Validate password update
-        if (!empty($updates['password_new'])) {
-            if ($_SESSION['_user']['access'] == 1 && $_SESSION['_user']['id'] != $id) {
-                $updates['password'] = crypt($updates['password_new']);
-            } elseif ($_SESSION['_user']['id'] == $id) {
-                $user = db()->fetchOne("SELECT `password` FROM `users` WHERE id = ".$id);
-                if (mb_substr($user['password'], 0, 13) !== mb_substr(crypt($updates['password'], $user['password']), 0, 13)) {
-                    return ['error' => _('Incorrect password.')];
-                }
-                $updates['password'] = crypt($updates['password_new']);
-            } else {
-                return ['error' => _('You do not have the requred access level to change the password for other users.')];
-            }
-        } else {
-            unset($updates['password']);
-        }
-        unset($updates['password_new']);
-
-        //Generate SQL command
-        $sql = "UPDATE `users` SET";
-        foreach ($updates as $key => $value) {
-            $sql .= " `".addcslashes($key, '`\\')."` = '".db()->esc($value)."',";
-        }
-        $sql = substr($sql, 0, -1);
-        $sql .= " WHERE `id` = " . (int) $id;
-
-        //Run SQL
-        db()->query($sql);
-
-        return true;
+    if ($_SESSION['_user']['access'] != 1 && $_SESSION['_user']['id'] != $id) {
+        return ['error' => _('You do not have the requred access level to change this user.')];
     }
 
-    return ['error' => _('You do not have the requred access level to change this user.')];
+    //Validate access lavel update
+    if ($_SESSION['_user']['id'] == $id && $updates['access'] != $_SESSION['_user']['access']) {
+        return ['error' => _('You can\'t change your own access level')];
+    }
+
+    //Validate password update
+    if (!empty($updates['password_new'])) {
+        if ($_SESSION['_user']['access'] == 1 && $_SESSION['_user']['id'] != $id) {
+            $updates['password'] = crypt($updates['password_new']);
+        } elseif ($_SESSION['_user']['id'] == $id) {
+            $user = db()->fetchOne('SELECT `password` FROM `users` WHERE id = ' . $id);
+            if (mb_substr($user['password'], 0, 13) !== mb_substr(crypt($updates['password'], $user['password']), 0, 13)) {
+                return ['error' => _('Incorrect password.')];
+            }
+            $updates['password'] = crypt($updates['password_new']);
+        } else {
+            return [
+                'error' => _('You do not have the requred access level to change the password for other users.'),
+            ];
+        }
+    } else {
+        unset($updates['password']);
+    }
+    unset($updates['password_new']);
+
+    //Generate SQL command
+    $sql = "UPDATE `users` SET";
+    foreach ($updates as $key => $value) {
+        $sql .= ' `' . addcslashes($key, '`\\') . "` = '" . db()->esc($value) . "',";
+    }
+    $sql = mb_substr($sql, 0, -1);
+    $sql .= ' WHERE `id` = ' . (int) $id;
+
+    //Run SQL
+    db()->query($sql);
+
+    return true;
 }
 
-/**
- * @param string $path
- * @param int $cropX
- * @param int $cropY
- * @param int $cropW
- * @param int $cropH
- * @param int $maxW
- * @param int $maxH
- * @param int $flip
- * @param int $rotate
- * @param string $filename
- * @param bool $force
- *
- * @return array
- */
-function saveImage(string $path, int $cropX, int $cropY, int $cropW, int $cropH, int $maxW, int $maxH, int $flip, int $rotate, string $filename, bool $force): array
-{
+function saveImage(
+    string $path,
+    int $cropX,
+    int $cropY,
+    int $cropW,
+    int $cropH,
+    int $maxW,
+    int $maxH,
+    int $flip,
+    int $rotate,
+    string $filename,
+    bool $force
+): array {
     $mimeType = get_mime_type(_ROOT_ . $path);
 
     $output = ['type' => 'png'];
@@ -1195,15 +820,11 @@ function saveImage(string $path, int $cropX, int $cropY, int $cropW, int $cropH,
 }
 
 /**
- * Delete user
- *
- * @param int $id User id
- *
- * @return null
+ * Delete user.
  */
 function deleteuser(int $id): bool
 {
-    if ($_SESSION['_user']['access'] != 1) {
+    if ($_SESSION['_user']['access'] != 1 || $_SESSION['_user']['id'] == $id) {
         return false;
     }
 
@@ -1211,12 +832,6 @@ function deleteuser(int $id): bool
     return true;
 }
 
-/**
- * @param string $filename
- * @param string $type
- *
- * @return bool
- */
 function fileExists(string $filename, string $type = ''): bool
 {
     $pathinfo = pathinfo($filename);
@@ -1227,78 +842,43 @@ function fileExists(string $filename, string $type = ''): bool
     } elseif ($type == 'lineimage') {
         $filePath .= '.png';
     } else {
-        $filePath .= '.'.$pathinfo['extension'];
+        $filePath .= '.' . $pathinfo['extension'];
     }
 
     return (bool) is_file($filePath);
 }
 
-/**
- * @return int
- */
 function newfaktura(): int
 {
     db()->query(
         "
         INSERT INTO `fakturas` (`date`, `clerk`)
         VALUES (
-            now(),
-            '" . db()->esc($_SESSION['_user']['fullname']) . "'
+            NOW(),
+            " . db()->eandq($_SESSION['_user']['fullname']) . "
         );
         "
     );
+
     return db()->insert_id;
 }
 
-/**
- * @param int $bind
- * @param string $pathName
- */
-function print_kat(int $bind, string $pathName)
+function getPricelistRootStructure(string $sort, int $categoryId = null): array
 {
-    $kats = db()->fetchArray("SELECT id, bind, navn FROM `kat` WHERE bind = ".$bind." ORDER BY navn");
-    foreach ($kats as $kat) {
-        echo "\n".'  <tr class="path"><td colspan="8"><a href="?sort='.@$_GET['sort'].'&amp;kat='.$kat['id'].'"><img src="images/find.png" alt="Vis" title="Vis kun denne kategori" /></a> '.$pathName.' &gt; <a href="/kat'.$kat['id'].'-">'.xhtmlEsc($kat['navn']).'</a></td></tr>';
-        print_pages($kat['id']);
-        print_kat($kat['id'], $pathName.' &gt; '.xhtmlEsc($kat['navn']));
-    }
-}
-
-/**
- * @param int $kat
- */
-function print_pages(int $kat)
-{
-    global $maerker;
-    global $krav;
-    global $sort;
-    $sider = db()->fetchArray("SELECT sider.* FROM `bind` JOIN sider ON bind.side = sider.id WHERE bind.kat = ".$kat." ORDER BY " . $sort);
-    $altrow = false;
-    foreach ($sider as $side) {
-        echo '<tr';
-        if ($altrow) {
-            echo ' class="altrow"';
+    $categories = [];
+    foreach ([-1 => _('Inactive'), 0 => _('Frontpage')] as $id => $name) {
+        if ($categoryId !== null && $categoryId !== $id) {
+            continue;
         }
-        $altrow = !$altrow;
 
-        echo '>
-      <td class="tal"><a href="/admin/?side=redigerside&amp;id='.$side['id'].'">'.$side['id'].'</a></td>
-      <td><a href="/side'.$side['id'].'-">'.xhtmlEsc($side['navn']).'</a></td>
-      <td>'.xhtmlEsc($side['varenr']).'</td>
-      <td class="tal">'.number_format($side['for'], 2, ',', '.').'</td>
-      <td class="tal">'.number_format($side['pris'], 2, ',', '.').'</td>
-      <td class="tal">'.$side['dato'].'</td>
-      <td>';
-        echo (!empty($side['maerke']) ? $maerker[$side['maerke']] : '') . ' </td><td>' . (!empty($side['krav']) ? $krav[$side['krav']] : '') . '</td></tr>';
+        $categories[] = new RootCategory(['id' => $id, 'title' => $name]);
     }
+
+    return $categories;
 }
 
 /**
- * Returns false for files that the users shoudn't see in the files view
- *
- * @param string $fileName
- *
- * @return bool
+ * Returns false for files that the users shoudn't see in the files view.
  */
 function isVisableFile(string $fileName): bool
 {
@@ -1306,15 +886,12 @@ function isVisableFile(string $fileName): bool
     if (mb_substr($fileName, 0, 1) === '.' || is_dir(_ROOT_ . $dir . '/' . $fileName)) {
         return false;
     }
+
     return true;
 }
 
 /**
- * display a list of files in the selected folder
- *
- * @param string $tempDir
- *
- * @return array
+ * display a list of files in the selected folder.
  */
 function showfiles(string $tempDir): array
 {
@@ -1347,17 +924,13 @@ function showfiles(string $tempDir): array
     return ['id' => 'files', 'html' => $html, 'javascript' => $javascript];
 }
 
-/**
- * @param File $file
- *
- * @return string
- */
 function filejavascript(File $file): string
 {
     $pathinfo = pathinfo($file->getPath());
 
     $javascript = '
-    files['.$file->getId().'] = new file('.$file->getId().', \''.$file->getPath().'\', \''.$pathinfo['filename'].'\'';
+    files[' . $file->getId() . '] = new file(' . $file->getId() . ', \'' . $file->getPath() . '\', \''
+        . $pathinfo['filename'] . '\'';
 
     $javascript .= ', \'';
     switch ($file->getMime()) {
@@ -1392,19 +965,14 @@ function filejavascript(File $file): string
     }
     $javascript .= '\'';
 
-    $javascript .= ', \''.addcslashes(@$file->getDescription(), "\\'").'\'';
-    $javascript .= ', '.($file->getWidth() ?: '0').'';
-    $javascript .= ', '.($file->getHeight() ?: '0').'';
+    $javascript .= ', \'' . addcslashes(@$file->getDescription(), "\\'") . '\'';
+    $javascript .= ', ' . ($file->getWidth() ?: '0') . '';
+    $javascript .= ', ' . ($file->getHeight() ?: '0') . '';
     $javascript .= ');';
 
     return $javascript;
 }
 
-/**
- * @param File $file
- *
- * @return string
- */
 function filehtml(File $file): string
 {
     $pathinfo = pathinfo($file->getPath());
@@ -1415,39 +983,45 @@ function filehtml(File $file): string
         case 'image/gif':
         case 'image/jpeg':
         case 'image/png':
-            $html .= '<div id="tilebox'.$file->getId().'" class="imagetile"><div class="image"';
-            if ($_GET['return']=='rtef') {
-                $html .= ' onclick="addimg('.$file->getId().')"';
-            } elseif ($_GET['return']=='thb') {
-                if ($file->getWidth() <= Config::get('thumb_width') && $file->getHeight() <= Config::get('thumb_height')) {
-                    $html .= ' onclick="insertThumbnail('.$file->getId().')"';
+            $html .= '<div id="tilebox' . $file->getId() . '" class="imagetile"><div class="image"';
+            if ($_GET['return'] == 'rtef') {
+                $html .= ' onclick="addimg(' . $file->getId() . ')"';
+            } elseif ($_GET['return'] == 'thb') {
+                if ($file->getWidth() <= Config::get('thumb_width')
+                    && $file->getHeight() <= Config::get('thumb_height')
+                ) {
+                    $html .= ' onclick="insertThumbnail(' . $file->getId() . ')"';
                 } else {
-                    $html .= ' onclick="open_image_thumbnail('.$file->getId().')"';
+                    $html .= ' onclick="open_image_thumbnail(' . $file->getId() . ')"';
                 }
             } else {
-                $html .= ' onclick="files['.$file->getId().'].openfile();"';
+                $html .= ' onclick="files[' . $file->getId() . '].openfile();"';
             }
             break;
         case 'video/x-flv':
-            $html .= '<div id="tilebox'.$file->getId().'" class="flvtile"><div class="image"';
-            if ($_GET['return']=='rtef') {
+            $html .= '<div id="tilebox' . $file->getId() . '" class="flvtile"><div class="image"';
+            if ($_GET['return'] == 'rtef') {
                 if ($file->getAspect() == '4-3') {
-                    $html .= ' onclick="addflv('.$file->getId().', \''.$file->getAspect().'\', '.max($file->getWidth(), $file->getHeight()/3*4).', '.ceil($file->getWidth()/4*3*1.1975).')"';
+                    $html .= ' onclick="addflv(' . $file->getId() . ', \'' . $file->getAspect() . '\', '
+                        . max($file->getWidth(), $file->getHeight() / 3 * 4) . ', '
+                        . ceil($file->getWidth() / 4 * 3 * 1.1975) . ')"';
                 } elseif ($file->getAspect() == '16-9') {
-                    $html .= ' onclick="addflv('.$file->getId().', \''.$file->getAspect().'\', '.max($file->getWidth(), $file->getHeight()/9*16).', '.ceil($file->getWidth()/16*9*1.2).')"';
+                    $html .= ' onclick="addflv(' . $file->getId() . ', \'' . $file->getAspect() . '\', '
+                        . max($file->getWidth(), $file->getHeight() / 9 * 16) . ', '
+                        . ceil($file->getWidth() / 16 * 9 * 1.2) . ')"';
                 }
             } else {
-                $html .= ' onclick="files['.$file->getId().'].openfile();"';
+                $html .= ' onclick="files[' . $file->getId() . '].openfile();"';
             }
             break;
         case 'application/futuresplash':
         case 'application/x-shockwave-flash':
         case 'video/x-shockwave-flash':
-            $html .= '<div id="tilebox'.$file->getId().'" class="swftile"><div class="image"';
-            if ($_GET['return']=='rtef') {
-                $html .= ' onclick="addswf('.$file->getId().', '.$file->getWidth().', '.$file->getHeight().')"';
+            $html .= '<div id="tilebox' . $file->getId() . '" class="swftile"><div class="image"';
+            if ($_GET['return'] == 'rtef') {
+                $html .= ' onclick="addswf(' . $file->getId() . ', ' . $file->getWidth() . ', ' . $file->getHeight() . ')"';
             } else {
-                $html .= ' onclick="files['.$file->getId().'].openfile();"';
+                $html .= ' onclick="files[' . $file->getId() . '].openfile();"';
             }
             break;
         case 'audio/midi':
@@ -1460,25 +1034,25 @@ function filehtml(File $file): string
         case 'video/x-ms-asf':
         case 'video/x-msvideo':
         case 'video/x-ms-wmv':
-            $html .= '<div id="tilebox'.$file->getId().'" class="videotile"><div class="image"';
+            $html .= '<div id="tilebox' . $file->getId() . '" class="videotile"><div class="image"';
             //TODO make the actual functions
-            if ($_GET['return']=='rtef') {
-                $html .= ' onclick="addmedia('.$file->getId().')"';
+            if ($_GET['return'] == 'rtef') {
+                $html .= ' onclick="addmedia(' . $file->getId() . ')"';
             } else {
-                $html .= ' onclick="files['.$file->getId().'].openfile();"';
+                $html .= ' onclick="files[' . $file->getId() . '].openfile();"';
             }
             break;
         default:
-            $html .= '<div id="tilebox'.$file->getId().'" class="filetile"><div class="image"';
-            if ($_GET['return']=='rtef') {
-                $html .= ' onclick="addfile('.$file->getId().')"';
+            $html .= '<div id="tilebox' . $file->getId() . '" class="filetile"><div class="image"';
+            if ($_GET['return'] == 'rtef') {
+                $html .= ' onclick="addfile(' . $file->getId() . ')"';
             } else {
-                $html .= ' onclick="files['.$file->getId().'].openfile();"';
+                $html .= ' onclick="files[' . $file->getId() . '].openfile();"';
             }
             break;
     }
 
-    $html .='> <img src="';
+    $html .= '> <img src="';
 
     $type = 'bin';
     switch ($file->getMime()) {
@@ -1534,7 +1108,8 @@ function filehtml(File $file): string
 
     switch ($type) {
         case 'image-native':
-            $html .= 'image.php?path=' . rawurlencode($pathinfo['dirname'] . '/' . $pathinfo['basename']) . '&amp;maxW=128&amp;maxH=96';
+            $html .= 'image.php?path=' . rawurlencode($pathinfo['dirname'] . '/' . $pathinfo['basename'])
+                . '&amp;maxW=128&amp;maxH=96';
             break;
         case 'pdf':
         case 'image':
@@ -1550,16 +1125,16 @@ function filehtml(File $file): string
             break;
     }
 
-    $html .= '" alt="" title="" /> </div><div ondblclick="showfilename('.$file->getId().')" class="navn" id="navn'.$file->getId().'div" title="'.$pathinfo['filename'].'"> '.$pathinfo['filename'].'</div><form action="" method="get" onsubmit="document.getElementById(\'files\').focus();return false;" style="display:none" id="navn'.$file->getId().'form"><p><input onblur="renamefile(\''.$file->getId().'\');" maxlength="'.(251-mb_strlen($pathinfo['dirname'], 'UTF-8')).'" value="'.$pathinfo['filename'].'" name="" /></p></form>';
-    $html .= '</div>';
+    $html .= '" alt="" title="" /> </div><div ondblclick="showfilename(' . $file->getId() . ')" class="navn" id="navn'
+        . $file->getId() . 'div" title="' . $pathinfo['filename'] . '"> ' . $pathinfo['filename']
+        . '</div><form action="" method="get" onsubmit="document.getElementById(\'files\').focus();return false;" style="display:none" id="navn'
+        . $file->getId() . 'form"><p><input onblur="renamefile(\'' . $file->getId() . '\');" maxlength="'
+        . (251 - mb_strlen($pathinfo['dirname'], 'UTF-8')) . '" value="' . $pathinfo['filename']
+        . '" name="" /></p></form></div>';
+
     return $html;
 }
 
-/**
- * @param string $name
- *
- * @return array
- */
 function makedir(string $name): array
 {
     $name = genfilename($name);
@@ -1581,15 +1156,7 @@ function makedir(string $name): array
 //TODO Error out if the files is being moved to it self
 //TODO moving two files to the same dire with no reload inbetwean = file exists?????????????
 /**
- * Rename or relocate a file/directory
- *
- * @param int $id
- * @param string $path
- * @param string $dir
- * @param string $filename
- * @param bool $force
- *
- * @return array
+ * Rename or relocate a file/directory.
  */
 function renamefile(int $id, string $path, string $dir, string $filename, bool $force = false): array
 {
@@ -1637,7 +1204,10 @@ function renamefile(int $id, string $path, string $dir, string $filename, bool $
 
     //Destination folder doesn't exist
     if (!is_dir(_ROOT_ . $dir . '/')) {
-        return ['error' => _('The file could not be moved because the destination folder does not exist.'), 'id' => $id];
+        return [
+            'error' => _('The file could not be moved because the destination folder does not exist.'),
+            'id' => $id,
+        ];
     }
     if ($pathinfo['extension']) {
         //No changes was requested.
@@ -1663,7 +1233,9 @@ Would you like to replace the existing file?'), 'id' => $id];
                 db()->query("DELETE FROM files WHERE `path` = '" . db()->esc($newPath) . "'");
             }
 
-            db()->query("UPDATE files     SET path = '" . db()->esc($newPath) . "' WHERE `path` = '" . db()->esc($path) . "'");
+            db()->query(
+                "UPDATE files SET path = '" . db()->esc($newPath) . "' WHERE `path` = '" . db()->esc($path) . "'"
+            );
             replacePaths($path, $newPath);
 
             return ['id' => $id, 'filename' => $filename, 'path' => $newPath];
@@ -1679,7 +1251,6 @@ Would you like to replace the existing file?'), 'id' => $id];
     if ($path == $newPath) {
         return ['id' => $id, 'filename' => $filename, 'path' => $path];
     }
-
 
     //folder already exists
     if (is_dir(_ROOT_ . $dir . '/' . $filename)) {
@@ -1705,15 +1276,15 @@ Would you like to replace the existing file?'), 'id' => $id];
             //TODO insert new file data (width, alt, height, aspect)
         }
 
-        db()->query("UPDATE files     SET path  = REPLACE(path, '" . db()->esc($path) . "', '" . db()->esc($newPath) . "')");
+        db()->query("UPDATE files SET path = REPLACE(path, '" . db()->esc($path) . "', '" . db()->esc($newPath) . "')");
         replacePaths($path, $newPath);
 
         if (is_dir(_ROOT_ . $dir . '/' . $filename)) {
             if (!empty($_COOKIE[$_COOKIE['admin_dir']])) {
-                setcookie($dir.'/'.$filename, ($_COOKIE[$_COOKIE['admin_dir']]) ?? '');
+                setcookie($dir . '/' . $filename, ($_COOKIE[$_COOKIE['admin_dir']]) ?? '');
             }
             setcookie($_COOKIE['admin_dir'] ?? '', false);
-            setcookie('admin_dir', $dir.'/'.$filename);
+            setcookie('admin_dir', $dir . '/' . $filename);
         }
 
         return ['id' => $id, 'filename' => $filename, 'path' => $dir . '/' . $filename];
@@ -1722,7 +1293,7 @@ Would you like to replace the existing file?'), 'id' => $id];
     return ['error' => _('An error occurred with the file operations.'), 'id' => $id];
 }
 
-function replacePaths($path, $newPath)
+function replacePaths($path, $newPath): void
 {
     $newPathEsc = db()->esc($newPath);
     $pathEsc = db()->esc($path);
@@ -1735,61 +1306,60 @@ function replacePaths($path, $newPath)
     db()->query("UPDATE kat       SET navn  = REPLACE(navn, '" . $pathEsc . "', '" . $newPathEsc . "'), icon = REPLACE(icon, '" . $pathEsc . "', '" . $newPathEsc . "')");
 }
 
-function deletefolder()
+/**
+ * Rename or relocate a file/directory.
+ *
+ * return void|array
+ */
+function deltree(string $dir)
 {
-    /**
-     * Rename or relocate a file/directory
-     *
-     * @param string $dir
-     *
-     * @return mixed
-     */
-    function deltree(string $dir)
-    {
-        $dirlists = scandir(_ROOT_ . $dir);
-        foreach ($dirlists as $dirlist) {
-            if ($dirlist != '.' && $dirlist != '..') {
-                if (is_dir(_ROOT_ . $dir . '/' . $dirlist)) {
-                    $deltree = deltree($dir . '/' . $dirlist);
-                    if ($deltree) {
-                        return $deltree;
-                    }
-                    @rmdir(_ROOT_ . $dir . '/' . $dirlist);
-                    @setcookie($dir . '/' .$dirlist, false);
-                } else {
-                    if (db()->fetchOne("SELECT id FROM `sider` WHERE `navn` LIKE '%" . $dir . "/" . $dirlist . "%' OR `text` LIKE '%" . $dir . "/" . $dirlist . "%' OR `beskrivelse` LIKE '%" . $dir . "/" . $dirlist . "%' OR `billed` LIKE '%" . $dir . "/" . $dirlist . "%'")
-                    || db()->fetchOne("SELECT id FROM `template` WHERE `navn` LIKE '%".$dir."/".$dirlist."%' OR `text` LIKE '%".$dir."/".$dirlist."%' OR `beskrivelse` LIKE '%".$dir."/".$dirlist."%' OR `billed` LIKE '%".$dir."/".$dirlist."%'")
-                    || db()->fetchOne("SELECT id FROM `special` WHERE `text` LIKE '%".$dir."/".$dirlist."%'")
-                    || db()->fetchOne("SELECT id FROM `krav` WHERE `text` LIKE '%".$dir."/".$dirlist."%'")
-                    || db()->fetchOne("SELECT id FROM `maerke` WHERE `ico` LIKE '%".$dir."/".$dirlist."%'")
-                    || db()->fetchOne("SELECT id FROM `list_rows` WHERE `cells` LIKE '%".$dir."/".$dirlist."%'")
-                    || db()->fetchOne("SELECT id FROM `kat` WHERE `navn` LIKE '%".$dir."/".$dirlist."%' OR `icon` LIKE '%".$dir."/".$dirlist."%'")) {
-                        return ['error' => _('A file could not be deleted because it is used on a site.')];
-                    }
-                    @unlink(_ROOT_ . $dir . '/' . $dirlist);
+    $dirlists = scandir(_ROOT_ . $dir);
+    foreach ($dirlists as $dirlist) {
+        if ($dirlist != '.' && $dirlist != '..') {
+            if (is_dir(_ROOT_ . $dir . '/' . $dirlist)) {
+                $deltree = deltree($dir . '/' . $dirlist);
+                if ($deltree) {
+                    return $deltree;
                 }
+                @rmdir(_ROOT_ . $dir . '/' . $dirlist);
+                @setcookie($dir . '/' . $dirlist, false);
+                continue;
             }
+
+            if (db()->fetchOne("SELECT id FROM `sider` WHERE `navn` LIKE '%" . $dir . '/' . $dirlist . "%' OR `text` LIKE '%" . $dir . '/' . $dirlist . "%' OR `beskrivelse` LIKE '%" . $dir . '/' . $dirlist . "%' OR `billed` LIKE '%" . $dir . '/' . $dirlist . "%'")
+                || db()->fetchOne("SELECT id FROM `template` WHERE `navn` LIKE '%" . $dir . '/' . $dirlist . "%' OR `text` LIKE '%" . $dir . '/' . $dirlist . "%' OR `beskrivelse` LIKE '%" . $dir . '/' . $dirlist . "%' OR `billed` LIKE '%" . $dir . '/' . $dirlist . "%'")
+                || db()->fetchOne("SELECT id FROM `special` WHERE `text` LIKE '%" . $dir . '/' . $dirlist . "%'")
+                || db()->fetchOne("SELECT id FROM `krav` WHERE `text` LIKE '%" . $dir . '/' . $dirlist . "%'")
+                || db()->fetchOne("SELECT id FROM `maerke` WHERE `ico` LIKE '%" . $dir . '/' . $dirlist . "%'")
+                || db()->fetchOne("SELECT id FROM `list_rows` WHERE `cells` LIKE '%" . $dir . '/' . $dirlist . "%'")
+                || db()->fetchOne("SELECT id FROM `kat` WHERE `navn` LIKE '%" . $dir . '/' . $dirlist . "%' OR `icon` LIKE '%" . $dir . '/' . $dirlist . "%'")
+            ) {
+                return ['error' => _('A file could not be deleted because it is used on a site.')];
+            }
+
+            @unlink(_ROOT_ . $dir . '/' . $dirlist);
         }
     }
+}
+
+/**
+ * @return array|true
+ */
+function deletefolder()
+{
     $deltree = deltree($_COOKIE['admin_dir'] ?? '');
     if ($deltree) {
         return $deltree;
     }
     if (@rmdir(_ROOT_ . ($_COOKIE['admin_dir'] ?? ''))) {
         @setcookie($_COOKIE['admin_dir'] ?? '', false);
+
         return true;
     }
 
     return ['error' => _('The folder could not be deleted, you may not have sufficient rights to this folder.')];
 }
 
-/**
- * @param string $qpath
- * @param string $qalt
- * @param string $qmime
- *
- * @return array
- */
 function searchfiles(string $qpath, string $qalt, string $qmime): array
 {
     $qpath = db()->escapeWildcards(db()->esc($qpath));
@@ -1828,19 +1398,19 @@ function searchfiles(string $qpath, string $qalt, string $qmime): array
             $sql .= "(";
         }
         if ($qpath) {
-            $sql .= "MATCH(path) AGAINST('".$qpath."')>0";
+            $sql .= "MATCH(path) AGAINST('" . $qpath . "')>0";
         }
         if ($qpath && $qalt) {
             $sql .= " OR ";
         }
         if ($qalt) {
-            $sql .= "MATCH(alt) AGAINST('".$qalt."')>0";
+            $sql .= "MATCH(alt) AGAINST('" . $qalt . "')>0";
         }
         if ($qpath) {
-            $sql .= " OR `path` LIKE '%".$qpath."%' ";
+            $sql .= " OR `path` LIKE '%" . $qpath . "%' ";
         }
         if ($qalt) {
-            $sql .= " OR `alt` LIKE '%".$qalt."%'";
+            $sql .= " OR `alt` LIKE '%" . $qalt . "%'";
         }
         if ($qpath || $qalt) {
             $sql .= ")";
@@ -1860,19 +1430,19 @@ function searchfiles(string $qpath, string $qalt, string $qmime): array
             $sqlSelect .= '(';
         }
         if ($qpath) {
-            $sqlSelect .= 'MATCH(path) AGAINST(\''.$qpath.'\')';
+            $sqlSelect .= 'MATCH(path) AGAINST(\'' . $qpath . '\')';
         }
         if ($qpath && $qalt) {
             $sqlSelect .= ' + ';
         }
         if ($qalt) {
-            $sqlSelect .= 'MATCH(alt) AGAINST(\''.$qalt.'\')';
+            $sqlSelect .= 'MATCH(alt) AGAINST(\'' . $qalt . '\')';
         }
         if ($qpath && $qalt) {
             $sqlSelect .= ')';
         }
         $sqlSelect .= ' AS score';
-        $sql = $sqlSelect.$sql;
+        $sql = $sqlSelect . $sql;
         $sql .= ' ORDER BY `score` DESC';
     }
 
@@ -1888,32 +1458,43 @@ function searchfiles(string $qpath, string $qalt, string $qmime): array
     return ['id' => 'files', 'html' => $html, 'javascript' => $javascript];
 }
 
-/**
- * @param int $qpath
- * @param string $description
- *
- * @return array
- */
 function edit_alt(int $id, string $description): array
 {
     $file = ORM::getOne(File::class, $id);
     $file->setDescription($description)->save();
 
     //Update html with new alt...
-    $pages = ORM::getByQuery(Page::class, "SELECT * FROM `sider` WHERE `text` LIKE '%" . db()->esc($file->getPath()) . "%'");
+    $pages = ORM::getByQuery(
+        Page::class,
+        "SELECT * FROM `sider` WHERE `text` LIKE '%" . db()->esc($file->getPath()) . "%'"
+    );
     foreach ($pages as $page) {
         //TODO move this to db fixer to test for missing alt="" in img
         /*preg_match_all('/<img[^>]+/?>/ui', $value, $matches);*/
         $html = $page->getHtml();
-        $html = preg_replace('/(<img[^>]+src="'.addcslashes(str_replace('.', '[.]', $file->getPath()), '/').'"[^>]+alt=)"[^"]*"([^>]*>)/iu', '\1"'.xhtmlEsc($description).'"\2', $html);
-        $html = preg_replace('/(<img[^>]+alt=)"[^"]*"([^>]+src="'.addcslashes(str_replace('.', '[.]', $file->getPath()), '/').'"[^>]*>)/iu', '\1"'.xhtmlEsc($description).'"\2', $html);
+        $html = preg_replace(
+            '/(<img[^>]+src="' . addcslashes(str_replace('.', '[.]', $file->getPath()), '/')
+                . '"[^>]+alt=)"[^"]*"([^>]*>)/iu',
+            '\1"' . xhtmlEsc($description) . '"\2',
+            $html
+        );
+        $html = preg_replace(
+            '/(<img[^>]+alt=)"[^"]*"([^>]+src="' . addcslashes(str_replace(
+                '.',
+                '[.]',
+                $file->getPath()
+            ), '/') . '"[^>]*>)/iu',
+            '\1"' . xhtmlEsc($description) . '"\2',
+            $html
+        );
         $page->setHtml($html)->save();
     }
+
     return ['id' => $id, 'alt' => $description];
 }
 
 /**
- * Use HTMLPurifier to clean HTML-code, preserves youtube videos
+ * Use HTMLPurifier to clean HTML-code, preserves youtube videos.
  *
  * @param string $string Sting to clean
  *
@@ -1932,417 +1513,34 @@ function purifyHTML(string $string): string
     return $purifier->purify($string);
 }
 
-function rtefsafe(string $text): string
-{
-    return str_replace(
-        ["'", chr(10), chr(13), '?', '?'],
-        ["&#39;", ' ', ' ', ' ', ' '],
-        $text
-    );
-}
-
 function search(string $text): array
 {
     if (!$text) {
         return ['error' => _('You must enter a search word.')];
     }
 
-    $sider = db()->fetchArray("SELECT id, navn, MATCH(navn, text, beskrivelse) AGAINST ('".$text."') AS score FROM sider WHERE MATCH (navn, text, beskrivelse) AGAINST('".$text."') > 0 ORDER BY `score` DESC");
-
     //fulltext search dosn't catch things like 3 letter words and some other combos
-    $qsearch = ['/\s+/u', "/'/u", '/´/u', '/`/u'];
-    $qreplace = ['%', '_', '_', '_'];
-    $simpleq = preg_replace($qsearch, $qreplace, $text);
-    $sidersimple = db()->fetchArray("SELECT id, navn FROM `sider` WHERE (`navn` LIKE '%".$simpleq."%' OR `text` LIKE '%".$simpleq."%' OR `beskrivelse` LIKE '%".$simpleq."%')");
+    $simpleq = preg_replace(
+        ['/\s+/u', "/'/u", '/´/u', '/`/u'],
+        ['%', '_', '_', '_'],
+        $text
+    );
 
-    //join $sidersimple to $sider
-    foreach ($sidersimple as $value) {
-        $match = false;
+    $pages = ORM::getByQuery(
+        Page::class,
+        "
+        SELECT * FROM sider
+        WHERE MATCH (navn, text, beskrivelse) AGAINST('" . $text . "') > 0
+            OR `navn` LIKE '%" . $simpleq . "%'
+            OR `text` LIKE '%" . $simpleq . "%'
+            OR `beskrivelse` LIKE '%" . $simpleq . "%'
+        ORDER BY MATCH (navn, text, beskrivelse) AGAINST('" . $text . "') DESC
+        "
+    );
 
-        foreach ($sider as $siderValue) {
-            if (@$siderValue['side'] == $value['id']) {
-                $match = true;
-                break;
-            }
-        }
-        unset($siderValue);
-        if (!$match) {
-            $sider[] = $value;
-        }
-    }
-
-    $html = '<div id="headline">Søgning</div><div><div><span style="margin-left: 16px;"><img src="images/folder.png" width="16" height="16" alt="" /> &quot;'.$text.'&quot;</span><div style="margin-left:16px">';
-    foreach ($sider as $value) {
-        $html .= '<div class="side'.$value['id'].'"><a style="margin-left:16px" class="side" href="?side=redigerside&amp;id='.$value['id'].'"><img src="images/page.png" width="16" height="16" alt="" /> '.$value['navn'].'</a></div>';
-    }
-    $html .= '</div></div></div>';
+    $html = Render::render('partial-admin-search', ['text' => $text, 'pages' => $pages]);
 
     return ['id' => 'canvas', 'html' => $html];
-}
-
-function redigerkat(int $id): string
-{
-    if ($id) {
-        $kat = db()->fetchOne("SELECT * FROM `kat` WHERE id = " . $id);
-    }
-
-    $html = '<div id="headline">'.('Rediger kategori').'</div><form action="" onsubmit="return updateKat('.$id.')"><input type="submit" accesskey="s" style="width:1px; height:1px; position:absolute; top: -20px; left:-20px;" />
-    <div>'._('Name:').' <img style="cursor:pointer;vertical-align:bottom" onclick="explorer(\'thb\',\'icon\')" src="';
-
-    $html .= $kat['icon'] ?? '' ?: 'images/folder.png';
-
-    $html .= '" title="" alt="Billeder" id="iconthb" /> <input id="navn" style="width:256px;" maxlength="64" value="'. $kat['navn'] . '" /> <br /> '._('Icon:').' <input id="icon" style="width:247px;" maxlength="128" type="hidden" value="'.$kat['icon'].'" /> <img style="cursor:pointer;vertical-align:bottom" onclick="explorer(\'thb\',\'icon\')" width="16" height="16" src="images/folder_image.png" title="'._('Find pictures').'" alt="'._('Pictures').'" /> <img style="cursor:pointer;vertical-align:bottom" onclick="setThb(\'icon\',\'\',\'images/folder.png\')" src="images/cross.png" alt="X" title="'._('Remove picture').'" height="16" width="16" /><br /><br />';
-
-    if ($subkats = db()->fetchArray('SELECT id, navn, icon FROM `kat` WHERE bind = '.$id.' ORDER BY `order`, `navn`')) {
-        $html .= _('Sort subcategories:').'<select id="custom_sort_subs" onchange="displaySubMenus(this.value);" onblur="displaySubMenus(this.value);"><option value="0">'._('Alphabetically').'</option><option value="1"';
-        if ($kat['custom_sort_subs']) {
-            $html .= ' selected="selected"';
-        }
-        $html .= '>'._('Manually').'</option></select><br /><ul id="subMenus" style="width:' . Config::get('text_width') . 'px;';
-        if (!$kat['custom_sort_subs']) {
-            $html .= 'display:none;';
-        }
-        $html .= '">';
-
-        foreach ($subkats as $value) {
-            $html .= '<li id="item_'.$value['id'].'"><img src="';
-            if ($value['icon']) {
-                $html .= $value['icon'];
-            } else {
-                $html .= 'images/folder.png';
-            }
-            $html .= '" alt=""> '.$value['navn'].'</li>';
-        }
-
-        $html .= '</ul><input type="hidden" id="subMenusOrder" value="" /><script type="text/javascript"><!--
-Sortable.create(\'subMenus\',{ghosting:false,constraint:false,hoverclass:\'over\',
-onChange:function(element){
-var newOrder = Sortable.serialize(element.parentNode);
-newOrder = newOrder.replace(/subMenus\\[\\]=/g,"");
-newOrder = newOrder.replace(/&/g,",");
-$(\'subMenusOrder\').value = newOrder;
-}
-});
-var newOrder = Sortable.serialize($(\'subMenus\'));
-newOrder = newOrder.replace(/subMenus\\[\\]=/g,"");
-newOrder = newOrder.replace(/&/g,",");
-$(\'subMenusOrder\').value = newOrder;
---></script>';
-    } else {
-        $html .= '<input type="hidden" id="subMenusOrder" /><input type="hidden" id="custom_sort_subs" />';
-    }
-
-    //Email
-    $html .= _('Contact:').' <select id="email">';
-    foreach (array_keys(Config::get('emails', [])) as $value) {
-        $html .= '<option value="'.$value.'"';
-        if ($kat['email'] == $value) {
-            $html .= ' selected="selected"';
-        }
-        $html .= '>'.$value.'</option>';
-    }
-    $html .= '</select>';
-
-    //Visning
-    $html .= '<br />'._('Display:').' <select id="vis"><option value="0"';
-    if ($kat['vis'] == 0) {
-        $html .= ' selected="selected"';
-    }
-    $html .= '>'._('Hide').'</option><option value="1"';
-    if ($kat['vis'] == 1) {
-        $html .= ' selected="selected"';
-    }
-    $html .= '>'._('Gallery').'</option><option value="2"';
-    if ($kat['vis'] == 2) {
-        $html .= ' selected="selected"';
-    }
-    $html .= '>'._('List').'</option></select>';
-
-    //Binding
-    //TODO init error, vælger fra cookie i stedet for $kat['bind']
-    $kat = $kat['bind'];
-    $html .= katlist($kat);
-
-    $html .= '<br /></div><p style="display:none;"></p></form>';
-    return $html;
-}
-
-function redigerside(int $id): string
-{
-    if ($id) {
-        $page = db()->fetchOne("SELECT * FROM `sider` WHERE id = " . $id);
-    }
-    if (!$page) {
-        return '<div id="headline">'._('The page does not exist').'</div>';
-    }
-
-    $html = '<div id="headline">'._('Edit page #').$id.'</div><form action="" method="post" onsubmit="return updateSide('.$id.');"><input type="submit" accesskey="s" style="width:1px; height:1px; position:absolute; top: -20px; left:-20px;" /><div><script type="text/javascript"><!--
-//Usage: initRTE(imagesPath, includesPath, cssFile, genXHTML)
-initRTE("/admin/rtef/images/", "/admin/rtef/", "/theme/rtef-text.css", true);
-//--></script><input type="hidden" name="id" id="id" value="'.$id.'" /><input class="admin_name" type="text" name="navn" id="navn" value="'.xhtmlEsc($page['navn']).'" maxlength="127" size="127" style="width:' . Config::get('text_width') . 'px" /><script type="text/javascript"><!--
-writeRichText("text", \'' . rtefsafe($page['text']) . '\', "", ' . (Config::get('text_width') + 32) . ', 420, true, false, false);
-//--></script>';
-    $html .= _('Search word (separate search words with a comma \'Emergency Blanket, Emergency Blanket\'):').'<br /><textarea name="keywords" id="keywords" style="width:' . Config::get('text_width') . 'px;max-width:' . Config::get('text_width') . 'px" rows="2" cols="">'.xhtmlEsc($page['keywords']).'</textarea>';
-    //Beskrivelse start
-    $html .= '<div class="toolbox"><a class="menuboxheader" id="beskrivelseboxheader" style="width:'.(Config::get('thumb_width') + 14).'px" onclick="showhide(\'beskrivelsebox\',this);">'._('Description:').' </a><div style="text-align:center;width:'.(Config::get('thumb_width') + 34).'px" id="beskrivelsebox"><br /><input type="hidden" value="';
-    if ($page['billed']) {
-        $html .= $page['billed'];
-    } else {
-        $html .= _('/images/web/intet-foto.jpg');
-    }
-    $html .= '" id="billed" name="billed" /><img id="billedthb" src="';
-
-    if ($page['billed']) {
-        $html .= $page['billed'];
-    } else {
-        $html .= _('/images/web/intet-foto.jpg');
-    }
-    $html .= '" alt="" onclick="explorer(\'thb\', \'billed\')" /><br /><img onclick="explorer(\'thb\', \'billed\')" src="images/folder_image.png" width="16" height="16" alt="'._('Pictures').'" title="'._('Find image').'" /><a onclick="setThb(\'billed\',\'\',\''._('/images/web/intet-foto.jpg').'\')"><img src="images/cross.png" alt="X" title="'._('Remove picture').'" width="16" height="16" /></a>';
-    $html .= '<script type="text/javascript"><!--
-writeRichText("beskrivelse", \''.rtefsafe($page['beskrivelse']).'\', "", '.(Config::get('thumb_width') + 32).', 115, false, false, false);
-//--></script>';
-    $html .= '</div></div>';
-    //Beskrivelse end
-    //Pris start
-    $html .= '<div class="toolbox"><a class="menuboxheader" id="priserheader" style="width:230px" onclick="showhide(\'priser\',this);">'._('Price:').' </a><div style="width:250px;" id="priser"><table style="width:100%"><tr><td><select name="burde" id="burde">
-    <option value="0"';
-    if ($page['burde'] == 0) {
-        $html .= ' selected="selected"';
-    }
-    $html .= '>'._('Before').'</option>
-    <option value="1"';
-    if ($page['burde'] == 1) {
-        $html .= ' selected="selected"';
-    }
-    $html .= '>'._('Indicative price').'</option>
-    <option value="2"';
-    if ($page['burde'] == 2) {
-        $html .= ' selected="selected"';
-    }
-    $html .= '>'._('Should cost').'</option>
-    </select></td><td style="text-align:right"><input class="XPris" onkeypress="return checkForInt(event)" onchange="prisHighlight()" value="'.$page['for'].'" name="for" id="for" size="11" maxlength="11" style="width:100px;text-align:right" />,-</td></tr>';
-    $html .= '<tr><td><select name="fra" id="fra">
-    <option value="0"';
-    if ($page['fra'] == 0) {
-        $html .= ' selected="selected"';
-    }
-    $html .= '>'._('Price').'</option>
-    <option value="1"';
-    if ($page['fra'] == 1) {
-        $html .= ' selected="selected"';
-    }
-    $html .= '>'._('From').'</option>
-    <option value="2"';
-    if ($page['fra'] == 2) {
-        $html .= ' selected="selected"';
-    }
-    $html .= '>'._('Used').'</option></select></td><td style="text-align:right"><input value="'.$page['pris'].'" class="';
-    if ($page['for']) {
-        $html .= 'NyPris';
-    } else {
-        $html .= 'Pris';
-    }
-    $html .= '" name="pris" id="pris" size="11" maxlength="11" style="width:100px;text-align:right" onkeypress="return checkForInt(event)" onchange="prisHighlight()" />,-';
-    $html .= '</td></tr></table></div></div>';
-    //Pris end
-    //misc start
-    $html .= '<div class="toolbox"><a class="menuboxheader" id="miscboxheader" style="width:201px" onclick="showhide(\'miscbox\',this);">'._('Other:').' </a><div style="width:221px" id="miscbox">'._('SKU:').' <input type="text" name="varenr" id="varenr" maxlength="63" style="text-align:right;width:128px" value="'.xhtmlEsc($page['varenr']).'" /><br /><img src="images/page_white_key.png" width="16" height="16" alt="" /><select id="krav" name="krav"><option value="0">'._('None').'</option>';
-    $kravs = db()->fetchArray('SELECT id, navn FROM `krav` ORDER BY navn');
-    foreach ($kravs as $krav) {
-        $html .= '<option value="'.$krav['id'].'"';
-        if ($page['krav'] == $krav['id']) {
-            $html .= ' selected="selected"';
-        }
-        $html .= '>'.xhtmlEsc($krav['navn']).'</option>';
-    }
-    $html .= '</select><br /><img width="16" height="16" alt="" src="images/page_white_medal.png"/><select id="maerke" name="maerke" size="15"><option' . (!$page['maerke'] ? ' selected="selected"' : '') . ' value="0">'._('All others').'</option>';
-
-    $maerker = db()->fetchArray('SELECT id, navn FROM `maerke` ORDER BY navn');
-    foreach ($maerker as $maerke) {
-        $html .= '<option value="' . $maerke['id'].'"';
-        if ($maerke['id'] == $page['maerke']) {
-            $html .= ' selected="selected"';
-        }
-        $html .= '>'.xhtmlEsc($maerke['navn']).'</option>';
-    }
-    $html .= '</select></div></div>';
-    //misc end
-    //list start
-    $html .= '<div class="toolbox"><a class="menuboxheader" id="listboxheader" style="width:'.(Config::get('text_width') - 20 + 32).'px" onclick="showhide(\'listbox\',this);">'._('Lists:').' </a><div style="width:'.(Config::get('text_width') + 32).'px" id="listbox">';
-    $lists = db()->fetchArray('SELECT * FROM `lists` WHERE page_id = ' . $id);
-    $options = [];
-    foreach ($lists as $list) {
-        $html .= '<table>';
-
-        $list['cells'] = explode('<', $list['cells']);
-        $list['cell_names'] = explode('<', $list['cell_names']);
-        $list['cell_names'] = array_map('html_entity_decode', $list['cell_names']);
-        $list['sorts'] = explode('<', $list['sorts']);
-
-
-        $html .= '<thead><tr>';
-        foreach ($list['cell_names'] as $name) {
-            $html .= '<td>'.$name.'</td>';
-        }
-        if ($list['link']) {
-            $html .= '<td><img src="images/link.png" alt="'._('Link').'" title="" width="16" height="16" /></td>';
-        }
-        $html .= '<td style="width:32px;"></td>';
-        $html .= '</tr></thead><tfoot><tr id="list'.$list['id'].'footer">';
-        foreach ($list['cells'] as $key => $type) {
-            if ($list['sorts'][$key] == 0) {
-                if ($type != 0) {
-                    $html .= '<td><input style="display:none;text-align:right;" /></td>';
-                } else {
-                    $html .= '<td><input style="display:none;" /></td>';
-                }
-            } else {
-                if (empty($options[$list['sorts'][$key]])) {
-                    $temp = db()->fetchOne("SELECT `text` FROM `tablesort` WHERE id = " . $list['sorts'][$key]);
-                    $options[$list['sorts'][$key]] = explode('<', $temp['text']);
-                }
-
-                $html .= '<td><select style="display:none;"><option value=""></option>';
-                foreach ($options[$list['sorts'][$key]] as $option) {
-                    $html .= '<option value="'.$option.'">'.$option.'</option>';
-                }
-                $html .= '</select></td>';
-            }
-        }
-        if ($list['link']) {
-            $html .= '<td><input style="display:none;text-align:right;" /></td>';
-        }
-        $html .= '<td><img onclick="listInsertRow('.$list['id'].');" src="images/disk.png" alt="'._('Edit').'" title="'._('Edit').'" width="16" height="16" /></td>';
-        $html .= '</tr></tfoot>';
-        $html .= '<tbody id="list'.$list['id'].'rows">';
-
-        if ($rows = db()->fetchArray('SELECT * FROM `list_rows` WHERE list_id = '.$list['id'])) {
-            //Explode cells
-            foreach ($rows as $row) {
-                $cells = explode('<', $row['cells']);
-                $cells = array_map('html_entity_decode', $cells);
-                $cells['id'] = $row['id'];
-                $cells['link'] = $row['link'];
-                $rowsCells[] = $cells;
-            }
-            $rows = $rowsCells;
-            unset($row);
-            unset($cells);
-            unset($rowsCells);
-
-            //Sort rows
-            $bycell = min($list['sort'], count($list['cells']) - 1);
-            if (empty($list['sorts'][$bycell])) {
-                $rows = arrayNatsort($rows, 'id', $bycell);
-            } else {
-                $rows = arrayListsort($rows, 'id', $bycell, $list['sorts'][$list['sort']]);
-            }
-
-            $defaultRow = array_fill(0, count($list['cells']) - 1, '');
-            foreach ($rows as $i => $row) {
-                $row = $row + $defaultRow;
-                $html .= '<tr id="list_row'.$row['id'].'"';
-                if ($i % 2) {
-                    $html .= ' class="altrow"';
-                }
-                $html .= '>';
-                foreach ($list['cells'] as $key => $type) {
-                    if ($list['sorts'][$key] == 0) {
-                        if ($type != 0) {
-                            $html .= '<td style="text-align:right;"><input value="'.$row[$key].'" style="display:none;text-align:right;" /><span>'.$row[$key].'</span></td>';
-                        } else {
-                            $html .= '<td><input value="'.$row[$key].'" style="display:none;" /><span>'.$row[$key].'</span></td>';
-                        }
-                        continue;
-                    }
-
-                    if (empty($options[$list['sorts'][$key]])) {
-                        $temp = db()->fetchOne("SELECT `text` FROM `tablesort` WHERE id = " . $list['sorts'][$key]);
-                        $options[$list['sorts'][$key]] = explode('<', $temp['text']);
-                    }
-
-                    $html .= '<td><select style="display:none"><option value=""></option>';
-                    foreach ($options[$list['sorts'][$key]] as $option) {
-                        $html .= '<option value="'.$option.'"';
-                        if ($row[$key] == $option) {
-                            $html .= ' selected="selected"';
-                        }
-                        $html .= '>'.$option.'</option>';
-                    }
-                    $html .= '</select><span>'.$row[$key].'</span></td>';
-                }
-                if ($list['link']) {
-                    $html .= '<td style="text-align:right;"><input value="'.$row['link'].'" style="display:none;text-align:right;" /><span>'.$row['link'].'</span></td>';
-                }
-                //TODO change to right click
-                $html .= '<td><img onclick="listEditRow('.$list['id'].', '.$row['id'].');" src="images/application_edit.png" alt="'._('Edit').'" title="'._('Edit').'" width="16" height="16" /><img onclick="listUpdateRow('.$list['id'].', '.$row['id'].');" style="display:none" src="images/disk.png" alt="'._('Edit').'" title="'._('Edit').'" width="16" height="16" /><img src="images/cross.png" alt="X" title="'._('Delete row').'" onclick="listRemoveRow('.$list['id'].', '.$row['id'].')" /></td>';
-                $html .= '</tr>';
-            }
-        }
-        $html .= '</tbody></table><script type="text/javascript"><!--
-
-Event.observe(window, \'load\', function() { listSizeFooter('.$list['id'].'); });
-listlink['.$list['id'].'] = '.$list['link'].';
---></script>';
-    }
-    $html .= '</div>';
-    $html .= '<input type="button" onclick="window.open(\'addlist.php?id='.$id.'\', \'addlist\',\'status=1,resizable=1,toolbar=0,menubar=0,location=0,scrollbars=0,height=250\');" value="'._('Add list').'"></div>';
-    //list end
-
-    $html .= '</div></form>';
-
-    //bind start
-        $html .= '<form action="" method="post" onsubmit="return bind('.$id.');">
-    <div class="toolbox"><a class="menuboxheader" id="bindingheader" style="width:593px;" onclick="showhide(\'binding\',this);">Bindinger: </a><div style="width:613pxpx;" id="binding"><div id="bindinger"><br />';
-    $binds = db()->fetchArray('SELECT id, kat FROM `bind` WHERE `side` = '.$id);
-    $kattree = [];
-    foreach ($binds as $bind) {
-        if ($bind['id'] != -1) {
-            $kattreeHtml = '';
-            foreach (kattree($bind['kat']) as $kattree) {
-                $kattreeHtml .= '/'.trim($kattree['navn']);
-            }
-            $kattreeHtml .= '/';
-
-            $html .= '<p id="bind'.$bind['id'].'"> <img onclick="slet(\'bind\', \''.addslashes($kattreeHtml).'\', '.$bind['id'].')" src="images/cross.png" alt="X" title="'._('Remove binding').'" width="16" height="16" /> ';
-            $html .= $kattreeHtml.'</p>';
-        }
-    }
-    $html .= '</div>';
-
-    $activeCategoryId = $_COOKIE['activekat'] ?? -1;
-    $activeCategoryId = $activeCategoryId >= -1 ? $activeCategoryId : -1;
-    $html .= katlist($activeCategoryId);
-    $html .= '<br /><input type="submit" value="'._('Create binding').'" accesskey="b" />';
-
-    $html .= '</div></div></form>';
-    //bind end
-
-    //tilbehor start
-    $html .= '<form action="" method="post" onsubmit="return tilbehor('.$id.');">
-<div class="toolbox"><a class="menuboxheader" id="tilbehorsheader" style="width:593px;" onclick="showhide(\'tilbehor\',this);">'._('Accessories:').' </a><div style="width:613pxpx;" id="tilbehor"><div id="tilbehore"><br />';
-    $tilbehors = db()->fetchArray('SELECT id, tilbehor FROM `tilbehor` WHERE `side` = '.$id);
-    foreach ($tilbehors as $tilbehor) {
-        if ($tilbehor['id'] != null && $tilbehor['id'] != -1) {
-            $kattreeHtml = '';
-            foreach (kattree($tilbehor['kat']) as $kattree) {
-                $kattreeHtml .= '/'.trim($kattree['navn']);
-            }
-            $kattreeHtml .= '/';
-
-            $html .= '<p id="tilbehor'.$tilbehor['id'].'"> <img onclick="slet(\'tilbehor\', \''.addslashes($kattreeHtml).'\', '.$tilbehor['id'].')" src="images/cross.png" alt="X" title="'._('Remove binding').'" width="16" height="16" /> ';
-            $html .= $kattreeHtml.'</p>';
-        }
-    }
-    $html .= '</div>';
-    $html .= '<div><iframe src="pagelist.php" width="100%" height="300"></iframe></div>';
-
-    $html .= '<br /><input type="submit" value="'._('Add accessories').'" accesskey="a" />';
-
-    $html .= '</div></div></form>';
-    //tilbehor end
-
-    return $html;
 }
 
 function listRemoveRow(int $listid, int $rowId): array
@@ -2355,343 +1553,112 @@ function listRemoveRow(int $listid, int $rowId): array
 function listSavetRow(int $listid, string $cells, string $link, int $rowId): array
 {
     if (!$rowId) {
-        db()->query('INSERT INTO `list_rows`(`list_id`, `cells`, `link`) VALUES (' . $listid . ', \'' . db()->esc($cells).'\', \''.db()->esc($link).'\')');
+        db()->query(
+            '
+            INSERT INTO `list_rows`(`list_id`, `cells`, `link`)
+            VALUES (' . $listid . ', \'' . db()->esc($cells) . '\', \'' . db()->esc($link) . '\')
+            '
+        );
         $rowId = db()->insert_id;
     } else {
-        db()->query('UPDATE `list_rows` SET `list_id` = '.$listid.', `cells` = \''.db()->esc($cells).'\', `link` = \''.db()->esc($link).'\' WHERE id = '.$rowId);
+        db()->query(
+            '
+            UPDATE `list_rows`
+                SET
+                    `list_id` = ' . $listid . ',
+                    `cells` = \'' . db()->esc($cells) . '\',
+                    `link` = \'' . db()->esc($link) . '\'
+            WHERE id = ' . $rowId
+        );
     }
 
     return ['listid' => $listid, 'rowid' => $rowId];
 }
 
-function redigerFrontpage(): string
-{
-    $customPage = ORM::getOne(CustomPage::class, 1);
-    if (!$customPage) {
-        return '<div id="headline">'._('The page does not exist').'</div>';
+function updateContact(
+    int $id,
+    string $navn,
+    string $email,
+    string $adresse,
+    string $land,
+    string $post,
+    string $city,
+    string $tlf1,
+    string $tlf2,
+    int $kartotek,
+    string $interests
+): bool {
+    if (!$id) {
+        $contact = new Contact([
+            'timestamp'  => time(),
+            'title'      => $navn,
+            'email'      => $email,
+            'address'    => $adresse,
+            'country'    => $land,
+            'postcode'   => $post,
+            'city'       => $city,
+            'phone1'     => $tlf1,
+            'phone2'     => $tlf2,
+            'newsletter' => (bool) $kartotek,
+            'interests'  => $interests,
+            'ip'         => $_SERVER['REMOTE_ADDR'],
+        ]);
+        $contact->save();
+
+        return true;
     }
 
-    $html = '';
-    $html .= '<div id="headline">'._('Edit frontpage').'</div><form action="" method="post" onsubmit="return updateForside();"><input type="submit" accesskey="s" style="width:1px; height:1px; position:absolute; top: -20px; left:-20px;" />';
+    $contact = ORM::getOne(Contact::class, $id);
+    $contact->setTitle($navn)
+        ->setEmail($email)
+        ->setAddress($adresse)
+        ->setCountry($land)
+        ->setPostcode($post)
+        ->setCity($city)
+        ->setPhone1($tlf1)
+        ->setPhone2($tlf2)
+        ->setNewsletter($kartotek)
+        ->setInterests($interests)
+        ->setIp($_SERVER['REMOTE_ADDR'])
+        ->save();
 
-    $subkats = db()->fetchArray('SELECT id, navn, icon FROM `kat` WHERE bind = 0 ORDER BY `order`, `navn`');
-
-    $html .= _('Sort maincategories:');
-    $html .= '<ul id="subMenus" style="width:' . Config::get('text_width') .'px;">';
-
-    foreach ($subkats as $value) {
-        $html .= '<li id="item_'.$value['id'].'"><img src="';
-        if ($value['icon']) {
-            $html .= $value['icon'];
-        } else {
-            $html .= 'images/folder.png';
-        }
-        $html .= '" alt=""> '.$value['navn'].'</li>';
-    }
-
-    $html .= '</ul><input type="hidden" id="subMenusOrder" /><script type="text/javascript"><!--
-Sortable.create(\'subMenus\',{ghosting:false,constraint:false,hoverclass:\'over\',
-onChange:function(element){
-var newOrder = Sortable.serialize(element.parentNode);
-newOrder = newOrder.replace(/subMenus\\[\\]=/g,"");
-newOrder = newOrder.replace(/&/g,",");
-$(\'subMenusOrder\').value = newOrder;
-}
-});
-var newOrder = Sortable.serialize($(\'subMenus\'));
-newOrder = newOrder.replace(/subMenus\\[\\]=/g,"");
-newOrder = newOrder.replace(/&/g,",");
-$(\'subMenusOrder\').value = newOrder;
---></script><br />';
-
-    $html .= '<script type="text/javascript"><!--
-//Usage: initRTE(imagesPath, includesPath, cssFile, genXHTML)
-initRTE("/admin/rtef/images/", "/admin/rtef/", "/theme/rtef-text.css", true);
-writeRichText("text", \''.rtefsafe($customPage->getHtml()).'\', "", '.(Config::get('frontpage_width') + 32).', 572, true, false, false);
-//--></script></form>';
-
-    return $html;
-}
-
-function redigerSpecial(int $id): string
-{
-    $customPage = ORM::getOne(CustomPage::class, $id);
-    if (!$customPage) {
-        return '<div id="headline">' . _('The page does not exist') . '</div>';
-    }
-
-    return '<div id="headline">' . sprintf(_('Edit %s'), $customPage->getTitle())
-        . '</div><form action="" method="post" onsubmit="return updateSpecial(' . $customPage->getId()
-        . ');"><input type="submit" accesskey="s" style="width:1px; height:1px; position:absolute; top: -20px; left:-20px;" />'
-        . '<input type="hidden" id="id" /><script type="text/javascript"><!--
-//Usage: initRTE(imagesPath, includesPath, cssFile, genXHTML)
-initRTE("/admin/rtef/images/", "/admin/rtef/", "/theme/rtef-text.css", true);
-writeRichText("text", \''
-        . rtefsafe($customPage->getHtml()) . '\', "", ' . (Config::get('text_width') + 32)
-        . ', 572, true, false, false);
-//--></script></form>';
-}
-
-function getnykrav()
-{
-    $html = '<div id="headline">'._('Create new requirement').'</div><form action="" method="post" onsubmit="return savekrav();"><input type="submit" accesskey="s" style="width:1px; height:1px; position:absolute; top: -20px; left:-20px;" /><input type="hidden" name="id" id="id" value="" /><input class="admin_name" type="text" name="navn" id="navn" value="" maxlength="127" size="127" style="width:' . Config::get('text_width') . 'px" /><script type="text/javascript"><!--
-//Usage: initRTE(imagesPath, includesPath, cssFile, genXHTML)
-initRTE("/admin/rtef/images/", "/admin/rtef/", "/theme/rtef-text.css", true);
-writeRichText("text", "", "", ' . Config::get('text_width') . ', 420, true, false, false);
-//--></script></form>';
-
-    return $html;
-}
-
-function listsort(int $id = null): string
-{
-    if ($id) {
-        $liste = db()->fetchOne("SELECT * FROM `tablesort` WHERE `id` = " . $id);
-
-        $html = '<div id="headline">'.sprintf(_('Edit %s sorting'), $liste['navn']) . '</div><div>';
-
-        $html .= _('Name:').' <input id="listOrderNavn" value="' . $liste['navn'] . '"><form action="" method="post" onsubmit="addNewItem(); return false;">'._('New Item:').' <input id="newItem"> <input type="submit" value="tilføj" accesskey="t"></form>';
-
-        $html .= '<ul id="listOrder" style="width:' . Config::get('text_width') . 'px;">';
-        $liste['text'] = explode('<', $liste['text']);
-
-        foreach ($liste['text'] as $key => $value) {
-            $html .= '<li id="item_'.$key.'">'.$value.'</li>';
-        }
-
-        $html .= '</ul><input type="hidden" id="listOrderValue" value="" /><script type="text/javascript"><!--
-var items = ' . count($liste['text']) . ';
-Sortable.create(\'listOrder\',{ghosting:false,constraint:false,hoverclass:\'over\'});
---></script></div>';
-
-        return $html;
-    }
-
-    $html = '<div id="headline">'._('List sorting').'</div><div>';
-    $html .= '<a href="#" onclick="makeNewList(); return false;">'._('Create new sorting').'</a><br /><br />';
-
-    $lists = db()->fetchArray('SELECT id, navn FROM `tablesort`');
-
-    foreach ($lists as $value) {
-        $html .= '<a href="?side=listsort&amp;id='.$value['id'].'"><img src="images/shape_align_left.png" width="16" height="16" alt="" /> '.$value['navn'].'</a><br />';
-    }
-    $html .= '</div>';
-
-    return $html;
-}
-
-function getaddressbook(): string
-{
-    $addresses = db()->fetchArray('SELECT * FROM `email` ORDER BY `navn`');
-
-    $html = '<div id="headline">'._('Address Book').'</div><div>';
-    $html .= '<table id="addressbook"><thead><tr><td></td><td>'._('Name').'</td><td>'._('E-mail').'</td><td>'._('Phone').'</td></tr></thead><tbody>';
-
-    foreach ($addresses as $i => $addres) {
-        if (!$addres['tlf1'] && $addres['tlf2']) {
-            $addres['tlf1'] = $addres['tlf2'];
-        }
-
-        $html .= '<tr id="contact'.$addres['id'].'"';
-
-        if ($i % 2) {
-            $html .= ' class="altrow"';
-        }
-
-        $html .= '><td><a href="?side=editContact&id='.$addres['id'].'"><img width="16" height="16" src="images/vcard_edit.png" alt="R" title="'._('Edit').'" /></a><img onclick="x_deleteContact('.$addres['id'].', removeTagById)" width="16" height="16" src="images/cross.png" alt="X" title="'._('Delete').'" /></td>';
-        $html .= '<td>'.$addres['navn'].'</td><td>'.$addres['email'].'</td><td>'.$addres['tlf1'].'</td></tr>';
-    }
-
-    $html .= '</tbody></table></div>';
-
-    return $html;
-}
-
-function editContact(int $id): string
-{
-    $address = db()->fetchOne('SELECT * FROM `email` WHERE `id` = ' . $id);
-
-    $html = '<div id="headline">' ._('Edit contact person') .'</div>';
-    $html .= '<form method="post" action="" onsubmit="updateContact(' .$id .'); return false;"><input type="submit" accesskey="s" style="width:1px; height:1px; position:absolute; top: -20px; left:-20px;" /><table border="0" cellspacing="0"><tbody><tr><td>'._('Name:').'</td><td colspan="2"><input value="'.
-    $address['navn'].'" id="navn" /></td></tr><tr><td>'._('E-mail:').'</td><td colspan="2"><input value="'.
-    $address['email'].'" id="email" /></td></tr><tr><td>'._('Address:').'</td><td colspan="2"><input value="'.
-    $address['adresse'].'" id="adresse" /></td></tr><tr><td>'._('Country:').'</td><td colspan="2"><input value="'.
-    $address['land'].'" id="land" /></td></tr><tr><td width="1%">'._('Postal Code:').'</td><td width="1%"><input maxlength="8" size="8" id="post" value="'.
-    $address['post'].'" /></td><td align="left" nowrap="nowrap">'._('City:').'<input size="8" id="by" value="'.
-    $address['by'].'" /></td></tr><tr><td nowrap="nowrap">'._('Private phone:').'</td><td colspan="2"><input maxlength="11" size="15" id="tlf1" value="'.
-    $address['tlf1'].'" /></td></tr><tr><td nowrap="nowrap">'._('Mobile phone:').'</td><td colspan="2"><input maxlength="11" size="15" id="tlf2" value="'.
-    $address['tlf2'].'" /></td></tr><tr><td colspan="5"><br /><label for="kartotek"><input value="1" id="kartotek" type="checkbox"';
-    if ($address['kartotek']) {
-        $html .= ' checked="checked"';
-    }
-    $html .= ' />'._('Receive newsletters.').'</label><br />
-    <strong>'._('Interests:').'</strong>';
-    $html .= '<div id="interests">';
-    $address['interests_array'] = explode('<', $address['interests']);
-    foreach (Config::get('interests', []) as $interest) {
-        $html .= '<label for="'.$interest.'"><input';
-        if (false !== array_search($interest, $address['interests_array'])) {
-            $html .= ' checked="checked"';
-        }
-        $html .= ' type="checkbox" value="'.$interest.'" id="'.$interest.'" /> '.$interest.'</label> ';
-    }
-    $html .= '</div></td></tr></tbody></table></form>';
-
-    return $html;
-}
-
-function updateContact(int $id, string $navn, string $email, string $adresse, string $land, string $post, string $city, string $tlf1, string $tlf2, string $kartotek, string $interests): bool
-{
-    db()->query("UPDATE `email` SET `navn` = '".db()->esc($navn)."', `email` = '".db()->esc($email)."', `adresse` = '".db()->esc($adresse)."', `land` = '".db()->esc($land)."', `post` = '".db()->esc($post)."', `by` = '".db()->esc($city)."', `tlf1` = '".db()->esc($tlf1)."', `tlf2` = '".db()->esc($tlf2)."', `kartotek` = '".db()->esc($kartotek)."', `interests` = '".db()->esc($interests)."' WHERE id = ".$id);
     return true;
 }
 
 function deleteContact(int $id): string
 {
-    db()->query('DELETE FROM `email` WHERE `id` = '.$id);
-    return 'contact'.$id;
+    db()->query('DELETE FROM `email` WHERE `id` = ' . $id);
+
+    return 'contact' . $id;
 }
 
 function makeNewList(string $navn): array
 {
-    db()->query('INSERT INTO `tablesort` (`navn`) VALUES (\''.db()->esc($navn).'\')');
+    db()->query('INSERT INTO `tablesort` (`navn`) VALUES (\'' . db()->esc($navn) . '\')');
+
     return ['id' => db()->insert_id, 'name' => $navn];
 }
 
 function saveListOrder(int $id, string $navn, string $text): bool
 {
-    db()->query('UPDATE `tablesort` SET navn = \''.db()->esc($navn).'\', text = \''.db()->esc($text).'\' WHERE id = '.$id);
+    db()->query(
+        'UPDATE `tablesort` SET navn = \'' . db()->esc($navn) . '\', text = \'' . db()->esc($text) . '\'
+        WHERE id = ' . $id
+    );
+
     return true;
-}
-
-function get_db_error(): string
-{
-    $html = '<div id="headline">'._('Maintenance').'</div><div>
-    <div>';
-        $html .= '<script type=""><!--
-        function set_db_errors(result)
-        {
-            if (result != \'\')
-                $(\'errors\').innerHTML = $(\'errors\').innerHTML+result;
-        }
-
-        function scan_db()
-        {
-            $(\'loading\').style.visibility = \'\';
-            $(\'errors\').innerHTML = \'\';
-
-            var starttime = new Date().getTime();
-
-            $(\'status\').innerHTML = \''._('Removing news subscribers without contact information').'\';
-            x_removeBadSubmisions(set_db_errors);
-
-            $(\'status\').innerHTML = \''._('Removing bindings to pages that do not exist').'\';
-            x_removeBadBindings(set_db_errors);
-
-            $(\'status\').innerHTML = \''._('Removing accessories that do not exist').'\';
-            x_removeBadAccessories(set_db_errors);
-
-            $(\'status\').innerHTML = \''._('Searching for pages without bindings').'\';
-            x_get_orphan_pages(set_db_errors);
-
-            $(\'status\').innerHTML = \''._('Searching for pages with illegal bindings').'\';
-            x_get_pages_with_mismatch_bindings(set_db_errors);
-
-            $(\'status\').innerHTML = \''._('Searching for orphaned lists').'\';
-            x_get_orphan_lists(set_db_errors);
-
-            $(\'status\').innerHTML = \''._('Searching for orphaned rows').'\';
-            x_get_orphan_rows(set_db_errors);
-
-            $(\'status\').innerHTML = \''._('Searching for orphaned categories').'\';
-            x_get_orphan_cats(set_db_errors);
-
-            $(\'status\').innerHTML = \''._('Searching for cirkalur linked categories').'\';
-            x_get_looping_cats(set_db_errors);
-
-            $(\'status\').innerHTML = \''._('Checking the file names').'\';
-            x_check_file_names(set_db_errors);
-
-            $(\'status\').innerHTML = \''._('Checking the folder names').'\';
-            x_check_file_paths(set_db_errors);
-
-            $(\'status\').innerHTML = \''._('Retrieving the size of the files').'\';
-            x_get_size_of_files(function(){});
-
-            $(\'status\').innerHTML = \''._('Optimizing the database').'\';
-            x_optimizeTables(set_db_errors);
-
-            $(\'status\').innerHTML = \''._('Sending delayed emails').'\';
-            x_sendDelayedEmail(set_db_errors);
-
-            $(\'status\').innerHTML = \'\';
-            $(\'loading\').style.visibility = \'hidden\';
-            $(\'errors\').innerHTML = $(\'errors\').innerHTML+\'<br />\'+(\''._('The scan took %d seconds.').'\'.replace(/[%]d/g, Math.round((new Date().getTime()-starttime)/1000).toString()));
-        }
-
-        function get_subscriptions_with_bad_emails()
-        {
-            $(\'loading\').style.visibility = \'\';
-            $(\'errors\').innerHTML = \'\';
-
-            var starttime = new Date().getTime();
-
-            $(\'status\').innerHTML = \''._('Searching for illegal e-mail adresses').'\';
-            x_get_subscriptions_with_bad_emails(set_db_errors);
-
-            $(\'status\').innerHTML = \'\';
-            $(\'loading\').style.visibility = \'hidden\';
-            $(\'errors\').innerHTML = $(\'errors\').innerHTML+\'<br />\'+(\''._('The scan took %d seconds.').'\'.replace(/[%]d/g, Math.round((new Date().getTime()-starttime)/1000).toString()));
-        }
-
-        function removeNoneExistingFiles()
-        {
-            $(\'loading\').style.visibility = \'\';
-            $(\'status\').innerHTML = \''._('Removes not existing files from the database').'\';
-            x_removeNoneExistingFiles(function (dummy) {});
-            $(\'status\').innerHTML = \''._('Getting Database Size').'\';
-            x_get_db_size(get_db_size_r);
-            $(\'status\').innerHTML = \'\';
-            $(\'loading\').style.visibility = \'hidden\';
-        }
-
-        function get_mail_size_r(size)
-        {
-            $(\'mailboxsize\').innerHTML = Math.round(size/1024/1024)+\''._('MB').'\';
-            $(\'status\').innerHTML = \'\';
-            $(\'loading\').style.visibility = \'hidden\';
-        }
-
-        function get_db_size_r(size)
-        {
-            $(\'dbsize\').innerHTML = Math.round(size*10)/10+\''._('MB').'\';
-        }
-
-        --></script><div><b>'._('Server consumption').'</b> - '._('E-mail:').' <span id="mailboxsize"><button onclick="$(\'loading\').style.visibility = \'\'; x_get_mail_size(get_mail_size_r);">'._('Get e-mail consumption').'</button></span> '._('DB:').' <span id="dbsize">'.number_format(get_db_size(), 1, ',', '')._('MB').'</span> '._('WWW').': <span id="wwwsize">'.number_format(get_size_of_files(), 1, ',', '')._('MB').'</span></div><div id="status"></div><button onclick="scan_db();">'._('Scan database').'</button> <button onclick="get_subscriptions_with_bad_emails();">'._('Check emails in the address book').'</button> <button onclick="removeNoneExistingFiles();">'._('Clean up files').'</button><div id="errors"></div>';
-
-    $emailsCount = db()->fetchOne("SELECT count(*) as 'count' FROM `emails`");
-    $emails = db()->fetchArray("SHOW TABLE STATUS LIKE 'emails'");
-    $emails = reset($emails);
-
-    return $html . '<div>' . sprintf(_('Delayed e-mails %d/%d'), $emailsCount['count'], $emails['Auto_increment'] - 1)
-        . '</div><div>'
-        . sprintf(_('Cron last run at %s'), date('d/m/Y', ORM::getOne(CustomPage::class, 0)->getTimestamp()))
-        . '</div></div></div>';
 }
 
 function get_subscriptions_with_bad_emails(): string
 {
-    $html = '';
-    $emails = db()->fetchArray("SELECT `id`, `email` FROM `email` WHERE `email` != ''");
-    foreach ($emails as $email) {
-        if (!valideMail($email['email'])) {
-            $html .= '<a href="?side=editContact&id='.$email['id'].'">'.sprintf(_('E-mail: %s #%d is not valid'), $email['email'], $email['id']).'</a><br />';
+    $contacts = ORM::getByQuery(Contact::class, "SELECT * FROM `email` WHERE `email` != ''");
+    foreach ($contacts as $key => $contact) {
+        if (!$contact->isEmailValide()) {
+            unset($contacts[$key]);
         }
     }
-    if ($html) {
-        $html = '<b>'._('The following e-mail addresses are not valid').'</b><br />'.$html;
-    }
-    return $html;
+
+    return Render::render('partial-admin-subscriptions_with_bad_emails', ['contacts' => $contacts]);
 }
 
 function get_orphan_rows(): string
@@ -2699,30 +1666,35 @@ function get_orphan_rows(): string
     $html = '';
     $error = db()->fetchArray('SELECT * FROM `list_rows` WHERE list_id NOT IN (SELECT id FROM lists);');
     if ($error) {
-        $html .= '<br /><b>'._('The following rows have no lists:').'</b><br />';
+        $html .= '<br /><b>' . _('The following rows have no lists:') . '</b><br />';
         foreach ($error as $value) {
-            $html .= $value['id'].': '.$value['cells'].' '.$value['link'].'<br />';
+            $html .= $value['id'] . ': ' . $value['cells'] . ' ' . $value['link'] . '<br />';
         }
     }
     if ($html) {
-        $html = '<b>'._('The following pages have no binding').'</b><br />'.$html;
+        $html = '<b>' . _('The following pages have no binding') . '</b><br />' . $html;
     }
+
     return $html;
 }
 
 function get_orphan_cats(): string
 {
     $html = '';
-    $error = db()->fetchArray('SELECT `id`, `navn` FROM `kat` WHERE `bind` != 0 AND `bind` != -1 AND `bind` NOT IN (SELECT `id` FROM `kat`);');
+    $error = db()->fetchArray(
+        'SELECT `id`, `navn` FROM `kat` WHERE `bind` != 0 AND `bind` != -1 AND `bind` NOT IN (SELECT `id` FROM `kat`);'
+    );
     if ($error) {
-        $html .= '<br /><b>'._('The following categories are orphans:').'</b><br />';
+        $html .= '<br /><b>' . _('The following categories are orphans:') . '</b><br />';
         foreach ($error as $value) {
-            $html .= '<a href="?side=redigerkat&id='.$value['id'].'">'.$value['id'].': '.$value['navn'].'</a><br />';
+            $html .= '<a href="?side=redigerkat&id=' . $value['id'] . '">' . $value['id'] . ': ' . $value['navn']
+                . '</a><br />';
         }
     }
     if ($html) {
-        $html = '<b>'._('The following categories have no binding').'</b><br />'.$html;
+        $html = '<b>' . _('The following categories have no binding') . '</b><br />' . $html;
     }
+
     return $html;
 }
 
@@ -2736,60 +1708,80 @@ function get_looping_cats(): string
         $bindtree = kattree($kat['bind']);
         foreach ($bindtree as $bindbranch) {
             if ($kat['id'] == $bindbranch['id']) {
-                $tempHtml .= '<a href="?side=redigerkat&id='.$kat['id'].'">'.$kat['id'].': '.$kat['navn'].'</a><br />';
+                $tempHtml .= '<a href="?side=redigerkat&id=' . $kat['id'] . '">' . $kat['id'] . ': ' . $kat['navn']
+                    . '</a><br />';
                 continue;
             }
         }
     }
     if ($tempHtml) {
-        $html .= '<br /><b>'._('The following categories are tied in itself:').'</b><br />'.$tempHtml;
+        $html .= '<br /><b>' . _('The following categories are tied in itself:') . '</b><br />' . $tempHtml;
     }
     if ($html) {
-        $html = '<b>'._('The following categories are tied in itself:').'</b><br />'.$html;
+        $html = '<b>' . _('The following categories are tied in itself:') . '</b><br />' . $html;
     }
+
     return $html;
 }
 
 function check_file_names(): string
 {
     $html = '';
-    $error = db()->fetchArray('SELECT path FROM `files` WHERE `path` COLLATE UTF8_bin REGEXP \'[A-Z|_"\\\'`:%=#&+?*<>{}\\]+[^/]+$\' ORDER BY `path` ASC');
+    $error = db()->fetchArray(
+        '
+        SELECT path FROM `files`
+        WHERE `path` COLLATE UTF8_bin REGEXP \'[A-Z|_"\\\'`:%=#&+?*<>{}\\]+[^/]+$\'
+        ORDER BY `path` ASC
+        '
+    );
     if ($error) {
         if (db()->affected_rows > 1) {
-            $html .= '<br /><b>'.sprintf(_('The following %d files must be renamed:'), db()->affected_rows).'</b><br /><a onclick="explorer(\'\',\'\');">';
+            $html .= '<br /><b>'
+                . sprintf(_('The following %d files must be renamed:'), db()->affected_rows)
+                . '</b><br /><a onclick="explorer(\'\',\'\');">';
         } else {
             $html .= '<br /><br /><a onclick="explorer(\'\',\'\');">';
         }
         foreach ($error as $value) {
-            $html .= $value['path'].'<br />';
+            $html .= $value['path'] . '<br />';
         }
         $html .= '</a>';
     }
     if ($html) {
-        $html = '<b>'._('The following files must be renamed').'</b><br />'.$html;
+        $html = '<b>' . _('The following files must be renamed') . '</b><br />' . $html;
     }
+
     return $html;
 }
 
 function check_file_paths(): string
 {
     $html = '';
-    $error = db()->fetchArray('SELECT path FROM `files` WHERE `path` COLLATE UTF8_bin REGEXP \'[A-Z|_"\\\'`:%=#&+?*<>{}\\]+.*[/]+\' ORDER BY `path` ASC');
+    $error = db()->fetchArray(
+        '
+        SELECT path FROM `files`
+        WHERE `path` COLLATE UTF8_bin REGEXP \'[A-Z|_"\\\'`:%=#&+?*<>{}\\]+.*[/]+\'
+        ORDER BY `path` ASC
+        '
+    );
     if ($error) {
         if (db()->affected_rows > 1) {
-            $html .= '<br /><b>'.sprintf(_('The following %d files are in a folder that needs to be renamed:'), db()->affected_rows).'</b><br /><a onclick="explorer(\'\',\'\');">';
+            $html .= '<br /><b>'
+                . sprintf(_('The following %d files are in a folder that needs to be renamed:'), db()->affected_rows)
+                . '</b><br /><a onclick="explorer(\'\',\'\');">';
         } else {
             $html .= '<br /><br /><a onclick="explorer(\'\',\'\');">';
         }
         //TODO only repport one error per folder
         foreach ($error as $value) {
-            $html .= $value['path'].'<br />';
+            $html .= $value['path'] . '<br />';
         }
         $html .= '</a>';
     }
     if ($html) {
-        $html = '<b>'._('The following folders must be renamed').'</b><br />'.$html;
+        $html = '<b>' . _('The following folders must be renamed') . '</b><br />' . $html;
     }
+
     return $html;
 }
 
@@ -2836,20 +1828,23 @@ TODO test for missing alt="" in img under sider
 preg_match_all('/<img[^>]+/?>/ui', $value, $matches);
 */
 
-
 function get_orphan_lists(): string
 {
     $error = db()->fetchArray('SELECT id FROM `lists` WHERE page_id NOT IN (SELECT id FROM sider);');
     $html = '';
     if ($error) {
-        $html .= '<br /><b>'._('The following lists are orphans:').'</b><br />';
+        $html .= '<br /><b>' . _('The following lists are orphans:') . '</b><br />';
         foreach ($error as $value) {
-            $html .= $value['id'].': '.$value['navn'].' '.$value['cell1'].' '.$value['cell2'].' '.$value['cell3'].' '.$value['cell4'].' '.$value['cell5'].' '.$value['cell6'].' '.$value['cell7'].' '.$value['cell8'].' '.$value['cell9'].' '.$value['img'].' '.$value['link'].'<br />';
+            $html .= $value['id'] . ': ' . $value['navn'] . ' ' . $value['cell1'] . ' ' . $value['cell2'] . ' '
+                . $value['cell3'] . ' ' . $value['cell4'] . ' ' . $value['cell5'] . ' ' . $value['cell6'] . ' '
+                . $value['cell7'] . ' ' . $value['cell8'] . ' ' . $value['cell9'] . ' ' . $value['img'] . ' '
+                . $value['link'] . '<br />';
         }
     }
     if ($html) {
-        $html = '<b>'._('The following lists are not tied to any page').'</b><br />'.$html;
+        $html = '<b>' . _('The following lists are not tied to any page') . '</b><br />' . $html;
     }
+
     return $html;
 }
 
@@ -2861,20 +1856,25 @@ function get_db_size(): float
         $dbsize += $tabel['Data_length'];
         $dbsize += $tabel['Index_length'];
     }
-    return $dbsize/1024/1024;
+
+    return $dbsize / 1024 / 1024;
 }
 
 function get_orphan_pages(): string
 {
     $html = '';
-    $sider = db()->fetchArray("SELECT `id`, `navn`, `varenr` FROM `sider` WHERE `id` NOT IN(SELECT `side` FROM `bind`);");
+    $sider = db()->fetchArray(
+        'SELECT `id`, `navn`, `varenr` FROM `sider` WHERE `id` NOT IN(SELECT `side` FROM `bind`);'
+    );
     foreach ($sider as $side) {
-        $html .= '<a href="?side=redigerside&amp;id='.$side['id'].'">'.$side['id'].': '.$side['navn'].'</a><br />';
+        $html .= '<a href="?side=redigerside&amp;id=' . $side['id'] . '">' . $side['id'] . ': ' . $side['navn']
+            . '</a><br />';
     }
 
     if ($html) {
-        $html = '<b>'._('The following pages have no binding').'</b><br />'.$html;
+        $html = '<b>' . _('The following pages have no binding') . '</b><br />' . $html;
     }
+
     return $html;
 }
 
@@ -2907,15 +1907,16 @@ function get_pages_with_mismatch_bindings(): string
         "
     );
     if ($pages) {
-        $html .= '<b>'._('The following pages are both active and inactive').'</b><br />';
+        $html .= '<b>' . _('The following pages are both active and inactive') . '</b><br />';
         foreach ($pages as $page) {
-            $html .= '<a href="?side=redigerside&amp;id=' . $page->getId() . '">' . $page->getId() . ': ' . $page->getTitle() . '</a><br />';
+            $html .= '<a href="?side=redigerside&amp;id=' . $page->getId() . '">' . $page->getId() . ': '
+                . $page->getTitle() . '</a><br />';
         }
     }
 
     //Add active pages that has a list that links to this page
     $pages = db()->fetchArray(
-        "
+        '
         SELECT `sider`.*, `lists`.`page_id`
         FROM `list_rows`
         JOIN `lists` ON `list_rows`.`list_id` = `lists`.`id`
@@ -2923,93 +1924,55 @@ function get_pages_with_mismatch_bindings(): string
         WHERE EXISTS (
             SELECT * FROM bind
             WHERE side = `lists`.`page_id`
-            AND kat IN (" . implode(",", $categoryActiveMaps[0]) . ")
+            AND kat IN (' . implode(',', $categoryActiveMaps[0]) . ')
         )
         AND EXISTS (
             SELECT * FROM bind
             WHERE side = sider.id
-            AND kat IN (" . implode(",", $categoryActiveMaps[1]) . ")
+            AND kat IN (' . implode(',', $categoryActiveMaps[1]) . ')
         )
         ORDER BY `lists`.`page_id`
-        "
+        '
     );
     if ($pages) {
-        $html .= '<b>'._('The following inactive pages appears in list on active pages').'</b><br />';
+        $html .= '<b>' . _('The following inactive pages appears in list on active pages') . '</b><br />';
         foreach ($pages as $page) {
             $listPage = ORM::getOne(Page::class, $page['page_id']);
             $page = new Page(Page::mapFromDB($page));
-            $html .= '<a href="?side=redigerside&amp;id=' . $listPage->getId() . '">' . $listPage->getId() . ': ' . $listPage->getTitle() . '</a> -&gt; <a href="?side=redigerside&amp;id=' . $page->getId() . '">' . $page->getId() . ': ' . $page->getTitle() . '</a><br />';
+            $html .= '<a href="?side=redigerside&amp;id=' . $listPage->getId() . '">' . $listPage->getId() . ': '
+                . $listPage->getTitle() . '</a> -&gt; <a href="?side=redigerside&amp;id=' . $page->getId() . '">'
+                . $page->getId() . ': ' . $page->getTitle() . '</a><br />';
         }
     }
 
     return $html;
 }
 
-function getnyside(): string
+function getRequirementOptions(): array
 {
-    $html = '<div id="headline">Opret ny side</div><form action="" method="post" onsubmit="return opretSide();"><input type="submit" accesskey="s" style="width:1px; height:1px; position:absolute; top: -20px; left:-20px;" /><div><script type="text/javascript"><!--
-//Usage: initRTE(imagesPath, includesPath, cssFile, genXHTML)
-initRTE("/admin/rtef/images/", "/admin/rtef/", "/theme/rtef-text.css", true);
-//--></script><input type="hidden" name="id" id="id" value="" /><input class="admin_name" type="text" name="navn" id="navn" value="" maxlength="127" size="127" style="width:' . Config::get('text_width') . 'px" /><script type="text/javascript"><!--
-writeRichText("text", \'\', "", ' . (Config::get('text_width') + 32) .', 420, true, false, false);
-//--></script>';
-    //Søge ord (separere søge ord med et komma "Emergency Blanket, Redningstæppe"):
-    $html .= _('Search word (separate search words with a comma \'Emergency Blanket, Rescue Blanket\'):').'<br /><textarea name="keywords" id="keywords" style="width:' . Config::get('text_width') . 'px;max-width:' . Config::get('text_width') . 'px" rows="2" cols=""></textarea>';
-    //Beskrivelse start
-    $html .= '<div class="toolbox"><a class="menuboxheader" id="beskrivelseboxheader" style="width:' . (Config::get('thumb_width') + 14).'px" onclick="showhide(\'beskrivelsebox\',this);">'._('Description:').' </a><div style="text-align:center;width:' . (Config::get('thumb_width') + 34) . 'px" id="beskrivelsebox"><br /><input type="hidden" value="'._('/images/web/intet-foto.jpg').'" id="billed" name="billed" /><img id="billedthb" src="'._('/images/web/intet-foto.jpg').'" alt="" onclick="explorer(\'thb\', \'billed\')" /><br /><img onclick="explorer(\'thb\', \'billed\')" src="images/folder_image.png" width="16" height="16" alt="'._('Pictures').'" title="'._('Find image').'" /><img onclick="setThb(\'billed\', \'\', \''._('/images/web/intet-foto.jpg').'\')" src="images/cross.png" alt="X" title="'._('Remove picture').'" width="16" height="16" /><script type="text/javascript"><!--
-writeRichText("beskrivelse", \'\', "", ' . (Config::get('thumb_width') + 32) . ', 115, false, false, false);
-//--></script></div></div>';
-    //Beskrivelse end
-    //Pris start
-    $html .= '<div class="toolbox"><a class="menuboxheader" id="priserheader" style="width:230px" onclick="showhide(\'priser\',this);">'._('Price:').' </a><div style="width:250px;" id="priser"><table style="width:100%"><tr><td><select name="burde" id="burde"><option value="0">'._('Before').'</option><option value="1">'._('Indicative price').'</option></select></td><td style="text-align:right"><input class="XPris" onkeypress="return checkForInt(event)" onchange="prisHighlight()" value="" name="for" id="for" size="11" maxlength="11" style="width:100px;text-align:right" />,-</td></tr><tr><td><select name="fra" id="fra"><option value="0">'._('Price').'</option><option value="1">'._('From').'</option></select></td><td style="text-align:right"><input value="" class="Pris" name="pris" id="pris" size="11" maxlength="11" style="width:100px;text-align:right" onkeypress="return checkForInt(event)" onchange="prisHighlight()" />,-</td></tr></table></div></div>';
-    //Pris end
-    //misc start
-    $html .= '<div class="toolbox"><a class="menuboxheader" id="miscboxheader" style="width:201px" onclick="showhide(\'miscbox\',this);">'._('Other:').' </a><div style="width:221px" id="miscbox">'._('SKU:').' <input type="text" name="varenr" id="varenr" maxlength="63" style="text-align:right;width:128px" value="" /><br /><img src="images/page_white_key.png" width="16" height="16" alt="" /><select id="krav" name="krav"><option value="0">'._('None').'</option>';
-    $kravs = db()->fetchArray('SELECT id, navn FROM `krav`');
-    foreach ($kravs as $krav) {
-        $html .= '<option value="'.$krav['id'].'"';
-        $html .= '>'.xhtmlEsc($krav['navn']).'</option>';
+    $options = [0 => 'None'];
+    $requirements = db()->fetchArray('SELECT id, navn FROM `krav` ORDER BY navn');
+    foreach ($requirements as $requirement) {
+        $options[$requirement['id']] = $requirement['navn'];
     }
-    $html .= '</select><br /><img width="16" height="16" alt="" src="images/page_white_medal.png"/><select id="maerke" name="maerke" size="10"><option selected="selected" value="0">'._('All others').'</option>';
-    $maerker = db()->fetchArray('SELECT id, navn FROM `maerke` ORDER BY navn');
-    foreach ($maerker as $maerke) {
-        $html .= '<option value="' . $maerke['id'] . '"';
-        $html .= '>' . xhtmlEsc($maerke['navn']) . '</option>';
-    }
-    $html .= '</select></div></div></div>';
-    //misc end
-    //bind start
-    $activeKat = $_COOKIE['activekat'] ?? -1;
-    $activeKat = $activeKat >= -1 ? $activeKat : -1;
-    $html .= katlist($activeKat);
 
-    $html .= '</form>';
-    return $html;
+    return $options;
 }
 
-function getnykat(): array
+function getBrandOptions(): array
 {
-    $html = '<div id="headline">'._('Create category').'</div><form action="" onsubmit="return save_ny_kat()"><input type="submit" accesskey="s" style="width:1px; height:1px; position:absolute; top: -20px; left:-20px;" /><div>'._('Name:').' <img style="cursor:pointer;vertical-align:bottom" onclick="explorer(\'thb\',\'icon\')" src="images/folder.png" title="" alt="'._('Pictures').'" id="iconthb" /> <input id="navn" style="width:256px;" maxlength="64" /> <br /> '._('Icon:').' <input id="icon" style="width:247px;" maxlength="128" type="hidden" /> <img style="cursor:pointer;vertical-align:bottom" onclick="explorer(\'thb\',\'icon\')" width="16" height="16" src="images/folder_image.png" title="'._('Find pictures').'" alt="'._('Pictures').'" /> <img style="cursor:pointer;vertical-align:bottom" onclick="setThb(\'icon\',\'\',\'images/folder.png\')" src="images/cross.png" alt="X" title="'._('Remove picture').'" height="16" width="16" /><br /><br />';
-
-    //Email
-    $html .= _('Contact:').' <select id="email">';
-    foreach (array_keys(Config::get('emails', [])) as $email) {
-        $html .= '<option value="' . $email . '">' . $email . '</option>';
+    $options = [0 => 'All others'];
+    $brands = db()->fetchArray('SELECT id, navn FROM `maerke` ORDER BY navn');
+    foreach ($brands as $brand) {
+        $options[$brand['id']] = $brand['navn'];
     }
-    $html .= '</select>';
 
-    //Visning
-    $html .= '<br />'._('Display:').' <select id="vis"><option value="0">'._('Hide').'</option><option value="1" selected="selected">'._('Gallery').'</option><option value="2">'._('List').'</option></select>';
-
-    //binding
-    $activeKat = $_COOKIE['activekat'] ?? -1;
-    $activeKat = $activeKat >= -1 ? $activeKat : -1;
-    $html .= katlist($activeKat);
-
-    $html .= '<br /></div></form>';
-    return ['id' => 'canvas', 'html' => $html];
+    return $options;
 }
 
+/**
+ * @return array|true
+ */
 function save_ny_kat(string $navn, string $kat, string $icon, string $vis, string $email)
 {
     if ($navn != '' && $kat != '') {
@@ -3040,79 +2003,24 @@ function savekrav(int $id, string $navn, string $text): array
                 'title' => $navn,
                 'html'  => $text,
             ]);
+            $id = $requirement->getId();
         } else {
             $requirement = ORM::getOne(Requirement::class, $id);
             $requirement->setTitle($navn)->setHtml($text);
         }
         $requirement->save();
 
-        return ['id' => 'canvas', 'html' => getkrav()];
+        return ['id' => $id];
     }
 
     return ['error' => _('You must enter a name and a text of the requirement.')];
 }
 
-function getsogogerstat()
-{
-    echo '<div id="headline">'._('Find and replace').'</div><form onsubmit="sogogerstat(document.getElementById(\'sog\').value,document.getElementById(\'erstat\').value,inject_html); return false;"><img src="images/error.png" width="16" height="16" alt="" > '._('This function affects all pages.').'<table cellspacing="0"><tr><td>'._('Find:').' </td><td><input id="sog" style="width:256px;" maxlength="64" /></td></tr><tr><td>'._('Replace:').' </td><td><input id="erstat" style="width:256px;" maxlength="64" /></td></tr></table><br /><br /><input value="'._('Find and replace').'" type="submit" accesskey="r" /></form>';
-}
-
 function sogogerstat(string $sog, string $erstat): int
 {
-    db()->query('UPDATE sider SET text = REPLACE(text,\''.db()->esc($sog).'\',\''.db()->esc($erstat).'\')');
+    db()->query('UPDATE sider SET text = REPLACE(text,\'' . db()->esc($sog) . '\',\'' . db()->esc($erstat) . '\')');
 
     return db()->affected_rows;
-}
-
-function getmaerker(): string
-{
-    $html = '<div id="headline">'._('List of brands').'</div><form action="" id="maerkerform" onsubmit="x_save_ny_maerke(document.getElementById(\'navn\').value,document.getElementById(\'link\').value,document.getElementById(\'ico\').value,inject_html); return false;"><table cellspacing="0"><tr style="height:21px"><td>'._('Name:').' </td><td><input id="navn" style="width:256px;" maxlength="64" /></td><td rowspan="4"><img id="icoimage" src="" style="display:none" alt="" /></td></tr><tr style="height:21px"><td>'._('Link:').' </td><td><input id="link" style="width:256px;" maxlength="64" /></td></tr><tr style="height:21px"><td>'._('Logo:').' </td>
-    <td style="text-align:center"><input type="hidden" value="'._('/images/web/intet-foto.jpg').'" id="ico" name="ico" /><img id="icothb" src="'._('/images/web/intet-foto.jpg').'" alt="" onclick="explorer(\'thb\', \'ico\')" /><br /><img onclick="explorer(\'thb\', \'ico\')" src="images/folder_image.png" width="16" height="16" alt="'._('Pictures').'" title="'._('Find image').'" /><img onclick="setThb(\'ico\', \'\', \''._('/images/web/intet-foto.jpg').'\')" src="images/cross.png" alt="X" title="'._('Remove picture').'" width="16" height="16" /></td>
-    </tr><tr><td></td></tr></table><p><input value="'._('Add brand').'e" type="submit" accesskey="s" /><br /><br /></p><div id="imagelogo" style="display:none; position:absolute;"></div>';
-    $brands = db()->fetchArray('SELECT * FROM `maerke` ORDER BY navn');
-    foreach ($brands as $brand) {
-        $html .= '<div id="maerke'.$brand['id'].'"><a href="" onclick="slet(\'maerke\',\''.addslashes($brand['navn']).'\','.$brand['id'].');"><img src="images/cross.png" alt="X" title="'._('Delete').' '.xhtmlEsc($brand['navn']).'!" width="16" height="16"';
-        if (!$brand['link'] && !$brand['ico']) {
-            $html .= ' style="margin-right:32px"';
-        } elseif (!$brand['link']) {
-            $html .= ' style="margin-right:16px"';
-        }
-        $html .= ' /></a><a href="?side=updatemaerke&amp;id='.$brand['id'].'">';
-        if ($brand['link']) {
-            $html .= '<img src="images/link.png" alt="W" width="16" height="16" title="'.xhtmlEsc($brand['link']).'"';
-            if (!$brand['ico']) {
-                $html .= ' style="margin-right:16px"';
-            }
-            $html .= ' />';
-        }
-        if ($brand['ico']) {
-            $html .= '<img alt="icon" title="" src="images/picture.png" width="16" height="16" onmouseout="document.getElementById(\'imagelogo\').style.display = \'none\'" onmouseover="showimage(this,\''.addslashes($brand['ico']).'\')" />';
-        }
-        $html .= ' '.xhtmlEsc($brand['navn']).'</a></div>';
-    }
-    $html .= '</form>';
-    return $html;
-}
-
-function getupdatemaerke(int $id): string
-{
-    $brand = db()->fetchOne("SELECT navn, link, ico FROM `maerke` WHERE id = " . $id);
-
-    $html = '<div id="headline">'.sprintf(_('Edit the brand %d'), $brand['navn']).'</div><form onsubmit="x_updatemaerke('.$id.',document.getElementById(\'navn\').value,document.getElementById(\'link\').value,document.getElementById(\'ico\').value,inject_html); return false;"><table cellspacing="0"><tr style="height:21px"><td>'._('Name:').' </td><td><input value="'.xhtmlEsc($brand['navn']).'" id="navn" style="width:256px;" maxlength="64" /></td></tr><tr style="height:21px"><td>Link: </td><td><input value="'.xhtmlEsc($brand['link']).'" id="link" style="width:256px;" maxlength="64" /></td></tr><tr style="height:21px"><td>'._('Logo:').' </td>
-    <td style="text-align:center"><input type="hidden" value="'.xhtmlEsc($brand['ico']).'" id="ico" name="ico" /><img id="icothb" src="';
-    if ($brand['ico']) {
-        $html .= $brand['ico'];
-    } else {
-        $html .= _('/images/web/intet-foto.jpg');
-    }
-    $html .= '" alt="" onclick="explorer(\'thb\', \'ico\')" /><br /><img onclick="explorer(\'thb\', \'ico\')" src="images/folder_image.png" width="16" height="16" alt="'._('Pictures').'" title="'._('Find image').'" /><img onclick="setThb(\'ico\', \'\', \''._('/images/web/intet-foto.jpg').'\')" src="images/cross.png" alt="X" title="'._('Remove picture').'" width="16" height="16" /></td>
-    </tr><tr><td></td></tr></table><br /><br /><input value="'._('Save brand').'" type="submit" accesskey="s" /><br /><br /><div id="imagelogo" style="display:none; position:absolute;"></div></form>';
-    return $html;
-}
-
-function save_ny_maerke(string $navn, string $link, string $ico): array
-{
-    return updatemaerke(null, $navn, $link, $ico);
 }
 
 function updatemaerke(int $id = null, string $navn = '', string $link = '', string $ico = ''): array
@@ -3121,75 +2029,76 @@ function updatemaerke(int $id = null, string $navn = '', string $link = '', stri
         if ($id === null) {
             (new Brand(['title' => $navn, 'link' => $link, 'icon_path' => $ico]))->save();
         } else {
-            ORM::getOne(Brand::class, $id)->setTitle($navn)->setLink($link)->setIconPath($ico)->save();
+            $brand = ORM::getOne(Brand::class, $id)->setTitle($navn)->setLink($link)->setIconPath($ico)->save();
+            $id = $brand->getId();
         }
-        return ['id' => 'canvas', 'html' => getmaerker()];
+
+        return ['id' => $id];
     }
 
     return ['error' => _('You must enter a name.')];
 }
 
-function getkrav(): string
-{
-    $html = '<div id="headline">'._('Requirements list').'</div><div style="margin:16px;"><a href="?side=nykrav">Tilføj krav</a>';
-    $kravs = db()->fetchArray('SELECT id, navn FROM `krav` ORDER BY navn');
-    foreach ($kravs as $krav) {
-        $html .= '<div id="krav'.$krav['id'].'"><a href="" onclick="slet(\'krav\',\''.addslashes($krav['navn']).'\','.$krav['id'].');"><img src="images/cross.png" title="Slet '.$krav['navn'].'!" width="16" height="16" /></a><a href="?side=editkrav&amp;id='.$krav['id'].'">'.$krav['navn'].'</a></div>';
-    }
-    $html .= '</div>';
-    return $html;
-}
-
-function editkrav(int $id): string
-{
-    $krav = db()->fetchOne('SELECT navn, text FROM `krav` WHERE id = '.$id);
-
-    $html = '<div id="headline">'.sprintf(_('Edit %s'), $krav['navn']).'</div><form action="" method="post" onsubmit="return savekrav();"><input type="submit" accesskey="s" style="width:1px; height:1px; position:absolute; top: -20px; left:-20px;" /><input type="hidden" name="id" id="id" value="'.$id.'" /><input class="admin_name" type="text" name="navn" id="navn" value="'.$krav['navn'].'" maxlength="127" size="127" style="width:587px" /><script type="text/javascript"><!--
-//Usage: initRTE(imagesPath, includesPath, cssFile, genXHTML)
-initRTE("/admin/rtef/images/", "/admin/rtef/", "/theme/rtef-text.css", true);
-writeRichText("text", \''.rtefsafe($krav['text']).'\', "", ' . Config::get('text_width') . ', 420, true, false, false);
-//--></script></form>';
-
-    return $html;
-}
-
 function sletmaerke(int $id): array
 {
     db()->query("DELETE FROM `maerke` WHERE `id` = " . $id);
+
     return ['node' => 'maerke' . $id];
 }
 
 function sletkrav(int $id): array
 {
     db()->query("DELETE FROM `krav` WHERE `id` = " . $id);
+
     return ['id' => 'krav' . $id];
+}
+
+function removeAccessory(int $pageId, int $accessoryId): array
+{
+    $accessory = ORM::getOne(Page::class, $accessoryId);
+    ORM::getOne(Page::class, $pageId)->removeAccessory($accessory);
+
+    return ['id' => 'accessory' . $accessory->getId()];
+}
+
+function addAccessory(int $pageId, int $accessoryId): array
+{
+    $accessory = ORM::getOne(Page::class, $accessoryId);
+    $page = ORM::getOne(Page::class, $pageId);
+    $page->addAccessory($accessory);
+
+    return ['pageId' => $page->getId(), 'accessoryId' => $accessory->getId(), 'title' => $accessory->getTitle()];
 }
 
 function sletkat(int $id): array
 {
-    db()->query("DELETE FROM `kat` WHERE `id` = " . $id);
-    if ($kats = db()->fetchArray('SELECT id FROM `kat` WHERE `bind` = '.$id)) {
+    db()->query('DELETE FROM `kat` WHERE `id` = ' . $id);
+    if ($kats = db()->fetchArray('SELECT id FROM `kat` WHERE `bind` = ' . $id)) {
         foreach ($kats as $kat) {
             sletkat($kat['id']);
         }
     }
-    if ($bind = db()->fetchArray('SELECT side FROM `bind` WHERE `kat` = '.$id)) {
-        db()->query('DELETE FROM `bind` WHERE `kat` = '.$id);
+    if ($bind = db()->fetchArray('SELECT side FROM `bind` WHERE `kat` = ' . $id)) {
+        db()->query('DELETE FROM `bind` WHERE `kat` = ' . $id);
         foreach ($bind as $side) {
             if (!db()->fetchOne("SELECT id FROM `bind` WHERE `side` = " . $side['side'])) {
                 sletSide($side['side']);
             }
         }
     }
+
     return ['id' => 'kat' . $id];
 }
 
+/**
+ * @return array|false
+ */
 function movekat(int $id, int $toId)
 {
     db()->query("UPDATE `kat` SET `bind` = " . $toId . " WHERE `id` = " . $id);
 
     if (db()->affected_rows) {
-        return ['id' => 'kat'.$id, 'update' => $toId];
+        return ['id' => 'kat' . $id, 'update' => $toId];
     }
 
     return false;
@@ -3198,10 +2107,11 @@ function movekat(int $id, int $toId)
 function renamekat(int $id, string $name): array
 {
     db()->query("UPDATE `kat` SET `navn` = '" . db()->esc($name) . "' WHERE `id` = " . $id);
+
     return ['id' => 'kat' . $id, 'name' => $name];
 }
 
-function sletbind(string $id)
+function sletbind(string $id): array
 {
     if (!$bind = db()->fetchOne("SELECT side FROM `bind` WHERE `id` = " . $id)) {
         return ['error' => _('The binding does not exist.')];
@@ -3209,16 +2119,17 @@ function sletbind(string $id)
     db()->query("DELETE FROM `bind` WHERE `id` = " . $id);
     $delete[0]['id'] = $id;
     $added = false;
-    if (!db()->fetchOne("SELECT id FROM `bind` WHERE `side` = " . $bind['side'])) {
-        db()->query('INSERT INTO `bind` (`side` ,`kat`) VALUES (\''.$bind['side'].'\', \'-1\')');
+    if (!db()->fetchOne('SELECT id FROM `bind` WHERE `side` = ' . $bind['side'])) {
+        db()->query('INSERT INTO `bind` (`side`, `kat`) VALUES (\'' . $bind['side'] . '\', \'-1\')');
 
         $added = [
             'id' => db()->insert_id,
-            'path' => '/'._('Inactive').'/',
+            'path' => '/' . _('Inactive') . '/',
             'kat' => -1,
             'side' => $bind['side'],
         ];
     }
+
     return ['deleted' => $delete, 'added' => $added];
 }
 
@@ -3236,11 +2147,11 @@ function bind(int $id, int $kat): array
 
     //Delete any binding not under $katRoot
     $delete = [];
-    $binds = db()->fetchArray('SELECT id, kat FROM `bind` WHERE `side` = '.$id);
+    $binds = db()->fetchArray('SELECT id, kat FROM `bind` WHERE `side` = ' . $id);
     foreach ($binds as $bind) {
         $bindRoot = $bind['kat'];
         while ($bindRoot > 0) {
-            $bindRoot = db()->fetchOne("SELECT bind FROM `kat` WHERE id = '" . $bindRoot ."'");
+            $bindRoot = db()->fetchOne("SELECT bind FROM `kat` WHERE id = '" . $bindRoot . "'");
             $bindRoot = $bindRoot['bind'];
         }
         if ($bindRoot != $katRoot) {
@@ -3249,7 +2160,7 @@ function bind(int $id, int $kat): array
         }
     }
 
-    db()->query('INSERT INTO `bind` (`side` ,`kat`) VALUES ('.$id.', '.$kat.')');
+    db()->query('INSERT INTO `bind` (`side`, `kat`) VALUES (' . $id . ', ' . $kat . ')');
 
     $added = [
         'id' => db()->insert_id,
@@ -3259,7 +2170,7 @@ function bind(int $id, int $kat): array
     ];
 
     foreach (kattree($kat) as $kat) {
-        $added['path'] .= '/'.trim($kat['navn']);
+        $added['path'] .= '/' . trim($kat['navn']);
     }
     $added['path'] .= '/';
 
@@ -3327,8 +2238,16 @@ function updateSide(
     return true;
 }
 
-function updateKat(int $id, string $navn, string $bind, string $icon, string $vis, string $email, string $customSortSubs, string $subsorder): bool
-{
+function updateKat(
+    int $id,
+    string $navn,
+    string $bind,
+    string $icon,
+    string $vis,
+    string $email,
+    string $customSortSubs,
+    string $subsorder
+): bool {
     $bindtree = kattree($bind);
     foreach ($bindtree as $bindbranch) {
         if ($id == $bindbranch['id']) {
@@ -3368,11 +2287,62 @@ function updateKatOrder(string $subsorder)
     $orderquery->close();
 }
 
-function updateForside(int $id, string $text, string $subsorder): bool
+function invoiceFromSession(): Invoice
 {
-    updateSpecial($id, $text);
-    updateKatOrder($subsorder);
-    return true;
+    $items = [];
+    foreach ($_SESSION['faktura']['products'] as $key => $title) {
+        $items[] = [
+            'title'    => $title,
+            'value'    => $_SESSION['faktura']['values'][$key] ?? 0,
+            'quantity' => $_SESSION['faktura']['quantities'][$key] ?? 0,
+        ];
+    }
+    $items = json_encode($items);
+
+    $note = '';
+    if ($_SESSION['faktura']['paymethod'] === 'creditcard') {
+        $note .= _('I would like to pay via credit card.');
+    } elseif ($_SESSION['faktura']['paymethod'] === 'bank') {
+        $note .= _('I would like to pay via bank transaction.');
+    } elseif ($_SESSION['faktura']['paymethod'] === 'cash') {
+        $note .= _('I would like to pay via cash.');
+    }
+    $note .= "\n";
+    if ($_SESSION['faktura']['delevery'] === 'pickup') {
+        $note .= _('I will pick up the goods in your shop.');
+    } elseif ($_SESSION['faktura']['delevery'] === 'postal') {
+        $note .= _('Please send the goods by mail.');
+    } elseif ($_SESSION['faktura']['delevery'] === 'express') {
+        $note .= _('Please send the order to by mail express.');
+    }
+    $note = trim($note);
+    $note .= "\n" . trim($_SESSION['faktura']['note']);
+
+    return new Invoice([
+        'item_data'            => $items,
+        'has_shipping_address' => (bool) $_SESSION['faktura']['altpost'],
+        'amount'               => (int) $_SESSION['faktura']['amount'],
+        'name'                 => $_SESSION['faktura']['navn'],
+        'att'                  => $_SESSION['faktura']['att'],
+        'address'              => $_SESSION['faktura']['adresse'],
+        'postbox'              => $_SESSION['faktura']['postbox'],
+        'postcode'             => $_SESSION['faktura']['postnr'],
+        'city'                 => $_SESSION['faktura']['by'],
+        'country'              => $_SESSION['faktura']['land'],
+        'email'                => $_SESSION['faktura']['email'],
+        'phone1'               => $_SESSION['faktura']['tlf1'],
+        'phone2'               => $_SESSION['faktura']['tlf2'],
+        'shipping_phone'       => $_SESSION['faktura']['posttlf'],
+        'shipping_name'        => $_SESSION['faktura']['postname'],
+        'shipping_att'         => $_SESSION['faktura']['postatt'],
+        'shipping_address'     => $_SESSION['faktura']['postaddress'],
+        'shipping_address2'    => $_SESSION['faktura']['postaddress2'],
+        'shipping_postbox'     => $_SESSION['faktura']['postpostbox'],
+        'shipping_postcode'    => $_SESSION['faktura']['postpostalcode'],
+        'shipping_city'        => $_SESSION['faktura']['postcity'],
+        'shipping_country'     => $_SESSION['faktura']['postcountry'],
+        'note'                 => $note,
+    ]);
 }
 
 function updateSpecial(int $id, string $html): bool
@@ -3380,18 +2350,31 @@ function updateSpecial(int $id, string $html): bool
     $html = purifyHTML($html);
     $html = htmlUrlDecode($html);
     ORM::getOne(CustomPage::class, $id)->setHtml($html)->save();
+
     return true;
 }
 
-function opretSide(int $kat, string $navn, string $keywords, int $pris, string $billed, string $beskrivelse, int $for, string $text, string $varenr, int $burde, int $fra, int $krav, int $maerke): array
-{
+function opretSide(
+    int $kat,
+    string $navn,
+    string $keywords,
+    int $pris,
+    string $billed,
+    string $beskrivelse,
+    int $for,
+    string $text,
+    string $varenr,
+    int $burde,
+    int $fra,
+    int $krav,
+    int $maerke
+): array {
     $beskrivelse = purifyHTML($beskrivelse);
     $beskrivelse = htmlUrlDecode($beskrivelse);
     $text = purifyHTML($text);
     $text = htmlUrlDecode($text);
 
     $page = new Page([
-        'timestamp'      => 0,
         'title'          => $navn,
         'keywords'       => $keywords,
         'excerpt'        => $beskrivelse,
@@ -3407,14 +2390,15 @@ function opretSide(int $kat, string $navn, string $keywords, int $pris, string $
     ]);
     $page->save();
 
-    db()->query('INSERT INTO `bind` (`side` ,`kat` ) VALUES (' . $page->getId() . ', ' . $kat . ')');
+    db()->query('INSERT INTO `bind` (`side`, `kat` ) VALUES (' . $page->getId() . ', ' . $kat . ')');
+
     return ['id' => $page->getId()];
 }
 
 //Delete a page and all it's relations from the database
 function sletSide(int $sideId): array
 {
-    $lists = db()->fetchArray('SELECT id FROM `lists` WHERE `page_id` = '.$sideId);
+    $lists = db()->fetchArray('SELECT id FROM `lists` WHERE `page_id` = ' . $sideId);
     if ($lists) {
         $listIds = [];
         foreach ($lists as $list) {
@@ -3432,14 +2416,9 @@ function sletSide(int $sideId): array
     return ['class' => 'side' . $sideId];
 }
 
-/**
- * @param int $id
- *
- * @return int
- */
 function copytonew(int $id): int
 {
-    $faktura = db()->fetchOne("SELECT * FROM `fakturas` WHERE `id` = ".$id);
+    $faktura = db()->fetchOne('SELECT * FROM `fakturas` WHERE `id` = ' . $id);
 
     unset(
         $faktura['id'],
@@ -3453,7 +2432,7 @@ function copytonew(int $id): int
 
     $sql = "INSERT INTO `fakturas` SET";
     foreach ($faktura as $key => $value) {
-        $sql .= " `".addcslashes($key, '`\\')."` = '".db()->esc($value)."',";
+        $sql .= ' `' . addcslashes($key, '`\\') . "` = '" . db()->esc($value) . "',";
     }
     $sql .= " `date` = NOW();";
 
@@ -3462,13 +2441,6 @@ function copytonew(int $id): int
     return db()->insert_id;
 }
 
-/**
- * @param int $id
- * @param string $type
- * @param array $updates
- *
- * @return array
- */
 function save(int $id, string $type, array $updates): array
 {
     if (empty($updates['department'])) {
@@ -3477,23 +2449,23 @@ function save(int $id, string $type, array $updates): array
     }
 
     if (!empty($updates['date'])) {
-        $date = "STR_TO_DATE('".$updates['date']."', '%d/%m/%Y')";
+        $date = "STR_TO_DATE('" . $updates['date'] . "', '%d/%m/%Y')";
         unset($updates['date']);
     }
 
     if (!empty($updates['paydate']) && ($type == 'giro' || $type == 'cash')) {
-        $paydate = "STR_TO_DATE('".$updates['paydate']."', '%d/%m/%Y')";
+        $paydate = "STR_TO_DATE('" . $updates['paydate'] . "', '%d/%m/%Y')";
     } elseif ($type == 'lock' || $type == 'cancel') {
         $paydate = 'NOW()';
     }
     unset($updates['paydate']);
 
-    $faktura = db()->fetchOne("SELECT `status`, `note` FROM `fakturas` WHERE `id` = ".$id);
+    $faktura = db()->fetchOne('SELECT `status`, `note` FROM `fakturas` WHERE `id` = ' . $id);
 
     if (in_array($faktura['status'], ['locked', 'pbsok', 'rejected'])) {
         $updates = [
             'note' => $updates['note'] ? trim($faktura['note'] . "\n" . $updates['note']) : $faktura['note'],
-            'clerk' => isset($updates['clerk']) ? $updates['clerk'] : '',
+            'clerk' => $updates['clerk'] ?? '',
             'department' => $updates['department'],
         ];
         if ($faktura['status'] != 'pbsok') {
@@ -3506,13 +2478,13 @@ function save(int $id, string $type, array $updates): array
         }
     } elseif (in_array($faktura['status'], ['accepted', 'giro', 'cash', 'canceled'])) {
         if ($updates['note']) {
-            $updates = ['note' => $faktura['note']."\n".$updates['note']];
+            $updates = ['note' => $faktura['note'] . "\n" . $updates['note']];
         } else {
             $updates = [];
         }
     } elseif ($faktura['status'] == 'new') {
-        unset($updates['id']);
-        unset($updates['status']);
+        unset($updates['id'], $updates['status']);
+
         if ($type == 'lock') {
             $updates['status'] = 'locked';
         } elseif ($type == 'giro') {
@@ -3535,26 +2507,29 @@ function save(int $id, string $type, array $updates): array
     if (count($updates) || !empty($date) || !empty($paydate)) {
         $sql = "UPDATE `fakturas` SET";
         foreach ($updates as $key => $value) {
-            $sql .= " `".addcslashes($key, '`\\')."` = '".addcslashes($value, "'\\")."',";
+            $sql .= ' `' . addcslashes($key, '`\\') . "` = '" . addcslashes($value, "'\\") . "',";
         }
-        $sql = substr($sql, 0, -1);
+        $sql = mb_substr($sql, 0, -1);
 
         if (!empty($date)) {
-            $sql .= ", `date` = ".$date;
+            $sql .= ', `date` = ' . $date;
         }
         if (!empty($paydate)) {
-            $sql .= ", `paydate` = ".$paydate;
+            $sql .= ', `paydate` = ' . $paydate;
         }
 
-        $sql .= ' WHERE `id` = '.$id;
+        $sql .= ' WHERE `id` = ' . $id;
 
         db()->query($sql);
     }
 
-    $faktura = db()->fetchOne("SELECT * FROM `fakturas` WHERE `id` = ".$id);
+    $faktura = db()->fetchOne('SELECT * FROM `fakturas` WHERE `id` = ' . $id);
 
     if (empty($faktura['clerk'])) {
-        db()->query("UPDATE `fakturas` SET `clerk` = '".db()->esc($_SESSION['_user']['fullname'])."' WHERE `id` = ".$faktura['id']);
+        db()->query(
+            "UPDATE `fakturas` SET `clerk` = '"
+                . db()->esc($_SESSION['_user']['fullname']) . "' WHERE `id` = " . $faktura['id']
+        );
         $faktura['clerk'] = $_SESSION['_user']['fullname'];
     }
 
@@ -3572,50 +2547,21 @@ function save(int $id, string $type, array $updates): array
             return ['error' => _('The invoice must be of at at least 1 krone!')];
         }
 
-        $msg = _(
-            '<p>Thank you for your order.</p>
-
-<p>your online invoice no %d is approved and ready for shipment once the payment is complete.</p>
-
-<p>Payment with credit card, is performed by clicking on the link below.</p>
-
-<p>Link to payment:<br />
-<a href="%s/betaling/?id=%d&amp;checkid=%s">%s/betaling/?id=%d&amp;checkid=%s</a></p>
-<p>Do you have questions about your order, do not hesitate to contact us.</p>
-
-<p>Sincerely,</p>
-
-<p>%s<br />
-<br />%s
-<br />%s
-%s %s<br />
-Tel. %s</p>'
-        );
-        $msg = sprintf(
-            $msg,
-            $faktura['id'],
-            Config::get('base_url'),
-            $faktura['id'],
-            getCheckid($faktura['id']),
-            Config::get('base_url'),
-            $faktura['id'],
-            getCheckid($faktura['id']),
-            $faktura['clerk'],
-            Config::get('site_name'),
-            Config::get('address'),
-            Config::get('postcode'),
-            Config::get('city'),
-            Config::get('phone')
-        );
-
-        $emailBody = '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml"><head><meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-<title>' . sprintf(_('Online payment to %s'), Config::get('site_name')) . '</title>
-</head><body>' .$msg .'</body></html>';
+        $data = [
+            'siteName' => Config::get('site_name'),
+            'invoiceId' => $faktura['id'],
+            'clerk' => $faktura['clerk'],
+            'address' => Config::get('address'),
+            'postcode' => Config::get('postcode'),
+            'city' => Config::get('city'),
+            'phone' => Config::get('phone'),
+            'link' => Config::get('base_url')
+                . '/betaling/?id=' . $faktura['id'] . '&checkid=' . getCheckid($faktura['id']),
+        ];
 
         $success = sendEmails(
             _('Online payment for ') . Config::get('site_name'),
-            $emailBody,
+            Render::render('email-invoice', $data),
             $faktura['department'],
             '',
             $faktura['email'],
@@ -3623,10 +2569,13 @@ Tel. %s</p>'
             false
         );
         if (!$success) {
-            return ['error' => _('Unable to sendt e-mail!')."\n"];
+            return ['error' => _('Unable to sendt e-mail!') . "\n"];
         }
-        db()->query("UPDATE `fakturas` SET `status` = 'locked' WHERE `status` = 'new' && `id` = ".$faktura['id']);
-        db()->query("UPDATE `fakturas` SET `sendt` = 1, `department` = '".db()->esc($faktura['department'])."' WHERE `id` = ".$faktura['id']);
+        db()->query("UPDATE `fakturas` SET `status` = 'locked' WHERE `status` = 'new' && `id` = " . $faktura['id']);
+        db()->query(
+            "UPDATE `fakturas` SET `sendt` = 1, `department` = '"
+                . db()->esc($faktura['department']) . "' WHERE `id` = " . $faktura['id']
+        );
 
         //Forece reload
         $faktura['status'] = 'sendt';
@@ -3635,16 +2584,11 @@ Tel. %s</p>'
     return ['type' => $type, 'status' => $faktura['status']];
 }
 
-/**
- * @param int $id
- *
- * @return array
- */
 function sendReminder(int $id): array
 {
     $error = '';
 
-    $faktura = db()->fetchOne("SELECT * FROM `fakturas` WHERE `id` = ".$id);
+    $faktura = db()->fetchOne('SELECT * FROM `fakturas` WHERE `id` = ' . $id);
 
     if (!$faktura['status']) {
         return ['error' => _('You can not send a reminder until the invoice is sent!')];
@@ -3659,71 +2603,22 @@ function sendReminder(int $id): array
         $faktura['department'] = $email;
     }
 
-    $msg = _('<hr />
-
-<p style="text-align:center;"> <img src="/images/logoer/jagt-og-fiskermagasinet.png" alt="%s" /> </p>
-
-<hr />
-
-<p>This is an automatically generated email reminder:</p>
-
-<p>Your goods are ready for delivery / pick-up - but we have not yet <br />
-registred, that the payment can be accepted - therefore we are <br />
-sending a you a new link to the credit card invoice system <br />
-<br />
-<a href="%s/betaling/?id=%d&amp;checkid=%s">%s/betaling/?id=%d&amp;checkid=%s</a><br />
-</p>
-
-<p>When entering your credit card information, - errors may occure <br />
- preventing us from noticing the payment - thus causing unnecessary <br />
- delays - therefore we include the following notice. </p>
-
- <p>It is very helpful and results in a shorter expedite time - if you could <br />
- please send us an email when the payment is made. </p>n
- <p>We would also welcome an email or phone call - if you: <br />
- * Experiencing problems with our payment system <br />
- * Wish to cancel the order <br />
- * Wish to change the order <br />
- * Wish to pay by other means - for example, by transfering the amount via home banking. </p>
-
- <p>Kind regards <br />
-<br />
-%s<br />
-%s<br />
-%s %s<br />
-Tel: %s<br />
-Fax: %s<br />
-<a href="mailto:%s">%s</a></p>');
-
-    $msg = sprintf(
-        $msg,
-        Config::get('site_name'),
-        Config::get('base_url'),
-        $faktura['id'],
-        getCheckid($faktura['id']),
-        Config::get('base_url'),
-        $faktura['id'],
-        getCheckid($faktura['id']),
-        Config::get('site_name'),
-        Config::get('address'),
-        Config::get('postcode'),
-        Config::get('city'),
-        Config::get('phone'),
-        Config::get('fax'),
-        $faktura['department'],
-        $faktura['department']
-    );
-
-    $emailBody = '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml">
-<head><meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-<title>'._('Electronic Invoice concerning order #').$faktura['id'].'</title>
-</head><body>' . $msg .'</body></html>';
-
+    $data = [
+        'siteName' => Config::get('site_name'),
+        'addresse' => Config::get('address'),
+        'postcode' => Config::get('postcode'),
+        'city' => Config::get('city'),
+        'phone' => Config::get('phone'),
+        'fax' => Config::get('fax'),
+        'department' => Config::get('department'),
+        'invoiceId' => $faktura['id'],
+        'link' => Config::get('base_url') . '/betaling/?id=' . $faktura['id']
+            . '&checkid=' . getCheckid($faktura['id']),
+    ];
 
     $success = sendEmails(
         'Elektronisk faktura vedr. ordre',
-        $emailBody,
+        Render::render('email-invoice-reminder', $data),
         $faktura['department'],
         '',
         $faktura['email'],
@@ -3734,13 +2629,13 @@ Fax: %s<br />
     if (!$success) {
         return ['error' => 'Mailen kunde ikke sendes!' . "\n"];
     }
-    $error .= "\n\n"._('A Reminder was sent to the customer.');
+    $error .= "\n\n" . _('A Reminder was sent to the customer.');
 
     return ['error' => trim($error)];
 }
 
 /**
- * @param int $id
+ * @return array|true
  */
 function pbsconfirm(int $id)
 {
@@ -3759,6 +2654,7 @@ function pbsconfirm(int $id)
             SET `status` = 'accepted', `paydate` = NOW()
             WHERE `id` = " . $id
         );
+
         return true;
     }
 
@@ -3766,7 +2662,7 @@ function pbsconfirm(int $id)
 }
 
 /**
- * @param int $id
+ * @return array|true
  */
 function annul(int $id)
 {
@@ -3787,26 +2683,13 @@ function annul(int $id)
             WHERE `id` = 'pbsok'
               AND `id` = " . $id
         );
+
         return true;
     }
 
     return ['error' => _('An error occurred')];
 }
 
-/**
- * @param string $path
- * @param int $cropX
- * @param int $cropY
- * @param int $cropW
- * @param int $cropH
- * @param int $maxW
- * @param int $maxH
- * @param int $flip
- * @param int $rotate
- * @param array $output
- *
- * @return array
- */
 function generateImage(
     string $path,
     int $cropX,
@@ -3830,15 +2713,19 @@ function generateImage(
         $outputPath .= !empty($output['type']) && $output['type'] === 'png' ? '.png' : '.jpg';
 
         if (!empty($output['type']) && empty($output['force']) && file_exists($outputPath)) {
-            return ['yesno' => _('A file with the same name already exists.'."\n".'Would you like to replace the existing file?'), 'filename' => $output['filename']];
+            return [
+                'yesno' => _(
+                    'A file with the same name already exists.' . "\n"
+                    . 'Would you like to replace the existing file?'
+                ),
+                'filename' => $output['filename'],
+            ];
         }
     }
 
     $image = new AJenbo\Image($path);
     $orginalWidth = $image->getWidth();
     $orginalHeight = $image->getHeight();
-
-    //Config::get('bgcolorR'), Config::get('bgcolorG'), Config::get('bgcolorB')
 
     // Crop image
     $cropW = $cropW ?: $image->getWidth();
@@ -3924,4 +2811,25 @@ function generateImage(
     }
 
     return ['id' => $file ? $file->getId() : null, 'path' => $localFile, 'width' => $width, 'height' => $height];
+}
+
+function getBasicAdminTemplateData(): array
+{
+    return [
+        'title'           => 'Administrator menu',
+        'javascript'      => Sajax::showJavascript(true),
+        'hide'            => [
+            'activity'    => $_COOKIE['hideActivity'] ?? false,
+            'binding'     => $_COOKIE['hidebinding'] ?? false,
+            'categories'  => $_COOKIE['hidekats'] ?? false,
+            'description' => $_COOKIE['hidebeskrivelsebox'] ?? false,
+            'indhold'     => $_COOKIE['hideIndhold'] ?? false,
+            'listbox'     => $_COOKIE['hidelistbox'] ?? false,
+            'misc'        => $_COOKIE['hidemiscbox'] ?? false,
+            'prices'      => $_COOKIE['hidepriser'] ?? false,
+            'suplemanger' => $_COOKIE['hideSuplemanger'] ?? false,
+            'tilbehor'    => $_COOKIE['hidetilbehor'] ?? false,
+            'tools'       => $_COOKIE['hideTools'] ?? false,
+        ],
+    ];
 }

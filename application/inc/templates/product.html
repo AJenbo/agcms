@@ -16,13 +16,13 @@
 </div>
 
 {% if accessories %}
-    <p align="center" style="clear:both">Accessories</p>
-    {% include 'productTiles.html' with {'products': accessories} %}
+<p align="center" style="clear:both">Accessories</p>
+{% include 'productTiles.html' with {'products': accessories} %}
 {% endif %}
 
 {% if brand %}
-    <p align="center" style="clear:both">View other product from the same brand</p><a href="{{brand.link}}">{{brand.name}}
-    {% if brand.icon %}<br /><img src="{{brand.icon}}" alt="{{brand.name}}" title="" />{% endif %}
-    </a>
+<p align="center" style="clear:both">View other product from the same brand</p><a href="{{brand.link}}">{{brand.name}}
+{% if brand.icon %}<br /><img src="{{brand.icon}}" alt="{{brand.name}}" title="" />{% endif %}
+</a>
 {% endif %}
 {% endblock %}
