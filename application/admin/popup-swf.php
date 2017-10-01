@@ -41,5 +41,5 @@ echo $file['width'];
 ?>" height="<?php
 echo $file['height'];
 ?>" bgcolor="#" name="flash" quality="high" align="middle" allowscriptaccess="sameDomain" allowfullscreen="true" type="application/x-shockwave-flash" pluginspage="http://www.macromedia.com/go/getflashplayer" />
-</object><script src="/ieupdate.js" type="text/javascript"></script></body>
+</object></body>
 </html>
