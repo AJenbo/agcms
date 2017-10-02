@@ -360,11 +360,11 @@ if (window.location.href.match(/return=rtef/g)) {
 
 function viewlFile(type, id, width, height) {
     if (type == 'unknown') {
-            var file = files[id].path;
+        var file = files[id].path;
     } else {
-            var file = 'popup-'+type+'.php?url=' + encodeURIComponent(files[id].path);
+        var file = 'popup-'+type+'.php?url=' + encodeURIComponent(files[id].path);
     }
-    popUpWin(file,'file_view','resizable=0,status=0,toolbar=0,menubar=0,location=0,scrollbars=0', width, height);
+    popUpWin(file,'file_view','toolbar=0', width, height);
 }
 
 function edit_alt(id) {
@@ -489,7 +489,7 @@ function popUpWin(url, win, options, width, height) {
 }
 
 function open_file_move(id) {
-    popUpWin('file-move.php?id=' + id + '&path=' + encodeURIComponent(files[id].path), 'file_move', 'resizable=1,status=0,toolbar=0,menubar=0,location=0,scrollbars=0', 322, 512)
+    popUpWin('file-move.php?id=' + id + '&path=' + encodeURIComponent(files[id].path), 'file_move', 'toolbar=0', 322, 512)
 }
 
 function deletefolder() {
@@ -572,7 +572,7 @@ function dir_contract(obj) {
 }
 
 function open_image_thumbnail(id) {
-    popUpWin('image-edit.php?mode=thb&path='+encodeURIComponent(files[id].path)+'&id='+id, 'image_thumbnail', 'toolbar=0,scrollbars=1,location=0,resizable=1,menubar=0,status=0,statusbar=0',740,600);
+    popUpWin('image-edit.php?mode=thb&path=image_thumbnail', 'toolbar=0',740,600);
 }
 
 
@@ -584,11 +584,11 @@ function thumbimage(path) {
 }
 
 function open_image_edit(id) {
-    popUpWin('image-edit.php?path='+encodeURIComponent(files[id].path)+'&id='+id,'image_edit','resizable=1,status=1,toolbar=0,menubar=0,location=0,scrollbars=1',740,600)
+    popUpWin('image-edit.php?path='+encodeURIComponent(files[id].path)+'&id='+id,'image_edit','toolbar=0',740,600)
 }
 
 function open_file_upload() {
-    popUpWin('file-upload.php','file_upload','status=0,toolbar=0,menubar=0,location=0', 640, 150)
+    popUpWin('file-upload.php','file_upload','toolbar=0', 640, 150)
 }
 
 function insertThumbnail(id) {

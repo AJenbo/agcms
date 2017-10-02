@@ -28,15 +28,7 @@ function explorer(returntype, returnid) {
     window.open(
         "explorer.php?return=" + returntype + "&returnid=" + returnid,
         "explorer",
-        "status=1,resizable=1,toolbar=0,menubar=0,location=0,scrollbars=0"
-    );
-}
-
-function explorer_unused() {
-    window.open(
-        "explorer-unused.php",
-        "explorer",
-        "status=1,resizable=1,toolbar=0,menubar=0,location=0,scrollbars=0"
+        "toolbar=0"
     );
 }
 

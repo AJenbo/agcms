@@ -233,7 +233,7 @@ function save(id, type)
         update['products']= products;
         update['values']= values;
         update['fragt']= $('fragt').value.replace(/[^-0-9,]/g, '').replace(/,/, '.');
-        update['amount']= amount.replace(/[^-0-9,]/g, '').replace(/,/, '.');
+        update['amount']= amount ? amount.replace(/[^-0-9,]/g, '').replace(/,/, '.') : 0;
         update['momssats']= $('momssats').value;
         update['premoms']= $('premoms').checked ? 1 : 0;
         update['date']= $('date').value;
