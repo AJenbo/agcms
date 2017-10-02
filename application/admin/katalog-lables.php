@@ -1,4 +1,5 @@
 <?php
+
 require_once __DIR__ . '/logon.php';
 
 ?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
@@ -6,14 +7,10 @@ require_once __DIR__ . '/logon.php';
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <style type="text/css" media="print">
-form, .web {
-    display:none;
-}
+form, .web {display:none}
 </style>
 <style type="text/css">
-@page {
- margin:0;
-}
+@page {margin:0}
 * {
     font-family:Geneva, Arial, Helvetica, sans-serif;
     font-size:13pt;
