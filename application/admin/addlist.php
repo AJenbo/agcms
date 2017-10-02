@@ -42,4 +42,4 @@ $data = [
     'id' => (int) ($_GET['id'] ?? 0),
 ];
 
-echo Render::render('admin-addlist', $data);
+Render::output('admin-addlist', $data);

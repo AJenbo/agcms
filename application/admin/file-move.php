@@ -16,4 +16,4 @@ $data = [
     'path' => $_GET['path'] ?? '',
     'dirs' => getRootDirs(),
 ];
-echo Render::render('admin-file-move', $data);
+Render::output('admin-file-move', $data);

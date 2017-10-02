@@ -53,4 +53,4 @@ $data = [
     'qtype'      => $_COOKIE['qtype'] ?? '',
     'dirs'       => getRootDirs(),
 ];
-echo Render::render('admin-explorer', $data);
+Render::output('admin-explorer', $data);

@@ -1585,13 +1585,13 @@ function updateContact(
     string $city,
     string $tlf1,
     string $tlf2,
-    int $kartotek,
+    bool $kartotek,
     string $interests
 ): bool {
     if (!$id) {
         $contact = new Contact([
             'timestamp'  => time(),
-            'title'      => $navn,
+            'name'       => $navn,
             'email'      => $email,
             'address'    => $adresse,
             'country'    => $land,
@@ -1599,7 +1599,7 @@ function updateContact(
             'city'       => $city,
             'phone1'     => $tlf1,
             'phone2'     => $tlf2,
-            'newsletter' => (bool) $kartotek,
+            'newsletter' => $kartotek,
             'interests'  => $interests,
             'ip'         => $_SERVER['REMOTE_ADDR'],
         ]);
@@ -1609,7 +1609,7 @@ function updateContact(
     }
 
     $contact = ORM::getOne(Contact::class, $id);
-    $contact->setTitle($navn)
+    $contact->setName($navn)
         ->setEmail($email)
         ->setAddress($adresse)
         ->setCountry($land)
@@ -1787,9 +1787,9 @@ function check_file_paths(): string
 
 function get_size_of_files(): int
 {
-    $files = db()->fetchOne("SELECT count( * ) AS `count`, sum( `size` ) /1024 /1024 AS `filesize` FROM `files`");
+    $files = db()->fetchOne("SELECT sum(`size`) / 1024 / 1024 AS `filesize` FROM `files`");
 
-    return $files['filesize'];
+    return $files['filesize'] ?? 0;
 }
 
 function get_mail_size(): int

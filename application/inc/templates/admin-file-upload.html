@@ -1,0 +1,48 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+        <title>File upload</title>
+        <script type="text/javascript" src="/javascript/sajax.js"></script>
+        <script type="text/javascript" src="/admin/javascript/file-upload.js"></script>
+        <script type="text/javascript">
+        <script type="text/javascript">
+        {{javascript|raw}}
+        </script>
+    </head>
+    <body onload="window.focus();" bgcolor="#ffffff">
+        <form method="post" enctype="multipart/form-data" action="/admin/upload/" onsubmit="return send();">
+            <select name="type" id="type" onchange="filetypeshow();" onkeyup="filetypeshow();">
+                <option value="">File type</option>
+                <option value="image">Image</option>
+                <option value="lineimage">Illustration</option>
+                <option value="video">Video</option>
+                <option value="other">Other files</option>
+            </select>
+            <input id="file" size="1" onchange="validate();" disabled="disabled" type="file" name="Filedata" accept="image/*" />
+            <input type="submit" value="Send fil" id="submit" disabled="disabled" />
+            <progress id="progress" style="display:none;width:100%;">File is being uploaded</progress>
+            <div id="status">Select file type</div><br />
+            <div id="description" style="display:none;">
+                Short description<br /><input type="text" name="alt" id="alt" />
+            </div>
+            <table id="videooptions" style="display:none;">
+                <tr>
+                    <td>
+                        Size<br />
+                        <input type="text" name="x" id="x" value="320" onkeyup="keepAspect('x', 'y')" onblur="keepAspect('x', 'y')" size="1" />
+                        x
+                        <input type="text" name="y" id="y" value="240" onkeyup="keepAspect('y', 'x')" onblur="keepAspect('y', 'x')" size="1" />
+                    </td>
+                    <td>
+                        Aspect<br />
+                        <select name="aspect" id="aspect" onchange="keepAspect('x', 'y')">
+                            <option value="4-3">4:3</option>
+                            <option value="16-9">16:9</option>
+                        </select>
+                    </td>
+                </tr>
+            </table>
+        </form>
+    </body>
+</html>

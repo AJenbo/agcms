@@ -405,7 +405,20 @@ function updateContact(id) {
             interests += interestObjs[i].value;
         }
     }
-    x_updateContact(id, $('navn').value, $('email').value, $('adresse').value, $('land').value, $('post').value, $('by').value, $('tlf1').value, $('tlf2').value, $('kartotek').value, interests, updateContact_r);
+    x_updateContact(
+        id,
+        $('navn').value,
+        $('email').value,
+        $('adresse').value,
+        $('land').value,
+        $('post').value,
+        $('by').value,
+        $('tlf1').value,
+        $('tlf2').value,
+        $('kartotek').checked,
+        interests,
+        updateContact_r
+    );
 }
 
 function updateContact_r(data) {

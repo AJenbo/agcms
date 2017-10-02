@@ -30,7 +30,7 @@ class Contact extends AbstractEntity
     {
         $this->setId($data['id'] ?? null)
             ->setTimeStamp($data['timestamp'])
-            ->setTitle($data['title'])
+            ->setName($data['name'])
             ->setEmail($data['email'])
             ->setAddress($data['address'])
             ->setCountry($data['country'])
@@ -204,7 +204,7 @@ class Contact extends AbstractEntity
         return [
             'id'         => $data['id'],
             'timestamp'  => strtotime($data['dato']) + db()->getTimeOffset(),
-            'title'      => $data['navn'],
+            'name'       => $data['navn'],
             'email'      => $data['email'],
             'address'    => $data['adresse'],
             'country'    => $data['land'],
@@ -231,7 +231,7 @@ class Contact extends AbstractEntity
 
         return [
             'dato'      => "NOW()",
-            'navn'      => db()->eandq($this->title),
+            'navn'      => db()->eandq($this->name),
             'email'     => db()->eandq($this->email),
             'adresse'   => db()->eandq($this->address),
             'land'      => db()->eandq($this->country),
@@ -239,7 +239,7 @@ class Contact extends AbstractEntity
             'by'        => db()->eandq($this->city),
             'tlf1'      => db()->eandq($this->phone1),
             'tlf2'      => db()->eandq($this->phone2),
-            'kartotek'  => (int) $this->newsletter,
+            'kartotek'  => db()->eandq((int) $this->newsletter), // enum :(
             'interests' => db()->eandq($this->interests),
             'ip'        => db()->eandq($this->ip),
         ];
