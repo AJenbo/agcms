@@ -1787,9 +1787,9 @@ function check_file_paths(): string
 
 function get_size_of_files(): int
 {
-    $files = db()->fetchOne("SELECT count( * ) AS `count`, sum( `size` ) /1024 /1024 AS `filesize` FROM `files`");
+    $files = db()->fetchOne("SELECT sum(`size`) / 1024 / 1024 AS `filesize` FROM `files`");
 
-    return $files['filesize'];
+    return $files['filesize'] ?? 0;
 }
 
 function get_mail_size(): int
