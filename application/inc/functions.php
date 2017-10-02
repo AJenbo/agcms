@@ -6,6 +6,7 @@ use AGCMS\Entity\Category;
 use AGCMS\ORM;
 use AGCMS\Render;
 use AJenbo\Imap;
+use PHPMailer\PHPMailer\PHPMailer;
 
 function bootStrap(): void
 {
@@ -481,7 +482,7 @@ function sendEmails(
     if ($success) {
         //Upload email to the sent folder via imap
         if ($emailConfig['imapHost']) {
-            $imap = new AJenbo\Imap(
+            $imap = new Imap(
                 $emailConfig['address'],
                 $emailConfig['password'],
                 $emailConfig['imapHost'],
