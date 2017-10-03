@@ -1103,8 +1103,26 @@ class Render
 
     public static function render(string $template = 'index', array $data = []): string
     {
-        $loader = new Twig_Loader_Filesystem(__DIR__ . '/templates/');
+        $templatePath = _ROOT_ . '/inc/templates/';
+        $loader = new Twig_Loader_Filesystem('.', $templatePath);
+        if (Config::get('locale', 'en_US') !== 'en_US') {
+            $loader->prependPath(Config::get('locale', 'en_US') . '/');
+        }
+        if (Config::get('theme')) {
+            $loader->prependPath('themes/' . Config::get('theme') . '/');
+            if (Config::get('locale', 'en_US') !== 'en_US') {
+                $loader->prependPath('themes/' . Config::get('theme') . '/' . Config::get('locale', 'en_US') . '/');
+            }
+        }
+
+
+
         $twig = new Twig_Environment($loader);
+        if (Config::get('enviroment', 'develop') !== 'develop') {
+            $twig->setCache(_ROOT_ . '/inc/cache/twig');
+        } else {
+            $twig->enableDebug();
+        }
 
         return $twig->render($template . '.html', $data);
     }

@@ -6,6 +6,9 @@
  * @license  MIT http://opensource.org/licenses/MIT
  */
 $GLOBALS['_config'] = [
+    'enviroment' => 'develop',
+    'timezone' => 'Europe/Copenhagen',
+    'locale' => 'da_DK',
     'base_url' => 'http://localhost',
     'site_name' => 'My store',
     'address' => '',
@@ -48,6 +51,7 @@ $GLOBALS['_config'] = [
     'altDBs' => [],
 
     //Admin options
+    'theme' => 'arms-gallery.dk',
 
     // Site color settings
     'bgcolor' => 'FFFFFF',

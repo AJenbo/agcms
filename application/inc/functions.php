@@ -13,11 +13,13 @@ function bootStrap(): void
     require_once __DIR__ . '/../vendor/autoload.php';
 
     defined('_ROOT_') || define('_ROOT_', realpath(__DIR__ . '/..'));
-    ini_set('display_errors', 1);
-    error_reporting(-1);
-    date_default_timezone_set('Europe/Copenhagen');
-    setlocale(LC_ALL, 'da_DK');
-    bindtextdomain('agcms', __DIR__ . '/../theme/locale');
+    if (Config::get('enviroment', 'develop') === 'develop') {
+        ini_set('display_errors', 1);
+        error_reporting(-1);
+    }
+    date_default_timezone_set(Config::get('timezone', 'Europe/Copenhagen'));
+    setlocale(LC_ALL, Config::get('locale', 'en_US'));
+    bindtextdomain('agcms', _ROOT_ . '/theme/locale');
     bind_textdomain_codeset('agcms', 'UTF-8');
     textdomain('agcms');
     mb_language('uni');
