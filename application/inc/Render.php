@@ -29,6 +29,7 @@ class Render
     private static $requirement;
     private static $loadedTables = [];
     private static $menu = [];
+    private static $openCategoryIds = [];
     private static $pageList = [];
     private static $price = [];
     private static $searchMenu = [];
@@ -302,22 +303,18 @@ class Render
         self::$email = first(Config::get('emails'))['address'];
         self::$title = self::$title ?: Config::get('site_name');
 
-        $categoryIds = [];
         if (self::$activeCategory) {
             self::$crumbs = [];
             foreach (self::$activeCategory->getBranch() as $category) {
-                $categoryIds[] = $category->getId();
+                self::$openCategoryIds[] = $category->getId();
                 self::$keywords[] = trim($category->getTitle());
-                self::$crumbs[] = [
-                    'name' => $category->getTitle(),
-                    'link' => $category->getCanonicalLink(),
-                    'icon' => $category->getIcon() ? $category->getIcon()->getPath() : '',
-                ];
+                self::$crumbs[] = $category;
             }
         }
 
         //Get list of top categorys on the site.
-        $categories = ORM::getByQuery(
+        self::addLoadedTable('bind');
+        self::$menu = ORM::getByQuery(
             Category::class,
             "
             SELECT *
@@ -330,8 +327,6 @@ class Render
             ORDER BY `order`, navn
             "
         );
-        self::addLoadedTable('bind');
-        self::$menu = self::menu($categories, $categoryIds);
 
         self::loadBrandData(self::$activeBrand);
         self::loadCategoryData(self::$activeCategory);
@@ -647,63 +642,6 @@ class Render
     }
 
     /**
-     * Get list of sub categories in format fitting the generatedcontent structure.
-     *
-     * @param array $categories          Categories
-     * @param array $categoryIds         Ids in active category trunk
-     * @param array $hasWeightedChildren Are the categories the list custome sorted
-     *
-     * @return array
-     */
-    public static function menu(array $categories, array $categoryIds, bool $hasWeightedChildren = true): array
-    {
-        $menu = [];
-        if (!$hasWeightedChildren) {
-            $objectArray = [];
-            foreach ($categories as $categorie) {
-                $objectArray[] = [
-                    'id'     => $categorie->getId(),
-                    'navn'   => $categorie->getTitle(),
-                    'object' => $categorie,
-                ];
-            }
-            $objectArray = arrayNatsort($objectArray, 'id', 'navn', 'asc');
-            $categories = [];
-            foreach ($objectArray as $row) {
-                $categories[] = $row['object'];
-            }
-        }
-
-        foreach ($categories as $category) {
-            if (!$category->isVisable()) {
-                continue;
-            }
-
-            //Er katagorien aaben
-            $subs = [];
-            if (in_array($category->getId(), $categoryIds, true)) {
-                $subs = self::menu(
-                    $category->getChildren(true),
-                    $categoryIds,
-                    $category->hasWeightedChildren()
-                );
-            }
-
-            //tegn under punkter
-            $menu[] = [
-                'id'   => $category->getId(),
-                'name' => $category->getTitle(),
-                'link' => $category->getCanonicalLink(),
-                'icon' => $category->getIcon() ? $category->getIcon()->getPath() : '',
-                'sub'  => $subs ? true : $category->hasChildren(true),
-                'subs' => $subs,
-            ];
-        }
-
-        return $menu;
-    }
-
-    /**
      * Search for pages and generate a list or redirect if only one was found.
      *
      * @param string $query Tekst to search for
@@ -799,7 +737,7 @@ class Render
         $simpleSearchString = $searchString ? '%' . preg_replace('/\s+/u', '%', $searchString) . '%' : '';
         $simpleAntiWords = $antiWords ? '%' . preg_replace('/\s+/u', '%', $antiWords) . '%' : '';
 
-        $brands = ORM::getByQuery(
+        $searchMenu = ORM::getByQuery(
             Brand::class,
             "
             SELECT * FROM `maerke`
@@ -811,13 +749,6 @@ class Render
             AND navn NOT LIKE '" . db()->esc($simpleAntiWords) . "'
             "
         );
-        foreach ($brands as $brand) {
-            $searchMenu[] = [
-                'id'   => $brand->getId(),
-                'name' => $brand->getTitle(),
-                'link' => $brand->getCanonicalLink(),
-            ];
-        }
 
         $categories = ORM::getByQuery(
             Category::class,
@@ -836,13 +767,7 @@ class Render
         );
         foreach ($categories as $category) {
             if ($category->isVisable() && !$category->isInactive()) {
-                $searchMenu[] = [
-                    'id' => $category->getId(),
-                    'name' => $category->getTitle(),
-                    'link' => $category->getCanonicalLink(),
-                    'icon' => $category->getIcon() ? $category->getIcon()->getPath() : '',
-                    'sub' => (bool) $category->getChildren(true),
-                ];
+                $searchMenu[] = $category;
             }
         }
 
@@ -1062,24 +987,25 @@ class Render
         self::output(
             self::$pageType,
             [
-                'brand'          => self::$brand,
-                'hasProductList' => self::$hasProductList,
-                'price'          => self::$price,
-                'pageList'       => self::$pageList,
-                'title'          => self::$title,
-                'canonical'      => self::$canonical,
-                'keywords'       => self::$keywords,
-                'crumbs'         => self::$crumbs,
-                'content'        => self::$bodyHtml,
-                'categoryId'     => self::$activeCategory ? self::$activeCategory->getId() : 0,
-                'pageId'         => self::$activePage ? self::$activePage->getId() : 0,
-                'headline'       => self::$headline,
-                'timeStamp'      => self::$timeStamp,
-                'serial'         => self::$serial,
-                'menu'           => self::$menu,
-                'searchMenu'     => self::$searchMenu,
-                'hasItemsInCart' => !empty($_SESSION['faktura']['quantities']),
-                'requirement'    => self::$requirement,
+                'brand'           => self::$brand,
+                'hasProductList'  => self::$hasProductList,
+                'price'           => self::$price,
+                'pageList'        => self::$pageList,
+                'title'           => self::$title,
+                'canonical'       => self::$canonical,
+                'keywords'        => self::$keywords,
+                'crumbs'          => self::$crumbs,
+                'content'         => self::$bodyHtml,
+                'categoryId'      => self::$activeCategory ? self::$activeCategory->getId() : 0,
+                'pageId'          => self::$activePage ? self::$activePage->getId() : 0,
+                'headline'        => self::$headline,
+                'timeStamp'       => self::$timeStamp,
+                'serial'          => self::$serial,
+                'menu'            => self::$menu,
+                'openCategoryIds' => self::$openCategoryIds,
+                'searchMenu'      => self::$searchMenu,
+                'hasItemsInCart'  => !empty($_SESSION['faktura']['quantities']),
+                'requirement'     => self::$requirement,
             ]
         );
     }

@@ -312,14 +312,17 @@ class Category extends AbstractRenderable
      */
     public function getChildren(bool $onlyVisable = false): array
     {
+        $orderBy = 'navn';
+        if ($this->hasWeightedChildren()) {
+            $orderBy = '`order`, navn';
+        }
+
         $children = ORM::getByQuery(
             self::class,
             "
-            SELECT *
-            FROM kat
+            SELECT * FROM kat
             WHERE bind = " . $this->getId() . "
-            ORDER BY `order`, navn
-            "
+            ORDER BY " . $orderBy
         );
 
         if (!$onlyVisable) {
@@ -333,6 +336,11 @@ class Category extends AbstractRenderable
         }
 
         return array_values($children);
+    }
+
+    public function getVisibleChildren(): array
+    {
+        return $this->getChildren(true);
     }
 
     /**

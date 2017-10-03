@@ -16,7 +16,6 @@
             <ul id="crumbs">
                 <li>
                     <a href="/">Home</a>
-
                     {% for crumb in crumbs %}
                     <ul>
                         <li>
@@ -25,12 +24,10 @@
                                 {{crumb.name}} {% if crumb.icon %}<img src="{{crumb.icon}}" alt="" />{% endif %}
                             </a>
                     {% endfor %}
-
                     {% for crumb in crumbs %}
                         </li>
                     </ul>
                     {% endfor %}
-
                     {% if hasItemsInCart %}
                     <div class="bar" id="cart">
                         <ul>
@@ -40,21 +37,16 @@
                         </ul>
                     </div>
                     {% endif %}
-
                 </li>
             </ul>
         </div>
         <div id="text">
             <a name="top"></a>
-
             {% block content %}{{content|raw}}{% endblock %}
-
         </div>
         <div id="menu">
-
-        {% include 'menu.html' with {'menu': menu, 'categoryId': categoryId} %}
-        {% include 'menu.html' with {'menu': searchMenu, 'categoryId': categoryId} %}
-
+        {% include 'menu.html' %}
+        {% include 'menu.html' with {'menu': searchMenu} %}
         </div>
     </body>
 </html>
