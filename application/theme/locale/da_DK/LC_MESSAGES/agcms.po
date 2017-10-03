@@ -3,30 +3,31 @@
 # This file is distributed under the same license as the PACKAGE package.
 # FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
 #
-#, fuzzy
 msgid ""
 msgstr ""
-"Project-Id-Version: PACKAGE VERSION\n"
+"Project-Id-Version: agcms\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2017-10-03 22:40+0200\n"
-"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
-"Language-Team: LANGUAGE <LL@li.org>\n"
-"Language: \n"
+"PO-Revision-Date: 2017-10-03 22:46+0200\n"
+"Language: da\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=INTEGER; plural=EXPRESSION;\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"Last-Translator: Anders Jenbo <anders@jenbo.dk>\n"
+"Language-Team: \n"
+"X-Generator: Poedit 1.8.7.1\n"
+"X-Poedit-SourceCharset: UTF-8\n"
 
 #: ../application/sog.php:14
 #, php-format
 msgid "Find in %s"
-msgstr ""
+msgstr "Find i %s"
 
 #: ../application/bestilling/index.php:104 ../application/betaling/index.php:21
 #: ../application/betaling/index.php:313 ../application/betaling/index.php:314
 msgid "Payment"
-msgstr ""
+msgstr "Betaling"
 
 #: ../application/bestilling/index.php:136
 #: ../application/bestilling/index.php:141
@@ -34,23 +35,23 @@ msgstr ""
 #: ../application/bestilling/index.php:252
 #: ../application/bestilling/index.php:253
 msgid "Place order"
-msgstr ""
+msgstr "Indsend bestilling"
 
 #: ../application/bestilling/index.php:212
 #: ../application/bestilling/index.php:217
 #: ../application/bestilling/index.php:218 ../application/betaling/index.php:97
 #: ../application/betaling/index.php:101 ../application/betaling/index.php:102
 msgid "Recipient"
-msgstr ""
+msgstr "Modtager"
 
 #: ../application/bestilling/index.php:237
 msgid "Online order #"
-msgstr ""
+msgstr "Online bestilling #"
 
 #: ../application/bestilling/index.php:243
 #: ../application/bestilling/index.php:244
 msgid "Order placed"
-msgstr ""
+msgstr "Bestilling sendt"
 
 #: ../application/bestilling/index.php:246
 msgid ""
@@ -58,73 +59,75 @@ msgid ""
 "to perform the payment as soon as we have validated that all goods are in "
 "stock."
 msgstr ""
+"Tak for din bestilling, De vil modtage en email med informationer om hvordan "
+"De betaler så snart vi har kontrolleret at alle varer er på lager."
 
 #: ../application/bestilling/index.php:254
 msgid "Ther is no content in the basket!"
-msgstr ""
+msgstr "Der er intet indhold på listen!"
 
 #: ../application/betaling/index.php:38 ../application/betaling/index.php:42
 #: ../application/betaling/index.php:43
 msgid "Order #"
-msgstr ""
+msgstr "Ordre #"
 
 #: ../application/betaling/index.php:120 ../application/betaling/index.php:124
 #: ../application/betaling/index.php:125
 msgid "Trade Conditions"
-msgstr ""
+msgstr "Handelsbetingelser"
 
 #: ../application/betaling/index.php:149 ../application/betaling/index.php:157
 #: ../application/betaling/index.php:158 ../application/betaling/index.php:161
 #: ../application/betaling/index.php:162
 msgid "Status"
-msgstr ""
+msgstr "Status"
 
 #: ../application/betaling/index.php:149 ../application/betaling/index.php:153
 #: ../application/betaling/index.php:154 ../application/betaling/index.php:177
 #: ../application/betaling/index.php:182 ../application/betaling/index.php:183
 #: ../application/admin/fakturas.php:107
 msgid "Error"
-msgstr ""
+msgstr "Fejl"
 
 #: ../application/betaling/index.php:155
 msgid "An errror occured."
-msgstr ""
+msgstr "Der opstod en fejl."
 
 #: ../application/betaling/index.php:159
 msgid "Payment received."
-msgstr ""
+msgstr "Betalingen er modtaget."
 
 #: ../application/betaling/index.php:163
 msgid "The payment was received and the package is sent."
-msgstr ""
+msgstr "Betalingen er modtaget og pakken er sendt."
 
 #: ../application/betaling/index.php:165 ../application/betaling/index.php:167
 msgid "The payment is already received in cash."
-msgstr ""
+msgstr "Betalingen er allerede modtaget kontant."
 
 #: ../application/betaling/index.php:169
 msgid "The transaction is canceled."
-msgstr ""
+msgstr "Handlen er annulleret."
 
 #: ../application/betaling/index.php:171
 msgid "Payment rejected."
-msgstr ""
+msgstr "Betalingen er afvist."
 
 #: ../application/betaling/index.php:184
 msgid "An unknown error occured."
-msgstr ""
+msgstr "Der opstod en ukendt fejl."
 
 #: ../application/betaling/index.php:196
 msgid "Payment code was tampered with!"
-msgstr ""
+msgstr "Betalingenskoden er blevet manipuleret!"
 
 #: ../application/betaling/index.php:200
 msgid "The payment does not exist in our system."
-msgstr ""
+msgstr "Betalingen findes ikke i vores system."
 
 #: ../application/betaling/index.php:201
 msgid "Payment not found!"
-msgstr ""
+msgstr "Betaling blev ikke fundet!"
 
 #: ../application/betaling/index.php:205 ../application/betaling/index.php:209
 #: ../application/betaling/index.php:210 ../application/betaling/index.php:216
@@ -132,1367 +135,1375 @@ msgstr ""
 #: ../application/betaling/index.php:227 ../application/betaling/index.php:231
 #: ../application/betaling/index.php:232
 msgid "Reciept"
-msgstr ""
+msgstr "Kvittering"
 
 #: ../application/betaling/index.php:211
 msgid "This trade has been canceled or refused."
-msgstr ""
+msgstr "Denne handel er blevet annulleret eller afvist."
 
 #: ../application/betaling/index.php:212
 msgid "Payment cancled"
-msgstr ""
+msgstr "Betalingen er anulleret"
 
 #: ../application/betaling/index.php:222
 msgid ""
 "Payment is registered and you ought to have received a receipt by email."
 msgstr ""
+"Betalingen er registreret og du skulle have modtaget en kvitering via email."
 
 #: ../application/betaling/index.php:223
 msgid "Viewed payment"
-msgstr ""
+msgstr "Så betalingen"
 
 #: ../application/betaling/index.php:257
 msgid "Payment complete"
-msgstr ""
+msgstr "Betaling gennemført"
 
 #: ../application/betaling/index.php:288
 #, php-format
 msgid "Order #%d - payment completed"
-msgstr ""
+msgstr "Ordre #%d - Betaling gennemført"
 
 #: ../application/betaling/index.php:305
 #, php-format
 msgid "Attn.: %s - Online invoice #%d : %s"
-msgstr ""
+msgstr "Att: %s - Online faktura #%d : %s"
 
 #: ../application/betaling/index.php:322
 msgid "The code is not correct!"
-msgstr ""
+msgstr "Koden er ikke korrekt!"
 
 #: ../application/inc/countries.php:7
 msgid "Denmark"
-msgstr ""
+msgstr "Danmark"
 
 #: ../application/inc/countries.php:8
 msgid "Finland"
-msgstr ""
+msgstr "Finland"
 
 #: ../application/inc/countries.php:9
 msgid "Norway"
-msgstr ""
+msgstr "Norge"
 
 #: ../application/inc/countries.php:10
 msgid "Sweden"
-msgstr ""
+msgstr "Sverige"
 
 #: ../application/inc/countries.php:11
 msgid "Afghanistan"
-msgstr ""
+msgstr "Afghanistan"
 
 #: ../application/inc/countries.php:12
 msgid "Albania"
-msgstr ""
+msgstr "Albanien"
 
 #: ../application/inc/countries.php:13
 msgid "Algeria"
-msgstr ""
+msgstr "Algeriet"
 
 #: ../application/inc/countries.php:14
 msgid "American Samoa"
-msgstr ""
+msgstr "Samoa"
 
 #: ../application/inc/countries.php:15
 msgid "Andorra"
-msgstr ""
+msgstr "Andorra"
 
 #: ../application/inc/countries.php:16
 msgid "Angola"
-msgstr ""
+msgstr "Angola"
 
 #: ../application/inc/countries.php:17
 msgid "Anguilla"
-msgstr ""
+msgstr "St. Christopher og Nevis"
 
 #: ../application/inc/countries.php:19
 msgid "Antigua and Barbuda"
-msgstr ""
+msgstr "Antigua og Barbuda"
 
 #: ../application/inc/countries.php:20
 msgid "Argentina"
-msgstr ""
+msgstr "Argentina"
 
 #: ../application/inc/countries.php:21
 msgid "Armenia"
-msgstr ""
+msgstr "Armenien"
 
 #: ../application/inc/countries.php:22
 msgid "Aruba"
-msgstr ""
+msgstr "Aruba"
 
 #: ../application/inc/countries.php:23
 msgid "Australia"
-msgstr ""
+msgstr "Australien"
 
 #: ../application/inc/countries.php:24
 msgid "Austria"
-msgstr ""
+msgstr "Østrig"
 
 #: ../application/inc/countries.php:25
 msgid "Azerbaidjan"
-msgstr ""
+msgstr "Azerbajdzhan"
 
 #: ../application/inc/countries.php:26
 msgid "Bahamas"
-msgstr ""
+msgstr "Bahama Øerne"
 
 #: ../application/inc/countries.php:27
 msgid "Bahrain"
-msgstr ""
+msgstr "Bahrain"
 
 #: ../application/inc/countries.php:28
 msgid "Bangladesh"
-msgstr ""
+msgstr "Bangladesh"
 
 #: ../application/inc/countries.php:29
 msgid "Barbados"
-msgstr ""
+msgstr "Barbados"
 
 #: ../application/inc/countries.php:30
 msgid "Belarus"
-msgstr ""
+msgstr "Hviderusland"
 
 #: ../application/inc/countries.php:31
 msgid "Belgium"
-msgstr ""
+msgstr "Belgien"
 
 #: ../application/inc/countries.php:32
 msgid "Belize"
-msgstr ""
+msgstr "Belize"
 
 #: ../application/inc/countries.php:33
 msgid "Benin"
-msgstr ""
+msgstr "Benin"
 
 #: ../application/inc/countries.php:34
 msgid "Bermuda"
-msgstr ""
+msgstr "Bermuda Øerne"
 
 #: ../application/inc/countries.php:35
 msgid "Bhutan"
-msgstr ""
+msgstr "Bhutan"
 
 #: ../application/inc/countries.php:36
 msgid "Bolivia"
-msgstr ""
+msgstr "Bolivia"
 
 #: ../application/inc/countries.php:37
 msgid "Bosnia-Herzegovina"
-msgstr ""
+msgstr "Bosnien Herzegovina"
 
 #: ../application/inc/countries.php:38
 msgid "Botswana"
-msgstr ""
+msgstr "Botswana"
 
 #: ../application/inc/countries.php:40
 msgid "Brazil"
-msgstr ""
+msgstr "Brasilien"
 
 #: ../application/inc/countries.php:41
 msgid "British Indian Ocean Territory"
-msgstr ""
+msgstr "British Indian Ocean Territories"
 
 #: ../application/inc/countries.php:42
 msgid "Brunei Darussalam"
-msgstr ""
+msgstr "Brunei Darussalam"
 
 #: ../application/inc/countries.php:43
 msgid "Bulgaria"
-msgstr ""
+msgstr "Bulgarien"
 
 #: ../application/inc/countries.php:44
 msgid "Burkina Faso"
-msgstr ""
+msgstr "Burkina Faso"
 
 #: ../application/inc/countries.php:45
 msgid "Burundi"
-msgstr ""
+msgstr "Burundi"
 
 #: ../application/inc/countries.php:46
 msgid "Cambodia"
-msgstr ""
+msgstr "Cambodja"
 
 #: ../application/inc/countries.php:47
 msgid "Cameroon"
-msgstr ""
+msgstr "Cameroun"
 
 #: ../application/inc/countries.php:48
 msgid "Canada"
-msgstr ""
+msgstr "Canada"
 
 #: ../application/inc/countries.php:49
 msgid "Cape Verde"
-msgstr ""
+msgstr "Cap Verde Øerne"
 
 #: ../application/inc/countries.php:50
 msgid "Cayman Islands"
-msgstr ""
+msgstr "Cayman Øerne"
 
 #: ../application/inc/countries.php:51
 msgid "Central African Republic"
-msgstr ""
+msgstr "Centralafrikanske Republik"
 
 #: ../application/inc/countries.php:52
 msgid "Chad"
-msgstr ""
+msgstr "Tchad"
 
 #: ../application/inc/countries.php:53
 msgid "Chile"
-msgstr ""
+msgstr "Chile"
 
 #: ../application/inc/countries.php:54
 msgid "China"
-msgstr ""
+msgstr "Kina"
 
 #: ../application/inc/countries.php:57
 msgid "Colombia"
-msgstr ""
+msgstr "Columbia"
 
 #: ../application/inc/countries.php:58
 msgid "Comoros"
-msgstr ""
+msgstr "Comorerne"
 
 #: ../application/inc/countries.php:59
 msgid "Congo"
-msgstr ""
+msgstr "Congo Republikken"
 
 #: ../application/inc/countries.php:60
 msgid "Cook Islands"
-msgstr ""
+msgstr "Cook Islands"
 
 #: ../application/inc/countries.php:61
 msgid "Costa Rica"
-msgstr ""
+msgstr "Costa Rica"
 
 #: ../application/inc/countries.php:62
 msgid "Croatia"
-msgstr ""
+msgstr "Kroatien"
 
 #: ../application/inc/countries.php:63
 msgid "Cuba"
-msgstr ""
+msgstr "Cuba"
 
 #: ../application/inc/countries.php:64
 msgid "Cyprus"
-msgstr ""
+msgstr "Cypern"
 
 #: ../application/inc/countries.php:65
 msgid "Czech Republic"
-msgstr ""
+msgstr "Tjekkiet"
 
 #: ../application/inc/countries.php:66
 msgid "Djibouti"
-msgstr ""
+msgstr "Djibouti"
 
 #: ../application/inc/countries.php:67
 msgid "Dominica"
-msgstr ""
+msgstr "Domenica"
 
 #: ../application/inc/countries.php:68
 msgid "Dominican Republic"
-msgstr ""
+msgstr "Dominikanske Republik"
 
 #: ../application/inc/countries.php:69
 msgid "East Timor"
-msgstr ""
+msgstr "Øst Timor"
 
 #: ../application/inc/countries.php:70
 msgid "Ecuador"
-msgstr ""
+msgstr "Ecuador"
 
 #: ../application/inc/countries.php:71
 msgid "Egypt"
-msgstr ""
+msgstr "Egypten"
 
 #: ../application/inc/countries.php:72
 msgid "El Salvador"
-msgstr ""
+msgstr "El Salvador"
 
 #: ../application/inc/countries.php:73
 msgid "Equatorial Guinea"
-msgstr ""
+msgstr "Equtorial Guinea"
 
 #: ../application/inc/countries.php:74
 msgid "Eritrea"
-msgstr ""
+msgstr "Eritrea"
 
 #: ../application/inc/countries.php:75
 msgid "Estonia"
-msgstr ""
+msgstr "Estland"
 
 #: ../application/inc/countries.php:76
 msgid "Ethiopia"
-msgstr ""
+msgstr "Etiopien"
 
 #: ../application/inc/countries.php:77
 msgid "Falkland Islands"
-msgstr ""
+msgstr "Falklands Øerne"
 
 #: ../application/inc/countries.php:78
 msgid "Faroe Islands"
-msgstr ""
+msgstr "Færøerne"
 
 #: ../application/inc/countries.php:79
 msgid "Fiji"
-msgstr ""
+msgstr "Fiji Øerne"
 
 #: ../application/inc/countries.php:81
 msgid "France"
-msgstr ""
+msgstr "Frankrig"
 
 #: ../application/inc/countries.php:83
 msgid "French Guyana"
-msgstr ""
+msgstr "Fransk Guyana"
 
 #: ../application/inc/countries.php:84
 msgid "French Southern Territories"
-msgstr ""
+msgstr "Fransk Syd og Antartic Territories"
 
 #: ../application/inc/countries.php:85
 msgid "Gabon"
-msgstr ""
+msgstr "Gabon"
 
 #: ../application/inc/countries.php:86
 msgid "Gambia"
-msgstr ""
+msgstr "Gambia"
 
 #: ../application/inc/countries.php:87
 msgid "Georgia"
-msgstr ""
+msgstr "Georgien"
 
 #: ../application/inc/countries.php:88
 msgid "Germany"
-msgstr ""
+msgstr "Tyskland"
 
 #: ../application/inc/countries.php:89
 msgid "Ghana"
-msgstr ""
+msgstr "Ghana"
 
 #: ../application/inc/countries.php:90
 msgid "Gibraltar"
-msgstr ""
+msgstr "Gibraltar"
 
 #: ../application/inc/countries.php:91
 msgid "Great Britain"
-msgstr ""
+msgstr "Storbritannien"
 
 #: ../application/inc/countries.php:92
 msgid "Greece"
-msgstr ""
+msgstr "Grækenland"
 
 #: ../application/inc/countries.php:93
 msgid "Greenland"
-msgstr ""
+msgstr "Grønland"
 
 #: ../application/inc/countries.php:94
 msgid "Grenada"
-msgstr ""
+msgstr "Grenada"
 
 #: ../application/inc/countries.php:95
 msgid "Guadeloupe (French)"
-msgstr ""
+msgstr "Guadelope"
 
 #: ../application/inc/countries.php:96
 msgid "Guam (USA)"
-msgstr ""
+msgstr "Guam"
 
 #: ../application/inc/countries.php:97
 msgid "Guatemala"
-msgstr ""
+msgstr "Guatemala"
 
 #: ../application/inc/countries.php:98
 msgid "Guinea"
-msgstr ""
+msgstr "Guinea"
 
 #: ../application/inc/countries.php:99
 msgid "Guinea Bissau"
-msgstr ""
+msgstr "Guinea-Bissau"
 
 #: ../application/inc/countries.php:100
 msgid "Guyana"
-msgstr ""
+msgstr "Guyana"
 
 #: ../application/inc/countries.php:101
 msgid "Haiti"
-msgstr ""
+msgstr "Haiti"
 
 #: ../application/inc/countries.php:103
 msgid "Honduras"
-msgstr ""
+msgstr "Honduras"
 
 #: ../application/inc/countries.php:104
 msgid "Hong Kong"
-msgstr ""
+msgstr "Hong Kong"
 
 #: ../application/inc/countries.php:105
 msgid "Hungary"
-msgstr ""
+msgstr "Ungarn"
 
 #: ../application/inc/countries.php:106
 msgid "Iceland"
-msgstr ""
+msgstr "Island"
 
 #: ../application/inc/countries.php:107
 msgid "India"
-msgstr ""
+msgstr "Indien"
 
 #: ../application/inc/countries.php:108
 msgid "Indonesia"
-msgstr ""
+msgstr "Indonesien"
 
 #: ../application/inc/countries.php:109
 msgid "Iran"
-msgstr ""
+msgstr "Iran"
 
 #: ../application/inc/countries.php:110
 msgid "Iraq"
-msgstr ""
+msgstr "Irak"
 
 #: ../application/inc/countries.php:111
 msgid "Ireland"
-msgstr ""
+msgstr "Irland"
 
 #: ../application/inc/countries.php:112
 msgid "Israel"
-msgstr ""
+msgstr "Israel"
 
 #: ../application/inc/countries.php:113
 msgid "Italy"
-msgstr ""
+msgstr "Italien"
 
 #: ../application/inc/countries.php:114
 msgid "Ivory Coast"
-msgstr ""
+msgstr "Elfenbenskysten"
 
 #: ../application/inc/countries.php:115
 msgid "Jamaica"
-msgstr ""
+msgstr "Jamaica"
 
 #: ../application/inc/countries.php:116
 msgid "Japan"
-msgstr ""
+msgstr "Japan"
 
 #: ../application/inc/countries.php:117
 msgid "Jordan"
-msgstr ""
+msgstr "Jordan"
 
 #: ../application/inc/countries.php:118
 msgid "Kazakhstan"
-msgstr ""
+msgstr "Kazakhstan"
 
 #: ../application/inc/countries.php:119
 msgid "Kenya"
-msgstr ""
+msgstr "Kenya"
 
 #: ../application/inc/countries.php:120
 msgid "Kiribati"
-msgstr ""
+msgstr "Kiribati"
 
 #: ../application/inc/countries.php:121
 msgid "Kuwait"
-msgstr ""
+msgstr "Kuwait"
 
 #: ../application/inc/countries.php:122
 msgid "Kyrgyzstan"
-msgstr ""
+msgstr "Kirgizstan"
 
 #: ../application/inc/countries.php:123
 msgid "Laos"
-msgstr ""
+msgstr "Laos"
 
 #: ../application/inc/countries.php:124
 msgid "Latvia"
-msgstr ""
+msgstr "Letland"
 
 #: ../application/inc/countries.php:125
 msgid "Lebanon"
-msgstr ""
+msgstr "Libanon"
 
 #: ../application/inc/countries.php:126
 msgid "Lesotho"
-msgstr ""
+msgstr "Lesotho"
 
 #: ../application/inc/countries.php:127
 msgid "Liberia"
-msgstr ""
+msgstr "Liberia"
 
 #: ../application/inc/countries.php:128
 msgid "Libya"
-msgstr ""
+msgstr "Libyen"
 
 #: ../application/inc/countries.php:129
 msgid "Liechtenstein"
-msgstr ""
+msgstr "Liechtenstein"
 
 #: ../application/inc/countries.php:130
 msgid "Lithuania"
-msgstr ""
+msgstr "Litauen"
 
 #: ../application/inc/countries.php:131
 msgid "Luxembourg"
-msgstr ""
+msgstr "Luxembourg"
 
 #: ../application/inc/countries.php:132
 msgid "Macau"
-msgstr ""
+msgstr "Macao"
 
 #: ../application/inc/countries.php:133
 msgid "Macedonia"
-msgstr ""
+msgstr "Makedonien"
 
 #: ../application/inc/countries.php:134
 msgid "Madagascar"
-msgstr ""
+msgstr "Madagascar"
 
 #: ../application/inc/countries.php:135
 msgid "Malawi"
-msgstr ""
+msgstr "Malawi"
 
 #: ../application/inc/countries.php:136
 msgid "Malaysia"
-msgstr ""
+msgstr "Malaysia"
 
 #: ../application/inc/countries.php:137
 msgid "Maldives"
-msgstr ""
+msgstr "Maldiverne"
 
 #: ../application/inc/countries.php:138
 msgid "Mali"
-msgstr ""
+msgstr "Mali"
 
 #: ../application/inc/countries.php:139
 msgid "Malta"
-msgstr ""
+msgstr "Malta"
 
 #: ../application/inc/countries.php:141
 msgid "Martinique (French)"
-msgstr ""
+msgstr "Martinique"
 
 #: ../application/inc/countries.php:142
 msgid "Mauritania"
-msgstr ""
+msgstr "Mauretanien"
 
 #: ../application/inc/countries.php:143
 msgid "Mauritius"
-msgstr ""
+msgstr "Mauritius"
 
 #: ../application/inc/countries.php:144
 msgid "Mayotte"
-msgstr ""
+msgstr "Mayotte"
 
 #: ../application/inc/countries.php:145
 msgid "Mexico"
-msgstr ""
+msgstr "Mexico"
 
 #: ../application/inc/countries.php:146
 msgid "Micronesia"
-msgstr ""
+msgstr "Micronesia"
 
 #: ../application/inc/countries.php:147
 msgid "Moldavia"
-msgstr ""
+msgstr "Moldova"
 
 #: ../application/inc/countries.php:148
 msgid "Monaco"
-msgstr ""
+msgstr "Monaco"
 
 #: ../application/inc/countries.php:149
 msgid "Mongolia"
-msgstr ""
+msgstr "Mongoliet"
 
 #: ../application/inc/countries.php:150
 msgid "Montenegro"
-msgstr ""
+msgstr "Montenegro"
 
 #: ../application/inc/countries.php:151
 msgid "Montserrat"
-msgstr ""
+msgstr "Montserrat"
 
 #: ../application/inc/countries.php:152
 msgid "Morocco"
-msgstr ""
+msgstr "Marokko"
 
 #: ../application/inc/countries.php:153
 msgid "Mozambique"
-msgstr ""
+msgstr "Mozambique"
 
 #: ../application/inc/countries.php:154
 msgid "Myanmar"
-msgstr ""
+msgstr "Myanmar"
 
 #: ../application/inc/countries.php:155
 msgid "Namibia"
-msgstr ""
+msgstr "Namibia"
 
 #: ../application/inc/countries.php:156
 msgid "Nauru"
-msgstr ""
+msgstr "Nauru"
 
 #: ../application/inc/countries.php:157
 msgid "Nepal"
-msgstr ""
+msgstr "Nepal"
 
 #: ../application/inc/countries.php:158
 msgid "Netherlands"
-msgstr ""
+msgstr "Holland"
 
 #: ../application/inc/countries.php:159
 msgid "Netherlands Antilles"
-msgstr ""
+msgstr "Nederlandske Antiller"
 
 #: ../application/inc/countries.php:161
 msgid "New Caledonia (French)"
-msgstr ""
+msgstr "Ny Caledonien"
 
 #: ../application/inc/countries.php:162
 msgid "New Zealand"
-msgstr ""
+msgstr "New Zealand"
 
 #: ../application/inc/countries.php:163
 msgid "Nicaragua"
-msgstr ""
+msgstr "Nicaragua"
 
 #: ../application/inc/countries.php:164
 msgid "Nigeria"
-msgstr ""
+msgstr "Nigeria"
 
 #: ../application/inc/countries.php:167
 msgid "North Korea"
-msgstr ""
+msgstr "Nordkorea"
 
 #: ../application/inc/countries.php:169
 msgid "Oman"
-msgstr ""
+msgstr "Oman"
 
 #: ../application/inc/countries.php:170
 msgid "Pakistan"
-msgstr ""
+msgstr "Pakistan"
 
 #: ../application/inc/countries.php:172
 msgid "Panama"
-msgstr ""
+msgstr "Panama"
 
 #: ../application/inc/countries.php:173
 msgid "Papua New Guinea"
-msgstr ""
+msgstr "Papua Ny Guinea"
 
 #: ../application/inc/countries.php:174
 msgid "Paraguay"
-msgstr ""
+msgstr "Paraguay"
 
 #: ../application/inc/countries.php:175
 msgid "Peru"
-msgstr ""
+msgstr "Peru"
 
 #: ../application/inc/countries.php:176
 msgid "Philippines"
-msgstr ""
+msgstr "Filippinerne"
 
 #: ../application/inc/countries.php:177
 msgid "Pitcairn Island"
-msgstr ""
+msgstr "Pitcairn Øerne"
 
 #: ../application/inc/countries.php:178
 msgid "Poland"
-msgstr ""
+msgstr "Polen"
 
 #: ../application/inc/countries.php:179
 msgid "Polynesia (French)"
-msgstr ""
+msgstr "Fransk Polynesien"
 
 #: ../application/inc/countries.php:180
 msgid "Portugal"
-msgstr ""
+msgstr "Portugal"
 
 #: ../application/inc/countries.php:181
 msgid "Puerto Rico"
-msgstr ""
+msgstr "Puerto Rico"
 
 #: ../application/inc/countries.php:182
 msgid "Qatar"
-msgstr ""
+msgstr "Qatar"
 
 #: ../application/inc/countries.php:183
 msgid "Reunion (French)"
-msgstr ""
+msgstr "Réunion"
 
 #: ../application/inc/countries.php:184
 msgid "Romania"
-msgstr ""
+msgstr "Rumænien"
 
 #: ../application/inc/countries.php:185
 msgid "Russia"
-msgstr ""
+msgstr "Rusland"
 
 #: ../application/inc/countries.php:186
 msgid "Rwanda"
-msgstr ""
+msgstr "Rwanda"
 
 #: ../application/inc/countries.php:187
 msgid "S. Georgia & S. Sandwich Isls."
-msgstr ""
+msgstr "S. Georgia og S. Sandwich Islands"
 
 #: ../application/inc/countries.php:188
 msgid "Saint Helena"
-msgstr ""
+msgstr "St. Helena"
 
 #: ../application/inc/countries.php:189
 msgid "Saint Kitts & Nevis Anguilla"
-msgstr ""
+msgstr "St. Christopher og Nevis"
 
 #: ../application/inc/countries.php:190
 msgid "Saint Lucia"
-msgstr ""
+msgstr "St. Lucia"
 
 #: ../application/inc/countries.php:191
 msgid "Saint Pierre and Miquelon"
-msgstr ""
+msgstr "St.-Pierre og Miquelon"
 
 #: ../application/inc/countries.php:192
 msgid "Saint Tome (Sao Tome) and Principe"
-msgstr ""
+msgstr "Sao Tomé og Principe"
 
 #: ../application/inc/countries.php:193
 msgid "Saint Vincent & Grenadines"
-msgstr ""
+msgstr "St. Vincent og Grenadinerne"
 
 #: ../application/inc/countries.php:194
 msgid "Samoa"
-msgstr ""
+msgstr "Samoa"
 
 #: ../application/inc/countries.php:195
 msgid "San Marino"
-msgstr ""
+msgstr "San Marino"
 
 #: ../application/inc/countries.php:196
 msgid "Saudi Arabia"
-msgstr ""
+msgstr "Saudi Arabien"
 
 #: ../application/inc/countries.php:197
 msgid "Senegal"
-msgstr ""
+msgstr "Senegal"
 
 #: ../application/inc/countries.php:198
 msgid "Serbia"
-msgstr ""
+msgstr "Serbien"
 
 #: ../application/inc/countries.php:199
 msgid "Seychelles"
-msgstr ""
+msgstr "Seychellerne"
 
 #: ../application/inc/countries.php:200
 msgid "Sierra Leone"
-msgstr ""
+msgstr "Sierra Leone"
 
 #: ../application/inc/countries.php:201
 msgid "Singapore"
-msgstr ""
+msgstr "Singapore"
 
 #: ../application/inc/countries.php:202
 msgid "Slovakia"
-msgstr ""
+msgstr "Slovakiet"
 
 #: ../application/inc/countries.php:203
 msgid "Slovenia"
-msgstr ""
+msgstr "Slovenien"
 
 #: ../application/inc/countries.php:204
 msgid "Solomon Islands"
-msgstr ""
+msgstr "Solomon Øerne"
 
 #: ../application/inc/countries.php:205
 msgid "Somalia"
-msgstr ""
+msgstr "Somalia"
 
 #: ../application/inc/countries.php:206
 msgid "South Africa"
-msgstr ""
+msgstr "Sydafrika"
 
 #: ../application/inc/countries.php:207
 msgid "South Korea"
-msgstr ""
+msgstr "Sydkorea"
 
 #: ../application/inc/countries.php:208
 msgid "Spain"
-msgstr ""
+msgstr "Spanien"
 
 #: ../application/inc/countries.php:209
 msgid "Sri Lanka"
-msgstr ""
+msgstr "Sri Lanka"
 
 #: ../application/inc/countries.php:210
 msgid "Sudan"
-msgstr ""
+msgstr "Sudan"
 
 #: ../application/inc/countries.php:211
 msgid "Suriname"
-msgstr ""
+msgstr "Suriname"
 
 #: ../application/inc/countries.php:213
 msgid "Swaziland"
-msgstr ""
+msgstr "Swaziland"
 
 #: ../application/inc/countries.php:214
 msgid "Switzerland"
-msgstr ""
+msgstr "Schweiz"
 
 #: ../application/inc/countries.php:215
 msgid "Syria"
-msgstr ""
+msgstr "Syrien"
 
 #: ../application/inc/countries.php:216
 msgid "Tadjikistan"
-msgstr ""
+msgstr "Tadzhikistan"
 
 #: ../application/inc/countries.php:217
 msgid "Taiwan"
-msgstr ""
+msgstr "Taiwan"
 
 #: ../application/inc/countries.php:218
 msgid "Tanzania"
-msgstr ""
+msgstr "Tanzania"
 
 #: ../application/inc/countries.php:219
 msgid "Thailand"
-msgstr ""
+msgstr "Thailand"
 
 #: ../application/inc/countries.php:220
 msgid "Togo"
-msgstr ""
+msgstr "Togo"
 
 #: ../application/inc/countries.php:222
 msgid "Tonga"
-msgstr ""
+msgstr "Tonga Øerne"
 
 #: ../application/inc/countries.php:223
 msgid "Trinidad and Tobago"
-msgstr ""
+msgstr "Trinidad og Tobago"
 
 #: ../application/inc/countries.php:224
 msgid "Tunisia"
-msgstr ""
+msgstr "Tunesien"
 
 #: ../application/inc/countries.php:225
 msgid "Turkey"
-msgstr ""
+msgstr "Tyrkiet"
 
 #: ../application/inc/countries.php:226
 msgid "Turkmenistan"
-msgstr ""
+msgstr "Turkmenistan"
 
 #: ../application/inc/countries.php:227
 msgid "Turks and Caicos Islands"
-msgstr ""
+msgstr "Turks og Caicos Øerne"
 
 #: ../application/inc/countries.php:228
 msgid "Tuvalu"
-msgstr ""
+msgstr "Tuvalu"
 
 #: ../application/inc/countries.php:229
 msgid "Uganda"
-msgstr ""
+msgstr "Uganda"
 
 #: ../application/inc/countries.php:230
 msgid "Ukraine"
-msgstr ""
+msgstr "Ukraine"
 
 #: ../application/inc/countries.php:231
 msgid "United Arab Emirates"
-msgstr ""
+msgstr "Forenede Arabiske Emirater"
 
 #: ../application/inc/countries.php:232
 msgid "United States"
-msgstr ""
+msgstr "USA"
 
 #: ../application/inc/countries.php:233
 msgid "Uruguay"
-msgstr ""
+msgstr "Uruguay"
 
 #: ../application/inc/countries.php:235
 msgid "Uzbekistan"
-msgstr ""
+msgstr "Uzbekistan"
 
 #: ../application/inc/countries.php:236
 msgid "Vanuatu"
-msgstr ""
+msgstr "Vanuatu"
 
 #: ../application/inc/countries.php:237
 msgid "Vatican City State"
-msgstr ""
+msgstr "Vatikanstaten"
 
 #: ../application/inc/countries.php:238
 msgid "Venezuela"
-msgstr ""
+msgstr "Venezuela"
 
 #: ../application/inc/countries.php:239
 msgid "Vietnam"
-msgstr ""
+msgstr "Vietnam"
 
 #: ../application/inc/countries.php:240
 msgid "Virgin Islands (British)"
-msgstr ""
+msgstr "Britiske Jomfruøer"
 
 #: ../application/inc/countries.php:241
 msgid "Virgin Islands (USA)"
-msgstr ""
+msgstr "Amerikanske Jomfruøer"
 
 #: ../application/inc/countries.php:242
 msgid "Wallis and Futuna Islands"
-msgstr ""
+msgstr "Wallis og Futuna"
 
 #: ../application/inc/countries.php:244
 msgid "Yemen"
-msgstr ""
+msgstr "Yemen"
 
 #: ../application/inc/countries.php:246
 msgid "Zambia"
-msgstr ""
+msgstr "Zambia"
 
 #: ../application/inc/countries.php:247
 msgid "Zimbabwe"
-msgstr ""
+msgstr "Zimbabwe"
 
 #: ../application/inc/countries.php:248
 msgid "Åland"
-msgstr ""
+msgstr "Åland"
 
 #: ../application/inc/functions.php:54
 msgid "Header already sent!"
-msgstr ""
+msgstr "Header er allerede sendt!"
 
 #: ../application/inc/functions.php:214
 msgid "I would like to pay via credit card."
-msgstr ""
+msgstr "Jeg ønsker at betale med betalingskort."
 
 #: ../application/inc/functions.php:216
 msgid "I would like to pay via bank transaction."
-msgstr ""
+msgstr "Jeg ønsker at betale med bank overførsel."
 
 #: ../application/inc/functions.php:218
 msgid "I would like to pay via cash."
-msgstr ""
+msgstr "Jeg ønsker at betale med kontanter."
 
 #: ../application/inc/functions.php:223
 msgid "I will pick up the goods in your shop."
-msgstr ""
+msgstr "Jeg henter varerne i butikken."
 
 #: ../application/inc/functions.php:225
 msgid "Please send the goods by mail."
-msgstr ""
+msgstr "Send venligst varerne med posten."
 
 #: ../application/inc/functions.php:227
 msgid "Please send the order to by mail express."
-msgstr ""
+msgstr "Send venligst varerne med ekspres post."
 
 #: ../application/inc/functions.php:428
 msgid "The address could not be found."
-msgstr ""
+msgstr "Adressen kunne ikke findes."
 
 #: ../application/inc/Render.php:336
 msgid "Contains"
-msgstr ""
+msgstr "Indeholder"
 
 #: ../application/inc/Render.php:337
 msgid "Search"
-msgstr ""
+msgstr "Søg"
 
 #: ../application/inc/Render.php:338
 msgid "Part No."
-msgstr ""
+msgstr "Varenummer"
 
 #: ../application/inc/Render.php:340
 msgid "Without the words"
-msgstr ""
+msgstr "Uden ordene"
 
 #: ../application/inc/Render.php:341
 msgid "Min price"
-msgstr ""
+msgstr "Min pris"
 
 #: ../application/inc/Render.php:343
 msgid "Max price"
-msgstr ""
+msgstr "Max pris"
 
 #: ../application/inc/Render.php:345
 msgid "Brand:"
-msgstr ""
+msgstr "Mærke:"
 
 #: ../application/inc/Render.php:345
 msgid "All"
-msgstr ""
+msgstr "Alle"
 
 #: ../application/inc/Render.php:764
 msgid "Sold out"
-msgstr ""
+msgstr "Udsolgt"
 
 #: ../application/inc/Render.php:779
 msgid "Add to shopping cart"
-msgstr ""
+msgstr "Tilføj til indkøbsliste"
 
 #: ../application/inc/Entity/Invoice.php:396
 msgid "Unknown"
-msgstr ""
+msgstr "Ukendt"
 
 #: ../application/inc/Entity/User.php:114
 msgid "Never"
-msgstr ""
+msgstr "Aldrig"
 
 #: ../application/inc/Entity/User.php:118
 msgid "Online"
-msgstr ""
+msgstr "Online"
 
 #: ../application/inc/Entity/User.php:125
 #, php-format
 msgid "%s years and %s months ago"
-msgstr ""
+msgstr "%s år og %s måneder siden"
 
 #: ../application/inc/Entity/User.php:129
 #, php-format
 msgid "%s months and %s dayes ago"
-msgstr ""
+msgstr "%s måneder og %s dage siden"
 
 #: ../application/inc/Entity/User.php:133
 #, php-format
 msgid "%s dayes and %s houres ago"
-msgstr ""
+msgstr "%s dage og %s timer siden"
 
 #: ../application/inc/Entity/User.php:137
 #, php-format
 msgid "%s houres and %s minuts ago"
-msgstr ""
+msgstr "%s timer og %s minutter siden"
 
 #: ../application/inc/Entity/User.php:140
 #, php-format
 msgid "%s minuts and %s secounds ago"
-msgstr ""
+msgstr "%s minutter og %s sekunder siden"
 
 #: ../application/admin/faktura-pdf.php:12
 msgid "Wrong id."
-msgstr ""
+msgstr "Forkert id."
 
 #: ../application/admin/faktura-pdf.php:17
 msgid "Can't print."
-msgstr ""
+msgstr "Kan ikke udskrive."
 
 #: ../application/admin/faktura-pdf.php:85
 msgid "Phone:"
-msgstr ""
+msgstr "Telefon:"
 
 #: ../application/admin/faktura-pdf.php:112
 #: ../application/admin/faktura-pdf.php:139
 msgid "Attn.:"
-msgstr ""
+msgstr "Att:"
 
 #: ../application/admin/faktura-pdf.php:164
 msgid "Delivery address:"
-msgstr ""
+msgstr "Lev. adresse:"
 
 #: ../application/admin/faktura-pdf.php:174
 msgid "Date"
-msgstr ""
+msgstr "Dato"
 
 #: ../application/admin/faktura-pdf.php:174
 #: ../application/admin/faktura-pdf.php:262
 #: ../application/admin/faktura-pdf.php:268
 #: ../application/admin/faktura-pdf.php:274
 msgid "m/d/Y"
-msgstr ""
+msgstr "d/m/Y"
 
 #: ../application/admin/faktura-pdf.php:176
 msgid "Our ref.:"
-msgstr ""
+msgstr "Vor ref.:"
 
 #: ../application/admin/faktura-pdf.php:179
 msgid "Their ref.:"
-msgstr ""
+msgstr "Deres ref.:"
 
 #: ../application/admin/faktura-pdf.php:187
 msgid "Online Invoice"
-msgstr ""
+msgstr "Online faktura"
 
 #: ../application/admin/faktura-pdf.php:196
 msgid "Quantity"
-msgstr ""
+msgstr "Antal"
 
 #: ../application/admin/faktura-pdf.php:197
 msgid "Title"
-msgstr ""
+msgstr "Benævnelse"
 
 #: ../application/admin/faktura-pdf.php:198
 msgid "unit price"
-msgstr ""
+msgstr "á pris"
 
 #: ../application/admin/faktura-pdf.php:199
 msgid "Total"
-msgstr ""
+msgstr "Total"
 
 #: ../application/admin/faktura-pdf.php:245
 msgid "% VAT is: "
-msgstr ""
+msgstr "% moms udgører: "
 
 #: ../application/admin/faktura-pdf.php:247
 msgid "Shipping"
-msgstr ""
+msgstr "Forsendelse"
 
 #: ../application/admin/faktura-pdf.php:251
 msgid "Payment Terms:"
-msgstr ""
+msgstr "Betalingsbetingelser:"
 
 #: ../application/admin/faktura-pdf.php:251
 msgid "Net cash at invoice reception."
-msgstr ""
+msgstr "Netto kontant ved faktura modtagelse."
 
 #: ../application/admin/faktura-pdf.php:251
 msgid ""
 "In case of payment later than the stated deadline, 2% interest will be added "
 "per. started months."
 msgstr ""
+"Ved senere indbetaling end anførte frist, vil der blive debiteret 2% rente "
+"pr. påbegyndt måned."
 
 #: ../application/admin/faktura-pdf.php:253
 msgid "TO PAY"
-msgstr ""
+msgstr "I alt (dkk)"
 
 #: ../application/admin/faktura-pdf.php:260
 msgid "Paid online"
-msgstr ""
+msgstr "Betalt online"
 
 #: ../application/admin/faktura-pdf.php:266
 msgid "Paid via giro"
-msgstr ""
+msgstr "Betalt via giro"
 
 #: ../application/admin/faktura-pdf.php:272
 msgid "Paid in cash"
-msgstr ""
+msgstr "Betalt kontant"
 
 #: ../application/admin/faktura-pdf.php:283
 msgid "Note:"
-msgstr ""
+msgstr "Notat:"
 
 #: ../application/admin/faktura-pdf.php:292
 msgid "Sincerely,"
-msgstr ""
+msgstr "Med venlig hilsen"
 
 #: ../application/admin/faktura.php:52
 msgid "Online Invoice #"
-msgstr ""
+msgstr "Online faktura #"
 
 #: ../application/admin/fakturas.php:90
 msgid "Invoice list"
-msgstr ""
+msgstr "Faktura liste"
 
 #: ../application/admin/fakturas.php:100
 msgid "Completed"
-msgstr ""
+msgstr "Afsluttet"
 
 #: ../application/admin/fakturas.php:101
 msgid "New"
-msgstr ""
+msgstr "Ny"
 
 #: ../application/admin/fakturas.php:102
 msgid "Locked"
-msgstr ""
+msgstr "Låst"
 
 #: ../application/admin/fakturas.php:103
 msgid "Ready"
-msgstr ""
+msgstr "Klar"
 
 #: ../application/admin/fakturas.php:104
 msgid "Expedited"
-msgstr ""
+msgstr "Ekspederet"
 
 #: ../application/admin/fakturas.php:105
 msgid "Giro"
-msgstr ""
+msgstr "Giro"
 
 #: ../application/admin/fakturas.php:106
 msgid "Cash"
-msgstr ""
+msgstr "Kontant"
 
 #: ../application/admin/fakturas.php:108
 msgid "Canceled"
-msgstr ""
+msgstr "Annulleret"
 
 #: ../application/admin/fakturas.php:109
 msgid "Rejected"
-msgstr ""
+msgstr "Afvist"
 
 #: ../application/admin/fakturasvalidate.php:23
 msgid "Invoice validation"
-msgstr ""
+msgstr "Faktura godkendelse"
 
 #: ../application/admin/image-edit.php:17
 msgid "Edit picture"
-msgstr ""
+msgstr "Rediger billed"
 
 #: ../application/admin/image-edit.php:68
 msgid "Rotate counterclockwise"
-msgstr ""
+msgstr "Roter mod uret"
 
 #: ../application/admin/image-edit.php:69
 msgid "Rotate clockwise"
-msgstr ""
+msgstr "Roter med uret"
 
 #: ../application/admin/image-edit.php:70
 msgid "Flip horizontally"
-msgstr ""
+msgstr "Spejlvend horisontalt"
 
 #: ../application/admin/image-edit.php:71
 msgid "Flip Vertically"
-msgstr ""
+msgstr "Spejlvend verticalt"
 
 #: ../application/admin/image-edit.php:72
 msgid "Clip"
-msgstr ""
+msgstr "Klip"
 
 #: ../application/admin/image-edit.php:73
 msgid "Save"
-msgstr ""
+msgstr "Gem"
 
 #: ../application/admin/image-edit.php:73
 msgid "Loading"
-msgstr ""
+msgstr "Indlæser"
 
 #: ../application/admin/newuser.php:10
 msgid "All fields must be filled."
-msgstr ""
+msgstr "Alle felter skal udfyldes."
 
 #: ../application/admin/newuser.php:12
 msgid "The passwords does not match."
-msgstr ""
+msgstr "Adgangskoderne er ikke ens."
 
 #: ../application/admin/newuser.php:14
 msgid "Username already taken."
-msgstr ""
+msgstr "Brugernavnet er allerede i brug."
 
 #: ../application/admin/newuser.php:24
 msgid ""
 "Your account has been created. An administrator will evaluate it shortly."
 msgstr ""
+"Din konto er blevet oprettet. En administrator vil evaluere den om kort tid."
 
 #: ../application/admin/newuser.php:26
 msgid "New user"
-msgstr ""
+msgstr "Ny bruger"
 
 #: ../application/admin/user.php:16
 msgid "Edit"
-msgstr ""
+msgstr "Rediger"
 
 #: ../application/admin/user.php:20
 msgid "No access"
-msgstr ""
+msgstr "Ingen adgang"
 
 #: ../application/admin/user.php:21
 msgid "Administrator"
-msgstr ""
+msgstr "Administrator"
 
 #: ../application/admin/user.php:22
 msgid "Non administrator"
-msgstr ""
+msgstr "Ikke-administrator"
 
 #: ../application/admin/user.php:23
 msgid "User"
-msgstr ""
+msgstr "Bruger"
 
 #: ../application/admin/users.php:19
 msgid "Users and Groups"
-msgstr ""
+msgstr "Brugere og grupper"
 
 #: ../application/admin/inc/functions.php:28
 msgid "Your login has expired, please reload the page and login again."
-msgstr ""
+msgstr "Dit login er udløbet, genindlæs siden og prøv igen."
 
 #: ../application/admin/inc/functions.php:183
 #, php-format
 msgid "%d of %d e-mail was sent."
 msgid_plural "%d of %d e-mails was sent."
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "%d af %d email blev sendt."
+msgstr[1] "%d af %d emails blev sendt."
 
 #: ../application/admin/inc/functions.php:309
 msgid "The newsletter has already been sent!"
-msgstr ""
+msgstr "Nyhedsbrevet er allerede afsendt!"
 
 #: ../application/admin/inc/functions.php:469
 #: ../application/admin/inc/functions.php:502
 #: ../application/admin/inc/functions.php:868
 #: ../application/admin/inc/functions.php:2126
 msgid "Inactive"
-msgstr ""
+msgstr "Inaktive"
 
 #: ../application/admin/inc/functions.php:469
 #: ../application/admin/inc/functions.php:502
 #: ../application/admin/inc/functions.php:868
 msgid "Frontpage"
-msgstr ""
+msgstr "Forsiden"
 
 #: ../application/admin/inc/functions.php:476
 msgid "Select location:"
-msgstr ""
+msgstr "Vælg placering:"
 
 #: ../application/admin/inc/functions.php:615
 msgid "The file can not be deleted because it is used on a page."
-msgstr ""
+msgstr "Filen kan ikke slettes da den bliver brugt på en side."
 
 #: ../application/admin/inc/functions.php:622
 msgid "There was an error deleting the file, the file may be in use."
 msgstr ""
+"Der opstod en fejl under slettningen af filen, filen er muligvis i brug."
 
 #: ../application/admin/inc/functions.php:691
 msgid "Images"
-msgstr ""
+msgstr "Billeder"
 
 #: ../application/admin/inc/functions.php:691
 msgid "Files"
-msgstr ""
+msgstr "Filer"
 
 #: ../application/admin/inc/functions.php:752
 msgid "You do not have the requred access level to change this user."
-msgstr ""
+msgstr "Du har ikke de nødvendige rettigheder for at ændre denne bruger."
 
 #: ../application/admin/inc/functions.php:757
 msgid "You can't change your own access level"
-msgstr ""
+msgstr "Du kan ikke ændre dit egent adgangs niveau"
 
 #: ../application/admin/inc/functions.php:767
 msgid "Incorrect password."
-msgstr ""
+msgstr "Forkert adgangskode."
 
 #: ../application/admin/inc/functions.php:772
 msgid ""
 "You do not have the requred access level to change the password for other "
 "users."
 msgstr ""
+"Du har ikke de nødvendige rettigheder til at ændre adgangskoden for denne "
+"bruger."
 
 #: ../application/admin/inc/functions.php:1142
 msgid "A file or folder with the same name already exists."
-msgstr ""
+msgstr "En fil eller mappe med samme navn eksisterer allerede."
 
 #: ../application/admin/inc/functions.php:1148
 msgid ""
 "Could not create folder, you may not have sufficient rights to this folder."
 msgstr ""
+"Kunne ikke oprette mappe, du har muligvis ikke rettigheder til denne mappe."
 
 #: ../application/admin/inc/functions.php:1201
 msgid "The name is invalid."
-msgstr ""
+msgstr "Navnet er ugyldigt."
 
 #: ../application/admin/inc/functions.php:1207
 msgid ""
 "The file could not be moved because the destination folder does not exist."
-msgstr ""
+msgstr "Filen kunne ikke flyttes da destinations mappen ikke eksisterer."
 
 #: ../application/admin/inc/functions.php:1220
 #: ../application/admin/inc/functions.php:1261
 msgid "The filename is too long."
-msgstr ""
+msgstr "Filnavnet er for langt."
 
 #: ../application/admin/inc/functions.php:1225
 #: ../application/admin/inc/functions.php:1266
@@ -1501,140 +1512,143 @@ msgid ""
 "A file with the same name already exists.\n"
 "Would you like to replace the existing file?"
 msgstr ""
+"En fil med samme navn eksistere allerede.\n"
+"Vil du erstatte den eksisterende fil?"
 
 #: ../application/admin/inc/functions.php:1243
 #: ../application/admin/inc/functions.php:1292
 msgid "An error occurred with the file operations."
-msgstr ""
+msgstr "Der opstod en fejl ved filhandlingen."
 
 #: ../application/admin/inc/functions.php:1256
 msgid "A folder with the same name already exists."
-msgstr ""
+msgstr "En mappe med samme navn eksisterer allerede."
 
 #: ../application/admin/inc/functions.php:1336
 msgid "A file could not be deleted because it is used on a site."
-msgstr ""
+msgstr "Filen kunne ikke slettes da den bliver brugt på en side."
 
 #: ../application/admin/inc/functions.php:1359
 msgid ""
 "The folder could not be deleted, you may not have sufficient rights to this "
 "folder."
 msgstr ""
+"Mappen kunne ikke slettes, du har muligvis ikke rettigheder til denne mappe."
 
 #: ../application/admin/inc/functions.php:1518
 msgid "You must enter a search word."
-msgstr ""
+msgstr "Du skal indtaste et søge ord."
 
 #: ../application/admin/inc/functions.php:1668
 msgid "The following rows have no lists:"
-msgstr ""
+msgstr "Følgende rækker er uden lister:"
 
 #: ../application/admin/inc/functions.php:1674
 #: ../application/admin/inc/functions.php:1874
 msgid "The following pages have no binding"
-msgstr ""
+msgstr "Følgende sider har ikke nogen binding"
 
 #: ../application/admin/inc/functions.php:1687
 msgid "The following categories are orphans:"
-msgstr ""
+msgstr "Følgende kategorier er løse:"
 
 #: ../application/admin/inc/functions.php:1694
 msgid "The following categories have no binding"
-msgstr ""
+msgstr "Følgende kategorier har ingen binding"
 
 #: ../application/admin/inc/functions.php:1717
 #: ../application/admin/inc/functions.php:1720
 msgid "The following categories are tied in itself:"
-msgstr ""
+msgstr "Følgende kategorier er bundet under sig selv:"
 
 #: ../application/admin/inc/functions.php:1739
 #, php-format
 msgid "The following %d files must be renamed:"
-msgstr ""
+msgstr "Følgende %d filer skal omdøbes:"
 
 #: ../application/admin/inc/functions.php:1750
 msgid "The following files must be renamed"
-msgstr ""
+msgstr "Følge filer skal omdøbes"
 
 #: ../application/admin/inc/functions.php:1769
 #, php-format
 msgid "The following %d files are in a folder that needs to be renamed:"
-msgstr ""
+msgstr "Følgende %d filer er i en mappe der skal omdøbes:"
 
 #: ../application/admin/inc/functions.php:1781
 msgid "The following folders must be renamed"
-msgstr ""
+msgstr "Følgende mapper skal omdøbes"
 
 #: ../application/admin/inc/functions.php:1835
 msgid "The following lists are orphans:"
-msgstr ""
+msgstr "Følgende lister er løse:"
 
 #: ../application/admin/inc/functions.php:1844
 msgid "The following lists are not tied to any page"
-msgstr ""
+msgstr "Følgende lister er ikke bundet til nogen side"
 
 #: ../application/admin/inc/functions.php:1909
 msgid "The following pages are both active and inactive"
-msgstr ""
+msgstr "Følgende sider er både aktive og inaktive"
 
 #: ../application/admin/inc/functions.php:1937
 msgid "The following inactive pages appears in list on active pages"
-msgstr ""
+msgstr "Følgende indaktive sider optræder i lister på aktive sider"
 
 #: ../application/admin/inc/functions.php:1991
 msgid "You must enter a name and choose a location for the new category."
-msgstr ""
+msgstr "Du skal indtaste et navn og vælge en placering til den nye kategori."
 
 #: ../application/admin/inc/functions.php:2015
 msgid "You must enter a name and a text of the requirement."
-msgstr ""
+msgstr "Du skal indtaste et navn og en tekst til kravet."
 
 #: ../application/admin/inc/functions.php:2038
 msgid "You must enter a name."
-msgstr ""
+msgstr "Du skal indtaste et navn."
 
 #: ../application/admin/inc/functions.php:2116
 msgid "The binding does not exist."
-msgstr ""
+msgstr "Bindingen eksisterer ikke."
 
 #: ../application/admin/inc/functions.php:2138
 msgid "The binding already exists."
-msgstr ""
+msgstr "Bindingen eksisterer allerede."
 
 #: ../application/admin/inc/functions.php:2253
 msgid "The category can not be placed under itself."
-msgstr ""
+msgstr "Kategorien kan ikke placeres under sig selv."
 
 #: ../application/admin/inc/functions.php:2479
 #: ../application/admin/inc/functions.php:2539
 msgid "E-mail address is not valid!"
-msgstr ""
+msgstr "Email adressen er ikke gyldig!"
 
 #: ../application/admin/inc/functions.php:2482
 msgid "You have not selected a sender!"
-msgstr ""
+msgstr "Du har ikke valgt en afsender!"
 
 #: ../application/admin/inc/functions.php:2488
 msgid "The invoice must be of at at least 1 krone!"
-msgstr ""
+msgstr "Fakturaen skal være på mindst 1 krone!"
 
 #: ../application/admin/inc/functions.php:2504
 msgid "Online payment for "
-msgstr ""
+msgstr "Online betaling til "
 
 #: ../application/admin/inc/functions.php:2513
 msgid "Unable to sendt e-mail!"
-msgstr ""
+msgstr "Kan ikke sende e-mail!"
 
 #: ../application/admin/inc/functions.php:2535
 msgid "You can not send a reminder until the invoice is sent!"
-msgstr ""
+msgstr "Du kan ikke sende en rykker før fakturaen er sendt!"
 
 #: ../application/admin/inc/functions.php:2573
 msgid "A Reminder was sent to the customer."
-msgstr ""
+msgstr "En rykker blev sendt til kunden."
 
 #: ../application/admin/inc/functions.php:2602
 #: ../application/admin/inc/functions.php:2631
 msgid "An error occurred"
-msgstr ""
+msgstr "En fejl er opstået"
