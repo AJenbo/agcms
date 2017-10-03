@@ -4,9 +4,9 @@
         <table style="border-bottom:1px solid;" id="faktura" cellspacing="0">
             <thead>
                 <tr>
-                    <td class="td1">Quantity</td>
-                    <td>Title</td>
-                    <td class="td3 tal" style="width:64px">unit price</td>
+                    <td class="td1">Antal</td>
+                    <td>Benævnelse</td>
+                    <td class="td3 tal" style="width:64px">á pris</td>
                     <td class="td4 tal" style="width:72px">Total</td>
                 </tr>
             </thead>
@@ -39,25 +39,25 @@
         var values = [{% for item in invoice.items %}{{item.value}}{% if not loop.last %},{% endif %}{% endfor %}];
         --></script>
         {% if invoice.hasUnknownPrice %}
-        <small>* The price cannot be determined automatically, please make sure to describe the exact type in the note field.</small></p>
+        <small>* Prisen kan ikke automatisk fastsættes, beskriv venligst den eksakte type i notatfeltet for neden.</small></p>
         {% endif %}
     </p>
     <p class="clearfix">
-        Prefered payment method:
+        Foretrukken betalingsmetode:
         <select name="paymethod" style="float:right;">
-            <option value="creditcard"{% if payMethod == 'creditcard' %} selected="selected"{% endif %}>Credit Card</option>
-            <option value="bank"{% if payMethod == 'bank' %} selected="selected"{% endif %}>Bank transaction</option>
-            <option value="cash"{% if payMethod == 'cash' %} selected="selected"{% endif %}>Cash</option>
+            <option value="creditcard"{% if payMethod == 'creditcard' %} selected="selected"{% endif %}>Betalingskort</option>
+            <option value="bank"{% if payMethod == 'bank' %} selected="selected"{% endif %}>Bank overførsel</option>
+            <option value="cash"{% if payMethod == 'cash' %} selected="selected"{% endif %}>Kontant</option>
         </select>
     </p>
     <p>
-        Delevery:
+        Levering:
         <select style="float:right;" name="delevery">
-            <option value="postal"{% if deleveryMethode == 'postal' %} selected="selected"{% endif %}>Mail</option>
-            <option value="express"{% if deleveryMethode == 'express' %} selected="selected"{% endif %}>Mail express</option>
-            <option value="pickup"{% if deleveryMethode == 'pickup' %} selected="selected"{% endif %}>Pickup in store</option>
+            <option value="postal"{% if deleveryMethode == 'postal' %} selected="selected"{% endif %}>Post</option>
+            <option value="express"{% if deleveryMethode == 'express' %} selected="selected"{% endif %}>Ekspres post</option>
+            <option value="pickup"{% if deleveryMethode == 'pickup' %} selected="selected"{% endif %}>Afhent i butikken</option>
         </select>
-        <small id="shipping"><br />The excact shipping cost will be calculcated as the goods are packed.</small>
+        <small id="shipping"><br />Den nøjagtige forsendelses pris vil blive udregnet når varerne pakkes.</small>
     </p>
     <p>
         Note:<br />

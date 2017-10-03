@@ -534,6 +534,18 @@ class Page extends AbstractRenderable
         return ORM::getByQuery(Page::class, $this->getAccessoryQuery());
     }
 
+    public function getActiveAccessories(): array
+    {
+        $accessories = [];
+        foreach ($this->getAccessories() as $accessory) {
+            if (!$accessory->isInactive()) {
+                $accessories[] = $accessory;
+            }
+        }
+
+        return $accessories;
+    }
+
     private function getAccessoryQuery(): string
     {
         Render::addLoadedTable('tilbehor');

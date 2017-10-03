@@ -1,27 +1,27 @@
 {% if product.oldPrice %}
     {% if product.oldPriceType == 1 %}
-        Retail price: <span>
+        Vejl.pris: <span>
     {% elseif product.oldPriceType == 2 %}
-        Should cost: <span>
+        Burde koste: <span>
     {% else %}
-        Before: <span class="XPris">
+        Før: <span class="XPris">
     {% endif %}
-    {{product.oldPrice|number_format(2, '.', ',')}}</span>
+    {{product.oldPrice|number_format(0, ',', '.')}},-</span>
 {% endif %}
 
 {% if product.price %}
     {% if product.priceType == 1 and product.oldPrice %}
-        <span class="NyPris">New price from:
+        <span class="NyPris">Nu fra:
     {% elseif product.priceType == 2 and product.oldPrice %}
-        <span class="NyPris">Used:
+        <span class="NyPris">Brugt:
     {% elseif product.priceType == 1 %}
-        Price from: <span class="Pris">
+        Fra: <span class="Pris">
     {% elseif product.priceType == 2 %}
-        Used: <span class="Pris">
+        Brugt: <span class="Pris">
     {% elseif product.oldPrice %}
-        <span class="NyPris">Now:
+        <span class="NyPris">Nu:
     {% else %}
-        Price: <span class="Pris">
+        Pris: <span class="Pris">
     {% endif %}
-    {{product.price|number_format(2, '.', ',')}}</span>
+    {{product.price|number_format(0, ',', '.')}},-</span>
 {% endif %}

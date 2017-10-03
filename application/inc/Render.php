@@ -11,7 +11,6 @@ use Twig_Environment;
 
 class Render
 {
-    private static $accessories = [];
     private static $activeRequirement;
     private static $activeBrand;
     private static $activeCategory;
@@ -33,7 +32,6 @@ class Render
     private static $pageList = [];
     private static $price = [];
     private static $searchMenu = [];
-    private static $serial = '';
     private static $timeStamp = 0;
     private static $adminOnlyTables = [
         'email',
@@ -377,7 +375,7 @@ class Render
             || !empty($_GET['sogikke'])
             || !empty($_GET['maerke'])
         ) {
-            $pages = self::searchListe(
+            self::$pageList = self::searchListe(
                 $_GET['q'] ?? '',
                 intval($_GET['maerke'] ?? 0),
                 $_GET['varenr'] ?? '',
@@ -385,11 +383,10 @@ class Render
                 intval($_GET['maxpris'] ?? 0),
                 $_GET['sogikke'] ?? ''
             );
-            if (count($pages) === 1) {
-                $page = array_shift($pages);
+            if (count(self::$pageList) === 1) {
+                $page = array_shift(self::$pageList);
                 redirect($page->getCanonicalLink(), 302);
             }
-            self::loadPagesData($pages);
 
             self::$pageType = 'tiles';
             self::$title = 'Søg på ' . Config::get('site_name');
@@ -403,16 +400,6 @@ class Render
             self::$bodyHtml = self::$activeRequirement->getHtml();
         } elseif (self::$pageType === 'index') {
             self::$bodyHtml = ORM::getOne(CustomPage::class, 1)->getHtml();
-        }
-
-        if (self::$activePage) {
-            $requirement = self::$activePage->getRequirement();
-            if ($requirement) {
-                self::$requirement = [
-                    'link' => $requirement->getCanonicalLink(),
-                    'name' => $requirement->getTitle(),
-                ];
-            }
         }
 
         self::cleanData();
@@ -440,20 +427,13 @@ class Render
         self::$pageType = 'tiles';
         self::$canonical = $brand->getCanonicalLink();
         self::$title = $brand->getTitle();
-        self::$brand = [
-            'link'  => $brand->getCanonicalLink(),
-            'name'  => $brand->getTitle(),
-            'xlink' => $brand->getLink(),
-            'icon'  => $brand->getIcon() ? $brand->getIcon()->getPath() : '',
-        ];
+        self::$brand = $brand;
 
-        $pages = [];
         foreach ($brand->getPages() as $page) {
             if (!$page->isInactive()) {
-                $pages[] = $page;
+                self::$pageList[] = $page;
             }
         }
-        self::loadPagesData($pages);
     }
 
     /**
@@ -467,18 +447,15 @@ class Render
             return;
         }
 
-        $pages = [];
         foreach ($category->getPages() as $page) {
             if (!$page->isInactive()) {
-                $pages[] = $page;
+                self::$pageList[] = $page;
             }
         }
-        if (count($pages) === 1) {
-            self::$activePage = array_shift($pages);
-
+        if (count(self::$pageList) === 1) {
+            self::$activePage = array_shift(self::$pageList);
             return;
         }
-        self::loadPagesData($pages);
 
         $title = trim($category->getTitle());
         if ($category->getIcon()) {
@@ -492,60 +469,6 @@ class Render
         self::$email     = $category->getEmail();
         self::$canonical = $category->getCanonicalLink();
         self::$pageType  = $category->getRenderMode() === Category::GALLERY ? 'tiles' : 'list';
-    }
-
-    /**
-     * Load data from pages.
-     *
-     * @param array $pages The pages
-     */
-    private static function loadPagesData(array $pages = null): void
-    {
-        if (!$pages) {
-            return;
-        }
-
-        $pageArray = [];
-        foreach ($pages as $page) {
-            $pageArray[] = [
-                'id'     => $page->getId(),
-                'navn'   => $page->getTitle(),
-                'object' => $page,
-            ];
-        }
-        $pageArray = arrayNatsort($pageArray, 'id', 'navn', 'asc');
-        foreach ($pageArray as $item) {
-            $page = $item['object'];
-
-            if (!self::$activeCategory || self::$activeCategory->getRenderMode() === Category::GALLERY) {
-                self::$pageList[] = [
-                    'id' => $page->getId(),
-                    'name' => $page->getTitle(),
-                    'date' => $page->getTimeStamp(),
-                    'link' => $page->getCanonicalLink(self::$activeCategory),
-                    'icon' => $page->getImagePath(),
-                    'text' => $page->getExcerpt(),
-                    'price' => [
-                        'before' => $page->getOldPrice(),
-                        'now' => $page->getPrice(),
-                        'from' => $page->getPriceType(),
-                        'market' => $page->getOldPriceType(),
-                    ],
-                ];
-            } else {
-                self::$pageList[] = [
-                    'id' => $page->getId(),
-                    'name' => $page->getTitle(),
-                    'date' => $page->getTimeStamp(),
-                    'link' => $page->getCanonicalLink(self::$activeCategory),
-                    'serial' => $page->getSku(),
-                    'price' => [
-                        'before' => $page->getOldPrice(),
-                        'now' => $page->getPrice(),
-                    ],
-                ];
-            }
-        }
     }
 
     /**
@@ -563,7 +486,6 @@ class Render
         self::$canonical  = $page->getCanonicalLink();
         self::$headline   = $page->getTitle();
         self::$keywords[] = $page->getTitle();
-        self::$serial     = $page->getSku();
         self::$timeStamp  = $page->getTimestamp();
         self::$title      = trim($page->getTitle()) ?: self::$title;
 
@@ -573,39 +495,7 @@ class Render
                 . self::getTableHtml($table->getId(), null, self::$activeCategory) . '</div>';
         }
 
-        self::$price = [
-            'now'    => $page->getPrice(),
-            'new'    => $page->getPrice(),
-            'from'   => $page->getPriceType(),
-            'before' => $page->getOldPrice(),
-            'old'    => $page->getOldPrice(),
-            'market' => $page->getOldPriceType(),
-        ];
-
-        $brand = $page->getBrand();
-        if ($brand) {
-            self::$brand = [
-                'name'  => $brand->getTitle(),
-                'link'  => $brand->getCanonicalLink(),
-                'xlink' => $brand->getLink(),
-                'icon'  => $brand->getIcon() ? $brand->getIcon()->getPath() : '',
-            ];
-        }
-
-        foreach ($page->getAccessories() as $accessory) {
-            self::$accessories[] = [
-                'name' => $accessory->getTitle(),
-                'link' => $accessory->getCanonicalLink(),
-                'icon' => $accessory->getImagePath(),
-                'text' => $accessory->getExcerpt(),
-                'price' => [
-                    'now' => $accessory->getPrice(),
-                    'from' => $accessory->getPriceType(),
-                    'before' => $accessory->getOldPrice(),
-                    'market' => $accessory->getOldPriceType(),
-                ],
-            ];
-        }
+        self::$brand = $page->getBrand();
     }
 
     /**
@@ -617,7 +507,6 @@ class Render
      */
     private static function getRootPages(): array
     {
-        $return = [];
         $pages = ORM::getByQuery(
             Page::class,
             "
@@ -630,15 +519,8 @@ class Render
             "
         );
         self::addLoadedTable('bind');
-        foreach ($pages as $page) {
-            $return[] = [
-                'id'   => $page->getId(),
-                'name' => $page->getTitle(),
-                'link' => $page->getCanonicalLink(),
-            ];
-        }
 
-        return $return;
+        return $pages;
     }
 
     /**
@@ -1000,13 +882,13 @@ class Render
                 'pageId'          => self::$activePage ? self::$activePage->getId() : 0,
                 'headline'        => self::$headline,
                 'timeStamp'       => self::$timeStamp,
-                'serial'          => self::$serial,
+                'page'            => self::$activePage,
                 'menu'            => self::$menu,
                 'openCategoryIds' => self::$openCategoryIds,
                 'searchMenu'      => self::$searchMenu,
                 'hasItemsInCart'  => !empty($_SESSION['faktura']['quantities']),
-                'requirement'     => self::$requirement,
                 'infoPage'        => ORM::getOne(CustomPage::class, 2),
+                'rootPages'       => self::$pageType === 'index' ? self::getRootPages() : [],
             ]
         );
     }

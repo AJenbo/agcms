@@ -370,6 +370,11 @@ class Category extends AbstractRenderable
         return false;
     }
 
+    public function hasVisibleChildren(): bool
+    {
+        return $this->hasChildren(true);
+    }
+
     /**
      * Return attache pages.
      *

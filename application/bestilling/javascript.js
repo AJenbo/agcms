@@ -17,7 +17,7 @@ function getElementsByClassName(name)
 
 function updateprice() {
     var total = document.getElementsByClassName('total');
-    var input = document.getElementsByName('quantity[ ]');
+    var input = document.getElementsByName('quantity[]');
     var subtotal = 0;
     for (var i=0;i<values.length;i++) {
         value = values[i]*input[i].value;

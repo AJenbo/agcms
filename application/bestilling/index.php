@@ -14,7 +14,7 @@ require_once __DIR__ . '/../inc/Bootstrap.php';
 
 // Add item to basket
 $rowId = 0;
-if (($pageId = intval($_GET['add'] ?? 0)) || ($rowId = (int)) ($_GET['add_list_item'] ?? 0))) {
+if (($pageId = (int) ($_GET['add'] ?? 0)) || ($rowId = (int) ($_GET['add_list_item'] ?? 0))) {
     $redirectUrl = '/';
     if ($_SERVER['HTTP_REFERER']) {
         $redirectUrl = $_SERVER['HTTP_REFERER'];
@@ -143,9 +143,9 @@ if (!empty($_SESSION['faktura']['quantities'])) {
 
         $data = [
             'invoice' => invoiceFromSession(),
-            'javascript' => $javascript,
             'payMethod' => $_SESSION['faktura']['paymethod'] ?? '',
             'deleveryMethode' => $_SESSION['faktura']['delevery'] ?? '',
+            'note' => $_SESSION['faktura']['note'] ?? '',
         ];
         Render::$bodyHtml = Render::render('partial-order-form', $data);
     } elseif ($_GET['step'] == 1) {

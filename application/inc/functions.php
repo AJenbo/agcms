@@ -3,6 +3,7 @@
 use AGCMS\Config;
 use AGCMS\DB;
 use AGCMS\Entity\Category;
+use AGCMS\Entity\Invoice;
 use AGCMS\ORM;
 use AGCMS\Render;
 use AJenbo\Imap;
@@ -193,6 +194,65 @@ function arrayNatsort(array $aryData, string $strIndex, string $strSortBy, strin
 
     //return the result
     return $aryResult;
+}
+
+function invoiceFromSession(): Invoice
+{
+    $items = [];
+    foreach ($_SESSION['faktura']['products'] as $key => $title) {
+        $items[] = [
+            'title'    => $title,
+            'value'    => $_SESSION['faktura']['values'][$key] ?? 0,
+            'quantity' => $_SESSION['faktura']['quantities'][$key] ?? 0,
+        ];
+    }
+    $items = json_encode($items);
+
+    $note = '';
+    $payMethod = $_SESSION['faktura']['paymethod'] ?? '';
+    if ($payMethod === 'creditcard') {
+        $note .= _('I would like to pay via credit card.');
+    } elseif ($payMethod === 'bank') {
+        $note .= _('I would like to pay via bank transaction.');
+    } elseif ($payMethod === 'cash') {
+        $note .= _('I would like to pay via cash.');
+    }
+    $note .= "\n";
+    $delevery = $_SESSION['faktura']['delevery'] ?? '';
+    if ($delevery === 'pickup') {
+        $note .= _('I will pick up the goods in your shop.');
+    } elseif ($delevery === 'postal') {
+        $note .= _('Please send the goods by mail.');
+    } elseif ($delevery === 'express') {
+        $note .= _('Please send the order to by mail express.');
+    }
+    $note = trim($note . "\n" . $_SESSION['faktura']['note'] ?? '');
+
+    return new Invoice([
+        'item_data'            => $items,
+        'has_shipping_address' => (bool) ($_SESSION['faktura']['altpost'] ?? false),
+        'amount'               => (int) ($_SESSION['faktura']['amount'] ?? 0),
+        'name'                 => $_SESSION['faktura']['navn'] ?? '',
+        'att'                  => $_SESSION['faktura']['att'] ?? '',
+        'address'              => $_SESSION['faktura']['adresse'] ?? '',
+        'postbox'              => $_SESSION['faktura']['postbox'] ?? '',
+        'postcode'             => $_SESSION['faktura']['postnr'] ?? '',
+        'city'                 => $_SESSION['faktura']['by'] ?? '',
+        'country'              => $_SESSION['faktura']['land'] ?? '',
+        'email'                => $_SESSION['faktura']['email'] ?? '',
+        'phone1'               => $_SESSION['faktura']['tlf1'] ?? '',
+        'phone2'               => $_SESSION['faktura']['tlf2'] ?? '',
+        'shipping_phone'       => $_SESSION['faktura']['posttlf'] ?? '',
+        'shipping_name'        => $_SESSION['faktura']['postname'] ?? '',
+        'shipping_att'         => $_SESSION['faktura']['postatt'] ?? '',
+        'shipping_address'     => $_SESSION['faktura']['postaddress'] ?? '',
+        'shipping_address2'    => $_SESSION['faktura']['postaddress2'] ?? '',
+        'shipping_postbox'     => $_SESSION['faktura']['postpostbox'] ?? '',
+        'shipping_postcode'    => $_SESSION['faktura']['postpostalcode'] ?? '',
+        'shipping_city'        => $_SESSION['faktura']['postcity'] ?? '',
+        'shipping_country'     => $_SESSION['faktura']['postcountry'] ?? '',
+        'note'                 => $note,
+    ]);
 }
 
 /**
