@@ -2348,7 +2348,7 @@ function sletSide(int $sideId): array
         }
 
         db()->query('DELETE FROM `list_rows` WHERE list_id IN(' . implode('', $listIds) . ')');
-        db()->query('DELETE FROM `lists` WHERE `sideId` = ' . $sideId);
+        db()->query('DELETE FROM `lists` WHERE `page_id` = ' . $sideId);
     }
     db()->query('DELETE FROM `list_rows` WHERE `link` = ' . $sideId);
     db()->query('DELETE FROM `bind` WHERE side = ' . $sideId);
