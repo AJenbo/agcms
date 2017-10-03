@@ -26,17 +26,17 @@
                     </td>
                     <td>{{item.title}}</td>
                     <td class="tal">
-                        {% if item.value %}{{item.value|number_format(2, ',', '')}}{% else %}*{% endif %}
+                        {% if item.value %}{{(item.value * (1 + invoice.vat))|number_format(2, ',', '')}}{% else %}*{% endif %}
                     </td>
                     <td class="tal total">
-                        {% if item.value %}{{(item.value * item.quantity)|number_format(2, ',', '')}}{% else %}*{% endif %}
+                        {% if item.value %}{{(item.value * item.quantity * (1 + invoice.vat))|number_format(2, ',', '')}}{% else %}*{% endif %}
                     </td>
                 </tr>
                 {% endfor %}
             </tbody>
         </table>
         <script type="text/javascript"><!--
-        var values = [{% for item in invoice.items %}{{item.value}}{% if not loop.last %},{% endif %}{% endfor %}];
+        var values = [{% for item in invoice.items %}{{(item.value * (1 + invoice.vat))|json_encode()|raw}}{% if not loop.last %},{% endif %}{% endfor %}];
         --></script>
         {% if invoice.hasUnknownPrice %}
         <small>* Prisen kan ikke automatisk fastsættes, beskriv venligst den eksakte type i notatfeltet for neden.</small></p>

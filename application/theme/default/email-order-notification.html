@@ -29,8 +29,8 @@
                 <tr>
                     <td class="tal">{{item.quantity}}</td>
                     <td>{{item.title}}</td>
-                    <td class="tal">{{item.value|number_format(2, '.', ',')}}</td>
-                    <td class="tal">{{item.value * item.quantity|number_format(2, '.', ',')}}</td>
+                    <td class="tal">{{(item.value * (1 + invoice.vat))|number_format(2, '.', ',')}}</td>
+                    <td class="tal">{{(item.value * item.quantity * (1 + invoice.vat))|number_format(2, '.', ',')}}</td>
                 </tr>
                 {% endfor %}
             </tbody>

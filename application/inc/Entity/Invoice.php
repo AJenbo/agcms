@@ -736,7 +736,7 @@ class Invoice extends AbstractEntity
 
         $this->setTimeStamp(time());
         return [
-            'paydate'        => "UNIX_TIMESTAMP(" . $this->timeStampPay . ")",
+            'paydate'        => $this->timeStampPay ? ("UNIX_TIMESTAMP(" . $this->timeStampPay . ")") : db()->eandq('0000-00-00'),
             'date'           => "NOW()",
             'quantities'     => db()->eandq($itemQuantities),
             'products'       => db()->eandq($itemTitle),
