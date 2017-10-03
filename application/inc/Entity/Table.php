@@ -78,9 +78,12 @@ class Table extends AbstractEntity
             $sorting = $columnSortings[$key] ?? 0;
             $options = [];
             if ($sorting) {
-                $options = db()->fetchOne("SELECT `text` FROM `tablesort` WHERE id = " . $sorting);
-                $options = explode('<', $options['text']);
-                $options = array_map('html_entity_decode', $options);
+                Render::addLoadedTable('tablesort');
+                $tablesort = db()->fetchOne("SELECT `text` FROM `tablesort` WHERE id = " . $sorting);
+                if ($tablesort) {
+                    $options = explode('<', $tablesort['text']);
+                    $options = array_map('html_entity_decode', $options);
+                }
             }
 
             $columns[] = [
