@@ -6,7 +6,7 @@
     {% else %}
         Before: <span class="XPris">
     {% endif %}
-    {{price.before|number_format(0, '.', ',')}},-</span>
+    {{price.before|number_format(2, '.', ',')}}</span>
 {% endif %}
 
 {% if price.now %}
@@ -23,5 +23,5 @@
     {% else %}
         Price: <span class="Pris">
     {% endif %}
-    {{price.now|number_format(0, '.', ',')}},-</span>
+    {{price.now|number_format(2, '.', ',')}}</span>
 {% endif %}
