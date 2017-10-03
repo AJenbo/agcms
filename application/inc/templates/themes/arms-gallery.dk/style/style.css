@@ -45,7 +45,7 @@ a {
 }
 
 .bar a:hover {
-    background-color:#aaaaaa;
+    text-shadow: 0 0 4px #555;
 }
 
 .bar img {
@@ -162,7 +162,7 @@ h1 {
 }
 
 .clearfix {
-    display: inline-block;
+    display: block;
 }
 
 #headder {
@@ -179,8 +179,8 @@ h1 {
     float:right;
 }
 
-#logo {
-    float:left;
+#headder form a {
+    text-decoration: none;
 }
 
 #crumb, #cart {
@@ -395,12 +395,12 @@ marquee {
     text-align:right;
 }
 
-@media only screen and (max-width: 748px) {
+@media only screen and (max-width: 779px) {
     img {
      max-width:100%;
     }
 
-    #logo, #headder form, #container4 {
+    #headder form, #container4 {
         float:none;
     }
 
@@ -457,6 +457,16 @@ marquee {
     #headder div {
         width:auto;
         padding:2px;
+    }
+
+    #menu a.main, #menu a.main_active {
+        background-image: none;
+        margin: 2px auto;
+    }
+
+    #menu a, #menu a.main, #menu a.main_active {
+        width:auto;
+        font-size: 16px;
     }
 
     #menu {

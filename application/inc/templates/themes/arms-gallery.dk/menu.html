@@ -1,0 +1,8 @@
+{% for menuItem in menu %}
+    <a href="{{menuItem.canonicalLink}}" {% if menuItem.id in openCategoryIds %}class="main_active"{% else %}class="main"{% endif %}{% if menuItem.id == categoryId %} id="activmenu"{% endif %}>
+        {{menuItem.title}}
+    </a>
+    {% if menuItem.id in openCategoryIds %}
+    {% include 'submenu.html' with {'menuItems': menuItem.visibleChildren} %}
+    {% endif %}
+{% endfor %}

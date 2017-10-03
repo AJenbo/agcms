@@ -1,0 +1,17 @@
+{% extends "index.html" %}
+
+{% block content %}
+{% if brand %}
+<p align="center">
+    {% if brand.canonicalLink %}<a rel="nofollow" target="_blank" href="{{brand.canonicalLink}}">Læs mere om {% endif %}
+    {{brand.title}}
+    {% if brand.icon %}<br /><img src="{{brand.icon.path}}" alt="" />{% endif %}
+    {% if brand.canonicalLink %}</a>{% endif %}
+</p>
+{% endif %}
+
+{% if not pageList %}
+<p align="center" class="web">Søgningen gav intet resultat</p>
+{% endif %}
+{% include 'productTiles.html' with {'products': pageList} %}
+{% endblock %}

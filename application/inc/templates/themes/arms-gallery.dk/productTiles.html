@@ -1,0 +1,29 @@
+{% if products %}
+<table cellspacing="0" class="liste">
+    {% for item in products %}
+    {% if loop.index is odd or loop.first %}</tr>{% endif %}
+        <td>
+            <div class="vare">
+                <h2><a href="{{item.canonicalLink}}">{{item.title}}</a></h2>
+                {% if item.imagePath %}
+                <div style="text-align:center">
+                    <a href="{{item.canonicalLink}}">
+                        <img style="margin:10px 0" alt="" src="{{item.imagePath}}" />
+                    </a>
+                </div>
+                {% endif %}
+                {% if item.excerpt %}
+                <div style="padding:5px;">{{item.excerpt}}</div>
+                {% endif %}
+                <a href="{{item.canonicalLink}}">
+                    <img class="laemere web" src="/images/web/info.gif" alt="Læs mere" width="83" height="15" />
+                </a>
+                <div style="padding:5px; text-align:right;">
+                    {% if item.price > 0 %}<strong>{{item.price}}</strong>{% else %}&nbsp;{% endif %}
+                </div>
+            </div>
+        </td>
+    {% if loop.index is even or loop.last %}</tr>{% endif %}
+    {% endfor %}
+</table>
+{% endif %}
