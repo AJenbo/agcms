@@ -14,13 +14,13 @@
         </style>
     </head>
     <body>
-        <p>{{invoice.name}} has placed an order for the following:</p>
+        <p>{{invoice.name}} har lavet en bestilling på følgende:</p>
         <table id="faktura" cellspacing="0">
             <thead>
                 <tr>
-                    <td class="td1">Quantity</td>
-                    <td>Title</td>
-                    <td class="td3 tal">unit price</td>
+                    <td class="td1">Antal</td>
+                    <td>Benævnelse</td>
+                    <td class="td3 tal">á pris</td>
                     <td class="td4 tal">Total</td>
                 </tr>
             </thead>
@@ -29,15 +29,15 @@
                 <tr>
                     <td class="tal">{{item.quantity}}</td>
                     <td>{{item.title}}</td>
-                    <td class="tal">{{item.value|number_format(2, '.', ',')}}</td>
-                    <td class="tal">{{item.value * item.quantity|number_format(2, '.', ',')}}</td>
+                    <td class="tal">{{item.value|number_format(2, ',', '.')}}</td>
+                    <td class="tal">{{item.value * item.quantity|number_format(2, ',', '.')}}</td>
                 </tr>
                 {% endfor %}
             </tbody>
         </table>
-        <p><b>Note:</b><br />{{invoice.note|nl2br}}</p>
+        <p><b>Notat:</b><br />{{invoice.note|nl2br}}</p>
         <p>
-            <b>Address:</b>
+            <b>Adresse:</b>
             {% if invoice.name %}<br />{{invoice.name}}{% endif %}
             {% if invoice.att %}<br />{{invoice.att}}{% endif %}
             {% if invoice.address %}<br />{{invoice.address}}{% endif %}
@@ -47,7 +47,7 @@
         </p>
         {% if invoice.hasShippingAddress %}
         <p>
-            <b>Delivery address:</b>
+            <b>Lev. adresse:</b>
             {% if invoice.shippingName %}<br />{{invoice.shippingName}}{% endif %}
             {% if invoice.shippingAtt %}<br />{{invoice.shippingAtt}}{% endif %}
             {% if invoice.shippingAddress %}<br />{{invoice.shippingAddress}}{% endif %}
@@ -57,12 +57,12 @@
             {% if invoice.shippingCountry != 'DK' %}<br />{{invoice.shippingCountry}}{% endif %}
         </p>
         {% endif %}
-        <p>Click <a href="{{invoice.adminLink}}">here</a> to expedite the order.</p>
+        <p>Klik <a href="{{invoice.adminLink}}">her</a> for at behandle ordren.</p>
         <p>
             email: <a href="mailto:{{invoice.email}}">{{invoice.email}}</a>
-            {% if invoice.phone1 %}Phone:{{invoice.phone1}}{% endif %}
-            {% if invoice.phone2 %}Mobile:{{invoice.phone2}}{% endif %}
+            {% if invoice.phone1 %}Tlf.:{{invoice.phone1}}{% endif %}
+            {% if invoice.phone2 %}Mobil:{{invoice.phone2}}{% endif %}
         </p>
-        <p>Sincerely the computer</p>
+        <p>Mvh Computeren</p>
     </body>
 </html>

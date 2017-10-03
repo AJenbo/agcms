@@ -1,0 +1,5 @@
+{% extends "email-admin-payment-confirmation.html" %}
+
+{% block info %}
+<p>En kunde forsøgte at se status-side for online faktura #{{invoice.id}}, som er annulleret eller afvist.</p>
+{% endblock %}

@@ -1,0 +1,5 @@
+{% extends "email-admin-payment-confirmation.html" %}
+
+{% block info %}
+<p>En bruger forsøgte at betale online faktura #{{invoice.id}}, som ikke findes i systemet!</p>
+{% endblock %}
