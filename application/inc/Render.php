@@ -1006,6 +1006,7 @@ class Render
                 'searchMenu'      => self::$searchMenu,
                 'hasItemsInCart'  => !empty($_SESSION['faktura']['quantities']),
                 'requirement'     => self::$requirement,
+                'infoPage'        => ORM::getOne(CustomPage::class, 2),
             ]
         );
     }
