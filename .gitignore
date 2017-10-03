@@ -1,7 +1,10 @@
 .DS_Store
 *~
-*.workspace
-*.phprj
-application/vendor/
-coverage/
-.codelite/
+/.codelite
+/*.phprj
+/*.workspace
+/coverage
+/application/files
+/application/images
+/application/inc/cache
+/application/vendor
