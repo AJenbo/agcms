@@ -775,7 +775,7 @@ class Render
                 if ($row[$columnId] >= 0) {
                     $html .= '<a href="/bestilling/?'
                         . ($page ? ('add=' . $page->getId()) : ('add_list_item=' . $row['id']))
-                        . '"><img src="/theme/images/cart_add.png" title="'
+                        . '"><img src="/theme/default/images/cart_add.png" title="'
                         . _('Add to shopping cart') . '" alt="+" /></a>';
                 }
                 $html .= '</td>';
@@ -912,22 +912,23 @@ class Render
 
     public static function render(string $template = 'index', array $data = []): string
     {
-        $templatePath = _ROOT_ . '/inc/templates/';
-        $loader = new Twig_Loader_Filesystem('.', $templatePath);
+        $templatePath = _ROOT_ . '/theme/';
+        $loader = new Twig_Loader_Filesystem('default/', $templatePath);
         if (Config::get('locale', 'en_US') !== 'en_US') {
-            $loader->prependPath(Config::get('locale') . '/');
+            $loader->prependPath('default/' . Config::get('locale') . '/');
         }
         if (Config::get('theme')) {
-            $loader->prependPath('themes/' . Config::get('theme') . '/');
+            $loader->prependPath(Config::get('theme') . '/');
             if (Config::get('locale', 'en_US') !== 'en_US') {
-                $loader->prependPath('themes/' . Config::get('theme') . '/' . Config::get('locale') . '/');
+                $loader->prependPath(Config::get('theme') . '/' . Config::get('locale') . '/');
             }
         }
 
         $twig = new Twig_Environment($loader);
-        if (Config::get('enviroment', 'develop') !== 'develop') {
-            $twig->setCache(_ROOT_ . '/inc/cache/twig');
-        } else {
+        if (Config::get('enviroment', 'develop') === 'production') {
+            $twig->setCache(_ROOT_ . '/theme/cache/twig');
+        }
+        if (Config::get('enviroment', 'develop') === 'develop') {
             $twig->enableDebug();
         }
 
