@@ -1507,6 +1507,7 @@ function purifyHTML(string $string): string
     $config->set('HTML.SafeObject', true);
     $config->set('Output.FlashCompat', true);
     $config->set('HTML.Doctype', 'XHTML 1.0 Transitional');
+    $config->set('Cache.SerializerPath', _ROOT_ . '/theme/cache/HTMLPurifier');
     $purifier = new HTMLPurifier($config);
 
     return $purifier->purify($string);
