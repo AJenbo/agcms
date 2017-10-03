@@ -349,7 +349,7 @@ function sendEmail(int $id, string $from, string $interests, string $subject, st
 
     $data = [
         'siteName' => Config::get('site_name'),
-        'css' => file_get_contents(_ROOT_ . '/theme/email.css'),
+        'css' => file_get_contents(_ROOT_ . '/theme/' . Config::get('theme', 'default') . '/style/email.css'),
         'body' => str_replace(' href="/', ' href="' . Config::get('base_url') . '/', $text),
     ];
 
@@ -2771,6 +2771,7 @@ function getBasicAdminTemplateData(): array
             'suplemanger' => $_COOKIE['hideSuplemanger'] ?? false,
             'tilbehor'    => $_COOKIE['hidetilbehor'] ?? false,
             'tools'       => $_COOKIE['hideTools'] ?? false,
+            'theme'       => Config::get('theme', 'default'),
         ],
     ];
 }
