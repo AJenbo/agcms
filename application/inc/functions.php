@@ -19,7 +19,7 @@ function bootStrap(): void
         error_reporting(-1);
     }
     date_default_timezone_set(Config::get('timezone', 'Europe/Copenhagen'));
-    setlocale(LC_ALL, Config::get('locale', 'en_US'));
+    setlocale(LC_ALL, Config::get('locale', 'C'));
     bindtextdomain('agcms', _ROOT_ . '/theme/locale');
     bind_textdomain_codeset('agcms', 'UTF-8');
     textdomain('agcms');
