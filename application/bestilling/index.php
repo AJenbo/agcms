@@ -59,7 +59,16 @@ if (($pageId = (int) ($_GET['add'] ?? 0)) || ($rowId = (int) ($_GET['add_list_it
             redirect($redirectUrl); // Product does not exist or is disabled
         }
 
-        $productTitle = $productTitle ?: $page->getTitle();
+        if (!$productTitle) {
+            $productTitle = $page->getTitle();
+            if ($page->getSku()) {
+                if ($productTitle) {
+                    $productTitle .= ' - ';
+                }
+
+                $productTitle .= $page->getSku();
+            }
+        }
         $productPrice = $productPrice ?: $page->getPrice();
         $redirectUrl = $page->getCanonicalLink();
     }
