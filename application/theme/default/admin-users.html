@@ -6,7 +6,7 @@
 
 {% block canvas %}
 <div id="headline">Users and Groups</div>
-<table id="addressbook">
+<table id="list">
     <thead>
         <tr>
             <td></td>
@@ -16,7 +16,7 @@
     </thead>
     <tbody>
         {% for user in users %}
-        <tr{% if loop.index is even %} class="altrow"{% endif %}>
+        <tr>
             <td>
             {% if userSession.access %}
                 <img src="images/cross.png" alt="X" title="Delete" onclick="deleteuser({{user.id}}, {{user.fullName|json_encode()}})" />

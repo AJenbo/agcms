@@ -124,7 +124,7 @@
     </thead>
     <tbody id="list">
     {% for invoice in invoices %}
-        <tr{% if loop.index is even %} class="altbc"{% endif %}>
+        <tr>
             <td style="text-align:center">
                 <a href="faktura.php?id={{invoice.id}}">
                     {% if invoice.status == 'new' %}

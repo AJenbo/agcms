@@ -141,7 +141,7 @@
                 <tbody id="list{{table.id}}rows">
                     {% if table.rows %}
                     {% for row in table.rows %}
-                    <tr id="list_row{{row.id}}"{% if loop.index is even %} class="altrow"{% endif %}>
+                    <tr id="list_row{{row.id}}">
                         {% for columnId, column in table.columns %}
                         {% if column.sort == 0 %}
                         <td{% if column.type %} style="text-align:right;"{% endif %}>

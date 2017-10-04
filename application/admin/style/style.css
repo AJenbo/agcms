@@ -81,18 +81,15 @@ a:hover {
     width:100%;
     background-color:#FFFFFF;
 }
-#listbox table *, #addressbook * {
+#listbox table * {
     color:#000000;
     border-collapse:separate;
 }
-#addressbook a {
-    display: block;
-}
-#listbox table td, #addressbook td {
+#listbox table td {
     border:1px solid #FFFFFF;
     line-height:16px;
 }
-#listbox table img, #addressbook img {
+#listbox table img {
     vertical-align:top;
 }
 #listbox caption {
@@ -100,19 +97,19 @@ a:hover {
     font-size:14px;
     font-weight:bold;
 }
-#listbox thead, #addressbook thead {
+#listbox thead {
     background-color:#999999;
     font-weight:bold;
 }
-#listbox .altrow, #addressbook .altrow {
-    background-color:#CCCCCC;
+#listbox tbody tr:nth-child(even), #list tbody tr:nth-child(even) {
+    background: #CCCCCC
 }
 #listbox input, #listbox select {
     border:0;
     padding:0;
     background-color:transparent;
 }
-#listbox tbody tr:hover, #listbox tfoot tr, #addressbook tbody tr:hover, #addressbook tfoot tr {
+#listbox tbody tr:hover, #listbox tfoot tr {
     background-color:#999999;
 }
 #listbox tfoot input, #listbox tfoot select {
@@ -185,12 +182,10 @@ a:hover {
 #list td thead * {
     font-weight:bold;
 }
-
-#list .altbc {
-    background-color:#e6eff4;
+#list tbody tr:nth-child(even) {
+    background: #CCCCCC
 }
-
-#list tr:hover {
+#list tbody tr:hover {
     background-color:#6CC;
 }
 

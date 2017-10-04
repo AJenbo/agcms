@@ -59,10 +59,6 @@ function listInsertRow_r(data) {
 
     rows = $('list'+data['listid']+'rows');
     rows.appendChild(tr);
-
-    if (!(rows.childNodes.length % 2)) {
-        rows.lastChild.className = 'altrow';
-    }
 }
 
 function listEditRow(listid, rowid) {
@@ -170,13 +166,4 @@ function listRemoveRow_r(data) {
     }
 
     removeTagById($('list_row'+data['rowid']));
-
-    rows = $('list'+data['listid']+'rows');
-    for (i=0;i<rows.childNodes.length;i++) {
-        if (i % 2) {
-            rows.childNodes[i].className = 'altrow';
-        } else {
-            rows.childNodes[i].className = '';
-        }
-    }
 }

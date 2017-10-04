@@ -6,7 +6,7 @@
     <a href="?side=editContact"><img src="images/group_add.png" width="16" height="16" alt="" /> Add new contact</a>
     <br />
     <br />
-    <table id="addressbook">
+    <table id="list">
         <thead>
             <tr>
                 <td style="width:16px"></td>
@@ -21,7 +21,7 @@
         </thead>
         <tbody>
             {% for contact in contacts %}
-            <tr id="contact{{contact.id}}"{% if loop.index is even %} class="altrow"{% endif %}>
+            <tr id="contact{{contact.id}}">
                 <td>
                     <a href="?side=editContact&id={{contact.id}}">
                         <img width="16" height="16" src="images/vcard_edit.png" alt="R" title="Edit" />
