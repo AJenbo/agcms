@@ -48,9 +48,16 @@
                     <p style="display:inline"><input style="width:30px;" id="jumptoid" name="id" /></p>
                 </form>
                 </li>
-                <li><a href="#" onclick="return sogsearch()"><img src="images/find.png" width="16" height="16" alt="" /> Search</a>
-                    <form onsubmit="sogsearch(); return false;" action="" method="get"><input style="width:1px; height:1px; position:absolute; top: -20px; left:-20px;" type="submit" accesskey="f" />
-                        <p style="display:inline"><input style="width:91px;" id="sogtext" name="text" /><input type="hidden" name="side" value="search" /></p>
+                <li><a href="#" onclick="return sogsearch()">
+                        <img src="images/find.png" width="16" height="16" alt="" />
+                        Search
+                    </a>
+                    <form onsubmit="sogsearch(); return false" action="" method="get">
+                        <input style="width:1px; height:1px; position:absolute; top: -20px; left:-20px;" type="submit" accesskey="f" />
+                        <p style="display:inline">
+                            <input style="width:91px;" id="sogtext" name="text" />
+                            <input type="hidden" name="side" value="search" />
+                        </p>
                     </form>
                 </li>
             </ul>

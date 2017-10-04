@@ -1520,6 +1520,15 @@ function search(string $text): array
         return ['error' => _('You must enter a search word.')];
     }
 
+    $pages = findPages($text);
+
+    $html = Render::render('partial-admin-search', ['text' => $text, 'pages' => $pages]);
+
+    return ['id' => 'canvas', 'html' => $html];
+}
+
+function findPages(string $text): array
+{
     //fulltext search dosn't catch things like 3 letter words and some other combos
     $simpleq = preg_replace(
         ['/\s+/u', "/'/u", '/´/u', '/`/u'],
@@ -1527,7 +1536,7 @@ function search(string $text): array
         $text
     );
 
-    $pages = ORM::getByQuery(
+    return ORM::getByQuery(
         Page::class,
         "
         SELECT * FROM sider
@@ -1538,10 +1547,6 @@ function search(string $text): array
         ORDER BY MATCH (navn, text, beskrivelse) AGAINST('" . $text . "') DESC
         "
     );
-
-    $html = Render::render('partial-admin-search', ['text' => $text, 'pages' => $pages]);
-
-    return ['id' => 'canvas', 'html' => $html];
 }
 
 function listRemoveRow(int $listid, int $rowId): array

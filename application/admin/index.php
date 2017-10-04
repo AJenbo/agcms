@@ -149,6 +149,10 @@ switch ($template) {
     case 'admin-maerker':
         $data['brands'] = db()->fetchArray("SELECT id, navn title, ico icon, link FROM `maerke` ORDER BY navn");
         break;
+    case 'admin-search':
+        $data['text'] = $_GET['text'];
+        $data['pages'] = findPages($data['text']);
+        break;
     case 'admin-updatemaerke':
         $id = (int) ($_GET['id'] ?? 0);
         $data['brand'] = db()->fetchOne("SELECT id, navn title, link, ico icon FROM `maerke` WHERE id = " . $id);
