@@ -85,6 +85,9 @@ a:hover {
     color:#000000;
     border-collapse:separate;
 }
+#addressbook a {
+    display: block;
+}
 #listbox table td, #addressbook td {
     border:1px solid #FFFFFF;
     line-height:16px;

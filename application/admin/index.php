@@ -1,8 +1,9 @@
 <?php
 
 use AGCMS\Config;
-use AGCMS\Entity\CustomPage;
 use AGCMS\Entity\Category;
+use AGCMS\Entity\Contact;
+use AGCMS\Entity\CustomPage;
 use AGCMS\Entity\Page;
 use AGCMS\ORM;
 use AGCMS\Render;
@@ -177,9 +178,11 @@ switch ($template) {
         $data['textWidth'] = Config::get('text_width');
         break;
     case 'admin-addressbook':
-        $data['addresses'] = db()->fetchArray(
-            "SELECT id, navn name, email, IF(tlf1 != '', tlf1, tlf2) phone FROM email ORDER BY navn"
-        );
+        $order = $_GET['order'] ?? '';
+        if (!in_array($order, ['email', 'tlf1', 'tlf2', 'post', 'adresse'], true)) {
+            $order = 'navn';
+        }
+        $data['contacts'] = ORM::getByQuery(Contact::class, "SELECT * FROM email ORDER BY " . $order);
         break;
     case 'admin-editContact':
         $id = (int) ($_GET['id'] ?? 0);

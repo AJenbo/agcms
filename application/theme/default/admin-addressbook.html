@@ -9,24 +9,33 @@
     <table id="addressbook">
         <thead>
             <tr>
-                <td></td>
-                <td>Name</td>
-                <td>E-mail</td>
-                <td>Phone</td>
+                <td style="width:16px"></td>
+                <td><a href="/admin/?side=addressbook">Name</a></td>
+                <td><a href="/admin/?side=addressbook&order=email">E-mail</td>
+                <td><a href="/admin/?side=addressbook&order=tlf1">Phone</td>
+                <td><a href="/admin/?side=addressbook&order=tlf2">Mobile</td>
+                <td><a href="/admin/?side=addressbook&order=post">Postcode</td>
+                <td><a href="/admin/?side=addressbook&order=adresse">Address</td>
+                <td style="width:16px"></td>
             </tr>
         </thead>
         <tbody>
-            {% for address in addresses %}
-            <tr id="contact{{address.id}}"{% if loop.index is even %} class="altrow"{% endif %}>
+            {% for contact in contacts %}
+            <tr id="contact{{contact.id}}"{% if loop.index is even %} class="altrow"{% endif %}>
                 <td>
-                    <a href="?side=editContact&id={{address.id}}">
+                    <a href="?side=editContact&id={{contact.id}}">
                         <img width="16" height="16" src="images/vcard_edit.png" alt="R" title="Edit" />
                     </a>
-                    <img onclick="x_deleteContact({{address.id}}, removeTagById)" width="16" height="16" src="images/cross.png" alt="X" title="Delete" />
                 </td>
-                <td>{{address.name}}</td>
-                <td>{{address.email}}</td>
-                <td>{{address.phone}}</td>
+                <td><a href="/admin/?side=editContact&id={{contact.id}}">{{contact.name}}</a></td>
+                <td><a href="/admin/?side=editContact&id={{contact.id}}">{{contact.email}} </a></td>
+                <td><a href="/admin/?side=editContact&id={{contact.id}}">{{contact.phone1}}</a></td>
+                <td><a href="/admin/?side=editContact&id={{contact.id}}">{{contact.phone2}}</a></td>
+                <td><a href="/admin/?side=editContact&id={{contact.id}}">{{contact.postcode}}</a></td>
+                <td><a href="/admin/?side=editContact&id={{contact.id}}">{{contact.address}}</a></td>
+                <td>
+                    <img onclick="x_deleteContact({{contact.id}}, removeTagById)" width="16" height="16" src="images/cross.png" alt="X" title="Delete" />
+                </td>
             </tr>
             {% endfor %}
         </tbody>
