@@ -19,7 +19,7 @@
                     <img class="laemere web" src="/images/web/info.gif" alt="Læs mere" width="83" height="15" />
                 </a>
                 <div style="padding:5px; text-align:right;">
-                    {% if item.price > 0 %}<strong>{{item.price}}</strong>{% else %}&nbsp;{% endif %}
+                    {% if item.price > 0 %}<strong>{{item.price|number_format(0, ',', '.')}},-</strong>{% else %}&nbsp;{% endif %}
                 </div>
             </div>
         </td>
