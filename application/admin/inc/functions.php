@@ -6,6 +6,7 @@ use AGCMS\Entity\Category;
 use AGCMS\Entity\Contact;
 use AGCMS\Entity\CustomPage;
 use AGCMS\Entity\File;
+use AGCMS\Entity\Invoice;
 use AGCMS\Entity\Page;
 use AGCMS\Entity\Requirement;
 use AGCMS\Entity\RootCategory;
@@ -1590,7 +1591,6 @@ function updateContact(
 ): bool {
     if (!$id) {
         $contact = new Contact([
-            'timestamp'  => time(),
             'name'       => $navn,
             'email'      => $email,
             'address'    => $adresse,
@@ -2466,83 +2466,81 @@ function save(int $id, string $type, array $updates): array
     }
 
     $faktura = db()->fetchOne('SELECT * FROM `fakturas` WHERE `id` = ' . $id);
+    /** @var Invoice */
+    $invoice = ORM::getOne(Invoice::class, $id);
+    $status = $invoice->getStatus();
 
-    if (empty($faktura['clerk'])) {
-        db()->query(
-            "UPDATE `fakturas` SET `clerk` = '"
-                . db()->esc($_SESSION['_user']['fullname']) . "' WHERE `id` = " . $faktura['id']
-        );
-        $faktura['clerk'] = $_SESSION['_user']['fullname'];
+    if (!$invoice->getClerk()) {
+        $invoice->setClerk($_SESSION['_user']['fullname'])->save();
     }
 
     if ($type == 'email') {
-        if (!valideMail($faktura['email'])) {
-            return ['error' => _('E-mail address is not valid!')];
+        if ($invoice->getInvalid()) {
+            return ['error' => _('Invoice is not valid!')];
         }
-        if (!$faktura['department'] && count(Config::get('emails')) > 1) {
+        if (!$invoice->getDepartment() && count(Config::get('emails')) > 1) {
             return ['error' => _('You have not selected a sender!')];
-        } elseif (!$faktura['department']) {
+        } elseif (!$invoice->getDepartment()) {
             $email = first(Config::get('emails'))['address'];
-            $updates['department'] = $email;
+            $invoice->setDepartment($email)->save();
         }
-        if ($faktura['amount'] < 1) {
+        if ($invoice->getAmount() < 1) {
             return ['error' => _('The invoice must be of at at least 1 krone!')];
         }
 
         $data = [
             'siteName' => Config::get('site_name'),
-            'invoiceId' => $faktura['id'],
-            'clerk' => $faktura['clerk'],
+            'invoiceId' => $invoice->getId(),
+            'clerk' => $invoice->getClerk(),
             'address' => Config::get('address'),
             'postcode' => Config::get('postcode'),
             'city' => Config::get('city'),
             'phone' => Config::get('phone'),
             'link' => Config::get('base_url')
-                . '/betaling/?id=' . $faktura['id'] . '&checkid=' . getCheckid($faktura['id']),
+                . '/betaling/?id=' . $invoice->getId() . '&checkid=' . $invoice->getCheckid(),
         ];
 
         $success = sendEmails(
             _('Online payment for ') . Config::get('site_name'),
             Render::render('email-invoice', $data),
-            $faktura['department'],
+            $invoice->getDepartment(),
             '',
-            $faktura['email'],
-            $faktura['navn'],
+            $invoice->getEmail(),
+            $invoice->getName(),
             false
         );
         if (!$success) {
             return ['error' => _('Unable to sendt e-mail!') . "\n"];
         }
-        db()->query("UPDATE `fakturas` SET `status` = 'locked' WHERE `status` = 'new' && `id` = " . $faktura['id']);
-        db()->query(
-            "UPDATE `fakturas` SET `sendt` = 1, `department` = '"
-                . db()->esc($faktura['department']) . "' WHERE `id` = " . $faktura['id']
-        );
+        if ($invoice->getStatus('new')) {
+            $invoice->setStatus('locked');
+        }
+        $invoice->setSent(true)
+            ->setDepartment($faktura['department'])
+            ->save();
 
-        //Forece reload
-        $faktura['status'] = 'sendt';
+        $status = 'sendt'; // forece reload
     }
 
-    return ['type' => $type, 'status' => $faktura['status']];
+    return ['type' => $type, 'status' => $status];
 }
 
 function sendReminder(int $id): array
 {
-    $error = '';
+    /** @var Invoice */
+    $invoice = ORM::getOne(Invoice::class, $id);
 
-    $faktura = db()->fetchOne('SELECT * FROM `fakturas` WHERE `id` = ' . $id);
-
-    if (!$faktura['status']) {
+    if (!$invoice->isSent()) {
         return ['error' => _('You can not send a reminder until the invoice is sent!')];
     }
 
-    if (!valideMail($faktura['email'])) {
-        return ['error' => _('E-mail address is not valid!')];
+    if ($invoice->getInvalid()) {
+        return ['error' => _('Invoice is not valid!')];
     }
 
-    if (empty($faktura['department'])) {
+    if (!$invoice->getDepartment()) {
         $email = first(Config::get('emails'))['address'];
-        $faktura['department'] = $email;
+        $invoice->setDepartment($email)->save();
     }
 
     $data = [
@@ -2553,27 +2551,25 @@ function sendReminder(int $id): array
         'phone' => Config::get('phone'),
         'fax' => Config::get('fax'),
         'department' => Config::get('department'),
-        'invoiceId' => $faktura['id'],
-        'link' => Config::get('base_url') . '/betaling/?id=' . $faktura['id']
-            . '&checkid=' . getCheckid($faktura['id']),
+        'invoiceId' => $invoice->getId(),
+        'link' => Config::get('base_url') . '/betaling/?id=' . $invoice->getId() . '&checkid=' . $invoice->getCheckid(),
     ];
 
     $success = sendEmails(
         'Elektronisk faktura vedr. ordre',
         Render::render('email-invoice-reminder', $data),
-        $faktura['department'],
+        $invoice->getDepartment(),
         '',
-        $faktura['email'],
-        $faktura['navn'],
+        $invoice->getEmail(),
+        $invoice->getName(),
         false
     );
 
     if (!$success) {
         return ['error' => 'Mailen kunde ikke sendes!' . "\n"];
     }
-    $error .= "\n\n" . _('A Reminder was sent to the customer.');
 
-    return ['error' => trim($error)];
+    return ['error' => _('A Reminder was sent to the customer.')];
 }
 
 /**

@@ -1,15 +1,7 @@
+{% include 'partial-payment-invoice.html' %}
 <form action="" method="get">
-    <table>
-        <tbody>
-            <tr>
-                <td>Ordre nr:</td>
-                <td><input name="id" value="{{id}}" /></td>
-            </tr>
-            <tr>
-                <td>Kode:</td>
-                <td><input name="checkid" value="{{checkid}}" /></td>
-            </tr>
-        </tbody>
-    </table>
-    <input type="submit" value="Fortsæt" />
+    <input name="id" value="{{invoice.id}}" type="hidden">
+    <input name="checkid" value="{{invoice.checkId}}" type="hidden">
+    <input name="step" value="1" type="hidden">
+    <input style="font-weight:bold;" value="Fortsæt" type="submit">
 </form>

@@ -744,6 +744,7 @@ class Invoice extends AbstractEntity
             'amount'         => db()->eandq($this->amount),
             'navn'           => db()->eandq($this->name),
             'att'            => db()->eandq($this->att),
+            'adresse'        => db()->eandq($this->address),
             'postbox'        => db()->eandq($this->postbox),
             'postnr'         => db()->eandq($this->postcode),
             'by'             => db()->eandq($this->city),

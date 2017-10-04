@@ -1,5 +1,6 @@
 <?php
 
+use AGCMS\Entity\Contact;
 use AGCMS\Entity\Invoice;
 use AGCMS\Entity\Page;
 use AGCMS\Entity\Table;
@@ -191,7 +192,7 @@ if (!empty($_SESSION['faktura']['quantities'])) {
         if ($_POST && !$invalid) {
             if (!empty($_POST['newsletter'])) {
                 $conteact = new Contact([
-                    'title'      => $updates['navn'],
+                    'name'       => $updates['navn'],
                     'email'      => $updates['email'],
                     'address'    => $updates['adresse'],
                     'country'    => $countries[$updates['land']],

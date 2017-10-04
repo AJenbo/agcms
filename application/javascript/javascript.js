@@ -1,6 +1,6 @@
 function x_getTable()
 {
-    sajax_do_call('getTable', arguments, "GET", true, "/ajax.php");
+    sajax.doCall('getTable', arguments, "GET", true, "/ajax.php");
     return false;
 }
 
@@ -21,13 +21,13 @@ function getAddress(phonenumber, function_name)
 
 function x_getAddress()
 {
-    sajax_do_call('getAddress', arguments, "GET", true, "/ajax.php");
+    sajax.doCall('getAddress', arguments, "GET", true, "/ajax.php");
     return false;
 }
 
 function x_getKat()
 {
-    sajax_do_call('getKat', arguments, "GET", true, "/ajax.php");
+    sajax.doCall('getKat', arguments, "GET", true, "/ajax.php");
     return false;
 }
 

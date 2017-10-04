@@ -24,7 +24,7 @@
             <td>&nbsp;</td>
             <td style="text-align:right" class="tal">{{invoice.vat * 100}}%</td>
             <td class="tal">Heraf moms</td>
-            <td class="tal">{{invoice.netAmount * invoice.vat|number_format(2, ',', '')}}</td>
+            <td class="tal">{{(invoice.netAmount * invoice.vat)|number_format(2, ',', '')}}</td>
         </tr>
         <tr class="border">
             <td colspan="2">Alle beløb er i DKK</td>
@@ -37,8 +37,8 @@
         <tr>
             <td class="tal">{{item.quantity}}</td>
             <td>{{item.title}}</td>
-            <td class="tal">{{item.value * (1 + invoice.vat)|number_format(2, ',', '')}}</td>
-            <td class="tal">{{item.value * (1 + invoice.vat) * item.quantity|number_format(2, ',', '')}}</td>
+            <td class="tal">{{(item.value * (1 + invoice.vat))|number_format(2, ',', '')}}</td>
+            <td class="tal">{{(item.value * (1 + invoice.vat) * item.quantity)|number_format(2, ',', '')}}</td>
         </tr>
     {% endfor %}
     </tbody>

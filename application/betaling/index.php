@@ -1,6 +1,7 @@
 <?php
 
 use AGCMS\Config;
+use AGCMS\Entity\Contact;
 use AGCMS\Entity\CustomPage;
 use AGCMS\Entity\Invoice;
 use AGCMS\ORM;
@@ -12,7 +13,7 @@ use AGCMS\Render;
 require_once __DIR__ . '/../inc/Bootstrap.php';
 @include_once _ROOT_ . '/inc/countries.php';
 
-$id = intval($_GET['id'] ?? null);
+$id = intval($_GET['id'] ?? 0) ?: null;
 $checkid = $_GET['checkid'] ?? '';
 
 Render::$pageType = 'custome';
@@ -24,11 +25,11 @@ Render::$crumbs = [
     ],
 ];
 
-if (!empty($id) && $checkid === getCheckid($id) && !isset($_GET['txnid'])) {
-    $invalid = [];
+/** @var Invoice */
+$invoice = $id ? ORM::getOne(Invoice::class, $id) : null;
 
-    /** @var Invoice */
-    $invoice = ORM::getOne(Invoice::class, $id);
+if ($invoice && $checkid === $invoice->getCheckid() && !isset($_GET['txnid'])) {
+    $invalid = [];
 
     if (in_array($invoice->getStatus(), ['new', 'locked', 'pbserror'])) {
         if (empty($_GET['step'])) { //Show order
@@ -41,7 +42,7 @@ if (!empty($id) && $checkid === getCheckid($id) && !isset($_GET['txnid'])) {
             ]];
             Render::$title = _('Order #') . $id;
             Render::$headline = _('Order #') . $id;
-            Render::$bodyHtml = Render::render('partial-order-form', compact('invoice'));
+            Render::$bodyHtml = Render::render('partial-payment-form0', compact('invoice'));
         } elseif ($_GET['step'] == 1) { //Fill out customer info
             if ($_POST) {
                 $invoice->setName($_POST['navn'])
@@ -75,14 +76,14 @@ if (!empty($id) && $checkid === getCheckid($id) && !isset($_GET['txnid'])) {
                 if (!empty($_POST['newsletter'])) {
                     // TODO check if email already exists and overwrite.
                     $conteact = new Contact([
-                        'title'      => $updates['navn'],
-                        'email'      => $updates['email'],
-                        'address'    => $updates['adresse'],
-                        'country'    => $countries[$updates['land']],
-                        'postcode'   => $updates['postnr'],
-                        'city'       => $updates['by'],
-                        'phone1'     => $updates['tlf1'],
-                        'phone2'     => $updates['tlf2'],
+                        'name'       => $_POST['navn'],
+                        'email'      => $_POST['email'],
+                        'address'    => $_POST['adresse'],
+                        'country'    => $countries[$_POST['land']],
+                        'postcode'   => $_POST['postnr'],
+                        'city'       => $_POST['by'],
+                        'phone1'     => $_POST['tlf1'] != $_POST['tlf2'] ? $_POST['tlf1'] : '',
+                        'phone2'     => $_POST['tlf2'],
                         'newsletter' => 1,
                         'ip'         => $_SERVER['REMOTE_ADDR'],
                     ]);
@@ -108,7 +109,7 @@ if (!empty($id) && $checkid === getCheckid($id) && !isset($_GET['txnid'])) {
                 'invalid' => $invalid,
                 'submitLabel' => 'Proceed to the terms of trade',
             ];
-            Render::$bodyHtml = Render::render('partial-payment-form1', $data);
+            Render::$bodyHtml = Render::render('partial-order-form1', $data);
         } elseif ($_GET['step'] == 2) { //Accept terms and continue to payment
             if ($invoice->getInvalid()) {
                 redirect('/betaling/?id=' . $id . '&checkid=' . $checkid . '&step=1');
@@ -136,13 +137,13 @@ if (!empty($id) && $checkid === getCheckid($id) && !isset($_GET['txnid'])) {
                 'windowstate'       => 3,
                 'windowid'          => Config::get('pbswindow'),
             ];
-            $inputs['hash'] = md5(implode('', $submit) . Config::get('pbspassword'));
+            $inputs['hash'] = md5(implode('', $inputs) . Config::get('pbspassword'));
 
             $data = [
                 'html' => ORM::getOne(CustomPage::class, 3)->getHtml(),
                 'inputs' => $inputs,
             ];
-            Render::$bodyHtml = Render::render('partial-payment-form2.html', $data);
+            Render::$bodyHtml = Render::render('partial-payment-form2', $data);
         }
     } else { //Show order status
         Render::$crumbs[] = [
@@ -317,7 +318,7 @@ if (!empty($id) && $checkid === getCheckid($id) && !isset($_GET['txnid'])) {
         'id'      => $id,
         'checkid' => $checkid,
     ];
-    Render::$bodyHtml = Render::render('partial-payment-form0', $data);
+    Render::$bodyHtml = Render::render('partial-payment-manual', $data);
     if ($checkid) {
         Render::$bodyHtml = _('The code is not correct!');
     }

@@ -129,32 +129,23 @@
                 <a href="faktura.php?id={{invoice.id}}">
                     {% if invoice.status == 'new' %}
                     <img src="/admin/images/table.png" alt="New" title="New" />
-                    {% endif %}
-                    {% if invoice.status == 'locked' and invoice.sent %}
+                    {% elseif invoice.status == 'locked' and invoice.sent %}
                     <img src="/admin/images/email_go.png" alt="Sent" title="Sent to customer" />
-                    {% endif %}
-                    {% if invoice.status == 'locked' %}
+                    {% elseif invoice.status == 'locked' %}
                     <img src="/admin/images/lock.png" alt="Locked" title="Locked" />
-                    {% endif %}
-                    {% if invoice.status == 'pbsok' %}
+                    {% elseif invoice.status == 'pbsok' %}
                     <img src="/admin/images/money.png" alt="Ready" title="Ready" />
-                    {% endif %}
-                    {% if invoice.status == 'accepted' %}
+                    {% elseif invoice.status == 'accepted' %}
                     <img src="/admin/images/creditcards.png" alt="Expedited" title="Expedited" />
-                    {% endif %}
-                    {% if invoice.status == 'giro' %}
+                    {% elseif invoice.status == 'giro' %}
                     <img src="/admin/images/building.png" alt="Giro" title="Giro" />
-                    {% endif %}
-                    {% if invoice.status == 'cash' %}
+                    {% elseif invoice.status == 'cash' %}
                     <img src="/admin/images/email.png" alt="Cash" title="Cash" />
-                    {% endif %}
-                    {% if invoice.status == 'pbserror' %}
+                    {% elseif invoice.status == 'pbserror' %}
                     <img src="/admin/images/error.png" alt="Error" title="Error" />
-                    {% endif %}
-                    {% if invoice.status == 'canceled' %}
+                    {% elseif invoice.status == 'canceled' %}
                     <img src="/admin/images/bin.png" alt="Canceled" title="Canceled" />
-                    {% endif %}
-                    {% if invoice.status == 'rejected' %}
+                    {% elseif invoice.status == 'rejected' %}
                     <img src="/admin/images/bin.png" alt="Rejected" title="Rejected" />
                     {% endif %}
                 </a>

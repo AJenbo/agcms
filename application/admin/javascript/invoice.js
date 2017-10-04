@@ -182,7 +182,8 @@ function prisUpdate()
         fragt= 0;
     }
 
-    $('payamount').innerHTML= parseFloat(fragt + netto + netto * momssats).toFixed(2).toString().replace(/\./, ',');
+    amount = parseFloat(fragt + netto + netto * momssats).toFixed(2);
+    $('payamount').innerHTML= amount.toString().replace(/\./, ',');
 
     if(!quantitieObjs.length || quantitieObjs[quantitieObjs.length - 1].value != '' ||
         productObjs[productObjs.length - 1].value != '' || valueObjs[valueObjs.length - 1].value != '') {
@@ -233,7 +234,7 @@ function save(id, type)
         update['products']= products;
         update['values']= values;
         update['fragt']= $('fragt').value.replace(/[^-0-9,]/g, '').replace(/,/, '.');
-        update['amount']= amount ? amount.replace(/[^-0-9,]/g, '').replace(/,/, '.') : 0;
+        update['amount']= amount;
         update['momssats']= $('momssats').value;
         update['premoms']= $('premoms').checked ? 1 : 0;
         update['date']= $('date').value;

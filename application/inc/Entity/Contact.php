@@ -29,7 +29,7 @@ class Contact extends AbstractEntity
     public function __construct(array $data)
     {
         $this->setId($data['id'] ?? null)
-            ->setTimeStamp($data['timestamp'])
+            ->setTimeStamp($data['timestamp'] ?? time())
             ->setName($data['name'])
             ->setEmail($data['email'])
             ->setAddress($data['address'])
@@ -39,7 +39,7 @@ class Contact extends AbstractEntity
             ->setPhone1($data['phone1'])
             ->setPhone2($data['phone2'])
             ->setNewsletter($data['newsletter'])
-            ->setInterests($data['interests'])
+            ->setInterests($data['interests'] ?? '')
             ->setIp($data['ip']);
     }
 
