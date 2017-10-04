@@ -517,7 +517,7 @@ class Invoice extends AbstractEntity
         $itemQuantities = explode('<', $data['quantities']);
         $itemQuantities = array_map('intval', $itemQuantities);
         $itemValue = explode('<', $data['values']);
-        $itemValue = array_map('intval', $itemValue);
+        $itemValue = array_map('floatval', $itemValue);
         $itemTitle = explode('<', $data['products']);
         $itemTitle = array_map('html_entity_decode', $itemTitle);
 
@@ -602,9 +602,9 @@ class Invoice extends AbstractEntity
         $items = [];
         foreach ($this->items as $item) {
             $items[] = [
-                'title' => $item['title'],
-                'quantity' => $item['quantity'],
-                'value' => $item['value'] / 1.25,
+                'title' => (string) $item['title'],
+                'quantity' => (int) $item['quantity'],
+                'value' => round($item['value'] / 1.25, 2),
             ];
         }
 
@@ -747,13 +747,12 @@ class Invoice extends AbstractEntity
         $itemTitle = [];
         $itemValue = [];
         foreach ($this->items as $column) {
-            $itemQuantities[] = $column['quantity'];
-            $itemTitle[] = $column['title'];
-            $itemValue[] = $column['value'];
+            $itemQuantities[] = (int) $column['quantity'];
+            $itemTitle[] = htmlspecialchars($column['title']);
+            $itemValue[] = round($column['value'], 2);
         }
 
         $itemQuantities = implode('<', $itemQuantities);
-        $itemTitle = array_map('htmlspecialchars', $itemTitle);
         $itemTitle = implode('<', $itemTitle);
         $itemValue = implode('<', $itemValue);
 
