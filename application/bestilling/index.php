@@ -109,13 +109,10 @@ if (!empty($_POST['delevery'])) {
 }
 
 //Generate return page
-Render::$crumbs = [
-    [
-        'name' => _('Payment'),
-        'link' => '/',
-        'icon' => null,
-    ],
-];
+Render::$crumbs = [[
+    'title' => _('Payment'),
+    'canonicalLink' => '/',
+]];
 
 Render::$pageType = 'custome';
 
@@ -141,13 +138,10 @@ if (!empty($_SESSION['faktura']['quantities'])) {
             $_SESSION['faktura']['amount'] += $_SESSION['faktura']['values'][$i] * $quantity;
         }
 
-        Render::$crumbs = [
-            [
-                'name' => _('Place order'),
-                'link' => '#',
-                'icon' => null,
-            ],
-        ];
+        Render::$crumbs = [[
+            'title' => _('Place order'),
+            'canonicalLink' => '#',
+        ]];
         Render::$title = _('Place order');
         Render::$headline = _('Place order');
 
@@ -217,13 +211,10 @@ if (!empty($_SESSION['faktura']['quantities'])) {
             redirect('/bestilling/?step=2');
         }
 
-        Render::$crumbs = [
-            [
-                'name' => _('Recipient'),
-                'link' => urldecode($_SERVER['REQUEST_URI']),
-                'icon' => null,
-            ],
-        ];
+        Render::$crumbs = [[
+            'title' => _('Recipient'),
+            'canonicalLink' => urldecode($_SERVER['REQUEST_URI']),
+        ]];
         Render::$title = _('Recipient');
         Render::$headline = _('Recipient');
 

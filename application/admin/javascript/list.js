@@ -1,27 +1,27 @@
-var listlink = Array();
+var listlink = [];
 function listInsertRow(listid) {
     var footer = $('list'+listid+'footer');
+    listSaveRow(footer, 0, listid, listInsertRow_r);
+}
 
-    var cells = '';
+function listUpdateRow(listid, rowid) {
+    var row = $('list_row'+rowid);
+    listSaveRow(row, rowid, listid, listUpdateRow_r);
+}
+
+function listSaveRow(row, rowid, listid, callback) {
+    var cellcount = row.childNodes.length - 1;
     var rowlink = 0;
     if (listlink[listid] == 1) {
-        for (i=0; i<footer.childNodes.length-2; i++) {
-            if (i) {
-                cells += '<';
-            }
-            cells += htmlspecialchars(footer.childNodes[i].firstChild.value);
-        }
-        rowlink = footer.childNodes[footer.childNodes.length-2].firstChild.value;
-    } else {
-        for (i=0; i<footer.childNodes.length-1; i++) {
-            if (i) {
-                cells += '<';
-            }
-            cells += htmlspecialchars(footer.childNodes[i].firstChild.value);
-        }
+        cellcount -= 1
+        rowlink = row.childNodes[cellcount].firstChild.value;
     }
-    //todo rowlink = undefined if no link
-    x_listSavetRow(listid, cells, rowlink, 0, listInsertRow_r);
+
+    var cells = [];
+    for (i = 0; i < cellcount; i++) {
+        cells.push(row.childNodes[i].firstChild.value);
+    }
+    x_listSavetRow(listid, cells, rowlink, rowid, callback);
 }
 
 function listInsertRow_r(data) {
@@ -85,30 +85,6 @@ function listEditRow(listid, rowid) {
     row.childNodes[row.childNodes.length-1].childNodes[2].style.display = 'none';
     //Firefox scrolls :(
     row.firstChild.firstChild.focus();
-}
-
-function listUpdateRow(listid, rowid) {
-    var row = $('list_row'+rowid);
-
-    var cells = '';
-    var rowlink = 0;
-    if (listlink[listid] == 1) {
-        for (i=0; i<row.childNodes.length-2; i++) {
-            if (i) {
-                cells += '<';
-            }
-            cells += htmlspecialchars(row.childNodes[i].firstChild.value);
-        }
-        rowlink = row.childNodes[row.childNodes.length-2].firstChild.value;
-    } else {
-        for (i=0; i<row.childNodes.length-1; i++) {
-            if (i) {
-                cells += '<';
-            }
-            cells += htmlspecialchars(row.childNodes[i].firstChild.value);
-        }
-    }
-    x_listSavetRow(listid, cells, rowlink, rowid, listUpdateRow_r);
 }
 
 function listUpdateRow_r(data) {

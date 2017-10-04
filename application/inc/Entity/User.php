@@ -9,6 +9,11 @@ class User extends AbstractEntity
     const TABLE_NAME = 'users';
     const ONLINE_INTERVAL = 1800;
 
+    const NO_ACCESS = 0;
+    const ADMINISTRATOR = 1;
+    const MANAGER = 3;
+    const CLERK = 4;
+
     private $fullName;
     private $nickname;
     private $passwordHash;
@@ -43,8 +48,8 @@ class User extends AbstractEntity
             'fullname'  => db()->eandq($this->fullName),
             'name'      => db()->eandq($this->nickname),
             'password'  => db()->eandq($this->passwordHash),
-            'access'    => db()->eandq($this->accessLevel),
-            'lastlogin' => db()->eandq($this->lastLogin),
+            'access'    => $this->accessLevel,
+            'lastlogin' => "UNIX_TIMESTAMP(" . $this->lastLogin . ")",
         ];
     }
 
@@ -70,6 +75,22 @@ class User extends AbstractEntity
     public function getNickname(): string
     {
         return $this->nickname;
+    }
+
+    public function setPassword(string $password): self
+    {
+        $this->passwordHash = crypt($password);
+
+        return $this;
+    }
+
+    public function validatePassword(string $password): bool
+    {
+        if (mb_substr($this->passwordHash, 0, 13) === mb_substr(crypt($password, $this->passwordHash), 0, 13)) {
+            return true;
+        }
+
+        return false;
     }
 
     public function setPasswordHash(string $passwordHash): self

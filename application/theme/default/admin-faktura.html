@@ -30,7 +30,7 @@
 {% endif %}
 {% if invoice.status not in ['giro', 'cash', 'pbsok', 'accepted', 'canceled', 'rejected'] %}
 {% if not invoice.sent %}
-<li id="emaillink"{% if invoice.invalid %} style="display:none;"{% endif %}>
+<li id="emaillink"{% if not invoice.hasValidEmail %} style="display:none;"{% endif %}>
     <a onclick="save({{invoice.id}}, 'email')">
         <img height="16" width="16" title="Send to customer" alt="" src="images/email_go.png"/> Send
     </a>
@@ -157,20 +157,15 @@
         <td>
             {% if userSession.access == 1 and users|length > 1 and invoice.status not in ['giro', 'cash', 'accepted', 'canceled'] %}
             <select name="clerk" id="clerk">
-                {% if not invoice.clerk %}
-                <option value=""{% if not invoice.clerk %} selected="selected"{% endif %}>No one</option>
-                {% endif %}
-                {% if invoice.clerk %}
-                <option value="{{invoice.clerk}}" selected="selected">{{invoice.clerk}}</option>
-                {% endif %}
+                <option value="">No one</option>
                 {% for user in users %}
-                {% if invoice.clerk != user.fullName %}
-                <option value="{{user.fullName}}">{{user.fullName}}</option>
-                {% endif %}
+                <option value="{{user.fullName}}"{% if invoice.clerk == user.fullName or (not invoice.clerk and userSession.fullname == user.fullName) %} selected="selected"{% endif %}>
+                    {{user.fullName}}
+                </option>
                 {% endfor %}
             </select>
             {% else %}
-            {{invoice.clerk}}
+            {% if invoice.clerk or invoice.isFinalized %}{{invoice.clerk}}{% else %}{{userSession.fullname}}{% endif %}
             {% endif %}
         </td>
     </tr>

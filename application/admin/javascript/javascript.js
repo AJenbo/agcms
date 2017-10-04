@@ -140,10 +140,13 @@ function getRadio(name) {
 }
 
 function getSelectValue(id) {
-    var objs = $(id).getElementsByTagName("option");
-    for (var i=0; i < objs.length; i++) {
-        if (objs[i].selected) {
-            return objs[i].value;
+    var select = $(id);
+    if (select) {
+        var options = select.getElementsByTagName("option");
+        for (var i=0; i < options.length; i++) {
+            if (options[i].selected) {
+                return options[i].value;
+            }
         }
     }
 

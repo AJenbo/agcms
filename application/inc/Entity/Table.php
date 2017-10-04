@@ -264,6 +264,41 @@ class Table extends AbstractEntity
         return $this->orderRows($rows, $orderBy);
     }
 
+    public function addRow(array $cells, int $link = 0): int
+    {
+        $cells = array_map('htmlspecialchars', $cells);
+        $cells = implode('<', $cells);
+
+        db()->query(
+            "
+            INSERT INTO `list_rows`(`list_id`, `cells`, `link`)
+            VALUES (" . $this->id . ", " . db()->eandq($cells) . ", " . $link . ")
+            "
+        );
+
+        return db()->insert_id;
+    }
+
+    public function updateRow(int $rowId, array $cells, int $link = 0): void
+    {
+        $cells = array_map('htmlspecialchars', $cells);
+        $cells = implode('<', $cells);
+
+        db()->query(
+            "
+            UPDATE `list_rows` SET
+                `cells` = " . db()->eandq($cells) . ",
+                `link` = " . $link . "
+            WHERE list_id = " . $this->id . "
+              AND id = " . $rowId
+        );
+    }
+
+    public function removeRow(int $rowId): void
+    {
+        db()->query("DELETE FROM `list_rows` WHERE list_id = " . $this->id . " AND `id` = " . $rowId);
+    }
+
     /**
      * Sort a 2D array based on a custome sort order.
      *

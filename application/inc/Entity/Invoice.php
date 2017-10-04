@@ -611,6 +611,11 @@ class Invoice extends AbstractEntity
         return $items;
     }
 
+    public function isFinalized(): string
+    {
+        return in_array($this->status, ['accepted', 'giro', 'cash', 'canceled'], true);
+    }
+
     public function getAdminLink(): string
     {
         if ($this->id === null) {
@@ -618,6 +623,15 @@ class Invoice extends AbstractEntity
         }
 
         return Config::get('base_url') . '/admin/faktura.php?id=' . $this->id;
+    }
+
+    public function getLink(): string
+    {
+        if ($this->id === null) {
+            $this->save();
+        }
+
+        return Config::get('base_url') . '/betaling/?id=' . $invoice->getId() . '&checkid=' . $invoice->getCheckid();
     }
 
     public function hasUnknownPrice(): bool
@@ -645,13 +659,22 @@ class Invoice extends AbstractEntity
         return $netAmount;
     }
 
-    public function getCheckId()
+    public function getCheckId(): string
     {
         if (!$this->id) {
             return '';
         }
 
         return mb_substr(md5($this->id . Config::get('pbssalt')), 3, 5);
+    }
+
+    function hasValidEmail(): bool
+    {
+        if (!$this->email || !valideMail($this->email)) {
+            return false;
+        }
+
+        return true;
     }
 
     /**
@@ -663,7 +686,7 @@ class Invoice extends AbstractEntity
     {
         $invalid = [];
 
-        if (!$this->email || !valideMail($this->email)) {
+        if (!$this->hasValidEmail()) {
             $invalid['email'] = true;
         }
         if (!$this->name) {

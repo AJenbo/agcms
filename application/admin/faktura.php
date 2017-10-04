@@ -15,6 +15,7 @@ if ($_GET['function'] ?? '' === 'new') {
     redirect('faktura.php?id=' . newfaktura());
 }
 
+/** @var Invoice */
 $invoice = ORM::getOne(Invoice::class, $_GET['id']);
 
 if ($invoice && $invoice->getStatus() !== 'new') {
@@ -46,6 +47,10 @@ Sajax::export([
     'save'         => ['method' => 'POST'],
 ]);
 Sajax::handleClientRequest();
+
+if (!$invoice->getClerk()) {
+    $invoice->setClerk($_SESSION['_user']['fullname']);
+}
 
 $data = getBasicAdminTemplateData();
 $data = [

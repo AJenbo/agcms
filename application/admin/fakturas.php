@@ -21,7 +21,7 @@ $selected = [
     'momssats'   => $_GET['momssats'] ?? null,
     'clerk'      => $_GET['clerk'] ?? null,
 ];
-if ($selected['clerk'] === null && $_SESSION['_user']['access'] != 1) {
+if ($selected['clerk'] === null && $_SESSION['_user']['access'] != User::ADMINISTRATOR) {
     $selected['clerk'] = $_SESSION['_user']['fullname'];
 }
 if ($selected['momssats'] === '') {
@@ -41,7 +41,7 @@ if ($selected['month'] && $selected['year']) {
 if ($selected['department']) {
     $where[] = "`department` = " . db()->eandq($selected['department']);
 }
-if ($selected['clerk'] && $_SESSION['_user']['access'] != 1 || $_SESSION['_user']['fullname'] == $selected['clerk']) {
+if ($selected['clerk'] && $_SESSION['_user']['access'] != User::ADMINISTRATOR || $_SESSION['_user']['fullname'] == $selected['clerk']) {
     //Viewing your self
     $where[] = "(`clerk` = " . db()->eandq($selected['clerk']) . " OR `clerk` = '')";
 } elseif ($selected['clerk']) {

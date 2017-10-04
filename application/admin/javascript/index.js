@@ -488,17 +488,18 @@ function reload_r(data) {
     window.location.reload();
 }
 function updateuser(id) {
-    if ($('password_new') && $('password_new').value != $('password2').value) {
+    if ($('password_new') && $('password_new').value !== $('password2').value) {
         alert("The passwords doesn't match.");
         return false;
     }
 
     $('loading').style.visibility = '';
-    var update = {};
-    update.access = getSelectValue('access');
-    update.fullname = $('fullname') ? $('fullname').value : '';
-    update.password = $('password') ? $('password').value : '';
-    update.password_new = $('password_new') ? $('password_new').value : '';
+    var update = {
+        "access": getSelectValue('access'),
+        "fullname": $('fullname') ? $('fullname').value : '',
+        "password": $('password') ? $('password').value : '',
+        "password_new": $('password_new') ? $('password_new').value : ''
+    };
     x_updateuser(id, update, reload_r);
     return false;
 }

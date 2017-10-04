@@ -107,90 +107,74 @@ function getAltAddress_r(data)
 
 function prisUpdate()
 {
-    quantities= '';
-    products= '';
-    values= '';
-    amount= 0;
+    invoiceLines= []
+    invoiceAmount= 0;
 
-    var quantitieObjs= document.getElementsByName('quantitie');
-    var productObjs= document.getElementsByName('product');
-    var valueObjs= document.getElementsByName('value');
-    var totalObjs= $$('.total');
+    var titles= document.getElementsByName('product');
+    var values= document.getElementsByName('value');
+    var quantities= document.getElementsByName('quantitie');
+    var totals= $$('.total');
     var premoms= $('premoms').checked;
     var momssats= parseFloat($('momssats').value);
 
     var netto= 0;
+    var quantity= 0;
+    var value= 0;
+    var total= 0;
 
-    var quantitie;
-    var value;
-    var total;
-
-    for(var i= 0; i < quantitieObjs.length; i++) {
-        quantitie= 0;
-        value= 0;
-        total= 0;
-        quantitie= parseInt(quantitieObjs[i].value);
-        if(isNaN(quantitie)) {
-            quantitie= 0;
+    for(var i= 0; i < quantities.length; i++) {
+        quantity= parseInt(quantities[i].value);
+        if(isNaN(quantity)) {
+            quantity= 0;
         }
 
-        value= parseFloat(parseFloat(valueObjs[i].value.replace(/[^-0-9,]/g, '').replace(/,/, '.')).toFixed(2));
-
+        value= parseFloat(parseFloat(values[i].value.replace(/[^-0-9,]/g, '').replace(/,/, '.')).toFixed(2));
         if(isNaN(value)) {
             value= 0;
         }
 
-        if(premoms) {
-            value= value / 1.25; // VAT
-        }
+        total= quantity * value;
 
-        total= quantitie * value;
-
-        totalObjs[i].innerHTML= '';
+        totals[i].innerHTML= '';
         if(total != 0) {
-            if(premoms) {
-                totalObjs[i].innerHTML= (total * 1.25).toFixed(2).toString().replace(/\./, ',');
-            } else {
-                totalObjs[i].innerHTML= total.toFixed(2).toString().replace(/\./, ',');
-            }
+            totals[i].innerHTML= numberFormat(total);
         }
 
-        netto+= total;
+        netto+= premoms ? (total / 1.25) : total;
 
-        if(quantitieObjs[i].value != '' || productObjs[i].value != '' || valueObjs[i].value != '') {
-            if(quantities != '') {
-                quantities+= '<';
-                products+= '<';
-                values+= '<';
-            }
-            quantities+= quantitie.toString();
-            products+= htmlspecialchars(productObjs[i].value.toString());
-            if(premoms) {
-                values+= (value * 1.25).toString();
-            } else {
-                values+= value.toString();
-            }
+        if(quantities[i].value != '' || titles[i].value != '' || values[i].value != '') {
+            invoiceLines.push({
+                "title": titles[i].value,
+                "value": value,
+                "quantity": quantity,
+            });
         }
     }
 
-    $('netto').innerHTML= netto.toFixed(2).toString().replace(/\./, ',');
+    $('netto').innerHTML= numberFormat(netto);
 
-    $('moms').innerHTML= (netto * momssats).toFixed(2).toString().replace(/\./, ',');
+    $('moms').innerHTML= numberFormat(netto * momssats);
 
     var fragt= parseFloat($('fragt').value.replace(/[^-0-9,]/g, '').replace(/,/, '.'));
     if(isNaN(fragt)) {
         fragt= 0;
     }
 
-    amount = parseFloat(fragt + netto + netto * momssats).toFixed(2);
-    $('payamount').innerHTML= amount.toString().replace(/\./, ',');
+    payamount = parseFloat(fragt + netto + netto * momssats);
+    $('payamount').innerHTML= numberFormat(payamount);
+    invoiceAmount = payamount.toFixed(2);
 
-    if(!quantitieObjs.length || quantitieObjs[quantitieObjs.length - 1].value != '' ||
-        productObjs[productObjs.length - 1].value != '' || valueObjs[valueObjs.length - 1].value != '') {
+    if(!quantities.length || quantities[quantities.length - 1].value != '' ||
+        titles[titles.length - 1].value != '' || values[values.length - 1].value != '') {
         addRow();
     }
 
     return true;
+}
+
+function numberFormat(number)
+{
+    return number.toFixed(2).toString().replace(/\./, ',');
 }
 
 function pbsconfirm(id)
@@ -229,56 +213,54 @@ function save(id, type)
 
     $('loading').style.visibility= '';
     var update= {};
-    if(status == 'new') {
-        update['quantities']= quantities;
-        update['products']= products;
-        update['values']= values;
-        update['fragt']= $('fragt').value.replace(/[^-0-9,]/g, '').replace(/,/, '.');
-        update['amount']= amount;
-        update['momssats']= $('momssats').value;
-        update['premoms']= $('premoms').checked ? 1 : 0;
-        update['date']= $('date').value;
-        update['iref']= $('iref').value;
-        update['eref']= $('eref').value;
-        update['navn']= $('navn').value;
-        update['att']= $('att').value;
-        update['adresse']= $('adresse').value;
-        update['postbox']= $('postbox').value;
-        update['postnr']= $('postnr').value;
-        update['by']= $('by').value;
-        update['land']= $('land').value;
-        update['email']= $('email').value;
-        update['tlf1']= $('tlf1').value;
-        update['tlf2']= $('tlf2').value;
-        update['altpost']= $('altpost').checked ? 1 : 0;
-        if($('altpost').value) {
-            update['posttlf']= $('posttlf').value;
-            update['postname']= $('postname').value;
-            update['postatt']= $('postatt').value;
-            update['postaddress']= $('postaddress').value;
-            update['postaddress2']= $('postaddress2').value;
-            update['postpostbox']= $('postpostbox').value;
-            update['postpostalcode']= $('postpostalcode').value;
-            update['postcity']= $('postcity').value;
-            update['postcountry']= $('postcountry').value;
+    if(status === 'new') {
+        update.lines= invoiceLines;
+        update.shipping= $('fragt').value.replace(/[^-0-9,]/g, '').replace(/,/, '.');
+        update.amount= invoiceAmount;
+        update.vat= $('momssats').value;
+        update.preVat= $('premoms').checked;
+        update.date= $('date').value;
+        update.iref= $('iref').value;
+        update.eref= $('eref').value;
+        update.name= $('navn').value;
+        update.att= $('att').value;
+        update.address= $('adresse').value;
+        update.postbox= $('postbox').value;
+        update.postcode= $('postnr').value;
+        update.city= $('by').value;
+        update.country= $('land').value;
+        update.email= $('email').value;
+        update.phone1= $('tlf1').value;
+        update.phone2= $('tlf2').value;
+        update.hasShippingAddress= $('altpost').checked ? 1 : 0;
+        if($('altpost').checked) {
+            update.shippingPhone= $('posttlf').value;
+            update.shippingName= $('postname').value;
+            update.shippingAtt= $('postatt').value;
+            update.shippingAddress= $('postaddress').value;
+            update.shippingAddress2= $('postaddress2').value;
+            update.shippingPostbox= $('postpostbox').value;
+            update.shippingPostcode= $('postpostalcode').value;
+            update.shippingCity= $('postcity').value;
+            update.shippingCountry= $('postcountry').value;
         }
     }
 
-    update['note']= $('note').value;
+    update.note= $('note').value;
 
     if($('clerk')) {
-        update['clerk']= getSelectValue('clerk');
+        update.clerk= getSelectValue('clerk');
     }
     if($('department')) {
-        update['department']= getSelectValue('department');
+        update.department= getSelectValue('department');
     }
 
     if(type == 'giro') {
-        update['paydate']= $('gdate').value;
+        update.paydate= $('gdate').value;
     }
 
     if(type == 'cash') {
-        update['paydate']= $('cdate').value;
+        update.paydate= $('cdate').value;
     }
 
     x_save(id, type, update, save_r);
@@ -363,7 +345,5 @@ function chnageZipCode(zipcode, country, city)
     $(city).value= arrayZipcode[zipcode] ? arrayZipcode[zipcode] : '';
 }
 
-var quantities;
-var products;
-var values;
-var amount;
+var invoiceLines = [];
+var invoiceAmount = 0;

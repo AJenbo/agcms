@@ -10,6 +10,9 @@ use AGCMS\Entity\Invoice;
 use AGCMS\Entity\Page;
 use AGCMS\Entity\Requirement;
 use AGCMS\Entity\RootCategory;
+use AGCMS\Entity\Table;
+use AGCMS\Entity\User;
+use AGCMS\EpaymentAdminService;
 use AGCMS\ORM;
 use AGCMS\Render;
 use AJenbo\Image;
@@ -738,56 +741,56 @@ function listdirs(string $path, bool $move = false): array
  *
  * @param int   $id      User id
  * @param array $updates Array of values to change
- *                       'access' int 0 = no acces, 1 = admin, 3 = priviliged, 4 = clerk
- *                       'password' crypt(string)
- *                       'password_new' string
+ *                       'access' int
  *                       'fullname' string
- *                       'name' string
- *                       'lastlogin' MySQL time stamp
+ *                       'password' string
+ *                       'password_new' string
  *
  * @return array|true True on update, else ['error' => string]
  */
 function updateuser(int $id, array $updates)
 {
-    if ($_SESSION['_user']['access'] != 1 && $_SESSION['_user']['id'] != $id) {
-        return ['error' => _('You do not have the requred access level to change this user.')];
+    if ($_SESSION['_user']['access'] != User::ADMINISTRATOR
+        && $_SESSION['_user']['id'] != $id
+    ) {
+        return ['error' => _('You do not have the requred access level to change other users.')];
     }
 
-    //Validate access lavel update
-    if ($_SESSION['_user']['id'] == $id && $updates['access'] != $_SESSION['_user']['access']) {
+    // Validate access lavel update
+    if ($_SESSION['_user']['id'] == $id
+        && isset($updates['access'])
+        && $updates['access'] != $_SESSION['_user']['access']
+    ) {
         return ['error' => _('You can\'t change your own access level')];
     }
 
+    /** @var User */
+    $user = ORM::getOne(User::class, $id);
+
     //Validate password update
     if (!empty($updates['password_new'])) {
-        if ($_SESSION['_user']['access'] == 1 && $_SESSION['_user']['id'] != $id) {
-            $updates['password'] = crypt($updates['password_new']);
-        } elseif ($_SESSION['_user']['id'] == $id) {
-            $user = db()->fetchOne('SELECT `password` FROM `users` WHERE id = ' . $id);
-            if (mb_substr($user['password'], 0, 13) !== mb_substr(crypt($updates['password'], $user['password']), 0, 13)) {
-                return ['error' => _('Incorrect password.')];
-            }
-            $updates['password'] = crypt($updates['password_new']);
-        } else {
-            return [
-                'error' => _('You do not have the requred access level to change the password for other users.'),
-            ];
+        if ($_SESSION['_user']['access'] != User::ADMINISTRATOR
+            && $_SESSION['_user']['id'] != $id
+        ) {
+            return ['error' => _('You do not have the requred access level to change the password for this users.')];
         }
-    } else {
-        unset($updates['password']);
-    }
-    unset($updates['password_new']);
 
-    //Generate SQL command
-    $sql = "UPDATE `users` SET";
-    foreach ($updates as $key => $value) {
-        $sql .= ' `' . addcslashes($key, '`\\') . "` = '" . db()->esc($value) . "',";
-    }
-    $sql = mb_substr($sql, 0, -1);
-    $sql .= ' WHERE `id` = ' . (int) $id;
+        if ($_SESSION['_user']['id'] == $id && !$user->validatePassword($updates['password'])) {
+            return ['error' => _('Incorrect password.')];
+        }
 
-    //Run SQL
-    db()->query($sql);
+        $user->setPassword($updates['password_new']);
+    }
+
+    if (isset($updates['access'])) {
+        $user->setAccessLevel($updates['access']);
+    }
+
+    if (!empty($updates['fullname'])) {
+        $user->setFullName($updates['fullname']);
+    }
+
+    $user->save();
 
     return true;
 }
@@ -824,7 +827,7 @@ function saveImage(
  */
 function deleteuser(int $id): bool
 {
-    if ($_SESSION['_user']['access'] != 1 || $_SESSION['_user']['id'] == $id) {
+    if ($_SESSION['_user']['access'] != User::ADMINISTRATOR || $_SESSION['_user']['id'] == $id) {
         return false;
     }
 
@@ -878,38 +881,21 @@ function getPricelistRootStructure(string $sort, int $categoryId = null): array
 }
 
 /**
- * Returns false for files that the users shoudn't see in the files view.
- */
-function isVisableFile(string $fileName): bool
-{
-    global $dir;
-    if (mb_substr($fileName, 0, 1) === '.' || is_dir(_ROOT_ . $dir . '/' . $fileName)) {
-        return false;
-    }
-
-    return true;
-}
-
-/**
  * display a list of files in the selected folder.
  */
-function showfiles(string $tempDir): array
+function showfiles(string $dir): array
 {
-    //temp_dir is needed to initialize dir as global
-    //$dir needs to be global for other functions like isVisableFiles()
-    global $dir;
-    $dir = $tempDir;
-    unset($tempDir);
     $html = '';
     $javascript = '';
 
-    $files = [];
-    if ($files = scandir(_ROOT_ . $dir)) {
-        $files = array_filter($files, 'isVisableFile');
-        natcasesort($files);
-    }
+    $files = scandir(_ROOT_ . $dir);
+    natcasesort($files);
 
     foreach ($files as $fileName) {
+        if (mb_substr($fileName, 0, 1) === '.' || is_dir(_ROOT_ . $dir . '/' . $fileName)) {
+            continue;
+        }
+
         $filePath = $dir . '/' . $fileName;
         $file = File::getByPath($filePath);
         if (!$file) {
@@ -1233,9 +1219,7 @@ Would you like to replace the existing file?'), 'id' => $id];
                 db()->query("DELETE FROM files WHERE `path` = '" . db()->esc($newPath) . "'");
             }
 
-            db()->query(
-                "UPDATE files SET path = '" . db()->esc($newPath) . "' WHERE `path` = '" . db()->esc($path) . "'"
-            );
+            File::getByPath($path)->setPath($newPath)->save();
             replacePaths($path, $newPath);
 
             return ['id' => $id, 'filename' => $filename, 'path' => $newPath];
@@ -1549,36 +1533,25 @@ function findPages(string $text): array
     );
 }
 
-function listRemoveRow(int $listid, int $rowId): array
+function listRemoveRow(int $tableId, int $rowId): array
 {
-    db()->query("DELETE FROM `list_rows` WHERE `id` = " . $rowId);
+    ORM::getOne(Table::class, $tableId)->removeRow($rowId);
 
-    return ['listid' => $listid, 'rowid' => $rowId];
+    return ['listid' => $tableId, 'rowid' => $rowId];
 }
 
-function listSavetRow(int $listid, string $cells, string $link, int $rowId): array
+function listSavetRow(int $tableId, array $cells, int $link, int $rowId = null): array
 {
+    /** @var Table */
+    $table = ORM::getOne(Table::class, $tableId);
+
     if (!$rowId) {
-        db()->query(
-            '
-            INSERT INTO `list_rows`(`list_id`, `cells`, `link`)
-            VALUES (' . $listid . ', \'' . db()->esc($cells) . '\', \'' . db()->esc($link) . '\')
-            '
-        );
-        $rowId = db()->insert_id;
+        $rowId = $table->addRow($cells, $link);
     } else {
-        db()->query(
-            '
-            UPDATE `list_rows`
-                SET
-                    `list_id` = ' . $listid . ',
-                    `cells` = \'' . db()->esc($cells) . '\',
-                    `link` = \'' . db()->esc($link) . '\'
-            WHERE id = ' . $rowId
-        );
+        $table->updateRow($rowId, $cells, $link);
     }
 
-    return ['listid' => $listid, 'rowid' => $rowId];
+    return ['listid' => $tableId, 'rowid' => $rowId];
 }
 
 function updateContact(
@@ -2098,22 +2071,18 @@ function sletkat(int $id): array
 /**
  * @return array|false
  */
-function movekat(int $id, int $toId)
+function movekat(int $id, int $parentId)
 {
-    db()->query("UPDATE `kat` SET `bind` = " . $toId . " WHERE `id` = " . $id);
+    ORM::getOne(Category::class, $id)->setParentId($parentId)->save();
 
-    if (db()->affected_rows) {
-        return ['id' => 'kat' . $id, 'update' => $toId];
-    }
-
-    return false;
+    return ['id' => 'kat' . $id, 'update' => $parentId];
 }
 
-function renamekat(int $id, string $name): array
+function renamekat(int $id, string $title): array
 {
-    db()->query("UPDATE `kat` SET `navn` = '" . db()->esc($name) . "' WHERE `id` = " . $id);
+    ORM::getOne(Category::class, $id)->setTitle($title)->save();
 
-    return ['id' => 'kat' . $id, 'name' => $name];
+    return ['id' => 'kat' . $id, 'name' => $title];
 }
 
 function sletbind(string $id): array
@@ -2213,7 +2182,7 @@ function updateSide(
     string $billed,
     string $beskrivelse,
     int $for,
-    string $text,
+    string $html,
     string $varenr,
     int $burde,
     int $fra,
@@ -2222,14 +2191,14 @@ function updateSide(
 ): bool {
     $beskrivelse = purifyHTML($beskrivelse);
     $beskrivelse = htmlUrlDecode($beskrivelse);
-    $text = purifyHTML($text);
-    $text = htmlUrlDecode($text);
+    $html = purifyHTML($html);
+    $html = htmlUrlDecode($html);
 
     ORM::getOne(Page::class, $id)
         ->setTitle($navn)
         ->setKeywords($keywords)
         ->setPrice($pris)
-        ->setHtml($text)
+        ->setHtml($html)
         ->setSku($varenr)
         ->setOldPrice($for)
         ->setExcerpt($beskrivelse)
@@ -2278,18 +2247,13 @@ function updateKat(
     return true;
 }
 
-function updateKatOrder(string $subsorder)
+function updateKatOrder(string $order)
 {
-    $orderquery = db()->prepare('UPDATE `kat` SET `order` = ? WHERE `id` = ?');
-    $orderquery->bind_param('ii', $key, $value);
+    $order = explode(',', $order);
 
-    $subsorder = explode(',', $subsorder);
-
-    foreach ($subsorder as $key => $value) {
-        $orderquery->execute();
+    foreach ($order as $weight => $id) {
+        ORM::getOne(Category::class, $id)->setWeight($weight)->save();
     }
-
-    $orderquery->close();
 }
 
 function updateSpecial(int $id, string $html): bool
@@ -2388,190 +2352,171 @@ function copytonew(int $id): int
     return db()->insert_id;
 }
 
-function save(int $id, string $type, array $updates): array
+function save(int $id, string $action, array $updates): array
 {
-    if (empty($updates['department'])) {
-        $email = first(Config::get('emails'))['address'];
-        $updates['department'] = $email;
-    }
-
-    if (!empty($updates['date'])) {
-        $date = "STR_TO_DATE('" . $updates['date'] . "', '%d/%m/%Y')";
-        unset($updates['date']);
-    }
-
-    if (!empty($updates['paydate']) && ($type == 'giro' || $type == 'cash')) {
-        $paydate = "STR_TO_DATE('" . $updates['paydate'] . "', '%d/%m/%Y')";
-    } elseif ($type == 'lock' || $type == 'cancel') {
-        $paydate = 'NOW()';
-    }
-    unset($updates['paydate']);
-
-    $faktura = db()->fetchOne('SELECT `status`, `note` FROM `fakturas` WHERE `id` = ' . $id);
-
-    if (in_array($faktura['status'], ['locked', 'pbsok', 'rejected'])) {
-        $updates = [
-            'note' => $updates['note'] ? trim($faktura['note'] . "\n" . $updates['note']) : $faktura['note'],
-            'clerk' => $updates['clerk'] ?? '',
-            'department' => $updates['department'],
-        ];
-        if ($faktura['status'] != 'pbsok') {
-            if ($type == 'giro') {
-                $updates['status'] = 'giro';
-            }
-            if ($type == 'cash') {
-                $updates['status'] = 'cash';
-            }
-        }
-    } elseif (in_array($faktura['status'], ['accepted', 'giro', 'cash', 'canceled'])) {
-        if ($updates['note']) {
-            $updates = ['note' => $faktura['note'] . "\n" . $updates['note']];
-        } else {
-            $updates = [];
-        }
-    } elseif ($faktura['status'] == 'new') {
-        unset($updates['id'], $updates['status']);
-
-        if ($type == 'lock') {
-            $updates['status'] = 'locked';
-        } elseif ($type == 'giro') {
-            $updates['status'] = 'giro';
-        } elseif ($type == 'cash') {
-            $updates['status'] = 'cash';
-        }
-    }
-
-    if ($type == 'cancel'
-        && !in_array($faktura['status'], ['pbsok', 'accepted', 'giro', 'cash'])
-    ) {
-        $updates['status'] = 'canceled';
-    }
-
-    if ($_SESSION['_user']['access'] != 1) {
-        unset($updates['clerk']);
-    }
-
-    if (count($updates) || !empty($date) || !empty($paydate)) {
-        $sql = "UPDATE `fakturas` SET";
-        foreach ($updates as $key => $value) {
-            $sql .= ' `' . addcslashes($key, '`\\') . "` = '" . addcslashes($value, "'\\") . "',";
-        }
-        $sql = mb_substr($sql, 0, -1);
-
-        if (!empty($date)) {
-            $sql .= ', `date` = ' . $date;
-        }
-        if (!empty($paydate)) {
-            $sql .= ', `paydate` = ' . $paydate;
-        }
-
-        $sql .= ' WHERE `id` = ' . $id;
-
-        db()->query($sql);
-    }
-
-    $faktura = db()->fetchOne('SELECT * FROM `fakturas` WHERE `id` = ' . $id);
     /** @var Invoice */
     $invoice = ORM::getOne(Invoice::class, $id);
-    $status = $invoice->getStatus();
 
-    if (!$invoice->getClerk()) {
-        $invoice->setClerk($_SESSION['_user']['fullname'])->save();
+    invoiceBasicUpdate($invoice, $action, $updates);
+
+    if ($action === 'email') {
+        try {
+            sendInvoice($invoice);
+        } catch (Exception $exception) {
+            return ['error' => $exception->getMessage()];
+        }
     }
 
-    if ($type == 'email') {
-        if ($invoice->getInvalid()) {
-            return ['error' => _('Invoice is not valid!')];
+    return ['type' => $action, 'status' => $invoice->getStatus()];
+}
+
+function invoiceBasicUpdate(Invoice $invoice, string $action, array $updates)
+{
+    $status = $invoice->getStatus();
+
+    if ($status === 'new') {
+        if ($action === 'lock') {
+            $invoice->setStatus('locked');
         }
-        if (!$invoice->getDepartment() && count(Config::get('emails')) > 1) {
-            return ['error' => _('You have not selected a sender!')];
-        } elseif (!$invoice->getDepartment()) {
-            $email = first(Config::get('emails'))['address'];
-            $invoice->setDepartment($email)->save();
+        $invoice->setTimeStamp(strtotime($updates['date']));
+        $invoice->setShipping($updates['shipping']);
+        $invoice->setAmount($updates['amount']);
+        $invoice->setVat($updates['vat']);
+        $invoice->setPreVat($updates['preVat']);
+        $invoice->setIref($updates['iref']);
+        $invoice->setEref($updates['eref']);
+        $invoice->setName($updates['name']);
+        $invoice->setAtt($updates['att']);
+        $invoice->setAddress($updates['address']);
+        $invoice->setPostbox($updates['postbox']);
+        $invoice->setPostcode($updates['postcode']);
+        $invoice->setCity($updates['city']);
+        $invoice->setCountry($updates['country']);
+        $invoice->setEmail($updates['email']);
+        $invoice->setPhone1($updates['phone1']);
+        $invoice->setPhone2($updates['phone2']);
+        $invoice->setHasShippingAddress($updates['hasShippingAddress']);
+        if ($updates['hasShippingAddress']) {
+            $invoice->setShippingPhone($updates['shippingPhone']);
+            $invoice->setShippingName($updates['shippingName']);
+            $invoice->setShippingAtt($updates['shippingAtt']);
+            $invoice->setShippingAddress($updates['shippingAddress']);
+            $invoice->setShippingAddress2($updates['shippingAddress2']);
+            $invoice->setShippingPostbox($updates['shippingPostbox']);
+            $invoice->setShippingPostcode($updates['shippingPostcode']);
+            $invoice->setShippingCity($updates['shippingCity']);
+            $invoice->setShippingCountry($updates['shippingCountry']);
         }
-        if ($invoice->getAmount() < 1) {
-            return ['error' => _('The invoice must be of at at least 1 krone!')];
+        $invoice->setItemData(json_encode($updates['lines']));
+    }
+
+    if (isset($updates['note'])) {
+        if ($status !== 'new') {
+            $updates['note'] = trim($invoice->getNote() . "\n" . $updates['note']);
+        }
+        $invoice->setNote($updates['note']);
+    }
+
+    if (!$invoice->getDepartment() && count(Config::get('emails')) === 1) {
+        $email = first(Config::get('emails'))['address'];
+        $invoice->setDepartment($email);
+    } elseif (!empty($updates['department'])) {
+        $invoice->setDepartment($updates['department']);
+    }
+
+    if (!$invoice->getClerk()) {
+        $invoice->setClerk($_SESSION['_user']['fullname']);
+    }
+
+    if (($action === 'giro' || $action === 'cash') && in_array($status, ['new', 'locked', 'rejected'], true)) {
+        $invoice->setStatus($action);
+    }
+
+    if (!$invoice->isFinalized()) {
+        if (($action === 'lock' || $action === 'cancel') && $status !== 'locked') {
+            $invoice->setTimeStampPay(!empty($updates['paydate']) ? strtotime($updates['paydate']) : time());
         }
 
-        $data = [
+        if ($action === 'cancel') {
+            if ($status === 'pbsok' && !annul($invoice->getId())) {
+                throw new Exception(_('Failed to cancel payment!'));
+            }
+            $invoice->setStatus('canceled');
+        }
+
+        if (isset($updates['clerk']) && $_SESSION['_user']['access'] == User::ADMINISTRATOR) {
+            $invoice->setClerk($updates['clerk']);
+        }
+    }
+
+    $invoice->save();
+}
+
+function sendInvoice(Invoice $invoice)
+{
+    if (!$invoice->hasValidEmail()) {
+        throw new Exception(_('Email is not valid!'));
+    }
+
+    if (!$invoice->getDepartment() && count(Config::get('emails')) === 1) {
+        $email = first(Config::get('emails'))['address'];
+        $invoice->setDepartment($email);
+    } elseif (!$invoice->getDepartment()) {
+        throw new Exception(_('You have not selected a sender!'));
+    }
+    if ($invoice->getAmount() < 0.01) {
+        throw new Exception(_('The invoice must be of at at least 0.01 krone!'));
+    }
+
+    $subject_('Online payment for ') . Config::get('site_name');
+    $emailTemplate = 'email-invoice';
+    if ($invoice->isSent()) {
+        $subject = 'Elektronisk faktura vedr. ordre';
+        $emailTemplate = 'email-invoice-reminder';
+    }
+
+    $emailBody = Render::render(
+        $emailTemplate,
+        [
+            'invoice' => $invoice,
             'siteName' => Config::get('site_name'),
-            'invoiceId' => $invoice->getId(),
-            'clerk' => $invoice->getClerk(),
             'address' => Config::get('address'),
             'postcode' => Config::get('postcode'),
             'city' => Config::get('city'),
             'phone' => Config::get('phone'),
-            'link' => Config::get('base_url')
-                . '/betaling/?id=' . $invoice->getId() . '&checkid=' . $invoice->getCheckid(),
-        ];
-
-        $success = sendEmails(
-            _('Online payment for ') . Config::get('site_name'),
-            Render::render('email-invoice', $data),
-            $invoice->getDepartment(),
-            '',
-            $invoice->getEmail(),
-            $invoice->getName(),
-            false
-        );
-        if (!$success) {
-            return ['error' => _('Unable to sendt e-mail!') . "\n"];
-        }
-        if ($invoice->getStatus('new')) {
-            $invoice->setStatus('locked');
-        }
-        $invoice->setSent(true)
-            ->setDepartment($faktura['department'])
-            ->save();
-
-        $status = 'sendt'; // forece reload
-    }
-
-    return ['type' => $type, 'status' => $status];
-}
-
-function sendReminder(int $id): array
-{
-    /** @var Invoice */
-    $invoice = ORM::getOne(Invoice::class, $id);
-
-    if (!$invoice->isSent()) {
-        return ['error' => _('You can not send a reminder until the invoice is sent!')];
-    }
-
-    if ($invoice->getInvalid()) {
-        return ['error' => _('Invoice is not valid!')];
-    }
-
-    if (!$invoice->getDepartment()) {
-        $email = first(Config::get('emails'))['address'];
-        $invoice->setDepartment($email)->save();
-    }
-
-    $data = [
-        'siteName' => Config::get('site_name'),
-        'addresse' => Config::get('address'),
-        'postcode' => Config::get('postcode'),
-        'city' => Config::get('city'),
-        'phone' => Config::get('phone'),
-        'fax' => Config::get('fax'),
-        'department' => Config::get('department'),
-        'invoiceId' => $invoice->getId(),
-        'link' => Config::get('base_url') . '/betaling/?id=' . $invoice->getId() . '&checkid=' . $invoice->getCheckid(),
-    ];
+            'fax' => Config::get('fax'),
+        ]
+    );
 
     $success = sendEmails(
-        'Elektronisk faktura vedr. ordre',
-        Render::render('email-invoice-reminder', $data),
+        $subject,
+        $emailBody,
         $invoice->getDepartment(),
         '',
         $invoice->getEmail(),
         $invoice->getName(),
         false
     );
-
     if (!$success) {
-        return ['error' => 'Mailen kunde ikke sendes!' . "\n"];
+        throw new Exception(_('Unable to sendt e-mail!'));
+    }
+
+    if ($invoice->getStatus() === 'new') {
+        $invoice->setStatus('locked');
+    }
+
+    $invoice->setSent(true)
+        ->save();
+}
+
+function sendReminder(int $id): array
+{
+    /** @var Invoice */
+    $invoice = ORM::getOne(Invoice::class, $id);
+    try {
+        sendInvoice($invoice);
+    } catch (Exception $exception) {
+        return ['error' => $exception->getMessage()];
     }
 
     return ['error' => _('A Reminder was sent to the customer.')];
@@ -2582,26 +2527,25 @@ function sendReminder(int $id): array
  */
 function pbsconfirm(int $id)
 {
-    global $epayment;
+    /** @var Invoice */
+    $invoice = ORM::getOne(Invoice::class, $id);
+
+    $epaymentService = new EpaymentAdminService(Config::get('pbsid'), Config::get('pbspwd'));
+    $epayment = $epaymentService->getPayment(Config::get('pbsfix') . $invoice->getId());
 
     try {
-        $success = $epayment->confirm();
+        if (!$epayment->confirm()) {
+            return ['error' => _('An error occurred')];
+        }
     } catch (SoapFault $e) {
         return ['error' => $e->faultstring];
     }
 
-    if (!$epayment->hasError() || !$success) {
-        db()->query(
-            "
-            UPDATE `fakturas`
-            SET `status` = 'accepted', `paydate` = NOW()
-            WHERE `id` = " . $id
-        );
+    $invoice->setStatus('accepted')
+        ->setTimeStampPay(time())
+        ->save();
 
-        return true;
-    }
-
-    return ['error' => _('An error occurred')];
+    return true;
 }
 
 /**
@@ -2609,28 +2553,27 @@ function pbsconfirm(int $id)
  */
 function annul(int $id)
 {
-    global $epayment;
+    /** @var Invoice */
+    $invoice = ORM::getOne(Invoice::class, $id);
+
+    $epaymentService = new EpaymentAdminService(Config::get('pbsid'), Config::get('pbspwd'));
+    $epayment = $epaymentService->getPayment(Config::get('pbsfix') . $invoice->getId());
 
     try {
-        $success = $epayment->annul();
+        if (!$epayment->annul()) {
+            return ['error' => _('An error occurred')];
+        }
     } catch (SoapFault $e) {
         return ['error' => $e->faultstring];
     }
 
-    if (!$epayment->hasError() || !$success) {
-        db()->query(
-            "
-            UPDATE `fakturas`
-            SET `status`  = 'rejected',
-                `paydate` = NOW()
-            WHERE `id` = 'pbsok'
-              AND `id` = " . $id
-        );
-
-        return true;
+    if ($invoice->getStatus() === 'pbsok') {
+        $invoice->setStatus('rejected')
+            ->setTimeStampPay(time())
+            ->save();
     }
 
-    return ['error' => _('An error occurred')];
+    return true;
 }
 
 function generateImage(
@@ -2761,6 +2704,7 @@ function getBasicAdminTemplateData(): array
     return [
         'title'           => 'Administrator menu',
         'javascript'      => Sajax::showJavascript(true),
+        'theme'           => Config::get('theme', 'default'),
         'hide'            => [
             'activity'    => $_COOKIE['hideActivity'] ?? false,
             'binding'     => $_COOKIE['hidebinding'] ?? false,
@@ -2773,7 +2717,6 @@ function getBasicAdminTemplateData(): array
             'suplemanger' => $_COOKIE['hideSuplemanger'] ?? false,
             'tilbehor'    => $_COOKIE['hidetilbehor'] ?? false,
             'tools'       => $_COOKIE['hideTools'] ?? false,
-            'theme'       => Config::get('theme', 'default'),
         ],
     ];
 }

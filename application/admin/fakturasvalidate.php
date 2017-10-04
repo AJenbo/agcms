@@ -1,16 +1,17 @@
 <?php
 
 use AGCMS\Entity\Invoice;
+use AGCMS\Entity\User;
 use AGCMS\ORM;
 use AGCMS\Render;
 
 require_once __DIR__ . '/logon.php';
 
-if ($_SESSION['_user']['access'] == 1) {
+if ($_SESSION['_user']['access'] == User::ADMINISTRATOR) {
     if (!empty($_GET['id'])) {
-        db()->query("UPDATE `fakturas` SET `transferred` =  '1' WHERE `id` = " . (int) $_GET['id']);
+        ORM::getOne(Invoice::class, $_GET['id'])->setTransferred(true)->save();
     } elseif (!empty($_GET['undoid'])) {
-        db()->query("UPDATE `fakturas` SET `transferred` =  '0' WHERE `id` = " . (int) $_GET['undoid']);
+        ORM::getOne(Invoice::class, $_GET['undoid'])->setTransferred(false)->save();
     }
 }
 

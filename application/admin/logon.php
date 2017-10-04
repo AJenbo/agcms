@@ -1,5 +1,8 @@
 <?php
 
+use AGCMS\Entity\User;
+use AGCMS\ORM;
+
 require_once __DIR__ . '/../inc/functions.php';
 bootStrap();
 
@@ -17,4 +20,4 @@ session_start();
 
 checkUserLoggedIn();
 
-db()->query("UPDATE `users` SET `lastlogin` =  NOW() WHERE `id` = " . $_SESSION['_user']['id']);
+ORM::getOne(User::class, $_SESSION['_user']['id'])->setLastLogin(time())->save();

@@ -17,10 +17,10 @@ $data = [
     'userSession' => $_SESSION['_user'],
     'user' => $user,
     'accessLevels' => [
-        0 => _('No access'),
-        1 => _('Administrator'),
-        3 => _('Non administrator'),
-        4 => _('User'),
+        User::NO_ACCESS => _('No access'),
+        User::ADMINISTRATOR => _('Administrator'),
+        User::MANAGER => _('Manager'),
+        User::CLERK => _('Clerk'),
     ],
 ] + getBasicAdminTemplateData();
 

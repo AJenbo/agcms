@@ -17,13 +17,10 @@ $id = intval($_GET['id'] ?? 0) ?: null;
 $checkid = $_GET['checkid'] ?? '';
 
 Render::$pageType = 'custome';
-Render::$crumbs = [
-    [
-        'name' => _('Payment'),
-        'link' => '/betaling/' . ($id ? '?id=' . $id . '&checkid=' . rawurlencode($checkid) : ''),
-        'icon' => null,
-    ],
-];
+Render::$crumbs = [[
+    'title' => _('Payment'),
+    'canonicalLink' => '/betaling/' . ($id ? '?id=' . $id . '&checkid=' . rawurlencode($checkid) : ''),
+]];
 
 /** @var Invoice */
 $invoice = $id ? ORM::getOne(Invoice::class, $id) : null;
@@ -36,9 +33,8 @@ if ($invoice && $checkid === $invoice->getCheckid() && !isset($_GET['txnid'])) {
             $invoice->setStatus('locked')->save();
 
             Render::$crumbs = [[
-                'name' => _('Order #') . $id,
-                'link' => urldecode($_SERVER['REQUEST_URI']),
-                'icon' => null,
+                'title' => _('Order #') . $id,
+                'canonicalLink' => urldecode($_SERVER['REQUEST_URI']),
             ]];
             Render::$title = _('Order #') . $id;
             Render::$headline = _('Order #') . $id;
@@ -90,14 +86,13 @@ if ($invoice && $checkid === $invoice->getCheckid() && !isset($_GET['txnid'])) {
                     $conteact->save();
                 }
 
-                redirect('/betaling/?id=' . $id . '&checkid=' . $checkid . '&step=2');
+                redirect($invoice->getLink() . '&step=2');
             }
 
             //TODO add enote
             Render::$crumbs[] = [
-                'name' => _('Recipient'),
-                'link' => urldecode($_SERVER['REQUEST_URI']),
-                'icon' => null,
+                'title' => _('Recipient'),
+                'canonicalLink' => urldecode($_SERVER['REQUEST_URI']),
             ];
             Render::$title = _('Recipient');
             Render::$headline = _('Recipient');
@@ -112,15 +107,14 @@ if ($invoice && $checkid === $invoice->getCheckid() && !isset($_GET['txnid'])) {
             Render::$bodyHtml = Render::render('partial-order-form1', $data);
         } elseif ($_GET['step'] == 2) { //Accept terms and continue to payment
             if ($invoice->getInvalid()) {
-                redirect('/betaling/?id=' . $id . '&checkid=' . $checkid . '&step=1');
+                redirect($invoice->getLink() . '&step=1');
             }
 
             $invoice->setStatus('locked')->save();
 
             Render::$crumbs[] = [
-                'name' => _('Trade Conditions'),
-                'link' => urldecode($_SERVER['REQUEST_URI']),
-                'icon' => null,
+                'title' => _('Trade Conditions'),
+                'canonicalLink' => urldecode($_SERVER['REQUEST_URI']),
             ];
             Render::$title = _('Trade Conditions');
             Render::$headline = _('Trade Conditions');
@@ -132,7 +126,7 @@ if ($invoice && $checkid === $invoice->getCheckid() && !isset($_GET['txnid'])) {
                 'currency'          => 208,
                 'amount'            => number_format($invoice->getAmount(), 2, '', ''),
                 'ownreceipt'        => 1,
-                'accepturl'         => Config::get('base_url') . '/betaling/?id=' . $id . '&checkid=' . $checkid,
+                'accepturl'         => $invoice->getLink(),
                 'cancelurl'         => Config::get('base_url') . $_SERVER['REQUEST_URI'],
                 'windowstate'       => 3,
                 'windowid'          => Config::get('pbswindow'),
@@ -147,9 +141,8 @@ if ($invoice && $checkid === $invoice->getCheckid() && !isset($_GET['txnid'])) {
         }
     } else { //Show order status
         Render::$crumbs[] = [
-            'name' => in_array($invoice->getStatus(), ['pbsok', 'accepted'], true) ? _('Status') : _('Error'),
-            'link' => urldecode($_SERVER['REQUEST_URI']),
-            'icon' => null,
+            'title' => in_array($invoice->getStatus(), ['pbsok', 'accepted'], true) ? _('Status') : _('Error'),
+            'canonicalLink' => urldecode($_SERVER['REQUEST_URI']),
         ];
         Render::$title = _('Error');
         Render::$headline = _('Error');
@@ -173,13 +166,10 @@ if ($invoice && $checkid === $invoice->getCheckid() && !isset($_GET['txnid'])) {
         }
     }
 } elseif (isset($_GET['txnid'])) {
-    Render::$crumbs = [
-        [
-            'name' => _('Error'),
-            'link' => urldecode($_SERVER['REQUEST_URI']),
-            'icon' => null,
-        ],
-    ];
+    Render::$crumbs = [[
+        'title' => _('Error'),
+        'canonicalLink' => urldecode($_SERVER['REQUEST_URI']),
+    ]];
     Render::$title = _('Error');
     Render::$headline = _('Error');
     Render::$bodyHtml = _('An unknown error occured.');
@@ -203,9 +193,8 @@ if ($invoice && $checkid === $invoice->getCheckid() && !isset($_GET['txnid'])) {
         $adminEmailTemplate = 'email-admin-payment-404';
     } elseif (in_array($invoice->getStatus(), ['canceled', 'rejected'])) {
         Render::$crumbs[] = [
-            'name' => _('Reciept'),
-            'link' => urldecode($_SERVER['REQUEST_URI']),
-            'icon' => null,
+            'title' => _('Reciept'),
+            'canonicalLink' => urldecode($_SERVER['REQUEST_URI']),
         ];
         Render::$title = _('Reciept');
         Render::$headline = _('Reciept');
@@ -214,9 +203,8 @@ if ($invoice && $checkid === $invoice->getCheckid() && !isset($_GET['txnid'])) {
         $adminEmailTemplate = 'email-admin-payment-cancle';
     } elseif (!in_array($invoice->getStatus(), ['locked', 'new', 'pbserror'])) {
         Render::$crumbs[] = [
-            'name' => _('Reciept'),
-            'link' => urldecode($_SERVER['REQUEST_URI']),
-            'icon' => null,
+            'title' => _('Reciept'),
+            'canonicalLink' => urldecode($_SERVER['REQUEST_URI']),
         ];
         Render::$title = _('Reciept');
         Render::$headline = _('Reciept');
@@ -225,9 +213,8 @@ if ($invoice && $checkid === $invoice->getCheckid() && !isset($_GET['txnid'])) {
         $adminEmailTemplate = 'email-admin-payment-blocked';
     } elseif ($eKey == $_GET['hash']) {
         Render::$crumbs[] = [
-            'name' => _('Reciept'),
-            'link' => urldecode($_SERVER['REQUEST_URI']),
-            'icon' => null,
+            'title' => _('Reciept'),
+            'canonicalLink' => urldecode($_SERVER['REQUEST_URI']),
         ];
         Render::$title = _('Reciept');
         Render::$headline = _('Reciept');
