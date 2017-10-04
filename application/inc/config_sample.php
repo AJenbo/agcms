@@ -48,8 +48,6 @@ $GLOBALS['_config'] = [
     'mysql_password' => '',
     'mysql_database' => 'agcms',
 
-    'altDBs' => [],
-
     //Admin options
     'theme' => 'arms-gallery.dk',
 

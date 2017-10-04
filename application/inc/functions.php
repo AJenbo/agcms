@@ -326,7 +326,6 @@ function stringLimit(string $string, int $length = 50, string $ellipsis = '…')
  */
 function getAddress(string $phoneNumber): array
 {
-    $updateTime = 0;
     $default = [
         'recName1'     => '',
         'recAttPerson' => '',
@@ -338,87 +337,67 @@ function getAddress(string $phoneNumber): array
         'email'        => '',
     ];
 
-    $dbs = Config::get('altDBs', []);
-    $dbs[] = [
-        'mysql_server'   => Config::get('mysql_server'),
-        'mysql_user'     => Config::get('mysql_user'),
-        'mysql_password' => Config::get('mysql_password'),
-        'mysql_database' => Config::get('mysql_database'),
-    ];
+    $updateTime = 0;
+    $tables = db()->fetchArray("SHOW TABLE STATUS WHERE Name IN('fakturas', 'email', 'post')");
+    foreach ($tables as $table) {
+        $updateTime = max($updateTime, strtotime($table['Update_time']) + db()->getTimeOffset());
+    }
 
-    foreach ($dbs as $db) {
-        try {
-            $db = new DB(
-                $db['mysql_server'],
-                $db['mysql_user'],
-                $db['mysql_password'],
-                $db['mysql_database']
-            );
-        } catch (Exception $e) {
-            continue;
-        }
+    //Try katalog orders
+    $address = db()->fetchOne(
+        "
+        SELECT * FROM (
+            SELECT
+                navn recName1,
+                att recAttPerson,
+                adresse recAddress1,
+                postnr recZipCode,
+                postbox recPostBox,
+                email
+            FROM `fakturas`
+            WHERE `tlf1` LIKE '" . $phoneNumber . "'
+               OR `tlf2` LIKE '" . $phoneNumber . "'
+            ORDER BY id DESC
+            LIMIT 1
+        ) x
+        UNION
+        SELECT * FROM (
+            SELECT
+                navn recName1,
+                '' recAttPerson,
+                adresse recAddress1,
+                post recZipCode,
+                '' recPostBox,
+                email
+            FROM `email`
+            WHERE `tlf1` LIKE '" . $phoneNumber . "'
+               OR `tlf2` LIKE '" . $phoneNumber . "'
+            ORDER BY id DESC
+            LIMIT 1
+        ) x
+        UNION
+        SELECT * FROM (
+            SELECT
+                recName1,
+                '' recAttPerson,
+                recAddress1,
+                recZipCode,
+                '' recPostBox,
+                '' email
+            FROM `post`
+            WHERE `recipientID` LIKE '" . $phoneNumber . "'
+            ORDER BY id DESC
+            LIMIT 1
+        ) x
+        "
+    );
 
-        $tables = $db->fetchArray("SHOW TABLE STATUS WHERE Name IN('fakturas', 'email', 'post')");
-        foreach ($tables as $table) {
-            $updateTime = max($updateTime, strtotime($table['Update_time']) + db()->getTimeOffset());
-        }
+    if ($address) {
+        $address += $default;
+        if ($address !== $default) {
+            Render::sendCacheHeader($updateTime);
 
-        //Try katalog orders
-        $address = $db->fetchOne(
-            "
-            SELECT * FROM (
-                SELECT
-                    navn recName1,
-                    att recAttPerson,
-                    adresse recAddress1,
-                    postnr recZipCode,
-                    postbox recPostBox,
-                    email
-                FROM `fakturas`
-                WHERE `tlf1` LIKE '" . $phoneNumber . "'
-                   OR `tlf2` LIKE '" . $phoneNumber . "'
-                ORDER BY id DESC
-                LIMIT 1
-            ) x
-            UNION
-            SELECT * FROM (
-                SELECT
-                    navn recName1,
-                    '' recAttPerson,
-                    adresse recAddress1,
-                    post recZipCode,
-                    '' recPostBox,
-                    email
-                FROM `email`
-                WHERE `tlf1` LIKE '" . $phoneNumber . "'
-                   OR `tlf2` LIKE '" . $phoneNumber . "'
-                ORDER BY id DESC
-                LIMIT 1
-            ) x
-            UNION
-            SELECT * FROM (
-                SELECT
-                    recName1,
-                    '' recAttPerson,
-                    recAddress1,
-                    recZipCode,
-                    '' recPostBox,
-                    '' email
-                FROM `post`
-                WHERE `recipientID` LIKE '" . $phoneNumber . "'
-                ORDER BY id DESC
-                LIMIT 1
-            ) x
-            "
-        );
-
-        if ($address) {
-            $address = array_merge($default, $address);
-            if ($address !== $default) {
-                Render::sendCacheHeader($updateTime);
-
-                return $address;
-            }
+            return $address;
         }
     }
 

@@ -37,7 +37,7 @@ if ($invoice && $invoice->getStatus() !== 'new') {
 }
 
 Sajax::export([
-    'getAddress'   => ['method' => 'GET'],
+    'getAddress'   => ['method' => 'GET', 'uri' => '/ajax.php'],
     'sendReminder' => ['method' => 'GET'],
     'valideMail'   => ['method' => 'GET'],
     'annul'        => ['method' => 'POST'],

@@ -65,15 +65,12 @@ function getAddress_r(data)
         $('att').value= data['recAttPerson'];
         $('adresse').value= data['recAddress1'];
         $('postnr').value= data['recZipCode'];
-        // TODO 'by' might not be danish!
-        var zip= arrayZipcode[data['recZipCode']];
-        if(zip != 'undefined') {
-            $('by').value= zip;
-        }
+        chnageZipCode(data['recZipCode'], 'land', 'by');
         $('postbox').value= data['recPostBox'];
-        $('email').value= data['email'];
-        // TODO support more values
-        // TODO setEmailLink();
+        if (!$('email').value) {
+            $('email').value= data['email'];
+            valideMail();
+        }
     }
     $('loading').style.visibility= 'hidden';
 }
@@ -92,15 +89,12 @@ function getAltAddress_r(data)
         $('postname').value= data['recName1'];
         $('postatt').value= data['recAttPerson'];
         $('postaddress').value= data['recAddress1'];
+        $('postaddress2').value= data['recAddress2'];
         $('postpostalcode').value= data['recZipCode'];
-        // TODO 'by' might not be danish!
-        var zip= arrayZipcode[data['recZipCode']];
-        if(zip != 'undefined') {
-            $('postcity').value= zip;
-        }
+        chnageZipCode(data['recZipCode'], 'postcountry', 'postcity');
         $('postpostbox').value= data['recPostBox'];
-        // TODO support more values
-        // TODO setEmailLink();
+
+        $('postpostbox').value= data['recPostBox'];
     }
     $('loading').style.visibility= 'hidden';
 }
