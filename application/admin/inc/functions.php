@@ -2530,15 +2530,14 @@ function pbsconfirm(int $id)
     /** @var Invoice */
     $invoice = ORM::getOne(Invoice::class, $id);
 
-    $epaymentService = new EpaymentAdminService(Config::get('pbsid'), Config::get('pbspwd'));
-    $epayment = $epaymentService->getPayment(Config::get('pbsfix') . $invoice->getId());
-
     try {
+        $epaymentService = new EpaymentAdminService(Config::get('pbsid'), Config::get('pbspwd'));
+        $epayment = $epaymentService->getPayment(Config::get('pbsfix') . $invoice->getId());
         if (!$epayment->confirm()) {
             return ['error' => _('An error occurred')];
         }
     } catch (SoapFault $e) {
-        return ['error' => $e->faultstring];
+        return ['error' => $e->getMessage()];
     }
 
     $invoice->setStatus('accepted')
@@ -2556,15 +2555,14 @@ function annul(int $id)
     /** @var Invoice */
     $invoice = ORM::getOne(Invoice::class, $id);
 
-    $epaymentService = new EpaymentAdminService(Config::get('pbsid'), Config::get('pbspwd'));
-    $epayment = $epaymentService->getPayment(Config::get('pbsfix') . $invoice->getId());
-
     try {
+        $epaymentService = new EpaymentAdminService(Config::get('pbsid'), Config::get('pbspwd'));
+        $epayment = $epaymentService->getPayment(Config::get('pbsfix') . $invoice->getId());
         if (!$epayment->annul()) {
             return ['error' => _('An error occurred')];
         }
     } catch (SoapFault $e) {
-        return ['error' => $e->faultstring];
+        return ['error' => $e->getMessage()];
     }
 
     if ($invoice->getStatus() === 'pbsok') {

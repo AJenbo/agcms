@@ -19,20 +19,25 @@ if ($_GET['function'] ?? '' === 'new') {
 $invoice = ORM::getOne(Invoice::class, $_GET['id']);
 
 if ($invoice && $invoice->getStatus() !== 'new') {
-    $epaymentService = new EpaymentAdminService(Config::get('pbsid'), Config::get('pbspwd'));
-    $epayment = $epaymentService->getPayment(Config::get('pbsfix') . $invoice->getId());
+    try {
+        $epaymentService = new EpaymentAdminService(Config::get('pbsid'), Config::get('pbspwd'));
+        $epayment = $epaymentService->getPayment(Config::get('pbsfix') . $invoice->getId());
 
-    if ($epayment->isAnnulled() && !in_array($invoice->getStatus(), ['rejected', 'giro', 'cash', 'canceled'])) {
-        // Annulled. The card payment has been deleted by the Merchant, prior to Acquisition.
-        $invoice->getStatus('rejected')->save();
-    } elseif ($epayment->getAmountCaptured() && !in_array($invoice->getStatus(), ['accepted', 'giro', 'cash'])) {
-        // The payment/order placement has been carried out: Paid.
-        $invoice->getStatus('accepted')->save();
-    } elseif ($epayment->isAuthorized() && !in_array($invoice->getStatus(), ['pbsok', 'giro', 'cash'])) {
-        // Authorised. The card payment is authorised and awaiting confirmation and Acquisition.
-        $invoice->getStatus('pbsok')->save();
-    } elseif (!$epayment->getId() && $invoice->getStatus() == 'pbsok') {
-        $invoice->getStatus('locked')->save();
+        if ($epayment->isAnnulled() && !in_array($invoice->getStatus(), ['rejected', 'giro', 'cash', 'canceled'])) {
+            // Annulled. The card payment has been deleted by the Merchant, prior to Acquisition.
+            $invoice->getStatus('rejected')->save();
+        } elseif ($epayment->getAmountCaptured() && !in_array($invoice->getStatus(), ['accepted', 'giro', 'cash'])) {
+            // The payment/order placement has been carried out: Paid.
+            $invoice->getStatus('accepted')->save();
+        } elseif ($epayment->isAuthorized() && !in_array($invoice->getStatus(), ['pbsok', 'giro', 'cash'])) {
+            // Authorised. The card payment is authorised and awaiting confirmation and Acquisition.
+            $invoice->getStatus('pbsok')->save();
+        } elseif (!$epayment->getId() && $invoice->getStatus() == 'pbsok') {
+            $invoice->getStatus('locked')->save();
+        }
+    } catch (SoapFault $e) {
+        echo 'Der er opstået en fejl i komunikationen med ePay: ' . $e->getMessage();
+        exit;
     }
 }
 
