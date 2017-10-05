@@ -281,14 +281,9 @@ function save_r(date)
         window.location.reload();
     }
 
-    if(date['status'] != 'new') {
-        if($('clerk')) {
-            $$('.clerk')[0].innerHTML= $('clerk').value;
-        }
-        if($('note').value) {
-            $$('.note')[0].innerHTML+= '<br />' + nl2br($('note').value);
-            $('note').value= '';
-        }
+    if(date.status != 'new' && $('note').value) {
+        $$('.note')[0].innerHTML+= '<br />' + nl2br($('note').value);
+        $('note').value= '';
     }
 
     $('loading').style.visibility= 'hidden';
