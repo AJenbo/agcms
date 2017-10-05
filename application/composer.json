@@ -24,6 +24,7 @@
         "ext-mysqli": "*",
         "ext-gettext": "*",
         "ext-soap": "*",
+        "ext-xml": "*",
         "phpmailer/phpmailer":  ">=5.0.0",
         "ezyang/htmlpurifier":  ">=4.4",
         "tecnickcom/tcpdf": "^6.2",
