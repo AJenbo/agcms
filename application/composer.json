@@ -25,6 +25,7 @@
         "ext-gettext": "*",
         "ext-soap": "*",
         "ext-xml": "*",
+        "ext-intl": "*",
         "phpmailer/phpmailer":  ">=5.0.0",
         "ezyang/htmlpurifier":  ">=4.4",
         "tecnickcom/tcpdf": "^6.2",
@@ -35,8 +36,5 @@
     },
     "require-dev": {
         "mockery/mockery": "^0.9.9"
-    },
-    "suggest": {
-        "ext-intl": "Support international domains in email addresses"
     }
 }
