@@ -631,7 +631,7 @@ class Invoice extends AbstractEntity
             $this->save();
         }
 
-        return Config::get('base_url') . '/betaling/?id=' . $invoice->getId() . '&checkid=' . $invoice->getCheckid();
+        return Config::get('base_url') . '/betaling/?id=' . $this->getId() . '&checkid=' . $this->getCheckid();
     }
 
     public function hasUnknownPrice(): bool

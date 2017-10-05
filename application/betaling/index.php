@@ -33,8 +33,8 @@ if ($invoice && $checkid === $invoice->getCheckid() && !isset($_GET['txnid'])) {
             $invoice->setStatus('locked')->save();
 
             Render::$crumbs = [[
-                'title' => _('Order #') . $id,
-                'canonicalLink' => urldecode($_SERVER['REQUEST_URI']),
+                'title' => _('Payment'),
+                'canonicalLink' => $invoice->getLink(),
             ]];
             Render::$title = _('Order #') . $id;
             Render::$headline = _('Order #') . $id;
@@ -89,10 +89,9 @@ if ($invoice && $checkid === $invoice->getCheckid() && !isset($_GET['txnid'])) {
                 redirect($invoice->getLink() . '&step=2');
             }
 
-            //TODO add enote
             Render::$crumbs[] = [
                 'title' => _('Recipient'),
-                'canonicalLink' => urldecode($_SERVER['REQUEST_URI']),
+                'canonicalLink' => $invoice->getLink() . '&step=1',
             ];
             Render::$title = _('Recipient');
             Render::$headline = _('Recipient');
@@ -113,8 +112,12 @@ if ($invoice && $checkid === $invoice->getCheckid() && !isset($_GET['txnid'])) {
             $invoice->setStatus('locked')->save();
 
             Render::$crumbs[] = [
+                'title' => _('Recipient'),
+                'canonicalLink' => $invoice->getLink() . '&step=1',
+            ];
+            Render::$crumbs[] = [
                 'title' => _('Trade Conditions'),
-                'canonicalLink' => urldecode($_SERVER['REQUEST_URI']),
+                'canonicalLink' => $invoice->getLink() . '&step=2',
             ];
             Render::$title = _('Trade Conditions');
             Render::$headline = _('Trade Conditions');
@@ -140,26 +143,32 @@ if ($invoice && $checkid === $invoice->getCheckid() && !isset($_GET['txnid'])) {
             Render::$bodyHtml = Render::render('partial-payment-form2', $data);
         }
     } else { //Show order status
-        Render::$crumbs[] = [
-            'title' => in_array($invoice->getStatus(), ['pbsok', 'accepted'], true) ? _('Status') : _('Error'),
-            'canonicalLink' => urldecode($_SERVER['REQUEST_URI']),
-        ];
+        Render::$crumbs = [[
+            'title' => in_array($invoice->getStatus(), ['pbsok', 'accepted', 'giro', 'cash', 'canceled'], true) ? _('Receipt') : _('Error'),
+            'canonicalLink' => $invoice->getLink(),
+        ]];
         Render::$title = _('Error');
         Render::$headline = _('Error');
         Render::$bodyHtml = _('An errror occured.');
         if ($invoice->getStatus() == 'pbsok') {
-            Render::$title = _('Status');
-            Render::$headline = _('Status');
+            Render::$title = _('Receipt');
+            Render::$headline = _('Receipt');
             Render::$bodyHtml = _('Payment received.');
         } elseif ($invoice->getStatus() == 'accepted') {
-            Render::$title = _('Status');
-            Render::$headline = _('Status');
+            Render::$title = _('Receipt');
+            Render::$headline = _('Receipt');
             Render::$bodyHtml = _('The payment was received and the package is sent.');
         } elseif ($invoice->getStatus() == 'giro') {
-            Render::$bodyHtml = _('The payment is already received in cash.');
+            Render::$title = _('Receipt');
+            Render::$headline = _('Receipt');
+            Render::$bodyHtml = _('The payment is already received via giro.');
         } elseif ($invoice->getStatus() == 'cash') {
+            Render::$title = _('Receipt');
+            Render::$headline = _('Receipt');
             Render::$bodyHtml = _('The payment is already received in cash.');
         } elseif ($invoice->getStatus() == 'canceled') {
+            Render::$title = _('Receipt');
+            Render::$headline = _('Receipt');
             Render::$bodyHtml = _('The transaction is canceled.');
         } elseif ($invoice->getStatus() == 'rejected') {
             Render::$bodyHtml = _('Payment rejected.');

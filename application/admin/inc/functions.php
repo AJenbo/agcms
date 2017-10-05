@@ -2468,7 +2468,7 @@ function sendInvoice(Invoice $invoice)
         throw new Exception(_('The invoice must be of at at least 0.01 krone!'));
     }
 
-    $subject_('Online payment for ') . Config::get('site_name');
+    $subject = _('Online payment for ') . Config::get('site_name');
     $emailTemplate = 'email-invoice';
     if ($invoice->isSent()) {
         $subject = 'Elektronisk faktura vedr. ordre';

@@ -48,7 +48,7 @@
 {% block canvas %}
 <div id="headline">{{title}}</div>
 <table style="float:right;">
-    {% if invoice.status in ['giro', 'cash', 'accepted', 'canceled', 'pbsok'] %}
+    {% if invoice.status not in ['giro', 'cash', 'accepted', 'canceled', 'pbsok'] %}
     <tr>
         <td><input type="button" value="Paid via giro" onclick="save({{invoice.id}}, 'giro');" /></td>
         <td>
