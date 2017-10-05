@@ -58,17 +58,17 @@ function getAddress(tlf)
 
 function getAddress_r(data)
 {
-    if(data['error']) {
-        alert(data['error']);
+    if(data.error) {
+        alert(data.error);
     } else {
-        $('navn').value= data['recName1'];
-        $('att').value= data['recAttPerson'];
-        $('adresse').value= data['recAddress1'];
-        $('postnr').value= data['recZipCode'];
-        chnageZipCode(data['recZipCode'], 'land', 'by');
-        $('postbox').value= data['recPostBox'];
-        if (!$('email').value) {
-            $('email').value= data['email'];
+        $('navn').value= data.recName1;
+        $('att').value= data.recAttPerson;
+        $('adresse').value= data.recAddress1;
+        $('postnr').value= data.recZipCode;
+        chnageZipCode(data.recZipCode, 'land', 'by');
+        $('postbox').value= data.recPostBox;
+        if(!$('email').value) {
+            $('email').value= data.email;
             valideMail();
         }
     }
@@ -83,18 +83,18 @@ function getAltAddress(tlf)
 
 function getAltAddress_r(data)
 {
-    if(data['error']) {
-        alert(data['error']);
+    if(data.error) {
+        alert(data.error);
     } else {
-        $('postname').value= data['recName1'];
-        $('postatt').value= data['recAttPerson'];
-        $('postaddress').value= data['recAddress1'];
-        $('postaddress2').value= data['recAddress2'];
-        $('postpostalcode').value= data['recZipCode'];
-        chnageZipCode(data['recZipCode'], 'postcountry', 'postcity');
-        $('postpostbox').value= data['recPostBox'];
+        $('postname').value= data.recName1;
+        $('postatt').value= data.recAttPerson;
+        $('postaddress').value= data.recAddress1;
+        $('postaddress2').value= data.recAddress2;
+        $('postpostalcode').value= data.recZipCode;
+        chnageZipCode(data.recZipCode, 'postcountry', 'postcity');
+        $('postpostbox').value= data.recPostBox;
 
-        $('postpostbox').value= data['recPostBox'];
+        $('postpostbox').value= data.recPostBox;
     }
     $('loading').style.visibility= 'hidden';
 }
@@ -187,8 +187,8 @@ function annul(id)
 
 function reload_r(date)
 {
-    if(date['error']) {
-        alert(date['error']);
+    if(date.error) {
+        alert(date.error);
     } else {
         window.location.reload();
     }
@@ -267,17 +267,17 @@ function sendReminder(id)
 
 function sendReminder_r(data)
 {
-    alert(data['error']);
+    alert(data.error);
 }
 
 function save_r(date)
 {
-    if(date['error']) {
-        alert(date['error']);
+    if(date.error) {
+        alert(date.error);
     }
 
-    if(date['status'] != status || date['type'] == 'faktura' || date['type'] == 'lock' || date['type'] == 'cancel' ||
-        date['type'] == 'giro' || date['type'] == 'cash') {
+    if(date.status != status || date.type == 'lock' || date.type == 'cancel' || date.type == 'giro'
+        || date.type == 'cash') {
         window.location.reload();
     }
 
