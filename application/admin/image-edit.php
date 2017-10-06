@@ -44,7 +44,7 @@ $imagesize = @getimagesize(_ROOT_ . $_GET['path']);
 <script type="text/javascript"><!--
     <?php Sajax::showJavascript(); ?>
 
-var id = <?php echo $_GET['id'] ?>;
+var id = <?php echo (int) $_GET['id'] ?>;
 var mode = '<?php echo $_GET['mode'] ?? '' ?>';
 var filename = <?php
 $fileName = '';

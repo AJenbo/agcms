@@ -101,7 +101,8 @@ function getAltAddress_r(data)
 
 function prisUpdate()
 {
-    invoiceLines= [] invoiceAmount= 0;
+    invoiceLines= [];
+    invoiceAmount= 0;
 
     var titles= document.getElementsByName('product');
     var values= document.getElementsByName('value');

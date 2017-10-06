@@ -618,7 +618,7 @@ function dir_contract(obj)
 
 function open_image_thumbnail(id)
 {
-    popUpWin('image-edit.php?mode=thb&path=image_thumbnail', 'toolbar=0', 740, 600);
+    popUpWin('image-edit.php?mode=thb&path=' + encodeURIComponent(files[id].path) + '&id=' + id, 'image_thumbnail', 'toolbar=0', 740, 600);
 }
 
 /*TODO REMOVE THIS FUNCTION*/
@@ -766,7 +766,8 @@ function swap_pannel(navn)
 {
     // Save what mode we are in and what was searched for
     if(navn == 'search') {
-        document.getElementById('files').innerHTML= '' document.getElementById('dir_bn').className= '';
+        document.getElementById('files').innerHTML= '';
+        document.getElementById('dir_bn').className= '';
         document.getElementById('dir').style.display= 'none';
         document.getElementById('search_bn').className= 'down';
         document.getElementById('search').style.display= '';
@@ -775,7 +776,8 @@ function swap_pannel(navn)
             searchfiles();
         }
     } else if(navn == 'dir') {
-        document.getElementById('files').innerHTML= '' setCookie('qpath', 0, -1);
+        document.getElementById('files').innerHTML= '';
+        setCookie('qpath', 0, -1);
         setCookie('qalt', 0, -1);
         setCookie('qtype', 0, -1);
         document.getElementById('search_bn').className= '';

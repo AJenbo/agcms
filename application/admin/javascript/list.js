@@ -16,7 +16,8 @@ function listSaveRow(row, rowid, listid, callback)
     var cellcount= row.childNodes.length - 1;
     var rowlink= 0;
     if(listlink[listid] == 1) {
-        cellcount-= 1 rowlink= row.childNodes[cellcount].firstChild.value;
+        cellcount-= 1;
+        rowlink= row.childNodes[cellcount].firstChild.value;
     }
 
     var cells= [];
