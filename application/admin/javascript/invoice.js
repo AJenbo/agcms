@@ -101,8 +101,7 @@ function getAltAddress_r(data)
 
 function prisUpdate()
 {
-    invoiceLines= []
-    invoiceAmount= 0;
+    invoiceLines= [] invoiceAmount= 0;
 
     var titles= document.getElementsByName('product');
     var values= document.getElementsByName('value');
@@ -138,9 +137,9 @@ function prisUpdate()
 
         if(quantities[i].value != '' || titles[i].value != '' || values[i].value != '') {
             invoiceLines.push({
-                "title": titles[i].value,
-                "value": value,
-                "quantity": quantity,
+                "title" : titles[i].value,
+                "value" : value,
+                "quantity" : quantity,
             });
         }
     }
@@ -154,12 +153,12 @@ function prisUpdate()
         fragt= 0;
     }
 
-    payamount = parseFloat(fragt + netto + netto * momssats);
+    payamount= parseFloat(fragt + netto + netto * momssats);
     $('payamount').innerHTML= numberFormat(payamount);
-    invoiceAmount = payamount.toFixed(2);
+    invoiceAmount= payamount.toFixed(2);
 
-    if(!quantities.length || quantities[quantities.length - 1].value != '' ||
-        titles[titles.length - 1].value != '' || values[values.length - 1].value != '') {
+    if(!quantities.length || quantities[quantities.length - 1].value != '' || titles[titles.length - 1].value != '' ||
+        values[values.length - 1].value != '') {
         addRow();
     }
 
@@ -276,8 +275,8 @@ function save_r(date)
         alert(date.error);
     }
 
-    if(date.status != status || date.type == 'lock' || date.type == 'cancel' || date.type == 'giro'
-        || date.type == 'cash') {
+    if(date.status != status || date.type == 'lock' || date.type == 'cancel' || date.type == 'giro' ||
+        date.type == 'cash') {
         window.location.reload();
     }
 
@@ -294,20 +293,23 @@ var lastemail;
 
 function valideMail()
 {
-    if($('emaillink')) {
-        if($('email').value.match('^[A-z0-9_.-]+@([A-z0-9-]+\.)+[A-z0-9-]+$')) {
-            if($('email').value != lastemail || $('emaillink').style.display == 'none') {
-                lastemail= $('email').value;
-                if(validemailajaxcall) {
-                    sajax.cancel(validemailajaxcall);
-                }
-                $('loading').style.visibility= '';
-                valideMail_r(false);
-                validemailajaxcall= x_valideMail($('email').value, valideMail_r);
-            }
-        } else {
-            valideMail_r(false);
+    if(!$('emaillink')) {
+        return;
+    }
+
+    if(!$('email').value.match('^[A-z0-9_.-]+@([A-z0-9-]+\.)+[A-z0-9-]+$')) {
+        valideMail_r(false);
+        return;
+    }
+
+    if($('email').value != lastemail || $('emaillink').style.display == 'none') {
+        lastemail= $('email').value;
+        if(validemailajaxcall) {
+            sajax.cancel(validemailajaxcall);
         }
+        $('loading').style.visibility= '';
+        valideMail_r(false);
+        validemailajaxcall= x_valideMail($('email').value, valideMail_r);
     }
 }
 
@@ -327,12 +329,12 @@ function showhidealtpost(status)
 
 function chnageZipCode(zipcode, country, city)
 {
-    if($(country).value != 'DK') {
+    if($(country).value !== 'DK') {
         return;
     }
 
     $(city).value= arrayZipcode[zipcode] ? arrayZipcode[zipcode] : '';
 }
 
-var invoiceLines = [];
-var invoiceAmount = 0;
+var invoiceLines= [];
+var invoiceAmount= 0;
