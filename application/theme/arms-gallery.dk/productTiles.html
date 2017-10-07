@@ -1,7 +1,7 @@
 {% if products %}
 <table cellspacing="0" class="liste">
     {% for item in products %}
-    {% if loop.index is odd or loop.first %}</tr>{% endif %}
+    {% if loop.index is odd or loop.first %}<tr>{% endif %}
         <td>
             <div class="vare">
                 <h2><a href="{{item.canonicalLink}}">{{item.title}}</a></h2>

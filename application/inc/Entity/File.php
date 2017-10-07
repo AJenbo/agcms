@@ -272,6 +272,21 @@ class File extends AbstractEntity
     }
 
     /**
+     * Rename file
+     */
+    public function move(string $path): bool
+    {
+        //Rename/move or give an error
+        if (!rename(_ROOT_ . $this->getPath(), _ROOT_ . $path)) {
+            return false;
+        }
+
+        replacePaths($this->getPath(), $path);
+        $this->setPath($path)->save();
+        return true;
+    }
+
+    /**
      * Create new File from a file path.
      *
      * @param string $path The file path

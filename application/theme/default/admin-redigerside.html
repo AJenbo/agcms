@@ -221,10 +221,10 @@
         <div id="tilbehor"{% if hide.tilbehor %} style="display:none;"{% endif %}>
             <div id="accessories">
                 <br />
-                {% for accessory in page.accessories %}
-                <p id="accessory{{accessory.id}}">
-                    <img onclick="removeAccessory({{accessory.title|json_encode()}}, {{page.id}}, {{accessory.id}})" src="images/cross.png" alt="X" title="Remove binding" width="16" height="16" />
-                    {{accessory.title}}
+                {% for accessoryId, accessoryTitle in accessories %}
+                <p id="accessory{{accessoryId}}">
+                    <img onclick="removeAccessory({{accessoryTitle|json_encode()}}, {{page.id}}, {{accessoryId}})" src="images/cross.png" alt="X" title="Remove binding" width="16" height="16" />
+                    {{accessoryTitle}}
                 </p>
                 {% endfor %}
             </div>

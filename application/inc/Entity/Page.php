@@ -465,7 +465,7 @@ class Page extends AbstractRenderable
      *
      * @return ?Category
      */
-    public function getPrimaryCategory()
+    public function getPrimaryCategory(): ?Category
     {
         Render::addLoadedTable('bind');
 
@@ -549,14 +549,7 @@ class Page extends AbstractRenderable
     private function getAccessoryQuery(): string
     {
         Render::addLoadedTable('tilbehor');
-        return "
-            SELECT sider.*
-            FROM tilbehor
-            JOIN sider ON tilbehor.tilbehor = sider.id
-            JOIN bind ON bind.side = sider.id
-            WHERE tilbehor.`side` = " . $this->getId() . "
-            ORDER BY sider.navn ASC
-            ";
+        return "SELECT * FROM sider WHERE id IN (SELECT tilbehor FROM tilbehor WHERE side = 5069) ORDER BY navn ASC";
     }
 
     /**

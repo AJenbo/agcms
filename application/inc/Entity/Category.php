@@ -124,7 +124,7 @@ class Category extends AbstractRenderable
      *
      * @return int
      */
-    protected function getParentId(): int
+    public function getParentId(): int
     {
         return $this->parentId;
     }
@@ -421,7 +421,7 @@ class Category extends AbstractRenderable
             $nodes[] = $category;
         } while ($category = $category->getParent());
 
-        return array_reverse($nodes);
+        return array_values(array_reverse($nodes));
     }
 
     /**

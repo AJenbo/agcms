@@ -448,39 +448,17 @@ function saveEmail(int $id, string $from, string $interests, string $subject, st
     return true;
 }
 
-function kattree(int $id): array
-{
-    $kat = db()->fetchOne("SELECT id, navn, bind FROM `kat` WHERE id = " . $id);
-
-    $kattree = [];
-    $id = null;
-    if ($kat) {
-        $id = $kat['bind'];
-        $kattree[] = [
-            'id' => $kat['id'],
-            'navn' => $kat['navn'],
-        ];
-
-        while ($kat['bind'] > 0) {
-            $kat = db()->fetchOne("SELECT id, navn, bind FROM `kat` WHERE id = " . $kat['bind']);
-            $id = $kat['bind'];
-            $kattree[]['id'] = $kat['id'];
-            $kattree[count($kattree) - 1]['navn'] = $kat['navn'];
-        }
-    }
-
-    $kattree[]['id'] = $id ? 1 : 0;
-    $kattree[count($kattree) - 1]['navn'] = $id ? _('Inactive') : _('Frontpage');
-
-    return array_reverse($kattree);
-}
-
 function katspath(int $id): array
 {
     $html = _('Select location:') . ' ';
-    foreach (kattree($id) as $kat) {
-        $html .= '/' . trim($kat['navn']);
+
+    $category = ORM::getOne(Category::class, $id);
+    if ($category) {
+        foreach ($category->getBranch() as $category) {
+            $html .= '/' . $category->getTitle();
+        }
     }
+
     $html .= '/';
 
     return ['id' => 'katsheader', 'html' => $html];
@@ -492,8 +470,10 @@ function getOpenCategories(): array
     $openCategories = explode('<', $_COOKIE['openkat'] ?? '');
     $openCategories = array_map('intval', $openCategories);
     $openCategories = array_flip($openCategories);
-    foreach (kattree($activeCategoryId) as $i => $value) {
-        $openCategories[$value['id']] = true;
+
+    $category = ORM::getOne(Category::class, $activeCategoryId);
+    foreach ($category->getBranch() as $category) {
+        $openCategories[$category->getId()] = true;
     }
 
     return $openCategories;
@@ -719,7 +699,7 @@ function formatDir(string $path, string $name): array
     ];
 }
 
-//TODO document type does not allow element "input" here; missing one of "p", "h1", "h2", "h3", "h4", "h5", "h6", "div", "pre", "address", "fieldset", "ins", "del" start-tag.
+//TODO document type doesn't allow element "input" here; missing one of "p", "h1", "h2", "h3", "h4", "h5", "h6", "div", "pre", "address", "fieldset", "ins", "del" start-tag.
 /**
  * Display a list of directorys for the explorer.
  */
@@ -1191,7 +1171,7 @@ function renamefile(int $id, string $path, string $dir, string $filename, bool $
     //Destination folder doesn't exist
     if (!is_dir(_ROOT_ . $dir . '/')) {
         return [
-            'error' => _('The file could not be moved because the destination folder does not exist.'),
+            'error' => _('The file could not be moved because the destination folder doesn\'t exist.'),
             'id' => $id,
         ];
     }
@@ -1212,16 +1192,13 @@ function renamefile(int $id, string $path, string $dir, string $filename, bool $
             return ['yesno' => _('A file with the same name already exists.
 Would you like to replace the existing file?'), 'id' => $id];
         }
-
-        //Rename/move or give an error
-        if (@rename(_ROOT_ . $path, _ROOT_ . $newPath)) {
-            if ($force) {
-                db()->query("DELETE FROM files WHERE `path` = '" . db()->esc($newPath) . "'");
+        if ($force) {
+            $oldFile = File::getByPath($newPath);
+            if ($oldFile) {
+                $oldFile->delete();
             }
-
-            File::getByPath($path)->setPath($newPath)->save();
-            replacePaths($path, $newPath);
-
+        }
+        if (File::getByPath($path)->move($newPath)) {
             return ['id' => $id, 'filename' => $filename, 'path' => $newPath];
         }
 
@@ -1678,25 +1655,21 @@ function get_orphan_cats(): string
 
 function get_looping_cats(): string
 {
-    $error = db()->fetchArray("SELECT id, bind, navn FROM `kat` WHERE bind != 0 AND bind != -1");
-
     $html = '';
-    $tempHtml = '';
-    foreach ($error as $kat) {
-        $bindtree = kattree($kat['bind']);
-        foreach ($bindtree as $bindbranch) {
-            if ($kat['id'] == $bindbranch['id']) {
-                $tempHtml .= '<a href="?side=redigerkat&id=' . $kat['id'] . '">' . $kat['id'] . ': ' . $kat['navn']
-                    . '</a><br />';
+    $categories = ORM::getByQuery(Category::class, "SELECT * FROM `kat` WHERE bind != 0 AND bind != -1");
+    foreach ($categories as $category) {
+        $branchIds = [$category->getId() => true];
+        while ($parent = $category->getParent()) {
+            if ($branchIds[$parent->getId()]) {
+                $html .= '<a href="?side=redigerkat&id=' . $category->getId() . '">' . $category->getId()
+                    . ': ' . $category->getTitle() . '</a><br />';
                 continue;
             }
+            $branchIds[$parent->getId()] = true;
         }
     }
-    if ($tempHtml) {
-        $html .= '<br /><b>' . _('The following categories are tied in itself:') . '</b><br />' . $tempHtml;
-    }
     if ($html) {
-        $html = '<b>' . _('The following categories are tied in itself:') . '</b><br />' . $html;
+        $html = '<b>' . _('The following categories have circular references:') . '</b><br />' . $html;
     }
 
     return $html;
@@ -2088,7 +2061,7 @@ function renamekat(int $id, string $title): array
 function sletbind(string $id): array
 {
     if (!$bind = db()->fetchOne("SELECT side FROM `bind` WHERE `id` = " . $id)) {
-        return ['error' => _('The binding does not exist.')];
+        return ['error' => _('The binding doesn\'t exist.')];
     }
     db()->query("DELETE FROM `bind` WHERE `id` = " . $id);
     $delete[0]['id'] = $id;
@@ -2107,44 +2080,42 @@ function sletbind(string $id): array
     return ['deleted' => $delete, 'added' => $added];
 }
 
-function bind(int $id, int $kat): array
+function bind(int $pageId, int $categoryId): array
 {
-    if (db()->fetchOne("SELECT id FROM `bind` WHERE `side` = " . $id . " AND `kat` = " . $kat)) {
-        return ['error' => _('The binding already exists.')];
+    $page = ORM::getOne(Page::class, $pageId);
+    if ($page->isInCategory($categoryId)) {
+        return ['deleted' => [], 'added' => []];
     }
 
-    $katRoot = $kat;
-    while ($katRoot > 0) {
-        $katRoot = db()->fetchOne("SELECT bind FROM `kat` WHERE id = '" . $katRoot . "'");
-        $katRoot = $katRoot['bind'];
+    $category = ORM::getOne(Category::class, $categoryId);
+    if (!$category) {
+        return ['error' => _('The category doesn\'t exist.')];
     }
 
-    //Delete any binding not under $katRoot
+    $rootCategoryId = $category->getBranch()[0]->getId();
+
+    //Delete any binding not under $rootCategoryId
     $delete = [];
-    $binds = db()->fetchArray('SELECT id, kat FROM `bind` WHERE `side` = ' . $id);
+    $binds = db()->fetchArray('SELECT id, kat FROM `bind` WHERE `side` = ' . $pageId);
     foreach ($binds as $bind) {
-        $bindRoot = $bind['kat'];
-        while ($bindRoot > 0) {
-            $bindRoot = db()->fetchOne("SELECT bind FROM `kat` WHERE id = '" . $bindRoot . "'");
-            $bindRoot = $bindRoot['bind'];
-        }
-        if ($bindRoot != $katRoot) {
+        $binding = ORM::getOne(Category::class, $bind['kat']);
+        if ($binding->getBranch()[0]->getParentId() != $rootCategoryId) {
             db()->query("DELETE FROM `bind` WHERE `id` = " . $bind['id']);
             $delete[] = $bind['id'];
         }
     }
 
-    db()->query('INSERT INTO `bind` (`side`, `kat`) VALUES (' . $id . ', ' . $kat . ')');
+    db()->query('INSERT INTO `bind` (`side`, `kat`) VALUES (' . $pageId . ', ' . $kat . ')');
 
     $added = [
         'id' => db()->insert_id,
         'kat' => $kat,
-        'side' => $id,
+        'side' => $pageId,
         'path' => '',
     ];
 
-    foreach (kattree($kat) as $kat) {
-        $added['path'] .= '/' . trim($kat['navn']);
+    foreach ($category->getBranch() as $category) {
+        $added['path'] .= '/' . $category->getTitle();
     }
     $added['path'] .= '/';
 
@@ -2222,9 +2193,9 @@ function updateKat(
     string $customSortSubs,
     string $subsorder
 ): bool {
-    $bindtree = kattree($bind);
-    foreach ($bindtree as $bindbranch) {
-        if ($id == $bindbranch['id']) {
+    $category = ORM::getOne(Category::class, $id);
+    foreach ($category->getBranch() as $node) {
+        if ($node->getId() === $category->getId()) {
             return ['error' => _('The category can not be placed under itself.')];
         }
     }
@@ -2235,8 +2206,7 @@ function updateKat(
     }
 
     //Update kat
-    ORM::getOne(Category::class, $id)
-        ->setTitle($navn)
+    $category->setTitle($navn)
         ->setParentId($bind)
         ->setIconPath($icon)
         ->setRenderMode($vis)

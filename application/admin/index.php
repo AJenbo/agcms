@@ -11,8 +11,6 @@ use Sajax\Sajax;
 
 require_once __DIR__ . '/logon.php';
 
-$kattree = [];
-
 Sajax::export(
     [
         'addAccessory'                      => ['method' => 'POST'],
@@ -77,18 +75,35 @@ switch ($template) {
         $id = (int) ($_GET['id'] ?? 0);
 
         $bindings = [];
+        $page = null;
         if ($id) {
+            $page = ORM::getOne(Page::class, $id);
             $binds = db()->fetchArray('SELECT id, kat FROM `bind` WHERE `side` = ' . $id);
             foreach ($binds as $bind) {
                 if ($bind['id'] == -1) {
                     continue; // binding for inactive is created and removed automatically
                 }
 
+                $category = ORM::getOne(Category::class, $bind['kat']);
                 $kattreeHtml = '';
-                foreach (kattree($bind['kat']) as $kattree) {
-                    $kattreeHtml .= '/' . trim($kattree['navn']);
+                foreach ($category->getBranch() as $category) {
+                    $kattreeHtml .= '/' . $category->getTitle();
                 }
                 $bindings[$bind['id']] = $kattreeHtml . '/';
+            }
+
+            $accessories = [];
+            foreach ($page->getAccessories() as $accessory) {
+                $category = $accessory->getPrimaryCategory();
+                if (!$category) {
+                    continue;
+                }
+
+                $kattreeHtml = '';
+                foreach ($category->getBranch() as $category) {
+                    $kattreeHtml .= '/' . $category->getTitle();
+                }
+                $accessories[$accessory->getId()] = $kattreeHtml . '/' . $accessory->getTitle();
             }
         }
 
@@ -103,8 +118,9 @@ switch ($template) {
             'categories' => getCategoryRootStructure(),
             'requirementOptions' => getRequirementOptions(),
             'brandOptions' => getBrandOptions(),
-            'page' => $id ? ORM::getOne(Page::class, $id) : null,
+            'page' => $page,
             'bindings' => $bindings,
+            'accessories' => $accessories,
         ] + $data;
         break;
     case 'admin-getSiteTree':

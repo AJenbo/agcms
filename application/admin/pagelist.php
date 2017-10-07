@@ -5,8 +5,6 @@ use Sajax\Sajax;
 
 require_once __DIR__ . '/logon.php';
 
-$kattree = [];
-
 Sajax::export([
     'katspath'   => ['method' => 'GET'],
     'kat_expand' => ['method' => 'GET'],
