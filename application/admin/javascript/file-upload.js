@@ -120,52 +120,12 @@ function send()
         document.getElementById('progress').style.display= 'none';
 
         if(x.status != 200) {
-            switch(x.status) {
-                case 401:
-                    alert('Session udløbet, logind igen for at fortsætte.');
-                    break;
-                case 501:
-                    alert('Mangler filfunctioner.');
-                    break;
-                case 503:
-                    alert('Kunne ikke læse filnavn.');
-                    break;
-                case 504:
-                    alert('Fejl under flytning af filen.');
-                    break;
-                case 505:
-                    alert('Kunne ikke give tilladelse til filen.');
-                    break;
-                case 512:
-                    alert('Kunne ikke finde billed størelsen.');
-                    break;
-                case 520:
-                    alert('Kunne ikke slette filen.');
-                    break;
-                case 521:
-                    alert('Billedet er for stor.');
-                    break;
-                case 561:
-                    alert('Fejl under billed behandling.');
-                    break;
-                case 542:
-                    alert('Slette fejl i databasen!');
-                    break;
-                case 543:
-                    alert('Fejl ved indsætning i database!');
-                    break;
-                case 404:
-                    alert('Fil ikke sendt!');
-                    break;
-                default:
-                    alert('Ukendt fejl: ' + x.status);
-                    break;
-            }
+            alert('Error: ' + x.responseText);
             return;
         }
 
         document.getElementById('file').value= '';
-        document.getElementById('alt').value = '';
+        document.getElementById('alt').value= '';
         validate();
         status('Filen er sendt');
         document.getElementById('status').style.display= '';

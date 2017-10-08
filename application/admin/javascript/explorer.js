@@ -21,8 +21,7 @@ function init()
     contextMenuImageTile=
         new Proto.Menu({ selector : '.imagetile', "className" : 'menu desktop', menuItems : imagetileContextMenu });
 
-    // Page fully loaded
-    document.getElementById('loading').style.display= 'none';
+    showfiles(activeDir, 0);
 }
 
 function file(id, path, name, type, alt, width, height)
