@@ -29,7 +29,7 @@ function checkUserLoggedIn(): void
         sleep(1);
         header('HTTP/1.0 401 Unauthorized', true, 401);
 
-        if (!request()->get('rs')) { // Sajax call
+        if (request()->get('rs')) { // Sajax call
             exit(_('Your login has expired, please reload the page and login again.'));
         }
 
