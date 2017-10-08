@@ -6,6 +6,8 @@ use AGCMS\Entity\CustomPage;
 use AGCMS\Entity\Page;
 use AGCMS\Entity\Requirement;
 use AGCMS\Entity\Table;
+use DateTime;
+use Symfony\Component\HttpFoundation\Response;
 use Twig_Loader_Filesystem;
 use Twig_Environment;
 
@@ -24,6 +26,8 @@ class Render
     private static $email = '';
     private static $hasProductList = false;
     private static $keywords = [];
+
+    private static $response;
 
     private static $requirement;
     private static $loadedTables = [];
@@ -56,7 +60,7 @@ class Render
      */
     public static function doRouting(): void
     {
-        $url = urldecode($_SERVER['REQUEST_URI']);
+        $url = urldecode(request()->getRequestUri());
         self::makeUrlUtf8($url);
 
         // Routing
@@ -64,12 +68,12 @@ class Render
         $brandId = (int) preg_replace('/.*\/mærke([0-9]*)-.*|.*/u', '\1', $url);
         $categoryId = (int) preg_replace('/.*\/kat([0-9]*)-.*|.*/u', '\1', $url);
         $pageId = (int) preg_replace('/.*\/side([0-9]*)-.*|.*/u', '\1', $url);
-        $redirect = !$brandId && !$categoryId && !$pageId && !$requirementId ? 302 : 0;
+        $redirect = !$brandId && !$categoryId && !$pageId && !$requirementId ? Response::HTTP_FOUND : 0;
 
         if ($requirementId) {
             self::$activeRequirement = ORM::getOne(Requirement::class, $requirementId);
             if (!self::$activeRequirement) {
-                $redirect = 301;
+                $redirect = Response::HTTP_MOVED_PERMANENTLY;
                 self::$activeRequirement = null;
             }
         }
@@ -77,7 +81,7 @@ class Render
         if ($brandId) {
             self::$activeBrand = ORM::getOne(Brand::class, $brandId);
             if (!self::$activeBrand) {
-                $redirect = 301;
+                $redirect = Response::HTTP_MOVED_PERMANENTLY;
                 self::$activeBrand = null;
             }
         }
@@ -85,18 +89,18 @@ class Render
         if ($categoryId) {
             self::$activeCategory = ORM::getOne(Category::class, $categoryId);
             if (!self::$activeCategory || self::$activeCategory->isInactive()) {
-                $redirect = self::$activeCategory ? 302 : 301;
+                $redirect = self::$activeCategory ? Response::HTTP_FOUND : Response::HTTP_MOVED_PERMANENTLY;
                 self::$activeCategory = null;
             }
         }
         if ($pageId) {
             self::$activePage = ORM::getOne(Page::class, $pageId);
             if (self::$activePage && !self::$activePage->isInCategory($categoryId)) {
-                $redirect = 301;
+                $redirect = Response::HTTP_MOVED_PERMANENTLY;
                 self::$activeCategory = null;
             }
             if (!self::$activePage || self::$activePage->isInactive()) {
-                $redirect = self::$activePage ? 302 : 301;
+                $redirect = self::$activePage ? Response::HTTP_FOUND : Response::HTTP_MOVED_PERMANENTLY;
                 self::$activePage = null;
             }
         }
@@ -118,7 +122,7 @@ class Render
                 $encoding = 'windows-1252';
             }
             $url = mb_convert_encoding($url, 'UTF-8', $encoding);
-            redirect($url, 301);
+            redirect($url, Response::HTTP_MOVED_PERMANENTLY);
         }
     }
 
@@ -228,10 +232,7 @@ class Render
      */
     public static function sendCacheHeader(int $timestamp = null): void
     {
-        header('Cache-Control: max-age=0, must-revalidate'); // HTTP/1.1
-        header('Pragma: no-cache');                          // HTTP/1.0
-
-        if (!empty($_SESSION['faktura']['quantities'])) {
+        if (!request()->isMethodCacheable() || !empty($_SESSION['faktura']['quantities'])) {
             return;
         }
         if (!$timestamp) {
@@ -241,39 +242,25 @@ class Render
             return;
         }
 
-        // A PHP implementation of conditional get, see
-        // http://fishbowl.pastiche.org/archives/001132.html
-        $timeZone = date_default_timezone_get();
-        date_default_timezone_set('GMT');
-        $lastModified = mb_substr(date('r', $timestamp), 0, -5) . 'GMT';
-        date_default_timezone_set($timeZone);
-        $etag = (string) $timestamp;
+        $response = self::getResponse();
 
-        // Send the headers
-        header('Last-Modified: ' . $lastModified);
-        header('ETag: ' . $etag);
+        $lastModified = DateTime::createFromFormat('U', $timestamp);
+        $response->setLastModified($lastModified);
+        $response->setEtag((string) $timestamp);
 
-        // See if the client has provided the required headers
-        $ifModifiedSince = $_SERVER['HTTP_IF_MODIFIED_SINCE'] ?? false;
-        $ifNoneMatch = $_SERVER['HTTP_IF_NONE_MATCH'] ?? false;
-        if (!$ifModifiedSince && !$ifNoneMatch) {
-            return;
+        if ($response->isNotModified(request())) {
+            $response->send();
+            die();
         }
-        // At least one of the headers is there - check them
-        if ($ifNoneMatch && $ifNoneMatch !== $etag) {
-            return; // etag is there but doesn't match
-        }
-        if ($ifModifiedSince && $ifModifiedSince !== $lastModified) {
-            return; // if-modified-since is there but doesn't match
+    }
+
+    private static function getResponse(): Response
+    {
+        if (!self::$response) {
+            self::$response = new Response();
         }
 
-        // Nothing has changed since their last request - serve a 304 and exit
-        if (function_exists('apache_setenv')) {
-            apache_setenv('no-gzip', 1);
-        }
-        ini_set('zlib.output_compression', 0);
-        header('HTTP/1.1 304 Not Modified', true, 304);
-        die();
+        return self::$response;
     }
 
     /**
@@ -281,20 +268,22 @@ class Render
      */
     public static function prepareData(): void
     {
+        $request = request();
+
         // Brand only search
-        if (empty($_GET['q'])
-            && empty($_GET['varenr'])
-            && empty($_GET['minpris'])
-            && empty($_GET['maxpris'])
-            && empty($_GET['sogikke'])
+        if (!$request->get('q')
+            && !$request->get('varenr')
+            && !$request->get('minpris')
+            && !$request->get('maxpris')
+            && !$request->get('sogikke')
         ) {
-            if (!empty($_GET['maerke'])) {
-                $brand = ORM::getOne(Brand::class, $_GET['maerke']);
+            if ($request->get('maerke')) {
+                $brand = ORM::getOne(Brand::class, $request->get('maerke'));
                 if ($brand) {
-                    redirect($brand->getCanonicalLink(), 301);
+                    redirect($brand->getCanonicalLink(), Response::HTTP_MOVED_PERMANENTLY);
                 }
-            } elseif (isset($_GET['q']) && empty($_GET['sog'])) {
-                redirect('/?sog=1&q=&sogikke=&minpris=&maxpris=&maerke=', 301);
+            } elseif ($request->get('q') && !$request->get('sog')) {
+                redirect('/?sog=1&q=&sogikke=&minpris=&maxpris=&maerke=', Response::HTTP_MOVED_PERMANENTLY);
             }
         }
 
@@ -330,7 +319,7 @@ class Render
         self::loadCategoryData(self::$activeCategory);
         self::loadPageData(self::$activePage);
 
-        if (!empty($_GET['sog'])) {
+        if ($request->get('sog')) {
             self::$pageType = 'search';
             self::$title = 'Søg på ' . Config::get('site_name');
             self::$bodyHtml = '<form action="/" method="get"><table><tr><td>' . _('Contains')
@@ -368,31 +357,31 @@ class Render
                     . xhtmlEsc($brand->getTitle()) . '</option>';
             }
             self::$bodyHtml .= '</select></td></tr></table></form>';
-        } elseif (isset($_GET['q'])
-            || !empty($_GET['varenr'])
-            || !empty($_GET['minpris'])
-            || !empty($_GET['maxpris'])
-            || !empty($_GET['sogikke'])
-            || !empty($_GET['maerke'])
+        } elseif ($request->get('q')
+            || $request->get('varenr')
+            || $request->get('minpris')
+            || $request->get('maxpris')
+            || $request->get('sogikke')
+            || $request->get('maerke')
         ) {
             self::$pageList = self::searchListe(
-                $_GET['q'] ?? '',
-                intval($_GET['maerke'] ?? 0),
-                $_GET['varenr'] ?? '',
-                intval($_GET['minpris'] ?? 0),
-                intval($_GET['maxpris'] ?? 0),
-                $_GET['sogikke'] ?? ''
+                $request->get('q', ''),
+                (int) $request->get('maerke', 0),
+                $request->get('varenr', ''),
+                (int) $request->get('minpris', 0),
+                (int) $request->get('maxpris', 0),
+                $request->get('sogikke', '')
             );
             if (count(self::$pageList) === 1) {
                 $page = array_shift(self::$pageList);
-                redirect($page->getCanonicalLink(), 302);
+                redirect($page->getCanonicalLink(), Response::HTTP_FOUND);
             }
 
             self::$pageType = 'tiles';
             self::$title = 'Søg på ' . Config::get('site_name');
             self::$searchMenu = self::getSearchMenu(
-                $_GET['q'] ?? '',
-                $_GET['sogikke'] ?? ''
+                $request->get('q', ''),
+                $request->get('sogikke', '')
             );
         } elseif (self::$activeRequirement) {
             self::$pageType = 'requirement';
@@ -898,16 +887,15 @@ class Render
      */
     public static function output(string $template = 'index', array $data = []): void
     {
-        if ($_SERVER['REQUEST_METHOD'] === 'HEAD') {
-            if (function_exists('apache_setenv')) {
-                apache_setenv('no-gzip', 1);
-            }
-            ini_set('zlib.output_compression', 0);
+        $response = self::getResponse();
+        $request = request();
 
-            return;
+        if (!$request->isMethod('HEAD') && !$response->isNotModified($request)) {
+            $content = self::render($template, $data);
+            $response->setContent($content);
         }
 
-        echo self::render($template, $data);
+        $response->send();
     }
 
     public static function render(string $template = 'index', array $data = []): string

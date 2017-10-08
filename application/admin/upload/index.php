@@ -37,7 +37,7 @@ if (!empty($_FILES['Filedata']['tmp_name'])
     //Fejl under flytning af filen.
     header('HTTP/1.1 504 Internal Server Error');
     move_uploaded_file($uploadPath, $tempPath) || die();
-    $targetDir = (string) realpath(_ROOT_ . ($_COOKIE['admin_dir'] ?? '/files')); // Get actual path
+    $targetDir = (string) realpath(_ROOT_ . ($_POST['dir'] ?? '/images')); // Get actual path
     $targetDir = mb_substr($targetDir, mb_strlen(_ROOT_)); // Remove _ROOT_
     if (mb_stripos($targetDir, '/files') !== 0 && mb_stripos($targetDir, '/images') !== 0) {
         $targetDir = '/files';
@@ -121,7 +121,7 @@ if (!empty($_FILES['Filedata']['tmp_name'])
         $width = $newfiledata['width'];
         $height = $newfiledata['height'];
     } else {
-        $aspect = empty($_POST['aspect']) ? '' : $_POST['aspect'];
+        $aspect = $_POST['aspect'] ?? null;
         $width = $imagesize[0];
         $height = $imagesize[1];
     }
@@ -141,7 +141,7 @@ if (!empty($_FILES['Filedata']['tmp_name'])
     //MySQL INSERT fejl!
     header('HTTP/1.1 543 Internal Server Error');
 
-    $alt = empty($_POST['alt']) ? '' : $_POST['alt'];
+    $alt = $_POST['alt'] ?? '';
     File::fromPath($destpath)
         ->setDescription($alt)
         ->setAspect($aspect)

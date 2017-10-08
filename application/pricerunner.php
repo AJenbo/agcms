@@ -42,7 +42,7 @@ foreach ($pages as $page) {
         'sku' => $page->getId(),
         'title' => $page->getTitle(),
         'price' => $page->getPrice() . ',00',
-        'imageUrl' => Config::get('base_url') . encodeUrl($page->getImagePath()),
+        'imageUrl' => Config::get('base_url') . encodeUrl($page->getIcon()->getPath()),
         'link' => Config::get('base_url') . encodeUrl($page->getCanonicalLink()),
         'manufacture' => $brand,
         'manufactureSku' => $page->getSku(),
@@ -64,4 +64,4 @@ foreach ($pages as $page) {
 }
 
 header('Content-Type: application/xml');
-Render::output('pricerunner', compact('products'));
+Render::output('pricerunner', ['products' => $products]);

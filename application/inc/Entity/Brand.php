@@ -83,7 +83,7 @@ class Brand extends AbstractRenderable
      *
      * @return self
      */
-    public function setIconPath(string $iconPath): self
+    public function setIconPath(string $iconPath = null): self
     {
         $this->iconPath = $iconPath;
 

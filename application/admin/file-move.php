@@ -8,12 +8,15 @@ require_once __DIR__ . '/logon.php';
 Sajax::export(['listdirs' => ['method' => 'GET']]);
 Sajax::handleClientRequest();
 
-$pathinfo = pathinfo($_GET['path']);
+$path = request()->get('path');
+if (mb_substr($path, 0, 7) !== '/files/' && mb_substr($path, 0, 8) !== '/images/') {
+    throw new Exception(_('File manipulation not allowed outside user folders'));
+}
 
 $data = [
     'javascript' => Sajax::showJavascript(true),
-    'id' => $_GET['id'] ?? 0,
-    'path' => $_GET['path'] ?? '',
+    'id' => request()->get('id'),
+    'path' => $path,
     'dirs' => getRootDirs(),
     'move' => true,
 ];

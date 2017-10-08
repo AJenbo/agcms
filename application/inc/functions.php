@@ -7,6 +7,9 @@ use AGCMS\Entity\Invoice;
 use AGCMS\ORM;
 use AGCMS\Render;
 use AJenbo\Imap;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 use PHPMailer\PHPMailer\PHPMailer;
 
 function bootStrap(): void
@@ -26,6 +29,16 @@ function bootStrap(): void
     mb_language('uni');
     mb_detect_order('UTF-8, ISO-8859-1');
     mb_internal_encoding('UTF-8');
+}
+
+function request(): Request
+{
+    static $request;
+    if (!$request) {
+        $request = Request::createFromGlobals();
+    }
+
+    return $request;
 }
 
 /**
@@ -48,7 +61,7 @@ function db(DB $overwrite = null): DB
     return $connection;
 }
 
-function redirect(string $url, int $status = 303): void
+function redirect(string $url, int $status = Response::HTTP_SEE_OTHER): void
 {
     if (headers_sent()) {
         throw new Exception(_('Header already sent!'));
@@ -56,37 +69,26 @@ function redirect(string $url, int $status = 303): void
 
     $url = parse_url($url);
     if (empty($url['scheme'])) {
-        $url['scheme'] = !empty($_SERVER['HTTPS']) && mb_strtolower($_SERVER['HTTPS']) !== 'off' ? 'https' : 'http';
+        $url['scheme'] = request()->getScheme();
     }
     if (empty($url['host'])) {
-        // IP
-        $url['host'] = $_SERVER['SERVER_ADDR'];
-        if (!empty($_SERVER['HTTP_HOST'])) {
-            // Browser
-            $url['host'] = $_SERVER['HTTP_HOST'];
-        } elseif (!empty($_SERVER['SERVER_NAME'])) {
-            // Can both be from Browser and server (virtual) config
-            $url['host'] = $_SERVER['SERVER_NAME'];
-        }
+        $url['host'] = request()->getHost();
     }
     if (empty($url['path'])) {
-        $url['path'] = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
+        $url['path'] = parse_url(request()->getRequestUri(), PHP_URL_PATH);
     } elseif (mb_substr($url['path'], 0, 1) !== '/') {
         //The redirect is relative to current path
         $path = [];
-        $requestPath = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
+        $requestPath = parse_url(request()->getRequestUri(), PHP_URL_PATH);
         preg_match('#^\S+/#u', $requestPath, $path);
         $url['path'] = $path[0] . $url['path'];
     }
     $url['path'] = encodeUrl($url['path']);
     $url = unparseUrl($url);
 
-    if (function_exists('apache_setenv')) {
-        apache_setenv('no-gzip', 1);
-    }
-    ini_set('zlib.output_compression', 0);
-
-    header('Location: ' . $url, true, $status);
+    $response = new RedirectResponse($url);
+    $response->setStatusCode($status);
+    $response->send();
     exit;
 }
 
@@ -199,17 +201,18 @@ function arrayNatsort(array $aryData, string $strIndex, string $strSortBy, strin
 function invoiceFromSession(): Invoice
 {
     $items = [];
-    foreach ($_SESSION['faktura']['products'] as $key => $title) {
+    $invoiceData = $_SESSION['faktura'];
+    foreach ($invoiceData['products'] as $key => $title) {
         $items[] = [
             'title'    => $title,
-            'value'    => $_SESSION['faktura']['values'][$key] ?? 0,
-            'quantity' => $_SESSION['faktura']['quantities'][$key] ?? 0,
+            'value'    => $invoiceData['values'][$key] ?? 0,
+            'quantity' => $invoiceData['quantities'][$key] ?? 0,
         ];
     }
     $items = json_encode($items);
 
     $note = '';
-    $payMethod = $_SESSION['faktura']['paymethod'] ?? '';
+    $payMethod = $invoiceData['paymethod'] ?? '';
     if ($payMethod === 'creditcard') {
         $note .= _('I would like to pay via credit card.');
     } elseif ($payMethod === 'bank') {
@@ -218,7 +221,7 @@ function invoiceFromSession(): Invoice
         $note .= _('I would like to pay via cash.');
     }
     $note .= "\n";
-    $delevery = $_SESSION['faktura']['delevery'] ?? '';
+    $delevery = $invoiceData['delevery'] ?? '';
     if ($delevery === 'pickup') {
         $note .= _('I will pick up the goods in your shop.');
     } elseif ($delevery === 'postal') {
@@ -226,31 +229,31 @@ function invoiceFromSession(): Invoice
     } elseif ($delevery === 'express') {
         $note .= _('Please send the order to by mail express.');
     }
-    $note = trim($note . "\n" . $_SESSION['faktura']['note'] ?? '');
+    $note = trim($note . "\n" . $invoiceData['note'] ?? '');
 
     return new Invoice([
         'item_data'            => $items,
-        'has_shipping_address' => (bool) ($_SESSION['faktura']['altpost'] ?? false),
-        'amount'               => (int) ($_SESSION['faktura']['amount'] ?? 0),
-        'name'                 => $_SESSION['faktura']['navn'] ?? '',
-        'att'                  => $_SESSION['faktura']['att'] ?? '',
-        'address'              => $_SESSION['faktura']['adresse'] ?? '',
-        'postbox'              => $_SESSION['faktura']['postbox'] ?? '',
-        'postcode'             => $_SESSION['faktura']['postnr'] ?? '',
-        'city'                 => $_SESSION['faktura']['by'] ?? '',
-        'country'              => $_SESSION['faktura']['land'] ?? '',
-        'email'                => $_SESSION['faktura']['email'] ?? '',
-        'phone1'               => $_SESSION['faktura']['tlf1'] ?? '',
-        'phone2'               => $_SESSION['faktura']['tlf2'] ?? '',
-        'shipping_phone'       => $_SESSION['faktura']['posttlf'] ?? '',
-        'shipping_name'        => $_SESSION['faktura']['postname'] ?? '',
-        'shipping_att'         => $_SESSION['faktura']['postatt'] ?? '',
-        'shipping_address'     => $_SESSION['faktura']['postaddress'] ?? '',
-        'shipping_address2'    => $_SESSION['faktura']['postaddress2'] ?? '',
-        'shipping_postbox'     => $_SESSION['faktura']['postpostbox'] ?? '',
-        'shipping_postcode'    => $_SESSION['faktura']['postpostalcode'] ?? '',
-        'shipping_city'        => $_SESSION['faktura']['postcity'] ?? '',
-        'shipping_country'     => $_SESSION['faktura']['postcountry'] ?? '',
+        'has_shipping_address' => (bool) ($invoiceData['altpost'] ?? false),
+        'amount'               => (int) ($invoiceData['amount'] ?? 0),
+        'name'                 => $invoiceData['navn'] ?? '',
+        'att'                  => $invoiceData['att'] ?? '',
+        'address'              => $invoiceData['adresse'] ?? '',
+        'postbox'              => $invoiceData['postbox'] ?? '',
+        'postcode'             => $invoiceData['postnr'] ?? '',
+        'city'                 => $invoiceData['by'] ?? '',
+        'country'              => $invoiceData['land'] ?? '',
+        'email'                => $invoiceData['email'] ?? '',
+        'phone1'               => $invoiceData['tlf1'] ?? '',
+        'phone2'               => $invoiceData['tlf2'] ?? '',
+        'shipping_phone'       => $invoiceData['posttlf'] ?? '',
+        'shipping_name'        => $invoiceData['postname'] ?? '',
+        'shipping_att'         => $invoiceData['postatt'] ?? '',
+        'shipping_address'     => $invoiceData['postaddress'] ?? '',
+        'shipping_address2'    => $invoiceData['postaddress2'] ?? '',
+        'shipping_postbox'     => $invoiceData['postpostbox'] ?? '',
+        'shipping_postcode'    => $invoiceData['postpostalcode'] ?? '',
+        'shipping_city'        => $invoiceData['postcity'] ?? '',
+        'shipping_country'     => $invoiceData['postcountry'] ?? '',
         'note'                 => $note,
     ]);
 }

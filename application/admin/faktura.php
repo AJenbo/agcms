@@ -11,12 +11,12 @@ use Sajax\Sajax;
 require_once __DIR__ . '/logon.php';
 @include_once _ROOT_ . '/inc/countries.php';
 
-if ($_GET['function'] ?? '' === 'new') {
+if (request()->get('function') === 'new') {
     redirect('faktura.php?id=' . newfaktura());
 }
 
 /** @var Invoice */
-$invoice = ORM::getOne(Invoice::class, $_GET['id']);
+$invoice = ORM::getOne(Invoice::class, request()->get('id'));
 
 if ($invoice && $invoice->getStatus() !== 'new') {
     try {
@@ -54,14 +54,14 @@ Sajax::export([
 Sajax::handleClientRequest();
 
 if (!$invoice->getClerk()) {
-    $invoice->setClerk($_SESSION['_user']['fullname']);
+    $invoice->setClerk(curentUser()->getFullName());
 }
 
 $data = getBasicAdminTemplateData();
 $data = [
     'title' => _('Online Invoice #') . $invoice->getId(),
     'javascript' => $data['javascript'] . ' var status = ' . json_encode($invoice->getStatus()) . ';',
-    'userSession' => $_SESSION['_user'],
+    'currentUser' => curentUser(),
     'users' => ORM::getByQuery(User::class, "SELECT * FROM `users` ORDER BY fullname"),
     'invoice' => $invoice,
     'departments' => array_keys(Config::get('emails', [])),

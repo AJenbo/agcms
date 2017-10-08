@@ -3,7 +3,7 @@ document.getElementsByClassName = getElementsByClassName;
 function getElementsByClassName(name)
 {
     var allelems, retary, i;
-    retary = new Array();
+    retary = [];
     allelems = document.getElementsByTagName("*");
     for (i = 0; i < allelems.length; i++) {
         if (allelems[i].className) {

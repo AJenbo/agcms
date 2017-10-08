@@ -10,19 +10,19 @@ require_once __DIR__ . '/logon.php';
 require_once _ROOT_ . '/inc/countries.php';
 
 $selected = [
-    'id'         => ((int) ($_GET['id'] ?? 0)) ?: null,
-    'year'       => (int) ($_GET['y'] ?? date('Y')),
-    'month'      => (int) ($_GET['m'] ?? 0),
-    'department' => $_GET['department'] ?? null,
-    'status'     => $_GET['status'] ?? 'activ',
-    'name'       => $_GET['name'] ?? null,
-    'tlf'        => $_GET['tlf'] ?? null,
-    'email'      => $_GET['email'] ?? null,
-    'momssats'   => $_GET['momssats'] ?? null,
-    'clerk'      => $_GET['clerk'] ?? null,
+    'id'         => (int) request()->get('id') ?: null,
+    'year'       => (int) request()->get('y', date('Y')),
+    'month'      => (int) request()->get('m'),
+    'department' => request()->get('department'),
+    'status'     => request()->get('status', 'activ'),
+    'name'       => request()->get('name'),
+    'tlf'        => request()->get('tlf'),
+    'email'      => request()->get('email'),
+    'momssats'   => request()->get('momssats'),
+    'clerk'      => request()->get('clerk'),
 ];
-if ($selected['clerk'] === null && $_SESSION['_user']['access'] != User::ADMINISTRATOR) {
-    $selected['clerk'] = $_SESSION['_user']['fullname'];
+if ($selected['clerk'] === null && !curentUser()->hasAccess(User::ADMINISTRATOR)) {
+    $selected['clerk'] = curentUser()->getFullName();
 }
 if ($selected['momssats'] === '') {
     $selected['momssats'] = null;
@@ -41,7 +41,7 @@ if ($selected['month'] && $selected['year']) {
 if ($selected['department']) {
     $where[] = "`department` = " . db()->eandq($selected['department']);
 }
-if ($selected['clerk'] && $_SESSION['_user']['access'] != User::ADMINISTRATOR || $_SESSION['_user']['fullname'] == $selected['clerk']) {
+if ($selected['clerk'] && !curentUser()->hasAccess(User::ADMINISTRATOR) || curentUser()->getFullName() == $selected['clerk']) {
     //Viewing your self
     $where[] = "(`clerk` = " . db()->eandq($selected['clerk']) . " OR `clerk` = '')";
 } elseif ($selected['clerk']) {
@@ -88,7 +88,7 @@ $oldest = date('Y', $oldest);
 
 $data = [
     'title'         => _('Invoice list'),
-    'userSession'   => $_SESSION['_user'],
+    'currentUser'   => curentUser(),
     'selected'      => $selected,
     'countries'     => $countries,
     'departments'   => array_keys(Config::get('emails', [])),

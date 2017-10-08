@@ -6,9 +6,8 @@ require_once __DIR__ . '/logon.php';
 @include_once _ROOT_ . '/vendor/tecnickcom/tcpdf/examples/lang/dan.php';
 @include_once _ROOT_ . '/inc/countries.php';
 
-if ($_GET['id'] > 0) {
-    $id = (int) $_GET['id'];
-} else {
+$id = (int) request()->get('id');
+if (!$id) {
     die(_('Wrong id.'));
 }
 
@@ -215,7 +214,22 @@ foreach ($faktura['values'] as $i => $value) {
     $netto += $value / (1 + $faktura['momssats']) * $faktura['quantities'][$i];
 
     $pdf->Cell(24, 6, $faktura['quantities'][$i], 'RL', 0, 'R');
-    $lines = $pdf->MultiCell(106, 6, html_entity_decode(htmlspecialchars_decode($faktura['products'][$i], ENT_QUOTES)), 'RL', '0', 0, 0, '', '', true, 0, false, true, 0);
+    $lines = $pdf->MultiCell(
+        106,
+        6,
+        html_entity_decode(htmlspecialchars_decode($faktura['products'][$i], ENT_QUOTES)),
+        'RL',
+        '0',
+        0,
+        0,
+        '',
+        '',
+        true,
+        0,
+        false,
+        true,
+        0
+    );
     //$pdf->Cell(106, 6, $faktura['products'][$i], 'RL', 0, 'L');
     $pdf->Cell(29, 6, number_format($value, 2, ',', ''), 'RL', 0, 'R');
     $pdf->Cell(34, 6, number_format($value * $faktura['quantities'][$i], 2, ',', ''), 'RL', 1, 'R');
@@ -242,13 +256,33 @@ $pdf->Cell( 29, 6, _('VAT Amount'), 'RL', 0, 'R');
 $pdf->Cell( 34, 6, number_format($netto*$faktura['momssats'], 2, ',', ''), 'RL', 1, 'R');
 */
 $pdf->Cell(24, 6, '', 'RL', 0);
-$pdf->Cell(106, 6, ($faktura['momssats'] * 100) . _('% VAT is: ') . number_format($netto * $faktura['momssats'], 2, ',', ''), 'RL', 0);
+$pdf->Cell(
+    106,
+    6,
+    ($faktura['momssats'] * 100) . _('% VAT is: ') . number_format($netto * $faktura['momssats'], 2, ',', ''),
+    'RL',
+    0
+);
 //Forsendelse
 $pdf->Cell(29, 6, _('Shipping'), 'RL', 0, 'R');
 $pdf->Cell(34, 6, number_format($faktura['fragt'], 2, ',', ''), 'RL', 1, 'R');
 
 $pdf->SetFont('times', '', 10);
-$pdf->MultiCell(130, 9, '<strong>' . _('Payment Terms:') . '</strong> ' . _('Net cash at invoice reception.') . '<small><br>' . _('In case of payment later than the stated deadline, 2% interest will be added per. started months.') . '</small>', 1, 'L', false, 0, '', '', false, 8, true, false);
+$pdf->MultiCell(
+    130,
+    9,
+    '<strong>' . _('Payment Terms:') . '</strong> ' . _('Net cash at invoice reception.') . '<small><br>' . _('In case of payment later than the stated deadline, 2% interest will be added per. started months.') . '</small>',
+    1,
+    'L',
+    false,
+    0,
+    '',
+    '',
+    false,
+    8,
+    true,
+    false
+);
 $pdf->SetFont('times', 'B', 11);
 $pdf->Cell(29, 9, _('TO PAY'), 1, 0, 'C');
 $pdf->SetFont('times', '', 11);

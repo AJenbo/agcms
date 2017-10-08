@@ -134,7 +134,7 @@
         <td>Recived:</td>
         <td>
             {% if invoice.transferred %}Yes{% else %}No{% endif %}
-            {% if userSession.access == 1 and invoice.transferred %}
+            {% if currentUser.accessLevel == 1 and invoice.transferred %}
             (<a href="fakturasvalidate.php?undoid={{invoice.id}}">Remove</a>)
             {% endif %}
         </td>
@@ -155,17 +155,17 @@
     <tr>
         <td>Ansvarlig:</td>
         <td>
-            {% if userSession.access == 1 and users|length > 1 and invoice.status not in ['giro', 'cash', 'accepted', 'canceled'] %}
+            {% if currentUser.accessLevel == 1 and users|length > 1 and invoice.status not in ['giro', 'cash', 'accepted', 'canceled'] %}
             <select name="clerk" id="clerk">
                 <option value="">No one</option>
                 {% for user in users %}
-                <option value="{{user.fullName}}"{% if invoice.clerk == user.fullName or (not invoice.clerk and userSession.fullname == user.fullName) %} selected="selected"{% endif %}>
+                <option value="{{user.fullName}}"{% if invoice.clerk == user.fullName or (not invoice.clerk and currentUser.fullname == user.fullName) %} selected="selected"{% endif %}>
                     {{user.fullName}}
                 </option>
                 {% endfor %}
             </select>
             {% else %}
-            {% if invoice.clerk or invoice.isFinalized %}{{invoice.clerk}}{% else %}{{userSession.fullname}}{% endif %}
+            {% if invoice.clerk or invoice.isFinalized %}{{invoice.clerk}}{% else %}{{currentUser.fullname}}{% endif %}
             {% endif %}
         </td>
     </tr>

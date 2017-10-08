@@ -10,11 +10,11 @@ require_once __DIR__ . '/logon.php';
 Sajax::export(['updateuser' => ['method' => 'POST']]);
 Sajax::handleClientRequest();
 
-$user = ORM::getOne(User::class, $_GET['id']);
+$user = ORM::getOne(User::class, request()->get('id'));
 
 $data = [
     'title' => _('Edit') . ' ' . $user->getFullName(),
-    'userSession' => $_SESSION['_user'],
+    'currentUser' => curentUser(),
     'user' => $user,
     'accessLevels' => [
         User::NO_ACCESS => _('No access'),

@@ -38,7 +38,7 @@ if ($invoice && $checkid === $invoice->getCheckid() && !isset($_GET['txnid'])) {
             ]];
             Render::$title = _('Order #') . $id;
             Render::$headline = _('Order #') . $id;
-            Render::$bodyHtml = Render::render('partial-payment-form0', compact('invoice'));
+            Render::$bodyHtml = Render::render('partial-payment-form0', ['invoice' => $invoice]);
         } elseif ($_GET['step'] == 1) { //Fill out customer info
             if ($_POST) {
                 $invoice->setName($_POST['navn'])

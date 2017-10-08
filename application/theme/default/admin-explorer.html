@@ -13,7 +13,6 @@
         <script type="text/javascript" src="javascript/explorer.js"></script>
         <script type="text/javascript" src="/javascript/sajax.js"></script>
         <script type="text/javascript"><!--
-        var rte = {{rte|json_encode|raw}};
         var returnid = {{returnid|json_encode|raw}};
         {{javascript|raw}}
         --></script>
@@ -23,14 +22,14 @@
         }
         </style>
     </head>
-    <body scroll="auto">
+    <body scroll="auto" onload="showfiles(activeDir, 0)">
         picture_error
         <div id="menu">
             <img id="loading" src="images/loading.gif" width="16" height="16" alt="Loading" title="Loading" />
-            <a id="dir_bn" class="{% if not hasSearch %}down{% endif %}" title="Folders" onclick="return swap_pannel('dir');">
+            <a id="dir_bn" class="down" title="Folders" onclick="return swap_pannel('dir');">
                 <img width="16" height="16" src="images/folder.png" alt="" /> Mapper
             </a>
-            <a id="search_bn" title="Søg" class="{% if hasSearch %}down{% endif %}" onclick="return swap_pannel('search');">
+            <a id="search_bn" title="Søg" onclick="return swap_pannel('search');">
                 <img width="16" height="16" src="images/magnifier.png" alt="" /> Search
             </a>
             <a title="New folder" onclick="makedir();return false">
@@ -43,39 +42,36 @@
                 <img width="16" height="16" src="images/folder_page_white.png" alt="" /> Add File
             </a>
         </div>
-        <div id="dir"{% if hasSearch %} style="display:none"{% endif %}>
+        <div id="dir">
             {% include 'partial-admin-listDirs.html' %}
         </div>
-        <form id="search"{% if not hasSearch %} style="display:none"{% endif %} action="" onsubmit="searchfiles();return false;">
+        <form id="search" style="display:none" action="" onsubmit="searchfiles();return false;">
             <div>
                 Name:<br />
-                <input name="searchpath" id="searchpath" value="{{qpath}}" />
+                <input name="searchpath" id="searchpath" />
                 <br />
                 <br />
                 Description:<br />
-                <input name="searchalt" id="searchalt" value="{{qalt}}" />
+                <input name="searchalt" id="searchalt" />
                 <br />
                 <br />
                 Type:<br />
                 <select name="searchtype" id="searchtype">
                     <option value="" selected="selected">alle</option>
-                    <option value="image"{% if qtype == 'image' %} selected="selected"{% endif %}>Pictures</option>
-                    <option value="imagefile"{% if qtype == 'imagefile' %} selected="selected"{% endif %}>Image files</option>
-                    <option value="video"{% if qtype == 'video' %} selected="selected"{% endif %}>Videos</option>
-                    <option value="audio"{% if qtype == 'audio' %} selected="selected"{% endif %}>Sounds</option>
-                    <option value="text"{% if qtype == 'text' %} selected="selected"{% endif %}>Documents</option>
-                    <option value="sysfile"{% if qtype == 'sysfile' %} selected="selected"{% endif %}>System files</option>
-                    <option value="compressed"{% if qtype == 'compressed' %} selected="selected"{% endif %}>Compressed files</option>
-                    <option value="unused"{% if qtype == 'unused' %} selected="selected"{% endif %}>Unused files</option>
+                    <option value="image">Pictures</option>
+                    <option value="imagefile">Image files</option>
+                    <option value="video">Videos</option>
+                    <option value="audio">Sounds</option>
+                    <option value="text">Documents</option>
+                    <option value="sysfile">System files</option>
+                    <option value="compressed">Compressed files</option>
+                    <option value="unused">Unused files</option>
                 </select>
                 <br />
                 <br />
                 <input type="submit" value="Søg nu" accesskey="f" />
             </div>
         </form>
-        <div id="files">{{filesHtml|raw}}</div>
-        <script type="text/javascript"><!--
-        init();
-        --></script>
+        <div id="files"></div>
     </body>
 </html>

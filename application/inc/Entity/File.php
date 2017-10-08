@@ -283,6 +283,7 @@ class File extends AbstractEntity
 
         replacePaths($this->getPath(), $path);
         $this->setPath($path)->save();
+
         return true;
     }
 

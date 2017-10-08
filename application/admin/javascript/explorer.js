@@ -1,4 +1,6 @@
 ﻿var files= [];
+var activeDir= getCookie('admin_dir');
+var activeDir= activeDir ? activeDir : '/images';
 var contextMenuFileTile;
 var contextMenuVideoTile;
 var contextMenuswfTile;
@@ -406,9 +408,6 @@ function searchfiles()
     qalt= document.getElementById('searchalt').value;
     qtype= getSelect('searchtype');
 
-    setCookie('qpath', qpath, 360);
-    setCookie('qalt', qalt, 360);
-    setCookie('qtype', qtype, 360);
     // TODO only cancle requests relating to searchfiles
     sajax.cancel();
     x_searchfiles(qpath, qalt, qtype, showfiles_r);
@@ -423,11 +422,8 @@ function getSelect(id)
 function showfiles(dir, mode)
 {
     // TODO, scroll to top.
-    if(dir != '') {
-        setCookie('admin_dir', dir, 360);
-    } else {
-        dir= getCookie('admin_dir');
-    }
+    activeDir= dir;
+    setCookie('admin_dir', activeDir, 360);
 
     document.getElementById('loading').style.display= '';
     if(mode == 0) {
@@ -435,6 +431,7 @@ function showfiles(dir, mode)
         for(var i= 0; i < dirlist.length; i++) {
             dirlist[i].className= '';
         }
+        document.getElementById(dirToId(dir)).getElementsByTagName('a')[0].className= 'active';
     }
     // TODO only cancle requests relating to showfiles
     sajax.cancel();
@@ -444,7 +441,7 @@ function showfiles(dir, mode)
 function showfiles_r(data)
 {
     inject_html(data);
-    files= new Array();
+    files= [];
     eval(data.javascript);
     reattachContextMenus();
 }
@@ -530,7 +527,8 @@ function deletefolder()
 {
     // TODO hvilket folder?
     if(confirm('Er du sikker på du vil slette denne mappe og dens indhold?')) {
-        x_deletefolder(deletefolder_r);
+        x_deletefolder(activeDir, deletefolder_r);
+        setCookie('admin_dir', '', 360);
     }
 }
 
@@ -538,8 +536,6 @@ function deletefolder_r(data)
 {
     if(data.error) {
         alert(data.error);
-    } else {
-        setCookie('admin_dir', '/images', 360);
     }
     window.location.reload();
 }
@@ -548,7 +544,7 @@ function makedir()
 {
     if(name= prompt('Hvad skal mappen hede?', 'Ny mappe')) {
         document.getElementById('loading').style.display= '';
-        x_makedir(name, makedir_r);
+        x_makedir(activeDir, name, makedir_r);
     }
 }
 
@@ -559,10 +555,7 @@ function makedir_r(data)
         alert(data.error);
         return;
     }
-    // TODO make sure current folder has +- and room for subs
-    // document.getElementById('loading').style.display = '';
-    // x_listdirs(getCookie('admin_dir'), 0, dir_expand_r);
-    setCookie(getCookie('admin_dir'), 1, 360);
+
     window.location.reload();
 }
 
@@ -588,7 +581,6 @@ function dir_expand(dirdiv, mode)
     dirdiv.lastChild.style.display= '';
     dirdiv.firstChild.style.display= 'none';
     dirdiv.childNodes[1].style.display= '';
-    setCookie(idToDir(dirdiv.id), 1, 360);
 }
 
 function dir_expand_r(data)
@@ -604,7 +596,6 @@ function dir_expand_r(data)
     dirdiv.childNodes[1].style.display= '';
     dirdiv.lastChild.innerHTML= data.html;
     dirdiv.lastChild.style.display= '';
-    setCookie(data.id, 1, 360);
 }
 
 function dir_contract(obj)
@@ -613,20 +604,12 @@ function dir_contract(obj)
     obj.lastChild.style.display= 'none';
     obj.firstChild.style.display= '';
     obj.childNodes[1].style.display= 'none';
-    setCookie(idToDir(obj.id), 0, -1);
 }
 
 function open_image_thumbnail(id)
 {
-    popUpWin('image-edit.php?mode=thb&path=' + encodeURIComponent(files[id].path) + '&id=' + id, 'image_thumbnail', 'toolbar=0', 740, 600);
-}
-
-/*TODO REMOVE THIS FUNCTION*/
-function thumbimage(path)
-{
-    window.opener.document.getElementById(rte).value= path;
-    generatethumbnail.close();
-    window.close();
+    popUpWin('image-edit.php?mode=thb&path=' + encodeURIComponent(files[id].path) + '&id=' + id, 'image_thumbnail',
+        'toolbar=0', 740, 600);
 }
 
 function open_image_edit(id)
@@ -637,7 +620,7 @@ function open_image_edit(id)
 
 function open_file_upload()
 {
-    popUpWin('file-upload.php', 'file_upload', 'toolbar=0', 640, 150);
+    popUpWin('file-upload.php?path=' + encodeURIComponent(activeDir), 'file_upload', 'toolbar=0', 640, 150);
 }
 
 function insertThumbnail(id)
@@ -759,13 +742,13 @@ function addswf(id, width, height)
 function showhide(id)
 {
     object= document.getElementById(id);
-    object.style.display= (object.style.display == 'none') ? '' : 'none';
+    object.style.display= (object.style.display === 'none') ? '' : 'none';
 }
 
 function swap_pannel(navn)
 {
     // Save what mode we are in and what was searched for
-    if(navn == 'search') {
+    if(navn === 'search') {
         document.getElementById('files').innerHTML= '';
         document.getElementById('dir_bn').className= '';
         document.getElementById('dir').style.display= 'none';
@@ -775,16 +758,13 @@ function swap_pannel(navn)
             getSelect('searchtype')) {
             searchfiles();
         }
-    } else if(navn == 'dir') {
+    } else if(navn === 'dir') {
         document.getElementById('files').innerHTML= '';
-        setCookie('qpath', 0, -1);
-        setCookie('qalt', 0, -1);
-        setCookie('qtype', 0, -1);
         document.getElementById('search_bn').className= '';
         document.getElementById('search').style.display= 'none';
         document.getElementById('dir_bn').className= 'down';
         document.getElementById('dir').style.display= '';
-        showfiles(getCookie('admin_dir'), 1);
+        showfiles(activeDir, 1);
     }
     return false;
 }

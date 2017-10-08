@@ -6,7 +6,7 @@
         <img src="images/table_add.png" width="16" height="16" alt="" title="Create new" /> Create new
     </a>
 </li>
-{% if userSession.access == 1 %}
+{% if currentUser.accessLevel == 1 %}
 <li>
     <a href="fakturasvalidate.php">
         <img src="images/tick.png" width="16" height="16" alt="" title="Validate" /> Validate

@@ -12,12 +12,12 @@ Sajax::handleClientRequest();
 
 $users = ORM::getByQuery(
     User::class,
-    "SELECT * FROM `users` ORDER BY " . (empty($_GET['order']) ? 'fullname' : 'lastlogin')
+    "SELECT * FROM `users` ORDER BY " . (request()->get('order') ? 'lastlogin' : 'fullname')
 );
 
 $data = [
     'title' => _('Users and Groups'),
-    'userSession' => $_SESSION['_user'],
+    'currentUser' => curentUser(),
     'users' => $users,
 ] + getBasicAdminTemplateData();
 

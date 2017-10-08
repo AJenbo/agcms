@@ -66,16 +66,18 @@ Sajax::export(
 );
 Sajax::handleClientRequest();
 
-$template = 'admin-' . ($_GET['side'] ?? 'index');
+$request = request();
+$template = 'admin-' . $request->get('side', 'index');
 
 $data = getBasicAdminTemplateData();
 
 switch ($template) {
     case 'admin-redigerside':
-        $id = (int) ($_GET['id'] ?? 0);
+        $id = (int) $request->get('id', 0);
 
-        $bindings = [];
         $page = null;
+        $bindings = [];
+        $accessories = [];
         if ($id) {
             $page = ORM::getOne(Page::class, $id);
             $binds = db()->fetchArray('SELECT id, kat FROM `bind` WHERE `side` = ' . $id);
@@ -92,7 +94,6 @@ switch ($template) {
                 $bindings[$bind['id']] = $kattreeHtml . '/';
             }
 
-            $accessories = [];
             foreach ($page->getAccessories() as $accessory) {
                 $category = $accessory->getPrimaryCategory();
                 if (!$category) {
@@ -107,7 +108,7 @@ switch ($template) {
             }
         }
 
-        $activeCategoryId = max($_COOKIE['activekat'] ?? -1, -1);
+        $activeCategoryId = max($request->cookies->get('activekat', -1), -1);
         $data = [
             'textWidth' => Config::get('text_width'),
             'thumbWidth' => Config::get('thumb_width'),
@@ -133,9 +134,9 @@ switch ($template) {
         ] + $data;
         break;
     case 'admin-redigerkat':
-        $id = (int) ($_GET['id'] ?? 0);
+        $id = (int) $request->get('id', 0);
 
-        $activeCategoryId = max($_COOKIE['activekat'] ?? -1, -1);
+        $activeCategoryId = max($request->cookies->get('activekat', -1), -1);
         $data = [
             'textWidth' => Config::get('text_width'),
             'emails' => array_keys(Config::get('emails')),
@@ -154,7 +155,7 @@ switch ($template) {
         break;
     case 'admin-editkrav':
         $requirement = ['id' => 0, 'html' => ''];
-        $id = (int) ($_GET['id'] ?? 0);
+        $id = (int) $request->get('id', 0);
         if ($id) {
             $requirement = db()->fetchOne("SELECT id, navn title, text html FROM `krav` WHERE id = " . $id);
         }
@@ -167,11 +168,11 @@ switch ($template) {
         $data['brands'] = db()->fetchArray("SELECT id, navn title, ico icon, link FROM `maerke` ORDER BY navn");
         break;
     case 'admin-search':
-        $data['text'] = $_GET['text'];
+        $data['text'] = $request->get('text');
         $data['pages'] = findPages($data['text']);
         break;
     case 'admin-updatemaerke':
-        $id = (int) ($_GET['id'] ?? 0);
+        $id = (int) $request->get('id', 0);
         $data['brand'] = db()->fetchOne("SELECT id, navn title, link, ico icon FROM `maerke` WHERE id = " . $id);
         break;
     case 'admin-emaillist':
@@ -180,7 +181,7 @@ switch ($template) {
         );
         break;
     case 'admin-viewemail':
-        $id = (int) ($_GET['id'] ?? 0);
+        $id = (int) $request->get('id', 0);
         $data['newsletter'] = ['id' => 0, 'html' => '', 'interests' => []];
         $data['recipientCount'] = 0;
         if ($id) {
@@ -194,14 +195,14 @@ switch ($template) {
         $data['textWidth'] = Config::get('text_width');
         break;
     case 'admin-addressbook':
-        $order = $_GET['order'] ?? '';
+        $order = $request->get('order');
         if (!in_array($order, ['email', 'tlf1', 'tlf2', 'post', 'adresse'], true)) {
             $order = 'navn';
         }
         $data['contacts'] = ORM::getByQuery(Contact::class, "SELECT * FROM email ORDER BY " . $order);
         break;
     case 'admin-editContact':
-        $id = (int) ($_GET['id'] ?? 0);
+        $id = (int) $request->get('id', 0);
         $data['contact'] = ['id' => 0, 'interests' => []];
         if ($id) {
             $data['contact'] = db()->fetchOne(
@@ -237,7 +238,7 @@ switch ($template) {
         ] + $data;
         break;
     case 'admin-redigerSpecial':
-        $id = (int) ($_GET['id'] ?? 0);
+        $id = (int) $request->get('id', 0);
         $data['page'] = ORM::getOne(CustomPage::class, $id);
         if ($id === 1) {
             $data['textWidth'] = Config::get('text_width');
@@ -252,7 +253,7 @@ switch ($template) {
         $data['lists'] = db()->fetchArray('SELECT id, navn FROM `tablesort`');
         break;
     case 'admin-listsort-edit':
-        $id = (int) ($_GET['id'] ?? 0);
+        $id = (int) $request->get('id', 0);
         if ($id) {
             $list = db()->fetchOne("SELECT * FROM `tablesort` WHERE `id` = " . $id);
             $data = [

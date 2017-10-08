@@ -84,15 +84,6 @@ class User extends AbstractEntity
         return $this;
     }
 
-    public function validatePassword(string $password): bool
-    {
-        if (mb_substr($this->passwordHash, 0, 13) === mb_substr(crypt($password, $this->passwordHash), 0, 13)) {
-            return true;
-        }
-
-        return false;
-    }
-
     public function setPasswordHash(string $passwordHash): self
     {
         $this->passwordHash = $passwordHash;
@@ -127,6 +118,28 @@ class User extends AbstractEntity
     public function getLastLogin(): int
     {
         return $this->lastLogin;
+    }
+
+    public function validatePassword(string $password): bool
+    {
+        if (mb_substr($this->passwordHash, 0, 13) === mb_substr(crypt($password, $this->passwordHash), 0, 13)) {
+            return true;
+        }
+
+        return false;
+    }
+
+    public function hasAccess(string $requestedLevel): bool
+    {
+        if (!$this->accessLevel) {
+            return false;
+        }
+
+        if ($this->accessLevel <= $requestedLevel) {
+            return true;
+        }
+
+        return false;
     }
 
     function getLastLoginText()

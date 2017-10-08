@@ -20,4 +20,4 @@ session_start();
 
 checkUserLoggedIn();
 
-ORM::getOne(User::class, $_SESSION['_user']['id'])->setLastLogin(time())->save();
+ORM::getOne(User::class, curentUser()->getId())->setLastLogin(time())->save();

@@ -26,8 +26,8 @@
         </a>
         <div style="text-align:center;width:{{thumbWidth + 34}}px{% if hide.description %};display:none{% endif %}" id="beskrivelsebox">
             <br />
-            <input type="hidden" value="{% if page.imagePath %}{{page.imagePath}}{% else %}/images/web/intet-foto.jpg{% endif %}" id="billed" name="billed" />
-            <img id="billedthb" src="{% if page.imagePath %}{{page.imagePath}}{% else %}/images/web/intet-foto.jpg{% endif %}" alt="" onclick="explorer('thb', 'billed')" />
+            <input type="hidden" value="{% if page.icon.path %}{{page.icon.path}}{% else %}/images/web/intet-foto.jpg{% endif %}" id="billed" name="billed" />
+            <img id="billedthb" src="{% if page.icon.path %}{{page.icon.path}}{% else %}/images/web/intet-foto.jpg{% endif %}" alt="" onclick="explorer('thb', 'billed')" />
             <br />
             <img onclick="explorer('thb', 'billed')" src="images/folder_image.png" width="16" height="16" alt="Pictures" title="Find image" />
             <img onclick="setThb('billed','','/images/web/intet-foto.jpg')" src="images/cross.png" alt="X" title="Remove picture" width="16" height="16" />

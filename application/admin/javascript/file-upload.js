@@ -73,7 +73,7 @@ function validate()
         return false;
     }
 
-    x_fileExists(file.name, document.getElementById('type').value, fileExists_r);
+    x_fileExists(activeDir, file.name, document.getElementById('type').value, fileExists_r);
 
     status('Fil: ' + file.name);
 
@@ -104,6 +104,7 @@ function send()
     form.append('type', document.getElementById('type').value);
     form.append('Filedata', file);
     form.append('alt', document.getElementById('alt').value);
+    form.append('dir', activeDir);
     form.append('x', document.getElementById('x').value);
     form.append('y', document.getElementById('y').value);
     form.append('aspect', document.getElementById('aspect').value);
@@ -164,10 +165,11 @@ function send()
         }
 
         document.getElementById('file').value= '';
+        document.getElementById('alt').value = '';
         validate();
         status('Filen er sendt');
         document.getElementById('status').style.display= '';
-        window.opener.showfiles('', 1);
+        window.opener.showfiles(window.opener.activeDir, 1);
     };
     x.upload.onprogress= function(evt) {
         if(evt.lengthComputable) {

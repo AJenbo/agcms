@@ -13,7 +13,7 @@ Render::addLoadedTable('maerke');
 Render::addLoadedTable('sider');
 Render::sendCacheHeader();
 
-$sort = $_GET['sort'] ?? 'navn';
+$sort = request()->get('sort', 'navn');
 $reverseOrder = false;
 if (mb_substr($sort, 0, 1) === '-') {
     $sort = mb_substr($sort, 1);
@@ -33,7 +33,7 @@ $sortOptions = [
 
 $sort = isset($sortOptions[$sort]) ? $sort : 'navn';
 
-$categoryId = is_numeric($_GET['kat'] ?? '') ? (int) $_GET['kat'] : null;
+$categoryId = is_numeric(request()->get('kat')) ? (int) request()->get('kat') : null;
 if ($categoryId < 1) {
     $categories = getPricelistRootStructure($sort, $categoryId);
 } else {

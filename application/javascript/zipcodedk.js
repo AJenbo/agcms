@@ -1,4 +1,4 @@
-var arrayZipcode = new Array();
+var arrayZipcode = [];
 arrayZipcode[555] = 'Scanning';
 arrayZipcode[800] = 'Høje Taastrup';
 arrayZipcode[877] = 'Valby';

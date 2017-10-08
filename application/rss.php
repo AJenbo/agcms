@@ -18,20 +18,6 @@ Render::addLoadedTable('sider');
 $timestamp = Render::getUpdateTime();
 Render::sendCacheHeader($timestamp);
 
-$search = [
-    '@<script[^>]*?>.*?</script>@siu', // Strip out javascript
-    '@<[\/\!]*?[^<>]*?>@sui',          // Strip out HTML tags
-    '@([\r\n])[\s]+@u',                // Strip out white space
-    '@&(&|#197);@iu',
-];
-
-$replace = [
-    ' ',
-    ' ',
-    '\1',
-    ' ',
-];
-
 $data = [
     'url' => Config::get('base_url') . '/rss.php',
     'title' => Config::get('site_name'),
@@ -43,13 +29,13 @@ $data = [
 ];
 
 $time = 0;
-if (isset($_SERVER['HTTP_IF_MODIFIED_SINCE'])) {
-    $time = strtotime(stripslashes($_SERVER['HTTP_IF_MODIFIED_SINCE']));
+if (request()->headers->has('If-Modified-Since')) {
+    $time = strtotime(stripslashes(request()->headers->get('If-Modified-Since')));
 }
 
 $limit = '';
 $where = '';
-if ($time > 1000000000) {
+if ($time) {
     $where = " WHERE `dato` > '" . date('Y-m-d h:i:s', $time) . "'";
 } else {
     $limit = " LIMIT 20";
@@ -68,11 +54,11 @@ foreach ($pages as $page) {
     }
 
     $decription = '';
-    if ($page->getImagePath() && $page->getImagePath() !== '/images/web/intet-foto.jpg') {
+    if ($page->getIcon()->getPath() && $page->getIcon()->getPath() !== '/images/web/intet-foto.jpg') {
         $decription .= '<img style="float:left;margin:0 10px 5px 0;" src="'
-            . Config::get('base_url') . encodeUrl($page->getImagePath()) . '" ><p>';
+            . Config::get('base_url') . encodeUrl($page->getIcon()->getPath()) . '" ><p>';
     }
-    $decription .= trim(preg_replace($search, $replace, $page->getExcerpt())) . '</p>';
+    $decription .= $page->getExcerpt() . '</p>';
 
     $categories = [];
     foreach ($page->getCategories() as $category) {

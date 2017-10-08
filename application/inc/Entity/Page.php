@@ -39,7 +39,7 @@ class Page extends AbstractRenderable
     /**
      * Thumbnail path.
      */
-    private $imagePath;
+    private $iconPath;
 
     /**
      * Id of requirement page.
@@ -85,7 +85,7 @@ class Page extends AbstractRenderable
             ->setKeywords($data['keywords'])
             ->setHtml($data['html'])
             ->setExcerpt($data['excerpt'])
-            ->setImagePath($data['image_path'])
+            ->setIconPath($data['icon_path'])
             ->setRequirementId($data['requirement_id'])
             ->setBrandId($data['brand_id'])
             ->setPrice($data['price'])
@@ -111,7 +111,7 @@ class Page extends AbstractRenderable
             'keywords'       => $data['keywords'],
             'html'           => $data['text'],
             'excerpt'        => $data['beskrivelse'],
-            'image_path'     => $data['billed'],
+            'icon_path'     => $data['billed'],
             'requirement_id' => $data['krav'],
             'brand_id'       => $data['maerke'],
             'price'          => $data['pris'],
@@ -254,25 +254,27 @@ class Page extends AbstractRenderable
     /**
      * Set the image file path.
      *
-     * @param strig $imagePath Thumbnail file path
+     * @param strig $iconPath Thumbnail file path
      *
      * @return self
      */
-    public function setImagePath(string $imagePath): self
+    public function setIconPath(string $iconPath = null): self
     {
-        $this->imagePath = $imagePath;
+        $this->iconPath = $iconPath;
 
         return $this;
     }
 
     /**
-     * Get image file path.
-     *
-     * @return string
+     * Get the file that is being used as an icon.
      */
-    public function getImagePath(): string
+    public function getIcon(): ?File
     {
-        return $this->imagePath;
+        if (!$this->iconPath) {
+            return null;
+        }
+
+        return File::getByPath($this->iconPath);
     }
 
     /**
@@ -282,7 +284,7 @@ class Page extends AbstractRenderable
      *
      * @return self
      */
-    public function setRequirementId(int $requirementId): self
+    public function setRequirementId(int $requirementId = null): self
     {
         $this->requirementId = $requirementId;
 
@@ -296,7 +298,7 @@ class Page extends AbstractRenderable
      *
      * @return self
      */
-    public function setBrandId(int $brandId): self
+    public function setBrandId(int $brandId = null): self
     {
         $this->brandId = $brandId;
 
@@ -549,7 +551,9 @@ class Page extends AbstractRenderable
     private function getAccessoryQuery(): string
     {
         Render::addLoadedTable('tilbehor');
-        return "SELECT * FROM sider WHERE id IN (SELECT tilbehor FROM tilbehor WHERE side = 5069) ORDER BY navn ASC";
+        return "
+            SELECT * FROM sider
+            WHERE id IN (SELECT tilbehor FROM tilbehor WHERE side = " . $this->getId() . ") ORDER BY navn ASC";
     }
 
     /**
@@ -620,7 +624,7 @@ class Page extends AbstractRenderable
             'text'        => db()->eandq($this->html),
             'varenr'      => db()->eandq($this->sku),
             'beskrivelse' => db()->eandq($this->excerpt),
-            'billed'      => db()->eandq($this->imagePath),
+            'billed'      => db()->eandq($this->iconPath),
             'krav'        => $this->getRequirement() ? $this->requirementId : 0,
             'maerke'      => $this->getBrand() ? $this->brandId : 0,
             'pris'        => $this->price,

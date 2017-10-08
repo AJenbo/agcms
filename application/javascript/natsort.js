@@ -1,6 +1,6 @@
 function natsort(a, b) {
   function chunkify(t) {
-    var tz = new Array();
+    var tz = [];
     var x = 0, y = -1, n = 0, i, j;
 
     while (i = (j = t.charAt(x++)).charCodeAt(0)) {
@@ -32,7 +32,7 @@ function natsort(a, b) {
 
 function natcasesort(a, b) {
   function chunkify(t) {
-    var tz = new Array();
+    var tz = [];
     var x = 0, y = -1, n = 0, i, j;
 
     while (i = (j = t.charAt(x++)).charCodeAt(0)) {

@@ -17,18 +17,19 @@ use AGCMS\ORM;
 use AGCMS\Render;
 use AJenbo\Image;
 use Sajax\Sajax;
+use Symfony\Component\HttpFoundation\Response;
 
 function checkUserLoggedIn(): void
 {
-    if (!empty($_SESSION['_user'])) {
+    if (curentUser()) {
         return;
     }
 
-    if (empty($_POST['username'])) {
+    if (!request()->get('username')) {
         sleep(1);
         header('HTTP/1.0 401 Unauthorized', true, 401);
 
-        if (!empty($_GET['rs']) || !empty($_POST['rs'])) {
+        if (!request()->get('rs')) { // Sajax call
             exit(_('Your login has expired, please reload the page and login again.'));
         }
 
@@ -36,18 +37,23 @@ function checkUserLoggedIn(): void
         exit;
     }
 
-    $user = db()->fetchOne(
-        "
-        SELECT * FROM `users`
-        WHERE `name` = '" . db()->esc($_POST['username']) . "'
-        AND `access` >= 1
-        "
+    $user = ORM::getOneByQuery(
+        User::class,
+        "SELECT * FROM `users` WHERE `name` = " . db()->eandq(request()->get('username'))
     );
-    if ($user && crypt($_POST['password'] ?? '', $user['password']) === $user['password']) {
+    if ($user && $user->getAccessLevel() && $user->validatePassword(request()->get('password', ''))) {
         $_SESSION['_user'] = $user;
     }
 
-    redirect($_SERVER['REQUEST_URI']);
+    redirect(request()->getRequestUri());
+}
+
+/**
+ * Declare common functions.
+ */
+function curentUser(): ?User
+{
+    return $_SESSION['_user'] ?? null;
 }
 
 /**
@@ -466,8 +472,8 @@ function katspath(int $id): array
 
 function getOpenCategories(): array
 {
-    $activeCategoryId = max($_COOKIE['activekat'] ?? -1, -1);
-    $openCategories = explode('<', $_COOKIE['openkat'] ?? '');
+    $activeCategoryId = max(request()->cookies->get('activekat', -1), -1);
+    $openCategories = explode('<', request()->cookies->get('openkat', ''));
     $openCategories = array_map('intval', $openCategories);
     $openCategories = array_flip($openCategories);
 
@@ -554,7 +560,7 @@ function kat_expand(int $id, bool $includePages = false, string $input = ''): ar
         'categories'        => getCategoryStructure($id, $openCategories, $includePages),
         'pages'             => $includePages ? getCategoryStructurePages($id) : [],
         'categoryBranchIds' => [],
-        'openCategories'    => explode('<', $_COOKIE['openkat'] ?? ''),
+        'openCategories'    => explode('<', request()->cookies->get('openkat', '')),
         'input'             => $input,
         'includePages'      => $includePages,
     ];
@@ -682,8 +688,7 @@ function getRootDirs(): array
 function formatDir(string $path, string $name): array
 {
     $subs = [];
-    $hassubs = false;
-    if (empty($_COOKIE[$path])) {
+    if (!request()->cookies->get($path)) {
         $hassubs = hasSubsDirs($path);
     } else {
         $subs = getSubDirs($path);
@@ -730,16 +735,14 @@ function listdirs(string $path, bool $move = false): array
  */
 function updateuser(int $id, array $updates)
 {
-    if ($_SESSION['_user']['access'] != User::ADMINISTRATOR
-        && $_SESSION['_user']['id'] != $id
-    ) {
+    if (curentUser()->hasAccess(User::ADMINISTRATOR) && curentUser()->getId() != $id) {
         return ['error' => _('You do not have the requred access level to change other users.')];
     }
 
     // Validate access lavel update
-    if ($_SESSION['_user']['id'] == $id
+    if (curentUser()->getId() == $id
         && isset($updates['access'])
-        && $updates['access'] != $_SESSION['_user']['access']
+        && $updates['access'] != curentUser()->getAccessLevel()
     ) {
         return ['error' => _('You can\'t change your own access level')];
     }
@@ -749,13 +752,13 @@ function updateuser(int $id, array $updates)
 
     //Validate password update
     if (!empty($updates['password_new'])) {
-        if ($_SESSION['_user']['access'] != User::ADMINISTRATOR
-            && $_SESSION['_user']['id'] != $id
+        if (!curentUser()->hasAccess(User::ADMINISTRATOR)
+            && curentUser()->getId() != $id
         ) {
             return ['error' => _('You do not have the requred access level to change the password for this users.')];
         }
 
-        if ($_SESSION['_user']['id'] == $id && !$user->validatePassword($updates['password'])) {
+        if (curentUser()->getId() == $id && !$user->validatePassword($updates['password'])) {
             return ['error' => _('Incorrect password.')];
         }
 
@@ -807,7 +810,7 @@ function saveImage(
  */
 function deleteuser(int $id): bool
 {
-    if ($_SESSION['_user']['access'] != User::ADMINISTRATOR || $_SESSION['_user']['id'] == $id) {
+    if (!curentUser()->hasAccess(User::ADMINISTRATOR) || curentUser()->getId() == $id) {
         return false;
     }
 
@@ -815,10 +818,10 @@ function deleteuser(int $id): bool
     return true;
 }
 
-function fileExists(string $filename, string $type = ''): bool
+function fileExists(string $dir, string $filename, string $type = ''): bool
 {
     $pathinfo = pathinfo($filename);
-    $filePath = _ROOT_ . ($_COOKIE['admin_dir'] ?? '') . '/' . genfilename($pathinfo['filename']);
+    $filePath = _ROOT_ . $dir . '/' . genfilename($pathinfo['filename']);
 
     if ($type == 'image') {
         $filePath .= '.jpg';
@@ -834,13 +837,7 @@ function fileExists(string $filename, string $type = ''): bool
 function newfaktura(): int
 {
     db()->query(
-        "
-        INSERT INTO `fakturas` (`date`, `clerk`)
-        VALUES (
-            NOW(),
-            " . db()->eandq($_SESSION['_user']['fullname']) . "
-        );
-        "
+        "INSERT INTO `fakturas` (`date`, `clerk`) VALUES (NOW(), " . db()->eandq(curentUser()->getFullName()) . ")"
     );
 
     return db()->insert_id;
@@ -942,7 +939,7 @@ function filejavascript(File $file): string
 function filehtml(File $file): string
 {
     $pathinfo = pathinfo($file->getPath());
-
+    $returnType = request()->get('return');
     $html = '';
 
     switch ($file->getMime()) {
@@ -950,9 +947,9 @@ function filehtml(File $file): string
         case 'image/jpeg':
         case 'image/png':
             $html .= '<div id="tilebox' . $file->getId() . '" class="imagetile"><div class="image"';
-            if ($_GET['return'] == 'rtef') {
+            if ($returnType === 'rtef') {
                 $html .= ' onclick="addimg(' . $file->getId() . ')"';
-            } elseif ($_GET['return'] == 'thb') {
+            } elseif ($returnType === 'thb') {
                 if ($file->getWidth() <= Config::get('thumb_width')
                     && $file->getHeight() <= Config::get('thumb_height')
                 ) {
@@ -966,7 +963,7 @@ function filehtml(File $file): string
             break;
         case 'video/x-flv':
             $html .= '<div id="tilebox' . $file->getId() . '" class="flvtile"><div class="image"';
-            if ($_GET['return'] == 'rtef') {
+            if ($returnType === 'rtef') {
                 if ($file->getAspect() == '4-3') {
                     $html .= ' onclick="addflv(' . $file->getId() . ', \'' . $file->getAspect() . '\', '
                         . max($file->getWidth(), $file->getHeight() / 3 * 4) . ', '
@@ -984,7 +981,7 @@ function filehtml(File $file): string
         case 'application/x-shockwave-flash':
         case 'video/x-shockwave-flash':
             $html .= '<div id="tilebox' . $file->getId() . '" class="swftile"><div class="image"';
-            if ($_GET['return'] == 'rtef') {
+            if ($returnType === 'rtef') {
                 $html .= ' onclick="addswf(' . $file->getId() . ', ' . $file->getWidth() . ', ' . $file->getHeight() . ')"';
             } else {
                 $html .= ' onclick="files[' . $file->getId() . '].openfile();"';
@@ -1002,7 +999,7 @@ function filehtml(File $file): string
         case 'video/x-ms-wmv':
             $html .= '<div id="tilebox' . $file->getId() . '" class="videotile"><div class="image"';
             //TODO make the actual functions
-            if ($_GET['return'] == 'rtef') {
+            if ($returnType === 'rtef') {
                 $html .= ' onclick="addmedia(' . $file->getId() . ')"';
             } else {
                 $html .= ' onclick="files[' . $file->getId() . '].openfile();"';
@@ -1010,7 +1007,7 @@ function filehtml(File $file): string
             break;
         default:
             $html .= '<div id="tilebox' . $file->getId() . '" class="filetile"><div class="image"';
-            if ($_GET['return'] == 'rtef') {
+            if ($returnType === 'rtef') {
                 $html .= ' onclick="addfile(' . $file->getId() . ')"';
             } else {
                 $html .= ' onclick="files[' . $file->getId() . '].openfile();"';
@@ -1101,10 +1098,9 @@ function filehtml(File $file): string
     return $html;
 }
 
-function makedir(string $name): array
+function makedir(string $adminDir, string $name): array
 {
     $name = genfilename($name);
-    $adminDir = $_COOKIE['admin_dir'] ?? '';
     if (is_dir(_ROOT_ . $adminDir . '/' . $name)) {
         return ['error' => _('A file or folder with the same name already exists.')];
     }
@@ -1123,8 +1119,10 @@ function makedir(string $name): array
 //TODO moving two files to the same dire with no reload inbetwean = file exists?????????????
 /**
  * Rename or relocate a file/directory.
+ *
+ * @param int|string $id Int for file renaming, string on folder renaming
  */
-function renamefile(int $id, string $path, string $dir, string $filename, bool $force = false): array
+function renamefile($id, string $path, string $dir, string $filename, bool $force = false): array
 {
     $pathinfo = pathinfo($path);
     if ($pathinfo['dirname'] == '/') {
@@ -1240,14 +1238,6 @@ Would you like to replace the existing file?'), 'id' => $id];
         db()->query("UPDATE files SET path = REPLACE(path, '" . db()->esc($path) . "', '" . db()->esc($newPath) . "')");
         replacePaths($path, $newPath);
 
-        if (is_dir(_ROOT_ . $dir . '/' . $filename)) {
-            if (!empty($_COOKIE[$_COOKIE['admin_dir']])) {
-                setcookie($dir . '/' . $filename, ($_COOKIE[$_COOKIE['admin_dir']]) ?? '');
-            }
-            setcookie($_COOKIE['admin_dir'] ?? '', false);
-            setcookie('admin_dir', $dir . '/' . $filename);
-        }
-
         return ['id' => $id, 'filename' => $filename, 'path' => $dir . '/' . $filename];
     }
 
@@ -1270,55 +1260,52 @@ function replacePaths($path, $newPath): void
 /**
  * Rename or relocate a file/directory.
  *
- * return void|array
+ * return bool False if one or more files coud not be deleted
  */
-function deltree(string $dir)
+function deltree(string $dir): bool
 {
-    $dirlists = scandir(_ROOT_ . $dir);
-    foreach ($dirlists as $dirlist) {
-        if ($dirlist != '.' && $dirlist != '..') {
-            if (is_dir(_ROOT_ . $dir . '/' . $dirlist)) {
-                $deltree = deltree($dir . '/' . $dirlist);
-                if ($deltree) {
-                    return $deltree;
-                }
-                @rmdir(_ROOT_ . $dir . '/' . $dirlist);
-                @setcookie($dir . '/' . $dirlist, false);
-                continue;
-            }
+    $success = true;
 
-            if (db()->fetchOne("SELECT id FROM `sider` WHERE `navn` LIKE '%" . $dir . '/' . $dirlist . "%' OR `text` LIKE '%" . $dir . '/' . $dirlist . "%' OR `beskrivelse` LIKE '%" . $dir . '/' . $dirlist . "%' OR `billed` LIKE '%" . $dir . '/' . $dirlist . "%'")
-                || db()->fetchOne("SELECT id FROM `template` WHERE `navn` LIKE '%" . $dir . '/' . $dirlist . "%' OR `text` LIKE '%" . $dir . '/' . $dirlist . "%' OR `beskrivelse` LIKE '%" . $dir . '/' . $dirlist . "%' OR `billed` LIKE '%" . $dir . '/' . $dirlist . "%'")
-                || db()->fetchOne("SELECT id FROM `special` WHERE `text` LIKE '%" . $dir . '/' . $dirlist . "%'")
-                || db()->fetchOne("SELECT id FROM `krav` WHERE `text` LIKE '%" . $dir . '/' . $dirlist . "%'")
-                || db()->fetchOne("SELECT id FROM `maerke` WHERE `ico` LIKE '%" . $dir . '/' . $dirlist . "%'")
-                || db()->fetchOne("SELECT id FROM `list_rows` WHERE `cells` LIKE '%" . $dir . '/' . $dirlist . "%'")
-                || db()->fetchOne("SELECT id FROM `kat` WHERE `navn` LIKE '%" . $dir . '/' . $dirlist . "%' OR `icon` LIKE '%" . $dir . '/' . $dirlist . "%'")
-            ) {
-                return ['error' => _('A file could not be deleted because it is used on a site.')];
-            }
-
-            @unlink(_ROOT_ . $dir . '/' . $dirlist);
+    $nodes = scandir(_ROOT_ . $dir);
+    foreach ($nodes as $node) {
+        if ($node === '.' || $node === '..') {
+            continue;
         }
+
+        if (is_dir(_ROOT_ . $dir . '/' . $node)) {
+            $success = $success && deltree($dir . '/' . $node);
+            continue;
+        }
+
+        if (db()->fetchOne("SELECT id FROM `sider` WHERE `navn` LIKE '%" . $dir . '/' . $node . "%' OR `text` LIKE '%" . $dir . '/' . $node . "%' OR `beskrivelse` LIKE '%" . $dir . '/' . $node . "%' OR `billed` LIKE '%" . $dir . '/' . $node . "%'")
+            || db()->fetchOne("SELECT id FROM `template` WHERE `navn` LIKE '%" . $dir . '/' . $node . "%' OR `text` LIKE '%" . $dir . '/' . $node . "%' OR `beskrivelse` LIKE '%" . $dir . '/' . $node . "%' OR `billed` LIKE '%" . $dir . '/' . $node . "%'")
+            || db()->fetchOne("SELECT id FROM `special` WHERE `text` LIKE '%" . $dir . '/' . $node . "%'")
+            || db()->fetchOne("SELECT id FROM `krav` WHERE `text` LIKE '%" . $dir . '/' . $node . "%'")
+            || db()->fetchOne("SELECT id FROM `maerke` WHERE `ico` LIKE '%" . $dir . '/' . $node . "%'")
+            || db()->fetchOne("SELECT id FROM `list_rows` WHERE `cells` LIKE '%" . $dir . '/' . $node . "%'")
+            || db()->fetchOne("SELECT id FROM `kat` WHERE `navn` LIKE '%" . $dir . '/' . $node . "%' OR `icon` LIKE '%" . $dir . '/' . $node . "%'")
+        ) {
+            $success = false;
+            continue;
+        }
+
+        unlink(_ROOT_ . $dir . '/' . $node);
     }
+    unlink(_ROOT_ . $dir);
+
+    return $success;
 }
 
 /**
  * @return array|true
  */
-function deletefolder()
+function deletefolder(string $dir)
 {
-    $deltree = deltree($_COOKIE['admin_dir'] ?? '');
-    if ($deltree) {
-        return $deltree;
-    }
-    if (@rmdir(_ROOT_ . ($_COOKIE['admin_dir'] ?? ''))) {
-        @setcookie($_COOKIE['admin_dir'] ?? '', false);
-
-        return true;
+    if (!deltree($dir)) {
+        return ['error' => _('A file could not be deleted because it is used on a site.')];
     }
 
-    return ['error' => _('The folder could not be deleted, you may not have sufficient rights to this folder.')];
+    return true;
 }
 
 function searchfiles(string $qpath, string $qalt, string $qmime): array
@@ -1556,7 +1543,7 @@ function updateContact(
             'phone2'     => $tlf2,
             'newsletter' => $kartotek,
             'interests'  => $interests,
-            'ip'         => $_SERVER['REMOTE_ADDR'],
+            'ip'         => request()->getClientIp(),
         ]);
         $contact->save();
 
@@ -1574,7 +1561,7 @@ function updateContact(
         ->setPhone2($tlf2)
         ->setNewsletter($kartotek)
         ->setInterests($interests)
-        ->setIp($_SERVER['REMOTE_ADDR'])
+        ->setIp(request()->getClientIp())
         ->save();
 
     return true;
@@ -1659,13 +1646,13 @@ function get_looping_cats(): string
     $categories = ORM::getByQuery(Category::class, "SELECT * FROM `kat` WHERE bind != 0 AND bind != -1");
     foreach ($categories as $category) {
         $branchIds = [$category->getId() => true];
-        while ($parent = $category->getParent()) {
-            if ($branchIds[$parent->getId()]) {
+        while ($category = $category->getParent()) {
+            if (isset($branchIds[$category->getId()])) {
                 $html .= '<a href="?side=redigerkat&id=' . $category->getId() . '">' . $category->getId()
                     . ': ' . $category->getTitle() . '</a><br />';
-                continue;
+                break;
             }
-            $branchIds[$parent->getId()] = true;
+            $branchIds[$category->getId()] = true;
         }
     }
     if ($html) {
@@ -1974,7 +1961,7 @@ function sogogerstat(string $sog, string $erstat): int
     return db()->affected_rows;
 }
 
-function updatemaerke(int $id = null, string $navn = '', string $link = '', string $ico = ''): array
+function updatemaerke(int $id = null, string $navn = '', string $link = '', string $ico = null): array
 {
     if ($navn) {
         if ($id === null) {
@@ -2309,7 +2296,7 @@ function copytonew(int $id): int
         $faktura['sendt'],
         $faktura['transferred']
     );
-    $faktura['clerk'] = $_SESSION['_user']['fullname'];
+    $faktura['clerk'] = curentUser()->getFullName();
 
     $sql = "INSERT INTO `fakturas` SET";
     foreach ($faktura as $key => $value) {
@@ -2395,7 +2382,7 @@ function invoiceBasicUpdate(Invoice $invoice, string $action, array $updates)
     }
 
     if (!$invoice->getClerk()) {
-        $invoice->setClerk($_SESSION['_user']['fullname']);
+        $invoice->setClerk(curentUser()->getFullName());
     }
 
     if (($action === 'giro' || $action === 'cash') && in_array($status, ['new', 'locked', 'rejected'], true)) {
@@ -2414,7 +2401,7 @@ function invoiceBasicUpdate(Invoice $invoice, string $action, array $updates)
             $invoice->setStatus('canceled');
         }
 
-        if (isset($updates['clerk']) && $_SESSION['_user']['access'] == User::ADMINISTRATOR) {
+        if (isset($updates['clerk']) && curentUser()->hasAccess(User::ADMINISTRATOR)) {
             $invoice->setClerk($updates['clerk']);
         }
     }
@@ -2603,7 +2590,7 @@ function generateImage(
         && $maxH === $orginalHeight
         && mb_strpos($path, _ROOT_) === 0
     ) {
-        redirect(mb_substr($path, mb_strlen(_ROOT_)), 301);
+        redirect(mb_substr($path, mb_strlen(_ROOT_)), Response::HTTP_MOVED_PERMANENTLY);
     }
 
     $image->crop(
@@ -2674,17 +2661,17 @@ function getBasicAdminTemplateData(): array
         'javascript'      => Sajax::showJavascript(true),
         'theme'           => Config::get('theme', 'default'),
         'hide'            => [
-            'activity'    => $_COOKIE['hideActivity'] ?? false,
-            'binding'     => $_COOKIE['hidebinding'] ?? false,
-            'categories'  => $_COOKIE['hidekats'] ?? false,
-            'description' => $_COOKIE['hidebeskrivelsebox'] ?? false,
-            'indhold'     => $_COOKIE['hideIndhold'] ?? false,
-            'listbox'     => $_COOKIE['hidelistbox'] ?? false,
-            'misc'        => $_COOKIE['hidemiscbox'] ?? false,
-            'prices'      => $_COOKIE['hidepriser'] ?? false,
-            'suplemanger' => $_COOKIE['hideSuplemanger'] ?? false,
-            'tilbehor'    => $_COOKIE['hidetilbehor'] ?? false,
-            'tools'       => $_COOKIE['hideTools'] ?? false,
+            'activity'    => request()->cookies->get('hideActivity'),
+            'binding'     => request()->cookies->get('hidebinding'),
+            'categories'  => request()->cookies->get('hidekats'),
+            'description' => request()->cookies->get('hidebeskrivelsebox'),
+            'indhold'     => request()->cookies->get('hideIndhold'),
+            'listbox'     => request()->cookies->get('hidelistbox'),
+            'misc'        => request()->cookies->get('hidemiscbox'),
+            'prices'      => request()->cookies->get('hidepriser'),
+            'suplemanger' => request()->cookies->get('hideSuplemanger'),
+            'tilbehor'    => request()->cookies->get('hidetilbehor'),
+            'tools'       => request()->cookies->get('hideTools'),
         ],
     ];
 }
