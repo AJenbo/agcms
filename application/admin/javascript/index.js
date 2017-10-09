@@ -225,8 +225,29 @@ function updateKat(id)
         return false;
     }
 
-    x_updateKat(id, $('navn').value, getRadio('kat'), $('icon').value, $('vis').value, $('email').value,
-        $('custom_sort_subs').value, $('subMenusOrder').value, generic_r);
+    var icon = $('icon').value;
+    icon = icon ? icon : null;
+
+    x_updateKat(id, $('navn').value, getRadio('kat'), $('vis').value, $('email').value,
+        $('custom_sort_subs').value, $('subMenusOrder').value, icon, generic_r);
+    return false;
+}
+
+function updatemaerke(id)
+{
+    $('loading').style.visibility= '';
+
+    var icon = document.getElementById('ico').value;
+    icon = icon ? icon : null;
+
+    x_updatemaerke(
+        id,
+        document.getElementById('navn').value,
+        document.getElementById('link').value,
+        icon,
+        id ? inject_html : updatemaerke_r
+    );
+
     return false;
 }
 
@@ -235,19 +256,49 @@ function updateSide(id)
     $('loading').style.visibility= '';
     updateRTEs();
 
+    var requirement = parseInt(getSelectValue("krav"));
+    requirement = requirement ? requirement : null;
+    var brand = parseInt(getSelectValue("maerke"));
+    brand = brand ? brand : null;
+    var icon = $("billed").value;
+    icon = icon ? icon : null;
+
     if(!id) {
-        x_opretSide(parseInt(getRadio("kat")), $("navn").value, $("keywords").value,
-            $("pris").value ? parseInt($("pris").value) : 0, $("billed").value, $("beskrivelse").value,
-            $("for").value ? parseInt($("for").value) : 0, $("text").value, $("varenr").value,
-            parseInt(getSelectValue("burde")), parseInt(getSelectValue("fra")), parseInt(getSelectValue("krav")),
-            parseInt(getSelectValue("maerke")), opretSide_r);
+        x_opretSide(
+            parseInt(getRadio("kat")),
+            $("navn").value,
+            $("keywords").value,
+            $("pris").value ? parseInt($("pris").value) : 0,
+            $("beskrivelse").value,
+            $("for").value ? parseInt($("for").value) : 0,
+            $("text").value,
+            $("varenr").value,
+            parseInt(getSelectValue("burde")),
+            parseInt(getSelectValue("fra")),
+            requirement,
+            brand,
+            icon,
+            opretSide_r
+        );
         return false;
     }
 
-    x_updateSide(id, $('navn').value, $('keywords').value, $('pris').value ? parseInt($('pris').value) : 0,
-        $('billed').value, $('beskrivelse').value, $('for').value ? parseInt($('for').value) : 0, $('text').value,
-        $('varenr').value, parseInt(getSelectValue('burde')), parseInt(getSelectValue('fra')),
-        parseInt(getSelectValue('krav')), parseInt(getSelectValue('maerke')), generic_r);
+    x_updateSide(
+        id,
+        $('navn').value,
+        $('keywords').value,
+        $('pris').value ? parseInt($('pris').value) : 0,
+        $('beskrivelse').value,
+        $('for').value ? parseInt($('for').value) : 0,
+        $('text').value,
+        $('varenr').value,
+        parseInt(getSelectValue('burde')),
+        parseInt(getSelectValue('fra')),
+        requirement,
+        brand,
+        icon,
+        generic_r
+    );
     return false;
 }
 

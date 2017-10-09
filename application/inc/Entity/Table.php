@@ -264,7 +264,7 @@ class Table extends AbstractEntity
         return $this->orderRows($rows, $orderBy);
     }
 
-    public function addRow(array $cells, int $link = 0): int
+    public function addRow(array $cells, int $link = null): int
     {
         $cells = array_map('htmlspecialchars', $cells);
         $cells = implode('<', $cells);
@@ -272,14 +272,14 @@ class Table extends AbstractEntity
         db()->query(
             "
             INSERT INTO `list_rows`(`list_id`, `cells`, `link`)
-            VALUES (" . $this->id . ", " . db()->eandq($cells) . ", " . $link . ")
+            VALUES (" . $this->id . ", " . db()->eandq($cells) . ", " . ($link === null ? 'NULL' : $link) . ")
             "
         );
 
         return db()->insert_id;
     }
 
-    public function updateRow(int $rowId, array $cells, int $link = 0): void
+    public function updateRow(int $rowId, array $cells, int $link = null): void
     {
         $cells = array_map('htmlspecialchars', $cells);
         $cells = implode('<', $cells);
@@ -288,7 +288,7 @@ class Table extends AbstractEntity
             "
             UPDATE `list_rows` SET
                 `cells` = " . db()->eandq($cells) . ",
-                `link` = " . $link . "
+                `link` = " . ($link === null ? 'NULL' : $link) . "
             WHERE list_id = " . $this->id . "
               AND id = " . $rowId
         );

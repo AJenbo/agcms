@@ -35,6 +35,7 @@ function explorer(returntype, returnid)
 function generic_r(data)
 {
     $("loading").style.visibility= "hidden";
+
     if(data.error) {
         alert(data.error);
 

@@ -1504,7 +1504,7 @@ function listRemoveRow(int $tableId, int $rowId): array
     return ['listid' => $tableId, 'rowid' => $rowId];
 }
 
-function listSavetRow(int $tableId, array $cells, int $link, int $rowId = null): array
+function listSavetRow(int $tableId, array $cells, int $link = null, int $rowId = null): array
 {
     /** @var Table */
     $table = ORM::getOne(Table::class, $tableId);
@@ -1967,7 +1967,11 @@ function updatemaerke(int $id = null, string $navn = '', string $link = '', stri
         if ($id === null) {
             (new Brand(['title' => $navn, 'link' => $link, 'icon_path' => $ico]))->save();
         } else {
-            $brand = ORM::getOne(Brand::class, $id)->setTitle($navn)->setLink($link)->setIconPath($ico)->save();
+            $brand = ORM::getOne(Brand::class, $id)
+                ->setTitle($navn)
+                ->setLink($link)
+                ->setIconPath($ico)
+                ->save();
             $id = $brand->getId();
         }
 
@@ -2137,15 +2141,15 @@ function updateSide(
     string $navn,
     string $keywords,
     int $pris,
-    string $billed,
     string $beskrivelse,
     int $for,
     string $html,
     string $varenr,
     int $burde,
     int $fra,
-    int $krav,
-    int $maerke
+    int $krav = null,
+    int $maerke = null,
+    string $billed = null
 ): bool {
     $beskrivelse = purifyHTML($beskrivelse);
     $beskrivelse = htmlUrlDecode($beskrivelse);
@@ -2174,11 +2178,11 @@ function updateKat(
     int $id,
     string $navn,
     string $bind,
-    string $icon,
     string $vis,
     string $email,
     string $customSortSubs,
-    string $subsorder
+    string $subsorder,
+    string $icon = null
 ): bool {
     $category = ORM::getOne(Category::class, $id);
     foreach ($category->getBranch() as $node) {
@@ -2195,10 +2199,10 @@ function updateKat(
     //Update kat
     $category->setTitle($navn)
         ->setParentId($bind)
-        ->setIconPath($icon)
         ->setRenderMode($vis)
         ->setEmail($email)
         ->setWeightedChildren($customSortSubs)
+        ->setIconPath($icon)
         ->save();
 
     return true;
@@ -2227,15 +2231,15 @@ function opretSide(
     string $navn,
     string $keywords,
     int $pris,
-    string $billed,
     string $beskrivelse,
     int $for,
     string $text,
     string $varenr,
     int $burde,
     int $fra,
-    int $krav,
-    int $maerke
+    int $krav = null,
+    int $maerke = null,
+    string $billed = null
 ): array {
     $beskrivelse = purifyHTML($beskrivelse);
     $beskrivelse = htmlUrlDecode($beskrivelse);
