@@ -231,7 +231,7 @@ if (!empty($_SESSION['faktura']['quantities'])) {
 
         sendEmails(
             _('Online order #') . $invoice->getId(),
-            Render::output('email-order-notification', ['invoice' => $invoice]);
+            Render::render('email-order-notification', ['invoice' => $invoice]),
             $invoice->getEmail(),
             $invoice->getName()
         );
