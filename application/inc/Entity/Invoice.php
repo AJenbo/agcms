@@ -468,7 +468,7 @@ class Invoice extends AbstractEntity
             ->setItemData($data['item_data'])
             ->setHasShippingAddress($data['has_shipping_address'] ?? false)
             ->setTimeStamp($data['timestamp'] ?? 0)
-            ->setTimeStampPay($data['timestamp'] ?? 0)
+            ->setTimeStampPay($data['timestamp_pay'] ?? 0)
             ->setAmount($data['amount'] ?? '0.00')
             ->setName($data['name'])
             ->setAtt($data['att'])
@@ -648,12 +648,8 @@ class Invoice extends AbstractEntity
     public function getNetAmount(): float
     {
         $netAmount = 0;
-        foreach ($this->items as $item) {
+        foreach ($this->getItems() as $item) {
             $netAmount += $item['value'] * $item['quantity'];
-        }
-
-        if ($this->preVat) {
-            return $netAmount / 1.25;
         }
 
         return $netAmount;

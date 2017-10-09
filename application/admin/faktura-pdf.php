@@ -11,7 +11,7 @@ require_once __DIR__ . '/logon.php';
 $id = (int) request()->get('id');
 /** @var Invoice */
 $invoice = ORM::getOne(Invoice::class, $id);
-if (!$invoice || $invoice->getStatus() !== 'new') {
+if (!$invoice || $invoice->getStatus() === 'new') {
     die(_('Can\'t print.'));
 }
 
@@ -202,7 +202,8 @@ $pdf->Cell(34, $extraSpacing, '', 'RL', 1);
 
 //Footer
 $pdf->Cell(24, 6, '', 'RL', 0);
-$vatText = ($invoice->getVat() * 100) . _('% VAT is: ') . number_format($invoice->getNetAmount(), 2, ',', '');
+$vatText = ($invoice->getVat() * 100) . _('% VAT is: ')
+    . number_format($invoice->getNetAmount() * $invoice->getVat(), 2, ',', '');
 $pdf->Cell(106, 6, $vatText, 'RL', 0);
 //Forsendelse
 $pdf->Cell(29, 6, _('Shipping'), 'RL', 0, 'R');

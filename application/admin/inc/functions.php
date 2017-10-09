@@ -2345,9 +2345,9 @@ function invoiceBasicUpdate(Invoice $invoice, string $action, array $updates)
 {
     $status = $invoice->getStatus();
 
-    if ($status === 'new') {
+    if ($invoice->getStatus() === 'new') {
         if ($action === 'lock') {
-            $invoice->setStatus('locked');
+            $status = 'locked';
         }
         $invoice->setTimeStamp(strtotime($updates['date']));
         $invoice->setShipping($updates['shipping']);
@@ -2382,7 +2382,7 @@ function invoiceBasicUpdate(Invoice $invoice, string $action, array $updates)
     }
 
     if (isset($updates['note'])) {
-        if ($status !== 'new') {
+        if ($invoice->getStatus() !== 'new') {
             $updates['note'] = trim($invoice->getNote() . "\n" . $updates['note']);
         }
         $invoice->setNote($updates['note']);
@@ -2399,20 +2399,26 @@ function invoiceBasicUpdate(Invoice $invoice, string $action, array $updates)
         $invoice->setClerk(curentUser()->getFullName());
     }
 
-    if (($action === 'giro' || $action === 'cash') && in_array($status, ['new', 'locked', 'rejected'], true)) {
-        $invoice->setStatus($action);
+    if (($action === 'giro' || $action === 'cash')
+        && in_array($invoice->getStatus(), ['new', 'locked', 'rejected'], true)
+    ) {
+        $status = $action;
     }
 
     if (!$invoice->isFinalized()) {
-        if (($action === 'lock' || $action === 'cancel') && $status !== 'locked') {
+        if (($action === 'lock' || $action === 'cancel') && $invoice->getStatus() !== 'locked') {
             $invoice->setTimeStampPay(!empty($updates['paydate']) ? strtotime($updates['paydate']) : time());
+        } elseif ($action === 'giro' && $updates['gdate']) {
+            $invoice->setTimeStampPay(strtotime($updates['gdate']));
+        } elseif ($action === 'cash' && $updates['cdate']) {
+            $invoice->setTimeStampPay(strtotime($updates['cdate']));
         }
 
         if ($action === 'cancel') {
-            if ($status === 'pbsok' && !annul($invoice->getId())) {
+            if ($invoice->getStatus() === 'pbsok' && !annul($invoice->getId())) {
                 throw new Exception(_('Failed to cancel payment!'));
             }
-            $invoice->setStatus('canceled');
+            $status = 'canceled';
         }
 
         if (isset($updates['clerk']) && curentUser()->hasAccess(User::ADMINISTRATOR)) {
@@ -2420,7 +2426,7 @@ function invoiceBasicUpdate(Invoice $invoice, string $action, array $updates)
         }
     }
 
-    $invoice->save();
+    $invoice->setStatus($status)->save();
 }
 
 function sendInvoice(Invoice $invoice)
