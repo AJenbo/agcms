@@ -9,15 +9,6 @@ bootStrap();
 // Load admin functions
 require_once _ROOT_ . '/admin/inc/functions.php';
 
-//access
-//0:ny, ingen ratigheder.
-//1:supper admin.
-//2:admin.
-//3:klader.
-//4:gaest, ikke gemme.
-
 session_start();
-
 checkUserLoggedIn();
-
 ORM::getOne(User::class, curentUser()->getId())->setLastLogin(time())->save();

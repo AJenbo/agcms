@@ -286,16 +286,6 @@ function getTable(int $listid, int $bycell = null, int $categoryId = null): arra
 }
 
 /**
- * @param string $string
- *
- * @return string
- */
-function xhtmlEsc(string $string): string
-{
-    return htmlspecialchars($string, ENT_COMPAT | ENT_XHTML);
-}
-
-/**
  * Crope a string to a given max lengt, round by word.
  *
  * @param string $string   String to crope
