@@ -124,6 +124,16 @@ function encodeUrl(string $url): string
 }
 
 /**
+ * @param string $string
+ *
+ * @return string
+ */
+function xhtmlEsc(string $string): string
+{
+    return htmlspecialchars($string, ENT_COMPAT | ENT_XHTML);
+}
+
+/**
  * Get first element from an array that can't be referenced.
  *
  * @return mixed
