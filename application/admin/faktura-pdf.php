@@ -52,8 +52,10 @@ $pdf->Write(0, Config::get('site_name'));
 //Contact info
 $pdf->SetY(12);
 $pdf->SetFont('times', '', 10);
-$addressLine = Config::get('address') . "\n" . Config::get('postcode') . ' ' . Config::get('city') . "\n"
-    . 'Fax: ' . Config::get('fax') . "\n";
+$addressLine = Config::get('address') . "\n" . Config::get('postcode') . ' ' . Config::get('city') . "\n";
+if (Config::get('fax')) {
+    $addressLine .= 'Fax: ' . Config::get('fax') . "\n";
+}
 $pdf->Write(0, $addressLine, '', 0, 'R');
 $pdf->SetFont('times', 'B', 11);
 $pdf->Write(0, _('Phone:') . ' ' . Config::get('phone') . "\n", '', 0, 'R');
