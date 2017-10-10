@@ -5,7 +5,7 @@
     <img{% if dir.subs %} style="display:none"{% endif %} src="images/+.gif" onclick="dir_expand(this,{{move|json_encode()}});" height="16" width="16" alt="+" title="" />
     <img{% if not dir.subs %} style="display:none"{% endif %} src="images/-.gif" onclick="dir_contract(this);" height="16" width="16" alt="-" title="" />
     {% endif %}
-    <a{% if not dir.hassubs %} style="margin-left:16px"{% endif %}{% if dir.path == activeDir %} class="active"{% endif %} title="{{dir.name}}"{% if not move %}ondblclick="showdirname(this)"{% endif %} onclick="{% if not move %}showfiles({{dir.path|json_encode()}}){% else %}movefile({{dir.path|json_encode()}}){% endif %}">
+    <a{% if not dir.hassubs %} style="margin-left:16px"{% endif %}{% if dir.path == activeDir %} class="active"{% endif %} title="{{dir.name}}"{% if not move %} ondblclick="showdirname(this)"{% endif %} onclick="{% if not move %}showfiles({{dir.path|json_encode()}}){% else %}movefile({{dir.path|json_encode()}}){% endif %}">
         <img src="images/folder.png" height="16" width="16" alt="" /> <span>{{dir.name}}</span>
     </a>
     <form action="" method="get" onsubmit="document.getElementById('files').focus();return false" style="display:none">
