@@ -21,7 +21,7 @@ function init()
     contextMenuImageTile =
         new Proto.Menu({ selector : '.imagetile', "className" : 'menu desktop', menuItems : imagetileContextMenu });
 
-    showfiles(activeDir, 0);
+    showfiles(activeDir);
 }
 
 function file(id, path, name, type, alt, width, height)
@@ -52,14 +52,13 @@ file.prototype.openfile = function() {
 };
 
 file.prototype.refreshThumb = function() {
-    $('tilebox' + this.id)
-        .firstChild.childNodes[1]
-        .src = 'image.php?path=' + encodeURIComponent(this.path) + '&maxW=128&maxH=96&timestamp=' + unix_timestamp();
+    $('tilebox' + this.id).firstChild.childNodes[1].src =
+        'image.php?path=' + encodeURIComponent(this.path) + '&maxW=128&maxH=96&timestamp=' + unix_timestamp();
 };
 
 function unix_timestamp()
 {
-    return parseInt(new Date().getTime().toString().substring(0, 10))
+    return parseInt(new Date().getTime().toString().substring(0, 10));
 }
 
 function reattachContextMenus()
@@ -418,20 +417,18 @@ function getSelect(id)
     return object[object.selectedIndex].value;
 }
 
-function showfiles(dir, mode)
+function showfiles(dir)
 {
     // TODO, scroll to top.
     activeDir = dir;
     setCookie('admin_dir', activeDir, 360);
 
     document.getElementById('loading').style.display = '';
-    if(mode == 0) {
-        dirlist = document.getElementById('dir').getElementsByTagName('a');
-        for(var i = 0; i < dirlist.length; i++) {
-            dirlist[i].className = '';
-        }
-        document.getElementById(dirToId(dir)).getElementsByTagName('a')[0].className = 'active';
+    dirlist = document.getElementById('dir').getElementsByTagName('a');
+    for(var i = 0; i < dirlist.length; i++) {
+        dirlist[i].className = '';
     }
+    document.getElementById(dirToId(dir)).getElementsByTagName('a')[0].className = 'active';
     // TODO only cancle requests relating to showfiles
     sajax.cancel();
     x_showfiles(dir, showfiles_r);
@@ -512,8 +509,9 @@ function popUpWin(url, win, options, width, height)
     if(options != '') {
         options += ',';
     }
-    popup = window.open(url, win, options + 'width=' + width + ',height=' + height + ',left=' +
-            (screen.availWidth - width) / 2 + ',top=' + (screen.availHeight - height) / 2);
+    var left = (screen.availWidth - width) / 2;
+    var top = (screen.availHeight - height) / 2;
+    popup = window.open(url, win, options + 'width=' + width + ',height=' + height + ',left=' + left + ',top=' + top);
 }
 
 function open_file_move(id)
@@ -568,12 +566,12 @@ function idToDir(id)
     return id.substr(4).replace(/[.]/g, '/');
 }
 
-function dir_expand(dirdiv, mode)
+function dir_expand(dirdiv, move)
 {
     dirdiv = dirdiv.parentNode;
     if(dirdiv.lastChild.firstChild == null) {
         document.getElementById('loading').style.display = '';
-        x_listdirs(idToDir(dirdiv.id), !!mode, dir_expand_r);
+        x_listdirs(idToDir(dirdiv.id), move, dir_expand_r);
         return;
     }
 
@@ -763,7 +761,7 @@ function swap_pannel(navn)
         document.getElementById('search').style.display = 'none';
         document.getElementById('dir_bn').className = 'down';
         document.getElementById('dir').style.display = '';
-        showfiles(activeDir, 1);
+        showfiles(activeDir);
     }
     return false;
 }

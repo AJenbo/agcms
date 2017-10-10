@@ -129,7 +129,7 @@ function send()
         validate();
         status('Filen er sendt');
         document.getElementById('status').style.display = '';
-        window.opener.showfiles(window.opener.activeDir, 1);
+        window.opener.showfiles(window.opener.activeDir);
     };
     x.upload.onprogress = function(evt) {
         if(evt.lengthComputable) {

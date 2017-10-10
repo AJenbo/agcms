@@ -43,7 +43,7 @@
             </a>
         </div>
         <div id="dir">
-            {% include 'partial-admin-listDirs.html' %}
+            {% include 'partial-admin-listDirs.html' with {'move': false} %}
         </div>
         <form id="search" style="display:none" action="" onsubmit="searchfiles();return false;">
             <div>

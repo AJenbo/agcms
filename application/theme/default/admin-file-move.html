@@ -96,7 +96,7 @@
         <p>Click on the folder where you want to move the file '{{filename}}'.</p>
         <img id="loading" style="float:right; cursor:default; display:none; padding:4px" src="images/loading.gif" width="16" height="16" alt="Loading" />
         <div id="dir">
-            {% include 'partial-admin-listDirs.html' %}
+            {% include 'partial-admin-listDirs.html' with {'move': true} %}
         </div>
         <p style="bottom:18px; position:absolute;">Click the plus sign above to see the subfolders.</p>
     </body>
