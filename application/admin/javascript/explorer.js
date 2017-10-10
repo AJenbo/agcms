@@ -1,6 +1,6 @@
-﻿var files= [];
-var activeDir= getCookie('admin_dir');
-var activeDir= activeDir ? activeDir : '/images';
+﻿var files = [];
+var activeDir = getCookie('admin_dir');
+var activeDir = activeDir ? activeDir : '/images';
 var contextMenuFileTile;
 var contextMenuVideoTile;
 var contextMenuswfTile;
@@ -10,15 +10,15 @@ var contextMenuImageTile;
 function init()
 {
     // attach context menus
-    contextMenuFileTile=
+    contextMenuFileTile =
         new Proto.Menu({ selector : '.filetile', "className" : 'menu desktop', menuItems : filetileContextMenu });
-    contextMenuVideoTile=
+    contextMenuVideoTile =
         new Proto.Menu({ selector : '.videotile', "className" : 'menu desktop', menuItems : videotileContextMenu });
-    contextMenuswfTile=
+    contextMenuswfTile =
         new Proto.Menu({ selector : '.swftile', "className" : 'menu desktop', menuItems : swftileContextMenu });
-    contextMenuflvTile=
+    contextMenuflvTile =
         new Proto.Menu({ selector : '.flvtile', "className" : 'menu desktop', menuItems : flvtileContextMenu });
-    contextMenuImageTile=
+    contextMenuImageTile =
         new Proto.Menu({ selector : '.imagetile', "className" : 'menu desktop', menuItems : imagetileContextMenu });
 
     showfiles(activeDir, 0);
@@ -26,35 +26,35 @@ function init()
 
 function file(id, path, name, type, alt, width, height)
 {
-    this.id= id;
-    this.path= path;
-    this.name= name;
-    this.alt= alt;
+    this.id = id;
+    this.path = path;
+    this.name = name;
+    this.alt = alt;
 
-    this.type= 'unknown';
+    this.type = 'unknown';
     if(path) {
-        this.type= type;
+        this.type = type;
     }
 
-    this.width= screen.availWidth;
+    this.width = screen.availWidth;
     if(width > 0) {
-        this.width= width;
+        this.width = width;
     }
 
-    this.height= screen.availHeight;
+    this.height = screen.availHeight;
     if(height > 0) {
-        this.height= height;
+        this.height = height;
     }
 }
 
-file.prototype.openfile= function() {
+file.prototype.openfile = function() {
     viewlFile(this.type, this.id, this.width, this.height);
 };
 
-file.prototype.refreshThumb= function() {
+file.prototype.refreshThumb = function() {
     $('tilebox' + this.id)
         .firstChild.childNodes[1]
-        .src= 'image.php?path=' + encodeURIComponent(this.path) + '&maxW=128&maxH=96&timestamp=' + unix_timestamp();
+        .src = 'image.php?path=' + encodeURIComponent(this.path) + '&maxW=128&maxH=96&timestamp=' + unix_timestamp();
 };
 
 function unix_timestamp()
@@ -71,13 +71,13 @@ function reattachContextMenus()
     contextMenuImageTile.reattach();
 }
 
-var filetileContextMenu= [
+var filetileContextMenu = [
     {
       "name" : 'Åbne',
       "className" : 'eye',
       "callback" : function(e) {
-          var object= getContextMenuTarget(e.target, 'filetile');
-          var id= object.id.match(/[0-9]+/g);
+          var object = getContextMenuTarget(e.target, 'filetile');
+          var id = object.id.match(/[0-9]+/g);
           files[id[0]].openfile();
       }
     },
@@ -85,8 +85,8 @@ var filetileContextMenu= [
       "name" : 'Flyt',
       "className" : 'folder_go',
       "callback" : function(e) {
-          var object= getContextMenuTarget(e.target, 'filetile');
-          var id= object.id.match(/[0-9]+/g);
+          var object = getContextMenuTarget(e.target, 'filetile');
+          var id = object.id.match(/[0-9]+/g);
           open_file_move(id[0]);
       }
     },
@@ -94,8 +94,8 @@ var filetileContextMenu= [
       "name" : 'Omdøb',
       "className" : 'textfield_rename',
       "callback" : function(e) {
-          var object= getContextMenuTarget(e.target, 'filetile');
-          var id= object.id.match(/[0-9]+/g);
+          var object = getContextMenuTarget(e.target, 'filetile');
+          var id = object.id.match(/[0-9]+/g);
           showfilename(id[0]);
       }
     },
@@ -103,20 +103,20 @@ var filetileContextMenu= [
       "name" : 'Slet',
       "className" : 'delete',
       "callback" : function(e) {
-          var object= getContextMenuTarget(e.target, 'filetile');
-          var id= object.id.match(/[0-9]+/g);
+          var object = getContextMenuTarget(e.target, 'filetile');
+          var id = object.id.match(/[0-9]+/g);
           deletefile(id[0]);
       }
     }
 ];
 
-var videotileContextMenu= [
+var videotileContextMenu = [
     {
       "name" : 'Åbne',
       "className" : 'film',
       "callback" : function(e) {
-          var object= getContextMenuTarget(e.target, 'videotile');
-          var id= object.id.match(/[0-9]+/g);
+          var object = getContextMenuTarget(e.target, 'videotile');
+          var id = object.id.match(/[0-9]+/g);
           files[id[0]].openfile();
       }
     },
@@ -124,8 +124,8 @@ var videotileContextMenu= [
       "name" : 'Flyt',
       "className" : 'folder_go',
       "callback" : function(e) {
-          var object= getContextMenuTarget(e.target, 'videotile');
-          var id= object.id.match(/[0-9]+/g);
+          var object = getContextMenuTarget(e.target, 'videotile');
+          var id = object.id.match(/[0-9]+/g);
           open_file_move(id[0]);
       }
     },
@@ -133,8 +133,8 @@ var videotileContextMenu= [
       "name" : 'Omdøb',
       "className" : 'textfield_rename',
       "callback" : function(e) {
-          var object= getContextMenuTarget(e.target, 'videotile');
-          var id= object.id.match(/[0-9]+/g);
+          var object = getContextMenuTarget(e.target, 'videotile');
+          var id = object.id.match(/[0-9]+/g);
           showfilename(id[0]);
       }
     },
@@ -142,20 +142,20 @@ var videotileContextMenu= [
       "name" : 'Slet',
       "className" : 'delete',
       "callback" : function(e) {
-          var object= getContextMenuTarget(e.target, 'videotile');
-          var id= object.id.match(/[0-9]+/g);
+          var object = getContextMenuTarget(e.target, 'videotile');
+          var id = object.id.match(/[0-9]+/g);
           deletefile(id[0]);
       }
     }
 ];
 
-var swftileContextMenu= [
+var swftileContextMenu = [
     {
       "name" : 'Åbne',
       "className" : 'film',
       "callback" : function(e) {
-          var object= getContextMenuTarget(e.target, 'swftile');
-          var id= object.id.match(/[0-9]+/g);
+          var object = getContextMenuTarget(e.target, 'swftile');
+          var id = object.id.match(/[0-9]+/g);
           files[id[0]].openfile();
       }
     },
@@ -163,8 +163,8 @@ var swftileContextMenu= [
       "name" : 'Flyt',
       "className" : 'folder_go',
       "callback" : function(e) {
-          var object= getContextMenuTarget(e.target, 'swftile');
-          var id= object.id.match(/[0-9]+/g);
+          var object = getContextMenuTarget(e.target, 'swftile');
+          var id = object.id.match(/[0-9]+/g);
           open_file_move(id[0]);
       }
     },
@@ -172,8 +172,8 @@ var swftileContextMenu= [
       "name" : 'Omdøb',
       "className" : 'textfield_rename',
       "callback" : function(e) {
-          var object= getContextMenuTarget(e.target, 'swftile');
-          var id= object.id.match(/[0-9]+/g);
+          var object = getContextMenuTarget(e.target, 'swftile');
+          var id = object.id.match(/[0-9]+/g);
           showfilename(id[0]);
       }
     },
@@ -181,20 +181,20 @@ var swftileContextMenu= [
       "name" : 'Slet',
       "className" : 'delete',
       "callback" : function(e) {
-          var object= getContextMenuTarget(e.target, 'swftile');
-          var id= object.id.match(/[0-9]+/g);
+          var object = getContextMenuTarget(e.target, 'swftile');
+          var id = object.id.match(/[0-9]+/g);
           deletefile(id[0]);
       }
     }
 ];
 
-var flvtileContextMenu= [
+var flvtileContextMenu = [
     {
       "name" : 'Åbne',
       "className" : 'film',
       "callback" : function(e) {
-          var object= getContextMenuTarget(e.target, 'flvtile');
-          var id= object.id.match(/[0-9]+/g);
+          var object = getContextMenuTarget(e.target, 'flvtile');
+          var id = object.id.match(/[0-9]+/g);
           files[id[0]].openfile();
       }
     },
@@ -202,8 +202,8 @@ var flvtileContextMenu= [
       "name" : 'Flyt',
       "className" : 'folder_go',
       "callback" : function(e) {
-          var object= getContextMenuTarget(e.target, 'flvtile');
-          var id= object.id.match(/[0-9]+/g);
+          var object = getContextMenuTarget(e.target, 'flvtile');
+          var id = object.id.match(/[0-9]+/g);
           open_file_move(id[0]);
       }
     },
@@ -211,8 +211,8 @@ var flvtileContextMenu= [
       "name" : 'Omdøb',
       "className" : 'textfield_rename',
       "callback" : function(e) {
-          var object= getContextMenuTarget(e.target, 'flvtile');
-          var id= object.id.match(/[0-9]+/g);
+          var object = getContextMenuTarget(e.target, 'flvtile');
+          var id = object.id.match(/[0-9]+/g);
           showfilename(id[0]);
       }
     },
@@ -220,21 +220,21 @@ var flvtileContextMenu= [
       "name" : 'Slet',
       "className" : 'delete',
       "callback" : function(e) {
-          var object= getContextMenuTarget(e.target, 'flvtile');
-          var id= object.id.match(/[0-9]+/g);
+          var object = getContextMenuTarget(e.target, 'flvtile');
+          var id = object.id.match(/[0-9]+/g);
           deletefile(id[0]);
       }
     }
 ];
 
 if(window.location.href.match(/return=rtef/g)) {
-    var imagetileContextMenu= [
+    var imagetileContextMenu = [
         {
           "name" : 'Åbne',
           "className" : 'picture',
           "callback" : function(e) {
-              var object= getContextMenuTarget(e.target, 'imagetile');
-              var id= object.id.match(/[0-9]+/g);
+              var object = getContextMenuTarget(e.target, 'imagetile');
+              var id = object.id.match(/[0-9]+/g);
               files[id[0]].openfile();
           }
         },
@@ -242,8 +242,8 @@ if(window.location.href.match(/return=rtef/g)) {
           "name" : 'Indsæt link',
           "className" : 'link',
           "callback" : function(e) {
-              var object= getContextMenuTarget(e.target, 'imagetile');
-              var id= object.id.match(/[0-9]+/g);
+              var object = getContextMenuTarget(e.target, 'imagetile');
+              var id = object.id.match(/[0-9]+/g);
               addfile(id[0]);
           }
         },
@@ -251,8 +251,8 @@ if(window.location.href.match(/return=rtef/g)) {
           "name" : 'Rediger',
           "className" : 'picture_edit',
           "callback" : function(e) {
-              var object= getContextMenuTarget(e.target, 'imagetile');
-              var id= object.id.match(/[0-9]+/g);
+              var object = getContextMenuTarget(e.target, 'imagetile');
+              var id = object.id.match(/[0-9]+/g);
               open_image_edit(id[0]);
           }
         },
@@ -260,8 +260,8 @@ if(window.location.href.match(/return=rtef/g)) {
           "name" : 'Beskrivelse',
           "className" : 'textfield_rename',
           "callback" : function(e) {
-              var object= getContextMenuTarget(e.target, 'imagetile');
-              var id= object.id.match(/[0-9]+/g);
+              var object = getContextMenuTarget(e.target, 'imagetile');
+              var id = object.id.match(/[0-9]+/g);
               edit_alt(id[0]);
           }
         },
@@ -269,8 +269,8 @@ if(window.location.href.match(/return=rtef/g)) {
           "name" : 'Generere ikon',
           "className" : 'pictures',
           "callback" : function(e) {
-              var object= getContextMenuTarget(e.target, 'imagetile');
-              var id= object.id.match(/[0-9]+/g);
+              var object = getContextMenuTarget(e.target, 'imagetile');
+              var id = object.id.match(/[0-9]+/g);
               open_image_thumbnail(id[0]);
           }
         },
@@ -278,8 +278,8 @@ if(window.location.href.match(/return=rtef/g)) {
           "name" : 'Flyt',
           "className" : 'folder_go',
           "callback" : function(e) {
-              var object= getContextMenuTarget(e.target, 'imagetile');
-              var id= object.id.match(/[0-9]+/g);
+              var object = getContextMenuTarget(e.target, 'imagetile');
+              var id = object.id.match(/[0-9]+/g);
               open_file_move(id[0]);
           }
         },
@@ -287,8 +287,8 @@ if(window.location.href.match(/return=rtef/g)) {
           "name" : 'Omdøb',
           "className" : 'textfield_rename',
           "callback" : function(e) {
-              var object= getContextMenuTarget(e.target, 'imagetile');
-              var id= object.id.match(/[0-9]+/g);
+              var object = getContextMenuTarget(e.target, 'imagetile');
+              var id = object.id.match(/[0-9]+/g);
               showfilename(id[0]);
           }
         },
@@ -296,20 +296,20 @@ if(window.location.href.match(/return=rtef/g)) {
           "name" : 'Slet',
           "className" : 'delete',
           "callback" : function(e) {
-              var object= getContextMenuTarget(e.target, 'imagetile');
-              var id= object.id.match(/[0-9]+/g);
+              var object = getContextMenuTarget(e.target, 'imagetile');
+              var id = object.id.match(/[0-9]+/g);
               deletefile(id[0]);
           }
         }
     ];
 } else {
-    var imagetileContextMenu= [
+    var imagetileContextMenu = [
         {
           "name" : 'Åbne',
           "className" : 'picture',
           "callback" : function(e) {
-              var object= getContextMenuTarget(e.target, 'imagetile');
-              var id= object.id.match(/[0-9]+/g);
+              var object = getContextMenuTarget(e.target, 'imagetile');
+              var id = object.id.match(/[0-9]+/g);
               files[id[0]].openfile();
           }
         },
@@ -317,8 +317,8 @@ if(window.location.href.match(/return=rtef/g)) {
           "name" : 'Rediger',
           "className" : 'picture_edit',
           "callback" : function(e) {
-              var object= getContextMenuTarget(e.target, 'imagetile');
-              var id= object.id.match(/[0-9]+/g);
+              var object = getContextMenuTarget(e.target, 'imagetile');
+              var id = object.id.match(/[0-9]+/g);
               open_image_edit(id[0]);
           }
         },
@@ -326,8 +326,8 @@ if(window.location.href.match(/return=rtef/g)) {
           "name" : 'Beskrivelse',
           "className" : 'textfield_rename',
           "callback" : function(e) {
-              var object= getContextMenuTarget(e.target, 'imagetile');
-              var id= object.id.match(/[0-9]+/g);
+              var object = getContextMenuTarget(e.target, 'imagetile');
+              var id = object.id.match(/[0-9]+/g);
               edit_alt(id[0]);
           }
         },
@@ -335,8 +335,8 @@ if(window.location.href.match(/return=rtef/g)) {
           "name" : 'Generere ikon',
           "className" : 'pictures',
           "callback" : function(e) {
-              var object= getContextMenuTarget(e.target, 'imagetile');
-              var id= object.id.match(/[0-9]+/g);
+              var object = getContextMenuTarget(e.target, 'imagetile');
+              var id = object.id.match(/[0-9]+/g);
               open_image_thumbnail(id[0]);
           }
         },
@@ -344,8 +344,8 @@ if(window.location.href.match(/return=rtef/g)) {
           "name" : 'Flyt',
           "className" : 'folder_go',
           "callback" : function(e) {
-              var object= getContextMenuTarget(e.target, 'imagetile');
-              var id= object.id.match(/[0-9]+/g);
+              var object = getContextMenuTarget(e.target, 'imagetile');
+              var id = object.id.match(/[0-9]+/g);
               open_file_move(id[0]);
           }
         },
@@ -353,8 +353,8 @@ if(window.location.href.match(/return=rtef/g)) {
           "name" : 'Omdøb',
           "className" : 'textfield_rename',
           "callback" : function(e) {
-              var object= getContextMenuTarget(e.target, 'imagetile');
-              var id= object.id.match(/[0-9]+/g);
+              var object = getContextMenuTarget(e.target, 'imagetile');
+              var id = object.id.match(/[0-9]+/g);
               showfilename(id[0]);
           }
         },
@@ -362,8 +362,8 @@ if(window.location.href.match(/return=rtef/g)) {
           "name" : 'Slet',
           "className" : 'delete',
           "callback" : function(e) {
-              var object= getContextMenuTarget(e.target, 'imagetile');
-              var id= object.id.match(/[0-9]+/g);
+              var object = getContextMenuTarget(e.target, 'imagetile');
+              var id = object.id.match(/[0-9]+/g);
               deletefile(id[0]);
           }
         }
@@ -373,39 +373,39 @@ if(window.location.href.match(/return=rtef/g)) {
 function viewlFile(type, id, width, height)
 {
     if(type == 'unknown') {
-        var file= files[id].path;
+        var file = files[id].path;
     } else {
-        var file= 'popup-' + type + '.php?url=' + encodeURIComponent(files[id].path);
+        var file = 'popup-' + type + '.php?url=' + encodeURIComponent(files[id].path);
     }
     popUpWin(file, 'file_view', 'toolbar=0', width, height);
 }
 
 function edit_alt(id)
 {
-    var newalt= prompt('Billed beskrivelse', files[id].alt);
+    var newalt = prompt('Billed beskrivelse', files[id].alt);
     if(newalt != null && newalt != files[id].alt) {
-        $('loading').style.visibility= '';
+        $('loading').style.visibility = '';
         x_edit_alt(id, newalt, edit_alt_r);
     }
 }
 
 function edit_alt_r(data)
 {
-    document.getElementById('loading').style.display= 'none';
+    document.getElementById('loading').style.display = 'none';
     if(data.error) {
         alert(data.error);
         return;
     }
 
-    files[data.id].alt= data.alt;
+    files[data.id].alt = data.alt;
 }
 
 function searchfiles()
 {
-    document.getElementById('loading').style.display= '';
-    qpath= document.getElementById('searchpath').value;
-    qalt= document.getElementById('searchalt').value;
-    qtype= getSelect('searchtype');
+    document.getElementById('loading').style.display = '';
+    qpath = document.getElementById('searchpath').value;
+    qalt = document.getElementById('searchalt').value;
+    qtype = getSelect('searchtype');
 
     // TODO only cancle requests relating to searchfiles
     sajax.cancel();
@@ -414,23 +414,23 @@ function searchfiles()
 
 function getSelect(id)
 {
-    object= document.getElementById(id);
+    object = document.getElementById(id);
     return object[object.selectedIndex].value;
 }
 
 function showfiles(dir, mode)
 {
     // TODO, scroll to top.
-    activeDir= dir;
+    activeDir = dir;
     setCookie('admin_dir', activeDir, 360);
 
-    document.getElementById('loading').style.display= '';
+    document.getElementById('loading').style.display = '';
     if(mode == 0) {
-        dirlist= document.getElementById('dir').getElementsByTagName('a');
-        for(var i= 0; i < dirlist.length; i++) {
-            dirlist[i].className= '';
+        dirlist = document.getElementById('dir').getElementsByTagName('a');
+        for(var i = 0; i < dirlist.length; i++) {
+            dirlist[i].className = '';
         }
-        document.getElementById(dirToId(dir)).getElementsByTagName('a')[0].className= 'active';
+        document.getElementById(dirToId(dir)).getElementsByTagName('a')[0].className = 'active';
     }
     // TODO only cancle requests relating to showfiles
     sajax.cancel();
@@ -440,56 +440,56 @@ function showfiles(dir, mode)
 function showfiles_r(data)
 {
     inject_html(data);
-    files= [];
+    files = [];
     eval(data.javascript);
     reattachContextMenus();
 }
 
 function showfilename(id)
 {
-    document.getElementById('navn' + id + 'div').style.display= 'none';
-    document.getElementById('navn' + id + 'form').style.display= '';
+    document.getElementById('navn' + id + 'div').style.display = 'none';
+    document.getElementById('navn' + id + 'form').style.display = '';
     document.getElementById('navn' + id + 'form').firstChild.firstChild.select();
     document.getElementById('navn' + id + 'form').firstChild.firstChild.focus();
 }
 
 function showdirname(nameObj)
 {
-    nameObj.style.display= 'none';
-    nameObj.nextSibling.style.display= 'inline';
+    nameObj.style.display = 'none';
+    nameObj.nextSibling.style.display = 'inline';
     nameObj.nextSibling.firstChild.childNodes[1].select();
     nameObj.nextSibling.firstChild.childNodes[1].focus();
 }
 
 function renamedir(newNameObj)
 {
-    newNameObj.parentNode.parentNode.style.display= 'none';
-    newNameObj.parentNode.parentNode.previousSibling.style.display= '';
-    document.getElementById('loading').style.display= '';
+    newNameObj.parentNode.parentNode.style.display = 'none';
+    newNameObj.parentNode.parentNode.previousSibling.style.display = '';
+    document.getElementById('loading').style.display = '';
     x_renamefile(idToDir(newNameObj.parentNode.parentNode.parentNode.id),
         idToDir(newNameObj.parentNode.parentNode.parentNode.id), '', newNameObj.value, renamedir_r);
 }
 
 function renamedir_r(data)
 {
-    document.getElementById('loading').style.display= 'none';
+    document.getElementById('loading').style.display = 'none';
     if(data.error) {
-        var divdir= document.getElementById(dirToId(data.id));
-        var form= divdir.getElementsByTagName('form');
-        form[0].firstChild.childNodes[1].value= form[0].previousSibling.title;
+        var divdir = document.getElementById(dirToId(data.id));
+        var form = divdir.getElementsByTagName('form');
+        form[0].firstChild.childNodes[1].value = form[0].previousSibling.title;
         alert(data.error);
         return;
     }
 
-    var formId= 'dir_' + data.id + 'form';
+    var formId = 'dir_' + data.id + 'form';
     if(data.yesno) {
         if(confirm(data.yesno)) {
-            document.getElementById('loading').style.display= '';
+            document.getElementById('loading').style.display = '';
             x_renamefile(data.id, document.getElementById(formId).lastChild.value, '',
                 document.getElementById(formId).firstChild.value, 1, renamefile_r);
             return;
         }
-        document.getElementById(formId).firstChild.value= document.getElementById('dir_' + data.id + 'name').innerHTML;
+        document.getElementById(formId).firstChild.value = document.getElementById('dir_' + data.id + 'name').innerHTML;
         return;
     }
 
@@ -502,17 +502,17 @@ function renamedir_r(data)
     */
 }
 
-var popup= null;
+var popup = null;
 function popUpWin(url, win, options, width, height)
 {
     if(popup != null) {
         popup.close();
-        popup= null;
+        popup = null;
     }
     if(options != '') {
-        options+= ',';
+        options += ',';
     }
-    popup= window.open(url, win, options + 'width=' + width + ',height=' + height + ',left=' +
+    popup = window.open(url, win, options + 'width=' + width + ',height=' + height + ',left=' +
             (screen.availWidth - width) / 2 + ',top=' + (screen.availHeight - height) / 2);
 }
 
@@ -541,15 +541,15 @@ function deletefolder_r(data)
 
 function makedir()
 {
-    if(name= prompt('Hvad skal mappen hede?', 'Ny mappe')) {
-        document.getElementById('loading').style.display= '';
+    if(name = prompt('Hvad skal mappen hede?', 'Ny mappe')) {
+        document.getElementById('loading').style.display = '';
         x_makedir(activeDir, name, makedir_r);
     }
 }
 
 function makedir_r(data)
 {
-    document.getElementById('loading').style.display= 'none';
+    document.getElementById('loading').style.display = 'none';
     if(data.error) {
         alert(data.error);
         return;
@@ -570,39 +570,39 @@ function idToDir(id)
 
 function dir_expand(dirdiv, mode)
 {
-    dirdiv= dirdiv.parentNode;
+    dirdiv = dirdiv.parentNode;
     if(dirdiv.lastChild.firstChild == null) {
-        document.getElementById('loading').style.display= '';
+        document.getElementById('loading').style.display = '';
         x_listdirs(idToDir(dirdiv.id), !!mode, dir_expand_r);
         return;
     }
 
-    dirdiv.lastChild.style.display= '';
-    dirdiv.firstChild.style.display= 'none';
-    dirdiv.childNodes[1].style.display= '';
+    dirdiv.lastChild.style.display = '';
+    dirdiv.firstChild.style.display = 'none';
+    dirdiv.childNodes[1].style.display = '';
 }
 
 function dir_expand_r(data)
 {
-    document.getElementById('loading').style.display= 'none';
+    document.getElementById('loading').style.display = 'none';
     if(data.error) {
         alert(data.error);
         return;
     }
 
-    var dirdiv= document.getElementById(dirToId(data.id));
-    dirdiv.firstChild.style.display= 'none';
-    dirdiv.childNodes[1].style.display= '';
-    dirdiv.lastChild.innerHTML= data.html;
-    dirdiv.lastChild.style.display= '';
+    var dirdiv = document.getElementById(dirToId(data.id));
+    dirdiv.firstChild.style.display = 'none';
+    dirdiv.childNodes[1].style.display = '';
+    dirdiv.lastChild.innerHTML = data.html;
+    dirdiv.lastChild.style.display = '';
 }
 
 function dir_contract(obj)
 {
-    obj= obj.parentNode;
-    obj.lastChild.style.display= 'none';
-    obj.firstChild.style.display= '';
-    obj.childNodes[1].style.display= 'none';
+    obj = obj.parentNode;
+    obj.lastChild.style.display = 'none';
+    obj.firstChild.style.display = '';
+    obj.childNodes[1].style.display = 'none';
 }
 
 function open_image_thumbnail(id)
@@ -624,8 +624,8 @@ function open_file_upload()
 
 function insertThumbnail(id)
 {
-    window.opener.document.getElementById(returnid).value= files[id].path;
-    window.opener.document.getElementById(returnid + 'thb').src= files[id].path;
+    window.opener.document.getElementById(returnid).value = files[id].path;
+    window.opener.document.getElementById(returnid + 'thb').src = files[id].path;
     if(window.opener.window.location.href.indexOf('side=redigerside') > -1) {
         window.opener.updateSide(window.opener.$('id').value);
     }
@@ -636,57 +636,57 @@ function renamefile(id)
 {
     showhide('navn' + id + 'div');
     showhide('navn' + id + 'form');
-    document.getElementById('loading').style.display= '';
+    document.getElementById('loading').style.display = '';
     x_renamefile(id, files[id].path, '', document.getElementById('navn' + id + 'form').firstChild.firstChild.value,
         renamefile_r);
 }
 
 function renamefile_r(data)
 {
-    document.getElementById('loading').style.display= 'none';
+    document.getElementById('loading').style.display = 'none';
     if(data.error) {
-        document.getElementById('navn' + data.id + 'form').firstChild.firstChild.value= files[data.id].name;
+        document.getElementById('navn' + data.id + 'form').firstChild.firstChild.value = files[data.id].name;
         alert(data.error);
         return;
     }
 
     if(data.yesno) {
         if(confirm(data.yesno)) {
-            document.getElementById('loading').style.display= '';
+            document.getElementById('loading').style.display = '';
             x_renamefile(data.id, files[data.id].path, '',
                 document.getElementById('navn' + data.id + 'form').firstChild.firstChild.value, 1, renamefile_r);
             return;
         }
 
-        document.getElementById('navn' + data.id + 'form').firstChild.firstChild.value= files[data.id].name;
+        document.getElementById('navn' + data.id + 'form').firstChild.firstChild.value = files[data.id].name;
         return;
     }
 
-    document.getElementById('navn' + data.id + 'div').innerHTML= data.filename;
-    document.getElementById('navn' + data.id + 'div').title= data.filename;
-    document.getElementById('navn' + data.id + 'form').firstChild.firstChild.value= data.filename;
-    files[data.id].name= data.filename;
-    files[data.id].path= data.path;
+    document.getElementById('navn' + data.id + 'div').innerHTML = data.filename;
+    document.getElementById('navn' + data.id + 'div').title = data.filename;
+    document.getElementById('navn' + data.id + 'form').firstChild.firstChild.value = data.filename;
+    files[data.id].name = data.filename;
+    files[data.id].path = data.path;
 }
 
 function deletefile(id)
 {
     if(confirm('vil du slette \'' + files[id].name + '\'?')) {
-        document.getElementById('loading').style.display= '';
+        document.getElementById('loading').style.display = '';
         x_deletefile(id, files[id].path, deletefile_r);
     }
 }
 
 function deletefile_r(data)
 {
-    document.getElementById('loading').style.display= 'none';
+    document.getElementById('loading').style.display = 'none';
     if(data.error) {
         alert(data.error);
         return;
     }
 
     removeTagById('tilebox' + data.id);
-    files[data.id]= null;
+    files[data.id] = null;
 }
 
 function addfile(id)
@@ -740,29 +740,29 @@ function addswf(id, width, height)
 
 function showhide(id)
 {
-    object= document.getElementById(id);
-    object.style.display= (object.style.display === 'none') ? '' : 'none';
+    object = document.getElementById(id);
+    object.style.display = (object.style.display === 'none') ? '' : 'none';
 }
 
 function swap_pannel(navn)
 {
     // Save what mode we are in and what was searched for
     if(navn === 'search') {
-        document.getElementById('files').innerHTML= '';
-        document.getElementById('dir_bn').className= '';
-        document.getElementById('dir').style.display= 'none';
-        document.getElementById('search_bn').className= 'down';
-        document.getElementById('search').style.display= '';
+        document.getElementById('files').innerHTML = '';
+        document.getElementById('dir_bn').className = '';
+        document.getElementById('dir').style.display = 'none';
+        document.getElementById('search_bn').className = 'down';
+        document.getElementById('search').style.display = '';
         if(document.getElementById('searchpath').value || document.getElementById('searchalt').value ||
             getSelect('searchtype')) {
             searchfiles();
         }
     } else if(navn === 'dir') {
-        document.getElementById('files').innerHTML= '';
-        document.getElementById('search_bn').className= '';
-        document.getElementById('search').style.display= 'none';
-        document.getElementById('dir_bn').className= 'down';
-        document.getElementById('dir').style.display= '';
+        document.getElementById('files').innerHTML = '';
+        document.getElementById('search_bn').className = '';
+        document.getElementById('search').style.display = 'none';
+        document.getElementById('dir_bn').className = 'down';
+        document.getElementById('dir').style.display = '';
         showfiles(activeDir, 1);
     }
     return false;

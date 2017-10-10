@@ -1,16 +1,16 @@
 function newfaktura()
 {
-    $('loading').style.visibility= '';
+    $('loading').style.visibility = '';
     x_newfaktura(newfaktura_r);
 }
 function copytonew(id)
 {
-    $('loading').style.visibility= '';
+    $('loading').style.visibility = '';
     x_copytonew(id, newfaktura_r);
 }
 function newfaktura_r(id)
 {
-    window.location.href= '?id=' + id;
+    window.location.href = '?id=' + id;
 }
 
 function removeRow(row)
@@ -24,27 +24,27 @@ function removeRow(row)
 
 function addRow()
 {
-    var tr= document.createElement('tr');
-    var td= document.createElement('td');
-    td.innerHTML=
+    var tr = document.createElement('tr');
+    var td = document.createElement('td');
+    td.innerHTML =
         '<input name="quantitie" style="width:58px;" class="tal" onkeyup="prisUpdate()" onchange="prisUpdate()" onblur="prisUpdate()" />';
     tr.appendChild(td);
-    td= document.createElement('td');
-    td.innerHTML=
+    td = document.createElement('td');
+    td.innerHTML =
         '<input name="product" style="width:303px;" onkeyup="prisUpdate()" onchange="prisUpdate()" onblur="prisUpdate()" />';
     tr.appendChild(td);
-    td= document.createElement('td');
-    td.innerHTML=
+    td = document.createElement('td');
+    td.innerHTML =
         '<input name="value" style="width:69px;" class="tal" onkeyup="prisUpdate()" onchange="prisUpdate()" onblur="prisUpdate()" />';
     tr.appendChild(td);
-    td= document.createElement('td');
-    td.className= 'tal total';
+    td = document.createElement('td');
+    td.className = 'tal total';
     tr.appendChild(td);
-    td= document.createElement('td');
-    td.className= 'web';
-    td.style.border= '0';
-    td.style.fontWeight= 'bold';
-    td.innerHTML=
+    td = document.createElement('td');
+    td.className = 'web';
+    td.style.border = '0';
+    td.style.fontWeight = 'bold';
+    td.innerHTML =
         '<a href="#" onclick="removeRow(this); return false"><img alt="X" src="images/cross.png" height="16" width="16" title="Remove Line" /></a>';
     tr.appendChild(td);
     $('vareTable').appendChild(tr);
@@ -52,7 +52,7 @@ function addRow()
 
 function getAddress(tlf)
 {
-    $('loading').style.visibility= '';
+    $('loading').style.visibility = '';
     x_getAddress(tlf, getAddress_r);
 }
 
@@ -61,23 +61,23 @@ function getAddress_r(data)
     if(data.error) {
         alert(data.error);
     } else {
-        $('navn').value= data.recName1;
-        $('att').value= data.recAttPerson;
-        $('adresse').value= data.recAddress1;
-        $('postnr').value= data.recZipCode;
+        $('navn').value = data.recName1;
+        $('att').value = data.recAttPerson;
+        $('adresse').value = data.recAddress1;
+        $('postnr').value = data.recZipCode;
         chnageZipCode(data.recZipCode, 'land', 'by');
-        $('postbox').value= data.recPostBox;
+        $('postbox').value = data.recPostBox;
         if(!$('email').value) {
-            $('email').value= data.email;
+            $('email').value = data.email;
             valideMail();
         }
     }
-    $('loading').style.visibility= 'hidden';
+    $('loading').style.visibility = 'hidden';
 }
 
 function getAltAddress(tlf)
 {
-    $('loading').style.visibility= '';
+    $('loading').style.visibility = '';
     x_getAddress(tlf, getAltAddress_r);
 }
 
@@ -86,55 +86,55 @@ function getAltAddress_r(data)
     if(data.error) {
         alert(data.error);
     } else {
-        $('postname').value= data.recName1;
-        $('postatt').value= data.recAttPerson;
-        $('postaddress').value= data.recAddress1;
-        $('postaddress2').value= data.recAddress2;
-        $('postpostalcode').value= data.recZipCode;
+        $('postname').value = data.recName1;
+        $('postatt').value = data.recAttPerson;
+        $('postaddress').value = data.recAddress1;
+        $('postaddress2').value = data.recAddress2;
+        $('postpostalcode').value = data.recZipCode;
         chnageZipCode(data.recZipCode, 'postcountry', 'postcity');
-        $('postpostbox').value= data.recPostBox;
+        $('postpostbox').value = data.recPostBox;
 
-        $('postpostbox').value= data.recPostBox;
+        $('postpostbox').value = data.recPostBox;
     }
-    $('loading').style.visibility= 'hidden';
+    $('loading').style.visibility = 'hidden';
 }
 
 function prisUpdate()
 {
-    invoiceLines= [];
-    invoiceAmount= 0;
+    invoiceLines = [];
+    invoiceAmount = 0;
 
-    var titles= document.getElementsByName('product');
-    var values= document.getElementsByName('value');
-    var quantities= document.getElementsByName('quantitie');
-    var totals= $$('.total');
-    var premoms= $('premoms').checked;
-    var momssats= parseFloat($('momssats').value);
+    var titles = document.getElementsByName('product');
+    var values = document.getElementsByName('value');
+    var quantities = document.getElementsByName('quantitie');
+    var totals = $$('.total');
+    var premoms = $('premoms').checked;
+    var momssats = parseFloat($('momssats').value);
 
-    var netto= 0;
-    var quantity= 0;
-    var value= 0;
-    var total= 0;
+    var netto = 0;
+    var quantity = 0;
+    var value = 0;
+    var total = 0;
 
-    for(var i= 0; i < quantities.length; i++) {
-        quantity= parseInt(quantities[i].value);
+    for(var i = 0; i < quantities.length; i++) {
+        quantity = parseInt(quantities[i].value);
         if(isNaN(quantity)) {
-            quantity= 0;
+            quantity = 0;
         }
 
-        value= parseFloat(parseFloat(values[i].value.replace(/[^-0-9,]/g, '').replace(/,/, '.')).toFixed(2));
+        value = parseFloat(parseFloat(values[i].value.replace(/[^-0-9,]/g, '').replace(/,/, '.')).toFixed(2));
         if(isNaN(value)) {
-            value= 0;
+            value = 0;
         }
 
-        total= quantity * value;
+        total = quantity * value;
 
-        totals[i].innerHTML= '';
+        totals[i].innerHTML = '';
         if(total != 0) {
-            totals[i].innerHTML= numberFormat(total);
+            totals[i].innerHTML = numberFormat(total);
         }
 
-        netto+= premoms ? (total / 1.25) : total;
+        netto += premoms ? (total / 1.25) : total;
 
         if(quantities[i].value != '' || titles[i].value != '' || values[i].value != '') {
             invoiceLines.push({
@@ -145,18 +145,18 @@ function prisUpdate()
         }
     }
 
-    $('netto').innerHTML= numberFormat(netto);
+    $('netto').innerHTML = numberFormat(netto);
 
-    $('moms').innerHTML= numberFormat(netto * momssats);
+    $('moms').innerHTML = numberFormat(netto * momssats);
 
-    var fragt= parseFloat($('fragt').value.replace(/[^-0-9,]/g, '').replace(/,/, '.'));
+    var fragt = parseFloat($('fragt').value.replace(/[^-0-9,]/g, '').replace(/,/, '.'));
     if(isNaN(fragt)) {
-        fragt= 0;
+        fragt = 0;
     }
 
-    payamount= parseFloat(fragt + netto + netto * momssats);
-    $('payamount').innerHTML= numberFormat(payamount);
-    invoiceAmount= payamount.toFixed(2);
+    payamount = parseFloat(fragt + netto + netto * momssats);
+    $('payamount').innerHTML = numberFormat(payamount);
+    invoiceAmount = payamount.toFixed(2);
 
     if(!quantities.length || quantities[quantities.length - 1].value != '' || titles[titles.length - 1].value != '' ||
         values[values.length - 1].value != '') {
@@ -173,14 +173,14 @@ function numberFormat(number)
 
 function pbsconfirm(id)
 {
-    $('loading').style.visibility= '';
+    $('loading').style.visibility = '';
     // TODO save comment
     x_pbsconfirm(id, reload_r);
 }
 
 function annul(id)
 {
-    $('loading').style.visibility= '';
+    $('loading').style.visibility = '';
     // TODO save comment
     x_annul(id, reload_r);
 }
@@ -192,69 +192,69 @@ function reload_r(date)
     } else {
         window.location.reload();
     }
-    $('loading').style.visibility= 'hidden';
+    $('loading').style.visibility = 'hidden';
 }
 
 function save(id, type)
 {
     if(type == null) {
-        type= 'save';
+        type = 'save';
     }
 
     if(type == 'cancel' && !confirm('Are you sure you want to cancel this Invoice?')) {
         return false;
     }
 
-    $('loading').style.visibility= '';
-    var update= {};
+    $('loading').style.visibility = '';
+    var update = {};
     if(status === 'new') {
-        update.lines= invoiceLines;
-        update.shipping= $('fragt').value.replace(/[^-0-9,]/g, '').replace(/,/, '.');
-        update.amount= invoiceAmount;
-        update.vat= $('momssats').value;
-        update.preVat= $('premoms').checked;
-        update.date= $('date').value;
-        update.iref= $('iref').value;
-        update.eref= $('eref').value;
-        update.name= $('navn').value;
-        update.att= $('att').value;
-        update.address= $('adresse').value;
-        update.postbox= $('postbox').value;
-        update.postcode= $('postnr').value;
-        update.city= $('by').value;
-        update.country= $('land').value;
-        update.email= $('email').value;
-        update.phone1= $('tlf1').value;
-        update.phone2= $('tlf2').value;
-        update.hasShippingAddress= $('altpost').checked ? 1 : 0;
+        update.lines = invoiceLines;
+        update.shipping = $('fragt').value.replace(/[^-0-9,]/g, '').replace(/,/, '.');
+        update.amount = invoiceAmount;
+        update.vat = $('momssats').value;
+        update.preVat = $('premoms').checked;
+        update.date = $('date').value;
+        update.iref = $('iref').value;
+        update.eref = $('eref').value;
+        update.name = $('navn').value;
+        update.att = $('att').value;
+        update.address = $('adresse').value;
+        update.postbox = $('postbox').value;
+        update.postcode = $('postnr').value;
+        update.city = $('by').value;
+        update.country = $('land').value;
+        update.email = $('email').value;
+        update.phone1 = $('tlf1').value;
+        update.phone2 = $('tlf2').value;
+        update.hasShippingAddress = $('altpost').checked ? 1 : 0;
         if($('altpost').checked) {
-            update.shippingPhone= $('posttlf').value;
-            update.shippingName= $('postname').value;
-            update.shippingAtt= $('postatt').value;
-            update.shippingAddress= $('postaddress').value;
-            update.shippingAddress2= $('postaddress2').value;
-            update.shippingPostbox= $('postpostbox').value;
-            update.shippingPostcode= $('postpostalcode').value;
-            update.shippingCity= $('postcity').value;
-            update.shippingCountry= $('postcountry').value;
+            update.shippingPhone = $('posttlf').value;
+            update.shippingName = $('postname').value;
+            update.shippingAtt = $('postatt').value;
+            update.shippingAddress = $('postaddress').value;
+            update.shippingAddress2 = $('postaddress2').value;
+            update.shippingPostbox = $('postpostbox').value;
+            update.shippingPostcode = $('postpostalcode').value;
+            update.shippingCity = $('postcity').value;
+            update.shippingCountry = $('postcountry').value;
         }
     }
 
-    update.note= $('note').value;
+    update.note = $('note').value;
 
     if($('clerk')) {
-        update.clerk= getSelectValue('clerk');
+        update.clerk = getSelectValue('clerk');
     }
     if($('department')) {
-        update.department= getSelectValue('department');
+        update.department = getSelectValue('department');
     }
 
     if(type == 'giro') {
-        update.paydate= $('gdate').value;
+        update.paydate = $('gdate').value;
     }
 
     if(type == 'cash') {
-        update.paydate= $('cdate').value;
+        update.paydate = $('cdate').value;
     }
 
     x_save(id, type, update, save_r);
@@ -282,11 +282,11 @@ function save_r(date)
     }
 
     if(date.status != 'new' && $('note').value) {
-        $$('.note')[0].innerHTML+= '<br />' + nl2br($('note').value);
-        $('note').value= '';
+        $$('.note')[0].innerHTML += '<br />' + nl2br($('note').value);
+        $('note').value = '';
     }
 
-    $('loading').style.visibility= 'hidden';
+    $('loading').style.visibility = 'hidden';
 }
 
 var validemailajaxcall;
@@ -304,27 +304,27 @@ function valideMail()
     }
 
     if($('email').value != lastemail || $('emaillink').style.display == 'none') {
-        lastemail= $('email').value;
+        lastemail = $('email').value;
         if(validemailajaxcall) {
             sajax.cancel(validemailajaxcall);
         }
-        $('loading').style.visibility= '';
+        $('loading').style.visibility = '';
         valideMail_r(false);
-        validemailajaxcall= x_valideMail($('email').value, valideMail_r);
+        validemailajaxcall = x_valideMail($('email').value, valideMail_r);
     }
 }
 
 function valideMail_r(valideMail)
 {
-    $('emaillink').style.display= valideMail ? '' : 'none';
-    $('loading').style.visibility= 'hidden';
+    $('emaillink').style.display = valideMail ? '' : 'none';
+    $('loading').style.visibility = 'hidden';
 }
 
 function showhidealtpost(status)
 {
-    var altpostTrs= $$('.altpost');
-    for(var i= 0; i < altpostTrs.length; i++) {
-        altpostTrs[i].style.display= status ? '' : 'none';
+    var altpostTrs = $$('.altpost');
+    for(var i = 0; i < altpostTrs.length; i++) {
+        altpostTrs[i].style.display = status ? '' : 'none';
     }
 }
 
@@ -334,8 +334,8 @@ function chnageZipCode(zipcode, country, city)
         return;
     }
 
-    $(city).value= arrayZipcode[zipcode] ? arrayZipcode[zipcode] : '';
+    $(city).value = arrayZipcode[zipcode] ? arrayZipcode[zipcode] : '';
 }
 
-var invoiceLines= [];
-var invoiceAmount= 0;
+var invoiceLines = [];
+var invoiceAmount = 0;

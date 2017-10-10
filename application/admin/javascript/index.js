@@ -6,18 +6,18 @@ var contextMenuListOrderContextMenu;
 
 function attachContextMenus()
 {
-    contextMenuActiveSide= new Proto.Menu({
+    contextMenuActiveSide = new Proto.Menu({
         "selector" : '#kat0content .side', // context menu will be shown when element with class of "side" is clicked
         "className" : 'menu desktop', // this is a class which will be attached to menu container (used for css styling)
         "menuItems" : activeSideContextMenu // array of menu items
     });
-    contextMenuInactiveSide= new Proto.Menu(
+    contextMenuInactiveSide = new Proto.Menu(
         { "selector" : '#kat-1content .side', "className" : 'menu desktop', "menuItems" : inactiveSideContextMenu });
-    contextMenuActiveKatContextMenu= new Proto.Menu(
+    contextMenuActiveKatContextMenu = new Proto.Menu(
         { "selector" : '#kat0content .kat', "className" : 'menu desktop', "menuItems" : activeKatContextMenu });
-    contextMenuInactiveKatContextMenu= new Proto.Menu(
+    contextMenuInactiveKatContextMenu = new Proto.Menu(
         { "selector" : '#kat-1content .kat', "className" : 'menu desktop', "menuItems" : inactiveKatContextMenu });
-    contextMenuListOrderContextMenu= new Proto.Menu(
+    contextMenuListOrderContextMenu = new Proto.Menu(
         { "selector" : '#listOrder li', "className" : 'menu desktop', "menuItems" : listOrderContextMenu });
 }
 
@@ -36,17 +36,17 @@ function reattachContextMenus()
 }
 
 // TODO only for getSiteTree
-var activeSideContextMenu= [
+var activeSideContextMenu = [
     {
       "name" : 'Rediger',
       "className" : 'edit',
       // TODO update to use getContextMenuTarget()
       "callback" : function(e) {
           if(e.element().tagName.toLowerCase() == 'a') {
-              location.href= '?side=redigerside&id=' + e.target.parentNode.className.replace(/^side/, '');
+              location.href = '?side=redigerside&id=' + e.target.parentNode.className.replace(/^side/, '');
               return;
           }
-          location.href= '?side=redigerside&id=' + e.target.parentNode.parentNode.className.replace(/^side/, '');
+          location.href = '?side=redigerside&id=' + e.target.parentNode.parentNode.className.replace(/^side/, '');
       }
     },
     {
@@ -69,17 +69,17 @@ var activeSideContextMenu= [
 ];
 
 // TODO only for getSiteTree
-var inactiveSideContextMenu= [
+var inactiveSideContextMenu = [
     {
       "name" : 'Rediger',
       "className" : 'edit',
       "callback" : function(e) {
           // TODO update to use getContextMenuTarget()
           if(e.element().tagName.toLowerCase() == 'a') {
-              location.href= '?side=redigerside&id=' + e.target.parentNode.className.replace(/^side/, '');
+              location.href = '?side=redigerside&id=' + e.target.parentNode.className.replace(/^side/, '');
               return;
           }
-          location.href= '?side=redigerside&id=' + e.target.parentNode.parentNode.className.replace(/^side/, '');
+          location.href = '?side=redigerside&id=' + e.target.parentNode.parentNode.className.replace(/^side/, '');
       }
     },
     {
@@ -99,7 +99,7 @@ var inactiveSideContextMenu= [
 ];
 
 // TODO only for getSiteTree
-var activeKatContextMenu= [
+var activeKatContextMenu = [
     {
       "name" : 'Omdøb',
       "className" : 'textfield_rename',
@@ -119,10 +119,10 @@ var activeKatContextMenu= [
       "callback" : function(e) {
           // TODO update to use getContextMenuTarget()
           if(e.element().tagName.toLowerCase() == 'a') {
-              location.href= '?side=redigerkat&id=' + e.target.parentNode.id.replace(/^kat/, '');
+              location.href = '?side=redigerkat&id=' + e.target.parentNode.id.replace(/^kat/, '');
               return;
           }
-          location.href= '?side=redigerkat&id=' + e.target.parentNode.parentNode.id.replace(/^kat/, '');
+          location.href = '?side=redigerkat&id=' + e.target.parentNode.parentNode.id.replace(/^kat/, '');
       }
     },
     {
@@ -142,7 +142,7 @@ var activeKatContextMenu= [
 ];
 
 // TODO only for getSiteTree
-var inactiveKatContextMenu= [
+var inactiveKatContextMenu = [
     {
       "name" : 'Omdøb',
       "className" : 'textfield_rename',
@@ -162,10 +162,10 @@ var inactiveKatContextMenu= [
       "callback" : function(e) {
           // TODO update to use getContextMenuTarget()
           if(e.element().tagName.toLowerCase() == 'a') {
-              location.href= '?side=redigerkat&id=' + e.target.parentNode.id.replace(/^kat/, '');
+              location.href = '?side=redigerkat&id=' + e.target.parentNode.id.replace(/^kat/, '');
               return;
           }
-          location.href= '?side=redigerkat&id=' + e.target.parentNode.parentNode.id.replace(/^kat/, '');
+          location.href = '?side=redigerkat&id=' + e.target.parentNode.parentNode.id.replace(/^kat/, '');
       }
     },
     {
@@ -184,7 +184,7 @@ var inactiveKatContextMenu= [
 ];
 
 // TODO only for listorder
-var listOrderContextMenu= [ {
+var listOrderContextMenu = [ {
     "name" : 'Slet',
     "className" : 'delete',
     "callback" : function(e) {
@@ -195,29 +195,29 @@ var listOrderContextMenu= [ {
 function sogogerstat(sog, erstat)
 {
     if(confirm('Dette vil søge og erstatte i al tekst på hele siden, vil du forsætte?') == true) {
-        $('loading').style.visibility= '';
+        $('loading').style.visibility = '';
         x_sogogerstat(sog, erstat, sogogerstat_r);
     }
 }
 
 function sogogerstat_r(affected_rows)
 {
-    $('loading').style.visibility= 'hidden';
+    $('loading').style.visibility = 'hidden';
     alert('Påvirket sider: ' + affected_rows + '.');
 }
 
 function displaySubMenus(state)
 {
     if(state == '1') {
-        $('subMenus').style.display= '';
+        $('subMenus').style.display = '';
         return;
     }
-    $('subMenus').style.display= 'none';
+    $('subMenus').style.display = 'none';
 }
 
 function updateKat(id)
 {
-    $('loading').style.visibility= '';
+    $('loading').style.visibility = '';
 
     if(!id) {
         x_save_ny_kat(
@@ -228,32 +228,27 @@ function updateKat(id)
     var icon = $('icon').value;
     icon = icon ? icon : null;
 
-    x_updateKat(id, $('navn').value, getRadio('kat'), $('vis').value, $('email').value,
-        $('custom_sort_subs').value, $('subMenusOrder').value, icon, generic_r);
+    x_updateKat(id, $('navn').value, getRadio('kat'), $('vis').value, $('email').value, $('custom_sort_subs').value,
+        $('subMenusOrder').value, icon, generic_r);
     return false;
 }
 
 function updatemaerke(id)
 {
-    $('loading').style.visibility= '';
+    $('loading').style.visibility = '';
 
     var icon = document.getElementById('ico').value;
     icon = icon ? icon : null;
 
-    x_updatemaerke(
-        id,
-        document.getElementById('navn').value,
-        document.getElementById('link').value,
-        icon,
-        id ? inject_html : updatemaerke_r
-    );
+    x_updatemaerke(id, document.getElementById('navn').value, document.getElementById('link').value, icon,
+        id ? inject_html : updatemaerke_r);
 
     return false;
 }
 
 function updateSide(id)
 {
-    $('loading').style.visibility= '';
+    $('loading').style.visibility = '';
     updateRTEs();
 
     var requirement = parseInt(getSelectValue("krav"));
@@ -264,41 +259,16 @@ function updateSide(id)
     icon = icon ? icon : null;
 
     if(!id) {
-        x_opretSide(
-            parseInt(getRadio("kat")),
-            $("navn").value,
-            $("keywords").value,
-            $("pris").value ? parseInt($("pris").value) : 0,
-            $("beskrivelse").value,
-            $("for").value ? parseInt($("for").value) : 0,
-            $("text").value,
-            $("varenr").value,
-            parseInt(getSelectValue("burde")),
-            parseInt(getSelectValue("fra")),
-            requirement,
-            brand,
-            icon,
-            opretSide_r
-        );
+        x_opretSide(parseInt(getRadio("kat")), $("navn").value, $("keywords").value,
+            $("pris").value ? parseInt($("pris").value) : 0, $("beskrivelse").value,
+            $("for").value ? parseInt($("for").value) : 0, $("text").value, $("varenr").value,
+            parseInt(getSelectValue("burde")), parseInt(getSelectValue("fra")), requirement, brand, icon, opretSide_r);
         return false;
     }
 
-    x_updateSide(
-        id,
-        $('navn').value,
-        $('keywords').value,
-        $('pris').value ? parseInt($('pris').value) : 0,
-        $('beskrivelse').value,
-        $('for').value ? parseInt($('for').value) : 0,
-        $('text').value,
-        $('varenr').value,
-        parseInt(getSelectValue('burde')),
-        parseInt(getSelectValue('fra')),
-        requirement,
-        brand,
-        icon,
-        generic_r
-    );
+    x_updateSide(id, $('navn').value, $('keywords').value, $('pris').value ? parseInt($('pris').value) : 0,
+        $('beskrivelse').value, $('for').value ? parseInt($('for').value) : 0, $('text').value, $('varenr').value,
+        parseInt(getSelectValue('burde')), parseInt(getSelectValue('fra')), requirement, brand, icon, generic_r);
     return false;
 }
 
@@ -308,12 +278,12 @@ function opretSide_r(data)
         return;
     }
 
-    window.location.href= "?side=redigerside&id=" + data.id;
+    window.location.href = "?side=redigerside&id=" + data.id;
 }
 
 function updateSpecial(id)
 {
-    $('loading').style.visibility= '';
+    $('loading').style.visibility = '';
     if($('subMenusOrder')) {
         x_updateKatOrder($('subMenusOrder').value, generic_r);
     }
@@ -328,19 +298,19 @@ function save_ny_kat_r(data)
         alert(data.error);
         return;
     }
-    location.href= '?side=getSiteTree';
+    location.href = '?side=getSiteTree';
 }
 
 function addNewItem()
 {
-    var text= $('newItem');
+    var text = $('newItem');
     if(text.value != '') {
-        var listOrder= $('listOrder');
-        var li= document.createElement('li');
-        li.id= 'item_' + items;
+        var listOrder = $('listOrder');
+        var li = document.createElement('li');
+        li.id = 'item_' + items;
         items++;
-        var textnode= document.createTextNode(text.value);
-        text.value= '';
+        var textnode = document.createTextNode(text.value);
+        text.value = '';
         li.appendChild(textnode);
         listOrder.insertBefore(li, listOrder.firstChild);
         Sortable.create('listOrder', { "ghosting" : false, "constraint" : false, "hoverclass" : 'over' });
@@ -350,46 +320,46 @@ function addNewItem()
 
 function saveListOrder(id)
 {
-    var newListOrder= '';
-    var listOrder= $('listOrder');
-    for(var i= 0; i < listOrder.childNodes.length; i++) {
+    var newListOrder = '';
+    var listOrder = $('listOrder');
+    for(var i = 0; i < listOrder.childNodes.length; i++) {
         if(i) {
-            newListOrder+= '<';
+            newListOrder += '<';
         }
-        newListOrder+= listOrder.childNodes[i].innerHTML;
+        newListOrder += listOrder.childNodes[i].innerHTML;
     }
     x_saveListOrder(id, $('listOrderNavn').value, newListOrder, generic_r);
 }
 
 function makeNewList()
 {
-    var name= prompt('Ny liste');
+    var name = prompt('Ny liste');
     if(name != null) {
-        $('loading').style.visibility= '';
+        $('loading').style.visibility = '';
         x_makeNewList(name, makeNewList_r);
     }
 }
 
 function makeNewList_r(data)
 {
-    $('loading').style.visibility= 'hidden';
+    $('loading').style.visibility = 'hidden';
     if(data.error) {
         alert(data.error);
         return;
     }
 
-    location.href= '/admin/?side=listsort-edit&id=' + data.id;
+    location.href = '/admin/?side=listsort-edit&id=' + data.id;
 }
 
 function countEmailTo()
 {
-    $('loading').style.visibility= '';
+    $('loading').style.visibility = '';
     // Cancle all othere ajax requests to avoide reponce order mix up
     // TODO only cancle requests relating to countEmailTo
     sajax.cancel();
-    var interestObjs= $('interests').getElementsByTagName('input');
-    var interests= [];
-    for(var i= 0; i < interestObjs.length; i++) {
+    var interestObjs = $('interests').getElementsByTagName('input');
+    var interests = [];
+    for(var i = 0; i < interestObjs.length; i++) {
         if(interestObjs[i].checked) {
             interests.push(interestObjs[i].value);
         }
@@ -399,25 +369,25 @@ function countEmailTo()
 
 function countEmailTo_r(data)
 {
-    $('loading').style.visibility= 'hidden';
+    $('loading').style.visibility = 'hidden';
     if(data.error) {
         alert(data.error);
     }
-    $('mailToCount').innerHTML= data;
+    $('mailToCount').innerHTML = data;
 }
 
 function saveEmail()
 {
-    $('loading').style.visibility= '';
+    $('loading').style.visibility = '';
     updateRTEs();
-    var interestObjs= $('interests').getElementsByTagName('input');
-    var interests= '';
-    for(var i= 0; i < interestObjs.length; i++) {
+    var interestObjs = $('interests').getElementsByTagName('input');
+    var interests = '';
+    for(var i = 0; i < interestObjs.length; i++) {
         if(interestObjs[i].checked) {
             if(interests != '') {
-                interests+= '<';
+                interests += '<';
             }
-            interests+= interestObjs[i].value;
+            interests += interestObjs[i].value;
         }
     }
     x_saveEmail($('id').value, $('from').value, interests, $('subject').value, $('text').value, generic_r);
@@ -425,15 +395,15 @@ function saveEmail()
 
 function updateContact(id)
 {
-    $('loading').style.visibility= '';
-    var interestObjs= $('interests').getElementsByTagName('input');
-    var interests= '';
-    for(var i= 0; i < interestObjs.length; i++) {
+    $('loading').style.visibility = '';
+    var interestObjs = $('interests').getElementsByTagName('input');
+    var interests = '';
+    for(var i = 0; i < interestObjs.length; i++) {
         if(interestObjs[i].checked) {
             if(interests != '') {
-                interests+= '<';
+                interests += '<';
             }
-            interests+= interestObjs[i].value;
+            interests += interestObjs[i].value;
         }
     }
     x_updateContact(id, $('navn').value, $('email').value, $('adresse').value, $('land').value, $('post').value,
@@ -442,12 +412,12 @@ function updateContact(id)
 
 function updateContact_r(data)
 {
-    $('loading').style.visibility= 'hidden';
+    $('loading').style.visibility = 'hidden';
     if(data.error) {
         alert(data.error);
         return;
     }
-    location.href= '?side=addressbook';
+    location.href = '?side=addressbook';
 }
 
 function sendEmail()
@@ -455,31 +425,31 @@ function sendEmail()
     if(!confirm('Ønsker du virkelig at sende denne nyhedsmail nu?')) {
         return false;
     }
-    $('loading').style.visibility= '';
+    $('loading').style.visibility = '';
     updateRTEs();
     if($('from').value == '') {
-        $('loading').style.visibility= 'hidden';
+        $('loading').style.visibility = 'hidden';
         alert('Du skal vælge en afsender!');
         return false;
     }
     if($('subject').value == '') {
-        $('loading').style.visibility= 'hidden';
+        $('loading').style.visibility = 'hidden';
         alert('Du skal skrive et emne!');
         return false;
     }
     if($('text').value == '') {
-        $('loading').style.visibility= 'hidden';
+        $('loading').style.visibility = 'hidden';
         alert('Du skal skrive et tekst!');
         return false;
     }
-    var interestObjs= $('interests').getElementsByTagName('input');
-    var interests= '';
-    for(var i= 0; i < interestObjs.length; i++) {
+    var interestObjs = $('interests').getElementsByTagName('input');
+    var interests = '';
+    for(var i = 0; i < interestObjs.length; i++) {
         if(interestObjs[i].checked) {
             if(interests != '') {
-                interests+= '<';
+                interests += '<';
             }
-            interests+= interestObjs[i].value;
+            interests += interestObjs[i].value;
         }
     }
     x_sendEmail($('id').value, $('from').value, interests, $('subject').value, $('text').value, sendEmail_r);
@@ -489,11 +459,11 @@ function sendEmail_r(data)
 {
     if(data.error) {
         alert(data.error);
-        $('loading').style.visibility= 'hidden';
+        $('loading').style.visibility = 'hidden';
         return;
     }
 
-    location.href= '?side=emaillist';
+    location.href = '?side=emaillist';
 }
 
 function deleteuser(id, name)
@@ -518,8 +488,8 @@ function updateuser(id)
         return false;
     }
 
-    $('loading').style.visibility= '';
-    var update= {
+    $('loading').style.visibility = '';
+    var update = {
         "access" : getSelectValue('access'),
         "fullname" : $('fullname') ? $('fullname').value : '',
         "password" : $('password') ? $('password').value : '',

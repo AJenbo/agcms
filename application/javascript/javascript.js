@@ -6,8 +6,8 @@ function x_getTable()
 
 function getAddress(phonenumber, function_name)
 {
-    phonenumber= phonenumber.replace('/\s/', '');
-    phonenumber= phonenumber.replace('/^[+]45/', '');
+    phonenumber = phonenumber.replace('/\s/', '');
+    phonenumber = phonenumber.replace('/^[+]45/', '');
     if(!phonenumber) {
         alert('De skal udfylde telefon nummeret først.');
         return false;
