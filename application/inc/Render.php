@@ -235,6 +235,7 @@ class Render
         if (!request()->isMethodCacheable() || !empty($_SESSION['faktura']['quantities'])) {
             return;
         }
+
         if (!$timestamp) {
             $timestamp = self::getUpdateTime();
         }
@@ -243,6 +244,8 @@ class Render
         }
 
         $response = self::getResponse();
+        $response->setPublic();
+        $response->headers->addCacheControlDirective('must-revalidate');
 
         $lastModified = DateTime::createFromFormat('U', $timestamp);
         $response->setLastModified($lastModified);
@@ -250,7 +253,7 @@ class Render
 
         if ($response->isNotModified(request())) {
             $response->send();
-            die();
+            exit;
         }
     }
 
@@ -887,8 +890,8 @@ class Render
      */
     public static function output(string $template = 'index', array $data = []): void
     {
-        $response = self::getResponse();
         $request = request();
+        $response = self::getResponse();
 
         if (!$request->isMethod('HEAD') && !$response->isNotModified($request)) {
             $content = self::render($template, $data);

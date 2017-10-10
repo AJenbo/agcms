@@ -42,11 +42,13 @@ foreach ($pages as $page) {
         'sku' => $page->getId(),
         'title' => $page->getTitle(),
         'price' => $page->getPrice() . ',00',
-        'imageUrl' => Config::get('base_url') . encodeUrl($page->getIcon()->getPath()),
         'link' => Config::get('base_url') . encodeUrl($page->getCanonicalLink()),
         'manufacture' => $brand,
         'manufactureSku' => $page->getSku(),
     ];
+    if ($page->getIcon()) {
+        $product['imageUrl'] = Config::get('base_url') . encodeUrl($page->getIcon()->getPath());
+    }
     $product = array_map('trim', $product);
 
     foreach ($page->getCategories() as $category) {

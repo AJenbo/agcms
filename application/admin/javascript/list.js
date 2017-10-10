@@ -18,6 +18,7 @@ function listSaveRow(row, rowid, listid, callback)
     if(listlink[listid] == 1) {
         cellcount -= 1;
         rowlink = row.childNodes[cellcount].firstChild.value;
+        rowlink = rowlink ? rowlink : null;
     }
 
     var cells = [];
@@ -58,11 +59,11 @@ function listInsertRow_r(data)
     }
 
     td = document.createElement('td');
-    td.innerHTML = '<img onclick="listEditRow(' + data.listid + ', ' + data.rowid
-        + ');" src="images/application_edit.png" alt="Rediger" title="Rediger" width="16" height="16" /><img onclick="listUpdateRow('
-        + data.listid + ', ' + data.rowid
-        + ');" style="display:none" src="images/disk.png" alt="Rediger" title="Rediger" width="16" height="16" /><img src="images/cross.png" alt="X" title="Slet række" onclick="listRemoveRow('
-        + data.listid + ', ' + data.rowid + ')" />';
+    td.innerHTML = '<img onclick="listEditRow(' + data.listid + ', ' + data.rowid +
+        ');" src="images/application_edit.png" alt="Rediger" title="Rediger" width="16" height="16" /><img onclick="listUpdateRow(' +
+        data.listid + ', ' + data.rowid +
+        ');" style="display:none" src="images/disk.png" alt="Rediger" title="Rediger" width="16" height="16" /><img src="images/cross.png" alt="X" title="Slet række" onclick="listRemoveRow(' +
+        data.listid + ', ' + data.rowid + ')" />';
     tr.appendChild(td);
 
     rows = $('list' + data.listid + 'rows');

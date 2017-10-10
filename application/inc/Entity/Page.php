@@ -248,7 +248,12 @@ class Page extends AbstractRenderable
             return stringLimit($excerpt, 100);
         }
 
-        return strip_tags($this->excerpt);
+        return $this->excerpt;
+    }
+
+    public function hasExcerpt(): bool
+    {
+        return (bool) $this->excerpt;
     }
 
     /**
@@ -310,7 +315,7 @@ class Page extends AbstractRenderable
      *
      * @return int
      */
-    public function getBrandId(): int
+    public function getBrandId(): ?int
     {
         return $this->brandId;
     }
@@ -624,7 +629,7 @@ class Page extends AbstractRenderable
             'text'        => db()->eandq($this->html),
             'varenr'      => db()->eandq($this->sku),
             'beskrivelse' => db()->eandq($this->excerpt),
-            'billed'      => db()->eandq($this->getIcon() ? $this->getIcon()->getPath() : 'NULL'),
+            'billed'      => $this->getIcon() ? db()->eandq($this->getIcon()->getPath()) : 'NULL',
             'krav'        => $this->getRequirement() ? $this->requirementId : 'NULL',
             'maerke'      => $this->getBrand() ? $this->brandId : 'NULL',
             'pris'        => $this->price,

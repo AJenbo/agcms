@@ -31,9 +31,7 @@
             <br />
             <img onclick="explorer('thb', 'billed')" src="images/folder_image.png" width="16" height="16" alt="Pictures" title="Find image" />
             <img onclick="setThb('billed','','/images/web/intet-foto.jpg')" src="images/cross.png" alt="X" title="Remove picture" width="16" height="16" />
-            <script type="text/javascript"><!--
-            writeRichText("beskrivelse", {{page.excerpt|trim|json_encode()|raw}}, "", {{thumbWidth + 32}}, 115, false, false, false);
-            //--></script>
+            <textarea id="beskrivelse" style="width:{{thumbWidth + 32}}px;height:115px">{% if page.hasExcerpt %}{{page.excerpt|trim}}{% endif %}</textarea>
         </div>
     </div>
     <div class="toolbox">
@@ -180,7 +178,7 @@
             </table>
             <script type="text/javascript"><!--
             Event.observe(window, 'load', function() { listSizeFooter({{table.id}}); });
-            listlink[{{table.id}}] = {{table.hasLink|json_encode()|raw}};
+            listlink[{{table.id}}] = {{table.hasLinks|json_encode()|raw}};
             --></script>
             {% endfor %}
             {% endspaceless %}

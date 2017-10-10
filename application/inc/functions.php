@@ -29,6 +29,7 @@ function bootStrap(): void
     mb_language('uni');
     mb_detect_order('UTF-8, ISO-8859-1');
     mb_internal_encoding('UTF-8');
+    session_cache_limiter('');
 }
 
 function request(): Request

@@ -247,7 +247,7 @@ class Table extends AbstractEntity
         // Cells are indexed by id, this is needed for sorting the rows
         foreach ($rows as &$row) {
             $row['id'] = (int) $row['id'];
-            $row['link'] = $this->hasLinks() ? (int) $row['link'] : 0;
+            $row['link'] = $this->hasLinks() && $row['link'] ? (int) $row['link'] : null;
             $cells = explode('<', $row['cells']);
             $cells = array_map('html_entity_decode', $cells);
             unset($row['cells'], $row['list_id']);

@@ -146,7 +146,7 @@ class Brand extends AbstractRenderable
         return [
             'navn' => db()->eandq($this->title),
             'link' => db()->eandq($this->link),
-            'ico'  => db()->eandq($this->getIcon() ? $this->getIcon()->getPath() : 'NULL'),
+            'ico'  => $this->getIcon() ? db()->eandq($this->getIcon()->getPath()) : 'NULL',
         ];
     }
 }

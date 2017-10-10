@@ -54,7 +54,7 @@ foreach ($pages as $page) {
     }
 
     $decription = '';
-    if ($page->getIcon()->getPath() && $page->getIcon()->getPath() !== '/images/web/intet-foto.jpg') {
+    if ($page->getIcon() && $page->getIcon()->getPath() !== '/images/web/intet-foto.jpg') {
         $decription .= '<img style="float:left;margin:0 10px 5px 0;" src="'
             . Config::get('base_url') . encodeUrl($page->getIcon()->getPath()) . '" ><p>';
     }

@@ -42,7 +42,7 @@ function checkUserLoggedIn(): void
         "SELECT * FROM `users` WHERE `name` = " . db()->eandq(request()->get('username'))
     );
     if ($user && $user->getAccessLevel() && $user->validatePassword(request()->get('password', ''))) {
-        $_SESSION['_user'] = $user;
+        $_SESSION['curentUser'] = $user;
     }
 
     redirect(request()->getRequestUri());
@@ -53,7 +53,7 @@ function checkUserLoggedIn(): void
  */
 function curentUser(): ?User
 {
-    return $_SESSION['_user'] ?? null;
+    return $_SESSION['curentUser'] ?? null;
 }
 
 /**
@@ -312,17 +312,17 @@ function get_mime_type(string $filepath): string
 /**
  * @return array|true
  */
-function sendEmail(int $id, string $from, string $interests, string $subject, string $text)
+function sendEmail(int $id, string $from, string $interests, string $subject, string $html)
 {
     if (!db()->fetchArray('SELECT `id` FROM `newsmails` WHERE `sendt` = 0')) {
         //Nyhedsbrevet er allerede afsendt!
         return ['error' => _('The newsletter has already been sent!')];
     }
 
-    $text = purifyHTML($text);
-    $text = htmlUrlDecode($text);
+    $html = purifyHTML($html);
+    $html = htmlUrlDecode($html);
 
-    saveEmail($id, $from, $interests, $subject, $text);
+    saveEmail($id, $from, $interests, $subject, $html);
 
     //Colect interests
     if ($interests) {
@@ -478,8 +478,10 @@ function getOpenCategories(): array
     $openCategories = array_flip($openCategories);
 
     $category = ORM::getOne(Category::class, $activeCategoryId);
-    foreach ($category->getBranch() as $category) {
-        $openCategories[$category->getId()] = true;
+    if ($category) {
+        foreach ($category->getBranch() as $category) {
+            $openCategories[$category->getId()] = true;
+        }
     }
 
     return $openCategories;
@@ -1454,11 +1456,11 @@ function xhtmlEsc(string $string): string
 /**
  * Use HTMLPurifier to clean HTML-code, preserves youtube videos.
  *
- * @param string $string Sting to clean
+ * @param string $html Sting to clean
  *
  * @return string Cleaned stirng
  **/
-function purifyHTML(string $string): string
+function purifyHTML(string $html): string
 {
     $config = HTMLPurifier_Config::createDefault();
     $config->set('HTML.SafeIframe', true);
@@ -1469,7 +1471,7 @@ function purifyHTML(string $string): string
     $config->set('Cache.SerializerPath', _ROOT_ . '/theme/cache/HTMLPurifier');
     $purifier = new HTMLPurifier($config);
 
-    return $purifier->purify($string);
+    return $purifier->purify($html);
 }
 
 function search(string $text): array
@@ -1940,21 +1942,21 @@ function save_ny_kat(string $navn, string $kat, string $icon, string $vis, strin
     return ['error' => _('You must enter a name and choose a location for the new category.')];
 }
 
-function savekrav(int $id, string $navn, string $text): array
+function savekrav(int $id, string $navn, string $html): array
 {
-    $text = purifyHTML($text);
-    $text = htmlUrlDecode($text);
+    $html = purifyHTML($html);
+    $html = htmlUrlDecode($html);
 
-    if ($navn != '' && $text != '') {
+    if ($navn != '' && $html != '') {
         if (!$id) {
             $requirement = new Requirement([
                 'title' => $navn,
-                'html'  => $text,
+                'html'  => $html,
             ]);
             $id = $requirement->getId();
         } else {
             $requirement = ORM::getOne(Requirement::class, $id);
-            $requirement->setTitle($navn)->setHtml($text);
+            $requirement->setTitle($navn)->setHtml($html);
         }
         $requirement->save();
 
@@ -2161,8 +2163,6 @@ function updateSide(
     int $maerke = null,
     string $billed = null
 ): bool {
-    $beskrivelse = purifyHTML($beskrivelse);
-    $beskrivelse = htmlUrlDecode($beskrivelse);
     $html = purifyHTML($html);
     $html = htmlUrlDecode($html);
 
@@ -2176,7 +2176,7 @@ function updateSide(
         ->setExcerpt($beskrivelse)
         ->setRequirementId($krav)
         ->setBrandId($maerke)
-        ->setImagePath($billed)
+        ->setIconPath($billed)
         ->setPriceType($fra)
         ->setOldPriceType($burde)
         ->save();
@@ -2243,7 +2243,7 @@ function opretSide(
     int $pris,
     string $beskrivelse,
     int $for,
-    string $text,
+    string $html,
     string $varenr,
     int $burde,
     int $fra,
@@ -2251,16 +2251,14 @@ function opretSide(
     int $maerke = null,
     string $billed = null
 ): array {
-    $beskrivelse = purifyHTML($beskrivelse);
-    $beskrivelse = htmlUrlDecode($beskrivelse);
-    $text = purifyHTML($text);
-    $text = htmlUrlDecode($text);
+    $html = purifyHTML($html);
+    $html = htmlUrlDecode($html);
 
     $page = new Page([
         'title'          => $navn,
         'keywords'       => $keywords,
         'excerpt'        => $beskrivelse,
-        'html'           => $text,
+        'html'           => $html,
         'sku'            => $varenr,
         'image_path'     => $billed,
         'requirement_id' => $krav,

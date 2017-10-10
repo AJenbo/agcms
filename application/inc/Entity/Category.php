@@ -448,7 +448,7 @@ class Category extends AbstractRenderable
         return [
             'navn'             => db()->eandq($this->title),
             'bind'             => $this->parentId,
-            'icon'             => db()->eandq($this->getIcon() ? $this->getIcon()->getPath() : 'NULL'),
+            'icon'             => $this->getIcon() ? db()->eandq($this->getIcon()->getPath()) : 'NULL',
             'vis'              => $this->renderMode,
             'email'            => db()->eandq($this->email),
             'custom_sort_subs' => $this->weightedChildren,

@@ -58,7 +58,8 @@ class EpaymentAdminService
         }
 
         $this->soapClient = new SoapClient(
-            'https://ssl.ditonlinebetalingssystem.dk/remote/payment.asmx?WSDL'
+            'https://ssl.ditonlinebetalingssystem.dk/remote/payment.asmx?WSDL',
+            ['features' => SOAP_SINGLE_ELEMENT_ARRAYS]
         );
     }
 
@@ -71,10 +72,10 @@ class EpaymentAdminService
      */
     private function getTransactionData(string $orderId): stdClass
     {
-        foreach (['PAYMENT_NEW', 'PAYMENT_CAPTURED', 'PAYMENT_DELETED'] as $status) {
+        foreach (['PAYMENT_CAPTURED', 'PAYMENT_NEW', 'PAYMENT_DELETED'] as $status) {
             $response = $this->soapClient->gettransactionlist($this->getSearchData($orderId, $status));
-            if (!empty($response->transactionInformationAry) && (array) $response->transactionInformationAry) {
-                return $response->transactionInformationAry->TransactionInformationType;
+            if (!empty($response->transactionInformationAry->TransactionInformationType)) {
+                return first($response->transactionInformationAry->TransactionInformationType);
             }
         }
 
