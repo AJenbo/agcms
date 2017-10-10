@@ -20,26 +20,11 @@
             $('status').innerHTML = 'Removing news subscribers without contact information';
             x_removeBadSubmisions(set_db_errors);
 
-            $('status').innerHTML = 'Removing bindings to pages that do not exist';
-            x_removeBadBindings(set_db_errors);
-
-            $('status').innerHTML = 'Removing accessories that do not exist';
-            x_removeBadAccessories(set_db_errors);
-
             $('status').innerHTML = 'Searching for pages without bindings';
             x_get_orphan_pages(set_db_errors);
 
             $('status').innerHTML = 'Searching for pages with illegal bindings';
             x_get_pages_with_mismatch_bindings(set_db_errors);
-
-            $('status').innerHTML = 'Searching for orphaned lists';
-            x_get_orphan_lists(set_db_errors);
-
-            $('status').innerHTML = 'Searching for orphaned rows';
-            x_get_orphan_rows(set_db_errors);
-
-            $('status').innerHTML = 'Searching for orphaned categories';
-            x_get_orphan_cats(set_db_errors);
 
             $('status').innerHTML = 'Searching for cirkalur linked categories';
             x_get_looping_cats(set_db_errors);

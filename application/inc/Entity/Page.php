@@ -121,6 +121,23 @@ class Page extends AbstractRenderable
         ];
     }
 
+    public function delete(): bool
+    {
+        // Forget affected tables, though alter indivitual deletes will forget most
+        Render::addLoadedTable('list_rows');
+        db()->query('DELETE FROM `list_rows` WHERE `link` = ' . $this->getId());
+        foreach ($this->getTables() as $table) {
+            $table->delete();
+        }
+
+        // parent::delete will forget any binding and accessory relationship
+        Render::addLoadedTable('bind');
+        db()->query('DELETE FROM `bind` WHERE side = ' . $this->getId());
+        Render::addLoadedTable('tilbehor');
+        db()->query('DELETE FROM `tilbehor` WHERE side = ' . $this->getId() . ' OR tilbehor =' . $this->getId());
+        return parent::delete();
+    }
+
     // Getters and setters
 
     /**
@@ -455,15 +472,15 @@ class Page extends AbstractRenderable
      *
      * @return bool
      */
-    public function isInCategory(int $categoryId): bool
+    public function isInCategory(Category $category): bool
     {
         Render::addLoadedTable('bind');
 
         return (bool) db()->fetchOne(
             "
-            SELECT id FROM `bind`
+            SELECT kat FROM `bind`
             WHERE side = " . $this->getId() . "
-            AND kat = " . $categoryId
+            AND kat = " . $category->getId()
         );
     }
 
@@ -474,16 +491,7 @@ class Page extends AbstractRenderable
      */
     public function getPrimaryCategory(): ?Category
     {
-        Render::addLoadedTable('bind');
-
-        return ORM::getOneByQuery(
-            Category::class,
-            "
-            SELECT kat.*
-            FROM `bind`
-            JOIN kat ON kat.id = bind.kat
-            WHERE bind.side = " . $this->getId()
-        );
+        return ORM::getOneByQuery(Category::class, $this->getCategoriesQuery());
     }
 
     /**
@@ -493,16 +501,25 @@ class Page extends AbstractRenderable
      */
     public function getCategories(): array
     {
-        Render::addLoadedTable('bind');
+        return ORM::getByQuery(Category::class, $this->getCategoriesQuery());
+    }
 
-        return ORM::getByQuery(
-            Category::class,
-            "
-            SELECT kat.*
-            FROM `bind`
-            JOIN kat ON kat.id = bind.kat
-            WHERE bind.side = " . $this->getId()
-        );
+    private function getCategoriesQuery(): string
+    {
+        Render::addLoadedTable('bind');
+        return "SELECT * FROM `kat` WHERE id IN (SELECT kat FROM `bind` WHERE side = " . $this->getId() . ")";
+    }
+
+    public function addToCategory(Category $category): void
+    {
+        db()->query("INSERT INTO `bind` (`side`, `kat`) VALUES (" . $page->getId() . ", " . $category->getId() . ")");
+        ORM::forgetByQuery(Page::class, $this->getCategoriesQuery());
+    }
+
+    public function removeFromCategory(Category $category): void
+    {
+        db()->query("DELETE FROM `bind` WHERE `side` = " . $this->getId() . " AND `kat` = " . $category->getId());
+        ORM::forgetByQuery(Page::class, $this->getCategoriesQuery());
     }
 
     /**
@@ -597,7 +614,7 @@ class Page extends AbstractRenderable
      */
     public function isInactive(): bool
     {
-        $bind = db()->fetchOne("SELECT kat FROM bind WHERE kat < 1 AND side = " . $this->getId());
+        $bind = db()->fetchOne("SELECT kat FROM `bind` WHERE kat < 1 AND side = " . $this->getId());
         Render::addLoadedTable('bind');
         if ($bind) {
             return (bool) $bind['kat'];

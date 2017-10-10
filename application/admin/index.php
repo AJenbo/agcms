@@ -22,10 +22,7 @@ Sajax::export(
         'get_db_size'                       => ['method' => 'GET', 'asynchronous' => false],
         'get_looping_cats'                  => ['method' => 'GET', 'asynchronous' => false],
         'get_mail_size'                     => ['method' => 'GET'],
-        'get_orphan_cats'                   => ['method' => 'GET', 'asynchronous' => false],
-        'get_orphan_lists'                  => ['method' => 'GET', 'asynchronous' => false],
         'get_orphan_pages'                  => ['method' => 'GET', 'asynchronous' => false],
-        'get_orphan_rows'                   => ['method' => 'GET', 'asynchronous' => false],
         'get_pages_with_mismatch_bindings'  => ['method' => 'GET', 'asynchronous' => false],
         'get_size_of_files'                 => ['method' => 'GET', 'asynchronous' => false],
         'get_subscriptions_with_bad_emails' => ['method' => 'GET', 'asynchronous' => false],
@@ -38,8 +35,6 @@ Sajax::export(
         'opretSide'                         => ['method' => 'POST'],
         'optimizeTables'                    => ['method' => 'POST', 'asynchronous' => false],
         'removeAccessory'                   => ['method' => 'POST'],
-        'removeBadAccessories'              => ['method' => 'POST', 'asynchronous' => false],
-        'removeBadBindings'                 => ['method' => 'POST', 'asynchronous' => false],
         'removeBadSubmisions'               => ['method' => 'POST', 'asynchronous' => false],
         'removeNoneExistingFiles'           => ['method' => 'POST', 'asynchronous' => false],
         'renamekat'                         => ['method' => 'POST'],
@@ -73,38 +68,18 @@ $data = getBasicAdminTemplateData();
 
 switch ($template) {
     case 'admin-redigerside':
-        $id = (int) $request->get('id', 0);
-
-        $page = null;
+        $page = ORM::getOne(Page::class, $request->get('id'));
         $bindings = [];
         $accessories = [];
-        if ($id) {
-            $page = ORM::getOne(Page::class, $id);
-            $binds = db()->fetchArray('SELECT id, kat FROM `bind` WHERE `side` = ' . $id);
-            foreach ($binds as $bind) {
-                if ($bind['id'] == -1) {
-                    continue; // binding for inactive is created and removed automatically
-                }
-
-                $category = ORM::getOne(Category::class, $bind['kat']);
-                $kattreeHtml = '';
-                foreach ($category->getBranch() as $category) {
-                    $kattreeHtml .= '/' . $category->getTitle();
-                }
-                $bindings[$bind['id']] = $kattreeHtml . '/';
+        if ($page) {
+            /** @var Page */
+            foreach ($page->getCategories() as $category) {
+                $bindings[$category->getId()] = $category->getPath();
             }
 
             foreach ($page->getAccessories() as $accessory) {
                 $category = $accessory->getPrimaryCategory();
-                if (!$category) {
-                    continue;
-                }
-
-                $kattreeHtml = '';
-                foreach ($category->getBranch() as $category) {
-                    $kattreeHtml .= '/' . $category->getTitle();
-                }
-                $accessories[$accessory->getId()] = $kattreeHtml . '/' . $accessory->getTitle();
+                $accessories[$accessory->getId()] = $category->getPath() . $accessory->getTitle();
             }
         }
 

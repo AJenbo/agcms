@@ -95,7 +95,7 @@ class Render
         }
         if ($pageId) {
             self::$activePage = ORM::getOne(Page::class, $pageId);
-            if (self::$activePage && !self::$activePage->isInCategory($categoryId)) {
+            if (self::$activePage && !self::$activePage->isInCategory(self::$activeCategory)) {
                 $redirect = Response::HTTP_MOVED_PERMANENTLY;
                 self::$activeCategory = null;
             }

@@ -103,6 +103,19 @@ class Category extends AbstractRenderable
         ];
     }
 
+    public function delete(): bool
+    {
+        foreach ($this->getChildren() as $child) {
+            $child->delete();
+        }
+
+        foreach ($this->getPages() as $page) {
+            $page->delete();
+        }
+
+        return parent::delete();
+    }
+
     // Getters and setters
 
     /**
@@ -112,9 +125,11 @@ class Category extends AbstractRenderable
      *
      * @return self
      */
-    public function setParentId(int $parentId): self
+    public function setParentId(int $parentId = null): self
     {
-        $this->parentId = $parentId;
+        if ($this->id && $this->id > 0) {
+            $this->parentId = $parentId;
+        }
 
         return $this;
     }
@@ -124,7 +139,7 @@ class Category extends AbstractRenderable
      *
      * @return int
      */
-    public function getParentId(): int
+    public function getParentId(): ?int
     {
         return $this->parentId;
     }
@@ -254,7 +269,7 @@ class Category extends AbstractRenderable
 
         if ($this->visable === null) {
             Render::addLoadedTable('bind');
-            if (db()->fetchOne("SELECT id FROM `bind` WHERE `kat` = " . $this->getId())) {
+            if (db()->fetchOne("SELECT kat FROM `bind` WHERE `kat` = " . $this->getId())) {
                 $this->visable = true;
 
                 return $this->visable;
@@ -296,7 +311,7 @@ class Category extends AbstractRenderable
      */
     public function getParent(): ?self
     {
-        if ($this->parentId > 0) {
+        if ($this->parentId !== null) {
             return ORM::getOne(self::class, $this->parentId);
         }
 
@@ -424,6 +439,16 @@ class Category extends AbstractRenderable
         return array_values(array_reverse($nodes));
     }
 
+    public function getPath(): string
+    {
+        $path = '/';
+        foreach ($this->getBranch() as $category) {
+            $path .= $category->getTitle() . '/';
+        }
+
+        return $path;
+    }
+
     /**
      * Get the file that is being used as an icon.
      */
@@ -447,7 +472,7 @@ class Category extends AbstractRenderable
     {
         return [
             'navn'             => db()->eandq($this->title),
-            'bind'             => $this->parentId,
+            'bind'             => $this->parentId !== null ? $this->parentId : 'NULL',
             'icon'             => $this->getIcon() ? db()->eandq($this->getIcon()->getPath()) : 'NULL',
             'vis'              => $this->renderMode,
             'email'            => db()->eandq($this->email),

@@ -92,43 +92,6 @@ function removeBadSubmisions(): string
 }
 
 /**
- * Delete bindings where either page or category is missing.
- *
- * @return string Always empty
- */
-function removeBadBindings(): string
-{
-    db()->query(
-        "
-        DELETE FROM `bind`
-        WHERE (kat != 0 AND kat != -1
-             AND NOT EXISTS (SELECT id FROM kat   WHERE id = bind.kat)
-            ) OR NOT EXISTS (SELECT id FROM sider WHERE id = bind.side);
-        "
-    );
-
-    return '';
-}
-
-/**
- * Remove bad tilbehor bindings.
- *
- * @return string Always empty
- */
-function removeBadAccessories(): string
-{
-    db()->query(
-        "
-        DELETE FROM `tilbehor`
-        WHERE NOT EXISTS (SELECT id FROM sider WHERE tilbehor.side)
-           OR NOT EXISTS (SELECT id FROM sider WHERE tilbehor.tilbehor);
-        "
-    );
-
-    return '';
-}
-
-/**
  * Remove enteries for files that do no longer exist.
  *
  * @return string Always empty
@@ -456,18 +419,10 @@ function saveEmail(int $id, string $from, string $interests, string $subject, st
 
 function katspath(int $id): array
 {
-    $html = _('Select location:') . ' ';
-
-    $category = ORM::getOne(Category::class, $id);
-    if ($category) {
-        foreach ($category->getBranch() as $category) {
-            $html .= '/' . $category->getTitle();
-        }
-    }
-
-    $html .= '/';
-
-    return ['id' => 'katsheader', 'html' => $html];
+    return [
+        'id' => 'katsheader',
+        'html' => _('Select location:') . ' ' . ORM::getOne(Category::class, $id)->getPath(),
+    ];
 }
 
 function getOpenCategories(): array
@@ -491,24 +446,24 @@ function getCategoryRootStructure(bool $includePages = false): array
 {
     $openCategories = getOpenCategories();
     $categories = [];
-    foreach ([-1 => _('Inactive'), 0 => _('Frontpage')] as $id => $name) {
+    foreach ([-1 => _('Inactive'), 0 => _('Frontpage')] as $categoryId => $name) {
         $pageSql = "";
         if ($includePages) {
-            $pageSql = " UNION SELECT id FROM `bind` WHERE kat = " . $id;
+            $pageSql = " UNION SELECT kat FROM `bind` WHERE kat = " . $categoryId;
         }
 
         $subs = [];
         $pages = [];
-        if (isset($openCategories[$id])) {
-            $subs = getCategoryStructure($id, $openCategories, $includePages);
+        if (isset($openCategories[$categoryId])) {
+            $subs = getCategoryStructure($categoryId, $openCategories, $includePages);
             if ($includePages) {
-                $pages = getCategoryStructurePages($id);
+                $pages = ORM::getOne(Category::class, $categoryId)->getPages();
             }
         }
 
         $categories[] = [
-            'id'         => $id,
-            'hasContent' => (bool) db()->fetchOne("SELECT id FROM `kat` WHERE bind = " . $id . $pageSql),
+            'id'         => $categoryId,
+            'hasContent' => (bool) db()->fetchOne("SELECT id FROM `kat` WHERE bind = " . $categoryId . $pageSql),
             'subs'       => $subs,
             'pages'      => $pages,
             'icon'       => '',
@@ -538,29 +493,22 @@ function getCategoryStructure(int $id, array $openCategories = [], bool $include
     foreach ($categories as $index => $category) {
         if (isset($openCategories[$category['id']])) {
             $categories[$index]['subs'] = getCategoryStructure($category['id'], $openCategories, $includePages);
-            $categories[$index]['pages'] = $includePages ? getCategoryStructurePages($category['id']) : [];
+            $categories[$index]['pages'] = [];
+            if ($includePages) {
+                $categories[$index]['pages'] = ORM::getOne(Category::class, $category['id'])->getPages();
+            }
         }
     }
 
     return $categories;
 }
 
-function getCategoryStructurePages(int $categoryId, string $orderBy = 'sider.navn'): array
-{
-    return db()->fetchArray(
-        "
-        SELECT sider.*, bind.id as bind
-        FROM `bind` LEFT JOIN sider on bind.side = sider.id
-        WHERE `kat` = " . $categoryId . " ORDER BY " . $orderBy
-    );
-}
-
-function kat_expand(int $id, bool $includePages = false, string $input = ''): array
+function kat_expand(int $categoryId, bool $includePages = false, string $input = ''): array
 {
     $openCategories = getOpenCategories();
     $data = [
-        'categories'        => getCategoryStructure($id, $openCategories, $includePages),
-        'pages'             => $includePages ? getCategoryStructurePages($id) : [],
+        'categories'        => getCategoryStructure($categoryId, $openCategories, $includePages),
+        'pages'             => $includePages ? ORM::getOne(Category::class, $categoryId)->getPages() : [],
         'categoryBranchIds' => [],
         'openCategories'    => explode('<', request()->cookies->get('openkat', '')),
         'input'             => $input,
@@ -569,7 +517,7 @@ function kat_expand(int $id, bool $includePages = false, string $input = ''): ar
 
     $html = Render::render('partial-admin-kat_expand', $data);
 
-    return ['id' => $id, 'html' => $html];
+    return ['id' => $categoryId, 'html' => $html];
 }
 
 /**
@@ -1605,43 +1553,6 @@ function get_subscriptions_with_bad_emails(): string
     return Render::render('partial-admin-subscriptions_with_bad_emails', ['contacts' => $contacts]);
 }
 
-function get_orphan_rows(): string
-{
-    $html = '';
-    $error = db()->fetchArray('SELECT * FROM `list_rows` WHERE list_id NOT IN (SELECT id FROM lists);');
-    if ($error) {
-        $html .= '<br /><b>' . _('The following rows have no lists:') . '</b><br />';
-        foreach ($error as $value) {
-            $html .= $value['id'] . ': ' . $value['cells'] . ' ' . $value['link'] . '<br />';
-        }
-    }
-    if ($html) {
-        $html = '<b>' . _('The following pages have no binding') . '</b><br />' . $html;
-    }
-
-    return $html;
-}
-
-function get_orphan_cats(): string
-{
-    $html = '';
-    $error = db()->fetchArray(
-        'SELECT `id`, `navn` FROM `kat` WHERE `bind` != 0 AND `bind` != -1 AND `bind` NOT IN (SELECT `id` FROM `kat`);'
-    );
-    if ($error) {
-        $html .= '<br /><b>' . _('The following categories are orphans:') . '</b><br />';
-        foreach ($error as $value) {
-            $html .= '<a href="?side=redigerkat&id=' . $value['id'] . '">' . $value['id'] . ': ' . $value['navn']
-                . '</a><br />';
-        }
-    }
-    if ($html) {
-        $html = '<b>' . _('The following categories have no binding') . '</b><br />' . $html;
-    }
-
-    return $html;
-}
-
 function get_looping_cats(): string
 {
     $html = '';
@@ -1768,26 +1679,6 @@ TODO test for missing alt="" in img under sider
 preg_match_all('/<img[^>]+/?>/ui', $value, $matches);
 */
 
-function get_orphan_lists(): string
-{
-    $error = db()->fetchArray('SELECT id FROM `lists` WHERE page_id NOT IN (SELECT id FROM sider);');
-    $html = '';
-    if ($error) {
-        $html .= '<br /><b>' . _('The following lists are orphans:') . '</b><br />';
-        foreach ($error as $value) {
-            $html .= $value['id'] . ': ' . $value['navn'] . ' ' . $value['cell1'] . ' ' . $value['cell2'] . ' '
-                . $value['cell3'] . ' ' . $value['cell4'] . ' ' . $value['cell5'] . ' ' . $value['cell6'] . ' '
-                . $value['cell7'] . ' ' . $value['cell8'] . ' ' . $value['cell9'] . ' ' . $value['img'] . ' '
-                . $value['link'] . '<br />';
-        }
-    }
-    if ($html) {
-        $html = '<b>' . _('The following lists are not tied to any page') . '</b><br />' . $html;
-    }
-
-    return $html;
-}
-
 function get_db_size(): float
 {
     $tabels = db()->fetchArray("SHOW TABLE STATUS");
@@ -1803,12 +1694,11 @@ function get_db_size(): float
 function get_orphan_pages(): string
 {
     $html = '';
-    $sider = db()->fetchArray(
-        'SELECT `id`, `navn`, `varenr` FROM `sider` WHERE `id` NOT IN(SELECT `side` FROM `bind`);'
-    );
-    foreach ($sider as $side) {
-        $html .= '<a href="?side=redigerside&amp;id=' . $side['id'] . '">' . $side['id'] . ': ' . $side['navn']
-            . '</a><br />';
+    /** @var Page */
+    $pages = ORM::getByQuery(Page::class, 'SELECT * FROM `sider` WHERE `id` NOT IN(SELECT `side` FROM `bind`)');
+    foreach ($pages as $page) {
+        $html .= '<a href="?side=redigerside&amp;id=' . $page->getId() . '">' . $page->getId()
+            . ': ' . $page->getTitle() . '</a><br />';
     }
 
     if ($html) {
@@ -2016,20 +1906,7 @@ function addAccessory(int $pageId, int $accessoryId): array
 
 function sletkat(int $id): array
 {
-    db()->query('DELETE FROM `kat` WHERE `id` = ' . $id);
-    if ($kats = db()->fetchArray('SELECT id FROM `kat` WHERE `bind` = ' . $id)) {
-        foreach ($kats as $kat) {
-            sletkat($kat['id']);
-        }
-    }
-    if ($bind = db()->fetchArray('SELECT side FROM `bind` WHERE `kat` = ' . $id)) {
-        db()->query('DELETE FROM `bind` WHERE `kat` = ' . $id);
-        foreach ($bind as $side) {
-            if (!db()->fetchOne("SELECT id FROM `bind` WHERE `side` = " . $side['side'])) {
-                sletSide($side['side']);
-            }
-        }
-    }
+    ORM::getOne(Category::class, $id)->delete();
 
     return ['id' => 'kat' . $id];
 }
@@ -2051,68 +1928,64 @@ function renamekat(int $id, string $title): array
     return ['id' => 'kat' . $id, 'name' => $title];
 }
 
-function sletbind(string $id): array
+function sletbind(int $pageId, int $categoryId): array
 {
-    if (!$bind = db()->fetchOne("SELECT side FROM `bind` WHERE `id` = " . $id)) {
-        return ['error' => _('The binding doesn\'t exist.')];
-    }
-    db()->query("DELETE FROM `bind` WHERE `id` = " . $id);
-    $delete[0]['id'] = $id;
-    $added = false;
-    if (!db()->fetchOne('SELECT id FROM `bind` WHERE `side` = ' . $bind['side'])) {
-        db()->query('INSERT INTO `bind` (`side`, `kat`) VALUES (\'' . $bind['side'] . '\', \'-1\')');
-
-        $added = [
-            'id' => db()->insert_id,
-            'path' => '/' . _('Inactive') . '/',
-            'kat' => -1,
-            'side' => $bind['side'],
-        ];
-    }
-
-    return ['deleted' => $delete, 'added' => $added];
-}
-
-function bind(int $pageId, int $categoryId): array
-{
+    /** @var Page */
     $page = ORM::getOne(Page::class, $pageId);
-    if ($page->isInCategory($categoryId)) {
-        return ['deleted' => [], 'added' => []];
-    }
 
+    /** @var Category */
     $category = ORM::getOne(Category::class, $categoryId);
     if (!$category) {
         return ['error' => _('The category doesn\'t exist.')];
     }
 
+    $result = ['pageId' => $page->getId(), 'deleted' => [], 'added' => null];
+    if (!$page->isInCategory($category)) {
+        return $result;
+    }
+
+    $page->removeFromCategory($category);
+    $result['deleted'][] = $category->getId();
+
+    if (!$page->getPrimaryCategory()) {
+        $page->addToCategory(ORM::getOne(Category::class, -1));
+        $result['added'] = ['categoryId' => -1, 'path' => '/' . _('Inactive') . '/'];
+    }
+
+    return $result;
+}
+
+function bind(int $pageId, int $categoryId): array
+{
+    /** @var Page */
+    $page = ORM::getOne(Page::class, $pageId);
+
+    /** @var Category */
+    $category = ORM::getOne(Category::class, $categoryId);
+    if (!$category) {
+        return ['error' => _('The category doesn\'t exist.')];
+    }
+
+    $result = ['pageId' => $page->getId(), 'deleted' => [], 'added' => null];
+
+    if ($page->isInCategory($category)) {
+        return $result;
+    }
+
+    $page->addToCategory($category);
+    $result['added'] = ['categoryId' => $category->getId(), 'path' => $category->getPath()];
+
     $rootCategoryId = $category->getBranch()[0]->getId();
-
-    //Delete any binding not under $rootCategoryId
-    $delete = [];
-    $binds = db()->fetchArray('SELECT id, kat FROM `bind` WHERE `side` = ' . $pageId);
-    foreach ($binds as $bind) {
-        $binding = ORM::getOne(Category::class, $bind['kat']);
-        if ($binding->getBranch()[0]->getParentId() != $rootCategoryId) {
-            db()->query("DELETE FROM `bind` WHERE `id` = " . $bind['id']);
-            $delete[] = $bind['id'];
+    foreach ($page->getCategories() as $category) {
+        if ($category->getBranch()[0]->getParentId() === $rootCategoryId) {
+            continue;
         }
+
+        $page->removeFromCategory($category);
+        $result['deleted'][] = $category->getId();
     }
 
-    db()->query('INSERT INTO `bind` (`side`, `kat`) VALUES (' . $pageId . ', ' . $kat . ')');
-
-    $added = [
-        'id' => db()->insert_id,
-        'kat' => $kat,
-        'side' => $pageId,
-        'path' => '',
-    ];
-
-    foreach ($category->getBranch() as $category) {
-        $added['path'] .= '/' . $category->getTitle();
-    }
-    $added['path'] .= '/';
-
-    return ['deleted' => $delete, 'added' => $added];
+    return $result;
 }
 
 function htmlUrlDecode(string $text): string
@@ -2183,9 +2056,10 @@ function updateKat(
     string $customSortSubs,
     string $subsorder,
     string $icon = null
-): bool {
+) {
     $category = ORM::getOne(Category::class, $id);
-    foreach ($category->getBranch() as $node) {
+    $parent = ORM::getOne(Category::class, $bind);
+    foreach ($parent->getBranch() as $node) {
         if ($node->getId() === $category->getId()) {
             return ['error' => _('The category can not be placed under itself.')];
         }
@@ -2266,22 +2140,9 @@ function opretSide(
 }
 
 //Delete a page and all it's relations from the database
-function sletSide(int $sideId): array
+function sletSide(int $pageId): array
 {
-    $lists = db()->fetchArray('SELECT id FROM `lists` WHERE `page_id` = ' . $sideId);
-    if ($lists) {
-        $listIds = [];
-        foreach ($lists as $list) {
-            $listIds[] = $list['id'];
-        }
-
-        db()->query('DELETE FROM `list_rows` WHERE list_id IN(' . implode('', $listIds) . ')');
-        db()->query('DELETE FROM `lists` WHERE `page_id` = ' . $sideId);
-    }
-    db()->query('DELETE FROM `list_rows` WHERE `link` = ' . $sideId);
-    db()->query('DELETE FROM `bind` WHERE side = ' . $sideId);
-    db()->query('DELETE FROM `tilbehor` WHERE side = ' . $sideId . ' OR tilbehor =' . $sideId);
-    db()->query('DELETE FROM `sider` WHERE id = ' . $sideId);
+    ORM::getOne(Page::class, $pageId)->delete();
 
     return ['class' => 'side' . $sideId];
 }

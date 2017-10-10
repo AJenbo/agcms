@@ -10,7 +10,7 @@ function copytonew(id)
 }
 function newfaktura_r(id)
 {
-    window.location.href = '?id=' + id;
+    window.location.href = '/admin/faktura.php?id=' + id;
 }
 
 function removeRow(row)

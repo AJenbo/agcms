@@ -624,7 +624,7 @@ function insertThumbnail(id)
 {
     window.opener.document.getElementById(returnid).value = files[id].path;
     window.opener.document.getElementById(returnid + 'thb').src = files[id].path;
-    if(window.opener.window.location.href.indexOf('side=redigerside') > -1) {
+    if(window.opener.window.location.href.indexOf('id=') > -1) {
         window.opener.updateSide(window.opener.$('id').value);
     }
     window.close();
@@ -690,7 +690,7 @@ function deletefile_r(data)
 function addfile(id)
 {
     window.opener.insertHTML('<a href="' + files[id].path + '" target="_blank">Klik her</a>');
-    if(window.opener.window.location.href.indexOf('side=redigerside') > -1) {
+    if(window.opener.window.location.href.indexOf('id=') > -1) {
         window.opener.updateSide(window.opener.$('id').value);
     }
     window.close();
@@ -699,7 +699,7 @@ function addfile(id)
 function addimg(id)
 {
     window.opener.insertHTML('<img src="' + files[id].path + '" alt="' + files[id].alt + '" title="" />');
-    if(window.opener.window.location.href.indexOf('side=redigerside') > -1) {
+    if(window.opener.window.location.href.indexOf('id=') > -1) {
         window.opener.updateSide(window.opener.$('id').value);
     }
     window.close();
@@ -715,7 +715,7 @@ function addflv(id, aspect, width, height)
         aspect + '.swf?flvFilename=' + files[id].path + '&quot; width=&quot;' + width + '&quot; height=&quot;' +
         height +
         '&quot; bgcolor=&quot;#FFFFFF&quot; name=&quot;flash&quot; quality=&quot;high&quot; align=&quot;middle&quot; allowScriptAccess=&quot;sameDomain&quot; allowFullScreen=&quot;true&quot; type=&quot;application/x-shockwave-flash&quot; pluginspage=&quot;http://www.macromedia.com/go/getflashplayer&quot; /&gt;&lt;/object&gt;" />');
-    if(window.opener.window.location.href.indexOf('side=redigerside') > -1) {
+    if(window.opener.window.location.href.indexOf('id=') > -1) {
         window.opener.updateSide(window.opener.$('id').value);
     }
     window.close();
@@ -730,7 +730,7 @@ function addswf(id, width, height)
         '&quot; /&gt;&lt;param name=&quot;allowFullScreen&quot; value=&quot;true&quot; /&gt;&lt;param name=&quot;quality&quot; value=&quot;high&quot; /&gt;&lt;param name=&quot;bgcolor&quot; value=&quot;#FFFFFF&quot; /&gt;&lt;embed src=&quot;' +
         files[id].path + '&quot; width=&quot;' + width + '&quot; height=&quot;' + height +
         '&quot; bgcolor=&quot;#FFFFFF&quot; name=&quot;flash&quot; quality=&quot;high&quot; align=&quot;middle&quot; allowScriptAccess=&quot;sameDomain&quot; allowFullScreen=&quot;true&quot; type=&quot;application/x-shockwave-flash&quot; pluginspage=&quot;http://www.macromedia.com/go/getflashplayer&quot; /&gt;&lt;/object&gt;" />');
-    if(window.opener.window.location.href.indexOf('side=redigerside') > -1) {
+    if(window.opener.window.location.href.indexOf('id=') > -1) {
         window.opener.updateSide(window.opener.$('id').value);
     }
     window.close();

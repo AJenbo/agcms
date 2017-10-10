@@ -43,10 +43,11 @@ var activeSideContextMenu = [
       // TODO update to use getContextMenuTarget()
       "callback" : function(e) {
           if(e.element().tagName.toLowerCase() == 'a') {
-              location.href = '?side=redigerside&id=' + e.target.parentNode.className.replace(/^side/, '');
+              location.href = '/admin/?side=redigerside&id=' + e.target.parentNode.className.replace(/^side/, '');
               return;
           }
-          location.href = '?side=redigerside&id=' + e.target.parentNode.parentNode.className.replace(/^side/, '');
+          location.href =
+              '/admin/?side=redigerside&id=' + e.target.parentNode.parentNode.className.replace(/^side/, '');
       }
     },
     {
@@ -54,16 +55,13 @@ var activeSideContextMenu = [
       "className" : 'unlink',
       "callback" : function(e) {
           // TODO update to use getContextMenuTarget()
-          if(e.element().tagName.toLowerCase() == 'a') {
-              // todo the respoce woun't fit here
-              slet('bindtree', e.target.parentNode.parentNode.previousSibling.lastChild.nodeValue.replace(/^\s+/, ''),
-                  e.target.parentNode.id.replace(/^bind/, ''));
-              return;
+          var element = e.target.parentNode;
+          if(e.element().tagName.toLowerCase() != 'a') {
+              element = element.parentNode;
           }
-          // todo the respoce woun't fit here
-          slet('bindtree',
-              e.target.parentNode.parentNode.parentNode.previousSibling.lastChild.nodeValue.replace(/^\s+/, ''),
-              e.target.parentNode.parentNode.id.replace(/^bind/, ''));
+          var name = element.parentNode.previousSibling.lastChild.nodeValue.trim();
+          var ids = element.id.match(/\d+/g);
+          removeBindingFromTree(name, ids[1], ids[0]);
       }
     }
 ];
@@ -76,10 +74,11 @@ var inactiveSideContextMenu = [
       "callback" : function(e) {
           // TODO update to use getContextMenuTarget()
           if(e.element().tagName.toLowerCase() == 'a') {
-              location.href = '?side=redigerside&id=' + e.target.parentNode.className.replace(/^side/, '');
+              location.href = '/admin/?side=redigerside&id=' + e.target.parentNode.className.replace(/^side/, '');
               return;
           }
-          location.href = '?side=redigerside&id=' + e.target.parentNode.parentNode.className.replace(/^side/, '');
+          location.href =
+              '/admin/?side=redigerside&id=' + e.target.parentNode.parentNode.className.replace(/^side/, '');
       }
     },
     {
@@ -88,11 +87,10 @@ var inactiveSideContextMenu = [
       "callback" : function(e) {
           // TODO update to use getContextMenuTarget()
           if(e.element().tagName.toLowerCase() == 'a') {
-              slet('side', e.target.lastChild.nodeValue.replace(/^\s+/, ''),
-                  e.target.parentNode.className.replace(/^side/, ''));
+              slet('side', e.target.lastChild.nodeValue.trim(), e.target.parentNode.className.replace(/^side/, ''));
               return;
           }
-          slet('side', e.target.parentNode.lastChild.nodeValue.replace(/^\s+/, ''),
+          slet('side', e.target.parentNode.lastChild.nodeValue.trim(),
               e.target.parentNode.parentNode.className.replace(/^side/, ''));
       }
     }
@@ -106,11 +104,11 @@ var activeKatContextMenu = [
       "callback" : function(e) {
           // TODO update to use getContextMenuTarget()
           if(e.element().tagName.toLowerCase() == 'a') {
-              renamekat(e.target.parentNode.id.replace(/^kat/, ''), e.target.lastChild.nodeValue.replace(/^\s+/, ''));
+              renamekat(e.target.parentNode.id.replace(/^kat/, ''), e.target.lastChild.nodeValue.trim());
               return;
           }
-          renamekat(e.target.parentNode.parentNode.id.replace(/^kat/, ''),
-              e.target.parentNode.lastChild.nodeValue.replace(/^\s+/, ''));
+          renamekat(
+              e.target.parentNode.parentNode.id.replace(/^kat/, ''), e.target.parentNode.lastChild.nodeValue.trim());
       }
     },
     {
@@ -119,10 +117,10 @@ var activeKatContextMenu = [
       "callback" : function(e) {
           // TODO update to use getContextMenuTarget()
           if(e.element().tagName.toLowerCase() == 'a') {
-              location.href = '?side=redigerkat&id=' + e.target.parentNode.id.replace(/^kat/, '');
+              location.href = '/admin/?side=redigerkat&id=' + e.target.parentNode.id.replace(/^kat/, '');
               return;
           }
-          location.href = '?side=redigerkat&id=' + e.target.parentNode.parentNode.id.replace(/^kat/, '');
+          location.href = '/admin/?side=redigerkat&id=' + e.target.parentNode.parentNode.id.replace(/^kat/, '');
       }
     },
     {
@@ -131,12 +129,11 @@ var activeKatContextMenu = [
       "callback" : function(e) {
           // TODO update to use getContextMenuTarget()
           if(e.element().tagName.toLowerCase() == 'a') {
-              movekat(e.target.lastChild.nodeValue.replace(/^\s+/, ''), e.target.parentNode.id.replace(/^kat/, ''), -1,
-                  true);
+              movekat(e.target.lastChild.nodeValue.trim(), e.target.parentNode.id.replace(/^kat/, ''), -1, true);
               return;
           }
-          movekat(e.target.parentNode.lastChild.nodeValue.replace(/^\s+/, ''),
-              e.target.parentNode.parentNode.id.replace(/^kat/, ''), -1, true);
+          movekat(e.target.parentNode.lastChild.nodeValue.trim(), e.target.parentNode.parentNode.id.replace(/^kat/, ''),
+              -1, true);
       }
     }
 ];
@@ -149,11 +146,11 @@ var inactiveKatContextMenu = [
       "callback" : function(e) {
           // TODO update to use getContextMenuTarget()
           if(e.element().tagName.toLowerCase() == 'a') {
-              renamekat(e.target.parentNode.id.replace(/^kat/, ''), e.target.lastChild.nodeValue.replace(/^\s+/, ''));
+              renamekat(e.target.parentNode.id.replace(/^kat/, ''), e.target.lastChild.nodeValue.trim());
               return;
           }
-          renamekat(e.target.parentNode.parentNode.id.replace(/^kat/, ''),
-              e.target.parentNode.lastChild.nodeValue.replace(/^\s+/, ''));
+          renamekat(
+              e.target.parentNode.parentNode.id.replace(/^kat/, ''), e.target.parentNode.lastChild.nodeValue.trim());
       }
     },
     {
@@ -162,10 +159,10 @@ var inactiveKatContextMenu = [
       "callback" : function(e) {
           // TODO update to use getContextMenuTarget()
           if(e.element().tagName.toLowerCase() == 'a') {
-              location.href = '?side=redigerkat&id=' + e.target.parentNode.id.replace(/^kat/, '');
+              location.href = '/admin/?side=redigerkat&id=' + e.target.parentNode.id.replace(/^kat/, '');
               return;
           }
-          location.href = '?side=redigerkat&id=' + e.target.parentNode.parentNode.id.replace(/^kat/, '');
+          location.href = '/admin/?side=redigerkat&id=' + e.target.parentNode.parentNode.id.replace(/^kat/, '');
       }
     },
     {
@@ -174,10 +171,10 @@ var inactiveKatContextMenu = [
       "callback" : function(e) {
           // TODO update to use getContextMenuTarget()
           if(e.element().tagName.toLowerCase() == 'a') {
-              slet('kat', e.target.lastChild.nodeValue.replace(/^\s+/, ''), e.target.parentNode.id.replace(/^kat/, ''));
+              slet('kat', e.target.lastChild.nodeValue.trim(), e.target.parentNode.id.replace(/^kat/, ''));
               return;
           }
-          slet('kat', e.target.parentNode.lastChild.nodeValue.replace(/^\s+/, ''),
+          slet('kat', e.target.parentNode.lastChild.nodeValue.trim(),
               e.target.parentNode.parentNode.id.replace(/^kat/, ''));
       }
     }
@@ -278,7 +275,7 @@ function opretSide_r(data)
         return;
     }
 
-    window.location.href = "?side=redigerside&id=" + data.id;
+    window.location.href = "/admin/?side=redigerside&id=" + data.id;
 }
 
 function updateSpecial(id)
@@ -298,7 +295,7 @@ function save_ny_kat_r(data)
         alert(data.error);
         return;
     }
-    location.href = '?side=getSiteTree';
+    location.href = '/admin/?side=getSiteTree';
 }
 
 function addNewItem()
@@ -417,7 +414,7 @@ function updateContact_r(data)
         alert(data.error);
         return;
     }
-    location.href = '?side=addressbook';
+    location.href = '/admin/?side=addressbook';
 }
 
 function sendEmail()
@@ -463,7 +460,7 @@ function sendEmail_r(data)
         return;
     }
 
-    location.href = '?side=emaillist';
+    location.href = '/admin/?side=emaillist';
 }
 
 function deleteuser(id, name)

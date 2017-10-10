@@ -19,10 +19,10 @@
 </div>
 {% endfor %}
 {% for page in pages %}
-<div id="bind{{page.bind}}" class="side{{page.id}}">
+<div id="bind{{category.id}}p{{page.id}}" class="side{{page.id}}">
     <a{% if input != 'pages' %} style="margin-left:16px"{% endif %} class="side"{% if not input %} href="?side=redigerside&id={{page.id}}{% endif %}">
         {% if input == 'pages' %}<input name="side" type="radio" value="{{page.id}}" />{% endif %}
-        <img src="images/page.png" width="16" height="16" alt="" /> {{page.navn}}
+        <img src="images/page.png" width="16" height="16" alt="" /> {{page.title}}
         {% if page.sku %}<em>#:{{page.sku}}</em>{% endif %}
     </a>
 </div>

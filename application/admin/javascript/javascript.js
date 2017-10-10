@@ -208,6 +208,7 @@ function kat_expand(id, includePage, input)
 function appendOpenCatCookie(id)
 {
     var openkat = getCookie("openkat");
+    openkat = openkat ? openkat : "";
     openkat = openkat.split("<");
     openkat.push(id);
     openkat = openkat.uniq();
@@ -245,18 +246,18 @@ function save_krav()
 
 function save_krav_r(data)
 {
-    location.href = "./?side=krav";
+    location.href = "/admin/?side=krav";
 }
 
 function updatemaerke_r(data)
 {
-    location.href = "./?side=maerker";
+    location.href = "/admin/?side=maerker";
 }
 
 function bind(id)
 {
     $("loading").style.visibility = "";
-    x_bind(id, getRadio("kat"), bind_r);
+    x_bind(id, getRadio("kat"), binding_r);
 
     return false;
 }
@@ -311,34 +312,16 @@ function removeAccessory(navn, pageId, accessoryId)
     return false;
 }
 
-function objToArray(obj)
+function removeBinding(navn, pageId, categoryId, callback = null)
 {
-    var r = [], x;
-    for(x in obj) {
-        if(obj.hasOwnProperty(x) && !isNaN(parseInt(x))) {
-            r[x] = obj[x];
-        }
-    }
-
-    return r;
-}
-
-function bindTree_r(data)
-{
-    if(!generic_r(data)) {
-        return;
-    }
-
-    removeTagById("bind" + data.deleted[0].id);
-
-    if(data.added && $("kat" + data.added.kat + "content").innerHTML != "") {
-        var display = $("kat" + data.added.kat + "content").style.display;
-        x_siteList_expand(data.added.kat, 0, kat_expand_r);
-        $("kat" + data.added.kat + "content").style.display = display;
+    callback = callback ? callback : binding_r;
+    if(confirm("Vil du fjerne siden fra '" + navn + "'?") == true) {
+        $("loading").style.visibility = "";
+        x_sletbind(pageId, categoryId, callback);
     }
 }
 
-function bind_r(data)
+function binding_r(data)
 {
     if(!generic_r(data)) {
         return;
@@ -352,7 +335,7 @@ function bind_r(data)
 
     if(data.added) {
         var p = document.createElement("p");
-        p.setAttribute("id", "bind" + data.added.id);
+        p.setAttribute("id", "bind" + data.added.categoryId);
         var img = document.createElement("img");
         img.setAttribute("src", "images/cross.png");
         img.setAttribute("alt", "X");
@@ -360,12 +343,44 @@ function bind_r(data)
         img.setAttribute("width", "16");
         img.setAttribute("title", "Fjern binding");
         img.onclick = function() {
-            slet("bind", data.added.path, data.added.id);
+            removeBinding(data.added.path, data.pageId, data.added.categoryId);
         };
         p.appendChild(img);
         p.appendChild(document.createTextNode(" " + data.added.path));
         $("bindinger").appendChild(p);
     }
+}
+
+function removeBindingFromTree(navn, pageId, categoryId)
+{
+    removeBinding(navn, pageId, categoryId, bindTree_r)
+}
+
+function bindTree_r(data)
+{
+    if(!generic_r(data)) {
+        return;
+    }
+
+    removeTagById("bind" + data.deleted[0] + 'p' + data.pageId);
+
+    if(data.added && $("kat" + data.added.categoryId + "content").innerHTML != "") {
+        var display = $("kat" + data.added.categoryId + "content").style.display;
+        x_siteList_expand(data.added.categoryId, 0, kat_expand_r);
+        $("kat" + data.added.categoryId + "content").style.display = display;
+    }
+}
+
+function objToArray(obj)
+{
+    var r = [], x;
+    for(x in obj) {
+        if(obj.hasOwnProperty(x) && !isNaN(parseInt(x))) {
+            r[x] = obj[x];
+        }
+    }
+
+    return r;
 }
 
 function removeTagById(id)
@@ -389,18 +404,6 @@ function slet(type, navn, id)
             if(confirm("Vil du slette '" + navn + "'?") == true) {
                 $("loading").style.visibility = "";
                 x_sletSide(id, sletClass_r);
-            }
-            break;
-        case "bind":
-            if(confirm("Vil du fjerne siden fra '" + navn + "'?") == true) {
-                $("loading").style.visibility = "";
-                x_sletbind(id, bind_r);
-            }
-            break;
-        case "bindtree":
-            if(confirm("Vil du fjerne siden fra '" + navn + "'?") == true) {
-                $("loading").style.visibility = "";
-                x_sletbind(id, bindTree_r);
             }
             break;
         case "maerke":
@@ -499,7 +502,7 @@ function jumpto()
         return false;
     }
 
-    location.href = "./?side=redigerside&id=" + jumptoid;
+    location.href = "/admin/?side=redigerside&id=" + jumptoid;
 }
 
 function sogsearch()

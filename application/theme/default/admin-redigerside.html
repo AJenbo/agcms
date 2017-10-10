@@ -195,10 +195,10 @@
         <div id="binding"{% if hide.binding %} style="display:none;"{% endif %}>
             <div id="bindinger">
                 <br />
-                {% for bindingId, binding in bindings %}
-                <p id="bind{{bindingId}}">
-                    <img onclick="slet('bind', {{binding|json_encode()}}, {{bindingId}})" src="images/cross.png" alt="X" title="Remove binding" width="16" height="16" />
-                    {{binding}}
+                {% for categoryId, path in bindings %}
+                <p id="bind{{categoryId}}">
+                    <img onclick="removeBinding({{path|json_encode()}}, {{page.id}}, {{categoryId}})" src="images/cross.png" alt="X" title="Remove binding" width="16" height="16" />
+                    {{path}}
                 </p>
                 {% endfor %}
             </div>

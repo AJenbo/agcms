@@ -101,8 +101,8 @@ class ORM
     public static function forget(string $class, int $id): void
     {
         unset(self::$byId[$class][$id]);
-        self::$bySql = [];
-        self::$oneBySql = [];
+        self::$bySql[$class] = [];
+        self::$oneBySql[$class] = [];
     }
 
     /**
