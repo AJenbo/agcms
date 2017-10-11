@@ -189,10 +189,10 @@ function reload_r(date)
 {
     if(date.error) {
         alert(date.error);
-    } else {
-        window.location.reload();
+        $('loading').style.visibility = 'hidden';
     }
-    $('loading').style.visibility = 'hidden';
+
+    window.location.reload();
 }
 
 function save(id, type)

@@ -33,9 +33,10 @@ function x_getKat()
 
 function inject_html(data)
 {
-    if(data['error'] || !data) {
-        alert(data['error']);
-    } else {
-        document.getElementById(data['id']).innerHTML = data['html'];
+    if(data.error || !data) {
+        alert(data.error);
+        return;
     }
+
+    document.getElementById(data.id).innerHTML = data.html;
 }

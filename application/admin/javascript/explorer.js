@@ -53,9 +53,8 @@ file.prototype.openfile = function() {
 };
 
 file.prototype.refreshThumb = function() {
-    $('tilebox' + this.id)
-        .firstChild.childNodes[1]
-        .src = 'image.php?path=' + encodeURIComponent(this.path) + '&maxW=128&maxH=96&timestamp=' + unix_timestamp();
+    $('tilebox' + this.id).firstChild.childNodes[1].src =
+        'image.php?path=' + encodeURIComponent(this.path) + '&maxW=128&maxH=96&timestamp=' + unix_timestamp();
 };
 
 function unix_timestamp()
@@ -228,154 +227,88 @@ var flvtileContextMenu = [
     }
 ];
 
+var imagetileContextMenu = [ {
+    "name" : 'Åbne',
+    "className" : 'picture',
+    "callback" : function(e) {
+        var object = getContextMenuTarget(e.target, 'imagetile');
+        var id = object.id.match(/[0-9]+/g);
+        files[id[0]].openfile();
+    }
+} ];
+
 if(window.location.href.match(/return=rtef/g)) {
-    var imagetileContextMenu = [
-        {
-          "name" : 'Åbne',
-          "className" : 'picture',
-          "callback" : function(e) {
-              var object = getContextMenuTarget(e.target, 'imagetile');
-              var id = object.id.match(/[0-9]+/g);
-              files[id[0]].openfile();
-          }
-        },
-        {
-          "name" : 'Indsæt link',
-          "className" : 'link',
-          "callback" : function(e) {
-              var object = getContextMenuTarget(e.target, 'imagetile');
-              var id = object.id.match(/[0-9]+/g);
-              addfile(id[0]);
-          }
-        },
-        {
-          "name" : 'Rediger',
-          "className" : 'picture_edit',
-          "callback" : function(e) {
-              var object = getContextMenuTarget(e.target, 'imagetile');
-              var id = object.id.match(/[0-9]+/g);
-              open_image_edit(id[0]);
-          }
-        },
-        {
-          "name" : 'Beskrivelse',
-          "className" : 'textfield_rename',
-          "callback" : function(e) {
-              var object = getContextMenuTarget(e.target, 'imagetile');
-              var id = object.id.match(/[0-9]+/g);
-              edit_alt(id[0]);
-          }
-        },
-        {
-          "name" : 'Generere ikon',
-          "className" : 'pictures',
-          "callback" : function(e) {
-              var object = getContextMenuTarget(e.target, 'imagetile');
-              var id = object.id.match(/[0-9]+/g);
-              open_image_thumbnail(id[0]);
-          }
-        },
-        {
-          "name" : 'Flyt',
-          "className" : 'folder_go',
-          "callback" : function(e) {
-              var object = getContextMenuTarget(e.target, 'imagetile');
-              var id = object.id.match(/[0-9]+/g);
-              open_file_move(id[0]);
-          }
-        },
-        {
-          "name" : 'Omdøb',
-          "className" : 'textfield_rename',
-          "callback" : function(e) {
-              var object = getContextMenuTarget(e.target, 'imagetile');
-              var id = object.id.match(/[0-9]+/g);
-              showfilename(id[0]);
-          }
-        },
-        {
-          "name" : 'Slet',
-          "className" : 'delete',
-          "callback" : function(e) {
-              var object = getContextMenuTarget(e.target, 'imagetile');
-              var id = object.id.match(/[0-9]+/g);
-              deletefile(id[0]);
-          }
+    imagetileContextMenu.push({
+        "name" : 'Indsæt link',
+        "className" : 'link',
+        "callback" : function(e) {
+            var object = getContextMenuTarget(e.target, 'imagetile');
+            var id = object.id.match(/[0-9]+/g);
+            addfile(id[0]);
         }
-    ];
-} else {
-    var imagetileContextMenu = [
-        {
-          "name" : 'Åbne',
-          "className" : 'picture',
-          "callback" : function(e) {
-              var object = getContextMenuTarget(e.target, 'imagetile');
-              var id = object.id.match(/[0-9]+/g);
-              files[id[0]].openfile();
-          }
-        },
-        {
-          "name" : 'Rediger',
-          "className" : 'picture_edit',
-          "callback" : function(e) {
-              var object = getContextMenuTarget(e.target, 'imagetile');
-              var id = object.id.match(/[0-9]+/g);
-              open_image_edit(id[0]);
-          }
-        },
-        {
-          "name" : 'Beskrivelse',
-          "className" : 'textfield_rename',
-          "callback" : function(e) {
-              var object = getContextMenuTarget(e.target, 'imagetile');
-              var id = object.id.match(/[0-9]+/g);
-              edit_alt(id[0]);
-          }
-        },
-        {
-          "name" : 'Generere ikon',
-          "className" : 'pictures',
-          "callback" : function(e) {
-              var object = getContextMenuTarget(e.target, 'imagetile');
-              var id = object.id.match(/[0-9]+/g);
-              open_image_thumbnail(id[0]);
-          }
-        },
-        {
-          "name" : 'Flyt',
-          "className" : 'folder_go',
-          "callback" : function(e) {
-              var object = getContextMenuTarget(e.target, 'imagetile');
-              var id = object.id.match(/[0-9]+/g);
-              open_file_move(id[0]);
-          }
-        },
-        {
-          "name" : 'Omdøb',
-          "className" : 'textfield_rename',
-          "callback" : function(e) {
-              var object = getContextMenuTarget(e.target, 'imagetile');
-              var id = object.id.match(/[0-9]+/g);
-              showfilename(id[0]);
-          }
-        },
-        {
-          "name" : 'Slet',
-          "className" : 'delete',
-          "callback" : function(e) {
-              var object = getContextMenuTarget(e.target, 'imagetile');
-              var id = object.id.match(/[0-9]+/g);
-              deletefile(id[0]);
-          }
-        }
-    ];
+    });
 }
+imagetileContextMenu.concat([
+    {
+      "name" : 'Rediger',
+      "className" : 'picture_edit',
+      "callback" : function(e) {
+          var object = getContextMenuTarget(e.target, 'imagetile');
+          var id = object.id.match(/[0-9]+/g);
+          open_image_edit(id[0]);
+      }
+    },
+    {
+      "name" : 'Beskrivelse',
+      "className" : 'textfield_rename',
+      "callback" : function(e) {
+          var object = getContextMenuTarget(e.target, 'imagetile');
+          var id = object.id.match(/[0-9]+/g);
+          edit_alt(id[0]);
+      }
+    },
+    {
+      "name" : 'Generere ikon',
+      "className" : 'pictures',
+      "callback" : function(e) {
+          var object = getContextMenuTarget(e.target, 'imagetile');
+          var id = object.id.match(/[0-9]+/g);
+          open_image_thumbnail(id[0]);
+      }
+    },
+    {
+      "name" : 'Flyt',
+      "className" : 'folder_go',
+      "callback" : function(e) {
+          var object = getContextMenuTarget(e.target, 'imagetile');
+          var id = object.id.match(/[0-9]+/g);
+          open_file_move(id[0]);
+      }
+    },
+    {
+      "name" : 'Omdøb',
+      "className" : 'textfield_rename',
+      "callback" : function(e) {
+          var object = getContextMenuTarget(e.target, 'imagetile');
+          var id = object.id.match(/[0-9]+/g);
+          showfilename(id[0]);
+      }
+    },
+    {
+      "name" : 'Slet',
+      "className" : 'delete',
+      "callback" : function(e) {
+          var object = getContextMenuTarget(e.target, 'imagetile');
+          var id = object.id.match(/[0-9]+/g);
+          deletefile(id[0]);
+      }
+    }
+]);
 
 function viewlFile(type, id, width, height)
 {
-    if(type == 'unknown') {
-        var file = files[id].path;
-    } else {
+    var file = files[id].path;
+    if(type !== 'unknown') {
         var file = 'popup-' + type + '.php?url=' + encodeURIComponent(files[id].path);
     }
     popUpWin(file, 'file_view', 'toolbar=0', width, height);

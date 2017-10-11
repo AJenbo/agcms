@@ -27,27 +27,24 @@ function filetypeshow()
     var videooptions = document.getElementById('videooptions');
     var file = document.getElementById('file');
 
-    if(type == 'image' || type == 'lineimage') {
-        videooptions.style.display = 'none';
+    var message = 'Vælg en filtype';
+
+    description.style.display = 'none';
+    videooptions.style.display = 'none';
+    file.setAttribute('accept', '');
+
+    if(type == '') {
+        message = 'Vælg den fil du vil sende';
+    } else if(type == 'image' || type == 'lineimage') {
         description.style.display = '';
-        status('Vælg det billed du vil sende');
+        message = 'Vælg det billed du vil sende';
         file.setAttribute('accept', 'image/*');
     } else if(type == 'video') {
-        description.style.display = 'none';
         videooptions.style.display = '';
-        status('Vælg den film du vil sende');
+        message = 'Vælg den film du vil sende';
         file.setAttribute('accept', 'video/*');
-    } else {
-        description.style.display = 'none';
-        videooptions.style.display = 'none';
-        file.setAttribute('accept', '');
-
-        if(type == '') {
-            status('Vælg den fil du vil sende');
-        } else {
-            status('Vælg en filtype');
-        }
     }
+    status(message);
 
     if(type == '') {
         file.disabled = true;

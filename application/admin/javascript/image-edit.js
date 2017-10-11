@@ -1,25 +1,36 @@
 // TODO avoide overscaling when triming has been in affect
 
-function saveImage()
+function saveImage(overwrite = false)
 {
     $('save').style.display = 'none';
     $('loading').style.visibility = '';
 
-    // TODO doesn't work?
-    if(mode == 'thb') {
-        if(rotate) {
-            var endW = Math.min(thumb_height, Math.round(maxW * scale));
-            var endH = Math.min(thumb_width, Math.round(maxH * scale));
-        } else {
-            var endW = Math.min(thumb_width, Math.round(maxW * scale));
-            var endH = Math.min(thumb_height, Math.round(maxH * scale));
-        }
-    } else {
-        var endW = Math.round(maxW * scale);
-        var endH = Math.round(maxH * scale);
+    dimention = calcImageDimension();
+
+    x_saveImage(path, cropX, cropY, maxW, maxH, dimention.width, dimention.height, flip, rotate, filename, overwrite,
+        saveImage_r);
     }
 
-    x_saveImage(path, cropX, cropY, maxW, maxH, endW, endH, flip, rotate, filename, 0, saveImage_r);
+function calcImageDimension()
+{
+    var dimention = {};
+
+    if(mode == 'thb') {
+        if(rotate) {
+            dimention.width = Math.min(thumb_height, Math.round(maxW * scale));
+            dimention.height = Math.min(thumb_width, Math.round(maxH * scale));
+            return dimention;
+        }
+
+        dimention.width = Math.min(thumb_width, Math.round(maxW * scale));
+        dimention.height = Math.min(thumb_height, Math.round(maxH * scale));
+        return dimention;
+    }
+
+    dimention.width = Math.round(maxW * scale);
+    dimention.height = Math.round(maxH * scale);
+
+    return dimention;
 }
 
 function saveImage_r(data)
@@ -30,19 +41,7 @@ function saveImage_r(data)
         alert(data.error);
     } else if(data.yesno) {
         if(eval(confirm(data.yesno)) == true) {
-            if(mode == 'thb') {
-                if(rotate) {
-                    var endW = Math.min(thumb_height, Math.round(maxW * scale));
-                    var endH = Math.min(thumb_width, Math.round(maxH * scale));
-                } else {
-                    var endW = Math.min(thumb_width, Math.round(maxW * scale));
-                    var endH = Math.min(thumb_height, Math.round(maxH * scale));
-                }
-            } else {
-                var endW = Math.round(maxW * scale);
-                var endH = Math.round(maxH * scale);
-            }
-            x_saveImage(path, cropX, cropY, maxW, maxH, endW, endH, flip, rotate, data.filename, 1, saveImage_r);
+            saveImage(true);
             return true;
         }
 
@@ -154,10 +153,9 @@ function resize()
     var maxWH = rotate ? maxH : maxW;
 
     if(mode == 'thb') {
+        maxWH = maxWH * Math.min(1, Math.min(thumb_width / maxW, thumb_height / maxH));
         if(rotate) {
             maxWH = maxWH * Math.min(1, Math.min(thumb_width / maxH, thumb_height / maxW));
-        } else {
-            maxWH = maxWH * Math.min(1, Math.min(thumb_width / maxW, thumb_height / maxH));
         }
     }
 
@@ -167,11 +165,7 @@ function resize()
         onDrag : function(obj, e) {
             $('preview').style.width = obj.element.style.left;
             $('resizeHandle').style.top = $('preview').height + 'px';
-            if(rotate) {
-                scale = (parseInt(obj.element.style.left) / maxH);
-            } else {
-                scale = (parseInt(obj.element.style.left) / maxW);
-            }
+            scale = (parseInt(obj.element.style.left) / (rotate ? maxH : maxW));
         },
         onEnd : function(e) {
             preview();
@@ -387,20 +381,9 @@ function preview()
     $('save').style.display = 'none';
     $('loading').style.visibility = '';
 
-    if(mode == 'thb') {
-        if(rotate) {
-            var endW = Math.min(thumb_height, Math.round(maxW * scale));
-            var endH = Math.min(thumb_width, Math.round(maxH * scale));
-        } else {
-            var endW = Math.min(thumb_width, Math.round(maxW * scale));
-            var endH = Math.min(thumb_height, Math.round(maxH * scale));
-        }
-    } else {
-        var endW = Math.round(maxW * scale);
-        var endH = Math.round(maxH * scale);
-    }
+    dimention = calcImageDimension();
 
-    $('preview')
-        .src = 'image.php?path=' + encodeURIComponent(path) + '&cropX=' + cropX + '&cropY=' + cropY + '&cropW=' + maxW +
-        '&cropH=' + maxH + '&maxW=' + endW + '&maxH=' + endH + '&rotate=' + rotate + '&flip=' + flip + '';
+    $('preview').src = 'image.php?path=' + encodeURIComponent(path) + '&cropX=' + cropX + '&cropY=' + cropY +
+        '&cropW=' + maxW + '&cropH=' + maxH + '&maxW=' + dimention.width + '&maxH=' + dimention.height +
+        '&rotate=' + rotate + '&flip=' + flip;
 }
