@@ -66,6 +66,11 @@ class incFunctionsTest extends TestCase
         $this->assertEquals($expected, arrayNatsort($list, 'a', 'a', 'desc'));
     }
 
+    public function test_first()
+    {
+        $this->assertEquals(1, first([1, 2]));
+    }
+
     public function test_xhtmlEsc()
     {
         $this->assertEquals('&amp;', xhtmlEsc('&'));
