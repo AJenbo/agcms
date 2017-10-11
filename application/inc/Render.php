@@ -273,7 +273,7 @@ class Render
     {
         $request = request();
 
-        self::$crumbs = [ORM::getOne(Category::class, 0)];
+        array_unshift(self::$crumbs, ORM::getOne(Category::class, 0));
 
         // Brand only search
         if (!$request->get('q')
@@ -510,7 +510,7 @@ class Render
      */
     private static function getRootPages(): array
     {
-        $pages = ORM::getOne(Category::class)->getPages();
+        $pages = ORM::getOne(Category::class, 0)->getPages();
         self::addLoadedTable('bind');
 
         return $pages;
