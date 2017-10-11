@@ -33,14 +33,15 @@
                 </form>
             </div>
         </div>
+        {% if crumbs %}
         <div class="bar" id="crumb">
             <ul>
-                <li><a href="/">Forside</a></li>
                 {% for crumb in crumbs %}
-                <li> &gt; <a href="{{crumb.canonicalLink}}">{{crumb.title}}</a></li>
+                <li>{% if not loop.first %} &gt; {% endif %}<a href="{{crumb.canonicalLink}}">{{crumb.title}}</a></li>
                 {% endfor %}
             </ul>
         </div>
+        {% endif %}
         {% if hasItemsInCart %}
         <div class="bar" id="cart">
             <ul>

@@ -15,12 +15,11 @@
         <div id="wrapper">
             <ul id="crumbs">
                 <li>
-                    <a href="/">Home</a>
                     {% for crumb in crumbs %}
                     <ul>
                         <li>
                             <b style="font-size:16px">-&gt;</b>
-                            <a href="{{crumb['link']}}">
+                            <a href="{{crumb.canonicalLink}}">
                                 {{crumb.name}} {% if crumb.icon %}<img src="{{crumb.icon}}" alt="" />{% endif %}
                             </a>
                     {% endfor %}

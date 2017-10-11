@@ -273,6 +273,8 @@ class Render
     {
         $request = request();
 
+        self::$crumbs = [ORM::getOne(Category::class, 0)];
+
         // Brand only search
         if (!$request->get('q')
             && !$request->get('varenr')
@@ -294,11 +296,10 @@ class Render
         self::$title = self::$title ?: Config::get('site_name');
 
         if (self::$activeCategory) {
-            self::$crumbs = [];
-            foreach (self::$activeCategory->getBranch() as $category) {
+            self::$crumbs = self::$activeCategory->getBranch();
+            foreach (self::$crumbs as $category) {
                 self::$openCategoryIds[] = $category->getId();
                 self::$keywords[] = trim($category->getTitle());
-                self::$crumbs[] = $category;
             }
         }
 
@@ -323,6 +324,10 @@ class Render
         self::loadPageData(self::$activePage);
 
         if ($request->get('sog')) {
+            self::$crumbs[] = [
+                'canonicalLink' => '/?sog=1&q=&sogikke=&minpris=&maxpris=&maerke=',
+                'title' => _('Search'),
+            ];
             self::$pageType = 'search';
             self::$title = 'Søg på ' . Config::get('site_name');
             self::$bodyHtml = '<form action="/" method="get"><table><tr><td>' . _('Contains')
@@ -367,6 +372,10 @@ class Render
             || $request->get('sogikke')
             || $request->get('maerke')
         ) {
+            self::$crumbs[] = [
+                'canonicalLink' => '/?sog=1&q=&sogikke=&minpris=&maxpris=&maerke=',
+                'title' => _('Search'),
+            ];
             self::$pageList = self::searchListe(
                 $request->get('q', ''),
                 (int) $request->get('maerke', 0),
@@ -390,6 +399,7 @@ class Render
             self::$pageType = 'requirement';
             self::$title = self::$activeRequirement->getTitle();
             self::$bodyHtml = self::$activeRequirement->getHtml();
+            self::$crumbs[] = self::$activeRequirement;
         } elseif (self::$pageType === 'index') {
             self::$bodyHtml = ORM::getOne(CustomPage::class, 1)->getHtml();
         }
@@ -420,6 +430,7 @@ class Render
         self::$canonical = $brand->getCanonicalLink();
         self::$title = $brand->getTitle();
         self::$brand = $brand;
+        self::$crumbs[] = $brand;
 
         foreach ($brand->getPages() as $page) {
             if (!$page->isInactive()) {
@@ -499,17 +510,7 @@ class Render
      */
     private static function getRootPages(): array
     {
-        $pages = ORM::getByQuery(
-            Page::class,
-            "
-            SELECT *
-            FROM bind
-            JOIN sider
-            ON bind.side = sider.id
-            WHERE kat = 0
-            ORDER BY sider.`navn` ASC
-            "
-        );
+        $pages = ORM::getOne(Category::class)->getPages();
         self::addLoadedTable('bind');
 
         return $pages;
