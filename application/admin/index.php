@@ -68,7 +68,7 @@ $data = getBasicAdminTemplateData();
 
 switch ($template) {
     case 'admin-redigerside':
-        $page = ORM::getOne(Page::class, $request->get('id'));
+        $page = ORM::getOne(Page::class, $request->get('id', 0));
         $bindings = [];
         $accessories = [];
         if ($page) {
@@ -109,8 +109,6 @@ switch ($template) {
         ] + $data;
         break;
     case 'admin-redigerkat':
-        $id = (int) $request->get('id', 0);
-
         $activeCategoryId = max($request->cookies->get('activekat', -1), -1);
         $data = [
             'textWidth' => Config::get('text_width'),
@@ -120,7 +118,7 @@ switch ($template) {
             'includePages' => false,
             'categoryPath' => $data['hide']['categories'] ? katspath($activeCategoryId)['html'] : 'Select location:',
             'categories' => getCategoryRootStructure(),
-            'category' => $id ? ORM::getOne(Category::class, $id) : null,
+            'category' => ORM::getOne(Category::class, $request->get('id', 0)),
         ] + $data;
         break;
     case 'admin-krav':
@@ -213,15 +211,15 @@ switch ($template) {
         ] + $data;
         break;
     case 'admin-redigerSpecial':
-        $id = (int) $request->get('id', 0);
-        $data['page'] = ORM::getOne(CustomPage::class, $id);
-        if ($id === 1) {
+        $page = ORM::getOne(CustomPage::class, $request->get('id', 0));
+        if ($page->getId() === 1) {
             $data['textWidth'] = Config::get('text_width');
             $data['categories'] = db()->fetchArray(
                 "SELECT id, navn title, icon FROM `kat` WHERE bind = 0 ORDER BY `order`, `navn`"
             );
         }
-        $data['pageWidth'] = $id === 1 ? Config::get('frontpage_width') : Config::get('text_width');
+        $data['page'] = ORM::getOne(CustomPage::class, $request->get('id', 0));
+        $data['pageWidth'] = $page->getId() === 1 ? Config::get('frontpage_width') : Config::get('text_width');
         break;
 
     case 'admin-listsort':
