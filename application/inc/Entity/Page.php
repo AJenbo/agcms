@@ -512,7 +512,7 @@ class Page extends AbstractRenderable
 
     public function addToCategory(Category $category): void
     {
-        db()->query("INSERT INTO `bind` (`side`, `kat`) VALUES (" . $page->getId() . ", " . $category->getId() . ")");
+        db()->query("INSERT INTO `bind` (`side`, `kat`) VALUES (" . $this->getId() . ", " . $category->getId() . ")");
         ORM::forgetByQuery(Page::class, $this->getCategoriesQuery());
     }
 

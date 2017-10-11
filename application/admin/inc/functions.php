@@ -1975,9 +1975,9 @@ function bind(int $pageId, int $categoryId): array
     $page->addToCategory($category);
     $result['added'] = ['categoryId' => $category->getId(), 'path' => $category->getPath()];
 
-    $rootCategoryId = $category->getBranch()[0]->getId();
-    foreach ($page->getCategories() as $category) {
-        if ($category->getBranch()[0]->getParentId() === $rootCategoryId) {
+    $rootCategory = $category->getRoot();
+    foreach ($page->getCategories() as $node) {
+        if ($node->getRoot() === $rootCategory) {
             continue;
         }
 

@@ -139,7 +139,7 @@ class Category extends AbstractRenderable
      *
      * @return int
      */
-    public function getParentId(): ?int
+    private function getParentId(): ?int
     {
         return $this->parentId;
     }
@@ -303,6 +303,10 @@ class Category extends AbstractRenderable
             }
         }
 
+        if (!$this->getId()) {
+            return '';
+        }
+
         return 'kat' . $this->getId() . '-' . clearFileName($title) . '/';
     }
 
@@ -418,9 +422,12 @@ class Category extends AbstractRenderable
      */
     public function isInactive(): bool
     {
-        $branch = $this->getBranch();
+        return (bool) $this->getRoot()->getId();
+    }
 
-        return (bool) reset($branch)->getParentId();
+    public function getRoot(): self
+    {
+        return $this->getBranch()[0];
     }
 
     /**
