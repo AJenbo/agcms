@@ -173,11 +173,6 @@ function clearFileName(string $name): string
  */
 function arrayNatsort(array $aryData, string $strIndex, string $strSortBy, string $strSortType = 'asc'): array
 {
-    //if the parameters are invalid
-    if (!$strIndex || !$strSortBy) {
-        return $aryData;
-    }
-
     //loop through the array
     $arySort = [];
     foreach ($aryData as $aryRow) {

@@ -405,14 +405,36 @@ class Category extends AbstractRenderable
     {
         Render::addLoadedTable('bind');
 
+        if (!in_array($order, ['navn', 'for', 'pris', 'varenr'])) {
+            $sort = 'navn';
+        }
+
         return ORM::getByQuery(
             Page::class,
             "
-            SELECT sider.*
-            FROM bind JOIN sider ON bind.side = sider.id
-            WHERE bind.kat = " . $this->getId() . "
-            ORDER BY sider.`" . db()->esc($order) . "` " . ($reverseOrder ? "DESC" : "ASC")
+            SELECT * FROM sider
+            WHERE id IN(SELECT side FROM bind WHERE kat = " . $this->getId() . ")
+            ORDER BY `" . db()->esc($order) . "` " . ($reverseOrder ? "DESC" : "ASC")
         );
+
+        $objectArray = [];
+        foreach ($pages as $page) {
+            $objectArray[] = [
+                'id' => $page->getId(),
+                'navn' => $page->getTitle(),
+                'for' => $page->getOldPrice(),
+                'pris' => $page->getPrice(),
+                'varenr' => $page->getSku(),
+                'object' => $page,
+            ];
+        }
+        $objectArray = arrayNatsort($objectArray, 'id', $order, $reverseOrder ? 'desc' : '');
+        $pages = [];
+        foreach ($objectArray as $item) {
+            $pages[] = $item['object'];
+        }
+
+        return $pages;
     }
 
     /**

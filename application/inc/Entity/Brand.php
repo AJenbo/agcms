@@ -123,7 +123,11 @@ class Brand extends AbstractRenderable
      */
     public function getPages(string $order = 'navn'): array
     {
-        return ORM::getByQuery(
+        if (!in_array($order, ['navn', 'for', 'pris', 'varenr'])) {
+            $order = 'navn';
+        }
+
+        $pages = ORM::getByQuery(
             Page::class,
             "
             SELECT sider.*
@@ -132,6 +136,25 @@ class Brand extends AbstractRenderable
             ORDER BY sider.`" . db()->esc($order) . "` ASC
             "
         );
+
+        $objectArray = [];
+        foreach ($pages as $page) {
+            $objectArray[] = [
+                'id' => $page->getId(),
+                'navn' => $page->getTitle(),
+                'for' => $page->getOldPrice(),
+                'pris' => $page->getPrice(),
+                'varenr' => $page->getSku(),
+                'object' => $page,
+            ];
+        }
+        $objectArray = arrayNatsort($objectArray, 'id', $order);
+        $pages = [];
+        foreach ($objectArray as $item) {
+            $pages[] = $item['object'];
+        }
+
+        return $pages;
     }
 
     // ORM related functions

@@ -790,30 +790,6 @@ class Render
      */
     public static function getKatHtml(Category $category, string $sort): string
     {
-        if (!in_array($sort, ['navn', 'for', 'pris', 'varenr'])) {
-            $sort = 'navn';
-        }
-
-        //Get pages list
-        $pages = $category->getPages($sort);
-
-        $objectArray = [];
-        foreach ($pages as $page) {
-            $objectArray[] = [
-                'id' => $page->getId(),
-                'navn' => $page->getTitle(),
-                'for' => $page->getOldPrice(),
-                'pris' => $page->getPrice(),
-                'varenr' => $page->getSku(),
-                'object' => $page,
-            ];
-        }
-        $objectArray = arrayNatsort($objectArray, 'id', $sort);
-        $pages = [];
-        foreach ($objectArray as $item) {
-            $pages[] = $item['object'];
-        }
-
         $html = '<table class="tabel"><thead><tr><td><a href="" onclick="x_getKat(\''
         . $category->getId()
         . '\', \'navn\', inject_html);return false">Titel</a></td><td><a href="" onclick="x_getKat(\''
@@ -825,6 +801,7 @@ class Render
         . '\', \'varenr\', inject_html);return false">#</a></td></tr></thead><tbody>';
 
         $isEven = false;
+        $pages = $category->getPages($sort);
         foreach ($pages as $page) {
             $oldPrice = '';
             if ($page->getOldPrice()) {
