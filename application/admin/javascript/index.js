@@ -225,8 +225,8 @@ function updateKat(id)
     var icon = $('icon').value;
     icon = icon ? icon : null;
 
-    x_updateKat(id, $('navn').value, getRadio('kat'), $('vis').value, $('email').value, $('custom_sort_subs').value,
-        $('subMenusOrder').value, icon, generic_r);
+    x_updateKat(id, $('navn').value, $('vis').value, $('email').value, $('custom_sort_subs').value,
+        $('subMenusOrder').value, getRadio('kat'), icon, generic_r);
     return false;
 }
 

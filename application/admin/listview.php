@@ -33,9 +33,9 @@ $sortOptions = [
 
 $sort = isset($sortOptions[$sort]) ? $sort : 'navn';
 
-$categoryId = is_numeric(request()->get('kat')) ? (int) request()->get('kat') : null;
-if ($categoryId < 1) {
-    $categories = getPricelistRootStructure($sort, $categoryId);
+$categoryId = request()->get('kat', '');
+if ($categoryId === '') {
+    $categories = ORM::getByQuery(Category::class, "SELECT * FROM kat WHERE bind IS NULL");
 } else {
     $categories = [ORM::getOne(Category::class, $categoryId)];
 }

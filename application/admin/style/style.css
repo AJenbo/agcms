@@ -3,6 +3,9 @@
     font-family:Verdana, Arial, Helvetica, sans-serif;
     color:#3F3D3D;
 }
+body, table, input, select {
+    font-size:10px;
+}
 h2 {
     font-size:18px;
 }

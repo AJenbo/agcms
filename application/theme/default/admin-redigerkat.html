@@ -75,7 +75,9 @@
             <option value="1"{% if category.renderMode == 1 or not category %} selected="selected"{% endif %}>Gallery</option>
             <option value="2"{% if category.renderMode == 2 %} selected="selected"{% endif %}>List</option>
         </select>
-        {% include 'partial-admin-katlist.html' with {'activeCategoryId': category.parent.id} %}
+        {% if not category or category.parent %}
+        {% include 'partial-admin-katlist.html' %}
+        {% endif %}
         <br />
     </div>
     <p style="display:none;"></p>

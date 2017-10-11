@@ -1,30 +1,34 @@
 {% spaceless %}
-{% for category in categories %}
+{% for category in node.children %}
+{% set hasContent = (includePages and category.hasContent) or category.hasChildren %}
+{% set isOpen = hasContent and category.id in openCategories %}
 <div id="kat{{category.id}}">
-    {% if category.hasContent %}
-    <img{% if category.subs or category.pages %} style="display:none"{% endif %} src="images/+.gif" id="kat{{category.id}}expand" onclick="kat_expand({{category.id}}, {{includePages|json_encode()}}, {{input|json_encode()}}, kat_expand_r);" height="16" width="16" alt="+" title="" />
-    <img{% if not category.subs and not category.pages %} style="display:none"{% endif %} src="images/-.gif" id="kat{{category.id}}contract" onclick="kat_contract({{category.id}});" height="16" width="16" alt="-" title="" />
+    {% if hasContent %}
+    <img{% if isOpen %} style="display:none"{% endif %} src="images/+.gif" id="kat{{category.id}}expand" onclick="expandCategory({{category.id}}, {{inputType|json_encode()}}, expandCategory_r);" height="16" width="16" alt="+" title="" />
+    <img{% if not isOpen %} style="display:none"{% endif %} src="images/-.gif" id="kat{{category.id}}contract" onclick="kat_contract({{category.id}});" height="16" width="16" alt="-" title="" />
     {% endif %}
-    <a class="kat"{% if not category.hasContent %} style="margin-left:16px"{% endif %}{% if input == 'categories' %} onclick="this.firstChild.checked=true;setCookie('activekat', {{category.id}}, 360);"{% elseif not input %} href="{% if category.id %}?side=redigerkat&id={{category.id}}{% else %}?side=redigerSpecial&id=1{% endif %}"{% endif %}>
-        {% if input == 'categories' %}<input name="kat" type="radio" value="{{category.id}}"{% if activeCategoryId == category.id %} checked="checked"{% endif %} />{% endif %}
-        <img src="{% if category.icon %}{{category.icon}}{% else %}{% if not category.id %}images/page.png{% else %}images/folder.png{% endif %}{% endif %}" width="16" height="16" alt="" /> {{category.title}}
+    <a class="kat"{% if not hasContent %} style="margin-left:16px"{% endif %}{% if inputType == 'categories' %} onclick="this.firstChild.checked=true;setCookie('activekat', {{category.id}}, 360);"{% elseif not inputType %} href="{% if category.id %}?side=redigerkat&id={{category.id}}{% else %}?side=redigerSpecial&id=1{% endif %}"{% endif %}>
+        {% if inputType == 'categories' %}<input name="kat" type="radio" value="{{category.id}}"{% if selectedCategory.id == category.id %} checked="checked"{% endif %} />{% endif %}
+        <img src="{% if category.icon %}{{category.icon.path}}{% else %}{% if category.id == 0 %}images/page.png{% else %}images/folder.png{% endif %}{% endif %}" width="16" height="16" alt="" /> {{category.title}}
     </a>
-    {% if category.hasContent %}
+    {% if hasContent %}
     <div id="kat{{category.id}}content" style="margin-left:16px">
-        {% if category.subs or category.pages %}
-        {% include 'partial-admin-kat_expand.html' with {'categories': category.subs, 'pages': category.pages} %}
+        {% if isOpen %}
+        {% include 'partial-admin-kat_expand.html' with {'node': category} %}
         {% endif %}
     </div>
     {% endif %}
 </div>
 {% endfor %}
-{% for page in pages %}
-<div id="bind{{category.id}}p{{page.id}}" class="side{{page.id}}">
-    <a{% if input != 'pages' %} style="margin-left:16px"{% endif %} class="side"{% if not input %} href="?side=redigerside&id={{page.id}}{% endif %}">
-        {% if input == 'pages' %}<input name="side" type="radio" value="{{page.id}}" />{% endif %}
+{% if includePages %}
+{% for page in node.pages %}
+<div id="bind{{node.id}}p{{page.id}}" class="side{{page.id}}">
+    <a class="side"{% if inputType != 'pages' %} style="margin-left:16px" href="?side=redigerside&id={{page.id}}"{% endif %}>
+        {% if inputType == 'pages' %}<input name="side" type="radio" value="{{page.id}}" />{% endif %}
         <img src="images/page.png" width="16" height="16" alt="" /> {{page.title}}
         {% if page.sku %}<em>#:{{page.sku}}</em>{% endif %}
     </a>
 </div>
 {% endfor %}
+{% endif %}
 {% endspaceless %}

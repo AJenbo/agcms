@@ -4,7 +4,9 @@ use AGCMS\Config;
 use AGCMS\Entity\Category;
 use AGCMS\Entity\Contact;
 use AGCMS\Entity\CustomPage;
+use AGCMS\Entity\Brand;
 use AGCMS\Entity\Page;
+use AGCMS\Entity\Requirement;
 use AGCMS\ORM;
 use AGCMS\Render;
 use Sajax\Sajax;
@@ -26,7 +28,7 @@ Sajax::export(
         'get_pages_with_mismatch_bindings'  => ['method' => 'GET', 'asynchronous' => false],
         'get_size_of_files'                 => ['method' => 'GET', 'asynchronous' => false],
         'get_subscriptions_with_bad_emails' => ['method' => 'GET', 'asynchronous' => false],
-        'kat_expand'                        => ['method' => 'GET'],
+        'expandCategory'                    => ['method' => 'GET'],
         'katspath'                          => ['method' => 'GET'],
         'listRemoveRow'                     => ['method' => 'POST'],
         'listSavetRow'                      => ['method' => 'POST'],
@@ -68,30 +70,30 @@ $data = getBasicAdminTemplateData();
 
 switch ($template) {
     case 'admin-redigerside':
-        $page = ORM::getOne(Page::class, $request->get('id', 0));
+        $id = $request->get('id');
+        $selectedId = $request->cookies->get('activekat', -1);
+        $page = null;
         $bindings = [];
         $accessories = [];
-        if ($page) {
+        if ($id !== null) {
             /** @var Page */
-            foreach ($page->getCategories() as $category) {
-                $bindings[$category->getId()] = $category->getPath();
-            }
+            $page = ORM::getOne(Page::class, $id);
+            if ($page) {
+                foreach ($page->getCategories() as $category) {
+                    $bindings[$category->getId()] = $category->getPath();
+                }
 
-            foreach ($page->getAccessories() as $accessory) {
-                $category = $accessory->getPrimaryCategory();
-                $accessories[$accessory->getId()] = $category->getPath() . $accessory->getTitle();
+                foreach ($page->getAccessories() as $accessory) {
+                    $category = $accessory->getPrimaryCategory();
+                    $accessories[$accessory->getId()] = $category->getPath() . $accessory->getTitle();
+                }
             }
         }
 
-        $activeCategoryId = max($request->cookies->get('activekat', -1), -1);
         $data = [
             'textWidth' => Config::get('text_width'),
             'thumbWidth' => Config::get('thumb_width'),
-            'input' => 'categories',
-            'includePages' => false,
-            'categoryPath' => $data['hide']['categories'] ? katspath($activeCategoryId)['html'] : 'Select location:',
-            'activeCategoryId' => $activeCategoryId,
-            'categories' => getCategoryRootStructure(),
+            'siteTree' => getSiteTreeData('categories', $selectedId),
             'requirementOptions' => getRequirementOptions(),
             'brandOptions' => getBrandOptions(),
             'page' => $page,
@@ -100,53 +102,43 @@ switch ($template) {
         ] + $data;
         break;
     case 'admin-getSiteTree':
-        $customPages = ORM::getByQuery(CustomPage::class, "SELECT * FROM `special` WHERE `id` > 1 ORDER BY `navn`");
-        $data = [
-            'categories' => getCategoryRootStructure(true),
-            'customPages' => $customPages,
-            'includePages' => true,
-            'input' => '',
-        ] + $data;
+        $data['siteTree'] = getSiteTreeData();
         break;
     case 'admin-redigerkat':
-        $activeCategoryId = max($request->cookies->get('activekat', -1), -1);
+        $id = $request->get('id');
+        $selectedId = $request->cookies->get('activekat', -1);
+        $category = null;
+        if ($id !== null) {
+            $category = ORM::getOne(Category::class, $id);
+            if ($category) {
+                $selectedId = $category->getParent() ? $category->getParent()->getId() : null;
+            }
+        }
+
         $data = [
             'textWidth' => Config::get('text_width'),
             'emails' => array_keys(Config::get('emails')),
-            'activeCategoryId' => $activeCategoryId,
-            'input' => 'categories',
+            'siteTree' => getSiteTreeData('categories', $selectedId),
             'includePages' => false,
-            'categoryPath' => $data['hide']['categories'] ? katspath($activeCategoryId)['html'] : 'Select location:',
-            'categories' => getCategoryRootStructure(),
-            'category' => ORM::getOne(Category::class, $request->get('id', 0)),
+            'category' => $category,
         ] + $data;
         break;
     case 'admin-krav':
-        $data = [
-            'requirements' => db()->fetchArray("SELECT id, navn title FROM `krav` ORDER BY navn"),
-        ] + $data;
+        $data['requirements'] = ORM::getByQuery(Requirement::class, "SELECT * FROM `krav` ORDER BY navn");
         break;
     case 'admin-editkrav':
-        $requirement = ['id' => 0, 'html' => ''];
-        $id = (int) $request->get('id', 0);
-        if ($id) {
-            $requirement = db()->fetchOne("SELECT id, navn title, text html FROM `krav` WHERE id = " . $id);
-        }
-        $data = [
-            'textWidth' => Config::get('text_width'),
-            'requirement' => $requirement,
-        ] + $data;
+        $data['textWidth'] = Config::get('text_width');
+        $data['requirement'] = ORM::getOne(Requirement::class, $request->get('id', 0));
         break;
     case 'admin-maerker':
-        $data['brands'] = db()->fetchArray("SELECT id, navn title, ico icon, link FROM `maerke` ORDER BY navn");
+        $data['brands'] = ORM::getByQuery(Brand::class, "SELECT * FROM `maerke` ORDER BY navn");
         break;
     case 'admin-search':
         $data['text'] = $request->get('text');
         $data['pages'] = findPages($data['text']);
         break;
     case 'admin-updatemaerke':
-        $id = (int) $request->get('id', 0);
-        $data['brand'] = db()->fetchOne("SELECT id, navn title, link, ico icon FROM `maerke` WHERE id = " . $id);
+        $data['brand'] = ORM::getOne(Brand::class, $request->get('id', 0));
         break;
     case 'admin-emaillist':
         $data['newsletters'] = db()->fetchArray(
@@ -155,7 +147,6 @@ switch ($template) {
         break;
     case 'admin-viewemail':
         $id = (int) $request->get('id', 0);
-        $data['newsletter'] = ['id' => 0, 'html' => '', 'interests' => []];
         $data['recipientCount'] = 0;
         if ($id) {
             $data['newsletter'] = db()->fetchOne(
@@ -175,28 +166,7 @@ switch ($template) {
         $data['contacts'] = ORM::getByQuery(Contact::class, "SELECT * FROM email ORDER BY " . $order);
         break;
     case 'admin-editContact':
-        $id = (int) $request->get('id', 0);
-        $data['contact'] = ['id' => 0, 'interests' => []];
-        if ($id) {
-            $data['contact'] = db()->fetchOne(
-                "
-                SELECT
-                    id,
-                    interests,
-                    navn name,
-                    tlf1 phone1,
-                    tlf2 phone2,
-                    email,
-                    adresse address,
-                    land country,
-                    post postcode,
-                    `by` city,
-                    kartotek newsletter
-                FROM `email`
-                WHERE `id` = " . $id
-            );
-            $data['contact']['interests'] = explode('<', $data['contact']['interests']);
-        }
+        $data['contact'] = ORM::getOne(Contact::class, $request->get('id', 0));
         $data['interests'] = Config::get('interests', []);
         break;
     case 'admin-get_db_error':
@@ -211,15 +181,12 @@ switch ($template) {
         ] + $data;
         break;
     case 'admin-redigerSpecial':
-        $page = ORM::getOne(CustomPage::class, $request->get('id', 0));
-        if ($page->getId() === 1) {
-            $data['textWidth'] = Config::get('text_width');
-            $data['categories'] = db()->fetchArray(
-                "SELECT id, navn title, icon FROM `kat` WHERE bind = 0 ORDER BY `order`, `navn`"
-            );
-        }
         $data['page'] = ORM::getOne(CustomPage::class, $request->get('id', 0));
-        $data['pageWidth'] = $page->getId() === 1 ? Config::get('frontpage_width') : Config::get('text_width');
+        $data['pageWidth'] = Config::get('text_width');
+        if ($data['page']->getId() === 1) {
+            $data['pageWidth'] = Config::get('frontpage_width');
+            $data['categories'] = ORM::getOne(Category::class, 0)->getChildren();
+        }
         break;
 
     case 'admin-listsort':

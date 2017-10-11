@@ -268,8 +268,7 @@ class Category extends AbstractRenderable
         }
 
         if ($this->visable === null) {
-            Render::addLoadedTable('bind');
-            if (db()->fetchOne("SELECT kat FROM `bind` WHERE `kat` = " . $this->getId())) {
+            if ($this->hasPages()) {
                 $this->visable = true;
 
                 return $this->visable;
@@ -282,6 +281,7 @@ class Category extends AbstractRenderable
                     return $this->visable;
                 }
             }
+
             $this->visable = false;
         }
 
@@ -435,6 +435,18 @@ class Category extends AbstractRenderable
         }
 
         return $pages;
+    }
+
+    public function hasPages(): bool
+    {
+        Render::addLoadedTable('bind');
+
+        return (bool) db()->fetchOne("SELECT kat FROM `bind` WHERE `kat` = " . $this->getId());
+    }
+
+    public function hasContent(): bool
+    {
+        return $this->hasChildren() || $this->hasPages();
     }
 
     /**

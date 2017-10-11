@@ -9,7 +9,6 @@ use AGCMS\Entity\File;
 use AGCMS\Entity\Invoice;
 use AGCMS\Entity\Page;
 use AGCMS\Entity\Requirement;
-use AGCMS\Entity\RootCategory;
 use AGCMS\Entity\Table;
 use AGCMS\Entity\User;
 use AGCMS\EpaymentAdminService;
@@ -425,99 +424,45 @@ function katspath(int $id): array
     ];
 }
 
-function getOpenCategories(): array
+function getOpenCategories(int $selectedId = null): array
 {
-    $activeCategoryId = max(request()->cookies->get('activekat', -1), -1);
     $openCategories = explode('<', request()->cookies->get('openkat', ''));
     $openCategories = array_map('intval', $openCategories);
-    $openCategories = array_flip($openCategories);
 
-    $category = ORM::getOne(Category::class, $activeCategoryId);
-    if ($category) {
-        foreach ($category->getBranch() as $category) {
-            $openCategories[$category->getId()] = true;
+    if ($selectedId !== null) {
+        $category = ORM::getOne(Category::class, $selectedId);
+        if ($category) {
+            foreach ($category->getBranch() as $category) {
+                $openCategories[] = $category->getId();
+            }
         }
     }
 
     return $openCategories;
 }
 
-function getCategoryRootStructure(bool $includePages = false): array
+function getSiteTreeData(string $inputType = '', int $selectedId = null): array
 {
-    $openCategories = getOpenCategories();
-    $categories = [];
-    foreach ([-1 => _('Inactive'), 0 => _('Frontpage')] as $categoryId => $name) {
-        $pageSql = "";
-        if ($includePages) {
-            $pageSql = " UNION SELECT kat FROM `bind` WHERE kat = " . $categoryId;
-        }
-
-        $subs = [];
-        $pages = [];
-        if (isset($openCategories[$categoryId])) {
-            $subs = getCategoryStructure($categoryId, $openCategories, $includePages);
-            if ($includePages) {
-                $pages = ORM::getOne(Category::class, $categoryId)->getPages();
-            }
-        }
-
-        $categories[] = [
-            'id'         => $categoryId,
-            'hasContent' => (bool) db()->fetchOne("SELECT id FROM `kat` WHERE bind = " . $categoryId . $pageSql),
-            'subs'       => $subs,
-            'pages'      => $pages,
-            'icon'       => '',
-            'title'      => $name,
-        ];
-    }
-
-    return $categories;
+    return [
+        'selectedCategory' => $selectedId !== null ? ORM::getOne(Category::class, $selectedId) : null,
+        'openCategories' => getOpenCategories($selectedId),
+        'includePages' => (!$inputType || $inputType === 'pages'),
+        'inputType' => $inputType,
+        'node' => ['children' => ORM::getByQuery(Category::class, "SELECT * FROM kat WHERE bind IS NULL")],
+        'customPages' => ORM::getByQuery(CustomPage::class, "SELECT * FROM `special` WHERE `id` > 1 ORDER BY `navn`"),
+    ];
 }
 
-function getCategoryStructure(int $id, array $openCategories = [], bool $includePages = false): array
+function expandCategory(int $categoryId, string $inputType = ''): array
 {
-    $pageSql = "'0'";
-    if ($includePages) {
-        $pageSql = "EXISTS(SELECT * FROM `bind` WHERE kat = kat.id)";
-    }
-    $categories = db()->fetchArray(
-        "
-        SELECT kat.id,
-            kat.icon,
-            kat.navn title,
-            EXISTS(SELECT * FROM `kat` child WHERE kat.id = child.bind) or $pageSql hasContent
-        FROM `kat` WHERE bind = " . $id . " ORDER BY `order`, `navn`
-        "
-    );
-
-    foreach ($categories as $index => $category) {
-        if (isset($openCategories[$category['id']])) {
-            $categories[$index]['subs'] = getCategoryStructure($category['id'], $openCategories, $includePages);
-            $categories[$index]['pages'] = [];
-            if ($includePages) {
-                $categories[$index]['pages'] = ORM::getOne(Category::class, $category['id'])->getPages();
-            }
-        }
-    }
-
-    return $categories;
-}
-
-function kat_expand(int $categoryId, bool $includePages = false, string $input = ''): array
-{
-    $openCategories = getOpenCategories();
     $data = [
-        'categories'        => getCategoryStructure($categoryId, $openCategories, $includePages),
-        'pages'             => $includePages ? ORM::getOne(Category::class, $categoryId)->getPages() : [],
-        'categoryBranchIds' => [],
-        'openCategories'    => explode('<', request()->cookies->get('openkat', '')),
-        'input'             => $input,
-        'includePages'      => $includePages,
+        'openCategories' => getOpenCategories(),
+        'includePages'   => (!$inputType || $inputType === 'pages'),
+        'inputType'      => $inputType,
+        'node'           => ORM::getOne(Category::class, $categoryId),
     ];
 
-    $html = Render::render('partial-admin-kat_expand', $data);
-
-    return ['id' => $categoryId, 'html' => $html];
+    return ['id' => $categoryId, 'html' => Render::render('partial-admin-kat_expand', $data)];
 }
 
 /**
@@ -791,20 +736,6 @@ function newfaktura(): int
     );
 
     return db()->insert_id;
-}
-
-function getPricelistRootStructure(string $sort, int $categoryId = null): array
-{
-    $categories = [];
-    foreach ([-1 => _('Inactive'), 0 => _('Frontpage')] as $id => $name) {
-        if ($categoryId !== null && $categoryId !== $id) {
-            continue;
-        }
-
-        $categories[] = new RootCategory(['id' => $id, 'title' => $name]);
-    }
-
-    return $categories;
 }
 
 /**
@@ -2050,19 +1981,26 @@ function updateSide(
 function updateKat(
     int $id,
     string $navn,
-    string $bind,
-    string $vis,
+    int $vis,
     string $email,
-    string $customSortSubs,
+    int $customSortSubs,
     string $subsorder,
+    int $bind = null,
     string $icon = null
 ) {
     $category = ORM::getOne(Category::class, $id);
-    $parent = ORM::getOne(Category::class, $bind);
-    foreach ($parent->getBranch() as $node) {
-        if ($node->getId() === $category->getId()) {
-            return ['error' => _('The category can not be placed under itself.')];
+    if ($category->getParent() && $bind === null) {
+        return ['error' => _('You must select a parent category')];
+    }
+
+    if ($bind !== null) {
+        $parent = ORM::getOne(Category::class, $bind);
+        foreach ($parent->getBranch() as $node) {
+            if ($node->getId() === $category->getId()) {
+                return ['error' => _('The category can not be placed under itself.')];
+            }
         }
+        $category->setParentId($bind);
     }
 
     //Set the order of the subs
@@ -2072,7 +2010,6 @@ function updateKat(
 
     //Update kat
     $category->setTitle($navn)
-        ->setParentId($bind)
         ->setRenderMode($vis)
         ->setEmail($email)
         ->setWeightedChildren($customSortSubs)
@@ -2084,9 +2021,7 @@ function updateKat(
 
 function updateKatOrder(string $order)
 {
-    $order = explode(',', $order);
-
-    foreach ($order as $weight => $id) {
+    foreach (explode(',', $order) as $weight => $id) {
         ORM::getOne(Category::class, $id)->setWeight($weight)->save();
     }
 }

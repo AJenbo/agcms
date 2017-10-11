@@ -1,8 +1,4 @@
 @charset "utf-8";
-body, table, input, select {
-    font-size:10px;
-    font-family:Verdana, Geneva, sans-serif;
-}
 
 #data select, #data input {
     border:1px dashed #999999;

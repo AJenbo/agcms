@@ -187,14 +187,14 @@ function kat_contract(id)
     setCookie("openkat", openkat, 360);
 }
 
-function kat_expand(id, includePage, input)
+function expandCategory(id, input = '')
 {
-    if(includePage) {
+    if(input === '') {
         setCookie("activekat", id, 360);
     }
-    if($("kat" + id + "content").innerHTML == "") {
+    if($("kat" + id + "content").innerHTML === "") {
         $("loading").style.visibility = "";
-        x_kat_expand(id, includePage, input, kat_expand_r);
+        x_expandCategory(id, input, expandCategory_r);
 
         return;
     }
@@ -216,7 +216,7 @@ function appendOpenCatCookie(id)
     setCookie("openkat", openkat, 360);
 }
 
-function kat_expand_r(data)
+function expandCategory_r(data)
 {
     if(!generic_r(data)) {
         return;
@@ -366,7 +366,7 @@ function bindTree_r(data)
 
     if(data.added && $("kat" + data.added.categoryId + "content").innerHTML != "") {
         var display = $("kat" + data.added.categoryId + "content").style.display;
-        x_siteList_expand(data.added.categoryId, 0, kat_expand_r);
+        x_siteList_expand(data.added.categoryId, 0, expandCategory_r);
         $("kat" + data.added.categoryId + "content").style.display = display;
     }
 }
@@ -445,7 +445,7 @@ function movekat_r(data)
         removeTagById(data.id);
         if($("kat" + data.update + "content").innerHTML != "") {
             var display = $("kat" + data.update + "content").style.display;
-            x_kat_expand(data.update, false, "categories", kat_expand_r);
+            x_expandCategory(data.update, "categories", expandCategory_r);
             $("kat" + data.update + "content").style.display = display;
         }
     }

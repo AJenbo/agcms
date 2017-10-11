@@ -2,7 +2,7 @@
 
 {% block canvas %}
 <div id="headline">Overview</div><div>
-{% include 'partial-admin-kat_expand.html' %}
+{% include 'partial-admin-kat_expand.html' with siteTree only %}
 {% for customPage in customPages %}
 <div style="margin-left: 16px;">
     <a href="?side=redigerSpecial&id={{customPage.id}}">

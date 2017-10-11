@@ -153,12 +153,14 @@ class Contact extends AbstractEntity
 
     public function setInterests(string $interests): self
     {
+        $interests = explode('<', $interests);
+        $interests = array_map('html_entity_decode', $interests);
         $this->interests = $interests;
 
         return $this;
     }
 
-    public function getInterests(): string
+    public function getInterests(): array
     {
         return $this->interests;
     }
@@ -229,6 +231,9 @@ class Contact extends AbstractEntity
     {
         $this->setTimeStamp(time());
 
+        $interests = array_map('htmlspecialchars', $this->interests);
+        $interests = implode('<', $interests);
+
         return [
             'dato'      => "NOW()",
             'navn'      => db()->eandq($this->name),
@@ -240,7 +245,7 @@ class Contact extends AbstractEntity
             'tlf1'      => db()->eandq($this->phone1),
             'tlf2'      => db()->eandq($this->phone2),
             'kartotek'  => db()->eandq((int) $this->newsletter), // enum :(
-            'interests' => db()->eandq($this->interests),
+            'interests' => db()->eandq($interests),
             'ip'        => db()->eandq($this->ip),
         ];
     }

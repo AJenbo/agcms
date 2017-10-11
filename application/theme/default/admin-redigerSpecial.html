@@ -8,13 +8,19 @@
 <div id="headline">Edit {{page.title}}</div>
 <form action="" method="post" onsubmit="return updateSpecial({{page.id}});">
 <input type="submit" accesskey="s" style="width:1px; height:1px; position:absolute; top: -20px; left:-20px;" />
+    <script type="text/javascript"><!--
+    initRTE("/admin/rtef/images/", "/admin/rtef/", "/theme/{{theme}}/style/rtef-text.css", true);
+    writeRichText("text", {{page.html|json_encode()|raw}}, "", {{pageWidth + 32}}, 572, true, false, false);
+    //--></script>
     {% if categories %}
-    Sort maincategories: <ul id="subMenus" style="width:{{textWidth}}px;">
-    {% for categoriy in categories %}
+    <br />
+    Sort maincategories:
+    <ul id="subMenus">
+        {% for categoriy in categories %}
         <li id="item_{{categoriy.id}}">
-            <img src="{% if categoriy.icon %}{{categoriy.icon}}{% else %}images/folder.png{% endif %}" alt=""> {{categoriy.title}}
+            <img src="{% if categoriy.icon %}{{categoriy.icon.path}}{% else %}images/folder.png{% endif %}" alt=""> {{categoriy.title}}
         </li>
-    {% endfor %}
+        {% endfor %}
 
     </ul>
     <input type="hidden" id="subMenusOrder" /><script type="text/javascript"><!--
@@ -37,11 +43,6 @@
     newOrder = newOrder.replace(/&/g,",");
     $('subMenusOrder').value = newOrder;
     --></script>
-    <br />
     {% endif %}
-    <script type="text/javascript"><!--
-    initRTE("/admin/rtef/images/", "/admin/rtef/", "/theme/{{theme}}/style/rtef-text.css", true);
-    writeRichText("text", {{page.html|json_encode()|raw}}, "", {{pageWidth + 32}}, 572, true, false, false);
-    //--></script>
 </form>
 {% endblock %}
