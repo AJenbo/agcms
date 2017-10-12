@@ -250,6 +250,7 @@ class Render
         $lastModified = DateTime::createFromFormat('U', $timestamp);
         $response->setLastModified($lastModified);
         $response->setEtag((string) $timestamp);
+        $response->setMaxAge(0);
 
         if ($response->isNotModified(request())) {
             $response->send();
@@ -871,10 +872,10 @@ class Render
         $request = request();
         $response = self::getResponse();
 
-        if (!$request->isMethod('HEAD') && !$response->isNotModified($request)) {
-            $content = self::render($template, $data);
-            $response->setContent($content);
-        }
+        $content = self::render($template, $data);
+        $response->setContent($content);
+
+        $response->isNotModified($request); // Set up 304 response if relevant
 
         $response->send();
     }
