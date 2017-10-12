@@ -154,7 +154,7 @@ switch ($template) {
             );
             $data['newsletter']['interests'] = explode('<', $data['newsletter']['interests']);
         }
-        $data['recipientCount'] = countEmailTo($data['newsletter']['interests']);
+        $data['recipientCount'] = countEmailTo($data['newsletter']['interests'] ?? []);
         $data['interests'] = Config::get('interests', []);
         $data['textWidth'] = Config::get('text_width');
         break;

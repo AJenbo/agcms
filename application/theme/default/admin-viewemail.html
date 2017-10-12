@@ -44,7 +44,7 @@
         <input class="admin_name" name="subject" id="subject" value="{{newsletter.subject}}" size="127" style="width:{{textWidth - 34}}px" />
         <script type="text/javascript"><!--
         initRTE('/admin/rtef/images/', '/admin/rtef/', '/theme/email.css', true);
-        writeRichText('text', {{newsletter.html|json_encode()|raw}}, '', {{textWidth + 32}}, 422, true, false, false);
+        writeRichText("text", {{newsletter.html|trim|json_encode()|raw}}, "", {{textWidth + 32}}, 422, true, false, false);
         //--></script>
         {% else %}
         <br />Subject: {{newsletter.subject}}

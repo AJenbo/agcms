@@ -630,7 +630,7 @@ function listdirs(string $path, bool $move = false): array
  */
 function updateuser(int $id, array $updates)
 {
-    if (curentUser()->hasAccess(User::ADMINISTRATOR) && curentUser()->getId() != $id) {
+    if (!curentUser()->hasAccess(User::ADMINISTRATOR) && curentUser()->getId() != $id) {
         return ['error' => _('You do not have the requred access level to change other users.')];
     }
 
@@ -2079,7 +2079,7 @@ function sletSide(int $pageId): array
 {
     ORM::getOne(Page::class, $pageId)->delete();
 
-    return ['class' => 'side' . $sideId];
+    return ['class' => 'side' . $pageId];
 }
 
 function copytonew(int $id): int

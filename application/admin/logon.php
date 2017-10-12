@@ -11,4 +11,4 @@ require_once _ROOT_ . '/admin/inc/functions.php';
 
 session_start();
 checkUserLoggedIn();
-ORM::getOne(User::class, curentUser()->getId())->setLastLogin(time())->save();
+curentUser()->setLastLogin(time())->save();

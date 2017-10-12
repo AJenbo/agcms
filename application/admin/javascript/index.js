@@ -225,8 +225,10 @@ function updateKat(id)
     var icon = $('icon').value;
     icon = icon ? icon : null;
 
-    x_updateKat(id, $('navn').value, $('vis').value, $('email').value, $('custom_sort_subs').value,
-        $('subMenusOrder').value, getRadio('kat'), icon, generic_r);
+    var hasWeightedChildren = $('custom_sort_subs').value ? 1 : 0;
+
+    x_updateKat(id, $('navn').value, $('vis').value, $('email').value, hasWeightedChildren, $('subMenusOrder').value,
+        getRadio('kat'), icon, generic_r);
     return false;
 }
 
@@ -317,6 +319,7 @@ function addNewItem()
 
 function saveListOrder(id)
 {
+    $('loading').style.visibility = '';
     var newListOrder = '';
     var listOrder = $('listOrder');
     for(var i = 0; i < listOrder.childNodes.length; i++) {
