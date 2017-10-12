@@ -17,7 +17,7 @@ function bootStrap(): void
     require_once __DIR__ . '/../vendor/autoload.php';
 
     defined('_ROOT_') || define('_ROOT_', realpath(__DIR__ . '/..'));
-    if (Config::get('enviroment', 'develop') === 'develop') {
+    if ('develop' === Config::get('enviroment', 'develop')) {
         ini_set('display_errors', 1);
         error_reporting(-1);
     }
@@ -77,7 +77,7 @@ function redirect(string $url, int $status = Response::HTTP_SEE_OTHER): void
     }
     if (empty($url['path'])) {
         $url['path'] = parse_url(request()->getRequestUri(), PHP_URL_PATH);
-    } elseif (mb_substr($url['path'], 0, 1) !== '/') {
+    } elseif ('/' !== mb_substr($url['path'], 0, 1)) {
         //The redirect is relative to current path
         $path = [];
         $requestPath = parse_url(request()->getRequestUri(), PHP_URL_PATH);
@@ -102,14 +102,14 @@ function redirect(string $url, int $status = Response::HTTP_SEE_OTHER): void
  */
 function unparseUrl(array $parsedUrl): string
 {
-    $scheme   = !empty($parsedUrl['scheme']) ? $parsedUrl['scheme'] . '://' : '';
-    $host     = !empty($parsedUrl['host']) ? $parsedUrl['host'] : '';
-    $port     = !empty($parsedUrl['port']) ? ':' . $parsedUrl['port'] : '';
-    $user     = !empty($parsedUrl['user']) ? $parsedUrl['user'] : '';
-    $pass     = !empty($parsedUrl['pass']) ? ':' . $parsedUrl['pass'] : '';
-    $pass     .= ($user || $pass) ? '@' : '';
-    $path     = !empty($parsedUrl['path']) ? $parsedUrl['path'] : '';
-    $query    = !empty($parsedUrl['query']) ? '?' . $parsedUrl['query'] : '';
+    $scheme = !empty($parsedUrl['scheme']) ? $parsedUrl['scheme'] . '://' : '';
+    $host = !empty($parsedUrl['host']) ? $parsedUrl['host'] : '';
+    $port = !empty($parsedUrl['port']) ? ':' . $parsedUrl['port'] : '';
+    $user = !empty($parsedUrl['user']) ? $parsedUrl['user'] : '';
+    $pass = !empty($parsedUrl['pass']) ? ':' . $parsedUrl['pass'] : '';
+    $pass .= ($user || $pass) ? '@' : '';
+    $path = !empty($parsedUrl['path']) ? $parsedUrl['path'] : '';
+    $query = !empty($parsedUrl['query']) ? '?' . $parsedUrl['query'] : '';
     $fragment = !empty($parsedUrl['fragment']) ? '#' . $parsedUrl['fragment'] : '';
 
     return $scheme . $user . $pass . $host . $port . $path . $query . $fragment;
@@ -219,20 +219,20 @@ function invoiceFromSession(): Invoice
 
     $note = '';
     $payMethod = $invoiceData['paymethod'] ?? '';
-    if ($payMethod === 'creditcard') {
+    if ('creditcard' === $payMethod) {
         $note .= _('I would like to pay via credit card.');
-    } elseif ($payMethod === 'bank') {
+    } elseif ('bank' === $payMethod) {
         $note .= _('I would like to pay via bank transaction.');
-    } elseif ($payMethod === 'cash') {
+    } elseif ('cash' === $payMethod) {
         $note .= _('I would like to pay via cash.');
     }
     $note .= "\n";
     $delevery = $invoiceData['delevery'] ?? '';
-    if ($delevery === 'pickup') {
+    if ('pickup' === $delevery) {
         $note .= _('I will pick up the goods in your shop.');
-    } elseif ($delevery === 'postal') {
+    } elseif ('postal' === $delevery) {
         $note .= _('Please send the goods by mail.');
-    } elseif ($delevery === 'express') {
+    } elseif ('express' === $delevery) {
         $note .= _('Please send the order to by mail express.');
     }
     $note = trim($note . "\n" . $invoiceData['note'] ?? '');
@@ -500,10 +500,10 @@ function sendEmails(
         $mailer->Username = $emailConfig['address'];
         $mailer->Password = $emailConfig['password'];
     }
-    $mailer->Host     = $emailConfig['smtpHost'];
-    $mailer->Port     = $emailConfig['smtpPort'];
-    $mailer->CharSet  = 'utf-8';
-    $mailer->From     = $emailConfig['address'];
+    $mailer->Host = $emailConfig['smtpHost'];
+    $mailer->Port = $emailConfig['smtpPort'];
+    $mailer->CharSet = 'utf-8';
+    $mailer->From = $emailConfig['address'];
     $mailer->FromName = Config::get('site_name');
 
     if ($from !== $emailConfig['address']) {
@@ -536,15 +536,15 @@ function sendEmails(
         }
     } elseif ($retry) {
         db()->query(
-            "
+            '
             INSERT INTO `emails` (`date`, `subject`, `body`, `from`, `to`)
             VALUES (NOW(),
-                " . db()->eandq($subject) . ",
-                " . db()->eandq($htmlBody) . ",
-                " . db()->eandq($from . '<' . $fromName . '>') . ",
-                " . db()->eandq($recipient . '<' . $recipientName . '>') . "
+                ' . db()->eandq($subject) . ',
+                ' . db()->eandq($htmlBody) . ',
+                ' . db()->eandq($from . '<' . $fromName . '>') . ',
+                ' . db()->eandq($recipient . '<' . $recipientName . '>') . '
             );
-            "
+            '
         );
         Render::addLoadedTable('emails');
     }

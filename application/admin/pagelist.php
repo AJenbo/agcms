@@ -13,6 +13,6 @@ Sajax::handleClientRequest();
 
 $data = [
     'javascript' => Sajax::showJavascript(true),
-    'siteTree' => getSiteTreeData('pages', request()->cookies->get('activekat', -1)),
+    'siteTree'   => getSiteTreeData('pages', request()->cookies->get('activekat', -1)),
 ];
 Render::output('admin-pagelist', $data);

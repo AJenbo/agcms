@@ -47,7 +47,7 @@ abstract class AbstractEntity implements InterfaceEntity
      */
     public function getId(): int
     {
-        if ($this->id === null) {
+        if (null === $this->id) {
             $this->save();
         }
 
@@ -68,7 +68,7 @@ abstract class AbstractEntity implements InterfaceEntity
     {
         $data = $this->getDbArray();
         Render::addLoadedTable(static::TABLE_NAME);
-        if ($this->id === null) {
+        if (null === $this->id) {
             $this->insert($data);
 
             return $this;
@@ -85,10 +85,10 @@ abstract class AbstractEntity implements InterfaceEntity
     private function insert(array $data): void
     {
         db()->query(
-            "
-            INSERT INTO `" . static::TABLE_NAME . "`
-            (`" . implode("`,`", array_keys($data)) . "`)
-            VALUES (" . implode(",", $data) . ")"
+            '
+            INSERT INTO `' . static::TABLE_NAME . '`
+            (`' . implode('`,`', array_keys($data)) . '`)
+            VALUES (' . implode(',', $data) . ')'
         );
         $this->setId(db()->insert_id);
         ORM::remember(static::class, $this->id, $this);
@@ -101,11 +101,11 @@ abstract class AbstractEntity implements InterfaceEntity
     {
         $sets = [];
         foreach ($data as $filedName => $value) {
-            $sets[] = "`" . $filedName . "` = " . $value;
+            $sets[] = '`' . $filedName . '` = ' . $value;
         }
         db()->query(
-            "UPDATE `" . static::TABLE_NAME . "` SET " . implode(",", $sets)
-            . " WHERE `id` = " . $this->id
+            'UPDATE `' . static::TABLE_NAME . '` SET ' . implode(',', $sets)
+            . ' WHERE `id` = ' . $this->id
         );
     }
 
@@ -116,11 +116,11 @@ abstract class AbstractEntity implements InterfaceEntity
      */
     public function delete(): bool
     {
-        if ($this->id === null) {
+        if (null === $this->id) {
             return true;
         }
 
-        db()->query("DELETE FROM `" . static::TABLE_NAME . "` WHERE `id` = " . $this->id);
+        db()->query('DELETE FROM `' . static::TABLE_NAME . '` WHERE `id` = ' . $this->id);
         ORM::forget(static::class, $this->id);
 
         return true;

@@ -11,16 +11,16 @@ var contextMenuImageTile;
 function init()
 {
     // attach context menus
-    contextMenuFileTile =
-        new Proto.Menu({ selector : '.filetile', "className" : 'menu desktop', menuItems : filetileContextMenu });
-    contextMenuVideoTile =
-        new Proto.Menu({ selector : '.videotile', "className" : 'menu desktop', menuItems : videotileContextMenu });
-    contextMenuswfTile =
-        new Proto.Menu({ selector : '.swftile', "className" : 'menu desktop', menuItems : swftileContextMenu });
-    contextMenuflvTile =
-        new Proto.Menu({ selector : '.flvtile', "className" : 'menu desktop', menuItems : flvtileContextMenu });
-    contextMenuImageTile =
-        new Proto.Menu({ selector : '.imagetile', "className" : 'menu desktop', menuItems : imagetileContextMenu });
+    contextMenuFileTile
+        = new Proto.Menu({ selector : '.filetile', "className" : 'menu desktop', menuItems : filetileContextMenu });
+    contextMenuVideoTile
+        = new Proto.Menu({ selector : '.videotile', "className" : 'menu desktop', menuItems : videotileContextMenu });
+    contextMenuswfTile
+        = new Proto.Menu({ selector : '.swftile', "className" : 'menu desktop', menuItems : swftileContextMenu });
+    contextMenuflvTile
+        = new Proto.Menu({ selector : '.flvtile', "className" : 'menu desktop', menuItems : flvtileContextMenu });
+    contextMenuImageTile
+        = new Proto.Menu({ selector : '.imagetile', "className" : 'menu desktop', menuItems : imagetileContextMenu });
 
     showfiles(activeDir);
 }
@@ -53,8 +53,8 @@ file.prototype.openfile = function() {
 };
 
 file.prototype.refreshThumb = function() {
-    $('tilebox' + this.id).firstChild.childNodes[1].src =
-        'image.php?path=' + encodeURIComponent(this.path) + '&maxW=128&maxH=96&timestamp=' + unix_timestamp();
+    $('tilebox' + this.id).firstChild.childNodes[1].src
+        = 'image.php?path=' + encodeURIComponent(this.path) + '&maxW=128&maxH=96&timestamp=' + unix_timestamp();
 };
 
 function unix_timestamp()
@@ -686,8 +686,8 @@ function swap_pannel(navn)
         document.getElementById('dir').style.display = 'none';
         document.getElementById('search_bn').className = 'down';
         document.getElementById('search').style.display = '';
-        if(document.getElementById('searchpath').value || document.getElementById('searchalt').value ||
-            getSelect('searchtype')) {
+        if(document.getElementById('searchpath').value || document.getElementById('searchalt').value
+            || getSelect('searchtype')) {
             searchfiles();
         }
     } else if(navn === 'dir') {

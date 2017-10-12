@@ -83,8 +83,8 @@ function setCookie(name, value, expires)
     }
 
     var expires_date = new Date(today.getTime() + (expires));
-    document.cookie = encodeURIComponent(name) + "=" + encodeURIComponent(value) +
-        ((expires) ? "; expires=" + expires_date.toGMTString() : "");
+    document.cookie = encodeURIComponent(name) + "=" + encodeURIComponent(value)
+        + ((expires) ? "; expires=" + expires_date.toGMTString() : "");
 }
 
 function getCookie(cookieName)

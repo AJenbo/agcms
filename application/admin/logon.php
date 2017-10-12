@@ -1,7 +1,5 @@
 <?php
 
-use AGCMS\Entity\User;
-use AGCMS\ORM;
 
 require_once __DIR__ . '/../inc/functions.php';
 bootStrap();

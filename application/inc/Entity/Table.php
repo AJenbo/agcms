@@ -79,7 +79,7 @@ class Table extends AbstractEntity
             $options = [];
             if ($sorting) {
                 Render::addLoadedTable('tablesort');
-                $tablesort = db()->fetchOne("SELECT `text` FROM `tablesort` WHERE id = " . $sorting);
+                $tablesort = db()->fetchOne('SELECT `text` FROM `tablesort` WHERE id = ' . $sorting);
                 if ($tablesort) {
                     $options = explode('<', $tablesort['text']);
                     $options = array_map('html_entity_decode', $options);
@@ -237,10 +237,10 @@ class Table extends AbstractEntity
     public function getRows(int $orderBy = null): array
     {
         $rows = db()->fetchArray(
-            "
+            '
             SELECT *
             FROM `list_rows`
-            WHERE `list_id` = " . $this->getId()
+            WHERE `list_id` = ' . $this->getId()
         );
         Render::addLoadedTable('list_rows');
 
@@ -270,10 +270,10 @@ class Table extends AbstractEntity
         $cells = implode('<', $cells);
 
         db()->query(
-            "
+            '
             INSERT INTO `list_rows`(`list_id`, `cells`, `link`)
-            VALUES (" . $this->id . ", " . db()->eandq($cells) . ", " . ($link === null ? 'NULL' : $link) . ")
-            "
+            VALUES (' . $this->id . ', ' . db()->eandq($cells) . ', ' . (null === $link ? 'NULL' : $link) . ')
+            '
         );
 
         return db()->insert_id;
@@ -285,18 +285,18 @@ class Table extends AbstractEntity
         $cells = implode('<', $cells);
 
         db()->query(
-            "
+            '
             UPDATE `list_rows` SET
-                `cells` = " . db()->eandq($cells) . ",
-                `link` = " . ($link === null ? 'NULL' : $link) . "
-            WHERE list_id = " . $this->id . "
-              AND id = " . $rowId
+                `cells` = ' . db()->eandq($cells) . ',
+                `link` = ' . (null === $link ? 'NULL' : $link) . '
+            WHERE list_id = ' . $this->id . '
+              AND id = ' . $rowId
         );
     }
 
     public function removeRow(int $rowId): void
     {
-        db()->query("DELETE FROM `list_rows` WHERE list_id = " . $this->id . " AND `id` = " . $rowId);
+        db()->query('DELETE FROM `list_rows` WHERE list_id = ' . $this->id . ' AND `id` = ' . $rowId);
     }
 
     /**

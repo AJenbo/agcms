@@ -12,7 +12,7 @@ Sajax::handleClientRequest();
 
 $users = ORM::getByQuery(
     User::class,
-    "SELECT * FROM `users` ORDER BY " . (request()->get('order') ? 'lastlogin' : 'fullname')
+    'SELECT * FROM `users` ORDER BY ' . (request()->get('order') ? 'lastlogin' : 'fullname')
 );
 
 $data = [

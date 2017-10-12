@@ -46,8 +46,8 @@ var activeSideContextMenu = [
               location.href = '/admin/?side=redigerside&id=' + e.target.parentNode.className.replace(/^side/, '');
               return;
           }
-          location.href =
-              '/admin/?side=redigerside&id=' + e.target.parentNode.parentNode.className.replace(/^side/, '');
+          location.href
+              = '/admin/?side=redigerside&id=' + e.target.parentNode.parentNode.className.replace(/^side/, '');
       }
     },
     {
@@ -77,8 +77,8 @@ var inactiveSideContextMenu = [
               location.href = '/admin/?side=redigerside&id=' + e.target.parentNode.className.replace(/^side/, '');
               return;
           }
-          location.href =
-              '/admin/?side=redigerside&id=' + e.target.parentNode.parentNode.className.replace(/^side/, '');
+          location.href
+              = '/admin/?side=redigerside&id=' + e.target.parentNode.parentNode.className.replace(/^side/, '');
       }
     },
     {

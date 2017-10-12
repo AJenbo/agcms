@@ -75,7 +75,7 @@ switch ($template) {
         $page = null;
         $bindings = [];
         $accessories = [];
-        if ($id !== null) {
+        if (null !== $id) {
             /** @var Page */
             $page = ORM::getOne(Page::class, $id);
             if ($page) {
@@ -108,7 +108,7 @@ switch ($template) {
         $id = $request->get('id');
         $selectedId = $request->cookies->get('activekat', -1);
         $category = null;
-        if ($id !== null) {
+        if (null !== $id) {
             $category = ORM::getOne(Category::class, $id);
             if ($category) {
                 $selectedId = $category->getParent() ? $category->getParent()->getId() : null;
@@ -124,14 +124,14 @@ switch ($template) {
         ] + $data;
         break;
     case 'admin-krav':
-        $data['requirements'] = ORM::getByQuery(Requirement::class, "SELECT * FROM `krav` ORDER BY navn");
+        $data['requirements'] = ORM::getByQuery(Requirement::class, 'SELECT * FROM `krav` ORDER BY navn');
         break;
     case 'admin-editkrav':
         $data['textWidth'] = Config::get('text_width');
         $data['requirement'] = ORM::getOne(Requirement::class, $request->get('id', 0));
         break;
     case 'admin-maerker':
-        $data['brands'] = ORM::getByQuery(Brand::class, "SELECT * FROM `maerke` ORDER BY navn");
+        $data['brands'] = ORM::getByQuery(Brand::class, 'SELECT * FROM `maerke` ORDER BY navn');
         break;
     case 'admin-search':
         $data['text'] = $request->get('text');
@@ -142,7 +142,7 @@ switch ($template) {
         break;
     case 'admin-emaillist':
         $data['newsletters'] = db()->fetchArray(
-            "SELECT id, subject, sendt sent FROM newsmails ORDER BY sendt, id DESC"
+            'SELECT id, subject, sendt sent FROM newsmails ORDER BY sendt, id DESC'
         );
         break;
     case 'admin-viewemail':
@@ -150,7 +150,7 @@ switch ($template) {
         $data['recipientCount'] = 0;
         if ($id) {
             $data['newsletter'] = db()->fetchOne(
-                "SELECT id, sendt sent, `from`, interests, subject, text html FROM newsmails WHERE id = " . $id
+                'SELECT id, sendt sent, `from`, interests, subject, text html FROM newsmails WHERE id = ' . $id
             );
             $data['newsletter']['interests'] = explode('<', $data['newsletter']['interests']);
         }
@@ -163,7 +163,7 @@ switch ($template) {
         if (!in_array($order, ['email', 'tlf1', 'tlf2', 'post', 'adresse'], true)) {
             $order = 'navn';
         }
-        $data['contacts'] = ORM::getByQuery(Contact::class, "SELECT * FROM email ORDER BY " . $order);
+        $data['contacts'] = ORM::getByQuery(Contact::class, 'SELECT * FROM email ORDER BY ' . $order);
         break;
     case 'admin-editContact':
         $data['contact'] = ORM::getOne(Contact::class, $request->get('id', 0));
@@ -183,7 +183,7 @@ switch ($template) {
     case 'admin-redigerSpecial':
         $data['page'] = ORM::getOne(CustomPage::class, $request->get('id', 0));
         $data['pageWidth'] = Config::get('text_width');
-        if ($data['page']->getId() === 1) {
+        if (1 === $data['page']->getId()) {
             $data['pageWidth'] = Config::get('frontpage_width');
             $data['categories'] = ORM::getOne(Category::class, 0)->getChildren();
         }
@@ -195,7 +195,7 @@ switch ($template) {
     case 'admin-listsort-edit':
         $id = (int) $request->get('id', 0);
         if ($id) {
-            $list = db()->fetchOne("SELECT * FROM `tablesort` WHERE `id` = " . $id);
+            $list = db()->fetchOne('SELECT * FROM `tablesort` WHERE `id` = ' . $id);
             $data = [
                 'id' => $id,
                 'name' => $list['navn'],

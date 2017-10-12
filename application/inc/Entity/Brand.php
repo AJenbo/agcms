@@ -91,7 +91,7 @@ class Brand extends AbstractRenderable
      */
     public function getIcon(): ?File
     {
-        if ($this->iconPath === null) {
+        if (null === $this->iconPath) {
             return null;
         }
 
@@ -125,21 +125,21 @@ class Brand extends AbstractRenderable
 
         $pages = ORM::getByQuery(
             Page::class,
-            "
+            '
             SELECT sider.*
             FROM sider
-            WHERE maerke = " . $this->getId() . "
-            ORDER BY sider.`" . db()->esc($order) . "` ASC
-            "
+            WHERE maerke = ' . $this->getId() . '
+            ORDER BY sider.`' . db()->esc($order) . '` ASC
+            '
         );
 
         $objectArray = [];
         foreach ($pages as $page) {
             $objectArray[] = [
-                'id' => $page->getId(),
-                'navn' => $page->getTitle(),
-                'for' => $page->getOldPrice(),
-                'pris' => $page->getPrice(),
+                'id'     => $page->getId(),
+                'navn'   => $page->getTitle(),
+                'for'    => $page->getOldPrice(),
+                'pris'   => $page->getPrice(),
                 'varenr' => $page->getSku(),
                 'object' => $page,
             ];
@@ -165,7 +165,7 @@ class Brand extends AbstractRenderable
         return [
             'navn' => db()->eandq($this->title),
             'link' => db()->eandq($this->link),
-            'ico'  => $this->iconPath !== null ? db()->eandq($this->iconPath) : 'NULL',
+            'ico'  => null !== $this->iconPath ? db()->eandq($this->iconPath) : 'NULL',
         ];
     }
 }

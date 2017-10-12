@@ -39,7 +39,7 @@ if ($invoice && $checkid === $invoice->getCheckid() && !isset($_GET['txnid'])) {
             Render::$title = _('Order #') . $id;
             Render::$headline = _('Order #') . $id;
             Render::$bodyHtml = Render::render('partial-payment-form0', ['invoice' => $invoice]);
-        } elseif ($_GET['step'] == 1) { //Fill out customer info
+        } elseif (1 == $_GET['step']) { //Fill out customer info
             if ($_POST) {
                 $invoice->setName($_POST['navn'])
                     ->setAtt($_POST['att'] != $_POST['navn'] ? $_POST['att'] : '')
@@ -90,21 +90,21 @@ if ($invoice && $checkid === $invoice->getCheckid() && !isset($_GET['txnid'])) {
             }
 
             Render::$crumbs[] = [
-                'title' => _('Recipient'),
+                'title'         => _('Recipient'),
                 'canonicalLink' => $invoice->getLink() . '&step=1',
             ];
             Render::$title = _('Recipient');
             Render::$headline = _('Recipient');
 
             $data = [
-                'countries' => $countries,
-                'newsletter' => !empty($_POST['newsletter']),
-                'invoice' => $invoice,
-                'invalid' => $invalid,
+                'countries'   => $countries,
+                'newsletter'  => !empty($_POST['newsletter']),
+                'invoice'     => $invoice,
+                'invalid'     => $invalid,
                 'submitLabel' => 'Proceed to the terms of trade',
             ];
             Render::$bodyHtml = Render::render('partial-order-form1', $data);
-        } elseif ($_GET['step'] == 2) { //Accept terms and continue to payment
+        } elseif (2 == $_GET['step']) { //Accept terms and continue to payment
             if ($invoice->getInvalid()) {
                 redirect($invoice->getLink() . '&step=1');
             }
@@ -112,32 +112,32 @@ if ($invoice && $checkid === $invoice->getCheckid() && !isset($_GET['txnid'])) {
             $invoice->setStatus('locked')->save();
 
             Render::$crumbs[] = [
-                'title' => _('Recipient'),
+                'title'         => _('Recipient'),
                 'canonicalLink' => $invoice->getLink() . '&step=1',
             ];
             Render::$crumbs[] = [
-                'title' => _('Trade Conditions'),
+                'title'         => _('Trade Conditions'),
                 'canonicalLink' => $invoice->getLink() . '&step=2',
             ];
             Render::$title = _('Trade Conditions');
             Render::$headline = _('Trade Conditions');
 
             $inputs = [
-                'group'             => Config::get('pbsfix'),
-                'merchantnumber'    => Config::get('pbsid'),
-                'orderid'           => Config::get('pbsfix') . $invoice->getId(),
-                'currency'          => 208,
-                'amount'            => number_format($invoice->getAmount(), 2, '', ''),
-                'ownreceipt'        => 1,
-                'accepturl'         => $invoice->getLink(),
-                'cancelurl'         => Config::get('base_url') . $_SERVER['REQUEST_URI'],
-                'windowstate'       => 3,
-                'windowid'          => Config::get('pbswindow'),
+                'group'          => Config::get('pbsfix'),
+                'merchantnumber' => Config::get('pbsid'),
+                'orderid'        => Config::get('pbsfix') . $invoice->getId(),
+                'currency'       => 208,
+                'amount'         => number_format($invoice->getAmount(), 2, '', ''),
+                'ownreceipt'     => 1,
+                'accepturl'      => $invoice->getLink(),
+                'cancelurl'      => Config::get('base_url') . $_SERVER['REQUEST_URI'],
+                'windowstate'    => 3,
+                'windowid'       => Config::get('pbswindow'),
             ];
             $inputs['hash'] = md5(implode('', $inputs) . Config::get('pbspassword'));
 
             $data = [
-                'html' => ORM::getOne(CustomPage::class, 3)->getHtml(),
+                'html'   => ORM::getOne(CustomPage::class, 3)->getHtml(),
                 'inputs' => $inputs,
             ];
             Render::$bodyHtml = Render::render('partial-payment-form2', $data);
@@ -150,27 +150,27 @@ if ($invoice && $checkid === $invoice->getCheckid() && !isset($_GET['txnid'])) {
         Render::$title = _('Error');
         Render::$headline = _('Error');
         Render::$bodyHtml = _('An errror occured.');
-        if ($invoice->getStatus() == 'pbsok') {
+        if ('pbsok' == $invoice->getStatus()) {
             Render::$title = _('Receipt');
             Render::$headline = _('Receipt');
             Render::$bodyHtml = _('Payment received.');
-        } elseif ($invoice->getStatus() == 'accepted') {
+        } elseif ('accepted' == $invoice->getStatus()) {
             Render::$title = _('Receipt');
             Render::$headline = _('Receipt');
             Render::$bodyHtml = _('The payment was received and the package is sent.');
-        } elseif ($invoice->getStatus() == 'giro') {
+        } elseif ('giro' == $invoice->getStatus()) {
             Render::$title = _('Receipt');
             Render::$headline = _('Receipt');
             Render::$bodyHtml = _('The payment is already received via giro.');
-        } elseif ($invoice->getStatus() == 'cash') {
+        } elseif ('cash' == $invoice->getStatus()) {
             Render::$title = _('Receipt');
             Render::$headline = _('Receipt');
             Render::$bodyHtml = _('The payment is already received in cash.');
-        } elseif ($invoice->getStatus() == 'canceled') {
+        } elseif ('canceled' == $invoice->getStatus()) {
             Render::$title = _('Receipt');
             Render::$headline = _('Receipt');
             Render::$bodyHtml = _('The transaction is canceled.');
-        } elseif ($invoice->getStatus() == 'rejected') {
+        } elseif ('rejected' == $invoice->getStatus()) {
             Render::$bodyHtml = _('Payment rejected.');
         }
     }

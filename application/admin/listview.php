@@ -15,7 +15,7 @@ Render::sendCacheHeader();
 
 $sort = request()->get('sort', 'navn');
 $reverseOrder = false;
-if (mb_substr($sort, 0, 1) === '-') {
+if ('-' === mb_substr($sort, 0, 1)) {
     $sort = mb_substr($sort, 1);
     $reverseOrder = true;
 }
@@ -34,8 +34,8 @@ $sortOptions = [
 $sort = isset($sortOptions[$sort]) ? $sort : 'navn';
 
 $categoryId = request()->get('kat', '');
-if ($categoryId === '') {
-    $categories = ORM::getByQuery(Category::class, "SELECT * FROM kat WHERE bind IS NULL");
+if ('' === $categoryId) {
+    $categories = ORM::getByQuery(Category::class, 'SELECT * FROM kat WHERE bind IS NULL');
 } else {
     $categories = [ORM::getOne(Category::class, $categoryId)];
 }

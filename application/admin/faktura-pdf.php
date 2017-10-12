@@ -10,7 +10,7 @@ require_once __DIR__ . '/logon.php';
 $id = (int) request()->get('id');
 /** @var \AGCMS\Entity\Invoice */
 $invoice = ORM::getOne(Invoice::class, $id);
-if (!$invoice || $invoice->getStatus() === 'new') {
+if (!$invoice || 'new' === $invoice->getStatus()) {
     die(_('Can\'t print.'));
 }
 
@@ -101,7 +101,7 @@ if ($invoice->getPostcode()) {
 } else {
     $address .= "\n" . $invoice->getCity();
 }
-if ($invoice->getCountry() && $invoice->getCountry() !== 'DK') {
+if ($invoice->getCountry() && 'DK' !== $invoice->getCountry()) {
     $address .= "\n" . $countries[$invoice->getCountry()];
 }
 
@@ -131,7 +131,7 @@ if ($invoice->getShippingPostcode()) {
 } elseif ($invoice->getShippingCity()) {
     $address .= "\n" . $invoice->getShippingCity();
 }
-if ($invoice->getShippingCountry() && $invoice->getShippingCountry() !== 'DK') {
+if ($invoice->getShippingCountry() && 'DK' !== $invoice->getShippingCountry()) {
     $address .= "\n" . $countries[$invoice->getShippingCountry()];
 }
 
@@ -228,11 +228,11 @@ $pdf->Cell(34, 9, number_format($invoice->getAmount(), 2, ',', ''), 1, 1, 'R');
 //Note
 $note = '';
 $date = ' d. ' . date(_('m/d/Y'), $invoice->getTimeStampPay());
-if ($invoice->getStatus() === 'accepted') {
+if ('accepted' === $invoice->getStatus()) {
     $note .= _('Paid online') . $date . "\n";
-} elseif ($invoice->getStatus() === 'giro') {
+} elseif ('giro' === $invoice->getStatus()) {
     $note .= _('Paid via giro') . $date . "\n";
-} elseif ($invoice->getStatus() === 'cash') {
+} elseif ('cash' === $invoice->getStatus()) {
     $note .= _('Paid in cash') . $date . "\n";
 }
 

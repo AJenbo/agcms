@@ -119,9 +119,9 @@ class Render
     private static function makeUrlUtf8(string $url): void
     {
         $encoding = mb_detect_encoding($url, 'UTF-8, ISO-8859-1');
-        if ($encoding !== 'UTF-8') {
+        if ('UTF-8' !== $encoding) {
             // Windows-1252 is a superset of iso-8859-1
-            if (!$encoding || $encoding == 'ISO-8859-1') {
+            if (!$encoding || 'ISO-8859-1' == $encoding) {
                 $encoding = 'windows-1252';
             }
             $url = mb_convert_encoding($url, 'UTF-8', $encoding);
@@ -210,14 +210,14 @@ class Render
     private static function checkDbUpdate(int $updateTime): int
     {
         $timeOffset = db()->getTimeOffset();
-        $where = " WHERE 1";
+        $where = ' WHERE 1';
         if (self::$adminOnlyTables) {
             $where .= " AND Name NOT IN('" . implode("', '", self::$adminOnlyTables) . "')";
         }
         if (self::$loadedTables) {
             $where .= " AND Name IN('" . implode("', '", array_keys(self::$loadedTables)) . "')";
         }
-        $tables = db()->fetchArray("SHOW TABLE STATUS" . $where);
+        $tables = db()->fetchArray('SHOW TABLE STATUS' . $where);
         foreach ($tables as $table) {
             $updateTime = max($updateTime, strtotime($table['Update_time']) + $timeOffset);
         }
@@ -309,16 +309,16 @@ class Render
         self::addLoadedTable('bind');
         self::$menu = ORM::getByQuery(
             Category::class,
-            "
+            '
             SELECT *
             FROM `kat`
-            WHERE kat.vis != " . Category::HIDDEN . "
+            WHERE kat.vis != ' . Category::HIDDEN . '
                 AND kat.bind = 0
-                AND (id IN (SELECT bind FROM kat WHERE vis != " . Category::HIDDEN . ")
+                AND (id IN (SELECT bind FROM kat WHERE vis != ' . Category::HIDDEN . ')
                     OR id IN (SELECT kat FROM bind)
                 )
             ORDER BY `order`, navn
-            "
+            '
         );
 
         self::loadBrandData(self::$activeBrand);
@@ -344,7 +344,7 @@ class Render
                 . _('Brand:') . '</td><td><select name="maerke"><option value="0">' . _('All') . '</option>';
 
             $categoryIds = [0];
-            $categories = ORM::getByQuery(Category::class, "SELECT * FROM kat");
+            $categories = ORM::getByQuery(Category::class, 'SELECT * FROM kat');
             foreach ($categories as $category) {
                 if ($category->isInactive()) {
                     continue;
@@ -353,14 +353,14 @@ class Render
             }
             $brands = ORM::getByQuery(
                 Brand::class,
-                "
+                '
                 SELECT * FROM `maerke`
                 WHERE id IN(
                     SELECT DISTINCT sider.maerke FROM bind
                     JOIN sider ON sider.id = bind.side
-                    WHERE bind.kat IN(" . implode(",", $categoryIds) . ")
+                    WHERE bind.kat IN(' . implode(',', $categoryIds) . ')
                 ) ORDER BY `navn`
-                "
+                '
             );
             foreach ($brands as $brand) {
                 self::$bodyHtml .= '<option value="' . $brand->getId() . '">'
@@ -386,7 +386,7 @@ class Render
                 (int) $request->get('maxpris', 0),
                 $request->get('sogikke', '')
             );
-            if (count(self::$pageList) === 1) {
+            if (1 === count(self::$pageList)) {
                 $page = array_shift(self::$pageList);
                 redirect($page->getCanonicalLink(), Response::HTTP_FOUND);
             }
@@ -402,7 +402,7 @@ class Render
             self::$title = self::$activeRequirement->getTitle();
             self::$bodyHtml = self::$activeRequirement->getHtml();
             self::$crumbs[] = self::$activeRequirement;
-        } elseif (self::$pageType === 'index') {
+        } elseif ('index' === self::$pageType) {
             self::$bodyHtml = ORM::getOne(CustomPage::class, 1)->getHtml();
         }
 
@@ -453,8 +453,9 @@ class Render
                 self::$pageList[] = $page;
             }
         }
-        if (count(self::$pageList) === 1) {
+        if (1 === count(self::$pageList)) {
             self::$activePage = array_shift(self::$pageList);
+
             return;
         }
 
@@ -466,10 +467,10 @@ class Render
                 $title = trim(ucfirst(preg_replace('/-/ui', ' ', $title)));
             }
         }
-        self::$title     = $title ?: self::$title;
-        self::$email     = $category->getEmail();
+        self::$title = $title ?: self::$title;
+        self::$email = $category->getEmail();
         self::$canonical = $category->getCanonicalLink();
-        self::$pageType  = $category->getRenderMode() === Category::GALLERY ? 'tiles' : 'list';
+        self::$pageType = Category::GALLERY === $category->getRenderMode() ? 'tiles' : 'list';
     }
 
     /**
@@ -481,12 +482,12 @@ class Render
             return;
         }
 
-        self::$pageType   = 'product';
-        self::$canonical  = $page->getCanonicalLink();
-        self::$headline   = $page->getTitle();
+        self::$pageType = 'product';
+        self::$canonical = $page->getCanonicalLink();
+        self::$headline = $page->getTitle();
         self::$keywords[] = $page->getTitle();
-        self::$timeStamp  = $page->getTimestamp();
-        self::$title      = trim($page->getTitle()) ?: self::$title;
+        self::$timeStamp = $page->getTimestamp();
+        self::$title = trim($page->getTitle()) ?: self::$title;
 
         self::$bodyHtml = $page->getHtml();
         foreach ($page->getTables() as $table) {
@@ -511,21 +512,21 @@ class Render
         string $antiWords = ''
     ): array {
         $pages = [];
-        $simpleQuery = "%" . preg_replace('/\s+/u', "%", $queryuery) . "%";
+        $simpleQuery = '%' . preg_replace('/\s+/u', '%', $queryuery) . '%';
 
         //Full search
-        $where = "";
+        $where = '';
         if ($brandId) {
-            $where = " AND `maerke` = " . $brandId;
+            $where = ' AND `maerke` = ' . $brandId;
         }
         if ($varenr) {
             $where .= " AND varenr LIKE '" . db()->esc($varenr) . "%'";
         }
         if ($minpris) {
-            $where .= " AND pris > " . $minpris;
+            $where .= ' AND pris > ' . $minpris;
         }
         if ($maxpris) {
-            $where .= " AND pris < " . $maxpris;
+            $where .= ' AND pris < ' . $maxpris;
         }
         if ($antiWords) {
             $where .= " AND !MATCH (navn, text, beskrivelse) AGAINST('" . db()->esc($antiWords) . "') > 0
@@ -537,13 +538,13 @@ class Render
 
         //TODO match on keywords
         $columns = [];
-        foreach (db()->fetchArray("SHOW COLUMNS FROM sider") as $column) {
+        foreach (db()->fetchArray('SHOW COLUMNS FROM sider') as $column) {
             $columns[] = $column['Field'];
         }
         $pages = ORM::getByQuery(
             Page::class,
-            "
-            SELECT `" . implode("`, `", $columns) . "`
+            '
+            SELECT `' . implode('`, `', $columns) . "`
             FROM (SELECT sider.*, MATCH(navn, text, beskrivelse) AGAINST ('" . db()->esc($queryuery) . "') AS score
             FROM sider
             JOIN bind ON sider.id = bind.side AND bind.kat != -1
@@ -643,7 +644,7 @@ class Render
         }
         $columns = $table->getColumns();
 
-        if ($orderBy === null) {
+        if (null === $orderBy) {
             $orderBy = (int) $table->getOrderBy();
         }
 
@@ -655,7 +656,7 @@ class Render
             }
         }
         if ($pageIds) {
-            ORM::getByQuery(Page::class, "SELECT * FROM sider WHERE id IN(" . implode(",", $pageIds) . ")");
+            ORM::getByQuery(Page::class, 'SELECT * FROM sider WHERE id IN(' . implode(',', $pageIds) . ')');
         }
 
         $html = '<table class="tabel">';
@@ -764,14 +765,14 @@ class Render
     public static function getKatHtml(Category $category, string $sort): string
     {
         $html = '<table class="tabel"><thead><tr><td><a href="" onclick="x_getKat(\''
-        . $category->getId()
-        . '\', \'navn\', inject_html);return false">Titel</a></td><td><a href="" onclick="x_getKat(\''
-        . $category->getId()
-        . '\', \'for\', inject_html);return false">Før</a></td><td><a href="" onclick="x_getKat(\''
-        . $category->getId()
-        . '\', \'pris\', inject_html);return false">Pris</a></td><td><a href="" onclick="x_getKat(\''
-        . $category->getId()
-        . '\', \'varenr\', inject_html);return false">#</a></td></tr></thead><tbody>';
+            . $category->getId()
+            . '\', \'navn\', inject_html);return false">Titel</a></td><td><a href="" onclick="x_getKat(\''
+            . $category->getId()
+            . '\', \'for\', inject_html);return false">Før</a></td><td><a href="" onclick="x_getKat(\''
+            . $category->getId()
+            . '\', \'pris\', inject_html);return false">Pris</a></td><td><a href="" onclick="x_getKat(\''
+            . $category->getId()
+            . '\', \'varenr\', inject_html);return false">#</a></td></tr></thead><tbody>';
 
         $isEven = false;
         $pages = $category->getPages($sort);
@@ -787,12 +788,12 @@ class Render
             }
 
             $html .= '<tr' . ($isEven ? ' class="altrow"' : '')
-            . '><td><a href="' . xhtmlEsc($page->getCanonicalLink($category)) . '">'
-            . xhtmlEsc($page->getTitle())
-            . '</a></td><td class="XPris" align="right">' . $oldPrice
-            . '</td><td class="Pris" align="right">' . $price
-            . '</td><td align="right" style="font-size:11px">'
-            . xhtmlEsc($page->getSku()) . '</td></tr>';
+                . '><td><a href="' . xhtmlEsc($page->getCanonicalLink($category)) . '">'
+                . xhtmlEsc($page->getTitle())
+                . '</a></td><td class="XPris" align="right">' . $oldPrice
+                . '</td><td class="Pris" align="right">' . $price
+                . '</td><td align="right" style="font-size:11px">'
+                . xhtmlEsc($page->getSku()) . '</td></tr>';
 
             $isEven = !$isEven;
         }
@@ -830,7 +831,7 @@ class Render
                 'searchMenu'      => self::$searchMenu,
                 'hasItemsInCart'  => !empty($_SESSION['faktura']['quantities']),
                 'infoPage'        => ORM::getOne(CustomPage::class, 2),
-                'rootPages'       => self::$pageType === 'index' ? ORM::getOne(Category::class, 0)->getPages() : [],
+                'rootPages'       => 'index' === self::$pageType ? ORM::getOne(Category::class, 0)->getPages() : [],
             ]
         );
     }
@@ -855,21 +856,21 @@ class Render
     {
         $templatePath = _ROOT_ . '/theme/';
         $loader = new Twig_Loader_Filesystem('default/', $templatePath);
-        if (Config::get('locale', 'en_US') !== 'en_US') {
+        if ('en_US' !== Config::get('locale', 'en_US')) {
             $loader->prependPath('default/' . Config::get('locale') . '/');
         }
         if (Config::get('theme')) {
             $loader->prependPath(Config::get('theme') . '/');
-            if (Config::get('locale', 'en_US') !== 'en_US') {
+            if ('en_US' !== Config::get('locale', 'en_US')) {
                 $loader->prependPath(Config::get('theme') . '/' . Config::get('locale') . '/');
             }
         }
 
         $twig = new Twig_Environment($loader);
-        if (Config::get('enviroment', 'develop') === 'production') {
+        if ('production' === Config::get('enviroment', 'develop')) {
             $twig->setCache(_ROOT_ . '/theme/cache/twig');
         }
-        if (Config::get('enviroment', 'develop') === 'develop') {
+        if ('develop' === Config::get('enviroment', 'develop')) {
             $twig->enableDebug();
         }
 

@@ -1,21 +1,29 @@
-function $(id) {
+function $(id)
+{
     return document.getElementById(id);
 }
 
 var krav;
-function openkrav(url) {
-    krav = window.open(url, 'krav', 'toolbar=0,scrollbars=1,location=0,statusbar=0,menubar=0,resizable=0,width=512,height=395,left = '+(screen.width-512)/2+',top = '+ (screen.height-395)/2);
+function openkrav(url)
+{
+    var left = (screen.width - 512) / 2;
+    var top = (screen.height - 395) / 2;
+    krav = window.open(url, 'krav', 'toolbar=0,width=512,height=395,left = ' + left + ',top = ' + top);
     return false;
 }
 
-function armorsize() {
-    if($('armor_size').selectedIndex == 8)
+function armorsize()
+{
+    if($('armor_size').selectedIndex == 8) {
         $('armor_special').style.display = '';
-    else
-        $('armor_special').style.display = 'none';
+        return;
+    }
+
+    $('armor_special').style.display = 'none';
 }
 
-function armorsex() {
+function armorsex()
+{
     if($('armor_sex').selectedIndex == 0) {
         $('armor_st4').disabled = true;
         $('armor_st4').className = 'gray';
@@ -33,27 +41,29 @@ function armorsex() {
         $('armor_st8').className = 'gray';
         $('armor_st7').disabled = false;
         $('armor_st7').className = '';
-    } else {
-        $('armor_st4').disabled = false;
-        $('armor_st4').className = '';
-        $('armor_st2').disabled = false;
-        $('armor_st2').className = '';
-        $('armor_st5').disabled = false;
-        $('armor_st5').className = '';
-        $('armor_st6').disabled = false;
-        $('armor_st6').className = '';
-        $('armor_cupstr').disabled = false;
-        $('armor_cupstr').className = '';
-        $('armor_bhstr').disabled = false;
-        $('armor_bhstr').className = '';
-        $('armor_st8').disabled = false;
-        $('armor_st8').className = '';
-        $('armor_st7').disabled = true;
-        $('armor_st7').className = 'gray';
+        return;
     }
+
+    $('armor_st4').disabled = false;
+    $('armor_st4').className = '';
+    $('armor_st2').disabled = false;
+    $('armor_st2').className = '';
+    $('armor_st5').disabled = false;
+    $('armor_st5').className = '';
+    $('armor_st6').disabled = false;
+    $('armor_st6').className = '';
+    $('armor_cupstr').disabled = false;
+    $('armor_cupstr').className = '';
+    $('armor_bhstr').disabled = false;
+    $('armor_bhstr').className = '';
+    $('armor_st8').disabled = false;
+    $('armor_st8').className = '';
+    $('armor_st7').disabled = true;
+    $('armor_st7').className = 'gray';
 }
 
-function armorvalidate() {
+function armorvalidate()
+{
     if($('armor_navn').value == '') {
         alert('Du skal udfylde dit navn.');
         $('armor_navn').focus();
@@ -92,7 +102,7 @@ function armorvalidate() {
             return false;
         }
         if($('armor_sex').selectedIndex == 1) {
-            //extra felter for kvinder
+            // extra felter for kvinder
             if($('armor_st2').value == '') {
                 alert('Du skal udfylde alle mål.');
                 $('armor_st2').focus();
@@ -129,7 +139,7 @@ function armorvalidate() {
                 return false;
             }
         } else {
-            //extra felter for mænd
+            // extra felter for mænd
             if($('armor_st7').value == '') {
                 alert('Du skal udfylde alle mål.');
                 $('armor_st7').focus();

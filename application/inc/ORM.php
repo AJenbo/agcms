@@ -31,7 +31,7 @@ class ORM
     {
         if (!isset(self::$byId[$class]) || !array_key_exists($id, self::$byId[$class])) {
             self::$byId[$class][$id] = null;
-            $data = db()->fetchOne("SELECT * FROM `" . $class::TABLE_NAME . "` WHERE id = " . $id);
+            $data = db()->fetchOne('SELECT * FROM `' . $class::TABLE_NAME . '` WHERE id = ' . $id);
             if ($data) {
                 self::$byId[$class][$id] = new $class($class::mapFromDB($data));
             }
@@ -95,8 +95,6 @@ class ORM
      *
      * @param string $class
      * @param int    $id
-     *
-     * @return void
      */
     public static function forget(string $class, int $id): void
     {
@@ -110,13 +108,10 @@ class ORM
      *
      * @param string $class
      * @param string $query The query
-     *
-     * @return void
      */
     public static function forgetByQuery(string $class, string $query): void
     {
-        unset(self::$bySql[$class][$query]);
-        unset(self::$oneBySql[$class][$query]);
+        unset(self::$bySql[$class][$query], self::$oneBySql[$class][$query]);
     }
 
     /**
@@ -125,8 +120,6 @@ class ORM
      * @param string         $class
      * @param int            $id
      * @param AbstractEntity $entity
-     *
-     * @return void
      */
     public static function remember(string $class, int $id, AbstractEntity $entity): void
     {

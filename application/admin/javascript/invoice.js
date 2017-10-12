@@ -26,16 +26,16 @@ function addRow()
 {
     var tr = document.createElement('tr');
     var td = document.createElement('td');
-    td.innerHTML =
-        '<input name="quantitie" style="width:58px;" class="tal" onkeyup="prisUpdate()" onchange="prisUpdate()" onblur="prisUpdate()" />';
+    td.innerHTML
+        = '<input name="quantitie" style="width:58px;" class="tal" onkeyup="prisUpdate()" onchange="prisUpdate()" onblur="prisUpdate()" />';
     tr.appendChild(td);
     td = document.createElement('td');
-    td.innerHTML =
-        '<input name="product" style="width:303px;" onkeyup="prisUpdate()" onchange="prisUpdate()" onblur="prisUpdate()" />';
+    td.innerHTML
+        = '<input name="product" style="width:303px;" onkeyup="prisUpdate()" onchange="prisUpdate()" onblur="prisUpdate()" />';
     tr.appendChild(td);
     td = document.createElement('td');
-    td.innerHTML =
-        '<input name="value" style="width:69px;" class="tal" onkeyup="prisUpdate()" onchange="prisUpdate()" onblur="prisUpdate()" />';
+    td.innerHTML
+        = '<input name="value" style="width:69px;" class="tal" onkeyup="prisUpdate()" onchange="prisUpdate()" onblur="prisUpdate()" />';
     tr.appendChild(td);
     td = document.createElement('td');
     td.className = 'tal total';
@@ -44,8 +44,8 @@ function addRow()
     td.className = 'web';
     td.style.border = '0';
     td.style.fontWeight = 'bold';
-    td.innerHTML =
-        '<a href="#" onclick="removeRow(this); return false"><img alt="X" src="images/cross.png" height="16" width="16" title="Remove Line" /></a>';
+    td.innerHTML
+        = '<a href="#" onclick="removeRow(this); return false"><img alt="X" src="images/cross.png" height="16" width="16" title="Remove Line" /></a>';
     tr.appendChild(td);
     $('vareTable').appendChild(tr);
 }
@@ -158,8 +158,8 @@ function prisUpdate()
     $('payamount').innerHTML = numberFormat(payamount);
     invoiceAmount = payamount.toFixed(2);
 
-    if(!quantities.length || quantities[quantities.length - 1].value != '' || titles[titles.length - 1].value != '' ||
-        values[values.length - 1].value != '') {
+    if(!quantities.length || quantities[quantities.length - 1].value != '' || titles[titles.length - 1].value != ''
+        || values[values.length - 1].value != '') {
         addRow();
     }
 
@@ -276,8 +276,8 @@ function save_r(date)
         alert(date.error);
     }
 
-    if(date.status != status || date.type == 'lock' || date.type == 'cancel' || date.type == 'giro' ||
-        date.type == 'cash') {
+    if(date.status != status || date.type == 'lock' || date.type == 'cancel' || date.type == 'giro'
+        || date.type == 'cash') {
         window.location.reload();
     }
 

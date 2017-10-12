@@ -38,7 +38,7 @@ function checkUserLoggedIn(): void
 
     $user = ORM::getOneByQuery(
         User::class,
-        "SELECT * FROM `users` WHERE `name` = " . db()->eandq(request()->get('username'))
+        'SELECT * FROM `users` WHERE `name` = ' . db()->eandq(request()->get('username'))
     );
     if ($user && $user->getAccessLevel() && $user->validatePassword(request()->get('password', ''))) {
         $_SESSION['curentUser'] = $user;
@@ -62,9 +62,9 @@ function curentUser(): ?User
  */
 function optimizeTables(): string
 {
-    $tables = db()->fetchArray("SHOW TABLE STATUS");
+    $tables = db()->fetchArray('SHOW TABLE STATUS');
     foreach ($tables as $table) {
-        db()->query("OPTIMIZE TABLE `" . $table['Name'] . "`");
+        db()->query('OPTIMIZE TABLE `' . $table['Name'] . '`');
     }
 
     return '';
@@ -97,7 +97,7 @@ function removeBadSubmisions(): string
  */
 function removeNoneExistingFiles(): string
 {
-    $files = db()->fetchArray("SELECT id, path FROM `files`");
+    $files = db()->fetchArray('SELECT id, path FROM `files`');
 
     $missing = [];
     foreach ($files as $files) {
@@ -106,7 +106,7 @@ function removeNoneExistingFiles(): string
         }
     }
     if ($missing) {
-        db()->query("DELETE FROM `files` WHERE `id` IN(" . implode(",", $missing) . ")");
+        db()->query('DELETE FROM `files` WHERE `id` IN(' . implode(',', $missing) . ')');
     }
 
     return '';
@@ -115,7 +115,7 @@ function removeNoneExistingFiles(): string
 function sendDelayedEmail(): string
 {
     //Get emails that needs sending
-    $emails = db()->fetchArray("SELECT * FROM `emails`");
+    $emails = db()->fetchArray('SELECT * FROM `emails`');
     $cronStatus = ORM::getOne(CustomPage::class, 0);
     if (!$emails) {
         $cronStatus->save();
@@ -146,7 +146,7 @@ function sendDelayedEmail(): string
 
         ++$emailsSendt;
 
-        db()->query("DELETE FROM `emails` WHERE `id` = " . (int) $email['id']);
+        db()->query('DELETE FROM `emails` WHERE `id` = ' . (int) $email['id']);
     }
 
     $cronStatus->save();
@@ -175,10 +175,10 @@ function returnBytes(string $val): int
     switch ($last) {
         case 'g':
             $val *= 1024;
-            /*keep going*/
+            // no break
         case 'm':
             $val *= 1024;
-            /*keep going*/
+            // no break
         case 'k':
             $val *= 1024;
     }
@@ -322,8 +322,8 @@ function sendEmail(int $id, string $from, string $interests, string $subject, st
 
     $data = [
         'siteName' => Config::get('site_name'),
-        'css' => file_get_contents(_ROOT_ . '/theme/' . Config::get('theme', 'default') . '/style/email.css'),
-        'body' => str_replace(' href="/', ' href="' . Config::get('base_url') . '/', $html),
+        'css'      => file_get_contents(_ROOT_ . '/theme/' . Config::get('theme', 'default') . '/style/email.css'),
+        'body'     => str_replace(' href="/', ' href="' . Config::get('base_url') . '/', $html),
     ];
 
     $error = '';
@@ -349,7 +349,7 @@ function sendEmail(int $id, string $from, string $interests, string $subject, st
         return ['error' => trim($error)];
     }
 
-    db()->query("UPDATE `newsmails` SET `sendt` = 1 WHERE `id` = " . (int) $id);
+    db()->query('UPDATE `newsmails` SET `sendt` = 1 WHERE `id` = ' . (int) $id);
 
     return true;
 }
@@ -389,7 +389,7 @@ function countEmailTo(array $interests): int
 
 function saveEmail(string $from, string $interests, string $subject, string $text, int $id = null): bool
 {
-    if ($id === null) {
+    if (null === $id) {
         db()->query(
             "
             INSERT INTO `newsmails` (`from`, `interests`, `subject`, `text`)
@@ -423,7 +423,7 @@ function saveEmail(string $from, string $interests, string $subject, string $tex
 function katspath(int $id): array
 {
     return [
-        'id' => 'katsheader',
+        'id'   => 'katsheader',
         'html' => _('Select location:') . ' ' . ORM::getOne(Category::class, $id)->getPath(),
     ];
 }
@@ -436,7 +436,7 @@ function getOpenCategories(int $selectedId = null): array
     $openCategories = explode('<', request()->cookies->get('openkat', ''));
     $openCategories = array_map('intval', $openCategories);
 
-    if ($selectedId !== null) {
+    if (null !== $selectedId) {
         $category = ORM::getOne(Category::class, $selectedId);
         if ($category) {
             foreach ($category->getBranch() as $category) {
@@ -451,12 +451,12 @@ function getOpenCategories(int $selectedId = null): array
 function getSiteTreeData(string $inputType = '', int $selectedId = null): array
 {
     return [
-        'selectedCategory' => $selectedId !== null ? ORM::getOne(Category::class, $selectedId) : null,
-        'openCategories' => getOpenCategories($selectedId),
-        'includePages' => (!$inputType || $inputType === 'pages'),
-        'inputType' => $inputType,
-        'node' => ['children' => ORM::getByQuery(Category::class, "SELECT * FROM kat WHERE bind IS NULL")],
-        'customPages' => ORM::getByQuery(CustomPage::class, "SELECT * FROM `special` WHERE `id` > 1 ORDER BY `navn`"),
+        'selectedCategory' => null !== $selectedId ? ORM::getOne(Category::class, $selectedId) : null,
+        'openCategories'   => getOpenCategories($selectedId),
+        'includePages'     => (!$inputType || 'pages' === $inputType),
+        'inputType'        => $inputType,
+        'node'             => ['children' => ORM::getByQuery(Category::class, 'SELECT * FROM kat WHERE bind IS NULL')],
+        'customPages'      => ORM::getByQuery(CustomPage::class, 'SELECT * FROM `special` WHERE `id` > 1 ORDER BY `navn`'),
     ];
 }
 
@@ -464,7 +464,7 @@ function expandCategory(int $categoryId, string $inputType = ''): array
 {
     $data = [
         'openCategories' => getOpenCategories(),
-        'includePages'   => (!$inputType || $inputType === 'pages'),
+        'includePages'   => (!$inputType || 'pages' === $inputType),
         'inputType'      => $inputType,
         'node'           => ORM::getOne(Category::class, $categoryId),
     ];
@@ -534,8 +534,8 @@ function genfilename(string $filename): string
 function is_dirs(string $path): bool
 {
     if (is_file(_ROOT_ . $path)
-        || $path == '.'
-        || $path == '..'
+        || '.' == $path
+        || '..' == $path
     ) {
         return false;
     }
@@ -705,7 +705,7 @@ function saveImage(
     $mimeType = get_mime_type(_ROOT_ . $path);
 
     $output = ['type' => 'png'];
-    if ($mimeType === 'image/jpeg') {
+    if ('image/jpeg' === $mimeType) {
         $output['type'] = 'jpg';
     }
 
@@ -725,7 +725,8 @@ function deleteuser(int $id): bool
         return false;
     }
 
-    db()->query("DELETE FROM `users` WHERE `id` = " . (int) $id);
+    db()->query('DELETE FROM `users` WHERE `id` = ' . (int) $id);
+
     return true;
 }
 
@@ -734,9 +735,9 @@ function fileExists(string $dir, string $filename, string $type = ''): bool
     $pathinfo = pathinfo($filename);
     $filePath = _ROOT_ . $dir . '/' . genfilename($pathinfo['filename']);
 
-    if ($type == 'image') {
+    if ('image' == $type) {
         $filePath .= '.jpg';
-    } elseif ($type == 'lineimage') {
+    } elseif ('lineimage' == $type) {
         $filePath .= '.png';
     } else {
         $filePath .= '.' . $pathinfo['extension'];
@@ -748,7 +749,7 @@ function fileExists(string $dir, string $filename, string $type = ''): bool
 function newfaktura(): int
 {
     db()->query(
-        "INSERT INTO `fakturas` (`date`, `clerk`) VALUES (NOW(), " . db()->eandq(curentUser()->getFullName()) . ")"
+        'INSERT INTO `fakturas` (`date`, `clerk`) VALUES (NOW(), ' . db()->eandq(curentUser()->getFullName()) . ')'
     );
 
     return db()->insert_id;
@@ -768,7 +769,7 @@ function showfiles(string $dir): array
     natcasesort($files);
 
     foreach ($files as $fileName) {
-        if (mb_substr($fileName, 0, 1) === '.' || is_dir(_ROOT_ . $dir . '/' . $fileName)) {
+        if ('.' === mb_substr($fileName, 0, 1) || is_dir(_ROOT_ . $dir . '/' . $fileName)) {
             continue;
         }
 
@@ -846,9 +847,9 @@ function filehtml(File $file): string
         case 'image/jpeg':
         case 'image/png':
             $html .= '<div id="tilebox' . $file->getId() . '" class="imagetile"><div class="image"';
-            if ($returnType === 'rtef') {
+            if ('rtef' === $returnType) {
                 $html .= ' onclick="addimg(' . $file->getId() . ')"';
-            } elseif ($returnType === 'thb') {
+            } elseif ('thb' === $returnType) {
                 if ($file->getWidth() <= Config::get('thumb_width')
                     && $file->getHeight() <= Config::get('thumb_height')
                 ) {
@@ -862,12 +863,12 @@ function filehtml(File $file): string
             break;
         case 'video/x-flv':
             $html .= '<div id="tilebox' . $file->getId() . '" class="flvtile"><div class="image"';
-            if ($returnType === 'rtef') {
-                if ($file->getAspect() == '4-3') {
+            if ('rtef' === $returnType) {
+                if ('4-3' == $file->getAspect()) {
                     $html .= ' onclick="addflv(' . $file->getId() . ', \'' . $file->getAspect() . '\', '
                         . max($file->getWidth(), $file->getHeight() / 3 * 4) . ', '
                         . ceil($file->getWidth() / 4 * 3 * 1.1975) . ')"';
-                } elseif ($file->getAspect() == '16-9') {
+                } elseif ('16-9' == $file->getAspect()) {
                     $html .= ' onclick="addflv(' . $file->getId() . ', \'' . $file->getAspect() . '\', '
                         . max($file->getWidth(), $file->getHeight() / 9 * 16) . ', '
                         . ceil($file->getWidth() / 16 * 9 * 1.2) . ')"';
@@ -880,7 +881,7 @@ function filehtml(File $file): string
         case 'application/x-shockwave-flash':
         case 'video/x-shockwave-flash':
             $html .= '<div id="tilebox' . $file->getId() . '" class="swftile"><div class="image"';
-            if ($returnType === 'rtef') {
+            if ('rtef' === $returnType) {
                 $html .= ' onclick="addswf(' . $file->getId() . ', ' . $file->getWidth() . ', ' . $file->getHeight() . ')"';
             } else {
                 $html .= ' onclick="files[' . $file->getId() . '].openfile();"';
@@ -898,7 +899,7 @@ function filehtml(File $file): string
         case 'video/x-ms-wmv':
             $html .= '<div id="tilebox' . $file->getId() . '" class="videotile"><div class="image"';
             //TODO make the actual functions
-            if ($returnType === 'rtef') {
+            if ('rtef' === $returnType) {
                 $html .= ' onclick="addmedia(' . $file->getId() . ')"';
             } else {
                 $html .= ' onclick="files[' . $file->getId() . '].openfile();"';
@@ -906,7 +907,7 @@ function filehtml(File $file): string
             break;
         default:
             $html .= '<div id="tilebox' . $file->getId() . '" class="filetile"><div class="image"';
-            if ($returnType === 'rtef') {
+            if ('rtef' === $returnType) {
                 $html .= ' onclick="addfile(' . $file->getId() . ')"';
             } else {
                 $html .= ' onclick="files[' . $file->getId() . '].openfile();"';
@@ -1024,30 +1025,30 @@ function makedir(string $adminDir, string $name): array
 function renamefile($id, string $path, string $dir, string $filename, bool $force = false): array
 {
     $pathinfo = pathinfo($path);
-    if ($pathinfo['dirname'] == '/') {
-        $pathinfo['dirname'] == '';
+    if ('/' == $pathinfo['dirname']) {
+        '' == $pathinfo['dirname'];
     }
 
     if (!$dir) {
         $dir = $pathinfo['dirname'];
-    } elseif ($dir == '/') {
-        $dir == '';
+    } elseif ('/' == $dir) {
+        '' == $dir;
     }
 
     $pathinfo['extension'] = '';
     if (!is_dir(_ROOT_ . $path)) {
         $mime = get_mime_type(_ROOT_ . $path);
-        if ($mime == 'image/jpeg') {
+        if ('image/jpeg' == $mime) {
             $pathinfo['extension'] = 'jpg';
-        } elseif ($mime == 'image/png') {
+        } elseif ('image/png' == $mime) {
             $pathinfo['extension'] = 'png';
-        } elseif ($mime == 'image/gif') {
+        } elseif ('image/gif' == $mime) {
             $pathinfo['extension'] = 'gif';
-        } elseif ($mime == 'application/pdf') {
+        } elseif ('application/pdf' == $mime) {
             $pathinfo['extension'] = 'pdf';
-        } elseif ($mime == 'video/x-flv') {
+        } elseif ('video/x-flv' == $mime) {
             $pathinfo['extension'] = 'flv';
-        } elseif ($mime == 'image/vnd.wap.wbmp') {
+        } elseif ('image/vnd.wap.wbmp' == $mime) {
             $pathinfo['extension'] = 'wbmp';
         }
     } else {
@@ -1167,7 +1168,7 @@ function deltree(string $dir): bool
 
     $nodes = scandir(_ROOT_ . $dir);
     foreach ($nodes as $node) {
-        if ($node === '.' || $node === '..') {
+        if ('.' === $node || '..' === $node) {
             continue;
         }
 
@@ -1241,17 +1242,17 @@ function searchfiles(string $qpath, string $qalt, string $qmime): array
     }
 
     //Generate search query
-    $sql = " FROM `files`";
+    $sql = ' FROM `files`';
     if ($qpath || $qalt || $sqlMime) {
-        $sql .= " WHERE ";
+        $sql .= ' WHERE ';
         if ($qpath || $qalt) {
-            $sql .= "(";
+            $sql .= '(';
         }
         if ($qpath) {
             $sql .= "MATCH(path) AGAINST('" . $qpath . "')>0";
         }
         if ($qpath && $qalt) {
-            $sql .= " OR ";
+            $sql .= ' OR ';
         }
         if ($qalt) {
             $sql .= "MATCH(alt) AGAINST('" . $qalt . "')>0";
@@ -1263,10 +1264,10 @@ function searchfiles(string $qpath, string $qalt, string $qmime): array
             $sql .= " OR `alt` LIKE '%" . $qalt . "%'";
         }
         if ($qpath || $qalt) {
-            $sql .= ")";
+            $sql .= ')';
         }
         if (($qpath || $qalt) && !empty($sqlMime)) {
-            $sql .= " AND ";
+            $sql .= ' AND ';
         }
         if (!empty($sqlMime)) {
             $sql .= $sqlMime;
@@ -1298,8 +1299,8 @@ function searchfiles(string $qpath, string $qalt, string $qmime): array
 
     $html = '';
     $javascript = '';
-    foreach (ORM::getByQuery(File::class, "SELECT *" . $sql) as $file) {
-        if ($qmime !== 'unused' || !isinuse($file->getPath())) {
+    foreach (ORM::getByQuery(File::class, 'SELECT *' . $sql) as $file) {
+        if ('unused' !== $qmime || !isinuse($file->getPath())) {
             $html .= filehtml($file);
             $javascript .= filejavascript($file);
         }
@@ -1517,7 +1518,7 @@ function get_subscriptions_with_bad_emails(): string
 function get_looping_cats(): string
 {
     $html = '';
-    $categories = ORM::getByQuery(Category::class, "SELECT * FROM `kat` WHERE bind != 0 AND bind != -1");
+    $categories = ORM::getByQuery(Category::class, 'SELECT * FROM `kat` WHERE bind != 0 AND bind != -1');
     foreach ($categories as $category) {
         $branchIds = [$category->getId() => true];
         while ($category = $category->getParent()) {
@@ -1599,7 +1600,7 @@ function check_file_paths(): string
 
 function get_size_of_files(): int
 {
-    $files = db()->fetchOne("SELECT sum(`size`) / 1024 / 1024 AS `filesize` FROM `files`");
+    $files = db()->fetchOne('SELECT sum(`size`) / 1024 / 1024 AS `filesize` FROM `files`');
 
     return $files['filesize'] ?? 0;
 }
@@ -1642,7 +1643,7 @@ preg_match_all('/<img[^>]+/?>/ui', $value, $matches);
 
 function get_db_size(): float
 {
-    $tabels = db()->fetchArray("SHOW TABLE STATUS");
+    $tabels = db()->fetchArray('SHOW TABLE STATUS');
     $dbsize = 0;
     foreach ($tabels as $tabel) {
         $dbsize += $tabel['Data_length'];
@@ -1675,27 +1676,27 @@ function get_pages_with_mismatch_bindings(): string
 
     // Map out active / inactive
     $categoryActiveMaps = [[0], [-1]];
-    $categories = ORM::getByQuery(Category::class, "SELECT * FROM `kat`");
+    $categories = ORM::getByQuery(Category::class, 'SELECT * FROM `kat`');
     foreach ($categories as $category) {
         $categoryActiveMaps[(int) $category->isInactive()][] = $category->getId();
     }
 
     $pages = ORM::getByQuery(
         Page::class,
-        "
+        '
         SELECT * FROM `sider`
         WHERE EXISTS (
             SELECT * FROM bind
             WHERE side = sider.id
-            AND kat IN (" . implode(",", $categoryActiveMaps[0]) . ")
+            AND kat IN (' . implode(',', $categoryActiveMaps[0]) . ')
         )
         AND EXISTS (
             SELECT * FROM bind
             WHERE side = sider.id
-            AND kat IN (" . implode(",", $categoryActiveMaps[1]) . ")
+            AND kat IN (' . implode(',', $categoryActiveMaps[1]) . ')
         )
         ORDER BY id
-        "
+        '
     );
     if ($pages) {
         $html .= '<b>' . _('The following pages are both active and inactive') . '</b><br />';
@@ -1786,6 +1787,7 @@ function save_ny_kat(string $navn, int $kat, string $icon, int $vis, string $ema
         'weight'            => 0,
     ]);
     $category->save();
+
     return true;
 }
 
@@ -1797,7 +1799,7 @@ function savekrav(string $navn, string $html, int $id = null): array
     $html = purifyHTML($html);
     $html = htmlUrlDecode($html);
 
-    if ($navn != '' && $html != '') {
+    if ('' != $navn && '' != $html) {
         if (!$id) {
             $requirement = new Requirement([
                 'title' => $navn,
@@ -1826,7 +1828,7 @@ function sogogerstat(string $sog, string $erstat): int
 function updatemaerke(int $id = null, string $navn = '', string $link = '', string $ico = null): array
 {
     if ($navn) {
-        if ($id === null) {
+        if (null === $id) {
             (new Brand(['title' => $navn, 'link' => $link, 'icon_path' => $ico]))->save();
         } else {
             $brand = ORM::getOne(Brand::class, $id)
@@ -1848,7 +1850,7 @@ function updatemaerke(int $id = null, string $navn = '', string $link = '', stri
  */
 function sletmaerke(int $id): array
 {
-    db()->query("DELETE FROM `maerke` WHERE `id` = " . $id);
+    db()->query('DELETE FROM `maerke` WHERE `id` = ' . $id);
 
     return ['node' => 'maerke' . $id];
 }
@@ -1858,7 +1860,7 @@ function sletmaerke(int $id): array
  */
 function sletkrav(int $id): array
 {
-    db()->query("DELETE FROM `krav` WHERE `id` = " . $id);
+    db()->query('DELETE FROM `krav` WHERE `id` = ' . $id);
 
     return ['id' => 'krav' . $id];
 }
@@ -2043,11 +2045,11 @@ function updateKat(
     string $icon = null
 ) {
     $category = ORM::getOne(Category::class, $id);
-    if ($category->getParent() && $bind === null) {
+    if ($category->getParent() && null === $bind) {
         return ['error' => _('You must select a parent category')];
     }
 
-    if ($bind !== null) {
+    if (null !== $bind) {
         $parent = ORM::getOne(Category::class, $bind);
         foreach ($parent->getBranch() as $node) {
             if ($node->getId() === $category->getId()) {
@@ -2132,7 +2134,7 @@ function opretSide(
 }
 
 /**
- * Delete a page and all it's relations from the database
+ * Delete a page and all it's relations from the database.
  *
  * @return string[]
  */
@@ -2157,11 +2159,11 @@ function copytonew(int $id): int
     );
     $faktura['clerk'] = curentUser()->getFullName();
 
-    $sql = "INSERT INTO `fakturas` SET";
+    $sql = 'INSERT INTO `fakturas` SET';
     foreach ($faktura as $key => $value) {
         $sql .= ' `' . addcslashes($key, '`\\') . "` = '" . db()->esc($value) . "',";
     }
-    $sql .= " `date` = NOW();";
+    $sql .= ' `date` = NOW();';
 
     db()->query($sql);
 
@@ -2178,7 +2180,7 @@ function save(int $id, string $action, array $updates): array
 
     invoiceBasicUpdate($invoice, $action, $updates);
 
-    if ($action === 'email') {
+    if ('email' === $action) {
         try {
             sendInvoice($invoice);
         } catch (Exception $exception) {
@@ -2193,8 +2195,8 @@ function invoiceBasicUpdate(Invoice $invoice, string $action, array $updates): v
 {
     $status = $invoice->getStatus();
 
-    if ($invoice->getStatus() === 'new') {
-        if ($action === 'lock') {
+    if ('new' === $invoice->getStatus()) {
+        if ('lock' === $action) {
             $status = 'locked';
         }
         $invoice->setTimeStamp(strtotime($updates['date']));
@@ -2230,13 +2232,13 @@ function invoiceBasicUpdate(Invoice $invoice, string $action, array $updates): v
     }
 
     if (isset($updates['note'])) {
-        if ($invoice->getStatus() !== 'new') {
+        if ('new' !== $invoice->getStatus()) {
             $updates['note'] = trim($invoice->getNote() . "\n" . $updates['note']);
         }
         $invoice->setNote($updates['note']);
     }
 
-    if (!$invoice->getDepartment() && count(Config::get('emails')) === 1) {
+    if (!$invoice->getDepartment() && 1 === count(Config::get('emails'))) {
         $email = first(Config::get('emails'))['address'];
         $invoice->setDepartment($email);
     } elseif (!empty($updates['department'])) {
@@ -2247,23 +2249,23 @@ function invoiceBasicUpdate(Invoice $invoice, string $action, array $updates): v
         $invoice->setClerk(curentUser()->getFullName());
     }
 
-    if (($action === 'giro' || $action === 'cash')
+    if (('giro' === $action || 'cash' === $action)
         && in_array($invoice->getStatus(), ['new', 'locked', 'rejected'], true)
     ) {
         $status = $action;
     }
 
     if (!$invoice->isFinalized()) {
-        if (($action === 'lock' || $action === 'cancel') && $invoice->getStatus() !== 'locked') {
+        if (('lock' === $action || 'cancel' === $action) && 'locked' !== $invoice->getStatus()) {
             $invoice->setTimeStampPay(!empty($updates['paydate']) ? strtotime($updates['paydate']) : time());
-        } elseif ($action === 'giro' && $updates['gdate']) {
+        } elseif ('giro' === $action && $updates['gdate']) {
             $invoice->setTimeStampPay(strtotime($updates['gdate']));
-        } elseif ($action === 'cash' && $updates['cdate']) {
+        } elseif ('cash' === $action && $updates['cdate']) {
             $invoice->setTimeStampPay(strtotime($updates['cdate']));
         }
 
-        if ($action === 'cancel') {
-            if ($invoice->getStatus() === 'pbsok' && !annul($invoice->getId())) {
+        if ('cancel' === $action) {
+            if ('pbsok' === $invoice->getStatus() && !annul($invoice->getId())) {
                 throw new Exception(_('Failed to cancel payment!'));
             }
             $status = 'canceled';
@@ -2283,7 +2285,7 @@ function sendInvoice(Invoice $invoice): void
         throw new Exception(_('Email is not valid!'));
     }
 
-    if (!$invoice->getDepartment() && count(Config::get('emails')) === 1) {
+    if (!$invoice->getDepartment() && 1 === count(Config::get('emails'))) {
         $email = first(Config::get('emails'))['address'];
         $invoice->setDepartment($email);
     } elseif (!$invoice->getDepartment()) {
@@ -2326,7 +2328,7 @@ function sendInvoice(Invoice $invoice): void
         throw new Exception(_('Unable to sendt e-mail!'));
     }
 
-    if ($invoice->getStatus() === 'new') {
+    if ('new' === $invoice->getStatus()) {
         $invoice->setStatus('locked');
     }
 
@@ -2393,7 +2395,7 @@ function annul(int $id)
         return ['error' => $e->getMessage()];
     }
 
-    if ($invoice->getStatus() === 'pbsok') {
+    if ('pbsok' === $invoice->getStatus()) {
         $invoice->setStatus('rejected')
             ->setTimeStampPay(time())
             ->save();
@@ -2422,7 +2424,7 @@ function generateImage(
         }
 
         $outputPath = $pathinfo['dirname'] . '/' . $output['filename'];
-        $outputPath .= !empty($output['type']) && $output['type'] === 'png' ? '.png' : '.jpg';
+        $outputPath .= !empty($output['type']) && 'png' === $output['type'] ? '.png' : '.jpg';
 
         if (!empty($output['type']) && empty($output['force']) && file_exists($outputPath)) {
             return [
@@ -2459,7 +2461,7 @@ function generateImage(
         && !$rotate
         && $maxW === $orginalWidth
         && $maxH === $orginalHeight
-        && mb_strpos($path, _ROOT_) === 0
+        && 0 === mb_strpos($path, _ROOT_)
     ) {
         redirect(mb_substr($path, mb_strlen(_ROOT_)), Response::HTTP_MOVED_PERMANENTLY);
     }
@@ -2476,7 +2478,7 @@ function generateImage(
 
     // Flip / mirror
     if ($flip) {
-        $image->flip($flip === 1 ? 'x' : 'y');
+        $image->flip(1 === $flip ? 'x' : 'y');
     }
 
     $image->rotate($rotate);
@@ -2486,13 +2488,13 @@ function generateImage(
     $type = 'jpeg';
     if (empty($output['type'])) {
         $mimeType = get_mime_type($path);
-        if ($mimeType !== 'image/png') {
+        if ('image/png' !== $mimeType) {
             $mimeType = 'image/jpeg';
         }
         header('Content-Type: ' . $mimeType);
-        $image->save(null, $mimeType === 'image/png' ? 'png' : 'jpeg');
+        $image->save(null, 'image/png' === $mimeType ? 'png' : 'jpeg');
         die();
-    } elseif ($output['type'] === 'png') {
+    } elseif ('png' === $output['type']) {
         $mimeType = 'image/png';
         $type = 'png';
     }
@@ -2504,7 +2506,7 @@ function generateImage(
 
     $file = null;
     $localFile = $outputPath;
-    if (mb_strpos($outputPath, _ROOT_) === 0) {
+    if (0 === mb_strpos($outputPath, _ROOT_)) {
         $localFile = mb_substr($outputPath, mb_strlen(_ROOT_));
         $file = File::getByPath($localFile);
         if ($file && $output['filename'] === $pathinfo['filename'] && $outputPath !== $path) {
@@ -2528,10 +2530,10 @@ function generateImage(
 function getBasicAdminTemplateData(): array
 {
     return [
-        'title'           => 'Administrator menu',
-        'javascript'      => Sajax::showJavascript(true),
-        'theme'           => Config::get('theme', 'default'),
-        'hide'            => [
+        'title'      => 'Administrator menu',
+        'javascript' => Sajax::showJavascript(true),
+        'theme'      => Config::get('theme', 'default'),
+        'hide'       => [
             'activity'    => request()->cookies->get('hideActivity'),
             'binding'     => request()->cookies->get('hidebinding'),
             'categories'  => request()->cookies->get('hidekats'),

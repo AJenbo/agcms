@@ -1,7 +1,5 @@
 <?php namespace AGCMS\Entity;
 
-use AGCMS\ORM;
-use DateInterval;
 use DateTime;
 
 class User extends AbstractEntity
@@ -52,7 +50,7 @@ class User extends AbstractEntity
             'name'      => db()->eandq($this->nickname),
             'password'  => db()->eandq($this->passwordHash),
             'access'    => (string) $this->accessLevel,
-            'lastlogin' => "UNIX_TIMESTAMP(" . $this->lastLogin . ")",
+            'lastlogin' => 'UNIX_TIMESTAMP(' . $this->lastLogin . ')',
         ];
     }
 
@@ -145,7 +143,7 @@ class User extends AbstractEntity
         return false;
     }
 
-    function getLastLoginText(): string
+    public function getLastLoginText(): string
     {
         if (!$this->lastLogin) {
             return _('Never');

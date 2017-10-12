@@ -1,4 +1,4 @@
-<?xml version="1.0"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <ruleset name="PSR2">
     <description>PSR-2 ruleset</description>
     <rule ref="PSR2"/>

@@ -124,7 +124,7 @@ class Category extends AbstractRenderable
     public function setParentId(int $parentId = null): self
     {
         if ($this->id && $this->id <= 0) {
-            Throw new Exception(_('Your not allowed to move root categories'));
+            throw new Exception(_('Your not allowed to move root categories'));
         }
 
         $this->parentId = $parentId;
@@ -237,11 +237,11 @@ class Category extends AbstractRenderable
      */
     public function isVisable(): bool
     {
-        if ($this->renderMode === self::HIDDEN) {
+        if (self::HIDDEN === $this->renderMode) {
             return false;
         }
 
-        if ($this->visable === null) {
+        if (null === $this->visable) {
             if ($this->hasPages()) {
                 $this->visable = true;
 
@@ -289,7 +289,7 @@ class Category extends AbstractRenderable
      */
     public function getParent(): ?self
     {
-        if ($this->parentId === null) {
+        if (null === $this->parentId) {
             return null;
         }
 
@@ -314,10 +314,10 @@ class Category extends AbstractRenderable
 
         $children = ORM::getByQuery(
             self::class,
-            "
+            '
             SELECT * FROM kat
-            WHERE bind = " . $this->getId() . "
-            ORDER BY " . $orderBy
+            WHERE bind = ' . $this->getId() . '
+            ORDER BY ' . $orderBy
         );
 
         if (!$onlyVisable) {
@@ -390,19 +390,19 @@ class Category extends AbstractRenderable
 
         $pages = ORM::getByQuery(
             Page::class,
-            "
+            '
             SELECT * FROM sider
-            WHERE id IN(SELECT side FROM bind WHERE kat = " . $this->getId() . ")
-            ORDER BY `" . db()->esc($order) . "` " . ($reverseOrder ? "DESC" : "ASC")
+            WHERE id IN(SELECT side FROM bind WHERE kat = ' . $this->getId() . ')
+            ORDER BY `' . db()->esc($order) . '` ' . ($reverseOrder ? 'DESC' : 'ASC')
         );
 
         $objectArray = [];
         foreach ($pages as $page) {
             $objectArray[] = [
-                'id' => $page->getId(),
-                'navn' => $page->getTitle(),
-                'for' => $page->getOldPrice(),
-                'pris' => $page->getPrice(),
+                'id'     => $page->getId(),
+                'navn'   => $page->getTitle(),
+                'for'    => $page->getOldPrice(),
+                'pris'   => $page->getPrice(),
                 'varenr' => $page->getSku(),
                 'object' => $page,
             ];
@@ -420,7 +420,7 @@ class Category extends AbstractRenderable
     {
         Render::addLoadedTable('bind');
 
-        return (bool) db()->fetchOne("SELECT kat FROM `bind` WHERE `kat` = " . $this->getId());
+        return (bool) db()->fetchOne('SELECT kat FROM `bind` WHERE `kat` = ' . $this->getId());
     }
 
     public function hasContent(): bool
@@ -474,7 +474,7 @@ class Category extends AbstractRenderable
      */
     public function getIcon(): ?File
     {
-        if ($this->iconPath === null) {
+        if (null === $this->iconPath) {
             return null;
         }
 
@@ -492,8 +492,8 @@ class Category extends AbstractRenderable
     {
         return [
             'navn'             => db()->eandq($this->title),
-            'bind'             => $this->parentId !== null ? (string) $this->parentId : 'NULL',
-            'icon'             => $this->iconPath !== null ? db()->eandq($this->iconPath) : 'NULL',
+            'bind'             => null !== $this->parentId ? (string) $this->parentId : 'NULL',
+            'icon'             => null !== $this->iconPath ? db()->eandq($this->iconPath) : 'NULL',
             'vis'              => (string) $this->renderMode,
             'email'            => db()->eandq($this->email),
             'custom_sort_subs' => (string) $this->weightedChildren,

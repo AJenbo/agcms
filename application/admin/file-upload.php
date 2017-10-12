@@ -19,6 +19,6 @@ Render::output(
     'admin-file-upload',
     [
         'javascript' => Sajax::showJavascript(true) . ' var maxbyte = ' . $maxbyte
-            . ';var activeDir = ' . json_encode(request()->get('path')) . ';'
+            . ';var activeDir = ' . json_encode(request()->get('path')) . ';',
     ]
 );

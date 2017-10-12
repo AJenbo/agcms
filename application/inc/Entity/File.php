@@ -237,18 +237,18 @@ class File extends AbstractEntity
     public function getDbArray(): array
     {
         return [
-            'path' => db()->eandq($this->path),
-            'mime' => db()->eandq($this->mime),
-            'size' => (string) $this->size,
-            'alt' => db()->eandq($this->description),
-            'width' => (string) $this->width,
+            'path'   => db()->eandq($this->path),
+            'mime'   => db()->eandq($this->mime),
+            'size'   => (string) $this->size,
+            'alt'    => db()->eandq($this->description),
+            'width'  => (string) $this->width,
             'height' => (string) $this->height,
-            'aspect' => $this->aspect ? db()->eandq($this->aspect) : "NULL",
+            'aspect' => $this->aspect ? db()->eandq($this->aspect) : 'NULL',
         ];
     }
 
     /**
-     * Rename file
+     * Rename file.
      */
     public function move(string $path): bool
     {
@@ -275,13 +275,13 @@ class File extends AbstractEntity
         $imagesize = @getimagesize(_ROOT_ . $path);
 
         $file = new self([
-            'path' => $path,
-            'mime' => get_mime_type(_ROOT_ . $path),
-            'size' => filesize(_ROOT_ . $path),
+            'path'        => $path,
+            'mime'        => get_mime_type(_ROOT_ . $path),
+            'size'        => filesize(_ROOT_ . $path),
             'description' => '',
-            'width' => $imagesize[0] ?? 0,
-            'height' => $imagesize[1] ?? 0,
-            'aspect' => '',
+            'width'       => $imagesize[0] ?? 0,
+            'height'      => $imagesize[1] ?? 0,
+            'aspect'      => '',
         ]);
 
         return $file;
@@ -295,7 +295,7 @@ class File extends AbstractEntity
     public function delete(): bool
     {
         if (@unlink(_ROOT_ . $this->path)) {
-            db()->query("DELETE FROM `" . self::TABLE_NAME . "` WHERE `id` = " . $this->id);
+            db()->query('DELETE FROM `' . self::TABLE_NAME . '` WHERE `id` = ' . $this->id);
             ORM::forget(self::class, $this->id);
 
             return true;
@@ -313,7 +313,7 @@ class File extends AbstractEntity
     {
         return ORM::getOneByQuery(
             self::class,
-            "SELECT * FROM `" . self::TABLE_NAME . "` WHERE path = '" . db()->esc($path) . "'"
+            'SELECT * FROM `' . self::TABLE_NAME . "` WHERE path = '" . db()->esc($path) . "'"
         );
     }
 }

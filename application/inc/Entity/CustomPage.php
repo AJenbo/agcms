@@ -139,7 +139,7 @@ class CustomPage extends AbstractEntity
         $this->setTimeStamp(time());
 
         return [
-            'dato' => "NOW()",
+            'dato' => 'NOW()',
             'navn' => db()->eandq($this->title),
             'text' => db()->eandq($this->html),
         ];

@@ -11,14 +11,14 @@ use Sajax\Sajax;
 require_once __DIR__ . '/logon.php';
 @include_once _ROOT_ . '/inc/countries.php';
 
-if (request()->get('function') === 'new') {
+if ('new' === request()->get('function')) {
     redirect('faktura.php?id=' . newfaktura());
 }
 
 /** @var Invoice */
 $invoice = ORM::getOne(Invoice::class, request()->get('id'));
 
-if ($invoice && $invoice->getStatus() !== 'new') {
+if ($invoice && 'new' !== $invoice->getStatus()) {
     try {
         $epaymentService = new EpaymentAdminService(Config::get('pbsid'), Config::get('pbspwd'));
         $epayment = $epaymentService->getPayment(Config::get('pbsfix') . $invoice->getId());
@@ -32,7 +32,7 @@ if ($invoice && $invoice->getStatus() !== 'new') {
         } elseif ($epayment->isAuthorized() && !in_array($invoice->getStatus(), ['pbsok', 'giro', 'cash'])) {
             // Authorised. The card payment is authorised and awaiting confirmation and Acquisition.
             $invoice->setStatus('pbsok')->save();
-        } elseif (!$epayment->getId() && $invoice->getStatus() === 'pbsok') {
+        } elseif (!$epayment->getId() && 'pbsok' === $invoice->getStatus()) {
             $invoice->setStatus('locked')->save();
         }
     } catch (SoapFault $e) {
@@ -59,13 +59,13 @@ if (!$invoice->getClerk()) {
 
 $data = getBasicAdminTemplateData();
 $data = [
-    'title' => _('Online Invoice #') . $invoice->getId(),
-    'javascript' => $data['javascript'] . ' var status = ' . json_encode($invoice->getStatus()) . ';',
+    'title'       => _('Online Invoice #') . $invoice->getId(),
+    'javascript'  => $data['javascript'] . ' var status = ' . json_encode($invoice->getStatus()) . ';',
     'currentUser' => curentUser(),
-    'users' => ORM::getByQuery(User::class, "SELECT * FROM `users` ORDER BY fullname"),
-    'invoice' => $invoice,
+    'users'       => ORM::getByQuery(User::class, 'SELECT * FROM `users` ORDER BY fullname'),
+    'invoice'     => $invoice,
     'departments' => array_keys(Config::get('emails', [])),
-    'countries' => $countries,
+    'countries'   => $countries,
 ] + $data;
 
 Render::output('admin-faktura', $data);

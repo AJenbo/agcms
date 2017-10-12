@@ -37,7 +37,7 @@ $urls = [
 ];
 
 $activeCategoryIds = [0];
-$categories = ORM::getByQuery(Category::class, "SELECT * FROM kat");
+$categories = ORM::getByQuery(Category::class, 'SELECT * FROM kat');
 foreach ($categories as $category) {
     if ($category->isInactive()) {
         continue;
@@ -55,11 +55,11 @@ unset($categories, $category);
 $brandIds = [];
 $pages = ORM::getByQuery(
     Page::class,
-    "
+    '
     SELECT sider.* FROM bind
     JOIN sider ON sider.id = bind.side
-    WHERE bind.kat IN(" . implode(",", $activeCategoryIds) . ")
-    "
+    WHERE bind.kat IN(' . implode(',', $activeCategoryIds) . ')
+    '
 );
 unset($activeCategoryIds);
 foreach ($pages as $page) {
@@ -75,10 +75,10 @@ unset($pages, $page);
 if ($brandIds) {
     $brands = ORM::getByQuery(
         Brand::class,
-        "
+        '
         SELECT * FROM maerke
-        WHERE id IN(" . implode(",", array_keys($brandIds)) . ")
-        "
+        WHERE id IN(' . implode(',', array_keys($brandIds)) . ')
+        '
     );
     foreach ($brands as $brand) {
         $urls[] = [
@@ -91,7 +91,7 @@ if ($brandIds) {
 }
 unset($brandIds);
 
-$requirements = ORM::getByQuery(Requirement::class, "SELECT * FROM krav");
+$requirements = ORM::getByQuery(Requirement::class, 'SELECT * FROM krav');
 foreach ($requirements as $requirement) {
     $urls[] = [
         'loc' => Config::get('base_url') . $requirement->getCanonicalLink(),

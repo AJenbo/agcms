@@ -28,8 +28,8 @@ class UploadHandler
     {
         $targetPath = (string) realpath(_ROOT_ . $targetPath); // Check path exists
         $targetPath = mb_substr($targetPath, mb_strlen(_ROOT_)); // Remove _ROOT_
-        if (mb_substr($targetPath, 0, 6) !== '/files'
-            && mb_substr($targetPath, 0, 7) !== '/images'
+        if ('/files' !== mb_substr($targetPath, 0, 6)
+            && '/images' !== mb_substr($targetPath, 0, 7)
         ) {
             throw new Exception(_('Invalid destination.'));
         }
@@ -98,15 +98,15 @@ class UploadHandler
 
     private function shouldProcessImage(Image $image, int $width, int $height, string $destinationType): bool
     {
-        if ($destinationType !== 'image' && $destinationType !== 'lineimage') {
+        if ('image' !== $destinationType && 'lineimage' !== $destinationType) {
             return false;
         }
 
-        if ($destinationType === 'lineimage'
+        if ('lineimage' === $destinationType
             || $image->getWidth() !== $width
             || $image->getHeight() !== $height
             || $this->file->getSize() / $width / $height > self::MAX_BYTE_PER_PIXEL
-            || $this->file->getMimeType() !== 'image/jpeg'
+            || 'image/jpeg' !== $this->file->getMimeType()
         ) {
             return true;
         }
@@ -119,7 +119,7 @@ class UploadHandler
         $this->checkMemorry($image);
 
         $this->extension = 'jpg';
-        if ($destinationType === 'lineimage') {
+        if ('lineimage' === $destinationType) {
             $this->extension = 'png';
         }
 
@@ -128,7 +128,7 @@ class UploadHandler
 
         $target = tempnam(sys_get_temp_dir(), 'upload');
 
-        $format = $this->extension === 'jpg' ? 'jpeg' : $this->extension;
+        $format = 'jpg' === $this->extension ? 'jpeg' : $this->extension;
         $image->save($target, $format);
 
         $this->file = new FileHandeler($target, false);

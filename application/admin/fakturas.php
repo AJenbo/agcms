@@ -21,10 +21,10 @@ $selected = [
     'momssats'   => request()->get('momssats'),
     'clerk'      => request()->get('clerk'),
 ];
-if ($selected['clerk'] === null && !curentUser()->hasAccess(User::ADMINISTRATOR)) {
+if (null === $selected['clerk'] && !curentUser()->hasAccess(User::ADMINISTRATOR)) {
     $selected['clerk'] = curentUser()->getFullName();
 }
-if ($selected['momssats'] === '') {
+if ('' === $selected['momssats']) {
     $selected['momssats'] = null;
 }
 
@@ -39,22 +39,22 @@ if ($selected['month'] && $selected['year']) {
 }
 
 if ($selected['department']) {
-    $where[] = "`department` = " . db()->eandq($selected['department']);
+    $where[] = '`department` = ' . db()->eandq($selected['department']);
 }
 if ($selected['clerk'] && !curentUser()->hasAccess(User::ADMINISTRATOR) || curentUser()->getFullName() == $selected['clerk']) {
     //Viewing your self
-    $where[] = "(`clerk` = " . db()->eandq($selected['clerk']) . " OR `clerk` = '')";
+    $where[] = '(`clerk` = ' . db()->eandq($selected['clerk']) . " OR `clerk` = '')";
 } elseif ($selected['clerk']) {
     //Viewing some one else
-    $where[] = "`clerk` = " . db()->eandq($selected['clerk']);
+    $where[] = '`clerk` = ' . db()->eandq($selected['clerk']);
 }
 
-if ($selected['status'] === 'activ') {
+if ('activ' === $selected['status']) {
     $where[] = "(`status` = 'new' OR `status` = 'locked' OR `status` = 'pbsok' OR `status` = 'pbserror')";
-} elseif ($selected['status'] == 'inactiv') {
+} elseif ('inactiv' == $selected['status']) {
     $where[] = "(`status` != 'new' AND `status` != 'locked' AND `status` != 'pbsok' AND `status` != 'pbserror')";
 } elseif ($selected['status']) {
-    $where[] = "`status` = " . db()->eandq($selected['status']);
+    $where[] = '`status` = ' . db()->eandq($selected['status']);
 }
 
 if ($selected['name']) {
@@ -71,13 +71,13 @@ if ($selected['email']) {
 }
 
 if ($selected['momssats']) {
-    $where[] = "`momssats` = " . db()->eandq($selected['momssats']);
+    $where[] = '`momssats` = ' . db()->eandq($selected['momssats']);
 }
 
 $where = implode(' AND ', $where);
 
 if ($selected['id']) {
-    $where = " `id` = " . $selected['id'];
+    $where = ' `id` = ' . $selected['id'];
 }
 
 $oldest = db()->fetchOne(
@@ -92,8 +92,8 @@ $data = [
     'selected'      => $selected,
     'countries'     => $countries,
     'departments'   => array_keys(Config::get('emails', [])),
-    'users'         => ORM::getByQuery(User::class, "SELECT * FROM `users` ORDER BY `fullname`"),
-    'invoices' => ORM::getByQuery(Invoice::class, "SELECT * FROM `fakturas` WHERE " . $where . " ORDER BY `id` DESC"),
+    'users'         => ORM::getByQuery(User::class, 'SELECT * FROM `users` ORDER BY `fullname`'),
+    'invoices'      => ORM::getByQuery(Invoice::class, 'SELECT * FROM `fakturas` WHERE ' . $where . ' ORDER BY `id` DESC'),
     'years'         => range($oldest, date('Y')),
     'statusOptions' => [
         ''         => 'All',

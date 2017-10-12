@@ -25,10 +25,10 @@ if (($pageId = (int) ($_GET['add'] ?? 0)) || ($rowId = (int) ($_GET['add_list_it
     $productPrice = null;
     if ($rowId) { // Find item based on price table row
         $listRow = db()->fetchOne(
-            "
+            '
             SELECT *
             FROM `list_rows`
-            WHERE id = " . $rowId
+            WHERE id = ' . $rowId
         );
         Render::addLoadedTable('list_rows');
         if (!$listRow) {
@@ -75,7 +75,7 @@ if (($pageId = (int) ($_GET['add'] ?? 0)) || ($rowId = (int) ($_GET['add_list_it
 
     session_start();
     $_SESSION['faktura']['products'] = $_SESSION['faktura']['products'] ?? [];
-    if (($productId = array_search($productTitle, $_SESSION['faktura']['products'])) !== false) {
+    if (false !== ($productId = array_search($productTitle, $_SESSION['faktura']['products']))) {
         ++$_SESSION['faktura']['quantities'][$productId]; // Increment item quantity
     } else {
         // Add new item to basket
@@ -147,7 +147,7 @@ if (!empty($_SESSION['faktura']['quantities'])) {
             'note' => $_SESSION['faktura']['note'] ?? '',
         ];
         Render::$bodyHtml = Render::render('partial-order-form', $data);
-    } elseif ($_GET['step'] == 1) {
+    } elseif (1 == $_GET['step']) {
         if (empty($_SESSION['faktura']['postcountry'])) {
             $_SESSION['faktura']['postcountry'] = 'DK';
         }
@@ -221,7 +221,7 @@ if (!empty($_SESSION['faktura']['quantities'])) {
             'submitLabel' => 'Send order',
         ];
         Render::$bodyHtml = Render::render('partial-order-form1', $data);
-    } elseif ($_GET['step'] == 2) {
+    } elseif (2 == $_GET['step']) {
         if (!$_SESSION['faktura'] || !$_SESSION['faktura']['email']) {
             redirect('/bestilling/');
         }

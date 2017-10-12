@@ -1,16 +1,16 @@
 <?php
 /**
- * Import VCARD files
+ * Import VCARD files.
  *
  * PHP version 5
  *
  * @category VCARD
- * @package  AGCMS
+ *
  * @author   Anders Jenbo <anders@jenbo.dk>
  * @license  LGPL http://www.gnu.org/licenses/lgpl.html
- * @link     http://anders.jenbo.dk/
+ *
+ * @see     http://anders.jenbo.dk/
  */
-
 require_once '../inc/functions.php';
 
 $filecontent = file_get_contents('paintballbaner.vcf');
@@ -40,7 +40,7 @@ foreach ($vcards[0] as $vcard) {
         'adresse' => $adresse[2],
         'by' => $adresse[3],
         'post' => $adresse[5],
-        'land' => $adresse[6]
+        'land' => $adresse[6],
     ];
 }
 
@@ -62,14 +62,14 @@ foreach ($contacts as $contact) {
             `dato`
         )
         VALUES (
-            '".$contact['navn']."',
-            '".$contact['email']."',
-            '".$contact['adresse']."',
-            '".$contact['land']."',
-            '".$contact['post']."',
-            '".$contact['by']."',
-            '".$contact['tlf1']."',
-            '".$contact['tlf2']."',
+            '" . $contact['navn'] . "',
+            '" . $contact['email'] . "',
+            '" . $contact['adresse'] . "',
+            '" . $contact['land'] . "',
+            '" . $contact['post'] . "',
+            '" . $contact['by'] . "',
+            '" . $contact['tlf1'] . "',
+            '" . $contact['tlf2'] . "',
             '1',
             'Paintballbaner',
             NOW()

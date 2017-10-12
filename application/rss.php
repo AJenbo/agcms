@@ -38,14 +38,14 @@ $where = '';
 if ($time) {
     $where = " WHERE `dato` > '" . date('Y-m-d h:i:s', $time) . "'";
 } else {
-    $limit = " LIMIT 20";
+    $limit = ' LIMIT 20';
 }
 
 $pages = ORM::getByQuery(
     Page::class,
-    "SELECT * FROM sider"
+    'SELECT * FROM sider'
     . $where
-    . " ORDER BY dato DESC"
+    . ' ORDER BY dato DESC'
     . $limit
 );
 foreach ($pages as $page) {
@@ -54,7 +54,7 @@ foreach ($pages as $page) {
     }
 
     $decription = '';
-    if ($page->getIcon() && $page->getIcon()->getPath() !== '/images/web/intet-foto.jpg') {
+    if ($page->getIcon() && '/images/web/intet-foto.jpg' !== $page->getIcon()->getPath()) {
         $decription .= '<img style="float:left;margin:0 10px 5px 0;" src="'
             . Config::get('base_url') . encodeUrl($page->getIcon()->getPath()) . '" ><p>';
     }

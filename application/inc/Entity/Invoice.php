@@ -5,7 +5,7 @@ use AGCMS\Config;
 class Invoice extends AbstractEntity
 {
     /**
-     * Table name in database
+     * Table name in database.
      */
     const TABLE_NAME = 'fakturas';
 
@@ -51,7 +51,7 @@ class Invoice extends AbstractEntity
     private $items;
 
     /**
-     * Construct the entity
+     * Construct the entity.
      *
      * @param array $data The entity data
      */
@@ -101,6 +101,7 @@ class Invoice extends AbstractEntity
     public function setTimeStamp(int $timeStamp): self
     {
         $this->timeStamp = $timeStamp;
+
         return $this;
     }
 
@@ -112,6 +113,7 @@ class Invoice extends AbstractEntity
     public function setTimeStampPay(int $timeStampPay): self
     {
         $this->timeStampPay = $timeStampPay;
+
         return $this;
     }
 
@@ -123,6 +125,7 @@ class Invoice extends AbstractEntity
     public function setAmount(string $amount): self
     {
         $this->amount = $amount;
+
         return $this;
     }
 
@@ -134,6 +137,7 @@ class Invoice extends AbstractEntity
     public function setName(string $name): self
     {
         $this->name = trim($name);
+
         return $this;
     }
 
@@ -145,6 +149,7 @@ class Invoice extends AbstractEntity
     public function setAtt(string $att): self
     {
         $this->att = trim($att);
+
         return $this;
     }
 
@@ -156,6 +161,7 @@ class Invoice extends AbstractEntity
     public function setAddress(string $address): self
     {
         $this->address = trim($address);
+
         return $this;
     }
 
@@ -167,6 +173,7 @@ class Invoice extends AbstractEntity
     public function setPostbox(string $postbox): self
     {
         $this->postbox = trim($postbox);
+
         return $this;
     }
 
@@ -178,6 +185,7 @@ class Invoice extends AbstractEntity
     public function setPostcode(string $postcode): self
     {
         $this->postcode = trim($postcode);
+
         return $this;
     }
 
@@ -189,6 +197,7 @@ class Invoice extends AbstractEntity
     public function setCity(string $city): self
     {
         $this->city = trim($city);
+
         return $this;
     }
 
@@ -200,6 +209,7 @@ class Invoice extends AbstractEntity
     public function setCountry(string $country): self
     {
         $this->country = trim($country);
+
         return $this;
     }
 
@@ -211,6 +221,7 @@ class Invoice extends AbstractEntity
     public function setEmail(string $email): self
     {
         $this->email = trim($email);
+
         return $this;
     }
 
@@ -222,6 +233,7 @@ class Invoice extends AbstractEntity
     public function setPhone1(string $phone1): self
     {
         $this->phone1 = trim($phone1);
+
         return $this;
     }
 
@@ -233,6 +245,7 @@ class Invoice extends AbstractEntity
     public function setPhone2(string $phone2): self
     {
         $this->phone2 = trim($phone2);
+
         return $this;
     }
 
@@ -244,6 +257,7 @@ class Invoice extends AbstractEntity
     public function setHasShippingAddress(bool $hasShippingAddress): self
     {
         $this->hasShippingAddress = $hasShippingAddress;
+
         return $this;
     }
 
@@ -255,6 +269,7 @@ class Invoice extends AbstractEntity
     public function setShippingPhone(string $shippingPhone): self
     {
         $this->shippingPhone = trim($shippingPhone);
+
         return $this;
     }
 
@@ -266,6 +281,7 @@ class Invoice extends AbstractEntity
     public function setShippingName(string $shippingName): self
     {
         $this->shippingName = trim($shippingName);
+
         return $this;
     }
 
@@ -277,6 +293,7 @@ class Invoice extends AbstractEntity
     public function setShippingAtt(string $shippingAtt): self
     {
         $this->shippingAtt = trim($shippingAtt);
+
         return $this;
     }
 
@@ -288,6 +305,7 @@ class Invoice extends AbstractEntity
     public function setShippingAddress(string $shippingAddress): self
     {
         $this->shippingAddress = trim($shippingAddress);
+
         return $this;
     }
 
@@ -299,6 +317,7 @@ class Invoice extends AbstractEntity
     public function setShippingAddress2(string $shippingAddress2): self
     {
         $this->shippingAddress2 = trim($shippingAddress2);
+
         return $this;
     }
 
@@ -310,6 +329,7 @@ class Invoice extends AbstractEntity
     public function setShippingPostbox(string $shippingPostbox): self
     {
         $this->shippingPostbox = trim($shippingPostbox);
+
         return $this;
     }
 
@@ -321,6 +341,7 @@ class Invoice extends AbstractEntity
     public function setShippingPostcode(string $shippingPostcode): self
     {
         $this->shippingPostcode = trim($shippingPostcode);
+
         return $this;
     }
 
@@ -332,6 +353,7 @@ class Invoice extends AbstractEntity
     public function setShippingCity(string $shippingCity): self
     {
         $this->shippingCity = trim($shippingCity);
+
         return $this;
     }
 
@@ -343,6 +365,7 @@ class Invoice extends AbstractEntity
     public function setShippingCountry(string $shippingCountry): self
     {
         $this->shippingCountry = trim($shippingCountry);
+
         return $this;
     }
 
@@ -354,6 +377,7 @@ class Invoice extends AbstractEntity
     public function setNote(string $note): self
     {
         $this->note = trim($note);
+
         return $this;
     }
 
@@ -365,6 +389,7 @@ class Invoice extends AbstractEntity
     public function setClerk(string $clerk): self
     {
         $this->clerk = trim($clerk);
+
         return $this;
     }
 
@@ -376,6 +401,7 @@ class Invoice extends AbstractEntity
     public function setStatus(string $status): self
     {
         $this->status = $status;
+
         return $this;
     }
 
@@ -387,6 +413,7 @@ class Invoice extends AbstractEntity
     public function setDiscount(string $discount): self
     {
         $this->discount = $discount;
+
         return $this;
     }
 
@@ -398,6 +425,7 @@ class Invoice extends AbstractEntity
     public function setShipping(string $shipping): self
     {
         $this->shipping = $shipping;
+
         return $this;
     }
 
@@ -409,6 +437,7 @@ class Invoice extends AbstractEntity
     public function setVat(string $vat): self
     {
         $this->vat = $vat;
+
         return $this;
     }
 
@@ -420,6 +449,7 @@ class Invoice extends AbstractEntity
     public function setPreVat(bool $preVat): self
     {
         $this->preVat = $preVat;
+
         return $this;
     }
 
@@ -431,6 +461,7 @@ class Invoice extends AbstractEntity
     public function setTransferred(bool $transferred): self
     {
         $this->transferred = $transferred;
+
         return $this;
     }
 
@@ -442,6 +473,7 @@ class Invoice extends AbstractEntity
     public function setCardtype(string $cardtype): self
     {
         $this->cardtype = trim($cardtype) ?: _('Unknown');
+
         return $this;
     }
 
@@ -453,6 +485,7 @@ class Invoice extends AbstractEntity
     public function setIref(string $iref): self
     {
         $this->iref = trim($iref);
+
         return $this;
     }
 
@@ -464,6 +497,7 @@ class Invoice extends AbstractEntity
     public function setEref(string $eref): self
     {
         $this->eref = trim($eref);
+
         return $this;
     }
 
@@ -475,6 +509,7 @@ class Invoice extends AbstractEntity
     public function setSent(bool $sent): self
     {
         $this->sent = $sent;
+
         return $this;
     }
 
@@ -486,6 +521,7 @@ class Invoice extends AbstractEntity
     public function setDepartment(string $department): self
     {
         $this->department = trim($department);
+
         return $this;
     }
 
@@ -497,6 +533,7 @@ class Invoice extends AbstractEntity
     public function setEnote(string $enote): self
     {
         $this->enote = trim($enote);
+
         return $this;
     }
 
@@ -506,7 +543,7 @@ class Invoice extends AbstractEntity
     }
 
     /**
-     * Map data from DB table to entity
+     * Map data from DB table to entity.
      *
      * @param array The data from the database
      *
@@ -575,7 +612,7 @@ class Invoice extends AbstractEntity
     }
 
     /**
-     * Set the item data
+     * Set the item data.
      *
      * @param string $itemData Array encoded as JSON
      *
@@ -584,12 +621,13 @@ class Invoice extends AbstractEntity
     public function setItemData(string $itemData): self
     {
         $this->items = json_decode($itemData, true);
+
         return $this;
     }
 
     /**
      * @param bool $normalizeVat Some invoices have prices entered including VAT,
-     * when set to true the function will always return values with out vat
+     *                           when set to true the function will always return values with out vat
      *
      * @return array[]
      */
@@ -602,9 +640,9 @@ class Invoice extends AbstractEntity
         $items = [];
         foreach ($this->items as $item) {
             $items[] = [
-                'title' => (string) $item['title'],
+                'title'    => (string) $item['title'],
                 'quantity' => (int) $item['quantity'],
-                'value' => round($item['value'] / 1.25, 2),
+                'value'    => round($item['value'] / 1.25, 2),
             ];
         }
 
@@ -618,7 +656,7 @@ class Invoice extends AbstractEntity
 
     public function getAdminLink(): string
     {
-        if ($this->id === null) {
+        if (null === $this->id) {
             $this->save();
         }
 
@@ -627,7 +665,7 @@ class Invoice extends AbstractEntity
 
     public function getLink(): string
     {
-        if ($this->id === null) {
+        if (null === $this->id) {
             $this->save();
         }
 
@@ -664,7 +702,7 @@ class Invoice extends AbstractEntity
         return mb_substr(md5($this->id . Config::get('pbssalt')), 3, 5);
     }
 
-    function hasValidEmail(): bool
+    public function hasValidEmail(): bool
     {
         if (!$this->email || !valideMail($this->email)) {
             return false;
@@ -674,11 +712,11 @@ class Invoice extends AbstractEntity
     }
 
     /**
-     * Checks that all nessesery contact information has been filled out correctly
+     * Checks that all nessesery contact information has been filled out correctly.
      *
      * @return true[] Key with bool true for each faild feald
      */
-    function getInvalid(): array
+    public function getInvalid(): array
     {
         $invalid = [];
 
@@ -692,7 +730,7 @@ class Invoice extends AbstractEntity
             $invalid['country'] = true;
         }
         if (!$this->postbox
-            && (!$this->address || ($this->country === 'DK' && !preg_match('/\s/ui', $this->address)))
+            && (!$this->address || ('DK' === $this->country && !preg_match('/\s/ui', $this->address)))
         ) {
             $invalid['address'] = true;
         }
@@ -714,7 +752,7 @@ class Invoice extends AbstractEntity
             }
             if (!$this->shippingPostbox && (
                 !$this->shippingAddress
-                || ($this->shippingCountry === 'DK' && !preg_match('/\s/ui', $this->shippingAddress))
+                || ('DK' === $this->shippingCountry && !preg_match('/\s/ui', $this->shippingAddress))
             )) {
                 $invalid['shippingAddress'] = true;
             }
@@ -733,7 +771,7 @@ class Invoice extends AbstractEntity
     }
 
     /**
-     * Get data in array format for the database
+     * Get data in array format for the database.
      *
      * @return string[]
      */
@@ -753,9 +791,10 @@ class Invoice extends AbstractEntity
         $itemValue = implode('<', $itemValue);
 
         $this->setTimeStamp(time());
+
         return [
-            'paydate'        => $this->timeStampPay ? ("UNIX_TIMESTAMP(" . $this->timeStampPay . ")") : db()->eandq('0000-00-00'),
-            'date'           => $this->timeStamp ? ("UNIX_TIMESTAMP(" . $this->timeStamp . ")") : db()->eandq('0000-00-00'),
+            'paydate'        => $this->timeStampPay > 86400 ? ('UNIX_TIMESTAMP(' . $this->timeStampPay . ')') : db()->eandq('0000-00-00'),
+            'date'           => $this->timeStamp > 86400 ? ('UNIX_TIMESTAMP(' . $this->timeStamp . ')') : db()->eandq('0000-00-00'),
             'quantities'     => db()->eandq($itemQuantities),
             'products'       => db()->eandq($itemTitle),
             'values'         => db()->eandq($itemValue),

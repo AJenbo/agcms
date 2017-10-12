@@ -39,7 +39,7 @@ if ($request->isMethod('POST')) {
 }
 
 $data = [
-    'tablesorts' => db()->fetchArray("SELECT id, navn title FROM `tablesort`"),
-    'id' => (int) $request->get('id'),
+    'tablesorts' => db()->fetchArray('SELECT id, navn title FROM `tablesort`'),
+    'id'         => (int) $request->get('id'),
 ];
 Render::output('admin-addlist', $data);

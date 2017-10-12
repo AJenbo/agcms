@@ -7,26 +7,26 @@
  */
 $GLOBALS['_config'] = [
     'enviroment' => 'develop',
-    'timezone' => 'Europe/Copenhagen',
-    'locale' => 'da_DK',
-    'base_url' => 'http://localhost',
-    'site_name' => 'My store',
-    'address' => '',
-    'postcode' => '',
-    'city' => '',
-    'phone' => '',
-    'fax' => '',
+    'timezone'   => 'Europe/Copenhagen',
+    'locale'     => 'da_DK',
+    'base_url'   => 'http://localhost',
+    'site_name'  => 'My store',
+    'address'    => '',
+    'postcode'   => '',
+    'city'       => '',
+    'phone'      => '',
+    'fax'        => '',
 
     'emails' => [
         'mail@example.com' => [
-            'address'  => 'mail@example.com',
-            'password' => 'password',
-            'sentBox'  => 'INBOX.Sent',
-            'imapHost' => 'imap.example.dk',
-            'imapPort' => 143,
-            'smtpHost' => 'smtp.example.com',
-            'smtpPort' => '25',
-            'smtpAuth' => true,
+            'address'      => 'mail@example.com',
+            'password'     => 'password',
+            'sentBox'      => 'INBOX.Sent',
+            'imapHost'     => 'imap.example.dk',
+            'imapPort'     => 143,
+            'smtpHost'     => 'smtp.example.com',
+            'smtpPort'     => '25',
+            'smtpAuth'     => true,
         ],
     ],
 
@@ -35,16 +35,16 @@ $GLOBALS['_config'] = [
     ],
 
     // Payment gateway
-    'pbsid' => '',
+    'pbsid'       => '',
     'pbspassword' => '',
-    'pbsfix' => '',
-    'pbswindow' => 0,
-    'pbspwd' => '',
-    'pbssalt' => '',
+    'pbsfix'      => '',
+    'pbswindow'   => 0,
+    'pbspwd'      => '',
+    'pbssalt'     => '',
 
     // Database
-    'mysql_server' => 'db',
-    'mysql_user' => 'root',
+    'mysql_server'   => 'db',
+    'mysql_user'     => 'root',
     'mysql_password' => '',
     'mysql_database' => 'agcms',
 
@@ -52,13 +52,13 @@ $GLOBALS['_config'] = [
     'theme' => 'arms-gallery.dk',
 
     // Site color settings
-    'bgcolor' => 'FFFFFF',
+    'bgcolor'  => 'FFFFFF',
     'bgcolorR' => 255,
     'bgcolorG' => 255,
     'bgcolorB' => 255,
 
     // Images
-    'thumb_width' => 150,
+    'thumb_width'  => 150,
     'thumb_height' => 150,
 
     'text_width' => 700,

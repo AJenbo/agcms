@@ -19,12 +19,12 @@ if ($request->isMethod('POST')) {
         $message = _('Username already taken.');
     } else {
         db()->query(
-            "
+            '
             INSERT INTO users
-            SET name = " . db()->eandq($name) . ",
-                password = " . db()->eandq(crypt($password)) . ",
-                fullname = " . db()->eandq($fullname) . "
-            "
+            SET name = ' . db()->eandq($name) . ',
+                password = ' . db()->eandq(crypt($password)) . ',
+                fullname = ' . db()->eandq($fullname) . '
+            '
         );
         $message = _('Your account has been created. An administrator will evaluate it shortly.');
         $emailbody = Render::render('email-admin-newuser', ['fullname' => $fullname]);

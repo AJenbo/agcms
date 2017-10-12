@@ -135,6 +135,7 @@ class Page extends AbstractRenderable
         db()->query('DELETE FROM `bind` WHERE side = ' . $this->getId());
         Render::addLoadedTable('tilbehor');
         db()->query('DELETE FROM `tilbehor` WHERE side = ' . $this->getId() . ' OR tilbehor =' . $this->getId());
+
         return parent::delete();
     }
 
@@ -285,7 +286,7 @@ class Page extends AbstractRenderable
      */
     public function getIcon(): ?File
     {
-        if ($this->iconPath === null) {
+        if (null === $this->iconPath) {
             return null;
         }
 
@@ -446,10 +447,10 @@ class Page extends AbstractRenderable
         Render::addLoadedTable('bind');
 
         return (bool) db()->fetchOne(
-            "
+            '
             SELECT kat FROM `bind`
-            WHERE side = " . $this->getId() . "
-            AND kat = " . $category->getId()
+            WHERE side = ' . $this->getId() . '
+            AND kat = ' . $category->getId()
         );
     }
 
@@ -476,19 +477,20 @@ class Page extends AbstractRenderable
     private function getCategoriesQuery(): string
     {
         Render::addLoadedTable('bind');
-        return "SELECT * FROM `kat` WHERE id IN (SELECT kat FROM `bind` WHERE side = " . $this->getId() . ")";
+
+        return 'SELECT * FROM `kat` WHERE id IN (SELECT kat FROM `bind` WHERE side = ' . $this->getId() . ')';
     }
 
     public function addToCategory(Category $category): void
     {
-        db()->query("INSERT INTO `bind` (`side`, `kat`) VALUES (" . $this->getId() . ", " . $category->getId() . ")");
-        ORM::forgetByQuery(Page::class, $this->getCategoriesQuery());
+        db()->query('INSERT INTO `bind` (`side`, `kat`) VALUES (' . $this->getId() . ', ' . $category->getId() . ')');
+        ORM::forgetByQuery(self::class, $this->getCategoriesQuery());
     }
 
     public function removeFromCategory(Category $category): void
     {
-        db()->query("DELETE FROM `bind` WHERE `side` = " . $this->getId() . " AND `kat` = " . $category->getId());
-        ORM::forgetByQuery(Page::class, $this->getCategoriesQuery());
+        db()->query('DELETE FROM `bind` WHERE `side` = ' . $this->getId() . ' AND `kat` = ' . $category->getId());
+        ORM::forgetByQuery(self::class, $this->getCategoriesQuery());
     }
 
     /**
@@ -497,19 +499,19 @@ class Page extends AbstractRenderable
     public function addAccessory(Page $accessory): void
     {
         db()->query(
-            "
+            '
             INSERT IGNORE INTO `tilbehor` (`side`, `tilbehor`)
-            VALUES (" . $this->getId() . ", " . $accessory->getId() . ")"
+            VALUES (' . $this->getId() . ', ' . $accessory->getId() . ')'
         );
 
-        ORM::forgetByQuery(Page::class, $this->getAccessoryQuery());
+        ORM::forgetByQuery(self::class, $this->getAccessoryQuery());
     }
 
     public function removeAccessory(Page $accessory): void
     {
-        db()->query("DELETE FROM `tilbehor` WHERE side = " . $this->getId() . " AND tilbehor = " . $accessory->getId());
+        db()->query('DELETE FROM `tilbehor` WHERE side = ' . $this->getId() . ' AND tilbehor = ' . $accessory->getId());
 
-        ORM::forgetByQuery(Page::class, $this->getAccessoryQuery());
+        ORM::forgetByQuery(self::class, $this->getAccessoryQuery());
     }
 
     /**
@@ -519,7 +521,7 @@ class Page extends AbstractRenderable
      */
     public function getAccessories(): array
     {
-        return ORM::getByQuery(Page::class, $this->getAccessoryQuery());
+        return ORM::getByQuery(self::class, $this->getAccessoryQuery());
     }
 
     /**
@@ -540,9 +542,10 @@ class Page extends AbstractRenderable
     private function getAccessoryQuery(): string
     {
         Render::addLoadedTable('tilbehor');
-        return "
+
+        return '
             SELECT * FROM sider
-            WHERE id IN (SELECT tilbehor FROM tilbehor WHERE side = " . $this->getId() . ") ORDER BY navn ASC";
+            WHERE id IN (SELECT tilbehor FROM tilbehor WHERE side = ' . $this->getId() . ') ORDER BY navn ASC';
     }
 
     /**
@@ -554,7 +557,7 @@ class Page extends AbstractRenderable
     {
         return ORM::getByQuery(
             Table::class,
-            "SELECT * FROM `lists` WHERE page_id = " . $this->getId()
+            'SELECT * FROM `lists` WHERE page_id = ' . $this->getId()
         );
     }
 
@@ -563,7 +566,7 @@ class Page extends AbstractRenderable
      */
     public function getBrand(): ?Brand
     {
-        return $this->brandId !== null ? ORM::getOne(Brand::class, $this->brandId) : null;
+        return null !== $this->brandId ? ORM::getOne(Brand::class, $this->brandId) : null;
     }
 
     /**
@@ -571,7 +574,7 @@ class Page extends AbstractRenderable
      */
     public function getRequirement(): ?Requirement
     {
-        return $this->requirementId !== null ? ORM::getOne(Requirement::class, $this->requirementId) : null;
+        return null !== $this->requirementId ? ORM::getOne(Requirement::class, $this->requirementId) : null;
     }
 
     /**
@@ -581,7 +584,7 @@ class Page extends AbstractRenderable
      */
     public function isInactive(): bool
     {
-        $bind = db()->fetchOne("SELECT kat FROM `bind` WHERE kat < 1 AND side = " . $this->getId());
+        $bind = db()->fetchOne('SELECT kat FROM `bind` WHERE kat < 1 AND side = ' . $this->getId());
         Render::addLoadedTable('bind');
         if ($bind) {
             return (bool) $bind['kat'];
@@ -607,15 +610,15 @@ class Page extends AbstractRenderable
         $this->setTimeStamp(time());
 
         return [
-            'dato'        => "NOW()",
+            'dato'        => 'NOW()',
             'navn'        => db()->eandq($this->title),
             'keywords'    => db()->eandq($this->keywords),
             'text'        => db()->eandq($this->html),
             'varenr'      => db()->eandq($this->sku),
             'beskrivelse' => db()->eandq($this->excerpt),
-            'billed'      => $this->iconPath !== null ? db()->eandq($this->iconPath) : 'NULL',
-            'krav'        => $this->requirementId !== null ? $this->requirementId : 'NULL',
-            'maerke'      => $this->brandId !== null ? $this->brandId : 'NULL',
+            'billed'      => null !== $this->iconPath ? db()->eandq($this->iconPath) : 'NULL',
+            'krav'        => null !== $this->requirementId ? $this->requirementId : 'NULL',
+            'maerke'      => null !== $this->brandId ? $this->brandId : 'NULL',
             'pris'        => $this->price,
             'for'         => $this->oldPrice,
             'fra'         => $this->priceType,

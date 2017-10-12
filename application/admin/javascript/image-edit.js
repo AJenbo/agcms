@@ -9,7 +9,7 @@ function saveImage(overwrite = false)
 
     x_saveImage(path, cropX, cropY, maxW, maxH, dimention.width, dimention.height, flip, rotate, filename, overwrite,
         saveImage_r);
-    }
+}
 
 function calcImageDimension()
 {
@@ -383,7 +383,7 @@ function preview()
 
     dimention = calcImageDimension();
 
-    $('preview').src = 'image.php?path=' + encodeURIComponent(path) + '&cropX=' + cropX + '&cropY=' + cropY +
-        '&cropW=' + maxW + '&cropH=' + maxH + '&maxW=' + dimention.width + '&maxH=' + dimention.height +
-        '&rotate=' + rotate + '&flip=' + flip;
+    $('preview').src = 'image.php?path=' + encodeURIComponent(path) + '&cropX=' + cropX + '&cropY=' + cropY + '&cropW='
+        + maxW + '&cropH=' + maxH + '&maxW=' + dimention.width + '&maxH=' + dimention.height + '&rotate=' + rotate
+        + '&flip=' + flip;
 }

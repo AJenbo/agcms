@@ -21,7 +21,7 @@ class DB extends mysqli
 
         $this->query("SET NAMES 'UTF8'");
         $this->query("SET SESSION character_set_server = 'UTF8'");
-        $this->query("SET collation_server=utf8_danish_ci");
+        $this->query('SET collation_server=utf8_danish_ci');
     }
 
     /**
@@ -57,7 +57,7 @@ class DB extends mysqli
      */
     public function fetchOne(string $query): array
     {
-        $row = $this->fetchArray($query . " LIMIT 1");
+        $row = $this->fetchArray($query . ' LIMIT 1');
         $row = array_shift($row);
 
         if (!$row) {
@@ -128,8 +128,8 @@ class DB extends mysqli
      */
     public function getTimeOffset(): int
     {
-        if (self::$timeOffset === null) {
-            self::$timeOffset = time() - strtotime(self::fetchOne("SELECT NOW() date")['date']);
+        if (null === self::$timeOffset) {
+            self::$timeOffset = time() - strtotime(self::fetchOne('SELECT NOW() date')['date']);
         }
 
         return self::$timeOffset;

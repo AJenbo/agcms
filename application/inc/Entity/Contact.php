@@ -238,7 +238,7 @@ class Contact extends AbstractEntity
         $interests = implode('<', $interests);
 
         return [
-            'dato'      => "NOW()",
+            'dato'      => 'NOW()',
             'navn'      => db()->eandq($this->name),
             'email'     => db()->eandq($this->email),
             'adresse'   => db()->eandq($this->address),

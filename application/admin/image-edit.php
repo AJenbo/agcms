@@ -10,7 +10,7 @@ Sajax::export(['saveImage' => ['method' => 'POST']]);
 Sajax::handleClientRequest();
 
 $path = request()->get('path');
-if (mb_substr($path, 0, 7) !== '/files/' && mb_substr($path, 0, 8) !== '/images/') {
+if ('/files/' !== mb_substr($path, 0, 7) && '/images/' !== mb_substr($path, 0, 8)) {
     throw new Exception(_('File manipulation not allowed outside user folders'));
 }
 
@@ -18,7 +18,7 @@ $imagesize = getimagesize(_ROOT_ . $path);
 $mode = request()->get('mode');
 $fileName = '';
 
-if ($mode == 'thb') {
+if ('thb' == $mode) {
     $pathinfo = pathinfo($path);
     $fileName = $pathinfo['filename'] . '-thb';
 }
