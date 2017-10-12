@@ -12,7 +12,7 @@
     <input class="admin_name" type="text" name="navn" id="navn" value="{{requirement.title}}" maxlength="127" size="127" style="width:{{textWidth}}px" />
     <script type="text/javascript"><!--
     initRTE("/admin/rtef/images/", "/admin/rtef/", "/theme/{{theme}}/style/rtef-text.css", true);
-    writeRichText("text", {{requirement.html|json_encode()|raw}}, "", {{textWidth}}, 420, true, false, false);
+    writeRichText("text", {{requirement.html|trim|json_encode()|raw}}, "", {{textWidth}}, 420, true, false, false);
     //--></script>
 </form>
 {% endblock %}
