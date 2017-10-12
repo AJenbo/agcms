@@ -1,5 +1,6 @@
 <?php namespace AGCMS\Entity;
 
+use Exception;
 use AGCMS\ORM;
 use AGCMS\Render;
 
@@ -127,9 +128,11 @@ class Category extends AbstractRenderable
      */
     public function setParentId(int $parentId = null): self
     {
-        if ($this->id && $this->id > 0) {
-            $this->parentId = $parentId;
+        if ($this->id && $this->id <= 0) {
+            Throw new Exception(_('Your not allowed to move root categories'));
         }
+
+        $this->parentId = $parentId;
 
         return $this;
     }
