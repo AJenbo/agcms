@@ -1,6 +1,4 @@
-<?php
-
-namespace AGCMS\Interfaces;
+<?php namespace AGCMS\Interfaces;
 
 interface Renderable
 {

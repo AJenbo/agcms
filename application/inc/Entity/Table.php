@@ -172,7 +172,7 @@ class Table extends AbstractEntity
     /**
      * Get tabel colum structure.
      *
-     * @return array
+     * @return array[]
      */
     public function getColumns(): array
     {
@@ -301,6 +301,10 @@ class Table extends AbstractEntity
 
     /**
      * Sort a 2D array based on a custome sort order.
+     *
+     * @param array[] $rows
+     *
+     * @return array[]
      */
     private function orderRows(array $rows, int $orderBy = null): array
     {
@@ -351,7 +355,7 @@ class Table extends AbstractEntity
     /**
      * Get data in array format for the database.
      *
-     * @return array
+     * @return string[]
      */
     public function getDbArray(): array
     {
@@ -370,13 +374,13 @@ class Table extends AbstractEntity
         $columnTitles = implode('<', $columnTitles);
 
         return [
-            'page_id'    => $this->pageId,
+            'page_id'    => (string) $this->pageId,
             'title'      => db()->eandq($this->title),
             'sorts'      => db()->eandq($columnSortings),
             'cells'      => db()->eandq($columnTypes),
             'cell_names' => db()->eandq($columnTitles),
-            'sort'       => $this->orderBy,
-            'link'       => $this->hasLinks ? 1 : 0,
+            'sort'       => (string) $this->orderBy,
+            'link'       => (string) (int) $this->hasLinks,
         ];
     }
 }

@@ -462,7 +462,7 @@ class Invoice extends AbstractEntity
      *
      * @param array $data The entity data
      */
-    public function __construct(array $data)
+    public function __construct(array $data): void
     {
         $this->setId($data['id'] ?? null)
             ->setItemData($data['item_data'])
@@ -591,7 +591,7 @@ class Invoice extends AbstractEntity
      * @param bool $normalizeVat Some invoices have prices entered including VAT,
      * when set to true the function will always return values with out vat
      *
-     * @return array
+     * @return array[]
      */
     public function getItems(bool $normalizeVat = true): array
     {
@@ -676,7 +676,7 @@ class Invoice extends AbstractEntity
     /**
      * Checks that all nessesery contact information has been filled out correctly
      *
-     * @return array Key with bool true for each faild feald
+     * @return true[] Key with bool true for each faild feald
      */
     function getInvalid(): array
     {
@@ -735,7 +735,7 @@ class Invoice extends AbstractEntity
     /**
      * Get data in array format for the database
      *
-     * @return array
+     * @return string[]
      */
     public function getDbArray(): array
     {
@@ -770,7 +770,7 @@ class Invoice extends AbstractEntity
             'email'          => db()->eandq($this->email),
             'tlf1'           => db()->eandq($this->phone1),
             'tlf2'           => db()->eandq($this->phone2),
-            'altpost'        => (int) $this->hasShippingAddress,
+            'altpost'        => (string) (int) $this->hasShippingAddress,
             'posttlf'        => db()->eandq($this->shippingPhone),
             'postname'       => db()->eandq($this->shippingName),
             'postatt'        => db()->eandq($this->shippingAtt),
@@ -786,12 +786,12 @@ class Invoice extends AbstractEntity
             'discount'       => db()->eandq($this->discount),
             'fragt'          => db()->eandq($this->shipping),
             'momssats'       => db()->eandq($this->vat),
-            'premoms'        => (int) $this->preVat,
-            'transferred'    => (int) $this->transferred,
+            'premoms'        => (string) (int) $this->preVat,
+            'transferred'    => (string) (int) $this->transferred,
             'cardtype'       => db()->eandq($this->cardtype),
             'iref'           => db()->eandq($this->iref),
             'eref'           => db()->eandq($this->eref),
-            'sendt'          => (int) $this->sent,
+            'sendt'          => (string) (int) $this->sent,
             'department'     => db()->eandq($this->department),
             'enote'          => db()->eandq($this->enote),
         ];

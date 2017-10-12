@@ -42,13 +42,16 @@ class User extends AbstractEntity
         ];
     }
 
+    /**
+     * @return string[]
+     */
     public function getDbArray(): array
     {
         return [
             'fullname'  => db()->eandq($this->fullName),
             'name'      => db()->eandq($this->nickname),
             'password'  => db()->eandq($this->passwordHash),
-            'access'    => $this->accessLevel,
+            'access'    => (string) $this->accessLevel,
             'lastlogin' => "UNIX_TIMESTAMP(" . $this->lastLogin . ")",
         ];
     }
@@ -142,7 +145,7 @@ class User extends AbstractEntity
         return false;
     }
 
-    function getLastLoginText()
+    function getLastLoginText(): string
     {
         if (!$this->lastLogin) {
             return _('Never');

@@ -72,7 +72,7 @@ class ORM
      * @param string $class Class name
      * @param string $query The query
      *
-     * @return array
+     * @return AbstractEntity[]
      */
     public static function getByQuery(string $class, string $query): array
     {

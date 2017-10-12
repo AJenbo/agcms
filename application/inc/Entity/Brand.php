@@ -115,7 +115,7 @@ class Brand extends AbstractRenderable
      *
      * @param string $order How to order the pages
      *
-     * @return array
+     * @return Page[]
      */
     public function getPages(string $order = 'navn'): array
     {
@@ -158,7 +158,7 @@ class Brand extends AbstractRenderable
     /**
      * Get data in array format for the database.
      *
-     * @return array
+     * @return string[]
      */
     public function getDbArray(): array
     {

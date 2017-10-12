@@ -84,7 +84,7 @@ class Requirement extends AbstractRenderable
     /**
      * Get data in array format for the database.
      *
-     * @return array
+     * @return string[]
      */
     public function getDbArray(): array
     {

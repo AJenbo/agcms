@@ -1,7 +1,7 @@
 <?php namespace AGCMS;
 
-use mysqli;
 use Exception;
+use mysqli;
 
 class DB extends mysqli
 {
@@ -29,7 +29,7 @@ class DB extends mysqli
      *
      * @param string $query The MySQL query to preforme
      *
-     * @return array
+     * @return array[]
      */
     public function fetchArray(string $query): array
     {
@@ -54,8 +54,6 @@ class DB extends mysqli
      * Performe query and return the first result as an associative arrays.
      *
      * @param string $query The MySQL query to preforme
-     *
-     * @return array
      */
     public function fetchOne(string $query): array
     {

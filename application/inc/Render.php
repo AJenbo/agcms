@@ -1,5 +1,6 @@
 <?php namespace AGCMS;
 
+use AGCMS\Entity\AbstractRenderable;
 use AGCMS\Entity\Brand;
 use AGCMS\Entity\Category;
 use AGCMS\Entity\CustomPage;
@@ -8,8 +9,8 @@ use AGCMS\Entity\Requirement;
 use AGCMS\Entity\Table;
 use DateTime;
 use Symfony\Component\HttpFoundation\Response;
-use Twig_Loader_Filesystem;
 use Twig_Environment;
+use Twig_Loader_Filesystem;
 
 class Render
 {
@@ -497,22 +498,9 @@ class Render
     }
 
     /**
-     * Fetch pages attached to the site root.
-     *
-     * Used by some themes
-     *
-     * @return array
-     */
-    private static function getRootPages(): array
-    {
-        $pages = ORM::getOne(Category::class, 0)->getPages();
-        self::addLoadedTable('bind');
-
-        return $pages;
-    }
-
-    /**
      * Search for pages and generate a list or redirect if only one was found.
+     *
+     * @return Page[]
      */
     public static function searchListe(
         string $queryuery,
@@ -590,6 +578,8 @@ class Render
 
     /**
      * Search for categories and populate generatedcontent with results.
+     *
+     * @return AbstractRenderable[]
      */
     public static function getSearchMenu(string $searchString, string $antiWords): array
     {
@@ -840,7 +830,7 @@ class Render
                 'searchMenu'      => self::$searchMenu,
                 'hasItemsInCart'  => !empty($_SESSION['faktura']['quantities']),
                 'infoPage'        => ORM::getOne(CustomPage::class, 2),
-                'rootPages'       => self::$pageType === 'index' ? self::getRootPages() : [],
+                'rootPages'       => self::$pageType === 'index' ? ORM::getOne(Category::class, 0)->getPages() : [],
             ]
         );
     }

@@ -1,9 +1,9 @@
 <?php namespace AGCMS\Service;
 
-use Exception;
 use AGCMS\Config;
 use AGCMS\Entity\File;
 use AJenbo\Image;
+use Exception;
 use Symfony\Component\HttpFoundation\File\File as FileHandeler;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 

@@ -3,9 +3,6 @@
 use AGCMS\ORM;
 use AGCMS\Render;
 
-/**
- * Category class.
- */
 class Category extends AbstractRenderable
 {
     /**
@@ -303,7 +300,7 @@ class Category extends AbstractRenderable
      *
      * @param bool $onlyVisable Only return visible
      *
-     * @return array
+     * @return Category[]
      */
     public function getChildren(bool $onlyVisable = false): array
     {
@@ -333,6 +330,9 @@ class Category extends AbstractRenderable
         return array_values($children);
     }
 
+    /**
+     * @return Category[]
+     */
     public function getVisibleChildren(): array
     {
         return $this->getChildren(true);
@@ -375,7 +375,7 @@ class Category extends AbstractRenderable
      *
      * @param string $order What column to order by
      *
-     * @return array
+     * @return Page[]
      */
     public function getPages(string $order = 'navn', bool $reverseOrder = false): array
     {
@@ -443,7 +443,7 @@ class Category extends AbstractRenderable
     /**
      * Get the full list of categories leading to the root element.
      *
-     * @return array
+     * @return Category[]
      */
     public function getBranch(): array
     {
@@ -483,18 +483,18 @@ class Category extends AbstractRenderable
     /**
      * Get data in array format for the database.
      *
-     * @return array
+     * @return string[]
      */
     public function getDbArray(): array
     {
         return [
             'navn'             => db()->eandq($this->title),
-            'bind'             => $this->parentId !== null ? $this->parentId : 'NULL',
+            'bind'             => $this->parentId !== null ? (string) $this->parentId : 'NULL',
             'icon'             => $this->iconPath !== null ? db()->eandq($this->iconPath) : 'NULL',
-            'vis'              => $this->renderMode,
+            'vis'              => (string) $this->renderMode,
             'email'            => db()->eandq($this->email),
-            'custom_sort_subs' => $this->weightedChildren,
-            'order'            => $this->weight,
+            'custom_sort_subs' => (string) $this->weightedChildren,
+            'order'            => (string) $this->weight,
         ];
     }
 }

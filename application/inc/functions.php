@@ -7,10 +7,10 @@ use AGCMS\Entity\Invoice;
 use AGCMS\ORM;
 use AGCMS\Render;
 use AJenbo\Imap;
+use PHPMailer\PHPMailer\PHPMailer;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\HttpFoundation\RedirectResponse;
-use PHPMailer\PHPMailer\PHPMailer;
 
 function bootStrap(): void
 {
@@ -164,12 +164,12 @@ function clearFileName(string $name): string
 /**
  * Natsort an array.
  *
- * @param array  $aryData     Array to sort
- * @param string $strIndex    Key of unique id
- * @param string $strSortBy   Key to sort by
- * @param string $strSortType Revers sorting
+ * @param array[] $aryData     Array to sort
+ * @param string  $strIndex    Key of unique id
+ * @param string  $strSortBy   Key to sort by
+ * @param string  $strSortType Revers sorting
  *
- * @return array
+ * @return array[]
  */
 function arrayNatsort(array $aryData, string $strIndex, string $strSortBy, string $strSortType = 'asc'): array
 {
@@ -271,7 +271,7 @@ function invoiceFromSession(): Invoice
  * @param int|null $bycell     What cell to sort by
  * @param int|null $categoryId Id of current category
  *
- * @return array
+ * @return string[]
  */
 function getTable(int $listid, int $bycell = null, int $categoryId = null): array
 {
@@ -321,7 +321,7 @@ function stringLimit(string $string, int $length = 50, string $ellipsis = '…')
  *
  * @param string $phoneNumber Phone number
  *
- * @return array Array with address fitting the post table format
+ * @return string[] Array with address fitting the post table format
  */
 function getAddress(string $phoneNumber): array
 {
@@ -412,7 +412,7 @@ function getAddress(string $phoneNumber): array
  * @param int    $categoryId Id of activ category
  * @param string $sort       What column to sort by
  *
- * @return array Apropriate for handeling with javascript function inject_html()
+ * @return string[] Apropriate for handeling with javascript function inject_html()
  */
 function getKat(int $categoryId, string $sort): array
 {

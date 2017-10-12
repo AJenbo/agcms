@@ -160,6 +160,9 @@ class Contact extends AbstractEntity
         return $this;
     }
 
+    /**
+     * @return string[]
+     */
     public function getInterests(): array
     {
         return $this->interests;
@@ -225,7 +228,7 @@ class Contact extends AbstractEntity
     /**
      * Get data in array format for the database.
      *
-     * @return array
+     * @return string[]
      */
     public function getDbArray(): array
     {

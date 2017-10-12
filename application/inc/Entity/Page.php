@@ -466,7 +466,7 @@ class Page extends AbstractRenderable
     /**
      * Get all categories.
      *
-     * @return array
+     * @return Category[]
      */
     public function getCategories(): array
     {
@@ -522,6 +522,9 @@ class Page extends AbstractRenderable
         return ORM::getByQuery(Page::class, $this->getAccessoryQuery());
     }
 
+    /**
+     * @return Page[]
+     */
     public function getActiveAccessories(): array
     {
         $accessories = [];
@@ -545,7 +548,7 @@ class Page extends AbstractRenderable
     /**
      * Get tabels.
      *
-     * @return array
+     * @return Table[]
      */
     public function getTables(): array
     {
@@ -597,7 +600,7 @@ class Page extends AbstractRenderable
     /**
      * Get data in array format for the database.
      *
-     * @return array
+     * @return string[]
      */
     public function getDbArray(): array
     {

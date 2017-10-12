@@ -56,6 +56,8 @@ abstract class AbstractEntity implements InterfaceEntity
 
     /**
      * Get data in array format for the database.
+     *
+     * @return string[]
      */
     abstract protected function getDbArray(): array;
 

@@ -232,17 +232,17 @@ class File extends AbstractEntity
     /**
      * Get data in array format for the database.
      *
-     * @return array
+     * @return string[]
      */
     public function getDbArray(): array
     {
         return [
             'path' => db()->eandq($this->path),
             'mime' => db()->eandq($this->mime),
-            'size' => $this->size,
+            'size' => (string) $this->size,
             'alt' => db()->eandq($this->description),
-            'width' => $this->width,
-            'height' => $this->height,
+            'width' => (string) $this->width,
+            'height' => (string) $this->height,
             'aspect' => $this->aspect ? db()->eandq($this->aspect) : "NULL",
         ];
     }
