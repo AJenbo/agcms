@@ -50,6 +50,54 @@ class Invoice extends AbstractEntity
     // Dynamic
     private $items;
 
+    /**
+     * Construct the entity
+     *
+     * @param array $data The entity data
+     */
+    public function __construct(array $data)
+    {
+        $this->setId($data['id'] ?? null)
+            ->setItemData($data['item_data'])
+            ->setHasShippingAddress($data['has_shipping_address'] ?? false)
+            ->setTimeStamp($data['timestamp'] ?? time())
+            ->setTimeStampPay($data['timestamp_pay'] ?? 0)
+            ->setAmount($data['amount'] ?? '0.00')
+            ->setName($data['name'])
+            ->setAtt($data['att'])
+            ->setAddress($data['address'])
+            ->setPostbox($data['postbox'])
+            ->setPostcode($data['postcode'])
+            ->setCity($data['city'])
+            ->setCountry($data['country'] ?? 'DK')
+            ->setEmail($data['email'])
+            ->setPhone1($data['phone1'])
+            ->setPhone2($data['phone2'])
+            ->setShippingPhone($data['shipping_phone'])
+            ->setShippingName($data['shipping_name'])
+            ->setShippingAtt($data['shipping_att'])
+            ->setShippingAddress($data['shipping_address'])
+            ->setShippingAddress2($data['shipping_address2'])
+            ->setShippingPostbox($data['shipping_postbox'])
+            ->setShippingPostcode($data['shipping_postcode'])
+            ->setShippingCity($data['shipping_city'])
+            ->setShippingCountry($data['shipping_country'] ?? 'DK')
+            ->setNote($data['note'])
+            ->setClerk($data['clerk'] ?? '')
+            ->setStatus($data['status'] ?? 'new')
+            ->setDiscount($data['discount'] ?? '0.00')
+            ->setShipping($data['shipping'] ?? '0.00')
+            ->setVat($data['vat'] ?? '0.25')
+            ->setPreVat($data['pre_vat'] ?? true)
+            ->setTransferred($data['transferred'] ?? false)
+            ->setCardtype($data['cardtype'] ?? '')
+            ->setIref($data['iref'] ?? '')
+            ->setEref($data['eref'] ?? '')
+            ->setSent($data['sent'] ?? false)
+            ->setDepartment($data['department'] ?? '')
+            ->setEnote($data['enote'] ?? '');
+    }
+
     public function setTimeStamp(int $timeStamp): self
     {
         $this->timeStamp = $timeStamp;
@@ -455,54 +503,6 @@ class Invoice extends AbstractEntity
     public function getEnote(): string
     {
         return $this->enote;
-    }
-
-    /**
-     * Construct the entity
-     *
-     * @param array $data The entity data
-     */
-    public function __construct(array $data): void
-    {
-        $this->setId($data['id'] ?? null)
-            ->setItemData($data['item_data'])
-            ->setHasShippingAddress($data['has_shipping_address'] ?? false)
-            ->setTimeStamp($data['timestamp'] ?? time())
-            ->setTimeStampPay($data['timestamp_pay'] ?? 0)
-            ->setAmount($data['amount'] ?? '0.00')
-            ->setName($data['name'])
-            ->setAtt($data['att'])
-            ->setAddress($data['address'])
-            ->setPostbox($data['postbox'])
-            ->setPostcode($data['postcode'])
-            ->setCity($data['city'])
-            ->setCountry($data['country'] ?? 'DK')
-            ->setEmail($data['email'])
-            ->setPhone1($data['phone1'])
-            ->setPhone2($data['phone2'])
-            ->setShippingPhone($data['shipping_phone'])
-            ->setShippingName($data['shipping_name'])
-            ->setShippingAtt($data['shipping_att'])
-            ->setShippingAddress($data['shipping_address'])
-            ->setShippingAddress2($data['shipping_address2'])
-            ->setShippingPostbox($data['shipping_postbox'])
-            ->setShippingPostcode($data['shipping_postcode'])
-            ->setShippingCity($data['shipping_city'])
-            ->setShippingCountry($data['shipping_country'] ?? 'DK')
-            ->setNote($data['note'])
-            ->setClerk($data['clerk'] ?? '')
-            ->setStatus($data['status'] ?? 'new')
-            ->setDiscount($data['discount'] ?? '0.00')
-            ->setShipping($data['shipping'] ?? '0.00')
-            ->setVat($data['vat'] ?? '0.25')
-            ->setPreVat($data['pre_vat'] ?? true)
-            ->setTransferred($data['transferred'] ?? false)
-            ->setCardtype($data['cardtype'] ?? '')
-            ->setIref($data['iref'] ?? '')
-            ->setEref($data['eref'] ?? '')
-            ->setSent($data['sent'] ?? false)
-            ->setDepartment($data['department'] ?? '')
-            ->setEnote($data['enote'] ?? '');
     }
 
     /**
