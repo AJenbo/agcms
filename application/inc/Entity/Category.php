@@ -471,7 +471,7 @@ class Category extends AbstractRenderable
      */
     public function getIcon(): ?File
     {
-        if (!$this->iconPath) {
+        if ($this->iconPath === null) {
             return null;
         }
 

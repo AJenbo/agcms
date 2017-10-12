@@ -285,7 +285,7 @@ class Page extends AbstractRenderable
      */
     public function getIcon(): ?File
     {
-        if (!$this->iconPath) {
+        if ($this->iconPath === null) {
             return null;
         }
 
@@ -563,7 +563,7 @@ class Page extends AbstractRenderable
      */
     public function getBrand(): ?Brand
     {
-        return $this->brandId ? ORM::getOne(Brand::class, $this->brandId) : null;
+        return $this->brandId !== null ? ORM::getOne(Brand::class, $this->brandId) : null;
     }
 
     /**
@@ -571,7 +571,7 @@ class Page extends AbstractRenderable
      */
     public function getRequirement(): ?Requirement
     {
-        return $this->requirementId ? ORM::getOne(Requirement::class, $this->requirementId) : null;
+        return $this->requirementId !== null ? ORM::getOne(Requirement::class, $this->requirementId) : null;
     }
 
     /**
