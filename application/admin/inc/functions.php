@@ -386,9 +386,9 @@ function countEmailTo(array $interests): int
     return $emails['count'];
 }
 
-function saveEmail(int $id, string $from, string $interests, string $subject, string $text): bool
+function saveEmail(string $from, string $interests, string $subject, string $text, int $id = null): bool
 {
-    if (!$id) {
+    if ($id === null) {
         db()->query(
             "
             INSERT INTO `newsmails` (`from`, `interests`, `subject`, `text`)
@@ -1400,7 +1400,6 @@ function listSavetRow(int $tableId, array $cells, int $link = null, int $rowId =
 }
 
 function updateContact(
-    int $id,
     string $navn,
     string $email,
     string $adresse,
@@ -1410,7 +1409,8 @@ function updateContact(
     string $tlf1,
     string $tlf2,
     bool $kartotek,
-    string $interests
+    string $interests,
+    int $id = null
 ): bool {
     if (!$id) {
         $contact = new Contact([
@@ -1734,26 +1734,26 @@ function getBrandOptions(): array
 /**
  * @return array|true
  */
-function save_ny_kat(string $navn, string $kat, string $icon, string $vis, string $email)
+function save_ny_kat(string $navn, int $kat, string $icon, int $vis, string $email)
 {
-    if ($navn != '' && $kat != '') {
-        $category = new Category([
-            'title'             => $navn,
-            'parent_id'         => $kat,
-            'icon_path'         => $icon,
-            'render_mode'       => $vis,
-            'email'             => $email,
-            'weighted_children' => 0,
-            'weight'            => 0,
-        ]);
-        $category->save();
-        return true;
+    if (!$navn) {
+        return ['error' => _('You must enter a name and choose a location for the new category.')];
     }
 
-    return ['error' => _('You must enter a name and choose a location for the new category.')];
+    $category = new Category([
+        'title'             => $navn,
+        'parent_id'         => $kat,
+        'icon_path'         => $icon,
+        'render_mode'       => $vis,
+        'email'             => $email,
+        'weighted_children' => 0,
+        'weight'            => 0,
+    ]);
+    $category->save();
+    return true;
 }
 
-function savekrav(int $id, string $navn, string $html): array
+function savekrav(string $navn, string $html, int $id = null): array
 {
     $html = purifyHTML($html);
     $html = htmlUrlDecode($html);
@@ -2059,7 +2059,7 @@ function opretSide(
         'excerpt'        => $beskrivelse,
         'html'           => $html,
         'sku'            => $varenr,
-        'image_path'     => $billed,
+        'icon_path'      => $billed,
         'requirement_id' => $krav,
         'brand_id'       => $maerke,
         'price'          => $pris,

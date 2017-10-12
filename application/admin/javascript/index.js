@@ -390,7 +390,9 @@ function saveEmail()
             interests += interestObjs[i].value;
         }
     }
-    x_saveEmail($('id').value, $('from').value, interests, $('subject').value, $('text').value, generic_r);
+    var id = $('id').value;
+    id = id ? id : null;
+    x_saveEmail($('from').value, interests, $('subject').value, $('text').value, id, generic_r);
 }
 
 function updateContact(id)
@@ -406,8 +408,8 @@ function updateContact(id)
             interests += interestObjs[i].value;
         }
     }
-    x_updateContact(id, $('navn').value, $('email').value, $('adresse').value, $('land').value, $('post').value,
-        $('by').value, $('tlf1').value, $('tlf2').value, $('kartotek').checked, interests, updateContact_r);
+    x_updateContact($('navn').value, $('email').value, $('adresse').value, $('land').value, $('post').value,
+        $('by').value, $('tlf1').value, $('tlf2').value, $('kartotek').checked, interests, id, updateContact_r);
 }
 
 function updateContact_r(data)

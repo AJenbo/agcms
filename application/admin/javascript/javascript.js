@@ -239,7 +239,9 @@ function init()
 function save_krav()
 {
     updateRTEs();
-    x_savekrav($("id").value, $("navn").value, $("text").value, save_krav_r);
+    var id = $("id").value;
+    id = id ? id : null;
+    x_savekrav($("navn").value, $("text").value, id, save_krav_r);
 
     return false
 }
