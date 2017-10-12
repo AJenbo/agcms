@@ -301,11 +301,6 @@ class Table extends AbstractEntity
 
     /**
      * Sort a 2D array based on a custome sort order.
-     *
-     * @param array  $rows    Array to sort
-     * @param string $orderBy Key to sort by
-     *
-     * @return array
      */
     private function orderRows(array $rows, int $orderBy = null): array
     {
@@ -321,10 +316,10 @@ class Table extends AbstractEntity
 
         $arySort = [];
         foreach ($rows as $aryRow) {
-            $arySort[$aryRow[$strIndex]] = -1;
+            $arySort[$aryRow['id']] = -1;
             foreach ($options as $kalKey => $kalSort) {
                 if ($aryRow[$orderBy] == $kalSort) {
-                    $arySort[$aryRow[$strIndex]] = $kalKey;
+                    $arySort[$aryRow['id']] = $kalKey;
                     break;
                 }
             }
@@ -335,7 +330,7 @@ class Table extends AbstractEntity
         $aryResult = [];
         foreach (array_keys($arySort) as $arySortKey) {
             foreach ($rows as $aryRow) {
-                if ($aryRow[$strIndex] == $arySortKey) {
+                if ($aryRow['id'] == $arySortKey) {
                     $aryResult[] = $aryRow;
                     break;
                 }
@@ -347,8 +342,6 @@ class Table extends AbstractEntity
 
     /**
      * Get the page this table belongs to.
-     *
-     * @return \Page
      */
     public function getPage(): Page
     {

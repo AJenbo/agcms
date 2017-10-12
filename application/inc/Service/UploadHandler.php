@@ -12,11 +12,11 @@ class UploadHandler
     /** A well compressed JPEG */
     const MAX_BYTE_PER_PIXEL = 0.7;
 
-    private $targetPath;
-    private $baseName;
-    private $extension;
+    private $targetPath = '';
+    private $baseName = '';
+    private $extension = '';
 
-    /** @var File */
+    /** @var FileHandeler */
     private $file;
 
     public function __construct(string $targetPath)

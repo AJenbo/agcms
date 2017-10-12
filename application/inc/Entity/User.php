@@ -129,7 +129,7 @@ class User extends AbstractEntity
         return false;
     }
 
-    public function hasAccess(string $requestedLevel): bool
+    public function hasAccess(int $requestedLevel): bool
     {
         if (!$this->accessLevel) {
             return false;

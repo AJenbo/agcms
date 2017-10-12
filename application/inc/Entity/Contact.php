@@ -244,7 +244,7 @@ class Contact extends AbstractEntity
             'by'        => db()->eandq($this->city),
             'tlf1'      => db()->eandq($this->phone1),
             'tlf2'      => db()->eandq($this->phone2),
-            'kartotek'  => db()->eandq((int) $this->newsletter), // enum :(
+            'kartotek'  => db()->eandq((string) (int) $this->newsletter), // enum :(
             'interests' => db()->eandq($interests),
             'ip'        => db()->eandq($this->ip),
         ];

@@ -96,16 +96,6 @@ class Epayment
     }
 
     /**
-     * Did an error occure on the last action.
-     *
-     * @return bool
-     */
-    public function hasError(): bool
-    {
-        return $this->error;
-    }
-
-    /**
      * Has the transaction been cancled.
      *
      * @return bool
@@ -127,8 +117,6 @@ class Epayment
 
     /**
      * Canncels a payment transation.
-     *
-     * @param int $transactionId The identifyer for the transation
      *
      * @return bool
      */
@@ -154,7 +142,7 @@ class Epayment
     /**
      * Confirm the transation and draw the amount from the users account.
      *
-     * @param int $amount The amount to draw from the customers account
+     * @param int|null $amount The amount to draw from the customers account
      *
      * @return bool
      */

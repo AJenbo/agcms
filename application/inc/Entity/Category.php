@@ -121,8 +121,6 @@ class Category extends AbstractRenderable
     /**
      * Set parent id.
      *
-     * @param int $parentId Id of parent category
-     *
      * @return self
      */
     public function setParentId(int $parentId = null): self
@@ -135,21 +133,7 @@ class Category extends AbstractRenderable
     }
 
     /**
-     * Get the parent category id.
-     *
-     * @return int
-     */
-    private function getParentId(): ?int
-    {
-        return $this->parentId;
-    }
-
-    /**
      * Set icon file path.
-     *
-     * @param string $iconPath Icon file path
-     *
-     * @return self
      */
     public function setIconPath(string $iconPath = null): self
     {
@@ -244,16 +228,6 @@ class Category extends AbstractRenderable
         return $this;
     }
 
-    /**
-     * Get category sorting weight.
-     *
-     * @return int
-     */
-    public function getWeight(): int
-    {
-        return $this->weight;
-    }
-
     // General methodes
 
     /**
@@ -315,15 +289,17 @@ class Category extends AbstractRenderable
      */
     public function getParent(): ?self
     {
-        if ($this->parentId !== null) {
-            return ORM::getOne(self::class, $this->parentId);
+        if ($this->parentId === null) {
+            return null;
         }
 
-        return null;
+        return ORM::getOne(self::class, $this->parentId);
     }
 
     /**
      * Get attached categories.
+     *
+     * @todo natsort when sorted by title
      *
      * @param bool $onlyVisable Only return visible
      *
@@ -409,7 +385,7 @@ class Category extends AbstractRenderable
             $sort = 'navn';
         }
 
-        return ORM::getByQuery(
+        $pages = ORM::getByQuery(
             Page::class,
             "
             SELECT * FROM sider
@@ -514,7 +490,7 @@ class Category extends AbstractRenderable
         return [
             'navn'             => db()->eandq($this->title),
             'bind'             => $this->parentId !== null ? $this->parentId : 'NULL',
-            'icon'             => $this->getIcon() ? db()->eandq($this->getIcon()->getPath()) : 'NULL',
+            'icon'             => $this->iconPath !== null ? db()->eandq($this->iconPath) : 'NULL',
             'vis'              => $this->renderMode,
             'email'            => db()->eandq($this->email),
             'custom_sort_subs' => $this->weightedChildren,

@@ -171,7 +171,7 @@ function returnBytes(string $val): int
 {
     $last = mb_substr($val, -1);
     $last = mb_strtolower($last);
-    $val = mb_substr($val, 0, -1);
+    $val = (int) mb_substr($val, 0, -1);
     switch ($last) {
         case 'g':
             $val *= 1024;
@@ -315,14 +315,15 @@ function sendEmail(int $id, string $from, string $interests, string $subject, st
           AND `kartotek` = \'1\' ' . $andwhere . '
         GROUP BY `email`'
     );
+    $emailsGroup = [];
     foreach ($emails as $x => $email) {
-        $emailsGroup[floor($x / 99) + 1][] = $email;
+        $emailsGroup[(int) floor($x / 99) + 1][] = $email;
     }
 
     $data = [
         'siteName' => Config::get('site_name'),
         'css' => file_get_contents(_ROOT_ . '/theme/' . Config::get('theme', 'default') . '/style/email.css'),
-        'body' => str_replace(' href="/', ' href="' . Config::get('base_url') . '/', $text),
+        'body' => str_replace(' href="/', ' href="' . Config::get('base_url') . '/', $html),
     ];
 
     $error = '';

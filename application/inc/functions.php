@@ -96,7 +96,7 @@ function redirect(string $url, int $status = Response::HTTP_SEE_OTHER): void
 /**
  * Build a url string from an array.
  *
- * @param array $parsed_url Array as returned by parse_url()
+ * @param array $parsedUrl Array as returned by parse_url()
  *
  * @return string The URL
  */
@@ -267,9 +267,9 @@ function invoiceFromSession(): Invoice
 /**
  * Return html for a sorted list.
  *
- * @param int $listid     Id of list
- * @param int $bycell     What cell to sort by
- * @param int $categoryId Id of current category
+ * @param int      $listid     Id of list
+ * @param int|null $bycell     What cell to sort by
+ * @param int|null $categoryId Id of current category
  *
  * @return array
  */
@@ -409,8 +409,8 @@ function getAddress(string $phoneNumber): array
 /**
  * Get the html for content bellonging to a category.
  *
- * @param int  $id   Id of activ category
- * @param bool $sort What column to sort by
+ * @param int    $categoryId Id of activ category
+ * @param string $sort       What column to sort by
  *
  * @return array Apropriate for handeling with javascript function inject_html()
  */

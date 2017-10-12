@@ -611,7 +611,7 @@ class Invoice extends AbstractEntity
         return $items;
     }
 
-    public function isFinalized(): string
+    public function isFinalized(): bool
     {
         return in_array($this->status, ['accepted', 'giro', 'cash', 'canceled'], true);
     }

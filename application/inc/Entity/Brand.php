@@ -77,11 +77,7 @@ class Brand extends AbstractRenderable
     }
 
     /**
-     * Set external url link.
-     *
-     * @param string $link The url
-     *
-     * @return self
+     * Set file path for an image type.
      */
     public function setIconPath(string $iconPath = null): self
     {
@@ -169,7 +165,7 @@ class Brand extends AbstractRenderable
         return [
             'navn' => db()->eandq($this->title),
             'link' => db()->eandq($this->link),
-            'ico'  => $this->getIcon() ? db()->eandq($this->getIcon()->getPath()) : 'NULL',
+            'ico'  => $this->iconPath !== null ? db()->eandq($this->iconPath) : 'NULL',
         ];
     }
 }

@@ -13,23 +13,25 @@ use Twig_Environment;
 
 class Render
 {
+    /** @var Requirement */
     private static $activeRequirement;
+    /** @var Brand */
     private static $activeBrand;
+    /** @var Category */
     private static $activeCategory;
 
-    /**
-     * @var Page
-     */
+    /** @var Page */
     private static $activePage;
-    private static $brand = [];
+    /** @var Brand */
+    private static $brand;
     private static $canonical = '';
     private static $email = '';
     private static $hasProductList = false;
     private static $keywords = [];
 
+    /** @var Response */
     private static $response;
 
-    private static $requirement;
     private static $loadedTables = [];
     private static $menu = [];
     private static $openCategoryIds = [];
@@ -185,8 +187,6 @@ class Render
 
     /**
      * Figure out when the data for this page was last touched.
-     *
-     * @param string $tableName The table name
      */
     public static function getUpdateTime(bool $checkDb = true): int
     {
@@ -228,7 +228,7 @@ class Render
      * Set Last-Modified and ETag http headers
      * and use cache if no updates since last visit.
      *
-     * @param int $timestamp Unix time stamp of last update to content
+     * @param int|null $timestamp Unix time stamp of last update to content
      */
     public static function sendCacheHeader(int $timestamp = null): void
     {
@@ -247,7 +247,7 @@ class Render
         $response->setPublic();
         $response->headers->addCacheControlDirective('must-revalidate');
 
-        $lastModified = DateTime::createFromFormat('U', $timestamp);
+        $lastModified = DateTime::createFromFormat('U', (string) $timestamp);
         $response->setLastModified($lastModified);
         $response->setEtag((string) $timestamp);
         $response->setMaxAge(0);
@@ -418,8 +418,6 @@ class Render
 
     /**
      * Load data from a brand.
-     *
-     * @param \Brand $brand The brand
      */
     private static function loadBrandData(Brand $brand = null): void
     {
@@ -442,8 +440,6 @@ class Render
 
     /**
      * Load data from a category.
-     *
-     * @param \Category $category The category
      */
     private static function loadCategoryData(Category $category = null): void
     {
@@ -477,8 +473,6 @@ class Render
 
     /**
      * Load data from a page.
-     *
-     * @param \Page $page The page
      */
     private static function loadPageData(Page $page = null): void
     {
@@ -519,9 +513,6 @@ class Render
 
     /**
      * Search for pages and generate a list or redirect if only one was found.
-     *
-     * @param string $query Tekst to search for
-     * @param string $where Additional sql where clause
      */
     public static function searchListe(
         string $queryuery,
@@ -599,9 +590,6 @@ class Render
 
     /**
      * Search for categories and populate generatedcontent with results.
-     *
-     * @param string $searchString Seach string
-     * @param string $wherekat     Additional SQL for WHERE clause
      */
     public static function getSearchMenu(string $searchString, string $antiWords): array
     {
@@ -653,11 +641,9 @@ class Render
     /**
      * Return html for a sorted list.
      *
-     * @param int      $tableId  Id of list
-     * @param int      $orderBy  What column to sort by
-     * @param Category $category Id of current category
-     *
-     * @return array
+     * @param int           $tableId  Id of list
+     * @param int|null      $orderBy  What column to sort by
+     * @param Category|null $category Current category
      */
     public static function getTableHtml(int $tableId, int $orderBy = null, Category $category = null): string
     {
@@ -679,12 +665,7 @@ class Render
             }
         }
         if ($pageIds) {
-            ORM::getByQuery(
-                Page::class,
-                "
-                SELECT * FROM sider WHERE id IN(" . implode(",", $pageIds) . ")
-                "
-            );
+            ORM::getByQuery(Page::class, "SELECT * FROM sider WHERE id IN(" . implode(",", $pageIds) . ")");
         }
 
         $html = '<table class="tabel">';
@@ -785,8 +766,8 @@ class Render
     /**
      * Get the html for content bellonging to a category.
      *
-     * @param int  $id   Id of activ category
-     * @param bool $sort What column to sort by
+     * @param Category $category Activ category
+     * @param string   $sort     What column to sort by
      *
      * @return string
      */

@@ -37,6 +37,7 @@ class DB extends mysqli
         if (mysqli_error($this)) {
             throw new Exception(mysqli_error($this), mysqli_errno($this));
         }
+        $rows = [];
         while ($row = $result->fetch_assoc()) {
             $rows[] = $row;
         }
@@ -71,8 +72,8 @@ class DB extends mysqli
     /**
      * Performe query.
      *
-     * @param string $query       The query string
-     * @param int    $resultmode
+     * @param string   $query      The query string
+     * @param int|null $resultmode
      *
      * @return bool
      */
@@ -125,9 +126,9 @@ class DB extends mysqli
     /**
      * Find out what offset the on the time database has form UTC.
      *
-     * @return string
+     * @return int
      */
-    public function getTimeOffset(): string
+    public function getTimeOffset(): int
     {
         if (self::$timeOffset === null) {
             self::$timeOffset = time() - strtotime(self::fetchOne("SELECT NOW() date")['date']);

@@ -5,11 +5,10 @@ use AGCMS\Entity\Invoice;
 use AGCMS\ORM;
 
 require_once __DIR__ . '/logon.php';
-@include_once _ROOT_ . '/vendor/tecnickcom/tcpdf/examples/lang/dan.php';
 @include_once _ROOT_ . '/inc/countries.php';
 
 $id = (int) request()->get('id');
-/** @var Invoice */
+/** @var \AGCMS\Entity\Invoice */
 $invoice = ORM::getOne(Invoice::class, $id);
 if (!$invoice || $invoice->getStatus() === 'new') {
     die(_('Can\'t print.'));
@@ -40,7 +39,12 @@ $pdf->SetAutoPageBreak(true, PDF_MARGIN_BOTTOM);
 $pdf->setImageScale(PDF_IMAGE_SCALE_RATIO);
 
 //set some language-dependent strings
-$pdf->setLanguageArray($l);
+
+// set some language-dependent strings (optional)
+if (file_exists(_ROOT_ . '/vendor/tecnickcom/tcpdf/examples/lang/dan.php')) {
+    require_once _ROOT_ . '/vendor/tecnickcom/tcpdf/examples/lang/dan.php';
+    $pdf->setLanguageArray($l);
+}
 
 // ---------------------------------------------------------
 $pdf->AddPage();
