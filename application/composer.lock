@@ -4,25 +4,25 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "content-hash": "47cd51affb6264c7c2bb68aab971b320",
+    "content-hash": "78c9378a69e15e1e6b519e3a6f6710c0",
     "packages": [
         {
             "name": "ajenbo/image.php",
-            "version": "0.9.1",
+            "version": "0.9.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/AJenbo/Image.php.git",
-                "reference": "d0fe31b060a83498c437f3540dfae137b187fca1"
+                "reference": "3ab242b894ba74f0018be84f3a63dc924372898f"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/AJenbo/Image.php/zipball/d0fe31b060a83498c437f3540dfae137b187fca1",
-                "reference": "d0fe31b060a83498c437f3540dfae137b187fca1",
+                "url": "https://api.github.com/repos/AJenbo/Image.php/zipball/3ab242b894ba74f0018be84f3a63dc924372898f",
+                "reference": "3ab242b894ba74f0018be84f3a63dc924372898f",
                 "shasum": ""
             },
             "require": {
                 "ext-gd": "*",
-                "php": ">=7.0.0"
+                "php": ">=7.1"
             },
             "type": "library",
             "autoload": {
@@ -32,27 +32,27 @@
             },
             "description": "Helper function for simple image manipulation using GD functions.",
             "support": {
-                "source": "https://github.com/AJenbo/Image.php/tree/0.9.1",
+                "source": "https://github.com/AJenbo/Image.php/tree/0.9.2",
                 "issues": "https://github.com/AJenbo/Image.php/issues"
             },
-            "time": "2017-04-12 16:30:49"
+            "time": "2017-10-12T22:58:08+00:00"
         },
         {
-            "name": "ajenbo/imap",
-            "version": "dev-master",
+            "name": "ajenbo/imap.php",
+            "version": "0.9.1",
             "source": {
                 "type": "git",
-                "url": "https://github.com/AJenbo/PHP-imap.git",
-                "reference": "973f21c657f3349e0241deb9302e43aa74acb868"
+                "url": "https://github.com/AJenbo/Imap.php.git",
+                "reference": "7cace9c58528d43d4bd8a908df69b7cf32c4d971"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/AJenbo/PHP-imap/zipball/973f21c657f3349e0241deb9302e43aa74acb868",
-                "reference": "973f21c657f3349e0241deb9302e43aa74acb868",
+                "url": "https://api.github.com/repos/AJenbo/Imap.php/zipball/7cace9c58528d43d4bd8a908df69b7cf32c4d971",
+                "reference": "7cace9c58528d43d4bd8a908df69b7cf32c4d971",
                 "shasum": ""
             },
             "require": {
-                "php": ">=5.4"
+                "php": ">=7.1"
             },
             "type": "library",
             "autoload": {
@@ -62,10 +62,10 @@
             },
             "description": "IMAP over socket",
             "support": {
-                "source": "https://github.com/AJenbo/PHP-imap/tree/master",
-                "issues": "https://github.com/AJenbo/PHP-imap/issues"
+                "source": "https://github.com/AJenbo/Imap.php/tree/master",
+                "issues": "https://github.com/AJenbo/Imap.php/issues"
             },
-            "time": "2017-07-01 13:07:11"
+            "time": "2017-10-12T23:26:10+00:00"
         },
         {
             "name": "ajenbo/sajax",
@@ -73,16 +73,16 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/AJenbo/Sajax.git",
-                "reference": "c9b27a2382de5b7f4d1acf30de69e144bf414935"
+                "reference": "9bf07d45a546dc81ff255e71f17e0cc93e001ceb"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/AJenbo/Sajax/zipball/c9b27a2382de5b7f4d1acf30de69e144bf414935",
-                "reference": "c9b27a2382de5b7f4d1acf30de69e144bf414935",
+                "url": "https://api.github.com/repos/AJenbo/Sajax/zipball/9bf07d45a546dc81ff255e71f17e0cc93e001ceb",
+                "reference": "9bf07d45a546dc81ff255e71f17e0cc93e001ceb",
                 "shasum": ""
             },
             "require": {
-                "php": ">=5.3.3"
+                "php": ">=7.1"
             },
             "type": "library",
             "autoload": {
@@ -95,7 +95,7 @@
                 "source": "https://github.com/AJenbo/Sajax/tree/master",
                 "issues": "https://github.com/AJenbo/Sajax/issues"
             },
-            "time": "2017-06-07 19:22:39"
+            "time": "2017-10-12T23:13:47+00:00"
         },
         {
             "name": "ezyang/htmlpurifier",
@@ -142,7 +142,7 @@
             "keywords": [
                 "html"
             ],
-            "time": "2017-06-03 02:28:16"
+            "time": "2017-06-03T02:28:16+00:00"
         },
         {
             "name": "phpmailer/phpmailer",
@@ -207,7 +207,7 @@
                 }
             ],
             "description": "PHPMailer is a full-featured email creation and transfer class for PHP",
-            "time": "2017-09-14 16:47:12"
+            "time": "2017-09-14T16:47:12+00:00"
         },
         {
             "name": "symfony/http-foundation",
@@ -260,7 +260,7 @@
             ],
             "description": "Symfony HttpFoundation Component",
             "homepage": "https://symfony.com",
-            "time": "2017-10-05 23:10:23"
+            "time": "2017-10-05T23:10:23+00:00"
         },
         {
             "name": "symfony/polyfill-mbstring",
@@ -319,7 +319,7 @@
                 "portable",
                 "shim"
             ],
-            "time": "2017-06-14 15:44:48"
+            "time": "2017-06-14T15:44:48+00:00"
         },
         {
             "name": "tecnickcom/tcpdf",
@@ -381,7 +381,7 @@
                 "pdf417",
                 "qrcode"
             ],
-            "time": "2017-04-26 08:14:48"
+            "time": "2017-04-26T08:14:48+00:00"
         },
         {
             "name": "twig/twig",
@@ -447,7 +447,7 @@
             "keywords": [
                 "templating"
             ],
-            "time": "2017-09-27 18:10:31"
+            "time": "2017-09-27T18:10:31+00:00"
         }
     ],
     "packages-dev": [
@@ -494,7 +494,7 @@
             "keywords": [
                 "test"
             ],
-            "time": "2015-05-11 14:41:42"
+            "time": "2015-05-11T14:41:42+00:00"
         },
         {
             "name": "mockery/mockery",
@@ -559,14 +559,13 @@
                 "test double",
                 "testing"
             ],
-            "time": "2017-02-28 12:52:32"
+            "time": "2017-02-28T12:52:32+00:00"
         }
     ],
     "aliases": [],
     "minimum-stability": "stable",
     "stability-flags": {
-        "ajenbo/sajax": 20,
-        "ajenbo/imap": 20
+        "ajenbo/sajax": 20
     },
     "prefer-stable": false,
     "prefer-lowest": false,

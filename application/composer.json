@@ -15,7 +15,7 @@
         },
         {
             "type": "vcs",
-            "url": "https://github.com/AJenbo/PHP-imap"
+            "url": "https://github.com/AJenbo/Imap.php"
         }
     ],
     "require": {
@@ -31,7 +31,7 @@
         "tecnickcom/tcpdf": "^6.2",
         "ajenbo/sajax" : "dev-master",
         "ajenbo/image.php": "^0.9.1",
-        "ajenbo/imap" : "dev-master",
+        "ajenbo/imap.php": "^0.9.1",
         "twig/twig": "^2.0",
         "symfony/http-foundation": "^3.3"
     },
