@@ -181,13 +181,6 @@ class File extends AbstractEntity
         return $this->description;
     }
 
-    /**
-     * Set width.
-     *
-     * @param int $width The object width
-     *
-     * @return self
-     */
     public function setWidth(int $width): self
     {
         $this->width = $width;
@@ -195,23 +188,11 @@ class File extends AbstractEntity
         return $this;
     }
 
-    /**
-     * Get width.
-     *
-     * @return int
-     */
     public function getWidth(): int
     {
         return $this->width;
     }
 
-    /**
-     * Set height.
-     *
-     * @param int $width The object height
-     *
-     * @return self
-     */
     public function setHeight(int $height): self
     {
         $this->height = $height;
@@ -219,11 +200,6 @@ class File extends AbstractEntity
         return $this;
     }
 
-    /**
-     * Get height.
-     *
-     * @return int
-     */
     public function getHeight(): int
     {
         return $this->height;
@@ -232,7 +208,7 @@ class File extends AbstractEntity
     /**
      * Set video aspect.
      *
-     * @param string $aspect In the format of 16-9
+     * @param string|null $aspect In the format of 16-9
      *
      * @return self
      */
@@ -256,18 +232,18 @@ class File extends AbstractEntity
     /**
      * Get data in array format for the database.
      *
-     * @return array
+     * @return string[]
      */
     public function getDbArray(): array
     {
         return [
             'path' => db()->eandq($this->path),
             'mime' => db()->eandq($this->mime),
-            'size' => $this->size,
+            'size' => (string) $this->size,
             'alt' => db()->eandq($this->description),
-            'width' => $this->width,
-            'height' => $this->height,
-            'aspect' => $this->aspect ? (db()->eandq($this->aspect)) : "NULL",
+            'width' => (string) $this->width,
+            'height' => (string) $this->height,
+            'aspect' => $this->aspect ? db()->eandq($this->aspect) : "NULL",
         ];
     }
 

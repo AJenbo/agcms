@@ -132,7 +132,7 @@ class CustomPage extends AbstractEntity
     /**
      * Get data in array format for the database.
      *
-     * @return array
+     * @return string[]
      */
     public function getDbArray(): array
     {

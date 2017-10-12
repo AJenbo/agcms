@@ -77,11 +77,7 @@ class Brand extends AbstractRenderable
     }
 
     /**
-     * Set external url link.
-     *
-     * @param string $link The url
-     *
-     * @return self
+     * Set file path for an image type.
      */
     public function setIconPath(string $iconPath = null): self
     {
@@ -95,7 +91,7 @@ class Brand extends AbstractRenderable
      */
     public function getIcon(): ?File
     {
-        if (!$this->iconPath) {
+        if ($this->iconPath === null) {
             return null;
         }
 
@@ -119,7 +115,7 @@ class Brand extends AbstractRenderable
      *
      * @param string $order How to order the pages
      *
-     * @return array
+     * @return Page[]
      */
     public function getPages(string $order = 'navn'): array
     {
@@ -162,14 +158,14 @@ class Brand extends AbstractRenderable
     /**
      * Get data in array format for the database.
      *
-     * @return array
+     * @return string[]
      */
     public function getDbArray(): array
     {
         return [
             'navn' => db()->eandq($this->title),
             'link' => db()->eandq($this->link),
-            'ico'  => $this->getIcon() ? db()->eandq($this->getIcon()->getPath()) : 'NULL',
+            'ico'  => $this->iconPath !== null ? db()->eandq($this->iconPath) : 'NULL',
         ];
     }
 }

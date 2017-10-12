@@ -56,6 +56,8 @@ abstract class AbstractEntity implements InterfaceEntity
 
     /**
      * Get data in array format for the database.
+     *
+     * @return string[]
      */
     abstract protected function getDbArray(): array;
 
@@ -114,6 +116,10 @@ abstract class AbstractEntity implements InterfaceEntity
      */
     public function delete(): bool
     {
+        if ($this->id === null) {
+            return true;
+        }
+
         db()->query("DELETE FROM `" . static::TABLE_NAME . "` WHERE `id` = " . $this->id);
         ORM::forget(static::class, $this->id);
 

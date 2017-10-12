@@ -269,8 +269,8 @@ if ($invoice && $checkid === $invoice->getCheckid() && !isset($_GET['txnid'])) {
         }
         Render::$track .= "ga('ecommerce:send');";
 
-        if (!valideMail($faktura['department'])) {
-            $faktura['department'] = first(Config::get('emails'))['address'];
+        if (!valideMail($invoice->getDepartment())) {
+            $invoice->setDepartment(first(Config::get('emails'))['address']);
         }
 
         $data = [

@@ -171,7 +171,7 @@ function returnBytes(string $val): int
 {
     $last = mb_substr($val, -1);
     $last = mb_strtolower($last);
-    $val = mb_substr($val, 0, -1);
+    $val = (int) mb_substr($val, 0, -1);
     switch ($last) {
         case 'g':
             $val *= 1024;
@@ -272,7 +272,7 @@ function get_mime_type(string $filepath): string
 }
 
 /**
- * @return array|true
+ * @return string[]|true
  */
 function sendEmail(int $id, string $from, string $interests, string $subject, string $html)
 {
@@ -315,14 +315,15 @@ function sendEmail(int $id, string $from, string $interests, string $subject, st
           AND `kartotek` = \'1\' ' . $andwhere . '
         GROUP BY `email`'
     );
+    $emailsGroup = [];
     foreach ($emails as $x => $email) {
-        $emailsGroup[floor($x / 99) + 1][] = $email;
+        $emailsGroup[(int) floor($x / 99) + 1][] = $email;
     }
 
     $data = [
         'siteName' => Config::get('site_name'),
         'css' => file_get_contents(_ROOT_ . '/theme/' . Config::get('theme', 'default') . '/style/email.css'),
-        'body' => str_replace(' href="/', ' href="' . Config::get('base_url') . '/', $text),
+        'body' => str_replace(' href="/', ' href="' . Config::get('base_url') . '/', $html),
     ];
 
     $error = '';
@@ -416,6 +417,9 @@ function saveEmail(string $from, string $interests, string $subject, string $tex
     return true;
 }
 
+/**
+ * @return string[]
+ */
 function katspath(int $id): array
 {
     return [
@@ -424,6 +428,9 @@ function katspath(int $id): array
     ];
 }
 
+/**
+ * @return int[]
+ */
 function getOpenCategories(int $selectedId = null): array
 {
     $openCategories = explode('<', request()->cookies->get('openkat', ''));
@@ -493,6 +500,8 @@ function isinuse(string $path): bool
 
 /**
  * Delete unused file.
+ *
+ * @return string[]|int[]
  */
 function deletefile(int $id, string $path): array
 {
@@ -536,6 +545,8 @@ function is_dirs(string $path): bool
 
 /**
  * return list of folders in a folder.
+ *
+ * @return array[]
  */
 function getSubDirs(string $path): array
 {
@@ -570,6 +581,9 @@ function hasSubsDirs(string $path): bool
     return false;
 }
 
+/**
+ * @return array[]
+ */
 function getRootDirs(): array
 {
     $dirs = [];
@@ -602,6 +616,8 @@ function formatDir(string $path, string $name): array
 //TODO document type doesn't allow element "input" here; missing one of "p", "h1", "h2", "h3", "h4", "h5", "h6", "div", "pre", "address", "fieldset", "ins", "del" start-tag.
 /**
  * Display a list of directorys for the explorer.
+ *
+ * @return string[]
  */
 function listdirs(string $path, bool $move = false): array
 {
@@ -626,7 +642,7 @@ function listdirs(string $path, bool $move = false): array
  *                       'password' string
  *                       'password_new' string
  *
- * @return array|true True on update, else ['error' => string]
+ * @return string[]|true True on update, else ['error' => string]
  */
 function updateuser(int $id, array $updates)
 {
@@ -740,6 +756,8 @@ function newfaktura(): int
 
 /**
  * display a list of files in the selected folder.
+ *
+ * @return string[]
  */
 function showfiles(string $dir): array
 {
@@ -1125,7 +1143,7 @@ Would you like to replace the existing file?'), 'id' => $id];
     return ['error' => _('An error occurred with the file operations.'), 'id' => $id];
 }
 
-function replacePaths($path, $newPath): void
+function replacePaths(string $path, string $newPath): void
 {
     $newPathEsc = db()->esc($newPath);
     $pathEsc = db()->esc($path);
@@ -1178,7 +1196,7 @@ function deltree(string $dir): bool
 }
 
 /**
- * @return array|true
+ * @return string[]|true
  */
 function deletefolder(string $dir)
 {
@@ -1189,6 +1207,9 @@ function deletefolder(string $dir)
     return true;
 }
 
+/**
+ * @return string[]
+ */
 function searchfiles(string $qpath, string $qalt, string $qmime): array
 {
     $qpath = db()->escapeWildcards(db()->esc($qpath));
@@ -1343,6 +1364,9 @@ function purifyHTML(string $html): string
     return $purifier->purify($html);
 }
 
+/**
+ * @return string[]
+ */
 function search(string $text): array
 {
     if (!$text) {
@@ -1356,6 +1380,9 @@ function search(string $text): array
     return ['id' => 'canvas', 'html' => $html];
 }
 
+/**
+ * @return Page[]
+ */
 function findPages(string $text): array
 {
     //fulltext search dosn't catch things like 3 letter words and some other combos
@@ -1378,6 +1405,9 @@ function findPages(string $text): array
     );
 }
 
+/**
+ * @return int[]
+ */
 function listRemoveRow(int $tableId, int $rowId): array
 {
     ORM::getOne(Table::class, $tableId)->removeRow($rowId);
@@ -1709,6 +1739,9 @@ function get_pages_with_mismatch_bindings(): string
     return $html;
 }
 
+/**
+ * @return string[]
+ */
 function getRequirementOptions(): array
 {
     $options = [0 => 'None'];
@@ -1720,6 +1753,9 @@ function getRequirementOptions(): array
     return $options;
 }
 
+/**
+ * @return string[]
+ */
 function getBrandOptions(): array
 {
     $options = [0 => 'All others'];
@@ -1732,7 +1768,7 @@ function getBrandOptions(): array
 }
 
 /**
- * @return array|true
+ * @return string[]|true
  */
 function save_ny_kat(string $navn, int $kat, string $icon, int $vis, string $email)
 {
@@ -1753,6 +1789,9 @@ function save_ny_kat(string $navn, int $kat, string $icon, int $vis, string $ema
     return true;
 }
 
+/**
+ * @return string[]|int[]
+ */
 function savekrav(string $navn, string $html, int $id = null): array
 {
     $html = purifyHTML($html);
@@ -1804,6 +1843,9 @@ function updatemaerke(int $id = null, string $navn = '', string $link = '', stri
     return ['error' => _('You must enter a name.')];
 }
 
+/**
+ * @return string[]
+ */
 function sletmaerke(int $id): array
 {
     db()->query("DELETE FROM `maerke` WHERE `id` = " . $id);
@@ -1811,6 +1853,9 @@ function sletmaerke(int $id): array
     return ['node' => 'maerke' . $id];
 }
 
+/**
+ * @return string[]
+ */
 function sletkrav(int $id): array
 {
     db()->query("DELETE FROM `krav` WHERE `id` = " . $id);
@@ -1818,6 +1863,9 @@ function sletkrav(int $id): array
     return ['id' => 'krav' . $id];
 }
 
+/**
+ * @return string[]
+ */
 function removeAccessory(int $pageId, int $accessoryId): array
 {
     $accessory = ORM::getOne(Page::class, $accessoryId);
@@ -1835,6 +1883,9 @@ function addAccessory(int $pageId, int $accessoryId): array
     return ['pageId' => $page->getId(), 'accessoryId' => $accessory->getId(), 'title' => $accessory->getTitle()];
 }
 
+/**
+ * @return string[]
+ */
 function sletkat(int $id): array
 {
     ORM::getOne(Category::class, $id)->delete();
@@ -1842,16 +1893,16 @@ function sletkat(int $id): array
     return ['id' => 'kat' . $id];
 }
 
-/**
- * @return array|false
- */
-function movekat(int $id, int $parentId)
+function movekat(int $id, int $parentId): array
 {
     ORM::getOne(Category::class, $id)->setParentId($parentId)->save();
 
     return ['id' => 'kat' . $id, 'update' => $parentId];
 }
 
+/**
+ * @return string[]
+ */
 function renamekat(int $id, string $title): array
 {
     ORM::getOne(Category::class, $id)->setTitle($title)->save();
@@ -1978,6 +2029,9 @@ function updateSide(
     return true;
 }
 
+/**
+ * @return string[]|true
+ */
 function updateKat(
     int $id,
     string $navn,
@@ -2019,7 +2073,7 @@ function updateKat(
     return true;
 }
 
-function updateKatOrder(string $order)
+function updateKatOrder(string $order): void
 {
     foreach (explode(',', $order) as $weight => $id) {
         ORM::getOne(Category::class, $id)->setWeight($weight)->save();
@@ -2035,6 +2089,9 @@ function updateSpecial(int $id, string $html): bool
     return true;
 }
 
+/**
+ * @return int[]
+ */
 function opretSide(
     int $kat,
     string $navn,
@@ -2074,7 +2131,11 @@ function opretSide(
     return ['id' => $page->getId()];
 }
 
-//Delete a page and all it's relations from the database
+/**
+ * Delete a page and all it's relations from the database
+ *
+ * @return string[]
+ */
 function sletSide(int $pageId): array
 {
     ORM::getOne(Page::class, $pageId)->delete();
@@ -2107,6 +2168,9 @@ function copytonew(int $id): int
     return db()->insert_id;
 }
 
+/**
+ * @return string[]
+ */
 function save(int $id, string $action, array $updates): array
 {
     /** @var Invoice */
@@ -2125,7 +2189,7 @@ function save(int $id, string $action, array $updates): array
     return ['type' => $action, 'status' => $invoice->getStatus()];
 }
 
-function invoiceBasicUpdate(Invoice $invoice, string $action, array $updates)
+function invoiceBasicUpdate(Invoice $invoice, string $action, array $updates): void
 {
     $status = $invoice->getStatus();
 
@@ -2213,7 +2277,7 @@ function invoiceBasicUpdate(Invoice $invoice, string $action, array $updates)
     $invoice->setStatus($status)->save();
 }
 
-function sendInvoice(Invoice $invoice)
+function sendInvoice(Invoice $invoice): void
 {
     if (!$invoice->hasValidEmail()) {
         throw new Exception(_('Email is not valid!'));
@@ -2270,6 +2334,9 @@ function sendInvoice(Invoice $invoice)
         ->save();
 }
 
+/**
+ * @return string[]
+ */
 function sendReminder(int $id): array
 {
     /** @var Invoice */
@@ -2284,7 +2351,7 @@ function sendReminder(int $id): array
 }
 
 /**
- * @return array|true
+ * @return string[]|true
  */
 function pbsconfirm(int $id)
 {
@@ -2309,7 +2376,7 @@ function pbsconfirm(int $id)
 }
 
 /**
- * @return array|true
+ * @return string[]|true
  */
 function annul(int $id)
 {

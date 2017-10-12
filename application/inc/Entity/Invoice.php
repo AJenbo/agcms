@@ -50,6 +50,54 @@ class Invoice extends AbstractEntity
     // Dynamic
     private $items;
 
+    /**
+     * Construct the entity
+     *
+     * @param array $data The entity data
+     */
+    public function __construct(array $data)
+    {
+        $this->setId($data['id'] ?? null)
+            ->setItemData($data['item_data'])
+            ->setHasShippingAddress($data['has_shipping_address'] ?? false)
+            ->setTimeStamp($data['timestamp'] ?? time())
+            ->setTimeStampPay($data['timestamp_pay'] ?? 0)
+            ->setAmount($data['amount'] ?? '0.00')
+            ->setName($data['name'])
+            ->setAtt($data['att'])
+            ->setAddress($data['address'])
+            ->setPostbox($data['postbox'])
+            ->setPostcode($data['postcode'])
+            ->setCity($data['city'])
+            ->setCountry($data['country'] ?? 'DK')
+            ->setEmail($data['email'])
+            ->setPhone1($data['phone1'])
+            ->setPhone2($data['phone2'])
+            ->setShippingPhone($data['shipping_phone'])
+            ->setShippingName($data['shipping_name'])
+            ->setShippingAtt($data['shipping_att'])
+            ->setShippingAddress($data['shipping_address'])
+            ->setShippingAddress2($data['shipping_address2'])
+            ->setShippingPostbox($data['shipping_postbox'])
+            ->setShippingPostcode($data['shipping_postcode'])
+            ->setShippingCity($data['shipping_city'])
+            ->setShippingCountry($data['shipping_country'] ?? 'DK')
+            ->setNote($data['note'])
+            ->setClerk($data['clerk'] ?? '')
+            ->setStatus($data['status'] ?? 'new')
+            ->setDiscount($data['discount'] ?? '0.00')
+            ->setShipping($data['shipping'] ?? '0.00')
+            ->setVat($data['vat'] ?? '0.25')
+            ->setPreVat($data['pre_vat'] ?? true)
+            ->setTransferred($data['transferred'] ?? false)
+            ->setCardtype($data['cardtype'] ?? '')
+            ->setIref($data['iref'] ?? '')
+            ->setEref($data['eref'] ?? '')
+            ->setSent($data['sent'] ?? false)
+            ->setDepartment($data['department'] ?? '')
+            ->setEnote($data['enote'] ?? '');
+    }
+
     public function setTimeStamp(int $timeStamp): self
     {
         $this->timeStamp = $timeStamp;
@@ -458,54 +506,6 @@ class Invoice extends AbstractEntity
     }
 
     /**
-     * Construct the entity
-     *
-     * @param array $data The entity data
-     */
-    public function __construct(array $data)
-    {
-        $this->setId($data['id'] ?? null)
-            ->setItemData($data['item_data'])
-            ->setHasShippingAddress($data['has_shipping_address'] ?? false)
-            ->setTimeStamp($data['timestamp'] ?? 0)
-            ->setTimeStampPay($data['timestamp_pay'] ?? 0)
-            ->setAmount($data['amount'] ?? '0.00')
-            ->setName($data['name'])
-            ->setAtt($data['att'])
-            ->setAddress($data['address'])
-            ->setPostbox($data['postbox'])
-            ->setPostcode($data['postcode'])
-            ->setCity($data['city'])
-            ->setCountry($data['country'] ?? 'DK')
-            ->setEmail($data['email'])
-            ->setPhone1($data['phone1'])
-            ->setPhone2($data['phone2'])
-            ->setShippingPhone($data['shipping_phone'])
-            ->setShippingName($data['shipping_name'])
-            ->setShippingAtt($data['shipping_att'])
-            ->setShippingAddress($data['shipping_address'])
-            ->setShippingAddress2($data['shipping_address2'])
-            ->setShippingPostbox($data['shipping_postbox'])
-            ->setShippingPostcode($data['shipping_postcode'])
-            ->setShippingCity($data['shipping_city'])
-            ->setShippingCountry($data['shipping_country'] ?? 'DK')
-            ->setNote($data['note'])
-            ->setClerk($data['clerk'] ?? '')
-            ->setStatus($data['status'] ?? 'new')
-            ->setDiscount($data['discount'] ?? '0.00')
-            ->setShipping($data['shipping'] ?? '0.00')
-            ->setVat($data['vat'] ?? '0.25')
-            ->setPreVat($data['pre_vat'] ?? true)
-            ->setTransferred($data['transferred'] ?? false)
-            ->setCardtype($data['cardtype'] ?? '')
-            ->setIref($data['iref'] ?? '')
-            ->setEref($data['eref'] ?? '')
-            ->setSent($data['sent'] ?? false)
-            ->setDepartment($data['department'] ?? '')
-            ->setEnote($data['enote'] ?? '');
-    }
-
-    /**
      * Map data from DB table to entity
      *
      * @param array The data from the database
@@ -591,7 +591,7 @@ class Invoice extends AbstractEntity
      * @param bool $normalizeVat Some invoices have prices entered including VAT,
      * when set to true the function will always return values with out vat
      *
-     * @return array
+     * @return array[]
      */
     public function getItems(bool $normalizeVat = true): array
     {
@@ -611,7 +611,7 @@ class Invoice extends AbstractEntity
         return $items;
     }
 
-    public function isFinalized(): string
+    public function isFinalized(): bool
     {
         return in_array($this->status, ['accepted', 'giro', 'cash', 'canceled'], true);
     }
@@ -676,7 +676,7 @@ class Invoice extends AbstractEntity
     /**
      * Checks that all nessesery contact information has been filled out correctly
      *
-     * @return array Key with bool true for each faild feald
+     * @return true[] Key with bool true for each faild feald
      */
     function getInvalid(): array
     {
@@ -735,7 +735,7 @@ class Invoice extends AbstractEntity
     /**
      * Get data in array format for the database
      *
-     * @return array
+     * @return string[]
      */
     public function getDbArray(): array
     {
@@ -755,7 +755,7 @@ class Invoice extends AbstractEntity
         $this->setTimeStamp(time());
         return [
             'paydate'        => $this->timeStampPay ? ("UNIX_TIMESTAMP(" . $this->timeStampPay . ")") : db()->eandq('0000-00-00'),
-            'date'           => "NOW()",
+            'date'           => $this->timeStamp ? ("UNIX_TIMESTAMP(" . $this->timeStamp . ")") : db()->eandq('0000-00-00'),
             'quantities'     => db()->eandq($itemQuantities),
             'products'       => db()->eandq($itemTitle),
             'values'         => db()->eandq($itemValue),
@@ -770,7 +770,7 @@ class Invoice extends AbstractEntity
             'email'          => db()->eandq($this->email),
             'tlf1'           => db()->eandq($this->phone1),
             'tlf2'           => db()->eandq($this->phone2),
-            'altpost'        => (int) $this->hasShippingAddress,
+            'altpost'        => (string) (int) $this->hasShippingAddress,
             'posttlf'        => db()->eandq($this->shippingPhone),
             'postname'       => db()->eandq($this->shippingName),
             'postatt'        => db()->eandq($this->shippingAtt),
@@ -786,12 +786,12 @@ class Invoice extends AbstractEntity
             'discount'       => db()->eandq($this->discount),
             'fragt'          => db()->eandq($this->shipping),
             'momssats'       => db()->eandq($this->vat),
-            'premoms'        => (int) $this->preVat,
-            'transferred'    => (int) $this->transferred,
+            'premoms'        => (string) (int) $this->preVat,
+            'transferred'    => (string) (int) $this->transferred,
             'cardtype'       => db()->eandq($this->cardtype),
             'iref'           => db()->eandq($this->iref),
             'eref'           => db()->eandq($this->eref),
-            'sendt'          => (int) $this->sent,
+            'sendt'          => (string) (int) $this->sent,
             'department'     => db()->eandq($this->department),
             'enote'          => db()->eandq($this->enote),
         ];

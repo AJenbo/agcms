@@ -1,9 +1,9 @@
 <?php namespace AGCMS\Service;
 
-use Exception;
 use AGCMS\Config;
 use AGCMS\Entity\File;
 use AJenbo\Image;
+use Exception;
 use Symfony\Component\HttpFoundation\File\File as FileHandeler;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 
@@ -12,11 +12,11 @@ class UploadHandler
     /** A well compressed JPEG */
     const MAX_BYTE_PER_PIXEL = 0.7;
 
-    private $targetPath;
-    private $baseName;
-    private $extension;
+    private $targetPath = '';
+    private $baseName = '';
+    private $extension = '';
 
-    /** @var File */
+    /** @var FileHandeler */
     private $file;
 
     public function __construct(string $targetPath)

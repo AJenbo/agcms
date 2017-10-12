@@ -1,6 +1,8 @@
 <?php namespace AGCMS\Entity;
 
-abstract class AbstractRenderable extends AbstractEntity
+use AGCMS\Interfaces\Renderable;
+
+abstract class AbstractRenderable extends AbstractEntity implements Renderable
 {
     /**
      * The title.

@@ -273,13 +273,6 @@ class Page extends AbstractRenderable
         return (bool) $this->excerpt;
     }
 
-    /**
-     * Set the image file path.
-     *
-     * @param strig $iconPath Thumbnail file path
-     *
-     * @return self
-     */
     public function setIconPath(string $iconPath = null): self
     {
         $this->iconPath = $iconPath;
@@ -292,7 +285,7 @@ class Page extends AbstractRenderable
      */
     public function getIcon(): ?File
     {
-        if (!$this->iconPath) {
+        if ($this->iconPath === null) {
             return null;
         }
 
@@ -325,16 +318,6 @@ class Page extends AbstractRenderable
         $this->brandId = $brandId;
 
         return $this;
-    }
-
-    /**
-     * Get the Brand Id.
-     *
-     * @return int
-     */
-    public function getBrandId(): ?int
-    {
-        return $this->brandId;
     }
 
     /**
@@ -409,13 +392,6 @@ class Page extends AbstractRenderable
         return $this->priceType;
     }
 
-    /**
-     * Set the previous price type.
-     *
-     * @param int $priceType The previous price type
-     *
-     * @return self
-     */
     public function setOldPriceType(int $oldPriceType): self
     {
         $this->oldPriceType = $oldPriceType;
@@ -448,7 +424,7 @@ class Page extends AbstractRenderable
     /**
      * Get canonical url for this entity.
      *
-     * @param \Category $category Category to base the url on
+     * @param Category|null $category Category to base the url on
      *
      * @return string
      */
@@ -465,13 +441,6 @@ class Page extends AbstractRenderable
         return $url . $this->getSlug();
     }
 
-    /**
-     * Is the page in the given category.
-     *
-     * @param int $categoryId Id of category to check in
-     *
-     * @return bool
-     */
     public function isInCategory(Category $category): bool
     {
         Render::addLoadedTable('bind');
@@ -497,7 +466,7 @@ class Page extends AbstractRenderable
     /**
      * Get all categories.
      *
-     * @return array
+     * @return Category[]
      */
     public function getCategories(): array
     {
@@ -536,11 +505,6 @@ class Page extends AbstractRenderable
         ORM::forgetByQuery(Page::class, $this->getAccessoryQuery());
     }
 
-    /**
-     * Get accessory pages.
-     *
-     * @return array
-     */
     public function removeAccessory(Page $accessory): void
     {
         db()->query("DELETE FROM `tilbehor` WHERE side = " . $this->getId() . " AND tilbehor = " . $accessory->getId());
@@ -551,13 +515,16 @@ class Page extends AbstractRenderable
     /**
      * Get accessory pages.
      *
-     * @return array
+     * @return Page[]
      */
     public function getAccessories(): array
     {
         return ORM::getByQuery(Page::class, $this->getAccessoryQuery());
     }
 
+    /**
+     * @return Page[]
+     */
     public function getActiveAccessories(): array
     {
         $accessories = [];
@@ -581,7 +548,7 @@ class Page extends AbstractRenderable
     /**
      * Get tabels.
      *
-     * @return array
+     * @return Table[]
      */
     public function getTables(): array
     {
@@ -596,7 +563,7 @@ class Page extends AbstractRenderable
      */
     public function getBrand(): ?Brand
     {
-        return $this->brandId ? ORM::getOne(Brand::class, $this->brandId) : null;
+        return $this->brandId !== null ? ORM::getOne(Brand::class, $this->brandId) : null;
     }
 
     /**
@@ -604,7 +571,7 @@ class Page extends AbstractRenderable
      */
     public function getRequirement(): ?Requirement
     {
-        return $this->requirementId ? ORM::getOne(Requirement::class, $this->requirementId) : null;
+        return $this->requirementId !== null ? ORM::getOne(Requirement::class, $this->requirementId) : null;
     }
 
     /**
@@ -633,7 +600,7 @@ class Page extends AbstractRenderable
     /**
      * Get data in array format for the database.
      *
-     * @return array
+     * @return string[]
      */
     public function getDbArray(): array
     {
@@ -646,9 +613,9 @@ class Page extends AbstractRenderable
             'text'        => db()->eandq($this->html),
             'varenr'      => db()->eandq($this->sku),
             'beskrivelse' => db()->eandq($this->excerpt),
-            'billed'      => $this->getIcon() ? db()->eandq($this->getIcon()->getPath()) : 'NULL',
-            'krav'        => $this->getRequirement() ? $this->requirementId : 'NULL',
-            'maerke'      => $this->getBrand() ? $this->brandId : 'NULL',
+            'billed'      => $this->iconPath !== null ? db()->eandq($this->iconPath) : 'NULL',
+            'krav'        => $this->requirementId !== null ? $this->requirementId : 'NULL',
+            'maerke'      => $this->brandId !== null ? $this->brandId : 'NULL',
             'pris'        => $this->price,
             'for'         => $this->oldPrice,
             'fra'         => $this->priceType,
