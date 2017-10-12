@@ -467,7 +467,7 @@ class Invoice extends AbstractEntity
         $this->setId($data['id'] ?? null)
             ->setItemData($data['item_data'])
             ->setHasShippingAddress($data['has_shipping_address'] ?? false)
-            ->setTimeStamp($data['timestamp'] ?? 0)
+            ->setTimeStamp($data['timestamp'] ?? time())
             ->setTimeStampPay($data['timestamp_pay'] ?? 0)
             ->setAmount($data['amount'] ?? '0.00')
             ->setName($data['name'])
@@ -755,7 +755,7 @@ class Invoice extends AbstractEntity
         $this->setTimeStamp(time());
         return [
             'paydate'        => $this->timeStampPay ? ("UNIX_TIMESTAMP(" . $this->timeStampPay . ")") : db()->eandq('0000-00-00'),
-            'date'           => "NOW()",
+            'date'           => $this->timeStamp ? ("UNIX_TIMESTAMP(" . $this->timeStamp . ")") : db()->eandq('0000-00-00'),
             'quantities'     => db()->eandq($itemQuantities),
             'products'       => db()->eandq($itemTitle),
             'values'         => db()->eandq($itemValue),
