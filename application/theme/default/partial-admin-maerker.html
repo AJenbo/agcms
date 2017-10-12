@@ -10,8 +10,8 @@
     <tr style="height:21px">
         <td>Logo: </td>
         <td style="text-align:center">
-                <input type="hidden" value="{% if brand %}{{brand.icon}}{% else %}/images/web/intet-foto.jpg{% endif %}" id="ico" name="ico" />
-                <img id="icothb" src="{% if brand %}{{brand.icon}}{% else %}/images/web/intet-foto.jpg{% endif %}" alt="" onclick="explorer('thb', 'ico')" />
+            <input type="hidden" value="{% if brand.icon %}{{brand.icon.path}}{% else %}/images/web/intet-foto.jpg{% endif %}" id="ico" name="ico" />
+            <img id="icothb" src="{% if brand.icon %}{{brand.icon.path}}{% else %}/images/web/intet-foto.jpg{% endif %}" alt="" onclick="explorer('thb', 'ico')" />
             <br />
             <img onclick="explorer('thb', 'ico')" src="images/folder_image.png" width="16" height="16" alt="Pictures" title="Find image" />
             <img onclick="setThb('ico', '', '/images/web/intet-foto.jpg')" src="images/cross.png" alt="X" title="Remove picture" width="16" height="16" />
