@@ -20,16 +20,18 @@
             <div>
                 <a href="/"><img id="logo" src="/images/web/logo.gif" alt="Arms Gallery" width="428" title="" /></a>
                 <form action="/" method="get">
-                    <input name="q" /><input name="sogikke" type="hidden" />
+                    <input name="q" placeholder="Søg" id="searchbox" /><input name="sogikke" type="hidden" />
                     <input name="minpris" type="hidden" />
                     <input name="maxpris" type="hidden" />
                     <input name="maerke" type="hidden" value="0" />
+                    <span class="notmobile">
                     <a href="" onclick="this.parentNode.submit(); return false">
                         <img src="/images/web/søg.gif" alt="Søg" width="15" height="15" title="Søg" />
                     </a><br />
                     <a href="/?sog=1&amp;q=&amp;sogikke=&amp;minpris=&amp;maxpris=&amp;maerke=" class="note">
                         Avanceret søgning.
                     </a>
+                    </span>
                 </form>
             </div>
         </div>

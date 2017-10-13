@@ -396,8 +396,20 @@ marquee {
 }
 
 @media only screen and (max-width: 779px) {
+    #logo {
+        width: 100%;
+    }
+    .notmobile {
+        display: none;
+    }
+    #searchbox {
+        width: calc(100% - 6px);
+    }
+    input {
+        font-size: 15px;
+    }
     img {
-     max-width:100%;
+        max-width:100%;
     }
 
     #headder form, #container4 {
