@@ -30,12 +30,9 @@ class ORM
     public static function getOne(string $class, int $id): ?AbstractEntity
     {
         if (!isset(self::$byId[$class]) || !array_key_exists($id, self::$byId[$class])) {
-            self::$byId[$class][$id] = null;
             $data = db()->fetchOne('SELECT * FROM `' . $class::TABLE_NAME . '` WHERE id = ' . $id);
-            if ($data) {
-                self::$byId[$class][$id] = new $class($class::mapFromDB($data));
-            }
             Render::addLoadedTable($class::TABLE_NAME);
+            self::$byId[$class][$id] = $data ? new $class($class::mapFromDB($data)) : null;
         }
 
         return self::$byId[$class][$id];
@@ -54,13 +51,13 @@ class ORM
         $query = trim(preg_replace('/\s+/u', ' ', $query));
         if (!isset(self::$oneBySql[$class]) || !array_key_exists($query, self::$oneBySql[$class])) {
             self::$oneBySql[$class][$query] = null;
+
             $data = db()->fetchOne($query);
-            if ($data) {
-                $entity = new $class($class::mapFromDB($data));
-                self::$oneBySql[$class][$query] = $entity;
-                self::$byId[$class][$entity->getId()] = $entity;
-            }
             Render::addLoadedTable($class::TABLE_NAME);
+            if (!isset(self::$byId[$class][$data['id']])) {
+                self::$byId[$class][$data['id']] = new $class($class::mapFromDB($data));
+            }
+            self::$oneBySql[$class][$query] = self::$byId[$class][$data['id']];
         }
 
         return self::$oneBySql[$class][$query];
@@ -80,9 +77,10 @@ class ORM
         if (!isset(self::$bySql[$class][$query])) {
             self::$bySql[$class][$query] = [];
             foreach (db()->fetchArray($query) as $data) {
-                $entity = new $class($class::mapFromDB($data));
-                self::$bySql[$class][$query][] = $entity;
-                self::$byId[$class][$entity->getId()] = $entity;
+                if (!isset(self::$byId[$class][$data['id']])) {
+                    self::$byId[$class][$data['id']] = new $class($class::mapFromDB($data));
+                }
+                self::$bySql[$class][$query][] = self::$byId[$class][$data['id']];
             }
             Render::addLoadedTable($class::TABLE_NAME);
         }
