@@ -123,7 +123,7 @@ class Category extends AbstractRenderable
      */
     public function setParentId(int $parentId = null): self
     {
-        if ($this->id && $this->id <= 0) {
+        if ($parentId !== null && $this->id !== null && $this->id <= 0) {
             throw new Exception(_('Your not allowed to move root categories'));
         }
 
