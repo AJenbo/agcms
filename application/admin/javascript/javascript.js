@@ -259,7 +259,7 @@ function updatemaerke_r(data)
 function bind(id)
 {
     $("loading").style.visibility = "";
-    x_bind(id, getRadio("kat"), binding_r);
+    x_bind(id, parseInt(getRadio("kat")), binding_r);
 
     return false;
 }
@@ -329,10 +329,8 @@ function binding_r(data)
         return;
     }
 
-    data.deleted = objToArray(data.deleted);
     for(i = 0; i < data.deleted.length; i++) {
-        removeTagById("bind" + data.deleted[i].id);
-        // TODO check that all function that returns to this, sends in  [i].id format
+        removeTagById("bind" + data.deleted[i]);
     }
 
     if(data.added) {
@@ -388,6 +386,9 @@ function objToArray(obj)
 function removeTagById(id)
 {
     var obj = $(id);
+    if(!obj) {
+        return;
+    }
     obj.parentNode.removeChild(obj);
 }
 

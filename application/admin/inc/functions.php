@@ -1951,8 +1951,8 @@ function bind(int $pageId, int $categoryId): array
             continue;
         }
 
-        $page->removeFromCategory($category);
-        $result['deleted'][] = $category->getId();
+        $page->removeFromCategory($node);
+        $result['deleted'][] = $node->getId();
     }
 
     return $result;
