@@ -408,7 +408,7 @@ marquee {
     input {
         font-size: 15px;
     }
-    img {
+    img, object, embed {
         max-width:100%;
     }
 
