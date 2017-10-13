@@ -95,7 +95,7 @@ switch ($template) {
             'thumbWidth' => Config::get('thumb_width'),
             'siteTree' => getSiteTreeData('categories', $selectedId),
             'requirementOptions' => getRequirementOptions(),
-            'brandOptions' => getBrandOptions(),
+            'brands' => ORM::getByQuery(Brand::class, 'SELECT * FROM `maerke` ORDER BY navn'),
             'page' => $page,
             'bindings' => $bindings,
             'accessories' => $accessories,

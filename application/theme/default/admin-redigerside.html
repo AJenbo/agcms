@@ -86,8 +86,9 @@
             <br />
             <img width="16" height="16" alt="" src="images/page_white_medal.png" />
             <select id="maerke" name="maerke" size="10">
-                {% for id, name in brandOptions %}
-                <option{% if brandId == id %} selected="selected"{% endif %} value="{{id}}">{{name}}</option>
+                <option{% if not brandId %} selected="selected"{% endif %} value="0">None</option>
+                {% for brand in brands %}
+                <option{% if brand.id == brandId %} selected="selected"{% endif %} value="{{id}}">{{bramd.name}}</option>
                 {% endfor %}
             </select>
         </div>

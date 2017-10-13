@@ -1755,20 +1755,6 @@ function getRequirementOptions(): array
 }
 
 /**
- * @return string[]
- */
-function getBrandOptions(): array
-{
-    $options = [0 => 'All others'];
-    $brands = db()->fetchArray('SELECT id, navn FROM `maerke` ORDER BY navn');
-    foreach ($brands as $brand) {
-        $options[$brand['id']] = $brand['navn'];
-    }
-
-    return $options;
-}
-
-/**
  * @return string[]|true
  */
 function save_ny_kat(string $navn, int $kat, string $icon, int $vis, string $email)

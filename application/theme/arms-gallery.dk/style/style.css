@@ -34,7 +34,7 @@ a {
 }
 
 .bar a, .bar li {
-    display:inline;
+    display:inline-block;
 }
 
 .bar * {
@@ -403,7 +403,20 @@ marquee {
         display: none;
     }
     #searchbox {
-        width: calc(100% - 6px);
+        width: calc(100% - 40px);
+        margin: 10px 0;
+    }
+    #crumb {
+        background: #ddd;
+    }
+    #submenu {
+        background-image: none;
+    }
+    .bar li img {
+        display: none;
+    }
+    .bar a {
+        padding: 4px;
     }
     input {
         font-size: 15px;
@@ -414,6 +427,10 @@ marquee {
 
     #headder form, #container4 {
         float:none;
+    }
+
+    #headder form {
+        display: inline;
     }
 
     .bar ul {
@@ -471,24 +488,27 @@ marquee {
         padding:2px;
     }
 
-    #menu a.main, #menu a.main_active {
-        background-image: none;
-        margin: 2px auto;
+    #menu {
+        position: fixed;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: rgba(0,0,0,0.8);
+        transition: left 0.3s ease-in;
     }
-
+    #burger {
+        vertical-align: bottom;
+        padding: 7px 0px;
+    }
     #menu a, #menu a.main, #menu a.main_active {
-        width:auto;
+        background-image: none;
+        width: 50%;
+        margin: 2px 0;
         font-size: 16px;
     }
-
-    #menu {
-        width:auto;
-        overflow:visible;
-    }
-
     #menu a {
         background-color:#CCCCCC;
-        margin: 2px auto;
     }
 
     #footer {

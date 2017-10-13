@@ -46,8 +46,6 @@ Render::output(
         'sortOptions'  => $sortOptions,
         'sort'         => $sort,
         'reverseOrder' => $reverseOrder,
-        'requirements' => getRequirementOptions(),
-        'brands'       => getBrandOptions(),
         'categories'   => $categories,
         'pathPrefix'   => '',
         'categoryId'   => $categoryId,

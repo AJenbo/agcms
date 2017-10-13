@@ -14,7 +14,7 @@
     <td class="tal">{% if page.oldPrice %}{{page.oldPrice|number_format(2, ',', '.')}}{% endif %}</td>
     <td class="tal">{% if page.price %}{{page.price|number_format(2, ',', '.')}}{% endif %}</td>
     <td class="tal">{{page.timeStamp|date('Y-m-d H:i:s')}}</td>
-    <td>{% if page.brandId %}{{attribute(brands, page.brandId)}}{% endif %}</td>
+    <td>{{page.brand.title}}</td>
     <td>{{page.requirement.title}}</td>
 </tr>
 {% endfor %}

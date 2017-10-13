@@ -3,6 +3,41 @@
 {% block content %}
 <div id="innercontainer">
     <h1>Search</h1>
-    {{content|raw}}
+    <form action="/" method="get">
+        <table>
+            <tr>
+                <td>Contains</td>
+                <td><input name="q" size="31" /></td>
+                <td><input type="submit" value="Search" /></td>
+            </tr>
+            <tr>
+                <td>Part No.</td>
+                <td><input name="varenr" size="31" value="" maxlength="63" /></td>
+            </tr>
+            <tr>
+                <td>Without the words</td>
+                <td><input name="sogikke" size="31" value="" /></td>
+            </tr>
+            <tr>
+                <td>Min price</td>
+                <td><input name="minpris" size="5" maxlength="11" value="" />,-</td>
+            </tr>
+            <tr>
+                <td>Max price</td>
+                <td><input name="maxpris" size="5" maxlength="11" value="" />,-</td>
+            </tr>
+            <tr>
+                <td>Brand:</td>
+                <td>
+                    <select name="maerke">
+                        <option value="0">All</option>
+                        {% for brand in search.brands %}
+                        <option value="{{brand.id}}">{{brand.title}}</option>
+                        {% endfor %}
+                    </select>
+                </td>
+            </tr>
+        </table>
+    </form>
 </div>
 {% endblock %}

@@ -29,6 +29,7 @@ class Render
     private static $email = '';
     private static $hasProductList = false;
     private static $keywords = [];
+    private static $searchValues = [];
 
     /** @var Response */
     private static $response;
@@ -275,6 +276,8 @@ class Render
     {
         $request = request();
 
+        self::$searchValues = ['q' => $request->get('q')];
+
         array_unshift(self::$crumbs, ORM::getOne(Category::class, 0));
 
         // Brand only search
@@ -332,16 +335,6 @@ class Render
             ];
             self::$pageType = 'search';
             self::$title = 'Søg på ' . Config::get('site_name');
-            self::$bodyHtml = '<form action="/" method="get"><table><tr><td>' . _('Contains')
-                . '</td><td><input name="q" size="31" /></td><td><input type="submit" value="' . _('Search')
-                . '" /></td></tr><tr><td>' . _('Part No.')
-                . '</td><td><input name="varenr" size="31" value="" maxlength="63" /></td></tr><tr><td>'
-                . _('Without the words') . '</td><td><input name="sogikke" size="31" value="" /></td></tr><tr><td>'
-                . _('Min price')
-                . '</td><td><input name="minpris" size="5" maxlength="11" value="" />,-</td></tr><tr><td>'
-                . _('Max price')
-                . '&nbsp;</td><td><input name="maxpris" size="5" maxlength="11" value="" />,-</td></tr><tr><td>'
-                . _('Brand:') . '</td><td><select name="maerke"><option value="0">' . _('All') . '</option>';
 
             $categoryIds = [0];
             $categories = ORM::getByQuery(Category::class, 'SELECT * FROM kat');
@@ -362,11 +355,16 @@ class Render
                 ) ORDER BY `navn`
                 '
             );
-            foreach ($brands as $brand) {
-                self::$bodyHtml .= '<option value="' . $brand->getId() . '">'
-                    . xhtmlEsc($brand->getTitle()) . '</option>';
-            }
-            self::$bodyHtml .= '</select></td></tr></table></form>';
+            $request = request();
+            self::$searchValues = [
+                'q'       => $request->get('q'),
+                'varenr'  => $request->get('varenr'),
+                'minpris' => $request->get('minpris'),
+                'maxpris' => $request->get('maxpris'),
+                'sogikke' => $request->get('sogikke'),
+                'maerke'  => $request->get('maerke'),
+                'brands'  => $brands,
+            ];
         } elseif ($request->get('q')
             || $request->get('varenr')
             || $request->get('minpris')
@@ -832,6 +830,7 @@ class Render
                 'hasItemsInCart'  => !empty($_SESSION['faktura']['quantities']),
                 'infoPage'        => ORM::getOne(CustomPage::class, 2),
                 'rootPages'       => 'index' === self::$pageType ? ORM::getOne(Category::class, 0)->getPages() : [],
+                'search'          => self::$searchValues,
             ]
         );
     }
@@ -841,14 +840,9 @@ class Render
      */
     public static function output(string $template = 'index', array $data = []): void
     {
-        $request = request();
         $response = self::getResponse();
-
-        $content = self::render($template, $data);
-        $response->setContent($content);
-
-        $response->isNotModified($request); // Set up 304 response if relevant
-
+        $response->setContent(self::render($template, $data));
+        $response->isNotModified(request()); // Set up 304 response if relevant
         $response->send();
     }
 

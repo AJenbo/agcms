@@ -19,8 +19,9 @@
         <div id="headder">
             <div>
                 <a href="/"><img id="logo" src="/images/web/logo.gif" alt="Arms Gallery" width="428" title="" /></a>
+                <img src="/theme/default/images/menu.svg" onclick="$('menu').style.left='0'" id="burger" />
                 <form action="/" method="get">
-                    <input name="q" placeholder="Søg" id="searchbox" /><input name="sogikke" type="hidden" />
+                    <input name="q" value="{{search.q}}" placeholder="Søg" id="searchbox" /><input name="sogikke" type="hidden" />
                     <input name="minpris" type="hidden" />
                     <input name="maxpris" type="hidden" />
                     <input name="maerke" type="hidden" value="0" />
@@ -53,8 +54,8 @@
             </ul>
         </div>
         {% endif %}
+        {% if rootPages %}
         <div class="bar" id="submenu">
-            {% if rootPages %}
             <ul>
                 {% for page in rootPages %}
                 <li>
@@ -65,8 +66,8 @@
                 </li>
                 {% endfor %}
             </ul>
-            {% endif %}
         </div>
+        {% endif %}
         <div id="container">
             <div id="container2">
                 <div id="container3">
@@ -78,7 +79,7 @@
                             {{infoPage.html|raw}}
                         </marquee>
                         <div id="footer">
-                            Nybrogade 26 - 30, 1203 København K, 3311 8338, E-mail:
+                            Nybrogade 26 - 30, 1203 København K, <a href="tel:+4533118338">3311 8338</a>, E-mail:
                             <a href="mailto:Arms Gallery &lt;mail@arms-gallery.dk&gt;"><strong>mail@arms-gallery.dk</strong></a>
                             SE13081387.<br />
                             <span>
@@ -87,7 +88,7 @@
                             </span>
                         </div>
                     </div>
-                    <div id="menu">
+                    <div id="menu" onclick="this.style.left='-100%'">
                     {% include 'menu.html' with {'menu': searchMenu} %}
                     {% include 'menu.html' %}
                     </div>
