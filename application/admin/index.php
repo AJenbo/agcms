@@ -157,6 +157,7 @@ switch ($template) {
         $data['recipientCount'] = countEmailTo($data['newsletter']['interests'] ?? []);
         $data['interests'] = Config::get('interests', []);
         $data['textWidth'] = Config::get('text_width');
+        $data['emails'] = array_keys(Config::get('emails'));
         break;
     case 'admin-addressbook':
         $order = $request->get('order');
