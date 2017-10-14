@@ -395,6 +395,9 @@ marquee {
     text-align:right;
 }
 
+#burger {
+    display: none;
+}
 @media only screen and (max-width: 779px) {
     #logo {
         width: 100%;
@@ -402,8 +405,13 @@ marquee {
     .notmobile {
         display: none;
     }
+    #burger {
+        display: inline-block;
+        vertical-align: bottom;
+        padding: 7px 0px;
+    }
     #searchbox {
-        width: calc(100% - 40px);
+        width: calc(100% - 42px);
         margin: 10px 0;
     }
     #crumb {
@@ -496,10 +504,6 @@ marquee {
         height: 100%;
         background: rgba(0,0,0,0.8);
         transition: left 0.3s ease-in;
-    }
-    #burger {
-        vertical-align: bottom;
-        padding: 7px 0px;
     }
     #menu a, #menu a.main, #menu a.main_active {
         background-image: none;
