@@ -320,6 +320,7 @@ function sendEmail(
           AND `kartotek` = \'1\' ' . $andwhere . '
         GROUP BY `email`'
     );
+    $totalEmails = count($emails);
     $emailsGroup = [];
     foreach ($emails as $x => $email) {
         $emailsGroup[(int) floor($x / 99) + 1][] = $email;
@@ -331,7 +332,7 @@ function sendEmail(
         'body'     => str_replace(' href="/', ' href="' . Config::get('base_url') . '/', $html),
     ];
 
-    $error = '';
+    $failedCount = 0;
     foreach ($emailsGroup as $of => $emails) {
         $success = sendEmails(
             $subject,
@@ -345,13 +346,11 @@ function sendEmail(
         );
 
         if (!$success) {
-            //TODO upload if send fails
-            $error .= 'Email ' . $of . '/' . count($emails) . ' failed to be sent.' . "\n";
+            $failedCount += count($emails);
         }
     }
-
-    if ($error) {
-        return ['error' => trim($error)];
+    if ($failedCount) {
+        return ['error' => 'Email ' . $failedCount . '/' . $totalEmails . ' failed to be sent.'];
     }
 
     db()->query('UPDATE `newsmails` SET `sendt` = 1 WHERE `id` = ' . (int) $id);

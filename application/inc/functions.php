@@ -8,6 +8,7 @@ use AGCMS\ORM;
 use AGCMS\Render;
 use AJenbo\Imap;
 use PHPMailer\PHPMailer\PHPMailer;
+use PHPMailer\PHPMailer\Exception as PHPMailerException;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -492,6 +493,7 @@ function sendEmails(
     }
 
     $mailer = new PHPMailer(true);
+
     $mailer->SetLanguage('dk');
     $mailer->IsSMTP();
     $mailer->SMTPAuth = false;
@@ -503,9 +505,8 @@ function sendEmails(
     $mailer->Host = $emailConfig['smtpHost'];
     $mailer->Port = $emailConfig['smtpPort'];
     $mailer->CharSet = 'utf-8';
-    $mailer->From = $emailConfig['address'];
-    $mailer->FromName = Config::get('site_name');
 
+    $mail->setFrom($emailConfig['address'], Config::get('site_name'));
     if ($from !== $emailConfig['address']) {
         $mailer->AddReplyTo($from, $fromName);
     }
@@ -518,7 +519,11 @@ function sendEmails(
     $mailer->MsgHTML($htmlBody, _ROOT_);
     $mailer->AddAddress($recipient, $recipientName);
 
-    $success = $mailer->Send();
+    try {
+        $success = $mailer->Send();
+    } catch (PHPMailerException $e) {
+        $success = false;
+    }
     if ($success) {
         //Upload email to the sent folder via imap
         if ($emailConfig['imapHost']) {
