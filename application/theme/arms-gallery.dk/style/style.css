@@ -414,14 +414,11 @@ marquee {
         width: calc(100% - 42px);
         margin: 10px 0;
     }
-    #crumb {
+    #crumb, #cart {
         background: #ddd;
     }
     #submenu {
         background-image: none;
-    }
-    .bar li img {
-        display: none;
     }
     .bar a {
         padding: 4px;
