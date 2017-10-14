@@ -54,8 +54,8 @@
             </ul>
         </div>
         {% endif %}
-        {% if rootPages %}
         <div class="bar" id="submenu">
+            {% if rootPages %}
             <ul>
                 {% for page in rootPages %}
                 <li>
@@ -66,8 +66,8 @@
                 </li>
                 {% endfor %}
             </ul>
+            {% endif %}
         </div>
-        {% endif %}
         <div id="container">
             <div id="container2">
                 <div id="container3">
