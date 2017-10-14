@@ -54,10 +54,12 @@ class ORM
 
             $data = db()->fetchOne($query);
             Render::addLoadedTable($class::TABLE_NAME);
-            if (!isset(self::$byId[$class][$data['id']])) {
-                self::$byId[$class][$data['id']] = new $class($class::mapFromDB($data));
+            if ($data) {
+                if (!isset(self::$byId[$class][$data['id']])) {
+                    self::$byId[$class][$data['id']] = new $class($class::mapFromDB($data));
+                }
+                self::$oneBySql[$class][$query] = self::$byId[$class][$data['id']];
             }
-            self::$oneBySql[$class][$query] = self::$byId[$class][$data['id']];
         }
 
         return self::$oneBySql[$class][$query];

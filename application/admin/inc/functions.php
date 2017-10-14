@@ -1910,17 +1910,19 @@ function sletbind(int $pageId, int $categoryId): array
     }
 
     $result = ['pageId' => $page->getId(), 'deleted' => [], 'added' => null];
-    if (!$page->isInCategory($category)) {
+    if (($category->getId() === -1 && count($page->getCategories()) === 1)
+        || !$page->isInCategory($category)
+    ) {
         return $result;
+    }
+
+    if (count($page->getCategories()) === 1) {
+        $page->addToCategory(ORM::getOne(Category::class, -1));
+        $result['added'] = ['categoryId' => -1, 'path' => '/' . _('Inactive') . '/'];
     }
 
     $page->removeFromCategory($category);
     $result['deleted'][] = $category->getId();
-
-    if (!$page->getPrimaryCategory()) {
-        $page->addToCategory(ORM::getOne(Category::class, -1));
-        $result['added'] = ['categoryId' => -1, 'path' => '/' . _('Inactive') . '/'];
-    }
 
     return $result;
 }
