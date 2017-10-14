@@ -276,7 +276,7 @@ class Render
     {
         $request = request();
 
-        self::$searchValues = ['q' => $request->get('q')];
+        self::$searchValues = $request->get('q') ? ['q' => $request->get('q')] : [];
 
         array_unshift(self::$crumbs, ORM::getOne(Category::class, 0));
 

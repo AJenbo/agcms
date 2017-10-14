@@ -45,6 +45,6 @@
 </div>
 {% endblock %}
 {% else %}
-<p align="center" class="web">The search did not return any results</p>
+{% if search %}<p align="center" class="web">The search did not return any results</p>{% endif %}
 {% endif %}
 {% endblock %}
