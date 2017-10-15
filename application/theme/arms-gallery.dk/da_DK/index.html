@@ -67,7 +67,7 @@
             </ul>
             {% endif %}
         </div>
-        <div id="container">
+        <div id="container"{% if hasItemsInCart or rootPages %} style="top: {{77 + 16 * (hasItemsInCart and rootPages ? 2 : 1)}}px"{% endif %}>
             <div id="container2">
                 <div id="container3">
                     <div id="container4">
