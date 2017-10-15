@@ -242,18 +242,8 @@ class Category extends AbstractRenderable
         }
 
         if (null === $this->visable) {
-            if ($this->hasPages()) {
-                $this->visable = true;
-
-                return $this->visable;
-            }
-
-            foreach ($this->getChildren() as $child) {
-                if ($child->isVisable()) {
-                    $this->visable = true;
-
-                    return $this->visable;
-                }
+            if ($this->hasPages() || $this->hasVisibleChildren()) {
+                return true;
             }
 
             $this->visable = false;
@@ -350,20 +340,14 @@ class Category extends AbstractRenderable
      */
     public function hasChildren(bool $onlyVisable = false): bool
     {
-        $children = $this->getChildren();
-        if (!$onlyVisable) {
-            return (bool) $children;
-        }
-
-        foreach ($children as $child) {
-            if ($child->isVisable()) {
+        $children = $this->getChildren($onlyVisable);
+        if ($children) {
+            if ($onlyVisable) {
                 $this->visable = true;
-
-                return true;
             }
-        }
 
-        $this->visable = false;
+            return true;
+        }
 
         return false;
     }
@@ -420,7 +404,12 @@ class Category extends AbstractRenderable
     {
         Render::addLoadedTable('bind');
 
-        return (bool) db()->fetchOne('SELECT kat FROM `bind` WHERE `kat` = ' . $this->getId());
+        $hasPages = (bool) db()->fetchOne('SELECT kat FROM `bind` WHERE `kat` = ' . $this->getId());
+        if ($hasPages) {
+            $this->visable = true;
+        }
+
+        return $hasPages;
     }
 
     public function hasContent(): bool
