@@ -738,7 +738,7 @@ function deleteuser(int $id): bool
     return true;
 }
 
-function fileExists(string $dir, string $filename, string $type = ''): bool
+function fileExists(string $dir, string $filename, string $type = ''): array
 {
     $pathinfo = pathinfo($filename);
     $filePath = _ROOT_ . $dir . '/' . genfilename($pathinfo['filename']);
@@ -751,7 +751,7 @@ function fileExists(string $dir, string $filename, string $type = ''): bool
         $filePath .= '.' . $pathinfo['extension'];
     }
 
-    return (bool) is_file($filePath);
+    return ['exists' => (bool) is_file($filePath), 'name' => basename($filePath)];
 }
 
 function newfaktura(): int
