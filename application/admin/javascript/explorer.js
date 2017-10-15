@@ -248,7 +248,7 @@ if(window.location.href.match(/return=rtef/g)) {
         }
     });
 }
-imagetileContextMenu.concat([
+imagetileContextMenu = imagetileContextMenu.concat([
     {
       "name" : 'Rediger',
       "className" : 'picture_edit',
