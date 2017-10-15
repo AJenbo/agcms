@@ -139,6 +139,7 @@ if (!empty($_SESSION['faktura']['quantities'])) {
         foreach ($_SESSION['faktura']['quantities'] as $i => $quantity) {
             $_SESSION['faktura']['amount'] += $_SESSION['faktura']['values'][$i] * $quantity;
         }
+        session_write_close();
 
         $data = [
             'invoice' => invoiceFromSession(),
@@ -183,7 +184,7 @@ if (!empty($_SESSION['faktura']['quantities'])) {
 
             $_SESSION['faktura'] = $updates + $_SESSION['faktura'];
         }
-
+        session_write_close();
         $invoice = invoiceFromSession();
         $invalid = $invoice->getInvalid();
 

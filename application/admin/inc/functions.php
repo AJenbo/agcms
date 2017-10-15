@@ -43,6 +43,7 @@ function checkUserLoggedIn(): void
     if ($user && $user->getAccessLevel() && $user->validatePassword(request()->get('password', ''))) {
         $_SESSION['curentUser'] = $user;
     }
+    session_write_close();
 
     redirect(request()->getRequestUri());
 }

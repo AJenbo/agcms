@@ -805,6 +805,7 @@ class Render
      */
     public static function outputPage(): void
     {
+        session_write_close();
         self::prepareData();
 
         self::output(
