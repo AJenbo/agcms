@@ -8,10 +8,8 @@ class Requirement extends AbstractRenderable
     const TABLE_NAME = 'krav';
 
     // Backed by DB
-    /**
-     * The body HTML.
-     */
-    private $html;
+    /** @var string The body HTML. */
+    private $html = '';
 
     /**
      * Construct the entity.

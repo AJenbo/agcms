@@ -10,45 +10,48 @@ class Invoice extends AbstractEntity
     const TABLE_NAME = 'fakturas';
 
     // Backed by DB
+    /** @var int */
     private $timeStamp;
+    /** @var int|null */
     private $timeStampPay;
-    private $amount;
-    private $name;
-    private $att;
-    private $address;
-    private $postbox;
-    private $postcode;
-    private $city;
-    private $country;
-    private $email;
-    private $phone1;
-    private $phone2;
-    private $hasShippingAddress;
-    private $shippingPhone;
-    private $shippingName;
-    private $shippingAtt;
-    private $shippingAddress;
-    private $shippingAddress2;
-    private $shippingPostbox;
-    private $shippingPostcode;
-    private $shippingCity;
-    private $shippingCountry;
-    private $note;
-    private $clerk;
-    private $status;
-    private $discount;
-    private $shipping;
-    private $vat;
-    private $preVat;
-    private $transferred;
-    private $cardtype;
-    private $iref;
-    private $eref;
-    private $sent;
-    private $department;
-    private $enote;
+    private $amount = 0;
+    private $name = '';
+    private $att = '';
+    private $address = '';
+    private $postbox = '';
+    private $postcode = '';
+    private $city = '';
+    private $country = '';
+    private $email = '';
+    private $phone1 = '';
+    private $phone2 = '';
+    private $hasShippingAddress = false;
+    private $shippingPhone = '';
+    private $shippingName = '';
+    private $shippingAtt = '';
+    private $shippingAddress = '';
+    private $shippingAddress2 = '';
+    private $shippingPostbox = '';
+    private $shippingPostcode = '';
+    private $shippingCity = '';
+    private $shippingCountry = '';
+    private $note = '';
+    private $clerk = '';
+    private $status = '';
+    private $shipping = 0;
+    private $vat = 0.25;
+    private $preVat = true;
+    private $transferred = false;
+    private $cardtype = '';
+    private $iref = '';
+    private $eref = '';
+    /** @var bool Has the invoice been sent to the customer */
+    private $sent = false;
+    private $department = '';
+    private $enote = '';
     // Dynamic
-    private $items;
+    /** @var array[] */
+    private $items = [];
 
     /**
      * Construct the entity.
@@ -85,7 +88,6 @@ class Invoice extends AbstractEntity
             ->setNote($data['note'])
             ->setClerk($data['clerk'] ?? '')
             ->setStatus($data['status'] ?? 'new')
-            ->setDiscount($data['discount'] ?? '0.00')
             ->setShipping($data['shipping'] ?? '0.00')
             ->setVat($data['vat'] ?? '0.25')
             ->setPreVat($data['pre_vat'] ?? true)
@@ -410,18 +412,6 @@ class Invoice extends AbstractEntity
         return $this->status;
     }
 
-    public function setDiscount(string $discount): self
-    {
-        $this->discount = $discount;
-
-        return $this;
-    }
-
-    public function getDiscount(): string
-    {
-        return $this->discount;
-    }
-
     public function setShipping(string $shipping): self
     {
         $this->shipping = $shipping;
@@ -597,7 +587,6 @@ class Invoice extends AbstractEntity
             'note'                 => $data['note'],
             'clerk'                => $data['clerk'],
             'status'               => $data['status'],
-            'discount'             => $data['discount'],
             'shipping'             => $data['fragt'],
             'vat'                  => $data['momssats'],
             'pre_vat'              => (bool) $data['premoms'],
@@ -822,7 +811,6 @@ class Invoice extends AbstractEntity
             'note'           => db()->eandq($this->note),
             'clerk'          => db()->eandq($this->clerk),
             'status'         => db()->eandq($this->status),
-            'discount'       => db()->eandq($this->discount),
             'fragt'          => db()->eandq($this->shipping),
             'momssats'       => db()->eandq($this->vat),
             'premoms'        => (string) (int) $this->preVat,

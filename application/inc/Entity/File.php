@@ -8,41 +8,29 @@ class File extends AbstractEntity
      * Table name in database.
      */
     const TABLE_NAME = 'files';
+    const ASPECT_16_9 = '16-9';
+    const ASPECT_4_3 = '4-3';
 
     // Backed by DB
-    /**
-     * File path.
-     */
+    /** @var string File path. */
     private $path;
 
-    /**
-     * File mime.
-     */
+    /** @var string File mime. */
     private $mime;
 
-    /**
-     * File byte size.
-     */
+    /** @var int File byte size. */
     private $size;
 
-    /**
-     * Text description of file.
-     */
-    private $description;
+    /** @var string Text description of file. */
+    private $description = '';
 
-    /**
-     * Object width in px.
-     */
-    private $width;
+    /** @var int Object width in px. */
+    private $width = 0;
 
-    /**
-     * Object height in px.
-     */
-    private $height;
+    /** @var int Object height in px. */
+    private $height = 0;
 
-    /**
-     * Video aspect (4-3, 16-9).
-     */
+    /** @var string|null Video aspect. */
     private $aspect;
 
     /**
@@ -208,7 +196,7 @@ class File extends AbstractEntity
     /**
      * Set video aspect.
      *
-     * @param string|null $aspect In the format of 16-9
+     * @param string|null $aspect
      *
      * @return self
      */

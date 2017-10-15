@@ -872,11 +872,11 @@ function filehtml(File $file): string
         case 'video/x-flv':
             $html .= '<div id="tilebox' . $file->getId() . '" class="flvtile"><div class="image"';
             if ('rtef' === $returnType) {
-                if ('4-3' == $file->getAspect()) {
+                if (File::ASPECT_4_3 == $file->getAspect()) {
                     $html .= ' onclick="addflv(' . $file->getId() . ', \'' . $file->getAspect() . '\', '
                         . max($file->getWidth(), $file->getHeight() / 3 * 4) . ', '
                         . ceil($file->getWidth() / 4 * 3 * 1.1975) . ')"';
-                } elseif ('16-9' == $file->getAspect()) {
+                } elseif (File::ASPECT_16_9 === $file->getAspect()) {
                     $html .= ' onclick="addflv(' . $file->getId() . ', \'' . $file->getAspect() . '\', '
                         . max($file->getWidth(), $file->getHeight() / 9 * 16) . ', '
                         . ceil($file->getWidth() / 16 * 9 * 1.2) . ')"';

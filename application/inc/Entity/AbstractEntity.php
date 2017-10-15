@@ -5,9 +5,7 @@ use AGCMS\Render;
 
 abstract class AbstractEntity implements InterfaceEntity
 {
-    /**
-     * The entity ID.
-     */
+    /** @var int|null The entity ID. */
     protected $id;
 
     /**

@@ -27,40 +27,26 @@ class Category extends AbstractRenderable
     const LIST = 2;
 
     // Backed by DB
-    /**
-     * Parent id.
-     */
+    /** @var int|null */
     private $parentId;
 
-    /**
-     * Icon file path.
-     */
+    /** @var string|null Icon file path. */
     private $iconPath;
 
-    /**
-     * Render mode for page list.
-     */
-    private $renderMode;
+    /** @var int|null Render mode for page list. */
+    private $renderMode = 1;
 
-    /**
-     * Contact email.
-     */
-    private $email;
+    /** @var string Contact email. */
+    private $email = '';
 
-    /**
-     * Are children to be fetched by weight.
-     */
-    private $weightedChildren;
+    /** @var bool Are children to be fetched by weight. */
+    private $weightedChildren = false;
 
-    /**
-     * Sorting weight.
-     */
-    private $weight;
+    /** @var int Sorting weight. */
+    private $weight = 0;
 
     // Runtime
-    /**
-     * Cache if category is visible or not.
-     */
+    /** @var bool Cache if category is visible or not. */
     private $visable;
 
     /**

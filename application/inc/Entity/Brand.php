@@ -10,14 +10,10 @@ class Brand extends AbstractRenderable
     const TABLE_NAME = 'maerke';
 
     // Backed by DB
-    /**
-     * The external link for this brand.
-     */
-    private $link;
+    /** @var string The external link for this brand. */
+    private $link = '';
 
-    /**
-     * The path for the brand icon.
-     */
+    /** @var string|null The path for the brand icon. */
     private $iconPath;
 
     /**

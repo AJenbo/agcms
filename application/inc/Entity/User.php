@@ -12,10 +12,11 @@ class User extends AbstractEntity
     const MANAGER = 3;
     const CLERK = 4;
 
-    private $fullName;
-    private $nickname;
-    private $passwordHash;
-    private $accessLevel;
+    private $fullName = '';
+    private $nickname = '';
+    private $passwordHash = '';
+    private $accessLevel = 0;
+    /** @var int */
     private $lastLogin;
 
     public function __construct(array $data)

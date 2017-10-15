@@ -11,65 +11,41 @@ class Page extends AbstractRenderable
     const TABLE_NAME = 'sider';
 
     // Backed by DB
-    /**
-     * Stock keeping unit.
-     */
-    private $sku;
+    /** @var string Stock keeping unit. */
+    private $sku = '';
 
-    /**
-     * Latest save time.
-     */
+    /** @var int Latest save time. */
     private $timeStamp;
 
-    /**
-     * Page keywords, coma seporated.
-     */
-    private $keywords;
+    /** @var string Page keywords, coma seporated. */
+    private $keywords = '';
 
-    /**
-     * HTML body.
-     */
-    private $html;
+    /** @var string HTML body. */
+    private $html = '';
 
-    /**
-     * Short text description.
-     */
-    private $excerpt;
+    /** @var string Short text description. */
+    private $excerpt = '';
 
-    /**
-     * Thumbnail path.
-     */
+    /** @var string|null Thumbnail path. */
     private $iconPath;
 
-    /**
-     * Id of requirement page.
-     */
+    /** @var int|null Id of requirement page. */
     private $requirementId;
 
-    /**
-     * Id of brand.
-     */
+    /** @var int|null Id of brand. */
     private $brandId;
 
-    /**
-     * Current price.
-     */
-    private $price;
+    /** @int Current price. */
+    private $price = 0;
 
-    /**
-     * Previous price.
-     */
-    private $oldPrice;
+    /** @var Previous price. */
+    private $oldPrice = 0;
 
-    /**
-     * What type of price is the current (from, specific).
-     */
-    private $priceType;
+    /** @var int What type of price is the current (from, specific). */
+    private $priceType = 0;
 
-    /**
-     * What type of price is the previous (from, specific).
-     */
-    private $oldPriceType;
+    /** @var int What type of price is the previous (from, specific). */
+    private $oldPriceType = 0;
 
     /**
      * Construct the entity.

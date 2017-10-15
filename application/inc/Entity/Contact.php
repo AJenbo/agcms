@@ -8,18 +8,19 @@ class Contact extends AbstractEntity
     const TABLE_NAME = 'email';
 
     // Backed by DB
-    private $name;
-    private $email;
-    private $address;
-    private $country;
-    private $postcode;
-    private $city;
-    private $phone1;
-    private $phone2;
-    private $newsletter;
-    private $interests;
+    private $name = '';
+    private $email = '';
+    private $address = '';
+    private $country = '';
+    private $postcode = '';
+    private $city = '';
+    private $phone1 = '';
+    private $phone2 = '';
+    private $newsletter = false;
+    private $interests = [];
+    /** @var int */
     private $timestamp;
-    private $ip;
+    private $ip = '';
 
     /**
      * Construct the entity.

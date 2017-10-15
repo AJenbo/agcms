@@ -8,20 +8,14 @@ class CustomPage extends AbstractEntity
     const TABLE_NAME = 'special';
 
     // Backed by DB
-    /**
-     * The title.
-     */
-    private $title;
+    /** @var string The title. */
+    private $title = '';
 
-    /**
-     * The time of last save.
-     */
+    /** @var int The time of last save. */
     private $timeStamp;
 
-    /**
-     * HTML body.
-     */
-    private $html;
+    /** @var string HTML body. */
+    private $html = '';
 
     /**
      * Construct the entity.

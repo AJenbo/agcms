@@ -16,31 +16,21 @@ class Table extends AbstractEntity
     const COLUMN_TYPE_PRICE_OLD = 4;
 
     // Backed by DB
-    /**
-     * Parent page id.
-     */
+    /** @var int Parent page id. */
     private $pageId;
 
-    /**
-     * Table caption.
-     */
-    private $title;
+    /** @var string Table caption. */
+    private $title = '';
 
-    /**
-     * The default column to order by, starting from 0.
-     */
-    private $orderBy;
+    /** @var int The default column to order by, starting from 0. */
+    private $orderBy = 0;
 
-    /**
-     * If rows can be linked to pages.
-     */
-    private $hasLinks;
+    /** @var bool If rows can be linked to pages. */
+    private $hasLinks = false;
 
     // Runtime
-    /**
-     * Decoded column data.
-     */
-    private $columns;
+    /** @var array[] Decoded column data. */
+    private $columns = [];
 
     /**
      * Construct the entity.

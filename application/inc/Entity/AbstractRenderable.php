@@ -4,10 +4,8 @@ use AGCMS\Interfaces\Renderable;
 
 abstract class AbstractRenderable extends AbstractEntity implements Renderable
 {
-    /**
-     * The title.
-     */
-    protected $title;
+    /** @var string The title. */
+    protected $title = '';
 
     /**
      * Set the title.
