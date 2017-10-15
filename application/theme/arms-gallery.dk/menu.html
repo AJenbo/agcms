@@ -1,8 +1,12 @@
 {% for menuItem in menu %}
-    <a href="{{menuItem.canonicalLink}}" {% if menuItem.id in openCategoryIds %}class="main_active"{% else %}class="main"{% endif %}{% if menuItem.id == categoryId %} id="activmenu"{% endif %}>
+    <a href="{{menuItem.canonicalLink}}" {% if menuItem in category.branch %}class="main_active"{% else %}class="main"{% endif %}{% if menuItem.id == category.id %} id="activmenu"{% endif %}>
         {{menuItem.title}}
     </a>
-    {% if menuItem.id in openCategoryIds %}
-    {% include 'submenu.html' with {'menuItems': menuItem.visibleChildren} %}
+    {% if menuItem in category.branch %}
+    {% for subItem in menuItem.visibleChildren %}
+    <a href="{{subItem.canonicalLink}}"{% if subItem in category.branch %} class="active" id="activmenu"{% endif %}>
+        {{subItem.title}}
+    </a>
+    {% endfor %}
     {% endif %}
 {% endfor %}

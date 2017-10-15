@@ -1,8 +1,12 @@
-{% for menuItem in menuItems %}
-<a href="{{menuItem.canonicalLink}}"{% if menuItem.id == categoryId %} class="active" id="activmenu"{% endif %}>
-    {{menuItem.title}}
-</a>
-{% if menuItem.hasVisibleChildren %}
-{% include 'submenu.html' with {'menuItems': menuItem.visibleChildren} %}
+{% for note in notes %}
+<li>
+    <a href="{{note.canonicalLink}}">{{note.title}}</a>
+</li>
+{% if note.hasVisibleChildren %}
+<img src="/images/web/bar-space.gif" alt="|" title="" class="notmobile" />
+{% include 'submenu.html' with {'notes': note.visibleChildren} %}
+{% endif %}
+{% if not loop.last %}
+<img src="/images/web/bar-space.gif" alt="|" title="" class="notmobile" />
 {% endif %}
 {% endfor %}

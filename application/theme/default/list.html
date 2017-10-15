@@ -13,14 +13,14 @@
 {% if pageList %}
 <p align="center" class="web">Click on the product for additional information</p>
 {% block products %}
-<div id="kat{{categoryId}}">
+<div id="kat{{category.id}}">
     <table class="tabel">
         <thead>
             <tr>
-                <td><a href="#" onClick="x_get_kat({{categoryId}}, 'navn', inject_html);">Title</a></td>
-                <td><a href="#" onClick="x_get_kat({{categoryId}}, 'for', inject_html);">Previously</a></td>
-                <td><a href="#" onClick="x_get_kat({{categoryId}}, 'pris', inject_html);">Price</a></td>
-                <td><a href="#" onClick="x_get_kat({{categoryId}}, 'varenr', inject_html);">#</a></td>
+                <td><a href="#" onClick="x_get_kat({{category.id}}, 'navn', inject_html);">Title</a></td>
+                <td><a href="#" onClick="x_get_kat({{category.id}}, 'for', inject_html);">Previously</a></td>
+                <td><a href="#" onClick="x_get_kat({{category.id}}, 'pris', inject_html);">Price</a></td>
+                <td><a href="#" onClick="x_get_kat({{category.id}}, 'varenr', inject_html);">#</a></td>
             </tr>
         </thead>
         <tbody>

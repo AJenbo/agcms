@@ -44,7 +44,9 @@
             </ul>
         </div>
         {% endif %}
+        {% set extraRows = 0 %}
         {% if hasItemsInCart %}
+        {% set extraRows = 1 %}
         <div class="bar" id="cart">
             <ul>
                 <li>
@@ -55,19 +57,18 @@
         {% endif %}
         <div class="bar" id="submenu">
             {% if rootPages %}
+            {% set extraRows = extraRows + 1 %}
             <ul>
-                {% for page in rootPages %}
-                <li>
-                    <a href="{{page.canonicalLink}}">{{page.title}}</a>
-                    {% if not loop.last %}
-                    <img src="/images/web/bar-space.gif" alt="|" title="" class="notmobile" />
-                    {% endif %}
-                </li>
-                {% endfor %}
+                {% include 'submenu.html' with {'notes': rootPages} %}
+            </ul>
+            {% elseif category.branch[2].hasVisibleChildren %}
+            {% set extraRows = extraRows + 1 %}
+            <ul>
+                {% include 'submenu.html' with {'notes': category.branch[2].visibleChildren} %}
             </ul>
             {% endif %}
         </div>
-        <div id="container"{% if hasItemsInCart or rootPages %} style="top: {{77 + 16 * (hasItemsInCart and rootPages ? 2 : 1)}}px"{% endif %}>
+        <div id="container"{% if extraRows %} style="top: {{77 + 16 * extraRows}}px"{% endif %}>
             <div id="container2">
                 <div id="container3">
                     <div id="container4">

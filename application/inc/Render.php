@@ -36,7 +36,6 @@ class Render
 
     private static $loadedTables = [];
     private static $menu = [];
-    private static $openCategoryIds = [];
     private static $pageList = [];
     private static $price = [];
     private static $searchMenu = [];
@@ -303,7 +302,6 @@ class Render
         if (self::$activeCategory) {
             self::$crumbs = self::$activeCategory->getBranch();
             foreach (self::$crumbs as $category) {
-                self::$openCategoryIds[] = $category->getId();
                 self::$keywords[] = trim($category->getTitle());
             }
         }
@@ -820,13 +818,12 @@ class Render
                 'keywords'        => self::$keywords,
                 'crumbs'          => self::$crumbs,
                 'content'         => self::$bodyHtml,
-                'categoryId'      => self::$activeCategory ? self::$activeCategory->getId() : 0,
+                'category'        => self::$activeCategory,
                 'pageId'          => self::$activePage ? self::$activePage->getId() : 0,
                 'headline'        => self::$headline,
                 'timeStamp'       => self::$timeStamp,
                 'page'            => self::$activePage,
                 'menu'            => self::$menu,
-                'openCategoryIds' => self::$openCategoryIds,
                 'searchMenu'      => self::$searchMenu,
                 'hasItemsInCart'  => !empty($_SESSION['faktura']['quantities']),
                 'infoPage'        => ORM::getOne(CustomPage::class, 2),
