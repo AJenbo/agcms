@@ -1765,7 +1765,7 @@ function getRequirementOptions(): array
 /**
  * @return string[]|true
  */
-function save_ny_kat(string $navn, int $kat, string $icon, int $vis, string $email)
+function save_ny_kat(string $navn, int $kat, int $vis, string $email, string $icon = null)
 {
     if (!$navn) {
         return ['error' => _('You must enter a name and choose a location for the new category.')];

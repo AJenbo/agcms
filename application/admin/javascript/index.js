@@ -216,14 +216,13 @@ function updateKat(id)
 {
     $('loading').style.visibility = '';
 
-    if(!id) {
-        x_save_ny_kat(
-            $('navn').value, getRadio('kat'), $('icon').value, $('vis').value, $('email').value, save_ny_kat_r);
-        return false;
-    }
-
     var icon = $('icon').value;
     icon = icon ? icon : null;
+
+    if(!id) {
+        x_save_ny_kat($('navn').value, getRadio('kat'), $('vis').value, $('email').value, icon, save_ny_kat_r);
+        return false;
+    }
 
     var hasWeightedChildren = $('custom_sort_subs').value ? 1 : 0;
 
