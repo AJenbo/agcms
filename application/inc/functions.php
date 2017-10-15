@@ -506,7 +506,7 @@ function sendEmails(
     $mailer->Port = $emailConfig['smtpPort'];
     $mailer->CharSet = 'utf-8';
 
-    $mail->setFrom($emailConfig['address'], Config::get('site_name'));
+    $mailer->setFrom($emailConfig['address'], Config::get('site_name'));
     if ($from !== $emailConfig['address']) {
         $mailer->AddReplyTo($from, $fromName);
     }
