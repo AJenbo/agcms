@@ -8,16 +8,16 @@
     "packages": [
         {
             "name": "ajenbo/image.php",
-            "version": "0.9.2",
+            "version": "0.9.3",
             "source": {
                 "type": "git",
                 "url": "https://github.com/AJenbo/Image.php.git",
-                "reference": "3ab242b894ba74f0018be84f3a63dc924372898f"
+                "reference": "c5dfe113fe620a33a4efdb119c5c8ddbaf297760"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/AJenbo/Image.php/zipball/3ab242b894ba74f0018be84f3a63dc924372898f",
-                "reference": "3ab242b894ba74f0018be84f3a63dc924372898f",
+                "url": "https://api.github.com/repos/AJenbo/Image.php/zipball/c5dfe113fe620a33a4efdb119c5c8ddbaf297760",
+                "reference": "c5dfe113fe620a33a4efdb119c5c8ddbaf297760",
                 "shasum": ""
             },
             "require": {
@@ -32,10 +32,10 @@
             },
             "description": "Helper function for simple image manipulation using GD functions.",
             "support": {
-                "source": "https://github.com/AJenbo/Image.php/tree/0.9.2",
+                "source": "https://github.com/AJenbo/Image.php/tree/0.9.3",
                 "issues": "https://github.com/AJenbo/Image.php/issues"
             },
-            "time": "2017-10-12T22:58:08+00:00"
+            "time": "2017-10-16T20:47:13+00:00"
         },
         {
             "name": "ajenbo/imap.php",
@@ -73,12 +73,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/AJenbo/Sajax.git",
-                "reference": "9bf07d45a546dc81ff255e71f17e0cc93e001ceb"
+                "reference": "2a099e448fcd4ee18120aa9a6211bf3045aedbc7"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/AJenbo/Sajax/zipball/9bf07d45a546dc81ff255e71f17e0cc93e001ceb",
-                "reference": "9bf07d45a546dc81ff255e71f17e0cc93e001ceb",
+                "url": "https://api.github.com/repos/AJenbo/Sajax/zipball/2a099e448fcd4ee18120aa9a6211bf3045aedbc7",
+                "reference": "2a099e448fcd4ee18120aa9a6211bf3045aedbc7",
                 "shasum": ""
             },
             "require": {
@@ -95,7 +95,7 @@
                 "source": "https://github.com/AJenbo/Sajax/tree/master",
                 "issues": "https://github.com/AJenbo/Sajax/issues"
             },
-            "time": "2017-10-12T23:13:47+00:00"
+            "time": "2017-10-13T08:06:00+00:00"
         },
         {
             "name": "ezyang/htmlpurifier",
