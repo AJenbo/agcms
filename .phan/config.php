@@ -21,4 +21,5 @@ return [
     'suppress_issue_types' => [
     ],
     'whitelist_issue_types' => [],
+    'skip_slow_php_options_warning' => false,
 ];
