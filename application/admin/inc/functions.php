@@ -2078,11 +2078,15 @@ function updateKatOrder(string $order): void
     }
 }
 
-function updateSpecial(int $id, string $html): bool
+function updateSpecial(int $id, string $html, string $title = null): bool
 {
     $html = purifyHTML($html);
     $html = htmlUrlDecode($html);
     ORM::getOne(CustomPage::class, $id)->setHtml($html)->save();
+
+    if ($id === 1) {
+        ORM::getOne(Category::class, 0)->setTitle($title)->save();
+    }
 
     return true;
 }

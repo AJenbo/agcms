@@ -185,8 +185,11 @@ switch ($template) {
         $data['page'] = ORM::getOne(CustomPage::class, $request->get('id', 0));
         $data['pageWidth'] = Config::get('text_width');
         if (1 === $data['page']->getId()) {
+            $category = ORM::getOne(Category::class, 0);
+            $data['category'] = $category;
+            $data['textWidth'] = Config::get('text_width');
             $data['pageWidth'] = Config::get('frontpage_width');
-            $data['categories'] = ORM::getOne(Category::class, 0)->getChildren();
+            $data['categories'] = $category->getChildren();
         }
         break;
 

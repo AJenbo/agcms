@@ -286,7 +286,10 @@ function updateSpecial(id)
         x_updateKatOrder($('subMenusOrder').value, generic_r);
     }
     updateRTEs();
-    x_updateSpecial(id, $('text').value, generic_r);
+
+    var title = $('title') ? $('title').value : null;
+
+    x_updateSpecial(id, $('text').value, title, generic_r);
     return false;
 }
 

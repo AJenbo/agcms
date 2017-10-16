@@ -7,7 +7,10 @@
 {% block canvas %}
 <div id="headline">Edit {{page.title}}</div>
 <form action="" method="post" onsubmit="return updateSpecial({{page.id}});">
-<input type="submit" accesskey="s" style="width:1px; height:1px; position:absolute; top: -20px; left:-20px;" />
+    <input type="submit" accesskey="s" style="width:1px; height:1px; position:absolute; top: -20px; left:-20px;" />
+    {% if category %}
+    <input class="admin_name" id="title" value="{{category.title}}" maxlength="127" size="127" style="width:{{textWidth + 19}}px" />
+    {% endif %}
     <script type="text/javascript"><!--
     initRTE("/admin/rtef/images/", "/admin/rtef/", "/theme/{{theme}}/style/rtef-text.css", true);
     writeRichText("text", {{page.html|json_encode()|raw}}, "", {{pageWidth + 32}}, 572, true, false, false);
@@ -16,9 +19,9 @@
     <br />
     Sort maincategories:
     <ul id="subMenus">
-        {% for categoriy in categories %}
-        <li id="item_{{categoriy.id}}">
-            <img src="{% if categoriy.icon %}{{categoriy.icon.path}}{% else %}images/folder.png{% endif %}" alt=""> {{categoriy.title}}
+        {% for category in categories %}
+        <li id="item_{{category.id}}">
+            <img src="{% if category.icon %}{{category.icon.path}}{% else %}images/folder.png{% endif %}" alt=""> {{category.title}}
         </li>
         {% endfor %}
 
@@ -32,14 +35,14 @@
             hoverclass:'over',
             onChange:function(element){
                 var newOrder = Sortable.serialize(element.parentNode);
-                newOrder = newOrder.replace(/subMenus\\[\\]=/g,"");
+                newOrder = newOrder.replace(/subMenus\[\]=/g,"");
                 newOrder = newOrder.replace(/&/g,",");
                 $('subMenusOrder').value = newOrder;
             }
         }
     );
     var newOrder = Sortable.serialize($('subMenus'));
-    newOrder = newOrder.replace(/subMenus\\[\\]=/g,"");
+    newOrder = newOrder.replace(/subMenus\[\]=/g,"");
     newOrder = newOrder.replace(/&/g,",");
     $('subMenusOrder').value = newOrder;
     --></script>
