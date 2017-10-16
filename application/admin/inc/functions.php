@@ -464,7 +464,7 @@ function getSiteTreeData(string $inputType = '', int $selectedId = null): array
         'includePages'     => (!$inputType || 'pages' === $inputType),
         'inputType'        => $inputType,
         'node'             => ['children' => ORM::getByQuery(Category::class, 'SELECT * FROM kat WHERE bind IS NULL')],
-        'customPages'      => ORM::getByQuery(CustomPage::class, 'SELECT * FROM `special` WHERE `id` > 1 ORDER BY `navn`'),
+        'customPages'      => !$inputType ? ORM::getByQuery(CustomPage::class, 'SELECT * FROM `special` WHERE `id` > 1 ORDER BY `navn`') : [],
     ];
 }
 
