@@ -551,9 +551,9 @@ class Invoice extends AbstractEntity
         $items = [];
         foreach ($itemTitle as $key => $title) {
             $items[] = [
+                'quantity' => $itemQuantities[$key] ?? 0,
                 'title'    => $title,
                 'value'    => $itemValue[$key] ?? 0,
-                'quantity' => $itemQuantities[$key] ?? 0,
             ];
         }
         $items = json_encode($items);
@@ -609,7 +609,20 @@ class Invoice extends AbstractEntity
      */
     public function setItemData(string $itemData): self
     {
-        $this->items = json_decode($itemData, true);
+        $this->items = [];
+
+        $items = json_decode($itemData, true);
+        foreach ($items as $item) {
+            $item = [
+                'quantity' => (int) $item['quantity'],
+                'title'    => (string) $item['title'],
+                'value'    => (float) $item['value'],
+            ];
+            if (!$item['quantity'] && !$item['title'] && !$item['value']) {
+                continue;
+            }
+            $this->items[] = $item;
+        }
 
         return $this;
     }
@@ -629,9 +642,9 @@ class Invoice extends AbstractEntity
         $items = [];
         foreach ($this->items as $item) {
             $items[] = [
-                'title'    => (string) $item['title'],
-                'quantity' => (int) $item['quantity'],
-                'value'    => round($item['value'] / 1.25, 2),
+                'quantity' => $item['quantity'],
+                'title'    => $item['title'],
+                'value'    => $item['value'] / 1.25,
             ];
         }
 
@@ -676,7 +689,7 @@ class Invoice extends AbstractEntity
     {
         $netAmount = 0;
         foreach ($this->getItems() as $item) {
-            $netAmount += $item['value'] * $item['quantity'];
+            $netAmount += $item['quantity'] * $item['value'];
         }
 
         return $netAmount;
@@ -770,7 +783,7 @@ class Invoice extends AbstractEntity
         $itemTitle = [];
         $itemValue = [];
         foreach ($this->items as $column) {
-            $itemQuantities[] = (int) $column['quantity'];
+            $itemQuantities[] = $column['quantity'];
             $itemTitle[] = htmlspecialchars($column['title']);
             $itemValue[] = round($column['value'], 2);
         }
@@ -779,11 +792,9 @@ class Invoice extends AbstractEntity
         $itemTitle = implode('<', $itemTitle);
         $itemValue = implode('<', $itemValue);
 
-        $this->setTimeStamp(time());
-
         return [
-            'paydate'        => $this->timeStampPay > 86400 ? ('UNIX_TIMESTAMP(' . $this->timeStampPay . ')') : db()->eandq('0000-00-00'),
-            'date'           => $this->timeStamp > 86400 ? ('UNIX_TIMESTAMP(' . $this->timeStamp . ')') : db()->eandq('0000-00-00'),
+            'paydate'        => ($this->timeStampPay + db()->getTimeOffset()) ? ('FROM_UNIXTIME(' . ($this->timeStampPay + db()->getTimeOffset()) . ')') : db()->eandq('0000-00-00'),
+            'date'           => ($this->timeStamp + db()->getTimeOffset()) ? ('FROM_UNIXTIME(' . ($this->timeStamp + db()->getTimeOffset()) . ')') : db()->eandq('0000-00-00'),
             'quantities'     => db()->eandq($itemQuantities),
             'products'       => db()->eandq($itemTitle),
             'values'         => db()->eandq($itemValue),

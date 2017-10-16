@@ -51,7 +51,7 @@ class User extends AbstractEntity
             'name'      => db()->eandq($this->nickname),
             'password'  => db()->eandq($this->passwordHash),
             'access'    => (string) $this->accessLevel,
-            'lastlogin' => 'UNIX_TIMESTAMP(' . $this->lastLogin . ')',
+            'lastlogin' => 'FROM_UNIXTIME(' . $this->lastLogin . ')',
         ];
     }
 

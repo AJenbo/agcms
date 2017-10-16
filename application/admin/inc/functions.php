@@ -2252,12 +2252,10 @@ function invoiceBasicUpdate(Invoice $invoice, string $action, array $updates): v
     }
 
     if (!$invoice->isFinalized()) {
-        if (('lock' === $action || 'cancel' === $action) && 'locked' !== $invoice->getStatus()) {
+        if (in_array($action, ['cancel', 'giro', 'cash'], true)
+            || ('lock' === $action && 'locked' !== $invoice->getStatus())
+        ) {
             $invoice->setTimeStampPay(!empty($updates['paydate']) ? strtotime($updates['paydate']) : time());
-        } elseif ('giro' === $action && $updates['gdate']) {
-            $invoice->setTimeStampPay(strtotime($updates['gdate']));
-        } elseif ('cash' === $action && $updates['cdate']) {
-            $invoice->setTimeStampPay(strtotime($updates['cdate']));
         }
 
         if ('cancel' === $action) {
@@ -2392,9 +2390,7 @@ function annul(int $id)
     }
 
     if ('pbsok' === $invoice->getStatus()) {
-        $invoice->setStatus('rejected')
-            ->setTimeStampPay(time())
-            ->save();
+        $invoice->setStatus('rejected')->save();
     }
 
     return true;

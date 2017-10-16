@@ -211,9 +211,9 @@ function invoiceFromSession(): Invoice
     $invoiceData = $_SESSION['faktura'];
     foreach ($invoiceData['products'] as $key => $title) {
         $items[] = [
+            'quantity' => $invoiceData['quantities'][$key] ?? 0,
             'title'    => $title,
             'value'    => $invoiceData['values'][$key] ?? 0,
-            'quantity' => $invoiceData['quantities'][$key] ?? 0,
         ];
     }
     $items = json_encode($items);

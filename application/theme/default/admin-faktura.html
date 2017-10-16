@@ -52,7 +52,7 @@
     <tr>
         <td><input type="button" value="Paid via giro" onclick="save({{invoice.id}}, 'giro');" /></td>
         <td>
-            <input maxlength="10" name="gdate" id="gdate" size="11" value="{{time|date('d/m/Y')}}" />
+            <input maxlength="10" name="gdate" id="gdate" size="11" value="{{time|date('d-m-Y')}}" />
             <script type="text/javascript"><!--
             new tcal({'controlid': 'gdate'});
             --></script>
@@ -61,7 +61,7 @@
     <tr>
         <td><input type="button" value="Paid in cash" onclick="save({{invoice.id}}, 'cash');" /></td>
         <td>
-            <input maxlength="10" name="cdate" id="cdate" size="11" value="{{time|date('d/m/Y')}}" />
+            <input maxlength="10" name="cdate" id="cdate" size="11" value="{{time|date('d-m-Y')}}" />
             <script type="text/javascript"><!--
             new tcal({'controlid': 'cdate'});
             --></script>
@@ -107,17 +107,17 @@
             {% elseif invoice.status == 'accepted' %}
             Paid online
             {% if invoice.timeStampPay %}
-            d. {{invoice.timeStampPay|date('d/m/Y')}}
+            d. {{invoice.timeStampPay|date('d-m-Y')}}
             {% endif %}
             {% elseif invoice.status == 'giro' %}
             Paid via giro
             {% if invoice.timeStampPay %}
-            d. {{invoice.timeStampPay|date('d/m/Y')}}
+            d. {{invoice.timeStampPay|date('d-m-Y')}}
             {% endif %}
             {% elseif invoice.status == 'cash' %}
             Paid in cash
             {% if invoice.timeStampPay %}
-            d. {{invoice.timeStampPay|date('d/m/Y')}}
+            d. {{invoice.timeStampPay|date('d-m-Y')}}
             {% endif %}
             {% elseif invoice.status == 'pbserror' %}
             An error occurred
@@ -143,12 +143,12 @@
         <td>Oprettet:</td>
         <td>
             {% if invoice.status == 'new' %}
-            <input maxlength="10" name="date" id="date" size="11" value="{{invoice.timestamp|date('d/m/Y')}}" />
+            <input maxlength="10" name="date" id="date" size="11" value="{{invoice.timestamp|date('d-m-Y')}}" />
             <script type="text/javascript"><!--
             new tcal({'controlid': 'date'});
             --></script>
             {% else %}
-                {{invoice.timestamp|date('d/m/Y')}}
+                {{invoice.timestamp|date('d-m-Y')}}
             {% endif %}
         </td>
     </tr>

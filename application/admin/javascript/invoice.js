@@ -136,12 +136,8 @@ function prisUpdate()
 
         netto += premoms ? (total / 1.25) : total;
 
-        if(quantities[i].value != '' || titles[i].value != '' || values[i].value != '') {
-            invoiceLines.push({
-                "title" : titles[i].value,
-                "value" : value,
-                "quantity" : quantity,
-            });
+        if(quantity || titles[i].value !== '' || value) {
+            invoiceLines.push({ "quantity" : quantity, "title" : titles[i].value, "value" : value });
         }
     }
 

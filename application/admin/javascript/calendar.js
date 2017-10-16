@@ -34,8 +34,8 @@ function f_tcalParseDate (s_date) {
 // date generating function
 function f_tcalGenerDate (d_date) {
 	return (
-		(d_date.getDate() < 10 ? '0' : '') + d_date.getDate() + '/'
-		+ (d_date.getMonth() < 9 ? '0' : '') + (d_date.getMonth() + 1) + '/'
+		(d_date.getDate() < 10 ? '0' : '') + d_date.getDate() + '-'
+		+ (d_date.getMonth() < 9 ? '0' : '') + (d_date.getMonth() + 1) + '-'
 		+ d_date.getFullYear()
 	);
 }
