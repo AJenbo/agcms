@@ -27,7 +27,6 @@
                 <td>{{invoice.name}}</td>
                 {% if invoice.hasShippingAddress %}<td>{{invoice.shippingName}}</td>{% endif %}
             </tr>
-            {% if and invoice.hasShippingAddress %}
             {% if invoice.phone1 or (invoice.hasShippingAddress and invoice.shippingPhone) %}
             <tr>
                 <td>Phone:</td>
