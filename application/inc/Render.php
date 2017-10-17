@@ -105,6 +105,8 @@ class Render
             if (!self::$activePage || self::$activePage->isInactive()) {
                 $redirect = self::$activePage ? Response::HTTP_FOUND : Response::HTTP_MOVED_PERMANENTLY;
                 self::$activePage = null;
+            } elseif (self::$activePage) {
+                self::$activeCategory = self::$activePage->getPrimaryCategory();
             }
         }
 
@@ -400,6 +402,7 @@ class Render
             self::$crumbs[] = self::$activeRequirement;
         } elseif ('index' === self::$pageType) {
             self::$bodyHtml = ORM::getOne(CustomPage::class, 1)->getHtml();
+            self::$activeCategory = ORM::getOne(Category::class, 0);
         }
 
         self::cleanData();
@@ -827,7 +830,6 @@ class Render
                 'searchMenu'      => self::$searchMenu,
                 'hasItemsInCart'  => !empty($_SESSION['faktura']['quantities']),
                 'infoPage'        => ORM::getOne(CustomPage::class, 2),
-                'rootPages'       => 'index' === self::$pageType ? ORM::getOne(Category::class, 0)->getPages() : [],
                 'search'          => self::$searchValues,
             ]
         );

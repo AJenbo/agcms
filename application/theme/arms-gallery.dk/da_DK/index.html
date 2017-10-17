@@ -56,10 +56,10 @@
         </div>
         {% endif %}
         <div class="bar" id="submenu">
-            {% if rootPages %}
+            {% if category.id == 0 %}
             {% set extraRows = extraRows + 1 %}
             <ul>
-                {% include 'submenu.html' with {'notes': rootPages} %}
+                {% include 'submenu.html' with {'notes': category.pages} %}
             </ul>
             {% elseif category.branch[2].hasVisibleChildren %}
             {% set extraRows = extraRows + 1 %}
