@@ -411,7 +411,7 @@ marquee {
         padding: 7px 0px;
     }
     #searchbox {
-        width: calc(100% - 42px);
+        width: calc(100% - 53px); /* button is 42 but iPhones need more space */
         margin: 10px 0;
     }
     #crumb, #cart {
