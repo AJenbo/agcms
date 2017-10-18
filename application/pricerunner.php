@@ -28,6 +28,7 @@ $pages = ORM::getByQuery(
     "
 );
 foreach ($pages as $page) {
+    assert($page instanceof Page);
     if ($page->isInactive()) {
         continue;
     }

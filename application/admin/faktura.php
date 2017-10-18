@@ -9,7 +9,8 @@ use AGCMS\Entity\User;
 use Sajax\Sajax;
 
 require_once __DIR__ . '/logon.php';
-@include_once _ROOT_ . '/inc/countries.php';
+$countries = [];
+include _ROOT_ . '/inc/countries.php';
 
 if ('new' === request()->get('function')) {
     redirect('faktura.php?id=' . newfaktura());
@@ -17,6 +18,7 @@ if ('new' === request()->get('function')) {
 
 /** @var Invoice */
 $invoice = ORM::getOne(Invoice::class, request()->get('id'));
+assert($invoice instanceof Invoice);
 
 if ($invoice && 'new' !== $invoice->getStatus()) {
     try {

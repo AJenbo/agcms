@@ -39,12 +39,12 @@ class Table extends AbstractEntity
      */
     public function __construct(array $data)
     {
-        $this->setId($data['id'] ?? null)
-            ->setPageId($data['page_id'])
+        $this->setPageId($data['page_id'])
             ->setTitle($data['title'])
             ->setColumnData($data['column_data'])
             ->setOrderBy($data['order_by'])
-            ->setHasLinks($data['has_links']);
+            ->setHasLinks($data['has_links'])
+            ->setId($data['id'] ?? null);
     }
 
     /**

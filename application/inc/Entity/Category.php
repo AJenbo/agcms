@@ -27,13 +27,13 @@ class Category extends AbstractRenderable
     const LIST = 2;
 
     // Backed by DB
-    /** @var int|null */
+    /** @var ?int */
     private $parentId;
 
-    /** @var string|null Icon file path. */
+    /** @var ?string Icon file path. */
     private $iconPath;
 
-    /** @var int|null Render mode for page list. */
+    /** @var ?int Render mode for page list. */
     private $renderMode = 1;
 
     /** @var string Contact email. */
@@ -56,14 +56,14 @@ class Category extends AbstractRenderable
      */
     public function __construct(array $data)
     {
-        $this->setId($data['id'] ?? null)
-            ->setTitle($data['title'])
-            ->setParentId($data['parent_id'])
+        $this->setParentId($data['parent_id'])
             ->setIconPath($data['icon_path'])
             ->setRenderMode($data['render_mode'])
             ->setEmail($data['email'])
             ->setWeightedChildren($data['weighted_children'])
-            ->setWeight($data['weight']);
+            ->setWeight($data['weight'])
+            ->setTitle($data['title'])
+            ->setId($data['id'] ?? null);
     }
 
     /**
@@ -107,7 +107,7 @@ class Category extends AbstractRenderable
      *
      * @return self
      */
-    public function setParentId(int $parentId = null): self
+    public function setParentId(?int $parentId): self
     {
         if ($parentId !== null && $this->id !== null && $this->id <= 0) {
             throw new Exception(_('Your not allowed to move root categories'));
@@ -121,7 +121,7 @@ class Category extends AbstractRenderable
     /**
      * Set icon file path.
      */
-    public function setIconPath(string $iconPath = null): self
+    public function setIconPath(?string $iconPath): self
     {
         $this->iconPath = $iconPath;
 
@@ -185,7 +185,7 @@ class Category extends AbstractRenderable
      */
     public function setWeightedChildren(bool $weightedChildren): self
     {
-        $this->weightedChildren = (int) $weightedChildren;
+        $this->weightedChildren = $weightedChildren;
 
         return $this;
     }
@@ -197,7 +197,7 @@ class Category extends AbstractRenderable
      */
     public function hasWeightedChildren(): bool
     {
-        return (bool) $this->weightedChildren;
+        return $this->weightedChildren;
     }
 
     /**
@@ -301,6 +301,7 @@ class Category extends AbstractRenderable
         }
 
         foreach ($children as $key => $child) {
+            assert($child instanceof self);
             if (!$child->isVisable()) {
                 unset($children[$key]);
             }
@@ -368,6 +369,7 @@ class Category extends AbstractRenderable
 
         $objectArray = [];
         foreach ($pages as $page) {
+            assert($page instanceof Page);
             $objectArray[] = [
                 'id'     => $page->getId(),
                 'navn'   => $page->getTitle(),
@@ -471,7 +473,7 @@ class Category extends AbstractRenderable
             'icon'             => null !== $this->iconPath ? db()->eandq($this->iconPath) : 'NULL',
             'vis'              => (string) $this->renderMode,
             'email'            => db()->eandq($this->email),
-            'custom_sort_subs' => (string) $this->weightedChildren,
+            'custom_sort_subs' => (string) (int) $this->weightedChildren,
             'order'            => (string) $this->weight,
         ];
     }

@@ -49,6 +49,7 @@ $pages = ORM::getByQuery(
     . $limit
 );
 foreach ($pages as $page) {
+    assert($page instanceof Page);
     if ($page->isInactive()) {
         continue;
     }

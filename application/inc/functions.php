@@ -423,6 +423,7 @@ function getKat(int $categoryId, string $sort): array
     Render::sendCacheHeader();
 
     $category = ORM::getOne(Category::class, $categoryId);
+    assert($category instanceof Category);
     $html = Render::getKatHtml($category, $sort);
 
     return [

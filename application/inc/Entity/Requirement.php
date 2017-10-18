@@ -18,9 +18,9 @@ class Requirement extends AbstractRenderable
      */
     public function __construct(array $data)
     {
-        $this->setId($data['id'] ?? null)
+        $this->setHtml($data['html'])
             ->setTitle($data['title'])
-            ->setHtml($data['html']);
+            ->setId($data['id'] ?? null);
     }
 
     /**

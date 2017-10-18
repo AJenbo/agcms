@@ -24,10 +24,10 @@ class CustomPage extends AbstractEntity
      */
     public function __construct(array $data)
     {
-        $this->setId($data['id'] ?? null)
-            ->setTimeStamp($data['timestamp'])
+        $this->setTimeStamp($data['timestamp'])
             ->setTitle($data['title'])
-            ->setHtml($data['html']);
+            ->setHtml($data['html'])
+            ->setId($data['id'] ?? null);
     }
 
     /**

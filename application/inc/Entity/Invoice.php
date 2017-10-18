@@ -10,11 +10,10 @@ class Invoice extends AbstractEntity
     const TABLE_NAME = 'fakturas';
 
     // Backed by DB
-    /** @var int */
-    private $timeStamp;
-    /** @var int|null */
+    private $timeStamp = 0;
+    /** @var ?int */
     private $timeStampPay;
-    private $amount = 0;
+    private $amount = 0.00;
     private $name = '';
     private $att = '';
     private $address = '';
@@ -38,7 +37,7 @@ class Invoice extends AbstractEntity
     private $note = '';
     private $clerk = '';
     private $status = '';
-    private $shipping = 0;
+    private $shipping = 0.00;
     private $vat = 0.25;
     private $preVat = true;
     private $transferred = false;
@@ -60,12 +59,11 @@ class Invoice extends AbstractEntity
      */
     public function __construct(array $data)
     {
-        $this->setId($data['id'] ?? null)
-            ->setItemData($data['item_data'])
+        $this->setItemData($data['item_data'])
             ->setHasShippingAddress($data['has_shipping_address'] ?? false)
             ->setTimeStamp($data['timestamp'] ?? time())
             ->setTimeStampPay($data['timestamp_pay'] ?? 0)
-            ->setAmount($data['amount'] ?? '0.00')
+            ->setAmount($data['amount'] ?? 0.00)
             ->setName($data['name'])
             ->setAtt($data['att'])
             ->setAddress($data['address'])
@@ -97,7 +95,8 @@ class Invoice extends AbstractEntity
             ->setEref($data['eref'] ?? '')
             ->setSent($data['sent'] ?? false)
             ->setDepartment($data['department'] ?? '')
-            ->setEnote($data['enote'] ?? '');
+            ->setEnote($data['enote'] ?? '')
+            ->setId($data['id'] ?? null);
     }
 
     public function setTimeStamp(int $timeStamp): self
@@ -124,14 +123,14 @@ class Invoice extends AbstractEntity
         return $this->timeStampPay;
     }
 
-    public function setAmount(string $amount): self
+    public function setAmount(float $amount): self
     {
         $this->amount = $amount;
 
         return $this;
     }
 
-    public function getAmount(): string
+    public function getAmount(): float
     {
         return $this->amount;
     }
@@ -412,26 +411,26 @@ class Invoice extends AbstractEntity
         return $this->status;
     }
 
-    public function setShipping(string $shipping): self
+    public function setShipping(float $shipping): self
     {
         $this->shipping = $shipping;
 
         return $this;
     }
 
-    public function getShipping(): string
+    public function getShipping(): float
     {
         return $this->shipping;
     }
 
-    public function setVat(string $vat): self
+    public function setVat(float $vat): self
     {
         $this->vat = $vat;
 
         return $this;
     }
 
-    public function getVat(): string
+    public function getVat(): float
     {
         return $this->vat;
     }
@@ -564,7 +563,7 @@ class Invoice extends AbstractEntity
             'has_shipping_address' => (bool) $data['altpost'],
             'timestamp'            => strtotime($data['date']) + db()->getTimeOffset(),
             'timestamp_pay'        => strtotime($data['paydate']) + db()->getTimeOffset(),
-            'amount'               => (int) $data['amount'],
+            'amount'               => (float) $data['amount'],
             'name'                 => $data['navn'],
             'att'                  => $data['att'],
             'address'              => $data['adresse'],
@@ -587,8 +586,8 @@ class Invoice extends AbstractEntity
             'note'                 => $data['note'],
             'clerk'                => $data['clerk'],
             'status'               => $data['status'],
-            'shipping'             => $data['fragt'],
-            'vat'                  => $data['momssats'],
+            'shipping'             => (float) $data['fragt'],
+            'vat'                  => (float) $data['momssats'],
             'pre_vat'              => (bool) $data['premoms'],
             'transferred'          => (bool) $data['transferred'],
             'cardtype'             => $data['cardtype'],
@@ -798,7 +797,7 @@ class Invoice extends AbstractEntity
             'quantities'     => db()->eandq($itemQuantities),
             'products'       => db()->eandq($itemTitle),
             'values'         => db()->eandq($itemValue),
-            'amount'         => db()->eandq($this->amount),
+            'amount'         => db()->escNum($this->amount),
             'navn'           => db()->eandq($this->name),
             'att'            => db()->eandq($this->att),
             'adresse'        => db()->eandq($this->address),
@@ -822,8 +821,8 @@ class Invoice extends AbstractEntity
             'note'           => db()->eandq($this->note),
             'clerk'          => db()->eandq($this->clerk),
             'status'         => db()->eandq($this->status),
-            'fragt'          => db()->eandq($this->shipping),
-            'momssats'       => db()->eandq($this->vat),
+            'fragt'          => db()->escNum($this->shipping),
+            'momssats'       => db()->escNum($this->vat),
             'premoms'        => (string) (int) $this->preVat,
             'transferred'    => (string) (int) $this->transferred,
             'cardtype'       => db()->eandq($this->cardtype),

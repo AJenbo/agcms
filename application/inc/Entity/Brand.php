@@ -13,7 +13,7 @@ class Brand extends AbstractRenderable
     /** @var string The external link for this brand. */
     private $link = '';
 
-    /** @var string|null The path for the brand icon. */
+    /** @var ?string The path for the brand icon. */
     private $iconPath;
 
     /**
@@ -23,10 +23,10 @@ class Brand extends AbstractRenderable
      */
     public function __construct(array $data)
     {
-        $this->setId($data['id'] ?? null)
+        $this->setLink($data['link'])
+            ->setIconPath($data['icon_path'])
             ->setTitle($data['title'])
-            ->setLink($data['link'])
-            ->setIconPath($data['icon_path']);
+            ->setId($data['id'] ?? null);
     }
 
     /**
@@ -75,7 +75,7 @@ class Brand extends AbstractRenderable
     /**
      * Set file path for an image type.
      */
-    public function setIconPath(string $iconPath = null): self
+    public function setIconPath(?string $iconPath): self
     {
         $this->iconPath = $iconPath;
 
@@ -131,6 +131,7 @@ class Brand extends AbstractRenderable
 
         $objectArray = [];
         foreach ($pages as $page) {
+            assert($page instanceof Page);
             $objectArray[] = [
                 'id'     => $page->getId(),
                 'navn'   => $page->getTitle(),

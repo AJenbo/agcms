@@ -20,7 +20,7 @@ $lastModified = DateTime::createFromFormat('U', (string) $timestamp);
 $response->setLastModified($lastModified);
 $response->setEtag((string) $timestamp);
 $response->setMaxAge($oneMonth);
-$expires = DateTime::createFromFormat('U', (string) time() + $oneMonth);
+$expires = DateTime::createFromFormat('U', (string) (time() + $oneMonth));
 $response->setExpires($expires);
 
 if ($response->isNotModified(request())) {

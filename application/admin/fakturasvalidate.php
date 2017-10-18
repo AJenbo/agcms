@@ -9,9 +9,13 @@ require_once __DIR__ . '/logon.php';
 
 if (curentUser()->hasAccess(User::ADMINISTRATOR)) {
     if (request()->get('id')) {
-        ORM::getOne(Invoice::class, request()->get('id'))->setTransferred(true)->save();
+        $invoice = ORM::getOne(Invoice::class, request()->get('id'));
+        assert($invoice instanceof Invoice);
+        $invoice->setTransferred(true)->save();
     } elseif (request()->get('undoid')) {
-        ORM::getOne(Invoice::class, request()->get('undoid'))->setTransferred(false)->save();
+        $invoice = ORM::getOne(Invoice::class, request()->get('undoid'));
+        assert($invoice instanceof Invoice);
+        $invoice->setTransferred(false)->save();
     }
 }
 

@@ -66,7 +66,7 @@ class UploadHandler
         string $description,
         int $width,
         int $height,
-        string $aspect = null
+        ?string $aspect
     ): void {
         if ($this->isImageFile()) {
             $aspect = null;
@@ -145,7 +145,7 @@ class UploadHandler
         }
     }
 
-    private function insertFile(string $description, int $width, int $height, string $aspect = null): void
+    private function insertFile(string $description, int $width, int $height, ?string $aspect): void
     {
         $file = File::getByPath($this->getDestination());
         if ($file) {

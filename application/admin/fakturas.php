@@ -7,7 +7,8 @@ use AGCMS\ORM;
 use AGCMS\Render;
 
 require_once __DIR__ . '/logon.php';
-require_once _ROOT_ . '/inc/countries.php';
+$countries = [];
+include _ROOT_ . '/inc/countries.php';
 
 $selected = [
     'id'         => (int) request()->get('id') ?: null,

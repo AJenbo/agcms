@@ -40,6 +40,7 @@ function checkUserLoggedIn(): void
         User::class,
         'SELECT * FROM `users` WHERE `name` = ' . db()->eandq(request()->get('username'))
     );
+    assert($user instanceof User);
     if ($user && $user->getAccessLevel() && $user->validatePassword(request()->get('password', ''))) {
         $_SESSION['curentUser'] = $user;
     }
@@ -118,6 +119,7 @@ function sendDelayedEmail(): string
     //Get emails that needs sending
     $emails = db()->fetchArray('SELECT * FROM `emails`');
     $cronStatus = ORM::getOne(CustomPage::class, 0);
+    assert($cronStatus instanceof CustomPage);
     if (!$emails) {
         $cronStatus->save();
 
@@ -430,9 +432,11 @@ function saveEmail(string $from, string $interests, string $subject, string $htm
  */
 function katspath(int $id): array
 {
+    $category = ORM::getOne(Category::class, $id);
+    assert($category instanceof Category);
     return [
         'id'   => 'katsheader',
-        'html' => _('Select location:') . ' ' . ORM::getOne(Category::class, $id)->getPath(),
+        'html' => _('Select location:') . ' ' . $category->getPath(),
     ];
 }
 
@@ -447,6 +451,7 @@ function getOpenCategories(int $selectedId = null): array
     if (null !== $selectedId) {
         $category = ORM::getOne(Category::class, $selectedId);
         if ($category) {
+            assert($category instanceof Category);
             foreach ($category->getBranch() as $category) {
                 $openCategories[] = $category->getId();
             }
@@ -458,8 +463,12 @@ function getOpenCategories(int $selectedId = null): array
 
 function getSiteTreeData(string $inputType = '', int $selectedId = null): array
 {
+    $category = null;
+    if (null !== $selectedId) {
+        $category = ORM::getOne(Category::class, $selectedId);
+    }
     return [
-        'selectedCategory' => null !== $selectedId ? ORM::getOne(Category::class, $selectedId) : null,
+        'selectedCategory' => $category,
         'openCategories'   => getOpenCategories($selectedId),
         'includePages'     => (!$inputType || 'pages' === $inputType),
         'inputType'        => $inputType,
@@ -668,6 +677,7 @@ function updateuser(int $id, array $updates)
 
     /** @var User */
     $user = ORM::getOne(User::class, $id);
+    assert($user instanceof User);
 
     //Validate password update
     if (!empty($updates['password_new'])) {
@@ -1308,6 +1318,7 @@ function searchfiles(string $qpath, string $qalt, string $qmime): array
     $html = '';
     $javascript = '';
     foreach (ORM::getByQuery(File::class, 'SELECT *' . $sql) as $file) {
+        assert($file instanceof File);
         if ('unused' !== $qmime || !isinuse($file->getPath())) {
             $html .= filehtml($file);
             $javascript .= filejavascript($file);
@@ -1320,6 +1331,7 @@ function searchfiles(string $qpath, string $qalt, string $qmime): array
 function edit_alt(int $id, string $description): array
 {
     $file = ORM::getOne(File::class, $id);
+    assert($file instanceof File);
     $file->setDescription($description)->save();
 
     //Update html with new alt...
@@ -1328,6 +1340,7 @@ function edit_alt(int $id, string $description): array
         "SELECT * FROM `sider` WHERE `text` LIKE '%" . db()->esc($file->getPath()) . "%'"
     );
     foreach ($pages as $page) {
+        assert($page instanceof Page);
         //TODO move this to db fixer to test for missing alt="" in img
         /*preg_match_all('/<img[^>]+/?>/ui', $value, $matches);*/
         $html = $page->getHtml();
@@ -1419,7 +1432,9 @@ function findPages(string $text): array
  */
 function listRemoveRow(int $tableId, int $rowId): array
 {
-    ORM::getOne(Table::class, $tableId)->removeRow($rowId);
+    $table = ORM::getOne(Table::class, $tableId);
+    assert($table instanceof Table);
+    $table->removeRow($rowId);
 
     return ['listid' => $tableId, 'rowid' => $rowId];
 }
@@ -1428,6 +1443,7 @@ function listSavetRow(int $tableId, array $cells, int $link = null, int $rowId =
 {
     /** @var Table */
     $table = ORM::getOne(Table::class, $tableId);
+    assert($table instanceof Table);
 
     if (!$rowId) {
         $rowId = $table->addRow($cells, $link);
@@ -1471,6 +1487,7 @@ function updateContact(
     }
 
     $contact = ORM::getOne(Contact::class, $id);
+    assert($contact instanceof Contact);
     $contact->setName($navn)
         ->setEmail($email)
         ->setAddress($adresse)
@@ -1515,6 +1532,7 @@ function get_subscriptions_with_bad_emails(): string
 {
     $contacts = ORM::getByQuery(Contact::class, "SELECT * FROM `email` WHERE `email` != ''");
     foreach ($contacts as $key => $contact) {
+        assert($contact instanceof Contact);
         if (!$contact->isEmailValide()) {
             unset($contacts[$key]);
         }
@@ -1528,6 +1546,7 @@ function get_looping_cats(): string
     $html = '';
     $categories = ORM::getByQuery(Category::class, 'SELECT * FROM `kat` WHERE bind != 0 AND bind != -1');
     foreach ($categories as $category) {
+        assert($category instanceof Category);
         $branchIds = [$category->getId() => true];
         while ($category = $category->getParent()) {
             if (isset($branchIds[$category->getId()])) {
@@ -1667,6 +1686,7 @@ function get_orphan_pages(): string
     /** @var Page */
     $pages = ORM::getByQuery(Page::class, 'SELECT * FROM `sider` WHERE `id` NOT IN(SELECT `side` FROM `bind`)');
     foreach ($pages as $page) {
+        assert($page instanceof Page);
         $html .= '<a href="?side=redigerside&amp;id=' . $page->getId() . '">' . $page->getId()
             . ': ' . $page->getTitle() . '</a><br />';
     }
@@ -1686,6 +1706,7 @@ function get_pages_with_mismatch_bindings(): string
     $categoryActiveMaps = [[0], [-1]];
     $categories = ORM::getByQuery(Category::class, 'SELECT * FROM `kat`');
     foreach ($categories as $category) {
+        assert($category instanceof Category);
         $categoryActiveMaps[(int) $category->isInactive()][] = $category->getId();
     }
 
@@ -1709,6 +1730,7 @@ function get_pages_with_mismatch_bindings(): string
     if ($pages) {
         $html .= '<b>' . _('The following pages are both active and inactive') . '</b><br />';
         foreach ($pages as $page) {
+            assert($page instanceof Page);
             $html .= '<a href="?side=redigerside&amp;id=' . $page->getId() . '">' . $page->getId() . ': '
                 . $page->getTitle() . '</a><br />';
         }
@@ -1738,6 +1760,7 @@ function get_pages_with_mismatch_bindings(): string
         $html .= '<b>' . _('The following inactive pages appears in list on active pages') . '</b><br />';
         foreach ($pages as $page) {
             $listPage = ORM::getOne(Page::class, $page['page_id']);
+            assert($listPage instanceof Page);
             $page = new Page(Page::mapFromDB($page));
             $html .= '<a href="?side=redigerside&amp;id=' . $listPage->getId() . '">' . $listPage->getId() . ': '
                 . $listPage->getTitle() . '</a> -&gt; <a href="?side=redigerside&amp;id=' . $page->getId() . '">'
@@ -1793,23 +1816,18 @@ function savekrav(string $navn, string $html, int $id = null): array
     $html = purifyHTML($html);
     $html = htmlUrlDecode($html);
 
-    if ('' != $navn && '' != $html) {
-        if (!$id) {
-            $requirement = new Requirement([
-                'title' => $navn,
-                'html'  => $html,
-            ]);
-            $id = $requirement->getId();
-        } else {
-            $requirement = ORM::getOne(Requirement::class, $id);
-            $requirement->setTitle($navn)->setHtml($html);
-        }
-        $requirement->save();
-
-        return ['id' => $id];
+    if ('' === $navn || '' === $html) {
+        return ['error' => _('You must enter a name and a text of the requirement.')];
     }
 
-    return ['error' => _('You must enter a name and a text of the requirement.')];
+    $requirement = new Requirement(['title' => $navn, 'html' => $html]);
+    if (null !== $id) {
+        $requirement = ORM::getOne(Requirement::class, $id);
+    }
+    assert($requirement instanceof Requirement);
+    $requirement->setHtml($html)->setTitle($navn)->save();
+
+    return ['id' => $requirement->getId()];
 }
 
 function sogogerstat(string $sog, string $erstat): int
@@ -1819,24 +1837,23 @@ function sogogerstat(string $sog, string $erstat): int
     return db()->affected_rows;
 }
 
-function updatemaerke(int $id = null, string $navn = '', string $link = '', string $ico = null): array
+function updatemaerke(?int $id, string $navn, string $link = '', string $ico = null): array
 {
-    if ($navn) {
-        if (null === $id) {
-            (new Brand(['title' => $navn, 'link' => $link, 'icon_path' => $ico]))->save();
-        } else {
-            $brand = ORM::getOne(Brand::class, $id)
-                ->setTitle($navn)
-                ->setLink($link)
-                ->setIconPath($ico)
-                ->save();
-            $id = $brand->getId();
-        }
-
-        return ['id' => $id];
+    if (!$navn) {
+        return ['error' => _('You must enter a name.')];
     }
 
-    return ['error' => _('You must enter a name.')];
+    $brand = new Brand(['title' => $navn, 'link' => $link, 'icon_path' => $ico]);
+    if (null !== $id) {
+        $brand = ORM::getOne(Brand::class, $id);
+    }
+    assert($brand instanceof Brand);
+    $brand->setLink($link)
+        ->setIconPath($ico)
+        ->setTitle($navn)
+        ->save();
+
+    return ['id' => $brand->getId()];
 }
 
 /**
@@ -1865,7 +1882,10 @@ function sletkrav(int $id): array
 function removeAccessory(int $pageId, int $accessoryId): array
 {
     $accessory = ORM::getOne(Page::class, $accessoryId);
-    ORM::getOne(Page::class, $pageId)->removeAccessory($accessory);
+    assert($accessory instanceof Page);
+    $page = ORM::getOne(Page::class, $pageId);
+    assert($page instanceof Page);
+    $page->removeAccessory($accessory);
 
     return ['id' => 'accessory' . $accessory->getId()];
 }
@@ -1873,7 +1893,9 @@ function removeAccessory(int $pageId, int $accessoryId): array
 function addAccessory(int $pageId, int $accessoryId): array
 {
     $accessory = ORM::getOne(Page::class, $accessoryId);
+    assert($accessory instanceof Page);
     $page = ORM::getOne(Page::class, $pageId);
+    assert($page instanceof Page);
     $page->addAccessory($accessory);
 
     return ['pageId' => $page->getId(), 'accessoryId' => $accessory->getId(), 'title' => $accessory->getTitle()];
@@ -1891,7 +1913,9 @@ function sletkat(int $id): array
 
 function movekat(int $id, int $parentId): array
 {
-    ORM::getOne(Category::class, $id)->setParentId($parentId)->save();
+    $category = ORM::getOne(Category::class, $id);
+    assert($category instanceof Category);
+    $category->setParentId($parentId)->save();
 
     return ['id' => 'kat' . $id, 'update' => $parentId];
 }
@@ -1901,7 +1925,9 @@ function movekat(int $id, int $parentId): array
  */
 function renamekat(int $id, string $title): array
 {
-    ORM::getOne(Category::class, $id)->setTitle($title)->save();
+    $category = ORM::getOne(Category::class, $id);
+    assert($category instanceof Category);
+    $category->setTitle($title)->save();
 
     return ['id' => 'kat' . $id, 'name' => $title];
 }
@@ -1910,12 +1936,14 @@ function sletbind(int $pageId, int $categoryId): array
 {
     /** @var Page */
     $page = ORM::getOne(Page::class, $pageId);
+    assert($page instanceof Page);
 
     /** @var Category */
     $category = ORM::getOne(Category::class, $categoryId);
     if (!$category) {
         return ['error' => _('The category doesn\'t exist.')];
     }
+    assert($category instanceof Category);
 
     $result = ['pageId' => $page->getId(), 'deleted' => [], 'added' => null];
     if (($category->getId() === -1 && count($page->getCategories()) === 1)
@@ -1925,7 +1953,9 @@ function sletbind(int $pageId, int $categoryId): array
     }
 
     if (count($page->getCategories()) === 1) {
-        $page->addToCategory(ORM::getOne(Category::class, -1));
+        $inactiveCategory = ORM::getOne(Category::class, -1);
+        assert($inactiveCategory instanceof Category);
+        $page->addToCategory($inactiveCategory);
         $result['added'] = ['categoryId' => -1, 'path' => '/' . _('Inactive') . '/'];
     }
 
@@ -1939,12 +1969,14 @@ function bind(int $pageId, int $categoryId): array
 {
     /** @var Page */
     $page = ORM::getOne(Page::class, $pageId);
+    assert($page instanceof Page);
 
     /** @var Category */
     $category = ORM::getOne(Category::class, $categoryId);
     if (!$category) {
         return ['error' => _('The category doesn\'t exist.')];
     }
+    assert($category instanceof Category);
 
     $result = ['pageId' => $page->getId(), 'deleted' => [], 'added' => null];
 
@@ -2009,11 +2041,10 @@ function updateSide(
     $html = purifyHTML($html);
     $html = htmlUrlDecode($html);
 
-    ORM::getOne(Page::class, $id)
-        ->setTitle($navn)
-        ->setKeywords($keywords)
+    $page = ORM::getOne(Page::class, $id);
+    assert($page instanceof Page);
+    $page->setKeywords($keywords)
         ->setPrice($pris)
-        ->setHtml($html)
         ->setSku($varenr)
         ->setOldPrice($for)
         ->setExcerpt($beskrivelse)
@@ -2022,6 +2053,8 @@ function updateSide(
         ->setIconPath($billed)
         ->setPriceType($fra)
         ->setOldPriceType($burde)
+        ->setHtml($html)
+        ->setTitle($navn)
         ->save();
 
     return true;
@@ -2035,24 +2068,26 @@ function updateKat(
     string $navn,
     int $vis,
     string $email,
-    int $customSortSubs,
+    bool $customSortSubs,
     string $subsorder,
-    int $bind = null,
+    int $parentId = null,
     string $icon = null
 ) {
     $category = ORM::getOne(Category::class, $id);
-    if ($category->getParent() && null === $bind) {
+    assert($category instanceof Category);
+    if ($category->getParent() && null === $parentId) {
         return ['error' => _('You must select a parent category')];
     }
 
-    if (null !== $bind) {
-        $parent = ORM::getOne(Category::class, $bind);
+    if (null !== $parentId) {
+        $parent = ORM::getOne(Category::class, $parentId);
+        assert($parent instanceof Category);
         foreach ($parent->getBranch() as $node) {
             if ($node->getId() === $category->getId()) {
                 return ['error' => _('The category can not be placed under itself.')];
             }
         }
-        $category->setParentId($bind);
+        $category->setParentId($parentId);
     }
 
     //Set the order of the subs
@@ -2061,11 +2096,11 @@ function updateKat(
     }
 
     //Update kat
-    $category->setTitle($navn)
-        ->setRenderMode($vis)
+    $category->setRenderMode($vis)
         ->setEmail($email)
         ->setWeightedChildren($customSortSubs)
         ->setIconPath($icon)
+        ->setTitle($navn)
         ->save();
 
     return true;
@@ -2074,18 +2109,24 @@ function updateKat(
 function updateKatOrder(string $order): void
 {
     foreach (explode(',', $order) as $weight => $id) {
-        ORM::getOne(Category::class, $id)->setWeight($weight)->save();
+        $category = ORM::getOne(Category::class, $id);
+        assert($category instanceof Category);
+        $category->setWeight($weight)->save();
     }
 }
 
-function updateSpecial(int $id, string $html, string $title = null): bool
+function updateSpecial(int $id, string $html, string $title = ''): bool
 {
     $html = purifyHTML($html);
     $html = htmlUrlDecode($html);
-    ORM::getOne(CustomPage::class, $id)->setHtml($html)->save();
+    $page = ORM::getOne(CustomPage::class, $id);
+    assert($page instanceof CustomPage);
+    $page->setHtml($html)->save();
 
     if ($id === 1) {
-        ORM::getOne(Category::class, 0)->setTitle($title)->save();
+        $category = ORM::getOne(Category::class, 0);
+        assert($category instanceof Category);
+        $category->setTitle($title)->save();
     }
 
     return true;
@@ -2177,6 +2218,7 @@ function save(int $id, string $action, array $updates): array
 {
     /** @var Invoice */
     $invoice = ORM::getOne(Invoice::class, $id);
+    assert($invoice instanceof Invoice);
 
     invoiceBasicUpdate($invoice, $action, $updates);
 
@@ -2341,6 +2383,7 @@ function sendReminder(int $id): array
 {
     /** @var Invoice */
     $invoice = ORM::getOne(Invoice::class, $id);
+    assert($invoice instanceof Invoice);
     try {
         sendInvoice($invoice);
     } catch (Exception $exception) {
@@ -2357,6 +2400,7 @@ function pbsconfirm(int $id)
 {
     /** @var Invoice */
     $invoice = ORM::getOne(Invoice::class, $id);
+    assert($invoice instanceof Invoice);
 
     try {
         $epaymentService = new EpaymentAdminService(Config::get('pbsid'), Config::get('pbspwd'));
@@ -2382,6 +2426,7 @@ function annul(int $id)
 {
     /** @var Invoice */
     $invoice = ORM::getOne(Invoice::class, $id);
+    assert($invoice instanceof Invoice);
 
     try {
         $epaymentService = new EpaymentAdminService(Config::get('pbsid'), Config::get('pbspwd'));

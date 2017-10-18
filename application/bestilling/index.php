@@ -11,7 +11,8 @@ use AGCMS\Render;
  * Page for sending an order request.
  */
 require_once __DIR__ . '/../inc/Bootstrap.php';
-@include_once _ROOT_ . '/inc/countries.php';
+$countries = [];
+include _ROOT_ . '/inc/countries.php';
 
 // Add item to basket
 $rowId = 0;
@@ -42,6 +43,7 @@ if (($pageId = (int) ($_GET['add'] ?? 0)) || ($rowId = (int) ($_GET['add_list_it
         if (!$table) {
             redirect($redirectUrl);
         }
+        assert($table instanceof Table);
         foreach ($table->getColumns() as $i => $column) {
             if (in_array($column['type'], [Table::COLUMN_TYPE_STRING, Table::COLUMN_TYPE_INT], true)) {
                 $productTitle .= ' ' . ($cells[$i] ?? '');
@@ -58,6 +60,7 @@ if (($pageId = (int) ($_GET['add'] ?? 0)) || ($rowId = (int) ($_GET['add_list_it
         if (!$page || $page->isInactive()) {
             redirect($redirectUrl); // Product does not exist or is disabled
         }
+        assert($page instanceof Page);
 
         if (!$productTitle) {
             $productTitle = $page->getTitle();

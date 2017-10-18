@@ -30,7 +30,7 @@ class File extends AbstractEntity
     /** @var int Object height in px. */
     private $height = 0;
 
-    /** @var string|null Video aspect. */
+    /** @var ?string Video aspect. */
     private $aspect;
 
     /**
@@ -40,14 +40,14 @@ class File extends AbstractEntity
      */
     public function __construct(array $data)
     {
-        $this->setId($data['id'] ?? null)
-            ->setPath($data['path'])
+        $this->setPath($data['path'])
             ->setMime($data['mime'])
             ->setSize($data['size'])
             ->setDescription($data['description'])
             ->setWidth($data['width'])
             ->setHeight($data['height'])
-            ->setAspect($data['aspect']);
+            ->setAspect($data['aspect'])
+            ->setId($data['id'] ?? null);
     }
 
     /**
@@ -196,11 +196,11 @@ class File extends AbstractEntity
     /**
      * Set video aspect.
      *
-     * @param string|null $aspect
+     * @param ?string $aspect
      *
      * @return self
      */
-    public function setAspect(string $aspect = null): self
+    public function setAspect(?string $aspect): self
     {
         $this->aspect = $aspect;
 
@@ -231,7 +231,7 @@ class File extends AbstractEntity
             'alt'    => db()->eandq($this->description),
             'width'  => (string) $this->width,
             'height' => (string) $this->height,
-            'aspect' => $this->aspect ? db()->eandq($this->aspect) : 'NULL',
+            'aspect' => $this->aspect !== null ? db()->eandq($this->aspect) : 'NULL',
         ];
     }
 
@@ -282,11 +282,8 @@ class File extends AbstractEntity
      */
     public function delete(): bool
     {
-        if (@unlink(_ROOT_ . $this->path)) {
-            db()->query('DELETE FROM `' . self::TABLE_NAME . '` WHERE `id` = ' . $this->id);
-            ORM::forget(self::class, $this->id);
-
-            return true;
+        if (unlink(_ROOT_ . $this->path)) {
+            return parent::delete();
         }
 
         return false;

@@ -3,9 +3,13 @@
 use Exception;
 use mysqli;
 
+/**
+ * @property int $insert_id
+ * @property int $affected_rows
+ */
 class DB extends mysqli
 {
-    private static $timeOffset = null;
+    private static $timeOffset;
 
     /**
      * Connect the database and set session to UTF-8 Danish.
@@ -119,6 +123,11 @@ class DB extends mysqli
     public function eandq(string $string): string
     {
         return '"' . $this->esc($string) . '"';
+    }
+
+    public function escNum(float $number, int $decimals = 2): string
+    {
+        return number_format($number, $decimals, '.', '');
     }
 
     /**

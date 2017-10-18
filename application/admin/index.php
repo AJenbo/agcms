@@ -78,6 +78,7 @@ switch ($template) {
         if (null !== $id) {
             /** @var Page */
             $page = ORM::getOne(Page::class, $id);
+            assert($page instanceof Page);
             if ($page) {
                 foreach ($page->getCategories() as $category) {
                     $bindings[$category->getId()] = $category->getPath();
@@ -111,6 +112,7 @@ switch ($template) {
         if (null !== $id) {
             $category = ORM::getOne(Category::class, $id);
             if ($category) {
+                assert($category instanceof Category);
                 $selectedId = $category->getParent() ? $category->getParent()->getId() : null;
             }
         }
@@ -173,12 +175,14 @@ switch ($template) {
     case 'admin-get_db_error':
         $emails = db()->fetchArray("SHOW TABLE STATUS LIKE 'emails'");
         $emails = reset($emails);
+        $page = ORM::getOne(CustomPage::class, 0);
+        assert($page instanceof CustomPage);
         $data = [
             'dbSize' => get_db_size(),
             'wwwSize' => get_size_of_files(),
             'pendingEmails' => db()->fetchOne("SELECT count(*) as 'count' FROM `emails`")['count'],
             'totalDelayedEmails' => $emails['Auto_increment'] - 1,
-            'lastrun' => ORM::getOne(CustomPage::class, 0)->getTimestamp(),
+            'lastrun' => $page->getTimestamp(),
         ] + $data;
         break;
     case 'admin-redigerSpecial':
@@ -186,6 +190,7 @@ switch ($template) {
         $data['pageWidth'] = Config::get('text_width');
         if (1 === $data['page']->getId()) {
             $category = ORM::getOne(Category::class, 0);
+            assert($category instanceof Category);
             $data['category'] = $category;
             $data['textWidth'] = Config::get('text_width');
             $data['pageWidth'] = Config::get('frontpage_width');

@@ -11,6 +11,7 @@ Sajax::export(['updateuser' => ['method' => 'POST']]);
 Sajax::handleClientRequest();
 
 $user = ORM::getOne(User::class, request()->get('id'));
+assert($user instanceof User);
 
 $data = [
     'title' => _('Edit') . ' ' . $user->getFullName(),

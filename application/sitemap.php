@@ -21,10 +21,12 @@ Render::addLoadedTable('sider');
 Render::addLoadedTable('special');
 Render::sendCacheHeader();
 
+$page = ORM::getOne(CustomPage::class, 1);
+assert($page instanceof CustomPage);
 $urls = [
     [
         'loc' => Config::get('base_url') . '/',
-        'lastmod' => ORM::getOne(CustomPage::class, 1)->getTimeStamp(),
+        'lastmod' => $page->getTimeStamp(),
         'changefreq' => 'monthly',
         'priority' => '0.7',
     ],
@@ -38,6 +40,7 @@ $urls = [
 
 $activeCategoryIds = [0];
 $categories = ORM::getByQuery(Category::class, 'SELECT * FROM kat');
+assert($categories instanceof Category);
 foreach ($categories as $category) {
     if ($category->isInactive()) {
         continue;
@@ -63,6 +66,7 @@ $pages = ORM::getByQuery(
 );
 unset($activeCategoryIds);
 foreach ($pages as $page) {
+    assert($page instanceof Page);
     $urls[] = [
         'loc' => Config::get('base_url') . $page->getCanonicalLink(),
         'lastmod' => $page->getTimeStamp(),
@@ -81,6 +85,7 @@ if ($brandIds) {
         '
     );
     foreach ($brands as $brand) {
+        assert($brand instanceof Brand);
         $urls[] = [
             'loc' => Config::get('base_url') . $brand->getCanonicalLink(),
             'changefreq' => 'weekly',
@@ -93,6 +98,7 @@ unset($brandIds);
 
 $requirements = ORM::getByQuery(Requirement::class, 'SELECT * FROM krav');
 foreach ($requirements as $requirement) {
+    assert($requirement instanceof Requirement);
     $urls[] = [
         'loc' => Config::get('base_url') . $requirement->getCanonicalLink(),
         'changefreq' => 'monthly',

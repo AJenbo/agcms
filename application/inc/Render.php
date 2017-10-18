@@ -291,6 +291,7 @@ class Render
             if ($request->get('maerke')) {
                 $brand = ORM::getOne(Brand::class, $request->get('maerke'));
                 if ($brand) {
+                    assert($brand instanceof Brand);
                     redirect($brand->getCanonicalLink(), Response::HTTP_MOVED_PERMANENTLY);
                 }
             } elseif ($request->get('q') && !$request->get('sog')) {
@@ -339,6 +340,7 @@ class Render
             $categoryIds = [0];
             $categories = ORM::getByQuery(Category::class, 'SELECT * FROM kat');
             foreach ($categories as $category) {
+                assert($category instanceof Category);
                 if ($category->isInactive()) {
                     continue;
                 }
@@ -401,7 +403,9 @@ class Render
             self::$bodyHtml = self::$activeRequirement->getHtml();
             self::$crumbs[] = self::$activeRequirement;
         } elseif ('index' === self::$pageType) {
-            self::$bodyHtml = ORM::getOne(CustomPage::class, 1)->getHtml();
+            $page = ORM::getOne(CustomPage::class, 1);
+            assert($page instanceof CustomPage);
+            self::$bodyHtml = $page->getHtml();
             self::$activeCategory = ORM::getOne(Category::class, 0);
         }
 
@@ -419,7 +423,7 @@ class Render
     /**
      * Load data from a brand.
      */
-    private static function loadBrandData(Brand $brand = null): void
+    private static function loadBrandData(?Brand $brand): void
     {
         if (!$brand) {
             return;
@@ -441,7 +445,7 @@ class Render
     /**
      * Load data from a category.
      */
-    private static function loadCategoryData(Category $category = null): void
+    private static function loadCategoryData(?Category $category): void
     {
         if (!$category) {
             return;
@@ -475,7 +479,7 @@ class Render
     /**
      * Load data from a page.
      */
-    private static function loadPageData(Page $page = null): void
+    private static function loadPageData(?Page $page): void
     {
         if (!$page) {
             return;
@@ -568,6 +572,7 @@ class Render
 
         // Remove inactive pages
         foreach ($pages as $key => $page) {
+            assert($page instanceof Page);
             if ($page->isInactive()) {
                 unset($pages[$key]);
             }
@@ -620,6 +625,7 @@ class Render
             "
         );
         foreach ($categories as $category) {
+            assert($category instanceof Category);
             if ($category->isVisable() && !$category->isInactive()) {
                 $searchMenu[] = $category;
             }
@@ -638,13 +644,16 @@ class Render
     public static function getTableHtml(int $tableId, int $orderBy = null, Category $category = null): string
     {
         $table = ORM::getOne(Table::class, $tableId);
-        if (!$table || !$rows = $table->getRows($orderBy)) {
+        if (!$table) {
             return '';
         }
-        $columns = $table->getColumns();
+        assert($table instanceof Table);
 
         if (null === $orderBy) {
-            $orderBy = (int) $table->getOrderBy();
+            $orderBy = $table->getOrderBy();
+        }
+        if (!$rows = $table->getRows($orderBy)) {
+            return '';
         }
 
         // Eager load data
@@ -663,6 +672,7 @@ class Render
             $html .= '<caption>' . xhtmlEsc($table->getTitle()) . '</caption>';
         }
         $html .= '<thead><tr>';
+        $columns = $table->getColumns();
         foreach ($columns as $columnId => $column) {
             if (in_array($column['type'], [Table::COLUMN_TYPE_PRICE, Table::COLUMN_TYPE_PRICE_NEW], true)) {
                 self::$hasProductList = true;
@@ -690,6 +700,7 @@ class Render
             $page = null;
             if ($row['link']) {
                 $page = ORM::getOne(Page::class, $row['link']);
+                assert($page instanceof Page);
                 $linkTag = '<a href="' . xhtmlEsc($page->getCanonicalLink($category)) . '">';
             }
             foreach ($columns as $columnId => $column) {

@@ -5,7 +5,7 @@ use AGCMS\Render;
 
 abstract class AbstractEntity implements InterfaceEntity
 {
-    /** @var int|null The entity ID. */
+    /** @var ?int The entity ID. */
     protected $id;
 
     /**
@@ -89,7 +89,7 @@ abstract class AbstractEntity implements InterfaceEntity
             VALUES (' . implode(',', $data) . ')'
         );
         $this->setId(db()->insert_id);
-        ORM::remember(static::class, $this->id, $this);
+        ORM::remember(static::class, db()->insert_id, $this);
     }
 
     /**
@@ -101,10 +101,7 @@ abstract class AbstractEntity implements InterfaceEntity
         foreach ($data as $filedName => $value) {
             $sets[] = '`' . $filedName . '` = ' . $value;
         }
-        db()->query(
-            'UPDATE `' . static::TABLE_NAME . '` SET ' . implode(',', $sets)
-            . ' WHERE `id` = ' . $this->id
-        );
+        db()->query('UPDATE `' . static::TABLE_NAME . '` SET ' . implode(',', $sets) . ' WHERE `id` = ' . $this->id);
     }
 
     /**
@@ -119,7 +116,7 @@ abstract class AbstractEntity implements InterfaceEntity
         }
 
         db()->query('DELETE FROM `' . static::TABLE_NAME . '` WHERE `id` = ' . $this->id);
-        ORM::forget(static::class, $this->id);
+        ORM::forget(static::class, $this->getId());
 
         return true;
     }

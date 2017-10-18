@@ -5,12 +5,17 @@ use AGCMS\Entity\Invoice;
 use AGCMS\ORM;
 
 require_once __DIR__ . '/logon.php';
-@include_once _ROOT_ . '/inc/countries.php';
+$countries = [];
+include _ROOT_ . '/inc/countries.php';
 
 $id = (int) request()->get('id');
 /** @var \AGCMS\Entity\Invoice */
 $invoice = ORM::getOne(Invoice::class, $id);
-if (!$invoice || 'new' === $invoice->getStatus()) {
+if (!$invoice) {
+    die(_('Can\'t print.'));
+}
+assert($invoice instanceof Invoice);
+if ('new' === $invoice->getStatus()) {
     die(_('Can\'t print.'));
 }
 
@@ -42,7 +47,8 @@ $pdf->setImageScale(PDF_IMAGE_SCALE_RATIO);
 
 // set some language-dependent strings (optional)
 if (file_exists(_ROOT_ . '/vendor/tecnickcom/tcpdf/examples/lang/dan.php')) {
-    require_once _ROOT_ . '/vendor/tecnickcom/tcpdf/examples/lang/dan.php';
+    $l = [];
+    include _ROOT_ . '/vendor/tecnickcom/tcpdf/examples/lang/dan.php';
     $pdf->setLanguageArray($l);
 }
 

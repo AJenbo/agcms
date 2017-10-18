@@ -26,19 +26,19 @@ class Page extends AbstractRenderable
     /** @var string Short text description. */
     private $excerpt = '';
 
-    /** @var string|null Thumbnail path. */
+    /** @var ?string Thumbnail path. */
     private $iconPath;
 
-    /** @var int|null Id of requirement page. */
+    /** @var ?int Id of requirement page. */
     private $requirementId;
 
-    /** @var int|null Id of brand. */
+    /** @var ?int Id of brand. */
     private $brandId;
 
-    /** @int Current price. */
+    /** @var int Current price. */
     private $price = 0;
 
-    /** @var Previous price. */
+    /** @var int Previous price. */
     private $oldPrice = 0;
 
     /** @var int What type of price is the current (from, specific). */
@@ -54,12 +54,9 @@ class Page extends AbstractRenderable
      */
     public function __construct(array $data)
     {
-        $this->setId($data['id'] ?? null)
-            ->setSku($data['sku'])
+        $this->setSku($data['sku'])
             ->setTimeStamp($data['timestamp'] ?? 0)
-            ->setTitle($data['title'])
             ->setKeywords($data['keywords'])
-            ->setHtml($data['html'])
             ->setExcerpt($data['excerpt'])
             ->setIconPath($data['icon_path'])
             ->setRequirementId($data['requirement_id'])
@@ -67,7 +64,10 @@ class Page extends AbstractRenderable
             ->setPrice($data['price'])
             ->setOldPrice($data['old_price'])
             ->setPriceType($data['price_type'])
-            ->setOldPriceType($data['old_price_type']);
+            ->setOldPriceType($data['old_price_type'])
+            ->setHtml($data['html'])
+            ->setTitle($data['title'])
+            ->setId($data['id'] ?? null);
     }
 
     /**
@@ -250,7 +250,7 @@ class Page extends AbstractRenderable
         return (bool) $this->excerpt;
     }
 
-    public function setIconPath(string $iconPath = null): self
+    public function setIconPath(?string $iconPath): self
     {
         $this->iconPath = $iconPath;
 
@@ -276,7 +276,7 @@ class Page extends AbstractRenderable
      *
      * @return self
      */
-    public function setRequirementId(int $requirementId = null): self
+    public function setRequirementId(?int $requirementId): self
     {
         $this->requirementId = $requirementId;
 
@@ -290,7 +290,7 @@ class Page extends AbstractRenderable
      *
      * @return self
      */
-    public function setBrandId(int $brandId = null): self
+    public function setBrandId(?int $brandId): self
     {
         $this->brandId = $brandId;
 
@@ -542,7 +542,11 @@ class Page extends AbstractRenderable
      */
     public function getBrand(): ?Brand
     {
-        return null !== $this->brandId ? ORM::getOne(Brand::class, $this->brandId) : null;
+        if (null === $this->brandId) {
+            return null;
+        }
+
+        return ORM::getOne(Brand::class, $this->brandId);
     }
 
     /**
@@ -550,7 +554,11 @@ class Page extends AbstractRenderable
      */
     public function getRequirement(): ?Requirement
     {
-        return null !== $this->requirementId ? ORM::getOne(Requirement::class, $this->requirementId) : null;
+        if (null === $this->requirementId) {
+            return null;
+        }
+
+        return ORM::getOne(Requirement::class, $this->requirementId);
     }
 
     /**
