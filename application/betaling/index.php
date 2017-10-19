@@ -14,8 +14,8 @@ require_once __DIR__ . '/../inc/Bootstrap.php';
 $countries = [];
 include _ROOT_ . '/inc/countries.php';
 
-$id = intval($_GET['id'] ?? 0) ?: null;
-$checkid = $_GET['checkid'] ?? '';
+$id = (int) request()->get('id', 0) ?: null;
+$checkid = request()->get('checkid', '');
 
 Render::$pageType = 'custome';
 Render::$crumbs = [[
@@ -26,134 +26,131 @@ Render::$crumbs = [[
 /** @var Invoice */
 $invoice = $id ? ORM::getOne(Invoice::class, $id) : null;
 
-if (isset($_GET['txnid'])) {
-    Render::$crumbs = [[
-        'title' => _('Error'),
-        'canonicalLink' => urldecode($_SERVER['REQUEST_URI']),
-    ]];
+if (request()->query->has('txnid')) {
     Render::$title = _('Error');
     Render::$headline = _('Error');
-    Render::$bodyHtml = _('An unknown error occured.');
 
-    $amount = intval($_GET['amount'] ?? 0);
+    $amount = (float) request()->get('amount', 0);
 
-    $params = $_GET;
+    $params = request()->query->all();
     unset($params['hash']);
     $eKey = md5(implode('', $params) . Config::get('pbspassword'));
     unset($params);
 
+    if (!$invoice) {
+        Render::$bodyHtml = _('The payment does not exist in our system.');
+        Render::outputPage();
+        return;
+    }
+
     $adminEmailSubject = _('Payment code was tampered with!');
     $adminEmailTemplate = 'email-admin-payment-error';
 
-    if (!$invoice) {
-        Render::$bodyHtml = _('The payment does not exist in our system.');
-        $adminEmailSubject = _('Payment not found!');
-        $adminEmailTemplate = 'email-admin-payment-404';
-    } else {
-        assert($invoice instanceof Invoice);
-        if (in_array($invoice->getStatus(), ['canceled', 'rejected'])) {
-            Render::$crumbs[] = [
-                'title' => _('Reciept'),
-                'canonicalLink' => urldecode($_SERVER['REQUEST_URI']),
-            ];
-            Render::$title = _('Reciept');
-            Render::$headline = _('Reciept');
-            Render::$bodyHtml = _('This trade has been canceled or refused.');
-            $adminEmailSubject = _('Payment cancled');
-            $adminEmailTemplate = 'email-admin-payment-cancle';
-        } elseif (!in_array($invoice->getStatus(), ['locked', 'new', 'pbserror'])) {
-            Render::$crumbs[] = [
-                'title' => _('Reciept'),
-                'canonicalLink' => urldecode($_SERVER['REQUEST_URI']),
-            ];
-            Render::$title = _('Reciept');
-            Render::$headline = _('Reciept');
-            Render::$bodyHtml = _('Payment is registered and you ought to have received a receipt by email.');
-            $adminEmailSubject = _('Viewed payment');
-            $adminEmailTemplate = 'email-admin-payment-blocked';
-        } elseif ($eKey == $_GET['hash']) {
-            Render::$crumbs[] = [
-                'title' => _('Reciept'),
-                'canonicalLink' => urldecode($_SERVER['REQUEST_URI']),
-            ];
-            Render::$title = _('Reciept');
-            Render::$headline = _('Reciept');
+    Render::$bodyHtml = _('An unknown error occured.');
+    assert($invoice instanceof Invoice);
+    if (in_array($invoice->getStatus(), ['canceled', 'rejected'])) {
+        Render::$crumbs[] = [
+            'title' => _('Reciept'),
+            'canonicalLink' => urldecode(request()->getRequestUri()),
+        ];
+        Render::$title = _('Reciept');
+        Render::$headline = _('Reciept');
+        Render::$bodyHtml = _('This trade has been canceled or refused.');
+        $adminEmailSubject = _('Payment cancled');
+        $adminEmailTemplate = 'email-admin-payment-cancle';
+    } elseif (!in_array($invoice->getStatus(), ['locked', 'new', 'pbserror'])) {
+        Render::$crumbs[] = [
+            'title' => _('Reciept'),
+            'canonicalLink' => urldecode(request()->getRequestUri()),
+        ];
+        Render::$title = _('Reciept');
+        Render::$headline = _('Reciept');
+        Render::$bodyHtml = _('Payment is registered and you ought to have received a receipt by email.');
+        $adminEmailSubject = _('Viewed payment');
+        $adminEmailTemplate = 'email-admin-payment-blocked';
+    } elseif ($eKey === request()->get('hash')) {
+        Render::$crumbs[] = [
+            'title' => _('Reciept'),
+            'canonicalLink' => urldecode(request()->getRequestUri()),
+        ];
+        Render::$title = _('Reciept');
+        Render::$headline = _('Reciept');
 
-            $cardtype = [
-                1  => 'Dankort/Visa-Dankort',
-                2  => 'eDankort',
-                3  => 'Visa / Visa Electron',
-                4  => 'MastercCard',
-                6  => 'JCB',
-                7  => 'Maestro',
-                8  => 'Diners Club',
-                9  => 'American Express',
-                11 => 'Forbrugsforeningen',
-                12 => 'Nordea e-betaling',
-                13 => 'Danske Netbetalinger',
-                14 => 'PayPal',
-                17 => 'Klarna',
-                18 => 'SveaWebPay',
-                23 => 'ViaBill',
-                24 => 'NemPay',
-            ];
+        $cardtype = [
+            1  => 'Dankort/Visa-Dankort',
+            2  => 'eDankort',
+            3  => 'Visa / Visa Electron',
+            4  => 'MastercCard',
+            6  => 'JCB',
+            7  => 'Maestro',
+            8  => 'Diners Club',
+            9  => 'American Express',
+            11 => 'Forbrugsforeningen',
+            12 => 'Nordea e-betaling',
+            13 => 'Danske Netbetalinger',
+            14 => 'PayPal',
+            17 => 'Klarna',
+            18 => 'SveaWebPay',
+            23 => 'ViaBill',
+            24 => 'NemPay',
+        ];
 
-            $invoice->setCardtype($cardtype[$_GET['paymenttype']])->save();
+        $invoice->setCardtype($cardtype[request()->get('paymenttype')])->save();
 
-            Render::$bodyHtml = Render::render('partial-payment-confirmation');
+        Render::$bodyHtml = Render::render('partial-payment-confirmation');
 
-            $adminEmailSubject = _('Payment complete');
-            $adminEmailTemplate = 'email-admin-payment-confirmation';
+        $adminEmailSubject = _('Payment complete');
+        $adminEmailTemplate = 'email-admin-payment-confirmation';
 
-            $withTax = $invoice->getAmount() - $invoice->getShipping();
-            $tax = $withTax * (1 - (1 / (1 + $invoice->getVat())));
+        $withTax = $invoice->getAmount() - $invoice->getShipping();
+        $tax = $withTax * (1 - (1 / (1 + $invoice->getVat())));
 
-            Render::$track = "ga('ecommerce:addTransaction',{'id':'" . $invoice->getId()
-            . "','revenue':'" . $invoice->getAmount()
-            . "','shipping':'" . $invoice->getShipping()
-            . "','tax':'" . $tax . "'});";
-            foreach ($invoice->getItems() as $item) {
-                Render::$track .= "ga('ecommerce:addItem',{'id':'" . $invoice->getId()
-                . "','name':" . json_encode($item['title'])
-                . ",'price': '" . ($item['value'] * (1 + $invoice->getVat()))
-                . "','quantity': '" . $item['quantity'] . "'});";
-            }
-            Render::$track .= "ga('ecommerce:send');";
-
-            if (!valideMail($invoice->getDepartment())) {
-                $invoice->setDepartment(first(Config::get('emails'))['address']);
-            }
-
-            $data = [
-                'invoice'  => $invoice,
-                'siteName' => Config::get('site_name'),
-                'address'  => Config::get('address'),
-                'postcode' => Config::get('postcode'),
-                'city'     => Config::get('city'),
-                'phone'    => Config::get('phone'),
-            ];
-            sendEmails(
-                sprintf(_('Order #%d - payment completed'), $invoice->getId()),
-                Render::render('email-payment-confirmation', $data),
-                $invoice->getDepartment(),
-                '',
-                $invoice->getEmail(),
-                $invoice->getName()
-            );
+        Render::$track = "ga('ecommerce:addTransaction',{'id':'" . $invoice->getId()
+        . "','revenue':'" . $invoice->getAmount()
+        . "','shipping':'" . $invoice->getShipping()
+        . "','tax':'" . $tax . "'});";
+        foreach ($invoice->getItems() as $item) {
+            Render::$track .= "ga('ecommerce:addItem',{'id':'" . $invoice->getId()
+            . "','name':" . json_encode($item['title'])
+            . ",'price': '" . ($item['value'] * (1 + $invoice->getVat()))
+            . "','quantity': '" . $item['quantity'] . "'});";
         }
+        Render::$track .= "ga('ecommerce:send');";
 
         if (!valideMail($invoice->getDepartment())) {
             $invoice->setDepartment(first(Config::get('emails'))['address']);
         }
 
+        $data = [
+            'invoice'  => $invoice,
+            'siteName' => Config::get('site_name'),
+            'address'  => Config::get('address'),
+            'postcode' => Config::get('postcode'),
+            'city'     => Config::get('city'),
+            'phone'    => Config::get('phone'),
+        ];
         sendEmails(
-            sprintf(_('Attn.: %s - Online invoice #%d : %s'), $invoice->getClerk(), $id, $adminEmailSubject),
-            Render::render($adminEmailTemplate, ['invoice' => $invoice]),
+            sprintf(_('Order #%d - payment completed'), $invoice->getId()),
+            Render::render('email-payment-confirmation', $data),
             $invoice->getDepartment(),
             '',
-            $invoice->getDepartment()
+            $invoice->getEmail(),
+            $invoice->getName()
         );
     }
+
+    if (!valideMail($invoice->getDepartment())) {
+        $invoice->setDepartment(first(Config::get('emails'))['address']);
+    }
+
+    sendEmails(
+        sprintf(_('Attn.: %s - Online invoice #%d : %s'), $invoice->getClerk(), $id, $adminEmailSubject),
+        Render::render($adminEmailTemplate, ['invoice' => $invoice]),
+        $invoice->getDepartment(),
+        '',
+        $invoice->getDepartment()
+    );
+
     Render::outputPage();
     return;
 }
@@ -167,7 +164,7 @@ if (!$invoice || $checkid !== $invoice->getCheckid()) {
         'checkid' => $checkid,
     ];
     Render::$bodyHtml = Render::render('partial-payment-manual', $data);
-    if ($checkid) {
+    if ($invoice && $checkid) {
         Render::$bodyHtml = _('The code is not correct!');
     }
     Render::outputPage();
@@ -176,7 +173,7 @@ if (!$invoice || $checkid !== $invoice->getCheckid()) {
 assert($invoice instanceof Invoice);
 
 if (in_array($invoice->getStatus(), ['new', 'locked', 'pbserror'])) {
-    if (empty($_GET['step'])) { //Show order
+    if (!request()->get('step')) { //Show order
         $invoice->setStatus('locked')->save();
 
         Render::$crumbs = [[
@@ -186,49 +183,48 @@ if (in_array($invoice->getStatus(), ['new', 'locked', 'pbserror'])) {
         Render::$title = _('Order #') . $id;
         Render::$headline = _('Order #') . $id;
         Render::$bodyHtml = Render::render('partial-payment-form0', ['invoice' => $invoice]);
-    } elseif (1 == $_GET['step']) { //Fill out customer info
-        if ($_POST) {
-            $invoice->setName($_POST['navn'])
-                ->setAtt($_POST['att'] != $_POST['navn'] ? $_POST['att'] : '')
-                ->setAddress($_POST['adresse'])
-                ->setPostbox($_POST['postbox'])
-                ->setPostcode($_POST['postnr'])
-                ->setCity($_POST['by'])
-                ->setCountry($_POST['land'])
-                ->setEmail($_POST['email'])
-                ->setPhone1($_POST['tlf1'] != $_POST['tlf2'] ? $_POST['tlf1'] : '')
-                ->setPhone2($_POST['tlf2'])
-                ->setHasShippingAddress(!empty($_POST['altpost']))
-                ->setShippingPhone($_POST['posttlf'])
-                ->setShippingName($_POST['postname'])
-                ->setShippingAtt($_POST['postatt'] != $_POST['postname'] ? $_POST['postatt'] : '')
-                ->setShippingAddress($_POST['postaddress'])
-                ->setShippingAddress2($_POST['postaddress2'])
-                ->setShippingPostbox($_POST['postpostbox'])
-                ->setShippingPostcode($_POST['postpostalcode'])
-                ->setShippingCity($_POST['postcity'])
-                ->setShippingCountry($_POST['postcountry'])
-                ->setNote($_POST['note'] ?? '')
+    } elseif (1 === request()->query->getInt('step')) { //Fill out customer info
+        if (request()->request->count()) {
+            $invoice->setName(request()->get('navn'))
+                ->setAtt(request()->get('att') !== request()->get('navn') ? request()->get('att') : '')
+                ->setAddress(request()->get('adresse'))
+                ->setPostbox(request()->get('postbox'))
+                ->setPostcode(request()->get('postnr'))
+                ->setCity(request()->get('by'))
+                ->setCountry(request()->get('land'))
+                ->setEmail(request()->get('email'))
+                ->setPhone1(request()->get('tlf1') !== request()->get('tlf2') ? request()->get('tlf1') : '')
+                ->setPhone2(request()->get('tlf2'))
+                ->setHasShippingAddress(request()->request->getBoolean('altpost'))
+                ->setShippingPhone(request()->get('posttlf'))
+                ->setShippingName(request()->get('postname'))
+                ->setShippingAtt(request()->get('postatt') !== request()->get('postname') ? request()->get('postatt') : '')
+                ->setShippingAddress(request()->get('postaddress'))
+                ->setShippingAddress2(request()->get('postaddress2'))
+                ->setShippingPostbox(request()->get('postpostbox'))
+                ->setShippingPostcode(request()->get('postpostalcode'))
+                ->setShippingCity(request()->get('postcity'))
+                ->setShippingCountry(request()->get('postcountry'))
+                ->setNote(request()->get('note', ''))
                 ->save();
         }
 
         $invalid = $invoice->getInvalid();
 
-        //TODO move down to skip address page if valid
-        if ($_POST && !$invalid) {
-            if (!empty($_POST['newsletter'])) {
+        if (request()->request->count() && !$invalid) {
+            if (request()->request->getBoolean('newsletter')) {
                 // TODO check if email already exists and overwrite.
                 $conteact = new Contact([
-                    'name'       => $_POST['navn'],
-                    'email'      => $_POST['email'],
-                    'address'    => $_POST['adresse'],
-                    'country'    => $countries[$_POST['land']],
-                    'postcode'   => $_POST['postnr'],
-                    'city'       => $_POST['by'],
-                    'phone1'     => $_POST['tlf1'] != $_POST['tlf2'] ? $_POST['tlf1'] : '',
-                    'phone2'     => $_POST['tlf2'],
+                    'name'       => $invoice->getName(),
+                    'email'      => $invoice->getEmail(),
+                    'address'    => $invoice->getAddress(),
+                    'country'    => $countries[$invoice->getCountry()],
+                    'postcode'   => $invoice->getPostcode(),
+                    'city'       => $invoice->getCity(),
+                    'phone1'     => $invoice->getPhone1(),
+                    'phone2'     => $invoice->getPhone2(),
                     'newsletter' => 1,
-                    'ip'         => $_SERVER['REMOTE_ADDR'],
+                    'ip'         => request()->getClientIp(),
                 ]);
                 $conteact->save();
             }
@@ -245,13 +241,13 @@ if (in_array($invoice->getStatus(), ['new', 'locked', 'pbserror'])) {
 
         $data = [
             'countries'   => $countries,
-            'newsletter'  => !empty($_POST['newsletter']),
+            'newsletter'  => request()->request->getBoolean('newsletter'),
             'invoice'     => $invoice,
             'invalid'     => $invalid,
             'submitLabel' => 'Proceed to the terms of trade',
         ];
         Render::$bodyHtml = Render::render('partial-order-form1', $data);
-    } elseif (2 == $_GET['step']) { //Accept terms and continue to payment
+    } elseif (2 === request()->query->getInt('step')) { //Accept terms and continue to payment
         if ($invoice->getInvalid()) {
             redirect($invoice->getLink() . '&step=1');
         }
@@ -277,7 +273,7 @@ if (in_array($invoice->getStatus(), ['new', 'locked', 'pbserror'])) {
             'amount'         => number_format($invoice->getAmount(), 2, '', ''),
             'ownreceipt'     => 1,
             'accepturl'      => $invoice->getLink(),
-            'cancelurl'      => Config::get('base_url') . $_SERVER['REQUEST_URI'],
+            'cancelurl'      => Config::get('base_url') . request()->getRequestUri(),
             'windowstate'    => 3,
             'windowid'       => Config::get('pbswindow'),
         ];
