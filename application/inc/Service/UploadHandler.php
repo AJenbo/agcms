@@ -44,7 +44,7 @@ class UploadHandler
         int $width = 0,
         int $height = 0,
         string $aspect = null
-    ): void {
+    ): File {
         if (!$uploadedFile->isValid()) {
             throw new Exception(_('No file recived.'));
         }
@@ -58,7 +58,7 @@ class UploadHandler
 
         $this->file = $uploadedFile;
 
-        $this->processFile($destinationType, $description, $width, $height, $aspect);
+        return $this->processFile($destinationType, $description, $width, $height, $aspect);
     }
 
     private function processFile(
@@ -67,7 +67,7 @@ class UploadHandler
         int $width,
         int $height,
         ?string $aspect
-    ): void {
+    ): File {
         if ($this->isImageFile()) {
             $aspect = null;
             $image = new Image($this->file->getRealPath());
@@ -83,7 +83,7 @@ class UploadHandler
             $height = $image->getHeight();
         }
 
-        $this->insertFile($description, $width, $height, $aspect);
+        return $this->insertFile($description, $width, $height, $aspect);
     }
 
     private function isImageFile(): bool
@@ -98,7 +98,7 @@ class UploadHandler
 
     private function shouldProcessImage(Image $image, int $width, int $height, string $destinationType): bool
     {
-        if ('image' !== $destinationType && 'lineimage' !== $destinationType) {
+        if ($destinationType && 'image' !== $destinationType && 'lineimage' !== $destinationType) {
             return false;
         }
 
@@ -145,7 +145,7 @@ class UploadHandler
         }
     }
 
-    private function insertFile(string $description, int $width, int $height, ?string $aspect): void
+    private function insertFile(string $description, int $width, int $height, ?string $aspect): File
     {
         $file = File::getByPath($this->getDestination());
         if ($file) {
@@ -154,7 +154,7 @@ class UploadHandler
 
         $this->file->move(_ROOT_ . $this->targetPath, $this->baseName . '.' . $this->extension);
 
-        File::fromPath($this->getDestination())
+        return File::fromPath($this->getDestination())
             ->setDescription($description)
             ->setWidth($width)
             ->setHeight($height)

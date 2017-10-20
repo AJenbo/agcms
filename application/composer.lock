@@ -4,20 +4,20 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "content-hash": "78c9378a69e15e1e6b519e3a6f6710c0",
+    "content-hash": "5597b0475b80f4fa536bd2400a8fd35a",
     "packages": [
         {
             "name": "ajenbo/image.php",
-            "version": "0.9.3",
+            "version": "dev-master",
             "source": {
                 "type": "git",
                 "url": "https://github.com/AJenbo/Image.php.git",
-                "reference": "c5dfe113fe620a33a4efdb119c5c8ddbaf297760"
+                "reference": "e90603ba5e3a6fa33a11684b44b12171af863265"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/AJenbo/Image.php/zipball/c5dfe113fe620a33a4efdb119c5c8ddbaf297760",
-                "reference": "c5dfe113fe620a33a4efdb119c5c8ddbaf297760",
+                "url": "https://api.github.com/repos/AJenbo/Image.php/zipball/e90603ba5e3a6fa33a11684b44b12171af863265",
+                "reference": "e90603ba5e3a6fa33a11684b44b12171af863265",
                 "shasum": ""
             },
             "require": {
@@ -32,10 +32,10 @@
             },
             "description": "Helper function for simple image manipulation using GD functions.",
             "support": {
-                "source": "https://github.com/AJenbo/Image.php/tree/0.9.3",
+                "source": "https://github.com/AJenbo/Image.php/tree/master",
                 "issues": "https://github.com/AJenbo/Image.php/issues"
             },
-            "time": "2017-10-16T20:47:13+00:00"
+            "time": "2017-10-16T22:04:03+00:00"
         },
         {
             "name": "ajenbo/imap.php",
@@ -264,16 +264,16 @@
         },
         {
             "name": "symfony/polyfill-mbstring",
-            "version": "v1.5.0",
+            "version": "v1.6.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/polyfill-mbstring.git",
-                "reference": "7c8fae0ac1d216eb54349e6a8baa57d515fe8803"
+                "reference": "2ec8b39c38cb16674bbf3fea2b6ce5bf117e1296"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/polyfill-mbstring/zipball/7c8fae0ac1d216eb54349e6a8baa57d515fe8803",
-                "reference": "7c8fae0ac1d216eb54349e6a8baa57d515fe8803",
+                "url": "https://api.github.com/repos/symfony/polyfill-mbstring/zipball/2ec8b39c38cb16674bbf3fea2b6ce5bf117e1296",
+                "reference": "2ec8b39c38cb16674bbf3fea2b6ce5bf117e1296",
                 "shasum": ""
             },
             "require": {
@@ -285,7 +285,7 @@
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-master": "1.5-dev"
+                    "dev-master": "1.6-dev"
                 }
             },
             "autoload": {
@@ -319,7 +319,7 @@
                 "portable",
                 "shim"
             ],
-            "time": "2017-06-14T15:44:48+00:00"
+            "time": "2017-10-11T12:05:26+00:00"
         },
         {
             "name": "tecnickcom/tcpdf",
@@ -565,7 +565,8 @@
     "aliases": [],
     "minimum-stability": "stable",
     "stability-flags": {
-        "ajenbo/sajax": 20
+        "ajenbo/sajax": 20,
+        "ajenbo/image.php": 20
     },
     "prefer-stable": false,
     "prefer-lowest": false,

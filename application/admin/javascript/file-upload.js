@@ -157,7 +157,7 @@ function send()
     form.append('aspect', document.getElementById('aspect').value);
 
     for(var i = 0; i < files.length; i++) {
-        form.append('Filedata', files[i]);
+        form.append('upload', files[i]);
         try {
             x = new window.XMLHttpRequest();
         } catch(e) {
@@ -181,8 +181,14 @@ function getOnLoadFunction(x, i)
     return function(data) {
         uploads[i] = totals[i];
         updateProgress();
-        if(x.status !== 200) {
-            alert('Error: ' + x.responseText);
+        var result;
+        try {
+            result = JSON.parse(x.responseText);
+        } catch(err) {
+            result = { "uploaded" : (x.status === 200 ? 1 : 0), "error" : { "message" : "Error: " + x.responseText } };
+        }
+        if(!result.uploaded) {
+            alert(result.error.message);
         }
     };
 }

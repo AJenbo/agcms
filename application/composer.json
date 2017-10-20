@@ -30,7 +30,7 @@
         "ezyang/htmlpurifier":  ">=4.4",
         "tecnickcom/tcpdf": "^6.2",
         "ajenbo/sajax" : "dev-master",
-        "ajenbo/image.php": "^0.9.1",
+        "ajenbo/image.php": "dev-master",
         "ajenbo/imap.php": "^0.9.1",
         "twig/twig": "^2.0",
         "symfony/http-foundation": "^3.3"
