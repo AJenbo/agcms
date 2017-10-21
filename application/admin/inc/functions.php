@@ -807,101 +807,52 @@ function showfiles(string $dir): array
 
 function filejavascript(File $file): string
 {
-    $pathinfo = pathinfo($file->getPath());
+    $data = [
+        'id'          => $file->getId(),
+        'path'        => $file->getPath(),
+        'mime'        => $file->getMime(),
+        'name'        => pathinfo($file->getPath(), PATHINFO_FILENAME),
+        'width'       => $file->getWidth(),
+        'height'      => $file->getHeight(),
+        'description' => $file->getDescription(),
+    ];
 
-    $javascript = '
-    files[' . $file->getId() . '] = new file(' . $file->getId() . ', \'' . $file->getPath() . '\', \''
-        . $pathinfo['filename'] . '\'';
-
-    $javascript .= ', \'';
-    switch ($file->getMime()) {
-        case 'image/jpeg':
-        case 'image/png':
-        case 'image/gif':
-            $javascript .= 'image';
-            break;
-        case 'video/avi':
-        case 'video/x-msvideo':
-        case 'video/mpeg':
-        case 'audio/mpeg':
-        case 'video/quicktime':
-        case 'video/x-ms-asf':
-        case 'video/x-ms-wmv':
-        case 'audio/x-wav':
-        case 'audio/midi':
-        case 'audio/x-ms-wma':
-            $javascript .= 'video';
-            break;
-        default:
-            $javascript .= 'unknown';
-            break;
-    }
-    $javascript .= '\'';
-
-    $javascript .= ', \'' . addcslashes(@$file->getDescription(), "\\'") . '\'';
-    $javascript .= ', ' . ($file->getWidth() ?: '0') . '';
-    $javascript .= ', ' . ($file->getHeight() ?: '0') . '';
-    $javascript .= ');';
-
-    return $javascript;
+    return 'files[' . $file->getId() . '] = new file(' . json_encode($data) . ');';
 }
 
 function filehtml(File $file): string
 {
-    $pathinfo = pathinfo($file->getPath());
-    $returnType = request()->get('return');
     $html = '';
 
-    switch ($file->getMime()) {
-        case 'image/gif':
-        case 'image/jpeg':
-        case 'image/png':
-            $html .= '<div id="tilebox' . $file->getId() . '" class="imagetile"><div class="image"';
-            if ('rtef' === $returnType) {
-                $html .= ' onclick="addimg(' . $file->getId() . ')"';
-            } elseif ('thb' === $returnType) {
-                if ($file->getWidth() <= Config::get('thumb_width')
-                    && $file->getHeight() <= Config::get('thumb_height')
-                ) {
-                    $html .= ' onclick="insertThumbnail(' . $file->getId() . ')"';
-                } else {
-                    $html .= ' onclick="open_image_thumbnail(' . $file->getId() . ')"';
-                }
-            } else {
-                $html .= ' onclick="files[' . $file->getId() . '].openfile();"';
-            }
-            break;
-        case 'audio/midi':
-        case 'audio/mpeg':
-        case 'audio/x-ms-wma':
-        case 'audio/x-wav':
-        case 'video/avi':
-        case 'video/mpeg':
-        case 'video/quicktime':
-        case 'video/x-ms-asf':
-        case 'video/x-msvideo':
-        case 'video/x-ms-wmv':
-            $html .= '<div id="tilebox' . $file->getId() . '" class="videotile"><div class="image"';
-            //TODO make the actual functions
-            if ('rtef' === $returnType) {
-                $html .= ' onclick="addmedia(' . $file->getId() . ')"';
-            } else {
-                $html .= ' onclick="files[' . $file->getId() . '].openfile();"';
-            }
-            break;
-        default:
-            $html .= '<div id="tilebox' . $file->getId() . '" class="filetile"><div class="image"';
-            if ('rtef' === $returnType) {
-                $html .= ' onclick="addfile(' . $file->getId() . ')"';
-            } else {
-                $html .= ' onclick="files[' . $file->getId() . '].openfile();"';
-            }
-            break;
+    $menuType = 'filetile';
+    $type = explode('/', $file->getMime());
+    $type = array_shift($type);
+    if ($type === 'audio' || $type === 'video') {
+        $menuType = 'videotile';
+    } elseif (in_array($file->getMime(), ['image/gif', 'image/jpeg', 'image/png'], true)) {
+        $menuType = 'imagetile';
+    }
+    $html .= '<div id="tilebox' . $file->getId() . '" class="' . $menuType . '"><div class="image"';
+
+    $returnType = request()->get('return');
+    if ('ckeditor' === $returnType) {
+        $html .= ' onclick="files[' . $file->getId() . '].addToEditor()"';
+    } elseif ('thb' === $returnType && in_array($file->getMime(), ['image/gif', 'image/jpeg', 'image/png'], true)) {
+        if ($file->getWidth() <= Config::get('thumb_width')
+            && $file->getHeight() <= Config::get('thumb_height')
+        ) {
+            $html .= ' onclick="insertThumbnail(' . $file->getId() . ')"';
+        } else {
+            $html .= ' onclick="openImageThumbnail(' . $file->getId() . ')"';
+        }
+    } else {
+        $html .= ' onclick="files[' . $file->getId() . '].openfile();"';
     }
 
     $html .= '> <img src="';
 
-    $type = 'bin';
+    $type = explode('/', $file->getMime());
+    $type = array_shift($type);
     switch ($file->getMime()) {
         case 'image/gif':
         case 'image/jpeg':
@@ -947,16 +898,11 @@ function filehtml(File $file): string
         case 'application/zip':
             $type = 'zip';
             break;
-        default:
-            $type = explode('/', $file->getMime());
-            $type = array_shift($type);
-            break;
     }
 
     switch ($type) {
         case 'image-native':
-            $html .= 'image.php?path=' . rawurlencode($pathinfo['dirname'] . '/' . $pathinfo['basename'])
-                . '&amp;maxW=128&amp;maxH=96';
+            $html .= '/admin/image.php?path=' . rawurlencode($file->getPath()) . '&amp;maxW=128&amp;maxH=96';
             break;
         case 'pdf':
         case 'image':
@@ -965,19 +911,20 @@ function filehtml(File $file): string
         case 'text':
         case 'sys':
         case 'zip':
-            $html .= 'images/file-' . $type . '.gif';
+            $html .= '/admin/images/file-' . $type . '.gif';
             break;
         default:
-            $html .= 'images/file-bin.gif';
+            $html .= '/admin/images/file-bin.gif';
             break;
     }
 
+    $pathinfo = pathinfo($file->getPath());
     $html .= '" alt="" title="" /> </div><div ondblclick="showfilename(' . $file->getId() . ')" class="navn" id="navn'
-        . $file->getId() . 'div" title="' . $pathinfo['filename'] . '"> ' . $pathinfo['filename']
-        . '</div><form action="" method="get" onsubmit="document.getElementById(\'files\').focus();return false;" style="display:none" id="navn'
-        . $file->getId() . 'form"><p><input onblur="renamefile(\'' . $file->getId() . '\');" maxlength="'
-        . (251 - mb_strlen($pathinfo['dirname'], 'UTF-8')) . '" value="' . $pathinfo['filename']
-        . '" name="" /></p></form></div>';
+    . $file->getId() . 'div" title="' . $pathinfo['filename'] . '"> ' . $pathinfo['filename']
+    . '</div><form action="" method="get" onsubmit="document.getElementById(\'files\').focus();return false;" style="display:none" id="navn'
+    . $file->getId() . 'form"><p><input onblur="renamefile(\'' . $file->getId() . '\');" maxlength="'
+    . (251 - mb_strlen($pathinfo['dirname'], 'UTF-8')) . '" value="' . $pathinfo['filename']
+    . '" name="" /></p></form></div>';
 
     return $html;
 }
@@ -1116,7 +1063,7 @@ Would you like to replace the existing file?'), 'id' => $id];
     if (rename(_ROOT_ . $path, _ROOT_ . $dir . '/' . $filename)) {
         if ($force) {
             db()->query("DELETE FROM files WHERE `path` = '" . db()->esc($newPath) . "%'");
-            //TODO insert new file data (width, alt, height, aspect)
+            //TODO insert new file data (width, alt, height)
         }
 
         db()->query("UPDATE files SET path = REPLACE(path, '" . db()->esc($path) . "', '" . db()->esc($newPath) . "')");

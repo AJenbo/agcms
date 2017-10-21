@@ -1,3 +1,10 @@
+function htmlEncode(value)
+{
+    var div = document.createElement('div')
+    div.innerText = value;
+    return div.innerHTML;
+}
+
 function getContextMenuTarget(object, className)
 {
     while(object.className != className) {
@@ -166,7 +173,7 @@ function getSelectValue(id)
 
 function showimage(obj, img)
 {
-    $("imagelogo").innerHTML = "<img src=\"" + img + "\" />";
+    $("imagelogo").innerHTML = "<img src=\"" + htmlEncode(img) + "\" />";
     $("imagelogo").style.left = obj.offsetLeft + 17 + "px";
     $("imagelogo").style.top = obj.offsetTop + 17 + "px";
     $("imagelogo").style.display = "";

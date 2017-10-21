@@ -278,7 +278,7 @@ function save_r(date)
     }
 
     if(date.status != 'new' && $('note').value) {
-        $$('.note')[0].innerHTML += '<br />' + nl2br($('note').value);
+        $$('.note')[0].innerHTML += '<br />' + htmlEncode($('note').value);
         $('note').value = '';
     }
 

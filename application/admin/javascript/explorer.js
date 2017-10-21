@@ -19,31 +19,68 @@ function init()
     showfiles(activeDir);
 }
 
-function file(id, path, name, type, alt, width, height)
+function file(data)
 {
-    this.id = id;
-    this.path = path;
-    this.name = name;
-    this.alt = alt;
-
-    this.type = 'unknown';
-    if(path) {
-        this.type = type;
-    }
-
-    this.width = screen.availWidth;
-    if(width > 0) {
-        this.width = width;
-    }
-
-    this.height = screen.availHeight;
-    if(height > 0) {
-        this.height = height;
-    }
+    this.id = data.id;
+    this.path = data.path;
+    this.name = data.name;
+    this.description = data.description;
+    this.mime = data.mime;
+    this.width = data.width ? data.width : screen.availWidth;
+    this.height = data.height ? data.height : screen.availHeight;
 }
 
 file.prototype.openfile = function() {
-    viewlFile(this.type, this.id, this.width, this.height);
+    var url = this.path;
+    var type = popupType(this.mime);
+    if(type) {
+        url = 'popup-' + type + '.php?url=' + encodeURIComponent(url);
+    }
+    popUpWin(url, 'file_view', 'toolbar=0', this.width, this.height);
+};
+
+function popupType(mime)
+{
+    if(mime === 'image/gif' || mime === 'image/jpeg' || mime === 'image/png') {
+        return 'image';
+    }
+
+    if(match(/^audio\//g)) {
+        return 'audio';
+    }
+
+    if(match(/^video\//g)) {
+        return 'video';
+    }
+
+    return '';
+}
+
+file.prototype.addToEditor = function() {
+    var html = '<a href="' + htmlEncode(this.path) + '" target="_blank">' + htmlEncode(this.name) + '</a>';
+    switch(type) {
+        case 'image':
+            var html = '<img src="' + htmlEncode(this.path) + '" title="" alt="' + htmlEncode(this.alt) + '" width="'
+                + this.width + '" height="' + this.height + '" />';
+            break;
+        case 'audio':
+            var html = ' <audio src="' + htmlEncode(this.path) + '" controls />';
+            break;
+        case 'video':
+            var html = ' <video width="' + this.width + '" height="' + this.height + '" src="' + htmlEncode(this.path)
+                + '" controls />';
+            break;
+    }
+
+    var element = window.opener.CKEDITOR.dom.element.createFromHtml(html);
+    var CKEDITOR = window.opener.CKEDITOR;
+    for(var i in CKEDITOR.instances) {
+        var currentInstance = i;
+        break;
+    }
+    var oEditor = window.opener.CKEDITOR.instances[currentInstance];
+    oEditor.insertElement(element);
+    window.close();
 };
 
 file.prototype.refreshThumb = function() {
@@ -151,14 +188,14 @@ var imagetileContextMenu = [ {
     }
 } ];
 
-if(window.location.href.match(/return=rtef/g)) {
+if(window.location.href.match(/return=ckeditor/g)) {
     imagetileContextMenu.push({
         "name" : 'Indsæt link',
         "className" : 'link',
         "callback" : function(e) {
             var object = getContextMenuTarget(e.target, 'imagetile');
-            var id = object.id.match(/[0-9]+/g);
-            addfile(id[0]);
+            var id = object.id.match(/[0-9]+/g)[0];
+            files[id].addToEditor();
         }
     });
 }
@@ -187,7 +224,7 @@ imagetileContextMenu = imagetileContextMenu.concat([
       "callback" : function(e) {
           var object = getContextMenuTarget(e.target, 'imagetile');
           var id = object.id.match(/[0-9]+/g);
-          open_image_thumbnail(id[0]);
+          openImageThumbnail(id[0]);
       }
     },
     {
@@ -218,15 +255,6 @@ imagetileContextMenu = imagetileContextMenu.concat([
       }
     }
 ]);
-
-function viewlFile(type, id, width, height)
-{
-    var file = files[id].path;
-    if(type !== 'unknown') {
-        var file = 'popup-' + type + '.php?url=' + encodeURIComponent(files[id].path);
-    }
-    popUpWin(file, 'file_view', 'toolbar=0', width, height);
-}
 
 function edit_alt(id)
 {
@@ -452,7 +480,7 @@ function dir_contract(obj)
     obj.childNodes[1].style.display = 'none';
 }
 
-function open_image_thumbnail(id)
+function openImageThumbnail(id)
 {
     popUpWin('image-edit.php?mode=thb&path=' + encodeURIComponent(files[id].path) + '&id=' + id, 'image_thumbnail',
         'toolbar=0', 740, 600);
@@ -534,24 +562,6 @@ function deletefile_r(data)
 
     removeTagById('tilebox' + data.id);
     files[data.id] = null;
-}
-
-function addfile(id)
-{
-    window.opener.insertHTML('<a href="' + files[id].path + '" target="_blank">Klik her</a>');
-    if(window.opener.window.location.href.indexOf('id=') > -1) {
-        window.opener.updateSide(window.opener.$('id').value);
-    }
-    window.close();
-}
-
-function addimg(id)
-{
-    window.opener.insertHTML('<img src="' + files[id].path + '" alt="' + files[id].alt + '" title="" />');
-    if(window.opener.window.location.href.indexOf('id=') > -1) {
-        window.opener.updateSide(window.opener.$('id').value);
-    }
-    window.close();
 }
 
 function showhide(id)

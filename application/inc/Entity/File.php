@@ -8,8 +8,6 @@ class File extends AbstractEntity
      * Table name in database.
      */
     const TABLE_NAME = 'files';
-    const ASPECT_16_9 = '16-9';
-    const ASPECT_4_3 = '4-3';
 
     // Backed by DB
     /** @var string File path. */
@@ -30,9 +28,6 @@ class File extends AbstractEntity
     /** @var int Object height in px. */
     private $height = 0;
 
-    /** @var ?string Video aspect. */
-    private $aspect;
-
     /**
      * Construct the entity.
      *
@@ -46,7 +41,6 @@ class File extends AbstractEntity
             ->setDescription($data['description'])
             ->setWidth($data['width'])
             ->setHeight($data['height'])
-            ->setAspect($data['aspect'])
             ->setId($data['id'] ?? null);
     }
 
@@ -67,7 +61,6 @@ class File extends AbstractEntity
             'description' => $data['alt'],
             'width'       => $data['width'],
             'height'      => $data['height'],
-            'aspect'      => $data['aspect'] ?: null,
         ];
     }
 
@@ -193,28 +186,6 @@ class File extends AbstractEntity
         return $this->height;
     }
 
-    /**
-     * Set video aspect.
-     *
-     * @param ?string $aspect
-     *
-     * @return self
-     */
-    public function setAspect(?string $aspect): self
-    {
-        $this->aspect = $aspect;
-
-        return $this;
-    }
-
-    /**
-     * Get the asspect.
-     */
-    public function getAspect(): ?string
-    {
-        return $this->aspect;
-    }
-
     // ORM related functions
 
     /**
@@ -231,7 +202,6 @@ class File extends AbstractEntity
             'alt'    => db()->eandq($this->description),
             'width'  => (string) $this->width,
             'height' => (string) $this->height,
-            'aspect' => $this->aspect !== null ? db()->eandq($this->aspect) : 'NULL',
         ];
     }
 
@@ -269,7 +239,6 @@ class File extends AbstractEntity
             'description' => '',
             'width'       => $imagesize[0] ?? 0,
             'height'      => $imagesize[1] ?? 0,
-            'aspect'      => '',
         ]);
 
         return $file;

@@ -158,7 +158,6 @@ class UploadHandler
             ->setDescription($description)
             ->setWidth($width)
             ->setHeight($height)
-            ->setAspect($aspect)
             ->save();
     }
 

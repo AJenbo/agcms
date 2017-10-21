@@ -21,11 +21,6 @@ function attachContextMenus()
         { "selector" : '#listOrder li', "className" : 'menu desktop', "menuItems" : listOrderContextMenu });
 }
 
-function htmlspecialchars(string)
-{
-    return string.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
-}
-
 function reattachContextMenus()
 {
     contextMenuActiveSide.reattach();

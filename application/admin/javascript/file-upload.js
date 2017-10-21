@@ -154,7 +154,6 @@ function send()
     form.append('dir', activeDir);
     form.append('x', document.getElementById('x').value);
     form.append('y', document.getElementById('y').value);
-    form.append('aspect', document.getElementById('aspect').value);
 
     for(var i = 0; i < files.length; i++) {
         form.append('upload', files[i]);
