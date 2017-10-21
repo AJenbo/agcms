@@ -820,14 +820,6 @@ function filejavascript(File $file): string
         case 'image/gif':
             $javascript .= 'image';
             break;
-        case 'video/x-flv':
-            $javascript .= 'flv';
-            break;
-        case 'video/x-shockwave-flash':
-        case 'application/x-shockwave-flash':
-        case 'application/futuresplash':
-            $javascript .= 'swf';
-            break;
         case 'video/avi':
         case 'video/x-msvideo':
         case 'video/mpeg':
@@ -875,32 +867,6 @@ function filehtml(File $file): string
                 } else {
                     $html .= ' onclick="open_image_thumbnail(' . $file->getId() . ')"';
                 }
-            } else {
-                $html .= ' onclick="files[' . $file->getId() . '].openfile();"';
-            }
-            break;
-        case 'video/x-flv':
-            $html .= '<div id="tilebox' . $file->getId() . '" class="flvtile"><div class="image"';
-            if ('rtef' === $returnType) {
-                if (File::ASPECT_4_3 == $file->getAspect()) {
-                    $html .= ' onclick="addflv(' . $file->getId() . ', \'' . $file->getAspect() . '\', '
-                        . max($file->getWidth(), $file->getHeight() / 3 * 4) . ', '
-                        . ceil($file->getWidth() / 4 * 3 * 1.1975) . ')"';
-                } elseif (File::ASPECT_16_9 === $file->getAspect()) {
-                    $html .= ' onclick="addflv(' . $file->getId() . ', \'' . $file->getAspect() . '\', '
-                        . max($file->getWidth(), $file->getHeight() / 9 * 16) . ', '
-                        . ceil($file->getWidth() / 16 * 9 * 1.2) . ')"';
-                }
-            } else {
-                $html .= ' onclick="files[' . $file->getId() . '].openfile();"';
-            }
-            break;
-        case 'application/futuresplash':
-        case 'application/x-shockwave-flash':
-        case 'video/x-shockwave-flash':
-            $html .= '<div id="tilebox' . $file->getId() . '" class="swftile"><div class="image"';
-            if ('rtef' === $returnType) {
-                $html .= ' onclick="addswf(' . $file->getId() . ', ' . $file->getWidth() . ', ' . $file->getHeight() . ')"';
             } else {
                 $html .= ' onclick="files[' . $file->getId() . '].openfile();"';
             }
