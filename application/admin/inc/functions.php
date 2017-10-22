@@ -614,11 +614,11 @@ function getRootDirs(): array
 function formatDir(string $path, string $name): array
 {
     $subs = [];
-    if (!request()->cookies->get($path)) {
-        $hassubs = hasSubsDirs($path);
-    } else {
+    if (mb_strpos(request()->cookies->get('admin_dir'), $path) === 0) {
         $subs = getSubDirs($path);
         $hassubs = (bool) $subs;
+    } else {
+        $hassubs = hasSubsDirs($path);
     }
 
     return [

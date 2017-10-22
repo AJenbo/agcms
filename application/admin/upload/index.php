@@ -10,7 +10,7 @@ $request = request();
 
 /** @var UploadedFile */
 $uploadedFile = $request->files->get('upload');
-$targetPath = $request->get('dir', '/images');
+$targetPath = $request->get('dir', request()->cookies->get('admin_dir', '/images'));
 
 $destinationType = $request->get('type', '');
 $width = $request->get('x', 0);
