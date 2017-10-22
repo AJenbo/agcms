@@ -42,10 +42,12 @@
         <br />Number of recipients: <span id="mailToCount">{{recipientCount}}</span><br />
         <br />Subject:
         <input class="admin_name" name="subject" id="subject" value="{{newsletter.subject}}" size="127" style="width:{{textWidth - 34}}px" />
-        <script type="text/javascript"><!--
-        initRTE('/admin/rtef/images/', '/admin/rtef/', '/theme/email.css', true);
-        writeRichText("text", {{newsletter.html|trim|json_encode()|raw}}, "", {{textWidth + 32}}, 422, true, false, false);
-        //--></script>
+        <textarea id="text" style="width:{{textWidth}}px;height:420px">{{newsletter.html|raw}}</textarea>
+        <script><!--
+            CKEDITOR.config.width = {{textWidth + 32}};
+            CKEDITOR.config.contentsCss = '/theme/{{theme}}/style/email.css';
+            CKEDITOR.replace('text');
+        --></script>
         {% else %}
         <br />Subject: {{newsletter.subject}}
         <div style="width:{{textWidth}}px; border:1px solid #D2D2D2">{{newsletter.html|raw}}</div>

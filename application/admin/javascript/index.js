@@ -242,7 +242,7 @@ function updatemaerke(id)
 function updateSide(id)
 {
     $('loading').style.visibility = '';
-    updateRTEs();
+    var html = CKEDITOR.instances.text.getData();
 
     var requirement = parseInt(getSelectValue("krav"));
     requirement = requirement ? requirement : null;
@@ -254,14 +254,14 @@ function updateSide(id)
     if(!id) {
         x_opretSide(parseInt(getRadio("kat")), $("navn").value, $("keywords").value,
             $("pris").value ? parseInt($("pris").value) : 0, $("beskrivelse").value,
-            $("for").value ? parseInt($("for").value) : 0, $("text").value, $("varenr").value,
-            parseInt(getSelectValue("burde")), parseInt(getSelectValue("fra")), requirement, brand, icon, opretSide_r);
+            $("for").value ? parseInt($("for").value) : 0, html, $("varenr").value, parseInt(getSelectValue("burde")),
+            parseInt(getSelectValue("fra")), requirement, brand, icon, opretSide_r);
         return false;
     }
 
-    x_updateSide(id, $('navn').value, $('keywords').value, $('pris').value ? parseInt($('pris').value) : 0,
-        $('beskrivelse').value, $('for').value ? parseInt($('for').value) : 0, $('text').value, $('varenr').value,
-        parseInt(getSelectValue('burde')), parseInt(getSelectValue('fra')), requirement, brand, icon, generic_r);
+    x_updateSide(id, $("navn").value, $("keywords").value, $("pris").value ? parseInt($("pris").value) : 0,
+        $("beskrivelse").value, $("for").value ? parseInt($("for").value) : 0, html, $("varenr").value,
+        parseInt(getSelectValue("burde")), parseInt(getSelectValue("fra")), requirement, brand, icon, generic_r);
     return false;
 }
 
@@ -280,11 +280,12 @@ function updateSpecial(id)
     if($('subMenusOrder')) {
         x_updateKatOrder($('subMenusOrder').value, generic_r);
     }
-    updateRTEs();
+
+    var html = CKEDITOR.instances.text.getData();
 
     var title = $('title') ? $('title').value : null;
 
-    x_updateSpecial(id, $('text').value, title, generic_r);
+    x_updateSpecial(id, html, title, generic_r);
     return false;
 }
 
@@ -376,7 +377,7 @@ function countEmailTo_r(data)
 function saveEmail()
 {
     $('loading').style.visibility = '';
-    updateRTEs();
+    var html = CKEDITOR.instances.text.getData();
     var interestObjs = $('interests').getElementsByTagName('input');
     var interests = '';
     for(var i = 0; i < interestObjs.length; i++) {
@@ -389,7 +390,7 @@ function saveEmail()
     }
     var id = $('id').value;
     id = id ? id : null;
-    x_saveEmail($('from').value, interests, $('subject').value, $('text').value, id, generic_r);
+    x_saveEmail($('from').value, interests, $('subject').value, html, id, generic_r);
 }
 
 function updateContact(id)
@@ -425,7 +426,7 @@ function sendEmail()
         return false;
     }
     $('loading').style.visibility = '';
-    updateRTEs();
+    var html = CKEDITOR.instances.text.getData();
     if($('from').value == '') {
         $('loading').style.visibility = 'hidden';
         alert('Du skal vælge en afsender!');
@@ -436,7 +437,7 @@ function sendEmail()
         alert('Du skal skrive et emne!');
         return false;
     }
-    if($('text').value == '') {
+    if(!html) {
         $('loading').style.visibility = 'hidden';
         alert('Du skal skrive et tekst!');
         return false;
@@ -451,7 +452,7 @@ function sendEmail()
             interests += interestObjs[i].value;
         }
     }
-    x_sendEmail($('id').value, $('from').value, interests, $('subject').value, $('text').value, sendEmail_r);
+    x_sendEmail($('id').value, $('from').value, interests, $('subject').value, html, sendEmail_r);
 }
 
 function sendEmail_r(data)

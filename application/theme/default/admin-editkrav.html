@@ -10,9 +10,11 @@
     <input type="submit" accesskey="s" style="width:1px; height:1px; position:absolute; top: -20px; left:-20px;" />
     <input type="hidden" name="id" id="id" value="{{requirement.id}}" />
     <input class="admin_name" type="text" name="navn" id="navn" value="{{requirement.title}}" maxlength="127" size="127" style="width:{{textWidth}}px" />
-    <script type="text/javascript"><!--
-    initRTE("/admin/rtef/images/", "/admin/rtef/", "/theme/{{theme}}/style/rtef-text.css", true);
-    writeRichText("text", {{requirement.html|trim|json_encode()|raw}}, "", {{textWidth}}, 420, true, false, false);
-    //--></script>
+    <textarea id="text" style="width:{{textWidth}}px;height:420px">{{requirement.html|raw}}</textarea>
+    <script><!--
+        CKEDITOR.config.width = {{textWidth}};
+        CKEDITOR.config.contentsCss = '/theme/{{theme}}/style/rtef-text.css';
+        CKEDITOR.replace('text');
+    --></script>
 </form>
 {% endblock %}

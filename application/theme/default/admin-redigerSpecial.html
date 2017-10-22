@@ -11,10 +11,12 @@
     {% if category %}
     <input class="admin_name" id="title" value="{{category.title}}" maxlength="127" size="127" style="width:{{textWidth + 19}}px" />
     {% endif %}
-    <script type="text/javascript"><!--
-    initRTE("/admin/rtef/images/", "/admin/rtef/", "/theme/{{theme}}/style/rtef-text.css", true);
-    writeRichText("text", {{page.html|json_encode()|raw}}, "", {{pageWidth + 32}}, 572, true, false, false);
-    //--></script>
+    <textarea id="text" style="width:{{textWidth}}px;height:420px">{{page.html|raw}}</textarea>
+    <script><!--
+        CKEDITOR.config.width = {{pageWidth + 32}};
+        CKEDITOR.config.contentsCss = '/theme/{{theme}}/style/rtef-text.css';
+        CKEDITOR.replace('text');
+    --></script>
     {% if categories %}
     <br />
     Sort maincategories:

@@ -245,10 +245,10 @@ function init()
 
 function save_krav()
 {
-    updateRTEs();
+    var html = CKEDITOR.instances.text.getData();
     var id = $("id").value;
     id = id ? id : null;
-    x_savekrav($("navn").value, $("text").value, id, save_krav_r);
+    x_savekrav($("navn").value, html, id, save_krav_r);
 
     return false
 }
