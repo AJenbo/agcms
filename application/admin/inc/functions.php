@@ -292,7 +292,6 @@ function sendEmail(
     saveEmail($from, $interests, $subject, $html, $id);
 
     $html = purifyHTML($html);
-    $html = htmlUrlDecode($html);
 
     //Colect interests
     if ($interests) {
@@ -397,7 +396,6 @@ function countEmailTo(array $interests): int
 function saveEmail(string $from, string $interests, string $subject, string $html, int $id = null): bool
 {
     $html = purifyHTML($html);
-    $html = htmlUrlDecode($html);
 
     if (null === $id) {
         db()->query(
@@ -434,6 +432,7 @@ function katspath(int $id): array
 {
     $category = ORM::getOne(Category::class, $id);
     assert($category instanceof Category);
+
     return [
         'id'   => 'katsheader',
         'html' => _('Select location:') . ' ' . $category->getPath(),
@@ -467,6 +466,7 @@ function getSiteTreeData(string $inputType = '', int $selectedId = null): array
     if (null !== $selectedId) {
         $category = ORM::getOne(Category::class, $selectedId);
     }
+
     return [
         'selectedCategory' => $category,
         'openCategories'   => getOpenCategories($selectedId),
@@ -614,7 +614,7 @@ function getRootDirs(): array
 function formatDir(string $path, string $name): array
 {
     $subs = [];
-    if (mb_strpos(request()->cookies->get('admin_dir'), $path) === 0) {
+    if (0 === mb_strpos(request()->cookies->get('admin_dir'), $path)) {
         $subs = getSubDirs($path);
         $hassubs = (bool) $subs;
     } else {
@@ -1294,7 +1294,9 @@ function purifyHTML(string $html): string
     $config->set('Cache.SerializerPath', _ROOT_ . '/theme/cache/HTMLPurifier');
     $purifier = new HTMLPurifier($config);
 
-    return $purifier->purify($html);
+    $html = $purifier->purify($html);
+
+    return htmlUrlDecode($html);
 }
 
 /**
@@ -1725,7 +1727,6 @@ function save_ny_kat(string $navn, int $kat, int $vis, string $email, string $ic
 function savekrav(string $navn, string $html, int $id = null): array
 {
     $html = purifyHTML($html);
-    $html = htmlUrlDecode($html);
 
     if ('' === $navn || '' === $html) {
         return ['error' => _('You must enter a name and a text of the requirement.')];
@@ -1857,13 +1858,13 @@ function sletbind(int $pageId, int $categoryId): array
     assert($category instanceof Category);
 
     $result = ['pageId' => $page->getId(), 'deleted' => [], 'added' => null];
-    if (($category->getId() === -1 && count($page->getCategories()) === 1)
+    if (($category->getId() === -1 && 1 === count($page->getCategories()))
         || !$page->isInCategory($category)
     ) {
         return $result;
     }
 
-    if (count($page->getCategories()) === 1) {
+    if (1 === count($page->getCategories())) {
         $inactiveCategory = ORM::getOne(Category::class, -1);
         assert($inactiveCategory instanceof Category);
         $page->addToCategory($inactiveCategory);
@@ -1950,7 +1951,6 @@ function updateSide(
     string $billed = null
 ): bool {
     $html = purifyHTML($html);
-    $html = htmlUrlDecode($html);
 
     $page = ORM::getOne(Page::class, $id);
     assert($page instanceof Page);
@@ -2029,12 +2029,12 @@ function updateKatOrder(string $order): void
 function updateSpecial(int $id, string $html, string $title = ''): bool
 {
     $html = purifyHTML($html);
-    $html = htmlUrlDecode($html);
+
     $page = ORM::getOne(CustomPage::class, $id);
     assert($page instanceof CustomPage);
     $page->setHtml($html)->save();
 
-    if ($id === 1) {
+    if (1 === $id) {
         $category = ORM::getOne(Category::class, 0);
         assert($category instanceof Category);
         $category->setTitle($title)->save();
@@ -2062,7 +2062,6 @@ function opretSide(
     string $billed = null
 ): array {
     $html = purifyHTML($html);
-    $html = htmlUrlDecode($html);
 
     $page = new Page([
         'title'          => $navn,
