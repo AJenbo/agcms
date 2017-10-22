@@ -4,236 +4,21 @@
     font-family:"Times New Roman", Times, serif;
 }
 
+body, body table {
+    font-size:13px;
+}
+
 img {
     border:0;
-    -ms-interpolation-mode:bicubic;
 }
 
 a {
     color:#000000;
 }
 
-.bar {
-    clear:both;
-}
-
-.bar ul {
-    width:740px;
-    margin:0 auto;
-    list-style:none;
-    padding:0;
-}
-
-.bar a, .bar li {
-    display:inline;
-}
-
-.bar * {
-    text-decoration:none;
-    font-size:13px;
-    font-weight:bold;
-    line-height:16px;
-}
-
-.bar a:hover {
-    background-color:#aaaaaa;
-}
-
-.bar img {
-    vertical-align:text-top;
-}
-
-input {
-    border-color:#3C3C3C;
-    border-style:solid;
-    font-size:13px;
-}
-
 .liste {
-    width:550px;
-    margin:4px auto;
-}
-
-.liste td {
-    vertical-align:top;
-}
-
-.liste .vare {
-    background-color:#FFFFFF;
-    border:2px solid #999999;
-    width:250px;
-    margin:4px auto;
-    font-size:13px;
-}
-
-.liste .vare h2 {
-    text-align:center;
-    width:250px;
-    border-bottom:2px solid #999999;
-    margin:0;
-    background-color:#d4d0c8;
-}
-
-.liste .vare h2 a {
     font-size: 17px;
-    font-family: 'Times New Roman',Times,serif;
     text-decoration: none;
-}
-
-.laemere {
-    margin:5px 0 0 5px;
-    float:left;
-}
-
-#menu {
-    width:157px;
-    background-image:url('/images/web/bg.jpg');
-    height:100%;
-    overflow:auto;
-    overflow-y:scroll;
-}
-
-#headder, #headder *, .bar, .bar *, #menu, #menu *, #footer, #footer *, marquee, marquee * {
-    font-family:Verdana, Arial, Helvetica, sans-serif;
-}
-
-#menu a {
-    width:128px;
-    margin:auto;
-    overflow:hidden;
-    display:block;
-    font-size:12px;
-    padding:3px;
-    text-decoration:none;
-}
-
-#menu a.active {
-    background-color:#999999;
-}
-
-#menu a:hover {
-    background-color:#BBBBBB;
-}
-
-#menu a.main, #menu a.main_active {
-    background-image:url('/images/web/button.gif');
-    background-color:#5a5a5a;
-    background-repeat:no-repeat;
-    background-position:top;
-    display:block;
-    width:128px;
-    margin:auto;
-    color:#BBBBBB;
-    font-weight:bold;
-    font-size:13px;
-    padding:2px 3px;
-    text-decoration:none;
-}
-
-#menu a.main:hover, #menu a.main_active {
-    color:#EEEEEE;
-}
-
-h1 {
-    font-size:17px;
-    font-weight:bold;
-    color:#333333;
-    font-family:"Times New Roman", Times, serif;
-    margin:0;
-}
-
-.clearfix:after {
-    content: ".";
-    display: block;
-    height: 0;
-    clear: both;
-    visibility: hidden;
-}
-
-.clearfix {
-    display: inline-block;
-}
-
-#headder {
-    background-color:#FFFFFF;
-}
-
-#headder div {
-    width:740px;
-    margin:0px auto;
-    padding:10px;
-}
-
-#headder form {
-    float:right;
-}
-
-#logo {
-    float:left;
-}
-
-#crumb {
-    background-image:url('/images/web/bar.gif');
-}
-
-#submenu {
-    background-image:url('/images/web/bar2.gif');
-}
-
-#submenu ul {
-    text-align:center;
-}
-
-#container {
-    background-color:#c5c5c5;
-    position:absolute;
-    bottom:0px;
-    width:100%;
-    top:77px;
-}
-
-#container2 {
-    height:100%;
-    width:740px;
-    margin:auto;
-}
-
-#container3 {
-    width:740px;
-    margin:0 auto;
-    height:100%;
-    position:absolute;
-}
-
-#container4 {
-    float:right;
-    width:583px;
-    height:100%;
-}
-
-#text, body, #text table, body table {
-    font-size:13px;
-    font-family:"Times New Roman", Times, serif;
-}
-
-#krav {
-    display:block;
-    float:right;
-    text-align:center;
-    text-decoration:none;
-    font-weight:bold;
-}
-
-#spar {
-    width:112px;
-    height:83px;
-    padding-top:39px;
-    padding-left:7px;
-    background-image:url('/images/web/spar.jpg');
-    font-size:17px;
-    font-weight:bold;
-    text-align:center;
-    float:left;
 }
 
 .nypris {
@@ -255,49 +40,8 @@ h1 {
     text-decoration:line-through;
 }
 
-#content {
-    overflow:auto;
-    overflow-y:scroll;
-    background-image:url('/images/web/bg.jpg');
-    background-position:top;
-    position:absolute;
-    bottom:57px;
-    top:0px;
-    right:0px;
-    width:583px;
-}
-
-#footer, .note {
-    font-size: 11px;
-    color:#333333
-}
-
-#footer {
-    text-align:center;
-    background-color:#FFFFFF;
-    position:absolute;
-    bottom:0px;
-    right:0px;
-    width:583px;
-}
-
-#footer span {
-    font-size: 9px;
-}
-
 .gray {
     background-color:#d4d0c8;
-}
-
-marquee {
-    text-align:center;
-    background-color:#aaaaaa;
-    position:absolute;
-    bottom:37px;
-    right:0px;
-    width:581px;
-    height:18px;
-    border:#000000 solid 1px;
 }
 
 .imgright {
