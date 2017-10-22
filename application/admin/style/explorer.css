@@ -127,7 +127,7 @@ img, .image {
     border:1px #000000 solid;
     font-size:inherit;
 }
-#files .filetile, #files .videotile, #files .swftile, #files .flvtile, #files .imagetile {
+#files .filetile, #files .imagetile {
     float:left;
     text-align:center;
     overflow:hidden;

@@ -827,9 +827,7 @@ function filehtml(File $file): string
     $menuType = 'filetile';
     $type = explode('/', $file->getMime());
     $type = array_shift($type);
-    if ($type === 'audio' || $type === 'video') {
-        $menuType = 'videotile';
-    } elseif (in_array($file->getMime(), ['image/gif', 'image/jpeg', 'image/png'], true)) {
+    if (in_array($file->getMime(), ['image/gif', 'image/jpeg', 'image/png'], true)) {
         $menuType = 'imagetile';
     }
     $html .= '<div id="tilebox' . $file->getId() . '" class="' . $menuType . '"><div class="image"';
