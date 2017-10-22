@@ -77,7 +77,9 @@ class Render
             self::$activeRequirement = ORM::getOne(Requirement::class, $requirementId);
             if (!self::$activeRequirement) {
                 $redirect = Response::HTTP_MOVED_PERMANENTLY;
-                self::$activeRequirement = null;
+            } elseif (self::$activeRequirement->getCanonicalLink() !== $url) {
+                redirect(self::$activeRequirement->getCanonicalLink(), Response::HTTP_MOVED_PERMANENTLY);
+                return;
             }
         }
 
@@ -85,28 +87,31 @@ class Render
             self::$activeBrand = ORM::getOne(Brand::class, $brandId);
             if (!self::$activeBrand) {
                 $redirect = Response::HTTP_MOVED_PERMANENTLY;
-                self::$activeBrand = null;
+            } elseif (self::$activeBrand->getCanonicalLink() !== $url) {
+                redirect(self::$activeBrand->getCanonicalLink(), Response::HTTP_MOVED_PERMANENTLY);
+                return;
             }
         }
 
-        if ($categoryId) {
-            self::$activeCategory = ORM::getOne(Category::class, $categoryId);
-            if (!self::$activeCategory || self::$activeCategory->isInactive()) {
-                $redirect = self::$activeCategory ? Response::HTTP_FOUND : Response::HTTP_MOVED_PERMANENTLY;
-                self::$activeCategory = null;
-            }
+        self::$activeCategory = ORM::getOne(Category::class, $categoryId);
+        if ($categoryId && (!self::$activeCategory || self::$activeCategory->isInactive())) {
+            $redirect = self::$activeCategory ? Response::HTTP_FOUND : Response::HTTP_MOVED_PERMANENTLY;
+            self::$activeCategory = null;
+        } elseif ($categoryId && !$pageId && self::$activeCategory->getCanonicalLink() !== $url) {
+            redirect(self::$activeCategory->getCanonicalLink(), Response::HTTP_MOVED_PERMANENTLY);
+            return;
         }
         if ($pageId) {
             self::$activePage = ORM::getOne(Page::class, $pageId);
-            if (self::$activePage && self::$activeCategory && !self::$activePage->isInCategory(self::$activeCategory)) {
-                $redirect = Response::HTTP_MOVED_PERMANENTLY;
-                self::$activeCategory = null;
-            }
-            if (!self::$activePage || self::$activePage->isInactive()) {
+            if (self::$activePage && self::$activePage->getCanonicalLink(self::$activeCategory) !== $url) {
+                redirect(self::$activePage->getCanonicalLink(), Response::HTTP_MOVED_PERMANENTLY);
+                return;
+            } elseif (!self::$activePage || self::$activePage->isInactive()) {
+                if (self::$activeCategory) {
+                    redirect(self::$activeCategory->getCanonicalLink(), Response::HTTP_MOVED_PERMANENTLY);
+                    return;
+                }
                 $redirect = self::$activePage ? Response::HTTP_FOUND : Response::HTTP_MOVED_PERMANENTLY;
-                self::$activePage = null;
-            } elseif (self::$activePage) {
-                self::$activeCategory = self::$activePage->getPrimaryCategory();
             }
         }
 
@@ -164,15 +169,6 @@ class Render
         $query = trim($query);
         if ($query) {
             $redirectUrl = '/?q=' . rawurlencode($query) . '&sogikke=&minpris=&maxpris=&maerke=0';
-        }
-        if (self::$activePage) {
-            $redirectUrl = self::$activePage->getCanonicalLink(self::$activeCategory);
-        } elseif (self::$activeCategory) {
-            $redirectUrl = self::$activeCategory->getCanonicalLink();
-        } elseif (self::$activeBrand) {
-            $redirectUrl = self::$activeBrand->getCanonicalLink();
-        } elseif (self::$activeRequirement) {
-            $redirectUrl = self::$activeRequirement->getCanonicalLink();
         }
 
         redirect($redirectUrl, $redirect);
@@ -406,7 +402,6 @@ class Render
             $page = ORM::getOne(CustomPage::class, 1);
             assert($page instanceof CustomPage);
             self::$bodyHtml = $page->getHtml();
-            self::$activeCategory = ORM::getOne(Category::class, 0);
         }
 
         self::cleanData();
@@ -832,7 +827,7 @@ class Render
                 'keywords'        => self::$keywords,
                 'crumbs'          => self::$crumbs,
                 'content'         => self::$bodyHtml,
-                'category'        => self::$activeCategory,
+                'category'        => self::$activeCategory ? self::$activeCategory : ORM::getOne(Category::class, 0),
                 'pageId'          => self::$activePage ? self::$activePage->getId() : 0,
                 'headline'        => self::$headline,
                 'timeStamp'       => self::$timeStamp,

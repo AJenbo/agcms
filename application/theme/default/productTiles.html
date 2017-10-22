@@ -3,7 +3,7 @@
     {% for product in products %}
     {% if loop.index is even %}<tr>{% endif %}
         <td>
-            <a href="{{product.canonicalLink}}">
+            <a href="{{product.canonicalLink(category)}}">
                 {% if product.iconPath %}<img src="{{product.iconPath}}" alt="" /><br />{% endif %}
                 {{product.title}}<br />
                 {% include 'price.html' %}

@@ -408,7 +408,7 @@ class Page extends AbstractRenderable
     public function getCanonicalLink(Category $category = null): string
     {
         $url = '/';
-        if (!$category) {
+        if (!$category || !$this->isInCategory($category)) {
             $category = $this->getPrimaryCategory();
         }
         if ($category) {
