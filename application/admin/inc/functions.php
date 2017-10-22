@@ -1287,7 +1287,7 @@ function purifyHTML(string $html): string
 {
     $config = HTMLPurifier_Config::createDefault();
     $config->set('HTML.SafeIframe', true);
-    $config->set('URI.SafeIframeRegexp', '%^http://www.youtube.com/embed/%u');
+    $config->set('URI.SafeIframeRegexp', '%^(https:|http:)?//www.youtube.com/embed/%u');
     $config->set('HTML.SafeObject', true);
     $config->set('Output.FlashCompat', true);
     $config->set('HTML.Doctype', 'XHTML 1.0 Transitional');
