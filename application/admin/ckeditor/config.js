@@ -7,7 +7,7 @@ CKEDITOR.editorConfig = function(config) {
     // http://docs.ckeditor.com/#!/api/CKEDITOR.config
 
     config.allowedContent
-        = 'span{color}(liste,nypris,pris,xpris,gray); strong; em; u; sup; ul; ol; li; a[!href,target]; img[!src,alt,width,height](imgleft,imgright); p{text-align}; h2{text-align}; h3; cite; table; tr; td; video[!src,!controls,!width,!height]; audio[!src,!controls]';
+        = 'span{color}(liste,nypris,pris,xpris,gray); strong; em; u; sup; ul; ol; li; a[!href,target]; img[!src,width,height,alt,data-*]; p{text-align}; h2{text-align}; h3; cite; table; tr; td; video[!src,!controls,!width,!height]; audio[!src,!controls]';
     // TODO convert audio and oembed plugin to use an <img> container instead of a simple div wrapper
     config.extraAllowedContent
         = 'div[data-*,!class](embeddedContent,oembed-provider-,oembed-provider-youtube,ckeditor-html5-audio);iframe[*]';
@@ -18,7 +18,7 @@ CKEDITOR.editorConfig = function(config) {
     ];
 
     config.removeButtons
-        = 'Format,Video,Html5audio,JustifyBlock,Link,searchCode,CommentSelectedRange,UncommentSelectedRange,autoFormat,AutoComplete';
+        = 'Video,Html5audio,JustifyBlock,Link,searchCode,CommentSelectedRange,UncommentSelectedRange,autoFormat,AutoComplete';
 
     config.tokenStart = '{{';
     config.tokenEnd = '}}';
