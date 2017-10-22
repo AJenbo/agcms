@@ -1292,6 +1292,32 @@ function purifyHTML(string $html): string
     $config->set('Output.FlashCompat', true);
     $config->set('HTML.Doctype', 'XHTML 1.0 Transitional');
     $config->set('Cache.SerializerPath', _ROOT_ . '/theme/cache/HTMLPurifier');
+
+    $config->set('HTML.DefinitionID', 'html5-definitions'); // unqiue id
+    if ($def = $config->maybeGetRawHTMLDefinition()) {
+        $def->addAttribute('div', 'data-oembed_provider', 'Text');
+        $def->addAttribute('div', 'data-oembed', 'Text');
+        $def->addAttribute('div', 'data-widget', 'Text');
+        $def->addAttribute('iframe', 'allowfullscreen', 'Bool');
+
+        // http://developers.whatwg.org/the-video-element.html#the-video-element
+        $def->addElement('video', 'Block', 'Flow', 'Common', [
+            'controls' => 'Bool',
+            'height' => 'Length',
+            'poster' => 'URI',
+            'preload' => 'Enum#auto,metadata,none',
+            'src' => 'URI',
+            'width' => 'Length',
+        ]);
+        // http://developers.whatwg.org/the-video-element.html#the-audio-element
+        $def->addElement('audio', 'Block', 'Flow', 'Common', [
+            'controls' => 'Bool',
+            'preload' => 'Enum#auto,metadata,none',
+            'src' => 'URI',
+        ]);
+        $def->addElement('source', 'Block', 'Empty', 'Common', ['src' => 'URI', 'type' => 'Text']);
+    }
+
     $purifier = new HTMLPurifier($config);
 
     $html = $purifier->purify($html);
