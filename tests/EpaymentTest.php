@@ -55,7 +55,6 @@ class EpaymentTest extends TestCase
 
         $this->assertTrue($epayment->annul());
         $this->assertTrue($epayment->isAnnulled());
-        $this->assertFalse($epayment->hasError());
     }
 
     public function test_annul_fail()
@@ -70,7 +69,6 @@ class EpaymentTest extends TestCase
 
         $this->assertFalse($epayment->annul());
         $this->assertFalse($epayment->isAnnulled());
-        $this->assertTrue($epayment->hasError());
     }
 
     public function test_confirm_preCancled()
@@ -79,7 +77,6 @@ class EpaymentTest extends TestCase
 
         $this->assertTrue($epayment->annul());
         $this->assertTrue($epayment->isAnnulled());
-        $this->assertFalse($epayment->hasError());
     }
 
     public function test_confirm()
@@ -94,7 +91,6 @@ class EpaymentTest extends TestCase
 
         $this->assertTrue($epayment->confirm());
         $this->assertEquals(100, $epayment->getAmountCaptured());
-        $this->assertFalse($epayment->hasError());
     }
 
     public function test_confirm_fail()
@@ -109,7 +105,6 @@ class EpaymentTest extends TestCase
 
         $this->assertFalse($epayment->confirm());
         $this->assertEquals(0, $epayment->getAmountCaptured());
-        $this->assertTrue($epayment->hasError());
     }
 
     public function test_confirm_overcharge()
@@ -118,7 +113,6 @@ class EpaymentTest extends TestCase
 
         $this->assertFalse($epayment->confirm(200));
         $this->assertEquals(0, $epayment->getAmountCaptured());
-        $this->assertFalse($epayment->hasError());
     }
 
     public function test_confirm_preCaptured()
@@ -127,6 +121,5 @@ class EpaymentTest extends TestCase
 
         $this->assertTrue($epayment->confirm());
         $this->assertEquals(100, $epayment->getAmountCaptured());
-        $this->assertFalse($epayment->hasError());
     }
 }
