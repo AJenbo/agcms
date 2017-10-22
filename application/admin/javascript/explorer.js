@@ -61,17 +61,25 @@ function popupType(mime)
 
 file.prototype.addToEditor = function() {
     var html = '<a href="' + htmlEncode(this.path) + '" target="_blank">' + htmlEncode(this.name) + '</a>';
-    switch(type) {
+    switch(popupType(this.mime)) {
         case 'image':
-            var html = '<img src="' + htmlEncode(this.path) + '" title="" alt="' + htmlEncode(this.alt) + '" width="'
-                + this.width + '" height="' + this.height + '" />';
+            html = '<img src="' + htmlEncode(this.path) + '" title="" alt="' + htmlEncode(this.description)
+                + '" width="' + this.width + '" height="' + this.height + '" />';
             break;
         case 'audio':
-            var html = ' <audio src="' + htmlEncode(this.path) + '" controls />';
+            var data = { "classes" : { "ckeditor-html5-audio" : 1 }, "src" : this.path };
+            data = JSON.stringify(data);
+            data = encodeURIComponent(data);
+            html
+                = '<div class="ckeditor-html5-audio cke_widget_element" data-cke-widget-keep-attr="0" data-widget="html5audio" data-cke-widget-data="'
+                + data + '"><audio controls="controls" src="' + this.path + '"></audio></div>';
             break;
         case 'video':
-            var html = ' <video width="' + this.width + '" height="' + this.height + '" src="' + htmlEncode(this.path)
-                + '" controls />';
+            var data = '<cke:video width="' + this.width + '" height="' + this.height + '" src="'
+                + htmlEncode(this.path) + '" controls="controls"></cke:video>';
+            data = encodeURIComponent(data);
+            html
+                = '<img class="cke-video" data-cke-realelement="' + data + '" data-cke-real-node-type="1" alt="Video" title="Video" src="data:image/svg+xml;charset=utf-8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22320%22%20height%3D%22240%22%3E%3C%2Fsvg%3E" data-cke-real-element-type="video" align="">';
             break;
     }
     var element = window.opener.CKEDITOR.dom.element.createFromHtml(html);
