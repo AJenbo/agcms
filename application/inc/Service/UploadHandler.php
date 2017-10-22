@@ -42,8 +42,7 @@ class UploadHandler
         string $destinationType,
         string $description,
         int $width = 0,
-        int $height = 0,
-        string $aspect = null
+        int $height = 0
     ): File {
         if (!$uploadedFile->isValid()) {
             throw new Exception(_('No file recived.'));
@@ -58,18 +57,12 @@ class UploadHandler
 
         $this->file = $uploadedFile;
 
-        return $this->processFile($destinationType, $description, $width, $height, $aspect);
+        return $this->processFile($destinationType, $description, $width, $height);
     }
 
-    private function processFile(
-        string $destinationType,
-        string $description,
-        int $width,
-        int $height,
-        ?string $aspect
-    ): File {
+    private function processFile(string $destinationType, string $description, int $width, int $height): File
+    {
         if ($this->isImageFile()) {
-            $aspect = null;
             $image = new Image($this->file->getRealPath());
 
             $imageContent = $image->findContent(0);
@@ -83,7 +76,7 @@ class UploadHandler
             $height = $image->getHeight();
         }
 
-        return $this->insertFile($description, $width, $height, $aspect);
+        return $this->insertFile($description, $width, $height);
     }
 
     private function isImageFile(): bool
@@ -145,7 +138,7 @@ class UploadHandler
         }
     }
 
-    private function insertFile(string $description, int $width, int $height, ?string $aspect): File
+    private function insertFile(string $description, int $width, int $height): File
     {
         $file = File::getByPath($this->getDestination());
         if ($file) {
