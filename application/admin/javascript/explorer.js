@@ -29,11 +29,17 @@ function file(data)
 
 file.prototype.openfile = function() {
     var url = this.path;
+    var width = this.width;
+    var height = this.height;
     var type = popupType(this.mime);
     if(type) {
         url = 'popup-' + type + '.php?url=' + encodeURIComponent(url);
+        if(type === 'audio') {
+            width = 300;
+            height = 40;
+        }
     }
-    popUpWin(url, 'file_view', 'toolbar=0', this.width, this.height);
+    popUpWin(url, 'file_view', 'toolbar=0', width, height);
 };
 
 function popupType(mime)
@@ -42,11 +48,11 @@ function popupType(mime)
         return 'image';
     }
 
-    if(match(/^audio\//g)) {
+    if(mime.match(/^audio\//g)) {
         return 'audio';
     }
 
-    if(match(/^video\//g)) {
+    if(mime.match(/^video\//g)) {
         return 'video';
     }
 
@@ -68,7 +74,6 @@ file.prototype.addToEditor = function() {
                 + '" controls />';
             break;
     }
-
     var element = window.opener.CKEDITOR.dom.element.createFromHtml(html);
     var CKEDITOR = window.opener.CKEDITOR;
     for(var i in CKEDITOR.instances) {
