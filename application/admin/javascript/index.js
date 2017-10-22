@@ -283,7 +283,7 @@ function updateSpecial(id)
 
     var html = CKEDITOR.instances.text.getData();
 
-    var title = $('title') ? $('title').value : null;
+    var title = $('title') ? $('title').value : '';
 
     x_updateSpecial(id, html, title, generic_r);
     return false;
