@@ -426,7 +426,7 @@ marquee {
     input {
         font-size: 15px;
     }
-    img, object, embed, iframe {
+    img, iframe, video, audio {
         max-width:100%;
     }
 
