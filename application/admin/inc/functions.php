@@ -2423,7 +2423,7 @@ function generateImage(
     $image->crop($cropX, $cropY, $cropW, $cropH);
 
     // Trim image whitespace
-    $imageContent = $image->findContent(0);
+    $imageContent = $image->findContent();
 
     $maxW = min($maxW, $imageContent['width']);
     $maxH = min($maxH, $imageContent['height']);
