@@ -4,6 +4,7 @@ use AGCMS\Config;
 use AGCMS\Entity\File;
 use AJenbo\Image;
 use Exception;
+use getID3;
 use Symfony\Component\HttpFoundation\File\File as FileHandeler;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 
@@ -40,9 +41,7 @@ class UploadHandler
     public function process(
         UploadedFile $uploadedFile,
         string $destinationType,
-        string $description,
-        int $width = 0,
-        int $height = 0
+        string $description
     ): File {
         if (!$uploadedFile->isValid()) {
             throw new Exception(_('No file recived.'));
@@ -57,11 +56,13 @@ class UploadHandler
 
         $this->file = $uploadedFile;
 
-        return $this->processFile($destinationType, $description, $width, $height);
+        return $this->processFile($destinationType, $description);
     }
 
-    private function processFile(string $destinationType, string $description, int $width, int $height): File
+    private function processFile(string $destinationType, string $description): File
     {
+        $width = 0;
+        $height = 0;
         if ($this->isImageFile()) {
             $image = new Image($this->file->getRealPath());
 
@@ -74,6 +75,11 @@ class UploadHandler
 
             $width = $image->getWidth();
             $height = $image->getHeight();
+        } elseif ($this->isVideoFile()) {
+            $getID3 = new getID3();
+            $fileInfo = $getID3->analyze($this->file->getRealPath());
+            $width = $fileInfo['video']['resolution_x'];
+            $height = $fileInfo['video']['resolution_y'];
         }
 
         return $this->insertFile($description, $width, $height);
@@ -81,12 +87,12 @@ class UploadHandler
 
     private function isImageFile(): bool
     {
-        $mime = $this->file->getMimeType();
-        if (in_array($mime, ['image/jpeg', 'image/gif', 'image/png'], true)) {
-            return true;
-        }
+        return in_array($this->file->getMimeType(), ['image/jpeg', 'image/gif', 'image/png'], true);
+    }
 
-        return false;
+    private function isVideoFile(): bool
+    {
+        return mb_strpos($this->file->getMimeType(), 'video/') === 0;
     }
 
     private function shouldProcessImage(Image $image, int $width, int $height, string $destinationType): bool

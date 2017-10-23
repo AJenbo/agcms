@@ -1,36 +1,12 @@
-﻿function keepAspect(changed, change)
-{
-    var value = document.getElementById(changed).value;
-    value = parseInt(value);
-
-    if(document.getElementById('aspect').value == '4-3') {
-        if(change == 'x') {
-            value = value / 3 * 4;
-        } else {
-            value = value / 4 * 3;
-        }
-    } else if(document.getElementById('aspect').value == '16-9') {
-        if(change == 'x') {
-            value = value / 9 * 16;
-        } else {
-            value = value / 16 * 9;
-        }
-    }
-
-    document.getElementById(change).value = Math.round(value);
-}
-
-function filetypeshow()
+﻿function filetypeshow()
 {
     var type = document.getElementById('type').value;
     var description = document.getElementById('description');
-    var videooptions = document.getElementById('videooptions');
     var file = document.getElementById('file');
 
     var message = 'Vælg en filtype';
 
     description.style.display = 'none';
-    videooptions.style.display = 'none';
     file.setAttribute('accept', '');
 
     if(type == '') {
@@ -40,7 +16,6 @@ function filetypeshow()
         message = 'Vælg de billeder du vil sende';
         file.setAttribute('accept', 'image/*');
     } else if(type == 'video') {
-        videooptions.style.display = '';
         message = 'Vælg den film du vil sende';
         file.setAttribute('accept', 'video/*');
     }
@@ -140,7 +115,6 @@ function send()
     document.getElementById('submit').disabled = true;
     document.getElementById('description').style.display = 'none';
     document.getElementById('description').style.display = 'none';
-    document.getElementById('videooptions').style.display = 'none';
 
     var progress = document.getElementById('progress');
     progress.removeAttribute("value")
@@ -152,8 +126,6 @@ function send()
     form.append('type', document.getElementById('type').value);
     form.append('alt', document.getElementById('alt').value);
     form.append('dir', activeDir);
-    form.append('x', document.getElementById('x').value);
-    form.append('y', document.getElementById('y').value);
 
     for(var i = 0; i < files.length; i++) {
         form.append('upload', files[i]);

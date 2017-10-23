@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "content-hash": "5597b0475b80f4fa536bd2400a8fd35a",
+    "content-hash": "277b0db303fae8b110a85f3cb54fe2ca",
     "packages": [
         {
             "name": "ajenbo/image.php",
@@ -12,12 +12,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/AJenbo/Image.php.git",
-                "reference": "e90603ba5e3a6fa33a11684b44b12171af863265"
+                "reference": "95d6182689d142d9b68a876ef584770233cf651f"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/AJenbo/Image.php/zipball/e90603ba5e3a6fa33a11684b44b12171af863265",
-                "reference": "e90603ba5e3a6fa33a11684b44b12171af863265",
+                "url": "https://api.github.com/repos/AJenbo/Image.php/zipball/95d6182689d142d9b68a876ef584770233cf651f",
+                "reference": "95d6182689d142d9b68a876ef584770233cf651f",
                 "shasum": ""
             },
             "require": {
@@ -35,7 +35,7 @@
                 "source": "https://github.com/AJenbo/Image.php/tree/master",
                 "issues": "https://github.com/AJenbo/Image.php/issues"
             },
-            "time": "2017-10-16T22:04:03+00:00"
+            "time": "2017-10-23T21:11:04+00:00"
         },
         {
             "name": "ajenbo/imap.php",
@@ -143,6 +143,42 @@
                 "html"
             ],
             "time": "2017-06-03T02:28:16+00:00"
+        },
+        {
+            "name": "james-heinrich/getid3",
+            "version": "v1.9.14",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/JamesHeinrich/getID3.git",
+                "reference": "30bd11473b0eef6f1b47866ef7ab0a557917fc21"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/JamesHeinrich/getID3/zipball/30bd11473b0eef6f1b47866ef7ab0a557917fc21",
+                "reference": "30bd11473b0eef6f1b47866ef7ab0a557917fc21",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.3.0"
+            },
+            "type": "library",
+            "autoload": {
+                "classmap": [
+                    "getid3/"
+                ]
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "GPL"
+            ],
+            "description": "PHP script that extracts useful information from popular multimedia file formats",
+            "homepage": "http://www.getid3.org/",
+            "keywords": [
+                "codecs",
+                "php",
+                "tags"
+            ],
+            "time": "2017-03-27T21:12:55+00:00"
         },
         {
             "name": "phpmailer/phpmailer",
