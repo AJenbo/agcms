@@ -386,6 +386,10 @@ marquee {
     width:1%;
 }
 
+#faktura .td3, #faktura .td4 {
+    width:64px;
+}
+
 .addtocart {
     width:16px;
     text-align:center;
