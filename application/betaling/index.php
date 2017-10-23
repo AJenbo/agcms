@@ -100,6 +100,7 @@ if (request()->query->has('txnid')) {
         ];
 
         $invoice->setCardtype($cardtype[request()->get('paymenttype')])
+            ->setStatus('pbsok')
             ->setTimeStampPay(time());
 
         Render::$bodyHtml = Render::render('partial-payment-confirmation');
