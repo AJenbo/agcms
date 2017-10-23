@@ -867,7 +867,6 @@ function filehtml(File $file): string
         case 'application/futuresplash':
         case 'application/vnd.ms-powerpoint':
         case 'application/vnd.rn-realmedia':
-        case 'application/x-shockwave-flash':
             $type = 'video';
             break;
         case 'application/msword':
@@ -975,8 +974,6 @@ function renamefile($id, string $path, string $dir, string $filename, bool $forc
             $pathinfo['extension'] = 'gif';
         } elseif ('application/pdf' == $mime) {
             $pathinfo['extension'] = 'pdf';
-        } elseif ('video/x-flv' == $mime) {
-            $pathinfo['extension'] = 'flv';
         } elseif ('image/vnd.wap.wbmp' == $mime) {
             $pathinfo['extension'] = 'wbmp';
         }
@@ -1154,7 +1151,7 @@ function searchfiles(string $qpath, string $qalt, string $qmime): array
             $sqlMime = "(mime = 'application/postscript' OR mime = 'image/x-ms-bmp' OR mime = 'image/x-psd' OR mime = 'image/x-photoshop' OR mime = 'image/tiff' OR mime = 'image/x-eps' OR mime = 'image/bmp')";
             break;
         case 'video':
-            $sqlMime = "(mime = 'video/avi' OR mime = 'video/x-msvideo' OR mime = 'video/mpeg' OR mime = 'video/quicktime' OR mime = 'video/x-shockwave-flash' OR mime = 'application/futuresplash' OR mime = 'application/x-shockwave-flash' OR mime = 'video/x-flv' OR mime = 'video/x-ms-asf' OR mime = 'video/x-ms-wmv' OR mime = 'application/vnd.ms-powerpoint' OR mime = 'video/vnd.rn-realvideo' OR mime = 'application/vnd.rn-realmedia')";
+            $sqlMime = "mime LIKE 'video/%'";
             break;
         case 'audio':
             $sqlMime = "(mime = 'audio/vnd.rn-realaudio' OR mime = 'audio/x-wav' OR mime = 'audio/mpeg' OR mime = 'audio/midi' OR mime = 'audio/x-ms-wma')";
@@ -1288,8 +1285,6 @@ function purifyHTML(string $html): string
     $config = HTMLPurifier_Config::createDefault();
     $config->set('HTML.SafeIframe', true);
     $config->set('URI.SafeIframeRegexp', '%^(https:|http:)?//www.youtube.com/embed/%u');
-    $config->set('HTML.SafeObject', true);
-    $config->set('Output.FlashCompat', true);
     $config->set('HTML.Doctype', 'XHTML 1.0 Transitional');
     $config->set('Cache.SerializerPath', _ROOT_ . '/theme/cache/HTMLPurifier');
 
