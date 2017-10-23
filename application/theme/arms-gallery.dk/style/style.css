@@ -433,6 +433,9 @@ marquee {
     img, iframe, video, audio {
         max-width:100%;
     }
+    img, video {
+        height: auto;
+    }
 
     #headder form, #container4 {
         float:none;
