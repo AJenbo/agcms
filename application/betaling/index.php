@@ -46,6 +46,10 @@ if (request()->query->has('txnid')) {
     $adminEmailSubject = _('Payment code was tampered with!');
     $adminEmailTemplate = 'email-admin-payment-error';
 
+    if (!valideMail($invoice->getDepartment())) {
+        $invoice->setDepartment(first(Config::get('emails'))['address']);
+    }
+
     Render::$bodyHtml = _('An unknown error occured.');
     assert($invoice instanceof Invoice);
     if (in_array($invoice->getStatus(), ['canceled', 'rejected'])) {
@@ -95,7 +99,8 @@ if (request()->query->has('txnid')) {
             24 => 'NemPay',
         ];
 
-        $invoice->setCardtype($cardtype[request()->get('paymenttype')])->save();
+        $invoice->setCardtype($cardtype[request()->get('paymenttype')])
+            ->setTimeStampPay(time());
 
         Render::$bodyHtml = Render::render('partial-payment-confirmation');
 
@@ -139,9 +144,7 @@ if (request()->query->has('txnid')) {
         );
     }
 
-    if (!valideMail($invoice->getDepartment())) {
-        $invoice->setDepartment(first(Config::get('emails'))['address']);
-    }
+    $invoice->save();
 
     sendEmails(
         sprintf(_('Attn.: %s - Online invoice #%d : %s'), $invoice->getClerk(), $id, $adminEmailSubject),
@@ -174,7 +177,7 @@ assert($invoice instanceof Invoice);
 
 if (in_array($invoice->getStatus(), ['new', 'locked', 'pbserror'])) {
     if (!request()->get('step')) { //Show order
-        $invoice->setStatus('locked')->save();
+        $invoice->setStatus('locked');
 
         Render::$crumbs = [[
             'title' => _('Payment'),
@@ -252,7 +255,7 @@ if (in_array($invoice->getStatus(), ['new', 'locked', 'pbserror'])) {
             redirect($invoice->getLink() . '&step=1');
         }
 
-        $invoice->setStatus('locked')->save();
+        $invoice->setStatus('locked');
 
         Render::$crumbs[] = [
             'title'         => _('Recipient'),
@@ -287,6 +290,8 @@ if (in_array($invoice->getStatus(), ['new', 'locked', 'pbserror'])) {
         ];
         Render::$bodyHtml = Render::render('partial-payment-form2', $data);
     }
+
+    $invoice->save();
 } else { //Show order status
     Render::$crumbs = [[
         'title' => in_array($invoice->getStatus(), ['pbsok', 'accepted', 'giro', 'cash', 'canceled'], true) ? _('Receipt') : _('Error'),
