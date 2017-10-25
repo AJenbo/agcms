@@ -234,8 +234,6 @@ function invoiceFromSession(): Invoice
         $note .= _('I will pick up the goods in your shop.');
     } elseif ('postal' === $delevery) {
         $note .= _('Please send the goods by mail.');
-    } elseif ('express' === $delevery) {
-        $note .= _('Please send the order to by mail express.');
     }
     $note = trim($note . "\n" . $invoiceData['note'] ?? '');
 
