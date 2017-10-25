@@ -5,7 +5,7 @@
  *
  * @license  MIT http://opensource.org/licenses/MIT
  */
-$GLOBALS['_config'] = [
+return [
     'enviroment' => 'develop',
     'timezone'   => 'Europe/Copenhagen',
     'locale'     => 'da_DK',

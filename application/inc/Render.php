@@ -8,6 +8,7 @@ use AGCMS\Entity\Page;
 use AGCMS\Entity\Requirement;
 use AGCMS\Entity\Table;
 use DateTime;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Twig_Environment;
 use Twig_Loader_Filesystem;
@@ -61,10 +62,13 @@ class Render
     /**
      * Do routing.
      */
-    public static function doRouting(): void
+    public static function doRouting(Request $request): void
     {
-        $url = urldecode(request()->getRequestUri());
+        $url = urldecode($request->getRequestUri());
         self::makeUrlUtf8($url);
+        if ($url === '/') {
+            return;
+        }
 
         // Routing
         $requirementId = (int) preg_replace('/\/krav\/([0-9]*)\/.*/u', '\1', $url);
@@ -847,6 +851,7 @@ class Render
     public static function output(string $template = 'index', array $data = []): void
     {
         $response = self::getResponse();
+        $response->setStatusCode(Response::HTTP_OK);
         $response->setContent(self::render($template, $data));
         $response->isNotModified(request()); // Set up 304 response if relevant
         $response->send();

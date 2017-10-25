@@ -2,7 +2,10 @@
     "autoload": {
         "psr-4": {
             "AGCMS\\": "inc/"
-        }
+        },
+        "files": [
+            "inc/functions.php"
+        ]
     },
     "repositories": [
         {

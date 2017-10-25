@@ -13,27 +13,6 @@ use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
-function bootStrap(): void
-{
-    require_once __DIR__ . '/../vendor/autoload.php';
-
-    defined('_ROOT_') || define('_ROOT_', realpath(__DIR__ . '/..'));
-    if ('develop' === Config::get('enviroment', 'develop')) {
-        ini_set('display_errors', 1);
-        error_reporting(-1);
-    }
-    date_default_timezone_set(Config::get('timezone', 'Europe/Copenhagen'));
-    setlocale(LC_ALL, Config::get('locale', 'C'));
-    setlocale(LC_NUMERIC, 'C');
-    bindtextdomain('agcms', _ROOT_ . '/theme/locale');
-    bind_textdomain_codeset('agcms', 'UTF-8');
-    textdomain('agcms');
-    mb_language('uni');
-    mb_detect_order('UTF-8, ISO-8859-1');
-    mb_internal_encoding('UTF-8');
-    session_cache_limiter('');
-}
-
 function request(): Request
 {
     static $request;

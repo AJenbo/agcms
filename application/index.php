@@ -1,12 +1,12 @@
 <?php
 
-use AGCMS\Render;
+use AGCMS\Application;
+use AGCMS\Config;
+use Symfony\Component\HttpFoundation\Request;
 
-/**
- * Handle request for the site and decide on how to generate the page.
- */
-require_once __DIR__ . '/inc/Bootstrap.php';
+require_once __DIR__ . '/vendor/autoload.php';
 
-session_start();
-Render::sendCacheHeader();
-Render::outputPage();
+Config::load(__DIR__);
+
+$app = new Application(__DIR__);
+$app->run(Request::createFromGlobals());
