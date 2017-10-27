@@ -1,5 +1,5 @@
 {% extends "list.html" %}
 
 {% block products %}
-{% include 'productTiles.html' with {'products': pageList} %}
+{% include 'productTiles.html' with {'products': renderable.pages} %}
 {% endblock %}

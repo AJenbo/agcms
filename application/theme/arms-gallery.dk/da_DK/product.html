@@ -2,16 +2,23 @@
 
 {% block content %}
 <div id="text" class="clearfix">
-    <div id="date">{{timeStamp|date('d-m-Y H:i:s')}}</div>
-    <h1>{{page.title}}</h1>
-    {{content|raw}}
-    {% if page.oldPrice > 0%}
-    <div id="spar">Spar<br />{{(100 / page.oldPrice * (page.oldPrice - page.price))|round}}%</div>
+    <div id="date">{{renderable.timeStamp|date('d-m-Y H:i:s')}}</div>
+    <h1>{{renderable.title}}</h1>
+    {{renderable.html|raw}}
+    {% for table in renderable.tables %}
+    {% if table.rows %}
+    <div id="table{{table.id}}">
+    {% include 'partial-table.html' with {'orderBy': table.orderBy} %}
+    </div>
     {% endif %}
-    {% if page.requirement %}
-    <a id="krav" href="{{page.requirement.canonicalLink}}" onclick="return openkrav({{page.requirement.canonicalLink|json_encode()}})" target="krav">
+    {% endfor %}
+    {% if renderable.oldPrice > 0%}
+    <div id="spar">Spar<br />{{(100 / renderable.oldPrice * (renderable.oldPrice - renderable.price))|round}}%</div>
+    {% endif %}
+    {% if renderable.requirement %}
+    <a id="krav" href="{{renderable.requirement.canonicalLink}}" onclick="return openkrav({{renderable.requirement.canonicalLink|json_encode()}})" target="krav">
         <img src="/images/web/advarsel.gif" alt="" title="" width="54" height="47" /><br />
-        {{page.requirement.title}}
+        {{renderable.requirement.title}}
     </a>
     {% endif %}
     <p style="text-align:right">
@@ -22,25 +29,25 @@
             <img src="http://s7.addthis.com/static/btn/v2/lg-share-da.gif" width="125" height="16" alt="PUBLICER" title="" style="border:0"/>
         </a>
         <script type="text/javascript" src="http://s7.addthis.com/js/250/addthis_widget.js#username=armsgallery"></script>
-        {% if page.sku %}
-        <br /><strong>Varenr: {{page.sku}}</strong><br />
+        {% if renderable.sku %}
+        <br /><strong>Varenr: {{renderable.sku}}</strong><br />
         {% endif %}
-        {% if not hasProductList %}
-        {% include 'price.html' with {'product': page} %}
-        {% if page.price > 0 %}
-        <a href="/bestilling/?add={{page.id}}">
+        {% if not hasProductTable %}
+        {% include 'price.html' with {'product': renderable} %}
+        {% if renderable.price > 0 %}
+        <a href="/bestilling/?add={{renderable.id}}">
             <img src="/theme/default/images/cart_add.png" alt="+" title="Tilføj til indkøbshummer" />
         </a>
         {% endif %}
         {% endif %}
     </p>
-    {% if page.brand %}
+    {% if renderable.brand %}
     <p align="center" style="clear:both">Se andre produkter af samme mærke</p>
-    {% include 'productTiles.html' with {'products': [page.brand]} %}
+    {% include 'productTiles.html' with {'products': [renderable.brand]} %}
     {% endif %}
 </div>
-{% if page.activeAccessories %}
+{% if renderable.activeAccessories %}
 <p align="center" style="clear:both">Tilbehør</p>
-{% include 'productTiles.html' with {'products': page.activeAccessories} %}
+{% include 'productTiles.html' with {'products': renderable.activeAccessories} %}
 {% endif %}
 {% endblock %}

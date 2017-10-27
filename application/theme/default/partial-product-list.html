@@ -1,0 +1,32 @@
+{% spaceless %}
+<table class="tabel">
+    <thead>
+        <tr>
+            <td><a href="" onclick="x_getKat({{renderable.id}}, 'navn', inject_html);return false">Titel</a></td>
+            <td><a href="" onclick="x_getKat({{renderable.id}}, 'for', inject_html);return false">Før</a></td>
+            <td><a href="" onclick="x_getKat({{renderable.id}}, 'pris', inject_html);return false">Pris</a></td>
+            <td><a href="" onclick="x_getKat({{renderable.id}}, 'varenr', inject_html);return false">#</a></td>
+        </tr>
+    </thead>
+    <tbody>
+        {% for page in renderable.pages(orderBy) %}
+        <tr{% if loop.index is even %} class="altrow"{% endif %}>
+            <td><a href="{{page.canonicalLink(renderable)}}">{{page.title}}</a></td>
+            <td class="XPris" align="right">
+                {% if page.oldPrice %}
+                {{page.oldPrice|number_format(0, ',', '.')}},-
+                {% endif %}
+            </td>
+            <td class="Pris" align="right">
+                {% if page.price > 0 %}
+                {{page.price|number_format(0, ',', '.')}},-
+                {% elseif page.price %}
+                Udsolgt
+                {% endif %}
+            </td>
+            <td align="right" style="font-size:11px">{{page.sku}}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endspaceless %}

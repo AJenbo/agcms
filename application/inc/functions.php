@@ -43,37 +43,6 @@ function db(DB $overwrite = null): DB
     return $connection;
 }
 
-function redirect(string $url, int $status = Response::HTTP_SEE_OTHER): void
-{
-    if (headers_sent()) {
-        throw new Exception(_('Header already sent!'));
-    }
-
-    $url = parse_url($url);
-    if (empty($url['scheme'])) {
-        $url['scheme'] = request()->getScheme();
-    }
-    if (empty($url['host'])) {
-        $url['host'] = request()->getHost();
-    }
-    if (empty($url['path'])) {
-        $url['path'] = parse_url(request()->getRequestUri(), PHP_URL_PATH);
-    } elseif ('/' !== mb_substr($url['path'], 0, 1)) {
-        //The redirect is relative to current path
-        $path = [];
-        $requestPath = parse_url(request()->getRequestUri(), PHP_URL_PATH);
-        preg_match('#^\S+/#u', $requestPath, $path);
-        $url['path'] = $path[0] . $url['path'];
-    }
-    $url['path'] = encodeUrl($url['path']);
-    $url = unparseUrl($url);
-
-    $response = new RedirectResponse($url);
-    $response->setStatusCode($status);
-    $response->send();
-    exit;
-}
-
 /**
  * Build a url string from an array.
  *
@@ -252,7 +221,7 @@ function invoiceFromSession(): Invoice
  *
  * @return string[]
  */
-function getTable(int $listid, int $bycell = null, int $categoryId = null): array
+function getTable(int $tableId, int $orderBy = null, int $categoryId = null): array
 {
     Render::addLoadedTable('lists');
     Render::addLoadedTable('list_rows');
@@ -261,13 +230,22 @@ function getTable(int $listid, int $bycell = null, int $categoryId = null): arra
     Render::addLoadedTable('kat');
     Render::sendCacheHeader();
 
-    $html = Render::getTableHtml(
-        $listid,
-        $bycell,
-        $categoryId ? ORM::getOne(Category::class, $categoryId) : null
-    );
+    $html = '';
 
-    return ['id' => 'table' . $listid, 'html' => $html];
+    $table = ORM::getOne(Table::class, $tableId);
+    if (null === $orderBy) {
+        $orderBy = $table->getOrderBy();
+    }
+    if ($rows = $table->getRows($orderBy)) {
+        $data = [
+            'orderBy' => $orderBy,
+            'table' => $table,
+            'category' => $categoryId ? ORM::getOne(Category::class, $categoryId) : null,
+        ];
+        $html = Render::render('partial-table', $data);
+    }
+
+    return ['id' => 'table' . $tableId, 'html' => $html];
 }
 
 /**
@@ -389,24 +367,25 @@ function getAddress(string $phoneNumber): array
  * Get the html for content bellonging to a category.
  *
  * @param int    $categoryId Id of activ category
- * @param string $sort       What column to sort by
+ * @param string $orderBy    What column to sort by
  *
  * @return string[] Apropriate for handeling with javascript function inject_html()
  */
-function getKat(int $categoryId, string $sort): array
+function getKat(int $categoryId, string $orderBy): array
 {
     Render::addLoadedTable('sider');
     Render::addLoadedTable('bind');
     Render::addLoadedTable('kat');
     Render::sendCacheHeader();
 
-    $category = ORM::getOne(Category::class, $categoryId);
-    assert($category instanceof Category);
-    $html = Render::getKatHtml($category, $sort);
+    $data = [
+        'renderable' => ORM::getOne(Category::class, $categoryId),
+        'orderBy' => $orderBy,
+    ];
 
     return [
         'id' => 'kat' . $categoryId,
-        'html' => $html,
+        'html' => Render::render('partial-product-list', $data),
     ];
 }
 

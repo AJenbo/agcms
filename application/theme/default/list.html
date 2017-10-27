@@ -10,38 +10,11 @@
 </p>
 {% endif %}
 
-{% if pageList %}
+{% if renderable.pages %}
 <p align="center" class="web">Click on the product for additional information</p>
 {% block products %}
-<div id="kat{{category.id}}">
-    <table class="tabel">
-        <thead>
-            <tr>
-                <td><a href="#" onClick="x_get_kat({{category.id}}, 'navn', inject_html);">Title</a></td>
-                <td><a href="#" onClick="x_get_kat({{category.id}}, 'for', inject_html);">Previously</a></td>
-                <td><a href="#" onClick="x_get_kat({{category.id}}, 'pris', inject_html);">Price</a></td>
-                <td><a href="#" onClick="x_get_kat({{category.id}}, 'varenr', inject_html);">#</a></td>
-            </tr>
-        </thead>
-        <tbody>
-            {% for item in pageList %}
-            <tr{% if loop.index is even %} class="altrow"{% endif %}>
-                <td><a href="{{item.canonicalLink}}">{{item.title}}</a></td>
-                <td class="XPris" align="right">
-                    {% if item.oldPrice > 0%}
-                    {{ item.oldPrice|number_format(2, ',', '.') }}
-                    {% endif %}
-                </td>
-                <td class="Pris" align="right">
-                    {% if item.price > 0 %}
-                    {{ item.price|number_format(2, ',', '.') }}
-                    {% endif %}
-                </td>
-                <td align="right" style="font-size:11px">{{item.sku}}</td>
-            </tr>
-            {% endfor %}
-        </tbody>
-    </table>
+<div id="kat{{renderable.id}}">
+    {% include 'productTiles.html' with {'orderBy': 'navn'} %}
 </div>
 {% endblock %}
 {% else %}

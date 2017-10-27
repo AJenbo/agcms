@@ -2,8 +2,8 @@
 
 {% block content %}
 <div id="innercontainer">
-    {% if ltimeStamp %}
-    <div id="date">{{ltimeStamp|date('d-m-Y H:i:s')}}</div>
+    {% if renderable.timeStamp %}
+    <div id="date">{{renderable.timeStamp|date('d-m-Y H:i:s')}}</div>
     {% endif %}
-<h1>{{headline}}</h1>{{content|raw}}</div>
+<h1>{{renderable.title}}</h1>{{renderable.html|raw}}</div>
 {% endblock %}

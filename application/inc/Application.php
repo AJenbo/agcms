@@ -2,12 +2,14 @@
 
 namespace AGCMS;
 
+use AGCMS\Controller\Base;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 
 class Application
 {
-    /** @var self */
-    protected static $instance;
+    /** @var array[] */
+    protected $routes = [];
 
     public function __construct(string $basePath)
     {
@@ -33,24 +35,33 @@ class Application
 
         defined('_ROOT_') || define('_ROOT_', $basePath);
         $this->basePath = $basePath;
-        self::$instance = $this;
     }
 
-    public static function getInstance(): self
+    public function addRoute(string $method, string $uri, string $controller, string $action)
     {
-        return self::$instance;
+        $this->routes[$method][] = ['url' => $uri, 'controller' => $controller, 'action' => $action];
     }
 
     public function run(Request $request): void
     {
         session_start();
         Render::sendCacheHeader();
-        $this->dispatch($request);
-        Render::outputPage();
+        $response = $this->dispatch($request);
+        $response->isNotModified(request()); // Set up 304 response if relevant
+        $response->send();
     }
 
-    public function dispatch(Request $request): void
+    private function dispatch(Request $request): Response
     {
-        Render::doRouting($request);
+        $requestUrl = urldecode($request->getRequestUri());
+
+        foreach ($this->routes[$request->getMethod()] as $route) {
+            if (preg_match('%^' . $route['url'] . '$%u', $requestUrl, $matches)) {
+                $matches[0] = $request;
+                return call_user_func_array([new $route['controller'](), $route['action']], $matches);
+            }
+        }
+
+        return (new Base())->redirectToSearch($request);
     }
 }

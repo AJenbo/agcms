@@ -15,32 +15,14 @@ use Twig_Loader_Filesystem;
 
 class Render
 {
-    /** @var Requirement */
-    private static $activeRequirement;
     /** @var Brand */
-    private static $activeBrand;
-    /** @var Category */
-    private static $activeCategory;
-
-    /** @var Page */
-    private static $activePage;
-    /** @var Brand */
-    private static $brand;
-    private static $canonical = '';
     private static $email = '';
     private static $hasProductList = false;
-    private static $keywords = [];
     private static $searchValues = [];
 
-    /** @var Response */
-    private static $response;
-
     private static $loadedTables = [];
-    private static $menu = [];
     private static $pageList = [];
-    private static $price = [];
     private static $searchMenu = [];
-    private static $timeStamp = 0;
     private static $adminOnlyTables = [
         'email',
         'emails',
@@ -54,129 +36,8 @@ class Render
 
     public static $pageType = 'index';
     public static $title = '';
-    public static $headline = '';
     public static $crumbs = [];
     public static $bodyHtml = '';
-    public static $track = '';
-
-    /**
-     * Do routing.
-     */
-    public static function doRouting(Request $request): void
-    {
-        $url = urldecode($request->getRequestUri());
-        self::makeUrlUtf8($url);
-        if ($url === '/') {
-            return;
-        }
-
-        // Routing
-        $requirementId = (int) preg_replace('/\/krav\/([0-9]*)\/.*/u', '\1', $url);
-        $brandId = (int) preg_replace('/.*\/mærke([0-9]*)-.*|.*/u', '\1', $url);
-        $categoryId = (int) preg_replace('/.*\/kat([0-9]*)-.*|.*/u', '\1', $url);
-        $pageId = (int) preg_replace('/.*\/side([0-9]*)-.*|.*/u', '\1', $url);
-        $redirect = !$brandId && !$categoryId && !$pageId && !$requirementId ? Response::HTTP_FOUND : 0;
-
-        if ($requirementId) {
-            self::$activeRequirement = ORM::getOne(Requirement::class, $requirementId);
-            if (!self::$activeRequirement) {
-                $redirect = Response::HTTP_MOVED_PERMANENTLY;
-            } elseif (self::$activeRequirement->getCanonicalLink() !== $url) {
-                redirect(self::$activeRequirement->getCanonicalLink(), Response::HTTP_MOVED_PERMANENTLY);
-                return;
-            }
-        }
-
-        if ($brandId) {
-            self::$activeBrand = ORM::getOne(Brand::class, $brandId);
-            if (!self::$activeBrand) {
-                $redirect = Response::HTTP_MOVED_PERMANENTLY;
-            } elseif (self::$activeBrand->getCanonicalLink() !== $url) {
-                redirect(self::$activeBrand->getCanonicalLink(), Response::HTTP_MOVED_PERMANENTLY);
-                return;
-            }
-        }
-
-        self::$activeCategory = ORM::getOne(Category::class, $categoryId);
-        if ($categoryId && (!self::$activeCategory || self::$activeCategory->isInactive())) {
-            $redirect = self::$activeCategory ? Response::HTTP_FOUND : Response::HTTP_MOVED_PERMANENTLY;
-            self::$activeCategory = null;
-        } elseif ($categoryId && !$pageId && self::$activeCategory->getCanonicalLink() !== $url) {
-            redirect(self::$activeCategory->getCanonicalLink(), Response::HTTP_MOVED_PERMANENTLY);
-            return;
-        }
-        if ($pageId) {
-            self::$activePage = ORM::getOne(Page::class, $pageId);
-            if (self::$activePage && self::$activePage->getCanonicalLink(self::$activeCategory) !== $url) {
-                redirect(self::$activePage->getCanonicalLink(), Response::HTTP_MOVED_PERMANENTLY);
-                return;
-            } elseif (!self::$activePage || self::$activePage->isInactive()) {
-                if (self::$activeCategory) {
-                    redirect(self::$activeCategory->getCanonicalLink(), Response::HTTP_MOVED_PERMANENTLY);
-                    return;
-                }
-                $redirect = self::$activePage ? Response::HTTP_FOUND : Response::HTTP_MOVED_PERMANENTLY;
-            }
-        }
-
-        self::doRedirects($redirect, $url);
-    }
-
-    /**
-     * Make sure URL is UTF8 and redirect if nessesery.
-     *
-     * @param string $url Requested url
-     */
-    private static function makeUrlUtf8(string $url): void
-    {
-        $encoding = mb_detect_encoding($url, 'UTF-8, ISO-8859-1');
-        if ('UTF-8' !== $encoding) {
-            // Windows-1252 is a superset of iso-8859-1
-            if (!$encoding || 'ISO-8859-1' == $encoding) {
-                $encoding = 'windows-1252';
-            }
-            $url = mb_convert_encoding($url, 'UTF-8', $encoding);
-            redirect($url, Response::HTTP_MOVED_PERMANENTLY);
-        }
-    }
-
-    /**
-     * Do redirects for routing.
-     *
-     * @param int    $redirect redirect code
-     * @param string $url      Requested url
-     */
-    private static function doRedirects(int $redirect, string $url): void
-    {
-        if (!$redirect) {
-            return;
-        }
-
-        $redirectUrl = '/?sog=1&q=&sogikke=&minpris=&maxpris=&maerke=';
-        $query = preg_replace(
-            [
-                '/\/|-|_|\.html|\.htm|\.php|\.gif|\.jpeg|\.jpg|\.png|mærke[0-9]+-|kat[0-9]+-|side[0-9]+-|\.php/u',
-                '/[^\w0-9]/u',
-                '/([0-9]+)/u',
-                '/([[:upper:]]?[[:lower:]]+)/u',
-                '/\s+/u',
-            ],
-            [
-                ' ',
-                ' ',
-                ' \1 ',
-                ' \1',
-                ' ',
-            ],
-            $url
-        );
-        $query = trim($query);
-        if ($query) {
-            $redirectUrl = '/?q=' . rawurlencode($query) . '&sogikke=&minpris=&maxpris=&maerke=0';
-        }
-
-        redirect($redirectUrl, $redirect);
-    }
 
     /**
      * Remember what tabels where read during page load.
@@ -246,7 +107,7 @@ class Render
             return;
         }
 
-        $response = self::getResponse();
+        $response = new Response();
         $response->setPublic();
         $response->headers->addCacheControlDirective('must-revalidate');
 
@@ -259,15 +120,6 @@ class Render
             $response->send();
             exit;
         }
-    }
-
-    private static function getResponse(): Response
-    {
-        if (!self::$response) {
-            self::$response = new Response();
-        }
-
-        return self::$response;
     }
 
     /**
@@ -299,35 +151,7 @@ class Render
             }
         }
 
-        self::$email = first(Config::get('emails'))['address'];
         self::$title = self::$title ?: Config::get('site_name');
-
-        if (self::$activeCategory) {
-            self::$crumbs = self::$activeCategory->getBranch();
-            foreach (self::$crumbs as $category) {
-                self::$keywords[] = trim($category->getTitle());
-            }
-        }
-
-        //Get list of top categorys on the site.
-        self::addLoadedTable('bind');
-        self::$menu = ORM::getByQuery(
-            Category::class,
-            '
-            SELECT *
-            FROM `kat`
-            WHERE kat.vis != ' . Category::HIDDEN . '
-                AND kat.bind = 0
-                AND (id IN (SELECT bind FROM kat WHERE vis != ' . Category::HIDDEN . ')
-                    OR id IN (SELECT kat FROM bind)
-                )
-            ORDER BY `order`, navn
-            '
-        );
-
-        self::loadBrandData(self::$activeBrand);
-        self::loadCategoryData(self::$activeCategory);
-        self::loadPageData(self::$activePage);
 
         if ($request->get('sog')) {
             self::$crumbs[] = [
@@ -397,107 +221,7 @@ class Render
                 $request->get('q', ''),
                 $request->get('sogikke', '')
             );
-        } elseif (self::$activeRequirement) {
-            self::$pageType = 'requirement';
-            self::$title = self::$activeRequirement->getTitle();
-            self::$bodyHtml = self::$activeRequirement->getHtml();
-            self::$crumbs[] = self::$activeRequirement;
-        } elseif ('index' === self::$pageType) {
-            $page = ORM::getOne(CustomPage::class, 1);
-            assert($page instanceof CustomPage);
-            self::$bodyHtml = $page->getHtml();
         }
-
-        self::cleanData();
-    }
-
-    /**
-     * Clean gathered data.
-     */
-    private static function cleanData(): void
-    {
-        self::$keywords = array_filter(self::$keywords);
-    }
-
-    /**
-     * Load data from a brand.
-     */
-    private static function loadBrandData(?Brand $brand): void
-    {
-        if (!$brand) {
-            return;
-        }
-
-        self::$pageType = 'tiles';
-        self::$canonical = $brand->getCanonicalLink();
-        self::$title = $brand->getTitle();
-        self::$brand = $brand;
-        self::$crumbs[] = $brand;
-
-        foreach ($brand->getPages() as $page) {
-            if (!$page->isInactive()) {
-                self::$pageList[] = $page;
-            }
-        }
-    }
-
-    /**
-     * Load data from a category.
-     */
-    private static function loadCategoryData(?Category $category): void
-    {
-        if (!$category) {
-            return;
-        }
-
-        foreach ($category->getPages() as $page) {
-            if (!$page->isInactive()) {
-                self::$pageList[] = $page;
-            }
-        }
-        if (1 === count(self::$pageList)) {
-            self::$activePage = array_shift(self::$pageList);
-
-            return;
-        }
-
-        $title = trim($category->getTitle());
-        if ($category->getIcon()) {
-            $title = ($title ? ' ' : '') . $category->getIcon()->getDescription();
-            if (!$title) {
-                $title = pathinfo($category->getIcon() ? $category->getIcon()->getPath() : '', PATHINFO_FILENAME);
-                $title = trim(ucfirst(preg_replace('/-/ui', ' ', $title)));
-            }
-        }
-        self::$title = $title ?: self::$title;
-        self::$email = $category->getEmail();
-        self::$canonical = $category->getCanonicalLink();
-        self::$pageType = Category::GALLERY === $category->getRenderMode() ? 'tiles' : 'list';
-    }
-
-    /**
-     * Load data from a page.
-     */
-    private static function loadPageData(?Page $page): void
-    {
-        if (!$page) {
-            return;
-        }
-
-        self::$pageType = 'product';
-        self::$canonical = $page->getCanonicalLink();
-        self::$headline = $page->getTitle();
-        self::$keywords[] = $page->getTitle();
-        self::$timeStamp = $page->getTimestamp();
-        self::$title = trim($page->getTitle()) ?: self::$title;
-
-        self::$bodyHtml = $page->getHtml();
-        foreach ($page->getTables() as $table) {
-            self::$bodyHtml .= '<div id="table' . $table->getId() . '">'
-                . self::getTableHtml($table->getId(), null, self::$activeCategory) . '</div>';
-        }
-
-        self::$brand = $page->getBrand();
     }
 
     /**
@@ -634,184 +358,6 @@ class Render
     }
 
     /**
-     * Return html for a sorted list.
-     *
-     * @param int           $tableId  Id of list
-     * @param int|null      $orderBy  What column to sort by
-     * @param Category|null $category Current category
-     */
-    public static function getTableHtml(int $tableId, int $orderBy = null, Category $category = null): string
-    {
-        $table = ORM::getOne(Table::class, $tableId);
-        if (!$table) {
-            return '';
-        }
-        assert($table instanceof Table);
-
-        if (null === $orderBy) {
-            $orderBy = $table->getOrderBy();
-        }
-        if (!$rows = $table->getRows($orderBy)) {
-            return '';
-        }
-
-        // Eager load data
-        $pageIds = [];
-        foreach ($rows as $row) {
-            if ($row['link']) {
-                $pageIds[] = $row['link'];
-            }
-        }
-        if ($pageIds) {
-            ORM::getByQuery(Page::class, 'SELECT * FROM sider WHERE id IN(' . implode(',', $pageIds) . ')');
-        }
-
-        $html = '<table class="tabel">';
-        if ($table->getTitle()) {
-            $html .= '<caption>' . xhtmlEsc($table->getTitle()) . '</caption>';
-        }
-        $html .= '<thead><tr>';
-        $columns = $table->getColumns();
-        foreach ($columns as $columnId => $column) {
-            if (in_array($column['type'], [Table::COLUMN_TYPE_PRICE, Table::COLUMN_TYPE_PRICE_NEW], true)) {
-                self::$hasProductList = true;
-            }
-
-            $html .= '<td><a href="" onclick="x_getTable(' . $table->getId()
-            . ', ' . $columnId . ', ' . ($category ? $category->getId() : '0')
-            . ', inject_html);return false;">' . xhtmlEsc($column['title']) . '</a></td>';
-        }
-        if (self::$hasProductList) {
-            $html .= '<td></td>';
-        }
-        $html .= '</tr></thead><tbody>';
-
-        $altRow = false;
-        foreach ($rows as $row) {
-            $html .= '<tr';
-            if ($altRow) {
-                $html .= ' class="altrow"';
-            }
-            $altRow = !$altRow;
-            $html .= '>';
-
-            $linkTag = '';
-            $page = null;
-            if ($row['link']) {
-                $page = ORM::getOne(Page::class, $row['link']);
-                assert($page instanceof Page);
-                $linkTag = '<a href="' . xhtmlEsc($page->getCanonicalLink($category)) . '">';
-            }
-            foreach ($columns as $columnId => $column) {
-                switch ($column['type']) {
-                    case Table::COLUMN_TYPE_STRING:
-                        $html .= '<td>';
-                        break;
-                    case Table::COLUMN_TYPE_INT:
-                        $html .= '<td style="text-align:right;">';
-                        break;
-                    case Table::COLUMN_TYPE_PRICE:
-                        $html .= '<td style="text-align:right;" class="Pris">';
-                        break;
-                    case Table::COLUMN_TYPE_PRICE_NEW:
-                        $html .= '<td style="text-align:right;" class="NyPris">';
-                        break;
-                    case Table::COLUMN_TYPE_PRICE_OLD:
-                        $html .= '<td style="text-align:right;" class="XPris">';
-                        break;
-                }
-
-                if ($linkTag) {
-                    $html .= $linkTag;
-                }
-
-                switch ($column['type']) {
-                    case Table::COLUMN_TYPE_STRING:
-                    case Table::COLUMN_TYPE_INT:
-                        $html .= xhtmlEsc($row[$columnId]);
-                        break;
-                    case Table::COLUMN_TYPE_PRICE:
-                    case Table::COLUMN_TYPE_PRICE_NEW:
-                    case Table::COLUMN_TYPE_PRICE_OLD:
-                        if ($row[$columnId] >= 0) {
-                            $html .= str_replace(',00', ',-', number_format($row[$columnId], 2, ',', '.'));
-                        } else {
-                            $html .= xhtmlEsc(_('Sold out'));
-                        }
-                        break;
-                }
-                if ($linkTag) {
-                    $html .= '</a>';
-                }
-                $html .= '</td>';
-            }
-            if (self::$hasProductList) {
-                $html .= '<td class="addtocart">';
-                if ($row[$columnId] >= 0) {
-                    $html .= '<a href="/bestilling/?'
-                        . ($page ? ('add=' . $page->getId()) : ('add_list_item=' . $row['id']))
-                        . '"><img src="/theme/default/images/cart_add.png" title="'
-                        . _('Add to shopping cart') . '" alt="+" /></a>';
-                }
-                $html .= '</td>';
-            }
-            $html .= '</tr>';
-        }
-
-        $html .= '</tbody></table>';
-
-        return $html;
-    }
-
-    /**
-     * Get the html for content bellonging to a category.
-     *
-     * @param Category $category Activ category
-     * @param string   $sort     What column to sort by
-     *
-     * @return string
-     */
-    public static function getKatHtml(Category $category, string $sort): string
-    {
-        $html = '<table class="tabel"><thead><tr><td><a href="" onclick="x_getKat(\''
-            . $category->getId()
-            . '\', \'navn\', inject_html);return false">Titel</a></td><td><a href="" onclick="x_getKat(\''
-            . $category->getId()
-            . '\', \'for\', inject_html);return false">Før</a></td><td><a href="" onclick="x_getKat(\''
-            . $category->getId()
-            . '\', \'pris\', inject_html);return false">Pris</a></td><td><a href="" onclick="x_getKat(\''
-            . $category->getId()
-            . '\', \'varenr\', inject_html);return false">#</a></td></tr></thead><tbody>';
-
-        $isEven = false;
-        $pages = $category->getPages($sort);
-        foreach ($pages as $page) {
-            $oldPrice = '';
-            if ($page->getOldPrice()) {
-                $oldPrice = $page->getOldPrice() . ',-';
-            }
-
-            $price = '';
-            if ($page->getPrice()) {
-                $price = $page->getPrice() . ',-';
-            }
-
-            $html .= '<tr' . ($isEven ? ' class="altrow"' : '')
-                . '><td><a href="' . xhtmlEsc($page->getCanonicalLink($category)) . '">'
-                . xhtmlEsc($page->getTitle())
-                . '</a></td><td class="XPris" align="right">' . $oldPrice
-                . '</td><td class="Pris" align="right">' . $price
-                . '</td><td align="right" style="font-size:11px">'
-                . xhtmlEsc($page->getSku()) . '</td></tr>';
-
-            $isEven = !$isEven;
-        }
-        $html .= '</tbody></table>';
-
-        return $html;
-    }
-
-    /**
      * Output the page to the browser.
      */
     public static function outputPage(): void
@@ -822,39 +368,16 @@ class Render
         self::output(
             self::$pageType,
             [
-                'brand'           => self::$brand,
-                'hasProductList'  => self::$hasProductList,
-                'price'           => self::$price,
-                'pageList'        => self::$pageList,
-                'title'           => self::$title,
-                'canonical'       => self::$canonical,
-                'keywords'        => self::$keywords,
-                'crumbs'          => self::$crumbs,
-                'content'         => self::$bodyHtml,
-                'category'        => self::$activeCategory ? self::$activeCategory : ORM::getOne(Category::class, 0),
-                'pageId'          => self::$activePage ? self::$activePage->getId() : 0,
-                'headline'        => self::$headline,
-                'timeStamp'       => self::$timeStamp,
-                'page'            => self::$activePage,
-                'menu'            => self::$menu,
-                'searchMenu'      => self::$searchMenu,
-                'hasItemsInCart'  => !empty($_SESSION['faktura']['quantities']),
-                'infoPage'        => ORM::getOne(CustomPage::class, 2),
-                'search'          => self::$searchValues,
+                'hasProductList' => self::$hasProductList,
+                'pageList'       => self::$pageList,
+                'title'          => self::$title,
+                'crumbs'         => self::$crumbs,
+                'content'        => self::$bodyHtml,
+                'searchMenu'     => self::$searchMenu,
+                'hasItemsInCart' => !empty($_SESSION['faktura']['quantities']),
+                'search'         => self::$searchValues,
             ]
         );
-    }
-
-    /**
-     * Output the page to the browser.
-     */
-    public static function output(string $template = 'index', array $data = []): void
-    {
-        $response = self::getResponse();
-        $response->setStatusCode(Response::HTTP_OK);
-        $response->setContent(self::render($template, $data));
-        $response->isNotModified(request()); // Set up 304 response if relevant
-        $response->send();
     }
 
     public static function render(string $template = 'index', array $data = []): string

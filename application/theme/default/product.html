@@ -1,13 +1,13 @@
 {% extends "index.html" %}
 
 {% block content %}
-<div id="innercontainer"><div id="date">{{timeStamp|date('d-m-Y H:i:s')}}</div>
+<div id="innercontainer"><div id="date">{{renderable.timeStamp|date('d-m-Y H:i:s')}}</div>
     <h1>
-        {{page.title}}
-        {% if page.sku %} <span style="font-weight:normal; font-size:13px">SKU: {{page.sku}}</span>{% endif %}
+        {{renderable.title}}
+        {% if renderable.sku %} <span style="font-weight:normal; font-size:13px">SKU: {{renderable.sku}}</span>{% endif %}
     </h1>
-    {{content|raw}}
-    {% if page.requirement %}<p><a href="{{page.requirement.canonicalLink}}" target="krav">{{page.requirement.title}}</a></p>{% endif %}
+    {{renderable.html|raw}}
+    {% if renderable.requirement %}<p><a href="{{renderable.requirement.canonicalLink}}" target="krav">{{renderable.requirement.title}}</a></p>{% endif %}
     <p style="text-align:center">
         {% include 'price.html' with {'product': page} %}
         {% if product.price and not hasProductList %}<a href="/bestilling/?add={{pageId}}">+ Add to shopping cart</a>{% endif %}
@@ -15,9 +15,9 @@
     </p>
 </div>
 
-{% if page.activeAccessories %}
+{% if renderable.activeAccessories %}
 <p align="center" style="clear:both">Accessories</p>
-{% include 'productTiles.html' with {'products': page.activeAccessories} %}
+{% include 'productTiles.html' with {'products': renderable.activeAccessories} %}
 {% endif %}
 
 {% if brand %}

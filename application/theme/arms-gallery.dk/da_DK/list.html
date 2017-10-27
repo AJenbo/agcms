@@ -9,6 +9,6 @@
     {% if brand.canonicalLink %}</a>{% endif %}
 </p>
 {% endif %}
-{% if not pageList and search %}<p align="center" class="web">Søgningen gav intet resultat</p>{% endif %}
-{% include 'productTiles.html' with {'products': pageList} %}
+{% if not renderable.pages and search %}<p align="center" class="web">Søgningen gav intet resultat</p>{% endif %}
+{% include 'productTiles.html' with {'products': renderable.pages} %}
 {% endblock %}

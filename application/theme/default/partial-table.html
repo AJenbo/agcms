@@ -1,0 +1,37 @@
+{% spaceless %}
+<table class="tabel">
+    {% if table.title %}<caption>{{table.title}}</caption>{% endif %}
+    <thead>
+        <tr>
+            {% for column in table.columns %}
+            <td>
+                <a href="" onclick="x_getTable({{table.id}}, {{loop.index0}}, {{category.id}}, inject_html);return false;">
+                    {{column.title}}
+                </a>
+            </td>
+            {% endfor%}
+            {% if table.hasPrices %}<td></td>{% endif %}
+        </tr>
+    </thead>
+    <tbody>
+        {% for row in table.rows(orderBy) %}
+        <tr{% if loop.index is even %} class="altrow"{% endif %}>
+            {% for column in table.columns %}
+            <td{% if column.type %} style="text-align:right;"{% endif %}{% if column.type > 2 %} class="{% if column.type == 2 %}Pris{% elseif column.type == 3 %}NyPris{% elseif column.type == 4 %}XPris{% endif %}"{% endif %}>
+                {% if table.hasLinks %}<a href="{{row.page.canonicalLink(category)}}">{% endif %}
+                    {% if column.type < 2 %}{{row[loop.index0]}}{% else %}{% if row[loop.index0] > 0 %}{{row[loop.index0]|number_format(0, ',', '.')}},-{% else %}Sold out{% endif %}{% endif %}
+                {% if table.hasLinks %}</a>{% endif %}
+            </td>
+            {% endfor %}
+            {% if table.hasPrices %}
+            <td class="addtocart">
+                <a href="/bestilling/?add={% if row.page %}{{row.page.id}}{% else %}{{table.page.id}}{% endif %}&add_list_item={{row.id}}">
+                    <img src="/theme/default/images/cart_add.png" title="Add to shopping cart" alt="+" />
+                </a>
+            </td>
+            {% endif %}
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endspaceless %}

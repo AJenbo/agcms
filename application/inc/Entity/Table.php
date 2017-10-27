@@ -28,6 +28,9 @@ class Table extends AbstractEntity
     /** @var bool If rows can be linked to pages. */
     private $hasLinks = false;
 
+    /** @var bool Indicate if there is a column with sales prices. */
+    private $hasPrices = false;
+
     // Runtime
     /** @var array[] Decoded column data. */
     private $columns = [];
@@ -156,6 +159,13 @@ class Table extends AbstractEntity
     {
         $this->columns = json_decode($columnData, true);
 
+        foreach ($this->columns as $column) {
+            if (in_array($column['type'], [Table::COLUMN_TYPE_PRICE, Table::COLUMN_TYPE_PRICE_NEW], true)) {
+                $this->hasPrices = true;
+                break;
+            }
+        }
+
         return $this;
     }
 
@@ -220,6 +230,16 @@ class Table extends AbstractEntity
     // ORM related functions
 
     /**
+     * Indicate if there is a column with sales prices.
+     *
+     * @return bool
+     */
+    public function hasPrices(): bool
+    {
+        return $this->hasPrices;
+    }
+
+    /**
      * Get table rows.
      *
      * @return array
@@ -237,10 +257,13 @@ class Table extends AbstractEntity
         // Cells are indexed by id, this is needed for sorting the rows
         foreach ($rows as &$row) {
             $row['id'] = (int) $row['id'];
-            $row['link'] = $this->hasLinks() && $row['link'] ? (int) $row['link'] : null;
+            $row['page'] = null;
+            if ($this->hasLinks() && $row['link']) {
+                $row['page'] = ORM::getOne(Pagem, $row['link']);
+            }
             $cells = explode('<', $row['cells']);
             $cells = array_map('html_entity_decode', $cells);
-            unset($row['cells'], $row['list_id']);
+            unset($row['cells'], $row['list_id'], $row['link']);
 
             foreach ($this->columns as $key => $column) {
                 $row[$key] = $cells[$key] ?? '';
