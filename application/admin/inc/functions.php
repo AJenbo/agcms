@@ -2053,6 +2053,9 @@ function updateSpecial(int $id, string $html, string $title = ''): bool
 
     $page = ORM::getOne(CustomPage::class, $id);
     assert($page instanceof CustomPage);
+    if ($title) {
+        $page->setTitle($title);
+    }
     $page->setHtml($html)->save();
 
     if (1 === $id) {
