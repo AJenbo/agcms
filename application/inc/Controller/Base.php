@@ -25,21 +25,18 @@ class Base
             $url['host'] = $request->getHost();
         }
         if (empty($url['path'])) {
-            $url['path'] = parse_url($request->getRequestUri(), PHP_URL_PATH);
+            $url['path'] = parse_url(urldecode($request->getRequestUri()), PHP_URL_PATH);
         } elseif ('/' !== mb_substr($url['path'], 0, 1)) {
             //The redirect is relative to current path
             $path = [];
-            $requestPath = parse_url($request->getRequestUri(), PHP_URL_PATH);
+            $requestPath = parse_url(urldecode($request->getRequestUri()), PHP_URL_PATH);
             preg_match('#^\S+/#u', $requestPath, $path);
             $url['path'] = $path[0] . $url['path'];
         }
         $url['path'] = encodeUrl($url['path']);
         $url = unparseUrl($url);
 
-        $response = new RedirectResponse($url);
-        $response->setStatusCode($status);
-
-        return $response;
+        return new RedirectResponse($url, $status);
     }
 
     /**
