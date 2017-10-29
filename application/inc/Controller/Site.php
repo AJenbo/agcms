@@ -186,10 +186,11 @@ class Site extends Base
         $category = ORM::getOne(Category::class, 0);
 
         return [
-            'menu'       => $category->getVisibleChildren(),
-            'infoPage'   => ORM::getOne(CustomPage::class, 2),
-            'crumbs'     => [$category],
-            'category'   => $category,
+            'menu'           => $category->getVisibleChildren(),
+            'infoPage'       => ORM::getOne(CustomPage::class, 2),
+            'crumbs'         => [$category],
+            'category'       => $category,
+            'hasItemsInCart' => !empty($_SESSION['faktura']['quantities']),
         ];
     }
 
