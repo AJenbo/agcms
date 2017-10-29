@@ -2,6 +2,7 @@
 
 namespace AGCMS;
 
+use Throwable;
 use AGCMS\Controller\Base;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -66,7 +67,12 @@ class Application
     {
         session_start();
         Render::sendCacheHeader();
-        $response = $this->dispatch($request);
+        try {
+            $response = $this->dispatch($request);
+        } catch (Throwable $exception) {
+            $response = new Response($exception->getMessage());
+            $response->setStatusCode(Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
         $response->isNotModified(request()); // Set up 304 response if relevant
         $response->send();
     }
