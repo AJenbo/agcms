@@ -41,47 +41,42 @@ function injectHtml(data)
 
     document.getElementById(data.id).innerHTML = data.html;
 }
+var xHttp = {
+    "requests" : [],
+    "cancel" : function(id) {
+        if(xHttp.requests[id]) {
+            xHttp.requests[id].abort();
+            xHttp.requests.splice(id, 1, null);
+        }
+    },
 
-var xHttp = { "requests" : [] };
+    "request" : function(uri, callback, data) {
+        var id = xHttp.requests.length;
 
-xHttp.cancel = function (id)
-{
-    if (xHttp.requests[id]) {
-        xHttp.requests[id].abort();
-        xHttp.requests.splice(id, 1, null);
-    }
-}
+        var x = new window.XMLHttpRequest();
+        x.responseType = "json";
+        x.onload = function(event) {
+            xHttp.requests[id] = null;
 
-xHttp.request = function (uri, callback, data)
-{
-    var id = xHttp.requests.length;
+            if(x.status < 200 || x.status > 299) {
+                alert(x.statusText);
+                return;
+            }
 
-    var x = new window.XMLHttpRequest();
-    x.responseType = "json";
-    x.onload = function (event)
-    {
-        xHttp.requests[id] = null;
+            callback(x.response);
+        };
 
-        if (x.status < 200 || x.status > 299) {
-            alert(x.statusText);
-            return;
+        var method = "GET";
+        if(data) {
+            method = "POST";
+            x.setRequestHeader("Content-Type", "application/json");
+            data = JSON.stringify(data);
         }
 
-        callback(x.response);
-    };
+        x.open(method, uri);
+        x.send(data);
 
-    var method = "GET";
-    if (data) {
-        method = "POST";
-        x.setRequestHeader("Content-Type", "application/json");
-        data = JSON.stringify(data);
+        xHttp.requests[id] = x;
+        return id;
     }
-
-    x.open(method, uri);
-
-    x.send(data);
-
-    xHttp.requests[id] = x;
-
-    return id;
-}
+};
