@@ -183,6 +183,14 @@ h1 {
     text-decoration: none;
 }
 
+#crumb li, #crumb a {
+    color: #5a5a5a;
+}
+
+#crumb a:hover {
+    color: #000;
+}
+
 #crumb, #cart {
     background-image:url('/images/web/bar.gif');
 }
@@ -420,6 +428,9 @@ marquee {
     }
     #crumb, #cart {
         background: #ddd;
+    }
+    #crumb li, #crumb a {
+        color: #999;
     }
     #submenu {
         background-image: none;
