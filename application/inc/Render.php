@@ -15,9 +15,6 @@ use Twig_Loader_Filesystem;
 
 class Render
 {
-    /** @var Brand */
-    private static $email = '';
-    private static $hasProductList = false;
     private static $searchValues = [];
 
     private static $loadedTables = [];
@@ -37,7 +34,6 @@ class Render
     public static $pageType = 'index';
     public static $title = '';
     public static $crumbs = [];
-    public static $bodyHtml = '';
 
     /**
      * Remember what tabels where read during page load.
@@ -131,8 +127,6 @@ class Render
 
         self::$searchValues = $request->get('q') ? ['q' => $request->get('q')] : [];
 
-        array_unshift(self::$crumbs, ORM::getOne(Category::class, 0));
-
         // Brand only search
         if (!$request->get('q')
             && !$request->get('varenr')
@@ -150,8 +144,6 @@ class Render
                 redirect('/?sog=1&q=&sogikke=&minpris=&maxpris=&maerke=', Response::HTTP_MOVED_PERMANENTLY);
             }
         }
-
-        self::$title = self::$title ?: Config::get('site_name');
 
         if ($request->get('sog')) {
             self::$crumbs[] = [
@@ -368,14 +360,8 @@ class Render
         self::output(
             self::$pageType,
             [
-                'hasProductList' => self::$hasProductList,
-                'pageList'       => self::$pageList,
-                'title'          => self::$title,
-                'crumbs'         => self::$crumbs,
-                'content'        => self::$bodyHtml,
-                'searchMenu'     => self::$searchMenu,
-                'hasItemsInCart' => !empty($_SESSION['faktura']['quantities']),
-                'search'         => self::$searchValues,
+                'searchMenu' => self::$searchMenu,
+                'search'     => self::$searchValues,
             ]
         );
     }
