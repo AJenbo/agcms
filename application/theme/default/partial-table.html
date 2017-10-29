@@ -5,7 +5,7 @@
         <tr>
             {% for column in table.columns %}
             <td>
-                <a href="" onclick="x_getTable({{table.id}}, {{loop.index0}}, {{category.id}}, inject_html);return false;">
+                <a href="" onclick="return getTable({{category.id}}, {{table.id}}, {{loop.index0}})">
                     {{column.title}}
                 </a>
             </td>

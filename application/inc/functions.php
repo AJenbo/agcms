@@ -2,16 +2,12 @@
 
 use AGCMS\Config;
 use AGCMS\DB;
-use AGCMS\Entity\Category;
 use AGCMS\Entity\Invoice;
-use AGCMS\ORM;
 use AGCMS\Render;
 use AJenbo\Imap;
 use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\Exception as PHPMailerException;
-use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\Response;
 
 function request(): Request
 {
@@ -213,42 +209,6 @@ function invoiceFromSession(): Invoice
 }
 
 /**
- * Return html for a sorted list.
- *
- * @param int      $listid     Id of list
- * @param int|null $bycell     What cell to sort by
- * @param int|null $categoryId Id of current category
- *
- * @return string[]
- */
-function getTable(int $tableId, int $orderBy = null, int $categoryId = null): array
-{
-    Render::addLoadedTable('lists');
-    Render::addLoadedTable('list_rows');
-    Render::addLoadedTable('sider');
-    Render::addLoadedTable('bind');
-    Render::addLoadedTable('kat');
-    Render::sendCacheHeader();
-
-    $html = '';
-
-    $table = ORM::getOne(Table::class, $tableId);
-    if (null === $orderBy) {
-        $orderBy = $table->getOrderBy();
-    }
-    if ($rows = $table->getRows($orderBy)) {
-        $data = [
-            'orderBy' => $orderBy,
-            'table' => $table,
-            'category' => $categoryId ? ORM::getOne(Category::class, $categoryId) : null,
-        ];
-        $html = Render::render('partial-table', $data);
-    }
-
-    return ['id' => 'table' . $tableId, 'html' => $html];
-}
-
-/**
  * Crope a string to a given max lengt, round by word.
  *
  * @param string $string   String to crope
@@ -271,122 +231,6 @@ function stringLimit(string $string, int $length = 50, string $ellipsis = '…')
     }
 
     return $string . (mb_strlen($string) === $length ? '' : ' ') . $ellipsis;
-}
-
-/**
- * Get address from phone number.
- *
- * @param string $phoneNumber Phone number
- *
- * @return string[] Array with address fitting the post table format
- */
-function getAddress(string $phoneNumber): array
-{
-    $default = [
-        'recName1'     => '',
-        'recAttPerson' => '',
-        'recAddress1'  => '',
-        'recAddress2'  => '',
-        'recZipCode'   => '',
-        'recPostBox'   => '',
-        'recCVR'       => '',
-        'email'        => '',
-    ];
-
-    $updateTime = 0;
-    $tables = db()->fetchArray("SHOW TABLE STATUS WHERE Name IN('fakturas', 'email', 'post')");
-    foreach ($tables as $table) {
-        $updateTime = max($updateTime, strtotime($table['Update_time']) + db()->getTimeOffset());
-    }
-
-    //Try katalog orders
-    $address = db()->fetchOne(
-        "
-        SELECT * FROM (
-            SELECT
-                navn recName1,
-                att recAttPerson,
-                adresse recAddress1,
-                postnr recZipCode,
-                postbox recPostBox,
-                email
-            FROM `fakturas`
-            WHERE `tlf1` LIKE '" . $phoneNumber . "'
-               OR `tlf2` LIKE '" . $phoneNumber . "'
-            ORDER BY id DESC
-            LIMIT 1
-        ) x
-        UNION
-        SELECT * FROM (
-            SELECT
-                navn recName1,
-                '' recAttPerson,
-                adresse recAddress1,
-                post recZipCode,
-                '' recPostBox,
-                email
-            FROM `email`
-            WHERE `tlf1` LIKE '" . $phoneNumber . "'
-               OR `tlf2` LIKE '" . $phoneNumber . "'
-            ORDER BY id DESC
-            LIMIT 1
-        ) x
-        UNION
-        SELECT * FROM (
-            SELECT
-                recName1,
-                '' recAttPerson,
-                recAddress1,
-                recZipCode,
-                '' recPostBox,
-                '' email
-            FROM `post`
-            WHERE `recipientID` LIKE '" . $phoneNumber . "'
-            ORDER BY id DESC
-            LIMIT 1
-        ) x
-        "
-    );
-
-    if ($address) {
-        $address += $default;
-        if ($address !== $default) {
-            Render::sendCacheHeader($updateTime);
-
-            return $address;
-        }
-    }
-
-    Render::sendCacheHeader($updateTime);
-
-    //Addressen kunde ikke findes.
-    return ['error' => _('The address could not be found.')];
-}
-
-/**
- * Get the html for content bellonging to a category.
- *
- * @param int    $categoryId Id of activ category
- * @param string $orderBy    What column to sort by
- *
- * @return string[] Apropriate for handeling with javascript function inject_html()
- */
-function getKat(int $categoryId, string $orderBy): array
-{
-    Render::addLoadedTable('sider');
-    Render::addLoadedTable('bind');
-    Render::addLoadedTable('kat');
-    Render::sendCacheHeader();
-
-    $data = [
-        'renderable' => ORM::getOne(Category::class, $categoryId),
-        'orderBy' => $orderBy,
-    ];
-
-    return [
-        'id' => 'kat' . $categoryId,
-        'html' => Render::render('partial-product-list', $data),
-    ];
 }
 
 /**

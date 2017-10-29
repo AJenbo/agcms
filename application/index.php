@@ -3,6 +3,7 @@
 use AGCMS\Application;
 use AGCMS\Config;
 use AGCMS\Controller\Site;
+use AGCMS\Controller\Ajax;
 use Symfony\Component\HttpFoundation\Request;
 
 require_once __DIR__ . '/vendor/autoload.php';
@@ -16,4 +17,7 @@ $app->addRoute('GET', '/side(\d+)-[^/]*\.html', Site::class, 'rootPage');
 $app->addRoute('GET', '/kat(\d+)-[^/]*/side(\d+)-[^/]*\.html', Site::class, 'page');
 $app->addRoute('GET', '/mærke(\d+)-[^/]*/', Site::class, 'brand');
 $app->addRoute('GET', '/krav/(\d+)/[^/]*.html', Site::class, 'requirement');
+$app->addRoute('GET', '/ajax/category/(\d+)/table/(\d+)/(\d+)', Ajax::class, 'table');
+$app->addRoute('GET', '/ajax/category/(\d+)/([^/]+)', Ajax::class, 'category');
+$app->addRoute('GET', '/ajax/address/([0-9+\s]+)', Ajax::class, 'address');
 $app->run(Request::createFromGlobals());

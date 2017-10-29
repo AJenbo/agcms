@@ -11,6 +11,9 @@ class Application
     /** @var array[] */
     protected $routes = [];
 
+    /**
+     * @param string $basePath
+     */
     public function __construct(string $basePath)
     {
         date_default_timezone_set(Config::get('timezone', 'Europe/Copenhagen'));
@@ -37,11 +40,28 @@ class Application
         $this->basePath = $basePath;
     }
 
-    public function addRoute(string $method, string $uri, string $controller, string $action)
+    /**
+     * Add a route
+     *
+     * @param string $method
+     * @param string $uri
+     * @param string $controller
+     * @param string $action
+     *
+     * @return void
+     */
+    public function addRoute(string $method, string $uri, string $controller, string $action): void
     {
         $this->routes[$method][] = ['url' => $uri, 'controller' => $controller, 'action' => $action];
     }
 
+    /**
+     * Run the application
+     *
+     * @param Request $request
+     *
+     * @return void
+     */
     public function run(Request $request): void
     {
         session_start();
@@ -51,6 +71,13 @@ class Application
         $response->send();
     }
 
+    /**
+     * Find a matching route for the current request
+     *
+     * @param Request $request
+     *
+     * @return Response
+     */
     private function dispatch(Request $request): Response
     {
         $requestUrl = urldecode($request->getRequestUri());

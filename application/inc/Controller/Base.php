@@ -6,6 +6,15 @@ use Symfony\Component\HttpFoundation\RedirectResponse;
 
 class Base
 {
+    /**
+     * Generate redirect response
+     *
+     * @param Request $request
+     * @param string  $url
+     * @param int     $status
+     *
+     * @return RedirectResponse
+     */
     protected function redirect(Request $request, string $url, int $status = Response::HTTP_SEE_OTHER): RedirectResponse
     {
         $url = parse_url($url);
@@ -33,6 +42,13 @@ class Base
         return $response;
     }
 
+    /**
+     * Generate a redirect to the search page based on the current request url
+     *
+     * @param Request $request
+     *
+     * @return RedirectResponse
+     */
     public function redirectToSearch(Request $request): RedirectResponse
     {
         $redirectUrl = '/?sog=1&q=&sogikke=&minpris=&maxpris=&maerke=';

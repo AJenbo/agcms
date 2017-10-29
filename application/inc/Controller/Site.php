@@ -14,6 +14,14 @@ use Symfony\Component\HttpFoundation\RedirectResponse;
 
 class Site extends Base
 {
+    /**
+     * View a category
+     *
+     * @param Request $request
+     * @param int     $categoryId
+     *
+     * @return Response
+     */
     public function category(Request $request, int $categoryId): Response
     {
         /** @var Category */
@@ -42,6 +50,13 @@ class Site extends Base
         return new Response($content);
     }
 
+    /**
+     * View the frontpage
+     *
+     * @param Request $request
+     *
+     * @return Response
+     */
     public function frontPage(Request $request): Response
     {
         $data = [
@@ -52,11 +67,28 @@ class Site extends Base
         return new Response($content);
     }
 
+    /**
+     * View page in the root category
+     *
+     * @param Request $request
+     * @param int     $pageId
+     *
+     * @return Response
+     */
     public function rootPage(Request $request, int $pageId): Response
     {
         return $this->page($request, 0, $pageId);
     }
 
+    /**
+     * View a page
+     *
+     * @param Request $request
+     * @param int     $categoryId
+     * @param int     $pageId
+     *
+     * @return Response
+     */
     public function page(Request $request, int $categoryId, int $pageId): Response
     {
         /** @var Category */
@@ -92,6 +124,14 @@ class Site extends Base
         return new Response($content);
     }
 
+    /**
+     * View a requirement notice
+     *
+     * @param Request $request
+     * @param int     $requirementId
+     *
+     * @return Response
+     */
     public function requirement(Request $request, int $requirementId): Response
     {
         /** @var Requirement */
@@ -109,6 +149,14 @@ class Site extends Base
         return new Response($content);
     }
 
+    /**
+     * View a brand
+     *
+     * @param Request $request
+     * @param int     $brandId
+     *
+     * @return Response
+     */
     public function brand(Request $request, int $brandId): Response
     {
         /** @var Brand */
@@ -127,6 +175,34 @@ class Site extends Base
         return new Response($content);
     }
 
+    /**
+     * Get the basice render data
+     *
+     * @return array
+     */
+    private function basicPageData(): array
+    {
+        /** @var Category */
+        $category = ORM::getOne(Category::class, 0);
+
+        return [
+            'menu'       => $category->getVisibleChildren(),
+            'infoPage'   => ORM::getOne(CustomPage::class, 2),
+            'crumbs'     => [$category],
+            'category'   => $category,
+        ];
+    }
+
+    /**
+     * Check that the url for a category is correct
+     *
+     * Returns a redirect responce if the url is not valid
+     *
+     * @param Request   $request
+     * @param ?Category $category
+     *
+     * @return ?RedirectResponse
+     */
     private function checkCategoryUrl(Request $request, ?Category $category): ?RedirectResponse
     {
         if ($category && !$category->isVisable()) {
@@ -140,11 +216,23 @@ class Site extends Base
         return null;
     }
 
+    /**
+     * Check that the url for a page is correct
+     *
+     * Returns a redirect responce if the url is not valid
+     *
+     * @param Request   $request
+     * @param ?Category $category
+     * @param ?Page     $page
+     *
+     * @return ?RedirectResponse
+     */
     private function checkPageUrl(Request $request, ?Category $category, ?Page $page): ?RedirectResponse
     {
         if (!$page || $page->isInactive()) {
             if ($category && $category->isVisable()) {
                 $status = $page ? Response::HTTP_FOUND : Response::HTTP_MOVED_PERMANENTLY;
+
                 return $this->redirect($request, $category->getCanonicalLink(), $status);
             }
 
@@ -158,6 +246,16 @@ class Site extends Base
         return null;
     }
 
+    /**
+     * Check that the url for a renderable is correct
+     *
+     * Returns a redirect responce if the url is not valid
+     *
+     * @param Request     $request
+     * @param ?Renderable $renderable
+     *
+     * @return ?RedirectResponse
+     */
     private function checkRenderableUrl(Request $request, ?Renderable $renderable): ?RedirectResponse
     {
         if (!$renderable) {
@@ -169,18 +267,5 @@ class Site extends Base
         }
 
         return null;
-    }
-
-    private function basicPageData(): array
-    {
-        /** @var Category */
-        $category = ORM::getOne(Category::class, 0);
-
-        return [
-            'menu'       => $category->getVisibleChildren(),
-            'infoPage'   => ORM::getOne(CustomPage::class, 2),
-            'crumbs'     => [$category],
-            'category'   => $category,
-        ];
     }
 }

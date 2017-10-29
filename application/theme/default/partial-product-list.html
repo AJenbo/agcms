@@ -2,10 +2,11 @@
 <table class="tabel">
     <thead>
         <tr>
-            <td><a href="" onclick="x_getKat({{renderable.id}}, 'navn', inject_html);return false">Titel</a></td>
-            <td><a href="" onclick="x_getKat({{renderable.id}}, 'for', inject_html);return false">Før</a></td>
-            <td><a href="" onclick="x_getKat({{renderable.id}}, 'pris', inject_html);return false">Pris</a></td>
-            <td><a href="" onclick="x_getKat({{renderable.id}}, 'varenr', inject_html);return false">#</a></td>
+            <td><a href="" onclick="return getKat({{renderable.id}}, 'navn')">Titel</a></td>
+            <td><a href="" onclick="return getKat({{renderable.id}}, 'for')">Før</a></td>
+            <td><a href="" onclick="return getKat({{renderable.id}}, 'pris')">Pris</a></td>
+            <td><a href="" onclick="return getKat({{renderable.id}}, 'varenr')">#</a></td>
+            <td></td>
         </tr>
     </thead>
     <tbody>
@@ -25,6 +26,13 @@
                 {% endif %}
             </td>
             <td align="right" style="font-size:11px">{{page.sku}}</td>
+            <td class="addtocart">
+                {% if page.price > 0 %}
+                <a href="/bestilling/?add={{page.id}}">
+                    <img src="/theme/default/images/cart_add.png" title="Add to shopping cart" alt="+" />
+                </a>
+                {% endif %}
+            </td>
         </tr>
         {% endfor %}
     </tbody>

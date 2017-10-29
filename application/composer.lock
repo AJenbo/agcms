@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "content-hash": "277b0db303fae8b110a85f3cb54fe2ca",
+    "content-hash": "8747f5c3767c447f798dc4fc99b61e70",
     "packages": [
         {
             "name": "ajenbo/image.php",
@@ -68,36 +68,6 @@
             "time": "2017-10-12T23:26:10+00:00"
         },
         {
-            "name": "ajenbo/sajax",
-            "version": "dev-master",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/AJenbo/Sajax.git",
-                "reference": "2a099e448fcd4ee18120aa9a6211bf3045aedbc7"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/AJenbo/Sajax/zipball/2a099e448fcd4ee18120aa9a6211bf3045aedbc7",
-                "reference": "2a099e448fcd4ee18120aa9a6211bf3045aedbc7",
-                "shasum": ""
-            },
-            "require": {
-                "php": ">=7.1"
-            },
-            "type": "library",
-            "autoload": {
-                "psr-4": {
-                    "Sajax\\": "php/"
-                }
-            },
-            "description": "Simple Ajax Toolkit",
-            "support": {
-                "source": "https://github.com/AJenbo/Sajax/tree/master",
-                "issues": "https://github.com/AJenbo/Sajax/issues"
-            },
-            "time": "2017-10-13T08:06:00+00:00"
-        },
-        {
             "name": "ezyang/htmlpurifier",
             "version": "v4.9.3",
             "source": {
@@ -146,16 +116,16 @@
         },
         {
             "name": "james-heinrich/getid3",
-            "version": "v1.9.14",
+            "version": "v1.9.15",
             "source": {
                 "type": "git",
                 "url": "https://github.com/JamesHeinrich/getID3.git",
-                "reference": "30bd11473b0eef6f1b47866ef7ab0a557917fc21"
+                "reference": "df9b441e547da1018b1be0e239bee095c9962c96"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/JamesHeinrich/getID3/zipball/30bd11473b0eef6f1b47866ef7ab0a557917fc21",
-                "reference": "30bd11473b0eef6f1b47866ef7ab0a557917fc21",
+                "url": "https://api.github.com/repos/JamesHeinrich/getID3/zipball/df9b441e547da1018b1be0e239bee095c9962c96",
+                "reference": "df9b441e547da1018b1be0e239bee095c9962c96",
                 "shasum": ""
             },
             "require": {
@@ -178,7 +148,7 @@
                 "php",
                 "tags"
             ],
-            "time": "2017-03-27T21:12:55+00:00"
+            "time": "2017-10-26T18:34:37+00:00"
         },
         {
             "name": "phpmailer/phpmailer",
@@ -601,7 +571,6 @@
     "aliases": [],
     "minimum-stability": "stable",
     "stability-flags": {
-        "ajenbo/sajax": 20,
         "ajenbo/image.php": 20
     },
     "prefer-stable": false,
