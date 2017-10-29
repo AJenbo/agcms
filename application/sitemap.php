@@ -40,8 +40,8 @@ $urls = [
 
 $activeCategoryIds = [0];
 $categories = ORM::getByQuery(Category::class, 'SELECT * FROM kat');
-assert($categories instanceof Category);
 foreach ($categories as $category) {
+    assert($category instanceof Category);
     if ($category->isInactive()) {
         continue;
     }
