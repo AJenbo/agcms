@@ -11,19 +11,13 @@ use stdClass;
  */
 class EpaymentAdminService
 {
-    /**
-     * Shops merchant id.
-     */
+    /** @var string Shops merchant id. */
     private $merchantId;
 
-    /**
-     * Service password.
-     */
+    /** @var string Service password. */
     private $password;
 
-    /**
-     * Service connection.
-     */
+    /** @var SoapClient Service connection. */
     private $soapClient;
 
     /**
