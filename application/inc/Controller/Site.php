@@ -35,15 +35,26 @@ class Site extends Base
 
         $renderable = $category;
         $pages = $category->getPages();
+        $hasProductTable = false;
         if (1 === count($pages)) {
+            /** @var Page */
             $renderable = array_shift($pages);
+            assert($renderable instanceof Page);
             $template = 'product';
+
+            foreach ($renderable->getTables() as $table) {
+                if ($table->hasPrices() && $table->hasPrices()) {
+                    $hasProductTable = true;
+                    break;
+                }
+            }
         }
 
         $data = [
-            'crumbs'     => $category->getBranch(),
-            'category'   => $category,
-            'renderable' => $renderable,
+            'crumbs'          => $category->getBranch(),
+            'category'        => $category,
+            'renderable'      => $renderable,
+            'hasProductTable' => $hasProductTable,
         ] + $this->basicPageData();
         $content = Render::render($template, $data);
 
