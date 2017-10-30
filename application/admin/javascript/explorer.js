@@ -441,13 +441,13 @@ function dir_contract(obj)
 function openImageThumbnail(id)
 {
     popUpWin('image-edit.php?mode=thb&path=' + encodeURIComponent(files[id].path) + '&id=' + id, 'image_thumbnail',
-        'toolbar=0', 740, 600);
+        'scrollbars=1,toolbar=0', 740, 600);
 }
 
 function open_image_edit(id)
 {
-    popUpWin(
-        'image-edit.php?path=' + encodeURIComponent(files[id].path) + '&id=' + id, 'image_edit', 'toolbar=0', 740, 600);
+    popUpWin('image-edit.php?path=' + encodeURIComponent(files[id].path) + '&id=' + id, 'image_edit',
+        'scrollbars=1,toolbar=0', 740, 600);
 }
 
 function open_file_upload()
