@@ -1,3 +1,4 @@
+#!/bin/sh
 xgettext --language=PHP --default-domain=../source/agcms --from-code=UTF-8 ../application/*.php
 xgettext --join-existing --language=PHP --default-domain=../source/agcms --from-code=UTF-8 ../application/bestilling/*.php
 xgettext --join-existing --language=PHP --default-domain=../source/agcms --from-code=UTF-8 ../application/betaling/*.php
