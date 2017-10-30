@@ -71,11 +71,6 @@ class incFunctionsTest extends TestCase
         $this->assertEquals(1, first([1, 2]));
     }
 
-    public function test_xhtmlEsc()
-    {
-        $this->assertEquals('&amp;', xhtmlEsc('&'));
-    }
-
     public function test_stringLimit()
     {
         $this->assertEquals('Long tekst …', stringLimit('Long tekst here', 12));

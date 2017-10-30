@@ -1273,6 +1273,16 @@ function edit_alt(int $id, string $description): array
 }
 
 /**
+ * @param string $string
+ *
+ * @return string
+ */
+function xhtmlEsc(string $string): string
+{
+    return htmlspecialchars($string, ENT_COMPAT | ENT_XHTML);
+}
+
+/**
  * Use HTMLPurifier to clean HTML-code, preserves youtube videos.
  *
  * @param string $html Sting to clean
