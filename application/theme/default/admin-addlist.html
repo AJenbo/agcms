@@ -3,49 +3,49 @@
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
         <title>Add list</title>
+        <link href="style/style.css" rel="stylesheet" type="text/css" />
         <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/prototype/1.7.3.0/prototype.js"></script>
         <script type="text/javascript" src="javascript/javascript.js"></script>
-        <script type="text/javascript"><!--
-        function asdsasgwtgernytymifdsbs()
-        {
-            var cells = '';
-            var cell_names = '';
-            var sorts = '';
-            var cellsObjs = document.getElementsByName('cell');
-            var cell_namesObjs = document.getElementsByName('cell_name');
-            var sortsObjs = document.getElementsByName('sort');
-            $('dsort').value = parseInt($('dsort').value).toString();
+        <script type="text/javascript">
+            function asdsasgwtgernytymifdsbs()
+            {
+                var cells = '';
+                var cell_names = '';
+                var sorts = '';
+                var cellsObjs = document.getElementsByName('cell');
+                var cell_namesObjs = document.getElementsByName('cell_name');
+                var sortsObjs = document.getElementsByName('sort');
+                $('dsort').value = parseInt($('dsort').value).toString();
 
-            for(var i=0;i<cellsObjs.length;i++) {
-                if (cellsObjs[i].value != '' || cell_namesObjs[i].value != '' || sortsObjs[i].value != '') {
-                    if (cells != '') {
-                        cells += '<';
-                        cell_names += '<';
-                        sorts += '<';
+                for(var i=0;i<cellsObjs.length;i++) {
+                    if (cellsObjs[i].value != '' || cell_namesObjs[i].value != '' || sortsObjs[i].value != '') {
+                        if (cells != '') {
+                            cells += '<';
+                            cell_names += '<';
+                            sorts += '<';
+                        }
+                        cells +=  cellsObjs[i].value.toString();
+                        cell_names +=  htmlEncode(cell_namesObjs[i].value.toString());
+                        sorts +=  sortsObjs[i].value.toString();
                     }
-                    cells +=  cellsObjs[i].value.toString();
-                    cell_names +=  htmlEncode(cell_namesObjs[i].value.toString());
-                    sorts +=  sortsObjs[i].value.toString();
                 }
+
+                $('cells').value = cells;
+                $('cell_names').value = cell_names;
+                $('sorts').value = sorts;
+
+                return true;
             }
 
-            $('cells').value = cells;
-            $('cell_names').value = cell_names;
-            $('sorts').value = sorts;
+            function addcolumn()
+            {
+                var td = document.createElement('td');
+                td.innerHTML = '<td><select name="cell"><option value="0">Tekst</option><option value="1">Tal</option><option value="2">Pris</option><option value="4">Før pris</option><option value="3">Tilbud</option></select><br /><select name="sort"><option value="0">Alfanumerisk</option>{% for tablesort in tablesorts %}<option value="{{tablesort.id}}">{{tablesort.title}}</option>{% endfor %}</select><br /><input name="cell_name" style="width:102px;" /></td>';
+                var addbuttonrow = $('addbuttonrow');
+                addbuttonrow.parentNode.insertBefore(td, addbuttonrow);
 
-            return true;
-        }
-
-        function addcolumn()
-        {
-            var td = document.createElement('td');
-            td.innerHTML = '<td><select name="cell"><option value="0">Tekst</option><option value="1">Tal</option><option value="2">Pris</option><option value="4">Før pris</option><option value="3">Tilbud</option></select><br /><select name="sort"><option value="0">Alfanumerisk</option>{% for tablesort in tablesorts %}<option value="{{tablesort.id}}">{{tablesort.title}}</option>{% endfor %}</select><br /><input name="cell_name" style="width:102px;" /></td>';
-            var addbuttonrow = $('addbuttonrow');
-            addbuttonrow.parentNode.insertBefore(td, addbuttonrow);
-
-        }
-        --></script>
-        <link href="style/style.css" rel="stylesheet" type="text/css" />
+            }
+        </script>
     </head>
     <body>
         <form method="post" action="" onsubmit="return asdsasgwtgernytymifdsbs();">

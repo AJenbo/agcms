@@ -36,7 +36,7 @@
             </tbody>
         </table>
         <script type="text/javascript"><!--
-        var values = [{% for item in invoice.items %}{{(item.value * (1 + invoice.vat))|json_encode()|raw}}{% if not loop.last %},{% endif %}{% endfor %}];
+            var values = [{% for item in invoice.items %}{{(item.value * (1 + invoice.vat))|json_encode()|raw}}{% if not loop.last %},{% endif %}{% endfor %}];
         --></script>
         {% if invoice.hasUnknownPrice %}
         <small>* Prisen kan ikke automatisk fastsættes, beskriv venligst den eksakte type i notatfeltet for neden.</small></p>

@@ -28,25 +28,26 @@
         {% endfor %}
 
     </ul>
-    <input type="hidden" id="subMenusOrder" /><script type="text/javascript"><!--
-    Sortable.create(
-        'subMenus',
-        {
-            ghosting:false,
-            onstraint:false,
-            hoverclass:'over',
-            onChange:function(element){
-                var newOrder = Sortable.serialize(element.parentNode);
-                newOrder = newOrder.replace(/subMenus\[\]=/g,"");
-                newOrder = newOrder.replace(/&/g,",");
-                $('subMenusOrder').value = newOrder;
+    <input type="hidden" id="subMenusOrder" />
+    <script type="text/javascript"><!--
+        Sortable.create(
+            'subMenus',
+            {
+                ghosting:false,
+                onstraint:false,
+                hoverclass:'over',
+                onChange:function(element){
+                    var newOrder = Sortable.serialize(element.parentNode);
+                    newOrder = newOrder.replace(/subMenus\[\]=/g,"");
+                    newOrder = newOrder.replace(/&/g,",");
+                    $('subMenusOrder').value = newOrder;
+                }
             }
-        }
-    );
-    var newOrder = Sortable.serialize($('subMenus'));
-    newOrder = newOrder.replace(/subMenus\[\]=/g,"");
-    newOrder = newOrder.replace(/&/g,",");
-    $('subMenusOrder').value = newOrder;
+        );
+        var newOrder = Sortable.serialize($('subMenus'));
+        newOrder = newOrder.replace(/subMenus\[\]=/g,"");
+        newOrder = newOrder.replace(/&/g,",");
+        $('subMenusOrder').value = newOrder;
     --></script>
     {% endif %}
 </form>

@@ -43,7 +43,7 @@
         <br />Subject:
         <input class="admin_name" name="subject" id="subject" value="{{newsletter.subject}}" size="127" style="width:{{textWidth - 34}}px" />
         <textarea id="text" style="width:{{textWidth}}px;height:420px">{{newsletter.html|raw}}</textarea>
-        <script><!--
+        <script type="text/javascript"><!--
             CKEDITOR.config.width = {{textWidth + 32}};
             CKEDITOR.config.contentsCss = '/theme/{{theme}}/style/email.css';
             CKEDITOR.replace('text');

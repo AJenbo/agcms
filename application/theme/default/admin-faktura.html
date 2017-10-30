@@ -54,7 +54,7 @@
         <td>
             <input maxlength="10" name="gdate" id="gdate" size="11" value="{{time|date('d-m-Y')}}" />
             <script type="text/javascript"><!--
-            new tcal({'controlid': 'gdate'});
+                new tcal({'controlid': 'gdate'});
             --></script>
         </td>
     </tr>
@@ -63,7 +63,7 @@
         <td>
             <input maxlength="10" name="cdate" id="cdate" size="11" value="{{time|date('d-m-Y')}}" />
             <script type="text/javascript"><!--
-            new tcal({'controlid': 'cdate'});
+                new tcal({'controlid': 'cdate'});
             --></script>
         </td>
     </tr>
@@ -145,7 +145,7 @@
             {% if invoice.status == 'new' %}
             <input maxlength="10" name="date" id="date" size="11" value="{{invoice.timestamp|date('d-m-Y')}}" />
             <script type="text/javascript"><!--
-            new tcal({'controlid': 'date'});
+                new tcal({'controlid': 'date'});
             --></script>
             {% else %}
                 {{invoice.timestamp|date('d-m-Y')}}
@@ -505,10 +505,10 @@
 </table>
 {% if invoice.status == 'new' %}
 <script type="text/javascript"><!--
-showhidealtpost($('altpost').checked);
-valideMail();
-prisUpdate();
-var status = {{status|json_encode|raw}};
+    showhidealtpost($('altpost').checked);
+    valideMail();
+    prisUpdate();
+    var status = {{status|json_encode|raw}};
 --></script>
 {% endif %}
 {% endblock %}

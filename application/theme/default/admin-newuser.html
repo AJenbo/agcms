@@ -4,7 +4,12 @@
         <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
         <title>Create account</title>
         <link type="text/css" rel="stylesheet" href="style/style.css" />
-        <script type="text/javascript"><!--
+        <style type="text/css">
+            table, td, tr {
+                border-collapse:separate;
+            }
+        </style>
+        <script type="text/javascript">
             function validate()
             {
                 if (document.getElementById('fullname').value == '' || document.getElementById('name').value == '' || document.getElementById('password').value == '') {
@@ -16,12 +21,7 @@
                     return false;
                 }
             }
-        --></script>
-        <style type="text/css"><!--
-            table, td, tr {
-                border-collapse:separate;
-            }
-        --></style>
+        </script>
     </head>
     <body style="margin: 20px;">
         <form action="" method="post" onsubmit="return validate();">

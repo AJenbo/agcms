@@ -3,41 +3,41 @@
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
         <title>Edit picture</title>
+        <style type="text/css">
+            #tools {
+                cursor:default;
+                text-align:center;
+                width:256px;
+                margin:auto;
+            }
+            #tools img {
+                cursor:pointer;
+            }
+            #ruler {
+                background-image:url('images/ruler.png');
+                background-position:left;
+                height:15px;
+                margin:auto;
+            }
+            #textDiv {
+                position: relative;
+                margin:auto;
+            }
+        </style>
         <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/prototype/1.7.3.0/prototype.js"></script>
         <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/scriptaculous/1.9.0/scriptaculous.js?load=effects,builder,dragdrop" type="text/javascript"></script>
         <script type="text/javascript" src="/admin/javascript/lib/cropper/cropper.js"></script>
-        <style type="text/css">
-        #tools {
-            cursor:default;
-            text-align:center;
-            width:256px;
-            margin:auto;
-        }
-        #tools img {
-            cursor:pointer;
-        }
-        #ruler {
-            background-image:url('images/ruler.png');
-            background-position:left;
-            height:15px;
-            margin:auto;
-        }
-        #textDiv {
-            position: relative;
-            margin:auto;
-        }
-        </style>
-        <script type="text/javascript"><!--
-        var id = {{id|json_encode()|raw}};
-        var mode = {{mode|json_encode()|raw}};
-        var filename = {{fileName|json_encode()|raw}};
-        var thumb_width = {{thumbWidth}};
-        var thumb_height = {{thumbHeight}};
-        var scale = 1;
-        var path = {{path|json_encode()|raw}};
-        var maxW = {{width}};
-        var maxH = {{height}};
-        --></script>
+        <script type="text/javascript">
+            var id = {{id|json_encode()|raw}};
+            var mode = {{mode|json_encode()|raw}};
+            var filename = {{fileName|json_encode()|raw}};
+            var thumb_width = {{thumbWidth}};
+            var thumb_height = {{thumbHeight}};
+            var scale = 1;
+            var path = {{path|json_encode()|raw}};
+            var maxW = {{width}};
+            var maxH = {{height}};
+        </script>
         <script type="text/javascript" src="/admin/javascript/image-edit.js"></script>
     </head>
     <body>

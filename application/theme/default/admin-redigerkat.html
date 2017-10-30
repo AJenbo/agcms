@@ -38,24 +38,24 @@
         </ul>
         <input type="hidden" id="subMenusOrder" value="" />
         <script type="text/javascript"><!--
-        Sortable.create(
-            'subMenus',
-            {
-                ghosting:false,
-                constraint:false,
-                hoverclass:'over',
-                onChange:function(element){
-                    var newOrder = Sortable.serialize(element.parentNode);
-                    newOrder = newOrder.replace(/subMenus\[\]=/g,"");
-                    newOrder = newOrder.replace(/&/g,",");
-                    $('subMenusOrder').value = newOrder;
+            Sortable.create(
+                'subMenus',
+                {
+                    ghosting:false,
+                    constraint:false,
+                    hoverclass:'over',
+                    onChange:function(element){
+                        var newOrder = Sortable.serialize(element.parentNode);
+                        newOrder = newOrder.replace(/subMenus\[\]=/g,"");
+                        newOrder = newOrder.replace(/&/g,",");
+                        $('subMenusOrder').value = newOrder;
+                    }
                 }
-            }
-        );
-        var newOrder = Sortable.serialize($('subMenus'));
-        newOrder = newOrder.replace(/subMenus\[\]=/g,"");
-        newOrder = newOrder.replace(/&/g,",");
-        $('subMenusOrder').value = newOrder;
+            );
+            var newOrder = Sortable.serialize($('subMenus'));
+            newOrder = newOrder.replace(/subMenus\[\]=/g,"");
+            newOrder = newOrder.replace(/&/g,",");
+            $('subMenusOrder').value = newOrder;
         --></script>
         {% else %}
         <input type="hidden" id="subMenusOrder" /><input type="hidden" id="custom_sort_subs" />

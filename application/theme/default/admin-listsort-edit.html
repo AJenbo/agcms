@@ -21,8 +21,8 @@
     </ul>
     <input type="hidden" id="listOrderValue" value="" />
     <script type="text/javascript"><!--
-    var items = {{rows|length|raw}};
-    Sortable.create('listOrder',{ghosting:false,constraint:false,hoverclass:'over'});
+        var items = {{rows|length|raw}};
+        Sortable.create('listOrder',{ghosting:false,constraint:false,hoverclass:'over'});
     --></script>
 </div>
 {% endblock %}
