@@ -15,7 +15,6 @@ use AGCMS\EpaymentAdminService;
 use AGCMS\ORM;
 use AGCMS\Render;
 use AJenbo\Image;
-use Sajax\Sajax;
 use Symfony\Component\HttpFoundation\Response;
 
 function checkUserLoggedIn(): void
@@ -2506,7 +2505,6 @@ function getBasicAdminTemplateData(): array
 {
     return [
         'title'      => 'Administrator menu',
-        'javascript' => Sajax::showJavascript(true),
         'theme'      => Config::get('theme', 'default'),
         'hide'       => [
             'activity'    => request()->cookies->get('hideActivity'),

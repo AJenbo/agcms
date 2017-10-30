@@ -2,12 +2,8 @@
 
 use AGCMS\Config;
 use AGCMS\Render;
-use Sajax\Sajax;
 
 require_once __DIR__ . '/logon.php';
-
-Sajax::export(['saveImage' => ['method' => 'POST']]);
-Sajax::handleClientRequest();
 
 $path = request()->get('path');
 if ('/files/' !== mb_substr($path, 0, 7) && '/images/' !== mb_substr($path, 0, 8)) {

@@ -9,59 +9,8 @@ use AGCMS\Entity\Page;
 use AGCMS\Entity\Requirement;
 use AGCMS\ORM;
 use AGCMS\Render;
-use Sajax\Sajax;
 
 require_once __DIR__ . '/logon.php';
-
-Sajax::export(
-    [
-        'addAccessory'                      => ['method' => 'POST'],
-        'bind'                              => ['method' => 'POST'],
-        'check_file_names'                  => ['method' => 'GET', 'asynchronous' => false],
-        'check_file_paths'                  => ['method' => 'GET', 'asynchronous' => false],
-        'countEmailTo'                      => ['method' => 'GET'],
-        'deleteContact'                     => ['method' => 'POST'],
-        'get_db_size'                       => ['method' => 'GET', 'asynchronous' => false],
-        'get_looping_cats'                  => ['method' => 'GET', 'asynchronous' => false],
-        'get_mail_size'                     => ['method' => 'GET'],
-        'get_orphan_pages'                  => ['method' => 'GET', 'asynchronous' => false],
-        'get_pages_with_mismatch_bindings'  => ['method' => 'GET', 'asynchronous' => false],
-        'get_size_of_files'                 => ['method' => 'GET', 'asynchronous' => false],
-        'get_subscriptions_with_bad_emails' => ['method' => 'GET', 'asynchronous' => false],
-        'expandCategory'                    => ['method' => 'GET'],
-        'katspath'                          => ['method' => 'GET'],
-        'listRemoveRow'                     => ['method' => 'POST'],
-        'listSavetRow'                      => ['method' => 'POST'],
-        'makeNewList'                       => ['method' => 'POST'],
-        'movekat'                           => ['method' => 'POST'],
-        'opretSide'                         => ['method' => 'POST'],
-        'optimizeTables'                    => ['method' => 'POST', 'asynchronous' => false],
-        'removeAccessory'                   => ['method' => 'POST'],
-        'removeBadSubmisions'               => ['method' => 'POST', 'asynchronous' => false],
-        'removeNoneExistingFiles'           => ['method' => 'POST', 'asynchronous' => false],
-        'renamekat'                         => ['method' => 'POST'],
-        'saveEmail'                         => ['method' => 'POST'],
-        'savekrav'                          => ['method' => 'POST'],
-        'saveListOrder'                     => ['method' => 'POST'],
-        'save_ny_kat'                       => ['method' => 'POST'],
-        'search'                            => ['method' => 'GET'],
-        'sendDelayedEmail'                  => ['method' => 'POST', 'asynchronous' => false],
-        'sendEmail'                         => ['method' => 'POST'],
-        'sletbind'                          => ['method' => 'POST'],
-        'sletkat'                           => ['method' => 'POST'],
-        'sletkrav'                          => ['method' => 'POST'],
-        'sletmaerke'                        => ['method' => 'POST'],
-        'sletSide'                          => ['method' => 'POST'],
-        'sogogerstat'                       => ['method' => 'POST'],
-        'updateContact'                     => ['method' => 'POST'],
-        'updateKat'                         => ['method' => 'POST'],
-        'updateKatOrder'                    => ['method' => 'POST', 'asynchronous' => false],
-        'updatemaerke'                      => ['method' => 'POST'],
-        'updateSide'                        => ['method' => 'POST'],
-        'updateSpecial'                     => ['method' => 'POST'],
-    ]
-);
-Sajax::handleClientRequest();
 
 $request = request();
 $template = 'admin-' . $request->get('side', 'index');

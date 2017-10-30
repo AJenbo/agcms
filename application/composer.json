@@ -10,10 +10,6 @@
     "repositories": [
         {
             "type": "vcs",
-            "url": "https://github.com/AJenbo/Sajax"
-        },
-        {
-            "type": "vcs",
             "url": "https://github.com/AJenbo/Image.php"
         },
         {

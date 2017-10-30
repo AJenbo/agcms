@@ -6,7 +6,6 @@ use AGCMS\Render;
 use AGCMS\EpaymentAdminService;
 use AGCMS\Entity\Invoice;
 use AGCMS\Entity\User;
-use Sajax\Sajax;
 
 require_once __DIR__ . '/logon.php';
 $countries = [];
@@ -43,18 +42,6 @@ if ($invoice && 'new' !== $invoice->getStatus()) {
     }
 }
 
-Sajax::export([
-    'getAddress'   => ['method' => 'GET', 'uri' => '/ajax.php'],
-    'sendReminder' => ['method' => 'GET'],
-    'valideMail'   => ['method' => 'GET'],
-    'annul'        => ['method' => 'POST'],
-    'copytonew'    => ['method' => 'POST'],
-    'newfaktura'   => ['method' => 'POST'],
-    'pbsconfirm'   => ['method' => 'POST'],
-    'save'         => ['method' => 'POST'],
-]);
-Sajax::handleClientRequest();
-
 if (!$invoice->getClerk()) {
     $invoice->setClerk(curentUser()->getFullName());
 }
@@ -62,7 +49,7 @@ if (!$invoice->getClerk()) {
 $data = getBasicAdminTemplateData();
 $data = [
     'title'       => _('Online Invoice #') . $invoice->getId(),
-    'javascript'  => $data['javascript'] . ' var status = ' . json_encode($invoice->getStatus()) . ';',
+    'status'      => $invoice->getStatus(),
     'currentUser' => curentUser(),
     'users'       => ORM::getByQuery(User::class, 'SELECT * FROM `users` ORDER BY fullname'),
     'invoice'     => $invoice,

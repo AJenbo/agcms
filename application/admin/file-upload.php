@@ -1,12 +1,8 @@
 <?php
 
 use AGCMS\Render;
-use Sajax\Sajax;
 
 require_once __DIR__ . '/logon.php';
-
-Sajax::export(['fileExists' => ['method' => 'GET', 'asynchronous' => false, 'uri' => '/admin/file-upload.php']]);
-Sajax::handleClientRequest();
 
 Render::sendCacheHeader(Render::getUpdateTime(false));
 
@@ -18,7 +14,7 @@ $maxbyte = min(
 Render::output(
     'admin-file-upload',
     [
-        'javascript' => Sajax::showJavascript(true) . ' var maxbyte = ' . $maxbyte
-            . ';var activeDir = ' . json_encode(request()->get('path')) . ';',
+        'maxbyte' => $maxbyte,
+        'activeDir' => request()->get('path'),
     ]
 );

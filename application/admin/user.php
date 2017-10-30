@@ -1,14 +1,10 @@
 <?php
 
-use Sajax\Sajax;
 use AGCMS\Render;
 use AGCMS\ORM;
 use AGCMS\Entity\User;
 
 require_once __DIR__ . '/logon.php';
-
-Sajax::export(['updateuser' => ['method' => 'POST']]);
-Sajax::handleClientRequest();
 
 $user = ORM::getOne(User::class, request()->get('id'));
 assert($user instanceof User);

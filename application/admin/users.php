@@ -1,14 +1,10 @@
 <?php
 
-use Sajax\Sajax;
 use AGCMS\Render;
 use AGCMS\ORM;
 use AGCMS\Entity\User;
 
 require_once __DIR__ . '/logon.php';
-
-Sajax::export(['deleteuser' => ['method' => 'POST']]);
-Sajax::handleClientRequest();
 
 $users = ORM::getByQuery(
     User::class,
