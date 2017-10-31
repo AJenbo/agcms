@@ -190,7 +190,7 @@ if (in_array($invoice->getStatus(), ['new', 'locked', 'pbserror'])) {
     } elseif (1 === request()->query->getInt('step')) { //Fill out customer info
         if (request()->request->count()) {
             $invoice->setName(request()->get('navn'))
-                ->setAtt(request()->get('att') !== request()->get('navn') ? request()->get('att') : '')
+                ->setAttn(request()->get('attn') !== request()->get('navn') ? request()->get('attn') : '')
                 ->setAddress(request()->get('adresse'))
                 ->setPostbox(request()->get('postbox'))
                 ->setPostcode(request()->get('postnr'))
@@ -202,7 +202,7 @@ if (in_array($invoice->getStatus(), ['new', 'locked', 'pbserror'])) {
                 ->setHasShippingAddress(request()->request->getBoolean('altpost'))
                 ->setShippingPhone(request()->get('posttlf'))
                 ->setShippingName(request()->get('postname'))
-                ->setShippingAtt(request()->get('postatt') !== request()->get('postname') ? request()->get('postatt') : '')
+                ->setShippingAttn(request()->get('postattn') !== request()->get('postname') ? request()->get('postattn') : '')
                 ->setShippingAddress(request()->get('postaddress'))
                 ->setShippingAddress2(request()->get('postaddress2'))
                 ->setShippingPostbox(request()->get('postpostbox'))

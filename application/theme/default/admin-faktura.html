@@ -257,9 +257,9 @@
         <td>Attn.:</td>
         <td>
             {% if invoice.status == 'new' %}
-            <input name="att" id="att" value="{{invoice.att}}" />
+            <input name="attn" id="attn" value="{{invoice.attn}}" />
             {% else %}
-            {{invoice.att}}
+            {{invoice.attn}}
             {% endif %}
         </td>
     </tr>
@@ -347,9 +347,9 @@
         <td>Attn.:</td>
         <td>
             {% if invoice.status == 'new' %}
-            <input name="postatt" id="postatt" value="{{invoice.shippingAtt}}" />
+            <input name="postattn" id="postattn" value="{{invoice.shippingAttn}}" />
             {% else %}
-            {{invoice.shippingAtt}}
+            {{invoice.shippingAttn}}
             {% endif %}
         </td>
     </tr>

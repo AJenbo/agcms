@@ -93,8 +93,8 @@ $pdf->Line(152.5, 12, 152.5, 74.5);
 
 //Invoice address
 $address = '' . $invoice->getName();
-if ($invoice->getAtt()) {
-    $address .= "\n" . _('Attn.:') . ' ' . $invoice->getAtt();
+if ($invoice->getAttn()) {
+    $address .= "\n" . _('Attn.:') . ' ' . $invoice->getAttn();
 }
 if ($invoice->getAddress()) {
     $address .= "\n" . $invoice->getAddress();
@@ -120,8 +120,8 @@ $pdf->Write(0, trim($address));
 //Delivery address
 $address = '';
 $address .= $invoice->getShippingName();
-if ($invoice->getShippingAtt()) {
-    $address .= "\n" . _('Attn.:') . ' ' . $invoice->getShippingAtt();
+if ($invoice->getShippingAttn()) {
+    $address .= "\n" . _('Attn.:') . ' ' . $invoice->getShippingAttn();
 }
 if ($invoice->getShippingAddress()) {
     $address .= "\n" . $invoice->getShippingAddress();

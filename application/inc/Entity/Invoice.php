@@ -15,7 +15,7 @@ class Invoice extends AbstractEntity
     private $timeStampPay;
     private $amount = 0.00;
     private $name = '';
-    private $att = '';
+    private $attn = '';
     private $address = '';
     private $postbox = '';
     private $postcode = '';
@@ -27,7 +27,7 @@ class Invoice extends AbstractEntity
     private $hasShippingAddress = false;
     private $shippingPhone = '';
     private $shippingName = '';
-    private $shippingAtt = '';
+    private $shippingAttn = '';
     private $shippingAddress = '';
     private $shippingAddress2 = '';
     private $shippingPostbox = '';
@@ -65,7 +65,7 @@ class Invoice extends AbstractEntity
             ->setTimeStampPay($data['timestamp_pay'] ?? 0)
             ->setAmount($data['amount'] ?? 0.00)
             ->setName($data['name'])
-            ->setAtt($data['att'])
+            ->setAttn($data['attn'])
             ->setAddress($data['address'])
             ->setPostbox($data['postbox'])
             ->setPostcode($data['postcode'])
@@ -76,7 +76,7 @@ class Invoice extends AbstractEntity
             ->setPhone2($data['phone2'])
             ->setShippingPhone($data['shipping_phone'])
             ->setShippingName($data['shipping_name'])
-            ->setShippingAtt($data['shipping_att'])
+            ->setShippingAttn($data['shipping_attn'])
             ->setShippingAddress($data['shipping_address'])
             ->setShippingAddress2($data['shipping_address2'])
             ->setShippingPostbox($data['shipping_postbox'])
@@ -147,16 +147,16 @@ class Invoice extends AbstractEntity
         return $this->name;
     }
 
-    public function setAtt(string $att): self
+    public function setAttn(string $attn): self
     {
-        $this->att = trim($att);
+        $this->attn = trim($attn);
 
         return $this;
     }
 
-    public function getAtt(): string
+    public function getAttn(): string
     {
-        return $this->att;
+        return $this->attn;
     }
 
     public function setAddress(string $address): self
@@ -291,16 +291,16 @@ class Invoice extends AbstractEntity
         return $this->shippingName;
     }
 
-    public function setShippingAtt(string $shippingAtt): self
+    public function setShippingAttn(string $shippingAttn): self
     {
-        $this->shippingAtt = trim($shippingAtt);
+        $this->shippingAttn = trim($shippingAttn);
 
         return $this;
     }
 
-    public function getShippingAtt(): string
+    public function getShippingAttn(): string
     {
-        return $this->shippingAtt;
+        return $this->shippingAttn;
     }
 
     public function setShippingAddress(string $shippingAddress): self
@@ -565,7 +565,7 @@ class Invoice extends AbstractEntity
             'timestamp_pay'        => strtotime($data['paydate']) + db()->getTimeOffset(),
             'amount'               => (float) $data['amount'],
             'name'                 => $data['navn'],
-            'att'                  => $data['att'],
+            'attn'                 => $data['att'],
             'address'              => $data['adresse'],
             'postbox'              => $data['postbox'],
             'postcode'             => $data['postnr'],
@@ -576,7 +576,7 @@ class Invoice extends AbstractEntity
             'phone2'               => $data['tlf2'],
             'shipping_phone'       => $data['posttlf'],
             'shipping_name'        => $data['postname'],
-            'shipping_att'         => $data['postatt'],
+            'shipping_attn'        => $data['postatt'],
             'shipping_address'     => $data['postaddress'],
             'shipping_address2'    => $data['postaddress2'],
             'shipping_postbox'     => $data['postpostbox'],
@@ -799,7 +799,7 @@ class Invoice extends AbstractEntity
             'values'         => db()->eandq($itemValue),
             'amount'         => db()->escNum($this->amount),
             'navn'           => db()->eandq($this->name),
-            'att'            => db()->eandq($this->att),
+            'att'            => db()->eandq($this->attn),
             'adresse'        => db()->eandq($this->address),
             'postbox'        => db()->eandq($this->postbox),
             'postnr'         => db()->eandq($this->postcode),
@@ -811,7 +811,7 @@ class Invoice extends AbstractEntity
             'altpost'        => (string) (int) $this->hasShippingAddress,
             'posttlf'        => db()->eandq($this->shippingPhone),
             'postname'       => db()->eandq($this->shippingName),
-            'postatt'        => db()->eandq($this->shippingAtt),
+            'postatt'        => db()->eandq($this->shippingAttn),
             'postaddress'    => db()->eandq($this->shippingAddress),
             'postaddress2'   => db()->eandq($this->shippingAddress2),
             'postpostbox'    => db()->eandq($this->shippingPostbox),

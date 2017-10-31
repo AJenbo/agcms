@@ -61,12 +61,12 @@ function getAddress_r(data)
     if(data.error) {
         alert(data.error);
     } else {
-        $('navn').value = data.recName1;
-        $('att').value = data.recAttPerson;
-        $('adresse').value = data.recAddress1;
-        $('postnr').value = data.recZipCode;
-        chnageZipCode(data.recZipCode, 'land', 'by');
-        $('postbox').value = data.recPostBox;
+        $('navn').value = data.name;
+        $('attn').value = data.attn;
+        $('adresse').value = data.address1;
+        $('postnr').value = data.zipcode;
+        chnageZipCode(data.zipcode, 'land', 'by');
+        $('postbox').value = data.postbox;
         if(!$('email').value) {
             $('email').value = data.email;
             valideMail();
@@ -86,15 +86,13 @@ function getAltAddress_r(data)
     if(data.error) {
         alert(data.error);
     } else {
-        $('postname').value = data.recName1;
-        $('postatt').value = data.recAttPerson;
-        $('postaddress').value = data.recAddress1;
-        $('postaddress2').value = data.recAddress2;
-        $('postpostalcode').value = data.recZipCode;
-        chnageZipCode(data.recZipCode, 'postcountry', 'postcity');
-        $('postpostbox').value = data.recPostBox;
-
-        $('postpostbox').value = data.recPostBox;
+        $('postname').value = data.name;
+        $('postattn').value = data.attn;
+        $('postaddress').value = data.address1;
+        $('postaddress2').value = data.address2;
+        $('postpostalcode').value = data.zipcode;
+        chnageZipCode(data.zipcode, 'postcountry', 'postcity');
+        $('postpostbox').value = data.postbox;
     }
     $('loading').style.visibility = 'hidden';
 }
@@ -213,7 +211,7 @@ function save(id, type)
         update.iref = $('iref').value;
         update.eref = $('eref').value;
         update.name = $('navn').value;
-        update.att = $('att').value;
+        update.attn = $('attn').value;
         update.address = $('adresse').value;
         update.postbox = $('postbox').value;
         update.postcode = $('postnr').value;
@@ -226,7 +224,7 @@ function save(id, type)
         if($('altpost').checked) {
             update.shippingPhone = $('posttlf').value;
             update.shippingName = $('postname').value;
-            update.shippingAtt = $('postatt').value;
+            update.shippingAttn = $('postattn').value;
             update.shippingAddress = $('postaddress').value;
             update.shippingAddress2 = $('postaddress2').value;
             update.shippingPostbox = $('postpostbox').value;

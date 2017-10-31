@@ -41,6 +41,111 @@ function injectHtml(data)
 
     document.getElementById(data.id).innerHTML = data.html;
 }
+
+function updateprice()
+{
+    var total = document.getElementsByClassName("total");
+    var input = document.getElementsByName("quantity[]");
+    var subtotal = 0;
+    for(var i = 0; i < values.length; i++) {
+        value = values[i] * input[i].value;
+        if(values[i] > 0) {
+            total[i].innerHTML = value.toFixed(2).toString().replace(/\./, ",");
+        }
+        subtotal = subtotal + value;
+    }
+
+    document.getElementById("total").innerHTML = subtotal.toFixed(2).toString().replace(/\./, ",");
+}
+
+function showhidealtpost(status)
+{
+    var Trs = document.getElementsByTagName("TR");
+
+    if(status) {
+        for(var i = 0; i < Trs.length; i++) {
+            if(Trs[i].className === "altpost") {
+                Trs[i].style.display = "";
+            }
+        }
+        return;
+    }
+
+    for(var i = 0; i < Trs.length; i++) {
+        if(Trs[i].className === "altpost") {
+            Trs[i].style.display = "none";
+        }
+    }
+}
+
+function getAddress_r1(responce)
+{
+    if(responce.error) {
+        alert(responce.error);
+        return false;
+    }
+    if(responce.name) {
+        document.getElementById("navn").value = responce.name;
+    }
+    if(responce.attn) {
+        document.getElementById("attn").value = responce.attn;
+    }
+    if(responce.address1) {
+        document.getElementById("adresse").value = responce.address1;
+    }
+    if(responce.postbox) {
+        document.getElementById("postbox").value = responce.postbox;
+    }
+    if(responce.zipcode) {
+        document.getElementById("postnr").value = responce.zipcode;
+    }
+    if(responce.email) {
+        document.getElementById("email").value = responce.email;
+    }
+    if(document.getElementById("land").value === "DK" && responce.zipcode && arrayZipcode[responce.zipcode]) {
+        document.getElementById("by").value = arrayZipcode[responce.zipcode];
+    }
+}
+
+function getAddress_r2(responce)
+{
+    if(responce.error) {
+        alert(responce.error);
+        return false;
+    }
+    if(responce.name) {
+        document.getElementById("postname").value = responce.name;
+    }
+    if(responce.attn) {
+        document.getElementById("postattn").value = responce.attn;
+    }
+    if(responce.address1) {
+        document.getElementById("postaddress").value = responce.address1;
+    }
+    if(responce.address2) {
+        document.getElementById("postaddress2").value = responce.address2;
+    }
+    if(responce.postbox) {
+        document.getElementById("postpostbox").value = responce.postbox;
+    }
+    if(responce.zipcode) {
+        document.getElementById("postpostalcode").value = responce.zipcode;
+    }
+    if(document.getElementById("postcountry").value === "DK" && responce.zipcode) {
+        document.getElementById("postcity").value = arrayZipcode[responce.zipcode];
+    }
+}
+
+function chnageZipCode(zipcode, countryid, cityid)
+{
+    if(document.getElementById(countryid).value !== "DK") {
+        return false;
+    }
+    if(arrayZipcode[zipcode]) {
+        document.getElementById(cityid).value = arrayZipcode[zipcode];
+    }
+}
+
 var xHttp = {
     "requests" : [],
     "cancel" : function(id) {

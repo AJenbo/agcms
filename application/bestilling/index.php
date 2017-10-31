@@ -170,7 +170,7 @@ if (empty($_GET['step'])) {
     if ($_POST) {
         $updates = [
             'navn'           => $_POST['navn'],
-            'att'            => $_POST['att'] != $_POST['navn'] ? $_POST['att'] : '',
+            'attn'           => $_POST['attn'] != $_POST['navn'] ? $_POST['attn'] : '',
             'adresse'        => $_POST['adresse'],
             'postbox'        => $_POST['postbox'],
             'postnr'         => $_POST['postnr'],
@@ -182,7 +182,7 @@ if (empty($_GET['step'])) {
             'altpost'        => (int) !empty($_POST['altpost']),
             'posttlf'        => $_POST['posttlf'],
             'postname'       => $_POST['postname'],
-            'postatt'        => $_POST['postatt'] != $_POST['postname'] ? $_POST['postatt'] : '',
+            'postattn'       => $_POST['postattn'] != $_POST['postname'] ? $_POST['postattn'] : '',
             'postaddress'    => $_POST['postaddress'],
             'postaddress2'   => $_POST['postaddress2'],
             'postpostbox'    => $_POST['postpostbox'],

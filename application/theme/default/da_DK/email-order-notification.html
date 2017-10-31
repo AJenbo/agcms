@@ -39,7 +39,7 @@
         <p>
             <b>Adresse:</b>
             {% if invoice.name %}<br />{{invoice.name}}{% endif %}
-            {% if invoice.att %}<br />{{invoice.att}}{% endif %}
+            {% if invoice.attn %}<br />{{invoice.attn}}{% endif %}
             {% if invoice.address %}<br />{{invoice.address}}{% endif %}
             {% if invoice.postbox %}<br />{{invoice.postbox}}{% endif %}
             {% if invoice.city %}<br />{{invoice.postcode}} {{invoice.city}}{% endif %}
@@ -49,7 +49,7 @@
         <p>
             <b>Lev. adresse:</b>
             {% if invoice.shippingName %}<br />{{invoice.shippingName}}{% endif %}
-            {% if invoice.shippingAtt %}<br />{{invoice.shippingAtt}}{% endif %}
+            {% if invoice.shippingAttn %}<br />{{invoice.shippingAttn}}{% endif %}
             {% if invoice.shippingAddress %}<br />{{invoice.shippingAddress}}{% endif %}
             {% if invoice.shippingAddress2 %}<br />{{invoice.shippingAddress2}}{% endif %}
             {% if invoice.shippingPostbox %}<br />{{invoice.shippingPostbox}}{% endif %}

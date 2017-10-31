@@ -2192,7 +2192,7 @@ function invoiceBasicUpdate(Invoice $invoice, string $action, array $updates): v
         $invoice->setIref($updates['iref']);
         $invoice->setEref($updates['eref']);
         $invoice->setName($updates['name']);
-        $invoice->setAtt($updates['att']);
+        $invoice->setAttn($updates['attn']);
         $invoice->setAddress($updates['address']);
         $invoice->setPostbox($updates['postbox']);
         $invoice->setPostcode($updates['postcode']);
@@ -2205,7 +2205,7 @@ function invoiceBasicUpdate(Invoice $invoice, string $action, array $updates): v
         if ($updates['hasShippingAddress']) {
             $invoice->setShippingPhone($updates['shippingPhone']);
             $invoice->setShippingName($updates['shippingName']);
-            $invoice->setShippingAtt($updates['shippingAtt']);
+            $invoice->setShippingAttn($updates['shippingAttn']);
             $invoice->setShippingAddress($updates['shippingAddress']);
             $invoice->setShippingAddress2($updates['shippingAddress2']);
             $invoice->setShippingPostbox($updates['shippingPostbox']);

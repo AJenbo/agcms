@@ -34,11 +34,11 @@
                 {% if invoice.hasShippingAddress %}<td>{{invoice.shippingPhone}}</td>{% endif %}
             </tr>
             {% endif %}
-            {% if invoice.att or (invoice.hasShippingAddress and invoice.shippingAtt) %}
+            {% if invoice.attn or (invoice.hasShippingAddress and invoice.shippingAttn) %}
             <tr>
                 <td>Att.:</td>
-                <td>{{invoice.att}}</td>
-                {% if invoice.hasShippingAddress %}<td>{{invoice.att}}</td>{% endif %}
+                <td>{{invoice.attn}}</td>
+                {% if invoice.hasShippingAddress %}<td>{{invoice.attn}}</td>{% endif %}
             </tr>
             {% endif %}
             {% if invoice.address or (invoice.hasShippingAddress and (invoice.shippingAddress or invoice.shippingAddress2)) %}

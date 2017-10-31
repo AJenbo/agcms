@@ -85,13 +85,12 @@ class Ajax extends Base
         Render::sendCacheHeader();
 
         $default = [
-            'recName1' => '',
-            'recAttPerson' => '',
-            'recAddress1' => '',
-            'recAddress2' => '',
-            'recZipCode' => '',
-            'recPostBox' => '',
-            'recCVR' => '',
+            'name' => '',
+            'attn' => '',
+            'address1' => '',
+            'address2' => '',
+            'zipcode' => '',
+            'postbox' => '',
             'email' => '',
         ];
 
@@ -100,11 +99,12 @@ class Ajax extends Base
             "
             SELECT * FROM (
                 SELECT
-                    navn recName1,
-                    att recAttPerson,
-                    adresse recAddress1,
-                    postnr recZipCode,
-                    postbox recPostBox,
+                    navn name,
+                    att attn,
+                    adresse address1,
+                    '' address2,
+                    postnr zipcode,
+                    postbox postbox,
                     email
                 FROM `fakturas`
                 WHERE `tlf1` LIKE " . db()->eandq($phoneNumber) . "
@@ -115,11 +115,27 @@ class Ajax extends Base
             UNION
             SELECT * FROM (
                 SELECT
-                    navn recName1,
-                    '' recAttPerson,
-                    adresse recAddress1,
-                    post recZipCode,
-                    '' recPostBox,
+                    postname name,
+                    postatt attn,
+                    postaddress address1,
+                    postaddress2 address2,
+                    postpostalcode zipcode,
+                    postpostbox postbox,
+                    email
+                FROM `fakturas`
+                WHERE `posttlf` LIKE " . db()->eandq($phoneNumber) . "
+                ORDER BY id DESC
+                LIMIT 1
+            ) x
+            UNION
+            SELECT * FROM (
+                SELECT
+                    navn name,
+                    '' attn,
+                    adresse address1,
+                    '' address2,
+                    post zipcode,
+                    '' postbox,
                     email
                 FROM `email`
                 WHERE `tlf1` LIKE " . db()->eandq($phoneNumber) . "
@@ -130,11 +146,12 @@ class Ajax extends Base
             UNION
             SELECT * FROM (
                 SELECT
-                    recName1,
-                    '' recAttPerson,
-                    recAddress1,
-                    recZipCode,
-                    '' recPostBox,
+                    name,
+                    '' attn,
+                    address1,
+                    '' address2,
+                    zipcode,
+                    '' postbox,
                     '' email
                 FROM `post`
                 WHERE `recipientID` LIKE " . db()->eandq($phoneNumber) . "

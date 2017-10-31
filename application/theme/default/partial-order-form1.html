@@ -25,7 +25,7 @@
             </tr>
             <tr>
                 <td> Attn:</td>
-                <td colspan="2"><input name="att" id="att" style="width:157px" value="{{invoice.att}}" /></td>
+                <td colspan="2"><input name="attn" id="attn" style="width:157px" value="{{invoice.attn}}" /></td>
                 <td></td>
             </tr>
             <tr>
@@ -96,7 +96,7 @@
             <tr class="altpost"{% if not invoice.hasShippingAddress %} style="display:none;"{% endif %}>
                 <td> Attn.:</td>
                 <td colspan="2">
-                    <input name="postatt" id="postatt" style="width:157px" value="{{invoice.shippingAtt}}" />
+                    <input name="postattn" id="postattn" style="width:157px" value="{{invoice.shippingAttn}}" />
                 </td>
                 <td></td>
             </tr>
@@ -152,5 +152,4 @@
     </table>
     <input style="font-weight:bold;" type="submit" value="{{submitLabel}}" />
 </form>
-<script type="text/javascript" src="javascript.js"></script>
 <script type="text/javascript" src="/javascript/zipcodedk.js"></script>
