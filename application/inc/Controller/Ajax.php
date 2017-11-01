@@ -12,9 +12,10 @@ class Ajax extends Base
     /**
      * Return html for a sorted list.
      *
-     * @param int $categoryId Id of current category
-     * @param int $tableId    Id of list
-     * @param int $orderBy    What cell to sort by
+     * @param Request $request
+     * @param int     $categoryId Id of current category
+     * @param int     $tableId    Id of list
+     * @param int     $orderBy    What cell to sort by
      *
      * @return JsonResponse
      */

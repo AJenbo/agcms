@@ -12,13 +12,11 @@ use Symfony\Component\HttpFoundation\Response;
 class Feed extends Base
 {
     /**
-     * Return html for a sorted list.
+     * Generate a Google Site Map
      *
-     * @param int $categoryId Id of current category
-     * @param int $tableId    Id of list
-     * @param int $orderBy    What cell to sort by
+     * @param Request $request
      *
-     * @return JsonResponse
+     * @return Response
      */
     public function siteMap(Request $request): Response
     {
@@ -109,13 +107,13 @@ class Feed extends Base
     }
 
     /**
-     * Get the html for content bellonging to a category.
+     * Rss feed of most recently updated articles
+     *
+     * If a If-Modefied-Since is detected the feed will extend to that date, else it will limit to 20 items
      *
      * @param Request $request
-     * @param int     $categoryId Id of activ category
-     * @param string  $orderBy    What column to sort by
      *
-     * @return JsonResponse
+     * @return Response
      */
     public function rss(Request $request): Response
     {
@@ -195,5 +193,26 @@ class Feed extends Base
         $content = Render::render('rss', $data);
 
         return new Response($content, 200, ['Content-Type' => 'application/rss+xml']);
+    }
+
+    /**
+     * Generate an OpenSearch configuration
+     *
+     * @param Request $request
+     *
+     * @return Response
+     */
+    public function openSearch(Request $request): Response
+    {
+        Render::sendCacheHeader(Render::getUpdateTime(false));
+
+        $data = [
+            'shortName' => Config::get('site_name'),
+            'description' => sprintf(_('Find in %s'), Config::get('site_name')),
+            'url' => Config::get('base_url') . '/?q={searchTerms}',
+        ];
+        $content = Render::render('opensearch', $data);
+
+        return new Response($content, 200, ['Content-Type' => 'application/opensearchdescription+xml']);
     }
 }

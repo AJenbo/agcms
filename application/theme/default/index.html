@@ -6,8 +6,8 @@
         <link href="/theme/style.css" rel="stylesheet" type="text/css" />
         <script src="/javascript/javascript.js" type="text/javascript"></script>
         <meta http-equiv="content-language" content="en" />
-        <link rel="alternate" type="application/rss+xml" title="News" href="/rss.php" />
-        <link title="Search" type="application/opensearchdescription+xml" rel="search" href="/sog.php" />
+        <link rel="alternate" type="application/rss+xml" title="News" href="/feed/rss/" />
+        <link title="Search" type="application/opensearchdescription+xml" rel="search" href="/opensearch.xml" />
         <link rel="canonical" href="{{renderable.canonicalLink}}" />
         <meta name="Keywords" content="{% for crumb in crumbs %}{{crumb.title}}{% if not loop.last %}, {% endif %}{% endfor %}" />
     </head>
