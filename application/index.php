@@ -2,8 +2,9 @@
 
 use AGCMS\Application;
 use AGCMS\Config;
-use AGCMS\Controller\Site;
 use AGCMS\Controller\Ajax;
+use AGCMS\Controller\Feed;
+use AGCMS\Controller\Site;
 use Symfony\Component\HttpFoundation\Request;
 
 require_once __DIR__ . '/vendor/autoload.php';
@@ -20,4 +21,6 @@ $app->addRoute('GET', '/krav/(\d+)/[^/]*.html', Site::class, 'requirement');
 $app->addRoute('GET', '/ajax/category/(\d+)/table/(\d+)/(\d+)', Ajax::class, 'table');
 $app->addRoute('GET', '/ajax/category/(\d+)/([^/]+)', Ajax::class, 'category');
 $app->addRoute('GET', '/ajax/address/([0-9+\s]+)', Ajax::class, 'address');
+$app->addRoute('GET', '/sitemap.xml', Feed::class, 'siteMap');
+$app->addRoute('GET', '/feed/rss/', Feed::class, 'rss');
 $app->run(Request::createFromGlobals());

@@ -15,7 +15,7 @@ class Base
      *
      * @return RedirectResponse
      */
-    protected function redirect(Request $request, string $url, int $status = Response::HTTP_SEE_OTHER): RedirectResponse
+    public function redirect(Request $request, string $url, int $status = Response::HTTP_SEE_OTHER): RedirectResponse
     {
         $url = parse_url($url);
         if (empty($url['scheme'])) {

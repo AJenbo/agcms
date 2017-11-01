@@ -6,6 +6,7 @@ use Throwable;
 use AGCMS\Controller\Base;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 
 class Application
 {
@@ -93,8 +94,22 @@ class Application
                 $matches[0] = $request;
                 return call_user_func_array([new $route['controller'](), $route['action']], $matches);
             }
+
+            if (preg_match('%^' . $route['url'] . '$%u', $requestUrl . '/', $matches)) {
+                return $this->redirectToFolderPath($request, $requestUrl);
+            }
         }
 
         return (new Base())->redirectToSearch($request);
+    }
+
+    private function redirectToFolderPath(Request $request, string $requestUrl): RedirectResponse
+    {
+        $query = $request->getQueryString();
+        if ($query) {
+            $query = '?' . $query;
+        }
+
+        return (new Base())->redirect($request, $requestUrl . '/' . $query, Response::HTTP_PERMANENTLY_REDIRECT);
     }
 }
