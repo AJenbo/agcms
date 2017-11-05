@@ -1,16 +1,17 @@
-<?php
-
-namespace AGCMS;
+<?php namespace AGCMS;
 
 use AGCMS\Interfaces\Renderable;
 
 class VolatilePage implements Renderable
 {
-    /** @var string page title */
+    /** @var string Page title */
     private $title;
 
-    /** @var string page link */
+    /** @var string Page link */
     private $link;
+
+    /** @var string Content list */
+    private $list;
 
     /**
      * Set varables
@@ -18,10 +19,11 @@ class VolatilePage implements Renderable
      * @param string $title
      * @param string $link
      */
-    public function __construct(string $title, string $link)
+    public function __construct(string $title, string $link, array $list = [])
     {
         $this->title = $title;
         $this->link = $link;
+        $this->list = $list;
     }
 
     /**
@@ -42,5 +44,15 @@ class VolatilePage implements Renderable
     public function getCanonicalLink(): string
     {
         return $this->link;
+    }
+
+    /**
+     * Get listed pages
+     *
+     * @return Renderable[]
+     */
+    public function getPages(): array
+    {
+        return $this->list;
     }
 }

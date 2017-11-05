@@ -17,8 +17,8 @@
             <div>
                 <a href="/"><img id="logo" src="/images/web/logo.gif" alt="Arms Gallery" width="428" title="" /></a>
                 <img src="/theme/default/images/menu.svg" onclick="$('menu').style.left='0'" id="burger" width="30" height="30" />
-                <form action="/" method="get">
-                    <input name="q" value="{{search.q}}" placeholder="Søg" id="searchbox" /><input name="sogikke" type="hidden" />
+                <form action="/search/results/" method="get">
+                    <input name="q" value="{{search}}" placeholder="Søg" id="searchbox" /><input name="sogikke" type="hidden" />
                     <input name="minpris" type="hidden" />
                     <input name="maxpris" type="hidden" />
                     <input name="maerke" type="hidden" value="0" />
@@ -26,7 +26,7 @@
                     <a href="" onclick="this.parentNode.submit(); return false">
                         <img src="/images/web/søg.gif" alt="Søg" width="15" height="15" title="Søg" />
                     </a><br />
-                    <a href="/?sog=1&amp;q=&amp;sogikke=&amp;minpris=&amp;maxpris=&amp;maerke=" class="note">
+                    <a href="/search/" class="note">
                         Avanceret søgning.
                     </a>
                     </span>
@@ -94,7 +94,6 @@
                         </div>
                     </div>
                     <div id="menu" onclick="this.style.left='-100%'">
-                    {% include 'menu.html' with {'menu': searchMenu} %}
                     {% include 'menu.html' %}
                     </div>
                 </div>

@@ -31,7 +31,7 @@
                 <td>
                     <select name="maerke">
                         <option value="0">All</option>
-                        {% for brand in search.brands %}
+                        {% for brand in brands %}
                         <option value="{{brand.id}}">{{brand.title}}</option>
                         {% endfor %}
                     </select>

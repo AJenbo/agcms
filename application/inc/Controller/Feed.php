@@ -30,7 +30,7 @@ class Feed extends Base
 
         $urls = [
             [
-                'loc' => Config::get('base_url') . '/?sog=1&amp;q=&amp;sogikke=&amp;minpris=&amp;maxpris=&amp;maerke=',
+                'loc' => Config::get('base_url') . '/search/',
                 'lastmod' => Render::getUpdateTime(false),
                 'changefreq' => 'monthly',
                 'priority' => '0.8',
@@ -209,7 +209,7 @@ class Feed extends Base
         $data = [
             'shortName' => Config::get('site_name'),
             'description' => sprintf(_('Find in %s'), Config::get('site_name')),
-            'url' => Config::get('base_url') . '/?q={searchTerms}',
+            'url' => Config::get('base_url') . '/search/results/?q={searchTerms}&sogikke=&minpris=&maxpris=&maerke=0',
         ];
         $content = Render::render('opensearch', $data);
 

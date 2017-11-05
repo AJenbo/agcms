@@ -51,7 +51,8 @@ class Base
      */
     public function redirectToSearch(Request $request): RedirectResponse
     {
-        $redirectUrl = '/?sog=1&q=&sogikke=&minpris=&maxpris=&maerke=';
+        $redirectUrl = '/search/';
+
         $query = preg_replace(
             [
                 '/\/|-|_|\.html|\.htm|\.php|\.gif|\.jpeg|\.jpg|\.png|mærke[0-9]+-|kat[0-9]+-|side[0-9]+-|\.php/u',
@@ -71,7 +72,7 @@ class Base
         );
         $query = trim($query);
         if ($query) {
-            $redirectUrl = '/?q=' . rawurlencode($query) . '&sogikke=&minpris=&maxpris=&maerke=0';
+            $redirectUrl = '/search/results/?q=' . rawurlencode($query) . '&sogikke=&minpris=&maxpris=&maerke=0';
         }
 
         return $this->redirect($request, $redirectUrl);
