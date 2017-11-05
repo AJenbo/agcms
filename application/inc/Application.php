@@ -87,6 +87,10 @@ class Application
      */
     private function dispatch(Request $request): Response
     {
+        $redirect = $this->correctEncoding($request);
+        if ($redirect) {
+            return $redirect;
+        }
 
         $requestUrl = urldecode($request->getPathInfo());
         foreach ($this->routes[$request->getMethod()] as $route) {
@@ -101,6 +105,25 @@ class Application
         }
 
         return (new Base())->redirectToSearch($request);
+    }
+
+    private function correctEncoding(Request $request): ?RedirectResponse
+    {
+        $requestUrl = urldecode($request->getRequestUri());
+
+        $encoding = mb_detect_encoding($requestUrl, 'UTF-8, ISO-8859-1');
+        if ('UTF-8' === $encoding) {
+            return null;
+        }
+
+        // Windows-1252 is a superset of iso-8859-1
+        if (!$encoding || 'ISO-8859-1' === $encoding) {
+            $encoding = 'windows-1252';
+        }
+
+        $requestUrl = mb_convert_encoding($requestUrl, 'UTF-8', $encoding);
+
+        return (new Base())->redirect($request, $requestUrl, Response::HTTP_MOVED_PERMANENTLY);
     }
 
     private function redirectToFolderPath(Request $request, string $requestUrl): RedirectResponse
