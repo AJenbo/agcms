@@ -13,18 +13,33 @@ class UploadHandler
     /** A well compressed JPEG */
     const MAX_BYTE_PER_PIXEL = 0.7;
 
+    /** @var string Foler where the current upload will be saved. */
     private $targetPath = '';
+    /** @var string File name with out extension. */
     private $baseName = '';
+    /** @var string File extension. */
     private $extension = '';
 
     /** @var FileHandeler */
     private $file;
 
+    /**
+     * Initialize the service
+     *
+     * @param string $targetPath
+     */
     public function __construct(string $targetPath)
     {
         $this->setTargetPath($targetPath);
     }
 
+    /**
+     * Set the target folder.
+     *
+     * @param string $targetPath
+     *
+     * @return void
+     */
     public function setTargetPath(string $targetPath): void
     {
         $targetPath = (string) realpath(_ROOT_ . $targetPath); // Check path exists
@@ -38,6 +53,15 @@ class UploadHandler
         $this->targetPath = $targetPath;
     }
 
+    /**
+     * Process a given file upload.
+     *
+     * @param UploadedFile $uploadedFile
+     * @param string       $destinationType
+     * @param string       $description
+     *
+     * @return File
+     */
     public function process(
         UploadedFile $uploadedFile,
         string $destinationType,
@@ -59,6 +83,14 @@ class UploadHandler
         return $this->processFile($destinationType, $description);
     }
 
+    /**
+     * Performe file operations.
+     *
+     * @param string $destinationType
+     * @param string $description
+     *
+     * @return File
+     */
     private function processFile(string $destinationType, string $description): File
     {
         $width = 0;
@@ -85,16 +117,36 @@ class UploadHandler
         return $this->insertFile($description, $width, $height);
     }
 
+    /**
+     * Check if file is a supported image type.
+     *
+     * @return bool
+     */
     private function isImageFile(): bool
     {
         return in_array($this->file->getMimeType(), ['image/jpeg', 'image/gif', 'image/png'], true);
     }
 
+    /**
+     * Check if file is type of video.
+     *
+     * @return bool
+     */
     private function isVideoFile(): bool
     {
         return mb_strpos($this->file->getMimeType(), 'video/') === 0;
     }
 
+    /**
+     * Should we process the image.
+     *
+     * @param Image  $image
+     * @param int    $width
+     * @param int    $height
+     * @param string $destinationType
+     *
+     * @return bool
+     */
     private function shouldProcessImage(Image $image, int $width, int $height, string $destinationType): bool
     {
         if ($destinationType && 'image' !== $destinationType && 'lineimage' !== $destinationType) {
@@ -113,6 +165,16 @@ class UploadHandler
         return false;
     }
 
+    /**
+     * Crop and resize uploaded image.
+     *
+     * @param Image  $image
+     * @param array  $imageContent
+     * @param int    $maxW
+     * @param string $destinationType
+     *
+     * @return void
+     */
     public function processImage(Image $image, array $imageContent, int $maxW, string $destinationType): void
     {
         $this->checkMemorry($image);
@@ -134,6 +196,8 @@ class UploadHandler
     }
 
     /**
+     * Check if the image is expected to take more memory then we have avalible.
+     *
      * @throws Exception If we don't have the needed memory avalibe
      */
     private function checkMemorry(Image $image): void
@@ -144,6 +208,15 @@ class UploadHandler
         }
     }
 
+    /**
+     * Insert the file in the database and move it to the final location.
+     *
+     * @param string $description
+     * @param int    $width
+     * @param int    $height
+     *
+     * @return File
+     */
     private function insertFile(string $description, int $width, int $height): File
     {
         $file = File::getByPath($this->getDestination());
@@ -160,6 +233,11 @@ class UploadHandler
             ->save();
     }
 
+    /**
+     * Get the full destination path.
+     *
+     * @return string
+     */
     private function getDestination(): string
     {
         return $this->targetPath . '/' . $this->baseName . '.' . $this->extension;

@@ -9,6 +9,13 @@ use AGCMS\Render;
 
 class InvoiceService
 {
+    /**
+     * Create an invoice from the client cart array
+     *
+     * @param array $cart
+     *
+     * @return Invoice
+     */
     public function createFromCart(array $cart): Invoice
     {
         $amount = 0;
@@ -111,6 +118,13 @@ class InvoiceService
         return $invoice;
     }
 
+    /**
+     * Generate additional order comments based on cart options.
+     *
+     * @param array $cart
+     *
+     * @return string
+     */
     public function generateExtraNote(array $cart): string
     {
         $notes = [];
@@ -137,6 +151,14 @@ class InvoiceService
         return implode("\n", $notes);
     }
 
+    /**
+     * Add the customer to the malinglist
+     *
+     * @param Invoice $invoice
+     * @param string  $clientIp
+     *
+     * @return void
+     */
     public function addToAddressBook(Invoice $invoice, string $clientIp): void
     {
         $countries = [];

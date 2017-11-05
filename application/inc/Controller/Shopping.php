@@ -13,6 +13,9 @@ class Shopping extends Base
     /** @var InvoiceService */
     private $invoiceService;
 
+    /**
+     * Initialize needed services.
+     */
     public function __construct()
     {
         $this->invoiceService = new InvoiceService();

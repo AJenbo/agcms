@@ -2,24 +2,33 @@
 
 class Contact extends AbstractEntity
 {
-    /**
-     * Table name in database.
-     */
+    /**  Table name in database. */
     const TABLE_NAME = 'email';
 
     // Backed by DB
+    /** @var string Name */
     private $name = '';
+    /** @var string Email */
     private $email = '';
+    /** @var string Address */
     private $address = '';
+    /** @var string Country */
     private $country = '';
+    /** @var string Postcode */
     private $postcode = '';
+    /** @var string City */
     private $city = '';
+    /** @var string Phone number */
     private $phone1 = '';
+    /** @var string Mobile phone number */
     private $phone2 = '';
+    /** @var bool Is the user subscribed to the newsletter. */
     private $newsletter = false;
+    /** @var string[] List of newsletter topics that the user is signed up for. */
     private $interests = [];
     /** @var int */
     private $timestamp;
+    /** @var string Client IP at moment of signup */
     private $ip = '';
 
     /**
@@ -44,6 +53,13 @@ class Contact extends AbstractEntity
             ->setId($data['id'] ?? null);
     }
 
+    /**
+     * Set name
+     *
+     * @param string $name
+     *
+     * @return self
+     */
     public function setName(string $name): self
     {
         $this->name = $name;
@@ -51,11 +67,23 @@ class Contact extends AbstractEntity
         return $this;
     }
 
+    /**
+     * Get Name
+     *
+     * @return string
+     */
     public function getName(): string
     {
         return $this->name;
     }
 
+    /**
+     * Set email
+     *
+     * @param string $email
+     *
+     * @return self
+     */
     public function setEmail(string $email): self
     {
         $this->email = $email;
@@ -63,11 +91,23 @@ class Contact extends AbstractEntity
         return $this;
     }
 
+    /**
+     * Get email
+     *
+     * @return string
+     */
     public function getEmail(): string
     {
         return $this->email;
     }
 
+    /**
+     * Set address
+     *
+     * @param string $address
+     *
+     * @return self
+     */
     public function setAddress(string $address): self
     {
         $this->address = $address;
@@ -75,11 +115,23 @@ class Contact extends AbstractEntity
         return $this;
     }
 
+    /**
+     * Get address
+     *
+     * @return string
+     */
     public function getAddress(): string
     {
         return $this->address;
     }
 
+    /**
+     * Set country
+     *
+     * @param string $country
+     *
+     * @return self
+     */
     public function setCountry(string $country): self
     {
         $this->country = $country;
@@ -87,11 +139,23 @@ class Contact extends AbstractEntity
         return $this;
     }
 
+    /**
+     * Get country
+     *
+     * @return string
+     */
     public function getCountry(): string
     {
         return $this->country;
     }
 
+    /**
+     * Set postcode
+     *
+     * @param string $postcode
+     *
+     * @return self
+     */
     public function setPostcode(string $postcode): self
     {
         $this->postcode = $postcode;
@@ -99,11 +163,23 @@ class Contact extends AbstractEntity
         return $this;
     }
 
+    /**
+     * Get postcode
+     *
+     * @return string
+     */
     public function getPostcode(): string
     {
         return $this->postcode;
     }
 
+    /**
+     * Set city
+     *
+     * @param string $city
+     *
+     * @return self
+     */
     public function setCity(string $city): self
     {
         $this->city = $city;
@@ -111,11 +187,23 @@ class Contact extends AbstractEntity
         return $this;
     }
 
+    /**
+     * Get city
+     *
+     * @return string
+     */
     public function getCity(): string
     {
         return $this->city;
     }
 
+    /**
+     * Set phone number
+     *
+     * @param string $phone1
+     *
+     * @return self
+     */
     public function setPhone1(string $phone1): self
     {
         $this->phone1 = $phone1;
@@ -123,11 +211,23 @@ class Contact extends AbstractEntity
         return $this;
     }
 
+    /**
+     * Get phone number
+     *
+     * @return string
+     */
     public function getPhone1(): string
     {
         return $this->phone1;
     }
 
+    /**
+     * Set mobile phone number
+     *
+     * @param string $phone2
+     *
+     * @return self
+     */
     public function setPhone2(string $phone2): self
     {
         $this->phone2 = $phone2;
@@ -135,11 +235,23 @@ class Contact extends AbstractEntity
         return $this;
     }
 
+    /**
+     * Get mobile phone number
+     *
+     * @return string
+     */
     public function getPhone2(): string
     {
         return $this->phone2;
     }
 
+    /**
+     * Set newsletter subscribtion status
+     *
+     * @param bool $newsletter
+     *
+     * @return self
+     */
     public function setNewsletter(bool $newsletter): self
     {
         $this->newsletter = $newsletter;
@@ -147,11 +259,23 @@ class Contact extends AbstractEntity
         return $this;
     }
 
+    /**
+     * Get newsletter subscribtion status
+     *
+     * @return bool
+     */
     public function getNewsletter(): bool
     {
         return $this->newsletter;
     }
 
+    /**
+     * Set newsletter interests
+     *
+     * @param string $interests
+     *
+     * @return self
+     */
     public function setInterests(string $interests): self
     {
         $interests = explode('<', $interests);
@@ -162,6 +286,8 @@ class Contact extends AbstractEntity
     }
 
     /**
+     * Get interests
+     *
      * @return string[]
      */
     public function getInterests(): array
@@ -169,6 +295,13 @@ class Contact extends AbstractEntity
         return $this->interests;
     }
 
+    /**
+     * Set created time
+     *
+     * @param int $timestamp
+     *
+     * @return self
+     */
     public function setTimestamp(int $timestamp): self
     {
         $this->timestamp = $timestamp;
@@ -176,11 +309,23 @@ class Contact extends AbstractEntity
         return $this;
     }
 
+    /**
+     * Get creation time
+     *
+     * @return int
+     */
     public function getTimestamp(): int
     {
         return $this->timestamp;
     }
 
+    /**
+     * Set client IP
+     *
+     * @param string $ip
+     *
+     * @return self
+     */
     public function setIp(string $ip): self
     {
         $this->ip = $ip;
@@ -188,11 +333,21 @@ class Contact extends AbstractEntity
         return $this;
     }
 
+    /**
+     * Get client IP
+     *
+     * @return string
+     */
     public function getIp(): string
     {
         return $this->ip;
     }
 
+    /**
+     * Check if email address is currently valid
+     *
+     * @return bool
+     */
     public function isEmailValide(): bool
     {
         return $this->email && valideMail($this->email);

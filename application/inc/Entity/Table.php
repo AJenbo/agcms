@@ -277,6 +277,14 @@ class Table extends AbstractEntity
         return $this->orderRows($rows, $orderBy);
     }
 
+    /**
+     * Add a new row to the table.
+     *
+     * @param array $cells
+     * @param int $link
+     *
+     * @return int Id of the new row
+     */
     public function addRow(array $cells, int $link = null): int
     {
         $cells = array_map('htmlspecialchars', $cells);
@@ -292,6 +300,15 @@ class Table extends AbstractEntity
         return db()->insert_id;
     }
 
+    /**
+     * Update an existing row.
+     *
+     * @param int   $rowId
+     * @param array $cells
+     * @param int   $link
+     *
+     * @return void
+     */
     public function updateRow(int $rowId, array $cells, int $link = null): void
     {
         $cells = array_map('htmlspecialchars', $cells);
@@ -307,6 +324,13 @@ class Table extends AbstractEntity
         );
     }
 
+    /**
+     * Remove a row from the table
+     *
+     * @param int $rowId
+     *
+     * @return void
+     */
     public function removeRow(int $rowId): void
     {
         db()->query('DELETE FROM `list_rows` WHERE list_id = ' . $this->id . ' AND `id` = ' . $rowId);
@@ -359,6 +383,8 @@ class Table extends AbstractEntity
 
     /**
      * Get the page this table belongs to.
+     *
+     * @return Page
      */
     public function getPage(): Page
     {

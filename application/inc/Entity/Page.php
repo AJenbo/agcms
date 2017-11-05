@@ -97,6 +97,11 @@ class Page extends AbstractRenderable
         ];
     }
 
+    /**
+     * Delete page and it's relations
+     *
+     * @return bool
+     */
     public function delete(): bool
     {
         // Forget affected tables, though alter indivitual deletes will forget most
@@ -245,11 +250,23 @@ class Page extends AbstractRenderable
         return $this->excerpt;
     }
 
+    /**
+     * Check if an except has been entered manually.
+     *
+     * @return bool
+     */
     public function hasExcerpt(): bool
     {
         return (bool) $this->excerpt;
     }
 
+    /**
+     * Set page thumbnail
+     *
+     * @param string $iconPath
+     *
+     * @return self
+     */
     public function setIconPath(?string $iconPath): self
     {
         $this->iconPath = $iconPath;
@@ -259,6 +276,8 @@ class Page extends AbstractRenderable
 
     /**
      * Get the file that is being used as an icon.
+     *
+     * @return ?File
      */
     public function getIcon(): ?File
     {
@@ -369,6 +388,13 @@ class Page extends AbstractRenderable
         return $this->priceType;
     }
 
+    /**
+     * Set the type of the privious price
+     *
+     * @param int $oldPriceType
+     *
+     * @return self
+     */
     public function setOldPriceType(int $oldPriceType): self
     {
         $this->oldPriceType = $oldPriceType;
@@ -418,6 +444,13 @@ class Page extends AbstractRenderable
         return $url . $this->getSlug();
     }
 
+    /**
+     * Check if the page i attached to a given category
+     *
+     * @param Category $category
+     *
+     * @return bool
+     */
     public function isInCategory(Category $category): bool
     {
         Render::addLoadedTable('bind');
@@ -450,6 +483,11 @@ class Page extends AbstractRenderable
         return ORM::getByQuery(Category::class, $this->getCategoriesQuery());
     }
 
+    /**
+     * Generate the query for getting all categories where this page is linke.
+     *
+     * @return string
+     */
     private function getCategoriesQuery(): string
     {
         Render::addLoadedTable('bind');
@@ -457,12 +495,26 @@ class Page extends AbstractRenderable
         return 'SELECT * FROM `kat` WHERE id IN (SELECT kat FROM `bind` WHERE side = ' . $this->getId() . ')';
     }
 
+    /**
+     * Add the page to a given category
+     *
+     * @param Category $category
+     *
+     * @return void
+     */
     public function addToCategory(Category $category): void
     {
         db()->query('INSERT INTO `bind` (`side`, `kat`) VALUES (' . $this->getId() . ', ' . $category->getId() . ')');
         ORM::forgetByQuery(self::class, $this->getCategoriesQuery());
     }
 
+    /**
+     * Remove the page form a given cateogory
+     *
+     * @param Category $category
+     *
+     * @return void
+     */
     public function removeFromCategory(Category $category): void
     {
         db()->query('DELETE FROM `bind` WHERE `side` = ' . $this->getId() . ' AND `kat` = ' . $category->getId());
@@ -471,6 +523,8 @@ class Page extends AbstractRenderable
 
     /**
      * Add a page as an accessory.
+     *
+     * @return void
      */
     public function addAccessory(Page $accessory): void
     {
@@ -483,6 +537,13 @@ class Page extends AbstractRenderable
         ORM::forgetByQuery(self::class, $this->getAccessoryQuery());
     }
 
+    /**
+     * Remove an accessory from the page.
+     *
+     * @param Page $accessory
+     *
+     * @return void
+     */
     public function removeAccessory(Page $accessory): void
     {
         db()->query('DELETE FROM `tilbehor` WHERE side = ' . $this->getId() . ' AND tilbehor = ' . $accessory->getId());
@@ -501,6 +562,8 @@ class Page extends AbstractRenderable
     }
 
     /**
+     * Get presentable accessories.
+     *
      * @return Page[]
      */
     public function getActiveAccessories(): array
@@ -515,6 +578,11 @@ class Page extends AbstractRenderable
         return $accessories;
     }
 
+    /**
+     * Get query for finding accessories
+     *
+     * @return string
+     */
     private function getAccessoryQuery(): string
     {
         Render::addLoadedTable('tilbehor');
@@ -539,6 +607,8 @@ class Page extends AbstractRenderable
 
     /**
      * Get product brand.
+     *
+     * @return ?Brand
      */
     public function getBrand(): ?Brand
     {

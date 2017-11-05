@@ -61,6 +61,8 @@ abstract class AbstractEntity implements InterfaceEntity
 
     /**
      * Save entity to database.
+     *
+     * @return InterfaceEntity
      */
     public function save(): InterfaceEntity
     {
@@ -79,6 +81,10 @@ abstract class AbstractEntity implements InterfaceEntity
 
     /**
      * insert new entity in to the database.
+     *
+     * @param array $data
+     *
+     * @return void
      */
     private function insert(array $data): void
     {
@@ -94,6 +100,10 @@ abstract class AbstractEntity implements InterfaceEntity
 
     /**
      * Update an entity in the database.
+     *
+     * @param array $data
+     *
+     * @return void
      */
     private function update(array $data): void
     {

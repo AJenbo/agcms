@@ -87,6 +87,13 @@ class Category extends AbstractRenderable
         ];
     }
 
+    /**
+     * Delete category and all of it's content.
+     *
+     * Not that this deletes all pages, even if they aren't exclusive to this cateogry.
+     *
+     * @return bool
+     */
     public function delete(): bool
     {
         foreach ($this->getChildren() as $child) {
@@ -262,6 +269,8 @@ class Category extends AbstractRenderable
 
     /**
      * Get parent category.
+     *
+     * @return ?self
      */
     public function getParent(): ?self
     {
@@ -311,6 +320,8 @@ class Category extends AbstractRenderable
     }
 
     /**
+     * Get children that are suitable for displaying.
+     *
      * @return Category[]
      */
     public function getVisibleChildren(): array
@@ -339,6 +350,11 @@ class Category extends AbstractRenderable
         return false;
     }
 
+    /**
+     * Check if there are children that are appropriate for displaying.
+     *
+     * @return bool
+     */
     public function hasVisibleChildren(): bool
     {
         return $this->hasChildren(true);
@@ -388,6 +404,11 @@ class Category extends AbstractRenderable
         return $pages;
     }
 
+    /**
+     * Chekc if there are andy attached pages.
+     *
+     * @return bool
+     */
     public function hasPages(): bool
     {
         Render::addLoadedTable('bind');
@@ -400,6 +421,11 @@ class Category extends AbstractRenderable
         return $hasPages;
     }
 
+    /**
+     * Check if there is any content for this category.
+     *
+     * @return bool
+     */
     public function hasContent(): bool
     {
         return $this->hasChildren() || $this->hasPages();
@@ -415,6 +441,11 @@ class Category extends AbstractRenderable
         return (bool) $this->getRoot()->getId();
     }
 
+    /**
+     * Find the root cateogry.
+     *
+     * @return self
+     */
     public function getRoot(): self
     {
         return $this->getBranch()[0];
@@ -436,6 +467,11 @@ class Category extends AbstractRenderable
         return array_values(array_reverse($nodes));
     }
 
+    /**
+     * Get display path.
+     *
+     * @return string
+     */
     public function getPath(): string
     {
         $path = '/';
