@@ -107,8 +107,21 @@
             m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
             })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
 
-            ga('create', 'UA-1037075-2', 'auto');
+            ga('create', 'UA-1037075-2', {
+                'storage': 'none',
+                'clientId': localStorage.getItem('ga:clientId')
+            });
+            ga(function(tracker) {
+                localStorage.setItem('ga:clientId', tracker.get('clientId'));
+            });
+
             ga('send', 'pageview');
+        --></script>
+        <script type="text/javascript"><!--
+            var addthis_config = {
+                "data_use_cookies_ondomain": false,
+                "data_use_cookies": false
+            };
         --></script>
         <script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=armsgallery"></script>
     </body>

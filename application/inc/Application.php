@@ -66,7 +66,6 @@ class Application
      */
     public function run(Request $request): void
     {
-        session_start();
         Render::sendCacheHeader();
         try {
             $response = $this->dispatch($request);
