@@ -92,7 +92,7 @@ class Render
      */
     public static function sendCacheHeader(int $timestamp = null): void
     {
-        if (!request()->isMethodCacheable() || !empty($_SESSION['faktura']['quantities'])) {
+        if (!request()->isMethodCacheable()) {
             return;
         }
 
@@ -354,7 +354,6 @@ class Render
      */
     public static function outputPage(): void
     {
-        session_write_close();
         self::prepareData();
 
         self::output(

@@ -1,4 +1,8 @@
-<form action="" method="post">
+{% extends "index.html" %}
+
+{% block content %}
+{% if invoice.items %}
+<form action="" method="get" onsubmit="shoppingCart.openAddress(); return false">
     <p>
         <table style="border-bottom:1px solid;" id="faktura" cellspacing="0">
             <thead>
@@ -61,5 +65,31 @@
         Note:<br />
         <textarea style="width:100%;box-sizing:border-box;" name="note">{{note}}</textarea>
     </p>
+        {% endif %}
+    </p>
+    <p class="clearfix">
+        Foretrukken betalingsmetode:
+        <select id="payMethod" name="payMethod" style="float:right">
+            <option value="creditcard"{% if payMethod == 'creditcard' %} selected="selected"{% endif %}>Betalingskort</option>
+            <option value="bank"{% if payMethod == 'bank' %} selected="selected"{% endif %}>Bank overførsel</option>
+            <option value="cash"{% if payMethod == 'cash' %} selected="selected"{% endif %}>Kontant</option>
+        </select>
+    </p>
+    <p>
+        Levering:
+        <select id="deleveryMethode" name="deleveryMethode" style="float:right">
+            <option value="postal"{% if deleveryMethode == 'postal' %} selected="selected"{% endif %}>Post</option>
+            <option value="pickup"{% if deleveryMethode == 'pickup' %} selected="selected"{% endif %}>Afhent i butikken</option>
+        </select>
+        <small id="shipping"><br />Den nøjagtige forsendelses pris vil blive udregnet når varerne pakkes.</small>
+    </p>
+    <p>
+        Note:<br />
+        <textarea style="width:100%;box-sizing:border-box;" id="note" name="note">{{note}}</textarea>
+    </p>
     <p><input value="Fortsæt" type="submit" /></p>
 </form>
+{% else %}
+    Der er intet indhold på listen!
+{% endif %}
+{% endblock %}

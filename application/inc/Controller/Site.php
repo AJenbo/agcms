@@ -187,25 +187,6 @@ class Site extends Base
     }
 
     /**
-     * Get the basice render data
-     *
-     * @return array
-     */
-    private function basicPageData(): array
-    {
-        /** @var Category */
-        $category = ORM::getOne(Category::class, 0);
-
-        return [
-            'menu'           => $category->getVisibleChildren(),
-            'infoPage'       => ORM::getOne(CustomPage::class, 2),
-            'crumbs'         => [$category],
-            'category'       => $category,
-            'hasItemsInCart' => !empty($_SESSION['faktura']['quantities']),
-        ];
-    }
-
-    /**
      * Check that the url for a category is correct
      *
      * Returns a redirect responce if the url is not valid

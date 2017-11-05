@@ -140,64 +140,6 @@ function arrayNatsort(array $aryData, string $strIndex, string $strSortBy, strin
     return $aryResult;
 }
 
-function invoiceFromSession(): Invoice
-{
-    $items = [];
-    $invoiceData = $_SESSION['faktura'];
-    foreach ($invoiceData['products'] as $key => $title) {
-        $items[] = [
-            'quantity' => $invoiceData['quantities'][$key] ?? 0,
-            'title'    => $title,
-            'value'    => $invoiceData['values'][$key] ?? 0,
-        ];
-    }
-    $items = json_encode($items);
-
-    $note = '';
-    $payMethod = $invoiceData['paymethod'] ?? '';
-    if ('creditcard' === $payMethod) {
-        $note .= _('I would like to pay via credit card.');
-    } elseif ('bank' === $payMethod) {
-        $note .= _('I would like to pay via bank transaction.');
-    } elseif ('cash' === $payMethod) {
-        $note .= _('I would like to pay via cash.');
-    }
-    $note .= "\n";
-    $delevery = $invoiceData['delevery'] ?? '';
-    if ('pickup' === $delevery) {
-        $note .= _('I will pick up the goods in your shop.');
-    } elseif ('postal' === $delevery) {
-        $note .= _('Please send the goods by mail.');
-    }
-    $note = trim($note . "\n" . $invoiceData['note'] ?? '');
-
-    return new Invoice([
-        'item_data'            => $items,
-        'has_shipping_address' => (bool) ($invoiceData['altpost'] ?? false),
-        'amount'               => (int) ($invoiceData['amount'] ?? 0),
-        'name'                 => $invoiceData['navn'] ?? '',
-        'attn'                 => $invoiceData['attn'] ?? '',
-        'address'              => $invoiceData['adresse'] ?? '',
-        'postbox'              => $invoiceData['postbox'] ?? '',
-        'postcode'             => $invoiceData['postnr'] ?? '',
-        'city'                 => $invoiceData['by'] ?? '',
-        'country'              => $invoiceData['land'] ?? '',
-        'email'                => $invoiceData['email'] ?? '',
-        'phone1'               => $invoiceData['tlf1'] ?? '',
-        'phone2'               => $invoiceData['tlf2'] ?? '',
-        'shipping_phone'       => $invoiceData['posttlf'] ?? '',
-        'shipping_name'        => $invoiceData['postname'] ?? '',
-        'shipping_attn'        => $invoiceData['postattn'] ?? '',
-        'shipping_address'     => $invoiceData['postaddress'] ?? '',
-        'shipping_address2'    => $invoiceData['postaddress2'] ?? '',
-        'shipping_postbox'     => $invoiceData['postpostbox'] ?? '',
-        'shipping_postcode'    => $invoiceData['postpostalcode'] ?? '',
-        'shipping_city'        => $invoiceData['postcity'] ?? '',
-        'shipping_country'     => $invoiceData['postcountry'] ?? '',
-        'note'                 => $note,
-    ]);
-}
-
 /**
  * Crope a string to a given max lengt, round by word.
  *

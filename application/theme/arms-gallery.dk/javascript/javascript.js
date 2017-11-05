@@ -1,5 +1,6 @@
 function init()
 {
+    shoppingCart.onupdate();
     var links = document.getElementsByTagName('a');
     for(var i = 0; i < links.length; i++) {
         if(links[i].hostname !== location.hostname) {
@@ -14,6 +15,11 @@ function init()
         $('menu').scrollTop = activmenu.offsetTop;
     }
 }
+
+shoppingCart.onupdate = function() {
+    document.getElementById("count").firstChild.data = shoppingCart.getCart().items.length;
+};
+
 function $(id)
 {
     return document.getElementById(id);

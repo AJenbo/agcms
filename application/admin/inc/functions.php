@@ -19,6 +19,7 @@ use Symfony\Component\HttpFoundation\Response;
 
 function checkUserLoggedIn(): void
 {
+    session_start();
     if (curentUser()) {
         return;
     }

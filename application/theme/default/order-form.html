@@ -1,4 +1,8 @@
-<form action="" method="post">
+{% extends "index.html" %}
+
+{% block content %}
+{% if invoice.items %}
+<form action="" method="get" onsubmit="shoppingCart.openAddress(); return false">
     <p>
         <table style="border-bottom:1px solid;" id="faktura" cellspacing="0">
             <thead>
@@ -43,7 +47,7 @@
     </p>
     <p class="clearfix">
         Prefered payment method:
-        <select name="paymethod" style="float:right;">
+        <select id="payMethod" name="payMethod" style="float:right">
             <option value="creditcard"{% if payMethod == 'creditcard' %} selected="selected"{% endif %}>Credit Card</option>
             <option value="bank"{% if payMethod == 'bank' %} selected="selected"{% endif %}>Bank transaction</option>
             <option value="cash"{% if payMethod == 'cash' %} selected="selected"{% endif %}>Cash</option>
@@ -51,7 +55,7 @@
     </p>
     <p>
         Delevery:
-        <select style="float:right;" name="delevery">
+        <select id="deleveryMethode" name="deleveryMethode" style="float:right">
             <option value="postal"{% if deleveryMethode == 'postal' %} selected="selected"{% endif %}>Mail</option>
             <option value="express"{% if deleveryMethode == 'express' %} selected="selected"{% endif %}>Mail express</option>
             <option value="pickup"{% if deleveryMethode == 'pickup' %} selected="selected"{% endif %}>Pickup in store</option>
@@ -60,7 +64,11 @@
     </p>
     <p>
         Note:<br />
-        <textarea style="width:100%;box-sizing:border-box;" name="note">{{note}}</textarea>
+        <textarea style="width:100%;box-sizing:border-box;" id="note" name="note">{{note}}</textarea>
     </p>
     <p><input value="Continue" type="submit" /></p>
 </form>
+{% else %}
+    Ther is no content in the basket!
+{% endif %}
+{% endblock %}

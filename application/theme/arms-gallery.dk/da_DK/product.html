@@ -28,7 +28,7 @@
         {% if not hasProductTable %}
         {% include 'price.html' with {'product': renderable} %}
         {% if renderable.price > 0 %}
-        <a href="/bestilling/?add={{renderable.id}}">
+        <a href="" onclick="shoppingCart.addItem('page', {{renderable.id}}); return false">
             <img src="/theme/default/images/cart_add.png" alt="+" title="Tilføj til indkøbshummer" />
         </a>
         {% endif %}

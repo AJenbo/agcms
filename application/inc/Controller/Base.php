@@ -1,5 +1,8 @@
 <?php namespace AGCMS\Controller;
 
+use AGCMS\Entity\Category;
+use AGCMS\Entity\CustomPage;
+use AGCMS\ORM;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\RedirectResponse;
@@ -25,12 +28,12 @@ class Base
             $url['host'] = $request->getHost();
         }
         if (empty($url['path'])) {
-            $url['path'] = parse_url(urldecode($request->getRequestUri()), PHP_URL_PATH);
+            $url['path'] = urldecode($request->getPathInfo());
         } elseif ('/' !== mb_substr($url['path'], 0, 1)) {
             //The redirect is relative to current path
             $path = [];
-            $requestPath = parse_url(urldecode($request->getRequestUri()), PHP_URL_PATH);
-            preg_match('#^\S+/#u', $requestPath, $path);
+            $requestPath = urldecode($request->getPathInfo());
+            preg_match('#^.+/#u', $requestPath, $path);
             $url['path'] = $path[0] . $url['path'];
         }
         $url['path'] = encodeUrl($url['path']);
@@ -64,7 +67,7 @@ class Base
                 ' \1',
                 ' ',
             ],
-            urldecode($request->getRequestUri())
+            urldecode($request->getPathInfo())
         );
         $query = trim($query);
         if ($query) {
@@ -72,5 +75,23 @@ class Base
         }
 
         return $this->redirect($request, $redirectUrl);
+    }
+
+    /**
+     * Get the basice render data
+     *
+     * @return array
+     */
+    protected function basicPageData(): array
+    {
+        /** @var Category */
+        $category = ORM::getOne(Category::class, 0);
+
+        return [
+            'menu'           => $category->getVisibleChildren(),
+            'infoPage'       => ORM::getOne(CustomPage::class, 2),
+            'crumbs'         => [$category],
+            'category'       => $category,
+        ];
     }
 }

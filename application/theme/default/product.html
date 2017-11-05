@@ -9,8 +9,8 @@
     {{renderable.html|raw}}
     {% if renderable.requirement %}<p><a href="{{renderable.requirement.canonicalLink}}" target="krav">{{renderable.requirement.title}}</a></p>{% endif %}
     <p style="text-align:center">
-        {% include 'price.html' with {'product': page} %}
-        {% if product.price and not hasProductList %}<a href="/bestilling/?add={{pageId}}">+ Add to shopping cart</a>{% endif %}
+        {% include 'price.html' with {'product': renderable} %}
+        {% if product.price and not hasProductList %}<a href="" onclick="shoppingCart.addItem('page', {{renderable.id}}); return false">+ Add to shopping cart</a>{% endif %}
         <br />
     </p>
 </div>

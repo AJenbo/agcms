@@ -25,7 +25,7 @@
             {% endfor %}
             {% if table.hasPrices %}
             <td class="addtocart">
-                <a href="/bestilling/?add={% if row.page %}{{row.page.id}}{% else %}{{table.page.id}}{% endif %}&add_list_item={{row.id}}">
+                <a href="" onclick="shoppingCart.addItem('line', {{row.id}}); return false">
                     <img src="/theme/default/images/cart_add.png" title="Add to shopping cart" alt="+" />
                 </a>
             </td>

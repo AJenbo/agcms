@@ -1,0 +1,75 @@
+{% extends "index.html" %}
+
+{% block content %}
+<div id="text">
+    {% if invoice.items %}
+    <form action="" method="get" onsubmit="shoppingCart.openAddress(); return false">
+        <p>
+            <table style="border-bottom:1px solid;" id="faktura" cellspacing="0">
+                <thead>
+                    <tr>
+                        <td class="td1">Antal</td>
+                        <td>Benævnelse</td>
+                        <td class="td3 tal" style="width:64px">á pris</td>
+                        <td class="td4 tal" style="width:72px">Total</td>
+                    </tr>
+                </thead>
+                <tfoot>
+                    <tr style="border:1px solid #000">
+                        <td class="td1"></td>
+                        <td></td>
+                        <td class="td3 tal">Total</td>
+                        <td class="td4 tal" id="total">{{invoice.amount|number_format(2, ',', '')}}</td>
+                    </tr>
+                </tfoot>
+                <tbody>
+                    {% for item in invoice.items %}
+                    <tr>
+                        <td class="tal">
+                            <input onkeyup="updateprice();" onchange="updateprice();" class="tal" value="{{item.quantity}}" name="quantity[]" size="3" />
+                        </td>
+                        <td>{{item.title}}</td>
+                        <td class="tal">
+                            {% if item.value %}{{(item.value * (1 + invoice.vat))|number_format(2, ',', '')}}{% else %}*{% endif %}
+                        </td>
+                        <td class="tal total">
+                            {% if item.value %}{{(item.value * item.quantity * (1 + invoice.vat))|number_format(2, ',', '')}}{% else %}*{% endif %}
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            <script type="text/javascript"><!--
+                var values = [{% for item in invoice.items %}{{(item.value * (1 + invoice.vat))|json_encode()|raw}}{% if not loop.last %},{% endif %}{% endfor %}];
+            --></script>
+            {% if invoice.hasUnknownPrice %}
+            <small>* Prisen kan ikke automatisk fastsættes, beskriv venligst den eksakte type i notatfeltet for neden.</small></p>
+            {% endif %}
+        </p>
+        <p class="clearfix">
+            Foretrukken betalingsmetode:
+            <select id="payMethod" name="payMethod" style="float:right">
+                <option value="creditcard"{% if payMethod == 'creditcard' %} selected="selected"{% endif %}>Betalingskort</option>
+                <option value="bank"{% if payMethod == 'bank' %} selected="selected"{% endif %}>Bank overførsel</option>
+                <option value="cash"{% if payMethod == 'cash' %} selected="selected"{% endif %}>Kontant</option>
+            </select>
+        </p>
+        <p>
+            Levering:
+            <select id="deleveryMethode" name="deleveryMethode" style="float:right">
+                <option value="postal"{% if deleveryMethode == 'postal' %} selected="selected"{% endif %}>Post</option>
+                <option value="pickup"{% if deleveryMethode == 'pickup' %} selected="selected"{% endif %}>Afhent i butikken</option>
+            </select>
+            <small id="shipping"><br />Den nøjagtige forsendelses pris vil blive udregnet når varerne pakkes.</small>
+        </p>
+        <p>
+            Note:<br />
+            <textarea style="width:100%;box-sizing:border-box;" id="note" name="note">{{invoice.note}}</textarea>
+        </p>
+        <p><input value="Fortsæt" type="submit" /></p>
+    </form>
+    {% else %}
+        Der er intet indhold på listen!
+    {% endif %}
+</div>
+{% endblock %}

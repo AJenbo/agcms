@@ -147,11 +147,11 @@ class Ajax extends Base
             UNION
             SELECT * FROM (
                 SELECT
-                    name,
+                    recName1 name,
                     '' attn,
-                    address1,
+                    recAddress1 address1,
                     '' address2,
-                    zipcode,
+                    recZipCode zipcode,
                     '' postbox,
                     '' email
                 FROM `post`

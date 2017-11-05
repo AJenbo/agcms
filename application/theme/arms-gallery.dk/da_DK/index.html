@@ -10,6 +10,7 @@
         <link title="Arms Gallery" type="application/opensearchdescription+xml" rel="search" href="/opensearch.xml" />
         <link rel="canonical" href="{{renderable.canonicalLink}}" />
         <meta name="Keywords" content="{% for crumb in crumbs %}{{crumb.title}}{% if not loop.last %}, {% endif %}{% endfor %}" />
+        <script type="text/javascript" src="/javascript/javascript.js"></script>
     </head>
     <body onload="init();">
         <div id="headder">
@@ -30,6 +31,16 @@
                     </a>
                     </span>
                 </form>
+                <svg id="basket" onclick="shoppingCart.open()" xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 30 29.999999">
+                    <ellipse cy="25.643" cx="6.016" rx="1.794" ry="1.74" fill="#333"/>
+                    <path d="M24.77 6.26c-.253 0-.538.208-.655.472-1.114 2.51-6.43 14.6-6.43 14.6H3.695c-.267 0-.482.215-.482.482v.913c0 .267.215.482.48.48 4.897-.013 9.805.024 14.694-.005.255 0 .54-.205.656-.47 2.16-4.858 6.437-14.595 6.437-14.595h3.627c.266 0 .48-.215.48-.48V6.74c0-.266-.214-.48-.48-.48z" fill="#333"/>
+                    <path d="M1.995 10.41l19.085.033-4.098 9.758H3.252z" fill="#333"/>
+                    <ellipse cy="25.643" cx="15.534" rx="1.794" ry="1.74" fill="#333"/>
+                    <circle cx="6.423" cy="9.753" r="6.57" fill="#333" stroke="#fff" stroke-width="1.134"/>
+                    <text style="line-height:125%" x="6.43" y="14.435" font-size="11" font-family="Sans" fill="#fff">
+                        <tspan id="count" x="6.43" y="14.11" style="text-align:center" text-anchor="middle"> </tspan>
+                    </text>
+                </svg>
             </div>
         </div>
         {% if crumbs %}
@@ -42,16 +53,13 @@
         </div>
         {% endif %}
         {% set extraRows = 0 %}
-        {% if hasItemsInCart %}
-        {% set extraRows = 1 %}
         <div class="bar" id="cart">
             <ul>
                 <li>
-                    <a href="/bestilling/"><img src="/theme/default/images/cart.png" alt="" /> Indkøbsliste</a>
+                    <a href="" onclick="shoppingCart.open(); return false"><img src="/theme/default/images/cart.png" alt="" /> Indkøbsliste</a>
                 </li>
             </ul>
         </div>
-        {% endif %}
         <div class="bar" id="submenu">
             {% if category.id == 0 %}
             {% set extraRows = extraRows + 1 %}
@@ -65,7 +73,7 @@
             </ul>
             {% endif %}
         </div>
-        <div id="container"{% if extraRows %} style="top: {{77 + 16 * extraRows}}px"{% endif %}>
+        <div id="container"{% if extraRows %} style="top:{{93 + 16 * extraRows}}px"{% endif %}>
             <div id="container2">
                 <div id="container3">
                     <div id="container4">
@@ -92,7 +100,6 @@
                 </div>
             </div>
         </div>
-        <script type="text/javascript" src="/javascript/javascript.js"></script>
         <script type="text/javascript" src="/theme/arms-gallery.dk/javascript/javascript.js"></script>
         <script type="text/javascript"><!--
             (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){

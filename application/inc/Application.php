@@ -87,8 +87,8 @@ class Application
      */
     private function dispatch(Request $request): Response
     {
-        $requestUrl = urldecode($request->getRequestUri());
 
+        $requestUrl = urldecode($request->getPathInfo());
         foreach ($this->routes[$request->getMethod()] as $route) {
             if (preg_match('%^' . $route['url'] . '$%u', $requestUrl, $matches)) {
                 $matches[0] = $request;

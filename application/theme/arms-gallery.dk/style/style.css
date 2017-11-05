@@ -407,26 +407,29 @@ marquee {
     text-align:right;
 }
 
-#burger {
+#burger, #basket {
     display: none;
 }
 @media only screen and (max-width: 779px) {
-    #logo {
-        width: 100%;
-    }
-    .notmobile {
+    #logo, .notmobile, #cart {
         display: none;
     }
-    #burger {
+    #burger, #basket {
         display: inline-block;
         vertical-align: bottom;
         padding: 7px 0px;
     }
+    #burger {
+        float: left;
+    }
+    #basket {
+        float: right;
+    }
     #searchbox {
-        width: calc(100% - 53px); /* button is 42 but iPhones need more space */
+        width: calc(100% - 95px); /* button is 42 but iPhones need more space */
         margin: 10px 0;
     }
-    #crumb, #cart {
+    #crumb {
         background: #ddd;
     }
     #crumb li, #crumb a {
@@ -446,6 +449,17 @@ marquee {
     }
     img, video {
         height: auto;
+    }
+
+    body {
+        margin-top: 44px;
+    }
+    #headder {
+        position: fixed;
+        width: 100%;
+        background: #fff;
+        top: 0;
+        height: 44px;
     }
 
     #headder form, #container4 {
@@ -509,6 +523,7 @@ marquee {
     #headder div {
         width:auto;
         padding:2px;
+        text-align: center;
     }
 
     #menu {
