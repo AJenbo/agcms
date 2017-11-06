@@ -1,6 +1,4 @@
-<?php
-
-namespace AGCMS;
+<?php namespace AGCMS;
 
 use SoapClient;
 use stdClass;

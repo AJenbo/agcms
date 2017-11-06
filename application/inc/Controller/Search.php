@@ -7,9 +7,9 @@ use AGCMS\ORM;
 use AGCMS\Render;
 use AGCMS\SearchPage;
 use AGCMS\VolatilePage;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\HttpFoundation\RedirectResponse;
 
 class Search extends Base
 {

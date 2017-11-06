@@ -1,9 +1,7 @@
-<?php
+<?php namespace AGCMS\Controller;
 
-namespace AGCMS\Controller;
-
-use AGCMS\Service\InvoiceService;
 use AGCMS\Render;
+use AGCMS\Service\InvoiceService;
 use AGCMS\VolatilePage;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;

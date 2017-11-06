@@ -262,7 +262,7 @@ class Table extends AbstractEntity
             $row['id'] = (int) $row['id'];
             $row['page'] = null;
             if ($this->hasLinks() && $row['link']) {
-                $row['page'] = ORM::getOne(Pagem, $row['link']);
+                $row['page'] = ORM::getOne(Page::class, $row['link']);
             }
             $cells = explode('<', $row['cells']);
             $cells = array_map('html_entity_decode', $cells);
@@ -283,8 +283,8 @@ class Table extends AbstractEntity
     /**
      * Add a new row to the table.
      *
-     * @param array $cells
-     * @param int $link
+     * @param array    $cells
+     * @param int|null $link
      *
      * @return int Id of the new row
      */
@@ -306,9 +306,9 @@ class Table extends AbstractEntity
     /**
      * Update an existing row.
      *
-     * @param int   $rowId
-     * @param array $cells
-     * @param int   $link
+     * @param int      $rowId
+     * @param array    $cells
+     * @param int|null $link
      *
      * @return void
      */

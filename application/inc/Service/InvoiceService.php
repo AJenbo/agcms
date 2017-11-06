@@ -1,9 +1,9 @@
 <?php namespace AGCMS\Service;
 
-use AGCMS\Entity\Invoice;
-use AGCMS\Entity\Table;
-use AGCMS\Entity\Page;
 use AGCMS\Entity\Contact;
+use AGCMS\Entity\Invoice;
+use AGCMS\Entity\Page;
+use AGCMS\Entity\Table;
 use AGCMS\ORM;
 use AGCMS\Render;
 

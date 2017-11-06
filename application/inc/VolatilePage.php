@@ -10,14 +10,15 @@ class VolatilePage implements Renderable
     /** @var string Page link */
     private $link;
 
-    /** @var string Content list */
+    /** @var Renderable[] Content list */
     private $list;
 
     /**
      * Set varables
      *
-     * @param string $title
-     * @param string $link
+     * @param string       $title
+     * @param string       $link
+     * @param Renderable[] $list
      */
     public function __construct(string $title, string $link, array $list = [])
     {

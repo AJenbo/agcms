@@ -4,8 +4,8 @@ use AGCMS\Entity\Category;
 use AGCMS\Entity\Table;
 use AGCMS\ORM;
 use AGCMS\Render;
-use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpFoundation\Request;
 
 class Ajax extends Base
 {
@@ -31,6 +31,7 @@ class Ajax extends Base
         $html = '';
 
         $table = ORM::getOne(Table::class, $tableId);
+        assert($table instanceof Table);
         if ($rows = $table->getRows($orderBy)) {
             $data = [
                 'orderBy' => $orderBy,

@@ -3,9 +3,9 @@
 use AGCMS\Entity\Category;
 use AGCMS\Entity\CustomPage;
 use AGCMS\ORM;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\HttpFoundation\RedirectResponse;
 
 class Base
 {
@@ -20,24 +20,24 @@ class Base
      */
     public function redirect(Request $request, string $url, int $status = Response::HTTP_SEE_OTHER): RedirectResponse
     {
-        $url = parse_url($url);
-        if (empty($url['scheme'])) {
-            $url['scheme'] = $request->getScheme();
+        $urlComponent = parse_url($url);
+        if (empty($urlComponent['scheme'])) {
+            $urlComponent['scheme'] = $request->getScheme();
         }
-        if (empty($url['host'])) {
-            $url['host'] = $request->getHost();
+        if (empty($urlComponent['host'])) {
+            $urlComponent['host'] = $request->getHost();
         }
-        if (empty($url['path'])) {
-            $url['path'] = urldecode($request->getPathInfo());
-        } elseif ('/' !== mb_substr($url['path'], 0, 1)) {
+        if (empty($urlComponent['path'])) {
+            $urlComponent['path'] = urldecode($request->getPathInfo());
+        } elseif ('/' !== mb_substr($urlComponent['path'], 0, 1)) {
             //The redirect is relative to current path
             $path = [];
             $requestPath = urldecode($request->getPathInfo());
             preg_match('#^.+/#u', $requestPath, $path);
-            $url['path'] = $path[0] . $url['path'];
+            $urlComponent['path'] = $path[0] . $urlComponent['path'];
         }
-        $url['path'] = encodeUrl($url['path']);
-        $url = $this->unparseUrl($url);
+        $urlComponent['path'] = encodeUrl($urlComponent['path']);
+        $url = $this->unparseUrl($urlComponent);
 
         return new RedirectResponse($url, $status);
     }
@@ -109,6 +109,7 @@ class Base
     {
         /** @var Category */
         $category = ORM::getOne(Category::class, 0);
+        assert($category instanceof Category);
 
         return [
             'menu'           => $category->getVisibleChildren(),

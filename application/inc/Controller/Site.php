@@ -5,12 +5,12 @@ use AGCMS\Entity\Category;
 use AGCMS\Entity\CustomPage;
 use AGCMS\Entity\Page;
 use AGCMS\Entity\Requirement;
-use AGCMS\ORM;
 use AGCMS\Interfaces\Renderable;
+use AGCMS\ORM;
 use AGCMS\Render;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\HttpFoundation\RedirectResponse;
 
 class Site extends Base
 {
