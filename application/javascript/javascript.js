@@ -232,7 +232,9 @@ var shoppingCart = {
         localStorage.setItem("cart", JSON.stringify(cart));
     },
     "resetCart" : function() {
-        shoppingCart.setCart(shoppingCart.default);
+        var cart = shoppingCart.getCart();
+        cart.items = [];
+        shoppingCart.setCart(cart);
     },
     "addItem" : function(type, id) {
         var cart = shoppingCart.getCart();
