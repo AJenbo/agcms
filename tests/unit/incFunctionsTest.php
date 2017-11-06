@@ -1,6 +1,6 @@
 <?php
 
-class incFunctionsTest extends TestCase
+class incFunctionsTest extends PHPUnit_Framework_TestCase
 {
     public function test_validemail()
     {
