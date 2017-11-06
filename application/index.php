@@ -15,6 +15,8 @@ require_once __DIR__ . '/vendor/autoload.php';
 Config::load(__DIR__);
 
 $app = new Application(__DIR__);
+
+// Set up site routes
 $app->addRoute('GET', '/', Site::class, 'frontPage');
 $app->addRoute('GET', '/kat(\d+)-[^/]*/', Site::class, 'category');
 $app->addRoute('GET', '/side(\d+)-[^/]*\.html', Site::class, 'rootPage');
@@ -39,4 +41,5 @@ $app->addRoute('POST', '/betaling/([\d]+)/([^/]+)/address/', Payment::class, 'ad
 $app->addRoute('GET', '/betaling/([\d]+)/([^/]+)/terms/', Payment::class, 'terms');
 $app->addRoute('GET', '/betaling/([\d]+)/([^/]+)/status/', Payment::class, 'status');
 $app->addRoute('GET', '/betaling/([\d]+)/([^/]+)/callback/', Payment::class, 'callback');
+
 $app->run(Request::createFromGlobals());
