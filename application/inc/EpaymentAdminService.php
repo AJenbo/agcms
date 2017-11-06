@@ -92,7 +92,12 @@ class EpaymentAdminService
 
         $this->soapClient = new SoapClient(
             'https://ssl.ditonlinebetalingssystem.dk/remote/payment.asmx?WSDL',
-            ['features' => SOAP_SINGLE_ELEMENT_ARRAYS]
+            [
+                'soap_version' => SOAP_1_2,
+                'features'     => SOAP_SINGLE_ELEMENT_ARRAYS,
+                'trace'        => true,
+                'exceptions'   => true,
+            ]
         );
     }
 
