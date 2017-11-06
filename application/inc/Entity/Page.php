@@ -5,9 +5,7 @@ use AGCMS\Render;
 
 class Page extends AbstractRenderable
 {
-    /**
-     * Table name in database.
-     */
+    /** Table name in database. */
     const TABLE_NAME = 'sider';
 
     // Backed by DB
@@ -621,6 +619,8 @@ class Page extends AbstractRenderable
 
     /**
      * Get product requirement.
+     *
+     * @return ?Requirement
      */
     public function getRequirement(): ?Requirement
     {

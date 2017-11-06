@@ -423,6 +423,13 @@ class Invoice extends AbstractEntity
         return $this->shipping;
     }
 
+    /**
+     * Set vat percentage
+     *
+     * @param float $vat
+     *
+     * @return self
+     */
     public function setVat(float $vat): self
     {
         $this->vat = $vat;
@@ -430,11 +437,23 @@ class Invoice extends AbstractEntity
         return $this;
     }
 
+    /**
+     * Get vat percentage
+     *
+     * @return float
+     */
     public function getVat(): float
     {
         return $this->vat;
     }
 
+    /**
+     * Set the product vat status
+     *
+     * @param bool $preVat
+     *
+     * @return self
+     */
     public function setPreVat(bool $preVat): self
     {
         $this->preVat = $preVat;
@@ -442,11 +461,23 @@ class Invoice extends AbstractEntity
         return $this;
     }
 
+    /**
+     * Has product values been entered with vat
+     *
+     * @return bool
+     */
     public function hasPreVat(): bool
     {
         return $this->preVat;
     }
 
+    /**
+     * Set the money transfer status
+     *
+     * @param bool $transferred
+     *
+     * @return self
+     */
     public function setTransferred(bool $transferred): self
     {
         $this->transferred = $transferred;
@@ -454,11 +485,23 @@ class Invoice extends AbstractEntity
         return $this;
     }
 
+    /**
+     * Has the money transfer been verifyed
+     *
+     * @return bool
+     */
     public function isTransferred(): bool
     {
         return $this->transferred;
     }
 
+    /**
+     * Set payment card type
+     *
+     * @param string $cardtype
+     *
+     * @return self
+     */
     public function setCardtype(string $cardtype): self
     {
         $this->cardtype = trim($cardtype) ?: _('Unknown');
@@ -466,11 +509,23 @@ class Invoice extends AbstractEntity
         return $this;
     }
 
+    /**
+     * Get payment card type
+     *
+     * @return string
+     */
     public function getCardtype(): string
     {
         return $this->cardtype;
     }
 
+    /**
+     * Set internal reference id
+     *
+     * @param string $iref
+     *
+     * @return self
+     */
     public function setIref(string $iref): self
     {
         $this->iref = trim($iref);
@@ -478,11 +533,23 @@ class Invoice extends AbstractEntity
         return $this;
     }
 
+    /**
+     * Get internal reference id
+     *
+     * @return string
+     */
     public function getIref(): string
     {
         return $this->iref;
     }
 
+    /**
+     * Set external reference id
+     *
+     * @param string $eref
+     *
+     * @return self
+     */
     public function setEref(string $eref): self
     {
         $this->eref = trim($eref);
@@ -490,11 +557,23 @@ class Invoice extends AbstractEntity
         return $this;
     }
 
+    /**
+     * Get external reference id
+     *
+     * @return string
+     */
     public function getEref(): string
     {
         return $this->eref;
     }
 
+    /**
+     * Set the payment sent status
+     *
+     * @param bool $sent
+     *
+     * @return self
+     */
     public function setSent(bool $sent): self
     {
         $this->sent = $sent;
@@ -502,11 +581,23 @@ class Invoice extends AbstractEntity
         return $this;
     }
 
+    /**
+     * Has the payment notice been sent to the customer
+     *
+     * @return bool
+     */
     public function isSent(): bool
     {
         return $this->sent;
     }
 
+    /**
+     * Set department email
+     *
+     * @param string $department
+     *
+     * @return self
+     */
     public function setDepartment(string $department): self
     {
         $this->department = trim($department);
@@ -514,11 +605,23 @@ class Invoice extends AbstractEntity
         return $this;
     }
 
+    /**
+     * Get department email
+     *
+     * @return string
+     */
     public function getDepartment(): string
     {
         return $this->department;
     }
 
+    /**
+     * Set internal note
+     *
+     * @param string $internalNote
+     *
+     * @return self
+     */
     public function setInternalNote(string $internalNote): self
     {
         $this->internalNote = trim($internalNote);
@@ -526,6 +629,11 @@ class Invoice extends AbstractEntity
         return $this;
     }
 
+    /**
+     * Get internal note
+     *
+     * @return string
+     */
     public function getInternalNote(): string
     {
         return $this->internalNote;

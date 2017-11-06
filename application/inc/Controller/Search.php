@@ -13,6 +13,13 @@ use Symfony\Component\HttpFoundation\RedirectResponse;
 
 class Search extends Base
 {
+    /**
+     * Show the advanced search form
+     *
+     * @param Request $request
+     *
+     * @return Response
+     */
     public function index(Request $request): Response
     {
         $data = $this->basicPageData();
@@ -54,6 +61,13 @@ class Search extends Base
         return $brands;
     }
 
+    /**
+     * Show search results
+     *
+     * @param Request $request
+     *
+     * @return Response
+     */
     public function results(Request $request): Response
     {
         $this->checkSearchable($request);

@@ -2,9 +2,7 @@
 
 class Requirement extends AbstractRenderable
 {
-    /**
-     * Table name in database.
-     */
+    /** Table name in database. */
     const TABLE_NAME = 'krav';
 
     // Backed by DB

@@ -2,9 +2,7 @@
 
 class CustomPage extends AbstractEntity
 {
-    /**
-     * Table name in database.
-     */
+    /** Table name in database. */
     const TABLE_NAME = 'special';
 
     // Backed by DB

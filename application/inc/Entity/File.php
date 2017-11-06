@@ -4,9 +4,7 @@ use AGCMS\ORM;
 
 class File extends AbstractEntity
 {
-    /**
-     * Table name in database.
-     */
+    /** Table name in database. */
     const TABLE_NAME = 'files';
 
     // Backed by DB
@@ -162,6 +160,13 @@ class File extends AbstractEntity
         return $this->description;
     }
 
+    /**
+     * Set display width
+     *
+     * @param int $width
+     *
+     * @return self
+     */
     public function setWidth(int $width): self
     {
         $this->width = $width;
@@ -169,11 +174,23 @@ class File extends AbstractEntity
         return $this;
     }
 
+    /**
+     * Get display width
+     *
+     * @return int
+     */
     public function getWidth(): int
     {
         return $this->width;
     }
 
+    /**
+     * Set display height
+     *
+     * @param int $height
+     *
+     * @return self
+     */
     public function setHeight(int $height): self
     {
         $this->height = $height;
@@ -181,6 +198,11 @@ class File extends AbstractEntity
         return $this;
     }
 
+    /**
+     * Get display height
+     *
+     * @return int
+     */
     public function getHeight(): int
     {
         return $this->height;
@@ -207,6 +229,10 @@ class File extends AbstractEntity
 
     /**
      * Rename file.
+     *
+     * @param string $path
+     *
+     * @return bool
      */
     public function move(string $path): bool
     {

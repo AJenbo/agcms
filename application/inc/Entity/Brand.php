@@ -84,6 +84,8 @@ class Brand extends AbstractRenderable
 
     /**
      * Get the file that is used as an icon.
+     *
+     * @return
      */
     public function getIcon(): ?File
     {

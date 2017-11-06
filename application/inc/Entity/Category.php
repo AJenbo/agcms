@@ -6,24 +6,16 @@ use AGCMS\Render;
 
 class Category extends AbstractRenderable
 {
-    /**
-     * Table name in database.
-     */
+    /** Table name in database. */
     const TABLE_NAME = 'kat';
 
-    /**
-     * Do not show category.
-     */
+    /** Do not show category. */
     const HIDDEN = 0;
 
-    /**
-     * Gallery rendering of pages.
-     */
+    /** Gallery rendering of pages. */
     const GALLERY = 1;
 
-    /**
-     * List rendering of pages.
-     */
+    /** List rendering of pages. */
     const LIST = 2;
 
     // Backed by DB
@@ -127,6 +119,10 @@ class Category extends AbstractRenderable
 
     /**
      * Set icon file path.
+     *
+     * @param string $iconPath
+     *
+     * @return self
      */
     public function setIconPath(?string $iconPath): self
     {
