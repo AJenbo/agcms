@@ -461,7 +461,7 @@ class Payment extends Base
      *
      * @return ?RedirectResponse
      */
-    private function checkStatus(Request $request, int $id, string $checkId, Invoice $invoice): RedirectResponse
+    private function checkStatus(Request $request, int $id, string $checkId, ?Invoice $invoice): ?RedirectResponse
     {
         if (!$invoice || $checkId !== $invoice->getCheckid()) {
             return $this->redirect($request, '/betaling/?id=' . $id . '&checkid=' . rawurlencode($checkId));
