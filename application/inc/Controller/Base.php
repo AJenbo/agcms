@@ -37,9 +37,31 @@ class Base
             $url['path'] = $path[0] . $url['path'];
         }
         $url['path'] = encodeUrl($url['path']);
-        $url = unparseUrl($url);
+        $url = $this->unparseUrl($url);
 
         return new RedirectResponse($url, $status);
+    }
+
+    /**
+     * Build a url string from an array.
+     *
+     * @param array $parsedUrl Array as returned by parse_url()
+     *
+     * @return string The URL
+     */
+    private function unparseUrl(array $parsedUrl): string
+    {
+        $scheme = !empty($parsedUrl['scheme']) ? $parsedUrl['scheme'] . '://' : '';
+        $host = !empty($parsedUrl['host']) ? $parsedUrl['host'] : '';
+        $port = !empty($parsedUrl['port']) ? ':' . $parsedUrl['port'] : '';
+        $user = !empty($parsedUrl['user']) ? $parsedUrl['user'] : '';
+        $pass = !empty($parsedUrl['pass']) ? ':' . $parsedUrl['pass'] : '';
+        $pass .= ($user || $pass) ? '@' : '';
+        $path = !empty($parsedUrl['path']) ? $parsedUrl['path'] : '';
+        $query = !empty($parsedUrl['query']) ? '?' . $parsedUrl['query'] : '';
+        $fragment = !empty($parsedUrl['fragment']) ? '#' . $parsedUrl['fragment'] : '';
+
+        return $scheme . $user . $pass . $host . $port . $path . $query . $fragment;
     }
 
     /**

@@ -39,28 +39,6 @@ function db(DB $overwrite = null): DB
     return $connection;
 }
 
-/**
- * Build a url string from an array.
- *
- * @param array $parsedUrl Array as returned by parse_url()
- *
- * @return string The URL
- */
-function unparseUrl(array $parsedUrl): string
-{
-    $scheme = !empty($parsedUrl['scheme']) ? $parsedUrl['scheme'] . '://' : '';
-    $host = !empty($parsedUrl['host']) ? $parsedUrl['host'] : '';
-    $port = !empty($parsedUrl['port']) ? ':' . $parsedUrl['port'] : '';
-    $user = !empty($parsedUrl['user']) ? $parsedUrl['user'] : '';
-    $pass = !empty($parsedUrl['pass']) ? ':' . $parsedUrl['pass'] : '';
-    $pass .= ($user || $pass) ? '@' : '';
-    $path = !empty($parsedUrl['path']) ? $parsedUrl['path'] : '';
-    $query = !empty($parsedUrl['query']) ? '?' . $parsedUrl['query'] : '';
-    $fragment = !empty($parsedUrl['fragment']) ? '#' . $parsedUrl['fragment'] : '';
-
-    return $scheme . $user . $pass . $host . $port . $path . $query . $fragment;
-}
-
 function encodeUrl(string $url): string
 {
     $url = explode('/', $url);
