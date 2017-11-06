@@ -1,0 +1,13 @@
+{% extends "index.html" %}
+
+{% block content %}
+<div id="text">
+    {{html|raw}}
+    <form style="text-align:center;" action="https://ssl.ditonlinebetalingssystem.dk/integration/ewindow/Default.aspx" method="post">
+        {% for name, value in inputs %}
+        <input type="hidden" name="{{name}}" value="{{value}}" />
+        {% endfor %}
+        <input class="web" type="submit" value="Jeg accepterer hermed handelsbetingelserne" />
+    </form>
+</div>
+{% endblock %}

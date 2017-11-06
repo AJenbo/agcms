@@ -186,6 +186,12 @@ var xHttp = {
     }
 };
 
+function openPayment()
+{
+    document.location.href = '/betaling/' + document.getElementById('id').value + '/'
+        + encodeURIComponent(document.getElementById('checkid').value) + '/';
+}
+
 var shoppingCart = {
     "default" : {
         "items" : [],

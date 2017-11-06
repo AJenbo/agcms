@@ -83,6 +83,12 @@
             <textarea style="width:350px" name="note" id="note" rows="{% if invoice.status == 'new' %}{{invoice.note|split('\n')|length + 2}}{% else %}2{% endif %}">{% if invoice.status == 'new' %}{{invoice.note}}{% endif %}</textarea>
         </td>
     </tr>
+    <tr>
+        <td colspan="2">
+            <p><strong>Internal note:</strong></p>
+            <p class="note" style="width:350px">{{invoice.internalNote|nl2br}}</p>
+        </td>
+    </tr>
 </table>
 <table>
     <tr>

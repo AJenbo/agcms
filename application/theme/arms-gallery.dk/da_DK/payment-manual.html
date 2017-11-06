@@ -1,0 +1,21 @@
+{% extends "index.html" %}
+
+{% block content %}
+<div id="text">
+    <form action="" method="get" onsubmit="openPayment(); return false">
+        <table>
+            <tbody>
+                <tr>
+                    <td>Ordre nr:</td>
+                    <td><input id="id" name="id" value="{{id}}" /></td>
+                </tr>
+                <tr>
+                    <td>Kode:</td>
+                    <td><input id="checkid" name="checkid" value="{{checkid}}" /></td>
+                </tr>
+            </tbody>
+        </table>
+        <input type="submit" value="Fortsæt" />
+    </form>
+</div>
+{% endblock %}

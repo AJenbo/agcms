@@ -1,4 +1,6 @@
-<?php namespace AGCMS;
+<?php
+
+namespace AGCMS;
 
 use SoapClient;
 use stdClass;
@@ -20,6 +22,31 @@ class EpaymentAdminService
     /** @var SoapClient Service connection. */
     private $soapClient;
 
+    private static $paymentTypes = [
+        1 => 'Dankort/Visa-Dankort',
+        3 => 'Visa / Visa Electron',
+        4 => 'MasterCard',
+        6 => 'JCB',
+        7 => 'Maestro',
+        8 => 'Diners Club',
+        9 => 'American Express',
+        11 => 'Forbrugsforeningen',
+        12 => 'Nordea e-betaling',
+        13 => 'Danske Netbetalinger',
+        14 => 'PayPal',
+        17 => 'Klarna',
+        19 => 'SEB (SE)',
+        20 => 'Nordea (SE)',
+        21 => 'Handelsbanken (SE)',
+        22 => 'Swedbank (SE)',
+        23 => 'ViaBill',
+        24 => 'Beeptify',
+        25 => 'iDEAL',
+        27 => 'Paii',
+        28 => 'Brandts Gavekort',
+        29 => 'MobilePay Online',
+    ];
+
     /**
      * Setup the class variables for initialization.
      *
@@ -30,6 +57,18 @@ class EpaymentAdminService
     {
         $this->merchantId = $merchantId;
         $this->password = $password;
+    }
+
+    /**
+     * Get name of payment type
+     *
+     * @param int $paymentType
+     *
+     * @return string
+     */
+    public static function getPaymentName(int $paymentType): string
+    {
+        return self::$paymentTypes[$paymentType];
     }
 
     /**

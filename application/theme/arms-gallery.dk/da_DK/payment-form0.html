@@ -1,0 +1,10 @@
+{% extends "index.html" %}
+
+{% block content %}
+<div id="text">
+    {% include 'partial-payment-invoice.html' %}
+    <form action="/betaling/{{invoice.id}}/{{invoice.checkid}}/address/" method="get">
+        <input style="font-weight:bold;" value="Fortsæt" type="submit">
+    </form>
+</div>
+{% endblock %}

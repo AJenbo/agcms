@@ -47,7 +47,7 @@ class Invoice extends AbstractEntity
     /** @var bool Has the invoice been sent to the customer */
     private $sent = false;
     private $department = '';
-    private $enote = '';
+    private $internalNote = '';
     // Dynamic
     /** @var array[] */
     private $items = [];
@@ -84,6 +84,7 @@ class Invoice extends AbstractEntity
             ->setShippingCity($data['shipping_city'])
             ->setShippingCountry($data['shipping_country'] ?? 'DK')
             ->setNote($data['note'])
+            ->setInternalNote($data['internal_note'] ?? '')
             ->setClerk($data['clerk'] ?? '')
             ->setStatus($data['status'] ?? 'new')
             ->setShipping($data['shipping'] ?? '0.00')
@@ -95,7 +96,6 @@ class Invoice extends AbstractEntity
             ->setEref($data['eref'] ?? '')
             ->setSent($data['sent'] ?? false)
             ->setDepartment($data['department'] ?? '')
-            ->setEnote($data['enote'] ?? '')
             ->setId($data['id'] ?? null);
     }
 
@@ -519,16 +519,16 @@ class Invoice extends AbstractEntity
         return $this->department;
     }
 
-    public function setEnote(string $enote): self
+    public function setInternalNote(string $internalNote): self
     {
-        $this->enote = trim($enote);
+        $this->internalNote = trim($internalNote);
 
         return $this;
     }
 
-    public function getEnote(): string
+    public function getInternalNote(): string
     {
-        return $this->enote;
+        return $this->internalNote;
     }
 
     /**
@@ -584,6 +584,7 @@ class Invoice extends AbstractEntity
             'shipping_city'        => $data['postcity'],
             'shipping_country'     => $data['postcountry'],
             'note'                 => $data['note'],
+            'internal_note'        => $data['enote'],
             'clerk'                => $data['clerk'],
             'status'               => $data['status'],
             'shipping'             => (float) $data['fragt'],
@@ -595,7 +596,6 @@ class Invoice extends AbstractEntity
             'eref'                 => $data['eref'],
             'sent'                 => (bool) $data['sendt'],
             'department'           => $data['department'],
-            'enote'                => $data['enote'],
         ];
     }
 
@@ -670,7 +670,7 @@ class Invoice extends AbstractEntity
             $this->save();
         }
 
-        return Config::get('base_url') . '/betaling/?id=' . $this->getId() . '&checkid=' . $this->getCheckid();
+        return Config::get('base_url') . '/betaling/' . $this->getId() . '/' . $this->getCheckid() . '/';
     }
 
     public function hasUnknownPrice(): bool
@@ -830,7 +830,7 @@ class Invoice extends AbstractEntity
             'eref'           => db()->eandq($this->eref),
             'sendt'          => (string) (int) $this->sent,
             'department'     => db()->eandq($this->department),
-            'enote'          => db()->eandq($this->enote),
+            'enote'          => db()->eandq($this->internalNote),
         ];
     }
 }

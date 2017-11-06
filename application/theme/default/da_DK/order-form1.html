@@ -1,7 +1,7 @@
 {% extends "index.html" %}
 
 {% block content %}
-<form action="/order/send/" method="post" onsubmit="shoppingCart.sendCart(); return false">
+<form action="{{action}}" method="post" onsubmit="{{onsubmit}}">
     <table>
         <tbody>
             <tr>

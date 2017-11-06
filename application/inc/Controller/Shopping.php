@@ -74,6 +74,7 @@ class Shopping extends Base
         $data['invalid'] = $invoice->getInvalid();
         $data['countries'] = $countries;
         $data['newsletter'] = $cart['newsletter'] ?? false;
+        $data['onsubmit'] = 'shoppingCart.sendCart(); return false';
 
         $content = Render::render('order-form1', $data);
 
