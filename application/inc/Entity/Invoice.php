@@ -650,11 +650,21 @@ class Invoice extends AbstractEntity
         return $items;
     }
 
+    /**
+     * Check if this invoice is closed for editing
+     *
+     * @return bool
+     */
     public function isFinalized(): bool
     {
         return in_array($this->status, ['accepted', 'giro', 'cash', 'canceled'], true);
     }
 
+    /**
+     * Get full url for administrating this invoice
+     *
+     * @return string
+     */
     public function getAdminLink(): string
     {
         if (null === $this->id) {
@@ -664,6 +674,11 @@ class Invoice extends AbstractEntity
         return Config::get('base_url') . '/admin/faktura.php?id=' . $this->id;
     }
 
+    /**
+     * Get full url for the payment pages
+     *
+     * @return string
+     */
     public function getLink(): string
     {
         if (null === $this->id) {
@@ -673,6 +688,11 @@ class Invoice extends AbstractEntity
         return Config::get('base_url') . '/betaling/' . $this->getId() . '/' . $this->getCheckid() . '/';
     }
 
+    /**
+     * Check if any of the items have an unspecified value
+     *
+     * @return bool
+     */
     public function hasUnknownPrice(): bool
     {
         foreach ($this->items as $item) {
@@ -684,6 +704,11 @@ class Invoice extends AbstractEntity
         return false;
     }
 
+    /**
+     * Get the total product value, excluding vat
+     *
+     * @return float
+     */
     public function getNetAmount(): float
     {
         $netAmount = 0;
@@ -694,6 +719,11 @@ class Invoice extends AbstractEntity
         return $netAmount;
     }
 
+    /**
+     * Generate the checkId code
+     *
+     * @return string
+     */
     public function getCheckId(): string
     {
         if (!$this->id) {
@@ -703,6 +733,11 @@ class Invoice extends AbstractEntity
         return mb_substr(md5($this->id . Config::get('pbssalt')), 3, 5);
     }
 
+    /**
+     * Chekc that a valid customer email has been set
+     *
+     * @return bool
+     */
     public function hasValidEmail(): bool
     {
         if (!$this->email || !valideMail($this->email)) {
