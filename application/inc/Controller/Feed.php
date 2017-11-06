@@ -126,8 +126,8 @@ class Feed extends Base
         Render::sendCacheHeader($timestamp);
 
         $time = 0;
-        if (request()->headers->has('If-Modified-Since')) {
-            $time = strtotime(stripslashes(request()->headers->get('If-Modified-Since')));
+        if ($request->headers->has('If-Modified-Since')) {
+            $time = strtotime(stripslashes($request->headers->get('If-Modified-Since')));
         }
 
         $where = '';
