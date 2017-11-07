@@ -46,7 +46,9 @@ $app->addRoute('GET', '/betaling/([\d]+)/([^/]+)/callback/', Payment::class, 'ca
 
 $app->addRoute('GET', '/admin/', AdminController::class, 'index');
 $app->addRoute('GET', '/admin/editpage/', PageController::class, 'index');
+$app->addRoute('POST', '/admin/editpage/', PageController::class, 'createPage');
 $app->addRoute('GET', '/admin/editpage/([\d]+)/', PageController::class, 'index');
+$app->addRoute('PUT', '/admin/editpage/([\d]+)/', PageController::class, 'updatePage');
 $app->addRoute('GET', '/admin/editpage/pagelist/', PageController::class, 'pageList');
 
 $app->run(Request::createFromGlobals());

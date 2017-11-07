@@ -268,3 +268,76 @@ function sendEmails(
 
     return $success;
 }
+
+/**
+ * Use HTMLPurifier to clean HTML-code, preserves youtube videos.
+ *
+ * @param string $html Sting to clean
+ *
+ * @return string Cleaned stirng
+ **/
+function purifyHTML(string $html): string
+{
+    $config = HTMLPurifier_Config::createDefault();
+    $config->set('HTML.SafeIframe', true);
+    $config->set('URI.SafeIframeRegexp', '%^(https:|http:)?//www.youtube.com/embed/%u');
+    $config->set('HTML.Doctype', 'XHTML 1.0 Transitional');
+    $config->set('Cache.SerializerPath', _ROOT_ . '/theme/cache/HTMLPurifier');
+
+    $config->set('HTML.DefinitionID', 'html5-definitions'); // unqiue id
+    if ($def = $config->maybeGetRawHTMLDefinition()) {
+        $def->addAttribute('div', 'data-oembed_provider', 'Text');
+        $def->addAttribute('div', 'data-oembed', 'Text');
+        $def->addAttribute('div', 'data-widget', 'Text');
+        $def->addAttribute('iframe', 'allowfullscreen', 'Bool');
+
+        // http://developers.whatwg.org/the-video-element.html#the-video-element
+        $def->addElement('video', 'Block', 'Flow', 'Common', [
+            'controls' => 'Bool',
+            'height' => 'Length',
+            'poster' => 'URI',
+            'preload' => 'Enum#auto,metadata,none',
+            'src' => 'URI',
+            'width' => 'Length',
+        ]);
+        // http://developers.whatwg.org/the-video-element.html#the-audio-element
+        $def->addElement('audio', 'Block', 'Flow', 'Common', [
+            'controls' => 'Bool',
+            'preload' => 'Enum#auto,metadata,none',
+            'src' => 'URI',
+        ]);
+        $def->addElement('source', 'Block', 'Empty', 'Common', ['src' => 'URI', 'type' => 'Text']);
+    }
+
+    $purifier = new HTMLPurifier($config);
+
+    $html = $purifier->purify($html);
+
+    return htmlUrlDecode($html);
+}
+
+/**
+ * Normalize char encoding
+ *
+ * @param string $html
+ *
+ * @return string
+ */
+function htmlUrlDecode(string $html): string
+{
+    // Double encode special characters, to survive next step, and remove extra white space
+    $html = str_replace(
+        ['/&amp;/u', '/&lt;/u', '/&gt;/u', '/&quot;/u', '%3C', '%3E', '%26', '%22'],
+        ['&amp;quot;', '&amp;lt;', '&amp;gt;', '&amp;amp;', '&amp;quot;', '&amp;lt;', '&amp;gt;', '&amp;amp;'],
+        $html
+    );
+
+    $html = preg_replace('/\s+/', ' ', $html);
+    $html = trim($html);
+
+    // Decode all html entities
+    $html = html_entity_decode($html, ENT_QUOTES, 'UTF-8');
+
+    // Decode any url encoded urls (we sometimes do replace on the content to update urls)
+    return rawurldecode($html);
+}

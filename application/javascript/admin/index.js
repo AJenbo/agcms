@@ -41,8 +41,7 @@ var activeSideContextMenu = [
               location.href = '/admin/editpage/' + e.target.parentNode.className.replace(/^side/, '') + "/";
               return;
           }
-          location.href
-              = '/admin/editpage/' + e.target.parentNode.parentNode.className.replace(/^side/, '') + "/";
+          location.href = '/admin/editpage/' + e.target.parentNode.parentNode.className.replace(/^side/, '') + "/";
       }
     },
     {
@@ -72,8 +71,7 @@ var inactiveSideContextMenu = [
               location.href = '/admin/editpage/' + e.target.parentNode.className.replace(/^side/, '') + "/";
               return;
           }
-          location.href
-              = '/admin/editpage/' + e.target.parentNode.parentNode.className.replace(/^side/, '') + "/";
+          location.href = '/admin/editpage/' + e.target.parentNode.parentNode.className.replace(/^side/, '') + "/";
       }
     },
     {
@@ -239,29 +237,36 @@ function updatemaerke(id)
     return false;
 }
 
+var savePage = null;
 function updateSide(id)
 {
-    $('loading').style.visibility = '';
-    var html = CKEDITOR.instances.text.getData();
+    $("loading").style.visibility = "";
 
-    var requirement = parseInt(getSelectValue("krav"));
-    requirement = requirement ? requirement : null;
-    var brand = parseInt(getSelectValue("maerke"));
-    brand = brand ? brand : null;
-    var icon = $("billed").value;
-    icon = icon ? icon : null;
+    var page = {
+        "title" : $("navn").value,
+        "keywords" : $("keywords").value,
+        "excerpt" : $("beskrivelse").value,
+        "html" : CKEDITOR.instances.text.getData(),
+        "sku" : $("varenr").value,
+        "iconPath" : $("billed").value || null,
+        "requirementId" : parseInt(getSelectValue("krav")) || null,
+        "brandId" : parseInt(getSelectValue("maerke")) || null,
+        "price" : parseInt($("pris").value) || 0,
+        "oldPrice" : parseInt($("for").value) || 0,
+        "priceType" : parseInt(getSelectValue("fra")),
+        "oldPriceType" : parseInt(getSelectValue("burde"))
+    };
 
+    xHttp.cancel(savePage);
     if(!id) {
-        x_opretSide(parseInt(getRadio("kat")), $("navn").value, $("keywords").value,
-            $("pris").value ? parseInt($("pris").value) : 0, $("beskrivelse").value,
-            $("for").value ? parseInt($("for").value) : 0, html, $("varenr").value, parseInt(getSelectValue("burde")),
-            parseInt(getSelectValue("fra")), requirement, brand, icon, opretSide_r);
+        page.categoryId = parseInt(getRadio("kat"));
+        savePage = xHttp.request("/admin/editpage/", opretSide_r, "POST", page);
+
         return false;
     }
 
-    x_updateSide(id, $("navn").value, $("keywords").value, $("pris").value ? parseInt($("pris").value) : 0,
-        $("beskrivelse").value, $("for").value ? parseInt($("for").value) : 0, html, $("varenr").value,
-        parseInt(getSelectValue("burde")), parseInt(getSelectValue("fra")), requirement, brand, icon, generic_r);
+    savePage = xHttp.request("/admin/editpage/" + id + "/", generic_r, "PUT", page);
+
     return false;
 }
 

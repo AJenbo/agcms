@@ -10,6 +10,7 @@
         <link title="Arms Gallery" type="application/opensearchdescription+xml" rel="search" href="/opensearch.xml" />
         <link rel="canonical" href="{{renderable.canonicalLink}}" />
         <meta name="Keywords" content="{% for crumb in crumbs %}{{crumb.title}}{% if not loop.last %}, {% endif %}{% endfor %}" />
+        <script type="text/javascript" src="/javascript/xHttp.js"></script>
         <script type="text/javascript" src="/javascript/javascript.js"></script>
     </head>
     <body onload="init();">

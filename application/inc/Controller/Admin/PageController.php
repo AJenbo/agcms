@@ -7,6 +7,7 @@ use AGCMS\Config;
 use AGCMS\ORM;
 use AGCMS\Render;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
 
 class PageController extends AbstractAdminController
@@ -66,6 +67,70 @@ class PageController extends AbstractAdminController
     }
 
     /**
+     * Create new page and attach it to a category.
+     *
+     * @param Request $request
+     *
+     * @return JsonResponse
+     */
+    public function createPage(Request $request): JsonResponse
+    {
+        $pageData = json_decode($request->getContent(), true);
+
+        $category = ORM::getOne(Category::class, $pageData['categoryId']);
+        assert($category instanceof Category);
+
+        $page = new Page([
+            'title'          => $pageData['title'],
+            'keywords'       => $pageData['keywords'],
+            'excerpt'        => $pageData['excerpt'],
+            'html'           => purifyHTML($pageData['html']),
+            'sku'            => $pageData['sku'],
+            'icon_path'      => $pageData['iconPath'],
+            'requirement_id' => $pageData['requirementId'],
+            'brand_id'       => $pageData['brandId'],
+            'price'          => $pageData['price'],
+            'old_price'      => $pageData['oldPrice'],
+            'price_type'     => $pageData['priceType'],
+            'old_price_type' => $pageData['oldPriceType'],
+        ]);
+        $page->save();
+        $page->addToCategory($category);
+
+        return new JsonResponse(['id' => $page->getId()]);
+    }
+
+    /**
+     * Update existing page.
+     *
+     * @param Request $request
+     *
+     * @return JsonResponse
+     */
+    public function updatePage(Request $request, int $id): JsonResponse
+    {
+        $pageData = json_decode($request->getContent(), true);
+
+        $page = ORM::getOne(Page::class, $id);
+        assert($page instanceof Page);
+        $page->setKeywords($pageData['keywords'])
+            ->setPrice($pageData['price'])
+            ->setSku($pageData['sku'])
+            ->setOldPrice($pageData['oldPrice'])
+            ->setExcerpt($pageData['excerpt'])
+            ->setRequirementId($pageData['requirementId'])
+            ->setBrandId($pageData['brandId'])
+            ->setIconPath($pageData['iconPath'])
+            ->setPriceType($pageData['priceType'])
+            ->setOldPriceType($pageData['oldPriceType'])
+            ->setHtml(purifyHTML($pageData['html']))
+            ->setTitle($pageData['title'])
+            ->save();
+
+        return new JsonResponse(['success' => true]);
+    }
+
+    /**
      * Get site tree data
      *
      * @param string $inputType
@@ -80,13 +145,19 @@ class PageController extends AbstractAdminController
             $category = ORM::getOne(Category::class, $selectedId);
         }
 
+        $rootCategories = ORM::getByQuery(Category::class, 'SELECT * FROM kat WHERE bind IS NULL');
+
+        $customPages = [];
+        if (!$inputType) {
+            $customPages = ORM::getByQuery(CustomPage::class, 'SELECT * FROM `special` WHERE `id` > 1 ORDER BY `navn`');
+        }
         return [
             'selectedCategory' => $category,
             'openCategories'   => $this->getOpenCategories($selectedId),
             'includePages'     => (!$inputType || 'pages' === $inputType),
             'inputType'        => $inputType,
-            'node'             => ['children' => ORM::getByQuery(Category::class, 'SELECT * FROM kat WHERE bind IS NULL')],
-            'customPages'      => !$inputType ? ORM::getByQuery(CustomPage::class, 'SELECT * FROM `special` WHERE `id` > 1 ORDER BY `navn`') : [],
+            'node'             => ['children' => $rootCategories],
+            'customPages'      => $customPages,
         ];
     }
 
@@ -116,7 +187,7 @@ class PageController extends AbstractAdminController
     }
 
     /**
-     * List of values for a select for requirements
+     * List of values for a select of requirements
      *
      * @return string[]
      */
