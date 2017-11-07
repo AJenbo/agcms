@@ -1,17 +1,16 @@
-<?php
+<?php namespace AGCMS\Controller;
 
-namespace AGCMS\Controller;
-
+use AGCMS\Config;
 use AGCMS\Entity\CustomPage;
 use AGCMS\Entity\Invoice;
-use AGCMS\Service\InvoiceService;
-use AGCMS\Config;
+use AGCMS\EpaymentAdminService;
 use AGCMS\ORM;
 use AGCMS\Render;
+use AGCMS\Service\InvoiceService;
 use AGCMS\VolatilePage;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\HttpFoundation\RedirectResponse;
 
 class Payment extends Base
 {
@@ -64,6 +63,7 @@ class Payment extends Base
         if ($redirect = $this->checkStatus($request, $id, $checkId, $invoice)) {
             return $redirect;
         }
+        assert($invoice instanceof Invoice);
 
         $invoice->setStatus('locked')->save();
 
@@ -95,6 +95,7 @@ class Payment extends Base
         if ($redirect = $this->checkStatus($request, $id, $checkId, $invoice)) {
             return $redirect;
         }
+        assert($invoice instanceof Invoice);
 
         $data = $this->basicPageData();
 
@@ -132,6 +133,7 @@ class Payment extends Base
         if ($redirect = $this->checkStatus($request, $id, $checkId, $invoice)) {
             return $redirect;
         }
+        assert($invoice instanceof Invoice);
 
         $invoice->setStatus('locked')
             ->setName($request->get('name'))
@@ -186,6 +188,7 @@ class Payment extends Base
         if ($redirect = $this->checkStatus($request, $id, $checkId, $invoice)) {
             return $redirect;
         }
+        assert($invoice instanceof Invoice);
 
         $invoice->setStatus('locked')->save();
 
@@ -237,6 +240,7 @@ class Payment extends Base
         if (!$invoice || $checkId !== $invoice->getCheckid()) {
             return $this->redirect($request, '/betaling/?id=' . $id . '&checkid=' . rawurlencode($checkId));
         }
+        assert($invoice instanceof Invoice);
 
         if (!$invoice->isFinalized() && 'pbsok' !== $invoice->getStatus() && !$request->query->has('txnid')) {
             return $this->redirect($request, $invoice->getLink());
@@ -314,6 +318,7 @@ class Payment extends Base
         ) {
             return new Response('', 400);
         }
+        assert($invoice instanceof Invoice);
 
         if (!$invoice->isFinalized() && $invoice->getStatus() !== 'pbsok') {
             $this->setPaymentStatus($request, $invoice);
@@ -457,7 +462,7 @@ class Payment extends Base
      * @param Request $request
      * @param int     $id
      * @param string  $checkId
-     * @param Invoice $invoice
+     * @param ?Invoice $invoice
      *
      * @return ?RedirectResponse
      */

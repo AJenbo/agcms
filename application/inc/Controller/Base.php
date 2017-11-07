@@ -3,8 +3,8 @@
 use AGCMS\Entity\Category;
 use AGCMS\Entity\CustomPage;
 use AGCMS\ORM;
-use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RedirectResponse;
+use Symfony\Component\HttpFoundation\Request;
 
 class Base extends AbstractController
 {
@@ -53,6 +53,7 @@ class Base extends AbstractController
     {
         /** @var Category */
         $category = ORM::getOne(Category::class, 0);
+        assert($category instanceof Category);
 
         return [
             'menu'           => $category->getVisibleChildren(),

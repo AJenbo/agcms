@@ -1,8 +1,9 @@
 <?php namespace AGCMS\Controller;
 
 use AGCMS\Config;
-use AGCMS\Entity\Page;
+use AGCMS\Entity\Brand;
 use AGCMS\Entity\Category;
+use AGCMS\Entity\Page;
 use AGCMS\Entity\Requirement;
 use AGCMS\ORM;
 use AGCMS\Render;

@@ -261,7 +261,7 @@ class Page extends AbstractRenderable
     /**
      * Set page thumbnail
      *
-     * @param string $iconPath
+     * @param ?string $iconPath
      *
      * @return self
      */

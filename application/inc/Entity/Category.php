@@ -1,8 +1,8 @@
 <?php namespace AGCMS\Entity;
 
-use Exception;
 use AGCMS\ORM;
 use AGCMS\Render;
+use Exception;
 
 class Category extends AbstractRenderable
 {
@@ -120,7 +120,7 @@ class Category extends AbstractRenderable
     /**
      * Set icon file path.
      *
-     * @param string $iconPath
+     * @param ?string $iconPath
      *
      * @return self
      */
@@ -266,7 +266,7 @@ class Category extends AbstractRenderable
     /**
      * Get parent category.
      *
-     * @return ?self
+     * @return self|null
      */
     public function getParent(): ?self
     {

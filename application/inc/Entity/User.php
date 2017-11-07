@@ -24,7 +24,7 @@ class User extends AbstractEntity
     private $nickname = '';
     /** @var string User's Password hash. */
     private $passwordHash = '';
-    /** @var string User's access level. */
+    /** @var int User's access level. */
     private $accessLevel = 0;
     /** @var int time of last login */
     private $lastLogin;
@@ -106,7 +106,7 @@ class User extends AbstractEntity
     /**
      * Set user's nick name
      *
-     * @param string $fullName
+     * @param string $nickname
      *
      * @return self
      */
