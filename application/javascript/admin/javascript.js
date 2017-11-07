@@ -54,7 +54,7 @@ function generic_r(data)
 
 function checkForInt(evt)
 {
-    return (evt.which >= 48 && charCode <= 57) || charCode == 8 || charCode == 0 || charCode == 13;
+    return (evt.which >= 48 && evt.charCode <= 57) || evt.charCode == 8 || evt.charCode == 0 || evt.charCode == 13;
 }
 
 function inject_html(data)
