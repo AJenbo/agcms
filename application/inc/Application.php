@@ -1,10 +1,13 @@
 <?php namespace AGCMS;
 
 use AGCMS\Controller\Base;
+use AGCMS\Config;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Throwable;
+use Raven_Client;
+use Raven_ErrorHandler;
 
 class Application
 {
@@ -67,10 +70,14 @@ class Application
      */
     public function run(Request $request): void
     {
+        $ravenClient = new Raven_Client(Config::get('sentry'));
+        $ravenClient->install();
+
         Render::sendCacheHeader();
         try {
             $response = $this->dispatch($request);
         } catch (Throwable $exception) {
+            $ravenClient->captureException($exception);
             $response = new Response($exception->getMessage());
             $response->setStatusCode(Response::HTTP_INTERNAL_SERVER_ERROR);
         }

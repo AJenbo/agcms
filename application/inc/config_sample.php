@@ -7,6 +7,7 @@
  */
 return [
     'enviroment' => 'develop',
+    'sentry'     => '',
     'timezone'   => 'Europe/Copenhagen',
     'locale'     => 'da_DK',
     'base_url'   => 'http://localhost',

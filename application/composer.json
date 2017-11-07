@@ -32,7 +32,8 @@
         "ajenbo/imap.php": "^0.9.1",
         "twig/twig": "^2.0",
         "symfony/http-foundation": "^3.3",
-        "james-heinrich/getid3": "^1.9"
+        "james-heinrich/getid3": "^1.9",
+        "sentry/sentry": "^1.8"
     },
     "require-dev": {
         "mockery/mockery": "^0.9.9"
