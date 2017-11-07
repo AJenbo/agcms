@@ -8,7 +8,7 @@
 </tr>
 {% for page in category.pages(sort, reverseOrder) %}
 <tr{% if loop.index is even %} class="altrow"{% endif %}>
-    <td class="tal"><a href="/admin/editPage/{{page.id}}/">{{page.id}}</a></td>
+    <td class="tal"><a href="/admin/editpage/{{page.id}}/">{{page.id}}</a></td>
     <td><a href="{{page.canonicalLink}}">{{page.title}}</a></td>
     <td>{{page.sku}}</td>
     <td class="tal">{% if page.oldPrice %}{{page.oldPrice|number_format(2, ',', '.')}}{% endif %}</td>

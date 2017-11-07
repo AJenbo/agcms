@@ -23,7 +23,7 @@
 {% if includePages %}
 {% for page in node.pages %}
 <div id="bind{{node.id}}p{{page.id}}" class="side{{page.id}}">
-    <a class="side"{% if inputType != 'pages' %} style="margin-left:16px" href="/admin/editPage/{{page.id}}/"{% endif %}>
+    <a class="side"{% if inputType != 'pages' %} style="margin-left:16px" href="/admin/editpage/{{page.id}}/"{% endif %}>
         {% if inputType == 'pages' %}<input name="side" type="radio" value="{{page.id}}" />{% endif %}
         <img src="/theme/default/images/admin/page.png" width="16" height="16" alt="" /> {{page.title}}
         {% if page.sku %}<em>#:{{page.sku}}</em>{% endif %}
