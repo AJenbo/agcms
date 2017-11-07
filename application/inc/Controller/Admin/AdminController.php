@@ -7,7 +7,7 @@ use Symfony\Component\HttpFoundation\Response;
 class AdminController extends AbstractAdminController
 {
     /**
-     * Admin index page
+     * Admin index page.
      *
      * @param Request $request
      *

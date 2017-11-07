@@ -300,7 +300,7 @@ function save_ny_kat_r(data)
         alert(data.error);
         return;
     }
-    location.href = '/admin/?side=getSiteTree';
+    location.href = '/admin/sitetree/';
 }
 
 function addNewItem()

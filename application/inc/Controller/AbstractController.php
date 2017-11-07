@@ -7,7 +7,7 @@ use Symfony\Component\HttpFoundation\RedirectResponse;
 abstract class AbstractController
 {
     /**
-     * Generate redirect response
+     * Generate redirect response.
      *
      * @param Request $request
      * @param string  $url

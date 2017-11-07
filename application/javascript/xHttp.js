@@ -8,7 +8,6 @@ var xHttp = {
     },
 
     "request" : function(uri, callback, method = "GET", data = null) {
-        console.log(method);
         var id = xHttp.requests.length;
 
         var x = new window.XMLHttpRequest();

@@ -2,14 +2,15 @@
 
 use AGCMS\Application;
 use AGCMS\Config;
-use AGCMS\Controller\Ajax;
-use AGCMS\Controller\Feed;
-use AGCMS\Controller\Site;
-use AGCMS\Controller\Shopping;
-use AGCMS\Controller\Payment;
-use AGCMS\Controller\Search;
 use AGCMS\Controller\Admin\AdminController;
 use AGCMS\Controller\Admin\PageController;
+use AGCMS\Controller\Admin\SiteTreeController;
+use AGCMS\Controller\Ajax;
+use AGCMS\Controller\Feed;
+use AGCMS\Controller\Payment;
+use AGCMS\Controller\Search;
+use AGCMS\Controller\Shopping;
+use AGCMS\Controller\Site;
 use Symfony\Component\HttpFoundation\Request;
 
 require_once __DIR__ . '/vendor/autoload.php';
@@ -44,11 +45,14 @@ $app->addRoute('GET', '/betaling/([\d]+)/([^/]+)/terms/', Payment::class, 'terms
 $app->addRoute('GET', '/betaling/([\d]+)/([^/]+)/status/', Payment::class, 'status');
 $app->addRoute('GET', '/betaling/([\d]+)/([^/]+)/callback/', Payment::class, 'callback');
 
+// Admin pages
 $app->addRoute('GET', '/admin/', AdminController::class, 'index');
 $app->addRoute('GET', '/admin/editpage/', PageController::class, 'index');
 $app->addRoute('POST', '/admin/editpage/', PageController::class, 'createPage');
 $app->addRoute('GET', '/admin/editpage/([\d]+)/', PageController::class, 'index');
 $app->addRoute('PUT', '/admin/editpage/([\d]+)/', PageController::class, 'updatePage');
 $app->addRoute('GET', '/admin/editpage/pagelist/', PageController::class, 'pageList');
+$app->addRoute('GET', '/admin/sitetree/', SiteTreeController::class, 'index');
+$app->addRoute('GET', '/admin/sitetree/([-\d]+)/lable/', SiteTreeController::class, 'lable');
 
 $app->run(Request::createFromGlobals());

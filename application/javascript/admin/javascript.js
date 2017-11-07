@@ -134,7 +134,7 @@ function showhidekats(id, thisobj)
         obj.style.display = "none";
         setCookie("hide" + id, "1", 360);
         $("loading").style.visibility = "";
-        x_katspath(getRadio("kat"), inject_html);
+        xHttp.request("/admin/sitetree/" + getRadio("kat") + "/lable/", inject_html);
 
         return;
     }

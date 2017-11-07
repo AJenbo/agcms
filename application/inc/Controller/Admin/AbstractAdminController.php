@@ -1,11 +1,8 @@
 <?php namespace AGCMS\Controller\Admin;
 
-use AGCMS\Controller\AbstractController;
-use AGCMS\Entity\Brand;
-use AGCMS\Entity\Category;
-use AGCMS\Entity\Page;
 use AGCMS\Config;
-use AGCMS\ORM;
+use AGCMS\Controller\AbstractController;
+use AGCMS\Entity\Page;
 use AGCMS\Render;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -13,7 +10,7 @@ use Symfony\Component\HttpFoundation\Response;
 abstract class AbstractAdminController extends AbstractController
 {
     /**
-     * Admin index page
+     * Admin index page.
      *
      * @param Request $request
      *
@@ -29,7 +26,7 @@ abstract class AbstractAdminController extends AbstractController
     }
 
     /**
-     * Basic admin render data
+     * Basic admin render data.
      *
      * @return array
      */

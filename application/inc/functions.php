@@ -2,7 +2,6 @@
 
 use AGCMS\Config;
 use AGCMS\DB;
-use AGCMS\Entity\Invoice;
 use AGCMS\Render;
 use AJenbo\Imap;
 use PHPMailer\PHPMailer\Exception as PHPMailerException;
@@ -317,7 +316,7 @@ function purifyHTML(string $html): string
 }
 
 /**
- * Normalize char encoding
+ * Normalize char encoding.
  *
  * @param string $html
  *

@@ -425,20 +425,6 @@ function saveEmail(string $from, string $interests, string $subject, string $htm
     return true;
 }
 
-/**
- * @return string[]
- */
-function katspath(int $id): array
-{
-    $category = ORM::getOne(Category::class, $id);
-    assert($category instanceof Category);
-
-    return [
-        'id'   => 'katsheader',
-        'html' => _('Select location:') . ' ' . $category->getPath(),
-    ];
-}
-
 function expandCategory(int $categoryId, string $inputType = ''): array
 {
     $data = [

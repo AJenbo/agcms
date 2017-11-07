@@ -18,9 +18,6 @@ $template = 'admin-' . $request->get('side', 'index');
 $data = getBasicAdminTemplateData();
 
 switch ($template) {
-    case 'admin-getSiteTree':
-        $data['siteTree'] = getSiteTreeData();
-        break;
     case 'admin-redigerkat':
         $id = $request->get('id');
         $selectedId = $request->cookies->get('activekat', -1);
