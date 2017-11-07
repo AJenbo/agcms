@@ -338,7 +338,7 @@ function sendEmail(
     foreach ($emailsGroup as $of => $emails) {
         $success = sendEmails(
             $subject,
-            Render::render('email-newsletter', $data),
+            Render::render('email/newsletter', $data),
             $from,
             '',
             '',
@@ -436,44 +436,6 @@ function katspath(int $id): array
     return [
         'id'   => 'katsheader',
         'html' => _('Select location:') . ' ' . $category->getPath(),
-    ];
-}
-
-/**
- * @return int[]
- */
-function getOpenCategories(int $selectedId = null): array
-{
-    $openCategories = explode('<', request()->cookies->get('openkat', ''));
-    $openCategories = array_map('intval', $openCategories);
-
-    if (null !== $selectedId) {
-        $category = ORM::getOne(Category::class, $selectedId);
-        if ($category) {
-            assert($category instanceof Category);
-            foreach ($category->getBranch() as $category) {
-                $openCategories[] = $category->getId();
-            }
-        }
-    }
-
-    return $openCategories;
-}
-
-function getSiteTreeData(string $inputType = '', int $selectedId = null): array
-{
-    $category = null;
-    if (null !== $selectedId) {
-        $category = ORM::getOne(Category::class, $selectedId);
-    }
-
-    return [
-        'selectedCategory' => $category,
-        'openCategories'   => getOpenCategories($selectedId),
-        'includePages'     => (!$inputType || 'pages' === $inputType),
-        'inputType'        => $inputType,
-        'node'             => ['children' => ORM::getByQuery(Category::class, 'SELECT * FROM kat WHERE bind IS NULL')],
-        'customPages'      => !$inputType ? ORM::getByQuery(CustomPage::class, 'SELECT * FROM `special` WHERE `id` > 1 ORDER BY `navn`') : [],
     ];
 }
 
@@ -1716,20 +1678,6 @@ function get_pages_with_mismatch_bindings(): string
 }
 
 /**
- * @return string[]
- */
-function getRequirementOptions(): array
-{
-    $options = [0 => 'None'];
-    $requirements = db()->fetchArray('SELECT id, navn FROM `krav` ORDER BY navn');
-    foreach ($requirements as $requirement) {
-        $options[$requirement['id']] = $requirement['navn'];
-    }
-
-    return $options;
-}
-
-/**
  * @return string[]|true
  */
 function save_ny_kat(string $navn, int $kat, int $vis, string $email, string $icon = null)
@@ -2280,10 +2228,10 @@ function sendInvoice(Invoice $invoice): void
     }
 
     $subject = _('Online payment for ') . Config::get('site_name');
-    $emailTemplate = 'email-invoice';
+    $emailTemplate = 'email/invoice';
     if ($invoice->isSent()) {
         $subject = 'Elektronisk faktura vedr. ordre';
-        $emailTemplate = 'email-invoice-reminder';
+        $emailTemplate = 'email/invoice-reminder';
     }
 
     $emailBody = Render::render(
@@ -2510,25 +2458,4 @@ function generateImage(
     }
 
     return ['id' => $file ? $file->getId() : null, 'path' => $localFile, 'width' => $width, 'height' => $height];
-}
-
-function getBasicAdminTemplateData(): array
-{
-    return [
-        'title'      => 'Administrator menu',
-        'theme'      => Config::get('theme', 'default'),
-        'hide'       => [
-            'activity'    => request()->cookies->get('hideActivity'),
-            'binding'     => request()->cookies->get('hidebinding'),
-            'categories'  => request()->cookies->get('hidekats'),
-            'description' => request()->cookies->get('hidebeskrivelsebox'),
-            'indhold'     => request()->cookies->get('hideIndhold'),
-            'listbox'     => request()->cookies->get('hidelistbox'),
-            'misc'        => request()->cookies->get('hidemiscbox'),
-            'prices'      => request()->cookies->get('hidepriser'),
-            'suplemanger' => request()->cookies->get('hideSuplemanger'),
-            'tilbehor'    => request()->cookies->get('hidetilbehor'),
-            'tools'       => request()->cookies->get('hideTools'),
-        ],
-    ];
 }

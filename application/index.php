@@ -8,6 +8,8 @@ use AGCMS\Controller\Site;
 use AGCMS\Controller\Shopping;
 use AGCMS\Controller\Payment;
 use AGCMS\Controller\Search;
+use AGCMS\Controller\Admin\AdminController;
+use AGCMS\Controller\Admin\PageController;
 use Symfony\Component\HttpFoundation\Request;
 
 require_once __DIR__ . '/vendor/autoload.php';
@@ -41,5 +43,10 @@ $app->addRoute('POST', '/betaling/([\d]+)/([^/]+)/address/', Payment::class, 'ad
 $app->addRoute('GET', '/betaling/([\d]+)/([^/]+)/terms/', Payment::class, 'terms');
 $app->addRoute('GET', '/betaling/([\d]+)/([^/]+)/status/', Payment::class, 'status');
 $app->addRoute('GET', '/betaling/([\d]+)/([^/]+)/callback/', Payment::class, 'callback');
+
+$app->addRoute('GET', '/admin/', AdminController::class, 'index');
+$app->addRoute('GET', '/admin/editpage/', PageController::class, 'index');
+$app->addRoute('GET', '/admin/editpage/([\d]+)/', PageController::class, 'index');
+$app->addRoute('GET', '/admin/editpage/pagelist/', PageController::class, 'pageList');
 
 $app->run(Request::createFromGlobals());

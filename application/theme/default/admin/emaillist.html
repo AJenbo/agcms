@@ -1,0 +1,16 @@
+{% extends "admin/index.html" %}
+
+{% block canvas %}
+<div id="headline">Newsletters</div>
+<div>
+    <a href="?side=viewemail"><img src="/theme/default/images/admin/email_add.png" width="16" height="16" alt="" /> Create new newsletter</a>
+    <br />
+    <br />
+    {% for newsletter in newsletters %}
+    <a href="?side=viewemail&amp;id={{newsletter.id}}">
+        <img src="/theme/default/images/admin/{% if newsletter.sent %}email_open.png{% else %}email_edit.png{% endif %}" width="16" height="16" alt="" /> {{newsletter.subject}}
+    </a>
+    <br />
+    {% endfor %}
+</div>
+{% endblock %}

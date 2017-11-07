@@ -1,0 +1,8 @@
+{% spaceless %}
+<a class="menuboxheader" id="katsheader" style="width:360px;clear:both" onclick="showhidekats('kats',this);">
+    Select location: {% if hide.categories %}{{siteTree.selectedCategory.path}}{% endif %}
+</a>
+<div style="width:384px;{% if hide.categories %}display:none;{% endif %}" id="kats">
+    {% include 'admin/partial-kat_expand.html' with siteTree only %}
+</div>
+{% endspaceless %}

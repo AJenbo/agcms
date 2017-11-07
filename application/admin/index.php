@@ -18,39 +18,6 @@ $template = 'admin-' . $request->get('side', 'index');
 $data = getBasicAdminTemplateData();
 
 switch ($template) {
-    case 'admin-redigerside':
-        $id = $request->get('id');
-        $selectedId = $request->cookies->get('activekat', -1);
-        $page = null;
-        $bindings = [];
-        $accessories = [];
-        if (null !== $id) {
-            /** @var Page */
-            $page = ORM::getOne(Page::class, $id);
-            assert($page instanceof Page);
-            if ($page) {
-                foreach ($page->getCategories() as $category) {
-                    $bindings[$category->getId()] = $category->getPath();
-                }
-
-                foreach ($page->getAccessories() as $accessory) {
-                    $category = $accessory->getPrimaryCategory();
-                    $accessories[$accessory->getId()] = $category->getPath() . $accessory->getTitle();
-                }
-            }
-        }
-
-        $data = [
-            'textWidth' => Config::get('text_width'),
-            'thumbWidth' => Config::get('thumb_width'),
-            'siteTree' => getSiteTreeData('categories', $selectedId),
-            'requirementOptions' => getRequirementOptions(),
-            'brands' => ORM::getByQuery(Brand::class, 'SELECT * FROM `maerke` ORDER BY navn'),
-            'page' => $page,
-            'bindings' => $bindings,
-            'accessories' => $accessories,
-        ] + $data;
-        break;
     case 'admin-getSiteTree':
         $data['siteTree'] = getSiteTreeData();
         break;

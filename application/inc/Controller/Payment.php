@@ -389,7 +389,7 @@ class Payment extends Base
         ];
         sendEmails(
             sprintf(_('Order #%d - payment completed'), $invoice->getId()),
-            Render::render('email-payment-confirmation', $data),
+            Render::render('email/payment-confirmation', $data),
             $invoice->getDepartment(),
             Config::get('site_name'),
             $invoice->getEmail(),
@@ -414,7 +414,7 @@ class Payment extends Base
         );
         sendEmails(
             $subject,
-            Render::render('email-admin-payment-confirmation', ['invoice' => $invoice]),
+            Render::render('admin/email/payment-confirmation', ['invoice' => $invoice]),
             $invoice->getDepartment(),
             Config::get('site_name'),
             $invoice->getDepartment(),

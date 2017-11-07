@@ -1,0 +1,20 @@
+{% extends "admin/index.html" %}
+
+{% block actions %}
+<li><a onclick="save_krav();"><img src="/theme/default/images/admin/disk.png" width="16" height="16" alt="" /> Save requirement</a></li>
+{% endblock %}
+
+{% block canvas %}
+<div id="headline">{% if requirement.id %}Edit {{requirement.title}}{% else %}Create new requirement{% endif %}</div>
+<form action="" method="post" onsubmit="return savekrav();">
+    <input type="submit" accesskey="s" style="width:1px; height:1px; position:absolute; top: -20px; left:-20px;" />
+    <input type="hidden" name="id" id="id" value="{{requirement.id}}" />
+    <input class="admin_name" type="text" name="navn" id="navn" value="{{requirement.title}}" maxlength="127" size="127" style="width:{{textWidth}}px" />
+    <textarea id="text" style="width:{{textWidth}}px;height:420px">{{requirement.html|raw}}</textarea>
+    <script type="text/javascript"><!--
+        CKEDITOR.config.width = {{textWidth}};
+        CKEDITOR.config.contentsCss = '/theme/{{theme}}/style/rtef-text.css';
+        CKEDITOR.replace('text');
+    --></script>
+</form>
+{% endblock %}

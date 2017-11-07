@@ -1,0 +1,85 @@
+{% extends "admin/index.html" %}
+
+{% block actions %}
+<li><a onclick="updateKat({{category.id}});"><img src="/theme/default/images/admin/disk.png" width="16" height="16" alt="" /> Save category</a></li>
+{% endblock %}
+
+{% block canvas %}
+<div id="headline">{% if category %}Edit category{% else %}Create category{% endif %}</div>
+<form action="" onsubmit="return updateKat({{category.id}})">
+    <input type="submit" accesskey="s" style="width:1px; height:1px; position:absolute; top: -20px; left:-20px;" />
+    <div>
+        Name:
+        <img style="cursor:pointer;vertical-align:bottom" onclick="explorer('thb','icon')" src="{% if category.icon %}{{category.icon.path}}{% else %}/theme/default/images/admin/folder.png{% endif %}" title="" alt="Pictures" id="iconthb" />
+        <input id="navn" style="width:256px;" maxlength="64" value="{{category.title}}" />
+        <br />
+        Icon:
+        <input id="icon" style="width:247px;" maxlength="128" type="hidden" value="{{category.icon.path}}" />
+        <img style="cursor:pointer;vertical-align:bottom" onclick="explorer('thb','icon')" width="16" height="16" src="/theme/default/images/admin/folder_image.png" title="Find pictures" alt="Pictures" />
+        <img style="cursor:pointer;vertical-align:bottom" onclick="setThb('icon','','images/folder.png')" src="/theme/default/images/admin/cross.png" alt="X" title="Remove picture" height="16" width="16" />
+        <br />
+        <br />
+
+        {% if category.hasChildren %}
+        Sort subcategories:
+        <select id="custom_sort_subs" onchange="displaySubMenus(this.value);" onblur="displaySubMenus(this.value);">
+            <option value="0">Alphabetically</option>
+            <option value="1"{% if category.weightedChildren %} selected="selected"{% endif %}>Manually </option>
+        </select>
+        <br />
+        <ul id="subMenus" style="width:{{textWidth}}}px;{% if not category.weightedChildren %}display:none;{% endif %}">
+        {% for child in category.children %}
+            <li id="item_{{child.id}}">
+                <img src="{% if child.icon %}{{child.icon.path}}{% else %}/theme/default/images/admin/folder.png{% endif %}" alt="">
+                {{child.title}}
+            </li>
+        {% endfor %}
+
+        </ul>
+        <input type="hidden" id="subMenusOrder" value="" />
+        <script type="text/javascript"><!--
+            Sortable.create(
+                'subMenus',
+                {
+                    ghosting:false,
+                    constraint:false,
+                    hoverclass:'over',
+                    onChange:function(element){
+                        var newOrder = Sortable.serialize(element.parentNode);
+                        newOrder = newOrder.replace(/subMenus\[\]=/g,"");
+                        newOrder = newOrder.replace(/&/g,",");
+                        $('subMenusOrder').value = newOrder;
+                    }
+                }
+            );
+            var newOrder = Sortable.serialize($('subMenus'));
+            newOrder = newOrder.replace(/subMenus\[\]=/g,"");
+            newOrder = newOrder.replace(/&/g,",");
+            $('subMenusOrder').value = newOrder;
+        --></script>
+        {% else %}
+        <input type="hidden" id="subMenusOrder" /><input type="hidden" id="custom_sort_subs" />
+        {% endif %}
+
+        Contact:
+        <select id="email">
+            {% for email in emails %}
+            <option value="{{email}}"{% if category.email == email %} selected="selected"{% endif %}>{{email}}</option>
+            {% endfor %}
+        </select>
+
+        <br />
+        Display:
+        <select id="vis">
+            <option value="0"{% if category.renderMode == 0 %} selected="selected"{% endif %}>Hide</option>
+            <option value="1"{% if category.renderMode == 1 or not category %} selected="selected"{% endif %}>Gallery</option>
+            <option value="2"{% if category.renderMode == 2 %} selected="selected"{% endif %}>List</option>
+        </select>
+        {% if not category or category.parent %}
+        {% include 'admin/partial-katlist.html' %}
+        {% endif %}
+        <br />
+    </div>
+    <p style="display:none;"></p>
+</form>
+{% endblock %}

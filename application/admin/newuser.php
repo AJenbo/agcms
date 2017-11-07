@@ -28,7 +28,7 @@ if ($request->isMethod('POST')) {
             '
         );
         $message = _('Your account has been created. An administrator will evaluate it shortly.');
-        $emailbody = Render::render('email-admin-newuser', ['fullname' => $fullname]);
+        $emailbody = Render::render('admin/email/newuser', ['fullname' => $fullname]);
         sendEmails(_('New user'), $emailbody);
     }
 }
