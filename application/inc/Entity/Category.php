@@ -266,7 +266,7 @@ class Category extends AbstractRenderable
     /**
      * Get parent category.
      *
-     * @return self|null
+     * @return ?self
      */
     public function getParent(): ?self
     {
