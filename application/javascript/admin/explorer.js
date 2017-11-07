@@ -234,6 +234,7 @@ function edit_alt_r(data)
     files[data.id].alt = data.alt;
 }
 
+var searchfilesRequest = null;
 function searchfiles()
 {
     document.getElementById('loading').style.display = '';
@@ -241,8 +242,7 @@ function searchfiles()
     qalt = document.getElementById('searchalt').value;
     qtype = getSelect('searchtype');
 
-    // TODO only cancle requests relating to searchfiles
-    sajax.cancel();
+    xHttp.cancel(searchfilesRequest);
     x_searchfiles(qpath, qalt, qtype, showfiles_r);
 }
 
@@ -252,6 +252,7 @@ function getSelect(id)
     return object[object.selectedIndex].value;
 }
 
+var showFilesRequest = null;
 function showfiles(dir)
 {
     // TODO, scroll to top.
@@ -264,9 +265,9 @@ function showfiles(dir)
         dirlist[i].className = '';
     }
     document.getElementById(dirToId(dir)).getElementsByTagName('a')[0].className = 'active';
-    // TODO only cancle requests relating to showfiles
-    sajax.cancel();
-    x_showfiles(dir, showfiles_r);
+
+    xHttp.cancel(showFilesRequest);
+    showFilesRequest = x_showfiles(dir, showfiles_r);
 }
 
 function showfiles_r(data)
@@ -406,7 +407,9 @@ function dir_expand(dirdiv, move)
     dirdiv = dirdiv.parentNode;
     if(dirdiv.lastChild.firstChild == null) {
         document.getElementById('loading').style.display = '';
-        x_listdirs(idToDir(dirdiv.id), move, dir_expand_r);
+        xHttp.request(
+            '/admin/explorer/folders/?path=' + encodeURIComponent(idToDir(dirdiv.id)) + '&move=' + (move ? 1 : 0),
+            dir_expand_r);
         return;
     }
 

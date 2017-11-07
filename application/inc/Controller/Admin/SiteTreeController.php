@@ -11,7 +11,7 @@ use Symfony\Component\HttpFoundation\Response;
 class SiteTreeController extends AbstractAdminController
 {
     /**
-     * Page for editing or creating pages.
+     * Page showing the site structure.
      *
      * @param Request $request
      *

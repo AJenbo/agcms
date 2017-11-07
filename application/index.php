@@ -3,6 +3,7 @@
 use AGCMS\Application;
 use AGCMS\Config;
 use AGCMS\Controller\Admin\AdminController;
+use AGCMS\Controller\Admin\ExplorerController;
 use AGCMS\Controller\Admin\PageController;
 use AGCMS\Controller\Admin\SiteTreeController;
 use AGCMS\Controller\Ajax;
@@ -54,5 +55,7 @@ $app->addRoute('PUT', '/admin/editpage/([\d]+)/', PageController::class, 'update
 $app->addRoute('GET', '/admin/editpage/pagelist/', PageController::class, 'pageList');
 $app->addRoute('GET', '/admin/sitetree/', SiteTreeController::class, 'index');
 $app->addRoute('GET', '/admin/sitetree/([-\d]+)/lable/', SiteTreeController::class, 'lable');
+$app->addRoute('GET', '/admin/explorer/', ExplorerController::class, 'index');
+$app->addRoute('GET', '/admin/explorer/folders/', ExplorerController::class, 'subFolders');
 
 $app->run(Request::createFromGlobals());

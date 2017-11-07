@@ -36,7 +36,7 @@ function setThb(id, value, imgvalue)
 
 function explorer(returntype, returnid)
 {
-    window.open("explorer.php?return=" + returntype + "&returnid=" + returnid, "explorer", "toolbar=0");
+    window.open("/admin/explorer/?return=" + returntype + "&returnid=" + returnid, "explorer", "toolbar=0");
 }
 
 function generic_r(data)
