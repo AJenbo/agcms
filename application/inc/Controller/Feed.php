@@ -53,9 +53,9 @@ class Feed extends Base
                 'priority' => '0.5',
             ];
         }
-        unset($categories, $category);
+        unset($categories);
 
-        $brandIds = [];
+        $brands = [];
         $pages = ORM::getByQuery(
             Page::class,
             '
@@ -72,24 +72,18 @@ class Feed extends Base
                 'changefreq' => 'monthly',
                 'priority' => '0.6',
             ];
+            $brand = $page->getBrand();
+            if ($brand) {
+                $brands[$brand->getId()] = $brand;
+            }
         }
 
-        if ($brandIds) {
-            $brands = ORM::getByQuery(
-                Brand::class,
-                '
-                SELECT * FROM maerke
-                WHERE id IN(' . implode(',', array_keys($brandIds)) . ')
-                '
-            );
-            foreach ($brands as $brand) {
-                assert($brand instanceof Brand);
-                $urls[] = [
-                    'loc' => Config::get('base_url') . $brand->getCanonicalLink(),
-                    'changefreq' => 'weekly',
-                    'priority' => '0.4',
-                ];
-            }
+        foreach ($brands as $brand) {
+            $urls[] = [
+                'loc' => Config::get('base_url') . $brand->getCanonicalLink(),
+                'changefreq' => 'weekly',
+                'priority' => '0.4',
+            ];
         }
 
         $requirements = ORM::getByQuery(Requirement::class, 'SELECT * FROM krav');
@@ -126,9 +120,9 @@ class Feed extends Base
         $timestamp = Render::getUpdateTime();
         Render::sendCacheHeader($timestamp);
 
-        $time = 0;
+        $time = false;
         if ($request->headers->has('If-Modified-Since')) {
-            $time = strtotime(stripslashes($request->headers->get('If-Modified-Since')));
+            $time = strtotime($request->headers->get('If-Modified-Since'));
         }
 
         $where = '';

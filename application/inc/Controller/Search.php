@@ -46,7 +46,8 @@ class Search extends Base
             }
             $categoryIds[] = $category->getId();
         }
-        $brands = ORM::getByQuery(
+
+        return ORM::getByQuery(
             Brand::class,
             '
             SELECT * FROM `maerke`
@@ -57,8 +58,6 @@ class Search extends Base
             ) ORDER BY `navn`
             '
         );
-
-        return $brands;
     }
 
     /**

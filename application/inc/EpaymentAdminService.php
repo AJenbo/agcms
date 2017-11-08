@@ -20,6 +20,7 @@ class EpaymentAdminService
     /** @var SoapClient Service connection. */
     private $soapClient;
 
+    /** @var string[] */
     private static $paymentTypes = [
         1 => 'Dankort/Visa-Dankort',
         3 => 'Visa / Visa Electron',

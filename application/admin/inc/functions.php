@@ -1825,7 +1825,10 @@ function updateSpecial(int $id, string $html, string $title = ''): bool
  */
 function sletSide(int $pageId): array
 {
-    ORM::getOne(Page::class, $pageId)->delete();
+    $page = ORM::getOne(Page::class, $pageId);
+    if ($page) {
+        $page->delete();
+    }
 
     return ['class' => 'side' . $pageId];
 }
@@ -1945,7 +1948,7 @@ function invoiceBasicUpdate(Invoice $invoice, string $action, array $updates): v
         if (in_array($action, ['cancel', 'giro', 'cash'], true)
             || ('lock' === $action && 'locked' !== $invoice->getStatus())
         ) {
-            $invoice->setTimeStampPay(!empty($updates['paydate']) ? strtotime($updates['paydate']) : time());
+            $invoice->setTimeStampPay(strtotime($updates['paydate'] ?? '') ?: time());
         }
 
         if ('cancel' === $action) {

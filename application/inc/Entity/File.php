@@ -288,6 +288,8 @@ class File extends AbstractEntity
      * Find entity by file path.
      *
      * @param string $path The file path
+     *
+     * @return ?self
      */
     public static function getByPath(string $path): ?self
     {

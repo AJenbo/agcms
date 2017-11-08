@@ -275,7 +275,6 @@ class Table extends AbstractEntity
                 }
             }
         }
-        unset($row);
 
         return $this->orderRows($rows, $orderBy);
     }
@@ -296,7 +295,7 @@ class Table extends AbstractEntity
         db()->query(
             '
             INSERT INTO `list_rows`(`list_id`, `cells`, `link`)
-            VALUES (' . $this->id . ', ' . db()->eandq($cells) . ', ' . (null === $link ? 'NULL' : $link) . ')
+            VALUES (' . $this->getId() . ', ' . db()->eandq($cells) . ', ' . (null === $link ? 'NULL' : $link) . ')
             '
         );
 
@@ -322,7 +321,7 @@ class Table extends AbstractEntity
             UPDATE `list_rows` SET
                 `cells` = ' . db()->eandq($cells) . ',
                 `link` = ' . (null === $link ? 'NULL' : $link) . '
-            WHERE list_id = ' . $this->id . '
+            WHERE list_id = ' . $this->getId() . '
               AND id = ' . $rowId
         );
     }

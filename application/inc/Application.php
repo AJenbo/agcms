@@ -135,7 +135,7 @@ class Application
 
     private function redirectToFolderPath(Request $request, string $requestUrl): RedirectResponse
     {
-        $query = $request->getQueryString();
+        $query = $request->getQueryString() ?: '';
         if ($query) {
             $query = '?' . $query;
         }

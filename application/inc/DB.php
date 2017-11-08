@@ -9,10 +9,16 @@ use mysqli;
  */
 class DB extends mysqli
 {
+    /** @var int */
     private static $timeOffset;
 
     /**
      * Connect the database and set session to UTF-8 Danish.
+     *
+     * @param string $host
+     * @param string $user
+     * @param string $password
+     * @param string $schema
      */
     public function __construct($host, $user, $password, $schema)
     {
@@ -47,10 +53,6 @@ class DB extends mysqli
         }
         $result->close();
 
-        if (!isset($rows)) {
-            $rows = [];
-        }
-
         return $rows;
     }
 
@@ -81,7 +83,7 @@ class DB extends mysqli
      */
     public function query($query, $resultmode = null): bool
     {
-        parent::query($query);
+        parent::query($query, $resultmode);
         if (mysqli_error($this)) {
             throw new Exception(mysqli_error($this), mysqli_errno($this));
         }
@@ -138,7 +140,7 @@ class DB extends mysqli
     public function getTimeOffset(): int
     {
         if (null === self::$timeOffset) {
-            self::$timeOffset = time() - strtotime(self::fetchOne('SELECT NOW() date')['date']);
+            self::$timeOffset = time() - strtotime($this->fetchOne('SELECT NOW() date')['date']);
         }
 
         return self::$timeOffset;

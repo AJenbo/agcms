@@ -72,6 +72,9 @@ class UploadHandler
         }
 
         $fileName = $uploadedFile->getClientOriginalName();
+        if (!$fileName) {
+            $fileName = (new DateTime())->format('Y-m-d-h-i-s');
+        }
         $fileName = pathinfo($fileName, PATHINFO_FILENAME);
         $this->baseName = genfilename($fileName);
 
@@ -134,7 +137,7 @@ class UploadHandler
      */
     private function isVideoFile(): bool
     {
-        return mb_strpos($this->file->getMimeType(), 'video/') === 0;
+        return mb_strpos($this->file->getMimeType() ?? '', 'video/') === 0;
     }
 
     /**
@@ -188,6 +191,9 @@ class UploadHandler
         $image->resize($maxW, $image->getHeight());
 
         $target = tempnam(sys_get_temp_dir(), 'upload');
+        if (!$target) {
+            throw new Exception('Failed to create temporary file');
+        }
 
         $format = 'jpg' === $this->extension ? 'jpeg' : $this->extension;
         $image->save($target, $format);

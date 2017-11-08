@@ -17,7 +17,9 @@ $response = new Response();
 $response->setPublic();
 
 $lastModified = DateTime::createFromFormat('U', (string) $timestamp);
-$response->setLastModified($lastModified);
+if (false !== $lastModified) {
+    $response->setLastModified($lastModified);
+}
 $response->setEtag((string) $timestamp);
 $response->setMaxAge($oneMonth);
 $expires = DateTime::createFromFormat('U', (string) (time() + $oneMonth));

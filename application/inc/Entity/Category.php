@@ -38,7 +38,7 @@ class Category extends AbstractRenderable
     private $weight = 0;
 
     // Runtime
-    /** @var bool Cache if category is visible or not. */
+    /** @var ?bool Cache if category is visible or not. */
     private $visable;
 
     /**

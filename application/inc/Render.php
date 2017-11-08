@@ -9,7 +9,9 @@ use Twig_Loader_Filesystem;
 
 class Render
 {
+    /** @var string[] */
     private static $loadedTables = [];
+    /** @var string[] */
     private static $adminOnlyTables = [
         'email',
         'emails',
@@ -25,6 +27,8 @@ class Render
      * Remember what tabels where read during page load.
      *
      * @param string $tableName The table name
+     *
+     * @return void
      */
     public static function addLoadedTable(string $tableName): void
     {
@@ -33,6 +37,10 @@ class Render
 
     /**
      * Figure out when the data for this page was last touched.
+     *
+     * @param bool $checkDb
+     *
+     * @return int
      */
     public static function getUpdateTime(bool $checkDb = true): int
     {
@@ -42,7 +50,7 @@ class Render
         }
 
         if ($checkDb) {
-            $updateTime = self::checkDbUpdate($updateTime);
+            $updateTime = self::checkDbUpdate($updateTime ?: 0);
         }
 
         if ($updateTime <= 0) {
@@ -96,11 +104,14 @@ class Render
             return;
         }
 
+        $lastModified = DateTime::createFromFormat('U', (string) $timestamp);
+        if (!$lastModified) {
+            return;
+        }
+
         $response = new Response();
         $response->setPublic();
         $response->headers->addCacheControlDirective('must-revalidate');
-
-        $lastModified = DateTime::createFromFormat('U', (string) $timestamp);
         $response->setLastModified($lastModified);
         $response->setEtag((string) $timestamp);
         $response->setMaxAge(0);
