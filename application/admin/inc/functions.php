@@ -294,9 +294,9 @@ function sendEmail(
     $html = purifyHTML($html);
 
     //Colect interests
+    $andwhere = '';
     if ($interests) {
         $interests = explode('<', $interests);
-        $andwhere = '';
         foreach ($interests as $interest) {
             if ($andwhere) {
                 $andwhere .= ' OR ';
@@ -355,7 +355,7 @@ function sendEmail(
         return ['error' => 'Email ' . $failedCount . '/' . $totalEmails . ' failed to be sent.'];
     }
 
-    db()->query('UPDATE `newsmails` SET `sendt` = 1 WHERE `id` = ' . (int) $id);
+    db()->query('UPDATE `newsmails` SET `sendt` = 1 WHERE `id` = ' . $id);
 
     return true;
 }
@@ -604,7 +604,7 @@ function deleteuser(int $id): bool
         return false;
     }
 
-    db()->query('DELETE FROM `users` WHERE `id` = ' . (int) $id);
+    db()->query('DELETE FROM `users` WHERE `id` = ' . $id);
 
     return true;
 }
@@ -2102,8 +2102,8 @@ function generateImage(
     array $output = []
 ): array {
     $outputPath = $path;
+    $pathinfo = pathinfo($path);
     if (!empty($output['type']) && empty($output['overwrite'])) {
-        $pathinfo = pathinfo($path);
         if (empty($output['filename'])) {
             $output['filename'] = $pathinfo['filename'];
         }

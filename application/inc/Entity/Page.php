@@ -671,12 +671,12 @@ class Page extends AbstractRenderable
             'varenr'      => db()->eandq($this->sku),
             'beskrivelse' => db()->eandq($this->excerpt),
             'billed'      => null !== $this->iconPath ? db()->eandq($this->iconPath) : 'NULL',
-            'krav'        => null !== $this->requirementId ? $this->requirementId : 'NULL',
-            'maerke'      => null !== $this->brandId ? $this->brandId : 'NULL',
-            'pris'        => $this->price,
-            'for'         => $this->oldPrice,
-            'fra'         => $this->priceType,
-            'burde'       => $this->oldPriceType,
+            'krav'        => (string) (null !== $this->requirementId ? $this->requirementId : 'NULL'),
+            'maerke'      => (string) (null !== $this->brandId ? $this->brandId : 'NULL'),
+            'pris'        => (string) $this->price,
+            'for'         => (string) $this->oldPrice,
+            'fra'         => (string) $this->priceType,
+            'burde'       => (string) $this->oldPriceType,
         ];
     }
 }

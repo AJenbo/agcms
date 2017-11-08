@@ -25,7 +25,7 @@ class Category extends AbstractRenderable
     /** @var ?string Icon file path. */
     private $iconPath;
 
-    /** @var ?int Render mode for page list. */
+    /** @var int Render mode for page list. */
     private $renderMode = 1;
 
     /** @var string Contact email. */

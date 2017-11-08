@@ -205,8 +205,8 @@ function sendEmails(
 
     $mailer = new PHPMailer(true);
 
-    $mailer->SetLanguage('dk');
-    $mailer->IsSMTP();
+    $mailer->setLanguage('dk');
+    $mailer->isSMTP();
     $mailer->SMTPAuth = false;
     if ($emailConfig['smtpAuth']) {
         $mailer->SMTPAuth = true;
@@ -219,19 +219,19 @@ function sendEmails(
 
     $mailer->setFrom($emailConfig['address'], Config::get('site_name'));
     if ($from !== $emailConfig['address']) {
-        $mailer->AddReplyTo($from, $fromName);
+        $mailer->addReplyTo($from, $fromName);
     }
 
     foreach ($bcc as $email) {
-        $mailer->AddBCC($email['email'], $email['navn']);
+        $mailer->addBCC($email['email'], $email['navn']);
     }
 
     $mailer->Subject = $subject;
-    $mailer->MsgHTML($htmlBody, _ROOT_);
-    $mailer->AddAddress($recipient, $recipientName);
+    $mailer->msgHTML($htmlBody, _ROOT_);
+    $mailer->addAddress($recipient, $recipientName);
 
     try {
-        $success = $mailer->Send();
+        $success = $mailer->send();
     } catch (PHPMailerException $e) {
         $success = false;
     }

@@ -237,7 +237,7 @@ class Payment extends Base
     {
         /** @var Invoice */
         $invoice = ORM::getOne(Invoice::class, $id);
-        if (!$invoice || $checkId !== $invoice->getCheckid()) {
+        if (!$invoice || $checkId !== $invoice->getCheckId()) {
             return $this->redirect($request, '/betaling/?id=' . $id . '&checkid=' . rawurlencode($checkId));
         }
         assert($invoice instanceof Invoice);
@@ -313,7 +313,7 @@ class Payment extends Base
         /** @var Invoice */
         $invoice = ORM::getOne(Invoice::class, $id);
         if (!$invoice
-            || $checkId !== $invoice->getCheckid()
+            || $checkId !== $invoice->getCheckId()
             || !$this->isHashValid($request)
         ) {
             return new Response('', 400);
@@ -468,7 +468,7 @@ class Payment extends Base
      */
     private function checkStatus(Request $request, int $id, string $checkId, ?Invoice $invoice): ?RedirectResponse
     {
-        if (!$invoice || $checkId !== $invoice->getCheckid()) {
+        if (!$invoice || $checkId !== $invoice->getCheckId()) {
             return $this->redirect($request, '/betaling/?id=' . $id . '&checkid=' . rawurlencode($checkId));
         }
         assert($invoice instanceof Invoice);

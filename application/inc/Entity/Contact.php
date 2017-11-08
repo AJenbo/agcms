@@ -38,7 +38,7 @@ class Contact extends AbstractEntity
      */
     public function __construct(array $data)
     {
-        $this->setTimeStamp($data['timestamp'] ?? time())
+        $this->setTimestamp($data['timestamp'] ?? time())
             ->setName($data['name'])
             ->setEmail($data['email'])
             ->setAddress($data['address'])
@@ -388,7 +388,7 @@ class Contact extends AbstractEntity
      */
     public function getDbArray(): array
     {
-        $this->setTimeStamp(time());
+        $this->setTimestamp(time());
 
         $interests = array_map('htmlspecialchars', $this->interests);
         $interests = implode('<', $interests);

@@ -159,7 +159,7 @@ class InvoiceService
      *
      * @return void
      */
-    public function addToAddressBook(Invoice $invoice, string $clientIp): void
+    public function addToAddressBook(Invoice $invoice, ?string $clientIp): void
     {
         $countries = [];
         include _ROOT_ . '/inc/countries.php';
@@ -179,7 +179,7 @@ class InvoiceService
                 'phone1'     => $invoice->getPhone1(),
                 'phone2'     => $invoice->getPhone2(),
                 'newsletter' => true,
-                'ip'         => $clientIp,
+                'ip'         => $clientIp ?? '',
             ]);
             $conteact->save();
             return;

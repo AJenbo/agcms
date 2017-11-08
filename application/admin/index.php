@@ -95,7 +95,7 @@ switch ($template) {
             'wwwSize' => get_size_of_files(),
             'pendingEmails' => db()->fetchOne("SELECT count(*) as 'count' FROM `emails`")['count'],
             'totalDelayedEmails' => $emails['Auto_increment'] - 1,
-            'lastrun' => $page->getTimestamp(),
+            'lastrun' => $page->getTimeStamp(),
         ] + $data;
         break;
     case 'admin-redigerSpecial':

@@ -118,7 +118,7 @@ class Invoice extends AbstractEntity
         return $this;
     }
 
-    public function getTimeStampPay(): int
+    public function getTimeStampPay(): ?int
     {
         return $this->timeStampPay;
     }
@@ -793,7 +793,7 @@ class Invoice extends AbstractEntity
             $this->save();
         }
 
-        return Config::get('base_url') . '/betaling/' . $this->getId() . '/' . $this->getCheckid() . '/';
+        return Config::get('base_url') . '/betaling/' . $this->getId() . '/' . $this->getCheckId() . '/';
     }
 
     /**
