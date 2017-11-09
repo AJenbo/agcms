@@ -29,33 +29,18 @@ class Feed extends Base
         Render::addLoadedTable('krav');
         Render::sendCacheHeader();
 
-        $urls = [
-            [
-                'loc' => Config::get('base_url') . '/search/',
-                'lastmod' => Render::getUpdateTime(false),
-                'changefreq' => 'monthly',
-                'priority' => '0.8',
-            ],
-        ];
-
-        $activeCategoryIds = [0];
+        $activeCategories = [];
+        $activeCategoryIds = [];
         $categories = ORM::getByQuery(Category::class, 'SELECT * FROM kat');
-        foreach ($categories as $category) {
+        foreach ($categories as $key => $category) {
             assert($category instanceof Category);
             if ($category->isInactive()) {
                 continue;
             }
+            $activeCategories[] = $category;
             $activeCategoryIds[] = $category->getId();
-
-            $urls[] = [
-                'loc' => Config::get('base_url') . $category->getCanonicalLink(),
-                'changefreq' => 'weekly',
-                'priority' => '0.5',
-            ];
         }
-        unset($categories);
 
-        $brands = [];
         $pages = ORM::getByQuery(
             Page::class,
             '
@@ -64,39 +49,25 @@ class Feed extends Base
             WHERE bind.kat IN(' . implode(',', $activeCategoryIds) . ')
             '
         );
+        $pages = [];
+        $brands = [];
         foreach ($pages as $page) {
             assert($page instanceof Page);
-            $urls[] = [
-                'loc' => Config::get('base_url') . $page->getCanonicalLink(),
-                'lastmod' => $page->getTimeStamp(),
-                'changefreq' => 'monthly',
-                'priority' => '0.6',
-            ];
+            $pages[] = $page;
             $brand = $page->getBrand();
             if ($brand) {
                 $brands[$brand->getId()] = $brand;
             }
         }
 
-        foreach ($brands as $brand) {
-            $urls[] = [
-                'loc' => Config::get('base_url') . $brand->getCanonicalLink(),
-                'changefreq' => 'weekly',
-                'priority' => '0.4',
-            ];
-        }
-
-        $requirements = ORM::getByQuery(Requirement::class, 'SELECT * FROM krav');
-        foreach ($requirements as $requirement) {
-            assert($requirement instanceof Requirement);
-            $urls[] = [
-                'loc' => Config::get('base_url') . $requirement->getCanonicalLink(),
-                'changefreq' => 'monthly',
-                'priority' => '0.2',
-            ];
-        }
-
-        $content = Render::render('sitemap', ['urls' => $urls]);
+        $data = [
+            'base_url' => Config::get('base_url'),
+            'categories' => $activeCategories,
+            'pages' => $pages,
+            'brands' => $brands,
+            'requirements' => ORM::getByQuery(Requirement::class, 'SELECT * FROM krav'),
+        ];
+        $content = Render::render('sitemap', $data);
 
         return new Response($content, 200, ['Content-Type' => 'text/xml;charset=utf-8']);
     }

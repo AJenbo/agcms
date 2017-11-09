@@ -1,11 +1,37 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.sitemaps.org/schemas/sitemap/0.9' http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd">
-    {% for url in urls %}
     <url>
-        <loc>{{url.loc}}</loc>
-        {% if url.lastmod %}<lastmod>{{url.lastmod|date('c')}}</lastmod>{% endif %}
-        <changefreq>{{url.changefreq}}</changefreq>
-        <priority>{{url.priority}}</priority>
+        <loc>{{base_url}}/search/</loc>
+        <changefreq>monthly</changefreq>
+        <priority>0.8</priority>
+    </url>
+    {% for category in categories %}
+    <url>
+        <loc>{{base_url}}{{category.canonicalLink}}</loc>
+        <changefreq>weekly</changefreq>
+        <priority>0.5</priority>
+    </url>
+    {% endfor %}
+    {% for page in pages %}
+    <url>
+        <loc>{{base_url}}{{page.canonicalLink}}</loc>
+        <lastmod>{{page.TimeStamp|date('c')}}</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority>0.6</priority>
+    </url>
+    {% endfor %}
+    {% for brand in brands %}
+    <url>
+        <loc>{{base_url}}{{brand.canonicalLink}}</loc>
+        <changefreq>weekly</changefreq>
+        <priority>0.4</priority>
+    </url>
+    {% endfor %}
+    {% for requirement in requirements %}
+    <url>
+        <loc>{{base_url}}{{requirement.canonicalLink}}</loc>
+        <changefreq>monthly</changefreq>
+        <priority>0.2</priority>
     </url>
     {% endfor %}
 </urlset>
