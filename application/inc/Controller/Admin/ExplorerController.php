@@ -144,37 +144,13 @@ class ExplorerController extends AbstractAdminController
             case 'application/pdf':
                 $type = 'pdf';
                 break;
-            case 'application/postscript':
-                $type = 'image';
-                break;
-            case 'application/futuresplash':
-            case 'application/vnd.ms-powerpoint':
-            case 'application/vnd.rn-realmedia':
-                $type = 'video';
-                break;
             case 'application/msword':
-            case 'application/rtf':
             case 'application/vnd.ms-excel':
             case 'application/vnd.ms-works':
+            case 'application/vnd.oasis.opendocument.graphics':
+            case 'application/vnd.openxmlformats-officedocument.spreadsheetml.shee':
                 $type = 'text';
                 break;
-            case 'text/css':
-            case 'text/html':
-                $type = 'sys';
-                break;
-            case 'application/mac-binhex40':
-            case 'application/x-7z-compressed':
-            case 'application/x-bzip2':
-            case 'application/x-compressed': //missing
-            case 'application/x-compress': //missing
-            case 'application/x-gtar':
-            case 'application/x-gzip':
-            case 'application/x-rar':
-            case 'application/x-rar-compressed':
-            case 'application/x-stuffit':
-            case 'application/x-stuffitx':
-            case 'application/x-tar':
-            case 'application/x-zip':
             case 'application/zip':
                 $type = 'zip';
                 break;
@@ -189,7 +165,6 @@ class ExplorerController extends AbstractAdminController
             case 'video':
             case 'audio':
             case 'text':
-            case 'sys':
             case 'zip':
                 $html .= '/admin/images/file-' . $type . '.gif';
                 break;
