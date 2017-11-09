@@ -56,6 +56,7 @@ $app->addRoute('GET', '/admin/editpage/pagelist/', PageController::class, 'pageL
 $app->addRoute('GET', '/admin/sitetree/', SiteTreeController::class, 'index');
 $app->addRoute('GET', '/admin/sitetree/([-\d]+)/lable/', SiteTreeController::class, 'lable');
 $app->addRoute('GET', '/admin/explorer/', ExplorerController::class, 'index');
-$app->addRoute('GET', '/admin/explorer/folders/', ExplorerController::class, 'subFolders');
+$app->addRoute('GET', '/admin/explorer/folders/', ExplorerController::class, 'folders');
+$app->addRoute('GET', '/admin/explorer/files/', ExplorerController::class, 'files');
 
 $app->run(Request::createFromGlobals());

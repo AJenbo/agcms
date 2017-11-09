@@ -1,5 +1,6 @@
 <?php namespace AGCMS\Controller\Admin;
 
+use AGCMS\Entity\File;
 use AGCMS\Config;
 use AGCMS\Render;
 use DirectoryIterator;
@@ -32,12 +33,11 @@ class ExplorerController extends AbstractAdminController
     /**
      * Render subfolder.
      *
-     * @param string $path
-     * @param bool   $move
+     * @param Request $request
      *
      * @return JsonResponse
      */
-    public function subFolders(Request $request): JsonResponse
+    public function folders(Request $request): JsonResponse
     {
         $path = $request->get('path');
         $move = $request->query->getBoolean('move');
@@ -51,6 +51,162 @@ class ExplorerController extends AbstractAdminController
         );
 
         return new JsonResponse(['id' => $path, 'html' => $html]);
+    }
+
+    /**
+     * display a list of files in the selected folder.
+     *
+     * @param Request $request
+     *
+     * @return JsonResponse
+     */
+    public function files(Request $request): JsonResponse
+    {
+        $dir = $request->get('path');
+        $html = '';
+        $javascript = '';
+
+        $files = scandir(_ROOT_ . $dir);
+        natcasesort($files);
+
+        foreach ($files as $fileName) {
+            if ('.' === mb_substr($fileName, 0, 1) || is_dir(_ROOT_ . $dir . '/' . $fileName)) {
+                continue;
+            }
+
+            $filePath = $dir . '/' . $fileName;
+            $file = File::getByPath($filePath);
+            if (!$file) {
+                $file = File::fromPath($filePath)->save();
+            }
+
+            $html .= $this->filehtml($file);
+            //TODO reduce net to javascript
+            $javascript .= $this->filejavascript($file);
+        }
+
+        return new JsonResponse(['id' => 'files', 'html' => $html, 'javascript' => $javascript]);
+    }
+
+    private function filejavascript(File $file): string
+    {
+        $data = [
+            'id'          => $file->getId(),
+            'path'        => $file->getPath(),
+            'mime'        => $file->getMime(),
+            'name'        => pathinfo($file->getPath(), PATHINFO_FILENAME),
+            'width'       => $file->getWidth(),
+            'height'      => $file->getHeight(),
+            'description' => $file->getDescription(),
+        ];
+
+        return 'files[' . $file->getId() . '] = new file(' . json_encode($data) . ');';
+    }
+
+    private function filehtml(File $file): string
+    {
+        $html = '';
+
+        $menuType = 'filetile';
+        $type = explode('/', $file->getMime());
+        $type = array_shift($type);
+        if (in_array($file->getMime(), ['image/gif', 'image/jpeg', 'image/png'], true)) {
+            $menuType = 'imagetile';
+        }
+        $html .= '<div id="tilebox' . $file->getId() . '" class="' . $menuType . '"><div class="image"';
+
+        $returnType = request()->get('return');
+        if ('ckeditor' === $returnType) {
+            $html .= ' onclick="files[' . $file->getId() . '].addToEditor()"';
+        } elseif ('thb' === $returnType && in_array($file->getMime(), ['image/gif', 'image/jpeg', 'image/png'], true)) {
+            if ($file->getWidth() <= Config::get('thumb_width')
+                && $file->getHeight() <= Config::get('thumb_height')
+            ) {
+                $html .= ' onclick="insertThumbnail(' . $file->getId() . ')"';
+            } else {
+                $html .= ' onclick="openImageThumbnail(' . $file->getId() . ')"';
+            }
+        } else {
+            $html .= ' onclick="files[' . $file->getId() . '].openfile();"';
+        }
+
+        $html .= '> <img src="';
+
+        $type = explode('/', $file->getMime());
+        $type = array_shift($type);
+        switch ($file->getMime()) {
+            case 'image/gif':
+            case 'image/jpeg':
+            case 'image/png':
+            case 'image/vnd.wap.wbmp':
+                $type = 'image-native';
+                break;
+            case 'application/pdf':
+                $type = 'pdf';
+                break;
+            case 'application/postscript':
+                $type = 'image';
+                break;
+            case 'application/futuresplash':
+            case 'application/vnd.ms-powerpoint':
+            case 'application/vnd.rn-realmedia':
+                $type = 'video';
+                break;
+            case 'application/msword':
+            case 'application/rtf':
+            case 'application/vnd.ms-excel':
+            case 'application/vnd.ms-works':
+                $type = 'text';
+                break;
+            case 'text/css':
+            case 'text/html':
+                $type = 'sys';
+                break;
+            case 'application/mac-binhex40':
+            case 'application/x-7z-compressed':
+            case 'application/x-bzip2':
+            case 'application/x-compressed': //missing
+            case 'application/x-compress': //missing
+            case 'application/x-gtar':
+            case 'application/x-gzip':
+            case 'application/x-rar':
+            case 'application/x-rar-compressed':
+            case 'application/x-stuffit':
+            case 'application/x-stuffitx':
+            case 'application/x-tar':
+            case 'application/x-zip':
+            case 'application/zip':
+                $type = 'zip';
+                break;
+        }
+
+        switch ($type) {
+            case 'image-native':
+                $html .= '/admin/image.php?path=' . rawurlencode($file->getPath()) . '&amp;maxW=128&amp;maxH=96';
+                break;
+            case 'pdf':
+            case 'image':
+            case 'video':
+            case 'audio':
+            case 'text':
+            case 'sys':
+            case 'zip':
+                $html .= '/admin/images/file-' . $type . '.gif';
+                break;
+            default:
+                $html .= '/admin/images/file-bin.gif';
+                break;
+        }
+
+        $pathinfo = pathinfo($file->getPath());
+        $html .= '" alt="" title="" /> </div><div ondblclick="showfilename(' . $file->getId() . ')" class="navn" id="navn'
+        . $file->getId() . 'div" title="' . $pathinfo['filename'] . '"> ' . $pathinfo['filename']
+        . '</div><form action="" method="get" onsubmit="document.getElementById(\'files\').focus();return false;" style="display:none" id="navn'
+        . $file->getId() . 'form"><p><input onblur="renamefile(\'' . $file->getId() . '\');" maxlength="'
+        . (251 - mb_strlen($pathinfo['dirname'], 'UTF-8')) . '" value="' . $pathinfo['filename']
+        . '" name="" /></p></form></div>';
+
+        return $html;
     }
 
     /**

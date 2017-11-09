@@ -267,7 +267,7 @@ function showfiles(dir)
     document.getElementById(dirToId(dir)).getElementsByTagName('a')[0].className = 'active';
 
     xHttp.cancel(showFilesRequest);
-    showFilesRequest = x_showfiles(dir, showfiles_r);
+    showFilesRequest = xHttp.request('/admin/explorer/files/?path=' + encodeURIComponent(dir), showfiles_r);
 }
 
 function showfiles_r(data)
