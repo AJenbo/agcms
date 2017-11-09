@@ -4,9 +4,7 @@ use AGCMS\Config;
 
 class Invoice extends AbstractEntity
 {
-    /**
-     * Table name in database.
-     */
+    /** Table name in database. */
     const TABLE_NAME = 'fakturas';
 
     // Backed by DB
@@ -16,27 +14,27 @@ class Invoice extends AbstractEntity
     private $timeStampPay;
     /** @var float Full amount */
     private $amount = 0.00;
-    /** @var string Client name */
+    /** @var string Billing name */
     private $name = '';
-    /** @var string Client attention */
+    /** @var string Billing attention */
     private $attn = '';
-    /** @var string Client address */
+    /** @var string Billing address */
     private $address = '';
-    /** @var string Client postbox */
+    /** @var string Billing postbox */
     private $postbox = '';
-    /** @var string Client zipcode */
+    /** @var string Billing zipcode */
     private $postcode = '';
-    /** @var string Client city */
+    /** @var string Billing city */
     private $city = '';
-    /** @var string Client country */
+    /** @var string Billing country */
     private $country = '';
-    /** @var string Client email */
+    /** @var string Billing email */
     private $email = '';
-    /** @var string Client phone number */
+    /** @var string Billing phone number */
     private $phone1 = '';
-    /** @var string Client mobile number */
+    /** @var string Billing mobile number */
     private $phone2 = '';
-    /** @var bool Is the shipping address different from the client address */
+    /** @var bool Is the shipping address different from the billing address */
     private $hasShippingAddress = false;
     /** @var string Shipping phone number */
     private $shippingPhone = '';
@@ -56,7 +54,7 @@ class Invoice extends AbstractEntity
     private $shippingCity = '';
     /** @var string Shipping country */
     private $shippingCountry = '';
-    /** @var string Shipping client visable note */
+    /** @var string Client visable note */
     private $note = '';
     /** @var string Name of responsible cleark */
     private $clerk = '';
@@ -133,6 +131,13 @@ class Invoice extends AbstractEntity
             ->setId($data['id'] ?? null);
     }
 
+    /**
+     * Set create time
+     *
+     * @param int $timeStamp
+     *
+     * @return self
+     */
     public function setTimeStamp(int $timeStamp): self
     {
         $this->timeStamp = $timeStamp;
@@ -140,11 +145,23 @@ class Invoice extends AbstractEntity
         return $this;
     }
 
+    /**
+     * Get create time
+     *
+     * @return int
+     */
     public function getTimeStamp(): int
     {
         return $this->timeStamp;
     }
 
+    /**
+     * Get time the payment was finalized
+     *
+     * @param int $timeStampPay
+     *
+     * @return self
+     */
     public function setTimeStampPay(int $timeStampPay): self
     {
         $this->timeStampPay = $timeStampPay;
@@ -152,11 +169,23 @@ class Invoice extends AbstractEntity
         return $this;
     }
 
+    /**
+     * Get time the payment was finalized
+     *
+     * @return ?int
+     */
     public function getTimeStampPay(): ?int
     {
         return $this->timeStampPay;
     }
 
+    /**
+     * Set total amount
+     *
+     * @param float $amount
+     *
+     * @return self
+     */
     public function setAmount(float $amount): self
     {
         $this->amount = $amount;
@@ -164,11 +193,23 @@ class Invoice extends AbstractEntity
         return $this;
     }
 
+    /**
+     * Get total amount
+     *
+     * @return float
+     */
     public function getAmount(): float
     {
         return $this->amount;
     }
 
+    /**
+     * Set billing name
+     *
+     * @param string $name
+     *
+     * @return self
+     */
     public function setName(string $name): self
     {
         $this->name = trim($name);
@@ -176,11 +217,23 @@ class Invoice extends AbstractEntity
         return $this;
     }
 
+    /**
+     * Get billing name
+     *
+     * @return string
+     */
     public function getName(): string
     {
         return $this->name;
     }
 
+    /**
+     * Set billing attention
+     *
+     * @param string $attn
+     *
+     * @return self
+     */
     public function setAttn(string $attn): self
     {
         $this->attn = trim($attn);
@@ -188,11 +241,23 @@ class Invoice extends AbstractEntity
         return $this;
     }
 
+    /**
+     * Get billing attention
+     *
+     * @return string
+     */
     public function getAttn(): string
     {
         return $this->attn;
     }
 
+    /**
+     * Set billing address
+     *
+     * @param string $address
+     *
+     * @return self
+     */
     public function setAddress(string $address): self
     {
         $this->address = trim($address);
@@ -200,11 +265,23 @@ class Invoice extends AbstractEntity
         return $this;
     }
 
+    /**
+     * Get billing address
+     *
+     * @return string
+     */
     public function getAddress(): string
     {
         return $this->address;
     }
 
+    /**
+     * Set billing postbox
+     *
+     * @param string $postbox
+     *
+     * @return self
+     */
     public function setPostbox(string $postbox): self
     {
         $this->postbox = trim($postbox);
@@ -212,11 +289,23 @@ class Invoice extends AbstractEntity
         return $this;
     }
 
+    /**
+     * Get billing postbox
+     *
+     * @return string
+     */
     public function getPostbox(): string
     {
         return $this->postbox;
     }
 
+    /**
+     * Set billing zipcode
+     *
+     * @param string $postcode
+     *
+     * @return self
+     */
     public function setPostcode(string $postcode): self
     {
         $this->postcode = trim($postcode);
@@ -224,11 +313,23 @@ class Invoice extends AbstractEntity
         return $this;
     }
 
+    /**
+     * Get billing zipcode
+     *
+     * @return string
+     */
     public function getPostcode(): string
     {
         return $this->postcode;
     }
 
+    /**
+     * Set billing city
+     *
+     * @param string $city
+     *
+     * @return self
+     */
     public function setCity(string $city): self
     {
         $this->city = trim($city);
@@ -236,11 +337,23 @@ class Invoice extends AbstractEntity
         return $this;
     }
 
+    /**
+     * Get billing city
+     *
+     * @return string
+     */
     public function getCity(): string
     {
         return $this->city;
     }
 
+    /**
+     * Set billing country
+     *
+     * @param string $country
+     *
+     * @return self
+     */
     public function setCountry(string $country): self
     {
         $this->country = trim($country);
@@ -248,11 +361,23 @@ class Invoice extends AbstractEntity
         return $this;
     }
 
+    /**
+     * Get billing country
+     *
+     * @return string
+     */
     public function getCountry(): string
     {
         return $this->country;
     }
 
+    /**
+     * Set billing email
+     *
+     * @param string $email
+     *
+     * @return self
+     */
     public function setEmail(string $email): self
     {
         $this->email = trim($email);
@@ -260,11 +385,23 @@ class Invoice extends AbstractEntity
         return $this;
     }
 
+    /**
+     * Get billing email
+     *
+     * @return string
+     */
     public function getEmail(): string
     {
         return $this->email;
     }
 
+    /**
+     * Set phone number
+     *
+     * @param string $phone1
+     *
+     * @return self
+     */
     public function setPhone1(string $phone1): self
     {
         $this->phone1 = trim($phone1);
@@ -272,11 +409,23 @@ class Invoice extends AbstractEntity
         return $this;
     }
 
+    /**
+     * Get phone number
+     *
+     * @return string
+     */
     public function getPhone1(): string
     {
         return $this->phone1;
     }
 
+    /**
+     * Set cellphone number
+     *
+     * @param string $phone2
+     *
+     * @return self
+     */
     public function setPhone2(string $phone2): self
     {
         $this->phone2 = trim($phone2);
@@ -284,11 +433,23 @@ class Invoice extends AbstractEntity
         return $this;
     }
 
+    /**
+     * Get cellphone number
+     *
+     * @return string
+     */
     public function getPhone2(): string
     {
         return $this->phone2;
     }
 
+    /**
+     * Set shipping address status
+     *
+     * @param bool $hasShippingAddress
+     *
+     * @return self
+     */
     public function setHasShippingAddress(bool $hasShippingAddress): self
     {
         $this->hasShippingAddress = $hasShippingAddress;
@@ -296,11 +457,23 @@ class Invoice extends AbstractEntity
         return $this;
     }
 
+    /**
+     * Has an address different from the billing address been entered for shipping
+     *
+     * @return bool
+     */
     public function hasShippingAddress(): bool
     {
         return $this->hasShippingAddress;
     }
 
+    /**
+     * Set shipping phone number
+     *
+     * @param string $shippingPhone
+     *
+     * @return self
+     */
     public function setShippingPhone(string $shippingPhone): self
     {
         $this->shippingPhone = trim($shippingPhone);
@@ -308,11 +481,23 @@ class Invoice extends AbstractEntity
         return $this;
     }
 
+    /**
+     * Get shipping phone number
+     *
+     * @return string
+     */
     public function getShippingPhone(): string
     {
         return $this->shippingPhone;
     }
 
+    /**
+     * Set shipping name
+     *
+     * @param string $shippingName
+     *
+     * @return self
+     */
     public function setShippingName(string $shippingName): self
     {
         $this->shippingName = trim($shippingName);
@@ -320,11 +505,23 @@ class Invoice extends AbstractEntity
         return $this;
     }
 
+    /**
+     * Get shipping name
+     *
+     * @return string
+     */
     public function getShippingName(): string
     {
         return $this->shippingName;
     }
 
+    /**
+     * Set shipping attention line
+     *
+     * @param string $shippingAttn
+     *
+     * @return self
+     */
     public function setShippingAttn(string $shippingAttn): self
     {
         $this->shippingAttn = trim($shippingAttn);
@@ -332,11 +529,23 @@ class Invoice extends AbstractEntity
         return $this;
     }
 
+    /**
+     * Get shipping attention line
+     *
+     * @return string
+     */
     public function getShippingAttn(): string
     {
         return $this->shippingAttn;
     }
 
+    /**
+     * Set first shipping address line
+     *
+     * @param string $shippingAddress
+     *
+     * @return self
+     */
     public function setShippingAddress(string $shippingAddress): self
     {
         $this->shippingAddress = trim($shippingAddress);
@@ -344,11 +553,23 @@ class Invoice extends AbstractEntity
         return $this;
     }
 
+    /**
+     * Get first shipping address line
+     *
+     * @return string
+     */
     public function getShippingAddress(): string
     {
         return $this->shippingAddress;
     }
 
+    /**
+     * Set secound shipping address line
+     *
+     * @param string $shippingAddress2
+     *
+     * @return self
+     */
     public function setShippingAddress2(string $shippingAddress2): self
     {
         $this->shippingAddress2 = trim($shippingAddress2);
@@ -356,11 +577,23 @@ class Invoice extends AbstractEntity
         return $this;
     }
 
+    /**
+     * Get secound shipping address line
+     *
+     * @return string
+     */
     public function getShippingAddress2(): string
     {
         return $this->shippingAddress2;
     }
 
+    /**
+     * Set shipping postbox
+     *
+     * @param string $shippingPostbox
+     *
+     * @return self
+     */
     public function setShippingPostbox(string $shippingPostbox): self
     {
         $this->shippingPostbox = trim($shippingPostbox);
@@ -368,11 +601,23 @@ class Invoice extends AbstractEntity
         return $this;
     }
 
+    /**
+     * Get shipping postbox
+     *
+     * @return string
+     */
     public function getShippingPostbox(): string
     {
         return $this->shippingPostbox;
     }
 
+    /**
+     * Set shipping zipcode
+     *
+     * @param string $shippingPostcode
+     *
+     * @return self
+     */
     public function setShippingPostcode(string $shippingPostcode): self
     {
         $this->shippingPostcode = trim($shippingPostcode);
@@ -380,11 +625,23 @@ class Invoice extends AbstractEntity
         return $this;
     }
 
+    /**
+     * Get shipping zipcode
+     *
+     * @return string
+     */
     public function getShippingPostcode(): string
     {
         return $this->shippingPostcode;
     }
 
+    /**
+     * Set shipping city
+     *
+     * @param string $shippingCity
+     *
+     * @return self
+     */
     public function setShippingCity(string $shippingCity): self
     {
         $this->shippingCity = trim($shippingCity);
@@ -392,11 +649,23 @@ class Invoice extends AbstractEntity
         return $this;
     }
 
+    /**
+     * Get shipping city
+     *
+     * @return string
+     */
     public function getShippingCity(): string
     {
         return $this->shippingCity;
     }
 
+    /**
+     * Set shipping country
+     *
+     * @param string $shippingCountry
+     *
+     * @return self
+     */
     public function setShippingCountry(string $shippingCountry): self
     {
         $this->shippingCountry = trim($shippingCountry);
@@ -404,11 +673,23 @@ class Invoice extends AbstractEntity
         return $this;
     }
 
+    /**
+     * Get shipping country
+     *
+     * @return string
+     */
     public function getShippingCountry(): string
     {
         return $this->shippingCountry;
     }
 
+    /**
+     * Set client note
+     *
+     * @param string $note
+     *
+     * @return self
+     */
     public function setNote(string $note): self
     {
         $this->note = trim($note);
@@ -416,11 +697,23 @@ class Invoice extends AbstractEntity
         return $this;
     }
 
+    /**
+     * Get client note
+     *
+     * @return string
+     */
     public function getNote(): string
     {
         return $this->note;
     }
 
+    /**
+     * Set clerk name
+     *
+     * @param string $clerk
+     *
+     * @return self
+     */
     public function setClerk(string $clerk): self
     {
         $this->clerk = trim($clerk);
@@ -428,11 +721,23 @@ class Invoice extends AbstractEntity
         return $this;
     }
 
+    /**
+     * Get clerk name
+     *
+     * @return string
+     */
     public function getClerk(): string
     {
         return $this->clerk;
     }
 
+    /**
+     * Set status
+     *
+     * @param string $status
+     *
+     * @return self
+     */
     public function setStatus(string $status): self
     {
         $this->status = $status;
@@ -440,11 +745,23 @@ class Invoice extends AbstractEntity
         return $this;
     }
 
+    /**
+     * Get status
+     *
+     * @return string
+     */
     public function getStatus(): string
     {
         return $this->status;
     }
 
+    /**
+     * Set fraight cost
+     *
+     * @param float $shipping
+     *
+     * @return self
+     */
     public function setShipping(float $shipping): self
     {
         $this->shipping = $shipping;
@@ -452,6 +769,11 @@ class Invoice extends AbstractEntity
         return $this;
     }
 
+    /**
+     * Get fraight cost
+     *
+     * @return float
+     */
     public function getShipping(): float
     {
         return $this->shipping;
@@ -968,9 +1290,19 @@ class Invoice extends AbstractEntity
         $itemTitle = implode('<', $itemTitle);
         $itemValue = implode('<', $itemValue);
 
+
+        $paydate = db()->eandq('0000-00-00');
+        if ($this->timeStampPay + db()->getTimeOffset()) {
+            $paydate = 'FROM_UNIXTIME(' . ($this->timeStampPay + db()->getTimeOffset()) . ')';
+        }
+        $date = db()->eandq('0000-00-00');
+        if ($this->timeStamp + db()->getTimeOffset()) {
+            $date = 'FROM_UNIXTIME(' . ($this->timeStamp + db()->getTimeOffset()) . ')';
+        }
+
         return [
-            'paydate'        => ($this->timeStampPay + db()->getTimeOffset()) ? ('FROM_UNIXTIME(' . ($this->timeStampPay + db()->getTimeOffset()) . ')') : db()->eandq('0000-00-00'),
-            'date'           => ($this->timeStamp + db()->getTimeOffset()) ? ('FROM_UNIXTIME(' . ($this->timeStamp + db()->getTimeOffset()) . ')') : db()->eandq('0000-00-00'),
+            'paydate'        => $paydate,
+            'date'           => $date,
             'quantities'     => db()->eandq($itemQuantities),
             'products'       => db()->eandq($itemTitle),
             'values'         => db()->eandq($itemValue),
