@@ -248,6 +248,35 @@ class File extends AbstractEntity
     }
 
     /**
+     * Check if file is in use.
+     *
+     * @param string $path
+     *
+     * @return bool
+     */
+    public function isInUse(): bool
+    {
+        $escapedPath = db()->esc($this->path);
+
+        return (bool) db()->fetchOne(
+            "
+            (
+                SELECT id FROM `sider`
+                WHERE `text` LIKE '%$escapedPath%' OR `billed` = '$escapedPath' LIMIT 1
+            )
+            UNION (
+                SELECT id FROM `template`
+                WHERE `text` LIKE '%$escapedPath%' OR `billed` = '$escapedPath' LIMIT 1
+            )
+            UNION (SELECT id FROM `special` WHERE `text` LIKE '%$escapedPath%' LIMIT 1)
+            UNION (SELECT id FROM `krav` WHERE `text` LIKE '%$escapedPath%' LIMIT 1)
+            UNION (SELECT id FROM `maerke` WHERE `ico` = '$escapedPath' LIMIT 1)
+            UNION (SELECT id FROM `kat` WHERE `icon` = '$escapedPath' LIMIT 1)
+            "
+        );
+    }
+
+    /**
      * Create new File from a file path.
      *
      * @param string $path The file path

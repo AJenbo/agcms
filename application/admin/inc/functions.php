@@ -391,32 +391,6 @@ function expandCategory(int $categoryId, string $inputType = ''): array
 }
 
 /**
- * Check if file is in use.
- */
-function isinuse(string $path): bool
-{
-    return (bool) db()->fetchOne(
-        "
-        (
-            SELECT id FROM `sider`
-            WHERE `text` LIKE '%$path%' OR `beskrivelse` LIKE '%$path%' OR `billed`
-            LIKE '$path' LIMIT 1
-        )
-        UNION (
-            SELECT id FROM `template`
-            WHERE `text` LIKE '%$path%' OR `beskrivelse` LIKE '%$path%' OR `billed`
-            LIKE '$path' LIMIT 1
-        )
-        UNION (SELECT id FROM `special` WHERE `text` LIKE '%$path%' LIMIT 1)
-        UNION (SELECT id FROM `krav` WHERE `text` LIKE '%$path%' LIMIT 1)
-        UNION (SELECT id FROM `maerke` WHERE `ico` LIKE '$path' LIMIT 1)
-        UNION (SELECT id FROM `list_rows` WHERE `cells` LIKE '%$path%' LIMIT 1)
-        UNION (SELECT id FROM `kat` WHERE `navn` LIKE '%$path%' OR `icon` LIKE '$path' LIMIT 1)
-        "
-    );
-}
-
-/**
  * Delete unused file.
  *
  * @return string[]|int[]
@@ -432,18 +406,6 @@ function deletefile(int $id, string $path): array
     }
 
     return ['error' => _('There was an error deleting the file, the file may be in use.')];
-}
-
-/**
- * Takes a string and changes it to comply with file name restrictions in windows, linux, mac and urls (UTF8)
- * .|"'´`:%=#&\/+?*<>{}-_.
- */
-function genfilename(string $filename): string
-{
-    $search = ['/[.&?\/:*"\'´`<>{}|%\s-_=+#\\\\]+/u', '/^\s+|\s+$/u', '/\s+/u'];
-    $replace = [' ', '', '-'];
-
-    return mb_strtolower(preg_replace($search, $replace, $filename), 'UTF-8');
 }
 
 //TODO document type doesn't allow element "input" here; missing one of "p", "h1", "h2", "h3", "h4", "h5", "h6", "div", "pre", "address", "fieldset", "ins", "del" start-tag.
@@ -550,7 +512,7 @@ function deleteuser(int $id): bool
 function fileExists(string $dir, string $filename, string $type = ''): array
 {
     $pathinfo = pathinfo($filename);
-    $filePath = _ROOT_ . $dir . '/' . genfilename($pathinfo['filename']);
+    $filePath = _ROOT_ . $dir . '/' . cleanFileName($pathinfo['filename']);
 
     if ('image' == $type) {
         $filePath .= '.jpg';
@@ -570,22 +532,6 @@ function newfaktura(): int
     );
 
     return db()->insert_id;
-}
-
-function makedir(string $adminDir, string $name): array
-{
-    $name = genfilename($name);
-    if (is_dir(_ROOT_ . $adminDir . '/' . $name)) {
-        return ['error' => _('A file or folder with the same name already exists.')];
-    }
-
-    if (!is_dir(_ROOT_ . $adminDir)
-        || !mkdir(_ROOT_ . $adminDir . '/' . $name, 0771)
-    ) {
-        return ['error' => _('Could not create folder, you may not have sufficient rights to this folder.')];
-    }
-
-    return ['error' => false];
 }
 
 //TODO if force, refresh folder or we might have duplicates displaying in the folder.
@@ -632,7 +578,7 @@ function renamefile($id, string $path, string $dir, string $filename, bool $forc
         $filename = $pathinfo['filename'];
     }
 
-    $filename = genfilename($filename);
+    $filename = cleanFileName($filename);
 
     if (!$filename) {
         return ['error' => _('The name is invalid.'), 'id' => $id];
@@ -778,108 +724,6 @@ function deletefolder(string $dir)
     }
 
     return true;
-}
-
-/**
- * @return string[]
- */
-function searchfiles(string $qpath, string $qalt, string $qmime): array
-{
-    $qpath = db()->escapeWildcards(db()->esc($qpath));
-    $qalt = db()->escapeWildcards(db()->esc($qalt));
-
-    $sqlMime = '';
-    switch ($qmime) {
-        case 'image':
-            $sqlMime = "(mime = 'image/jpeg' OR mime = 'image/png' OR mime = 'image/gif' OR mime = 'image/vnd.wap.wbmp')";
-            break;
-        case 'imagefile':
-            $sqlMime = "(mime = 'application/postscript' OR mime = 'image/x-ms-bmp' OR mime = 'image/x-psd' OR mime = 'image/x-photoshop' OR mime = 'image/tiff' OR mime = 'image/x-eps' OR mime = 'image/bmp')";
-            break;
-        case 'video':
-            $sqlMime = "mime LIKE 'video/%'";
-            break;
-        case 'audio':
-            $sqlMime = "(mime = 'audio/vnd.rn-realaudio' OR mime = 'audio/x-wav' OR mime = 'audio/mpeg' OR mime = 'audio/midi' OR mime = 'audio/x-ms-wma')";
-            break;
-        case 'text':
-            $sqlMime = "(mime = 'application/pdf' OR mime = 'text/plain' OR mime = 'application/rtf' OR mime = 'text/rtf' OR mime = 'application/msword' OR mime = 'application/vnd.ms-works' OR mime = 'application/vnd.ms-excel')";
-            break;
-        case 'sysfile':
-            $sqlMime = "(mime = 'text/html' OR mime = 'text/css')";
-            break;
-        case 'compressed':
-            $sqlMime = "(mime = 'application/x-gzip' OR mime = 'application/x-gtar' OR mime = 'application/x-tar' OR mime = 'application/x-stuffit' OR mime = 'application/x-stuffitx' OR mime = 'application/zip' OR mime = 'application/x-zip' OR mime = 'application/x-compressed' OR mime = 'application/x-compress' OR mime = 'application/mac-binhex40' OR mime = 'application/x-rar-compressed' OR mime = 'application/x-rar' OR mime = 'application/x-bzip2' OR mime = 'application/x-7z-compressed')";
-            break;
-    }
-
-    //Generate search query
-    $sql = ' FROM `files`';
-    if ($qpath || $qalt || $sqlMime) {
-        $sql .= ' WHERE ';
-        if ($qpath || $qalt) {
-            $sql .= '(';
-        }
-        if ($qpath) {
-            $sql .= "MATCH(path) AGAINST('" . $qpath . "')>0";
-        }
-        if ($qpath && $qalt) {
-            $sql .= ' OR ';
-        }
-        if ($qalt) {
-            $sql .= "MATCH(alt) AGAINST('" . $qalt . "')>0";
-        }
-        if ($qpath) {
-            $sql .= " OR `path` LIKE '%" . $qpath . "%' ";
-        }
-        if ($qalt) {
-            $sql .= " OR `alt` LIKE '%" . $qalt . "%'";
-        }
-        if ($qpath || $qalt) {
-            $sql .= ')';
-        }
-        if (($qpath || $qalt) && !empty($sqlMime)) {
-            $sql .= ' AND ';
-        }
-        if (!empty($sqlMime)) {
-            $sql .= $sqlMime;
-        }
-    }
-
-    $sqlSelect = '';
-    if ($qpath || $qalt) {
-        $sqlSelect .= ', ';
-        if ($qpath && $qalt) {
-            $sqlSelect .= '(';
-        }
-        if ($qpath) {
-            $sqlSelect .= 'MATCH(path) AGAINST(\'' . $qpath . '\')';
-        }
-        if ($qpath && $qalt) {
-            $sqlSelect .= ' + ';
-        }
-        if ($qalt) {
-            $sqlSelect .= 'MATCH(alt) AGAINST(\'' . $qalt . '\')';
-        }
-        if ($qpath && $qalt) {
-            $sqlSelect .= ')';
-        }
-        $sqlSelect .= ' AS score';
-        $sql = $sqlSelect . $sql;
-        $sql .= ' ORDER BY `score` DESC';
-    }
-
-    $html = '';
-    $javascript = '';
-    foreach (ORM::getByQuery(File::class, 'SELECT *' . $sql) as $file) {
-        assert($file instanceof File);
-        if ('unused' !== $qmime || !isinuse($file->getPath())) {
-            $html .= filehtml($file);
-            $javascript .= filejavascript($file);
-        }
-    }
-
-    return ['id' => 'files', 'html' => $html, 'javascript' => $javascript];
 }
 
 function edit_alt(int $id, string $description): array

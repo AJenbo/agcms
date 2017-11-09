@@ -326,8 +326,8 @@ function htmlUrlDecode(string $html): string
 {
     // Double encode special characters, to survive next step, and remove extra white space
     $html = str_replace(
-        ['/&amp;/u', '/&lt;/u', '/&gt;/u', '/&quot;/u', '%3C', '%3E', '%26', '%22'],
-        ['&amp;quot;', '&amp;lt;', '&amp;gt;', '&amp;amp;', '&amp;quot;', '&amp;lt;', '&amp;gt;', '&amp;amp;'],
+        ['&quot;', '&lt;', '&gt;', '&amp;'],
+        ['&amp;quot;', '&amp;lt;', '&amp;gt;', '&amp;amp;'],
         $html
     );
 

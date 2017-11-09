@@ -57,6 +57,9 @@ $app->addRoute('GET', '/admin/sitetree/', SiteTreeController::class, 'index');
 $app->addRoute('GET', '/admin/sitetree/([-\d]+)/lable/', SiteTreeController::class, 'lable');
 $app->addRoute('GET', '/admin/explorer/', ExplorerController::class, 'index');
 $app->addRoute('GET', '/admin/explorer/folders/', ExplorerController::class, 'folders');
+$app->addRoute('POST', '/admin/explorer/folders/', ExplorerController::class, 'folderCreate');
+$app->addRoute('DELETE', '/admin/explorer/folders/', ExplorerController::class, 'folderDelete');
 $app->addRoute('GET', '/admin/explorer/files/', ExplorerController::class, 'files');
+$app->addRoute('GET', '/admin/explorer/search/', ExplorerController::class, 'search');
 
 $app->run(Request::createFromGlobals());

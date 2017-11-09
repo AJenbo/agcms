@@ -243,7 +243,9 @@ function searchfiles()
     qtype = getSelect('searchtype');
 
     xHttp.cancel(searchfilesRequest);
-    x_searchfiles(qpath, qalt, qtype, showfiles_r);
+    searchfilesRequest = xHttp.request('/admin/explorer/search/?qpath=' + encodeURIComponent(qpath) + '&qalt='
+            + encodeURIComponent(qalt) + '&qtype=' + encodeURIComponent(qtype),
+        showfiles_r);
 }
 
 function getSelect(id)
@@ -377,7 +379,9 @@ function makedir()
 {
     if(name = prompt('Hvad skal mappen hede?', 'Ny mappe')) {
         document.getElementById('loading').style.visibility = '';
-        x_makedir(activeDir, name, makedir_r);
+        xHttp.request(
+            '/admin/explorer/folders/?path=' + encodeURIComponent(activeDir) + '&name=' + encodeURIComponent(name),
+            makedir_r, "POST");
     }
 }
 
@@ -507,9 +511,9 @@ function renamefile_r(data)
 
 function deletefile(id)
 {
-    if(confirm('vil du slette \'' + files[id].name + '\'?')) {
+    if(confirm('Vil du slette \'' + files[id].name + '\'?')) {
         document.getElementById('loading').style.visibility = '';
-        x_deletefile(id, files[id].path, deletefile_r);
+        xHttp.request('/admin/explorer/files/' + id + "/", deletefile_r, "DELETE");
     }
 }
 
