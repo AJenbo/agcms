@@ -218,14 +218,14 @@ function edit_alt(id)
 {
     var newalt = prompt('Billed beskrivelse', files[id].alt);
     if(newalt != null && newalt != files[id].alt) {
-        $('loading').style.visibility = '';
+        document.getElementById('loading').style.visibility = '';
         x_edit_alt(id, newalt, edit_alt_r);
     }
 }
 
 function edit_alt_r(data)
 {
-    document.getElementById('loading').style.display = 'none';
+    document.getElementById('loading').style.visibility = 'hidden';
     if(data.error) {
         alert(data.error);
         return;
@@ -237,7 +237,7 @@ function edit_alt_r(data)
 var searchfilesRequest = null;
 function searchfiles()
 {
-    document.getElementById('loading').style.display = '';
+    document.getElementById('loading').style.visibility = '';
     qpath = document.getElementById('searchpath').value;
     qalt = document.getElementById('searchalt').value;
     qtype = getSelect('searchtype');
@@ -259,7 +259,7 @@ function showfiles(dir)
     activeDir = dir;
     setCookie('admin_dir', activeDir, 360);
 
-    document.getElementById('loading').style.display = '';
+    document.getElementById('loading').style.visibility = '';
     dirlist = document.getElementById('dir').getElementsByTagName('a');
     for(var i = 0; i < dirlist.length; i++) {
         dirlist[i].className = '';
@@ -298,14 +298,14 @@ function renamedir(newNameObj)
 {
     newNameObj.parentNode.parentNode.style.display = 'none';
     newNameObj.parentNode.parentNode.previousSibling.style.display = '';
-    document.getElementById('loading').style.display = '';
+    document.getElementById('loading').style.visibility = '';
     x_renamefile(idToDir(newNameObj.parentNode.parentNode.parentNode.id),
         idToDir(newNameObj.parentNode.parentNode.parentNode.id), '', newNameObj.value, renamedir_r);
 }
 
 function renamedir_r(data)
 {
-    document.getElementById('loading').style.display = 'none';
+    document.getElementById('loading').style.visibility = 'hidden';
     if(data.error) {
         var divdir = document.getElementById(dirToId(data.id));
         var form = divdir.getElementsByTagName('form');
@@ -317,7 +317,7 @@ function renamedir_r(data)
     var formId = 'dir_' + data.id + 'form';
     if(data.yesno) {
         if(confirm(data.yesno)) {
-            document.getElementById('loading').style.display = '';
+            document.getElementById('loading').style.visibility = '';
             x_renamefile(data.id, document.getElementById(formId).lastChild.value, '',
                 document.getElementById(formId).firstChild.value, 1, renamefile_r);
             return;
@@ -376,14 +376,14 @@ function deletefolder_r(data)
 function makedir()
 {
     if(name = prompt('Hvad skal mappen hede?', 'Ny mappe')) {
-        document.getElementById('loading').style.display = '';
+        document.getElementById('loading').style.visibility = '';
         x_makedir(activeDir, name, makedir_r);
     }
 }
 
 function makedir_r(data)
 {
-    document.getElementById('loading').style.display = 'none';
+    document.getElementById('loading').style.visibility = 'hidden';
     if(data.error) {
         alert(data.error);
         return;
@@ -406,7 +406,7 @@ function dir_expand(dirdiv, move)
 {
     dirdiv = dirdiv.parentNode;
     if(dirdiv.lastChild.firstChild == null) {
-        document.getElementById('loading').style.display = '';
+        document.getElementById('loading').style.visibility = '';
         xHttp.request(
             '/admin/explorer/folders/?path=' + encodeURIComponent(idToDir(dirdiv.id)) + '&move=' + (move ? 1 : 0),
             dir_expand_r);
@@ -420,7 +420,7 @@ function dir_expand(dirdiv, move)
 
 function dir_expand_r(data)
 {
-    document.getElementById('loading').style.display = 'none';
+    document.getElementById('loading').style.visibility = 'hidden';
     if(data.error) {
         alert(data.error);
         return;
@@ -472,14 +472,14 @@ function renamefile(id)
 {
     showhide('navn' + id + 'div');
     showhide('navn' + id + 'form');
-    document.getElementById('loading').style.display = '';
+    document.getElementById('loading').style.visibility = '';
     x_renamefile(id, files[id].path, '', document.getElementById('navn' + id + 'form').firstChild.firstChild.value,
         renamefile_r);
 }
 
 function renamefile_r(data)
 {
-    document.getElementById('loading').style.display = 'none';
+    document.getElementById('loading').style.visibility = 'hidden';
     if(data.error) {
         document.getElementById('navn' + data.id + 'form').firstChild.firstChild.value = files[data.id].name;
         alert(data.error);
@@ -488,7 +488,7 @@ function renamefile_r(data)
 
     if(data.yesno) {
         if(confirm(data.yesno)) {
-            document.getElementById('loading').style.display = '';
+            document.getElementById('loading').style.visibility = '';
             x_renamefile(data.id, files[data.id].path, '',
                 document.getElementById('navn' + data.id + 'form').firstChild.firstChild.value, 1, renamefile_r);
             return;
@@ -508,14 +508,14 @@ function renamefile_r(data)
 function deletefile(id)
 {
     if(confirm('vil du slette \'' + files[id].name + '\'?')) {
-        document.getElementById('loading').style.display = '';
+        document.getElementById('loading').style.visibility = '';
         x_deletefile(id, files[id].path, deletefile_r);
     }
 }
 
 function deletefile_r(data)
 {
-    document.getElementById('loading').style.display = 'none';
+    document.getElementById('loading').style.visibility = 'hidden';
     if(data.error) {
         alert(data.error);
         return;
