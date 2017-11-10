@@ -6,6 +6,7 @@ use AGCMS\Controller\Admin\AdminController;
 use AGCMS\Controller\Admin\ExplorerController;
 use AGCMS\Controller\Admin\PageController;
 use AGCMS\Controller\Admin\SiteTreeController;
+use AGCMS\Controller\Admin\InvoiceController;
 use AGCMS\Controller\Ajax;
 use AGCMS\Controller\Feed;
 use AGCMS\Controller\Payment;
@@ -61,5 +62,6 @@ $app->addRoute('POST', '/admin/explorer/folders/', ExplorerController::class, 'f
 $app->addRoute('DELETE', '/admin/explorer/folders/', ExplorerController::class, 'folderDelete');
 $app->addRoute('GET', '/admin/explorer/files/', ExplorerController::class, 'files');
 $app->addRoute('GET', '/admin/explorer/search/', ExplorerController::class, 'search');
+$app->addRoute('GET', '/admin/invoices/([\d]+)/pdf/', InvoiceController::class, 'pdf');
 
 $app->run(Request::createFromGlobals());

@@ -1627,7 +1627,6 @@ function sendInvoice(Invoice $invoice): void
             'postcode' => Config::get('postcode'),
             'city' => Config::get('city'),
             'phone' => Config::get('phone'),
-            'fax' => Config::get('fax'),
         ]
     );
 
