@@ -40,19 +40,19 @@ $app->addRoute('GET', '/order/', Shopping::class, 'basket');
 $app->addRoute('GET', '/order/address/', Shopping::class, 'address');
 $app->addRoute('POST', '/order/send/', Shopping::class, 'send');
 $app->addRoute('GET', '/betaling/', Payment::class, 'index');
-$app->addRoute('GET', '/betaling/([\d]+)/([^/]+)/', Payment::class, 'basket');
-$app->addRoute('GET', '/betaling/([\d]+)/([^/]+)/address/', Payment::class, 'address');
-$app->addRoute('POST', '/betaling/([\d]+)/([^/]+)/address/', Payment::class, 'addressSave');
-$app->addRoute('GET', '/betaling/([\d]+)/([^/]+)/terms/', Payment::class, 'terms');
-$app->addRoute('GET', '/betaling/([\d]+)/([^/]+)/status/', Payment::class, 'status');
-$app->addRoute('GET', '/betaling/([\d]+)/([^/]+)/callback/', Payment::class, 'callback');
+$app->addRoute('GET', '/betaling/(\d+)/([^/]+)/', Payment::class, 'basket');
+$app->addRoute('GET', '/betaling/(\d+)/([^/]+)/address/', Payment::class, 'address');
+$app->addRoute('POST', '/betaling/(\d+)/([^/]+)/address/', Payment::class, 'addressSave');
+$app->addRoute('GET', '/betaling/(\d+)/([^/]+)/terms/', Payment::class, 'terms');
+$app->addRoute('GET', '/betaling/(\d+)/([^/]+)/status/', Payment::class, 'status');
+$app->addRoute('GET', '/betaling/(\d+)/([^/]+)/callback/', Payment::class, 'callback');
 
 // Admin pages
 $app->addRoute('GET', '/admin/', AdminController::class, 'index');
 $app->addRoute('GET', '/admin/editpage/', PageController::class, 'index');
 $app->addRoute('POST', '/admin/editpage/', PageController::class, 'createPage');
-$app->addRoute('GET', '/admin/editpage/([\d]+)/', PageController::class, 'index');
-$app->addRoute('PUT', '/admin/editpage/([\d]+)/', PageController::class, 'updatePage');
+$app->addRoute('GET', '/admin/editpage/(\d+)/', PageController::class, 'index');
+$app->addRoute('PUT', '/admin/editpage/(\d+)/', PageController::class, 'updatePage');
 $app->addRoute('GET', '/admin/editpage/pagelist/', PageController::class, 'pageList');
 $app->addRoute('GET', '/admin/sitetree/', SiteTreeController::class, 'index');
 $app->addRoute('GET', '/admin/sitetree/([-\d]+)/lable/', SiteTreeController::class, 'lable');
@@ -61,7 +61,8 @@ $app->addRoute('GET', '/admin/explorer/folders/', ExplorerController::class, 'fo
 $app->addRoute('POST', '/admin/explorer/folders/', ExplorerController::class, 'folderCreate');
 $app->addRoute('DELETE', '/admin/explorer/folders/', ExplorerController::class, 'folderDelete');
 $app->addRoute('GET', '/admin/explorer/files/', ExplorerController::class, 'files');
+$app->addRoute('DELETE', '/admin/explorer/files/(\d+)/', ExplorerController::class, 'fileDelete');
 $app->addRoute('GET', '/admin/explorer/search/', ExplorerController::class, 'search');
-$app->addRoute('GET', '/admin/invoices/([\d]+)/pdf/', InvoiceController::class, 'pdf');
+$app->addRoute('GET', '/admin/invoices/(\d+)/pdf/', InvoiceController::class, 'pdf');
 
 $app->run(Request::createFromGlobals());
