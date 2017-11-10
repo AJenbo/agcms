@@ -194,7 +194,7 @@ class InvoicePdfService
         $this->pdf->Write(0, $address);
 
         //Delivery address
-        $address = $this->getBillingAddress($countries);
+        $address = $this->getShippingAddress($countries);
         if ($address) {
             $this->pdf->SetMargins(110, 0, 0);
             $this->pdf->Write(0, "\n");
