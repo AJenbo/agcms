@@ -675,57 +675,6 @@ function replacePaths(string $path, string $newPath): void
     db()->query("UPDATE kat       SET navn  = REPLACE(navn, '" . $pathEsc . "', '" . $newPathEsc . "'), icon = REPLACE(icon, '" . $pathEsc . "', '" . $newPathEsc . "')");
 }
 
-/**
- * Rename or relocate a file/directory.
- *
- * return bool False if one or more files coud not be deleted
- */
-function deltree(string $dir): bool
-{
-    $success = true;
-
-    $nodes = scandir(_ROOT_ . $dir);
-    foreach ($nodes as $node) {
-        if ('.' === $node || '..' === $node) {
-            continue;
-        }
-
-        if (is_dir(_ROOT_ . $dir . '/' . $node)) {
-            $success = $success && deltree($dir . '/' . $node);
-            continue;
-        }
-
-        if (db()->fetchOne("SELECT id FROM `sider` WHERE `navn` LIKE '%" . $dir . '/' . $node . "%' OR `text` LIKE '%" . $dir . '/' . $node . "%' OR `beskrivelse` LIKE '%" . $dir . '/' . $node . "%' OR `billed` LIKE '%" . $dir . '/' . $node . "%'")
-            || db()->fetchOne("SELECT id FROM `template` WHERE `navn` LIKE '%" . $dir . '/' . $node . "%' OR `text` LIKE '%" . $dir . '/' . $node . "%' OR `beskrivelse` LIKE '%" . $dir . '/' . $node . "%' OR `billed` LIKE '%" . $dir . '/' . $node . "%'")
-            || db()->fetchOne("SELECT id FROM `special` WHERE `text` LIKE '%" . $dir . '/' . $node . "%'")
-            || db()->fetchOne("SELECT id FROM `krav` WHERE `text` LIKE '%" . $dir . '/' . $node . "%'")
-            || db()->fetchOne("SELECT id FROM `maerke` WHERE `ico` LIKE '%" . $dir . '/' . $node . "%'")
-            || db()->fetchOne("SELECT id FROM `list_rows` WHERE `cells` LIKE '%" . $dir . '/' . $node . "%'")
-            || db()->fetchOne("SELECT id FROM `kat` WHERE `navn` LIKE '%" . $dir . '/' . $node . "%' OR `icon` LIKE '%" . $dir . '/' . $node . "%'")
-        ) {
-            $success = false;
-            continue;
-        }
-
-        unlink(_ROOT_ . $dir . '/' . $node);
-    }
-    unlink(_ROOT_ . $dir);
-
-    return $success;
-}
-
-/**
- * @return string[]|true
- */
-function deletefolder(string $dir)
-{
-    if (!deltree($dir)) {
-        return ['error' => _('A file could not be deleted because it is used on a site.')];
-    }
-
-    return true;
-}
-
 function edit_alt(int $id, string $description): array
 {
     $file = ORM::getOne(File::class, $id);

@@ -258,6 +258,67 @@ class ExplorerController extends AbstractAdminController
     }
 
     /**
+     * Create new folder
+     *
+     * @param Request $request
+     *
+     * @return JsonResponse
+     */
+    public function folderDelete(Request $request): JsonResponse
+    {
+        $path = $request->get('path', '');
+        if (realpath(_ROOT_ . $path) !== _ROOT_ . $path) {
+            return new JsonResponse(['error' => _('Invalid path.')]);
+        }
+
+        $files = ORM::getByQuery(
+            File::class,
+            'SELECT * FROM `' . File::TABLE_NAME . "` WHERE path LIKE '" . db()->esc($path) . "/%'"
+        );
+        foreach ($files as $file) {
+            if ($file->isInUse()) {
+                return new JsonResponse(['error' => sprintf(_('"%s" is still in use.'), $file->getPath())]);
+            }
+
+            $file->delete();
+        }
+
+        if (!$this->deltree(_ROOT_ . $path)) {
+            return new JsonResponse(['error' => _('A file could not be deleted because it is used on a site.')]);
+        }
+
+        return new JsonResponse(['error' => false]);
+    }
+
+    /**
+     * Delete a folder structure
+     *
+     * Alle files must be deleted seperatly
+     *
+     * return bool
+     */
+    private function deltree(string $path): bool
+    {
+        $success = true;
+
+        $nodes = scandir($path);
+        foreach ($nodes as $node) {
+            if ('.' === $node || '..' === $node) {
+                continue;
+            }
+
+            if (!is_dir($path . '/' . $node)) {
+                return false;
+            }
+
+            $success = $success && $this->deltree($path . '/' . $node);
+        }
+        rmdir($path);
+
+        return $success;
+    }
+
+    /**
      * File viwer
      *
      * @param Request $request

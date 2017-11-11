@@ -362,7 +362,7 @@ function deletefolder()
 {
     // TODO hvilket folder?
     if(confirm('Er du sikker på du vil slette denne mappe og dens indhold?')) {
-        x_deletefolder(activeDir, deletefolder_r);
+        xHttp.request('/admin/explorer/folders/?path=' + encodeURIComponent(activeDir), deletefolder_r, "DELETE");
         setCookie('admin_dir', '', 360);
     }
 }
