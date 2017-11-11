@@ -33,7 +33,7 @@ file.prototype.openfile = function() {
     var height = this.height;
     var type = popupType(this.mime);
     if(type) {
-        url = 'popup-' + type + '.php?url=' + encodeURIComponent(url);
+        url = '/admin/explorer/files/' + this.id + '/view/';
         if(type === 'audio') {
             width = 300;
             height = 40;

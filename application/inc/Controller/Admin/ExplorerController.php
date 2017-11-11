@@ -255,6 +255,31 @@ class ExplorerController extends AbstractAdminController
     }
 
     /**
+     * File viwer
+     *
+     * @param Request $request
+     * @param int     $id
+     *
+     * @return Response
+     */
+    public function fileView(Request $request, int $id): Response
+    {
+        /** @var File */
+        $file = ORM::getOne(File::class, $id);
+        $template = 'admin/popup-image';
+
+        if (mb_strpos($file->getMime(), 'video/') === 0) {
+            $template = 'admin/popup-video';
+        } elseif (mb_strpos($file->getMime(), 'audio/') === 0) {
+            $template = 'admin/popup-audio';
+        }
+
+        $content = Render::render($template, ['file' => $file]);
+
+        return new Response($content);
+    }
+
+    /**
      * Takes a string and changes it to comply with file name restrictions in windows, linux, mac and urls (UTF8)
      * .|"'´`:%=#&\/+?*<>{}-_
      *

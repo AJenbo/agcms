@@ -62,6 +62,7 @@ $app->addRoute('POST', '/admin/explorer/folders/', ExplorerController::class, 'f
 $app->addRoute('DELETE', '/admin/explorer/folders/', ExplorerController::class, 'folderDelete');
 $app->addRoute('GET', '/admin/explorer/files/', ExplorerController::class, 'files');
 $app->addRoute('DELETE', '/admin/explorer/files/(\d+)/', ExplorerController::class, 'fileDelete');
+$app->addRoute('GET', '/admin/explorer/files/(\d+)/view/', ExplorerController::class, 'fileView');
 $app->addRoute('GET', '/admin/explorer/search/', ExplorerController::class, 'search');
 $app->addRoute('GET', '/admin/invoices/(\d+)/pdf/', InvoiceController::class, 'pdf');
 
