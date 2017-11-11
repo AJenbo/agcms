@@ -261,17 +261,15 @@ class File extends AbstractEntity
         return (bool) db()->fetchOne(
             "
             (
-                SELECT id FROM `sider`
-                WHERE `text` LIKE '%$escapedPath%' OR `billed` = '$escapedPath' LIMIT 1
+                SELECT id FROM `sider`    WHERE `text` LIKE '%=\"$escapedPath\"%' OR `billed` = '$escapedPath' LIMIT 1
             )
             UNION (
-                SELECT id FROM `template`
-                WHERE `text` LIKE '%$escapedPath%' OR `billed` = '$escapedPath' LIMIT 1
+                SELECT id FROM `template` WHERE `text` LIKE '%=\"$escapedPath\"%' OR `billed` = '$escapedPath' LIMIT 1
             )
-            UNION (SELECT id FROM `special` WHERE `text` LIKE '%$escapedPath%' LIMIT 1)
-            UNION (SELECT id FROM `krav` WHERE `text` LIKE '%$escapedPath%' LIMIT 1)
-            UNION (SELECT id FROM `maerke` WHERE `ico` = '$escapedPath' LIMIT 1)
-            UNION (SELECT id FROM `kat` WHERE `icon` = '$escapedPath' LIMIT 1)
+            UNION (SELECT id FROM `special` WHERE `text` LIKE '%=\"$escapedPath\"%' LIMIT 1)
+            UNION (SELECT id FROM `krav`    WHERE `text` LIKE '%=\"$escapedPath\"%' LIMIT 1)
+            UNION (SELECT id FROM `maerke`  WHERE `ico`  = '$escapedPath' LIMIT 1)
+            UNION (SELECT id FROM `kat`     WHERE `icon` = '$escapedPath' LIMIT 1)
             "
         );
     }
