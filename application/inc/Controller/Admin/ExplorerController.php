@@ -63,19 +63,22 @@ class ExplorerController extends AbstractAdminController
      */
     public function files(Request $request): JsonResponse
     {
-        $dir = $request->get('path');
-        $html = '';
-        $javascript = '';
+        $path = $request->get('path');
+        if (realpath(_ROOT_ . $path) !== _ROOT_ . $path) {
+            return new JsonResponse(['error' => _('Invalid path.')]);
+        }
 
-        $files = scandir(_ROOT_ . $dir);
+        $files = scandir(_ROOT_ . $path);
         natcasesort($files);
 
+        $html = '';
+        $javascript = '';
         foreach ($files as $fileName) {
-            if ('.' === mb_substr($fileName, 0, 1) || is_dir(_ROOT_ . $dir . '/' . $fileName)) {
+            if ('.' === mb_substr($fileName, 0, 1) || is_dir(_ROOT_ . $path . '/' . $fileName)) {
                 continue;
             }
 
-            $filePath = $dir . '/' . $fileName;
+            $filePath = $path . '/' . $fileName;
             $file = File::getByPath($filePath);
             if (!$file) {
                 $file = File::fromPath($filePath)->save();
