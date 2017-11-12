@@ -36,7 +36,7 @@ file.prototype.openfile = function() {
     var height = this.height;
     var type = popupType(this.mime);
     if(type) {
-        url = '/admin/explorer/files/' + this.id + '/view/';
+        url = '/admin/explorer/files/' + this.id + '/';
         if(type === 'audio') {
             width = 300;
             height = 40;
@@ -246,7 +246,7 @@ function searchfiles()
     qtype = getSelect('searchtype');
 
     xHttp.cancel(searchfilesRequest);
-    searchfilesRequest = xHttp.request('/admin/explorer/search/?qpath=' + encodeURIComponent(qpath) + '&qalt='
+    searchfilesRequest = xHttp.request('/admin/explorer/files/search/?qpath=' + encodeURIComponent(qpath) + '&qalt='
             + encodeURIComponent(qalt) + '&qtype=' + encodeURIComponent(qtype) + '&return='
             + encodeURIComponent(returnType),
         showfiles_r);
@@ -479,7 +479,7 @@ function renamefile(id)
     showhide('navn' + id + 'form');
     var payload = { "name" : document.getElementById('navn' + id + 'form').firstChild.firstChild.value };
     document.getElementById('loading').style.visibility = '';
-    xHttp.request('/admin/explorer/files/' + id + '/move/', renamefile_r, 'PUT', payload);
+    xHttp.request('/admin/explorer/files/' + id + '/', renamefile_r, 'PUT', payload);
 }
 
 function renamefile_r(data)
@@ -498,7 +498,7 @@ function renamefile_r(data)
                 "name" : document.getElementById('navn' + data.id + 'form').firstChild.firstChild.value,
                 "overwrite" : true
             };
-            xHttp.request('/admin/explorer/files/' + data.id + '/move/', renamefile_r, 'PUT', payload);
+            xHttp.request('/admin/explorer/files/' + data.id + '/', renamefile_r, 'PUT', payload);
             return;
         }
 

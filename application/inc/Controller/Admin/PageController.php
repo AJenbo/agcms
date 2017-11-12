@@ -65,32 +65,6 @@ class PageController extends AbstractAdminController
     }
 
     /**
-     * Page picker widget
-     *
-     * @param Request $request
-     *
-     * @return Response
-     */
-    public function pageList(Request $request): Response
-    {
-        $openCategories = explode('<', $request->cookies->get('openkat', ''));
-        $openCategories = array_map('intval', $openCategories);
-
-        $siteTreeService = new SiteTreeService();
-        $data = [
-            'siteTree' => $siteTreeService->getSiteTreeData(
-                $openCategories,
-                'pages',
-                $request->cookies->get('activekat', -1)
-            ),
-        ];
-
-        $content = Render::render('admin/pagelist', $data);
-
-        return new Response($content);
-    }
-
-    /**
      * Create new page and attach it to a category.
      *
      * @param Request $request
