@@ -5,7 +5,6 @@ use AGCMS\Entity\File;
 use AGCMS\Exception\InvalidInput;
 use AGCMS\ORM;
 use AGCMS\Render;
-use DirectoryIterator;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -742,12 +741,9 @@ class ExplorerController extends AbstractAdminController
     private function getSubDirs(string $path): array
     {
         $dirs = [];
-        $iterator = new DirectoryIterator(_ROOT_ . $path);
-        foreach ($iterator as $fileinfo) {
-            if ($fileinfo->isDot() || !$fileinfo->isDir()) {
-                continue;
-            }
-            $dirs[] = $fileinfo->getFilename();
+        $folders = glob(_ROOT_ . $path . '/*/');
+        foreach ($folders as $folder) {
+            $dirs[] = pathinfo($folder, PATHINFO_BASENAME);
         }
 
         natcasesort($dirs);
@@ -769,13 +765,6 @@ class ExplorerController extends AbstractAdminController
      */
     private function hasSubsDirs(string $path): bool
     {
-        $iterator = new DirectoryIterator(_ROOT_ . $path);
-        foreach ($iterator as $fileinfo) {
-            if (!$fileinfo->isDot() && $fileinfo->isDir()) {
-                return true;
-            }
-        }
-
-        return false;
+        return (bool) glob(_ROOT_ . $path . '/*/');
     }
 }
