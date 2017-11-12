@@ -81,6 +81,7 @@ class Application
             $response = new Response($exception->getMessage());
             $response->setStatusCode(Response::HTTP_INTERNAL_SERVER_ERROR);
         }
+        $response->prepare($request);
         $response->isNotModified($request); // Set up 304 response if relevant
         $response->send();
     }

@@ -7,10 +7,15 @@ use AGCMS\ORM;
 use AGCMS\Render;
 use AGCMS\Service\FileService;
 use AGCMS\Service\UploadHandler;
+use AJenbo\Image;
+use DateTime;
+use Symfony\Component\HttpFoundation\BinaryFileResponse;
+use Symfony\Component\HttpFoundation\File\MimeType\MimeTypeGuesser;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\ResponseHeaderBag;
 
 class ExplorerController extends AbstractAdminController
 {
@@ -540,5 +545,93 @@ class ExplorerController extends AbstractAdminController
         $this->fileService->replaceFolderPaths($path, $newPath);
 
         return new JsonResponse(['filename' => $name, 'path' => $path, 'newPath' => $newPath]);
+    }
+
+    /**
+     * Dynamic image
+     *
+     * @param Request $request
+     *
+     * @return Response
+     */
+    public function image(Request $request): Response
+    {
+        $path = $request->get('path');
+        $this->fileService->checkPermittedPath($path);
+
+        $timestamp = filemtime(_ROOT_ . $path);
+        $lastModified = DateTime::createFromFormat('U', (string) $timestamp);
+
+        $response = new Response();
+        $response->setLastModified($lastModified);
+        if ($response->isNotModified($request)) {
+            $response->setMaxAge(2592000); // one month
+            return $response;
+        }
+
+        $cropX = $request->get('cropX', 0);
+        $cropY = $request->get('cropY', 0);
+        $cropW = $request->get('cropW', 0);
+        $cropH = $request->get('cropH', 0);
+        $maxW = $request->get('maxW', 0);
+        $maxH = $request->get('maxH', 0);
+        $flip = $request->get('flip', 0);
+        $rotate = $request->get('rotate', 0);
+
+        $type = 'jpeg';
+        $guesser = MimeTypeGuesser::getInstance();
+        $mime = $guesser->guess(_ROOT_ . $path);
+        if ($mime !== 'image/jpeg') {
+            $type = 'png';
+        }
+
+        $image = new Image(_ROOT_ . $path);
+
+        $orginalWidth = $image->getWidth();
+        $orginalHeight = $image->getHeight();
+
+        // Crop image
+        $cropW = min($image->getWidth(), $cropW);
+        $cropH = min($image->getHeight(), $cropH);
+        $cropX = $cropX + $cropW < $image->getWidth() ? $cropX : 0;
+        $cropY = $cropY + $cropH < $image->getHeight() ? $cropY : 0;
+        $image->crop($cropX, $cropY, $cropW, $cropH);
+
+        // Trim image whitespace
+        $imageContent = $image->findContent();
+
+        $maxW = min($maxW, $imageContent['width']);
+        $maxH = min($maxH, $imageContent['height']);
+
+        if (!$flip && !$rotate && $maxW === $orginalWidth && $maxH === $orginalHeight) {
+            return $this->redirect($request, $path, Response::HTTP_MOVED_PERMANENTLY);
+        }
+
+        $image->crop(
+            $imageContent['x'],
+            $imageContent['y'],
+            $imageContent['width'],
+            $imageContent['height']
+        );
+
+        // Resize
+        $image->resize($maxW, $maxH);
+
+        // Flip / mirror
+        if ($flip) {
+            $image->flip(1 === $flip ? 'x' : 'y');
+        }
+
+        $image->rotate($rotate);
+
+        $target = tempnam(sys_get_temp_dir(), 'image');
+        $image->save($target, $type);
+
+        $response = new BinaryFileResponse($target);
+        $response->setContentDisposition(ResponseHeaderBag::DISPOSITION_INLINE, pathinfo($path, PATHINFO_BASENAME));
+        $response->setMaxAge(2592000); // one month
+        $response->setLastModified($lastModified);
+
+        return $response;
     }
 }

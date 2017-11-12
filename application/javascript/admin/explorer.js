@@ -97,8 +97,8 @@ file.prototype.addToEditor = function() {
 };
 
 file.prototype.refreshThumb = function() {
-    $('tilebox' + this.id).firstChild.childNodes[1].src
-        = 'image.php?path=' + encodeURIComponent(this.path) + '&maxW=128&maxH=96&timestamp=' + unix_timestamp();
+    $('tilebox' + this.id).firstChild.childNodes[1].src = '/admin/explorer/image/?path=' + encodeURIComponent(this.path)
+        + '&maxW=128&maxH=96&timestamp=' + unix_timestamp();
 };
 
 function unix_timestamp()

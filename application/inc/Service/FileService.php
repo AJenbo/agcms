@@ -274,7 +274,7 @@ class FileService
 
         switch ($type) {
             case 'image-native':
-                $html .= '/admin/image.php?path=' . rawurlencode($file->getPath()) . '&amp;maxW=128&amp;maxH=96';
+                $html .= '/admin/explorer/image/?path=' . rawurlencode($file->getPath()) . '&amp;maxW=128&amp;maxH=96';
                 break;
             case 'pdf':
             case 'image':
