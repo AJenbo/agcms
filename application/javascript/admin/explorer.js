@@ -475,8 +475,8 @@ function insertThumbnail(id)
 
 function renamefile(id)
 {
-    showhide('navn' + id + 'div');
-    showhide('navn' + id + 'form');
+    document.getElementById('navn' + id + 'form').style.display = 'none';
+    document.getElementById('navn' + id + 'div').style.display = '';
     var payload = { "name" : document.getElementById('navn' + id + 'form').firstChild.firstChild.value };
     document.getElementById('loading').style.visibility = '';
     xHttp.request('/admin/explorer/files/' + id + '/', renamefile_r, 'PUT', payload);
@@ -531,12 +531,6 @@ function deletefile_r(data)
 
     removeTagById('tilebox' + data.id);
     files[data.id] = null;
-}
-
-function showhide(id)
-{
-    object = document.getElementById(id);
-    object.style.display = (object.style.display === 'none') ? '' : 'none';
 }
 
 function swap_pannel(navn)

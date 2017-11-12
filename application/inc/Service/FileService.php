@@ -292,11 +292,11 @@ class FileService
         $pathinfo = pathinfo($file->getPath());
         $html .= '" alt="" title="" /> </div><div ondblclick="showfilename(' . $file->getId()
             . ')" class="navn" id="navn' . $file->getId() . 'div" title="' . $pathinfo['filename'] . '"> '
-            . $pathinfo['filename']
-            . '</div><form action="" method="get" onsubmit="document.getElementById(\'files\').focus();return false;" style="display:none" id="navn'
-            . $file->getId() . 'form"><p><input onblur="renamefile(\'' . $file->getId() . '\');" maxlength="'
-            . (251 - mb_strlen($pathinfo['dirname'], 'UTF-8')) . '" value="' . $pathinfo['filename']
-            . '" name="" /></p></form></div>';
+            . $pathinfo['filename'] . '</div><form action="" method="get" onsubmit="document.getElementById(\'rename'
+            . $file->getId() . '\').blur();return false" style="display:none" id="navn' . $file->getId()
+            . 'form"><p><input id="rename' . $file->getId() . '" onblur="renamefile(\'' . $file->getId()
+            . '\');" maxlength="' . (251 - mb_strlen($pathinfo['dirname'], 'UTF-8')) . '" value="'
+            . $pathinfo['filename'] . '" /></p></form></div>';
 
         return $html;
     }

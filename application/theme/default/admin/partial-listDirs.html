@@ -8,10 +8,10 @@
     <a{% if not dir.hassubs %} style="margin-left:16px"{% endif %}{% if dir.path == activeDir %} class="active"{% endif %} title="{{dir.name}}"{% if not move %} ondblclick="showdirname(this)"{% endif %} onclick="{% if not move %}showfiles({{dir.path|json_encode()}}){% else %}movefile({{dir.path|json_encode()}}){% endif %}">
         <img src="/theme/default/images/admin/folder.png" height="16" width="16" alt="" /> <span>{{dir.name}}</span>
     </a>
-    <form action="" method="get" onsubmit="document.getElementById('files').focus();return false" style="display:none">
-        <p style="display: inline; margin-left: {% if not dir.hassubs %}16{% else %}3{% endif %}px;">
-            <img width="16" height="16" alt="" src="/theme/default/images/admin/folder.png"/>
-            <input style="display:inline;" onblur="renamedir(this);" maxlength="{{254 - dir.path|length}}" value="{{dir.name}}" name="{{dir.path}}" />
+    <form action="" method="get" onsubmit="document.getElementById('renameDir_{{dir.id}}').blur();return false" style="display:none">
+        <p style="display:inline;margin-left:{% if not dir.hassubs %}16{% else %}3{% endif %}px">
+            <img width="16" height="16" alt="" src="/theme/default/images/admin/folder.png" />
+            <input id="renameDir_{{dir.id}}" style="display:inline" onblur="renamedir(this)" maxlength="{{254 - dir.path|length}}" value="{{dir.name}}" name="{{dir.path}}" />
         </p>
     </form>
     {% if dir.hassubs %}
