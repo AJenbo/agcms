@@ -445,6 +445,14 @@ class ExplorerController extends AbstractAdminController
         return new JsonResponse(['filename' => $name, 'path' => $path, 'newPath' => $newPath]);
     }
 
+    /**
+     * Replace file paths in the html of pages, templates and requirements
+     *
+     * @param string $path
+     * @param string $newPath
+     *
+     * @return void
+     */
     private function replaceFolderPaths(string $path, string $newPath): void
     {
         $newPathEsc = db()->esc($newPath);
@@ -593,6 +601,13 @@ class ExplorerController extends AbstractAdminController
         return mb_strtolower(preg_replace($search, $replace, $filename), 'UTF-8');
     }
 
+    /**
+     * Generate javascript for setting up file objects in Explorer
+     *
+     * @param File $file
+     *
+     * @return string
+     */
     private function filejavascript(File $file): string
     {
         $data = [
@@ -608,6 +623,14 @@ class ExplorerController extends AbstractAdminController
         return 'files[' . $file->getId() . '] = new file(' . json_encode($data) . ');';
     }
 
+    /**
+     * Generate display HTML for file objects in Explorer
+     *
+     * @param File   $file
+     * @param string $returnType
+     *
+     * @return string
+     */
     private function filehtml(File $file, string $returnType = ''): string
     {
         $html = '';

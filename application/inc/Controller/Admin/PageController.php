@@ -64,17 +64,26 @@ class PageController extends AbstractAdminController
         return new Response($content);
     }
 
+    /**
+     * Page picker widget
+     *
+     * @param Request $request
+     *
+     * @return Response
+     */
     public function pageList(Request $request): Response
     {
         $openCategories = explode('<', $request->cookies->get('openkat', ''));
         $openCategories = array_map('intval', $openCategories);
 
         $siteTreeService = new SiteTreeService();
-        $data = ['siteTree' => $siteTreeService->getSiteTreeData(
-            $openCategories,
-            'pages',
-            $request->cookies->get('activekat', -1)
-        )];
+        $data = [
+            'siteTree' => $siteTreeService->getSiteTreeData(
+                $openCategories,
+                'pages',
+                $request->cookies->get('activekat', -1)
+            ),
+        ];
 
         $content = Render::render('admin/pagelist', $data);
 

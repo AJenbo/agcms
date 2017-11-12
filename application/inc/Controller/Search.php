@@ -111,11 +111,11 @@ class Search extends Base
     /**
      * Check if we should performe the search or handle it else where
      *
-     * @param mixed $request
+     * @param Request $request
      *
      * @return ?RedirectResponse
      */
-    private function checkSearchable($request): ?RedirectResponse
+    private function checkSearchable(Request $request): ?RedirectResponse
     {
         if (!$request->get('q')
             && !$request->get('varenr')
@@ -139,6 +139,13 @@ class Search extends Base
 
     /**
      * Search for pages and generate a list or redirect if only one was found.
+     *
+     * @param string $searchString
+     * @param int    $brandId
+     * @param string $varenr
+     * @param int    $minpris
+     * @param int    $maxpris
+     * @param string $antiWords
      *
      * @return Page[]
      */
@@ -223,6 +230,9 @@ class Search extends Base
     /**
      * Search for brands.
      *
+     * @param string $searchString
+     * @param string $antiWords
+     *
      * @return Brand[]
      */
     private function findBrands(string $searchString, string $antiWords): array
@@ -250,6 +260,9 @@ class Search extends Base
 
     /**
      * Search for categories.
+     *
+     * @param string $searchString
+     * @param string $antiWords
      *
      * @return Category[]
      */
