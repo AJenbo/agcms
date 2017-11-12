@@ -13,7 +13,7 @@ use AGCMS\Controller\Payment;
 use AGCMS\Controller\Search;
 use AGCMS\Controller\Shopping;
 use AGCMS\Controller\Site;
-use Symfony\Component\HttpFoundation\Request;
+use AGCMS\Request;
 
 require_once __DIR__ . '/vendor/autoload.php';
 

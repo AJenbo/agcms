@@ -345,16 +345,14 @@ class ExplorerController extends AbstractAdminController
      */
     public function renameFile(Request $request, int $id): JsonResponse
     {
-        $postData = json_decode($request->getContent(), true);
-
         /** @var File */
         $file = ORM::getOne(File::class, $id);
         $pathinfo = pathinfo($file->getPath());
 
-        $dir = $postData['dir'] ?? $pathinfo['dirname'];
-        $filename = $postData['name'] ?? $pathinfo['filename'];
+        $dir = $request->request->get('dir', $pathinfo['dirname']);
+        $filename = $request->request->get('name', $pathinfo['filename']);
         $filename = $this->cleanFileName($filename);
-        $overwrite = !empty($postData['overwrite']);
+        $overwrite = $request->request->getBoolean('overwrite');
 
         $newPath = $dir . '/' . $filename . '.' . $pathinfo['extension'];
 
@@ -405,11 +403,10 @@ class ExplorerController extends AbstractAdminController
      */
     public function renameFolder(Request $request): JsonResponse
     {
-        $postData = json_decode($request->getContent(), true);
-        $path = $postData['path'];
-        $name = $postData['name'];
+        $path = $request->request->get('path', '');
+        $name = $request->request->get('name', '');
         $name = $this->cleanFileName($name);
-        $overwrite = !empty($postData['overwrite']);
+        $overwrite = $request->request->getBoolean('overwrite');
 
         $pathinfo = pathinfo($path);
         $newPath = $pathinfo['dirname'] . '/' . $name;

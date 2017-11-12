@@ -90,24 +90,22 @@ class PageController extends AbstractAdminController
      */
     public function createPage(Request $request): JsonResponse
     {
-        $pageData = json_decode($request->getContent(), true);
-
-        $category = ORM::getOne(Category::class, $pageData['categoryId']);
+        $category = ORM::getOne(Category::class, $request->request->get('categoryId'));
         assert($category instanceof Category);
 
         $page = new Page([
-            'title'          => $pageData['title'],
-            'keywords'       => $pageData['keywords'],
-            'excerpt'        => $pageData['excerpt'],
-            'html'           => purifyHTML($pageData['html']),
-            'sku'            => $pageData['sku'],
-            'icon_id'        => $pageData['iconId'],
-            'requirement_id' => $pageData['requirementId'],
-            'brand_id'       => $pageData['brandId'],
-            'price'          => $pageData['price'],
-            'old_price'      => $pageData['oldPrice'],
-            'price_type'     => $pageData['priceType'],
-            'old_price_type' => $pageData['oldPriceType'],
+            'title'          => $request->request->get('title'),
+            'keywords'       => $request->request->get('keywords'),
+            'excerpt'        => $request->request->get('excerpt'),
+            'html'           => purifyHTML($request->request->get('html')),
+            'sku'            => $request->request->get('sku'),
+            'icon_id'        => $request->request->get('iconId'),
+            'requirement_id' => $request->request->get('requirementId'),
+            'brand_id'       => $request->request->get('brandId'),
+            'price'          => $request->request->get('price'),
+            'old_price'      => $request->request->get('oldPrice'),
+            'price_type'     => $request->request->get('priceType'),
+            'old_price_type' => $request->request->get('oldPriceType'),
         ]);
         $page->save();
         $page->addToCategory($category);
@@ -124,27 +122,25 @@ class PageController extends AbstractAdminController
      */
     public function updatePage(Request $request, int $id): JsonResponse
     {
-        $pageData = json_decode($request->getContent(), true);
-
         $icon = null;
-        if (null !== $pageData['iconId']) {
-            $icon = ORM::getOne(File::class, $pageData['iconId']);
+        if (null !== $request->request->get('iconId')) {
+            $icon = ORM::getOne(File::class, $request->request->get('iconId'));
         }
 
         $page = ORM::getOne(Page::class, $id);
         assert($page instanceof Page);
-        $page->setKeywords($pageData['keywords'])
-            ->setPrice($pageData['price'])
-            ->setSku($pageData['sku'])
-            ->setOldPrice($pageData['oldPrice'])
-            ->setExcerpt($pageData['excerpt'])
-            ->setRequirementId($pageData['requirementId'])
-            ->setBrandId($pageData['brandId'])
+        $page->setKeywords($request->request->get('keywords'))
+            ->setPrice($request->request->get('price'))
+            ->setSku($request->request->get('sku'))
+            ->setOldPrice($request->request->get('oldPrice'))
+            ->setExcerpt($request->request->get('excerpt'))
+            ->setRequirementId($request->request->get('requirementId'))
+            ->setBrandId($request->request->get('brandId'))
             ->setIcon($icon)
-            ->setPriceType($pageData['priceType'])
-            ->setOldPriceType($pageData['oldPriceType'])
-            ->setHtml(purifyHTML($pageData['html']))
-            ->setTitle($pageData['title'])
+            ->setPriceType($request->request->get('priceType'))
+            ->setOldPriceType($request->request->get('oldPriceType'))
+            ->setHtml(purifyHTML($request->request->get('html')))
+            ->setTitle($request->request->get('title'))
             ->save();
 
         return new JsonResponse(['success' => true]);
