@@ -20,11 +20,13 @@ class ExplorerController extends AbstractAdminController
      */
     public function index(Request $request): Response
     {
+        $currentDir = $request->cookies->get('admin_dir', '/images');
+
         $data = [
             'returnType' => $request->get('return', ''),
             'returnid' => $request->get('returnid', ''),
             'bgcolor'  => Config::get('bgcolor'),
-            'dirs'     => $this->getRootDirs(),
+            'dirs'     => $this->getRootDirs($currentDir),
         ];
 
         $content = Render::render('admin/explorer', $data);
@@ -43,11 +45,12 @@ class ExplorerController extends AbstractAdminController
     {
         $path = $request->get('path');
         $move = $request->query->getBoolean('move');
+        $currentDir = $request->cookies->get('admin_dir', '/images');
 
         $html = Render::render(
             'admin/partial-listDirs',
             [
-                'dirs' => $this->getSubDirs($path),
+                'dirs' => $this->getSubDirs($path, $currentDir),
                 'move' => $move,
             ]
         );
@@ -321,13 +324,14 @@ class ExplorerController extends AbstractAdminController
      */
     public function fileMoveDialog(Request $request, int $id): Response
     {
+        $currentDir = $request->cookies->get('admin_dir', '/images');
+
         /** @var File */
         $file = ORM::getOne(File::class, $id);
-        $template = 'admin/popup-image';
 
         $data = [
             'file' => $file,
-            'dirs' => $this->getRootDirs(),
+            'dirs' => $this->getRootDirs($currentDir),
         ];
         $content = Render::render('admin/file-move', $data);
 
@@ -715,13 +719,15 @@ class ExplorerController extends AbstractAdminController
     /**
      * Get root of folder tree
      *
+     * @param string $currentDir
+     *
      * @return array[]
      */
-    private function getRootDirs(): array
+    private function getRootDirs(string $currentDir): array
     {
         $dirs = [];
         foreach (['/images' => _('Images'), '/files' => _('Files')] as $path => $name) {
-            $dirs[] = $this->formatDir($path, $name);
+            $dirs[] = $this->formatDir($path, $name, $currentDir);
         }
 
         return $dirs;
@@ -732,14 +738,15 @@ class ExplorerController extends AbstractAdminController
      *
      * @param string $path
      * @param string $name
+     * @param string $currentDir
      *
      * @return array
      */
-    private function formatDir(string $path, string $name): array
+    private function formatDir(string $path, string $name, string $currentDir): array
     {
         $subs = [];
-        if (0 === mb_strpos(request()->cookies->get('admin_dir'), $path)) {
-            $subs = $this->getSubDirs($path);
+        if (0 === mb_strpos($currentDir, $path)) {
+            $subs = $this->getSubDirs($path, $currentDir);
             $hassubs = (bool) $subs;
         } else {
             $hassubs = $this->hasSubsDirs($path);
@@ -758,22 +765,19 @@ class ExplorerController extends AbstractAdminController
      * Return list of folders in a folder.
      *
      * @param string $path
+     * @param string $currentDir
      *
      * @return array[]
      */
-    private function getSubDirs(string $path): array
+    private function getSubDirs(string $path, string $currentDir): array
     {
-        $dirs = [];
         $folders = glob(_ROOT_ . $path . '/*/');
+        natcasesort($folders);
+
+        $dirs = [];
         foreach ($folders as $folder) {
-            $dirs[] = pathinfo($folder, PATHINFO_BASENAME);
-        }
-
-        natcasesort($dirs);
-        $dirs = array_values($dirs);
-
-        foreach ($dirs as $index => $dir) {
-            $dirs[$index] = $this->formatDir($path . '/' . $dir, $dir);
+            $name = pathinfo($folder, PATHINFO_BASENAME);
+            $dirs[] = $this->formatDir($path . '/' . $name, $name, $currentDir);
         }
 
         return $dirs;
