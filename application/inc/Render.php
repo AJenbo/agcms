@@ -1,6 +1,7 @@
 <?php namespace AGCMS;
 
 use DateTime;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Twig_Environment;
 use Twig_Loader_Filesystem;
@@ -84,14 +85,16 @@ class Render
     }
 
     /**
-     * Set Last-Modified and ETag http headers
-     * and use cache if no updates since last visit.
+     * Set Last-Modified and ETag http headers and use cache if no updates since last visit.
      *
+     * @param Request $request
      * @param int|null $timestamp Unix time stamp of last update to content
+     *
+     * @return void
      */
-    public static function sendCacheHeader(int $timestamp = null): void
+    public static function sendCacheHeader(Request $request, int $timestamp = null): void
     {
-        if (!request()->isMethodCacheable()) {
+        if (!$request->isMethodCacheable()) {
             return;
         }
 
@@ -114,7 +117,7 @@ class Render
         $response->setEtag((string) $timestamp);
         $response->setMaxAge(0);
 
-        if ($response->isNotModified(request())) {
+        if ($response->isNotModified($request)) {
             $response->send();
             exit;
         }

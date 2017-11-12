@@ -78,4 +78,60 @@ class SiteTreeController extends AbstractAdminController
 
         return new Response($content);
     }
+
+    /**
+     * List all site products.
+     *
+     * @param Request $request
+     *
+     * @return Response
+     */
+    public function inventory(Request $request): Response
+    {
+        Render::addLoadedTable('bind');
+        Render::addLoadedTable('kat');
+        Render::addLoadedTable('krav');
+        Render::addLoadedTable('maerke');
+        Render::addLoadedTable('sider');
+        Render::sendCacheHeader($request);
+
+        $categoryId = $request->request->get('kat', '');
+        $sort = $request->get('sort', 'navn');
+
+        $sortOptions = [
+            'id'     => 'ID',
+            'navn'   => 'Navn',
+            'varenr' => 'Varenummer',
+            'for'    => 'Før pris',
+            'pris'   => 'Nu Pris',
+            'dato'   => 'Sidst ændret',
+            'maerke' => 'Mærke',
+            'krav'   => 'Krav',
+        ];
+
+        $reverseOrder = false;
+        if ('-' === mb_substr($sort, 0, 1)) {
+            $sort = mb_substr($sort, 1);
+            $reverseOrder = true;
+        }
+
+        $sort = isset($sortOptions[$sort]) ? $sort : 'navn';
+
+        $categories = ORM::getByQuery(Category::class, 'SELECT * FROM kat WHERE bind IS NULL');
+        if ('' !== $categoryId) {
+            $categories = [ORM::getOne(Category::class, $categoryId)];
+        }
+
+        $data = [
+            'sortOptions'  => $sortOptions,
+            'sort'         => $sort,
+            'reverseOrder' => $reverseOrder,
+            'categories'   => $categories,
+            'pathPrefix'   => '',
+            'categoryId'   => $categoryId,
+        ];
+        $content = Render::render('admin/listview', $data);
+
+        return new Response($content);
+    }
 }

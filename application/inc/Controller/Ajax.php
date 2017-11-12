@@ -26,7 +26,7 @@ class Ajax extends Base
         Render::addLoadedTable('sider');
         Render::addLoadedTable('bind');
         Render::addLoadedTable('kat');
-        Render::sendCacheHeader();
+        Render::sendCacheHeader($request);
 
         $html = '';
 
@@ -58,7 +58,7 @@ class Ajax extends Base
         Render::addLoadedTable('sider');
         Render::addLoadedTable('bind');
         Render::addLoadedTable('kat');
-        Render::sendCacheHeader();
+        Render::sendCacheHeader($request);
 
         $data = [
             'renderable' => ORM::getOne(Category::class, $categoryId),
@@ -84,7 +84,7 @@ class Ajax extends Base
         Render::addLoadedTable('fakturas');
         Render::addLoadedTable('email');
         Render::addLoadedTable('post');
-        Render::sendCacheHeader();
+        Render::sendCacheHeader($request);
 
         $default = [
             'name' => '',

@@ -64,6 +64,7 @@ $app->addRoute('PUT', '/admin/editpage/(\d+)/', PageController::class, 'updatePa
 $app->addRoute('GET', '/admin/sitetree/', SiteTreeController::class, 'index');
 $app->addRoute('GET', '/admin/sitetree/([-\d]+)/lable/', SiteTreeController::class, 'lable');
 $app->addRoute('GET', '/admin/sitetree/pageWidget/', SiteTreeController::class, 'pageWidget');
+$app->addRoute('GET', '/admin/sitetree/inventory/', SiteTreeController::class, 'inventory');
 // Explorer
 $app->addRoute('GET', '/admin/explorer/', ExplorerController::class, 'index');
 // Folder CRUD

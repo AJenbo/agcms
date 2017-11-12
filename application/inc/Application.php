@@ -71,7 +71,7 @@ class Application
         $ravenClient = new Raven_Client(Config::get('sentry'));
         $ravenClient->install();
 
-        Render::sendCacheHeader();
+        Render::sendCacheHeader($request);
         try {
             $response = $this->dispatch($request);
         } catch (Throwable $exception) {

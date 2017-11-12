@@ -6,17 +6,6 @@ use AGCMS\Render;
 use AJenbo\Imap;
 use PHPMailer\PHPMailer\Exception as PHPMailerException;
 use PHPMailer\PHPMailer\PHPMailer;
-use Symfony\Component\HttpFoundation\Request;
-
-function request(): Request
-{
-    static $request;
-    if (!$request) {
-        $request = Request::createFromGlobals();
-    }
-
-    return $request;
-}
 
 /**
  * Declare common functions.

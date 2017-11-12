@@ -26,7 +26,7 @@ class Feed extends Base
         Render::addLoadedTable('special');
         Render::addLoadedTable('maerke');
         Render::addLoadedTable('krav');
-        Render::sendCacheHeader();
+        Render::sendCacheHeader($request);
 
         $activeCategories = [];
         $activeCategoryIds = [];
@@ -88,7 +88,7 @@ class Feed extends Base
         Render::addLoadedTable('maerke');
         Render::addLoadedTable('sider');
         $timestamp = Render::getUpdateTime();
-        Render::sendCacheHeader($timestamp);
+        Render::sendCacheHeader($request, $timestamp);
 
         $time = false;
         if ($request->headers->has('If-Modified-Since')) {
@@ -169,7 +169,7 @@ class Feed extends Base
      */
     public function openSearch(Request $request): Response
     {
-        Render::sendCacheHeader(Render::getUpdateTime(false));
+        Render::sendCacheHeader($request, Render::getUpdateTime(false));
 
         $data = [
             'shortName' => Config::get('site_name'),
