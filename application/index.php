@@ -60,11 +60,12 @@ $app->addRoute('GET', '/admin/explorer/', ExplorerController::class, 'index');
 $app->addRoute('GET', '/admin/explorer/folders/', ExplorerController::class, 'folders');
 $app->addRoute('POST', '/admin/explorer/folders/', ExplorerController::class, 'folderCreate');
 $app->addRoute('DELETE', '/admin/explorer/folders/', ExplorerController::class, 'folderDelete');
+$app->addRoute('PUT', '/admin/explorer/folders/', ExplorerController::class, 'folderRename');
 $app->addRoute('GET', '/admin/explorer/files/', ExplorerController::class, 'files');
 $app->addRoute('DELETE', '/admin/explorer/files/(\d+)/', ExplorerController::class, 'fileDelete');
 $app->addRoute('GET', '/admin/explorer/files/(\d+)/view/', ExplorerController::class, 'fileView');
 $app->addRoute('GET', '/admin/explorer/files/(\d+)/move/', ExplorerController::class, 'fileMoveDialog');
-$app->addRoute('PUT', '/admin/explorer/files/(\d+)/move/', ExplorerController::class, 'renameFile');
+$app->addRoute('PUT', '/admin/explorer/files/(\d+)/move/', ExplorerController::class, 'fileRename');
 $app->addRoute('GET', '/admin/explorer/search/', ExplorerController::class, 'search');
 $app->addRoute('GET', '/admin/invoices/(\d+)/pdf/', InvoiceController::class, 'pdf');
 

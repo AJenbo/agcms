@@ -1,7 +1,6 @@
 ﻿var files = [];
 var activeDir = getCookie('admin_dir');
-// todo open this folder
-var activeDir = activeDir ? activeDir : '/images';
+
 var contextMenuFileTile;
 var contextMenuImageTile;
 
@@ -12,6 +11,10 @@ function init()
         = new Proto.Menu({ selector : '.filetile', "className" : 'menu desktop', menuItems : filetileContextMenu });
     contextMenuImageTile
         = new Proto.Menu({ selector : '.imagetile', "className" : 'menu desktop', menuItems : imagetileContextMenu });
+
+    if(!activeDir || !document.getElementById(dirToId(activeDir))) {
+        activeDir = '/images';
+    }
 
     showfiles(activeDir);
 }
@@ -304,40 +307,39 @@ function renamedir(newNameObj)
     newNameObj.parentNode.parentNode.style.display = 'none';
     newNameObj.parentNode.parentNode.previousSibling.style.display = '';
     document.getElementById('loading').style.visibility = '';
-    x_renamefile(idToDir(newNameObj.parentNode.parentNode.parentNode.id),
-        idToDir(newNameObj.parentNode.parentNode.parentNode.id), '', newNameObj.value, renamedir_r);
+    var payload = { "path" : idToDir(newNameObj.parentNode.parentNode.parentNode.id), "name" : newNameObj.value };
+    xHttp.request('/admin/explorer/folders/', renamedir_r, 'PUT', payload);
 }
 
 function renamedir_r(data)
 {
     document.getElementById('loading').style.visibility = 'hidden';
+    var form = document.getElementById(dirToId(data.path)).getElementsByTagName('form')[0];
     if(data.error) {
-        var divdir = document.getElementById(dirToId(data.id));
-        var form = divdir.getElementsByTagName('form');
-        form[0].firstChild.childNodes[1].value = form[0].previousSibling.title;
+        form.firstChild.childNodes[1].value = form.previousSibling.title;
         alert(data.error);
         return;
     }
 
-    var formId = 'dir_' + data.id + 'form';
     if(data.yesno) {
         if(confirm(data.yesno)) {
             document.getElementById('loading').style.visibility = '';
-            x_renamefile(data.id, document.getElementById(formId).lastChild.value, '',
-                document.getElementById(formId).firstChild.value, 1, renamefile_r);
+            var payload = {
+                "path" : data.path,
+                "name" : form.firstChild.childNodes[1].value,
+                "overwrite" : true,
+            };
+            xHttp.request('/admin/explorer/folders/', renamedir_r, 'PUT', payload);
             return;
         }
-        document.getElementById(formId).firstChild.value = document.getElementById('dir_' + data.id + 'name').innerHTML;
+        form.firstChild.childNodes[1].value = form.previousSibling.title;
         return;
     }
 
-    window.location.reload();
-    /*
-    document.getElementById('dir_'+data.id+'name').innerHTML = data.filename;
-    document.getElementById('dir_'+data.id+'name').parentNode.title = data.filename;
-    document.getElementById('dir_'+data.id+'form').firstChild.value = data.filename;
-    document.getElementById('dir_'+data.id+'form').lastChild.value = data.path;
-    */
+    if(data.newPath !== data.path) {
+        setCookie('admin_dir', data.newPath, 360);
+        window.location.reload();
+    }
 }
 
 var popup = null;
@@ -475,9 +477,9 @@ function renamefile(id)
 {
     showhide('navn' + id + 'div');
     showhide('navn' + id + 'form');
-    var data = { "name" : document.getElementById('navn' + id + 'form').firstChild.firstChild.value };
+    var payload = { "name" : document.getElementById('navn' + id + 'form').firstChild.firstChild.value };
     document.getElementById('loading').style.visibility = '';
-    xHttp.request('/admin/explorer/files/' + id + '/move/', renamefile_r, 'PUT', data);
+    xHttp.request('/admin/explorer/files/' + id + '/move/', renamefile_r, 'PUT', payload);
 }
 
 function renamefile_r(data)
@@ -492,8 +494,11 @@ function renamefile_r(data)
     if(data.yesno) {
         if(confirm(data.yesno)) {
             document.getElementById('loading').style.visibility = '';
-            x_renamefile(data.id, files[data.id].path, '',
-                document.getElementById('navn' + data.id + 'form').firstChild.firstChild.value, 1, renamefile_r);
+            var payload = {
+                "name" : document.getElementById('navn' + data.id + 'form').firstChild.firstChild.value,
+                "overwrite" : true
+            };
+            xHttp.request('/admin/explorer/files/' + data.id + '/move/', renamefile_r, 'PUT', payload);
             return;
         }
 

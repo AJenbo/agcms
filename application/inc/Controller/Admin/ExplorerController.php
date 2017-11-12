@@ -343,7 +343,7 @@ class ExplorerController extends AbstractAdminController
      *
      * @return JsonResponse
      */
-    public function renameFile(Request $request, int $id): JsonResponse
+    public function fileRename(Request $request, int $id): JsonResponse
     {
         /** @var File */
         $file = ORM::getOne(File::class, $id);
@@ -401,7 +401,7 @@ class ExplorerController extends AbstractAdminController
      *
      * @return JsonResponse
      */
-    public function renameFolder(Request $request): JsonResponse
+    public function folderRename(Request $request): JsonResponse
     {
         $path = $request->request->get('path', '');
         $name = $request->request->get('name', '');
@@ -412,7 +412,7 @@ class ExplorerController extends AbstractAdminController
         $newPath = $pathinfo['dirname'] . '/' . $name;
 
         if ($path === $newPath) {
-            return JsonResponse(['filename' => $name, 'path' => $newPath]);
+            return new JsonResponse(['filename' => $name, 'path' => $path, 'newPath' => $newPath]);
         }
 
         try {
@@ -424,7 +424,10 @@ class ExplorerController extends AbstractAdminController
 
             if (file_exists(_ROOT_ . $newPath)) {
                 if (!$overwrite) {
-                    return new JsonResponse(['yesno' =>_('A file with the same name already exists. Would you like to replace the existing file?')]);
+                    return new JsonResponse([
+                        'yesno' =>_('A file with the same name already exists. Would you like to replace the existing file?'),
+                        'path' => $path,
+                    ]);
                 }
 
                 $this->deleteFolder($newPath);
@@ -434,12 +437,12 @@ class ExplorerController extends AbstractAdminController
                 throw new InvalidInput(_('An error occurred with the file operations.'));
             }
         } catch (InvalidInput $exception) {
-            return new JsonResponse(['error' => $exception->getMessage()]);
+            return new JsonResponse(['error' => $exception->getMessage(), 'path' => $path]);
         }
 
         $this->replaceFolderPaths($path, $newPath);
 
-        return new JsonResponse(['filename' => $name, 'path' => $newPath]);
+        return new JsonResponse(['filename' => $name, 'path' => $path, 'newPath' => $newPath]);
     }
 
     private function replaceFolderPaths(string $path, string $newPath): void
@@ -497,7 +500,7 @@ class ExplorerController extends AbstractAdminController
     private function checkPermittedPath(string $path): void
     {
         if (realpath(_ROOT_ . $path) !== _ROOT_ . $path) {
-            throw new InvalidInput(_('Path may not be relative.'));
+            throw new InvalidInput(_('Path must be absolute.'));
         }
 
         if (mb_strpos($path . '/', '/files/') !== 0 && mb_strpos($path . '/', '/images/') !== 0) {
