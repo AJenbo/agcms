@@ -163,7 +163,7 @@ class Table extends AbstractEntity
         $this->columns = json_decode($columnData, true);
 
         foreach ($this->columns as $column) {
-            if (in_array($column['type'], [Table::COLUMN_TYPE_PRICE, Table::COLUMN_TYPE_PRICE_NEW], true)) {
+            if (in_array($column['type'], [self::COLUMN_TYPE_PRICE, self::COLUMN_TYPE_PRICE_NEW], true)) {
                 $this->hasPrices = true;
                 break;
             }
@@ -327,7 +327,7 @@ class Table extends AbstractEntity
     }
 
     /**
-     * Remove a row from the table
+     * Remove a row from the table.
      *
      * @param int $rowId
      *

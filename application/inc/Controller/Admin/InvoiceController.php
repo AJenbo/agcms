@@ -9,7 +9,7 @@ use Symfony\Component\HttpFoundation\Response;
 class InvoiceController extends AbstractAdminController
 {
     /**
-     * Show a pdf version of the invoice
+     * Show a pdf version of the invoice.
      *
      * @param Request $request
      *

@@ -2,7 +2,6 @@
 
 use AGCMS\Config;
 use AGCMS\Entity\File;
-use AGCMS\Service\FileService;
 use AJenbo\Image;
 use Exception;
 use getID3;
@@ -26,7 +25,7 @@ class UploadHandler
     private $file;
 
     /**
-     * Initialize the service
+     * Initialize the service.
      *
      * @param string $targetDir
      */
@@ -133,7 +132,7 @@ class UploadHandler
      */
     private function isVideoFile(): bool
     {
-        return mb_strpos($this->file->getMimeType() ?? '', 'video/') === 0;
+        return 0 === mb_strpos($this->file->getMimeType() ?? '', 'video/');
     }
 
     /**

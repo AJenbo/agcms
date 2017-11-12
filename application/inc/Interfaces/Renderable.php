@@ -3,14 +3,14 @@
 interface Renderable
 {
     /**
-     * Get page title
+     * Get page title.
      *
      * @return string
      */
     public function getTitle(): string;
 
     /**
-     * Get page link
+     * Get page link.
      *
      * @return string
      */

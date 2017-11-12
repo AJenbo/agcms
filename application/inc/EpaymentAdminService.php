@@ -59,7 +59,7 @@ class EpaymentAdminService
     }
 
     /**
-     * Get name of payment type
+     * Get name of payment type.
      *
      * @param int $paymentType
      *

@@ -80,7 +80,7 @@ class Payment extends Base
     }
 
     /**
-     * Page for user to correct there contact info
+     * Page for user to correct there contact info.
      *
      * @param Request $request
      * @param int     $id
@@ -118,7 +118,7 @@ class Payment extends Base
     }
 
     /**
-     * Update the contact infor and forwared the user in the payment process
+     * Update the contact infor and forwared the user in the payment process.
      *
      * @param Request $request
      * @param int     $id
@@ -162,6 +162,7 @@ class Payment extends Base
             if ($request->request->getBoolean('newsletter')) {
                 return $this->redirect($request, $invoice->getLink() . 'address/?newsletter=1');
             }
+
             return $this->redirect($request, $invoice->getLink() . 'address/');
         }
 
@@ -173,7 +174,7 @@ class Payment extends Base
     }
 
     /**
-     * Show the terms of condition
+     * Show the terms of condition.
      *
      * @param Request $request
      * @param int     $id
@@ -223,7 +224,7 @@ class Payment extends Base
     }
 
     /**
-     * Show the order status page
+     * Show the order status page.
      *
      * Also set the order payment status if txnid is provided
      *
@@ -274,7 +275,7 @@ class Payment extends Base
     }
 
     /**
-     * Get the status message
+     * Get the status message.
      *
      * @param Invoice $invoice
      *
@@ -300,7 +301,7 @@ class Payment extends Base
     }
 
     /**
-     * Set the order payment status
+     * Set the order payment status.
      *
      * @param Request $request
      * @param int     $id
@@ -320,7 +321,7 @@ class Payment extends Base
         }
         assert($invoice instanceof Invoice);
 
-        if (!$invoice->isFinalized() && $invoice->getStatus() !== 'pbsok') {
+        if (!$invoice->isFinalized() && 'pbsok' !== $invoice->getStatus()) {
             $this->setPaymentStatus($request, $invoice);
         }
 
@@ -328,7 +329,7 @@ class Payment extends Base
     }
 
     /**
-     * Validate payment hash
+     * Validate payment hash.
      *
      * @param mixed $request
      *
@@ -349,7 +350,7 @@ class Payment extends Base
     }
 
     /**
-     * Set the order payment status
+     * Set the order payment status.
      *
      * @param Request $request
      * @param Invoice $invoice
@@ -376,7 +377,7 @@ class Payment extends Base
     }
 
     /**
-     * Send recipt to the customer
+     * Send recipt to the customer.
      *
      * @param Invoice $invoice
      *
@@ -403,7 +404,7 @@ class Payment extends Base
     }
 
     /**
-     * Send status email to the admin
+     * Send status email to the admin.
      *
      * @param Invoice $invoice
      *
@@ -428,7 +429,7 @@ class Payment extends Base
     }
 
     /**
-     * Generate message for the internal note about fraud status
+     * Generate message for the internal note about fraud status.
      *
      * @param Request $request
      *
@@ -459,9 +460,9 @@ class Payment extends Base
     /**
      * Check if request should be redirected to a different page in the process.
      *
-     * @param Request $request
-     * @param int     $id
-     * @param string  $checkId
+     * @param Request  $request
+     * @param int      $id
+     * @param string   $checkId
      * @param ?Invoice $invoice
      *
      * @return ?RedirectResponse
@@ -472,7 +473,7 @@ class Payment extends Base
             return $this->redirect($request, '/betaling/?id=' . $id . '&checkid=' . rawurlencode($checkId));
         }
         assert($invoice instanceof Invoice);
-        if ($invoice->isFinalized() || $invoice->getStatus() === 'pbsok') {
+        if ($invoice->isFinalized() || 'pbsok' === $invoice->getStatus()) {
             return $this->redirect($request, $invoice->getLink() . 'status/');
         }
 

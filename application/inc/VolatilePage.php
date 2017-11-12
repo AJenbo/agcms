@@ -14,7 +14,7 @@ class VolatilePage implements Renderable
     private $list;
 
     /**
-     * Set varables
+     * Set varables.
      *
      * @param string       $title
      * @param string       $link
@@ -28,7 +28,7 @@ class VolatilePage implements Renderable
     }
 
     /**
-     * Get page title
+     * Get page title.
      *
      * @return string
      */
@@ -38,7 +38,7 @@ class VolatilePage implements Renderable
     }
 
     /**
-     * Get page link
+     * Get page link.
      *
      * @return string
      */
@@ -48,7 +48,7 @@ class VolatilePage implements Renderable
     }
 
     /**
-     * Get listed pages
+     * Get listed pages.
      *
      * @return Renderable[]
      */

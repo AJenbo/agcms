@@ -52,7 +52,6 @@ $app->addRoute('GET', '/opensearch.xml', Feed::class, 'openSearch');
 $app->addRoute('GET', '/sitemap.xml', Feed::class, 'siteMap');
 $app->addRoute('GET', '/feed/rss/', Feed::class, 'rss');
 
-
 // Admin pages
 $app->addRoute('GET', '/admin/', AdminController::class, 'index');
 // Page editing

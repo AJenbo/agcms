@@ -1,7 +1,6 @@
 <?php namespace AGCMS\Controller;
 
 use AGCMS\Config;
-use AGCMS\Entity\Brand;
 use AGCMS\Entity\Category;
 use AGCMS\Entity\Page;
 use AGCMS\Entity\Requirement;
@@ -13,7 +12,7 @@ use Symfony\Component\HttpFoundation\Response;
 class Feed extends Base
 {
     /**
-     * Generate a Google Site Map
+     * Generate a Google Site Map.
      *
      * @param Request $request
      *
@@ -73,7 +72,7 @@ class Feed extends Base
     }
 
     /**
-     * Rss feed of most recently updated articles
+     * Rss feed of most recently updated articles.
      *
      * If a If-Modefied-Since is detected the feed will extend to that date, else it will limit to 20 items
      *
@@ -162,7 +161,7 @@ class Feed extends Base
     }
 
     /**
-     * Generate an OpenSearch configuration
+     * Generate an OpenSearch configuration.
      *
      * @param Request $request
      *

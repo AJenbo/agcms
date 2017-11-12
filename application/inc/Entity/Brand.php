@@ -39,10 +39,10 @@ class Brand extends AbstractRenderable
     public static function mapFromDB(array $data): array
     {
         return [
-            'id'        => $data['id'],
-            'title'     => $data['navn'],
-            'link'      => $data['link'],
-            'icon_id'   => $data['icon_id'],
+            'id'      => $data['id'],
+            'title'   => $data['navn'],
+            'link'    => $data['link'],
+            'icon_id' => $data['icon_id'],
         ];
     }
 
@@ -73,7 +73,7 @@ class Brand extends AbstractRenderable
     }
 
     /**
-     * Set icon
+     * Set icon.
      *
      * @param ?File $icon
      *

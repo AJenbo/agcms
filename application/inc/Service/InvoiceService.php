@@ -10,7 +10,7 @@ use AGCMS\Render;
 class InvoiceService
 {
     /**
-     * Create an invoice from the client cart array
+     * Create an invoice from the client cart array.
      *
      * @param array $cart
      *
@@ -90,29 +90,29 @@ class InvoiceService
         $items = json_encode($items);
 
         $invoice = new Invoice([
-            'item_data' => $items,
-            'amount' => $amount,
-            'name' => $cart['name'] ?? '',
-            'attn' => $cart['attn'] ?? '',
-            'address' => $cart['address'] ?? '',
-            'postbox' => $cart['postbox'] ?? '',
-            'postcode' => $cart['postcode'] ?? '',
-            'city' => $cart['city'] ?? '',
-            'country' => $cart['country'] ?? 'DK',
-            'email' => $cart['email'] ?? '',
-            'phone1' => $cart['phone1'] ?? '',
-            'phone2' => $cart['phone2'] ?? '',
+            'item_data'            => $items,
+            'amount'               => $amount,
+            'name'                 => $cart['name'] ?? '',
+            'attn'                 => $cart['attn'] ?? '',
+            'address'              => $cart['address'] ?? '',
+            'postbox'              => $cart['postbox'] ?? '',
+            'postcode'             => $cart['postcode'] ?? '',
+            'city'                 => $cart['city'] ?? '',
+            'country'              => $cart['country'] ?? 'DK',
+            'email'                => $cart['email'] ?? '',
+            'phone1'               => $cart['phone1'] ?? '',
+            'phone2'               => $cart['phone2'] ?? '',
             'has_shipping_address' => (bool) ($cart['hasShippingAddress'] ?? false),
-            'shipping_phone' => $cart['shippingPhone'] ?? '',
-            'shipping_name' => $cart['shippingName'] ?? '',
-            'shipping_attn' => $cart['shippingAttn'] ?? '',
-            'shipping_address' => $cart['shippingAddress'] ?? '',
-            'shipping_address2' => $cart['shippingAddress2'] ?? '',
-            'shipping_postbox' => $cart['shippingPostbox'] ?? '',
-            'shipping_postcode' => $cart['shippingPostcode'] ?? '',
-            'shipping_city' => $cart['shippingCity'] ?? '',
-            'shipping_country' => $cart['shippingCountry'] ?? 'DK',
-            'note' => $cart['note'] ?? '',
+            'shipping_phone'       => $cart['shippingPhone'] ?? '',
+            'shipping_name'        => $cart['shippingName'] ?? '',
+            'shipping_attn'        => $cart['shippingAttn'] ?? '',
+            'shipping_address'     => $cart['shippingAddress'] ?? '',
+            'shipping_address2'    => $cart['shippingAddress2'] ?? '',
+            'shipping_postbox'     => $cart['shippingPostbox'] ?? '',
+            'shipping_postcode'    => $cart['shippingPostcode'] ?? '',
+            'shipping_city'        => $cart['shippingCity'] ?? '',
+            'shipping_country'     => $cart['shippingCountry'] ?? 'DK',
+            'note'                 => $cart['note'] ?? '',
         ]);
 
         return $invoice;
@@ -152,7 +152,7 @@ class InvoiceService
     }
 
     /**
-     * Add the customer to the malinglist
+     * Add the customer to the malinglist.
      *
      * @param Invoice $invoice
      * @param string  $clientIp
@@ -182,6 +182,7 @@ class InvoiceService
                 'ip'         => $clientIp ?? '',
             ]);
             $conteact->save();
+
             return;
         }
         assert($conteact instanceof Contact);

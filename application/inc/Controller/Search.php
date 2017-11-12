@@ -5,7 +5,6 @@ use AGCMS\Entity\Category;
 use AGCMS\Entity\Page;
 use AGCMS\ORM;
 use AGCMS\Render;
-use AGCMS\SearchPage;
 use AGCMS\VolatilePage;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -14,7 +13,7 @@ use Symfony\Component\HttpFoundation\Response;
 class Search extends Base
 {
     /**
-     * Show the advanced search form
+     * Show the advanced search form.
      *
      * @param Request $request
      *
@@ -31,7 +30,7 @@ class Search extends Base
     }
 
     /**
-     * Get brands used on active pages
+     * Get brands used on active pages.
      *
      * @return Brand[]
      */
@@ -61,7 +60,7 @@ class Search extends Base
     }
 
     /**
-     * Show search results
+     * Show search results.
      *
      * @param Request $request
      *
@@ -81,6 +80,7 @@ class Search extends Base
         );
         if (1 === count($pages)) {
             $page = array_shift($pages);
+
             return $this->redirect($request, $page->getCanonicalLink(), Response::HTTP_FOUND);
         }
 
@@ -109,7 +109,7 @@ class Search extends Base
     }
 
     /**
-     * Check if we should performe the search or handle it else where
+     * Check if we should performe the search or handle it else where.
      *
      * @param Request $request
      *
@@ -127,6 +127,7 @@ class Search extends Base
                 $brand = ORM::getOne(Brand::class, $request->get('maerke'));
                 if ($brand) {
                     assert($brand instanceof Brand);
+
                     return $this->redirect($request, $brand->getCanonicalLink(), Response::HTTP_MOVED_PERMANENTLY);
                 }
             }
@@ -177,7 +178,7 @@ class Search extends Base
         if ($antiWords) {
             $simpleAntiQuery = '%' . preg_replace('/\s+/u', '%', $antiWords) . '%';
             $simpleAntiQuery = db()->esc($simpleAntiQuery);
-            $where .= " AND !MATCH (navn, text, beskrivelse) AGAINST(" . db()->eandq($antiWords) . ") > 0
+            $where .= ' AND !MATCH (navn, text, beskrivelse) AGAINST(' . db()->eandq($antiWords) . ") > 0
             AND `navn` NOT LIKE '$simpleAntiQuery'
             AND `text` NOT LIKE '$simpleAntiQuery'
             AND `beskrivelse` NOT LIKE '$simpleAntiQuery'
@@ -195,12 +196,12 @@ class Search extends Base
         $pages = ORM::getByQuery(
             Page::class,
             '
-            SELECT `' . implode('`, `', $columns) . "`
-            FROM (SELECT sider.*, MATCH(navn, text, beskrivelse) AGAINST (" . db()->eandq($searchString) . ") AS score
+            SELECT `' . implode('`, `', $columns) . '`
+            FROM (SELECT sider.*, MATCH(navn, text, beskrivelse) AGAINST (' . db()->eandq($searchString) . ') AS score
             FROM sider
             JOIN bind ON sider.id = bind.side AND bind.kat != -1
             WHERE (
-                MATCH (navn, text, beskrivelse) AGAINST(" . db()->eandq($searchString) . ") > 0
+                MATCH (navn, text, beskrivelse) AGAINST(' . db()->eandq($searchString) . ") > 0
                 OR `navn` LIKE '$simpleQuery'
                 OR `text` LIKE '$simpleQuery'
                 OR `beskrivelse` LIKE '$simpleQuery'
@@ -246,15 +247,15 @@ class Search extends Base
 
         return ORM::getByQuery(
             Brand::class,
-            "
+            '
             SELECT * FROM `maerke`
             WHERE (
-                MATCH (navn) AGAINST(" . db()->eandq($searchString) . ") > 0
-                OR navn LIKE " . db()->eandq($simpleSearchString) . "
+                MATCH (navn) AGAINST(' . db()->eandq($searchString) . ') > 0
+                OR navn LIKE ' . db()->eandq($simpleSearchString) . '
             )
-            AND !MATCH (navn) AGAINST(" . db()->eandq($antiWords) . ") > 0
-            AND navn NOT LIKE " . db()->eandq($simpleAntiWords) . "
-            "
+            AND !MATCH (navn) AGAINST(' . db()->eandq($antiWords) . ') > 0
+            AND navn NOT LIKE ' . db()->eandq($simpleAntiWords) . '
+            '
         );
     }
 
@@ -277,15 +278,15 @@ class Search extends Base
 
         $categories = ORM::getByQuery(
             Category::class,
-            "
-            SELECT *, MATCH (navn) AGAINST (" . db()->eandq($searchString) . ") AS score
+            '
+            SELECT *, MATCH (navn) AGAINST (' . db()->eandq($searchString) . ') AS score
             FROM kat
             WHERE (
-                MATCH (navn) AGAINST(" . db()->eandq($searchString) . ") > 0
-                OR navn LIKE " . db()->eandq($simpleSearchString) . "
+                MATCH (navn) AGAINST(' . db()->eandq($searchString) . ') > 0
+                OR navn LIKE ' . db()->eandq($simpleSearchString) . '
             )
-            AND !MATCH (navn) AGAINST(" . db()->eandq($antiWords) . ") > 0
-            AND navn NOT LIKE " . db()->eandq($simpleAntiWords) . "
+            AND !MATCH (navn) AGAINST(' . db()->eandq($antiWords) . ') > 0
+            AND navn NOT LIKE ' . db()->eandq($simpleAntiWords) . "
             AND `vis` != '0'
             ORDER BY score, navn
             "

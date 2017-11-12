@@ -132,7 +132,7 @@ class Invoice extends AbstractEntity
     }
 
     /**
-     * Set create time
+     * Set create time.
      *
      * @param int $timeStamp
      *
@@ -146,7 +146,7 @@ class Invoice extends AbstractEntity
     }
 
     /**
-     * Get create time
+     * Get create time.
      *
      * @return int
      */
@@ -156,7 +156,7 @@ class Invoice extends AbstractEntity
     }
 
     /**
-     * Get time the payment was finalized
+     * Get time the payment was finalized.
      *
      * @param int $timeStampPay
      *
@@ -170,7 +170,7 @@ class Invoice extends AbstractEntity
     }
 
     /**
-     * Get time the payment was finalized
+     * Get time the payment was finalized.
      *
      * @return ?int
      */
@@ -180,7 +180,7 @@ class Invoice extends AbstractEntity
     }
 
     /**
-     * Set total amount
+     * Set total amount.
      *
      * @param float $amount
      *
@@ -194,7 +194,7 @@ class Invoice extends AbstractEntity
     }
 
     /**
-     * Get total amount
+     * Get total amount.
      *
      * @return float
      */
@@ -204,7 +204,7 @@ class Invoice extends AbstractEntity
     }
 
     /**
-     * Set billing name
+     * Set billing name.
      *
      * @param string $name
      *
@@ -218,7 +218,7 @@ class Invoice extends AbstractEntity
     }
 
     /**
-     * Get billing name
+     * Get billing name.
      *
      * @return string
      */
@@ -228,7 +228,7 @@ class Invoice extends AbstractEntity
     }
 
     /**
-     * Set billing attention
+     * Set billing attention.
      *
      * @param string $attn
      *
@@ -242,7 +242,7 @@ class Invoice extends AbstractEntity
     }
 
     /**
-     * Get billing attention
+     * Get billing attention.
      *
      * @return string
      */
@@ -252,7 +252,7 @@ class Invoice extends AbstractEntity
     }
 
     /**
-     * Set billing address
+     * Set billing address.
      *
      * @param string $address
      *
@@ -266,7 +266,7 @@ class Invoice extends AbstractEntity
     }
 
     /**
-     * Get billing address
+     * Get billing address.
      *
      * @return string
      */
@@ -276,7 +276,7 @@ class Invoice extends AbstractEntity
     }
 
     /**
-     * Set billing postbox
+     * Set billing postbox.
      *
      * @param string $postbox
      *
@@ -290,7 +290,7 @@ class Invoice extends AbstractEntity
     }
 
     /**
-     * Get billing postbox
+     * Get billing postbox.
      *
      * @return string
      */
@@ -300,7 +300,7 @@ class Invoice extends AbstractEntity
     }
 
     /**
-     * Set billing zipcode
+     * Set billing zipcode.
      *
      * @param string $postcode
      *
@@ -314,7 +314,7 @@ class Invoice extends AbstractEntity
     }
 
     /**
-     * Get billing zipcode
+     * Get billing zipcode.
      *
      * @return string
      */
@@ -324,7 +324,7 @@ class Invoice extends AbstractEntity
     }
 
     /**
-     * Set billing city
+     * Set billing city.
      *
      * @param string $city
      *
@@ -338,7 +338,7 @@ class Invoice extends AbstractEntity
     }
 
     /**
-     * Get billing city
+     * Get billing city.
      *
      * @return string
      */
@@ -348,7 +348,7 @@ class Invoice extends AbstractEntity
     }
 
     /**
-     * Set billing country
+     * Set billing country.
      *
      * @param string $country
      *
@@ -362,7 +362,7 @@ class Invoice extends AbstractEntity
     }
 
     /**
-     * Get billing country
+     * Get billing country.
      *
      * @return string
      */
@@ -372,7 +372,7 @@ class Invoice extends AbstractEntity
     }
 
     /**
-     * Set billing email
+     * Set billing email.
      *
      * @param string $email
      *
@@ -386,7 +386,7 @@ class Invoice extends AbstractEntity
     }
 
     /**
-     * Get billing email
+     * Get billing email.
      *
      * @return string
      */
@@ -396,7 +396,7 @@ class Invoice extends AbstractEntity
     }
 
     /**
-     * Set phone number
+     * Set phone number.
      *
      * @param string $phone1
      *
@@ -410,7 +410,7 @@ class Invoice extends AbstractEntity
     }
 
     /**
-     * Get phone number
+     * Get phone number.
      *
      * @return string
      */
@@ -420,7 +420,7 @@ class Invoice extends AbstractEntity
     }
 
     /**
-     * Set cellphone number
+     * Set cellphone number.
      *
      * @param string $phone2
      *
@@ -434,7 +434,7 @@ class Invoice extends AbstractEntity
     }
 
     /**
-     * Get cellphone number
+     * Get cellphone number.
      *
      * @return string
      */
@@ -444,7 +444,7 @@ class Invoice extends AbstractEntity
     }
 
     /**
-     * Set shipping address status
+     * Set shipping address status.
      *
      * @param bool $hasShippingAddress
      *
@@ -458,7 +458,7 @@ class Invoice extends AbstractEntity
     }
 
     /**
-     * Has an address different from the billing address been entered for shipping
+     * Has an address different from the billing address been entered for shipping.
      *
      * @return bool
      */
@@ -468,7 +468,7 @@ class Invoice extends AbstractEntity
     }
 
     /**
-     * Set shipping phone number
+     * Set shipping phone number.
      *
      * @param string $shippingPhone
      *
@@ -482,7 +482,7 @@ class Invoice extends AbstractEntity
     }
 
     /**
-     * Get shipping phone number
+     * Get shipping phone number.
      *
      * @return string
      */
@@ -492,7 +492,7 @@ class Invoice extends AbstractEntity
     }
 
     /**
-     * Set shipping name
+     * Set shipping name.
      *
      * @param string $shippingName
      *
@@ -506,7 +506,7 @@ class Invoice extends AbstractEntity
     }
 
     /**
-     * Get shipping name
+     * Get shipping name.
      *
      * @return string
      */
@@ -516,7 +516,7 @@ class Invoice extends AbstractEntity
     }
 
     /**
-     * Set shipping attention line
+     * Set shipping attention line.
      *
      * @param string $shippingAttn
      *
@@ -530,7 +530,7 @@ class Invoice extends AbstractEntity
     }
 
     /**
-     * Get shipping attention line
+     * Get shipping attention line.
      *
      * @return string
      */
@@ -540,7 +540,7 @@ class Invoice extends AbstractEntity
     }
 
     /**
-     * Set first shipping address line
+     * Set first shipping address line.
      *
      * @param string $shippingAddress
      *
@@ -554,7 +554,7 @@ class Invoice extends AbstractEntity
     }
 
     /**
-     * Get first shipping address line
+     * Get first shipping address line.
      *
      * @return string
      */
@@ -564,7 +564,7 @@ class Invoice extends AbstractEntity
     }
 
     /**
-     * Set secound shipping address line
+     * Set secound shipping address line.
      *
      * @param string $shippingAddress2
      *
@@ -578,7 +578,7 @@ class Invoice extends AbstractEntity
     }
 
     /**
-     * Get secound shipping address line
+     * Get secound shipping address line.
      *
      * @return string
      */
@@ -588,7 +588,7 @@ class Invoice extends AbstractEntity
     }
 
     /**
-     * Set shipping postbox
+     * Set shipping postbox.
      *
      * @param string $shippingPostbox
      *
@@ -602,7 +602,7 @@ class Invoice extends AbstractEntity
     }
 
     /**
-     * Get shipping postbox
+     * Get shipping postbox.
      *
      * @return string
      */
@@ -612,7 +612,7 @@ class Invoice extends AbstractEntity
     }
 
     /**
-     * Set shipping zipcode
+     * Set shipping zipcode.
      *
      * @param string $shippingPostcode
      *
@@ -626,7 +626,7 @@ class Invoice extends AbstractEntity
     }
 
     /**
-     * Get shipping zipcode
+     * Get shipping zipcode.
      *
      * @return string
      */
@@ -636,7 +636,7 @@ class Invoice extends AbstractEntity
     }
 
     /**
-     * Set shipping city
+     * Set shipping city.
      *
      * @param string $shippingCity
      *
@@ -650,7 +650,7 @@ class Invoice extends AbstractEntity
     }
 
     /**
-     * Get shipping city
+     * Get shipping city.
      *
      * @return string
      */
@@ -660,7 +660,7 @@ class Invoice extends AbstractEntity
     }
 
     /**
-     * Set shipping country
+     * Set shipping country.
      *
      * @param string $shippingCountry
      *
@@ -674,7 +674,7 @@ class Invoice extends AbstractEntity
     }
 
     /**
-     * Get shipping country
+     * Get shipping country.
      *
      * @return string
      */
@@ -684,7 +684,7 @@ class Invoice extends AbstractEntity
     }
 
     /**
-     * Set client note
+     * Set client note.
      *
      * @param string $note
      *
@@ -698,7 +698,7 @@ class Invoice extends AbstractEntity
     }
 
     /**
-     * Get client note
+     * Get client note.
      *
      * @return string
      */
@@ -708,7 +708,7 @@ class Invoice extends AbstractEntity
     }
 
     /**
-     * Set clerk name
+     * Set clerk name.
      *
      * @param string $clerk
      *
@@ -722,7 +722,7 @@ class Invoice extends AbstractEntity
     }
 
     /**
-     * Get clerk name
+     * Get clerk name.
      *
      * @return string
      */
@@ -732,7 +732,7 @@ class Invoice extends AbstractEntity
     }
 
     /**
-     * Set status
+     * Set status.
      *
      * @param string $status
      *
@@ -746,7 +746,7 @@ class Invoice extends AbstractEntity
     }
 
     /**
-     * Get status
+     * Get status.
      *
      * @return string
      */
@@ -756,7 +756,7 @@ class Invoice extends AbstractEntity
     }
 
     /**
-     * Set fraight cost
+     * Set fraight cost.
      *
      * @param float $shipping
      *
@@ -770,7 +770,7 @@ class Invoice extends AbstractEntity
     }
 
     /**
-     * Get fraight cost
+     * Get fraight cost.
      *
      * @return float
      */
@@ -780,7 +780,7 @@ class Invoice extends AbstractEntity
     }
 
     /**
-     * Set vat percentage
+     * Set vat percentage.
      *
      * @param float $vat
      *
@@ -794,7 +794,7 @@ class Invoice extends AbstractEntity
     }
 
     /**
-     * Get vat percentage
+     * Get vat percentage.
      *
      * @return float
      */
@@ -804,7 +804,7 @@ class Invoice extends AbstractEntity
     }
 
     /**
-     * Set the product vat status
+     * Set the product vat status.
      *
      * @param bool $preVat
      *
@@ -818,7 +818,7 @@ class Invoice extends AbstractEntity
     }
 
     /**
-     * Has product values been entered with vat
+     * Has product values been entered with vat.
      *
      * @return bool
      */
@@ -828,7 +828,7 @@ class Invoice extends AbstractEntity
     }
 
     /**
-     * Set the money transfer status
+     * Set the money transfer status.
      *
      * @param bool $transferred
      *
@@ -842,7 +842,7 @@ class Invoice extends AbstractEntity
     }
 
     /**
-     * Has the money transfer been verifyed
+     * Has the money transfer been verifyed.
      *
      * @return bool
      */
@@ -852,7 +852,7 @@ class Invoice extends AbstractEntity
     }
 
     /**
-     * Set payment card type
+     * Set payment card type.
      *
      * @param string $cardtype
      *
@@ -866,7 +866,7 @@ class Invoice extends AbstractEntity
     }
 
     /**
-     * Get payment card type
+     * Get payment card type.
      *
      * @return string
      */
@@ -876,7 +876,7 @@ class Invoice extends AbstractEntity
     }
 
     /**
-     * Set internal reference id
+     * Set internal reference id.
      *
      * @param string $iref
      *
@@ -890,7 +890,7 @@ class Invoice extends AbstractEntity
     }
 
     /**
-     * Get internal reference id
+     * Get internal reference id.
      *
      * @return string
      */
@@ -900,7 +900,7 @@ class Invoice extends AbstractEntity
     }
 
     /**
-     * Set external reference id
+     * Set external reference id.
      *
      * @param string $eref
      *
@@ -914,7 +914,7 @@ class Invoice extends AbstractEntity
     }
 
     /**
-     * Get external reference id
+     * Get external reference id.
      *
      * @return string
      */
@@ -924,7 +924,7 @@ class Invoice extends AbstractEntity
     }
 
     /**
-     * Set the payment sent status
+     * Set the payment sent status.
      *
      * @param bool $sent
      *
@@ -938,7 +938,7 @@ class Invoice extends AbstractEntity
     }
 
     /**
-     * Has the payment notice been sent to the customer
+     * Has the payment notice been sent to the customer.
      *
      * @return bool
      */
@@ -948,7 +948,7 @@ class Invoice extends AbstractEntity
     }
 
     /**
-     * Set department email
+     * Set department email.
      *
      * @param string $department
      *
@@ -962,7 +962,7 @@ class Invoice extends AbstractEntity
     }
 
     /**
-     * Get department email
+     * Get department email.
      *
      * @return string
      */
@@ -972,7 +972,7 @@ class Invoice extends AbstractEntity
     }
 
     /**
-     * Set internal note
+     * Set internal note.
      *
      * @param string $internalNote
      *
@@ -986,7 +986,7 @@ class Invoice extends AbstractEntity
     }
 
     /**
-     * Get internal note
+     * Get internal note.
      *
      * @return string
      */
@@ -1015,8 +1015,8 @@ class Invoice extends AbstractEntity
         foreach ($itemTitle as $key => $title) {
             $items[] = [
                 'quantity' => $itemQuantities[$key] ?? 0,
-                'title'    => $title,
-                'value'    => $itemValue[$key] ?? 0,
+                'title' => $title,
+                'value' => $itemValue[$key] ?? 0,
             ];
         }
         $items = json_encode($items);
@@ -1115,7 +1115,7 @@ class Invoice extends AbstractEntity
     }
 
     /**
-     * Check if this invoice is closed for editing
+     * Check if this invoice is closed for editing.
      *
      * @return bool
      */
@@ -1125,7 +1125,7 @@ class Invoice extends AbstractEntity
     }
 
     /**
-     * Get full url for administrating this invoice
+     * Get full url for administrating this invoice.
      *
      * @return string
      */
@@ -1139,7 +1139,7 @@ class Invoice extends AbstractEntity
     }
 
     /**
-     * Get full url for the payment pages
+     * Get full url for the payment pages.
      *
      * @return string
      */
@@ -1153,7 +1153,7 @@ class Invoice extends AbstractEntity
     }
 
     /**
-     * Check if any of the items have an unspecified value
+     * Check if any of the items have an unspecified value.
      *
      * @return bool
      */
@@ -1169,7 +1169,7 @@ class Invoice extends AbstractEntity
     }
 
     /**
-     * Get the total product value, excluding vat
+     * Get the total product value, excluding vat.
      *
      * @return float
      */
@@ -1184,7 +1184,7 @@ class Invoice extends AbstractEntity
     }
 
     /**
-     * Generate the checkId code
+     * Generate the checkId code.
      *
      * @return string
      */
@@ -1198,7 +1198,7 @@ class Invoice extends AbstractEntity
     }
 
     /**
-     * Chekc that a valid customer email has been set
+     * Chekc that a valid customer email has been set.
      *
      * @return bool
      */
@@ -1289,7 +1289,6 @@ class Invoice extends AbstractEntity
         $itemQuantities = implode('<', $itemQuantities);
         $itemTitle = implode('<', $itemTitle);
         $itemValue = implode('<', $itemValue);
-
 
         $paydate = db()->eandq('0000-00-00');
         if ($this->timeStampPay + db()->getTimeOffset()) {

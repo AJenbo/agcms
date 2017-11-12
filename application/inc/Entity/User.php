@@ -80,7 +80,7 @@ class User extends AbstractEntity
     }
 
     /**
-     * Set user's full name
+     * Set user's full name.
      *
      * @param string $fullName
      *
@@ -94,7 +94,7 @@ class User extends AbstractEntity
     }
 
     /**
-     * Get user's full name
+     * Get user's full name.
      *
      * @return string
      */
@@ -104,7 +104,7 @@ class User extends AbstractEntity
     }
 
     /**
-     * Set user's nick name
+     * Set user's nick name.
      *
      * @param string $nickname
      *
@@ -118,7 +118,7 @@ class User extends AbstractEntity
     }
 
     /**
-     * Get nick name
+     * Get nick name.
      *
      * @return string
      */
@@ -128,7 +128,7 @@ class User extends AbstractEntity
     }
 
     /**
-     * Set users password
+     * Set users password.
      *
      * @param string $password
      *
@@ -156,7 +156,7 @@ class User extends AbstractEntity
     }
 
     /**
-     * Get password hash
+     * Get password hash.
      *
      * @return string
      */
@@ -166,7 +166,7 @@ class User extends AbstractEntity
     }
 
     /**
-     * Set access level
+     * Set access level.
      *
      * @param int $accessLevel
      *
@@ -180,7 +180,7 @@ class User extends AbstractEntity
     }
 
     /**
-     * Get access level
+     * Get access level.
      *
      * @return int
      */
@@ -230,7 +230,7 @@ class User extends AbstractEntity
     }
 
     /**
-     * Check if user has given access level (or higher)
+     * Check if user has given access level (or higher).
      *
      * @param int $requestedLevel
      *

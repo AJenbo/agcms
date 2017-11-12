@@ -9,7 +9,7 @@ use Symfony\Component\HttpFoundation\Request;
 class Base extends AbstractController
 {
     /**
-     * Generate a redirect to the search page based on the current request url
+     * Generate a redirect to the search page based on the current request url.
      *
      * @param Request $request
      *
@@ -45,7 +45,7 @@ class Base extends AbstractController
     }
 
     /**
-     * Get the basice render data
+     * Get the basice render data.
      *
      * @return array
      */
@@ -56,10 +56,10 @@ class Base extends AbstractController
         assert($category instanceof Category);
 
         return [
-            'menu'           => $category->getVisibleChildren(),
-            'infoPage'       => ORM::getOne(CustomPage::class, 2),
-            'crumbs'         => [$category],
-            'category'       => $category,
+            'menu'     => $category->getVisibleChildren(),
+            'infoPage' => ORM::getOne(CustomPage::class, 2),
+            'crumbs'   => [$category],
+            'category' => $category,
         ];
     }
 }

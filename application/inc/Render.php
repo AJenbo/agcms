@@ -1,7 +1,5 @@
 <?php namespace AGCMS;
 
-use AGCMS\Entity\Brand;
-use AGCMS\Entity\Category;
 use DateTime;
 use Symfony\Component\HttpFoundation\Response;
 use Twig_Environment;

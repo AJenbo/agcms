@@ -2,10 +2,8 @@
 
 use AGCMS\Config;
 use AGCMS\Controller\AbstractController;
-use AGCMS\Entity\Page;
 use AGCMS\Render;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\Response;
 
 abstract class AbstractAdminController extends AbstractController
 {

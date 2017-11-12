@@ -108,7 +108,7 @@ class Category extends AbstractRenderable
      */
     public function setParentId(?int $parentId): self
     {
-        if ($parentId !== null && $this->id !== null && $this->id <= 0) {
+        if (null !== $parentId && null !== $this->id && $this->id <= 0) {
             throw new Exception(_('Your not allowed to move root categories'));
         }
 
@@ -465,7 +465,7 @@ class Category extends AbstractRenderable
     }
 
     /**
-     * Set icon
+     * Set icon.
      *
      * @param ?File $icon
      *

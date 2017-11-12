@@ -20,14 +20,14 @@ return [
 
     'emails' => [
         'mail@example.com' => [
-            'address'      => 'mail@example.com',
-            'password'     => 'password',
-            'sentBox'      => 'INBOX.Sent',
-            'imapHost'     => 'imap.example.dk',
-            'imapPort'     => 143,
-            'smtpHost'     => 'smtp.example.com',
-            'smtpPort'     => '25',
-            'smtpAuth'     => true,
+            'address'  => 'mail@example.com',
+            'password' => 'password',
+            'sentBox'  => 'INBOX.Sent',
+            'imapHost' => 'imap.example.dk',
+            'imapPort' => 143,
+            'smtpHost' => 'smtp.example.com',
+            'smtpPort' => '25',
+            'smtpAuth' => true,
         ],
     ],
 

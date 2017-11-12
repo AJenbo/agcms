@@ -96,7 +96,7 @@ class Page extends AbstractRenderable
     }
 
     /**
-     * Delete page and it's relations
+     * Delete page and it's relations.
      *
      * @return bool
      */
@@ -259,7 +259,7 @@ class Page extends AbstractRenderable
     }
 
     /**
-     * Set icon
+     * Set icon.
      *
      * @param ?File $icon
      *
@@ -387,7 +387,7 @@ class Page extends AbstractRenderable
     }
 
     /**
-     * Set the type of the privious price
+     * Set the type of the privious price.
      *
      * @param int $oldPriceType
      *
@@ -443,7 +443,7 @@ class Page extends AbstractRenderable
     }
 
     /**
-     * Check if the page i attached to a given category
+     * Check if the page i attached to a given category.
      *
      * @param Category $category
      *
@@ -494,7 +494,7 @@ class Page extends AbstractRenderable
     }
 
     /**
-     * Add the page to a given category
+     * Add the page to a given category.
      *
      * @param Category $category
      *
@@ -507,7 +507,7 @@ class Page extends AbstractRenderable
     }
 
     /**
-     * Remove the page form a given cateogory
+     * Remove the page form a given cateogory.
      *
      * @param Category $category
      *
@@ -524,7 +524,7 @@ class Page extends AbstractRenderable
      *
      * @return void
      */
-    public function addAccessory(Page $accessory): void
+    public function addAccessory(self $accessory): void
     {
         db()->query(
             '
@@ -542,7 +542,7 @@ class Page extends AbstractRenderable
      *
      * @return void
      */
-    public function removeAccessory(Page $accessory): void
+    public function removeAccessory(self $accessory): void
     {
         db()->query('DELETE FROM `tilbehor` WHERE side = ' . $this->getId() . ' AND tilbehor = ' . $accessory->getId());
 
@@ -577,7 +577,7 @@ class Page extends AbstractRenderable
     }
 
     /**
-     * Get query for finding accessories
+     * Get query for finding accessories.
      *
      * @return string
      */

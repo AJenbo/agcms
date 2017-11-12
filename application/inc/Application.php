@@ -1,13 +1,11 @@
 <?php namespace AGCMS;
 
 use AGCMS\Controller\Base;
-use AGCMS\Config;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Throwable;
 use Raven_Client;
-use Raven_ErrorHandler;
 
 class Application
 {
@@ -47,7 +45,7 @@ class Application
     }
 
     /**
-     * Add a route
+     * Add a route.
      *
      * @param string $method
      * @param string $uri
@@ -62,7 +60,7 @@ class Application
     }
 
     /**
-     * Run the application
+     * Run the application.
      *
      * @param Request $request
      *
@@ -87,7 +85,7 @@ class Application
     }
 
     /**
-     * Find a matching route for the current request
+     * Find a matching route for the current request.
      *
      * @param Request $request
      *
@@ -104,6 +102,7 @@ class Application
         foreach ($this->routes[$request->getMethod()] as $route) {
             if (preg_match('%^' . $route['url'] . '$%u', $requestUrl, $matches)) {
                 $matches[0] = $request;
+
                 return call_user_func_array([new $route['controller'](), $route['action']], $matches);
             }
 

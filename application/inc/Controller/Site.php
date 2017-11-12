@@ -15,7 +15,7 @@ use Symfony\Component\HttpFoundation\Response;
 class Site extends Base
 {
     /**
-     * View a category
+     * View a category.
      *
      * @param Request $request
      * @param int     $categoryId
@@ -62,7 +62,7 @@ class Site extends Base
     }
 
     /**
-     * View the frontpage
+     * View the frontpage.
      *
      * @param Request $request
      *
@@ -79,7 +79,7 @@ class Site extends Base
     }
 
     /**
-     * View page in the root category
+     * View page in the root category.
      *
      * @param Request $request
      * @param int     $pageId
@@ -92,7 +92,7 @@ class Site extends Base
     }
 
     /**
-     * View a page
+     * View a page.
      *
      * @param Request $request
      * @param int     $categoryId
@@ -136,7 +136,7 @@ class Site extends Base
     }
 
     /**
-     * View a requirement notice
+     * View a requirement notice.
      *
      * @param Request $request
      * @param int     $requirementId
@@ -161,7 +161,7 @@ class Site extends Base
     }
 
     /**
-     * View a brand
+     * View a brand.
      *
      * @param Request $request
      * @param int     $brandId
@@ -177,7 +177,7 @@ class Site extends Base
         }
 
         $data = [
-            'brand' => $brand,
+            'brand'      => $brand,
             'renderable' => $brand,
         ] + $this->basicPageData();
         $data['crumbs'][] = $brand;
@@ -187,7 +187,7 @@ class Site extends Base
     }
 
     /**
-     * Check that the url for a category is correct
+     * Check that the url for a category is correct.
      *
      * Returns a redirect responce if the url is not valid
      *
@@ -210,7 +210,7 @@ class Site extends Base
     }
 
     /**
-     * Check that the url for a page is correct
+     * Check that the url for a page is correct.
      *
      * Returns a redirect responce if the url is not valid
      *
@@ -240,7 +240,7 @@ class Site extends Base
     }
 
     /**
-     * Check that the url for a renderable is correct
+     * Check that the url for a renderable is correct.
      *
      * Returns a redirect responce if the url is not valid
      *

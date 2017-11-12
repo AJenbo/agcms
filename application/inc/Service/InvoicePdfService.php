@@ -2,7 +2,6 @@
 
 use AGCMS\Config;
 use AGCMS\Entity\Invoice;
-use AGCMS\ORM;
 use TCPDF;
 
 class InvoicePdfService
@@ -19,7 +18,7 @@ class InvoicePdfService
     private $invoice;
 
     /**
-     * Generate PDF data for an invoce
+     * Generate PDF data for an invoce.
      *
      * @param Invoice $invoice
      *
@@ -42,7 +41,7 @@ class InvoicePdfService
     }
 
     /**
-     * Set up document defaults, title, size and margins
+     * Set up document defaults, title, size and margins.
      *
      * @return void
      */
@@ -83,7 +82,7 @@ class InvoicePdfService
     }
 
     /**
-     * Generate the header part of the document
+     * Generate the header part of the document.
      *
      * @return void
      */
@@ -97,7 +96,7 @@ class InvoicePdfService
     }
 
     /**
-     * Insert date, id and references
+     * Insert date, id and references.
      *
      * @return void
      */
@@ -123,7 +122,8 @@ class InvoicePdfService
     }
 
     /**
-     * Add lines to seporate the document, client and company addresses
+     * Add lines to seporate the document, client and company addresses.
+     *
      * @return void
      */
     private function addSeporationLines(): void
@@ -136,7 +136,7 @@ class InvoicePdfService
     }
 
     /**
-     * Insert the company name in big bold letters
+     * Insert the company name in big bold letters.
      *
      * @return void
      */
@@ -147,7 +147,7 @@ class InvoicePdfService
     }
 
     /**
-     * Insert company address, phone, email and bank account
+     * Insert company address, phone, email and bank account.
      *
      * @return void
      */
@@ -176,7 +176,7 @@ class InvoicePdfService
     }
 
     /**
-     * Insert billing and shipping addresses
+     * Insert billing and shipping addresses.
      *
      * @return void
      */
@@ -207,7 +207,7 @@ class InvoicePdfService
     }
 
     /**
-     * Get the billing addres
+     * Get the billing addres.
      *
      * @param string[] $countries
      *
@@ -238,7 +238,7 @@ class InvoicePdfService
     }
 
     /**
-     * Get the shippig addres
+     * Get the shippig addres.
      *
      * @param string[] $countries
      *
@@ -272,7 +272,7 @@ class InvoicePdfService
     }
 
     /**
-     * Add product table
+     * Add product table.
      *
      * @return void
      */
@@ -300,7 +300,7 @@ class InvoicePdfService
     }
 
     /**
-     * Insert a single product line in the product table
+     * Insert a single product line in the product table.
      *
      * @param mixed $item
      * @param mixed $productLines
@@ -325,7 +325,7 @@ class InvoicePdfService
     }
 
     /**
-     * Insert empty lines at the of the table to keep it at a consistent height
+     * Insert empty lines at the of the table to keep it at a consistent height.
      *
      * @param int $productLines
      *
@@ -340,7 +340,7 @@ class InvoicePdfService
     }
 
     /**
-     * Set the table footer, contaning total amount, shipping, conditions
+     * Set the table footer, contaning total amount, shipping, conditions.
      *
      * @return void
      */
@@ -369,7 +369,7 @@ class InvoicePdfService
     }
 
     /**
-     * Generate the footer part of the invoice
+     * Generate the footer part of the invoice.
      *
      * @return void
      */
@@ -395,7 +395,7 @@ class InvoicePdfService
     }
 
     /**
-     * Generate the payment note containing date and type of payment
+     * Generate the payment note containing date and type of payment.
      *
      * @return string
      */

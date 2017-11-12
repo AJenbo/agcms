@@ -163,7 +163,7 @@ class File extends AbstractEntity
     }
 
     /**
-     * Set display width
+     * Set display width.
      *
      * @param int $width
      *
@@ -177,7 +177,7 @@ class File extends AbstractEntity
     }
 
     /**
-     * Get display width
+     * Get display width.
      *
      * @return int
      */
@@ -187,7 +187,7 @@ class File extends AbstractEntity
     }
 
     /**
-     * Set display height
+     * Set display height.
      *
      * @param int $height
      *
@@ -201,7 +201,7 @@ class File extends AbstractEntity
     }
 
     /**
-     * Get display height
+     * Get display height.
      *
      * @return int
      */
@@ -250,7 +250,7 @@ class File extends AbstractEntity
     }
 
     /**
-     * Update related data
+     * Update related data.
      *
      * @param string $path
      * @param string $newPath
@@ -279,10 +279,10 @@ class File extends AbstractEntity
         $escapedPath = db()->esc($this->path);
 
         return (bool) db()->fetchOne(
-            "
+            '
             (
                 SELECT id FROM `sider`
-                WHERE `icon_id` = " . $this->getId() . " OR `text` LIKE '%=\"$escapedPath\"%' LIMIT 1
+                WHERE `icon_id` = ' . $this->getId() . " OR `text` LIKE '%=\"$escapedPath\"%' LIMIT 1
             )
             UNION (
                 SELECT id FROM `template`
@@ -290,9 +290,9 @@ class File extends AbstractEntity
             )
             UNION (SELECT id FROM `special` WHERE `text` LIKE '%=\"$escapedPath\"%' LIMIT 1)
             UNION (SELECT id FROM `krav`    WHERE `text` LIKE '%=\"$escapedPath\"%' LIMIT 1)
-            UNION (SELECT id FROM `maerke`  WHERE `icon_id`  = " . $this->getId() . " LIMIT 1)
-            UNION (SELECT id FROM `kat`     WHERE `icon_id` = " . $this->getId() . " LIMIT 1)
-            "
+            UNION (SELECT id FROM `maerke`  WHERE `icon_id`  = " . $this->getId() . ' LIMIT 1)
+            UNION (SELECT id FROM `kat`     WHERE `icon_id` = ' . $this->getId() . ' LIMIT 1)
+            '
         );
     }
 

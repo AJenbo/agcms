@@ -40,9 +40,9 @@ class ExplorerController extends AbstractAdminController
 
         $data = [
             'returnType' => $request->get('return', ''),
-            'returnid' => $request->get('returnid', ''),
-            'bgcolor' => Config::get('bgcolor'),
-            'dirs' => $this->fileService->getRootDirs($currentDir),
+            'returnid'   => $request->get('returnid', ''),
+            'bgcolor'    => Config::get('bgcolor'),
+            'dirs'       => $this->fileService->getRootDirs($currentDir),
         ];
 
         $content = Render::render('admin/explorer', $data);
@@ -419,15 +419,15 @@ class ExplorerController extends AbstractAdminController
             $data = [
                 'uploaded' => 1,
                 'fileName' => basename($file->getPath()),
-                'url' => $file->getPath(),
-                'width' => $file->getWidth(),
-                'height' => $file->getHeight(),
+                'url'      => $file->getPath(),
+                'width'    => $file->getWidth(),
+                'height'   => $file->getHeight(),
             ];
         } catch (Throwable $exception) {
             // TODO log errors with sentry
             $data = [
                 'uploaded' => 0,
-                'error' => [
+                'error'    => [
                     'message' => _('Error: ') . $exception->getMessage(),
                 ],
             ];
@@ -528,7 +528,7 @@ class ExplorerController extends AbstractAdminController
                 if (!$overwrite) {
                     return new JsonResponse([
                         'yesno' => _('A file with the same name already exists. Would you like to replace the existing file?'),
-                        'path' => $path,
+                        'path'  => $path,
                     ]);
                 }
 
@@ -548,7 +548,7 @@ class ExplorerController extends AbstractAdminController
     }
 
     /**
-     * Dynamic image
+     * Dynamic image.
      *
      * @param Request $request
      *
@@ -581,7 +581,7 @@ class ExplorerController extends AbstractAdminController
         $type = 'jpeg';
         $guesser = MimeTypeGuesser::getInstance();
         $mime = $guesser->guess(_ROOT_ . $path);
-        if ($mime !== 'image/jpeg') {
+        if ('image/jpeg' !== $mime) {
             $type = 'png';
         }
 

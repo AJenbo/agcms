@@ -49,14 +49,14 @@ class PageController extends AbstractAdminController
         $siteTreeService = new SiteTreeService();
 
         $data = [
-            'textWidth' => Config::get('text_width'),
-            'thumbWidth' => Config::get('thumb_width'),
-            'siteTree' => $siteTreeService->getSiteTreeData($openCategories, 'categories', $selectedId),
+            'textWidth'          => Config::get('text_width'),
+            'thumbWidth'         => Config::get('thumb_width'),
+            'siteTree'           => $siteTreeService->getSiteTreeData($openCategories, 'categories', $selectedId),
             'requirementOptions' => $this->getRequirementOptions(),
-            'brands' => ORM::getByQuery(Brand::class, 'SELECT * FROM `maerke` ORDER BY navn'),
-            'page' => $page,
-            'bindings' => $bindings,
-            'accessories' => $accessories,
+            'brands'             => ORM::getByQuery(Brand::class, 'SELECT * FROM `maerke` ORDER BY navn'),
+            'page'               => $page,
+            'bindings'           => $bindings,
+            'accessories'        => $accessories,
         ] + $this->basicPageData($request);
 
         $content = Render::render('admin/redigerside', $data);

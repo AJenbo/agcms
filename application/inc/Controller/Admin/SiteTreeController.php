@@ -33,10 +33,10 @@ class SiteTreeController extends AbstractAdminController
     }
 
     /**
-     * Get the label for a folded tree widget
+     * Get the label for a folded tree widget.
      *
      * @param Request $request
-     * @param int $id
+     * @param int     $id
      *
      * @return JsonResponse
      */
@@ -49,11 +49,12 @@ class SiteTreeController extends AbstractAdminController
             'id'   => 'katsheader',
             'html' => _('Select location:') . ' ' . $category->getPath(),
         ];
+
         return new JsonResponse($data);
     }
 
     /**
-     * Page picker widget
+     * Page picker widget.
      *
      * @param Request $request
      *

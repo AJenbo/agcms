@@ -54,7 +54,7 @@ class Contact extends AbstractEntity
     }
 
     /**
-     * Set name
+     * Set name.
      *
      * @param string $name
      *
@@ -68,7 +68,7 @@ class Contact extends AbstractEntity
     }
 
     /**
-     * Get Name
+     * Get Name.
      *
      * @return string
      */
@@ -78,7 +78,7 @@ class Contact extends AbstractEntity
     }
 
     /**
-     * Set email
+     * Set email.
      *
      * @param string $email
      *
@@ -92,7 +92,7 @@ class Contact extends AbstractEntity
     }
 
     /**
-     * Get email
+     * Get email.
      *
      * @return string
      */
@@ -102,7 +102,7 @@ class Contact extends AbstractEntity
     }
 
     /**
-     * Set address
+     * Set address.
      *
      * @param string $address
      *
@@ -116,7 +116,7 @@ class Contact extends AbstractEntity
     }
 
     /**
-     * Get address
+     * Get address.
      *
      * @return string
      */
@@ -126,7 +126,7 @@ class Contact extends AbstractEntity
     }
 
     /**
-     * Set country
+     * Set country.
      *
      * @param string $country
      *
@@ -140,7 +140,7 @@ class Contact extends AbstractEntity
     }
 
     /**
-     * Get country
+     * Get country.
      *
      * @return string
      */
@@ -150,7 +150,7 @@ class Contact extends AbstractEntity
     }
 
     /**
-     * Set postcode
+     * Set postcode.
      *
      * @param string $postcode
      *
@@ -164,7 +164,7 @@ class Contact extends AbstractEntity
     }
 
     /**
-     * Get postcode
+     * Get postcode.
      *
      * @return string
      */
@@ -174,7 +174,7 @@ class Contact extends AbstractEntity
     }
 
     /**
-     * Set city
+     * Set city.
      *
      * @param string $city
      *
@@ -188,7 +188,7 @@ class Contact extends AbstractEntity
     }
 
     /**
-     * Get city
+     * Get city.
      *
      * @return string
      */
@@ -198,7 +198,7 @@ class Contact extends AbstractEntity
     }
 
     /**
-     * Set phone number
+     * Set phone number.
      *
      * @param string $phone1
      *
@@ -212,7 +212,7 @@ class Contact extends AbstractEntity
     }
 
     /**
-     * Get phone number
+     * Get phone number.
      *
      * @return string
      */
@@ -222,7 +222,7 @@ class Contact extends AbstractEntity
     }
 
     /**
-     * Set mobile phone number
+     * Set mobile phone number.
      *
      * @param string $phone2
      *
@@ -236,7 +236,7 @@ class Contact extends AbstractEntity
     }
 
     /**
-     * Get mobile phone number
+     * Get mobile phone number.
      *
      * @return string
      */
@@ -246,7 +246,7 @@ class Contact extends AbstractEntity
     }
 
     /**
-     * Set newsletter subscribtion status
+     * Set newsletter subscribtion status.
      *
      * @param bool $newsletter
      *
@@ -260,7 +260,7 @@ class Contact extends AbstractEntity
     }
 
     /**
-     * Get newsletter subscribtion status
+     * Get newsletter subscribtion status.
      *
      * @return bool
      */
@@ -270,7 +270,7 @@ class Contact extends AbstractEntity
     }
 
     /**
-     * Set newsletter interests
+     * Set newsletter interests.
      *
      * @param string $interests
      *
@@ -286,7 +286,7 @@ class Contact extends AbstractEntity
     }
 
     /**
-     * Get interests
+     * Get interests.
      *
      * @return string[]
      */
@@ -296,7 +296,7 @@ class Contact extends AbstractEntity
     }
 
     /**
-     * Set created time
+     * Set created time.
      *
      * @param int $timestamp
      *
@@ -310,7 +310,7 @@ class Contact extends AbstractEntity
     }
 
     /**
-     * Get creation time
+     * Get creation time.
      *
      * @return int
      */
@@ -320,7 +320,7 @@ class Contact extends AbstractEntity
     }
 
     /**
-     * Set client IP
+     * Set client IP.
      *
      * @param string $ip
      *
@@ -334,7 +334,7 @@ class Contact extends AbstractEntity
     }
 
     /**
-     * Get client IP
+     * Get client IP.
      *
      * @return string
      */
@@ -344,7 +344,7 @@ class Contact extends AbstractEntity
     }
 
     /**
-     * Check if email address is currently valid
+     * Check if email address is currently valid.
      *
      * @return bool
      */
