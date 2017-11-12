@@ -2,6 +2,7 @@
 
 use AGCMS\ORM;
 use Exception;
+use Symfony\Component\HttpFoundation\File\MimeType\MimeTypeGuesser;
 
 class File extends AbstractEntity
 {
@@ -306,9 +307,8 @@ class File extends AbstractEntity
     {
         $imagesize = @getimagesize(_ROOT_ . $path);
 
-        $finfo = finfo_open(FILEINFO_MIME);
-        $mime = finfo_file($finfo, _ROOT_ . $path);
-        finfo_close($finfo);
+        $guesser = MimeTypeGuesser::getInstance();
+        $mime = $guesser->guess(_ROOT_ . $path);
 
         $file = new self([
             'path'        => $path,

@@ -15,6 +15,7 @@ use AGCMS\EpaymentAdminService;
 use AGCMS\ORM;
 use AGCMS\Render;
 use AJenbo\Image;
+use Symfony\Component\HttpFoundation\File\MimeType\MimeTypeGuesser;
 use Symfony\Component\HttpFoundation\Response;
 
 function checkUserLoggedIn(): void
@@ -417,9 +418,8 @@ function saveImage(
     string $filename,
     bool $force
 ): array {
-    $finfo = finfo_open(FILEINFO_MIME);
-    $mime = finfo_file($finfo, _ROOT_ . $path);
-    finfo_close($finfo);
+    $guesser = MimeTypeGuesser::getInstance();
+    $mime = $guesser->guess(_ROOT_ . $path);
 
     $output = ['type' => 'png'];
     if ('image/jpeg' === $mime) {
@@ -1543,9 +1543,8 @@ function generateImage(
     $mime = 'image/jpeg';
     $type = 'jpeg';
     if (empty($output['type'])) {
-        $finfo = finfo_open(FILEINFO_MIME);
-        $mime = finfo_file($finfo, $path);
-        finfo_close($finfo);
+        $guesser = MimeTypeGuesser::getInstance();
+        $mime = $guesser->guess($path);
         if ('image/png' !== $mime) {
             $mime = 'image/jpeg';
         }
