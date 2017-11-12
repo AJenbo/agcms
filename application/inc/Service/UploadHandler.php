@@ -2,6 +2,7 @@
 
 use AGCMS\Config;
 use AGCMS\Entity\File;
+use AGCMS\Service\FileService;
 use AJenbo\Image;
 use Exception;
 use getID3;
@@ -14,43 +15,38 @@ class UploadHandler
     const MAX_BYTE_PER_PIXEL = 0.7;
 
     /** @var string Foler where the current upload will be saved. */
-    private $targetPath = '';
+    private $targetDir = '';
     /** @var string File name with out extension. */
     private $baseName = '';
     /** @var string File extension. */
     private $extension = '';
-
+    /** @var FileService */
+    private $fileService;
     /** @var FileHandeler */
     private $file;
 
     /**
      * Initialize the service
      *
-     * @param string $targetPath
+     * @param string $targetDir
      */
-    public function __construct(string $targetPath)
+    public function __construct(string $targetDir)
     {
-        $this->setTargetPath($targetPath);
+        $this->fileService = new FileService();
+        $this->fileService->checkPermittedPath($targetDir);
+        $this->targetDir = $targetDir;
     }
 
     /**
      * Set the target folder.
      *
-     * @param string $targetPath
+     * @param string $targetDir
      *
      * @return void
      */
-    public function setTargetPath(string $targetPath): void
+    public function settargetDir(string $targetDir): void
     {
-        $targetPath = (string) realpath(_ROOT_ . $targetPath); // Check path exists
-        $targetPath = mb_substr($targetPath, mb_strlen(_ROOT_)); // Remove _ROOT_
-        if ('/files' !== mb_substr($targetPath, 0, 6)
-            && '/images' !== mb_substr($targetPath, 0, 7)
-        ) {
-            throw new Exception(_('Invalid destination.'));
-        }
-
-        $this->targetPath = $targetPath;
+        $this->targetDir = $targetDir;
     }
 
     /**
@@ -76,7 +72,7 @@ class UploadHandler
             $fileName = (new DateTime())->format('Y-m-d-h-i-s');
         }
         $fileName = pathinfo($fileName, PATHINFO_FILENAME);
-        $this->baseName = genfilename($fileName);
+        $this->baseName = $this->fileService->cleanFileName($fileName);
 
         $fileExtension = $uploadedFile->getClientOriginalExtension();
         $this->extension = mb_strtolower($fileExtension);
@@ -208,7 +204,7 @@ class UploadHandler
      */
     private function checkMemorry(Image $image): void
     {
-        $memoryLimit = returnBytes(ini_get('memory_limit')) - 270336; // Estimated overhead, TODO substract current usage
+        $memoryLimit = $this->fileService->returnBytes(ini_get('memory_limit')) - 270336; // Estimated overhead, TODO substract current usage
         if ($image->getWidth() * $image->getHeight() > $memoryLimit / 10) {
             throw new Exception(_('Image is to large to be processed.'));
         }
@@ -225,14 +221,17 @@ class UploadHandler
      */
     private function insertFile(string $description, int $width, int $height): File
     {
-        $file = File::getByPath($this->getDestination());
+        $path = $this->targetDir . '/' . $this->getFilename();
+        $this->fileService->checkPermittedTargetPath($path);
+
+        $file = File::getByPath($path);
         if ($file) {
             $file->delete();
         }
 
-        $this->file->move(_ROOT_ . $this->targetPath, $this->baseName . '.' . $this->extension);
+        $this->file->move(_ROOT_ . $this->targetDir, $this->getFilename());
 
-        return File::fromPath($this->getDestination())
+        return File::fromPath($path)
             ->setDescription($description)
             ->setWidth($width)
             ->setHeight($height)
@@ -244,8 +243,12 @@ class UploadHandler
      *
      * @return string
      */
-    private function getDestination(): string
+    private function getFilename(): string
     {
-        return $this->targetPath . '/' . $this->baseName . '.' . $this->extension;
+        if (!$this->extension) {
+            return $this->baseName;
+        }
+
+        return $this->baseName . '.' . $this->extension;
     }
 }

@@ -246,7 +246,7 @@ function searchfiles()
     qtype = getSelect('searchtype');
 
     xHttp.cancel(searchfilesRequest);
-    searchfilesRequest = xHttp.request('/admin/explorer/files/search/?qpath=' + encodeURIComponent(qpath) + '&qalt='
+    searchfilesRequest = xHttp.request('/admin/explorer/search/?qpath=' + encodeURIComponent(qpath) + '&qalt='
             + encodeURIComponent(qalt) + '&qtype=' + encodeURIComponent(qtype) + '&return='
             + encodeURIComponent(returnType),
         showfiles_r);
@@ -359,7 +359,7 @@ function popUpWin(url, win, options, width, height)
 
 function open_file_move(id)
 {
-    popUpWin('/admin/explorer/files/' + id + '/move/', 'file_move', 'toolbar=0', 322, 512);
+    popUpWin('/admin/explorer/move/' + id + '/', 'file_move', 'toolbar=0', 322, 512);
 }
 
 function deletefolder()
@@ -463,7 +463,7 @@ function open_image_edit(id)
 
 function open_file_upload()
 {
-    popUpWin('file-upload.php?path=' + encodeURIComponent(activeDir), 'file_upload', 'toolbar=0', 640, 150);
+    popUpWin('/admin/explorer/upload/?path=' + encodeURIComponent(activeDir), 'file_upload', 'toolbar=0', 640, 150);
 }
 
 function insertThumbnail(id)

@@ -164,32 +164,6 @@ function sendDelayedEmail(): string
 }
 
 /**
- * Convert PHP size string to bytes.
- *
- * @param string $val PHP size string (eg. '2M')
- *
- * @return int Byte size
- */
-function returnBytes(string $val): int
-{
-    $last = mb_substr($val, -1);
-    $last = mb_strtolower($last);
-    $val = (int) mb_substr($val, 0, -1);
-    switch ($last) {
-        case 'g':
-            $val *= 1024;
-            // no break
-        case 'm':
-            $val *= 1024;
-            // no break
-        case 'k':
-            $val *= 1024;
-    }
-
-    return $val;
-}
-
-/**
  * @return string[]|true
  */
 function sendEmail(
@@ -471,22 +445,6 @@ function deleteuser(int $id): bool
     db()->query('DELETE FROM `users` WHERE `id` = ' . $id);
 
     return true;
-}
-
-function fileExists(string $dir, string $filename, string $type = ''): array
-{
-    $pathinfo = pathinfo($filename);
-    $filePath = _ROOT_ . $dir . '/' . cleanFileName($pathinfo['filename']);
-
-    if ('image' == $type) {
-        $filePath .= '.jpg';
-    } elseif ('lineimage' == $type) {
-        $filePath .= '.png';
-    } else {
-        $filePath .= '.' . $pathinfo['extension'];
-    }
-
-    return ['exists' => (bool) is_file($filePath), 'name' => basename($filePath)];
 }
 
 function newfaktura(): int

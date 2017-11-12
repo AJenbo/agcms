@@ -45,7 +45,12 @@ function validate()
         }
 
         status('Søger efter dubletter...');
-        x_fileExists(activeDir, files[i].name, document.getElementById('type').value, fileExists_r);
+
+        var path = activeDir + '/' + files[i].name;
+        var type = document.getElementById('type').value;
+        xHttp.request(
+            '/admin/explorer/files/exists/?path=' + encodeURIComponent(path) + '&type=' + encodeURIComponent(type),
+            fileExists_r);
     }
     status('');
 
@@ -59,7 +64,7 @@ function fileExists_r(data)
         alert(data.error);
     } else if(data.exists) {
         alert('Bemærk en fil med navnet "' + data.name
-            + '" eksistere allerede, og vil blive overskrevet hvis du fortsætter med denne upload!');
+            + '" allerede eksistere, og vil blive overskrevet hvis du fortsætter med denne upload!');
     }
     return data;
 }
@@ -140,7 +145,7 @@ function send()
         uploads[i] = NaN;
         x.onload = getOnLoadFunction(x, i);
         x.upload.onprogress = getOnProgressFunction(i);
-        x.open('POST', '/admin/upload/', true);
+        x.open('POST', '/admin/explorer/files/', true);
         x.send(form);
     }
 

@@ -24,7 +24,7 @@ CKEDITOR.editorConfig = function(config) {
     config.tokenEnd = '}}';
     config.availableTokens = [];
 
-    config.uploadUrl = '/admin/upload/';
+    config.uploadUrl = '/admin/explorer/files/';
 
     config.forcePasteAsPlainText = true;
 

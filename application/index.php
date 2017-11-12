@@ -73,10 +73,13 @@ $app->addRoute('GET', '/admin/explorer/folders/', ExplorerController::class, 'fo
 $app->addRoute('PUT', '/admin/explorer/folders/', ExplorerController::class, 'folderRename');
 $app->addRoute('DELETE', '/admin/explorer/folders/', ExplorerController::class, 'folderDelete');
 // List files
+$app->addRoute('GET', '/admin/explorer/upload/', ExplorerController::class, 'fileUploadDialog');
 $app->addRoute('GET', '/admin/explorer/files/', ExplorerController::class, 'files');
-$app->addRoute('GET', '/admin/explorer/files/search/', ExplorerController::class, 'search');
-$app->addRoute('GET', '/admin/explorer/files/(\d+)/move/', ExplorerController::class, 'fileMoveDialog');
+$app->addRoute('GET', '/admin/explorer/search/', ExplorerController::class, 'search');
+$app->addRoute('GET', '/admin/explorer/move/(\d+)/', ExplorerController::class, 'fileMoveDialog');
+$app->addRoute('GET', '/admin/explorer/files/exists/', ExplorerController::class, 'fileExists');
 // File CRUD
+$app->addRoute('POST', '/admin/explorer/files/', ExplorerController::class, 'fileUpload');
 $app->addRoute('GET', '/admin/explorer/files/(\d+)/', ExplorerController::class, 'fileView');
 $app->addRoute('PUT', '/admin/explorer/files/(\d+)/', ExplorerController::class, 'fileRename');
 $app->addRoute('DELETE', '/admin/explorer/files/(\d+)/', ExplorerController::class, 'fileDelete');

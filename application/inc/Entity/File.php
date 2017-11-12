@@ -326,9 +326,15 @@ class File extends AbstractEntity
      * Delete entity and file.
      *
      * @return bool
+     *
+     * @throws Exception
      */
     public function delete(): bool
     {
+        if ($this->isInUse()) {
+            throw new Exception(sprintf(_('"%s" is still in use.'), $this->path));
+        }
+
         if (file_exists(_ROOT_ . $this->path) && !unlink(_ROOT_ . $this->path)) {
             throw new Exception(sprintf(_('Could not delete "%s".'), $this->path));
         }

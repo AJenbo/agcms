@@ -5,14 +5,25 @@ use AGCMS\Entity\File;
 use AGCMS\Exception\InvalidInput;
 use AGCMS\ORM;
 use AGCMS\Render;
+use AGCMS\Service\FileService;
+use AGCMS\Service\UploadHandler;
+use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
 class ExplorerController extends AbstractAdminController
 {
+    /** @var FileService */
+    private $fileService;
+
+    public function __construct()
+    {
+        $this->fileService = new FileService();
+    }
+
     /**
-     * Show the file manager
+     * Show the file manager.
      *
      * @param Request $request
      *
@@ -25,8 +36,8 @@ class ExplorerController extends AbstractAdminController
         $data = [
             'returnType' => $request->get('return', ''),
             'returnid' => $request->get('returnid', ''),
-            'bgcolor'  => Config::get('bgcolor'),
-            'dirs'     => $this->getRootDirs($currentDir),
+            'bgcolor' => Config::get('bgcolor'),
+            'dirs' => $this->fileService->getRootDirs($currentDir),
         ];
 
         $content = Render::render('admin/explorer', $data);
@@ -50,7 +61,7 @@ class ExplorerController extends AbstractAdminController
         $html = Render::render(
             'admin/partial-listDirs',
             [
-                'dirs' => $this->getSubDirs($path, $currentDir),
+                'dirs' => $this->fileService->getSubDirs($path, $currentDir),
                 'move' => $move,
             ]
         );
@@ -71,7 +82,7 @@ class ExplorerController extends AbstractAdminController
         $returnType = $request->get('return', '');
 
         try {
-            $this->checkPermittedPath($path);
+            $this->fileService->checkPermittedPath($path);
         } catch (InvalidInput $exception) {
             return new JsonResponse(['error' => $exception->getMessage()]);
         }
@@ -92,16 +103,16 @@ class ExplorerController extends AbstractAdminController
                 $file = File::fromPath($filePath)->save();
             }
 
-            $html .= $this->filehtml($file, $returnType);
+            $html .= $this->fileService->filehtml($file, $returnType);
             //TODO reduce net to javascript
-            $javascript .= $this->filejavascript($file);
+            $javascript .= $this->fileService->filejavascript($file);
         }
 
         return new JsonResponse(['id' => 'files', 'html' => $html, 'javascript' => $javascript]);
     }
 
     /**
-     * Search for files
+     * Search for files.
      *
      * @param Request $request
      *
@@ -204,8 +215,8 @@ class ExplorerController extends AbstractAdminController
         foreach (ORM::getByQuery(File::class, 'SELECT *' . $sql) as $file) {
             assert($file instanceof File);
             if ('unused' !== $qtype || !$file->isinuse()) {
-                $html .= $this->filehtml($file, $returnType);
-                $javascript .= $this->filejavascript($file);
+                $html .= $this->fileService->filehtml($file, $returnType);
+                $javascript .= $this->fileService->filejavascript($file);
             }
         }
 
@@ -241,7 +252,7 @@ class ExplorerController extends AbstractAdminController
     }
 
     /**
-     * Create new folder
+     * Create new folder.
      *
      * @param Request $request
      *
@@ -250,17 +261,11 @@ class ExplorerController extends AbstractAdminController
     public function folderCreate(Request $request): JsonResponse
     {
         $path = $request->get('path', '');
-        $name = $this->cleanFileName($request->get('name', ''));
+        $name = $this->fileService->cleanFileName($request->get('name', ''));
         $newPath = $path . '/' . $name;
 
         try {
-            $this->checkPathIsAvalible($newPath);
-
-            if (!@mkdir(_ROOT_ . $path . '/' . $name, 0771)) {
-                throw new InvalidInput(
-                    _('Could not create folder, you may not have sufficient rights to this folder.')
-                );
-            }
+            $this->fileService->createFolder($newPath);
         } catch (InvalidInput $exception) {
             return new JsonResponse(['error' => $exception->getMessage()]);
         }
@@ -269,7 +274,7 @@ class ExplorerController extends AbstractAdminController
     }
 
     /**
-     * Endpoint for deleting a folder
+     * Endpoint for deleting a folder.
      *
      * @param Request $request
      *
@@ -279,9 +284,7 @@ class ExplorerController extends AbstractAdminController
     {
         $path = $request->get('path', '');
         try {
-            $this->checkPermittedPath($path);
-
-            $this->deleteFolder($path);
+            $this->fileService->deleteFolder($path);
         } catch (InvalidInput $exception) {
             return new JsonResponse(['error' => $exception->getMessage()]);
         }
@@ -290,7 +293,7 @@ class ExplorerController extends AbstractAdminController
     }
 
     /**
-     * File viwer
+     * File viwer.
      *
      * @param Request $request
      * @param int     $id
@@ -303,9 +306,9 @@ class ExplorerController extends AbstractAdminController
         $file = ORM::getOne(File::class, $id);
         $template = 'admin/popup-image';
 
-        if (mb_strpos($file->getMime(), 'video/') === 0) {
+        if (0 === mb_strpos($file->getMime(), 'video/')) {
             $template = 'admin/popup-video';
-        } elseif (mb_strpos($file->getMime(), 'audio/') === 0) {
+        } elseif (0 === mb_strpos($file->getMime(), 'audio/')) {
             $template = 'admin/popup-audio';
         }
 
@@ -315,7 +318,34 @@ class ExplorerController extends AbstractAdminController
     }
 
     /**
-     * File viwer
+     * Check if a file already exists.
+     *
+     * @param Request $request
+     *
+     * @return JsonResponse
+     */
+    public function fileExists(Request $request): JsonResponse
+    {
+        $path = $request->get('path', '');
+        $type = $request->get('type', '');
+
+        $pathinfo = pathinfo($path);
+
+        if ('image' === $type) {
+            $pathinfo['extension'] = 'jpg';
+        } elseif ('lineimage' == $type) {
+            $pathinfo['extension'] = 'png';
+        }
+        $filePath = _ROOT_ . $pathinfo['dirname'] . '/' . $this->fileService->cleanFileName($pathinfo['filename']);
+        if ($pathinfo['extension']) {
+            $filePath .= '.' . $pathinfo['extension'];
+        }
+
+        return new JsonResponse(['exists' => (bool) is_file($filePath), 'name' => basename($filePath)]);
+    }
+
+    /**
+     * File viwer.
      *
      * @param Request $request
      * @param int     $id
@@ -331,19 +361,83 @@ class ExplorerController extends AbstractAdminController
 
         $data = [
             'file' => $file,
-            'dirs' => $this->getRootDirs($currentDir),
+            'dirs' => $this->fileService->getRootDirs($currentDir),
         ];
         $content = Render::render('admin/file-move', $data);
 
         return new Response($content);
     }
 
+    /**
+     * Upload dialog.
+     *
+     * @param Request $request
+     *
+     * @return Response
+     */
+    public function fileUploadDialog(Request $request): Response
+    {
+        $maxbyte = min(
+            $this->fileService->returnBytes(ini_get('post_max_size')),
+            $this->fileService->returnBytes(ini_get('upload_max_filesize'))
+        );
+
+        $data = [
+            'maxbyte'   => $maxbyte,
+            'activeDir' => $request->get('path'),
+        ];
+        $content = Render::render('admin/file-upload', $data);
+
+        return new Response($content);
+    }
+
+    /**
+     * Upload file.
+     *
+     * @param Request $request
+     *
+     * @return Response
+     */
+    public function fileUpload(Request $request): Response
+    {
+        /** @var UploadedFile */
+        $uploadedFile = $request->files->get('upload');
+        $currentDir = $request->cookies->get('admin_dir', '/images');
+        $targetDir = $request->get('dir', $currentDir);
+        $destinationType = $request->get('type', '');
+        $description = $request->get('alt', '');
+
+        try {
+            $uploadHandler = new UploadHandler($targetDir);
+            $file = $uploadHandler->process($uploadedFile, $destinationType, $description);
+
+            $data = [
+                'uploaded' => 1,
+                'fileName' => basename($file->getPath()),
+                'url' => $file->getPath(),
+                'width' => $file->getWidth(),
+                'height' => $file->getHeight(),
+            ];
+        } catch (Throwable $exception) {
+            // TODO log errors with sentry
+            $data = [
+                'uploaded' => 0,
+                'error' => [
+                    'message' => _('Error: ') . $exception->getMessage(),
+                ],
+            ];
+        }
+
+        return new JsonResponse($data);
+    }
+
     //TODO if force, refresh folder or we might have duplicates displaying in the folder.
+
     /**
      * Rename or relocate file.
      *
      * @param Request $request
-     * @param int    $id
+     * @param int     $id
      *
      * @return JsonResponse
      */
@@ -355,7 +449,7 @@ class ExplorerController extends AbstractAdminController
 
         $dir = $request->request->get('dir', $pathinfo['dirname']);
         $filename = $request->request->get('name', $pathinfo['filename']);
-        $filename = $this->cleanFileName($filename);
+        $filename = $this->fileService->cleanFileName($filename);
         $overwrite = $request->request->getBoolean('overwrite');
 
         $newPath = $dir . '/' . $filename . '.' . $pathinfo['extension'];
@@ -369,7 +463,7 @@ class ExplorerController extends AbstractAdminController
                 throw new InvalidInput(_('The name is invalid.'));
             }
 
-            $this->checkPermittedTargetPath($newPath);
+            $this->fileService->checkPermittedTargetPath($newPath);
 
             $existingFile = File::getByPath($newPath);
             if ($existingFile) {
@@ -379,9 +473,8 @@ class ExplorerController extends AbstractAdminController
 
                 if (!$overwrite) {
                     return new JsonResponse([
-                        'yesno' =>
-                            _('A file with the same name already exists. Would you like to replace the existing file?'),
-                        'id' => $id
+                        'yesno' => _('A file with the same name already exists. Would you like to replace the existing file?'),
+                        'id' => $id,
                     ]);
                 }
 
@@ -409,11 +502,11 @@ class ExplorerController extends AbstractAdminController
     {
         $path = $request->request->get('path', '');
         $name = $request->request->get('name', '');
-        $name = $this->cleanFileName($name);
+        $name = $this->fileService->cleanFileName($name);
         $overwrite = $request->request->getBoolean('overwrite');
 
-        $pathinfo = pathinfo($path);
-        $newPath = $pathinfo['dirname'] . '/' . $name;
+        $dirname = pathinfo($path, PATHINFO_DIRNAME);
+        $newPath = $dirname . '/' . $name;
 
         if ($path === $newPath) {
             return new JsonResponse(['filename' => $name, 'path' => $path, 'newPath' => $newPath]);
@@ -424,17 +517,17 @@ class ExplorerController extends AbstractAdminController
                 throw new InvalidInput(_('The name is invalid.'));
             }
 
-            $this->checkPermittedTargetPath($path);
+            $this->fileService->checkPermittedTargetPath($path);
 
             if (file_exists(_ROOT_ . $newPath)) {
                 if (!$overwrite) {
                     return new JsonResponse([
-                        'yesno' =>_('A file with the same name already exists. Would you like to replace the existing file?'),
+                        'yesno' => _('A file with the same name already exists. Would you like to replace the existing file?'),
                         'path' => $path,
                     ]);
                 }
 
-                $this->deleteFolder($newPath);
+                $this->fileService->deleteFolder($newPath);
             }
 
             if (!rename(_ROOT_ . $path, _ROOT_ . $newPath)) {
@@ -444,354 +537,8 @@ class ExplorerController extends AbstractAdminController
             return new JsonResponse(['error' => $exception->getMessage(), 'path' => $path]);
         }
 
-        $this->replaceFolderPaths($path, $newPath);
+        $this->fileService->replaceFolderPaths($path, $newPath);
 
         return new JsonResponse(['filename' => $name, 'path' => $path, 'newPath' => $newPath]);
-    }
-
-    /**
-     * Replace file paths in the html of pages, templates and requirements
-     *
-     * @param string $path
-     * @param string $newPath
-     *
-     * @return void
-     */
-    private function replaceFolderPaths(string $path, string $newPath): void
-    {
-        $newPathEsc = db()->esc($newPath);
-        $pathEsc = db()->esc($path);
-        db()->query("UPDATE sider    SET text = REPLACE(text, '=\"" . $pathEsc . "', '=\"" . $newPathEsc . "')");
-        db()->query("UPDATE template SET text = REPLACE(text, '=\"" . $pathEsc . "', '=\"" . $newPathEsc . "')");
-        db()->query("UPDATE special  SET text = REPLACE(text, '=\"" . $pathEsc . "', '=\"" . $newPathEsc . "')");
-        db()->query("UPDATE krav     SET text = REPLACE(text, '=\"" . $pathEsc . "', '=\"" . $newPathEsc . "')");
-        db()->query(
-            "
-            UPDATE files
-            SET path = REPLACE(path, '" . $pathEsc . "', '" . $newPathEsc . "')
-            WHERE path LIKE '$pathEsc%'
-            "
-        );
-    }
-
-    /**
-     * Delete folder
-     *
-     * @param string $path
-     *
-     * @return void
-     */
-    private function deleteFolder(string $path): void
-    {
-        $files = ORM::getByQuery(
-            File::class,
-            'SELECT * FROM `' . File::TABLE_NAME . "` WHERE path LIKE '" . db()->esc($path) . "/%'"
-        );
-        foreach ($files as $file) {
-            if ($file->isInUse()) {
-                throw new InvalidInput(sprintf(_('"%s" is still in use.'), $file->getPath()));
-            }
-
-            $file->delete();
-        }
-
-        if (!$this->deltree(_ROOT_ . $path)) {
-            throw new InvalidInput(_('A file could not be deleted because it is used on a site.'));
-        }
-    }
-
-    /**
-     * Check that given path is within the permittede datafolders
-     *
-     * @param string $path
-     *
-     * @return void
-     *
-     * @throws InvalidInput
-     */
-    private function checkPermittedPath(string $path): void
-    {
-        if (realpath(_ROOT_ . $path) !== _ROOT_ . $path) {
-            throw new InvalidInput(_('Path must be absolute.'));
-        }
-
-        if (mb_strpos($path . '/', '/files/') !== 0 && mb_strpos($path . '/', '/images/') !== 0) {
-            throw new InvalidInput(_('Path is outside of permitted folders.'));
-        }
-    }
-
-    /**
-     * Check that the path is a valid save to taget
-     *
-     * @param string $path
-     *
-     * @return void
-     *
-     * @throws InvalidInput
-     */
-    private function checkPermittedTargetPath(string $path): void
-    {
-        $pathinfo = pathinfo($path);
-        $this->checkPermittedPath($pathinfo['dirname']);
-
-        if (mb_strlen($path, 'UTF-8') > 255) {
-            throw new InvalidInput(_('The name is too long.'));
-        }
-
-        if (!is_dir(_ROOT_ . $pathinfo['dirname'] . '/')) {
-            throw new InvalidInput(_('Target is not a folder.'));
-        }
-    }
-
-    /**
-     * Check that the given path is a valid save to target
-     *
-     * @param string $path
-     *
-     * @return void
-     *
-     * @throws InvalidInput
-     */
-    private function checkPathIsAvalible(string $path): void
-    {
-        $this->checkPermittedTargetPath($path);
-
-        if (file_exists(_ROOT_ . $path)) {
-            throw new InvalidInput(_('A file or folder with the same name already exists.'));
-        }
-    }
-
-    /**
-     * Delete a folder structure
-     *
-     * Alle files must be deleted seperatly
-     *
-     * return bool
-     */
-    private function deltree(string $path): bool
-    {
-        $success = true;
-
-        $nodes = scandir($path);
-        foreach ($nodes as $node) {
-            if ('.' === $node || '..' === $node) {
-                continue;
-            }
-
-            if (!is_dir($path . '/' . $node)) {
-                return false;
-            }
-
-            $success = $success && $this->deltree($path . '/' . $node);
-        }
-        rmdir($path);
-
-        return $success;
-    }
-
-    /**
-     * Takes a string and changes it to comply with file name restrictions in windows, linux, mac and urls (UTF8)
-     * .|"'´`:%=#&\/+?*<>{}-_
-     *
-     * @param string $filename
-     *
-     * @return string
-     */
-    private function cleanFileName(string $filename): string
-    {
-        $search = ['/[.&?\/:*"\'´`<>{}|%\s-_=+#\\\\]+/u', '/^\s+|\s+$/u', '/\s+/u'];
-        $replace = [' ', '', '-'];
-
-        return mb_strtolower(preg_replace($search, $replace, $filename), 'UTF-8');
-    }
-
-    /**
-     * Generate javascript for setting up file objects in Explorer
-     *
-     * @param File $file
-     *
-     * @return string
-     */
-    private function filejavascript(File $file): string
-    {
-        $data = [
-            'id'          => $file->getId(),
-            'path'        => $file->getPath(),
-            'mime'        => $file->getMime(),
-            'name'        => pathinfo($file->getPath(), PATHINFO_FILENAME),
-            'width'       => $file->getWidth(),
-            'height'      => $file->getHeight(),
-            'description' => $file->getDescription(),
-        ];
-
-        return 'files[' . $file->getId() . '] = new file(' . json_encode($data) . ');';
-    }
-
-    /**
-     * Generate display HTML for file objects in Explorer
-     *
-     * @param File   $file
-     * @param string $returnType
-     *
-     * @return string
-     */
-    private function filehtml(File $file, string $returnType = ''): string
-    {
-        $html = '';
-
-        $menuType = 'filetile';
-        $type = explode('/', $file->getMime());
-        $type = array_shift($type);
-        if (in_array($file->getMime(), ['image/gif', 'image/jpeg', 'image/png'], true)) {
-            $menuType = 'imagetile';
-        }
-        $html .= '<div id="tilebox' . $file->getId() . '" class="' . $menuType . '"><div class="image"';
-
-        if ('ckeditor' === $returnType) {
-            $html .= ' onclick="files[' . $file->getId() . '].addToEditor()"';
-        } elseif ('thb' === $returnType && in_array($file->getMime(), ['image/gif', 'image/jpeg', 'image/png'], true)) {
-            if ($file->getWidth() <= Config::get('thumb_width')
-                && $file->getHeight() <= Config::get('thumb_height')
-            ) {
-                $html .= ' onclick="insertThumbnail(' . $file->getId() . ')"';
-            } else {
-                $html .= ' onclick="openImageThumbnail(' . $file->getId() . ')"';
-            }
-        } else {
-            $html .= ' onclick="files[' . $file->getId() . '].openfile();"';
-        }
-
-        $html .= '> <img src="';
-
-        $type = explode('/', $file->getMime());
-        $type = array_shift($type);
-        switch ($file->getMime()) {
-            case 'image/gif':
-            case 'image/jpeg':
-            case 'image/png':
-            case 'image/vnd.wap.wbmp':
-                $type = 'image-native';
-                break;
-            case 'application/pdf':
-                $type = 'pdf';
-                break;
-            case 'application/msword':
-            case 'application/vnd.ms-excel':
-            case 'application/vnd.ms-works':
-            case 'application/vnd.oasis.opendocument.graphics':
-            case 'application/vnd.openxmlformats-officedocument.spreadsheetml.shee':
-                $type = 'text';
-                break;
-            case 'application/zip':
-                $type = 'zip';
-                break;
-        }
-
-        switch ($type) {
-            case 'image-native':
-                $html .= '/admin/image.php?path=' . rawurlencode($file->getPath()) . '&amp;maxW=128&amp;maxH=96';
-                break;
-            case 'pdf':
-            case 'image':
-            case 'video':
-            case 'audio':
-            case 'text':
-            case 'zip':
-                $html .= '/admin/images/file-' . $type . '.gif';
-                break;
-            default:
-                $html .= '/admin/images/file-bin.gif';
-                break;
-        }
-
-        $pathinfo = pathinfo($file->getPath());
-        $html .= '" alt="" title="" /> </div><div ondblclick="showfilename(' . $file->getId()
-            . ')" class="navn" id="navn' . $file->getId() . 'div" title="' . $pathinfo['filename'] . '"> '
-            . $pathinfo['filename']
-            . '</div><form action="" method="get" onsubmit="document.getElementById(\'files\').focus();return false;" style="display:none" id="navn'
-            . $file->getId() . 'form"><p><input onblur="renamefile(\'' . $file->getId() . '\');" maxlength="'
-            . (251 - mb_strlen($pathinfo['dirname'], 'UTF-8')) . '" value="' . $pathinfo['filename']
-            . '" name="" /></p></form></div>';
-
-        return $html;
-    }
-
-    /**
-     * Get root of folder tree
-     *
-     * @param string $currentDir
-     *
-     * @return array[]
-     */
-    private function getRootDirs(string $currentDir): array
-    {
-        $dirs = [];
-        foreach (['/images' => _('Images'), '/files' => _('Files')] as $path => $name) {
-            $dirs[] = $this->formatDir($path, $name, $currentDir);
-        }
-
-        return $dirs;
-    }
-
-    /**
-     * Get metadata for a folder
-     *
-     * @param string $path
-     * @param string $name
-     * @param string $currentDir
-     *
-     * @return array
-     */
-    private function formatDir(string $path, string $name, string $currentDir): array
-    {
-        $subs = [];
-        if (0 === mb_strpos($currentDir, $path)) {
-            $subs = $this->getSubDirs($path, $currentDir);
-            $hassubs = (bool) $subs;
-        } else {
-            $hassubs = $this->hasSubsDirs($path);
-        }
-
-        return [
-            'id'      => preg_replace('#/#u', '.', $path),
-            'path'    => $path,
-            'name'    => $name,
-            'hassubs' => $hassubs,
-            'subs'    => $subs,
-        ];
-    }
-
-    /**
-     * Return list of folders in a folder.
-     *
-     * @param string $path
-     * @param string $currentDir
-     *
-     * @return array[]
-     */
-    private function getSubDirs(string $path, string $currentDir): array
-    {
-        $folders = glob(_ROOT_ . $path . '/*/');
-        natcasesort($folders);
-
-        $dirs = [];
-        foreach ($folders as $folder) {
-            $name = pathinfo($folder, PATHINFO_BASENAME);
-            $dirs[] = $this->formatDir($path . '/' . $name, $name, $currentDir);
-        }
-
-        return $dirs;
-    }
-
-    /**
-     * Check if folder has subfolders
-     *
-     * @param string $path
-     *
-     * @return bool
-     */
-    private function hasSubsDirs(string $path): bool
-    {
-        return (bool) glob(_ROOT_ . $path . '/*/');
     }
 }
