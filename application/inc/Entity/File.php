@@ -1,6 +1,7 @@
 <?php namespace AGCMS\Entity;
 
 use AGCMS\ORM;
+use Exception;
 
 class File extends AbstractEntity
 {
@@ -241,10 +242,28 @@ class File extends AbstractEntity
             return false;
         }
 
-        replacePaths($this->getPath(), $path);
+        $this->replacePaths($this->getPath(), $path);
         $this->setPath($path)->save();
 
         return true;
+    }
+
+    /**
+     * Update related data
+     *
+     * @param string $path
+     * @param string $newPath
+     *
+     * @return void
+     */
+    private function replacePaths(string $path, string $newPath): void
+    {
+        $newPathEsc = db()->esc($newPath);
+        $pathEsc = db()->esc($path);
+        db()->query("UPDATE sider    SET text = REPLACE(text, '=\"" . $pathEsc . "\"', '=\"" . $newPathEsc . "\"')");
+        db()->query("UPDATE template SET text = REPLACE(text, '=\"" . $pathEsc . "\"', '=\"" . $newPathEsc . "\"')");
+        db()->query("UPDATE special  SET text = REPLACE(text, '=\"" . $pathEsc . "\"', '=\"" . $newPathEsc . "\"')");
+        db()->query("UPDATE krav     SET text = REPLACE(text, '=\"" . $pathEsc . "\"', '=\"" . $newPathEsc . "\"')");
     }
 
     /**
@@ -261,15 +280,17 @@ class File extends AbstractEntity
         return (bool) db()->fetchOne(
             "
             (
-                SELECT id FROM `sider`    WHERE `text` LIKE '%=\"$escapedPath\"%' OR `billed` = '$escapedPath' LIMIT 1
+                SELECT id FROM `sider`
+                WHERE `icon_id` = " . $this->getId() . " OR `text` LIKE '%=\"$escapedPath\"%' LIMIT 1
             )
             UNION (
-                SELECT id FROM `template` WHERE `text` LIKE '%=\"$escapedPath\"%' OR `billed` = '$escapedPath' LIMIT 1
+                SELECT id FROM `template`
+                WHERE `icon_id` = " . $this->getId() . " OR `text` LIKE '%=\"$escapedPath\"%' LIMIT 1
             )
             UNION (SELECT id FROM `special` WHERE `text` LIKE '%=\"$escapedPath\"%' LIMIT 1)
             UNION (SELECT id FROM `krav`    WHERE `text` LIKE '%=\"$escapedPath\"%' LIMIT 1)
-            UNION (SELECT id FROM `maerke`  WHERE `ico`  = '$escapedPath' LIMIT 1)
-            UNION (SELECT id FROM `kat`     WHERE `icon` = '$escapedPath' LIMIT 1)
+            UNION (SELECT id FROM `maerke`  WHERE `icon_id`  = " . $this->getId() . " LIMIT 1)
+            UNION (SELECT id FROM `kat`     WHERE `icon_id` = " . $this->getId() . " LIMIT 1)
             "
         );
     }
@@ -285,9 +306,13 @@ class File extends AbstractEntity
     {
         $imagesize = @getimagesize(_ROOT_ . $path);
 
+        $finfo = finfo_open(FILEINFO_MIME);
+        $mime = finfo_file($finfo, _ROOT_ . $path);
+        finfo_close($finfo);
+
         $file = new self([
             'path'        => $path,
-            'mime'        => get_mime_type(_ROOT_ . $path),
+            'mime'        => $mime,
             'size'        => filesize(_ROOT_ . $path),
             'description' => '',
             'width'       => $imagesize[0] ?? 0,
@@ -304,11 +329,11 @@ class File extends AbstractEntity
      */
     public function delete(): bool
     {
-        if (unlink(_ROOT_ . $this->path)) {
-            return parent::delete();
+        if (file_exists(_ROOT_ . $this->path) && !unlink(_ROOT_ . $this->path)) {
+            throw new Exception(sprintf(_('Could not delete "%s".'), $this->path));
         }
 
-        return false;
+        return parent::delete();
     }
 
     /**

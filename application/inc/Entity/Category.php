@@ -22,8 +22,8 @@ class Category extends AbstractRenderable
     /** @var ?int */
     private $parentId;
 
-    /** @var ?string Icon file path. */
-    private $iconPath;
+    /** @var ?int File id. */
+    private $iconId;
 
     /** @var int Render mode for page list. */
     private $renderMode = 1;
@@ -48,8 +48,8 @@ class Category extends AbstractRenderable
      */
     public function __construct(array $data)
     {
+        $this->iconId = $data['icon_id'];
         $this->setParentId($data['parent_id'])
-            ->setIconPath($data['icon_path'])
             ->setRenderMode($data['render_mode'])
             ->setEmail($data['email'])
             ->setWeightedChildren($data['weighted_children'])
@@ -71,7 +71,7 @@ class Category extends AbstractRenderable
             'id'                => $data['id'],
             'title'             => $data['navn'],
             'parent_id'         => $data['bind'],
-            'icon_path'         => $data['icon'],
+            'icon_id'           => $data['icon_id'],
             'render_mode'       => $data['vis'],
             'email'             => $data['email'],
             'weighted_children' => $data['custom_sort_subs'],
@@ -113,20 +113,6 @@ class Category extends AbstractRenderable
         }
 
         $this->parentId = $parentId;
-
-        return $this;
-    }
-
-    /**
-     * Set icon file path.
-     *
-     * @param ?string $iconPath
-     *
-     * @return self
-     */
-    public function setIconPath(?string $iconPath): self
-    {
-        $this->iconPath = $iconPath;
 
         return $this;
     }
@@ -479,15 +465,31 @@ class Category extends AbstractRenderable
     }
 
     /**
-     * Get the file that is being used as an icon.
+     * Set icon
+     *
+     * @param ?File $icon
+     *
+     * @return self
+     */
+    public function setIcon(?File $icon): self
+    {
+        $this->iconId = $icon->getId();
+
+        return $this;
+    }
+
+    /**
+     * Get the file that is used as an icon.
+     *
+     * @return ?File
      */
     public function getIcon(): ?File
     {
-        if (null === $this->iconPath) {
+        if (null === $this->iconId) {
             return null;
         }
 
-        return File::getByPath($this->iconPath);
+        return ORM::getOne(File::class, $this->iconId);
     }
 
     // ORM related functions
@@ -502,7 +504,7 @@ class Category extends AbstractRenderable
         return [
             'navn'             => db()->eandq($this->title),
             'bind'             => null !== $this->parentId ? (string) $this->parentId : 'NULL',
-            'icon'             => null !== $this->iconPath ? db()->eandq($this->iconPath) : 'NULL',
+            'icon_id'          => null !== $this->iconId ? (string) $this->iconId : 'NULL',
             'vis'              => (string) $this->renderMode,
             'email'            => db()->eandq($this->email),
             'custom_sort_subs' => (string) (int) $this->weightedChildren,

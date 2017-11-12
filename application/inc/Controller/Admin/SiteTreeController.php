@@ -19,10 +19,13 @@ class SiteTreeController extends AbstractAdminController
      */
     public function index(Request $request): Response
     {
+        $openCategories = explode('<', $request->cookies->get('openkat', ''));
+        $openCategories = array_map('intval', $openCategories);
+
         $siteTreeService = new SiteTreeService();
 
-        $data = $this->basicPageData();
-        $data['siteTree'] = $siteTreeService->getSiteTreeData();
+        $data = $this->basicPageData($request);
+        $data['siteTree'] = $siteTreeService->getSiteTreeData($openCategories);
 
         $content = Render::render('admin/getSiteTree', $data);
 

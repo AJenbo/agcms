@@ -3,6 +3,7 @@
 use AGCMS\Config;
 use AGCMS\Entity\Brand;
 use AGCMS\Entity\Category;
+use AGCMS\Entity\File;
 use AGCMS\Entity\Page;
 use AGCMS\ORM;
 use AGCMS\Render;
@@ -23,6 +24,9 @@ class PageController extends AbstractAdminController
     public function index(Request $request, int $id = null): Response
     {
         $selectedId = $request->cookies->get('activekat', -1);
+        $openCategories = explode('<', $request->cookies->get('openkat', ''));
+        $openCategories = array_map('intval', $openCategories);
+
         $page = null;
         $bindings = [];
         $accessories = [];
@@ -47,13 +51,13 @@ class PageController extends AbstractAdminController
         $data = [
             'textWidth' => Config::get('text_width'),
             'thumbWidth' => Config::get('thumb_width'),
-            'siteTree' => $siteTreeService->getSiteTreeData('categories', $selectedId),
+            'siteTree' => $siteTreeService->getSiteTreeData($openCategories, 'categories', $selectedId),
             'requirementOptions' => $this->getRequirementOptions(),
             'brands' => ORM::getByQuery(Brand::class, 'SELECT * FROM `maerke` ORDER BY navn'),
             'page' => $page,
             'bindings' => $bindings,
             'accessories' => $accessories,
-        ] + $this->basicPageData();
+        ] + $this->basicPageData($request);
 
         $content = Render::render('admin/redigerside', $data);
 
@@ -62,8 +66,15 @@ class PageController extends AbstractAdminController
 
     public function pageList(Request $request): Response
     {
+        $openCategories = explode('<', $request->cookies->get('openkat', ''));
+        $openCategories = array_map('intval', $openCategories);
+
         $siteTreeService = new SiteTreeService();
-        $data = ['siteTree' => $siteTreeService->getSiteTreeData('pages', request()->cookies->get('activekat', -1))];
+        $data = ['siteTree' => $siteTreeService->getSiteTreeData(
+            $openCategories,
+            'pages',
+            $request->cookies->get('activekat', -1)
+        )];
 
         $content = Render::render('admin/pagelist', $data);
 
@@ -90,7 +101,7 @@ class PageController extends AbstractAdminController
             'excerpt'        => $pageData['excerpt'],
             'html'           => purifyHTML($pageData['html']),
             'sku'            => $pageData['sku'],
-            'icon_path'      => $pageData['iconPath'],
+            'icon_id'        => $pageData['iconId'],
             'requirement_id' => $pageData['requirementId'],
             'brand_id'       => $pageData['brandId'],
             'price'          => $pageData['price'],
@@ -115,6 +126,11 @@ class PageController extends AbstractAdminController
     {
         $pageData = json_decode($request->getContent(), true);
 
+        $icon = null;
+        if (null !== $pageData['iconId']) {
+            $icon = ORM::getOne(File::class, $pageData['iconId']);
+        }
+
         $page = ORM::getOne(Page::class, $id);
         assert($page instanceof Page);
         $page->setKeywords($pageData['keywords'])
@@ -124,7 +140,7 @@ class PageController extends AbstractAdminController
             ->setExcerpt($pageData['excerpt'])
             ->setRequirementId($pageData['requirementId'])
             ->setBrandId($pageData['brandId'])
-            ->setIconPath($pageData['iconPath'])
+            ->setIcon($icon)
             ->setPriceType($pageData['priceType'])
             ->setOldPriceType($pageData['oldPriceType'])
             ->setHtml(purifyHTML($pageData['html']))

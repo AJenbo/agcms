@@ -15,7 +15,7 @@ function calcImageDimension()
 {
     var dimention = {};
 
-    if(mode == 'thb') {
+    if(mode == "thb") {
         if(rotate) {
             dimention.width = Math.min(thumb_height, Math.round(maxW * scale));
             dimention.height = Math.min(thumb_width, Math.round(maxH * scale));
@@ -35,8 +35,8 @@ function calcImageDimension()
 
 function saveImage_r(data)
 {
-    $('loading').style.visibility = 'hidden';
-    $('save').style.display = '';
+    $("loading").style.visibility = "hidden";
+    $("save").style.display = "";
     if(data.error) {
         alert(data.error);
     } else if(data.yesno) {
@@ -46,12 +46,9 @@ function saveImage_r(data)
         }
 
         self.close();
-    } else if(window.opener.returnid && window.opener.returnid != 'undefined') {
-        window.opener.opener.document.getElementById(window.opener.returnid).value = data.path;
-        window.opener.opener.document.getElementById(window.opener.returnid + 'thb').src = data.path;
-        if(window.opener.opener.window.location.href.indexOf('id=') > -1) {
-            window.opener.opener.updateSide(window.opener.opener.$('id').value);
-        }
+    } else if(window.opener.returnid && window.opener.returnid != "undefined") {
+        window.opener.opener.document.getElementById(window.opener.returnid).value = data.id;
+        window.opener.opener.document.getElementById(window.opener.returnid + "thb").src = data.path;
         // TODO make shure theas closes
         window.opener.close();
     } else if(window.opener.files[data.id]) {

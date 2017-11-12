@@ -45,47 +45,42 @@
             }
         </style>
         <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/prototype/1.7.3.0/prototype.js"></script>
-        <script type="text/javascript" src="javascript/javascript.js"></script>
-        <script type="text/javascript" src="javascript/explorer.js"></script>
+        <script type="text/javascript" src="/javascript/xHttp.js"></script>
+        <script type="text/javascript" src="/javascript/admin/javascript.js"></script>
+        <script type="text/javascript" src="/javascript/admin/explorer.js"></script>
         <script type="text/javascript">
-            var global_dir = '';
+            var global_dir = "";
 
             function movefile(dir)
             {
                 global_dir = dir;
-                //TODO issues with ie
-                window.opener.document.getElementById('loading').style.display = '';
-                window.opener.x_renamefile({{id}}, {{path|json_encode()|raw}}, dir, '', 0, movefile_r);
+                window.opener.document.getElementById("loading").style.display = "";
+                var data = { "dir": dir };
+                xHttp.request("/admin/explorer/files/{{file.id}}/move/", movefile_r, "PUT", data);
             }
 
-            //TODO Closes on mouse out???
             function movefile_r(data)
             {
-                window.opener.document.getElementById('loading').style.display = 'none';
+                window.opener.document.getElementById("loading").style.display = "none";
 
-                if (data['path'] == {{path|json_encode()|raw}})
+                if (data["path"] === {{file.path|json_encode()|raw}}) {
                     return;
+                }
 
-                if (data['error']) {
-                    alert(data['error']);
-                    //Somthing prevents the FF from closing when hovering the link so we remove it
-                    document.body.innerHTML = '';
-                    window.close();
-                } else if (data['yesno']) {
-                    if (eval(confirm(data['yesno']))==true){
-                        document.getElementById('loading').style.display = '';
-                        window.opener.x_renamefile({{id}}, {{path|json_encode()|raw}}, global_dir, '', 1, movefile_r);
-                    } else {
-                        //Somthing prevents the FF from closing when hovering the link so we remove it
-                        document.body.innerHTML = '';
-                        window.close();
+                if (data["error"]) {
+                    alert(data["error"]);
+                } else if (data["yesno"]) {
+                    if (eval(confirm(data["yesno"])) == true) {
+                        document.getElementById("loading").style.display = "";
+                        var data = { "dir": global_dir, "overwrite": true };
+                        xHttp.request("/admin/explorer/files/{{file.id}}/move/", movefile_r, "PUT", data);
+                        return;
                     }
                 } else {
-                    window.opener.document.getElementById('files').removeChild(window.opener.document.getElementById('tilebox'+data['id']));
-                    //Somthing prevents FF from closing when hovering the link so we remove it
-                    document.body.innerHTML = '';
-                    window.close();
+                    window.opener.document.getElementById("files").removeChild(window.opener.document.getElementById("tilebox" + data["id"]));
                 }
+
+                window.close();
             }
         </script>
     </head>

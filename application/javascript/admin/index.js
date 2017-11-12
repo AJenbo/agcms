@@ -209,8 +209,7 @@ function updateKat(id)
 {
     $('loading').style.visibility = '';
 
-    var icon = $('icon').value;
-    icon = icon ? icon : null;
+    var icon = parseInt($('icon_id').value) || null;
 
     if(!id) {
         x_save_ny_kat($('navn').value, getRadio('kat'), $('vis').value, $('email').value, icon, save_ny_kat_r);
@@ -228,8 +227,7 @@ function updatemaerke(id)
 {
     $('loading').style.visibility = '';
 
-    var icon = document.getElementById('ico').value;
-    icon = icon ? icon : null;
+    var icon = parseInt(document.getElementById('icon_id').value) || null;
 
     x_updatemaerke(id, document.getElementById('navn').value, document.getElementById('link').value, icon,
         id ? inject_html : updatemaerke_r);
@@ -248,7 +246,7 @@ function updateSide(id)
         "excerpt" : $("beskrivelse").value,
         "html" : CKEDITOR.instances.text.getData(),
         "sku" : $("varenr").value,
-        "iconPath" : $("billed").value || null,
+        "iconId" : parseInt($("icon_id").value) || null,
         "requirementId" : parseInt(getSelectValue("krav")) || null,
         "brandId" : parseInt(getSelectValue("maerke")) || null,
         "price" : parseInt($("pris").value) || 0,

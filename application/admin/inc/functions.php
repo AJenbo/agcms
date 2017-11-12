@@ -189,44 +189,6 @@ function returnBytes(string $val): int
     return $val;
 }
 
-function get_mime_type(string $filepath): string
-{
-    $mime = '';
-    if (function_exists('finfo_file')) {
-        $mime = finfo_file($finfo = finfo_open(FILEINFO_MIME), $filepath);
-        finfo_close($finfo);
-    }
-    if (!$mime && function_exists('mime_content_type')) {
-        $mime = mime_content_type($filepath);
-    }
-
-    //Some types can't be trusted, and finding them via extension seams to give better resutls.
-    $unknown = ['text/plain', 'application/msword', 'application/octet-stream'];
-    if (!$mime || in_array($mime, $unknown, true)) {
-        $mimes = [
-            'doc'   => 'application/msword',
-            'pdf'   => 'application/pdf',
-            'xls'   => 'application/vnd.ms-excel',
-            'zip'   => 'application/zip',
-            'm4a'   => 'audio/mpeg',
-            'mp3'   => 'audio/mpeg',
-            'wav'   => 'audio/x-wav',
-            'bmp'   => 'image/x-ms-bmp',
-            'txt'   => 'text/plain',
-            'mov'   => 'video/quicktime',
-        ];
-        $mime = 'application/octet-stream';
-        $extension = mb_strtolower(pathinfo($filepath, PATHINFO_EXTENSION));
-        if (isset($mimes[$extension])) {
-            $mime = $mimes[$extension];
-        }
-    }
-
-    $mime = explode(';', $mime);
-
-    return array_shift($mime);
-}
-
 /**
  * @return string[]|true
  */
@@ -481,10 +443,12 @@ function saveImage(
     string $filename,
     bool $force
 ): array {
-    $mimeType = get_mime_type(_ROOT_ . $path);
+    $finfo = finfo_open(FILEINFO_MIME);
+    $mime = finfo_file($finfo, _ROOT_ . $path);
+    finfo_close($finfo);
 
     $output = ['type' => 'png'];
-    if ('image/jpeg' === $mimeType) {
+    if ('image/jpeg' === $mime) {
         $output['type'] = 'jpg';
     }
 
@@ -532,147 +496,6 @@ function newfaktura(): int
     );
 
     return db()->insert_id;
-}
-
-//TODO if force, refresh folder or we might have duplicates displaying in the folder.
-//TODO Error out if the files is being moved to it self
-//TODO moving two files to the same dire with no reload inbetwean = file exists?????????????
-/**
- * Rename or relocate a file/directory.
- *
- * @param int|string $id Int for file renaming, string on folder renaming
- */
-function renamefile($id, string $path, string $dir, string $filename, bool $force = false): array
-{
-    $pathinfo = pathinfo($path);
-    if ('/' == $pathinfo['dirname']) {
-        '' == $pathinfo['dirname'];
-    }
-
-    if (!$dir) {
-        $dir = $pathinfo['dirname'];
-    } elseif ('/' == $dir) {
-        '' == $dir;
-    }
-
-    $pathinfo['extension'] = '';
-    if (!is_dir(_ROOT_ . $path)) {
-        $mime = get_mime_type(_ROOT_ . $path);
-        if ('image/jpeg' == $mime) {
-            $pathinfo['extension'] = 'jpg';
-        } elseif ('image/png' == $mime) {
-            $pathinfo['extension'] = 'png';
-        } elseif ('image/gif' == $mime) {
-            $pathinfo['extension'] = 'gif';
-        } elseif ('application/pdf' == $mime) {
-            $pathinfo['extension'] = 'pdf';
-        } elseif ('image/vnd.wap.wbmp' == $mime) {
-            $pathinfo['extension'] = 'wbmp';
-        }
-    } else {
-        //a folder with a . will mistakingly be seen as a file with extension
-        $pathinfo['filename'] .= '-' . @$pathinfo['extension'];
-    }
-
-    if (!$filename) {
-        $filename = $pathinfo['filename'];
-    }
-
-    $filename = cleanFileName($filename);
-
-    if (!$filename) {
-        return ['error' => _('The name is invalid.'), 'id' => $id];
-    }
-
-    //Destination folder doesn't exist
-    if (!is_dir(_ROOT_ . $dir . '/')) {
-        return [
-            'error' => _('The file could not be moved because the destination folder doesn\'t exist.'),
-            'id' => $id,
-        ];
-    }
-    if ($pathinfo['extension']) {
-        //No changes was requested.
-        $newPath = $dir . '/' . $filename . '.' . $pathinfo['extension'];
-        if ($path === $newPath) {
-            return ['id' => $id, 'filename' => $filename, 'path' => $path];
-        }
-
-        //if file path more then 255 erturn error
-        if (mb_strlen($newPath, 'UTF-8') > 255) {
-            return ['error' => _('The filename is too long.'), 'id' => $id];
-        }
-
-        //File already exists, but are we trying to force a overwrite?
-        if (is_file(_ROOT_ . $newPath) && !$force) {
-            return ['yesno' => _('A file with the same name already exists.
-Would you like to replace the existing file?'), 'id' => $id];
-        }
-        if ($force) {
-            $oldFile = File::getByPath($newPath);
-            if ($oldFile) {
-                $oldFile->delete();
-            }
-        }
-        if (File::getByPath($path)->move($newPath)) {
-            return ['id' => $id, 'filename' => $filename, 'path' => $newPath];
-        }
-
-        return ['error' => _('An error occurred with the file operations.'), 'id' => $id];
-    }
-
-    //Dir or file with no extension
-    //TODO ajax rename folder
-    $newPath = $dir . '/' . $filename . '.' . $pathinfo['extension'];
-    //No changes was requested.
-    if ($path == $newPath) {
-        return ['id' => $id, 'filename' => $filename, 'path' => $path];
-    }
-
-    //folder already exists
-    if (is_dir(_ROOT_ . $dir . '/' . $filename)) {
-        return ['error' => _('A folder with the same name already exists.'), 'id' => $id];
-    }
-
-    //if file path more then 255 erturn error
-    if (mb_strlen($newPath, 'UTF-8') > 255) {
-        return ['error' => _('The filename is too long.'), 'id' => $id];
-    }
-
-    //File already exists, but are we trying to force a overwrite?
-    if (is_file(_ROOT_ . $path) && !$force) {
-        return ['yesno' => _('A file with the same name already exists.
-Would you like to replace the existing file?'), 'id' => $id];
-    }
-
-    //Rename/move or give an error
-    //TODO prepared query
-    if (rename(_ROOT_ . $path, _ROOT_ . $dir . '/' . $filename)) {
-        if ($force) {
-            db()->query("DELETE FROM files WHERE `path` = '" . db()->esc($newPath) . "%'");
-            //TODO insert new file data (width, alt, height)
-        }
-
-        db()->query("UPDATE files SET path = REPLACE(path, '" . db()->esc($path) . "', '" . db()->esc($newPath) . "')");
-        replacePaths($path, $newPath);
-
-        return ['id' => $id, 'filename' => $filename, 'path' => $dir . '/' . $filename];
-    }
-
-    return ['error' => _('An error occurred with the file operations.'), 'id' => $id];
-}
-
-function replacePaths(string $path, string $newPath): void
-{
-    $newPathEsc = db()->esc($newPath);
-    $pathEsc = db()->esc($path);
-    db()->query("UPDATE sider     SET navn  = REPLACE(navn, '" . $pathEsc . "', '" . $newPathEsc . "'), text = REPLACE(text, '" . $pathEsc . "', '" . $newPathEsc . "'), beskrivelse = REPLACE(beskrivelse, '" . $pathEsc . "', '" . $newPathEsc . "'), billed = REPLACE(billed, '" . $pathEsc . "', '" . $newPathEsc . "')");
-    db()->query("UPDATE template  SET navn  = REPLACE(navn, '" . $pathEsc . "', '" . $newPathEsc . "'), text = REPLACE(text, '" . $pathEsc . "', '" . $newPathEsc . "'), beskrivelse = REPLACE(beskrivelse, '" . $pathEsc . "', '" . $newPathEsc . "'), billed = REPLACE(billed, '" . $pathEsc . "', '" . $newPathEsc . "')");
-    db()->query("UPDATE special   SET text  = REPLACE(text, '" . $pathEsc . "', '" . $newPathEsc . "')");
-    db()->query("UPDATE krav      SET text  = REPLACE(text, '" . $pathEsc . "', '" . $newPathEsc . "')");
-    db()->query("UPDATE maerke    SET ico   = REPLACE(ico, '" . $pathEsc . "', '" . $newPathEsc . "')");
-    db()->query("UPDATE list_rows SET cells = REPLACE(cells, '" . $pathEsc . "', '" . $newPathEsc . "')");
-    db()->query("UPDATE kat       SET navn  = REPLACE(navn, '" . $pathEsc . "', '" . $newPathEsc . "'), icon = REPLACE(icon, '" . $pathEsc . "', '" . $newPathEsc . "')");
 }
 
 function edit_alt(int $id, string $description): array
@@ -1110,7 +933,7 @@ function get_pages_with_mismatch_bindings(): string
 /**
  * @return string[]|true
  */
-function save_ny_kat(string $navn, int $kat, int $vis, string $email, string $icon = null)
+function save_ny_kat(string $navn, int $kat, int $vis, string $email, int $iconId = null)
 {
     if (!$navn) {
         return ['error' => _('You must enter a name and choose a location for the new category.')];
@@ -1119,7 +942,7 @@ function save_ny_kat(string $navn, int $kat, int $vis, string $email, string $ic
     $category = new Category([
         'title'             => $navn,
         'parent_id'         => $kat,
-        'icon_path'         => $icon,
+        'icon_id'           => $iconId,
         'render_mode'       => $vis,
         'email'             => $email,
         'weighted_children' => 0,
@@ -1158,21 +981,26 @@ function sogogerstat(string $sog, string $erstat): int
     return db()->affected_rows;
 }
 
-function updatemaerke(?int $id, string $navn, string $link = '', string $ico = null): array
+function updatemaerke(?int $id, string $navn, string $link = '', int $iconId = null): array
 {
     if (!$navn) {
         return ['error' => _('You must enter a name.')];
     }
 
-    $brand = new Brand(['title' => $navn, 'link' => $link, 'icon_path' => $ico]);
+    $brand = new Brand(['title' => $navn, 'link' => $link, 'icon_id' => $iconId]);
     if (null !== $id) {
+        $icon = null;
+        if (null !== $iconId) {
+            $icon = ORM::getOne(File::class, $iconId);
+        }
+
         $brand = ORM::getOne(Brand::class, $id);
+        assert($brand instanceof Brand);
+        $brand->setIcon($icon)
+            ->setLink($link)
+            ->setTitle($navn);
     }
-    assert($brand instanceof Brand);
-    $brand->setLink($link)
-        ->setIconPath($ico)
-        ->setTitle($navn)
-        ->save();
+    $brand->save();
 
     return ['id' => $brand->getId()];
 }
@@ -1332,7 +1160,7 @@ function updateKat(
     bool $customSortSubs,
     string $subsorder,
     int $parentId = null,
-    string $icon = null
+    int $iconId = null
 ) {
     $category = ORM::getOne(Category::class, $id);
     assert($category instanceof Category);
@@ -1356,11 +1184,16 @@ function updateKat(
         updateKatOrder($subsorder);
     }
 
+    $icon = null;
+    if (null !== $iconId) {
+        $icon = ORM::getOne(File::class, $iconId);
+    }
+
     //Update kat
     $category->setRenderMode($vis)
         ->setEmail($email)
         ->setWeightedChildren($customSortSubs)
-        ->setIconPath($icon)
+        ->setIcon($icon)
         ->setTitle($navn)
         ->save();
 
@@ -1749,18 +1582,20 @@ function generateImage(
     $image->rotate($rotate);
 
     // Output image or save
-    $mimeType = 'image/jpeg';
+    $mime = 'image/jpeg';
     $type = 'jpeg';
     if (empty($output['type'])) {
-        $mimeType = get_mime_type($path);
-        if ('image/png' !== $mimeType) {
-            $mimeType = 'image/jpeg';
+        $finfo = finfo_open(FILEINFO_MIME);
+        $mime = finfo_file($finfo, $path);
+        finfo_close($finfo);
+        if ('image/png' !== $mime) {
+            $mime = 'image/jpeg';
         }
-        header('Content-Type: ' . $mimeType);
-        $image->save(null, 'image/png' === $mimeType ? 'png' : 'jpeg');
+        header('Content-Type: ' . $mime);
+        $image->save(null, 'image/png' === $mime ? 'png' : 'jpeg');
         die();
     } elseif ('png' === $output['type']) {
-        $mimeType = 'image/png';
+        $mime = 'image/png';
         $type = 'png';
     }
     $image->save($outputPath, $type);
@@ -1782,7 +1617,7 @@ function generateImage(
             $file = File::fromPath($localFile);
         }
 
-        $file->setMime($mimeType)
+        $file->setMime($mime)
             ->setWidth($width)
             ->setHeight($height)
             ->setSize(filesize($outputPath))

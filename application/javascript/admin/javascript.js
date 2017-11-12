@@ -25,13 +25,10 @@ function prisHighlight()
     $("pris").className = "NyPris";
 }
 
-function setThb(id, value, imgvalue)
+function setThb(id, value, src)
 {
-    if(arguments.length == 2) {
-        imgvalue = value;
-    }
     $(id).value = value;
-    $(id + "thb").src = imgvalue;
+    $(id + "thb").src = src;
 }
 
 function explorer(returntype, returnid)

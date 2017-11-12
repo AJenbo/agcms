@@ -13,8 +13,8 @@ class Brand extends AbstractRenderable
     /** @var string The external link for this brand. */
     private $link = '';
 
-    /** @var ?string The path for the brand icon. */
-    private $iconPath;
+    /** @var ?int File id. */
+    private $iconId;
 
     /**
      * Construct the entity.
@@ -23,8 +23,8 @@ class Brand extends AbstractRenderable
      */
     public function __construct(array $data)
     {
+        $this->iconId = $data['icon_id'];
         $this->setLink($data['link'])
-            ->setIconPath($data['icon_path'])
             ->setTitle($data['title'])
             ->setId($data['id'] ?? null);
     }
@@ -42,7 +42,7 @@ class Brand extends AbstractRenderable
             'id'        => $data['id'],
             'title'     => $data['navn'],
             'link'      => $data['link'],
-            'icon_path' => $data['ico'],
+            'icon_id'   => $data['icon_id'],
         ];
     }
 
@@ -73,11 +73,15 @@ class Brand extends AbstractRenderable
     }
 
     /**
-     * Set file path for an image type.
+     * Set icon
+     *
+     * @param ?File $icon
+     *
+     * @return self
      */
-    public function setIconPath(?string $iconPath): self
+    public function setIcon(?File $icon): self
     {
-        $this->iconPath = $iconPath;
+        $this->iconId = $icon->getId();
 
         return $this;
     }
@@ -89,11 +93,11 @@ class Brand extends AbstractRenderable
      */
     public function getIcon(): ?File
     {
-        if (null === $this->iconPath) {
+        if (null === $this->iconId) {
             return null;
         }
 
-        return File::getByPath($this->iconPath);
+        return ORM::getOne(File::class, $this->iconId);
     }
 
     // General methodes
@@ -162,9 +166,9 @@ class Brand extends AbstractRenderable
     public function getDbArray(): array
     {
         return [
-            'navn' => db()->eandq($this->title),
-            'link' => db()->eandq($this->link),
-            'ico'  => null !== $this->iconPath ? db()->eandq($this->iconPath) : 'NULL',
+            'navn'    => db()->eandq($this->title),
+            'link'    => db()->eandq($this->link),
+            'icon_id' => null !== $this->iconId ? (string) $this->iconId : 'NULL',
         ];
     }
 }

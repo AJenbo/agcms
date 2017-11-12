@@ -24,8 +24,8 @@ class Page extends AbstractRenderable
     /** @var string Short text description. */
     private $excerpt = '';
 
-    /** @var ?string Thumbnail path. */
-    private $iconPath;
+    /** @var ?int File id. */
+    private $iconId;
 
     /** @var ?int Id of requirement page. */
     private $requirementId;
@@ -52,11 +52,11 @@ class Page extends AbstractRenderable
      */
     public function __construct(array $data)
     {
+        $this->iconId = $data['icon_id'];
         $this->setSku($data['sku'])
             ->setTimeStamp($data['timestamp'] ?? 0)
             ->setKeywords($data['keywords'])
             ->setExcerpt($data['excerpt'])
-            ->setIconPath($data['icon_path'])
             ->setRequirementId($data['requirement_id'])
             ->setBrandId($data['brand_id'])
             ->setPrice($data['price'])
@@ -85,7 +85,7 @@ class Page extends AbstractRenderable
             'keywords'       => $data['keywords'],
             'html'           => $data['text'],
             'excerpt'        => $data['beskrivelse'],
-            'icon_path'      => $data['billed'],
+            'icon_id'        => $data['icon_id'],
             'requirement_id' => $data['krav'],
             'brand_id'       => $data['maerke'],
             'price'          => $data['pris'],
@@ -259,31 +259,31 @@ class Page extends AbstractRenderable
     }
 
     /**
-     * Set page thumbnail
+     * Set icon
      *
-     * @param ?string $iconPath
+     * @param ?File $icon
      *
      * @return self
      */
-    public function setIconPath(?string $iconPath): self
+    public function setIcon(?File $icon): self
     {
-        $this->iconPath = $iconPath;
+        $this->iconId = $icon->getId();
 
         return $this;
     }
 
     /**
-     * Get the file that is being used as an icon.
+     * Get the file that is used as an icon.
      *
      * @return ?File
      */
     public function getIcon(): ?File
     {
-        if (null === $this->iconPath) {
+        if (null === $this->iconId) {
             return null;
         }
 
-        return File::getByPath($this->iconPath);
+        return ORM::getOne(File::class, $this->iconId);
     }
 
     /**
@@ -670,9 +670,9 @@ class Page extends AbstractRenderable
             'text'        => db()->eandq($this->html),
             'varenr'      => db()->eandq($this->sku),
             'beskrivelse' => db()->eandq($this->excerpt),
-            'billed'      => null !== $this->iconPath ? db()->eandq($this->iconPath) : 'NULL',
-            'krav'        => (string) (null !== $this->requirementId ? $this->requirementId : 'NULL'),
-            'maerke'      => (string) (null !== $this->brandId ? $this->brandId : 'NULL'),
+            'icon_id'     => null !== $this->iconId ? (string) $this->iconId : 'NULL',
+            'krav'        => null !== $this->requirementId ? (string) $this->requirementId : 'NULL',
+            'maerke'      => null !== $this->brandId ? (string) $this->brandId : 'NULL',
             'pris'        => (string) $this->price,
             'for'         => (string) $this->oldPrice,
             'fra'         => (string) $this->priceType,

@@ -10,13 +10,13 @@
     <input type="submit" accesskey="s" style="width:1px; height:1px; position:absolute; top: -20px; left:-20px;" />
     <div>
         Name:
-        <img style="cursor:pointer;vertical-align:bottom" onclick="explorer('thb','icon')" src="{% if category.icon %}{{category.icon.path}}{% else %}/theme/default/images/admin/folder.png{% endif %}" title="" alt="Pictures" id="iconthb" />
+        <img style="cursor:pointer;vertical-align:bottom" onclick="explorer('thb','icon_id')" src="{% if category.icon %}{{category.icon.path}}{% else %}/theme/default/images/admin/folder.png{% endif %}" title="" alt="Pictures" id="icon_idthb" />
         <input id="navn" style="width:256px;" maxlength="64" value="{{category.title}}" />
         <br />
         Icon:
-        <input id="icon" style="width:247px;" maxlength="128" type="hidden" value="{{category.icon.path}}" />
-        <img style="cursor:pointer;vertical-align:bottom" onclick="explorer('thb','icon')" width="16" height="16" src="/theme/default/images/admin/folder_image.png" title="Find pictures" alt="Pictures" />
-        <img style="cursor:pointer;vertical-align:bottom" onclick="setThb('icon','','images/folder.png')" src="/theme/default/images/admin/cross.png" alt="X" title="Remove picture" height="16" width="16" />
+        <input id="icon_id" name="icon_id" type="hidden" value="{{category.icon.id}}" />
+        <img style="cursor:pointer;vertical-align:bottom" onclick="explorer('thb','icon_id')" width="16" height="16" src="/theme/default/images/admin/folder_image.png" title="Find pictures" alt="Pictures" />
+        <img style="cursor:pointer;vertical-align:bottom" onclick="setThb('icon_id','','/theme/default/images/admin/folder.png')" src="/theme/default/images/admin/cross.png" alt="X" title="Remove picture" height="16" width="16" />
         <br />
         <br />
 

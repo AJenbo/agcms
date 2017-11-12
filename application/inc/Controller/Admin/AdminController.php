@@ -15,7 +15,7 @@ class AdminController extends AbstractAdminController
      */
     public function index(Request $request): Response
     {
-        $data = $this->basicPageData();
+        $data = $this->basicPageData($request);
 
         $content = Render::render('admin/index', $data);
 

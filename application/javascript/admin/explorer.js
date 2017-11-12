@@ -244,7 +244,8 @@ function searchfiles()
 
     xHttp.cancel(searchfilesRequest);
     searchfilesRequest = xHttp.request('/admin/explorer/search/?qpath=' + encodeURIComponent(qpath) + '&qalt='
-            + encodeURIComponent(qalt) + '&qtype=' + encodeURIComponent(qtype),
+            + encodeURIComponent(qalt) + '&qtype=' + encodeURIComponent(qtype) + '&return='
+            + encodeURIComponent(returnType),
         showfiles_r);
 }
 
@@ -269,7 +270,9 @@ function showfiles(dir)
     document.getElementById(dirToId(dir)).getElementsByTagName('a')[0].className = 'active';
 
     xHttp.cancel(showFilesRequest);
-    showFilesRequest = xHttp.request('/admin/explorer/files/?path=' + encodeURIComponent(dir), showfiles_r);
+    showFilesRequest = xHttp.request(
+        '/admin/explorer/files/?path=' + encodeURIComponent(dir) + '&return=' + encodeURIComponent(returnType),
+        showfiles_r);
 }
 
 function showfiles_r(data)
@@ -354,8 +357,7 @@ function popUpWin(url, win, options, width, height)
 
 function open_file_move(id)
 {
-    popUpWin(
-        'file-move.php?id=' + id + '&path=' + encodeURIComponent(files[id].path), 'file_move', 'toolbar=0', 322, 512);
+    popUpWin('/admin/explorer/files/' + id + '/move/', 'file_move', 'toolbar=0', 322, 512);
 }
 
 function deletefolder()
@@ -464,11 +466,8 @@ function open_file_upload()
 
 function insertThumbnail(id)
 {
-    window.opener.document.getElementById(returnid).value = files[id].path;
+    window.opener.document.getElementById(returnid).value = id;
     window.opener.document.getElementById(returnid + 'thb').src = files[id].path;
-    if(window.opener.window.location.href.indexOf('id=') > -1) {
-        window.opener.updateSide(window.opener.$('id').value);
-    }
     window.close();
 }
 
@@ -476,9 +475,9 @@ function renamefile(id)
 {
     showhide('navn' + id + 'div');
     showhide('navn' + id + 'form');
+    var data = { "name" : document.getElementById('navn' + id + 'form').firstChild.firstChild.value };
     document.getElementById('loading').style.visibility = '';
-    x_renamefile(id, files[id].path, '', document.getElementById('navn' + id + 'form').firstChild.firstChild.value,
-        renamefile_r);
+    xHttp.request('/admin/explorer/files/' + id + '/move/', renamefile_r, 'PUT', data);
 }
 
 function renamefile_r(data)

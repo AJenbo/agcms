@@ -9,12 +9,13 @@ class SiteTreeService
     /**
      * Get site tree data.
      *
+     * @param int[]    $openCategories
      * @param string   $inputType
      * @param int|null $selectedId
      *
      * @return array
      */
-    public function getSiteTreeData(string $inputType = '', int $selectedId = null): array
+    public function getSiteTreeData(array $openCategories, string $inputType = '', int $selectedId = null): array
     {
         $category = null;
         if (null !== $selectedId) {
@@ -30,7 +31,7 @@ class SiteTreeService
 
         return [
             'selectedCategory' => $category,
-            'openCategories' => $this->getOpenCategories($selectedId),
+            'openCategories' => $this->getOpenCategories($openCategories, $selectedId),
             'includePages' => (!$inputType || 'pages' === $inputType),
             'inputType' => $inputType,
             'node' => ['children' => $rootCategories],
@@ -41,15 +42,13 @@ class SiteTreeService
     /**
      * Get ids of open categories.
      *
-     * @param int|null @selectedId
+     * @param int[]    $openCategories
+     * @param int|null $selectedId
      *
      * @return int[]
      */
-    private function getOpenCategories(int $selectedId = null): array
+    private function getOpenCategories(array $openCategories, int $selectedId = null): array
     {
-        $openCategories = explode('<', request()->cookies->get('openkat', ''));
-        $openCategories = array_map('intval', $openCategories);
-
         if (null !== $selectedId) {
             $category = ORM::getOne(Category::class, $selectedId);
             if ($category) {

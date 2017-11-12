@@ -10,11 +10,11 @@
     <tr style="height:21px">
         <td>Logo: </td>
         <td style="text-align:center">
-            <input type="hidden" value="{% if brand.icon %}{{brand.icon.path}}{% else %}/images/web/intet-foto.jpg{% endif %}" id="ico" name="ico" />
-            <img id="icothb" src="{% if brand.icon %}{{brand.icon.path}}{% else %}/images/web/intet-foto.jpg{% endif %}" alt="" onclick="explorer('thb', 'ico')" />
+            <input id="icon_id" name="icon_id" type="hidden" value="{{brand.icon.id}}" />
+            <img id="icon_idthb" src="{% if brand.icon %}{{brand.icon.path}}{% else %}/images/web/intet-foto.jpg{% endif %}" alt="" onclick="explorer('thb', 'icon_id')" />
             <br />
-            <img onclick="explorer('thb', 'ico')" src="/theme/default/images/admin/folder_image.png" width="16" height="16" alt="Pictures" title="Find image" />
-            <img onclick="setThb('ico', '', '/images/web/intet-foto.jpg')" src="/theme/default/images/admin/cross.png" alt="X" title="Remove picture" width="16" height="16" />
+            <img onclick="explorer('thb', 'icon_id')" src="/theme/default/images/admin/folder_image.png" width="16" height="16" alt="Pictures" title="Find image" />
+            <img onclick="setThb('icon_id', '', '/images/web/intet-foto.jpg')" src="/theme/default/images/admin/cross.png" alt="X" title="Remove picture" width="16" height="16" />
         </td>
     </tr>
     <tr>
