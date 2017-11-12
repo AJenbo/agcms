@@ -282,10 +282,10 @@ class FileService
             case 'audio':
             case 'text':
             case 'zip':
-                $html .= '/admin/images/file-' . $type . '.gif';
+                $html .= '/theme/default/images/admin/file-' . $type . '.gif';
                 break;
             default:
-                $html .= '/admin/images/file-bin.gif';
+                $html .= '/theme/default/images/admin/file-bin.gif';
                 break;
         }
 
