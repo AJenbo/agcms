@@ -5,7 +5,7 @@
 <p align="center">
     {% if brand.canonicalLink %}<a rel="nofollow" target="_blank" href="{{brand.canonicalLink}}">Read more about {% endif %}
     {{brand.title}}
-    {% if brand.icon %}<br /><img src="{{brand.icon.path}}" alt="" width="{{brand.icon.width}}" height="{{brand.icon.height}}" />{% endif %}
+    {% if brand.icon %}<br /><img src="{{brand.icon.path}}" alt="{{item.icon.description}}" width="{{brand.icon.width}}" height="{{brand.icon.height}}" />{% endif %}
     {% if brand.canonicalLink %}</a>{% endif %}
 </p>
 {% endif %}

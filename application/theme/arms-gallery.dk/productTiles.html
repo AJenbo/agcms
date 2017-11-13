@@ -8,7 +8,7 @@
                 {% if item.icon.path %}
                 <div style="text-align:center">
                     <a href="{{item.canonicalLink(category)}}">
-                        <img style="margin:10px 0" alt="" src="{{item.icon.path}}" width="{{item.icon.width}}" height="{{item.icon.height}}" />
+                        <img style="margin:10px 0" alt="{{item.icon.description}}" src="{{item.icon.path}}" width="{{item.icon.width}}" height="{{item.icon.height}}" />
                     </a>
                 </div>
                 {% endif %}
