@@ -123,6 +123,14 @@ class Render
         }
     }
 
+    /**
+     * Render a template.
+     *
+     * @param string $template
+     * @param array $data
+     *
+     * @return string
+     */
     public static function render(string $template = 'index', array $data = []): string
     {
         $templatePath = _ROOT_ . '/theme/';

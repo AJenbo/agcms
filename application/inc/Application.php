@@ -16,6 +16,8 @@ class Application
     protected $routes = [];
 
     /**
+     * Set up the enviroment.
+     *
      * @param string $basePath
      */
     public function __construct(string $basePath)
@@ -114,6 +116,13 @@ class Application
         return (new Base())->redirectToSearch($request);
     }
 
+    /**
+     * Generate a redirect if URL was not UTF-8 encoded.
+     *
+     * @param Request $request
+     *
+     * @return ?RedirectResponse
+     */
     private function correctEncoding(Request $request): ?RedirectResponse
     {
         $requestUrl = urldecode($request->getRequestUri());
@@ -133,6 +142,14 @@ class Application
         return (new Base())->redirect($request, $requestUrl, Response::HTTP_MOVED_PERMANENTLY);
     }
 
+    /**
+     * Generate a redirect for the requested path with a / appended to the path.
+     *
+     * @param Request $request
+     * @param string $requestUrl
+     *
+     * @return RedirectResponse
+     */
     private function redirectToFolderPath(Request $request, string $requestUrl): RedirectResponse
     {
         $query = $request->getQueryString() ?: '';

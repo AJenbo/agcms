@@ -83,6 +83,11 @@ class EpaymentAdminService
         return new Epayment($this, $transactionData);
     }
 
+    /**
+     * Setup the connection to the API.
+     *
+     * @return void
+     */
     private function openConnection(): void
     {
         if ($this->soapClient) {
@@ -124,6 +129,14 @@ class EpaymentAdminService
         return $transactionData;
     }
 
+    /**
+     * Generate a search request.
+     *
+     * @param string $orderId
+     * @param string $status
+     *
+     * @return array
+     */
     private function getSearchData(string $orderId, string $status): array
     {
         return [

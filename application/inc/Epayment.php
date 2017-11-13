@@ -161,6 +161,13 @@ class Epayment
         return $this->doCapture($amount);
     }
 
+    /**
+     * Send the actual transaction request.
+     *
+     * @param int $amount
+     *
+     * @return bool
+     */
     private function doCapture(int $amount): bool
     {
         $success = $this->service->confirm($this, $amount);

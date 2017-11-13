@@ -7,6 +7,15 @@ class Config
      */
     private static $config = [];
 
+    /**
+     * Load the site configurations.
+     *
+     * Will fallback to config_sample.php if config.php does not exist.
+     *
+     * @param string $basePath
+     *
+     * @return void
+     */
     public static function load(string $basePath): void
     {
         self::$config = @include $basePath . '/inc/config.php';

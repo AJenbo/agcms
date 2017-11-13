@@ -8,7 +8,11 @@ use PHPMailer\PHPMailer\Exception as PHPMailerException;
 use PHPMailer\PHPMailer\PHPMailer;
 
 /**
- * Declare common functions.
+ * Get database connection.
+ *
+ * @param DB $overwrite
+ *
+ * @return DB
  */
 function db(DB $overwrite = null): DB
 {
@@ -27,6 +31,13 @@ function db(DB $overwrite = null): DB
     return $connection;
 }
 
+/**
+ * rawurlencode a string, but leave / alone.
+ *
+ * @param string $url
+ *
+ * @return string
+ */
 function encodeUrl(string $url): string
 {
     $url = explode('/', $url);
@@ -37,6 +48,8 @@ function encodeUrl(string $url): string
 
 /**
  * Get first element from an array that can't be referenced.
+ *
+ * @param array $array
  *
  * @return mixed
  */
@@ -153,6 +166,13 @@ function valideMail(string $email): bool
     return false;
 }
 
+/**
+ * Check that the domain has a valid MX setup.
+ *
+ * @param string $domain
+ *
+ * @return bool
+ */
 function checkMx(string $domain): bool
 {
     static $ceche = [];
@@ -165,6 +185,20 @@ function checkMx(string $domain): bool
     return $ceche[$domain];
 }
 
+/**
+ * Send an email.
+ *
+ * @param string $subject
+ * @param string $htmlBody
+ * @param string $from
+ * @param string $fromName
+ * @param string $recipient
+ * @param string $recipientName
+ * @param bool $retry
+ * @param array $bcc
+ *
+ * @return bool
+ */
 function sendEmails(
     string $subject,
     string $htmlBody,
@@ -263,7 +297,7 @@ function sendEmails(
  * @param string $html Sting to clean
  *
  * @return string Cleaned stirng
- **/
+ */
 function purifyHTML(string $html): string
 {
     $config = HTMLPurifier_Config::createDefault();
