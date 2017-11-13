@@ -49,39 +49,7 @@
         <script type="text/javascript" src="/javascript/admin/javascript.js"></script>
         <script type="text/javascript" src="/javascript/admin/explorer.js"></script>
         <script type="text/javascript">
-            var global_dir = "";
-
-            function movefile(dir)
-            {
-                global_dir = dir;
-                window.opener.document.getElementById("loading").style.display = "";
-                var data = { "dir": dir };
-                xHttp.request("/admin/explorer/files/{{file.id}}/move/", movefile_r, "PUT", data);
-            }
-
-            function movefile_r(data)
-            {
-                window.opener.document.getElementById("loading").style.display = "none";
-
-                if (data["path"] === {{file.path|json_encode()|raw}}) {
-                    return;
-                }
-
-                if (data["error"]) {
-                    alert(data["error"]);
-                } else if (data["yesno"]) {
-                    if (eval(confirm(data["yesno"])) == true) {
-                        document.getElementById("loading").style.display = "";
-                        var data = { "dir": global_dir, "overwrite": true };
-                        xHttp.request("/admin/explorer/files/{{file.id}}/move/", movefile_r, "PUT", data);
-                        return;
-                    }
-                } else {
-                    window.opener.document.getElementById("files").removeChild(window.opener.document.getElementById("tilebox" + data["id"]));
-                }
-
-                window.close();
-            }
+            var fileId = {{file.id}};
         </script>
     </head>
     <body style="background-color:ThreeDFace; border:0px #FF0000 none;">

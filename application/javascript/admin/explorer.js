@@ -513,6 +513,40 @@ function renamefile_r(data)
     files[data.id].path = data.path;
 }
 
+var moveFileGlobal;
+function movefile(dir)
+{
+    moveFileGlobal = dir;
+    window.opener.document.getElementById("loading").style.display = "";
+    var data = { "dir" : dir };
+    xHttp.request("/admin/explorer/files/" + fileId + "/", movefile_r, "PUT", data);
+}
+
+function movefile_r(data)
+{
+    window.opener.document.getElementById("loading").style.display = "none";
+
+    if(data.newPath === data.path) {
+        return;
+    }
+
+    if(data.error) {
+        alert(data.error);
+        return;
+    } else if(data.yesno) {
+        if(eval(confirm(data.yesno)) == true) {
+            document.getElementById("loading").style.display = "";
+            var data = { "dir" : moveFileGlobal, "overwrite" : true };
+            xHttp.request("/admin/explorer/files/" + fileId + "/", movefile_r, "PUT", data);
+        }
+        return;
+    }
+
+    window.opener.document.getElementById("files").removeChild(
+        window.opener.document.getElementById("tilebox" + data.id));
+    window.close();
+}
+
 function deletefile(id)
 {
     if(confirm('Vil du slette \'' + files[id].name + '\'?')) {
