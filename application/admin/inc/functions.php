@@ -41,7 +41,6 @@ function checkUserLoggedIn(): void
         User::class,
         'SELECT * FROM `users` WHERE `name` = ' . db()->eandq(request()->get('username'))
     );
-    assert($user instanceof User);
     if ($user && $user->getAccessLevel() && $user->validatePassword(request()->get('password', ''))) {
         $_SESSION['curentUser'] = $user;
     }
