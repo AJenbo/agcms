@@ -61,7 +61,7 @@
             </div>
         </div>
         <div id="textDiv" style="width: {{textWidth}}px;">
-            <img id="preview" src="{% if mode == 'thb' %}/admin/explorer/image/?path={{path}}&amp;maxW={{thumbWidth}}&amp;maxH={{thumbHeight}}{% else %}{{path}}{% endif %}" alt="" onload="resize()" />
+            <img id="preview" src="{% if mode == 'thb' %}/admin/explorer/files/{{file.id}}/image/?maxW={{thumbWidth}}&amp;maxH={{thumbHeight}}{% else %}{{file.path}}{% endif %}" alt="" onload="resize()" />
             <img id="resizeHandle" src="/javascript/admin/lib/cropper/resizehandle.gif" alt="" style="position: absolute; left: 16px; top: 16px; cursor: se-resize; margin:-16px 0 0 -16px; display:none">
             <img id="original" src="{{path}}" alt="" style="display:none;" />
         </div>

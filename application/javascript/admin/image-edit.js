@@ -380,7 +380,7 @@ function preview()
 
     dimention = calcImageDimension();
 
-    $('preview').src = '/admin/explorer/image/?path=' + encodeURIComponent(path) + '&cropX=' + cropX + '&cropY=' + cropY
-        + '&cropW=' + maxW + '&cropH=' + maxH + '&maxW=' + dimention.width + '&maxH=' + dimention.height + '&rotate='
-        + rotate + '&flip=' + flip;
+    $('preview').src = '/admin/explorer/files/' + id + '/image/?cropX=' + cropX + '&cropY=' + cropY + '&cropW=' + maxW
+        + '&cropH=' + maxH + '&maxW=' + dimention.width + '&maxH=' + dimention.height + '&rotate=' + rotate + '&flip='
+        + flip;
 }
