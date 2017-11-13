@@ -548,6 +548,37 @@ class ExplorerController extends AbstractAdminController
     }
 
     /**
+     * Image editing window
+     *
+     * @param Request $request
+     * @param int     $id
+     *
+     * @return Response
+     */
+    public function imageEditWidget(Request $request, int $id): Response
+    {
+        $file = ORM::getOne(File::class, $id);
+        $mode = $request->get('mode');
+
+        $fileName = '';
+        if ('thb' === $mode) {
+            $fileName = pathinfo($file->getPath(), PATHINFO_FILENAME) . '-thb';
+        }
+
+        $data = [
+            'textWidth' => Config::get('text_width'),
+            'thumbWidth' => Config::get('thumb_width'),
+            'thumbHeight' => Config::get('thumb_height'),
+            'mode' => $mode,
+            'fileName' => $fileName,
+            'file' => $file,
+        ];
+        $content = Render::render('admin/image-edit', $data);
+
+        return new Response($content);
+    }
+
+    /**
      * Dynamic image.
      *
      * @param Request $request
