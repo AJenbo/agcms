@@ -549,16 +549,48 @@ class ExplorerController extends AbstractAdminController
     }
 
     /**
-     * Dynamic image.
+     * Image editing window
      *
      * @param Request $request
+     * @param int     $id
      *
      * @return Response
      */
-    public function image(Request $request): Response
+    public function imageEditWidget(Request $request, int $id): Response
     {
-        $path = $request->get('path');
-        $this->fileService->checkPermittedPath($path);
+        $file = ORM::getOne(File::class, $id);
+        $mode = $request->get('mode');
+
+        $fileName = '';
+        if ('thb' === $mode) {
+            $fileName = pathinfo($file->getPath(), PATHINFO_FILENAME) . '-thb';
+        }
+
+        $data = [
+            'textWidth' => Config::get('text_width'),
+            'thumbWidth' => Config::get('thumb_width'),
+            'thumbHeight' => Config::get('thumb_height'),
+            'mode' => $mode,
+            'fileName' => $fileName,
+            'file' => $file,
+        ];
+        $content = Render::render('admin/image-edit', $data);
+
+        return new Response($content);
+    }
+
+    /**
+     * Dynamic image.
+     *
+     * @param Request $request
+     * @param int     $id
+     *
+     * @return Response
+     */
+    public function image(Request $request, int $id): Response
+    {
+        $file = ORM::getOne(File::class, $id);
+        $path = $file->getPath();
 
         $timestamp = filemtime(_ROOT_ . $path);
         $lastModified = DateTime::createFromFormat('U', (string) $timestamp);
@@ -567,17 +599,21 @@ class ExplorerController extends AbstractAdminController
         $response->setLastModified($lastModified);
         if ($response->isNotModified($request)) {
             $response->setMaxAge(2592000); // one month
-            return $response;
+            return $response; // 304
         }
 
-        $cropX = $request->get('cropX', 0);
-        $cropY = $request->get('cropY', 0);
-        $cropW = $request->get('cropW', 0);
-        $cropH = $request->get('cropH', 0);
-        $maxW = $request->get('maxW', 0);
-        $maxH = $request->get('maxH', 0);
-        $flip = $request->get('flip', 0);
-        $rotate = $request->get('rotate', 0);
+        $cropW = $request->get('cropW');
+        $cropW = min($file->getWidth(), $cropW) ?: $file->getWidth();
+        $cropH = $request->get('cropH');
+        $cropH = min($file->getHeight(), $cropH) ?: $file->getHeight();
+        $cropX = $request->query->getInt('cropX');
+        $cropY = $request->query->getInt('cropY');
+        $cropX = $cropX + $cropW < $file->getWidth() ? $cropX : 0;
+        $cropY = $cropY + $cropH < $file->getHeight() ? $cropY : 0;
+        $maxW = $request->get('maxW', $file->getWidth());
+        $maxH = $request->get('maxH', $file->getHeight());
+        $flip = $request->query->getInt('flip');
+        $rotate = $request->query->getInt('rotate', 0);
 
         $type = 'jpeg';
         $guesser = MimeTypeGuesser::getInstance();
@@ -588,14 +624,7 @@ class ExplorerController extends AbstractAdminController
 
         $image = new Image(_ROOT_ . $path);
 
-        $orginalWidth = $image->getWidth();
-        $orginalHeight = $image->getHeight();
-
         // Crop image
-        $cropW = min($image->getWidth(), $cropW);
-        $cropH = min($image->getHeight(), $cropH);
-        $cropX = $cropX + $cropW < $image->getWidth() ? $cropX : 0;
-        $cropY = $cropY + $cropH < $image->getHeight() ? $cropY : 0;
         $image->crop($cropX, $cropY, $cropW, $cropH);
 
         // Trim image whitespace
@@ -604,7 +633,7 @@ class ExplorerController extends AbstractAdminController
         $maxW = min($maxW, $imageContent['width']);
         $maxH = min($maxH, $imageContent['height']);
 
-        if (!$flip && !$rotate && $maxW === $orginalWidth && $maxH === $orginalHeight) {
+        if (!$flip && !$rotate && $maxW === $file->getWidth() && $maxH === $file->getHeight()) {
             return $this->redirect($request, $path, Response::HTTP_MOVED_PERMANENTLY);
         }
 
@@ -626,6 +655,7 @@ class ExplorerController extends AbstractAdminController
         $image->rotate($rotate);
 
         $target = tempnam(sys_get_temp_dir(), 'image');
+
         $image->save($target, $type);
 
         $response = new BinaryFileResponse($target);

@@ -97,8 +97,9 @@ file.prototype.addToEditor = function() {
 };
 
 file.prototype.refreshThumb = function() {
-    $('tilebox' + this.id).firstChild.childNodes[1].src = '/admin/explorer/image/?path=' + encodeURIComponent(this.path)
-        + '&maxW=128&maxH=96&timestamp=' + unix_timestamp();
+    $('tilebox' + this.id).firstChild.childNodes[1].src
+        = '/admin/explorer/files/' + this.id + '/image/?maxW=128&maxH=96&timestamp=' + unix_timestamp();
+    iframe.contentWindow.location.reload(true)
 };
 
 function unix_timestamp()
@@ -451,14 +452,13 @@ function dir_contract(obj)
 
 function openImageThumbnail(id)
 {
-    popUpWin('image-edit.php?mode=thb&path=' + encodeURIComponent(files[id].path) + '&id=' + id, 'image_thumbnail',
-        'scrollbars=1,toolbar=0', 740, 600);
+    popUpWin(
+        '/admin/explorer/files/' + id + '/image/edit/?mode=thb', 'image_thumbnail', 'scrollbars=1,toolbar=0', 740, 600);
 }
 
 function open_image_edit(id)
 {
-    popUpWin('image-edit.php?path=' + encodeURIComponent(files[id].path) + '&id=' + id, 'image_edit',
-        'scrollbars=1,toolbar=0', 740, 600);
+    popUpWin('/admin/explorer/files/' + id + '/image/edit/', 'image_edit', 'scrollbars=1,toolbar=0', 740, 600);
 }
 
 function open_file_upload()
