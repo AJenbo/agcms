@@ -2,6 +2,7 @@
 
 use AGCMS\Config;
 use AGCMS\Entity\Invoice;
+use Exception;
 use TCPDF;
 
 class InvoicePdfService
