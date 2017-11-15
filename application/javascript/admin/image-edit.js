@@ -169,7 +169,7 @@ function resize()
 
             $('preview').style.width = width + 'px';
             $('resizeHandle').style.top = $('preview').height + 'px';
-            scale = (width / (rotate ? maxH : maxW));
+            scale = width / (rotate ? maxH : maxW);
         },
         onEnd : function(e) {
             preview();
@@ -186,198 +186,127 @@ function resizeEnd()
 
 var cropX = 0;
 var cropY = 0;
-var position = 0; // 0-7
-var rotate = 0;   // 90,180,270
-var flip = 0;     // 1,2
+var orientation = 0; // 0-7
+var rotate = 0;      // 90,180,270
+var flip = 0;        // 1,2
 
 function rotateCCW()
 {
-    switch(position) {
-        case 0:
-            position = 1;
-            rotate = 90;
-            flip = 0;
-            break;
-        case 1:
-            position = 2;
-            rotate = 180;
-            flip = 0;
-            break;
-        case 2:
-            position = 3;
-            rotate = 270;
-            flip = 0;
-            break;
-        case 3:
-            position = 0;
-            rotate = 0;
-            flip = 0;
-            break;
-        case 4:
-            position = 7;
-            rotate = 90;
-            flip = 1;
-            break;
-        case 5:
-            position = 4;
-            rotate = 0;
-            flip = 1;
-            break;
-        case 6:
-            position = 5;
-            rotate = 270;
-            flip = 1;
-            break;
-        case 7:
-            position = 6;
-            rotate = 0;
-            flip = 2;
-            break;
+    if(orientation === 3) {
+        orientation = 0;
+    } else if(orientation === 7) {
+        orientation = 4;
+    } else {
+        orientation += 1;
     }
-    preview();
-    $('preview').style.width = '';
+    updateOrientation(orientation);
 }
 
 function rotateCW()
 {
-    switch(position) {
+    if(orientation === 0) {
+        orientation = 3;
+    } else if(orientation === 4) {
+        orientation = 7;
+    } else {
+        orientation -= 1;
+    }
+    updateOrientation(orientation);
+}
+
+function flipHorizontal()
+{
+    orientation = flipHorizontalOrientation(orientation);
+    updateOrientation(orientation);
+}
+function flipHorizontalOrientation(orientation)
+{
+    switch(orientation) {
         case 0:
-            position = 3;
-            rotate = 270;
+            return 4;
+        case 1:
+            return 7;
+        case 2:
+            return 6;
+        case 3:
+            return 5;
+        case 4:
+            return 0;
+        case 5:
+            return 3;
+        case 6:
+            return 2;
+        case 7:
+            return 1;
+    }
+}
+
+function flipVertical()
+{
+    orientation = flipVerticalOrientation(orientation);
+    updateOrientation(orientation);
+}
+function flipVerticalOrientation(orientation)
+{
+    switch(orientation) {
+        case 0:
+            return 6;
+        case 1:
+            return 5;
+        case 2:
+            return 4;
+        case 3:
+            return 7;
+        case 4:
+            return 2;
+        case 5:
+            return 1;
+        case 6:
+            return 0;
+        case 7:
+            return 3;
+    }
+}
+
+function updateOrientation(orientation)
+{
+    switch(orientation) {
+        case 0:
+            rotate = 0;
             flip = 0;
             break;
         case 1:
-            position = 0;
-            rotate = 0;
+            rotate = 90;
             flip = 0;
             break;
         case 2:
-            position = 1;
-            rotate = 90;
-            flip = 0;
-            break;
-        case 3:
-            position = 2;
             rotate = 180;
             flip = 0;
             break;
-        case 4:
-            position = 5;
+        case 3:
             rotate = 270;
+            flip = 0;
+            break;
+        // fliped
+        case 4:
+            rotate = 0;
             flip = 1;
             break;
         case 5:
-            position = 6;
-            rotate = 0;
-            flip = 2;
-            break;
-        case 6:
-            position = 7;
             rotate = 90;
             flip = 1;
             break;
-        case 7:
-            position = 4;
+        case 6:
             rotate = 0;
+            flip = 2;
+            break;
+        case 7:
+            rotate = 270;
             flip = 1;
             break;
     }
     preview();
     $('preview').style.width = '';
-}
-
-function flipHorizontal()
-{
-    switch(position) {
-        case 0:
-            position = 4;
-            rotate = 0;
-            flip = 1;
-            break;
-        case 1:
-            position = 5;
-            rotate = 270;
-            flip = 1;
-            break;
-        case 2:
-            position = 6;
-            rotate = 0;
-            flip = 2;
-            break;
-        case 3:
-            position = 7;
-            rotate = 90;
-            flip = 1;
-            break;
-        case 4:
-            position = 0;
-            rotate = 0;
-            flip = 0;
-            break;
-        case 5:
-            position = 1;
-            rotate = 90;
-            flip = 0;
-            break;
-        case 6:
-            position = 2;
-            rotate = 180;
-            flip = 0;
-            break;
-        case 7:
-            position = 3;
-            rotate = 270;
-            flip = 0;
-            break;
-    }
-    preview();
-}
-
-function flipVertical()
-{
-    switch(position) {
-        case 0:
-            position = 6;
-            rotate = 0;
-            flip = 2;
-            break;
-        case 1:
-            position = 7;
-            rotate = 90;
-            flip = 1;
-            break;
-        case 2:
-            position = 4;
-            rotate = 0;
-            flip = 1;
-            break;
-        case 3:
-            position = 5;
-            rotate = 270;
-            flip = 1;
-            break;
-        case 4:
-            position = 2;
-            rotate = 180;
-            flip = 0;
-            break;
-        case 5:
-            position = 3;
-            rotate = 270;
-            flip = 0;
-            break;
-        case 6:
-            position = 0;
-            rotate = 0;
-            flip = 0;
-            break;
-        case 7:
-            position = 1;
-            rotate = 90;
-            flip = 0;
-            break;
-    }
-    preview();
 }
 
 function preview()
