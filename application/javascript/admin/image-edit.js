@@ -15,8 +15,8 @@ function calcImageDimension()
 {
     var dimention = {};
 
-    if(mode == "thb") {
-        if(rotate) {
+    if(mode === "thb") {
+        if(rotate === 90 || rotate === 270) {
             dimention.width = Math.min(thumb_height, Math.round(maxW * scale));
             dimention.height = Math.min(thumb_width, Math.round(maxH * scale));
             return dimention;
@@ -113,7 +113,7 @@ function onEndCrop(coords, dimensions)
     maxW = dimensions.width;
     maxH = dimensions.height;
 
-    if(mode == 'thb') {
+    if(mode === "thb") {
         if(rotate) {
             scale = Math.min(1, Math.max(thumb_height / maxW, thumb_width / maxH));
             return;
@@ -135,6 +135,7 @@ Event.observe(window, 'load', function test() {
     Event.observe(
         $('resetCropper'), 'click', CropImageManager.resetCropper.bindAsEventListener(CropImageManager), false);
 });
+
 var resizeHandle = null;
 function resize()
 {
@@ -147,13 +148,9 @@ function resize()
     $('resizeHandle').style.left = $('preview').width + 'px';
     $('resizeHandle').style.top = $('preview').height + 'px';
 
-    var maxWH = rotate ? maxH : maxW;
-
-    if(mode == 'thb') {
-        maxWH = maxWH * Math.min(1, Math.min(thumb_width / maxW, thumb_height / maxH));
-        if(rotate) {
-            maxWH = maxWH * Math.min(1, Math.min(thumb_width / maxH, thumb_height / maxW));
-        }
+    var maxWH = (rotate === 90 || rotate === 270) ? maxH : maxW;
+    if(mode === "thb") {
+        maxWH = Math.round(maxWH * Math.min(1, Math.min(thumb_width / maxW, thumb_height / maxH)));
     }
 
     resizeHandle = new Draggable('resizeHandle', {
@@ -298,7 +295,7 @@ function updateOrientation(orientation)
             break;
         case 6:
             rotate = 0;
-            flip = 2;
+            flip = 2; // faster then rotates
             break;
         case 7:
             rotate = 270;
