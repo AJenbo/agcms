@@ -5,7 +5,7 @@ function saveImage(overwrite = false)
     $('save').style.display = 'none';
     $('loading').style.visibility = '';
 
-    dimention = calcImageDimension();
+    var dimention = calcImageDimension();
 
     x_saveImage(path, cropX, cropY, maxW, maxH, dimention.width, dimention.height, flip, rotate, filename, overwrite,
         saveImage_r);
@@ -158,11 +158,18 @@ function resize()
 
     resizeHandle = new Draggable('resizeHandle', {
         constraint : 'horizontal',
-        boundary : [ [ 16, 0 ], [ maxWH, 0 ] ],
         onDrag : function(obj, e) {
-            $('preview').style.width = obj.element.style.left;
+            var width = parseInt(obj.element.style.left);
+            if(width < 16) {
+                width = 16;
+            }
+            if(width > maxWH) {
+                width = maxWH;
+            }
+
+            $('preview').style.width = width + 'px';
             $('resizeHandle').style.top = $('preview').height + 'px';
-            scale = (parseInt(obj.element.style.left) / (rotate ? maxH : maxW));
+            scale = (width / (rotate ? maxH : maxW));
         },
         onEnd : function(e) {
             preview();
@@ -378,7 +385,7 @@ function preview()
     $('save').style.display = 'none';
     $('loading').style.visibility = '';
 
-    dimention = calcImageDimension();
+    var dimention = calcImageDimension();
 
     $('preview').src = '/admin/explorer/files/' + id + '/image/?cropX=' + cropX + '&cropY=' + cropY + '&cropW=' + maxW
         + '&cropH=' + maxH + '&maxW=' + dimention.width + '&maxH=' + dimention.height + '&rotate=' + rotate + '&flip='
