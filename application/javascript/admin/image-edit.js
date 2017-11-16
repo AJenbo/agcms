@@ -183,122 +183,77 @@ function resizeEnd()
 
 var cropX = 0;
 var cropY = 0;
-var orientation = 0; // 0-7
+var orientation = 1; // 1-4,11-14
 var rotate = 0;      // 90,180,270
 var flip = 0;        // 1,2
 
 function rotateCCW()
 {
-    if(orientation === 3) {
-        orientation = 0;
-    } else if(orientation === 7) {
-        orientation = 4;
-    } else {
-        orientation += 1;
+    var move = 1;
+    if(orientation === 4 || orientation === 11) {
+        move = -3;
     }
-    updateOrientation(orientation);
+    updateOrientation(move);
 }
 
 function rotateCW()
 {
-    if(orientation === 0) {
-        orientation = 3;
-    } else if(orientation === 4) {
-        orientation = 7;
-    } else {
-        orientation -= 1;
+    var move = -1;
+    if(orientation === 1 || orientation === 14) {
+        move = 3;
     }
-    updateOrientation(orientation);
+    updateOrientation(move);
 }
 
 function flipHorizontal()
 {
-    orientation = flipHorizontalOrientation(orientation);
-    updateOrientation(orientation);
-}
-function flipHorizontalOrientation(orientation)
-{
-    switch(orientation) {
-        case 0:
-            return 4;
-        case 1:
-            return 7;
-        case 2:
-            return 6;
-        case 3:
-            return 5;
-        case 4:
-            return 0;
-        case 5:
-            return 3;
-        case 6:
-            return 2;
-        case 7:
-            return 1;
-    }
+    updateOrientation(10);
 }
 
 function flipVertical()
 {
-    orientation = flipVerticalOrientation(orientation);
-    updateOrientation(orientation);
-}
-function flipVerticalOrientation(orientation)
-{
-    switch(orientation) {
-        case 0:
-            return 6;
-        case 1:
-            return 5;
-        case 2:
-            return 4;
-        case 3:
-            return 7;
-        case 4:
-            return 2;
-        case 5:
-            return 1;
-        case 6:
-            return 0;
-        case 7:
-            return 3;
+    var move = 12;
+    if(orientation === 3 || orientation === 11 || orientation === 4 || orientation === 12) {
+        move = 8;
     }
+    updateOrientation(move);
 }
 
-function updateOrientation(orientation)
+function updateOrientation(move)
 {
+    orientation += orientation < 10 ? move : -move;
     switch(orientation) {
-        case 0:
+        case 1:
             rotate = 0;
             flip = 0;
             break;
-        case 1:
+        case 2:
             rotate = 90;
             flip = 0;
             break;
-        case 2:
+        case 3:
             rotate = 180;
             flip = 0;
             break;
-        case 3:
+        case 4:
             rotate = 270;
             flip = 0;
             break;
         // fliped
-        case 4:
+        case 11:
             rotate = 0;
             flip = 1;
             break;
-        case 5:
-            rotate = 90;
+        case 12:
+            rotate = 270;
             flip = 1;
             break;
-        case 6:
+        case 13:
             rotate = 0;
             flip = 2; // faster then rotates
             break;
-        case 7:
-            rotate = 270;
+        case 14:
+            rotate = 90;
             flip = 1;
             break;
     }
