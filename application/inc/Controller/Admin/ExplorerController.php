@@ -6,8 +6,8 @@ use AGCMS\Exception\InvalidInput;
 use AGCMS\ORM;
 use AGCMS\Render;
 use AGCMS\Service\FileService;
+use AGCMS\Service\ImageService;
 use AGCMS\Service\UploadHandler;
-use AJenbo\Image;
 use DateTime;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
 use Symfony\Component\HttpFoundation\File\MimeType\MimeTypeGuesser;
@@ -589,6 +589,7 @@ class ExplorerController extends AbstractAdminController
      */
     public function image(Request $request, int $id): Response
     {
+        /** @var File */
         $file = ORM::getOne(File::class, $id);
         $path = $file->getPath();
 
@@ -602,63 +603,34 @@ class ExplorerController extends AbstractAdminController
             return $response; // 304
         }
 
-        $cropW = $request->get('cropW');
-        $cropW = min($file->getWidth(), $cropW) ?: $file->getWidth();
-        $cropH = $request->get('cropH');
-        $cropH = min($file->getHeight(), $cropH) ?: $file->getHeight();
-        $cropX = $request->query->getInt('cropX');
-        $cropY = $request->query->getInt('cropY');
-        $cropX = $cropX + $cropW < $file->getWidth() ? $cropX : 0;
-        $cropY = $cropY + $cropH < $file->getHeight() ? $cropY : 0;
-        $maxW = $request->get('maxW', $file->getWidth());
-        $maxH = $request->get('maxH', $file->getHeight());
-        $flip = $request->query->getInt('flip');
-        $rotate = $request->query->getInt('rotate', 0);
+        $image = new ImageService(_ROOT_ . $path);
+        $image->setCrop(
+            $request->query->getInt('cropX'),
+            $request->query->getInt('cropY'),
+            $request->query->getInt('cropW'),
+            $request->query->getInt('cropH')
+        );
+        $image->setScale($request->query->getInt('maxW'), $request->query->getInt('maxH'));
+        $image->setFlip($request->query->getInt('flip'));
+        $image->setRotate($request->query->getInt('rotate'));
 
-        $type = 'jpeg';
-        $guesser = MimeTypeGuesser::getInstance();
-        $mime = $guesser->guess(_ROOT_ . $path);
-        if ('image/jpeg' !== $mime) {
-            $type = 'png';
-        }
-
-        $image = new Image(_ROOT_ . $path);
-
-        // Crop image
-        $image->crop($cropX, $cropY, $cropW, $cropH);
-
-        // Trim image whitespace
-        $imageContent = $image->findContent();
-
-        $maxW = min($maxW, $imageContent['width']);
-        $maxH = min($maxH, $imageContent['height']);
-
-        if (!$flip && !$rotate && $maxW === $file->getWidth() && $maxH === $file->getHeight()) {
+        if ($image->isNoOp()) {
             return $this->redirect($request, $path, Response::HTTP_MOVED_PERMANENTLY);
         }
 
-        $image->crop(
-            $imageContent['x'],
-            $imageContent['y'],
-            $imageContent['width'],
-            $imageContent['height']
-        );
-
-        // Resize
-        $image->resize($maxW, $maxH);
-
-        // Flip / mirror
-        if ($flip) {
-            $image->flip(1 === $flip ? 'x' : 'y');
+        $targetPath = tempnam(sys_get_temp_dir(), 'image');
+        if (!$targetPath) {
+            throw new Exception('Failed to create temporary file');
         }
 
-        $image->rotate($rotate);
+        $type = 'jpeg';
+        if ('image/jpeg' !== $file->getMime()) {
+            $type = 'png';
+        }
 
-        $target = tempnam(sys_get_temp_dir(), 'image');
+        $image->processImage($targetPath, $type);
 
-        $image->save($target, $type);
-
-        $response = new BinaryFileResponse($target);
+        $response = new BinaryFileResponse($targetPath);
         $response->setContentDisposition(ResponseHeaderBag::DISPOSITION_INLINE, pathinfo($path, PATHINFO_BASENAME));
         $response->setMaxAge(2592000); // one month
         $response->setLastModified($lastModified);

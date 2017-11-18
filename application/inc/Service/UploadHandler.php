@@ -2,7 +2,7 @@
 
 use AGCMS\Config;
 use AGCMS\Entity\File;
-use AJenbo\Image;
+use AGCMS\Service\ImageService;
 use DateTime;
 use Exception;
 use getID3;
@@ -95,13 +95,12 @@ class UploadHandler
         $width = 0;
         $height = 0;
         if ($this->isImageFile()) {
-            $image = new Image($this->file->getRealPath());
+            $image = new ImageService($this->file->getRealPath());
+            $image->setAutoCrop(true);
+            $image->setScale(Config::get('text_width'));
 
-            $imageContent = $image->findContent(0);
-            $maxW = min(Config::get('text_width'), $imageContent['width']);
-
-            if ($this->shouldProcessImage($image, $maxW, $imageContent['height'], $destinationType)) {
-                $this->processImage($image, $imageContent, $maxW, $destinationType);
+            if ($this->shouldProcessImage($image, $image->getWidth(), $image->getHeight(), $destinationType)) {
+                $this->processImage($image, $destinationType);
             }
 
             $width = $image->getWidth();
@@ -139,60 +138,55 @@ class UploadHandler
     /**
      * Should we process the image.
      *
-     * @param Image  $image
-     * @param int    $width
-     * @param int    $height
-     * @param string $destinationType
+     * @param ImageService $image
+     * @param int          $width
+     * @param int          $height
+     * @param string       $destinationType
      *
      * @return bool
      */
-    private function shouldProcessImage(Image $image, int $width, int $height, string $destinationType): bool
+    private function shouldProcessImage(ImageService $image, int $width, int $height, string $destinationType): bool
     {
         if ($destinationType && 'image' !== $destinationType && 'lineimage' !== $destinationType) {
             return false;
         }
 
-        if ('lineimage' === $destinationType
-            || $image->getWidth() !== $width
-            || $image->getHeight() !== $height
-            || $this->file->getSize() / $width / $height > self::MAX_BYTE_PER_PIXEL
-            || 'image/jpeg' !== $this->file->getMimeType()
+        if ('lineimage' !== $destinationType
+            && 'image/jpeg' === $this->file->getMimeType()
+            && $this->file->getSize() / $width / $height <= self::MAX_BYTE_PER_PIXEL
+            && $image->isNoOp()
         ) {
-            return true;
+            return false;
         }
 
-        return false;
+        return true;
     }
 
     /**
      * Crop and resize uploaded image.
      *
-     * @param Image  $image
-     * @param array  $imageContent
-     * @param int    $maxW
-     * @param string $destinationType
+     * @param ImageService  $image
+     * @param string        $destinationType
      *
      * @return void
      */
-    public function processImage(Image $image, array $imageContent, int $maxW, string $destinationType): void
+    public function processImage(ImageService $image, string $destinationType): void
     {
         $this->checkMemorry($image);
 
+        $format = 'jpeg';
         $this->extension = 'jpg';
         if ('lineimage' === $destinationType) {
+            $format = 'png';
             $this->extension = 'png';
         }
-
-        $image->crop($imageContent['x'], $imageContent['y'], $imageContent['width'], $imageContent['height']);
-        $image->resize($maxW, $image->getHeight());
 
         $target = tempnam(sys_get_temp_dir(), 'upload');
         if (!$target) {
             throw new Exception('Failed to create temporary file');
         }
 
-        $format = 'jpg' === $this->extension ? 'jpeg' : $this->extension;
-        $image->save($target, $format);
+        $image->processImage($target, $format);
 
         $this->file = new FileHandeler($target, false);
     }
@@ -200,9 +194,13 @@ class UploadHandler
     /**
      * Check if the image is expected to take more memory then we have avalible.
      *
+     * @param ImageService $image
+     *
+     * @return void
+     *
      * @throws Exception If we don't have the needed memory avalibe
      */
-    private function checkMemorry(Image $image): void
+    private function checkMemorry(ImageService $image): void
     {
         $memoryLimit = $this->fileService->returnBytes(ini_get('memory_limit')) - 270336; // Estimated overhead, TODO substract current usage
         if ($image->getWidth() * $image->getHeight() > $memoryLimit / 10) {
