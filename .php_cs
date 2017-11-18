@@ -9,8 +9,10 @@ return PhpCsFixer\Config::create()
     ->setRules(json_decode('{
       "visibility_required":true,
       "ternary_to_null_coalescing":true,
-      "binary_operator_spaces":true,
-      "blank_line_after_opening_tag":true,
+      "binary_operator_spaces":{
+         "align_double_arrow":true
+      },
+      "blank_line_after_opening_tag":false,
       "blank_line_before_statement":{
          "statements":[
             "return"
@@ -77,7 +79,7 @@ return PhpCsFixer\Config::create()
       "phpdoc_inline_tag":true,
       "phpdoc_no_access":true,
       "phpdoc_no_alias_tag":true,
-      "phpdoc_no_empty_return":true,
+      "phpdoc_no_empty_return":false,
       "phpdoc_no_package":true,
       "phpdoc_no_useless_inheritdoc":true,
       "phpdoc_return_self_reference":true,
@@ -94,7 +96,7 @@ return PhpCsFixer\Config::create()
       "self_accessor":true,
       "semicolon_after_instruction":true,
       "short_scalar_cast":true,
-      "single_blank_line_before_namespace":true,
+      "single_blank_line_before_namespace":false,
       "single_class_element_per_statement":true,
       "single_line_comment_style":{
          "comment_types":[
@@ -108,7 +110,7 @@ return PhpCsFixer\Config::create()
       "standardize_not_equals":true,
       "ternary_operator_spaces":true,
       "trailing_comma_in_multiline_array":true,
-      "trim_array_spaces":true,
+      "trim_array_spaces":false,
       "unary_operator_spaces":true,
       "whitespace_after_comma_in_array":true,
       "yoda_style":true,
