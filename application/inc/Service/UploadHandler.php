@@ -2,7 +2,6 @@
 
 use AGCMS\Config;
 use AGCMS\Entity\File;
-use AGCMS\Service\ImageService;
 use DateTime;
 use Exception;
 use getID3;
