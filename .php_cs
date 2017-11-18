@@ -72,7 +72,9 @@ return PhpCsFixer\Config::create()
       "no_whitespace_in_blank_line":true,
       "normalize_index_brace":true,
       "object_operator_without_whitespace":true,
+      "ordered_imports":true,
       "php_unit_fqcn_annotation":true,
+      "phpdoc_add_missing_param_annotation":true,
       "phpdoc_align":true,
       "phpdoc_annotation_without_dot":true,
       "phpdoc_indent":true,
@@ -82,6 +84,7 @@ return PhpCsFixer\Config::create()
       "phpdoc_no_empty_return":false,
       "phpdoc_no_package":true,
       "phpdoc_no_useless_inheritdoc":true,
+      "phpdoc_order":true,
       "phpdoc_return_self_reference":true,
       "phpdoc_scalar":true,
       "phpdoc_separation":true,
@@ -90,6 +93,9 @@ return PhpCsFixer\Config::create()
       "phpdoc_to_comment":true,
       "phpdoc_trim":true,
       "phpdoc_types":true,
+      "phpdoc_types_order":{
+          "null_adjustment":"always_last"
+      },
       "phpdoc_var_without_name":true,
       "protected_to_private":true,
       "return_type_declaration":true,
@@ -122,6 +128,7 @@ return PhpCsFixer\Config::create()
       "lowercase_constants":true,
       "lowercase_keywords":true,
       "no_break_comment":true,
+      "no_useless_return":true,
       "no_closing_tag":true,
       "no_spaces_after_function_name":true,
       "no_spaces_inside_parenthesis":true,
@@ -134,6 +141,14 @@ return PhpCsFixer\Config::create()
       "switch_case_space":true,
       "encoding":true,
       "full_opening_tag":true,
+      "no_superfluous_elseif":true,
+      "no_useless_else":true,
+      "compact_nullable_typehint":true,
+      "align_multiline_comment":true,
+      "combine_consecutive_issets":true,
+      "list_syntax":{
+         "syntax":"short"
+      },
       "array_syntax":{
          "syntax":"short"
       },
