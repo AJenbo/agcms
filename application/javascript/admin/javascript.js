@@ -1,22 +1,19 @@
-function htmlEncode(value)
-{
-    var div = document.createElement('div')
+function htmlEncode(value) {
+    var div = document.createElement("div")
     div.innerText = value;
     return div.innerHTML;
 }
 
-function getContextMenuTarget(object, className)
-{
-    while(object.className != className) {
+function getContextMenuTarget(object, className) {
+    while (object.className != className) {
         object = object.parentNode;
     }
 
     return object;
 }
 
-function prisHighlight()
-{
-    if($("for").value - $("pris").value < 0) {
+function prisHighlight() {
+    if ($("for").value - $("pris").value < 0) {
         $("pris").className = "Pris";
 
         return;
@@ -25,22 +22,19 @@ function prisHighlight()
     $("pris").className = "NyPris";
 }
 
-function setThb(id, value, src)
-{
+function setThb(id, value, src) {
     $(id).value = value;
     $(id + "thb").src = src;
 }
 
-function explorer(returntype, returnid)
-{
+function explorer(returntype, returnid) {
     window.open("/admin/explorer/?return=" + returntype + "&returnid=" + returnid, "explorer", "toolbar=0");
 }
 
-function generic_r(data)
-{
+function generic_r(data) {
     $("loading").style.visibility = "hidden";
 
-    if(data.error) {
+    if (data.error) {
         alert(data.error);
 
         return false;
@@ -49,27 +43,24 @@ function generic_r(data)
     return true;
 }
 
-function checkForInt(evt)
-{
+function checkForInt(evt) {
     return (evt.which >= 48 && evt.charCode <= 57) || evt.charCode == 8 || evt.charCode == 0 || evt.charCode == 13;
 }
 
-function inject_html(data)
-{
-    if(!generic_r(data)) {
+function inject_html(data) {
+    if (!generic_r(data)) {
         return;
     }
 
     $(data.id).innerHTML = data.html;
 }
 
-function isInteger(s)
-{
+function isInteger(s) {
     var i;
-    for(i = 0; i < s.length; i++) {
+    for (i = 0; i < s.length; i++) {
         // Check that current character is number.
         var c = s.charAt(i);
-        if(c < "0" || c > "9") {
+        if (c < "0" || c > "9") {
             return false;
         }
     }
@@ -78,28 +69,26 @@ function isInteger(s)
     return true;
 }
 
-function setCookie(name, value, expires)
-{
+function setCookie(name, value, expires) {
     var today = new Date();
     today.setTime(today.getTime());
-    if(expires) {
+    if (expires) {
         expires = expires * 1000 * 60 * 60 * 24;
     }
 
     var expires_date = new Date(today.getTime() + (expires));
-    document.cookie = encodeURIComponent(name) + "=" + encodeURIComponent(value)
-        + ((expires) ? "; expires=" + expires_date.toGMTString() : "");
+    document.cookie = encodeURIComponent(name) + "=" + encodeURIComponent(value) +
+                      ((expires) ? "; expires=" + expires_date.toGMTString() : "");
 }
 
-function getCookie(cookieName)
-{
+function getCookie(cookieName) {
     cookieName = encodeURIComponent(cookieName);
-    if(document.cookie.length > 0) {
+    if (document.cookie.length > 0) {
         begin = document.cookie.indexOf(cookieName + "=");
-        if(begin != -1) {
+        if (begin != -1) {
             begin += cookieName.length + 1;
             end = document.cookie.indexOf(";", begin);
-            if(end == -1) {
+            if (end == -1) {
                 end = document.cookie.length;
             }
 
@@ -110,10 +99,9 @@ function getCookie(cookieName)
     return null;
 }
 
-function showhide(id)
-{
+function showhide(id) {
     var obj = $(id);
-    if(obj.style.display == "") {
+    if (obj.style.display == "") {
         obj.style.display = "none";
         setCookie("hide" + id, "1", 360);
 
@@ -124,10 +112,9 @@ function showhide(id)
     setCookie("hide" + id, "", 0);
 }
 
-function showhidekats(id, thisobj)
-{
+function showhidekats(id, thisobj) {
     var obj = $(id);
-    if(obj.style.display == "") {
+    if (obj.style.display == "") {
         obj.style.display = "none";
         setCookie("hide" + id, "1", 360);
         $("loading").style.visibility = "";
@@ -141,11 +128,10 @@ function showhidekats(id, thisobj)
     setCookie("hide" + id, "", 0);
 }
 
-function getRadio(name)
-{
+function getRadio(name) {
     var objs = document.getElementsByName(name);
-    for(var i = 0; i < objs.length; i++) {
-        if(objs[i].checked) {
+    for (var i = 0; i < objs.length; i++) {
+        if (objs[i].checked) {
             return objs[i].value;
         }
     }
@@ -153,13 +139,12 @@ function getRadio(name)
     return null;
 }
 
-function getSelectValue(id)
-{
+function getSelectValue(id) {
     var select = $(id);
-    if(select) {
+    if (select) {
         var options = select.getElementsByTagName("option");
-        for(var i = 0; i < options.length; i++) {
-            if(options[i].selected) {
+        for (var i = 0; i < options.length; i++) {
+            if (options[i].selected) {
                 return options[i].value;
             }
         }
@@ -168,22 +153,20 @@ function getSelectValue(id)
     return null;
 }
 
-function showimage(obj, img)
-{
+function showimage(obj, img) {
     $("imagelogo").innerHTML = "<img src=\"" + htmlEncode(img) + "\" />";
     $("imagelogo").style.left = obj.offsetLeft + 17 + "px";
     $("imagelogo").style.top = obj.offsetTop + 17 + "px";
     $("imagelogo").style.display = "";
 }
 
-function kat_contract(id)
-{
+function kat_contract(id) {
     $("kat" + id + "content").style.display = "none";
     $("kat" + id + "contract").style.display = "none";
     $("kat" + id + "expand").style.display = "";
     var openkat = getCookie("openkat");
     openkat = openkat.split("<");
-    if(openkat.indexOf(id + "") < 0) {
+    if (openkat.indexOf(id + "") < 0) {
         return;
     }
     openkat.splice(openkat.indexOf(id + ""), 1);
@@ -191,12 +174,11 @@ function kat_contract(id)
     setCookie("openkat", openkat, 360);
 }
 
-function expandCategory(id, input = '')
-{
-    if(input === '') {
+function expandCategory(id, input = "") {
+    if (input === "") {
         setCookie("activekat", id, 360);
     }
-    if($("kat" + id + "content").innerHTML === "") {
+    if ($("kat" + id + "content").innerHTML === "") {
         $("loading").style.visibility = "";
         x_expandCategory(id, input, expandCategory_r);
 
@@ -209,8 +191,7 @@ function expandCategory(id, input = '')
     appendOpenCatCookie(id);
 }
 
-function appendOpenCatCookie(id)
-{
+function appendOpenCatCookie(id) {
     var openkat = getCookie("openkat");
     openkat = openkat ? openkat : "";
     openkat = openkat.split("<");
@@ -220,9 +201,8 @@ function appendOpenCatCookie(id)
     setCookie("openkat", openkat, 360);
 }
 
-function expandCategory_r(data)
-{
-    if(!generic_r(data)) {
+function expandCategory_r(data) {
+    if (!generic_r(data)) {
         return;
     }
 
@@ -234,14 +214,12 @@ function expandCategory_r(data)
     reattachContextMenus();
 }
 
-function init()
-{
+function init() {
     $("loading").style.visibility = "hidden";
     attachContextMenus();
 }
 
-function save_krav()
-{
+function save_krav() {
     var html = CKEDITOR.instances.text.getData();
     var id = $("id").value;
     id = id ? id : null;
@@ -250,29 +228,25 @@ function save_krav()
     return false
 }
 
-function save_krav_r(data)
-{
+function save_krav_r(data) {
     location.href = "/admin/?side=krav";
 }
 
-function updatemaerke_r(data)
-{
+function updatemaerke_r(data) {
     location.href = "/admin/?side=maerker";
 }
 
-function bind(id)
-{
+function bind(id) {
     $("loading").style.visibility = "";
     x_bind(id, parseInt(getRadio("kat")), binding_r);
 
     return false;
 }
 
-function addAccessory(pageId)
-{
+function addAccessory(pageId) {
     $("loading").style.visibility = "";
     var accessoryId = $("accessoryFrame").contentWindow.getRadio("side");
-    if(!accessoryId) {
+    if (!accessoryId) {
         alert("Du skal vælge en side som tilbehør.");
         return false;
     }
@@ -282,14 +256,13 @@ function addAccessory(pageId)
     return false;
 }
 
-function addAccessory_r(data)
-{
-    if(!generic_r(data)) {
+function addAccessory_r(data) {
+    if (!generic_r(data)) {
         return;
     }
 
     var elementId = "accessory" + data.accessoryId;
-    if($(elementId)) {
+    if ($(elementId)) {
         return;
     }
 
@@ -309,35 +282,32 @@ function addAccessory_r(data)
     $("accessories").appendChild(p);
 }
 
-function removeAccessory(navn, pageId, accessoryId)
-{
-    if(confirm("Vil du fjerne '" + navn + "' som tilbehor?") == true) {
+function removeAccessory(navn, pageId, accessoryId) {
+    if (confirm("Vil du fjerne '" + navn + "' som tilbehor?")) {
         $("loading").style.visibility = "";
         x_removeAccessory(pageId, accessoryId, slet_r);
     }
     return false;
 }
 
-function removeBinding(navn, pageId, categoryId, callback = null)
-{
+function removeBinding(navn, pageId, categoryId, callback = null) {
     callback = callback ? callback : binding_r;
-    if(confirm("Vil du fjerne siden fra '" + navn + "'?") == true) {
+    if (confirm("Vil du fjerne siden fra '" + navn + "'?")) {
         $("loading").style.visibility = "";
         x_sletbind(pageId, categoryId, callback);
     }
 }
 
-function binding_r(data)
-{
-    if(!generic_r(data)) {
+function binding_r(data) {
+    if (!generic_r(data)) {
         return;
     }
 
-    for(i = 0; i < data.deleted.length; i++) {
+    for (i = 0; i < data.deleted.length; i++) {
         removeTagById("bind" + data.deleted[i]);
     }
 
-    if(data.added) {
+    if (data.added) {
         var p = document.createElement("p");
         p.setAttribute("id", "bind" + data.added.categoryId);
         var img = document.createElement("img");
@@ -355,31 +325,28 @@ function binding_r(data)
     }
 }
 
-function removeBindingFromTree(navn, pageId, categoryId)
-{
+function removeBindingFromTree(navn, pageId, categoryId) {
     removeBinding(navn, pageId, categoryId, bindTree_r)
 }
 
-function bindTree_r(data)
-{
-    if(!generic_r(data)) {
+function bindTree_r(data) {
+    if (!generic_r(data)) {
         return;
     }
 
-    removeTagById("bind" + data.deleted[0] + 'p' + data.pageId);
+    removeTagById("bind" + data.deleted[0] + "p" + data.pageId);
 
-    if(data.added && $("kat" + data.added.categoryId + "content").innerHTML != "") {
+    if (data.added && $("kat" + data.added.categoryId + "content").innerHTML != "") {
         var display = $("kat" + data.added.categoryId + "content").style.display;
         x_siteList_expand(data.added.categoryId, 0, expandCategory_r);
         $("kat" + data.added.categoryId + "content").style.display = display;
     }
 }
 
-function objToArray(obj)
-{
+function objToArray(obj) {
     var r = [], x;
-    for(x in obj) {
-        if(obj.hasOwnProperty(x) && !isNaN(parseInt(x))) {
+    for (x in obj) {
+        if (obj.hasOwnProperty(x) && !isNaN(parseInt(x))) {
             r[x] = obj[x];
         }
     }
@@ -387,46 +354,43 @@ function objToArray(obj)
     return r;
 }
 
-function removeTagById(id)
-{
+function removeTagById(id) {
     var obj = $(id);
-    if(!obj) {
+    if (!obj) {
         return;
     }
     obj.parentNode.removeChild(obj);
 }
 
-function removeTagByClass(className)
-{
+function removeTagByClass(className) {
     var objs = $$("." + className);
-    for(var i = 0; i < objs.length; i++) {
+    for (var i = 0; i < objs.length; i++) {
         objs[i].parentNode.removeChild(objs[i]);
     }
 }
 
-function slet(type, navn, id)
-{
-    switch(type) {
+function slet(type, navn, id) {
+    switch (type) {
         case "side":
-            if(confirm("Vil du slette '" + navn + "'?") == true) {
+            if (confirm("Vil du slette '" + navn + "'?")) {
                 $("loading").style.visibility = "";
                 x_sletSide(id, sletClass_r);
             }
             break;
         case "maerke":
-            if(confirm("Vil du slette mærket '" + navn + "'?") == true) {
+            if (confirm("Vil du slette mærket '" + navn + "'?")) {
                 $("loading").style.visibility = "";
                 x_sletmaerke(id, slet_r);
             }
             break;
         case "krav":
-            if(confirm("Vil du slette kravet '" + navn + "'?") == true) {
+            if (confirm("Vil du slette kravet '" + navn + "'?")) {
                 $("loading").style.visibility = "";
                 x_sletkrav(id, slet_r);
             }
             break;
         case "kat":
-            if(confirm("Vil du slette katagorien '" + navn + "'?") == true) {
+            if (confirm("Vil du slette katagorien '" + navn + "'?")) {
                 $("loading").style.visibility = "";
                 x_sletkat(id, slet_r);
             }
@@ -434,23 +398,21 @@ function slet(type, navn, id)
     }
 }
 
-function movekat(navn, id, toId, confirmMove)
-{
-    if(!confirmMove || confirm("Vil du fjerne kategorien '" + navn + "'?") == true) {
+function movekat(navn, id, toId, confirmMove) {
+    if (!confirmMove || confirm("Vil du fjerne kategorien '" + navn + "'?")) {
         $("loading").style.visibility = "";
         x_movekat(id, toId, movekat_r);
     }
 }
 
-function movekat_r(data)
-{
-    if(!generic_r(data)) {
+function movekat_r(data) {
+    if (!generic_r(data)) {
         return;
     }
 
-    if(data) {
+    if (data) {
         removeTagById(data.id);
-        if($("kat" + data.update + "content").innerHTML != "") {
+        if ($("kat" + data.update + "content").innerHTML != "") {
             var display = $("kat" + data.update + "content").style.display;
             x_expandCategory(data.update, "categories", expandCategory_r);
             $("kat" + data.update + "content").style.display = display;
@@ -458,22 +420,20 @@ function movekat_r(data)
     }
 }
 
-function renamekat(id, name)
-{
+function renamekat(id, name) {
     var newname = prompt("Omdøb kategori", name);
-    if(newname != null && newname != name) {
+    if (newname != null && newname != name) {
         $("loading").style.visibility = "";
         x_renamekat(id, newname, renamekat_r);
     }
 }
 
-function renamekat_r(data)
-{
-    if(!generic_r(data)) {
+function renamekat_r(data) {
+    if (!generic_r(data)) {
         return;
     }
 
-    if($(data.id).childNodes.length == 4) {
+    if ($(data.id).childNodes.length == 4) {
         $(data.id).childNodes[2].lastChild.nodeValue = " " + data.name;
 
         return;
@@ -482,28 +442,25 @@ function renamekat_r(data)
     $(data.id).firstChild.lastChild.nodeValue = " " + data.name;
 }
 
-function sletClass_r(data)
-{
-    if(!generic_r(data)) {
+function sletClass_r(data) {
+    if (!generic_r(data)) {
         return;
     }
 
     removeTagByClass(data.class);
 }
 
-function slet_r(data)
-{
-    if(!generic_r(data)) {
+function slet_r(data) {
+    if (!generic_r(data)) {
         return;
     }
 
     removeTagById(data.id);
 }
 
-function jumpto()
-{
+function jumpto() {
     var jumptoid = $("jumptoid").value;
-    if(!jumptoid && isInteger(jumptoid)) {
+    if (!jumptoid && isInteger(jumptoid)) {
         alert("Du skal indtaste et korrekt side nummer");
 
         return false;
@@ -512,10 +469,9 @@ function jumpto()
     location.href = "/admin/editpage/" + jumptoid + "/";
 }
 
-function sogsearch()
-{
+function sogsearch() {
     var sogtext = $("sogtext").value;
-    if(!sogtext) {
+    if (!sogtext) {
         alert("Du skal indtaste et søge ord.");
 
         return false;
@@ -526,7 +482,6 @@ function sogsearch()
     x_search(sogtext, inject_html);
 }
 
-function confirm_faktura_validate(id)
-{
+function confirm_faktura_validate(id) {
     return confirm("Mente du '" + id + "'?");
 }

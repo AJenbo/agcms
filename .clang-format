@@ -1,0 +1,10 @@
+---
+AllowShortFunctionsOnASingleLine:     None
+ColumnLimit:                          120
+IndentCaseLabels:                     true
+IndentWidth:                          4
+JavaScriptQuotes:                     Double
+Language:                             JavaScript
+PenaltyBreakBeforeFirstCallParameter: 1
+SpacesInContainerLiterals:            false
+...
