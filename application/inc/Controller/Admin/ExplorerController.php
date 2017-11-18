@@ -480,7 +480,7 @@ class ExplorerController extends AbstractAdminController
                 if (!$overwrite) {
                     return new JsonResponse([
                         'yesno' => _('A file with the same name already exists. Would you like to replace the existing file?'),
-                        'id' => $id,
+                        'id'    => $id,
                     ]);
                 }
 
@@ -567,12 +567,12 @@ class ExplorerController extends AbstractAdminController
         }
 
         $data = [
-            'textWidth' => Config::get('text_width'),
-            'thumbWidth' => Config::get('thumb_width'),
+            'textWidth'   => Config::get('text_width'),
+            'thumbWidth'  => Config::get('thumb_width'),
             'thumbHeight' => Config::get('thumb_height'),
-            'mode' => $mode,
-            'fileName' => $fileName,
-            'file' => $file,
+            'mode'        => $mode,
+            'fileName'    => $fileName,
+            'file'        => $file,
         ];
         $content = Render::render('admin/image-edit', $data);
 

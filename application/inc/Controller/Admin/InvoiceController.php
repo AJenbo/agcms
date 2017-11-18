@@ -26,7 +26,7 @@ class InvoiceController extends AbstractAdminController
         $pdfData = $invoicePdfService->createPdf($invoice);
 
         $header = [
-            'Content-Type' => 'application/pdf',
+            'Content-Type'        => 'application/pdf',
             'Content-Disposition' => 'inline; filename="Faktura-' . $invoice->getId() . '.pdf"',
         ];
 

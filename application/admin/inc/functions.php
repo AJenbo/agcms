@@ -1360,12 +1360,12 @@ function sendInvoice(Invoice $invoice): void
     $emailBody = Render::render(
         $emailTemplate,
         [
-            'invoice' => $invoice,
+            'invoice'  => $invoice,
             'siteName' => Config::get('site_name'),
-            'address' => Config::get('address'),
+            'address'  => Config::get('address'),
             'postcode' => Config::get('postcode'),
-            'city' => Config::get('city'),
-            'phone' => Config::get('phone'),
+            'city'     => Config::get('city'),
+            'phone'    => Config::get('phone'),
         ]
     );
 

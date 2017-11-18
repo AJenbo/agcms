@@ -34,8 +34,8 @@ class Ajax extends Base
         assert($table instanceof Table);
         if ($rows = $table->getRows($orderBy)) {
             $data = [
-                'orderBy' => $orderBy,
-                'table' => $table,
+                'orderBy'  => $orderBy,
+                'table'    => $table,
                 'category' => ORM::getOne(Category::class, $categoryId),
             ];
             $html = Render::render('partial-table', $data);
@@ -62,11 +62,11 @@ class Ajax extends Base
 
         $data = [
             'renderable' => ORM::getOne(Category::class, $categoryId),
-            'orderBy' => $orderBy,
+            'orderBy'    => $orderBy,
         ];
 
         return new JsonResponse([
-            'id' => 'kat' . $categoryId,
+            'id'   => 'kat' . $categoryId,
             'html' => Render::render('partial-product-list', $data),
         ]);
     }
@@ -87,13 +87,13 @@ class Ajax extends Base
         Render::sendCacheHeader($request);
 
         $default = [
-            'name' => '',
-            'attn' => '',
+            'name'     => '',
+            'attn'     => '',
             'address1' => '',
             'address2' => '',
-            'zipcode' => '',
-            'postbox' => '',
-            'email' => '',
+            'zipcode'  => '',
+            'postbox'  => '',
+            'email'    => '',
         ];
 
         //Try katalog orders

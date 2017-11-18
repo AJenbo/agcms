@@ -31,11 +31,11 @@ class SiteTreeService
 
         return [
             'selectedCategory' => $category,
-            'openCategories' => $this->getOpenCategories($openCategories, $selectedId),
-            'includePages' => (!$inputType || 'pages' === $inputType),
-            'inputType' => $inputType,
-            'node' => ['children' => $rootCategories],
-            'customPages' => $customPages,
+            'openCategories'   => $this->getOpenCategories($openCategories, $selectedId),
+            'includePages'     => (!$inputType || 'pages' === $inputType),
+            'inputType'        => $inputType,
+            'node'             => ['children' => $rootCategories],
+            'customPages'      => $customPages,
         ];
     }
 

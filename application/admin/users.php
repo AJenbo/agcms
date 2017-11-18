@@ -12,9 +12,9 @@ $users = ORM::getByQuery(
 );
 
 $data = [
-    'title' => _('Users and Groups'),
+    'title'       => _('Users and Groups'),
     'currentUser' => curentUser(),
-    'users' => $users,
+    'users'       => $users,
 ] + getBasicAdminTemplateData();
 
 Render::output('admin-users', $data);
