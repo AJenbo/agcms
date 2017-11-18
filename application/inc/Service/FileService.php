@@ -13,6 +13,8 @@ class FileService
      *
      * @param string $newPath
      *
+     * @return void
+     *
      * @throws Exception
      */
     public function createFolder(string $path): void

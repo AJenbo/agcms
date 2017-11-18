@@ -194,8 +194,8 @@ function checkMx(string $domain): bool
  * @param string $fromName
  * @param string $recipient
  * @param string $recipientName
- * @param bool $retry
- * @param array $bcc
+ * @param bool   $retry
+ * @param array  $bcc
  *
  * @return bool
  */

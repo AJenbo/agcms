@@ -26,7 +26,7 @@ class ImageService
     private $rotate = 0;
 
     /**
-     * Load the image
+     * Load the image.
      *
      * @param string $path
      */
@@ -40,7 +40,7 @@ class ImageService
     }
 
     /**
-     * Set cropping operation
+     * Set cropping operation.
      *
      * @param int $startX
      * @param int $startY
@@ -67,7 +67,7 @@ class ImageService
     }
 
     /**
-     * Set autocrop
+     * Set autocrop.
      *
      * @param bool $autoCrop
      *
@@ -81,7 +81,7 @@ class ImageService
     }
 
     /**
-     * Set scale operation
+     * Set scale operation.
      *
      * @param int $width
      * @param int $maxH
@@ -100,7 +100,7 @@ class ImageService
     }
 
     /**
-     * Set flip/mirror
+     * Set flip/mirror.
      *
      * @param int $flip
      *
@@ -114,7 +114,7 @@ class ImageService
     }
 
     /**
-     * Set rotate operation
+     * Set rotate operation.
      *
      * @param int $rotate
      *
@@ -127,9 +127,8 @@ class ImageService
         return $this;
     }
 
-
     /**
-     * Test if the settings will cause a change in the image
+     * Test if the settings will cause a change in the image.
      *
      * @return bool
      */
@@ -158,7 +157,7 @@ class ImageService
     }
 
     /**
-     * Get image width
+     * Get image width.
      *
      * @return int
      */
@@ -168,7 +167,7 @@ class ImageService
     }
 
     /**
-     * Get image height
+     * Get image height.
      *
      * @return int
      */
@@ -178,7 +177,7 @@ class ImageService
     }
 
     /**
-     * Performe the set operations and save the image
+     * Performe the set operations and save the image.
      *
      * Doing so will reset the changes
      *
@@ -210,7 +209,6 @@ class ImageService
 
     /**
      * Trim image whitespace.
-     *
      */
     private function autoCrop(): void
     {
@@ -228,7 +226,7 @@ class ImageService
     }
 
     /**
-     * Reset operations to loaded image
+     * Reset operations to loaded image.
      *
      * @return void
      */

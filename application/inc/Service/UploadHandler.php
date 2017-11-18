@@ -165,8 +165,8 @@ class UploadHandler
     /**
      * Crop and resize uploaded image.
      *
-     * @param ImageService  $image
-     * @param string        $destinationType
+     * @param ImageService $image
+     * @param string       $destinationType
      *
      * @return void
      */

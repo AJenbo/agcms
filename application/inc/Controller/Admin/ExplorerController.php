@@ -549,7 +549,7 @@ class ExplorerController extends AbstractAdminController
     }
 
     /**
-     * Image editing window
+     * Image editing window.
      *
      * @param Request $request
      * @param int     $id

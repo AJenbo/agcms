@@ -146,7 +146,7 @@ class Application
      * Generate a redirect for the requested path with a / appended to the path.
      *
      * @param Request $request
-     * @param string $requestUrl
+     * @param string  $requestUrl
      *
      * @return RedirectResponse
      */

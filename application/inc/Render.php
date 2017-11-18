@@ -87,7 +87,7 @@ class Render
     /**
      * Set Last-Modified and ETag http headers and use cache if no updates since last visit.
      *
-     * @param Request $request
+     * @param Request  $request
      * @param int|null $timestamp Unix time stamp of last update to content
      *
      * @return void
@@ -127,7 +127,7 @@ class Render
      * Render a template.
      *
      * @param string $template
-     * @param array $data
+     * @param array  $data
      *
      * @return string
      */
