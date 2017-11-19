@@ -1,10 +1,10 @@
 <?php
 
 use AGCMS\Config;
+use AGCMS\Entity\Brand;
 use AGCMS\Entity\Category;
 use AGCMS\Entity\Contact;
 use AGCMS\Entity\CustomPage;
-use AGCMS\Entity\Brand;
 use AGCMS\Entity\Page;
 use AGCMS\Entity\Requirement;
 use AGCMS\ORM;

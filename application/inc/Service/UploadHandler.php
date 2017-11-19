@@ -195,9 +195,9 @@ class UploadHandler
      *
      * @param ImageService $image
      *
-     * @return void
-     *
      * @throws Exception If we don't have the needed memory avalibe
+     *
+     * @return void
      */
     private function checkMemorry(ImageService $image): void
     {

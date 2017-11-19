@@ -1,11 +1,11 @@
 <?php namespace AGCMS;
 
 use AGCMS\Controller\Base;
+use Raven_Client;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Throwable;
-use Raven_Client;
 
 class Application
 {

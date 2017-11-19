@@ -1,8 +1,8 @@
 <?php
 
-use AGCMS\Render;
-use AGCMS\ORM;
 use AGCMS\Entity\User;
+use AGCMS\ORM;
+use AGCMS\Render;
 
 require_once __DIR__ . '/logon.php';
 

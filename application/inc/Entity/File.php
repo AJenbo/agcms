@@ -325,9 +325,9 @@ class File extends AbstractEntity
     /**
      * Delete entity and file.
      *
-     * @return bool
-     *
      * @throws Exception
+     *
+     * @return bool
      */
     public function delete(): bool
     {

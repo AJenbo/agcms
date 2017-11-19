@@ -329,7 +329,7 @@ function expandCategory(int $categoryId, string $inputType = ''): array
 /**
  * Delete unused file.
  *
- * @return string[]|int[]
+ * @return int[]|string[]
  */
 function deletefile(int $id, string $path): array
 {
@@ -911,7 +911,7 @@ function save_ny_kat(string $navn, int $kat, int $vis, string $email, int $iconI
 }
 
 /**
- * @return string[]|int[]
+ * @return int[]|string[]
  */
 function savekrav(string $navn, string $html, int $id = null): array
 {
@@ -1550,7 +1550,8 @@ function generateImage(
         header('Content-Type: ' . $mime);
         $image->save(null, 'image/png' === $mime ? 'png' : 'jpeg');
         die();
-    } elseif ('png' === $output['type']) {
+    }
+    if ('png' === $output['type']) {
         $mime = 'image/png';
         $type = 'png';
     }

@@ -1,7 +1,7 @@
 <?php namespace AGCMS;
 
-use Symfony\Component\HttpFoundation\Request as SymfonyRequest;
 use Symfony\Component\HttpFoundation\ParameterBag;
+use Symfony\Component\HttpFoundation\Request as SymfonyRequest;
 
 class Request extends SymfonyRequest
 {

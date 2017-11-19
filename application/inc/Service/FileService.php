@@ -13,9 +13,9 @@ class FileService
      *
      * @param string $newPath
      *
-     * @return void
-     *
      * @throws Exception
+     *
+     * @return void
      */
     public function createFolder(string $path): void
     {
