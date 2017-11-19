@@ -8,7 +8,7 @@ use Twig_Loader_Filesystem;
 
 class Render
 {
-    /** @var string[] */
+    /** @var bool[] */
     private static $loadedTables = [];
     /** @var string[] */
     private static $adminOnlyTables = [
