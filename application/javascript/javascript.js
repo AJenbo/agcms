@@ -30,8 +30,7 @@ function getKat(categoryId, column) {
 }
 
 function injectHtml(data) {
-    if (!data || data.error) {
-        alert(data.error || "Error");
+    if (data.error) {
         return;
     }
 
@@ -74,8 +73,7 @@ function showhidealtpost(status) {
 
 function getAddress_r1(responce) {
     if (responce.error) {
-        alert(responce.error);
-        return false;
+        return;
     }
     if (responce.name) {
         document.getElementById("name").value = responce.name;
@@ -102,8 +100,7 @@ function getAddress_r1(responce) {
 
 function getAddress_r2(responce) {
     if (responce.error) {
-        alert(responce.error);
-        return false;
+        return;
     }
     if (responce.name) {
         document.getElementById("shippingName").value = responce.name;

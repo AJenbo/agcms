@@ -4,6 +4,7 @@ use AGCMS\Entity\Category;
 use AGCMS\Entity\Table;
 use AGCMS\ORM;
 use AGCMS\Render;
+use Exception;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 
@@ -164,7 +165,7 @@ class Ajax extends Base
         ) + $default;
 
         if ($address === $default) {
-            return new JsonResponse(['error' => _('The address could not be found.')]);
+            throw new Exception(_('The address could not be found.'));
         }
 
         return new JsonResponse($address);

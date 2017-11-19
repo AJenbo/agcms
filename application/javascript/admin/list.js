@@ -27,10 +27,6 @@ function listSaveRow(row, rowid, listid, callback) {
 
 function listInsertRow_r(data) {
     $("loading").style.visibility = "hidden";
-    if (data.error) {
-        alert(data.error);
-    }
-
     var footer = $("list" + data.listid + "footer");
 
     var tr = document.createElement("tr");
@@ -95,9 +91,6 @@ function listEditRow(listid, rowid) {
 
 function listUpdateRow_r(data) {
     $("loading").style.visibility = "hidden";
-    if (data.error) {
-        alert(data.error);
-    }
     var row = $("list_row" + data.rowid);
 
     for (i = 0; i < row.childNodes.length - 1; i++) {
@@ -143,9 +136,5 @@ function listRemoveRow(listid, rowid) {
 
 function listRemoveRow_r(data) {
     $("loading").style.visibility = "hidden";
-    if (data.error) {
-        alert(data.error);
-    }
-
     removeTagById($("list_row" + data.rowid));
 }

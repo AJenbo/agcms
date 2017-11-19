@@ -88,11 +88,7 @@ class ExplorerController extends AbstractAdminController
         $path = $request->get('path');
         $returnType = $request->get('return', '');
 
-        try {
-            $this->fileService->checkPermittedPath($path);
-        } catch (InvalidInput $exception) {
-            return new JsonResponse(['error' => $exception->getMessage()]);
-        }
+        $this->fileService->checkPermittedPath($path);
 
         $files = scandir(_ROOT_ . $path);
         natcasesort($files);
@@ -245,15 +241,11 @@ class ExplorerController extends AbstractAdminController
             return new JsonResponse(['id' => $id]);
         }
 
-        try {
-            if ($file->isInUse()) {
-                throw new InvalidInput(_('The file can not be deleted because it is in use.'));
-            }
-
-            $file->delete();
-        } catch (InvalidInput $exception) {
-            return new JsonResponse(['error' => $exception->getMessage()]);
+        if ($file->isInUse()) {
+            throw new InvalidInput(_('The file can not be deleted because it is in use.'));
         }
+
+        $file->delete();
 
         return new JsonResponse(['id' => $id]);
     }
@@ -271,13 +263,9 @@ class ExplorerController extends AbstractAdminController
         $name = $this->fileService->cleanFileName($request->get('name', ''));
         $newPath = $path . '/' . $name;
 
-        try {
-            $this->fileService->createFolder($newPath);
-        } catch (InvalidInput $exception) {
-            return new JsonResponse(['error' => $exception->getMessage()]);
-        }
+        $this->fileService->createFolder($newPath);
 
-        return new JsonResponse(['error' => false]);
+        return new JsonResponse([]);
     }
 
     /**
@@ -290,13 +278,9 @@ class ExplorerController extends AbstractAdminController
     public function folderDelete(Request $request): JsonResponse
     {
         $path = $request->get('path', '');
-        try {
-            $this->fileService->deleteFolder($path);
-        } catch (InvalidInput $exception) {
-            return new JsonResponse(['error' => $exception->getMessage()]);
-        }
+        $this->fileService->deleteFolder($path);
 
-        return new JsonResponse(['error' => false]);
+        return new JsonResponse([]);
     }
 
     /**
@@ -414,26 +398,16 @@ class ExplorerController extends AbstractAdminController
         $destinationType = $request->get('type', '');
         $description = $request->get('alt', '');
 
-        try {
-            $uploadHandler = new UploadHandler($targetDir);
-            $file = $uploadHandler->process($uploadedFile, $destinationType, $description);
+        $uploadHandler = new UploadHandler($targetDir);
+        $file = $uploadHandler->process($uploadedFile, $destinationType, $description);
 
-            $data = [
-                'uploaded' => 1,
-                'fileName' => basename($file->getPath()),
-                'url'      => $file->getPath(),
-                'width'    => $file->getWidth(),
-                'height'   => $file->getHeight(),
-            ];
-        } catch (Throwable $exception) {
-            // TODO log errors with sentry
-            $data = [
-                'uploaded' => 0,
-                'error'    => [
-                    'message' => _('Error: ') . $exception->getMessage(),
-                ],
-            ];
-        }
+        $data = [
+            'uploaded' => 1,
+            'fileName' => basename($file->getPath()),
+            'url'      => $file->getPath(),
+            'width'    => $file->getWidth(),
+            'height'   => $file->getHeight(),
+        ];
 
         return new JsonResponse($data);
     }
@@ -492,7 +466,7 @@ class ExplorerController extends AbstractAdminController
                 throw new InvalidInput(_('An error occurred with the file operations.'));
             }
         } catch (InvalidInput $exception) {
-            return new JsonResponse(['error' => $exception->getMessage(), 'id' => $id]);
+            return new JsonResponse(['error' => ['message' => $exception->getMessage()], 'id' => $id], 400);
         }
 
         return new JsonResponse(['id' => $id, 'filename' => $filename, 'path' => $newPath]);
@@ -541,7 +515,7 @@ class ExplorerController extends AbstractAdminController
                 throw new InvalidInput(_('An error occurred with the file operations.'));
             }
         } catch (InvalidInput $exception) {
-            return new JsonResponse(['error' => $exception->getMessage(), 'path' => $path]);
+            return new JsonResponse(['error' => ['message' => $exception->getMessage()], 'path' => $path], 400);
         }
 
         $this->fileService->replaceFolderPaths($path, $newPath);

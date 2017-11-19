@@ -57,13 +57,10 @@ function validate() {
 }
 
 function fileExists_r(data) {
-    if (data.error) {
-        alert(data.error);
-    } else if (data.exists) {
+    if (data.exists) {
         alert("Bemærk en fil med navnet \"" + data.name +
               "\" allerede eksistere, og vil blive overskrevet hvis du fortsætter med denne upload!");
     }
-    return data;
 }
 
 var totals = [];

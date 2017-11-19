@@ -41,8 +41,9 @@ function saveImage_r(data) {
     $("loading").style.visibility = "hidden";
     $("save").style.display = "";
     if (data.error) {
-        alert(data.error);
-    } else if (data.yesno) {
+        return;
+    }
+    if (data.yesno) {
         if (confirm(data.yesno)) {
             saveImage(true);
             return true;

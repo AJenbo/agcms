@@ -175,7 +175,7 @@ function sendEmail(
 ) {
     if (!db()->fetchArray('SELECT `id` FROM `newsmails` WHERE `sendt` = 0')) {
         //Nyhedsbrevet er allerede afsendt!
-        return ['error' => _('The newsletter has already been sent!')];
+        throw new Exception(_('The newsletter has already been sent!'));
     }
 
     saveEmail($from, $interests, $subject, $html, $id);
@@ -241,7 +241,7 @@ function sendEmail(
         }
     }
     if ($failedCount) {
-        return ['error' => 'Email ' . $failedCount . '/' . $totalEmails . ' failed to be sent.'];
+        throw new Exception('Email ' . $failedCount . '/' . $totalEmails . ' failed to be sent.');
     }
 
     db()->query('UPDATE `newsmails` SET `sendt` = 1 WHERE `id` = ' . $id);
@@ -334,14 +334,14 @@ function expandCategory(int $categoryId, string $inputType = ''): array
 function deletefile(int $id, string $path): array
 {
     if (isinuse($path)) {
-        return ['error' => _('The file can not be deleted because it is used on a page.')];
+        throw new Exception(_('The file can not be deleted because it is used on a page.'));
     }
     $file = File::getByPath($path);
     if ($file && $file->delete()) {
         return ['id' => $id];
     }
 
-    return ['error' => _('There was an error deleting the file, the file may be in use.')];
+    throw new Exception(_('There was an error deleting the file, the file may be in use.'));
 }
 
 //TODO document type doesn't allow element "input" here; missing one of "p", "h1", "h2", "h3", "h4", "h5", "h6", "div", "pre", "address", "fieldset", "ins", "del" start-tag.
@@ -356,12 +356,14 @@ function deletefile(int $id, string $path): array
  *                       'password' string
  *                       'password_new' string
  *
- * @return string[]|true True on update, else ['error' => string]
+ * @return string[]|true True on update
+ *
+ * @throws Exception
  */
 function updateuser(int $id, array $updates)
 {
     if (!curentUser()->hasAccess(User::ADMINISTRATOR) && curentUser()->getId() != $id) {
-        return ['error' => _('You do not have the requred access level to change other users.')];
+        throw new Exception(_('You do not have the requred access level to change other users.'));
     }
 
     // Validate access lavel update
@@ -369,7 +371,7 @@ function updateuser(int $id, array $updates)
         && isset($updates['access'])
         && $updates['access'] != curentUser()->getAccessLevel()
     ) {
-        return ['error' => _('You can\'t change your own access level')];
+        throw new Exception(_('You can\'t change your own access level'));
     }
 
     /** @var User */
@@ -381,11 +383,11 @@ function updateuser(int $id, array $updates)
         if (!curentUser()->hasAccess(User::ADMINISTRATOR)
             && curentUser()->getId() != $id
         ) {
-            return ['error' => _('You do not have the requred access level to change the password for this users.')];
+            throw new Exception(_('You do not have the requred access level to change the password for this users.'));
         }
 
         if (curentUser()->getId() == $id && !$user->validatePassword($updates['password'])) {
-            return ['error' => _('Incorrect password.')];
+            throw new Exception(_('Incorrect password.'));
         }
 
         $user->setPassword($updates['password_new']);
@@ -508,7 +510,7 @@ function xhtmlEsc(string $string): string
 function search(string $text): array
 {
     if (!$text) {
-        return ['error' => _('You must enter a search word.')];
+        throw new Exception(_('You must enter a search word.'));
     }
 
     $pages = findPages($text);
@@ -893,7 +895,7 @@ function get_pages_with_mismatch_bindings(): string
 function save_ny_kat(string $navn, int $kat, int $vis, string $email, int $iconId = null)
 {
     if (!$navn) {
-        return ['error' => _('You must enter a name and choose a location for the new category.')];
+        throw new Exception(_('You must enter a name and choose a location for the new category.'));
     }
 
     $category = new Category([
@@ -918,7 +920,7 @@ function savekrav(string $navn, string $html, int $id = null): array
     $html = purifyHTML($html);
 
     if ('' === $navn || '' === $html) {
-        return ['error' => _('You must enter a name and a text of the requirement.')];
+        throw new Exception(_('You must enter a name and a text of the requirement.'));
     }
 
     $requirement = new Requirement(['title' => $navn, 'html' => $html]);
@@ -941,7 +943,7 @@ function sogogerstat(string $sog, string $erstat): int
 function updatemaerke(?int $id, string $navn, string $link = '', int $iconId = null): array
 {
     if (!$navn) {
-        return ['error' => _('You must enter a name.')];
+        throw new Exception(_('You must enter a name.'));
     }
 
     $brand = new Brand(['title' => $navn, 'link' => $link, 'icon_id' => $iconId]);
@@ -1047,7 +1049,7 @@ function sletbind(int $pageId, int $categoryId): array
     /** @var Category */
     $category = ORM::getOne(Category::class, $categoryId);
     if (!$category) {
-        return ['error' => _('The category doesn\'t exist.')];
+        throw new Exception(_('The category doesn\'t exist.'));
     }
     assert($category instanceof Category);
 
@@ -1080,7 +1082,7 @@ function bind(int $pageId, int $categoryId): array
     /** @var Category */
     $category = ORM::getOne(Category::class, $categoryId);
     if (!$category) {
-        return ['error' => _('The category doesn\'t exist.')];
+        throw new Exception(_('The category doesn\'t exist.'));
     }
     assert($category instanceof Category);
 
@@ -1122,7 +1124,7 @@ function updateKat(
     $category = ORM::getOne(Category::class, $id);
     assert($category instanceof Category);
     if ($category->getParent() && null === $parentId) {
-        return ['error' => _('You must select a parent category')];
+        throw new Exception(_('You must select a parent category'));
     }
 
     if (null !== $parentId) {
@@ -1130,7 +1132,7 @@ function updateKat(
         assert($parent instanceof Category);
         foreach ($parent->getBranch() as $node) {
             if ($node->getId() === $category->getId()) {
-                return ['error' => _('The category can not be placed under itself.')];
+                throw new Exception(_('The category can not be placed under itself.'));
             }
         }
         $category->setParentId($parentId);
@@ -1238,11 +1240,7 @@ function save(int $id, string $action, array $updates): array
     invoiceBasicUpdate($invoice, $action, $updates);
 
     if ('email' === $action) {
-        try {
-            sendInvoice($invoice);
-        } catch (Exception $exception) {
-            return ['error' => $exception->getMessage()];
-        }
+        sendInvoice($invoice);
     }
 
     return ['type' => $action, 'status' => $invoice->getStatus()];
@@ -1398,13 +1396,9 @@ function sendReminder(int $id): array
     /** @var Invoice */
     $invoice = ORM::getOne(Invoice::class, $id);
     assert($invoice instanceof Invoice);
-    try {
-        sendInvoice($invoice);
-    } catch (Exception $exception) {
-        return ['error' => $exception->getMessage()];
-    }
+    sendInvoice($invoice);
 
-    return ['error' => _('A Reminder was sent to the customer.')];
+    throw new Exception(_('A Reminder was sent to the customer.'));
 }
 
 /**
@@ -1416,14 +1410,10 @@ function pbsconfirm(int $id)
     $invoice = ORM::getOne(Invoice::class, $id);
     assert($invoice instanceof Invoice);
 
-    try {
-        $epaymentService = new EpaymentAdminService(Config::get('pbsid'), Config::get('pbspwd'));
-        $epayment = $epaymentService->getPayment(Config::get('pbsfix') . $invoice->getId());
-        if (!$epayment->confirm()) {
-            return ['error' => _('An error occurred')];
-        }
-    } catch (SoapFault $e) {
-        return ['error' => $e->getMessage()];
+    $epaymentService = new EpaymentAdminService(Config::get('pbsid'), Config::get('pbspwd'));
+    $epayment = $epaymentService->getPayment(Config::get('pbsfix') . $invoice->getId());
+    if (!$epayment->confirm()) {
+        throw new Exception(_('An error occurred'));
     }
 
     $invoice->setStatus('accepted')
@@ -1442,14 +1432,10 @@ function annul(int $id)
     $invoice = ORM::getOne(Invoice::class, $id);
     assert($invoice instanceof Invoice);
 
-    try {
-        $epaymentService = new EpaymentAdminService(Config::get('pbsid'), Config::get('pbspwd'));
-        $epayment = $epaymentService->getPayment(Config::get('pbsfix') . $invoice->getId());
-        if (!$epayment->annul()) {
-            return ['error' => _('An error occurred')];
-        }
-    } catch (SoapFault $e) {
-        return ['error' => $e->getMessage()];
+    $epaymentService = new EpaymentAdminService(Config::get('pbsid'), Config::get('pbspwd'));
+    $epayment = $epaymentService->getPayment(Config::get('pbsfix') . $invoice->getId());
+    if (!$epayment->annul()) {
+        throw new Exception(_('An error occurred'));
     }
 
     if ('pbsok' === $invoice->getStatus()) {

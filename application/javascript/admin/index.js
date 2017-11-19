@@ -284,7 +284,6 @@ function updateSpecial(id) {
 
 function save_ny_kat_r(data) {
     if (data.error) {
-        alert(data.error);
         return;
     }
     location.href = "/admin/sitetree/";
@@ -330,7 +329,6 @@ function makeNewList() {
 function makeNewList_r(data) {
     $("loading").style.visibility = "hidden";
     if (data.error) {
-        alert(data.error);
         return;
     }
 
@@ -354,9 +352,6 @@ function countEmailTo() {
 
 function countEmailTo_r(data) {
     $("loading").style.visibility = "hidden";
-    if (data.error) {
-        alert(data.error);
-    }
     $("mailToCount").innerHTML = data;
 }
 
@@ -398,7 +393,6 @@ function updateContact(id) {
 function updateContact_r(data) {
     $("loading").style.visibility = "hidden";
     if (data.error) {
-        alert(data.error);
         return;
     }
     location.href = "/admin/?side=addressbook";
@@ -440,7 +434,6 @@ function sendEmail() {
 
 function sendEmail_r(data) {
     if (data.error) {
-        alert(data.error);
         $("loading").style.visibility = "hidden";
         return;
     }
@@ -455,9 +448,6 @@ function deleteuser(id, name) {
 }
 
 function reload_r(data) {
-    if (data.error) {
-        alert(data.error);
-    }
     window.location.reload();
 }
 

@@ -35,8 +35,6 @@ function generic_r(data) {
     $("loading").style.visibility = "hidden";
 
     if (data.error) {
-        alert(data.error);
-
         return false;
     }
 

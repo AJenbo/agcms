@@ -225,7 +225,6 @@ function edit_alt(id) {
 function edit_alt_r(data) {
     document.getElementById("loading").style.visibility = "hidden";
     if (data.error) {
-        alert(data.error);
         return;
     }
 
@@ -304,7 +303,6 @@ function renamedir_r(data) {
     var form = document.getElementById(dirToId(data.path)).getElementsByTagName("form")[0];
     if (data.error) {
         form.firstChild.childNodes[1].value = form.previousSibling.title;
-        alert(data.error);
         return;
     }
 
@@ -356,9 +354,6 @@ function deletefolder() {
 }
 
 function deletefolder_r(data) {
-    if (data.error) {
-        alert(data.error);
-    }
     window.location.reload();
 }
 
@@ -374,7 +369,6 @@ function makedir() {
 function makedir_r(data) {
     document.getElementById("loading").style.visibility = "hidden";
     if (data.error) {
-        alert(data.error);
         return;
     }
 
@@ -407,7 +401,6 @@ function dir_expand(dirdiv, move) {
 function dir_expand_r(data) {
     document.getElementById("loading").style.visibility = "hidden";
     if (data.error) {
-        alert(data.error);
         return;
     }
 
@@ -456,7 +449,6 @@ function renamefile_r(data) {
     document.getElementById("loading").style.visibility = "hidden";
     if (data.error) {
         document.getElementById("navn" + data.id + "form").firstChild.firstChild.value = files[data.id].name;
-        alert(data.error);
         return;
     }
 
@@ -498,9 +490,9 @@ function movefile_r(data) {
     }
 
     if (data.error) {
-        alert(data.error);
         return;
-    } else if (data.yesno) {
+    }
+    if (data.yesno) {
         if (confirm(data.yesno)) {
             document.getElementById("loading").style.display = "";
             var data = {"dir": moveFileGlobal, "overwrite": true};
@@ -524,7 +516,6 @@ function deletefile(id) {
 function deletefile_r(data) {
     document.getElementById("loading").style.visibility = "hidden";
     if (data.error) {
-        alert(data.error);
         return;
     }
 

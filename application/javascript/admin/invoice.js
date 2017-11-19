@@ -51,9 +51,7 @@ function getAddress(tlf) {
 }
 
 function getAddress_r(data) {
-    if (data.error) {
-        alert(data.error);
-    } else {
+    if (!data.error) {
         $("navn").value = data.name;
         $("attn").value = data.attn;
         $("adresse").value = data.address1;
@@ -74,9 +72,7 @@ function getAltAddress(tlf) {
 }
 
 function getAltAddress_r(data) {
-    if (data.error) {
-        alert(data.error);
-    } else {
+    if (!data.error) {
         $("postname").value = data.name;
         $("postattn").value = data.attn;
         $("postaddress").value = data.address1;
@@ -168,7 +164,6 @@ function annul(id) {
 
 function reload_r(date) {
     if (date.error) {
-        alert(date.error);
         $("loading").style.visibility = "hidden";
     }
 
@@ -240,18 +235,10 @@ function save(id, type) {
 }
 
 function sendReminder(id) {
-    x_sendReminder(id, sendReminder_r);
-}
-
-function sendReminder_r(data) {
-    alert(data.error);
+    x_sendReminder(id);
 }
 
 function save_r(date) {
-    if (date.error) {
-        alert(date.error);
-    }
-
     if (date.status != status || date.type == "lock" || date.type == "cancel" || date.type == "giro" ||
         date.type == "cash") {
         window.location.reload();
