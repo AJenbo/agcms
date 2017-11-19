@@ -114,7 +114,6 @@ class Render
         $response->setPublic();
         $response->headers->addCacheControlDirective('must-revalidate');
         $response->setLastModified($lastModified);
-        $response->setEtag((string) $timestamp);
         $response->setMaxAge(0);
 
         if ($response->isNotModified($request)) {

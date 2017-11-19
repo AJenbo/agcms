@@ -55,7 +55,7 @@ function saveImage_r(data) {
     } else if (window.opener.files[data.id]) {
         window.opener.files[data.id].width = data.width;
         window.opener.files[data.id].height = data.height;
-        window.opener.files[data.id].refreshThumb();
+        window.opener.files[data.id].refresh();
     } else {
         window.opener.location.reload(true);
     }
@@ -262,5 +262,9 @@ function preview() {
 
     $("preview").src = "/admin/explorer/files/" + id + "/image/?cropX=" + cropX + "&cropY=" + cropY + "&cropW=" + maxW +
                        "&cropH=" + maxH + "&maxW=" + dimention.width + "&maxH=" + dimention.height + "&rotate=" +
-                       rotate + "&flip=" + flip;
+                       rotate + "&flip=" + flip + "&noCache=1&t=" + unix_timestamp();
+}
+
+function unix_timestamp() {
+    return parseInt(new Date().getTime().toString().substring(0, 10));
 }

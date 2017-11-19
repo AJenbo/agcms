@@ -94,15 +94,24 @@ file.prototype.addToEditor = function() {
     window.close();
 };
 
-file.prototype.refreshThumb = function() {
-    $("tilebox" + this.id).firstChild.childNodes[1].src =
-        "/admin/explorer/files/" + this.id + "/image/?maxW=128&maxH=96&timestamp=" + unix_timestamp();
-    iframe.contentWindow.location.reload(true)
+file.prototype.refresh = function() {
+    var img = $("tilebox" + this.id).firstChild.childNodes[1];
+    var fullSizeUrl = this.path;
+    $("reloader").onload = function() {
+        this.onload = function() {
+            this.onload = function() {
+                this.onload = null;                       // Stop event
+                this.contentWindow.location.reload(true); // Refresh cache for full size image
+            };
+            img.src = this.src;     // Display new thumbnail
+            this.src = fullSizeUrl; // Start reloading of full size image
+        };
+        this.contentWindow.location.reload(true); // Refresh cache for thumb image
+    };
+    var url = img.src;
+    img.src = url + "#";     // Set image to a temp path so we can reload it later
+    $("reloader").src = url; // Start cache refreshing
 };
-
-function unix_timestamp() {
-    return parseInt(new Date().getTime().toString().substring(0, 10));
-}
 
 function reattachContextMenus() {
     contextMenuFileTile.reattach();

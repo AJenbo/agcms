@@ -568,14 +568,18 @@ class ExplorerController extends AbstractAdminController
         $file = ORM::getOne(File::class, $id);
         $path = $file->getPath();
 
+        $noCache = $request->query->getBoolean('noCache');
+
         $timestamp = filemtime(_ROOT_ . $path);
         $lastModified = DateTime::createFromFormat('U', (string) $timestamp);
 
-        $response = new Response();
-        $response->setLastModified($lastModified);
-        if ($response->isNotModified($request)) {
-            $response->setMaxAge(2592000); // one month
-            return $response; // 304
+        if (!$noCache) {
+            $response = new Response();
+            $response->setLastModified($lastModified);
+            if ($response->isNotModified($request)) {
+                $response->setMaxAge(2592000); // one month
+                return $response; // 304
+            }
         }
 
         $image = $this->createImageServiceFomRequest($request->query, _ROOT_ . $path);
@@ -597,8 +601,10 @@ class ExplorerController extends AbstractAdminController
 
         $response = new BinaryFileResponse($targetPath);
         $response->setContentDisposition(ResponseHeaderBag::DISPOSITION_INLINE, pathinfo($path, PATHINFO_BASENAME));
-        $response->setMaxAge(2592000); // one month
         $response->setLastModified($lastModified);
+        if ($noCache) {
+            $response->setMaxAge(2592000); // one month
+        }
 
         return $response;
     }
