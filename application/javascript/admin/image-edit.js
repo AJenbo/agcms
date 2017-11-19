@@ -17,7 +17,11 @@ function saveImage(overwrite = false) {
         "rotate": rotate
     };
     xHttp.cancel(imageSaveRequest);
-    imageSaveRequest = xHttp.request("/admin/explorer/files/" + id + "/image/", saveImage_r, "PUT", data);
+    var methode = "PUT";
+    if (mode === "thb") {
+        methode = "POST";
+    }
+    imageSaveRequest = xHttp.request("/admin/explorer/files/" + id + "/image/", saveImage_r, methode, data);
 }
 
 function calcImageDimension() {
@@ -43,14 +47,7 @@ function saveImage_r(data) {
     if (data.error) {
         return;
     }
-    if (data.yesno) {
-        if (confirm(data.yesno)) {
-            saveImage(true);
-            return true;
-        }
-
-        self.close();
-    } else if (window.opener.returnid) {
+    if (window.opener.returnid) {
         window.opener.opener.document.getElementById(window.opener.returnid).value = data.id;
         window.opener.opener.document.getElementById(window.opener.returnid + "thb").src = data.path;
         // TODO make shure theas closes

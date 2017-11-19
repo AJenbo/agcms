@@ -644,6 +644,49 @@ class ExplorerController extends AbstractAdminController
     }
 
     /**
+     * Generate a thumbnail image from an existing image.
+     *
+     * @param Request $request
+     * @param int     $id
+     *
+     * @return Response
+     */
+    public function imageSaveThumb(Request $request, int $id): Response
+    {
+        /** @var File */
+        $file = ORM::getOne(File::class, $id);
+        $path = $file->getPath();
+
+        $image = $this->createImageServiceFomRequest($request->request, _ROOT_ . $path);
+        if ($image->isNoOp()) {
+            return $this->createImageResponse($file);
+        }
+
+        $type = 'jpeg';
+        $ext = 'jpg';
+        $mime = 'image/jpeg';
+        if ('image/jpeg' !== $file->getMime()) {
+            $type = 'png';
+            $ext = 'png';
+            $mime = 'image/png';
+        }
+
+        $pathInfo = pathinfo($path);
+        $newPath = $pathInfo['dirname'] . '/' . $pathInfo['filename'] . '-thb.' . $ext;
+
+        if (File::getByPath($newPath)) {
+            throw new InvalidInput(_('Thumbnail already exists.'));
+        }
+        $image->processImage(_ROOT_ . $newPath, $type);
+
+        /** @var File */
+        $newFile = File::fromPath($newPath);
+        $newFile->setDescription($file->getDescription())->save();
+
+        return $this->createImageResponse($newFile);
+    }
+
+    /**
      * Create an image service from a path and the request parameteres.
      *
      * @param ParameterBag $parameterBag
