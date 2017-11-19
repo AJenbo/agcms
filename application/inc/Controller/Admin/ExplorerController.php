@@ -9,12 +9,14 @@ use AGCMS\Service\FileService;
 use AGCMS\Service\ImageService;
 use AGCMS\Service\UploadHandler;
 use DateTime;
+use Exception;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\ResponseHeaderBag;
+use Symfony\Component\HttpFoundation\ParameterBag;
 use Throwable;
 
 class ExplorerController extends AbstractAdminController
@@ -602,17 +604,7 @@ class ExplorerController extends AbstractAdminController
             return $response; // 304
         }
 
-        $image = new ImageService(_ROOT_ . $path);
-        $image->setCrop(
-            $request->query->getInt('cropX'),
-            $request->query->getInt('cropY'),
-            $request->query->getInt('cropW'),
-            $request->query->getInt('cropH')
-        );
-        $image->setScale($request->query->getInt('maxW'), $request->query->getInt('maxH'));
-        $image->setFlip($request->query->getInt('flip'));
-        $image->setRotate($request->query->getInt('rotate'));
-
+        $image = $this->createImageServiceFomRequest($request->query, _ROOT_ . $path);
         if ($image->isNoOp()) {
             return $this->redirect($request, $path, Response::HTTP_MOVED_PERMANENTLY);
         }
@@ -635,5 +627,86 @@ class ExplorerController extends AbstractAdminController
         $response->setLastModified($lastModified);
 
         return $response;
+    }
+
+    /**
+     * Process an image image.
+     *
+     * @param Request $request
+     * @param int     $id
+     *
+     * @return Response
+     */
+    public function imageSave(Request $request, int $id): Response
+    {
+        /** @var File */
+        $file = ORM::getOne(File::class, $id);
+        $path = $file->getPath();
+
+        $image = $this->createImageServiceFomRequest($request->request, _ROOT_ . $path);
+        if ($image->isNoOp()) {
+            return $this->createImageResponse($file);
+        }
+        if ($file->isInUse(true)) {
+            throw new Exception('Image can not be changed as it used in a text.');
+        }
+
+        $type = 'jpeg';
+        $mime = 'image/jpeg';
+        if ('image/jpeg' !== $file->getMime()) {
+            $type = 'png';
+            $mime = 'image/png';
+        }
+
+        $image->processImage(_ROOT_ . $path, $type);
+
+        $file->setWidth($image->getWidth())
+            ->setHeight($image->getHeight())
+            ->setMime($mime)
+            ->setSize(filesize(_ROOT_ . $path))
+            ->save();
+
+        return $this->createImageResponse($file);
+    }
+
+    /**
+     * Create an image service from a path and the request parameteres.
+     *
+     * @param ParameterBag $parameterBag
+     * @param string       $path
+     *
+     * @return ImageService
+     */
+    private function createImageServiceFomRequest(ParameterBag $parameterBag, string $path): ImageService
+    {
+        $image = new ImageService($path);
+        $image->setCrop(
+            $parameterBag->getInt('cropX'),
+            $parameterBag->getInt('cropY'),
+            $parameterBag->getInt('cropW'),
+            $parameterBag->getInt('cropH')
+        );
+        $image->setScale($parameterBag->getInt('maxW'), $parameterBag->getInt('maxH'));
+        $image->setFlip($parameterBag->getInt('flip'));
+        $image->setRotate($parameterBag->getInt('rotate'));
+
+        return $image;
+    }
+
+    /**
+     * Create an image response for the image editor
+     *
+     * @param File $file
+     *
+     * @return JsonResponse
+     */
+    private function createImageResponse(File $file): JsonResponse
+    {
+        return new JsonResponse([
+            'id'     => $file->getId(),
+            'path'   => $file->getPath(),
+            'width'  => $file->getWidth(),
+            'height' => $file->getHeight(),
+        ]);
     }
 }

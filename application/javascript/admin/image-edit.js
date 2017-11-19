@@ -1,13 +1,23 @@
 // TODO avoide overscaling when triming has been in affect
-
+var imageSaveRequest;
 function saveImage(overwrite = false) {
     $("save").style.display = "none";
     $("loading").style.visibility = "";
 
     var dimention = calcImageDimension();
 
-    x_saveImage(path, cropX, cropY, maxW, maxH, dimention.width, dimention.height, flip, rotate, filename, overwrite,
-                saveImage_r);
+    var data = {
+        "cropX": cropX,
+        "cropY": cropY,
+        "cropW": maxW,
+        "cropH": maxH,
+        "maxW": dimention.width,
+        "maxH": dimention.height,
+        "flip": flip,
+        "rotate": rotate
+    };
+    xHttp.cancel(imageSaveRequest);
+    imageSaveRequest = xHttp.request("/admin/explorer/files/" + id + "/image/", saveImage_r, "PUT", data);
 }
 
 function calcImageDimension() {

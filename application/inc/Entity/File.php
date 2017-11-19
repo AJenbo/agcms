@@ -270,13 +270,24 @@ class File extends AbstractEntity
     /**
      * Check if file is in use.
      *
-     * @param string $path
+     * @param bool $onlyCheckHtml
      *
      * @return bool
      */
-    public function isInUse(): bool
+    public function isInUse(bool $onlyCheckHtml = false): bool
     {
         $escapedPath = db()->esc($this->path);
+
+        if ($onlyCheckHtml) {
+            return (bool) db()->fetchOne(
+                "
+                (SELECT id FROM `sider` WHERE `text` LIKE '%=\"$escapedPath\"%' LIMIT 1)
+                UNION (SELECT id FROM `template` WHERE `text` LIKE '%=\"$escapedPath\"%' LIMIT 1)
+                UNION (SELECT id FROM `special` WHERE `text` LIKE '%=\"$escapedPath\"%' LIMIT 1)
+                UNION (SELECT id FROM `krav`    WHERE `text` LIKE '%=\"$escapedPath\"%' LIMIT 1)
+                "
+            );
+        }
 
         return (bool) db()->fetchOne(
             '
