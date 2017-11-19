@@ -57,10 +57,10 @@ class ImageService
         $height = min($this->image->getHeight(), $height);
         $this->cropH = max(0, $height) ?: $this->image->getHeight();
 
-        $startX = $startX + $this->cropW < $this->image->getWidth() ? $startX : 0;
+        $startX = $startX + $this->cropW <= $this->image->getWidth() ? $startX : 0;
         $this->cropX = max(0, $startX);
 
-        $startY = $startY + $this->cropH < $this->image->getHeight() ? $startY : 0;
+        $startY = $startY + $this->cropH <= $this->image->getHeight() ? $startY : 0;
         $this->cropY = max(0, $startY);
 
         return $this;
