@@ -13,10 +13,10 @@ use Exception;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpFoundation\ParameterBag;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\ResponseHeaderBag;
-use Symfony\Component\HttpFoundation\ParameterBag;
 use Throwable;
 
 class ExplorerController extends AbstractAdminController
@@ -622,7 +622,7 @@ class ExplorerController extends AbstractAdminController
             return $this->createImageResponse($file);
         }
         if ($file->isInUse(true)) {
-            throw new Exception('Image can not be changed as it used in a text.');
+            throw new InvalidInput('Image can not be changed as it used in a text.');
         }
 
         $type = 'jpeg';

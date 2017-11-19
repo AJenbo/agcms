@@ -2,6 +2,7 @@
 
 use AGCMS\Config;
 use AGCMS\Entity\File;
+use AGCMS\Exception\InvalidInput;
 use DateTime;
 use Exception;
 use getID3;
@@ -63,7 +64,7 @@ class UploadHandler
         string $description
     ): File {
         if (!$uploadedFile->isValid()) {
-            throw new Exception(_('No file recived.'));
+            throw new InvalidInput(_('No file recived.'));
         }
 
         $fileName = $uploadedFile->getClientOriginalName();
@@ -203,7 +204,7 @@ class UploadHandler
     {
         $memoryLimit = $this->fileService->returnBytes(ini_get('memory_limit')) - 270336; // Estimated overhead, TODO substract current usage
         if ($image->getWidth() * $image->getHeight() > $memoryLimit / 10) {
-            throw new Exception(_('Image is to large to be processed.'));
+            throw new InvalidInput(_('Image is to large to be processed.'));
         }
     }
 

@@ -1,5 +1,6 @@
 <?php namespace AGCMS\Entity;
 
+use AGCMS\Exception\InvalidInput;
 use AGCMS\ORM;
 use Exception;
 use Symfony\Component\HttpFoundation\File\MimeType\MimeTypeGuesser;
@@ -337,13 +338,14 @@ class File extends AbstractEntity
      * Delete entity and file.
      *
      * @throws Exception
+     * @throws InvalidInput
      *
      * @return bool
      */
     public function delete(): bool
     {
         if ($this->isInUse()) {
-            throw new Exception(sprintf(_('"%s" is still in use.'), $this->path));
+            throw new InvalidInput(sprintf(_('"%s" is still in use.'), $this->path));
         }
 
         if (file_exists(_ROOT_ . $this->path) && !unlink(_ROOT_ . $this->path)) {
