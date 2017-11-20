@@ -8,6 +8,8 @@ use Exception;
 
 class FileService
 {
+    const MAX_PATH_LENGHT = 255; // Limit for some older browsers
+
     /**
      * Create new folder.
      *
@@ -104,7 +106,7 @@ class FileService
         $dirname = pathinfo($path, PATHINFO_DIRNAME);
         $this->checkPermittedPath($dirname);
 
-        if (mb_strlen($path, 'UTF-8') > 255) {
+        if (mb_strlen($path, 'UTF-8') > self::MAX_PATH_LENGHT) {
             throw new InvalidInput(_('The name is too long.'));
         }
 
