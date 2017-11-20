@@ -4,11 +4,11 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "content-hash": "f001f83dff06566d9f9b2ccd9878a2e3",
+    "content-hash": "0de80d8f55628a507f4802935b6ead81",
     "packages": [
         {
             "name": "ajenbo/image.php",
-            "version": "dev-master",
+            "version": "0.9.4",
             "source": {
                 "type": "git",
                 "url": "https://github.com/AJenbo/Image.php.git",
@@ -30,14 +30,11 @@
                     "AJenbo\\": "./"
                 }
             },
+            "notification-url": "https://packagist.org/downloads/",
             "license": [
                 "LGPL-3.0"
             ],
             "description": "Helper function for simple image manipulation using GD functions.",
-            "support": {
-                "source": "https://github.com/AJenbo/Image.php/tree/master",
-                "issues": "https://github.com/AJenbo/Image.php/issues"
-            },
             "time": "2017-11-20T12:28:21+00:00"
         },
         {
@@ -637,9 +634,7 @@
     ],
     "aliases": [],
     "minimum-stability": "stable",
-    "stability-flags": {
-        "ajenbo/image.php": 20
-    },
+    "stability-flags": [],
     "prefer-stable": false,
     "prefer-lowest": false,
     "platform": {
