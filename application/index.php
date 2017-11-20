@@ -79,6 +79,7 @@ $app->addRoute('GET', '/admin/explorer/search/', ExplorerController::class, 'sea
 $app->addRoute('GET', '/admin/explorer/move/(\d+)/', ExplorerController::class, 'fileMoveDialog');
 $app->addRoute('GET', '/admin/explorer/files/exists/', ExplorerController::class, 'fileExists');
 $app->addRoute('GET', '/admin/explorer/files/(\d+)/image/edit/', ExplorerController::class, 'imageEditWidget');
+$app->addRoute('PUT', '/admin/explorer/files/(\d+)/description/', ExplorerController::class, 'fileDescription');
 // Image CRU
 $app->addRoute('POST', '/admin/explorer/files/(\d+)/image/', ExplorerController::class, 'imageSaveThumb');
 $app->addRoute('GET', '/admin/explorer/files/(\d+)/image/', ExplorerController::class, 'image');

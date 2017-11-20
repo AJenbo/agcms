@@ -17,7 +17,6 @@ use AGCMS\ORM;
 use AGCMS\Render;
 use AJenbo\Image;
 use Symfony\Component\HttpFoundation\File\MimeType\MimeTypeGuesser;
-use Symfony\Component\HttpFoundation\Response;
 
 function checkUserLoggedIn(): void
 {
@@ -357,9 +356,9 @@ function deletefile(int $id, string $path): array
  *                       'password' string
  *                       'password_new' string
  *
- * @return string[]|true True on update
- *
  * @throws InvalidInput
+ *
+ * @return string[]|true True on update
  */
 function updateuser(int $id, array $updates)
 {
@@ -456,53 +455,6 @@ function newfaktura(): int
     );
 
     return db()->insert_id;
-}
-
-function edit_alt(int $id, string $description): array
-{
-    $file = ORM::getOne(File::class, $id);
-    assert($file instanceof File);
-    $file->setDescription($description)->save();
-
-    //Update html with new alt...
-    $pages = ORM::getByQuery(
-        Page::class,
-        "SELECT * FROM `sider` WHERE `text` LIKE '%" . db()->esc($file->getPath()) . "%'"
-    );
-    foreach ($pages as $page) {
-        assert($page instanceof Page);
-        //TODO move this to db fixer to test for missing alt="" in img
-        /*preg_match_all('/<img[^>]+/?>/ui', $value, $matches);*/
-        $html = $page->getHtml();
-        $html = preg_replace(
-            '/(<img[^>]+src="' . addcslashes(str_replace('.', '[.]', $file->getPath()), '/')
-                . '"[^>]+alt=)"[^"]*"([^>]*>)/iu',
-            '\1"' . xhtmlEsc($description) . '"\2',
-            $html
-        );
-        $html = preg_replace(
-            '/(<img[^>]+alt=)"[^"]*"([^>]+src="' . addcslashes(str_replace(
-                '.',
-                '[.]',
-                $file->getPath()
-            ), '/') . '"[^>]*>)/iu',
-            '\1"' . xhtmlEsc($description) . '"\2',
-            $html
-        );
-        $page->setHtml($html)->save();
-    }
-
-    return ['id' => $id, 'alt' => $description];
-}
-
-/**
- * @param string $string
- *
- * @return string
- */
-function xhtmlEsc(string $string): string
-{
-    return htmlspecialchars($string, ENT_COMPAT | ENT_XHTML);
 }
 
 /**

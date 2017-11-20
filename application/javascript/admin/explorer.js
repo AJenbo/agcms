@@ -223,21 +223,28 @@ imageTileContextMenu = imageTileContextMenu.concat([
     }
 ]);
 
+var editDescriptionRequest;
 function editDescription(id) {
-    var newalt = prompt("Billed beskrivelse", files[id].alt);
-    if (newalt !== null && newalt !== files[id].alt) {
-        document.getElementById("loading").style.visibility = "";
-        x_edit_alt(id, newalt, edit_alt_r);
+    var newalt = prompt("Billed beskrivelse", files[id].description);
+    if (newalt === null || newalt === files[id].description) {
+        return;
     }
+
+    document.getElementById("loading").style.visibility = "";
+
+    var data = {"description": newalt};
+    xHttp.cancel(editDescriptionRequest);
+    editDescriptionRequest =
+        xHttp.request("/admin/explorer/files/" + id + "/description/", editDescriptionCallback, "PUT", data);
 }
 
-function edit_alt_r(data) {
+function editDescriptionCallback(data) {
     document.getElementById("loading").style.visibility = "hidden";
     if (data.error) {
         return;
     }
 
-    files[data.id].alt = data.alt;
+    files[data.id].description = data.description;
 }
 
 var searchfilesRequest = null;

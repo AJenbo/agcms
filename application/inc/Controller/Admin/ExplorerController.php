@@ -1,8 +1,12 @@
 <?php namespace AGCMS\Controller\Admin;
 
 use AGCMS\Config;
+use AGCMS\Entity\CustomPage;
 use AGCMS\Entity\File;
+use AGCMS\Entity\Page;
+use AGCMS\Entity\Requirement;
 use AGCMS\Exception\InvalidInput;
+use AGCMS\Interfaces\Renderable;
 use AGCMS\ORM;
 use AGCMS\Render;
 use AGCMS\Service\FileService;
@@ -17,7 +21,6 @@ use Symfony\Component\HttpFoundation\ParameterBag;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\ResponseHeaderBag;
-use Throwable;
 
 class ExplorerController extends AbstractAdminController
 {
@@ -333,6 +336,60 @@ class ExplorerController extends AbstractAdminController
         }
 
         return new JsonResponse(['exists' => (bool) is_file($filePath), 'name' => basename($filePath)]);
+    }
+
+    /**
+     * Update image description.
+     *
+     * @param Request $request
+     * @param int     $id
+     *
+     * @return JsonResponse
+     */
+    public function fileDescription(Request $request, int $id): JsonResponse
+    {
+        /** @var File */
+        $file = ORM::getOne(File::class, $id);
+
+        $description = $request->request->get('description', '');
+        $file->setDescription($description)->save();
+
+        // TODO make db fixer check for missing alt="" in <img>
+
+        foreach ([Page::class, CustomPage::class, Requirement::class] as $className) {
+            $pages = ORM::getByQuery(
+                $className,
+                'SELECT * FROM `' . $className::TABLE_NAME
+                    . "` WHERE `text` LIKE '%=\"" . db()->esc($file->getPath()) . "\"%'"
+            );
+            $this->updateAltInHtml($pages, $file);
+        }
+
+        return new JsonResponse(['id' => $id, 'description' => $description]);
+    }
+
+    /**
+     * Update alt text for images in HTML text.
+     *
+     * @param Renderable[] $request
+     * @param File         $file
+     *
+     * @return void
+     */
+    private function updateAltInHtml(array $renderables, File $file): void
+    {
+        foreach ($renderables as $renderable) {
+            $html = $renderable->getHtml();
+            $html = preg_replace(
+                [
+                    '/(<img[^>]+src="' . preg_quote($file->getPath(), '/') . '"[^>]+alt=")[^"]*("[^>]*>)/iu',
+                    '/(<img[^>]+alt=")[^"]*("[^>]+src="' . preg_quote($file->getPath(), '/') . '"[^>]*>)/iu',
+                ],
+                '\1' . htmlspecialchars($file->getDescription(), ENT_COMPAT | ENT_XHTML) . '\2',
+                $html
+            );
+            $renderable->setHtml($html)->save();
+        }
     }
 
     /**
@@ -717,7 +774,7 @@ class ExplorerController extends AbstractAdminController
     }
 
     /**
-     * Create an image response for the image editor
+     * Create an image response for the image editor.
      *
      * @param File $file
      *
