@@ -458,47 +458,6 @@ function newfaktura(): int
 }
 
 /**
- * @return string[]
- */
-function search(string $text): array
-{
-    if (!$text) {
-        throw new InvalidInput(_('You must enter a search word.'));
-    }
-
-    $pages = findPages($text);
-
-    $html = Render::render('partial-admin-search', ['text' => $text, 'pages' => $pages]);
-
-    return ['id' => 'canvas', 'html' => $html];
-}
-
-/**
- * @return Page[]
- */
-function findPages(string $text): array
-{
-    //fulltext search dosn't catch things like 3 letter words and some other combos
-    $simpleq = preg_replace(
-        ['/\s+/u', "/'/u", '/´/u', '/`/u'],
-        ['%', '_', '_', '_'],
-        $text
-    );
-
-    return ORM::getByQuery(
-        Page::class,
-        "
-        SELECT * FROM sider
-        WHERE MATCH (navn, text, beskrivelse) AGAINST('" . $text . "') > 0
-            OR `navn` LIKE '%" . $simpleq . "%'
-            OR `text` LIKE '%" . $simpleq . "%'
-            OR `beskrivelse` LIKE '%" . $simpleq . "%'
-        ORDER BY MATCH (navn, text, beskrivelse) AGAINST('" . $text . "') DESC
-        "
-    );
-}
-
-/**
  * @return int[]
  */
 function listRemoveRow(int $tableId, int $rowId): array
@@ -621,7 +580,7 @@ function get_looping_cats(): string
         $branchIds = [$category->getId() => true];
         while ($category = $category->getParent()) {
             if (isset($branchIds[$category->getId()])) {
-                $html .= '<a href="?side=redigerkat&id=' . $category->getId() . '">' . $category->getId()
+                $html .= '<a href="/admin/categories/' . $category->getId() . '/">' . $category->getId()
                     . ': ' . $category->getTitle() . '</a><br />';
                 break;
             }
@@ -696,13 +655,6 @@ function check_file_paths(): string
     return $html;
 }
 
-function get_size_of_files(): int
-{
-    $files = db()->fetchOne('SELECT sum(`size`) / 1024 / 1024 AS `filesize` FROM `files`');
-
-    return $files['filesize'] ?? 0;
-}
-
 function get_mail_size(): int
 {
     $size = 0;
@@ -731,24 +683,6 @@ function get_mail_size(): int
     }
 
     return $size;
-}
-
-//todo remove missing maerke from sider->maerke
-/*
-TODO test for missing alt="" in img under sider
-preg_match_all('/<img[^>]+/?>/ui', $value, $matches);
-*/
-
-function get_db_size(): float
-{
-    $tabels = db()->fetchArray('SHOW TABLE STATUS');
-    $dbsize = 0;
-    foreach ($tabels as $tabel) {
-        $dbsize += $tabel['Data_length'];
-        $dbsize += $tabel['Index_length'];
-    }
-
-    return $dbsize / 1024 / 1024;
 }
 
 function get_orphan_pages(): string

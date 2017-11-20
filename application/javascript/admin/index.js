@@ -36,10 +36,10 @@ var activeSideContextMenu = [
       // TODO update to use getContextMenuTarget()
       "callback": function(e) {
           if (e.element().tagName.toLowerCase() == "a") {
-              location.href = "/admin/editpage/" + e.target.parentNode.className.replace(/^side/, "") + "/";
+              location.href = "/admin/page/" + e.target.parentNode.className.replace(/^side/, "") + "/";
               return;
           }
-          location.href = "/admin/editpage/" + e.target.parentNode.parentNode.className.replace(/^side/, "") + "/";
+          location.href = "/admin/page/" + e.target.parentNode.parentNode.className.replace(/^side/, "") + "/";
       }
     },
     {
@@ -66,10 +66,10 @@ var inactiveSideContextMenu = [
       "callback": function(e) {
           // TODO update to use getContextMenuTarget()
           if (e.element().tagName.toLowerCase() == "a") {
-              location.href = "/admin/editpage/" + e.target.parentNode.className.replace(/^side/, "") + "/";
+              location.href = "/admin/page/" + e.target.parentNode.className.replace(/^side/, "") + "/";
               return;
           }
-          location.href = "/admin/editpage/" + e.target.parentNode.parentNode.className.replace(/^side/, "") + "/";
+          location.href = "/admin/page/" + e.target.parentNode.parentNode.className.replace(/^side/, "") + "/";
       }
     },
     {
@@ -108,10 +108,10 @@ var activeKatContextMenu = [
       "callback": function(e) {
           // TODO update to use getContextMenuTarget()
           if (e.element().tagName.toLowerCase() == "a") {
-              location.href = "/admin/?side=redigerkat&id=" + e.target.parentNode.id.replace(/^kat/, "");
+              location.href = "/admin/categories/" + e.target.parentNode.id.replace(/^kat/, "") + "/";
               return;
           }
-          location.href = "/admin/?side=redigerkat&id=" + e.target.parentNode.parentNode.id.replace(/^kat/, "");
+          location.href = "/admin/categories/" + e.target.parentNode.parentNode.id.replace(/^kat/, "") + "/";
       }
     },
     {
@@ -150,10 +150,10 @@ var inactiveKatContextMenu = [
       "callback": function(e) {
           // TODO update to use getContextMenuTarget()
           if (e.element().tagName.toLowerCase() == "a") {
-              location.href = "/admin/?side=redigerkat&id=" + e.target.parentNode.id.replace(/^kat/, "");
+              location.href = "/admin/categories/" + e.target.parentNode.id.replace(/^kat/, "") + "/";
               return;
           }
-          location.href = "/admin/?side=redigerkat&id=" + e.target.parentNode.parentNode.id.replace(/^kat/, "");
+          location.href = "/admin/categories/" + e.target.parentNode.parentNode.id.replace(/^kat/, "") + "/";
       }
     },
     {
@@ -252,12 +252,12 @@ function updateSide(id) {
     xHttp.cancel(savePage);
     if (!id) {
         page.categoryId = parseInt(getRadio("kat"));
-        savePage = xHttp.request("/admin/editpage/", opretSide_r, "POST", page);
+        savePage = xHttp.request("/admin/page/", opretSide_r, "POST", page);
 
         return false;
     }
 
-    savePage = xHttp.request("/admin/editpage/" + id + "/", generic_r, "PUT", page);
+    savePage = xHttp.request("/admin/page/" + id + "/", generic_r, "PUT", page);
 
     return false;
 }
@@ -267,7 +267,7 @@ function opretSide_r(data) {
         return;
     }
 
-    window.location.href = "/admin/editpage/" + data.id + "/";
+    window.location.href = "/admin/page/" + data.id + "/";
 }
 
 function updateSpecial(id) {
@@ -398,7 +398,7 @@ function updateContact_r(data) {
     if (!genericCallback(data)) {
         return;
     }
-    location.href = "/admin/?side=addressbook";
+    location.href = "/admin/addressbook/list/";
 }
 
 function sendEmail() {

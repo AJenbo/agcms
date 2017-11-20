@@ -2,6 +2,6 @@
 <b>The following e-mail addresses are not valid</b><br />
 {% endif %}
 {% for page in pages %}
-<a href="/admin/?side=editContact&amp;id={{contact.id}}">E-mail: {{contact.email}} #{{contact.id}} is not valid</a>
+<a href="/admin/addressbook/{{contact.id}}/">E-mail: {{contact.email}} #{{contact.id}} is not valid</a>
 <br />
 {% endfor %}

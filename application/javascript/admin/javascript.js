@@ -226,11 +226,11 @@ function save_krav() {
 }
 
 function save_krav_r(data) {
-    location.href = "/admin/?side=krav";
+    location.href = "/admin/requirement/list/";
 }
 
 function updatemaerke_r(data) {
-    location.href = "/admin/?side=maerker";
+    location.href = "/admin/brands/";
 }
 
 function bind(id) {
@@ -463,7 +463,7 @@ function jumpto() {
         return false;
     }
 
-    location.href = "/admin/editpage/" + jumptoid + "/";
+    location.href = "/admin/page/" + jumptoid + "/";
 }
 
 function sogsearch() {
@@ -475,8 +475,7 @@ function sogsearch() {
     }
 
     $("loading").style.visibility = "";
-    // TODO make page independant!
-    x_search(sogtext, inject_html);
+    xHttp.request("/admin/page/search/?text=" + encodeURIComponent(sogtext), inject_html);
 }
 
 function confirm_faktura_validate(id) {

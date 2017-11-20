@@ -2,11 +2,17 @@
 
 use AGCMS\Application;
 use AGCMS\Config;
+use AGCMS\Controller\Admin\AddressbookController;
 use AGCMS\Controller\Admin\AdminController;
+use AGCMS\Controller\Admin\BrandController;
+use AGCMS\Controller\Admin\CategoryController;
+use AGCMS\Controller\Admin\CustomPageController;
 use AGCMS\Controller\Admin\ExplorerController;
-use AGCMS\Controller\Admin\PageController;
-use AGCMS\Controller\Admin\SiteTreeController;
 use AGCMS\Controller\Admin\InvoiceController;
+use AGCMS\Controller\Admin\MaintenanceController;
+use AGCMS\Controller\Admin\PageController;
+use AGCMS\Controller\Admin\RequirementController;
+use AGCMS\Controller\Admin\SiteTreeController;
 use AGCMS\Controller\Ajax;
 use AGCMS\Controller\Feed;
 use AGCMS\Controller\Payment;
@@ -55,16 +61,32 @@ $app->addRoute('GET', '/feed/rss/', Feed::class, 'rss');
 // Admin pages
 $app->addRoute('GET', '/admin/', AdminController::class, 'index');
 // Page editing
-$app->addRoute('GET', '/admin/editpage/', PageController::class, 'index');
+$app->addRoute('GET', '/admin/page/', PageController::class, 'index');
+$app->addRoute('GET', '/admin/page/search/', PageController::class, 'search');
 // Page CRUD
-$app->addRoute('POST', '/admin/editpage/', PageController::class, 'createPage');
-$app->addRoute('GET', '/admin/editpage/(\d+)/', PageController::class, 'index');
-$app->addRoute('PUT', '/admin/editpage/(\d+)/', PageController::class, 'updatePage');
+$app->addRoute('POST', '/admin/page/', PageController::class, 'createPage');
+$app->addRoute('GET', '/admin/page/(\d+)/', PageController::class, 'index');
+$app->addRoute('PUT', '/admin/page/(\d+)/', PageController::class, 'updatePage');
+// Category editing
+$app->addRoute('GET', '/admin/categories/', CategoryController::class, 'index');
+// Category CRUD
+$app->addRoute('GET', '/admin/categories/([-\d]+)/', CategoryController::class, 'index');
+// Category RU
+$app->addRoute('GET', '/admin/custom/(\d+)/', CustomPageController::class, 'index');
 // Site tree
 $app->addRoute('GET', '/admin/sitetree/', SiteTreeController::class, 'index');
 $app->addRoute('GET', '/admin/sitetree/([-\d]+)/lable/', SiteTreeController::class, 'lable');
 $app->addRoute('GET', '/admin/sitetree/pageWidget/', SiteTreeController::class, 'pageWidget');
 $app->addRoute('GET', '/admin/sitetree/inventory/', SiteTreeController::class, 'inventory');
+// Requirement editing
+$app->addRoute('GET', '/admin/requirement/list/', RequirementController::class, 'index');
+$app->addRoute('GET', '/admin/requirement/', RequirementController::class, 'editPage');
+// Requirement CRUD
+$app->addRoute('GET', '/admin/requirement/(\d+)/', RequirementController::class, 'editPage');
+// Brand editing
+$app->addRoute('GET', '/admin/brands/', BrandController::class, 'index');
+// Brand CRUD
+$app->addRoute('GET', '/admin/brands/(\d+)/', BrandController::class, 'editPage');
 // Explorer
 $app->addRoute('GET', '/admin/explorer/', ExplorerController::class, 'index');
 // Folder CRUD
@@ -89,6 +111,13 @@ $app->addRoute('POST', '/admin/explorer/files/', ExplorerController::class, 'fil
 $app->addRoute('GET', '/admin/explorer/files/(\d+)/', ExplorerController::class, 'fileView');
 $app->addRoute('PUT', '/admin/explorer/files/(\d+)/', ExplorerController::class, 'fileRename');
 $app->addRoute('DELETE', '/admin/explorer/files/(\d+)/', ExplorerController::class, 'fileDelete');
+// Addressbook
+$app->addRoute('GET', '/admin/addressbook/list/', AddressbookController::class, 'index');
+$app->addRoute('GET', '/admin/addressbook/', AddressbookController::class, 'editContact');
+// Addressbook CRUD
+$app->addRoute('GET', '/admin/addressbook/(\d+)/', AddressbookController::class, 'editContact');
+// Maintenance
+$app->addRoute('GET', '/admin/maintenance/', MaintenanceController::class, 'index');
 // Invoice
 $app->addRoute('GET', '/admin/invoices/(\d+)/pdf/', InvoiceController::class, 'pdf');
 

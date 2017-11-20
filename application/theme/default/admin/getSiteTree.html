@@ -5,7 +5,7 @@
 {% include 'admin/partial-kat_expand.html' with siteTree only %}
 {% for customPage in siteTree.customPages %}
 <div style="margin-left: 16px;">
-    <a href="?side=redigerSpecial&id={{customPage.id}}">
+    <a href="/admin/custom/{{customPage.id}}/">
         <img height="16" width="16" alt="" src="/theme/default/images/admin/page.png"/> {{customPage.title}}
     </a>
 </div>

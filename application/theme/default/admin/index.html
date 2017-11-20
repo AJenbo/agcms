@@ -33,8 +33,8 @@
             </ul>
             <a class="menuboxheader" onclick="showhide('Indhold');">Indhold</a>
             <ul id="Indhold"{% if hide.indhold %} style="display:none"{% endif %}>
-                <li><a href="/admin/editpage/"><img src="/theme/default/images/admin/page_add.png" width="16" height="16" alt="" /> Create page</a></li>
-                <li><a href="./?side=redigerkat"><img src="/theme/default/images/admin/folder_add.png" width="16" height="16" alt="" /> Create category</a></li>
+                <li><a href="/admin/page/"><img src="/theme/default/images/admin/page_add.png" width="16" height="16" alt="" /> Create page</a></li>
+                <li><a href="/admin/categories/"><img src="/theme/default/images/admin/folder_add.png" width="16" height="16" alt="" /> Create category</a></li>
                 <li><a href="/admin/sitetree/"><img src="/theme/default/images/admin/book_open.png" width="16" height="16" alt="" /> Overview</a></li>
                 <li><a href="#" onclick="return jumpto()"><img src="/theme/default/images/admin/book_go.png" width="16" height="16" alt="" /> Skip to page</a>
                 <form onsubmit="jumpto(); return false;" action="" method="get"><input style="width:1px; height:1px; position:absolute; top: -20px; left:-20px;" type="submit" accesskey="g" />
@@ -45,28 +45,27 @@
                         <img src="/theme/default/images/admin/find.png" width="16" height="16" alt="" />
                         Search
                     </a>
-                    <form onsubmit="sogsearch(); return false" action="" method="get">
+                    <form onsubmit="sogsearch(); return false" action="/admin/search/" method="get">
                         <input style="width:1px; height:1px; position:absolute; top: -20px; left:-20px;" type="submit" accesskey="f" />
                         <p style="display:inline">
                             <input style="width:91px;" id="sogtext" name="text" />
-                            <input type="hidden" name="side" value="search" />
                         </p>
                     </form>
                 </li>
             </ul>
             <a class="menuboxheader" onclick="showhide('Suplemanger');">Lists</a>
             <ul id="Suplemanger"{% if hide.suplemanger %} style="display:none"{% endif %}>
-                <li><a href="./?side=krav"><img src="/theme/default/images/admin/page_white_key.png" width="16" height="16" alt="" /> Requirements</a></li>
-                <li><a href="./?side=maerker"><img src="/theme/default/images/admin/page_white_medal.png" width="16" height="16" alt="" /> Brands</a></li>
+                <li><a href="/admin/requirement/list/"><img src="/theme/default/images/admin/page_white_key.png" width="16" height="16" alt="" /> Requirements</a></li>
+                <li><a href="/admin/brands/"><img src="/theme/default/images/admin/page_white_medal.png" width="16" height="16" alt="" /> Brands</a></li>
                 <li><a href="./?side=listsort"><img src="/theme/default/images/admin/shape_align_left.png" width="16" height="16" alt="" /> List sorting</a></li>
             </ul>
             <a class="menuboxheader" onclick="showhide('Tools');">Tools</a>
             <ul id="Tools"{% if hide.tools %} style="display:none"{% endif %}>
                 <li><a onclick="explorer('','');"><img src="/theme/default/images/admin/folder_page_white.png" width="16" height="16" alt="" /> Open file manager</a></li>
                 <li><a href="./?side=emaillist"><img src="/theme/default/images/admin/email.png" width="16" height="16" alt="" /> Newsletters</a></li>
-                <li><a href="./?side=addressbook"><img src="/theme/default/images/admin/book_addresses.png" width="16" height="16" alt="" /> Address Book</a></li>
+                <li><a href="/admin/addressbook/list/"><img src="/theme/default/images/admin/book_addresses.png" width="16" height="16" alt="" /> Address Book</a></li>
                 <li><a href="./?side=sogogerstat"><img src="/theme/default/images/admin/page_white_find.png" width="16" height="16" alt="" /> Find and replace</a></li>
-                <li><a href="./?side=get_db_error"><img src="/theme/default/images/admin/database_error.png" width="16" height="16" alt="" /> Maintenance</a></li>
+                <li><a href="/admin/maintenance/"><img src="/theme/default/images/admin/database_error.png" width="16" height="16" alt="" /> Maintenance</a></li>
                 <li><a href="users.php"><img src="/theme/default/images/admin/group_edit.png" width="16" height="16" alt="" /> Users and Groups</a></li>
                 <li><a href="/admin/sitetree/inventory/"><img src="/theme/default/images/admin/book_open.png" width="16" height="16" alt="" /> Pris liste</a></li>
                 <li><a href="fakturas.php"><img src="/theme/default/images/admin/table_multiple.png" width="16" height="16" alt="" /> Invoices</a></li>

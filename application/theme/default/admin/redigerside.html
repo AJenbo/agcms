@@ -77,9 +77,10 @@
             <br />
             <img src="/theme/default/images/admin/page_white_key.png" width="16" height="16" alt="" />
             <select id="krav" name="krav">
-                {% for requirementId, name in requirementOptions %}
-                <option{% if page.requirement.id == requirementId %} selected="selected"{% endif %} value="{{requirementId}}">
-                    {{name}}
+                <option{% if not page.requirement %} selected="selected"{% endif %} value="0">None</option>
+                {% for requirement in requirements %}
+                <option{% if page.requirement.id == requirement.id %} selected="selected"{% endif %} value="{{requirement.id}}">
+                    {{requirement.title}}
                 </option>
                 {% endfor %}
             </select>
@@ -227,7 +228,7 @@
                 </p>
                 {% endfor %}
             </div>
-            <div><iframe id="accessoryFrame" src="/admin/editpage/pagelist/" width="100%" height="300"></iframe></div>
+            <div><iframe id="accessoryFrame" src="/admin/page/pagelist/" width="100%" height="300"></iframe></div>
             <br />
             <input type="submit" value="Add accessories" accesskey="a" />
         </div>

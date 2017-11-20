@@ -5,6 +5,7 @@ use AGCMS\Entity\Brand;
 use AGCMS\Entity\Category;
 use AGCMS\Entity\File;
 use AGCMS\Entity\Page;
+use AGCMS\Entity\Requirement;
 use AGCMS\ORM;
 use AGCMS\Render;
 use AGCMS\Service\SiteTreeService;
@@ -15,9 +16,10 @@ use Symfony\Component\HttpFoundation\Response;
 class PageController extends AbstractAdminController
 {
     /**
-     * Page for editing or creating pages.
+     * Create or edit pages.
      *
-     * @param Request $request
+     * @param Request  $request
+     * @param int|null $id
      *
      * @return Response
      */
@@ -49,14 +51,14 @@ class PageController extends AbstractAdminController
         $siteTreeService = new SiteTreeService();
 
         $data = [
-            'textWidth'          => Config::get('text_width'),
-            'thumbWidth'         => Config::get('thumb_width'),
-            'siteTree'           => $siteTreeService->getSiteTreeData($openCategories, 'categories', $selectedId),
-            'requirementOptions' => $this->getRequirementOptions(),
-            'brands'             => ORM::getByQuery(Brand::class, 'SELECT * FROM `maerke` ORDER BY navn'),
-            'page'               => $page,
-            'bindings'           => $bindings,
-            'accessories'        => $accessories,
+            'textWidth'    => Config::get('text_width'),
+            'thumbWidth'   => Config::get('thumb_width'),
+            'siteTree'     => $siteTreeService->getSiteTreeData($openCategories, 'categories', $selectedId),
+            'requirements' => ORM::getByQuery(Requirement::class, 'SELECT * FROM `krav` ORDER BY navn'),
+            'brands'       => ORM::getByQuery(Brand::class, 'SELECT * FROM `maerke` ORDER BY navn'),
+            'page'         => $page,
+            'bindings'     => $bindings,
+            'accessories'  => $accessories,
         ] + $this->basicPageData($request);
 
         $content = Render::render('admin/redigerside', $data);
@@ -130,18 +132,55 @@ class PageController extends AbstractAdminController
     }
 
     /**
-     * List of values for a select of requirements.
+     * Search page.
      *
-     * @return string[]
+     * @param Request $request
+     *
+     * @return Response
      */
-    private function getRequirementOptions(): array
+    public function search(Request $request): Response
     {
-        $options = [0 => 'None'];
-        $requirements = db()->fetchArray('SELECT id, navn FROM `krav` ORDER BY navn');
-        foreach ($requirements as $requirement) {
-            $options[$requirement['id']] = $requirement['navn'];
+        $text = $request->get('text', '');
+        if ('' === $text) {
+            throw new InvalidInput(_('You must enter a search word.'));
         }
 
-        return $options;
+        $pages = $this->findPages($text);
+
+        $template = $request->isXmlHttpRequest() ? 'admin/partial-search' : 'admin/search';
+        $html = Render::render($template, ['text' => $text, 'pages' => $pages]);
+
+        if ($request->isXmlHttpRequest()) {
+            return new JsonResponse(['id' => 'canvas', 'html' => $html]);
+        }
+
+        return new Response($html);
+    }
+
+    /**
+     * Find pages.
+     *
+     * @return Page[]
+     */
+    private function findPages(string $text): array
+    {
+        //fulltext search dosn't catch things like 3 letter words and some other combos
+        $simpleq = preg_replace(
+            ['/\s+/u', "/'/u", '/´/u', '/`/u'],
+            ['%', '_', '_', '_'],
+            $text
+        );
+
+        return ORM::getByQuery(
+            Page::class,
+            "
+            SELECT * FROM sider
+            WHERE MATCH (navn, text, beskrivelse) AGAINST('" . $text . "') > 0
+                OR `navn` LIKE '%" . $simpleq . "%'
+                OR `text` LIKE '%" . $simpleq . "%'
+                OR `beskrivelse` LIKE '%" . $simpleq . "%'
+            ORDER BY MATCH (navn, text, beskrivelse) AGAINST('" . $text . "') DESC
+            "
+        );
     }
 }
