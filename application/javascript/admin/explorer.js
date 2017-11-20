@@ -7,9 +7,9 @@ var contextMenuImageTile;
 function init() {
     // attach context menus
     contextMenuFileTile =
-        new Proto.Menu({selector: ".filetile", "className": "menu desktop", menuItems: filetileContextMenu});
+        new Proto.Menu({"selector": ".filetile", "className": "menu desktop", "menuItems": fileTileContextMenu});
     contextMenuImageTile =
-        new Proto.Menu({selector: ".imagetile", "className": "menu desktop", menuItems: imagetileContextMenu});
+        new Proto.Menu({"selector": ".imagetile", "className": "menu desktop", "menuItems": imageTileContextMenu});
 
     if (!activeDir || !document.getElementById(dirToId(activeDir))) {
         activeDir = "/images";
@@ -118,7 +118,7 @@ function reattachContextMenus() {
     contextMenuImageTile.reattach();
 }
 
-var filetileContextMenu = [
+var fileTileContextMenu = [
     {
       "name": "Åbne",
       "className": "eye",
@@ -132,7 +132,7 @@ var filetileContextMenu = [
       "className": "folder_go",
       "callback": function(e) {
           var id = getContextMenuTarget(e.target, "filetile").id.match(/[0-9]+/g)[0];
-          open_file_move(id);
+          fileMoveDialog(id);
       }
     },
     {
@@ -153,7 +153,7 @@ var filetileContextMenu = [
     }
 ];
 
-var imagetileContextMenu = [{
+var imageTileContextMenu = [{
     "name": "Åbne",
     "className": "picture",
     "callback": function(e) {
@@ -163,7 +163,7 @@ var imagetileContextMenu = [{
 }];
 
 if (window.location.href.match(/return=ckeditor/g)) {
-    imagetileContextMenu.push({
+    imageTileContextMenu.push({
         "name": "Indsæt link",
         "className": "link",
         "callback": function(e) {
@@ -172,7 +172,7 @@ if (window.location.href.match(/return=ckeditor/g)) {
         }
     });
 }
-imagetileContextMenu = imagetileContextMenu.concat([
+imageTileContextMenu = imageTileContextMenu.concat([
     {
       "name": "Rediger",
       "className": "picture_edit",
@@ -186,7 +186,7 @@ imagetileContextMenu = imagetileContextMenu.concat([
       "className": "textfield_rename",
       "callback": function(e) {
           var id = getContextMenuTarget(e.target, "imagetile").id.match(/[0-9]+/g)[0];
-          edit_alt(id);
+          editDescription(id);
       }
     },
     {
@@ -202,7 +202,7 @@ imagetileContextMenu = imagetileContextMenu.concat([
       "className": "folder_go",
       "callback": function(e) {
           var id = getContextMenuTarget(e.target, "imagetile").id.match(/[0-9]+/g)[0];
-          open_file_move(id);
+          fileMoveDialog(id);
       }
     },
     {
@@ -223,9 +223,9 @@ imagetileContextMenu = imagetileContextMenu.concat([
     }
 ]);
 
-function edit_alt(id) {
+function editDescription(id) {
     var newalt = prompt("Billed beskrivelse", files[id].alt);
-    if (newalt != null && newalt != files[id].alt) {
+    if (newalt !== null && newalt !== files[id].alt) {
         document.getElementById("loading").style.visibility = "";
         x_edit_alt(id, newalt, edit_alt_r);
     }
@@ -350,19 +350,19 @@ function popUpWin(url, win, options, width, height) {
     popup = window.open(url, win, options + "width=" + width + ",height=" + height + ",left=" + left + ",top=" + top);
 }
 
-function open_file_move(id) {
+function fileMoveDialog(id) {
     popUpWin("/admin/explorer/move/" + id + "/", "file_move", "toolbar=0", 322, 512);
 }
 
-function deletefolder() {
+function deleteFolder() {
     // TODO hvilket folder?
     if (confirm("Er du sikker på du vil slette denne mappe og dens indhold?")) {
-        xHttp.request("/admin/explorer/folders/?path=" + encodeURIComponent(activeDir), deletefolder_r, "DELETE");
+        xHttp.request("/admin/explorer/folders/?path=" + encodeURIComponent(activeDir), deleteFolderCallback, "DELETE");
         setCookie("admin_dir", "", 360);
     }
 }
 
-function deletefolder_r(data) {
+function deleteFolderCallback(data) {
     window.location.reload();
 }
 

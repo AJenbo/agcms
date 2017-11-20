@@ -31,9 +31,8 @@ function explorer(returntype, returnid) {
     window.open("/admin/explorer/?return=" + returntype + "&returnid=" + returnid, "explorer", "toolbar=0");
 }
 
-function generic_r(data) {
+function genericCallback(data) {
     $("loading").style.visibility = "hidden";
-
     if (data.error) {
         return false;
     }
@@ -46,7 +45,7 @@ function checkForInt(evt) {
 }
 
 function inject_html(data) {
-    if (!generic_r(data)) {
+    if (!genericCallback(data)) {
         return;
     }
 
@@ -200,7 +199,7 @@ function appendOpenCatCookie(id) {
 }
 
 function expandCategory_r(data) {
-    if (!generic_r(data)) {
+    if (!genericCallback(data)) {
         return;
     }
 
@@ -255,7 +254,7 @@ function addAccessory(pageId) {
 }
 
 function addAccessory_r(data) {
-    if (!generic_r(data)) {
+    if (!genericCallback(data)) {
         return;
     }
 
@@ -297,7 +296,7 @@ function removeBinding(navn, pageId, categoryId, callback = null) {
 }
 
 function binding_r(data) {
-    if (!generic_r(data)) {
+    if (!genericCallback(data)) {
         return;
     }
 
@@ -328,7 +327,7 @@ function removeBindingFromTree(navn, pageId, categoryId) {
 }
 
 function bindTree_r(data) {
-    if (!generic_r(data)) {
+    if (!genericCallback(data)) {
         return;
     }
 
@@ -404,7 +403,7 @@ function movekat(navn, id, toId, confirmMove) {
 }
 
 function movekat_r(data) {
-    if (!generic_r(data)) {
+    if (!genericCallback(data)) {
         return;
     }
 
@@ -427,7 +426,7 @@ function renamekat(id, name) {
 }
 
 function renamekat_r(data) {
-    if (!generic_r(data)) {
+    if (!genericCallback(data)) {
         return;
     }
 
@@ -441,7 +440,7 @@ function renamekat_r(data) {
 }
 
 function sletClass_r(data) {
-    if (!generic_r(data)) {
+    if (!genericCallback(data)) {
         return;
     }
 
@@ -449,7 +448,7 @@ function sletClass_r(data) {
 }
 
 function slet_r(data) {
-    if (!generic_r(data)) {
+    if (!genericCallback(data)) {
         return;
     }
 

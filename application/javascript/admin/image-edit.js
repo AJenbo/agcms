@@ -42,11 +42,11 @@ function calcImageDimension() {
 }
 
 function saveImage_r(data) {
-    $("loading").style.visibility = "hidden";
     $("save").style.display = "";
-    if (data.error) {
+    if (!genericCallback(data)) {
         return;
     }
+
     if (window.opener.returnid) {
         window.opener.opener.document.getElementById(window.opener.returnid).value = data.id;
         window.opener.opener.document.getElementById(window.opener.returnid + "thb").src = data.path;
@@ -86,7 +86,7 @@ var CropImageManager = {
         this.curCrop = new Cropper.Img("original", {
             "onEndCrop": onEndCrop,
             "displayOnInit": true,
-            "onloadCoords": {x1: cropX, y1: cropY, x2: maxW + cropX, y2: maxH + cropY}
+            "onloadCoords": {"x1": cropX, "y1": cropY, "x2": maxW + cropX, "y2": maxH + cropY}
         });
     },
     // Removes the cropper
@@ -153,8 +153,8 @@ function resize() {
     }
 
     resizeHandle = new Draggable("resizeHandle", {
-        constraint: "horizontal",
-        onDrag: function(obj, e) {
+        "constraint": "horizontal",
+        "onDrag": function(obj, e) {
             var width = parseInt(obj.element.style.left);
             if (width < 16) {
                 width = 16;
@@ -167,7 +167,7 @@ function resize() {
             $("resizeHandle").style.top = $("preview").height + "px";
             scale = width / (rotate ? maxH : maxW);
         },
-        onEnd: function(e) {
+        "onEnd": function(e) {
             preview();
         }
     });

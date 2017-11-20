@@ -183,12 +183,14 @@ var listOrderContextMenu = [{
 function sogogerstat(sog, erstat) {
     if (confirm("Dette vil søge og erstatte i al tekst på hele siden, vil du forsætte?")) {
         $("loading").style.visibility = "";
-        x_sogogerstat(sog, erstat, sogogerstat_r);
+        x_sogogerstat(sog, erstat, searchAndReplaceCallback);
     }
 }
 
-function sogogerstat_r(affected_rows) {
-    $("loading").style.visibility = "hidden";
+function searchAndReplaceCallback(affected_rows) {
+    if (!genericCallback(data)) {
+        return;
+    }
     alert("Påvirket sider: " + affected_rows + ".");
 }
 
@@ -261,7 +263,7 @@ function updateSide(id) {
 }
 
 function opretSide_r(data) {
-    if (!generic_r(data)) {
+    if (!genericCallback(data)) {
         return;
     }
 
@@ -327,8 +329,7 @@ function makeNewList() {
 }
 
 function makeNewList_r(data) {
-    $("loading").style.visibility = "hidden";
-    if (data.error) {
+    if (!genericCallback(data)) {
         return;
     }
 
@@ -351,7 +352,10 @@ function countEmailTo() {
 }
 
 function countEmailTo_r(data) {
-    $("loading").style.visibility = "hidden";
+    if (!genericCallback(data)) {
+        return;
+    }
+
     $("mailToCount").innerHTML = data;
 }
 
@@ -391,8 +395,7 @@ function updateContact(id) {
 }
 
 function updateContact_r(data) {
-    $("loading").style.visibility = "hidden";
-    if (data.error) {
+    if (!genericCallback(data)) {
         return;
     }
     location.href = "/admin/?side=addressbook";
