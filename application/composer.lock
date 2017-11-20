@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "content-hash": "f65793ab256281d7950a92927f729c69",
+    "content-hash": "f001f83dff06566d9f9b2ccd9878a2e3",
     "packages": [
         {
             "name": "ajenbo/image.php",
@@ -12,12 +12,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/AJenbo/Image.php.git",
-                "reference": "95d6182689d142d9b68a876ef584770233cf651f"
+                "reference": "d07c97046fa7f28b90cf125f9926be350fbbcdcb"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/AJenbo/Image.php/zipball/95d6182689d142d9b68a876ef584770233cf651f",
-                "reference": "95d6182689d142d9b68a876ef584770233cf651f",
+                "url": "https://api.github.com/repos/AJenbo/Image.php/zipball/d07c97046fa7f28b90cf125f9926be350fbbcdcb",
+                "reference": "d07c97046fa7f28b90cf125f9926be350fbbcdcb",
                 "shasum": ""
             },
             "require": {
@@ -30,25 +30,28 @@
                     "AJenbo\\": "./"
                 }
             },
+            "license": [
+                "LGPL-3.0"
+            ],
             "description": "Helper function for simple image manipulation using GD functions.",
             "support": {
                 "source": "https://github.com/AJenbo/Image.php/tree/master",
                 "issues": "https://github.com/AJenbo/Image.php/issues"
             },
-            "time": "2017-10-23T21:11:04+00:00"
+            "time": "2017-11-20T12:28:21+00:00"
         },
         {
             "name": "ajenbo/imap.php",
-            "version": "0.9.1",
+            "version": "0.9.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/AJenbo/Imap.php.git",
-                "reference": "7cace9c58528d43d4bd8a908df69b7cf32c4d971"
+                "reference": "3308b7a5e8e6cd2643b560e0598d067dc31f1243"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/AJenbo/Imap.php/zipball/7cace9c58528d43d4bd8a908df69b7cf32c4d971",
-                "reference": "7cace9c58528d43d4bd8a908df69b7cf32c4d971",
+                "url": "https://api.github.com/repos/AJenbo/Imap.php/zipball/3308b7a5e8e6cd2643b560e0598d067dc31f1243",
+                "reference": "3308b7a5e8e6cd2643b560e0598d067dc31f1243",
                 "shasum": ""
             },
             "require": {
@@ -60,12 +63,12 @@
                     "AJenbo\\": "./"
                 }
             },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
             "description": "IMAP over socket",
-            "support": {
-                "source": "https://github.com/AJenbo/Imap.php/tree/master",
-                "issues": "https://github.com/AJenbo/Imap.php/issues"
-            },
-            "time": "2017-10-12T23:26:10+00:00"
+            "time": "2017-11-20T12:26:26+00:00"
         },
         {
             "name": "ezyang/htmlpurifier",
@@ -217,16 +220,16 @@
         },
         {
             "name": "sentry/sentry",
-            "version": "1.8.0",
+            "version": "1.8.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/getsentry/sentry-php.git",
-                "reference": "b3a03c1eb2877f0c66885641a52216dcbf313a11"
+                "reference": "3e4bb1486cd4e09869cb3342aef374788d540f1c"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/getsentry/sentry-php/zipball/b3a03c1eb2877f0c66885641a52216dcbf313a11",
-                "reference": "b3a03c1eb2877f0c66885641a52216dcbf313a11",
+                "url": "https://api.github.com/repos/getsentry/sentry-php/zipball/3e4bb1486cd4e09869cb3342aef374788d540f1c",
+                "reference": "3e4bb1486cd4e09869cb3342aef374788d540f1c",
                 "shasum": ""
             },
             "require": {
@@ -253,7 +256,7 @@
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-master": "1.8.x-dev"
+                    "dev-master": "1.9.x-dev"
                 }
             },
             "autoload": {
@@ -277,20 +280,20 @@
                 "log",
                 "logging"
             ],
-            "time": "2017-10-29T21:19:48+00:00"
+            "time": "2017-11-09T17:44:23+00:00"
         },
         {
             "name": "symfony/http-foundation",
-            "version": "v3.3.10",
+            "version": "v3.3.13",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/http-foundation.git",
-                "reference": "22cf9c2b1d9f67cc8e75ae7f4eaa60e4c1eff1f8"
+                "reference": "5943f0f19817a7e05992d20a90729b0dc93faf36"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/http-foundation/zipball/22cf9c2b1d9f67cc8e75ae7f4eaa60e4c1eff1f8",
-                "reference": "22cf9c2b1d9f67cc8e75ae7f4eaa60e4c1eff1f8",
+                "url": "https://api.github.com/repos/symfony/http-foundation/zipball/5943f0f19817a7e05992d20a90729b0dc93faf36",
+                "reference": "5943f0f19817a7e05992d20a90729b0dc93faf36",
                 "shasum": ""
             },
             "require": {
@@ -330,7 +333,7 @@
             ],
             "description": "Symfony HttpFoundation Component",
             "homepage": "https://symfony.com",
-            "time": "2017-10-05T23:10:23+00:00"
+            "time": "2017-11-13T18:13:16+00:00"
         },
         {
             "name": "symfony/polyfill-mbstring",

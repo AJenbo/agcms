@@ -11,10 +11,6 @@
         {
             "type": "vcs",
             "url": "https://github.com/AJenbo/Image.php"
-        },
-        {
-            "type": "vcs",
-            "url": "https://github.com/AJenbo/Imap.php"
         }
     ],
     "require": {
