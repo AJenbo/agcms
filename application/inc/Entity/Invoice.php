@@ -1015,8 +1015,8 @@ class Invoice extends AbstractEntity
         foreach ($itemTitle as $key => $title) {
             $items[] = [
                 'quantity' => $itemQuantities[$key] ?? 0,
-                'title' => $title,
-                'value' => $itemValue[$key] ?? 0,
+                'title'    => $title,
+                'value'    => $itemValue[$key] ?? 0,
             ];
         }
         $items = json_encode($items);

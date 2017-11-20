@@ -1,22 +1,26 @@
 <?php namespace AGCMS\Controller\Admin;
 
 use AGCMS\Config;
+use AGCMS\Entity\CustomPage;
 use AGCMS\Entity\File;
+use AGCMS\Entity\Page;
+use AGCMS\Entity\Requirement;
 use AGCMS\Exception\InvalidInput;
+use AGCMS\Interfaces\Renderable;
 use AGCMS\ORM;
 use AGCMS\Render;
 use AGCMS\Service\FileService;
+use AGCMS\Service\ImageService;
 use AGCMS\Service\UploadHandler;
-use AJenbo\Image;
 use DateTime;
+use Exception;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
-use Symfony\Component\HttpFoundation\File\MimeType\MimeTypeGuesser;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpFoundation\ParameterBag;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\ResponseHeaderBag;
-use Throwable;
 
 class ExplorerController extends AbstractAdminController
 {
@@ -87,11 +91,7 @@ class ExplorerController extends AbstractAdminController
         $path = $request->get('path');
         $returnType = $request->get('return', '');
 
-        try {
-            $this->fileService->checkPermittedPath($path);
-        } catch (InvalidInput $exception) {
-            return new JsonResponse(['error' => $exception->getMessage()]);
-        }
+        $this->fileService->checkPermittedPath($path);
 
         $files = scandir(_ROOT_ . $path);
         natcasesort($files);
@@ -220,7 +220,7 @@ class ExplorerController extends AbstractAdminController
         $javascript = '';
         foreach (ORM::getByQuery(File::class, 'SELECT *' . $sql) as $file) {
             assert($file instanceof File);
-            if ('unused' !== $qtype || !$file->isinuse()) {
+            if ('unused' !== $qtype || !$file->isInUse()) {
                 $html .= $this->fileService->filehtml($file, $returnType);
                 $javascript .= $this->fileService->filejavascript($file);
             }
@@ -244,15 +244,11 @@ class ExplorerController extends AbstractAdminController
             return new JsonResponse(['id' => $id]);
         }
 
-        try {
-            if ($file->isInUse()) {
-                throw new InvalidInput(_('The file can not be deleted because it is in use.'));
-            }
-
-            $file->delete();
-        } catch (InvalidInput $exception) {
-            return new JsonResponse(['error' => $exception->getMessage()]);
+        if ($file->isInUse()) {
+            throw new InvalidInput(_('The file can not be deleted because it is in use.'));
         }
+
+        $file->delete();
 
         return new JsonResponse(['id' => $id]);
     }
@@ -270,13 +266,9 @@ class ExplorerController extends AbstractAdminController
         $name = $this->fileService->cleanFileName($request->get('name', ''));
         $newPath = $path . '/' . $name;
 
-        try {
-            $this->fileService->createFolder($newPath);
-        } catch (InvalidInput $exception) {
-            return new JsonResponse(['error' => $exception->getMessage()]);
-        }
+        $this->fileService->createFolder($newPath);
 
-        return new JsonResponse(['error' => false]);
+        return new JsonResponse([]);
     }
 
     /**
@@ -289,13 +281,9 @@ class ExplorerController extends AbstractAdminController
     public function folderDelete(Request $request): JsonResponse
     {
         $path = $request->get('path', '');
-        try {
-            $this->fileService->deleteFolder($path);
-        } catch (InvalidInput $exception) {
-            return new JsonResponse(['error' => $exception->getMessage()]);
-        }
+        $this->fileService->deleteFolder($path);
 
-        return new JsonResponse(['error' => false]);
+        return new JsonResponse([]);
     }
 
     /**
@@ -348,6 +336,60 @@ class ExplorerController extends AbstractAdminController
         }
 
         return new JsonResponse(['exists' => (bool) is_file($filePath), 'name' => basename($filePath)]);
+    }
+
+    /**
+     * Update image description.
+     *
+     * @param Request $request
+     * @param int     $id
+     *
+     * @return JsonResponse
+     */
+    public function fileDescription(Request $request, int $id): JsonResponse
+    {
+        /** @var File */
+        $file = ORM::getOne(File::class, $id);
+
+        $description = $request->request->get('description', '');
+        $file->setDescription($description)->save();
+
+        // TODO make db fixer check for missing alt="" in <img>
+
+        foreach ([Page::class, CustomPage::class, Requirement::class] as $className) {
+            $pages = ORM::getByQuery(
+                $className,
+                'SELECT * FROM `' . $className::TABLE_NAME
+                    . "` WHERE `text` LIKE '%=\"" . db()->esc($file->getPath()) . "\"%'"
+            );
+            $this->updateAltInHtml($pages, $file);
+        }
+
+        return new JsonResponse(['id' => $id, 'description' => $description]);
+    }
+
+    /**
+     * Update alt text for images in HTML text.
+     *
+     * @param Renderable[] $request
+     * @param File         $file
+     *
+     * @return void
+     */
+    private function updateAltInHtml(array $renderables, File $file): void
+    {
+        foreach ($renderables as $renderable) {
+            $html = $renderable->getHtml();
+            $html = preg_replace(
+                [
+                    '/(<img[^>]+src="' . preg_quote($file->getPath(), '/') . '"[^>]+alt=")[^"]*("[^>]*>)/iu',
+                    '/(<img[^>]+alt=")[^"]*("[^>]+src="' . preg_quote($file->getPath(), '/') . '"[^>]*>)/iu',
+                ],
+                '\1' . htmlspecialchars($file->getDescription(), ENT_COMPAT | ENT_XHTML) . '\2',
+                $html
+            );
+            $renderable->setHtml($html)->save();
+        }
     }
 
     /**
@@ -413,26 +455,16 @@ class ExplorerController extends AbstractAdminController
         $destinationType = $request->get('type', '');
         $description = $request->get('alt', '');
 
-        try {
-            $uploadHandler = new UploadHandler($targetDir);
-            $file = $uploadHandler->process($uploadedFile, $destinationType, $description);
+        $uploadHandler = new UploadHandler($targetDir);
+        $file = $uploadHandler->process($uploadedFile, $destinationType, $description);
 
-            $data = [
-                'uploaded' => 1,
-                'fileName' => basename($file->getPath()),
-                'url'      => $file->getPath(),
-                'width'    => $file->getWidth(),
-                'height'   => $file->getHeight(),
-            ];
-        } catch (Throwable $exception) {
-            // TODO log errors with sentry
-            $data = [
-                'uploaded' => 0,
-                'error'    => [
-                    'message' => _('Error: ') . $exception->getMessage(),
-                ],
-            ];
-        }
+        $data = [
+            'uploaded' => 1,
+            'fileName' => basename($file->getPath()),
+            'url'      => $file->getPath(),
+            'width'    => $file->getWidth(),
+            'height'   => $file->getHeight(),
+        ];
 
         return new JsonResponse($data);
     }
@@ -480,7 +512,7 @@ class ExplorerController extends AbstractAdminController
                 if (!$overwrite) {
                     return new JsonResponse([
                         'yesno' => _('A file with the same name already exists. Would you like to replace the existing file?'),
-                        'id' => $id,
+                        'id'    => $id,
                     ]);
                 }
 
@@ -491,7 +523,7 @@ class ExplorerController extends AbstractAdminController
                 throw new InvalidInput(_('An error occurred with the file operations.'));
             }
         } catch (InvalidInput $exception) {
-            return new JsonResponse(['error' => $exception->getMessage(), 'id' => $id]);
+            return new JsonResponse(['error' => ['message' => $exception->getMessage()], 'id' => $id], 400);
         }
 
         return new JsonResponse(['id' => $id, 'filename' => $filename, 'path' => $newPath]);
@@ -540,7 +572,7 @@ class ExplorerController extends AbstractAdminController
                 throw new InvalidInput(_('An error occurred with the file operations.'));
             }
         } catch (InvalidInput $exception) {
-            return new JsonResponse(['error' => $exception->getMessage(), 'path' => $path]);
+            return new JsonResponse(['error' => ['message' => $exception->getMessage()], 'path' => $path], 400);
         }
 
         $this->fileService->replaceFolderPaths($path, $newPath);
@@ -549,7 +581,7 @@ class ExplorerController extends AbstractAdminController
     }
 
     /**
-     * Image editing window
+     * Image editing window.
      *
      * @param Request $request
      * @param int     $id
@@ -567,12 +599,12 @@ class ExplorerController extends AbstractAdminController
         }
 
         $data = [
-            'textWidth' => Config::get('text_width'),
-            'thumbWidth' => Config::get('thumb_width'),
+            'textWidth'   => Config::get('text_width'),
+            'thumbWidth'  => Config::get('thumb_width'),
             'thumbHeight' => Config::get('thumb_height'),
-            'mode' => $mode,
-            'fileName' => $fileName,
-            'file' => $file,
+            'mode'        => $mode,
+            'fileName'    => $fileName,
+            'file'        => $file,
         ];
         $content = Render::render('admin/image-edit', $data);
 
@@ -589,80 +621,172 @@ class ExplorerController extends AbstractAdminController
      */
     public function image(Request $request, int $id): Response
     {
+        /** @var File */
         $file = ORM::getOne(File::class, $id);
         $path = $file->getPath();
+
+        $noCache = $request->query->getBoolean('noCache');
 
         $timestamp = filemtime(_ROOT_ . $path);
         $lastModified = DateTime::createFromFormat('U', (string) $timestamp);
 
-        $response = new Response();
-        $response->setLastModified($lastModified);
-        if ($response->isNotModified($request)) {
-            $response->setMaxAge(2592000); // one month
-            return $response; // 304
+        if (!$noCache) {
+            $response = new Response();
+            $response->setLastModified($lastModified);
+            if ($response->isNotModified($request)) {
+                $response->setMaxAge(2592000); // one month
+                return $response; // 304
+            }
         }
 
-        $cropW = $request->get('cropW');
-        $cropW = min($file->getWidth(), $cropW) ?: $file->getWidth();
-        $cropH = $request->get('cropH');
-        $cropH = min($file->getHeight(), $cropH) ?: $file->getHeight();
-        $cropX = $request->query->getInt('cropX');
-        $cropY = $request->query->getInt('cropY');
-        $cropX = $cropX + $cropW < $file->getWidth() ? $cropX : 0;
-        $cropY = $cropY + $cropH < $file->getHeight() ? $cropY : 0;
-        $maxW = $request->get('maxW', $file->getWidth());
-        $maxH = $request->get('maxH', $file->getHeight());
-        $flip = $request->query->getInt('flip');
-        $rotate = $request->query->getInt('rotate', 0);
-
-        $type = 'jpeg';
-        $guesser = MimeTypeGuesser::getInstance();
-        $mime = $guesser->guess(_ROOT_ . $path);
-        if ('image/jpeg' !== $mime) {
-            $type = 'png';
-        }
-
-        $image = new Image(_ROOT_ . $path);
-
-        // Crop image
-        $image->crop($cropX, $cropY, $cropW, $cropH);
-
-        // Trim image whitespace
-        $imageContent = $image->findContent();
-
-        $maxW = min($maxW, $imageContent['width']);
-        $maxH = min($maxH, $imageContent['height']);
-
-        if (!$flip && !$rotate && $maxW === $file->getWidth() && $maxH === $file->getHeight()) {
+        $image = $this->createImageServiceFomRequest($request->query, _ROOT_ . $path);
+        if ($image->isNoOp()) {
             return $this->redirect($request, $path, Response::HTTP_MOVED_PERMANENTLY);
         }
 
-        $image->crop(
-            $imageContent['x'],
-            $imageContent['y'],
-            $imageContent['width'],
-            $imageContent['height']
-        );
-
-        // Resize
-        $image->resize($maxW, $maxH);
-
-        // Flip / mirror
-        if ($flip) {
-            $image->flip(1 === $flip ? 'x' : 'y');
+        $targetPath = tempnam(sys_get_temp_dir(), 'image');
+        if (!$targetPath) {
+            throw new Exception('Failed to create temporary file');
         }
 
-        $image->rotate($rotate);
+        $type = 'jpeg';
+        if ('image/jpeg' !== $file->getMime()) {
+            $type = 'png';
+        }
 
-        $target = tempnam(sys_get_temp_dir(), 'image');
+        $image->processImage($targetPath, $type);
 
-        $image->save($target, $type);
-
-        $response = new BinaryFileResponse($target);
+        $response = new BinaryFileResponse($targetPath);
         $response->setContentDisposition(ResponseHeaderBag::DISPOSITION_INLINE, pathinfo($path, PATHINFO_BASENAME));
-        $response->setMaxAge(2592000); // one month
         $response->setLastModified($lastModified);
+        if ($noCache) {
+            $response->setMaxAge(2592000); // one month
+        }
 
         return $response;
+    }
+
+    /**
+     * Process an image image.
+     *
+     * @param Request $request
+     * @param int     $id
+     *
+     * @return Response
+     */
+    public function imageSave(Request $request, int $id): Response
+    {
+        /** @var File */
+        $file = ORM::getOne(File::class, $id);
+        $path = $file->getPath();
+
+        $image = $this->createImageServiceFomRequest($request->request, _ROOT_ . $path);
+        if ($image->isNoOp()) {
+            return $this->createImageResponse($file);
+        }
+        if ($file->isInUse(true)) {
+            throw new InvalidInput('Image can not be changed as it used in a text.');
+        }
+
+        $type = 'jpeg';
+        $mime = 'image/jpeg';
+        if ('image/jpeg' !== $file->getMime()) {
+            $type = 'png';
+            $mime = 'image/png';
+        }
+
+        $image->processImage(_ROOT_ . $path, $type);
+
+        $file->setWidth($image->getWidth())
+            ->setHeight($image->getHeight())
+            ->setMime($mime)
+            ->setSize(filesize(_ROOT_ . $path))
+            ->save();
+
+        return $this->createImageResponse($file);
+    }
+
+    /**
+     * Generate a thumbnail image from an existing image.
+     *
+     * @param Request $request
+     * @param int     $id
+     *
+     * @return Response
+     */
+    public function imageSaveThumb(Request $request, int $id): Response
+    {
+        /** @var File */
+        $file = ORM::getOne(File::class, $id);
+        $path = $file->getPath();
+
+        $image = $this->createImageServiceFomRequest($request->request, _ROOT_ . $path);
+        if ($image->isNoOp()) {
+            return $this->createImageResponse($file);
+        }
+
+        $type = 'jpeg';
+        $ext = 'jpg';
+        $mime = 'image/jpeg';
+        if ('image/jpeg' !== $file->getMime()) {
+            $type = 'png';
+            $ext = 'png';
+            $mime = 'image/png';
+        }
+
+        $pathInfo = pathinfo($path);
+        $newPath = $pathInfo['dirname'] . '/' . $pathInfo['filename'] . '-thb.' . $ext;
+
+        if (File::getByPath($newPath)) {
+            throw new InvalidInput(_('Thumbnail already exists.'));
+        }
+        $image->processImage(_ROOT_ . $newPath, $type);
+
+        /** @var File */
+        $newFile = File::fromPath($newPath);
+        $newFile->setDescription($file->getDescription())->save();
+
+        return $this->createImageResponse($newFile);
+    }
+
+    /**
+     * Create an image service from a path and the request parameteres.
+     *
+     * @param ParameterBag $parameterBag
+     * @param string       $path
+     *
+     * @return ImageService
+     */
+    private function createImageServiceFomRequest(ParameterBag $parameterBag, string $path): ImageService
+    {
+        $image = new ImageService($path);
+        $image->setCrop(
+            $parameterBag->getInt('cropX'),
+            $parameterBag->getInt('cropY'),
+            $parameterBag->getInt('cropW'),
+            $parameterBag->getInt('cropH')
+        );
+        $image->setScale($parameterBag->getInt('maxW'), $parameterBag->getInt('maxH'));
+        $image->setFlip($parameterBag->getInt('flip'));
+        $image->setRotate($parameterBag->getInt('rotate'));
+
+        return $image;
+    }
+
+    /**
+     * Create an image response for the image editor.
+     *
+     * @param File $file
+     *
+     * @return JsonResponse
+     */
+    private function createImageResponse(File $file): JsonResponse
+    {
+        return new JsonResponse([
+            'id'     => $file->getId(),
+            'path'   => $file->getPath(),
+            'width'  => $file->getWidth(),
+            'height' => $file->getHeight(),
+        ]);
     }
 }

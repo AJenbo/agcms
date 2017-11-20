@@ -1,8 +1,8 @@
 <?php
 
-use AGCMS\Render;
-use AGCMS\ORM;
 use AGCMS\Entity\User;
+use AGCMS\ORM;
+use AGCMS\Render;
 
 require_once __DIR__ . '/logon.php';
 
@@ -12,9 +12,9 @@ $users = ORM::getByQuery(
 );
 
 $data = [
-    'title' => _('Users and Groups'),
+    'title'       => _('Users and Groups'),
     'currentUser' => curentUser(),
-    'users' => $users,
+    'users'       => $users,
 ] + getBasicAdminTemplateData();
 
 Render::output('admin-users', $data);

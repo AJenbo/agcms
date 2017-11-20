@@ -194,8 +194,8 @@ function checkMx(string $domain): bool
  * @param string $fromName
  * @param string $recipient
  * @param string $recipientName
- * @param bool $retry
- * @param array $bcc
+ * @param bool   $retry
+ * @param array  $bcc
  *
  * @return bool
  */
@@ -316,17 +316,17 @@ function purifyHTML(string $html): string
         // http://developers.whatwg.org/the-video-element.html#the-video-element
         $def->addElement('video', 'Block', 'Flow', 'Common', [
             'controls' => 'Bool',
-            'height' => 'Length',
-            'poster' => 'URI',
-            'preload' => 'Enum#auto,metadata,none',
-            'src' => 'URI',
-            'width' => 'Length',
+            'height'   => 'Length',
+            'poster'   => 'URI',
+            'preload'  => 'Enum#auto,metadata,none',
+            'src'      => 'URI',
+            'width'    => 'Length',
         ]);
         // http://developers.whatwg.org/the-video-element.html#the-audio-element
         $def->addElement('audio', 'Block', 'Flow', 'Common', [
             'controls' => 'Bool',
-            'preload' => 'Enum#auto,metadata,none',
-            'src' => 'URI',
+            'preload'  => 'Enum#auto,metadata,none',
+            'src'      => 'URI',
         ]);
         $def->addElement('source', 'Block', 'Empty', 'Common', ['src' => 'URI', 'type' => 'Text']);
     }

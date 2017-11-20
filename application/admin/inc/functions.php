@@ -12,11 +12,11 @@ use AGCMS\Entity\Requirement;
 use AGCMS\Entity\Table;
 use AGCMS\Entity\User;
 use AGCMS\EpaymentAdminService;
+use AGCMS\Exception\InvalidInput;
 use AGCMS\ORM;
 use AGCMS\Render;
 use AJenbo\Image;
 use Symfony\Component\HttpFoundation\File\MimeType\MimeTypeGuesser;
-use Symfony\Component\HttpFoundation\Response;
 
 function checkUserLoggedIn(): void
 {
@@ -175,7 +175,7 @@ function sendEmail(
 ) {
     if (!db()->fetchArray('SELECT `id` FROM `newsmails` WHERE `sendt` = 0')) {
         //Nyhedsbrevet er allerede afsendt!
-        return ['error' => _('The newsletter has already been sent!')];
+        throw new InvalidInput(_('The newsletter has already been sent!'));
     }
 
     saveEmail($from, $interests, $subject, $html, $id);
@@ -241,7 +241,7 @@ function sendEmail(
         }
     }
     if ($failedCount) {
-        return ['error' => 'Email ' . $failedCount . '/' . $totalEmails . ' failed to be sent.'];
+        throw new Exception('Email ' . $failedCount . '/' . $totalEmails . ' failed to be sent.');
     }
 
     db()->query('UPDATE `newsmails` SET `sendt` = 1 WHERE `id` = ' . $id);
@@ -329,19 +329,19 @@ function expandCategory(int $categoryId, string $inputType = ''): array
 /**
  * Delete unused file.
  *
- * @return string[]|int[]
+ * @return int[]|string[]
  */
 function deletefile(int $id, string $path): array
 {
     if (isinuse($path)) {
-        return ['error' => _('The file can not be deleted because it is used on a page.')];
+        throw new InvalidInput(_('The file can not be deleted because it is used on a page.'));
     }
     $file = File::getByPath($path);
-    if ($file && $file->delete()) {
-        return ['id' => $id];
+    if ($file) {
+        $file->delete();
     }
 
-    return ['error' => _('There was an error deleting the file, the file may be in use.')];
+    return ['id' => $id];
 }
 
 //TODO document type doesn't allow element "input" here; missing one of "p", "h1", "h2", "h3", "h4", "h5", "h6", "div", "pre", "address", "fieldset", "ins", "del" start-tag.
@@ -356,12 +356,14 @@ function deletefile(int $id, string $path): array
  *                       'password' string
  *                       'password_new' string
  *
- * @return string[]|true True on update, else ['error' => string]
+ * @throws InvalidInput
+ *
+ * @return string[]|true True on update
  */
 function updateuser(int $id, array $updates)
 {
     if (!curentUser()->hasAccess(User::ADMINISTRATOR) && curentUser()->getId() != $id) {
-        return ['error' => _('You do not have the requred access level to change other users.')];
+        throw new InvalidInput(_('You do not have the requred access level to change other users.'));
     }
 
     // Validate access lavel update
@@ -369,7 +371,7 @@ function updateuser(int $id, array $updates)
         && isset($updates['access'])
         && $updates['access'] != curentUser()->getAccessLevel()
     ) {
-        return ['error' => _('You can\'t change your own access level')];
+        throw new InvalidInput(_('You can\'t change your own access level'));
     }
 
     /** @var User */
@@ -381,11 +383,11 @@ function updateuser(int $id, array $updates)
         if (!curentUser()->hasAccess(User::ADMINISTRATOR)
             && curentUser()->getId() != $id
         ) {
-            return ['error' => _('You do not have the requred access level to change the password for this users.')];
+            throw new InvalidInput(_('You do not have the requred access level to change the password for this users.'));
         }
 
         if (curentUser()->getId() == $id && !$user->validatePassword($updates['password'])) {
-            return ['error' => _('Incorrect password.')];
+            throw new InvalidInput(_('Incorrect password.'));
         }
 
         $user->setPassword($updates['password_new']);
@@ -455,60 +457,13 @@ function newfaktura(): int
     return db()->insert_id;
 }
 
-function edit_alt(int $id, string $description): array
-{
-    $file = ORM::getOne(File::class, $id);
-    assert($file instanceof File);
-    $file->setDescription($description)->save();
-
-    //Update html with new alt...
-    $pages = ORM::getByQuery(
-        Page::class,
-        "SELECT * FROM `sider` WHERE `text` LIKE '%" . db()->esc($file->getPath()) . "%'"
-    );
-    foreach ($pages as $page) {
-        assert($page instanceof Page);
-        //TODO move this to db fixer to test for missing alt="" in img
-        /*preg_match_all('/<img[^>]+/?>/ui', $value, $matches);*/
-        $html = $page->getHtml();
-        $html = preg_replace(
-            '/(<img[^>]+src="' . addcslashes(str_replace('.', '[.]', $file->getPath()), '/')
-                . '"[^>]+alt=)"[^"]*"([^>]*>)/iu',
-            '\1"' . xhtmlEsc($description) . '"\2',
-            $html
-        );
-        $html = preg_replace(
-            '/(<img[^>]+alt=)"[^"]*"([^>]+src="' . addcslashes(str_replace(
-                '.',
-                '[.]',
-                $file->getPath()
-            ), '/') . '"[^>]*>)/iu',
-            '\1"' . xhtmlEsc($description) . '"\2',
-            $html
-        );
-        $page->setHtml($html)->save();
-    }
-
-    return ['id' => $id, 'alt' => $description];
-}
-
-/**
- * @param string $string
- *
- * @return string
- */
-function xhtmlEsc(string $string): string
-{
-    return htmlspecialchars($string, ENT_COMPAT | ENT_XHTML);
-}
-
 /**
  * @return string[]
  */
 function search(string $text): array
 {
     if (!$text) {
-        return ['error' => _('You must enter a search word.')];
+        throw new InvalidInput(_('You must enter a search word.'));
     }
 
     $pages = findPages($text);
@@ -893,7 +848,7 @@ function get_pages_with_mismatch_bindings(): string
 function save_ny_kat(string $navn, int $kat, int $vis, string $email, int $iconId = null)
 {
     if (!$navn) {
-        return ['error' => _('You must enter a name and choose a location for the new category.')];
+        throw new InvalidInput(_('You must enter a name and choose a location for the new category.'));
     }
 
     $category = new Category([
@@ -911,14 +866,14 @@ function save_ny_kat(string $navn, int $kat, int $vis, string $email, int $iconI
 }
 
 /**
- * @return string[]|int[]
+ * @return int[]|string[]
  */
 function savekrav(string $navn, string $html, int $id = null): array
 {
     $html = purifyHTML($html);
 
     if ('' === $navn || '' === $html) {
-        return ['error' => _('You must enter a name and a text of the requirement.')];
+        throw new InvalidInput(_('You must enter a name and a text of the requirement.'));
     }
 
     $requirement = new Requirement(['title' => $navn, 'html' => $html]);
@@ -941,7 +896,7 @@ function sogogerstat(string $sog, string $erstat): int
 function updatemaerke(?int $id, string $navn, string $link = '', int $iconId = null): array
 {
     if (!$navn) {
-        return ['error' => _('You must enter a name.')];
+        throw new InvalidInput(_('You must enter a name.'));
     }
 
     $brand = new Brand(['title' => $navn, 'link' => $link, 'icon_id' => $iconId]);
@@ -1047,7 +1002,7 @@ function sletbind(int $pageId, int $categoryId): array
     /** @var Category */
     $category = ORM::getOne(Category::class, $categoryId);
     if (!$category) {
-        return ['error' => _('The category doesn\'t exist.')];
+        throw new InvalidInput(_('The category doesn\'t exist.'));
     }
     assert($category instanceof Category);
 
@@ -1080,7 +1035,7 @@ function bind(int $pageId, int $categoryId): array
     /** @var Category */
     $category = ORM::getOne(Category::class, $categoryId);
     if (!$category) {
-        return ['error' => _('The category doesn\'t exist.')];
+        throw new InvalidInput(_('The category doesn\'t exist.'));
     }
     assert($category instanceof Category);
 
@@ -1122,7 +1077,7 @@ function updateKat(
     $category = ORM::getOne(Category::class, $id);
     assert($category instanceof Category);
     if ($category->getParent() && null === $parentId) {
-        return ['error' => _('You must select a parent category')];
+        throw new InvalidInput(_('You must select a parent category'));
     }
 
     if (null !== $parentId) {
@@ -1130,7 +1085,7 @@ function updateKat(
         assert($parent instanceof Category);
         foreach ($parent->getBranch() as $node) {
             if ($node->getId() === $category->getId()) {
-                return ['error' => _('The category can not be placed under itself.')];
+                throw new InvalidInput(_('The category can not be placed under itself.'));
             }
         }
         $category->setParentId($parentId);
@@ -1238,11 +1193,7 @@ function save(int $id, string $action, array $updates): array
     invoiceBasicUpdate($invoice, $action, $updates);
 
     if ('email' === $action) {
-        try {
-            sendInvoice($invoice);
-        } catch (Exception $exception) {
-            return ['error' => $exception->getMessage()];
-        }
+        sendInvoice($invoice);
     }
 
     return ['type' => $action, 'status' => $invoice->getStatus()];
@@ -1337,17 +1288,17 @@ function invoiceBasicUpdate(Invoice $invoice, string $action, array $updates): v
 function sendInvoice(Invoice $invoice): void
 {
     if (!$invoice->hasValidEmail()) {
-        throw new Exception(_('Email is not valid!'));
+        throw new InvalidInput(_('Email is not valid!'));
     }
 
     if (!$invoice->getDepartment() && 1 === count(Config::get('emails'))) {
         $email = first(Config::get('emails'))['address'];
         $invoice->setDepartment($email);
     } elseif (!$invoice->getDepartment()) {
-        throw new Exception(_('You have not selected a sender!'));
+        throw new InvalidInput(_('You have not selected a sender!'));
     }
     if ($invoice->getAmount() < 0.01) {
-        throw new Exception(_('The invoice must be of at at least 0.01 krone!'));
+        throw new InvalidInput(_('The invoice must be of at at least 0.01 krone!'));
     }
 
     $subject = _('Online payment for ') . Config::get('site_name');
@@ -1360,12 +1311,12 @@ function sendInvoice(Invoice $invoice): void
     $emailBody = Render::render(
         $emailTemplate,
         [
-            'invoice' => $invoice,
+            'invoice'  => $invoice,
             'siteName' => Config::get('site_name'),
-            'address' => Config::get('address'),
+            'address'  => Config::get('address'),
             'postcode' => Config::get('postcode'),
-            'city' => Config::get('city'),
-            'phone' => Config::get('phone'),
+            'city'     => Config::get('city'),
+            'phone'    => Config::get('phone'),
         ]
     );
 
@@ -1398,13 +1349,9 @@ function sendReminder(int $id): array
     /** @var Invoice */
     $invoice = ORM::getOne(Invoice::class, $id);
     assert($invoice instanceof Invoice);
-    try {
-        sendInvoice($invoice);
-    } catch (Exception $exception) {
-        return ['error' => $exception->getMessage()];
-    }
+    sendInvoice($invoice);
 
-    return ['error' => _('A Reminder was sent to the customer.')];
+    throw new InvalidInput(_('A Reminder was sent to the customer.'));
 }
 
 /**
@@ -1416,14 +1363,10 @@ function pbsconfirm(int $id)
     $invoice = ORM::getOne(Invoice::class, $id);
     assert($invoice instanceof Invoice);
 
-    try {
-        $epaymentService = new EpaymentAdminService(Config::get('pbsid'), Config::get('pbspwd'));
-        $epayment = $epaymentService->getPayment(Config::get('pbsfix') . $invoice->getId());
-        if (!$epayment->confirm()) {
-            return ['error' => _('An error occurred')];
-        }
-    } catch (SoapFault $e) {
-        return ['error' => $e->getMessage()];
+    $epaymentService = new EpaymentAdminService(Config::get('pbsid'), Config::get('pbspwd'));
+    $epayment = $epaymentService->getPayment(Config::get('pbsfix') . $invoice->getId());
+    if (!$epayment->confirm()) {
+        throw new Exception(_('An error occurred'));
     }
 
     $invoice->setStatus('accepted')
@@ -1442,14 +1385,10 @@ function annul(int $id)
     $invoice = ORM::getOne(Invoice::class, $id);
     assert($invoice instanceof Invoice);
 
-    try {
-        $epaymentService = new EpaymentAdminService(Config::get('pbsid'), Config::get('pbspwd'));
-        $epayment = $epaymentService->getPayment(Config::get('pbsfix') . $invoice->getId());
-        if (!$epayment->annul()) {
-            return ['error' => _('An error occurred')];
-        }
-    } catch (SoapFault $e) {
-        return ['error' => $e->getMessage()];
+    $epaymentService = new EpaymentAdminService(Config::get('pbsid'), Config::get('pbspwd'));
+    $epayment = $epaymentService->getPayment(Config::get('pbsfix') . $invoice->getId());
+    if (!$epayment->annul()) {
+        throw new Exception(_('An error occurred'));
     }
 
     if ('pbsok' === $invoice->getStatus()) {
@@ -1457,128 +1396,4 @@ function annul(int $id)
     }
 
     return true;
-}
-
-function generateImage(
-    string $path,
-    int $cropX,
-    int $cropY,
-    int $cropW,
-    int $cropH,
-    int $maxW,
-    int $maxH,
-    int $flip,
-    int $rotate,
-    array $output = []
-): array {
-    $outputPath = $path;
-    $pathinfo = pathinfo($path);
-    if (!empty($output['type']) && empty($output['overwrite'])) {
-        if (empty($output['filename'])) {
-            $output['filename'] = $pathinfo['filename'];
-        }
-
-        $outputPath = $pathinfo['dirname'] . '/' . $output['filename'];
-        $outputPath .= !empty($output['type']) && 'png' === $output['type'] ? '.png' : '.jpg';
-
-        if (!empty($output['type']) && empty($output['force']) && file_exists($outputPath)) {
-            return [
-                'yesno' => _(
-                    'A file with the same name already exists.' . "\n"
-                    . 'Would you like to replace the existing file?'
-                ),
-                'filename' => $output['filename'],
-            ];
-        }
-    }
-
-    $image = new AJenbo\Image($path);
-    $orginalWidth = $image->getWidth();
-    $orginalHeight = $image->getHeight();
-
-    // Crop image
-    $cropW = $cropW ?: $image->getWidth();
-    $cropH = $cropH ?: $image->getHeight();
-    $cropW = min($image->getWidth(), $cropW);
-    $cropH = min($image->getHeight(), $cropH);
-    $cropX = $cropW !== $image->getWidth() ? $cropX : 0;
-    $cropY = $cropH !== $image->getHeight() ? $cropY : 0;
-    $image->crop($cropX, $cropY, $cropW, $cropH);
-
-    // Trim image whitespace
-    $imageContent = $image->findContent();
-
-    $maxW = min($maxW, $imageContent['width']);
-    $maxH = min($maxH, $imageContent['height']);
-
-    if (empty($output['type'])
-        && !$flip
-        && !$rotate
-        && $maxW === $orginalWidth
-        && $maxH === $orginalHeight
-        && 0 === mb_strpos($path, _ROOT_)
-    ) {
-        redirect(mb_substr($path, mb_strlen(_ROOT_)), Response::HTTP_MOVED_PERMANENTLY);
-    }
-
-    $image->crop(
-        $imageContent['x'],
-        $imageContent['y'],
-        $imageContent['width'],
-        $imageContent['height']
-    );
-
-    // Resize
-    $image->resize($maxW, $maxH);
-
-    // Flip / mirror
-    if ($flip) {
-        $image->flip(1 === $flip ? 'x' : 'y');
-    }
-
-    $image->rotate($rotate);
-
-    // Output image or save
-    $mime = 'image/jpeg';
-    $type = 'jpeg';
-    if (empty($output['type'])) {
-        $guesser = MimeTypeGuesser::getInstance();
-        $mime = $guesser->guess($path);
-        if ('image/png' !== $mime) {
-            $mime = 'image/jpeg';
-        }
-        header('Content-Type: ' . $mime);
-        $image->save(null, 'image/png' === $mime ? 'png' : 'jpeg');
-        die();
-    } elseif ('png' === $output['type']) {
-        $mime = 'image/png';
-        $type = 'png';
-    }
-    $image->save($outputPath, $type);
-
-    $width = $image->getWidth();
-    $height = $image->getHeight();
-    unset($image);
-
-    $file = null;
-    $localFile = $outputPath;
-    if (0 === mb_strpos($outputPath, _ROOT_)) {
-        $localFile = mb_substr($outputPath, mb_strlen(_ROOT_));
-        $file = File::getByPath($localFile);
-        if ($file && $output['filename'] === $pathinfo['filename'] && $outputPath !== $path) {
-            $file->delete();
-            $file = null;
-        }
-        if (!$file) {
-            $file = File::fromPath($localFile);
-        }
-
-        $file->setMime($mime)
-            ->setWidth($width)
-            ->setHeight($height)
-            ->setSize(filesize($outputPath))
-            ->save();
-    }
-
-    return ['id' => $file ? $file->getId() : null, 'path' => $localFile, 'width' => $width, 'height' => $height];
 }

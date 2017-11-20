@@ -79,9 +79,9 @@ class InvoiceService
             }
 
             $items[] = [
-                'title' => trim($title),
+                'title'    => trim($title),
                 'quantity' => $quantity,
-                'value' => $value,
+                'value'    => $value,
             ];
 
             $amount += $value * $quantity;

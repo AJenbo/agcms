@@ -1,19 +1,29 @@
 <?php namespace AGCMS;
 
 use AGCMS\Controller\Base;
+use AGCMS\Exception\InvalidInput;
+use Raven_Client;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Throwable;
-use Raven_Client;
 
 class Application
 {
     /** @var string */
-    protected $basePath;
+    private $basePath;
 
     /** @var array[] */
-    protected $routes = [];
+    private $routes = [];
+
+    /** @var Raven_Client */
+    private $ravenClient;
+
+    /** @var string[] */
+    private $dontReport = [
+        InvalidInput::class,
+    ];
 
     /**
      * Set up the enviroment.
@@ -22,6 +32,9 @@ class Application
      */
     public function __construct(string $basePath)
     {
+        $this->ravenClient = new Raven_Client(Config::get('sentry'));
+        $this->ravenClient->install();
+
         date_default_timezone_set(Config::get('timezone', 'Europe/Copenhagen'));
 
         if ('develop' === Config::get('enviroment', 'develop')) {
@@ -70,20 +83,40 @@ class Application
      */
     public function run(Request $request): void
     {
-        $ravenClient = new Raven_Client(Config::get('sentry'));
-        $ravenClient->install();
-
         Render::sendCacheHeader($request);
         try {
             $response = $this->dispatch($request);
         } catch (Throwable $exception) {
-            $ravenClient->captureException($exception);
-            $response = new Response($exception->getMessage());
-            $response->setStatusCode(Response::HTTP_INTERNAL_SERVER_ERROR);
+            $response = $this->handleException($request, $exception);
         }
         $response->prepare($request);
         $response->isNotModified($request); // Set up 304 response if relevant
         $response->send();
+    }
+
+    /**
+     * Generate an error response and repport the exception.
+     *
+     * @param Request   $request
+     * @param Throwable $exception
+     *
+     * @return Response
+     */
+    private function handleException(Request $request, Throwable $exception): Response
+    {
+        if (!in_array(get_class($exception), $this->dontReport, true)) {
+            $this->ravenClient->captureException($exception);
+        }
+
+        if ($request->isXmlHttpRequest()) {
+            $response = new JsonResponse(['error' => ['message' => $exception->getMessage()]]);
+            $response->setStatusCode(Response::HTTP_INTERNAL_SERVER_ERROR);
+            return $response;
+        }
+
+        $response = new Response($exception->getMessage());
+        $response->setStatusCode(Response::HTTP_INTERNAL_SERVER_ERROR);
+        return $response;
     }
 
     /**
@@ -146,7 +179,7 @@ class Application
      * Generate a redirect for the requested path with a / appended to the path.
      *
      * @param Request $request
-     * @param string $requestUrl
+     * @param string  $requestUrl
      *
      * @return RedirectResponse
      */

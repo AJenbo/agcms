@@ -1,8 +1,8 @@
 <?php namespace AGCMS\Entity;
 
+use AGCMS\Exception\InvalidInput;
 use AGCMS\ORM;
 use AGCMS\Render;
-use Exception;
 
 class Category extends AbstractRenderable
 {
@@ -109,7 +109,7 @@ class Category extends AbstractRenderable
     public function setParentId(?int $parentId): self
     {
         if (null !== $parentId && null !== $this->id && $this->id <= 0) {
-            throw new Exception(_('Your not allowed to move root categories'));
+            throw new InvalidInput(_('Your not allowed to move root categories'));
         }
 
         $this->parentId = $parentId;

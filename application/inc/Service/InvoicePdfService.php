@@ -2,7 +2,7 @@
 
 use AGCMS\Config;
 use AGCMS\Entity\Invoice;
-use Exception;
+use AGCMS\Exception\InvalidInput;
 use TCPDF;
 
 class InvoicePdfService
@@ -28,7 +28,7 @@ class InvoicePdfService
     public function createPdf(Invoice $invoice): string
     {
         if ('new' === $invoice->getStatus()) {
-            throw new Exception(_('Can\'t print invoice before it\'s locked.'));
+            throw new InvalidInput(_('Can\'t print invoice before it\'s locked.'));
         }
 
         $this->invoice = $invoice;

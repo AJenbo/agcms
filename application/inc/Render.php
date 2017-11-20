@@ -8,7 +8,7 @@ use Twig_Loader_Filesystem;
 
 class Render
 {
-    /** @var string[] */
+    /** @var bool[] */
     private static $loadedTables = [];
     /** @var string[] */
     private static $adminOnlyTables = [
@@ -87,7 +87,7 @@ class Render
     /**
      * Set Last-Modified and ETag http headers and use cache if no updates since last visit.
      *
-     * @param Request $request
+     * @param Request  $request
      * @param int|null $timestamp Unix time stamp of last update to content
      *
      * @return void
@@ -114,7 +114,6 @@ class Render
         $response->setPublic();
         $response->headers->addCacheControlDirective('must-revalidate');
         $response->setLastModified($lastModified);
-        $response->setEtag((string) $timestamp);
         $response->setMaxAge(0);
 
         if ($response->isNotModified($request)) {
@@ -127,7 +126,7 @@ class Render
      * Render a template.
      *
      * @param string $template
-     * @param array $data
+     * @param array  $data
      *
      * @return string
      */

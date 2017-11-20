@@ -1,10 +1,10 @@
 <?php
 
 use AGCMS\Config;
+use AGCMS\Entity\Brand;
 use AGCMS\Entity\Category;
 use AGCMS\Entity\Contact;
 use AGCMS\Entity\CustomPage;
-use AGCMS\Entity\Brand;
 use AGCMS\Entity\Page;
 use AGCMS\Entity\Requirement;
 use AGCMS\ORM;
@@ -31,11 +31,11 @@ switch ($template) {
         }
 
         $data = [
-            'textWidth' => Config::get('text_width'),
-            'emails' => array_keys(Config::get('emails')),
-            'siteTree' => getSiteTreeData('categories', $selectedId),
+            'textWidth'    => Config::get('text_width'),
+            'emails'       => array_keys(Config::get('emails')),
+            'siteTree'     => getSiteTreeData('categories', $selectedId),
             'includePages' => false,
-            'category' => $category,
+            'category'     => $category,
         ] + $data;
         break;
     case 'admin-krav':
@@ -91,11 +91,11 @@ switch ($template) {
         $page = ORM::getOne(CustomPage::class, 0);
         assert($page instanceof CustomPage);
         $data = [
-            'dbSize' => get_db_size(),
-            'wwwSize' => get_size_of_files(),
-            'pendingEmails' => db()->fetchOne("SELECT count(*) as 'count' FROM `emails`")['count'],
+            'dbSize'             => get_db_size(),
+            'wwwSize'            => get_size_of_files(),
+            'pendingEmails'      => db()->fetchOne("SELECT count(*) as 'count' FROM `emails`")['count'],
             'totalDelayedEmails' => $emails['Auto_increment'] - 1,
-            'lastrun' => $page->getTimeStamp(),
+            'lastrun'            => $page->getTimeStamp(),
         ] + $data;
         break;
     case 'admin-redigerSpecial':
@@ -119,9 +119,9 @@ switch ($template) {
         if ($id) {
             $list = db()->fetchOne('SELECT * FROM `tablesort` WHERE `id` = ' . $id);
             $data = [
-                'id' => $id,
-                'name' => $list['navn'],
-                'rows' => explode('<', $list['text']),
+                'id'        => $id,
+                'name'      => $list['navn'],
+                'rows'      => explode('<', $list['text']),
                 'textWidth' => Config::get('text_width'),
             ] + $data;
         }

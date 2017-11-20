@@ -25,7 +25,7 @@ $invoices = ORM::getByQuery(
 );
 
 $data = [
-    'title' => _('Invoice validation'),
+    'title'    => _('Invoice validation'),
     'invoices' => $invoices,
 ] + getBasicAdminTemplateData();
 Render::output('admin-fakturasvalidate', $data);

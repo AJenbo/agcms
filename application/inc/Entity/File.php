@@ -1,5 +1,6 @@
 <?php namespace AGCMS\Entity;
 
+use AGCMS\Exception\InvalidInput;
 use AGCMS\ORM;
 use Exception;
 use Symfony\Component\HttpFoundation\File\MimeType\MimeTypeGuesser;
@@ -270,13 +271,24 @@ class File extends AbstractEntity
     /**
      * Check if file is in use.
      *
-     * @param string $path
+     * @param bool $onlyCheckHtml
      *
      * @return bool
      */
-    public function isInUse(): bool
+    public function isInUse(bool $onlyCheckHtml = false): bool
     {
         $escapedPath = db()->esc($this->path);
+
+        if ($onlyCheckHtml) {
+            return (bool) db()->fetchOne(
+                "
+                (SELECT id FROM `sider` WHERE `text` LIKE '%=\"$escapedPath\"%' LIMIT 1)
+                UNION (SELECT id FROM `template` WHERE `text` LIKE '%=\"$escapedPath\"%' LIMIT 1)
+                UNION (SELECT id FROM `special` WHERE `text` LIKE '%=\"$escapedPath\"%' LIMIT 1)
+                UNION (SELECT id FROM `krav`    WHERE `text` LIKE '%=\"$escapedPath\"%' LIMIT 1)
+                "
+            );
+        }
 
         return (bool) db()->fetchOne(
             '
@@ -325,14 +337,15 @@ class File extends AbstractEntity
     /**
      * Delete entity and file.
      *
-     * @return bool
-     *
      * @throws Exception
+     * @throws InvalidInput
+     *
+     * @return bool
      */
     public function delete(): bool
     {
         if ($this->isInUse()) {
-            throw new Exception(sprintf(_('"%s" is still in use.'), $this->path));
+            throw new InvalidInput(sprintf(_('"%s" is still in use.'), $this->path));
         }
 
         if (file_exists(_ROOT_ . $this->path) && !unlink(_ROOT_ . $this->path)) {

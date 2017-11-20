@@ -22,13 +22,13 @@ class EpaymentAdminService
 
     /** @var string[] */
     private static $paymentTypes = [
-        1 => 'Dankort/Visa-Dankort',
-        3 => 'Visa / Visa Electron',
-        4 => 'MasterCard',
-        6 => 'JCB',
-        7 => 'Maestro',
-        8 => 'Diners Club',
-        9 => 'American Express',
+        1  => 'Dankort/Visa-Dankort',
+        3  => 'Visa / Visa Electron',
+        4  => 'MasterCard',
+        6  => 'JCB',
+        7  => 'Maestro',
+        8  => 'Diners Club',
+        9  => 'American Express',
         11 => 'Forbrugsforeningen',
         12 => 'Nordea e-betaling',
         13 => 'Danske Netbetalinger',
@@ -140,13 +140,13 @@ class EpaymentAdminService
     private function getSearchData(string $orderId, string $status): array
     {
         return [
-            'pwd' => $this->password,
-            'merchantnumber' => $this->merchantId,
-            'searchorderid' => $orderId,
-            'status' => $status,
+            'pwd'             => $this->password,
+            'merchantnumber'  => $this->merchantId,
+            'searchorderid'   => $orderId,
+            'status'          => $status,
             'searchdatestart' => '2014-06-19T00:00:00+02:00',
-            'searchdateend' => date('c'),
-            'epayresponse' => true,
+            'searchdateend'   => date('c'),
+            'epayresponse'    => true,
         ];
     }
 
@@ -161,10 +161,10 @@ class EpaymentAdminService
     {
         $response = $this->soapClient->delete(
             [
-                'pwd' => $this->password,
+                'pwd'            => $this->password,
                 'merchantnumber' => $this->merchantId,
-                'transactionid' => $epayment->getId(),
-                'epayresponse' => true,
+                'transactionid'  => $epayment->getId(),
+                'epayresponse'   => true,
             ]
         );
 
@@ -186,12 +186,12 @@ class EpaymentAdminService
     public function confirm(Epayment $epayment, int $amount): bool
     {
         $response = $this->soapClient->capture([
-            'pwd' => $this->password,
+            'pwd'            => $this->password,
             'merchantnumber' => $this->merchantId,
-            'transactionid' => $epayment->getId(),
-            'amount' => $amount,
-            'epayresponse' => true,
-            'pbsResponse' => true,
+            'transactionid'  => $epayment->getId(),
+            'amount'         => $amount,
+            'epayresponse'   => true,
+            'pbsResponse'    => true,
         ]);
 
         if ($response->captureResult) {

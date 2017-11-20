@@ -16,6 +16,8 @@ class FileService
      * @param string $newPath
      *
      * @throws Exception
+     *
+     * @return void
      */
     public function createFolder(string $path): void
     {
@@ -202,12 +204,12 @@ class FileService
     public function filejavascript(File $file): string
     {
         $data = [
-            'id' => $file->getId(),
-            'path' => $file->getPath(),
-            'mime' => $file->getMime(),
-            'name' => pathinfo($file->getPath(), PATHINFO_FILENAME),
-            'width' => $file->getWidth(),
-            'height' => $file->getHeight(),
+            'id'          => $file->getId(),
+            'path'        => $file->getPath(),
+            'mime'        => $file->getMime(),
+            'name'        => pathinfo($file->getPath(), PATHINFO_FILENAME),
+            'width'       => $file->getWidth(),
+            'height'      => $file->getHeight(),
             'description' => $file->getDescription(),
         ];
 
@@ -340,11 +342,11 @@ class FileService
         }
 
         return [
-            'id' => preg_replace('#/#u', '.', $path),
-            'path' => $path,
-            'name' => $name,
+            'id'      => preg_replace('#/#u', '.', $path),
+            'path'    => $path,
+            'name'    => $name,
             'hassubs' => $hassubs,
-            'subs' => $subs,
+            'subs'    => $subs,
         ];
     }
 

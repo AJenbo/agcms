@@ -31,9 +31,9 @@ class Requirement extends AbstractRenderable
     public static function mapFromDB(array $data): array
     {
         return [
-            'id' => $data['id'],
+            'id'    => $data['id'],
             'title' => $data['navn'],
-            'html' => $data['text'],
+            'html'  => $data['text'],
         ];
     }
 
