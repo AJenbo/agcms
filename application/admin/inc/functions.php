@@ -58,10 +58,10 @@ function curentUser(): ?User
 }
 
 /**
- * Optimize all tables.
- *
- * @return string Always empty
- */
+  * Optimize all tables.
+  *
+  * @return string Always empty
+  */
 function optimizeTables(): string
 {
     $tables = db()->fetchArray('SHOW TABLE STATUS');
@@ -455,33 +455,6 @@ function newfaktura(): int
     );
 
     return db()->insert_id;
-}
-
-/**
- * @return int[]
- */
-function listRemoveRow(int $tableId, int $rowId): array
-{
-    $table = ORM::getOne(Table::class, $tableId);
-    assert($table instanceof Table);
-    $table->removeRow($rowId);
-
-    return ['listid' => $tableId, 'rowid' => $rowId];
-}
-
-function listSavetRow(int $tableId, array $cells, int $link = null, int $rowId = null): array
-{
-    /** @var Table */
-    $table = ORM::getOne(Table::class, $tableId);
-    assert($table instanceof Table);
-
-    if (!$rowId) {
-        $rowId = $table->addRow($cells, $link);
-    } else {
-        $table->updateRow($rowId, $cells, $link);
-    }
-
-    return ['listid' => $tableId, 'rowid' => $rowId];
 }
 
 function updateContact(

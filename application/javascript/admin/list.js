@@ -1,28 +1,33 @@
 var listlink = [];
 function listInsertRow(listid) {
     var footer = $("list" + listid + "footer");
-    listSaveRow(footer, 0, listid, listInsertRow_r);
+    var data = listSaveRow(footer, listid);
+    xHttp.request("/admin/tables/" + listid + "/row/", listInsertRow_r, "POST", data);
 }
 
 function listUpdateRow(listid, rowid) {
     var row = $("list_row" + rowid);
-    listSaveRow(row, rowid, listid, listUpdateRow_r);
+    var data = listSaveRow(row, listid);
+    xHttp.request("/admin/tables/" + listid + "/row/" + rowid + "/", listUpdateRow_r, "PUT", data);
 }
 
-function listSaveRow(row, rowid, listid, callback) {
+function listSaveRow(row, listid) {
+    var data = {
+        "cells": [],
+        "link": null,
+    };
+
     var cellcount = row.childNodes.length - 1;
-    var rowlink = null;
-    if (listlink[listid] == 1) {
+    if (listlink[listid] === true) {
         cellcount -= 1;
-        rowlink = row.childNodes[cellcount].firstChild.value;
-        rowlink = rowlink ? rowlink : null;
+        data.link = row.childNodes[cellcount].firstChild.value || null;
     }
 
-    var cells = [];
     for (i = 0; i < cellcount; i++) {
-        cells.push(row.childNodes[i].firstChild.value);
+        data.cells.push(row.childNodes[i].firstChild.value);
     }
-    x_listSavetRow(listid, cells, rowlink, rowid, callback);
+
+    return data;
 }
 
 function listInsertRow_r(data) {
@@ -133,8 +138,8 @@ function listSizeFooter(listid) {
 
 function listRemoveRow(listid, rowid) {
     if (confirm("Vil du virkelig slette denne linje.")) {
-        x_listRemoveRow(listid, rowid, listRemoveRow_r);
         $("loading").style.visibility = "";
+        xHttp.request("/admin/tables/" + listid + "/row/" + rowid + "/", listRemoveRow_r, "DELETE");
     }
 }
 

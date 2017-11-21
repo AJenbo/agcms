@@ -13,6 +13,7 @@ use AGCMS\Controller\Admin\MaintenanceController;
 use AGCMS\Controller\Admin\PageController;
 use AGCMS\Controller\Admin\RequirementController;
 use AGCMS\Controller\Admin\SiteTreeController;
+use AGCMS\Controller\Admin\TableController;
 use AGCMS\Controller\Ajax;
 use AGCMS\Controller\Feed;
 use AGCMS\Controller\Payment;
@@ -67,11 +68,15 @@ $app->addRoute('GET', '/admin/page/search/', PageController::class, 'search');
 $app->addRoute('POST', '/admin/page/', PageController::class, 'createPage');
 $app->addRoute('GET', '/admin/page/(\d+)/', PageController::class, 'index');
 $app->addRoute('PUT', '/admin/page/(\d+)/', PageController::class, 'updatePage');
+// Table row CUD
+$app->addRoute('POST', '/admin/tables/(\d+)/row/', TableController::class, 'addRow');
+$app->addRoute('PUT', '/admin/tables/(\d+)/row/(\d+)/', TableController::class, 'updateRow');
+$app->addRoute('DELETE', '/admin/tables/(\d+)/row/(\d+)/', TableController::class, 'removeRow');
 // Category editing
 $app->addRoute('GET', '/admin/categories/', CategoryController::class, 'index');
 // Category CRUD
 $app->addRoute('GET', '/admin/categories/([-\d]+)/', CategoryController::class, 'index');
-// Category RU
+// Custom page RU
 $app->addRoute('GET', '/admin/custom/(\d+)/', CustomPageController::class, 'index');
 // Site tree
 $app->addRoute('GET', '/admin/sitetree/', SiteTreeController::class, 'index');
