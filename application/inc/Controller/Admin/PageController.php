@@ -158,6 +158,51 @@ class PageController extends AbstractAdminController
     }
 
     /**
+     * Add a page to page relation.
+     *
+     * @param Request $request
+     * @param int     $pageId
+     * @param int     $accessoryId
+     *
+     * @return JsonResponse
+     */
+    public function addAccessory(Request $request, int $pageId, int $accessoryId): JsonResponse
+    {
+        $page = ORM::getOne(Page::class, $pageId);
+        assert($page instanceof Page);
+        /** @var Page */
+        $accessory = ORM::getOne(Page::class, $accessoryId);
+        assert($accessory instanceof Page);
+        $page->addAccessory($accessory);
+
+        return new JsonResponse([
+            'pageId'      => $page->getId(),
+            'accessoryId' => $accessory->getId(),
+            'title'       => $accessory->getPrimaryCategory()->getPath() . '/' . $accessory->getTitle(),
+        ]);
+    }
+
+    /**
+     * Remove a page to page relation.
+     *
+     * @param Request $request
+     * @param int     $pageId
+     * @param int     $accessoryId
+     *
+     * @return JsonResponse
+     */
+    public function removeAccessory(Request $request, int $pageId, int $accessoryId): JsonResponse
+    {
+        $page = ORM::getOne(Page::class, $pageId);
+        assert($page instanceof Page);
+        $accessory = ORM::getOne(Page::class, $accessoryId);
+        assert($accessory instanceof Page);
+        $page->removeAccessory($accessory);
+
+        return new JsonResponse(['id' => 'accessory' . $accessory->getId()]);
+    }
+
+    /**
      * Find pages.
      *
      * @return Page[]

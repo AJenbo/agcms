@@ -6,7 +6,7 @@
     <a href="/admin/requirement/">Tilføj krav</a>
     {% for requirement in requirements %}
     <div id="krav{{requirement.id}}">
-        <a href="" onclick="slet('krav',{{requirement.title|json_encode()}},{{requirement.id}});">
+        <a href="" onclick="return deleteRequirement({{requirement.id}},{{requirement.title|json_encode()}});">
             <img src="/theme/default/images/admin/cross.png" title="Slet {{requirement.title}}!" width="16" height="16" />
         </a>
         <a href="/admin/requirement/{{requirement.id}}/">{{requirement.title}}</a>

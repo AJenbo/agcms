@@ -40,7 +40,7 @@ function addRow() {
     td.style.border = "0";
     td.style.fontWeight = "bold";
     td.innerHTML =
-        "<a href=\"#\" onclick=\"removeRow(this); return false\"><img alt=\"X\" src=\"images/cross.png\" height=\"16\" width=\"16\" title=\"Remove Line\" /></a>";
+        "<a href=\"#\" onclick=\"removeRow(this); return false\"><img alt=\"X\" src=\"/theme/default/images/admin/cross.png\" height=\"16\" width=\"16\" title=\"Remove Line\" /></a>";
     tr.appendChild(td);
     $("vareTable").appendChild(tr);
 }

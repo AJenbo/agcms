@@ -68,6 +68,9 @@ $app->addRoute('GET', '/admin/page/search/', PageController::class, 'search');
 $app->addRoute('POST', '/admin/page/', PageController::class, 'createPage');
 $app->addRoute('GET', '/admin/page/(\d+)/', PageController::class, 'index');
 $app->addRoute('PUT', '/admin/page/(\d+)/', PageController::class, 'updatePage');
+// Accessory CD
+$app->addRoute('POST', '/admin/page/(\d+)/accessories/(\d+)/', PageController::class, 'addAccessory');
+$app->addRoute('DELETE', '/admin/page/(\d+)/accessories/(\d+)/', PageController::class, 'removeAccessory');
 // Table row CUD
 $app->addRoute('POST', '/admin/tables/(\d+)/row/', TableController::class, 'addRow');
 $app->addRoute('PUT', '/admin/tables/(\d+)/row/(\d+)/', TableController::class, 'updateRow');
@@ -87,7 +90,10 @@ $app->addRoute('GET', '/admin/sitetree/inventory/', SiteTreeController::class, '
 $app->addRoute('GET', '/admin/requirement/list/', RequirementController::class, 'index');
 $app->addRoute('GET', '/admin/requirement/', RequirementController::class, 'editPage');
 // Requirement CRUD
+$app->addRoute('POST', '/admin/requirement/', RequirementController::class, 'create');
 $app->addRoute('GET', '/admin/requirement/(\d+)/', RequirementController::class, 'editPage');
+$app->addRoute('PUT', '/admin/requirement/(\d+)/', RequirementController::class, 'update');
+$app->addRoute('DELETE', '/admin/requirement/(\d+)/', RequirementController::class, 'delete');
 // Brand editing
 $app->addRoute('GET', '/admin/brands/', BrandController::class, 'index');
 // Brand CRUD

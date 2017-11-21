@@ -8,7 +8,6 @@ use AGCMS\Entity\CustomPage;
 use AGCMS\Entity\File;
 use AGCMS\Entity\Invoice;
 use AGCMS\Entity\Page;
-use AGCMS\Entity\Requirement;
 use AGCMS\Entity\Table;
 use AGCMS\Entity\User;
 use AGCMS\EpaymentAdminService;
@@ -58,10 +57,10 @@ function curentUser(): ?User
 }
 
 /**
-  * Optimize all tables.
-  *
-  * @return string Always empty
-  */
+ * Optimize all tables.
+ *
+ * @return string Always empty
+ */
 function optimizeTables(): string
 {
     $tables = db()->fetchArray('SHOW TABLE STATUS');
@@ -772,27 +771,6 @@ function save_ny_kat(string $navn, int $kat, int $vis, string $email, int $iconI
     return true;
 }
 
-/**
- * @return int[]|string[]
- */
-function savekrav(string $navn, string $html, int $id = null): array
-{
-    $html = purifyHTML($html);
-
-    if ('' === $navn || '' === $html) {
-        throw new InvalidInput(_('You must enter a name and a text of the requirement.'));
-    }
-
-    $requirement = new Requirement(['title' => $navn, 'html' => $html]);
-    if (null !== $id) {
-        $requirement = ORM::getOne(Requirement::class, $id);
-    }
-    assert($requirement instanceof Requirement);
-    $requirement->setHtml($html)->setTitle($navn)->save();
-
-    return ['id' => $requirement->getId()];
-}
-
 function sogogerstat(string $sog, string $erstat): int
 {
     db()->query('UPDATE sider SET text = REPLACE(text,\'' . db()->esc($sog) . '\',\'' . db()->esc($erstat) . '\')');
@@ -832,41 +810,6 @@ function sletmaerke(int $id): array
     db()->query('DELETE FROM `maerke` WHERE `id` = ' . $id);
 
     return ['node' => 'maerke' . $id];
-}
-
-/**
- * @return string[]
- */
-function sletkrav(int $id): array
-{
-    db()->query('DELETE FROM `krav` WHERE `id` = ' . $id);
-
-    return ['id' => 'krav' . $id];
-}
-
-/**
- * @return string[]
- */
-function removeAccessory(int $pageId, int $accessoryId): array
-{
-    $accessory = ORM::getOne(Page::class, $accessoryId);
-    assert($accessory instanceof Page);
-    $page = ORM::getOne(Page::class, $pageId);
-    assert($page instanceof Page);
-    $page->removeAccessory($accessory);
-
-    return ['id' => 'accessory' . $accessory->getId()];
-}
-
-function addAccessory(int $pageId, int $accessoryId): array
-{
-    $accessory = ORM::getOne(Page::class, $accessoryId);
-    assert($accessory instanceof Page);
-    $page = ORM::getOne(Page::class, $pageId);
-    assert($page instanceof Page);
-    $page->addAccessory($accessory);
-
-    return ['pageId' => $page->getId(), 'accessoryId' => $accessory->getId(), 'title' => $accessory->getTitle()];
 }
 
 /**

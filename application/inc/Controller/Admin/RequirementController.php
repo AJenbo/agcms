@@ -3,8 +3,10 @@
 use AGCMS\Config;
 use AGCMS\Entity\Page;
 use AGCMS\Entity\Requirement;
+use AGCMS\Exception\InvalidInput;
 use AGCMS\ORM;
 use AGCMS\Render;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -27,6 +29,29 @@ class RequirementController extends AbstractAdminController
     }
 
     /**
+     * Create a requirement.
+     *
+     * @param Request $request
+     *
+     * @return JsonResponse
+     */
+    public function create(Request $request): JsonResponse
+    {
+        $title = $request->get('title', '');
+        $html = $request->get('html', '');
+        $html = purifyHTML($html);
+
+        if ('' === $title || '' === $html) {
+            throw new InvalidInput(_('You must enter a name and a text of the requirement.'));
+        }
+
+        $requirement = new Requirement(['title' => $title, 'html' => $html]);
+        $requirement->save();
+
+        return new JsonResponse(['id' => $requirement->getId()]);
+    }
+
+    /**
      * Page for editing or creating a requirement.
      *
      * @param Request  $request
@@ -43,5 +68,45 @@ class RequirementController extends AbstractAdminController
         $content = Render::render('admin/editkrav', $data);
 
         return new Response($content);
+    }
+
+    /**
+     * Update requirement.
+     *
+     * @param Request $request
+     * @param int     $id
+     *
+     * @return JsonResponse
+     */
+    public function update(Request $request, int $id): JsonResponse
+    {
+        $title = $request->get('title', '');
+        $html = $request->get('html', '');
+        $html = purifyHTML($html);
+
+        if ('' === $title || '' === $html) {
+            throw new InvalidInput(_('You must enter a name and a text of the requirement.'));
+        }
+
+        $requirement = ORM::getOne(Requirement::class, $id);
+        $requirement->setHtml($html)->setTitle($title)->save();
+
+        return new JsonResponse(['id' => $requirement->getId()]);
+    }
+
+    /**
+     * Delete a requirement.
+     *
+     * @param Request $request
+     * @param int     $id
+     *
+     * @return JsonResponse
+     */
+    public function delete(Request $request, int $id): JsonResponse
+    {
+        $requirement = ORM::getOne(Requirement::class, $id);
+        $requirement->delete();
+
+        return new JsonResponse(['id' => 'krav' . $id]);
     }
 }

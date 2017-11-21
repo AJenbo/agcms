@@ -60,9 +60,9 @@ function listInsertRow_r(data) {
     td = document.createElement("td");
     td.innerHTML =
         "<img onclick=\"listEditRow(" + data.listid + ", " + data.rowid +
-        ");\" src=\"images/application_edit.png\" alt=\"Rediger\" title=\"Rediger\" width=\"16\" height=\"16\" /><img onclick=\"listUpdateRow(" +
+        ");\" src=\"/theme/default/images/admin/application_edit.png\" alt=\"Rediger\" title=\"Rediger\" width=\"16\" height=\"16\" /><img onclick=\"listUpdateRow(" +
         data.listid + ", " + data.rowid +
-        ");\" style=\"display:none\" src=\"images/disk.png\" alt=\"Rediger\" title=\"Rediger\" width=\"16\" height=\"16\" /><img src=\"images/cross.png\" alt=\"X\" title=\"Slet række\" onclick=\"listRemoveRow(" +
+        ");\" style=\"display:none\" src=\"/theme/default/images/admin/disk.png\" alt=\"Rediger\" title=\"Rediger\" width=\"16\" height=\"16\" /><img src=\"/theme/default/images/admin/cross.png\" alt=\"X\" title=\"Slet række\" onclick=\"listRemoveRow(" +
         data.listid + ", " + data.rowid + ")\" />";
     tr.appendChild(td);
 

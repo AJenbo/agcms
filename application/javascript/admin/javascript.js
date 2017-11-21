@@ -217,12 +217,31 @@ function init() {
 }
 
 function save_krav() {
-    var html = CKEDITOR.instances.text.getData();
-    var id = $("id").value;
-    id = id ? id : null;
-    x_savekrav($("navn").value, html, id, save_krav_r);
+    $("loading").style.visibility = "";
 
+    var data = {
+        "title": $("navn").value,
+        "html": CKEDITOR.instances.text.getData(),
+    };
+
+    var id = $("id").value;
+    if (id) {
+        xHttp.request("/admin/requirement/" + id + "/", save_krav_r, "PUT", data);
+        return false;
+    }
+
+    xHttp.request("/admin/requirement/", save_krav_r, "POST", data);
     return false
+}
+
+function deleteRequirement(id, navn) {
+    if (!confirm("Vil du slette kravet '" + navn + "'?")) {
+        return false;
+    }
+    $("loading").style.visibility = "";
+    xHttp.request("/admin/requirement/" + id + "/", slet_r, "DELETE");
+
+    return false;
 }
 
 function save_krav_r(data) {
@@ -248,7 +267,7 @@ function addAccessory(pageId) {
         return false;
     }
 
-    x_addAccessory(pageId, accessoryId, addAccessory_r);
+    xHttp.request("/admin/page/" + pageId + "/accessories/" + accessoryId + "/", addAccessory_r, "POST");
 
     return false;
 }
@@ -266,7 +285,7 @@ function addAccessory_r(data) {
     var p = document.createElement("p");
     p.setAttribute("id", elementId);
     var img = document.createElement("img");
-    img.setAttribute("src", "images/cross.png");
+    img.setAttribute("src", "/theme/default/images/admin/cross.png");
     img.setAttribute("alt", "X");
     img.setAttribute("height", "16");
     img.setAttribute("width", "16");
@@ -282,7 +301,7 @@ function addAccessory_r(data) {
 function removeAccessory(navn, pageId, accessoryId) {
     if (confirm("Vil du fjerne '" + navn + "' som tilbehor?")) {
         $("loading").style.visibility = "";
-        x_removeAccessory(pageId, accessoryId, slet_r);
+        xHttp.request("/admin/page/" + pageId + "/accessories/" + accessoryId + "/", slet_r, "DELETE");
     }
     return false;
 }
@@ -308,7 +327,7 @@ function binding_r(data) {
         var p = document.createElement("p");
         p.setAttribute("id", "bind" + data.added.categoryId);
         var img = document.createElement("img");
-        img.setAttribute("src", "images/cross.png");
+        img.setAttribute("src", "/theme/default/images/admin/cross.png");
         img.setAttribute("alt", "X");
         img.setAttribute("height", "16");
         img.setAttribute("width", "16");
@@ -378,12 +397,6 @@ function slet(type, navn, id) {
             if (confirm("Vil du slette mærket '" + navn + "'?")) {
                 $("loading").style.visibility = "";
                 x_sletmaerke(id, slet_r);
-            }
-            break;
-        case "krav":
-            if (confirm("Vil du slette kravet '" + navn + "'?")) {
-                $("loading").style.visibility = "";
-                x_sletkrav(id, slet_r);
             }
             break;
         case "kat":
