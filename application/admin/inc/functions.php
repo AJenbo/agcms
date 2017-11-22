@@ -17,45 +17,6 @@ use AGCMS\Render;
 use AJenbo\Image;
 use Symfony\Component\HttpFoundation\File\MimeType\MimeTypeGuesser;
 
-function checkUserLoggedIn(): void
-{
-    session_start();
-    if (curentUser()) {
-        return;
-    }
-
-    if (!request()->get('username')) {
-        sleep(1);
-        header('HTTP/1.0 401 Unauthorized', true, 401);
-
-        if (request()->get('rs')) { // Sajax call
-            exit(_('Your login has expired, please reload the page and login again.'));
-        }
-
-        Render::output('admin-login');
-        exit;
-    }
-
-    $user = ORM::getOneByQuery(
-        User::class,
-        'SELECT * FROM `users` WHERE `name` = ' . db()->eandq(request()->get('username'))
-    );
-    if ($user && $user->getAccessLevel() && $user->validatePassword(request()->get('password', ''))) {
-        $_SESSION['curentUser'] = $user;
-    }
-    session_write_close();
-
-    redirect(request()->getRequestUri());
-}
-
-/**
- * Declare common functions.
- */
-function curentUser(): ?User
-{
-    return $_SESSION['curentUser'] ?? null;
-}
-
 /**
  * Optimize all tables.
  *

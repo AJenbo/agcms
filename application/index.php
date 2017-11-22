@@ -20,6 +20,7 @@ use AGCMS\Controller\Payment;
 use AGCMS\Controller\Search;
 use AGCMS\Controller\Shopping;
 use AGCMS\Controller\Site;
+use AGCMS\Middleware\Auth;
 use AGCMS\Request;
 
 require_once __DIR__ . '/vendor/autoload.php';
@@ -59,8 +60,11 @@ $app->addRoute('GET', '/opensearch.xml', Feed::class, 'openSearch');
 $app->addRoute('GET', '/sitemap.xml', Feed::class, 'siteMap');
 $app->addRoute('GET', '/feed/rss/', Feed::class, 'rss');
 
-// Admin pages
+// Admin backoffice
+$app->addMiddleware('/admin/', Auth::class);
+// Main index
 $app->addRoute('GET', '/admin/', AdminController::class, 'index');
+$app->addRoute('GET', '/admin/logout', AdminController::class, 'logout');
 // Page editing
 $app->addRoute('GET', '/admin/page/', PageController::class, 'index');
 $app->addRoute('GET', '/admin/page/search/', PageController::class, 'search');

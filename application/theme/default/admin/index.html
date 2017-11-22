@@ -29,7 +29,7 @@
             <ul id="Activity"{% if hide.activity %} style="display:none"{% endif %}>
                 {% block actions %}{% endblock %}
                 <li id="loading" style="cursor:default;"><img src="/theme/default/images/admin/loading.gif" width="16" height="16" alt="Processing" /> Loading</li>
-                <li><a href="./logout.php"><img src="/theme/default/images/admin/door_in.png" width="16" height="16" alt="" /> Log out</a></li>
+                <li><a href="/admin/logout"><img src="/theme/default/images/admin/door_in.png" width="16" height="16" alt="" /> Log out</a></li>
             </ul>
             <a class="menuboxheader" onclick="showhide('Indhold');">Indhold</a>
             <ul id="Indhold"{% if hide.indhold %} style="display:none"{% endif %}>
