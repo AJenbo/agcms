@@ -126,7 +126,10 @@ $app->addRoute('DELETE', '/admin/explorer/files/(\d+)/', ExplorerController::cla
 $app->addRoute('GET', '/admin/addressbook/list/', AddressbookController::class, 'index');
 $app->addRoute('GET', '/admin/addressbook/', AddressbookController::class, 'editContact');
 // Addressbook CRUD
+$app->addRoute('POST', '/admin/addressbook/', AddressbookController::class, 'create');
 $app->addRoute('GET', '/admin/addressbook/(\d+)/', AddressbookController::class, 'editContact');
+$app->addRoute('PUT', '/admin/addressbook/(\d+)/', AddressbookController::class, 'update');
+$app->addRoute('DELETE', '/admin/addressbook/(\d+)/', AddressbookController::class, 'delete');
 // Maintenance
 $app->addRoute('GET', '/admin/maintenance/', MaintenanceController::class, 'index');
 // Invoice

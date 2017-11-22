@@ -456,63 +456,6 @@ function newfaktura(): int
     return db()->insert_id;
 }
 
-function updateContact(
-    string $navn,
-    string $email,
-    string $adresse,
-    string $land,
-    string $post,
-    string $city,
-    string $tlf1,
-    string $tlf2,
-    bool $kartotek,
-    string $interests,
-    int $id = null
-): bool {
-    if (!$id) {
-        $contact = new Contact([
-            'name'       => $navn,
-            'email'      => $email,
-            'address'    => $adresse,
-            'country'    => $land,
-            'postcode'   => $post,
-            'city'       => $city,
-            'phone1'     => $tlf1,
-            'phone2'     => $tlf2,
-            'newsletter' => $kartotek,
-            'interests'  => $interests,
-            'ip'         => request()->getClientIp(),
-        ]);
-        $contact->save();
-
-        return true;
-    }
-
-    $contact = ORM::getOne(Contact::class, $id);
-    assert($contact instanceof Contact);
-    $contact->setName($navn)
-        ->setEmail($email)
-        ->setAddress($adresse)
-        ->setCountry($land)
-        ->setPostcode($post)
-        ->setCity($city)
-        ->setPhone1($tlf1)
-        ->setPhone2($tlf2)
-        ->setNewsletter($kartotek)
-        ->setInterests($interests)
-        ->setIp(request()->getClientIp())
-        ->save();
-
-    return true;
-}
-
-function deleteContact(int $id): string
-{
-    db()->query('DELETE FROM `email` WHERE `id` = ' . $id);
-
-    return 'contact' . $id;
-}
-
 function makeNewList(string $navn): array
 {
     db()->query('INSERT INTO `tablesort` (`navn`) VALUES (\'' . db()->esc($navn) . '\')');

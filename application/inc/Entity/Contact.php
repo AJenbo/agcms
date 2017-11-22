@@ -48,7 +48,7 @@ class Contact extends AbstractEntity
             ->setPhone1($data['phone1'])
             ->setPhone2($data['phone2'])
             ->setNewsletter($data['newsletter'])
-            ->setInterests($data['interests'] ?? '')
+            ->setInterests($data['interests'] ?? [])
             ->setIp($data['ip'])
             ->setId($data['id'] ?? null);
     }
@@ -272,14 +272,12 @@ class Contact extends AbstractEntity
     /**
      * Set newsletter interests.
      *
-     * @param string $interests
+     * @param string[] $interests
      *
      * @return self
      */
-    public function setInterests(string $interests): self
+    public function setInterests(array $interests): self
     {
-        $interests = explode('<', $interests);
-        $interests = array_map('html_entity_decode', $interests);
         $this->interests = $interests;
 
         return $this;
@@ -362,6 +360,9 @@ class Contact extends AbstractEntity
      */
     public static function mapFromDB(array $data): array
     {
+        $interests = explode('<', $data['interests']);
+        $interests = array_map('html_entity_decode', $interests);
+
         return [
             'id'         => $data['id'],
             'timestamp'  => strtotime($data['dato']) + db()->getTimeOffset(),
@@ -374,7 +375,7 @@ class Contact extends AbstractEntity
             'phone1'     => $data['tlf1'],
             'phone2'     => $data['tlf2'],
             'newsletter' => (bool) $data['kartotek'],
-            'interests'  => $data['interests'],
+            'interests'  => $interests,
             'ip'         => $data['ip'],
         ];
     }

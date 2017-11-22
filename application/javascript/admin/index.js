@@ -230,7 +230,7 @@ function updatemaerke(id) {
     return false;
 }
 
-var savePage = null;
+var saveRequest = null;
 function updateSide(id) {
     $("loading").style.visibility = "";
 
@@ -249,15 +249,15 @@ function updateSide(id) {
         "oldPriceType": parseInt(getSelectValue("burde"))
     };
 
-    xHttp.cancel(savePage);
+    xHttp.cancel(saveRequest);
     if (!id) {
         page.categoryId = parseInt(getRadio("kat"));
-        savePage = xHttp.request("/admin/page/", opretSide_r, "POST", page);
+        saveRequest = xHttp.request("/admin/page/", opretSide_r, "POST", page);
 
         return false;
     }
 
-    savePage = xHttp.request("/admin/page/" + id + "/", generic_r, "PUT", page);
+    saveRequest = xHttp.request("/admin/page/" + id + "/", generic_r, "PUT", page);
 
     return false;
 }
@@ -379,19 +379,30 @@ function saveEmail() {
 
 function updateContact(id) {
     $("loading").style.visibility = "";
+    var data = {
+        "name": $("navn").value,
+        "email": $("email").value,
+        "address": $("adresse").value,
+        "country": $("land").value,
+        "postcode": $("post").value,
+        "city": $("by").value,
+        "phone1": $("tlf1").value,
+        "phone2": $("tlf2").value,
+        "newsletter": $("kartotek").value,
+        "interests": [],
+    };
     var interestObjs = $("interests").getElementsByTagName("input");
-    var interests = "";
     for (var i = 0; i < interestObjs.length; i++) {
         if (interestObjs[i].checked) {
-            if (interests != "") {
-                interests += "<";
-            }
-            interests += interestObjs[i].value;
+            data.interests.push(interestObjs[i].value);
         }
     }
-    x_updateContact($("navn").value, $("email").value, $("adresse").value, $("land").value, $("post").value,
-                    $("by").value, $("tlf1").value, $("tlf2").value, $("kartotek").checked, interests, id,
-                    updateContact_r);
+
+    if (id) {
+        saveRequest = xHttp.request("/admin/addressbook/" + id + "/", updateContact_r, "PUT", data);
+        return;
+    }
+    saveRequest = xHttp.request("/admin/addressbook/", updateContact_r, "POST", data);
 }
 
 function updateContact_r(data) {
