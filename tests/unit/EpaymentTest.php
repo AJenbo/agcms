@@ -3,8 +3,9 @@
 use AGCMS\EpaymentAdminService;
 use AGCMS\Epayment;
 use Mockery as M;
+use PHPUnit\Framework\TestCase;
 
-class EpaymentTest extends PHPUnit_Framework_TestCase
+class EpaymentTest extends TestCase
 {
     private $epaymentAdminService;
     private $epayment;

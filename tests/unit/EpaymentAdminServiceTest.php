@@ -1,8 +1,9 @@
 <?php
 
 use AGCMS\EpaymentAdminService;
+use PHPUnit\Framework\TestCase;
 
-class EpaymentAdminServiceTest extends PHPUnit_Framework_TestCase
+class EpaymentAdminServiceTest extends TestCase
 {
     private $epaymentAdminService;
 

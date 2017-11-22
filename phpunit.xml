@@ -20,4 +20,8 @@
             <directory suffix=".php">application/admin/inc</directory>
         </whitelist>
     </filter>
+    <logging>
+        <log type="coverage-html" target="coverage"/>
+        <log type="junit" target="logfile.xml" logIncompleteSkipped="false"/>
+    </logging>
 </phpunit>
