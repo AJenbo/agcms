@@ -120,21 +120,42 @@ class Application
      */
     private function handleException(Request $request, Throwable $exception): Response
     {
-        if (!in_array(get_class($exception), $this->dontReport, true)) {
+        if ($this->shouldLog($exception)) {
+            if ('develop' === Config::get('enviroment')) {
+                throw $exception;
+            }
+
             $this->ravenClient->captureException($exception);
         }
 
-        if ($request->isXmlHttpRequest()) {
-            $response = new JsonResponse(['error' => ['message' => $exception->getMessage()]]);
-            $response->setStatusCode(Response::HTTP_INTERNAL_SERVER_ERROR);
-
-            return $response;
+        $status = Response::HTTP_INTERNAL_SERVER_ERROR;
+        if ($exception->getCode() >= 400 && $exception->getCode() <= 599) {
+            $status = $exception->getCode();
         }
 
-        $response = new Response($exception->getMessage());
-        $response->setStatusCode(Response::HTTP_INTERNAL_SERVER_ERROR);
+        if ($request->isXmlHttpRequest()) {
+            return new JsonResponse(['error' => ['message' => $exception->getMessage()]], $status);
+        }
 
-        return $response;
+        return new Response($exception->getMessage(), $status);
+    }
+
+    /**
+     * Determin if the exception should be logged.
+     *
+     * @param Throwable $exception
+     *
+     * @return bool
+     */
+    private function shouldLog(Throwable $exception): bool
+    {
+        foreach ($this->dontReport as $className) {
+            if ($exception instanceof $className) {
+                return false;
+            }
+        }
+
+        return true;
     }
 
     /**
