@@ -11,7 +11,7 @@
         <tr>
             <td>Full name:</td>
             <td>
-                {% if currentUser.accessLevel == user.id or currentUser.accessLevel == 1 %}
+                {% if currentUser.id == user.id or currentUser.accessLevel == 1 %}
                 <input value="{{user.fullName}}" id="fullname" name="fullname" />
                 {% else %}
                 {{user.fullName}}
