@@ -2,17 +2,20 @@
 
 use AGCMS\Controller\Base;
 use AGCMS\Exception\InvalidInput;
+use Closure;
 use Raven_Client;
-use Symfony\Component\HttpFoundation\RedirectResponse;
-use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpFoundation\RedirectResponse;
+use Symfony\Component\HttpFoundation\Response;
 use Throwable;
 
 class Application
 {
     /** @var string */
     private $basePath;
+
+    /** @var array[] */
+    private $middleware = [];
 
     /** @var array[] */
     private $routes = [];
@@ -57,6 +60,19 @@ class Application
 
         defined('_ROOT_') || define('_ROOT_', $basePath);
         $this->basePath = $basePath;
+    }
+
+    /**
+     * Add middleware.
+     *
+     * @param string $uriPrefix
+     * @param string $middleware
+     *
+     * @return void
+     */
+    public function addMiddleware(string $uriPrefix, string $middleware): void
+    {
+        $this->middleware[] = ['uriPrefix' => $uriPrefix, 'middleware' => $middleware];
     }
 
     /**
@@ -111,11 +127,13 @@ class Application
         if ($request->isXmlHttpRequest()) {
             $response = new JsonResponse(['error' => ['message' => $exception->getMessage()]]);
             $response->setStatusCode(Response::HTTP_INTERNAL_SERVER_ERROR);
+
             return $response;
         }
 
         $response = new Response($exception->getMessage());
         $response->setStatusCode(Response::HTTP_INTERNAL_SERVER_ERROR);
+
         return $response;
     }
 
@@ -133,12 +151,36 @@ class Application
             return $redirect;
         }
 
+        $metode = $request->getMethod();
         $requestUrl = urldecode($request->getPathInfo());
-        foreach ($this->routes[$request->getMethod()] as $route) {
-            if (preg_match('%^' . $route['url'] . '$%u', $requestUrl, $matches)) {
-                $matches[0] = $request;
+        $processRequest = $this->matchRoute($metode, $requestUrl);
 
-                return call_user_func_array([new $route['controller'](), $route['action']], $matches);
+        foreach ($this->middleware as $middleware) {
+            if (0 === mb_strpos($requestUrl, $middleware['uriPrefix'])) {
+                $processRequest = $this->wrapMiddleware($middleware['middleware'], $processRequest);
+            }
+        }
+
+        return $processRequest($request);
+    }
+
+    /**
+     * Wrap closure in a middle ware call.
+     *
+     * @param string $metode
+     * @param string $requestUrl
+     *
+     * @return Closure
+     */
+    private function matchRoute(string $metode, string $requestUrl): Closure
+    {
+        foreach ($this->routes[$metode] as $route) {
+            if (preg_match('%^' . $route['url'] . '$%u', $requestUrl, $matches)) {
+                return function (Request $request) use ($route, $matches): Response {
+                    $matches[0] = $request;
+
+                    return call_user_func_array([new $route['controller'](), $route['action']], $matches);
+                };
             }
 
             if (preg_match('%^' . $route['url'] . '$%u', $requestUrl . '/', $matches)) {
@@ -146,7 +188,24 @@ class Application
             }
         }
 
-        return (new Base())->redirectToSearch($request);
+        return function (Request $request): RedirectResponse {
+            return (new Base())->redirectToSearch($request);
+        };
+    }
+
+    /**
+     * Wrap closure in a middle ware call.
+     *
+     * @param string  $middlewareClass
+     * @param Closure $next
+     *
+     * @return Closure
+     */
+    private function wrapMiddleware(string $middlewareClass, Closure $next): Closure
+    {
+        return function (Request $request) use ($middlewareClass, $next): Response {
+            return (new $middlewareClass())->handle($request, $next);
+        };
     }
 
     /**
@@ -185,11 +244,13 @@ class Application
      */
     private function redirectToFolderPath(Request $request, string $requestUrl): RedirectResponse
     {
-        $query = $request->getQueryString() ?: '';
-        if ($query) {
-            $query = '?' . $query;
-        }
+        return function (Request $request) use ($requestUrl): RedirectResponse {
+            $query = $request->getQueryString() ?: '';
+            if ($query) {
+                $query = '?' . $query;
+            }
 
-        return (new Base())->redirect($request, $requestUrl . '/' . $query, Response::HTTP_PERMANENTLY_REDIRECT);
+            return (new Base())->redirect($request, $requestUrl . '/' . $query, Response::HTTP_PERMANENTLY_REDIRECT);
+        };
     }
 }
