@@ -456,9 +456,11 @@ function sendEmail_r(data) {
 }
 
 function deleteuser(id, name) {
-    if (confirm("Do you want to delete the user '" + name + "'?")) {
-        x_deleteuser(id, reload_r);
+    if (!confirm("Do you want to delete the user '" + name + "'?")) {
+        return;
     }
+
+    xHttp.request("/admin/users/" + id + "/", reload_r, "DELETE");
 }
 
 function reload_r(data) {
@@ -478,6 +480,6 @@ function updateuser(id) {
         "password": $("password") ? $("password").value : "",
         "password_new": $("password_new") ? $("password_new").value : ""
     };
-    x_updateuser(id, update, reload_r);
+    xHttp.request("/admin/users/" + id + "/", reload_r, "PUT", update);
     return false;
 }

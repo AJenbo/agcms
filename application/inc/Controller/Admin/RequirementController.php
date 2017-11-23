@@ -1,7 +1,6 @@
 <?php namespace AGCMS\Controller\Admin;
 
 use AGCMS\Config;
-use AGCMS\Entity\Page;
 use AGCMS\Entity\Requirement;
 use AGCMS\Exception\InvalidInput;
 use AGCMS\ORM;

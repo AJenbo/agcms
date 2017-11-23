@@ -14,6 +14,7 @@ use AGCMS\Controller\Admin\PageController;
 use AGCMS\Controller\Admin\RequirementController;
 use AGCMS\Controller\Admin\SiteTreeController;
 use AGCMS\Controller\Admin\TableController;
+use AGCMS\Controller\Admin\UserController;
 use AGCMS\Controller\Ajax;
 use AGCMS\Controller\Feed;
 use AGCMS\Controller\Payment;
@@ -134,6 +135,14 @@ $app->addRoute('POST', '/admin/addressbook/', AddressbookController::class, 'cre
 $app->addRoute('GET', '/admin/addressbook/(\d+)/', AddressbookController::class, 'editContact');
 $app->addRoute('PUT', '/admin/addressbook/(\d+)/', AddressbookController::class, 'update');
 $app->addRoute('DELETE', '/admin/addressbook/(\d+)/', AddressbookController::class, 'delete');
+// Users
+$app->addRoute('GET', '/admin/users/new/', UserController::class, 'newUser');
+$app->addRoute('GET', '/admin/users/', UserController::class, 'index');
+// User CRUD
+$app->addRoute('POST', '/admin/users/new/', UserController::class, 'create');
+$app->addRoute('GET', '/admin/users/(\d+)/', UserController::class, 'editUser');
+$app->addRoute('PUT', '/admin/users/(\d+)/', UserController::class, 'update');
+$app->addRoute('DELETE', '/admin/users/(\d+)/', UserController::class, 'delete');
 // Maintenance
 $app->addRoute('GET', '/admin/maintenance/', MaintenanceController::class, 'index');
 // Invoice

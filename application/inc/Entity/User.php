@@ -136,7 +136,7 @@ class User extends AbstractEntity
      */
     public function setPassword(string $password): self
     {
-        $this->passwordHash = crypt($password);
+        $this->passwordHash = password_hash($password, PASSWORD_BCRYPT);
 
         return $this;
     }
@@ -222,11 +222,7 @@ class User extends AbstractEntity
      */
     public function validatePassword(string $password): bool
     {
-        if (mb_substr($this->passwordHash, 0, 13) === mb_substr(crypt($password, $this->passwordHash), 0, 13)) {
-            return true;
-        }
-
-        return false;
+        return password_verify($password, $this->passwordHash);
     }
 
     /**

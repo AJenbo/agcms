@@ -304,68 +304,6 @@ function deletefile(int $id, string $path): array
     return ['id' => $id];
 }
 
-//TODO document type doesn't allow element "input" here; missing one of "p", "h1", "h2", "h3", "h4", "h5", "h6", "div", "pre", "address", "fieldset", "ins", "del" start-tag.
-
-/**
- * Update user.
- *
- * @param int   $id      User id
- * @param array $updates Array of values to change
- *                       'access' int
- *                       'fullname' string
- *                       'password' string
- *                       'password_new' string
- *
- * @throws InvalidInput
- *
- * @return string[]|true True on update
- */
-function updateuser(int $id, array $updates)
-{
-    if (!curentUser()->hasAccess(User::ADMINISTRATOR) && curentUser()->getId() != $id) {
-        throw new InvalidInput(_('You do not have the requred access level to change other users.'));
-    }
-
-    // Validate access lavel update
-    if (curentUser()->getId() == $id
-        && isset($updates['access'])
-        && $updates['access'] != curentUser()->getAccessLevel()
-    ) {
-        throw new InvalidInput(_('You can\'t change your own access level'));
-    }
-
-    /** @var User */
-    $user = ORM::getOne(User::class, $id);
-    assert($user instanceof User);
-
-    //Validate password update
-    if (!empty($updates['password_new'])) {
-        if (!curentUser()->hasAccess(User::ADMINISTRATOR)
-            && curentUser()->getId() != $id
-        ) {
-            throw new InvalidInput(_('You do not have the requred access level to change the password for this users.'));
-        }
-
-        if (curentUser()->getId() == $id && !$user->validatePassword($updates['password'])) {
-            throw new InvalidInput(_('Incorrect password.'));
-        }
-
-        $user->setPassword($updates['password_new']);
-    }
-
-    if (isset($updates['access'])) {
-        $user->setAccessLevel($updates['access']);
-    }
-
-    if (!empty($updates['fullname'])) {
-        $user->setFullName($updates['fullname']);
-    }
-
-    $user->save();
-
-    return true;
-}
-
 function saveImage(
     string $path,
     int $cropX,
@@ -392,20 +330,6 @@ function saveImage(
 
     return generateImage(_ROOT_ . $path, $cropX, $cropY, $cropW, $cropH, $maxW, $maxH, $flip, $rotate, $output);
     //TODO close and update image in explorer
-}
-
-/**
- * Delete user.
- */
-function deleteuser(int $id): bool
-{
-    if (!curentUser()->hasAccess(User::ADMINISTRATOR) || curentUser()->getId() == $id) {
-        return false;
-    }
-
-    db()->query('DELETE FROM `users` WHERE `id` = ' . $id);
-
-    return true;
 }
 
 function newfaktura(): int
