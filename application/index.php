@@ -22,6 +22,7 @@ use AGCMS\Controller\Search;
 use AGCMS\Controller\Shopping;
 use AGCMS\Controller\Site;
 use AGCMS\Middleware\Auth;
+use AGCMS\Middleware\Placekitten;
 use AGCMS\Middleware\Utf8Url;
 use AGCMS\Request;
 
@@ -31,6 +32,10 @@ Config::load(__DIR__);
 
 $app = new Application(__DIR__);
 $app->addMiddleware('/', Utf8Url::class);
+if ('develop' === Config::get('enviroment')) {
+    $app->addMiddleware('/images/', Placekitten::class);
+    $app->addMiddleware('/files/', Placekitten::class);
+}
 
 // Set up site routes
 $app->addRoute('GET', '/', Site::class, 'frontPage');
