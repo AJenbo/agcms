@@ -22,6 +22,7 @@ use AGCMS\Controller\Search;
 use AGCMS\Controller\Shopping;
 use AGCMS\Controller\Site;
 use AGCMS\Middleware\Auth;
+use AGCMS\Middleware\Utf8Url;
 use AGCMS\Request;
 
 require_once __DIR__ . '/vendor/autoload.php';
@@ -29,6 +30,7 @@ require_once __DIR__ . '/vendor/autoload.php';
 Config::load(__DIR__);
 
 $app = new Application(__DIR__);
+$app->addMiddleware('/', Utf8Url::class);
 
 // Set up site routes
 $app->addRoute('GET', '/', Site::class, 'frontPage');
