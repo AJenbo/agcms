@@ -200,7 +200,7 @@ class Application
             }
 
             if (preg_match('%^' . $route['url'] . '$%u', $requestUrl . '/', $matches)) {
-                return $this->redirectToFolderPath($request, $requestUrl);
+                return $this->redirectToFolderPath($requestUrl);
             }
         }
 
@@ -227,12 +227,11 @@ class Application
     /**
      * Generate a redirect for the requested path with a / appended to the path.
      *
-     * @param Request $request
-     * @param string  $requestUrl
+     * @param string $requestUrl
      *
-     * @return RedirectResponse
+     * @return Closure
      */
-    private function redirectToFolderPath(Request $request, string $requestUrl): RedirectResponse
+    private function redirectToFolderPath(string $requestUrl): Closure
     {
         return function (Request $request) use ($requestUrl): RedirectResponse {
             $query = $request->getQueryString() ?: '';
