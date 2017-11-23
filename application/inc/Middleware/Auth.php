@@ -6,14 +6,17 @@ use AGCMS\Exception\InvalidInput;
 use AGCMS\Interfaces\Middleware;
 use AGCMS\ORM;
 use AGCMS\Render;
+use AGCMS\Request;
 use Closure;
-use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
 class Auth implements Middleware
 {
     /**
      * Assert that the user is logged in.
+     *
+     * @param Request $request
+     * @param Closure $next
      *
      * @return Response
      */
