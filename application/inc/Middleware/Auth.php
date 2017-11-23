@@ -28,18 +28,46 @@ class Auth implements Middleware
         }
 
         if (!$request->request->get('username') || !$request->request->get('password')) {
-            sleep(1);
-
-            if ($request->isXmlHttpRequest()) {
-                throw new InvalidInput(
-                    _('Your login has expired, please reload the page and login again.'),
-                    Response::HTTP_UNAUTHORIZED
-                );
-            }
-
-            return new Response(Render::render('admin/login'), Response::HTTP_UNAUTHORIZED);
+            $this->showLoginPage($request);
         }
 
+        $this->authenticate($request);
+
+        return (new Base())->redirect($request, $request->getRequestUri(), Response::HTTP_MOVED_PERMANENTLY);
+    }
+
+    /**
+     * Render the login page.
+     *
+     * @param Request $request
+     *
+     * @throws InvalidInput If the request is an AJAX call
+     *
+     * @return Response
+     */
+    private function showLoginPage(Request $request): Response
+    {
+        sleep(1); // Prevent brute force
+
+        if ($request->isXmlHttpRequest()) {
+            throw new InvalidInput(
+                _('Your login has expired, please reload the page and login again.'),
+                Response::HTTP_UNAUTHORIZED
+            );
+        }
+
+        return new Response(Render::render('admin/login'), Response::HTTP_UNAUTHORIZED);
+    }
+
+    /**
+     * Authenticate and attach the user to a session.
+     *
+     * @param Request $request
+     *
+     * @return void
+     */
+    private function authenticate(Request $request): void
+    {
         /** @var User */
         $user = ORM::getOneByQuery(
             User::class,
@@ -51,7 +79,5 @@ class Auth implements Middleware
             $session->set('login_hash', $user->getPasswordHash());
             $session->save();
         }
-
-        return (new Base())->redirect($request, $request->getRequestUri(), Response::HTTP_MOVED_PERMANENTLY);
     }
 }
