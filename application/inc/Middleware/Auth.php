@@ -28,7 +28,7 @@ class Auth implements Middleware
         }
 
         if (!$request->request->get('username') || !$request->request->get('password')) {
-            $this->showLoginPage($request);
+            return $this->showLoginPage($request);
         }
 
         $this->authenticate($request);
