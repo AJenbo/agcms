@@ -17,7 +17,9 @@ function init()
 }
 
 shoppingCart.onupdate = function() {
-    document.getElementById("count").firstChild.data = shoppingCart.getCart().items.length;
+    var itemCount = shoppingCart.getCart().items.length;
+    document.getElementById("count").firstChild.data = itemCount;
+    document.getElementById("cartCount").innerText = itemCount ? "(" + itemCount + ")" : "";
 };
 
 function $(id)
