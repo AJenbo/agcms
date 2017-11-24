@@ -31,7 +31,7 @@ class Placekitten implements Middleware
             $height = $file->getHeight();
         }
 
-        $url = 'https://placekitten.com/' . $width . '/' . $height . '?image=' . (($width + $height) % 16 + 1);
+        $url = 'https://placeimg.com/' . $width . '/' . $height . '/animals';
 
         return (new Base())->redirect($request, $url, Response::HTTP_TEMPORARY_REDIRECT);
     }
