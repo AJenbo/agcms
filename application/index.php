@@ -152,6 +152,13 @@ $app->addRoute('PUT', '/admin/users/(\d+)/', UserController::class, 'update');
 $app->addRoute('DELETE', '/admin/users/(\d+)/', UserController::class, 'delete');
 // Maintenance
 $app->addRoute('GET', '/admin/maintenance/', MaintenanceController::class, 'index');
+$app->addRoute('DELETE', '/admin/maintenance/clean/contacts/', MaintenanceController::class, 'removeBadContacts');
+$app->addRoute('GET', '/admin/maintenance/pages/mismatches/', MaintenanceController::class, 'mismatchedBindings');
+$app->addRoute('GET', '/admin/maintenance/pages/orphans/', MaintenanceController::class, 'orphanPages');
+$app->addRoute('GET', '/admin/maintenance/categories/circular/', MaintenanceController::class, 'circularLinks');
+$app->addRoute('GET', '/admin/maintenance/files/names/', MaintenanceController::class, 'badFileNames');
+$app->addRoute('GET', '/admin/maintenance/files/folderNames/', MaintenanceController::class, 'badFolderNames');
+$app->addRoute('GET', '/admin/maintenance/files/size/', MaintenanceController::class, 'sizeOfFiles');
 // Invoice
 $app->addRoute('GET', '/admin/invoices/(\d+)/pdf/', InvoiceController::class, 'pdf');
 

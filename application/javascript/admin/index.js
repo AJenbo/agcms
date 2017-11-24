@@ -483,3 +483,90 @@ function updateuser(id) {
     xHttp.request("/admin/users/" + id + "/", reload_r, "PUT", update);
     return false;
 }
+
+function set_db_errors(data) {
+    if (data.html) {
+        $("errors").innerHTML = $("errors").innerHTML + data.html;
+    }
+}
+
+function scan_db() {
+    $("loading").style.visibility = "";
+    $("errors").innerHTML = "";
+
+    var starttime = new Date().getTime();
+
+    $("status").innerHTML = "Removing news subscribers without contact information";
+    xHttp.request("/admin/maintenance/clean/contacts/", set_db_errors, "DELETE");
+
+    $("status").innerHTML = "Searching for pages without bindings";
+    xHttp.request("/admin/maintenance/pages/orphans/", set_db_errors);
+
+    $("status").innerHTML = "Searching for pages with illegal bindings";
+    xHttp.request("/admin/maintenance/pages/mismatches/", set_db_errors);
+
+    $("status").innerHTML = "Searching for cirkalur linked categories";
+    xHttp.request("/admin/maintenance/categories/circular/", set_db_errors);
+
+    $("status").innerHTML = "Checking the file names";
+    xHttp.request("/admin/maintenance/files/names/", set_db_errors);
+
+    $("status").innerHTML = "Checking the folder names";
+    xHttp.request("/admin/maintenance/files/folderNames/", set_db_errors);
+
+    $("status").innerHTML = "Sending delayed emails";
+    x_sendDelayedEmail(set_db_errors);
+
+    $("status").innerHTML = "Getting Database Size";
+    x_get_db_size(get_db_size_r);
+
+    $("status").innerHTML = "";
+    $("loading").style.visibility = "hidden";
+    $("errors").innerHTML = $("errors").innerHTML + "<br />" +
+                            ("The scan took %d seconds.".replace(
+                                /[%]d/g, Math.round((new Date().getTime() - starttime) / 1000).toString()));
+}
+
+function get_subscriptions_with_bad_emails() {
+    $("loading").style.visibility = "";
+    $("errors").innerHTML = "";
+
+    var starttime = new Date().getTime();
+
+    $("status").innerHTML = "Searching for illegal e-mail adresses";
+    x_get_subscriptions_with_bad_emails(set_db_errors);
+
+    $("status").innerHTML = "";
+    $("loading").style.visibility = "hidden";
+    $("errors").innerHTML = $("errors").innerHTML + "<br />" +
+                            ("The scan took %d seconds.".replace(
+                                /[%]d/g, Math.round((new Date().getTime() - starttime) / 1000).toString()));
+}
+
+function removeNoneExistingFiles() {
+    $("loading").style.visibility = "";
+    $("status").innerHTML = "Removes not existing files from the database";
+    x_removeNoneExistingFiles(removeNoneExistingFiles_r);
+}
+
+function removeNoneExistingFiles_r() {
+    $("status").innerHTML = "Getting Database Size";
+    x_get_db_size(get_db_size_r);
+    $("status").innerHTML = "Retrieving the size of the files";
+    xHttp.request("/admin/maintenance/files/size/", getFileSize_r);
+    $("status").innerHTML = "";
+}
+
+function get_mail_size_r(size) {
+    $("mailboxsize").innerHTML = Math.round(size / 1024 / 1024) + "MB";
+    $("status").innerHTML = "";
+    $("loading").style.visibility = "hidden";
+}
+
+function getFileSize_r(data) {
+    $("dbwww").innerHTML = Math.round(data.size * 10) / 10 + "MB";
+}
+
+function get_db_size_r(size) {
+    $("dbsize").innerHTML = Math.round(size * 10) / 10 + "MB";
+}

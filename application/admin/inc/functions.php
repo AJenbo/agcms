@@ -8,7 +8,6 @@ use AGCMS\Entity\CustomPage;
 use AGCMS\Entity\File;
 use AGCMS\Entity\Invoice;
 use AGCMS\Entity\Page;
-use AGCMS\Entity\Table;
 use AGCMS\Entity\User;
 use AGCMS\EpaymentAdminService;
 use AGCMS\Exception\InvalidInput;
@@ -16,41 +15,6 @@ use AGCMS\ORM;
 use AGCMS\Render;
 use AJenbo\Image;
 use Symfony\Component\HttpFoundation\File\MimeType\MimeTypeGuesser;
-
-/**
- * Optimize all tables.
- *
- * @return string Always empty
- */
-function optimizeTables(): string
-{
-    $tables = db()->fetchArray('SHOW TABLE STATUS');
-    foreach ($tables as $table) {
-        db()->query('OPTIMIZE TABLE `' . $table['Name'] . '`');
-    }
-
-    return '';
-}
-
-/**
- * Remove newletter submissions that are missing vital information.
- *
- * @return string Always empty
- */
-function removeBadSubmisions(): string
-{
-    db()->query(
-        "
-        DELETE FROM `email`
-        WHERE `email` = ''
-          AND `adresse` = ''
-          AND `tlf1` = ''
-          AND `tlf2` = '';
-        "
-    );
-
-    return '';
-}
 
 /**
  * Remove enteries for files that do no longer exist.
@@ -371,90 +335,6 @@ function get_subscriptions_with_bad_emails(): string
     return Render::render('partial-admin-subscriptions_with_bad_emails', ['contacts' => $contacts]);
 }
 
-function get_looping_cats(): string
-{
-    $html = '';
-    $categories = ORM::getByQuery(Category::class, 'SELECT * FROM `kat` WHERE bind != 0 AND bind != -1');
-    foreach ($categories as $category) {
-        assert($category instanceof Category);
-        $branchIds = [$category->getId() => true];
-        while ($category = $category->getParent()) {
-            if (isset($branchIds[$category->getId()])) {
-                $html .= '<a href="/admin/categories/' . $category->getId() . '/">' . $category->getId()
-                    . ': ' . $category->getTitle() . '</a><br />';
-                break;
-            }
-            $branchIds[$category->getId()] = true;
-        }
-    }
-    if ($html) {
-        $html = '<b>' . _('The following categories have circular references:') . '</b><br />' . $html;
-    }
-
-    return $html;
-}
-
-function check_file_names(): string
-{
-    $html = '';
-    $error = db()->fetchArray(
-        '
-        SELECT path FROM `files`
-        WHERE `path` COLLATE UTF8_bin REGEXP \'[A-Z|_"\\\'`:%=#&+?*<>{}\\]+[^/]+$\'
-        ORDER BY `path` ASC
-        '
-    );
-    if ($error) {
-        if (db()->affected_rows > 1) {
-            $html .= '<br /><b>'
-                . sprintf(_('The following %d files must be renamed:'), db()->affected_rows)
-                . '</b><br /><a onclick="explorer(\'\',\'\');">';
-        } else {
-            $html .= '<br /><br /><a onclick="explorer(\'\',\'\');">';
-        }
-        foreach ($error as $value) {
-            $html .= $value['path'] . '<br />';
-        }
-        $html .= '</a>';
-    }
-    if ($html) {
-        $html = '<b>' . _('The following files must be renamed') . '</b><br />' . $html;
-    }
-
-    return $html;
-}
-
-function check_file_paths(): string
-{
-    $html = '';
-    $error = db()->fetchArray(
-        '
-        SELECT path FROM `files`
-        WHERE `path` COLLATE UTF8_bin REGEXP \'[A-Z|_"\\\'`:%=#&+?*<>{}\\]+.*[/]+\'
-        ORDER BY `path` ASC
-        '
-    );
-    if ($error) {
-        if (db()->affected_rows > 1) {
-            $html .= '<br /><b>'
-                . sprintf(_('The following %d files are in a folder that needs to be renamed:'), db()->affected_rows)
-                . '</b><br /><a onclick="explorer(\'\',\'\');">';
-        } else {
-            $html .= '<br /><br /><a onclick="explorer(\'\',\'\');">';
-        }
-        //TODO only repport one error per folder
-        foreach ($error as $value) {
-            $html .= $value['path'] . '<br />';
-        }
-        $html .= '</a>';
-    }
-    if ($html) {
-        $html = '<b>' . _('The following folders must be renamed') . '</b><br />' . $html;
-    }
-
-    return $html;
-}
-
 function get_mail_size(): int
 {
     $size = 0;
@@ -483,97 +363,6 @@ function get_mail_size(): int
     }
 
     return $size;
-}
-
-function get_orphan_pages(): string
-{
-    $html = '';
-    /** @var Page */
-    $pages = ORM::getByQuery(Page::class, 'SELECT * FROM `sider` WHERE `id` NOT IN(SELECT `side` FROM `bind`)');
-    foreach ($pages as $page) {
-        assert($page instanceof Page);
-        $html .= '<a href="?side=redigerside&amp;id=' . $page->getId() . '">' . $page->getId()
-            . ': ' . $page->getTitle() . '</a><br />';
-    }
-
-    if ($html) {
-        $html = '<b>' . _('The following pages have no binding') . '</b><br />' . $html;
-    }
-
-    return $html;
-}
-
-function get_pages_with_mismatch_bindings(): string
-{
-    $html = '';
-
-    // Map out active / inactive
-    $categoryActiveMaps = [[0], [-1]];
-    $categories = ORM::getByQuery(Category::class, 'SELECT * FROM `kat`');
-    foreach ($categories as $category) {
-        assert($category instanceof Category);
-        $categoryActiveMaps[(int) $category->isInactive()][] = $category->getId();
-    }
-
-    $pages = ORM::getByQuery(
-        Page::class,
-        '
-        SELECT * FROM `sider`
-        WHERE EXISTS (
-            SELECT * FROM bind
-            WHERE side = sider.id
-            AND kat IN (' . implode(',', $categoryActiveMaps[0]) . ')
-        )
-        AND EXISTS (
-            SELECT * FROM bind
-            WHERE side = sider.id
-            AND kat IN (' . implode(',', $categoryActiveMaps[1]) . ')
-        )
-        ORDER BY id
-        '
-    );
-    if ($pages) {
-        $html .= '<b>' . _('The following pages are both active and inactive') . '</b><br />';
-        foreach ($pages as $page) {
-            assert($page instanceof Page);
-            $html .= '<a href="?side=redigerside&amp;id=' . $page->getId() . '">' . $page->getId() . ': '
-                . $page->getTitle() . '</a><br />';
-        }
-    }
-
-    //Add active pages that has a list that links to this page
-    $pages = db()->fetchArray(
-        '
-        SELECT `sider`.*, `lists`.`page_id`
-        FROM `list_rows`
-        JOIN `lists` ON `list_rows`.`list_id` = `lists`.`id`
-        JOIN `sider` ON `list_rows`.`link` = `sider`.id
-        WHERE EXISTS (
-            SELECT * FROM bind
-            WHERE side = `lists`.`page_id`
-            AND kat IN (' . implode(',', $categoryActiveMaps[0]) . ')
-        )
-        AND EXISTS (
-            SELECT * FROM bind
-            WHERE side = sider.id
-            AND kat IN (' . implode(',', $categoryActiveMaps[1]) . ')
-        )
-        ORDER BY `lists`.`page_id`
-        '
-    );
-    if ($pages) {
-        $html .= '<b>' . _('The following inactive pages appears in list on active pages') . '</b><br />';
-        foreach ($pages as $page) {
-            $listPage = ORM::getOne(Page::class, $page['page_id']);
-            assert($listPage instanceof Page);
-            $page = new Page(Page::mapFromDB($page));
-            $html .= '<a href="?side=redigerside&amp;id=' . $listPage->getId() . '">' . $listPage->getId() . ': '
-                . $listPage->getTitle() . '</a> -&gt; <a href="?side=redigerside&amp;id=' . $page->getId() . '">'
-                . $page->getId() . ': ' . $page->getTitle() . '</a><br />';
-        }
-    }
-
-    return $html;
 }
 
 /**
