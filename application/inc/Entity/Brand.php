@@ -138,6 +138,10 @@ class Brand extends AbstractRenderable
         $objectArray = [];
         foreach ($pages as $page) {
             assert($page instanceof Page);
+            if ($page->isInactive()) {
+                continue;
+            }
+
             $objectArray[] = [
                 'id'     => $page->getId(),
                 'navn'   => $page->getTitle(),

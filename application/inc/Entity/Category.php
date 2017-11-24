@@ -217,7 +217,7 @@ class Category extends AbstractRenderable
         }
 
         if (null === $this->visable) {
-            if ($this->hasPages() || $this->hasVisibleChildren()) {
+            if (!$this->isInactive() && ($this->hasPages() || $this->hasVisibleChildren())) {
                 return true;
             }
 
