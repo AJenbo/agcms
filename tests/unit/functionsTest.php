@@ -2,23 +2,8 @@
 
 use PHPUnit\Framework\TestCase;
 
-class incFunctionsTest extends TestCase
+class functionsTest extends TestCase
 {
-    public function test_validemail()
-    {
-        $this->assertTrue(validemail('_An-._E-mail@gmail.com'));
-    }
-
-    public function test_validemail_fake_domain()
-    {
-        $this->assertFalse(validemail('email@test.notadomain'));
-    }
-
-    public function test_validemail_IDN_domain()
-    {
-        $this->assertTrue(validemail('email@sørensen.dk'));
-    }
-
     public function test_clearFileName_date()
     {
         $this->assertEquals('13-04-2016', clearFileName('13/04/2016'));
