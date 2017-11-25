@@ -489,42 +489,66 @@ function set_db_errors(data) {
         $("errors").innerHTML = $("errors").innerHTML + data.html;
     }
 }
-
+var startTime;
 function scan_db() {
     $("loading").style.visibility = "";
     $("errors").innerHTML = "";
 
-    var starttime = new Date().getTime();
+    startTime = new Date().getTime();
 
-    $("status").innerHTML = "Removing news subscribers without contact information";
-    xHttp.request("/admin/maintenance/clean/contacts/", set_db_errors, "DELETE");
+    $("status").innerHTML = "Removing contacts that are missing vital information";
+    xHttp.request("/admin/maintenance/clean/contacts/", maintainStep2, "DELETE");
+}
 
+function maintainStep2(data) {
+    set_db_errors(data);
     $("status").innerHTML = "Searching for pages without bindings";
-    xHttp.request("/admin/maintenance/pages/orphans/", set_db_errors);
+    xHttp.request("/admin/maintenance/pages/orphans/", maintainStep3);
+}
 
+function maintainStep3(data) {
+    set_db_errors(data);
     $("status").innerHTML = "Searching for pages with illegal bindings";
-    xHttp.request("/admin/maintenance/pages/mismatches/", set_db_errors);
+    xHttp.request("/admin/maintenance/pages/mismatches/", maintainStep4);
+}
 
+function maintainStep4(data) {
+    set_db_errors(data);
     $("status").innerHTML = "Searching for cirkalur linked categories";
-    xHttp.request("/admin/maintenance/categories/circular/", set_db_errors);
+    xHttp.request("/admin/maintenance/categories/circular/", maintainStep5);
+}
 
+function maintainStep5(data) {
+    set_db_errors(data);
     $("status").innerHTML = "Checking the file names";
-    xHttp.request("/admin/maintenance/files/names/", set_db_errors);
+    xHttp.request("/admin/maintenance/files/names/", maintainStep6);
+}
 
+function maintainStep6(data) {
+    set_db_errors(data);
     $("status").innerHTML = "Checking the folder names";
-    xHttp.request("/admin/maintenance/files/folderNames/", set_db_errors);
+    xHttp.request("/admin/maintenance/files/folderNames/", maintainStep7);
+}
 
+function maintainStep7(data) {
+    set_db_errors(data);
     $("status").innerHTML = "Sending delayed emails";
-    xHttp.request("/admin/maintenance/emails/send/", set_db_errors, "POST");
+    xHttp.request("/admin/maintenance/emails/send/", maintainStep8, "POST");
+}
 
-    $("status").innerHTML = "Getting Database Size";
-    x_get_db_size(get_db_size_r);
+function maintainStep8(data) {
+    set_db_errors(data);
+    $("status").innerHTML = "Getting system usage";
+    xHttp.request("/admin/maintenance/usage/", maintainStep9);
+}
 
+function maintainStep9(data) {
+    getUsage_r(data);
     $("status").innerHTML = "";
     $("loading").style.visibility = "hidden";
     $("errors").innerHTML = $("errors").innerHTML + "<br />" +
                             ("The scan took %d seconds.".replace(
-                                /[%]d/g, Math.round((new Date().getTime() - starttime) / 1000).toString()));
+                                /[%]d/g, Math.round((new Date().getTime() - startTime) / 1000).toString()));
 }
 
 function get_subscriptions_with_bad_emails() {
@@ -550,23 +574,18 @@ function removeNoneExistingFiles() {
 }
 
 function removeNoneExistingFiles_r() {
-    $("status").innerHTML = "Getting Database Size";
-    x_get_db_size(get_db_size_r);
-    $("status").innerHTML = "Retrieving the size of the files";
-    xHttp.request("/admin/maintenance/files/size/", getFileSize_r);
+    $("status").innerHTML = "Getting system usage";
+    xHttp.request("/admin/maintenance/usage/", getUsage_r);
     $("status").innerHTML = "";
 }
 
 function get_mail_size_r(size) {
-    $("mailboxsize").innerHTML = Math.round(size / 1024 / 1024) + "MB";
+    $("mailboxsize").innerHTML = Math.round(size / 1024 / 1024 * 10) / 10 + "MB";
     $("status").innerHTML = "";
     $("loading").style.visibility = "hidden";
 }
 
-function getFileSize_r(data) {
-    $("dbwww").innerHTML = Math.round(data.size * 10) / 10 + "MB";
-}
-
-function get_db_size_r(size) {
-    $("dbsize").innerHTML = Math.round(size * 10) / 10 + "MB";
+function getUsage_r(data) {
+    $("wwwsize").innerHTML = Math.round(data.www / 1024 / 1024 * 10) / 10 + "MB";
+    $("dbsize").innerHTML = Math.round(data.db / 1024 / 1024 * 10) / 10 + "MB";
 }

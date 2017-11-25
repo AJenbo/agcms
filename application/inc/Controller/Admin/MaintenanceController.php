@@ -260,13 +260,16 @@ class MaintenanceController extends AbstractAdminController
     }
 
     /**
-     * Endpoint for getting size of files.
+     * Endpoint for getting system usage.
      *
      * @return JsonResponse
      */
-    public function sizeOfFiles(): JsonResponse
+    public function usage(): JsonResponse
     {
-        return new JsonResponse(['size' => $this->getSizeOfFiles()]);
+        return new JsonResponse([
+            'www' => $this->getSizeOfFiles(),
+            'db'  => $this->getDbSize(),
+        ]);
     }
 
     /**
