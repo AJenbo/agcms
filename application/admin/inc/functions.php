@@ -13,8 +13,6 @@ use AGCMS\EpaymentAdminService;
 use AGCMS\Exception\InvalidInput;
 use AGCMS\ORM;
 use AGCMS\Render;
-use AJenbo\Image;
-use Symfony\Component\HttpFoundation\File\MimeType\MimeTypeGuesser;
 
 /**
  * Remove enteries for files that do no longer exist.
@@ -266,34 +264,6 @@ function deletefile(int $id, string $path): array
     }
 
     return ['id' => $id];
-}
-
-function saveImage(
-    string $path,
-    int $cropX,
-    int $cropY,
-    int $cropW,
-    int $cropH,
-    int $maxW,
-    int $maxH,
-    int $flip,
-    int $rotate,
-    string $filename,
-    bool $force
-): array {
-    $guesser = MimeTypeGuesser::getInstance();
-    $mime = $guesser->guess(_ROOT_ . $path);
-
-    $output = ['type' => 'png'];
-    if ('image/jpeg' === $mime) {
-        $output['type'] = 'jpg';
-    }
-
-    $output['filename'] = $filename;
-    $output['force'] = $force;
-
-    return generateImage(_ROOT_ . $path, $cropX, $cropY, $cropW, $cropH, $maxW, $maxH, $flip, $rotate, $output);
-    //TODO close and update image in explorer
 }
 
 function newfaktura(): int
