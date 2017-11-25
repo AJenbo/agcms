@@ -1,5 +1,6 @@
 <?php namespace AGCMS\Controller\Admin;
 
+use AGCMS\Application;
 use AGCMS\Entity\User;
 use AGCMS\Exception\InvalidInput;
 use AGCMS\ORM;
@@ -8,6 +9,7 @@ use AGCMS\Request;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Response;
+use Throwable;
 
 class UserController extends AbstractAdminController
 {
@@ -92,7 +94,23 @@ class UserController extends AbstractAdminController
             $user->setPassword($password)->save();
 
             $emailbody = Render::render('admin/email/newuser', ['fullname' => $fullname]);
-            sendEmails(_('New user'), $emailbody);
+
+            $emailAddress = first(Config::get('emails'))['address'];
+            $email = new Email([
+                'subject'          => _('New user'),
+                'body'             => $emailbody,
+                'senderName'       => Config::get('site_name'),
+                'senderAddress'    => $emailAddress,
+                'recipientName'    => Config::get('site_name'),
+                'recipientAddress' => $emailAddress,
+            ]);
+            $emailService = new EmailService();
+            try {
+                $emailService->send($email);
+            } catch (Throwable $exception) {
+                Application::getInstance()->logException($exception);
+                $email->save();
+            }
         } catch (InvalidInput $exception) {
             $message = $exception->getMessage();
         }

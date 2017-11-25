@@ -159,6 +159,7 @@ $app->addRoute('GET', '/admin/maintenance/categories/circular/', MaintenanceCont
 $app->addRoute('GET', '/admin/maintenance/files/names/', MaintenanceController::class, 'badFileNames');
 $app->addRoute('GET', '/admin/maintenance/files/folderNames/', MaintenanceController::class, 'badFolderNames');
 $app->addRoute('GET', '/admin/maintenance/files/size/', MaintenanceController::class, 'sizeOfFiles');
+$app->addRoute('POST', '/admin/maintenance/emails/send/', MaintenanceController::class, 'sendDelayedEmail');
 // Invoice
 $app->addRoute('GET', '/admin/invoices/(\d+)/pdf/', InvoiceController::class, 'pdf');
 

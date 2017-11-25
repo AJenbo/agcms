@@ -1,6 +1,7 @@
 <?php namespace AGCMS\Entity;
 
 use AGCMS\Config;
+use AGCMS\Service\EmailService;
 
 class Invoice extends AbstractEntity
 {
@@ -1204,7 +1205,8 @@ class Invoice extends AbstractEntity
      */
     public function hasValidEmail(): bool
     {
-        if (!$this->email || !valideMail($this->email)) {
+        $emailService = new EmailService();
+        if (!$this->email || !$emailService->valideMail($this->email)) {
             return false;
         }
 

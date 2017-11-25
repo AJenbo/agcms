@@ -3,10 +3,12 @@
 use AGCMS\Entity\Category;
 use AGCMS\Entity\Contact;
 use AGCMS\Entity\CustomPage;
+use AGCMS\Entity\Email;
 use AGCMS\Entity\File;
 use AGCMS\Entity\Page;
 use AGCMS\ORM;
 use AGCMS\Render;
+use AGCMS\Service\EmailService;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -265,6 +267,42 @@ class MaintenanceController extends AbstractAdminController
     public function sizeOfFiles(): JsonResponse
     {
         return new JsonResponse(['size' => $this->getSizeOfFiles()]);
+    }
+
+    /**
+     * Resend any email that failed ealier.
+     *
+     * @return JsonResponse
+     */
+    public function sendDelayedEmail(): JsonResponse
+    {
+        $cronStatus = ORM::getOne(CustomPage::class, 0);
+        assert($cronStatus instanceof CustomPage);
+
+        $html = '';
+
+        //Get emails that needs sending
+        $emails = ORM::getByQuery(Email::class, 'SELECT * FROM `emails`');
+        if ($emails) {
+            $emailsSendt = 0;
+            $emailService = new EmailService();
+            foreach ($emails as $email) {
+                $emailService->send($email);
+                $email->delete();
+                ++$emailsSendt;
+            }
+
+            $cronStatus->save();
+
+            $msg = ngettext(
+                '%d of %d e-mail was sent.',
+                '%d of %d e-mails was sent.',
+                $emailsSendt
+            );
+            $html = sprintf($msg, $emailsSendt, count($emails));
+        }
+
+        return new JsonResponse(['html' => $html]);
     }
 
     /**

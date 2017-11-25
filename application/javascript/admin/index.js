@@ -515,7 +515,7 @@ function scan_db() {
     xHttp.request("/admin/maintenance/files/folderNames/", set_db_errors);
 
     $("status").innerHTML = "Sending delayed emails";
-    x_sendDelayedEmail(set_db_errors);
+    xHttp.request("/admin/maintenance/emails/send/", set_db_errors, "POST");
 
     $("status").innerHTML = "Getting Database Size";
     x_get_db_size(get_db_size_r);

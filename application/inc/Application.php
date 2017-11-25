@@ -11,6 +11,9 @@ use Throwable;
 
 class Application
 {
+    /** @var self */
+    private static $instance;
+
     /** @var string */
     private $basePath;
 
@@ -60,6 +63,17 @@ class Application
 
         defined('_ROOT_') || define('_ROOT_', $basePath);
         $this->basePath = $basePath;
+
+        self::$instance = $this;
+    }
+
+    public static function getInstance(): self
+    {
+        if (!self::$instance) {
+            new self(realpath(__DIR__ . '/../..'));
+        }
+
+        return self::$instance;
     }
 
     /**
@@ -111,6 +125,18 @@ class Application
     }
 
     /**
+     * Log an exception for later debugging.
+     *
+     * @param Throwable $exception
+     *
+     * @return void
+     */
+    public function logException(Throwable $exception): void
+    {
+        $this->ravenClient->captureException($exception);
+    }
+
+    /**
      * Generate an error response and repport the exception.
      *
      * @param Request   $request
@@ -125,7 +151,7 @@ class Application
                 throw $exception;
             }
 
-            $this->ravenClient->captureException($exception);
+            $this->logException($exception);
         }
 
         $status = Response::HTTP_INTERNAL_SERVER_ERROR;

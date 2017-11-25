@@ -1,16 +1,20 @@
 <?php namespace AGCMS\Controller;
 
+use AGCMS\Application;
 use AGCMS\Config;
 use AGCMS\Entity\CustomPage;
 use AGCMS\Entity\Invoice;
+use AGCMS\Entity\Email;
 use AGCMS\EpaymentAdminService;
 use AGCMS\ORM;
 use AGCMS\Render;
+use AGCMS\Service\EmailService;
 use AGCMS\Service\InvoiceService;
 use AGCMS\VolatilePage;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Throwable,
 
 class Payment extends Base
 {
@@ -362,7 +366,8 @@ class Payment extends Base
         $cardType = EpaymentAdminService::getPaymentName($request->get('paymenttype'));
         $internalNote = $this->generateInternalPaymentNote($request);
 
-        if (!valideMail($invoice->getDepartment())) {
+        $emailService = new EmailService();
+        if (!$emailService->valideMail($invoice->getDepartment())) {
             $invoice->setDepartment(first(Config::get('emails'))['address']);
         }
 
@@ -393,14 +398,21 @@ class Payment extends Base
             'city'     => Config::get('city'),
             'phone'    => Config::get('phone'),
         ];
-        sendEmails(
-            sprintf(_('Order #%d - payment completed'), $invoice->getId()),
-            Render::render('email/payment-confirmation', $data),
-            $invoice->getDepartment(),
-            Config::get('site_name'),
-            $invoice->getEmail(),
-            $invoice->getName()
-        );
+        $email = new Email([
+            'subject'          => sprintf(_('Order #%d - payment completed'), $invoice->getId()),
+            'body'             => Render::render('email/payment-confirmation', $data),
+            'senderName'       => Config::get('site_name'),
+            'senderAddress'    => $invoice->getDepartment(),
+            'recipientName'    => $invoice->getName(),
+            'recipientAddress' => $invoice->getEmail(),
+        ]);
+        $emailService = new EmailService();
+        try {
+            $emailService->send($email);
+        } catch (Throwable $exception) {
+            Application::getInstance()->logException($exception);
+            $email->save();
+        }
     }
 
     /**
@@ -418,14 +430,21 @@ class Payment extends Base
             $invoice->getId(),
             _('Payment complete')
         );
-        sendEmails(
-            $subject,
-            Render::render('admin/email/payment-confirmation', ['invoice' => $invoice]),
-            $invoice->getDepartment(),
-            Config::get('site_name'),
-            $invoice->getDepartment(),
-            Config::get('site_name')
-        );
+        $email = new Email([
+            'subject'          => $subject,
+            'body'             => Render::render('admin/email/payment-confirmation', ['invoice' => $invoice]),
+            'senderName'       => Config::get('site_name'),
+            'senderAddress'    => $invoice->getDepartment(),
+            'recipientName'    => Config::get('site_name'),
+            'recipientAddress' => $invoice->getDepartment(),
+        ]);
+        $emailService = new EmailService();
+        try {
+            $emailService->send($email);
+        } catch (Throwable $exception) {
+            Application::getInstance()->logException($exception);
+            $email->save();
+        }
     }
 
     /**

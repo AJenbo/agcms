@@ -1,10 +1,12 @@
 <?php
 
+use AGCMS\Application;
 use AGCMS\Config;
 use AGCMS\Entity\Brand;
 use AGCMS\Entity\Category;
 use AGCMS\Entity\Contact;
 use AGCMS\Entity\CustomPage;
+use AGCMS\Entity\Email;
 use AGCMS\Entity\File;
 use AGCMS\Entity\Invoice;
 use AGCMS\Entity\Page;
@@ -13,6 +15,8 @@ use AGCMS\EpaymentAdminService;
 use AGCMS\Exception\InvalidInput;
 use AGCMS\ORM;
 use AGCMS\Render;
+use AGCMS\Service\EmailService;
+use Throwable;
 
 /**
  * Remove enteries for files that do no longer exist.
@@ -36,56 +40,9 @@ function removeNoneExistingFiles(): string
     return '';
 }
 
-function sendDelayedEmail(): string
-{
-    //Get emails that needs sending
-    $emails = db()->fetchArray('SELECT * FROM `emails`');
-    $cronStatus = ORM::getOne(CustomPage::class, 0);
-    assert($cronStatus instanceof CustomPage);
-    if (!$emails) {
-        $cronStatus->save();
-
-        return '';
-    }
-
-    $emailsSendt = 0;
-    $emailCount = count($emails);
-    foreach ($emails as $email) {
-        $email['from'] = explode('<', $email['from']);
-        $email['from'][1] = mb_substr($email['from'][1], 0, -1);
-        $email['to'] = explode('<', $email['to']);
-        $email['to'][1] = mb_substr($email['to'][1], 0, -1);
-
-        $success = sendEmails(
-            $email['subject'],
-            $email['body'],
-            $email['from'][1],
-            $email['from'][0],
-            $email['to'][1],
-            $email['to'][0],
-            false
-        );
-        if (!$success) {
-            continue;
-        }
-
-        ++$emailsSendt;
-
-        db()->query('DELETE FROM `emails` WHERE `id` = ' . (int) $email['id']);
-    }
-
-    $cronStatus->save();
-
-    $msg = ngettext(
-        '%d of %d e-mail was sent.',
-        '%d of %d e-mails was sent.',
-        $emailsSendt
-    );
-
-    return sprintf($msg, $emailsSendt, $emailCount);
-}
-
 /**
+ * @todo resend failed emails, save bcc
+ *
  * @return string[]|true
  */
 function sendEmail(
@@ -144,22 +101,23 @@ function sendEmail(
         'css'      => file_get_contents(_ROOT_ . '/theme/' . Config::get('theme', 'default') . '/style/email.css'),
         'body'     => str_replace(' href="/', ' href="' . Config::get('base_url') . '/', $html),
     ];
-
+    $emailService = new EmailService();
     $failedCount = 0;
-    foreach ($emailsGroup as $of => $emails) {
-        $success = sendEmails(
-            $subject,
-            Render::render('email/newsletter', $data),
-            $from,
-            '',
-            '',
-            '',
-            true,
-            $emails
-        );
+    foreach ($emailsGroup as $of => $bcc) {
+        $email = new Email([
+            'subject'          => $subject,
+            'body'             => Render::render('email/newsletter', $data),
+            'senderName'       => Config::get('site_name'),
+            'senderAddress'    => $from,
+            'recipientName'    => Config::get('site_name'),
+            'recipientAddress' => $from,
+        ]);
 
-        if (!$success) {
-            $failedCount += count($emails);
+        try {
+            $emailService->send($email, $bcc);
+        } catch (Throwable $exception) {
+            Application::getInstance()->logException($exception);
+            $failedCount += count($bcc);
         }
     }
     if ($failedCount) {
@@ -757,18 +715,17 @@ function sendInvoice(Invoice $invoice): void
         ]
     );
 
-    $success = sendEmails(
-        $subject,
-        $emailBody,
-        $invoice->getDepartment(),
-        '',
-        $invoice->getEmail(),
-        $invoice->getName(),
-        false
-    );
-    if (!$success) {
-        throw new Exception(_('Unable to sendt e-mail!'));
-    }
+    $email = new Email([
+        'subject'          => $subject,
+        'body'             => $emailBody,
+        'senderName'       => Config::get('site_name'),
+        'senderAddress'    => $invoice->getDepartment(),
+        'recipientName'    => $invoice->getName(),
+        'recipientAddress' => $invoice->getEmail(),
+    ]);
+
+    $emailService = new EmailService();
+    $emailService->send($email);
 
     if ('new' === $invoice->getStatus()) {
         $invoice->setStatus('locked');

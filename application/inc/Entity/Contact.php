@@ -1,5 +1,7 @@
 <?php namespace AGCMS\Entity;
 
+use AGCMS\Service\EmailService;
+
 class Contact extends AbstractEntity
 {
     /**  Table name in database. */
@@ -348,7 +350,9 @@ class Contact extends AbstractEntity
      */
     public function isEmailValide(): bool
     {
-        return $this->email && valideMail($this->email);
+        $emailService = new EmailService();
+
+        return $this->email && $emailService->valideMail($this->email);
     }
 
     /**

@@ -1,10 +1,14 @@
 <?php namespace AGCMS\Controller;
 
+use AGCMS\Application;
+use AGCMS\Entity\Email;
 use AGCMS\Render;
+use AGCMS\Service\EmailService;
 use AGCMS\Service\InvoiceService;
 use AGCMS\VolatilePage;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Throwable;
 
 class Shopping extends Base
 {
@@ -110,12 +114,21 @@ class Shopping extends Base
 
         $invoice->save();
 
-        sendEmails(
-            _('Online order #') . $invoice->getId(),
-            Render::render('email/order-notification', ['invoice' => $invoice]),
-            $invoice->getEmail(),
-            $invoice->getName()
-        );
+        $email = new Email([
+            'subject'          => _('Online order #') . $invoice->getId(),
+            'body'             => Render::render('email/order-notification', ['invoice' => $invoice]),
+            'senderName'       => $invoice->getName(),
+            'senderAddress'    => $invoice->getEmail(),
+            'recipientName'    => Config::get('site_name'),
+            'recipientAddress' => first(Config::get('emails'))['address'],
+        ]);
+        $emailService = new EmailService();
+        try {
+            $emailService->send($email);
+        } catch (Throwable $exception) {
+            Application::getInstance()->logException($exception);
+            $email->save();
+        }
 
         $data = $this->basicPageData();
 
