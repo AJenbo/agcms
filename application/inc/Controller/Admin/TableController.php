@@ -2,11 +2,55 @@
 
 use AGCMS\Entity\Table;
 use AGCMS\ORM;
+use AGCMS\Render;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 
 class TableController extends AbstractAdminController
 {
+    /**
+     * Add table to page.
+     *
+     * @param Request $request
+     *
+     * @return JsonResponse
+     */
+    public function create(Request $request): JsonResponse
+    {
+        $table = new Table([
+            'page_id'     => $request->request->getInt('page_id'),
+            'title'       => $request->request->get('title'),
+            'column_data' => json_encode($request->request->get('columns', [])),
+            'order_by'    => $request->request->getInt('order_by'),
+            'has_links'   => $request->request->getBoolean('has_links'),
+        ]);
+        $table->save();
+
+        return new JsonResponse([]);
+    }
+
+    /**
+     * Add table to page.
+     *
+     * @param Request $request
+     * @param int     $pageId
+     *
+     * @return Response
+     */
+    public function createDialog(Request $request, int $pageId): Response
+    {
+        $content = Render::render(
+            'admin/addlist',
+            [
+                'tablesorts' => db()->fetchArray('SELECT id, navn title FROM `tablesort`'),
+                'page_id'    => $pageId,
+            ]
+        );
+
+        return new Response($content);
+    }
+
     /**
      * Add row to a table.
      *

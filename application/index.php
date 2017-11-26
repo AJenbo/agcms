@@ -83,6 +83,10 @@ $app->addRoute('PUT', '/admin/page/(\d+)/', PageController::class, 'updatePage')
 // Accessory CD
 $app->addRoute('POST', '/admin/page/(\d+)/accessories/(\d+)/', PageController::class, 'addAccessory');
 $app->addRoute('DELETE', '/admin/page/(\d+)/accessories/(\d+)/', PageController::class, 'removeAccessory');
+// Table
+$app->addRoute('GET', '/admin/page/(\d+)/tables/', TableController::class, 'createDialog');
+// Table C
+$app->addRoute('POST', '/admin/tables/', TableController::class, 'create');
 // Table row CUD
 $app->addRoute('POST', '/admin/tables/(\d+)/row/', TableController::class, 'addRow');
 $app->addRoute('PUT', '/admin/tables/(\d+)/row/(\d+)/', TableController::class, 'updateRow');
