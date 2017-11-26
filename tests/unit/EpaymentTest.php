@@ -1,21 +1,35 @@
 <?php
 
-use AGCMS\EpaymentAdminService;
 use AGCMS\Epayment;
+use AGCMS\EpaymentAdminService;
 use Mockery as M;
 use PHPUnit\Framework\TestCase;
 
 class EpaymentTest extends TestCase
 {
+    /** @var EpaymentAdminService */
     private $epaymentAdminService;
-    private $epayment;
 
-    public function setUp()
+    /**
+     * Initiate the mock.
+     *
+     * @return void
+     */
+    public function setUp(): void
     {
         $this->epaymentAdminService = M::mock(EpaymentAdminService::class);
     }
 
-    private function getPayment($status = 'PAYMENT_NEW', $amount = 100, $captured = 0)
+    /**
+     * Create a payment.
+     *
+     * @param string $status
+     * @param int    $amount
+     * @param int    $captured
+     *
+     * @return Epayment
+     */
+    private function getPayment(string $status = 'PAYMENT_NEW', int $amount = 100, int $captured = 0): Epayment
     {
         $data = new StdClass();
         $data->transactionid = 1;
@@ -26,25 +40,37 @@ class EpaymentTest extends TestCase
         return new Epayment($this->epaymentAdminService, $data);
     }
 
-    public function test_can_instanciate()
+    /**
+     * @return void
+     */
+    public function test_can_instanciate(): void
     {
         $epayment = $this->getPayment();
         $this->assertInstanceOf(Epayment::class, $epayment);
     }
 
-    public function test_isAuthorized()
+    /**
+     * @return void
+     */
+    public function test_isAuthorized(): void
     {
         $epayment = $this->getPayment();
         $this->assertTrue($epayment->isAuthorized());
     }
 
-    public function test_getId()
+    /**
+     * @return void
+     */
+    public function test_getId(): void
     {
         $epayment = $this->getPayment();
         $this->assertEquals(1, $epayment->getId());
     }
 
-    public function test_annul()
+    /**
+     * @return void
+     */
+    public function test_annul(): void
     {
         $epayment = $this->getPayment();
 
@@ -58,7 +84,10 @@ class EpaymentTest extends TestCase
         $this->assertTrue($epayment->isAnnulled());
     }
 
-    public function test_annul_fail()
+    /**
+     * @return void
+     */
+    public function test_annul_fail(): void
     {
         $epayment = $this->getPayment();
 
@@ -72,7 +101,10 @@ class EpaymentTest extends TestCase
         $this->assertFalse($epayment->isAnnulled());
     }
 
-    public function test_confirm_preCancled()
+    /**
+     * @return void
+     */
+    public function test_confirm_preCancled(): void
     {
         $epayment = $this->getPayment('PAYMENT_DELETED');
 
@@ -80,7 +112,10 @@ class EpaymentTest extends TestCase
         $this->assertTrue($epayment->isAnnulled());
     }
 
-    public function test_confirm()
+    /**
+     * @return void
+     */
+    public function test_confirm(): void
     {
         $epayment = $this->getPayment();
 
@@ -94,7 +129,10 @@ class EpaymentTest extends TestCase
         $this->assertEquals(100, $epayment->getAmountCaptured());
     }
 
-    public function test_confirm_fail()
+    /**
+     * @return void
+     */
+    public function test_confirm_fail(): void
     {
         $epayment = $this->getPayment();
 
@@ -108,7 +146,10 @@ class EpaymentTest extends TestCase
         $this->assertEquals(0, $epayment->getAmountCaptured());
     }
 
-    public function test_confirm_overcharge()
+    /**
+     * @return void
+     */
+    public function test_confirm_overcharge(): void
     {
         $epayment = $this->getPayment();
 
@@ -116,7 +157,10 @@ class EpaymentTest extends TestCase
         $this->assertEquals(0, $epayment->getAmountCaptured());
     }
 
-    public function test_confirm_preCaptured()
+    /**
+     * @return void
+     */
+    public function test_confirm_preCaptured(): void
     {
         $epayment = $this->getPayment('PAYMENT_CAPTURED', 100, 100);
 

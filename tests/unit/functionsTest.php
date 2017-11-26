@@ -4,22 +4,34 @@ use PHPUnit\Framework\TestCase;
 
 class functionsTest extends TestCase
 {
-    public function test_clearFileName_date()
+    /**
+     * @return void
+     */
+    public function test_clearFileName_date(): void
     {
         $this->assertEquals('13-04-2016', clearFileName('13/04/2016'));
     }
 
-    public function test_clearFileName_multiple()
+    /**
+     * @return void
+     */
+    public function test_clearFileName_multiple(): void
     {
         $this->assertEquals('my-folder', clearFileName('my\/\/\/folder'));
     }
 
-    public function test_clearFileName_trim()
+    /**
+     * @return void
+     */
+    public function test_clearFileName_trim(): void
     {
         $this->assertEquals('trimed', clearFileName('trimed#'));
     }
 
-    public function test_arrayNatsort()
+    /**
+     * @return void
+     */
+    public function test_arrayNatsort(): void
     {
         $list = [
             ['a' => '1'],
@@ -36,7 +48,10 @@ class functionsTest extends TestCase
         $this->assertEquals($expected, arrayNatsort($list, 'a', 'a'));
     }
 
-    public function test_arrayNatsort_reverse()
+    /**
+     * @return void
+     */
+    public function test_arrayNatsort_reverse(): void
     {
         $list = [
             ['a' => '1'],
@@ -53,27 +68,42 @@ class functionsTest extends TestCase
         $this->assertEquals($expected, arrayNatsort($list, 'a', 'a', 'desc'));
     }
 
-    public function test_first()
+    /**
+     * @return void
+     */
+    public function test_first(): void
     {
         $this->assertEquals(1, first([1, 2]));
     }
 
-    public function test_stringLimit()
+    /**
+     * @return void
+     */
+    public function test_stringLimit(): void
     {
         $this->assertEquals('Long tekst …', stringLimit('Long tekst here', 12));
     }
 
-    public function test_stringLimit_edge_of_word()
+    /**
+     * @return void
+     */
+    public function test_stringLimit_edge_of_word(): void
     {
         $this->assertEquals('Long …', stringLimit('Long tekst here', 11));
     }
 
-    public function test_stringLimit_tiny()
+    /**
+     * @return void
+     */
+    public function test_stringLimit_tiny(): void
     {
         $this->assertEquals('Lon…', stringLimit('Long tekst here', 4));
     }
 
-    public function test_stringLimit_noop()
+    /**
+     * @return void
+     */
+    public function test_stringLimit_noop(): void
     {
         $this->assertEquals('Long tekst here', stringLimit('Long tekst here', 15));
     }
