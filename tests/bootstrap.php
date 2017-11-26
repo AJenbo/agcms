@@ -5,6 +5,6 @@ use AGCMS\Config;
 
 require_once __DIR__ . '/../application/vendor/autoload.php';
 
-Config::load(realpath(__DIR__ . '/../application/'));
+Config::load(__DIR__ . '/application');
 
-$app = new Application(realpath(__DIR__));
+$app = new Application(__DIR__ . '/application');
