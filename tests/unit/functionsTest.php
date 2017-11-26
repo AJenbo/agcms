@@ -9,7 +9,7 @@ class functionsTest extends TestCase
      */
     public function test_clearFileName_date(): void
     {
-        $this->assertEquals('13-04-2016', clearFileName('13/04/2016'));
+        $this->assertSame('13-04-2016', clearFileName('13/04/2016'));
     }
 
     /**
@@ -17,7 +17,7 @@ class functionsTest extends TestCase
      */
     public function test_clearFileName_multiple(): void
     {
-        $this->assertEquals('my-folder', clearFileName('my\/\/\/folder'));
+        $this->assertSame('my-folder', clearFileName('my\/\/\/folder'));
     }
 
     /**
@@ -25,7 +25,7 @@ class functionsTest extends TestCase
      */
     public function test_clearFileName_trim(): void
     {
-        $this->assertEquals('trimed', clearFileName('trimed#'));
+        $this->assertSame('trimed', clearFileName('trimed#'));
     }
 
     /**
@@ -45,7 +45,7 @@ class functionsTest extends TestCase
             ['a' => '10'],
         ];
 
-        $this->assertEquals($expected, arrayNatsort($list, 'a', 'a'));
+        $this->assertSame($expected, arrayNatsort($list, 'a', 'a'));
     }
 
     /**
@@ -65,7 +65,7 @@ class functionsTest extends TestCase
             ['a' => '1'],
         ];
 
-        $this->assertEquals($expected, arrayNatsort($list, 'a', 'a', 'desc'));
+        $this->assertSame($expected, arrayNatsort($list, 'a', 'a', 'desc'));
     }
 
     /**
@@ -73,7 +73,7 @@ class functionsTest extends TestCase
      */
     public function test_first(): void
     {
-        $this->assertEquals(1, first([1, 2]));
+        $this->assertSame(1, first([1, 2]));
     }
 
     /**
@@ -81,7 +81,7 @@ class functionsTest extends TestCase
      */
     public function test_stringLimit(): void
     {
-        $this->assertEquals('Long tekst …', stringLimit('Long tekst here', 12));
+        $this->assertSame('Long tekst …', stringLimit('Long tekst here', 12));
     }
 
     /**
@@ -89,7 +89,7 @@ class functionsTest extends TestCase
      */
     public function test_stringLimit_edge_of_word(): void
     {
-        $this->assertEquals('Long …', stringLimit('Long tekst here', 11));
+        $this->assertSame('Long …', stringLimit('Long tekst here', 11));
     }
 
     /**
@@ -97,7 +97,7 @@ class functionsTest extends TestCase
      */
     public function test_stringLimit_tiny(): void
     {
-        $this->assertEquals('Lon…', stringLimit('Long tekst here', 4));
+        $this->assertSame('Lon…', stringLimit('Long tekst here', 4));
     }
 
     /**
@@ -105,6 +105,6 @@ class functionsTest extends TestCase
      */
     public function test_stringLimit_noop(): void
     {
-        $this->assertEquals('Long tekst here', stringLimit('Long tekst here', 15));
+        $this->assertSame('Long tekst here', stringLimit('Long tekst here', 15));
     }
 }

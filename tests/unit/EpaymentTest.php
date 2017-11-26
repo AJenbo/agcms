@@ -64,7 +64,7 @@ class EpaymentTest extends TestCase
     public function test_getId(): void
     {
         $epayment = $this->getPayment();
-        $this->assertEquals(1, $epayment->getId());
+        $this->assertSame(1, $epayment->getId());
     }
 
     /**
@@ -126,7 +126,7 @@ class EpaymentTest extends TestCase
             ->andReturn(true);
 
         $this->assertTrue($epayment->confirm());
-        $this->assertEquals(100, $epayment->getAmountCaptured());
+        $this->assertSame(100, $epayment->getAmountCaptured());
     }
 
     /**
@@ -143,7 +143,7 @@ class EpaymentTest extends TestCase
             ->andReturn(false);
 
         $this->assertFalse($epayment->confirm());
-        $this->assertEquals(0, $epayment->getAmountCaptured());
+        $this->assertSame(0, $epayment->getAmountCaptured());
     }
 
     /**
@@ -154,7 +154,7 @@ class EpaymentTest extends TestCase
         $epayment = $this->getPayment();
 
         $this->assertFalse($epayment->confirm(200));
-        $this->assertEquals(0, $epayment->getAmountCaptured());
+        $this->assertSame(0, $epayment->getAmountCaptured());
     }
 
     /**
@@ -164,7 +164,8 @@ class EpaymentTest extends TestCase
     {
         $epayment = $this->getPayment('PAYMENT_CAPTURED', 100, 100);
 
+
         $this->assertTrue($epayment->confirm());
-        $this->assertEquals(100, $epayment->getAmountCaptured());
+        $this->assertSame(100, $epayment->getAmountCaptured());
     }
 }
