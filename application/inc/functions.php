@@ -64,9 +64,9 @@ function first(array $array)
 function clearFileName(string $name): string
 {
     $replace = [
-        '/[&?\/:*"<>|%\s-_#\\\\]+/u' => ' ',
-        '/^\s+|\s+$/u'               => '', // trim
-        '/\s+/u'                     => '-',
+        '/[&?\\/:*"<>|%\s-_#\\[\\]@;={}^~\\\\]+/u' => ' ',
+        '/^\s+|\s+$/u'                             => '', // trim
+        '/\s+/u'                                   => '-',
     ];
 
     return preg_replace(array_keys($replace), $replace, $name);
@@ -184,11 +184,18 @@ function purifyHTML(string $html): string
 
     $html = $purifier->purify($html);
 
-    return htmlUrlDecode($html);
+    $html = htmlUrlDecode($html);
+
+    // remove extra white space
+    $html = preg_replace('/\s+/', ' ', $html);
+
+    return trim($html);
 }
 
 /**
  * Normalize char encoding.
+ *
+ * Minimize char encoding to facilitate updating file with search replace
  *
  * @param string $html
  *
@@ -196,19 +203,23 @@ function purifyHTML(string $html): string
  */
 function htmlUrlDecode(string $html): string
 {
-    // Double encode special characters, to survive next step, and remove extra white space
+    // Double encoding url special characters
+    $urlSpeciaslChars = '%,",[,],&,?,#,:,/,@,;,=,<,>,{,},|,\,^,`';
+    $urlSpeciaslChars = explode(',', $urlSpeciaslChars);
+    $urlSpeciaslChars = array_map('rawurlencode', $urlSpeciaslChars);
+    $urlDoubleEncoded = array_map('rawurlencode', $urlSpeciaslChars);
+    $html = str_replace($urlSpeciaslChars, $urlDoubleEncoded, $html);
+
+    // Decode any url encoded urls
+    $html = rawurldecode($html);
+
+    // Double HTML url special characters
     $html = str_replace(
-        ['&quot;', '&lt;', '&gt;', '&amp;'],
-        ['&amp;quot;', '&amp;lt;', '&amp;gt;', '&amp;amp;'],
+        ['&amp;', '&quot;', '&lt;', '&gt;'],
+        ['&amp;amp;', '&amp;quot;', '&amp;lt;', '&amp;gt;'],
         $html
     );
 
-    $html = preg_replace('/\s+/', ' ', $html);
-    $html = trim($html);
-
     // Decode all html entities
-    $html = html_entity_decode($html, ENT_QUOTES, 'UTF-8');
-
-    // Decode any url encoded urls (we sometimes do replace on the content to update urls)
-    return rawurldecode($html);
+    return html_entity_decode($html, ENT_QUOTES, 'UTF-8');
 }
