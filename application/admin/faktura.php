@@ -6,6 +6,7 @@ use AGCMS\Entity\User;
 use AGCMS\EpaymentAdminService;
 use AGCMS\ORM;
 use AGCMS\Render;
+use Exception;
 
 require_once __DIR__ . '/logon.php';
 $countries = [];
@@ -37,8 +38,7 @@ if ($invoice && 'new' !== $invoice->getStatus()) {
             $invoice->setStatus('locked')->save();
         }
     } catch (SoapFault $e) {
-        echo 'Der er opstået en fejl i komunikationen med ePay: ' . $e->getMessage();
-        exit;
+        throw new Exception('Der er opstået en fejl i komunikationen med ePay: ' . $e->getMessage(), 0, $e);
     }
 }
 

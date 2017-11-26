@@ -286,6 +286,7 @@ function get_mail_size(): int
                 preg_match_all('/RFC822.SIZE\s([0-9]+)/', $mails['data'], $mailSizes);
                 $size += array_sum($mailSizes[1]);
             } catch (Exception $e) {
+                Application::getInstance()->logException($e);
             }
         }
     }
