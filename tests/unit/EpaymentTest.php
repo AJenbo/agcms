@@ -41,6 +41,8 @@ class EpaymentTest extends TestCase
     }
 
     /**
+     * @covers \AGCMS\Epayment::__construct
+     *
      * @return void
      */
     public function test_can_instanciate(): void
@@ -50,6 +52,8 @@ class EpaymentTest extends TestCase
     }
 
     /**
+     * @covers \AGCMS\Epayment::isAuthorized
+     *
      * @return void
      */
     public function test_isAuthorized(): void
@@ -59,6 +63,8 @@ class EpaymentTest extends TestCase
     }
 
     /**
+     * @covers \AGCMS\Epayment::getId
+     *
      * @return void
      */
     public function test_getId(): void
@@ -68,6 +74,9 @@ class EpaymentTest extends TestCase
     }
 
     /**
+     * @covers \AGCMS\Epayment::annul
+     * @covers \AGCMS\Epayment::isAnnulled
+     *
      * @return void
      */
     public function test_annul(): void
@@ -85,6 +94,9 @@ class EpaymentTest extends TestCase
     }
 
     /**
+     * @covers \AGCMS\Epayment::annul
+     * @covers \AGCMS\Epayment::isAnnulled
+     *
      * @return void
      */
     public function test_annul_fail(): void
@@ -102,6 +114,9 @@ class EpaymentTest extends TestCase
     }
 
     /**
+     * @covers \AGCMS\Epayment::__construct
+     * @covers \AGCMS\Epayment::isAnnulled
+     *
      * @return void
      */
     public function test_confirm_preCancled(): void
@@ -113,6 +128,10 @@ class EpaymentTest extends TestCase
     }
 
     /**
+     * @covers \AGCMS\Epayment::confirm
+     * @covers \AGCMS\Epayment::doCapture
+     * @covers \AGCMS\Epayment::getAmountCaptured
+     *
      * @return void
      */
     public function test_confirm(): void
@@ -130,6 +149,10 @@ class EpaymentTest extends TestCase
     }
 
     /**
+     * @covers \AGCMS\Epayment::confirm
+     * @covers \AGCMS\Epayment::doCapture
+     * @covers \AGCMS\Epayment::getAmountCaptured
+     *
      * @return void
      */
     public function test_confirm_fail(): void
@@ -147,6 +170,10 @@ class EpaymentTest extends TestCase
     }
 
     /**
+     * @covers \AGCMS\Epayment::confirm
+     * @covers \AGCMS\Epayment::doCapture
+     * @covers \AGCMS\Epayment::getAmountCaptured
+     *
      * @return void
      */
     public function test_confirm_overcharge(): void
@@ -158,6 +185,9 @@ class EpaymentTest extends TestCase
     }
 
     /**
+     * @covers \AGCMS\Epayment::__construct
+     * @covers \AGCMS\Epayment::getAmountCaptured
+     *
      * @return void
      */
     public function test_confirm_preCaptured(): void

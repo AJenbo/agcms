@@ -19,6 +19,8 @@ class EpaymentAdminServiceTest extends TestCase
     }
 
     /**
+     * @covers \AGCMS\EpaymentAdminService::__construct
+     *
      * @return void
      */
     public function test_can_instanciate(): void

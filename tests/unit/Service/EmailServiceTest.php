@@ -19,6 +19,8 @@ class EmailServiceTest extends TestCase
     }
 
     /**
+     * @covers \AGCMS\Service\EmailService::validemail
+     *
      * @return void
      */
     public function test_validemail(): void
@@ -27,6 +29,8 @@ class EmailServiceTest extends TestCase
     }
 
     /**
+     * @covers \AGCMS\Service\EmailService::validemail
+     *
      * @return void
      */
     public function test_validemail_fake_domain(): void
@@ -35,6 +39,8 @@ class EmailServiceTest extends TestCase
     }
 
     /**
+     * @covers \AGCMS\Service\EmailService::checkMx
+     *
      * @return void
      */
     public function test_validemail_IDN_domain(): void

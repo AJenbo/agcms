@@ -5,6 +5,8 @@ use PHPUnit\Framework\TestCase;
 class functionsTest extends TestCase
 {
     /**
+     * @covers \clearFileName
+     *
      * @return void
      */
     public function test_clearFileName_date(): void
@@ -13,6 +15,8 @@ class functionsTest extends TestCase
     }
 
     /**
+     * @covers \clearFileName
+     *
      * @return void
      */
     public function test_clearFileName_multiple(): void
@@ -21,6 +25,8 @@ class functionsTest extends TestCase
     }
 
     /**
+     * @covers \clearFileName
+     *
      * @return void
      */
     public function test_clearFileName_trim(): void
@@ -29,6 +35,8 @@ class functionsTest extends TestCase
     }
 
     /**
+     * @covers \arrayNatsort
+     *
      * @return void
      */
     public function test_arrayNatsort(): void
@@ -49,6 +57,8 @@ class functionsTest extends TestCase
     }
 
     /**
+     * @covers \arrayNatsort
+     *
      * @return void
      */
     public function test_arrayNatsort_reverse(): void
@@ -69,6 +79,8 @@ class functionsTest extends TestCase
     }
 
     /**
+     * @covers \first
+     *
      * @return void
      */
     public function test_first(): void
@@ -77,6 +89,8 @@ class functionsTest extends TestCase
     }
 
     /**
+     * @covers \stringLimit
+     *
      * @return void
      */
     public function test_stringLimit(): void
@@ -85,6 +99,8 @@ class functionsTest extends TestCase
     }
 
     /**
+     * @covers \stringLimit
+     *
      * @return void
      */
     public function test_stringLimit_edge_of_word(): void
@@ -93,6 +109,8 @@ class functionsTest extends TestCase
     }
 
     /**
+     * @covers \stringLimit
+     *
      * @return void
      */
     public function test_stringLimit_tiny(): void
@@ -101,6 +119,8 @@ class functionsTest extends TestCase
     }
 
     /**
+     * @covers \stringLimit
+     *
      * @return void
      */
     public function test_stringLimit_noop(): void
