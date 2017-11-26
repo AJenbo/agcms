@@ -156,6 +156,7 @@ class MaintenanceController extends AbstractAdminController
             foreach ($pages as $page) {
                 $listPage = ORM::getOne(Page::class, $page['page_id']);
                 assert($listPage instanceof Page);
+                unset($page['page_id']);
                 $page = new Page(Page::mapFromDB($page));
                 $html .= '<a href="?side=redigerside&amp;id=' . $listPage->getId() . '">' . $listPage->getId() . ': '
                     . $listPage->getTitle() . '</a> -&gt; <a href="?side=redigerside&amp;id=' . $page->getId() . '">'
