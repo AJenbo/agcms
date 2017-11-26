@@ -1,5 +1,6 @@
 <?php namespace AGCMS\Controller\Admin;
 
+use AGCMS\Config;
 use AGCMS\Entity\Category;
 use AGCMS\Entity\Contact;
 use AGCMS\Entity\CustomPage;
@@ -9,9 +10,11 @@ use AGCMS\Entity\Page;
 use AGCMS\ORM;
 use AGCMS\Render;
 use AGCMS\Service\EmailService;
+use AJenbo\Imap;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Thorwable;
 
 /**
  * @todo test for missing alt="" in <img>
@@ -306,6 +309,62 @@ class MaintenanceController extends AbstractAdminController
         }
 
         return new JsonResponse(['html' => $html]);
+    }
+
+    /**
+     * Get list of contacts with invalid emails.
+     *
+     * @return JsonResponse
+     */
+    public function contactsWithInvalidEmails(): JsonResponse
+    {
+        $contacts = ORM::getByQuery(Contact::class, "SELECT * FROM `email` WHERE `email` != ''");
+        foreach ($contacts as $key => $contact) {
+            assert($contact instanceof Contact);
+            if ($contact->isEmailValide()) {
+                unset($contacts[$key]);
+            }
+        }
+
+        $html = Render::render('admin/partial-subscriptions_with_bad_emails', ['contacts' => $contacts]);
+
+        return new JsonResponse(['html' => $html]);
+    }
+
+    /**
+     * Get combined email usage.
+     *
+     * @return JsonResponse
+     */
+    public function mailUsage(): JsonResponse
+    {
+        $size = 0;
+
+        foreach (Config::get('emails', []) as $email) {
+            $imap = new Imap(
+                $email['address'],
+                $email['password'],
+                $email['imapHost'],
+                $email['imapPort']
+            );
+
+            foreach ($imap->listMailboxes() as $mailbox) {
+                try {
+                    $mailboxStatus = $imap->select($mailbox['name'], true);
+                    if (!$mailboxStatus['exists']) {
+                        continue;
+                    }
+
+                    $mails = $imap->fetch('1:*', 'RFC822.SIZE');
+                    preg_match_all('/RFC822.SIZE\s([0-9]+)/', $mails['data'], $mailSizes);
+                    $size += array_sum($mailSizes[1]);
+                } catch (Thorwable $e) {
+                    Application::getInstance()->logException($e);
+                }
+            }
+        }
+
+        return new JsonResponse(['size' => $size]);
     }
 
     /**

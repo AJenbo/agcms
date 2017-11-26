@@ -4,7 +4,6 @@ use AGCMS\Application;
 use AGCMS\Config;
 use AGCMS\Entity\Brand;
 use AGCMS\Entity\Category;
-use AGCMS\Entity\Contact;
 use AGCMS\Entity\CustomPage;
 use AGCMS\Entity\Email;
 use AGCMS\Entity\File;
@@ -248,50 +247,6 @@ function saveListOrder(int $id, string $navn, string $text): bool
     );
 
     return true;
-}
-
-function get_subscriptions_with_bad_emails(): string
-{
-    $contacts = ORM::getByQuery(Contact::class, "SELECT * FROM `email` WHERE `email` != ''");
-    foreach ($contacts as $key => $contact) {
-        assert($contact instanceof Contact);
-        if (!$contact->isEmailValide()) {
-            unset($contacts[$key]);
-        }
-    }
-
-    return Render::render('partial-admin-subscriptions_with_bad_emails', ['contacts' => $contacts]);
-}
-
-function get_mail_size(): int
-{
-    $size = 0;
-
-    foreach (Config::get('emails', []) as $email) {
-        $imap = new AJenbo\Imap(
-            $email['address'],
-            $email['password'],
-            $email['imapHost'],
-            $email['imapPort']
-        );
-
-        foreach ($imap->listMailboxes() as $mailbox) {
-            try {
-                $mailboxStatus = $imap->select($mailbox['name'], true);
-                if (!$mailboxStatus['exists']) {
-                    continue;
-                }
-
-                $mails = $imap->fetch('1:*', 'RFC822.SIZE');
-                preg_match_all('/RFC822.SIZE\s([0-9]+)/', $mails['data'], $mailSizes);
-                $size += array_sum($mailSizes[1]);
-            } catch (Exception $e) {
-                Application::getInstance()->logException($e);
-            }
-        }
-    }
-
-    return $size;
 }
 
 /**

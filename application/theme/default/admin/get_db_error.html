@@ -6,9 +6,7 @@
         <div>
             <b>Server consumption</b> - E-mail:
             <span id="mailboxsize">
-                <button onclick="$('loading').style.visibility = ''; x_get_mail_size(get_mail_size_r);">
-                    Get e-mail consumption
-                </button>
+                <button onclick="getEmailUsage()">Get e-mail consumption</button>
             </span>
             DB: <span id="dbsize">{{dbSize|number_format(1, ',', '')}}MB</span>
             WWW: <span id="wwwsize">{{wwwSize|number_format(1, ',', '')}}MB</span>

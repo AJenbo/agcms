@@ -497,7 +497,7 @@ function scan_db() {
     startTime = new Date().getTime();
 
     $("status").innerHTML = "Removing contacts that are missing vital information";
-    xHttp.request("/admin/maintenance/clean/contacts/", maintainStep2, "DELETE");
+    xHttp.request("/admin/maintenance/contacts/empty/", maintainStep2, "DELETE");
 }
 
 function maintainStep2(data) {
@@ -558,7 +558,7 @@ function get_subscriptions_with_bad_emails() {
     var starttime = new Date().getTime();
 
     $("status").innerHTML = "Searching for illegal e-mail adresses";
-    x_get_subscriptions_with_bad_emails(set_db_errors);
+    xHttp.request("/admin/maintenance/contacts/invalid/", set_db_errors);
 
     $("status").innerHTML = "";
     $("loading").style.visibility = "hidden";
@@ -579,8 +579,14 @@ function removeNoneExistingFiles_r() {
     $("status").innerHTML = "";
 }
 
-function get_mail_size_r(size) {
-    $("mailboxsize").innerHTML = Math.round(size / 1024 / 1024 * 10) / 10 + "MB";
+function getEmailUsage() {
+    $("loading").style.visibility = "";
+    $("status").innerHTML = "Getting email usage";
+    xHttp.request("/admin/maintenance/emails/usage/", getEmailUsage_r);
+}
+
+function getEmailUsage_r(data) {
+    $("mailboxsize").innerHTML = Math.round(data.size / 1024 / 1024 * 10) / 10 + "MB";
     $("status").innerHTML = "";
     $("loading").style.visibility = "hidden";
 }
