@@ -49,7 +49,7 @@ class UserController extends AbstractAdminController
     {
         $request->startSession();
         $message = $request->getSession()->get('message', '');
-        $request->getSession()->clear();
+        $request->getSession()->remove('message');
         $request->getSession()->save();
 
         $content = Render::render('admin/newuser', ['message' => $message]);

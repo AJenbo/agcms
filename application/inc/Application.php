@@ -59,8 +59,6 @@ class Application
         mb_detect_order('UTF-8, ISO-8859-1');
         mb_internal_encoding('UTF-8');
 
-        session_cache_limiter('');
-
         defined('_ROOT_') || define('_ROOT_', $basePath);
         $this->basePath = $basePath;
 

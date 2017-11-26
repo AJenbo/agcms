@@ -54,16 +54,18 @@ class Request extends SymfonyRequest
      */
     public function user(): ?User
     {
-        if ($this->user || !$this->session) {
+        if ($this->user) {
             return $this->user;
         }
 
+        $this->startSession();
         $id = $this->session->get('login_id');
-        if (!$id) {
+        $hash = $this->session->get('login_hash');
+        $this->getSession()->save();
+
+        if (!$id || !$hash) {
             return null;
         }
-
-        $hash = $this->session->get('login_hash');
 
         $user = ORM::getOneByQuery(
             User::class,
@@ -84,7 +86,9 @@ class Request extends SymfonyRequest
      */
     public function logout(): void
     {
-        $this->getSession()->clear();
+        $this->startSession();
+        $this->session->remove('login_id');
+        $this->session->remove('login_hash');
         $this->session->save();
         $this->user = null;
     }

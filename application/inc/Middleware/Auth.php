@@ -22,7 +22,6 @@ class Auth implements Middleware
      */
     public function handle(Request $request, Closure $next): Response
     {
-        $request->startSession();
         if ($request->user() || '/admin/users/new/' === $request->getPathInfo()) {
             return $next($request);
         }
@@ -74,6 +73,7 @@ class Auth implements Middleware
             'SELECT * FROM `users` WHERE `name` = ' . db()->eandq($request->get('username', ''))
         );
         if ($user && $user->getAccessLevel() && $user->validatePassword($request->get('password', ''))) {
+            $request->startSession();
             $session = $request->getSession();
             $session->set('login_id', $user->getId());
             $session->set('login_hash', $user->getPasswordHash());
