@@ -7,7 +7,7 @@ function copytonew(id) {
     x_copytonew(id, newfaktura_r);
 }
 function newfaktura_r(id) {
-    window.location.href = "/admin/faktura.php?id=" + id;
+    window.location.href = "/admin/invoices/" + id + "/";
 }
 
 function removeRow(row) {

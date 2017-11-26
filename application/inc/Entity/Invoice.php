@@ -92,31 +92,31 @@ class Invoice extends AbstractEntity
      */
     public function __construct(array $data)
     {
-        $this->setItemData($data['item_data'])
+        $this->setItemData($data['item_data'] ?? '[]')
             ->setHasShippingAddress($data['has_shipping_address'] ?? false)
             ->setTimeStamp($data['timestamp'] ?? time())
             ->setTimeStampPay($data['timestamp_pay'] ?? 0)
             ->setAmount($data['amount'] ?? 0.00)
-            ->setName($data['name'])
-            ->setAttn($data['attn'])
-            ->setAddress($data['address'])
-            ->setPostbox($data['postbox'])
-            ->setPostcode($data['postcode'])
-            ->setCity($data['city'])
+            ->setName($data['name'] ?? '')
+            ->setAttn($data['attn'] ?? '')
+            ->setAddress($data['address'] ?? '')
+            ->setPostbox($data['postbox'] ?? '')
+            ->setPostcode($data['postcode'] ?? '')
+            ->setCity($data['city'] ?? '')
             ->setCountry($data['country'] ?? 'DK')
-            ->setEmail($data['email'])
-            ->setPhone1($data['phone1'])
-            ->setPhone2($data['phone2'])
-            ->setShippingPhone($data['shipping_phone'])
-            ->setShippingName($data['shipping_name'])
-            ->setShippingAttn($data['shipping_attn'])
-            ->setShippingAddress($data['shipping_address'])
-            ->setShippingAddress2($data['shipping_address2'])
-            ->setShippingPostbox($data['shipping_postbox'])
-            ->setShippingPostcode($data['shipping_postcode'])
-            ->setShippingCity($data['shipping_city'])
+            ->setEmail($data['email'] ?? '')
+            ->setPhone1($data['phone1'] ?? '')
+            ->setPhone2($data['phone2'] ?? '')
+            ->setShippingPhone($data['shipping_phone'] ?? '')
+            ->setShippingName($data['shipping_name'] ?? '')
+            ->setShippingAttn($data['shipping_attn'] ?? '')
+            ->setShippingAddress($data['shipping_address'] ?? '')
+            ->setShippingAddress2($data['shipping_address2'] ?? '')
+            ->setShippingPostbox($data['shipping_postbox'] ?? '')
+            ->setShippingPostcode($data['shipping_postcode'] ?? '')
+            ->setShippingCity($data['shipping_city'] ?? '')
             ->setShippingCountry($data['shipping_country'] ?? 'DK')
-            ->setNote($data['note'])
+            ->setNote($data['note'] ?? '')
             ->setInternalNote($data['internal_note'] ?? '')
             ->setClerk($data['clerk'] ?? '')
             ->setStatus($data['status'] ?? 'new')
@@ -1136,7 +1136,7 @@ class Invoice extends AbstractEntity
             $this->save();
         }
 
-        return Config::get('base_url') . '/admin/faktura.php?id=' . $this->id;
+        return Config::get('base_url') . '/admin/invoices/' . $this->id . '/';
     }
 
     /**

@@ -492,5 +492,19 @@ function sogsearch() {
 }
 
 function confirm_faktura_validate(id) {
-    return confirm("Mente du '" + id + "'?");
+    if (!confirm("Mente du '" + id + "'?")) {
+        return false;
+    }
+
+    return setPaymentTransferred(id, true);
+}
+
+function setPaymentTransferred(id, transferred) {
+    xHttp.request("/admin/invoices/payments/" + id + "/", setPaymentTransferred_r, "PUT", {"transferred": transferred});
+    return false;
+}
+
+function setPaymentTransferred_r() {
+    location.reload();
+}
 }

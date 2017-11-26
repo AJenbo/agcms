@@ -3,8 +3,8 @@
 use AGCMS\Application;
 use AGCMS\Config;
 use AGCMS\Entity\CustomPage;
-use AGCMS\Entity\Invoice;
 use AGCMS\Entity\Email;
+use AGCMS\Entity\Invoice;
 use AGCMS\EpaymentAdminService;
 use AGCMS\ORM;
 use AGCMS\Render;
@@ -103,10 +103,7 @@ class Payment extends Base
 
         $data = $this->basicPageData();
 
-        $countries = [];
-        include _ROOT_ . '/inc/countries.php';
-
-        $data['countries'] = $countries;
+        $data['countries'] = include _ROOT_ . '/inc/countries.php';
         $data['crumbs'][] = new VolatilePage(_('Order #') . $id, $invoice->getLink());
         $renderable = new VolatilePage(_('Address'), $invoice->getLink() . 'address/');
         $data['crumbs'][] = $renderable;
@@ -464,8 +461,7 @@ class Payment extends Base
             $internalNote .= _('Credit card no.: ') . $request->get('cardno') . "\n";
         }
 
-        $countries = [];
-        include _ROOT_ . '/inc/countries.php';
+        $countries = include _ROOT_ . '/inc/countries.php';
         if ($request->get('issuercountry')) {
             $internalNote .= _('Card is from: ') . $countries[$request->get('issuercountry')] . "\n";
         }

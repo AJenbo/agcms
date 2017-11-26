@@ -183,8 +183,7 @@ class InvoicePdfService
      */
     private function insertCustomerAddresses(): void
     {
-        $countries = [];
-        include _ROOT_ . '/inc/countries.php';
+        $countries = include _ROOT_ . '/inc/countries.php';
 
         //Invoice address
         $address = $this->getBillingAddress($countries);

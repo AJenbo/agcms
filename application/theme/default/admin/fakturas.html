@@ -2,13 +2,13 @@
 
 {% block actions %}
 <li>
-    <a href="faktura.php?function=new">
+    <a href="" onclick="createInvoice();return false">
         <img src="/theme/default/images/admin/table_add.png" width="16" height="16" alt="" title="Create new" /> Create new
     </a>
 </li>
 {% if currentUser.accessLevel == 1 %}
 <li>
-    <a href="fakturasvalidate.php">
+    <a href="/admin/invoices/payments/">
         <img src="/theme/default/images/admin/tick.png" width="16" height="16" alt="" title="Validate" /> Validate
     </a>
 </li>
@@ -126,42 +126,42 @@
     {% for invoice in invoices %}
         <tr>
             <td style="text-align:center">
-                <a href="faktura.php?id={{invoice.id}}">
+                <a href="/admin/invoices/{{invoice.id}}/">
                     {% if invoice.status == 'new' %}
-                    <img src="/admin/images/table.png" alt="New" title="New" />
+                    <img src="/theme/default/images/admin/table.png" alt="New" title="New" />
                     {% elseif invoice.status == 'locked' and invoice.sent %}
-                    <img src="/admin/images/email_go.png" alt="Sent" title="Sent to customer" />
+                    <img src="/theme/default/images/admin/email_go.png" alt="Sent" title="Sent to customer" />
                     {% elseif invoice.status == 'locked' %}
-                    <img src="/admin/images/lock.png" alt="Locked" title="Locked" />
+                    <img src="/theme/default/images/admin/lock.png" alt="Locked" title="Locked" />
                     {% elseif invoice.status == 'pbsok' %}
-                    <img src="/admin/images/money.png" alt="Ready" title="Ready" />
+                    <img src="/theme/default/images/admin/money.png" alt="Ready" title="Ready" />
                     {% elseif invoice.status == 'accepted' %}
-                    <img src="/admin/images/creditcards.png" alt="Expedited" title="Expedited" />
+                    <img src="/theme/default/images/admin/creditcards.png" alt="Expedited" title="Expedited" />
                     {% elseif invoice.status == 'giro' %}
-                    <img src="/admin/images/building.png" alt="Giro" title="Giro" />
+                    <img src="/theme/default/images/admin/building.png" alt="Giro" title="Giro" />
                     {% elseif invoice.status == 'cash' %}
-                    <img src="/admin/images/email.png" alt="Cash" title="Cash" />
+                    <img src="/theme/default/images/admin/email.png" alt="Cash" title="Cash" />
                     {% elseif invoice.status == 'pbserror' %}
-                    <img src="/admin/images/error.png" alt="Error" title="Error" />
+                    <img src="/theme/default/images/admin/error.png" alt="Error" title="Error" />
                     {% elseif invoice.status == 'canceled' %}
-                    <img src="/admin/images/bin.png" alt="Canceled" title="Canceled" />
+                    <img src="/theme/default/images/admin/bin.png" alt="Canceled" title="Canceled" />
                     {% elseif invoice.status == 'rejected' %}
-                    <img src="/admin/images/bin.png" alt="Rejected" title="Rejected" />
+                    <img src="/theme/default/images/admin/bin.png" alt="Rejected" title="Rejected" />
                     {% endif %}
                 </a>
             </td>
             <td style="text-align:right">
-                <a href="faktura.php?id={{invoice.id}}">{{invoice.id}}</a>
+                <a href="/admin/invoices/{{invoice.id}}/">{{invoice.id}}</a>
             </td>
             <td style="text-align:right">
-                <a href="faktura.php?id={{invoice.id}}">{{invoice.timestamp|date('d-m-Y')}}</a>
+                <a href="/admin/invoices/{{invoice.id}}/">{{invoice.timestamp|date('d-m-Y')}}</a>
             </td>
-            {% if not selected.clerk %}<td><a href="faktura.php?id={{invoice.id}}">{{invoice.clerk}}</a></td>{% endif %}
+            {% if not selected.clerk %}<td><a href="/admin/invoices/{{invoice.id}}/">{{invoice.clerk}}</a></td>{% endif %}
             <td style="text-align:right">
-                <a href="faktura.php?id={{invoice.id}}">{{invoice.amount|number_format(2, '.', ',')}}</a>
+                <a href="/admin/invoices/{{invoice.id}}/">{{invoice.amount|number_format(2, '.', ',')}}</a>
             </td>
             <td>
-                <a href="faktura.php?id={{invoice.id}}">
+                <a href="/admin/invoices/{{invoice.id}}/">
                     {% if not invoice.name and invoice.email %}{{invoice.email}}{% else %}{{invoice.name}}{% endif %}
                 </a>
                 <div class="address">

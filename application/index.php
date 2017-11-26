@@ -163,6 +163,12 @@ $app->addRoute('POST', '/admin/maintenance/emails/send/', MaintenanceController:
 $app->addRoute('GET', '/admin/maintenance/emails/usage/', MaintenanceController::class, 'mailUsage');
 $app->addRoute('GET', '/admin/maintenance/usage/', MaintenanceController::class, 'usage');
 // Invoice
+$app->addRoute('GET', '/admin/invoices/', InvoiceController::class, 'index');
+$app->addRoute('GET', '/admin/invoices/payments/', InvoiceController::class, 'validationList');
+$app->addRoute('PUT', '/admin/invoices/payments/(\d+)/', InvoiceController::class, 'validate');
 $app->addRoute('GET', '/admin/invoices/(\d+)/pdf/', InvoiceController::class, 'pdf');
+// Invoice CRU
+$app->addRoute('POST', '/admin/invoices/', InvoiceController::class, 'create');
+$app->addRoute('GET', '/admin/invoices/(\d+)/', InvoiceController::class, 'invoice');
 
 $app->run(Request::createFromGlobals());

@@ -61,13 +61,9 @@ class Shopping extends Base
         $rawCart = $request->get('cart', '{}');
         $cart = json_decode($rawCart, true);
 
-        $data = $this->basicPageData();
-
-        $countries = [];
-        include _ROOT_ . '/inc/countries.php';
-
         $invoice = $this->invoiceService->createFromCart($cart);
 
+        $data = $this->basicPageData();
         $data['crumbs'][] = new VolatilePage(_('Shopping list'), '/order/?cart=' . rawurlencode($rawCart));
         $renderable = new VolatilePage(_('Recipient'), '/order/address/?cart=' . rawurlencode($rawCart));
         $data['crumbs'][] = $renderable;

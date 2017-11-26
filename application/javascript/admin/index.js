@@ -595,3 +595,11 @@ function getUsage_r(data) {
     $("wwwsize").innerHTML = Math.round(data.www / 1024 / 1024 * 10) / 10 + "MB";
     $("dbsize").innerHTML = Math.round(data.db / 1024 / 1024 * 10) / 10 + "MB";
 }
+
+function createInvoice() {
+    xHttp.request("/admin/invoices/", createInvoice_r, "POST");
+}
+
+function createInvoice_r(data) {
+    location.href = "/admin/invoices/" + data.id + "/";
+}

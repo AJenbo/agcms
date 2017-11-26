@@ -223,15 +223,6 @@ function deletefile(int $id, string $path): array
     return ['id' => $id];
 }
 
-function newfaktura(): int
-{
-    db()->query(
-        'INSERT INTO `fakturas` (`date`, `clerk`) VALUES (NOW(), ' . db()->eandq(curentUser()->getFullName()) . ')'
-    );
-
-    return db()->insert_id;
-}
-
 function makeNewList(string $navn): array
 {
     db()->query('INSERT INTO `tablesort` (`navn`) VALUES (\'' . db()->esc($navn) . '\')');

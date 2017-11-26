@@ -248,3 +248,5 @@ $countries = [
     'AX' => _('Åland'),
 ];
 natcasesort($countries);
+
+return $countries;

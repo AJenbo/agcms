@@ -161,8 +161,7 @@ class InvoiceService
      */
     public function addToAddressBook(Invoice $invoice, ?string $clientIp): void
     {
-        $countries = [];
-        include _ROOT_ . '/inc/countries.php';
+        $countries = include _ROOT_ . '/inc/countries.php';
         /** @var Contact */
         $conteact = ORM::getOneByQuery(
             Contact::class,
