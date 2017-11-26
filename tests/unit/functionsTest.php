@@ -5,6 +5,16 @@ use PHPUnit\Framework\TestCase;
 class functionsTest extends TestCase
 {
     /**
+     * @covers \encodeUrl
+     *
+     * @return void
+     */
+    public function test_encodeUrl(): void
+    {
+        $this->assertSame('/test/%C3%B8', encodeUrl('/test/ø'));
+    }
+
+    /**
      * @covers \clearFileName
      *
      * @return void
@@ -126,5 +136,95 @@ class functionsTest extends TestCase
     public function test_stringLimit_noop(): void
     {
         $this->assertSame('Long tekst here', stringLimit('Long tekst here', 15));
+    }
+
+    /**
+     * @covers \purifyHTML
+     *
+     * @return void
+     */
+    public function test_purifyHTML_alert(): void
+    {
+        $this->flush_purifyer_cache();
+        $this->assertSame('<p>Click me!</p>', purifyHTML('<p onclick="alert(\'Boo!\')">Click me!</p>'));
+    }
+
+    /**
+     * @covers \purifyHTML
+     *
+     * @return void
+     */
+    public function test_purifyHTML_video(): void
+    {
+        $this->flush_purifyer_cache();
+        $html = '<video width="320" height="240" src="video.mp4" controls=""></video>';
+        $this->assertSame($html, purifyHTML($html));
+    }
+
+    /**
+     * @covers \purifyHTML
+     *
+     * @return void
+     */
+    public function test_purifyHTML_audio(): void
+    {
+        $this->flush_purifyer_cache();
+        $html = '<audio src="audio.mp3" controls=""></audio>';
+        $this->assertSame($html, purifyHTML($html));
+    }
+
+    /**
+     * @covers \purifyHTML
+     *
+     * @return void
+     */
+    public function test_purifyHTML_youtube(): void
+    {
+        $this->flush_purifyer_cache();
+        $html = '<div class="embeddedContent oembed-provider- oembed-provider-youtube" data-oembed="https://www.youtube.com/watch?v=-I4pOBJ3RZQ" data-oembed_provider="youtube"><iframe src="//www.youtube.com/embed/-I4pOBJ3RZQ?wmode=transparent&amp;jqoemcache=mUXUu" allowfullscreen="" scrolling="no" width="425" height="349" frameborder="0"></iframe></div>';
+        $this->assertSame($html, purifyHTML($html));
+    }
+
+    /**
+     * @covers \htmlUrlDecode
+     *
+     * @return void
+     */
+    public function test_htmlUrlDecode_decode_url(): void
+    {
+        $this->assertSame('<a href="/test/ø">', htmlUrlDecode('<a href="/test/%C3%B8">'));
+    }
+
+    /**
+     * @covers \htmlUrlDecode
+     *
+     * @return void
+     */
+    public function test_htmlUrlDecode_decode_html(): void
+    {
+        $this->assertSame('<a href="/test/ø">', htmlUrlDecode('<a href="/test/&oslash;">'));
+    }
+
+    /**
+     * @covers \htmlUrlDecode
+     *
+     * @return void
+     */
+    public function test_htmlUrlDecode_maintain_special(): void
+    {
+        $this->assertSame('&quot;%22?test&amp;hi', htmlUrlDecode('&quot;%22?test&amp;hi'));
+    }
+
+    /**
+     * Clear purifyer cache.
+     *
+     * @return void
+     */
+    private function flush_purifyer_cache(): void
+    {
+        $files = glob(_ROOT_ . '/theme/cache/HTMLPurifier/**/*');
+        foreach ($files as $file) {
+            unlink($file);
+        }
     }
 }
