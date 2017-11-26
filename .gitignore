@@ -8,3 +8,4 @@
 /application/images
 /application/theme/cache
 /application/vendor
+/tests/application/theme/cache
