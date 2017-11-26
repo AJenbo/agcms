@@ -123,6 +123,18 @@ class EpaymentTest extends TestCase
     {
         $epayment = $this->getPayment('PAYMENT_DELETED');
 
+        $this->assertTrue($epayment->isAnnulled());
+    }
+
+    /**
+     * @covers \AGCMS\Epayment::annul
+     *
+     * @return void
+     */
+    public function test_confirm_preCancled_double(): void
+    {
+        $epayment = $this->getPayment('PAYMENT_DELETED');
+
         $this->assertTrue($epayment->annul());
         $this->assertTrue($epayment->isAnnulled());
     }
@@ -194,6 +206,19 @@ class EpaymentTest extends TestCase
     {
         $epayment = $this->getPayment('PAYMENT_CAPTURED', 100, 100);
 
+        $this->assertSame(100, $epayment->getAmountCaptured());
+    }
+
+    /**
+     * @covers \AGCMS\Epayment::confirm
+     * @covers \AGCMS\Epayment::doCapture
+     * @covers \AGCMS\Epayment::getAmountCaptured
+     *
+     * @return void
+     */
+    public function test_confirm_preCaptured_double(): void
+    {
+        $epayment = $this->getPayment('PAYMENT_CAPTURED', 100, 100);
 
         $this->assertTrue($epayment->confirm());
         $this->assertSame(100, $epayment->getAmountCaptured());
