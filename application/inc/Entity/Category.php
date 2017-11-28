@@ -3,6 +3,7 @@
 use AGCMS\Exception\InvalidInput;
 use AGCMS\ORM;
 use AGCMS\Render;
+use Exception;
 
 class Category extends AbstractRenderable
 {
@@ -48,14 +49,18 @@ class Category extends AbstractRenderable
      */
     public function __construct(array $data)
     {
-        $this->iconId = $data['icon_id'];
-        $this->setParentId($data['parent_id'])
-            ->setRenderMode($data['render_mode'])
+        $this->setRenderMode($data['render_mode'])
             ->setEmail($data['email'])
             ->setWeightedChildren($data['weighted_children'])
             ->setWeight($data['weight'])
             ->setTitle($data['title'])
             ->setId($data['id'] ?? null);
+
+        $this->iconId = $data['icon_id'];
+        $this->parentId = $data['parent_id'];
+        if (null === $this->parentId && $this->id > 0) {
+            throw new Exception('Cannot create root categories!');
+        }
     }
 
     /**
@@ -99,20 +104,20 @@ class Category extends AbstractRenderable
         return parent::delete();
     }
 
-    // Getters and setters
-
     /**
-     * Set parent id.
+     * Set parent.
+     *
+     * @param self $parent
      *
      * @return self
      */
-    public function setParentId(?int $parentId): self
+    public function setParent(self $parent): self
     {
-        if (null !== $parentId && null !== $this->id && $this->id <= 0) {
+        if (null === $this->parentId) {
             throw new InvalidInput(_('Your not allowed to move root categories'));
         }
 
-        $this->parentId = $parentId;
+        $this->parentId = $parent->getId();
 
         return $this;
     }

@@ -53,7 +53,7 @@ var activeSideContextMenu = [
           }
           var name = element.parentNode.previousSibling.lastChild.nodeValue.trim();
           var ids = element.id.match(/\d+/g);
-          removeBindingFromTree(name, ids[1], ids[0]);
+          removeBinding(name, ids[1], ids[0], bindTree_r);
       }
     }
 ];

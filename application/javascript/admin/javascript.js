@@ -341,21 +341,14 @@ function binding_r(data) {
     }
 }
 
-function removeBindingFromTree(navn, pageId, categoryId) {
-    removeBinding(navn, pageId, categoryId, bindTree_r)
-}
-
 function bindTree_r(data) {
     if (!genericCallback(data)) {
         return;
     }
 
     removeTagById("bind" + data.deleted[0] + "p" + data.pageId);
-
-    if (data.added && $("kat" + data.added.categoryId + "content").innerHTML != "") {
-        var display = $("kat" + data.added.categoryId + "content").style.display;
-        x_siteList_expand(data.added.categoryId, 0, expandCategory_r);
-        $("kat" + data.added.categoryId + "content").style.display = display;
+    if (data.added && $("kat" + data.added.categoryId + "content").innerHTML !== "") {
+        xHttp.request("/admin/sitetree/" + data.added.categoryId + "/", expandCategory_r);
     }
 }
 
@@ -411,7 +404,7 @@ function slet(type, navn, id) {
 function movekat(navn, id, toId, confirmMove) {
     if (!confirmMove || confirm("Vil du fjerne kategorien '" + navn + "'?")) {
         $("loading").style.visibility = "";
-        x_movekat(id, toId, movekat_r);
+        xHttp.request("/admin/categories/" + id + "/move/", movekat_r, "PUT", {"parentId": toId});
     }
 }
 
@@ -420,13 +413,9 @@ function movekat_r(data) {
         return;
     }
 
-    if (data) {
-        removeTagById(data.id);
-        if ($("kat" + data.update + "content").innerHTML != "") {
-            var display = $("kat" + data.update + "content").style.display;
-            xHttp.request("/admin/sitetree/" + data.update + "/?type=categories", expandCategory_r);
-            $("kat" + data.update + "content").style.display = display;
-        }
+    removeTagById(data.id);
+    if ($("kat" + data.update + "content").innerHTML != "") {
+        xHttp.request("/admin/sitetree/" + data.update + "/", expandCategory_r);
     }
 }
 

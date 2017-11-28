@@ -302,15 +302,6 @@ function sletkat(int $id): array
     return ['id' => 'kat' . $id];
 }
 
-function movekat(int $id, int $parentId): array
-{
-    $category = ORM::getOne(Category::class, $id);
-    assert($category instanceof Category);
-    $category->setParentId($parentId)->save();
-
-    return ['id' => 'kat' . $id, 'update' => $parentId];
-}
-
 /**
  * @return string[]
  */
@@ -418,7 +409,7 @@ function updateKat(
                 throw new InvalidInput(_('The category can not be placed under itself.'));
             }
         }
-        $category->setParentId($parentId);
+        $category->setParent($parent);
     }
 
     //Set the order of the subs

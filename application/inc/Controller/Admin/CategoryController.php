@@ -5,6 +5,7 @@ use AGCMS\Entity\Category;
 use AGCMS\ORM;
 use AGCMS\Render;
 use AGCMS\Service\SiteTreeService;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -46,5 +47,24 @@ class CategoryController extends AbstractAdminController
         $content = Render::render('admin/redigerkat', $data);
 
         return new Response($content);
+    }
+
+    /**
+     * Move category.
+     *
+     * @param Request $request
+     * @param int     $id
+     *
+     * @return JsonResponse
+     */
+    public function move(Request $request, int $id): JsonResponse
+    {
+        $parentId = $request->request->getInt('parentId');
+
+        $category = ORM::getOne(Category::class, $id);
+        $parent = ORM::getOne(Category::class, $parentId);
+        $category->setParent($parent)->save();
+
+        return new JsonResponse(['id' => 'kat' . $id, 'update' => $parentId]);
     }
 }
