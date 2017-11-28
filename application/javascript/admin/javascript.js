@@ -177,7 +177,7 @@ function expandCategory(id, input = "") {
     }
     if ($("kat" + id + "content").innerHTML === "") {
         $("loading").style.visibility = "";
-        x_expandCategory(id, input, expandCategory_r);
+        xHttp.request("/admin/sitetree/" + id + "/?type=" + encodeURIComponent(input), expandCategory_r);
 
         return;
     }
@@ -424,7 +424,7 @@ function movekat_r(data) {
         removeTagById(data.id);
         if ($("kat" + data.update + "content").innerHTML != "") {
             var display = $("kat" + data.update + "content").style.display;
-            x_expandCategory(data.update, "categories", expandCategory_r);
+            xHttp.request("/admin/sitetree/" + data.update + "/?type=categories", expandCategory_r);
             $("kat" + data.update + "content").style.display = display;
         }
     }

@@ -100,6 +100,7 @@ $app->addRoute('GET', '/admin/custom/(\d+)/', CustomPageController::class, 'inde
 // Site tree
 $app->addRoute('GET', '/admin/sitetree/', SiteTreeController::class, 'index');
 $app->addRoute('GET', '/admin/sitetree/([-\d]+)/lable/', SiteTreeController::class, 'lable');
+$app->addRoute('GET', '/admin/sitetree/([-\d]+)/', SiteTreeController::class, 'categoryContent');
 $app->addRoute('GET', '/admin/sitetree/pageWidget/', SiteTreeController::class, 'pageWidget');
 $app->addRoute('GET', '/admin/sitetree/inventory/', SiteTreeController::class, 'inventory');
 // Requirement editing

@@ -193,18 +193,6 @@ function saveEmail(string $from, string $interests, string $subject, string $htm
     return true;
 }
 
-function expandCategory(int $categoryId, string $inputType = ''): array
-{
-    $data = [
-        'openCategories' => getOpenCategories(),
-        'includePages'   => (!$inputType || 'pages' === $inputType),
-        'inputType'      => $inputType,
-        'node'           => ORM::getOne(Category::class, $categoryId),
-    ];
-
-    return ['id' => $categoryId, 'html' => Render::render('partial-admin-kat_expand', $data)];
-}
-
 /**
  * Delete unused file.
  *

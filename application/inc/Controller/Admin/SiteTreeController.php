@@ -33,6 +33,31 @@ class SiteTreeController extends AbstractAdminController
     }
 
     /**
+     * Fetch the content for a category.
+     *
+     * @param Request $request
+     * @param int     $categoryId
+     *
+     * @return JsonResponse
+     */
+    public function categoryContent(Request $request, int $categoryId): JsonResponse
+    {
+        $inputType = $request->get('type', '');
+        $openCategories = explode('<', $request->cookies->get('openkat', ''));
+        $openCategories = array_map('intval', $openCategories);
+
+        $data = [
+            'openCategories' => $openCategories,
+            'includePages'   => (!$inputType || 'pages' === $inputType),
+            'inputType'      => $inputType,
+            'node'           => ORM::getOne(Category::class, $categoryId),
+        ];
+        $html = Render::render('admin/partial-kat_expand', $data);
+
+        return new JsonResponse(['id' => $categoryId, 'html' => $html]);
+    }
+
+    /**
      * Get the label for a folded tree widget.
      *
      * @param Request $request
