@@ -93,9 +93,9 @@ $app->addRoute('PUT', '/admin/tables/(\d+)/row/(\d+)/', TableController::class, 
 $app->addRoute('DELETE', '/admin/tables/(\d+)/row/(\d+)/', TableController::class, 'removeRow');
 // Category editing
 $app->addRoute('GET', '/admin/categories/', CategoryController::class, 'index');
-$app->addRoute('PUT', '/admin/categories/(\d+)/move/', CategoryController::class, 'move');
 // Category CRUD
 $app->addRoute('GET', '/admin/categories/([-\d]+)/', CategoryController::class, 'index');
+$app->addRoute('PUT', '/admin/categories/(\d+)/', CategoryController::class, 'update');
 $app->addRoute('DELETE', '/admin/categories/(\d+)/', CategoryController::class, 'delete');
 // Custom page RU
 $app->addRoute('GET', '/admin/custom/(\d+)/', CustomPageController::class, 'index');

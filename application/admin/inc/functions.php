@@ -292,18 +292,6 @@ function sletmaerke(int $id): array
     return ['node' => 'maerke' . $id];
 }
 
-/**
- * @return string[]
- */
-function renamekat(int $id, string $title): array
-{
-    $category = ORM::getOne(Category::class, $id);
-    assert($category instanceof Category);
-    $category->setTitle($title)->save();
-
-    return ['id' => 'kat' . $id, 'name' => $title];
-}
-
 function sletbind(int $pageId, int $categoryId): array
 {
     /** @var Page */

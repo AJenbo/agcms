@@ -402,44 +402,44 @@ function deleteCategory(navn, id) {
     }
 }
 
-function movekat(navn, id, toId, confirmMove) {
+function moveCategory(navn, id, toId, confirmMove) {
     if (!confirmMove || confirm("Vil du fjerne kategorien '" + navn + "'?")) {
         $("loading").style.visibility = "";
-        xHttp.request("/admin/categories/" + id + "/move/", movekat_r, "PUT", {"parentId": toId});
+        xHttp.request("/admin/categories/" + id + "/", moveCategory_r, "PUT", {"parentId": toId});
     }
 }
 
-function movekat_r(data) {
+function moveCategory_r(data) {
     if (!genericCallback(data)) {
         return;
     }
 
     removeTagById(data.id);
-    if ($("kat" + data.update + "content").innerHTML != "") {
-        xHttp.request("/admin/sitetree/" + data.update + "/", expandCategory_r);
+    if ($("kat" + data.parentId + "content").innerHTML != "") {
+        xHttp.request("/admin/sitetree/" + data.parentId + "/", expandCategory_r);
     }
 }
 
-function renamekat(id, name) {
-    var newname = prompt("Omdøb kategori", name);
-    if (newname != null && newname != name) {
+function renameCategory(id, title) {
+    var newTitle = prompt("Omdøb kategori", title);
+    if (newTitle != null && newTitle !== title) {
         $("loading").style.visibility = "";
-        x_renamekat(id, newname, renamekat_r);
+        xHttp.request("/admin/categories/" + id + "/", renameCategory_r, "PUT", {"title": newTitle});
     }
 }
 
-function renamekat_r(data) {
+function renameCategory_r(data) {
     if (!genericCallback(data)) {
         return;
     }
 
     if ($(data.id).childNodes.length == 4) {
-        $(data.id).childNodes[2].lastChild.nodeValue = " " + data.name;
+        $(data.id).childNodes[2].lastChild.nodeValue = " " + data.title;
 
         return;
     }
 
-    $(data.id).firstChild.lastChild.nodeValue = " " + data.name;
+    $(data.id).firstChild.lastChild.nodeValue = " " + data.title;
 }
 
 function sletClass_r(data) {

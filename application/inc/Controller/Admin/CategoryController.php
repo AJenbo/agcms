@@ -58,15 +58,29 @@ class CategoryController extends AbstractAdminController
      *
      * @return JsonResponse
      */
-    public function move(Request $request, int $id): JsonResponse
+    public function update(Request $request, int $id): JsonResponse
     {
-        $parentId = $request->request->getInt('parentId');
-
+        /** @var Category */
         $category = ORM::getOne(Category::class, $id);
-        $parent = ORM::getOne(Category::class, $parentId);
-        $category->setParent($parent)->save();
 
-        return new JsonResponse(['id' => 'kat' . $id, 'update' => $parentId]);
+        if ($request->request->has('parentId')) {
+            $parentId = $request->request->getInt('parentId');
+            $parent = ORM::getOne(Category::class, $parentId);
+            $category->setParent($parent);
+        }
+
+        if ($request->request->has('title')) {
+            $title = $request->request->get('title', '');
+            $category->setTitle($title);
+        }
+
+        $category->save();
+
+        return new JsonResponse([
+            'id' => 'kat' . $category->getId(),
+            'parentId' => $category->getParent()->getId(),
+            'title' => $category->getTitle(),
+        ]);
     }
 
     /**

@@ -95,11 +95,11 @@ var activeKatContextMenu = [
       "callback": function(e) {
           // TODO update to use getContextMenuTarget()
           if (e.element().tagName.toLowerCase() == "a") {
-              renamekat(e.target.parentNode.id.replace(/^kat/, ""), e.target.lastChild.nodeValue.trim());
+              renameCategory(e.target.parentNode.id.replace(/^kat/, ""), e.target.lastChild.nodeValue.trim());
               return;
           }
-          renamekat(e.target.parentNode.parentNode.id.replace(/^kat/, ""),
-                    e.target.parentNode.lastChild.nodeValue.trim());
+          renameCategory(e.target.parentNode.parentNode.id.replace(/^kat/, ""),
+                         e.target.parentNode.lastChild.nodeValue.trim());
       }
     },
     {
@@ -120,11 +120,11 @@ var activeKatContextMenu = [
       "callback": function(e) {
           // TODO update to use getContextMenuTarget()
           if (e.element().tagName.toLowerCase() == "a") {
-              movekat(e.target.lastChild.nodeValue.trim(), e.target.parentNode.id.replace(/^kat/, ""), -1, true);
+              moveCategory(e.target.lastChild.nodeValue.trim(), e.target.parentNode.id.replace(/^kat/, ""), -1, true);
               return;
           }
-          movekat(e.target.parentNode.lastChild.nodeValue.trim(), e.target.parentNode.parentNode.id.replace(/^kat/, ""),
-                  -1, true);
+          moveCategory(e.target.parentNode.lastChild.nodeValue.trim(),
+                       e.target.parentNode.parentNode.id.replace(/^kat/, ""), -1, true);
       }
     }
 ];
@@ -137,11 +137,11 @@ var inactiveKatContextMenu = [
       "callback": function(e) {
           // TODO update to use getContextMenuTarget()
           if (e.element().tagName.toLowerCase() == "a") {
-              renamekat(e.target.parentNode.id.replace(/^kat/, ""), e.target.lastChild.nodeValue.trim());
+              renameCategory(e.target.parentNode.id.replace(/^kat/, ""), e.target.lastChild.nodeValue.trim());
               return;
           }
-          renamekat(e.target.parentNode.parentNode.id.replace(/^kat/, ""),
-                    e.target.parentNode.lastChild.nodeValue.trim());
+          renameCategory(e.target.parentNode.parentNode.id.replace(/^kat/, ""),
+                         e.target.parentNode.lastChild.nodeValue.trim());
       }
     },
     {
