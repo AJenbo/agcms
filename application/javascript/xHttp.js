@@ -16,7 +16,7 @@ var xHttp = {
             xHttp.requests[id] = null;
 
             if (x.status < 200 || x.status > 299 || x.response.error) {
-                var message = x.response.error && x.response.error.message || x.statusText;
+                var message = x.response && x.response.error && x.response.error.message || x.statusText;
                 alert("Error: " + message);
             }
 

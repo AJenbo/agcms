@@ -146,6 +146,7 @@ class Application
     {
         if ($this->shouldLog($exception)) {
             if ('develop' === Config::get('enviroment')) {
+                http_response_code(Response::HTTP_INTERNAL_SERVER_ERROR);
                 throw $exception;
             }
 
