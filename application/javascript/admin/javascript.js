@@ -392,12 +392,13 @@ function slet(type, navn, id) {
                 x_sletmaerke(id, slet_r);
             }
             break;
-        case "kat":
-            if (confirm("Vil du slette katagorien '" + navn + "'?")) {
-                $("loading").style.visibility = "";
-                x_sletkat(id, slet_r);
-            }
-            break;
+    }
+}
+
+function deleteCategory(navn, id) {
+    if (confirm("Vil du slette katagorien '" + navn + "'?")) {
+        $("loading").style.visibility = "";
+        xHttp.request("/admin/categories/" + id + "/", slet_r, "DELETE");
     }
 }
 

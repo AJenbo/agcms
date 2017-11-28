@@ -2,6 +2,7 @@
 
 use AGCMS\Config;
 use AGCMS\Entity\Category;
+use AGCMS\Exception\InvalidInput;
 use AGCMS\ORM;
 use AGCMS\Render;
 use AGCMS\Service\SiteTreeService;
@@ -66,5 +67,24 @@ class CategoryController extends AbstractAdminController
         $category->setParent($parent)->save();
 
         return new JsonResponse(['id' => 'kat' . $id, 'update' => $parentId]);
+    }
+
+    /**
+     * Delete category.
+     *
+     * @param Request $request
+     * @param int     $id
+     *
+     * @return JsonResponse
+     */
+    public function delete(Request $request, int $id): JsonResponse
+    {
+        if ($id < 1) {
+            throw new InvalidInput(_('Cannot delete root categories!'));
+        }
+
+        ORM::getOne(Category::class, $id)->delete();
+
+        return new JsonResponse(['id' => 'kat' . $id]);
     }
 }

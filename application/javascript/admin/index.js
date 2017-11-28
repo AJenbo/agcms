@@ -162,11 +162,11 @@ var inactiveKatContextMenu = [
       "callback": function(e) {
           // TODO update to use getContextMenuTarget()
           if (e.element().tagName.toLowerCase() == "a") {
-              slet("kat", e.target.lastChild.nodeValue.trim(), e.target.parentNode.id.replace(/^kat/, ""));
+              deleteCategory(e.target.lastChild.nodeValue.trim(), e.target.parentNode.id.replace(/^kat/, ""));
               return;
           }
-          slet("kat", e.target.parentNode.lastChild.nodeValue.trim(),
-               e.target.parentNode.parentNode.id.replace(/^kat/, ""));
+          deleteCategory(e.target.parentNode.lastChild.nodeValue.trim(),
+                         e.target.parentNode.parentNode.id.replace(/^kat/, ""));
       }
     }
 ];

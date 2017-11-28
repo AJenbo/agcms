@@ -96,6 +96,7 @@ $app->addRoute('GET', '/admin/categories/', CategoryController::class, 'index');
 $app->addRoute('PUT', '/admin/categories/(\d+)/move/', CategoryController::class, 'move');
 // Category CRUD
 $app->addRoute('GET', '/admin/categories/([-\d]+)/', CategoryController::class, 'index');
+$app->addRoute('DELETE', '/admin/categories/(\d+)/', CategoryController::class, 'delete');
 // Custom page RU
 $app->addRoute('GET', '/admin/custom/(\d+)/', CustomPageController::class, 'index');
 // Site tree

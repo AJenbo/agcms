@@ -295,16 +295,6 @@ function sletmaerke(int $id): array
 /**
  * @return string[]
  */
-function sletkat(int $id): array
-{
-    ORM::getOne(Category::class, $id)->delete();
-
-    return ['id' => 'kat' . $id];
-}
-
-/**
- * @return string[]
- */
 function renamekat(int $id, string $title): array
 {
     $category = ORM::getOne(Category::class, $id);
