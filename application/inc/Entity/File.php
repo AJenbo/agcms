@@ -1,8 +1,8 @@
 <?php namespace AGCMS\Entity;
 
+use AGCMS\Exception\Exception;
 use AGCMS\Exception\InvalidInput;
 use AGCMS\ORM;
-use Exception;
 use Symfony\Component\HttpFoundation\File\MimeType\MimeTypeGuesser;
 
 class File extends AbstractEntity

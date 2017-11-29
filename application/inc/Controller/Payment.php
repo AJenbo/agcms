@@ -6,6 +6,7 @@ use AGCMS\Entity\CustomPage;
 use AGCMS\Entity\Email;
 use AGCMS\Entity\Invoice;
 use AGCMS\EpaymentAdminService;
+use AGCMS\Exception\Exception;
 use AGCMS\ORM;
 use AGCMS\Render;
 use AGCMS\Service\EmailService;

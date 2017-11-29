@@ -1,6 +1,5 @@
 <?php namespace AGCMS\Exception;
 
-use Exception;
 use Throwable;
 
 class InvalidInput extends Exception

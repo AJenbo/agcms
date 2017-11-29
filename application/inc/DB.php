@@ -1,6 +1,6 @@
 <?php namespace AGCMS;
 
-use Exception;
+use AGCMS\Exception\Exception;
 use mysqli;
 
 /**
