@@ -24,11 +24,11 @@ class FileService
     {
         $this->checkPermittedTargetPath($path);
 
-        if (file_exists(_ROOT_ . $path)) {
+        if (file_exists(app()->basePath($path))) {
             throw new InvalidInput(_('A file or folder with the same name already exists.'));
         }
 
-        if (!@mkdir(_ROOT_ . $path, 0771)) {
+        if (!@mkdir(app()->basePath($path), 0771)) {
             throw new Exception(
                 _('Could not create folder, you may not have sufficient rights to this folder.')
             );
@@ -61,7 +61,7 @@ class FileService
             $file->delete();
         }
 
-        if (!$this->deltree(_ROOT_ . $path)) {
+        if (!$this->deltree(app()->basePath($path))) {
             throw new InvalidInput(_('A file could not be deleted because it is used on a site.'));
         }
     }
@@ -93,7 +93,7 @@ class FileService
      */
     public function checkPermittedPath(string $path): void
     {
-        if (realpath(_ROOT_ . $path) !== _ROOT_ . $path) {
+        if (realpath(app()->basePath($path)) !== app()->basePath($path)) {
             throw new InvalidInput(_('Path must be absolute.'));
         }
 
@@ -120,7 +120,7 @@ class FileService
             throw new InvalidInput(_('The name is too long.'));
         }
 
-        if (!is_dir(_ROOT_ . $dirname . '/')) {
+        if (!is_dir(app()->basePath($dirname . '/'))) {
             throw new InvalidInput(_('Target is not a folder.'));
         }
     }
@@ -368,7 +368,7 @@ class FileService
      */
     public function getSubDirs(string $path, string $currentDir): array
     {
-        $folders = glob(_ROOT_ . $path . '/*/');
+        $folders = glob(app()->basePath($path . '/*/'));
         natcasesort($folders);
 
         $dirs = [];
@@ -389,6 +389,6 @@ class FileService
      */
     private function hasSubsDirs(string $path): bool
     {
-        return (bool) glob(_ROOT_ . $path . '/*/');
+        return (bool) glob(app()->basePath($path . '/*/'));
     }
 }

@@ -93,13 +93,13 @@ class ExplorerController extends AbstractAdminController
 
         $this->fileService->checkPermittedPath($path);
 
-        $files = scandir(_ROOT_ . $path);
+        $files = scandir(app()->basePath($path));
         natcasesort($files);
 
         $html = '';
         $javascript = '';
         foreach ($files as $fileName) {
-            if ('.' === mb_substr($fileName, 0, 1) || is_dir(_ROOT_ . $path . '/' . $fileName)) {
+            if ('.' === mb_substr($fileName, 0, 1) || is_dir(app()->basePath($path . '/' . $fileName))) {
                 continue;
             }
 
@@ -333,12 +333,13 @@ class ExplorerController extends AbstractAdminController
         } elseif ('lineimage' == $type) {
             $pathinfo['extension'] = 'png';
         }
-        $filePath = _ROOT_ . $pathinfo['dirname'] . '/' . $this->fileService->cleanFileName($pathinfo['filename']);
+        $path = $pathinfo['dirname'] . '/' . $this->fileService->cleanFileName($pathinfo['filename']);
+        $fullPath = app()->basePath($path);
         if ($pathinfo['extension']) {
-            $filePath .= '.' . $pathinfo['extension'];
+            $fullPath .= '.' . $pathinfo['extension'];
         }
 
-        return new JsonResponse(['exists' => (bool) is_file($filePath), 'name' => basename($filePath)]);
+        return new JsonResponse(['exists' => (bool) is_file($fullPath), 'name' => basename($fullPath)]);
     }
 
     /**
@@ -565,7 +566,7 @@ class ExplorerController extends AbstractAdminController
 
             $this->fileService->checkPermittedTargetPath($path);
 
-            if (file_exists(_ROOT_ . $newPath)) {
+            if (file_exists(app()->basePath($newPath))) {
                 if (!$overwrite) {
                     return new JsonResponse([
                         'yesno' => _('A file with the same name already exists. Would you like to replace the existing file?'),
@@ -576,7 +577,7 @@ class ExplorerController extends AbstractAdminController
                 $this->fileService->deleteFolder($newPath);
             }
 
-            if (!rename(_ROOT_ . $path, _ROOT_ . $newPath)) {
+            if (!rename(app()->basePath($path), app()->basePath($newPath))) {
                 throw new InvalidInput(_('An error occurred with the file operations.'));
             }
         } catch (InvalidInput $exception) {
@@ -644,7 +645,7 @@ class ExplorerController extends AbstractAdminController
 
         $noCache = $request->query->getBoolean('noCache');
 
-        $timestamp = filemtime(_ROOT_ . $path);
+        $timestamp = filemtime(app()->basePath($path));
         $lastModified = DateTime::createFromFormat('U', (string) $timestamp);
 
         if (!$noCache) {
@@ -656,7 +657,7 @@ class ExplorerController extends AbstractAdminController
             }
         }
 
-        $image = $this->createImageServiceFomRequest($request->query, _ROOT_ . $path);
+        $image = $this->createImageServiceFomRequest($request->query, app()->basePath($path));
         if ($image->isNoOp()) {
             return $this->redirect($request, $path, Response::HTTP_MOVED_PERMANENTLY);
         }
@@ -698,8 +699,9 @@ class ExplorerController extends AbstractAdminController
         /** @var ?File */
         $file = ORM::getOne(File::class, $id);
         $path = $file->getPath();
+        $fullPath = app()->basePath($path);
 
-        $image = $this->createImageServiceFomRequest($request->request, _ROOT_ . $path);
+        $image = $this->createImageServiceFomRequest($request->request, $fullPath);
         if ($image->isNoOp()) {
             return $this->createImageResponse($file);
         }
@@ -714,12 +716,12 @@ class ExplorerController extends AbstractAdminController
             $mime = 'image/png';
         }
 
-        $image->processImage(_ROOT_ . $path, $type);
+        $image->processImage($fullPath, $type);
 
         $file->setWidth($image->getWidth())
             ->setHeight($image->getHeight())
             ->setMime($mime)
-            ->setSize(filesize(_ROOT_ . $path))
+            ->setSize(filesize($fullPath))
             ->save();
 
         return $this->createImageResponse($file);
@@ -741,7 +743,7 @@ class ExplorerController extends AbstractAdminController
         $file = ORM::getOne(File::class, $id);
         $path = $file->getPath();
 
-        $image = $this->createImageServiceFomRequest($request->request, _ROOT_ . $path);
+        $image = $this->createImageServiceFomRequest($request->request, app()->basePath($path));
         if ($image->isNoOp()) {
             return $this->createImageResponse($file);
         }
@@ -761,7 +763,7 @@ class ExplorerController extends AbstractAdminController
         if (File::getByPath($newPath)) {
             throw new InvalidInput(_('Thumbnail already exists.'));
         }
-        $image->processImage(_ROOT_ . $newPath, $type);
+        $image->processImage(app()->basePath($newPath), $type);
 
         /** @var File */
         $newFile = File::fromPath($newPath);

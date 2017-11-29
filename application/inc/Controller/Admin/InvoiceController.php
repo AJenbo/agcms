@@ -110,7 +110,7 @@ class InvoiceController extends AbstractAdminController
             'title'         => _('Invoice list'),
             'currentUser'   => $request->user(),
             'selected'      => $selected,
-            'countries'     => include _ROOT_ . '/inc/countries.php',
+            'countries'     => include app()->basePath('/inc/countries.php'),
             'departments'   => array_keys(Config::get('emails', [])),
             'users'         => ORM::getByQuery(User::class, 'SELECT * FROM `users` ORDER BY `fullname`'),
             'invoices'      => $invoices,
@@ -225,7 +225,7 @@ class InvoiceController extends AbstractAdminController
             'users'       => ORM::getByQuery(User::class, 'SELECT * FROM `users` ORDER BY fullname'),
             'invoice'     => $invoice,
             'departments' => array_keys(Config::get('emails', [])),
-            'countries'   => include _ROOT_ . '/inc/countries.php',
+            'countries'   => include app()->basePath('/inc/countries.php'),
         ] + $this->basicPageData($request);
 
         $content = Render::render('admin/faktura', $data);

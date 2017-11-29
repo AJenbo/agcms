@@ -103,7 +103,7 @@ class Payment extends Base
 
         $data = $this->basicPageData();
 
-        $data['countries'] = include _ROOT_ . '/inc/countries.php';
+        $data['countries'] = include app()->basePath('/inc/countries.php');
         $data['crumbs'][] = new VolatilePage(_('Order #') . $id, $invoice->getLink());
         $renderable = new VolatilePage(_('Address'), $invoice->getLink() . 'address/');
         $data['crumbs'][] = $renderable;
@@ -217,14 +217,28 @@ class Payment extends Base
         ];
         $inputs['hash'] = md5(implode('', $inputs) . Config::get('pbspassword'));
         $data['inputs'] = $inputs;
-
-        /** @var ?CustomPage */
-        $shoppingTerms = ORM::getOne(CustomPage::class, 3);
-        $data['html'] = $shoppingTerms->getHtml();
+        $data['html'] = $this->getTermsHtml();
 
         $content = Render::render('payment-form2', $data);
 
         return new Response($content);
+    }
+
+    /**
+     * Get the terms and conditions text.
+     *
+     * @return string
+     */
+    public function getTermsHtml(): string
+    {
+        /** @var ?CustomPage */
+        $shoppingTerms = ORM::getOne(CustomPage::class, 3);
+        if (!$shoppingTerms) {
+            app()->logException(new Exception(_('Missing terms and condition')));
+            return '';
+        }
+
+        return $shoppingTerms->getHtml();
     }
 
     /**
@@ -410,7 +424,7 @@ class Payment extends Base
         try {
             $emailService->send($email);
         } catch (Throwable $exception) {
-            Application::getInstance()->logException($exception);
+            app()->logException($exception);
             $email->save();
         }
     }
@@ -442,7 +456,7 @@ class Payment extends Base
         try {
             $emailService->send($email);
         } catch (Throwable $exception) {
-            Application::getInstance()->logException($exception);
+            app()->logException($exception);
             $email->save();
         }
     }
@@ -464,7 +478,7 @@ class Payment extends Base
             $internalNote .= _('Credit card no.: ') . $request->get('cardno') . "\n";
         }
 
-        $countries = include _ROOT_ . '/inc/countries.php';
+        $countries = include app()->basePath('/inc/countries.php');
         if ($request->get('issuercountry')) {
             $internalNote .= _('Card is from: ') . $countries[$request->get('issuercountry')] . "\n";
         }

@@ -47,7 +47,7 @@ class User extends AbstractEntity
     /**
      * Map database content to enity format.
      *
-     * @param array $data
+     * @param array $data The data from the database
      *
      * @return array
      */

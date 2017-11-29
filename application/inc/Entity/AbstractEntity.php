@@ -5,6 +5,9 @@ use AGCMS\Render;
 
 abstract class AbstractEntity implements InterfaceEntity
 {
+    /** Table name in database. */
+    const TABLE_NAME = '';
+
     /** @var ?int The entity ID. */
     protected $id;
 

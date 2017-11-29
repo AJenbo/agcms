@@ -71,7 +71,7 @@ class Shopping extends Base
         $data['renderable'] = $renderable;
         $data['invoice'] = $invoice;
         $data['invalid'] = $invoice->getInvalid();
-        $data['countries'] = include _ROOT_ . '/inc/countries.php';
+        $data['countries'] = include app()->basePath('/inc/countries.php');
         $data['newsletter'] = $cart['newsletter'] ?? false;
         $data['onsubmit'] = 'shoppingCart.sendCart(); return false';
 
@@ -123,7 +123,7 @@ class Shopping extends Base
         try {
             $emailService->send($email);
         } catch (Throwable $exception) {
-            Application::getInstance()->logException($exception);
+            app()->logException($exception);
             $email->save();
         }
 

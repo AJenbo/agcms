@@ -132,7 +132,7 @@ class Render
      */
     public static function render(string $template = 'index', array $data = []): string
     {
-        $templatePath = _ROOT_ . '/theme/';
+        $templatePath = app()->basePath('/theme/');
         $loader = new Twig_Loader_Filesystem('default/', $templatePath);
         if ('en_US' !== Config::get('locale', 'en_US')) {
             $loader->prependPath('default/' . Config::get('locale') . '/');
@@ -146,7 +146,7 @@ class Render
 
         $twig = new Twig_Environment($loader);
         if ('production' === Config::get('enviroment', 'develop')) {
-            $twig->setCache(_ROOT_ . '/theme/cache/twig');
+            $twig->setCache(app()->basePath('/theme/cache/twig'));
         }
         if ('develop' === Config::get('enviroment', 'develop')) {
             $twig->enableDebug();

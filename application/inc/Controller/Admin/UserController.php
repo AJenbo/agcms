@@ -113,7 +113,7 @@ class UserController extends AbstractAdminController
             try {
                 $emailService->send($email);
             } catch (Throwable $exception) {
-                Application::getInstance()->logException($exception);
+                app()->logException($exception);
                 $email->save();
             }
         } catch (InvalidInput $exception) {

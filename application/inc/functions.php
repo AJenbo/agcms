@@ -1,5 +1,6 @@
 <?php
 
+use AGCMS\Application;
 use AGCMS\Config;
 use AGCMS\DB;
 
@@ -25,6 +26,16 @@ function db(DB $overwrite = null): DB
     }
 
     return $connection;
+}
+
+/**
+ * Get the current application instance
+ *
+ * @return Application
+ */
+function app(): Application
+{
+    return Application::getInstance();
 }
 
 /**
@@ -153,7 +164,7 @@ function purifyHTML(string $html): string
     $config->set('HTML.SafeIframe', true);
     $config->set('URI.SafeIframeRegexp', '%^(https:|http:)?//www.youtube.com/embed/%u');
     $config->set('HTML.Doctype', 'XHTML 1.0 Transitional');
-    $config->set('Cache.SerializerPath', _ROOT_ . '/theme/cache/HTMLPurifier');
+    $config->set('Cache.SerializerPath', app()->basePath('/theme/cache/HTMLPurifier'));
 
     $config->set('HTML.DefinitionID', 'html5-definitions'); // unqiue id
     if ($def = $config->maybeGetRawHTMLDefinition()) {

@@ -362,7 +362,7 @@ class MaintenanceController extends AbstractAdminController
                     preg_match_all('/RFC822.SIZE\s([0-9]+)/', $mails['data'], $mailSizes);
                     $size += array_sum($mailSizes[1]);
                 } catch (Throwable $e) {
-                    Application::getInstance()->logException($e);
+                    app()->logException($e);
                 }
             }
         }

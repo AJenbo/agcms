@@ -82,7 +82,7 @@ class EmailService
         }
 
         $mailer->Subject = $email->getSubject();
-        $mailer->msgHTML($email->getBody(), _ROOT_);
+        $mailer->msgHTML($email->getBody(), app()->basePath());
         $mailer->addAddress($email->getRecipientAddress(), $email->getRecipientName());
 
         if (!$mailer->send()) {

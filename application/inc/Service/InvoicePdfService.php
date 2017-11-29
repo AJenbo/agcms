@@ -78,12 +78,10 @@ class InvoicePdfService
         //set image scale factor
         $this->pdf->setImageScale(PDF_IMAGE_SCALE_RATIO);
 
-        // set some language-dependent strings (optional)
-        if (file_exists(_ROOT_ . '/vendor/tecnickcom/tcpdf/examples/lang/dan.php')) {
-            // include sets $l
-            include _ROOT_ . '/vendor/tecnickcom/tcpdf/examples/lang/dan.php';
-            $this->pdf->setLanguageArray($l);
-        }
+        $this->pdf->setLanguageArray([
+            'a_meta_language' => 'da',
+            'w_page'          => 'side',
+        ]);
 
         $this->pdf->AddPage();
     }
@@ -189,7 +187,7 @@ class InvoicePdfService
      */
     private function insertCustomerAddresses(): void
     {
-        $countries = include _ROOT_ . '/inc/countries.php';
+        $countries = include app()->basePath('/inc/countries.php');
 
         //Invoice address
         $address = $this->getBillingAddress($countries);

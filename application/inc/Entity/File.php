@@ -240,7 +240,7 @@ class File extends AbstractEntity
     public function move(string $path): bool
     {
         //Rename/move or give an error
-        if (!rename(_ROOT_ . $this->getPath(), _ROOT_ . $path)) {
+        if (!rename(app()->basePath($this->getPath()), app()->basePath($path))) {
             return false;
         }
 
@@ -319,15 +319,16 @@ class File extends AbstractEntity
      */
     public static function fromPath(string $path): self
     {
-        $imagesize = @getimagesize(_ROOT_ . $path);
+        $fullPath = app()->basePath($path);
+        $imagesize = @getimagesize($fullPath);
 
         $guesser = MimeTypeGuesser::getInstance();
-        $mime = $guesser->guess(_ROOT_ . $path);
+        $mime = $guesser->guess($fullPath);
 
         $file = new static([
             'path'        => $path,
             'mime'        => $mime,
-            'size'        => filesize(_ROOT_ . $path),
+            'size'        => filesize($fullPath),
             'description' => '',
             'width'       => $imagesize[0] ?? 0,
             'height'      => $imagesize[1] ?? 0,
@@ -350,7 +351,7 @@ class File extends AbstractEntity
             throw new InvalidInput(sprintf(_('"%s" is still in use.'), $this->path));
         }
 
-        if (file_exists(_ROOT_ . $this->path) && !unlink(_ROOT_ . $this->path)) {
+        if (file_exists(app()->basePath($this->path)) && !unlink(app()->basePath($this->path))) {
             throw new Exception(sprintf(_('Could not delete "%s".'), $this->path));
         }
 

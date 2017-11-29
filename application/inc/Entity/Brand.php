@@ -4,9 +4,7 @@ use AGCMS\ORM;
 
 class Brand extends AbstractRenderable
 {
-    /**
-     * Table name in database.
-     */
+    /** Table name in database. */
     const TABLE_NAME = 'maerke';
 
     // Backed by DB

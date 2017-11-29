@@ -59,10 +59,21 @@ class Application
         mb_detect_order('UTF-8, ISO-8859-1');
         mb_internal_encoding('UTF-8');
 
-        defined('_ROOT_') || define('_ROOT_', $basePath);
         $this->basePath = $basePath;
 
         self::$instance = $this;
+    }
+
+    /**
+     * Get base path for the running application.
+     *
+     * @param string $path
+     *
+     * @return string
+     */
+    public function basePath(string $path = ''): string
+    {
+        return $this->basePath . $path;
     }
 
     public static function getInstance(): self

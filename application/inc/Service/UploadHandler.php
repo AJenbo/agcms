@@ -231,7 +231,7 @@ class UploadHandler
             $file->delete();
         }
 
-        $this->file->move(_ROOT_ . $this->targetDir, $this->getFilename());
+        $this->file->move(app()->basePath($this->targetDir), $this->getFilename());
 
         return File::fromPath($path)
             ->setDescription($description)

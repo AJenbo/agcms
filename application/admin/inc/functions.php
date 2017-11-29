@@ -28,7 +28,7 @@ function removeNoneExistingFiles(): string
 
     $missing = [];
     foreach ($files as $files) {
-        if (!is_file(_ROOT_ . $files['path'])) {
+        if (!is_file(app()->basePath($files['path']))) {
             $missing[] = (int) $files['id'];
         }
     }
@@ -100,7 +100,7 @@ function sendEmail(
 
     $data = [
         'siteName' => Config::get('site_name'),
-        'css'      => file_get_contents(_ROOT_ . '/theme/' . Config::get('theme', 'default') . '/style/email.css'),
+        'css'      => file_get_contents(app()->basePath('/theme/' . Config::get('theme', 'default') . '/style/email.css')),
         'body'     => str_replace(' href="/', ' href="' . Config::get('base_url') . '/', $html),
     ];
     $emailService = new EmailService();
@@ -118,7 +118,7 @@ function sendEmail(
         try {
             $emailService->send($email, $bcc);
         } catch (Throwable $exception) {
-            Application::getInstance()->logException($exception);
+            app()->logException($exception);
             $failedCount += count($bcc);
         }
     }
