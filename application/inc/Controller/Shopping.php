@@ -1,6 +1,5 @@
 <?php namespace AGCMS\Controller;
 
-use AGCMS\Application;
 use AGCMS\Config;
 use AGCMS\Entity\Email;
 use AGCMS\Render;

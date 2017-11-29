@@ -25,7 +25,7 @@ class Contact extends AbstractEntity
     /** @var string Mobile phone number */
     private $phone2 = '';
     /** @var bool Is the user subscribed to the newsletter. */
-    private $newsletter = false;
+    private $subscribed = false;
     /** @var string[] List of newsletter topics that the user is signed up for. */
     private $interests = [];
     /** @var int */
@@ -49,7 +49,7 @@ class Contact extends AbstractEntity
             ->setCity($data['city'])
             ->setPhone1($data['phone1'])
             ->setPhone2($data['phone2'])
-            ->setNewsletter($data['newsletter'])
+            ->setSubscribed($data['subscribed'])
             ->setInterests($data['interests'] ?? [])
             ->setIp($data['ip'])
             ->setId($data['id'] ?? null);
@@ -250,13 +250,13 @@ class Contact extends AbstractEntity
     /**
      * Set newsletter subscribtion status.
      *
-     * @param bool $newsletter
+     * @param bool $subscribed
      *
      * @return $this
      */
-    public function setNewsletter(bool $newsletter): self
+    public function setSubscribed(bool $subscribed): self
     {
-        $this->newsletter = $newsletter;
+        $this->subscribed = $subscribed;
 
         return $this;
     }
@@ -266,9 +266,9 @@ class Contact extends AbstractEntity
      *
      * @return bool
      */
-    public function getNewsletter(): bool
+    public function isSubscribed(): bool
     {
-        return $this->newsletter;
+        return $this->subscribed;
     }
 
     /**
@@ -378,7 +378,7 @@ class Contact extends AbstractEntity
             'city'       => $data['by'],
             'phone1'     => $data['tlf1'],
             'phone2'     => $data['tlf2'],
-            'newsletter' => (bool) $data['kartotek'],
+            'subscribed' => (bool) $data['kartotek'],
             'interests'  => $interests,
             'ip'         => $data['ip'],
         ];
@@ -408,7 +408,7 @@ class Contact extends AbstractEntity
             'by'        => db()->eandq($this->city),
             'tlf1'      => db()->eandq($this->phone1),
             'tlf2'      => db()->eandq($this->phone2),
-            'kartotek'  => db()->eandq((string) (int) $this->newsletter), // enum :(
+            'kartotek'  => db()->eandq((string) (int) $this->subscribed), // enum :(
             'interests' => db()->eandq($interests),
             'ip'        => db()->eandq($this->ip),
         ];

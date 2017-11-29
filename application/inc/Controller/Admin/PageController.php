@@ -232,7 +232,8 @@ class PageController extends AbstractAdminController
             $text
         );
 
-        return ORM::getByQuery(
+        /** @var Page[] */
+        $pages = ORM::getByQuery(
             Page::class,
             "
             SELECT * FROM sider
@@ -243,5 +244,7 @@ class PageController extends AbstractAdminController
             ORDER BY MATCH (navn, text, beskrivelse) AGAINST('" . $text . "') DESC
             "
         );
+
+        return $pages;
     }
 }

@@ -1,6 +1,5 @@
 <?php
 
-use AGCMS\Application;
 use AGCMS\Config;
 use AGCMS\Entity\Brand;
 use AGCMS\Entity\Category;
@@ -100,12 +99,14 @@ function sendEmail(
 
     $data = [
         'siteName' => Config::get('site_name'),
-        'css'      => file_get_contents(app()->basePath('/theme/' . Config::get('theme', 'default') . '/style/email.css')),
+        'css'      => file_get_contents(
+            app()->basePath('/theme/' . Config::get('theme', 'default') . '/style/email.css')
+        ),
         'body'     => str_replace(' href="/', ' href="' . Config::get('base_url') . '/', $html),
     ];
     $emailService = new EmailService();
     $failedCount = 0;
-    foreach ($emailsGroup as $of => $bcc) {
+    foreach ($emailsGroup as $bcc) {
         $email = new Email([
             'subject'          => $subject,
             'body'             => Render::render('email/newsletter', $data),

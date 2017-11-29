@@ -83,9 +83,9 @@ class CategoryController extends AbstractAdminController
         $category->save();
 
         return new JsonResponse([
-            'id' => 'kat' . $category->getId(),
+            'id'       => 'kat' . $category->getId(),
             'parentId' => $category->getParent() ? $category->getParent()->getId() : null,
-            'title' => $category->getTitle(),
+            'title'    => $category->getTitle(),
         ]);
     }
 

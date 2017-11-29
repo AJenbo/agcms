@@ -1,6 +1,5 @@
 <?php namespace AGCMS\Controller\Admin;
 
-use AGCMS\Application;
 use AGCMS\Config;
 use AGCMS\Entity\Email;
 use AGCMS\Entity\User;
@@ -12,6 +11,7 @@ use AGCMS\Service\EmailService;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Throwable;
 
 class UserController extends AbstractAdminController
@@ -51,9 +51,11 @@ class UserController extends AbstractAdminController
     public function newUser(Request $request): Response
     {
         $request->startSession();
-        $message = $request->getSession()->get('message', '');
-        $request->getSession()->remove('message');
-        $request->getSession()->save();
+        /** @var SessionInterface */
+        $session = $request->getSession();
+        $message = $session->get('message', '');
+        $session->remove('message');
+        $session->save();
 
         $content = Render::render('admin/newuser', ['message' => $message]);
 
@@ -121,8 +123,10 @@ class UserController extends AbstractAdminController
         }
 
         $request->startSession();
-        $request->getSession()->set('message', $message);
-        $request->getSession()->save();
+        /** @var SessionInterface */
+        $session = $request->getSession();
+        $session->set('message', $message);
+        $session->save();
 
         return $this->redirect($request, '/admin/users/new/');
     }
@@ -169,13 +173,15 @@ class UserController extends AbstractAdminController
      */
     public function update(Request $request, int $id): JsonResponse
     {
-        if (!$request->user()->hasAccess(User::ADMINISTRATOR) && $request->user()->getId() !== $id) {
+        /** @var User */
+        $user = $request->user();
+        if (!$user->hasAccess(User::ADMINISTRATOR) && $user->getId() !== $id) {
             throw new InvalidInput(_('You do not have the requred access level to change other users.'));
         }
 
         // Validate access lavel update
-        if ($request->user()->getId() === $id
-            && $request->request->getInt('access') !== $request->user()->getAccessLevel()
+        if ($user->getId() === $id
+            && $request->request->getInt('access') !== $user->getAccessLevel()
         ) {
             throw new InvalidInput(_('You can\'t change your own access level'));
         }
@@ -187,13 +193,13 @@ class UserController extends AbstractAdminController
         // Validate password update
         $newPassword = $request->request->get('password_new');
         if ($newPassword) {
-            if (!$request->user()->hasAccess(User::ADMINISTRATOR) && $request->user()->getId() !== $id) {
+            if (!$user->hasAccess(User::ADMINISTRATOR) && $user->getId() !== $id) {
                 throw new InvalidInput(
                     _('You do not have the requred access level to change the password for this users.')
                 );
             }
 
-            if ($request->user()->getId() === $id && !$user->validatePassword($request->request->get('password'))) {
+            if ($user->getId() === $id && !$user->validatePassword($request->request->get('password'))) {
                 throw new InvalidInput(_('Incorrect password.'));
             }
 
@@ -225,10 +231,12 @@ class UserController extends AbstractAdminController
      */
     public function delete(Request $request, int $id): JsonResponse
     {
-        if (!$request->user()->hasAccess(User::ADMINISTRATOR)) {
+        /** @var User */
+        $user = $request->user();
+        if (!$user->hasAccess(User::ADMINISTRATOR)) {
             throw new InvalidInput(_('You do not have permissions to edit users.'));
         }
-        if ($request->user()->getId() === $id) {
+        if ($user->getId() === $id) {
             throw new InvalidInput(_('You can\'t delete yourself.'));
         }
 

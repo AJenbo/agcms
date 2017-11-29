@@ -67,7 +67,7 @@ class AddressbookController extends AbstractAdminController
             'city'       => $request->request->get('city', ''),
             'phone1'     => $request->request->getAlnum('phone1'),
             'phone2'     => $request->request->getAlnum('phone2'),
-            'newsletter' => $request->request->getBoolean('newsletter'),
+            'subscribed' => $request->request->getBoolean('newsletter'),
             'interests'  => $request->request->get('interests', []),
             'ip'         => $request->getClientIp(),
         ]);
@@ -96,7 +96,7 @@ class AddressbookController extends AbstractAdminController
             ->setCity($request->request->get('city', ''))
             ->setPhone1($request->request->getAlnum('phone1'))
             ->setPhone2($request->request->getAlnum('phone2'))
-            ->setNewsletter($request->request->getBoolean('newsletter'))
+            ->setSubscribed($request->request->getBoolean('newsletter'))
             ->setInterests($request->request->get('interests', []))
             ->save();
 

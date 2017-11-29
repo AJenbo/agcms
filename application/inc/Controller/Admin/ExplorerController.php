@@ -301,8 +301,11 @@ class ExplorerController extends AbstractAdminController
     {
         /** @var ?File */
         $file = ORM::getOne(File::class, $id);
-        $template = 'admin/popup-image';
+        if (!$file) {
+            throw new InvalidInput(_('File not found'));
+        }
 
+        $template = 'admin/popup-image';
         if (0 === mb_strpos($file->getMime(), 'video/')) {
             $template = 'admin/popup-video';
         } elseif (0 === mb_strpos($file->getMime(), 'audio/')) {
@@ -354,6 +357,9 @@ class ExplorerController extends AbstractAdminController
     {
         /** @var ?File */
         $file = ORM::getOne(File::class, $id);
+        if (!$file) {
+            throw new InvalidInput(_('File not found'));
+        }
 
         $description = $request->request->get('description', '');
         $file->setDescription($description)->save();
@@ -411,6 +417,9 @@ class ExplorerController extends AbstractAdminController
 
         /** @var ?File */
         $file = ORM::getOne(File::class, $id);
+        if (!$file) {
+            throw new InvalidInput(_('File not found'));
+        }
 
         $data = [
             'file' => $file,
@@ -455,6 +464,10 @@ class ExplorerController extends AbstractAdminController
     {
         /** @var ?UploadedFile */
         $uploadedFile = $request->files->get('upload');
+        if (!$uploadedFile) {
+            throw new InvalidInput(_('File not recived'));
+        }
+
         $currentDir = $request->cookies->get('admin_dir', '/images');
         $targetDir = $request->get('dir', $currentDir);
         $destinationType = $request->get('type', '');
@@ -488,22 +501,26 @@ class ExplorerController extends AbstractAdminController
      */
     public function fileRename(Request $request, int $id): JsonResponse
     {
-        /** @var ?File */
-        $file = ORM::getOne(File::class, $id);
-        $pathinfo = pathinfo($file->getPath());
-
-        $dir = $request->request->get('dir', $pathinfo['dirname']);
-        $filename = $request->request->get('name', $pathinfo['filename']);
-        $filename = $this->fileService->cleanFileName($filename);
-        $overwrite = $request->request->getBoolean('overwrite');
-
-        $newPath = $dir . '/' . $filename . '.' . $pathinfo['extension'];
-
-        if ($file->getPath() === $newPath) {
-            return new JsonResponse(['id' => $id, 'filename' => $filename, 'path' => $file->getPath()]);
-        }
-
         try {
+            /** @var ?File */
+            $file = ORM::getOne(File::class, $id);
+            if (!$file) {
+                throw new InvalidInput(_('File not found'));
+            }
+
+            $pathinfo = pathinfo($file->getPath());
+
+            $dir = $request->request->get('dir', $pathinfo['dirname']);
+            $filename = $request->request->get('name', $pathinfo['filename']);
+            $filename = $this->fileService->cleanFileName($filename);
+            $overwrite = $request->request->getBoolean('overwrite');
+
+            $newPath = $dir . '/' . $filename . '.' . $pathinfo['extension'];
+
+            if ($file->getPath() === $newPath) {
+                return new JsonResponse(['id' => $id, 'filename' => $filename, 'path' => $file->getPath()]);
+            }
+
             if (!$filename) {
                 throw new InvalidInput(_('The name is invalid.'));
             }
@@ -604,7 +621,7 @@ class ExplorerController extends AbstractAdminController
         /** @var ?File */
         $file = ORM::getOne(File::class, $id);
         if (!$file) {
-            throw new InvalidInput('File not found.');
+            throw new InvalidInput(_('File not found'));
         }
 
         $mode = $request->get('mode');
@@ -641,6 +658,10 @@ class ExplorerController extends AbstractAdminController
     {
         /** @var ?File */
         $file = ORM::getOne(File::class, $id);
+        if (!$file) {
+            throw new InvalidInput(_('File not found'));
+        }
+
         $path = $file->getPath();
 
         $noCache = $request->query->getBoolean('noCache');
@@ -685,7 +706,7 @@ class ExplorerController extends AbstractAdminController
     }
 
     /**
-     * Process an image image.
+     * Process an image.
      *
      * @param Request $request
      * @param int     $id
@@ -698,6 +719,10 @@ class ExplorerController extends AbstractAdminController
     {
         /** @var ?File */
         $file = ORM::getOne(File::class, $id);
+        if (!$file) {
+            throw new InvalidInput(_('File not found'));
+        }
+
         $path = $file->getPath();
         $fullPath = app()->basePath($path);
 
@@ -741,6 +766,10 @@ class ExplorerController extends AbstractAdminController
     {
         /** @var ?File */
         $file = ORM::getOne(File::class, $id);
+        if (!$file) {
+            throw new InvalidInput(_('File not found'));
+        }
+
         $path = $file->getPath();
 
         $image = $this->createImageServiceFomRequest($request->request, app()->basePath($path));

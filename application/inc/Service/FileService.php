@@ -244,21 +244,16 @@ class FileService
         }
         $html .= '<div id="tilebox' . $file->getId() . '" class="' . $menuType . '"><div class="image"';
 
+        $onclick = 'files[' . $file->getId() . '].openfile()';
         if ('ckeditor' === $returnType) {
-            $html .= ' onclick="files[' . $file->getId() . '].addToEditor()"';
+            $onclick = 'files[' . $file->getId() . '].addToEditor()';
         } elseif ('thb' === $returnType && in_array($file->getMime(), ['image/gif', 'image/jpeg', 'image/png'], true)) {
-            if ($file->getWidth() <= Config::get('thumb_width')
-                && $file->getHeight() <= Config::get('thumb_height')
-            ) {
-                $html .= ' onclick="insertThumbnail(' . $file->getId() . ')"';
-            } else {
-                $html .= ' onclick="openImageThumbnail(' . $file->getId() . ')"';
+            $onclick = 'openImageThumbnail(' . $file->getId() . ')';
+            if ($file->getWidth() <= Config::get('thumb_width') && $file->getHeight() <= Config::get('thumb_height')) {
+                $onclick = 'insertThumbnail(' . $file->getId() . ')';
             }
-        } else {
-            $html .= ' onclick="files[' . $file->getId() . '].openfile();"';
         }
-
-        $html .= '> <img src="';
+        $html .= ' onclick="' . $onclick . '"> <img src="';
 
         $type = explode('/', $file->getMime());
         $type = array_shift($type);

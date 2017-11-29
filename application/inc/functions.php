@@ -29,7 +29,7 @@ function db(DB $overwrite = null): DB
 }
 
 /**
- * Get the current application instance
+ * Get the current application instance.
  *
  * @return Application
  */

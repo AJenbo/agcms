@@ -367,9 +367,12 @@ class File extends AbstractEntity
      */
     public static function getByPath(string $path): ?self
     {
-        return ORM::getOneByQuery(
-            self::class,
+        /** @var ?static */
+        $file = ORM::getOneByQuery(
+            static::class,
             'SELECT * FROM `' . self::TABLE_NAME . "` WHERE path = '" . db()->esc($path) . "'"
         );
+
+        return $file;
     }
 }

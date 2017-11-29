@@ -1,5 +1,6 @@
 <?php namespace AGCMS\Entity;
 
+use AGCMS\Exception\Exception;
 use AGCMS\ORM;
 use AGCMS\Render;
 
@@ -390,7 +391,13 @@ class Table extends AbstractEntity
      */
     public function getPage(): Page
     {
-        return ORM::getOne(Page::class, $this->pageId);
+        /** @var ?Page */
+        $page = ORM::getOne(Page::class, $this->pageId);
+        if (!$page) {
+            throw new Exception(_('The page has gone missing'));
+        }
+
+        return $page;
     }
 
     /**

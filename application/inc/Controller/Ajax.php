@@ -33,7 +33,7 @@ class Ajax extends Base
 
         $table = ORM::getOne(Table::class, $tableId);
         assert($table instanceof Table);
-        if ($rows = $table->getRows($orderBy)) {
+        if ($table->getRows()) {
             $data = [
                 'orderBy'  => $orderBy,
                 'table'    => $table,

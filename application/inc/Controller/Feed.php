@@ -31,7 +31,7 @@ class Feed extends Base
         $activeCategories = [];
         $activeCategoryIds = [];
         $categories = ORM::getByQuery(Category::class, 'SELECT * FROM kat');
-        foreach ($categories as $key => $category) {
+        foreach ($categories as $category) {
             assert($category instanceof Category);
             if ($category->isInactive()) {
                 continue;

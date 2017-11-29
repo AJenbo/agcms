@@ -156,7 +156,7 @@ class InvoiceService
      * Add the customer to the malinglist.
      *
      * @param Invoice $invoice
-     * @param ?string  $clientIp
+     * @param ?string $clientIp
      *
      * @return void
      */
@@ -178,7 +178,7 @@ class InvoiceService
                 'city'       => $invoice->getCity(),
                 'phone1'     => $invoice->getPhone1(),
                 'phone2'     => $invoice->getPhone2(),
-                'newsletter' => true,
+                'subscribed' => true,
                 'ip'         => $clientIp ?? '',
             ]);
             $conteact->save();
@@ -196,7 +196,7 @@ class InvoiceService
             ->setPhone1($invoice->getPhone1())
             ->setPhone2($invoice->getPhone2())
             ->setPhone2($invoice->getPhone2())
-            ->setNewsletter(true)
+            ->setSubscribed(true)
             ->setIp($clientIp ?? '')
             ->save();
     }

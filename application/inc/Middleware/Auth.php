@@ -9,6 +9,7 @@ use AGCMS\Render;
 use AGCMS\Request;
 use Closure;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\Session\SessionInterface;
 
 class Auth implements Middleware
 {
@@ -74,6 +75,7 @@ class Auth implements Middleware
         );
         if ($user && $user->getAccessLevel() && $user->validatePassword($request->get('password', ''))) {
             $request->startSession();
+            /** @var SessionInterface */
             $session = $request->getSession();
             $session->set('login_id', $user->getId());
             $session->set('login_hash', $user->getPasswordHash());

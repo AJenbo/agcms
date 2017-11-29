@@ -34,8 +34,10 @@ class InvoiceController extends AbstractAdminController
             'momssats'   => $request->get('momssats'),
             'clerk'      => $request->get('clerk'),
         ];
-        if (null === $selected['clerk'] && !$request->user()->hasAccess(User::ADMINISTRATOR)) {
-            $selected['clerk'] = $request->user()->getFullName();
+        /** @var User */
+        $user = $request->user();
+        if (null === $selected['clerk'] && !$user->hasAccess(User::ADMINISTRATOR)) {
+            $selected['clerk'] = $user->getFullName();
         }
         if ('' === $selected['momssats']) {
             $selected['momssats'] = null;
@@ -55,7 +57,7 @@ class InvoiceController extends AbstractAdminController
             $where[] = '`department` = ' . db()->eandq($selected['department']);
         }
         if ($selected['clerk']
-            && (!$request->user()->hasAccess(User::ADMINISTRATOR) || $request->user()->getFullName() === $selected['clerk'])
+            && (!$user->hasAccess(User::ADMINISTRATOR) || $user->getFullName() === $selected['clerk'])
         ) {
             //Viewing your self
             $where[] = '(`clerk` = ' . db()->eandq($selected['clerk']) . " OR `clerk` = '')";
@@ -108,7 +110,7 @@ class InvoiceController extends AbstractAdminController
 
         $data = [
             'title'         => _('Invoice list'),
-            'currentUser'   => $request->user(),
+            'currentUser'   => $user,
             'selected'      => $selected,
             'countries'     => include app()->basePath('/inc/countries.php'),
             'departments'   => array_keys(Config::get('emails', [])),
@@ -174,7 +176,9 @@ class InvoiceController extends AbstractAdminController
      */
     public function validate(Request $request, int $id): JsonResponse
     {
-        if (!$request->user()->hasAccess(User::ADMINISTRATOR)) {
+        /** @var User */
+        $user = $request->user();
+        if (!$user->hasAccess(User::ADMINISTRATOR)) {
             throw new InvalidInput('You do not have permissions to validate payments!');
         }
 
@@ -194,7 +198,9 @@ class InvoiceController extends AbstractAdminController
      */
     public function create(Request $request): JsonResponse
     {
-        $invoice = new Invoice(['clerk' => $request->user()->getFullName()]);
+        /** @var User */
+        $user = $request->user();
+        $invoice = new Invoice(['clerk' => $user->getFullName()]);
         $invoice->save();
 
         return new JsonResponse(['id' => $invoice->getId()]);
@@ -214,14 +220,17 @@ class InvoiceController extends AbstractAdminController
         $invoice = ORM::getOne(Invoice::class, $id);
         assert($invoice instanceof Invoice);
 
+        /** @var User */
+        $user = $request->user();
+
         if (!$invoice->getClerk()) {
-            $invoice->setClerk($request->user()->getFullName());
+            $invoice->setClerk($user->getFullName());
         }
 
         $data = [
             'title'       => _('Online Invoice #') . $invoice->getId(),
             'status'      => $invoice->getStatus(),
-            'currentUser' => $request->user(),
+            'currentUser' => $user,
             'users'       => ORM::getByQuery(User::class, 'SELECT * FROM `users` ORDER BY fullname'),
             'invoice'     => $invoice,
             'departments' => array_keys(Config::get('emails', [])),

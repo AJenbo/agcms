@@ -46,7 +46,8 @@ class Search extends Base
             $categoryIds[] = $category->getId();
         }
 
-        return ORM::getByQuery(
+        /** @var Brand[] */
+        $brands = ORM::getByQuery(
             Brand::class,
             '
             SELECT * FROM `maerke`
@@ -57,6 +58,8 @@ class Search extends Base
             ) ORDER BY `navn`
             '
         );
+
+        return $brands;
     }
 
     /**
@@ -247,7 +250,8 @@ class Search extends Base
         $simpleSearchString = $searchString ? '%' . preg_replace('/\s+/u', '%', $searchString) . '%' : '';
         $simpleAntiWords = $antiWords ? '%' . preg_replace('/\s+/u', '%', $antiWords) . '%' : '';
 
-        return ORM::getByQuery(
+        /** @var Brand[] */
+        $brands = ORM::getByQuery(
             Brand::class,
             '
             SELECT * FROM `maerke`
@@ -259,6 +263,8 @@ class Search extends Base
             AND navn NOT LIKE ' . db()->eandq($simpleAntiWords) . '
             '
         );
+
+        return $brands;
     }
 
     /**

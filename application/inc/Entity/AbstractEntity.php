@@ -52,7 +52,7 @@ abstract class AbstractEntity implements InterfaceEntity
             $this->save();
         }
 
-        return $this->id;
+        return (int) $this->id;
     }
 
     /**

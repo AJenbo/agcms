@@ -1,6 +1,5 @@
 <?php namespace AGCMS\Controller;
 
-use AGCMS\Application;
 use AGCMS\Config;
 use AGCMS\Entity\CustomPage;
 use AGCMS\Entity\Email;
@@ -236,6 +235,7 @@ class Payment extends Base
         $shoppingTerms = ORM::getOne(CustomPage::class, 3);
         if (!$shoppingTerms) {
             app()->logException(new Exception(_('Missing terms and condition')));
+
             return '';
         }
 

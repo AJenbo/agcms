@@ -123,7 +123,7 @@ class Category extends AbstractRenderable
             throw new InvalidInput(_('You cannot create new root categories!'));
         }
 
-        $this->parentId = $parent->getId();
+        $this->parentId = $parent ? $parent->getId() : null;
 
         return $this;
     }
@@ -263,15 +263,17 @@ class Category extends AbstractRenderable
     /**
      * Get parent category.
      *
-     * @return ?self
+     * @return ?static
      */
     public function getParent(): ?self
     {
-        if (null === $this->parentId) {
-            return null;
+        $cetegory = null;
+        if (null !== $this->parentId) {
+            /** @var ?static */
+            $cetegory = ORM::getOne(static::class, $this->parentId);
         }
 
-        return ORM::getOne(self::class, $this->parentId);
+        return $cetegory;
     }
 
     /**
@@ -366,9 +368,10 @@ class Category extends AbstractRenderable
         Render::addLoadedTable('bind');
 
         if (!in_array($order, ['navn', 'for', 'pris', 'varenr'])) {
-            $sort = 'navn';
+            $order = 'navn';
         }
 
+        /** @var Page[] */
         $pages = ORM::getByQuery(
             Page::class,
             '
@@ -497,11 +500,13 @@ class Category extends AbstractRenderable
      */
     public function getIcon(): ?File
     {
-        if (null === $this->iconId) {
-            return null;
+        $file = null;
+        if (null !== $this->iconId) {
+            /** @var ?File */
+            $file = ORM::getOne(File::class, $this->iconId);
         }
 
-        return ORM::getOne(File::class, $this->iconId);
+        return $file;
     }
 
     // ORM related functions

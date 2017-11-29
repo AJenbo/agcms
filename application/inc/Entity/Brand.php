@@ -91,11 +91,13 @@ class Brand extends AbstractRenderable
      */
     public function getIcon(): ?File
     {
-        if (null === $this->iconId) {
-            return null;
+        $file = null;
+        if (null !== $this->iconId) {
+            /** @var ?File */
+            $file = ORM::getOne(File::class, $this->iconId);
         }
 
-        return ORM::getOne(File::class, $this->iconId);
+        return $file;
     }
 
     // General methodes

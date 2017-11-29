@@ -229,11 +229,11 @@ class InvoicePdfService
         if ($this->invoice->getPostbox()) {
             $address .= "\n" . $this->invoice->getPostbox();
         }
+        $cityLine = $this->invoice->getCity();
         if ($this->invoice->getPostcode()) {
-            $address .= "\n" . $this->invoice->getPostcode() . ' ' . $this->invoice->getCity();
-        } else {
-            $address .= "\n" . $this->invoice->getCity();
+            $cityLine = $this->invoice->getPostcode() . ' ' . $this->invoice->getCity();
         }
+        $address .= "\n" . $cityLine;
         if ($this->invoice->getCountry() && 'DK' !== $this->invoice->getCountry()) {
             $address .= "\n" . $countries[$this->invoice->getCountry()];
         }

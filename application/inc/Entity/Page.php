@@ -279,11 +279,13 @@ class Page extends AbstractRenderable implements InterfaceRichText
      */
     public function getIcon(): ?File
     {
-        if (null === $this->iconId) {
-            return null;
+        $file = null;
+        if (null !== $this->iconId) {
+            /** @var ?File */
+            $file = ORM::getOne(File::class, $this->iconId);
         }
 
-        return ORM::getOne(File::class, $this->iconId);
+        return $file;
     }
 
     /**
@@ -468,7 +470,10 @@ class Page extends AbstractRenderable implements InterfaceRichText
      */
     public function getPrimaryCategory(): ?Category
     {
-        return ORM::getOneByQuery(Category::class, $this->getCategoriesQuery());
+        /** @var ?Category */
+        $category = ORM::getOneByQuery(Category::class, $this->getCategoriesQuery());
+
+        return $category;
     }
 
     /**
@@ -478,7 +483,10 @@ class Page extends AbstractRenderable implements InterfaceRichText
      */
     public function getCategories(): array
     {
-        return ORM::getByQuery(Category::class, $this->getCategoriesQuery());
+        /** @var Category[] */
+        $categories = ORM::getByQuery(Category::class, $this->getCategoriesQuery());
+
+        return $categories;
     }
 
     /**
@@ -556,7 +564,10 @@ class Page extends AbstractRenderable implements InterfaceRichText
      */
     public function getAccessories(): array
     {
-        return ORM::getByQuery(self::class, $this->getAccessoryQuery());
+        /** @var Page[] */
+        $page = ORM::getByQuery(self::class, $this->getAccessoryQuery());
+
+        return $page;
     }
 
     /**
@@ -597,10 +608,13 @@ class Page extends AbstractRenderable implements InterfaceRichText
      */
     public function getTables(): array
     {
-        return ORM::getByQuery(
+        /** @var Table[] */
+        $tables = ORM::getByQuery(
             Table::class,
             'SELECT * FROM `lists` WHERE page_id = ' . $this->getId()
         );
+
+        return $tables;
     }
 
     /**
@@ -610,11 +624,13 @@ class Page extends AbstractRenderable implements InterfaceRichText
      */
     public function getBrand(): ?Brand
     {
-        if (null === $this->brandId) {
-            return null;
+        $brand = null;
+        if (null !== $this->brandId) {
+            /** @var ?Brand */
+            $brand = ORM::getOne(Brand::class, $this->brandId);
         }
 
-        return ORM::getOne(Brand::class, $this->brandId);
+        return $brand;
     }
 
     /**
@@ -624,11 +640,13 @@ class Page extends AbstractRenderable implements InterfaceRichText
      */
     public function getRequirement(): ?Requirement
     {
-        if (null === $this->requirementId) {
-            return null;
+        $requirement = null;
+        if (null !== $this->requirementId) {
+            /** @var ?Requirement */
+            $requirement = ORM::getOne(Requirement::class, $this->requirementId);
         }
 
-        return ORM::getOne(Requirement::class, $this->requirementId);
+        return null;
     }
 
     /**
