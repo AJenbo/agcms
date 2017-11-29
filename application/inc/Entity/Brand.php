@@ -32,7 +32,7 @@ class Brand extends AbstractRenderable
     /**
      * Map data from DB table to entity.
      *
-     * @param array The data from the database
+     * @param array $data The data from the database
      *
      * @return array
      */
@@ -53,7 +53,7 @@ class Brand extends AbstractRenderable
      *
      * @param string $link The url
      *
-     * @return self
+     * @return $this
      */
     public function setLink(string $link): self
     {
@@ -77,11 +77,11 @@ class Brand extends AbstractRenderable
      *
      * @param ?File $icon
      *
-     * @return self
+     * @return $this
      */
     public function setIcon(?File $icon): self
     {
-        $this->iconId = $icon->getId();
+        $this->iconId = $icon ? $icon->getId() : null;
 
         return $this;
     }

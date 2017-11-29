@@ -6,6 +6,7 @@ use AGCMS\Entity\Category;
 use AGCMS\Entity\File;
 use AGCMS\Entity\Page;
 use AGCMS\Entity\Requirement;
+use AGCMS\Exception\InvalidInput;
 use AGCMS\ORM;
 use AGCMS\Render;
 use AGCMS\Service\SiteTreeService;
@@ -21,6 +22,8 @@ class PageController extends AbstractAdminController
      * @param Request  $request
      * @param int|null $id
      *
+     * @throws InvalidInput
+     *
      * @return Response
      */
     public function index(Request $request, int $id = null): Response
@@ -33,18 +36,23 @@ class PageController extends AbstractAdminController
         $bindings = [];
         $accessories = [];
         if (null !== $id) {
-            /** @var Page */
+            /** @var ?Page */
             $page = ORM::getOne(Page::class, $id);
-            assert($page instanceof Page);
-            if ($page) {
-                foreach ($page->getCategories() as $category) {
-                    $bindings[$category->getId()] = $category->getPath();
+            if (!$page) {
+                throw new InvalidInput(_('The page does not exist'));
+            }
+
+            foreach ($page->getCategories() as $category) {
+                $bindings[$category->getId()] = $category->getPath();
+            }
+
+            foreach ($page->getAccessories() as $accessory) {
+                $path = '';
+                if ($root = $accessory->getPrimaryCategory()) {
+                    $path = $root->getPath();
                 }
 
-                foreach ($page->getAccessories() as $accessory) {
-                    $category = $accessory->getPrimaryCategory();
-                    $accessories[$accessory->getId()] = $category->getPath() . $accessory->getTitle();
-                }
+                $accessories[$accessory->getId()] = $path . '/' . $accessory->getTitle();
             }
         }
 
@@ -108,8 +116,9 @@ class PageController extends AbstractAdminController
     public function updatePage(Request $request, int $id): JsonResponse
     {
         $icon = null;
-        if (null !== $request->request->get('iconId')) {
-            $icon = ORM::getOne(File::class, $request->request->get('iconId'));
+        if ($request->request->has('iconId')) {
+            /** @var ?File */
+            $icon = ORM::getOne(File::class, $request->request->getInt('iconId'));
         }
 
         $page = ORM::getOne(Page::class, $id);
@@ -135,6 +144,8 @@ class PageController extends AbstractAdminController
      * Search page.
      *
      * @param Request $request
+     *
+     * @throws InvalidInput
      *
      * @return Response
      */
@@ -170,15 +181,20 @@ class PageController extends AbstractAdminController
     {
         $page = ORM::getOne(Page::class, $pageId);
         assert($page instanceof Page);
-        /** @var Page */
+        /** @var ?Page */
         $accessory = ORM::getOne(Page::class, $accessoryId);
         assert($accessory instanceof Page);
         $page->addAccessory($accessory);
 
+        $path = '';
+        if ($root = $accessory->getPrimaryCategory()) {
+            $path = $root->getPath();
+        }
+
         return new JsonResponse([
             'pageId'      => $page->getId(),
             'accessoryId' => $accessory->getId(),
-            'title'       => $accessory->getPrimaryCategory()->getPath() . '/' . $accessory->getTitle(),
+            'title'       => $path . '/' . $accessory->getTitle(),
         ]);
     }
 

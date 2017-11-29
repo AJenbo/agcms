@@ -7,7 +7,7 @@ use Symfony\Component\HttpFoundation\Session\Session;
 
 class Request extends SymfonyRequest
 {
-    /** @var User */
+    /** @var ?User */
     private $user;
 
     /**
@@ -61,12 +61,13 @@ class Request extends SymfonyRequest
         $this->startSession();
         $id = $this->session->get('login_id');
         $hash = $this->session->get('login_hash');
-        $this->getSession()->save();
+        $this->session->save();
 
         if (!$id || !$hash) {
             return null;
         }
 
+        /** @var ?User */
         $user = ORM::getOneByQuery(
             User::class,
             'SELECT * FROM `users` WHERE `id` = ' . $id . ' AND access != 0 AND password = ' . db()->eandq($hash)

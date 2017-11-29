@@ -1,11 +1,14 @@
 <?php namespace AGCMS\Controller\Admin;
 
 use AGCMS\Application;
+use AGCMS\Config;
+use AGCMS\Entity\Email;
 use AGCMS\Entity\User;
 use AGCMS\Exception\InvalidInput;
 use AGCMS\ORM;
 use AGCMS\Render;
 use AGCMS\Request;
+use AGCMS\Service\EmailService;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Response;
@@ -63,6 +66,8 @@ class UserController extends AbstractAdminController
      * The new user must be verified by an admin.
      *
      * @param Request $request
+     *
+     * @throws InvalidInput
      *
      * @return RedirectResponse
      */
@@ -158,6 +163,8 @@ class UserController extends AbstractAdminController
      * @param Request $request
      * @param int     $id
      *
+     * @throws InvalidInput
+     *
      * @return JsonResponse
      */
     public function update(Request $request, int $id): JsonResponse
@@ -173,7 +180,7 @@ class UserController extends AbstractAdminController
             throw new InvalidInput(_('You can\'t change your own access level'));
         }
 
-        /** @var User */
+        /** @var ?User */
         $user = ORM::getOne(User::class, $id);
         assert($user instanceof User);
 
@@ -212,6 +219,8 @@ class UserController extends AbstractAdminController
      * @param Request $request
      * @param int     $id
      *
+     * @throws InvalidInput
+     *
      * @return JsonResponse
      */
     public function delete(Request $request, int $id): JsonResponse
@@ -224,7 +233,9 @@ class UserController extends AbstractAdminController
         }
 
         $user = ORM::getOne(User::class, $id);
-        $user->delete();
+        if ($user) {
+            $user->delete();
+        }
 
         return new JsonResponse([]);
     }

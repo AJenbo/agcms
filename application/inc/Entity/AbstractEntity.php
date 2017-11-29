@@ -18,7 +18,7 @@ abstract class AbstractEntity implements InterfaceEntity
     /**
      * Map data from DB table to entity.
      *
-     * @param array The data from the database
+     * @param array $data The data from the database
      *
      * @return array
      */
@@ -27,9 +27,9 @@ abstract class AbstractEntity implements InterfaceEntity
     /**
      * Set the entity ID.
      *
-     * @param int|null The id
+     * @param int|null $id The id
      *
-     * @return self
+     * @return $this
      */
     protected function setId(int $id = null): self
     {
@@ -62,7 +62,7 @@ abstract class AbstractEntity implements InterfaceEntity
     /**
      * Save entity to database.
      *
-     * @return InterfaceEntity
+     * @return $this
      */
     public function save(): InterfaceEntity
     {

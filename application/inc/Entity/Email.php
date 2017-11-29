@@ -51,7 +51,7 @@ class Email extends AbstractEntity
      *
      * @param int $timestamp
      *
-     * @return self
+     * @return $this
      */
     public function setTimestamp(int $timestamp): self
     {
@@ -75,7 +75,7 @@ class Email extends AbstractEntity
      *
      * @throws InvalidInput
      *
-     * @return self
+     * @return $this
      */
     public function setSubject(string $subject): self
     {
@@ -101,7 +101,7 @@ class Email extends AbstractEntity
      *
      * @throws InvalidInput
      *
-     * @return self
+     * @return $this
      */
     public function setBody(string $body): self
     {
@@ -127,7 +127,7 @@ class Email extends AbstractEntity
      *
      * @throws InvalidInput
      *
-     * @return self
+     * @return $this
      */
     public function setSenderName(string $senderName): self
     {
@@ -153,7 +153,7 @@ class Email extends AbstractEntity
      *
      * @throws InvalidInput
      *
-     * @return self
+     * @return $this
      */
     public function setSenderAddress(string $senderAddress): self
     {
@@ -179,7 +179,7 @@ class Email extends AbstractEntity
      *
      * @throws InvalidInput
      *
-     * @return self
+     * @return $this
      */
     public function setRecipientName(string $recipientName): self
     {
@@ -205,7 +205,7 @@ class Email extends AbstractEntity
      *
      * @throws InvalidInput
      *
-     * @return self
+     * @return $this
      */
     public function setRecipientAddress(string $recipientAddress): self
     {
@@ -231,7 +231,7 @@ class Email extends AbstractEntity
     /**
      * Map data from DB table to entity.
      *
-     * @param array The data from the database
+     * @param array $data The data from the database
      *
      * @return array
      */

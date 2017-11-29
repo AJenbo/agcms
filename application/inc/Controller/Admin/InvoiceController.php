@@ -168,6 +168,8 @@ class InvoiceController extends AbstractAdminController
      *
      * @param Request $request
      *
+     * @throws InvalidInput
+     *
      * @return JsonResponse
      */
     public function validate(Request $request, int $id): JsonResponse
@@ -208,7 +210,7 @@ class InvoiceController extends AbstractAdminController
      */
     public function invoice(Request $request, int $id): Response
     {
-        /** @var Invoice */
+        /** @var ?Invoice */
         $invoice = ORM::getOne(Invoice::class, $id);
         assert($invoice instanceof Invoice);
 
@@ -240,13 +242,14 @@ class InvoiceController extends AbstractAdminController
      */
     public function pdf(Request $request, int $id): Response
     {
+        /** @var ?Invoice */
         $invoice = ORM::getOne(Invoice::class, $id);
         if (!$invoice) {
             return new Response(_('Invoice not found.'), 404);
         }
 
-        $invoicePdfService = new InvoicePdfService();
-        $pdfData = $invoicePdfService->createPdf($invoice);
+        $invoicePdfService = new InvoicePdfService($invoice);
+        $pdfData = $invoicePdfService->getStream();
 
         $header = [
             'Content-Type'        => 'application/pdf',

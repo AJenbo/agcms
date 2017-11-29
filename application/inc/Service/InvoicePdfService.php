@@ -13,19 +13,19 @@ class InvoicePdfService
     const CELL_WIDTH_TOTAL = 34;
     const MAX_PRODCUTS = 20;
 
-    /** @var ?TCPDF */
+    /** @var TCPDF */
     private $pdf;
-    /** @var ?Invoice */
+    /** @var Invoice */
     private $invoice;
 
     /**
-     * Generate PDF data for an invoce.
+     * Create the service.
      *
      * @param Invoice $invoice
      *
-     * @return string
+     * @throws InvalidInput
      */
-    public function createPdf(Invoice $invoice): string
+    public function __construct(Invoice $invoice)
     {
         if ('new' === $invoice->getStatus()) {
             throw new InvalidInput(_('Can\'t print invoice before it\'s locked.'));
@@ -33,11 +33,20 @@ class InvoicePdfService
 
         $this->invoice = $invoice;
 
+        $this->pdf = new TCPDF('P', 'mm', 'A4', true, 'UTF-8', false);
         $this->setupDocument();
         $this->generateHeader();
         $this->addProductTable();
         $this->generateFooter();
+    }
 
+    /**
+     * Get the PDF as a blob.
+     *
+     * @return string
+     */
+    public function getStream(): string
+    {
         return $this->pdf->Output('', 'S');
     }
 
@@ -48,9 +57,6 @@ class InvoicePdfService
      */
     private function setupDocument(): void
     {
-        // create new PDF document
-        $this->pdf = new TCPDF('P', 'mm', 'A4', true, 'UTF-8', false);
-
         // set document information
         $this->pdf->SetCreator(PDF_CREATOR);
         $this->pdf->SetAuthor(Config::get('site_name'));
@@ -292,7 +298,7 @@ class InvoicePdfService
         //Cells
         $productLines = 0;
         foreach ($this->invoice->getItems() as $item) {
-            $productLines += $this->insertProductLine($item, $productLines);
+            $productLines += $this->insertProductLine($item);
         }
 
         $this->insertTableSpacing(self::MAX_PRODCUTS - $productLines);
@@ -302,12 +308,11 @@ class InvoicePdfService
     /**
      * Insert a single product line in the product table.
      *
-     * @param mixed $item
-     * @param mixed $productLines
+     * @param (int|string)[] $item
      *
      * @return int
      */
-    private function insertProductLine($item, $productLines): int
+    private function insertProductLine(array $item): int
     {
         $value = $item['value'] * (1 + $this->invoice->getVat());
         $lineTotal = $value * $item['quantity'];
@@ -327,7 +332,7 @@ class InvoicePdfService
     /**
      * Insert empty lines at the of the table to keep it at a consistent height.
      *
-     * @param int $productLines
+     * @param int $lines
      *
      * @return void
      */

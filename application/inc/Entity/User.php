@@ -84,7 +84,7 @@ class User extends AbstractEntity
      *
      * @param string $fullName
      *
-     * @return self
+     * @return $this
      */
     public function setFullName(string $fullName): self
     {
@@ -108,7 +108,7 @@ class User extends AbstractEntity
      *
      * @param string $nickname
      *
-     * @return self
+     * @return $this
      */
     public function setNickname(string $nickname): self
     {
@@ -132,7 +132,7 @@ class User extends AbstractEntity
      *
      * @param string $password
      *
-     * @return self
+     * @return $this
      */
     public function setPassword(string $password): self
     {
@@ -146,7 +146,7 @@ class User extends AbstractEntity
      *
      * @param string $passwordHash
      *
-     * @return self
+     * @return $this
      */
     public function setPasswordHash(string $passwordHash): self
     {
@@ -170,7 +170,7 @@ class User extends AbstractEntity
      *
      * @param int $accessLevel
      *
-     * @return self
+     * @return $this
      */
     public function setAccessLevel(int $accessLevel): self
     {
@@ -194,7 +194,7 @@ class User extends AbstractEntity
      *
      * @param int $lastLogin
      *
-     * @return self
+     * @return $this
      */
     public function setLastLogin(int $lastLogin): self
     {

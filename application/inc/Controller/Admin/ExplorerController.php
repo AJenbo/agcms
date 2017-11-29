@@ -3,10 +3,10 @@
 use AGCMS\Config;
 use AGCMS\Entity\CustomPage;
 use AGCMS\Entity\File;
+use AGCMS\Entity\InterfaceRichText;
 use AGCMS\Entity\Page;
 use AGCMS\Entity\Requirement;
 use AGCMS\Exception\InvalidInput;
-use AGCMS\Interfaces\Renderable;
 use AGCMS\ORM;
 use AGCMS\Render;
 use AGCMS\Service\FileService;
@@ -235,10 +235,13 @@ class ExplorerController extends AbstractAdminController
      * @param Request $request
      * @param int     $id
      *
+     * @throws InvalidInput
+     *
      * @return JsonResponse
      */
     public function fileDelete(Request $request, int $id): JsonResponse
     {
+        /** @var ?File */
         $file = ORM::getOne(File::class, $id);
         if (!$file) {
             return new JsonResponse(['id' => $id]);
@@ -296,7 +299,7 @@ class ExplorerController extends AbstractAdminController
      */
     public function fileView(Request $request, int $id): Response
     {
-        /** @var File */
+        /** @var ?File */
         $file = ORM::getOne(File::class, $id);
         $template = 'admin/popup-image';
 
@@ -348,7 +351,7 @@ class ExplorerController extends AbstractAdminController
      */
     public function fileDescription(Request $request, int $id): JsonResponse
     {
-        /** @var File */
+        /** @var ?File */
         $file = ORM::getOne(File::class, $id);
 
         $description = $request->request->get('description', '');
@@ -357,12 +360,13 @@ class ExplorerController extends AbstractAdminController
         // TODO make db fixer check for missing alt="" in <img>
 
         foreach ([Page::class, CustomPage::class, Requirement::class] as $className) {
-            $pages = ORM::getByQuery(
+            /** @var (Page|CustomPage|Requirement)[] */
+            $richTexts = ORM::getByQuery(
                 $className,
                 'SELECT * FROM `' . $className::TABLE_NAME
                     . "` WHERE `text` LIKE '%=\"" . db()->esc($file->getPath()) . "\"%'"
             );
-            $this->updateAltInHtml($pages, $file);
+            $this->updateAltInHtml($richTexts, $file);
         }
 
         return new JsonResponse(['id' => $id, 'description' => $description]);
@@ -371,15 +375,15 @@ class ExplorerController extends AbstractAdminController
     /**
      * Update alt text for images in HTML text.
      *
-     * @param Renderable[] $request
-     * @param File         $file
+     * @param InterfaceRichText[] $richTexts
+     * @param File                $file
      *
      * @return void
      */
-    private function updateAltInHtml(array $renderables, File $file): void
+    private function updateAltInHtml(array $richTexts, File $file): void
     {
-        foreach ($renderables as $renderable) {
-            $html = $renderable->getHtml();
+        foreach ($richTexts as $richText) {
+            $html = $richText->getHtml();
             $html = preg_replace(
                 [
                     '/(<img[^>]+src="' . preg_quote($file->getPath(), '/') . '"[^>]+alt=")[^"]*("[^>]*>)/iu',
@@ -388,7 +392,7 @@ class ExplorerController extends AbstractAdminController
                 '\1' . htmlspecialchars($file->getDescription(), ENT_COMPAT | ENT_XHTML) . '\2',
                 $html
             );
-            $renderable->setHtml($html)->save();
+            $richText->setHtml($html)->save();
         }
     }
 
@@ -404,7 +408,7 @@ class ExplorerController extends AbstractAdminController
     {
         $currentDir = $request->cookies->get('admin_dir', '/images');
 
-        /** @var File */
+        /** @var ?File */
         $file = ORM::getOne(File::class, $id);
 
         $data = [
@@ -448,7 +452,7 @@ class ExplorerController extends AbstractAdminController
      */
     public function fileUpload(Request $request): Response
     {
-        /** @var UploadedFile */
+        /** @var ?UploadedFile */
         $uploadedFile = $request->files->get('upload');
         $currentDir = $request->cookies->get('admin_dir', '/images');
         $targetDir = $request->get('dir', $currentDir);
@@ -477,11 +481,13 @@ class ExplorerController extends AbstractAdminController
      * @param Request $request
      * @param int     $id
      *
+     * @throws InvalidInput
+     *
      * @return JsonResponse
      */
     public function fileRename(Request $request, int $id): JsonResponse
     {
-        /** @var File */
+        /** @var ?File */
         $file = ORM::getOne(File::class, $id);
         $pathinfo = pathinfo($file->getPath());
 
@@ -533,6 +539,8 @@ class ExplorerController extends AbstractAdminController
      * Rename directory.
      *
      * @param Request $request
+     *
+     * @throws InvalidInput
      *
      * @return JsonResponse
      */
@@ -586,11 +594,18 @@ class ExplorerController extends AbstractAdminController
      * @param Request $request
      * @param int     $id
      *
+     * @throws InvalidInput
+     *
      * @return Response
      */
     public function imageEditWidget(Request $request, int $id): Response
     {
+        /** @var ?File */
         $file = ORM::getOne(File::class, $id);
+        if (!$file) {
+            throw new InvalidInput('File not found.');
+        }
+
         $mode = $request->get('mode');
 
         $fileName = '';
@@ -617,11 +632,13 @@ class ExplorerController extends AbstractAdminController
      * @param Request $request
      * @param int     $id
      *
+     * @throws Exception
+     *
      * @return Response
      */
     public function image(Request $request, int $id): Response
     {
-        /** @var File */
+        /** @var ?File */
         $file = ORM::getOne(File::class, $id);
         $path = $file->getPath();
 
@@ -672,11 +689,13 @@ class ExplorerController extends AbstractAdminController
      * @param Request $request
      * @param int     $id
      *
+     * @throws InvalidInput
+     *
      * @return Response
      */
     public function imageSave(Request $request, int $id): Response
     {
-        /** @var File */
+        /** @var ?File */
         $file = ORM::getOne(File::class, $id);
         $path = $file->getPath();
 
@@ -712,11 +731,13 @@ class ExplorerController extends AbstractAdminController
      * @param Request $request
      * @param int     $id
      *
+     * @throws InvalidInput
+     *
      * @return Response
      */
     public function imageSaveThumb(Request $request, int $id): Response
     {
-        /** @var File */
+        /** @var ?File */
         $file = ORM::getOne(File::class, $id);
         $path = $file->getPath();
 

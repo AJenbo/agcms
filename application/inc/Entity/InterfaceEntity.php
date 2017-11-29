@@ -12,7 +12,7 @@ interface InterfaceEntity
     /**
      * Map data from DB table to entity.
      *
-     * @param array The data from the database
+     * @param array $data The data from the database
      *
      * @return array
      */
@@ -28,7 +28,7 @@ interface InterfaceEntity
     /**
      * Save entity to database.
      *
-     * @return self
+     * @return $this
      */
     public function save(): self;
 

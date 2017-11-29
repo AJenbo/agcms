@@ -3,7 +3,6 @@
 use AGCMS\Exception\InvalidInput;
 use AGCMS\ORM;
 use AGCMS\Render;
-use Exception;
 
 class Category extends AbstractRenderable
 {
@@ -46,6 +45,8 @@ class Category extends AbstractRenderable
      * Construct the entity.
      *
      * @param array $data The entity data
+     *
+     * @throws InvalidInput
      */
     public function __construct(array $data)
     {
@@ -59,14 +60,14 @@ class Category extends AbstractRenderable
         $this->iconId = $data['icon_id'];
         $this->parentId = $data['parent_id'];
         if (null === $this->parentId && $this->id > 0) {
-            throw new Exception(_('Cannot create root categories!'));
+            throw new InvalidInput(_('Cannot create root categories!'));
         }
     }
 
     /**
      * Map data from DB table to entity.
      *
-     * @param array The data from the database
+     * @param array $data The data from the database
      *
      * @return array
      */
@@ -107,14 +108,19 @@ class Category extends AbstractRenderable
     /**
      * Set parent.
      *
-     * @param self $parent
+     * @param ?self $parent
      *
-     * @return self
+     * @throws InvalidInput
+     *
+     * @return $this
      */
-    public function setParent(self $parent): self
+    public function setParent(?self $parent): self
     {
-        if (null === $this->parentId) {
+        if (null === $this->parentId && $parent) {
             throw new InvalidInput(_('Your not allowed to move root categories!'));
+        }
+        if (null !== $this->parentId && !$parent) {
+            throw new InvalidInput(_('You cannot create new root categories!'));
         }
 
         $this->parentId = $parent->getId();
@@ -127,7 +133,7 @@ class Category extends AbstractRenderable
      *
      * @param int $renderMode The render mode for displaying pages
      *
-     * @return self
+     * @return $this
      */
     public function setRenderMode(int $renderMode): self
     {
@@ -151,7 +157,7 @@ class Category extends AbstractRenderable
      *
      * @param string $email Contact email
      *
-     * @return self
+     * @return $this
      */
     public function setEmail(string $email): self
     {
@@ -175,7 +181,7 @@ class Category extends AbstractRenderable
      *
      * @param bool $weightedChildren Weather child categories should be ordered by weight
      *
-     * @return self
+     * @return $this
      */
     public function setWeightedChildren(bool $weightedChildren): self
     {
@@ -199,7 +205,7 @@ class Category extends AbstractRenderable
      *
      * @param int $weight Order-by weight
      *
-     * @return self
+     * @return $this
      */
     public function setWeight(int $weight): self
     {
@@ -284,6 +290,7 @@ class Category extends AbstractRenderable
             $orderBy = '`order`, navn';
         }
 
+        /** @var Category[] */
         $children = ORM::getByQuery(
             self::class,
             '
@@ -474,11 +481,11 @@ class Category extends AbstractRenderable
      *
      * @param ?File $icon
      *
-     * @return self
+     * @return $this
      */
     public function setIcon(?File $icon): self
     {
-        $this->iconId = $icon->getId();
+        $this->iconId = $icon ? $icon->getId() : null;
 
         return $this;
     }

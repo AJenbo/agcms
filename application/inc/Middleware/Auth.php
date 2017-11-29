@@ -67,7 +67,7 @@ class Auth implements Middleware
      */
     private function authenticate(Request $request): void
     {
-        /** @var User */
+        /** @var ?User */
         $user = ORM::getOneByQuery(
             User::class,
             'SELECT * FROM `users` WHERE `name` = ' . db()->eandq($request->get('username', ''))

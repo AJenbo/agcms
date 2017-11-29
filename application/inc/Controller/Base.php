@@ -51,7 +51,7 @@ class Base extends AbstractController
      */
     protected function basicPageData(): array
     {
-        /** @var Category */
+        /** @var ?Category */
         $category = ORM::getOne(Category::class, 0);
         assert($category instanceof Category);
 

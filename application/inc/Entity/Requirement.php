@@ -1,6 +1,6 @@
 <?php namespace AGCMS\Entity;
 
-class Requirement extends AbstractRenderable
+class Requirement extends AbstractRenderable implements InterfaceRichText
 {
     /** Table name in database. */
     const TABLE_NAME = 'krav';
@@ -24,7 +24,7 @@ class Requirement extends AbstractRenderable
     /**
      * Map data from DB table to entity.
      *
-     * @param array The data from the database
+     * @param array $data The data from the database
      *
      * @return array
      */
@@ -44,9 +44,9 @@ class Requirement extends AbstractRenderable
      *
      * @param string $html The HTML body
      *
-     * @return self
+     * @return $this
      */
-    public function setHtml(string $html): self
+    public function setHtml(string $html): InterfaceRichText
     {
         $this->html = $html;
 

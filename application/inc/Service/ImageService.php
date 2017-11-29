@@ -47,7 +47,7 @@ class ImageService
      * @param int $width
      * @param int $height
      *
-     * @return self
+     * @return $this
      */
     public function setCrop(int $startX, int $startY, int $width, int $height): self
     {
@@ -71,7 +71,7 @@ class ImageService
      *
      * @param bool $autoCrop
      *
-     * @return self
+     * @return $this
      */
     public function setAutoCrop(bool $autoCrop): self
     {
@@ -84,9 +84,9 @@ class ImageService
      * Set scale operation.
      *
      * @param int $width
-     * @param int $maxH
+     * @param int $height
      *
-     * @return self
+     * @return $this
      */
     public function setScale(int $width, int $height = 0): self
     {
@@ -104,7 +104,7 @@ class ImageService
      *
      * @param int $flip
      *
-     * @return self
+     * @return $this
      */
     public function setFlip(int $flip): self
     {
@@ -118,7 +118,7 @@ class ImageService
      *
      * @param int $rotate
      *
-     * @return self
+     * @return $this
      */
     public function setRotate(int $rotate): self
     {

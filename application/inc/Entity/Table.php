@@ -56,7 +56,7 @@ class Table extends AbstractEntity
     /**
      * Map data from DB table to entity.
      *
-     * @param array The data from the database
+     * @param array $data The data from the database
      *
      * @return array
      */
@@ -108,7 +108,7 @@ class Table extends AbstractEntity
      *
      * @param int $pageId The page the table belongs on
      *
-     * @return self
+     * @return $this
      */
     private function setPageId(int $pageId): self
     {
@@ -132,7 +132,7 @@ class Table extends AbstractEntity
      *
      * @param string $title The caption
      *
-     * @return self
+     * @return $this
      */
     public function setTitle(string $title): self
     {
@@ -156,7 +156,7 @@ class Table extends AbstractEntity
      *
      * @param string $columnData Array encoded as JSON
      *
-     * @return self
+     * @return $this
      */
     public function setColumnData(string $columnData): self
     {
@@ -187,7 +187,7 @@ class Table extends AbstractEntity
      *
      * @param int $orderBy First column = 0
      *
-     * @return self
+     * @return $this
      */
     private function setOrderBy(int $orderBy): self
     {
@@ -211,7 +211,7 @@ class Table extends AbstractEntity
      *
      * @param bool $hasLinks
      *
-     * @return self
+     * @return $this
      */
     private function setHasLinks(bool $hasLinks): self
     {
@@ -352,7 +352,7 @@ class Table extends AbstractEntity
         $orderBy = min($orderBy, count($this->columns) - 1);
 
         if (!$this->columns[$orderBy]['sorting']) {
-            return arrayNatsort($rows, 'id', $orderBy); // Alpha numeric
+            return arrayNatsort($rows, 'id', (string) $orderBy); // Alpha numeric
         }
 
         $options = $this->columns[$orderBy]['options'];

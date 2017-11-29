@@ -56,6 +56,8 @@ class UploadHandler
      * @param string       $destinationType
      * @param string       $description
      *
+     * @throws InvalidInput
+     *
      * @return File
      */
     public function process(
@@ -168,6 +170,8 @@ class UploadHandler
      * @param ImageService $image
      * @param string       $destinationType
      *
+     * @throws Exception
+     *
      * @return void
      */
     public function processImage(ImageService $image, string $destinationType): void
@@ -196,7 +200,7 @@ class UploadHandler
      *
      * @param ImageService $image
      *
-     * @throws Exception If we don't have the needed memory avalibe
+     * @throws InvalidInput If we don't have the needed memory avalibe
      *
      * @return void
      */

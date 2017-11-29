@@ -114,7 +114,9 @@ class AddressbookController extends AbstractAdminController
     public function delete(Request $request, int $id): JsonResponse
     {
         $contact = ORM::getOne(Contact::class, $id);
-        $contact->delete();
+        if ($contact) {
+            $contact->delete();
+        }
 
         return new JsonResponse(['id' => 'contact' . $id]);
     }

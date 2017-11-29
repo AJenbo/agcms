@@ -56,15 +56,21 @@ class CategoryController extends AbstractAdminController
      * @param Request $request
      * @param int     $id
      *
+     * @throws InvalidInput
+     *
      * @return JsonResponse
      */
     public function update(Request $request, int $id): JsonResponse
     {
-        /** @var Category */
+        /** @var ?Category */
         $category = ORM::getOne(Category::class, $id);
+        if (!$category) {
+            throw new InvalidInput('Category does not exist.');
+        }
 
         if ($request->request->has('parentId')) {
             $parentId = $request->request->getInt('parentId');
+            /** @var ?Category */
             $parent = ORM::getOne(Category::class, $parentId);
             $category->setParent($parent);
         }
@@ -78,7 +84,7 @@ class CategoryController extends AbstractAdminController
 
         return new JsonResponse([
             'id' => 'kat' . $category->getId(),
-            'parentId' => $category->getParent()->getId(),
+            'parentId' => $category->getParent() ? $category->getParent()->getId() : null,
             'title' => $category->getTitle(),
         ]);
     }
@@ -88,6 +94,8 @@ class CategoryController extends AbstractAdminController
      *
      * @param Request $request
      * @param int     $id
+     *
+     * @throws InvalidInput
      *
      * @return JsonResponse
      */

@@ -42,6 +42,9 @@ function removeNoneExistingFiles(): string
 /**
  * @todo resend failed emails, save bcc
  *
+ * @throws InvalidInput
+ * @throws Exception
+ *
  * @return string[]|true
  */
 function sendEmail(
@@ -196,6 +199,8 @@ function saveEmail(string $from, string $interests, string $subject, string $htm
 /**
  * Delete unused file.
  *
+ * @throws InvalidInput
+ *
  * @return int[]|string[]
  */
 function deletefile(int $id, string $path): array
@@ -229,6 +234,8 @@ function saveListOrder(int $id, string $navn, string $text): bool
 }
 
 /**
+ * @throws InvalidInput
+ *
  * @return string[]|true
  */
 function save_ny_kat(string $navn, int $kat, int $vis, string $email, int $iconId = null)
@@ -258,6 +265,16 @@ function sogogerstat(string $sog, string $erstat): int
     return db()->affected_rows;
 }
 
+/**
+ * @param int    $id
+ * @param string $navn
+ * @param string $link
+ * @param int    $iconId
+ *
+ * @throws InvalidInput
+ *
+ * @return array
+ */
 function updatemaerke(?int $id, string $navn, string $link = '', int $iconId = null): array
 {
     if (!$navn) {
@@ -292,13 +309,21 @@ function sletmaerke(int $id): array
     return ['node' => 'maerke' . $id];
 }
 
+/**
+ * @param int $pageId
+ * @param int $categoryId
+ *
+ * @throws InvalidInput
+ *
+ * @return array
+ */
 function sletbind(int $pageId, int $categoryId): array
 {
-    /** @var Page */
+    /** @var ?Page */
     $page = ORM::getOne(Page::class, $pageId);
     assert($page instanceof Page);
 
-    /** @var Category */
+    /** @var ?Category */
     $category = ORM::getOne(Category::class, $categoryId);
     if (!$category) {
         throw new InvalidInput(_('The category doesn\'t exist.'));
@@ -325,13 +350,21 @@ function sletbind(int $pageId, int $categoryId): array
     return $result;
 }
 
+/**
+ * @param int $pageId
+ * @param int $categoryId
+ *
+ * @throws InvalidInput
+ *
+ * @return array
+ */
 function bind(int $pageId, int $categoryId): array
 {
-    /** @var Page */
+    /** @var ?Page */
     $page = ORM::getOne(Page::class, $pageId);
     assert($page instanceof Page);
 
-    /** @var Category */
+    /** @var ?Category */
     $category = ORM::getOne(Category::class, $categoryId);
     if (!$category) {
         throw new InvalidInput(_('The category doesn\'t exist.'));
@@ -361,6 +394,8 @@ function bind(int $pageId, int $categoryId): array
 }
 
 /**
+ * @throws InvalidInput
+ *
  * @return string[]|true
  */
 function updateKat(
@@ -485,7 +520,7 @@ function copytonew(int $id): int
  */
 function save(int $id, string $action, array $updates): array
 {
-    /** @var Invoice */
+    /** @var ?Invoice */
     $invoice = ORM::getOne(Invoice::class, $id);
     assert($invoice instanceof Invoice);
 
@@ -498,6 +533,15 @@ function save(int $id, string $action, array $updates): array
     return ['type' => $action, 'status' => $invoice->getStatus()];
 }
 
+/**
+ * @param Invoice $invoice
+ * @param string  $action
+ * @param array   $updates
+ *
+ * @throws Exception
+ *
+ * @return void
+ */
 function invoiceBasicUpdate(Invoice $invoice, string $action, array $updates): void
 {
     $status = $invoice->getStatus();
@@ -584,6 +628,9 @@ function invoiceBasicUpdate(Invoice $invoice, string $action, array $updates): v
     $invoice->setStatus($status)->save();
 }
 
+/**
+ * @throws InvalidInput
+ */
 function sendInvoice(Invoice $invoice): void
 {
     if (!$invoice->hasValidEmail()) {
@@ -640,11 +687,13 @@ function sendInvoice(Invoice $invoice): void
 }
 
 /**
+ * @throws InvalidInput
+ *
  * @return string[]
  */
 function sendReminder(int $id): array
 {
-    /** @var Invoice */
+    /** @var ?Invoice */
     $invoice = ORM::getOne(Invoice::class, $id);
     assert($invoice instanceof Invoice);
     sendInvoice($invoice);
@@ -653,11 +702,13 @@ function sendReminder(int $id): array
 }
 
 /**
+ * @throws Exception
+ *
  * @return string[]|true
  */
 function pbsconfirm(int $id)
 {
-    /** @var Invoice */
+    /** @var ?Invoice */
     $invoice = ORM::getOne(Invoice::class, $id);
     assert($invoice instanceof Invoice);
 
@@ -675,11 +726,13 @@ function pbsconfirm(int $id)
 }
 
 /**
+ * @throws Exception
+ *
  * @return string[]|true
  */
 function annul(int $id)
 {
-    /** @var Invoice */
+    /** @var ?Invoice */
     $invoice = ORM::getOne(Invoice::class, $id);
     assert($invoice instanceof Invoice);
 

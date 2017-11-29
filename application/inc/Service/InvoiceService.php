@@ -57,6 +57,7 @@ class InvoiceService
                 $pageId = $item['id'] ?? null;
             }
 
+            /** @var ?Page */
             $page = $pageId ? ORM::getOne(Page::class, $pageId) : null;
             if (!$page || $page->isInactive()) {
                 $title = _('Expired');
@@ -155,14 +156,14 @@ class InvoiceService
      * Add the customer to the malinglist.
      *
      * @param Invoice $invoice
-     * @param string  $clientIp
+     * @param ?string  $clientIp
      *
      * @return void
      */
     public function addToAddressBook(Invoice $invoice, ?string $clientIp): void
     {
         $countries = include _ROOT_ . '/inc/countries.php';
-        /** @var Contact */
+        /** @var ?Contact */
         $conteact = ORM::getOneByQuery(
             Contact::class,
             'SELECT * FROM email WHERE email = ' . db()->eandq($invoice->getEmail())
@@ -196,7 +197,7 @@ class InvoiceService
             ->setPhone2($invoice->getPhone2())
             ->setPhone2($invoice->getPhone2())
             ->setNewsletter(true)
-            ->setIp($clientIp)
+            ->setIp($clientIp ?? '')
             ->save();
     }
 }

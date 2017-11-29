@@ -12,7 +12,7 @@ abstract class AbstractRenderable extends AbstractEntity implements Renderable
      *
      * @param string $title The title
      *
-     * @return self
+     * @return $this
      */
     public function setTitle(string $title): self
     {

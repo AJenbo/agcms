@@ -137,7 +137,7 @@ class Invoice extends AbstractEntity
      *
      * @param int $timeStamp
      *
-     * @return self
+     * @return $this
      */
     public function setTimeStamp(int $timeStamp): self
     {
@@ -161,7 +161,7 @@ class Invoice extends AbstractEntity
      *
      * @param int $timeStampPay
      *
-     * @return self
+     * @return $this
      */
     public function setTimeStampPay(int $timeStampPay): self
     {
@@ -185,7 +185,7 @@ class Invoice extends AbstractEntity
      *
      * @param float $amount
      *
-     * @return self
+     * @return $this
      */
     public function setAmount(float $amount): self
     {
@@ -209,7 +209,7 @@ class Invoice extends AbstractEntity
      *
      * @param string $name
      *
-     * @return self
+     * @return $this
      */
     public function setName(string $name): self
     {
@@ -233,7 +233,7 @@ class Invoice extends AbstractEntity
      *
      * @param string $attn
      *
-     * @return self
+     * @return $this
      */
     public function setAttn(string $attn): self
     {
@@ -257,7 +257,7 @@ class Invoice extends AbstractEntity
      *
      * @param string $address
      *
-     * @return self
+     * @return $this
      */
     public function setAddress(string $address): self
     {
@@ -281,7 +281,7 @@ class Invoice extends AbstractEntity
      *
      * @param string $postbox
      *
-     * @return self
+     * @return $this
      */
     public function setPostbox(string $postbox): self
     {
@@ -305,7 +305,7 @@ class Invoice extends AbstractEntity
      *
      * @param string $postcode
      *
-     * @return self
+     * @return $this
      */
     public function setPostcode(string $postcode): self
     {
@@ -329,7 +329,7 @@ class Invoice extends AbstractEntity
      *
      * @param string $city
      *
-     * @return self
+     * @return $this
      */
     public function setCity(string $city): self
     {
@@ -353,7 +353,7 @@ class Invoice extends AbstractEntity
      *
      * @param string $country
      *
-     * @return self
+     * @return $this
      */
     public function setCountry(string $country): self
     {
@@ -377,7 +377,7 @@ class Invoice extends AbstractEntity
      *
      * @param string $email
      *
-     * @return self
+     * @return $this
      */
     public function setEmail(string $email): self
     {
@@ -401,7 +401,7 @@ class Invoice extends AbstractEntity
      *
      * @param string $phone1
      *
-     * @return self
+     * @return $this
      */
     public function setPhone1(string $phone1): self
     {
@@ -425,7 +425,7 @@ class Invoice extends AbstractEntity
      *
      * @param string $phone2
      *
-     * @return self
+     * @return $this
      */
     public function setPhone2(string $phone2): self
     {
@@ -449,7 +449,7 @@ class Invoice extends AbstractEntity
      *
      * @param bool $hasShippingAddress
      *
-     * @return self
+     * @return $this
      */
     public function setHasShippingAddress(bool $hasShippingAddress): self
     {
@@ -473,7 +473,7 @@ class Invoice extends AbstractEntity
      *
      * @param string $shippingPhone
      *
-     * @return self
+     * @return $this
      */
     public function setShippingPhone(string $shippingPhone): self
     {
@@ -497,7 +497,7 @@ class Invoice extends AbstractEntity
      *
      * @param string $shippingName
      *
-     * @return self
+     * @return $this
      */
     public function setShippingName(string $shippingName): self
     {
@@ -521,7 +521,7 @@ class Invoice extends AbstractEntity
      *
      * @param string $shippingAttn
      *
-     * @return self
+     * @return $this
      */
     public function setShippingAttn(string $shippingAttn): self
     {
@@ -545,7 +545,7 @@ class Invoice extends AbstractEntity
      *
      * @param string $shippingAddress
      *
-     * @return self
+     * @return $this
      */
     public function setShippingAddress(string $shippingAddress): self
     {
@@ -569,7 +569,7 @@ class Invoice extends AbstractEntity
      *
      * @param string $shippingAddress2
      *
-     * @return self
+     * @return $this
      */
     public function setShippingAddress2(string $shippingAddress2): self
     {
@@ -593,7 +593,7 @@ class Invoice extends AbstractEntity
      *
      * @param string $shippingPostbox
      *
-     * @return self
+     * @return $this
      */
     public function setShippingPostbox(string $shippingPostbox): self
     {
@@ -617,7 +617,7 @@ class Invoice extends AbstractEntity
      *
      * @param string $shippingPostcode
      *
-     * @return self
+     * @return $this
      */
     public function setShippingPostcode(string $shippingPostcode): self
     {
@@ -641,7 +641,7 @@ class Invoice extends AbstractEntity
      *
      * @param string $shippingCity
      *
-     * @return self
+     * @return $this
      */
     public function setShippingCity(string $shippingCity): self
     {
@@ -665,7 +665,7 @@ class Invoice extends AbstractEntity
      *
      * @param string $shippingCountry
      *
-     * @return self
+     * @return $this
      */
     public function setShippingCountry(string $shippingCountry): self
     {
@@ -689,7 +689,7 @@ class Invoice extends AbstractEntity
      *
      * @param string $note
      *
-     * @return self
+     * @return $this
      */
     public function setNote(string $note): self
     {
@@ -713,7 +713,7 @@ class Invoice extends AbstractEntity
      *
      * @param string $clerk
      *
-     * @return self
+     * @return $this
      */
     public function setClerk(string $clerk): self
     {
@@ -737,7 +737,7 @@ class Invoice extends AbstractEntity
      *
      * @param string $status
      *
-     * @return self
+     * @return $this
      */
     public function setStatus(string $status): self
     {
@@ -761,7 +761,7 @@ class Invoice extends AbstractEntity
      *
      * @param float $shipping
      *
-     * @return self
+     * @return $this
      */
     public function setShipping(float $shipping): self
     {
@@ -785,7 +785,7 @@ class Invoice extends AbstractEntity
      *
      * @param float $vat
      *
-     * @return self
+     * @return $this
      */
     public function setVat(float $vat): self
     {
@@ -809,7 +809,7 @@ class Invoice extends AbstractEntity
      *
      * @param bool $preVat
      *
-     * @return self
+     * @return $this
      */
     public function setPreVat(bool $preVat): self
     {
@@ -833,7 +833,7 @@ class Invoice extends AbstractEntity
      *
      * @param bool $transferred
      *
-     * @return self
+     * @return $this
      */
     public function setTransferred(bool $transferred): self
     {
@@ -857,7 +857,7 @@ class Invoice extends AbstractEntity
      *
      * @param string $cardtype
      *
-     * @return self
+     * @return $this
      */
     public function setCardtype(string $cardtype): self
     {
@@ -881,7 +881,7 @@ class Invoice extends AbstractEntity
      *
      * @param string $iref
      *
-     * @return self
+     * @return $this
      */
     public function setIref(string $iref): self
     {
@@ -905,7 +905,7 @@ class Invoice extends AbstractEntity
      *
      * @param string $eref
      *
-     * @return self
+     * @return $this
      */
     public function setEref(string $eref): self
     {
@@ -929,7 +929,7 @@ class Invoice extends AbstractEntity
      *
      * @param bool $sent
      *
-     * @return self
+     * @return $this
      */
     public function setSent(bool $sent): self
     {
@@ -953,7 +953,7 @@ class Invoice extends AbstractEntity
      *
      * @param string $department
      *
-     * @return self
+     * @return $this
      */
     public function setDepartment(string $department): self
     {
@@ -977,7 +977,7 @@ class Invoice extends AbstractEntity
      *
      * @param string $internalNote
      *
-     * @return self
+     * @return $this
      */
     public function setInternalNote(string $internalNote): self
     {
@@ -999,7 +999,7 @@ class Invoice extends AbstractEntity
     /**
      * Map data from DB table to entity.
      *
-     * @param array The data from the database
+     * @param array $data The data from the database
      *
      * @return array
      */
@@ -1069,7 +1069,7 @@ class Invoice extends AbstractEntity
      *
      * @param string $itemData Array encoded as JSON
      *
-     * @return self
+     * @return $this
      */
     public function setItemData(string $itemData): self
     {

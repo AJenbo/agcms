@@ -1,6 +1,7 @@
 <?php namespace AGCMS\Controller;
 
 use AGCMS\Application;
+use AGCMS\Config;
 use AGCMS\Entity\Email;
 use AGCMS\Render;
 use AGCMS\Service\EmailService;
@@ -70,7 +71,7 @@ class Shopping extends Base
         $data['renderable'] = $renderable;
         $data['invoice'] = $invoice;
         $data['invalid'] = $invoice->getInvalid();
-        $data['countries'] = $countries;
+        $data['countries'] = include _ROOT_ . '/inc/countries.php';
         $data['newsletter'] = $cart['newsletter'] ?? false;
         $data['onsubmit'] = 'shoppingCart.sendCart(); return false';
 

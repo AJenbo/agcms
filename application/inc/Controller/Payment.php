@@ -62,7 +62,7 @@ class Payment extends Base
      */
     public function basket(Request $request, int $id, string $checkId): Response
     {
-        /** @var Invoice */
+        /** @var ?Invoice */
         $invoice = ORM::getOne(Invoice::class, $id);
         if ($redirect = $this->checkStatus($request, $id, $checkId, $invoice)) {
             return $redirect;
@@ -94,7 +94,7 @@ class Payment extends Base
      */
     public function address(Request $request, int $id, string $checkId): Response
     {
-        /** @var Invoice */
+        /** @var ?Invoice */
         $invoice = ORM::getOne(Invoice::class, $id);
         if ($redirect = $this->checkStatus($request, $id, $checkId, $invoice)) {
             return $redirect;
@@ -129,7 +129,7 @@ class Payment extends Base
      */
     public function addressSave(Request $request, int $id, string $checkId): Response
     {
-        /** @var Invoice */
+        /** @var ?Invoice */
         $invoice = ORM::getOne(Invoice::class, $id);
         if ($redirect = $this->checkStatus($request, $id, $checkId, $invoice)) {
             return $redirect;
@@ -185,7 +185,7 @@ class Payment extends Base
      */
     public function terms(Request $request, int $id, string $checkId): Response
     {
-        /** @var Invoice */
+        /** @var ?Invoice */
         $invoice = ORM::getOne(Invoice::class, $id);
         if ($redirect = $this->checkStatus($request, $id, $checkId, $invoice)) {
             return $redirect;
@@ -217,7 +217,10 @@ class Payment extends Base
         ];
         $inputs['hash'] = md5(implode('', $inputs) . Config::get('pbspassword'));
         $data['inputs'] = $inputs;
-        $data['html'] = ORM::getOne(CustomPage::class, 3)->getHtml();
+
+        /** @var ?CustomPage */
+        $shoppingTerms = ORM::getOne(CustomPage::class, 3);
+        $data['html'] = $shoppingTerms->getHtml();
 
         $content = Render::render('payment-form2', $data);
 
@@ -237,7 +240,7 @@ class Payment extends Base
      */
     public function status(Request $request, int $id, string $checkId): Response
     {
-        /** @var Invoice */
+        /** @var ?Invoice */
         $invoice = ORM::getOne(Invoice::class, $id);
         if (!$invoice || $checkId !== $invoice->getCheckId()) {
             return $this->redirect($request, '/betaling/?id=' . $id . '&checkid=' . rawurlencode($checkId));
@@ -312,7 +315,7 @@ class Payment extends Base
      */
     public function callback(Request $request, int $id, string $checkId): Response
     {
-        /** @var Invoice */
+        /** @var ?Invoice */
         $invoice = ORM::getOne(Invoice::class, $id);
         if (!$invoice
             || $checkId !== $invoice->getCheckId()

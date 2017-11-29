@@ -32,6 +32,8 @@ class RequirementController extends AbstractAdminController
      *
      * @param Request $request
      *
+     * @throws InvalidInput
+     *
      * @return JsonResponse
      */
     public function create(Request $request): JsonResponse
@@ -75,6 +77,8 @@ class RequirementController extends AbstractAdminController
      * @param Request $request
      * @param int     $id
      *
+     * @throws InvalidInput
+     *
      * @return JsonResponse
      */
     public function update(Request $request, int $id): JsonResponse
@@ -87,10 +91,15 @@ class RequirementController extends AbstractAdminController
             throw new InvalidInput(_('You must enter a name and a text of the requirement.'));
         }
 
+        /** @var ?Requirement */
         $requirement = ORM::getOne(Requirement::class, $id);
+        if (!$requirement) {
+            throw new InvalidInput(_('Requirement not found.'));
+        }
+
         $requirement->setHtml($html)->setTitle($title)->save();
 
-        return new JsonResponse(['id' => $requirement->getId()]);
+        return new JsonResponse(['id' => $id]);
     }
 
     /**
@@ -104,7 +113,9 @@ class RequirementController extends AbstractAdminController
     public function delete(Request $request, int $id): JsonResponse
     {
         $requirement = ORM::getOne(Requirement::class, $id);
-        $requirement->delete();
+        if ($requirement) {
+            $requirement->delete();
+        }
 
         return new JsonResponse(['id' => 'krav' . $id]);
     }

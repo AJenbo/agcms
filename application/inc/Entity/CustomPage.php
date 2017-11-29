@@ -1,6 +1,6 @@
 <?php namespace AGCMS\Entity;
 
-class CustomPage extends AbstractEntity
+class CustomPage extends AbstractEntity implements InterfaceRichText
 {
     /** Table name in database. */
     const TABLE_NAME = 'special';
@@ -31,7 +31,7 @@ class CustomPage extends AbstractEntity
     /**
      * Map data from DB table to entity.
      *
-     * @param array The data from the database
+     * @param array $data The data from the database
      *
      * @return array
      */
@@ -52,7 +52,7 @@ class CustomPage extends AbstractEntity
      *
      * @param int $timeStamp UnixTimeStamp
      *
-     * @return self
+     * @return $this
      */
     public function setTimeStamp(int $timeStamp): self
     {
@@ -76,7 +76,7 @@ class CustomPage extends AbstractEntity
      *
      * @param string $title The title
      *
-     * @return self
+     * @return $this
      */
     public function setTitle(string $title): self
     {
@@ -100,9 +100,9 @@ class CustomPage extends AbstractEntity
      *
      * @param string $html HTML body
      *
-     * @return self
+     * @return $this
      */
-    public function setHtml(string $html): self
+    public function setHtml(string $html): InterfaceRichText
     {
         $this->html = $html;
 

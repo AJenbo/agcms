@@ -64,7 +64,7 @@ class TableController extends AbstractAdminController
         $cells = $request->request->get('cells', []);
         $link = $request->request->get('link');
 
-        /** @var Table */
+        /** @var ?Table */
         $table = ORM::getOne(Table::class, $tableId);
         assert($table instanceof Table);
         $rowId = $table->addRow($cells, $link);
@@ -86,7 +86,7 @@ class TableController extends AbstractAdminController
         $cells = $request->request->get('cells', []);
         $link = $request->request->get('link');
 
-        /** @var Table */
+        /** @var ?Table */
         $table = ORM::getOne(Table::class, $tableId);
         assert($table instanceof Table);
         $table->updateRow($rowId, $cells, $link);

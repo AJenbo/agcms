@@ -13,9 +13,10 @@ class FileService
     /**
      * Create new folder.
      *
-     * @param string $newPath
+     * @param string $path
      *
      * @throws Exception
+     * @throws InvalidInput
      *
      * @return void
      */
@@ -40,11 +41,14 @@ class FileService
      * @param string $path
      *
      * @throws InvalidInput
+     *
+     * @return void
      */
     public function deleteFolder(string $path): void
     {
         $this->checkPermittedPath($path);
 
+        /** @var File[] */
         $files = ORM::getByQuery(
             File::class,
             'SELECT * FROM `' . File::TABLE_NAME . "` WHERE path LIKE '" . db()->esc($path) . "/%'"
@@ -84,6 +88,8 @@ class FileService
      * @param string $path
      *
      * @throws InvalidInput
+     *
+     * @return void
      */
     public function checkPermittedPath(string $path): void
     {
@@ -102,6 +108,8 @@ class FileService
      * @param string $path
      *
      * @throws InvalidInput
+     *
+     * @return void
      */
     public function checkPermittedTargetPath(string $path): void
     {

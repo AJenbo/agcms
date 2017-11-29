@@ -193,6 +193,8 @@ class Search extends Base
         foreach (db()->fetchArray('SHOW COLUMNS FROM sider') as $column) {
             $columns[] = $column['Field'];
         }
+
+        /** @var Page[] */
         $pages = ORM::getByQuery(
             Page::class,
             '

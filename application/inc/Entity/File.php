@@ -48,7 +48,7 @@ class File extends AbstractEntity
     /**
      * Map data from DB table to entity.
      *
-     * @param array The data from the database
+     * @param array $data The data from the database
      *
      * @return array
      */
@@ -72,7 +72,7 @@ class File extends AbstractEntity
      *
      * @param string $path The file path
      *
-     * @return self
+     * @return $this
      */
     private function setPath(string $path): self
     {
@@ -96,7 +96,7 @@ class File extends AbstractEntity
      *
      * @param string $mime The mime type
      *
-     * @return self
+     * @return $this
      */
     public function setMime(string $mime): self
     {
@@ -120,7 +120,7 @@ class File extends AbstractEntity
      *
      * @param int $size The file size in bytes
      *
-     * @return self
+     * @return $this
      */
     public function setSize(int $size): self
     {
@@ -144,7 +144,7 @@ class File extends AbstractEntity
      *
      * @param string $description Text description
      *
-     * @return self
+     * @return $this
      */
     public function setDescription(string $description): self
     {
@@ -168,7 +168,7 @@ class File extends AbstractEntity
      *
      * @param int $width
      *
-     * @return self
+     * @return $this
      */
     public function setWidth(int $width): self
     {
@@ -192,7 +192,7 @@ class File extends AbstractEntity
      *
      * @param int $height
      *
-     * @return self
+     * @return $this
      */
     public function setHeight(int $height): self
     {
@@ -311,9 +311,11 @@ class File extends AbstractEntity
     /**
      * Create new File from a file path.
      *
+     * @todo Load size of video
+     *
      * @param string $path The file path
      *
-     * @return self
+     * @return static
      */
     public static function fromPath(string $path): self
     {
@@ -322,7 +324,7 @@ class File extends AbstractEntity
         $guesser = MimeTypeGuesser::getInstance();
         $mime = $guesser->guess(_ROOT_ . $path);
 
-        $file = new self([
+        $file = new static([
             'path'        => $path,
             'mime'        => $mime,
             'size'        => filesize(_ROOT_ . $path),

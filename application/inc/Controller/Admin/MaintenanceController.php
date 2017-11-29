@@ -1,5 +1,6 @@
 <?php namespace AGCMS\Controller\Admin;
 
+use AGCMS\Application;
 use AGCMS\Config;
 use AGCMS\Entity\Category;
 use AGCMS\Entity\Contact;
@@ -14,7 +15,7 @@ use AJenbo\Imap;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Thorwable;
+use Throwable;
 
 /**
  * @todo test for missing alt="" in <img>
@@ -202,6 +203,7 @@ class MaintenanceController extends AbstractAdminController
      */
     public function badFileNames(): JsonResponse
     {
+        /** @var File[] */
         $files = ORM::getByQuery(
             File::class,
             '
@@ -288,7 +290,7 @@ class MaintenanceController extends AbstractAdminController
 
         $html = '';
 
-        //Get emails that needs sending
+        /** @var Email[] */
         $emails = ORM::getByQuery(Email::class, 'SELECT * FROM `emails`');
         if ($emails) {
             $emailsSendt = 0;
@@ -359,7 +361,7 @@ class MaintenanceController extends AbstractAdminController
                     $mails = $imap->fetch('1:*', 'RFC822.SIZE');
                     preg_match_all('/RFC822.SIZE\s([0-9]+)/', $mails['data'], $mailSizes);
                     $size += array_sum($mailSizes[1]);
-                } catch (Thorwable $e) {
+                } catch (Throwable $e) {
                     Application::getInstance()->logException($e);
                 }
             }

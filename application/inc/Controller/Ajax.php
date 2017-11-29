@@ -78,6 +78,8 @@ class Ajax extends Base
      * @param Request $request
      * @param string  $phoneNumber Phone number
      *
+     * @throws InvalidInput
+     *
      * @return JsonResponse
      */
     public function address(Request $request, string $phoneNumber): JsonResponse

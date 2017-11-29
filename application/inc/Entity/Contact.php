@@ -60,7 +60,7 @@ class Contact extends AbstractEntity
      *
      * @param string $name
      *
-     * @return self
+     * @return $this
      */
     public function setName(string $name): self
     {
@@ -84,7 +84,7 @@ class Contact extends AbstractEntity
      *
      * @param string $email
      *
-     * @return self
+     * @return $this
      */
     public function setEmail(string $email): self
     {
@@ -108,7 +108,7 @@ class Contact extends AbstractEntity
      *
      * @param string $address
      *
-     * @return self
+     * @return $this
      */
     public function setAddress(string $address): self
     {
@@ -132,7 +132,7 @@ class Contact extends AbstractEntity
      *
      * @param string $country
      *
-     * @return self
+     * @return $this
      */
     public function setCountry(string $country): self
     {
@@ -156,7 +156,7 @@ class Contact extends AbstractEntity
      *
      * @param string $postcode
      *
-     * @return self
+     * @return $this
      */
     public function setPostcode(string $postcode): self
     {
@@ -180,7 +180,7 @@ class Contact extends AbstractEntity
      *
      * @param string $city
      *
-     * @return self
+     * @return $this
      */
     public function setCity(string $city): self
     {
@@ -204,7 +204,7 @@ class Contact extends AbstractEntity
      *
      * @param string $phone1
      *
-     * @return self
+     * @return $this
      */
     public function setPhone1(string $phone1): self
     {
@@ -228,7 +228,7 @@ class Contact extends AbstractEntity
      *
      * @param string $phone2
      *
-     * @return self
+     * @return $this
      */
     public function setPhone2(string $phone2): self
     {
@@ -252,7 +252,7 @@ class Contact extends AbstractEntity
      *
      * @param bool $newsletter
      *
-     * @return self
+     * @return $this
      */
     public function setNewsletter(bool $newsletter): self
     {
@@ -276,7 +276,7 @@ class Contact extends AbstractEntity
      *
      * @param string[] $interests
      *
-     * @return self
+     * @return $this
      */
     public function setInterests(array $interests): self
     {
@@ -300,7 +300,7 @@ class Contact extends AbstractEntity
      *
      * @param int $timestamp
      *
-     * @return self
+     * @return $this
      */
     public function setTimestamp(int $timestamp): self
     {
@@ -324,7 +324,7 @@ class Contact extends AbstractEntity
      *
      * @param string $ip
      *
-     * @return self
+     * @return $this
      */
     public function setIp(string $ip): self
     {
@@ -358,7 +358,7 @@ class Contact extends AbstractEntity
     /**
      * Map data from DB table to entity.
      *
-     * @param array The data from the database
+     * @param array $data The data from the database
      *
      * @return array
      */

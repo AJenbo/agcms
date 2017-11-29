@@ -55,6 +55,8 @@ class EmailService
      * @param Email   $email
      * @param array[] $bcc
      *
+     * @throws SendEmail
+     *
      * @return bool
      */
     public function send(Email $email, array $bcc = []): bool
@@ -75,8 +77,8 @@ class EmailService
             $mailer->addReplyTo($email->getSenderAddress(), $email->getSenderName());
         }
 
-        foreach ($bcc as $email) {
-            $mailer->addBCC($email['email'], $email['navn']);
+        foreach ($bcc as $emailAddress) {
+            $mailer->addBCC($emailAddress['email'], $emailAddress['navn']);
         }
 
         $mailer->Subject = $email->getSubject();

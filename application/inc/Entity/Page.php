@@ -3,7 +3,7 @@
 use AGCMS\ORM;
 use AGCMS\Render;
 
-class Page extends AbstractRenderable
+class Page extends AbstractRenderable implements InterfaceRichText
 {
     /** Table name in database. */
     const TABLE_NAME = 'sider';
@@ -71,7 +71,7 @@ class Page extends AbstractRenderable
     /**
      * Map data from DB table to entity.
      *
-     * @param array The data from the database
+     * @param array $data The data from the database
      *
      * @return array
      */
@@ -125,7 +125,7 @@ class Page extends AbstractRenderable
      *
      * @param string $sku Stock product number
      *
-     * @return self
+     * @return $this
      */
     public function setSku(string $sku): self
     {
@@ -149,7 +149,7 @@ class Page extends AbstractRenderable
      *
      * @param int $timeStamp Last modefied
      *
-     * @return self
+     * @return $this
      */
     public function setTimeStamp(int $timeStamp): self
     {
@@ -173,7 +173,7 @@ class Page extends AbstractRenderable
      *
      * @param string $keywords Comma seporated
      *
-     * @return self
+     * @return $this
      */
     public function setKeywords(string $keywords): self
     {
@@ -197,9 +197,9 @@ class Page extends AbstractRenderable
      *
      * @param string $html The HTML body
      *
-     * @return self
+     * @return $this
      */
-    public function setHtml(string $html): self
+    public function setHtml(string $html): InterfaceRichText
     {
         $this->html = $html;
 
@@ -221,7 +221,7 @@ class Page extends AbstractRenderable
      *
      * @param string $excerpt Short text
      *
-     * @return self
+     * @return $this
      */
     public function setExcerpt(string $excerpt): self
     {
@@ -263,11 +263,11 @@ class Page extends AbstractRenderable
      *
      * @param ?File $icon
      *
-     * @return self
+     * @return $this
      */
     public function setIcon(?File $icon): self
     {
-        $this->iconId = $icon->getId();
+        $this->iconId = $icon ? $icon->getId() : null;
 
         return $this;
     }
@@ -289,9 +289,9 @@ class Page extends AbstractRenderable
     /**
      * Set the Requirement id.
      *
-     * @param int Requirement id
+     * @param ?int $requirementId Requirement id
      *
-     * @return self
+     * @return $this
      */
     public function setRequirementId(?int $requirementId): self
     {
@@ -303,9 +303,9 @@ class Page extends AbstractRenderable
     /**
      * Set the Brand id.
      *
-     * @param int Brand id
+     * @param int $brandId Brand id
      *
-     * @return self
+     * @return $this
      */
     public function setBrandId(?int $brandId): self
     {
@@ -319,7 +319,7 @@ class Page extends AbstractRenderable
      *
      * @param int $price Price
      *
-     * @return self
+     * @return $this
      */
     public function setPrice(int $price): self
     {
@@ -343,7 +343,7 @@ class Page extends AbstractRenderable
      *
      * @param int $oldPrice The previous price
      *
-     * @return self
+     * @return $this
      */
     public function setOldPrice(int $oldPrice): self
     {
@@ -367,7 +367,7 @@ class Page extends AbstractRenderable
      *
      * @param int $priceType The price type
      *
-     * @return self
+     * @return $this
      */
     public function setPriceType(int $priceType): self
     {
@@ -391,7 +391,7 @@ class Page extends AbstractRenderable
      *
      * @param int $oldPriceType
      *
-     * @return self
+     * @return $this
      */
     public function setOldPriceType(int $oldPriceType): self
     {

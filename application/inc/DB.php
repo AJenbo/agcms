@@ -39,6 +39,8 @@ class DB extends mysqli
      *
      * @param string $query The MySQL query to preforme
      *
+     * @throws Exception
+     *
      * @return array[]
      */
     public function fetchArray(string $query): array
@@ -78,6 +80,8 @@ class DB extends mysqli
      *
      * @param string   $query      The query string
      * @param int|null $resultmode
+     *
+     * @throws Exception
      *
      * @return bool
      */

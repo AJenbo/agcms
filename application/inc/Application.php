@@ -140,6 +140,8 @@ class Application
      * @param Request   $request
      * @param Throwable $exception
      *
+     * @throws Throwable
+     *
      * @return Response
      */
     private function handleException(Request $request, Throwable $exception): Response
