@@ -97,7 +97,10 @@ class CategoryController extends AbstractAdminController
             throw new InvalidInput(_('Cannot delete root categories!'));
         }
 
-        ORM::getOne(Category::class, $id)->delete();
+        $category = ORM::getOne(Category::class, $id);
+        if ($category) {
+            $category->delete();
+        }
 
         return new JsonResponse(['id' => 'kat' . $id]);
     }
