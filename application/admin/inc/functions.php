@@ -7,7 +7,6 @@ use AGCMS\Entity\CustomPage;
 use AGCMS\Entity\Email;
 use AGCMS\Entity\File;
 use AGCMS\Entity\Invoice;
-use AGCMS\Entity\Page;
 use AGCMS\Entity\User;
 use AGCMS\EpaymentAdminService;
 use AGCMS\Exception\InvalidInput;
@@ -291,90 +290,6 @@ function sletmaerke(int $id): array
 }
 
 /**
- * @param int $pageId
- * @param int $categoryId
- *
- * @throws InvalidInput
- *
- * @return array
- */
-function sletbind(int $pageId, int $categoryId): array
-{
-    /** @var ?Page */
-    $page = ORM::getOne(Page::class, $pageId);
-    assert($page instanceof Page);
-
-    /** @var ?Category */
-    $category = ORM::getOne(Category::class, $categoryId);
-    if (!$category) {
-        throw new InvalidInput(_('The category doesn\'t exist.'));
-    }
-    assert($category instanceof Category);
-
-    $result = ['pageId' => $page->getId(), 'deleted' => [], 'added' => null];
-    if (($category->getId() === -1 && 1 === count($page->getCategories()))
-        || !$page->isInCategory($category)
-    ) {
-        return $result;
-    }
-
-    if (1 === count($page->getCategories())) {
-        $inactiveCategory = ORM::getOne(Category::class, -1);
-        assert($inactiveCategory instanceof Category);
-        $page->addToCategory($inactiveCategory);
-        $result['added'] = ['categoryId' => -1, 'path' => '/' . _('Inactive') . '/'];
-    }
-
-    $page->removeFromCategory($category);
-    $result['deleted'][] = $category->getId();
-
-    return $result;
-}
-
-/**
- * @param int $pageId
- * @param int $categoryId
- *
- * @throws InvalidInput
- *
- * @return array
- */
-function bind(int $pageId, int $categoryId): array
-{
-    /** @var ?Page */
-    $page = ORM::getOne(Page::class, $pageId);
-    assert($page instanceof Page);
-
-    /** @var ?Category */
-    $category = ORM::getOne(Category::class, $categoryId);
-    if (!$category) {
-        throw new InvalidInput(_('The category doesn\'t exist.'));
-    }
-    assert($category instanceof Category);
-
-    $result = ['pageId' => $page->getId(), 'deleted' => [], 'added' => null];
-
-    if ($page->isInCategory($category)) {
-        return $result;
-    }
-
-    $page->addToCategory($category);
-    $result['added'] = ['categoryId' => $category->getId(), 'path' => $category->getPath()];
-
-    $rootCategory = $category->getRoot();
-    foreach ($page->getCategories() as $node) {
-        if ($node->getRoot() === $rootCategory) {
-            continue;
-        }
-
-        $page->removeFromCategory($node);
-        $result['deleted'][] = $node->getId();
-    }
-
-    return $result;
-}
-
-/**
  * @throws InvalidInput
  *
  * @return string[]|true
@@ -454,21 +369,6 @@ function updateSpecial(int $id, string $html, string $title = ''): bool
     }
 
     return true;
-}
-
-/**
- * Delete a page and all it's relations from the database.
- *
- * @return string[]
- */
-function sletSide(int $pageId): array
-{
-    $page = ORM::getOne(Page::class, $pageId);
-    if ($page) {
-        $page->delete();
-    }
-
-    return ['class' => 'side' . $pageId];
 }
 
 function copytonew(int $id): int

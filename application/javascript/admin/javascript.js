@@ -241,7 +241,8 @@ function updatemaerke_r(data) {
 
 function bind(id) {
     $("loading").style.visibility = "";
-    x_bind(id, parseInt(getRadio("kat")), binding_r);
+    var categoryId = parseInt(getRadio("kat"));
+    xHttp.request("/admin/page/" + id + "/categories/" + categoryId + "/", binding_r, "POST");
 
     return false;
 }
@@ -293,11 +294,11 @@ function removeAccessory(navn, pageId, accessoryId) {
     return false;
 }
 
-function removeBinding(navn, pageId, categoryId, callback = null) {
-    callback = callback ? callback : binding_r;
+function removeBinding(navn, id, categoryId, callback = null) {
+    callback = callback || binding_r;
     if (confirm("Vil du fjerne siden fra '" + navn + "'?")) {
         $("loading").style.visibility = "";
-        x_sletbind(pageId, categoryId, callback);
+        xHttp.request("/admin/page/" + id + "/categories/" + categoryId + "/", callback, "DELETE");
     }
 }
 
@@ -365,20 +366,17 @@ function removeTagByClass(className) {
     }
 }
 
-function slet(type, navn, id) {
-    switch (type) {
-        case "side":
-            if (confirm("Vil du slette '" + navn + "'?")) {
-                $("loading").style.visibility = "";
-                x_sletSide(id, sletClass_r);
-            }
-            break;
-        case "maerke":
-            if (confirm("Vil du slette mærket '" + navn + "'?")) {
-                $("loading").style.visibility = "";
-                x_sletmaerke(id, slet_r);
-            }
-            break;
+function deleteBrand(navn, id) {
+    if (confirm("Vil du slette mærket '" + navn + "'?")) {
+        $("loading").style.visibility = "";
+        x_sletmaerke(id, slet_r);
+    }
+}
+
+function deletePage(navn, id) {
+    if (confirm("Vil du slette '" + navn + "'?")) {
+        $("loading").style.visibility = "";
+        xHttp.request("/admin/page/" + id + "/", sletClass_r, "DELETE");
     }
 }
 

@@ -76,10 +76,13 @@ $app->addRoute('GET', '/admin/logout', AdminController::class, 'logout');
 // Page editing
 $app->addRoute('GET', '/admin/page/', PageController::class, 'index');
 $app->addRoute('GET', '/admin/page/search/', PageController::class, 'search');
+$app->addRoute('POST', '/admin/page/(\d+)/categories/(\d+)/', PageController::class, 'addToCategory');
+$app->addRoute('DELETE', '/admin/page/(\d+)/categories/(\d+)/', PageController::class, 'removeFromCategory');
 // Page CRUD
 $app->addRoute('POST', '/admin/page/', PageController::class, 'createPage');
 $app->addRoute('GET', '/admin/page/(\d+)/', PageController::class, 'index');
 $app->addRoute('PUT', '/admin/page/(\d+)/', PageController::class, 'updatePage');
+$app->addRoute('DELETE', '/admin/page/(\d+)/', PageController::class, 'delete');
 // Accessory CD
 $app->addRoute('POST', '/admin/page/(\d+)/accessories/(\d+)/', PageController::class, 'addAccessory');
 $app->addRoute('DELETE', '/admin/page/(\d+)/accessories/(\d+)/', PageController::class, 'removeAccessory');

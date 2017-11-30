@@ -49,7 +49,10 @@ activeSideContextMenu.push({
     "className": "unlink",
     "callback": function(e) {
         var element = getNodeFromContextMenuEvent(e).parentNode;
-        var name = element.parentNode.previousSibling.lastChild.nodeValue.trim();
+        var name = "";
+        if (element.childNodes.length > 1) {
+            name = element.parentNode.previousSibling.lastChild.nodeValue.trim();
+        }
         var ids = element.id.match(/\d+/g);
         removeBinding(name, ids[1], ids[0], bindTree_r);
     }
@@ -60,7 +63,11 @@ inactiveSideContextMenu.push({
     "className": "delete",
     "callback": function(e) {
         var element = getNodeFromContextMenuEvent(e).parentNode;
-        slet("side", element.firstChild.childNodes[1].nodeValue.trim(), element.className.replace(/^side/, ""));
+        var name = "";
+        if (element.childNodes.length > 1) {
+            name = element.firstChild.childNodes[1].nodeValue.trim();
+        }
+        deletePage(name, element.className.replace(/^side/, ""));
     }
 });
 
@@ -70,7 +77,6 @@ var katContextMenu = [
       "className": "textfield_rename",
       "callback": function(e) {
           var element = getNodeFromContextMenuEvent(e);
-          console.log(element);
           renameCategory(element.parentNode.id.replace(/^kat/, ""), element.lastChild.nodeValue.trim());
       }
     },

@@ -110,6 +110,7 @@ class PageController extends AbstractAdminController
      * Update existing page.
      *
      * @param Request $request
+     * @param int     $id
      *
      * @return JsonResponse
      */
@@ -121,6 +122,7 @@ class PageController extends AbstractAdminController
             $icon = ORM::getOne(File::class, $request->request->getInt('iconId'));
         }
 
+        /** @var ?Page */
         $page = ORM::getOne(Page::class, $id);
         assert($page instanceof Page);
         $page->setKeywords($request->request->get('keywords'))
@@ -138,6 +140,116 @@ class PageController extends AbstractAdminController
             ->save();
 
         return new JsonResponse(['success' => true]);
+    }
+
+    /**
+     * Delete page.
+     *
+     * @param Request $request
+     * @param int     $id
+     *
+     * @return JsonResponse
+     */
+    public function delete(Request $request, int $id): JsonResponse
+    {
+        /** @var ?Page */
+        $page = ORM::getOne(Page::class, $id);
+        if ($page) {
+            $page->delete();
+        }
+
+        return new JsonResponse(['class' => 'side' . $id]);
+    }
+
+    /**
+     * Attach a page to a category.
+     *
+     * @param Request $request
+     * @param int     $id
+     * @param int     $categoryId
+     *
+     * @throws InvalidInput
+     *
+     * @return JsonResponse
+     */
+    public function addToCategory(Request $request, int $id, int $categoryId): JsonResponse
+    {
+        /** @var ?Page */
+        $page = ORM::getOne(Page::class, $id);
+        if (!$page) {
+            throw new InvalidInput(_('The page doesn\'t exist.'));
+        }
+
+        /** @var ?Category */
+        $category = ORM::getOne(Category::class, $categoryId);
+        if (!$category) {
+            throw new InvalidInput(_('The category doesn\'t exist.'));
+        }
+
+        $result = ['pageId' => $page->getId(), 'deleted' => [], 'added' => null];
+
+        if ($page->isInCategory($category)) {
+            return new JsonResponse($result);
+        }
+
+        $page->addToCategory($category);
+        $result['added'] = ['categoryId' => $category->getId(), 'path' => $category->getPath()];
+
+        $rootCategory = $category->getRoot();
+        foreach ($page->getCategories() as $node) {
+            if ($node->getRoot() === $rootCategory) {
+                continue;
+            }
+
+            $page->removeFromCategory($node);
+            $result['deleted'][] = $node->getId();
+        }
+
+        return new JsonResponse($result);
+    }
+
+    /**
+     * Remove the page from category.
+     *
+     * @param Request $request
+     * @param int     $id
+     * @param int     $categoryId
+     *
+     * @throws InvalidInput
+     *
+     * @return JsonResponse
+     */
+    public function removeFromCategory(Request $request, int $id, int $categoryId): JsonResponse
+    {
+        /** @var ?Page */
+        $page = ORM::getOne(Page::class, $id);
+        if (!$page) {
+            throw new InvalidInput(_('The page doesn\'t exist.'));
+        }
+
+        /** @var ?Category */
+        $category = ORM::getOne(Category::class, $categoryId);
+        if (!$category) {
+            throw new InvalidInput(_('The category doesn\'t exist.'));
+        }
+
+        $result = ['pageId' => $page->getId(), 'deleted' => [], 'added' => null];
+        if ((-1 === $category->getId() && 1 === count($page->getCategories())) || !$page->isInCategory($category)) {
+            return new JsonResponse($result);
+        }
+
+        if (1 === count($page->getCategories())) {
+            /** @var ?Category */
+            $inactiveCategory = ORM::getOne(Category::class, -1);
+            assert($inactiveCategory instanceof Category);
+            $page->addToCategory($inactiveCategory);
+            $result['added'] = ['categoryId' => -1, 'path' => '/' . _('Inactive') . '/'];
+        }
+
+        $page->removeFromCategory($category);
+        $result['deleted'][] = $category->getId();
+
+        return new JsonResponse($result);
     }
 
     /**

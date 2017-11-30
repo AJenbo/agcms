@@ -8,7 +8,7 @@
     <div id="imagelogo" style="display:none; position:absolute;"></div>
     {% for brand in brands %}
         <div id="maerke{{brand.id}}">
-            <a href="" onclick="slet('maerke',{{brand.title|json_encode()}},{{brand.id}});">
+            <a href="" onclick="deleteBrand({{brand.title|json_encode()}},{{brand.id}});">
                 <img src="/theme/default/images/admin/cross.png" alt="X" title="Delete {{brand.title}}!" width="16" height="16" />
             </a>
             <a href="/admin/brands/{{brand.id}}/"{% if not brand.link %} style="margin-left:{% if not brand.icon %}32{% else %}16{% endif %}px"{% endif %}>
