@@ -4,14 +4,6 @@ function htmlEncode(value) {
     return div.innerHTML;
 }
 
-function getContextMenuTarget(object, className) {
-    while (object.className != className) {
-        object = object.parentNode;
-    }
-
-    return object;
-}
-
 function prisHighlight() {
     if ($("for").value - $("pris").value < 0) {
         $("pris").className = "Pris";

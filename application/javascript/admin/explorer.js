@@ -59,6 +59,14 @@ function popupType(mime) {
     return "";
 }
 
+function getContextMenuTarget(object, className) {
+    while (object.className != className) {
+        object = object.parentNode;
+    }
+
+    return object;
+}
+
 file.prototype.addToEditor = function() {
     var html = "<a href=\"" + htmlEncode(this.path) + "\" target=\"_blank\">" + htmlEncode(this.name) + "</a>";
     switch (popupType(this.mime)) {
