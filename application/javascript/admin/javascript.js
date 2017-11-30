@@ -369,8 +369,10 @@ function removeTagByClass(className) {
 function deleteBrand(navn, id) {
     if (confirm("Vil du slette mærket '" + navn + "'?")) {
         $("loading").style.visibility = "";
-        x_sletmaerke(id, slet_r);
+        xHttp.request("/admin/brands/" + id + "/", slet_r, "DELETE");
     }
+
+    return false;
 }
 
 function deletePage(navn, id) {
@@ -406,7 +408,7 @@ function moveCategory_r(data) {
 }
 
 function renameCategory(id, title) {
-    var newTitle = prompt("Omdøb kategori", title);
+    var newTitle = prompt("OmdÃ¸b kategori", title);
     if (newTitle != null && newTitle !== title) {
         $("loading").style.visibility = "";
         xHttp.request("/admin/categories/" + id + "/", renameCategory_r, "PUT", {"title": newTitle});

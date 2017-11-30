@@ -1,7 +1,6 @@
 <?php
 
 use AGCMS\Config;
-use AGCMS\Entity\Brand;
 use AGCMS\Entity\Category;
 use AGCMS\Entity\CustomPage;
 use AGCMS\Entity\Email;
@@ -243,50 +242,6 @@ function sogogerstat(string $sog, string $erstat): int
     db()->query('UPDATE sider SET text = REPLACE(text,\'' . db()->esc($sog) . '\',\'' . db()->esc($erstat) . '\')');
 
     return db()->affected_rows;
-}
-
-/**
- * @param int    $id
- * @param string $navn
- * @param string $link
- * @param int    $iconId
- *
- * @throws InvalidInput
- *
- * @return array
- */
-function updatemaerke(?int $id, string $navn, string $link = '', int $iconId = null): array
-{
-    if (!$navn) {
-        throw new InvalidInput(_('You must enter a name.'));
-    }
-
-    $brand = new Brand(['title' => $navn, 'link' => $link, 'icon_id' => $iconId]);
-    if (null !== $id) {
-        $icon = null;
-        if (null !== $iconId) {
-            $icon = ORM::getOne(File::class, $iconId);
-        }
-
-        $brand = ORM::getOne(Brand::class, $id);
-        assert($brand instanceof Brand);
-        $brand->setIcon($icon)
-            ->setLink($link)
-            ->setTitle($navn);
-    }
-    $brand->save();
-
-    return ['id' => $brand->getId()];
-}
-
-/**
- * @return string[]
- */
-function sletmaerke(int $id): array
-{
-    db()->query('DELETE FROM `maerke` WHERE `id` = ' . $id);
-
-    return ['node' => 'maerke' . $id];
 }
 
 /**

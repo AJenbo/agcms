@@ -119,7 +119,10 @@ $app->addRoute('DELETE', '/admin/requirement/(\d+)/', RequirementController::cla
 // Brand editing
 $app->addRoute('GET', '/admin/brands/', BrandController::class, 'index');
 // Brand CRUD
+$app->addRoute('POST', '/admin/brands/', BrandController::class, 'create');
 $app->addRoute('GET', '/admin/brands/(\d+)/', BrandController::class, 'editPage');
+$app->addRoute('PUT', '/admin/brands/(\d+)/', BrandController::class, 'update');
+$app->addRoute('DELETE', '/admin/brands/(\d+)/', BrandController::class, 'delete');
 // Explorer
 $app->addRoute('GET', '/admin/explorer/', ExplorerController::class, 'index');
 // Folder CRUD
