@@ -28,148 +28,80 @@ function reattachContextMenus() {
     contextMenuListOrderContextMenu.reattach();
 }
 
-// TODO only for getSiteTree
-var activeSideContextMenu = [
-    {
-      "name": "Rediger",
-      "className": "edit",
-      // TODO update to use getContextMenuTarget()
-      "callback": function(e) {
-          if (e.element().tagName.toLowerCase() == "a") {
-              location.href = "/admin/page/" + e.target.parentNode.className.replace(/^side/, "") + "/";
-              return;
-          }
-          location.href = "/admin/page/" + e.target.parentNode.parentNode.className.replace(/^side/, "") + "/";
-      }
-    },
-    {
-      "name": "Fjern",
-      "className": "unlink",
-      "callback": function(e) {
-          // TODO update to use getContextMenuTarget()
-          var element = e.target.parentNode;
-          if (e.element().tagName.toLowerCase() != "a") {
-              element = element.parentNode;
-          }
-          var name = element.parentNode.previousSibling.lastChild.nodeValue.trim();
-          var ids = element.id.match(/\d+/g);
-          removeBinding(name, ids[1], ids[0], bindTree_r);
-      }
+function getNodeFromContextMenuEvent(e) {
+    if (e.element().tagName.toLowerCase() === "a") {
+        return e.target;
     }
-];
+    return e.target.parentNode;
+}
 
 // TODO only for getSiteTree
-var inactiveSideContextMenu = [
-    {
-      "name": "Rediger",
-      "className": "edit",
-      "callback": function(e) {
-          // TODO update to use getContextMenuTarget()
-          if (e.element().tagName.toLowerCase() == "a") {
-              location.href = "/admin/page/" + e.target.parentNode.className.replace(/^side/, "") + "/";
-              return;
-          }
-          location.href = "/admin/page/" + e.target.parentNode.parentNode.className.replace(/^side/, "") + "/";
-      }
-    },
-    {
-      "name": "Slet",
-      "className": "delete",
-      "callback": function(e) {
-          // TODO update to use getContextMenuTarget()
-          if (e.element().tagName.toLowerCase() == "a") {
-              slet("side", e.target.lastChild.nodeValue.trim(), e.target.parentNode.className.replace(/^side/, ""));
-              return;
-          }
-          slet("side", e.target.parentNode.lastChild.nodeValue.trim(),
-               e.target.parentNode.parentNode.className.replace(/^side/, ""));
-      }
+var sideContextMenu = [{
+    "name": "Rediger",
+    "className": "edit",
+    "callback": function(e) {
+        location.href = "/admin/page/" + getNodeFromContextMenuEvent(e).parentNode.className.replace(/^side/, "") + "/";
     }
-];
+}];
+var activeSideContextMenu = sideContextMenu.slice(0);
+activeSideContextMenu.push({
+    "name": "Fjern",
+    "className": "unlink",
+    "callback": function(e) {
+        var element = getNodeFromContextMenuEvent(e).parentNode;
+        var name = element.parentNode.previousSibling.lastChild.nodeValue.trim();
+        var ids = element.id.match(/\d+/g);
+        removeBinding(name, ids[1], ids[0], bindTree_r);
+    }
+});
+var inactiveSideContextMenu = sideContextMenu.slice(0);
+inactiveSideContextMenu.push({
+    "name": "Slet",
+    "className": "delete",
+    "callback": function(e) {
+        var element = getNodeFromContextMenuEvent(e).parentNode;
+        slet("side", element.firstChild.childNodes[1].nodeValue.trim(), element.className.replace(/^side/, ""));
+    }
+});
 
-// TODO only for getSiteTree
-var activeKatContextMenu = [
+var katContextMenu = [
     {
       "name": "Omdøb",
       "className": "textfield_rename",
       "callback": function(e) {
-          // TODO update to use getContextMenuTarget()
-          if (e.element().tagName.toLowerCase() == "a") {
-              renameCategory(e.target.parentNode.id.replace(/^kat/, ""), e.target.lastChild.nodeValue.trim());
-              return;
-          }
-          renameCategory(e.target.parentNode.parentNode.id.replace(/^kat/, ""),
-                         e.target.parentNode.lastChild.nodeValue.trim());
+          var element = getNodeFromContextMenuEvent(e);
+          console.log(element);
+          renameCategory(element.parentNode.id.replace(/^kat/, ""), element.lastChild.nodeValue.trim());
       }
     },
     {
       "name": "Rediger",
       "className": "edit",
       "callback": function(e) {
-          // TODO update to use getContextMenuTarget()
-          if (e.element().tagName.toLowerCase() == "a") {
-              location.href = "/admin/categories/" + e.target.parentNode.id.replace(/^kat/, "") + "/";
-              return;
-          }
-          location.href = "/admin/categories/" + e.target.parentNode.parentNode.id.replace(/^kat/, "") + "/";
-      }
-    },
-    {
-      "name": "fjern",
-      "className": "unlink",
-      "callback": function(e) {
-          // TODO update to use getContextMenuTarget()
-          if (e.element().tagName.toLowerCase() == "a") {
-              moveCategory(e.target.lastChild.nodeValue.trim(), e.target.parentNode.id.replace(/^kat/, ""), -1, true);
-              return;
-          }
-          moveCategory(e.target.parentNode.lastChild.nodeValue.trim(),
-                       e.target.parentNode.parentNode.id.replace(/^kat/, ""), -1, true);
+          location.href = "/admin/categories/" + getNodeFromContextMenuEvent(e).parentNode.id.replace(/^kat/, "") + "/";
       }
     }
 ];
-
-// TODO only for getSiteTree
-var inactiveKatContextMenu = [
-    {
-      "name": "Omdøb",
-      "className": "textfield_rename",
-      "callback": function(e) {
-          // TODO update to use getContextMenuTarget()
-          if (e.element().tagName.toLowerCase() == "a") {
-              renameCategory(e.target.parentNode.id.replace(/^kat/, ""), e.target.lastChild.nodeValue.trim());
-              return;
-          }
-          renameCategory(e.target.parentNode.parentNode.id.replace(/^kat/, ""),
-                         e.target.parentNode.lastChild.nodeValue.trim());
-      }
-    },
-    {
-      "name": "Rediger",
-      "className": "edit",
-      "callback": function(e) {
-          // TODO update to use getContextMenuTarget()
-          if (e.element().tagName.toLowerCase() == "a") {
-              location.href = "/admin/categories/" + e.target.parentNode.id.replace(/^kat/, "") + "/";
-              return;
-          }
-          location.href = "/admin/categories/" + e.target.parentNode.parentNode.id.replace(/^kat/, "") + "/";
-      }
-    },
-    {
-      "name": "Slet",
-      "className": "delete",
-      "callback": function(e) {
-          // TODO update to use getContextMenuTarget()
-          if (e.element().tagName.toLowerCase() == "a") {
-              deleteCategory(e.target.lastChild.nodeValue.trim(), e.target.parentNode.id.replace(/^kat/, ""));
-              return;
-          }
-          deleteCategory(e.target.parentNode.lastChild.nodeValue.trim(),
-                         e.target.parentNode.parentNode.id.replace(/^kat/, ""));
-      }
+var activeKatContextMenu = katContextMenu.slice(0);
+activeKatContextMenu.push({
+    "name": "fjern",
+    "className": "unlink",
+    "callback": function(e) {
+        var element = getNodeFromContextMenuEvent(e);
+        console.log(element);
+        moveCategory(element.lastChild.nodeValue.trim(), element.parentNode.id.replace(/^kat/, ""), -1, true);
     }
-];
+});
+var inactiveKatContextMenu = katContextMenu.slice(0);
+inactiveKatContextMenu.push({
+    "name": "Slet",
+    "className": "delete",
+    "callback": function(e) {
+        var element = getNodeFromContextMenuEvent(e);
+        console.log(element);
+        deleteCategory(element.lastChild.nodeValue.trim(), element.parentNode.id.replace(/^kat/, ""));
+    }
+});
 
 // TODO only for listorder
 var listOrderContextMenu = [{
