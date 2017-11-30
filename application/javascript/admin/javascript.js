@@ -66,16 +66,11 @@ function isInteger(s) {
     return true;
 }
 
-function setCookie(name, value, expires) {
-    var today = new Date();
-    today.setTime(today.getTime());
-    if (expires) {
-        expires = expires * 1000 * 60 * 60 * 24;
-    }
-
-    var expires_date = new Date(today.getTime() + (expires));
-    document.cookie = encodeURIComponent(name) + "=" + encodeURIComponent(value) +
-                      ((expires) ? "; expires=" + expires_date.toGMTString() : "");
+function setCookie(name, value, expiresInDayes) {
+    var now = new Date();
+    now.setTime(now.getTime() + (expiresInDayes * 24 * 60 * 60 * 1000));
+    var expires = "expires=" + now.toUTCString();
+    document.cookie = encodeURIComponent(name) + "=" + encodeURIComponent(value) + ";" + expires + ";path=/admin/";
 }
 
 function getCookie(cookieName) {

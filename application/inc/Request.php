@@ -4,6 +4,7 @@ use AGCMS\Entity\User;
 use Symfony\Component\HttpFoundation\ParameterBag;
 use Symfony\Component\HttpFoundation\Request as SymfonyRequest;
 use Symfony\Component\HttpFoundation\Session\Session;
+use Symfony\Component\HttpFoundation\Session\Storage\NativeSessionStorage;
 
 class Request extends SymfonyRequest
 {
@@ -41,7 +42,11 @@ class Request extends SymfonyRequest
     {
         $session = $this->getSession();
         if (!$session) {
-            $session = new Session();
+            $storage = new NativeSessionStorage([
+                'cookie_httponly' => 1,
+                'cookie_path'     => '/admin/',
+            ]);
+            $session = new Session($storage);
             $this->setSession($session);
         }
         $session->start();
