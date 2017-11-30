@@ -154,9 +154,10 @@ a:hover {
     white-space:nowrap;
 }
 #kats {
+    height:400px;
     border:1px #AAAAAA solid;
     border-top:0;
-    overflow:hidden;
+    overflow:auto;
     background-color:#FFFFFF;
 }
 #headline {
