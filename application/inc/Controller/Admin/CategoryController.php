@@ -2,6 +2,7 @@
 
 use AGCMS\Config;
 use AGCMS\Entity\Category;
+use AGCMS\Entity\File;
 use AGCMS\Exception\InvalidInput;
 use AGCMS\ORM;
 use AGCMS\Render;
@@ -51,6 +52,41 @@ class CategoryController extends AbstractAdminController
     }
 
     /**
+     * Create a category.
+     *
+     * @param Request $request
+     *
+     * @throws InvalidInput
+     *
+     * @return JsonResponse
+     */
+    public function create(Request $request): JsonResponse
+    {
+        $iconId = $request->request->get('icon_id');
+        $renderMode = $request->request->getInt('render_mode', Category::GALLERY);
+        $email = $request->request->get('email');
+        $parentId = $request->request->get('parentId');
+        $title = $request->request->get('title');
+        if (!$title || null === $parentId) {
+            throw new InvalidInput(_('You must enter a title and choose a location for the new category.'));
+        }
+
+
+        $category = new Category([
+            'title'             => $title,
+            'parent_id'         => $parentId,
+            'icon_id'           => $iconId,
+            'render_mode'       => $renderMode,
+            'email'             => $email,
+            'weighted_children' => 0,
+            'weight'            => 0,
+        ]);
+        $category->save();
+
+        return new JsonResponse(['id' => $category->getId()]);
+    }
+
+    /**
      * Move category.
      *
      * @param Request $request
@@ -72,21 +108,74 @@ class CategoryController extends AbstractAdminController
             $parentId = $request->request->getInt('parentId');
             /** @var ?Category */
             $parent = ORM::getOne(Category::class, $parentId);
+            if (!$parent) {
+                throw new InvalidInput(_('You must select a parent category'));
+            }
+
+            foreach ($parent->getBranch() as $node) {
+                if ($node->getId() === $category->getId()) {
+                    throw new InvalidInput(_('The category can not be placed under itself.'));
+                }
+            }
             $category->setParent($parent);
         }
-
         if ($request->request->has('title')) {
             $title = $request->request->get('title', '');
             $category->setTitle($title);
         }
+        if ($request->request->has('render_mode')) {
+            $renderMode = $request->request->getInt('render_mode', Category::GALLERY);
+            $category->setRenderMode($renderMode);
+        }
+        if ($request->request->has('weightedChildren')) {
+            $weightedChildren = $request->request->getBoolean('weightedChildren');
+            $category->setWeightedChildren($weightedChildren);
+        }
+        if ($request->request->has('email')) {
+            $email = $request->request->get('email');
+            $category->setEmail($email);
+        }
+
+        if ($request->request->has('icon_id')) {
+            $icon = null;
+            $iconId = $request->request->get('icon_id');
+            if (null !== $iconId) {
+                /** @var ?File */
+                $icon = ORM::getOne(File::class, $iconId);
+            }
+            $category->setIcon($icon);
+        }
 
         $category->save();
+
+        if ($request->request->has('subMenusOrder')) {
+            $subMenusOrder = $request->request->get('subMenusOrder', '');
+            $this->updateKatOrder($subMenusOrder);
+        }
 
         return new JsonResponse([
             'id'       => 'kat' . $category->getId(),
             'parentId' => $category->getParent() ? $category->getParent()->getId() : null,
             'title'    => $category->getTitle(),
         ]);
+    }
+
+    /**
+     * Update the order of categories.
+     *
+     * @param string $order Comma seporated list of ids
+     *
+     * @return void
+     */
+    public function updateKatOrder(string $order): void
+    {
+        foreach (explode(',', $order) as $weight => $id) {
+            /** @var ?Category */
+            $category = ORM::getOne(Category::class, $id);
+            if ($category) {
+                $category->setWeight($weight)->save();
+            }
+        }
     }
 
     /**

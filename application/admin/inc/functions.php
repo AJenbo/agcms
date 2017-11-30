@@ -4,7 +4,6 @@ use AGCMS\Config;
 use AGCMS\Entity\Category;
 use AGCMS\Entity\CustomPage;
 use AGCMS\Entity\Email;
-use AGCMS\Entity\File;
 use AGCMS\Entity\Invoice;
 use AGCMS\Entity\User;
 use AGCMS\EpaymentAdminService;
@@ -212,98 +211,11 @@ function saveListOrder(int $id, string $navn, string $text): bool
     return true;
 }
 
-/**
- * @throws InvalidInput
- *
- * @return string[]|true
- */
-function save_ny_kat(string $navn, int $kat, int $vis, string $email, int $iconId = null)
-{
-    if (!$navn) {
-        throw new InvalidInput(_('You must enter a name and choose a location for the new category.'));
-    }
-
-    $category = new Category([
-        'title'             => $navn,
-        'parent_id'         => $kat,
-        'icon_id'           => $iconId,
-        'render_mode'       => $vis,
-        'email'             => $email,
-        'weighted_children' => 0,
-        'weight'            => 0,
-    ]);
-    $category->save();
-
-    return true;
-}
-
 function sogogerstat(string $sog, string $erstat): int
 {
     db()->query('UPDATE sider SET text = REPLACE(text,\'' . db()->esc($sog) . '\',\'' . db()->esc($erstat) . '\')');
 
     return db()->affected_rows;
-}
-
-/**
- * @throws InvalidInput
- *
- * @return string[]|true
- */
-function updateKat(
-    int $id,
-    string $navn,
-    int $vis,
-    string $email,
-    bool $customSortSubs,
-    string $subsorder,
-    int $parentId = null,
-    int $iconId = null
-) {
-    $category = ORM::getOne(Category::class, $id);
-    assert($category instanceof Category);
-    if ($category->getParent() && null === $parentId) {
-        throw new InvalidInput(_('You must select a parent category'));
-    }
-
-    if (null !== $parentId) {
-        $parent = ORM::getOne(Category::class, $parentId);
-        assert($parent instanceof Category);
-        foreach ($parent->getBranch() as $node) {
-            if ($node->getId() === $category->getId()) {
-                throw new InvalidInput(_('The category can not be placed under itself.'));
-            }
-        }
-        $category->setParent($parent);
-    }
-
-    //Set the order of the subs
-    if ($customSortSubs) {
-        updateKatOrder($subsorder);
-    }
-
-    $icon = null;
-    if (null !== $iconId) {
-        $icon = ORM::getOne(File::class, $iconId);
-    }
-
-    //Update kat
-    $category->setRenderMode($vis)
-        ->setEmail($email)
-        ->setWeightedChildren($customSortSubs)
-        ->setIcon($icon)
-        ->setTitle($navn)
-        ->save();
-
-    return true;
-}
-
-function updateKatOrder(string $order): void
-{
-    foreach (explode(',', $order) as $weight => $id) {
-        $category = ORM::getOne(Category::class, $id);
-        assert($category instanceof Category);
-        $category->setWeight($weight)->save();
-    }
 }
 
 function updateSpecial(int $id, string $html, string $title = ''): bool

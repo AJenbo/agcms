@@ -1,6 +1,8 @@
 <?php namespace AGCMS\Controller\Admin;
 
 use AGCMS\Entity\Brand;
+use AGCMS\Entity\File;
+use AGCMS\Exception\InvalidInput;
 use AGCMS\ORM;
 use AGCMS\Render;
 use Symfony\Component\HttpFoundation\JsonResponse;

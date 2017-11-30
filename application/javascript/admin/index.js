@@ -143,17 +143,23 @@ function displaySubMenus(state) {
 function updateKat(id) {
     $("loading").style.visibility = "";
 
-    var icon = parseInt($("icon_id").value) || null;
+    var data = {
+        "title": $("navn").value,
+        "parentId": getRadio("kat"),
+        "icon_id": parseInt($("icon_id").value) || null,
+        "render_mode": parseInt($("vis").value),
+        "email": $("email").value
+    };
 
     if (!id) {
-        x_save_ny_kat($("navn").value, getRadio("kat"), $("vis").value, $("email").value, icon, save_ny_kat_r);
+        xHttp.request("/admin/categories/", save_ny_kat_r, "POST", data);
         return false;
     }
 
-    var hasWeightedChildren = $("custom_sort_subs").value ? 1 : 0;
+    data.weightedChildren = $("custom_sort_subs").value === "1";
+    data.subMenusOrder = $("subMenusOrder").value;
 
-    x_updateKat(id, $("navn").value, $("vis").value, $("email").value, hasWeightedChildren, $("subMenusOrder").value,
-                getRadio("kat"), icon, generic_r);
+    xHttp.request("/admin/categories/" + id + "/", genericCallback, "PUT", data);
     return false;
 }
 
@@ -195,7 +201,7 @@ function updateSide(id) {
         return false;
     }
 
-    saveRequest = xHttp.request("/admin/page/" + id + "/", generic_r, "PUT", page);
+    saveRequest = xHttp.request("/admin/page/" + id + "/", genericCallback, "PUT", page);
 
     return false;
 }
@@ -211,19 +217,19 @@ function opretSide_r(data) {
 function updateSpecial(id) {
     $("loading").style.visibility = "";
     if ($("subMenusOrder")) {
-        x_updateKatOrder($("subMenusOrder").value, generic_r);
+        x_updateKatOrder($("subMenusOrder").value, genericCallback);
     }
 
     var html = CKEDITOR.instances.text.getData();
 
     var title = $("title") ? $("title").value : "";
 
-    x_updateSpecial(id, html, title, generic_r);
+    x_updateSpecial(id, html, title, genericCallback);
     return false;
 }
 
 function save_ny_kat_r(data) {
-    if (data.error) {
+    if (!genericCallback(data)) {
         return;
     }
     location.href = "/admin/sitetree/";
@@ -255,7 +261,7 @@ function saveListOrder(id) {
         }
         newListOrder += listOrder.childNodes[i].innerHTML;
     }
-    x_saveListOrder(id, $("listOrderNavn").value, newListOrder, generic_r);
+    x_saveListOrder(id, $("listOrderNavn").value, newListOrder, genericCallback);
 }
 
 function makeNewList() {
@@ -312,7 +318,7 @@ function saveEmail() {
     }
     var id = $("id").value;
     id = id ? id : null;
-    x_saveEmail($("from").value, interests, $("subject").value, html, id, generic_r);
+    x_saveEmail($("from").value, interests, $("subject").value, html, id, genericCallback);
 }
 
 function updateContact(id) {
@@ -385,7 +391,7 @@ function sendEmail() {
 }
 
 function sendEmail_r(data) {
-    if (data.error) {
+    if (!genericCallback(data)) {
         $("loading").style.visibility = "hidden";
         return;
     }
