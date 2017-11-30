@@ -243,15 +243,13 @@ class ExplorerController extends AbstractAdminController
     {
         /** @var ?File */
         $file = ORM::getOne(File::class, $id);
-        if (!$file) {
-            return new JsonResponse(['id' => $id]);
-        }
+        if ($file) {
+            if ($file->isInUse()) {
+                throw new InvalidInput(_('The file can not be deleted because it is in use.'));
+            }
 
-        if ($file->isInUse()) {
-            throw new InvalidInput(_('The file can not be deleted because it is in use.'));
+            $file->delete();
         }
-
-        $file->delete();
 
         return new JsonResponse(['id' => $id]);
     }

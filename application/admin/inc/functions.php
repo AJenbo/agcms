@@ -197,26 +197,6 @@ function saveEmail(string $from, string $interests, string $subject, string $htm
     return true;
 }
 
-/**
- * Delete unused file.
- *
- * @throws InvalidInput
- *
- * @return int[]|string[]
- */
-function deletefile(int $id, string $path): array
-{
-    if (isinuse($path)) {
-        throw new InvalidInput(_('The file can not be deleted because it is used on a page.'));
-    }
-    $file = File::getByPath($path);
-    if ($file) {
-        $file->delete();
-    }
-
-    return ['id' => $id];
-}
-
 function makeNewList(string $navn): array
 {
     db()->query('INSERT INTO `tablesort` (`navn`) VALUES (\'' . db()->esc($navn) . '\')');
