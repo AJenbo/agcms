@@ -7,7 +7,7 @@ use AGCMS\DB;
 /**
  * Get database connection.
  *
- * @param DB $overwrite
+ * @param DB|null $overwrite
  *
  * @return DB
  */

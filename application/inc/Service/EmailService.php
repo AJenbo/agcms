@@ -57,9 +57,9 @@ class EmailService
      *
      * @throws SendEmail
      *
-     * @return bool
+     * @return void
      */
-    public function send(Email $email, array $bcc = []): bool
+    public function send(Email $email, array $bcc = []): void
     {
         $emailConfig = first(Config::get('emails'));
         if (isset(Config::get('emails')[$email->getSenderAddress()])) {

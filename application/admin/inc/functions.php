@@ -215,13 +215,15 @@ function sogogerstat(string $sog, string $erstat): int
 
 function emaillist()
 {
+    $data = [];
     $data['newsletters'] = db()->fetchArray(
         'SELECT id, subject, sendt sent FROM newsmails ORDER BY sendt, id DESC'
     );
 }
 
-function viewemail()
+function viewemail(Request $request)
 {
+    $data = [];
     $id = (int) $request->get('id', 0);
     $data['recipientCount'] = 0;
     if ($id) {
@@ -238,12 +240,14 @@ function viewemail()
 
 function listsort()
 {
+    $data = [];
     $data['lists'] = db()->fetchArray('SELECT id, navn FROM `tablesort`');
 }
 
-function listsortEdit()
+function listsortEdit(Request $request)
 {
     // listsort-edit
+    $data = [];
     $id = (int) $request->get('id', 0);
     if ($id) {
         $list = db()->fetchOne('SELECT * FROM `tablesort` WHERE `id` = ' . $id);

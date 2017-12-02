@@ -418,6 +418,10 @@ class InvoicePdfService
                 return '';
         }
 
+        if (null === $this->invoice->getTimeStampPay()) {
+            return $note . "\n";
+        }
+
         return $note . ' d. ' . date(_('m/d/Y'), $this->invoice->getTimeStampPay()) . "\n";
     }
 }

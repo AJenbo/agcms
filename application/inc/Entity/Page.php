@@ -305,7 +305,7 @@ class Page extends AbstractRenderable implements InterfaceRichText
     /**
      * Set the Brand id.
      *
-     * @param int $brandId Brand id
+     * @param ?int $brandId Brand id
      *
      * @return $this
      */
