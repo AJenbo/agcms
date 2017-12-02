@@ -295,6 +295,8 @@ class ExplorerController extends AbstractAdminController
      * @param Request $request
      * @param int     $id
      *
+     * @throws InvalidInput
+     *
      * @return Response
      */
     public function fileView(Request $request, int $id): Response
@@ -350,6 +352,8 @@ class ExplorerController extends AbstractAdminController
      *
      * @param Request $request
      * @param int     $id
+     *
+     * @throws InvalidInput
      *
      * @return JsonResponse
      */
@@ -409,6 +413,8 @@ class ExplorerController extends AbstractAdminController
      * @param Request $request
      * @param int     $id
      *
+     * @throws InvalidInput
+     *
      * @return Response
      */
     public function fileMoveDialog(Request $request, int $id): Response
@@ -457,6 +463,8 @@ class ExplorerController extends AbstractAdminController
      * Upload file.
      *
      * @param Request $request
+     *
+     * @throws InvalidInput
      *
      * @return Response
      */
@@ -651,6 +659,7 @@ class ExplorerController extends AbstractAdminController
      * @param int     $id
      *
      * @throws Exception
+     * @throws InvalidInput
      *
      * @return Response
      */

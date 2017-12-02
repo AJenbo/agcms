@@ -2,6 +2,7 @@
 
 use AGCMS\Config;
 use AGCMS\Entity\Contact;
+use AGCMS\Exception\InvalidInput;
 use AGCMS\ORM;
 use AGCMS\Render;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -81,6 +82,8 @@ class AddressbookController extends AbstractAdminController
      *
      * @param Request $request
      * @param int     $id
+     *
+     * @throws InvalidInput
      *
      * @return JsonResponse
      */

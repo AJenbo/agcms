@@ -1,6 +1,7 @@
 <?php namespace AGCMS\Controller\Admin;
 
 use AGCMS\Entity\Category;
+use AGCMS\Exception\InvalidInput;
 use AGCMS\ORM;
 use AGCMS\Render;
 use AGCMS\Service\SiteTreeService;
@@ -63,12 +64,17 @@ class SiteTreeController extends AbstractAdminController
      * @param Request $request
      * @param int     $id
      *
+     * @throws InvalidInput
+     *
      * @return JsonResponse
      */
     public function lable(Request $request, int $id): JsonResponse
     {
         /** @var ?Category */
         $category = ORM::getOne(Category::class, $id);
+        if (!$category) {
+            throw new InvalidInput(_('Category not found'));
+        }
 
         $data = [
             'id'   => 'katsheader',

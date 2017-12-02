@@ -387,6 +387,8 @@ class Table extends AbstractEntity
     /**
      * Get the page this table belongs to.
      *
+     * @throws Exception
+     *
      * @return Page
      */
     public function getPage(): Page

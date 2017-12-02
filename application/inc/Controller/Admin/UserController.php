@@ -138,12 +138,17 @@ class UserController extends AbstractAdminController
      * @param Request $request
      * @param int     $id
      *
+     * @throws InvalidInput
+     *
      * @return Response
      */
     public function editUser(Request $request, int $id): Response
     {
         /** @var ?User */
         $user = ORM::getOne(User::class, $id);
+        if (!$user) {
+            throw new InvalidInput(_('User not found'));
+        }
 
         $data = [
             'title'        => _('Edit') . ' ' . $user->getFullName(),
@@ -189,6 +194,9 @@ class UserController extends AbstractAdminController
 
         /** @var ?User */
         $user = ORM::getOne(User::class, $id);
+        if (!$user) {
+            throw new InvalidInput(_('User not found'));
+        }
 
         // Validate password update
         $newPassword = $request->request->get('password_new');

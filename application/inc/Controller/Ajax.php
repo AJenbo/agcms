@@ -18,6 +18,8 @@ class Ajax extends Base
      * @param int     $tableId    Id of list
      * @param int     $orderBy    What cell to sort by
      *
+     * @exception InvalidInput
+     *
      * @return JsonResponse
      */
     public function table(Request $request, int $categoryId, int $tableId, int $orderBy): JsonResponse
@@ -33,6 +35,10 @@ class Ajax extends Base
 
         /** @var ?Table */
         $table = ORM::getOne(Table::class, $tableId);
+        if (!$table) {
+            throw new InvalidInput(_('Table not found'));
+        }
+
         if ($table->getRows()) {
             $data = [
                 'orderBy'  => $orderBy,

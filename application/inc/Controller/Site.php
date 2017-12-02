@@ -109,6 +109,8 @@ class Site extends Base
         if ($redirect = $this->checkPageUrl($request, $category, $page)) {
             return $redirect;
         }
+        assert($category instanceof Category);
+        assert($page instanceof Page);
 
         /** @var Renderable[] */
         $crumbs = $category->getBranch();

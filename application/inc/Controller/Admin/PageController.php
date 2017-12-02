@@ -79,12 +79,17 @@ class PageController extends AbstractAdminController
      *
      * @param Request $request
      *
+     * @throws InvalidInput
+     *
      * @return JsonResponse
      */
     public function createPage(Request $request): JsonResponse
     {
         /** @var ?Category */
         $category = ORM::getOne(Category::class, $request->request->get('categoryId'));
+        if (!$category) {
+            throw new InvalidInput(_('Category not found.'));
+        }
 
         $page = new Page([
             'title'          => $request->request->get('title'),
@@ -112,6 +117,8 @@ class PageController extends AbstractAdminController
      * @param Request $request
      * @param int     $id
      *
+     * @throws InvalidInput
+     *
      * @return JsonResponse
      */
     public function updatePage(Request $request, int $id): JsonResponse
@@ -124,6 +131,9 @@ class PageController extends AbstractAdminController
 
         /** @var ?Page */
         $page = ORM::getOne(Page::class, $id);
+        if (!$page) {
+            throw new InvalidInput(_('Page not found.'));
+        }
 
         $page->setKeywords($request->request->get('keywords'))
             ->setPrice($request->request->get('price'))
@@ -230,7 +240,7 @@ class PageController extends AbstractAdminController
         /** @var ?Category */
         $category = ORM::getOne(Category::class, $categoryId);
         if (!$category) {
-            throw new InvalidInput(_('The category doesn\'t exist.'));
+            throw new InvalidInput(_('Category not found.'));
         }
 
         $result = ['pageId' => $page->getId(), 'deleted' => [], 'added' => null];
@@ -241,6 +251,9 @@ class PageController extends AbstractAdminController
         if (1 === count($page->getCategories())) {
             /** @var ?Category */
             $inactiveCategory = ORM::getOne(Category::class, -1);
+            if (!$inactiveCategory) {
+                throw new InvalidInput(_('Category not found.'));
+            }
 
             $page->addToCategory($inactiveCategory);
             $result['added'] = ['categoryId' => -1, 'path' => '/' . _('Inactive') . '/'];
@@ -287,14 +300,23 @@ class PageController extends AbstractAdminController
      * @param int     $pageId
      * @param int     $accessoryId
      *
+     * @throws InvalidInput
+     *
      * @return JsonResponse
      */
     public function addAccessory(Request $request, int $pageId, int $accessoryId): JsonResponse
     {
         /** @var ?Page */
         $page = ORM::getOne(Page::class, $pageId);
+        if (!$page) {
+            throw new InvalidInput(_('Page not found'));
+        }
+
         /** @var ?Page */
         $accessory = ORM::getOne(Page::class, $accessoryId);
+        if (!$accessory) {
+            throw new InvalidInput(_('Accessory not found'));
+        }
 
         $page->addAccessory($accessory);
 
@@ -317,14 +339,24 @@ class PageController extends AbstractAdminController
      * @param int     $pageId
      * @param int     $accessoryId
      *
+     * @throws InvalidInput
+     *
      * @return JsonResponse
      */
     public function removeAccessory(Request $request, int $pageId, int $accessoryId): JsonResponse
     {
         /** @var ?Page */
         $page = ORM::getOne(Page::class, $pageId);
+        if (!$page) {
+            throw new InvalidInput(_('Page not found'));
+        }
+
         /** @var ?Page */
         $accessory = ORM::getOne(Page::class, $accessoryId);
+        if (!$accessory) {
+            throw new InvalidInput(_('Accessory not found'));
+        }
+
         $page->removeAccessory($accessory);
 
         return new JsonResponse(['id' => 'accessory' . $accessory->getId()]);

@@ -7,6 +7,7 @@ use AGCMS\Entity\Email;
 use AGCMS\Entity\Invoice;
 use AGCMS\Entity\User;
 use AGCMS\EpaymentAdminService;
+use AGCMS\Exception\Exception;
 use AGCMS\Exception\InvalidInput;
 use AGCMS\ORM;
 use AGCMS\Render;
@@ -38,8 +39,8 @@ function removeNoneExistingFiles(): string
 /**
  * @todo resend failed emails, save bcc
  *
- * @throws InvalidInput
  * @throws Exception
+ * @throws InvalidInput
  *
  * @return string[]|true
  */
@@ -218,12 +219,26 @@ function sogogerstat(string $sog, string $erstat): int
     return db()->affected_rows;
 }
 
+/**
+ * @param int    $id
+ * @param string $html
+ * @param string $title
+ *
+ * @throws Exception
+ * @throws InvalidInput
+ *
+ * @return bool
+ */
 function updateSpecial(int $id, string $html, string $title = ''): bool
 {
     $html = purifyHTML($html);
 
     /** @var ?CustomPage */
     $page = ORM::getOne(CustomPage::class, $id);
+    if (!$page) {
+        throw new InvalidInput(_('Page not found'));
+    }
+
     if ($title) {
         $page->setTitle($title);
     }
@@ -232,6 +247,10 @@ function updateSpecial(int $id, string $html, string $title = ''): bool
     if (1 === $id) {
         /** @var ?Category */
         $category = ORM::getOne(Category::class, 0);
+        if (!$category) {
+            throw new Exception(_('Root category is missing!'));
+        }
+
         $category->setTitle($title)->save();
     }
 
@@ -443,6 +462,10 @@ function sendReminder(int $id): array
 {
     /** @var ?Invoice */
     $invoice = ORM::getOne(Invoice::class, $id);
+    if (!$invoice) {
+        throw new InvalidInput(_('Email is not valid!'));
+    }
+
     sendInvoice($invoice);
 
     throw new InvalidInput(_('A Reminder was sent to the customer.'));
@@ -450,6 +473,7 @@ function sendReminder(int $id): array
 
 /**
  * @throws Exception
+ * @throws InvalidInput
  *
  * @return string[]|true
  */
@@ -457,6 +481,9 @@ function pbsconfirm(int $id)
 {
     /** @var ?Invoice */
     $invoice = ORM::getOne(Invoice::class, $id);
+    if (!$invoice) {
+        throw new InvalidInput(_('Email is not valid!'));
+    }
 
     $epaymentService = new EpaymentAdminService(Config::get('pbsid'), Config::get('pbspwd'));
     $epayment = $epaymentService->getPayment(Config::get('pbsfix') . $invoice->getId());
@@ -473,6 +500,7 @@ function pbsconfirm(int $id)
 
 /**
  * @throws Exception
+ * @throws InvalidInput
  *
  * @return string[]|true
  */
@@ -480,6 +508,9 @@ function annul(int $id)
 {
     /** @var ?Invoice */
     $invoice = ORM::getOne(Invoice::class, $id);
+    if (!$invoice) {
+        throw new InvalidInput(_('Email is not valid!'));
+    }
 
     $epaymentService = new EpaymentAdminService(Config::get('pbsid'), Config::get('pbspwd'));
     $epayment = $epaymentService->getPayment(Config::get('pbsfix') . $invoice->getId());

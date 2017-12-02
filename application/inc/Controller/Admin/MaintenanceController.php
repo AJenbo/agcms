@@ -7,6 +7,7 @@ use AGCMS\Entity\CustomPage;
 use AGCMS\Entity\Email;
 use AGCMS\Entity\File;
 use AGCMS\Entity\Page;
+use AGCMS\Exception\Exception;
 use AGCMS\ORM;
 use AGCMS\Render;
 use AGCMS\Service\EmailService;
@@ -26,15 +27,22 @@ class MaintenanceController extends AbstractAdminController
      *
      * @param Request $request
      *
+     * @throws Exception
+     *
      * @return Response
      */
     public function index(Request $request): Response
     {
         $emailStatus = db()->fetchArray("SHOW TABLE STATUS LIKE 'emails'");
+        /** @var (string|int)[] */
         $emailStatus = reset($emailStatus);
 
         /** @var ?CustomPage */
         $page = ORM::getOne(CustomPage::class, 0);
+        if (!$page) {
+            throw new Exception(_('Cron status missing'));
+        }
+
         $data = [
             'dbSize'             => $this->getDbSize() / 1024 / 1024,
             'wwwSize'            => $this->getSizeOfFiles() / 1024 / 1024,
@@ -91,6 +99,8 @@ class MaintenanceController extends AbstractAdminController
 
     /**
      * Get list of pages with bindings to both active and inactive sections of the site.
+     *
+     * @throws Exception
      *
      * @return JsonResponse
      */
@@ -158,6 +168,10 @@ class MaintenanceController extends AbstractAdminController
             foreach ($pages as $page) {
                 /** @var ?Page */
                 $listPage = ORM::getOne(Page::class, $page['page_id']);
+                if (!$listPage) {
+                    throw new Exception(_('Page disapired during processing'));
+                }
+
                 unset($page['page_id']);
                 $page = new Page(Page::mapFromDB($page));
                 $html .= '<a href="?side=redigerside&amp;id=' . $listPage->getId() . '">' . $listPage->getId() . ': '
@@ -283,12 +297,17 @@ class MaintenanceController extends AbstractAdminController
     /**
      * Resend any email that failed ealier.
      *
+     * @throws Exception
+     *
      * @return JsonResponse
      */
     public function sendDelayedEmail(): JsonResponse
     {
         /** @var ?CustomPage */
         $cronStatus = ORM::getOne(CustomPage::class, 0);
+        if (!$cronStatus) {
+            throw new Exception(_('Cron status missing'));
+        }
 
         $html = '';
 

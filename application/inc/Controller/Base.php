@@ -2,6 +2,7 @@
 
 use AGCMS\Entity\Category;
 use AGCMS\Entity\CustomPage;
+use AGCMS\Exception\Exception;
 use AGCMS\ORM;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -47,12 +48,17 @@ class Base extends AbstractController
     /**
      * Get the basice render data.
      *
+     * @throws Exception
+     *
      * @return array
      */
     protected function basicPageData(): array
     {
         /** @var ?Category */
         $category = ORM::getOne(Category::class, 0);
+        if (!$category) {
+            throw new Exception(_('Root category is missing!'));
+        }
 
         return [
             'menu'     => $category->getVisibleChildren(),

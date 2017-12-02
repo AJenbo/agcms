@@ -218,6 +218,8 @@ class InvoiceController extends AbstractAdminController
      * @param Request $request
      * @param int     $id
      *
+     * @throws InvalidInput
+     *
      * @return Response
      */
     public function invoice(Request $request, int $id): Response

@@ -1,6 +1,7 @@
 <?php namespace AGCMS\Controller\Admin;
 
 use AGCMS\Entity\Table;
+use AGCMS\Exception\InvalidInput;
 use AGCMS\ORM;
 use AGCMS\Render;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -57,6 +58,8 @@ class TableController extends AbstractAdminController
      * @param Request $request
      * @param int     $tableId
      *
+     * @throws InvalidInput
+     *
      * @return JsonResponse
      */
     public function addRow(Request $request, int $tableId): JsonResponse
@@ -66,6 +69,10 @@ class TableController extends AbstractAdminController
 
         /** @var ?Table */
         $table = ORM::getOne(Table::class, $tableId);
+        if (!$table) {
+            throw new InvalidInput(_('Table not found'));
+        }
+
         $rowId = $table->addRow($cells, $link);
 
         return new JsonResponse(['listid' => $tableId, 'rowid' => $rowId]);
@@ -78,6 +85,8 @@ class TableController extends AbstractAdminController
      * @param int     $tableId
      * @param int     $rowId
      *
+     * @throws InvalidInput
+     *
      * @return JsonResponse
      */
     public function updateRow(Request $request, int $tableId, int $rowId): JsonResponse
@@ -87,6 +96,10 @@ class TableController extends AbstractAdminController
 
         /** @var ?Table */
         $table = ORM::getOne(Table::class, $tableId);
+        if (!$table) {
+            throw new InvalidInput(_('Table not found'));
+        }
+
         $table->updateRow($rowId, $cells, $link);
 
         return new JsonResponse(['listid' => $tableId, 'rowid' => $rowId]);
@@ -99,12 +112,18 @@ class TableController extends AbstractAdminController
      * @param int     $tableId
      * @param int     $rowId
      *
+     * @throws InvalidInput
+     *
      * @return JsonResponse
      */
     public function removeRow(Request $request, int $tableId, int $rowId): JsonResponse
     {
         /** @var ?Table */
         $table = ORM::getOne(Table::class, $tableId);
+        if (!$table) {
+            throw new InvalidInput(_('Table not found'));
+        }
+
         $table->removeRow($rowId);
 
         return new JsonResponse(['listid' => $tableId, 'rowid' => $rowId]);
