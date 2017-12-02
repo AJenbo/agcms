@@ -289,11 +289,10 @@ function makeNewList_r(data) {
     location.href = "/admin/?side=listsort-edit&id=" + data.id;
 }
 
+var contactCountRequest;
 function countEmailTo() {
     $("loading").style.visibility = "";
-    // Cancle all othere ajax requests to avoide reponce order mix up
-    // TODO only cancle requests relating to countEmailTo
-    sajax.cancel();
+    xHttp.cancel(contactCountRequest);
     var interestObjs = $("interests").getElementsByTagName("input");
     var interests = [];
     for (var i = 0; i < interestObjs.length; i++) {
@@ -301,7 +300,7 @@ function countEmailTo() {
             interests.push(interestObjs[i].value);
         }
     }
-    x_countEmailTo(interests, countEmailTo_r)
+    contactCountRequest = x_countEmailTo(interests, countEmailTo_r)
 }
 
 function countEmailTo_r(data) {

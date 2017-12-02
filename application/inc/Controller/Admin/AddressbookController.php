@@ -5,6 +5,7 @@ use AGCMS\Entity\Contact;
 use AGCMS\Exception\InvalidInput;
 use AGCMS\ORM;
 use AGCMS\Render;
+use AGCMS\Service\EmailService;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -127,5 +128,22 @@ class AddressbookController extends AbstractAdminController
         }
 
         return new JsonResponse(['id' => 'contact' . $id]);
+    }
+
+    /**
+     * Check if an email is valid.
+     *
+     * @param Request $request
+     *
+     * @return JsonResponse
+     */
+    public function isValidEmail(Request $request): JsonResponse
+    {
+        $email = $request->get('email', '');
+
+        $emailService = new EmailService();
+        $isValid = $emailService->valideMail($email);
+
+        return new JsonResponse(['isValid' => $isValid]);
     }
 }

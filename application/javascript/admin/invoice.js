@@ -1,6 +1,6 @@
 function newfaktura() {
     $("loading").style.visibility = "";
-    x_newfaktura(newfaktura_r);
+    xHttp.request("/admin/invoices/", newfaktura_r, "POST");
 }
 function copytonew(id) {
     $("loading").style.visibility = "";
@@ -271,23 +271,23 @@ function valideMail() {
     }
 
     if (!$("email").value.match("^[A-z0-9_.-]+@([A-z0-9-]+\\.)+[A-z0-9-]+$")) {
-        valideMail_r(false);
+        valideMail_r({"isValid": false});
         return;
     }
 
     if ($("email").value != lastemail || $("emaillink").style.display == "none") {
         lastemail = $("email").value;
-        if (validemailajaxcall) {
-            sajax.cancel(validemailajaxcall);
-        }
+        xHttp.cancel(validemailajaxcall);
         $("loading").style.visibility = "";
-        valideMail_r(false);
-        validemailajaxcall = x_valideMail($("email").value, valideMail_r);
+        valideMail_r({"isValid": false});
+
+        validemailajaxcall =
+            xHttp.request("/admin/addressbook/validEmail/?email=" + encodeURIComponent(lastemail), valideMail_r, "GET");
     }
 }
 
-function valideMail_r(valideMail) {
-    $("emaillink").style.display = valideMail ? "" : "none";
+function valideMail_r(data) {
+    $("emaillink").style.display = data.isValid ? "" : "none";
     $("loading").style.visibility = "hidden";
 }
 
