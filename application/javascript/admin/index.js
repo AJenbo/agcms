@@ -166,10 +166,19 @@ function updateKat(id) {
 function updatemaerke(id) {
     $("loading").style.visibility = "";
 
-    var icon = parseInt(document.getElementById("icon_id").value) || null;
+    var data = {
+        "title": document.getElementById("navn").value,
+        "link": document.getElementById("link").value,
+        "iconId": parseInt(document.getElementById("icon_id").value) || null
+    };
 
-    x_updatemaerke(id, document.getElementById("navn").value, document.getElementById("link").value, icon,
-                   id ? inject_html : updatemaerke_r);
+    if (!id) {
+        xHttp.request("/admin/brands/", updatemaerke_r, "POST", data);
+
+        return false;
+    }
+
+    xHttp.request("/admin/brands/" + id + "/", genericCallback, "PUT", data);
 
     return false;
 }

@@ -1,5 +1,9 @@
 {% extends "admin/index.html" %}
 
+{% block actions %}
+<li><a onclick="updatemaerke({{brand.id}});"><img src="/theme/default/images/admin/disk.png" width="16" height="16" alt="" /> Save brand</a></li>
+{% endblock %}
+
 {% block canvas %}
 <div id="headline">Edit the brand {{brand.title}}</div>
 <form onsubmit="return updatemaerke({{brand.id}})">

@@ -1,5 +1,9 @@
 {% extends "admin/index.html" %}
 
+{% block actions %}
+<li><a onclick="updatemaerke(null);"><img src="/theme/default/images/admin/disk.png" width="16" height="16" alt="" /> Save brand</a></li>
+{% endblock %}
+
 {% block canvas %}
 {% spaceless %}
 <div id="headline">List of brands</div>

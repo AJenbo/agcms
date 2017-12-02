@@ -56,14 +56,14 @@ class BrandController extends AbstractAdminController
      */
     public function create(Request $request): JsonResponse
     {
-        $name = $request->request->get('name', '');
+        $title = $request->request->get('title', '');
         $link = $request->request->get('link', '');
         $iconId = $request->request->get('iconId');
-        if (!$name) {
+        if (!$title) {
             throw new InvalidInput(_('You must enter a name.'));
         }
 
-        $brand = new Brand(['title' => $name, 'link' => $link, 'icon_id' => $iconId]);
+        $brand = new Brand(['title' => $title, 'link' => $link, 'icon_id' => $iconId]);
         $brand->save();
 
         return new JsonResponse(['id' => $brand->getId()]);
@@ -81,26 +81,27 @@ class BrandController extends AbstractAdminController
      */
     public function update(Request $request, int $id): JsonResponse
     {
-        $name = $request->request->get('name');
+        $title = $request->request->get('title');
         $link = $request->request->get('link', '');
         $iconId = $request->request->get('iconId');
-        if (!$name) {
-            throw new InvalidInput(_('You must enter a name.'));
+        if (!$title) {
+            throw new InvalidInput(_('You must enter a title.'));
         }
 
         $brand = ORM::getOne(Brand::class, $id);
-        if (!$name) {
+        if (!$brand) {
             throw new InvalidInput(_('The brand dosen\'t exist.'));
         }
 
         $icon = null;
         if (null !== $iconId) {
+            /** @var ?File */
             $icon = ORM::getOne(File::class, $iconId);
         }
 
         $brand->setIcon($icon)
             ->setLink($link)
-            ->setTitle($name)
+            ->setTitle($title)
             ->save();
 
         return new JsonResponse(['id' => $brand->getId()]);
