@@ -237,7 +237,15 @@ function save(id, type) {
 }
 
 function sendReminder(id) {
-    xHttp.request("/admin/invoices/" + id + "/email/", genericCallback, "POST");
+    xHttp.request("/admin/invoices/" + id + "/email/", sendReminder_r, "POST");
+}
+
+function sendReminder_r(data) {
+    if (!genericCallback(data)) {
+        return;
+    }
+
+    alert("Em påmindelse er blevet sendt til kunden.");
 }
 
 function save_r(date) {

@@ -116,7 +116,7 @@ function sendEmail(
         }
     }
     if ($failedCount) {
-        throw new Exception('Email ' . $failedCount . '/' . $totalEmails . ' failed to be sent.');
+        throw new Exception(sprintf(_('Email %d/%d failed to be sent.'), $failedCount, $totalEmails));
     }
 
     db()->query('UPDATE `newsmails` SET `sendt` = 1 WHERE `id` = ' . $id);

@@ -120,7 +120,7 @@ class InvoiceController extends AbstractAdminController
             'invoices'      => $invoices,
             'years'         => range($oldest, date('Y')),
             'statusOptions' => [
-                ''         => 'All',
+                ''         => _('All'),
                 'inactiv'  => _('Completed'),
                 'new'      => _('New'),
                 'locked'   => _('Locked'),
@@ -295,7 +295,7 @@ class InvoiceController extends AbstractAdminController
         $invoiceService = new InvoiceService();
         $invoiceService->sendInvoice($invoice);
 
-        return new JsonResponse(['error' => ['message' => _('A Reminder was sent to the customer.')]]);
+        return new JsonResponse([]);
     }
 
     /**

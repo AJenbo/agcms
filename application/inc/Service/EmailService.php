@@ -86,7 +86,7 @@ class EmailService
         $mailer->addAddress($email->getRecipientAddress(), $email->getRecipientName());
 
         if (!$mailer->send()) {
-            throw new SendEmail('Failed to send email!');
+            throw new SendEmail(_('Failed to send email!'));
         }
 
         $this->uploadEmail($emailConfig, $mailer->getSentMIMEMessage());

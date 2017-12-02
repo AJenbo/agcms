@@ -740,7 +740,7 @@ class ExplorerController extends AbstractAdminController
             return $this->createImageResponse($file);
         }
         if ($file->isInUse(true)) {
-            throw new InvalidInput('Image can not be changed as it used in a text.');
+            throw new InvalidInput(_('Image can not be changed as it used in a text.'));
         }
 
         $type = 'jpeg';

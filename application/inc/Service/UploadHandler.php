@@ -187,7 +187,7 @@ class UploadHandler
 
         $target = tempnam(sys_get_temp_dir(), 'upload');
         if (!$target) {
-            throw new Exception('Failed to create temporary file');
+            throw new Exception(_('Failed to create temporary file'));
         }
 
         $image->processImage($target, $format);
