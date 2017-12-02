@@ -24,7 +24,7 @@ class DB extends mysqli
     {
         parent::__construct($host, $user, $password, $schema);
 
-        /* Throw an error if the connection fails */
+        // Throwing an exception in the constructor can revel the password
         if (mysqli_connect_error()) {
             return;
         }
@@ -83,16 +83,14 @@ class DB extends mysqli
      *
      * @throws Exception
      *
-     * @return bool
+     * @return void
      */
-    public function query($query, $resultmode = null): bool
+    public function query($query, $resultmode = null): void
     {
         parent::query($query, $resultmode);
         if (mysqli_error($this)) {
             throw new Exception(mysqli_error($this), mysqli_errno($this));
         }
-
-        return true;
     }
 
     /**
