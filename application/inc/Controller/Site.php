@@ -39,7 +39,6 @@ class Site extends Base
         if (1 === count($pages)) {
             /** @var Page */
             $renderable = array_shift($pages);
-            assert($renderable instanceof Page);
             $template = 'product';
 
             foreach ($renderable->getTables() as $table) {
@@ -110,8 +109,6 @@ class Site extends Base
         if ($redirect = $this->checkPageUrl($request, $category, $page)) {
             return $redirect;
         }
-        assert($category instanceof Category);
-        assert($page instanceof Page);
 
         /** @var Renderable[] */
         $crumbs = $category->getBranch();

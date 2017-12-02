@@ -66,7 +66,6 @@ class TableController extends AbstractAdminController
 
         /** @var ?Table */
         $table = ORM::getOne(Table::class, $tableId);
-        assert($table instanceof Table);
         $rowId = $table->addRow($cells, $link);
 
         return new JsonResponse(['listid' => $tableId, 'rowid' => $rowId]);
@@ -88,7 +87,6 @@ class TableController extends AbstractAdminController
 
         /** @var ?Table */
         $table = ORM::getOne(Table::class, $tableId);
-        assert($table instanceof Table);
         $table->updateRow($rowId, $cells, $link);
 
         return new JsonResponse(['listid' => $tableId, 'rowid' => $rowId]);
@@ -105,8 +103,8 @@ class TableController extends AbstractAdminController
      */
     public function removeRow(Request $request, int $tableId, int $rowId): JsonResponse
     {
+        /** @var ?Table */
         $table = ORM::getOne(Table::class, $tableId);
-        assert($table instanceof Table);
         $table->removeRow($rowId);
 
         return new JsonResponse(['listid' => $tableId, 'rowid' => $rowId]);

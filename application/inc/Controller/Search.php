@@ -37,9 +37,9 @@ class Search extends Base
     private function getActiveBrands(): array
     {
         $categoryIds = [];
+        /** @var Category[] */
         $categories = ORM::getByQuery(Category::class, 'SELECT * FROM kat');
         foreach ($categories as $category) {
-            assert($category instanceof Category);
             if ($category->isInactive()) {
                 continue;
             }
@@ -127,10 +127,9 @@ class Search extends Base
             && !$request->get('sogikke')
         ) {
             if ($request->get('maerke')) {
+                /** @var ?Brand */
                 $brand = ORM::getOne(Brand::class, $request->get('maerke'));
                 if ($brand) {
-                    assert($brand instanceof Brand);
-
                     return $this->redirect($request, $brand->getCanonicalLink(), Response::HTTP_MOVED_PERMANENTLY);
                 }
             }
@@ -224,7 +223,6 @@ class Search extends Base
 
         // Remove inactive pages
         foreach ($pages as $key => $page) {
-            assert($page instanceof Page);
             if ($page->isInactive()) {
                 unset($pages[$key]);
             }
@@ -284,6 +282,7 @@ class Search extends Base
         $simpleSearchString = $searchString ? '%' . preg_replace('/\s+/u', '%', $searchString) . '%' : '';
         $simpleAntiWords = $antiWords ? '%' . preg_replace('/\s+/u', '%', $antiWords) . '%' : '';
 
+        /** @var Category[] */
         $categories = ORM::getByQuery(
             Category::class,
             '
@@ -302,7 +301,6 @@ class Search extends Base
 
         $activeCategories = [];
         foreach ($categories as $category) {
-            assert($category instanceof Category);
             if ($category->isVisable()) {
                 $activeCategories[] = $category;
             }

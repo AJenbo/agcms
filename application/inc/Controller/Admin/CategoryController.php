@@ -29,9 +29,9 @@ class CategoryController extends AbstractAdminController
 
         $category = null;
         if (null !== $id) {
+            /** @var ?Category */
             $category = ORM::getOne(Category::class, $id);
             if ($category) {
-                assert($category instanceof Category);
                 $selectedId = $category->getParent() ? $category->getParent()->getId() : null;
             }
         }
@@ -70,7 +70,6 @@ class CategoryController extends AbstractAdminController
         if (!$title || null === $parentId) {
             throw new InvalidInput(_('You must enter a title and choose a location for the new category.'));
         }
-
 
         $category = new Category([
             'title'             => $title,
@@ -194,6 +193,7 @@ class CategoryController extends AbstractAdminController
             throw new InvalidInput(_('Cannot delete root categories!'));
         }
 
+        /** @var ?Category */
         $category = ORM::getOne(Category::class, $id);
         if ($category) {
             $category->delete();

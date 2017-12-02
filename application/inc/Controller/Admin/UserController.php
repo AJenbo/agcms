@@ -25,6 +25,7 @@ class UserController extends AbstractAdminController
      */
     public function index(Request $request): Response
     {
+        /** @var User[] */
         $users = ORM::getByQuery(
             User::class,
             'SELECT * FROM `users` ORDER BY ' . ($request->get('order') ? 'lastlogin' : 'fullname')
@@ -141,8 +142,8 @@ class UserController extends AbstractAdminController
      */
     public function editUser(Request $request, int $id): Response
     {
+        /** @var ?User */
         $user = ORM::getOne(User::class, $id);
-        assert($user instanceof User);
 
         $data = [
             'title'        => _('Edit') . ' ' . $user->getFullName(),
@@ -188,7 +189,6 @@ class UserController extends AbstractAdminController
 
         /** @var ?User */
         $user = ORM::getOne(User::class, $id);
-        assert($user instanceof User);
 
         // Validate password update
         $newPassword = $request->request->get('password_new');
@@ -240,6 +240,7 @@ class UserController extends AbstractAdminController
             throw new InvalidInput(_('You can\'t delete yourself.'));
         }
 
+        /** @var ?User */
         $user = ORM::getOne(User::class, $id);
         if ($user) {
             $user->delete();

@@ -218,8 +218,10 @@ class ExplorerController extends AbstractAdminController
 
         $html = '';
         $javascript = '';
-        foreach (ORM::getByQuery(File::class, 'SELECT *' . $sql) as $file) {
-            assert($file instanceof File);
+
+        /** @var File[] */
+        $files = ORM::getByQuery(File::class, 'SELECT *' . $sql);
+        foreach ($files as $file) {
             if ('unused' !== $qtype || !$file->isInUse()) {
                 $html .= $this->fileService->filehtml($file, $returnType);
                 $javascript .= $this->fileService->filejavascript($file);

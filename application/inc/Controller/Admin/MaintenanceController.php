@@ -32,8 +32,9 @@ class MaintenanceController extends AbstractAdminController
     {
         $emailStatus = db()->fetchArray("SHOW TABLE STATUS LIKE 'emails'");
         $emailStatus = reset($emailStatus);
+
+        /** @var ?CustomPage */
         $page = ORM::getOne(CustomPage::class, 0);
-        assert($page instanceof CustomPage);
         $data = [
             'dbSize'             => $this->getDbSize() / 1024 / 1024,
             'wwwSize'            => $this->getSizeOfFiles() / 1024 / 1024,
@@ -54,6 +55,7 @@ class MaintenanceController extends AbstractAdminController
      */
     public function removeBadContacts(): JsonResponse
     {
+        /** @var Contact[] */
         $contacts = ORM::getByQuery(
             Contact::class,
             "SELECT * FROM `email` WHERE `email` = '' AND `adresse` = '' AND `tlf1` = '' AND `tlf2` = ''"
@@ -72,14 +74,13 @@ class MaintenanceController extends AbstractAdminController
      */
     public function orphanPages(): JsonResponse
     {
+        /** @var Page[] */
         $pages = ORM::getByQuery(Page::class, 'SELECT * FROM `sider` WHERE `id` NOT IN(SELECT `side` FROM `bind`)');
 
         $html = '';
         if ($pages) {
             $html = '<b>' . _('The following pages have no binding') . '</b><br />';
             foreach ($pages as $page) {
-                /* @var Page */
-                assert($page instanceof Page);
                 $html .= '<a href="?side=redigerside&amp;id=' . $page->getId() . '">' . $page->getId()
                     . ': ' . $page->getTitle() . '</a><br />';
             }
@@ -99,12 +100,14 @@ class MaintenanceController extends AbstractAdminController
 
         // Map out active / inactive
         $categoryActiveMaps = [];
+
+        /** @var Category[] */
         $categories = ORM::getByQuery(Category::class, 'SELECT * FROM `kat`');
         foreach ($categories as $category) {
-            assert($category instanceof Category);
             $categoryActiveMaps[(int) $category->isInactive()][] = $category->getId();
         }
 
+        /** @var Page[] */
         $pages = ORM::getByQuery(
             Page::class,
             '
@@ -125,7 +128,6 @@ class MaintenanceController extends AbstractAdminController
         if ($pages) {
             $html .= '<b>' . _('The following pages are both active and inactive') . '</b><br />';
             foreach ($pages as $page) {
-                assert($page instanceof Page);
                 $html .= '<a href="?side=redigerside&amp;id=' . $page->getId() . '">' . $page->getId() . ': '
                     . $page->getTitle() . '</a><br />';
             }
@@ -154,8 +156,8 @@ class MaintenanceController extends AbstractAdminController
         if ($pages) {
             $html .= '<b>' . _('The following inactive pages appears in list on active pages') . '</b><br />';
             foreach ($pages as $page) {
+                /** @var ?Page */
                 $listPage = ORM::getOne(Page::class, $page['page_id']);
-                assert($listPage instanceof Page);
                 unset($page['page_id']);
                 $page = new Page(Page::mapFromDB($page));
                 $html .= '<a href="?side=redigerside&amp;id=' . $listPage->getId() . '">' . $listPage->getId() . ': '
@@ -175,9 +177,10 @@ class MaintenanceController extends AbstractAdminController
     public function circularLinks(): JsonResponse
     {
         $html = '';
+
+        /** @var Category[] */
         $categories = ORM::getByQuery(Category::class, 'SELECT * FROM `kat` WHERE bind != 0 AND bind != -1');
         foreach ($categories as $category) {
-            assert($category instanceof Category);
             $branchIds = [$category->getId() => true];
             while ($category = $category->getParent()) {
                 if (isset($branchIds[$category->getId()])) {
@@ -284,8 +287,8 @@ class MaintenanceController extends AbstractAdminController
      */
     public function sendDelayedEmail(): JsonResponse
     {
+        /** @var ?CustomPage */
         $cronStatus = ORM::getOne(CustomPage::class, 0);
-        assert($cronStatus instanceof CustomPage);
 
         $html = '';
 
@@ -320,9 +323,9 @@ class MaintenanceController extends AbstractAdminController
      */
     public function contactsWithInvalidEmails(): JsonResponse
     {
+        /** @var Contact[] */
         $contacts = ORM::getByQuery(Contact::class, "SELECT * FROM `email` WHERE `email` != ''");
         foreach ($contacts as $key => $contact) {
-            assert($contact instanceof Contact);
             if ($contact->isEmailValide()) {
                 unset($contacts[$key]);
             }

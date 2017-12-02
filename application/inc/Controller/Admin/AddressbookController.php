@@ -86,8 +86,12 @@ class AddressbookController extends AbstractAdminController
      */
     public function update(Request $request, int $id): JsonResponse
     {
+        /** @var ?Contact */
         $contact = ORM::getOne(Contact::class, $id);
-        assert($contact instanceof Contact);
+        if (!$contact) {
+            throw new InvalidInput(_('Contact not found.'));
+        }
+
         $contact->setName($request->request->get('name', ''))
             ->setEmail($request->request->get('email', ''))
             ->setAddress($request->request->get('address', ''))
@@ -113,6 +117,7 @@ class AddressbookController extends AbstractAdminController
      */
     public function delete(Request $request, int $id): JsonResponse
     {
+        /** @var ?Contact */
         $contact = ORM::getOne(Contact::class, $id);
         if ($contact) {
             $contact->delete();

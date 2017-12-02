@@ -19,13 +19,16 @@ class SiteTreeService
     {
         $category = null;
         if (null !== $selectedId) {
+            /** @var ?Category */
             $category = ORM::getOne(Category::class, $selectedId);
         }
 
+        /** @var Category[] */
         $rootCategories = ORM::getByQuery(Category::class, 'SELECT * FROM kat WHERE bind IS NULL');
 
         $customPages = [];
         if (!$inputType) {
+            /** @var CustomPage[] */
             $customPages = ORM::getByQuery(CustomPage::class, 'SELECT * FROM `special` WHERE `id` > 1 ORDER BY `navn`');
         }
 
@@ -50,9 +53,9 @@ class SiteTreeService
     private function getOpenCategories(array $openCategories, int $selectedId = null): array
     {
         if (null !== $selectedId) {
+            /** @var ?Category */
             $category = ORM::getOne(Category::class, $selectedId);
             if ($category) {
-                assert($category instanceof Category);
                 foreach ($category->getBranch() as $category) {
                     $openCategories[] = $category->getId();
                 }

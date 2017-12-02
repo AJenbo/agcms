@@ -67,8 +67,8 @@ class SiteTreeController extends AbstractAdminController
      */
     public function lable(Request $request, int $id): JsonResponse
     {
+        /** @var ?Category */
         $category = ORM::getOne(Category::class, $id);
-        assert($category instanceof Category);
 
         $data = [
             'id'   => 'katsheader',
@@ -142,8 +142,10 @@ class SiteTreeController extends AbstractAdminController
 
         $sort = isset($sortOptions[$sort]) ? $sort : 'navn';
 
+        /** @var Category[] */
         $categories = ORM::getByQuery(Category::class, 'SELECT * FROM kat WHERE bind IS NULL');
         if ('' !== $categoryId) {
+            /** @var Category[] */
             $categories = [ORM::getOne(Category::class, $categoryId)];
         }
 

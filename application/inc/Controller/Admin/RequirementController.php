@@ -21,6 +21,7 @@ class RequirementController extends AbstractAdminController
     public function index(Request $request): Response
     {
         $data = $this->basicPageData($request);
+        /* @var Requirement[] */
         $data['requirements'] = ORM::getByQuery(Requirement::class, 'SELECT * FROM `krav` ORDER BY navn');
         $content = Render::render('admin/krav', $data);
 
@@ -112,6 +113,7 @@ class RequirementController extends AbstractAdminController
      */
     public function delete(Request $request, int $id): JsonResponse
     {
+        /** @var ?Requirement */
         $requirement = ORM::getOne(Requirement::class, $id);
         if ($requirement) {
             $requirement->delete();

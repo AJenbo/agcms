@@ -53,7 +53,6 @@ class Base extends AbstractController
     {
         /** @var ?Category */
         $category = ORM::getOne(Category::class, 0);
-        assert($category instanceof Category);
 
         return [
             'menu'     => $category->getVisibleChildren(),

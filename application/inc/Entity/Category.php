@@ -283,7 +283,7 @@ class Category extends AbstractRenderable
      *
      * @param bool $onlyVisable Only return visible
      *
-     * @return Category[]
+     * @return self[]
      */
     public function getChildren(bool $onlyVisable = false): array
     {
@@ -292,7 +292,7 @@ class Category extends AbstractRenderable
             $orderBy = '`order`, navn';
         }
 
-        /** @var Category[] */
+        /** @var self[] */
         $children = ORM::getByQuery(
             self::class,
             '
@@ -306,7 +306,6 @@ class Category extends AbstractRenderable
         }
 
         foreach ($children as $key => $child) {
-            assert($child instanceof self);
             if (!$child->isVisable()) {
                 unset($children[$key]);
             }
@@ -318,7 +317,7 @@ class Category extends AbstractRenderable
     /**
      * Get children that are suitable for displaying.
      *
-     * @return Category[]
+     * @return self[]
      */
     public function getVisibleChildren(): array
     {
@@ -382,7 +381,6 @@ class Category extends AbstractRenderable
 
         $objectArray = [];
         foreach ($pages as $page) {
-            assert($page instanceof Page);
             $objectArray[] = [
                 'id'     => $page->getId(),
                 'navn'   => $page->getTitle(),
@@ -451,7 +449,7 @@ class Category extends AbstractRenderable
     /**
      * Get the full list of categories leading to the root element.
      *
-     * @return Category[]
+     * @return self[]
      */
     public function getBranch(): array
     {

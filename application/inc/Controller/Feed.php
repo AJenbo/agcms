@@ -30,9 +30,9 @@ class Feed extends Base
 
         $activeCategories = [];
         $activeCategoryIds = [];
+        /** @var Category[] */
         $categories = ORM::getByQuery(Category::class, 'SELECT * FROM kat');
         foreach ($categories as $category) {
-            assert($category instanceof Category);
             if ($category->isInactive()) {
                 continue;
             }
@@ -40,6 +40,7 @@ class Feed extends Base
             $activeCategoryIds[] = $category->getId();
         }
 
+        /** @var Page[] */
         $pages = ORM::getByQuery(
             Page::class,
             '
@@ -51,7 +52,6 @@ class Feed extends Base
         $pages = [];
         $brands = [];
         foreach ($pages as $page) {
-            assert($page instanceof Page);
             $pages[] = $page;
             $brand = $page->getBrand();
             if ($brand) {
@@ -103,6 +103,7 @@ class Feed extends Base
         }
 
         $items = [];
+        /** @var Page[] */
         $pages = ORM::getByQuery(
             Page::class,
             'SELECT * FROM sider'
@@ -111,7 +112,6 @@ class Feed extends Base
             . $limit
         );
         foreach ($pages as $page) {
-            assert($page instanceof Page);
             if ($page->isInactive()) {
                 continue;
             }

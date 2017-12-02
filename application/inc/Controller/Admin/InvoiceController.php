@@ -106,6 +106,7 @@ class InvoiceController extends AbstractAdminController
         $oldest = $oldest['date'] ?? time();
         $oldest = date('Y', $oldest);
 
+        /** @var Invoice[] */
         $invoices = ORM::getByQuery(Invoice::class, 'SELECT * FROM `fakturas` WHERE ' . $where . ' ORDER BY `id` DESC');
 
         $data = [
@@ -146,6 +147,7 @@ class InvoiceController extends AbstractAdminController
      */
     public function validationList(Request $request): Response
     {
+        /** @var Invoice[] */
         $invoices = ORM::getByQuery(
             Invoice::class,
             "
@@ -179,11 +181,15 @@ class InvoiceController extends AbstractAdminController
         /** @var User */
         $user = $request->user();
         if (!$user->hasAccess(User::ADMINISTRATOR)) {
-            throw new InvalidInput('You do not have permissions to validate payments!');
+            throw new InvalidInput(_('You do not have permissions to validate payments!'));
         }
 
+        /** @var ?Invoice */
         $invoice = ORM::getOne(Invoice::class, $id);
-        assert($invoice instanceof Invoice);
+        if (!$invoice) {
+            throw new InvalidInput(_('Invoice not found.'));
+        }
+
         $invoice->setTransferred($request->request->getBoolean('transferred'))->save();
 
         return new JsonResponse([]);
@@ -218,7 +224,9 @@ class InvoiceController extends AbstractAdminController
     {
         /** @var ?Invoice */
         $invoice = ORM::getOne(Invoice::class, $id);
-        assert($invoice instanceof Invoice);
+        if (!$invoice) {
+            throw new InvalidInput(_('Invoice not found.'));
+        }
 
         /** @var User */
         $user = $request->user();

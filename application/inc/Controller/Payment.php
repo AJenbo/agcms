@@ -260,7 +260,6 @@ class Payment extends Base
         if (!$invoice || $checkId !== $invoice->getCheckId()) {
             return $this->redirect($request, '/betaling/?id=' . $id . '&checkid=' . rawurlencode($checkId));
         }
-        assert($invoice instanceof Invoice);
 
         if (!$invoice->isFinalized() && 'pbsok' !== $invoice->getStatus() && !$request->query->has('txnid')) {
             return $this->redirect($request, $invoice->getLink());
@@ -338,7 +337,6 @@ class Payment extends Base
         ) {
             return new Response('', 400);
         }
-        assert($invoice instanceof Invoice);
 
         if (!$invoice->isFinalized() && 'pbsok' !== $invoice->getStatus()) {
             $this->setPaymentStatus($request, $invoice);
@@ -505,7 +503,6 @@ class Payment extends Base
         if (!$invoice || $checkId !== $invoice->getCheckId()) {
             return $this->redirect($request, '/betaling/?id=' . $id . '&checkid=' . rawurlencode($checkId));
         }
-        assert($invoice instanceof Invoice);
         if ($invoice->isFinalized() || 'pbsok' === $invoice->getStatus()) {
             return $this->redirect($request, $invoice->getLink() . 'status/');
         }

@@ -83,8 +83,8 @@ class PageController extends AbstractAdminController
      */
     public function createPage(Request $request): JsonResponse
     {
+        /** @var ?Category */
         $category = ORM::getOne(Category::class, $request->request->get('categoryId'));
-        assert($category instanceof Category);
 
         $page = new Page([
             'title'          => $request->request->get('title'),
@@ -124,7 +124,7 @@ class PageController extends AbstractAdminController
 
         /** @var ?Page */
         $page = ORM::getOne(Page::class, $id);
-        assert($page instanceof Page);
+
         $page->setKeywords($request->request->get('keywords'))
             ->setPrice($request->request->get('price'))
             ->setSku($request->request->get('sku'))
@@ -241,7 +241,7 @@ class PageController extends AbstractAdminController
         if (1 === count($page->getCategories())) {
             /** @var ?Category */
             $inactiveCategory = ORM::getOne(Category::class, -1);
-            assert($inactiveCategory instanceof Category);
+
             $page->addToCategory($inactiveCategory);
             $result['added'] = ['categoryId' => -1, 'path' => '/' . _('Inactive') . '/'];
         }
@@ -291,11 +291,11 @@ class PageController extends AbstractAdminController
      */
     public function addAccessory(Request $request, int $pageId, int $accessoryId): JsonResponse
     {
+        /** @var ?Page */
         $page = ORM::getOne(Page::class, $pageId);
-        assert($page instanceof Page);
         /** @var ?Page */
         $accessory = ORM::getOne(Page::class, $accessoryId);
-        assert($accessory instanceof Page);
+
         $page->addAccessory($accessory);
 
         $path = '';
@@ -321,10 +321,10 @@ class PageController extends AbstractAdminController
      */
     public function removeAccessory(Request $request, int $pageId, int $accessoryId): JsonResponse
     {
+        /** @var ?Page */
         $page = ORM::getOne(Page::class, $pageId);
-        assert($page instanceof Page);
+        /** @var ?Page */
         $accessory = ORM::getOne(Page::class, $accessoryId);
-        assert($accessory instanceof Page);
         $page->removeAccessory($accessory);
 
         return new JsonResponse(['id' => 'accessory' . $accessory->getId()]);

@@ -28,10 +28,9 @@ class InvoiceService
             if ('line' === $item['type']) { // Find item based on price table row
                 Render::addLoadedTable('list_rows');
                 $listRow = db()->fetchOne('SELECT * FROM `list_rows` WHERE id = ' . $item['id']);
+                /** @var ?Table */
                 $table = $listRow ? ORM::getOne(Table::class, $listRow['list_id']) : null;
                 if ($table) {
-                    assert($table instanceof Table);
-
                     $pageId = $table->getPage()->getId();
                     if ($table->hasLinks()) {
                         $pageId = intval($listRow['link']);
@@ -62,8 +61,6 @@ class InvoiceService
             if (!$page || $page->isInactive()) {
                 $title = _('Expired');
             } else {
-                assert($page instanceof Page);
-
                 if (!$title) {
                     $title = $page->getTitle();
                     if ($page->getSku()) {
@@ -185,7 +182,6 @@ class InvoiceService
 
             return;
         }
-        assert($conteact instanceof Contact);
 
         $conteact->setName($invoice->getName())
             ->setEmail($invoice->getEmail())

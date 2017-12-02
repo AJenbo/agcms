@@ -222,16 +222,16 @@ function updateSpecial(int $id, string $html, string $title = ''): bool
 {
     $html = purifyHTML($html);
 
+    /** @var ?CustomPage */
     $page = ORM::getOne(CustomPage::class, $id);
-    assert($page instanceof CustomPage);
     if ($title) {
         $page->setTitle($title);
     }
     $page->setHtml($html)->save();
 
     if (1 === $id) {
+        /** @var ?Category */
         $category = ORM::getOne(Category::class, 0);
-        assert($category instanceof Category);
         $category->setTitle($title)->save();
     }
 
@@ -443,7 +443,6 @@ function sendReminder(int $id): array
 {
     /** @var ?Invoice */
     $invoice = ORM::getOne(Invoice::class, $id);
-    assert($invoice instanceof Invoice);
     sendInvoice($invoice);
 
     throw new InvalidInput(_('A Reminder was sent to the customer.'));
@@ -458,7 +457,6 @@ function pbsconfirm(int $id)
 {
     /** @var ?Invoice */
     $invoice = ORM::getOne(Invoice::class, $id);
-    assert($invoice instanceof Invoice);
 
     $epaymentService = new EpaymentAdminService(Config::get('pbsid'), Config::get('pbspwd'));
     $epayment = $epaymentService->getPayment(Config::get('pbsfix') . $invoice->getId());
@@ -482,7 +480,6 @@ function annul(int $id)
 {
     /** @var ?Invoice */
     $invoice = ORM::getOne(Invoice::class, $id);
-    assert($invoice instanceof Invoice);
 
     $epaymentService = new EpaymentAdminService(Config::get('pbsid'), Config::get('pbspwd'));
     $epayment = $epaymentService->getPayment(Config::get('pbsfix') . $invoice->getId());

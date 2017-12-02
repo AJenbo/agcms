@@ -125,6 +125,7 @@ class Brand extends AbstractRenderable
             $order = 'navn';
         }
 
+        /** @var Page[] */
         $pages = ORM::getByQuery(
             Page::class,
             '
@@ -137,7 +138,6 @@ class Brand extends AbstractRenderable
 
         $objectArray = [];
         foreach ($pages as $page) {
-            assert($page instanceof Page);
             if ($page->isInactive()) {
                 continue;
             }

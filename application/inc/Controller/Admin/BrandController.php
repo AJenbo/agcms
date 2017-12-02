@@ -88,6 +88,7 @@ class BrandController extends AbstractAdminController
             throw new InvalidInput(_('You must enter a title.'));
         }
 
+        /** @var ?Brand */
         $brand = ORM::getOne(Brand::class, $id);
         if (!$brand) {
             throw new InvalidInput(_('The brand dosen\'t exist.'));
