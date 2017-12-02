@@ -103,6 +103,7 @@ $app->addRoute('PUT', '/admin/categories/([-\d]+)/', CategoryController::class, 
 $app->addRoute('DELETE', '/admin/categories/(\d+)/', CategoryController::class, 'delete');
 // Custom page RU
 $app->addRoute('GET', '/admin/custom/(\d+)/', CustomPageController::class, 'index');
+$app->addRoute('PUT', '/admin/custom/(\d+)/', CustomPageController::class, 'update');
 // Site tree
 $app->addRoute('GET', '/admin/sitetree/', SiteTreeController::class, 'index');
 $app->addRoute('GET', '/admin/sitetree/([-\d]+)/lable/', SiteTreeController::class, 'lable');
@@ -179,10 +180,15 @@ $app->addRoute('GET', '/admin/maintenance/usage/', MaintenanceController::class,
 // Invoice
 $app->addRoute('GET', '/admin/invoices/', InvoiceController::class, 'index');
 $app->addRoute('GET', '/admin/invoices/payments/', InvoiceController::class, 'validationList');
+$app->addRoute('POST', '/admin/invoices/payments/(\d+)/', InvoiceController::class, 'capturePayment');
 $app->addRoute('PUT', '/admin/invoices/payments/(\d+)/', InvoiceController::class, 'validate');
+$app->addRoute('DELETE', '/admin/invoices/payments/(\d+)/', InvoiceController::class, 'annulPayment');
+$app->addRoute('POST', '/admin/invoices/(\d+)/email/', InvoiceController::class, 'sendReminder');
 $app->addRoute('GET', '/admin/invoices/(\d+)/pdf/', InvoiceController::class, 'pdf');
+$app->addRoute('POST', '/admin/invoices/(\d+)/clone/', InvoiceController::class, 'clone');
 // Invoice CRU
 $app->addRoute('POST', '/admin/invoices/', InvoiceController::class, 'create');
 $app->addRoute('GET', '/admin/invoices/(\d+)/', InvoiceController::class, 'invoice');
+$app->addRoute('PUT', '/admin/invoices/(\d+)/', InvoiceController::class, 'update');
 
 $app->run(Request::createFromGlobals());

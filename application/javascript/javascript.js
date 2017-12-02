@@ -5,23 +5,6 @@ function getTable(categoryId, tableId, cell) {
     return false;
 }
 
-var getAddressCall = null;
-function getAddress(phonenumber, callback) {
-    phonenumber = phonenumber.replace("/\\s/", "");
-    phonenumber = phonenumber.replace("/^[+]45/", "");
-    if (!phonenumber) {
-        alert("De skal udfylde telefon nummeret først.");
-        return false;
-    }
-    if (phonenumber.length !== 8) {
-        alert("Telefonnummeret skal være på 8 cifre!");
-        return false;
-    }
-    xHttp.cancel(getAddressCall);
-    getAddressCall = xHttp.request("/ajax/address/" + phonenumber, callback);
-    return false;
-}
-
 var getKatCall = null;
 function getKat(categoryId, column) {
     xHttp.cancel(getKatCall);

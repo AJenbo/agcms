@@ -222,7 +222,7 @@ class functionsTest extends TestCase
      */
     private function flush_purifyer_cache(): void
     {
-        $files = glob(_ROOT_ . '/theme/cache/HTMLPurifier/**/*');
+        $files = glob(__DIR__ . '/../application/theme/cache/HTMLPurifier/**/*');
         foreach ($files as $file) {
             unlink($file);
         }

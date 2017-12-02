@@ -4,10 +4,10 @@ function newfaktura() {
 }
 function copytonew(id) {
     $("loading").style.visibility = "";
-    x_copytonew(id, newfaktura_r);
+    xHttp.request("/admin/invoices/" + id + "/clone/", newfaktura_r, "POST");
 }
-function newfaktura_r(id) {
-    window.location.href = "/admin/invoices/" + id + "/";
+function newfaktura_r(data) {
+    window.location.href = "/admin/invoices/" + data.id + "/";
 }
 
 function removeRow(row) {
@@ -45,9 +45,9 @@ function addRow() {
     $("vareTable").appendChild(tr);
 }
 
-function getAddress(tlf) {
+function getInvoiceAddress(tlf) {
     $("loading").style.visibility = "";
-    x_getAddress(tlf, getAddress_r);
+    getAddress(tlf, getAddress_r);
 }
 
 function getAddress_r(data) {
@@ -68,7 +68,7 @@ function getAddress_r(data) {
 
 function getAltAddress(tlf) {
     $("loading").style.visibility = "";
-    x_getAddress(tlf, getAltAddress_r);
+    getAddress(tlf, getAltAddress_r);
 }
 
 function getAltAddress_r(data) {
@@ -153,13 +153,13 @@ function numberFormat(number) {
 function pbsconfirm(id) {
     $("loading").style.visibility = "";
     // TODO save comment
-    x_pbsconfirm(id, reload_r);
+    xHttp.request("/admin/invoices/payments/" + id + "/", reload_r, "POST");
 }
 
 function annul(id) {
     $("loading").style.visibility = "";
     // TODO save comment
-    x_annul(id, reload_r);
+    xHttp.request("/admin/invoices/payments/" + id + "/", reload_r, "DELETE");
 }
 
 function reload_r(date) {
@@ -231,11 +231,13 @@ function save(id, type) {
         update.paydate = $("cdate").value;
     }
 
-    x_save(id, type, update, save_r);
+    update.action = type;
+
+    xHttp.request("/admin/invoices/" + id + "/", save_r, "PUT", update);
 }
 
 function sendReminder(id) {
-    x_sendReminder(id);
+    xHttp.request("/admin/invoices/" + id + "/email/", genericCallback, "POST");
 }
 
 function save_r(date) {

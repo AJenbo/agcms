@@ -222,7 +222,7 @@
         <td>
             {% if invoice.status == 'new' %}
             <input name="tlf1" id="tlf1" value="{{invoice.phone1}}" />
-            <input type="button" value="Hent" onclick="getAddress($('tlf1').value);" />
+            <input type="button" value="Hent" onclick="getInvoiceAddress($('tlf1').value);" />
             {% else %}
             {{invoice.phone1}}
             {% endif %}
@@ -233,7 +233,7 @@
         <td>
             {% if invoice.status == 'new' %}
             <input name="tlf2" id="tlf2" value="{{invoice.phone2}}" />
-            <input type="button" value="Hent" onclick="getAddress($('tlf2').value);" />
+            <input type="button" value="Hent" onclick="getInvoiceAddress($('tlf2').value);" />
             {% else %}
             {{invoice.phone2}}
             {% endif %}

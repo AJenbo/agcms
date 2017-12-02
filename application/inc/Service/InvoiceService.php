@@ -1,9 +1,16 @@
 <?php namespace AGCMS\Service;
 
+use AGCMS\Config;
 use AGCMS\Entity\Contact;
+use AGCMS\Entity\Email;
 use AGCMS\Entity\Invoice;
 use AGCMS\Entity\Page;
 use AGCMS\Entity\Table;
+use AGCMS\Entity\User;
+use AGCMS\Epayment;
+use AGCMS\EpaymentAdminService;
+use AGCMS\Exception\Exception;
+use AGCMS\Exception\InvalidInput;
 use AGCMS\ORM;
 use AGCMS\Render;
 
@@ -194,6 +201,222 @@ class InvoiceService
             ->setPhone2($invoice->getPhone2())
             ->setSubscribed(true)
             ->setIp($clientIp ?? '')
+            ->save();
+    }
+
+    /**
+     * Update invoice and mange it's state.
+     *
+     * @param Invoice $invoice
+     * @param User    $user
+     * @param string  $action
+     * @param array   $updates
+     *
+     * @return void
+     */
+    public function invoiceBasicUpdate(Invoice $invoice, User $user, string $action, array $updates): void
+    {
+        $status = $invoice->getStatus();
+
+        if ('new' === $invoice->getStatus()) {
+            if ('lock' === $action) {
+                $status = 'locked';
+            }
+            $invoice->setTimeStamp(strtotime($updates['date']));
+            $invoice->setShipping($updates['shipping']);
+            $invoice->setAmount($updates['amount']);
+            $invoice->setVat($updates['vat']);
+            $invoice->setPreVat($updates['preVat']);
+            $invoice->setIref($updates['iref']);
+            $invoice->setEref($updates['eref']);
+            $invoice->setName($updates['name']);
+            $invoice->setAttn($updates['attn']);
+            $invoice->setAddress($updates['address']);
+            $invoice->setPostbox($updates['postbox']);
+            $invoice->setPostcode($updates['postcode']);
+            $invoice->setCity($updates['city']);
+            $invoice->setCountry($updates['country']);
+            $invoice->setEmail($updates['email']);
+            $invoice->setPhone1($updates['phone1']);
+            $invoice->setPhone2($updates['phone2']);
+            $invoice->setHasShippingAddress($updates['hasShippingAddress']);
+            if ($updates['hasShippingAddress']) {
+                $invoice->setShippingPhone($updates['shippingPhone']);
+                $invoice->setShippingName($updates['shippingName']);
+                $invoice->setShippingAttn($updates['shippingAttn']);
+                $invoice->setShippingAddress($updates['shippingAddress']);
+                $invoice->setShippingAddress2($updates['shippingAddress2']);
+                $invoice->setShippingPostbox($updates['shippingPostbox']);
+                $invoice->setShippingPostcode($updates['shippingPostcode']);
+                $invoice->setShippingCity($updates['shippingCity']);
+                $invoice->setShippingCountry($updates['shippingCountry']);
+            }
+            $invoice->setItemData(json_encode($updates['lines']));
+        }
+
+        if (isset($updates['note'])) {
+            if ('new' !== $invoice->getStatus()) {
+                $updates['note'] = trim($invoice->getNote() . "\n" . $updates['note']);
+            }
+            $invoice->setNote($updates['note']);
+        }
+
+        if (!$invoice->getDepartment() && 1 === count(Config::get('emails'))) {
+            $email = first(Config::get('emails'))['address'];
+            $invoice->setDepartment($email);
+        } elseif (!empty($updates['department'])) {
+            $invoice->setDepartment($updates['department']);
+        }
+
+        if (!$invoice->getClerk()) {
+            $invoice->setClerk($user->getFullName());
+        }
+
+        if (('giro' === $action || 'cash' === $action)
+            && in_array($invoice->getStatus(), ['new', 'locked', 'rejected'], true)
+        ) {
+            $status = $action;
+        }
+
+        if (!$invoice->isFinalized()) {
+            if (in_array($action, ['cancel', 'giro', 'cash'], true)
+                || ('lock' === $action && 'locked' !== $invoice->getStatus())
+            ) {
+                $invoice->setTimeStampPay(strtotime($updates['paydate'] ?? '') ?: time());
+            }
+
+            if ('cancel' === $action) {
+                if ('pbsok' === $invoice->getStatus()) {
+                    $this->annulPayment($invoice);
+                }
+                $status = 'canceled';
+            }
+
+            if (isset($updates['clerk']) && $user->hasAccess(User::ADMINISTRATOR)) {
+                $invoice->setClerk($updates['clerk']);
+            }
+        }
+
+        $invoice->setStatus($status)->save();
+    }
+
+    /**
+     * Accept payment.
+     *
+     * @param Invoice $invoice
+     *
+     * @throws Exception
+     *
+     * @return void
+     */
+    public function capturePayment(Invoice $invoice): void
+    {
+        $epayment = $this->getPayment($invoice);
+        if (!$epayment->confirm()) {
+            throw new Exception(_('An error occurred'));
+        }
+
+        $invoice->setStatus('accepted')
+            ->setTimeStampPay(time())
+            ->save();
+    }
+
+    /**
+     * Cancle payment.
+     *
+     * @param Invoice $invoice
+     *
+     * @throws Exception
+     *
+     * @return void
+     */
+    public function annulPayment(Invoice $invoice): void
+    {
+        $epayment = $this->getPayment($invoice);
+        if (!$epayment->annul()) {
+            throw new Exception(_('Failed to cancel payment!'));
+        }
+
+        if ('pbsok' === $invoice->getStatus()) {
+            $invoice->setStatus('rejected')->save();
+        }
+    }
+
+    /**
+     * Get payment.
+     *
+     * @param Invoice $invoice
+     *
+     * @return Epayment
+     */
+    private function getPayment(Invoice $invoice): Epayment
+    {
+        $epaymentService = new EpaymentAdminService(Config::get('pbsid'), Config::get('pbspwd'));
+
+        return $epaymentService->getPayment(Config::get('pbsfix') . $invoice->getId());
+    }
+
+    /**
+     * Send payment email to client.
+     *
+     * @param Invoice $invoice
+     *
+     * @throws InvalidInput
+     *
+     * @return void
+     */
+    public function sendInvoice(Invoice $invoice): void
+    {
+        if (!$invoice->hasValidEmail()) {
+            throw new InvalidInput(_('Email is not valid!'));
+        }
+
+        if (!$invoice->getDepartment() && 1 === count(Config::get('emails'))) {
+            $email = first(Config::get('emails'))['address'];
+            $invoice->setDepartment($email);
+        } elseif (!$invoice->getDepartment()) {
+            throw new InvalidInput(_('You have not selected a sender!'));
+        }
+        if ($invoice->getAmount() < 0.01) {
+            throw new InvalidInput(_('The invoice must be of at at least 0.01 krone!'));
+        }
+
+        $subject = _('Online payment for ') . Config::get('site_name');
+        $emailTemplate = 'email/invoice';
+        if ($invoice->isSent()) {
+            $subject = 'Elektronisk faktura vedr. ordre';
+            $emailTemplate = 'email/invoice-reminder';
+        }
+
+        $emailBody = Render::render(
+            $emailTemplate,
+            [
+                'invoice'  => $invoice,
+                'siteName' => Config::get('site_name'),
+                'address'  => Config::get('address'),
+                'postcode' => Config::get('postcode'),
+                'city'     => Config::get('city'),
+                'phone'    => Config::get('phone'),
+            ]
+        );
+
+        $email = new Email([
+            'subject'          => $subject,
+            'body'             => $emailBody,
+            'senderName'       => Config::get('site_name'),
+            'senderAddress'    => $invoice->getDepartment(),
+            'recipientName'    => $invoice->getName(),
+            'recipientAddress' => $invoice->getEmail(),
+        ]);
+
+        $emailService = new EmailService();
+        $emailService->send($email);
+
+        if ('new' === $invoice->getStatus()) {
+            $invoice->setStatus('locked');
+        }
+
+        $invoice->setSent(true)
             ->save();
     }
 }

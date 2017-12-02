@@ -1,15 +1,9 @@
 <?php
 
 use AGCMS\Config;
-use AGCMS\Entity\Category;
-use AGCMS\Entity\CustomPage;
 use AGCMS\Entity\Email;
-use AGCMS\Entity\Invoice;
-use AGCMS\Entity\User;
-use AGCMS\EpaymentAdminService;
 use AGCMS\Exception\Exception;
 use AGCMS\Exception\InvalidInput;
-use AGCMS\ORM;
 use AGCMS\Render;
 use AGCMS\Service\EmailService;
 use Throwable;
@@ -219,308 +213,45 @@ function sogogerstat(string $sog, string $erstat): int
     return db()->affected_rows;
 }
 
-/**
- * @param int    $id
- * @param string $html
- * @param string $title
- *
- * @throws Exception
- * @throws InvalidInput
- *
- * @return bool
- */
-function updateSpecial(int $id, string $html, string $title = ''): bool
+function emaillist()
 {
-    $html = purifyHTML($html);
-
-    /** @var ?CustomPage */
-    $page = ORM::getOne(CustomPage::class, $id);
-    if (!$page) {
-        throw new InvalidInput(_('Page not found'));
-    }
-
-    if ($title) {
-        $page->setTitle($title);
-    }
-    $page->setHtml($html)->save();
-
-    if (1 === $id) {
-        /** @var ?Category */
-        $category = ORM::getOne(Category::class, 0);
-        if (!$category) {
-            throw new Exception(_('Root category is missing!'));
-        }
-
-        $category->setTitle($title)->save();
-    }
-
-    return true;
-}
-
-function copytonew(int $id): int
-{
-    $faktura = db()->fetchOne('SELECT * FROM `fakturas` WHERE `id` = ' . $id);
-
-    unset(
-        $faktura['id'],
-        $faktura['status'],
-        $faktura['date'],
-        $faktura['paydate'],
-        $faktura['sendt'],
-        $faktura['transferred']
+    $data['newsletters'] = db()->fetchArray(
+        'SELECT id, subject, sendt sent FROM newsmails ORDER BY sendt, id DESC'
     );
-    $faktura['clerk'] = curentUser()->getFullName();
-
-    $sql = 'INSERT INTO `fakturas` SET';
-    foreach ($faktura as $key => $value) {
-        $sql .= ' `' . addcslashes($key, '`\\') . "` = '" . db()->esc($value) . "',";
-    }
-    $sql .= ' `date` = NOW();';
-
-    db()->query($sql);
-
-    return db()->insert_id;
 }
 
-/**
- * @return string[]
- */
-function save(int $id, string $action, array $updates): array
+function viewemail()
 {
-    /** @var ?Invoice */
-    $invoice = ORM::getOne(Invoice::class, $id);
-    assert($invoice instanceof Invoice);
-
-    invoiceBasicUpdate($invoice, $action, $updates);
-
-    if ('email' === $action) {
-        sendInvoice($invoice);
+    $id = (int) $request->get('id', 0);
+    $data['recipientCount'] = 0;
+    if ($id) {
+        $data['newsletter'] = db()->fetchOne(
+            'SELECT id, sendt sent, `from`, interests, subject, text html FROM newsmails WHERE id = ' . $id
+        );
+        $data['newsletter']['interests'] = explode('<', $data['newsletter']['interests']);
     }
-
-    return ['type' => $action, 'status' => $invoice->getStatus()];
+    $data['recipientCount'] = countEmailTo($data['newsletter']['interests'] ?? []);
+    $data['interests'] = Config::get('interests', []);
+    $data['textWidth'] = Config::get('text_width');
+    $data['emails'] = array_keys(Config::get('emails'));
 }
 
-/**
- * @param Invoice $invoice
- * @param string  $action
- * @param array   $updates
- *
- * @throws Exception
- *
- * @return void
- */
-function invoiceBasicUpdate(Invoice $invoice, string $action, array $updates): void
+function listsort()
 {
-    $status = $invoice->getStatus();
-
-    if ('new' === $invoice->getStatus()) {
-        if ('lock' === $action) {
-            $status = 'locked';
-        }
-        $invoice->setTimeStamp(strtotime($updates['date']));
-        $invoice->setShipping($updates['shipping']);
-        $invoice->setAmount($updates['amount']);
-        $invoice->setVat($updates['vat']);
-        $invoice->setPreVat($updates['preVat']);
-        $invoice->setIref($updates['iref']);
-        $invoice->setEref($updates['eref']);
-        $invoice->setName($updates['name']);
-        $invoice->setAttn($updates['attn']);
-        $invoice->setAddress($updates['address']);
-        $invoice->setPostbox($updates['postbox']);
-        $invoice->setPostcode($updates['postcode']);
-        $invoice->setCity($updates['city']);
-        $invoice->setCountry($updates['country']);
-        $invoice->setEmail($updates['email']);
-        $invoice->setPhone1($updates['phone1']);
-        $invoice->setPhone2($updates['phone2']);
-        $invoice->setHasShippingAddress($updates['hasShippingAddress']);
-        if ($updates['hasShippingAddress']) {
-            $invoice->setShippingPhone($updates['shippingPhone']);
-            $invoice->setShippingName($updates['shippingName']);
-            $invoice->setShippingAttn($updates['shippingAttn']);
-            $invoice->setShippingAddress($updates['shippingAddress']);
-            $invoice->setShippingAddress2($updates['shippingAddress2']);
-            $invoice->setShippingPostbox($updates['shippingPostbox']);
-            $invoice->setShippingPostcode($updates['shippingPostcode']);
-            $invoice->setShippingCity($updates['shippingCity']);
-            $invoice->setShippingCountry($updates['shippingCountry']);
-        }
-        $invoice->setItemData(json_encode($updates['lines']));
-    }
-
-    if (isset($updates['note'])) {
-        if ('new' !== $invoice->getStatus()) {
-            $updates['note'] = trim($invoice->getNote() . "\n" . $updates['note']);
-        }
-        $invoice->setNote($updates['note']);
-    }
-
-    if (!$invoice->getDepartment() && 1 === count(Config::get('emails'))) {
-        $email = first(Config::get('emails'))['address'];
-        $invoice->setDepartment($email);
-    } elseif (!empty($updates['department'])) {
-        $invoice->setDepartment($updates['department']);
-    }
-
-    if (!$invoice->getClerk()) {
-        $invoice->setClerk(curentUser()->getFullName());
-    }
-
-    if (('giro' === $action || 'cash' === $action)
-        && in_array($invoice->getStatus(), ['new', 'locked', 'rejected'], true)
-    ) {
-        $status = $action;
-    }
-
-    if (!$invoice->isFinalized()) {
-        if (in_array($action, ['cancel', 'giro', 'cash'], true)
-            || ('lock' === $action && 'locked' !== $invoice->getStatus())
-        ) {
-            $invoice->setTimeStampPay(strtotime($updates['paydate'] ?? '') ?: time());
-        }
-
-        if ('cancel' === $action) {
-            if ('pbsok' === $invoice->getStatus() && !annul($invoice->getId())) {
-                throw new Exception(_('Failed to cancel payment!'));
-            }
-            $status = 'canceled';
-        }
-
-        if (isset($updates['clerk']) && curentUser()->hasAccess(User::ADMINISTRATOR)) {
-            $invoice->setClerk($updates['clerk']);
-        }
-    }
-
-    $invoice->setStatus($status)->save();
+    $data['lists'] = db()->fetchArray('SELECT id, navn FROM `tablesort`');
 }
 
-/**
- * @throws InvalidInput
- */
-function sendInvoice(Invoice $invoice): void
+function listsortEdit()
 {
-    if (!$invoice->hasValidEmail()) {
-        throw new InvalidInput(_('Email is not valid!'));
+    // listsort-edit
+    $id = (int) $request->get('id', 0);
+    if ($id) {
+        $list = db()->fetchOne('SELECT * FROM `tablesort` WHERE `id` = ' . $id);
+        $data = [
+            'id'        => $id,
+            'name'      => $list['navn'],
+            'rows'      => explode('<', $list['text']),
+            'textWidth' => Config::get('text_width'),
+        ] + $data;
     }
-
-    if (!$invoice->getDepartment() && 1 === count(Config::get('emails'))) {
-        $email = first(Config::get('emails'))['address'];
-        $invoice->setDepartment($email);
-    } elseif (!$invoice->getDepartment()) {
-        throw new InvalidInput(_('You have not selected a sender!'));
-    }
-    if ($invoice->getAmount() < 0.01) {
-        throw new InvalidInput(_('The invoice must be of at at least 0.01 krone!'));
-    }
-
-    $subject = _('Online payment for ') . Config::get('site_name');
-    $emailTemplate = 'email/invoice';
-    if ($invoice->isSent()) {
-        $subject = 'Elektronisk faktura vedr. ordre';
-        $emailTemplate = 'email/invoice-reminder';
-    }
-
-    $emailBody = Render::render(
-        $emailTemplate,
-        [
-            'invoice'  => $invoice,
-            'siteName' => Config::get('site_name'),
-            'address'  => Config::get('address'),
-            'postcode' => Config::get('postcode'),
-            'city'     => Config::get('city'),
-            'phone'    => Config::get('phone'),
-        ]
-    );
-
-    $email = new Email([
-        'subject'          => $subject,
-        'body'             => $emailBody,
-        'senderName'       => Config::get('site_name'),
-        'senderAddress'    => $invoice->getDepartment(),
-        'recipientName'    => $invoice->getName(),
-        'recipientAddress' => $invoice->getEmail(),
-    ]);
-
-    $emailService = new EmailService();
-    $emailService->send($email);
-
-    if ('new' === $invoice->getStatus()) {
-        $invoice->setStatus('locked');
-    }
-
-    $invoice->setSent(true)
-        ->save();
-}
-
-/**
- * @throws InvalidInput
- *
- * @return string[]
- */
-function sendReminder(int $id): array
-{
-    /** @var ?Invoice */
-    $invoice = ORM::getOne(Invoice::class, $id);
-    if (!$invoice) {
-        throw new InvalidInput(_('Email is not valid!'));
-    }
-
-    sendInvoice($invoice);
-
-    throw new InvalidInput(_('A Reminder was sent to the customer.'));
-}
-
-/**
- * @throws Exception
- * @throws InvalidInput
- *
- * @return string[]|true
- */
-function pbsconfirm(int $id)
-{
-    /** @var ?Invoice */
-    $invoice = ORM::getOne(Invoice::class, $id);
-    if (!$invoice) {
-        throw new InvalidInput(_('Email is not valid!'));
-    }
-
-    $epaymentService = new EpaymentAdminService(Config::get('pbsid'), Config::get('pbspwd'));
-    $epayment = $epaymentService->getPayment(Config::get('pbsfix') . $invoice->getId());
-    if (!$epayment->confirm()) {
-        throw new Exception(_('An error occurred'));
-    }
-
-    $invoice->setStatus('accepted')
-        ->setTimeStampPay(time())
-        ->save();
-
-    return true;
-}
-
-/**
- * @throws Exception
- * @throws InvalidInput
- *
- * @return string[]|true
- */
-function annul(int $id)
-{
-    /** @var ?Invoice */
-    $invoice = ORM::getOne(Invoice::class, $id);
-    if (!$invoice) {
-        throw new InvalidInput(_('Email is not valid!'));
-    }
-
-    $epaymentService = new EpaymentAdminService(Config::get('pbsid'), Config::get('pbspwd'));
-    $epayment = $epaymentService->getPayment(Config::get('pbsfix') . $invoice->getId());
-    if (!$epayment->annul()) {
-        throw new Exception(_('An error occurred'));
-    }
-
-    if ('pbsok' === $invoice->getStatus()) {
-        $invoice->setStatus('rejected')->save();
-    }
-
-    return true;
 }

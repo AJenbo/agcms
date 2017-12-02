@@ -8,6 +8,7 @@ use AGCMS\ORM;
 use AGCMS\Render;
 use AGCMS\Request;
 use AGCMS\Service\InvoicePdfService;
+use AGCMS\Service\InvoiceService;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -210,6 +211,139 @@ class InvoiceController extends AbstractAdminController
         $invoice->save();
 
         return new JsonResponse(['id' => $invoice->getId()]);
+    }
+
+    /**
+     * Update invoice.
+     *
+     * @param Request $request
+     * @param int     $id
+     *
+     * @throws InvalidInput
+     *
+     * @return JsonResponse
+     */
+    public function update(Request $request, int $id): JsonResponse
+    {
+        $action = $request->get('action', 'save');
+        $data = $request->request->all();
+        unset($data['action']);
+
+        /** @var ?Invoice */
+        $invoice = ORM::getOne(Invoice::class, $id);
+        if (!$invoice) {
+            throw new InvalidInput(_('Invoice not found.'));
+        }
+
+        $invoiceService = new InvoiceService();
+
+        /** @var User */
+        $user = $request->user();
+        $invoiceService->invoiceBasicUpdate($invoice, $user, $action, $data);
+
+        if ('email' === $action) {
+            $invoiceService->sendInvoice($invoice);
+        }
+
+        return new JsonResponse(['type' => $action, 'status' => $invoice->getStatus()]);
+    }
+
+    /**
+     * Clone invoice.
+     *
+     * @param Request $request
+     * @param int     $id
+     *
+     * @throws InvalidInput
+     *
+     * @return JsonResponse
+     */
+    public function clone(Request $request, int $id): JsonResponse
+    {
+        /** @var ?Invoice */
+        $invoice = ORM::getOne(Invoice::class, $id);
+        if (!$invoice) {
+            throw new InvalidInput(_('Invoice not found.'));
+        }
+
+        $invoice = clone $invoice;
+        /** @var User */
+        $user = $request->user();
+        $invoice->setClerk($user->getFullName())->save();
+
+        return new JsonResponse(['id' => $invoice->getId()]);
+    }
+
+    /**
+     * Send payment reminder.
+     *
+     * @param Request $request
+     * @param int     $id
+     *
+     * @throws InvalidInput
+     *
+     * @return JsonResponse
+     */
+    public function sendReminder(Request $request, int $id): JsonResponse
+    {
+        /** @var ?Invoice */
+        $invoice = ORM::getOne(Invoice::class, $id);
+        if (!$invoice) {
+            throw new InvalidInput(_('Invoice not found.'));
+        }
+
+        $invoiceService = new InvoiceService();
+        $invoiceService->sendInvoice($invoice);
+
+        return new JsonResponse(['error' => ['message' => _('A Reminder was sent to the customer.')]]);
+    }
+
+    /**
+     * Accept payment.
+     *
+     * @param Request $request
+     * @param int     $id
+     *
+     * @throws InvalidInput
+     *
+     * @return JsonResponse
+     */
+    public function capturePayment(Request $request, int $id): JsonResponse
+    {
+        /** @var ?Invoice */
+        $invoice = ORM::getOne(Invoice::class, $id);
+        if (!$invoice) {
+            throw new InvalidInput(_('Invoice not found.'));
+        }
+
+        $invoiceService = new InvoiceService();
+        $invoiceService->capturePayment($invoice);
+
+        return new JsonResponse([]);
+    }
+
+    /**
+     * Cancle payment.
+     *
+     * @param Request $request
+     * @param int     $id
+     *
+     * @throws InvalidInput
+     *
+     * @return JsonResponse
+     */
+    public function annulPayment(Request $request, int $id): JsonResponse
+    {
+        /** @var ?Invoice */
+        $invoice = ORM::getOne(Invoice::class, $id);
+        if (!$invoice) {
+            throw new InvalidInput(_('Invoice not found.'));
+        }
+
+        $invoiceService = new InvoiceService();
+        $invoiceService->annulPayment($invoice);
+
+        return new JsonResponse([]);
     }
 
     /**

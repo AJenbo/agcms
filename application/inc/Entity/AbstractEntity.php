@@ -19,6 +19,14 @@ abstract class AbstractEntity implements InterfaceEntity
     abstract public function __construct(array $data);
 
     /**
+     * Clone entity.
+     */
+    public function __clone()
+    {
+        $this->id = null;
+    }
+
+    /**
      * Map data from DB table to entity.
      *
      * @param array $data The data from the database

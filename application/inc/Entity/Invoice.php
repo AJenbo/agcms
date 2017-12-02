@@ -133,6 +133,19 @@ class Invoice extends AbstractEntity
     }
 
     /**
+     * Clone invoice.
+     */
+    public function __clone()
+    {
+        parent::__clone();
+        $this->status = 'new';
+        $this->timeStamp = time();
+        $this->timeStampPay = null;
+        $this->sent = false;
+        $this->transferred = false;
+    }
+
+    /**
      * Set create time.
      *
      * @param int $timeStamp
