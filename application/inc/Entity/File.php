@@ -34,7 +34,7 @@ class File extends AbstractEntity
      *
      * @param array $data The entity data
      */
-    public function __construct(array $data)
+    public function __construct(array $data = [])
     {
         $this->setPath($data['path'])
             ->setMime($data['mime'])

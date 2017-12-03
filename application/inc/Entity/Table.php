@@ -44,7 +44,7 @@ class Table extends AbstractEntity
      *
      * @param array $data The entity data
      */
-    public function __construct(array $data)
+    public function __construct(array $data = [])
     {
         $this->setPageId($data['page_id'])
             ->setTitle($data['title'])

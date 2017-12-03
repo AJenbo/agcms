@@ -187,6 +187,7 @@ $app->addRoute('DELETE', '/admin/invoices/payments/(\d+)/', InvoiceController::c
 $app->addRoute('POST', '/admin/invoices/(\d+)/email/', InvoiceController::class, 'sendReminder');
 $app->addRoute('GET', '/admin/invoices/(\d+)/pdf/', InvoiceController::class, 'pdf');
 $app->addRoute('POST', '/admin/invoices/(\d+)/clone/', InvoiceController::class, 'clone');
+$app->addRoute('GET', '/admin/invoices/new/', InvoiceController::class, 'invoice');
 // Invoice CRU
 $app->addRoute('POST', '/admin/invoices/', InvoiceController::class, 'create');
 $app->addRoute('GET', '/admin/invoices/(\d+)/', InvoiceController::class, 'invoice');

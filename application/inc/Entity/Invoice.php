@@ -90,7 +90,7 @@ class Invoice extends AbstractEntity
      *
      * @param array $data The entity data
      */
-    public function __construct(array $data)
+    public function __construct(array $data = [])
     {
         $this->setItemData($data['item_data'] ?? '[]')
             ->setHasShippingAddress($data['has_shipping_address'] ?? false)

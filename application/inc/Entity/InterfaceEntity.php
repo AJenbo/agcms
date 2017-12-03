@@ -7,7 +7,7 @@ interface InterfaceEntity
      *
      * @param array $data The entity data
      */
-    public function __construct(array $data);
+    public function __construct(array $data = []);
 
     /**
      * Map data from DB table to entity.

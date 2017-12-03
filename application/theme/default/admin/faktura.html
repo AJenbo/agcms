@@ -3,41 +3,42 @@
 {% block actions %}
 {% if invoice.status == 'pbsok' %}
 <li>
-    <a onclick="pbsconfirm({{invoice.id}})"><img src="/theme/default/images/admin/money.png" alt="" width="16" height="16" /> Expedite</a>
+    <a onclick="return pbsconfirm({{invoiceId}})"><img src="/theme/default/images/admin/money.png" alt="" width="16" height="16" /> Expedite</a>
 </li>
-<li><a onclick="annul({{invoice.id}})"><img src="/theme/default/images/admin/bin.png" alt="" width="16" height="16" /> Reject</a></li>
+<li><a onclick="return annul({{invoiceId}})"><img src="/theme/default/images/admin/bin.png" alt="" width="16" height="16" /> Reject</a></li>
 {% endif %}
-<li><a onclick="save({{invoice.id}})"><img src="/theme/default/images/admin/table_save.png" alt="" width="16" height="16" /> Save</a></li>
+<li><a onclick="return save({{invoiceId}})"><img src="/theme/default/images/admin/table_save.png" alt="" width="16" height="16" /> Save</a></li>
 {% if invoice.status == 'new' %}
-<li><a onclick="save({{invoice.id}}, 'lock')"><img src="/theme/default/images/admin/lock.png" alt="" width="16" height="16" /> Lock</a></li>
+<li><a onclick="return save({{invoiceId}}, 'lock')"><img src="/theme/default/images/admin/lock.png" alt="" width="16" height="16" /> Lock</a></li>
 {% else %}
 <li>
-    <a href="/admin/invoices/{{invoice.id}}/pdf/">
+    <a href="/admin/invoices/{{invoiceId}}/pdf/">
         <img height="16" width="16" title="" src="/theme/default/images/admin/printer.png"/> Print
     </a>
 </li>
 {% endif %}
-<li><a onclick="newfaktura();"><img src="/theme/default/images/admin/table_add.png" alt="" width="16" height="16" /> Create new</a></li>
+{% if invoiceId %}
 <li>
-    <a onclick="copytonew({{invoice.id}})">
+    <a onclick="return copytonew({{invoiceId}})">
         <img src="/theme/default/images/admin/table_multiple.png" alt="" width="16" height="16" /> Copy to new
     </a>
 </li>
-{% if invoice.status not in ['canceled', 'pbsok', 'accepted', 'giro', 'cash'] %}
+{% endif %}
+{% if invoiceId and invoice.status not in ['canceled', 'pbsok', 'accepted', 'giro', 'cash'] %}
 <li>
-    <a onclick="save({{invoice.id}}, 'cancel')"><img src="/theme/default/images/admin/bin.png" alt="" width="16" height="16" /> Cancel</a>
+    <a onclick="return save({{invoiceId}}, 'cancel')"><img src="/theme/default/images/admin/bin.png" alt="" width="16" height="16" /> Cancel</a>
 </li>
 {% endif %}
 {% if invoice.status not in ['giro', 'cash', 'pbsok', 'accepted', 'canceled', 'rejected'] %}
 {% if not invoice.sent %}
 <li id="emaillink"{% if not invoice.hasValidEmail %} style="display:none;"{% endif %}>
-    <a onclick="save({{invoice.id}}, 'email')">
+    <a onclick="return save({{invoiceId}}, 'email')">
         <img height="16" width="16" title="Send to customer" alt="" src="/theme/default/images/admin/email_go.png"/> Send
     </a>
 </li>
 {% else %}
 <li>
-    <a onclick="sendReminder({{invoice.id}})">
+    <a onclick="return sendReminder({{invoiceId}})">
         <img height="16" width="16" alt="" src="/theme/default/images/admin/email_go.png"/> Send reminder!
     </a>
 </li>
@@ -50,7 +51,7 @@
 <table style="float:right;">
     {% if invoice.status not in ['giro', 'cash', 'accepted', 'canceled', 'pbsok'] %}
     <tr>
-        <td><input type="button" value="Paid via giro" onclick="save({{invoice.id}}, 'giro');" /></td>
+        <td><input type="button" value="Paid via giro" onclick="save({{invoiceId}}, 'giro');" /></td>
         <td>
             <input maxlength="10" name="gdate" id="gdate" size="11" value="{{time|date('d-m-Y')}}" />
             <script type="text/javascript"><!--
@@ -59,7 +60,7 @@
         </td>
     </tr>
     <tr>
-        <td><input type="button" value="Paid in cash" onclick="save({{invoice.id}}, 'cash');" /></td>
+        <td><input type="button" value="Paid in cash" onclick="save({{invoiceId}}, 'cash');" /></td>
         <td>
             <input maxlength="10" name="cdate" id="cdate" size="11" value="{{time|date('d-m-Y')}}" />
             <script type="text/javascript"><!--
@@ -91,14 +92,16 @@
     </tr>
 </table>
 <table>
+    {% if invoiceId %}
     <tr>
         <td>ID:</td>
-        <td>{{invoice.id}}</td>
+        <td>{{invoiceId}}</td>
     </tr>
     <tr>
         <td>eCode:</td>
         <td>{{invoice.checkId}}</td>
     </tr>
+    {% endif %}
     <tr>
         <td>Status:</td>
         <td>
@@ -141,7 +144,7 @@
         <td>
             {% if invoice.transferred %}Yes{% else %}No{% endif %}
             {% if currentUser.accessLevel == 1 and invoice.transferred %}
-            (<a href="" onclick="return setPaymentTransferred({{invoice.id}}, false)">Remove</a>)
+            (<a href="" onclick="return setPaymentTransferred({{invoiceId}}, false)">Remove</a>)
             {% endif %}
         </td>
     </tr>
@@ -493,7 +496,7 @@
             </td>
             <td class="tal total"></td>
             <td style="border:0; font-weight:bold;">
-                <a href="#" onclick="removeRow(this); return false">
+                <a href="" onclick="return removeRow(this); return false">
                     <img alt="X" src="/theme/default/images/admin/cross.png" height="16" width="16" title="Remove Line" />
                 </a>
             </td>
@@ -514,7 +517,7 @@
     showhidealtpost($('altpost').checked);
     valideMail();
     prisUpdate();
-    var status = {{status|json_encode|raw}};
+    var status = {{invoice.status|json_encode|raw}};
 --></script>
 {% endif %}
 {% endblock %}

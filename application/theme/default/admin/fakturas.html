@@ -2,8 +2,8 @@
 
 {% block actions %}
 <li>
-    <a href="" onclick="createInvoice();return false">
-        <img src="/theme/default/images/admin/table_add.png" width="16" height="16" alt="" title="Create new" /> Create new
+    <a href="/admin/invoices/new/">
+        <img src="/theme/default/images/admin/table_add.png" alt="" width="16" height="16" /> Create new
     </a>
 </li>
 {% if currentUser.accessLevel == 1 %}

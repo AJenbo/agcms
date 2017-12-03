@@ -48,7 +48,7 @@ class Category extends AbstractRenderable
      *
      * @throws InvalidInput
      */
-    public function __construct(array $data)
+    public function __construct(array $data = [])
     {
         $this->setRenderMode($data['render_mode'])
             ->setEmail($data['email'])

@@ -14,7 +14,7 @@ class Requirement extends AbstractRenderable implements InterfaceRichText
      *
      * @param array $data The entity data
      */
-    public function __construct(array $data)
+    public function __construct(array $data = [])
     {
         $this->setHtml($data['html'])
             ->setTitle($data['title'])

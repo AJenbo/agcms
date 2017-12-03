@@ -207,8 +207,18 @@ class InvoiceController extends AbstractAdminController
     {
         /** @var User */
         $user = $request->user();
+        $action = $request->get('action', 'save');
+        $data = $request->request->all();
+        unset($data['action']);
+
         $invoice = new Invoice(['clerk' => $user->getFullName()]);
-        $invoice->save();
+
+        $invoiceService = new InvoiceService();
+        $invoiceService->invoiceBasicUpdate($invoice, $user, $action, $data);
+
+        if ('email' === $action) {
+            $invoiceService->sendInvoice($invoice);
+        }
 
         return new JsonResponse(['id' => $invoice->getId()]);
     }
@@ -356,27 +366,30 @@ class InvoiceController extends AbstractAdminController
      *
      * @return Response
      */
-    public function invoice(Request $request, int $id): Response
+    public function invoice(Request $request, int $id = null): Response
     {
-        /** @var ?Invoice */
-        $invoice = ORM::getOne(Invoice::class, $id);
-        if (!$invoice) {
-            throw new InvalidInput(_('Invoice not found.'));
+        $invoice = new Invoice();
+        if (null !== $id) {
+            /** @var ?Invoice */
+            $invoice = ORM::getOne(Invoice::class, $id);
+            if (!$invoice) {
+                throw new InvalidInput(_('Invoice not found.'));
+            }
         }
 
         /** @var User */
         $user = $request->user();
 
-        if (!$invoice->getClerk()) {
+        if ($invoice && !$invoice->getClerk()) {
             $invoice->setClerk($user->getFullName());
         }
 
         $data = [
-            'title'       => _('Online Invoice #') . $invoice->getId(),
-            'status'      => $invoice->getStatus(),
+            'title'       => null !== $id ? _('Online Invoice #') . $invoice->getId() : _('Create Invoice'),
+            'invoiceId'   => $id,
+            'invoice'     => $invoice,
             'currentUser' => $user,
             'users'       => ORM::getByQuery(User::class, 'SELECT * FROM `users` ORDER BY fullname'),
-            'invoice'     => $invoice,
             'departments' => array_keys(Config::get('emails', [])),
             'countries'   => include app()->basePath('/inc/countries.php'),
         ] + $this->basicPageData($request);

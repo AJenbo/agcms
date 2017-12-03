@@ -50,7 +50,7 @@ class Page extends AbstractRenderable implements InterfaceRichText
      *
      * @param array $data The entity data
      */
-    public function __construct(array $data)
+    public function __construct(array $data = [])
     {
         $this->iconId = $data['icon_id'];
         $this->setSku($data['sku'])

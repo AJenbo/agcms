@@ -16,7 +16,7 @@ abstract class AbstractEntity implements InterfaceEntity
      *
      * @param array $data The entity data
      */
-    abstract public function __construct(array $data);
+    abstract public function __construct(array $data = []);
 
     /**
      * Clone entity.

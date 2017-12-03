@@ -1,10 +1,7 @@
-function newfaktura() {
-    $("loading").style.visibility = "";
-    xHttp.request("/admin/invoices/", newfaktura_r, "POST");
-}
 function copytonew(id) {
     $("loading").style.visibility = "";
     xHttp.request("/admin/invoices/" + id + "/clone/", newfaktura_r, "POST");
+    return false;
 }
 function newfaktura_r(data) {
     window.location.href = "/admin/invoices/" + data.id + "/";
@@ -154,12 +151,14 @@ function pbsconfirm(id) {
     $("loading").style.visibility = "";
     // TODO save comment
     xHttp.request("/admin/invoices/payments/" + id + "/", reload_r, "POST");
+    return false;
 }
 
 function annul(id) {
     $("loading").style.visibility = "";
     // TODO save comment
     xHttp.request("/admin/invoices/payments/" + id + "/", reload_r, "DELETE");
+    return false;
 }
 
 function reload_r(date) {
@@ -170,7 +169,7 @@ function reload_r(date) {
     window.location.reload();
 }
 
-function save(id, type) {
+function save(id = null, type) {
     if (type == null) {
         type = "save";
     }
@@ -233,11 +232,18 @@ function save(id, type) {
 
     update.action = type;
 
+    if (id === null) {
+        xHttp.request("/admin/invoices/", newfaktura_r, "POST", update);
+        return false;
+    }
+
     xHttp.request("/admin/invoices/" + id + "/", save_r, "PUT", update);
+    return false;
 }
 
 function sendReminder(id) {
     xHttp.request("/admin/invoices/" + id + "/email/", sendReminder_r, "POST");
+    return false;
 }
 
 function sendReminder_r(data) {

@@ -34,7 +34,7 @@ class User extends AbstractEntity
      *
      * @param array $data
      */
-    public function __construct(array $data)
+    public function __construct(array $data = [])
     {
         $this->setFullName($data['full_name'])
             ->setNickname($data['nickname'])

@@ -32,7 +32,7 @@ class Email extends AbstractEntity
      *
      * @param array $data The entity data
      */
-    public function __construct(array $data)
+    public function __construct(array $data = [])
     {
         $this->emailService = new EmailService();
 
