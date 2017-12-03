@@ -175,6 +175,7 @@ $app->addRoute('GET', '/admin/maintenance/contacts/invalid/', MaintenanceControl
 $app->addRoute('GET', '/admin/maintenance/pages/mismatches/', MaintenanceController::class, 'mismatchedBindings');
 $app->addRoute('GET', '/admin/maintenance/pages/orphans/', MaintenanceController::class, 'orphanPages');
 $app->addRoute('GET', '/admin/maintenance/categories/circular/', MaintenanceController::class, 'circularLinks');
+$app->addRoute('DELETE', '/admin/maintenance/files/missing/', MaintenanceController::class, 'removeNoneExistingFiles');
 $app->addRoute('GET', '/admin/maintenance/files/names/', MaintenanceController::class, 'badFileNames');
 $app->addRoute('GET', '/admin/maintenance/files/folderNames/', MaintenanceController::class, 'badFolderNames');
 $app->addRoute('POST', '/admin/maintenance/emails/send/', MaintenanceController::class, 'sendDelayedEmail');

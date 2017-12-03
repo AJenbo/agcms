@@ -220,6 +220,33 @@ class MaintenanceController extends AbstractAdminController
     }
 
     /**
+     * Remove enteries for files that do no longer exist.
+     *
+     * @return JsonResponse
+     */
+    public function removeNoneExistingFiles(): JsonResponse
+    {
+        /** @var File[] */
+        $files = ORM::getByQuery(File::class, 'SELECT * FROM `files`');
+
+        $deleted = 0;
+        $missingFiles = [];
+        foreach ($files as $file) {
+            if (!is_file(app()->basePath($file->getPath()))) {
+                if (!$file->isInUse()) {
+                    $file->delete();
+                    ++$deleted;
+                    continue;
+                }
+
+                $missingFiles[] = $file->getPath();
+            }
+        }
+
+        return new JsonResponse(['missingFiles' => $missingFiles, 'deleted' => $deleted]);
+    }
+
+    /**
      * Get list of files with problematic names.
      *
      * @return JsonResponse

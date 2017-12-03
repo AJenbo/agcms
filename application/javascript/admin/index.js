@@ -483,7 +483,6 @@ function maintainStep8(data) {
 
 function maintainStep9(data) {
     getUsage_r(data);
-    $("status").innerHTML = "";
     $("loading").style.visibility = "hidden";
     $("errors").innerHTML = $("errors").innerHTML + "<br />" +
                             ("The scan took %d seconds.".replace(
@@ -509,13 +508,21 @@ function get_subscriptions_with_bad_emails() {
 function removeNoneExistingFiles() {
     $("loading").style.visibility = "";
     $("status").innerHTML = "Removes not existing files from the database";
-    x_removeNoneExistingFiles(removeNoneExistingFiles_r);
+    xHttp.request("/admin/maintenance/files/missing/", removeNoneExistingFiles_r, "DELETE");
 }
 
-function removeNoneExistingFiles_r() {
+function removeNoneExistingFiles_r(data) {
+    var missingHtml = "The folloding files are missing:";
+    for (var i = 0; i < data.missing.length; i++) {
+        missingHtml += "<br />";
+        missingHtml += data.missing[i];
+    }
+    $("errors").innerHTML = missingHtml + "<br />" + data.deleted + "files removed" +
+                            "<br />" + ("The scan took %d seconds.".replace(
+                                           /[%]d/g, Math.round((new Date().getTime() - starttime) / 1000).toString()));
+
     $("status").innerHTML = "Getting system usage";
     xHttp.request("/admin/maintenance/usage/", getUsage_r);
-    $("status").innerHTML = "";
 }
 
 function getEmailUsage() {
@@ -531,6 +538,7 @@ function getEmailUsage_r(data) {
 }
 
 function getUsage_r(data) {
+    $("status").innerHTML = "";
     $("wwwsize").innerHTML = Math.round(data.www / 1024 / 1024 * 10) / 10 + "MB";
     $("dbsize").innerHTML = Math.round(data.db / 1024 / 1024 * 10) / 10 + "MB";
 }
