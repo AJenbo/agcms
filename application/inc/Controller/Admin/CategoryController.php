@@ -100,7 +100,7 @@ class CategoryController extends AbstractAdminController
         /** @var ?Category */
         $category = ORM::getOne(Category::class, $id);
         if (!$category) {
-            throw new InvalidInput(_('Category does not exist.'));
+            throw new InvalidInput(_('Category does not exist.'), 404);
         }
 
         if ($request->request->has('parentId')) {

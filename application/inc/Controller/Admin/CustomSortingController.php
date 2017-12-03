@@ -43,7 +43,7 @@ class CustomSortingController extends AbstractAdminController
             /** @var ?CustomSorting */
             $customSorting = ORM::getOne(CustomSorting::class, $id);
             if (!$customSorting) {
-                throw new InvalidInput(_('Custom sorting not found'));
+                throw new InvalidInput(_('Custom sorting not found'), 404);
             }
         }
 
@@ -100,7 +100,7 @@ class CustomSortingController extends AbstractAdminController
         /** @var ?CustomSorting */
         $customSorting = ORM::getOne(CustomSorting::class, $id);
         if (!$customSorting) {
-            throw new InvalidInput(_('Custom sorting not found'));
+            throw new InvalidInput(_('Custom sorting not found'), 404);
         }
 
         $customSorting->setTitle($title)

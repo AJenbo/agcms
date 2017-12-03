@@ -95,7 +95,7 @@ class RequirementController extends AbstractAdminController
         /** @var ?Requirement */
         $requirement = ORM::getOne(Requirement::class, $id);
         if (!$requirement) {
-            throw new InvalidInput(_('Requirement not found.'));
+            throw new InvalidInput(_('Requirement not found.'), 404);
         }
 
         $requirement->setHtml($html)->setTitle($title)->save();

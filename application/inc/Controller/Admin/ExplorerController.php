@@ -305,7 +305,7 @@ class ExplorerController extends AbstractAdminController
         /** @var ?File */
         $file = ORM::getOne(File::class, $id);
         if (!$file) {
-            throw new InvalidInput(_('File not found'));
+            throw new InvalidInput(_('File not found'), 404);
         }
 
         $template = 'admin/popup-image';
@@ -363,7 +363,7 @@ class ExplorerController extends AbstractAdminController
         /** @var ?File */
         $file = ORM::getOne(File::class, $id);
         if (!$file) {
-            throw new InvalidInput(_('File not found'));
+            throw new InvalidInput(_('File not found'), 404);
         }
 
         $description = $request->request->get('description', '');
@@ -425,7 +425,7 @@ class ExplorerController extends AbstractAdminController
         /** @var ?File */
         $file = ORM::getOne(File::class, $id);
         if (!$file) {
-            throw new InvalidInput(_('File not found'));
+            throw new InvalidInput(_('File not found'), 404);
         }
 
         $data = [
@@ -514,7 +514,7 @@ class ExplorerController extends AbstractAdminController
             /** @var ?File */
             $file = ORM::getOne(File::class, $id);
             if (!$file) {
-                throw new InvalidInput(_('File not found'));
+                throw new InvalidInput(_('File not found'), 404);
             }
 
             $pathinfo = pathinfo($file->getPath());
@@ -630,7 +630,7 @@ class ExplorerController extends AbstractAdminController
         /** @var ?File */
         $file = ORM::getOne(File::class, $id);
         if (!$file) {
-            throw new InvalidInput(_('File not found'));
+            throw new InvalidInput(_('File not found'), 404);
         }
 
         $mode = $request->get('mode');
@@ -669,7 +669,7 @@ class ExplorerController extends AbstractAdminController
         /** @var ?File */
         $file = ORM::getOne(File::class, $id);
         if (!$file) {
-            throw new InvalidInput(_('File not found'));
+            throw new InvalidInput(_('File not found'), 404);
         }
 
         $path = $file->getPath();
@@ -730,7 +730,7 @@ class ExplorerController extends AbstractAdminController
         /** @var ?File */
         $file = ORM::getOne(File::class, $id);
         if (!$file) {
-            throw new InvalidInput(_('File not found'));
+            throw new InvalidInput(_('File not found'), 404);
         }
 
         $path = $file->getPath();
@@ -777,7 +777,7 @@ class ExplorerController extends AbstractAdminController
         /** @var ?File */
         $file = ORM::getOne(File::class, $id);
         if (!$file) {
-            throw new InvalidInput(_('File not found'));
+            throw new InvalidInput(_('File not found'), 404);
         }
 
         $path = $file->getPath();

@@ -43,7 +43,7 @@ class NewsletterController extends AbstractAdminController
             /** @var ?Newsletter */
             $newsletter = ORM::getOne(Newsletter::class, $id);
             if (!$newsletter) {
-                throw new InvalidInput(_('Newsletter not found'));
+                throw new InvalidInput(_('Newsletter not found'), 404);
             }
         }
 
@@ -95,7 +95,7 @@ class NewsletterController extends AbstractAdminController
         /** @var ?Newsletter */
         $newsletter = ORM::getOne(Newsletter::class, $id);
         if (!$newsletter) {
-            throw new InvalidInput(_('Newsletter not found'));
+            throw new InvalidInput(_('Newsletter not found'), 404);
         }
 
         if ($newsletter->isSent()) {

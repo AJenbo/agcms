@@ -93,7 +93,7 @@ class AddressbookController extends AbstractAdminController
         /** @var ?Contact */
         $contact = ORM::getOne(Contact::class, $id);
         if (!$contact) {
-            throw new InvalidInput(_('Contact not found.'));
+            throw new InvalidInput(_('Contact not found.'), 404);
         }
 
         $contact->setName($request->request->get('name', ''))

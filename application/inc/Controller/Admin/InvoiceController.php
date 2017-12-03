@@ -189,7 +189,7 @@ class InvoiceController extends AbstractAdminController
         /** @var ?Invoice */
         $invoice = ORM::getOne(Invoice::class, $id);
         if (!$invoice) {
-            throw new InvalidInput(_('Invoice not found.'));
+            throw new InvalidInput(_('Invoice not found.'), 404);
         }
 
         $invoice->setTransferred($request->request->getBoolean('transferred'))->save();
@@ -243,7 +243,7 @@ class InvoiceController extends AbstractAdminController
         /** @var ?Invoice */
         $invoice = ORM::getOne(Invoice::class, $id);
         if (!$invoice) {
-            throw new InvalidInput(_('Invoice not found.'));
+            throw new InvalidInput(_('Invoice not found.'), 404);
         }
 
         $invoiceService = new InvoiceService();
@@ -274,7 +274,7 @@ class InvoiceController extends AbstractAdminController
         /** @var ?Invoice */
         $invoice = ORM::getOne(Invoice::class, $id);
         if (!$invoice) {
-            throw new InvalidInput(_('Invoice not found.'));
+            throw new InvalidInput(_('Invoice not found.'), 404);
         }
 
         $invoice = clone $invoice;
@@ -300,7 +300,7 @@ class InvoiceController extends AbstractAdminController
         /** @var ?Invoice */
         $invoice = ORM::getOne(Invoice::class, $id);
         if (!$invoice) {
-            throw new InvalidInput(_('Invoice not found.'));
+            throw new InvalidInput(_('Invoice not found.'), 404);
         }
 
         $invoiceService = new InvoiceService();
@@ -324,7 +324,7 @@ class InvoiceController extends AbstractAdminController
         /** @var ?Invoice */
         $invoice = ORM::getOne(Invoice::class, $id);
         if (!$invoice) {
-            throw new InvalidInput(_('Invoice not found.'));
+            throw new InvalidInput(_('Invoice not found.'), 404);
         }
 
         $invoiceService = new InvoiceService();
@@ -348,7 +348,7 @@ class InvoiceController extends AbstractAdminController
         /** @var ?Invoice */
         $invoice = ORM::getOne(Invoice::class, $id);
         if (!$invoice) {
-            throw new InvalidInput(_('Invoice not found.'));
+            throw new InvalidInput(_('Invoice not found.'), 404);
         }
 
         $invoiceService = new InvoiceService();
@@ -374,7 +374,7 @@ class InvoiceController extends AbstractAdminController
             /** @var ?Invoice */
             $invoice = ORM::getOne(Invoice::class, $id);
             if (!$invoice) {
-                throw new InvalidInput(_('Invoice not found.'));
+                throw new InvalidInput(_('Invoice not found.'), 404);
             }
         }
 

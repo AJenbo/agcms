@@ -147,7 +147,7 @@ class UserController extends AbstractAdminController
         /** @var ?User */
         $user = ORM::getOne(User::class, $id);
         if (!$user) {
-            throw new InvalidInput(_('User not found'));
+            throw new InvalidInput(_('User not found'), 404);
         }
 
         $data = [

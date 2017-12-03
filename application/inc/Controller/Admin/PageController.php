@@ -39,7 +39,7 @@ class PageController extends AbstractAdminController
             /** @var ?Page */
             $page = ORM::getOne(Page::class, $id);
             if (!$page) {
-                throw new InvalidInput(_('The page does not exist'));
+                throw new InvalidInput(_('Page not found'), 404);
             }
 
             foreach ($page->getCategories() as $category) {
@@ -88,7 +88,7 @@ class PageController extends AbstractAdminController
         /** @var ?Category */
         $category = ORM::getOne(Category::class, $request->request->get('categoryId'));
         if (!$category) {
-            throw new InvalidInput(_('Category not found.'));
+            throw new InvalidInput(_('Category not found.'), 404);
         }
 
         $page = new Page([
@@ -132,7 +132,7 @@ class PageController extends AbstractAdminController
         /** @var ?Page */
         $page = ORM::getOne(Page::class, $id);
         if (!$page) {
-            throw new InvalidInput(_('Page not found.'));
+            throw new InvalidInput(_('Page not found.'), 404);
         }
 
         $page->setKeywords($request->request->get('keywords'))
@@ -187,13 +187,13 @@ class PageController extends AbstractAdminController
         /** @var ?Page */
         $page = ORM::getOne(Page::class, $id);
         if (!$page) {
-            throw new InvalidInput(_('The page doesn\'t exist.'));
+            throw new InvalidInput(_('Page not found.'), 404);
         }
 
         /** @var ?Category */
         $category = ORM::getOne(Category::class, $categoryId);
         if (!$category) {
-            throw new InvalidInput(_('The category doesn\'t exist.'));
+            throw new InvalidInput(_('Category not found.'), 404);
         }
 
         $result = ['pageId' => $page->getId(), 'deleted' => [], 'added' => null];
@@ -234,13 +234,13 @@ class PageController extends AbstractAdminController
         /** @var ?Page */
         $page = ORM::getOne(Page::class, $id);
         if (!$page) {
-            throw new InvalidInput(_('The page doesn\'t exist.'));
+            throw new InvalidInput(_('Page not found.'), 404);
         }
 
         /** @var ?Category */
         $category = ORM::getOne(Category::class, $categoryId);
         if (!$category) {
-            throw new InvalidInput(_('Category not found.'));
+            throw new InvalidInput(_('Category not found.'), 404);
         }
 
         $result = ['pageId' => $page->getId(), 'deleted' => [], 'added' => null];
@@ -252,7 +252,7 @@ class PageController extends AbstractAdminController
             /** @var ?Category */
             $inactiveCategory = ORM::getOne(Category::class, -1);
             if (!$inactiveCategory) {
-                throw new InvalidInput(_('Category not found.'));
+                throw new InvalidInput(_('Category not found.'), 404);
             }
 
             $page->addToCategory($inactiveCategory);
@@ -309,13 +309,13 @@ class PageController extends AbstractAdminController
         /** @var ?Page */
         $page = ORM::getOne(Page::class, $pageId);
         if (!$page) {
-            throw new InvalidInput(_('Page not found'));
+            throw new InvalidInput(_('Page not found'), 404);
         }
 
         /** @var ?Page */
         $accessory = ORM::getOne(Page::class, $accessoryId);
         if (!$accessory) {
-            throw new InvalidInput(_('Accessory not found'));
+            throw new InvalidInput(_('Accessory not found'), 404);
         }
 
         $page->addAccessory($accessory);
@@ -348,13 +348,13 @@ class PageController extends AbstractAdminController
         /** @var ?Page */
         $page = ORM::getOne(Page::class, $pageId);
         if (!$page) {
-            throw new InvalidInput(_('Page not found'));
+            throw new InvalidInput(_('Page not found'), 404);
         }
 
         /** @var ?Page */
         $accessory = ORM::getOne(Page::class, $accessoryId);
         if (!$accessory) {
-            throw new InvalidInput(_('Accessory not found'));
+            throw new InvalidInput(_('Accessory not found'), 404);
         }
 
         $page->removeAccessory($accessory);
