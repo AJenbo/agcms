@@ -104,16 +104,14 @@ class CategoryController extends AbstractAdminController
         }
 
         if ($request->request->has('parentId')) {
-            $parentId = $request->request->getInt('parentId');
+            $parentId = $request->request->get('parentId');
             /** @var ?Category */
-            $parent = ORM::getOne(Category::class, $parentId);
-            if (!$parent) {
-                throw new InvalidInput(_('You must select a parent category'));
-            }
-
-            foreach ($parent->getBranch() as $node) {
-                if ($node->getId() === $category->getId()) {
-                    throw new InvalidInput(_('The category can not be placed under itself.'));
+            $parent = null !== $parentId ? ORM::getOne(Category::class, $parentId) : null;
+            if ($parent) {
+                foreach ($parent->getBranch() as $node) {
+                    if ($node->getId() === $category->getId()) {
+                        throw new InvalidInput(_('The category can not be placed under itself.'));
+                    }
                 }
             }
             $category->setParent($parent);
@@ -168,7 +166,10 @@ class CategoryController extends AbstractAdminController
      */
     public function updateKatOrder(string $order): void
     {
-        foreach (explode(',', $order) as $weight => $id) {
+        $order = explode(',', $order);
+        $order = array_filter($order);
+        $order = array_map('intval', $order);
+        foreach ($order as $weight => $id) {
             /** @var ?Category */
             $category = ORM::getOne(Category::class, $id);
             if ($category) {

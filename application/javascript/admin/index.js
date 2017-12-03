@@ -212,14 +212,11 @@ function opretSide_r(data) {
 function updateSpecial(id) {
     $("loading").style.visibility = "";
     if ($("subMenusOrder")) {
-        x_updateKatOrder($("subMenusOrder").value, genericCallback);
+        xHttp.request("/admin/categories/0/", genericCallback, "PUT", {"subMenusOrder": $("subMenusOrder").value});
     }
 
-    var html = CKEDITOR.instances.text.getData();
-
-    var title = $("title") ? $("title").value : "";
-
-    x_updateSpecial(id, html, title, genericCallback);
+    var data = {"html": CKEDITOR.instances.text.getData(), "title": $("title") ? $("title").value : ""};
+    xHttp.request("/admin/custom/" + id + "/", genericCallback, "PUT", data);
     return false;
 }
 

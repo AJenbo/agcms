@@ -66,7 +66,7 @@ class CustomPageController extends AbstractAdminController
         }
 
         $title = $request->get('title', '');
-        $html = $request->get('text');
+        $html = $request->get('html');
         $html = purifyHTML($html);
 
         if ($title) {

@@ -1,5 +1,6 @@
 <?php namespace AGCMS\Controller\Admin;
 
+use AGCMS\Config;
 use AGCMS\Entity\Brand;
 use AGCMS\Entity\File;
 use AGCMS\Exception\InvalidInput;
