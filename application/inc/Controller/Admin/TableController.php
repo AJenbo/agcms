@@ -41,6 +41,7 @@ class TableController extends AbstractAdminController
      */
     public function createDialog(Request $request, int $pageId): Response
     {
+        Render::addLoadedTable('tablesort');
         $content = Render::render(
             'admin/addlist',
             [

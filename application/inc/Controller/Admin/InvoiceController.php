@@ -98,6 +98,7 @@ class InvoiceController extends AbstractAdminController
             $where = ' `id` = ' . $selected['id'];
         }
 
+        Render::addLoadedTable('fakturas');
         $oldest = db()->fetchOne(
             "
             SELECT UNIX_TIMESTAMP(`date`) AS `date` FROM `fakturas`

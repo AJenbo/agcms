@@ -44,6 +44,7 @@ function saveListOrder(int $id, string $navn, string $text): bool
 function listsort()
 {
     $data = [];
+    Render::addLoadedTable('tablesort');
     $data['lists'] = db()->fetchArray('SELECT id, navn FROM `tablesort`');
 }
 
@@ -53,6 +54,7 @@ function listsortEdit(Request $request)
     $data = [];
     $id = (int) $request->get('id', 0);
     if ($id) {
+        Render::addLoadedTable('tablesort');
         $list = db()->fetchOne('SELECT * FROM `tablesort` WHERE `id` = ' . $id);
         $data = [
             'id'        => $id,

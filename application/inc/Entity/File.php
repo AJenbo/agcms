@@ -287,14 +287,20 @@ class File extends AbstractEntity
         UNION (SELECT id FROM `krav`      WHERE `text` LIKE '%=\"$escapedPath\"%' LIMIT 1)
         UNION (SELECT id FROM `newsmails` WHERE `text` LIKE '%=\"$escapedPath\"%' LIMIT 1)
         ";
+        Render::addLoadedTable('sider');
+        Render::addLoadedTable('template');
+        Render::addLoadedTable('special');
+        Render::addLoadedTable('krav');
+        Render::addLoadedTable('newsmails');
 
         if (!$onlyCheckHtml) {
             $sql .= '
-            UNION (SELECT id FROM `sider`    WHERE `icon_id` = ' . $this->getId() . " LIMIT 1)
-            UNION (SELECT id FROM `template` WHERE `icon_id` = " . $this->getId() . " LIMIT 1)
-            UNION (SELECT id FROM `maerke`   WHERE `icon_id` = " . $this->getId() . ' LIMIT 1)
+            UNION (SELECT id FROM `sider`    WHERE `icon_id` = ' . $this->getId() . ' LIMIT 1)
+            UNION (SELECT id FROM `template` WHERE `icon_id` = ' . $this->getId() . ' LIMIT 1)
+            UNION (SELECT id FROM `maerke`   WHERE `icon_id` = ' . $this->getId() . ' LIMIT 1)
             UNION (SELECT id FROM `kat`      WHERE `icon_id` = ' . $this->getId() . ' LIMIT 1)
-            '
+            ';
+            Render::addLoadedTable('kat');
         }
 
         return (bool) db()->fetchOne($sql);

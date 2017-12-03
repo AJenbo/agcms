@@ -88,7 +88,7 @@ class UserController extends AbstractAdminController
             if ($password !== $request->get('password2')) {
                 throw new InvalidInput(_('The passwords do not match.'));
             }
-            if (db()->fetchOne('SELECT id FROM users WHERE name = ' . db()->eandq($name))) {
+            if (ORM::getOneByQuery(User::class, 'SELECT * FROM users WHERE name = ' . db()->eandq($name))) {
                 throw new InvalidInput(_('Username already taken.'));
             }
 
