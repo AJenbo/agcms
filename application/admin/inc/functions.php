@@ -41,13 +41,6 @@ function saveListOrder(int $id, string $navn, string $text): bool
     return true;
 }
 
-function sogogerstat(string $sog, string $erstat): int
-{
-    db()->query('UPDATE sider SET text = REPLACE(text,\'' . db()->esc($sog) . '\',\'' . db()->esc($erstat) . '\')');
-
-    return db()->affected_rows;
-}
-
 function listsort()
 {
     $data = [];

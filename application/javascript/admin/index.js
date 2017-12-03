@@ -118,20 +118,6 @@ var listOrderContextMenu = [{
     }
 }];
 
-function sogogerstat(sog, erstat) {
-    if (confirm("Dette vil søge og erstatte i al tekst på hele siden, vil du forsætte?")) {
-        $("loading").style.visibility = "";
-        x_sogogerstat(sog, erstat, searchAndReplaceCallback);
-    }
-}
-
-function searchAndReplaceCallback(affected_rows) {
-    if (!genericCallback(data)) {
-        return;
-    }
-    alert("Påvirket sider: " + affected_rows + ".");
-}
-
 function displaySubMenus(state) {
     if (state == "1") {
         $("subMenus").style.display = "";
