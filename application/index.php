@@ -7,6 +7,7 @@ use AGCMS\Controller\Admin\AdminController;
 use AGCMS\Controller\Admin\BrandController;
 use AGCMS\Controller\Admin\CategoryController;
 use AGCMS\Controller\Admin\CustomPageController;
+use AGCMS\Controller\Admin\CustomSortingController;
 use AGCMS\Controller\Admin\ExplorerController;
 use AGCMS\Controller\Admin\InvoiceController;
 use AGCMS\Controller\Admin\MaintenanceController;
@@ -202,5 +203,12 @@ $app->addRoute('GET', '/admin/newsletters/new/', NewsletterController::class, 'e
 $app->addRoute('POST', '/admin/newsletters/', NewsletterController::class, 'create');
 $app->addRoute('GET', '/admin/newsletters/(\d+)/', NewsletterController::class, 'editNewsletter');
 $app->addRoute('PUT', '/admin/newsletters/(\d+)/', NewsletterController::class, 'update');
+// CustomSorting
+$app->addRoute('GET', '/admin/sortings/', CustomSortingController::class, 'index');
+$app->addRoute('GET', '/admin/sortings/new/', CustomSortingController::class, 'listsortEdit');
+// CustomSorting CRU
+$app->addRoute('POST', '/admin/sortings/', CustomSortingController::class, 'create');
+$app->addRoute('GET', '/admin/sortings/(\d+)/', CustomSortingController::class, 'listsortEdit');
+$app->addRoute('PUT', '/admin/sortings/(\d+)/', CustomSortingController::class, 'update');
 
 $app->run(Request::createFromGlobals());

@@ -248,23 +248,20 @@ function addNewItem() {
 
 function saveListOrder(id) {
     $("loading").style.visibility = "";
-    var newListOrder = "";
+    var data = {
+        "title": $("listOrderNavn").value,
+        "items": [],
+    };
     var listOrder = $("listOrder");
     for (var i = 0; i < listOrder.childNodes.length; i++) {
-        if (i) {
-            newListOrder += "<";
-        }
-        newListOrder += listOrder.childNodes[i].innerHTML;
+        data.items.push(listOrder.childNodes[i].innerText);
     }
-    x_saveListOrder(id, $("listOrderNavn").value, newListOrder, genericCallback);
-}
+    if (id === null) {
+        xHttp.request("/admin/sortings/", makeNewList_r, "POST", data);
+        return;
+    }
 
-function makeNewList() {
-    var name = prompt("Ny liste");
-    if (name != null) {
-        $("loading").style.visibility = "";
-        x_makeNewList(name, makeNewList_r);
-    }
+    xHttp.request("/admin/sortings/" + id + "/", genericCallback, "PUT", data);
 }
 
 function makeNewList_r(data) {
@@ -272,7 +269,7 @@ function makeNewList_r(data) {
         return;
     }
 
-    location.href = "/admin/?side=listsort-edit&id=" + data.id;
+    location.href = "/admin/sortings/" + data.id + "/";
 }
 
 var contactCountRequest;

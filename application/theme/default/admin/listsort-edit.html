@@ -2,26 +2,26 @@
 
 {% block actions %}
     <li>
-        <a onclick="saveListOrder({{id}});"><img src="/theme/default/images/admin/disk.png" width="16" height="16" alt="" /> Save list</a>
+        <a onclick="saveListOrder({{customSorting.id|json_encode|raw}});"><img src="/theme/default/images/admin/disk.png" width="16" height="16" alt="" /> Save list</a>
     </li>
 {% endblock %}
 
 {% block canvas %}
-<div id="headline">Edit {{name}} sorting</div>
+<div id="headline">Edit {{customSorting.title}} sorting</div>
 <div>
-    Name: <input id="listOrderNavn" value="{{name}}">
+    Title: <input id="listOrderNavn" value="{{customSorting.title}}">
     <form action="" method="post" onsubmit="addNewItem(); return false;">
         New Item: <input id="newItem"> <input type="submit" value="tilføj" accesskey="t">
     </form>
 
     <ul id="listOrder" style="width:{{textWidth}}px;">
-    {% for row in rows %}
+    {% for row in customSorting.items %}
         <li id="item_{{loop.index}}">{{row}}</li>
     {% endfor %}
     </ul>
     <input type="hidden" id="listOrderValue" value="" />
     <script type="text/javascript"><!--
-        var items = {{rows|length|raw}};
+        var items = {{customSorting.items|length|raw}};
         Sortable.create('listOrder',{ghosting:false,constraint:false,hoverclass:'over'});
     --></script>
 </div>
