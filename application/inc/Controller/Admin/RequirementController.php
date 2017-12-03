@@ -44,7 +44,7 @@ class RequirementController extends AbstractAdminController
         $html = purifyHTML($html);
 
         if ('' === $title || '' === $html) {
-            throw new InvalidInput(_('You must enter a name and a text of the requirement.'));
+            throw new InvalidInput(_('You must enter a name and a text for the requirement.'));
         }
 
         $requirement = new Requirement(['title' => $title, 'html' => $html]);
@@ -89,7 +89,7 @@ class RequirementController extends AbstractAdminController
         $html = purifyHTML($html);
 
         if ('' === $title || '' === $html) {
-            throw new InvalidInput(_('You must enter a name and a text of the requirement.'));
+            throw new InvalidInput(_('You must enter a name and a text for the requirement.'));
         }
 
         /** @var ?Requirement */

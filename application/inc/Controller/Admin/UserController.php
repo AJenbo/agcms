@@ -86,7 +86,7 @@ class UserController extends AbstractAdminController
                 throw new InvalidInput(_('All fields must be filled.'));
             }
             if ($password !== $request->get('password2')) {
-                throw new InvalidInput(_('The passwords do not match.'));
+                throw new InvalidInput(_('The passwords does not match.'), 403);
             }
             if (ORM::getOneByQuery(User::class, 'SELECT * FROM users WHERE name = ' . db()->eandq($name))) {
                 throw new InvalidInput(_('Username already taken.'));
@@ -147,7 +147,7 @@ class UserController extends AbstractAdminController
         /** @var ?User */
         $user = ORM::getOne(User::class, $id);
         if (!$user) {
-            throw new InvalidInput(_('User not found'), 404);
+            throw new InvalidInput(_('User not found.'), 404);
         }
 
         $data = [
@@ -182,20 +182,20 @@ class UserController extends AbstractAdminController
         /** @var User */
         $user = $request->user();
         if (!$user->hasAccess(User::ADMINISTRATOR) && $user->getId() !== $id) {
-            throw new InvalidInput(_('You do not have the requred access level to change other users.'));
+            throw new InvalidInput(_('You do not have the requred access level to change other users.'), 403);
         }
 
         // Validate access lavel update
         if ($user->getId() === $id
             && $request->request->getInt('access') !== $user->getAccessLevel()
         ) {
-            throw new InvalidInput(_('You can\'t change your own access level'));
+            throw new InvalidInput(_('You can\'t change your own access level.'), 403);
         }
 
         /** @var ?User */
         $user = ORM::getOne(User::class, $id);
         if (!$user) {
-            throw new InvalidInput(_('User not found'));
+            throw new InvalidInput(_('User not found.'), 404);
         }
 
         // Validate password update
@@ -203,12 +203,13 @@ class UserController extends AbstractAdminController
         if ($newPassword) {
             if (!$user->hasAccess(User::ADMINISTRATOR) && $user->getId() !== $id) {
                 throw new InvalidInput(
-                    _('You do not have the requred access level to change the password for this users.')
+                    _('You do not have the requred access level to change the password for this users.'),
+                    403
                 );
             }
 
             if ($user->getId() === $id && !$user->validatePassword($request->request->get('password'))) {
-                throw new InvalidInput(_('Incorrect password.'));
+                throw new InvalidInput(_('Incorrect password.'), 403);
             }
 
             $user->setPassword($newPassword);
@@ -242,10 +243,10 @@ class UserController extends AbstractAdminController
         /** @var User */
         $user = $request->user();
         if (!$user->hasAccess(User::ADMINISTRATOR)) {
-            throw new InvalidInput(_('You do not have permissions to edit users.'));
+            throw new InvalidInput(_('You do not have permissions to edit users.'), 403);
         }
         if ($user->getId() === $id) {
-            throw new InvalidInput(_('You can\'t delete yourself.'));
+            throw new InvalidInput(_('You can\'t delete yourself.'), 403);
         }
 
         /** @var ?User */

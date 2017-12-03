@@ -347,11 +347,11 @@ class File extends AbstractEntity
     public function delete(): bool
     {
         if ($this->isInUse()) {
-            throw new InvalidInput(sprintf(_('"%s" is still in use.'), $this->path));
+            throw new InvalidInput(sprintf(_('"%s" is still in use.'), $this->path), 423);
         }
 
         if (file_exists(app()->basePath($this->path)) && !unlink(app()->basePath($this->path))) {
-            throw new Exception(sprintf(_('Could not delete "%s".'), $this->path));
+            throw new Exception(sprintf(_('Could not delete "%s".'), $this->path), 403);
         }
 
         return parent::delete();

@@ -191,7 +191,7 @@ class CategoryController extends AbstractAdminController
     public function delete(Request $request, int $id): JsonResponse
     {
         if ($id < 1) {
-            throw new InvalidInput(_('Cannot delete root categories!'));
+            throw new InvalidInput(_('Cannot delete root categories.'), 423);
         }
 
         /** @var ?Category */

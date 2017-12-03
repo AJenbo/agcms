@@ -60,7 +60,7 @@ class Category extends AbstractRenderable
         $this->iconId = $data['icon_id'];
         $this->parentId = $data['parent_id'];
         if (null === $this->parentId && $this->id > 0) {
-            throw new InvalidInput(_('Cannot create root categories!'));
+            throw new InvalidInput(_('Cannot create root categories.'), 423);
         }
     }
 
@@ -117,10 +117,10 @@ class Category extends AbstractRenderable
     public function setParent(?self $parent): self
     {
         if (null === $this->parentId && $parent) {
-            throw new InvalidInput(_('Your not allowed to move root categories!'));
+            throw new InvalidInput(_('Your not allowed to move root categories.'), 423);
         }
         if (null !== $this->parentId && !$parent) {
-            throw new InvalidInput(_('You cannot create new root categories!'));
+            throw new InvalidInput(_('You cannot create new root categories.'), 423);
         }
 
         $this->parentId = $parent ? $parent->getId() : null;

@@ -55,15 +55,13 @@ class FileService
         );
         foreach ($files as $file) {
             if ($file->isInUse()) {
-                throw new InvalidInput(sprintf(_('"%s" is still in use.'), $file->getPath()));
+                throw new InvalidInput(sprintf(_('"%s" is still in use.'), $file->getPath()), 423);
             }
 
             $file->delete();
         }
 
-        if (!$this->deltree(app()->basePath($path))) {
-            throw new InvalidInput(_('A file could not be deleted because it is used on a site.'));
-        }
+        $this->deltree(app()->basePath($path));
     }
 
     /**
@@ -192,7 +190,7 @@ class FileService
             }
 
             if (!is_dir($path . '/' . $node)) {
-                return false;
+                throw new InvalidInput(_('Folder still contains files.'), 423);
             }
 
             $success = $success && $this->deltree($path . '/' . $node);

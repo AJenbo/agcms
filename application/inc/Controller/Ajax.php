@@ -36,7 +36,7 @@ class Ajax extends Base
         /** @var ?Table */
         $table = ORM::getOne(Table::class, $tableId);
         if (!$table) {
-            throw new InvalidInput(_('Table not found'));
+            throw new InvalidInput(_('Table not found.'), 404);
         }
 
         if ($table->getRows()) {
@@ -173,7 +173,7 @@ class Ajax extends Base
         ) + $default;
 
         if ($address === $default) {
-            throw new InvalidInput(_('The address could not be found.'));
+            throw new InvalidInput(_('The address could not be found.'), 404);
         }
 
         return new JsonResponse($address);

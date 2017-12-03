@@ -80,7 +80,7 @@ class Email extends AbstractEntity
     public function setSubject(string $subject): self
     {
         if (!$subject) {
-            throw new InvalidInput(_('Email subject may not be empty!'));
+            throw new InvalidInput(_('Email subject is required.'));
         }
 
         $this->subject = $subject;
@@ -106,7 +106,7 @@ class Email extends AbstractEntity
     public function setBody(string $body): self
     {
         if (!$body) {
-            throw new InvalidInput(_('Email body may not be empty!'));
+            throw new InvalidInput(_('Email body is required.'));
         }
 
         $this->body = $body;
@@ -132,7 +132,7 @@ class Email extends AbstractEntity
     public function setSenderName(string $senderName): self
     {
         if (!$senderName) {
-            throw new InvalidInput(_('Sender address is not valid!'));
+            throw new InvalidInput(_('Sender address is not valid.'));
         }
 
         $this->senderName = $senderName;
@@ -158,7 +158,7 @@ class Email extends AbstractEntity
     public function setSenderAddress(string $senderAddress): self
     {
         if (!$this->emailService->valideMail($senderAddress)) {
-            throw new InvalidInput(_('Sender name may not be empty!'));
+            throw new InvalidInput(_('Sender name required.'));
         }
 
         $this->senderAddress = $senderAddress;
@@ -184,7 +184,7 @@ class Email extends AbstractEntity
     public function setRecipientName(string $recipientName): self
     {
         if (!$recipientName) {
-            throw new InvalidInput(_('Recipient address is not valid!'));
+            throw new InvalidInput(_('Recipient address is not valid.'));
         }
 
         $this->recipientName = $recipientName;
@@ -210,7 +210,7 @@ class Email extends AbstractEntity
     public function setRecipientAddress(string $recipientAddress): self
     {
         if (!$this->emailService->valideMail($recipientAddress)) {
-            throw new InvalidInput(_('Recipient name may not be empty!'));
+            throw new InvalidInput(_('Recipient name required.'));
         }
 
         $this->recipientAddress = $recipientAddress;

@@ -39,7 +39,7 @@ class PageController extends AbstractAdminController
             /** @var ?Page */
             $page = ORM::getOne(Page::class, $id);
             if (!$page) {
-                throw new InvalidInput(_('Page not found'), 404);
+                throw new InvalidInput(_('Page not found.'), 404);
             }
 
             foreach ($page->getCategories() as $category) {
@@ -310,13 +310,13 @@ class PageController extends AbstractAdminController
         /** @var ?Page */
         $page = ORM::getOne(Page::class, $pageId);
         if (!$page) {
-            throw new InvalidInput(_('Page not found'), 404);
+            throw new InvalidInput(_('Page not found.'), 404);
         }
 
         /** @var ?Page */
         $accessory = ORM::getOne(Page::class, $accessoryId);
         if (!$accessory) {
-            throw new InvalidInput(_('Accessory not found'), 404);
+            throw new InvalidInput(_('Accessory not found.'), 404);
         }
 
         $page->addAccessory($accessory);
@@ -349,13 +349,13 @@ class PageController extends AbstractAdminController
         /** @var ?Page */
         $page = ORM::getOne(Page::class, $pageId);
         if (!$page) {
-            throw new InvalidInput(_('Page not found'), 404);
+            throw new InvalidInput(_('Page not found.'), 404);
         }
 
         /** @var ?Page */
         $accessory = ORM::getOne(Page::class, $accessoryId);
         if (!$accessory) {
-            throw new InvalidInput(_('Accessory not found'), 404);
+            throw new InvalidInput(_('Accessory not found.'), 404);
         }
 
         $page->removeAccessory($accessory);

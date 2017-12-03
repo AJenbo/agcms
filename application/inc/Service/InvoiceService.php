@@ -368,17 +368,17 @@ class InvoiceService
     public function sendInvoice(Invoice $invoice): void
     {
         if (!$invoice->hasValidEmail()) {
-            throw new InvalidInput(_('Email is not valid!'));
+            throw new InvalidInput(_('Email is not valid.'));
         }
 
         if (!$invoice->getDepartment() && 1 === count(Config::get('emails'))) {
             $email = first(Config::get('emails'))['address'];
             $invoice->setDepartment($email);
         } elseif (!$invoice->getDepartment()) {
-            throw new InvalidInput(_('You have not selected a sender!'));
+            throw new InvalidInput(_('You have not selected a sender.'));
         }
         if ($invoice->getAmount() < 0.01) {
-            throw new InvalidInput(_('The invoice must be of at at least 0.01 krone!'));
+            throw new InvalidInput(_('The invoice must be of at at least 0.01 krone.'));
         }
 
         $subject = _('Online payment for ') . Config::get('site_name');

@@ -183,7 +183,7 @@ class InvoiceController extends AbstractAdminController
         /** @var User */
         $user = $request->user();
         if (!$user->hasAccess(User::ADMINISTRATOR)) {
-            throw new InvalidInput(_('You do not have permissions to validate payments!'));
+            throw new InvalidInput(_('You do not have permissions to validate payments.'), 403);
         }
 
         /** @var ?Invoice */
