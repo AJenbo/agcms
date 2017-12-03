@@ -92,7 +92,7 @@ class MaintenanceController extends AbstractAdminController
         if ($pages) {
             $html = '<b>' . _('The following pages have no binding') . '</b><br />';
             foreach ($pages as $page) {
-                $html .= '<a href="?side=redigerside&amp;id=' . $page->getId() . '">' . $page->getId()
+                $html .= '<a href="/admin/page/' . $page->getId() . '/">' . $page->getId()
                     . ': ' . $page->getTitle() . '</a><br />';
             }
         }
@@ -141,7 +141,7 @@ class MaintenanceController extends AbstractAdminController
         if ($pages) {
             $html .= '<b>' . _('The following pages are both active and inactive') . '</b><br />';
             foreach ($pages as $page) {
-                $html .= '<a href="?side=redigerside&amp;id=' . $page->getId() . '">' . $page->getId() . ': '
+                $html .= '<a href="/admin/page/' . $page->getId() . '/">' . $page->getId() . ': '
                     . $page->getTitle() . '</a><br />';
             }
         }
@@ -181,8 +181,8 @@ class MaintenanceController extends AbstractAdminController
 
                 unset($page['page_id']);
                 $page = new Page(Page::mapFromDB($page));
-                $html .= '<a href="?side=redigerside&amp;id=' . $listPage->getId() . '">' . $listPage->getId() . ': '
-                    . $listPage->getTitle() . '</a> -&gt; <a href="?side=redigerside&amp;id=' . $page->getId() . '">'
+                $html .= '<a href="/admin/page/' . $listPage->getId() . '/">' . $listPage->getId() . ': '
+                    . $listPage->getTitle() . '</a> -&gt; <a href="/admin/page/' . $page->getId() . '/">'
                     . $page->getId() . ': ' . $page->getTitle() . '</a><br />';
             }
         }
