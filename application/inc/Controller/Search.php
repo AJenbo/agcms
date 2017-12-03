@@ -15,11 +15,9 @@ class Search extends Base
     /**
      * Show the advanced search form.
      *
-     * @param Request $request
-     *
      * @return Response
      */
-    public function index(Request $request): Response
+    public function index(): Response
     {
         $data = $this->basicPageData();
         $data['crumbs'][] = new VolatilePage(_('Search'), '/search/');

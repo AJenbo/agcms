@@ -63,11 +63,9 @@ class Site extends Base
     /**
      * View the frontpage.
      *
-     * @param Request $request
-     *
      * @return Response
      */
-    public function frontPage(Request $request): Response
+    public function frontPage(): Response
     {
         $data = [
             'renderable' => ORM::getOne(CustomPage::class, 1),
