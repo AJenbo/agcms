@@ -1,7 +1,6 @@
 SET SQL_MODE="NO_AUTO_VALUE_ON_ZERO";
 SET time_zone = "+00:00";
 
-
 --
 -- Table structure for table `bind`
 --
@@ -37,7 +36,7 @@ CREATE TABLE IF NOT EXISTS `email` (
   PRIMARY KEY (`id`),
   KEY `tlf1` (`tlf1`),
   KEY `tlf2` (`tlf2`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_danish_ci PACK_KEYS=0 ;
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_danish_ci PACK_KEYS=0;
 
 -- --------------------------------------------------------
 
@@ -53,7 +52,7 @@ CREATE TABLE IF NOT EXISTS `emails` (
   `body` text COLLATE utf8_danish_ci NOT NULL,
   `date` datetime NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_danish_ci ;
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_danish_ci;
 
 -- --------------------------------------------------------
 
@@ -111,7 +110,7 @@ CREATE TABLE IF NOT EXISTS `fakturas` (
   KEY `clerk` (`clerk`,`date`),
   KEY `department` (`department`,`date`),
   KEY `status` (`status`,`date`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_danish_ci ;
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_danish_ci;
 
 -- --------------------------------------------------------
 
@@ -120,7 +119,7 @@ CREATE TABLE IF NOT EXISTS `fakturas` (
 --
 
 CREATE TABLE IF NOT EXISTS `files` (
-  `id` smallint(5) unsigned NOT NULL AUTO_INCREMENT,
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `path` varchar(255) COLLATE utf8_danish_ci NOT NULL,
   `mime` varchar(64) COLLATE utf8_danish_ci NOT NULL,
   `alt` varchar(128) COLLATE utf8_danish_ci NOT NULL,
@@ -133,7 +132,7 @@ CREATE TABLE IF NOT EXISTS `files` (
   KEY `mime` (`mime`),
   FULLTEXT KEY `alt` (`alt`),
   FULLTEXT KEY `path` (`path`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_danish_ci ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_danish_ci;
 
 -- --------------------------------------------------------
 
@@ -145,18 +144,18 @@ CREATE TABLE IF NOT EXISTS `kat` (
   `id` smallint(5) NOT NULL AUTO_INCREMENT,
   `navn` varchar(64) COLLATE utf8_danish_ci NOT NULL DEFAULT '',
   `bind` smallint(5) DEFAULT '-1',
-  `icon` varchar(128) COLLATE utf8_danish_ci DEFAULT NULL,
+  `icon_id` int(10) unsigned DEFAULT NULL,
   `vis` tinyint(1) NOT NULL DEFAULT '1',
   `email` varchar(64) COLLATE utf8_danish_ci NOT NULL DEFAULT 'mail',
   `custom_sort_subs` tinyint(1) NOT NULL DEFAULT '0',
   `order` tinyint(3) unsigned NOT NULL DEFAULT '0',
   `access` varchar(64) COLLATE utf8_danish_ci NOT NULL,
   PRIMARY KEY (`id`),
-  KEY `icon` (`icon`),
   KEY `bind` (`bind`,`vis`),
   KEY `order` (`order`),
+  KEY `icon_id` (`icon_id`),
   FULLTEXT KEY `navn` (`navn`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_danish_ci ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_danish_ci;
 
 -- --------------------------------------------------------
 
@@ -169,7 +168,7 @@ CREATE TABLE IF NOT EXISTS `krav` (
   `navn` varchar(32) COLLATE utf8_danish_ci NOT NULL DEFAULT '',
   `text` text COLLATE utf8_danish_ci NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_danish_ci ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_danish_ci;
 
 -- --------------------------------------------------------
 
@@ -189,7 +188,7 @@ CREATE TABLE IF NOT EXISTS `lists` (
   PRIMARY KEY (`id`),
   KEY `page_id` (`page_id`),
   KEY `link` (`link`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_danish_ci ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_danish_ci;
 
 -- --------------------------------------------------------
 
@@ -205,7 +204,7 @@ CREATE TABLE IF NOT EXISTS `list_rows` (
   PRIMARY KEY (`id`),
   KEY `list_id` (`list_id`),
   KEY `link` (`link`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_danish_ci ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_danish_ci;
 
 -- --------------------------------------------------------
 
@@ -217,11 +216,11 @@ CREATE TABLE IF NOT EXISTS `maerke` (
   `id` smallint(5) unsigned NOT NULL AUTO_INCREMENT,
   `navn` varchar(32) COLLATE utf8_danish_ci NOT NULL DEFAULT '',
   `link` varchar(255) COLLATE utf8_danish_ci NOT NULL DEFAULT '',
-  `ico` varchar(128) COLLATE utf8_danish_ci DEFAULT NULL,
+  `icon_id` int(10) unsigned DEFAULT NULL,
   PRIMARY KEY (`id`),
-  KEY `ico` (`ico`),
+  KEY `icon_id` (`icon_id`),
   FULLTEXT KEY `navn` (`navn`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_danish_ci ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_danish_ci;
 
 -- --------------------------------------------------------
 
@@ -238,7 +237,23 @@ CREATE TABLE IF NOT EXISTS `newsmails` (
   `sendt` tinyint(1) unsigned NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`),
   UNIQUE KEY `sendt` (`sendt`,`id`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_danish_ci ;
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_danish_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `post`
+--
+
+CREATE TABLE IF NOT EXISTS `post` (
+  `id` smallint(6) NOT NULL AUTO_INCREMENT,
+  `recipientID` varchar(64) CHARACTER SET utf8 COLLATE utf8_danish_ci NOT NULL,
+  `recName1` varchar(64) CHARACTER SET utf8 COLLATE utf8_danish_ci NOT NULL,
+  `recAddress1` varchar(64) CHARACTER SET utf8 COLLATE utf8_danish_ci NOT NULL,
+  `recZipCode` varchar(64) CHARACTER SET utf8 COLLATE utf8_danish_ci NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `recipientID` (`recipientID`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 
@@ -258,17 +273,17 @@ CREATE TABLE IF NOT EXISTS `sider` (
   `beskrivelse` text COLLATE utf8_danish_ci NOT NULL,
   `krav` smallint(5) unsigned DEFAULT NULL,
   `maerke` smallint(5) unsigned DEFAULT NULL,
-  `billed` varchar(255) COLLATE utf8_danish_ci DEFAULT NULL,
+  `icon_id` int(10) unsigned DEFAULT NULL,
   `fra` tinyint(1) NOT NULL DEFAULT '0',
   `burde` tinyint(1) NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`),
   KEY `pris` (`pris`),
   KEY `maerke` (`maerke`),
   KEY `varenr` (`varenr`),
-  KEY `billed` (`billed`),
   KEY `krav` (`krav`),
+  KEY `icon_id` (`icon_id`),
   FULLTEXT KEY `navn` (`navn`,`text`,`beskrivelse`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_danish_ci ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_danish_ci;
 
 -- --------------------------------------------------------
 
@@ -282,7 +297,7 @@ CREATE TABLE IF NOT EXISTS `special` (
   `text` text COLLATE utf8_danish_ci NOT NULL,
   `dato` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_danish_ci ;
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_danish_ci;
 
 -- --------------------------------------------------------
 
@@ -295,7 +310,7 @@ CREATE TABLE IF NOT EXISTS `tablesort` (
   `navn` varchar(64) COLLATE utf8_danish_ci NOT NULL DEFAULT '',
   `text` text COLLATE utf8_danish_ci NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_danish_ci ;
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_danish_ci;
 
 -- --------------------------------------------------------
 
@@ -310,7 +325,7 @@ CREATE TABLE IF NOT EXISTS `template` (
   `keywords` varchar(255) COLLATE utf8_danish_ci NOT NULL DEFAULT '',
   `beskrivelse` text COLLATE utf8_danish_ci NOT NULL,
   `text` mediumtext COLLATE utf8_danish_ci NOT NULL,
-  `billed` varchar(255) COLLATE utf8_danish_ci DEFAULT NULL,
+  `icon_id` int(10) unsigned DEFAULT NULL,
   `pris` mediumint(8) unsigned NOT NULL DEFAULT '0',
   `burde` tinyint(1) NOT NULL DEFAULT '0',
   `for` mediumint(8) unsigned NOT NULL DEFAULT '0',
@@ -321,9 +336,9 @@ CREATE TABLE IF NOT EXISTS `template` (
   PRIMARY KEY (`id`),
   KEY `krav` (`krav`),
   KEY `maerke` (`maerke`),
-  KEY `billed` (`billed`),
-  KEY `bind` (`bind`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_danish_ci ;
+  KEY `bind` (`bind`),
+  KEY `icon_id` (`icon_id`)
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_danish_ci;
 
 -- --------------------------------------------------------
 
@@ -355,7 +370,7 @@ CREATE TABLE IF NOT EXISTS `users` (
   UNIQUE KEY `navn` (`name`),
   KEY `access` (`access`),
   KEY `fullname` (`fullname`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_danish_ci ;
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_danish_ci;
 
 --
 -- Constraints for dumped tables
@@ -372,8 +387,8 @@ ALTER TABLE `bind`
 -- Constraints for table `kat`
 --
 ALTER TABLE `kat`
-  ADD CONSTRAINT `kat_ibfk_1` FOREIGN KEY (`icon`) REFERENCES `files` (`path`) ON UPDATE CASCADE,
-  ADD CONSTRAINT `kat_ibfk_2` FOREIGN KEY (`bind`) REFERENCES `kat` (`id`) ON DELETE CASCADE;
+  ADD CONSTRAINT `kat_ibfk_2` FOREIGN KEY (`bind`) REFERENCES `kat` (`id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `kat_ibfk_3` FOREIGN KEY (`icon_id`) REFERENCES `files` (`id`);
 
 --
 -- Constraints for table `lists`
@@ -392,7 +407,7 @@ ALTER TABLE `list_rows`
 -- Constraints for table `maerke`
 --
 ALTER TABLE `maerke`
-  ADD CONSTRAINT `maerke_ibfk_1` FOREIGN KEY (`ico`) REFERENCES `files` (`path`);
+  ADD CONSTRAINT `maerke_ibfk_3` FOREIGN KEY (`icon_id`) REFERENCES `files` (`id`);
 
 --
 -- Constraints for table `sider`
@@ -400,16 +415,16 @@ ALTER TABLE `maerke`
 ALTER TABLE `sider`
   ADD CONSTRAINT `sider_ibfk_1` FOREIGN KEY (`krav`) REFERENCES `krav` (`id`) ON DELETE SET NULL,
   ADD CONSTRAINT `sider_ibfk_2` FOREIGN KEY (`maerke`) REFERENCES `maerke` (`id`) ON DELETE SET NULL,
-  ADD CONSTRAINT `sider_ibfk_3` FOREIGN KEY (`billed`) REFERENCES `files` (`path`);
+  ADD CONSTRAINT `sider_ibfk_5` FOREIGN KEY (`icon_id`) REFERENCES `files` (`id`);
 
 --
 -- Constraints for table `template`
 --
 ALTER TABLE `template`
-  ADD CONSTRAINT `template_ibfk_1` FOREIGN KEY (`billed`) REFERENCES `files` (`path`),
   ADD CONSTRAINT `template_ibfk_2` FOREIGN KEY (`maerke`) REFERENCES `maerke` (`id`) ON DELETE SET NULL,
   ADD CONSTRAINT `template_ibfk_3` FOREIGN KEY (`krav`) REFERENCES `krav` (`id`) ON DELETE SET NULL,
-  ADD CONSTRAINT `template_ibfk_4` FOREIGN KEY (`bind`) REFERENCES `bind` (`kat`) ON DELETE SET NULL;
+  ADD CONSTRAINT `template_ibfk_4` FOREIGN KEY (`bind`) REFERENCES `bind` (`kat`) ON DELETE SET NULL,
+  ADD CONSTRAINT `template_ibfk_5` FOREIGN KEY (`icon_id`) REFERENCES `files` (`id`);
 
 --
 -- Constraints for table `tilbehor`
