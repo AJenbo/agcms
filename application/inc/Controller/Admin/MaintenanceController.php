@@ -270,7 +270,7 @@ class MaintenanceController extends AbstractAdminController
                 count($files)
             );
             $html = '<br /><b>' . sprintf($msg, count($files))
-                . '</b><br /><br /><br /><a onclick="explorer(\'\',\'\');">';
+                . '</b><br /><br /><br /><a onclick="explorer(\'\',\'\')">';
             foreach ($files as $file) {
                 $html .= $file->getPath() . '<br />';
             }

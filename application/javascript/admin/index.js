@@ -480,7 +480,6 @@ function maintainStep8(data) {
 
 function maintainStep9(data) {
     getUsage_r(data);
-    $("loading").style.visibility = "hidden";
     $("errors").innerHTML = $("errors").innerHTML + "<br />" +
                             ("The scan took %d seconds.".replace(
                                 /[%]d/g, Math.round((new Date().getTime() - startTime) / 1000).toString()));
@@ -490,31 +489,40 @@ function get_subscriptions_with_bad_emails() {
     $("loading").style.visibility = "";
     $("errors").innerHTML = "";
 
-    var starttime = new Date().getTime();
+    starttime = new Date().getTime();
 
     $("status").innerHTML = "Searching for illegal e-mail adresses";
-    xHttp.request("/admin/maintenance/contacts/invalid/", set_db_errors);
+    xHttp.request("/admin/maintenance/contacts/invalid/", subscriptionsWithBadEmails_r);
+}
 
-    $("status").innerHTML = "";
+function subscriptionsWithBadEmails_r(data) {
     $("loading").style.visibility = "hidden";
-    $("errors").innerHTML = $("errors").innerHTML + "<br />" +
+    $("errors").innerHTML = $("errors").innerHTML + "<br />" + data.html + "<br />" +
                             ("The scan took %d seconds.".replace(
                                 /[%]d/g, Math.round((new Date().getTime() - starttime) / 1000).toString()));
+    $("status").innerHTML = "";
 }
 
 function removeNoneExistingFiles() {
     $("loading").style.visibility = "";
+
+    starttime = new Date().getTime();
+
     $("status").innerHTML = "Removes not existing files from the database";
     xHttp.request("/admin/maintenance/files/missing/", removeNoneExistingFiles_r, "DELETE");
 }
 
 function removeNoneExistingFiles_r(data) {
-    var missingHtml = "The folloding files are missing:";
-    for (var i = 0; i < data.missing.length; i++) {
-        missingHtml += "<br />";
-        missingHtml += data.missing[i];
+    var missingHtml = "";
+    if (data.missingFiles) {
+        missingHtml = "<b>The folloding files are missing:</b><a onclick=\"explorer('','')\">";
+        for (var i = 0; i < data.missingFiles.length; i++) {
+            missingHtml += "<br />";
+            missingHtml += data.missingFiles[i];
+        }
+        missingHtml += "</a>";
     }
-    $("errors").innerHTML = missingHtml + "<br />" + data.deleted + "files removed" +
+    $("errors").innerHTML = missingHtml + "<br />" + data.deleted + " files removed" +
                             "<br />" + ("The scan took %d seconds.".replace(
                                            /[%]d/g, Math.round((new Date().getTime() - starttime) / 1000).toString()));
 
@@ -535,6 +543,7 @@ function getEmailUsage_r(data) {
 }
 
 function getUsage_r(data) {
+    $("loading").style.visibility = "hidden";
     $("status").innerHTML = "";
     $("wwwsize").innerHTML = Math.round(data.www / 1024 / 1024 * 10) / 10 + "MB";
     $("dbsize").innerHTML = Math.round(data.db / 1024 / 1024 * 10) / 10 + "MB";
