@@ -369,7 +369,7 @@ class InvoiceController extends AbstractAdminController
      */
     public function invoice(Request $request, int $id = null): Response
     {
-        $invoice = new Invoice();
+        $invoice = null;
         if (null !== $id) {
             /** @var ?Invoice */
             $invoice = ORM::getOne(Invoice::class, $id);
@@ -386,8 +386,7 @@ class InvoiceController extends AbstractAdminController
         }
 
         $data = [
-            'title'       => null !== $id ? _('Online Invoice #') . $invoice->getId() : _('Create Invoice'),
-            'invoiceId'   => $id,
+            'title'       => $invoice ? _('Online Invoice #') . $invoice->getId() : _('Create Invoice'),
             'invoice'     => $invoice,
             'currentUser' => $user,
             'users'       => ORM::getByQuery(User::class, 'SELECT * FROM `users` ORDER BY fullname'),

@@ -3,42 +3,42 @@
 {% block actions %}
 {% if invoice.status == 'pbsok' %}
 <li>
-    <a onclick="return pbsconfirm({{invoiceId}})"><img src="/theme/default/images/admin/money.png" alt="" width="16" height="16" /> Expedite</a>
+    <a onclick="return pbsconfirm({{invoice.id}})"><img src="/theme/default/images/admin/money.png" alt="" width="16" height="16" /> Expedite</a>
 </li>
-<li><a onclick="return annul({{invoiceId}})"><img src="/theme/default/images/admin/bin.png" alt="" width="16" height="16" /> Reject</a></li>
+<li><a onclick="return annul({{invoice.id}})"><img src="/theme/default/images/admin/bin.png" alt="" width="16" height="16" /> Reject</a></li>
 {% endif %}
-<li><a onclick="return save({{invoiceId}})"><img src="/theme/default/images/admin/table_save.png" alt="" width="16" height="16" /> Save</a></li>
-{% if invoice.status == 'new' %}
-<li><a onclick="return save({{invoiceId}}, 'lock')"><img src="/theme/default/images/admin/lock.png" alt="" width="16" height="16" /> Lock</a></li>
+<li><a onclick="return save({{invoice.id|json_encode|raw}})"><img src="/theme/default/images/admin/table_save.png" alt="" width="16" height="16" /> Save</a></li>
+{% if not invoice or invoice.status == 'new' %}
+<li><a onclick="return save({{invoice.id|json_encode|raw}}, 'lock')"><img src="/theme/default/images/admin/lock.png" alt="" width="16" height="16" /> Lock</a></li>
 {% else %}
 <li>
-    <a href="/admin/invoices/{{invoiceId}}/pdf/">
+    <a href="/admin/invoices/{{invoice.id}}/pdf/">
         <img height="16" width="16" title="" src="/theme/default/images/admin/printer.png"/> Print
     </a>
 </li>
 {% endif %}
-{% if invoiceId %}
+{% if invoice.id %}
 <li>
-    <a onclick="return copytonew({{invoiceId}})">
+    <a onclick="return copytonew({{invoice.id}})">
         <img src="/theme/default/images/admin/table_multiple.png" alt="" width="16" height="16" /> Copy to new
     </a>
 </li>
 {% endif %}
-{% if invoiceId and invoice.status not in ['canceled', 'pbsok', 'accepted', 'giro', 'cash'] %}
+{% if invoice.id and invoice.status not in ['canceled', 'pbsok', 'accepted', 'giro', 'cash'] %}
 <li>
-    <a onclick="return save({{invoiceId}}, 'cancel')"><img src="/theme/default/images/admin/bin.png" alt="" width="16" height="16" /> Cancel</a>
+    <a onclick="return save({{invoice.id}}, 'cancel')"><img src="/theme/default/images/admin/bin.png" alt="" width="16" height="16" /> Cancel</a>
 </li>
 {% endif %}
 {% if invoice.status not in ['giro', 'cash', 'pbsok', 'accepted', 'canceled', 'rejected'] %}
 {% if not invoice.sent %}
 <li id="emaillink"{% if not invoice.hasValidEmail %} style="display:none;"{% endif %}>
-    <a onclick="return save({{invoiceId}}, 'email')">
+    <a onclick="return save({{invoice.id|json_encode|raw}}, 'email')">
         <img height="16" width="16" title="Send to customer" alt="" src="/theme/default/images/admin/email_go.png"/> Send
     </a>
 </li>
 {% else %}
 <li>
-    <a onclick="return sendReminder({{invoiceId}})">
+    <a onclick="return sendReminder({{invoice.id}})">
         <img height="16" width="16" alt="" src="/theme/default/images/admin/email_go.png"/> Send reminder!
     </a>
 </li>
@@ -51,7 +51,7 @@
 <table style="float:right;">
     {% if invoice.status not in ['giro', 'cash', 'accepted', 'canceled', 'pbsok'] %}
     <tr>
-        <td><input type="button" value="Paid via giro" onclick="save({{invoiceId}}, 'giro');" /></td>
+        <td><input type="button" value="Paid via giro" onclick="save({{invoice.id|json_encode|raw}}, 'giro');" /></td>
         <td>
             <input maxlength="10" name="gdate" id="gdate" size="11" value="{{time|date('d-m-Y')}}" />
             <script type="text/javascript"><!--
@@ -60,7 +60,7 @@
         </td>
     </tr>
     <tr>
-        <td><input type="button" value="Paid in cash" onclick="save({{invoiceId}}, 'cash');" /></td>
+        <td><input type="button" value="Paid in cash" onclick="save({{invoice.id|json_encode|raw}}, 'cash');" /></td>
         <td>
             <input maxlength="10" name="cdate" id="cdate" size="11" value="{{time|date('d-m-Y')}}" />
             <script type="text/javascript"><!--
@@ -81,7 +81,7 @@
             <p class="note" style="width:350px">
                 {% if invoice.status != 'new' %}{{invoice.note|nl2br}}{% endif %}
             </p>
-            <textarea style="width:350px" name="note" id="note" rows="{% if invoice.status == 'new' %}{{invoice.note|split('\n')|length + 2}}{% else %}2{% endif %}">{% if invoice.status == 'new' %}{{invoice.note}}{% endif %}</textarea>
+            <textarea style="width:350px" name="note" id="note" rows="{% if not invoice or invoice.status == 'new' %}{{invoice.note|split('\n')|length + 2}}{% else %}2{% endif %}">{% if not invoice or invoice.status == 'new' %}{{invoice.note}}{% endif %}</textarea>
         </td>
     </tr>
     <tr>
@@ -92,10 +92,10 @@
     </tr>
 </table>
 <table>
-    {% if invoiceId %}
+    {% if invoice.id %}
     <tr>
         <td>ID:</td>
-        <td>{{invoiceId}}</td>
+        <td>{{invoice.id}}</td>
     </tr>
     <tr>
         <td>eCode:</td>
@@ -105,7 +105,7 @@
     <tr>
         <td>Status:</td>
         <td>
-            {% if invoice.status == 'new' %}
+            {% if not invoice or invoice.status == 'new' %}
             Newly created
             {% elseif invoice.status == 'locked' and invoice.sent %}
             Is sent to the Customer.
@@ -144,14 +144,14 @@
         <td>
             {% if invoice.transferred %}Yes{% else %}No{% endif %}
             {% if currentUser.accessLevel == 1 and invoice.transferred %}
-            (<a href="" onclick="return setPaymentTransferred({{invoiceId}}, false)">Remove</a>)
+            (<a href="" onclick="return setPaymentTransferred({{invoice.id}}, false)">Remove</a>)
             {% endif %}
         </td>
     </tr>
     <tr>
         <td>Oprettet:</td>
         <td>
-            {% if invoice.status == 'new' %}
+            {% if not invoice or invoice.status == 'new' %}
             <input maxlength="10" name="date" id="date" size="11" value="{{invoice.timestamp|date('d-m-Y')}}" />
             <script type="text/javascript"><!--
                 new tcal({'controlid': 'date'});
@@ -200,7 +200,7 @@
     <tr>
         <td>Our ref.:</td>
         <td>
-            {% if invoice.status == 'new' %}
+            {% if not invoice or invoice.status == 'new' %}
             <input name="iref" id="iref" value="{{invoice.iref}}" />
             {% else %}
             {{invoice.iref}}
@@ -210,7 +210,7 @@
     <tr>
         <td>Their ref.:</td>
         <td>
-            {% if invoice.status == 'new' %}
+            {% if not invoice or invoice.status == 'new' %}
             <input name="eref" id="eref" value="{{invoice.eref}}" />
             {% else %}
             {{invoice.eref}}
@@ -223,7 +223,7 @@
     <tr>
         <td>Phone 1:</td>
         <td>
-            {% if invoice.status == 'new' %}
+            {% if not invoice or invoice.status == 'new' %}
             <input name="tlf1" id="tlf1" value="{{invoice.phone1}}" />
             <input type="button" value="Hent" onclick="getInvoiceAddress($('tlf1').value);" />
             {% else %}
@@ -234,7 +234,7 @@
     <tr>
         <td>Phone 2:</td>
         <td>
-            {% if invoice.status == 'new' %}
+            {% if not invoice or invoice.status == 'new' %}
             <input name="tlf2" id="tlf2" value="{{invoice.phone2}}" />
             <input type="button" value="Hent" onclick="getInvoiceAddress($('tlf2').value);" />
             {% else %}
@@ -245,7 +245,7 @@
     <tr>
         <td>E-mail:</td>
         <td>
-            {% if invoice.status == 'new' %}
+            {% if not invoice or invoice.status == 'new' %}
             <input name="email" id="email" onchange="valideMail();" onkeyup="valideMail();" value="{{invoice.email}}" />
             {% else %}
             <a href="mailto:{{invoice.email}}">{{invoice.email}}</a>
@@ -255,7 +255,7 @@
     <tr>
         <td>Name:</td>
         <td>
-            {% if invoice.status == 'new' %}
+            {% if not invoice or invoice.status == 'new' %}
             <input name="navn" id="navn" value="{{invoice.name}}" />
             {% else %}
             {{invoice.name}}
@@ -265,7 +265,7 @@
     <tr>
         <td>Attn.:</td>
         <td>
-            {% if invoice.status == 'new' %}
+            {% if not invoice or invoice.status == 'new' %}
             <input name="attn" id="attn" value="{{invoice.attn}}" />
             {% else %}
             {{invoice.attn}}
@@ -275,7 +275,7 @@
     <tr>
         <td>Address:</td>
         <td>
-            {% if invoice.status == 'new' %}
+            {% if not invoice or invoice.status == 'new' %}
             <input name="adresse" id="adresse" value="{{invoice.address}}" />
             {% else %}
             {{invoice.address}}
@@ -285,7 +285,7 @@
     <tr>
         <td>Postbox:</td>
         <td>
-            {% if invoice.status == 'new' %}
+            {% if not invoice or invoice.status == 'new' %}
             <input name="postbox" id="postbox" value="{{invoice.postbox}}" />
             {% else %}
             {{invoice.postbox}}
@@ -295,7 +295,7 @@
     <tr>
         <td>Zipcode:</td>
         <td>
-            {% if invoice.status == 'new' %}
+            {% if not invoice or invoice.status == 'new' %}
             <input name="postnr" id="postnr" value="{{invoice.postcode}}" onblur="chnageZipCode(this.value, 'land', 'by')" onkeyup="chnageZipCode(this.value, 'land', 'by')" onchange="chnageZipCode(this.value, 'land', 'by')" />
             City:
             <input name="by" id="by" value="{{invoice.city}}" />
@@ -307,7 +307,7 @@
     <tr>
         <td>Country:</td>
         <td>
-            {% if invoice.status == 'new' %}
+            {% if not invoice or invoice.status == 'new' %}
             <select name="land" id="land" onblur="chnageZipCode($('postnr').value, 'land', 'by')" onkeyup="chnageZipCode($('postnr').value, 'land', 'by')" onchange="chnageZipCode($('postnr').value, 'land', 'by')">
                 <option value=""{% if not invoice.country %} selected="selected"{% endif %}></option>
                 {% for code, country in countries %}
@@ -321,10 +321,10 @@
             {% endif %}
         </td>
     </tr>
-    {% if invoice.hasShippingAddress or invoice.status == 'new' %}
+    {% if invoice.hasShippingAddress or not invoice or invoice.status == 'new' %}
     <tr>
         <td colspan="2">
-            {% if invoice.status == 'new' %}
+            {% if not invoice or invoice.status == 'new' %}
             <input onclick="showhidealtpost(this.checked);" name="altpost" id="altpost" type="checkbox"{% if invoice.hasShippingAddress %} checked="checked"{% endif %} />
             {% endif %}
             <label for="altpost"> <strong>Other delivery address</strong></label>
@@ -334,7 +334,7 @@
     <tr class="altpost"{% if not invoice.hasShippingAddress %} style="display:none;"{% endif %}>
         <td>Tlf:</td>
         <td>
-            {% if invoice.status == 'new' %}
+            {% if not invoice or invoice.status == 'new' %}
             <input name="posttlf" id="posttlf" value="{{invoice.shippingPhone}}" />
             <input type="button" value="Hent" onclick="getAltAddress($('posttlf').value);" />
             {% else %}
@@ -345,7 +345,7 @@
     <tr class="altpost"{% if not invoice.hasShippingAddress %} style="display:none;"{% endif %}>
         <td>Name:</td>
         <td>
-            {% if invoice.status == 'new' %}
+            {% if not invoice or invoice.status == 'new' %}
             <input name="postname" id="postname" value="{{invoice.shippingName}}" />
             {% else %}
             {{invoice.shippingName}}
@@ -355,7 +355,7 @@
     <tr class="altpost"{% if not invoice.hasShippingAddress %} style="display:none;"{% endif %}>
         <td>Attn.:</td>
         <td>
-            {% if invoice.status == 'new' %}
+            {% if not invoice or invoice.status == 'new' %}
             <input name="postattn" id="postattn" value="{{invoice.shippingAttn}}" />
             {% else %}
             {{invoice.shippingAttn}}
@@ -365,7 +365,7 @@
     <tr class="altpost"{% if not invoice.hasShippingAddress %} style="display:none;"{% endif %}>
         <td>Address:</td>
         <td>
-            {% if invoice.status == 'new' %}
+            {% if not invoice or invoice.status == 'new' %}
             <input name="postaddress" id="postaddress" value="{{invoice.shippingAddress}}" />
             {% else %}
             {{invoice.shippingAddress}}
@@ -375,7 +375,7 @@
     <tr class="altpost"{% if not invoice.hasShippingAddress %} style="display:none;"{% endif %}>
         <td></td>
         <td>
-            {% if invoice.status == 'new' %}
+            {% if not invoice or invoice.status == 'new' %}
             <input name="postaddress2" id="postaddress2" value="{{invoice.shippingAddress2}}" />
             {% else %}
             {{invoice.shippingAddress2}}
@@ -385,7 +385,7 @@
     <tr class="altpost"{% if not invoice.hasShippingAddress %} style="display:none;"{% endif %}>
         <td>Postbox:</td>
         <td>
-            {% if invoice.status == 'new' %}
+            {% if not invoice or invoice.status == 'new' %}
             <input name="postpostbox" id="postpostbox" value="{{invoice.shippingPostbox}}" />
             {% else %}
             {{invoice.shippingPostbox}}
@@ -395,7 +395,7 @@
     <tr class="altpost"{% if not invoice.hasShippingAddress %} style="display:none;"{% endif %}>
         <td>Zipcode:</td>
         <td>
-            {% if invoice.status == 'new' %}
+            {% if not invoice or invoice.status == 'new' %}
             <input name="postpostalcode" id="postpostalcode" value="{{invoice.shippingPostcode}}" onblur="chnageZipCode(this.value, 'postcountry', 'postcity')" onkeyup="chnageZipCode(this.value, 'postcountry', 'postcity')" onchange="chnageZipCode(this.value, 'postcountry', 'postcity')" />
             City:
             <input name="postcity" id="postcity" value="{{invoice.shippingCity}}" />
@@ -407,7 +407,7 @@
     <tr class="altpost"{% if not invoice.hasShippingAddress %} style="display:none;"{% endif %}>
         <td>Country:</td>
         <td>
-            {% if invoice.status == 'new' %}
+            {% if not invoice or invoice.status == 'new' %}
             <select name="postcountry" id="postcountry" onblur="chnageZipCode($('postpostalcode').value, 'postcountry', 'postcity')" onkeyup="chnageZipCode($('postpostalcode').value, 'postcountry', 'postcity')" onchange="chnageZipCode($('postpostalcode').value, 'postcountry', 'postcity')">
                 <option value=""{% if not invoice.shippingCountry %} selected="selected"{% endif %}></option>
                 {% for code, country in countries %}
@@ -421,7 +421,7 @@
             {% endif %}
         </td>
     </tr>
-    {% if invoice.status == 'new' %}
+    {% if not invoice or invoice.status == 'new' %}
     <tr>
         <td colspan="2">
             <input type="checkbox"{% if invoice.hasPreVat %} checked="checked"{% endif %} id="premoms" onkeyup="prisUpdate()" onchange="prisUpdate()" onblur="prisUpdate()" onclick="prisUpdate()" />
@@ -451,7 +451,7 @@
             <td>&nbsp;</td>
             <td class="tal">Freight</td>
             <td class="tal">
-                {% if invoice.status == 'new' %}
+                {% if not invoice or invoice.status == 'new' %}
                 <input maxlength="7" name="fragt" id="fragt" style="width:80px;" class="tal" value="{{invoice.shipping|number_format(2, ',', '')}}" onkeyup="prisUpdate()" onchange="prisUpdate()" onblur="prisUpdate()" />
                 {% else %}
                 {{invoice.shipping|number_format(2, ',', '')}}
@@ -461,7 +461,7 @@
         <tr>
             <td>&nbsp;</td>
             <td style="text-align:right">
-                {% if invoice.status == 'new' %}
+                {% if not invoice or invoice.status == 'new' %}
                 <select name="momssats" id="momssats" onkeyup="prisUpdate()" onchange="prisUpdate()" onblur="prisUpdate()">
                     <option value="0.25"{% if invoice.vat == '0.25'%} selected="selected"{% endif %}>25%</option>
                     <option value="0"{% if not invoice.vat %} selected="selected"{% endif %}>0%</option>
@@ -483,7 +483,7 @@
     </tfoot>
     <tbody id="vareTable">
         {% for item in invoice.items %}
-        {% if invoice.status == 'new' %}
+        {% if not invoice or invoice.status == 'new' %}
         <tr>
             <td>
                 <input name="quantitie" style="width:58px;" class="tal" value="{{item.quantity}}" onkeyup="prisUpdate()" onchange="prisUpdate()" onblur="prisUpdate()" />
@@ -512,7 +512,7 @@
         {% endfor %}
     </tbody>
 </table>
-{% if invoice.status == 'new' %}
+{% if not invoice or invoice.status == 'new' %}
 <script type="text/javascript"><!--
     showhidealtpost($('altpost').checked);
     valideMail();

@@ -169,8 +169,8 @@ function reload_r(date) {
     window.location.reload();
 }
 
-function save(id = null, type) {
-    if (type == null) {
+function save(id = null, type = null) {
+    if (type === null) {
         type = "save";
     }
 
@@ -180,7 +180,7 @@ function save(id = null, type) {
 
     $("loading").style.visibility = "";
     var update = {};
-    if (status === "new") {
+    if (status === "new" || status === null || status === "null") {
         update.lines = invoiceLines;
         update.shipping = $("fragt").value.replace(/[^-0-9,]/g, "").replace(/,/, ".");
         update.amount = invoiceAmount;
@@ -255,12 +255,12 @@ function sendReminder_r(data) {
 }
 
 function save_r(date) {
-    if (date.status != status || date.type == "lock" || date.type == "cancel" || date.type == "giro" ||
+    if (date.status !== status || date.type == "lock" || date.type == "cancel" || date.type == "giro" ||
         date.type == "cash") {
         window.location.reload();
     }
 
-    if (date.status != "new" && $("note").value) {
+    if (date.status !== "new" && $("note").value) {
         $$(".note")[0].innerHTML += "<br />" + htmlEncode($("note").value);
         $("note").value = "";
     }
