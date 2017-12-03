@@ -198,6 +198,9 @@ class UploadHandler
     /**
      * Check if the image is expected to take more memory then we have avalible.
      *
+     * @todo substract current usage
+     * @todo reestimate limits
+     *
      * @param ImageService $image
      *
      * @throws InvalidInput If we don't have the needed memory avalibe
@@ -206,7 +209,7 @@ class UploadHandler
      */
     private function checkMemorry(ImageService $image): void
     {
-        $memoryLimit = $this->fileService->returnBytes(ini_get('memory_limit')) - 270336; // Estimated overhead, TODO substract current usage
+        $memoryLimit = $this->fileService->returnBytes(ini_get('memory_limit')) - 270336;
         if ($image->getWidth() * $image->getHeight() > $memoryLimit / 10) {
             throw new InvalidInput(_('Image is to large to be processed.'));
         }

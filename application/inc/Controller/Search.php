@@ -141,6 +141,8 @@ class Search extends Base
     /**
      * Search for pages and generate a list or redirect if only one was found.
      *
+     * @todo search in keywords
+     *
      * @param string $searchString
      * @param int    $brandId
      * @param string $varenr
@@ -188,7 +190,6 @@ class Search extends Base
         Render::addLoadedTable('list_rows');
         Render::addLoadedTable('lists');
         Render::addLoadedTable('bind');
-        //TODO match on keywords
         $columns = [];
         foreach (db()->fetchArray('SHOW COLUMNS FROM sider') as $column) {
             $columns[] = $column['Field'];

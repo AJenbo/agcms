@@ -142,6 +142,8 @@ class Epayment
     /**
      * Confirm the transation and draw the amount from the users account.
      *
+     * @todo support multiple partial captures
+     *
      * @param int|null $amount The amount to draw from the customers account
      *
      * @return bool
@@ -151,7 +153,7 @@ class Epayment
         $amount = $amount ?? $this->amount;
 
         if ($this->amountCaptured) {
-            return true; // TODO can we not capture multiple times, should substract it form $amount?
+            return true;
         }
 
         if ($this->amount < $amount || !$this->authorized) {

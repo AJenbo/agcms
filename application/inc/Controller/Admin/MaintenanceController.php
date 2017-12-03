@@ -283,6 +283,8 @@ class MaintenanceController extends AbstractAdminController
     /**
      * Get list of bad folder names.
      *
+     * @todo only repport one error per folder
+     *
      * @return JsonResponse
      */
     public function badFolderNames(): JsonResponse
@@ -303,7 +305,6 @@ class MaintenanceController extends AbstractAdminController
                 count($errors)
             );
             $html .= '<br /><b>' . sprintf($msg, count($errors)) . '</b><br /><a onclick="explorer(\'\',\'\');">';
-            //TODO only repport one error per folder
             foreach ($errors as $value) {
                 $html .= $value['path'] . '<br />';
             }

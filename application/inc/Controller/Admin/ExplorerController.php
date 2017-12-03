@@ -83,6 +83,8 @@ class ExplorerController extends AbstractAdminController
     /**
      * Display a list of files in the selected folder.
      *
+     * @todo only output json, let fronend generate html and init objects
+     *
      * @param Request $request
      *
      * @return JsonResponse
@@ -111,7 +113,6 @@ class ExplorerController extends AbstractAdminController
             }
 
             $html .= $this->fileService->filehtml($file, $returnType);
-            //TODO reduce net to javascript
             $javascript .= $this->fileService->filejavascript($file);
         }
 
@@ -351,6 +352,8 @@ class ExplorerController extends AbstractAdminController
     /**
      * Update image description.
      *
+     * @todo make db fixer check for missing alt="" in <img>
+     *
      * @param Request $request
      * @param int     $id
      *
@@ -368,8 +371,6 @@ class ExplorerController extends AbstractAdminController
 
         $description = $request->request->get('description', '');
         $file->setDescription($description)->save();
-
-        // TODO make db fixer check for missing alt="" in <img>
 
         foreach ([Page::class, CustomPage::class, Requirement::class, Newsletter::class] as $className) {
             /** @var (Page|CustomPage|Requirement|Newsletter)[] */
@@ -495,8 +496,6 @@ class ExplorerController extends AbstractAdminController
 
         return new JsonResponse($data);
     }
-
-    //TODO if force, refresh folder or we might have duplicates displaying in the folder.
 
     /**
      * Rename or relocate file.

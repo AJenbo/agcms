@@ -461,6 +461,7 @@ function insertThumbnail(id) {
     window.close();
 }
 
+// TODO if force, refresh folder or we might have duplicates displaying in the folder.
 function renamefile(id) {
     document.getElementById("navn" + id + "form").style.display = "none";
     document.getElementById("navn" + id + "div").style.display = "";
