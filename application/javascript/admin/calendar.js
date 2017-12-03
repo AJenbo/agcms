@@ -9,7 +9,7 @@ var A_TCALDEF = {
 	'yearscroll': true, // show year scroller
 	'weekstart': 1, // first day of week: 0-Su or 1-Mo
 	'centyear'  : 70, // 2 digit years less than 'centyear' are in 20xx, othewise in 19xx.
-	'imgpath' : 'images/' // directory with calendar images
+	'imgpath' : '/theme/default/images/admin/' // directory with calendar images
 }
 // date parsing function
 function f_tcalParseDate (s_date) {
