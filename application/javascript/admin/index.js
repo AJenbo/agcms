@@ -292,15 +292,16 @@ function makeNewList_r(data) {
 var contactCountRequest;
 function countEmailTo() {
     $("loading").style.visibility = "";
-    xHttp.cancel(contactCountRequest);
+    var query = "";
     var interestObjs = $("interests").getElementsByTagName("input");
-    var interests = [];
     for (var i = 0; i < interestObjs.length; i++) {
         if (interestObjs[i].checked) {
-            interests.push(interestObjs[i].value);
+            query = "interests[]=" + encodeURIComponent(interestObjs[i].value) + "&";
         }
     }
-    contactCountRequest = x_countEmailTo(interests, countEmailTo_r)
+
+    xHttp.cancel(contactCountRequest);
+    contactCountRequest = xHttp.request("/admin/addressbook/count/?" + query, countEmailTo_r);
 }
 
 function countEmailTo_r(data) {
@@ -308,25 +309,35 @@ function countEmailTo_r(data) {
         return;
     }
 
-    $("mailToCount").innerHTML = data;
+    $("mailToCount").innerText = data.count;
 }
 
-function saveEmail() {
+function saveEmail(callback = null, send = false) {
     $("loading").style.visibility = "";
-    var html = CKEDITOR.instances.text.getData();
+
+    var data = {
+        "from": $("from").value,
+        "interests": [],
+        "subject": $("subject").value,
+        "html": CKEDITOR.instances.text.getData(),
+    };
+
     var interestObjs = $("interests").getElementsByTagName("input");
-    var interests = "";
     for (var i = 0; i < interestObjs.length; i++) {
         if (interestObjs[i].checked) {
-            if (interests != "") {
-                interests += "<";
-            }
-            interests += interestObjs[i].value;
+            data.interests.push(interestObjs[i].value);
         }
     }
-    var id = $("id").value;
-    id = id ? id : null;
-    x_saveEmail($("from").value, interests, $("subject").value, html, id, genericCallback);
+
+    var id = parseInt($("id").value) || null;
+    if (id) {
+        callback = callback || genericCallback;
+        data.send = send;
+        xHttp.request("/admin/newsletters/" + id + "/", callback, "PUT", data);
+        return;
+    }
+
+    xHttp.request("/admin/newsletters/", sendEmail_r, "POST", data);
 }
 
 function updateContact(id) {
@@ -385,26 +396,16 @@ function sendEmail() {
         alert("Du skal skrive et tekst!");
         return false;
     }
-    var interestObjs = $("interests").getElementsByTagName("input");
-    var interests = "";
-    for (var i = 0; i < interestObjs.length; i++) {
-        if (interestObjs[i].checked) {
-            if (interests != "") {
-                interests += "<";
-            }
-            interests += interestObjs[i].value;
-        }
-    }
-    x_sendEmail($("id").value, $("from").value, interests, $("subject").value, html, sendEmail_r);
+    saveEmail(sendEmail_r, true);
+    return false;
 }
 
 function sendEmail_r(data) {
     if (!genericCallback(data)) {
-        $("loading").style.visibility = "hidden";
         return;
     }
 
-    location.href = "/admin/?side=emaillist";
+    location.href = "/admin/newsletters/";
 }
 
 function deleteuser(id, name) {

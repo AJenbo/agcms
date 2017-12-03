@@ -24,7 +24,7 @@ var xHttp = {
                 return;
             }
 
-            callback(x.response || {});
+            callback(x.response);
         };
 
         x.open(method, uri);

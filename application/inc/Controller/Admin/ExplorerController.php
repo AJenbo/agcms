@@ -4,6 +4,7 @@ use AGCMS\Config;
 use AGCMS\Entity\CustomPage;
 use AGCMS\Entity\File;
 use AGCMS\Entity\InterfaceRichText;
+use AGCMS\Entity\Newsletter;
 use AGCMS\Entity\Page;
 use AGCMS\Entity\Requirement;
 use AGCMS\Exception\Exception;
@@ -370,8 +371,8 @@ class ExplorerController extends AbstractAdminController
 
         // TODO make db fixer check for missing alt="" in <img>
 
-        foreach ([Page::class, CustomPage::class, Requirement::class] as $className) {
-            /** @var (Page|CustomPage|Requirement)[] */
+        foreach ([Page::class, CustomPage::class, Requirement::class, Newsletter::class] as $className) {
+            /** @var (Page|CustomPage|Requirement|Newsletter)[] */
             $richTexts = ORM::getByQuery(
                 $className,
                 'SELECT * FROM `' . $className::TABLE_NAME

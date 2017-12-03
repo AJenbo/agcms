@@ -25,7 +25,7 @@ function explorer(returntype, returnid) {
 
 function genericCallback(data) {
     $("loading").style.visibility = "hidden";
-    if (data.error) {
+    if (data === null || data.error) {
         return false;
     }
 

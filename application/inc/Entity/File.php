@@ -262,10 +262,11 @@ class File extends AbstractEntity
     {
         $newPathEsc = db()->esc($newPath);
         $pathEsc = db()->esc($path);
-        db()->query("UPDATE sider    SET text = REPLACE(text, '=\"" . $pathEsc . "\"', '=\"" . $newPathEsc . "\"')");
-        db()->query("UPDATE template SET text = REPLACE(text, '=\"" . $pathEsc . "\"', '=\"" . $newPathEsc . "\"')");
-        db()->query("UPDATE special  SET text = REPLACE(text, '=\"" . $pathEsc . "\"', '=\"" . $newPathEsc . "\"')");
-        db()->query("UPDATE krav     SET text = REPLACE(text, '=\"" . $pathEsc . "\"', '=\"" . $newPathEsc . "\"')");
+        db()->query("UPDATE sider     SET text = REPLACE(text, '=\"" . $pathEsc . "\"', '=\"" . $newPathEsc . "\"')");
+        db()->query("UPDATE template  SET text = REPLACE(text, '=\"" . $pathEsc . "\"', '=\"" . $newPathEsc . "\"')");
+        db()->query("UPDATE special   SET text = REPLACE(text, '=\"" . $pathEsc . "\"', '=\"" . $newPathEsc . "\"')");
+        db()->query("UPDATE krav      SET text = REPLACE(text, '=\"" . $pathEsc . "\"', '=\"" . $newPathEsc . "\"')");
+        db()->query("UPDATE newsmails SET text = REPLACE(text, '=\"" . $pathEsc . "\"', '=\"" . $newPathEsc . "\"')");
     }
 
     /**
@@ -279,33 +280,24 @@ class File extends AbstractEntity
     {
         $escapedPath = db()->esc($this->path);
 
-        if ($onlyCheckHtml) {
-            return (bool) db()->fetchOne(
-                "
-                (SELECT id FROM `sider` WHERE `text` LIKE '%=\"$escapedPath\"%' LIMIT 1)
-                UNION (SELECT id FROM `template` WHERE `text` LIKE '%=\"$escapedPath\"%' LIMIT 1)
-                UNION (SELECT id FROM `special` WHERE `text` LIKE '%=\"$escapedPath\"%' LIMIT 1)
-                UNION (SELECT id FROM `krav`    WHERE `text` LIKE '%=\"$escapedPath\"%' LIMIT 1)
-                "
-            );
+        $sql = "
+              (SELECT id FROM `sider`     WHERE `text` LIKE '%=\"$escapedPath\"%' LIMIT 1)
+        UNION (SELECT id FROM `template`  WHERE `text` LIKE '%=\"$escapedPath\"%' LIMIT 1)
+        UNION (SELECT id FROM `special`   WHERE `text` LIKE '%=\"$escapedPath\"%' LIMIT 1)
+        UNION (SELECT id FROM `krav`      WHERE `text` LIKE '%=\"$escapedPath\"%' LIMIT 1)
+        UNION (SELECT id FROM `newsmails` WHERE `text` LIKE '%=\"$escapedPath\"%' LIMIT 1)
+        ";
+
+        if (!$onlyCheckHtml) {
+            $sql .= '
+            UNION (SELECT id FROM `sider`    WHERE `icon_id` = ' . $this->getId() . " LIMIT 1)
+            UNION (SELECT id FROM `template` WHERE `icon_id` = " . $this->getId() . " LIMIT 1)
+            UNION (SELECT id FROM `maerke`   WHERE `icon_id` = " . $this->getId() . ' LIMIT 1)
+            UNION (SELECT id FROM `kat`      WHERE `icon_id` = ' . $this->getId() . ' LIMIT 1)
+            '
         }
 
-        return (bool) db()->fetchOne(
-            '
-            (
-                SELECT id FROM `sider`
-                WHERE `icon_id` = ' . $this->getId() . " OR `text` LIKE '%=\"$escapedPath\"%' LIMIT 1
-            )
-            UNION (
-                SELECT id FROM `template`
-                WHERE `icon_id` = " . $this->getId() . " OR `text` LIKE '%=\"$escapedPath\"%' LIMIT 1
-            )
-            UNION (SELECT id FROM `special` WHERE `text` LIKE '%=\"$escapedPath\"%' LIMIT 1)
-            UNION (SELECT id FROM `krav`    WHERE `text` LIKE '%=\"$escapedPath\"%' LIMIT 1)
-            UNION (SELECT id FROM `maerke`  WHERE `icon_id`  = " . $this->getId() . ' LIMIT 1)
-            UNION (SELECT id FROM `kat`     WHERE `icon_id` = ' . $this->getId() . ' LIMIT 1)
-            '
-        );
+        return (bool) db()->fetchOne($sql);
     }
 
     /**

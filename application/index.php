@@ -10,6 +10,7 @@ use AGCMS\Controller\Admin\CustomPageController;
 use AGCMS\Controller\Admin\ExplorerController;
 use AGCMS\Controller\Admin\InvoiceController;
 use AGCMS\Controller\Admin\MaintenanceController;
+use AGCMS\Controller\Admin\NewsletterController;
 use AGCMS\Controller\Admin\PageController;
 use AGCMS\Controller\Admin\RequirementController;
 use AGCMS\Controller\Admin\SiteTreeController;
@@ -153,6 +154,7 @@ $app->addRoute('DELETE', '/admin/explorer/files/(\d+)/', ExplorerController::cla
 $app->addRoute('GET', '/admin/addressbook/list/', AddressbookController::class, 'index');
 $app->addRoute('GET', '/admin/addressbook/', AddressbookController::class, 'editContact');
 $app->addRoute('GET', '/admin/addressbook/validEmail/', AddressbookController::class, 'isValidEmail');
+$app->addRoute('GET', '/admin/addressbook/count/', NewsletterController::class, 'countRecipients');
 // Addressbook CRUD
 $app->addRoute('POST', '/admin/addressbook/', AddressbookController::class, 'create');
 $app->addRoute('GET', '/admin/addressbook/(\d+)/', AddressbookController::class, 'editContact');
@@ -192,5 +194,12 @@ $app->addRoute('GET', '/admin/invoices/new/', InvoiceController::class, 'invoice
 $app->addRoute('POST', '/admin/invoices/', InvoiceController::class, 'create');
 $app->addRoute('GET', '/admin/invoices/(\d+)/', InvoiceController::class, 'invoice');
 $app->addRoute('PUT', '/admin/invoices/(\d+)/', InvoiceController::class, 'update');
+// Newsletter
+$app->addRoute('GET', '/admin/newsletters/', NewsletterController::class, 'index');
+$app->addRoute('GET', '/admin/newsletters/new/', NewsletterController::class, 'editNewsletter');
+// Newsletter CRU
+$app->addRoute('POST', '/admin/newsletters/', NewsletterController::class, 'create');
+$app->addRoute('GET', '/admin/newsletters/(\d+)/', NewsletterController::class, 'editNewsletter');
+$app->addRoute('PUT', '/admin/newsletters/(\d+)/', NewsletterController::class, 'update');
 
 $app->run(Request::createFromGlobals());
