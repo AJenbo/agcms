@@ -292,9 +292,11 @@ class MaintenanceController extends AbstractAdminController
     /**
      * Endpoint for getting system usage.
      *
+     * @param Request $request
+     *
      * @return JsonResponse
      */
-    public function usage(): JsonResponse
+    public function usage(Request $request): JsonResponse
     {
         Render::sendCacheHeader($request, time()); // getDbSize isn't cachable
         return new JsonResponse([
