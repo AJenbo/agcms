@@ -2,6 +2,7 @@
 
 use AGCMS\Config;
 use AGCMS\Entity\Email;
+use AGCMS\Exception\InvalidInput;
 use AGCMS\Render;
 use AGCMS\Service\EmailService;
 use AGCMS\Service\InvoiceService;
@@ -34,6 +35,9 @@ class Shopping extends Base
     {
         $rawCart = $request->get('cart', '{}');
         $cart = json_decode($rawCart, true);
+        if (!$cart) {
+            throw new InvalidInput(_('Basket data is invalid'));
+        }
 
         $data = $this->basicPageData();
 
@@ -60,6 +64,9 @@ class Shopping extends Base
     {
         $rawCart = $request->get('cart', '{}');
         $cart = json_decode($rawCart, true);
+        if (!$cart) {
+            throw new InvalidInput(_('Basket data is invalid'));
+        }
 
         $invoice = $this->invoiceService->createFromCart($cart);
 
