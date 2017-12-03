@@ -49,16 +49,12 @@ class Feed extends Base
             WHERE bind.kat IN(' . implode(',', $activeCategoryIds) . ')
             '
         );
-        $pages = [];
         $brands = [];
         foreach ($pages as $page) {
-            $pages[] = $page;
-            $brand = $page->getBrand();
-            if ($brand) {
+            if ($brand = $page->getBrand()) {
                 $brands[$brand->getId()] = $brand;
             }
         }
-
         $data = [
             'base_url'     => Config::get('base_url'),
             'categories'   => $activeCategories,
