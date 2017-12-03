@@ -17,7 +17,7 @@
     {% endif %}
     {% if renderable.requirement %}
     <a id="krav" href="{{renderable.requirement.canonicalLink}}" onclick="return openkrav({{renderable.requirement.canonicalLink|json_encode()}})" target="krav">
-        <img src="/images/web/advarsel.gif" alt="" title="" width="54" height="47" /><br />
+        <img src="/theme/arms-gallery.dk/images/advarsel.gif" alt="" title="" width="54" height="47" /><br />
         {{renderable.requirement.title}}
     </a>
     {% endif %}

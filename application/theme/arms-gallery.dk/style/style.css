@@ -98,7 +98,7 @@ input {
 
 #menu {
     width:177px;
-    background-image:url('/images/web/bg.jpg');
+    background-image:url('/theme/arms-gallery.dk/images/bg.jpg');
     height:100%;
     overflow:auto;
     overflow-y:scroll;
@@ -127,7 +127,7 @@ input {
 }
 
 #menu a.main, #menu a.main_active {
-    background-image:url('/images/web/button.gif');
+    background-image:url('/theme/arms-gallery.dk/images/button.gif');
     background-color:#5a5a5a;
     background-repeat:no-repeat;
     background-position:top;
@@ -192,11 +192,11 @@ h1 {
 }
 
 #crumb, #cart {
-    background-image:url('/images/web/bar.gif');
+    background-image:url('/theme/arms-gallery.dk/images/bar.gif');
 }
 
 #submenu {
-    background-image:url('/images/web/bar2.gif');
+    background-image:url('/theme/arms-gallery.dk/images/bar2.gif');
 }
 
 #submenu ul {
@@ -256,7 +256,7 @@ h1 {
     height:83px;
     padding-top:39px;
     padding-left:7px;
-    background-image:url('/images/web/spar.jpg');
+    background-image:url('/theme/arms-gallery.dk/images/spar.jpg');
     font-size:17px;
     font-weight:bold;
     text-align:center;
@@ -285,7 +285,7 @@ h1 {
 #content {
     overflow:auto;
     overflow-y:scroll;
-    background-image:url('/images/web/bg.jpg');
+    background-image:url('/theme/arms-gallery.dk/images/bg.jpg');
     background-position:top;
     position:absolute;
     bottom:57px;

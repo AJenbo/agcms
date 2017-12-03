@@ -3,10 +3,10 @@
     <a href="{{note.canonicalLink}}">{{note.title}}</a>
 </li>
 {% if note.hasVisibleChildren %}
-<img src="/images/web/bar-space.gif" alt="|" title="" class="notmobile" />
+<img src="/theme/default/images/admin/bar-space.gif" alt="|" title="" class="notmobile" />
 {% include 'submenu.html' with {'notes': note.visibleChildren} %}
 {% endif %}
 {% if not loop.last %}
-<img src="/images/web/bar-space.gif" alt="|" title="" class="notmobile" />
+<img src="/theme/default/images/admin/bar-space.gif" alt="|" title="" class="notmobile" />
 {% endif %}
 {% endfor %}
