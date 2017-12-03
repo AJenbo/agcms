@@ -50,8 +50,8 @@ return [
     'mysql_database' => 'agcms',
 
     //Admin options
-    'theme' => 'arms-gallery.dk',
-    'blank_image' => '/theme/default/images/admin/intet-foto.jpg',
+    'theme'       => 'arms-gallery.dk',
+    'blank_image' => '/theme/default/images/intet-foto.jpg',
 
     // Site color settings
     'bgcolor'  => 'FFFFFF',

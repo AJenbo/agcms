@@ -67,7 +67,7 @@ class PageController extends AbstractAdminController
             'page'         => $page,
             'bindings'     => $bindings,
             'accessories'  => $accessories,
-            'blank_image'  => Config::get('blank_image', '/theme/default/images/admin/intet-foto.jpg'),
+            'blank_image'  => Config::get('blank_image', '/theme/default/images/intet-foto.jpg'),
         ] + $this->basicPageData($request);
 
         $content = Render::render('admin/redigerside', $data);

@@ -22,7 +22,7 @@ class BrandController extends AbstractAdminController
     {
         $data = $this->basicPageData($request);
         $data['brands'] = ORM::getByQuery(Brand::class, 'SELECT * FROM `maerke` ORDER BY navn');
-        $data['blank_image'] = Config::get('blank_image', '/theme/default/images/admin/intet-foto.jpg');
+        $data['blank_image'] = Config::get('blank_image', '/theme/default/images/intet-foto.jpg');
         $content = Render::render('admin/maerker', $data);
 
         return new Response($content);
@@ -40,7 +40,7 @@ class BrandController extends AbstractAdminController
     {
         $data = $this->basicPageData($request);
         $data['brand'] = $id ? ORM::getOne(Brand::class, $id) : null;
-        $data['blank_image'] = Config::get('blank_image', '/theme/default/images/admin/intet-foto.jpg');
+        $data['blank_image'] = Config::get('blank_image', '/theme/default/images/intet-foto.jpg');
 
         $content = Render::render('admin/updatemaerke', $data);
 
