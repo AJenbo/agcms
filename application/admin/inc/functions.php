@@ -1,27 +1,32 @@
 <?php
 
 use AGCMS\Config;
+use AGCMS\Entity\File;
+use AGCMS\ORM;
 
 /**
  * Remove enteries for files that do no longer exist.
- *
- * @return string Always empty
  */
-function removeNoneExistingFiles(): string
+function removeNoneExistingFiles()
 {
-    $files = db()->fetchArray('SELECT id, path FROM `files`');
+    /** @var File[] */
+    $files = ORM::getByQuery(File::class, 'SELECT * FROM `files`');
 
-    $missing = [];
-    foreach ($files as $files) {
-        if (!is_file(app()->basePath($files['path']))) {
-            $missing[] = (int) $files['id'];
+    $deleted = 0;
+    $missingFiles = [];
+    foreach ($files as $file) {
+        if (!is_file(app()->basePath($file->getPath()))) {
+            if (!$file->isInUse()) {
+                $file->delete();
+                ++$deleted;
+                continue;
+            }
+
+            $missingFiles[] = $file->getPath();
         }
     }
-    if ($missing) {
-        db()->query('DELETE FROM `files` WHERE `id` IN(' . implode(',', $missing) . ')');
-    }
 
-    return '';
+    return ['missingFiles' => $missingFiles, 'deleted' => $deleted];
 }
 
 function makeNewList(string $navn): array
