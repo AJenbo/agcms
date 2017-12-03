@@ -50,7 +50,7 @@ return [
     'mysql_database' => 'agcms',
 
     //Admin options
-    'theme'       => 'arms-gallery.dk',
+    'theme'       => 'default',
     'blank_image' => '/theme/default/images/intet-foto.jpg',
 
     // Site color settings

@@ -47,28 +47,6 @@
     </p>
     <p class="clearfix">
         Foretrukken betalingsmetode:
-        <select name="paymethod" style="float:right;">
-            <option value="creditcard"{% if payMethod == 'creditcard' %} selected="selected"{% endif %}>Betalingskort</option>
-            <option value="bank"{% if payMethod == 'bank' %} selected="selected"{% endif %}>Bank overførsel</option>
-            <option value="cash"{% if payMethod == 'cash' %} selected="selected"{% endif %}>Kontant</option>
-        </select>
-    </p>
-    <p>
-        Levering:
-        <select style="float:right;" name="delevery">
-            <option value="postal"{% if deleveryMethode == 'postal' %} selected="selected"{% endif %}>Post</option>
-            <option value="pickup"{% if deleveryMethode == 'pickup' %} selected="selected"{% endif %}>Afhent i butikken</option>
-        </select>
-        <small id="shipping"><br />Den nøjagtige forsendelses pris vil blive udregnet når varerne pakkes.</small>
-    </p>
-    <p>
-        Note:<br />
-        <textarea style="width:100%;box-sizing:border-box;" name="note">{{note}}</textarea>
-    </p>
-        {% endif %}
-    </p>
-    <p class="clearfix">
-        Foretrukken betalingsmetode:
         <select id="payMethod" name="payMethod" style="float:right">
             <option value="creditcard"{% if payMethod == 'creditcard' %} selected="selected"{% endif %}>Betalingskort</option>
             <option value="bank"{% if payMethod == 'bank' %} selected="selected"{% endif %}>Bank overførsel</option>

@@ -5,7 +5,7 @@
         {% if menuItem in category.branch %}<h4 id="activmenu">{% endif %}
         <a href="{{menuItem.canonicalLink}}">
             {{menuItem.title}}
-            {% if menuItem.icon %}<img src="{{menuItem.icon}}" alt="" />{% endif %}
+            {% if menuItem.icon %}<img src="{{menuItem.icon.path}}" alt="" />{% endif %}
         </a>
         {% if menuItem in category.branch %}
         </h4>
