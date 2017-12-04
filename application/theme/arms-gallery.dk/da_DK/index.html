@@ -1,19 +1,18 @@
+{% spaceless %}
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
         <title>{{renderable.title}}</title>
         <meta id="viewport" name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-        <link href="/theme/arms-gallery.dk/style/style.css" rel="stylesheet" type="text/css" />
+        <link href="/theme/arms-gallery.dk/style/style.min.css" rel="stylesheet" type="text/css" />
         <meta http-equiv="content-language" content="da" />
         <link rel="alternate" type="application/rss+xml" title="Nyheder i Arms Gallery" href="/feed/rss/" />
         <link title="Arms Gallery" type="application/opensearchdescription+xml" rel="search" href="/opensearch.xml" />
         <link rel="canonical" href="{{renderable.canonicalLink}}" />
         <meta name="Keywords" content="{% for crumb in crumbs %}{{crumb.title}}{% if not loop.last %}, {% endif %}{% endfor %}" />
-        <script type="text/javascript" src="/javascript/xHttp.js"></script>
-        <script type="text/javascript" src="/javascript/javascript.js"></script>
     </head>
-    <body onload="init();">
+    <body>
         <div id="headder">
             <div>
                 <a href="/"><img id="logo" src="/theme/arms-gallery.dk/images/logo.gif" alt="Arms Gallery" width="428" title="" /></a>
@@ -27,9 +26,7 @@
                     <a href="" onclick="this.parentNode.submit(); return false">
                         <img src="/theme/arms-gallery.dk/images/søg.gif" alt="Søg" width="15" height="15" title="Søg" />
                     </a><br />
-                    <a href="/search/" class="note">
-                        Avanceret søgning.
-                    </a>
+                    <a href="/search/" class="note">Avanceret søgning.</a>
                     </span>
                 </form>
                 <svg id="basket" onclick="shoppingCart.open()" xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 30 29.999999">
@@ -39,7 +36,7 @@
                     <ellipse cy="25.643" cx="15.534" rx="1.794" ry="1.74" fill="#333"/>
                     <circle cx="6.423" cy="9.753" r="6.57" fill="#333" stroke="#fff" stroke-width="1.134"/>
                     <text style="line-height:125%" x="6.43" y="14.435" font-size="11" font-family="Sans" fill="#fff">
-                        <tspan id="count" x="6.43" y="14.11" style="text-align:center" text-anchor="middle"> </tspan>
+                        <tspan id="count" x="6.43" y="14.11" style="text-align:center" text-anchor="middle">&nbsp;</tspan>
                     </text>
                 </svg>
             </div>
@@ -85,7 +82,7 @@
                             {{infoPage.html|raw}}
                         </marquee>
                         <div id="footer">
-                            Nybrogade 26 - 30, 1203 København K, <a href="tel:+4533118338">3311 8338</a>, E-mail:
+                            Nybrogade 26 - 30, 1203 København K, <a href="tel:+4533118338">33118338</a>, E-mail:
                             <a href="mailto:Arms Gallery &lt;mail@arms-gallery.dk&gt;"><strong>mail@arms-gallery.dk</strong></a>
                             SE13081387.<br />
                             <span>
@@ -100,8 +97,11 @@
                 </div>
             </div>
         </div>
-        <script type="text/javascript" src="/theme/arms-gallery.dk/javascript/javascript.js"></script>
+        <script type="text/javascript" src="/javascript/xHttp.min.js"></script>
+        <script type="text/javascript" src="/javascript/javascript.min.js"></script>
+        <script type="text/javascript" src="/theme/arms-gallery.dk/javascript/javascript.min.js"></script>
         <script type="text/javascript"><!--
+            init();
             var addthis_config = {"data_use_cookies_ondomain": false, "data_use_cookies": false};
         --></script>
         <script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=armsgallery"></script>
@@ -123,3 +123,4 @@
         --></script>
     </body>
 </html>
+{% endspaceless %}
