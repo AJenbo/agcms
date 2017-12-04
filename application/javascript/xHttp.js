@@ -7,7 +7,10 @@ var xHttp = {
         }
     },
 
-    "request": function(uri, callback = null, method = "GET", data = null) {
+    "request": function(uri, callback, method, data) {
+        callback = callback || null;
+        method = method || "GET";
+        data = data || null;
         var id = xHttp.requests.length;
 
         var x = new window.XMLHttpRequest();
@@ -16,7 +19,7 @@ var xHttp = {
             xHttp.requests[id] = null;
 
             if (x.status < 200 || x.status > 299 || x.response.error) {
-                var message = x.response && x.response.error && x.response.error.message || x.statusText;
+                var message = (x.response && x.response.error && x.response.error.message) || x.statusText;
                 alert("Error: " + message);
             }
 
