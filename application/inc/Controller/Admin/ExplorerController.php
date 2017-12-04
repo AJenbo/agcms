@@ -676,6 +676,10 @@ class ExplorerController extends AbstractAdminController
         $noCache = $request->query->getBoolean('noCache');
 
         $timestamp = filemtime(app()->basePath($path));
+        if (false === $timestamp) {
+            throw new Exception('File not found.', 404);
+        }
+
         $lastModified = DateTime::createFromFormat('U', (string) $timestamp);
 
         if (!$noCache) {
