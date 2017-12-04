@@ -191,6 +191,10 @@ h1 {
     color: #5a5a5a;
 }
 
+#crumb li {
+    padding-right: 4px;
+}
+
 #crumb a:hover {
     color: #000;
 }
