@@ -276,7 +276,7 @@ function countEmailTo() {
     var interestObjs = $("interests").getElementsByTagName("input");
     for (var i = 0; i < interestObjs.length; i++) {
         if (interestObjs[i].checked) {
-            query = "interests[]=" + encodeURIComponent(interestObjs[i].value) + "&";
+            query += "interests[]=" + encodeURIComponent(interestObjs[i].value) + "&";
         }
     }
 
