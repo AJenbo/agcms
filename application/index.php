@@ -57,6 +57,7 @@ $app->addRoute('GET', '/search/results/', Search::class, 'results');
 $app->addRoute('GET', '/order/', Shopping::class, 'basket');
 $app->addRoute('GET', '/order/address/', Shopping::class, 'address');
 $app->addRoute('POST', '/order/send/', Shopping::class, 'send');
+$app->addRoute('GET', '/order/receipt/', Shopping::class, 'receipt');
 // Payment float
 $app->addRoute('GET', '/betaling/', Payment::class, 'index');
 $app->addRoute('GET', '/betaling/(\d+)/([^/]+)/', Payment::class, 'basket');

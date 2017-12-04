@@ -165,6 +165,9 @@ var shoppingCart = {
         var cart = shoppingCart.getCart();
         cart.items = [];
         shoppingCart.setCart(cart);
+        if (typeof shoppingCart.onupdate === "function") {
+            shoppingCart.onupdate();
+        }
     },
     "addItem": function(type, id) {
         var cart = shoppingCart.getCart();

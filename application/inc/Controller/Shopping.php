@@ -33,7 +33,7 @@ class Shopping extends Base
      */
     public function basket(Request $request): Response
     {
-        $rawCart = $request->get('cart', '{}');
+        $rawCart = $request->get('cart', '');
         $cart = json_decode($rawCart, true);
         if (!$cart) {
             throw new InvalidInput(_('Basket data is invalid'));
@@ -62,7 +62,7 @@ class Shopping extends Base
      */
     public function address(Request $request): Response
     {
-        $rawCart = $request->get('cart', '{}');
+        $rawCart = $request->get('cart', '');
         $cart = json_decode($rawCart, true);
         if (!$cart) {
             throw new InvalidInput(_('Basket data is invalid'));
@@ -72,7 +72,7 @@ class Shopping extends Base
 
         $data = $this->basicPageData();
         $data['crumbs'][] = new VolatilePage(_('Shopping list'), '/order/?cart=' . rawurlencode($rawCart));
-        $renderable = new VolatilePage(_('Recipient'), '/order/address/?cart=' . rawurlencode($rawCart));
+        $renderable = new VolatilePage(_('Address'), '/order/address/?cart=' . rawurlencode($rawCart));
         $data['crumbs'][] = $renderable;
         $data['renderable'] = $renderable;
         $data['invoice'] = $invoice;
@@ -95,8 +95,12 @@ class Shopping extends Base
      */
     public function send(Request $request): Response
     {
-        $rawCart = $request->get('cart', '{}');
+        $rawCart = $request->get('cart', '');
         $cart = json_decode($rawCart, true);
+        if (!$cart) {
+            throw new InvalidInput(_('Basket data is invalid'));
+        }
+
         $invoice = $this->invoiceService->createFromCart($cart);
 
         if ($invoice->getInvalid()) {
@@ -133,11 +137,31 @@ class Shopping extends Base
             $email->save();
         }
 
+        $cart['items'] = [];
+        $rawCart = json_encode($cart);
+
+        return $this->redirect($request, '/order/receipt/?cart=' . rawurlencode($rawCart));
+    }
+
+    /**
+     * Show a receipt page.
+     *
+     * @param Request $request
+     *
+     * @return Response
+     */
+    public function receipt(Request $request): Response
+    {
+        $rawCart = $request->get('cart', '');
+
         $data = $this->basicPageData();
 
         $data['crumbs'][] = new VolatilePage(_('Shopping list'), '/order/?cart=' . rawurlencode($rawCart));
-        $data['crumbs'][] = new VolatilePage(_('Recipient'), '/order/address/?cart=' . rawurlencode($rawCart));
-        $data['renderable'] = new VolatilePage(_('Order placed'), '/order/send/');
+        $data['crumbs'][] = new VolatilePage(_('Address'), '/order/address/?cart=' . rawurlencode($rawCart));
+        $renderable = new VolatilePage(_('Recipient'), '/order/receipt/?cart=' . rawurlencode($rawCart));
+        $data['crumbs'][] = $renderable;
+        $data['renderable'] = $renderable;
+        $data['basketRest'] = true;
 
         $content = Render::render('order-form2', $data);
 

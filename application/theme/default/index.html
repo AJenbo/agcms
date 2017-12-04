@@ -12,7 +12,7 @@
         <link rel="canonical" href="{{renderable.canonicalLink}}" />
         <meta name="Keywords" content="{% for crumb in crumbs %}{{crumb.title}}{% if not loop.last %}, {% endif %}{% endfor %}" />
     </head>
-    <body>
+    <body{% if basketRest %} onload="shoppingCart.resetCart()"{% endif %}>
         <div id="wrapper">
             <ul id="crumbs">
                 <li>
