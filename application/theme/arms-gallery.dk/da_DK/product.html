@@ -21,19 +21,28 @@
         {{renderable.requirement.title}}
     </a>
     {% endif %}
-    <p style="text-align:right">
+    {% if renderable.sku or renderable.price > 0 or renderable.brand %}
+    <p vocab="http://schema.org/" typeof="Product" style="text-align:right">
+        {% if renderable.brand %}
+        <meta property="brand" content="{{renderable.brand.title}}" />
+        {% endif %}
         {% if renderable.sku %}
-        <br /><strong>Varenr: {{renderable.sku}}</strong><br />
+        <br /><strong>Varenr: <span property="sku">{{renderable.sku}}</span></strong><br />
         {% endif %}
         {% if not hasProductTable %}
         {% include 'price.html' with {'product': renderable} %}
         {% if renderable.price > 0 %}
+        <span property="offers" typeof="Offer">
+            <meta property="price" content="{{renderable.price|number_format(2)}}" />
+            <meta property="priceCurrency" content="DKK" />
+        </span>
         <a href="" onclick="shoppingCart.addItem('page', {{renderable.id}}); return false">
             <img src="/theme/default/images/cart_add.png" alt="+" title="Tilføj til indkøbshummer" />
         </a>
         {% endif %}
         {% endif %}
     </p>
+    {% endif %}
     {% if renderable.brand %}
     <p align="center" style="clear:both">Se andre produkter af samme mærke</p>
     {% include 'productTiles.html' with {'products': [renderable.brand]} %}

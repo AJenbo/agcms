@@ -11,6 +11,14 @@
         <link title="Arms Gallery" type="application/opensearchdescription+xml" rel="search" href="/opensearch.xml" />
         <link rel="canonical" href="{{renderable.canonicalLink}}" />
         <meta name="Keywords" content="{% for crumb in crumbs %}{{crumb.title}}{% if not loop.last %}, {% endif %}{% endfor %}" />
+        {% if renderable.icon %}
+        <meta property="og:image" content="{{renderable.icon.path}}" />
+        <meta property="og:image:type" content="{{renderable.icon.mime}}" />
+        <meta property="og:image:width" content="{{renderable.icon.width}}" />
+        <meta property="og:image:height" content="{{renderable.icon.height}}" />
+        <meta property="og:image:alt" content="{{renderable.icon.description}}" />
+        {% endif %}
+        {% if renderable.excerpt %}<meta property="og:description" content="{{renderable.excerpt}}" />{% endif %}
     </head>
     <body>
         <div id="headder">
