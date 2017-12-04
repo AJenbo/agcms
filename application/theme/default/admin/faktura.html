@@ -311,7 +311,7 @@
             <select name="land" id="land" onblur="chnageZipCode($('postnr').value, 'land', 'by')" onkeyup="chnageZipCode($('postnr').value, 'land', 'by')" onchange="chnageZipCode($('postnr').value, 'land', 'by')">
                 <option value=""{% if not invoice.country %} selected="selected"{% endif %}></option>
                 {% for code, country in countries %}
-                <option value="{{code}}"{% if invoice.country == code %} selected="selected"{% endif %}>
+                <option value="{{code}}"{% if invoice.country == code or (not invoice and code == 'DK') %} selected="selected"{% endif %}>
                     {{country}}
                 </option>
                 {% endfor %}
@@ -411,7 +411,7 @@
             <select name="postcountry" id="postcountry" onblur="chnageZipCode($('postpostalcode').value, 'postcountry', 'postcity')" onkeyup="chnageZipCode($('postpostalcode').value, 'postcountry', 'postcity')" onchange="chnageZipCode($('postpostalcode').value, 'postcountry', 'postcity')">
                 <option value=""{% if not invoice.shippingCountry %} selected="selected"{% endif %}></option>
                 {% for code, country in countries %}
-                <option value="{{code}}"{% if invoice.shippingCountry == code %} selected="selected"{% endif %}>
+                <option value="{{code}}"{% if invoice.shippingCountry == code or (not invoice and code == 'DK') %} selected="selected"{% endif %}>
                     {{country}}
                 </option>
                 {% endfor %}
@@ -424,7 +424,7 @@
     {% if not invoice or invoice.status == 'new' %}
     <tr>
         <td colspan="2">
-            <input type="checkbox"{% if invoice.hasPreVat %} checked="checked"{% endif %} id="premoms" onkeyup="prisUpdate()" onchange="prisUpdate()" onblur="prisUpdate()" onclick="prisUpdate()" />
+            <input type="checkbox"{% if not invoice or invoice.hasPreVat %} checked="checked"{% endif %} id="premoms" onkeyup="prisUpdate()" onchange="prisUpdate()" onblur="prisUpdate()" onclick="prisUpdate()" />
             <label for="premoms">Entered amount includes VAT</label>
         </td>
     </tr>
@@ -463,8 +463,8 @@
             <td style="text-align:right">
                 {% if not invoice or invoice.status == 'new' %}
                 <select name="momssats" id="momssats" onkeyup="prisUpdate()" onchange="prisUpdate()" onblur="prisUpdate()">
-                    <option value="0.25"{% if invoice.vat == '0.25'%} selected="selected"{% endif %}>25%</option>
-                    <option value="0"{% if not invoice.vat %} selected="selected"{% endif %}>0%</option>
+                    <option value="0.25"{% if not invoice or invoice.vat == '0.25'%} selected="selected"{% endif %}>25%</option>
+                    <option value="0"{% if invoice and not invoice.vat %} selected="selected"{% endif %}>0%</option>
                 </select>
                 {% else %}
                 {{invoice.vat * 100}}%
