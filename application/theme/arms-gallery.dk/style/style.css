@@ -53,6 +53,10 @@ a {
     max-height:15px;
 }
 
+#submenu img {
+    margin:0 2px;
+}
+
 input {
     border-color:#3C3C3C;
     border-style:solid;

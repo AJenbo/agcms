@@ -1,12 +1,11 @@
 {% for note in notes %}
 <li>
     <a href="{{note.canonicalLink}}">{{note.title}}</a>
+    {% if not loop.last or note.hasVisibleChildren %}
+    <img src="/theme/arms-gallery.dk/images/bar-space.gif" alt="|" title="" class="notmobile" />
+    {% endif %}
 </li>
 {% if note.hasVisibleChildren %}
-<img src="/theme/arms-gallery.dk/images/bar-space.gif" alt="|" title="" class="notmobile" />
 {% include 'submenu.html' with {'notes': note.visibleChildren} %}
-{% endif %}
-{% if not loop.last %}
-<img src="/theme/arms-gallery.dk/images/bar-space.gif" alt="|" title="" class="notmobile" />
 {% endif %}
 {% endfor %}
