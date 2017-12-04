@@ -505,7 +505,7 @@ function removeNoneExistingFiles() {
 
     starttime = new Date().getTime();
 
-    $("status").innerHTML = "Removes not existing files from the database";
+    $("status").innerHTML = "Remove missing files from database";
     xHttp.request("/admin/maintenance/files/missing/", removeNoneExistingFiles_r, "DELETE");
 }
 
