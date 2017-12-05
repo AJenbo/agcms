@@ -338,9 +338,7 @@ class Payment extends Base
             return new Response('', 400);
         }
 
-        if (!$invoice->isFinalized() && 'pbsok' !== $invoice->getStatus()) {
-            $this->setPaymentStatus($request, $invoice);
-        }
+        $this->setPaymentStatus($request, $invoice);
 
         return new Response();
     }
@@ -372,6 +370,10 @@ class Payment extends Base
      */
     private function setPaymentStatus(Request $request, Invoice $invoice): void
     {
+        if ($invoice->isFinalized() || 'pbsok' === $invoice->getStatus()) {
+            return;
+        }
+
         $cardType = EpaymentAdminService::getPaymentName($request->get('paymenttype'));
         $internalNote = $this->generateInternalPaymentNote($request);
 
