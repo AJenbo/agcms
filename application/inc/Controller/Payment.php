@@ -359,11 +359,7 @@ class Payment extends Base
 
         $eKey = md5(implode('', $params) . Config::get('pbspassword'));
 
-        if ($eKey !== $request->get('hash')) {
-            return true;
-        }
-
-        return false;
+        return $eKey === $request->get('hash');
     }
 
     /**
