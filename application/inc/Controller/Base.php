@@ -1,5 +1,6 @@
 <?php namespace AGCMS\Controller;
 
+use AGCMS\Config;
 use AGCMS\Entity\Category;
 use AGCMS\Entity\CustomPage;
 use AGCMS\Exception\Exception;
@@ -61,10 +62,19 @@ class Base extends AbstractController
         }
 
         return [
-            'menu'     => $category->getVisibleChildren(),
-            'infoPage' => ORM::getOne(CustomPage::class, 2),
-            'crumbs'   => [$category],
-            'category' => $category,
+            'menu'           => $category->getVisibleChildren(),
+            'infoPage'       => ORM::getOne(CustomPage::class, 2),
+            'crumbs'         => [$category],
+            'category'       => $category,
+            'companyContact' => [
+                'siteName' => Config::get('site_name'),
+                'address'  => Config::get('address'),
+                'postcode' => Config::get('postcode'),
+                'city'     => Config::get('city'),
+                'phone'    => Config::get('phone'),
+                'fax'      => Config::get('fax'),
+                'email'    => first(Config::get('emails'))['address'],
+            ],
         ];
     }
 }
