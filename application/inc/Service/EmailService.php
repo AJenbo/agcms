@@ -20,7 +20,7 @@ class EmailService
         $user = preg_replace('/@.+$/u', '', $email);
         $domain = preg_replace('/^.+?@/u', '', $email);
         if (function_exists('idn_to_ascii')) {
-            $domain = idn_to_ascii($domain);
+            $domain = idn_to_ascii($domain, 0, INTL_IDNA_VARIANT_UTS46);
         }
 
         if (filter_var($user . '@' . $domain, FILTER_VALIDATE_EMAIL) && $this->checkMx($domain)) {
