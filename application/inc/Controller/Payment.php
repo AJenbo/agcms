@@ -112,6 +112,7 @@ class Payment extends Base
         $data['invoice'] = $invoice;
         $data['invalid'] = $invoice->getInvalid();
         $data['action'] = $invoice->getLink() . 'address/';
+        $data['actionLable'] = _('Continue');
 
         $content = Render::render('order-form1', $data);
 

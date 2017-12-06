@@ -80,6 +80,7 @@ class Shopping extends Base
         $data['countries'] = include app()->basePath('/inc/countries.php');
         $data['newsletter'] = $cart['newsletter'] ?? false;
         $data['onsubmit'] = 'shoppingCart.sendCart(); return false';
+        $data['actionLable'] = _('Send order');
 
         $content = Render::render('order-form1', $data);
 
