@@ -4,6 +4,7 @@ use DateTime;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Twig_Environment;
+use Twig_Extensions_Extension_I18n;
 use Twig_Loader_Filesystem;
 
 class Render
@@ -151,6 +152,7 @@ class Render
         if ('develop' === Config::get('enviroment', 'develop')) {
             $twig->enableDebug();
         }
+        $twig->addExtension(new Twig_Extensions_Extension_I18n());
 
         return $twig->render($template . '.html', $data);
     }
