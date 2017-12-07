@@ -66,15 +66,12 @@ class Base extends AbstractController
             'infoPage'       => ORM::getOne(CustomPage::class, 2),
             'crumbs'         => [$category],
             'category'       => $category,
-            'companyContact' => [
-                'siteName' => Config::get('site_name'),
-                'address'  => Config::get('address'),
-                'postcode' => Config::get('postcode'),
-                'city'     => Config::get('city'),
-                'phone'    => Config::get('phone'),
-                'fax'      => Config::get('fax'),
-                'email'    => first(Config::get('emails'))['address'],
-            ],
+            'companyName'    => Config::get('site_name'),
+            'companyAddress' => Config::get('address'),
+            'companyZipCode' => Config::get('postcode'),
+            'companyCity'    => Config::get('city'),
+            'companyPhone'   => Config::get('phone'),
+            'companyEmail'   => first(Config::get('emails'))['address'],
         ];
     }
 }

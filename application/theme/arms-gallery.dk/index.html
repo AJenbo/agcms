@@ -6,9 +6,9 @@
         <title>{{renderable.title}}</title>
         <meta id="viewport" name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
         <link href="/theme/arms-gallery.dk/style/style.min.css" rel="stylesheet" type="text/css" />
-        <meta http-equiv="content-language" content="da" />
-        <link rel="alternate" type="application/rss+xml" title="Nyheder i Arms Gallery" href="/feed/rss/" />
-        <link title="Arms Gallery" type="application/opensearchdescription+xml" rel="search" href="/opensearch.xml" />
+        <meta http-equiv="content-language" content="{{'en'|trans}}" />
+        <link rel="alternate" type="application/rss+xml" title="{{'Nyheder i %companyName%'|trans({'%name%': companyName})}}" href="/feed/rss/" />
+        <link title="{{companyName}}" type="application/opensearchdescription+xml" rel="search" href="/opensearch.xml" />
         <link rel="canonical" href="{{renderable.canonicalLink}}" />
         <meta name="Keywords" content="{% for crumb in crumbs %}{{crumb.title}}{% if not loop.last %}, {% endif %}{% endfor %}" />
         {% if renderable.icon %}
@@ -23,7 +23,7 @@
     <body>
         <div id="headder">
             <div>
-                <a href="/"><img id="logo" src="/theme/arms-gallery.dk/images/logo.gif" alt="Arms Gallery" width="428" title="" /></a>
+                <a href="/"><img id="logo" src="/theme/arms-gallery.dk/images/logo.gif" alt="{{companyName}}" width="428" title="" /></a>
                 <img src="/theme/default/images/menu.svg" onclick="$('menu').style.left='0'" id="burger" width="30" height="30" />
                 <form action="/search/results/" method="get">
                     <input name="q" value="{{search}}" placeholder="Søg" id="searchbox" /><input name="sogikke" type="hidden" />
@@ -31,10 +31,10 @@
                     <input name="maxpris" type="hidden" />
                     <input name="maerke" type="hidden" value="0" />
                     <span class="notmobile">
-                    <a href="" onclick="this.parentNode.submit(); return false">
-                        <img src="/theme/arms-gallery.dk/images/søg.gif" alt="Søg" width="15" height="15" title="Søg" />
-                    </a><br />
-                    <a href="/search/" class="note">Avanceret søgning.</a>
+                        <a href="" onclick="this.parentNode.submit(); return false">
+                            <img src="/theme/arms-gallery.dk/images/søg.gif" alt="Søg" width="15" height="15" title="Søg" />
+                        </a><br />
+                        <a href="/search/" class="note">{{'Advanced search'|trans}}</a>
                     </span>
                 </form>
                 <svg id="basket" onclick="shoppingCart.open()" xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 30 29.999999">
@@ -62,7 +62,7 @@
         <div class="bar" id="cart">
             <ul>
                 <li>
-                    <a href="" onclick="shoppingCart.open(); return false"><img src="/theme/default/images/cart.png" alt="" /> Indkøbsliste <span id="cartCount"></span></a>
+                    <a href="" onclick="shoppingCart.open(); return false"><img src="/theme/default/images/cart.png" alt="" /> {{'Shopping List'|trans}} <span id="cartCount"></span></a>
                 </li>
             </ul>
         </div>
@@ -90,10 +90,10 @@
                             {{infoPage.html|raw}}
                         </marquee>
                         <div id="footer">
-                            {{companyContact.address}}, {{companyContact.postcode}} {{companyContact.city}}, Tlf. <a href="tel:{{companyContact.phone}}">{{companyContact.phone}}</a>, <a href="mailto:{{companyContact.siteName}} &lt;{{companyContact.email}}&gt;"><strong>{{companyContact.email}}</strong></a> SE13081387.<br />
+                            {{companyAddress}}, {{companyZipCode}} {{companyCity}}, {{'Tlf'|trans}} <a href="tel:{{companyPhone}}">{{companyPhone}}</a>, <a href="mailto:{{companyName}} &lt;{{companyEmail}}&gt;"><strong>{{companyEmail}}</strong></a> SE13081387.<br />
                             <span>
-                                Priser er inkl. Moms. Der tages forbehold for:<br />
-                                Udsolgte varer, trykfejl og prisændringer, samt forhold vi ikke er herre over.
+                                {{'Prices are VAT inclusive. Subject to reservations:'|trans}}<br />
+                                {{'Sold items, printing errors and price changes, as well as force majeure.'|trans}}
                             </span>
                         </div>
                     </div>

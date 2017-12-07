@@ -135,12 +135,12 @@ class Render
     {
         $templatePath = app()->basePath('/theme/');
         $loader = new Twig_Loader_Filesystem('default/', $templatePath);
-        if ('en_US' !== Config::get('locale', 'en_US')) {
+        if ('C' !== Config::get('locale', 'C')) {
             $loader->prependPath('default/' . Config::get('locale') . '/');
         }
         if (Config::get('theme')) {
             $loader->prependPath(Config::get('theme') . '/');
-            if ('en_US' !== Config::get('locale', 'en_US')) {
+            if ('C' !== Config::get('locale', 'C')) {
                 $loader->prependPath(Config::get('theme') . '/' . Config::get('locale') . '/');
             }
         }
