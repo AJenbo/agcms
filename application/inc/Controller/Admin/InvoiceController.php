@@ -122,7 +122,8 @@ class InvoiceController extends AbstractAdminController
             'years'         => range($oldest, date('Y')),
             'statusOptions' => [
                 ''         => _('All'),
-                'inactiv'  => _('Completed'),
+                'activ'    => _('Current'),
+                'inactiv'  => _('Finalized'),
                 'new'      => _('New'),
                 'locked'   => _('Locked'),
                 'pbsok'    => _('Ready'),
