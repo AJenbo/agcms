@@ -32,7 +32,7 @@
         {% endif %}
         {% if renderable.price > 0 %}
         <span property="offers" typeof="Offer">
-            <meta property="price" content="{{renderable.price|number_format(2)}}" />
+            <meta property="price" content="{{renderable.price|number_format(2, '.', '')}}" />
             <meta property="priceCurrency" content="{{'USD'|trans}}" />
         </span>
         {% if not hasProductTable %}
