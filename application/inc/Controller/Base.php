@@ -72,6 +72,7 @@ class Base extends AbstractController
             'companyCity'    => Config::get('city'),
             'companyPhone'   => Config::get('phone'),
             'companyEmail'   => first(Config::get('emails'))['address'],
+            'localeconv'     => localeconv(),
         ];
     }
 }

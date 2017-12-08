@@ -5,21 +5,24 @@
         <title></title>
     </head>
     <body>
-        <p>Thank you for your order.</p>
-        <p>your online invoice no {{invoice.id}} is approved and ready for shipment once the payment is complete.</p>
-        <p>Payment with credit card, is performed by clicking on the link below.</p>
+        <p>{{'Thank you for your order.'|trans}}</p>
+        <p>{{'Order no %invoiceId% is approved and will be shipped once payment is complete.'|trans({'invoiceId': invoice.id})}}</p>
         <p>
-            Link to payment:<br />
+            {{'Link to payment:'|trans}}<br />
             <a href="{{invoice.link}}">{{invoice.link}}</a>
         </p>
-        <p>Do you have questions about your order, do not hesitate to contact us.</p>
-        <p>Sincerely,</p>
+        <p>
+            {{'Do not hesitate to contact us if you have questions about your order.'|trans}}
+            <br /><br />
+        </p>
+        <p>{{'Sincerely,'|trans}}</p>
         <p>
             {{invoice.clerk}}<br />
-            <br />{{siteName}}
-            <br />{{address}}
+            {{siteName}}<br />
+            {{address}}<br />
             {{postcode}} {{city}}<br />
-            Tel. {{phone}}
+            {{'Tel'|trans}} {{phone}}<br />
+            <a href="mailto:{{invoice.department}}">{{invoice.department}}</a>
         </p>
     </body>
 </html>

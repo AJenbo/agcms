@@ -15,18 +15,18 @@
     </head>
     <body>
         {% block info %}
-        <p>The customer has approved the payment and the following order must be shipped to the customer.</p>
-        <p>Remember to 'expedite' the payment when the product is sent (The payment is first transferred from the customer's account once we hit 'Expedite').</p>
+        <p>{{'The customer has approved the payment and the following order must be shipped to the customer.'|trans}}</p>
+        <p>{{'Remember to 'expedite' the payment when the product is sent (The payment is first transferred from the customer's account once we hit 'Expedite')'|trans}}.</p>
         {% endblock %}
-        <p>Click <a href="{{invoice.adminLink}}">here</a> to open the invoice page.</p>
+        <p>{{'Click '|trans}}<a href="{{invoice.adminLink}}">{{'here'|trans}}</a>{{' to open the invoice page.'|trans}}</p>
         <p>
             <a href="mailto:{{invoice.email}}">{{invoice.email}}</a><br />
-            Mobile: {{invoice.phone2}}<br />
-            Phone: {{invoice.phone1}}<br />
-            Delivery phone: {{invoice.shippingPhone}}
+            {{'Mobile:'|trans}} {{invoice.phone2}}<br />
+            {{'Phone:'|trans}} {{invoice.phone1}}<br />
+            {{'Delivery phone:'|trans}} {{invoice.shippingPhone}}
         </p>
         {% include 'partial-payment-invoice.html' %}
-        <p>Sincerely, the computer</p>
+        <p>{{'Sincerely, the computer'|trans}}</p>
     </body>
 </html>
 

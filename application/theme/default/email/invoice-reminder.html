@@ -8,37 +8,32 @@
         <hr />
         <p style="text-align:center;">{{siteName}}</p>
         <hr />
-        <p>This is an automatically generated email reminder:</p>
+        <p>{{'This is an automatically generated email reminder:'|trans}}</p>
         <p>
-            Your goods are ready for delivery / pick-up - but we have not yet<br />
-            registred, that the payment can be accepted - therefore we are<br />
-            sending a you a new link to the credit card invoice system<br />
+            {{'Your goods are ready for delivery / pick-up - but we have not yet registred, that the payment can be accepted - therefore we are sending a you a new link to the credit card invoice system'|trans}}
             <br />
             <a href="{{invoice.link}}">{{invoice.link}}</a><br />
         </p>
         <p>
-            When entering your credit card information, - errors may occure<br />
-            preventing us from noticing the payment - thus causing unnecessary<br />
-            delays - therefore we include the following notice.
+            {{'When entering your credit card information, - errors may occure preventing us from noticing the payment - thus causing unnecessary delays - therefore we include the following notice.'|trans}}
         </p>
         <p>
-            It is very helpful and results in a shorter expedite time - if you could<br />
-            please send us an email when the payment is made.
+            {{'It is very helpful and results in a shorter expedite time - if you could please send us an email when the payment is made.'|trans}}
         </p>
         <p>
-             We would also welcome an email or phone call - if you:<br />
-             * Experiencing problems with our payment system<br />
-             * Wish to cancel the order<br />
-             * Wish to change the order<br />
-             * Wish to pay by other means - for example, by transfering the amount via home banking.
+             {{'We would also welcome an email or phone call - if you:'|trans}}<br />
+             {{'* Experiencing problems with our payment system'|trans}}<br />
+             {{'* Wish to cancel the order'|trans}}<br />
+             {{'* Wish to change the order'|trans}}<br />
+             {{'* Wish to pay by other means - for example, by transfering the amount via home banking.'|trans}}
         </p>
+        <p>{{'Sincerely,'|trans}}</p>
         <p>
-            Kind regards<br />
-            <br />
+            {{invoice.clerk}}<br />
             {{siteName}}<br />
             {{address}}<br />
             {{postcode}} {{city}}<br />
-            Tel: {{phone}}<br />
+            {{'Tel'|trans}} {{phone}}<br />
             <a href="mailto:{{invoice.department}}">{{invoice.department}}</a>
         </p>
     </body>

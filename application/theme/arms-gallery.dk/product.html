@@ -33,24 +33,24 @@
         {% if renderable.price > 0 %}
         <span property="offers" typeof="Offer">
             <meta property="price" content="{{renderable.price|number_format(2)}}" />
-            <meta property="priceCurrency" content="DKK" />
+            <meta property="priceCurrency" content="{{'USD'|trans}}" />
         </span>
         {% if not hasProductTable %}
         {% include 'price.html' with {'product': renderable} %}
         <a href="" onclick="shoppingCart.addItem('page', {{renderable.id}}); return false">
-            <img src="/theme/default/images/cart_add.png" alt="+" title="Tilføj til indkøbshummer" />
+            <img src="/theme/default/images/cart_add.png" alt="+" title="{{'Add to shopping cart'|trans}}" />
         </a>
         {% endif %}
         {% endif %}
     </p>
     {% endif %}
     {% if renderable.brand %}
-    <p align="center" style="clear:both">Se andre produkter af samme mærke</p>
+    <p align="center" style="clear:both">{{'View other product from the same brand'|trans}}</p>
     {% include 'productTiles.html' with {'products': [renderable.brand]} %}
     {% endif %}
 </div>
 {% if renderable.activeAccessories %}
-<p align="center" style="clear:both">Tilbehør</p>
+<p align="center" style="clear:both">{{'Accessories'|trans}}</p>
 {% include 'productTiles.html' with {'products': renderable.activeAccessories} %}
 {% endif %}
 {% endblock %}

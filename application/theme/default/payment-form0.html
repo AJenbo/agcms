@@ -3,6 +3,6 @@
 {% block content %}
 {% include 'partial-payment-invoice.html' %}
 <form action="/betaling/{{invoice.id}}/{{invoice.checkid}}/address/" method="get">
-    <input style="font-weight:bold;" value="Continue" type="submit">
+    <input style="font-weight:bold;" value="{{'Continue'|trans}}" type="submit">
 </form>
 {% endblock %}

@@ -1,27 +1,27 @@
 {% if product.oldPrice %}
     {% if product.oldPriceType == 1 %}
-        Retail price: <span>
+        {{'Retail price:'|trans}} <span>
     {% elseif product.oldPriceType == 2 %}
-        Should cost: <span>
+        {{'Should cost:'|trans}} <span>
     {% else %}
-        Before: <span class="XPris">
+        {{'Before:'|trans}} <span class="XPris">
     {% endif %}
-    {{product.oldPrice|number_format(2, '.', ',')}}</span>
+    {{product.oldPrice|number_format(2, localeconv.mon_decimal_point, localeconv.mon_thousands_sep)}}</span>
 {% endif %}
 
 {% if product.price %}
     {% if product.priceType == 1 and product.oldPrice %}
-        <span class="NyPris">New price from:
+        <span class="NyPris">{{'New price from:'|trans}}
     {% elseif product.priceType == 2 and product.oldPrice %}
-        <span class="NyPris">Used:
+        <span class="NyPris">{{'Used:'|trans}}
     {% elseif product.priceType == 1 %}
-        Price from: <span class="Pris">
+        {{'Price from:'|trans}} <span class="Pris">
     {% elseif product.priceType == 2 %}
-        Used: <span class="Pris">
+        {{'Used:'|trans}} <span class="Pris">
     {% elseif product.oldPrice %}
-        <span class="NyPris">Now:
+        <span class="NyPris">{{'Now:'|trans}}
     {% else %}
-        Price: <span class="Pris">
+        {{'Price:'|trans}} <span class="Pris">
     {% endif %}
-    {{product.price|number_format(2, '.', ',')}}</span>
+    {{product.price|number_format(2, localeconv.mon_decimal_point, localeconv.mon_thousands_sep)}}</span>
 {% endif %}

@@ -25,25 +25,25 @@
     <body onload="init()">
         <div id="canvas">{% block canvas %}{% endblock %}</div>
         <div id="mainmenu">
-            <a class="menuboxheader" onclick="showhide('Activity');">Handlinger</a>
+            <a class="menuboxheader" onclick="showhide('Activity');">{{'Handlinger'|trans}}</a>
             <ul id="Activity"{% if hide.activity %} style="display:none"{% endif %}>
                 {% block actions %}{% endblock %}
-                <li id="loading" style="cursor:default;"><img src="/theme/default/images/admin/loading.gif" width="16" height="16" alt="Processing" /> Loading</li>
-                <li><a href="/admin/logout"><img src="/theme/default/images/admin/door_in.png" width="16" height="16" alt="" /> Log out</a></li>
+                <li id="loading" style="cursor:default;"><img src="/theme/default/images/admin/loading.gif" width="16" height="16" alt="{{'Processing'|trans}}" /> {{'Loading'|trans}}</li>
+                <li><a href="/admin/logout"><img src="/theme/default/images/admin/door_in.png" width="16" height="16" alt="" /> {{'Log out'|trans}}</a></li>
             </ul>
-            <a class="menuboxheader" onclick="showhide('Indhold');">Indhold</a>
+            <a class="menuboxheader" onclick="showhide('Indhold');">{{'Indhold'|trans}}</a>
             <ul id="Indhold"{% if hide.indhold %} style="display:none"{% endif %}>
-                <li><a href="/admin/page/"><img src="/theme/default/images/admin/page_add.png" width="16" height="16" alt="" /> Create page</a></li>
-                <li><a href="/admin/categories/"><img src="/theme/default/images/admin/folder_add.png" width="16" height="16" alt="" /> Create category</a></li>
-                <li><a href="/admin/sitetree/"><img src="/theme/default/images/admin/book_open.png" width="16" height="16" alt="" /> Overview</a></li>
-                <li><a href="#" onclick="return jumpto()"><img src="/theme/default/images/admin/book_go.png" width="16" height="16" alt="" /> Skip to page</a>
+                <li><a href="/admin/page/"><img src="/theme/default/images/admin/page_add.png" width="16" height="16" alt="" /> {{'Create page'|trans}}</a></li>
+                <li><a href="/admin/categories/"><img src="/theme/default/images/admin/folder_add.png" width="16" height="16" alt="" /> {{'Create category'|trans}}</a></li>
+                <li><a href="/admin/sitetree/"><img src="/theme/default/images/admin/book_open.png" width="16" height="16" alt="" /> {{'Overview'|trans}}</a></li>
+                <li><a href="#" onclick="return jumpto()"><img src="/theme/default/images/admin/book_go.png" width="16" height="16" alt="" /> {{'Skip to page'|trans}}</a>
                 <form onsubmit="jumpto(); return false;" action="" method="get"><input style="width:1px; height:1px; position:absolute; top: -20px; left:-20px;" type="submit" accesskey="g" />
                     <p style="display:inline"><input style="width:30px;" id="jumptoid" name="id" /></p>
                 </form>
                 </li>
                 <li><a href="#" onclick="return sogsearch()">
                         <img src="/theme/default/images/admin/find.png" width="16" height="16" alt="" />
-                        Search
+                        {{'Search'|trans}}
                     </a>
                     <form onsubmit="sogsearch(); return false" action="/admin/search/" method="get">
                         <input style="width:1px; height:1px; position:absolute; top: -20px; left:-20px;" type="submit" accesskey="f" />
@@ -53,21 +53,21 @@
                     </form>
                 </li>
             </ul>
-            <a class="menuboxheader" onclick="showhide('Suplemanger');">Lists</a>
+            <a class="menuboxheader" onclick="showhide('Suplemanger');">{{'Lists'|trans}}</a>
             <ul id="Suplemanger"{% if hide.suplemanger %} style="display:none"{% endif %}>
-                <li><a href="/admin/requirement/list/"><img src="/theme/default/images/admin/page_white_key.png" width="16" height="16" alt="" /> Requirements</a></li>
-                <li><a href="/admin/brands/"><img src="/theme/default/images/admin/page_white_medal.png" width="16" height="16" alt="" /> Brands</a></li>
-                <li><a href="/admin/sortings/"><img src="/theme/default/images/admin/shape_align_left.png" width="16" height="16" alt="" /> List sorting</a></li>
+                <li><a href="/admin/requirement/list/"><img src="/theme/default/images/admin/page_white_key.png" width="16" height="16" alt="" /> {{'Requirements'|trans}}</a></li>
+                <li><a href="/admin/brands/"><img src="/theme/default/images/admin/page_white_medal.png" width="16" height="16" alt="" /> {{'Brands'|trans}}</a></li>
+                <li><a href="/admin/sortings/"><img src="/theme/default/images/admin/shape_align_left.png" width="16" height="16" alt="" /> {{'List sorting'|trans}}</a></li>
             </ul>
-            <a class="menuboxheader" onclick="showhide('Tools');">Tools</a>
+            <a class="menuboxheader" onclick="showhide('Tools');">{{'Tools'|trans}}</a>
             <ul id="Tools"{% if hide.tools %} style="display:none"{% endif %}>
-                <li><a onclick="explorer('','');"><img src="/theme/default/images/admin/folder_page_white.png" width="16" height="16" alt="" /> Open file manager</a></li>
-                <li><a href="/admin/newsletters/"><img src="/theme/default/images/admin/email.png" width="16" height="16" alt="" /> Newsletters</a></li>
-                <li><a href="/admin/addressbook/list/"><img src="/theme/default/images/admin/book_addresses.png" width="16" height="16" alt="" /> Address Book</a></li>
-                <li><a href="/admin/maintenance/"><img src="/theme/default/images/admin/database_error.png" width="16" height="16" alt="" /> Maintenance</a></li>
-                <li><a href="/admin/users/"><img src="/theme/default/images/admin/group_edit.png" width="16" height="16" alt="" /> Users and Groups</a></li>
-                <li><a href="/admin/sitetree/inventory/"><img src="/theme/default/images/admin/book_open.png" width="16" height="16" alt="" /> Pris liste</a></li>
-                <li><a href="/admin/invoices/"><img src="/theme/default/images/admin/table_multiple.png" width="16" height="16" alt="" /> Invoices</a></li>
+                <li><a onclick="explorer('','');"><img src="/theme/default/images/admin/folder_page_white.png" width="16" height="16" alt="" /> {{'Open file manager'|trans}}</a></li>
+                <li><a href="/admin/newsletters/"><img src="/theme/default/images/admin/email.png" width="16" height="16" alt="" /> {{'Newsletters'|trans}}</a></li>
+                <li><a href="/admin/addressbook/list/"><img src="/theme/default/images/admin/book_addresses.png" width="16" height="16" alt="" /> {{'Address Book'|trans}}</a></li>
+                <li><a href="/admin/maintenance/"><img src="/theme/default/images/admin/database_error.png" width="16" height="16" alt="" /> {{'Maintenance'|trans}}</a></li>
+                <li><a href="/admin/users/"><img src="/theme/default/images/admin/group_edit.png" width="16" height="16" alt="" /> {{'Users and Groups'|trans}}</a></li>
+                <li><a href="/admin/sitetree/inventory/"><img src="/theme/default/images/admin/book_open.png" width="16" height="16" alt="" /> {{'Pris liste'|trans}}</a></li>
+                <li><a href="/admin/invoices/"><img src="/theme/default/images/admin/table_multiple.png" width="16" height="16" alt="" /> {{'Invoices'|trans}}</a></li>
             </ul>
         </div>
     </body>

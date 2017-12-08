@@ -14,14 +14,14 @@
         </style>
     </head>
     <body>
-        <p>{{invoice.name}} has placed an order for the following:</p>
+        <p>{{'%invoiceName% has placed an order for the following:'|trans({'invoiceName': invoice.name})}}</p>
         <table id="faktura" cellspacing="0">
             <thead>
                 <tr>
-                    <td class="td1">Quantity</td>
-                    <td>Title</td>
-                    <td class="td3 tal">unit price</td>
-                    <td class="td4 tal">Total</td>
+                    <td class="td1">{{'Quantity</td>
+                    <td>{{'Title</td>
+                    <td class="td3 tal">{{'unit price</td>
+                    <td class="td4 tal">{{'Total</td>
                 </tr>
             </thead>
             <tbody>
@@ -29,15 +29,15 @@
                 <tr>
                     <td class="tal">{{item.quantity}}</td>
                     <td>{{item.title}}</td>
-                    <td class="tal">{{(item.value * (1 + invoice.vat))|number_format(2, '.', ',')}}</td>
-                    <td class="tal">{{(item.value * item.quantity * (1 + invoice.vat))|number_format(2, '.', ',')}}</td>
+                    <td class="tal">{{(item.value * (1 + invoice.vat))|number_format(2, localeconv.mon_decimal_point, localeconv.mon_thousands_sep)}}</td>
+                    <td class="tal">{{(item.value * item.quantity * (1 + invoice.vat))|number_format(2, localeconv.mon_decimal_point, localeconv.mon_thousands_sep)}}</td>
                 </tr>
                 {% endfor %}
             </tbody>
         </table>
-        <p><b>Note:</b><br />{{invoice.note|nl2br}}</p>
+        <p><b>{{'Note:'|trans}}</b><br />{{invoice.note|nl2br}}</p>
         <p>
-            <b>Address:</b>
+            <b>{{'Address:'|trans}}</b>
             {% if invoice.name %}<br />{{invoice.name}}{% endif %}
             {% if invoice.attn %}<br />{{invoice.attn}}{% endif %}
             {% if invoice.address %}<br />{{invoice.address}}{% endif %}
@@ -47,7 +47,7 @@
         </p>
         {% if invoice.hasShippingAddress %}
         <p>
-            <b>Delivery address:</b>
+            <b>{{'Delivery address:'|trans}}</b>
             {% if invoice.shippingName %}<br />{{invoice.shippingName}}{% endif %}
             {% if invoice.shippingAttn %}<br />{{invoice.shippingAttn}}{% endif %}
             {% if invoice.shippingAddress %}<br />{{invoice.shippingAddress}}{% endif %}
@@ -57,12 +57,12 @@
             {% if invoice.shippingCountry != 'DK' %}<br />{{invoice.shippingCountry}}{% endif %}
         </p>
         {% endif %}
-        <p>Click <a href="{{invoice.adminLink}}">here</a> to expedite the order.</p>
+        <p>{{'Click '|trans}}<a href="{{invoice.adminLink}}">{{'here'|trans}}</a>{{' to expedite the order.'|trans}}</p>
         <p>
             email: <a href="mailto:{{invoice.email}}">{{invoice.email}}</a>
-            {% if invoice.phone1 %}Phone:{{invoice.phone1}}{% endif %}
-            {% if invoice.phone2 %}Mobile:{{invoice.phone2}}{% endif %}
+            {% if invoice.phone1 %}{{'Phone:'|trans}}{{invoice.phone1}}{% endif %}
+            {% if invoice.phone2 %}{{'Mobile:'|trans}}{{invoice.phone2}}{% endif %}
         </p>
-        <p>Sincerely the computer</p>
+        <p>{{'Sincerely the computer'|trans}}</p>
     </body>
 </html>

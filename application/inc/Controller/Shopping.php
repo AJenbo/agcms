@@ -124,11 +124,12 @@ class Shopping extends Base
 
         $email = new Email([
             'subject'          => _('Online order #') . $invoice->getId(),
-            'body'             => Render::render('email/order-notification', ['invoice' => $invoice]),
+            'body'             => Render::render('admin/email/order-notification', ['invoice' => $invoice]),
             'senderName'       => $invoice->getName(),
             'senderAddress'    => $invoice->getEmail(),
             'recipientName'    => Config::get('site_name'),
             'recipientAddress' => first(Config::get('emails'))['address'],
+            'localeconv'       => localeconv(),
         ]);
         $emailService = new EmailService();
         try {

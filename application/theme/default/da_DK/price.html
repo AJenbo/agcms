@@ -1,27 +1,27 @@
 {% if product.oldPrice %}
     {% if product.oldPriceType == 1 %}
-        Vejl.pris: <span>
+        {{'Retail price:'|trans}} <span>
     {% elseif product.oldPriceType == 2 %}
-        Burde koste: <span>
+        {{'Should cost:'|trans}} <span>
     {% else %}
-        Før: <span class="XPris">
+        {{'Before:'|trans}} <span class="XPris">
     {% endif %}
-    {{product.oldPrice|number_format(0, ',', '.')}},-</span>
+    {{product.oldPrice|number_format(0, localeconv.mon_decimal_point, localeconv.mon_thousands_sep)}},-</span>
 {% endif %}
 
 {% if product.price %}
     {% if product.priceType == 1 and product.oldPrice %}
-        <span class="NyPris">Nu fra:
+        <span class="NyPris">{{'New price from:'|trans}}
     {% elseif product.priceType == 2 and product.oldPrice %}
-        <span class="NyPris">Brugt:
+        <span class="NyPris">{{'Used:'|trans}}
     {% elseif product.priceType == 1 %}
-        Fra: <span class="Pris">
+        {{'Price from:'|trans}} <span class="Pris">
     {% elseif product.priceType == 2 %}
-        Brugt: <span class="Pris">
+        {{'Used:'|trans}} <span class="Pris">
     {% elseif product.oldPrice %}
-        <span class="NyPris">Nu:
+        <span class="NyPris">{{'Now:'|trans}}
     {% else %}
-        Pris: <span class="Pris">
+        {{'Price:'|trans}} <span class="Pris">
     {% endif %}
-    {{product.price|number_format(0, ',', '.')}},-</span>
+    {{product.price|number_format(0, localeconv.mon_decimal_point, localeconv.mon_thousands_sep)}},-</span>
 {% endif %}

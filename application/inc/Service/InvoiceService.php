@@ -313,7 +313,7 @@ class InvoiceService
     {
         $epayment = $this->getPayment($invoice);
         if (!$epayment->confirm()) {
-            throw new Exception(_('An error occurred'));
+            throw new Exception(_('Failed to capture payment.'));
         }
 
         $invoice->setStatus('accepted')
@@ -334,7 +334,7 @@ class InvoiceService
     {
         $epayment = $this->getPayment($invoice);
         if (!$epayment->annul()) {
-            throw new Exception(_('Failed to cancel payment!'));
+            throw new Exception(_('Failed to cancel payment.'));
         }
 
         if ('pbsok' === $invoice->getStatus()) {

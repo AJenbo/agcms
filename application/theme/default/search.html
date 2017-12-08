@@ -2,35 +2,35 @@
 
 {% block content %}
 <div id="innercontainer">
-    <h1>Search</h1>
+    <h1>{{'Search'|trans}}</h1>
     <form action="/" method="get">
         <table>
             <tr>
-                <td>Contains</td>
+                <td>{{'Contains'|trans}}</td>
                 <td><input name="q" size="31" /></td>
-                <td><input type="submit" value="Search" /></td>
+                <td><input type="submit" value="{{'Search'|trans}}" /></td>
             </tr>
             <tr>
-                <td>Part No.</td>
+                <td>{{'Part No.'|trans}}</td>
                 <td><input name="varenr" size="31" value="" maxlength="63" /></td>
             </tr>
             <tr>
-                <td>Without the words</td>
+                <td>{{'Without the words'|trans}}</td>
                 <td><input name="sogikke" size="31" value="" /></td>
             </tr>
             <tr>
-                <td>Min price</td>
-                <td><input name="minpris" size="5" maxlength="11" value="" />,-</td>
+                <td>{{'Min price'|trans}}</td>
+                <td><input name="minpris" size="5" maxlength="11" value="" />{{'.00'|trans}}</td>
             </tr>
             <tr>
-                <td>Max price</td>
-                <td><input name="maxpris" size="5" maxlength="11" value="" />,-</td>
+                <td>{{'Max price'|trans}}</td>
+                <td><input name="maxpris" size="5" maxlength="11" value="" />{{'.00'|trans}}</td>
             </tr>
             <tr>
-                <td>Brand:</td>
+                <td>{{'Brand:'|trans}}</td>
                 <td>
                     <select name="maerke">
-                        <option value="0">All</option>
+                        <option value="0">{{'All'|trans}}</option>
                         {% for brand in brands %}
                         <option value="{{brand.id}}">{{brand.title}}</option>
                         {% endfor %}

@@ -6,6 +6,6 @@
     {% for name, value in inputs %}
     <input type="hidden" name="{{name}}" value="{{value}}" />
     {% endfor %}
-    <input class="web" type="submit" value="I hereby agree to the terms of trade" />
+    <input class="web" type="submit" value="{{'I hereby agree to the terms of trade'|trans}}" />
 </form>
 {% endblock %}

@@ -3,35 +3,35 @@
 {% block content %}
 <div id="text">
     <div style="padding-left:16px">
-        <h1>Søg</h1>
-        <form action="/search/results/" method="get">
+        <h1>{{'Search'|trans}}</h1>
+        <form action="/" method="get">
             <table>
                 <tr>
-                    <td>Indeholder</td>
+                    <td>{{'Contains'|trans}}</td>
                     <td><input name="q" size="31" /></td>
-                    <td><input type="submit" value="Søg" /></td>
+                    <td><input type="submit" value="{{'Search'|trans}}" /></td>
                 </tr>
                 <tr>
-                    <td>Varenummer</td>
+                    <td>{{'Part No.'|trans}}</td>
                     <td><input name="varenr" size="31" value="" maxlength="63" /></td>
                 </tr>
                 <tr>
-                    <td>Uden ordene</td>
+                    <td>{{'Without the words'|trans}}</td>
                     <td><input name="sogikke" size="31" value="" /></td>
                 </tr>
                 <tr>
-                    <td>Min pris</td>
-                    <td><input name="minpris" size="5" maxlength="11" value="" />,-</td>
+                    <td>{{'Min price'|trans}}</td>
+                    <td><input name="minpris" size="5" maxlength="11" value="" />{{'.00'|trans}}</td>
                 </tr>
                 <tr>
-                    <td>Max pris</td>
-                    <td><input name="maxpris" size="5" maxlength="11" value="" />,-</td>
+                    <td>{{'Max price'|trans}}</td>
+                    <td><input name="maxpris" size="5" maxlength="11" value="" />{{'.00'|trans}}</td>
                 </tr>
                 <tr>
-                    <td>Mærke:</td>
+                    <td>{{'Brand:'|trans}}</td>
                     <td>
                         <select name="maerke">
-                            <option value="0">Alle</option>
+                            <option value="0">{{'All'|trans}}</option>
                             {% for brand in brands %}
                             <option value="{{brand.id}}">{{brand.title}}</option>
                             {% endfor %}

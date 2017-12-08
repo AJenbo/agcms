@@ -1,9 +1,9 @@
 <table id="faktura" cellspacing="0">
     <thead>
         <tr>
-            <td class="td1">Quantity</td>
+            <td class="td1">{{'Quantity'|trans}}</td>
             <td>Title</td>
-            <td class="td3 tal">unit price</td>
+            <td class="td3 tal">{{'unit price'|trans}}</td>
             <td class="td4 tal">Total</td>
         </tr>
     </thead>
@@ -11,24 +11,24 @@
         <tr style="height:auto;min-height:auto;max-height:auto;">
             <td>&nbsp;</td>
             <td>&nbsp;</td>
-            <td class="tal">Net Amount</td>
+            <td class="tal">{{'Net Amount'|trans}}</td>
             <td class="tal">{{invoice.netAmount|number_format(2, ',', '')}}</td>
         </tr>
         <tr>
             <td>&nbsp;</td>
             <td>&nbsp;</td>
-            <td class="tal">Freight</td>
+            <td class="tal">{{'Freight'|trans}}</td>
             <td class="tal">{{invoice.shipping|number_format(2, ',', '')}}</td>
         </tr>
         <tr>
             <td>&nbsp;</td>
             <td style="text-align:right" class="tal">{{invoice.vat * 100}}%</td>
-            <td class="tal">VAT Amount</td>
+            <td class="tal">{{'VAT Amount'|trans}}</td>
             <td class="tal">{{(invoice.netAmount * invoice.vat)|number_format(2, ',', '')}}</td>
         </tr>
         <tr class="border">
-            <td colspan="2">All figures are in DKK</td>
-            <td style="text-align:center; font-weight:bold;">TO PAY</td>
+            <td colspan="2">{{'All figures are in DKK'|trans}}</td>
+            <td style="text-align:center; font-weight:bold;">{{'TO PAY'|trans}}</td>
             <td class="tal"><big>{{invoice.amount|number_format(2, ',', '')}}</big></td>
         </tr>
     </tfoot>
@@ -44,4 +44,4 @@
     </tbody>
 </table>
 
-{% if invoice.name %}<br /><strong>Note:</strong><br /><p class="note">{{invoice.note|nl2br}}</p>{% endif %}
+{% if invoice.name %}<br /><strong>{{'Note:'|trans}}</strong><br /><p class="note">{{invoice.note|nl2br}}</p>{% endif %}

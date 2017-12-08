@@ -8,10 +8,10 @@
             <table style="border-bottom:1px solid;" id="faktura" cellspacing="0">
                 <thead>
                     <tr>
-                        <td class="td1">Antal</td>
-                        <td>Benævnelse</td>
-                        <td class="td3 tal" style="width:64px">á pris</td>
-                        <td class="td4 tal" style="width:72px">Total</td>
+                        <td class="td1">{{'Quantity'|trans}}</td>
+                        <td>{{'Title'|trans}}</td>
+                        <td class="td3 tal" style="width:64px">{{'unit price'|trans}}</td>
+                        <td class="td4 tal" style="width:72px">{{'Total'|trans}}</td>
                     </tr>
                 </thead>
                 <tfoot>
@@ -43,33 +43,33 @@
                 var values = [{% for item in invoice.items %}{{(item.value * (1 + invoice.vat))|json_encode()|raw}}{% if not loop.last %},{% endif %}{% endfor %}];
             --></script>
             {% if invoice.hasUnknownPrice %}
-            <small>* Prisen kan ikke automatisk fastsættes, beskriv venligst den eksakte type i notatfeltet for neden.</small></p>
+                <small>{{'* The price cannot be determined automatically, please make sure to describe the exact type in the note field.'|trans}}</small></p>
             {% endif %}
         </p>
         <p class="clearfix">
-            Foretrukken betalingsmetode:
+            {{'Prefered payment method:'|trans}}
             <select id="payMethod" name="payMethod" style="float:right">
-                <option value="creditcard"{% if payMethod == 'creditcard' %} selected="selected"{% endif %}>Betalingskort</option>
-                <option value="bank"{% if payMethod == 'bank' %} selected="selected"{% endif %}>Bank overførsel</option>
-                <option value="cash"{% if payMethod == 'cash' %} selected="selected"{% endif %}>Kontant i butik</option>
+                <option value="creditcard"{% if payMethod == 'creditcard' %} selected="selected"{% endif %}>{{'Credit Card'|trans}}</option>
+                <option value="bank"{% if payMethod == 'bank' %} selected="selected"{% endif %}>{{'Bank transaction'|trans}}</option>
+                <option value="cash"{% if payMethod == 'cash' %} selected="selected"{% endif %}>{{'Cash'|trans}}</option>
             </select>
         </p>
         <p>
-            Levering:
+            {{'Delevery:'|trans}}
             <select id="deleveryMethode" name="deleveryMethode" style="float:right">
-                <option value="postal"{% if deleveryMethode == 'postal' %} selected="selected"{% endif %}>Post</option>
-                <option value="pickup"{% if deleveryMethode == 'pickup' %} selected="selected"{% endif %}>Afhent i butikken</option>
+                <option value="postal"{% if deleveryMethode == 'postal' %} selected="selected"{% endif %}>{{'Mail'|trans}}</option>
+                <option value="pickup"{% if deleveryMethode == 'pickup' %} selected="selected"{% endif %}>{{'Pickup in store'|trans}}</option>
             </select>
-            <small id="shipping"><br />Den nøjagtige forsendelses pris vil blive udregnet når varerne pakkes.</small>
+            <small id="shipping"><br />{{'The excact shipping cost will be calculcated as the goods are packed.'|trans}}</small>
         </p>
         <p>
-            Note:<br />
-            <textarea style="width:100%;box-sizing:border-box;" id="note" name="note">{{invoice.note}}</textarea>
+            {{'Note:'|trans}}<br />
+            <textarea style="width:100%;box-sizing:border-box;" id="note" name="note">{{note}}</textarea>
         </p>
-        <p><input value="Fortsæt" type="submit" /></p>
+        <p><input value="{{'Continue'|trans}}" type="submit" /></p>
     </form>
     {% else %}
-        Der er intet indhold på listen!
+        {{'Ther is no content in the basket!'|trans}}
     {% endif %}
 </div>
 {% endblock %}
