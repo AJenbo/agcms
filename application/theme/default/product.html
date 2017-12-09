@@ -8,6 +8,13 @@
         {% if renderable.sku %} <span style="font-weight:normal;font-size:13px">{{'SKU:'|trans}} {{renderable.sku}}</span>{% endif %}
     </h1>
     {{renderable.html|raw}}
+    {% for table in renderable.tables %}
+    {% if table.rows %}
+    <div id="table{{table.id}}">
+    {% include 'partial-table.html' with {'orderBy': table.orderBy} %}
+    </div>
+    {% endif %}
+    {% endfor %}
     {% if renderable.requirement %}<p><a href="{{renderable.requirement.canonicalLink}}" target="krav">{{renderable.requirement.title}}</a></p>{% endif %}
     <p style="text-align:center">
         {% include 'price.html' with {'product': renderable} %}
