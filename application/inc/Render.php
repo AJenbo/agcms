@@ -133,15 +133,17 @@ class Render
      */
     public static function render(string $template = 'index', array $data = []): string
     {
-        $templatePath = app()->basePath('/theme/');
+        $templatePath = app()->basePath('/theme');
         $loader = new Twig_Loader_Filesystem('default/', $templatePath);
-        if ('C' !== Config::get('locale', 'C')) {
-            $loader->prependPath('default/' . Config::get('locale') . '/');
+        $langPath = 'default/' . Config::get('locale', 'C') . '/';
+        if (file_exists($templatePath . '/' . $langPath)) {
+            $loader->prependPath($langPath);
         }
         if (Config::get('theme')) {
             $loader->prependPath(Config::get('theme') . '/');
-            if ('C' !== Config::get('locale', 'C')) {
-                $loader->prependPath(Config::get('theme') . '/' . Config::get('locale') . '/');
+            $langPath = Config::get('theme') . '/' . Config::get('locale', 'C') . '/';
+            if (file_exists($templatePath . '/' . $langPath)) {
+                $loader->prependPath($langPath);
             }
         }
 
