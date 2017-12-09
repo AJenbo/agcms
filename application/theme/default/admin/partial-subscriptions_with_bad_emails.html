@@ -2,6 +2,6 @@
 <b>{{'The following email addresses are not valid'|trans}}</b><br />
 {% endif %}
 {% for contact in contacts %}
-<a href="/admin/addressbook/{{contact.id}}/">{{'Email: %email% #%contactId% is not valid'|trans|replace({'email': contact.email, 'contactId': contact.id})}}</a>
+<a href="/admin/addressbook/{{contact.id}}/">{{'Email: %email% #%contactId% is not valid'|trans|replace({'%email%': contact.email, '%contactId%': contact.id})}}</a>
 <br />
 {% endfor %}
