@@ -1,19 +1,19 @@
 {% extends "admin/index.html" %}
 
 {% block actions %}
-<li><a onclick="updatemaerke(null);"><img src="/theme/default/images/admin/disk.png" width="16" height="16" alt="" /> Save brand</a></li>
+<li><a onclick="updatemaerke(null)"><img src="/theme/default/images/admin/disk.png" width="16" height="16" alt="" /> {{'Save brand'|trans}}</a></li>
 {% endblock %}
 
 {% block canvas %}
 {% spaceless %}
-<div id="headline">List of brands</div>
+<div id="headline">{{'List of brands'|trans}}</div>
 <form action="" id="maerkerform" onsubmit="return updatemaerke(null)">
     {% include 'admin/partial-maerker.html' %}
-    <div id="imagelogo" style="display:none; position:absolute;"></div>
+    <div id="imagelogo" style="display:none;position:absolute"></div>
     {% for brand in brands %}
         <div id="maerke{{brand.id}}">
-            <a href="" onclick="return deleteBrand({{brand.title|json_encode()}},{{brand.id}});">
-                <img src="/theme/default/images/admin/cross.png" alt="X" title="Delete {{brand.title}}!" width="16" height="16" />
+            <a href="" onclick="return deleteBrand({{brand.title|json_encode()}},{{brand.id}})">
+                <img src="/theme/default/images/admin/cross.png" alt="X" title="{{'Delete %title%!'|trans|replace({'%title%': brand.title})}}" width="16" height="16" />
             </a>
             <a href="/admin/brands/{{brand.id}}/"{% if not brand.link %} style="margin-left:{% if not brand.icon %}32{% else %}16{% endif %}px"{% endif %}>
                 {% if brand.link %}

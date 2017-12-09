@@ -6,7 +6,7 @@
     </head>
     <body>
         <p>{{'Thank you for your order.'|trans}}</p>
-        <p>{{'Order no %invoiceId% is approved and will be shipped once payment is complete.'|trans({'invoiceId': invoice.id})}}</p>
+        <p>{{'Order no %invoiceId% is approved and will be shipped once payment is complete.'|trans|replace({'%invoiceId%': invoice.id})}}</p>
         <p>
             {{'Link to payment:'|trans}}<br />
             <a href="{{invoice.link}}">{{invoice.link}}</a>

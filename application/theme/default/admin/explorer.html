@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-        <title>Explorer</title>
+        <title>{{'Explorer'|trans}}</title>
         <link rel="stylesheet" type="text/css" href="/theme/default/style/admin/proto.menu.css" media="screen" />
         <link rel="stylesheet" type="text/css" href="/theme/default/style/admin/explorer.css" />
         <style type="text/css">
@@ -22,21 +22,21 @@
     </head>
     <body scroll="auto" onload="init()">
         <div id="menu">
-            <img id="loading" src="/theme/default/images/admin/loading.gif" width="16" height="16" alt="Loading" title="Loading" />
-            <a id="dir_bn" class="down" title="Folders" onclick="return swap_pannel('dir');">
-                <img width="16" height="16" src="/theme/default/images/admin/folder.png" alt="" /> Mapper
+            <img id="loading" src="/theme/default/images/admin/loading.gif" width="16" height="16" alt="{{'Loading'|trans}}" title="{{'Loading'|trans}}" />
+            <a id="dir_bn" class="down" title="{{'Folders'|trans}}" onclick="return swap_pannel('dir');">
+                <img width="16" height="16" src="/theme/default/images/admin/folder.png" alt="" /> {{'Folders'|trans}}
             </a>
-            <a id="search_bn" title="Søg" onclick="return swap_pannel('search');">
-                <img width="16" height="16" src="/theme/default/images/admin/magnifier.png" alt="" /> Search
+            <a id="search_bn" title="{{'Search'|trans}}" onclick="return swap_pannel('search');">
+                <img width="16" height="16" src="/theme/default/images/admin/magnifier.png" alt="" /> {{'Search'|trans}}
             </a>
-            <a title="New folder" onclick="makedir();return false">
-                <img width="16" height="16" src="/theme/default/images/admin/folder_add.png" alt="" /> New folder
+            <a title="{{'New folder'|trans}}" onclick="makedir();return false">
+                <img width="16" height="16" src="/theme/default/images/admin/folder_add.png" alt="" /> {{'New folder'|trans}}
             </a>
-            <a title="Delete folder" onclick="deleteFolder();return false">
-                <img width="16" height="16" src="/theme/default/images/admin/folder_delete.png" alt="" /> Delete folder
+            <a title="{{'Delete folder'|trans}}" onclick="deleteFolder();return false">
+                <img width="16" height="16" src="/theme/default/images/admin/folder_delete.png" alt="" /> {{'Delete folder'|trans}}
             </a>
-            <a title="Add File" onclick="open_file_upload();return false;">
-                <img width="16" height="16" src="/theme/default/images/admin/folder_page_white.png" alt="" /> Add File
+            <a title="{{'Add File'|trans}}" onclick="open_file_upload();return false;">
+                <img width="16" height="16" src="/theme/default/images/admin/folder_page_white.png" alt="" /> {{'Add File'|trans}}
             </a>
         </div>
         <div id="dir">
@@ -44,28 +44,28 @@
         </div>
         <form id="search" style="display:none" action="" onsubmit="searchfiles();return false;">
             <div>
-                Name:<br />
+                {{'Name:'|trans}}<br />
                 <input name="searchpath" id="searchpath" />
                 <br />
                 <br />
-                Description:<br />
+                {{'Description:'|trans}}<br />
                 <input name="searchalt" id="searchalt" />
                 <br />
                 <br />
-                Type:<br />
+                {{'Type:'|trans}}<br />
                 <select name="searchtype" id="searchtype">
-                    <option value="" selected="selected">All</option>
-                    <option value="image">Pictures</option>
-                    <option value="imagefile">Image files</option>
-                    <option value="video">Videos</option>
-                    <option value="audio">Sounds</option>
-                    <option value="text">Documents</option>
-                    <option value="compressed">ZIP-files</option>
-                    <option value="unused">Unused files</option>
+                    <option value="" selected="selected">{{'All'|trans}}</option>
+                    <option value="image">{{'Pictures'|trans}}</option>
+                    <option value="imagefile">{{'Images'|trans}}</option>
+                    <option value="video">{{'Videos'|trans}}</option>
+                    <option value="audio">{{'Sounds'|trans}}</option>
+                    <option value="text">{{'Documents'|trans}}</option>
+                    <option value="compressed">{{'Zip-files'|trans}}</option>
+                    <option value="unused">{{'Unused files'|trans}}</option>
                 </select>
                 <br />
                 <br />
-                <input type="submit" value="Søg nu" accesskey="f" />
+                <input type="submit" value="{{'Search'|trans}}" accesskey="f" />
             </div>
         </form>
         <div id="files"></div>

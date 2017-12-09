@@ -36,7 +36,7 @@
             {% endif %}
             {% if invoice.attn or (invoice.hasShippingAddress and invoice.shippingAttn) %}
             <tr>
-                <td>{{'Attn:'|trans}}</td>
+                <td>{{'Attn.:'|trans}}</td>
                 <td>{{invoice.attn}}</td>
                 {% if invoice.hasShippingAddress %}<td>{{invoice.attn}}</td>{% endif %}
             </tr>
@@ -82,7 +82,7 @@
                 <td><a href="mailto:{{invoice.email}}">{{invoice.email}}</a></td>
             </tr>
         </table>
-        <p>{{'Payment for your order no. %invoiceId% is now approved. Your product will be shipped as soon as possible. There will automatically be sent an email with a Track & Trace link where they can follow the package.'|trans({'invoiceId': invoice.id})}}<br />
+        <p>{{'Payment for your order no. %invoiceId% is now approved. Your product will be shipped as soon as possible. There will automatically be sent an email with a Track & Trace link where they can follow the package.'|trans|replace({'%invoiceId%': invoice.id})}}<br />
         </p>
 
         {% include 'partial-payment-invoice.html' %}

@@ -14,7 +14,7 @@
         </style>
     </head>
     <body>
-        <p>{{'%invoiceName% has placed an order for the following:'|trans({'invoiceName': invoice.name})}}</p>
+        <p>{{'%clientName% has placed an order for the following:'|trans|replace({'%clientName%': invoice.name})}}</p>
         <table id="faktura" cellspacing="0">
             <thead>
                 <tr>

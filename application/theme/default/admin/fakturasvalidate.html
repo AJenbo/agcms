@@ -5,11 +5,11 @@
 <table style="width:100%; margin:0 0 113px 0">
     <thead>
         <tr>
-            <td>ID</td>
-            <td>Payment methode</td>
-            <td>Pay date</td>
-            <td>Responsible</td>
-            <td>Amount</td>
+            <td>{{'ID'|trans}}</td>
+            <td>{{'Payment methode'|trans}}</td>
+            <td>{{'Pay date'|trans}}</td>
+            <td>{{'Responsible'|trans}}</td>
+            <td>{{'Amount'|trans}}</td>
             <td style="width:16px;"></td>
         </tr>
     </thead>
@@ -19,7 +19,7 @@
             <td style="text-align:right"><a href="/admin/invoices/{{invoice.id}}/">{{invoice.id}}</a></td>
             <td style="text-align:right">
                 <a href="/admin/invoices/{{invoice.id}}/">
-                    {% if invoice.status == 'accepted' %}{{invoice.cardType}}{% elseif invoice.status == 'giro' %}Bank overførsel{% endif %}
+                    {% if invoice.status == 'accepted' %}{{invoice.cardType}}{% elseif invoice.status == 'giro' %}{{'Bank overførsel'|trans}}{% endif %}
                 </a>
             </td>
             <td style="text-align:right">
@@ -31,7 +31,7 @@
             </td>
             <td style="text-align:center">
                 <a href="" onclick="return confirm_faktura_validate({{invoice.id}})">
-                    <img src="/theme/default/images/admin/tick.png" alt="Approve" title="Approve" />
+                    <img src="/theme/default/images/admin/tick.png" alt="{{'Approve'|trans}}" title="{{'Approve'|trans}}" />
                 </a>
             </td>
         </tr>

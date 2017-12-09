@@ -1,24 +1,24 @@
 {% extends "admin/index.html" %}
 
 {% block canvas %}
-<div id="headline">Maintenance</div><div>
+<div id="headline">{{'Maintenance'|trans}}</div><div>
     <div>
         <div>
-            <b>Server consumption</b> - E-mail:
+            <b>{{'Server consumption'|trans}}</b> - {{'Email:'|trans}}
             <span id="mailboxsize">
-                <button onclick="getEmailUsage()">Get e-mail consumption</button>
+                <button onclick="getEmailUsage()">{{'Get e-mail consumption'|trans}}</button>
             </span>
-            DB: <span id="dbsize">{{dbSize|number_format(1, ',', '')}}MB</span>
-            WWW: <span id="wwwsize">{{wwwSize|number_format(1, ',', '')}}MB</span>
+            {{'DB:'|trans}} <span id="dbsize">{{dbSize|number_format(1, ',', '')}}MiB</span>
+            {{'WWW:'|trans}} <span id="wwwsize">{{wwwSize|number_format(1, ',', '')}}MiB</span>
         </div>
         <div id="status"></div>
-        <button onclick="scan_db();">Scan database</button>
-        <button onclick="get_subscriptions_with_bad_emails();">Check emails in the address book</button>
-        <button onclick="removeNoneExistingFiles();">Clean up files</button>
+        <button onclick="scan_db();">{{'Scan database'|trans}}</button>
+        <button onclick="get_subscriptions_with_bad_emails();">{{'Check emails in the address book'|trans}}</button>
+        <button onclick="removeNoneExistingFiles();">{{'Clean up files'|trans}}</button>
         <div id="errors"></div>
 
-        <div>Delayed e-mails {{pendingEmails}}/{{totalDelayedEmails}}</div>
-        <div>Cron last run at {{lastrun|date('d-m-Y')}}</div>
+        <div>{{'Delayed emails %pending%/%total%'|trans|replace({'%pending%': pendingEmails, '%total%': totalDelayedEmails})}}</div>
+        <div>{{'Cron last run at %date%'|trans|replace({'%date%': lastrun|date('d-m-Y')})}}</div>
     </div>
 </div>
 {% endblock %}

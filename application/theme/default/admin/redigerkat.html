@@ -1,30 +1,30 @@
 {% extends "admin/index.html" %}
 
 {% block actions %}
-<li><a onclick="updateKat({{category.id}});"><img src="/theme/default/images/admin/disk.png" width="16" height="16" alt="" /> Save category</a></li>
+<li><a onclick="updateKat({{category.id}});"><img src="/theme/default/images/admin/disk.png" width="16" height="16" alt="" /> {{'Save category'|trans}}</a></li>
 {% endblock %}
 
 {% block canvas %}
-<div id="headline">{% if category %}Edit category{% else %}Create category{% endif %}</div>
+<div id="headline">{% if category %}{{'Edit category'|trans}}{% else %}{{'Create category'|trans}}{% endif %}</div>
 <form action="" onsubmit="return updateKat({{category.id}})">
-    <input type="submit" accesskey="s" style="width:1px; height:1px; position:absolute; top: -20px; left:-20px;" />
+    <input type="submit" accesskey="s" style="width:1px;height:1px;position:absolute;top:-20px;left:-20px" />
     <div>
-        Name:
-        <img style="cursor:pointer;vertical-align:bottom" onclick="explorer('thb','icon_id')" src="{% if category.icon %}{{category.icon.path}}{% else %}/theme/default/images/admin/folder.png{% endif %}" title="" alt="Pictures" id="icon_idthb" />
+        {{'Name:'|trans}}
+        <img style="cursor:pointer;vertical-align:bottom" onclick="explorer('thb','icon_id')" src="{% if category.icon %}{{category.icon.path}}{% else %}/theme/default/images/admin/folder.png{% endif %}" title="" alt="{{'Pictures'|trans}}" id="icon_idthb" />
         <input id="navn" style="width:256px;" maxlength="64" value="{{category.title}}" />
         <br />
-        Icon:
+        {{'Icon:'|trans}}
         <input id="icon_id" name="icon_id" type="hidden" value="{{category.icon.id}}" />
-        <img style="cursor:pointer;vertical-align:bottom" onclick="explorer('thb','icon_id')" width="16" height="16" src="/theme/default/images/admin/folder_image.png" title="Find pictures" alt="Pictures" />
-        <img style="cursor:pointer;vertical-align:bottom" onclick="setThb('icon_id','','/theme/default/images/admin/folder.png')" src="/theme/default/images/admin/cross.png" alt="X" title="Remove picture" height="16" width="16" />
+        <img style="cursor:pointer;vertical-align:bottom" onclick="explorer('thb','icon_id')" width="16" height="16" src="/theme/default/images/admin/folder_image.png" title="Find pictures" alt="{{'Pictures'|trans}}" />
+        <img style="cursor:pointer;vertical-align:bottom" onclick="setThb('icon_id','','/theme/default/images/admin/folder.png')" src="/theme/default/images/admin/cross.png" alt="X" title="{{'Remove picture'|trans}}" height="16" width="16" />
         <br />
         <br />
 
         {% if category.hasChildren %}
-        Sort subcategories:
+        {{'Sort subcategories:'|trans}}
         <select id="custom_sort_subs" onchange="displaySubMenus(this.value);" onblur="displaySubMenus(this.value);">
-            <option value="0">Alphabetically</option>
-            <option value="1"{% if category.weightedChildren %} selected="selected"{% endif %}>Manually </option>
+            <option value="0">{{'Alphabetically'|trans}}</option>
+            <option value="1"{% if category.weightedChildren %} selected="selected"{% endif %}>{{'Manually'|trans}} </option>
         </select>
         <br />
         <ul id="subMenus" style="width:{{textWidth}}}px;{% if not category.weightedChildren %}display:none;{% endif %}">
@@ -61,7 +61,7 @@
         <input type="hidden" id="subMenusOrder" /><input type="hidden" id="custom_sort_subs" />
         {% endif %}
 
-        Contact:
+        {{'Contact:'|trans}}
         <select id="email">
             {% for email in emails %}
             <option value="{{email}}"{% if category.email == email %} selected="selected"{% endif %}>{{email}}</option>
@@ -69,11 +69,11 @@
         </select>
 
         <br />
-        Display:
+        {{'Display:'|trans}}
         <select id="vis">
-            <option value="0"{% if category.renderMode == 0 %} selected="selected"{% endif %}>Hide</option>
-            <option value="1"{% if category.renderMode == 1 or not category %} selected="selected"{% endif %}>Gallery</option>
-            <option value="2"{% if category.renderMode == 2 %} selected="selected"{% endif %}>List</option>
+            <option value="0"{% if category.renderMode == 0 %} selected="selected"{% endif %}>{{'Hide'|trans}}</option>
+            <option value="1"{% if category.renderMode == 1 or not category %} selected="selected"{% endif %}>{{'Gallery'|trans}}</option>
+            <option value="2"{% if category.renderMode == 2 %} selected="selected"{% endif %}>{{'List'|trans}}</option>
         </select>
         {% if not category or category.parent %}
         {% include 'admin/partial-katlist.html' %}

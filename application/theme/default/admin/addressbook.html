@@ -1,21 +1,21 @@
 {% extends "admin/index.html" %}
 
 {% block canvas %}
-<div id="headline">Address Book</div>
+<div id="headline">{{'Address Book'|trans}}</div>
 <div>
-    <a href="/admin/addressbook/"><img src="/theme/default/images/admin/group_add.png" width="16" height="16" alt="" /> Add new contact</a>
+    <a href="/admin/addressbook/"><img src="/theme/default/images/admin/group_add.png" width="16" height="16" alt="" /> {{'Add new contact'|trans}}</a>
     <br />
     <br />
     <table id="list">
         <thead>
             <tr>
                 <td style="width:16px"></td>
-                <td><a href="/admin/addressbook/list/">Name</a></td>
-                <td><a href="/admin/addressbook/list/?order=email">E-mail</td>
-                <td><a href="/admin/addressbook/list/?order=tlf1">Phone</td>
-                <td><a href="/admin/addressbook/list/?order=tlf2">Mobile</td>
-                <td><a href="/admin/addressbook/list/?order=post">Postcode</td>
-                <td><a href="/admin/addressbook/list/?order=adresse">Address</td>
+                <td><a href="/admin/addressbook/list/">{{'Name'|trans}}</a></td>
+                <td><a href="/admin/addressbook/list/?order=email">{{'Email'|trans}}</td>
+                <td><a href="/admin/addressbook/list/?order=tlf1">{{'Phone'|trans}}</td>
+                <td><a href="/admin/addressbook/list/?order=tlf2">{{'Mobile'|trans}}</td>
+                <td><a href="/admin/addressbook/list/?order=post">{{'Postcode'|trans}}</td>
+                <td><a href="/admin/addressbook/list/?order=adresse">{{'Address'|trans}}</td>
                 <td style="width:16px"></td>
             </tr>
         </thead>
@@ -24,7 +24,7 @@
             <tr id="contact{{contact.id}}">
                 <td>
                     <a href="/admin/addressbook/{{contact.id}}/">
-                        <img width="16" height="16" src="/theme/default/images/admin/vcard_edit.png" alt="R" title="Edit" />
+                        <img width="16" height="16" src="/theme/default/images/admin/vcard_edit.png" alt="{{'E'|trans}}" title="{{'Edit'|trans}}" />
                     </a>
                 </td>
                 <td><a href="/admin/addressbook/{{contact.id}}/">{{contact.name}}</a></td>
@@ -34,7 +34,7 @@
                 <td><a href="/admin/addressbook/{{contact.id}}/">{{contact.postcode}}</a></td>
                 <td><a href="/admin/addressbook/{{contact.id}}/">{{contact.address}}</a></td>
                 <td>
-                    <img onclick="x_deleteContact({{contact.id}}, removeTagById)" width="16" height="16" src="/theme/default/images/admin/cross.png" alt="X" title="Delete" />
+                    <img onclick="x_deleteContact({{contact.id}}, removeTagById)" width="16" height="16" src="/theme/default/images/admin/cross.png" alt="X" title="{{'Delete'|trans}}" />
                 </td>
             </tr>
             {% endfor %}

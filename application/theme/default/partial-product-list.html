@@ -2,10 +2,10 @@
 <table class="tabel">
     <thead>
         <tr>
-            <td><a href="" onclick="return getKat({{renderable.id}}, 'navn')">Titel</a></td>
-            <td><a href="" onclick="return getKat({{renderable.id}}, 'for')">Før</a></td>
-            <td><a href="" onclick="return getKat({{renderable.id}}, 'pris')">Pris</a></td>
-            <td><a href="" onclick="return getKat({{renderable.id}}, 'varenr')">#</a></td>
+            <td><a href="" onclick="return getKat({{renderable.id}}, 'navn')">{{'Title'|trans}}</a></td>
+            <td><a href="" onclick="return getKat({{renderable.id}}, 'for')">{{'Previously'|trans}}</a></td>
+            <td><a href="" onclick="return getKat({{renderable.id}}, 'pris')">{{'Price'|trans}}</a></td>
+            <td><a href="" onclick="return getKat({{renderable.id}}, 'varenr')">{{'#'|trans}}</a></td>
             <td></td>
         </tr>
     </thead>
@@ -22,14 +22,14 @@
                 {% if page.price > 0 %}
                 {{page.price|number_format(0, ',', '.')}},-
                 {% elseif page.price %}
-                Udsolgt
+                {{'Sold out'|trans}}
                 {% endif %}
             </td>
             <td align="right" style="font-size:11px">{{page.sku}}</td>
             <td class="addtocart">
                 {% if page.price > 0 %}
                 <a href="" onclick="shoppingCart.addItem('page', {{page.id}}); return false">
-                    <img src="/theme/default/images/cart_add.png" title="Add to shopping cart" alt="+" />
+                    <img src="/theme/default/images/cart_add.png" title="{{'Add to shopping cart'|trans}}" alt="+" />
                 </a>
                 {% endif %}
             </td>

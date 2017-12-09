@@ -1,5 +1,5 @@
 {% extends "email-admin-payment-confirmation.html" %}
 
 {% block info %}
-<p>{{'A user tried to pay online invoice #%invoiceId%, which is not in the system!'|trans({'invoiceId': invoice.id})}}</p>
+<p>{{'A user tried to pay online invoice #%invoiceId%, which is not in the system!'|trans|replace({'%invoiceId%': invoice.id})}}</p>
 {% endblock %}

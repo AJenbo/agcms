@@ -1,11 +1,11 @@
 {% extends "admin/index.html" %}
 
 {% block actions %}
-    <li><a onclick="updateSpecial({{page.id}});"><img src="/theme/default/images/admin/disk.png" width="16" height="16" alt="" /> Save page</a></li>
+    <li><a onclick="updateSpecial({{page.id}});"><img src="/theme/default/images/admin/disk.png" width="16" height="16" alt="" /> {{'Save page'|trans}}</a></li>
 {% endblock %}
 
 {% block canvas %}
-<div id="headline">Edit {{page.title}}</div>
+<div id="headline">{{'Edit %title%'|trans|replace({'%title%': page.title})}}</div>
 <form action="" method="post" onsubmit="return updateSpecial({{page.id}});">
     <input type="submit" accesskey="s" style="width:1px; height:1px; position:absolute; top: -20px; left:-20px;" />
     {% if category %}
@@ -19,7 +19,7 @@
     --></script>
     {% if categories %}
     <br />
-    Sort maincategories:
+    {{'Sort maincategories:'|trans}}
     <ul id="subMenus">
         {% for category in categories %}
         <li id="item_{{category.id}}">

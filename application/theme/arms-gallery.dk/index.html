@@ -7,7 +7,7 @@
         <meta id="viewport" name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
         <link href="/theme/arms-gallery.dk/style/style.min.css" rel="stylesheet" type="text/css" />
         <meta http-equiv="content-language" content="{{'en'|trans}}" />
-        <link rel="alternate" type="application/rss+xml" title="{{'Nyheder i %companyName%'|trans({'%name%': companyName})}}" href="/feed/rss/" />
+        <link rel="alternate" type="application/rss+xml" title="{{'News on %name%'|trans|replace({'%name%': companyName})}}" href="/feed/rss/" />
         <link title="{{companyName}}" type="application/opensearchdescription+xml" rel="search" href="/opensearch.xml" />
         <link rel="canonical" href="{{renderable.canonicalLink}}" />
         <meta name="Keywords" content="{% for crumb in crumbs %}{{crumb.title}}{% if not loop.last %}, {% endif %}{% endfor %}" />
@@ -26,13 +26,13 @@
                 <a href="/"><img id="logo" src="/theme/arms-gallery.dk/images/logo.gif" alt="{{companyName}}" width="428" title="" /></a>
                 <img src="/theme/default/images/menu.svg" onclick="$('menu').style.left='0'" id="burger" width="30" height="30" />
                 <form action="/search/results/" method="get">
-                    <input name="q" value="{{search}}" placeholder="Søg" id="searchbox" /><input name="sogikke" type="hidden" />
+                    <input name="q" value="{{search}}" placeholder="{{'Search'|trans}}" id="searchbox" /><input name="sogikke" type="hidden" />
                     <input name="minpris" type="hidden" />
                     <input name="maxpris" type="hidden" />
                     <input name="maerke" type="hidden" value="0" />
                     <span class="notmobile">
                         <a href="" onclick="this.parentNode.submit(); return false">
-                            <img src="/theme/arms-gallery.dk/images/søg.gif" alt="Søg" width="15" height="15" title="Søg" />
+                            <img src="/theme/arms-gallery.dk/images/søg.gif" alt="{{'Search'|trans}}" width="15" height="15" title="{{'Search'|trans}}" />
                         </a><br />
                         <a href="/search/" class="note">{{'Advanced search'|trans}}</a>
                     </span>

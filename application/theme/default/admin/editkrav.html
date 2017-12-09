@@ -1,11 +1,11 @@
 {% extends "admin/index.html" %}
 
 {% block actions %}
-<li><a onclick="save_krav();"><img src="/theme/default/images/admin/disk.png" width="16" height="16" alt="" /> Save requirement</a></li>
+<li><a onclick="save_krav();"><img src="/theme/default/images/admin/disk.png" width="16" height="16" alt="" /> {{'Save requirement'|trans}}</a></li>
 {% endblock %}
 
 {% block canvas %}
-<div id="headline">{% if requirement.id %}Edit {{requirement.title}}{% else %}Create new requirement{% endif %}</div>
+<div id="headline">{% if requirement.id %}{{'Edit %title%'|trans|replace({'%title%': requirement.title})}}{% else %}{{'Create new requirement'|trans}}{% endif %}</div>
 <form action="" method="post" onsubmit="return savekrav();">
     <input type="submit" accesskey="s" style="width:1px; height:1px; position:absolute; top: -20px; left:-20px;" />
     <input type="hidden" name="id" id="id" value="{{requirement.id}}" />

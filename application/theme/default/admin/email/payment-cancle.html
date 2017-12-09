@@ -1,5 +1,5 @@
 {% extends "email-admin-payment-confirmation.html" %}
 
 {% block info %}
-<p>{{'A customer tried to see the status page for online invoice #%invoiceId%, which is canceled or rejected.'|trans({'invoiceId': invoice.id})}}</p>
+<p>{{'A customer tried to see the status page for online invoice #%invoiceId%, which is canceled or rejected.'|trans|replace({'%invoiceId%': invoice.id})}}</p>
 {% endblock %}

@@ -1,7 +1,7 @@
 {% extends "admin/index.html" %}
 
 {% block canvas %}
-<div id="headline">Overview</div><div>
+<div id="headline">{{'Overview'|trans}}</div><div>
 {% include 'admin/partial-kat_expand.html' with siteTree only %}
 {% for customPage in siteTree.customPages %}
 <div style="margin-left: 16px;">

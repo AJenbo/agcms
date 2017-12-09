@@ -24,7 +24,7 @@
                 <td>{% if invalid.name %}<img src="/theme/default/images/error.png" alt="">{% endif %}</td>
             </tr>
             <tr>
-                <td> {{'Attn:'|trans}}</td>
+                <td> {{'Attn.:'|trans}}</td>
                 <td colspan="2"><input name="attn" id="attn" style="width:157px" value="{{invoice.attn}}" /></td>
                 <td></td>
             </tr>
@@ -94,7 +94,7 @@
                 <td>{% if invalid.shippingName %}<img src="/theme/default/images/error.png" alt="" >{% endif %}</td>
             </tr>
             <tr class="altpost"{% if not invoice.hasShippingAddress %} style="display:none;"{% endif %}>
-                <td> {{'Attn:'|trans}}</td>
+                <td> {{'Attn.:'|trans}}</td>
                 <td colspan="2">
                     <input name="shippingAttn" id="shippingAttn" style="width:157px" value="{{invoice.shippingAttn}}" />
                 </td>

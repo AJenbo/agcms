@@ -1,9 +1,9 @@
 {% extends "admin/index.html" %}
 
 {% block canvas %}
-<div id="headline">Newsletters</div>
+<div id="headline">{{'Newsletters'|trans}}</div>
 <div>
-    <a href="/admin/newsletters/new/"><img src="/theme/default/images/admin/email_add.png" width="16" height="16" alt="" /> Create new newsletter</a>
+    <a href="/admin/newsletters/new/"><img src="/theme/default/images/admin/email_add.png" width="16" height="16" alt="" /> {{'Create new newsletter'|trans}}</a>
     <br />
     <br />
     {% for newsletter in newsletters %}

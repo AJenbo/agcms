@@ -1,17 +1,19 @@
 {% extends "admin/index.html" %}
 
 {% block actions %}
-    <li>
-        <a onclick="saveListOrder({{customSorting.id|json_encode|raw}});"><img src="/theme/default/images/admin/disk.png" width="16" height="16" alt="" /> Save list</a>
-    </li>
+<li>
+    <a onclick="saveListOrder({{customSorting.id|json_encode|raw}})">
+        <img src="/theme/default/images/admin/disk.png" width="16" height="16" alt="" /> {{'Save list'|trans}}
+    </a>
+</li>
 {% endblock %}
 
 {% block canvas %}
-<div id="headline">Edit {{customSorting.title}} sorting</div>
+<div id="headline">{{'Edit %title% sorting'|trans|replace({'%title%': customSorting.title})}}</div>
 <div>
-    Title: <input id="listOrderNavn" value="{{customSorting.title}}">
+    {{'Title:'|trans}} <input id="listOrderNavn" value="{{customSorting.title}}">
     <form action="" method="post" onsubmit="addNewItem(); return false;">
-        New Item: <input id="newItem"> <input type="submit" value="tilføj" accesskey="t">
+        {{'New Item:'|trans}} <input id="newItem"> <input type="submit" value="{{'add'|trans}}" accesskey="t">
     </form>
 
     <ul id="listOrder" style="width:{{textWidth}}px;">

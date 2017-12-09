@@ -2,21 +2,21 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-        <title>Login</title>
+        <title>{{'Login'|trans}}</title>
         <link type="text/css" rel="stylesheet" href="/theme/default/style/admin/style.css">
     </head>
     <body style="margin:20px;" onload="document.getElementById('form').style.width = document.getElementById('width').offsetWidth+1+'px';">
         <form id="form" action="" method="post" style="margin: auto; text-align: right; background-color: #DDDDDD; border: 1px solid #AAAAAA; padding: 10px;">
             <span id="width">
-                User: <input name="username" /><br />
-                Password: <input type="password" name="password" style="margin-top: 5px;" /><br />
+                {{'User:'|trans}} <input name="username" /><br />
+                {{'Password:'|trans}} <input type="password" name="password" style="margin-top: 5px;" /><br />
                 <input type="submit" value="Log ind" style="margin-top: 5px;" />
             </span>
         </form>
         <p style="text-align: center; margin-top: 20px;">
-            <a href="#" onclick="alert('Ring til Ole og forklar din situation!');">Lost password?</a>
+            <a href="#" onclick="alert('Ring til Ole og forklar din situation!');">{{'Lost password?'|trans}}</a>
             &nbsp;
-            <a href="/admin/users/new/">Create account</a>
+            <a href="/admin/users/new/">{{'Create account'|trans}}</a>
         </p>
     </body>
 </html>

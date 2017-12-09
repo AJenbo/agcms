@@ -1,9 +1,9 @@
 {% extends "admin/index.html" %}
 
 {% block canvas %}
-<div id="headline">List sorting</div>
+<div id="headline">{{'List sorting'|trans}}</div>
 <div>
-    <a href="/admin/sortings/new/">Create new sorting</a><br />
+    <a href="/admin/sortings/new/">{{'Create new sorting'|trans}}</a><br />
     <br />
     {% for list in lists %}
         <a href="/admin/sortings/{{list.id}}/"><img src="/theme/default/images/admin/shape_align_left.png" width="16" height="16" alt="" /> {{list.title}}</a><br />

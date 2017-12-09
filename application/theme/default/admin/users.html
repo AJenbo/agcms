@@ -1,17 +1,17 @@
 {% extends "admin/index.html" %}
 
 {% block actions %}
-<li><a href="/admin/users/new/"><img src="/theme/default/images/admin/table_add.png" width="16" height="16" alt="" title="Create new" /> Create new</a></li>
+<li><a href="/admin/users/new/"><img src="/theme/default/images/admin/table_add.png" width="16" height="16" alt="" /> {{'Create new'|trans}}</a></li>
 {% endblock %}
 
 {% block canvas %}
-<div id="headline">Users and Groups</div>
+<div id="headline">{{'Users and Groups'|trans}}</div>
 <table id="list">
     <thead>
         <tr>
             <td></td>
-            <td><a href="/admin/users/">Name</a></td>
-            <td><a href="/admin/users/?order=date">Last online</a></td>
+            <td><a href="/admin/users/">{{'Name'|trans}}</a></td>
+            <td><a href="/admin/users/?order=date">{{'Last online'|trans}}</a></td>
         </tr>
     </thead>
     <tbody>
@@ -19,7 +19,7 @@
         <tr>
             <td>
             {% if currentUser.accessLevel %}
-                <img src="/theme/default/images/admin/cross.png" alt="X" title="Delete" onclick="deleteuser({{user.id}}, {{user.fullName|json_encode()}})" />
+                <img src="/theme/default/images/admin/cross.png" alt="X" title="{{'Delete'|trans}}" onclick="deleteuser({{user.id}}, {{user.fullName|json_encode()}})" />
             {% endif %}
             </td>
             <td><a href="/admin/users/{{user.id}}/">{{user.fullName}}</a></td>

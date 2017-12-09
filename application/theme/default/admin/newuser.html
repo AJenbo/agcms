@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-        <title>Create account</title>
+        <title>{{'Create account'|trans}}</title>
         <link type="text/css" rel="stylesheet" href="/theme/default/style/admin/style.css">
         <style type="text/css">
             table, td, tr {
@@ -13,11 +13,11 @@
             function validate()
             {
                 if (document.getElementById('fullname').value == '' || document.getElementById('name').value == '' || document.getElementById('password').value == '') {
-                    alert('All fields must be filled.');
+                    alert({{'All fields must be filled.'|trans|json_encode|raw}});
                     return false;
                 }
                 if (document.getElementById('password').value != document.getElementById('password2').value) {
-                    alert('The passwords does not match.');
+                    alert({{'The passwords does not match.'|trans|json_encode|raw}});
                     return false;
                 }
             }
@@ -27,19 +27,19 @@
         <form action="" method="post" onsubmit="return validate();">
             <table style="background-color: #DDDDDD; border: 1px solid #AAAAAA; padding: 7px; margin: auto;">
                 <tr>
-                    <td>Fullname:</td>
+                    <td>{{'Fullname:'|trans}}</td>
                     <td><input id="fullname" name="fullname" /></td></tr>
                 <tr>
-                    <td>Username:</td>
+                    <td>{{'Username:'|trans}}</td>
                     <td><input id="name" name="name" /></td></tr>
                 <tr>
-                    <td>Password:</td>
+                    <td>{{'Password:'|trans}}</td>
                     <td><input id="password" name="password" type="password" /></td></tr>
                 <tr>
-                    <td>Repeat password:</td>
+                    <td>{{'Repeat password:'|trans}}</td>
                     <td><input id="password2" name="password2" type="password" /></td></tr>
                 <tr>
-                    <td colspan="2" align="center"><input type="submit" style="margin-top:6px; width:52; height:24;" value="Create account" /></td></tr>
+                    <td colspan="2" align="center"><input type="submit" style="margin-top:6px; width:52; height:24;" value="{{'Create account'|trans}}" /></td></tr>
             </table>
         </form>
         {% if message %}<p style="text-align: center; margin-top: 20px;">{{message}}</p>{% endif %}

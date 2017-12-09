@@ -5,7 +5,7 @@
 <p align="center">
     {% if brand.canonicalLink %}
     <a rel="nofollow" target="_blank" href="{{brand.canonicalLink}}">
-        {{'Read more about %title%'|trans({'title': brand.title})}}
+        {{'Read more about %title%'|trans|replace({'%title%': brand.title})}}
         {% else %}
         {{brand.title}}
         {% endif %}
