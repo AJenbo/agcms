@@ -11,7 +11,12 @@
     {% if renderable.requirement %}<p><a href="{{renderable.requirement.canonicalLink}}" target="krav">{{renderable.requirement.title}}</a></p>{% endif %}
     <p style="text-align:center">
         {% include 'price.html' with {'product': renderable} %}
-        {% if product.price and not hasProductList %}<a href="" onclick="shoppingCart.addItem('page', {{renderable.id}}); return false">+ {{'Add to shopping cart'|trans}}</a>{% endif %}
+        {% if renderable.price > 0 and not hasProductTable %}
+        <br />
+        <a href="" onclick="shoppingCart.addItem('page',{{renderable.id}});return false">
+            {{'Add to shopping cart'|trans}}
+        </a>
+        {% endif %}
         <br />
     </p>
 </div>
