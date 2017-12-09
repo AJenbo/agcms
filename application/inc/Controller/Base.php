@@ -73,6 +73,7 @@ class Base extends AbstractController
             'companyPhone'   => Config::get('phone'),
             'companyEmail'   => first(Config::get('emails'))['address'],
             'localeconv'     => localeconv(),
+            'blankImage'     => Config::get('blank_image', '/theme/default/images/intet-foto.jpg'),
         ];
     }
 }
