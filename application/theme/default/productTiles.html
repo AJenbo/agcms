@@ -1,7 +1,7 @@
 {% if products %}
 <table cellspacing="0" id="liste">
     {% for product in products %}
-    {% if loop.index is even %}<tr>{% endif %}
+    {% if loop.index is odd or loop.first %}<tr>{% endif %}
         <td>
             <a href="{{product.canonicalLink(category)}}">
                 {% if product.icon %}<img src="{{product.icon.path}}" alt="" /><br />{% endif %}
@@ -9,7 +9,7 @@
                 {% include 'price.html' %}
             </a>
         </td>
-    {% if loop.index is odd or loop.last %}</tr>{% endif %}
+    {% if loop.index is even or loop.last %}</tr>{% endif %}
     {% endfor %}
 </table>
 {% endif %}
