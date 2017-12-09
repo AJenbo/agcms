@@ -1,10 +1,11 @@
 {% extends "index.html" %}
 
 {% block content %}
-<div id="innercontainer"><div id="date">{{renderable.timeStamp|date('d-m-Y H:i:s')}}</div>
+<div id="innercontainer">
+    <div id="date">{{renderable.timeStamp|date('d-m-Y H:i:s')}}</div>
     <h1>
         {{renderable.title}}
-        {% if renderable.sku %} <span style="font-weight:normal; font-size:13px">{{'SKU:'|trans}} {{renderable.sku}}</span>{% endif %}
+        {% if renderable.sku %} <span style="font-weight:normal;font-size:13px">{{'SKU:'|trans}} {{renderable.sku}}</span>{% endif %}
     </h1>
     {{renderable.html|raw}}
     {% if renderable.requirement %}<p><a href="{{renderable.requirement.canonicalLink}}" target="krav">{{renderable.requirement.title}}</a></p>{% endif %}
