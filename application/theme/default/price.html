@@ -9,7 +9,7 @@
     {{product.oldPrice|number_format(2, localeconv.mon_decimal_point, localeconv.mon_thousands_sep)}}</span>
 {% endif %}
 
-{% if product.price %}
+{% if product.price > 0 %}
     {% if product.priceType == 1 and product.oldPrice %}
         <span class="NyPris">{{'New price from:'|trans}}
     {% elseif product.priceType == 2 and product.oldPrice %}
@@ -24,4 +24,6 @@
         {{'Price:'|trans}} <span class="Pris">
     {% endif %}
     {{product.price|number_format(2, localeconv.mon_decimal_point, localeconv.mon_thousands_sep)}}</span>
+{% elseif product.price < 0 %}
+    <span class="Pris">{{'Sold out'|trans}}</span>
 {% endif %}
