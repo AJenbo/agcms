@@ -81,6 +81,8 @@ class Invoice extends AbstractEntity
     private $department = '';
     /** @var string Internal note */
     private $internalNote = '';
+    /** @var int Payment id */
+    private $paymentId;
     // Dynamic
     /** @var array[] */
     private $items = [];
@@ -191,6 +193,30 @@ class Invoice extends AbstractEntity
     public function getTimeStampPay(): ?int
     {
         return $this->timeStampPay;
+    }
+
+    /**
+     * Set payment id.
+     *
+     * @param int $paymentId
+     *
+     * @return $this
+     */
+    public function setPaymentId(int $paymentId): self
+    {
+        $this->paymentId = $paymentId;
+
+        return $this;
+    }
+
+    /**
+     * Get payment id.
+     *
+     * @return ?int
+     */
+    public function getPaymentId(): ?int
+    {
+        return $this->paymentId;
     }
 
     /**
@@ -1352,6 +1378,7 @@ class Invoice extends AbstractEntity
             'iref'           => db()->eandq($this->iref),
             'eref'           => db()->eandq($this->eref),
             'sendt'          => (string) (int) $this->sent,
+            'payment_id'     => null !== $this->paymentId ? (string) $this->paymentId : 'NULL',
             'department'     => db()->eandq($this->department),
             'enote'          => db()->eandq($this->internalNote),
         ];
