@@ -228,7 +228,11 @@ class Application
      */
     private function matchRoute(string $metode, string $requestUrl): Closure
     {
-        foreach ($this->routes[$metode] as $route) {
+        if ('HEAD' === $metode) {
+            $metode = 'GET';
+        }
+
+        foreach ($this->routes[$metode] ?? [] as $route) {
             if (preg_match('%^' . $route['url'] . '$%u', $requestUrl, $matches)) {
                 return function (Request $request) use ($route, $matches): Response {
                     $matches[0] = $request;
