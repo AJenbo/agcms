@@ -179,7 +179,7 @@ class Site extends Base
             'renderable' => $brand,
         ] + $this->basicPageData();
         $data['crumbs'][] = $brand;
-        $content = Render::render('list', $data);
+        $content = Render::render('tiles', $data);
 
         return new Response($content);
     }
