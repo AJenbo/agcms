@@ -132,7 +132,7 @@ class Email extends AbstractEntity
     public function setSenderName(string $senderName): self
     {
         if (!$senderName) {
-            throw new InvalidInput(_('Sender address is not valid.'));
+            throw new InvalidInput(_('Sender name required.'));
         }
 
         $this->senderName = $senderName;
@@ -158,7 +158,7 @@ class Email extends AbstractEntity
     public function setSenderAddress(string $senderAddress): self
     {
         if (!$this->emailService->valideMail($senderAddress)) {
-            throw new InvalidInput(_('Sender name required.'));
+            throw new InvalidInput(_('Sender address is not valid.'));
         }
 
         $this->senderAddress = $senderAddress;
@@ -184,7 +184,7 @@ class Email extends AbstractEntity
     public function setRecipientName(string $recipientName): self
     {
         if (!$recipientName) {
-            throw new InvalidInput(_('Recipient address is not valid.'));
+            throw new InvalidInput(_('Recipient name required.'));
         }
 
         $this->recipientName = $recipientName;
@@ -210,7 +210,7 @@ class Email extends AbstractEntity
     public function setRecipientAddress(string $recipientAddress): self
     {
         if (!$this->emailService->valideMail($recipientAddress)) {
-            throw new InvalidInput(_('Recipient name required.'));
+            throw new InvalidInput(_('Recipient address is not valid.'));
         }
 
         $this->recipientAddress = $recipientAddress;
