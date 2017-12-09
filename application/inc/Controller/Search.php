@@ -71,14 +71,21 @@ class Search extends Base
     {
         $this->checkSearchable($request);
 
-        $pages = $this->findPages(
-            $request->get('q', ''),
-            (int) $request->get('maerke', 0),
-            $request->get('varenr', ''),
-            (int) $request->get('minpris', 0),
-            (int) $request->get('maxpris', 0),
-            $request->get('sogikke', '')
-        );
+        $searchString = $request->get('q', '');
+        $brandId = $request->query->getInt('maerke');
+        $varenr = $request->get('varenr', '');
+        $minpris = $request->query->getInt('minpris', 0);
+        $maxpris = $request->query->getInt('maxpris', 0);
+        $antiWords = $request->get('sogikke', '');
+
+        if ($brandId && !$searchString && !$varenr && !$minpris && !$maxpris && !$antiWords) {
+            $brand = ORM::getOne(Brand::class, $brandId);
+            if ($brand) {
+                return $this->redirect($request, $brand->getCanonicalLink(), Response::HTTP_PERMANENTLY_REDIRECT);
+            }
+        }
+
+        $pages = $this->findPages($searchString, $brandId, $varenr, $minpris, $maxpris, $antiWords);
         if (1 === count($pages)) {
             $page = array_shift($pages);
 
