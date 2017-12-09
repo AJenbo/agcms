@@ -1,29 +1,5 @@
 {% extends "index.html" %}
 
-{% block content %}
-{% if brand %}
-<p align="center">
-    {% if brand.canonicalLink %}
-    <a rel="nofollow" target="_blank" href="{{brand.canonicalLink}}">
-        {{'Read more about %title%'|trans|replace({'%title%': brand.title})}}
-        {% else %}
-        {{brand.title}}
-        {% endif %}
-        {% if brand.icon %}
-        <br />
-        <img src="{{brand.icon.path}}" alt="{{brand.icon.description}}" width="{{brand.icon.width}}" height="{{brand.icon.height}}" />
-        {% endif %}
-    {% if brand.canonicalLink %}</a>{% endif %}
-</p>
-{% endif %}
-
-{% if renderable.pages %}
 {% block products %}
-<div id="kat{{renderable.id}}">
-    {% include 'productTiles.html' with {'orderBy': 'navn'} %}
-</div>
-{% endblock %}
-{% elseif search %}
-<p align="center" class="web">{{'The search did not return any results'|trans}}</p>
-{% endif %}
+{% include 'productTiles.html' with {'products': renderable.pages} %}
 {% endblock %}
