@@ -2,7 +2,7 @@
 
 {% block canvas %}
 <div id="headline">{{title}}</div>
-<table style="width:100%; margin:0 0 113px 0">
+<table id="list" style="width:100%; margin:0 0 113px 0">
     <thead>
         <tr>
             <td>{{'ID'|trans}}</td>
@@ -13,7 +13,7 @@
             <td style="width:16px;"></td>
         </tr>
     </thead>
-    <tbody id="list">
+    <tbody>
         {% for invoice in invoices %}
         <tr>
             <td style="text-align:right"><a href="/admin/invoices/{{invoice.id}}/">{{invoice.id}}</a></td>
