@@ -475,7 +475,7 @@ class ExplorerController extends AbstractAdminController
         /** @var ?UploadedFile */
         $uploadedFile = $request->files->get('upload');
         if (!$uploadedFile) {
-            throw new InvalidInput(_('File not recived.'));
+            throw new InvalidInput(_('No file received.'));
         }
 
         $currentDir = $request->cookies->get('admin_dir', '/images');

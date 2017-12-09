@@ -18,10 +18,10 @@
         <table id="faktura" cellspacing="0">
             <thead>
                 <tr>
-                    <td class="td1">{{'Quantity</td>
-                    <td>{{'Title</td>
-                    <td class="td3 tal">{{'unit price</td>
-                    <td class="td4 tal">{{'Total</td>
+                    <td class="td1">{{'Quantity'|trans}}</td>
+                    <td>{{'Title'|trans}}</td>
+                    <td class="td3 tal">{{'unit price'|trans}}</td>
+                    <td class="td4 tal">{{'Total'|trans}}</td>
                 </tr>
             </thead>
             <tbody>
@@ -57,7 +57,7 @@
             {% if invoice.shippingCountry != 'DK' %}<br />{{invoice.shippingCountry}}{% endif %}
         </p>
         {% endif %}
-        <p>{{'Click '|trans}}<a href="{{invoice.adminLink}}">{{'here'|trans}}</a>{{' to expedite the order.'|trans}}</p>
+        <p>{{'Click '|trans}}<a href="{{invoice.adminLink}}">{{'here'|trans}}</a>{{' to process the order.'|trans}}</p>
         <p>
             email: <a href="mailto:{{invoice.email}}">{{invoice.email}}</a>
             {% if invoice.phone1 %}{{'Phone:'|trans}}{{invoice.phone1}}{% endif %}

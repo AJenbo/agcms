@@ -182,7 +182,7 @@ class UserController extends AbstractAdminController
         /** @var User */
         $user = $request->user();
         if (!$user->hasAccess(User::ADMINISTRATOR) && $user->getId() !== $id) {
-            throw new InvalidInput(_('You do not have the requred access level to change other users.'), 403);
+            throw new InvalidInput(_('You do not have permissions to edit users.'), 403);
         }
 
         // Validate access lavel update

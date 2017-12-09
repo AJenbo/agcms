@@ -69,7 +69,7 @@ class Invoice extends AbstractEntity
     private $preVat = true;
     /** @var bool Has the money been transfered */
     private $transferred = false;
-    /** @var string Name of used electronic payment methode */
+    /** @var string Name of used electronic payment method */
     private $cardtype = '';
     /** @var string Internal reference */
     private $iref = '';

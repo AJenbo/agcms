@@ -130,14 +130,14 @@ class SiteTreeController extends AbstractAdminController
         $sort = $request->get('sort', 'navn');
 
         $sortOptions = [
-            'id'     => 'ID',
-            'navn'   => 'Navn',
-            'varenr' => 'Varenummer',
-            'for'    => 'Før pris',
-            'pris'   => 'Nu Pris',
-            'dato'   => 'Sidst ændret',
-            'maerke' => 'Mærke',
-            'krav'   => 'Krav',
+            'id'     => _('ID'),
+            'navn'   => _('Title'),
+            'varenr' => _('SKU'),
+            'for'    => _('Previous price'),
+            'pris'   => _('Price'),
+            'dato'   => _('Updated'),
+            'maerke' => _('Brand'),
+            'krav'   => _('Requirement'),
         ];
 
         $reverseOrder = false;

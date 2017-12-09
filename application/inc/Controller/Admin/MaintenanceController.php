@@ -301,7 +301,7 @@ class MaintenanceController extends AbstractAdminController
         if ($errors) {
             $msg = ngettext(
                 'The following %d file is in a folder that needs to be renamed:',
-                'The following %d files are in folders that needs to be renamed:',
+                'The following %d files are a folder that needs to be renamed:',
                 count($errors)
             );
             $html .= '<br /><b>' . sprintf($msg, count($errors)) . '</b><br /><a onclick="explorer(\'\',\'\');">';
@@ -364,8 +364,8 @@ class MaintenanceController extends AbstractAdminController
             $cronStatus->save();
 
             $msg = ngettext(
-                '%d of %d e-mail was sent.',
-                '%d of %d e-mails was sent.',
+                '%d of %d email was sent.',
+                '%d of %d emails was sent.',
                 $emailsSendt
             );
             $html = sprintf($msg, $emailsSendt, count($emails));

@@ -5,7 +5,7 @@
 {% endblock %}
 
 {% block canvas %}
-<div id="headline">{{'Edit the brand %title%'|trans|replace({'%title%': brand.title})}}</div>
+<div id="headline">{{'Edit %title%'|trans|replace({'%title%': brand.title})}}</div>
 <form onsubmit="return updatemaerke({{brand.id}})">
     {% include 'admin/partial-maerker.html' %}
     <div id="imagelogo" style="display:none; position:absolute;"></div>

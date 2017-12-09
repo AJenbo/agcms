@@ -9,7 +9,7 @@
 {% endblock %}
 
 {% block canvas %}
-<div id="headline">{{'Edit %title% sorting'|trans|replace({'%title%': customSorting.title})}}</div>
+<div id="headline">{{'Edit %title%'|trans|replace({'%title%': customSorting.title})}}</div>
 <div>
     {{'Title:'|trans}} <input id="listOrderNavn" value="{{customSorting.title}}">
     <form action="" method="post" onsubmit="addNewItem(); return false;">

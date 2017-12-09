@@ -127,7 +127,7 @@ class InvoiceController extends AbstractAdminController
                 'new'      => _('New'),
                 'locked'   => _('Locked'),
                 'pbsok'    => _('Ready'),
-                'accepted' => _('Expedited'),
+                'accepted' => _('Processed'),
                 'giro'     => _('Giro'),
                 'cash'     => _('Cash'),
                 'pbserror' => _('Error'),
@@ -387,7 +387,7 @@ class InvoiceController extends AbstractAdminController
         }
 
         $data = [
-            'title'       => $invoice ? _('Online Invoice #') . $invoice->getId() : _('Create Invoice'),
+            'title'       => $invoice ? _('Online Invoice #') . $invoice->getId() : _('Create invoice'),
             'invoice'     => $invoice,
             'currentUser' => $user,
             'users'       => ORM::getByQuery(User::class, 'SELECT * FROM `users` ORDER BY fullname'),

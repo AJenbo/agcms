@@ -66,7 +66,7 @@ class UploadHandler
         string $description
     ): File {
         if (!$uploadedFile->isValid()) {
-            throw new InvalidInput(_('No file recived.'));
+            throw new InvalidInput(_('No file received.'));
         }
 
         $fileName = $uploadedFile->getClientOriginalName();

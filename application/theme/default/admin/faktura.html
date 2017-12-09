@@ -3,7 +3,7 @@
 {% block actions %}
 {% if invoice.status == 'pbsok' %}
 <li>
-    <a onclick="return pbsconfirm({{invoice.id}})"><img src="/theme/default/images/admin/money.png" alt="" width="16" height="16" /> {{'Expedite'|trans}}</a>
+    <a onclick="return pbsconfirm({{invoice.id}})"><img src="/theme/default/images/admin/money.png" alt="" width="16" height="16" /> {{'Process'|trans}}</a>
 </li>
 <li><a onclick="return annul({{invoice.id}})"><img src="/theme/default/images/admin/bin.png" alt="" width="16" height="16" /> {{'Reject'|trans}}</a></li>
 {% endif %}
@@ -112,7 +112,7 @@
             {% elseif invoice.status == 'locked' %}
             {{'Locked for editing'|trans}}
             {% elseif invoice.status == 'pbsok' %}
-            {{'Ready to expedite'|trans}}
+            {{'Ready for processing'|trans}}
             {% elseif invoice.status == 'accepted' %}
             {% if invoice.timeStampPay %}
             {{'Paid online the %date%'|trans|replace({'%date%': invoice.timeStampPay|date('d-m-Y')})}}
@@ -143,7 +143,7 @@
         </td>
     </tr>
     <tr>
-        <td>{{'Recived:'|trans}}</td>
+        <td>{{'Received:'|trans}}</td>
         <td>
             {% if invoice.transferred %}{{'Yes'|trans}}{% else %}{{'No'|trans}}{% endif %}
             {% if currentUser.accessLevel == 1 and invoice.transferred %}
@@ -165,7 +165,7 @@
         </td>
     </tr>
     <tr>
-        <td>{{'Ansvarlig:'|trans}}</td>
+        <td>{{'Assigned:'|trans}}</td>
         <td>
             {% if currentUser.accessLevel == 1 and users|length > 1 and invoice.status not in ['giro', 'cash', 'accepted', 'canceled'] %}
             <select name="clerk" id="clerk">

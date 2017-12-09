@@ -396,7 +396,7 @@ class Table extends AbstractEntity
         /** @var ?Page */
         $page = ORM::getOne(Page::class, $this->pageId);
         if (!$page) {
-            throw new Exception(_('The page has gone missing'));
+            throw new Exception(_('Page not found.'));
         }
 
         return $page;

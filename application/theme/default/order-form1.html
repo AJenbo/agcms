@@ -8,14 +8,14 @@
                 <td>{{'Phone:'|trans}} </td>
                 <td colspan="2"><input name="phone1" id="phone1" style="width:157px" value="{{invoice.phone1}}" /></td>
                 <td>
-                    <input type="button" value="{{'Hent adresse'|trans}}" onclick="getAddress(document.getElementById('phone1').value, getAddress_r1);" />
+                    <input type="button" value="{{'Get address'|trans}}" onclick="getAddress(document.getElementById('phone1').value, getAddress_r1);" />
                 </td>
             </tr>
             <tr>
                 <td>{{'Mobile:'|trans}} </td>
                 <td colspan="2"><input name="phone2" id="phone2" style="width:157px" value="{{invoice.phone2}}" /></td>
                 <td>
-                    <input type="button" value="{{'Hent adresse'|trans}}" onclick="getAddress(document.getElementById('phone2').value, getAddress_r1);" />
+                    <input type="button" value="{{'Get address'|trans}}" onclick="getAddress(document.getElementById('phone2').value, getAddress_r1);" />
                 </td>
             </tr>
             <tr>
@@ -67,7 +67,7 @@
                 <td>{% if invalid.country %}<img src="/theme/default/images/error.png" alt="" >{% endif %}</td>
             </tr>
             <tr>
-                <td> {{'E-mail:'|trans}}</td>
+                <td> {{'Email:'|trans}}</td>
                 <td colspan="2"><input name="email" id="email" style="width:157px" value="{{invoice.email}}" /></td>
                 <td>{% if invalid.email %}<img src="/theme/default/images/error.png" alt="" >{% endif %}</td>
             </tr>
@@ -83,7 +83,7 @@
                     <input name="shippingPhone" id="shippingPhone" style="width:157px" value="{{invoice.shippingPhone}}" />
                 </td>
                 <td>
-                    <input type="button" value="Hent adresse" onclick="getAddress(document.getElementById('shippingPhone').value, getAddress_r2);" />
+                    <input type="button" value="{{'Get address'|trans}}" onclick="getAddress(document.getElementById('shippingPhone').value, getAddress_r2);" />
                 </td>
             </tr>
             <tr class="altpost"{% if not invoice.hasShippingAddress %} style="display:none;"{% endif %}>

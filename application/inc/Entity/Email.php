@@ -80,7 +80,7 @@ class Email extends AbstractEntity
     public function setSubject(string $subject): self
     {
         if (!$subject) {
-            throw new InvalidInput(_('Email subject is required.'));
+            throw new InvalidInput(_('Subject required.'));
         }
 
         $this->subject = $subject;

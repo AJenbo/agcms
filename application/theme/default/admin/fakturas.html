@@ -25,7 +25,7 @@
             <td>{{'Month:'|trans}}</td>
             <td>{{'Clerk:'|trans}}</td>
             <td>{{'Status:'|trans}}</td>
-            <td>{{'Vat:'|trans}}</td>
+            <td>{{'VAT:'|trans}}</td>
         </tr>
         <tr>
             <td>
@@ -115,7 +115,7 @@
     <thead>
         <tr>
             <td style="width:16px;"></td>
-            <td>{{'I'|trans}}D</td>
+            <td>{{'ID'|trans}}</td>
             <td>{{'Created'|trans}}</td>
             {% if not selected.clerk %}<td>{{'Responsible'|trans}}</td>{% endif %}
             <td>{{'Amount'|trans}}</td>
@@ -136,7 +136,7 @@
                     {% elseif invoice.status == 'pbsok' %}
                     <img src="/theme/default/images/admin/money.png" alt="{{'Ready'|trans}}" title="{{'Ready'|trans}}" />
                     {% elseif invoice.status == 'accepted' %}
-                    <img src="/theme/default/images/admin/creditcards.png" alt="{{'Expedited'|trans}}" title="{{'Expedited'|trans}}" />
+                    <img src="/theme/default/images/admin/creditcards.png" alt="{{'Processed'|trans}}" title="{{'Processed'|trans}}" />
                     {% elseif invoice.status == 'giro' %}
                     <img src="/theme/default/images/admin/building.png" alt="{{'Giro'|trans}}" title="{{'Giro'|trans}}" />
                     {% elseif invoice.status == 'cash' %}

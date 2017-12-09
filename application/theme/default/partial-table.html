@@ -19,7 +19,7 @@
             {% for column in table.columns %}
             <td{% if column.type %} style="text-align:right;"{% endif %}{% if column.type > 2 %} class="{% if column.type == 2 %}Pris{% elseif column.type == 3 %}NyPris{% elseif column.type == 4 %}XPris{% endif %}"{% endif %}>
                 {% if table.hasLinks %}<a href="{{row.page.canonicalLink(category)}}">{% endif %}
-                    {% if column.type < 2 %}{{row[loop.index0]}}{% else %}{% if row[loop.index0] > 0 %}{{row[loop.index0]|number_format(0, ',', '.')}}{{',00'|trans}}{% else %}{{'Sold out'|trans}}{% endif %}{% endif %}
+                    {% if column.type < 2 %}{{row[loop.index0]}}{% else %}{% if row[loop.index0] > 0 %}{{row[loop.index0]|number_format(0, ',', '.')}}{{'.00'|trans}}{% else %}{{'Sold out'|trans}}{% endif %}{% endif %}
                 {% if table.hasLinks %}</a>{% endif %}
             </td>
             {% endfor %}

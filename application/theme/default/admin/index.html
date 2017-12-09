@@ -25,13 +25,13 @@
     <body onload="init()">
         <div id="canvas">{% block canvas %}{% endblock %}</div>
         <div id="mainmenu">
-            <a class="menuboxheader" onclick="showhide('Activity');">{{'Handlinger'|trans}}</a>
+            <a class="menuboxheader" onclick="showhide('Activity');">{{'Actions'|trans}}</a>
             <ul id="Activity"{% if hide.activity %} style="display:none"{% endif %}>
                 {% block actions %}{% endblock %}
                 <li id="loading" style="cursor:default;"><img src="/theme/default/images/admin/loading.gif" width="16" height="16" alt="{{'Processing'|trans}}" /> {{'Loading'|trans}}</li>
                 <li><a href="/admin/logout"><img src="/theme/default/images/admin/door_in.png" width="16" height="16" alt="" /> {{'Log out'|trans}}</a></li>
             </ul>
-            <a class="menuboxheader" onclick="showhide('Indhold');">{{'Indhold'|trans}}</a>
+            <a class="menuboxheader" onclick="showhide('Indhold');">{{'Content'|trans}}</a>
             <ul id="Indhold"{% if hide.indhold %} style="display:none"{% endif %}>
                 <li><a href="/admin/page/"><img src="/theme/default/images/admin/page_add.png" width="16" height="16" alt="" /> {{'Create page'|trans}}</a></li>
                 <li><a href="/admin/categories/"><img src="/theme/default/images/admin/folder_add.png" width="16" height="16" alt="" /> {{'Create category'|trans}}</a></li>
@@ -66,7 +66,7 @@
                 <li><a href="/admin/addressbook/list/"><img src="/theme/default/images/admin/book_addresses.png" width="16" height="16" alt="" /> {{'Address Book'|trans}}</a></li>
                 <li><a href="/admin/maintenance/"><img src="/theme/default/images/admin/database_error.png" width="16" height="16" alt="" /> {{'Maintenance'|trans}}</a></li>
                 <li><a href="/admin/users/"><img src="/theme/default/images/admin/group_edit.png" width="16" height="16" alt="" /> {{'Users and Groups'|trans}}</a></li>
-                <li><a href="/admin/sitetree/inventory/"><img src="/theme/default/images/admin/book_open.png" width="16" height="16" alt="" /> {{'Price list'|trans}}</a></li>
+                <li><a href="/admin/sitetree/inventory/"><img src="/theme/default/images/admin/book_open.png" width="16" height="16" alt="" /> {{'Pricelist'|trans}}</a></li>
                 <li><a href="/admin/invoices/"><img src="/theme/default/images/admin/table_multiple.png" width="16" height="16" alt="" /> {{'Invoices'|trans}}</a></li>
             </ul>
         </div>
