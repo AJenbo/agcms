@@ -62,6 +62,7 @@ CREATE TABLE IF NOT EXISTS `emails` (
 
 CREATE TABLE IF NOT EXISTS `fakturas` (
   `id` smallint(5) unsigned NOT NULL AUTO_INCREMENT,
+  `payment_id` int(11) DEFAULT NULL,
   `status` varchar(8) CHARACTER SET utf8 NOT NULL DEFAULT 'new',
   `quantities` varchar(255) COLLATE utf8_danish_ci NOT NULL,
   `products` text COLLATE utf8_danish_ci NOT NULL,
@@ -432,4 +433,3 @@ ALTER TABLE `template`
 ALTER TABLE `tilbehor`
   ADD CONSTRAINT `tilbehor_ibfk_1` FOREIGN KEY (`side`) REFERENCES `sider` (`id`) ON DELETE CASCADE,
   ADD CONSTRAINT `tilbehor_ibfk_2` FOREIGN KEY (`tilbehor`) REFERENCES `sider` (`id`) ON DELETE CASCADE;
-
