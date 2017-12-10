@@ -5,7 +5,9 @@
     <div id="date">{{renderable.timeStamp|date('d-m-Y H:i:s')}}</div>
     <h1>
         {{renderable.title}}
-        {% if renderable.sku %} <span style="font-weight:normal;font-size:13px">{{'SKU:'|trans}} {{renderable.sku}}</span>{% endif %}
+        {% if renderable.sku %}
+        <span style="font-weight:normal;font-size:13px">{{'SKU:'|trans}} {{renderable.sku}}</span>
+        {% endif %}
     </h1>
     {{renderable.html|raw}}
     {% for table in renderable.tables %}
@@ -15,8 +17,9 @@
     </div>
     {% endif %}
     {% endfor %}
-    {% if renderable.requirement %}<p><a href="{{renderable.requirement.canonicalLink}}" target="krav">{{renderable.requirement.title}}</a></p>{% endif %}
-    <p style="text-align:center">
+    {% if renderable.requirement %}
+    <p><a href="{{renderable.requirement.canonicalLink}}" target="krav">{{renderable.requirement.title}}</a></p>
+    {% endif %}
         {% include 'price.html' with {'product': renderable} %}
         {% if renderable.price > 0 and not hasProductTable %}
         <br />
@@ -24,7 +27,6 @@
             {{'Add to shopping cart'|trans}}
         </a>
         {% endif %}
-        <br />
     </p>
 </div>
 
