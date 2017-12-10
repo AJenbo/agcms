@@ -512,7 +512,7 @@ function removeNoneExistingFiles() {
 function removeNoneExistingFiles_r(data) {
     var missingHtml = "";
     if (data.missingFiles) {
-        missingHtml = "<b>The folloding files are missing:</b><a onclick=\"explorer('','')\">";
+        missingHtml = "<b>The following files are missing:</b><a onclick=\"explorer('','')\">";
         for (var i = 0; i < data.missingFiles.length; i++) {
             missingHtml += "<br />";
             missingHtml += data.missingFiles[i];
