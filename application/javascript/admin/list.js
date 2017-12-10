@@ -45,13 +45,13 @@ function listInsertRow_r(data) {
     for (i = 0; i < footer.childNodes.length - 1; i++) {
         td = document.createElement("td");
         td.style.textAlign = footer.childNodes[i].firstChild.style.textAlign;
-        span = document.createElement("span");
-        span.appendChild(document.createTextNode(footer.childNodes[i].firstChild.value));
-        td.appendChild(span);
         input = document.createElement("input");
         input.setAttribute("value", footer.childNodes[i].firstChild.value);
         input.style.display = "none";
         td.appendChild(input);
+        span = document.createElement("span");
+        span.appendChild(document.createTextNode(footer.childNodes[i].firstChild.value));
+        td.appendChild(span);
         tr.appendChild(td);
 
         footer.childNodes[i].firstChild.value = "";
