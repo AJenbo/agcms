@@ -133,7 +133,7 @@ class InvoiceService
     public function generateExtraNote(array $cart): string
     {
         $notes = [];
-        switch ($cart['paymethod'] ?? '') {
+        switch ($cart['payMethod'] ?? '') {
             case 'creditcard':
                 $notes[] = _('I would like to pay via credit card.');
                 break;
@@ -144,7 +144,7 @@ class InvoiceService
                 $notes[] = _('I would like to pay via cash.');
                 break;
         }
-        switch ($cart['delevery'] ?? '') {
+        switch ($cart['deleveryMethode'] ?? '') {
             case 'pickup':
                 $notes[] = _('I will pick up the goods in your shop.');
                 break;
