@@ -238,7 +238,7 @@ h1 {
     height:100%;
 }
 
-#text {
+#text, #innercontainer {
     width:525px;
     border:1px solid #999999;
     margin:8px auto;
@@ -246,7 +246,7 @@ h1 {
     padding:10px;
 }
 
-#text, #text table {
+#text, #innercontainer, #innercontainer table, #text table {
     font-size:13px;
     font-family:"Times New Roman", Times, serif;
 }
@@ -513,7 +513,7 @@ marquee {
         bottom:
     }
 
-    #text {
+    #text, #innercontainer {
         width:auto;
         padding:2px;
         margin:auto;
