@@ -21,7 +21,7 @@
             <td class="Pris" align="right">
                 {% if page.price > 0 %}
                 {{page.price|number_format(0, ',', '.')}},-
-                {% elseif page.price %}
+                {% elseif page.price < 0 %}
                 {{'Sold-out'|trans}}
                 {% endif %}
             </td>
