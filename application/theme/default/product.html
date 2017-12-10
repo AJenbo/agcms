@@ -20,14 +20,26 @@
     {% if renderable.requirement %}
     <p><a href="{{renderable.requirement.canonicalLink}}" target="krav">{{renderable.requirement.title}}</a></p>
     {% endif %}
-        {% include 'price.html' with {'product': renderable} %}
+    {% if renderable.sku or renderable.price > 0 or renderable.brand %}
+    <p vocab="http://schema.org/" typeof="Product" style="text-align:center">
+        {% if renderable.brand %}<meta property="brand" content="{{renderable.brand.title}}" />{% endif %}
+        <meta property="name" content="{{renderable.title}}" />
+        {% if renderable.icon %}<meta property="image" content="{{renderable.icon.path}}" />{% endif %}
+        {% if renderable.excerpt %}<meta property="description" content="{{renderable.excerpt}}" />{% endif %}
+        {% if renderable.sku %}<meta property="sku" content="{{renderable.sku}}" />{% endif %}
+        {% if not hasProductTable %}{% include 'price.html' with {'product': renderable} %}{% endif %}
         {% if renderable.price > 0 and not hasProductTable %}
+        <span property="offers" typeof="Offer">
+            <meta property="price" content="{{renderable.price|number_format(2, '.', '')}}" />
+            <meta property="priceCurrency" content="{{'USD'|trans}}" />
+        </span>
         <br />
         <a href="" onclick="shoppingCart.addItem('page',{{renderable.id}});return false">
             {{'Add to shopping cart'|trans}}
         </a>
         {% endif %}
     </p>
+    {% endif %}
 </div>
 
 {% if renderable.brand %}
