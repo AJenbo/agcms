@@ -44,11 +44,15 @@
         {% endif %}
     </p>
     {% endif %}
+
     {% if renderable.brand %}
-    <p align="center" style="clear:both">{{'View other product from the same brand'|trans}}</p>
-    {% include 'productTiles.html' with {'products': [renderable.brand]} %}
+    <p align="center" style="clear:both">
+        {{'View other product from the same brand'|trans}}
+        {% include 'productTiles.html' with {'products': [renderable.brand]} %}
+    </p>
     {% endif %}
 </div>
+
 {% if renderable.activeAccessories %}
 <p align="center" style="clear:both">{{'Accessories'|trans}}</p>
 {% include 'productTiles.html' with {'products': renderable.activeAccessories} %}
