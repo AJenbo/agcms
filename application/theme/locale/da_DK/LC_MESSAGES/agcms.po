@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: agcms\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-12-10 01:52+0100\n"
-"PO-Revision-Date: 2017-12-10 01:52+0100\n"
+"POT-Creation-Date: 2017-12-10 16:39+0100\n"
+"PO-Revision-Date: 2017-12-10 16:39+0100\n"
 "Last-Translator: Anders Jenbo <anders@jenbo.dk>\n"
 "Language-Team: \n"
 "Language: da\n"
@@ -26,7 +26,7 @@ msgstr ""
 #: inc/Controller/Admin/MaintenanceController.php:367
 #, php-format
 msgid "%d of %d email was sent."
-msgid_plural "%d of %d emails was sent."
+msgid_plural "%d of %d emails were sent."
 msgstr[0] "%d af %d e-mail blev sendt."
 msgstr[1] "%d af %d e-mails blev sendt."
 
@@ -45,13 +45,13 @@ msgid "Accessory not found."
 msgstr "Tilbehør ikke fundet."
 
 #: inc/Controller/Admin/InvoiceController.php:124
-#: /tmp/cache/5a2c854849f0b/2b/2b55f44daff993f17325b7a910a629c7395d980a8263ec5f0a115d30fd46c983.php:93
-#: /tmp/cache/5a2c85488411d/4a/4ac2cfe57fe4d5202f651e6c79b9e72aa3a5655574cc23a14588172e114e355c.php:132
-#: /tmp/cache/5a2c85488411d/4a/4ac2cfe57fe4d5202f651e6c79b9e72aa3a5655574cc23a14588172e114e355c.php:246
-#: /tmp/cache/5a2c85488411d/4a/4ac2cfe57fe4d5202f651e6c79b9e72aa3a5655574cc23a14588172e114e355c.php:316
-#: /tmp/cache/5a2c85488411d/4a/4ac2cfe57fe4d5202f651e6c79b9e72aa3a5655574cc23a14588172e114e355c.php:379
-#: /tmp/cache/5a2c85488411d/50/50d3e2074d13358d7d2c8ed77097db06c070cd191efa9020658d8b6df11cfb41.php:136
-#: /tmp/cache/5a2c854995e8e/7b/7bf142564421509e87d9522d87e37fd2e1e34f76df7f930f53db15a812e0b858.php:92
+#: /tmp/cache/5a2d55365eb67/2b/2b55f44daff993f17325b7a910a629c7395d980a8263ec5f0a115d30fd46c983.php:93
+#: /tmp/cache/5a2d55369756f/4a/4ac2cfe57fe4d5202f651e6c79b9e72aa3a5655574cc23a14588172e114e355c.php:132
+#: /tmp/cache/5a2d55369756f/4a/4ac2cfe57fe4d5202f651e6c79b9e72aa3a5655574cc23a14588172e114e355c.php:246
+#: /tmp/cache/5a2d55369756f/4a/4ac2cfe57fe4d5202f651e6c79b9e72aa3a5655574cc23a14588172e114e355c.php:316
+#: /tmp/cache/5a2d55369756f/4a/4ac2cfe57fe4d5202f651e6c79b9e72aa3a5655574cc23a14588172e114e355c.php:379
+#: /tmp/cache/5a2d55369756f/50/50d3e2074d13358d7d2c8ed77097db06c070cd191efa9020658d8b6df11cfb41.php:136
+#: /tmp/cache/5a2d553774b2e/7b/7bf142564421509e87d9522d87e37fd2e1e34f76df7f930f53db15a812e0b858.php:92
 msgid "All"
 msgstr "Alle"
 
@@ -65,9 +65,9 @@ msgid "Brand not found."
 msgstr "Mærke ikke fundet."
 
 #: inc/Controller/Admin/InvoiceController.php:134
-#: /tmp/cache/5a2c85488411d/37/379363122404d9cccecc6c8d11814533b1e80e3744bd92378d358fa6635665ed.php:383
-#: /tmp/cache/5a2c85488411d/4a/4ac2cfe57fe4d5202f651e6c79b9e72aa3a5655574cc23a14588172e114e355c.php:530
-#: /tmp/cache/5a2c85488411d/4a/4ac2cfe57fe4d5202f651e6c79b9e72aa3a5655574cc23a14588172e114e355c.php:532
+#: /tmp/cache/5a2d55369756f/37/379363122404d9cccecc6c8d11814533b1e80e3744bd92378d358fa6635665ed.php:383
+#: /tmp/cache/5a2d55369756f/4a/4ac2cfe57fe4d5202f651e6c79b9e72aa3a5655574cc23a14588172e114e355c.php:530
+#: /tmp/cache/5a2d55369756f/4a/4ac2cfe57fe4d5202f651e6c79b9e72aa3a5655574cc23a14588172e114e355c.php:532
 msgid "Canceled"
 msgstr "Annulleret"
 
@@ -76,10 +76,9 @@ msgid "Cannot delete root categories."
 msgstr "Kan ikke slette rod kategorier."
 
 #: inc/Controller/Admin/InvoiceController.php:132
-#: /tmp/cache/5a2c854849f0b/12/1228e8267630381d45866414ab75ee1bd216aaadc7ad95455a723cc6b3723853.php:193
-#: /tmp/cache/5a2c85488411d/4a/4ac2cfe57fe4d5202f651e6c79b9e72aa3a5655574cc23a14588172e114e355c.php:512
-#: /tmp/cache/5a2c85488411d/4a/4ac2cfe57fe4d5202f651e6c79b9e72aa3a5655574cc23a14588172e114e355c.php:514
-#: /tmp/cache/5a2c85495f779/5c/5cbc68db62c4d9580234a742471593bb416df810fcc197cf867e468ff2e91189.php:190
+#: /tmp/cache/5a2d55369756f/4a/4ac2cfe57fe4d5202f651e6c79b9e72aa3a5655574cc23a14588172e114e355c.php:512
+#: /tmp/cache/5a2d55369756f/4a/4ac2cfe57fe4d5202f651e6c79b9e72aa3a5655574cc23a14588172e114e355c.php:514
+#: /tmp/cache/5a2d55374274c/5c/5cbc68db62c4d9580234a742471593bb416df810fcc197cf867e468ff2e91189.php:193
 msgid "Cash"
 msgstr "Kontant"
 
@@ -115,8 +114,8 @@ msgid "Custom sorting not found."
 msgstr "Brugerdefineret sortering ikke fundet"
 
 #: inc/Controller/Admin/InvoiceController.php:133
-#: /tmp/cache/5a2c85488411d/4a/4ac2cfe57fe4d5202f651e6c79b9e72aa3a5655574cc23a14588172e114e355c.php:521
-#: /tmp/cache/5a2c85488411d/4a/4ac2cfe57fe4d5202f651e6c79b9e72aa3a5655574cc23a14588172e114e355c.php:523
+#: /tmp/cache/5a2d55369756f/4a/4ac2cfe57fe4d5202f651e6c79b9e72aa3a5655574cc23a14588172e114e355c.php:521
+#: /tmp/cache/5a2d55369756f/4a/4ac2cfe57fe4d5202f651e6c79b9e72aa3a5655574cc23a14588172e114e355c.php:523
 msgid "Error"
 msgstr "Fejl"
 
@@ -140,8 +139,8 @@ msgid "Finalized"
 msgstr "Afsluttet"
 
 #: inc/Controller/Admin/InvoiceController.php:131
-#: /tmp/cache/5a2c85488411d/4a/4ac2cfe57fe4d5202f651e6c79b9e72aa3a5655574cc23a14588172e114e355c.php:503
-#: /tmp/cache/5a2c85488411d/4a/4ac2cfe57fe4d5202f651e6c79b9e72aa3a5655574cc23a14588172e114e355c.php:505
+#: /tmp/cache/5a2d55369756f/4a/4ac2cfe57fe4d5202f651e6c79b9e72aa3a5655574cc23a14588172e114e355c.php:503
+#: /tmp/cache/5a2d55369756f/4a/4ac2cfe57fe4d5202f651e6c79b9e72aa3a5655574cc23a14588172e114e355c.php:505
 msgid "Giro"
 msgstr "Giro"
 
@@ -173,14 +172,14 @@ msgid "Invoice validation"
 msgstr "Faktura godkendelse"
 
 #: inc/Controller/Admin/InvoiceController.php:128
-#: /tmp/cache/5a2c85488411d/4a/4ac2cfe57fe4d5202f651e6c79b9e72aa3a5655574cc23a14588172e114e355c.php:476
-#: /tmp/cache/5a2c85488411d/4a/4ac2cfe57fe4d5202f651e6c79b9e72aa3a5655574cc23a14588172e114e355c.php:478
+#: /tmp/cache/5a2d55369756f/4a/4ac2cfe57fe4d5202f651e6c79b9e72aa3a5655574cc23a14588172e114e355c.php:476
+#: /tmp/cache/5a2d55369756f/4a/4ac2cfe57fe4d5202f651e6c79b9e72aa3a5655574cc23a14588172e114e355c.php:478
 msgid "Locked"
 msgstr "Låst"
 
 #: inc/Controller/Admin/InvoiceController.php:127
-#: /tmp/cache/5a2c85488411d/4a/4ac2cfe57fe4d5202f651e6c79b9e72aa3a5655574cc23a14588172e114e355c.php:458
-#: /tmp/cache/5a2c85488411d/4a/4ac2cfe57fe4d5202f651e6c79b9e72aa3a5655574cc23a14588172e114e355c.php:460
+#: /tmp/cache/5a2d55369756f/4a/4ac2cfe57fe4d5202f651e6c79b9e72aa3a5655574cc23a14588172e114e355c.php:458
+#: /tmp/cache/5a2d55369756f/4a/4ac2cfe57fe4d5202f651e6c79b9e72aa3a5655574cc23a14588172e114e355c.php:460
 msgid "New"
 msgstr "Ny"
 
@@ -199,7 +198,7 @@ msgid "Online Invoice #"
 msgstr "Online faktura #"
 
 #: inc/Controller/Admin/MaintenanceController.php:179
-msgid "Page disapired during processing"
+msgid "Page disappeared during processing"
 msgstr "Siden forsvandt under behadlingsprocessen"
 
 #: inc/Controller/Admin/CustomPageController.php:65
@@ -213,20 +212,20 @@ msgid "Page not found."
 msgstr "Side ikke fundet."
 
 #: inc/Controller/Admin/InvoiceController.php:130
-#: /tmp/cache/5a2c85488411d/4a/4ac2cfe57fe4d5202f651e6c79b9e72aa3a5655574cc23a14588172e114e355c.php:494
-#: /tmp/cache/5a2c85488411d/4a/4ac2cfe57fe4d5202f651e6c79b9e72aa3a5655574cc23a14588172e114e355c.php:496
+#: /tmp/cache/5a2d55369756f/4a/4ac2cfe57fe4d5202f651e6c79b9e72aa3a5655574cc23a14588172e114e355c.php:494
+#: /tmp/cache/5a2d55369756f/4a/4ac2cfe57fe4d5202f651e6c79b9e72aa3a5655574cc23a14588172e114e355c.php:496
 msgid "Processed"
 msgstr "Behandlet"
 
 #: inc/Controller/Admin/InvoiceController.php:129
-#: /tmp/cache/5a2c85488411d/4a/4ac2cfe57fe4d5202f651e6c79b9e72aa3a5655574cc23a14588172e114e355c.php:485
-#: /tmp/cache/5a2c85488411d/4a/4ac2cfe57fe4d5202f651e6c79b9e72aa3a5655574cc23a14588172e114e355c.php:487
+#: /tmp/cache/5a2d55369756f/4a/4ac2cfe57fe4d5202f651e6c79b9e72aa3a5655574cc23a14588172e114e355c.php:485
+#: /tmp/cache/5a2d55369756f/4a/4ac2cfe57fe4d5202f651e6c79b9e72aa3a5655574cc23a14588172e114e355c.php:487
 msgid "Ready"
 msgstr "Klar"
 
 #: inc/Controller/Admin/InvoiceController.php:135
-#: /tmp/cache/5a2c85488411d/4a/4ac2cfe57fe4d5202f651e6c79b9e72aa3a5655574cc23a14588172e114e355c.php:539
-#: /tmp/cache/5a2c85488411d/4a/4ac2cfe57fe4d5202f651e6c79b9e72aa3a5655574cc23a14588172e114e355c.php:541
+#: /tmp/cache/5a2d55369756f/4a/4ac2cfe57fe4d5202f651e6c79b9e72aa3a5655574cc23a14588172e114e355c.php:539
+#: /tmp/cache/5a2d55369756f/4a/4ac2cfe57fe4d5202f651e6c79b9e72aa3a5655574cc23a14588172e114e355c.php:541
 msgid "Rejected"
 msgstr "Afvist"
 
@@ -234,13 +233,10 @@ msgstr "Afvist"
 msgid "Requirement not found."
 msgstr "Krav ikke fundet."
 
-#: inc/Controller/Admin/CustomPageController.php:81 inc/Controller/Base.php:61
-msgid "Root category is missing!"
-msgstr "Rod kategori mangler!"
-
 #: inc/Controller/Admin/CustomPageController.php:35
-msgid "Root cateogry missing"
-msgstr "Mangler rod kategori"
+#: inc/Controller/Admin/CustomPageController.php:81 inc/Controller/Base.php:61
+msgid "Root category is missing."
+msgstr "Rod kategori mangler."
 
 #: inc/Controller/Admin/CategoryController.php:113
 msgid "The category can not be placed under itself."
@@ -253,7 +249,7 @@ msgstr "Filen kan ikke slettes da den er i brug."
 #: inc/Controller/Admin/MaintenanceController.php:303
 #, php-format
 msgid "The following %d file is in a folder that needs to be renamed:"
-msgid_plural "The following %d files are a folder that needs to be renamed:"
+msgid_plural "The following %d files are in a folder that needs to be renamed:"
 msgstr[0] "Følgende %d fil er i en mappe der skal omdøbes:"
 msgstr[1] "Følgende %d filer er i en mappe der skal omdøbes:"
 
@@ -269,11 +265,11 @@ msgid "The following categories have circular references:"
 msgstr "Følgende kategorier har cirkulare bindinger:"
 
 #: inc/Controller/Admin/MaintenanceController.php:314
-msgid "The following folders must be renamed"
-msgstr "Følgende mapper skal omdøbes"
+msgid "The following folders must be renamed:"
+msgstr "Følgende mapper skal omdøbes:"
 
 #: inc/Controller/Admin/MaintenanceController.php:174
-msgid "The following inactive pages appears in list on active pages"
+msgid "The following inactive pages appear in a list on an active page:"
 msgstr "Følgende indaktive sider optræder i lister på aktive sider"
 
 #: inc/Controller/Admin/MaintenanceController.php:142
@@ -290,6 +286,7 @@ msgid "The name is invalid."
 msgstr "Navnet er ugyldigt."
 
 #: inc/Controller/Admin/NewsletterController.php:102
+#: inc/Entity/Newsletter.php:249
 msgid "The newsletter has already been sent."
 msgstr "Nyhedsbrevet er allerede afsendt."
 
@@ -298,7 +295,7 @@ msgid "Thumbnail already exists."
 msgstr "Forhåndsvisning eksisterer allerede."
 
 #: inc/Controller/Admin/InvoiceController.php:187
-msgid "You do not have permissions to validate payments."
+msgid "You do not have permission to validate payments."
 msgstr "Du har ikke rettigheder til at godkende betalinger."
 
 #: inc/Controller/Admin/RequirementController.php:47
@@ -325,13 +322,13 @@ msgid "You must enter a title."
 msgstr "Du skal indtaste en title."
 
 #: inc/Controller/Payment.php:308
-msgid "A copy of your order is sent to your email."
+msgid "A copy of your order has been sent to your email."
 msgstr "En kopi af Deres ordre er sendt til Deres email."
 
 #: inc/Controller/Payment.php:108 inc/Controller/Payment.php:201
 #: inc/Controller/Payment.php:280 inc/Controller/Shopping.php:75
 #: inc/Controller/Shopping.php:169
-#: /tmp/cache/5a2c854849f0b/d7/d750b7d88293d03c4f46c5ae0101e6d8698c88a12503db4e7d3867d797b6db84.php:67
+#: /tmp/cache/5a2d55365eb67/d7/d750b7d88293d03c4f46c5ae0101e6d8698c88a12503db4e7d3867d797b6db84.php:67
 msgid "Address"
 msgstr "Adresse"
 
@@ -340,7 +337,7 @@ msgid "Administrator"
 msgstr "Administrator"
 
 #: inc/Controller/Admin/UserController.php:86
-#: /tmp/cache/5a2c8548e7ced/3e/3efe128e4882505e78ffe36c8daae58f86f3ef07e2b4ebbdceaa24998ee8fa24.php:39
+#: /tmp/cache/5a2d553703c36/3e/3efe128e4882505e78ffe36c8daae58f86f3ef07e2b4ebbdceaa24998ee8fa24.php:39
 msgid "All fields must be filled."
 msgstr "Alle felter skal udfyldes."
 
@@ -350,8 +347,8 @@ msgstr "Der opstod en fejl."
 
 #: inc/Controller/Payment.php:440
 #, php-format
-msgid "Attn.: %s - Online invoice #%d : %s"
-msgstr "Att: %s - Online faktura #%d : %s"
+msgid "Attn.: %s - Payment received for invoice #%d"
+msgstr "Att: %s - Betaling modtaget for faktura #%d"
 
 #: inc/Controller/Shopping.php:39 inc/Controller/Shopping.php:68
 #: inc/Controller/Shopping.php:102
@@ -366,7 +363,7 @@ msgstr "Mærke"
 msgid "Cannot create root categories."
 msgstr "Kan ikke opret rod kategorier."
 
-#: inc/Controller/Payment.php:481
+#: inc/Controller/Payment.php:480
 msgid "Card is from: "
 msgstr "Kortet er fra:"
 
@@ -375,27 +372,24 @@ msgid "Clerk"
 msgstr "Ekspedient"
 
 #: inc/Controller/Payment.php:115
-#: /tmp/cache/5a2c854849f0b/07/07fce9499a16dbb04f235c94f6b8f5e1c37e7798730ba6ef26ed3db3b366d31c.php:43
-#: /tmp/cache/5a2c854849f0b/12/1228e8267630381d45866414ab75ee1bd216aaadc7ad95455a723cc6b3723853.php:237
-#: /tmp/cache/5a2c854849f0b/95/95f15e87853a13afb82285f0d44792130ae8a0dcc56541153f797ee46291c137.php:59
-#: /tmp/cache/5a2c85495f779/5c/5cbc68db62c4d9580234a742471593bb416df810fcc197cf867e468ff2e91189.php:234
-#: /tmp/cache/5a2c85495f779/b3/b3074f3be867dd4db9795356d26b37c3cf38fb4922cad99e8e767d4ac4b33e24.php:40
-#: /tmp/cache/5a2c85495f779/ee/ee36479e5c411a6ca4d77c52d72ddb83b2114aa6f02681bb744f5a56b0d3b780.php:58
+#: /tmp/cache/5a2d55374274c/5c/5cbc68db62c4d9580234a742471593bb416df810fcc197cf867e468ff2e91189.php:237
+#: /tmp/cache/5a2d553774b2e/b3/b3074f3be867dd4db9795356d26b37c3cf38fb4922cad99e8e767d4ac4b33e24.php:43
+#: /tmp/cache/5a2d553774b2e/ee/ee36479e5c411a6ca4d77c52d72ddb83b2114aa6f02681bb744f5a56b0d3b780.php:59
 msgid "Continue"
 msgstr "Fortsæt"
 
-#: inc/Controller/Payment.php:476
+#: inc/Controller/Payment.php:475
 msgid "Credit card no.: "
 msgstr "Kort nr.:"
 
 #: inc/Controller/Admin/UserController.php:154
-#: /tmp/cache/5a2c854849f0b/d7/d750b7d88293d03c4f46c5ae0101e6d8698c88a12503db4e7d3867d797b6db84.php:91
-#: /tmp/cache/5a2c8549217c7/f8/f86e346dbe541eb1bedffb82a6ac2d868c4eceb3a756ea2ee8549e1abb0c54e1.php:464
-#: /tmp/cache/5a2c8549217c7/f8/f86e346dbe541eb1bedffb82a6ac2d868c4eceb3a756ea2ee8549e1abb0c54e1.php:466
-#: /tmp/cache/5a2c8549217c7/f8/f86e346dbe541eb1bedffb82a6ac2d868c4eceb3a756ea2ee8549e1abb0c54e1.php:582
-#: /tmp/cache/5a2c8549217c7/f8/f86e346dbe541eb1bedffb82a6ac2d868c4eceb3a756ea2ee8549e1abb0c54e1.php:584
-#: /tmp/cache/5a2c8549217c7/f8/f86e346dbe541eb1bedffb82a6ac2d868c4eceb3a756ea2ee8549e1abb0c54e1.php:592
-#: /tmp/cache/5a2c8549217c7/f8/f86e346dbe541eb1bedffb82a6ac2d868c4eceb3a756ea2ee8549e1abb0c54e1.php:594
+#: /tmp/cache/5a2d55365eb67/d7/d750b7d88293d03c4f46c5ae0101e6d8698c88a12503db4e7d3867d797b6db84.php:91
+#: /tmp/cache/5a2d553703c36/f8/f86e346dbe541eb1bedffb82a6ac2d868c4eceb3a756ea2ee8549e1abb0c54e1.php:464
+#: /tmp/cache/5a2d553703c36/f8/f86e346dbe541eb1bedffb82a6ac2d868c4eceb3a756ea2ee8549e1abb0c54e1.php:466
+#: /tmp/cache/5a2d553703c36/f8/f86e346dbe541eb1bedffb82a6ac2d868c4eceb3a756ea2ee8549e1abb0c54e1.php:582
+#: /tmp/cache/5a2d553703c36/f8/f86e346dbe541eb1bedffb82a6ac2d868c4eceb3a756ea2ee8549e1abb0c54e1.php:584
+#: /tmp/cache/5a2d553703c36/f8/f86e346dbe541eb1bedffb82a6ac2d868c4eceb3a756ea2ee8549e1abb0c54e1.php:592
+#: /tmp/cache/5a2d553703c36/f8/f86e346dbe541eb1bedffb82a6ac2d868c4eceb3a756ea2ee8549e1abb0c54e1.php:594
 msgid "Edit"
 msgstr "Rediger"
 
@@ -405,8 +399,8 @@ msgid "Find in %s"
 msgstr "Find i %s"
 
 #: inc/Controller/Admin/SiteTreeController.php:133
-#: /tmp/cache/5a2c85488411d/12/12d19a57d7aca5736ec12b0e3b424973c47f24d33be5b2c0de6e046e74db1ded.php:39
-#: /tmp/cache/5a2c85488411d/4a/4ac2cfe57fe4d5202f651e6c79b9e72aa3a5655574cc23a14588172e114e355c.php:417
+#: /tmp/cache/5a2d55369756f/12/12d19a57d7aca5736ec12b0e3b424973c47f24d33be5b2c0de6e046e74db1ded.php:39
+#: /tmp/cache/5a2d55369756f/4a/4ac2cfe57fe4d5202f651e6c79b9e72aa3a5655574cc23a14588172e114e355c.php:417
 msgid "ID"
 msgstr "Id"
 
@@ -419,7 +413,7 @@ msgid "Manager"
 msgstr "Bestyr"
 
 #: inc/Controller/Payment.php:238
-msgid "Missing terms and condition"
+msgid "Missing terms and conditions"
 msgstr "Mangler handelsbetingelserne"
 
 #: inc/Controller/Admin/UserController.php:108
@@ -448,44 +442,40 @@ msgstr "Ordre #%d - Betaling gennemført"
 msgid "Payment"
 msgstr "Betaling"
 
-#: inc/Controller/Payment.php:443
-msgid "Payment complete"
-msgstr "Betaling gennemført"
-
 #: inc/Controller/Payment.php:307
 msgid ""
 "Payment is now accepted. We will send your goods by mail as soon as possible."
 msgstr ""
 "Betalingen er nu godkendt. Vi sender Deres vare med posten hurtigst muligt."
 
-#: inc/Controller/Payment.php:484
+#: inc/Controller/Payment.php:483
 msgid "Payment was made from: "
 msgstr "Betalingen blev udført fra:"
 
-#: inc/Controller/Payment.php:473
+#: inc/Controller/Payment.php:472
 msgid "Possible payment fraud."
 msgstr "Mistanke om bedrageri."
 
 #: inc/Controller/Admin/SiteTreeController.php:136
-#: /tmp/cache/5a2c854849f0b/6f/6f3aa23f9573fa1d018ae4d00282006532278532cbf0085f27df5d73c5e6f6d8.php:43
-#: /tmp/cache/5a2c854849f0b/6f/6f3aa23f9573fa1d018ae4d00282006532278532cbf0085f27df5d73c5e6f6d8.php:118
+#: /tmp/cache/5a2d55365eb67/6f/6f3aa23f9573fa1d018ae4d00282006532278532cbf0085f27df5d73c5e6f6d8.php:43
+#: /tmp/cache/5a2d55365eb67/6f/6f3aa23f9573fa1d018ae4d00282006532278532cbf0085f27df5d73c5e6f6d8.php:118
 msgid "Previous price"
 msgstr "Før:"
 
 #: inc/Controller/Admin/SiteTreeController.php:137
-#: /tmp/cache/5a2c854849f0b/6f/6f3aa23f9573fa1d018ae4d00282006532278532cbf0085f27df5d73c5e6f6d8.php:41
-#: /tmp/cache/5a2c854849f0b/6f/6f3aa23f9573fa1d018ae4d00282006532278532cbf0085f27df5d73c5e6f6d8.php:114
-#: /tmp/cache/5a2c8549217c7/f8/f86e346dbe541eb1bedffb82a6ac2d868c4eceb3a756ea2ee8549e1abb0c54e1.php:209
-#: /tmp/cache/5a2c85495f779/9d/9db354caa8bd6770554ed81da70cc1b00181104ce634ee113a70289d59b0569e.php:40
+#: /tmp/cache/5a2d55365eb67/6f/6f3aa23f9573fa1d018ae4d00282006532278532cbf0085f27df5d73c5e6f6d8.php:41
+#: /tmp/cache/5a2d55365eb67/6f/6f3aa23f9573fa1d018ae4d00282006532278532cbf0085f27df5d73c5e6f6d8.php:114
+#: /tmp/cache/5a2d553703c36/f8/f86e346dbe541eb1bedffb82a6ac2d868c4eceb3a756ea2ee8549e1abb0c54e1.php:209
+#: /tmp/cache/5a2d553774b2e/9d/9db354caa8bd6770554ed81da70cc1b00181104ce634ee113a70289d59b0569e.php:40
 msgid "Price"
 msgstr "Pris"
 
 #: inc/Controller/Payment.php:282
-msgid "Reciept"
+msgid "Receipt"
 msgstr "Kvittering"
 
 #: inc/Controller/Shopping.php:170
-#: /tmp/cache/5a2c85488411d/4a/4ac2cfe57fe4d5202f651e6c79b9e72aa3a5655574cc23a14588172e114e355c.php:436
+#: /tmp/cache/5a2d55369756f/4a/4ac2cfe57fe4d5202f651e6c79b9e72aa3a5655574cc23a14588172e114e355c.php:436
 msgid "Recipient"
 msgstr "Modtager"
 
@@ -498,23 +488,23 @@ msgid "SKU"
 msgstr "Varenr."
 
 #: inc/Controller/Search.php:23 inc/Controller/Search.php:110
-#: /tmp/cache/5a2c854849f0b/2b/2b55f44daff993f17325b7a910a629c7395d980a8263ec5f0a115d30fd46c983.php:35
-#: /tmp/cache/5a2c854849f0b/2b/2b55f44daff993f17325b7a910a629c7395d980a8263ec5f0a115d30fd46c983.php:47
-#: /tmp/cache/5a2c854849f0b/f6/f64c19bd8e9101fe17e037ad86e03610b8ba4d2f8d9ce9714363164c05726e18.php:130
-#: /tmp/cache/5a2c854849f0b/f6/f64c19bd8e9101fe17e037ad86e03610b8ba4d2f8d9ce9714363164c05726e18.php:139
-#: /tmp/cache/5a2c854849f0b/f6/f64c19bd8e9101fe17e037ad86e03610b8ba4d2f8d9ce9714363164c05726e18.php:141
-#: /tmp/cache/5a2c85488411d/50/50d3e2074d13358d7d2c8ed77097db06c070cd191efa9020658d8b6df11cfb41.php:72
-#: /tmp/cache/5a2c85488411d/50/50d3e2074d13358d7d2c8ed77097db06c070cd191efa9020658d8b6df11cfb41.php:76
-#: /tmp/cache/5a2c85488411d/50/50d3e2074d13358d7d2c8ed77097db06c070cd191efa9020658d8b6df11cfb41.php:171
-#: /tmp/cache/5a2c8548e7ced/71/718adbdcc9a080772ed64aecfbb0a5010c4fbf3a5f6ab7fc3d9b479d4c5a95d0.php:115
-#: /tmp/cache/5a2c8548e7ced/b8/b851d224ea398e9c33116f4d88d2078773cc32e1ee969f19c107f24bda53928d.php:20
-#: /tmp/cache/5a2c854995e8e/7b/7bf142564421509e87d9522d87e37fd2e1e34f76df7f930f53db15a812e0b858.php:34
-#: /tmp/cache/5a2c854995e8e/7b/7bf142564421509e87d9522d87e37fd2e1e34f76df7f930f53db15a812e0b858.php:46
+#: /tmp/cache/5a2d55365eb67/2b/2b55f44daff993f17325b7a910a629c7395d980a8263ec5f0a115d30fd46c983.php:35
+#: /tmp/cache/5a2d55365eb67/2b/2b55f44daff993f17325b7a910a629c7395d980a8263ec5f0a115d30fd46c983.php:47
+#: /tmp/cache/5a2d55365eb67/f6/f64c19bd8e9101fe17e037ad86e03610b8ba4d2f8d9ce9714363164c05726e18.php:130
+#: /tmp/cache/5a2d55365eb67/f6/f64c19bd8e9101fe17e037ad86e03610b8ba4d2f8d9ce9714363164c05726e18.php:139
+#: /tmp/cache/5a2d55365eb67/f6/f64c19bd8e9101fe17e037ad86e03610b8ba4d2f8d9ce9714363164c05726e18.php:141
+#: /tmp/cache/5a2d55369756f/50/50d3e2074d13358d7d2c8ed77097db06c070cd191efa9020658d8b6df11cfb41.php:72
+#: /tmp/cache/5a2d55369756f/50/50d3e2074d13358d7d2c8ed77097db06c070cd191efa9020658d8b6df11cfb41.php:76
+#: /tmp/cache/5a2d55369756f/50/50d3e2074d13358d7d2c8ed77097db06c070cd191efa9020658d8b6df11cfb41.php:171
+#: /tmp/cache/5a2d55369756f/71/718adbdcc9a080772ed64aecfbb0a5010c4fbf3a5f6ab7fc3d9b479d4c5a95d0.php:115
+#: /tmp/cache/5a2d553703c36/b8/b851d224ea398e9c33116f4d88d2078773cc32e1ee969f19c107f24bda53928d.php:20
+#: /tmp/cache/5a2d553774b2e/7b/7bf142564421509e87d9522d87e37fd2e1e34f76df7f930f53db15a812e0b858.php:34
+#: /tmp/cache/5a2d553774b2e/7b/7bf142564421509e87d9522d87e37fd2e1e34f76df7f930f53db15a812e0b858.php:46
 msgid "Search"
 msgstr "Søg"
 
 #: inc/Controller/Admin/SiteTreeController.php:81
-#: /tmp/cache/5a2c8548e7ced/7e/7e3f601f87f4099f18d428f391dc248d98788020289df3d9c605d22eadcfafe1.php:24
+#: /tmp/cache/5a2d553703c36/7e/7e3f601f87f4099f18d428f391dc248d98788020289df3d9c605d22eadcfafe1.php:24
 msgid "Select location:"
 msgstr "Vælg placering:"
 
@@ -524,7 +514,7 @@ msgstr "Send bestilling"
 
 #: inc/Controller/Shopping.php:44 inc/Controller/Shopping.php:74
 #: inc/Controller/Shopping.php:168
-#: /tmp/cache/5a2c854849f0b/f6/f64c19bd8e9101fe17e037ad86e03610b8ba4d2f8d9ce9714363164c05726e18.php:223
+#: /tmp/cache/5a2d55365eb67/f6/f64c19bd8e9101fe17e037ad86e03610b8ba4d2f8d9ce9714363164c05726e18.php:223
 msgid "Shopping list"
 msgstr "Indkøbsliste"
 
@@ -539,16 +529,15 @@ msgid "The address could not be found."
 msgstr "Adressen kunne ikke findes."
 
 #: inc/Controller/Admin/UserController.php:89
-#: /tmp/cache/5a2c8548e7ced/3e/3efe128e4882505e78ffe36c8daae58f86f3ef07e2b4ebbdceaa24998ee8fa24.php:46
-msgid "The passwords does not match."
+msgid "The passwords do not match."
 msgstr "Adgangskoderne er ikke ens."
 
 #: inc/Controller/Payment.php:314
-msgid "The payment is already received in cash."
+msgid "The payment has already been received in cash."
 msgstr "Betalingen er allerede modtaget kontant."
 
 #: inc/Controller/Payment.php:312
-msgid "The payment is already received via giro."
+msgid "The payment has already been received via giro."
 msgstr "Betalingen er allerede modtaget via giro."
 
 #: inc/Controller/Payment.php:316
@@ -561,12 +550,11 @@ msgstr "Handlen er annulleret."
 
 #: inc/Controller/Admin/SiteTreeController.php:134
 #: inc/Service/InvoicePdfService.php:292
-#: /tmp/cache/5a2c854849f0b/12/1228e8267630381d45866414ab75ee1bd216aaadc7ad95455a723cc6b3723853.php:47
-#: /tmp/cache/5a2c85488411d/37/379363122404d9cccecc6c8d11814533b1e80e3744bd92378d358fa6635665ed.php:1224
-#: /tmp/cache/5a2c85488411d/da/dabe617473a7f2ab2f6b704a878d67de4949e1d0e0775f1f1323b5a089fb0b97.php:48
-#: /tmp/cache/5a2c85495f779/5c/5cbc68db62c4d9580234a742471593bb416df810fcc197cf867e468ff2e91189.php:44
-#: /tmp/cache/5a2c85495f779/9d/9db354caa8bd6770554ed81da70cc1b00181104ce634ee113a70289d59b0569e.php:28
-#: /tmp/cache/5a2c85495f779/ee/ee32a3930ee557fec46de4ed6e6029f8540b3b5e4ed22f547e3fa32718f1adfb.php:28
+#: /tmp/cache/5a2d55365eb67/da/dabe617473a7f2ab2f6b704a878d67de4949e1d0e0775f1f1323b5a089fb0b97.php:48
+#: /tmp/cache/5a2d55369756f/37/379363122404d9cccecc6c8d11814533b1e80e3744bd92378d358fa6635665ed.php:1224
+#: /tmp/cache/5a2d55374274c/5c/5cbc68db62c4d9580234a742471593bb416df810fcc197cf867e468ff2e91189.php:47
+#: /tmp/cache/5a2d553774b2e/9d/9db354caa8bd6770554ed81da70cc1b00181104ce634ee113a70289d59b0569e.php:28
+#: /tmp/cache/5a2d553774b2e/ee/ee32a3930ee557fec46de4ed6e6029f8540b3b5e4ed22f547e3fa32718f1adfb.php:28
 msgid "Title"
 msgstr "Benævnelse"
 
@@ -588,8 +576,8 @@ msgid "Username already taken."
 msgstr "Brugernavnet er allerede i brug."
 
 #: inc/Controller/Admin/UserController.php:35
-#: /tmp/cache/5a2c8548e7ced/71/718adbdcc9a080772ed64aecfbb0a5010c4fbf3a5f6ab7fc3d9b479d4c5a95d0.php:177
-#: /tmp/cache/5a2c8549217c7/8a/8a679d2960702fef980209e0994c23420e2e7d8fbd528502726c3c2facc7718d.php:43
+#: /tmp/cache/5a2d55369756f/71/718adbdcc9a080772ed64aecfbb0a5010c4fbf3a5f6ab7fc3d9b479d4c5a95d0.php:177
+#: /tmp/cache/5a2d55374274c/8a/8a679d2960702fef980209e0994c23420e2e7d8fbd528502726c3c2facc7718d.php:43
 msgid "Users and Groups"
 msgstr "Brugere og grupper"
 
@@ -607,26 +595,24 @@ msgstr "Du kan ikke oprette nye rod kategorier."
 
 #: inc/Controller/Admin/UserController.php:185
 #: inc/Controller/Admin/UserController.php:246
-msgid "You do not have permissions to edit users."
+msgid "You do not have permission to edit users."
 msgstr "Du har ikke de nødvendige rettigheder for at ændre brugere."
 
 #: inc/Controller/Admin/UserController.php:206
 msgid ""
-"You do not have the requred access level to change the password for this "
-"users."
-msgstr ""
-"Du har ikke de nødvendige rettigheder for at ændre adgangskoden for denne "
-"bruger."
+"You do not have the required access level to change the password for this "
+"user."
+msgstr "Du har ikke de nødvendige rettigheder for at ændre denne bruger."
+
+#: inc/Entity/Category.php:120
+msgid "You'r not allowed to move root categories."
+msgstr "Du må ikke flytte rod kategorier."
 
 #: inc/Controller/Admin/UserController.php:83
 msgid ""
 "Your account has been created. An administrator will evaluate it shortly."
 msgstr ""
 "Din konto er blevet oprettet. En administrator vil evaluere den om kort tid."
-
-#: inc/Entity/Category.php:120
-msgid "Your not allowed to move root categories."
-msgstr "Du må ikke flytte rod kategorier."
 
 #: inc/Entity/File.php:350 inc/Service/FileService.php:58
 #, php-format
@@ -635,22 +621,22 @@ msgstr "\"%s\" er stadig i brug."
 
 #: inc/Entity/User.php:275
 #, php-format
-msgid "%s dayes and %s houres ago"
+msgid "%s days and %s hours ago"
 msgstr "%s dage og %s timer siden"
 
 #: inc/Entity/User.php:279
 #, php-format
-msgid "%s houres and %s minuts ago"
+msgid "%s hours and %s minutes ago"
 msgstr "%s timer og %s minutter siden"
 
 #: inc/Entity/User.php:282
 #, php-format
-msgid "%s minuts and %s secounds ago"
+msgid "%s minutes and %s seconds ago"
 msgstr "%s minutter og %s sekunder siden"
 
 #: inc/Entity/User.php:271
 #, php-format
-msgid "%s months and %s dayes ago"
+msgid "%s months and %s days ago"
 msgstr "%s måneder og %s dage siden"
 
 #: inc/Entity/User.php:267
@@ -700,10 +686,6 @@ msgstr "Afsender navn påkrævet."
 msgid "Subject required."
 msgstr "Emne påkrævet."
 
-#: inc/Entity/Newsletter.php:249
-msgid "The newsletter has already been sent!"
-msgstr "Nyhedsbrevet er allerede afsendt!"
-
 #: inc/Entity/Invoice.php:903
 msgid "Unknown"
 msgstr "Ukendt"
@@ -717,14 +699,12 @@ msgid "A file or folder with the same name already exists."
 msgstr "En fil eller mappe med samme navn eksisterer allerede."
 
 #: inc/Service/InvoicePdfService.php:224 inc/Service/InvoicePdfService.php:255
-#: /tmp/cache/5a2c854849f0b/d9/d95acce7d18ceae0cafbfcfc3978a4af11d6b51263895b378608758d6b4be40c.php:91
-#: /tmp/cache/5a2c854849f0b/d9/d95acce7d18ceae0cafbfcfc3978a4af11d6b51263895b378608758d6b4be40c.php:285
-#: /tmp/cache/5a2c85488411d/37/379363122404d9cccecc6c8d11814533b1e80e3744bd92378d358fa6635665ed.php:739
-#: /tmp/cache/5a2c85488411d/37/379363122404d9cccecc6c8d11814533b1e80e3744bd92378d358fa6635665ed.php:989
-#: /tmp/cache/5a2c85488411d/4a/4ac2cfe57fe4d5202f651e6c79b9e72aa3a5655574cc23a14588172e114e355c.php:603
-#: /tmp/cache/5a2c85495f779/15/151c19d54033dbdbe8f070e30e6b43fc0272bed8e2d842b5f9f3a2a32d996c5b.php:89
-#: /tmp/cache/5a2c85495f779/15/151c19d54033dbdbe8f070e30e6b43fc0272bed8e2d842b5f9f3a2a32d996c5b.php:283
-#: /tmp/cache/5a2c85495f779/88/88dc8530ec5c024a2f28d13c7402857ed5068a9d8dd99f6513190137023955e8.php:107
+#: /tmp/cache/5a2d55369756f/37/379363122404d9cccecc6c8d11814533b1e80e3744bd92378d358fa6635665ed.php:739
+#: /tmp/cache/5a2d55369756f/37/379363122404d9cccecc6c8d11814533b1e80e3744bd92378d358fa6635665ed.php:989
+#: /tmp/cache/5a2d55369756f/4a/4ac2cfe57fe4d5202f651e6c79b9e72aa3a5655574cc23a14588172e114e355c.php:603
+#: /tmp/cache/5a2d55374274c/88/88dc8530ec5c024a2f28d13c7402857ed5068a9d8dd99f6513190137023955e8.php:107
+#: /tmp/cache/5a2d553774b2e/15/151c19d54033dbdbe8f070e30e6b43fc0272bed8e2d842b5f9f3a2a32d996c5b.php:91
+#: /tmp/cache/5a2d553774b2e/15/151c19d54033dbdbe8f070e30e6b43fc0272bed8e2d842b5f9f3a2a32d996c5b.php:285
 msgid "Attn.:"
 msgstr "Att:"
 
@@ -734,7 +714,7 @@ msgstr "Kan ikke udskrive faktura før den er låst."
 
 #: inc/Service/FileService.php:33
 msgid ""
-"Could not create folder, you may not have sufficient rights to this folder."
+"Could not create folder. You may not have sufficient rights to this folder."
 msgstr ""
 "Kunne ikke oprette mappe, du har muligvis ikke rettigheder til denne mappe."
 
@@ -743,8 +723,8 @@ msgid "Date"
 msgstr "Dato"
 
 #: inc/Service/InvoicePdfService.php:207
-#: /tmp/cache/5a2c85488411d/da/dabe617473a7f2ab2f6b704a878d67de4949e1d0e0775f1f1323b5a089fb0b97.php:151
-#: /tmp/cache/5a2c85495f779/88/88dc8530ec5c024a2f28d13c7402857ed5068a9d8dd99f6513190137023955e8.php:53
+#: /tmp/cache/5a2d55365eb67/da/dabe617473a7f2ab2f6b704a878d67de4949e1d0e0775f1f1323b5a089fb0b97.php:151
+#: /tmp/cache/5a2d55374274c/88/88dc8530ec5c024a2f28d13c7402857ed5068a9d8dd99f6513190137023955e8.php:53
 msgid "Delivery address:"
 msgstr "Lev. adresse:"
 
@@ -769,8 +749,8 @@ msgid "Failed to create temporary file"
 msgstr "Kunne ikke oprette en midlertidig fil"
 
 #: inc/Service/EmailService.php:89
-msgid "Failed to send email!"
-msgstr "E-mail afsending fejlede!"
+msgid "Failed to send email."
+msgstr "Afsending af e-mail fejlede."
 
 #: inc/Service/FileService.php:319
 msgid "Files"
@@ -797,32 +777,31 @@ msgid "I would like to pay via credit card."
 msgstr "Jeg ønsker at betale med betalingskort."
 
 #: inc/Service/UploadHandler.php:214
-msgid "Image is to large to be processed."
-msgstr "Billedet er forstort til at blive behandlet."
+msgid "Image is too large to be processed."
+msgstr "Billedet er for stort til at blive behandlet."
 
 #: inc/Service/FileService.php:319
-#: /tmp/cache/5a2c85488411d/50/50d3e2074d13358d7d2c8ed77097db06c070cd191efa9020658d8b6df11cfb41.php:144
+#: /tmp/cache/5a2d55369756f/50/50d3e2074d13358d7d2c8ed77097db06c070cd191efa9020658d8b6df11cfb41.php:144
 msgid "Images"
 msgstr "Billeder"
 
 #: inc/Service/InvoicePdfService.php:357
 msgid ""
 "In case of payment later than the stated deadline, 2% interest will be added "
-"per. started months."
+"per month."
 msgstr ""
 "Ved senere indbetaling end anførte frist, vil der blive debiteret 2% rente "
 "pr. påbegyndt måned."
 
 #: inc/Service/InvoicePdfService.php:355
-msgid "Net cash at invoice reception."
+msgid "Initial net amount."
 msgstr "Netto kontant ved faktura modtagelse."
 
 #: inc/Service/InvoicePdfService.php:388
-#: /tmp/cache/5a2c854849f0b/12/1228e8267630381d45866414ab75ee1bd216aaadc7ad95455a723cc6b3723853.php:228
-#: /tmp/cache/5a2c85488411d/37/379363122404d9cccecc6c8d11814533b1e80e3744bd92378d358fa6635665ed.php:217
-#: /tmp/cache/5a2c85488411d/da/dabe617473a7f2ab2f6b704a878d67de4949e1d0e0775f1f1323b5a089fb0b97.php:95
-#: /tmp/cache/5a2c85495f779/5c/5cbc68db62c4d9580234a742471593bb416df810fcc197cf867e468ff2e91189.php:225
-#: /tmp/cache/5a2c85495f779/ee/ee32a3930ee557fec46de4ed6e6029f8540b3b5e4ed22f547e3fa32718f1adfb.php:130
+#: /tmp/cache/5a2d55365eb67/da/dabe617473a7f2ab2f6b704a878d67de4949e1d0e0775f1f1323b5a089fb0b97.php:95
+#: /tmp/cache/5a2d55369756f/37/379363122404d9cccecc6c8d11814533b1e80e3744bd92378d358fa6635665ed.php:217
+#: /tmp/cache/5a2d55374274c/5c/5cbc68db62c4d9580234a742471593bb416df810fcc197cf867e468ff2e91189.php:228
+#: /tmp/cache/5a2d553774b2e/ee/ee32a3930ee557fec46de4ed6e6029f8540b3b5e4ed22f547e3fa32718f1adfb.php:130
 msgid "Note:"
 msgstr "Notat:"
 
@@ -835,24 +814,24 @@ msgid "Online payment for "
 msgstr "Online betaling til "
 
 #: inc/Service/InvoicePdfService.php:116
-#: /tmp/cache/5a2c85488411d/37/379363122404d9cccecc6c8d11814533b1e80e3744bd92378d358fa6635665ed.php:579
+#: /tmp/cache/5a2d55369756f/37/379363122404d9cccecc6c8d11814533b1e80e3744bd92378d358fa6635665ed.php:579
 msgid "Our ref.:"
 msgstr "Vor ref.:"
 
 #: inc/Service/InvoicePdfService.php:415
-#: /tmp/cache/5a2c85488411d/37/379363122404d9cccecc6c8d11814533b1e80e3744bd92378d358fa6635665ed.php:183
+#: /tmp/cache/5a2d55369756f/37/379363122404d9cccecc6c8d11814533b1e80e3744bd92378d358fa6635665ed.php:183
 msgid "Paid in cash"
 msgstr "Betalt kontant"
 
 #: inc/Service/InvoicePdfService.php:409
-#: /tmp/cache/5a2c85488411d/37/379363122404d9cccecc6c8d11814533b1e80e3744bd92378d358fa6635665ed.php:331
-#: /tmp/cache/5a2c85488411d/37/379363122404d9cccecc6c8d11814533b1e80e3744bd92378d358fa6635665ed.php:349
-#: /tmp/cache/5a2c85488411d/37/379363122404d9cccecc6c8d11814533b1e80e3744bd92378d358fa6635665ed.php:367
+#: /tmp/cache/5a2d55369756f/37/379363122404d9cccecc6c8d11814533b1e80e3744bd92378d358fa6635665ed.php:331
+#: /tmp/cache/5a2d55369756f/37/379363122404d9cccecc6c8d11814533b1e80e3744bd92378d358fa6635665ed.php:349
+#: /tmp/cache/5a2d55369756f/37/379363122404d9cccecc6c8d11814533b1e80e3744bd92378d358fa6635665ed.php:367
 msgid "Paid online"
 msgstr "Betalt online"
 
 #: inc/Service/InvoicePdfService.php:412
-#: /tmp/cache/5a2c85488411d/37/379363122404d9cccecc6c8d11814533b1e80e3744bd92378d358fa6635665ed.php:166
+#: /tmp/cache/5a2d55369756f/37/379363122404d9cccecc6c8d11814533b1e80e3744bd92378d358fa6635665ed.php:166
 msgid "Paid via giro"
 msgstr "Betalt via giro"
 
@@ -869,13 +848,11 @@ msgid "Payment Terms:"
 msgstr "Betalingsbetingelser:"
 
 #: inc/Service/InvoicePdfService.php:166
-#: /tmp/cache/5a2c854849f0b/d9/d95acce7d18ceae0cafbfcfc3978a4af11d6b51263895b378608758d6b4be40c.php:43
-#: /tmp/cache/5a2c854849f0b/d9/d95acce7d18ceae0cafbfcfc3978a4af11d6b51263895b378608758d6b4be40c.php:239
-#: /tmp/cache/5a2c85488411d/0b/0b20a8b372f6efaba242a73a89c9110284a988b3d8d2d7bc79f9a1763f378f4e.php:64
-#: /tmp/cache/5a2c85488411d/da/dabe617473a7f2ab2f6b704a878d67de4949e1d0e0775f1f1323b5a089fb0b97.php:221
-#: /tmp/cache/5a2c85495f779/15/151c19d54033dbdbe8f070e30e6b43fc0272bed8e2d842b5f9f3a2a32d996c5b.php:41
-#: /tmp/cache/5a2c85495f779/15/151c19d54033dbdbe8f070e30e6b43fc0272bed8e2d842b5f9f3a2a32d996c5b.php:237
-#: /tmp/cache/5a2c85495f779/88/88dc8530ec5c024a2f28d13c7402857ed5068a9d8dd99f6513190137023955e8.php:83
+#: /tmp/cache/5a2d55365eb67/0b/0b20a8b372f6efaba242a73a89c9110284a988b3d8d2d7bc79f9a1763f378f4e.php:64
+#: /tmp/cache/5a2d55365eb67/da/dabe617473a7f2ab2f6b704a878d67de4949e1d0e0775f1f1323b5a089fb0b97.php:221
+#: /tmp/cache/5a2d55374274c/88/88dc8530ec5c024a2f28d13c7402857ed5068a9d8dd99f6513190137023955e8.php:83
+#: /tmp/cache/5a2d553774b2e/15/151c19d54033dbdbe8f070e30e6b43fc0272bed8e2d842b5f9f3a2a32d996c5b.php:43
+#: /tmp/cache/5a2d553774b2e/15/151c19d54033dbdbe8f070e30e6b43fc0272bed8e2d842b5f9f3a2a32d996c5b.php:239
 msgid "Phone:"
 msgstr "Telefon:"
 
@@ -884,11 +861,10 @@ msgid "Please send the goods by mail."
 msgstr "Send venligst varerne med posten."
 
 #: inc/Service/InvoicePdfService.php:291
-#: /tmp/cache/5a2c854849f0b/12/1228e8267630381d45866414ab75ee1bd216aaadc7ad95455a723cc6b3723853.php:43
-#: /tmp/cache/5a2c85488411d/37/379363122404d9cccecc6c8d11814533b1e80e3744bd92378d358fa6635665ed.php:1220
-#: /tmp/cache/5a2c85488411d/da/dabe617473a7f2ab2f6b704a878d67de4949e1d0e0775f1f1323b5a089fb0b97.php:44
-#: /tmp/cache/5a2c85495f779/5c/5cbc68db62c4d9580234a742471593bb416df810fcc197cf867e468ff2e91189.php:40
-#: /tmp/cache/5a2c85495f779/ee/ee32a3930ee557fec46de4ed6e6029f8540b3b5e4ed22f547e3fa32718f1adfb.php:24
+#: /tmp/cache/5a2d55365eb67/da/dabe617473a7f2ab2f6b704a878d67de4949e1d0e0775f1f1323b5a089fb0b97.php:44
+#: /tmp/cache/5a2d55369756f/37/379363122404d9cccecc6c8d11814533b1e80e3744bd92378d358fa6635665ed.php:1220
+#: /tmp/cache/5a2d55374274c/5c/5cbc68db62c4d9580234a742471593bb416df810fcc197cf867e468ff2e91189.php:43
+#: /tmp/cache/5a2d553774b2e/ee/ee32a3930ee557fec46de4ed6e6029f8540b3b5e4ed22f547e3fa32718f1adfb.php:24
 msgid "Quantity"
 msgstr "Antal"
 
@@ -897,24 +873,18 @@ msgid "Shipping"
 msgstr "Forsendelse"
 
 #: inc/Service/InvoicePdfService.php:397
-#: /tmp/cache/5a2c8549217c7/36/361b1776263f5977fd8742164cc417f73be64bddb6038197549ff345ab6776ec.php:79
-#: /tmp/cache/5a2c8549217c7/61/61f47b13a6b895f39f3960225fae2973063d9a02405d70fd4c9779cf0b495c33.php:55
-#: /tmp/cache/5a2c85495f779/88/88dc8530ec5c024a2f28d13c7402857ed5068a9d8dd99f6513190137023955e8.php:274
+#: /tmp/cache/5a2d55374274c/36/361b1776263f5977fd8742164cc417f73be64bddb6038197549ff345ab6776ec.php:79
+#: /tmp/cache/5a2d55374274c/61/61f47b13a6b895f39f3960225fae2973063d9a02405d70fd4c9779cf0b495c33.php:55
+#: /tmp/cache/5a2d55374274c/88/88dc8530ec5c024a2f28d13c7402857ed5068a9d8dd99f6513190137023955e8.php:274
 msgid "Sincerely,"
 msgstr "Med venlig hilsen"
-
-#: inc/Service/InvoicePdfService.php:369
-#: /tmp/cache/5a2c85488411d/37/379363122404d9cccecc6c8d11814533b1e80e3744bd92378d358fa6635665ed.php:1319
-#: /tmp/cache/5a2c85495f779/ee/ee32a3930ee557fec46de4ed6e6029f8540b3b5e4ed22f547e3fa32718f1adfb.php:84
-msgid "TO PAY"
-msgstr "I alt (dkk)"
 
 #: inc/Service/FileService.php:122
 msgid "Target is not a folder."
 msgstr "Målet er ikke en mappe."
 
 #: inc/Service/InvoiceService.php:381
-msgid "The invoice must be of at at least 0.01 krone."
+msgid "The invoice must be of at least 1 cent."
 msgstr "Fakturaen skal være på mindst 1 øre."
 
 #: inc/Service/FileService.php:118
@@ -922,36 +892,38 @@ msgid "The name is too long."
 msgstr "Navnet er for langt."
 
 #: inc/Service/InvoicePdfService.php:119
-#: /tmp/cache/5a2c85488411d/37/379363122404d9cccecc6c8d11814533b1e80e3744bd92378d358fa6635665ed.php:603
+#: /tmp/cache/5a2d55369756f/37/379363122404d9cccecc6c8d11814533b1e80e3744bd92378d358fa6635665ed.php:603
 msgid "Their ref.:"
 msgstr "Deres ref.:"
 
 #: inc/Service/InvoicePdfService.php:294
-#: /tmp/cache/5a2c854849f0b/12/1228e8267630381d45866414ab75ee1bd216aaadc7ad95455a723cc6b3723853.php:55
-#: /tmp/cache/5a2c85488411d/37/379363122404d9cccecc6c8d11814533b1e80e3744bd92378d358fa6635665ed.php:1232
-#: /tmp/cache/5a2c85488411d/da/dabe617473a7f2ab2f6b704a878d67de4949e1d0e0775f1f1323b5a089fb0b97.php:56
-#: /tmp/cache/5a2c85495f779/5c/5cbc68db62c4d9580234a742471593bb416df810fcc197cf867e468ff2e91189.php:52
+#: /tmp/cache/5a2d55365eb67/da/dabe617473a7f2ab2f6b704a878d67de4949e1d0e0775f1f1323b5a089fb0b97.php:56
+#: /tmp/cache/5a2d55369756f/37/379363122404d9cccecc6c8d11814533b1e80e3744bd92378d358fa6635665ed.php:1232
+#: /tmp/cache/5a2d55374274c/5c/5cbc68db62c4d9580234a742471593bb416df810fcc197cf867e468ff2e91189.php:55
 msgid "Total"
 msgstr "Total"
+
+#: inc/Service/InvoicePdfService.php:369
+msgid "Total (USD)"
+msgstr "Total (DKK)"
 
 #: inc/Service/InvoiceService.php:378
 msgid "You have not selected a sender."
 msgstr "Du har ikke valgt en afsender."
 
 #: inc/Middleware/Auth.php:54
-msgid "Your login has expired, please reload the page and login again."
-msgstr "Dit login er udløbet, genindlæs siden og prøv igen."
+msgid "Your login has expired. Please reload the page and login again."
+msgstr "Dit login er udløbet, genindlæs siden og login ingen."
 
 #: inc/Service/InvoicePdfService.php:114 inc/Service/InvoicePdfService.php:425
 msgid "m/d/Y"
 msgstr "d/m/Y"
 
 #: inc/Service/InvoicePdfService.php:293
-#: /tmp/cache/5a2c854849f0b/12/1228e8267630381d45866414ab75ee1bd216aaadc7ad95455a723cc6b3723853.php:51
-#: /tmp/cache/5a2c85488411d/37/379363122404d9cccecc6c8d11814533b1e80e3744bd92378d358fa6635665ed.php:1228
-#: /tmp/cache/5a2c85488411d/da/dabe617473a7f2ab2f6b704a878d67de4949e1d0e0775f1f1323b5a089fb0b97.php:52
-#: /tmp/cache/5a2c85495f779/5c/5cbc68db62c4d9580234a742471593bb416df810fcc197cf867e468ff2e91189.php:48
-#: /tmp/cache/5a2c85495f779/ee/ee32a3930ee557fec46de4ed6e6029f8540b3b5e4ed22f547e3fa32718f1adfb.php:32
+#: /tmp/cache/5a2d55365eb67/da/dabe617473a7f2ab2f6b704a878d67de4949e1d0e0775f1f1323b5a089fb0b97.php:52
+#: /tmp/cache/5a2d55369756f/37/379363122404d9cccecc6c8d11814533b1e80e3744bd92378d358fa6635665ed.php:1228
+#: /tmp/cache/5a2d55374274c/5c/5cbc68db62c4d9580234a742471593bb416df810fcc197cf867e468ff2e91189.php:51
+#: /tmp/cache/5a2d553774b2e/ee/ee32a3930ee557fec46de4ed6e6029f8540b3b5e4ed22f547e3fa32718f1adfb.php:32
 msgid "unit price"
 msgstr "á pris"
 
@@ -1851,8 +1823,1213 @@ msgstr "Zimbabwe"
 msgid "Åland"
 msgstr "Åland"
 
-#: /tmp/cache/5a2c854849f0b/12/1228e8267630381d45866414ab75ee1bd216aaadc7ad95455a723cc6b3723853.php:159
-#: /tmp/cache/5a2c85495f779/5c/5cbc68db62c4d9580234a742471593bb416df810fcc197cf867e468ff2e91189.php:156
+#: /tmp/cache/5a2d55365eb67/0b/0b20a8b372f6efaba242a73a89c9110284a988b3d8d2d7bc79f9a1763f378f4e.php:47
+msgid " to open the invoice page."
+msgstr " for at åbne faktura siden."
+
+#: /tmp/cache/5a2d55365eb67/da/dabe617473a7f2ab2f6b704a878d67de4949e1d0e0775f1f1323b5a089fb0b97.php:209
+msgid " to process the order."
+msgstr " at ekspeder orderen."
+
+#: /tmp/cache/5a2d55365eb67/da/dabe617473a7f2ab2f6b704a878d67de4949e1d0e0775f1f1323b5a089fb0b97.php:37
+msgid "%clientName% has placed an order for the following:"
+msgstr "%clientName% har afgivet en bestilling på følgende:"
+
+#: /tmp/cache/5a2d55365eb67/dd/ddac04e7eee2933a23f5586023c1975d0f92f7aacddc227c482d3051caf1848a.php:28
+msgid ""
+"%fullname% has created an account for the administrator page. An "
+"administrator needs to confirm the account or reject it."
+msgstr ""
+"%fullname% har oprettet en konto til administrator siden. En administrator "
+"skal bekræfte konto eller afvise den."
+
+#: /tmp/cache/5a2d55365eb67/2b/2b55f44daff993f17325b7a910a629c7395d980a8263ec5f0a115d30fd46c983.php:71
+#: /tmp/cache/5a2d55365eb67/2b/2b55f44daff993f17325b7a910a629c7395d980a8263ec5f0a115d30fd46c983.php:81
+#: /tmp/cache/5a2d553703c36/f8/f86e346dbe541eb1bedffb82a6ac2d868c4eceb3a756ea2ee8549e1abb0c54e1.php:242
+#: /tmp/cache/5a2d553774b2e/7b/7bf142564421509e87d9522d87e37fd2e1e34f76df7f930f53db15a812e0b858.php:70
+#: /tmp/cache/5a2d553774b2e/7b/7bf142564421509e87d9522d87e37fd2e1e34f76df7f930f53db15a812e0b858.php:80
+#: /tmp/cache/5a2d553774b2e/ac/ac58229a26cb8ed3cf6cfb3013e34e1dab77c36c0eea4eed791f859aff521cd9.php:161
+msgid ".00"
+msgstr ",-"
+
+#: /tmp/cache/5a2d55365eb67/9e/9ed384d9492aa56c06845cfaba38c66e8d827a8d4a7f3ffad9e406d69d4491ed.php:32
+msgid ""
+"A customer tried to see the status page for online invoice #%invoiceId%, "
+"which is cancelled or rejected."
+msgstr ""
+"En kunde forsøgte at se status-side for online faktura #%invoiceId% som er "
+"annulleret eller afvist."
+
+#: /tmp/cache/5a2d55365eb67/77/7753fa0e04d68e035fa70f307ea9e927546a6bbdf6c0f06976898e8222fe65a4.php:32
+msgid ""
+"A user tried to pay online invoice #%invoiceId%, which is not in the system."
+msgstr ""
+"En bruger forsøgte at betale online faktura #%invoiceId% som ikke findes i "
+"systemet."
+
+#: /tmp/cache/5a2d55365eb67/cc/cc4d03b5c31214df52be0b91f25aabfb5cd3df0feae3e1c7763bee624df2bf16.php:221
+#: /tmp/cache/5a2d553774b2e/f6/f698664c6eb6959d7329b9c080d74322e079353621fdb79c30bc2a04624acd87.php:237
+msgid "Accessories"
+msgstr "Tilbehør"
+
+#: /tmp/cache/5a2d55365eb67/6f/6f3aa23f9573fa1d018ae4d00282006532278532cbf0085f27df5d73c5e6f6d8.php:153
+msgid "Add"
+msgstr "Tilføj"
+
+#: /tmp/cache/5a2d55365eb67/6f/6f3aa23f9573fa1d018ae4d00282006532278532cbf0085f27df5d73c5e6f6d8.php:25
+#: /tmp/cache/5a2d553703c36/f8/f86e346dbe541eb1bedffb82a6ac2d868c4eceb3a756ea2ee8549e1abb0c54e1.php:641
+msgid "Add list"
+msgstr "Tilføj liste"
+
+#: /tmp/cache/5a2d55365eb67/d7/d750b7d88293d03c4f46c5ae0101e6d8698c88a12503db4e7d3867d797b6db84.php:37
+msgid "Add new contact"
+msgstr "Tilføje en ny kontakt"
+
+#: /tmp/cache/5a2d55365eb67/cc/cc4d03b5c31214df52be0b91f25aabfb5cd3df0feae3e1c7763bee624df2bf16.php:183
+#: /tmp/cache/5a2d553774b2e/9d/9db354caa8bd6770554ed81da70cc1b00181104ce634ee113a70289d59b0569e.php:125
+#: /tmp/cache/5a2d553774b2e/ac/ac58229a26cb8ed3cf6cfb3013e34e1dab77c36c0eea4eed791f859aff521cd9.php:197
+#: /tmp/cache/5a2d553774b2e/f6/f698664c6eb6959d7329b9c080d74322e079353621fdb79c30bc2a04624acd87.php:182
+msgid "Add to shopping cart"
+msgstr "Tilføj til indkøbsliste"
+
+#: /tmp/cache/5a2d55365eb67/d7/d750b7d88293d03c4f46c5ae0101e6d8698c88a12503db4e7d3867d797b6db84.php:32
+#: /tmp/cache/5a2d55369756f/71/718adbdcc9a080772ed64aecfbb0a5010c4fbf3a5f6ab7fc3d9b479d4c5a95d0.php:169
+msgid "Address Book"
+msgstr "Adressebog"
+
+#: /tmp/cache/5a2d55365eb67/84/84e5cbd88381c46cb1381167749c21e954111324c2d175b35e1809845c8d076d.php:77
+#: /tmp/cache/5a2d55365eb67/da/dabe617473a7f2ab2f6b704a878d67de4949e1d0e0775f1f1323b5a089fb0b97.php:102
+#: /tmp/cache/5a2d55369756f/37/379363122404d9cccecc6c8d11814533b1e80e3744bd92378d358fa6635665ed.php:763
+#: /tmp/cache/5a2d55369756f/37/379363122404d9cccecc6c8d11814533b1e80e3744bd92378d358fa6635665ed.php:1018
+#: /tmp/cache/5a2d55374274c/88/88dc8530ec5c024a2f28d13c7402857ed5068a9d8dd99f6513190137023955e8.php:131
+#: /tmp/cache/5a2d553774b2e/15/151c19d54033dbdbe8f070e30e6b43fc0272bed8e2d842b5f9f3a2a32d996c5b.php:102
+#: /tmp/cache/5a2d553774b2e/15/151c19d54033dbdbe8f070e30e6b43fc0272bed8e2d842b5f9f3a2a32d996c5b.php:303
+msgid "Address:"
+msgstr "Adresse:"
+
+#: /tmp/cache/5a2d55365eb67/f6/f64c19bd8e9101fe17e037ad86e03610b8ba4d2f8d9ce9714363164c05726e18.php:146
+msgid "Advanced search"
+msgstr "Avanceret søgning"
+
+#: /tmp/cache/5a2d55365eb67/6f/6f3aa23f9573fa1d018ae4d00282006532278532cbf0085f27df5d73c5e6f6d8.php:47
+#: /tmp/cache/5a2d55365eb67/6f/6f3aa23f9573fa1d018ae4d00282006532278532cbf0085f27df5d73c5e6f6d8.php:128
+msgid "Alphanumeric"
+msgstr "Alfanumerisk"
+
+#: /tmp/cache/5a2d55365eb67/2b/2b55f44daff993f17325b7a910a629c7395d980a8263ec5f0a115d30fd46c983.php:87
+#: /tmp/cache/5a2d553774b2e/7b/7bf142564421509e87d9522d87e37fd2e1e34f76df7f930f53db15a812e0b858.php:86
+msgid "Brand:"
+msgstr "Mærke:"
+
+#: /tmp/cache/5a2d55365eb67/84/84e5cbd88381c46cb1381167749c21e954111324c2d175b35e1809845c8d076d.php:105
+#: /tmp/cache/5a2d55369756f/37/379363122404d9cccecc6c8d11814533b1e80e3744bd92378d358fa6635665ed.php:823
+#: /tmp/cache/5a2d55369756f/37/379363122404d9cccecc6c8d11814533b1e80e3744bd92378d358fa6635665ed.php:835
+#: /tmp/cache/5a2d55369756f/37/379363122404d9cccecc6c8d11814533b1e80e3744bd92378d358fa6635665ed.php:1114
+#: /tmp/cache/5a2d55369756f/37/379363122404d9cccecc6c8d11814533b1e80e3744bd92378d358fa6635665ed.php:1126
+#: /tmp/cache/5a2d55374274c/88/88dc8530ec5c024a2f28d13c7402857ed5068a9d8dd99f6513190137023955e8.php:198
+#: /tmp/cache/5a2d553774b2e/15/151c19d54033dbdbe8f070e30e6b43fc0272bed8e2d842b5f9f3a2a32d996c5b.php:143
+#: /tmp/cache/5a2d553774b2e/15/151c19d54033dbdbe8f070e30e6b43fc0272bed8e2d842b5f9f3a2a32d996c5b.php:360
+msgid "City:"
+msgstr "By:"
+
+#: /tmp/cache/5a2d55365eb67/0b/0b20a8b372f6efaba242a73a89c9110284a988b3d8d2d7bc79f9a1763f378f4e.php:41
+#: /tmp/cache/5a2d55365eb67/da/dabe617473a7f2ab2f6b704a878d67de4949e1d0e0775f1f1323b5a089fb0b97.php:203
+msgid "Click "
+msgstr "Klik "
+
+#: /tmp/cache/5a2d55365eb67/2b/2b55f44daff993f17325b7a910a629c7395d980a8263ec5f0a115d30fd46c983.php:42
+#: /tmp/cache/5a2d553774b2e/7b/7bf142564421509e87d9522d87e37fd2e1e34f76df7f930f53db15a812e0b858.php:41
+msgid "Contains"
+msgstr "Indeholder"
+
+#: /tmp/cache/5a2d55365eb67/84/84e5cbd88381c46cb1381167749c21e954111324c2d175b35e1809845c8d076d.php:87
+#: /tmp/cache/5a2d55369756f/37/379363122404d9cccecc6c8d11814533b1e80e3744bd92378d358fa6635665ed.php:847
+#: /tmp/cache/5a2d55369756f/37/379363122404d9cccecc6c8d11814533b1e80e3744bd92378d358fa6635665ed.php:1143
+#: /tmp/cache/5a2d55374274c/88/88dc8530ec5c024a2f28d13c7402857ed5068a9d8dd99f6513190137023955e8.php:216
+#: /tmp/cache/5a2d553774b2e/15/151c19d54033dbdbe8f070e30e6b43fc0272bed8e2d842b5f9f3a2a32d996c5b.php:164
+#: /tmp/cache/5a2d553774b2e/15/151c19d54033dbdbe8f070e30e6b43fc0272bed8e2d842b5f9f3a2a32d996c5b.php:387
+msgid "Country:"
+msgstr "Land:"
+
+#: /tmp/cache/5a2d55365eb67/4e/4e4abecef7536d0c95c197d1f6a7dd3125a5d255cbdd21e8dfb2669e2b685507.php:46
+msgid "Create new requirement"
+msgstr "Opret nyt krav"
+
+#: /tmp/cache/5a2d55365eb67/d7/d750b7d88293d03c4f46c5ae0101e6d8698c88a12503db4e7d3867d797b6db84.php:136
+#: /tmp/cache/5a2d55374274c/8a/8a679d2960702fef980209e0994c23420e2e7d8fbd528502726c3c2facc7718d.php:73
+msgid "Delete"
+msgstr "Slet"
+
+#: /tmp/cache/5a2d55365eb67/0b/0b20a8b372f6efaba242a73a89c9110284a988b3d8d2d7bc79f9a1763f378f4e.php:70
+msgid "Delivery phone:"
+msgstr "Lev. tlf.:"
+
+#: /tmp/cache/5a2d55365eb67/d7/d750b7d88293d03c4f46c5ae0101e6d8698c88a12503db4e7d3867d797b6db84.php:89
+msgid "E"
+msgstr "R"
+
+#: /tmp/cache/5a2d55365eb67/4e/4e4abecef7536d0c95c197d1f6a7dd3125a5d255cbdd21e8dfb2669e2b685507.php:44
+#: /tmp/cache/5a2d55369756f/7d/7debfd26e348f9275769328a1f2c9774e1ac35b9fdacc7c7f69ae740c9614e1f.php:51
+#: /tmp/cache/5a2d553703c36/c1/c1163ccd489ed8c55140768d8f28bb345002fbb79606dbe59163374b4bcd4fcf.php:45
+#: /tmp/cache/5a2d55374274c/9c/9c4378d271b7c04bafd4c534243b1c33d95e9b50beb1b0de6e7813149c51a612.php:45
+msgid "Edit %title%"
+msgstr "Rediger %title%"
+
+#: /tmp/cache/5a2d55365eb67/84/84e5cbd88381c46cb1381167749c21e954111324c2d175b35e1809845c8d076d.php:45
+msgid "Edit contact person"
+msgstr "Rediger kontakt person"
+
+#: /tmp/cache/5a2d55365eb67/d7/d750b7d88293d03c4f46c5ae0101e6d8698c88a12503db4e7d3867d797b6db84.php:51
+#: /tmp/cache/5a2d55369756f/4a/4ac2cfe57fe4d5202f651e6c79b9e72aa3a5655574cc23a14588172e114e355c.php:346
+msgid "Email"
+msgstr "E-mail"
+
+#: /tmp/cache/5a2d55365eb67/84/84e5cbd88381c46cb1381167749c21e954111324c2d175b35e1809845c8d076d.php:67
+#: /tmp/cache/5a2d55369756f/14/1407ab56ba50d739b49c277062e14cc4b6cbcdcbc77fc7e1f456558f053418b9.php:40
+#: /tmp/cache/5a2d55369756f/37/379363122404d9cccecc6c8d11814533b1e80e3744bd92378d358fa6635665ed.php:689
+#: /tmp/cache/5a2d55374274c/88/88dc8530ec5c024a2f28d13c7402857ed5068a9d8dd99f6513190137023955e8.php:251
+#: /tmp/cache/5a2d553774b2e/15/151c19d54033dbdbe8f070e30e6b43fc0272bed8e2d842b5f9f3a2a32d996c5b.php:204
+msgid "Email:"
+msgstr "E-mail:"
+
+#: /tmp/cache/5a2d55365eb67/84/84e5cbd88381c46cb1381167749c21e954111324c2d175b35e1809845c8d076d.php:148
+msgid "Interests:"
+msgstr "Interesser:"
+
+#: /tmp/cache/5a2d55365eb67/6f/6f3aa23f9573fa1d018ae4d00282006532278532cbf0085f27df5d73c5e6f6d8.php:79
+msgid "Links:"
+msgstr "Links:"
+
+#: /tmp/cache/5a2d55365eb67/2b/2b55f44daff993f17325b7a910a629c7395d980a8263ec5f0a115d30fd46c983.php:77
+#: /tmp/cache/5a2d553774b2e/7b/7bf142564421509e87d9522d87e37fd2e1e34f76df7f930f53db15a812e0b858.php:76
+msgid "Max price"
+msgstr "Max pris"
+
+#: /tmp/cache/5a2d55365eb67/2b/2b55f44daff993f17325b7a910a629c7395d980a8263ec5f0a115d30fd46c983.php:67
+#: /tmp/cache/5a2d553774b2e/7b/7bf142564421509e87d9522d87e37fd2e1e34f76df7f930f53db15a812e0b858.php:66
+msgid "Min price"
+msgstr "Min pris"
+
+#: /tmp/cache/5a2d55365eb67/d7/d750b7d88293d03c4f46c5ae0101e6d8698c88a12503db4e7d3867d797b6db84.php:59
+msgid "Mobile"
+msgstr "Mobil"
+
+#: /tmp/cache/5a2d55365eb67/0b/0b20a8b372f6efaba242a73a89c9110284a988b3d8d2d7bc79f9a1763f378f4e.php:58
+#: /tmp/cache/5a2d55365eb67/84/84e5cbd88381c46cb1381167749c21e954111324c2d175b35e1809845c8d076d.php:123
+#: /tmp/cache/5a2d55365eb67/da/dabe617473a7f2ab2f6b704a878d67de4949e1d0e0775f1f1323b5a089fb0b97.php:227
+#: /tmp/cache/5a2d55374274c/88/88dc8530ec5c024a2f28d13c7402857ed5068a9d8dd99f6513190137023955e8.php:238
+#: /tmp/cache/5a2d553774b2e/15/151c19d54033dbdbe8f070e30e6b43fc0272bed8e2d842b5f9f3a2a32d996c5b.php:59
+msgid "Mobile:"
+msgstr "Mobil:"
+
+#: /tmp/cache/5a2d55365eb67/d7/d750b7d88293d03c4f46c5ae0101e6d8698c88a12503db4e7d3867d797b6db84.php:47
+#: /tmp/cache/5a2d55369756f/4a/4ac2cfe57fe4d5202f651e6c79b9e72aa3a5655574cc23a14588172e114e355c.php:338
+#: /tmp/cache/5a2d55374274c/8a/8a679d2960702fef980209e0994c23420e2e7d8fbd528502726c3c2facc7718d.php:51
+msgid "Name"
+msgstr "Navn"
+
+#: /tmp/cache/5a2d55365eb67/6f/6f3aa23f9573fa1d018ae4d00282006532278532cbf0085f27df5d73c5e6f6d8.php:99
+#: /tmp/cache/5a2d55365eb67/84/84e5cbd88381c46cb1381167749c21e954111324c2d175b35e1809845c8d076d.php:57
+#: /tmp/cache/5a2d55369756f/37/379363122404d9cccecc6c8d11814533b1e80e3744bd92378d358fa6635665ed.php:715
+#: /tmp/cache/5a2d55369756f/37/379363122404d9cccecc6c8d11814533b1e80e3744bd92378d358fa6635665ed.php:960
+#: /tmp/cache/5a2d55369756f/50/50d3e2074d13358d7d2c8ed77097db06c070cd191efa9020658d8b6df11cfb41.php:117
+#: /tmp/cache/5a2d553703c36/91/919f0ac7ae7aa48a7f83e6d2740f9b52568481a0b05b1df7a2b9d974e20c5ffd.php:23
+#: /tmp/cache/5a2d553703c36/9d/9d10aa030a646d016b911143e849094fc69e02c21437ed9f11b541dabc36e1fa.php:59
+#: /tmp/cache/5a2d55374274c/88/88dc8530ec5c024a2f28d13c7402857ed5068a9d8dd99f6513190137023955e8.php:61
+#: /tmp/cache/5a2d553774b2e/15/151c19d54033dbdbe8f070e30e6b43fc0272bed8e2d842b5f9f3a2a32d996c5b.php:75
+#: /tmp/cache/5a2d553774b2e/15/151c19d54033dbdbe8f070e30e6b43fc0272bed8e2d842b5f9f3a2a32d996c5b.php:262
+msgid "Name:"
+msgstr "Navn:"
+
+#: /tmp/cache/5a2d55365eb67/f6/f64c19bd8e9101fe17e037ad86e03610b8ba4d2f8d9ce9714363164c05726e18.php:38
+#: /tmp/cache/5a2d55374274c/1d/1d0d517b0f2c4426d7dc4e4e186ea9cd3bc7ee1bec7bfb348259454c15fd90c6.php:38
+msgid "News on %name%"
+msgstr "Nyheder på %name%"
+
+#: /tmp/cache/5a2d55365eb67/6f/6f3aa23f9573fa1d018ae4d00282006532278532cbf0085f27df5d73c5e6f6d8.php:39
+#: /tmp/cache/5a2d55365eb67/6f/6f3aa23f9573fa1d018ae4d00282006532278532cbf0085f27df5d73c5e6f6d8.php:110
+msgid "Number"
+msgstr "Nummer"
+
+#: /tmp/cache/5a2d55365eb67/6f/6f3aa23f9573fa1d018ae4d00282006532278532cbf0085f27df5d73c5e6f6d8.php:45
+#: /tmp/cache/5a2d55365eb67/6f/6f3aa23f9573fa1d018ae4d00282006532278532cbf0085f27df5d73c5e6f6d8.php:122
+msgid "Offer"
+msgstr "Tilbud"
+
+#: /tmp/cache/5a2d55365eb67/6f/6f3aa23f9573fa1d018ae4d00282006532278532cbf0085f27df5d73c5e6f6d8.php:83
+msgid "Order by column:"
+msgstr "Sorter efter kolonde:"
+
+#: /tmp/cache/5a2d55365eb67/6f/6f3aa23f9573fa1d018ae4d00282006532278532cbf0085f27df5d73c5e6f6d8.php:95
+msgid "Ordering:"
+msgstr "Sortering:"
+
+#: /tmp/cache/5a2d55365eb67/2b/2b55f44daff993f17325b7a910a629c7395d980a8263ec5f0a115d30fd46c983.php:53
+#: /tmp/cache/5a2d553774b2e/7b/7bf142564421509e87d9522d87e37fd2e1e34f76df7f930f53db15a812e0b858.php:52
+msgid "Part No."
+msgstr "Varenr."
+
+#: /tmp/cache/5a2d55365eb67/d7/d750b7d88293d03c4f46c5ae0101e6d8698c88a12503db4e7d3867d797b6db84.php:55
+#: /tmp/cache/5a2d55369756f/4a/4ac2cfe57fe4d5202f651e6c79b9e72aa3a5655574cc23a14588172e114e355c.php:342
+msgid "Phone"
+msgstr "Tlf."
+
+#: /tmp/cache/5a2d55365eb67/84/84e5cbd88381c46cb1381167749c21e954111324c2d175b35e1809845c8d076d.php:97
+msgid "Postal Code:"
+msgstr "Post nr.:"
+
+#: /tmp/cache/5a2d55365eb67/f6/f64c19bd8e9101fe17e037ad86e03610b8ba4d2f8d9ce9714363164c05726e18.php:306
+msgid "Prices are VAT inclusive. Subject to reservations:"
+msgstr " Priser er inkl. Moms. Der tages forbehold for:"
+
+#: /tmp/cache/5a2d55365eb67/84/84e5cbd88381c46cb1381167749c21e954111324c2d175b35e1809845c8d076d.php:113
+msgid "Private:"
+msgstr "Privat:"
+
+#: /tmp/cache/5a2d55365eb67/e1/e1e4934e117d015bb5e2aa2e5cc5e5d28b61b9522009d6fdcaabc3bfe3e65e7d.php:92
+msgid "Read more"
+msgstr "Læs mere"
+
+#: /tmp/cache/5a2d55365eb67/84/84e5cbd88381c46cb1381167749c21e954111324c2d175b35e1809845c8d076d.php:142
+msgid "Receive newsletters."
+msgstr "Modtag nyhedsbreve."
+
+#: /tmp/cache/5a2d55365eb67/0b/0b20a8b372f6efaba242a73a89c9110284a988b3d8d2d7bc79f9a1763f378f4e.php:97
+msgid ""
+"Remember to process the payment when the product is sent (The payment will "
+"only be transferred from the customer's account once we hit 'Process')"
+msgstr ""
+"Husk at \"ekspedere\" betalingen når varen sendes (Betaling overføres først "
+"fra kundens konto, når vi trykker \"Ekspedér\")."
+
+#: /tmp/cache/5a2d55365eb67/84/84e5cbd88381c46cb1381167749c21e954111324c2d175b35e1809845c8d076d.php:35
+msgid "Save contact"
+msgstr "Gem kontakt"
+
+#: /tmp/cache/5a2d55365eb67/4e/4e4abecef7536d0c95c197d1f6a7dd3125a5d255cbdd21e8dfb2669e2b685507.php:33
+msgid "Save requirement"
+msgstr "Gem krav"
+
+#: /tmp/cache/5a2d55365eb67/da/dabe617473a7f2ab2f6b704a878d67de4949e1d0e0775f1f1323b5a089fb0b97.php:234
+#: /tmp/cache/5a2d55365eb67/dd/ddac04e7eee2933a23f5586023c1975d0f92f7aacddc227c482d3051caf1848a.php:32
+msgid "Sincerely the computer"
+msgstr "Mvh Computeren"
+
+#: /tmp/cache/5a2d55365eb67/0b/0b20a8b372f6efaba242a73a89c9110284a988b3d8d2d7bc79f9a1763f378f4e.php:80
+msgid "Sincerely, the computer"
+msgstr "Mvh Computeren"
+
+#: /tmp/cache/5a2d55365eb67/f6/f64c19bd8e9101fe17e037ad86e03610b8ba4d2f8d9ce9714363164c05726e18.php:310
+msgid ""
+"Sold items, printing errors and price changes, as well as force majeure."
+msgstr ""
+" Udsolgte varer, trykfejl og prisændringer, samt forhold vi ikke er herre "
+"over."
+
+#: /tmp/cache/5a2d55365eb67/f6/f64c19bd8e9101fe17e037ad86e03610b8ba4d2f8d9ce9714363164c05726e18.php:291
+#: /tmp/cache/5a2d55374274c/36/361b1776263f5977fd8742164cc417f73be64bddb6038197549ff345ab6776ec.php:102
+#: /tmp/cache/5a2d55374274c/61/61f47b13a6b895f39f3960225fae2973063d9a02405d70fd4c9779cf0b495c33.php:78
+#: /tmp/cache/5a2d55374274c/88/88dc8530ec5c024a2f28d13c7402857ed5068a9d8dd99f6513190137023955e8.php:297
+msgid "Tel."
+msgstr "Tlf."
+
+#: /tmp/cache/5a2d55365eb67/6f/6f3aa23f9573fa1d018ae4d00282006532278532cbf0085f27df5d73c5e6f6d8.php:37
+#: /tmp/cache/5a2d55365eb67/6f/6f3aa23f9573fa1d018ae4d00282006532278532cbf0085f27df5d73c5e6f6d8.php:106
+msgid "Text"
+msgstr "Tekst"
+
+#: /tmp/cache/5a2d55365eb67/0b/0b20a8b372f6efaba242a73a89c9110284a988b3d8d2d7bc79f9a1763f378f4e.php:93
+msgid ""
+"The customer has approved the payment and the following order must be "
+"shipped to the customer."
+msgstr ""
+"Kunden har godkendt betalingen og nedenstående ordre skal sendes til kunden."
+
+#: /tmp/cache/5a2d55365eb67/6f/6f3aa23f9573fa1d018ae4d00282006532278532cbf0085f27df5d73c5e6f6d8.php:75
+#: /tmp/cache/5a2d55369756f/7d/7debfd26e348f9275769328a1f2c9774e1ac35b9fdacc7c7f69ae740c9614e1f.php:56
+msgid "Title:"
+msgstr "Titel:"
+
+#: /tmp/cache/5a2d55365eb67/6f/6f3aa23f9573fa1d018ae4d00282006532278532cbf0085f27df5d73c5e6f6d8.php:91
+#: /tmp/cache/5a2d55369756f/50/50d3e2074d13358d7d2c8ed77097db06c070cd191efa9020658d8b6df11cfb41.php:131
+msgid "Type:"
+msgstr "Type:"
+
+#: /tmp/cache/5a2d55365eb67/cc/cc4d03b5c31214df52be0b91f25aabfb5cd3df0feae3e1c7763bee624df2bf16.php:171
+#: /tmp/cache/5a2d553774b2e/f6/f698664c6eb6959d7329b9c080d74322e079353621fdb79c30bc2a04624acd87.php:168
+msgid "USD"
+msgstr "DKK"
+
+#: /tmp/cache/5a2d55365eb67/cc/cc4d03b5c31214df52be0b91f25aabfb5cd3df0feae3e1c7763bee624df2bf16.php:204
+#: /tmp/cache/5a2d553774b2e/f6/f698664c6eb6959d7329b9c080d74322e079353621fdb79c30bc2a04624acd87.php:204
+msgid "View other product from the same brand"
+msgstr "Se andre produkter fra samme mærke"
+
+#: /tmp/cache/5a2d55365eb67/2b/2b55f44daff993f17325b7a910a629c7395d980a8263ec5f0a115d30fd46c983.php:60
+#: /tmp/cache/5a2d553774b2e/7b/7bf142564421509e87d9522d87e37fd2e1e34f76df7f930f53db15a812e0b858.php:59
+msgid "Without the words"
+msgstr "Uden ordene"
+
+#: /tmp/cache/5a2d55365eb67/d7/d750b7d88293d03c4f46c5ae0101e6d8698c88a12503db4e7d3867d797b6db84.php:63
+msgid "Zip code"
+msgstr "Postnr."
+
+#: /tmp/cache/5a2d55365eb67/f6/f64c19bd8e9101fe17e037ad86e03610b8ba4d2f8d9ce9714363164c05726e18.php:34
+#: /tmp/cache/5a2d55374274c/1d/1d0d517b0f2c4426d7dc4e4e186ea9cd3bc7ee1bec7bfb348259454c15fd90c6.php:34
+#: /tmp/cache/5a2d553774b2e/a8/a8c03c7648c2f3cbd9268f80b9b406caf2defbb1906671e205eadfc8ad1a1ac7.php:40
+msgid "en"
+msgstr "da"
+
+#: /tmp/cache/5a2d55365eb67/0b/0b20a8b372f6efaba242a73a89c9110284a988b3d8d2d7bc79f9a1763f378f4e.php:45
+#: /tmp/cache/5a2d55365eb67/da/dabe617473a7f2ab2f6b704a878d67de4949e1d0e0775f1f1323b5a089fb0b97.php:207
+msgid "here"
+msgstr "her"
+
+#: /tmp/cache/5a2d55369756f/71/718adbdcc9a080772ed64aecfbb0a5010c4fbf3a5f6ab7fc3d9b479d4c5a95d0.php:59
+msgid "Actions"
+msgstr "Handling"
+
+#: /tmp/cache/5a2d55369756f/50/50d3e2074d13358d7d2c8ed77097db06c070cd191efa9020658d8b6df11cfb41.php:99
+#: /tmp/cache/5a2d55369756f/50/50d3e2074d13358d7d2c8ed77097db06c070cd191efa9020658d8b6df11cfb41.php:103
+msgid "Add File"
+msgstr "Tilføj fil"
+
+#: /tmp/cache/5a2d55369756f/ab/ab65c925a3e4b610688b336afdcead69162b6baa790e95b5ed98098ebd553790.php:37
+msgid "Add requirement"
+msgstr "Tilføj krav"
+
+#: /tmp/cache/5a2d55369756f/12/12d19a57d7aca5736ec12b0e3b424973c47f24d33be5b2c0de6e046e74db1ded.php:55
+#: /tmp/cache/5a2d55369756f/4a/4ac2cfe57fe4d5202f651e6c79b9e72aa3a5655574cc23a14588172e114e355c.php:432
+msgid "Amount"
+msgstr "Beløb"
+
+#: /tmp/cache/5a2d55369756f/37/379363122404d9cccecc6c8d11814533b1e80e3744bd92378d358fa6635665ed.php:376
+msgid "An error occurred"
+msgstr "En fejl er opstået"
+
+#: /tmp/cache/5a2d55369756f/12/12d19a57d7aca5736ec12b0e3b424973c47f24d33be5b2c0de6e046e74db1ded.php:118
+#: /tmp/cache/5a2d55369756f/12/12d19a57d7aca5736ec12b0e3b424973c47f24d33be5b2c0de6e046e74db1ded.php:120
+msgid "Approve"
+msgstr "Godkendt"
+
+#: /tmp/cache/5a2d55369756f/4a/4ac2cfe57fe4d5202f651e6c79b9e72aa3a5655574cc23a14588172e114e355c.php:164
+msgid "Apr"
+msgstr "Apr"
+
+#: /tmp/cache/5a2d55369756f/37/379363122404d9cccecc6c8d11814533b1e80e3744bd92378d358fa6635665ed.php:460
+msgid "Assigned:"
+msgstr "Tildelt:"
+
+#: /tmp/cache/5a2d55369756f/4a/4ac2cfe57fe4d5202f651e6c79b9e72aa3a5655574cc23a14588172e114e355c.php:196
+msgid "Aug"
+msgstr "Aug"
+
+#: /tmp/cache/5a2d55369756f/12/12d19a57d7aca5736ec12b0e3b424973c47f24d33be5b2c0de6e046e74db1ded.php:84
+msgid "Bank transferal"
+msgstr "Bank overførsel"
+
+#: /tmp/cache/5a2d55369756f/71/718adbdcc9a080772ed64aecfbb0a5010c4fbf3a5f6ab7fc3d9b479d4c5a95d0.php:142
+msgid "Brands"
+msgstr "Mærker"
+
+#: /tmp/cache/5a2d55369756f/37/379363122404d9cccecc6c8d11814533b1e80e3744bd92378d358fa6635665ed.php:105
+msgid "Cancel"
+msgstr "Annullér"
+
+#: /tmp/cache/5a2d55369756f/14/1407ab56ba50d739b49c277062e14cc4b6cbcdcbc77fc7e1f456558f053418b9.php:68
+msgid "Check emails in the address book"
+msgstr "Kontroler mail-adresser i adressebog"
+
+#: /tmp/cache/5a2d55369756f/14/1407ab56ba50d739b49c277062e14cc4b6cbcdcbc77fc7e1f456558f053418b9.php:72
+msgid "Clean up files"
+msgstr "Ryd op i filer"
+
+#: /tmp/cache/5a2d55369756f/4a/4ac2cfe57fe4d5202f651e6c79b9e72aa3a5655574cc23a14588172e114e355c.php:80
+msgid "Clerk:"
+msgstr "Ekspedient:"
+
+#: /tmp/cache/5a2d55369756f/86/86a5166be7102032270a3d64441fd82215fb2886a996ceca62db398f9fd27101.php:82
+msgid "Click on the folder where you want to move the file '%filename%'."
+msgstr "Klik på den mappe, hvor du vil flytte filen \"%filename\" til."
+
+#: /tmp/cache/5a2d55369756f/86/86a5166be7102032270a3d64441fd82215fb2886a996ceca62db398f9fd27101.php:96
+msgid "Click the plus sign above to see the subfolders."
+msgstr "Klik på plustegnet ovenfor for at se undermapper."
+
+#: /tmp/cache/5a2d55369756f/1a/1aad2c04d9a693d391b7c6336a77f99c7f9e9a1ade5f4d40011511241970369f.php:105
+#: /tmp/cache/5a2d55369756f/1a/1aad2c04d9a693d391b7c6336a77f99c7f9e9a1ade5f4d40011511241970369f.php:109
+msgid "Clip"
+msgstr "Klip"
+
+#: /tmp/cache/5a2d55369756f/71/718adbdcc9a080772ed64aecfbb0a5010c4fbf3a5f6ab7fc3d9b479d4c5a95d0.php:83
+msgid "Content"
+msgstr "Fortsæt"
+
+#: /tmp/cache/5a2d55369756f/37/379363122404d9cccecc6c8d11814533b1e80e3744bd92378d358fa6635665ed.php:91
+msgid "Copy to new"
+msgstr "Kopier til ny"
+
+#: /tmp/cache/5a2d55369756f/76/767ae672fb1324684d1f5556f84d12a27eecba06c29de0b831eedef92fed53de.php:51
+#: /tmp/cache/5a2d553703c36/3e/3efe128e4882505e78ffe36c8daae58f86f3ef07e2b4ebbdceaa24998ee8fa24.php:25
+#: /tmp/cache/5a2d553703c36/3e/3efe128e4882505e78ffe36c8daae58f86f3ef07e2b4ebbdceaa24998ee8fa24.php:83
+msgid "Create account"
+msgstr "Opret konto"
+
+#: /tmp/cache/5a2d55369756f/71/718adbdcc9a080772ed64aecfbb0a5010c4fbf3a5f6ab7fc3d9b479d4c5a95d0.php:97
+#: /tmp/cache/5a2d553703c36/9d/9d10aa030a646d016b911143e849094fc69e02c21437ed9f11b541dabc36e1fa.php:48
+msgid "Create category"
+msgstr "Opret kategori"
+
+#: /tmp/cache/5a2d55369756f/4a/4ac2cfe57fe4d5202f651e6c79b9e72aa3a5655574cc23a14588172e114e355c.php:36
+#: /tmp/cache/5a2d55374274c/8a/8a679d2960702fef980209e0994c23420e2e7d8fbd528502726c3c2facc7718d.php:33
+msgid "Create new"
+msgstr "Opret ny"
+
+#: /tmp/cache/5a2d55369756f/69/698831c24e5b1880dd21371c4c64df420e5d1fe9d16baf243fbe13aac1c74638.php:37
+msgid "Create new newsletter"
+msgstr "Opret nyt nyhedsbrev"
+
+#: /tmp/cache/5a2d55369756f/5b/5b7da8fd4e888a249202c72c5e9914c1febbe375b1abc183991b8546fab3e75e.php:37
+msgid "Create new sorting"
+msgstr "Opret ny sortering"
+
+#: /tmp/cache/5a2d55369756f/71/718adbdcc9a080772ed64aecfbb0a5010c4fbf3a5f6ab7fc3d9b479d4c5a95d0.php:93
+msgid "Create page"
+msgstr "Opret side"
+
+#: /tmp/cache/5a2d55369756f/4a/4ac2cfe57fe4d5202f651e6c79b9e72aa3a5655574cc23a14588172e114e355c.php:421
+msgid "Created"
+msgstr "Oprettet"
+
+#: /tmp/cache/5a2d55369756f/37/379363122404d9cccecc6c8d11814533b1e80e3744bd92378d358fa6635665ed.php:433
+msgid "Created:"
+msgstr "Oprettet:"
+
+#: /tmp/cache/5a2d55369756f/14/1407ab56ba50d739b49c277062e14cc4b6cbcdcbc77fc7e1f456558f053418b9.php:82
+msgid "Cron last run at %date%"
+msgstr "Cron senest kørt d. %date%"
+
+#: /tmp/cache/5a2d55369756f/14/1407ab56ba50d739b49c277062e14cc4b6cbcdcbc77fc7e1f456558f053418b9.php:50
+msgid "DB:"
+msgstr "DB:"
+
+#: /tmp/cache/5a2d55369756f/4a/4ac2cfe57fe4d5202f651e6c79b9e72aa3a5655574cc23a14588172e114e355c.php:228
+msgid "Dec"
+msgstr "Dec"
+
+#: /tmp/cache/5a2d55369756f/14/1407ab56ba50d739b49c277062e14cc4b6cbcdcbc77fc7e1f456558f053418b9.php:78
+msgid "Delayed emails %pending%/%total%"
+msgstr "Forsinkede emails %pending%/%total%"
+
+#: /tmp/cache/5a2d55369756f/ab/ab65c925a3e4b610688b336afdcead69162b6baa790e95b5ed98098ebd553790.php:56
+#: /tmp/cache/5a2d553703c36/c6/c64c04b446586055ff7cdc08eb13ea8423dd816de2d3ce9e637764e7bc5a6a0d.php:70
+msgid "Delete %title%!"
+msgstr "Slet %title%!"
+
+#: /tmp/cache/5a2d55369756f/50/50d3e2074d13358d7d2c8ed77097db06c070cd191efa9020658d8b6df11cfb41.php:90
+#: /tmp/cache/5a2d55369756f/50/50d3e2074d13358d7d2c8ed77097db06c070cd191efa9020658d8b6df11cfb41.php:94
+msgid "Delete folder"
+msgstr "Slet mappe"
+
+#: /tmp/cache/5a2d55369756f/4a/4ac2cfe57fe4d5202f651e6c79b9e72aa3a5655574cc23a14588172e114e355c.php:352
+msgid "Department"
+msgstr "Afdeling"
+
+#: /tmp/cache/5a2d55369756f/37/379363122404d9cccecc6c8d11814533b1e80e3744bd92378d358fa6635665ed.php:515
+msgid "Department:"
+msgstr "Afdeling:"
+
+#: /tmp/cache/5a2d55369756f/50/50d3e2074d13358d7d2c8ed77097db06c070cd191efa9020658d8b6df11cfb41.php:124
+#: /tmp/cache/5a2d553703c36/f8/f86e346dbe541eb1bedffb82a6ac2d868c4eceb3a756ea2ee8549e1abb0c54e1.php:104
+msgid "Description:"
+msgstr "Beskrivelse:"
+
+#: /tmp/cache/5a2d55369756f/50/50d3e2074d13358d7d2c8ed77097db06c070cd191efa9020658d8b6df11cfb41.php:156
+msgid "Documents"
+msgstr "Dokumenter"
+
+#: /tmp/cache/5a2d55369756f/37/379363122404d9cccecc6c8d11814533b1e80e3744bd92378d358fa6635665ed.php:396
+msgid "Does not exist in the system"
+msgstr "Findes ikke i systemet"
+
+#: /tmp/cache/5a2d55369756f/1a/1aad2c04d9a693d391b7c6336a77f99c7f9e9a1ade5f4d40011511241970369f.php:25
+msgid "Edit picture"
+msgstr "Rediger billed"
+
+#: /tmp/cache/5a2d55369756f/37/379363122404d9cccecc6c8d11814533b1e80e3744bd92378d358fa6635665ed.php:1207
+msgid "Entered amount includes VAT"
+msgstr "Indtastet beløb er med moms"
+
+#: /tmp/cache/5a2d55369756f/50/50d3e2074d13358d7d2c8ed77097db06c070cd191efa9020658d8b6df11cfb41.php:25
+msgid "Explorer"
+msgstr "Explorer"
+
+#: /tmp/cache/5a2d55369756f/4a/4ac2cfe57fe4d5202f651e6c79b9e72aa3a5655574cc23a14588172e114e355c.php:148
+msgid "Feb"
+msgstr "Feb"
+
+#: /tmp/cache/5a2d55369756f/37/379363122404d9cccecc6c8d11814533b1e80e3744bd92378d358fa6635665ed.php:645
+#: /tmp/cache/5a2d55369756f/37/379363122404d9cccecc6c8d11814533b1e80e3744bd92378d358fa6635665ed.php:673
+#: /tmp/cache/5a2d55369756f/4a/4ac2cfe57fe4d5202f651e6c79b9e72aa3a5655574cc23a14588172e114e355c.php:406
+msgid "Fetch"
+msgstr "Hent"
+
+#: /tmp/cache/5a2d55369756f/aa/aa28d05c0f5b3a67a09a60548e85aeffc07c096c84c47b5277d1035c99121488.php:68
+msgid "File is being uploaded"
+msgstr "Filen er blevet uploadet"
+
+#: /tmp/cache/5a2d55369756f/aa/aa28d05c0f5b3a67a09a60548e85aeffc07c096c84c47b5277d1035c99121488.php:45
+msgid "File type"
+msgstr "Filtype"
+
+#: /tmp/cache/5a2d55369756f/aa/aa28d05c0f5b3a67a09a60548e85aeffc07c096c84c47b5277d1035c99121488.php:25
+msgid "File upload"
+msgstr "Fil-opload"
+
+#: /tmp/cache/5a2d55369756f/1a/1aad2c04d9a693d391b7c6336a77f99c7f9e9a1ade5f4d40011511241970369f.php:101
+msgid "Flip Vertically"
+msgstr "Spejlvend verticalt"
+
+#: /tmp/cache/5a2d55369756f/1a/1aad2c04d9a693d391b7c6336a77f99c7f9e9a1ade5f4d40011511241970369f.php:97
+msgid "Flip horizontally"
+msgstr "Spejlvend horisontalt"
+
+#: /tmp/cache/5a2d55369756f/50/50d3e2074d13358d7d2c8ed77097db06c070cd191efa9020658d8b6df11cfb41.php:63
+#: /tmp/cache/5a2d55369756f/50/50d3e2074d13358d7d2c8ed77097db06c070cd191efa9020658d8b6df11cfb41.php:67
+msgid "Folders"
+msgstr "Mapper"
+
+#: /tmp/cache/5a2d55369756f/76/767ae672fb1324684d1f5556f84d12a27eecba06c29de0b831eedef92fed53de.php:46
+msgid "Forgot Password?"
+msgstr "Glemt adgangskode?"
+
+#: /tmp/cache/5a2d55369756f/37/379363122404d9cccecc6c8d11814533b1e80e3744bd92378d358fa6635665ed.php:1254
+#: /tmp/cache/5a2d553774b2e/ee/ee32a3930ee557fec46de4ed6e6029f8540b3b5e4ed22f547e3fa32718f1adfb.php:55
+msgid "Freight"
+msgstr "Fragt"
+
+#: /tmp/cache/5a2d55369756f/14/1407ab56ba50d739b49c277062e14cc4b6cbcdcbc77fc7e1f456558f053418b9.php:45
+msgid "Get email consumption"
+msgstr "Hent e-mail forbrug"
+
+#: /tmp/cache/5a2d55369756f/37/379363122404d9cccecc6c8d11814533b1e80e3744bd92378d358fa6635665ed.php:263
+#: /tmp/cache/5a2d55369756f/4a/4ac2cfe57fe4d5202f651e6c79b9e72aa3a5655574cc23a14588172e114e355c.php:68
+msgid "ID:"
+msgstr "Id:"
+
+#: /tmp/cache/5a2d55369756f/aa/aa28d05c0f5b3a67a09a60548e85aeffc07c096c84c47b5277d1035c99121488.php:53
+msgid "Illustration"
+msgstr "Illustration"
+
+#: /tmp/cache/5a2d55369756f/aa/aa28d05c0f5b3a67a09a60548e85aeffc07c096c84c47b5277d1035c99121488.php:49
+msgid "Image"
+msgstr "Billede"
+
+#: /tmp/cache/5a2d55369756f/37/379363122404d9cccecc6c8d11814533b1e80e3744bd92378d358fa6635665ed.php:246
+msgid "Internal note:"
+msgstr "Internt notat:"
+
+#: /tmp/cache/5a2d55369756f/37/379363122404d9cccecc6c8d11814533b1e80e3744bd92378d358fa6635665ed.php:627
+msgid "Invoice address:"
+msgstr "Faktura adresse:"
+
+#: /tmp/cache/5a2d55369756f/71/718adbdcc9a080772ed64aecfbb0a5010c4fbf3a5f6ab7fc3d9b479d4c5a95d0.php:185
+msgid "Invoices"
+msgstr "Fakturas"
+
+#: /tmp/cache/5a2d55369756f/4a/4ac2cfe57fe4d5202f651e6c79b9e72aa3a5655574cc23a14588172e114e355c.php:140
+msgid "Jan"
+msgstr "Jan"
+
+#: /tmp/cache/5a2d55369756f/4a/4ac2cfe57fe4d5202f651e6c79b9e72aa3a5655574cc23a14588172e114e355c.php:188
+msgid "Jul"
+msgstr "Jul"
+
+#: /tmp/cache/5a2d55369756f/4a/4ac2cfe57fe4d5202f651e6c79b9e72aa3a5655574cc23a14588172e114e355c.php:180
+msgid "Jun"
+msgstr "Jun"
+
+#: /tmp/cache/5a2d55369756f/5b/5b7da8fd4e888a249202c72c5e9914c1febbe375b1abc183991b8546fab3e75e.php:32
+#: /tmp/cache/5a2d55369756f/71/718adbdcc9a080772ed64aecfbb0a5010c4fbf3a5f6ab7fc3d9b479d4c5a95d0.php:146
+msgid "List sorting"
+msgstr "Liste sortering"
+
+#: /tmp/cache/5a2d55369756f/71/718adbdcc9a080772ed64aecfbb0a5010c4fbf3a5f6ab7fc3d9b479d4c5a95d0.php:128
+msgid "Lists"
+msgstr "Lister"
+
+#: /tmp/cache/5a2d55369756f/1a/1aad2c04d9a693d391b7c6336a77f99c7f9e9a1ade5f4d40011511241970369f.php:119
+#: /tmp/cache/5a2d55369756f/1a/1aad2c04d9a693d391b7c6336a77f99c7f9e9a1ade5f4d40011511241970369f.php:121
+#: /tmp/cache/5a2d55369756f/50/50d3e2074d13358d7d2c8ed77097db06c070cd191efa9020658d8b6df11cfb41.php:57
+#: /tmp/cache/5a2d55369756f/50/50d3e2074d13358d7d2c8ed77097db06c070cd191efa9020658d8b6df11cfb41.php:59
+#: /tmp/cache/5a2d55369756f/71/718adbdcc9a080772ed64aecfbb0a5010c4fbf3a5f6ab7fc3d9b479d4c5a95d0.php:74
+#: /tmp/cache/5a2d55369756f/86/86a5166be7102032270a3d64441fd82215fb2886a996ceca62db398f9fd27101.php:86
+msgid "Loading"
+msgstr "Indlæser"
+
+#: /tmp/cache/5a2d55369756f/37/379363122404d9cccecc6c8d11814533b1e80e3744bd92378d358fa6635665ed.php:63
+msgid "Lock"
+msgstr "Lås"
+
+#: /tmp/cache/5a2d55369756f/37/379363122404d9cccecc6c8d11814533b1e80e3744bd92378d358fa6635665ed.php:308
+msgid "Locked for editing"
+msgstr "Låst for redigering"
+
+#: /tmp/cache/5a2d55369756f/71/718adbdcc9a080772ed64aecfbb0a5010c4fbf3a5f6ab7fc3d9b479d4c5a95d0.php:78
+msgid "Log out"
+msgstr "log ud"
+
+#: /tmp/cache/5a2d55369756f/76/767ae672fb1324684d1f5556f84d12a27eecba06c29de0b831eedef92fed53de.php:25
+msgid "Login"
+msgstr "Login"
+
+#: /tmp/cache/5a2d55369756f/14/1407ab56ba50d739b49c277062e14cc4b6cbcdcbc77fc7e1f456558f053418b9.php:32
+#: /tmp/cache/5a2d55369756f/71/718adbdcc9a080772ed64aecfbb0a5010c4fbf3a5f6ab7fc3d9b479d4c5a95d0.php:173
+msgid "Maintenance"
+msgstr "Vedligeholdelse"
+
+#: /tmp/cache/5a2d55369756f/4a/4ac2cfe57fe4d5202f651e6c79b9e72aa3a5655574cc23a14588172e114e355c.php:156
+msgid "Mar"
+msgstr "Mar"
+
+#: /tmp/cache/5a2d55369756f/4a/4ac2cfe57fe4d5202f651e6c79b9e72aa3a5655574cc23a14588172e114e355c.php:172
+msgid "May"
+msgstr "Maj"
+
+#: /tmp/cache/5a2d55369756f/4a/4ac2cfe57fe4d5202f651e6c79b9e72aa3a5655574cc23a14588172e114e355c.php:76
+msgid "Month:"
+msgstr "Måned:"
+
+#: /tmp/cache/5a2d55369756f/86/86a5166be7102032270a3d64441fd82215fb2886a996ceca62db398f9fd27101.php:25
+msgid "Move file"
+msgstr "Flyt fil"
+
+#: /tmp/cache/5a2d55369756f/37/379363122404d9cccecc6c8d11814533b1e80e3744bd92378d358fa6635665ed.php:1242
+#: /tmp/cache/5a2d553774b2e/ee/ee32a3930ee557fec46de4ed6e6029f8540b3b5e4ed22f547e3fa32718f1adfb.php:43
+msgid "Net Amount"
+msgstr "Nettobeløb"
+
+#: /tmp/cache/5a2d55369756f/7d/7debfd26e348f9275769328a1f2c9774e1ac35b9fdacc7c7f69ae740c9614e1f.php:63
+msgid "New Item:"
+msgstr "Nyt punkt:"
+
+#: /tmp/cache/5a2d55369756f/50/50d3e2074d13358d7d2c8ed77097db06c070cd191efa9020658d8b6df11cfb41.php:81
+#: /tmp/cache/5a2d55369756f/50/50d3e2074d13358d7d2c8ed77097db06c070cd191efa9020658d8b6df11cfb41.php:85
+msgid "New folder"
+msgstr "Ny mappe"
+
+#: /tmp/cache/5a2d55369756f/37/379363122404d9cccecc6c8d11814533b1e80e3744bd92378d358fa6635665ed.php:294
+msgid "Newly created"
+msgstr "Nyoprettet"
+
+#: /tmp/cache/5a2d55369756f/69/698831c24e5b1880dd21371c4c64df420e5d1fe9d16baf243fbe13aac1c74638.php:32
+#: /tmp/cache/5a2d55369756f/71/718adbdcc9a080772ed64aecfbb0a5010c4fbf3a5f6ab7fc3d9b479d4c5a95d0.php:165
+msgid "Newsletters"
+msgstr "Nyhedsbreve"
+
+#: /tmp/cache/5a2d55369756f/37/379363122404d9cccecc6c8d11814533b1e80e3744bd92378d358fa6635665ed.php:414
+msgid "No"
+msgstr "Nej"
+
+#: /tmp/cache/5a2d55369756f/37/379363122404d9cccecc6c8d11814533b1e80e3744bd92378d358fa6635665ed.php:470
+msgid "No one"
+msgstr "Ingen"
+
+#: /tmp/cache/5a2d55369756f/37/379363122404d9cccecc6c8d11814533b1e80e3744bd92378d358fa6635665ed.php:532
+msgid "Not selected"
+msgstr "Ikke valgt"
+
+#: /tmp/cache/5a2d55369756f/4a/4ac2cfe57fe4d5202f651e6c79b9e72aa3a5655574cc23a14588172e114e355c.php:220
+msgid "Nov"
+msgstr "Nov"
+
+#: /tmp/cache/5a2d55369756f/4a/4ac2cfe57fe4d5202f651e6c79b9e72aa3a5655574cc23a14588172e114e355c.php:212
+msgid "Oct"
+msgstr "Okt"
+
+#: /tmp/cache/5a2d55369756f/71/718adbdcc9a080772ed64aecfbb0a5010c4fbf3a5f6ab7fc3d9b479d4c5a95d0.php:161
+msgid "Open file manager"
+msgstr "Åben fil håndtering"
+
+#: /tmp/cache/5a2d55369756f/37/379363122404d9cccecc6c8d11814533b1e80e3744bd92378d358fa6635665ed.php:916
+#: /tmp/cache/5a2d553774b2e/15/151c19d54033dbdbe8f070e30e6b43fc0272bed8e2d842b5f9f3a2a32d996c5b.php:227
+msgid "Other delivery address"
+msgstr "Anden leveringsadresse"
+
+#: /tmp/cache/5a2d55369756f/aa/aa28d05c0f5b3a67a09a60548e85aeffc07c096c84c47b5277d1035c99121488.php:61
+msgid "Other files"
+msgstr "Andre filer"
+
+#: /tmp/cache/5a2d55369756f/71/718adbdcc9a080772ed64aecfbb0a5010c4fbf3a5f6ab7fc3d9b479d4c5a95d0.php:101
+#: /tmp/cache/5a2d55369756f/aa/aa435a4aff69d70a51e54b01df37e30446f47e4d93601122875ee212f4eb5793.php:32
+msgid "Overview"
+msgstr "Oversigt"
+
+#: /tmp/cache/5a2d55369756f/37/379363122404d9cccecc6c8d11814533b1e80e3744bd92378d358fa6635665ed.php:361
+msgid "Paid in cash the %date%"
+msgstr "Betalt kontant d. %date%"
+
+#: /tmp/cache/5a2d55369756f/37/379363122404d9cccecc6c8d11814533b1e80e3744bd92378d358fa6635665ed.php:325
+msgid "Paid online the %date%"
+msgstr "Betalt online d. %date%"
+
+#: /tmp/cache/5a2d55369756f/37/379363122404d9cccecc6c8d11814533b1e80e3744bd92378d358fa6635665ed.php:343
+msgid "Paid via giro the %date%"
+msgstr "Betalt via giro d. %date%"
+
+#: /tmp/cache/5a2d55369756f/76/767ae672fb1324684d1f5556f84d12a27eecba06c29de0b831eedef92fed53de.php:38
+#: /tmp/cache/5a2d553703c36/3e/3efe128e4882505e78ffe36c8daae58f86f3ef07e2b4ebbdceaa24998ee8fa24.php:71
+#: /tmp/cache/5a2d55374274c/ad/ad4e8f6e7681765d79a5548ff3d2cda8243b91f4c8d6d8ee851129b7869cd7a0.php:134
+msgid "Password:"
+msgstr "Adgangskode:"
+
+#: /tmp/cache/5a2d55369756f/12/12d19a57d7aca5736ec12b0e3b424973c47f24d33be5b2c0de6e046e74db1ded.php:47
+msgid "Pay date"
+msgstr "Betalings dato"
+
+#: /tmp/cache/5a2d55369756f/37/379363122404d9cccecc6c8d11814533b1e80e3744bd92378d358fa6635665ed.php:390
+msgid "Payment declined"
+msgstr "Betaling afvist"
+
+#: /tmp/cache/5a2d55369756f/12/12d19a57d7aca5736ec12b0e3b424973c47f24d33be5b2c0de6e046e74db1ded.php:43
+msgid "Payment method"
+msgstr "Betalingsmetode"
+
+#: /tmp/cache/5a2d55369756f/37/379363122404d9cccecc6c8d11814533b1e80e3744bd92378d358fa6635665ed.php:633
+msgid "Phone 1:"
+msgstr "Tlf. 1:"
+
+#: /tmp/cache/5a2d55369756f/37/379363122404d9cccecc6c8d11814533b1e80e3744bd92378d358fa6635665ed.php:661
+msgid "Phone 2:"
+msgstr "Tlf. 2:"
+
+#: /tmp/cache/5a2d55369756f/50/50d3e2074d13358d7d2c8ed77097db06c070cd191efa9020658d8b6df11cfb41.php:140
+#: /tmp/cache/5a2d553703c36/91/919f0ac7ae7aa48a7f83e6d2740f9b52568481a0b05b1df7a2b9d974e20c5ffd.php:61
+#: /tmp/cache/5a2d553703c36/9d/9d10aa030a646d016b911143e849094fc69e02c21437ed9f11b541dabc36e1fa.php:69
+#: /tmp/cache/5a2d553703c36/9d/9d10aa030a646d016b911143e849094fc69e02c21437ed9f11b541dabc36e1fa.php:86
+#: /tmp/cache/5a2d553703c36/f8/f86e346dbe541eb1bedffb82a6ac2d868c4eceb3a756ea2ee8549e1abb0c54e1.php:131
+msgid "Pictures"
+msgstr "Billeder"
+
+#: /tmp/cache/5a2d55369756f/37/379363122404d9cccecc6c8d11814533b1e80e3744bd92378d358fa6635665ed.php:787
+#: /tmp/cache/5a2d55369756f/37/379363122404d9cccecc6c8d11814533b1e80e3744bd92378d358fa6635665ed.php:1073
+#: /tmp/cache/5a2d55374274c/88/88dc8530ec5c024a2f28d13c7402857ed5068a9d8dd99f6513190137023955e8.php:159
+#: /tmp/cache/5a2d553774b2e/15/151c19d54033dbdbe8f070e30e6b43fc0272bed8e2d842b5f9f3a2a32d996c5b.php:120
+#: /tmp/cache/5a2d553774b2e/15/151c19d54033dbdbe8f070e30e6b43fc0272bed8e2d842b5f9f3a2a32d996c5b.php:331
+msgid "Postbox:"
+msgstr "Postboks:"
+
+#: /tmp/cache/5a2d55369756f/71/718adbdcc9a080772ed64aecfbb0a5010c4fbf3a5f6ab7fc3d9b479d4c5a95d0.php:181
+#: /tmp/cache/5a2d55369756f/8c/8cc08cc4fb12f06d74b614d02a697760809b08afe054712b17627b402132f6af.php:25
+msgid "Pricelist"
+msgstr "Prisliste"
+
+#: /tmp/cache/5a2d55369756f/37/379363122404d9cccecc6c8d11814533b1e80e3744bd92378d358fa6635665ed.php:75
+msgid "Print"
+msgstr "Udskriv"
+
+#: /tmp/cache/5a2d55369756f/37/379363122404d9cccecc6c8d11814533b1e80e3744bd92378d358fa6635665ed.php:39
+msgid "Process"
+msgstr "Ekspeder"
+
+#: /tmp/cache/5a2d55369756f/71/718adbdcc9a080772ed64aecfbb0a5010c4fbf3a5f6ab7fc3d9b479d4c5a95d0.php:72
+#: /tmp/cache/5a2d553703c36/dd/dda05311dfbdc714b310b5ee4c6fe3873f3ce70a4f8c19c0f672d1a2085a5ad9.php:38
+msgid "Processing"
+msgstr "Behandler"
+
+#: /tmp/cache/5a2d55369756f/37/379363122404d9cccecc6c8d11814533b1e80e3744bd92378d358fa6635665ed.php:315
+msgid "Ready for processing"
+msgstr "Klar til ekspedering"
+
+#: /tmp/cache/5a2d55369756f/37/379363122404d9cccecc6c8d11814533b1e80e3744bd92378d358fa6635665ed.php:406
+msgid "Received:"
+msgstr "Betalingen er allerede modtaget kontant."
+
+#: /tmp/cache/5a2d55369756f/37/379363122404d9cccecc6c8d11814533b1e80e3744bd92378d358fa6635665ed.php:206
+msgid "Refund:"
+msgstr "Krediter:"
+
+#: /tmp/cache/5a2d55369756f/37/379363122404d9cccecc6c8d11814533b1e80e3744bd92378d358fa6635665ed.php:46
+msgid "Reject"
+msgstr "Afvis"
+
+#: /tmp/cache/5a2d55369756f/37/379363122404d9cccecc6c8d11814533b1e80e3744bd92378d358fa6635665ed.php:423
+msgid "Remove"
+msgstr "Fjern"
+
+#: /tmp/cache/5a2d55369756f/37/379363122404d9cccecc6c8d11814533b1e80e3744bd92378d358fa6635665ed.php:1367
+msgid "Remove Line"
+msgstr "Fjern linje"
+
+#: /tmp/cache/5a2d55369756f/71/718adbdcc9a080772ed64aecfbb0a5010c4fbf3a5f6ab7fc3d9b479d4c5a95d0.php:138
+msgid "Requirements"
+msgstr "Krav"
+
+#: /tmp/cache/5a2d55369756f/ab/ab65c925a3e4b610688b336afdcead69162b6baa790e95b5ed98098ebd553790.php:32
+msgid "Requirements list"
+msgstr "Kravliste"
+
+#: /tmp/cache/5a2d55369756f/12/12d19a57d7aca5736ec12b0e3b424973c47f24d33be5b2c0de6e046e74db1ded.php:51
+#: /tmp/cache/5a2d55369756f/4a/4ac2cfe57fe4d5202f651e6c79b9e72aa3a5655574cc23a14588172e114e355c.php:427
+msgid "Responsible"
+msgstr "Ansvarlige"
+
+#: /tmp/cache/5a2d55369756f/1a/1aad2c04d9a693d391b7c6336a77f99c7f9e9a1ade5f4d40011511241970369f.php:93
+msgid "Rotate clockwise"
+msgstr "Roter med uret"
+
+#: /tmp/cache/5a2d55369756f/1a/1aad2c04d9a693d391b7c6336a77f99c7f9e9a1ade5f4d40011511241970369f.php:89
+msgid "Rotate counterclockwise"
+msgstr "Roter mod uret"
+
+#: /tmp/cache/5a2d55369756f/1a/1aad2c04d9a693d391b7c6336a77f99c7f9e9a1ade5f4d40011511241970369f.php:113
+#: /tmp/cache/5a2d55369756f/1a/1aad2c04d9a693d391b7c6336a77f99c7f9e9a1ade5f4d40011511241970369f.php:115
+#: /tmp/cache/5a2d55369756f/37/379363122404d9cccecc6c8d11814533b1e80e3744bd92378d358fa6635665ed.php:54
+#: /tmp/cache/5a2d55374274c/ad/ad4e8f6e7681765d79a5548ff3d2cda8243b91f4c8d6d8ee851129b7869cd7a0.php:35
+msgid "Save"
+msgstr "Gem"
+
+#: /tmp/cache/5a2d55369756f/7d/7debfd26e348f9275769328a1f2c9774e1ac35b9fdacc7c7f69ae740c9614e1f.php:39
+msgid "Save list"
+msgstr "Gem liste"
+
+#: /tmp/cache/5a2d55369756f/14/1407ab56ba50d739b49c277062e14cc4b6cbcdcbc77fc7e1f456558f053418b9.php:64
+msgid "Scan database"
+msgstr "Scan database"
+
+#: /tmp/cache/5a2d55369756f/aa/aa28d05c0f5b3a67a09a60548e85aeffc07c096c84c47b5277d1035c99121488.php:72
+msgid "Select file type"
+msgstr "Vægl filtype"
+
+#: /tmp/cache/5a2d55369756f/37/379363122404d9cccecc6c8d11814533b1e80e3744bd92378d358fa6635665ed.php:128
+msgid "Send"
+msgstr "Send"
+
+#: /tmp/cache/5a2d55369756f/37/379363122404d9cccecc6c8d11814533b1e80e3744bd92378d358fa6635665ed.php:142
+msgid "Send reminder"
+msgstr "Send rykker"
+
+#: /tmp/cache/5a2d55369756f/37/379363122404d9cccecc6c8d11814533b1e80e3744bd92378d358fa6635665ed.php:126
+msgid "Send to customer"
+msgstr "Send til kunden"
+
+#: /tmp/cache/5a2d55369756f/4a/4ac2cfe57fe4d5202f651e6c79b9e72aa3a5655574cc23a14588172e114e355c.php:467
+msgid "Sent"
+msgstr "Sendt"
+
+#: /tmp/cache/5a2d55369756f/37/379363122404d9cccecc6c8d11814533b1e80e3744bd92378d358fa6635665ed.php:301
+#: /tmp/cache/5a2d55369756f/4a/4ac2cfe57fe4d5202f651e6c79b9e72aa3a5655574cc23a14588172e114e355c.php:469
+msgid "Sent to customer"
+msgstr "Sendt til kunden"
+
+#: /tmp/cache/5a2d55369756f/4a/4ac2cfe57fe4d5202f651e6c79b9e72aa3a5655574cc23a14588172e114e355c.php:204
+msgid "Sep"
+msgstr "Sep"
+
+#: /tmp/cache/5a2d55369756f/14/1407ab56ba50d739b49c277062e14cc4b6cbcdcbc77fc7e1f456558f053418b9.php:38
+msgid "Server consumption"
+msgstr "Server forbrug"
+
+#: /tmp/cache/5a2d55369756f/aa/aa28d05c0f5b3a67a09a60548e85aeffc07c096c84c47b5277d1035c99121488.php:77
+msgid "Short description"
+msgstr "Kort beskrivelse"
+
+#: /tmp/cache/5a2d55369756f/71/718adbdcc9a080772ed64aecfbb0a5010c4fbf3a5f6ab7fc3d9b479d4c5a95d0.php:105
+msgid "Skip to page"
+msgstr "Spring til side"
+
+#: /tmp/cache/5a2d55369756f/50/50d3e2074d13358d7d2c8ed77097db06c070cd191efa9020658d8b6df11cfb41.php:152
+msgid "Sounds"
+msgstr "Lyde"
+
+#: /tmp/cache/5a2d55369756f/37/379363122404d9cccecc6c8d11814533b1e80e3744bd92378d358fa6635665ed.php:286
+#: /tmp/cache/5a2d55369756f/4a/4ac2cfe57fe4d5202f651e6c79b9e72aa3a5655574cc23a14588172e114e355c.php:84
+msgid "Status:"
+msgstr "Status:"
+
+#: /tmp/cache/5a2d55369756f/37/379363122404d9cccecc6c8d11814533b1e80e3744bd92378d358fa6635665ed.php:1319
+#: /tmp/cache/5a2d553774b2e/ee/ee32a3930ee557fec46de4ed6e6029f8540b3b5e4ed22f547e3fa32718f1adfb.php:84
+msgid "TO PAY"
+msgstr "I alt (dkk)"
+
+#: /tmp/cache/5a2d55369756f/37/379363122404d9cccecc6c8d11814533b1e80e3744bd92378d358fa6635665ed.php:930
+msgid "Tel.:"
+msgstr "Tlf.:"
+
+#: /tmp/cache/5a2d55369756f/71/718adbdcc9a080772ed64aecfbb0a5010c4fbf3a5f6ab7fc3d9b479d4c5a95d0.php:151
+msgid "Tools"
+msgstr "Værktøjer"
+
+#: /tmp/cache/5a2d55369756f/50/50d3e2074d13358d7d2c8ed77097db06c070cd191efa9020658d8b6df11cfb41.php:164
+msgid "Unused files"
+msgstr "Ubrugte filer"
+
+#: /tmp/cache/5a2d55369756f/76/767ae672fb1324684d1f5556f84d12a27eecba06c29de0b831eedef92fed53de.php:34
+msgid "User:"
+msgstr "Bruger:"
+
+#: /tmp/cache/5a2d55369756f/37/379363122404d9cccecc6c8d11814533b1e80e3744bd92378d358fa6635665ed.php:1308
+#: /tmp/cache/5a2d553774b2e/ee/ee32a3930ee557fec46de4ed6e6029f8540b3b5e4ed22f547e3fa32718f1adfb.php:70
+msgid "VAT Amount"
+msgstr "Heraf moms"
+
+#: /tmp/cache/5a2d55369756f/4a/4ac2cfe57fe4d5202f651e6c79b9e72aa3a5655574cc23a14588172e114e355c.php:88
+msgid "VAT:"
+msgstr "Moms: "
+
+#: /tmp/cache/5a2d55369756f/4a/4ac2cfe57fe4d5202f651e6c79b9e72aa3a5655574cc23a14588172e114e355c.php:48
+msgid "Validate"
+msgstr "Validér"
+
+#: /tmp/cache/5a2d55369756f/aa/aa28d05c0f5b3a67a09a60548e85aeffc07c096c84c47b5277d1035c99121488.php:57
+msgid "Video"
+msgstr "Video"
+
+#: /tmp/cache/5a2d55369756f/50/50d3e2074d13358d7d2c8ed77097db06c070cd191efa9020658d8b6df11cfb41.php:148
+msgid "Videos"
+msgstr "Videoer"
+
+#: /tmp/cache/5a2d55369756f/14/1407ab56ba50d739b49c277062e14cc4b6cbcdcbc77fc7e1f456558f053418b9.php:56
+msgid "WWW:"
+msgstr "WWW:"
+
+#: /tmp/cache/5a2d55369756f/4a/4ac2cfe57fe4d5202f651e6c79b9e72aa3a5655574cc23a14588172e114e355c.php:72
+msgid "Year:"
+msgstr "År:"
+
+#: /tmp/cache/5a2d55369756f/37/379363122404d9cccecc6c8d11814533b1e80e3744bd92378d358fa6635665ed.php:412
+msgid "Yes"
+msgstr "Ja"
+
+#: /tmp/cache/5a2d55369756f/37/379363122404d9cccecc6c8d11814533b1e80e3744bd92378d358fa6635665ed.php:811
+#: /tmp/cache/5a2d55369756f/37/379363122404d9cccecc6c8d11814533b1e80e3744bd92378d358fa6635665ed.php:1102
+#: /tmp/cache/5a2d55374274c/88/88dc8530ec5c024a2f28d13c7402857ed5068a9d8dd99f6513190137023955e8.php:180
+#: /tmp/cache/5a2d553774b2e/15/151c19d54033dbdbe8f070e30e6b43fc0272bed8e2d842b5f9f3a2a32d996c5b.php:133
+#: /tmp/cache/5a2d553774b2e/15/151c19d54033dbdbe8f070e30e6b43fc0272bed8e2d842b5f9f3a2a32d996c5b.php:349
+msgid "Zipcode:"
+msgstr "Postnr.:"
+
+#: /tmp/cache/5a2d55369756f/50/50d3e2074d13358d7d2c8ed77097db06c070cd191efa9020658d8b6df11cfb41.php:160
+msgid "Zipfiles"
+msgstr "Zip-filer"
+
+#: /tmp/cache/5a2d55369756f/7d/7debfd26e348f9275769328a1f2c9774e1ac35b9fdacc7c7f69ae740c9614e1f.php:65
+msgid "add"
+msgstr "tilføj"
+
+#: /tmp/cache/5a2d55369756f/37/379363122404d9cccecc6c8d11814533b1e80e3744bd92378d358fa6635665ed.php:273
+msgid "eCode:"
+msgstr "eKode:"
+
+#: /tmp/cache/5a2d553703c36/f8/f86e346dbe541eb1bedffb82a6ac2d868c4eceb3a756ea2ee8549e1abb0c54e1.php:728
+msgid "Accessories:"
+msgstr "Tilbehør:"
+
+#: /tmp/cache/5a2d553703c36/f8/f86e346dbe541eb1bedffb82a6ac2d868c4eceb3a756ea2ee8549e1abb0c54e1.php:774
+msgid "Add accessories"
+msgstr "Tilføj tilbehør"
+
+#: /tmp/cache/5a2d553703c36/9d/9d10aa030a646d016b911143e849094fc69e02c21437ed9f11b541dabc36e1fa.php:105
+msgid "Alphabetically"
+msgstr "Alfabetisk"
+
+#: /tmp/cache/5a2d553703c36/f8/f86e346dbe541eb1bedffb82a6ac2d868c4eceb3a756ea2ee8549e1abb0c54e1.php:172
+msgid "Before"
+msgstr "Før"
+
+#: /tmp/cache/5a2d553703c36/f8/f86e346dbe541eb1bedffb82a6ac2d868c4eceb3a756ea2ee8549e1abb0c54e1.php:657
+msgid "Bindings:"
+msgstr "Bindinger:"
+
+#: /tmp/cache/5a2d553703c36/9d/9d10aa030a646d016b911143e849094fc69e02c21437ed9f11b541dabc36e1fa.php:186
+msgid "Contact:"
+msgstr "Kontakt:"
+
+#: /tmp/cache/5a2d553703c36/f8/f86e346dbe541eb1bedffb82a6ac2d868c4eceb3a756ea2ee8549e1abb0c54e1.php:709
+msgid "Create binding"
+msgstr "Opret binding"
+
+#: /tmp/cache/5a2d553703c36/f8/f86e346dbe541eb1bedffb82a6ac2d868c4eceb3a756ea2ee8549e1abb0c54e1.php:48
+msgid "Create new page"
+msgstr "Opret ny side"
+
+#: /tmp/cache/5a2d553703c36/f8/f86e346dbe541eb1bedffb82a6ac2d868c4eceb3a756ea2ee8549e1abb0c54e1.php:602
+msgid "Delete row"
+msgstr "Slet række"
+
+#: /tmp/cache/5a2d553703c36/9d/9d10aa030a646d016b911143e849094fc69e02c21437ed9f11b541dabc36e1fa.php:215
+msgid "Display:"
+msgstr "Visning:"
+
+#: /tmp/cache/5a2d553703c36/9d/9d10aa030a646d016b911143e849094fc69e02c21437ed9f11b541dabc36e1fa.php:46
+msgid "Edit category"
+msgstr "Rediger kategori"
+
+#: /tmp/cache/5a2d553703c36/f8/f86e346dbe541eb1bedffb82a6ac2d868c4eceb3a756ea2ee8549e1abb0c54e1.php:46
+msgid "Edit page #%pageId%"
+msgstr "Rediger side #%pageId%"
+
+#: /tmp/cache/5a2d553703c36/5f/5f12dffd078e3206893a4984b6eba96e4598f075fd86c4c024aa9ae41d6d6e57.php:34
+msgid "Email: %email% #%contactId% is not valid"
+msgstr "E-mail: %email% #%contactId% er ikke gyldige"
+
+#: /tmp/cache/5a2d553703c36/91/919f0ac7ae7aa48a7f83e6d2740f9b52568481a0b05b1df7a2b9d974e20c5ffd.php:63
+#: /tmp/cache/5a2d553703c36/f8/f86e346dbe541eb1bedffb82a6ac2d868c4eceb3a756ea2ee8549e1abb0c54e1.php:133
+msgid "Find image"
+msgstr "Find billede"
+
+#: /tmp/cache/5a2d553703c36/f8/f86e346dbe541eb1bedffb82a6ac2d868c4eceb3a756ea2ee8549e1abb0c54e1.php:217
+msgid "From"
+msgstr "Fra"
+
+#: /tmp/cache/5a2d553703c36/3e/3efe128e4882505e78ffe36c8daae58f86f3ef07e2b4ebbdceaa24998ee8fa24.php:59
+#: /tmp/cache/5a2d55374274c/ad/ad4e8f6e7681765d79a5548ff3d2cda8243b91f4c8d6d8ee851129b7869cd7a0.php:52
+msgid "Full name:"
+msgstr "Fulde navn:"
+
+#: /tmp/cache/5a2d553703c36/9d/9d10aa030a646d016b911143e849094fc69e02c21437ed9f11b541dabc36e1fa.php:232
+msgid "Gallery"
+msgstr "Galleri"
+
+#: /tmp/cache/5a2d553703c36/9d/9d10aa030a646d016b911143e849094fc69e02c21437ed9f11b541dabc36e1fa.php:224
+msgid "Hide"
+msgstr "Skjul"
+
+#: /tmp/cache/5a2d553703c36/9d/9d10aa030a646d016b911143e849094fc69e02c21437ed9f11b541dabc36e1fa.php:78
+msgid "Icon:"
+msgstr "Ikon:"
+
+#: /tmp/cache/5a2d553703c36/f8/f86e346dbe541eb1bedffb82a6ac2d868c4eceb3a756ea2ee8549e1abb0c54e1.php:180
+msgid "Indicative price"
+msgstr "Vejledende pris"
+
+#: /tmp/cache/5a2d553703c36/f8/f86e346dbe541eb1bedffb82a6ac2d868c4eceb3a756ea2ee8549e1abb0c54e1.php:86
+msgid ""
+"Keywords (separate search terms with a comma - for example: 'emergency "
+"blanket, first aid'):"
+msgstr ""
+"Søgeord (separer søgeord med et komma - f.eks.: \"Brandtæppe, førstehjælp\"):"
+
+#: /tmp/cache/5a2d553703c36/3a/3ad444d3f36286e8abe26dbbe4d0fc3e0a828ba5eb40c5f6b001162239ed7181.php:31
+msgid "Limit list to this section"
+msgstr "Begræns liste til denne sektion"
+
+#: /tmp/cache/5a2d553703c36/f8/f86e346dbe541eb1bedffb82a6ac2d868c4eceb3a756ea2ee8549e1abb0c54e1.php:391
+msgid "Link"
+msgstr "Link"
+
+#: /tmp/cache/5a2d553703c36/91/919f0ac7ae7aa48a7f83e6d2740f9b52568481a0b05b1df7a2b9d974e20c5ffd.php:33
+msgid "Link:"
+msgstr "Link:"
+
+#: /tmp/cache/5a2d553703c36/9d/9d10aa030a646d016b911143e849094fc69e02c21437ed9f11b541dabc36e1fa.php:240
+msgid "List"
+msgstr "Liste"
+
+#: /tmp/cache/5a2d553703c36/c6/c64c04b446586055ff7cdc08eb13ea8423dd816de2d3ce9e637764e7bc5a6a0d.php:45
+msgid "List of brands"
+msgstr "Mærkeliste"
+
+#: /tmp/cache/5a2d553703c36/dd/dda05311dfbdc714b310b5ee4c6fe3873f3ce70a4f8c19c0f672d1a2085a5ad9.php:25
+msgid "List of pages"
+msgstr "Liste af sider"
+
+#: /tmp/cache/5a2d553703c36/91/919f0ac7ae7aa48a7f83e6d2740f9b52568481a0b05b1df7a2b9d974e20c5ffd.php:43
+msgid "Logo:"
+msgstr "Logo:"
+
+#: /tmp/cache/5a2d553703c36/9d/9d10aa030a646d016b911143e849094fc69e02c21437ed9f11b541dabc36e1fa.php:113
+msgid "Manually"
+msgstr "Manuelt"
+
+#: /tmp/cache/5a2d553703c36/f8/f86e346dbe541eb1bedffb82a6ac2d868c4eceb3a756ea2ee8549e1abb0c54e1.php:279
+#: /tmp/cache/5a2d553703c36/f8/f86e346dbe541eb1bedffb82a6ac2d868c4eceb3a756ea2ee8549e1abb0c54e1.php:315
+msgid "None"
+msgstr "Ingen"
+
+#: /tmp/cache/5a2d553703c36/f8/f86e346dbe541eb1bedffb82a6ac2d868c4eceb3a756ea2ee8549e1abb0c54e1.php:253
+msgid "Other:"
+msgstr "Andet:"
+
+#: /tmp/cache/5a2d553703c36/f8/f86e346dbe541eb1bedffb82a6ac2d868c4eceb3a756ea2ee8549e1abb0c54e1.php:154
+#: /tmp/cache/5a2d55374274c/17/171ecca8b361a66fd09bc50f5a76ea43cefa37d67d4c064546e4b426862283cd.php:92
+#: /tmp/cache/5a2d553774b2e/a0/a0782a31ee7b595a450fe71285cb38742b912747497d2c5f07c832cf0b607ce1.php:92
+msgid "Price:"
+msgstr "Pris:"
+
+#: /tmp/cache/5a2d553703c36/f8/f86e346dbe541eb1bedffb82a6ac2d868c4eceb3a756ea2ee8549e1abb0c54e1.php:685
+#: /tmp/cache/5a2d553703c36/f8/f86e346dbe541eb1bedffb82a6ac2d868c4eceb3a756ea2ee8549e1abb0c54e1.php:756
+msgid "Remove binding"
+msgstr "Fjern binding"
+
+#: /tmp/cache/5a2d553703c36/91/919f0ac7ae7aa48a7f83e6d2740f9b52568481a0b05b1df7a2b9d974e20c5ffd.php:69
+#: /tmp/cache/5a2d553703c36/9d/9d10aa030a646d016b911143e849094fc69e02c21437ed9f11b541dabc36e1fa.php:90
+#: /tmp/cache/5a2d553703c36/f8/f86e346dbe541eb1bedffb82a6ac2d868c4eceb3a756ea2ee8549e1abb0c54e1.php:139
+msgid "Remove picture"
+msgstr "Fjern billede"
+
+#: /tmp/cache/5a2d553703c36/3e/3efe128e4882505e78ffe36c8daae58f86f3ef07e2b4ebbdceaa24998ee8fa24.php:77
+#: /tmp/cache/5a2d55374274c/ad/ad4e8f6e7681765d79a5548ff3d2cda8243b91f4c8d6d8ee851129b7869cd7a0.php:154
+msgid "Repeat password:"
+msgstr "Gentag adgangskode:"
+
+#: /tmp/cache/5a2d553703c36/f8/f86e346dbe541eb1bedffb82a6ac2d868c4eceb3a756ea2ee8549e1abb0c54e1.php:264
+#: /tmp/cache/5a2d553774b2e/f6/f698664c6eb6959d7329b9c080d74322e079353621fdb79c30bc2a04624acd87.php:46
+msgid "SKU:"
+msgstr "Varenr.:"
+
+#: /tmp/cache/5a2d553703c36/c6/c64c04b446586055ff7cdc08eb13ea8423dd816de2d3ce9e637764e7bc5a6a0d.php:33
+#: /tmp/cache/5a2d55374274c/9c/9c4378d271b7c04bafd4c534243b1c33d95e9b50beb1b0de6e7813149c51a612.php:35
+msgid "Save brand"
+msgstr "Gem mærke"
+
+#: /tmp/cache/5a2d553703c36/9d/9d10aa030a646d016b911143e849094fc69e02c21437ed9f11b541dabc36e1fa.php:35
+msgid "Save category"
+msgstr "Gem kategori"
+
+#: /tmp/cache/5a2d553703c36/c1/c1163ccd489ed8c55140768d8f28bb345002fbb79606dbe59163374b4bcd4fcf.php:35
+#: /tmp/cache/5a2d553703c36/f8/f86e346dbe541eb1bedffb82a6ac2d868c4eceb3a756ea2ee8549e1abb0c54e1.php:35
+msgid "Save page"
+msgstr "Gem siden"
+
+#: /tmp/cache/5a2d553703c36/f8/f86e346dbe541eb1bedffb82a6ac2d868c4eceb3a756ea2ee8549e1abb0c54e1.php:188
+msgid "Should cost"
+msgstr "Burde koste"
+
+#: /tmp/cache/5a2d553703c36/c1/c1163ccd489ed8c55140768d8f28bb345002fbb79606dbe59163374b4bcd4fcf.php:87
+msgid "Sort main categories:"
+msgstr "Sorter hovedkategorier:"
+
+#: /tmp/cache/5a2d553703c36/9d/9d10aa030a646d016b911143e849094fc69e02c21437ed9f11b541dabc36e1fa.php:100
+msgid "Sort subcategories:"
+msgstr "Sorter underkategorier:"
+
+#: /tmp/cache/5a2d553703c36/5f/5f12dffd078e3206893a4984b6eba96e4598f075fd86c4c024aa9ae41d6d6e57.php:22
+msgid "The following email addresses are not valid"
+msgstr "Følgende email adresser er ikke gyldige"
+
+#: /tmp/cache/5a2d553703c36/3e/3efe128e4882505e78ffe36c8daae58f86f3ef07e2b4ebbdceaa24998ee8fa24.php:46
+msgid "The passwords does not match."
+msgstr "Adgangskoderne er ikke ens."
+
+#: /tmp/cache/5a2d553703c36/f8/f86e346dbe541eb1bedffb82a6ac2d868c4eceb3a756ea2ee8549e1abb0c54e1.php:225
+msgid "Used"
+msgstr "Brugt"
+
+#: /tmp/cache/5a2d553703c36/3e/3efe128e4882505e78ffe36c8daae58f86f3ef07e2b4ebbdceaa24998ee8fa24.php:65
+#: /tmp/cache/5a2d55374274c/ad/ad4e8f6e7681765d79a5548ff3d2cda8243b91f4c8d6d8ee851129b7869cd7a0.php:76
+msgid "Username:"
+msgstr "Brugernavn:"
+
+#: /tmp/cache/5a2d553703c36/3a/3ad444d3f36286e8abe26dbbe4d0fc3e0a828ba5eb40c5f6b001162239ed7181.php:29
+msgid "View"
+msgstr "Vis"
+
+#: /tmp/cache/5a2d55374274c/36/361b1776263f5977fd8742164cc417f73be64bddb6038197549ff345ab6776ec.php:62
+msgid "* Experiencing problems with our payment system"
+msgstr "* Oplever problemer med vores betalingssystem"
+
+#: /tmp/cache/5a2d55374274c/5c/5cbc68db62c4d9580234a742471593bb416df810fcc197cf867e468ff2e91189.php:159
 msgid ""
 "* The price cannot be determined automatically, please make sure to describe "
 "the exact type in the note field."
@@ -1860,1487 +3037,101 @@ msgstr ""
 "* Prisen kan ikke automatisk fastsættes, beskriv venligst den eksakte type i "
 "notatfeltet for neden."
 
-#: /tmp/cache/5a2c854849f0b/2b/2b55f44daff993f17325b7a910a629c7395d980a8263ec5f0a115d30fd46c983.php:71
-#: /tmp/cache/5a2c854849f0b/2b/2b55f44daff993f17325b7a910a629c7395d980a8263ec5f0a115d30fd46c983.php:81
-#: /tmp/cache/5a2c8549217c7/f8/f86e346dbe541eb1bedffb82a6ac2d868c4eceb3a756ea2ee8549e1abb0c54e1.php:242
-#: /tmp/cache/5a2c85495f779/ac/ac58229a26cb8ed3cf6cfb3013e34e1dab77c36c0eea4eed791f859aff521cd9.php:161
-#: /tmp/cache/5a2c854995e8e/7b/7bf142564421509e87d9522d87e37fd2e1e34f76df7f930f53db15a812e0b858.php:70
-#: /tmp/cache/5a2c854995e8e/7b/7bf142564421509e87d9522d87e37fd2e1e34f76df7f930f53db15a812e0b858.php:80
-msgid ".00"
-msgstr ",-"
-
-#: /tmp/cache/5a2c854849f0b/cc/cc4d03b5c31214df52be0b91f25aabfb5cd3df0feae3e1c7763bee624df2bf16.php:221
-#: /tmp/cache/5a2c854995e8e/f6/f698664c6eb6959d7329b9c080d74322e079353621fdb79c30bc2a04624acd87.php:237
-msgid "Accessories"
-msgstr "Tilbehør"
-
-#: /tmp/cache/5a2c854849f0b/6f/6f3aa23f9573fa1d018ae4d00282006532278532cbf0085f27df5d73c5e6f6d8.php:153
-msgid "Add"
-msgstr "Tilføj"
-
-#: /tmp/cache/5a2c854849f0b/6f/6f3aa23f9573fa1d018ae4d00282006532278532cbf0085f27df5d73c5e6f6d8.php:25
-#: /tmp/cache/5a2c8549217c7/f8/f86e346dbe541eb1bedffb82a6ac2d868c4eceb3a756ea2ee8549e1abb0c54e1.php:641
-msgid "Add list"
-msgstr "Tilføj liste"
-
-#: /tmp/cache/5a2c854849f0b/d7/d750b7d88293d03c4f46c5ae0101e6d8698c88a12503db4e7d3867d797b6db84.php:37
-msgid "Add new contact"
-msgstr "Tilføje en ny kontakt"
-
-#: /tmp/cache/5a2c854849f0b/cc/cc4d03b5c31214df52be0b91f25aabfb5cd3df0feae3e1c7763bee624df2bf16.php:183
-#: /tmp/cache/5a2c85495f779/9d/9db354caa8bd6770554ed81da70cc1b00181104ce634ee113a70289d59b0569e.php:125
-#: /tmp/cache/5a2c85495f779/ac/ac58229a26cb8ed3cf6cfb3013e34e1dab77c36c0eea4eed791f859aff521cd9.php:197
-#: /tmp/cache/5a2c854995e8e/f6/f698664c6eb6959d7329b9c080d74322e079353621fdb79c30bc2a04624acd87.php:182
-msgid "Add to shopping cart"
-msgstr "Tilføj til indkøbsliste"
-
-#: /tmp/cache/5a2c854849f0b/d7/d750b7d88293d03c4f46c5ae0101e6d8698c88a12503db4e7d3867d797b6db84.php:32
-#: /tmp/cache/5a2c8548e7ced/71/718adbdcc9a080772ed64aecfbb0a5010c4fbf3a5f6ab7fc3d9b479d4c5a95d0.php:169
-msgid "Address Book"
-msgstr "Adressebog"
-
-#: /tmp/cache/5a2c854849f0b/d9/d95acce7d18ceae0cafbfcfc3978a4af11d6b51263895b378608758d6b4be40c.php:102
-#: /tmp/cache/5a2c854849f0b/d9/d95acce7d18ceae0cafbfcfc3978a4af11d6b51263895b378608758d6b4be40c.php:303
-#: /tmp/cache/5a2c85488411d/37/379363122404d9cccecc6c8d11814533b1e80e3744bd92378d358fa6635665ed.php:763
-#: /tmp/cache/5a2c85488411d/37/379363122404d9cccecc6c8d11814533b1e80e3744bd92378d358fa6635665ed.php:1018
-#: /tmp/cache/5a2c85488411d/84/84e5cbd88381c46cb1381167749c21e954111324c2d175b35e1809845c8d076d.php:77
-#: /tmp/cache/5a2c85488411d/da/dabe617473a7f2ab2f6b704a878d67de4949e1d0e0775f1f1323b5a089fb0b97.php:102
-#: /tmp/cache/5a2c85495f779/15/151c19d54033dbdbe8f070e30e6b43fc0272bed8e2d842b5f9f3a2a32d996c5b.php:100
-#: /tmp/cache/5a2c85495f779/15/151c19d54033dbdbe8f070e30e6b43fc0272bed8e2d842b5f9f3a2a32d996c5b.php:301
-#: /tmp/cache/5a2c85495f779/88/88dc8530ec5c024a2f28d13c7402857ed5068a9d8dd99f6513190137023955e8.php:131
-msgid "Address:"
-msgstr "Adresse:"
-
-#: /tmp/cache/5a2c854849f0b/f6/f64c19bd8e9101fe17e037ad86e03610b8ba4d2f8d9ce9714363164c05726e18.php:146
-msgid "Advanced search"
-msgstr "Avanceret søgning"
-
-#: /tmp/cache/5a2c854849f0b/6f/6f3aa23f9573fa1d018ae4d00282006532278532cbf0085f27df5d73c5e6f6d8.php:47
-#: /tmp/cache/5a2c854849f0b/6f/6f3aa23f9573fa1d018ae4d00282006532278532cbf0085f27df5d73c5e6f6d8.php:128
-msgid "Alphanumeric"
-msgstr "Alfanumerisk"
-
-#: /tmp/cache/5a2c854849f0b/12/1228e8267630381d45866414ab75ee1bd216aaadc7ad95455a723cc6b3723853.php:185
-#: /tmp/cache/5a2c85495f779/5c/5cbc68db62c4d9580234a742471593bb416df810fcc197cf867e468ff2e91189.php:182
-msgid "Bank transaction"
-msgstr "Bank overførsel"
-
-#: /tmp/cache/5a2c854849f0b/2b/2b55f44daff993f17325b7a910a629c7395d980a8263ec5f0a115d30fd46c983.php:87
-#: /tmp/cache/5a2c854995e8e/7b/7bf142564421509e87d9522d87e37fd2e1e34f76df7f930f53db15a812e0b858.php:86
-msgid "Brand:"
-msgstr "Mærke:"
-
-#: /tmp/cache/5a2c854849f0b/d9/d95acce7d18ceae0cafbfcfc3978a4af11d6b51263895b378608758d6b4be40c.php:143
-#: /tmp/cache/5a2c854849f0b/d9/d95acce7d18ceae0cafbfcfc3978a4af11d6b51263895b378608758d6b4be40c.php:360
-#: /tmp/cache/5a2c85488411d/37/379363122404d9cccecc6c8d11814533b1e80e3744bd92378d358fa6635665ed.php:823
-#: /tmp/cache/5a2c85488411d/37/379363122404d9cccecc6c8d11814533b1e80e3744bd92378d358fa6635665ed.php:835
-#: /tmp/cache/5a2c85488411d/37/379363122404d9cccecc6c8d11814533b1e80e3744bd92378d358fa6635665ed.php:1114
-#: /tmp/cache/5a2c85488411d/37/379363122404d9cccecc6c8d11814533b1e80e3744bd92378d358fa6635665ed.php:1126
-#: /tmp/cache/5a2c85488411d/84/84e5cbd88381c46cb1381167749c21e954111324c2d175b35e1809845c8d076d.php:105
-#: /tmp/cache/5a2c85495f779/15/151c19d54033dbdbe8f070e30e6b43fc0272bed8e2d842b5f9f3a2a32d996c5b.php:141
-#: /tmp/cache/5a2c85495f779/15/151c19d54033dbdbe8f070e30e6b43fc0272bed8e2d842b5f9f3a2a32d996c5b.php:358
-#: /tmp/cache/5a2c85495f779/88/88dc8530ec5c024a2f28d13c7402857ed5068a9d8dd99f6513190137023955e8.php:198
-msgid "City:"
-msgstr "By:"
-
-#: /tmp/cache/5a2c854849f0b/95/95f15e87853a13afb82285f0d44792130ae8a0dcc56541153f797ee46291c137.php:48
-#: /tmp/cache/5a2c85495f779/ee/ee36479e5c411a6ca4d77c52d72ddb83b2114aa6f02681bb744f5a56b0d3b780.php:47
-msgid "Code:"
-msgstr "Kode:"
-
-#: /tmp/cache/5a2c854849f0b/2b/2b55f44daff993f17325b7a910a629c7395d980a8263ec5f0a115d30fd46c983.php:42
-#: /tmp/cache/5a2c854995e8e/7b/7bf142564421509e87d9522d87e37fd2e1e34f76df7f930f53db15a812e0b858.php:41
-msgid "Contains"
-msgstr "Indeholder"
-
-#: /tmp/cache/5a2c854849f0b/d9/d95acce7d18ceae0cafbfcfc3978a4af11d6b51263895b378608758d6b4be40c.php:164
-#: /tmp/cache/5a2c854849f0b/d9/d95acce7d18ceae0cafbfcfc3978a4af11d6b51263895b378608758d6b4be40c.php:387
-#: /tmp/cache/5a2c85488411d/37/379363122404d9cccecc6c8d11814533b1e80e3744bd92378d358fa6635665ed.php:847
-#: /tmp/cache/5a2c85488411d/37/379363122404d9cccecc6c8d11814533b1e80e3744bd92378d358fa6635665ed.php:1143
-#: /tmp/cache/5a2c85488411d/84/84e5cbd88381c46cb1381167749c21e954111324c2d175b35e1809845c8d076d.php:87
-#: /tmp/cache/5a2c85495f779/15/151c19d54033dbdbe8f070e30e6b43fc0272bed8e2d842b5f9f3a2a32d996c5b.php:162
-#: /tmp/cache/5a2c85495f779/15/151c19d54033dbdbe8f070e30e6b43fc0272bed8e2d842b5f9f3a2a32d996c5b.php:385
-#: /tmp/cache/5a2c85495f779/88/88dc8530ec5c024a2f28d13c7402857ed5068a9d8dd99f6513190137023955e8.php:216
-msgid "Country:"
-msgstr "Land:"
-
-#: /tmp/cache/5a2c854849f0b/12/1228e8267630381d45866414ab75ee1bd216aaadc7ad95455a723cc6b3723853.php:177
-#: /tmp/cache/5a2c85495f779/5c/5cbc68db62c4d9580234a742471593bb416df810fcc197cf867e468ff2e91189.php:174
-msgid "Credit Card"
-msgstr "Betalingskort"
-
-#: /tmp/cache/5a2c854849f0b/d7/d750b7d88293d03c4f46c5ae0101e6d8698c88a12503db4e7d3867d797b6db84.php:136
-#: /tmp/cache/5a2c8549217c7/8a/8a679d2960702fef980209e0994c23420e2e7d8fbd528502726c3c2facc7718d.php:73
-msgid "Delete"
-msgstr "Slet"
-
-#: /tmp/cache/5a2c854849f0b/12/1228e8267630381d45866414ab75ee1bd216aaadc7ad95455a723cc6b3723853.php:200
-#: /tmp/cache/5a2c85495f779/5c/5cbc68db62c4d9580234a742471593bb416df810fcc197cf867e468ff2e91189.php:197
-msgid "Delevery:"
-msgstr "Levering:"
-
-#: /tmp/cache/5a2c854849f0b/d7/d750b7d88293d03c4f46c5ae0101e6d8698c88a12503db4e7d3867d797b6db84.php:89
-msgid "E"
-msgstr "R"
-
-#: /tmp/cache/5a2c854849f0b/d7/d750b7d88293d03c4f46c5ae0101e6d8698c88a12503db4e7d3867d797b6db84.php:51
-#: /tmp/cache/5a2c85488411d/4a/4ac2cfe57fe4d5202f651e6c79b9e72aa3a5655574cc23a14588172e114e355c.php:346
-msgid "Email"
-msgstr "E-mail"
-
-#: /tmp/cache/5a2c854849f0b/d9/d95acce7d18ceae0cafbfcfc3978a4af11d6b51263895b378608758d6b4be40c.php:204
-#: /tmp/cache/5a2c85488411d/14/1407ab56ba50d739b49c277062e14cc4b6cbcdcbc77fc7e1f456558f053418b9.php:40
-#: /tmp/cache/5a2c85488411d/37/379363122404d9cccecc6c8d11814533b1e80e3744bd92378d358fa6635665ed.php:689
-#: /tmp/cache/5a2c85488411d/84/84e5cbd88381c46cb1381167749c21e954111324c2d175b35e1809845c8d076d.php:67
-#: /tmp/cache/5a2c85495f779/15/151c19d54033dbdbe8f070e30e6b43fc0272bed8e2d842b5f9f3a2a32d996c5b.php:202
-#: /tmp/cache/5a2c85495f779/88/88dc8530ec5c024a2f28d13c7402857ed5068a9d8dd99f6513190137023955e8.php:251
-msgid "Email:"
-msgstr "E-mail:"
-
-#: /tmp/cache/5a2c854849f0b/d9/d95acce7d18ceae0cafbfcfc3978a4af11d6b51263895b378608758d6b4be40c.php:52
-#: /tmp/cache/5a2c854849f0b/d9/d95acce7d18ceae0cafbfcfc3978a4af11d6b51263895b378608758d6b4be40c.php:68
-#: /tmp/cache/5a2c854849f0b/d9/d95acce7d18ceae0cafbfcfc3978a4af11d6b51263895b378608758d6b4be40c.php:250
-#: /tmp/cache/5a2c85495f779/15/151c19d54033dbdbe8f070e30e6b43fc0272bed8e2d842b5f9f3a2a32d996c5b.php:50
-#: /tmp/cache/5a2c85495f779/15/151c19d54033dbdbe8f070e30e6b43fc0272bed8e2d842b5f9f3a2a32d996c5b.php:66
-#: /tmp/cache/5a2c85495f779/15/151c19d54033dbdbe8f070e30e6b43fc0272bed8e2d842b5f9f3a2a32d996c5b.php:248
-msgid "Get address"
-msgstr "Hent adresse"
-
-#: /tmp/cache/5a2c854849f0b/f1/f1d2b73349a8eb7075e6d0f79c14d5342cda436cb8a86340db005d729c11bd75.php:55
-#: /tmp/cache/5a2c85495f779/64/64fa87d34374ebe470b71859d771a5b2b116625a4406c90370f221d04552f32f.php:52
-msgid "I hereby agree to the terms of trade"
-msgstr "Jeg accepterer hermed handelsbetingelserne"
-
-#: /tmp/cache/5a2c854849f0b/6f/6f3aa23f9573fa1d018ae4d00282006532278532cbf0085f27df5d73c5e6f6d8.php:79
-msgid "Links:"
-msgstr "Links:"
-
-#: /tmp/cache/5a2c854849f0b/12/1228e8267630381d45866414ab75ee1bd216aaadc7ad95455a723cc6b3723853.php:209
-#: /tmp/cache/5a2c85495f779/5c/5cbc68db62c4d9580234a742471593bb416df810fcc197cf867e468ff2e91189.php:206
-msgid "Mail"
-msgstr "Post"
-
-#: /tmp/cache/5a2c854849f0b/2b/2b55f44daff993f17325b7a910a629c7395d980a8263ec5f0a115d30fd46c983.php:77
-#: /tmp/cache/5a2c854995e8e/7b/7bf142564421509e87d9522d87e37fd2e1e34f76df7f930f53db15a812e0b858.php:76
-msgid "Max price"
-msgstr "Max pris"
-
-#: /tmp/cache/5a2c854849f0b/2b/2b55f44daff993f17325b7a910a629c7395d980a8263ec5f0a115d30fd46c983.php:67
-#: /tmp/cache/5a2c854995e8e/7b/7bf142564421509e87d9522d87e37fd2e1e34f76df7f930f53db15a812e0b858.php:66
-msgid "Min price"
-msgstr "Min pris"
-
-#: /tmp/cache/5a2c854849f0b/d7/d750b7d88293d03c4f46c5ae0101e6d8698c88a12503db4e7d3867d797b6db84.php:59
-msgid "Mobile"
-msgstr "Mobil"
-
-#: /tmp/cache/5a2c854849f0b/d9/d95acce7d18ceae0cafbfcfc3978a4af11d6b51263895b378608758d6b4be40c.php:59
-#: /tmp/cache/5a2c85488411d/0b/0b20a8b372f6efaba242a73a89c9110284a988b3d8d2d7bc79f9a1763f378f4e.php:58
-#: /tmp/cache/5a2c85488411d/84/84e5cbd88381c46cb1381167749c21e954111324c2d175b35e1809845c8d076d.php:123
-#: /tmp/cache/5a2c85488411d/da/dabe617473a7f2ab2f6b704a878d67de4949e1d0e0775f1f1323b5a089fb0b97.php:227
-#: /tmp/cache/5a2c85495f779/15/151c19d54033dbdbe8f070e30e6b43fc0272bed8e2d842b5f9f3a2a32d996c5b.php:57
-#: /tmp/cache/5a2c85495f779/88/88dc8530ec5c024a2f28d13c7402857ed5068a9d8dd99f6513190137023955e8.php:238
-msgid "Mobile:"
-msgstr "Mobil:"
-
-#: /tmp/cache/5a2c854849f0b/d7/d750b7d88293d03c4f46c5ae0101e6d8698c88a12503db4e7d3867d797b6db84.php:47
-#: /tmp/cache/5a2c85488411d/4a/4ac2cfe57fe4d5202f651e6c79b9e72aa3a5655574cc23a14588172e114e355c.php:338
-#: /tmp/cache/5a2c8549217c7/8a/8a679d2960702fef980209e0994c23420e2e7d8fbd528502726c3c2facc7718d.php:51
-msgid "Name"
-msgstr "Navn"
-
-#: /tmp/cache/5a2c854849f0b/6f/6f3aa23f9573fa1d018ae4d00282006532278532cbf0085f27df5d73c5e6f6d8.php:99
-#: /tmp/cache/5a2c854849f0b/d9/d95acce7d18ceae0cafbfcfc3978a4af11d6b51263895b378608758d6b4be40c.php:75
-#: /tmp/cache/5a2c854849f0b/d9/d95acce7d18ceae0cafbfcfc3978a4af11d6b51263895b378608758d6b4be40c.php:262
-#: /tmp/cache/5a2c85488411d/37/379363122404d9cccecc6c8d11814533b1e80e3744bd92378d358fa6635665ed.php:715
-#: /tmp/cache/5a2c85488411d/37/379363122404d9cccecc6c8d11814533b1e80e3744bd92378d358fa6635665ed.php:960
-#: /tmp/cache/5a2c85488411d/50/50d3e2074d13358d7d2c8ed77097db06c070cd191efa9020658d8b6df11cfb41.php:117
-#: /tmp/cache/5a2c85488411d/84/84e5cbd88381c46cb1381167749c21e954111324c2d175b35e1809845c8d076d.php:57
-#: /tmp/cache/5a2c8548e7ced/91/919f0ac7ae7aa48a7f83e6d2740f9b52568481a0b05b1df7a2b9d974e20c5ffd.php:23
-#: /tmp/cache/5a2c8549217c7/9d/9d10aa030a646d016b911143e849094fc69e02c21437ed9f11b541dabc36e1fa.php:59
-#: /tmp/cache/5a2c85495f779/15/151c19d54033dbdbe8f070e30e6b43fc0272bed8e2d842b5f9f3a2a32d996c5b.php:73
-#: /tmp/cache/5a2c85495f779/15/151c19d54033dbdbe8f070e30e6b43fc0272bed8e2d842b5f9f3a2a32d996c5b.php:260
-#: /tmp/cache/5a2c85495f779/88/88dc8530ec5c024a2f28d13c7402857ed5068a9d8dd99f6513190137023955e8.php:61
-msgid "Name:"
-msgstr "Navn:"
-
-#: /tmp/cache/5a2c854849f0b/f6/f64c19bd8e9101fe17e037ad86e03610b8ba4d2f8d9ce9714363164c05726e18.php:38
-#: /tmp/cache/5a2c85495f779/1d/1d0d517b0f2c4426d7dc4e4e186ea9cd3bc7ee1bec7bfb348259454c15fd90c6.php:37
-msgid "News on %name%"
-msgstr "Nyheder på %name%"
-
-#: /tmp/cache/5a2c854849f0b/6f/6f3aa23f9573fa1d018ae4d00282006532278532cbf0085f27df5d73c5e6f6d8.php:39
-#: /tmp/cache/5a2c854849f0b/6f/6f3aa23f9573fa1d018ae4d00282006532278532cbf0085f27df5d73c5e6f6d8.php:110
-msgid "Number"
-msgstr "Nummer"
-
-#: /tmp/cache/5a2c854849f0b/6f/6f3aa23f9573fa1d018ae4d00282006532278532cbf0085f27df5d73c5e6f6d8.php:45
-#: /tmp/cache/5a2c854849f0b/6f/6f3aa23f9573fa1d018ae4d00282006532278532cbf0085f27df5d73c5e6f6d8.php:122
-msgid "Offer"
-msgstr "Tilbud"
-
-#: /tmp/cache/5a2c854849f0b/95/95f15e87853a13afb82285f0d44792130ae8a0dcc56541153f797ee46291c137.php:38
-#: /tmp/cache/5a2c85495f779/ee/ee36479e5c411a6ca4d77c52d72ddb83b2114aa6f02681bb744f5a56b0d3b780.php:37
-msgid "Order No:"
-msgstr "Ordrenr.:"
-
-#: /tmp/cache/5a2c854849f0b/6f/6f3aa23f9573fa1d018ae4d00282006532278532cbf0085f27df5d73c5e6f6d8.php:83
-msgid "Order by column:"
-msgstr "Sorter efter kolonde:"
-
-#: /tmp/cache/5a2c854849f0b/6f/6f3aa23f9573fa1d018ae4d00282006532278532cbf0085f27df5d73c5e6f6d8.php:95
-msgid "Ordering:"
-msgstr "Sortering:"
-
-#: /tmp/cache/5a2c854849f0b/d9/d95acce7d18ceae0cafbfcfc3978a4af11d6b51263895b378608758d6b4be40c.php:227
-#: /tmp/cache/5a2c85488411d/37/379363122404d9cccecc6c8d11814533b1e80e3744bd92378d358fa6635665ed.php:916
-#: /tmp/cache/5a2c85495f779/15/151c19d54033dbdbe8f070e30e6b43fc0272bed8e2d842b5f9f3a2a32d996c5b.php:225
-msgid "Other delivery address"
-msgstr "Anden leveringsadresse"
-
-#: /tmp/cache/5a2c854849f0b/2b/2b55f44daff993f17325b7a910a629c7395d980a8263ec5f0a115d30fd46c983.php:53
-#: /tmp/cache/5a2c854995e8e/7b/7bf142564421509e87d9522d87e37fd2e1e34f76df7f930f53db15a812e0b858.php:52
-msgid "Part No."
-msgstr "Varenr."
-
-#: /tmp/cache/5a2c854849f0b/d7/d750b7d88293d03c4f46c5ae0101e6d8698c88a12503db4e7d3867d797b6db84.php:55
-#: /tmp/cache/5a2c85488411d/4a/4ac2cfe57fe4d5202f651e6c79b9e72aa3a5655574cc23a14588172e114e355c.php:342
-msgid "Phone"
-msgstr "Tlf."
-
-#: /tmp/cache/5a2c854849f0b/12/1228e8267630381d45866414ab75ee1bd216aaadc7ad95455a723cc6b3723853.php:217
-#: /tmp/cache/5a2c85495f779/5c/5cbc68db62c4d9580234a742471593bb416df810fcc197cf867e468ff2e91189.php:214
-msgid "Pickup in store"
-msgstr "Afhent i butikken"
-
-#: /tmp/cache/5a2c854849f0b/d9/d95acce7d18ceae0cafbfcfc3978a4af11d6b51263895b378608758d6b4be40c.php:434
-#: /tmp/cache/5a2c85495f779/15/151c19d54033dbdbe8f070e30e6b43fc0272bed8e2d842b5f9f3a2a32d996c5b.php:432
-msgid "Please send me your newsletter."
-msgstr "Ja tak! Send mig jeres nyhedsbrev."
-
-#: /tmp/cache/5a2c854849f0b/d9/d95acce7d18ceae0cafbfcfc3978a4af11d6b51263895b378608758d6b4be40c.php:120
-#: /tmp/cache/5a2c854849f0b/d9/d95acce7d18ceae0cafbfcfc3978a4af11d6b51263895b378608758d6b4be40c.php:331
-#: /tmp/cache/5a2c85488411d/37/379363122404d9cccecc6c8d11814533b1e80e3744bd92378d358fa6635665ed.php:787
-#: /tmp/cache/5a2c85488411d/37/379363122404d9cccecc6c8d11814533b1e80e3744bd92378d358fa6635665ed.php:1073
-#: /tmp/cache/5a2c85495f779/15/151c19d54033dbdbe8f070e30e6b43fc0272bed8e2d842b5f9f3a2a32d996c5b.php:118
-#: /tmp/cache/5a2c85495f779/15/151c19d54033dbdbe8f070e30e6b43fc0272bed8e2d842b5f9f3a2a32d996c5b.php:329
-#: /tmp/cache/5a2c85495f779/88/88dc8530ec5c024a2f28d13c7402857ed5068a9d8dd99f6513190137023955e8.php:159
-msgid "Postbox:"
-msgstr "Postboks:"
-
-#: /tmp/cache/5a2c854849f0b/12/1228e8267630381d45866414ab75ee1bd216aaadc7ad95455a723cc6b3723853.php:168
-#: /tmp/cache/5a2c85495f779/5c/5cbc68db62c4d9580234a742471593bb416df810fcc197cf867e468ff2e91189.php:165
-msgid "Prefered payment method:"
-msgstr "Foretrukken betalingsmetode:"
-
-#: /tmp/cache/5a2c854849f0b/f6/f64c19bd8e9101fe17e037ad86e03610b8ba4d2f8d9ce9714363164c05726e18.php:306
-msgid "Prices are VAT inclusive. Subject to reservations:"
-msgstr " Priser er inkl. Moms. Der tages forbehold for:"
-
-#: /tmp/cache/5a2c854849f0b/e1/e1e4934e117d015bb5e2aa2e5cc5e5d28b61b9522009d6fdcaabc3bfe3e65e7d.php:92
-msgid "Read more"
-msgstr "Læs mere"
-
-#: /tmp/cache/5a2c854849f0b/f6/f64c19bd8e9101fe17e037ad86e03610b8ba4d2f8d9ce9714363164c05726e18.php:310
-msgid ""
-"Sold items, printing errors and price changes, as well as force majeure."
-msgstr ""
-" Udsolgte varer, trykfejl og prisændringer, samt forhold vi ikke er herre "
-"over."
-
-#: /tmp/cache/5a2c854849f0b/f6/f64c19bd8e9101fe17e037ad86e03610b8ba4d2f8d9ce9714363164c05726e18.php:291
-msgid "Tel."
-msgstr "Tlf."
-
-#: /tmp/cache/5a2c854849f0b/6f/6f3aa23f9573fa1d018ae4d00282006532278532cbf0085f27df5d73c5e6f6d8.php:37
-#: /tmp/cache/5a2c854849f0b/6f/6f3aa23f9573fa1d018ae4d00282006532278532cbf0085f27df5d73c5e6f6d8.php:106
-msgid "Text"
-msgstr "Tekst"
-
-#: /tmp/cache/5a2c854849f0b/39/3938714f01f4c8065273fa40d3fec0ce8e7c58fd2bd98f3902a0799b0d2ed8fa.php:34
-#: /tmp/cache/5a2c85495f779/e2/e2723d4fadbf3f57a2638c0c14946ab8237de0146829041995e208b55c350a1f.php:31
-msgid ""
-"Thank you for your order, you will recive an email with instructions on how "
-"to perform the payment as soon as we have validated that all goods are in "
-"stock."
-msgstr ""
-"Tak for din bestilling, De vil modtage en email med informationer om hvordan "
-"De betaler så snart vi har kontrolleret at alle varer er på lager."
-
-#: /tmp/cache/5a2c854849f0b/12/1228e8267630381d45866414ab75ee1bd216aaadc7ad95455a723cc6b3723853.php:222
-#: /tmp/cache/5a2c85495f779/5c/5cbc68db62c4d9580234a742471593bb416df810fcc197cf867e468ff2e91189.php:219
-msgid "The excact shipping cost will be calculcated as the goods are packed."
-msgstr "Den nøjagtige forsendelses pris vil blive udregnet når varerne pakkes."
-
-#: /tmp/cache/5a2c854849f0b/12/1228e8267630381d45866414ab75ee1bd216aaadc7ad95455a723cc6b3723853.php:244
-#: /tmp/cache/5a2c85495f779/5c/5cbc68db62c4d9580234a742471593bb416df810fcc197cf867e468ff2e91189.php:241
-msgid "Ther is no content in the basket!"
-msgstr "Der er intet indhold på listen!"
-
-#: /tmp/cache/5a2c854849f0b/6f/6f3aa23f9573fa1d018ae4d00282006532278532cbf0085f27df5d73c5e6f6d8.php:75
-#: /tmp/cache/5a2c8548e7ced/7d/7debfd26e348f9275769328a1f2c9774e1ac35b9fdacc7c7f69ae740c9614e1f.php:56
-msgid "Title:"
-msgstr "Titel:"
-
-#: /tmp/cache/5a2c854849f0b/6f/6f3aa23f9573fa1d018ae4d00282006532278532cbf0085f27df5d73c5e6f6d8.php:91
-#: /tmp/cache/5a2c85488411d/50/50d3e2074d13358d7d2c8ed77097db06c070cd191efa9020658d8b6df11cfb41.php:131
-msgid "Type:"
-msgstr "Type:"
-
-#: /tmp/cache/5a2c854849f0b/cc/cc4d03b5c31214df52be0b91f25aabfb5cd3df0feae3e1c7763bee624df2bf16.php:171
-#: /tmp/cache/5a2c854995e8e/f6/f698664c6eb6959d7329b9c080d74322e079353621fdb79c30bc2a04624acd87.php:168
-msgid "USD"
-msgstr "DKK"
-
-#: /tmp/cache/5a2c854849f0b/cc/cc4d03b5c31214df52be0b91f25aabfb5cd3df0feae3e1c7763bee624df2bf16.php:204
-#: /tmp/cache/5a2c854995e8e/f6/f698664c6eb6959d7329b9c080d74322e079353621fdb79c30bc2a04624acd87.php:204
-msgid "View other product from the same brand"
-msgstr "Se andre produkter fra samme mærke"
-
-#: /tmp/cache/5a2c854849f0b/2b/2b55f44daff993f17325b7a910a629c7395d980a8263ec5f0a115d30fd46c983.php:60
-#: /tmp/cache/5a2c854995e8e/7b/7bf142564421509e87d9522d87e37fd2e1e34f76df7f930f53db15a812e0b858.php:59
-msgid "Without the words"
-msgstr "Uden ordene"
-
-#: /tmp/cache/5a2c854849f0b/d7/d750b7d88293d03c4f46c5ae0101e6d8698c88a12503db4e7d3867d797b6db84.php:63
-msgid "Zip code"
-msgstr "Postnr."
-
-#: /tmp/cache/5a2c854849f0b/d9/d95acce7d18ceae0cafbfcfc3978a4af11d6b51263895b378608758d6b4be40c.php:133
-#: /tmp/cache/5a2c854849f0b/d9/d95acce7d18ceae0cafbfcfc3978a4af11d6b51263895b378608758d6b4be40c.php:349
-#: /tmp/cache/5a2c85488411d/37/379363122404d9cccecc6c8d11814533b1e80e3744bd92378d358fa6635665ed.php:811
-#: /tmp/cache/5a2c85488411d/37/379363122404d9cccecc6c8d11814533b1e80e3744bd92378d358fa6635665ed.php:1102
-#: /tmp/cache/5a2c85495f779/15/151c19d54033dbdbe8f070e30e6b43fc0272bed8e2d842b5f9f3a2a32d996c5b.php:131
-#: /tmp/cache/5a2c85495f779/15/151c19d54033dbdbe8f070e30e6b43fc0272bed8e2d842b5f9f3a2a32d996c5b.php:347
-#: /tmp/cache/5a2c85495f779/88/88dc8530ec5c024a2f28d13c7402857ed5068a9d8dd99f6513190137023955e8.php:180
-msgid "Zipcode:"
-msgstr "Postnr.:"
-
-#: /tmp/cache/5a2c854849f0b/f6/f64c19bd8e9101fe17e037ad86e03610b8ba4d2f8d9ce9714363164c05726e18.php:34
-#: /tmp/cache/5a2c85495f779/1d/1d0d517b0f2c4426d7dc4e4e186ea9cd3bc7ee1bec7bfb348259454c15fd90c6.php:33
-#: /tmp/cache/5a2c854995e8e/a8/a8c03c7648c2f3cbd9268f80b9b406caf2defbb1906671e205eadfc8ad1a1ac7.php:40
-msgid "en"
-msgstr "da"
-
-#: /tmp/cache/5a2c85488411d/0b/0b20a8b372f6efaba242a73a89c9110284a988b3d8d2d7bc79f9a1763f378f4e.php:47
-msgid " to open the invoice page."
-msgstr " for at åbne faktura siden."
-
-#: /tmp/cache/5a2c85488411d/da/dabe617473a7f2ab2f6b704a878d67de4949e1d0e0775f1f1323b5a089fb0b97.php:209
-msgid " to process the order."
-msgstr " at ekspeder orderen."
-
-#: /tmp/cache/5a2c85488411d/da/dabe617473a7f2ab2f6b704a878d67de4949e1d0e0775f1f1323b5a089fb0b97.php:37
-msgid "%clientName% has placed an order for the following:"
-msgstr "%clientName% har afgivet en bestilling på følgende:"
-
-#: /tmp/cache/5a2c85488411d/dd/ddac04e7eee2933a23f5586023c1975d0f92f7aacddc227c482d3051caf1848a.php:28
-msgid ""
-"%fullname% has created an account for the administrator page. An "
-"administrator needs to confirm the accound or reject it."
-msgstr ""
-"%fullname% har oprettet en konto til administrator siden. En administrator "
-"skal bekræfte konto eller afvise den."
-
-#: /tmp/cache/5a2c85488411d/9e/9ed384d9492aa56c06845cfaba38c66e8d827a8d4a7f3ffad9e406d69d4491ed.php:32
-msgid ""
-"A customer tried to see the status page for online invoice #%invoiceId%, "
-"which is canceled or rejected."
-msgstr ""
-"En kunde forsøgte at se status-side for online faktura #%invoiceId% som er "
-"annulleret eller afvist."
-
-#: /tmp/cache/5a2c85488411d/77/7753fa0e04d68e035fa70f307ea9e927546a6bbdf6c0f06976898e8222fe65a4.php:32
-msgid ""
-"A user tried to pay online invoice #%invoiceId%, which is not in the system!"
-msgstr ""
-"En bruger forsøgte at betale online faktura #%invoiceId% som ikke findes i "
-"systemet!"
-
-#: /tmp/cache/5a2c85488411d/50/50d3e2074d13358d7d2c8ed77097db06c070cd191efa9020658d8b6df11cfb41.php:99
-#: /tmp/cache/5a2c85488411d/50/50d3e2074d13358d7d2c8ed77097db06c070cd191efa9020658d8b6df11cfb41.php:103
-msgid "Add File"
-msgstr "Tilføj fil"
-
-#: /tmp/cache/5a2c85488411d/12/12d19a57d7aca5736ec12b0e3b424973c47f24d33be5b2c0de6e046e74db1ded.php:55
-#: /tmp/cache/5a2c85488411d/4a/4ac2cfe57fe4d5202f651e6c79b9e72aa3a5655574cc23a14588172e114e355c.php:432
-msgid "Amount"
-msgstr "Beløb"
-
-#: /tmp/cache/5a2c85488411d/37/379363122404d9cccecc6c8d11814533b1e80e3744bd92378d358fa6635665ed.php:376
-msgid "An error occurred"
-msgstr "En fejl er opstået"
-
-#: /tmp/cache/5a2c85488411d/12/12d19a57d7aca5736ec12b0e3b424973c47f24d33be5b2c0de6e046e74db1ded.php:118
-#: /tmp/cache/5a2c85488411d/12/12d19a57d7aca5736ec12b0e3b424973c47f24d33be5b2c0de6e046e74db1ded.php:120
-msgid "Approve"
-msgstr "Godkendt"
-
-#: /tmp/cache/5a2c85488411d/4a/4ac2cfe57fe4d5202f651e6c79b9e72aa3a5655574cc23a14588172e114e355c.php:164
-msgid "Apr"
-msgstr "Apr"
-
-#: /tmp/cache/5a2c85488411d/37/379363122404d9cccecc6c8d11814533b1e80e3744bd92378d358fa6635665ed.php:460
-msgid "Assigned:"
-msgstr "Tildelt:"
-
-#: /tmp/cache/5a2c85488411d/4a/4ac2cfe57fe4d5202f651e6c79b9e72aa3a5655574cc23a14588172e114e355c.php:196
-msgid "Aug"
-msgstr "Aug"
-
-#: /tmp/cache/5a2c85488411d/12/12d19a57d7aca5736ec12b0e3b424973c47f24d33be5b2c0de6e046e74db1ded.php:84
-msgid "Bank overførsel"
-msgstr "Bank overførsel"
-
-#: /tmp/cache/5a2c85488411d/37/379363122404d9cccecc6c8d11814533b1e80e3744bd92378d358fa6635665ed.php:105
-msgid "Cancel"
-msgstr "Annullér"
-
-#: /tmp/cache/5a2c85488411d/14/1407ab56ba50d739b49c277062e14cc4b6cbcdcbc77fc7e1f456558f053418b9.php:68
-msgid "Check emails in the address book"
-msgstr "Kontroler mail-adresser i adressebog"
-
-#: /tmp/cache/5a2c85488411d/14/1407ab56ba50d739b49c277062e14cc4b6cbcdcbc77fc7e1f456558f053418b9.php:72
-msgid "Clean up files"
-msgstr "Ryd op i filer"
-
-#: /tmp/cache/5a2c85488411d/4a/4ac2cfe57fe4d5202f651e6c79b9e72aa3a5655574cc23a14588172e114e355c.php:80
-msgid "Clerk:"
-msgstr "Ekspedient:"
-
-#: /tmp/cache/5a2c85488411d/0b/0b20a8b372f6efaba242a73a89c9110284a988b3d8d2d7bc79f9a1763f378f4e.php:41
-#: /tmp/cache/5a2c85488411d/da/dabe617473a7f2ab2f6b704a878d67de4949e1d0e0775f1f1323b5a089fb0b97.php:203
-msgid "Click "
-msgstr "Klik "
-
-#: /tmp/cache/5a2c85488411d/86/86a5166be7102032270a3d64441fd82215fb2886a996ceca62db398f9fd27101.php:82
-msgid "Click on the folder where you want to move the file '%filename%'."
-msgstr "Klik på den mappe, hvor du vil flytte filen \"%filename\" til."
-
-#: /tmp/cache/5a2c85488411d/86/86a5166be7102032270a3d64441fd82215fb2886a996ceca62db398f9fd27101.php:96
-msgid "Click the plus sign above to see the subfolders."
-msgstr "Klik på plustegnet ovenfor for at se undermapper."
-
-#: /tmp/cache/5a2c85488411d/37/379363122404d9cccecc6c8d11814533b1e80e3744bd92378d358fa6635665ed.php:91
-msgid "Copy to new"
-msgstr "Kopier til ny"
-
-#: /tmp/cache/5a2c85488411d/4a/4ac2cfe57fe4d5202f651e6c79b9e72aa3a5655574cc23a14588172e114e355c.php:36
-#: /tmp/cache/5a2c8549217c7/8a/8a679d2960702fef980209e0994c23420e2e7d8fbd528502726c3c2facc7718d.php:33
-msgid "Create new"
-msgstr "Opret ny"
-
-#: /tmp/cache/5a2c85488411d/69/698831c24e5b1880dd21371c4c64df420e5d1fe9d16baf243fbe13aac1c74638.php:37
-msgid "Create new newsletter"
-msgstr "Opret nyt nyhedsbrev"
-
-#: /tmp/cache/5a2c85488411d/4e/4e4abecef7536d0c95c197d1f6a7dd3125a5d255cbdd21e8dfb2669e2b685507.php:46
-msgid "Create new requirement"
-msgstr "Opret nyt krav"
-
-#: /tmp/cache/5a2c85488411d/4a/4ac2cfe57fe4d5202f651e6c79b9e72aa3a5655574cc23a14588172e114e355c.php:421
-msgid "Created"
-msgstr "Oprettet"
-
-#: /tmp/cache/5a2c85488411d/37/379363122404d9cccecc6c8d11814533b1e80e3744bd92378d358fa6635665ed.php:433
-msgid "Created:"
-msgstr "Oprettet:"
-
-#: /tmp/cache/5a2c85488411d/14/1407ab56ba50d739b49c277062e14cc4b6cbcdcbc77fc7e1f456558f053418b9.php:82
-msgid "Cron last run at %date%"
-msgstr "Cron senest kørt d. %date%"
-
-#: /tmp/cache/5a2c85488411d/14/1407ab56ba50d739b49c277062e14cc4b6cbcdcbc77fc7e1f456558f053418b9.php:50
-msgid "DB:"
-msgstr "DB:"
-
-#: /tmp/cache/5a2c85488411d/4a/4ac2cfe57fe4d5202f651e6c79b9e72aa3a5655574cc23a14588172e114e355c.php:228
-msgid "Dec"
-msgstr "Dec"
-
-#: /tmp/cache/5a2c85488411d/14/1407ab56ba50d739b49c277062e14cc4b6cbcdcbc77fc7e1f456558f053418b9.php:78
-msgid "Delayed emails %pending%/%total%"
-msgstr "Forsinkede emails %pending%/%total%"
-
-#: /tmp/cache/5a2c85488411d/50/50d3e2074d13358d7d2c8ed77097db06c070cd191efa9020658d8b6df11cfb41.php:90
-#: /tmp/cache/5a2c85488411d/50/50d3e2074d13358d7d2c8ed77097db06c070cd191efa9020658d8b6df11cfb41.php:94
-msgid "Delete folder"
-msgstr "Slet mappe"
-
-#: /tmp/cache/5a2c85488411d/0b/0b20a8b372f6efaba242a73a89c9110284a988b3d8d2d7bc79f9a1763f378f4e.php:70
-msgid "Delivery phone:"
-msgstr "Lev. tlf.:"
-
-#: /tmp/cache/5a2c85488411d/4a/4ac2cfe57fe4d5202f651e6c79b9e72aa3a5655574cc23a14588172e114e355c.php:352
-msgid "Department"
-msgstr "Afdeling"
-
-#: /tmp/cache/5a2c85488411d/37/379363122404d9cccecc6c8d11814533b1e80e3744bd92378d358fa6635665ed.php:515
-msgid "Department:"
-msgstr "Afdeling:"
-
-#: /tmp/cache/5a2c85488411d/50/50d3e2074d13358d7d2c8ed77097db06c070cd191efa9020658d8b6df11cfb41.php:124
-#: /tmp/cache/5a2c8549217c7/f8/f86e346dbe541eb1bedffb82a6ac2d868c4eceb3a756ea2ee8549e1abb0c54e1.php:104
-msgid "Description:"
-msgstr "Beskrivelse:"
-
-#: /tmp/cache/5a2c85488411d/50/50d3e2074d13358d7d2c8ed77097db06c070cd191efa9020658d8b6df11cfb41.php:156
-msgid "Documents"
-msgstr "Dokumenter"
-
-#: /tmp/cache/5a2c85488411d/37/379363122404d9cccecc6c8d11814533b1e80e3744bd92378d358fa6635665ed.php:396
-msgid "Does not exist in the system"
-msgstr "Findes ikke i systemet"
-
-#: /tmp/cache/5a2c85488411d/4e/4e4abecef7536d0c95c197d1f6a7dd3125a5d255cbdd21e8dfb2669e2b685507.php:44
-#: /tmp/cache/5a2c8548e7ced/7d/7debfd26e348f9275769328a1f2c9774e1ac35b9fdacc7c7f69ae740c9614e1f.php:51
-#: /tmp/cache/5a2c8549217c7/9c/9c4378d271b7c04bafd4c534243b1c33d95e9b50beb1b0de6e7813149c51a612.php:45
-#: /tmp/cache/5a2c8549217c7/c1/c1163ccd489ed8c55140768d8f28bb345002fbb79606dbe59163374b4bcd4fcf.php:45
-msgid "Edit %title%"
-msgstr "Rediger %title%"
-
-#: /tmp/cache/5a2c85488411d/84/84e5cbd88381c46cb1381167749c21e954111324c2d175b35e1809845c8d076d.php:45
-msgid "Edit contact person"
-msgstr "Rediger kontakt person"
-
-#: /tmp/cache/5a2c85488411d/37/379363122404d9cccecc6c8d11814533b1e80e3744bd92378d358fa6635665ed.php:1207
-msgid "Entered amount includes VAT"
-msgstr "Indtastet beløb er med moms"
-
-#: /tmp/cache/5a2c85488411d/50/50d3e2074d13358d7d2c8ed77097db06c070cd191efa9020658d8b6df11cfb41.php:25
-msgid "Explorer"
-msgstr "Explorer"
-
-#: /tmp/cache/5a2c85488411d/4a/4ac2cfe57fe4d5202f651e6c79b9e72aa3a5655574cc23a14588172e114e355c.php:148
-msgid "Feb"
-msgstr "Feb"
-
-#: /tmp/cache/5a2c85488411d/37/379363122404d9cccecc6c8d11814533b1e80e3744bd92378d358fa6635665ed.php:645
-#: /tmp/cache/5a2c85488411d/37/379363122404d9cccecc6c8d11814533b1e80e3744bd92378d358fa6635665ed.php:673
-#: /tmp/cache/5a2c85488411d/4a/4ac2cfe57fe4d5202f651e6c79b9e72aa3a5655574cc23a14588172e114e355c.php:406
-msgid "Fetch"
-msgstr "Hent"
-
-#: /tmp/cache/5a2c85488411d/aa/aa28d05c0f5b3a67a09a60548e85aeffc07c096c84c47b5277d1035c99121488.php:68
-msgid "File is being uploaded"
-msgstr "Filen er blevet uploadet"
-
-#: /tmp/cache/5a2c85488411d/aa/aa28d05c0f5b3a67a09a60548e85aeffc07c096c84c47b5277d1035c99121488.php:45
-msgid "File type"
-msgstr "Filtype"
-
-#: /tmp/cache/5a2c85488411d/aa/aa28d05c0f5b3a67a09a60548e85aeffc07c096c84c47b5277d1035c99121488.php:25
-msgid "File upload"
-msgstr "Fil-opload"
-
-#: /tmp/cache/5a2c85488411d/50/50d3e2074d13358d7d2c8ed77097db06c070cd191efa9020658d8b6df11cfb41.php:63
-#: /tmp/cache/5a2c85488411d/50/50d3e2074d13358d7d2c8ed77097db06c070cd191efa9020658d8b6df11cfb41.php:67
-msgid "Folders"
-msgstr "Mapper"
-
-#: /tmp/cache/5a2c85488411d/37/379363122404d9cccecc6c8d11814533b1e80e3744bd92378d358fa6635665ed.php:1254
-#: /tmp/cache/5a2c85495f779/ee/ee32a3930ee557fec46de4ed6e6029f8540b3b5e4ed22f547e3fa32718f1adfb.php:55
-msgid "Freight"
-msgstr "Fragt"
-
-#: /tmp/cache/5a2c85488411d/14/1407ab56ba50d739b49c277062e14cc4b6cbcdcbc77fc7e1f456558f053418b9.php:45
-msgid "Get email consumption"
-msgstr "Hent e-mail forbrug"
-
-#: /tmp/cache/5a2c85488411d/37/379363122404d9cccecc6c8d11814533b1e80e3744bd92378d358fa6635665ed.php:263
-#: /tmp/cache/5a2c85488411d/4a/4ac2cfe57fe4d5202f651e6c79b9e72aa3a5655574cc23a14588172e114e355c.php:68
-msgid "ID:"
-msgstr "Id:"
-
-#: /tmp/cache/5a2c85488411d/aa/aa28d05c0f5b3a67a09a60548e85aeffc07c096c84c47b5277d1035c99121488.php:53
-msgid "Illustration"
-msgstr "Illustration"
-
-#: /tmp/cache/5a2c85488411d/aa/aa28d05c0f5b3a67a09a60548e85aeffc07c096c84c47b5277d1035c99121488.php:49
-msgid "Image"
-msgstr "Billede"
-
-#: /tmp/cache/5a2c85488411d/84/84e5cbd88381c46cb1381167749c21e954111324c2d175b35e1809845c8d076d.php:148
-msgid "Interests:"
-msgstr "Interesser:"
-
-#: /tmp/cache/5a2c85488411d/37/379363122404d9cccecc6c8d11814533b1e80e3744bd92378d358fa6635665ed.php:246
-msgid "Internal note:"
-msgstr "Internt notat:"
-
-#: /tmp/cache/5a2c85488411d/37/379363122404d9cccecc6c8d11814533b1e80e3744bd92378d358fa6635665ed.php:627
-msgid "Invoice address:"
-msgstr "Faktura adresse:"
-
-#: /tmp/cache/5a2c85488411d/4a/4ac2cfe57fe4d5202f651e6c79b9e72aa3a5655574cc23a14588172e114e355c.php:140
-msgid "Jan"
-msgstr "Jan"
-
-#: /tmp/cache/5a2c85488411d/4a/4ac2cfe57fe4d5202f651e6c79b9e72aa3a5655574cc23a14588172e114e355c.php:188
-msgid "Jul"
-msgstr "Jul"
-
-#: /tmp/cache/5a2c85488411d/4a/4ac2cfe57fe4d5202f651e6c79b9e72aa3a5655574cc23a14588172e114e355c.php:180
-msgid "Jun"
-msgstr "Jun"
-
-#: /tmp/cache/5a2c85488411d/50/50d3e2074d13358d7d2c8ed77097db06c070cd191efa9020658d8b6df11cfb41.php:57
-#: /tmp/cache/5a2c85488411d/50/50d3e2074d13358d7d2c8ed77097db06c070cd191efa9020658d8b6df11cfb41.php:59
-#: /tmp/cache/5a2c85488411d/86/86a5166be7102032270a3d64441fd82215fb2886a996ceca62db398f9fd27101.php:86
-#: /tmp/cache/5a2c8548e7ced/1a/1aad2c04d9a693d391b7c6336a77f99c7f9e9a1ade5f4d40011511241970369f.php:119
-#: /tmp/cache/5a2c8548e7ced/1a/1aad2c04d9a693d391b7c6336a77f99c7f9e9a1ade5f4d40011511241970369f.php:121
-#: /tmp/cache/5a2c8548e7ced/71/718adbdcc9a080772ed64aecfbb0a5010c4fbf3a5f6ab7fc3d9b479d4c5a95d0.php:74
-msgid "Loading"
-msgstr "Indlæser"
-
-#: /tmp/cache/5a2c85488411d/37/379363122404d9cccecc6c8d11814533b1e80e3744bd92378d358fa6635665ed.php:63
-msgid "Lock"
-msgstr "Lås"
-
-#: /tmp/cache/5a2c85488411d/37/379363122404d9cccecc6c8d11814533b1e80e3744bd92378d358fa6635665ed.php:308
-msgid "Locked for editing"
-msgstr "Låst for redigering"
-
-#: /tmp/cache/5a2c85488411d/14/1407ab56ba50d739b49c277062e14cc4b6cbcdcbc77fc7e1f456558f053418b9.php:32
-#: /tmp/cache/5a2c8548e7ced/71/718adbdcc9a080772ed64aecfbb0a5010c4fbf3a5f6ab7fc3d9b479d4c5a95d0.php:173
-msgid "Maintenance"
-msgstr "Vedligeholdelse"
-
-#: /tmp/cache/5a2c85488411d/4a/4ac2cfe57fe4d5202f651e6c79b9e72aa3a5655574cc23a14588172e114e355c.php:156
-msgid "Mar"
-msgstr "Mar"
-
-#: /tmp/cache/5a2c85488411d/4a/4ac2cfe57fe4d5202f651e6c79b9e72aa3a5655574cc23a14588172e114e355c.php:172
-msgid "May"
-msgstr "Maj"
-
-#: /tmp/cache/5a2c85488411d/4a/4ac2cfe57fe4d5202f651e6c79b9e72aa3a5655574cc23a14588172e114e355c.php:76
-msgid "Month:"
-msgstr "Måned:"
-
-#: /tmp/cache/5a2c85488411d/86/86a5166be7102032270a3d64441fd82215fb2886a996ceca62db398f9fd27101.php:25
-msgid "Move file"
-msgstr "Flyt fil"
-
-#: /tmp/cache/5a2c85488411d/37/379363122404d9cccecc6c8d11814533b1e80e3744bd92378d358fa6635665ed.php:1242
-#: /tmp/cache/5a2c85495f779/ee/ee32a3930ee557fec46de4ed6e6029f8540b3b5e4ed22f547e3fa32718f1adfb.php:43
-msgid "Net Amount"
-msgstr "Nettobeløb"
-
-#: /tmp/cache/5a2c85488411d/50/50d3e2074d13358d7d2c8ed77097db06c070cd191efa9020658d8b6df11cfb41.php:81
-#: /tmp/cache/5a2c85488411d/50/50d3e2074d13358d7d2c8ed77097db06c070cd191efa9020658d8b6df11cfb41.php:85
-msgid "New folder"
-msgstr "Ny mappe"
-
-#: /tmp/cache/5a2c85488411d/37/379363122404d9cccecc6c8d11814533b1e80e3744bd92378d358fa6635665ed.php:294
-msgid "Newly created"
-msgstr "Nyoprettet"
-
-#: /tmp/cache/5a2c85488411d/69/698831c24e5b1880dd21371c4c64df420e5d1fe9d16baf243fbe13aac1c74638.php:32
-#: /tmp/cache/5a2c8548e7ced/71/718adbdcc9a080772ed64aecfbb0a5010c4fbf3a5f6ab7fc3d9b479d4c5a95d0.php:165
-msgid "Newsletters"
-msgstr "Nyhedsbreve"
-
-#: /tmp/cache/5a2c85488411d/37/379363122404d9cccecc6c8d11814533b1e80e3744bd92378d358fa6635665ed.php:414
-msgid "No"
-msgstr "Nej"
-
-#: /tmp/cache/5a2c85488411d/37/379363122404d9cccecc6c8d11814533b1e80e3744bd92378d358fa6635665ed.php:470
-msgid "No one"
-msgstr "Ingen"
-
-#: /tmp/cache/5a2c85488411d/37/379363122404d9cccecc6c8d11814533b1e80e3744bd92378d358fa6635665ed.php:532
-msgid "Not selected"
-msgstr "Ikke valgt"
-
-#: /tmp/cache/5a2c85488411d/4a/4ac2cfe57fe4d5202f651e6c79b9e72aa3a5655574cc23a14588172e114e355c.php:220
-msgid "Nov"
-msgstr "Nov"
-
-#: /tmp/cache/5a2c85488411d/4a/4ac2cfe57fe4d5202f651e6c79b9e72aa3a5655574cc23a14588172e114e355c.php:212
-msgid "Oct"
-msgstr "Okt"
-
-#: /tmp/cache/5a2c85488411d/aa/aa28d05c0f5b3a67a09a60548e85aeffc07c096c84c47b5277d1035c99121488.php:61
-msgid "Other files"
-msgstr "Andre filer"
-
-#: /tmp/cache/5a2c85488411d/aa/aa435a4aff69d70a51e54b01df37e30446f47e4d93601122875ee212f4eb5793.php:32
-#: /tmp/cache/5a2c8548e7ced/71/718adbdcc9a080772ed64aecfbb0a5010c4fbf3a5f6ab7fc3d9b479d4c5a95d0.php:101
-msgid "Overview"
-msgstr "Oversigt"
-
-#: /tmp/cache/5a2c85488411d/37/379363122404d9cccecc6c8d11814533b1e80e3744bd92378d358fa6635665ed.php:361
-msgid "Paid in cash the %date%"
-msgstr "Betalt kontant d. %date%"
-
-#: /tmp/cache/5a2c85488411d/37/379363122404d9cccecc6c8d11814533b1e80e3744bd92378d358fa6635665ed.php:325
-msgid "Paid online the %date%"
-msgstr "Betalt online d. %date%"
-
-#: /tmp/cache/5a2c85488411d/37/379363122404d9cccecc6c8d11814533b1e80e3744bd92378d358fa6635665ed.php:343
-msgid "Paid via giro the %date%"
-msgstr "Betalt via giro d. %date%"
-
-#: /tmp/cache/5a2c85488411d/12/12d19a57d7aca5736ec12b0e3b424973c47f24d33be5b2c0de6e046e74db1ded.php:47
-msgid "Pay date"
-msgstr "Betalings dato"
-
-#: /tmp/cache/5a2c85488411d/37/379363122404d9cccecc6c8d11814533b1e80e3744bd92378d358fa6635665ed.php:390
-msgid "Payment declined"
-msgstr "Betaling afvist"
-
-#: /tmp/cache/5a2c85488411d/12/12d19a57d7aca5736ec12b0e3b424973c47f24d33be5b2c0de6e046e74db1ded.php:43
-msgid "Payment method"
-msgstr "Betalingsmetode"
-
-#: /tmp/cache/5a2c85488411d/37/379363122404d9cccecc6c8d11814533b1e80e3744bd92378d358fa6635665ed.php:633
-msgid "Phone 1:"
-msgstr "Tlf. 1:"
-
-#: /tmp/cache/5a2c85488411d/37/379363122404d9cccecc6c8d11814533b1e80e3744bd92378d358fa6635665ed.php:661
-msgid "Phone 2:"
-msgstr "Tlf. 2:"
-
-#: /tmp/cache/5a2c85488411d/50/50d3e2074d13358d7d2c8ed77097db06c070cd191efa9020658d8b6df11cfb41.php:140
-#: /tmp/cache/5a2c8548e7ced/91/919f0ac7ae7aa48a7f83e6d2740f9b52568481a0b05b1df7a2b9d974e20c5ffd.php:61
-#: /tmp/cache/5a2c8549217c7/9d/9d10aa030a646d016b911143e849094fc69e02c21437ed9f11b541dabc36e1fa.php:69
-#: /tmp/cache/5a2c8549217c7/9d/9d10aa030a646d016b911143e849094fc69e02c21437ed9f11b541dabc36e1fa.php:86
-#: /tmp/cache/5a2c8549217c7/f8/f86e346dbe541eb1bedffb82a6ac2d868c4eceb3a756ea2ee8549e1abb0c54e1.php:131
-msgid "Pictures"
-msgstr "Billeder"
-
-#: /tmp/cache/5a2c85488411d/84/84e5cbd88381c46cb1381167749c21e954111324c2d175b35e1809845c8d076d.php:97
-msgid "Postal Code:"
-msgstr "Post nr.:"
-
-#: /tmp/cache/5a2c85488411d/37/379363122404d9cccecc6c8d11814533b1e80e3744bd92378d358fa6635665ed.php:75
-msgid "Print"
-msgstr "Udskriv"
-
-#: /tmp/cache/5a2c85488411d/84/84e5cbd88381c46cb1381167749c21e954111324c2d175b35e1809845c8d076d.php:113
-msgid "Private:"
-msgstr "Privat:"
-
-#: /tmp/cache/5a2c85488411d/37/379363122404d9cccecc6c8d11814533b1e80e3744bd92378d358fa6635665ed.php:39
-msgid "Process"
-msgstr "Ekspeder"
-
-#: /tmp/cache/5a2c85488411d/37/379363122404d9cccecc6c8d11814533b1e80e3744bd92378d358fa6635665ed.php:315
-msgid "Ready for processing"
-msgstr "Klar til ekspedering"
-
-#: /tmp/cache/5a2c85488411d/84/84e5cbd88381c46cb1381167749c21e954111324c2d175b35e1809845c8d076d.php:142
-msgid "Receive newsletters."
-msgstr "Modtag nyhedsbreve."
-
-#: /tmp/cache/5a2c85488411d/37/379363122404d9cccecc6c8d11814533b1e80e3744bd92378d358fa6635665ed.php:406
-msgid "Received:"
-msgstr "Betalingen er allerede modtaget kontant."
-
-#: /tmp/cache/5a2c85488411d/37/379363122404d9cccecc6c8d11814533b1e80e3744bd92378d358fa6635665ed.php:206
-msgid "Refund:"
-msgstr "Krediter:"
-
-#: /tmp/cache/5a2c85488411d/37/379363122404d9cccecc6c8d11814533b1e80e3744bd92378d358fa6635665ed.php:46
-msgid "Reject"
-msgstr "Afvis"
-
-#: /tmp/cache/5a2c85488411d/0b/0b20a8b372f6efaba242a73a89c9110284a988b3d8d2d7bc79f9a1763f378f4e.php:97
-msgid ""
-"Remember to process the payment when the product is sent (The payment will "
-"only by transferred from the customer's account once we hit 'Process')"
-msgstr ""
-"Husk at \"ekspedere\" betalingen når varen sendes (Betaling overføres først "
-"fra kundens konto, når vi trykker \"Ekspedér\")."
-
-#: /tmp/cache/5a2c85488411d/37/379363122404d9cccecc6c8d11814533b1e80e3744bd92378d358fa6635665ed.php:423
-msgid "Remove"
-msgstr "Fjern"
-
-#: /tmp/cache/5a2c85488411d/37/379363122404d9cccecc6c8d11814533b1e80e3744bd92378d358fa6635665ed.php:1367
-msgid "Remove Line"
-msgstr "Fjern linje"
-
-#: /tmp/cache/5a2c85488411d/12/12d19a57d7aca5736ec12b0e3b424973c47f24d33be5b2c0de6e046e74db1ded.php:51
-#: /tmp/cache/5a2c85488411d/4a/4ac2cfe57fe4d5202f651e6c79b9e72aa3a5655574cc23a14588172e114e355c.php:427
-msgid "Responsible"
-msgstr "Ansvarlige"
-
-#: /tmp/cache/5a2c85488411d/37/379363122404d9cccecc6c8d11814533b1e80e3744bd92378d358fa6635665ed.php:54
-#: /tmp/cache/5a2c8548e7ced/1a/1aad2c04d9a693d391b7c6336a77f99c7f9e9a1ade5f4d40011511241970369f.php:113
-#: /tmp/cache/5a2c8548e7ced/1a/1aad2c04d9a693d391b7c6336a77f99c7f9e9a1ade5f4d40011511241970369f.php:115
-#: /tmp/cache/5a2c8549217c7/ad/ad4e8f6e7681765d79a5548ff3d2cda8243b91f4c8d6d8ee851129b7869cd7a0.php:35
-msgid "Save"
-msgstr "Gem"
-
-#: /tmp/cache/5a2c85488411d/84/84e5cbd88381c46cb1381167749c21e954111324c2d175b35e1809845c8d076d.php:35
-msgid "Save contact"
-msgstr "Gem kontakt"
-
-#: /tmp/cache/5a2c85488411d/4e/4e4abecef7536d0c95c197d1f6a7dd3125a5d255cbdd21e8dfb2669e2b685507.php:33
-msgid "Save requirement"
-msgstr "Gem krav"
-
-#: /tmp/cache/5a2c85488411d/14/1407ab56ba50d739b49c277062e14cc4b6cbcdcbc77fc7e1f456558f053418b9.php:64
-msgid "Scan database"
-msgstr "Scan database"
-
-#: /tmp/cache/5a2c85488411d/aa/aa28d05c0f5b3a67a09a60548e85aeffc07c096c84c47b5277d1035c99121488.php:72
-msgid "Select file type"
-msgstr "Vægl filtype"
-
-#: /tmp/cache/5a2c85488411d/37/379363122404d9cccecc6c8d11814533b1e80e3744bd92378d358fa6635665ed.php:128
-msgid "Send"
-msgstr "Send"
-
-#: /tmp/cache/5a2c85488411d/37/379363122404d9cccecc6c8d11814533b1e80e3744bd92378d358fa6635665ed.php:142
-msgid "Send reminder"
-msgstr "Send rykker"
-
-#: /tmp/cache/5a2c85488411d/37/379363122404d9cccecc6c8d11814533b1e80e3744bd92378d358fa6635665ed.php:126
-msgid "Send to customer"
-msgstr "Send til kunden"
-
-#: /tmp/cache/5a2c85488411d/4a/4ac2cfe57fe4d5202f651e6c79b9e72aa3a5655574cc23a14588172e114e355c.php:467
-msgid "Sent"
-msgstr "Sendt"
-
-#: /tmp/cache/5a2c85488411d/37/379363122404d9cccecc6c8d11814533b1e80e3744bd92378d358fa6635665ed.php:301
-#: /tmp/cache/5a2c85488411d/4a/4ac2cfe57fe4d5202f651e6c79b9e72aa3a5655574cc23a14588172e114e355c.php:469
-msgid "Sent to customer"
-msgstr "Sendt til kunden"
-
-#: /tmp/cache/5a2c85488411d/4a/4ac2cfe57fe4d5202f651e6c79b9e72aa3a5655574cc23a14588172e114e355c.php:204
-msgid "Sep"
-msgstr "Sep"
-
-#: /tmp/cache/5a2c85488411d/14/1407ab56ba50d739b49c277062e14cc4b6cbcdcbc77fc7e1f456558f053418b9.php:38
-msgid "Server consumption"
-msgstr "Server forbrug"
-
-#: /tmp/cache/5a2c85488411d/aa/aa28d05c0f5b3a67a09a60548e85aeffc07c096c84c47b5277d1035c99121488.php:77
-msgid "Short description"
-msgstr "Kort beskrivelse"
-
-#: /tmp/cache/5a2c85488411d/da/dabe617473a7f2ab2f6b704a878d67de4949e1d0e0775f1f1323b5a089fb0b97.php:234
-#: /tmp/cache/5a2c85488411d/dd/ddac04e7eee2933a23f5586023c1975d0f92f7aacddc227c482d3051caf1848a.php:32
-msgid "Sincerely the computer"
-msgstr "Mvh Computeren"
-
-#: /tmp/cache/5a2c85488411d/0b/0b20a8b372f6efaba242a73a89c9110284a988b3d8d2d7bc79f9a1763f378f4e.php:80
-msgid "Sincerely, the computer"
-msgstr "Mvh Computeren"
-
-#: /tmp/cache/5a2c85488411d/50/50d3e2074d13358d7d2c8ed77097db06c070cd191efa9020658d8b6df11cfb41.php:152
-msgid "Sounds"
-msgstr "Lyde"
-
-#: /tmp/cache/5a2c85488411d/37/379363122404d9cccecc6c8d11814533b1e80e3744bd92378d358fa6635665ed.php:286
-#: /tmp/cache/5a2c85488411d/4a/4ac2cfe57fe4d5202f651e6c79b9e72aa3a5655574cc23a14588172e114e355c.php:84
-msgid "Status:"
-msgstr "Status:"
-
-#: /tmp/cache/5a2c85488411d/37/379363122404d9cccecc6c8d11814533b1e80e3744bd92378d358fa6635665ed.php:930
-msgid "Tel.:"
-msgstr "Tlf.:"
-
-#: /tmp/cache/5a2c85488411d/0b/0b20a8b372f6efaba242a73a89c9110284a988b3d8d2d7bc79f9a1763f378f4e.php:93
-msgid ""
-"The customer has approved the payment and the following order must be "
-"shipped to the customer."
-msgstr ""
-"Kunden har godkendt betalingen og nedenstående ordre skal sendes til kunden."
-
-#: /tmp/cache/5a2c85488411d/50/50d3e2074d13358d7d2c8ed77097db06c070cd191efa9020658d8b6df11cfb41.php:164
-msgid "Unused files"
-msgstr "Ubrugte filer"
-
-#: /tmp/cache/5a2c85488411d/37/379363122404d9cccecc6c8d11814533b1e80e3744bd92378d358fa6635665ed.php:1308
-#: /tmp/cache/5a2c85495f779/ee/ee32a3930ee557fec46de4ed6e6029f8540b3b5e4ed22f547e3fa32718f1adfb.php:70
-msgid "VAT Amount"
-msgstr "Heraf moms"
-
-#: /tmp/cache/5a2c85488411d/4a/4ac2cfe57fe4d5202f651e6c79b9e72aa3a5655574cc23a14588172e114e355c.php:88
-msgid "VAT:"
-msgstr "Moms: "
-
-#: /tmp/cache/5a2c85488411d/4a/4ac2cfe57fe4d5202f651e6c79b9e72aa3a5655574cc23a14588172e114e355c.php:48
-msgid "Validate"
-msgstr "Validér"
-
-#: /tmp/cache/5a2c85488411d/aa/aa28d05c0f5b3a67a09a60548e85aeffc07c096c84c47b5277d1035c99121488.php:57
-msgid "Video"
-msgstr "Video"
-
-#: /tmp/cache/5a2c85488411d/50/50d3e2074d13358d7d2c8ed77097db06c070cd191efa9020658d8b6df11cfb41.php:148
-msgid "Videos"
-msgstr "Videoer"
-
-#: /tmp/cache/5a2c85488411d/14/1407ab56ba50d739b49c277062e14cc4b6cbcdcbc77fc7e1f456558f053418b9.php:56
-msgid "WWW:"
-msgstr "WWW:"
-
-#: /tmp/cache/5a2c85488411d/4a/4ac2cfe57fe4d5202f651e6c79b9e72aa3a5655574cc23a14588172e114e355c.php:72
-msgid "Year:"
-msgstr "År:"
-
-#: /tmp/cache/5a2c85488411d/37/379363122404d9cccecc6c8d11814533b1e80e3744bd92378d358fa6635665ed.php:412
-msgid "Yes"
-msgstr "Ja"
-
-#: /tmp/cache/5a2c85488411d/50/50d3e2074d13358d7d2c8ed77097db06c070cd191efa9020658d8b6df11cfb41.php:160
-msgid "Zip-files"
-msgstr "Zip-filer"
-
-#: /tmp/cache/5a2c85488411d/37/379363122404d9cccecc6c8d11814533b1e80e3744bd92378d358fa6635665ed.php:273
-msgid "eCode:"
-msgstr "eKode:"
-
-#: /tmp/cache/5a2c85488411d/0b/0b20a8b372f6efaba242a73a89c9110284a988b3d8d2d7bc79f9a1763f378f4e.php:45
-#: /tmp/cache/5a2c85488411d/da/dabe617473a7f2ab2f6b704a878d67de4949e1d0e0775f1f1323b5a089fb0b97.php:207
-msgid "here"
-msgstr "her"
-
-#: /tmp/cache/5a2c8548e7ced/71/718adbdcc9a080772ed64aecfbb0a5010c4fbf3a5f6ab7fc3d9b479d4c5a95d0.php:59
-msgid "Actions"
-msgstr "Handling"
-
-#: /tmp/cache/5a2c8548e7ced/ab/ab65c925a3e4b610688b336afdcead69162b6baa790e95b5ed98098ebd553790.php:37
-msgid "Add requirement"
-msgstr "Tilføj krav"
-
-#: /tmp/cache/5a2c8548e7ced/71/718adbdcc9a080772ed64aecfbb0a5010c4fbf3a5f6ab7fc3d9b479d4c5a95d0.php:142
-msgid "Brands"
-msgstr "Mærker"
-
-#: /tmp/cache/5a2c8548e7ced/1a/1aad2c04d9a693d391b7c6336a77f99c7f9e9a1ade5f4d40011511241970369f.php:105
-#: /tmp/cache/5a2c8548e7ced/1a/1aad2c04d9a693d391b7c6336a77f99c7f9e9a1ade5f4d40011511241970369f.php:109
-msgid "Clip"
-msgstr "Klip"
-
-#: /tmp/cache/5a2c8548e7ced/71/718adbdcc9a080772ed64aecfbb0a5010c4fbf3a5f6ab7fc3d9b479d4c5a95d0.php:83
-msgid "Content"
-msgstr "Fortsæt"
-
-#: /tmp/cache/5a2c8548e7ced/3e/3efe128e4882505e78ffe36c8daae58f86f3ef07e2b4ebbdceaa24998ee8fa24.php:25
-#: /tmp/cache/5a2c8548e7ced/3e/3efe128e4882505e78ffe36c8daae58f86f3ef07e2b4ebbdceaa24998ee8fa24.php:83
-#: /tmp/cache/5a2c8548e7ced/76/767ae672fb1324684d1f5556f84d12a27eecba06c29de0b831eedef92fed53de.php:51
-msgid "Create account"
-msgstr "Opret konto"
-
-#: /tmp/cache/5a2c8548e7ced/71/718adbdcc9a080772ed64aecfbb0a5010c4fbf3a5f6ab7fc3d9b479d4c5a95d0.php:97
-#: /tmp/cache/5a2c8549217c7/9d/9d10aa030a646d016b911143e849094fc69e02c21437ed9f11b541dabc36e1fa.php:48
-msgid "Create category"
-msgstr "Opret kategori"
-
-#: /tmp/cache/5a2c8548e7ced/5b/5b7da8fd4e888a249202c72c5e9914c1febbe375b1abc183991b8546fab3e75e.php:37
-msgid "Create new sorting"
-msgstr "Opret ny sortering"
-
-#: /tmp/cache/5a2c8548e7ced/71/718adbdcc9a080772ed64aecfbb0a5010c4fbf3a5f6ab7fc3d9b479d4c5a95d0.php:93
-msgid "Create page"
-msgstr "Opret side"
-
-#: /tmp/cache/5a2c8548e7ced/ab/ab65c925a3e4b610688b336afdcead69162b6baa790e95b5ed98098ebd553790.php:56
-#: /tmp/cache/5a2c8548e7ced/c6/c64c04b446586055ff7cdc08eb13ea8423dd816de2d3ce9e637764e7bc5a6a0d.php:70
-msgid "Delete %title%!"
-msgstr "Slet %title%!"
-
-#: /tmp/cache/5a2c8548e7ced/1a/1aad2c04d9a693d391b7c6336a77f99c7f9e9a1ade5f4d40011511241970369f.php:25
-msgid "Edit picture"
-msgstr "Rediger billed"
-
-#: /tmp/cache/5a2c8548e7ced/91/919f0ac7ae7aa48a7f83e6d2740f9b52568481a0b05b1df7a2b9d974e20c5ffd.php:63
-#: /tmp/cache/5a2c8549217c7/f8/f86e346dbe541eb1bedffb82a6ac2d868c4eceb3a756ea2ee8549e1abb0c54e1.php:133
-msgid "Find image"
-msgstr "Find billede"
-
-#: /tmp/cache/5a2c8548e7ced/1a/1aad2c04d9a693d391b7c6336a77f99c7f9e9a1ade5f4d40011511241970369f.php:101
-msgid "Flip Vertically"
-msgstr "Spejlvend verticalt"
-
-#: /tmp/cache/5a2c8548e7ced/1a/1aad2c04d9a693d391b7c6336a77f99c7f9e9a1ade5f4d40011511241970369f.php:97
-msgid "Flip horizontally"
-msgstr "Spejlvend horisontalt"
-
-#: /tmp/cache/5a2c8548e7ced/76/767ae672fb1324684d1f5556f84d12a27eecba06c29de0b831eedef92fed53de.php:46
-msgid "Forgot Password?"
-msgstr "Glemt adgangskode?"
-
-#: /tmp/cache/5a2c8548e7ced/3e/3efe128e4882505e78ffe36c8daae58f86f3ef07e2b4ebbdceaa24998ee8fa24.php:59
-msgid "Fullname:"
-msgstr "Fulde navn:"
-
-#: /tmp/cache/5a2c8548e7ced/71/718adbdcc9a080772ed64aecfbb0a5010c4fbf3a5f6ab7fc3d9b479d4c5a95d0.php:185
-msgid "Invoices"
-msgstr "Fakturas"
-
-#: /tmp/cache/5a2c8548e7ced/3a/3ad444d3f36286e8abe26dbbe4d0fc3e0a828ba5eb40c5f6b001162239ed7181.php:31
-msgid "Limit list to this section"
-msgstr "Begræns liste til denne sektion"
-
-#: /tmp/cache/5a2c8548e7ced/91/919f0ac7ae7aa48a7f83e6d2740f9b52568481a0b05b1df7a2b9d974e20c5ffd.php:33
-msgid "Link:"
-msgstr "Link:"
-
-#: /tmp/cache/5a2c8548e7ced/c6/c64c04b446586055ff7cdc08eb13ea8423dd816de2d3ce9e637764e7bc5a6a0d.php:45
-msgid "List of brands"
-msgstr "Mærkeliste"
-
-#: /tmp/cache/5a2c8548e7ced/dd/dda05311dfbdc714b310b5ee4c6fe3873f3ce70a4f8c19c0f672d1a2085a5ad9.php:25
-msgid "List of pages"
-msgstr "Liste af sider"
-
-#: /tmp/cache/5a2c8548e7ced/5b/5b7da8fd4e888a249202c72c5e9914c1febbe375b1abc183991b8546fab3e75e.php:32
-#: /tmp/cache/5a2c8548e7ced/71/718adbdcc9a080772ed64aecfbb0a5010c4fbf3a5f6ab7fc3d9b479d4c5a95d0.php:146
-msgid "List sorting"
-msgstr "Liste sortering"
-
-#: /tmp/cache/5a2c8548e7ced/71/718adbdcc9a080772ed64aecfbb0a5010c4fbf3a5f6ab7fc3d9b479d4c5a95d0.php:128
-msgid "Lists"
-msgstr "Lister"
-
-#: /tmp/cache/5a2c8548e7ced/71/718adbdcc9a080772ed64aecfbb0a5010c4fbf3a5f6ab7fc3d9b479d4c5a95d0.php:78
-msgid "Log out"
-msgstr "log ud"
-
-#: /tmp/cache/5a2c8548e7ced/76/767ae672fb1324684d1f5556f84d12a27eecba06c29de0b831eedef92fed53de.php:25
-msgid "Login"
-msgstr "Login"
-
-#: /tmp/cache/5a2c8548e7ced/91/919f0ac7ae7aa48a7f83e6d2740f9b52568481a0b05b1df7a2b9d974e20c5ffd.php:43
-msgid "Logo:"
-msgstr "Logo:"
-
-#: /tmp/cache/5a2c8548e7ced/7d/7debfd26e348f9275769328a1f2c9774e1ac35b9fdacc7c7f69ae740c9614e1f.php:63
-msgid "New Item:"
-msgstr "Nyt punkt:"
-
-#: /tmp/cache/5a2c8548e7ced/71/718adbdcc9a080772ed64aecfbb0a5010c4fbf3a5f6ab7fc3d9b479d4c5a95d0.php:161
-msgid "Open file manager"
-msgstr "Åben fil håndtering"
-
-#: /tmp/cache/5a2c8548e7ced/3e/3efe128e4882505e78ffe36c8daae58f86f3ef07e2b4ebbdceaa24998ee8fa24.php:71
-#: /tmp/cache/5a2c8548e7ced/76/767ae672fb1324684d1f5556f84d12a27eecba06c29de0b831eedef92fed53de.php:38
-#: /tmp/cache/5a2c8549217c7/ad/ad4e8f6e7681765d79a5548ff3d2cda8243b91f4c8d6d8ee851129b7869cd7a0.php:134
-msgid "Password:"
-msgstr "Adgangskode:"
-
-#: /tmp/cache/5a2c8548e7ced/71/718adbdcc9a080772ed64aecfbb0a5010c4fbf3a5f6ab7fc3d9b479d4c5a95d0.php:181
-#: /tmp/cache/5a2c8548e7ced/8c/8cc08cc4fb12f06d74b614d02a697760809b08afe054712b17627b402132f6af.php:25
-msgid "Pricelist"
-msgstr "Prisliste"
-
-#: /tmp/cache/5a2c8548e7ced/71/718adbdcc9a080772ed64aecfbb0a5010c4fbf3a5f6ab7fc3d9b479d4c5a95d0.php:72
-#: /tmp/cache/5a2c8548e7ced/dd/dda05311dfbdc714b310b5ee4c6fe3873f3ce70a4f8c19c0f672d1a2085a5ad9.php:38
-msgid "Processing"
-msgstr "Behandler"
-
-#: /tmp/cache/5a2c8548e7ced/91/919f0ac7ae7aa48a7f83e6d2740f9b52568481a0b05b1df7a2b9d974e20c5ffd.php:69
-#: /tmp/cache/5a2c8549217c7/9d/9d10aa030a646d016b911143e849094fc69e02c21437ed9f11b541dabc36e1fa.php:90
-#: /tmp/cache/5a2c8549217c7/f8/f86e346dbe541eb1bedffb82a6ac2d868c4eceb3a756ea2ee8549e1abb0c54e1.php:139
-msgid "Remove picture"
-msgstr "Fjern billede"
-
-#: /tmp/cache/5a2c8548e7ced/3e/3efe128e4882505e78ffe36c8daae58f86f3ef07e2b4ebbdceaa24998ee8fa24.php:77
-#: /tmp/cache/5a2c8549217c7/ad/ad4e8f6e7681765d79a5548ff3d2cda8243b91f4c8d6d8ee851129b7869cd7a0.php:154
-msgid "Repeat password:"
-msgstr "Gentag adgangskode:"
-
-#: /tmp/cache/5a2c8548e7ced/71/718adbdcc9a080772ed64aecfbb0a5010c4fbf3a5f6ab7fc3d9b479d4c5a95d0.php:138
-msgid "Requirements"
-msgstr "Krav"
-
-#: /tmp/cache/5a2c8548e7ced/ab/ab65c925a3e4b610688b336afdcead69162b6baa790e95b5ed98098ebd553790.php:32
-msgid "Requirements list"
-msgstr "Kravliste"
-
-#: /tmp/cache/5a2c8548e7ced/1a/1aad2c04d9a693d391b7c6336a77f99c7f9e9a1ade5f4d40011511241970369f.php:93
-msgid "Rotate clockwise"
-msgstr "Roter med uret"
-
-#: /tmp/cache/5a2c8548e7ced/1a/1aad2c04d9a693d391b7c6336a77f99c7f9e9a1ade5f4d40011511241970369f.php:89
-msgid "Rotate counterclockwise"
-msgstr "Roter mod uret"
-
-#: /tmp/cache/5a2c8548e7ced/c6/c64c04b446586055ff7cdc08eb13ea8423dd816de2d3ce9e637764e7bc5a6a0d.php:33
-#: /tmp/cache/5a2c8549217c7/9c/9c4378d271b7c04bafd4c534243b1c33d95e9b50beb1b0de6e7813149c51a612.php:35
-msgid "Save brand"
-msgstr "Gem mærke"
-
-#: /tmp/cache/5a2c8548e7ced/7d/7debfd26e348f9275769328a1f2c9774e1ac35b9fdacc7c7f69ae740c9614e1f.php:39
-msgid "Save list"
-msgstr "Gem liste"
-
-#: /tmp/cache/5a2c8548e7ced/71/718adbdcc9a080772ed64aecfbb0a5010c4fbf3a5f6ab7fc3d9b479d4c5a95d0.php:105
-msgid "Skip to page"
-msgstr "Spring til side"
-
-#: /tmp/cache/5a2c8548e7ced/71/718adbdcc9a080772ed64aecfbb0a5010c4fbf3a5f6ab7fc3d9b479d4c5a95d0.php:151
-msgid "Tools"
-msgstr "Værktøjer"
-
-#: /tmp/cache/5a2c8548e7ced/76/767ae672fb1324684d1f5556f84d12a27eecba06c29de0b831eedef92fed53de.php:34
-msgid "User:"
-msgstr "Bruger:"
-
-#: /tmp/cache/5a2c8548e7ced/3e/3efe128e4882505e78ffe36c8daae58f86f3ef07e2b4ebbdceaa24998ee8fa24.php:65
-msgid "Username:"
-msgstr "Brugernavn:"
-
-#: /tmp/cache/5a2c8548e7ced/3a/3ad444d3f36286e8abe26dbbe4d0fc3e0a828ba5eb40c5f6b001162239ed7181.php:29
-msgid "Vis"
-msgstr "View"
-
-#: /tmp/cache/5a2c8548e7ced/7d/7debfd26e348f9275769328a1f2c9774e1ac35b9fdacc7c7f69ae740c9614e1f.php:65
-msgid "add"
-msgstr "tilføj"
-
-#: /tmp/cache/5a2c8549217c7/36/361b1776263f5977fd8742164cc417f73be64bddb6038197549ff345ab6776ec.php:62
-msgid "* Experiencing problems with our payment system"
-msgstr "* Oplever problemer med vores betalingssystem"
-
-#: /tmp/cache/5a2c8549217c7/36/361b1776263f5977fd8742164cc417f73be64bddb6038197549ff345ab6776ec.php:66
+#: /tmp/cache/5a2d55374274c/36/361b1776263f5977fd8742164cc417f73be64bddb6038197549ff345ab6776ec.php:66
 msgid "* Wish to cancel the order"
 msgstr "* Ønsker at afbestille ordren"
 
-#: /tmp/cache/5a2c8549217c7/36/361b1776263f5977fd8742164cc417f73be64bddb6038197549ff345ab6776ec.php:70
+#: /tmp/cache/5a2d55374274c/36/361b1776263f5977fd8742164cc417f73be64bddb6038197549ff345ab6776ec.php:70
 msgid "* Wish to change the order"
 msgstr "* Ønsker at ændre i bestillingen"
 
-#: /tmp/cache/5a2c8549217c7/36/361b1776263f5977fd8742164cc417f73be64bddb6038197549ff345ab6776ec.php:74
+#: /tmp/cache/5a2d55374274c/36/361b1776263f5977fd8742164cc417f73be64bddb6038197549ff345ab6776ec.php:74
 msgid ""
-"* Wish to pay by other means - for example, by transfering the amount via "
+"* Wish to pay by other means - for example, by transferring the amount via "
 "home banking."
 msgstr "* Ønsker at betale på anden måde, - f.eks ved overførsel via netbank."
 
-#: /tmp/cache/5a2c8549217c7/ad/ad4e8f6e7681765d79a5548ff3d2cda8243b91f4c8d6d8ee851129b7869cd7a0.php:96
+#: /tmp/cache/5a2d55374274c/ad/ad4e8f6e7681765d79a5548ff3d2cda8243b91f4c8d6d8ee851129b7869cd7a0.php:96
 msgid "Access level:"
 msgstr "Adgangsniveau:"
 
-#: /tmp/cache/5a2c8549217c7/f8/f86e346dbe541eb1bedffb82a6ac2d868c4eceb3a756ea2ee8549e1abb0c54e1.php:728
-msgid "Accessories:"
-msgstr "Tilbehør:"
+#: /tmp/cache/5a2d55374274c/5c/5cbc68db62c4d9580234a742471593bb416df810fcc197cf867e468ff2e91189.php:185
+msgid "Bank transaction"
+msgstr "Bank overførsel"
 
-#: /tmp/cache/5a2c8549217c7/f8/f86e346dbe541eb1bedffb82a6ac2d868c4eceb3a756ea2ee8549e1abb0c54e1.php:774
-msgid "Add accessories"
-msgstr "Tilføj tilbehør"
-
-#: /tmp/cache/5a2c8549217c7/9d/9d10aa030a646d016b911143e849094fc69e02c21437ed9f11b541dabc36e1fa.php:105
-msgid "Alphabetically"
-msgstr "Alfabetisk"
-
-#: /tmp/cache/5a2c8549217c7/f8/f86e346dbe541eb1bedffb82a6ac2d868c4eceb3a756ea2ee8549e1abb0c54e1.php:172
-msgid "Before"
-msgstr "Før"
-
-#: /tmp/cache/5a2c8549217c7/17/171ecca8b361a66fd09bc50f5a76ea43cefa37d67d4c064546e4b426862283cd.php:38
-#: /tmp/cache/5a2c854995e8e/a0/a0782a31ee7b595a450fe71285cb38742b912747497d2c5f07c832cf0b607ce1.php:38
+#: /tmp/cache/5a2d55374274c/17/171ecca8b361a66fd09bc50f5a76ea43cefa37d67d4c064546e4b426862283cd.php:38
+#: /tmp/cache/5a2d553774b2e/a0/a0782a31ee7b595a450fe71285cb38742b912747497d2c5f07c832cf0b607ce1.php:38
 msgid "Before:"
 msgstr "Før:"
 
-#: /tmp/cache/5a2c8549217c7/f8/f86e346dbe541eb1bedffb82a6ac2d868c4eceb3a756ea2ee8549e1abb0c54e1.php:657
-msgid "Bindings:"
-msgstr "Bindinger:"
+#: /tmp/cache/5a2d55374274c/5c/5cbc68db62c4d9580234a742471593bb416df810fcc197cf867e468ff2e91189.php:177
+msgid "Credit Card"
+msgstr "Betalingskort"
 
-#: /tmp/cache/5a2c8549217c7/9d/9d10aa030a646d016b911143e849094fc69e02c21437ed9f11b541dabc36e1fa.php:186
-msgid "Contact:"
-msgstr "Kontakt:"
+#: /tmp/cache/5a2d55374274c/88/88dc8530ec5c024a2f28d13c7402857ed5068a9d8dd99f6513190137023955e8.php:47
+msgid "Customer:"
+msgstr "Kunde:"
 
-#: /tmp/cache/5a2c8549217c7/f8/f86e346dbe541eb1bedffb82a6ac2d868c4eceb3a756ea2ee8549e1abb0c54e1.php:709
-msgid "Create binding"
-msgstr "Opret binding"
+#: /tmp/cache/5a2d55374274c/88/88dc8530ec5c024a2f28d13c7402857ed5068a9d8dd99f6513190137023955e8.php:37
+msgid "Date:"
+msgstr "Dato:"
 
-#: /tmp/cache/5a2c8549217c7/f8/f86e346dbe541eb1bedffb82a6ac2d868c4eceb3a756ea2ee8549e1abb0c54e1.php:48
-msgid "Create new page"
-msgstr "Opret ny side"
+#: /tmp/cache/5a2d55374274c/5c/5cbc68db62c4d9580234a742471593bb416df810fcc197cf867e468ff2e91189.php:200
+msgid "Delivery:"
+msgstr "Levering:"
 
-#: /tmp/cache/5a2c8549217c7/f8/f86e346dbe541eb1bedffb82a6ac2d868c4eceb3a756ea2ee8549e1abb0c54e1.php:602
-msgid "Delete row"
-msgstr "Slet række"
-
-#: /tmp/cache/5a2c8549217c7/9d/9d10aa030a646d016b911143e849094fc69e02c21437ed9f11b541dabc36e1fa.php:215
-msgid "Display:"
-msgstr "Visning:"
-
-#: /tmp/cache/5a2c8549217c7/ad/ad4e8f6e7681765d79a5548ff3d2cda8243b91f4c8d6d8ee851129b7869cd7a0.php:45
+#: /tmp/cache/5a2d55374274c/ad/ad4e8f6e7681765d79a5548ff3d2cda8243b91f4c8d6d8ee851129b7869cd7a0.php:45
 msgid "Edit %name%"
 msgstr "Rediger %name%"
 
-#: /tmp/cache/5a2c8549217c7/9d/9d10aa030a646d016b911143e849094fc69e02c21437ed9f11b541dabc36e1fa.php:46
-msgid "Edit category"
-msgstr "Rediger kategori"
-
-#: /tmp/cache/5a2c8549217c7/86/8639b1b64055cd04b34629230910bdde8240cf3f75eeb6e2b9d8267bd0186715.php:53
+#: /tmp/cache/5a2d55374274c/86/8639b1b64055cd04b34629230910bdde8240cf3f75eeb6e2b9d8267bd0186715.php:53
 msgid "Edit newsletter"
 msgstr "Rediger nyhedsbrev"
 
-#: /tmp/cache/5a2c8549217c7/f8/f86e346dbe541eb1bedffb82a6ac2d868c4eceb3a756ea2ee8549e1abb0c54e1.php:46
-msgid "Edit page #%pageId%"
-msgstr "Rediger side #%pageId%"
-
-#: /tmp/cache/5a2c8549217c7/5f/5f12dffd078e3206893a4984b6eba96e4598f075fd86c4c024aa9ae41d6d6e57.php:34
-msgid "Email: %email% #%contactId% is not valid"
-msgstr "E-mail: %email% #%contactId% er ikke gyldige"
-
-#: /tmp/cache/5a2c8549217c7/f8/f86e346dbe541eb1bedffb82a6ac2d868c4eceb3a756ea2ee8549e1abb0c54e1.php:217
-msgid "From"
-msgstr "Fra"
-
-#: /tmp/cache/5a2c8549217c7/ad/ad4e8f6e7681765d79a5548ff3d2cda8243b91f4c8d6d8ee851129b7869cd7a0.php:52
-msgid "Full name:"
-msgstr "Fulde navn:"
-
-#: /tmp/cache/5a2c8549217c7/9d/9d10aa030a646d016b911143e849094fc69e02c21437ed9f11b541dabc36e1fa.php:232
-msgid "Gallery"
-msgstr "Galleri"
-
-#: /tmp/cache/5a2c8549217c7/9d/9d10aa030a646d016b911143e849094fc69e02c21437ed9f11b541dabc36e1fa.php:224
-msgid "Hide"
-msgstr "Skjul"
-
-#: /tmp/cache/5a2c8549217c7/9d/9d10aa030a646d016b911143e849094fc69e02c21437ed9f11b541dabc36e1fa.php:78
-msgid "Icon:"
-msgstr "Ikon:"
-
-#: /tmp/cache/5a2c8549217c7/61/61f47b13a6b895f39f3960225fae2973063d9a02405d70fd4c9779cf0b495c33.php:49
+#: /tmp/cache/5a2d55374274c/61/61f47b13a6b895f39f3960225fae2973063d9a02405d70fd4c9779cf0b495c33.php:49
 msgid ""
-"If you wish to pay by other means or simply cancle the order, - then please "
-"inform us so via email."
+"If you wish to pay by other means or simply cancel the order, then please "
+"inform us via email."
 msgstr ""
 "Ønsker du at betale på en anden måde eller blot aflyse handlen, - så oplys "
 "også gerne dette via mail."
 
-#: /tmp/cache/5a2c8549217c7/f8/f86e346dbe541eb1bedffb82a6ac2d868c4eceb3a756ea2ee8549e1abb0c54e1.php:180
-msgid "Indicative price"
-msgstr "Vejledende pris"
-
-#: /tmp/cache/5a2c8549217c7/f8/f86e346dbe541eb1bedffb82a6ac2d868c4eceb3a756ea2ee8549e1abb0c54e1.php:86
-msgid ""
-"Keywords (separate search term with a comma 'emergency Blanket, first aid'):"
-msgstr "Søgeord (separer søgeord med et komma \"Brandtæppe, førstehjælp\"):"
-
-#: /tmp/cache/5a2c8549217c7/8a/8a679d2960702fef980209e0994c23420e2e7d8fbd528502726c3c2facc7718d.php:55
+#: /tmp/cache/5a2d55374274c/8a/8a679d2960702fef980209e0994c23420e2e7d8fbd528502726c3c2facc7718d.php:55
 msgid "Last online"
 msgstr "Sidst online"
 
-#: /tmp/cache/5a2c8549217c7/ad/ad4e8f6e7681765d79a5548ff3d2cda8243b91f4c8d6d8ee851129b7869cd7a0.php:86
+#: /tmp/cache/5a2d55374274c/ad/ad4e8f6e7681765d79a5548ff3d2cda8243b91f4c8d6d8ee851129b7869cd7a0.php:86
 msgid "Last online:"
 msgstr "Sidst online:"
 
-#: /tmp/cache/5a2c8549217c7/f8/f86e346dbe541eb1bedffb82a6ac2d868c4eceb3a756ea2ee8549e1abb0c54e1.php:391
-msgid "Link"
-msgstr "Link"
+#: /tmp/cache/5a2d55374274c/5c/5cbc68db62c4d9580234a742471593bb416df810fcc197cf867e468ff2e91189.php:209
+msgid "Mail"
+msgstr "Post"
 
-#: /tmp/cache/5a2c8549217c7/9d/9d10aa030a646d016b911143e849094fc69e02c21437ed9f11b541dabc36e1fa.php:240
-msgid "List"
-msgstr "Liste"
-
-#: /tmp/cache/5a2c8549217c7/9d/9d10aa030a646d016b911143e849094fc69e02c21437ed9f11b541dabc36e1fa.php:113
-msgid "Manually"
-msgstr "Manuelt"
-
-#: /tmp/cache/5a2c8549217c7/17/171ecca8b361a66fd09bc50f5a76ea43cefa37d67d4c064546e4b426862283cd.php:25
-#: /tmp/cache/5a2c854995e8e/a0/a0782a31ee7b595a450fe71285cb38742b912747497d2c5f07c832cf0b607ce1.php:25
+#: /tmp/cache/5a2d55374274c/17/171ecca8b361a66fd09bc50f5a76ea43cefa37d67d4c064546e4b426862283cd.php:25
+#: /tmp/cache/5a2d553774b2e/a0/a0782a31ee7b595a450fe71285cb38742b912747497d2c5f07c832cf0b607ce1.php:25
 msgid "Market price:"
 msgstr "Vejl.pris:"
 
-#: /tmp/cache/5a2c8549217c7/ad/ad4e8f6e7681765d79a5548ff3d2cda8243b91f4c8d6d8ee851129b7869cd7a0.php:147
+#: /tmp/cache/5a2d55374274c/ad/ad4e8f6e7681765d79a5548ff3d2cda8243b91f4c8d6d8ee851129b7869cd7a0.php:147
 msgid "New password:"
 msgstr "Ny adgangskode:"
 
-#: /tmp/cache/5a2c8549217c7/17/171ecca8b361a66fd09bc50f5a76ea43cefa37d67d4c064546e4b426862283cd.php:58
-#: /tmp/cache/5a2c854995e8e/a0/a0782a31ee7b595a450fe71285cb38742b912747497d2c5f07c832cf0b607ce1.php:58
+#: /tmp/cache/5a2d55374274c/17/171ecca8b361a66fd09bc50f5a76ea43cefa37d67d4c064546e4b426862283cd.php:58
+#: /tmp/cache/5a2d553774b2e/a0/a0782a31ee7b595a450fe71285cb38742b912747497d2c5f07c832cf0b607ce1.php:58
 msgid "New price from:"
 msgstr "Nu fra:"
 
-#: /tmp/cache/5a2c8549217c7/f8/f86e346dbe541eb1bedffb82a6ac2d868c4eceb3a756ea2ee8549e1abb0c54e1.php:279
-#: /tmp/cache/5a2c8549217c7/f8/f86e346dbe541eb1bedffb82a6ac2d868c4eceb3a756ea2ee8549e1abb0c54e1.php:315
-msgid "None"
-msgstr "Ingen"
-
-#: /tmp/cache/5a2c8549217c7/17/171ecca8b361a66fd09bc50f5a76ea43cefa37d67d4c064546e4b426862283cd.php:86
-#: /tmp/cache/5a2c854995e8e/a0/a0782a31ee7b595a450fe71285cb38742b912747497d2c5f07c832cf0b607ce1.php:86
+#: /tmp/cache/5a2d55374274c/17/171ecca8b361a66fd09bc50f5a76ea43cefa37d67d4c064546e4b426862283cd.php:86
+#: /tmp/cache/5a2d553774b2e/a0/a0782a31ee7b595a450fe71285cb38742b912747497d2c5f07c832cf0b607ce1.php:86
 msgid "Now:"
 msgstr "Nu:"
 
-#: /tmp/cache/5a2c8549217c7/86/8639b1b64055cd04b34629230910bdde8240cf3f75eeb6e2b9d8267bd0186715.php:169
+#: /tmp/cache/5a2d55374274c/86/8639b1b64055cd04b34629230910bdde8240cf3f75eeb6e2b9d8267bd0186715.php:169
 msgid "Number of recipients:"
 msgstr "Antal modtagere:"
 
-#: /tmp/cache/5a2c8549217c7/f8/f86e346dbe541eb1bedffb82a6ac2d868c4eceb3a756ea2ee8549e1abb0c54e1.php:253
-msgid "Other:"
-msgstr "Andet:"
-
-#: /tmp/cache/5a2c8549217c7/61/61f47b13a6b895f39f3960225fae2973063d9a02405d70fd4c9779cf0b495c33.php:32
-msgid "Payment is ready for invoice %invoiceId%:"
-msgstr "Betalingen er klar for faktura %invoiceId%:"
-
-#: /tmp/cache/5a2c8549217c7/61/61f47b13a6b895f39f3960225fae2973063d9a02405d70fd4c9779cf0b495c33.php:37
-msgid "Please click the following link and fill out the form:"
-msgstr " Klik venligst på vedlagte link herunder og udfyld formularen:"
-
-#: /tmp/cache/5a2c8549217c7/17/171ecca8b361a66fd09bc50f5a76ea43cefa37d67d4c064546e4b426862283cd.php:72
-#: /tmp/cache/5a2c854995e8e/a0/a0782a31ee7b595a450fe71285cb38742b912747497d2c5f07c832cf0b607ce1.php:72
-msgid "Price from:"
-msgstr "From:"
-
-#: /tmp/cache/5a2c8549217c7/17/171ecca8b361a66fd09bc50f5a76ea43cefa37d67d4c064546e4b426862283cd.php:92
-#: /tmp/cache/5a2c8549217c7/f8/f86e346dbe541eb1bedffb82a6ac2d868c4eceb3a756ea2ee8549e1abb0c54e1.php:154
-#: /tmp/cache/5a2c854995e8e/a0/a0782a31ee7b595a450fe71285cb38742b912747497d2c5f07c832cf0b607ce1.php:92
-msgid "Price:"
-msgstr "Pris:"
-
-#: /tmp/cache/5a2c8549217c7/86/8639b1b64055cd04b34629230910bdde8240cf3f75eeb6e2b9d8267bd0186715.php:81
-msgid "Recipient:"
-msgstr "Modtager:"
-
-#: /tmp/cache/5a2c8549217c7/f8/f86e346dbe541eb1bedffb82a6ac2d868c4eceb3a756ea2ee8549e1abb0c54e1.php:685
-#: /tmp/cache/5a2c8549217c7/f8/f86e346dbe541eb1bedffb82a6ac2d868c4eceb3a756ea2ee8549e1abb0c54e1.php:756
-msgid "Remove binding"
-msgstr "Fjern binding"
-
-#: /tmp/cache/5a2c8549217c7/86/8639b1b64055cd04b34629230910bdde8240cf3f75eeb6e2b9d8267bd0186715.php:124
-msgid "Restrict recipients to:"
-msgstr "Begræns modtagere til:"
-
-#: /tmp/cache/5a2c8549217c7/f8/f86e346dbe541eb1bedffb82a6ac2d868c4eceb3a756ea2ee8549e1abb0c54e1.php:264
-#: /tmp/cache/5a2c854995e8e/f6/f698664c6eb6959d7329b9c080d74322e079353621fdb79c30bc2a04624acd87.php:46
-msgid "SKU:"
-msgstr "Varenr.:"
-
-#: /tmp/cache/5a2c8549217c7/9d/9d10aa030a646d016b911143e849094fc69e02c21437ed9f11b541dabc36e1fa.php:35
-msgid "Save category"
-msgstr "Gem kategori"
-
-#: /tmp/cache/5a2c8549217c7/86/8639b1b64055cd04b34629230910bdde8240cf3f75eeb6e2b9d8267bd0186715.php:35
-msgid "Save email"
-msgstr "Gem e-mail"
-
-#: /tmp/cache/5a2c8549217c7/c1/c1163ccd489ed8c55140768d8f28bb345002fbb79606dbe59163374b4bcd4fcf.php:35
-#: /tmp/cache/5a2c8549217c7/f8/f86e346dbe541eb1bedffb82a6ac2d868c4eceb3a756ea2ee8549e1abb0c54e1.php:35
-msgid "Save page"
-msgstr "Gem siden"
-
-#: /tmp/cache/5a2c8549217c7/86/8639b1b64055cd04b34629230910bdde8240cf3f75eeb6e2b9d8267bd0186715.php:94
-msgid "Select sender"
-msgstr "Vælg afsender"
-
-#: /tmp/cache/5a2c8549217c7/86/8639b1b64055cd04b34629230910bdde8240cf3f75eeb6e2b9d8267bd0186715.php:39
-msgid "Send email"
-msgstr "Send e-mail"
-
-#: /tmp/cache/5a2c8549217c7/86/8639b1b64055cd04b34629230910bdde8240cf3f75eeb6e2b9d8267bd0186715.php:75
-#: /tmp/cache/5a2c8549217c7/86/8639b1b64055cd04b34629230910bdde8240cf3f75eeb6e2b9d8267bd0186715.php:90
-msgid "Sender:"
-msgstr "Afsender:"
-
-#: /tmp/cache/5a2c8549217c7/f8/f86e346dbe541eb1bedffb82a6ac2d868c4eceb3a756ea2ee8549e1abb0c54e1.php:188
-msgid "Should cost"
-msgstr "Burde koste"
-
-#: /tmp/cache/5a2c8549217c7/17/171ecca8b361a66fd09bc50f5a76ea43cefa37d67d4c064546e4b426862283cd.php:32
-#: /tmp/cache/5a2c854995e8e/a0/a0782a31ee7b595a450fe71285cb38742b912747497d2c5f07c832cf0b607ce1.php:32
-msgid "Should cost:"
-msgstr "Burde koste:"
-
-#: /tmp/cache/5a2c8549217c7/17/171ecca8b361a66fd09bc50f5a76ea43cefa37d67d4c064546e4b426862283cd.php:105
-#: /tmp/cache/5a2c85495f779/9d/9db354caa8bd6770554ed81da70cc1b00181104ce634ee113a70289d59b0569e.php:105
-#: /tmp/cache/5a2c85495f779/ac/ac58229a26cb8ed3cf6cfb3013e34e1dab77c36c0eea4eed791f859aff521cd9.php:163
-#: /tmp/cache/5a2c854995e8e/a0/a0782a31ee7b595a450fe71285cb38742b912747497d2c5f07c832cf0b607ce1.php:105
-msgid "Sold out"
-msgstr "Udsolgt"
-
-#: /tmp/cache/5a2c8549217c7/c1/c1163ccd489ed8c55140768d8f28bb345002fbb79606dbe59163374b4bcd4fcf.php:87
-msgid "Sort maincategories:"
-msgstr "Sorter hovedkategorier:"
-
-#: /tmp/cache/5a2c8549217c7/9d/9d10aa030a646d016b911143e849094fc69e02c21437ed9f11b541dabc36e1fa.php:100
-msgid "Sort subcategories:"
-msgstr "Sorter underkategorier:"
-
-#: /tmp/cache/5a2c8549217c7/86/8639b1b64055cd04b34629230910bdde8240cf3f75eeb6e2b9d8267bd0186715.php:175
-#: /tmp/cache/5a2c8549217c7/86/8639b1b64055cd04b34629230910bdde8240cf3f75eeb6e2b9d8267bd0186715.php:204
-msgid "Subject:"
-msgstr "Emne:"
-
-#: /tmp/cache/5a2c8549217c7/36/361b1776263f5977fd8742164cc417f73be64bddb6038197549ff345ab6776ec.php:102
-#: /tmp/cache/5a2c8549217c7/61/61f47b13a6b895f39f3960225fae2973063d9a02405d70fd4c9779cf0b495c33.php:78
-#: /tmp/cache/5a2c85495f779/88/88dc8530ec5c024a2f28d13c7402857ed5068a9d8dd99f6513190137023955e8.php:297
-msgid "Tel"
-msgstr "Tlf."
-
-#: /tmp/cache/5a2c8549217c7/61/61f47b13a6b895f39f3960225fae2973063d9a02405d70fd4c9779cf0b495c33.php:28
-msgid ""
-"Thank you for your order. We have included a link for the electronice "
-"invoice."
-msgstr "Tak for ordren. Vi vedlægger her et link til en elektronisk faktura."
-
-#: /tmp/cache/5a2c8549217c7/5f/5f12dffd078e3206893a4984b6eba96e4598f075fd86c4c024aa9ae41d6d6e57.php:22
-msgid "The following email addresses are not valid"
-msgstr "Følgende email adresser er ikke gyldige"
-
-#: /tmp/cache/5a2c8549217c7/36/361b1776263f5977fd8742164cc417f73be64bddb6038197549ff345ab6776ec.php:34
-msgid "This is an automatically generated reminder!"
-msgstr "Dette er en automatisk genereret rykkermail!"
-
-#: /tmp/cache/5a2c8549217c7/f8/f86e346dbe541eb1bedffb82a6ac2d868c4eceb3a756ea2ee8549e1abb0c54e1.php:225
-msgid "Used"
-msgstr "Brugt"
-
-#: /tmp/cache/5a2c8549217c7/17/171ecca8b361a66fd09bc50f5a76ea43cefa37d67d4c064546e4b426862283cd.php:65
-#: /tmp/cache/5a2c8549217c7/17/171ecca8b361a66fd09bc50f5a76ea43cefa37d67d4c064546e4b426862283cd.php:79
-#: /tmp/cache/5a2c854995e8e/a0/a0782a31ee7b595a450fe71285cb38742b912747497d2c5f07c832cf0b607ce1.php:65
-#: /tmp/cache/5a2c854995e8e/a0/a0782a31ee7b595a450fe71285cb38742b912747497d2c5f07c832cf0b607ce1.php:79
-msgid "Used:"
-msgstr "Brugt:"
-
-#: /tmp/cache/5a2c8549217c7/ad/ad4e8f6e7681765d79a5548ff3d2cda8243b91f4c8d6d8ee851129b7869cd7a0.php:76
-msgid "User name:"
-msgstr "Brugernavn:"
-
-#: /tmp/cache/5a2c8549217c7/86/8639b1b64055cd04b34629230910bdde8240cf3f75eeb6e2b9d8267bd0186715.php:51
-msgid "View newsletter"
-msgstr "Vis nyhedsbrev"
-
-#: /tmp/cache/5a2c8549217c7/36/361b1776263f5977fd8742164cc417f73be64bddb6038197549ff345ab6776ec.php:58
-msgid "We would also welcome an email or phone call - if you:"
-msgstr "Vi modtager også gerne en mail eller telefonopkald, - hvis du:"
-
-#: /tmp/cache/5a2c8549217c7/36/361b1776263f5977fd8742164cc417f73be64bddb6038197549ff345ab6776ec.php:52
-msgid ""
-"When entering your credit card information, - errors may occure preventing "
-"us from noticing the payment - thus causing unnecessary delays - this is the "
-"reason that we have sent this notice."
-msgstr ""
-"I forbindelse med indtastning af Dankortoplysningerne, - kan der ske fejl så "
-"vi ikke registrerer betalingen, - derved opstår der unødig ventetid, - "
-"derfor sender vi denne skrivelse."
-
-#: /tmp/cache/5a2c8549217c7/36/361b1776263f5977fd8742164cc417f73be64bddb6038197549ff345ab6776ec.php:39
-msgid ""
-"Your goods are ready for shipping / pick-up - but we have not yet registred "
-"any payment - we are therefore sending a you a new link to the credit card "
-"invoice system."
-msgstr ""
-"Dine varer er klar til forsendelse / afhentning, - men det er endnu ikke "
-"registreret, at betalingen kan godkendes, - derfor sender vi herved et nyt "
-"link til Dankort-fakturasystemet."
-
-#: /tmp/cache/5a2c85495f779/ee/ee32a3930ee557fec46de4ed6e6029f8540b3b5e4ed22f547e3fa32718f1adfb.php:80
-msgid "All figures in USD"
-msgstr "Alle beløb er i DKK"
-
-#: /tmp/cache/5a2c85495f779/88/88dc8530ec5c024a2f28d13c7402857ed5068a9d8dd99f6513190137023955e8.php:47
-msgid "Customer:"
-msgstr "Kunde:"
-
-#: /tmp/cache/5a2c85495f779/88/88dc8530ec5c024a2f28d13c7402857ed5068a9d8dd99f6513190137023955e8.php:37
-msgid "Date:"
-msgstr "Dato:"
-
-#: /tmp/cache/5a2c85495f779/88/88dc8530ec5c024a2f28d13c7402857ed5068a9d8dd99f6513190137023955e8.php:263
+#: /tmp/cache/5a2d55374274c/88/88dc8530ec5c024a2f28d13c7402857ed5068a9d8dd99f6513190137023955e8.php:263
 msgid ""
 "Payment for your order no. %invoiceId% is now approved. Your product will be "
 "shipped as soon as possible. A Track & Trace link will automatically be sent "
@@ -3350,22 +3141,172 @@ msgstr ""
 "blive afsendt hurtigst muligt. Der vil automatisk blive sendt en email med "
 "et Track & Trace link hvor de kan følge pakken."
 
-#: /tmp/cache/5a2c85495f779/9d/9db354caa8bd6770554ed81da70cc1b00181104ce634ee113a70289d59b0569e.php:34
-msgid "Previously"
-msgstr "Før"
+#: /tmp/cache/5a2d55374274c/61/61f47b13a6b895f39f3960225fae2973063d9a02405d70fd4c9779cf0b495c33.php:32
+msgid "Payment is ready for invoice %invoiceId%:"
+msgstr "Betalingen er klar for faktura %invoiceId%:"
 
-#: /tmp/cache/5a2c854995e8e/91/9199ae5f331dba0f2834cda40469ffe95e32bcc86d0f7faa583ea2c3a9915ea5.php:22
+#: /tmp/cache/5a2d55374274c/5c/5cbc68db62c4d9580234a742471593bb416df810fcc197cf867e468ff2e91189.php:217
+msgid "Pick-up in store"
+msgstr "Afhent i butikken"
+
+#: /tmp/cache/5a2d55374274c/61/61f47b13a6b895f39f3960225fae2973063d9a02405d70fd4c9779cf0b495c33.php:37
+msgid "Please click the following link and fill out the form:"
+msgstr " Klik venligst på vedlagte link herunder og udfyld formularen:"
+
+#: /tmp/cache/5a2d55374274c/5c/5cbc68db62c4d9580234a742471593bb416df810fcc197cf867e468ff2e91189.php:168
+msgid "Preferred payment method:"
+msgstr "Foretrukken betalingsmetode:"
+
+#: /tmp/cache/5a2d55374274c/17/171ecca8b361a66fd09bc50f5a76ea43cefa37d67d4c064546e4b426862283cd.php:72
+#: /tmp/cache/5a2d553774b2e/a0/a0782a31ee7b595a450fe71285cb38742b912747497d2c5f07c832cf0b607ce1.php:72
+msgid "Price from:"
+msgstr "From:"
+
+#: /tmp/cache/5a2d55374274c/86/8639b1b64055cd04b34629230910bdde8240cf3f75eeb6e2b9d8267bd0186715.php:81
+msgid "Recipient:"
+msgstr "Modtager:"
+
+#: /tmp/cache/5a2d55374274c/86/8639b1b64055cd04b34629230910bdde8240cf3f75eeb6e2b9d8267bd0186715.php:124
+msgid "Restrict recipients to:"
+msgstr "Begræns modtagere til:"
+
+#: /tmp/cache/5a2d55374274c/86/8639b1b64055cd04b34629230910bdde8240cf3f75eeb6e2b9d8267bd0186715.php:35
+msgid "Save email"
+msgstr "Gem e-mail"
+
+#: /tmp/cache/5a2d55374274c/86/8639b1b64055cd04b34629230910bdde8240cf3f75eeb6e2b9d8267bd0186715.php:94
+msgid "Select sender"
+msgstr "Vælg afsender"
+
+#: /tmp/cache/5a2d55374274c/86/8639b1b64055cd04b34629230910bdde8240cf3f75eeb6e2b9d8267bd0186715.php:39
+msgid "Send email"
+msgstr "Send e-mail"
+
+#: /tmp/cache/5a2d55374274c/86/8639b1b64055cd04b34629230910bdde8240cf3f75eeb6e2b9d8267bd0186715.php:75
+#: /tmp/cache/5a2d55374274c/86/8639b1b64055cd04b34629230910bdde8240cf3f75eeb6e2b9d8267bd0186715.php:90
+msgid "Sender:"
+msgstr "Afsender:"
+
+#: /tmp/cache/5a2d55374274c/17/171ecca8b361a66fd09bc50f5a76ea43cefa37d67d4c064546e4b426862283cd.php:32
+#: /tmp/cache/5a2d553774b2e/a0/a0782a31ee7b595a450fe71285cb38742b912747497d2c5f07c832cf0b607ce1.php:32
+msgid "Should cost:"
+msgstr "Burde koste:"
+
+#: /tmp/cache/5a2d55374274c/17/171ecca8b361a66fd09bc50f5a76ea43cefa37d67d4c064546e4b426862283cd.php:105
+#: /tmp/cache/5a2d553774b2e/9d/9db354caa8bd6770554ed81da70cc1b00181104ce634ee113a70289d59b0569e.php:105
+#: /tmp/cache/5a2d553774b2e/a0/a0782a31ee7b595a450fe71285cb38742b912747497d2c5f07c832cf0b607ce1.php:105
+#: /tmp/cache/5a2d553774b2e/ac/ac58229a26cb8ed3cf6cfb3013e34e1dab77c36c0eea4eed791f859aff521cd9.php:163
+msgid "Sold-out"
+msgstr "Udsolgt"
+
+#: /tmp/cache/5a2d55374274c/86/8639b1b64055cd04b34629230910bdde8240cf3f75eeb6e2b9d8267bd0186715.php:175
+#: /tmp/cache/5a2d55374274c/86/8639b1b64055cd04b34629230910bdde8240cf3f75eeb6e2b9d8267bd0186715.php:204
+msgid "Subject:"
+msgstr "Emne:"
+
+#: /tmp/cache/5a2d55374274c/61/61f47b13a6b895f39f3960225fae2973063d9a02405d70fd4c9779cf0b495c33.php:28
+msgid ""
+"Thank you for your order. We have included a link for the electronic invoice."
+msgstr "Tak for ordren. Vi vedlægger her et link til en elektronisk faktura."
+
+#: /tmp/cache/5a2d55374274c/5c/5cbc68db62c4d9580234a742471593bb416df810fcc197cf867e468ff2e91189.php:222
+msgid "The exact shipping cost will be calculated when the goods are packed."
+msgstr "Den nøjagtige forsendelses pris vil blive udregnet når varerne pakkes."
+
+#: /tmp/cache/5a2d55374274c/5c/5cbc68db62c4d9580234a742471593bb416df810fcc197cf867e468ff2e91189.php:244
+msgid "Ther is no content in the basket."
+msgstr "Der er intet indhold på listen."
+
+#: /tmp/cache/5a2d55374274c/36/361b1776263f5977fd8742164cc417f73be64bddb6038197549ff345ab6776ec.php:34
+msgid "This is an automatically generated reminder!"
+msgstr "Dette er en automatisk genereret rykkermail!"
+
+#: /tmp/cache/5a2d55374274c/17/171ecca8b361a66fd09bc50f5a76ea43cefa37d67d4c064546e4b426862283cd.php:65
+#: /tmp/cache/5a2d55374274c/17/171ecca8b361a66fd09bc50f5a76ea43cefa37d67d4c064546e4b426862283cd.php:79
+#: /tmp/cache/5a2d553774b2e/a0/a0782a31ee7b595a450fe71285cb38742b912747497d2c5f07c832cf0b607ce1.php:65
+#: /tmp/cache/5a2d553774b2e/a0/a0782a31ee7b595a450fe71285cb38742b912747497d2c5f07c832cf0b607ce1.php:79
+msgid "Used:"
+msgstr "Brugt:"
+
+#: /tmp/cache/5a2d55374274c/86/8639b1b64055cd04b34629230910bdde8240cf3f75eeb6e2b9d8267bd0186715.php:51
+msgid "View newsletter"
+msgstr "Vis nyhedsbrev"
+
+#: /tmp/cache/5a2d55374274c/36/361b1776263f5977fd8742164cc417f73be64bddb6038197549ff345ab6776ec.php:58
+msgid "We would also welcome an email or phone call if you:"
+msgstr "Vi modtager også gerne en mail eller telefonopkald, - hvis du:"
+
+#: /tmp/cache/5a2d55374274c/36/361b1776263f5977fd8742164cc417f73be64bddb6038197549ff345ab6776ec.php:52
+msgid ""
+"When entering your credit card information, errors may have occurred that "
+"are preventing us from noticing the payment. It may be causing unnecessary "
+"delays, this is the reason that we have sent this notice."
+msgstr ""
+"I forbindelse med indtastning af Dankortoplysningerne, - kan der ske fejl så "
+"vi ikke registrerer betalingen, - derved opstår der unødig ventetid, - "
+"derfor sender vi denne skrivelse."
+
+#: /tmp/cache/5a2d55374274c/36/361b1776263f5977fd8742164cc417f73be64bddb6038197549ff345ab6776ec.php:39
+msgid ""
+"Your goods are ready for shipping / pick-up, but we have not yet registered "
+"any payment - we are therefore sending you a new link to the credit card "
+"invoice system."
+msgstr ""
+"Dine varer er klar til forsendelse / afhentning, - men det er endnu ikke "
+"registreret, at betalingen kan godkendes, - derfor sender vi herved et nyt "
+"link til Dankort-fakturasystemet."
+
+#: /tmp/cache/5a2d553774b2e/ee/ee32a3930ee557fec46de4ed6e6029f8540b3b5e4ed22f547e3fa32718f1adfb.php:80
+msgid "All figures in USD"
+msgstr "Alle beløb er i DKK"
+
+#: /tmp/cache/5a2d553774b2e/91/9199ae5f331dba0f2834cda40469ffe95e32bcc86d0f7faa583ea2c3a9915ea5.php:22
 msgid "Click on the products for more information"
 msgstr "Klik på produktet for yderligere information"
 
-#: /tmp/cache/5a2c854995e8e/b4/b4d0da421e454cc2e9b30e4e26328fe7be1d22fb6d55b5134eccd651d37369c1.php:43
-msgid "Read more about %title%"
-msgstr "Lær mere om %title%"
+#: /tmp/cache/5a2d553774b2e/ee/ee36479e5c411a6ca4d77c52d72ddb83b2114aa6f02681bb744f5a56b0d3b780.php:48
+msgid "Code:"
+msgstr "Kode:"
 
-#: /tmp/cache/5a2c854995e8e/a8/a8c03c7648c2f3cbd9268f80b9b406caf2defbb1906671e205eadfc8ad1a1ac7.php:36
+#: /tmp/cache/5a2d553774b2e/15/151c19d54033dbdbe8f070e30e6b43fc0272bed8e2d842b5f9f3a2a32d996c5b.php:52
+#: /tmp/cache/5a2d553774b2e/15/151c19d54033dbdbe8f070e30e6b43fc0272bed8e2d842b5f9f3a2a32d996c5b.php:68
+#: /tmp/cache/5a2d553774b2e/15/151c19d54033dbdbe8f070e30e6b43fc0272bed8e2d842b5f9f3a2a32d996c5b.php:250
+msgid "Get address"
+msgstr "Hent adresse"
+
+#: /tmp/cache/5a2d553774b2e/64/64fa87d34374ebe470b71859d771a5b2b116625a4406c90370f221d04552f32f.php:55
+msgid "I hereby agree to the terms of trade"
+msgstr "Jeg accepterer hermed handelsbetingelserne"
+
+#: /tmp/cache/5a2d553774b2e/ee/ee36479e5c411a6ca4d77c52d72ddb83b2114aa6f02681bb744f5a56b0d3b780.php:38
+msgid "Order No:"
+msgstr "Ordrenr.:"
+
+#: /tmp/cache/5a2d553774b2e/15/151c19d54033dbdbe8f070e30e6b43fc0272bed8e2d842b5f9f3a2a32d996c5b.php:434
+msgid "Please send me your newsletter."
+msgstr "Ja tak! Send mig jeres nyhedsbrev."
+
+#: /tmp/cache/5a2d553774b2e/9d/9db354caa8bd6770554ed81da70cc1b00181104ce634ee113a70289d59b0569e.php:34
+msgid "Previously"
+msgstr "Før"
+
+#: /tmp/cache/5a2d553774b2e/e2/e2723d4fadbf3f57a2638c0c14946ab8237de0146829041995e208b55c350a1f.php:34
+msgid ""
+"Thank you for your order, you will receive an email with instructions on how "
+"to perform the payment as soon as we have validated that all goods are in "
+"stock."
+msgstr ""
+"Tak for din bestilling, De vil modtage en email med informationer om hvordan "
+"De betaler så snart vi har kontrolleret at alle varer er på lager."
+
+#: /tmp/cache/5a2d553774b2e/a8/a8c03c7648c2f3cbd9268f80b9b406caf2defbb1906671e205eadfc8ad1a1ac7.php:36
 msgid "The latest pages"
 msgstr "Den seneste side"
 
-#: /tmp/cache/5a2c854995e8e/b4/b4d0da421e454cc2e9b30e4e26328fe7be1d22fb6d55b5134eccd651d37369c1.php:86
+#: /tmp/cache/5a2d5537a9da8/b4/b4d0da421e454cc2e9b30e4e26328fe7be1d22fb6d55b5134eccd651d37369c1.php:43
+msgid "Read more about %title%"
+msgstr "Lær mere om %title%"
+
+#: /tmp/cache/5a2d5537a9da8/b4/b4d0da421e454cc2e9b30e4e26328fe7be1d22fb6d55b5134eccd651d37369c1.php:86
 msgid "The search did not return any results"
 msgstr "Søgningen gav ingen resultater"
