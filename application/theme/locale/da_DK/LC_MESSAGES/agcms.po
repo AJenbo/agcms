@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: agcms\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2017-12-10 16:39+0100\n"
-"PO-Revision-Date: 2017-12-10 16:39+0100\n"
+"PO-Revision-Date: 2017-12-10 22:08+0100\n"
 "Last-Translator: Anders Jenbo <anders@jenbo.dk>\n"
 "Language-Team: \n"
 "Language: da\n"
@@ -2643,7 +2643,7 @@ msgstr "Klar til ekspedering"
 
 #: /tmp/cache/5a2d55369756f/37/379363122404d9cccecc6c8d11814533b1e80e3744bd92378d358fa6635665ed.php:406
 msgid "Received:"
-msgstr "Betalingen er allerede modtaget kontant."
+msgstr "Modtaget:"
 
 #: /tmp/cache/5a2d55369756f/37/379363122404d9cccecc6c8d11814533b1e80e3744bd92378d358fa6635665ed.php:206
 msgid "Refund:"
