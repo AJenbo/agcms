@@ -335,6 +335,11 @@ marquee {
     border:#000000 solid 1px;
 }
 
+marquee * {
+    margin:0;
+    padding:0;
+}
+
 .imgright {
     padding: 0pt 0pt 10px 10px;
     float: right;
