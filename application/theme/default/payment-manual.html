@@ -1,19 +1,21 @@
 {% extends "index.html" %}
 
 {% block content %}
-<form action="" method="get" onsubmit="openPayment(); return false">
-    <table>
-        <tbody>
-            <tr>
-                <td>{{'Order No:'|trans}}</td>
-                <td><input id="id" name="id" value="{{id}}" /></td>
-            </tr>
-            <tr>
-                <td>{{'Code:'|trans}}</td>
-                <td><input id="checkid" name="checkid" value="{{checkid}}" /></td>
-            </tr>
-        </tbody>
-    </table>
-    <input type="submit" value="{{'Continue'|trans}}" />
-</form>
+<div id="innercontainer">
+    <form action="" method="get" onsubmit="openPayment(); return false">
+        <table>
+            <tbody>
+                <tr>
+                    <td>{{'Order No:'|trans}}</td>
+                    <td><input id="id" name="id" value="{{id}}" /></td>
+                </tr>
+                <tr>
+                    <td>{{'Code:'|trans}}</td>
+                    <td><input id="checkid" name="checkid" value="{{checkid}}" /></td>
+                </tr>
+            </tbody>
+        </table>
+        <input type="submit" value="{{'Continue'|trans}}" />
+    </form>
+</div>
 {% endblock %}
