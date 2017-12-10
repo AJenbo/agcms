@@ -171,12 +171,12 @@ class MaintenanceController extends AbstractAdminController
             '
         );
         if ($pages) {
-            $html .= '<b>' . _('The following inactive pages appears in list on active pages') . '</b><br />';
+            $html .= '<b>' . _('The following inactive pages appear in a list on an active page:') . '</b><br />';
             foreach ($pages as $page) {
                 /** @var ?Page */
                 $listPage = ORM::getOne(Page::class, $page['page_id']);
                 if (!$listPage) {
-                    throw new Exception(_('Page disapired during processing'));
+                    throw new Exception(_('Page disappeared during processing'));
                 }
 
                 unset($page['page_id']);
@@ -301,7 +301,7 @@ class MaintenanceController extends AbstractAdminController
         if ($errors) {
             $msg = ngettext(
                 'The following %d file is in a folder that needs to be renamed:',
-                'The following %d files are a folder that needs to be renamed:',
+                'The following %d files are in a folder that needs to be renamed:',
                 count($errors)
             );
             $html .= '<br /><b>' . sprintf($msg, count($errors)) . '</b><br /><a onclick="explorer(\'\',\'\');">';
@@ -311,7 +311,7 @@ class MaintenanceController extends AbstractAdminController
             $html .= '</a>';
         }
         if ($html) {
-            $html = '<b>' . _('The following folders must be renamed') . '</b><br />' . $html;
+            $html = '<b>' . _('The following folders must be renamed:') . '</b><br />' . $html;
         }
 
         return new JsonResponse(['html' => $html]);
@@ -365,7 +365,7 @@ class MaintenanceController extends AbstractAdminController
 
             $msg = ngettext(
                 '%d of %d email was sent.',
-                '%d of %d emails was sent.',
+                '%d of %d emails were sent.',
                 $emailsSendt
             );
             $html = sprintf($msg, $emailsSendt, count($emails));

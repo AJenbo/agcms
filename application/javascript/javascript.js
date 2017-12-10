@@ -147,7 +147,7 @@ var shoppingCart = {
         "shippingCountry": "DK",
         "note": "",
         "payMethod": "",
-        "deleveryMethode": "",
+        "deleveryMethod": "",
         "newsletter": false,
     },
     "getCart": function() {
@@ -199,7 +199,7 @@ var shoppingCart = {
     "openAddress": function() {
         var cart = shoppingCart.getCart();
         cart.payMethod = document.getElementById("payMethod").value;
-        cart.deleveryMethode = document.getElementById("deleveryMethode").value;
+        cart.deleveryMethod = document.getElementById("deleveryMethod").value;
         cart.note = document.getElementById("note").value;
 
         var quantity = 0;

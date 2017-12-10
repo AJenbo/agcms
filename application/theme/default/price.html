@@ -25,5 +25,5 @@
     {% endif %}
     {{product.price|number_format(2, localeconv.mon_decimal_point, localeconv.mon_thousands_sep)}}</span>
 {% elseif product.price < 0 %}
-    <span class="Pris">{{'Sold out'|trans}}</span>
+    <span class="Pris">{{'Sold-out'|trans}}</span>
 {% endif %}

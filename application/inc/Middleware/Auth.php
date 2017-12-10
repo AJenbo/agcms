@@ -51,7 +51,7 @@ class Auth implements Middleware
 
         if ($request->isXmlHttpRequest()) {
             throw new InvalidInput(
-                _('Your login has expired, please reload the page and login again.'),
+                _('Your login has expired. Please reload the page and login again.'),
                 Response::HTTP_UNAUTHORIZED
             );
         }

@@ -412,7 +412,7 @@ class Page extends AbstractRenderable implements InterfaceRichText
         return $this->oldPriceType;
     }
 
-    // General methodes
+    // General methods
 
     /**
      * Get the url slug.

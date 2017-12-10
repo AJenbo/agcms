@@ -16,7 +16,7 @@
     <body>
         {% block info %}
         <p>{{'The customer has approved the payment and the following order must be shipped to the customer.'|trans}}</p>
-        <p>{{'Remember to process the payment when the product is sent (The payment will only by transferred from the customer\'s account once we hit \'Process\')'|trans}}.</p>
+        <p>{{'Remember to process the payment when the product is sent (The payment will only be transferred from the customer\'s account once we hit \'Process\')'|trans}}.</p>
         {% endblock %}
         <p>{{'Click '|trans}}<a href="{{invoice.adminLink}}">{{'here'|trans}}</a>{{' to open the invoice page.'|trans}}</p>
         <p>

@@ -19,7 +19,7 @@
             <td style="text-align:right"><a href="/admin/invoices/{{invoice.id}}/">{{invoice.id}}</a></td>
             <td style="text-align:right">
                 <a href="/admin/invoices/{{invoice.id}}/">
-                    {% if invoice.status == 'accepted' %}{{invoice.cardType}}{% elseif invoice.status == 'giro' %}{{'Bank overførsel'|trans}}{% endif %}
+                    {% if invoice.status == 'accepted' %}{{invoice.cardType}}{% elseif invoice.status == 'giro' %}{{'Bank transferal'|trans}}{% endif %}
                 </a>
             </td>
             <td style="text-align:right">

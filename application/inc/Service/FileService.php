@@ -30,7 +30,7 @@ class FileService
 
         if (!@mkdir(app()->basePath($path), 0771)) {
             throw new Exception(
-                _('Could not create folder, you may not have sufficient rights to this folder.')
+                _('Could not create folder. You may not have sufficient rights to this folder.')
             );
         }
     }

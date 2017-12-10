@@ -211,7 +211,7 @@ class UploadHandler
     {
         $memoryLimit = $this->fileService->returnBytes(ini_get('memory_limit')) - 270336;
         if ($image->getWidth() * $image->getHeight() > $memoryLimit / 10) {
-            throw new InvalidInput(_('Image is to large to be processed.'));
+            throw new InvalidInput(_('Image is too large to be processed.'));
         }
     }
 

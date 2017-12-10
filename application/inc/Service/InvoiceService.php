@@ -144,7 +144,7 @@ class InvoiceService
                 $notes[] = _('I would like to pay via cash.');
                 break;
         }
-        switch ($cart['deleveryMethode'] ?? '') {
+        switch ($cart['deleveryMethod'] ?? '') {
             case 'pickup':
                 $notes[] = _('I will pick up the goods in your shop.');
                 break;
@@ -378,7 +378,7 @@ class InvoiceService
             throw new InvalidInput(_('You have not selected a sender.'));
         }
         if ($invoice->getAmount() < 0.01) {
-            throw new InvalidInput(_('The invoice must be of at at least 0.01 krone.'));
+            throw new InvalidInput(_('The invoice must be of at least 1 cent.'));
         }
 
         $subject = _('Online payment for ') . Config::get('site_name');

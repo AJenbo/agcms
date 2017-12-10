@@ -22,7 +22,7 @@
                 {% if page.price > 0 %}
                 {{page.price|number_format(0, ',', '.')}},-
                 {% elseif page.price %}
-                {{'Sold out'|trans}}
+                {{'Sold-out'|trans}}
                 {% endif %}
             </td>
             <td align="right" style="font-size:11px">{{page.sku}}</td>

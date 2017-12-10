@@ -235,7 +235,7 @@ class Payment extends Base
         /** @var ?CustomPage */
         $shoppingTerms = ORM::getOne(CustomPage::class, 3);
         if (!$shoppingTerms) {
-            app()->logException(new Exception(_('Missing terms and condition')));
+            app()->logException(new Exception(_('Missing terms and conditions')));
 
             return '';
         }
@@ -279,7 +279,7 @@ class Payment extends Base
         $data['crumbs'][] = new VolatilePage(_('Order #') . $id, $invoice->getLink());
         $data['crumbs'][] = new VolatilePage(_('Address'), $invoice->getLink() . 'address/');
         $data['crumbs'][] = new VolatilePage(_('Trade Conditions'), $invoice->getLink() . 'terms/');
-        $renderable = new VolatilePage(_('Reciept'), $invoice->getLink() . 'status/');
+        $renderable = new VolatilePage(_('Receipt'), $invoice->getLink() . 'status/');
         $data['crumbs'][] = $renderable;
         $data['renderable'] = $renderable;
         $data['newsletter'] = $request->query->getBoolean('newsletter');
@@ -305,13 +305,13 @@ class Payment extends Base
         switch ($invoice->getStatus()) {
             case 'pbsok':
                 return _('Payment is now accepted. We will send your goods by mail as soon as possible.')
-                    . "\n" . _('A copy of your order is sent to your email.');
+                    . "\n" . _('A copy of your order has been sent to your email.');
             case 'canceled':
                 return _('The transaction is canceled.');
             case 'giro':
-                return _('The payment is already received via giro.');
+                return _('The payment has already been received via giro.');
             case 'cash':
-                return _('The payment is already received in cash.');
+                return _('The payment has already been received in cash.');
             case 'accepted':
                 return _('The payment was received and the package is sent.');
         }
@@ -437,10 +437,9 @@ class Payment extends Base
     private function sendAdminEmail(Invoice $invoice): void
     {
         $subject = sprintf(
-            _('Attn.: %s - Online invoice #%d : %s'),
+            _('Attn.: %s - Payment received for invoice #%d'),
             $invoice->getClerk(),
-            $invoice->getId(),
-            _('Payment complete')
+            $invoice->getId()
         );
         $email = new Email([
             'subject'          => $subject,

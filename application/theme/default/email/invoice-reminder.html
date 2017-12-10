@@ -10,19 +10,19 @@
         <hr />
         <p>{{'This is an automatically generated reminder!'|trans}}</p>
         <p>
-            {{'Your goods are ready for shipping / pick-up - but we have not yet registred any payment - we are therefore sending a you a new link to the credit card invoice system.'|trans}}
+            {{'Your goods are ready for shipping / pick-up, but we have not yet registered any payment - we are therefore sending you a new link to the credit card invoice system.'|trans}}
             <br />
             <a href="{{invoice.link}}">{{invoice.link}}</a><br />
         </p>
         <p>
-            {{'When entering your credit card information, - errors may occure preventing us from noticing the payment - thus causing unnecessary delays - this is the reason that we have sent this notice.'|trans}}
+            {{'When entering your credit card information, errors may have occurred that are preventing us from noticing the payment. It may be causing unnecessary delays, this is the reason that we have sent this notice.'|trans}}
         </p>
         <p>
-             {{'We would also welcome an email or phone call - if you:'|trans}}<br />
+             {{'We would also welcome an email or phone call if you:'|trans}}<br />
              {{'* Experiencing problems with our payment system'|trans}}<br />
              {{'* Wish to cancel the order'|trans}}<br />
              {{'* Wish to change the order'|trans}}<br />
-             {{'* Wish to pay by other means - for example, by transfering the amount via home banking.'|trans}}
+             {{'* Wish to pay by other means - for example, by transferring the amount via home banking.'|trans}}
         </p>
         <p>{{'Sincerely,'|trans}}</p>
         <p>
@@ -30,7 +30,7 @@
             {{siteName}}<br />
             {{address}}<br />
             {{postcode}} {{city}}<br />
-            {{'Tel'|trans}} {{phone}}<br />
+            {{'Tel.'|trans}} {{phone}}<br />
             <a href="mailto:{{invoice.department}}">{{invoice.department}}</a>
         </p>
     </body>

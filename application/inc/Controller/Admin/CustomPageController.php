@@ -32,7 +32,7 @@ class CustomPageController extends AbstractAdminController
             /** @var ?Category */
             $category = ORM::getOne(Category::class, 0);
             if (!$category) {
-                throw new Exception(_('Root cateogry missing'));
+                throw new Exception(_('Root category is missing.'));
             }
 
             $data['category'] = $category;
@@ -78,7 +78,7 @@ class CustomPageController extends AbstractAdminController
             /** @var ?Category */
             $category = ORM::getOne(Category::class, 0);
             if (!$category) {
-                throw new Exception(_('Root category is missing!'));
+                throw new Exception(_('Root category is missing.'));
             }
 
             $category->setTitle($title)->save();

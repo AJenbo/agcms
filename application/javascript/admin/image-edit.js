@@ -17,11 +17,11 @@ function saveImage(overwrite = false) {
         "rotate": rotate
     };
     xHttp.cancel(imageSaveRequest);
-    var methode = "PUT";
+    var method = "PUT";
     if (mode === "thb") {
-        methode = "POST";
+        method = "POST";
     }
-    imageSaveRequest = xHttp.request("/admin/explorer/files/" + id + "/image/", saveImage_r, methode, data);
+    imageSaveRequest = xHttp.request("/admin/explorer/files/" + id + "/image/", saveImage_r, method, data);
 }
 
 function calcImageDimension() {

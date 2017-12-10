@@ -5,14 +5,14 @@
         <title></title>
     </head>
     <body>
-        <p>{{'Thank you for your order. We have included a link for the electronice invoice.'|trans}}</p>
+        <p>{{'Thank you for your order. We have included a link for the electronic invoice.'|trans}}</p>
         <p>{{'Payment is ready for invoice %invoiceId%:'|trans|replace({'%invoiceId%': invoice.id})}}</p>
         <p>
             {{'Please click the following link and fill out the form:'|trans}}<br />
             <a href="{{invoice.link}}">{{invoice.link}}</a>
         </p>
         <p>
-            {{'If you wish to pay by other means or simply cancle the order, - then please inform us so via email.'|trans}}
+            {{'If you wish to pay by other means or simply cancel the order, then please inform us via email.'|trans}}
             <br /><br />
         </p>
         <p>{{'Sincerely,'|trans}}</p>
@@ -21,7 +21,7 @@
             {{siteName}}<br />
             {{address}}<br />
             {{postcode}} {{city}}<br />
-            {{'Tel'|trans}} {{phone}}<br />
+            {{'Tel.'|trans}} {{phone}}<br />
             <a href="mailto:{{invoice.department}}">{{invoice.department}}</a>
         </p>
     </body>

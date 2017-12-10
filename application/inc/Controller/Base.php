@@ -58,7 +58,7 @@ class Base extends AbstractController
         /** @var ?Category */
         $category = ORM::getOne(Category::class, 0);
         if (!$category) {
-            throw new Exception(_('Root category is missing!'));
+            throw new Exception(_('Root category is missing.'));
         }
 
         return [

@@ -47,7 +47,7 @@
             {% endif %}
         </p>
         <p class="clearfix">
-        {{'Prefered payment method:'|trans}}
+        {{'Preferred payment method:'|trans}}
             <select id="payMethod" name="payMethod" style="float:right">
                 <option value="creditcard"{% if payMethod == 'creditcard' %} selected="selected"{% endif %}>{{'Credit Card'|trans}}</option>
                 <option value="bank"{% if payMethod == 'bank' %} selected="selected"{% endif %}>{{'Bank transaction'|trans}}</option>
@@ -55,12 +55,12 @@
             </select>
         </p>
         <p>
-            {{'Delevery:'|trans}}
-            <select id="deleveryMethode" name="deleveryMethode" style="float:right">
-                <option value="postal"{% if deleveryMethode == 'postal' %} selected="selected"{% endif %}>{{'Mail'|trans}}</option>
-                <option value="pickup"{% if deleveryMethode == 'pickup' %} selected="selected"{% endif %}>{{'Pickup in store'|trans}}</option>
+            {{'Delivery:'|trans}}
+            <select id="deleveryMethod" name="deleveryMethod" style="float:right">
+                <option value="postal"{% if deleveryMethod == 'postal' %} selected="selected"{% endif %}>{{'Mail'|trans}}</option>
+                <option value="pickup"{% if deleveryMethod == 'pickup' %} selected="selected"{% endif %}>{{'Pick-up in store'|trans}}</option>
             </select>
-            <small id="shipping"><br />{{'The excact shipping cost will be calculcated as the goods are packed.'|trans}}</small>
+            <small id="shipping"><br />{{'The exact shipping cost will be calculated when the goods are packed.'|trans}}</small>
         </p>
         <p>
             {{'Note:'|trans}}<br />
@@ -69,7 +69,7 @@
         <p><input value="{{'Continue'|trans}}" type="submit" /></p>
     </form>
     {% else %}
-    {{'Ther is no content in the basket!'|trans}}
+    {{'Ther is no content in the basket.'|trans}}
     {% endif %}
 </div>
 {% endblock %}

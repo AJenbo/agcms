@@ -100,7 +100,7 @@ class Brand extends AbstractRenderable
         return $file;
     }
 
-    // General methodes
+    // General methods
 
     /**
      * Get the url slug.

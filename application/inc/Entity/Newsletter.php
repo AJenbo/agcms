@@ -246,7 +246,7 @@ class Newsletter extends AbstractEntity implements InterfaceRichText
     public function send(): void
     {
         if ($this->sent) {
-            throw new Exception(_('The newsletter has already been sent!'));
+            throw new Exception(_('The newsletter has already been sent.'));
         }
 
         $andWhere = $this->getContactFilterSQL();

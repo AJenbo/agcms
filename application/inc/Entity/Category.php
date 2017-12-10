@@ -88,7 +88,7 @@ class Category extends AbstractRenderable
     /**
      * Delete category and all of it's content.
      *
-     * Not that this deletes all pages, even if they aren't exclusive to this cateogry.
+     * Not that this deletes all pages, even if they aren't exclusive to this category.
      *
      * @return bool
      */
@@ -117,7 +117,7 @@ class Category extends AbstractRenderable
     public function setParent(?self $parent): self
     {
         if (null === $this->parentId && $parent) {
-            throw new InvalidInput(_('Your not allowed to move root categories.'), 423);
+            throw new InvalidInput(_('You\'r not allowed to move root categories.'), 423);
         }
         if (null !== $this->parentId && !$parent) {
             throw new InvalidInput(_('You cannot create new root categories.'), 423);
@@ -214,7 +214,7 @@ class Category extends AbstractRenderable
         return $this;
     }
 
-    // General methodes
+    // General methods
 
     /**
      * Should the category be visible on the website (is it empty or hidden).
@@ -437,7 +437,7 @@ class Category extends AbstractRenderable
     }
 
     /**
-     * Find the root cateogry.
+     * Find the root category.
      *
      * @return self
      */

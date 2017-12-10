@@ -46,7 +46,7 @@ class Shopping extends Base
         $data['renderable'] = $renderable;
         $data['invoice'] = $this->invoiceService->createFromCart($cart);
         $data['payMethod'] = $cart['payMethod'] ?? '';
-        $data['deleveryMethode'] = $cart['deleveryMethode'] ?? '';
+        $data['deleveryMethod'] = $cart['deleveryMethod'] ?? '';
 
         $content = Render::render('order-form', $data);
 

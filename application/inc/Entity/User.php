@@ -6,7 +6,7 @@ class User extends AbstractEntity
 {
     /** Table name */
     const TABLE_NAME = 'users';
-    /** Number of secounds a user is assumed to be active. */
+    /** Number of seconds a user is assumed to be active. */
     const ONLINE_INTERVAL = 1800;
 
     /** Not approved user */
@@ -268,17 +268,17 @@ class User extends AbstractEntity
         }
 
         if ($interval->m) {
-            return sprintf(_('%s months and %s dayes ago'), $interval->m, $interval->d);
+            return sprintf(_('%s months and %s days ago'), $interval->m, $interval->d);
         }
 
         if ($interval->d) {
-            return sprintf(_('%s dayes and %s houres ago'), $interval->d, $interval->h);
+            return sprintf(_('%s days and %s hours ago'), $interval->d, $interval->h);
         }
 
         if ($interval->h) {
-            return sprintf(_('%s houres and %s minuts ago'), $interval->h, $interval->i);
+            return sprintf(_('%s hours and %s minutes ago'), $interval->h, $interval->i);
         }
 
-        return sprintf(_('%s minuts and %s secounds ago'), $interval->i, $interval->s);
+        return sprintf(_('%s minutes and %s seconds ago'), $interval->i, $interval->s);
     }
 }
