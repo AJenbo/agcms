@@ -1,0 +1,16 @@
+{% if products %}
+<p class="web" align="center">{{'Click on the products for more information'|trans}}</p>
+<table cellspacing="0" id="liste">
+    {% for product in products %}
+    {% if loop.index is odd or loop.first %}<tr>{% endif %}
+        <td>
+            <a href="{{product.canonicalLink(category)}}">
+                {{product.title}}<br />
+                <img src="{% if product.icon %}{{product.icon.path}}{% else %}{{blankImage}}{% endif %}" alt="" /><br />
+            </a>
+            {% include 'price.html' %}
+        </td>
+    {% if loop.index is even or loop.last %}</tr>{% endif %}
+    {% endfor %}
+</table>
+{% endif %}

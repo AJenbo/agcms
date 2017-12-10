@@ -1,0 +1,64 @@
+{% extends "index.html" %}
+
+{% block content %}
+<div id="innercontainer">
+    <div id="date">{{renderable.timeStamp|date('d-m-Y H:i:s')}}</div>
+    <h1>{{renderable.title}}</h1>
+    {{renderable.html|raw}}
+    {% for table in renderable.tables %}
+    {% if table.rows %}
+    <div id="table{{table.id}}">
+    {% include 'partial-table.html' with {'orderBy': table.orderBy} %}
+    </div>
+    {% endif %}
+    {% endfor %}
+    {% if renderable.requirement %}
+    <p><a href="{{renderable.requirement.canonicalLink}}" target="krav">{{renderable.requirement.title}}</a></p>
+    {% endif %}
+    {% if renderable.sku or renderable.price or renderable.brand %}
+    <p vocab="http://schema.org/" typeof="Product" style="text-align:center">
+        {% if renderable.brand %}<meta property="brand" content="{{renderable.brand.title}}" />{% endif %}
+        <meta property="name" content="{{renderable.title}}" />
+        {% if renderable.icon %}<meta property="image" content="{{renderable.icon.path}}" />{% endif %}
+        {% if renderable.excerpt %}<meta property="description" content="{{renderable.excerpt}}" />{% endif %}
+        {% if renderable.sku %}<meta property="sku" content="{{renderable.sku}}" />{% endif %}
+        {% if not hasProductTable %}{% include 'price.html' with {'product': renderable} %}{% endif %}
+        {% if renderable.price > 0 %}
+        <span property="offers" typeof="Offer">
+            <meta property="price" content="{{renderable.price|number_format(2, '.', '')}}" />
+            <meta property="priceCurrency" content="{{'USD'|trans}}" />
+        </span>
+        {% if not hasProductTable %}
+        <br />
+        <img src="/theme/www.jagtogfiskerimagasinet.dk/images/nocolors.gif" alt="" width="196" height="5" /><br />
+        <span class="web">
+            <a href="" onclick="shoppingCart.addItem('page',{{renderable.id}});return false" class="Pris" style="color:#000">
+                {{'Add to shopping cart'|trans}}
+            </a>
+        </span>
+        {% endif %}
+        {% endif %}
+        <br />
+        <span class="Pris, print">mail@jagtogfiskerimagasinet.dk</span>
+    </p>
+    {% endif %}
+</div>
+
+{% if renderable.brand %}
+<p align="center" style="clear:both">
+    {{'View other product from the same brand'|trans}}<br />
+    <a href="{{renderable.brand.canonicalLink}}">
+        {{renderable.brand.title}}
+        {% if renderable.brand.icon %}
+        <br />
+        <img src="{{renderable.brand.icon.path}}" alt="" />
+        {% endif %}
+    </a>
+</p>
+{% endif %}
+
+{% if renderable.activeAccessories %}
+<p align="center" style="clear:both">{{'Accessories'|trans}}</p>
+{% include 'productTiles.html' with {'products': renderable.activeAccessories} %}
+{% endif %}
+{% endblock %}

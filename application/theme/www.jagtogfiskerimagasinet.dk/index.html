@@ -1,0 +1,92 @@
+{% spaceless %}
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+        <title>{{renderable.title}}</title>
+        <meta id="viewport" name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+        <link rel="stylesheet" type="text/css" href="/theme/www.jagtogfiskerimagasinet.dk/style/style.min.css" />
+        <meta http-equiv="content-language" content="{{'en'|trans}}" />
+        <link rel="alternate" type="application/rss+xml" title="{{'News on %name%'|trans|replace({'%name%': companyName})}}" href="/feed/rss/" />
+        <link title="{{companyName}}" type="application/opensearchdescription+xml" rel="search" href="/opensearch.xml" />
+        <link rel="canonical" href="{{renderable.canonicalLink}}" />
+        <meta name="Keywords" content="{% for crumb in crumbs %}{{crumb.title}}{% if not loop.last %}, {% endif %}{% endfor %}" />
+        {% if renderable.icon %}
+        <meta property="og:image" content="{{renderable.icon.path}}" />
+        <meta property="og:image:type" content="{{renderable.icon.mime}}" />
+        <meta property="og:image:width" content="{{renderable.icon.width}}" />
+        <meta property="og:image:height" content="{{renderable.icon.height}}" />
+        <meta property="og:image:alt" content="{{renderable.icon.description}}" />
+        {% endif %}
+        {% if renderable.excerpt %}<meta property="og:description" content="{{renderable.excerpt}}" />{% endif %}
+    </head>
+    <body>
+        <div id="wrapper">
+            <div id="headder">
+                <img src="/theme/www.jagtogfiskerimagasinet.dk/images/menu.svg" onclick="$('menu').style.left='0'" id="burger" width="30" height="30" />
+                <a href="/" id="jof" {% if crumbs|length == 1 %} class="active"{% endif%}><img src="/theme/www.jagtogfiskerimagasinet.dk/images/logo.png" alt="{{companyName}}" width="148" height="37" title="" /></a>
+                <svg id="basket" onclick="shoppingCart.open()" xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 30 29.999999">
+                    <ellipse cy="25.643" cx="6.016" rx="1.794" ry="1.74" fill="#777"/>
+                    <path d="M24.77 6.26c-.253 0-.538.208-.655.472-1.114 2.51-6.43 14.6-6.43 14.6H3.695c-.267 0-.482.215-.482.482v.913c0 .267.215.482.48.48 4.897-.013 9.805.024 14.694-.005.255 0 .54-.205.656-.47 2.16-4.858 6.437-14.595 6.437-14.595h3.627c.266 0 .48-.215.48-.48V6.74c0-.266-.214-.48-.48-.48z" fill="#777"/>
+                    <path d="M1.995 10.41l19.085.033-4.098 9.758H3.252z" fill="#777"/>
+                    <ellipse cy="25.643" cx="15.534" rx="1.794" ry="1.74" fill="#777"/>
+                    <circle cx="6.423" cy="9.753" r="6.57" fill="#777" stroke="#000" stroke-width="1.134"/>
+                    <text style="line-height:125%" x="6.43" y="14.435" font-size="11" font-family="Sans" fill="#000">
+                        <tspan id="count" x="6.43" y="14.11" style="text-align:center" text-anchor="middle">&nbsp;</tspan>
+                    </text>
+                </svg>
+            </div>
+            <h2>
+                {% for menuItem in menu %}
+                    <a href="{{menuItem.canonicalLink}}" {% if menuItem in category.branch %}class="active"{% endif %}>
+                        {{menuItem.title}}
+                    </a>
+                {% endfor %}
+                <a href="/search/">{{'Search'|trans}}</a>
+            </h2>
+            <img src="/theme/www.jagtogfiskerimagasinet.dk/images/mainfade-l.gif" alt="" width="15" height="15" id="mainfade-l" />
+            <img src="/theme/www.jagtogfiskerimagasinet.dk/images/mainfade-r.gif" alt="" width="17" height="15" id="mainfade-r" />
+        </div>
+        <div id="text" {% if crumbs|length == 1 %} class="h510"{% else %} style="bottom:0px"{% endif%}>{% block content %}<img src="/images/web/main.jpg" alt="" width="620" height="510" style="display:block;" />{% endblock %}</div>
+        <div id="menu" {% if crumbs|length == 1 %} class="h510"{% else %} style="bottom:0px"{% endif%} onclick="this.style.left='-100%'">
+            <a name="top" class="notmobile"></a>
+            <a style="margin-left:5px" class="notmobile" href="" onclick="shoppingCart.open(); return false"><img src="/theme/default/images/cart.png" alt="" /> {{'Shopping list'|trans}} <span id="cartCount"></span></a>
+            {% if crumbs|length == 1 %}
+            {{renderable.html|raw}}
+            {% else %}
+            {% for menuItem in menu %}
+            {% if menuItem in category.branch %}
+            <span class="print" style="font-weight:bold">{{menuItem.title}}<br /></span>
+            {% include 'menu.html' with {'menu': menuItem.visibleChildren} %}
+            {% endif %}
+            {% endfor %}
+            {% endif %}
+        </div>
+        <script type="text/javascript" src="/javascript/xHttp.min.js"></script>
+        <script type="text/javascript" src="/javascript/javascript.min.js"></script>
+        <script type="text/javascript" src="/theme/www.jagtogfiskerimagasinet.dk/javascript/javascript.min.js"></script>
+        <script type="text/javascript"><!--
+            init();
+            {% if basketRest %}shoppingCart.resetCart();{% endif %}
+
+        --></script>
+        <script type="text/javascript"><!--
+            (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+            (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+            m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+            })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+            ga('create', 'UA-1037075-1', {
+                'storage': 'none',
+                'clientId': localStorage.getItem('ga:clientId')
+            });
+            ga(function(tracker) {
+                localStorage.setItem('ga:clientId', tracker.get('clientId'));
+            });
+
+            ga('send', 'pageview');
+        --></script>
+        <div style="display:none"><img alt="" src="/theme/www.jagtogfiskerimagasinet.dk/images/logo-hover.gif" /> <img alt="" src="/theme/www.jagtogfiskerimagasinet.dk/images/link-a.gif" /> <img alt="" src="/theme/www.jagtogfiskerimagasinet.dk/images/close-h.gif" /><img alt="" src="/theme/www.jagtogfiskerimagasinet.dk/images/dod-h.gif" /></div>
+    </body>
+</html>
+{% endspaceless %}

@@ -1,0 +1,15 @@
+{% if menu %}
+<ul>
+    {% for menuItem in menu %}
+    <li{% if menuItem in category.branch and menuItem.hasVisibleChildren %} class="open"{% elseif menuItem in category.branch %} class="active"{% elseif menuItem.hasVisibleChildren %} class="close"{% endif %}>
+        <a href="{{menuItem.canonicalLink}}">
+            {{menuItem.title}}
+            {% if menuItem.icon %}<img src="{{menuItem.icon.path}}" alt="" />{% endif %}
+        </a>
+        {% if menuItem in category.branch %}
+        {% include 'menu.html' with {'menu': menuItem.visibleChildren} %}
+        {% endif %}
+    </li>
+    {% endfor %}
+</ul>
+{% endif %}

@@ -1,0 +1,26 @@
+* {
+	text-shadow: 0 0 0 #fff;
+}
+.NyPris {
+	font-size:16px;
+	font-weight:bold;
+	font-family:"Gill Sans", Arial, Helvetica, sans-serif;
+	color:#CC0000;
+	line-height:125%;
+}
+.Pris {
+	font-family:"Gill Sans", Arial, Helvetica, sans-serif;
+	font-size:14px;
+	font-weight:bold;
+}
+.XPris {
+	font-size:14px;
+	font-weight:lighter;
+	color:#666666;
+	text-decoration:line-through;
+}
+.admin_name {
+	font-size:17px;
+	font-family:"Gill Sans", Arial, Helvetica, sans-serif;
+	font-weight:bold;
+}
