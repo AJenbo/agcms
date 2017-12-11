@@ -14,13 +14,13 @@
         <tr{% if loop.index is even %} class="altrow"{% endif %}>
             <td><a href="{{page.canonicalLink(renderable)}}">{{page.title}}</a></td>
             <td class="XPris" align="right">
-                {% if page.oldPrice %}
-                {{page.oldPrice|number_format(0, ',', '.')}},-
+                {% if page.oldPrice > 0 %}
+                {{page.oldPrice|number_format(0, ',', '.')}}{{'.00'|trans}}
                 {% endif %}
             </td>
             <td class="Pris" align="right">
                 {% if page.price > 0 %}
-                {{page.price|number_format(0, ',', '.')}},-
+                {{page.price|number_format(0, ',', '.')}}{{'.00'|trans}}
                 {% elseif page.price < 0 %}
                 {{'Sold-out'|trans}}
                 {% endif %}

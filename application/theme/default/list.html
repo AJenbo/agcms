@@ -1,1 +1,10 @@
-{% extends "tiles.html" %}
+{% extends "index.html" %}
+
+{% block content %}
+{% if renderable.pages %}
+<p class="web" align="center">{{'Click on the products for more information'|trans}}</p>
+<div id="kat{{renderable.id}}">
+{% include 'partial-product-list.html' with {'orderBy' : 'name'} %}
+</div>
+{% endif %}
+{% endblock %}
