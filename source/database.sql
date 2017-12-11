@@ -8,7 +8,7 @@ SET time_zone = "+00:00";
 CREATE TABLE IF NOT EXISTS `bind` (
   `side` smallint(5) unsigned NOT NULL DEFAULT '0',
   `kat` smallint(5) NOT NULL DEFAULT '-1',
-  UNIQUE KEY `side` (`side`,`kat`),
+  PRIMARY KEY (`side`,`kat`),
   UNIQUE KEY `kat` (`kat`,`side`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_danish_ci;
 
