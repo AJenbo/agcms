@@ -415,17 +415,17 @@ ALTER TABLE `maerke`
 --
 ALTER TABLE `sider`
   ADD CONSTRAINT `sider_ibfk_1` FOREIGN KEY (`krav`) REFERENCES `krav` (`id`) ON DELETE SET NULL,
-  ADD CONSTRAINT `sider_ibfk_2` FOREIGN KEY (`maerke`) REFERENCES `maerke` (`id`) ON DELETE SET NULL,
-  ADD CONSTRAINT `sider_ibfk_5` FOREIGN KEY (`icon_id`) REFERENCES `files` (`id`);
+  ADD CONSTRAINT `sider_ibfk_5` FOREIGN KEY (`icon_id`) REFERENCES `files` (`id`),
+  ADD CONSTRAINT `sider_ibfk_6` FOREIGN KEY (`maerke`) REFERENCES `maerke` (`id`);
 
 --
 -- Constraints for table `template`
 --
 ALTER TABLE `template`
   ADD CONSTRAINT `template_ibfk_2` FOREIGN KEY (`maerke`) REFERENCES `maerke` (`id`) ON DELETE SET NULL,
-  ADD CONSTRAINT `template_ibfk_3` FOREIGN KEY (`krav`) REFERENCES `krav` (`id`) ON DELETE SET NULL,
-  ADD CONSTRAINT `template_ibfk_4` FOREIGN KEY (`bind`) REFERENCES `bind` (`kat`) ON DELETE SET NULL,
-  ADD CONSTRAINT `template_ibfk_5` FOREIGN KEY (`icon_id`) REFERENCES `files` (`id`);
+  ADD CONSTRAINT `template_ibfk_6` FOREIGN KEY (`bind`) REFERENCES `kat` (`id`) ON DELETE SET NULL,
+  ADD CONSTRAINT `template_ibfk_8` FOREIGN KEY (`icon_id`) REFERENCES `files` (`id`) ON DELETE SET NULL,
+  ADD CONSTRAINT `template_ibfk_9` FOREIGN KEY (`krav`) REFERENCES `krav` (`id`) ON DELETE SET NULL;
 
 --
 -- Constraints for table `tilbehor`
