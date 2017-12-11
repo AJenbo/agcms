@@ -2,13 +2,13 @@
 <ul>
     {% for menuItem in menu %}
     <li>
-        {% if menuItem in category.branch %}<h4 id="activmenu">{% endif %}
+        {% if menuItem == category %}<h4 id="activmenu">{% endif %}
         <a href="{{menuItem.canonicalLink}}">
             {{menuItem.title}}
             {% if menuItem.icon %}<img src="{{menuItem.icon.path}}" alt="" />{% endif %}
         </a>
         {% if menuItem in category.branch %}
-        </h4>
+        {% if menuItem == category %}</h4>{% endif %}
         {% include 'menu.html' with {'menu': menuItem.visibleChildren} %}
         {% endif %}
     </li>
