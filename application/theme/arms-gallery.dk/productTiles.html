@@ -1,25 +1,25 @@
 {% if products %}
 <table cellspacing="0" class="liste">
-    {% for item in products %}
+    {% for product in products %}
     {% if loop.index is odd or loop.first %}<tr>{% endif %}
         <td>
             <div class="vare">
-                <h2><a href="{{item.canonicalLink(category)}}">{{item.title}}</a></h2>
-                {% if item.icon.path %}
+                <h2><a href="{{product.canonicalLink(category)}}">{{product.title}}</a></h2>
+                {% if product.icon.path %}
                 <div style="text-align:center">
-                    <a href="{{item.canonicalLink(category)}}">
-                        <img style="margin:10px 0" alt="{{item.icon.description}}" src="{{item.icon.path}}" width="{{item.icon.width}}" height="{{item.icon.height}}" />
+                    <a href="{{product.canonicalLink(category)}}">
+                        <img style="margin:10px 0" src="{{product.icon.path}}" alt="{{product.icon.description}}" width="{{product.icon.width}}" height="{{product.icon.height}}" />
                     </a>
                 </div>
                 {% endif %}
-                {% if item.excerpt %}
-                <div style="padding:5px;">{{item.excerpt}}</div>
+                {% if product.excerpt %}
+                <div style="padding:5px;">{{product.excerpt}}</div>
                 {% endif %}
-                <a href="{{item.canonicalLink(category)}}">
+                <a href="{{product.canonicalLink(category)}}">
                     <img class="laemere web" src="/theme/arms-gallery.dk/images/info.gif" alt="{{'Read more'|trans}}" width="83" height="15" />
                 </a>
                 <div style="padding:5px; text-align:right;">
-                    {% if item.price > 0 %}<strong>{{item.price|number_format(0, ',', '.')}},-</strong>{% else %}&nbsp;{% endif %}
+                    {% if product.price > 0 %}<strong>{{product.price|number_format(0, ',', '.')}},-</strong>{% else %}&nbsp;{% endif %}
                 </div>
             </div>
         </td>
