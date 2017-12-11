@@ -45,7 +45,7 @@ class EpaymentTest extends TestCase
      *
      * @return void
      */
-    public function test_can_instanciate(): void
+    public function testCanInstanciate(): void
     {
         $epayment = $this->getPayment();
         $this->assertInstanceOf(Epayment::class, $epayment);
@@ -56,7 +56,7 @@ class EpaymentTest extends TestCase
      *
      * @return void
      */
-    public function test_isAuthorized(): void
+    public function testIsAuthorized(): void
     {
         $epayment = $this->getPayment();
         $this->assertTrue($epayment->isAuthorized());
@@ -67,7 +67,7 @@ class EpaymentTest extends TestCase
      *
      * @return void
      */
-    public function test_getId(): void
+    public function testGetId(): void
     {
         $epayment = $this->getPayment();
         $this->assertSame(1, $epayment->getId());
@@ -79,7 +79,7 @@ class EpaymentTest extends TestCase
      *
      * @return void
      */
-    public function test_annul(): void
+    public function testAnnulPayment(): void
     {
         $epayment = $this->getPayment();
 
@@ -99,7 +99,7 @@ class EpaymentTest extends TestCase
      *
      * @return void
      */
-    public function test_annul_fail(): void
+    public function testAnnulPaymentFail(): void
     {
         $epayment = $this->getPayment();
 
@@ -119,7 +119,7 @@ class EpaymentTest extends TestCase
      *
      * @return void
      */
-    public function test_confirm_preCancled(): void
+    public function testIsAnulled(): void
     {
         $epayment = $this->getPayment('PAYMENT_DELETED');
 
@@ -131,7 +131,7 @@ class EpaymentTest extends TestCase
      *
      * @return void
      */
-    public function test_confirm_preCancled_double(): void
+    public function testAnullAnulled(): void
     {
         $epayment = $this->getPayment('PAYMENT_DELETED');
 
@@ -146,7 +146,7 @@ class EpaymentTest extends TestCase
      *
      * @return void
      */
-    public function test_confirm(): void
+    public function testConfirmAndCheckeCapturedAmount(): void
     {
         $epayment = $this->getPayment();
 
@@ -167,7 +167,7 @@ class EpaymentTest extends TestCase
      *
      * @return void
      */
-    public function test_confirm_fail(): void
+    public function testConfirmFail(): void
     {
         $epayment = $this->getPayment();
 
@@ -188,7 +188,7 @@ class EpaymentTest extends TestCase
      *
      * @return void
      */
-    public function test_confirm_overcharge(): void
+    public function testConfirmWithOvercharge(): void
     {
         $epayment = $this->getPayment();
 
@@ -202,7 +202,7 @@ class EpaymentTest extends TestCase
      *
      * @return void
      */
-    public function test_confirm_preCaptured(): void
+    public function testGetConfirmedAmountAlreadyCaptured(): void
     {
         $epayment = $this->getPayment('PAYMENT_CAPTURED', 100, 100);
 
@@ -216,7 +216,7 @@ class EpaymentTest extends TestCase
      *
      * @return void
      */
-    public function test_confirm_preCaptured_double(): void
+    public function testConfirmConfirmed(): void
     {
         $epayment = $this->getPayment('PAYMENT_CAPTURED', 100, 100);
 

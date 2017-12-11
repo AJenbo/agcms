@@ -9,7 +9,7 @@ class functionsTest extends TestCase
      *
      * @return void
      */
-    public function test_encodeUrl(): void
+    public function testEncodeUrl(): void
     {
         $this->assertSame('/test/%C3%B8', encodeUrl('/test/ø'));
     }
@@ -19,7 +19,7 @@ class functionsTest extends TestCase
      *
      * @return void
      */
-    public function test_clearFileName_date(): void
+    public function testClearFileNameDate(): void
     {
         $this->assertSame('13-04-2016', clearFileName('13/04/2016'));
     }
@@ -29,7 +29,7 @@ class functionsTest extends TestCase
      *
      * @return void
      */
-    public function test_clearFileName_multiple(): void
+    public function testClearFileNameSequenceOfBadChars(): void
     {
         $this->assertSame('my-folder', clearFileName('my\/\/\/folder'));
     }
@@ -39,7 +39,7 @@ class functionsTest extends TestCase
      *
      * @return void
      */
-    public function test_clearFileName_trim(): void
+    public function testClearFileNameTrim(): void
     {
         $this->assertSame('trimed', clearFileName('trimed#'));
     }
@@ -49,7 +49,7 @@ class functionsTest extends TestCase
      *
      * @return void
      */
-    public function test_arrayNatsort(): void
+    public function testArrayNatsort(): void
     {
         $list = [
             ['a' => '1'],
@@ -71,7 +71,7 @@ class functionsTest extends TestCase
      *
      * @return void
      */
-    public function test_arrayNatsort_reverse(): void
+    public function testArrayNatsortReverse(): void
     {
         $list = [
             ['a' => '1'],
@@ -93,7 +93,7 @@ class functionsTest extends TestCase
      *
      * @return void
      */
-    public function test_first(): void
+    public function testFirst(): void
     {
         $this->assertSame(1, first([1, 2]));
     }
@@ -103,7 +103,7 @@ class functionsTest extends TestCase
      *
      * @return void
      */
-    public function test_stringLimit(): void
+    public function testStringLimit(): void
     {
         $this->assertSame('Long tekst …', stringLimit('Long tekst here', 12));
     }
@@ -113,7 +113,7 @@ class functionsTest extends TestCase
      *
      * @return void
      */
-    public function test_stringLimit_edge_of_word(): void
+    public function testStringLimitRdgeOfWord(): void
     {
         $this->assertSame('Long …', stringLimit('Long tekst here', 11));
     }
@@ -123,7 +123,7 @@ class functionsTest extends TestCase
      *
      * @return void
      */
-    public function test_stringLimit_tiny(): void
+    public function testStringLimitTiny(): void
     {
         $this->assertSame('Lon…', stringLimit('Long tekst here', 4));
     }
@@ -133,7 +133,7 @@ class functionsTest extends TestCase
      *
      * @return void
      */
-    public function test_stringLimit_noop(): void
+    public function testStringLimitNoop(): void
     {
         $this->assertSame('Long tekst here', stringLimit('Long tekst here', 15));
     }
@@ -143,9 +143,9 @@ class functionsTest extends TestCase
      *
      * @return void
      */
-    public function test_purifyHTML_alert(): void
+    public function testPurifyHTMLAlert(): void
     {
-        $this->flush_purifyer_cache();
+        $this->flushPurifyerCache();
         $this->assertSame('<p>Click me!</p>', purifyHTML('<p onclick="alert(\'Boo!\')">Click me!</p>'));
     }
 
@@ -154,9 +154,9 @@ class functionsTest extends TestCase
      *
      * @return void
      */
-    public function test_purifyHTML_video(): void
+    public function testPurifyHTMLVideo(): void
     {
-        $this->flush_purifyer_cache();
+        $this->flushPurifyerCache();
         $html = '<video width="320" height="240" src="video.mp4" controls=""></video>';
         $this->assertSame($html, purifyHTML($html));
     }
@@ -166,9 +166,9 @@ class functionsTest extends TestCase
      *
      * @return void
      */
-    public function test_purifyHTML_audio(): void
+    public function testPurifyHTMLAudio(): void
     {
-        $this->flush_purifyer_cache();
+        $this->flushPurifyerCache();
         $html = '<audio src="audio.mp3" controls=""></audio>';
         $this->assertSame($html, purifyHTML($html));
     }
@@ -178,9 +178,9 @@ class functionsTest extends TestCase
      *
      * @return void
      */
-    public function test_purifyHTML_youtube(): void
+    public function testPurifyHTMLYoutube(): void
     {
-        $this->flush_purifyer_cache();
+        $this->flushPurifyerCache();
         $html = '<div class="embeddedContent oembed-provider- oembed-provider-youtube" data-oembed="https://www.youtube.com/watch?v=-I4pOBJ3RZQ" data-oembed_provider="youtube"><iframe src="//www.youtube.com/embed/-I4pOBJ3RZQ?wmode=transparent&amp;jqoemcache=mUXUu" allowfullscreen="" scrolling="no" width="425" height="349" frameborder="0"></iframe></div>';
         $this->assertSame($html, purifyHTML($html));
     }
@@ -190,7 +190,7 @@ class functionsTest extends TestCase
      *
      * @return void
      */
-    public function test_htmlUrlDecode_decode_url(): void
+    public function testHtmlUrlDecodeDecodeUrl(): void
     {
         $this->assertSame('<a href="/test/ø">', htmlUrlDecode('<a href="/test/%C3%B8">'));
     }
@@ -200,7 +200,7 @@ class functionsTest extends TestCase
      *
      * @return void
      */
-    public function test_htmlUrlDecode_decode_html(): void
+    public function testHtmlUrlDecodeDecodeHtml(): void
     {
         $this->assertSame('<a href="/test/ø">', htmlUrlDecode('<a href="/test/&oslash;">'));
     }
@@ -210,7 +210,7 @@ class functionsTest extends TestCase
      *
      * @return void
      */
-    public function test_htmlUrlDecode_maintain_special(): void
+    public function testHtmlUrlDecodeMaintainSpecial(): void
     {
         $this->assertSame('&quot;%22?test&amp;hi', htmlUrlDecode('&quot;%22?test&amp;hi'));
     }
@@ -220,7 +220,7 @@ class functionsTest extends TestCase
      *
      * @return void
      */
-    private function flush_purifyer_cache(): void
+    private function flushPurifyerCache(): void
     {
         $files = glob(__DIR__ . '/../application/theme/cache/HTMLPurifier/**/*');
         foreach ($files as $file) {

@@ -23,7 +23,7 @@ class EmailServiceTest extends TestCase
      *
      * @return void
      */
-    public function test_validemail(): void
+    public function testValidAddress(): void
     {
         $this->assertTrue($this->emailService->validemail('_An-._E-mail@gmail.com'));
     }
@@ -33,7 +33,7 @@ class EmailServiceTest extends TestCase
      *
      * @return void
      */
-    public function test_validemail_fake_domain(): void
+    public function testValideAddressForNonExistingDomain(): void
     {
         $this->assertFalse($this->emailService->validemail('email@test.notadomain'));
     }
@@ -43,7 +43,7 @@ class EmailServiceTest extends TestCase
      *
      * @return void
      */
-    public function test_validemail_IDN_domain(): void
+    public function testValidAddressIdnDomain(): void
     {
         $this->assertTrue($this->emailService->validemail('email@sørensen.dk'));
     }

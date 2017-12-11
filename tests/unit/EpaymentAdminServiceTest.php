@@ -23,7 +23,7 @@ class EpaymentAdminServiceTest extends TestCase
      *
      * @return void
      */
-    public function test_can_instanciate(): void
+    public function testCanInstanciate(): void
     {
         $this->assertInstanceOf(EpaymentAdminService::class, $this->epaymentAdminService);
     }
