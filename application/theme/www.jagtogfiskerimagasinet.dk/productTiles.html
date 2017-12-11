@@ -6,7 +6,7 @@
         <td>
             <a href="{{product.canonicalLink(category)}}">
                 {{product.title}}<br />
-                <img src="{% if product.icon %}{{product.icon.path}}{% else %}{{blankImage}}{% endif %}" alt="" /><br />
+                <img src="{% if product.icon %}{{product.icon.path}}{% else %}{{blankImage}}{% endif %}" alt="{{product.icon.description}}" width="{{product.icon.width}}" height="{{product.icon.height}}" /><br />
             </a>
             {% include 'price.html' %}
         </td>
