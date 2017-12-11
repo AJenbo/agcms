@@ -74,6 +74,30 @@ class Base extends AbstractController
             'companyEmail'   => first(Config::get('emails'))['address'],
             'localeconv'     => localeconv(),
             'blankImage'     => Config::get('blank_image', '/theme/default/images/intet-foto.jpg'),
+            'pageCount'      => Config::get('has_count') ? $this->getActivePageCount() : null,
         ];
+    }
+
+    /**
+     * Get number active page.
+     *
+     * @return int
+     */
+    private function getActivePageCount(): int
+    {
+        $activeCategoryIds = [];
+        $categories = ORM::getByQuery(Category::class, 'SELECT * FROM kat');
+        foreach ($categories as $category) {
+            if ($category->isInactive()) {
+                continue;
+            }
+            $activeCategoryIds[] = $category->getId();
+        }
+
+        $pages = db()->fetchOne(
+            'SELECT COUNT(DISTINCT side) as count FROM bind WHERE kat IN(' . implode(',', $activeCategoryIds) . ')'
+        );
+
+        return $pages['count'];
     }
 }
