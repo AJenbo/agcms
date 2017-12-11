@@ -1,5 +1,7 @@
 # AGcms
 
+[![Build Status](https://travis-ci.org/AJenbo/agcms.svg?branch=master)](https://travis-ci.org/AJenbo/agcms)
+
 AGcms is a simple CMS that I build around 2004, since it still have active userse I try to maintain the code base and use it to experiment with differnet tools. The maintanace mostly revolve around keeping the back end in a decent shape code wise.
 
 ## Security Vulnerabilities
