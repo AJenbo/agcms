@@ -340,7 +340,6 @@ display:none;
         overflow:auto;
         overflow-y:scroll;
         background: rgba(0,0,0,0.8);
-        transition: left 0.3s ease-in;
     }
     #menu>ul {
         padding-left: 23px;
