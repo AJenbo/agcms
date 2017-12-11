@@ -1,0 +1,16 @@
+language: php
+
+php:
+  - 7.1
+  - 7.2
+
+before_install:
+- cd application
+
+install:
+  - composer install
+
+before_script:
+- cd ..
+
+script: phpunit
