@@ -41,9 +41,7 @@
             <ul{% if loop.first %} id="crumbs"{% endif %}>
                 <li>
                     {% if not loop.first %}<b style="font-size:16px">-&gt;</b>{% endif %}
-                    <a href="{{crumb.canonicalLink}}">
-                        {{crumb.title}} {% if crumb.icon %}<img src="{{crumb.icon.path}}" alt="" />{% endif %}
-                    </a>
+                    <a href="{{crumb.canonicalLink}}">{{crumb.title}}</a>
             {% endfor %}
             {% for crumb in crumbs %}
                 </li>
