@@ -28,6 +28,9 @@
         {% if renderable.excerpt %}<meta property="description" content="{{renderable.excerpt}}" />{% endif %}
         {% if renderable.sku %}<meta property="sku" content="{{renderable.sku}}" />{% endif %}
         {% if not hasProductTable %}{% include 'price.html' with {'product': renderable} %}{% endif %}
+        {% if not hasProductTable and not renderable.price %}
+        <span class="web"><a href="mailto:{{companyEmail}}?subject=Angiv emne:" class="Pris">{{'Contact us via email'|trans}}</a></span>
+        {% endif %}
         {% if renderable.price > 0 %}
         <span property="offers" typeof="Offer">
             <meta property="price" content="{{renderable.price|number_format(2, '.', '')}}" />
@@ -40,6 +43,7 @@
         </a>
         {% endif %}
         {% endif %}
+        <span class="print">{{companyEmail}}</span>
     </p>
     {% endif %}
 </div>

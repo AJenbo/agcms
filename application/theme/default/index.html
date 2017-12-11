@@ -22,36 +22,31 @@
     </head>
     <body>
         <div id="wrapper">
-            <ul id="crumbs">
+            {% for crumb in crumbs %}
+            <ul{% if loop.first %} id="crumbs"{% endif %}>
                 <li>
-                    {% for crumb in crumbs %}
-                    <ul>
-                        <li>
-                            <b style="font-size:16px">-&gt;</b>
-                            <a href="{{crumb.canonicalLink}}">
-                                {{crumb.name}} {% if crumb.icon %}<img src="{{crumb.icon.path}}" alt="" />{% endif %}
-                            </a>
-                    {% endfor %}
-                    {% for crumb in crumbs %}
-                        </li>
-                    </ul>
-                    {% endfor %}
-                    <div class="bar" id="cart">
-                        <ul>
-                            <li>
-                                <a href="" onclick="shoppingCart.open(); return false">Shopping basket</a>
-                            </li>
-                        </ul>
-                    </div>
+                    {% if not loop.first %}<b style="font-size:16px">-&gt;</b>{% endif %}
+                    <a href="{{crumb.canonicalLink}}">
+                        {{crumb.title}} {% if crumb.icon %}<img src="{{crumb.icon.path}}" alt="" />{% endif %}
+                    </a>
+            {% endfor %}
+            {% for crumb in crumbs %}
                 </li>
             </ul>
+            {% endfor %}
         </div>
         <div id="text">
             <a name="top"></a>
             {% block content %}{{renderable.html|raw}}{% endblock %}
         </div>
+        <div id="cart">
+            <a style="margin-left:5px" class="notmobile" href="" onclick="shoppingCart.open();return false"><img alt="" src="/theme/default/images/cart.png" /> {{'Shopping list'|trans}} <span id="cartCount"></span></a>
+        </div>
         <div id="menu">
         {% include 'menu.html' %}
+            <ul>
+                <li><a href="/search/">{{'Search and find'|trans}}</a></li>
+            </ul>
         </div>
         <script type="text/javascript" src="/javascript/xHttp.js"></script>
         <script type="text/javascript" src="/javascript/javascript.js"></script>
