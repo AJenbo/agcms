@@ -27,6 +27,7 @@
         "twig/extensions": "^1.5"
     },
     "require-dev": {
-        "mockery/mockery": "^0.9.9"
+        "mockery/mockery": "^0.9.9",
+        "php-coveralls/php-coveralls": "^2.0"
     }
 }
