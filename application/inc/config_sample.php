@@ -16,7 +16,7 @@ return [
     'postcode'   => '',
     'city'       => '',
     'phone'      => '',
-    'fax'        => '',
+    'has_count'  => false,
 
     'emails' => [
         'mail@example.com' => [
