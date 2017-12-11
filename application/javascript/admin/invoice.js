@@ -182,7 +182,7 @@ function save(id = null, type = null) {
     var update = {};
     if (status === "new" || status === null || status === "null") {
         update.lines = invoiceLines;
-        update.shipping = $("fragt").value.replace(/[^-0-9,]/g, "").replace(/,/, ".");
+        update.shipping = $("fragt").value.replace(/[^-0-9,]/g, "").replace(/,/, ".") || 0;
         update.amount = invoiceAmount;
         update.vat = $("momssats").value;
         update.preVat = $("premoms").checked;
