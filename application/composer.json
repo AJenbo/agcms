@@ -28,6 +28,7 @@
     },
     "require-dev": {
         "mockery/mockery": "^0.9.9",
-        "php-coveralls/php-coveralls": "^2.0"
+        "php-coveralls/php-coveralls": "^2.0",
+        "codacy/coverage": "^1.0"
     }
 }

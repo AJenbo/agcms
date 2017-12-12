@@ -25,3 +25,4 @@ script: phpunit
 after_success:
   - travis_retry php application/vendor/bin/php-coveralls
   - ./cc-test-reporter after-build --exit-code $TRAVIS_TEST_RESULT
+  - php application/vendor/bin/codacycoverage clover build/logs/clover.xml
