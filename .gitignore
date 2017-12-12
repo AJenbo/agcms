@@ -1,11 +1,12 @@
 .DS_Store
 *~
+/coverage
 /.codelite
 /*.phprj
 /*.workspace
-/coverage
 /application/files
 /application/images
 /application/theme/cache
 /application/vendor
+/build
 /tests/application/theme/cache
