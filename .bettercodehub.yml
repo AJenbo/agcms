@@ -1,0 +1,12 @@
+exclude:
+- /.phan/config.php
+- /application/javascript/admin/calendar.js
+- /application/javascript/admin/ckeditor/.*
+- /application/javascript/admin/lib/.*
+- /source/.*
+- /wip/admin/vcard.php
+component_depth: 1
+languages:
+- javascript
+- php
+- script
