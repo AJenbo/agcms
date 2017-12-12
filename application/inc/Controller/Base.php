@@ -86,6 +86,7 @@ class Base extends AbstractController
     private function getActivePageCount(): int
     {
         $activeCategoryIds = [];
+        /** @var Category[] */
         $categories = ORM::getByQuery(Category::class, 'SELECT * FROM kat');
         foreach ($categories as $category) {
             if ($category->isInactive()) {
