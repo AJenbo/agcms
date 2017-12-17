@@ -39,8 +39,8 @@ class InvoiceService
                 $table = $listRow ? ORM::getOne(Table::class, $listRow['list_id']) : null;
                 if ($table) {
                     $pageId = $table->getPage()->getId();
-                    if ($table->hasLinks()) {
-                        $pageId = intval($listRow['link']);
+                    if ($table->hasLinks() && $listRow['link']) {
+                        $pageId = (int) $listRow['link'];
                     }
 
                     $cells = explode('<', $listRow['cells']);
@@ -54,7 +54,7 @@ class InvoiceService
                         if (in_array($column['type'], [Table::COLUMN_TYPE_STRING, Table::COLUMN_TYPE_INT], true)) {
                             $title .= ' ' . trim($cells[$i]);
                         } elseif (in_array($column['type'], [Table::COLUMN_TYPE_PRICE, Table::COLUMN_TYPE_PRICE_NEW], true)) {
-                            $value = intval($cells[$i]) ?: $value;
+                            $value = (int) $cells[$i] ?: $value;
                         }
                     }
                     $title = trim($title);
