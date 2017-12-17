@@ -22,7 +22,7 @@
                 {% set forSale = true %}
             {% endif %}
             <td{% if column.type %} style="text-align:right;"{% endif %}{% if column.type > 2 %} class="{% if column.type == 2 %}Pris{% elseif column.type == 3 %}NyPris{% elseif column.type == 4 %}XPris{% endif %}"{% endif %}>
-                {% if table.hasLinks %}<a href="{{row.page.canonicalLink(category)}}">{% endif %}
+                {% if table.hasLinks and row.page %}<a href="{{row.page.canonicalLink(category)}}">{% endif %}
                     {% if column.type < 2 %}
                         {{row[loop.index0]}}
                     {% else %}
