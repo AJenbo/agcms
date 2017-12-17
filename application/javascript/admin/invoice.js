@@ -13,6 +13,7 @@ function removeRow(row) {
         addRow();
     }
     prisUpdate();
+    return false;
 }
 
 function addRow() {
@@ -33,11 +34,10 @@ function addRow() {
     td.className = "tal total";
     tr.appendChild(td);
     td = document.createElement("td");
-    td.className = "web";
     td.style.border = "0";
     td.style.fontWeight = "bold";
     td.innerHTML =
-        "<a href=\"#\" onclick=\"removeRow(this); return false\"><img alt=\"X\" src=\"/theme/default/images/admin/cross.png\" height=\"16\" width=\"16\" title=\"Remove Line\" /></a>";
+        "<a href=\"#\" onclick=\"return removeRow(this)\"><img alt=\"X\" src=\"/theme/default/images/admin/cross.png\" height=\"16\" width=\"16\" title=\"Remove Line\" /></a>";
     tr.appendChild(td);
     $("vareTable").appendChild(tr);
 }
