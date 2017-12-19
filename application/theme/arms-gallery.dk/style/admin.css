@@ -1,35 +1,32 @@
 /* set edit elements to match onsite content */
 
 .nypris {
-    font-size:16px;
-    font-weight:bold;
-    color:#CC0000;
-    line-height:125%;
-    font-family:"Times New Roman", Times, serif;
+    color: #CC0000;
+    font-family: "Times New Roman", Times, serif;
+    font-size: 16px;
+    font-weight: bold;
+    line-height: 125%;
 }
-
 .pris {
-    font-size:15px;
-    font-weight:bold;
-    font-family:"Times New Roman", Times, serif;
+    font-family: "Times New Roman", Times, serif;
+    font-size: 15px;
+    font-weight: bold;
 }
-
 .xpris {
-    font-size:14px;
-    font-weight:lighter;
-    color:#666666;
-    text-decoration:line-through;
-    font-family:"Times New Roman", Times, serif;
+    color: #666666;
+    font-family: "Times New Roman", Times, serif;
+    font-size: 14px;
+    font-weight: lighter;
+    text-decoration: line-through;
 }
-
 .admin_name {
-    font-size:17px;
-    font-weight:bold;
-    color:#333333;
-    font-family:"Times New Roman", Times, serif;
-    margin:0;
+    color: #333333;
+    font-family: "Times New Roman", Times, serif;
+    font-size: 17px;
+    font-weight: bold;
+    margin: 0;
 }
 #beskrivelse {
-    font-size: 13px;
     font-family: "Times New Roman", Times, serif;
+    font-size: 13px;
 }

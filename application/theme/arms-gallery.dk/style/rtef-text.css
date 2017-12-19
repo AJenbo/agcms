@@ -1,55 +1,45 @@
 @charset "utf-8";
-
 * {
-    font-family:"Times New Roman", Times, serif;
+    font-family: "Times New Roman", Times, serif;
 }
-
-body, body table {
-    font-size:13px;
+body,
+body table {
+    font-size: 13px;
 }
-
 img {
-    border:0;
+    border: 0;
 }
-
 a {
-    color:#000000;
+    color: #000000;
 }
-
 .liste {
     font-size: 17px;
     text-decoration: none;
 }
-
 .nypris {
-    font-size:16px;
-    font-weight:bold;
-    color:#CC0000;
-    line-height:125%;
+    color: #CC0000;
+    font-size: 16px;
+    font-weight: bold;
+    line-height: 125%;
 }
-
 .pris {
-    font-size:15px;
-    font-weight:bold;
+    font-size: 15px;
+    font-weight: bold;
 }
-
 .xpris {
-    font-size:14px;
-    font-weight:lighter;
-    color:#666666;
-    text-decoration:line-through;
+    color: #666666;
+    font-size: 14px;
+    font-weight: lighter;
+    text-decoration: line-through;
 }
-
 .gray {
-    background-color:#d4d0c8;
+    background-color: #d4d0c8;
 }
-
 .imgright {
-    padding: 0pt 0pt 10px 10px;
     float: right;
+    padding: 0pt 0pt 10px 10px;
 }
-
 .imgleft {
-    padding: 0pt 10pt 10px 0px;
     float: left;
+    padding: 0pt 10pt 10px 0px;
 }

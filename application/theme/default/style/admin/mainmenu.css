@@ -1,77 +1,76 @@
 @charset "utf-8";
 #mainmenu form {
-    display:inline;
+    display: inline;
 }
 #mainmenu {
-    padding:0 16px;
-    background-color:#F0F0F0;
-    overflow:auto;
-    overflow-y:scroll;
-    width:190px;
-    top:0px;
-    bottom:0px;
-    position:fixed;
-    left:0px;
-    border-right:3px #C1C1C1 solid;
-    font-size:12px;
+    background-color: #F0F0F0;
+    border-right: 3px #C1C1C1 solid;
+    bottom: 0px;
+    font-size: 12px;
+    left: 0px;
+    overflow: auto;
+    overflow-y: scroll;
+    padding: 0 16px;
+    position: fixed;
+    top: 0px;
+    width: 190px;
 }
 #mainmenu img {
-    border:0 none;
-    cursor:pointer;
+    border: 0 none;
+    cursor: pointer;
 }
 #mainmenu a {
-    color:#3F3D3D;
-    cursor:pointer;
-    text-decoration:none;
+    color: #3F3D3D;
+    cursor: pointer;
+    text-decoration: none;
 }
 #mainmenu li a {
-    display:inline;
+    display: inline;
 }
 #mainmenu * {
-    font-family:Verdana,Arial,Helvetica,sans-serif;
-    color:#3F3D3D;
-    font-family:Verdana,Arial,Helvetica,sans-serif;
+    color: #3F3D3D;
+    font-family: Verdana, Arial, Helvetica, sans-serif;
 }
 #mainmenu input {
-    text-align:center;
-    border:1px #C1C1C1 solid;
+    border: 1px #C1C1C1 solid;
+    text-align: center;
 }
 .toolbox {
-    margin:0 15px 15px 0;
-    float:left
+    float: left;
+    margin: 0 15px 15px 0;
 }
 .toolbox>div {
-    background-color:#EFEDDE;
-    padding:3px;
+    background-color: #EFEDDE;
+    padding: 3px;
 }
 .menuboxheader {
-    margin-top:15px;
-    border:1px #AAAAAA solid;
-    width:143px;
-    white-space:nowrap;
-    overflow:hidden;
+    background-image: url('/theme/default/images/admin/headerbar.gif');
+    border: 1px #AAAAAA solid;
+    display: block;
+    font-weight: bold;
+    height: 13px;
+    margin-top: 15px;
+    overflow: hidden;
     padding: 4px 12px;
-    background-image:url('/theme/default/images/admin/headerbar.gif');
-    height:13px;
-    font-weight:bold;
-    display:block;
+    white-space: nowrap;
+    width: 143px;
 }
 .menuboxheader:hover {
-    text-decoration:none;
+    text-decoration: none;
 }
 #mainmenu ul {
-    margin:0px;
-    border:1px #C1C1C1 solid;
-    border-top:0;
-    width:143px;
+    background-color: #F5F5F5;
+    border: 1px #C1C1C1 solid;
+    border-top: 0;
+    margin: 0px;
     padding: 10px 12px;
-    background-color:#F5F5F5;
+    width: 143px;
 }
 #mainmenu ul li {
-    list-style:none;
+    list-style: none;
     margin: 2px 0;
 }
 #canvas {
-    margin:0 0 0 225px;
-    background-color:#FFFFFF;
+    background-color: #FFFFFF;
+    margin: 0 0 0 225px;
 }

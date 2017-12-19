@@ -1,23 +1,23 @@
 * {
-	text-shadow: 0 0 0 #fff;
+    text-shadow: 0 0 0 #fff;
 }
 .NyPris {
-	font-size:16px;
-	font-weight:bold;
-	color:#CC0000;
-	line-height:125%;
+    color: #CC0000;
+    font-size: 16px;
+    font-weight: bold;
+    line-height: 125%;
 }
 .Pris {
-	font-size:14px;
-	font-weight:bold;
+    font-size: 14px;
+    font-weight: bold;
 }
 .XPris {
-	font-size: 17px;
-	text-decoration: line-through;
+    font-size: 17px;
+    text-decoration: line-through;
 }
 .admin_name {
-	font-size:24px;
-	font-weight:bold;
-	background-color:#FFFCD5;
-	font-family:"Times New Roman", Times, serif;
+    background-color: #FFFCD5;
+    font-family: "Times New Roman", Times, serif;
+    font-size: 24px;
+    font-weight: bold;
 }

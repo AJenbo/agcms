@@ -16,28 +16,28 @@ body, table {
 }
 
 h1 {
-    font-size:35.5pt;
-    display:inline;
-    padding-bottom:2.6mm;
     border-bottom:1.5pt #000000 solid;
+    display:inline;
+    font-size:35.5pt;
+    padding-bottom:2.6mm;
 }
 
 address {
     background-color:#FFFFFF;
     border-left:1.5pt solid #000000;
+    float:right;
     font-size:10pt;
     font-style:normal;
     padding-left:8mm;
     text-align:right;
-    float:right;
 }
 
 #postadresse {
-    margin-top:22mm;
-    margin-left:2mm;
-    width:81mm;
-    height:29mm;
     font-size:11pt;
+    height:29mm;
+    margin-left:2mm;
+    margin-top:22mm;
+    width:81mm;
 }
 
 #ref span {
@@ -45,9 +45,9 @@ address {
 }
 
 #fakturadiv {
-    margin-top:1mm;
-    font-size:25pt;
     float:right;
+    font-size:25pt;
+    margin-top:1mm;
 }
 
 #ref {
@@ -55,14 +55,14 @@ address {
 }
 
 #printdata {
+    border-collapse:collapse;
     height:12cm;
     width:100%;
-    border-collapse:collapse;
 }
 
 #printdata td {
-    vertical-align:bottom;
     padding:1pt 3pt;
+    vertical-align:bottom;
 }
 
 #printdata thead td {
@@ -74,8 +74,8 @@ address {
 }
 
 #printdata tbody td, #printdata tfoot td {
-    border-right:1pt #000000 solid;
     border-left:1pt #000000 solid;
+    border-right:1pt #000000 solid;
 }
 
 .td1 {
@@ -101,8 +101,8 @@ address {
 
 tr {
     height:6mm;
-    min-height:6mm;
     max-height:6mm;
+    min-height:6mm;
 }
 
 p {

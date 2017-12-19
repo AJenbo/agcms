@@ -1,312 +1,325 @@
 @font-face {
-font-family:"Gill Sans";
-font-style:normal;
-font-weight:bold;
-src:url('/theme/www.jagtogfiskerimagasinet.dk/style/gillsan0.eot');
+    font-family: "Gill Sans";
+    font-style: normal;
+    font-weight: bold;
+    src: url('/theme/www.jagtogfiskerimagasinet.dk/style/gillsan0.eot');
 }
 * {
-border:0px;
-font-family:Verdana, Arial, Helvetica, sans-serif;
-line-height:120%;
-scrollbar-base-color:#E0E0E0;
-scrollbar-3dlight-color:#CCCCCC;
-scrollbar-highlight-color:#dddddd;
-scrollbar-shadow-color:#dddddd;
+    border: 0px;
+    font-family: Verdana, Arial, Helvetica, sans-serif;
+    line-height: 120%;
+    scrollbar-3dlight-color: #CCCCCC;
+    scrollbar-base-color: #E0E0E0;
+    scrollbar-highlight-color: #dddddd;
+    scrollbar-shadow-color: #dddddd;
 }
 body {
-background-color:#0C0C0C;
-margin:0px;
-font-size:12px;
-color:#000000;
+    background-color: #0C0C0C;
+    color: #000000;
+    font-size: 12px;
+    margin: 0px;
 }
 img {
--ms-interpolation-mode:bicubic;
+    -ms-interpolation-mode: bicubic;
 }
-input, select, textarea {
-border:1px solid #000000;
-font-size:12px;
-color:#000000;
+input,
+select,
+textarea {
+    border: 1px solid #000000;
+    color: #000000;
+    font-size: 12px;
 }
 #wrapper {
-font-size:12px;
-position:absolute;
-width:750px;
-left:50%;
-margin-left:-397px;
+    font-size: 12px;
+    left: 50%;
+    margin-left: -397px;
+    position: absolute;
+    width: 750px;
 }
 #mainfade-l {
-position:absolute;
-top:59px;
-left:0px;
-border-right:159px solid #EAEAEA;
+    border-right: 159px solid #EAEAEA;
+    left: 0px;
+    position: absolute;
+    top: 59px;
 }
 #mainfade-r {
-position:absolute;
-top:59px;
-left:174px;
-border-left:603px solid #ffffff;
+    border-left: 603px solid #ffffff;
+    left: 174px;
+    position: absolute;
+    top: 59px;
 }
 #jof {
-position:absolute;
-left:10px;
-top:19px;
+    left: 10px;
+    position: absolute;
+    top: 19px;
 }
-#jof:hover, #jof.active {
-background:url('/theme/www.jagtogfiskerimagasinet.dk/images/logo-hover.gif')
+#jof:hover,
+#jof.active {
+    background: url('/theme/www.jagtogfiskerimagasinet.dk/images/logo-hover.gif')
 }
-#jof:hover img, #jof.active img {
-visibility: hidden;
+#jof:hover img,
+#jof.active img {
+    visibility: hidden;
 }
 a {
-text-decoration:none;
-color:#333333;
+    color: #333333;
+    text-decoration: none;
 }
 a:visited {
-color:#000000;
+    color: #000000;
 }
 a:hover {
-text-decoration:underline;
+    text-decoration: underline;
 }
 #wrapper h2 {
-font-size:12px;
-margin:0px;
-position:absolute;
-left:173px;
-top:28px;
+    font-size: 12px;
+    left: 173px;
+    margin: 0px;
+    position: absolute;
+    top: 28px;
 }
 #wrapper h2 img {
-font-size:12px;
-vertical-align:middle;
+    font-size: 12px;
+    vertical-align: middle;
 }
 #wrapper h2 a {
-font-size:16px;
-font-family:"Gill Sans", Arial, Helvetica, sans-serif;
-font-weight:bold;
-color:#777777;
-background: url('/theme/www.jagtogfiskerimagasinet.dk/images/link.gif') no-repeat;
-padding: 0 10px 0 36px;
+    background: url('/theme/www.jagtogfiskerimagasinet.dk/images/link.gif') no-repeat;
+    color: #777777;
+    font-family: "Gill Sans", Arial, Helvetica, sans-serif;
+    font-size: 16px;
+    font-weight: bold;
+    padding: 0 10px 0 36px;
 }
 #wrapper h2 a:visited {
-color:#777777;
+    color: #777777;
 }
-#wrapper h2 a:hover, #wrapper h2 a:active, #wrapper h2 a.active {
-background-image: url('/theme/www.jagtogfiskerimagasinet.dk/images/link-a.gif');
-text-decoration:none;
-color:#e0e0e0;
+#wrapper h2 a:hover,
+#wrapper h2 a:active,
+#wrapper h2 a.active {
+    background-image: url('/theme/www.jagtogfiskerimagasinet.dk/images/link-a.gif');
+    color: #e0e0e0;
+    text-decoration: none;
 }
 #menu h3 {
-font-size:12px;
-color:#000000;
-display:inline;
-font-weight:normal;
+    color: #000000;
+    display: inline;
+    font-size: 12px;
+    font-weight: normal;
 }
 #menu {
-font-size:12px;
-color:#000000;
-position:absolute;
-top:74px;
-left:50%;
-margin-left:-397px;
-clip:auto;
-width:174px;
-background-color:#EAEAEA;
-overflow:auto;
+    background-color: #EAEAEA;
+    clip: auto;
+    color: #000000;
+    font-size: 12px;
+    left: 50%;
+    margin-left: -397px;
+    overflow: auto;
+    position: absolute;
+    top: 74px;
+    width: 174px;
 }
 #menu * {
-font-size:12px;
-margin:0px;
-padding:0px;
+    font-size: 12px;
+    margin: 0px;
+    padding: 0px;
 }
 #menu a {
-margin-left:-3px;
-display:block;
+    display: block;
+    margin-left: -3px;
 }
 #menu ul {
-margin-left:23px;
-list-style:url('/theme/www.jagtogfiskerimagasinet.dk/images/dod.gif');
+    list-style: url('/theme/www.jagtogfiskerimagasinet.dk/images/dod.gif');
+    margin-left: 23px;
 }
 #menu ul ul {
-margin-left:16px;
+    margin-left: 16px;
 }
 #menu li {
-cursor:pointer;
+    cursor: pointer;
 }
-#menu ul li:hover, #menu ul li.active {
-list-style:url('/theme/www.jagtogfiskerimagasinet.dk/images/dod-h.gif');
+#menu ul li:hover,
+#menu ul li.active {
+    list-style: url('/theme/www.jagtogfiskerimagasinet.dk/images/dod-h.gif');
 }
 .close {
-list-style:url('/theme/www.jagtogfiskerimagasinet.dk/images/close.gif');
+    list-style: url('/theme/www.jagtogfiskerimagasinet.dk/images/close.gif');
 }
 #menu ul .close:hover {
-list-style:url('/theme/www.jagtogfiskerimagasinet.dk/images/close-h.gif');
+    list-style: url('/theme/www.jagtogfiskerimagasinet.dk/images/close-h.gif');
 }
 .open {
-list-style:url('/theme/www.jagtogfiskerimagasinet.dk/images/open.gif');
-cursor:default;
+    cursor: default;
+    list-style: url('/theme/www.jagtogfiskerimagasinet.dk/images/open.gif');
 }
 #menu ul .open:hover {
-list-style:url('/theme/www.jagtogfiskerimagasinet.dk/images/open.gif');
+    list-style: url('/theme/www.jagtogfiskerimagasinet.dk/images/open.gif');
 }
-
-#text, #text table {
-font-size:12px;
-color:#000000;
-background-color:#ffffff;
+#text,
+#text table {
+    background-color: #ffffff;
+    color: #000000;
+    font-size: 12px;
 }
 #text {
-position:absolute;
-top:74px;
-left:50%;
-margin-left:-223px;
-clip:auto;
-width:620px;
-overflow:auto;
+    clip: auto;
+    left: 50%;
+    margin-left: -223px;
+    overflow: auto;
+    position: absolute;
+    top: 74px;
+    width: 620px;
 }
 #innercontainer {
-width:587px;
-padding-left:16px;
+    padding-left: 16px;
+    width: 587px;
 }
 #innercontainer a {
-color:#3366FF;
+    color: #3366FF;
 }
 .tabel {
-font-size:12px;
-width:100%;
-clear:both;
+    clear: both;
+    font-size: 12px;
+    width: 100%;
 }
 .tabel * {
-font-size:12px;
-color:#000000;
-padding:1px;
+    color: #000000;
+    font-size: 12px;
+    padding: 1px;
 }
 .tabel thead {
-background-color:#999999;
+    background-color: #999999;
 }
 .tabel a {
-font-weight:bold;
-color:#000000;
+    color: #000000;
+    font-weight: bold;
 }
 .altrow {
-background-color:#cccccc;
+    background-color: #cccccc;
 }
 #liste {
-font-size:12px;
-text-align:center;
-width:587px;
-margin-left:16px;
-border-collapse:collapse;
+    border-collapse: collapse;
+    font-size: 12px;
+    margin-left: 16px;
+    text-align: center;
+    width: 587px;
 }
 #liste td {
-border:#DDD dashed 1px;
-width:50%;
-vertical-align:top;
-padding:5px 5px 15px 5px;
+    border: #DDD dashed 1px;
+    padding: 5px 5px 15px 5px;
+    vertical-align: top;
+    width: 50%;
 }
 #liste a {
-display: block;
+    display: block;
 }
 .NyPris {
-font-size:16px;
-font-weight:bold;
-font-family:"Gill Sans", Arial, Helvetica, sans-serif;
-color:#CC0000;
-line-height:125%;
+    color: #CC0000;
+    font-family: "Gill Sans", Arial, Helvetica, sans-serif;
+    font-size: 16px;
+    font-weight: bold;
+    line-height: 125%;
 }
-.Pris, .tabel caption {
-font-family:"Gill Sans", Arial, Helvetica, sans-serif;
-font-size:14px;
-font-weight:bold;
+.Pris,
+.tabel caption {
+    font-family: "Gill Sans", Arial, Helvetica, sans-serif;
+    font-size: 14px;
+    font-weight: bold;
 }
 .XPris {
-font-size:14px;
-font-weight:lighter;
-color:#666666;
-text-decoration:line-through;
+    color: #666666;
+    font-size: 14px;
+    font-weight: lighter;
+    text-decoration: line-through;
 }
-#liste a, h1 {
-font-size:17px;
-font-family:"Gill Sans", Arial, Helvetica, sans-serif;
-font-weight:bold;
+#liste a,
+h1 {
+    font-family: "Gill Sans", Arial, Helvetica, sans-serif;
+    font-size: 17px;
+    font-weight: bold;
 }
 #text h2 {
-font-size:14px;
-font-family:"Gill Sans", Arial, Helvetica, sans-serif;
-font-weight:bold;
-margin-bottom:0;
+    font-family: "Gill Sans", Arial, Helvetica, sans-serif;
+    font-size: 14px;
+    font-weight: bold;
+    margin-bottom: 0;
 }
 #text h3 {
-font-family:"Gill Sans", Arial, Helvetica, sans-serif;
-font-weight:bold;
-font-size:12px;
-margin-bottom:0;
+    font-family: "Gill Sans", Arial, Helvetica, sans-serif;
+    font-size: 12px;
+    font-weight: bold;
+    margin-bottom: 0;
 }
 #text h4 {
-font-family:"Gill Sans", Arial, Helvetica, sans-serif;
-font-weight:normal;
-text-decoration:underline;
-font-size:12px;
-margin-bottom:0;
+    font-family: "Gill Sans", Arial, Helvetica, sans-serif;
+    font-size: 12px;
+    font-weight: normal;
+    margin-bottom: 0;
+    text-decoration: underline;
 }
 #text h5 {
-font-family:"Gill Sans", Arial, Helvetica, sans-serif;
-font-weight:normal;
-font-size:11px;
-margin:0;
+    font-family: "Gill Sans", Arial, Helvetica, sans-serif;
+    font-size: 11px;
+    font-weight: normal;
+    margin: 0;
 }
 #text h6 {
-font-weight:normal;
-font-size:9px;
-margin:0;
+    font-size: 9px;
+    font-weight: normal;
+    margin: 0;
 }
 .h510 {
-height:510px;
+    height: 510px;
 }
 .imgleft {
-float:left;
-margin:0 10px 10px 0;
+    float: left;
+    margin: 0 10px 10px 0;
 }
 .imgright {
-float:right;
-margin:0 0 10px 10px;
+    float: right;
+    margin: 0 0 10px 10px;
 }
-.print, #date, #burger, #basket {
-display:none;
+.print,
+#date,
+#burger,
+#basket {
+    display: none;
 }
 .tal {
-text-align:right;
+    text-align: right;
 }
-
 #faktura {
-width:100%;
-border-collapse:collapse;
+    border-collapse: collapse;
+    width: 100%;
 }
 #faktura td {
-padding:1px 3px;
+    padding: 1px 3px;
 }
 #faktura thead td {
-vertical-align:middle;
-font-weight:bold;
+    font-weight: bold;
+    vertical-align: middle;
 }
-#faktura thead td, #faktura .border td {
-border:1px #000000 solid;
+#faktura thead td,
+#faktura .border td {
+    border: 1px #000000 solid;
 }
-#faktura tbody td, #faktura tfoot td {
-border-right:1px #000000 solid;
-border-left:1px #000000 solid;
-white-space:nowrap;
+#faktura tbody td,
+#faktura tfoot td {
+    border-left: 1px #000000 solid;
+    border-right: 1px #000000 solid;
+    white-space: nowrap;
 }
 #faktura .border td {
-border-top:2px #000000 solid;
+    border-top: 2px #000000 solid;
 }
 #faktura .td1 {
-width:1%;
+    width: 1%;
 }
 .addtocart {
-width:16px;
-text-align:center;
+    text-align: center;
+    width: 16px;
 }
 .mobile {
-display:none;
+    display: none;
 }
 @media only screen and (min-width: 793px) {
     #menu {
@@ -315,173 +328,199 @@ display:none;
 }
 @media only screen and (max-width: 792px) {
     body {
-        background-color:#FFFFFF;
+        background-color: #FFFFFF;
         margin-top: 61px;
     }
     #jof {
-        margin:auto;
-        display:inline-block;
-        position:static;
+        display: inline-block;
+        margin: auto;
+        position: static;
     }
-    .open>a, .active>a {
-        font-weight:bold;
+    .open>a,
+    .active>a {
+        font-weight: bold;
     }
-    #menu, #text, .h510 {
-        height:auto;
+    #menu,
+    #text,
+    .h510 {
+        height: auto;
     }
     #menu {
+        background: rgba(0, 0, 0, 0.8);
+        height: 100%;
+        left: -100%;
+        margin: auto;
+        overflow: auto;
+        overflow-y: scroll;
+        padding: 2px 0;
         position: fixed;
         top: 0;
-        left: -100%;
         width: 100%;
-        height: 100%;
-        margin:auto;
-        padding:2px 0;
-        overflow:auto;
-        overflow-y:scroll;
-        background: rgba(0,0,0,0.8);
     }
     #menu>ul {
-        padding-left: 23px;
+        background-color: #EAEAEA;
         margin-left: 0px;
-        width: 50%;
         min-height: 100%;
-        background-color:#EAEAEA;
+        padding-left: 23px;
         top: 0;
+        width: 50%;
     }
-    #menu a, #menu a.open, #menu a.close, #menu a.active {
+    #menu a,
+    #menu a.open,
+    #menu a.close,
+    #menu a.active {
         background-image: none;
         font-size: 16px;
     }
     #menu * {
-        font-size:16px;
+        font-size: 16px;
     }
     #menu a {
         padding: 4px 0;
     }
     .notmobile {
-        display:none !important;
+        display: none !important;
     }
-    #mainfade-l, #mainfade-r, h2 img, #menu a.notmobile, .notmobile, #menu.h510 * {
-        display:none;
+    #mainfade-l,
+    #mainfade-r,
+    h2 img,
+    #menu a.notmobile,
+    .notmobile,
+    #menu.h510 * {
+        display: none;
     }
     #wrapper {
-        position:static;
-        text-align:center;
-        margin:auto;
-        background-color:#000000;
-        width:100%;
+        background-color: #000000;
+        margin: auto;
+        position: static;
+        text-align: center;
+        width: 100%;
     }
     #wrapper h2 {
-        margin:auto;
-        position:static;
-        padding:2px 0;
+        margin: auto;
+        padding: 2px 0;
+        position: static;
     }
-    #wrapper h2 a, #wrapper h2 a:hover, #wrapper h2 a:active, #wrapper h2 a.active {
+    #wrapper h2 a,
+    #wrapper h2 a:hover,
+    #wrapper h2 a:active,
+    #wrapper h2 a.active {
         background: none;
         padding: 0 4px 0 0;
     }
     #headder {
-        position:fixed;
-        top:0;
-        width:100%;
-        height:61px;
-        background:#000;
-        text-align:center;
-
+        background: #000;
+        height: 61px;
+        position: fixed;
+        text-align: center;
+        top: 0;
+        width: 100%;
     }
     #text {
-        position:static;
-        margin:auto;
-        overflow:visible;
-        width:100%;
+        margin: auto;
+        overflow: visible;
+        position: static;
+        width: 100%;
     }
     #innercontainer {
-         width:auto;
-         padding:0px 2px;
+        padding: 0px 2px;
+        width: auto;
     }
     #text img {
-        max-width:100%;
+        max-width: 100%;
     }
     #liste {
-        width:100%;
-        margin:auto;
+        margin: auto;
+        width: 100%;
     }
     #liste * {
-        width:auto;
+        width: auto;
     }
     #liste td {
-        display:block;
-        width:100%;
-        padding:5px 0 15px;
+        display: block;
+        padding: 5px 0 15px;
+        width: 100%;
     }
-    #liste a, .mobile {
-        display:block;
+    #liste a,
+    .mobile {
+        display: block;
     }
-    .imgright, .imgleft {
-        padding:0;
-        margin:auto;
-        display:block;
-        float:none;
+    .imgright,
+    .imgleft {
+        display: block;
+        float: none;
+        margin: auto;
+        padding: 0;
     }
-    #burger, #basket {
-        display:inline-block;
-        padding:3px;
+    #burger,
+    #basket {
+        display: inline-block;
+        padding: 3px;
     }
     #burger {
-        float:left;
+        float: left;
     }
     #basket {
-        float:right;
+        float: right;
     }
 }
-
 @media only print {
     body {
-        background-color:#FFFFFF;
+        background-color: #FFFFFF;
     }
-    #wrapper, #mainfade-l, #mainfade-r, .web, .addtocart {
-        display:none;
+    #wrapper,
+    #mainfade-l,
+    #mainfade-r,
+    .web,
+    .addtocart {
+        display: none;
     }
     #menu {
-        position:fixed;
-        top:0px;
-        height:100%;
-        left:0px;
-        margin-left:0px;
-        overflow:visible;
-        background-color:#EAEAEA;
-        float:left;
+        background-color: #EAEAEA;
+        float: left;
+        height: 100%;
+        left: 0px;
+        margin-left: 0px;
+        overflow: visible;
+        position: fixed;
+        top: 0px;
     }
     #text {
         background: none;
-        position:relative;
-        top:0px;
-        height:100%;
-        overflow:visible;
-        left:auto;
-        margin-left:174px;
+        height: 100%;
+        left: auto;
+        margin-left: 174px;
+        overflow: visible;
+        position: relative;
+        top: 0px;
     }
     .print {
-        display:inline;
+        display: inline;
     }
     #menu a {
-        margin-left:0px;
+        margin-left: 0px;
     }
     #menu ul {
-        margin-left:16px;
-        list-style-image:none;
-        list-style:none;
+        list-style-image: none;
+        list-style: none;
+        margin-left: 16px;
     }
-    .active h4 a, .open a {
-        list-style-image:none;
-        list-style:none;
-        font-weight:bold;
+    .active h4 a,
+    .open a {
+        font-weight: bold;
+        list-style-image: none;
+        list-style: none;
     }
-    #menu ul ul, #menu ul li:hover, .close, .open, .open *, .open * a, #menu ul .close:hover, .active {
-        list-style-image:none;
-        list-style:none;
-        font-weight:normal;
+    #menu ul ul,
+    #menu ul li:hover,
+    .close,
+    .open,
+    .open *,
+    .open * a,
+    #menu ul .close:hover,
+    .active {
+        font-weight: normal;
+        list-style-image: none;
+        list-style: none;
     }
-
 }

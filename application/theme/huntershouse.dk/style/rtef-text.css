@@ -1,187 +1,218 @@
 * {
-	border:0px;
-	font-family:"Times New Roman", Times, serif;
-	line-height:120%;
-	scrollbar-base-color:#DFC586;
-	scrollbar-3dlight-color:#F4DCA3;
-	scrollbar-highlight-color:#DFC586;
-	scrollbar-shadow-color:#DFC586;
-	scrollbar-track-color:#FFFCD5;
-	scrollbar-darkshadow-color:#CDA341;
-	scrollbar-arrow-color:#CDA341;
+    border: 0px;
+    font-family: "Times New Roman", Times, serif;
+    line-height: 120%;
+    scrollbar-3dlight-color: #F4DCA3;
+    scrollbar-arrow-color: #CDA341;
+    scrollbar-base-color: #DFC586;
+    scrollbar-darkshadow-color: #CDA341;
+    scrollbar-highlight-color: #DFC586;
+    scrollbar-shadow-color: #DFC586;
+    scrollbar-track-color: #FFFCD5;
 }
-input, select, textarea {
-	border:1px solid #000000;
+input,
+select,
+textarea {
+    border: 1px solid #000000;
 }
 #wrapper {
-	position:absolute;
-	width:750px;
-	left:50%;
-	margin-left:-375px;
+    left: 50%;
+    margin-left: -375px;
+    position: absolute;
+    width: 750px;
 }
 a {
-	text-decoration:none;
-	color: black;
-	font-weight: bold;
+    color: black;
+    font-weight: bold;
+    text-decoration: none;
 }
 a:visited {
-	color:#8A0F12;
+    color: #8A0F12;
 }
 a:hover {
-	color:red;
+    color: red;
 }
 #crumbs {
-	margin:0px;
-	position:absolute;
-	left:150px;
-	top:0px;
-	padding:0;
+    left: 150px;
+    margin: 0px;
+    padding: 0;
+    position: absolute;
+    top: 0px;
 }
 #crumbs * {
-	display:inline;
-	font-size:14px;
-	margin:0;
-	padding:0;
+    display: inline;
+    font-size: 14px;
+    margin: 0;
+    padding: 0;
 }
-#crumbs li li a { background-color:#DFC586; padding:3px; margin:1px; line-height:25px; }
-#crumbs li li li a { background-color:#C7D6A9; }
-#crumbs li li li li a { background-color:#B3A9D6; }
-#crumbs li li li li li a { background-color:#D9E925; }
-#crumbs li li li li li li a { background-color:#D6A9B8; }
+#crumbs li li a {
+    background-color: #DFC586;
+    line-height: 25px;
+    margin: 1px;
+    padding: 3px;
+}
+#crumbs li li li a {
+    background-color: #C7D6A9;
+}
+#crumbs li li li li a {
+    background-color: #B3A9D6;
+}
+#crumbs li li li li li a {
+    background-color: #D9E925;
+}
+#crumbs li li li li li li a {
+    background-color: #D6A9B8;
+}
 h3 {
-	font-size:15px;
-	font-weight:bold;
-	text-align:center;
-	margin:0px;
+    font-size: 15px;
+    font-weight: bold;
+    margin: 0px;
+    text-align: center;
 }
 h3 * {
-	font-size:15px;
-	font-weight:bold;
+    font-size: 15px;
+    font-weight: bold;
 }
 h4 {
-	display:inline;
-	font-weight:normal;
+    display: inline;
+    font-weight: normal;
 }
 #menu {
-	position:absolute;
-	top:90px;
-	left:50%;
-	margin-left:-390px;
-	bottom:0px;
-	width:144px;
-	overflow:auto;
-	background-color:#FFFCD5;
+    background-color: #FFFCD5;
+    bottom: 0px;
+    left: 50%;
+    margin-left: -390px;
+    overflow: auto;
+    position: absolute;
+    top: 90px;
+    width: 144px;
 }
 #menu * {
-	margin:0px;
-	padding:0px;
-	font-weight: bold;
-	font-size: 14px;
+    font-size: 14px;
+    font-weight: bold;
+    margin: 0px;
+    padding: 0px;
 }
-
-#menu ul, #menu li {
-	display:inline;
+#menu ul,
+#menu li {
+    display: inline;
 }
-
 #menu * a {
-	display:block;
-	padding:2px;
-	margin:2px 0;
+    display: block;
+    margin: 2px 0;
+    padding: 2px;
 }
-#menu li li a {	background-color:#DFC586; }
-#menu li li li a { background-color:#C7D6A9; }
-#menu li li li li a { background-color:#B3A9D6; }
-#menu li li li li li a { background-color:#D9E925; }
-#menu li li li li li li a { background-color:#D6A9B8; }
-#menu a:visited {color:#8A0F12; }
-#menu a:hover {color:red;}
+#menu li li a {
+    background-color: #DFC586;
+}
+#menu li li li a {
+    background-color: #C7D6A9;
+}
+#menu li li li li a {
+    background-color: #B3A9D6;
+}
+#menu li li li li li a {
+    background-color: #D9E925;
+}
+#menu li li li li li li a {
+    background-color: #D6A9B8;
+}
+#menu a:visited {
+    color: #8A0F12;
+}
+#menu a:hover {
+    color: red;
+}
 body {
-	background-color:#FFFCD5;
+    background-color: #FFFCD5;
 }
-body td, body div {
-	font-size:16px;
+body td,
+body div {
+    font-size: 16px;
 }
 .tabel {
-	width:100%;
-	clear:both;
+    clear: both;
+    width: 100%;
 }
 .tabel * {
-	padding:1px;
+    padding: 1px;
 }
 .tabel thead {
-	background-color:#DFC586;
+    background-color: #DFC586;
 }
 .tabel a {
-	font-weight:bold;
+    font-weight: bold;
 }
 .altrow {
-	background-color:#F4DCA3;
+    background-color: #F4DCA3;
 }
 #liste {
-	text-align:center;
-	width:587px;
-	margin-left:16px;
-	border-collapse:collapse;
+    border-collapse: collapse;
+    margin-left: 16px;
+    text-align: center;
+    width: 587px;
 }
 #liste td {
-	border:0px;
-	width:50%;
-	vertical-align:top;
-	padding:5px 5px 15px 5px;
+    border: 0px;
+    padding: 5px 5px 15px 5px;
+    vertical-align: top;
+    width: 50%;
 }
 .NyPris {
-	font-size:16px;
-	font-weight:bold;
-	color:#CC0000;
-	line-height:125%;
+    color: #CC0000;
+    font-size: 16px;
+    font-weight: bold;
+    line-height: 125%;
 }
 .Pris {
-	font-size:14px;
-	font-weight:bold;
+    font-size: 14px;
+    font-weight: bold;
 }
 .XPris {
-	font-size: 17px;
-	text-decoration: line-through;
+    font-size: 17px;
+    text-decoration: line-through;
 }
-#liste a, h1 {
-	font-size:24px;
-	font-weight:bold;
+#liste a,
+h1 {
+    font-size: 24px;
+    font-weight: bold;
 }
 .print {
-	display:none;
+    display: none;
 }
 .note {
-	font-size:13px;
-	font-style:italic;
+    font-size: 13px;
+    font-style: italic;
 }
 #faktura tbody td {
-	border:1px #000000 solid;
-	border-collapse:collapse;
-	padding:0;
+    border: 1px #000000 solid;
+    border-collapse: collapse;
+    padding: 0;
 }
 #faktura thead td {
-	border:1px #000000 solid;
-	border-bottom:2px;
-	border-collapse:collapse;
-	font-weight:bold;
+    border: 1px #000000 solid;
+    border-bottom: 2px;
+    border-collapse: collapse;
+    font-weight: bold;
 }
 #faktura table {
-	font-size:14px;
-	border-collapse:collapse;
+    border-collapse: collapse;
+    font-size: 14px;
 }
-body td .requred, .requred {
-	color:#CC3300;
-	font-size:12px;
+body td .requred,
+.requred {
+    color: #CC3300;
+    font-size: 12px;
 }
 #innercontainer {
-	width:600px;
-	padding-left:16px;
+    padding-left: 16px;
+    width: 600px;
 }
 .imgright {
-	padding: 0pt 0pt 10px 10px;
-	float: right;
+    float: right;
+    padding: 0pt 0pt 10px 10px;
 }
 .imgleft {
-	padding: 0pt 10pt 10px 0px;
-	float: left;
+    float: left;
+    padding: 0pt 10pt 10px 0px;
 }
