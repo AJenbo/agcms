@@ -52,8 +52,8 @@ class EmailService
     /**
      * Send an email.
      *
-     * @param Email   $email
-     * @param array[] $bcc
+     * @param Email     $email
+     * @param Contact[] $bcc
      *
      * @throws SendEmail
      *
@@ -77,8 +77,8 @@ class EmailService
             $mailer->addReplyTo($email->getSenderAddress(), $email->getSenderName());
         }
 
-        foreach ($bcc as $emailAddress) {
-            $mailer->addBCC($emailAddress['email'], $emailAddress['navn']);
+        foreach ($bcc as $contact) {
+            $mailer->addBCC($contact->getEmail(), $contact->getName());
         }
 
         $mailer->Subject = $email->getSubject();
