@@ -154,5 +154,6 @@
         <input style="font-weight:bold" type="submit" value="{{actionLable}}" />
     </form>
 </div>
-<script type="text/javascript" src="/javascript/zipcodedk.js"></script>
 {% endblock %}
+
+{% block jsonload %}xHttp.request("/javascript/zipcodedk.json", loadZipCodesDk);{% endblock %}

@@ -108,6 +108,11 @@ function getAddress_r2(responce) {
     }
 }
 
+var arrayZipcode = {};
+function loadZipCodesDk(data) {
+    arrayZipcode = data;
+}
+
 function chnageZipCode(zipcode, countryid, cityid) {
     if (document.getElementById(countryid).value !== "DK") {
         return false;

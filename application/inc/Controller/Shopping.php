@@ -170,7 +170,6 @@ class Shopping extends Base
         $renderable = new VolatilePage(_('Recipient'), '/order/receipt/?cart=' . rawurlencode($rawCart));
         $data['crumbs'][] = $renderable;
         $data['renderable'] = $renderable;
-        $data['basketRest'] = true;
 
         $content = Render::render('order-form2', $data);
 
