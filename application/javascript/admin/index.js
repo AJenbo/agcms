@@ -355,6 +355,22 @@ function updateContact_r(data) {
     location.href = "/admin/addressbook/list/";
 }
 
+function deleteContact(id, name) {
+    if (!confirm("Vil du fjerne '" + name + "' fra adressebogen?")) {
+        return false;
+    }
+    $("loading").style.visibility = "";
+    xHttp.request("/admin/addressbook/" + id + "/", deleteContact_r, "DELETE");
+}
+
+function deleteContact_r(data) {
+    if (!genericCallback(data)) {
+        return;
+    }
+
+    removeTagById(data.id);
+}
+
 function sendEmail() {
     if (!confirm("Ønsker du virkelig at sende denne nyhedsmail nu?")) {
         return false;

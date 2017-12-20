@@ -34,7 +34,7 @@
                 <td><a href="/admin/addressbook/{{contact.id}}/">{{contact.postcode}}</a></td>
                 <td><a href="/admin/addressbook/{{contact.id}}/">{{contact.address}}</a></td>
                 <td>
-                    <img onclick="x_deleteContact({{contact.id}}, removeTagById)" width="16" height="16" src="/theme/default/images/admin/cross.png" alt="X" title="{{'Delete'|trans}}" />
+                    <img onclick="deleteContact({{contact.id}}, {{contact.name|json_encode}})" width="16" height="16" src="/theme/default/images/admin/cross.png" alt="X" title="{{'Delete'|trans}}" />
                 </td>
             </tr>
             {% endfor %}

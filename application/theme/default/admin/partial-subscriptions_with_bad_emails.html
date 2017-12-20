@@ -2,6 +2,11 @@
 <b>{{'The following email addresses are not valid'|trans}}</b><br />
 {% endif %}
 {% for contact in contacts %}
-<a href="/admin/addressbook/{{contact.id}}/">{{'Email: %email% #%contactId% is not valid'|trans|replace({'%email%': contact.email, '%contactId%': contact.id})}}</a>
-<br />
+<span id="contact{{contact.id}}">
+    <a href="/admin/addressbook/{{contact.id}}/">
+        {{'"%email%" for "%name%" is not valid'|trans|replace({'%email%': contact.email, '%name%': contact.name})}}
+    </a>
+    <img onclick="deleteContact({{contact.id}}, {{contact.name|json_encode}})" width="16" height="16" src="/theme/default/images/admin/cross.png" alt="X" title="{{'Delete'|trans}}" />
+    <br />
+</span>
 {% endfor %}
