@@ -275,7 +275,7 @@ function searchfiles() {
     searchfilesRequest = xHttp.request("/admin/explorer/search/?qpath=" + encodeURIComponent(qpath) + "&qalt=" +
                                            encodeURIComponent(qalt) + "&qtype=" + encodeURIComponent(qtype) +
                                            "&return=" + encodeURIComponent(returnType),
-                                       showfiles_r);
+                                       injectFileData);
 }
 
 var showFilesRequest = null;
@@ -294,10 +294,10 @@ function showfiles(dir) {
     xHttp.cancel(showFilesRequest);
     showFilesRequest = xHttp.request(
         "/admin/explorer/files/?path=" + encodeURIComponent(dir) + "&return=" + encodeURIComponent(returnType),
-        showfiles_r);
+        injectFileData);
 }
 
-function showfiles_r(data) {
+function injectFileData(data) {
     inject_html(data);
     files = [];
     eval(data.javascript);

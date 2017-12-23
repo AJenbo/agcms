@@ -2,23 +2,6 @@
     document.getElementById("status").innerHTML = text;
 }
 
-function filetypeshow() {
-    var type = document.getElementById("type").value;
-    var description = document.getElementById("description");
-    var file = document.getElementById("file");
-
-    description.style.display = (type === "image" || type === "lineimage") ? "" : "none";
-
-    setFileInputMime(file, type);
-    setFileSelectStatusMessage(type);
-
-    if (type === "") {
-        file.disabled = true;
-        return;
-    }
-    file.disabled = false;
-}
-
 function setFileInputMime(file, type) {
     file.setAttribute("accept", "");
     if (type === "image" || type === "lineimage") {
@@ -28,16 +11,35 @@ function setFileInputMime(file, type) {
     }
 }
 
-function setFileSelectStatusMessage(type) {
-    var message = "Vælg en filtype";
-    if (type === "") {
-        message = "Vælg den fil du vil sende";
-    } else if (type === "image" || type === "lineimage") {
-        message = "Vælg de billeder du vil sende";
-    } else if (type === "video") {
-        message = "Vælg den film du vil sende";
+function getFileSelectStatusMessage(type) {
+    switch (type) {
+        case "":
+            return "Vælg den fil du vil sende";
+        case "image":
+        case "lineimage":
+            return "Vælg de billeder du vil sende";
+        case "video":
+            return "Vælg den film du vil sende";
     }
-    status(message);
+
+    return "Vælg en filtype";
+}
+
+function filetypeshow() {
+    var type = document.getElementById("type").value;
+    var description = document.getElementById("description");
+    var file = document.getElementById("file");
+
+    description.style.display = (type === "image" || type === "lineimage") ? "" : "none";
+
+    setFileInputMime(file, type);
+    status(getFileSelectStatusMessage(type));
+
+    if (type === "") {
+        file.disabled = true;
+        return;
+    }
+    file.disabled = false;
 }
 
 function validate() {

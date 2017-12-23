@@ -185,34 +185,6 @@ function resizeEnd() {
     $("resizeHandle").style.display = "none";
 }
 
-function rotateCCW() {
-    var move = 1;
-    if (orientation === 4 || orientation === 11) {
-        move = -3;
-    }
-    updateOrientation(move);
-}
-
-function rotateCW() {
-    var move = -1;
-    if (orientation === 1 || orientation === 14) {
-        move = 3;
-    }
-    updateOrientation(move);
-}
-
-function flipHorizontal() {
-    updateOrientation(10);
-}
-
-function flipVertical() {
-    var move = 12;
-    if (orientation === 3 || orientation === 11 || orientation === 4 || orientation === 12) {
-        move = 8;
-    }
-    updateOrientation(move);
-}
-
 function updateOrientation(move) {
     orientation += orientation < 10 ? move : -move;
     switch (orientation) {
@@ -252,6 +224,34 @@ function updateOrientation(move) {
     }
     preview();
     $("preview").style.width = "";
+}
+
+function rotateCCW() {
+    var move = 1;
+    if (orientation === 4 || orientation === 11) {
+        move = -3;
+    }
+    updateOrientation(move);
+}
+
+function rotateCW() {
+    var move = -1;
+    if (orientation === 1 || orientation === 14) {
+        move = 3;
+    }
+    updateOrientation(move);
+}
+
+function flipHorizontal() {
+    updateOrientation(10);
+}
+
+function flipVertical() {
+    var move = 12;
+    if (orientation === 3 || orientation === 11 || orientation === 4 || orientation === 12) {
+        move = 8;
+    }
+    updateOrientation(move);
 }
 
 function preview() {

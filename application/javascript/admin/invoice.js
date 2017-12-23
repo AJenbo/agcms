@@ -1,13 +1,15 @@
 var invoiceLines = [];
 var invoiceAmount = 0;
+var validemailajaxcall;
+var lastemail;
 
-function newfaktura_r(data) {
+function redirectToInvoice(data) {
     window.location.href = "/admin/invoices/" + data.id + "/";
 }
 
 function copytonew(id) {
     $("loading").style.visibility = "";
-    xHttp.request("/admin/invoices/" + id + "/clone/", newfaktura_r, "POST");
+    xHttp.request("/admin/invoices/" + id + "/clone/", redirectToInvoice, "POST");
     return false;
 }
 
@@ -46,12 +48,7 @@ function addRow() {
     $("vareTable").appendChild(tr);
 }
 
-function getInvoiceAddress(tlf) {
-    $("loading").style.visibility = "";
-    getAddress(tlf, getAddress_r);
-}
-
-function getAddress_r(data) {
+function injectInvoiceAddress(data) {
     if (!data.error) {
         $("navn").value = data.name;
         $("attn").value = data.attn;
@@ -67,7 +64,12 @@ function getAddress_r(data) {
     $("loading").style.visibility = "hidden";
 }
 
-function getAltAddress_r(data) {
+function getInvoiceAddress(tlf) {
+    $("loading").style.visibility = "";
+    getAddress(tlf, injectInvoiceAddress);
+}
+
+function injectInvoiceDeliverAddress(data) {
     if (!data.error) {
         $("postname").value = data.name;
         $("postattn").value = data.attn;
@@ -82,7 +84,7 @@ function getAltAddress_r(data) {
 
 function getAltAddress(tlf) {
     $("loading").style.visibility = "";
-    getAddress(tlf, getAltAddress_r);
+    getAddress(tlf, injectInvoiceDeliverAddress);
 }
 
 function numberFormat(number) {
@@ -151,26 +153,22 @@ function prisUpdate() {
     return true;
 }
 
+function reloadPage(date) {
+    window.location.reload();
+}
+
 function pbsconfirm(id) {
     $("loading").style.visibility = "";
     // TODO save comment
-    xHttp.request("/admin/invoices/payments/" + id + "/", reload_r, "POST");
+    xHttp.request("/admin/invoices/payments/" + id + "/", reloadPage, "POST");
     return false;
 }
 
 function annul(id) {
     $("loading").style.visibility = "";
     // TODO save comment
-    xHttp.request("/admin/invoices/payments/" + id + "/", reload_r, "DELETE");
+    xHttp.request("/admin/invoices/payments/" + id + "/", reloadPage, "DELETE");
     return false;
-}
-
-function reload_r(date) {
-    if (date.error) {
-        $("loading").style.visibility = "hidden";
-    }
-
-    window.location.reload();
 }
 
 function save(id = null, type = null) {
@@ -237,20 +235,15 @@ function save(id = null, type = null) {
     update.action = type;
 
     if (id === null) {
-        xHttp.request("/admin/invoices/", newfaktura_r, "POST", update);
+        xHttp.request("/admin/invoices/", redirectToInvoice, "POST", update);
         return false;
     }
 
-    xHttp.request("/admin/invoices/" + id + "/", save_r, "PUT", update);
+    xHttp.request("/admin/invoices/" + id + "/", invoiceSaveResponse, "PUT", update);
     return false;
 }
 
-function sendReminder(id) {
-    xHttp.request("/admin/invoices/" + id + "/email/", sendReminder_r, "POST");
-    return false;
-}
-
-function sendReminder_r(data) {
+function showReminderSendMessage(data) {
     if (!genericCallback(data)) {
         return;
     }
@@ -258,7 +251,12 @@ function sendReminder_r(data) {
     alert("Em påmindelse er blevet sendt til kunden.");
 }
 
-function save_r(date) {
+function sendReminder(id) {
+    xHttp.request("/admin/invoices/" + id + "/email/", showReminderSendMessage, "POST");
+    return false;
+}
+
+function invoiceSaveResponse(date) {
     if (date.status !== status || date.type === "lock" || date.type === "cancel" || date.type === "giro" ||
         date.type === "cash") {
         window.location.reload();
@@ -272,16 +270,13 @@ function save_r(date) {
     $("loading").style.visibility = "hidden";
 }
 
-var validemailajaxcall;
-var lastemail;
-
 function valideMail() {
     if (!$("emaillink")) {
         return;
     }
 
     if (!$("email").value.match("^[A-z0-9_.-]+@([A-z0-9-]+\\.)+[A-z0-9-]+$")) {
-        valideMail_r({"isValid": false});
+        displayInvoiceEmailAction({"isValid": false});
         return;
     }
 
@@ -289,14 +284,17 @@ function valideMail() {
         lastemail = $("email").value;
         xHttp.cancel(validemailajaxcall);
         $("loading").style.visibility = "";
-        valideMail_r({"isValid": false});
+        displayInvoiceEmailAction({"isValid": false});
 
-        validemailajaxcall =
-            xHttp.request("/admin/addressbook/validEmail/?email=" + encodeURIComponent(lastemail), valideMail_r, "GET");
+        validemailajaxcall = xHttp.request(
+            "/admin/addressbook/validEmail/?email=" + encodeURIComponent(lastemail),
+            setVisabilityForSendAction,
+            "GET"
+        );
     }
 }
 
-function valideMail_r(data) {
+function setVisabilityForSendAction(data) {
     $("emaillink").style.display = data.isValid ? "" : "none";
     $("loading").style.visibility = "hidden";
 }
