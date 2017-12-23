@@ -1,30 +1,43 @@
-﻿function filetypeshow() {
+﻿function status(text) {
+    document.getElementById("status").innerHTML = text;
+}
+
+function filetypeshow() {
     var type = document.getElementById("type").value;
     var description = document.getElementById("description");
     var file = document.getElementById("file");
 
-    var message = "Vælg en filtype";
+    description.style.display = (type === "image" || type === "lineimage") ? "" : "none";
 
-    description.style.display = "none";
-    file.setAttribute("accept", "");
-
-    if (type === "") {
-        message = "Vælg den fil du vil sende";
-    } else if (type === "image" || type === "lineimage") {
-        description.style.display = "";
-        message = "Vælg de billeder du vil sende";
-        file.setAttribute("accept", "image/*");
-    } else if (type === "video") {
-        message = "Vælg den film du vil sende";
-        file.setAttribute("accept", "video/*");
-    }
-    status(message);
+    setFileInputMime(file, type);
+    setFileSelectStatusMessage(type);
 
     if (type === "") {
         file.disabled = true;
         return;
     }
     file.disabled = false;
+}
+
+function setFileInputMime(file, type) {
+    file.setAttribute("accept", "");
+    if (type === "image" || type === "lineimage") {
+        file.setAttribute("accept", "image/*");
+    } else if (type === "video") {
+        file.setAttribute("accept", "video/*");
+    }
+}
+
+function setFileSelectStatusMessage(type) {
+    var message = "Vælg en filtype";
+    if (type === "") {
+        message = "Vælg den fil du vil sende";
+    } else if (type === "image" || type === "lineimage") {
+        message = "Vælg de billeder du vil sende";
+    } else if (type === "video") {
+        message = "Vælg den film du vil sende";
+    }
+    status(message);
 }
 
 function validate() {
@@ -63,6 +76,17 @@ function fileExists_r(data) {
     }
 }
 
+function uploadCompleated() {
+    status("Filerne er sendt");
+    window.opener.showfiles(window.opener.activeDir);
+    document.getElementById("progress").style.display = "none";
+    document.getElementById("type").disabled = false;
+    document.getElementById("type").value = "";
+    document.getElementById("file").value = "";
+    document.getElementById("alt").value = "";
+    validate();
+}
+
 var totals = [];
 var uploads = [];
 function updateProgress() {
@@ -91,15 +115,24 @@ function updateProgress() {
     status(diff.length + "/" + totals.length + statusText);
 
     if (progressBar.max === progressBar.value) {
-        status("Filerne er sendt");
-        window.opener.showfiles(window.opener.activeDir);
-        document.getElementById("progress").style.display = "none";
-        document.getElementById("type").disabled = false;
-        document.getElementById("type").value = "";
-        document.getElementById("file").value = "";
-        document.getElementById("alt").value = "";
-        validate();
+        uploadCompleated();
     }
+}
+
+function getOnLoadFunction(x, i) {
+    return function(data) {
+        uploads[i] = totals[i];
+        updateProgress();
+        var result;
+        try {
+            result = JSON.parse(x.responseText);
+        } catch (err) {
+            result = {"uploaded": (x.status === 200 ? 1 : 0), "error": {"message": "Error: " + x.responseText}};
+        }
+        if (!result.uploaded) {
+            alert(result.error.message);
+        }
+    };
 }
 
 function send() {
@@ -145,22 +178,6 @@ function send() {
     return false;
 }
 
-function getOnLoadFunction(x, i) {
-    return function(data) {
-        uploads[i] = totals[i];
-        updateProgress();
-        var result;
-        try {
-            result = JSON.parse(x.responseText);
-        } catch (err) {
-            result = {"uploaded": (x.status === 200 ? 1 : 0), "error": {"message": "Error: " + x.responseText}};
-        }
-        if (!result.uploaded) {
-            alert(result.error.message);
-        }
-    };
-}
-
 function getOnProgressFunction(i) {
     return function(evt) {
         if (evt.lengthComputable) {
@@ -169,8 +186,4 @@ function getOnProgressFunction(i) {
         uploads[i] = evt.loaded;
         updateProgress();
     };
-}
-
-function status(text) {
-    document.getElementById("status").innerHTML = text;
 }

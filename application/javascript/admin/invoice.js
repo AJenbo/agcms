@@ -1,10 +1,14 @@
+var invoiceLines = [];
+var invoiceAmount = 0;
+
+function newfaktura_r(data) {
+    window.location.href = "/admin/invoices/" + data.id + "/";
+}
+
 function copytonew(id) {
     $("loading").style.visibility = "";
     xHttp.request("/admin/invoices/" + id + "/clone/", newfaktura_r, "POST");
     return false;
-}
-function newfaktura_r(data) {
-    window.location.href = "/admin/invoices/" + data.id + "/";
 }
 
 function removeRow(row) {
@@ -63,11 +67,6 @@ function getAddress_r(data) {
     $("loading").style.visibility = "hidden";
 }
 
-function getAltAddress(tlf) {
-    $("loading").style.visibility = "";
-    getAddress(tlf, getAltAddress_r);
-}
-
 function getAltAddress_r(data) {
     if (!data.error) {
         $("postname").value = data.name;
@@ -79,6 +78,15 @@ function getAltAddress_r(data) {
         $("postpostbox").value = data.postbox;
     }
     $("loading").style.visibility = "hidden";
+}
+
+function getAltAddress(tlf) {
+    $("loading").style.visibility = "";
+    getAddress(tlf, getAltAddress_r);
+}
+
+function numberFormat(number) {
+    return number.toFixed(2).toString().replace(/\./, ",");
 }
 
 function prisUpdate() {
@@ -141,10 +149,6 @@ function prisUpdate() {
     }
 
     return true;
-}
-
-function numberFormat(number) {
-    return number.toFixed(2).toString().replace(/\./, ",");
 }
 
 function pbsconfirm(id) {
@@ -311,6 +315,3 @@ function chnageZipCode(zipcode, country, city) {
 
     $(city).value = arrayZipcode[zipcode] ? arrayZipcode[zipcode] : "";
 }
-
-var invoiceLines = [];
-var invoiceAmount = 0;

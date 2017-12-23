@@ -300,14 +300,6 @@ function removeAccessory(navn, pageId, accessoryId) {
     return false;
 }
 
-function removeBinding(navn, id, categoryId, callback = null) {
-    callback = callback || binding_r;
-    if (confirm("Vil du fjerne siden fra '" + navn + "'?")) {
-        $("loading").style.visibility = "";
-        xHttp.request("/admin/page/" + id + "/categories/" + categoryId + "/", callback, "DELETE");
-    }
-}
-
 function binding_r(data) {
     if (!genericCallback(data)) {
         return;
@@ -332,6 +324,14 @@ function binding_r(data) {
         p.appendChild(img);
         p.appendChild(document.createTextNode(" " + data.added.path));
         $("bindinger").appendChild(p);
+    }
+}
+
+function removeBinding(navn, id, categoryId, callback = null) {
+    callback = callback || binding_r;
+    if (confirm("Vil du fjerne siden fra '" + navn + "'?")) {
+        $("loading").style.visibility = "";
+        xHttp.request("/admin/page/" + id + "/categories/" + categoryId + "/", callback, "DELETE");
     }
 }
 

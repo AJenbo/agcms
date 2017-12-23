@@ -4,6 +4,10 @@ var activeDir = getCookie("admin_dir");
 var contextMenuFileTile;
 var contextMenuImageTile;
 
+function dirToId(dir) {
+    return "dir_" + dir.replace(/\//g, ".");
+}
+
 function init() {
     // attach context menus
     contextMenuFileTile =
@@ -255,6 +259,11 @@ function editDescriptionCallback(data) {
     files[data.id].description = data.description;
 }
 
+function getSelect(id) {
+    object = document.getElementById(id);
+    return object[object.selectedIndex].value;
+}
+
 var searchfilesRequest = null;
 function searchfiles() {
     document.getElementById("loading").style.visibility = "";
@@ -267,11 +276,6 @@ function searchfiles() {
                                            encodeURIComponent(qalt) + "&qtype=" + encodeURIComponent(qtype) +
                                            "&return=" + encodeURIComponent(returnType),
                                        showfiles_r);
-}
-
-function getSelect(id) {
-    object = document.getElementById(id);
-    return object[object.selectedIndex].value;
 }
 
 var showFilesRequest = null;
@@ -397,10 +401,6 @@ function makedir_r(data) {
     }
 
     window.location.reload();
-}
-
-function dirToId(dir) {
-    return "dir_" + dir.replace(/\//g, ".");
 }
 
 function idToDir(id) {

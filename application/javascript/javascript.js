@@ -36,20 +36,20 @@ function updateprice() {
 }
 
 function showhidealtpost(status) {
-    var Trs = document.getElementsByTagName("TR");
+    var rows = document.getElementsByTagName("tr");
 
     if (status) {
-        for (var i = 0; i < Trs.length; i++) {
-            if (Trs[i].className === "altpost") {
-                Trs[i].style.display = "";
+        for (var i = 0; i < rows.length; i++) {
+            if (rows[i].className === "altpost") {
+                rows[i].style.display = "";
             }
         }
         return;
     }
 
-    for (var i = 0; i < Trs.length; i++) {
-        if (Trs[i].className === "altpost") {
-            Trs[i].style.display = "none";
+    for (var i = 0; i < rows.length; i++) {
+        if (rows[i].className === "altpost") {
+            rows[i].style.display = "none";
         }
     }
 }

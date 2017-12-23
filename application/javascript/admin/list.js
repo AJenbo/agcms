@@ -1,34 +1,4 @@
 var listlink = [];
-function listInsertRow(listid) {
-    var footer = $("list" + listid + "footer");
-    var data = listSaveRow(footer, listid);
-    xHttp.request("/admin/tables/" + listid + "/row/", listInsertRow_r, "POST", data);
-}
-
-function listUpdateRow(listid, rowid) {
-    var row = $("list_row" + rowid);
-    var data = listSaveRow(row, listid);
-    xHttp.request("/admin/tables/" + listid + "/row/" + rowid + "/", listUpdateRow_r, "PUT", data);
-}
-
-function listSaveRow(row, listid) {
-    var data = {
-        "cells": [],
-        "link": null,
-    };
-
-    var cellcount = row.childNodes.length - 1;
-    if (listlink[listid] === true) {
-        cellcount -= 1;
-        data.link = row.childNodes[cellcount].firstChild.value || null;
-    }
-
-    for (i = 0; i < cellcount; i++) {
-        data.cells.push(row.childNodes[i].firstChild.value);
-    }
-
-    return data;
-}
 
 function listInsertRow_r(data) {
     if (!genericCallback(data)) {
@@ -68,6 +38,37 @@ function listInsertRow_r(data) {
 
     rows = $("list" + data.listid + "rows");
     rows.appendChild(tr);
+}
+
+function listInsertRow(listid) {
+    var footer = $("list" + listid + "footer");
+    var data = listSaveRow(footer, listid);
+    xHttp.request("/admin/tables/" + listid + "/row/", listInsertRow_r, "POST", data);
+}
+
+function listUpdateRow(listid, rowid) {
+    var row = $("list_row" + rowid);
+    var data = listSaveRow(row, listid);
+    xHttp.request("/admin/tables/" + listid + "/row/" + rowid + "/", listUpdateRow_r, "PUT", data);
+}
+
+function listSaveRow(row, listid) {
+    var data = {
+        "cells": [],
+        "link": null,
+    };
+
+    var cellcount = row.childNodes.length - 1;
+    if (listlink[listid] === true) {
+        cellcount -= 1;
+        data.link = row.childNodes[cellcount].firstChild.value || null;
+    }
+
+    for (i = 0; i < cellcount; i++) {
+        data.cells.push(row.childNodes[i].firstChild.value);
+    }
+
+    return data;
 }
 
 function listEditRow(listid, rowid) {

@@ -1,3 +1,9 @@
+var cropX = 0;
+var cropY = 0;
+var orientation = 1; // 1-4,11-14
+var rotate = 0;      // 90,180,270
+var flip = 0;        // 1,2
+
 // TODO avoide overscaling when triming has been in affect
 var imageSaveRequest;
 function saveImage(overwrite = false) {
@@ -178,12 +184,6 @@ function resizeEnd() {
     resizeHandle.destroy();
     $("resizeHandle").style.display = "none";
 }
-
-var cropX = 0;
-var cropY = 0;
-var orientation = 1; // 1-4,11-14
-var rotate = 0;      // 90,180,270
-var flip = 0;        // 1,2
 
 function rotateCCW() {
     var move = 1;
