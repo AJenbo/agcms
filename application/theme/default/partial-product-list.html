@@ -28,7 +28,7 @@
             <td align="right" style="font-size:11px">{{page.sku}}</td>
             <td class="addtocart">
                 {% if page.price > 0 %}
-                <a href="" onclick="shoppingCart.addItem('page', {{page.id}}); return false">
+                <a href="" onclick="shoppingCart.addItem('page',{{page.id}});return false">
                     <img src="/theme/default/images/cart_add.png" title="{{'Add to shopping cart'|trans}}" alt="+" />
                 </a>
                 {% endif %}

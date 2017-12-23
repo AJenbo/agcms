@@ -37,7 +37,7 @@
             <meta property="priceCurrency" content="{{'USD'|trans}}" />
         </span>
         {% if not hasProductTable %}
-        <a href="" onclick="shoppingCart.addItem('page', {{renderable.id}}); return false">
+        <a href="" onclick="shoppingCart.addItem('page',{{renderable.id}});return false">
             <img src="/theme/default/images/cart_add.png" alt="+" title="{{'Add to shopping cart'|trans}}" />
         </a>
         {% endif %}

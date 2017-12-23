@@ -48,22 +48,22 @@
             <img id="flipV" onclick="flipVertical()" src="/theme/default/images/admin/shape_flip_vertical.png" alt="-" title="{{'Flip Vertically'|trans}}" width="16" height="16" />
             <img id="resetCropper" src="/theme/default/images/admin/cut.png" alt="X" title="{{'Clip'|trans}}" width="16" height="16" />
             <img id="removeCropper" src="/theme/default/images/admin/cut.png" alt="X" title="{{'Clip'|trans}}" width="16" height="16" style="display:none" />
-            <img id="save" onclick="saveImage();" src="/theme/default/images/admin/disk.png" alt="{{'Save'|trans}}" title="{{'Save'|trans}}" width="16" height="16" style="display:none" />
+            <img id="save" onclick="saveImage()" src="/theme/default/images/admin/disk.png" alt="{{'Save'|trans}}" title="{{'Save'|trans}}" width="16" height="16" style="display:none" />
             <img id="loading" src="/theme/default/images/admin/loading.gif" width="16" height="16" alt="{{'Loading'|trans}}" title="{{'Loading'|trans}}" />
         </div>
-        <div id="ruler" style="width: {{textWidth}}px;">
-            <div style="width: {{(textWidth - 1)}}px; border-right:1px #FF0000 solid">
-                <div style="width: {{(thumbWidth - 1)}}px; border-right:1px #0000FF solid">
-                    <div style="width: {{(width - 1)}}px; border-right:1px #00FF00 solid">
+        <div id="ruler" style="width:{{textWidth}}px">
+            <div style="width: {{(textWidth - 1)}}px;border-right:1px #FF0000 solid">
+                <div style="width: {{(thumbWidth - 1)}}px;border-right:1px #0000FF solid">
+                    <div style="width: {{(width - 1)}}px;border-right:1px #00FF00 solid">
                         &nbsp;
                     </div>
                 </div>
             </div>
         </div>
-        <div id="textDiv" style="width: {{textWidth}}px;">
+        <div id="textDiv" style="width:{{textWidth}}px">
             <img id="preview" src="{% if mode == 'thb' %}/admin/explorer/files/{{file.id}}/image/?maxW={{thumbWidth}}&amp;maxH={{thumbHeight}}&amp;noCache=1&amp;t={{now|date('U')}}{% else %}{{file.path}}{% endif %}" alt="" onload="resize()" />
-            <img id="resizeHandle" src="/javascript/admin/lib/cropper/resizehandle.gif" alt="" style="position: absolute; left: 16px; top: 16px; cursor: se-resize; margin:-16px 0 0 -16px; display:none">
-            <img id="original" src="{{file.path}}" alt="" style="display:none;" />
+            <img id="resizeHandle" src="/javascript/admin/lib/cropper/resizehandle.gif" alt="" style="position:absolute;left:16px;top:16px;cursor:se-resize;margin:-16px 0 0 -16px;display:none">
+            <img id="original" src="{{file.path}}" alt="" style="display:none" />
         </div>
     </body>
 </html>

@@ -4,7 +4,7 @@
 <div id="innercontainer">
     {% include 'partial-payment-invoice.html' %}
     <form action="/betaling/{{invoice.id}}/{{invoice.checkid}}/address/" method="get">
-        <input style="font-weight:bold;" value="{{'Continue'|trans}}" type="submit">
+        <input style="font-weight:bold" value="{{'Continue'|trans}}" type="submit">
     </form>
 </div>
 {% endblock %}

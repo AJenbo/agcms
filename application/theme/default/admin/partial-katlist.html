@@ -1,5 +1,5 @@
 {% spaceless %}
-<a class="menuboxheader" id="katsheader" style="width:360px;clear:both" onclick="showhidekats('kats',this);">
+<a class="menuboxheader" id="katsheader" style="width:360px;clear:both" onclick="showhidekats('kats',this)">
     {{'Select location:'|trans}} {% if hide.categories %}{{siteTree.selectedCategory.path}}{% endif %}
 </a>
 <div style="width:384px;{% if hide.categories %}display:none;{% endif %}" id="kats">

@@ -300,7 +300,7 @@ class FileService
             . $pathinfo['filename'] . '</div><form action="" method="get" onsubmit="document.getElementById(\'rename'
             . $file->getId() . '\').blur();return false" style="display:none" id="navn' . $file->getId()
             . 'form"><p><input id="rename' . $file->getId() . '" onblur="renamefile(\'' . $file->getId()
-            . '\');" maxlength="' . (251 - mb_strlen($pathinfo['dirname'], 'UTF-8')) . '" value="'
+            . '\')" maxlength="' . (251 - mb_strlen($pathinfo['dirname'], 'UTF-8')) . '" value="'
             . $pathinfo['filename'] . '" /></p></form></div>';
 
         return $html;

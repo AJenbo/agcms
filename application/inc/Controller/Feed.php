@@ -115,7 +115,7 @@ class Feed extends Base
             $decription = '';
             if ($page->getIcon()) {
                 $imgUrl = Config::get('base_url') . encodeUrl($page->getIcon()->getPath());
-                $decription .= '<img style="float:left;margin:0 10px 5px 0;" src="'
+                $decription .= '<img style="float:left;margin:0 10px 5px 0" src="'
                     . htmlspecialchars($imgUrl, ENT_COMPAT | ENT_XHTML) . '" ><p>';
             }
             $decription .= $page->getExcerpt() . '</p>';

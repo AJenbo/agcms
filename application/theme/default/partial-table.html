@@ -21,7 +21,7 @@
             {% if (column.type == 2 or column.type == 3) and row[loop.index0] > 0 %}
                 {% set forSale = true %}
             {% endif %}
-            <td{% if column.type %} style="text-align:right;"{% endif %}{% if column.type > 2 %} class="{% if column.type == 2 %}Pris{% elseif column.type == 3 %}NyPris{% elseif column.type == 4 %}XPris{% endif %}"{% endif %}>
+            <td{% if column.type %} style="text-align:right"{% endif %}{% if column.type > 2 %} class="{% if column.type == 2 %}Pris{% elseif column.type == 3 %}NyPris{% elseif column.type == 4 %}XPris{% endif %}"{% endif %}>
                 {% if table.hasLinks and row.page %}<a href="{{row.page.canonicalLink(category)}}">{% endif %}
                     {% if column.type < 2 %}
                         {{row[loop.index0]}}
@@ -38,7 +38,7 @@
             {% if table.hasPrices %}
             <td class="addtocart">
                 {% if forSale %}
-                <a href="" onclick="shoppingCart.addItem('line', {{row.id}}); return false">
+                <a href="" onclick="shoppingCart.addItem('line',{{row.id}});return false">
                     <img src="/theme/default/images/cart_add.png" title="{{'Add to shopping cart'|trans}}" alt="+" />
                 </a>
                 {% endif %}

@@ -1,13 +1,13 @@
 {% extends "admin/index.html" %}
 
 {% block actions %}
-<li><a onclick="updateContact({{contact.id}});"><img src="/theme/default/images/admin/disk.png" width="16" height="16" alt="" /> {{'Save contact'|trans}}</a></li>
+<li><a onclick="updateContact({{contact.id}})"><img src="/theme/default/images/admin/disk.png" width="16" height="16" alt="" /> {{'Save contact'|trans}}</a></li>
 {% endblock %}
 
 {% block canvas %}
 <div id="headline">{{'Edit contact person'|trans}}</div>
-<form method="post" action="" onsubmit="updateContact({{contact.id}}); return false;">
-    <input type="submit" accesskey="s" style="width:1px; height:1px; position:absolute; top: -20px; left:-20px;" />
+<form method="post" action="" onsubmit="updateContact({{contact.id}});return false">
+    <input type="submit" accesskey="s" style="width:1px;height:1px;position:absolute;top:-20px;left:-20px" />
     <table border="0" cellspacing="0">
         <tbody>
             <tr>

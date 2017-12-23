@@ -31,7 +31,7 @@
 {% endif %}
 {% if invoice.status not in ['giro', 'cash', 'pbsok', 'accepted', 'canceled', 'rejected'] %}
 {% if not invoice.sent %}
-<li id="emaillink"{% if not invoice.hasValidEmail %} style="display:none;"{% endif %}>
+<li id="emaillink"{% if not invoice.hasValidEmail %} style="display:none"{% endif %}>
     <a onclick="return save({{invoice.id|json_encode|raw}}, 'email')">
         <img height="16" width="16" title="{{'Send to customer'|trans}}" alt="" src="/theme/default/images/admin/email_go.png"/> {{'Send'|trans}}
     </a>
@@ -48,10 +48,10 @@
 
 {% block canvas %}
 <div id="headline">{{title}}</div>
-<table style="float:right;">
+<table style="float:right">
     {% if invoice.status not in ['giro', 'cash', 'accepted', 'canceled', 'pbsok'] %}
     <tr>
-        <td><input type="button" value="{{'Paid via giro'|trans}}" onclick="save({{invoice.id|json_encode|raw}}, 'giro');" /></td>
+        <td><input type="button" value="{{'Paid via giro'|trans}}" onclick="save({{invoice.id|json_encode|raw}}, 'giro')" /></td>
         <td>
             <input maxlength="10" name="gdate" id="gdate" size="11" value="{{time|date('d-m-Y')}}" />
             <script type="text/javascript"><!--
@@ -60,7 +60,7 @@
         </td>
     </tr>
     <tr>
-        <td><input type="button" value="{{'Paid in cash'|trans}}" onclick="save({{invoice.id|json_encode|raw}}, 'cash');" /></td>
+        <td><input type="button" value="{{'Paid in cash'|trans}}" onclick="save({{invoice.id|json_encode|raw}}, 'cash')" /></td>
         <td>
             <input maxlength="10" name="cdate" id="cdate" size="11" value="{{time|date('d-m-Y')}}" />
             <script type="text/javascript"><!--
@@ -228,7 +228,7 @@
         <td>
             {% if not invoice or invoice.status == 'new' %}
             <input name="tlf1" id="tlf1" value="{{invoice.phone1}}" />
-            <input type="button" value="{{'Fetch'|trans}}" onclick="getInvoiceAddress($('tlf1').value);" />
+            <input type="button" value="{{'Fetch'|trans}}" onclick="getInvoiceAddress($('tlf1').value)" />
             {% else %}
             {{invoice.phone1}}
             {% endif %}
@@ -239,7 +239,7 @@
         <td>
             {% if not invoice or invoice.status == 'new' %}
             <input name="tlf2" id="tlf2" value="{{invoice.phone2}}" />
-            <input type="button" value="{{'Fetch'|trans}}" onclick="getInvoiceAddress($('tlf2').value);" />
+            <input type="button" value="{{'Fetch'|trans}}" onclick="getInvoiceAddress($('tlf2').value)" />
             {% else %}
             {{invoice.phone2}}
             {% endif %}
@@ -249,7 +249,7 @@
         <td>{{'Email:'|trans}}</td>
         <td>
             {% if not invoice or invoice.status == 'new' %}
-            <input name="email" id="email" onchange="valideMail();" onkeyup="valideMail();" value="{{invoice.email}}" />
+            <input name="email" id="email" onchange="valideMail()" onkeyup="valideMail()" value="{{invoice.email}}" />
             {% else %}
             <a href="mailto:{{invoice.email}}">{{invoice.email}}</a>
             {% endif %}
@@ -328,24 +328,24 @@
     <tr>
         <td colspan="2">
             {% if not invoice or invoice.status == 'new' %}
-            <input onclick="showhidealtpost(this.checked);" name="altpost" id="altpost" type="checkbox"{% if invoice.hasShippingAddress %} checked="checked"{% endif %} />
+            <input onclick="showhidealtpost(this.checked)" name="altpost" id="altpost" type="checkbox"{% if invoice.hasShippingAddress %} checked="checked"{% endif %} />
             {% endif %}
             <label for="altpost"> <strong>{{'Other delivery address'|trans}}</strong></label>
         </td>
     </tr>
     {% endif %}
-    <tr class="altpost"{% if not invoice.hasShippingAddress %} style="display:none;"{% endif %}>
+    <tr class="altpost"{% if not invoice.hasShippingAddress %} style="display:none"{% endif %}>
         <td>{{'Tel.:'|trans}}</td>
         <td>
             {% if not invoice or invoice.status == 'new' %}
             <input name="posttlf" id="posttlf" value="{{invoice.shippingPhone}}" />
-            <input type="button" value="Hent" onclick="getAltAddress($('posttlf').value);" />
+            <input type="button" value="Hent" onclick="getAltAddress($('posttlf').value)" />
             {% else %}
             {{invoice.shippingPhone}}
             {% endif %}
         </td>
     </tr>
-    <tr class="altpost"{% if not invoice.hasShippingAddress %} style="display:none;"{% endif %}>
+    <tr class="altpost"{% if not invoice.hasShippingAddress %} style="display:none"{% endif %}>
         <td>{{'Name:'|trans}}</td>
         <td>
             {% if not invoice or invoice.status == 'new' %}
@@ -355,7 +355,7 @@
             {% endif %}
         </td>
     </tr>
-    <tr class="altpost"{% if not invoice.hasShippingAddress %} style="display:none;"{% endif %}>
+    <tr class="altpost"{% if not invoice.hasShippingAddress %} style="display:none"{% endif %}>
         <td>{{'Attn.:'|trans}}</td>
         <td>
             {% if not invoice or invoice.status == 'new' %}
@@ -365,7 +365,7 @@
             {% endif %}
         </td>
     </tr>
-    <tr class="altpost"{% if not invoice.hasShippingAddress %} style="display:none;"{% endif %}>
+    <tr class="altpost"{% if not invoice.hasShippingAddress %} style="display:none"{% endif %}>
         <td>{{'Address:'|trans}}</td>
         <td>
             {% if not invoice or invoice.status == 'new' %}
@@ -375,7 +375,7 @@
             {% endif %}
         </td>
     </tr>
-    <tr class="altpost"{% if not invoice.hasShippingAddress %} style="display:none;"{% endif %}>
+    <tr class="altpost"{% if not invoice.hasShippingAddress %} style="display:none"{% endif %}>
         <td></td>
         <td>
             {% if not invoice or invoice.status == 'new' %}
@@ -385,7 +385,7 @@
             {% endif %}
         </td>
     </tr>
-    <tr class="altpost"{% if not invoice.hasShippingAddress %} style="display:none;"{% endif %}>
+    <tr class="altpost"{% if not invoice.hasShippingAddress %} style="display:none"{% endif %}>
         <td>{{'Postbox:'|trans}}</td>
         <td>
             {% if not invoice or invoice.status == 'new' %}
@@ -395,7 +395,7 @@
             {% endif %}
         </td>
     </tr>
-    <tr class="altpost"{% if not invoice.hasShippingAddress %} style="display:none;"{% endif %}>
+    <tr class="altpost"{% if not invoice.hasShippingAddress %} style="display:none"{% endif %}>
         <td>{{'Zipcode:'|trans}}</td>
         <td>
             {% if not invoice or invoice.status == 'new' %}
@@ -407,7 +407,7 @@
             {% endif %}
         </td>
     </tr>
-    <tr class="altpost"{% if not invoice.hasShippingAddress %} style="display:none;"{% endif %}>
+    <tr class="altpost"{% if not invoice.hasShippingAddress %} style="display:none"{% endif %}>
         <td>{{'Country:'|trans}}</td>
         <td>
             {% if not invoice or invoice.status == 'new' %}
@@ -443,7 +443,7 @@
         </tr>
     </thead>
     <tfoot>
-        <tr style="height:auto;min-height:auto;max-height:auto;">
+        <tr style="height:auto;min-height:auto;max-height:auto">
             <td>&nbsp;</td>
             <td>&nbsp;</td>
             <td class="tal">{{'Net Amount'|trans}}</td>
@@ -455,7 +455,7 @@
             <td class="tal">{{'Freight'|trans}}</td>
             <td class="tal">
                 {% if not invoice or invoice.status == 'new' %}
-                <input maxlength="7" name="fragt" id="fragt" style="width:80px;" class="tal" value="{{invoice.shipping|number_format(2, ',', '')}}" onkeyup="prisUpdate()" onchange="prisUpdate()" onblur="prisUpdate()" />
+                <input maxlength="7" name="fragt" id="fragt" style="width:80px" class="tal" value="{{invoice.shipping|number_format(2, ',', '')}}" onkeyup="prisUpdate()" onchange="prisUpdate()" onblur="prisUpdate()" />
                 {% else %}
                 {{invoice.shipping|number_format(2, ',', '')}}
                 {% endif %}
@@ -478,7 +478,7 @@
         </tr>
         <tr class="border">
             <td colspan="2">&nbsp;</td>
-            <td style="text-align:center; font-weight:bold;">{{'TO PAY'|trans}}</td>
+            <td style="text-align:center;font-weight:bold">{{'TO PAY'|trans}}</td>
             <td class="tal" id="payamount">
                 {{((invoice.vat + 1) * invoice.netAmount + invoice.shipping)|number_format(2, ',', '')}}
             </td>
@@ -489,16 +489,16 @@
         {% if not invoice or invoice.status == 'new' %}
         <tr>
             <td>
-                <input name="quantitie" style="width:58px;" class="tal" value="{{item.quantity}}" onkeyup="prisUpdate()" onchange="prisUpdate()" onblur="prisUpdate()" />
+                <input name="quantitie" style="width:58px" class="tal" value="{{item.quantity}}" onkeyup="prisUpdate()" onchange="prisUpdate()" onblur="prisUpdate()" />
             </td>
             <td>
-                <input name="product" style="width:303px;" value="{{item.title}}" onkeyup="prisUpdate()" onchange="prisUpdate()" onblur="prisUpdate()" />
+                <input name="product" style="width:303px" value="{{item.title}}" onkeyup="prisUpdate()" onchange="prisUpdate()" onblur="prisUpdate()" />
             </td>
             <td>
-                <input name="value" style="width:69px;" class="tal" value="{% if invoice.hasPreVat %}{{(item.value * 1.25)|number_format(2, ',', '')}}{% else %}{{item.value|number_format(2, ',', '')}}{% endif %}" onkeyup="prisUpdate()" onchange="prisUpdate()" onblur="prisUpdate()" />
+                <input name="value" style="width:69px" class="tal" value="{% if invoice.hasPreVat %}{{(item.value * 1.25)|number_format(2, ',', '')}}{% else %}{{item.value|number_format(2, ',', '')}}{% endif %}" onkeyup="prisUpdate()" onchange="prisUpdate()" onblur="prisUpdate()" />
             </td>
             <td class="tal total"></td>
-            <td style="border:0; font-weight:bold;">
+            <td style="border:0;font-weight:bold">
                 <a href="" onclick="return removeRow(this)">
                     <img alt="X" src="/theme/default/images/admin/cross.png" height="16" width="16" title="{{'Remove Line'|trans}}" />
                 </a>

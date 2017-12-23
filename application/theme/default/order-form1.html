@@ -9,14 +9,14 @@
                     <td>{{'Phone:'|trans}} </td>
                     <td colspan="2"><input name="phone1" id="phone1" style="width:157px" value="{{invoice.phone1}}" /></td>
                     <td>
-                        <input type="button" value="{{'Get address'|trans}}" onclick="getAddress(document.getElementById('phone1').value, getAddress_r1);" />
+                        <input type="button" value="{{'Get address'|trans}}" onclick="getAddress(document.getElementById('phone1').value,getAddress_r1)" />
                     </td>
                 </tr>
                 <tr>
                     <td>{{'Mobile:'|trans}} </td>
                     <td colspan="2"><input name="phone2" id="phone2" style="width:157px" value="{{invoice.phone2}}" /></td>
                     <td>
-                        <input type="button" value="{{'Get address'|trans}}" onclick="getAddress(document.getElementById('phone2').value, getAddress_r1);" />
+                        <input type="button" value="{{'Get address'|trans}}" onclick="getAddress(document.getElementById('phone2').value, getAddress_r1)" />
                     </td>
                 </tr>
                 <tr>
@@ -74,34 +74,34 @@
                 </tr>
                 <tr>
                     <td colspan="4">
-                        <input onclick="showhidealtpost(this.checked);" name="hasShippingAddress" id="hasShippingAddress" type="checkbox"{% if invoice.hasShippingAddress %} checked="checked"{% endif %} />
+                        <input onclick="showhidealtpost(this.checked)" name="hasShippingAddress" id="hasShippingAddress" type="checkbox"{% if invoice.hasShippingAddress %} checked="checked"{% endif %} />
                         <label for="hasShippingAddress"> {{'Other delivery address'|trans}}</label>
                     </td>
                 </tr>
-                <tr class="altpost"{% if not invoice.hasShippingAddress %} style="display:none;"{% endif %}>
+                <tr class="altpost"{% if not invoice.hasShippingAddress %} style="display:none"{% endif %}>
                     <td> {{'Phone:'|trans}}</td>
                     <td colspan="2">
                         <input name="shippingPhone" id="shippingPhone" style="width:157px" value="{{invoice.shippingPhone}}" />
                     </td>
                     <td>
-                        <input type="button" value="{{'Get address'|trans}}" onclick="getAddress(document.getElementById('shippingPhone').value, getAddress_r2);" />
+                        <input type="button" value="{{'Get address'|trans}}" onclick="getAddress(document.getElementById('shippingPhone').value,getAddress_r2)" />
                     </td>
                 </tr>
-                <tr class="altpost"{% if not invoice.hasShippingAddress %} style="display:none;"{% endif %}>
+                <tr class="altpost"{% if not invoice.hasShippingAddress %} style="display:none"{% endif %}>
                     <td>{{'Name:'|trans}}</td>
                     <td colspan="2">
                         <input name="shippingName" id="shippingName" style="width:157px" value="{{invoice.shippingName}}" />
                     </td>
                     <td>{% if invalid.shippingName %}<img src="/theme/default/images/error.png" alt="" >{% endif %}</td>
                 </tr>
-                <tr class="altpost"{% if not invoice.hasShippingAddress %} style="display:none;"{% endif %}>
+                <tr class="altpost"{% if not invoice.hasShippingAddress %} style="display:none"{% endif %}>
                     <td> {{'Attn.:'|trans}}</td>
                     <td colspan="2">
                         <input name="shippingAttn" id="shippingAttn" style="width:157px" value="{{invoice.shippingAttn}}" />
                     </td>
                     <td></td>
                 </tr>
-                <tr class="altpost"{% if not invoice.hasShippingAddress %} style="display:none;"{% endif %}>
+                <tr class="altpost"{% if not invoice.hasShippingAddress %} style="display:none"{% endif %}>
                     <td> {{'Address:'|trans}}</td>
                     <td colspan="2">
                         <input name="shippingAddress" id="shippingAddress" style="width:157px" value="{{invoice.shippingAddress}}" />
@@ -110,14 +110,14 @@
                     </td>
                     <td>{% if invalid.shippingAddress %}<img src="/theme/default/images/error.png" alt="" >{% endif %}</td>
                 </tr>
-                <tr class="altpost"{% if not invoice.hasShippingAddress %} style="display:none;"{% endif %}>
+                <tr class="altpost"{% if not invoice.hasShippingAddress %} style="display:none"{% endif %}>
                     <td> {{'Postbox:'|trans}}</td>
                     <td colspan="2">
                         <input name="shippingPostbox" id="shippingPostbox" style="width:157px" value="{{invoice.shippingPostbox}}" />
                     </td>
                     <td></td>
                 </tr>
-                <tr class="altpost"{% if not invoice.hasShippingAddress %} style="display:none;"{% endif %}>
+                <tr class="altpost"{% if not invoice.hasShippingAddress %} style="display:none"{% endif %}>
                     <td> {{'Zipcode:'|trans}}</td>
                     <td>
                         <input name="shippingPostcode" id="shippingPostcode" style="width:35px" value="{{invoice.shippingPostalcode}}" onblur="chnageZipCode(this.value, 'shippingCountry', 'shippingCity')" onkeyup="chnageZipCode(this.value, 'shippingCountry', 'shippingCity')" onchange="chnageZipCode(this.value, 'shippingCountry', 'shippingCity')" />
@@ -130,7 +130,7 @@
                         {% if invalid.shippingCity %}<img src="/theme/default/images/error.png" alt="" >{% endif %}
                     </td>
                 </tr>
-                <tr class="altpost"{% if not invoice.hasShippingAddress %} style="display:none;"{% endif %}>
+                <tr class="altpost"{% if not invoice.hasShippingAddress %} style="display:none"{% endif %}>
                     <td> {{'Country:'|trans}}</td>
                     <td colspan="2">
                         <select name="shippingCountry" id="shippingCountry" style="width:157px" onblur="chnageZipCode($('shippingPostcode').value, 'shippingCountry', 'shippingCity')" onkeyup="chnageZipCode($('shippingPostcode').value, 'shippingCountry', 'shippingCity')" onchange="chnageZipCode($('shippingPostcode').value, 'shippingCountry', 'shippingCity')">

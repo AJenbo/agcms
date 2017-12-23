@@ -18,7 +18,7 @@
         </script>
     </head>
     <body>
-        <form method="post" action="" onsubmit="return createTable();">
+        <form method="post" action="" onsubmit="return createTable()">
             <input id="page_id" name="page_id" type="hidden" value="{{page_id}}" />
             {{'Title:'|trans}} <input id="title" name="title" /><br />
             {{'Links:'|trans}} <input type="checkbox" name="link" id="link" value="1" /><br />
@@ -45,10 +45,10 @@
                                 <option value="{{tablesort.id}}">{{tablesort.title}}</option>
                                 {% endfor %}
                             </select><br />
-                            <input name="cell_name" style="width:102px;" />
+                            <input name="cell_name" style="width:102px" />
                         </td>
                         <td id="addbuttonrow">
-                            <input type="button" value="{{'Add'|trans}}" style="height: 48px;" onclick="addcolumn();" />
+                            <input type="button" value="{{'Add'|trans}}" style="height:48px" onclick="addcolumn()" />
                         </td>
                     </tr>
                 </tbody>

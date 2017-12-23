@@ -304,7 +304,7 @@ class MaintenanceController extends AbstractAdminController
                 'The following %d files are in a folder that needs to be renamed:',
                 count($errors)
             );
-            $html .= '<br /><b>' . sprintf($msg, count($errors)) . '</b><br /><a onclick="explorer(\'\',\'\');">';
+            $html .= '<br /><b>' . sprintf($msg, count($errors)) . '</b><br /><a onclick="explorer(\'\',\'\')">';
             foreach ($errors as $value) {
                 $html .= $value['path'] . '<br />';
             }

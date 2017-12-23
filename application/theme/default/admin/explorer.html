@@ -23,10 +23,10 @@
     <body scroll="auto" onload="init()">
         <div id="menu">
             <img id="loading" src="/theme/default/images/admin/loading.gif" width="16" height="16" alt="{{'Loading'|trans}}" title="{{'Loading'|trans}}" />
-            <a id="dir_bn" class="down" title="{{'Folders'|trans}}" onclick="return swap_pannel('dir');">
+            <a id="dir_bn" class="down" title="{{'Folders'|trans}}" onclick="return swap_pannel('dir')">
                 <img width="16" height="16" src="/theme/default/images/admin/folder.png" alt="" /> {{'Folders'|trans}}
             </a>
-            <a id="search_bn" title="{{'Search'|trans}}" onclick="return swap_pannel('search');">
+            <a id="search_bn" title="{{'Search'|trans}}" onclick="return swap_pannel('search')">
                 <img width="16" height="16" src="/theme/default/images/admin/magnifier.png" alt="" /> {{'Search'|trans}}
             </a>
             <a title="{{'New folder'|trans}}" onclick="makedir();return false">
@@ -35,14 +35,14 @@
             <a title="{{'Delete folder'|trans}}" onclick="deleteFolder();return false">
                 <img width="16" height="16" src="/theme/default/images/admin/folder_delete.png" alt="" /> {{'Delete folder'|trans}}
             </a>
-            <a title="{{'Add File'|trans}}" onclick="open_file_upload();return false;">
+            <a title="{{'Add File'|trans}}" onclick="open_file_upload();return false">
                 <img width="16" height="16" src="/theme/default/images/admin/folder_page_white.png" alt="" /> {{'Add File'|trans}}
             </a>
         </div>
         <div id="dir">
             {% include 'admin/partial-listDirs.html' with {'move': false} %}
         </div>
-        <form id="search" style="display:none" action="" onsubmit="searchfiles();return false;">
+        <form id="search" style="display:none" action="" onsubmit="searchfiles();return false">
             <div>
                 {{'Name:'|trans}}<br />
                 <input name="searchpath" id="searchpath" />

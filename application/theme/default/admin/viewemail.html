@@ -2,16 +2,16 @@
 
 {% block actions %}
 {% if not newsletter.sent %}
-<li><a onclick="saveEmail();"><img src="/theme/default/images/admin/disk.png" width="16" height="16" alt="" /> {{'Save email'|trans}}</a></li>
-<li><a onclick="sendEmail();"><img src="/theme/default/images/admin/email_go.png" width="16" height="16" alt="" /> {{'Send email'|trans}}</a></li>
+<li><a onclick="saveEmail()"><img src="/theme/default/images/admin/disk.png" width="16" height="16" alt="" /> {{'Save email'|trans}}</a></li>
+<li><a onclick="sendEmail()"><img src="/theme/default/images/admin/email_go.png" width="16" height="16" alt="" /> {{'Send email'|trans}}</a></li>
 {% endif %}
 {% endblock %}
 
 {% block canvas %}
 <div id="headline">{% if newsletter.sent %}{{'View newsletter'|trans}}{% else %}{{'Edit newsletter'|trans}}{% endif %}</div>
 {% if not newsletter.sent %}
-<form action="" method="post" onsubmit="return sendNews();">
-    <input type="submit" accesskey="m" style="width:1px; height:1px;position:absolute;top:-20px;left:-20px;" />
+<form action="" method="post" onsubmit="return sendNews()">
+    <input type="submit" accesskey="m" style="width:1px;height:1px;position:absolute;top:-20px;left:-20px" />
     <input value="{{newsletter.id}}" id="id" type="hidden" />
 {% endif %}
     <div>
@@ -27,7 +27,7 @@
             {% endfor %}
         </select>
         {% else %}
-        <input value="{{emails|first}}" id="from" style="display:none;" />
+        <input value="{{emails|first}}" id="from" style="display:none" />
         {% endif %}
         <br />{{'Restrict recipients to:'|trans}}
         {% endif %}
@@ -50,7 +50,7 @@
         --></script>
         {% else %}
         <br />{{'Subject:'|trans}} {{newsletter.subject}}
-        <div style="width:{{textWidth}}px; border:1px solid #D2D2D2">{{newsletter.html|raw}}</div>
+        <div style="width:{{textWidth}}px;border:1px solid #D2D2D2">{{newsletter.html|raw}}</div>
         {% endif %}
     </div>
 {% if not newsletter.sent %}

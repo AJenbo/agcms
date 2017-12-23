@@ -23,9 +23,9 @@
             }
         </script>
     </head>
-    <body style="margin: 20px;">
-        <form action="" method="post" onsubmit="return validate();">
-            <table style="background-color: #DDDDDD; border: 1px solid #AAAAAA; padding: 7px; margin: auto;">
+    <body style="margin:20px">
+        <form action="" method="post" onsubmit="return validate()">
+            <table style="background-color:#DDDDDD;border:1px solid #AAAAAA;padding:7px;margin:auto">
                 <tr>
                     <td>{{'Full name:'|trans}}</td>
                     <td><input id="fullname" name="fullname" /></td></tr>
@@ -39,9 +39,9 @@
                     <td>{{'Repeat password:'|trans}}</td>
                     <td><input id="password2" name="password2" type="password" /></td></tr>
                 <tr>
-                    <td colspan="2" align="center"><input type="submit" style="margin-top:6px; width:52; height:24;" value="{{'Create account'|trans}}" /></td></tr>
+                    <td colspan="2" align="center"><input type="submit" style="margin-top:6px;width:52;height:24" value="{{'Create account'|trans}}" /></td></tr>
             </table>
         </form>
-        {% if message %}<p style="text-align: center; margin-top: 20px;">{{message}}</p>{% endif %}
+        {% if message %}<p style="text-align:center;margin-top:20px">{{message}}</p>{% endif %}
     </body>
 </html>

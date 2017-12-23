@@ -1,13 +1,13 @@
 {% extends "admin/index.html" %}
 
 {% block actions %}
-<li><a onclick="updatemaerke({{brand.id}});"><img src="/theme/default/images/admin/disk.png" width="16" height="16" alt="" /> {{'Save brand'|trans}}</a></li>
+<li><a onclick="updatemaerke({{brand.id}})"><img src="/theme/default/images/admin/disk.png" width="16" height="16" alt="" /> {{'Save brand'|trans}}</a></li>
 {% endblock %}
 
 {% block canvas %}
 <div id="headline">{{'Edit %title%'|trans|replace({'%title%': brand.title})}}</div>
 <form onsubmit="return updatemaerke({{brand.id}})">
     {% include 'admin/partial-maerker.html' %}
-    <div id="imagelogo" style="display:none; position:absolute;"></div>
+    <div id="imagelogo" style="display:none;position:absolute"></div>
 </form>
 {% endblock %}

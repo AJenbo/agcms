@@ -47,10 +47,10 @@
             <img src="/theme/www.jagtogfiskerimagasinet.dk/images/mainfade-l.gif" alt="" width="15" height="15" id="mainfade-l" />
             <img src="/theme/www.jagtogfiskerimagasinet.dk/images/mainfade-r.gif" alt="" width="17" height="15" id="mainfade-r" />
         </div>
-        <div id="text" {% if crumbs|length == 1 %} class="h510"{% else %} style="bottom:0px"{% endif%}>{% block content %}<div class="mobile">{{renderable.html|raw}}</div><img class="notmobile" src="/images/web/main.jpg" alt="" width="620" height="510" style="display:block;" />{% endblock %}</div>
+        <div id="text" {% if crumbs|length == 1 %} class="h510"{% else %} style="bottom:0px"{% endif%}>{% block content %}<div class="mobile">{{renderable.html|raw}}</div><img class="notmobile" src="/images/web/main.jpg" alt="" width="620" height="510" style="display:block" />{% endblock %}</div>
         <div id="menu" {% if crumbs|length == 1 %} class="h510"{% else %} style="bottom:0px"{% endif%} onclick="this.style.left='-100%'">
             <a name="top" class="notmobile"></a>
-            <a style="margin-left:5px" class="notmobile" href="" onclick="shoppingCart.open(); return false"><img src="/theme/default/images/cart.png" alt="" /> {{'Shopping list'|trans}} <span id="cartCount"></span></a>
+            <a style="margin-left:5px" class="notmobile" href="" onclick="shoppingCart.open();return false"><img src="/theme/default/images/cart.png" alt="" /> {{'Shopping list'|trans}} <span id="cartCount"></span></a>
             {% if crumbs|length == 1 %}
             {{renderable.html|raw}}
             {% else %}

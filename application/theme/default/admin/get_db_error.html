@@ -12,9 +12,9 @@
             {{'WWW:'|trans}} <span id="wwwsize">{{wwwSize|number_format(1, ',', '')}}MiB</span>
         </div>
         <div id="status"></div>
-        <button onclick="scan_db();">{{'Scan database'|trans}}</button>
-        <button onclick="get_subscriptions_with_bad_emails();">{{'Check emails in the address book'|trans}}</button>
-        <button onclick="removeNoneExistingFiles();">{{'Clean up files'|trans}}</button>
+        <button onclick="scan_db()">{{'Scan database'|trans}}</button>
+        <button onclick="get_subscriptions_with_bad_emails()">{{'Check emails in the address book'|trans}}</button>
+        <button onclick="removeNoneExistingFiles()">{{'Clean up files'|trans}}</button>
         <div id="errors"></div>
 
         <div>{{'Delayed emails %pending%/%total%'|trans|replace({'%pending%': pendingEmails, '%total%': totalDelayedEmails})}}</div>

@@ -3,7 +3,7 @@
 {% block content %}
 <div id="innercontainer">
     {{html|raw}}
-    <form style="text-align:center;" action="https://ssl.ditonlinebetalingssystem.dk/integration/ewindow/Default.aspx" method="post">
+    <form style="text-align:center" action="https://ssl.ditonlinebetalingssystem.dk/integration/ewindow/Default.aspx" method="post">
         {% for name, value in inputs %}
         <input type="hidden" name="{{name}}" value="{{value}}" />
         {% endfor %}

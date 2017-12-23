@@ -13,12 +13,12 @@
                 </div>
                 {% endif %}
                 {% if product.excerpt %}
-                <div style="padding:5px;">{{product.excerpt}}</div>
+                <div style="padding:5px">{{product.excerpt}}</div>
                 {% endif %}
                 <a href="{{product.canonicalLink(category)}}">
                     <img class="laemere web" src="/theme/arms-gallery.dk/images/info.gif" alt="{{'Read more'|trans}}" width="83" height="15" />
                 </a>
-                <div style="padding:5px; text-align:right;">
+                <div style="padding:5px;text-align:right">
                     {% if product.price > 0 %}<strong>{{product.price|number_format(0, ',', '.')}},-</strong>{% else %}&nbsp;{% endif %}
                 </div>
             </div>

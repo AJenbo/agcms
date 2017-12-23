@@ -1,7 +1,7 @@
 {% extends "admin/index.html" %}
 
 {% block actions %}
-<li><a onclick="updateKat({{category.id}});"><img src="/theme/default/images/admin/disk.png" width="16" height="16" alt="" /> {{'Save category'|trans}}</a></li>
+<li><a onclick="updateKat({{category.id}})"><img src="/theme/default/images/admin/disk.png" width="16" height="16" alt="" /> {{'Save category'|trans}}</a></li>
 {% endblock %}
 
 {% block canvas %}
@@ -11,7 +11,7 @@
     <div>
         {{'Name:'|trans}}
         <img style="cursor:pointer;vertical-align:bottom" onclick="explorer('thb','icon_id')" src="{% if category.icon %}{{category.icon.path}}{% else %}/theme/default/images/admin/folder.png{% endif %}" title="" alt="{{'Pictures'|trans}}" id="icon_idthb" />
-        <input id="navn" style="width:256px;" maxlength="64" value="{{category.title}}" />
+        <input id="navn" style="width:256px" maxlength="64" value="{{category.title}}" />
         <br />
         {{'Icon:'|trans}}
         <input id="icon_id" name="icon_id" type="hidden" value="{{category.icon.id}}" />
@@ -22,7 +22,7 @@
 
         {% if category.hasChildren %}
         {{'Sort subcategories:'|trans}}
-        <select id="custom_sort_subs" onchange="displaySubMenus(this.value);" onblur="displaySubMenus(this.value);">
+        <select id="custom_sort_subs" onchange="displaySubMenus(this.value)" onblur="displaySubMenus(this.value)">
             <option value="0">{{'Alphabetically'|trans}}</option>
             <option value="1"{% if category.weightedChildren %} selected="selected"{% endif %}>{{'Manually'|trans}} </option>
         </select>
@@ -80,6 +80,6 @@
         {% endif %}
         <br />
     </div>
-    <p style="display:none;"></p>
+    <p style="display:none"></p>
 </form>
 {% endblock %}

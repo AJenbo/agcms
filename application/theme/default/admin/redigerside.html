@@ -1,13 +1,13 @@
 {% extends "admin/index.html" %}
 
 {% block actions %}
-<li><a onclick="updateSide({{page.id}});"><img src="/theme/default/images/admin/disk.png" width="16" height="16" alt="" /> {{'Save page'|trans}}</a></li>
+<li><a onclick="updateSide({{page.id}})"><img src="/theme/default/images/admin/disk.png" width="16" height="16" alt="" /> {{'Save page'|trans}}</a></li>
 {% endblock %}
 
 {% block canvas %}
 <div id="headline">{% if page %}{{'Edit page #%pageId%'|trans|replace({'%pageId%': page.id})}}{% else %}{{'Create new page'|trans}}{% endif %}</div>
-<form action="" method="post" onsubmit="return updateSide({{page.id}});">
-    <input type="submit" accesskey="s" style="width:1px; height:1px; position:absolute; top: -20px; left:-20px;" />
+<form action="" method="post" onsubmit="return updateSide({{page.id}})">
+    <input type="submit" accesskey="s" style="width:1px;height:1px;position:absolute;top:-20px;left:-20px" />
     <input type="hidden" name="id" id="id" value="{{page.id}}" />
     <div>
         <input class="admin_name" type="text" name="navn" id="navn" value="{{page.title}}" maxlength="127" size="127" style="width:{{textWidth + 19}}px" />
@@ -21,7 +21,7 @@
         <textarea name="keywords" id="keywords" style="width:{{textWidth}}px;max-width:{{textWidth}}px" rows="2" cols="">{{page.keywords}}</textarea>
     </div>
     <div class="toolbox">
-        <a class="menuboxheader" id="beskrivelseboxheader" style="width:{{thumbWidth - 16}}px" onclick="showhide('beskrivelsebox',this);">
+        <a class="menuboxheader" id="beskrivelseboxheader" style="width:{{thumbWidth - 16}}px" onclick="showhide('beskrivelsebox',this)">
             {{'Description:'|trans}}
         </a>
         <div style="text-align:center;width:{{thumbWidth + 4}}px{% if hide.description %};display:none{% endif %}" id="beskrivelsebox">
@@ -35,7 +35,7 @@
         </div>
     </div>
     <div class="toolbox">
-        <a class="menuboxheader" id="priserheader" style="width:261px" onclick="showhide('priser',this);">{{'Price:'|trans}} </a>
+        <a class="menuboxheader" id="priserheader" style="width:261px" onclick="showhide('priser',this)">{{'Price:'|trans}} </a>
         <div style="width:281px{% if hide.prices %};display:none{% endif %}" id="priser">
             <table style="width:100%">
                 <tr>
@@ -68,7 +68,7 @@
         </div>
     </div>
     <div class="toolbox">
-        <a class="menuboxheader" id="miscboxheader" style="width:250px" onclick="showhide('miscbox',this);">
+        <a class="menuboxheader" id="miscboxheader" style="width:250px" onclick="showhide('miscbox',this)">
             {{'Other:'|trans}}
         </a>
         <div style="width:270px{% if hide.misc %};display:none{% endif %}" id="miscbox">
@@ -96,7 +96,7 @@
     </div>
     {% if page %}
     <div class="toolbox">
-        <a class="menuboxheader" id="listboxheader" style="width:{{textWidth - 20 + 32}}px" onclick="showhide('listbox',this);">
+        <a class="menuboxheader" id="listboxheader" style="width:{{textWidth - 20 + 32}}px" onclick="showhide('listbox',this)">
             Lists:
         </a>
         <div style="width:{{textWidth + 32}}px{% if hide.listbox %};display:none{% endif %}" id="listbox">
@@ -111,7 +111,7 @@
                         {% if table.hasLinks %}
                         <td><img src="/theme/default/images/admin/link.png" alt="{{'Link'|trans}}" title="" width="16" height="16" /></td>
                         {% endif %}
-                        <td style="width:32px;"></td>
+                        <td style="width:32px"></td>
                     </tr>
                 </thead>
                 <tfoot>
@@ -121,7 +121,7 @@
                         <td><input style="display:none;{% if column.type != 0 %}text-align:right;{% endif %}" /></td>
                         {% else %}
                         <td>
-                            <select style="display:none;">
+                            <select style="display:none">
                                 <option value=""></option>
                                 {% for option in column.options %}
                                 <option value="{{option}}">{{option}}</option>
@@ -131,10 +131,10 @@
                         {% endif %}
                         {% endfor %}
                         {% if table.hasLinks %}
-                        <td><input style="display:none;text-align:right;" /></td>
+                        <td><input style="display:none;text-align:right" /></td>
                         {% endif %}
                         <td>
-                            <img onclick="listInsertRow({{table.id}});" src="/theme/default/images/admin/disk.png" alt="{{'Edit'|trans}}" title="{{'Edit'|trans}}" width="16" height="16" />
+                            <img onclick="listInsertRow({{table.id}})" src="/theme/default/images/admin/disk.png" alt="{{'Edit'|trans}}" title="{{'Edit'|trans}}" width="16" height="16" />
                         </td>
                     </tr>
                 </tfoot>
@@ -144,7 +144,7 @@
                     <tr id="list_row{{row.id}}">
                         {% for columnId, column in table.columns %}
                         {% if column.sort == 0 %}
-                        <td{% if column.type %} style="text-align:right;"{% endif %}>
+                        <td{% if column.type %} style="text-align:right"{% endif %}>
                             <input value="{{row[columnId]}}" style="display:none;{% if column.type %}text-align:right;{% endif %}" />
                             <span>{{row[columnId]}}</span>
                         </td>
@@ -163,15 +163,15 @@
                         {% endif %}
                         {% endfor %}
                         {% if table.hasLinks %}
-                        <td style="text-align:right;">
-                            <input value="{{row.page.id}}" style="display:none;text-align:right;" />
+                        <td style="text-align:right">
+                            <input value="{{row.page.id}}" style="display:none;text-align:right" />
                             <span>{{row.page.id}}</span>
                         </td>
                         {% endif %}
                         <td>
-                            <img onclick="listEditRow({{table.id}}, {{row.id}});" src="/theme/default/images/admin/application_edit.png" alt="{{'Edit'|trans}}" title="{{'Edit'|trans}}" width="16" height="16" />
-                            <img onclick="listUpdateRow({{table.id}}, {{row.id}});" style="display:none" src="/theme/default/images/admin/disk.png" alt="{{'Edit'|trans}}" title="{{'Edit'|trans}}" width="16" height="16" />
-                            <img onclick="listRemoveRow({{table.id}}, {{row.id}});" src="/theme/default/images/admin/cross.png" alt="X" title="{{'Delete row'|trans}}" />
+                            <img onclick="listEditRow({{table.id}},{{row.id}})" src="/theme/default/images/admin/application_edit.png" alt="{{'Edit'|trans}}" title="{{'Edit'|trans}}" width="16" height="16" />
+                            <img onclick="listUpdateRow({{table.id}},{{row.id}})" style="display:none" src="/theme/default/images/admin/disk.png" alt="{{'Edit'|trans}}" title="{{'Edit'|trans}}" width="16" height="16" />
+                            <img onclick="listRemoveRow({{table.id}},{{row.id}})" src="/theme/default/images/admin/cross.png" alt="X" title="{{'Delete row'|trans}}" />
                         </td>
                     </tr>
                     {% endfor %}
@@ -184,17 +184,17 @@
             --></script>
             {% endfor %}
             {% endspaceless %}
-            <input type="button" onclick="window.open('/admin/page/{{page.id}}/tables/', 'addlist','toolbar=0,height=250');" value="{{'Add list'|trans}}">
+            <input type="button" onclick="window.open('/admin/page/{{page.id}}/tables/','addlist','toolbar=0,height=250')" value="{{'Add list'|trans}}">
         </div>
     </div>
 </form>
-<form action="" method="post" onsubmit="return bind({{page.id}});">
+<form action="" method="post" onsubmit="return bind({{page.id}})">
     {% endif %}
     <div class="toolbox">
-        <a class="menuboxheader" id="bindingheader" style="width:366px;" onclick="showhide('binding',this);">
+        <a class="menuboxheader" id="bindingheader" style="width:366px" onclick="showhide('binding',this)">
             {{'Bindings:'|trans}}
         </a>
-        <div id="binding"{% if hide.binding %} style="display:none;"{% endif %}>
+        <div id="binding"{% if hide.binding %} style="display:none"{% endif %}>
             <div id="bindinger">
                 <br />
                 {% for categoryId, path in bindings %}
@@ -215,10 +215,10 @@
 {% if page %}
 <form action="" method="post" onsubmit="return addAccessory({{page.id}})">
     <div class="toolbox">
-        <a class="menuboxheader" id="accessoryheader" style="width:593px;" onclick="showhide('tilbehor',this);">
+        <a class="menuboxheader" id="accessoryheader" style="width:593px" onclick="showhide('tilbehor',this)">
             {{'Accessories:'|trans}}
         </a>
-        <div id="tilbehor"{% if hide.tilbehor %} style="display:none;"{% endif %}>
+        <div id="tilbehor"{% if hide.tilbehor %} style="display:none"{% endif %}>
             <div id="accessories">
                 <br />
                 {% for accessoryId, accessoryTitle in accessories %}
