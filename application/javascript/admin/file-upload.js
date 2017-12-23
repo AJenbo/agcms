@@ -129,8 +129,9 @@ function send() {
         try {
             x = new window.XMLHttpRequest();
         } catch (e) {
+            continue;
         }
-        if (x === null || typeof x.readyState !== "number") {
+        if (typeof x.readyState !== "number") {
             continue;
         }
         totals[i] = files[i].size;
