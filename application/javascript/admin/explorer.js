@@ -60,7 +60,7 @@ function popupType(mime) {
 }
 
 function getContextMenuTarget(object, className) {
-    while (object.className != className) {
+    while (object.className !== className) {
         object = object.parentNode;
     }
 
@@ -353,11 +353,11 @@ function renamedir_r(data) {
 
 var popup = null;
 function popUpWin(url, win, options, width, height) {
-    if (popup != null) {
+    if (popup !== null) {
         popup.close();
         popup = null;
     }
-    if (options != "") {
+    if (options !== "") {
         options += ",";
     }
     var left = (screen.availWidth - width) / 2;
@@ -409,7 +409,7 @@ function idToDir(id) {
 
 function dir_expand(dirdiv, move) {
     dirdiv = dirdiv.parentNode;
-    if (dirdiv.lastChild.firstChild == null) {
+    if (dirdiv.lastChild.firstChild === null) {
         document.getElementById("loading").style.visibility = "";
         xHttp.request(
             "/admin/explorer/folders/?path=" + encodeURIComponent(idToDir(dirdiv.id)) + "&move=" + (move ? 1 : 0),

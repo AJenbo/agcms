@@ -72,7 +72,7 @@ var CropImageManager = {
 
     // Attaches/resets the image cropper
     attachCropper: function() {
-        if (resizeHandle != null) {
+        if (resizeHandle !== null) {
             resizeEnd();
         }
         $("preview").style.display = "none";
@@ -80,7 +80,7 @@ var CropImageManager = {
         $("resetCropper").style.display = "none";
         $("removeCropper").style.display = "";
         $("preview").style.width = "";
-        if (this.curCrop != null) {
+        if (this.curCrop !== null) {
             this.curCrop.remove();
         }
         this.curCrop = new Cropper.Img("original", {
@@ -96,7 +96,7 @@ var CropImageManager = {
         $("removeCropper").style.display = "none";
         $("resetCropper").style.display = "";
         preview();
-        if (this.curCrop != null) {
+        if (this.curCrop !== null) {
             this.curCrop.remove();
         }
     },
@@ -140,7 +140,7 @@ var resizeHandle = null;
 function resize() {
     $("save").style.display = "";
     $("loading").style.visibility = "hidden";
-    if (resizeHandle != null) {
+    if (resizeHandle !== null) {
         resizeHandle.destroy();
     }
 

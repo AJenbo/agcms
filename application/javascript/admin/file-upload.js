@@ -8,19 +8,19 @@
     description.style.display = "none";
     file.setAttribute("accept", "");
 
-    if (type == "") {
+    if (type === "") {
         message = "Vælg den fil du vil sende";
-    } else if (type == "image" || type == "lineimage") {
+    } else if (type === "image" || type === "lineimage") {
         description.style.display = "";
         message = "Vælg de billeder du vil sende";
         file.setAttribute("accept", "image/*");
-    } else if (type == "video") {
+    } else if (type === "video") {
         message = "Vælg den film du vil sende";
         file.setAttribute("accept", "video/*");
     }
     status(message);
 
-    if (type == "") {
+    if (type === "") {
         file.disabled = true;
         return;
     }

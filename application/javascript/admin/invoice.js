@@ -9,7 +9,7 @@ function newfaktura_r(data) {
 
 function removeRow(row) {
     $("vareTable").removeChild(row.parentNode.parentNode);
-    if ($("vareTable").childNodes.length == 0) {
+    if ($("vareTable").childNodes.length === 0) {
         addRow();
     }
     prisUpdate();
@@ -111,7 +111,7 @@ function prisUpdate() {
         total = quantity * value;
 
         totals[i].innerHTML = "";
-        if (total != 0) {
+        if (total !== 0) {
             totals[i].innerHTML = numberFormat(total);
         }
 
@@ -135,8 +135,8 @@ function prisUpdate() {
     $("payamount").innerHTML = numberFormat(payamount);
     invoiceAmount = payamount.toFixed(2);
 
-    if (!quantities.length || quantities[quantities.length - 1].value != "" || titles[titles.length - 1].value != "" ||
-        values[values.length - 1].value != "") {
+    if (!quantities.length || quantities[quantities.length - 1].value !== "" || titles[titles.length - 1].value !== "" ||
+        values[values.length - 1].value !== "") {
         addRow();
     }
 
@@ -174,7 +174,7 @@ function save(id = null, type = null) {
         type = "save";
     }
 
-    if (type == "cancel" && !confirm("Are you sure you want to cancel this Invoice?")) {
+    if (type === "cancel" && !confirm("Are you sure you want to cancel this Invoice?")) {
         return false;
     }
 
@@ -222,11 +222,11 @@ function save(id = null, type = null) {
         update.department = getSelectValue("department");
     }
 
-    if (type == "giro") {
+    if (type === "giro") {
         update.paydate = $("gdate").value;
     }
 
-    if (type == "cash") {
+    if (type === "cash") {
         update.paydate = $("cdate").value;
     }
 
@@ -255,8 +255,8 @@ function sendReminder_r(data) {
 }
 
 function save_r(date) {
-    if (date.status !== status || date.type == "lock" || date.type == "cancel" || date.type == "giro" ||
-        date.type == "cash") {
+    if (date.status !== status || date.type === "lock" || date.type === "cancel" || date.type === "giro" ||
+        date.type === "cash") {
         window.location.reload();
     }
 
@@ -281,7 +281,7 @@ function valideMail() {
         return;
     }
 
-    if ($("email").value != lastemail || $("emaillink").style.display == "none") {
+    if ($("email").value !== lastemail || $("emaillink").style.display === "none") {
         lastemail = $("email").value;
         xHttp.cancel(validemailajaxcall);
         $("loading").style.visibility = "";

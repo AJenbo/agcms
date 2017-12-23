@@ -119,7 +119,7 @@ var listOrderContextMenu = [{
 }];
 
 function displaySubMenus(state) {
-    if (state == "1") {
+    if (state === "1") {
         $("subMenus").style.display = "";
         return;
     }
@@ -229,7 +229,7 @@ function save_ny_kat_r(data) {
 
 function addNewItem() {
     var text = $("newItem");
-    if (text.value != "") {
+    if (text.value !== "") {
         var listOrder = $("listOrder");
         var li = document.createElement("li");
         li.id = "item_" + items;
@@ -377,12 +377,12 @@ function sendEmail() {
     }
     $("loading").style.visibility = "";
     var html = CKEDITOR.instances.text.getData();
-    if ($("from").value == "") {
+    if ($("from").value === "") {
         $("loading").style.visibility = "hidden";
         alert("Du skal vælge en afsender!");
         return false;
     }
-    if ($("subject").value == "") {
+    if ($("subject").value === "") {
         $("loading").style.visibility = "hidden";
         alert("Du skal skrive et emne!");
         return false;

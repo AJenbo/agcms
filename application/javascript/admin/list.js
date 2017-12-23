@@ -103,7 +103,7 @@ function listUpdateRow_r(data) {
     var row = $("list_row" + data.rowid);
 
     for (i = 0; i < row.childNodes.length - 1; i++) {
-        if (typeof(row.childNodes[i].lastChild.textContent) == "string") {
+        if (typeof(row.childNodes[i].lastChild.textContent) === "string") {
             row.childNodes[i].lastChild.textContent = row.childNodes[i].firstChild.value;
         } else {
             row.childNodes[i].lastChild.innerText = row.childNodes[i].firstChild.value;

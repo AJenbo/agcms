@@ -33,7 +33,7 @@ function genericCallback(data) {
 }
 
 function checkForInt(evt) {
-    return (evt.which >= 48 && evt.charCode <= 57) || evt.charCode == 8 || evt.charCode == 0 || evt.charCode == 13;
+    return (evt.which >= 48 && evt.charCode <= 57) || evt.charCode === 8 || evt.charCode === 0 || evt.charCode === 13;
 }
 
 function inject_html(data) {
@@ -69,10 +69,10 @@ function getCookie(cookieName) {
     cookieName = encodeURIComponent(cookieName);
     if (document.cookie.length > 0) {
         begin = document.cookie.indexOf(cookieName + "=");
-        if (begin != -1) {
+        if (begin !== -1) {
             begin += cookieName.length + 1;
             end = document.cookie.indexOf(";", begin);
-            if (end == -1) {
+            if (end === -1) {
                 end = document.cookie.length;
             }
 
@@ -85,7 +85,7 @@ function getCookie(cookieName) {
 
 function showhide(id) {
     var obj = $(id);
-    if (obj.style.display == "") {
+    if (obj.style.display === "") {
         obj.style.display = "none";
         setCookie("hide" + id, "1", 360);
 
@@ -98,7 +98,7 @@ function showhide(id) {
 
 function showhidekats(id, thisobj) {
     var obj = $(id);
-    if (obj.style.display == "") {
+    if (obj.style.display === "") {
         obj.style.display = "none";
         setCookie("hide" + id, "1", 360);
         $("loading").style.visibility = "";
@@ -408,14 +408,14 @@ function moveCategory_r(data) {
     }
 
     removeTagById(data.id);
-    if ($("kat" + data.parentId + "content").innerHTML != "") {
+    if ($("kat" + data.parentId + "content").innerHTML !== "") {
         xHttp.request("/admin/sitetree/" + data.parentId + "/", expandCategory_r);
     }
 }
 
 function renameCategory(id, title) {
     var newTitle = prompt("OmdÃ¸b kategori", title);
-    if (newTitle != null && newTitle !== title) {
+    if (newTitle !== null && newTitle !== title) {
         $("loading").style.visibility = "";
         xHttp.request("/admin/categories/" + id + "/", renameCategory_r, "PUT", {"title": newTitle});
     }
@@ -426,7 +426,7 @@ function renameCategory_r(data) {
         return;
     }
 
-    if ($(data.id).childNodes.length == 4) {
+    if ($(data.id).childNodes.length === 4) {
         $(data.id).childNodes[2].lastChild.nodeValue = " " + data.title;
 
         return;
