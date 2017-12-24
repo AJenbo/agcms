@@ -34,11 +34,11 @@ function calcImageDimension() {
     var dimention = {"width": Math.round(maxW * scale), "height": Math.round(maxH * scale)};
 
     if (mode === "thb") {
-        var width = thumb_width;
-        var height = thumb_height;
+        var width = thumbWidth;
+        var height = thumbHeight;
         if (rotate % 180) {
-            width = thumb_height;
-            height = thumb_width;
+            width = thumbHeight;
+            height = thumbWidth;
         }
         dimention.width = Math.min(width, dimention.width);
         dimention.height = Math.min(height, dimention.height);
@@ -67,6 +67,22 @@ function saveImage_r(data) {
     }
 
     window.close();
+}
+
+// setup the callback function
+function onEndCrop(coords, dimensions) {
+    cropX = coords.x1;
+    cropY = coords.y1;
+    maxW = dimensions.width;
+    maxH = dimensions.height;
+
+    if (mode === "thb") {
+        if (rotate) {
+            scale = Math.min(1, Math.max(thumbHeight / maxW, thumbWidth / maxH));
+            return;
+        }
+        scale = Math.min(1, Math.max(thumbWidth / maxW, thumbHeight / maxH));
+    }
 }
 
 var CropImageManager = {
@@ -112,22 +128,6 @@ var CropImageManager = {
     }
 };
 
-// setup the callback function
-function onEndCrop(coords, dimensions) {
-    cropX = coords.x1;
-    cropY = coords.y1;
-    maxW = dimensions.width;
-    maxH = dimensions.height;
-
-    if (mode === "thb") {
-        if (rotate) {
-            scale = Math.min(1, Math.max(thumb_height / maxW, thumb_width / maxH));
-            return;
-        }
-        scale = Math.min(1, Math.max(thumb_width / maxW, thumb_height / maxH));
-    }
-}
-
 // basic example
 Event.observe(window, "load", function test() {
     CropImageManager.init();
@@ -155,7 +155,7 @@ function resize() {
 
     var maxWH = (rotate === 90 || rotate === 270) ? maxH : maxW;
     if (mode === "thb") {
-        maxWH = Math.round(maxWH * Math.min(1, Math.min(thumb_width / maxW, thumb_height / maxH)));
+        maxWH = Math.round(maxWH * Math.min(1, Math.min(thumbWidth / maxW, thumbHeight / maxH)));
     }
 
     resizeHandle = new Draggable("resizeHandle", {

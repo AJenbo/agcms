@@ -311,5 +311,5 @@ function chnageZipCode(zipcode, country, city) {
         return;
     }
 
-    $(city).value = arrayZipcode[zipcode] ? arrayZipcode[zipcode] : "";
+    $(city).value = arrayZipcode[zipcode] || "";
 }

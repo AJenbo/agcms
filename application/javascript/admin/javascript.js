@@ -248,7 +248,7 @@ function updatemaerke_r(data) {
 function bind(id) {
     $("loading").style.visibility = "";
     var categoryId = parseInt(getRadio("kat"));
-    xHttp.request("/admin/page/" + id + "/categories/" + categoryId + "/", binding_r, "POST");
+    xHttp.request("/admin/page/" + id + "/categories/" + categoryId + "/", bindingsCallback, "POST");
 
     return false;
 }
@@ -300,7 +300,7 @@ function removeAccessory(navn, pageId, accessoryId) {
     return false;
 }
 
-function binding_r(data) {
+function bindingsCallback(data) {
     if (!genericCallback(data)) {
         return;
     }
@@ -328,7 +328,7 @@ function binding_r(data) {
 }
 
 function removeBinding(navn, id, categoryId, callback = null) {
-    callback = callback || binding_r;
+    callback = callback || bindingsCallback;
     if (confirm("Vil du fjerne siden fra '" + navn + "'?")) {
         $("loading").style.visibility = "";
         xHttp.request("/admin/page/" + id + "/categories/" + categoryId + "/", callback, "DELETE");

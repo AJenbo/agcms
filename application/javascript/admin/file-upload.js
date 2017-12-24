@@ -42,6 +42,13 @@ function filetypeshow() {
     file.disabled = false;
 }
 
+function fileExistsResponse(data) {
+    if (data.exists) {
+        alert("Bemærk en fil med navnet \"" + data.name +
+              "\" allerede eksistere, og vil blive overskrevet hvis du fortsætter med denne upload!");
+    }
+}
+
 function validate() {
     var files = document.getElementById("file").files;
     var submit = document.getElementById("submit");
@@ -63,19 +70,12 @@ function validate() {
         var type = document.getElementById("type").value;
         xHttp.request(
             "/admin/explorer/files/exists/?path=" + encodeURIComponent(path) + "&type=" + encodeURIComponent(type),
-            fileExists_r);
+            fileExistsResponse);
     }
     status("");
 
     submit.disabled = false;
     return true;
-}
-
-function fileExists_r(data) {
-    if (data.exists) {
-        alert("Bemærk en fil med navnet \"" + data.name +
-              "\" allerede eksistere, og vil blive overskrevet hvis du fortsætter med denne upload!");
-    }
 }
 
 function uploadCompleated() {

@@ -12,7 +12,7 @@ function listInsertRow_r(data) {
     var td;
     var span;
     var input;
-    for (i = 0; i < footer.childNodes.length - 1; i++) {
+    for (var i = 0; i < footer.childNodes.length - 1; i++) {
         td = document.createElement("td");
         td.style.textAlign = footer.childNodes[i].firstChild.style.textAlign;
         input = document.createElement("input");
@@ -49,7 +49,7 @@ function listInsertRow(listid) {
 function listUpdateRow(listid, rowid) {
     var row = $("list_row" + rowid);
     var data = listSaveRow(row, listid);
-    xHttp.request("/admin/tables/" + listid + "/row/" + rowid + "/", listUpdateRow_r, "PUT", data);
+    xHttp.request("/admin/tables/" + listid + "/row/" + rowid + "/", listUpdateRowCallback, "PUT", data);
 }
 
 function listSaveRow(row, listid) {
@@ -97,7 +97,7 @@ function listEditRow(listid, rowid) {
     row.firstChild.firstChild.focus();
 }
 
-function listUpdateRow_r(data) {
+function listUpdateRowCallback(data) {
     if (!genericCallback(data)) {
         return;
     }
