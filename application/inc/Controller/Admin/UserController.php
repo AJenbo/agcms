@@ -91,12 +91,13 @@ class UserController extends AbstractAdminController
             if (ORM::getOneByQuery(User::class, 'SELECT * FROM users WHERE name = ' . db()->eandq($name))) {
                 throw new InvalidInput(_('Username already taken.'));
             }
+            $firstUser = !(bool) ORM::getOneByQuery(User::class, 'SELECT * FROM users WHERE access != 0');
 
             $user = new User([
                 'full_name'     => $fullname,
                 'nickname'      => $name,
                 'password_hash' => '',
-                'access_level'  => 0,
+                'access_level'  => $firstUser ? User::ADMINISTRATOR : User::NO_ACCESS,
                 'last_login'    => time(),
             ]);
             $user->setPassword($password)->save();
