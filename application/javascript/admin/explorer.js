@@ -492,7 +492,7 @@ function renamefile_r(data) {
         return;
     }
 
-    document.getElementById("navn" + data.id + "div").innerHTML = data.filename;
+    document.getElementById("navn" + data.id + "div").innerText = data.filename;
     document.getElementById("navn" + data.id + "div").title = data.filename;
     document.getElementById("navn" + data.id + "form").firstChild.firstChild.value = data.filename;
     files[data.id].name = data.filename;
@@ -551,7 +551,7 @@ function deletefile_r(data) {
 function swap_pannel(navn) {
     // Save what mode we are in and what was searched for
     if (navn === "search") {
-        document.getElementById("files").innerHTML = "";
+        document.getElementById("files").innerText = "";
         document.getElementById("dir_bn").className = "";
         document.getElementById("dir").style.display = "none";
         document.getElementById("search_bn").className = "down";
@@ -561,7 +561,7 @@ function swap_pannel(navn) {
             searchfiles();
         }
     } else if (navn === "dir") {
-        document.getElementById("files").innerHTML = "";
+        document.getElementById("files").innerText = "";
         document.getElementById("search_bn").className = "";
         document.getElementById("search").style.display = "none";
         document.getElementById("dir_bn").className = "down";

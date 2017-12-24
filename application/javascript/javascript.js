@@ -27,12 +27,12 @@ function updateprice() {
     for (var i = 0; i < values.length; i++) {
         value = values[i] * input[i].value;
         if (values[i] > 0) {
-            total[i].innerHTML = value.toFixed(2).toString().replace(/\./, ",");
+            total[i].innerText = value.toFixed(2).toString().replace(/\./, ",");
         }
         subtotal = subtotal + value;
     }
 
-    document.getElementById("total").innerHTML = subtotal.toFixed(2).toString().replace(/\./, ",");
+    document.getElementById("total").innerText = subtotal.toFixed(2).toString().replace(/\./, ",");
 }
 
 function showhidealtpost(status) {

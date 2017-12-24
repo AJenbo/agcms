@@ -120,9 +120,9 @@ function prisUpdate() {
 
         total = quantity * value;
 
-        totals[i].innerHTML = "";
+        totals[i].innerText = "";
         if (total !== 0) {
-            totals[i].innerHTML = numberFormat(total);
+            totals[i].innerText = numberFormat(total);
         }
 
         netto += premoms ? (total / 1.25) : total;
@@ -132,9 +132,9 @@ function prisUpdate() {
         }
     }
 
-    $("netto").innerHTML = numberFormat(netto);
+    $("netto").innerText = numberFormat(netto);
 
-    $("moms").innerHTML = numberFormat(netto * momssats);
+    $("moms").innerText = numberFormat(netto * momssats);
 
     var fragt = parseFloat($("fragt").value.replace(/[^-0-9,]/g, "").replace(/,/, "."));
     if (isNaN(fragt)) {
@@ -142,7 +142,7 @@ function prisUpdate() {
     }
 
     payamount = parseFloat(fragt + netto + netto * momssats);
-    $("payamount").innerHTML = numberFormat(payamount);
+    $("payamount").innerText = numberFormat(payamount);
     invoiceAmount = payamount.toFixed(2);
 
     if (!quantities.length || quantities[quantities.length - 1].value !== "" || titles[titles.length - 1].value !== "" ||
@@ -263,7 +263,7 @@ function invoiceSaveResponse(date) {
     }
 
     if (date.status !== "new" && $("note").value) {
-        $$(".note")[0].innerHTML += "<br />" + htmlEncode($("note").value);
+        $$(".note")[0].innerText += "\n" + $("note").value;
         $("note").value = "";
     }
 

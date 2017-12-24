@@ -441,53 +441,53 @@ function set_db_errors(data) {
 var startTime;
 function scan_db() {
     $("loading").style.visibility = "";
-    $("errors").innerHTML = "";
+    $("errors").innerText = "";
 
     startTime = new Date().getTime();
 
-    $("status").innerHTML = "Removing contacts that are missing vital information";
+    $("status").innerText = "Removing contacts that are missing vital information";
     xHttp.request("/admin/maintenance/contacts/empty/", maintainStep2, "DELETE");
 }
 
 function maintainStep2(data) {
     set_db_errors(data);
-    $("status").innerHTML = "Searching for pages without bindings";
+    $("status").innerText = "Searching for pages without bindings";
     xHttp.request("/admin/maintenance/pages/orphans/", maintainStep3);
 }
 
 function maintainStep3(data) {
     set_db_errors(data);
-    $("status").innerHTML = "Searching for pages with illegal bindings";
+    $("status").innerText = "Searching for pages with illegal bindings";
     xHttp.request("/admin/maintenance/pages/mismatches/", maintainStep4);
 }
 
 function maintainStep4(data) {
     set_db_errors(data);
-    $("status").innerHTML = "Searching for cirkalur linked categories";
+    $("status").innerText = "Searching for cirkalur linked categories";
     xHttp.request("/admin/maintenance/categories/circular/", maintainStep5);
 }
 
 function maintainStep5(data) {
     set_db_errors(data);
-    $("status").innerHTML = "Checking the file names";
+    $("status").innerText = "Checking the file names";
     xHttp.request("/admin/maintenance/files/names/", maintainStep6);
 }
 
 function maintainStep6(data) {
     set_db_errors(data);
-    $("status").innerHTML = "Checking the folder names";
+    $("status").innerText = "Checking the folder names";
     xHttp.request("/admin/maintenance/files/folderNames/", maintainStep7);
 }
 
 function maintainStep7(data) {
     set_db_errors(data);
-    $("status").innerHTML = "Sending delayed emails";
+    $("status").innerText = "Sending delayed emails";
     xHttp.request("/admin/maintenance/emails/send/", maintainStep8, "POST");
 }
 
 function maintainStep8(data) {
     set_db_errors(data);
-    $("status").innerHTML = "Getting system usage";
+    $("status").innerText = "Getting system usage";
     xHttp.request("/admin/maintenance/usage/", maintainStep9);
 }
 
@@ -500,11 +500,11 @@ function maintainStep9(data) {
 
 function get_subscriptions_with_bad_emails() {
     $("loading").style.visibility = "";
-    $("errors").innerHTML = "";
+    $("errors").innerText = "";
 
     starttime = new Date().getTime();
 
-    $("status").innerHTML = "Searching for illegal e-mail adresses";
+    $("status").innerText = "Searching for illegal e-mail adresses";
     xHttp.request("/admin/maintenance/contacts/invalid/", subscriptionsWithBadEmails_r);
 }
 
@@ -513,7 +513,7 @@ function subscriptionsWithBadEmails_r(data) {
     $("errors").innerHTML = $("errors").innerHTML + "<br />" + data.html + "<br />" +
                             ("The scan took %d seconds.".replace(
                                 /[%]d/g, Math.round((new Date().getTime() - starttime) / 1000).toString()));
-    $("status").innerHTML = "";
+    $("status").innerText = "";
 }
 
 function removeNoneExistingFiles() {
@@ -521,7 +521,7 @@ function removeNoneExistingFiles() {
 
     starttime = new Date().getTime();
 
-    $("status").innerHTML = "Remove missing files from database";
+    $("status").innerText = "Remove missing files from database";
     xHttp.request("/admin/maintenance/files/missing/", removeNoneExistingFiles_r, "DELETE");
 }
 
@@ -539,27 +539,27 @@ function removeNoneExistingFiles_r(data) {
                             "<br />" + ("The scan took %d seconds.".replace(
                                            /[%]d/g, Math.round((new Date().getTime() - starttime) / 1000).toString()));
 
-    $("status").innerHTML = "Getting system usage";
+    $("status").innerText = "Getting system usage";
     xHttp.request("/admin/maintenance/usage/", getUsage_r);
 }
 
 function getEmailUsage() {
     $("loading").style.visibility = "";
-    $("status").innerHTML = "Getting email usage";
+    $("status").innerText = "Getting email usage";
     xHttp.request("/admin/maintenance/emails/usage/", getEmailUsage_r);
 }
 
 function getEmailUsage_r(data) {
-    $("mailboxsize").innerHTML = Math.round(data.size / 1024 / 1024 * 10) / 10 + "MB";
-    $("status").innerHTML = "";
+    $("mailboxsize").innerText = Math.round(data.size / 1024 / 1024 * 10) / 10 + "MB";
+    $("status").innerText = "";
     $("loading").style.visibility = "hidden";
 }
 
 function getUsage_r(data) {
     $("loading").style.visibility = "hidden";
-    $("status").innerHTML = "";
-    $("wwwsize").innerHTML = Math.round(data.www / 1024 / 1024 * 10) / 10 + "MB";
-    $("dbsize").innerHTML = Math.round(data.db / 1024 / 1024 * 10) / 10 + "MB";
+    $("status").innerText = "";
+    $("wwwsize").innerText = Math.round(data.www / 1024 / 1024 * 10) / 10 + "MB";
+    $("dbsize").innerText = Math.round(data.db / 1024 / 1024 * 10) / 10 + "MB";
 }
 
 function createInvoice() {

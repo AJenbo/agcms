@@ -1,5 +1,5 @@
 ﻿function status(text) {
-    document.getElementById("status").innerHTML = text;
+    document.getElementById("status").innerText = text;
 }
 
 function setFileInputMime(file, type) {
