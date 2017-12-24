@@ -1,16 +1,5 @@
 var getTableCall = null;
-function getTable(categoryId, tableId, cell) {
-    xHttp.cancel(getTableCall);
-    getTableCall = xHttp.request("/ajax/category/" + categoryId + "/table/" + tableId + "/" + cell, injectHtml);
-    return false;
-}
-
 var getKatCall = null;
-function getKat(categoryId, column) {
-    xHttp.cancel(getKatCall);
-    getKatCall = xHttp.request("/ajax/category/" + categoryId + "/" + column, injectHtml);
-    return false;
-}
 
 function injectHtml(data) {
     if (data.error) {
@@ -18,6 +7,18 @@ function injectHtml(data) {
     }
 
     document.getElementById(data.id).innerHTML = data.html;
+}
+
+function getTable(categoryId, tableId, cell) {
+    xHttp.cancel(getTableCall);
+    getTableCall = xHttp.request("/ajax/category/" + categoryId + "/table/" + tableId + "/" + cell, injectHtml);
+    return false;
+}
+
+function getKat(categoryId, column) {
+    xHttp.cancel(getKatCall);
+    getKatCall = xHttp.request("/ajax/category/" + categoryId + "/" + column, injectHtml);
+    return false;
 }
 
 function updateprice() {

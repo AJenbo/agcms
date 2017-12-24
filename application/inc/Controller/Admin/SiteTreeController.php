@@ -78,7 +78,7 @@ class SiteTreeController extends AbstractAdminController
 
         $data = [
             'id'   => 'katsheader',
-            'html' => _('Select location:') . ' ' . $category->getPath(),
+            'text' => _('Select location:') . ' ' . $category->getPath(),
         ];
 
         return new JsonResponse($data);

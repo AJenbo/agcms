@@ -36,14 +36,6 @@ function checkForInt(evt) {
     return (evt.which >= 48 && evt.charCode <= 57) || evt.charCode === 8 || evt.charCode === 0 || evt.charCode === 13;
 }
 
-function inject_html(data) {
-    if (!genericCallback(data)) {
-        return;
-    }
-
-    $(data.id).innerHTML = data.html;
-}
-
 function isInteger(s) {
     var i;
     for (i = 0; i < s.length; i++) {
@@ -96,13 +88,21 @@ function showhide(id) {
     setCookie("hide" + id, "", 0);
 }
 
+function injectText(data) {
+    if (!genericCallback(data)) {
+        return;
+    }
+
+    $(data.id).innerText = data.text;
+}
+
 function showhidekats(id, thisobj) {
     var obj = $(id);
     if (obj.style.display === "") {
         obj.style.display = "none";
         setCookie("hide" + id, "1", 360);
         $("loading").style.visibility = "";
-        xHttp.request("/admin/sitetree/" + getRadio("kat") + "/lable/", inject_html);
+        xHttp.request("/admin/sitetree/" + getRadio("kat") + "/lable/", injectText);
 
         return;
     }
@@ -462,6 +462,14 @@ function jumpto() {
     location.href = "/admin/page/" + jumptoid + "/";
 }
 
+function injectHtml(data) {
+    if (!genericCallback(data)) {
+        return;
+    }
+
+    $(data.id).innerHTML = data.html;
+}
+
 function sogsearch() {
     var sogtext = $("sogtext").value;
     if (!sogtext) {
@@ -471,7 +479,7 @@ function sogsearch() {
     }
 
     $("loading").style.visibility = "";
-    xHttp.request("/admin/page/search/?text=" + encodeURIComponent(sogtext), inject_html);
+    xHttp.request("/admin/page/search/?text=" + encodeURIComponent(sogtext), injectHtml);
 }
 
 function confirm_faktura_validate(id) {

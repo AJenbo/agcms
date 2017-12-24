@@ -298,7 +298,7 @@ function showfiles(dir) {
 }
 
 function injectFileData(data) {
-    inject_html(data);
+    injectHtml(data);
     files = [];
     eval(data.javascript);
     reattachContextMenus();
