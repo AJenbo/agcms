@@ -12,6 +12,9 @@ db:
     MYSQL_ALLOW_EMPTY_PASSWORD: 1
   ports:
   - 3306:3306
+  volumes:
+  - ./source/schema.sql:/docker-entrypoint-initdb.d/10schema.sql
+  - ./source/seed.sql:/docker-entrypoint-initdb.d/20seed.sql
 
 nginx:
   image: nginx:stable-alpine
