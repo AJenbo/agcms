@@ -300,7 +300,9 @@ function showfiles(dir) {
 function injectFileData(data) {
     injectHtml(data);
     files = [];
-    eval(data.javascript);
+    data.files.forEach(function(fileData) {
+        files[fileData.id] = new file(fileData);
+    });
     reattachContextMenus();
 }
 

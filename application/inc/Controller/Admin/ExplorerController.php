@@ -100,7 +100,7 @@ class ExplorerController extends AbstractAdminController
         natcasesort($files);
 
         $html = '';
-        $javascript = '';
+        $fileData = [];
         foreach ($files as $fileName) {
             if ('.' === mb_substr($fileName, 0, 1) || is_dir(app()->basePath($path . '/' . $fileName))) {
                 continue;
@@ -113,10 +113,10 @@ class ExplorerController extends AbstractAdminController
             }
 
             $html .= $this->fileService->filehtml($file, $returnType);
-            $javascript .= $this->fileService->filejavascript($file);
+            $fileData[] = $this->fileService->fileAsArray($file);
         }
 
-        return new JsonResponse(['id' => 'files', 'html' => $html, 'javascript' => $javascript]);
+        return new JsonResponse(['id' => 'files', 'html' => $html, 'files' => $fileData]);
     }
 
     /**
@@ -219,18 +219,18 @@ class ExplorerController extends AbstractAdminController
         }
 
         $html = '';
-        $javascript = '';
+        $fileData = [];
 
         /** @var File[] */
         $files = ORM::getByQuery(File::class, 'SELECT *' . $sql);
         foreach ($files as $file) {
             if ('unused' !== $qtype || !$file->isInUse()) {
                 $html .= $this->fileService->filehtml($file, $returnType);
-                $javascript .= $this->fileService->filejavascript($file);
+                $fileData[] = $this->fileService->fileAsArray($file);
             }
         }
 
-        return new JsonResponse(['id' => 'files', 'html' => $html, 'javascript' => $javascript]);
+        return new JsonResponse(['id' => 'files', 'html' => $html, 'files' => $fileData]);
     }
 
     /**

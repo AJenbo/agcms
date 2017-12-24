@@ -223,6 +223,26 @@ class FileService
     }
 
     /**
+     * Get file data as an array.
+     *
+     * @param File $file
+     *
+     * @return array
+     */
+    public function fileAsArray(File $file): array
+    {
+        return [
+            'id'          => $file->getId(),
+            'path'        => $file->getPath(),
+            'mime'        => $file->getMime(),
+            'name'        => pathinfo($file->getPath(), PATHINFO_FILENAME),
+            'width'       => $file->getWidth(),
+            'height'      => $file->getHeight(),
+            'description' => $file->getDescription(),
+        ];
+    }
+
+    /**
      * Generate display HTML for file objects in Explorer.
      *
      * @param File   $file
