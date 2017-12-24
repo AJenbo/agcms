@@ -96,13 +96,10 @@ file.prototype.addToEditor = function() {
             break;
     }
     var element = window.opener.CKEDITOR.dom.element.createFromHtml(html);
-    var CKEDITOR = window.opener.CKEDITOR;
-    for (var i in CKEDITOR.instances) {
-        var currentInstance = i;
+    for (var key in window.opener.CKEDITOR.instances) {
+        window.opener.CKEDITOR.instances[key].insertElement(element);
         break;
     }
-    var oEditor = window.opener.CKEDITOR.instances[currentInstance];
-    oEditor.insertElement(element);
     window.close();
 };
 
@@ -285,9 +282,9 @@ function showfiles(dir) {
     setCookie("admin_dir", activeDir, 360);
 
     document.getElementById("loading").style.visibility = "";
-    dirlist = document.getElementById("dir").getElementsByTagName("a");
-    for (var i = 0; i < dirlist.length; i++) {
-        dirlist[i].className = "";
+    var dirlist = document.getElementById("dir").getElementsByTagName("a");
+    for (element of dirlist) {
+        element.className = "";
     }
     document.getElementById(dirToId(dir)).getElementsByTagName("a")[0].className = "active";
 
