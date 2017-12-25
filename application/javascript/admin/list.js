@@ -12,19 +12,23 @@ function listInsertRow_r(data) {
     var td;
     var span;
     var input;
-    for (var i = 0; i < footer.childNodes.length - 1; i++) {
+    for (const element of footer.childNodes) {
+        if (element.firstChild.nodeName === 'IMG') {
+            continue;
+        }
+
         td = document.createElement("td");
-        td.style.textAlign = footer.childNodes[i].firstChild.style.textAlign;
+        td.style.textAlign = element.firstChild.style.textAlign;
         input = document.createElement("input");
-        input.setAttribute("value", footer.childNodes[i].firstChild.value);
+        input.setAttribute("value", element.firstChild.value);
         input.style.display = "none";
         td.appendChild(input);
         span = document.createElement("span");
-        span.appendChild(document.createTextNode(footer.childNodes[i].firstChild.value));
+        span.appendChild(document.createTextNode(element.firstChild.value));
         td.appendChild(span);
         tr.appendChild(td);
 
-        footer.childNodes[i].firstChild.value = "";
+        element.firstChild.value = "";
     }
 
     td = document.createElement("td");
@@ -125,15 +129,26 @@ function listUpdateRowCallback(data) {
     $("list" + data.listid + "footer").style.display = "";
 }
 
+/**
+ * Set with on input elements and display them late to avoid them affecting column width.
+ *
+ * @param {number} listid
+ */
 function listSizeFooter(listid) {
     var row = $("list" + listid + "footer");
 
-    for (var i = 0; i < row.childNodes.length - 1; i++) {
-        row.childNodes[i].firstChild.style.width = row.childNodes[i].clientWidth + "px";
+    for (const element of row.childNodes) {
+        if (element.firstChild.nodeName === 'IMG') {
+            continue;
+        }
+        element.firstChild.style.width = element.clientWidth + "px";
     }
-    for (i = 0; i < row.childNodes.length - 1; i++) {
-        row.childNodes[i].lastChild.style.display = "none";
-        row.childNodes[i].firstChild.style.display = "";
+
+    for (const element of row.childNodes) {
+        if (element.firstChild.nodeName === 'IMG') {
+            continue;
+        }
+        element.firstChild.style.display = "";
     }
 }
 

@@ -107,7 +107,7 @@ function prisUpdate() {
     var value = 0;
     var total = 0;
 
-    for (var i = 0; i < quantities.length; i++) {
+    for (const i = 0; i < quantities.length; i++) {
         quantity = parseInt(quantities[i].value);
         if (isNaN(quantity)) {
             quantity = 0;
@@ -300,9 +300,9 @@ function setVisabilityForSendAction(data) {
 }
 
 function showhidealtpost(status) {
-    var altpostTrs = $$(".altpost");
-    for (var i = 0; i < altpostTrs.length; i++) {
-        altpostTrs[i].style.display = status ? "" : "none";
+    var rows = $$(".altpost");
+    for (const row of rows) {
+        row.style.display = status ? "" : "none";
     }
 }
 

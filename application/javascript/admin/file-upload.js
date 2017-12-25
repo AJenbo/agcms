@@ -58,15 +58,15 @@ function validate() {
         return false;
     }
 
-    for (var i = 0; i < files.length; i++) {
-        if (files[i].size > maxbyte) {
+    for (const file of files) {
+        if (file.size > maxbyte) {
             alert("Filen må max være på " + Math.round(maxbyte / 1024 / 1024 * 10) / 10 + "MB");
             return false;
         }
 
         status("Søger efter dubletter...");
 
-        var path = activeDir + "/" + files[i].name;
+        var path = activeDir + "/" + file.name;
         var type = document.getElementById("type").value;
         xHttp.request(
             "/admin/explorer/files/exists/?path=" + encodeURIComponent(path) + "&type=" + encodeURIComponent(type),

@@ -36,18 +36,8 @@ function checkForInt(evt) {
     return (evt.which >= 48 && evt.charCode <= 57) || evt.charCode === 8 || evt.charCode === 0 || evt.charCode === 13;
 }
 
-function isInteger(s) {
-    var i;
-    for (i = 0; i < s.length; i++) {
-        // Check that current character is number.
-        var c = s.charAt(i);
-        if (c < "0" || c > "9") {
-            return false;
-        }
-    }
-
-    // All characters are numbers.
-    return true;
+function isInteger(string) {
+    return parseInt(string).toString() === string;
 }
 
 function setCookie(name, value, expiresInDayes) {

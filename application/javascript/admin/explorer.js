@@ -283,7 +283,7 @@ function showfiles(dir) {
 
     document.getElementById("loading").style.visibility = "";
     var dirlist = document.getElementById("dir").getElementsByTagName("a");
-    for (element of dirlist) {
+    for (const element of dirlist) {
         element.className = "";
     }
     document.getElementById(dirToId(dir)).getElementsByTagName("a")[0].className = "active";
