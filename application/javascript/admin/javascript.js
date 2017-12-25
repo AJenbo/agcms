@@ -104,9 +104,9 @@ function showhidekats(id, thisobj) {
 
 function getRadio(name) {
     var objs = document.getElementsByName(name);
-    for (var i = 0; i < objs.length; i++) {
-        if (objs[i].checked) {
-            return objs[i].value;
+    for (const obj of objs) {
+        if (obj.checked) {
+            return obj.value;
         }
     }
 
@@ -117,9 +117,9 @@ function getSelectValue(id) {
     var select = $(id);
     if (select) {
         var options = select.getElementsByTagName("option");
-        for (var i = 0; i < options.length; i++) {
-            if (options[i].selected) {
-                return options[i].value;
+        for (const option of options) {
+            if (option.selected) {
+                return option.value;
             }
         }
     }
@@ -293,8 +293,8 @@ function bindingsCallback(data) {
         return;
     }
 
-    for (i = 0; i < data.deleted.length; i++) {
-        removeTagById("bind" + data.deleted[i]);
+    for (const id of data.deleted) {
+        removeTagById("bind" + id);
     }
 
     if (data.added) {
@@ -344,8 +344,8 @@ function removeTagById(id) {
 
 function removeTagByClass(className) {
     var objs = $$("." + className);
-    for (var i = 0; i < objs.length; i++) {
-        objs[i].parentNode.removeChild(objs[i]);
+    for (obj of objs) {
+        obj.parentNode.removeChild(obj);
     }
 }
 
