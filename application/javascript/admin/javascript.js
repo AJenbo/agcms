@@ -200,8 +200,6 @@ function expandCategory_r(data) {
 
 function init() {
     $("loading").style.visibility = "hidden";
-    attachContextMenus();
-    xHttp.request("/javascript/zipcodedk.json", loadZipCodesDk);
 }
 
 var arrayZipcode = {};
