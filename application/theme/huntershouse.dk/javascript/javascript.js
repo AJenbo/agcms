@@ -2,18 +2,14 @@ function init() {
     shoppingCart.onupdate();
     openForigenLinksInNewWindow();
 
-    var activmenu = $("activmenu");
+    var activmenu = document.getElementById("activmenu");
     if (activmenu) {
-        $("menu").scrollTop = activmenu.offsetTop;
+        document.getElementById("menu").scrollTop = activmenu.offsetTop;
     }
-}
-
-function $(id) {
-    return document.getElementById(id);
 }
 
 shoppingCart.onupdate = function() {
     var itemCount = shoppingCart.getCart().items.length;
-    $("count").firstChild.data = itemCount;
-    $("cartCount").innerText = itemCount ? "(" + itemCount + ")" : "";
+    document.getElementById("count").firstChild.data = itemCount;
+    document.getElementById("cartCount").innerText = itemCount ? "(" + itemCount + ")" : "";
 };

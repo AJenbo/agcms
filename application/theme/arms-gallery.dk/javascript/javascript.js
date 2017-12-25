@@ -2,10 +2,11 @@ function init() {
     shoppingCart.onupdate();
     openForigenLinksInNewWindow();
 
-    $("container").style.top = $("submenu").offsetTop + $("submenu").offsetHeight + "px";
-    var activmenu = $("activmenu");
+    var subMenu = document.getElementById("submenu");
+    document.getElementById("container").style.top = subMenu.offsetTop + subMenu.offsetHeight + "px";
+    var activmenu = document.getElementById("activmenu");
     if (activmenu) {
-        $("menu").scrollTop = activmenu.offsetTop;
+        document.getElementById("menu").scrollTop = activmenu.offsetTop;
     }
 }
 
@@ -14,10 +15,6 @@ shoppingCart.onupdate = function() {
     document.getElementById("count").firstChild.data = itemCount;
     document.getElementById("cartCount").innerText = itemCount ? "(" + itemCount + ")" : "";
 };
-
-function $(id) {
-    return document.getElementById(id);
-}
 
 var krav;
 function openkrav(url) {

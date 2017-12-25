@@ -1,16 +1,12 @@
 function init() {
     shoppingCart.onupdate();
-}
-
-function $(id) {
-    return document.getElementById(id);
     openForigenLinksInNewWindow();
 }
 
 shoppingCart.onupdate = function() {
     var itemCount = shoppingCart.getCart().items.length;
-    $("count").firstChild.data = itemCount;
-    $("cartCount").innerText = itemCount ? "(" + itemCount + ")" : "";
+    document.getElementById("count").firstChild.data = itemCount;
+    document.getElementById("cartCount").innerText = itemCount ? "(" + itemCount + ")" : "";
 };
 
 var krav;
