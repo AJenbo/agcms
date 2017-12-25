@@ -334,17 +334,6 @@ function bindTree_r(data) {
     }
 }
 
-function objToArray(obj) {
-    var r = [], x;
-    for (x in obj) {
-        if (obj.hasOwnProperty(x) && !isNaN(parseInt(x))) {
-            r[x] = obj[x];
-        }
-    }
-
-    return r;
-}
-
 function removeTagById(id) {
     var obj = $(id);
     if (!obj) {
