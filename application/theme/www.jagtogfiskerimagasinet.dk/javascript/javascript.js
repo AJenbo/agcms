@@ -1,16 +1,10 @@
 function init() {
     shoppingCart.onupdate();
-    var links = document.getElementsByTagName("a");
-    for (var i = 0; i < links.length; i++) {
-        if (links[i].hostname !== location.hostname) {
-            links[i].setAttribute("target", "_blank");
-            links[i].setAttribute("title", "Åbner i et nyt vindu");
-        }
-    }
 }
 
 function $(id) {
     return document.getElementById(id);
+    openForigenLinksInNewWindow();
 }
 
 shoppingCart.onupdate = function() {
