@@ -10,12 +10,6 @@ function init() {
     }
 }
 
-shoppingCart.onupdate = function() {
-    var itemCount = shoppingCart.getCart().items.length;
-    document.getElementById("count").firstChild.data = itemCount;
-    document.getElementById("cartCount").innerText = itemCount ? "(" + itemCount + ")" : "";
-};
-
 var krav;
 function openkrav(url) {
     var left = (screen.width - 512) / 2;

@@ -182,9 +182,7 @@ var shoppingCart = {
         var cart = shoppingCart.getCart();
         cart.items = [];
         shoppingCart.setCart(cart);
-        if (typeof shoppingCart.onupdate === "function") {
-            shoppingCart.onupdate();
-        }
+        shoppingCart.onupdate();
     },
     "addItem": function(type, id) {
         var cart = shoppingCart.getCart();
@@ -204,10 +202,7 @@ var shoppingCart = {
         });
 
         shoppingCart.setCart(cart);
-
-        if (typeof shoppingCart.onupdate === "function") {
-            shoppingCart.onupdate();
-        }
+        shoppingCart.onupdate();
     },
     "open": function() {
         var cart = shoppingCart.getCart();
@@ -272,5 +267,10 @@ var shoppingCart = {
 
         document.body.appendChild(form);
         form.submit();
+    },
+    "onupdate": function() {
+        var itemCount = shoppingCart.getCart().items.length;
+        document.getElementById("count").firstChild.data = itemCount;
+        document.getElementById("cartCount").innerText = itemCount ? "(" + itemCount + ")" : "";
     }
 };
