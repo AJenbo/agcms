@@ -250,8 +250,8 @@ function saveListOrder(id) {
         "items": [],
     };
     var listOrder = $("listOrder");
-    for (var i = 0; i < listOrder.childNodes.length; i++) {
-        data.items.push(listOrder.childNodes[i].innerText);
+    for (const item of listOrder.childNodes) {
+        data.items.push(item.innerText);
     }
     if (id === null) {
         xHttp.request("/admin/sortings/", makeNewList_r, "POST", data);
@@ -274,9 +274,9 @@ function countEmailTo() {
     $("loading").style.visibility = "";
     var query = "";
     var interestObjs = $("interests").getElementsByTagName("input");
-    for (var i = 0; i < interestObjs.length; i++) {
-        if (interestObjs[i].checked) {
-            query += "interests[]=" + encodeURIComponent(interestObjs[i].value) + "&";
+    for (const interest of interestObjs) {
+        if (interest.checked) {
+            query += "interests[]=" + encodeURIComponent(interest.value) + "&";
         }
     }
 
@@ -303,9 +303,9 @@ function saveEmail(callback = null, send = false) {
     };
 
     var interestObjs = $("interests").getElementsByTagName("input");
-    for (var i = 0; i < interestObjs.length; i++) {
-        if (interestObjs[i].checked) {
-            data.interests.push(interestObjs[i].value);
+    for (const interest of interestObjs) {
+        if (interest.checked) {
+            data.interests.push(interest.value);
         }
     }
 
@@ -335,9 +335,9 @@ function updateContact(id) {
         "interests": [],
     };
     var interestObjs = $("interests").getElementsByTagName("input");
-    for (var i = 0; i < interestObjs.length; i++) {
-        if (interestObjs[i].checked) {
-            data.interests.push(interestObjs[i].value);
+    for (const interest of interestObjs) {
+        if (interest.checked) {
+            data.interests.push(interest.value);
         }
     }
 
@@ -529,9 +529,9 @@ function removeNoneExistingFiles_r(data) {
     var missingHtml = "";
     if (data.missingFiles) {
         missingHtml = "<b>The following files are missing:</b><a onclick=\"explorer('','')\">";
-        for (var i = 0; i < data.missingFiles.length; i++) {
+        for (const fileName of data.missingFiles) {
             missingHtml += "<br />";
-            missingHtml += data.missingFiles[i];
+            missingHtml += fileName;
         }
         missingHtml += "</a>";
     }
