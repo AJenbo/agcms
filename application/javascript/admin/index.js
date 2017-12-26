@@ -244,6 +244,14 @@ function addNewItem() {
     return false;
 }
 
+function createListCallback(data) {
+    if (!genericCallback(data)) {
+        return;
+    }
+
+    location.href = "/admin/sortings/" + data.id + "/";
+}
+
 function saveListOrder(id) {
     $("loading").style.visibility = "";
     var data = {
@@ -255,19 +263,11 @@ function saveListOrder(id) {
         data.items.push(item.innerText);
     }
     if (id === null) {
-        xHttp.request("/admin/sortings/", makeNewList_r, "POST", data);
+        xHttp.request("/admin/sortings/", createListCallback, "POST", data);
         return;
     }
 
     xHttp.request("/admin/sortings/" + id + "/", genericCallback, "PUT", data);
-}
-
-function makeNewList_r(data) {
-    if (!genericCallback(data)) {
-        return;
-    }
-
-    location.href = "/admin/sortings/" + data.id + "/";
 }
 
 function insertMailToCount(data) {
