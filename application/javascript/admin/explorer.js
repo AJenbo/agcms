@@ -132,7 +132,7 @@ var fileTileContextMenu = [
     {
       "name": "Åbne",
       "className": "eye",
-      "callback": function(e) {
+      callback(e) {
           var id = getContextMenuTarget(e.target, "filetile").id.match(/[0-9]+/g)[0];
           files[id].openfile();
       }
@@ -140,7 +140,7 @@ var fileTileContextMenu = [
     {
       "name": "Flyt",
       "className": "folder_go",
-      "callback": function(e) {
+      callback(e) {
           var id = getContextMenuTarget(e.target, "filetile").id.match(/[0-9]+/g)[0];
           fileMoveDialog(id);
       }
@@ -148,7 +148,7 @@ var fileTileContextMenu = [
     {
       "name": "Omdøb",
       "className": "textfield_rename",
-      "callback": function(e) {
+      callback(e) {
           var id = getContextMenuTarget(e.target, "filetile").id.match(/[0-9]+/g)[0];
           showfilename(id);
       }
@@ -156,7 +156,7 @@ var fileTileContextMenu = [
     {
       "name": "Slet",
       "className": "delete",
-      "callback": function(e) {
+      callback(e) {
           var id = getContextMenuTarget(e.target, "filetile").id.match(/[0-9]+/g)[0];
           deletefile(id);
       }
@@ -166,7 +166,7 @@ var fileTileContextMenu = [
 var imageTileContextMenu = [{
     "name": "Åbne",
     "className": "picture",
-    "callback": function(e) {
+    callback(e) {
         var id = getContextMenuTarget(e.target, "imagetile").id.match(/[0-9]+/g)[0];
         files[id].openfile();
     }
@@ -176,7 +176,7 @@ if (window.location.href.match(/return=ckeditor/g)) {
     imageTileContextMenu.push({
         "name": "Indsæt link",
         "className": "link",
-        "callback": function(e) {
+        callback(e) {
             var id = getContextMenuTarget(e.target, "imagetile").id.match(/[0-9]+/g)[0];
             files[id].addToEditor();
         }
@@ -186,7 +186,7 @@ imageTileContextMenu = imageTileContextMenu.concat([
     {
       "name": "Rediger",
       "className": "picture_edit",
-      "callback": function(e) {
+      callback(e) {
           var id = getContextMenuTarget(e.target, "imagetile").id.match(/[0-9]+/g)[0];
           open_image_edit(id);
       }
@@ -194,7 +194,7 @@ imageTileContextMenu = imageTileContextMenu.concat([
     {
       "name": "Beskrivelse",
       "className": "textfield_rename",
-      "callback": function(e) {
+      callback(e) {
           var id = getContextMenuTarget(e.target, "imagetile").id.match(/[0-9]+/g)[0];
           editDescription(id);
       }
@@ -202,7 +202,7 @@ imageTileContextMenu = imageTileContextMenu.concat([
     {
       "name": "Generere ikon",
       "className": "pictures",
-      "callback": function(e) {
+      callback(e) {
           var id = getContextMenuTarget(e.target, "imagetile").id.match(/[0-9]+/g)[0];
           openImageThumbnail(id);
       }
@@ -210,7 +210,7 @@ imageTileContextMenu = imageTileContextMenu.concat([
     {
       "name": "Flyt",
       "className": "folder_go",
-      "callback": function(e) {
+      callback(e) {
           var id = getContextMenuTarget(e.target, "imagetile").id.match(/[0-9]+/g)[0];
           fileMoveDialog(id);
       }
@@ -218,7 +218,7 @@ imageTileContextMenu = imageTileContextMenu.concat([
     {
       "name": "Omdøb",
       "className": "textfield_rename",
-      "callback": function(e) {
+      callback(e) {
           var id = getContextMenuTarget(e.target, "imagetile").id.match(/[0-9]+/g)[0];
           showfilename(id);
       }
@@ -226,7 +226,7 @@ imageTileContextMenu = imageTileContextMenu.concat([
     {
       "name": "Slet",
       "className": "delete",
-      "callback": function(e) {
+      callback(e) {
           var id = getContextMenuTarget(e.target, "imagetile").id.match(/[0-9]+/g)[0];
           deletefile(id);
       }

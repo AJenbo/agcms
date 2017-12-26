@@ -4,22 +4,6 @@ var contextMenuActiveKatContextMenu;
 var contextMenuInactiveKatContextMenu;
 var contextMenuListOrderContextMenu;
 
-function attachContextMenus() {
-    contextMenuActiveSide = new Proto.Menu({
-        "selector": "#kat0content .side", // context menu will be shown when element with class of "side" is clicked
-        "className": "menu desktop", // this is a class which will be attached to menu container (used for css styling)
-        "menuItems": activeSideContextMenu // array of menu items
-    });
-    contextMenuInactiveSide = new Proto.Menu(
-        {"selector": "#kat-1content .side", "className": "menu desktop", "menuItems": inactiveSideContextMenu});
-    contextMenuActiveKatContextMenu = new Proto.Menu(
-        {"selector": "#kat0content .kat", "className": "menu desktop", "menuItems": activeKatContextMenu});
-    contextMenuInactiveKatContextMenu = new Proto.Menu(
-        {"selector": "#kat-1content .kat", "className": "menu desktop", "menuItems": inactiveKatContextMenu});
-    contextMenuListOrderContextMenu =
-        new Proto.Menu({"selector": "#listOrder li", "className": "menu desktop", "menuItems": listOrderContextMenu});
-}
-
 function reattachContextMenus() {
     contextMenuActiveSide.reattach();
     contextMenuInactiveSide.reattach();
@@ -39,7 +23,7 @@ function getNodeFromContextMenuEvent(e) {
 var sideContextMenu = [{
     "name": "Rediger",
     "className": "edit",
-    "callback": function(e) {
+    callback(e) {
         location.href = "/admin/page/" + getNodeFromContextMenuEvent(e).parentNode.className.replace(/^side/, "") + "/";
     }
 }];
@@ -47,7 +31,7 @@ var activeSideContextMenu = sideContextMenu.slice(0);
 activeSideContextMenu.push({
     "name": "Fjern",
     "className": "unlink",
-    "callback": function(e) {
+    callback(e) {
         var element = getNodeFromContextMenuEvent(e).parentNode;
         var name = "";
         if (element.childNodes.length > 1) {
@@ -61,7 +45,7 @@ var inactiveSideContextMenu = sideContextMenu.slice(0);
 inactiveSideContextMenu.push({
     "name": "Slet",
     "className": "delete",
-    "callback": function(e) {
+    callback(e) {
         var element = getNodeFromContextMenuEvent(e).parentNode;
         var name = "";
         if (element.childNodes.length > 1) {
@@ -75,7 +59,7 @@ var katContextMenu = [
     {
       "name": "Omdøb",
       "className": "textfield_rename",
-      "callback": function(e) {
+      callback(e) {
           var element = getNodeFromContextMenuEvent(e);
           renameCategory(element.parentNode.id.replace(/^kat/, ""), element.lastChild.nodeValue.trim());
       }
@@ -83,7 +67,7 @@ var katContextMenu = [
     {
       "name": "Rediger",
       "className": "edit",
-      "callback": function(e) {
+      callback(e) {
           location.href = "/admin/categories/" + getNodeFromContextMenuEvent(e).parentNode.id.replace(/^kat/, "") + "/";
       }
     }
@@ -92,7 +76,7 @@ var activeKatContextMenu = katContextMenu.slice(0);
 activeKatContextMenu.push({
     "name": "fjern",
     "className": "unlink",
-    "callback": function(e) {
+    callback(e) {
         var element = getNodeFromContextMenuEvent(e);
         console.log(element);
         moveCategory(element.lastChild.nodeValue.trim(), element.parentNode.id.replace(/^kat/, ""), -1, true);
@@ -102,7 +86,7 @@ var inactiveKatContextMenu = katContextMenu.slice(0);
 inactiveKatContextMenu.push({
     "name": "Slet",
     "className": "delete",
-    "callback": function(e) {
+    callback(e) {
         var element = getNodeFromContextMenuEvent(e);
         console.log(element);
         deleteCategory(element.lastChild.nodeValue.trim(), element.parentNode.id.replace(/^kat/, ""));
@@ -113,10 +97,26 @@ inactiveKatContextMenu.push({
 var listOrderContextMenu = [{
     "name": "Slet",
     "className": "delete",
-    "callback": function(e) {
+    callback(e) {
         e.target.parentNode.removeChild(e.target);
     }
 }];
+
+function attachContextMenus() {
+    contextMenuActiveSide = new Proto.Menu({
+        "selector": "#kat0content .side", // context menu will be shown when element with class of "side" is clicked
+        "className": "menu desktop", // this is a class which will be attached to menu container (used for css styling)
+        "menuItems": activeSideContextMenu // array of menu items
+    });
+    contextMenuInactiveSide = new Proto.Menu(
+        {"selector": "#kat-1content .side", "className": "menu desktop", "menuItems": inactiveSideContextMenu});
+    contextMenuActiveKatContextMenu = new Proto.Menu(
+        {"selector": "#kat0content .kat", "className": "menu desktop", "menuItems": activeKatContextMenu});
+    contextMenuInactiveKatContextMenu = new Proto.Menu(
+        {"selector": "#kat-1content .kat", "className": "menu desktop", "menuItems": inactiveKatContextMenu});
+    contextMenuListOrderContextMenu =
+        new Proto.Menu({"selector": "#listOrder li", "className": "menu desktop", "menuItems": listOrderContextMenu});
+}
 
 function displaySubMenus(state) {
     if (state === "1") {
@@ -124,6 +124,14 @@ function displaySubMenus(state) {
         return;
     }
     $("subMenus").style.display = "none";
+}
+
+function createCategoryCallback(data) {
+    if (!genericCallback(data)) {
+        return;
+    }
+
+    location.href = "/admin/sitetree/";
 }
 
 function updateKat(id) {
@@ -138,7 +146,7 @@ function updateKat(id) {
     };
 
     if (!id) {
-        xHttp.request("/admin/categories/", save_ny_kat_r, "POST", data);
+        xHttp.request("/admin/categories/", createCategoryCallback, "POST", data);
         return false;
     }
 
@@ -169,6 +177,14 @@ function updatemaerke(id) {
     return false;
 }
 
+function createPageCallback(data) {
+    if (!genericCallback(data)) {
+        return;
+    }
+
+    window.location.href = "/admin/page/" + data.id + "/";
+}
+
 var saveRequest = null;
 function updateSide(id) {
     $("loading").style.visibility = "";
@@ -191,7 +207,7 @@ function updateSide(id) {
     xHttp.cancel(saveRequest);
     if (!id) {
         page.categoryId = parseInt(getRadio("kat"));
-        saveRequest = xHttp.request("/admin/page/", opretSide_r, "POST", page);
+        saveRequest = xHttp.request("/admin/page/", createPageCallback, "POST", page);
 
         return false;
     }
@@ -199,14 +215,6 @@ function updateSide(id) {
     saveRequest = xHttp.request("/admin/page/" + id + "/", genericCallback, "PUT", page);
 
     return false;
-}
-
-function opretSide_r(data) {
-    if (!genericCallback(data)) {
-        return;
-    }
-
-    window.location.href = "/admin/page/" + data.id + "/";
 }
 
 function updateSpecial(id) {
@@ -218,13 +226,6 @@ function updateSpecial(id) {
     var data = {"html": CKEDITOR.instances.text.getData(), "title": $("title") ? $("title").value : ""};
     xHttp.request("/admin/custom/" + id + "/", genericCallback, "PUT", data);
     return false;
-}
-
-function save_ny_kat_r(data) {
-    if (!genericCallback(data)) {
-        return;
-    }
-    location.href = "/admin/sitetree/";
 }
 
 function addNewItem() {
@@ -269,6 +270,14 @@ function makeNewList_r(data) {
     location.href = "/admin/sortings/" + data.id + "/";
 }
 
+function insertMailToCount(data) {
+    if (!genericCallback(data)) {
+        return;
+    }
+
+    $("mailToCount").innerText = data.count;
+}
+
 var contactCountRequest;
 function countEmailTo() {
     $("loading").style.visibility = "";
@@ -281,15 +290,7 @@ function countEmailTo() {
     }
 
     xHttp.cancel(contactCountRequest);
-    contactCountRequest = xHttp.request("/admin/addressbook/count/?" + query, countEmailTo_r);
-}
-
-function countEmailTo_r(data) {
-    if (!genericCallback(data)) {
-        return;
-    }
-
-    $("mailToCount").innerText = data.count;
+    contactCountRequest = xHttp.request("/admin/addressbook/count/?" + query, insertMailToCount);
 }
 
 function saveEmail(callback = null, send = false) {

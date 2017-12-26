@@ -90,10 +90,10 @@ var CropImageManager = {
     curCrop: null,
 
     // Initialises the cropImageManager
-    init: function() {},
+    init() {},
 
     // Attaches/resets the image cropper
-    attachCropper: function() {
+    attachCropper() {
         if (resizeHandle !== null) {
             resizeEnd();
         }
@@ -112,7 +112,7 @@ var CropImageManager = {
         });
     },
     // Removes the cropper
-    removeCropper: function() {
+    removeCropper() {
         $("original").style.display = "none";
         $("preview").style.display = "";
         $("removeCropper").style.display = "none";
@@ -123,7 +123,7 @@ var CropImageManager = {
         }
     },
     // Resets the cropper, either re-setting or re-applying
-    resetCropper: function() {
+    resetCropper() {
         this.attachCropper();
     }
 };
@@ -160,7 +160,7 @@ function resize() {
 
     resizeHandle = new Draggable("resizeHandle", {
         "constraint": "horizontal",
-        "onDrag": function(obj, e) {
+        onDrag(obj, e) {
             var width = parseInt(obj.element.style.left);
             if (width < 16) {
                 width = 16;
@@ -173,7 +173,7 @@ function resize() {
             $("resizeHandle").style.top = $("preview").height + "px";
             scale = width / (rotate ? maxH : maxW);
         },
-        "onEnd": function(e) {
+        onEnd(e) {
             preview();
         }
     });
