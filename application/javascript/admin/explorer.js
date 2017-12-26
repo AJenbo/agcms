@@ -72,7 +72,7 @@ function getContextMenuTarget(object, className) {
 }
 
 file.prototype.addToEditor = function() {
-    var data = '';
+    var data = "";
     var html = "<a href=\"" + htmlEncode(this.path) + "\" target=\"_blank\">" + htmlEncode(this.name) + "</a>";
     switch (popupType(this.mime)) {
         case "image":
