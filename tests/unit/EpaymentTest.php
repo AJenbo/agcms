@@ -1,9 +1,10 @@
-<?php
+<?php namespace AGCMS\Tests;
 
 use AGCMS\Epayment;
 use AGCMS\EpaymentAdminService;
 use Mockery as M;
 use PHPUnit\Framework\TestCase;
+use stdClass;
 
 class EpaymentTest extends TestCase
 {

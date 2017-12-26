@@ -1,4 +1,4 @@
-<?php
+<?php namespace AGCMS\Tests;
 
 use PHPUnit\Framework\TestCase;
 

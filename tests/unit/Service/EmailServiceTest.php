@@ -1,4 +1,4 @@
-<?php
+<?php namespace AGCMS\Tests\Service;
 
 use AGCMS\Service\EmailService;
 use PHPUnit\Framework\TestCase;
