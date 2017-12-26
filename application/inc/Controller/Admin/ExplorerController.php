@@ -523,7 +523,9 @@ class ExplorerController extends AbstractAdminController
             $filename = $this->fileService->cleanFileName($filename);
             $overwrite = $request->request->getBoolean('overwrite');
 
-            $newPath = $dir . '/' . $filename . '.' . $pathinfo['extension'];
+            $ext = $pathinfo['extension'] ?? '';
+            $ext = $ext ? '.' . $ext : '';
+            $newPath = $dir . '/' . $filename . $ext;
 
             if ($file->getPath() === $newPath) {
                 return new JsonResponse(['id' => $id, 'filename' => $filename, 'path' => $file->getPath()]);
