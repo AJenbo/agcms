@@ -79,7 +79,7 @@ function listEditRow(listid, rowid) {
     $("list" + listid + "footer").style.display = "none";
 
     // Prevent editing other rows
-    rows = $("list" + listid + "rows");
+    var rows = $("list" + listid + "rows");
     rows = Array.from(rows.childNodes);
     for (const row of rows) {
         row.lastChild.style.display = "none";
@@ -130,7 +130,7 @@ function listUpdateRowCallback(data) {
         cell.firstChild.style.display = "none";
     }
 
-    rows = $("list" + data.listid + "rows");
+    var rows = $("list" + data.listid + "rows");
     for (const row of rows.childNodes) {
         row.lastChild.style.display = "";
     }

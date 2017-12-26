@@ -137,6 +137,16 @@ function getOnLoadFunction(x, i) {
     };
 }
 
+function getOnProgressFunction(i) {
+    return function(evt) {
+        if (evt.lengthComputable) {
+            totals[i] = evt.total;
+        }
+        uploads[i] = evt.loaded;
+        updateProgress();
+    };
+}
+
 function send() {
     status("Klargøre data.");
     totals = [];
@@ -153,6 +163,7 @@ function send() {
     progress.style.display = "block";
 
     var index;
+    var x;
     var file;
     var files = document.getElementById("file").files;
     var form = new FormData();
@@ -179,14 +190,4 @@ function send() {
     }
 
     return false;
-}
-
-function getOnProgressFunction(i) {
-    return function(evt) {
-        if (evt.lengthComputable) {
-            totals[i] = evt.total;
-        }
-        uploads[i] = evt.loaded;
-        updateProgress();
-    };
 }
