@@ -72,6 +72,7 @@ function getContextMenuTarget(object, className) {
 }
 
 file.prototype.addToEditor = function() {
+    var data = '';
     var html = "<a href=\"" + htmlEncode(this.path) + "\" target=\"_blank\">" + htmlEncode(this.name) + "</a>";
     switch (popupType(this.mime)) {
         case "image":
@@ -79,7 +80,7 @@ file.prototype.addToEditor = function() {
                    "\" width=\"" + this.width + "\" height=\"" + this.height + "\" />";
             break;
         case "audio":
-            var data = {"classes": {"ckeditor-html5-audio": 1}, "src": this.path};
+            data = {"classes": {"ckeditor-html5-audio": 1}, "src": this.path};
             data = JSON.stringify(data);
             data = encodeURIComponent(data);
             html =
@@ -87,7 +88,7 @@ file.prototype.addToEditor = function() {
                 data + "\"><audio controls=\"controls\" src=\"" + this.path + "\"></audio></div>";
             break;
         case "video":
-            var data = "<cke:video width=\"" + this.width + "\" height=\"" + this.height + "\" src=\"" +
+            data = "<cke:video width=\"" + this.width + "\" height=\"" + this.height + "\" src=\"" +
                        htmlEncode(this.path) + "\" controls=\"controls\"></cke:video>";
             data = encodeURIComponent(data);
             html =
@@ -385,7 +386,8 @@ function deleteFolderCallback(data) {
 }
 
 function makedir() {
-    if (name = prompt("Hvad skal mappen hede?", "Ny mappe")) {
+    var name = prompt("Hvad skal mappen hede?", "Ny mappe");
+    if (name) {
         document.getElementById("loading").style.visibility = "";
         xHttp.request(
             "/admin/explorer/folders/?path=" + encodeURIComponent(activeDir) + "&name=" + encodeURIComponent(name),
@@ -519,8 +521,8 @@ function movefile_r(data) {
     if (data.yesno) {
         if (confirm(data.yesno)) {
             document.getElementById("loading").style.display = "";
-            var data = {"dir": moveFileGlobal, "overwrite": true};
-            xHttp.request("/admin/explorer/files/" + fileId + "/", movefile_r, "PUT", data);
+            var requestData = {"dir": moveFileGlobal, "overwrite": true};
+            xHttp.request("/admin/explorer/files/" + fileId + "/", movefile_r, "PUT", requestData);
         }
         return;
     }

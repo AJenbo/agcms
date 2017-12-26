@@ -144,7 +144,7 @@ function listUpdateRowCallback(data) {
  */
 function listSizeFooter(listid) {
     var cells = $("list" + listid + "footer");
-    var cells = Array.from(cells.childNodes);
+    cells = Array.from(cells.childNodes);
     cells.splice(-1, 1);
 
     for (const cell of cells) {

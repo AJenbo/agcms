@@ -1,5 +1,5 @@
 function htmlEncode(value) {
-    var div = document.createElement("div")
+    var div = document.createElement("div");
     div.innerText = value;
     return div.innerHTML;
 }
@@ -212,7 +212,7 @@ function save_krav() {
     }
 
     xHttp.request("/admin/requirement/", save_krav_r, "POST", data);
-    return false
+    return false;
 }
 
 function deleteRequirement(id, navn) {

@@ -106,13 +106,13 @@ function updateProgress() {
     progressBar.max = parseInt(totalSize);
 
     var diff = totals.filter(function(element, index) {
-        return element === uploads[index]
+        return element === uploads[index];
     });
 
     var statusText = " beregner upload...";
     if (uploaded) {
         progressBar.value = parseInt(uploaded);
-        statusText = " uploader..."
+        statusText = " uploader...";
     }
     status(diff.length + "/" + totals.length + statusText);
 
@@ -159,7 +159,7 @@ function send() {
     document.getElementById("description").style.display = "none";
 
     var progress = document.getElementById("progress");
-    progress.removeAttribute("value")
+    progress.removeAttribute("value");
     progress.style.display = "block";
 
     var index;

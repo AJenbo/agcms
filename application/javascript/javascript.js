@@ -47,10 +47,11 @@ function updateprice() {
 }
 
 function showhidealtpost(status) {
+    var i = 0;
     var rows = document.getElementsByTagName("tr");
 
     if (status) {
-        for (var i = 0; i < rows.length; i++) {
+        for (i = 0; i < rows.length; i++) {
             if (rows[i].className === "altpost") {
                 rows[i].style.display = "";
             }
@@ -58,7 +59,7 @@ function showhidealtpost(status) {
         return;
     }
 
-    for (var i = 0; i < rows.length; i++) {
+    for (i = 0; i < rows.length; i++) {
         if (rows[i].className === "altpost") {
             rows[i].style.display = "none";
         }

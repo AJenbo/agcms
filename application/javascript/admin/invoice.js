@@ -107,7 +107,7 @@ function prisUpdate() {
     var value = 0;
     var total = 0;
 
-    for (const i = 0; i < quantities.length; i++) {
+    for (var i = 0; i < quantities.length; i++) {
         quantity = parseInt(quantities[i].value);
         if (isNaN(quantity)) {
             quantity = 0;
