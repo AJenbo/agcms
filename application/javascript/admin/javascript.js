@@ -344,7 +344,7 @@ function removeTagById(id) {
 
 function removeTagByClass(className) {
     var objs = $$("." + className);
-    for (obj of objs) {
+    for (const obj of objs) {
         obj.parentNode.removeChild(obj);
     }
 }

@@ -93,13 +93,13 @@ var totals = [];
 var uploads = [];
 function updateProgress() {
     var totalSize = 0;
-    for (var i = 0; i < totals.length; i++) {
-        totalSize += totals[i]; // Set max before starting any uploads
+    for (const total of totals) {
+        totalSize += total; // Set max before starting any uploads
     }
 
     var uploaded = 0;
-    for (var i = 0; i < uploads.length; i++) {
-        uploaded += uploads[i];
+    for (const upload of uploads) {
+        uploaded += upload;
     }
 
     var progressBar = document.getElementById("progress");
@@ -152,6 +152,7 @@ function send() {
     progress.removeAttribute("value")
     progress.style.display = "block";
 
+    var index;
     var file;
     var files = document.getElementById("file").files;
     var form = new FormData();
@@ -159,8 +160,8 @@ function send() {
     form.append("alt", document.getElementById("alt").value);
     form.append("dir", activeDir);
 
-    for (var i = 0; i < files.length; i++) {
-        form.append("upload", files[i]);
+    for (const file of files) {
+        form.append("upload", file);
         try {
             x = new window.XMLHttpRequest();
         } catch (e) {
@@ -169,10 +170,10 @@ function send() {
         if (typeof x.readyState !== "number") {
             continue;
         }
-        totals[i] = files[i].size;
-        uploads[i] = NaN;
-        x.onload = getOnLoadFunction(x, i);
-        x.upload.onprogress = getOnProgressFunction(i);
+        index = totals.push(files.size);
+        uploads.push(NaN);
+        x.onload = getOnLoadFunction(x, index - 1);
+        x.upload.onprogress = getOnProgressFunction(index - 1);
         x.open("POST", "/admin/explorer/files/", true);
         x.send(form);
     }

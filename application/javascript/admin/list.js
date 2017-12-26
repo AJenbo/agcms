@@ -4,31 +4,30 @@ function listInsertRow_r(data) {
     if (!genericCallback(data)) {
         return;
     }
-    var footer = $("list" + data.listid + "footer");
 
     var tr = document.createElement("tr");
     tr.setAttribute("id", "list_row" + data.rowid);
 
+    var cells = $("list" + data.listid + "footer");
+    cells = Array.from(cells.childNodes);
+    cells.splice(-1, 1);
+
     var td;
     var span;
     var input;
-    for (const element of footer.childNodes) {
-        if (element.firstChild.nodeName === 'IMG') {
-            continue;
-        }
-
+    for (const cell of cells) {
         td = document.createElement("td");
-        td.style.textAlign = element.firstChild.style.textAlign;
+        td.style.textAlign = cell.firstChild.style.textAlign;
         input = document.createElement("input");
-        input.setAttribute("value", element.firstChild.value);
+        input.setAttribute("value", cell.firstChild.value);
         input.style.display = "none";
         td.appendChild(input);
         span = document.createElement("span");
-        span.appendChild(document.createTextNode(element.firstChild.value));
+        span.appendChild(document.createTextNode(cell.firstChild.value));
         td.appendChild(span);
         tr.appendChild(td);
 
-        element.firstChild.value = "";
+        cell.firstChild.value = "";
     }
 
     td = document.createElement("td");
@@ -62,69 +61,78 @@ function listSaveRow(row, listid) {
         "link": null,
     };
 
-    var cellcount = row.childNodes.length - 1;
+    var cells = Array.from(row.childNodes);
+    cells.splice(-1, 1);
     if (listlink[listid] === true) {
-        cellcount -= 1;
-        data.link = row.childNodes[cellcount].firstChild.value || null;
+        data.link = cells.splice(-1, 1)[0].firstChild.value || null;
     }
 
-    for (i = 0; i < cellcount; i++) {
-        data.cells.push(row.childNodes[i].firstChild.value);
+    for (const cell of cells) {
+        data.cells.push(cell.firstChild.value);
     }
 
     return data;
 }
 
 function listEditRow(listid, rowid) {
+    // Prevent adding new rows
     $("list" + listid + "footer").style.display = "none";
 
-    var row = $("list_row" + rowid);
-
-    for (var i = 0; i < row.childNodes.length - 1; i++) {
-        row.childNodes[i].firstChild.style.width = row.childNodes[i].clientWidth - 2 + "px";
-    }
-    for (i = 0; i < row.childNodes.length - 1; i++) {
-        row.childNodes[i].lastChild.style.display = "none";
-        row.childNodes[i].firstChild.style.display = "";
-    }
-
+    // Prevent editing other rows
     rows = $("list" + listid + "rows");
-    for (i = 0; i < rows.childNodes.length; i++) {
-        rows.childNodes[i].childNodes[row.childNodes.length - 1].style.display = "none";
+    rows = Array.from(rows.childNodes);
+    for (const row of rows) {
+        row.lastChild.style.display = "none";
     }
-    row.childNodes[row.childNodes.length - 1].style.display = "";
 
-    row.childNodes[row.childNodes.length - 1].firstChild.style.display = "none";
-    row.childNodes[row.childNodes.length - 1].childNodes[1].style.display = "";
-    row.childNodes[row.childNodes.length - 1].childNodes[2].style.display = "none";
-    // Firefox scrolls :(
-    row.firstChild.firstChild.focus();
+    var cells = $("list_row" + rowid);
+    // Display save button
+    cells.lastChild.style.display = "";
+    cells.lastChild.childNodes[0].style.display = "none";
+    cells.lastChild.childNodes[1].style.display = "";
+    cells.lastChild.childNodes[2].style.display = "none";
+
+    // Display row editing tools
+    cells = Array.from(cells.childNodes);
+    cells.splice(-1, 1);
+    for (const cell of cells) {
+        // Set input width to the same as table cell
+        cell.firstChild.style.width = cell.clientWidth - 2 + "px";
+    }
+    for (const cell of cells) {
+        // Swap text for input
+        cell.lastChild.style.display = "none";
+        cell.firstChild.style.display = "";
+    }
 }
 
 function listUpdateRowCallback(data) {
     if (!genericCallback(data)) {
         return;
     }
-    var row = $("list_row" + data.rowid);
+    var cells = $("list_row" + data.rowid);
 
-    for (i = 0; i < row.childNodes.length - 1; i++) {
-        if (typeof(row.childNodes[i].lastChild.textContent) === "string") {
-            row.childNodes[i].lastChild.textContent = row.childNodes[i].firstChild.value;
+    cells.lastChild.childNodes[0].style.display = "";
+    cells.lastChild.childNodes[1].style.display = "none";
+    cells.lastChild.childNodes[2].style.display = "";
+
+    cells = Array.from(cells.childNodes);
+    cells.splice(-1, 1);
+
+    for (const cell of cells) {
+        if (typeof(cell.lastChild.textContent) === "string") {
+            cell.lastChild.textContent = cell.firstChild.value;
         } else {
-            row.childNodes[i].lastChild.innerText = row.childNodes[i].firstChild.value;
+            cell.lastChild.innerText = cell.firstChild.value;
         }
 
-        row.childNodes[i].lastChild.style.display = "";
-        row.childNodes[i].firstChild.style.display = "none";
+        cell.lastChild.style.display = "";
+        cell.firstChild.style.display = "none";
     }
 
-    row.childNodes[row.childNodes.length - 1].firstChild.style.display = "";
-    row.childNodes[row.childNodes.length - 1].childNodes[1].style.display = "none";
-    row.childNodes[row.childNodes.length - 1].childNodes[2].style.display = "";
-
     rows = $("list" + data.listid + "rows");
-    for (i = 0; i < rows.childNodes.length; i++) {
-        rows.childNodes[i].childNodes[row.childNodes.length - 1].style.display = "";
+    for (const row of rows.childNodes) {
+        row.lastChild.style.display = "";
     }
     $("list" + data.listid + "footer").style.display = "";
 }
@@ -135,20 +143,16 @@ function listUpdateRowCallback(data) {
  * @param {number} listid
  */
 function listSizeFooter(listid) {
-    var row = $("list" + listid + "footer");
+    var cells = $("list" + listid + "footer");
+    var cells = Array.from(cells.childNodes);
+    cells.splice(-1, 1);
 
-    for (const element of row.childNodes) {
-        if (element.firstChild.nodeName === 'IMG') {
-            continue;
-        }
-        element.firstChild.style.width = element.clientWidth + "px";
+    for (const cell of cells) {
+        cell.firstChild.style.width = cell.clientWidth + "px";
     }
 
-    for (const element of row.childNodes) {
-        if (element.firstChild.nodeName === 'IMG') {
-            continue;
-        }
-        element.firstChild.style.display = "";
+    for (const cell of cells) {
+        cell.firstChild.style.display = "";
     }
 }
 
