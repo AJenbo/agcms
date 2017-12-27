@@ -1,6 +1,6 @@
 var listlink = [];
 
-function listInsertRow_r(data) {
+function listInsertRowCallback(data) {
     if (!genericCallback(data)) {
         return;
     }
@@ -39,20 +39,8 @@ function listInsertRow_r(data) {
         data.listid + ", " + data.rowid + ")\" />";
     tr.appendChild(td);
 
-    rows = $("list" + data.listid + "rows");
+    var rows = $("list" + data.listid + "rows");
     rows.appendChild(tr);
-}
-
-function listInsertRow(listid) {
-    var footer = $("list" + listid + "footer");
-    var data = listSaveRow(footer, listid);
-    xHttp.request("/admin/tables/" + listid + "/row/", listInsertRow_r, "POST", data);
-}
-
-function listUpdateRow(listid, rowid) {
-    var row = $("list_row" + rowid);
-    var data = listSaveRow(row, listid);
-    xHttp.request("/admin/tables/" + listid + "/row/" + rowid + "/", listUpdateRowCallback, "PUT", data);
 }
 
 function listSaveRow(row, listid) {
@@ -72,6 +60,49 @@ function listSaveRow(row, listid) {
     }
 
     return data;
+}
+
+function listInsertRow(listid) {
+    var footer = $("list" + listid + "footer");
+    var data = listSaveRow(footer, listid);
+    xHttp.request("/admin/tables/" + listid + "/row/", listInsertRowCallback, "POST", data);
+}
+
+function listUpdateRowCallback(data) {
+    if (!genericCallback(data)) {
+        return;
+    }
+    var cells = $("list_row" + data.rowid);
+
+    cells.lastChild.childNodes[0].style.display = "";
+    cells.lastChild.childNodes[1].style.display = "none";
+    cells.lastChild.childNodes[2].style.display = "";
+
+    cells = Array.from(cells.childNodes);
+    cells.splice(-1, 1);
+
+    for (const cell of cells) {
+        if (typeof(cell.lastChild.textContent) === "string") {
+            cell.lastChild.textContent = cell.firstChild.value;
+        } else {
+            cell.lastChild.innerText = cell.firstChild.value;
+        }
+
+        cell.lastChild.style.display = "";
+        cell.firstChild.style.display = "none";
+    }
+
+    var rows = $("list" + data.listid + "rows");
+    for (const row of rows.childNodes) {
+        row.lastChild.style.display = "";
+    }
+    $("list" + data.listid + "footer").style.display = "";
+}
+
+function listUpdateRow(listid, rowid) {
+    var row = $("list_row" + rowid);
+    var data = listSaveRow(row, listid);
+    xHttp.request("/admin/tables/" + listid + "/row/" + rowid + "/", listUpdateRowCallback, "PUT", data);
 }
 
 function listEditRow(listid, rowid) {
@@ -106,37 +137,6 @@ function listEditRow(listid, rowid) {
     }
 }
 
-function listUpdateRowCallback(data) {
-    if (!genericCallback(data)) {
-        return;
-    }
-    var cells = $("list_row" + data.rowid);
-
-    cells.lastChild.childNodes[0].style.display = "";
-    cells.lastChild.childNodes[1].style.display = "none";
-    cells.lastChild.childNodes[2].style.display = "";
-
-    cells = Array.from(cells.childNodes);
-    cells.splice(-1, 1);
-
-    for (const cell of cells) {
-        if (typeof(cell.lastChild.textContent) === "string") {
-            cell.lastChild.textContent = cell.firstChild.value;
-        } else {
-            cell.lastChild.innerText = cell.firstChild.value;
-        }
-
-        cell.lastChild.style.display = "";
-        cell.firstChild.style.display = "none";
-    }
-
-    var rows = $("list" + data.listid + "rows");
-    for (const row of rows.childNodes) {
-        row.lastChild.style.display = "";
-    }
-    $("list" + data.listid + "footer").style.display = "";
-}
-
 /**
  * Set with on input elements and display them late to avoid them affecting column width.
  *
@@ -156,16 +156,16 @@ function listSizeFooter(listid) {
     }
 }
 
-function listRemoveRow(listid, rowid) {
-    if (confirm("Vil du virkelig slette denne linje.")) {
-        $("loading").style.visibility = "";
-        xHttp.request("/admin/tables/" + listid + "/row/" + rowid + "/", listRemoveRow_r, "DELETE");
-    }
-}
-
-function listRemoveRow_r(data) {
+function listRemoveRowCallback(data) {
     if (!genericCallback(data)) {
         return;
     }
     removeTagById($("list_row" + data.rowid));
+}
+
+function listRemoveRow(listid, rowid) {
+    if (confirm("Vil du virkelig slette denne linje.")) {
+        $("loading").style.visibility = "";
+        xHttp.request("/admin/tables/" + listid + "/row/" + rowid + "/", listRemoveRowCallback, "DELETE");
+    }
 }
