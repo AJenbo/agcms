@@ -48,7 +48,7 @@ function File(data) {
     this.height = data.height ? data.height : screen.availHeight;
 }
 
-file.prototype.openfile = function() {
+File.prototype.openfile = function() {
     var url = this.path;
     var width = this.width;
     var height = this.height;
@@ -71,7 +71,7 @@ function getContextMenuTarget(object, className) {
     return object;
 }
 
-file.prototype.addToEditor = function() {
+File.prototype.addToEditor = function() {
     var data = "";
     var html = "<a href=\"" + htmlEncode(this.path) + "\" target=\"_blank\">" + htmlEncode(this.name) + "</a>";
     switch (popupType(this.mime)) {
@@ -104,7 +104,7 @@ file.prototype.addToEditor = function() {
     window.close();
 };
 
-file.prototype.refresh = function() {
+File.prototype.refresh = function() {
     var img = $("tilebox" + this.id).firstChild.childNodes[1];
     var fullSizeUrl = this.path;
     $("reloader").onload = function() {
