@@ -223,16 +223,17 @@ function invoiceSaveResponse(date) {
 }
 
 function save(id = null, type = null) {
-    if (type === null) {
-        type = "save";
-    }
-
     if (type === "cancel" && !confirm("Are you sure you want to cancel this Invoice?")) {
         return false;
     }
 
     $("loading").style.visibility = "";
-    var update = {};
+
+    if (type === null) {
+        type = "save";
+    }
+
+    var update = {"action": type};
     if (status === "new") {
         update.lines = invoiceLines;
         update.shipping = $("fragt").value.replace(/[^-0-9,]/g, "").replace(/,/, ".") || 0;
@@ -266,15 +267,10 @@ function save(id = null, type = null) {
         }
     }
 
-
-    if ($("clerk")) {
-        update.clerk = getSelectValue("clerk");
-    }
-    if ($("department")) {
-        update.department = getSelectValue("department");
-    }
     update.note = $("note") ? $("note").value : "";
     update.internalNote = $("internalNote").value;
+    update.clerk = getSelectValue("clerk") || null;
+    update.department = getSelectValue("department") || null;
 
     if (type === "giro") {
         update.paydate = $("gdate").value;
@@ -283,8 +279,6 @@ function save(id = null, type = null) {
     if (type === "cash") {
         update.paydate = $("cdate").value;
     }
-
-    update.action = type;
 
     if (id === null) {
         xHttp.request("/admin/invoices/", redirectToInvoice, "POST", update);
