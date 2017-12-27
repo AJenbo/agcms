@@ -79,15 +79,15 @@
         <td colspan="2">
             <p><strong>{{'Note:'|trans}}</strong></p>
             <p class="note" style="width:350px">
-                {% if invoice.status != 'new' %}{{invoice.note|nl2br}}{% endif %}
+                {% if invoice and invoice.status != 'new' %}{{invoice.note|nl2br}}{% endif %}
             </p>
-            <textarea style="width:350px" name="note" id="note" rows="{% if not invoice or invoice.status == 'new' %}{{invoice.note|split('\n')|length + 2}}{% else %}2{% endif %}">{% if not invoice or invoice.status == 'new' %}{{invoice.note}}{% endif %}</textarea>
+            {% if not invoice or invoice.status in ['new', 'locked'] %}<textarea style="width:350px" name="note" id="note" rows="{% if not invoice or invoice.status == 'new' %}{{invoice.note|split('\n')|length + 2}}{% else %}2{% endif %}">{% if not invoice or invoice.status == 'new' %}{{invoice.note}}{% endif %}</textarea>{% endif %}
         </td>
     </tr>
     <tr>
         <td colspan="2">
             <p><strong>{{'Internal note:'|trans}}</strong></p>
-            <p class="note" style="width:350px">{{invoice.internalNote|nl2br}}</p>
+            <textarea style="width:350px" name="internalNote" id="internalNote" rows="{{invoice.internalNote|split('\n')|length + 2}}">{{invoice.internalNote}}</textarea>
         </td>
     </tr>
 </table>

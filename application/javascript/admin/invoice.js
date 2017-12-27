@@ -266,7 +266,6 @@ function save(id = null, type = null) {
         }
     }
 
-    update.note = $("note").value;
 
     if ($("clerk")) {
         update.clerk = getSelectValue("clerk");
@@ -274,6 +273,8 @@ function save(id = null, type = null) {
     if ($("department")) {
         update.department = getSelectValue("department");
     }
+    update.note = $("note") ? $("note").value : "";
+    update.internalNote = $("internalNote").value;
 
     if (type === "giro") {
         update.paydate = $("gdate").value;

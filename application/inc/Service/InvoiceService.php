@@ -261,6 +261,8 @@ class InvoiceService
             $invoice->setNote($updates['note']);
         }
 
+        $invoice->setInternalNote($updates['internalNote']);
+
         if (!$invoice->getDepartment() && 1 === count(Config::get('emails'))) {
             $email = first(Config::get('emails'))['address'];
             $invoice->setDepartment($email);
