@@ -2,13 +2,6 @@
     border: 0;
     font-family: "Times New Roman", Times, serif;
     line-height: 120%;
-    scrollbar-3dlight-color: #F4DCA3;
-    scrollbar-arrow-color: #CDA341;
-    scrollbar-base-color: #DFC586;
-    scrollbar-darkshadow-color: #CDA341;
-    scrollbar-highlight-color: #DFC586;
-    scrollbar-shadow-color: #DFC586;
-    scrollbar-track-color: #FFFCD5;
 }
 input,
 select,

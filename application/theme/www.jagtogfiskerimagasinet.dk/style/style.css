@@ -8,10 +8,6 @@
     border: 0;
     font-family: Verdana, Arial, Helvetica, sans-serif;
     line-height: 120%;
-    scrollbar-3dlight-color: #CCCCCC;
-    scrollbar-base-color: #E0E0E0;
-    scrollbar-highlight-color: #dddddd;
-    scrollbar-shadow-color: #dddddd;
 }
 body {
     background-color: #0C0C0C;
