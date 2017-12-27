@@ -5,7 +5,7 @@
 <div id="kat{{category.id}}">
     {% if hasContent %}
     <img{% if isOpen %} style="display:none"{% endif %} src="/theme/default/images/admin/+.gif" id="kat{{category.id}}expand" onclick="expandCategory({{category.id}},{{inputType|json_encode()}},expandCategory_r)" height="16" width="16" alt="+" title="" />
-    <img{% if not isOpen %} style="display:none"{% endif %} src="/theme/default/images/admin/-.gif" id="kat{{category.id}}contract" onclick="kat_contract({{category.id}})" height="16" width="16" alt="-" title="" />
+    <img{% if not isOpen %} style="display:none"{% endif %} src="/theme/default/images/admin/-.gif" id="kat{{category.id}}contract" onclick="contractCategory({{category.id}})" height="16" width="16" alt="-" title="" />
     {% endif %}
     <a class="kat"{% if not hasContent %} style="margin-left:16px"{% endif %}{% if inputType == 'categories' %} onclick="this.firstChild.checked=true;setCookie('activekat',{{category.id}},360)"{% elseif not inputType %} href="{% if category.id %}/admin/categories/{{category.id}}/{% else %}/admin/custom/1/{% endif %}"{% endif %}>
         {% if inputType == 'categories' %}<input name="kat" type="radio" value="{{category.id}}"{% if selectedCategory.id == category.id %} checked="checked"{% endif %} />{% endif %}

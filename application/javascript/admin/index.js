@@ -19,6 +19,17 @@ function getNodeFromContextMenuEvent(e) {
     return e.target.parentNode;
 }
 
+function unlinkCategoryCallback(data) {
+    if (!genericCallback(data)) {
+        return;
+    }
+
+    removeTagById("bind" + data.deleted[0] + "p" + data.pageId);
+    if (data.added && $("kat" + data.added.categoryId + "content").innerText !== "") {
+        xHttp.request("/admin/sitetree/" + data.added.categoryId + "/", expandCategoryCallback);
+    }
+}
+
 // TODO only for getSiteTree
 var sideContextMenu = [{
     "name": "Rediger",
@@ -38,7 +49,7 @@ activeSideContextMenu.push({
             name = element.parentNode.previousSibling.lastChild.nodeValue.trim();
         }
         var ids = element.id.match(/\d+/g);
-        removeBinding(name, ids[1], ids[0], bindTree_r);
+        removeBinding(name, ids[1], ids[0], unlinkCategoryCallback);
     }
 });
 var inactiveSideContextMenu = sideContextMenu.slice(0);
@@ -157,7 +168,11 @@ function updateKat(id) {
     return false;
 }
 
-function updatemaerke(id) {
+function updateBrandCallback(data) {
+    location.href = "/admin/brands/";
+}
+
+function saveBrand(id = null) {
     $("loading").style.visibility = "";
 
     var data = {
@@ -167,7 +182,7 @@ function updatemaerke(id) {
     };
 
     if (!id) {
-        xHttp.request("/admin/brands/", updatemaerke_r, "POST", data);
+        xHttp.request("/admin/brands/", updateBrandCallback, "POST", data);
 
         return false;
     }

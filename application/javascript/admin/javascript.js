@@ -50,10 +50,10 @@ function setCookie(name, value, expiresInDayes) {
 function getCookie(cookieName) {
     cookieName = encodeURIComponent(cookieName);
     if (document.cookie.length > 0) {
-        begin = document.cookie.indexOf(cookieName + "=");
+        var begin = document.cookie.indexOf(cookieName + "=");
         if (begin !== -1) {
             begin += cookieName.length + 1;
-            end = document.cookie.indexOf(";", begin);
+            var end = document.cookie.indexOf(";", begin);
             if (end === -1) {
                 end = document.cookie.length;
             }
@@ -86,6 +86,17 @@ function injectText(data) {
     $(data.id).innerText = data.text;
 }
 
+function getRadio(name) {
+    var objs = document.getElementsByName(name);
+    for (const obj of objs) {
+        if (obj.checked) {
+            return obj.value;
+        }
+    }
+
+    return null;
+}
+
 function showhidekats(id, thisobj) {
     var obj = $(id);
     if (obj.style.display === "") {
@@ -100,17 +111,6 @@ function showhidekats(id, thisobj) {
     obj.style.display = "";
     thisobj.innerText = "Vælg placering:";
     setCookie("hide" + id, "", 0);
-}
-
-function getRadio(name) {
-    var objs = document.getElementsByName(name);
-    for (const obj of objs) {
-        if (obj.checked) {
-            return obj.value;
-        }
-    }
-
-    return null;
 }
 
 function getSelectValue(id) {
@@ -134,7 +134,7 @@ function showimage(obj, img) {
     $("imagelogo").style.display = "";
 }
 
-function kat_contract(id) {
+function contractCategory(id) {
     $("kat" + id + "content").style.display = "none";
     $("kat" + id + "contract").style.display = "none";
     $("kat" + id + "expand").style.display = "";
@@ -148,23 +148,6 @@ function kat_contract(id) {
     setCookie("openkat", openkat, 360);
 }
 
-function expandCategory(id, input = "") {
-    if (input === "") {
-        setCookie("activekat", id, 360);
-    }
-    if ($("kat" + id + "content").innerText === "") {
-        $("loading").style.visibility = "";
-        xHttp.request("/admin/sitetree/" + id + "/?type=" + encodeURIComponent(input), expandCategory_r);
-
-        return;
-    }
-
-    $("kat" + id + "content").style.display = "";
-    $("kat" + id + "expand").style.display = "none";
-    $("kat" + id + "contract").style.display = "";
-    appendOpenCatCookie(id);
-}
-
 function appendOpenCatCookie(id) {
     var openkat = getCookie("openkat");
     openkat = openkat ? openkat : "";
@@ -175,7 +158,7 @@ function appendOpenCatCookie(id) {
     setCookie("openkat", openkat, 360);
 }
 
-function expandCategory_r(data) {
+function expandCategoryCallback(data) {
     if (!genericCallback(data)) {
         return;
     }
@@ -188,6 +171,23 @@ function expandCategory_r(data) {
     reattachContextMenus();
 }
 
+function expandCategory(id, input = "") {
+    if (input === "") {
+        setCookie("activekat", id, 360);
+    }
+    if ($("kat" + id + "content").innerText === "") {
+        $("loading").style.visibility = "";
+        xHttp.request("/admin/sitetree/" + id + "/?type=" + encodeURIComponent(input), expandCategoryCallback);
+
+        return;
+    }
+
+    $("kat" + id + "content").style.display = "";
+    $("kat" + id + "expand").style.display = "none";
+    $("kat" + id + "contract").style.display = "";
+    appendOpenCatCookie(id);
+}
+
 function init() {
     $("loading").style.visibility = "hidden";
 }
@@ -197,7 +197,11 @@ function loadZipCodesDk(data) {
     arrayZipcode = data;
 }
 
-function save_krav() {
+function saveRequirementCallback(data) {
+    location.href = "/admin/requirement/list/";
+}
+
+function saveRequirement() {
     $("loading").style.visibility = "";
 
     var data = {
@@ -207,12 +211,28 @@ function save_krav() {
 
     var id = $("id").value;
     if (id) {
-        xHttp.request("/admin/requirement/" + id + "/", save_krav_r, "PUT", data);
+        xHttp.request("/admin/requirement/" + id + "/", saveRequirementCallback, "PUT", data);
         return false;
     }
 
-    xHttp.request("/admin/requirement/", save_krav_r, "POST", data);
+    xHttp.request("/admin/requirement/", saveRequirementCallback, "POST", data);
     return false;
+}
+
+function removeTagById(id) {
+    var obj = $(id);
+    if (!obj) {
+        return;
+    }
+    obj.parentNode.removeChild(obj);
+}
+
+function deleteCallback(data) {
+    if (!genericCallback(data)) {
+        return;
+    }
+
+    removeTagById(data.id);
 }
 
 function deleteRequirement(id, navn) {
@@ -220,17 +240,9 @@ function deleteRequirement(id, navn) {
         return false;
     }
     $("loading").style.visibility = "";
-    xHttp.request("/admin/requirement/" + id + "/", slet_r, "DELETE");
+    xHttp.request("/admin/requirement/" + id + "/", deleteCallback, "DELETE");
 
     return false;
-}
-
-function save_krav_r(data) {
-    location.href = "/admin/requirement/list/";
-}
-
-function updatemaerke_r(data) {
-    location.href = "/admin/brands/";
 }
 
 function bind(id) {
@@ -241,20 +253,15 @@ function bind(id) {
     return false;
 }
 
-function addAccessory(pageId) {
-    $("loading").style.visibility = "";
-    var accessoryId = $("accessoryFrame").contentWindow.getRadio("side");
-    if (!accessoryId) {
-        alert("Du skal vælge en side som tilbehør.");
-        return false;
+function removeAccessory(navn, pageId, accessoryId) {
+    if (confirm("Vil du fjerne '" + navn + "' som tilbehor?")) {
+        $("loading").style.visibility = "";
+        xHttp.request("/admin/page/" + pageId + "/accessories/" + accessoryId + "/", deleteCallback, "DELETE");
     }
-
-    xHttp.request("/admin/page/" + pageId + "/accessories/" + accessoryId + "/", addAccessory_r, "POST");
-
     return false;
 }
 
-function addAccessory_r(data) {
+function addAccessoryCallback(data) {
     if (!genericCallback(data)) {
         return;
     }
@@ -280,12 +287,25 @@ function addAccessory_r(data) {
     $("accessories").appendChild(p);
 }
 
-function removeAccessory(navn, pageId, accessoryId) {
-    if (confirm("Vil du fjerne '" + navn + "' som tilbehor?")) {
-        $("loading").style.visibility = "";
-        xHttp.request("/admin/page/" + pageId + "/accessories/" + accessoryId + "/", slet_r, "DELETE");
+function addAccessory(pageId) {
+    $("loading").style.visibility = "";
+    var accessoryId = $("accessoryFrame").contentWindow.getRadio("side");
+    if (!accessoryId) {
+        alert("Du skal vælge en side som tilbehør.");
+        return false;
     }
+
+    xHttp.request("/admin/page/" + pageId + "/accessories/" + accessoryId + "/", addAccessoryCallback, "POST");
+
     return false;
+}
+
+function removeBinding(navn, id, categoryId, callback = null) {
+    callback = callback || bindingsCallback;
+    if (confirm("Vil du fjerne siden fra '" + navn + "'?")) {
+        $("loading").style.visibility = "";
+        xHttp.request("/admin/page/" + id + "/categories/" + categoryId + "/", callback, "DELETE");
+    }
 }
 
 function bindingsCallback(data) {
@@ -315,33 +335,6 @@ function bindingsCallback(data) {
     }
 }
 
-function removeBinding(navn, id, categoryId, callback = null) {
-    callback = callback || bindingsCallback;
-    if (confirm("Vil du fjerne siden fra '" + navn + "'?")) {
-        $("loading").style.visibility = "";
-        xHttp.request("/admin/page/" + id + "/categories/" + categoryId + "/", callback, "DELETE");
-    }
-}
-
-function bindTree_r(data) {
-    if (!genericCallback(data)) {
-        return;
-    }
-
-    removeTagById("bind" + data.deleted[0] + "p" + data.pageId);
-    if (data.added && $("kat" + data.added.categoryId + "content").innerText !== "") {
-        xHttp.request("/admin/sitetree/" + data.added.categoryId + "/", expandCategory_r);
-    }
-}
-
-function removeTagById(id) {
-    var obj = $(id);
-    if (!obj) {
-        return;
-    }
-    obj.parentNode.removeChild(obj);
-}
-
 function removeTagByClass(className) {
     var objs = $$("." + className);
     for (const obj of objs) {
@@ -352,41 +345,49 @@ function removeTagByClass(className) {
 function deleteBrand(navn, id) {
     if (confirm("Vil du slette mærket '" + navn + "'?")) {
         $("loading").style.visibility = "";
-        xHttp.request("/admin/brands/" + id + "/", slet_r, "DELETE");
+        xHttp.request("/admin/brands/" + id + "/", deleteCallback, "DELETE");
     }
 
     return false;
 }
 
+function removeElementByClass(data) {
+    if (!genericCallback(data)) {
+        return;
+    }
+
+    removeTagByClass(data.class);
+}
+
 function deletePage(navn, id) {
     if (confirm("Vil du slette '" + navn + "'?")) {
         $("loading").style.visibility = "";
-        xHttp.request("/admin/page/" + id + "/", sletClass_r, "DELETE");
+        xHttp.request("/admin/page/" + id + "/", removeElementByClass, "DELETE");
     }
 }
 
 function deleteCategory(navn, id) {
     if (confirm("Vil du slette katagorien '" + navn + "'?")) {
         $("loading").style.visibility = "";
-        xHttp.request("/admin/categories/" + id + "/", slet_r, "DELETE");
+        xHttp.request("/admin/categories/" + id + "/", deleteCallback, "DELETE");
     }
 }
 
-function moveCategory(navn, id, toId, confirmMove) {
-    if (!confirmMove || confirm("Vil du fjerne kategorien '" + navn + "'?")) {
-        $("loading").style.visibility = "";
-        xHttp.request("/admin/categories/" + id + "/", moveCategory_r, "PUT", {"parentId": toId});
-    }
-}
-
-function moveCategory_r(data) {
+function moveCategoryCallback(data) {
     if (!genericCallback(data)) {
         return;
     }
 
     removeTagById(data.id);
     if ($("kat" + data.parentId + "content").innerText !== "") {
-        xHttp.request("/admin/sitetree/" + data.parentId + "/", expandCategory_r);
+        xHttp.request("/admin/sitetree/" + data.parentId + "/", expandCategoryCallback);
+    }
+}
+
+function moveCategory(navn, id, toId, confirmMove) {
+    if (!confirmMove || confirm("Vil du fjerne kategorien '" + navn + "'?")) {
+        $("loading").style.visibility = "";
+        xHttp.request("/admin/categories/" + id + "/", moveCategoryCallback, "PUT", {"parentId": toId});
     }
 }
 
@@ -410,22 +411,6 @@ function renameCategory_r(data) {
     }
 
     $(data.id).firstChild.lastChild.nodeValue = " " + data.title;
-}
-
-function sletClass_r(data) {
-    if (!genericCallback(data)) {
-        return;
-    }
-
-    removeTagByClass(data.class);
-}
-
-function slet_r(data) {
-    if (!genericCallback(data)) {
-        return;
-    }
-
-    removeTagById(data.id);
 }
 
 function jumpto() {
