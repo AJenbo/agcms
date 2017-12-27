@@ -8,21 +8,37 @@ function dirToId(dir) {
     return "dir_" + dir.replace(/\//g, ".");
 }
 
-function init() {
-    // attach context menus
-    contextMenuFileTile =
-        new Proto.Menu({"selector": ".filetile", "className": "menu desktop", "menuItems": fileTileContextMenu});
-    contextMenuImageTile =
-        new Proto.Menu({"selector": ".imagetile", "className": "menu desktop", "menuItems": imageTileContextMenu});
-
-    if (!activeDir || !document.getElementById(dirToId(activeDir))) {
-        activeDir = "/images";
+function popupType(mime) {
+    if (mime === "image/gif" || mime === "image/jpeg" || mime === "image/png") {
+        return "image";
     }
 
-    showfiles(activeDir);
+    if (mime.match(/^audio\//g)) {
+        return "audio";
+    }
+
+    if (mime.match(/^video\//g)) {
+        return "video";
+    }
+
+    return "";
 }
 
-function file(data) {
+var popup = null;
+function popUpWin(url, win, options, width, height) {
+    if (popup !== null) {
+        popup.close();
+        popup = null;
+    }
+    if (options !== "") {
+        options += ",";
+    }
+    var left = (screen.availWidth - width) / 2;
+    var top = (screen.availHeight - height) / 2;
+    popup = window.open(url, win, options + "width=" + width + ",height=" + height + ",left=" + left + ",top=" + top);
+}
+
+function File(data) {
     this.id = data.id;
     this.path = data.path;
     this.name = data.name;
@@ -46,22 +62,6 @@ file.prototype.openfile = function() {
     }
     popUpWin(url, "file_view", "toolbar=0", width, height);
 };
-
-function popupType(mime) {
-    if (mime === "image/gif" || mime === "image/jpeg" || mime === "image/png") {
-        return "image";
-    }
-
-    if (mime.match(/^audio\//g)) {
-        return "audio";
-    }
-
-    if (mime.match(/^video\//g)) {
-        return "video";
-    }
-
-    return "";
-}
 
 function getContextMenuTarget(object, className) {
     while (object.className !== className) {
@@ -128,6 +128,67 @@ function reattachContextMenus() {
     contextMenuImageTile.reattach();
 }
 
+function fileMoveDialog(id) {
+    popUpWin("/admin/explorer/move/" + id + "/", "file_move", "toolbar=0", 322, 512);
+}
+
+function showFileName(id) {
+    document.getElementById("navn" + id + "div").style.display = "none";
+    document.getElementById("navn" + id + "form").style.display = "";
+    document.getElementById("navn" + id + "form").firstChild.firstChild.select();
+    document.getElementById("navn" + id + "form").firstChild.firstChild.focus();
+}
+
+function deleteFileCallback(data) {
+    document.getElementById("loading").style.visibility = "hidden";
+    if (data.error) {
+        return;
+    }
+
+    removeTagById("tilebox" + data.id);
+    files[data.id] = null;
+}
+
+function deleteFile(id) {
+    if (confirm("Vil du slette '" + files[id].name + "'?")) {
+        document.getElementById("loading").style.visibility = "";
+        xHttp.request("/admin/explorer/files/" + id + "/", deleteFileCallback, "DELETE");
+    }
+}
+
+function openImageEditor(id) {
+    popUpWin("/admin/explorer/files/" + id + "/image/edit/", "image_edit", "scrollbars=1,toolbar=0", 740, 600);
+}
+
+function editDescriptionCallback(data) {
+    document.getElementById("loading").style.visibility = "hidden";
+    if (data.error) {
+        return;
+    }
+
+    files[data.id].description = data.description;
+}
+
+var editDescriptionRequest;
+function editDescription(id) {
+    var newalt = prompt("Billed beskrivelse", files[id].description);
+    if (newalt === null || newalt === files[id].description) {
+        return;
+    }
+
+    document.getElementById("loading").style.visibility = "";
+
+    var data = {"description": newalt};
+    xHttp.cancel(editDescriptionRequest);
+    editDescriptionRequest =
+        xHttp.request("/admin/explorer/files/" + id + "/description/", editDescriptionCallback, "PUT", data);
+}
+
+function openImageThumbnail(id) {
+    popUpWin("/admin/explorer/files/" + id + "/image/edit/?mode=thb", "image_thumbnail", "scrollbars=1,toolbar=0", 740,
+             600);
+}
+
 var fileTileContextMenu = [
     {
       "name": "Åbne",
@@ -150,7 +211,7 @@ var fileTileContextMenu = [
       "className": "textfield_rename",
       callback(e) {
           var id = getContextMenuTarget(e.target, "filetile").id.match(/[0-9]+/g)[0];
-          showfilename(id);
+          showFileName(id);
       }
     },
     {
@@ -158,7 +219,7 @@ var fileTileContextMenu = [
       "className": "delete",
       callback(e) {
           var id = getContextMenuTarget(e.target, "filetile").id.match(/[0-9]+/g)[0];
-          deletefile(id);
+          deleteFile(id);
       }
     }
 ];
@@ -188,7 +249,7 @@ imageTileContextMenu = imageTileContextMenu.concat([
       "className": "picture_edit",
       callback(e) {
           var id = getContextMenuTarget(e.target, "imagetile").id.match(/[0-9]+/g)[0];
-          open_image_edit(id);
+          openImageEditor(id);
       }
     },
     {
@@ -220,7 +281,7 @@ imageTileContextMenu = imageTileContextMenu.concat([
       "className": "textfield_rename",
       callback(e) {
           var id = getContextMenuTarget(e.target, "imagetile").id.match(/[0-9]+/g)[0];
-          showfilename(id);
+          showFileName(id);
       }
     },
     {
@@ -228,52 +289,18 @@ imageTileContextMenu = imageTileContextMenu.concat([
       "className": "delete",
       callback(e) {
           var id = getContextMenuTarget(e.target, "imagetile").id.match(/[0-9]+/g)[0];
-          deletefile(id);
+          deleteFile(id);
       }
     }
 ]);
 
-var editDescriptionRequest;
-function editDescription(id) {
-    var newalt = prompt("Billed beskrivelse", files[id].description);
-    if (newalt === null || newalt === files[id].description) {
-        return;
-    }
-
-    document.getElementById("loading").style.visibility = "";
-
-    var data = {"description": newalt};
-    xHttp.cancel(editDescriptionRequest);
-    editDescriptionRequest =
-        xHttp.request("/admin/explorer/files/" + id + "/description/", editDescriptionCallback, "PUT", data);
-}
-
-function editDescriptionCallback(data) {
-    document.getElementById("loading").style.visibility = "hidden";
-    if (data.error) {
-        return;
-    }
-
-    files[data.id].description = data.description;
-}
-
-function getSelect(id) {
-    object = document.getElementById(id);
-    return object[object.selectedIndex].value;
-}
-
-var searchfilesRequest = null;
-function searchfiles() {
-    document.getElementById("loading").style.visibility = "";
-    qpath = document.getElementById("searchpath").value;
-    qalt = document.getElementById("searchalt").value;
-    qtype = getSelect("searchtype");
-
-    xHttp.cancel(searchfilesRequest);
-    searchfilesRequest = xHttp.request("/admin/explorer/search/?qpath=" + encodeURIComponent(qpath) + "&qalt=" +
-                                           encodeURIComponent(qalt) + "&qtype=" + encodeURIComponent(qtype) +
-                                           "&return=" + encodeURIComponent(returnType),
-                                       injectFileData);
+function injectFileData(data) {
+    injectHtml(data);
+    files = [];
+    data.files.forEach(function(fileData) {
+        files[fileData.id] = new File(fileData);
+    });
+    reattachContextMenus();
 }
 
 var showFilesRequest = null;
@@ -295,20 +322,37 @@ function showfiles(dir) {
         injectFileData);
 }
 
-function injectFileData(data) {
-    injectHtml(data);
-    files = [];
-    data.files.forEach(function(fileData) {
-        files[fileData.id] = new file(fileData);
-    });
-    reattachContextMenus();
+function init() {
+    // attach context menus
+    contextMenuFileTile =
+        new Proto.Menu({"selector": ".filetile", "className": "menu desktop", "menuItems": fileTileContextMenu});
+    contextMenuImageTile =
+        new Proto.Menu({"selector": ".imagetile", "className": "menu desktop", "menuItems": imageTileContextMenu});
+
+    if (!activeDir || !document.getElementById(dirToId(activeDir))) {
+        activeDir = "/images";
+    }
+
+    showfiles(activeDir);
 }
 
-function showfilename(id) {
-    document.getElementById("navn" + id + "div").style.display = "none";
-    document.getElementById("navn" + id + "form").style.display = "";
-    document.getElementById("navn" + id + "form").firstChild.firstChild.select();
-    document.getElementById("navn" + id + "form").firstChild.firstChild.focus();
+function getSelect(id) {
+    var object = document.getElementById(id);
+    return object[object.selectedIndex].value;
+}
+
+var searchfilesRequest = null;
+function searchfiles() {
+    document.getElementById("loading").style.visibility = "";
+    var qpath = document.getElementById("searchpath").value;
+    var qalt = document.getElementById("searchalt").value;
+    var qtype = getSelect("searchtype");
+
+    xHttp.cancel(searchfilesRequest);
+    searchfilesRequest = xHttp.request("/admin/explorer/search/?qpath=" + encodeURIComponent(qpath) + "&qalt=" +
+                                           encodeURIComponent(qalt) + "&qtype=" + encodeURIComponent(qtype) +
+                                           "&return=" + encodeURIComponent(returnType),
+                                       injectFileData);
 }
 
 function showdirname(nameObj) {
@@ -318,15 +362,11 @@ function showdirname(nameObj) {
     nameObj.nextSibling.firstChild.childNodes[1].focus();
 }
 
-function renamedir(newNameObj) {
-    newNameObj.parentNode.parentNode.style.display = "none";
-    newNameObj.parentNode.parentNode.previousSibling.style.display = "";
-    document.getElementById("loading").style.visibility = "";
-    var payload = {"path": idToDir(newNameObj.parentNode.parentNode.parentNode.id), "name": newNameObj.value};
-    xHttp.request("/admin/explorer/folders/", renamedir_r, "PUT", payload);
+function idToDir(id) {
+    return id.substr(4).replace(/[.]/g, "/");
 }
 
-function renamedir_r(data) {
+function renameFolderCallback(data) {
     document.getElementById("loading").style.visibility = "hidden";
     var form = document.getElementById(dirToId(data.path)).getElementsByTagName("form")[0];
     if (data.error) {
@@ -342,7 +382,7 @@ function renamedir_r(data) {
                 "name": form.firstChild.childNodes[1].value,
                 "overwrite": true,
             };
-            xHttp.request("/admin/explorer/folders/", renamedir_r, "PUT", payload);
+            xHttp.request("/admin/explorer/folders/", renameFolderCallback, "PUT", payload);
             return;
         }
         form.firstChild.childNodes[1].value = form.previousSibling.title;
@@ -355,22 +395,12 @@ function renamedir_r(data) {
     }
 }
 
-var popup = null;
-function popUpWin(url, win, options, width, height) {
-    if (popup !== null) {
-        popup.close();
-        popup = null;
-    }
-    if (options !== "") {
-        options += ",";
-    }
-    var left = (screen.availWidth - width) / 2;
-    var top = (screen.availHeight - height) / 2;
-    popup = window.open(url, win, options + "width=" + width + ",height=" + height + ",left=" + left + ",top=" + top);
-}
-
-function fileMoveDialog(id) {
-    popUpWin("/admin/explorer/move/" + id + "/", "file_move", "toolbar=0", 322, 512);
+function renamedir(newNameObj) {
+    newNameObj.parentNode.parentNode.style.display = "none";
+    newNameObj.parentNode.parentNode.previousSibling.style.display = "";
+    document.getElementById("loading").style.visibility = "";
+    var payload = {"path": idToDir(newNameObj.parentNode.parentNode.parentNode.id), "name": newNameObj.value};
+    xHttp.request("/admin/explorer/folders/", renameFolderCallback, "PUT", payload);
 }
 
 function deleteFolder() {
@@ -402,10 +432,6 @@ function makedir_r(data) {
     }
 
     window.location.reload();
-}
-
-function idToDir(id) {
-    return id.substr(4).replace(/[.]/g, "/");
 }
 
 function dir_expand(dirdiv, move) {
@@ -441,15 +467,6 @@ function dir_contract(obj) {
     obj.lastChild.style.display = "none";
     obj.firstChild.style.display = "";
     obj.childNodes[1].style.display = "none";
-}
-
-function openImageThumbnail(id) {
-    popUpWin("/admin/explorer/files/" + id + "/image/edit/?mode=thb", "image_thumbnail", "scrollbars=1,toolbar=0", 740,
-             600);
-}
-
-function open_image_edit(id) {
-    popUpWin("/admin/explorer/files/" + id + "/image/edit/", "image_edit", "scrollbars=1,toolbar=0", 740, 600);
 }
 
 function open_file_upload() {
@@ -530,23 +547,6 @@ function movefile_r(data) {
     window.opener.document.getElementById("files").removeChild(
         window.opener.document.getElementById("tilebox" + data.id));
     window.close();
-}
-
-function deletefile(id) {
-    if (confirm("Vil du slette '" + files[id].name + "'?")) {
-        document.getElementById("loading").style.visibility = "";
-        xHttp.request("/admin/explorer/files/" + id + "/", deletefile_r, "DELETE");
-    }
-}
-
-function deletefile_r(data) {
-    document.getElementById("loading").style.visibility = "hidden";
-    if (data.error) {
-        return;
-    }
-
-    removeTagById("tilebox" + data.id);
-    files[data.id] = null;
 }
 
 function swap_pannel(navn) {

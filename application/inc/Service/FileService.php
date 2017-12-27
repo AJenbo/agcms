@@ -219,7 +219,7 @@ class FileService
             'description' => $file->getDescription(),
         ];
 
-        return 'files[' . $file->getId() . '] = new file(' . json_encode($data) . ');';
+        return 'files[' . $file->getId() . '] = new File(' . json_encode($data) . ');';
     }
 
     /**

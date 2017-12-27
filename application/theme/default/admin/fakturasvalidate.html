@@ -30,7 +30,7 @@
                 <a href="/admin/invoices/{{invoice.id}}/">{{invoice.amount|number_format(2, '.', ',')}}</a>
             </td>
             <td style="text-align:center">
-                <a href="" onclick="return confirm_faktura_validate({{invoice.id}})">
+                <a href="" onclick="return confirmPaymentValidate({{invoice.id}})">
                     <img src="/theme/default/images/admin/tick.png" alt="{{'Approve'|trans}}" title="{{'Approve'|trans}}" />
                 </a>
             </td>

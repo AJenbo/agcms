@@ -4,32 +4,6 @@ var orientation = 1; // 1-4,11-14
 var rotate = 0;      // 90,180,270
 var flip = 0;        // 1,2
 
-// TODO avoide overscaling when triming has been in affect
-var imageSaveRequest;
-function saveImage(overwrite = false) {
-    $("save").style.display = "none";
-    $("loading").style.visibility = "";
-
-    var dimention = calcImageDimension();
-
-    var data = {
-        "cropX": cropX,
-        "cropY": cropY,
-        "cropW": maxW,
-        "cropH": maxH,
-        "maxW": dimention.width,
-        "maxH": dimention.height,
-        "flip": flip,
-        "rotate": rotate
-    };
-    xHttp.cancel(imageSaveRequest);
-    var method = "PUT";
-    if (mode === "thb") {
-        method = "POST";
-    }
-    imageSaveRequest = xHttp.request("/admin/explorer/files/" + id + "/image/", saveImage_r, method, data);
-}
-
 function calcImageDimension() {
     var dimention = {"width": Math.round(maxW * scale), "height": Math.round(maxH * scale)};
 
@@ -47,7 +21,33 @@ function calcImageDimension() {
     return dimention;
 }
 
-function saveImage_r(data) {
+// TODO avoide overscaling when triming has been in affect
+var imageSaveRequest;
+function saveImage(overwrite = false) {
+    $("save").style.display = "none";
+    $("loading").style.visibility = "";
+
+    var dimention = calcImageDimension();
+
+    var data = {
+        cropX,
+        cropY,
+        "cropW": maxW,
+        "cropH": maxH,
+        "maxW": dimention.width,
+        "maxH": dimention.height,
+        flip,
+        rotate
+    };
+    xHttp.cancel(imageSaveRequest);
+    var method = "PUT";
+    if (mode === "thb") {
+        method = "POST";
+    }
+    imageSaveRequest = xHttp.request("/admin/explorer/files/" + id + "/image/", saveImageCallback, method, data);
+}
+
+function saveImageCallback(data) {
     $("save").style.display = "";
     if (!genericCallback(data)) {
         return;
@@ -85,6 +85,27 @@ function onEndCrop(coords, dimensions) {
     }
 }
 
+function resizeEnd() {
+    resizeHandle.destroy();
+    $("resizeHandle").style.display = "none";
+}
+
+function getUnixTimestamp() {
+    return parseInt(new Date().getTime().toString().substring(0, 10));
+}
+
+function preview() {
+    $("save").style.display = "none";
+    $("loading").style.visibility = "";
+
+    var dimention = calcImageDimension();
+
+    $("preview").src = "/admin/explorer/files/" + id + "/image/?cropX=" + cropX + "&cropY=" + cropY + "&cropW=" + maxW +
+                       "&cropH=" + maxH + "&maxW=" + dimention.width + "&maxH=" + dimention.height + "&rotate=" +
+                       rotate + "&flip=" + flip + "&noCache=1&t=" + getUnixTimestamp();
+}
+
+var resizeHandle = null;
 var CropImageManager = {
     // Holds the current Cropper.Img object
     curCrop: null,
@@ -106,7 +127,7 @@ var CropImageManager = {
             this.curCrop.remove();
         }
         this.curCrop = new Cropper.Img("original", {
-            "onEndCrop": onEndCrop,
+            onEndCrop,
             "displayOnInit": true,
             "onloadCoords": {"x1": cropX, "y1": cropY, "x2": maxW + cropX, "y2": maxH + cropY}
         });
@@ -142,7 +163,6 @@ Event.observe(window, "load", function test() {
                   false);
 });
 
-var resizeHandle = null;
 function resize() {
     $("save").style.display = "";
     $("loading").style.visibility = "hidden";
@@ -178,11 +198,6 @@ function resize() {
         }
     });
     $("resizeHandle").style.display = "";
-}
-
-function resizeEnd() {
-    resizeHandle.destroy();
-    $("resizeHandle").style.display = "none";
 }
 
 function updateOrientation(move) {
@@ -252,19 +267,4 @@ function flipVertical() {
         move = 8;
     }
     updateOrientation(move);
-}
-
-function preview() {
-    $("save").style.display = "none";
-    $("loading").style.visibility = "";
-
-    var dimention = calcImageDimension();
-
-    $("preview").src = "/admin/explorer/files/" + id + "/image/?cropX=" + cropX + "&cropY=" + cropY + "&cropW=" + maxW +
-                       "&cropH=" + maxH + "&maxW=" + dimention.width + "&maxH=" + dimention.height + "&rotate=" +
-                       rotate + "&flip=" + flip + "&noCache=1&t=" + unix_timestamp();
-}
-
-function unix_timestamp() {
-    return parseInt(new Date().getTime().toString().substring(0, 10));
 }

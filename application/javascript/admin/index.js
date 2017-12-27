@@ -308,6 +308,14 @@ function countEmailTo() {
     contactCountRequest = xHttp.request("/admin/addressbook/count/?" + query, insertMailToCount);
 }
 
+function sendEmailCallback(data) {
+    if (!genericCallback(data)) {
+        return;
+    }
+
+    location.href = "/admin/newsletters/";
+}
+
 function saveEmail(callback = null, send = false) {
     $("loading").style.visibility = "";
 
@@ -333,7 +341,14 @@ function saveEmail(callback = null, send = false) {
         return;
     }
 
-    xHttp.request("/admin/newsletters/", sendEmail_r, "POST", data);
+    xHttp.request("/admin/newsletters/", sendEmailCallback, "POST", data);
+}
+
+function saveContactCallback(data) {
+    if (!genericCallback(data)) {
+        return;
+    }
+    location.href = "/admin/addressbook/list/";
 }
 
 function updateContact(id) {
@@ -358,17 +373,18 @@ function updateContact(id) {
     }
 
     if (id) {
-        saveRequest = xHttp.request("/admin/addressbook/" + id + "/", updateContact_r, "PUT", data);
+        saveRequest = xHttp.request("/admin/addressbook/" + id + "/", saveContactCallback, "PUT", data);
         return;
     }
-    saveRequest = xHttp.request("/admin/addressbook/", updateContact_r, "POST", data);
+    saveRequest = xHttp.request("/admin/addressbook/", saveContactCallback, "POST", data);
 }
 
-function updateContact_r(data) {
+function deleteContactCallback(data) {
     if (!genericCallback(data)) {
         return;
     }
-    location.href = "/admin/addressbook/list/";
+
+    removeTagById(data.id);
 }
 
 function deleteContact(id, name) {
@@ -376,15 +392,7 @@ function deleteContact(id, name) {
         return false;
     }
     $("loading").style.visibility = "";
-    xHttp.request("/admin/addressbook/" + id + "/", deleteContact_r, "DELETE");
-}
-
-function deleteContact_r(data) {
-    if (!genericCallback(data)) {
-        return;
-    }
-
-    removeTagById(data.id);
+    xHttp.request("/admin/addressbook/" + id + "/", deleteContactCallback, "DELETE");
 }
 
 function sendEmail() {
@@ -408,16 +416,8 @@ function sendEmail() {
         alert("Du skal skrive et tekst!");
         return false;
     }
-    saveEmail(sendEmail_r, true);
+    saveEmail(sendEmailCallback, true);
     return false;
-}
-
-function sendEmail_r(data) {
-    if (!genericCallback(data)) {
-        return;
-    }
-
-    location.href = "/admin/newsletters/";
 }
 
 function deleteuser(id, name) {
@@ -425,11 +425,7 @@ function deleteuser(id, name) {
         return;
     }
 
-    xHttp.request("/admin/users/" + id + "/", reload_r, "DELETE");
-}
-
-function reload_r(data) {
-    window.location.reload();
+    xHttp.request("/admin/users/" + id + "/", reloadCallback, "DELETE");
 }
 
 function updateuser(id) {
@@ -445,7 +441,7 @@ function updateuser(id) {
         "password": $("password") ? $("password").value : "",
         "password_new": $("password_new") ? $("password_new").value : ""
     };
-    xHttp.request("/admin/users/" + id + "/", reload_r, "PUT", update);
+    xHttp.request("/admin/users/" + id + "/", reloadCallback, "PUT", update);
     return false;
 }
 

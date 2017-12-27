@@ -245,12 +245,47 @@ function deleteRequirement(id, navn) {
     return false;
 }
 
+function bindingsCallback(data) {
+    if (!genericCallback(data)) {
+        return;
+    }
+
+    for (const id of data.deleted) {
+        removeTagById("bind" + id);
+    }
+
+    if (data.added) {
+        var p = document.createElement("p");
+        p.setAttribute("id", "bind" + data.added.categoryId);
+        var img = document.createElement("img");
+        img.setAttribute("src", "/theme/default/images/admin/cross.png");
+        img.setAttribute("alt", "X");
+        img.setAttribute("height", "16");
+        img.setAttribute("width", "16");
+        img.setAttribute("title", "Fjern binding");
+        img.onclick = function() {
+            removeBinding(data.added.path, data.pageId, data.added.categoryId);
+        };
+        p.appendChild(img);
+        p.appendChild(document.createTextNode(" " + data.added.path));
+        $("bindinger").appendChild(p);
+    }
+}
+
 function bind(id) {
     $("loading").style.visibility = "";
     var categoryId = parseInt(getRadio("kat"));
     xHttp.request("/admin/page/" + id + "/categories/" + categoryId + "/", bindingsCallback, "POST");
 
     return false;
+}
+
+function removeBinding(navn, id, categoryId, callback = null) {
+    callback = callback || bindingsCallback;
+    if (confirm("Vil du fjerne siden fra '" + navn + "'?")) {
+        $("loading").style.visibility = "";
+        xHttp.request("/admin/page/" + id + "/categories/" + categoryId + "/", callback, "DELETE");
+    }
 }
 
 function removeAccessory(navn, pageId, accessoryId) {
@@ -298,41 +333,6 @@ function addAccessory(pageId) {
     xHttp.request("/admin/page/" + pageId + "/accessories/" + accessoryId + "/", addAccessoryCallback, "POST");
 
     return false;
-}
-
-function removeBinding(navn, id, categoryId, callback = null) {
-    callback = callback || bindingsCallback;
-    if (confirm("Vil du fjerne siden fra '" + navn + "'?")) {
-        $("loading").style.visibility = "";
-        xHttp.request("/admin/page/" + id + "/categories/" + categoryId + "/", callback, "DELETE");
-    }
-}
-
-function bindingsCallback(data) {
-    if (!genericCallback(data)) {
-        return;
-    }
-
-    for (const id of data.deleted) {
-        removeTagById("bind" + id);
-    }
-
-    if (data.added) {
-        var p = document.createElement("p");
-        p.setAttribute("id", "bind" + data.added.categoryId);
-        var img = document.createElement("img");
-        img.setAttribute("src", "/theme/default/images/admin/cross.png");
-        img.setAttribute("alt", "X");
-        img.setAttribute("height", "16");
-        img.setAttribute("width", "16");
-        img.setAttribute("title", "Fjern binding");
-        img.onclick = function() {
-            removeBinding(data.added.path, data.pageId, data.added.categoryId);
-        };
-        p.appendChild(img);
-        p.appendChild(document.createTextNode(" " + data.added.path));
-        $("bindinger").appendChild(p);
-    }
 }
 
 function removeTagByClass(className) {
@@ -391,15 +391,7 @@ function moveCategory(navn, id, toId, confirmMove) {
     }
 }
 
-function renameCategory(id, title) {
-    var newTitle = prompt("OmdÃ¸b kategori", title);
-    if (newTitle !== null && newTitle !== title) {
-        $("loading").style.visibility = "";
-        xHttp.request("/admin/categories/" + id + "/", renameCategory_r, "PUT", {"title": newTitle});
-    }
-}
-
-function renameCategory_r(data) {
+function renameCategoryCallback(data) {
     if (!genericCallback(data)) {
         return;
     }
@@ -411,6 +403,14 @@ function renameCategory_r(data) {
     }
 
     $(data.id).firstChild.lastChild.nodeValue = " " + data.title;
+}
+
+function renameCategory(id, title) {
+    var newTitle = prompt("OmdÃ¸b kategori", title);
+    if (newTitle !== null && newTitle !== title) {
+        $("loading").style.visibility = "";
+        xHttp.request("/admin/categories/" + id + "/", renameCategoryCallback, "PUT", {"title": newTitle});
+    }
 }
 
 function jumpto() {
@@ -444,7 +444,16 @@ function sogsearch() {
     xHttp.request("/admin/page/search/?text=" + encodeURIComponent(sogtext), injectHtml);
 }
 
-function confirm_faktura_validate(id) {
+function reloadCallback(data) {
+    window.location.reload();
+}
+
+function setPaymentTransferred(id, transferred) {
+    xHttp.request("/admin/invoices/payments/" + id + "/", reloadCallback, "PUT", {"transferred": transferred});
+    return false;
+}
+
+function confirmPaymentValidate(id) {
     if (!confirm("Mente du '" + id + "'?")) {
         return false;
     }
@@ -452,13 +461,9 @@ function confirm_faktura_validate(id) {
     return setPaymentTransferred(id, true);
 }
 
-function setPaymentTransferred(id, transferred) {
-    xHttp.request("/admin/invoices/payments/" + id + "/", setPaymentTransferred_r, "PUT", {"transferred": transferred});
-    return false;
-}
-
-function setPaymentTransferred_r() {
-    location.reload();
+function createTableCallback(data) {
+    window.opener.location.reload();
+    window.close();
 }
 
 function createTable() {
@@ -486,12 +491,7 @@ function createTable() {
         });
     }
 
-    xHttp.request("/admin/tables/", createTable_r, "POST", data);
+    xHttp.request("/admin/tables/", createTableCallback, "POST", data);
 
     return false;
-}
-
-function createTable_r(data) {
-    window.opener.location.reload();
-    window.close();
 }

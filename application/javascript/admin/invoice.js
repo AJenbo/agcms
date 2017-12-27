@@ -13,15 +13,6 @@ function copytonew(id) {
     return false;
 }
 
-function removeRow(row) {
-    $("vareTable").removeChild(row.parentNode.parentNode);
-    if ($("vareTable").childNodes.length === 0) {
-        addRow();
-    }
-    prisUpdate();
-    return false;
-}
-
 function addRow() {
     var tr = document.createElement("tr");
     var td = document.createElement("td");
@@ -46,6 +37,114 @@ function addRow() {
         "<a href=\"#\" onclick=\"return removeRow(this)\"><img alt=\"X\" src=\"/theme/default/images/admin/cross.png\" height=\"16\" width=\"16\" title=\"Remove Line\" /></a>";
     tr.appendChild(td);
     $("vareTable").appendChild(tr);
+}
+
+function prisUpdate() {
+    invoiceLines = [];
+    invoiceAmount = 0;
+
+    var titles = document.getElementsByName("product");
+    var values = document.getElementsByName("value");
+    var quantities = document.getElementsByName("quantitie");
+    var totals = $$(".total");
+    var premoms = $("premoms").checked;
+    var momssats = parseFloat($("momssats").value);
+
+    var netto = 0;
+    var quantity = 0;
+    var value = 0;
+    var total = 0;
+
+    for (var i = 0; i < quantities.length; i++) {
+        quantity = parseInt(quantities[i].value);
+        if (isNaN(quantity)) {
+            quantity = 0;
+        }
+
+        value = parseFloat(parseFloat(values[i].value.replace(/[^-0-9,]/g, "").replace(/,/, ".")).toFixed(2));
+        if (isNaN(value)) {
+            value = 0;
+        }
+
+        total = quantity * value;
+
+        totals[i].innerText = "";
+        if (total !== 0) {
+            totals[i].innerText = numberFormat(total);
+        }
+
+        netto += premoms ? (total / 1.25) : total;
+
+        if (quantity || titles[i].value !== "" || value) {
+            invoiceLines.push({quantity, "title": titles[i].value, value});
+        }
+    }
+
+    $("netto").innerText = numberFormat(netto);
+
+    $("moms").innerText = numberFormat(netto * momssats);
+
+    var fragt = parseFloat($("fragt").value.replace(/[^-0-9,]/g, "").replace(/,/, "."));
+    if (isNaN(fragt)) {
+        fragt = 0;
+    }
+
+    payamount = parseFloat(fragt + netto + netto * momssats);
+    $("payamount").innerText = numberFormat(payamount);
+    invoiceAmount = payamount.toFixed(2);
+
+    if (!quantities.length || quantities[quantities.length - 1].value !== ""
+        || titles[titles.length - 1].value !== "" || values[values.length - 1].value !== "") {
+        addRow();
+    }
+
+    return true;
+}
+
+function removeRow(row) {
+    $("vareTable").removeChild(row.parentNode.parentNode);
+    if ($("vareTable").childNodes.length === 0) {
+        addRow();
+    }
+    prisUpdate();
+    return false;
+}
+
+function setVisabilityForSendAction(data) {
+    $("emaillink").style.display = data.isValid ? "" : "none";
+    $("loading").style.visibility = "hidden";
+}
+
+function valideMail() {
+    if (!$("emaillink")) {
+        return;
+    }
+
+    if (!$("email").value.match("^[A-z0-9_.-]+@([A-z0-9-]+\\.)+[A-z0-9-]+$")) {
+        displayInvoiceEmailAction({"isValid": false});
+        return;
+    }
+
+    if ($("email").value !== lastemail || $("emaillink").style.display === "none") {
+        lastemail = $("email").value;
+        xHttp.cancel(validemailajaxcall);
+        $("loading").style.visibility = "";
+        displayInvoiceEmailAction({"isValid": false});
+
+        validemailajaxcall = xHttp.request(
+            "/admin/addressbook/validEmail/?email=" + encodeURIComponent(lastemail),
+            setVisabilityForSendAction,
+            "GET"
+        );
+    }
+}
+
+function chnageZipCode(zipcode, country, city) {
+    if ($(country).value !== "DK") {
+        return;
+    }
+
+    $(city).value = arrayZipcode[zipcode] || "";
 }
 
 function injectInvoiceAddress(data) {
@@ -91,68 +190,6 @@ function numberFormat(number) {
     return number.toFixed(2).toString().replace(/\./, ",");
 }
 
-function prisUpdate() {
-    invoiceLines = [];
-    invoiceAmount = 0;
-
-    var titles = document.getElementsByName("product");
-    var values = document.getElementsByName("value");
-    var quantities = document.getElementsByName("quantitie");
-    var totals = $$(".total");
-    var premoms = $("premoms").checked;
-    var momssats = parseFloat($("momssats").value);
-
-    var netto = 0;
-    var quantity = 0;
-    var value = 0;
-    var total = 0;
-
-    for (var i = 0; i < quantities.length; i++) {
-        quantity = parseInt(quantities[i].value);
-        if (isNaN(quantity)) {
-            quantity = 0;
-        }
-
-        value = parseFloat(parseFloat(values[i].value.replace(/[^-0-9,]/g, "").replace(/,/, ".")).toFixed(2));
-        if (isNaN(value)) {
-            value = 0;
-        }
-
-        total = quantity * value;
-
-        totals[i].innerText = "";
-        if (total !== 0) {
-            totals[i].innerText = numberFormat(total);
-        }
-
-        netto += premoms ? (total / 1.25) : total;
-
-        if (quantity || titles[i].value !== "" || value) {
-            invoiceLines.push({"quantity": quantity, "title": titles[i].value, "value": value});
-        }
-    }
-
-    $("netto").innerText = numberFormat(netto);
-
-    $("moms").innerText = numberFormat(netto * momssats);
-
-    var fragt = parseFloat($("fragt").value.replace(/[^-0-9,]/g, "").replace(/,/, "."));
-    if (isNaN(fragt)) {
-        fragt = 0;
-    }
-
-    payamount = parseFloat(fragt + netto + netto * momssats);
-    $("payamount").innerText = numberFormat(payamount);
-    invoiceAmount = payamount.toFixed(2);
-
-    if (!quantities.length || quantities[quantities.length - 1].value !== "" || titles[titles.length - 1].value !== "" ||
-        values[values.length - 1].value !== "") {
-        addRow();
-    }
-
-    return true;
-}
-
 function reloadPage(date) {
     window.location.reload();
 }
@@ -169,6 +206,20 @@ function annul(id) {
     // TODO save comment
     xHttp.request("/admin/invoices/payments/" + id + "/", reloadPage, "DELETE");
     return false;
+}
+
+function invoiceSaveResponse(date) {
+    if (date.status !== status || date.type === "lock" || date.type === "cancel" || date.type === "giro" ||
+        date.type === "cash") {
+        window.location.reload();
+    }
+
+    if (date.status !== "new" && $("note").value) {
+        $$(".note")[0].innerText += "\n" + $("note").value;
+        $("note").value = "";
+    }
+
+    $("loading").style.visibility = "hidden";
 }
 
 function save(id = null, type = null) {
@@ -256,60 +307,9 @@ function sendReminder(id) {
     return false;
 }
 
-function invoiceSaveResponse(date) {
-    if (date.status !== status || date.type === "lock" || date.type === "cancel" || date.type === "giro" ||
-        date.type === "cash") {
-        window.location.reload();
-    }
-
-    if (date.status !== "new" && $("note").value) {
-        $$(".note")[0].innerText += "\n" + $("note").value;
-        $("note").value = "";
-    }
-
-    $("loading").style.visibility = "hidden";
-}
-
-function valideMail() {
-    if (!$("emaillink")) {
-        return;
-    }
-
-    if (!$("email").value.match("^[A-z0-9_.-]+@([A-z0-9-]+\\.)+[A-z0-9-]+$")) {
-        displayInvoiceEmailAction({"isValid": false});
-        return;
-    }
-
-    if ($("email").value !== lastemail || $("emaillink").style.display === "none") {
-        lastemail = $("email").value;
-        xHttp.cancel(validemailajaxcall);
-        $("loading").style.visibility = "";
-        displayInvoiceEmailAction({"isValid": false});
-
-        validemailajaxcall = xHttp.request(
-            "/admin/addressbook/validEmail/?email=" + encodeURIComponent(lastemail),
-            setVisabilityForSendAction,
-            "GET"
-        );
-    }
-}
-
-function setVisabilityForSendAction(data) {
-    $("emaillink").style.display = data.isValid ? "" : "none";
-    $("loading").style.visibility = "hidden";
-}
-
 function showhidealtpost(status) {
     var rows = $$(".altpost");
     for (const row of rows) {
         row.style.display = status ? "" : "none";
     }
-}
-
-function chnageZipCode(zipcode, country, city) {
-    if ($(country).value !== "DK") {
-        return;
-    }
-
-    $(city).value = arrayZipcode[zipcode] || "";
 }
