@@ -155,7 +155,7 @@ h1 {
     background-color: #FFFFFF;
 }
 #headder div {
-    margin: 0px auto;
+    margin: 0 auto;
     padding: 10px;
     width: 760px;
 }
@@ -187,7 +187,7 @@ h1 {
 }
 #container {
     background-color: #c5c5c5;
-    bottom: 0px;
+    bottom: 0;
     position: absolute;
     top: 93px;
     width: 100%;
@@ -264,8 +264,8 @@ h1 {
     overflow: auto;
     overflow-y: scroll;
     position: absolute;
-    right: 0px;
-    top: 0px;
+    right: 0;
+    top: 0;
     width: 583px;
 }
 #footer,
@@ -275,9 +275,9 @@ h1 {
 }
 #footer {
     background-color: #FFFFFF;
-    bottom: 0px;
+    bottom: 0;
     position: absolute;
-    right: 0px;
+    right: 0;
     text-align: center;
     width: 583px;
 }
@@ -293,7 +293,7 @@ marquee {
     bottom: 37px;
     height: 18px;
     position: absolute;
-    right: 0px;
+    right: 0;
     text-align: center;
     width: 581px;
 }
@@ -303,11 +303,11 @@ marquee * {
 }
 .imgright {
     float: right;
-    padding: 0pt 0pt 10px 10px;
+    padding: 0 0 10px 10px;
 }
 .imgleft {
     float: left;
-    padding: 0pt 10pt 10px 0px;
+    padding: 0 10pt 10px 0;
 }
 .tabel {
     clear: both;
@@ -380,7 +380,7 @@ marquee * {
     #burger,
     #basket {
         display: inline-block;
-        padding: 7px 0px;
+        padding: 7px 0;
         vertical-align: bottom;
     }
     #burger {

@@ -1,5 +1,5 @@
 * {
-    border: 0px;
+    border: 0;
     font-family: "Times New Roman", Times, serif;
     line-height: 120%;
     scrollbar-3dlight-color: #F4DCA3;
@@ -34,10 +34,10 @@ a:hover {
 }
 #crumbs {
     left: 150px;
-    margin: 0px;
+    margin: 0;
     padding: 0;
     position: absolute;
-    top: 0px;
+    top: 0;
 }
 #crumbs * {
     display: inline;
@@ -66,7 +66,7 @@ a:hover {
 h3 {
     font-size: 15px;
     font-weight: bold;
-    margin: 0px;
+    margin: 0;
     text-align: center;
 }
 h3 * {
@@ -79,7 +79,7 @@ h4 {
 }
 #menu {
     background-color: #FFFCD5;
-    bottom: 0px;
+    bottom: 0;
     left: 50%;
     margin-left: -390px;
     overflow: auto;
@@ -90,8 +90,8 @@ h4 {
 #menu * {
     font-size: 14px;
     font-weight: bold;
-    margin: 0px;
-    padding: 0px;
+    margin: 0;
+    padding: 0;
 }
 #menu ul,
 #menu li {
@@ -153,7 +153,7 @@ body div {
     width: 587px;
 }
 #liste td {
-    border: 0px;
+    border: 0;
     padding: 5px 5px 15px 5px;
     vertical-align: top;
     width: 50%;
@@ -210,9 +210,9 @@ body td .requred,
 }
 .imgright {
     float: right;
-    padding: 0pt 0pt 10px 10px;
+    padding: 0 0 10px 10px;
 }
 .imgleft {
     float: left;
-    padding: 0pt 10pt 10px 0px;
+    padding: 0 10pt 10px 0;
 }

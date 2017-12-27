@@ -5,7 +5,7 @@
     src: url('/theme/gillsan0.eot');
 }
 * {
-    border: 0px;
+    border: 0;
     font-family: Verdana, Arial, Helvetica, sans-serif;
     line-height: 120%;
     scrollbar-3dlight-color: #CCCCCC;
@@ -39,7 +39,7 @@ textarea {
 }
 #mainfade-l {
     border-right: 115px solid #EAEAEA;
-    left: 0px;
+    left: 0;
     position: absolute;
     top: 59px;
 }
@@ -67,7 +67,7 @@ a:hover {
 #wrapper h2 {
     font-size: 12px;
     left: 173px;
-    margin: 0px;
+    margin: 0;
     position: absolute;
     top: 28px;
 }
@@ -113,8 +113,8 @@ a:hover {
 }
 #menu * {
     font-size: 12px;
-    margin: 0px;
-    padding: 0px;
+    margin: 0;
+    padding: 0;
 }
 #menu a {
     display: block;

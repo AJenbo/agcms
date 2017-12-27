@@ -5,7 +5,7 @@
     src: url('/theme/www.jagtogfiskerimagasinet.dk/style/gillsan0.eot');
 }
 * {
-    border: 0px;
+    border: 0;
     font-family: Verdana, Arial, Helvetica, sans-serif;
     line-height: 120%;
     scrollbar-3dlight-color: #CCCCCC;
@@ -17,7 +17,7 @@ body {
     background-color: #0C0C0C;
     color: #000000;
     font-size: 12px;
-    margin: 0px;
+    margin: 0;
 }
 img {
     -ms-interpolation-mode: bicubic;
@@ -38,7 +38,7 @@ textarea {
 }
 #mainfade-l {
     border-right: 159px solid #EAEAEA;
-    left: 0px;
+    left: 0;
     position: absolute;
     top: 59px;
 }
@@ -74,7 +74,7 @@ a:hover {
 #wrapper h2 {
     font-size: 12px;
     left: 173px;
-    margin: 0px;
+    margin: 0;
     position: absolute;
     top: 28px;
 }
@@ -120,8 +120,8 @@ a:hover {
 }
 #menu * {
     font-size: 12px;
-    margin: 0px;
-    padding: 0px;
+    margin: 0;
+    padding: 0;
 }
 #menu a {
     display: block;
@@ -359,7 +359,7 @@ h1 {
     }
     #menu>ul {
         background-color: #EAEAEA;
-        margin-left: 0px;
+        margin-left: 0;
         min-height: 100%;
         padding-left: 23px;
         top: 0;
@@ -423,7 +423,7 @@ h1 {
         width: 100%;
     }
     #innercontainer {
-        padding: 0px 2px;
+        padding: 0 2px;
         width: auto;
     }
     #text img {
@@ -479,11 +479,11 @@ h1 {
         background-color: #EAEAEA;
         float: left;
         height: 100%;
-        left: 0px;
-        margin-left: 0px;
+        left: 0;
+        margin-left: 0;
         overflow: visible;
         position: fixed;
-        top: 0px;
+        top: 0;
     }
     #text {
         background: none;
@@ -492,13 +492,13 @@ h1 {
         margin-left: 174px;
         overflow: visible;
         position: relative;
-        top: 0px;
+        top: 0;
     }
     .print {
         display: inline;
     }
     #menu a {
-        margin-left: 0px;
+        margin-left: 0;
     }
     #menu ul {
         list-style-image: none;

@@ -1,11 +1,11 @@
 * {
-    border: 0px;
+    border: 0;
     font-family: "Times New Roman", Times, serif;
     line-height: 120%;
 }
 body {
     background-color: #FFFCD5;
-    margin: 0px;
+    margin: 0;
 }
 #date {
     display: none;
@@ -34,10 +34,10 @@ a:hover {
 }
 #crumbs {
     left: 150px;
-    margin: 0px;
+    margin: 0;
     padding: 0;
     position: absolute;
-    top: 0px;
+    top: 0;
 }
 #crumbs * {
     display: inline;
@@ -69,7 +69,7 @@ a:hover {
 h3 {
     font-size: 15px;
     font-weight: bold;
-    margin: 0px;
+    margin: 0;
     text-align: center;
 }
 h3 * {
@@ -88,7 +88,7 @@ h4 {
     width: 144px;
 }
 #menu {
-    bottom: 0px;
+    bottom: 0;
     left: 50%;
     margin-left: -390px;
     overflow: auto;
@@ -99,8 +99,8 @@ h4 {
 #menu * {
     font-size: 14px;
     font-weight: bold;
-    margin: 0px;
-    padding: 0px;
+    margin: 0;
+    padding: 0;
 }
 #menu * img {
     vertical-align: text-top;
@@ -136,7 +136,7 @@ h4 {
     color: red;
 }
 #text {
-    bottom: 0px;
+    bottom: 0;
     clip: auto;
     left: 50%;
     margin-left: -246px;
@@ -172,7 +172,7 @@ h4 {
     width: 587px;
 }
 #liste td {
-    border: 0px;
+    border: 0;
     padding: 5px 5px 15px 5px;
     vertical-align: top;
     width: 50%;
@@ -229,11 +229,11 @@ h1 {
 }
 .imgright {
     float: right;
-    padding: 0pt 0pt 10px 10px;
+    padding: 0 0 10px 10px;
 }
 .imgleft {
     float: left;
-    padding: 0pt 10pt 10px 0px;
+    padding: 0 10pt 10px 0;
 }
 .addtocart {
     text-align: center;
@@ -388,7 +388,7 @@ h1 {
         display: block;
     }
     #innercontainer {
-        padding: 0px 2px;
+        padding: 0 2px;
         width: auto;
     }
     .imgright,
@@ -411,11 +411,11 @@ h1 {
         background-color: #EAEAEA;
         float: left;
         height: 100%;
-        left: 0px;
-        margin-left: 0px;
+        left: 0;
+        margin-left: 0;
         overflow: visible;
         position: fixed;
-        top: 0px;
+        top: 0;
     }
     #text {
         height: 100%;
@@ -423,13 +423,13 @@ h1 {
         margin-left: 130px;
         overflow: visible;
         position: relative;
-        top: 0px;
+        top: 0;
     }
     .print {
         display: inline;
     }
     #menu a {
-        margin-left: 0px;
+        margin-left: 0;
     }
     #menu ul {
         list-style-image: none;

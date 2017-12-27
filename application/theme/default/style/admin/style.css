@@ -51,13 +51,13 @@ a:hover {
 #mainmenu {
     background-color: #F0F0F0;
     border-right: 3px #C1C1C1 solid;
-    bottom: 0px;
-    left: 0px;
+    bottom: 0;
+    left: 0;
     overflow: auto;
     overflow-y: scroll;
     padding: 0 16px;
     position: fixed;
-    top: 0px;
+    top: 0;
     width: 190px;
 }
 #mainmenu input {
@@ -133,7 +133,7 @@ a:hover {
     background-color: #F5F5F5;
     border: 1px #C1C1C1 solid;
     border-top: 0;
-    margin: 0px;
+    margin: 0;
     padding: 10px 12px;
     width: 143px;
 }
