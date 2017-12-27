@@ -89,7 +89,6 @@ activeKatContextMenu.push({
     "className": "unlink",
     callback(e) {
         var element = getNodeFromContextMenuEvent(e);
-        console.log(element);
         moveCategory(element.lastChild.nodeValue.trim(), element.parentNode.id.replace(/^kat/, ""), -1, true);
     }
 });
@@ -99,7 +98,6 @@ inactiveKatContextMenu.push({
     "className": "delete",
     callback(e) {
         var element = getNodeFromContextMenuEvent(e);
-        console.log(element);
         deleteCategory(element.lastChild.nodeValue.trim(), element.parentNode.id.replace(/^kat/, ""));
     }
 });
