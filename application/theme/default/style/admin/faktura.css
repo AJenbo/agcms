@@ -3,13 +3,6 @@
 #data input {
     border: 1px dashed #999999;
 }
-#data input[type=checkbox] {
-    border: 2px inset threedface;
-}
-#data input[type=submit],
-#data input[type=button] {
-    border: 2px outset buttonface;
-}
 #print {
     display: none;
 }

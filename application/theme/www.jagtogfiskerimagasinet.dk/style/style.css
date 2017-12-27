@@ -2,7 +2,7 @@
     font-family: "Gill Sans";
     font-style: normal;
     font-weight: bold;
-    src: url('/theme/www.jagtogfiskerimagasinet.dk/style/gillsan0.eot');
+    src: url('/theme/www.jagtogfiskerimagasinet.dk/style/gillsan0.eot?#iefix') format('embedded-opentype');
 }
 * {
     border: 0;
@@ -516,7 +516,7 @@ h1 {
     #menu ul .close:hover,
     .active {
         font-weight: normal;
-        list-style-image: none;
         list-style: none;
+        list-style-image: none;
     }
 }

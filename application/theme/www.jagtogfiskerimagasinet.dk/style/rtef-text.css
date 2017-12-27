@@ -137,8 +137,8 @@ a:hover {
     list-style: url('/images/web/close-h.gif');
 }
 .open {
-    list-style: url('/images/web/open.gif');
     cursor: default;
+    list-style: url('/images/web/open.gif');
 }
 #menu ul .open:hover {
     list-style: url('/images/web/open.gif');

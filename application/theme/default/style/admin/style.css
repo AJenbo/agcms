@@ -72,12 +72,15 @@ a:hover {
     background-color: #EFEDDE;
     padding: 3px;
 }
-.menuboxheader {
+.menuboxheader,
+#headline {
     background-image: url('/theme/default/images/admin/headerbar.gif');
-    border: 1px #AAAAAA solid;
-    display: block;
     font-weight: bold;
     height: 13px;
+}
+.menuboxheader {
+    border: 1px #AAAAAA solid;
+    display: block;
     margin-top: 15px;
     overflow: hidden;
     padding: 4px 12px;
@@ -160,9 +163,6 @@ a:hover {
     overflow: auto;
 }
 #headline {
-    background-image: url('/theme/default/images/admin/headerbar.gif');
-    font-weight: bold;
-    height: 13px;
     margin: 0;
     padding: 4px 0;
     text-align: center;

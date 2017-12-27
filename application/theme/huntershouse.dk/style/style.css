@@ -50,9 +50,9 @@ a:hover {
 }
 #crumbs li li a {
     background-color: #DFC586;
-    padding: 3px;
-    margin: 1px;
     line-height: 25px;
+    margin: 1px;
+    padding: 3px;
 }
 #crumbs li li li a {
     background-color: #C7D6A9;

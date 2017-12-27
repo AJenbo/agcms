@@ -1,159 +1,168 @@
 @charset "utf-8";
 * {
-    font-family:Verdana, Arial, Helvetica, sans-serif;
-    white-space:nowrap;
+    font-family: Verdana, Arial, Helvetica, sans-serif;
+    white-space: nowrap;
 }
-html, body {
-    overflow:hidden;
-}
+html,
 body {
-    margin:0px;
+    overflow: hidden;
+    margin: 0;
 }
-img, .image {
-    cursor:pointer;
+img,
+.image {
+    cursor: pointer;
 }
 #menu {
-    background-color:ButtonFace;
-    border:1px outset;
-    font-size:11px;
-    height:23px;
-    left:1px;
-    overflow:hidden;
-    position:absolute;
-    right:0px;
-    top:1px;
+    background-color: #F0F0F0;
+    border-bottom: 1px #c8c8c8 solid;
+    font-size: 11px;
+    height: 23px;
+    left: 1px;
+    overflow: hidden;
+    position: absolute;
+    right: 0;
+    top: 1px;
 }
 #menu a {
-    border:1px ButtonFace solid;
-    color:#000000;
-    display:block;
-    float:left;
-    height:18px;
-    line-height:16px;
-    padding:1px 3px;
-    text-decoration:none;
-    white-space:nowrap;
+    border: 1px #F0F0F0 solid;
+    color: #000000;
+    display: block;
+    float: left;
+    height: 18px;
+    line-height: 16px;
+    padding: 1px 3px;
+    text-decoration: none;
+    white-space: nowrap;
 }
 #menu a:hover {
-    border:1px ThreeDHighlight outset;
+    border: 1px #F0F0F0 outset;
 }
 #menu a.down {
-    background-color:ThreeDHighlight;
-    border:1px ThreeDHighlight inset;
+    background-color: #ddd;
+    border: 1px #ddd inset;
 }
 #menu img {
-    border:0px;
+    border: 0;
 }
 #loading {
-    cursor:default;
-    float:right;
-    padding:4px;
+    cursor: default;
+    float: right;
+    padding: 4px;
 }
-#dir, #search, #favorits {
-    background-color:Window;
-    bottom:0px;
-    font-size:11px;
-    left:0px;
-    overflow:auto;
-    overflow-y:scroll;
-    padding:5px;
-    position:absolute;
-    top:26px;
-    width:195px;
+#dir,
+#search,
+#favorits {
+    background-color: #fff;
+    bottom: 0;
+    font-size: 11px;
+    left: 0;
+    overflow: auto;
+    overflow-y: scroll;
+    padding: 5px;
+    position: absolute;
+    top: 26px;
+    width: 195px;
 }
 #dir div div {
-    margin-left:8px
+    margin-left: 8px
 }
 #dir a {
-    cursor:pointer;
-    padding:1px 3px 4px 3px;
-    white-space:nowrap;
+    cursor: pointer;
+    padding: 1px 3px 4px 3px;
+    white-space: nowrap;
 }
 #dir a:hover {
-    text-decoration:underline;
+    text-decoration: underline;
 }
 #dir a:hover img {
-    text-decoration:none;
+    text-decoration: none;
 }
-#dir a:active, #dir .active {
-    /*Safari dosn't support os colors for this*/
-    color:#FFFFFF;
-    background-color:#0A246A;
+#dir a:active,
+#dir .active {
+    background-color: #0A246A;
+    color: #FFFFFF;
 }
 #dir input {
-    padding:0;
-    width:75%;
+    padding: 0;
+    width: 75%;
 }
 #dir p {
     display: inline;
     margin-left: 3px;
 }
-#dir *, #menu * {
-    vertical-align:middle;
+#dir *,
+#menu * {
+    vertical-align: middle;
 }
-#searchpath, #searchalt {
-    padding:2px;
-    width:172px;
+#searchpath,
+#searchalt {
+    padding: 2px;
+    width: 172px;
 }
 #searchtype {
-    padding:2px;
-    width:178px;
+    padding: 2px;
+    width: 178px;
 }
 #files {
-    background-color:Window;
-    bottom:0px;
-    left:205px;
-    overflow:auto;
-    overflow-y:scroll;
-    padding-top:10px;
-    position:absolute;
-    right:0px;
-    top:26px;
+    background-color: #fff;
+    bottom: 0;
+    left: 205px;
+    overflow: auto;
+    overflow-y: scroll;
+    padding-top: 10px;
+    position: absolute;
+    right: 0;
+    top: 26px;
 }
 #files .navn {
-    border:1px Window solid;
-    height:18px;
-    overflow:hidden;
-    padding:0;
-    text-align:left;
-    white-space:nowrap;
-    width:128px;
+    border: 1px #fff solid;
+    height: 18px;
+    overflow: hidden;
+    padding: 0;
+    text-align: left;
+    white-space: nowrap;
+    width: 128px;
 }
 #files input {
-    width:128px;
+    width: 128px;
 }
-#files input, #dir input, #searchpath, #searchalt {
-    border:1px #000000 solid;
-    font-size:inherit;
-    text-align:left;
+#files input,
+#dir input,
+#searchpath,
+#searchalt {
+    border: 1px #000000 solid;
+    font-size: inherit;
+    text-align: left;
 }
-#files .filetile, #files .imagetile {
-    float:left;
-    font-size:12px;
+#files .filetile,
+#files .imagetile {
+    float: left;
+    font-size: 12px;
     height: 118px;
-    margin:5px 10px;
-    overflow:hidden;
-    text-align:center;
-    width:130px;
+    margin: 5px 10px;
+    overflow: hidden;
+    text-align: center;
+    width: 130px;
 }
 #files .image {
-    background-color:#FFFFFF;
-    border:1px #CCCCCC solid;
-    font-size:0px;
-    height:96px;
+    background-color: #FFFFFF;
+    border: 1px #CCCCCC solid;
+    font-size: 0;
+    height: 96px;
     /*FF needs it 1px lower*/
-    line-height:95px;
-    margin:0;
-    overflow:hidden;
-    text-align:center;
-    white-space:nowrap;
-    width:128px;
+    line-height: 95px;
+    margin: 0;
+    overflow: hidden;
+    text-align: center;
+    white-space: nowrap;
+    width: 128px;
 }
 #files .image * {
-    vertical-align:middle;
+    vertical-align: middle;
 }
-#files form, #files form * {
-    border:0;
-    display:inline;
-    padding:0;
+#files form,
+#files form * {
+    border: 0;
+    display: inline;
+    padding: 0;
 }
