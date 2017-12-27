@@ -97,10 +97,7 @@ File.prototype.addToEditor = function() {
             break;
     }
     var element = window.opener.CKEDITOR.dom.element.createFromHtml(html);
-    for (var key in window.opener.CKEDITOR.instances) {
-        window.opener.CKEDITOR.instances[key].insertElement(element);
-        break;
-    }
+    window.opener.CKEDITOR.instances.text.insertElement(element);
     window.close();
 };
 
