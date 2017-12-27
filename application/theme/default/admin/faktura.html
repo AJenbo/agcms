@@ -520,7 +520,7 @@
     showhidealtpost($('altpost').checked);
     valideMail();
     prisUpdate();
-    var status = {{invoice.status|json_encode|raw}};
+    var status = {% if invoice %}{{invoice.status|json_encode|raw}}{% else %}"new"{% endif%};
 --></script>
 {% endif %}
 {% endblock %}

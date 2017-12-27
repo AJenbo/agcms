@@ -233,7 +233,7 @@ function save(id = null, type = null) {
 
     $("loading").style.visibility = "";
     var update = {};
-    if (status === "new" || status === null || status === "null") {
+    if (status === "new") {
         update.lines = invoiceLines;
         update.shipping = $("fragt").value.replace(/[^-0-9,]/g, "").replace(/,/, ".") || 0;
         update.amount = invoiceAmount;
