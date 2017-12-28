@@ -109,14 +109,14 @@ marquee * {
     text-decoration: none;
     width: 148px;
 }
-#menu a.active {
+#menu .active {
     background-color: #999999;
 }
 #menu a:hover {
     background-color: #BBBBBB;
 }
-#menu a.main,
-#menu a.main_active {
+#menu .main,
+#menu .main_active {
     background-color: #5a5a5a;
     background-image: url('/theme/arms-gallery.dk/images/button.gif');
     background-position: top;
@@ -130,8 +130,8 @@ marquee * {
     text-decoration: none;
     width: 148px;
 }
-#menu a.main:hover,
-#menu a.main_active {
+#menu .main:hover,
+#menu .main_active {
     color: #EEEEEE;
 }
 h1 {
@@ -492,8 +492,8 @@ marquee * {
         width: 100%;
     }
     #menu a,
-    #menu a.main,
-    #menu a.main_active {
+    #menu .main,
+    #menu .main_active {
         background-image: none;
         font-size: 16px;
         margin: 2px 0;
