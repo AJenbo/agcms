@@ -5,8 +5,8 @@
 }
 html,
 body {
-    overflow: hidden;
     margin: 0;
+    overflow: hidden;
 }
 img,
 .image {
@@ -37,7 +37,7 @@ img,
 #menu a:hover {
     border: 1px #F0F0F0 outset;
 }
-#menu a.down {
+#menu .down {
     background-color: #ddd;
     border: 1px #ddd inset;
 }

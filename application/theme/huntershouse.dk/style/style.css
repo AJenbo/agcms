@@ -34,7 +34,6 @@ a:hover {
 }
 #crumbs {
     left: 150px;
-    margin: 0;
     padding: 0;
     position: absolute;
     top: 0;
@@ -331,6 +330,7 @@ h1 {
         height: auto;
     }
     #menu {
+        background: #33332b;
         background: rgba(0, 0, 0, 0.8);
         height: 100%;
         left: -100%;
@@ -432,15 +432,15 @@ h1 {
         margin-left: 0;
     }
     #menu ul {
-        list-style-image: none;
         list-style: none;
+        list-style-image: none;
         margin-left: 16px;
     }
     .activ h4 a,
     .open a {
         font-weight: bold;
-        list-style-image: none;
         list-style: none;
+        list-style-image: none;
     }
     #menu ul ul,
     #menu ul li:hover,
@@ -451,7 +451,7 @@ h1 {
     #menu ul .close:hover,
     .activ {
         font-weight: normal;
-        list-style-image: none;
         list-style: none;
+        list-style-image: none;
     }
 }
