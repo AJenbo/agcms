@@ -1,5 +1,8 @@
 @charset "utf-8";
-* {
+html {
+    font-family: Verdana, Arial, Helvetica, sans-serif;
+}
+#text {
     font-family: "Times New Roman", Times, serif;
 }
 body {
@@ -73,7 +76,6 @@ input {
     width: 250px;
 }
 .liste .vare h2 a {
-    font-family: 'Times New Roman', Times, serif;
     font-size: 17px;
     text-decoration: none;
 }
@@ -87,18 +89,6 @@ input {
     overflow: auto;
     overflow-y: scroll;
     width: 177px;
-}
-#headder,
-#headder *,
-.bar,
-.bar *,
-#menu,
-#menu *,
-#footer,
-#footer *,
-marquee,
-marquee * {
-    font-family: Verdana, Arial, Helvetica, sans-serif;
 }
 #menu a {
     display: block;
@@ -136,7 +126,6 @@ marquee * {
 }
 h1 {
     color: #333333;
-    font-family: "Times New Roman", Times, serif;
     font-size: 17px;
     font-weight: bold;
     margin: 0;
@@ -220,7 +209,6 @@ h1 {
 #innercontainer,
 #innercontainer table,
 #text table {
-    font-family: "Times New Roman", Times, serif;
     font-size: 13px;
 }
 #krav {
@@ -297,7 +285,7 @@ marquee {
     text-align: center;
     width: 581px;
 }
-marquee * {
+marquee p {
     margin: 0;
     padding: 0;
 }
