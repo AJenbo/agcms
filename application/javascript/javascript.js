@@ -47,21 +47,10 @@ function updateprice() {
 }
 
 function showhidealtpost(status) {
-    var i = 0;
     var rows = document.getElementsByTagName("tr");
-
-    if (status) {
-        for (i = 0; i < rows.length; i++) {
-            if (rows[i].className === "altpost") {
-                rows[i].style.display = "";
-            }
-        }
-        return;
-    }
-
-    for (i = 0; i < rows.length; i++) {
+    for (var i = 0; i < rows.length; i++) {
         if (rows[i].className === "altpost") {
-            rows[i].style.display = "none";
+            rows[i].style.display = status ? "" : "none";
         }
     }
 }
