@@ -524,6 +524,7 @@ class Category extends AbstractRenderable
             'email'            => db()->eandq($this->email),
             'custom_sort_subs' => (string) (int) $this->weightedChildren,
             'order'            => (string) $this->weight,
+            'access'           => '""',
         ];
     }
 }
