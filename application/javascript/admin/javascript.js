@@ -49,20 +49,22 @@ function setCookie(name, value, expiresInDayes) {
 
 function getCookie(cookieName) {
     cookieName = encodeURIComponent(cookieName);
-    if (document.cookie.length > 0) {
-        var begin = document.cookie.indexOf(cookieName + "=");
-        if (begin !== -1) {
-            begin += cookieName.length + 1;
-            var end = document.cookie.indexOf(";", begin);
-            if (end === -1) {
-                end = document.cookie.length;
-            }
-
-            return decodeURIComponent(document.cookie.substring(begin, end));
-        }
+    if (!document.cookie.length) {
+        return null;
     }
 
-    return null;
+    var begin = document.cookie.indexOf(cookieName + "=");
+    if (begin === -1) {
+        return null;
+    }
+
+    begin += cookieName.length + 1;
+    var end = document.cookie.indexOf(";", begin);
+    if (end === -1) {
+        end = document.cookie.length;
+    }
+
+    return decodeURIComponent(document.cookie.substring(begin, end));
 }
 
 function showhide(id) {
@@ -115,12 +117,14 @@ function showhidekats(id, thisobj) {
 
 function getSelectValue(id) {
     var select = $(id);
-    if (select) {
-        var options = select.getElementsByTagName("option");
-        for (const option of options) {
-            if (option.selected) {
-                return option.value;
-            }
+    if (!select) {
+        return null;
+    }
+
+    var options = select.getElementsByTagName("option");
+    for (const option of options) {
+        if (option.selected) {
+            return option.value;
         }
     }
 
