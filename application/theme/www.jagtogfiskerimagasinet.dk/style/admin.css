@@ -1,19 +1,22 @@
-* {
-    text-shadow: 0 0 0 #fff;
+@font-face {
+    font-family: "Gill Sans";
+    font-style: normal;
+    font-weight: bold;
+    src: url('/theme/www.jagtogfiskerimagasinet.dk/style/gillsan0.eot?#iefix') format('embedded-opentype');
 }
-.NyPris {
+.nypris {
     color: #CC0000;
     font-family: "Gill Sans", Arial, Helvetica, sans-serif;
     font-size: 16px;
     font-weight: bold;
     line-height: 125%;
 }
-.Pris {
+.pris {
     font-family: "Gill Sans", Arial, Helvetica, sans-serif;
     font-size: 14px;
     font-weight: bold;
 }
-.XPris {
+.xpris {
     color: #666666;
     font-size: 14px;
     font-weight: lighter;
@@ -23,4 +26,11 @@
     font-family: "Gill Sans", Arial, Helvetica, sans-serif;
     font-size: 17px;
     font-weight: bold;
+}
+#beskrivelse {
+    background-color: #ffffff;
+    color: #000000;
+    font-family: Verdana, Arial, Helvetica, sans-serif;
+    font-size: 12px;
+    line-height: 120%;
 }

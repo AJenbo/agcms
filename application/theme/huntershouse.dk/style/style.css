@@ -1,10 +1,8 @@
-* {
+body {
+    background-color: #FFFCD5;
     border: 0;
     font-family: "Times New Roman", Times, serif;
     line-height: 120%;
-}
-body {
-    background-color: #FFFCD5;
     margin: 0;
 }
 #date {

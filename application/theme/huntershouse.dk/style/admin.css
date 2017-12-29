@@ -1,17 +1,14 @@
-* {
-    text-shadow: 0 0 0 #fff;
-}
-.NyPris {
+.nypris {
     color: #CC0000;
     font-size: 16px;
     font-weight: bold;
     line-height: 125%;
 }
-.Pris {
+.pris {
     font-size: 14px;
     font-weight: bold;
 }
-.XPris {
+.xpris {
     font-size: 17px;
     text-decoration: line-through;
 }
@@ -20,4 +17,9 @@
     font-family: "Times New Roman", Times, serif;
     font-size: 24px;
     font-weight: bold;
+}
+#beskrivelse {
+    background-color: #FFFCD5;
+    font-family: "Times New Roman", Times, serif;
+    line-height: 120%;
 }
