@@ -503,9 +503,8 @@ function maintainStep8(data) {
 
 function maintainStep9(data) {
     getUsage_r(data);
-    $("errors").innerHTML += "<br />" +
-                            ("The scan took %d seconds.".replace(
-                                /[%]d/g, Math.round((new Date().getTime() - startTime) / 1000).toString()));
+    $("errors").innerHTML += "<br />" + ("The scan took %d seconds.".replace(
+                                            /[%]d/g, Math.round((new Date().getTime() - startTime) / 1000).toString()));
 }
 
 function get_subscriptions_with_bad_emails() {
@@ -521,8 +520,8 @@ function get_subscriptions_with_bad_emails() {
 function subscriptionsWithBadEmails_r(data) {
     $("loading").style.visibility = "hidden";
     $("errors").innerHTML += "<br />" + data.html + "<br />" +
-                            ("The scan took %d seconds.".replace(
-                                /[%]d/g, Math.round((new Date().getTime() - starttime) / 1000).toString()));
+                             ("The scan took %d seconds.".replace(
+                                 /[%]d/g, Math.round((new Date().getTime() - starttime) / 1000).toString()));
     $("status").innerText = "";
 }
 
