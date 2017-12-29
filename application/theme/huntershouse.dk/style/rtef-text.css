@@ -1,60 +1,13 @@
-* {
+body {
+    background-color: #FFFCD5;
     border: 0;
     font-family: "Times New Roman", Times, serif;
     line-height: 120%;
-}
-input,
-select,
-textarea {
-    border: 1px solid #000000;
-}
-#wrapper {
-    left: 50%;
-    margin-left: -375px;
-    position: absolute;
-    width: 750px;
 }
 a {
     color: black;
     font-weight: bold;
     text-decoration: none;
-}
-a:visited {
-    color: #8A0F12;
-}
-a:hover {
-    color: red;
-}
-#crumbs {
-    left: 150px;
-    margin: 0;
-    padding: 0;
-    position: absolute;
-    top: 0;
-}
-#crumbs * {
-    display: inline;
-    font-size: 14px;
-    margin: 0;
-    padding: 0;
-}
-#crumbs li li a {
-    background-color: #DFC586;
-    line-height: 25px;
-    margin: 1px;
-    padding: 3px;
-}
-#crumbs li li li a {
-    background-color: #C7D6A9;
-}
-#crumbs li li li li a {
-    background-color: #B3A9D6;
-}
-#crumbs li li li li li a {
-    background-color: #D9E925;
-}
-#crumbs li li li li li li a {
-    background-color: #D6A9B8;
 }
 h3 {
     font-size: 15px;
@@ -62,150 +15,17 @@ h3 {
     margin: 0;
     text-align: center;
 }
-h3 * {
-    font-size: 15px;
-    font-weight: bold;
-}
-h4 {
-    display: inline;
-    font-weight: normal;
-}
-#menu {
-    background-color: #FFFCD5;
-    bottom: 0;
-    left: 50%;
-    margin-left: -390px;
-    overflow: auto;
-    position: absolute;
-    top: 90px;
-    width: 144px;
-}
-#menu * {
-    font-size: 14px;
-    font-weight: bold;
-    margin: 0;
-    padding: 0;
-}
-#menu ul,
-#menu li {
-    display: inline;
-}
-#menu * a {
-    display: block;
-    margin: 2px 0;
-    padding: 2px;
-}
-#menu li li a {
-    background-color: #DFC586;
-}
-#menu li li li a {
-    background-color: #C7D6A9;
-}
-#menu li li li li a {
-    background-color: #B3A9D6;
-}
-#menu li li li li li a {
-    background-color: #D9E925;
-}
-#menu li li li li li li a {
-    background-color: #D6A9B8;
-}
-#menu a:visited {
-    color: #8A0F12;
-}
-#menu a:hover {
-    color: red;
-}
-body {
-    background-color: #FFFCD5;
-}
-body td,
-body div {
-    font-size: 16px;
-}
-.tabel {
-    clear: both;
-    width: 100%;
-}
-.tabel * {
-    padding: 1px;
-}
-.tabel thead {
-    background-color: #DFC586;
-}
-.tabel a {
-    font-weight: bold;
-}
-.altrow {
-    background-color: #F4DCA3;
-}
-#liste {
-    border-collapse: collapse;
-    margin-left: 16px;
-    text-align: center;
-    width: 587px;
-}
-#liste td {
-    border: 0;
-    padding: 5px 5px 15px 5px;
-    vertical-align: top;
-    width: 50%;
-}
-.NyPris {
+.nypris {
     color: #CC0000;
     font-size: 16px;
     font-weight: bold;
     line-height: 125%;
 }
-.Pris {
+.pris {
     font-size: 14px;
     font-weight: bold;
 }
-.XPris {
+.xpris {
     font-size: 17px;
     text-decoration: line-through;
-}
-#liste a,
-h1 {
-    font-size: 24px;
-    font-weight: bold;
-}
-.print {
-    display: none;
-}
-.note {
-    font-size: 13px;
-    font-style: italic;
-}
-#faktura tbody td {
-    border: 1px #000000 solid;
-    border-collapse: collapse;
-    padding: 0;
-}
-#faktura thead td {
-    border: 1px #000000 solid;
-    border-bottom: 2px;
-    border-collapse: collapse;
-    font-weight: bold;
-}
-#faktura table {
-    border-collapse: collapse;
-    font-size: 14px;
-}
-body td .requred,
-.requred {
-    color: #CC3300;
-    font-size: 12px;
-}
-#innercontainer {
-    padding-left: 16px;
-    width: 600px;
-}
-.imgright {
-    float: right;
-    padding: 0 0 10px 10px;
-}
-.imgleft {
-    float: left;
-    padding: 0 10pt 10px 0;
 }

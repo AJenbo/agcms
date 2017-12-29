@@ -301,14 +301,6 @@ marquee * {
     margin: 0;
     padding: 0;
 }
-.imgright {
-    float: right;
-    padding: 0 0 10px 10px;
-}
-.imgleft {
-    float: left;
-    padding: 0 10pt 10px 0;
-}
 .tabel {
     clear: both;
     font-size: 12px;
@@ -527,13 +519,6 @@ marquee * {
     }
     .liste .vare h2 div a img {
         margin: 5px auto;
-    }
-    .imgright,
-    .imgleft {
-        display: block;
-        float: none;
-        margin: auto;
-        padding: 0;
     }
 }
 @media only print {

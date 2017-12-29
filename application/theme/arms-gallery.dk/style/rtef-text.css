@@ -1,9 +1,5 @@
-@charset "utf-8";
-* {
+body {
     font-family: "Times New Roman", Times, serif;
-}
-body,
-body table {
     font-size: 13px;
 }
 img {
@@ -11,10 +7,6 @@ img {
 }
 a {
     color: #000000;
-}
-.liste {
-    font-size: 17px;
-    text-decoration: none;
 }
 .nypris {
     color: #CC0000;
@@ -34,12 +26,4 @@ a {
 }
 .gray {
     background-color: #d4d0c8;
-}
-.imgright {
-    float: right;
-    padding: 0 0 10px 10px;
-}
-.imgleft {
-    float: left;
-    padding: 0 10pt 10px 0;
 }

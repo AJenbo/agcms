@@ -177,17 +177,17 @@ h4 {
     vertical-align: top;
     width: 50%;
 }
-.NyPris {
+.nypris {
     color: #CC0000;
     font-size: 16px;
     font-weight: bold;
     line-height: 125%;
 }
-.Pris {
+.pris {
     font-size: 14px;
     font-weight: bold;
 }
-.XPris {
+.xpris {
     font-size: 17px;
     text-decoration: line-through;
 }
@@ -226,14 +226,6 @@ h1 {
 #innercontainer {
     padding-left: 16px;
     width: 600px;
-}
-.imgright {
-    float: right;
-    padding: 0 0 10px 10px;
-}
-.imgleft {
-    float: left;
-    padding: 0 10pt 10px 0;
 }
 .addtocart {
     text-align: center;
@@ -390,13 +382,6 @@ h1 {
     #innercontainer {
         padding: 0 2px;
         width: auto;
-    }
-    .imgright,
-    .imgleft {
-        display: block;
-        float: none;
-        margin: auto;
-        padding: 0;
     }
 }
 @media only print {

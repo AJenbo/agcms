@@ -1,206 +1,20 @@
 @font-face {
-    font-family: 'Gill Sans';
+    font-family: "Gill Sans";
     font-style: normal;
     font-weight: bold;
-    src: url('/theme/gillsan0.eot');
+    src: url('/theme/www.jagtogfiskerimagasinet.dk/style/gillsan0.eot?#iefix') format('embedded-opentype');
 }
-* {
-    border: 0;
-    font-family: Verdana, Arial, Helvetica, sans-serif;
-    line-height: 120%;
-}
-body,
-#text,
-table {
+body {
     background-color: #ffffff;
+    border: 0;
     color: #000000;
+    font-family: Verdana, Arial, Helvetica, sans-serif;
     font-size: 12px;
-}
-img {
-    -ms-interpolation-mode: bicubic;
-}
-input,
-select,
-textarea {
-    border: 1px solid #000000;
-    color: #000000;
-    font-size: 12px;
-}
-#wrapper {
-    font-size: 12px;
-    left: 50%;
-    margin-left: -375px;
-    position: absolute;
-    width: 750px;
-}
-#mainfade-l {
-    border-right: 115px solid #EAEAEA;
-    left: 0;
-    position: absolute;
-    top: 59px;
-}
-#mainfade-r {
-    border-left: 603px solid #ffffff;
-    left: 130px;
-    position: absolute;
-    top: 59px;
-}
-#jof {
-    left: 10px;
-    position: absolute;
-    top: 19px;
-}
-a:visited {
-    color: #000000;
+    line-height: 120%;
 }
 a {
     color: #3366FF;
     text-decoration: none;
-}
-a:hover {
-    text-decoration: underline;
-}
-#wrapper h2 {
-    font-size: 12px;
-    left: 173px;
-    margin: 0;
-    position: absolute;
-    top: 28px;
-}
-#wrapper h2 img {
-    font-size: 12px;
-    vertical-align: middle;
-}
-#wrapper h2 a {
-    color: #777777;
-    font-family: "Gill Sans", Arial, Helvetica, sans-serif;
-    font-size: 16px;
-    font-weight: bold;
-    margin-right: 6px;
-}
-#wrapper h2 a:visited {
-    color: #777777;
-}
-#wrapper h2 a:hover {
-    color: #e0e0e0;
-    text-decoration: none;
-}
-#wrapper h2 a:active {
-    color: #e0e0e0;
-    text-decoration: none;
-}
-#wrapper h3 {
-    color: #000000;
-    display: inline;
-    font-size: 12px;
-    font-weight: normal;
-}
-#menu {
-    background-color: #EAEAEA;
-    clip: auto;
-    color: #000000;
-    font-size: 12px;
-    left: 50%;
-    margin-left: -375px;
-    overflow: auto;
-    position: absolute;
-    top: 74px;
-    width: 130px;
-}
-#menu * {
-    font-size: 12px;
-    margin: 0;
-    padding: 0;
-}
-#menu a {
-    display: block;
-    margin-left: -3px;
-}
-#menu ul {
-    list-style: url('/images/web/dod.gif');
-    margin-left: 23px;
-}
-#menu ul ul {
-    margin-left: 16px;
-}
-#menu li {
-    cursor: pointer;
-}
-#menu ul li:hover,
-.activ {
-    list-style: url('/images/web/dod-h.gif');
-}
-.close {
-    list-style: url('/images/web/close.gif');
-}
-#menu ul .close:hover {
-    list-style: url('/images/web/close-h.gif');
-}
-.open {
-    cursor: default;
-    list-style: url('/images/web/open.gif');
-}
-#menu ul .open:hover {
-    list-style: url('/images/web/open.gif');
-}
-.tabel {
-    clear: both;
-    font-size: 12px;
-    width: 100%;
-}
-.tabel * {
-    color: #000000;
-    font-size: 12px;
-    padding: 1px;
-}
-.tabel thead {
-    background-color: #999999;
-}
-.tabel a {
-    color: #000000;
-    font-weight: bold;
-}
-.altrow {
-    background-color: #cccccc;
-}
-#liste {
-    border-collapse: collapse;
-    font-size: 12px;
-    margin-left: 16px;
-    text-align: center;
-    width: 587px;
-}
-#liste td {
-    border: #DDD dashed 1px;
-    padding: 5px 5px 15px 5px;
-    vertical-align: top;
-    width: 50%;
-}
-.NyPris {
-    color: #CC0000;
-    font-family: "Gill Sans", Arial, Helvetica, sans-serif;
-    font-size: 16px;
-    font-weight: bold;
-    line-height: 125%;
-}
-.Pris,
-.tabel caption {
-    font-family: "Gill Sans", Arial, Helvetica, sans-serif;
-    font-size: 14px;
-    font-weight: bold;
-}
-.XPris {
-    color: #666666;
-    font-size: 14px;
-    font-weight: lighter;
-    text-decoration: line-through;
-}
-#liste a,
-h1 {
-    color: #000000;
-    font-family: "Gill Sans", Arial, Helvetica, sans-serif;
-    font-size: 17px;
-    font-weight: bold;
 }
 h2 {
     font-family: "Gill Sans", Arial, Helvetica, sans-serif;
@@ -214,33 +28,21 @@ h3 {
     font-weight: bold;
     margin-bottom: 0;
 }
-h4 {
+.nypris {
+    color: #CC0000;
     font-family: "Gill Sans", Arial, Helvetica, sans-serif;
-    font-size: 12px;
-    font-weight: normal;
-    margin-bottom: 0;
-    text-decoration: underline;
+    font-size: 16px;
+    font-weight: bold;
+    line-height: 125%;
 }
-h5 {
+.pris {
     font-family: "Gill Sans", Arial, Helvetica, sans-serif;
-    font-size: 11px;
-    font-weight: normal;
-    margin: 0;
+    font-size: 14px;
+    font-weight: bold;
 }
-h6 {
-    font-size: 9px;
-    font-weight: normal;
-    margin: 0;
-}
-.imgleft {
-    float: left;
-    margin: 0 10px 10px 0;
-}
-.imgright {
-    float: right;
-    margin: 0 0 10px 10px;
-}
-.print,
-#date {
-    display: none;
+.xpris {
+    color: #666666;
+    font-size: 14px;
+    font-weight: lighter;
+    text-decoration: line-through;
 }

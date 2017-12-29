@@ -4,19 +4,14 @@
     font-weight: bold;
     src: url('/theme/www.jagtogfiskerimagasinet.dk/style/gillsan0.eot?#iefix') format('embedded-opentype');
 }
-* {
-    border: 0;
-    font-family: Verdana, Arial, Helvetica, sans-serif;
-    line-height: 120%;
-}
 body {
     background-color: #0C0C0C;
+    border: 0;
     color: #000000;
+    font-family: Verdana, Arial, Helvetica, sans-serif;
     font-size: 12px;
+    line-height: 120%;
     margin: 0;
-}
-img {
-    -ms-interpolation-mode: bicubic;
 }
 input,
 select,
@@ -208,20 +203,20 @@ a:hover {
 #liste a {
     display: block;
 }
-.NyPris {
+.nypris {
     color: #CC0000;
     font-family: "Gill Sans", Arial, Helvetica, sans-serif;
     font-size: 16px;
     font-weight: bold;
     line-height: 125%;
 }
-.Pris,
+.pris,
 .tabel caption {
     font-family: "Gill Sans", Arial, Helvetica, sans-serif;
     font-size: 14px;
     font-weight: bold;
 }
-.XPris {
+.xpris {
     color: #666666;
     font-size: 14px;
     font-weight: lighter;
@@ -265,14 +260,6 @@ h1 {
 }
 .h510 {
     height: 510px;
-}
-.imgleft {
-    float: left;
-    margin: 0 10px 10px 0;
-}
-.imgright {
-    float: right;
-    margin: 0 0 10px 10px;
 }
 .print,
 #date,
@@ -368,7 +355,7 @@ h1 {
         background-image: none;
         font-size: 16px;
     }
-    #menu * {
+    #menu {
         font-size: 16px;
     }
     #menu a {
@@ -440,13 +427,6 @@ h1 {
     #liste a,
     .mobile {
         display: block;
-    }
-    .imgright,
-    .imgleft {
-        display: block;
-        float: none;
-        margin: auto;
-        padding: 0;
     }
     #burger,
     #basket {
