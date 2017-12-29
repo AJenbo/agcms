@@ -560,7 +560,7 @@ function getEmailUsage() {
 }
 
 function getEmailUsage_r(data) {
-    $("mailboxsize").innerText = Math.round(data.size / 1024 / 1024 * 10) / 10 + "MB";
+    $("mailboxsize").innerText = byteToHuman(data.size);
     $("status").innerText = "";
     $("loading").style.visibility = "hidden";
 }
@@ -568,8 +568,19 @@ function getEmailUsage_r(data) {
 function getUsage_r(data) {
     $("loading").style.visibility = "hidden";
     $("status").innerText = "";
-    $("wwwsize").innerText = Math.round(data.www / 1024 / 1024 * 10) / 10 + "MB";
-    $("dbsize").innerText = Math.round(data.db / 1024 / 1024 * 10) / 10 + "MB";
+    $("wwwsize").innerText = byteToHuman(data.www);
+    $("dbsize").innerText = byteToHuman(data.db);
+}
+
+function byteToHuman(bytes) {
+    var sizes = ["B", "KiB", "MiB", "GiB", "TiB", "PiB", "EiB", "ZiB", "YiB", "BiB"];
+    for (const size of sizes) {
+        if (bytes < 1024 || size === "BiB") {
+            return (Math.round(bytes * 10) / 10 + size).replace(/\./, ",");
+        }
+
+        bytes /= 1024;
+    }
 }
 
 function createInvoice() {

@@ -8,8 +8,8 @@
             <span id="mailboxsize">
                 <button onclick="getEmailUsage()">{{'Get email consumption'|trans}}</button>
             </span>
-            {{'DB:'|trans}} <span id="dbsize">{{dbSize|number_format(1, ',', '')}}MiB</span>
-            {{'WWW:'|trans}} <span id="wwwsize">{{wwwSize|number_format(1, ',', '')}}MiB</span>
+            {{'DB:'|trans}} <span id="dbsize">{{dbSize}}</span>
+            {{'WWW:'|trans}} <span id="wwwsize">{{wwwSize}}</span>
         </div>
         <div id="status"></div>
         <button onclick="scan_db()">{{'Scan database'|trans}}</button>

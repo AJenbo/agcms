@@ -47,8 +47,8 @@ class MaintenanceController extends AbstractAdminController
         Render::addLoadedTable('emails');
         Render::sendCacheHeader($request, time()); // getDbSize isn't cachable
         $data = [
-            'dbSize'             => $this->getDbSize() / 1024 / 1024,
-            'wwwSize'            => $this->getSizeOfFiles() / 1024 / 1024,
+            'dbSize'             => $this->byteToHuman($this->getDbSize()),
+            'wwwSize'            => $this->byteToHuman($this->getSizeOfFiles()),
             'pendingEmails'      => db()->fetchOne("SELECT count(*) as 'count' FROM `emails`")['count'],
             'totalDelayedEmails' => $emailStatus['Auto_increment'] - 1,
             'lastrun'            => $page->getTimeStamp(),
@@ -57,6 +57,25 @@ class MaintenanceController extends AbstractAdminController
         $content = Render::render('admin/get_db_error', $data);
 
         return new Response($content);
+    }
+
+    /**
+     * Format bytes in a hum frindly maner.
+     *
+     * @param int $size
+     *
+     * @return string
+     */
+    private function byteToHuman(int $size): string
+    {
+        $units = ['B', 'KiB', 'MiB', 'GiB', 'TiB', 'PiB', 'EiB', 'ZiB', 'YiB', 'BiB'];
+        foreach ($units as $unit) {
+            if ($size < 1024 || 'BiB' === $unit) {
+                return number_format($size, 1, ',', '') . $unit;
+            }
+
+            $size /= 1024;
+        }
     }
 
     /**
