@@ -6,11 +6,7 @@ var xHttp = {
             xHttp.requests.splice(id, 1, null);
         }
     },
-
     "request": function(uri, callback, method, data) {
-        callback = callback || null;
-        method = method || "GET";
-        data = data || null;
         var id = xHttp.requests.length;
 
         var x = new window.XMLHttpRequest();
@@ -23,22 +19,18 @@ var xHttp = {
                 alert("Error: " + message);
             }
 
-            if (null === callback) {
-                return;
-            }
-
             callback(x.response);
         };
 
-        x.open(method, uri);
+        x.open(method || "GET", uri);
         x.setRequestHeader("X-Requested-With", "XMLHttpRequest");
 
-        if (data !== null && typeof data !== "string") {
+        if (data && typeof data !== "string") {
             x.setRequestHeader("Content-Type", "application/json");
             data = JSON.stringify(data);
         }
 
-        x.send(data);
+        x.send(data || null);
 
         xHttp.requests[id] = x;
         return id;
