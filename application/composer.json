@@ -21,7 +21,7 @@
         "ajenbo/image.php": "^0.9.3",
         "ajenbo/imap.php": "^0.9.1",
         "twig/twig": "^2.0",
-        "symfony/http-foundation": "^3.3",
+        "symfony/http-foundation": "^4.0",
         "james-heinrich/getid3": "^1.9",
         "sentry/sentry": "^1.8",
         "twig/extensions": "^1.5"
