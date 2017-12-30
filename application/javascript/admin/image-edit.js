@@ -185,9 +185,7 @@ function resize() {
             $("resizeHandle").style.top = $("preview").height + "px";
             scale = width / (rotate ? maxH : maxW);
         },
-        onEnd(e) {
-            preview();
-        }
+        "onEnd": preview,
     });
     $("resizeHandle").style.display = "";
 }
