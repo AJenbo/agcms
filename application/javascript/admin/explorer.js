@@ -89,7 +89,7 @@ File.prototype.addToEditor = function() {
             break;
         case "video":
             data = "<cke:video width=\"" + this.width + "\" height=\"" + this.height + "\" src=\"" +
-                       htmlEncode(this.path) + "\" controls=\"controls\"></cke:video>";
+                   htmlEncode(this.path) + "\" controls=\"controls\"></cke:video>";
             data = encodeURIComponent(data);
             html =
                 "<img class=\"cke-video\" data-cke-realelement=\"" + data +

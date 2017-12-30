@@ -29,16 +29,8 @@ function saveImage(overwrite = false) {
 
     var dimention = calcImageDimension();
 
-    var data = {
-        cropX,
-        cropY,
-        "cropW": maxW,
-        "cropH": maxH,
-        "maxW": dimention.width,
-        "maxH": dimention.height,
-        flip,
-        rotate
-    };
+    var data =
+        {cropX, cropY, "cropW": maxW, "cropH": maxH, "maxW": dimention.width, "maxH": dimention.height, flip, rotate};
     xHttp.cancel(imageSaveRequest);
     var method = "PUT";
     if (mode === "thb") {

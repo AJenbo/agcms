@@ -93,8 +93,8 @@ function prisUpdate() {
     $("payamount").innerText = numberFormat(payamount);
     invoiceAmount = payamount.toFixed(2);
 
-    if (!quantities.length || quantities[quantities.length - 1].value !== ""
-        || titles[titles.length - 1].value !== "" || values[values.length - 1].value !== "") {
+    if (!quantities.length || quantities[quantities.length - 1].value !== "" ||
+        titles[titles.length - 1].value !== "" || values[values.length - 1].value !== "") {
         addRow();
     }
 
@@ -131,11 +131,8 @@ function valideMail() {
         $("loading").style.visibility = "";
         displayInvoiceEmailAction({"isValid": false});
 
-        validemailajaxcall = xHttp.request(
-            "/admin/addressbook/validEmail/?email=" + encodeURIComponent(lastemail),
-            setVisabilityForSendAction,
-            "GET"
-        );
+        validemailajaxcall = xHttp.request("/admin/addressbook/validEmail/?email=" + encodeURIComponent(lastemail),
+                                           setVisabilityForSendAction, "GET");
     }
 }
 
