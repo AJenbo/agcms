@@ -6,6 +6,7 @@ unzip ckeditor.zip
 rm ckeditor.zip
 sed -i 's/ckeditor\/plugins\/custimage\/dialogs\/dialogtest.html/\/admin\/explorer\/?return=ckeditor/g' ckeditor/plugins/custimage/dialogs/custimage.js
 rm -rf ckeditor/samples/
+mv application/javascript/admin/ckeditor/config.js ckeditor/config.js
 rm -rf application/javascript/admin/ckeditor/
 mv ckeditor application/javascript/admin/
 
