@@ -175,10 +175,10 @@ function send() {
         form.append("upload", file);
         try {
             x = new window.XMLHttpRequest();
+            if (typeof x.readyState !== "number") {
+                throw "Bady readyState";
+            }
         } catch (e) {
-            continue;
-        }
-        if (typeof x.readyState !== "number") {
             continue;
         }
         index = totals.push(files.size);
