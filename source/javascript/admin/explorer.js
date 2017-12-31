@@ -1,4 +1,9 @@
-﻿var files = [];
+﻿import xHttp from "../xHttp.js";
+import {injectHtml, setCookie, getCookie, htmlEncode, removeTagById} from "./javascript.js";
+
+var files = [];
+var fileId = null;
+var returnType = "";
 var activeDir = getCookie("admin_dir");
 
 var contextMenuFileTile;
@@ -319,20 +324,6 @@ function showfiles(dir) {
         injectFileData);
 }
 
-function init() {
-    // attach context menus
-    contextMenuFileTile =
-        new Proto.Menu({"selector": ".filetile", "className": "menu desktop", "menuItems": fileTileContextMenu});
-    contextMenuImageTile =
-        new Proto.Menu({"selector": ".imagetile", "className": "menu desktop", "menuItems": imageTileContextMenu});
-
-    if (!activeDir || !document.getElementById(dirToId(activeDir))) {
-        activeDir = "/images";
-    }
-
-    showfiles(activeDir);
-}
-
 function getSelect(id) {
     var object = document.getElementById(id);
     return object[object.selectedIndex].value;
@@ -400,6 +391,10 @@ function renamedir(newNameObj) {
     xHttp.request("/admin/explorer/folders/", renameFolderCallback, "PUT", payload);
 }
 
+function deleteFolderCallback(data) {
+    window.location.reload();
+}
+
 function deleteFolder() {
     // TODO hvilket folder?
     if (confirm("Er du sikker på du vil slette denne mappe og dens indhold?")) {
@@ -408,7 +403,12 @@ function deleteFolder() {
     }
 }
 
-function deleteFolderCallback(data) {
+function makedir_r(data) {
+    document.getElementById("loading").style.visibility = "hidden";
+    if (data.error) {
+        return;
+    }
+
     window.location.reload();
 }
 
@@ -422,13 +422,17 @@ function makedir() {
     }
 }
 
-function makedir_r(data) {
+function dir_expand_r(data) {
     document.getElementById("loading").style.visibility = "hidden";
     if (data.error) {
         return;
     }
 
-    window.location.reload();
+    var dirdiv = document.getElementById(dirToId(data.id));
+    dirdiv.firstChild.style.display = "none";
+    dirdiv.childNodes[1].style.display = "";
+    dirdiv.lastChild.innerHTML = data.html;
+    dirdiv.lastChild.style.display = "";
 }
 
 function dir_expand(dirdiv, move) {
@@ -446,19 +450,6 @@ function dir_expand(dirdiv, move) {
     dirdiv.childNodes[1].style.display = "";
 }
 
-function dir_expand_r(data) {
-    document.getElementById("loading").style.visibility = "hidden";
-    if (data.error) {
-        return;
-    }
-
-    var dirdiv = document.getElementById(dirToId(data.id));
-    dirdiv.firstChild.style.display = "none";
-    dirdiv.childNodes[1].style.display = "";
-    dirdiv.lastChild.innerHTML = data.html;
-    dirdiv.lastChild.style.display = "";
-}
-
 function dir_contract(obj) {
     obj = obj.parentNode;
     obj.lastChild.style.display = "none";
@@ -468,21 +459,6 @@ function dir_contract(obj) {
 
 function open_file_upload() {
     popUpWin("/admin/explorer/upload/?path=" + encodeURIComponent(activeDir), "file_upload", "toolbar=0", 640, 150);
-}
-
-function insertThumbnail(id) {
-    window.opener.document.getElementById(returnid).value = id;
-    window.opener.document.getElementById(returnid + "thb").src = files[id].path;
-    window.close();
-}
-
-// TODO if force, refresh folder or we might have duplicates displaying in the folder.
-function renamefile(id) {
-    document.getElementById("navn" + id + "form").style.display = "none";
-    document.getElementById("navn" + id + "div").style.display = "";
-    var payload = {"name": document.getElementById("navn" + id + "form").firstChild.firstChild.value};
-    document.getElementById("loading").style.visibility = "";
-    xHttp.request("/admin/explorer/files/" + id + "/", renamefile_r, "PUT", payload);
 }
 
 function renamefile_r(data) {
@@ -514,12 +490,13 @@ function renamefile_r(data) {
     files[data.id].path = data.path;
 }
 
-var moveFileGlobal;
-function movefile(dir) {
-    moveFileGlobal = dir;
-    window.opener.document.getElementById("loading").style.display = "";
-    var data = {"dir": dir};
-    xHttp.request("/admin/explorer/files/" + fileId + "/", movefile_r, "PUT", data);
+// TODO if force, refresh folder or we might have duplicates displaying in the folder.
+function renamefile(id) {
+    document.getElementById("navn" + id + "form").style.display = "none";
+    document.getElementById("navn" + id + "div").style.display = "";
+    var payload = {"name": document.getElementById("navn" + id + "form").firstChild.firstChild.value};
+    document.getElementById("loading").style.visibility = "";
+    xHttp.request("/admin/explorer/files/" + id + "/", renamefile_r, "PUT", payload);
 }
 
 function movefile_r(data) {
@@ -546,6 +523,14 @@ function movefile_r(data) {
     window.close();
 }
 
+var moveFileGlobal;
+function movefile(dir) {
+    moveFileGlobal = dir;
+    window.opener.document.getElementById("loading").style.display = "";
+    var data = {"dir": dir};
+    xHttp.request("/admin/explorer/files/" + fileId + "/", movefile_r, "PUT", data);
+}
+
 function swap_pannel(navn) {
     // Save what mode we are in and what was searched for
     if (navn === "search") {
@@ -568,3 +553,33 @@ function swap_pannel(navn) {
     }
     return false;
 }
+
+window.addEventListener("DOMContentLoaded", function(event) {
+    window.showfiles = showfiles;
+    window.searchfiles = searchfiles;
+    window.showdirname = showdirname;
+    window.renamedir = renamedir;
+    window.deleteFolder = deleteFolder;
+    window.makedir = makedir;
+    window.dir_expand = dir_expand;
+    window.dir_contract = dir_contract;
+    window.open_file_upload = open_file_upload;
+    window.renamefile = renamefile;
+    window.movefile = movefile;
+    window.swap_pannel = swap_pannel;
+
+    returnType = window.returnType || "";
+    fileId = window.fileId || null;
+
+    // attach context menus
+    contextMenuFileTile =
+        new Proto.Menu({"selector": ".filetile", "className": "menu desktop", "menuItems": fileTileContextMenu});
+    contextMenuImageTile =
+        new Proto.Menu({"selector": ".imagetile", "className": "menu desktop", "menuItems": imageTileContextMenu});
+
+    if (!activeDir || !document.getElementById(dirToId(activeDir))) {
+        activeDir = "/images";
+    }
+
+    showfiles(activeDir);
+});

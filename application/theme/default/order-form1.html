@@ -9,14 +9,14 @@
                     <td>{{'Phone:'|trans}} </td>
                     <td colspan="2"><input name="phone1" id="phone1" style="width:157px" value="{{invoice.phone1}}" /></td>
                     <td>
-                        <input type="button" value="{{'Get address'|trans}}" onclick="getAddress(document.getElementById('phone1').value,getAddress_r1)" />
+                        <input type="button" value="{{'Get address'|trans}}" onclick="getAddress(document.getElementById('phone1').value,getAddressCallback1)" />
                     </td>
                 </tr>
                 <tr>
                     <td>{{'Mobile:'|trans}} </td>
                     <td colspan="2"><input name="phone2" id="phone2" style="width:157px" value="{{invoice.phone2}}" /></td>
                     <td>
-                        <input type="button" value="{{'Get address'|trans}}" onclick="getAddress(document.getElementById('phone2').value, getAddress_r1)" />
+                        <input type="button" value="{{'Get address'|trans}}" onclick="getAddress(document.getElementById('phone2').value,getAddressCallback1)" />
                     </td>
                 </tr>
                 <tr>
@@ -84,7 +84,7 @@
                         <input name="shippingPhone" id="shippingPhone" style="width:157px" value="{{invoice.shippingPhone}}" />
                     </td>
                     <td>
-                        <input type="button" value="{{'Get address'|trans}}" onclick="getAddress(document.getElementById('shippingPhone').value,getAddress_r2)" />
+                        <input type="button" value="{{'Get address'|trans}}" onclick="getAddress(document.getElementById('shippingPhone').value,getAddressCallback2)" />
                     </td>
                 </tr>
                 <tr class="altpost"{% if not invoice.hasShippingAddress %} style="display:none"{% endif %}>
@@ -155,5 +155,3 @@
     </form>
 </div>
 {% endblock %}
-
-{% block jsonload %}xHttp.request("/javascript/zipcodedk.json", loadZipCodesDk);{% endblock %}

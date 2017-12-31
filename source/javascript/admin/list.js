@@ -1,3 +1,6 @@
+import xHttp from "../xHttp.js";
+import {genericCallback, removeTagById} from "./javascript.js";
+
 var listlink = [];
 
 function listInsertRowCallback(data) {
@@ -169,3 +172,5 @@ function listRemoveRow(listid, rowid) {
         xHttp.request("/admin/tables/" + listid + "/row/" + rowid + "/", listRemoveRowCallback, "DELETE");
     }
 }
+
+export {listlink, listInsertRow, listUpdateRow, listEditRow, listSizeFooter, listRemoveRow};

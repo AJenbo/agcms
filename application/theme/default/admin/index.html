@@ -3,30 +3,20 @@
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
         <title>{{title}}</title>
-        <link rel="stylesheet" type="text/css" href="/theme/default/style/admin/style.css" />
+        <link rel="stylesheet" type="text/css" href="/theme/default/style/admin/proto.menu.css" />
         <link rel="stylesheet" type="text/css" href="/theme/default/style/admin/calendar.css" />
-        <link rel="stylesheet" type="text/css" href="/theme/default/style/admin/faktura.css" media="screen" />
+        <link rel="stylesheet" type="text/css" href="/theme/default/style/admin/style.css" />
         <link rel="stylesheet" type="text/css" href="/theme/default/style/admin/mainmenu.css" />
-        <link rel="stylesheet" type="text/css" href="/theme/default/style/admin/proto.menu.css" media="screen" />
+        <link rel="stylesheet" type="text/css" href="/theme/default/style/admin/faktura.css" />
         <link rel="stylesheet" type="text/css" href="/theme/{{theme}}/style/admin.css" />
         <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/prototype/1.7.3.0/prototype.js"></script>
         <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/scriptaculous/1.9.0/scriptaculous.js"></script>
         <script type="text/javascript" src="/javascript/admin/lib/protomenu/proto.menu.js"></script>
-        <script type="text/javascript" src="/javascript/xHttp.js"></script>
-        <script type="text/javascript" src="/javascript/admin/javascript.js"></script>
-        <script type="text/javascript" src="/javascript/admin/index.js"></script>
-        <script type="text/javascript" src="/javascript/admin/list.js"></script>
-        <script type="text/javascript" src="/javascript/admin/calendar.js"></script>
-        <script type="text/javascript" src="/javascript/admin/invoice.js"></script>
         <script type="text/javascript" src="/javascript/admin/ckeditor/ckeditor.js"></script>
-        <script>
-            document.addEventListener("DOMContentLoaded", function(event) {
-                attachContextMenus();
-                xHttp.request("/javascript/zipcodedk.json", loadZipCodesDk);
-            });
-        </script>
+        <script type="text/javascript" src="/javascript/admin/calendar.js"></script>
+        <script type="text/javascript" src="/javascript/admin.js"></script>
     </head>
-    <body onload="init()">
+    <body>
         <div id="canvas">{% block canvas %}{% endblock %}</div>
         <div id="mainmenu">
             <a class="menuboxheader" onclick="showhide('Activity')">{{'Actions'|trans}}</a>

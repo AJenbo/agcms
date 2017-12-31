@@ -12,15 +12,13 @@
         </style>
         <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/prototype/1.7.3.0/prototype.js"></script>
         <script type="text/javascript" src="/javascript/admin/lib/protomenu/proto.menu.js"></script>
-        <script type="text/javascript" src="/javascript/xHttp.js"></script>
-        <script type="text/javascript" src="/javascript/admin/javascript.js"></script>
-        <script type="text/javascript" src="/javascript/admin/explorer.js"></script>
+        <script type="text/javascript" src="/javascript/adminExplorer.js"></script>
         <script type="text/javascript">
             var returnid = {{returnid|json_encode|raw}};
             var returnType = {{returnType|json_encode|raw}};
         </script>
     </head>
-    <body scroll="auto" onload="init()">
+    <body scroll="auto">
         <div id="menu">
             <img id="loading" src="/theme/default/images/admin/loading.gif" width="16" height="16" alt="{{'Loading'|trans}}" title="{{'Loading'|trans}}" />
             <a id="dir_bn" class="down" title="{{'Folders'|trans}}" onclick="return swap_pannel('dir')">

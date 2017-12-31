@@ -12,7 +12,7 @@
     <input class="admin_name" id="title" value="{{category.title}}" maxlength="127" size="127" style="width:{{textWidth + 19}}px" />
     {% endif %}
     <textarea id="text" style="width:{{textWidth}}px;height:420px">{{page.html|raw}}</textarea>
-    <script><!--
+    <script type="text/javascript"><!--
         CKEDITOR.config.width = {{pageWidth + 32}};
         CKEDITOR.config.contentsCss = '/theme/{{theme}}/style/rtef-text.css';
         CKEDITOR.replace('text');

@@ -1,0 +1,27 @@
+{
+  "name": "AGcms",
+  "version": "1.0.0",
+  "description": "CMS project build in PHP over a decade",
+  "main": "index.js",
+  "directories": {
+    "test": "tests"
+  },
+  "scripts": {
+    "build": "webpack",
+    "watch": "webpack -d --watch",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:AJenbo/agcms.git"
+  },
+  "keywords": [
+    "cms"
+  ],
+  "author": "Anders Jenbo",
+  "license": "GPL-2.0",
+  "devDependencies": {
+    "babel-minify-webpack-plugin": "^0.2.0",
+    "webpack": "^3.10.0"
+  }
+}

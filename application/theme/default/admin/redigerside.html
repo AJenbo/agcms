@@ -12,7 +12,7 @@
     <div>
         <input class="admin_name" type="text" name="navn" id="navn" value="{{page.title}}" maxlength="127" size="127" style="width:{{textWidth + 19}}px" />
         <textarea id="text" style="width:{{textWidth + 32}}px;height:420px">{{page.html|raw}}</textarea>
-        <script><!--
+        <script type="text/javascript"><!--
             CKEDITOR.config.width = {{textWidth + 32}};
             CKEDITOR.config.contentsCss = '/theme/{{theme}}/style/rtef-text.css';
             CKEDITOR.replace('text');
@@ -179,8 +179,10 @@
                 </tbody>
             </table>
             <script type="text/javascript"><!--
-                Event.observe(window, 'load', function() { listSizeFooter({{table.id}}); });
-                listlink[{{table.id}}] = {{table.hasLinks|json_encode()|raw}};
+                window.addEventListener("DOMContentLoaded", function(event) {
+                    listlink[{{table.id}}] = {{table.hasLinks|json_encode()|raw}};
+                    listSizeFooter({{table.id}});
+                });
             --></script>
             {% endfor %}
             {% endspaceless %}

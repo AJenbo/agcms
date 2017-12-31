@@ -4,7 +4,6 @@ exclude:
 - /application/javascript/admin/calendar.js
 - /application/javascript/admin/lib/.*
 - /application/theme/.*
-- /source/.*
 - /wip/admin/vcard.php
 component_depth: 3
 languages:

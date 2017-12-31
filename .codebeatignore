@@ -1,5 +1,4 @@
 .phan/config.php
 application/javascript/admin/calendar.js
 application/javascript/admin/lib/**
-source/**
 wip/admin/vcard.php

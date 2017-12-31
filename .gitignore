@@ -6,8 +6,9 @@
 /*.workspace
 /application/files
 /application/images
-/application/javascript/admin/ckeditor/
+/application/javascript
 /application/theme/cache
 /application/vendor
 /build
+/node_modules
 /tests/application/theme/cache

@@ -1,4 +1,9 @@
-﻿function status(text) {
+﻿import xHttp from "../xHttp.js";
+
+var maxbyte = 0;
+var activeDir = null;
+
+function status(text) {
     document.getElementById("status").innerText = text;
 }
 
@@ -80,7 +85,9 @@ function validate() {
 
 function uploadCompleated() {
     status("Filerne er sendt");
-    window.opener.showfiles(window.opener.activeDir);
+    if (window.opener) {
+        window.opener.showfiles(window.opener.activeDir);
+    }
     document.getElementById("progress").style.display = "none";
     document.getElementById("type").disabled = false;
     document.getElementById("type").value = "";
@@ -191,3 +198,11 @@ function send() {
 
     return false;
 }
+
+window.addEventListener("DOMContentLoaded", function(event) {
+    window.send = send;
+    window.filetypeshow = filetypeshow;
+    window.validate = validate;
+    maxbyte = window.maxbyte;
+    activeDir = window.activeDir || "/images";
+});

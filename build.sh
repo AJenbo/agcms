@@ -10,6 +10,10 @@ mv application/javascript/admin/ckeditor/config.js ckeditor/config.js
 rm -rf application/javascript/admin/ckeditor/
 mv ckeditor application/javascript/admin/
 
+# build frontend
+npm install
+npm run build
+
 #Install php dependencies
 cd application
 composer install -o --no-dev

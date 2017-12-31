@@ -3,12 +3,6 @@
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
         <title>{{'File upload'|trans}}</title>
-        <script type="text/javascript" src="/javascript/xHttp.js"></script>
-        <script type="text/javascript" src="/javascript/admin/file-upload.js"></script>
-        <script type="text/javascript">
-            var maxbyte = {{maxbyte|json_encode|raw}};
-            var activeDir = {{activeDir|json_encode|raw}};
-        </script>
     </head>
     <body onload="window.focus()" bgcolor="#ffffff">
         <form method="post" enctype="multipart/form-data" action="/admin/upload/" onsubmit="return send()">
@@ -26,5 +20,11 @@
             <div id="description" style="display:none">
                 {{'Short description'|trans}}<br /><input type="text" name="alt" id="alt" />
             </div>
+        </form>
+        <script type="text/javascript" src="/javascript/adminUpload.js"></script>
+        <script type="text/javascript"><!--
+            var maxbyte = {{maxbyte|json_encode|raw}};
+            var activeDir = {{activeDir|json_encode|raw}};
+        --></script>
     </body>
 </html>

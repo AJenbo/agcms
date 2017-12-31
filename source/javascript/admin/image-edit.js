@@ -1,3 +1,14 @@
+import xHttp from "../xHttp.js";
+import {genericCallback} from "./javascript.js";
+
+var id = null;
+var mode = "";
+var filename = "";
+var thumbWidth = 0;
+var thumbHeight = 0;
+var maxW = 0;
+var maxH = 0;
+var scale = 1;
 var cropX = 0;
 var cropY = 0;
 var orientation = 1; // 1-4,11-14
@@ -21,24 +32,6 @@ function calcImageDimension() {
     return dimention;
 }
 
-// TODO avoide overscaling when triming has been in affect
-var imageSaveRequest;
-function saveImage(overwrite = false) {
-    $("save").style.display = "none";
-    $("loading").style.visibility = "";
-
-    var dimention = calcImageDimension();
-
-    var data =
-        {cropX, cropY, "cropW": maxW, "cropH": maxH, "maxW": dimention.width, "maxH": dimention.height, flip, rotate};
-    xHttp.cancel(imageSaveRequest);
-    var method = "PUT";
-    if (mode === "thb") {
-        method = "POST";
-    }
-    imageSaveRequest = xHttp.request("/admin/explorer/files/" + id + "/image/", saveImageCallback, method, data);
-}
-
 function saveImageCallback(data) {
     $("save").style.display = "";
     if (!genericCallback(data)) {
@@ -59,6 +52,24 @@ function saveImageCallback(data) {
     }
 
     window.close();
+}
+
+// TODO avoide overscaling when triming has been in affect
+var imageSaveRequest;
+function saveImage(overwrite = false) {
+    $("save").style.display = "none";
+    $("loading").style.visibility = "";
+
+    var dimention = calcImageDimension();
+
+    var data =
+        {cropX, cropY, "cropW": maxW, "cropH": maxH, "maxW": dimention.width, "maxH": dimention.height, flip, rotate};
+    xHttp.cancel(imageSaveRequest);
+    var method = "PUT";
+    if (mode === "thb") {
+        method = "POST";
+    }
+    imageSaveRequest = xHttp.request("/admin/explorer/files/" + id + "/image/", saveImageCallback, method, data);
 }
 
 // setup the callback function
@@ -140,20 +151,6 @@ var CropImageManager = {
         this.attachCropper();
     }
 };
-
-// basic example
-Event.observe(window, "load", function test() {
-    CropImageManager.init();
-    Event.observe($("save"), "click", CropImageManager.removeCropper.bindAsEventListener(CropImageManager), false);
-    Event.observe($("flipV"), "click", CropImageManager.removeCropper.bindAsEventListener(CropImageManager), false);
-    Event.observe($("flipH"), "click", CropImageManager.removeCropper.bindAsEventListener(CropImageManager), false);
-    Event.observe($("cw"), "click", CropImageManager.removeCropper.bindAsEventListener(CropImageManager), false);
-    Event.observe($("ccw"), "click", CropImageManager.removeCropper.bindAsEventListener(CropImageManager), false);
-    Event.observe($("removeCropper"), "click", CropImageManager.removeCropper.bindAsEventListener(CropImageManager),
-                  false);
-    Event.observe($("resetCropper"), "click", CropImageManager.resetCropper.bindAsEventListener(CropImageManager),
-                  false);
-});
 
 function resize() {
     $("save").style.display = "";
@@ -258,3 +255,31 @@ function flipVertical() {
     }
     updateOrientation(move);
 }
+
+window.addEventListener("DOMContentLoaded", function(event) {
+    window.saveImage = saveImage;
+    window.resize = resize;
+    window.rotateCCW = rotateCCW;
+    window.rotateCW = rotateCW;
+    window.flipHorizontal = flipHorizontal;
+    window.flipVertical = flipVertical;
+
+    id = window.id;
+    mode = window.mode;
+    filename = window.filename;
+    thumbWidth = window.thumbWidth;
+    thumbHeight = window.thumbHeight;
+    maxW = window.maxW;
+    maxH = window.maxH;
+
+    CropImageManager.init();
+    Event.observe($("save"), "click", CropImageManager.removeCropper.bindAsEventListener(CropImageManager), false);
+    Event.observe($("flipV"), "click", CropImageManager.removeCropper.bindAsEventListener(CropImageManager), false);
+    Event.observe($("flipH"), "click", CropImageManager.removeCropper.bindAsEventListener(CropImageManager), false);
+    Event.observe($("cw"), "click", CropImageManager.removeCropper.bindAsEventListener(CropImageManager), false);
+    Event.observe($("ccw"), "click", CropImageManager.removeCropper.bindAsEventListener(CropImageManager), false);
+    Event.observe($("removeCropper"), "click", CropImageManager.removeCropper.bindAsEventListener(CropImageManager),
+                  false);
+    Event.observe($("resetCropper"), "click", CropImageManager.resetCropper.bindAsEventListener(CropImageManager),
+                  false);
+});

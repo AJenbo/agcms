@@ -1,4 +1,34 @@
-﻿var contextMenuActiveSide;
+﻿import xHttp from "../xHttp.js";
+import {
+    genericCallback,
+    reloadCallback,
+    injectHtml,
+    setCookie,
+    getCookie,
+    getSelectValue,
+    htmlEncode,
+    removeTagById
+} from "./javascript.js";
+import {listlink, listInsertRow, listUpdateRow, listEditRow, listSizeFooter, listRemoveRow} from "./list.js";
+import {
+    copytonew,
+    prisUpdate,
+    removeRow,
+    valideMail,
+    getInvoiceAddress,
+    getAltAddress,
+    numberFormat,
+    reloadPage,
+    pbsconfirm,
+    annul,
+    save,
+    sendReminder,
+    showhidealtpost,
+    setPaymentTransferred,
+    confirmPaymentValidate
+} from "./invoice.js";
+
+var contextMenuActiveSide;
 var contextMenuInactiveSide;
 var contextMenuActiveKatContextMenu;
 var contextMenuInactiveKatContextMenu;
@@ -19,6 +49,43 @@ function getNodeFromContextMenuEvent(e) {
     return e.target.parentNode;
 }
 
+function contractCategory(id) {
+    $("kat" + id + "content").style.display = "none";
+    $("kat" + id + "contract").style.display = "none";
+    $("kat" + id + "expand").style.display = "";
+    var openkat = getCookie("openkat");
+    openkat = openkat.split("<");
+    if (openkat.indexOf(id + "") < 0) {
+        return;
+    }
+    openkat.splice(openkat.indexOf(id + ""), 1);
+    openkat = openkat.join("<");
+    setCookie("openkat", openkat, 360);
+}
+
+function appendOpenCatCookie(id) {
+    var openkat = getCookie("openkat");
+    openkat = openkat ? openkat : "";
+    openkat = openkat.split("<");
+    openkat.push(id);
+    openkat = openkat.uniq();
+    openkat = openkat.join("<");
+    setCookie("openkat", openkat, 360);
+}
+
+function expandCategoryCallback(data) {
+    if (!genericCallback(data)) {
+        return;
+    }
+
+    $("kat" + data.id + "expand").style.display = "none";
+    $("kat" + data.id + "contract").style.display = "";
+    $("kat" + data.id + "content").innerHTML = data.html;
+    $("kat" + data.id + "content").style.display = "";
+    appendOpenCatCookie(data.id);
+    reattachContextMenus();
+}
+
 function unlinkCategoryCallback(data) {
     if (!genericCallback(data)) {
         return;
@@ -28,6 +95,23 @@ function unlinkCategoryCallback(data) {
     if (data.added && $("kat" + data.added.categoryId + "content").innerText !== "") {
         xHttp.request("/admin/sitetree/" + data.added.categoryId + "/", expandCategoryCallback);
     }
+}
+
+function expandCategory(id, input = "") {
+    if (input === "") {
+        setCookie("activekat", id, 360);
+    }
+    if ($("kat" + id + "content").innerText === "") {
+        $("loading").style.visibility = "";
+        xHttp.request("/admin/sitetree/" + id + "/?type=" + encodeURIComponent(input), expandCategoryCallback);
+
+        return;
+    }
+
+    $("kat" + id + "content").style.display = "";
+    $("kat" + id + "expand").style.display = "none";
+    $("kat" + id + "contract").style.display = "";
+    appendOpenCatCookie(id);
 }
 
 // TODO only for getSiteTree
@@ -125,6 +209,225 @@ function attachContextMenus() {
         {"selector": "#kat-1content .kat", "className": "menu desktop", "menuItems": inactiveKatContextMenu});
     contextMenuListOrderContextMenu =
         new Proto.Menu({"selector": "#listOrder li", "className": "menu desktop", "menuItems": listOrderContextMenu});
+}
+
+function saveRequirementCallback(data) {
+    location.href = "/admin/requirement/list/";
+}
+
+function saveRequirement() {
+    $("loading").style.visibility = "";
+
+    var data = {
+        "title": $("navn").value,
+        "html": CKEDITOR.instances.text.getData(),
+    };
+
+    var id = $("id").value;
+    if (id) {
+        xHttp.request("/admin/requirement/" + id + "/", saveRequirementCallback, "PUT", data);
+        return false;
+    }
+
+    xHttp.request("/admin/requirement/", saveRequirementCallback, "POST", data);
+    return false;
+}
+
+function removeBinding(navn, id, categoryId, callback = null) {
+    callback = callback || bindingsCallback;
+    if (confirm("Vil du fjerne siden fra '" + navn + "'?")) {
+        $("loading").style.visibility = "";
+        xHttp.request("/admin/page/" + id + "/categories/" + categoryId + "/", callback, "DELETE");
+    }
+}
+
+function bindingsCallback(data) {
+    if (!genericCallback(data)) {
+        return;
+    }
+
+    for (const id of data.deleted) {
+        removeTagById("bind" + id);
+    }
+
+    if (data.added) {
+        var p = document.createElement("p");
+        p.setAttribute("id", "bind" + data.added.categoryId);
+        var img = document.createElement("img");
+        img.setAttribute("src", "/theme/default/images/admin/cross.png");
+        img.setAttribute("alt", "X");
+        img.setAttribute("height", "16");
+        img.setAttribute("width", "16");
+        img.setAttribute("title", "Fjern binding");
+        img.onclick = function() {
+            removeBinding(data.added.path, data.pageId, data.added.categoryId);
+        };
+        p.appendChild(img);
+        p.appendChild(document.createTextNode(" " + data.added.path));
+        $("bindinger").appendChild(p);
+    }
+}
+
+function getRadio(name) {
+    var objs = document.getElementsByName(name);
+    for (const obj of objs) {
+        if (obj.checked) {
+            return obj.value;
+        }
+    }
+
+    return null;
+}
+
+function bind(id) {
+    $("loading").style.visibility = "";
+    var categoryId = parseInt(getRadio("kat"));
+    xHttp.request("/admin/page/" + id + "/categories/" + categoryId + "/", bindingsCallback, "POST");
+
+    return false;
+}
+
+function deleteCallback(data) {
+    if (!genericCallback(data)) {
+        return;
+    }
+
+    removeTagById(data.id);
+}
+
+function deleteBrand(navn, id) {
+    if (confirm("Vil du slette mærket '" + navn + "'?")) {
+        $("loading").style.visibility = "";
+        xHttp.request("/admin/brands/" + id + "/", deleteCallback, "DELETE");
+    }
+
+    return false;
+}
+
+function removeTagByClass(className) {
+    var objs = $$("." + className);
+    for (const obj of objs) {
+        obj.parentNode.removeChild(obj);
+    }
+}
+
+function removeElementByClass(data) {
+    if (!genericCallback(data)) {
+        return;
+    }
+
+    removeTagByClass(data.class);
+}
+
+function deletePage(navn, id) {
+    if (confirm("Vil du slette '" + navn + "'?")) {
+        $("loading").style.visibility = "";
+        xHttp.request("/admin/page/" + id + "/", removeElementByClass, "DELETE");
+    }
+}
+
+function moveCategoryCallback(data) {
+    if (!genericCallback(data)) {
+        return;
+    }
+
+    removeTagById(data.id);
+    if ($("kat" + data.parentId + "content").innerText !== "") {
+        xHttp.request("/admin/sitetree/" + data.parentId + "/", expandCategoryCallback);
+    }
+}
+
+function moveCategory(navn, id, toId, confirmMove) {
+    if (!confirmMove || confirm("Vil du fjerne kategorien '" + navn + "'?")) {
+        $("loading").style.visibility = "";
+        xHttp.request("/admin/categories/" + id + "/", moveCategoryCallback, "PUT", {"parentId": toId});
+    }
+}
+
+function renameCategoryCallback(data) {
+    if (!genericCallback(data)) {
+        return;
+    }
+
+    if ($(data.id).childNodes.length === 4) {
+        $(data.id).childNodes[2].lastChild.nodeValue = " " + data.title;
+
+        return;
+    }
+
+    $(data.id).firstChild.lastChild.nodeValue = " " + data.title;
+}
+
+function renameCategory(id, title) {
+    var newTitle = prompt("Omdøb kategori", title);
+    if (newTitle !== null && newTitle !== title) {
+        $("loading").style.visibility = "";
+        xHttp.request("/admin/categories/" + id + "/", renameCategoryCallback, "PUT", {"title": newTitle});
+    }
+}
+
+function deleteCategory(navn, id) {
+    if (confirm("Vil du slette katagorien '" + navn + "'?")) {
+        $("loading").style.visibility = "";
+        xHttp.request("/admin/categories/" + id + "/", deleteCallback, "DELETE");
+    }
+}
+
+function deleteRequirement(id, navn) {
+    if (!confirm("Vil du slette kravet '" + navn + "'?")) {
+        return false;
+    }
+    $("loading").style.visibility = "";
+    xHttp.request("/admin/requirement/" + id + "/", deleteCallback, "DELETE");
+
+    return false;
+}
+
+function removeAccessory(navn, pageId, accessoryId) {
+    if (confirm("Vil du fjerne '" + navn + "' som tilbehor?")) {
+        $("loading").style.visibility = "";
+        xHttp.request("/admin/page/" + pageId + "/accessories/" + accessoryId + "/", deleteCallback, "DELETE");
+    }
+    return false;
+}
+
+function addAccessoryCallback(data) {
+    if (!genericCallback(data)) {
+        return;
+    }
+
+    var elementId = "accessory" + data.accessoryId;
+    if ($(elementId)) {
+        return;
+    }
+
+    var p = document.createElement("p");
+    p.setAttribute("id", elementId);
+    var img = document.createElement("img");
+    img.setAttribute("src", "/theme/default/images/admin/cross.png");
+    img.setAttribute("alt", "X");
+    img.setAttribute("height", "16");
+    img.setAttribute("width", "16");
+    img.setAttribute("title", "Fjern tilbehør");
+    img.onclick = function() {
+        removeAccessory(data.title, data.pageId, data.accessoryId);
+    };
+    p.appendChild(img);
+    p.appendChild(document.createTextNode(" " + data.title));
+    $("accessories").appendChild(p);
+}
+
+function addAccessory(pageId) {
+    $("loading").style.visibility = "";
+    var accessoryId = $("accessoryFrame").contentWindow.getRadio("side");
+    if (!accessoryId) {
+        alert("Du skal vælge en side som tilbehør.");
+        return false;
+    }
+
+    xHttp.request("/admin/page/" + pageId + "/accessories/" + accessoryId + "/", addAccessoryCallback, "POST");
+
+    return false;
 }
 
 function displaySubMenus(state) {
@@ -448,6 +751,7 @@ function set_db_errors(data) {
         $("errors").innerHTML += data.html;
     }
 }
+
 var startTime;
 function scan_db() {
     $("loading").style.visibility = "";
@@ -501,20 +805,17 @@ function maintainStep8(data) {
     xHttp.request("/admin/maintenance/usage/", maintainStep9);
 }
 
+function getUsage_r(data) {
+    $("loading").style.visibility = "hidden";
+    $("status").innerText = "";
+    $("wwwsize").innerText = byteToHuman(data.www);
+    $("dbsize").innerText = byteToHuman(data.db);
+}
+
 function maintainStep9(data) {
     getUsage_r(data);
     $("errors").innerHTML += "<br />" + ("The scan took %d seconds.".replace(
                                             /[%]d/g, Math.round((new Date().getTime() - startTime) / 1000).toString()));
-}
-
-function get_subscriptions_with_bad_emails() {
-    $("loading").style.visibility = "";
-    $("errors").innerText = "";
-
-    starttime = new Date().getTime();
-
-    $("status").innerText = "Searching for illegal e-mail adresses";
-    xHttp.request("/admin/maintenance/contacts/invalid/", subscriptionsWithBadEmails_r);
 }
 
 function subscriptionsWithBadEmails_r(data) {
@@ -525,13 +826,14 @@ function subscriptionsWithBadEmails_r(data) {
     $("status").innerText = "";
 }
 
-function removeNoneExistingFiles() {
+function get_subscriptions_with_bad_emails() {
     $("loading").style.visibility = "";
+    $("errors").innerText = "";
 
     starttime = new Date().getTime();
 
-    $("status").innerText = "Remove missing files from database";
-    xHttp.request("/admin/maintenance/files/missing/", removeNoneExistingFiles_r, "DELETE");
+    $("status").innerText = "Searching for illegal e-mail adresses";
+    xHttp.request("/admin/maintenance/contacts/invalid/", subscriptionsWithBadEmails_r);
 }
 
 function removeNoneExistingFiles_r(data) {
@@ -552,10 +854,13 @@ function removeNoneExistingFiles_r(data) {
     xHttp.request("/admin/maintenance/usage/", getUsage_r);
 }
 
-function getEmailUsage() {
+function removeNoneExistingFiles() {
     $("loading").style.visibility = "";
-    $("status").innerText = "Getting email usage";
-    xHttp.request("/admin/maintenance/emails/usage/", getEmailUsage_r);
+
+    starttime = new Date().getTime();
+
+    $("status").innerText = "Remove missing files from database";
+    xHttp.request("/admin/maintenance/files/missing/", removeNoneExistingFiles_r, "DELETE");
 }
 
 function getEmailUsage_r(data) {
@@ -564,11 +869,10 @@ function getEmailUsage_r(data) {
     $("loading").style.visibility = "hidden";
 }
 
-function getUsage_r(data) {
-    $("loading").style.visibility = "hidden";
-    $("status").innerText = "";
-    $("wwwsize").innerText = byteToHuman(data.www);
-    $("dbsize").innerText = byteToHuman(data.db);
+function getEmailUsage() {
+    $("loading").style.visibility = "";
+    $("status").innerText = "Getting email usage";
+    xHttp.request("/admin/maintenance/emails/usage/", getEmailUsage_r);
 }
 
 function byteToHuman(bytes) {
@@ -582,10 +886,169 @@ function byteToHuman(bytes) {
     }
 }
 
-function createInvoice() {
-    xHttp.request("/admin/invoices/", createInvoice_r, "POST");
+function injectText(data) {
+    if (!genericCallback(data)) {
+        return;
+    }
+
+    $(data.id).innerText = data.text;
 }
 
-function createInvoice_r(data) {
-    location.href = "/admin/invoices/" + data.id + "/";
+function showhide(id) {
+    var obj = $(id);
+    if (obj.style.display === "") {
+        obj.style.display = "none";
+        setCookie("hide" + id, "1", 360);
+
+        return;
+    }
+
+    obj.style.display = "";
+    setCookie("hide" + id, "", 0);
 }
+
+function showhidekats(id, thisobj) {
+    var obj = $(id);
+    if (obj.style.display === "") {
+        obj.style.display = "none";
+        setCookie("hide" + id, "1", 360);
+        $("loading").style.visibility = "";
+        xHttp.request("/admin/sitetree/" + getRadio("kat") + "/lable/", injectText);
+
+        return;
+    }
+
+    obj.style.display = "";
+    thisobj.innerText = "Vælg placering:";
+    setCookie("hide" + id, "", 0);
+}
+
+function checkForInt(evt) {
+    return (evt.which >= 48 && evt.charCode <= 57) || evt.charCode === 8 || evt.charCode === 0 || evt.charCode === 13;
+}
+
+function isInteger(string) {
+    return parseInt(string).toString() === string;
+}
+
+function jumpto() {
+    var jumptoid = $("jumptoid").value;
+    if (!jumptoid && isInteger(jumptoid)) {
+        alert("Du skal indtaste et korrekt side nummer");
+
+        return false;
+    }
+
+    location.href = "/admin/page/" + jumptoid + "/";
+}
+
+function sogsearch() {
+    var sogtext = $("sogtext").value;
+    if (!sogtext) {
+        alert("Du skal indtaste et søge ord.");
+
+        return false;
+    }
+
+    $("loading").style.visibility = "";
+    xHttp.request("/admin/page/search/?text=" + encodeURIComponent(sogtext), injectHtml);
+}
+
+function setThb(id, value, src) {
+    $(id).value = value;
+    $(id + "thb").src = src;
+}
+
+function explorer(returntype, returnid) {
+    window.open("/admin/explorer/?return=" + returntype + "&returnid=" + returnid, "explorer", "toolbar=0");
+}
+
+function showimage(obj, img) {
+    $("imagelogo").innerHTML = "<img src=\"" + htmlEncode(img) + "\" />";
+    $("imagelogo").style.left = obj.offsetLeft + 17 + "px";
+    $("imagelogo").style.top = obj.offsetTop + 17 + "px";
+    $("imagelogo").style.display = "";
+}
+
+function prisHighlight() {
+    if ($("for").value - $("pris").value < 0) {
+        $("pris").className = "Pris";
+
+        return;
+    }
+
+    $("pris").className = "NyPris";
+}
+
+window.addEventListener("DOMContentLoaded", function(event) {
+    window.displaySubMenus = displaySubMenus;
+    window.updateKat = updateKat;
+    window.saveBrand = saveBrand;
+    window.updateSide = updateSide;
+    window.updateSpecial = updateSpecial;
+    window.addNewItem = addNewItem;
+    window.saveListOrder = saveListOrder;
+    window.countEmailTo = countEmailTo;
+    window.saveEmail = saveEmail;
+    window.updateContact = updateContact;
+    window.deleteContact = deleteContact;
+    window.sendEmail = sendEmail;
+    window.deleteuser = deleteuser;
+    window.updateuser = updateuser;
+    window.scan_db = scan_db;
+    window.get_subscriptions_with_bad_emails = get_subscriptions_with_bad_emails;
+    window.removeNoneExistingFiles = removeNoneExistingFiles;
+    window.getEmailUsage = getEmailUsage;
+    window.prisHighlight = prisHighlight;
+    window.setThb = setThb;
+    window.explorer = explorer;
+    window.checkForInt = checkForInt;
+    window.showhide = showhide;
+    window.showhidekats = showhidekats;
+    window.showimage = showimage;
+    window.contractCategory = contractCategory;
+    window.expandCategory = expandCategory;
+    window.expandCategoryCallback = expandCategoryCallback;
+    window.saveRequirement = saveRequirement;
+    window.removeBinding = removeBinding;
+    window.bind = bind;
+    window.deleteBrand = deleteBrand;
+    window.removeAccessory = removeAccessory;
+    window.addAccessory = addAccessory;
+    window.deleteRequirement = deleteRequirement;
+    window.jumpto = jumpto;
+    window.sogsearch = sogsearch;
+    window.setPaymentTransferred = setPaymentTransferred;
+    window.confirmPaymentValidate = confirmPaymentValidate;
+
+    // Lists
+    window.listlink = listlink;
+    window.listInsertRow = listInsertRow;
+    window.listUpdateRow = listUpdateRow;
+    window.listEditRow = listEditRow;
+    window.listSizeFooter = listSizeFooter;
+    window.listRemoveRow = listRemoveRow;
+
+    // Invoice
+    window.copytonew = copytonew;
+    window.prisUpdate = prisUpdate;
+    window.removeRow = removeRow;
+    window.valideMail = valideMail;
+    window.getInvoiceAddress = getInvoiceAddress;
+    window.getAltAddress = getAltAddress;
+    window.numberFormat = numberFormat;
+    window.reloadPage = reloadPage;
+    window.pbsconfirm = pbsconfirm;
+    window.annul = annul;
+    window.save = save;
+    window.sendReminder = sendReminder;
+    window.showhidealtpost = showhidealtpost;
+    window.setPaymentTransferred = setPaymentTransferred;
+    window.confirmPaymentValidate = confirmPaymentValidate;
+
+    attachContextMenus();
+});
+
+window.addEventListener("load", function(event) {
+    $("loading").style.visibility = "hidden";
+});

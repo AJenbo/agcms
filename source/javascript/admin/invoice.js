@@ -1,7 +1,11 @@
+import xHttp from "../xHttp.js";
+import {genericCallback, reloadCallback, getSelectValue} from "./javascript.js";
+import {getAddress} from "../getAddress.js";
+
 var invoiceLines = [];
 var invoiceAmount = 0;
-var validemailajaxcall;
-var lastemail;
+var validemailajaxcall = null;
+var lastemail = "";
 
 function redirectToInvoice(data) {
     window.location.href = "/admin/invoices/" + data.id + "/";
@@ -134,14 +138,6 @@ function valideMail() {
         validemailajaxcall = xHttp.request("/admin/addressbook/validEmail/?email=" + encodeURIComponent(lastemail),
                                            setVisabilityForSendAction, "GET");
     }
-}
-
-function chnageZipCode(zipcode, country, city) {
-    if ($(country).value !== "DK") {
-        return;
-    }
-
-    $(city).value = arrayZipcode[zipcode] || "";
 }
 
 function injectInvoiceAddress(data) {
@@ -305,3 +301,34 @@ function showhidealtpost(status) {
         row.style.display = status ? "" : "none";
     }
 }
+
+function setPaymentTransferred(id, transferred) {
+    xHttp.request("/admin/invoices/payments/" + id + "/", reloadCallback, "PUT", {"transferred": transferred});
+    return false;
+}
+
+function confirmPaymentValidate(id) {
+    if (!confirm("Mente du '" + id + "'?")) {
+        return false;
+    }
+
+    return setPaymentTransferred(id, true);
+}
+
+export {
+    copytonew,
+    prisUpdate,
+    removeRow,
+    valideMail,
+    getInvoiceAddress,
+    getAltAddress,
+    numberFormat,
+    reloadPage,
+    pbsconfirm,
+    annul,
+    save,
+    sendReminder,
+    showhidealtpost,
+    setPaymentTransferred,
+    confirmPaymentValidate
+};
