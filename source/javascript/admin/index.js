@@ -191,6 +191,60 @@ function deleteCategory(navn, id) {
     }
 }
 
+function removeBinding(navn, id, categoryId, callback = null) {
+    callback = callback || bindingsCallback;
+    if (confirm("Vil du fjerne siden fra '" + navn + "'?")) {
+        $("loading").style.visibility = "";
+        xHttp.request("/admin/page/" + id + "/categories/" + categoryId + "/", callback, "DELETE");
+    }
+}
+
+function bindingsCallback(data) {
+    if (!genericCallback(data)) {
+        return;
+    }
+
+    for (const id of data.deleted) {
+        removeTagById("bind" + id);
+    }
+
+    if (data.added) {
+        var p = document.createElement("p");
+        p.setAttribute("id", "bind" + data.added.categoryId);
+        var img = document.createElement("img");
+        img.setAttribute("src", "/theme/default/images/admin/cross.png");
+        img.setAttribute("alt", "X");
+        img.setAttribute("height", "16");
+        img.setAttribute("width", "16");
+        img.setAttribute("title", "Fjern binding");
+        img.onclick = function() {
+            removeBinding(data.added.path, data.pageId, data.added.categoryId);
+        };
+        p.appendChild(img);
+        p.appendChild(document.createTextNode(" " + data.added.path));
+        $("bindinger").appendChild(p);
+    }
+}
+
+function getRadio(name) {
+    var objs = document.getElementsByName(name);
+    for (const obj of objs) {
+        if (obj.checked) {
+            return obj.value;
+        }
+    }
+
+    return null;
+}
+
+function bind(id) {
+    $("loading").style.visibility = "";
+    var categoryId = parseInt(getRadio("kat"));
+    xHttp.request("/admin/page/" + id + "/categories/" + categoryId + "/", bindingsCallback, "POST");
+
+    return false;
+}
+
 // TODO only for getSiteTree
 var sideContextMenu = [{
     "name": "Rediger",
@@ -307,60 +361,6 @@ function saveRequirement() {
     }
 
     xHttp.request("/admin/requirement/", saveRequirementCallback, "POST", data);
-    return false;
-}
-
-function removeBinding(navn, id, categoryId, callback = null) {
-    callback = callback || bindingsCallback;
-    if (confirm("Vil du fjerne siden fra '" + navn + "'?")) {
-        $("loading").style.visibility = "";
-        xHttp.request("/admin/page/" + id + "/categories/" + categoryId + "/", callback, "DELETE");
-    }
-}
-
-function bindingsCallback(data) {
-    if (!genericCallback(data)) {
-        return;
-    }
-
-    for (const id of data.deleted) {
-        removeTagById("bind" + id);
-    }
-
-    if (data.added) {
-        var p = document.createElement("p");
-        p.setAttribute("id", "bind" + data.added.categoryId);
-        var img = document.createElement("img");
-        img.setAttribute("src", "/theme/default/images/admin/cross.png");
-        img.setAttribute("alt", "X");
-        img.setAttribute("height", "16");
-        img.setAttribute("width", "16");
-        img.setAttribute("title", "Fjern binding");
-        img.onclick = function() {
-            removeBinding(data.added.path, data.pageId, data.added.categoryId);
-        };
-        p.appendChild(img);
-        p.appendChild(document.createTextNode(" " + data.added.path));
-        $("bindinger").appendChild(p);
-    }
-}
-
-function getRadio(name) {
-    var objs = document.getElementsByName(name);
-    for (const obj of objs) {
-        if (obj.checked) {
-            return obj.value;
-        }
-    }
-
-    return null;
-}
-
-function bind(id) {
-    $("loading").style.visibility = "";
-    var categoryId = parseInt(getRadio("kat"));
-    xHttp.request("/admin/page/" + id + "/categories/" + categoryId + "/", bindingsCallback, "POST");
-
     return false;
 }
 
@@ -746,9 +746,21 @@ function updateuser(id) {
     return false;
 }
 
+var startTime;
 function set_db_errors(data) {
     if (data.html) {
         $("errors").innerHTML += data.html;
+    }
+}
+
+function byteToHuman(bytes) {
+    var sizes = ["B", "KiB", "MiB", "GiB", "TiB", "PiB", "EiB", "ZiB", "YiB", "BiB"];
+    for (const size of sizes) {
+        if (bytes < 1024 || size === "BiB") {
+            return (Math.round(bytes * 10) / 10 + size).replace(/\./, ",");
+        }
+
+        bytes /= 1024;
     }
 }
 
@@ -807,7 +819,6 @@ function maintainStep2(data) {
     xHttp.request("/admin/maintenance/pages/orphans/", maintainStep3);
 }
 
-var startTime;
 function scan_db() {
     $("loading").style.visibility = "";
     $("errors").innerText = "";
@@ -861,17 +872,6 @@ function removeNoneExistingFiles() {
 
     $("status").innerText = "Remove missing files from database";
     xHttp.request("/admin/maintenance/files/missing/", removeNoneExistingFiles_r, "DELETE");
-}
-
-function byteToHuman(bytes) {
-    var sizes = ["B", "KiB", "MiB", "GiB", "TiB", "PiB", "EiB", "ZiB", "YiB", "BiB"];
-    for (const size of sizes) {
-        if (bytes < 1024 || size === "BiB") {
-            return (Math.round(bytes * 10) / 10 + size).replace(/\./, ",");
-        }
-
-        bytes /= 1024;
-    }
 }
 
 function getEmailUsage_r(data) {
