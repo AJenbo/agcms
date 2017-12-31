@@ -499,6 +499,7 @@ function renamefile(id) {
     xHttp.request("/admin/explorer/files/" + id + "/", renamefile_r, "PUT", payload);
 }
 
+var moveFileGlobal;
 function movefile_r(data) {
     window.opener.document.getElementById("loading").style.display = "none";
 
@@ -523,7 +524,6 @@ function movefile_r(data) {
     window.close();
 }
 
-var moveFileGlobal;
 function movefile(dir) {
     moveFileGlobal = dir;
     window.opener.document.getElementById("loading").style.display = "";

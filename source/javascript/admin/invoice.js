@@ -43,6 +43,10 @@ function addRow() {
     $("vareTable").appendChild(tr);
 }
 
+function numberFormat(number) {
+    return number.toFixed(2).toString().replace(/\./, ",");
+}
+
 function prisUpdate() {
     invoiceLines = [];
     invoiceAmount = 0;
@@ -177,10 +181,6 @@ function injectInvoiceDeliverAddress(data) {
 function getAltAddress(tlf) {
     $("loading").style.visibility = "";
     getAddress(tlf, injectInvoiceDeliverAddress);
-}
-
-function numberFormat(number) {
-    return number.toFixed(2).toString().replace(/\./, ",");
 }
 
 function reloadPage(date) {

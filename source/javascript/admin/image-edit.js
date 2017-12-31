@@ -88,6 +88,7 @@ function onEndCrop(coords, dimensions) {
     }
 }
 
+var resizeHandle = null;
 function resizeEnd() {
     resizeHandle.destroy();
     $("resizeHandle").style.display = "none";
@@ -108,7 +109,6 @@ function preview() {
                        rotate + "&flip=" + flip + "&noCache=1&t=" + getUnixTimestamp();
 }
 
-var resizeHandle = null;
 var CropImageManager = {
     // Holds the current Cropper.Img object
     curCrop: null,

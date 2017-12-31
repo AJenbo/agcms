@@ -114,6 +114,83 @@ function expandCategory(id, input = "") {
     appendOpenCatCookie(id);
 }
 
+function removeTagByClass(className) {
+    var objs = $$("." + className);
+    for (const obj of objs) {
+        obj.parentNode.removeChild(obj);
+    }
+}
+
+function removeElementByClass(data) {
+    if (!genericCallback(data)) {
+        return;
+    }
+
+    removeTagByClass(data.class);
+}
+
+function deletePage(navn, id) {
+    if (confirm("Vil du slette '" + navn + "'?")) {
+        $("loading").style.visibility = "";
+        xHttp.request("/admin/page/" + id + "/", removeElementByClass, "DELETE");
+    }
+}
+
+function renameCategoryCallback(data) {
+    if (!genericCallback(data)) {
+        return;
+    }
+
+    if ($(data.id).childNodes.length === 4) {
+        $(data.id).childNodes[2].lastChild.nodeValue = " " + data.title;
+
+        return;
+    }
+
+    $(data.id).firstChild.lastChild.nodeValue = " " + data.title;
+}
+
+function renameCategory(id, title) {
+    var newTitle = prompt("Omdøb kategori", title);
+    if (newTitle !== null && newTitle !== title) {
+        $("loading").style.visibility = "";
+        xHttp.request("/admin/categories/" + id + "/", renameCategoryCallback, "PUT", {"title": newTitle});
+    }
+}
+
+function moveCategoryCallback(data) {
+    if (!genericCallback(data)) {
+        return;
+    }
+
+    removeTagById(data.id);
+    if ($("kat" + data.parentId + "content").innerText !== "") {
+        xHttp.request("/admin/sitetree/" + data.parentId + "/", expandCategoryCallback);
+    }
+}
+
+function moveCategory(navn, id, toId, confirmMove) {
+    if (!confirmMove || confirm("Vil du fjerne kategorien '" + navn + "'?")) {
+        $("loading").style.visibility = "";
+        xHttp.request("/admin/categories/" + id + "/", moveCategoryCallback, "PUT", {"parentId": toId});
+    }
+}
+
+function deleteCallback(data) {
+    if (!genericCallback(data)) {
+        return;
+    }
+
+    removeTagById(data.id);
+}
+
+function deleteCategory(navn, id) {
+    if (confirm("Vil du slette katagorien '" + navn + "'?")) {
+        $("loading").style.visibility = "";
+        xHttp.request("/admin/categories/" + id + "/", deleteCallback, "DELETE");
+    }
+}
+
 // TODO only for getSiteTree
 var sideContextMenu = [{
     "name": "Rediger",
@@ -287,14 +364,6 @@ function bind(id) {
     return false;
 }
 
-function deleteCallback(data) {
-    if (!genericCallback(data)) {
-        return;
-    }
-
-    removeTagById(data.id);
-}
-
 function deleteBrand(navn, id) {
     if (confirm("Vil du slette mærket '" + navn + "'?")) {
         $("loading").style.visibility = "";
@@ -302,75 +371,6 @@ function deleteBrand(navn, id) {
     }
 
     return false;
-}
-
-function removeTagByClass(className) {
-    var objs = $$("." + className);
-    for (const obj of objs) {
-        obj.parentNode.removeChild(obj);
-    }
-}
-
-function removeElementByClass(data) {
-    if (!genericCallback(data)) {
-        return;
-    }
-
-    removeTagByClass(data.class);
-}
-
-function deletePage(navn, id) {
-    if (confirm("Vil du slette '" + navn + "'?")) {
-        $("loading").style.visibility = "";
-        xHttp.request("/admin/page/" + id + "/", removeElementByClass, "DELETE");
-    }
-}
-
-function moveCategoryCallback(data) {
-    if (!genericCallback(data)) {
-        return;
-    }
-
-    removeTagById(data.id);
-    if ($("kat" + data.parentId + "content").innerText !== "") {
-        xHttp.request("/admin/sitetree/" + data.parentId + "/", expandCategoryCallback);
-    }
-}
-
-function moveCategory(navn, id, toId, confirmMove) {
-    if (!confirmMove || confirm("Vil du fjerne kategorien '" + navn + "'?")) {
-        $("loading").style.visibility = "";
-        xHttp.request("/admin/categories/" + id + "/", moveCategoryCallback, "PUT", {"parentId": toId});
-    }
-}
-
-function renameCategoryCallback(data) {
-    if (!genericCallback(data)) {
-        return;
-    }
-
-    if ($(data.id).childNodes.length === 4) {
-        $(data.id).childNodes[2].lastChild.nodeValue = " " + data.title;
-
-        return;
-    }
-
-    $(data.id).firstChild.lastChild.nodeValue = " " + data.title;
-}
-
-function renameCategory(id, title) {
-    var newTitle = prompt("Omdøb kategori", title);
-    if (newTitle !== null && newTitle !== title) {
-        $("loading").style.visibility = "";
-        xHttp.request("/admin/categories/" + id + "/", renameCategoryCallback, "PUT", {"title": newTitle});
-    }
-}
-
-function deleteCategory(navn, id) {
-    if (confirm("Vil du slette katagorien '" + navn + "'?")) {
-        $("loading").style.visibility = "";
-        xHttp.request("/admin/categories/" + id + "/", deleteCallback, "DELETE");
-    }
 }
 
 function deleteRequirement(id, navn) {
@@ -752,59 +752,6 @@ function set_db_errors(data) {
     }
 }
 
-var startTime;
-function scan_db() {
-    $("loading").style.visibility = "";
-    $("errors").innerText = "";
-
-    startTime = new Date().getTime();
-
-    $("status").innerText = "Removing contacts that are missing vital information";
-    xHttp.request("/admin/maintenance/contacts/empty/", maintainStep2, "DELETE");
-}
-
-function maintainStep2(data) {
-    set_db_errors(data);
-    $("status").innerText = "Searching for pages without bindings";
-    xHttp.request("/admin/maintenance/pages/orphans/", maintainStep3);
-}
-
-function maintainStep3(data) {
-    set_db_errors(data);
-    $("status").innerText = "Searching for pages with illegal bindings";
-    xHttp.request("/admin/maintenance/pages/mismatches/", maintainStep4);
-}
-
-function maintainStep4(data) {
-    set_db_errors(data);
-    $("status").innerText = "Searching for cirkalur linked categories";
-    xHttp.request("/admin/maintenance/categories/circular/", maintainStep5);
-}
-
-function maintainStep5(data) {
-    set_db_errors(data);
-    $("status").innerText = "Checking the file names";
-    xHttp.request("/admin/maintenance/files/names/", maintainStep6);
-}
-
-function maintainStep6(data) {
-    set_db_errors(data);
-    $("status").innerText = "Checking the folder names";
-    xHttp.request("/admin/maintenance/files/folderNames/", maintainStep7);
-}
-
-function maintainStep7(data) {
-    set_db_errors(data);
-    $("status").innerText = "Sending delayed emails";
-    xHttp.request("/admin/maintenance/emails/send/", maintainStep8, "POST");
-}
-
-function maintainStep8(data) {
-    set_db_errors(data);
-    $("status").innerText = "Getting system usage";
-    xHttp.request("/admin/maintenance/usage/", maintainStep9);
-}
-
 function getUsage_r(data) {
     $("loading").style.visibility = "hidden";
     $("status").innerText = "";
@@ -816,6 +763,59 @@ function maintainStep9(data) {
     getUsage_r(data);
     $("errors").innerHTML += "<br />" + ("The scan took %d seconds.".replace(
                                             /[%]d/g, Math.round((new Date().getTime() - startTime) / 1000).toString()));
+}
+
+function maintainStep8(data) {
+    set_db_errors(data);
+    $("status").innerText = "Getting system usage";
+    xHttp.request("/admin/maintenance/usage/", maintainStep9);
+}
+
+function maintainStep7(data) {
+    set_db_errors(data);
+    $("status").innerText = "Sending delayed emails";
+    xHttp.request("/admin/maintenance/emails/send/", maintainStep8, "POST");
+}
+
+function maintainStep6(data) {
+    set_db_errors(data);
+    $("status").innerText = "Checking the folder names";
+    xHttp.request("/admin/maintenance/files/folderNames/", maintainStep7);
+}
+
+function maintainStep5(data) {
+    set_db_errors(data);
+    $("status").innerText = "Checking the file names";
+    xHttp.request("/admin/maintenance/files/names/", maintainStep6);
+}
+
+function maintainStep4(data) {
+    set_db_errors(data);
+    $("status").innerText = "Searching for cirkalur linked categories";
+    xHttp.request("/admin/maintenance/categories/circular/", maintainStep5);
+}
+
+function maintainStep3(data) {
+    set_db_errors(data);
+    $("status").innerText = "Searching for pages with illegal bindings";
+    xHttp.request("/admin/maintenance/pages/mismatches/", maintainStep4);
+}
+
+function maintainStep2(data) {
+    set_db_errors(data);
+    $("status").innerText = "Searching for pages without bindings";
+    xHttp.request("/admin/maintenance/pages/orphans/", maintainStep3);
+}
+
+var startTime;
+function scan_db() {
+    $("loading").style.visibility = "";
+    $("errors").innerText = "";
+
+    startTime = new Date().getTime();
+
+    $("status").innerText = "Removing contacts that are missing vital information";
+    xHttp.request("/admin/maintenance/contacts/empty/", maintainStep2, "DELETE");
 }
 
 function subscriptionsWithBadEmails_r(data) {
@@ -863,6 +863,17 @@ function removeNoneExistingFiles() {
     xHttp.request("/admin/maintenance/files/missing/", removeNoneExistingFiles_r, "DELETE");
 }
 
+function byteToHuman(bytes) {
+    var sizes = ["B", "KiB", "MiB", "GiB", "TiB", "PiB", "EiB", "ZiB", "YiB", "BiB"];
+    for (const size of sizes) {
+        if (bytes < 1024 || size === "BiB") {
+            return (Math.round(bytes * 10) / 10 + size).replace(/\./, ",");
+        }
+
+        bytes /= 1024;
+    }
+}
+
 function getEmailUsage_r(data) {
     $("mailboxsize").innerText = byteToHuman(data.size);
     $("status").innerText = "";
@@ -873,17 +884,6 @@ function getEmailUsage() {
     $("loading").style.visibility = "";
     $("status").innerText = "Getting email usage";
     xHttp.request("/admin/maintenance/emails/usage/", getEmailUsage_r);
-}
-
-function byteToHuman(bytes) {
-    var sizes = ["B", "KiB", "MiB", "GiB", "TiB", "PiB", "EiB", "ZiB", "YiB", "BiB"];
-    for (const size of sizes) {
-        if (bytes < 1024 || size === "BiB") {
-            return (Math.round(bytes * 10) / 10 + size).replace(/\./, ",");
-        }
-
-        bytes /= 1024;
-    }
 }
 
 function injectText(data) {
