@@ -6,13 +6,13 @@ h1 {
     font-weight: bold;
     margin: 0;
 }
-.nypris {
+.NyPris {
     color: #CC0000;
     font-weight: bold;
 }
-.pris {
+.Pris {
     font-weight: bold;
 }
-.xpris {
+.XPris {
     text-decoration: line-through;
 }

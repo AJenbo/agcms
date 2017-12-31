@@ -7,7 +7,7 @@ CKEDITOR.editorConfig = function(config) {
     // http://docs.ckeditor.com/#!/api/CKEDITOR.config
 
     config.allowedContent =
-        "span{color}(liste,nypris,pris,xpris,gray); strong; em; u; sup; ul; ol; li; a[!href,target]; img[!src,width,height,alt,data-*]; p{text-align}; h2{text-align}; h3; cite; table; tr; td; video[!src,!controls,!width,!height]; audio[!src,!controls]";
+        "span{color}(liste,NyPris,Pris,XPris,gray); strong; em; u; sup; ul; ol; li; a[!href,target]; img[!src,width,height,alt,data-*]; p{text-align}; h2{text-align}; h3; cite; table; tr; td; video[!src,!controls,!width,!height]; audio[!src,!controls]";
     // TODO convert audio and oembed plugin to use an <img> container instead of a simple div wrapper
     config.extraAllowedContent =
         "div[data-*,!class](embeddedContent,oembed-provider-,oembed-provider-youtube,ckeditor-html5-audio);iframe[*]";
@@ -44,9 +44,9 @@ CKEDITOR.editorConfig = function(config) {
     config.stylesSet = [
         {"name": "Normal", "element": "p"}, {"name": "Overskrift 2", "element": "h2"},
         {"name": "Overskrift 3", "element": "h3"},
-        {"name": "nypris", "element": "span", "attributes": {"class": "nypris"}},
-        {"name": "pris", "element": "span", "attributes": {"class": "pris"}},
-        {"name": "xpris", "element": "span", "attributes": {"class": "xpris"}},
+        {"name": "NyPris", "element": "span", "attributes": {"class": "NyPris"}},
+        {"name": "Pris", "element": "span", "attributes": {"class": "Pris"}},
+        {"name": "XPris", "element": "span", "attributes": {"class": "XPris"}},
         {"name": "gray", "element": "span", "attributes": {"class": "gray"}}
     ];
 };

@@ -232,17 +232,17 @@ h1 {
     text-align: center;
     width: 112px;
 }
-.nypris {
+.NyPris {
     color: #CC0000;
     font-size: 16px;
     font-weight: bold;
     line-height: 125%;
 }
-.pris {
+.Pris {
     font-size: 15px;
     font-weight: bold;
 }
-.xpris {
+.XPris {
     color: #666666;
     font-size: 14px;
     font-weight: lighter;

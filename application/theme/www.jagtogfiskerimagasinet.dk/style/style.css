@@ -203,20 +203,20 @@ a:hover {
 #liste a {
     display: block;
 }
-.nypris {
+.NyPris {
     color: #CC0000;
     font-family: "Gill Sans", Arial, Helvetica, sans-serif;
     font-size: 16px;
     font-weight: bold;
     line-height: 125%;
 }
-.pris,
+.Pris,
 .tabel caption {
     font-family: "Gill Sans", Arial, Helvetica, sans-serif;
     font-size: 14px;
     font-weight: bold;
 }
-.xpris {
+.XPris {
     color: #666666;
     font-size: 14px;
     font-weight: lighter;
