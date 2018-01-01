@@ -1,7 +1,8 @@
 ﻿import xHttp from "../xHttp.js";
+import File from "./File.js";
+import openPopup from "./openPopup.js";
 import {injectHtml, setCookie, getCookie, htmlEncode, removeTagById} from "./javascript.js";
 
-var files = [];
 var fileId = null;
 var returnType = "";
 var activeDir = getCookie("admin_dir");
@@ -13,61 +14,6 @@ function dirToId(dir) {
     return "dir_" + dir.replace(/\//g, ".");
 }
 
-function popupType(mime) {
-    if (mime === "image/gif" || mime === "image/jpeg" || mime === "image/png") {
-        return "image";
-    }
-
-    if (mime.match(/^audio\//g)) {
-        return "audio";
-    }
-
-    if (mime.match(/^video\//g)) {
-        return "video";
-    }
-
-    return "";
-}
-
-var popup = null;
-function popUpWin(url, win, options, width, height) {
-    if (popup !== null) {
-        popup.close();
-        popup = null;
-    }
-    if (options !== "") {
-        options += ",";
-    }
-    var left = (screen.availWidth - width) / 2;
-    var top = (screen.availHeight - height) / 2;
-    popup = window.open(url, win, options + "width=" + width + ",height=" + height + ",left=" + left + ",top=" + top);
-}
-
-function File(data) {
-    this.id = data.id;
-    this.path = data.path;
-    this.name = data.name;
-    this.description = data.description;
-    this.mime = data.mime;
-    this.width = data.width ? data.width : screen.availWidth;
-    this.height = data.height ? data.height : screen.availHeight;
-}
-
-File.prototype.openfile = function() {
-    var url = this.path;
-    var width = this.width;
-    var height = this.height;
-    var type = popupType(this.mime);
-    if (type) {
-        url = "/admin/explorer/files/" + this.id + "/";
-        if (type === "audio") {
-            width = 300;
-            height = 40;
-        }
-    }
-    popUpWin(url, "file_view", "toolbar=0", width, height);
-};
-
 function getContextMenuTarget(object, className) {
     while (object.className !== className) {
         object = object.parentNode;
@@ -76,62 +22,13 @@ function getContextMenuTarget(object, className) {
     return object;
 }
 
-File.prototype.addToEditor = function() {
-    var data = "";
-    var html = "<a href=\"" + htmlEncode(this.path) + "\" target=\"_blank\">" + htmlEncode(this.name) + "</a>";
-    switch (popupType(this.mime)) {
-        case "image":
-            html = "<img src=\"" + htmlEncode(this.path) + "\" title=\"\" alt=\"" + htmlEncode(this.description) +
-                   "\" width=\"" + this.width + "\" height=\"" + this.height + "\" />";
-            break;
-        case "audio":
-            data = {"classes": {"ckeditor-html5-audio": 1}, "src": this.path};
-            data = JSON.stringify(data);
-            data = encodeURIComponent(data);
-            html =
-                "<div class=\"ckeditor-html5-audio cke_widget_element\" data-cke-widget-keep-attr=\"0\" data-widget=\"html5audio\" data-cke-widget-data=\"" +
-                data + "\"><audio controls=\"controls\" src=\"" + this.path + "\"></audio></div>";
-            break;
-        case "video":
-            data = "<cke:video width=\"" + this.width + "\" height=\"" + this.height + "\" src=\"" +
-                   htmlEncode(this.path) + "\" controls=\"controls\"></cke:video>";
-            data = encodeURIComponent(data);
-            html =
-                "<img class=\"cke-video\" data-cke-realelement=\"" + data +
-                "\" data-cke-real-node-type=\"1\" alt=\"Video\" title=\"Video\" src=\"data:image/svg+xml;charset=utf-8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22320%22%20height%3D%22240%22%3E%3C%2Fsvg%3E\" data-cke-real-element-type=\"video\" align=\"\">";
-            break;
-    }
-    var element = window.opener.CKEDITOR.dom.element.createFromHtml(html);
-    window.opener.CKEDITOR.instances.text.insertElement(element);
-    window.close();
-};
-
-File.prototype.refresh = function() {
-    var img = $("tilebox" + this.id).firstChild.childNodes[1];
-    var fullSizeUrl = this.path;
-    $("reloader").onload = function() {
-        this.onload = function() {
-            this.onload = function() {
-                this.onload = null;                       // Stop event
-                this.contentWindow.location.reload(true); // Refresh cache for full size image
-            };
-            img.src = this.src;     // Display new thumbnail
-            this.src = fullSizeUrl; // Start reloading of full size image
-        };
-        this.contentWindow.location.reload(true); // Refresh cache for thumb image
-    };
-    var url = img.src;
-    img.src = url + "#";     // Set image to a temp path so we can reload it later
-    $("reloader").src = url; // Start cache refreshing
-};
-
 function reattachContextMenus() {
     contextMenuFileTile.reattach();
     contextMenuImageTile.reattach();
 }
 
 function fileMoveDialog(id) {
-    popUpWin("/admin/explorer/move/" + id + "/", "file_move", "toolbar=0", 322, 512);
+    openPopup("/admin/explorer/move/" + id + "/", "fileMove", 322, 512);
 }
 
 function showFileName(id) {
@@ -148,18 +45,18 @@ function deleteFileCallback(data) {
     }
 
     removeTagById("tilebox" + data.id);
-    files[data.id] = null;
+    delete window.files[data.id];
 }
 
 function deleteFile(id) {
-    if (confirm("Vil du slette '" + files[id].name + "'?")) {
+    if (confirm("Vil du slette '" + window.files[id].name + "'?")) {
         document.getElementById("loading").style.visibility = "";
         xHttp.request("/admin/explorer/files/" + id + "/", deleteFileCallback, "DELETE");
     }
 }
 
 function openImageEditor(id) {
-    popUpWin("/admin/explorer/files/" + id + "/image/edit/", "image_edit", "scrollbars=1,toolbar=0", 740, 600);
+    openPopup("/admin/explorer/files/" + id + "/image/edit/", "imageEdit", 740, 600);
 }
 
 function editDescriptionCallback(data) {
@@ -168,13 +65,13 @@ function editDescriptionCallback(data) {
         return;
     }
 
-    files[data.id].description = data.description;
+    window.files[data.id].description = data.description;
 }
 
 var editDescriptionRequest;
 function editDescription(id) {
-    var newalt = prompt("Billed beskrivelse", files[id].description);
-    if (newalt === null || newalt === files[id].description) {
+    var newalt = prompt("Billed beskrivelse", window.files[id].description);
+    if (newalt === null || newalt === window.files[id].description) {
         return;
     }
 
@@ -187,8 +84,7 @@ function editDescription(id) {
 }
 
 function openImageThumbnail(id) {
-    popUpWin("/admin/explorer/files/" + id + "/image/edit/?mode=thb", "image_thumbnail", "scrollbars=1,toolbar=0", 740,
-             600);
+    openPopup("/admin/explorer/files/" + id + "/image/edit/?mode=thb", "imageThumbnail", 740, 600);
 }
 
 var fileTileContextMenu = [
@@ -197,7 +93,7 @@ var fileTileContextMenu = [
       "className": "eye",
       callback(e) {
           var id = getContextMenuTarget(e.target, "filetile").id.match(/[0-9]+/g)[0];
-          files[id].openfile();
+          window.files[id].openfile();
       }
     },
     {
@@ -231,7 +127,7 @@ var imageTileContextMenu = [{
     "className": "picture",
     callback(e) {
         var id = getContextMenuTarget(e.target, "imagetile").id.match(/[0-9]+/g)[0];
-        files[id].openfile();
+        window.files[id].openfile();
     }
 }];
 
@@ -241,7 +137,7 @@ if (window.location.href.match(/return=ckeditor/g)) {
         "className": "link",
         callback(e) {
             var id = getContextMenuTarget(e.target, "imagetile").id.match(/[0-9]+/g)[0];
-            files[id].addToEditor();
+            window.files[id].addToEditor();
         }
     });
 }
@@ -298,10 +194,11 @@ imageTileContextMenu = imageTileContextMenu.concat([
 
 function injectFileData(data) {
     injectHtml(data);
-    files = [];
+    files = {};
     data.files.forEach(function(fileData) {
-        files[fileData.id] = new File(fileData);
+        window.files[fileData.id] = new File(fileData);
     });
+    console.log(files);
     reattachContextMenus();
 }
 
@@ -458,13 +355,13 @@ function dir_contract(obj) {
 }
 
 function open_file_upload() {
-    popUpWin("/admin/explorer/upload/?path=" + encodeURIComponent(activeDir), "file_upload", "toolbar=0", 640, 150);
+    openPopup("/admin/explorer/upload/?path=" + encodeURIComponent(activeDir), "fileUpload", 640, 150);
 }
 
 function renamefile_r(data) {
     document.getElementById("loading").style.visibility = "hidden";
     if (data.error) {
-        document.getElementById("navn" + data.id + "form").firstChild.firstChild.value = files[data.id].name;
+        document.getElementById("navn" + data.id + "form").firstChild.firstChild.value = window.files[data.id].name;
         return;
     }
 
@@ -479,15 +376,15 @@ function renamefile_r(data) {
             return;
         }
 
-        document.getElementById("navn" + data.id + "form").firstChild.firstChild.value = files[data.id].name;
+        document.getElementById("navn" + data.id + "form").firstChild.firstChild.value = window.files[data.id].name;
         return;
     }
 
     document.getElementById("navn" + data.id + "div").innerText = data.filename;
     document.getElementById("navn" + data.id + "div").title = data.filename;
     document.getElementById("navn" + data.id + "form").firstChild.firstChild.value = data.filename;
-    files[data.id].name = data.filename;
-    files[data.id].path = data.path;
+    window.files[data.id].name = data.filename;
+    window.files[data.id].path = data.path;
 }
 
 // TODO if force, refresh folder or we might have duplicates displaying in the folder.
@@ -555,6 +452,7 @@ function swap_pannel(navn) {
 }
 
 window.addEventListener("DOMContentLoaded", function(event) {
+    window.files = {};
     window.showfiles = showfiles;
     window.searchfiles = searchfiles;
     window.showdirname = showdirname;

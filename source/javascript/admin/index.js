@@ -27,6 +27,7 @@ import {
     setPaymentTransferred,
     confirmPaymentValidate
 } from "./invoice.js";
+import openPopup from "./openPopup.js";
 
 var contextMenuActiveSide;
 var contextMenuInactiveSide;
@@ -960,7 +961,7 @@ function setThb(id, value, src) {
 }
 
 function explorer(returntype, returnid) {
-    window.open("/admin/explorer/?return=" + returntype + "&returnid=" + returnid, "explorer", "toolbar=0");
+    openPopup("/admin/explorer/?return=" + returntype + "&returnid=" + returnid, "explorer");
 }
 
 function showimage(obj, img) {
@@ -1045,6 +1046,8 @@ window.addEventListener("DOMContentLoaded", function(event) {
     window.showhidealtpost = showhidealtpost;
     window.setPaymentTransferred = setPaymentTransferred;
     window.confirmPaymentValidate = confirmPaymentValidate;
+
+    window.openPopup = openPopup;
 
     attachContextMenus();
 });

@@ -186,7 +186,7 @@
             --></script>
             {% endfor %}
             {% endspaceless %}
-            <input type="button" onclick="window.open('/admin/page/{{page.id}}/tables/','addlist','toolbar=0,height=250')" value="{{'Add list'|trans}}">
+            <input type="button" onclick="openPopup('/admin/page/{{page.id}}/tables/','addList',0,250)" value="{{'Add list'|trans}}">
         </div>
     </div>
 </form>
