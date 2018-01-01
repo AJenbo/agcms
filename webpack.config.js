@@ -12,5 +12,9 @@ module.exports = {
         "huntershouse.dk": "./application/theme/huntershouse.dk/javascript/javascript.js"
     },
     output: {filename: "[name].js", path: __dirname + "/application/javascript"},
-    plugins: [new MinifyPlugin({}, {})]
+    plugins: [new MinifyPlugin({}, {})],
+    module: {
+        rules:
+            [{test: /\.js$/, exclude: /node_modules/, use: {loader: "babel-loader", options: {"presets": ["env"]}}}]
+    }
 };
