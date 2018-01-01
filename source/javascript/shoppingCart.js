@@ -55,8 +55,8 @@ const shoppingCart = {
         }
 
         cart.items.push({
-            "type": type,
-            "id": id,
+            type,
+            id,
             "quantity": 1,
         });
 

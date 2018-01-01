@@ -19,7 +19,7 @@ function getAddress(phonenumber, callback) {
 
 let arrayZipcode = {};
 
-function chnageZipCode(zipcode, countryId, cityId) {
+function changeZipCode(zipcode, countryId, cityId) {
     if (document.getElementById(countryId).value !== "DK") {
         return false;
     }
@@ -34,4 +34,4 @@ window.addEventListener("DOMContentLoaded", function(event) {
     });
 });
 
-export {getAddress, chnageZipCode};
+export {getAddress, changeZipCode};

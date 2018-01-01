@@ -194,11 +194,10 @@ imageTileContextMenu = imageTileContextMenu.concat([
 
 function injectFileData(data) {
     injectHtml(data);
-    files = {};
+    window.files = {};
     data.files.forEach(function(fileData) {
         window.files[fileData.id] = new File(fileData);
     });
-    console.log(files);
     reattachContextMenus();
 }
 
@@ -332,7 +331,7 @@ function expandFolderCallback(data) {
     dirdiv.lastChild.style.display = "";
 }
 
-function dir_expand(dirdiv, move) {
+function expandFolder(dirdiv, move) {
     dirdiv = dirdiv.parentNode;
     if (dirdiv.lastChild.firstChild === null) {
         document.getElementById("loading").style.visibility = "";
@@ -424,7 +423,7 @@ function moveFileCallback(data) {
 function movefile(dir) {
     moveFileGlobal = dir;
     window.opener.document.getElementById("loading").style.display = "";
-    var data = {"dir": dir};
+    var data = {dir};
     xHttp.request("/admin/explorer/files/" + fileId + "/", moveFileCallback, "PUT", data);
 }
 
@@ -459,7 +458,7 @@ window.addEventListener("DOMContentLoaded", function(event) {
     window.renamedir = renamedir;
     window.deleteFolder = deleteFolder;
     window.makedir = makedir;
-    window.dir_expand = dir_expand;
+    window.expandFolder = expandFolder;
     window.dir_contract = dir_contract;
     window.open_file_upload = open_file_upload;
     window.renamefile = renamefile;

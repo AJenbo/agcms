@@ -550,8 +550,8 @@ function addNewItem() {
     if (text.value !== "") {
         var listOrder = $("listOrder");
         var li = document.createElement("li");
-        li.id = "item_" + items;
-        items++;
+        li.id = "item_" + window.items;
+        window.items++;
         var textnode = document.createTextNode(text.value);
         text.value = "";
         li.appendChild(textnode);
@@ -838,7 +838,7 @@ function subscriptionsWithBadEmailsCallback(data) {
     $("status").innerText = "";
 }
 
-function get_subscriptions_with_bad_emails() {
+function getSubscriptionsWithBadEmails() {
     $("loading").style.visibility = "";
     $("errors").innerText = "";
 
@@ -997,7 +997,7 @@ window.addEventListener("DOMContentLoaded", function(event) {
     window.deleteuser = deleteuser;
     window.updateuser = updateuser;
     window.scan_db = scan_db;
-    window.get_subscriptions_with_bad_emails = get_subscriptions_with_bad_emails;
+    window.getSubscriptionsWithBadEmails = getSubscriptionsWithBadEmails;
     window.removeNoneExistingFiles = removeNoneExistingFiles;
     window.getEmailUsage = getEmailUsage;
     window.prisHighlight = prisHighlight;

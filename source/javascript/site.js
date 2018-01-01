@@ -1,9 +1,10 @@
 import xHttp from "./xHttp.js";
-import {getAddress, chnageZipCode} from "./getAddress.js";
+import {getAddress, changeZipCode} from "./getAddress.js";
 import shoppingCart from "./shoppingCart.js";
 
 let getTableCall = null;
 let getKatCall = null;
+let values = [];
 
 /**
  * Make all links to external pages open in a new window, and set a tool tip as to thint this to the user.
@@ -103,7 +104,7 @@ function getAddressCallback1(responce) {
     if (responce.email) {
         document.getElementById("email").value = responce.email;
     }
-    chnageZipCode(responce.zipcode, "country", "city");
+    changeZipCode(responce.zipcode, "country", "city");
 }
 
 function getAddressCallback2(responce) {
@@ -128,7 +129,7 @@ function getAddressCallback2(responce) {
     if (responce.zipcode) {
         document.getElementById("shippingPostcode").value = responce.zipcode;
     }
-    chnageZipCode(responce.zipcode, "shippingCountry", "shippingCity");
+    changeZipCode(responce.zipcode, "shippingCountry", "shippingCity");
 }
 
 window.addEventListener("DOMContentLoaded", function(event) {
@@ -144,7 +145,9 @@ window.addEventListener("DOMContentLoaded", function(event) {
     window.getAddress = getAddress;
     window.getAddressCallback1 = getAddressCallback1;
     window.getAddressCallback2 = getAddressCallback2;
-    window.chnageZipCode = chnageZipCode;
+    window.changeZipCode = changeZipCode;
+
+    values = window.values;
 
     shoppingCart.onupdate();
     openForigenLinksInNewWindow();

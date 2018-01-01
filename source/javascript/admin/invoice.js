@@ -1,6 +1,6 @@
 import xHttp from "../xHttp.js";
 import {genericCallback, reloadCallback, getSelectValue} from "./javascript.js";
-import {getAddress} from "../getAddress.js";
+import {getAddress, changeZipCode} from "../getAddress.js";
 
 var invoiceLines = [];
 var invoiceAmount = 0;
@@ -97,7 +97,7 @@ function prisUpdate() {
         fragt = 0;
     }
 
-    payamount = parseFloat(fragt + netto + netto * momssats);
+    const payamount = parseFloat(fragt + netto + netto * momssats);
     $("payamount").innerText = numberFormat(payamount);
     invoiceAmount = payamount.toFixed(2);
 
@@ -150,7 +150,7 @@ function injectInvoiceAddress(data) {
         $("attn").value = data.attn;
         $("adresse").value = data.address1;
         $("postnr").value = data.zipcode;
-        chnageZipCode(data.zipcode, "land", "by");
+        changeZipCode(data.zipcode, "land", "by");
         $("postbox").value = data.postbox;
         if (!$("email").value) {
             $("email").value = data.email;
@@ -172,7 +172,7 @@ function injectInvoiceDeliverAddress(data) {
         $("postaddress").value = data.address1;
         $("postaddress2").value = data.address2;
         $("postpostalcode").value = data.zipcode;
-        chnageZipCode(data.zipcode, "postcountry", "postcity");
+        changeZipCode(data.zipcode, "postcountry", "postcity");
         $("postpostbox").value = data.postbox;
     }
     $("loading").style.visibility = "hidden";

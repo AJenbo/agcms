@@ -299,7 +299,7 @@
         <td>{{'Zipcode:'|trans}}</td>
         <td>
             {% if not invoice or invoice.status == 'new' %}
-            <input name="postnr" id="postnr" value="{{invoice.postcode}}" onblur="chnageZipCode(this.value, 'land', 'by')" onkeyup="chnageZipCode(this.value, 'land', 'by')" onchange="chnageZipCode(this.value, 'land', 'by')" />
+            <input name="postnr" id="postnr" value="{{invoice.postcode}}" onblur="changeZipCode(this.value, 'land', 'by')" onkeyup="changeZipCode(this.value, 'land', 'by')" onchange="changeZipCode(this.value, 'land', 'by')" />
             {{'City:'|trans}}
             <input name="by" id="by" value="{{invoice.city}}" />
             {% else %}
@@ -311,7 +311,7 @@
         <td>{{'Country:'|trans}}</td>
         <td>
             {% if not invoice or invoice.status == 'new' %}
-            <select name="land" id="land" onblur="chnageZipCode($('postnr').value, 'land', 'by')" onkeyup="chnageZipCode($('postnr').value, 'land', 'by')" onchange="chnageZipCode($('postnr').value, 'land', 'by')">
+            <select name="land" id="land" onblur="changeZipCode($('postnr').value, 'land', 'by')" onkeyup="changeZipCode($('postnr').value, 'land', 'by')" onchange="changeZipCode($('postnr').value, 'land', 'by')">
                 <option value=""{% if not invoice.country %} selected="selected"{% endif %}></option>
                 {% for code, country in countries %}
                 <option value="{{code}}"{% if invoice.country == code or (not invoice and code == 'DK') %} selected="selected"{% endif %}>
@@ -399,7 +399,7 @@
         <td>{{'Zipcode:'|trans}}</td>
         <td>
             {% if not invoice or invoice.status == 'new' %}
-            <input name="postpostalcode" id="postpostalcode" value="{{invoice.shippingPostcode}}" onblur="chnageZipCode(this.value, 'postcountry', 'postcity')" onkeyup="chnageZipCode(this.value, 'postcountry', 'postcity')" onchange="chnageZipCode(this.value, 'postcountry', 'postcity')" />
+            <input name="postpostalcode" id="postpostalcode" value="{{invoice.shippingPostcode}}" onblur="changeZipCode(this.value, 'postcountry', 'postcity')" onkeyup="changeZipCode(this.value, 'postcountry', 'postcity')" onchange="changeZipCode(this.value, 'postcountry', 'postcity')" />
             {{'City:'|trans}}
             <input name="postcity" id="postcity" value="{{invoice.shippingCity}}" />
             {% else %}
@@ -411,7 +411,7 @@
         <td>{{'Country:'|trans}}</td>
         <td>
             {% if not invoice or invoice.status == 'new' %}
-            <select name="postcountry" id="postcountry" onblur="chnageZipCode($('postpostalcode').value, 'postcountry', 'postcity')" onkeyup="chnageZipCode($('postpostalcode').value, 'postcountry', 'postcity')" onchange="chnageZipCode($('postpostalcode').value, 'postcountry', 'postcity')">
+            <select name="postcountry" id="postcountry" onblur="changeZipCode($('postpostalcode').value, 'postcountry', 'postcity')" onkeyup="changeZipCode($('postpostalcode').value, 'postcountry', 'postcity')" onchange="changeZipCode($('postpostalcode').value, 'postcountry', 'postcity')">
                 <option value=""{% if not invoice.shippingCountry %} selected="selected"{% endif %}></option>
                 {% for code, country in countries %}
                 <option value="{{code}}"{% if invoice.shippingCountry == code or (not invoice and code == 'DK') %} selected="selected"{% endif %}>
