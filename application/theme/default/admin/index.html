@@ -31,7 +31,7 @@
                 <li><a href="/admin/categories/"><img src="/theme/default/images/admin/folder_add.png" width="16" height="16" alt="" /> {{'Create category'|trans}}</a></li>
                 <li><a href="/admin/sitetree/"><img src="/theme/default/images/admin/book_open.png" width="16" height="16" alt="" /> {{'Overview'|trans}}</a></li>
                 <li><a href="#" onclick="return jumpto()"><img src="/theme/default/images/admin/book_go.png" width="16" height="16" alt="" /> {{'Skip to page'|trans}}</a>
-                <form onsubmit="jumpto();return false" action="" method="get"><input style="width:1px;height:1px;position:absolute;top:-20px;left:-20px" type="submit" accesskey="g" />
+                <form onsubmit="return jumpto()" action="" method="get"><input style="width:1px;height:1px;position:absolute;top:-20px;left:-20px" type="submit" accesskey="g" />
                     <p style="display:inline"><input style="width:30px" id="jumptoid" name="id" /></p>
                 </form>
                 </li>
@@ -39,7 +39,7 @@
                         <img src="/theme/default/images/admin/find.png" width="16" height="16" alt="" />
                         {{'Search'|trans}}
                     </a>
-                    <form onsubmit="sogsearch();return false" action="/admin/search/" method="get">
+                    <form onsubmit="return sogsearch()" action="/admin/search/" method="get">
                         <input style="width:1px;height:1px;position:absolute;top:-20px;left:-20px" type="submit" accesskey="f" />
                         <p style="display:inline">
                             <input style="width:91px" id="sogtext" name="text" />

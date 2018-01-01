@@ -676,9 +676,10 @@ function updateContact(id) {
 
     if (id) {
         saveRequest = xHttp.request("/admin/addressbook/" + id + "/", saveContactCallback, "PUT", data);
-        return;
+        return false;
     }
     saveRequest = xHttp.request("/admin/addressbook/", saveContactCallback, "POST", data);
+    return false;
 }
 
 function deleteContactCallback(data) {
@@ -953,6 +954,7 @@ function sogsearch() {
 
     $("loading").style.visibility = "";
     xHttp.request("/admin/page/search/?text=" + encodeURIComponent(sogtext), injectHtml);
+    return false;
 }
 
 function setThb(id, value, src) {

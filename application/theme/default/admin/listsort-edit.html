@@ -12,7 +12,7 @@
 <div id="headline">{{'Edit %title%'|trans|replace({'%title%': customSorting.title})}}</div>
 <div>
     {{'Title:'|trans}} <input id="listOrderNavn" value="{{customSorting.title}}">
-    <form action="" method="post" onsubmit="addNewItem();return false">
+    <form action="" method="post" onsubmit="return addNewItem()">
         {{'New Item:'|trans}} <input id="newItem"> <input type="submit" value="{{'add'|trans}}" accesskey="t">
     </form>
 

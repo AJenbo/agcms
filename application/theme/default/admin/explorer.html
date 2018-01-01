@@ -27,20 +27,20 @@
             <a id="search_bn" title="{{'Search'|trans}}" onclick="return swap_pannel('search')">
                 <img width="16" height="16" src="/theme/default/images/admin/magnifier.png" alt="" /> {{'Search'|trans}}
             </a>
-            <a title="{{'New folder'|trans}}" onclick="makedir();return false">
+            <a title="{{'New folder'|trans}}" onclick="return makedir()">
                 <img width="16" height="16" src="/theme/default/images/admin/folder_add.png" alt="" /> {{'New folder'|trans}}
             </a>
-            <a title="{{'Delete folder'|trans}}" onclick="deleteFolder();return false">
+            <a title="{{'Delete folder'|trans}}" onclick="return deleteFolder()">
                 <img width="16" height="16" src="/theme/default/images/admin/folder_delete.png" alt="" /> {{'Delete folder'|trans}}
             </a>
-            <a title="{{'Add File'|trans}}" onclick="open_file_upload();return false">
+            <a title="{{'Add File'|trans}}" onclick="return openUploader()">
                 <img width="16" height="16" src="/theme/default/images/admin/folder_page_white.png" alt="" /> {{'Add File'|trans}}
             </a>
         </div>
         <div id="dir">
             {% include 'admin/partial-listDirs.html' with {'move': false} %}
         </div>
-        <form id="search" style="display:none" action="" onsubmit="searchfiles();return false">
+        <form id="search" style="display:none" action="" onsubmit="return searchfiles()">
             <div>
                 {{'Name:'|trans}}<br />
                 <input name="searchpath" id="searchpath" />

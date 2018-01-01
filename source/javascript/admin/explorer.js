@@ -237,6 +237,8 @@ function searchfiles() {
                                            encodeURIComponent(qalt) + "&qtype=" + encodeURIComponent(qtype) +
                                            "&return=" + encodeURIComponent(returnType),
                                        injectFileData);
+
+    return false;
 }
 
 function showdirname(nameObj) {
@@ -297,6 +299,7 @@ function deleteFolder() {
         xHttp.request("/admin/explorer/folders/?path=" + encodeURIComponent(activeDir), deleteFolderCallback, "DELETE");
         setCookie("admin_dir", "", 360);
     }
+    return false;
 }
 
 function makedirCallback(data) {
@@ -316,6 +319,7 @@ function makedir() {
             "/admin/explorer/folders/?path=" + encodeURIComponent(activeDir) + "&name=" + encodeURIComponent(name),
             makedirCallback, "POST");
     }
+    return false;
 }
 
 function expandFolderCallback(data) {
@@ -346,15 +350,16 @@ function expandFolder(dirdiv, move) {
     dirdiv.childNodes[1].style.display = "";
 }
 
-function dir_contract(obj) {
+function contractFolder(obj) {
     obj = obj.parentNode;
     obj.lastChild.style.display = "none";
     obj.firstChild.style.display = "";
     obj.childNodes[1].style.display = "none";
 }
 
-function open_file_upload() {
+function openUploader() {
     openPopup("/admin/explorer/upload/?path=" + encodeURIComponent(activeDir), "fileUpload", 640, 150);
+    return false;
 }
 
 function renameFileCallback(data) {
@@ -459,8 +464,8 @@ window.addEventListener("DOMContentLoaded", function(event) {
     window.deleteFolder = deleteFolder;
     window.makedir = makedir;
     window.expandFolder = expandFolder;
-    window.dir_contract = dir_contract;
-    window.open_file_upload = open_file_upload;
+    window.contractFolder = contractFolder;
+    window.openUploader = openUploader;
     window.renamefile = renamefile;
     window.movefile = movefile;
     window.swap_pannel = swap_pannel;

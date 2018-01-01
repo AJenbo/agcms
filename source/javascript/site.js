@@ -80,6 +80,7 @@ function setShippingAddressVisability(status) {
 function openPayment() {
     document.location.href = "/betaling/" + document.getElementById("id").value + "/" +
                              encodeURIComponent(document.getElementById("checkid").value) + "/";
+    return false;
 }
 
 function getAddressCallback1(responce) {
