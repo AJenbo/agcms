@@ -1,4 +1,5 @@
 ﻿import openPopup from "./openPopup.js";
+import {htmlEncode} from "./javascript.js";
 
 class File {
     constructor(data) {
