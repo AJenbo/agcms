@@ -1,6 +1,6 @@
 import xHttp from "./xHttp.js";
 
-var getAddressCall = null;
+let getAddressCall = null;
 function getAddress(phonenumber, callback) {
     phonenumber = phonenumber.replace("/\\s/", "");
     phonenumber = phonenumber.replace("/^[+]45/", "");
@@ -17,7 +17,7 @@ function getAddress(phonenumber, callback) {
     return false;
 }
 
-var arrayZipcode = {};
+let arrayZipcode = {};
 
 function chnageZipCode(zipcode, countryId, cityId) {
     if (document.getElementById(countryId).value !== "DK") {

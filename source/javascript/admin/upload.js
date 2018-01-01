@@ -1,7 +1,7 @@
 ﻿import xHttp from "../xHttp.js";
 
-var maxbyte = 0;
-var activeDir = null;
+let maxbyte = 0;
+let activeDir = null;
 
 function status(text) {
     document.getElementById("status").innerText = text;
@@ -31,9 +31,9 @@ function getFileSelectStatusMessage(type) {
 }
 
 function filetypeshow() {
-    var type = document.getElementById("type").value;
-    var description = document.getElementById("description");
-    var file = document.getElementById("file");
+    const type = document.getElementById("type").value;
+    const description = document.getElementById("description");
+    const file = document.getElementById("file");
 
     description.style.display = (type === "image" || type === "lineimage") ? "" : "none";
 
@@ -55,8 +55,8 @@ function fileExistsResponse(data) {
 }
 
 function validate() {
-    var files = document.getElementById("file").files;
-    var submit = document.getElementById("submit");
+    const files = document.getElementById("file").files;
+    const submit = document.getElementById("submit");
 
     submit.disabled = true;
     if (!files.length) {
@@ -71,8 +71,8 @@ function validate() {
 
         status("Søger efter dubletter...");
 
-        var path = activeDir + "/" + file.name;
-        var type = document.getElementById("type").value;
+        const path = activeDir + "/" + file.name;
+        const type = document.getElementById("type").value;
         xHttp.request(
             "/admin/explorer/files/exists/?path=" + encodeURIComponent(path) + "&type=" + encodeURIComponent(type),
             fileExistsResponse);
@@ -96,27 +96,27 @@ function uploadCompleated() {
     validate();
 }
 
-var totals = [];
-var uploads = [];
+let totals = [];
+let uploads = [];
 function updateProgress() {
-    var totalSize = 0;
+    let totalSize = 0;
     for (const total of totals) {
         totalSize += total; // Set max before starting any uploads
     }
 
-    var uploaded = 0;
+    let uploaded = 0;
     for (const upload of uploads) {
         uploaded += upload;
     }
 
-    var progressBar = document.getElementById("progress");
+    const progressBar = document.getElementById("progress");
     progressBar.max = parseInt(totalSize);
 
-    var diff = totals.filter(function(element, index) {
+    const diff = totals.filter(function(element, index) {
         return element === uploads[index];
     });
 
-    var statusText = " beregner upload...";
+    let statusText = " beregner upload...";
     if (uploaded) {
         progressBar.value = parseInt(uploaded);
         statusText = " uploader...";
@@ -132,7 +132,7 @@ function getOnLoadFunction(x, i) {
     return function(data) {
         uploads[i] = totals[i];
         updateProgress();
-        var result;
+        let result;
         try {
             result = JSON.parse(x.responseText);
         } catch (err) {
@@ -165,19 +165,17 @@ function send() {
     document.getElementById("description").style.display = "none";
     document.getElementById("description").style.display = "none";
 
-    var progress = document.getElementById("progress");
+    const progress = document.getElementById("progress");
     progress.removeAttribute("value");
     progress.style.display = "block";
 
-    var index;
-    var x;
-    var file;
-    var files = document.getElementById("file").files;
-    var form = new FormData();
+    const files = document.getElementById("file").files;
+    const form = new FormData();
     form.append("type", document.getElementById("type").value);
     form.append("alt", document.getElementById("alt").value);
     form.append("dir", activeDir);
 
+    let x;
     for (const file of files) {
         form.append("upload", file);
         try {
@@ -188,7 +186,7 @@ function send() {
         } catch (e) {
             continue;
         }
-        index = totals.push(files.size);
+        const index = totals.push(file.size);
         uploads.push(NaN);
         x.onload = getOnLoadFunction(x, index - 1);
         x.upload.onprogress = getOnProgressFunction(index - 1);

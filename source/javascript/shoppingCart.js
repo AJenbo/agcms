@@ -1,4 +1,4 @@
-var shoppingCart = {
+const shoppingCart = {
     "default": {
         "items": [],
         "name": "",
@@ -27,7 +27,7 @@ var shoppingCart = {
         "newsletter": false,
     },
     "getCart": function() {
-        var cart = localStorage.getItem("cart");
+        const cart = localStorage.getItem("cart");
         if (!cart) {
             return shoppingCart.default;
         }
@@ -38,17 +38,17 @@ var shoppingCart = {
         localStorage.setItem("cart", JSON.stringify(cart));
     },
     "resetCart": function() {
-        var cart = shoppingCart.getCart();
+        const cart = shoppingCart.getCart();
         cart.items = [];
         shoppingCart.setCart(cart);
         shoppingCart.onupdate();
     },
     "addItem": function(type, id) {
-        var cart = shoppingCart.getCart();
+        const cart = shoppingCart.getCart();
 
-        for (var i = 0; i < cart.items.length; i++) {
-            if (cart.items[i].type === type && cart.items[i].id === id) {
-                cart.items[i].quantity++;
+        for (const item of cart.items) {
+            if (item.type === type && item.id === id) {
+                item.quantity++;
                 shoppingCart.setCart(cart);
                 return;
             }
@@ -64,19 +64,19 @@ var shoppingCart = {
         shoppingCart.onupdate();
     },
     "open": function() {
-        var cart = shoppingCart.getCart();
+        const cart = shoppingCart.getCart();
         document.location.href = "/order/?cart=" + encodeURIComponent(JSON.stringify(cart));
     },
     "openAddress": function() {
-        var cart = shoppingCart.getCart();
+        const cart = shoppingCart.getCart();
         cart.payMethod = document.getElementById("payMethod").value;
         cart.deleveryMethod = document.getElementById("deleveryMethod").value;
         cart.note = document.getElementById("note").value;
 
-        var quantity = 0;
-        var quantities = document.getElementsByName("quantity[]");
-        var items = [];
-        for (var i = 0; i < quantities.length; i++) {
+        let quantity = 0;
+        const quantities = document.getElementsByName("quantity[]");
+        const items = [];
+        for (let i = 0; i < quantities.length; i++) {
             quantity = parseInt(quantities[i].value);
             if (quantity) {
                 cart.items[i].quantity = quantity;
@@ -89,7 +89,7 @@ var shoppingCart = {
         document.location.href = "/order/address/?cart=" + encodeURIComponent(JSON.stringify(cart));
     },
     "sendCart": function() {
-        var cart = shoppingCart.getCart();
+        const cart = shoppingCart.getCart();
         cart.name = document.getElementById("name").value;
         cart.attn = document.getElementById("attn").value;
         cart.address = document.getElementById("address").value;
@@ -113,11 +113,11 @@ var shoppingCart = {
         cart.newsletter = document.getElementById("newsletter").checked;
         shoppingCart.setCart(cart);
 
-        var form = document.createElement("form");
+        const form = document.createElement("form");
         form.setAttribute("method", "POST");
         form.setAttribute("action", "/order/send/");
 
-        var hiddenField = document.createElement("input");
+        const hiddenField = document.createElement("input");
         hiddenField.setAttribute("type", "hidden");
         hiddenField.setAttribute("name", "cart");
         hiddenField.setAttribute("value", JSON.stringify(cart));
@@ -128,7 +128,7 @@ var shoppingCart = {
         form.submit();
     },
     "onupdate": function() {
-        var itemCount = shoppingCart.getCart().items.length;
+        const itemCount = shoppingCart.getCart().items.length;
         document.getElementById("count").firstChild.data = itemCount;
         document.getElementById("cartCount").innerText = itemCount ? "(" + itemCount + ")" : "";
     }

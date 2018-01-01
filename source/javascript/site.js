@@ -2,18 +2,18 @@ import xHttp from "./xHttp.js";
 import {getAddress, chnageZipCode} from "./getAddress.js";
 import shoppingCart from "./shoppingCart.js";
 
-var getTableCall = null;
-var getKatCall = null;
+let getTableCall = null;
+let getKatCall = null;
 
 /**
  * Make all links to external pages open in a new window, and set a tool tip as to thint this to the user.
  */
 function openForigenLinksInNewWindow() {
-    var links = document.getElementsByTagName("a");
-    for (var i = 0; i < links.length; i++) {
-        if (links[i].hostname !== location.hostname) {
-            links[i].setAttribute("target", "_blank");
-            links[i].setAttribute("title", "Åbner i et nyt vindu");
+    const links = document.getElementsByTagName("a");
+    for (const link of links) {
+        if (link.hostname !== location.hostname) {
+            link.setAttribute("target", "_blank");
+            link.setAttribute("title", "Åbner i et nyt vindu");
         }
     }
 }
@@ -49,11 +49,11 @@ function getKat(categoryId, column) {
  * Update total order price on order page.
  */
 function updateprice() {
-    var value = 0;
-    var total = document.getElementsByClassName("total");
-    var input = document.getElementsByName("quantity[]");
-    var subtotal = 0;
-    for (var i = 0; i < values.length; i++) {
+    let value = 0;
+    let subtotal = 0;
+    const total = document.getElementsByClassName("total");
+    const input = document.getElementsByName("quantity[]");
+    for (let i = 0; i < values.length; i++) {
         value = values[i] * input[i].value;
         if (values[i] > 0) {
             total[i].innerText = value.toFixed(2).toString().replace(/\./, ",");
@@ -65,10 +65,10 @@ function updateprice() {
 }
 
 function showhidealtpost(status) {
-    var rows = document.getElementsByTagName("tr");
-    for (var i = 0; i < rows.length; i++) {
-        if (rows[i].className === "altpost") {
-            rows[i].style.display = status ? "" : "none";
+    const rows = document.getElementsByTagName("tr");
+    for (const row of rows) {
+        if (row.className === "altpost") {
+            row.style.display = status ? "" : "none";
         }
     }
 }

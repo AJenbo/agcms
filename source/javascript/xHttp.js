@@ -1,4 +1,4 @@
-var xHttp = {
+const xHttp = {
     "requests": [],
     "cancel": function(id) {
         if (xHttp.requests[id]) {
@@ -7,15 +7,15 @@ var xHttp = {
         }
     },
     "request": function(uri, callback, method, data) {
-        var id = xHttp.requests.length;
+        const id = xHttp.requests.length;
 
-        var x = new window.XMLHttpRequest();
+        const x = new window.XMLHttpRequest();
         x.responseType = "json";
         x.onload = function() {
             xHttp.requests[id] = null;
 
             if (x.status < 200 || x.status > 299 || x.response.error) {
-                var message = (x.response && x.response.error && x.response.error.message) || x.statusText;
+                const message = (x.response && x.response.error && x.response.error.message) || x.statusText;
                 alert("Error: " + message);
             }
 
