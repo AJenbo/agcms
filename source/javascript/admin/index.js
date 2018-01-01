@@ -765,7 +765,7 @@ function byteToHuman(bytes) {
     }
 }
 
-function getUsage_r(data) {
+function getUsageCallback(data) {
     $("loading").style.visibility = "hidden";
     $("status").innerText = "";
     $("wwwsize").innerText = byteToHuman(data.www);
@@ -773,7 +773,7 @@ function getUsage_r(data) {
 }
 
 function maintainStep9(data) {
-    getUsage_r(data);
+    getUsageCallback(data);
     $("errors").innerHTML += "<br />" + ("The scan took %d seconds.".replace(
                                             /[%]d/g, Math.round((new Date().getTime() - startTime) / 1000).toString()));
 }
@@ -830,7 +830,7 @@ function scan_db() {
     xHttp.request("/admin/maintenance/contacts/empty/", maintainStep2, "DELETE");
 }
 
-function subscriptionsWithBadEmails_r(data) {
+function subscriptionsWithBadEmailsCallback(data) {
     $("loading").style.visibility = "hidden";
     $("errors").innerHTML += "<br />" + data.html + "<br />" +
                              ("The scan took %d seconds.".replace(
@@ -845,10 +845,10 @@ function get_subscriptions_with_bad_emails() {
     starttime = new Date().getTime();
 
     $("status").innerText = "Searching for illegal e-mail adresses";
-    xHttp.request("/admin/maintenance/contacts/invalid/", subscriptionsWithBadEmails_r);
+    xHttp.request("/admin/maintenance/contacts/invalid/", subscriptionsWithBadEmailsCallback);
 }
 
-function removeNoneExistingFiles_r(data) {
+function removeNoneExistingFilesCallback(data) {
     var missingHtml = "";
     if (data.missingFiles) {
         missingHtml = "<b>The following files are missing:</b><a onclick=\"explorer('','')\">";
@@ -863,7 +863,7 @@ function removeNoneExistingFiles_r(data) {
                                            /[%]d/g, Math.round((new Date().getTime() - starttime) / 1000).toString()));
 
     $("status").innerText = "Getting system usage";
-    xHttp.request("/admin/maintenance/usage/", getUsage_r);
+    xHttp.request("/admin/maintenance/usage/", getUsageCallback);
 }
 
 function removeNoneExistingFiles() {
@@ -872,10 +872,10 @@ function removeNoneExistingFiles() {
     starttime = new Date().getTime();
 
     $("status").innerText = "Remove missing files from database";
-    xHttp.request("/admin/maintenance/files/missing/", removeNoneExistingFiles_r, "DELETE");
+    xHttp.request("/admin/maintenance/files/missing/", removeNoneExistingFilesCallback, "DELETE");
 }
 
-function getEmailUsage_r(data) {
+function getEmailUsageCallback(data) {
     $("mailboxsize").innerText = byteToHuman(data.size);
     $("status").innerText = "";
     $("loading").style.visibility = "hidden";
@@ -884,7 +884,7 @@ function getEmailUsage_r(data) {
 function getEmailUsage() {
     $("loading").style.visibility = "";
     $("status").innerText = "Getting email usage";
-    xHttp.request("/admin/maintenance/emails/usage/", getEmailUsage_r);
+    xHttp.request("/admin/maintenance/emails/usage/", getEmailUsageCallback);
 }
 
 function injectText(data) {

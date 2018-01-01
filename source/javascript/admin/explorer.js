@@ -300,7 +300,7 @@ function deleteFolder() {
     }
 }
 
-function makedir_r(data) {
+function makedirCallback(data) {
     document.getElementById("loading").style.visibility = "hidden";
     if (data.error) {
         return;
@@ -315,11 +315,11 @@ function makedir() {
         document.getElementById("loading").style.visibility = "";
         xHttp.request(
             "/admin/explorer/folders/?path=" + encodeURIComponent(activeDir) + "&name=" + encodeURIComponent(name),
-            makedir_r, "POST");
+            makedirCallback, "POST");
     }
 }
 
-function dir_expand_r(data) {
+function expandFolderCallback(data) {
     document.getElementById("loading").style.visibility = "hidden";
     if (data.error) {
         return;
@@ -338,7 +338,7 @@ function dir_expand(dirdiv, move) {
         document.getElementById("loading").style.visibility = "";
         xHttp.request(
             "/admin/explorer/folders/?path=" + encodeURIComponent(idToDir(dirdiv.id)) + "&move=" + (move ? 1 : 0),
-            dir_expand_r);
+            expandFolderCallback);
         return;
     }
 
@@ -358,7 +358,7 @@ function open_file_upload() {
     openPopup("/admin/explorer/upload/?path=" + encodeURIComponent(activeDir), "fileUpload", 640, 150);
 }
 
-function renamefile_r(data) {
+function renameFileCallback(data) {
     document.getElementById("loading").style.visibility = "hidden";
     if (data.error) {
         document.getElementById("navn" + data.id + "form").firstChild.firstChild.value = window.files[data.id].name;
@@ -372,7 +372,7 @@ function renamefile_r(data) {
                 "name": document.getElementById("navn" + data.id + "form").firstChild.firstChild.value,
                 "overwrite": true
             };
-            xHttp.request("/admin/explorer/files/" + data.id + "/", renamefile_r, "PUT", payload);
+            xHttp.request("/admin/explorer/files/" + data.id + "/", renameFileCallback, "PUT", payload);
             return;
         }
 
@@ -393,11 +393,11 @@ function renamefile(id) {
     document.getElementById("navn" + id + "div").style.display = "";
     var payload = {"name": document.getElementById("navn" + id + "form").firstChild.firstChild.value};
     document.getElementById("loading").style.visibility = "";
-    xHttp.request("/admin/explorer/files/" + id + "/", renamefile_r, "PUT", payload);
+    xHttp.request("/admin/explorer/files/" + id + "/", renameFileCallback, "PUT", payload);
 }
 
 var moveFileGlobal;
-function movefile_r(data) {
+function moveFileCallback(data) {
     window.opener.document.getElementById("loading").style.display = "none";
 
     if (data.newPath === data.path) {
@@ -411,7 +411,7 @@ function movefile_r(data) {
         if (confirm(data.yesno)) {
             document.getElementById("loading").style.display = "";
             var requestData = {"dir": moveFileGlobal, "overwrite": true};
-            xHttp.request("/admin/explorer/files/" + fileId + "/", movefile_r, "PUT", requestData);
+            xHttp.request("/admin/explorer/files/" + fileId + "/", moveFileCallback, "PUT", requestData);
         }
         return;
     }
@@ -425,7 +425,7 @@ function movefile(dir) {
     moveFileGlobal = dir;
     window.opener.document.getElementById("loading").style.display = "";
     var data = {"dir": dir};
-    xHttp.request("/admin/explorer/files/" + fileId + "/", movefile_r, "PUT", data);
+    xHttp.request("/admin/explorer/files/" + fileId + "/", moveFileCallback, "PUT", data);
 }
 
 function swap_pannel(navn) {

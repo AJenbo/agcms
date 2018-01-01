@@ -30,7 +30,7 @@ function getFileSelectStatusMessage(type) {
     return "Vælg en filtype";
 }
 
-function filetypeshow() {
+function showFileType() {
     const type = document.getElementById("type").value;
     const description = document.getElementById("description");
     const file = document.getElementById("file");
@@ -199,7 +199,7 @@ function send() {
 
 window.addEventListener("DOMContentLoaded", function(event) {
     window.send = send;
-    window.filetypeshow = filetypeshow;
+    window.showFileType = showFileType;
     window.validate = validate;
     maxbyte = window.maxbyte;
     activeDir = window.activeDir || "/images";

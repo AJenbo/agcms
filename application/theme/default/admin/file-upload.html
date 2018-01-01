@@ -6,7 +6,7 @@
     </head>
     <body onload="window.focus()" bgcolor="#ffffff">
         <form method="post" enctype="multipart/form-data" action="/admin/upload/" onsubmit="return send()">
-            <select name="type" id="type" onchange="filetypeshow()" onkeyup="filetypeshow()">
+            <select name="type" id="type" onchange="showFileType()" onkeyup="showFileType()">
                 <option value="">{{'File type'|trans}}</option>
                 <option value="image">{{'Image'|trans}}</option>
                 <option value="lineimage">{{'Illustration'|trans}}</option>

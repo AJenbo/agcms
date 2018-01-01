@@ -26,7 +26,7 @@
                     {% for item in invoice.items %}
                     <tr>
                         <td class="tal">
-                            <input onkeyup="updateprice()" onchange="updateprice()" class="tal" value="{{item.quantity}}" name="quantity[]" size="3" />
+                            <input onkeyup="updatePrice()" onchange="updatePrice()" class="tal" value="{{item.quantity}}" name="quantity[]" size="3" />
                         </td>
                         <td>{{item.title}}</td>
                         <td class="tal">

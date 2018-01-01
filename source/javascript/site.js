@@ -48,7 +48,7 @@ function getKat(categoryId, column) {
 /**
  * Update total order price on order page.
  */
-function updateprice() {
+function updatePrice() {
     let value = 0;
     let subtotal = 0;
     const total = document.getElementsByClassName("total");
@@ -64,7 +64,7 @@ function updateprice() {
     document.getElementById("total").innerText = subtotal.toFixed(2).toString().replace(/\./, ",");
 }
 
-function showhidealtpost(status) {
+function setShippingAddressVisability(status) {
     const rows = document.getElementsByTagName("tr");
     for (const row of rows) {
         if (row.className === "altpost") {
@@ -135,8 +135,8 @@ window.addEventListener("DOMContentLoaded", function(event) {
     window.$ = $;
     window.getTable = getTable;
     window.getKat = getKat;
-    window.updateprice = updateprice;
-    window.showhidealtpost = showhidealtpost;
+    window.updatePrice = updatePrice;
+    window.setShippingAddressVisability = setShippingAddressVisability;
     window.openPayment = openPayment;
 
     // Expose imported functions

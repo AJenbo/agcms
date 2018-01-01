@@ -328,7 +328,7 @@
     <tr>
         <td colspan="2">
             {% if not invoice or invoice.status == 'new' %}
-            <input onclick="showhidealtpost(this.checked)" name="altpost" id="altpost" type="checkbox"{% if invoice.hasShippingAddress %} checked="checked"{% endif %} />
+            <input onclick="setShippingAddressVisability(this.checked)" name="altpost" id="altpost" type="checkbox"{% if invoice.hasShippingAddress %} checked="checked"{% endif %} />
             {% endif %}
             <label for="altpost"> <strong>{{'Other delivery address'|trans}}</strong></label>
         </td>
@@ -517,7 +517,7 @@
 </table>
 {% if not invoice or invoice.status == 'new' %}
 <script type="text/javascript"><!--
-    showhidealtpost($('altpost').checked);
+    setShippingAddressVisability($('altpost').checked);
     valideMail();
     prisUpdate();
     var status = {% if invoice %}{{invoice.status|json_encode|raw}}{% else %}"new"{% endif%};

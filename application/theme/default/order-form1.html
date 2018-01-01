@@ -74,7 +74,7 @@
                 </tr>
                 <tr>
                     <td colspan="4">
-                        <input onclick="showhidealtpost(this.checked)" name="hasShippingAddress" id="hasShippingAddress" type="checkbox"{% if invoice.hasShippingAddress %} checked="checked"{% endif %} />
+                        <input onclick="setShippingAddressVisability(this.checked)" name="hasShippingAddress" id="hasShippingAddress" type="checkbox"{% if invoice.hasShippingAddress %} checked="checked"{% endif %} />
                         <label for="hasShippingAddress"> {{'Other delivery address'|trans}}</label>
                     </td>
                 </tr>
