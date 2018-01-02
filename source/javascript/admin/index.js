@@ -775,8 +775,10 @@ function getUsageCallback(data) {
 
 function maintainStep9(data) {
     getUsageCallback(data);
-    $("errors").innerHTML += "<br />" + ("The scan took %d seconds.".replace(
-                                            /[%]d/g, Math.round((new Date().getTime() - startTime) / 1000).toString()));
+    addErrorReport({
+        "html": "<br />" + ("The scan took %d seconds.".replace(
+                               /[%]d/g, Math.round((new Date().getTime() - startTime) / 1000).toString()))
+    });
 }
 
 function maintainStep8(data) {
@@ -833,9 +835,11 @@ function runMaintenance() {
 
 function subscriptionsWithBadEmailsCallback(data) {
     $("loading").style.visibility = "hidden";
-    $("errors").innerHTML += "<br />" + data.html + "<br />" +
-                             ("The scan took %d seconds.".replace(
-                                 /[%]d/g, Math.round((new Date().getTime() - starttime) / 1000).toString()));
+    addErrorReport({
+        "html": "<br />" + data.html + "<br />" +
+                    ("The scan took %d seconds.".replace(
+                        /[%]d/g, Math.round((new Date().getTime() - startTime) / 1000).toString()))
+    });
     $("status").innerText = "";
 }
 
@@ -859,9 +863,12 @@ function removeNoneExistingFilesCallback(data) {
         }
         missingHtml += "</a>";
     }
-    $("errors").innerHTML = missingHtml + "<br />" + data.deleted + " files removed" +
-                            "<br />" + ("The scan took %d seconds.".replace(
-                                           /[%]d/g, Math.round((new Date().getTime() - starttime) / 1000).toString()));
+
+    addErrorReport({
+        "html": missingHtml + "<br />" + data.deleted + " files removed" +
+                    "<br />" + ("The scan took %d seconds.".replace(
+                                   /[%]d/g, Math.round((new Date().getTime() - startTime) / 1000).toString()))
+    });
 
     $("status").innerText = "Getting system usage";
     xHttp.request("/admin/maintenance/usage/", getUsageCallback);
