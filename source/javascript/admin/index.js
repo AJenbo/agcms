@@ -749,7 +749,7 @@ function updateuser(id) {
 }
 
 var startTime;
-function set_db_errors(data) {
+function addErrorReport(data) {
     if (data.html) {
         $("errors").innerHTML += data.html;
     }
@@ -780,48 +780,48 @@ function maintainStep9(data) {
 }
 
 function maintainStep8(data) {
-    set_db_errors(data);
+    addErrorReport(data);
     $("status").innerText = "Getting system usage";
     xHttp.request("/admin/maintenance/usage/", maintainStep9);
 }
 
 function maintainStep7(data) {
-    set_db_errors(data);
+    addErrorReport(data);
     $("status").innerText = "Sending delayed emails";
     xHttp.request("/admin/maintenance/emails/send/", maintainStep8, "POST");
 }
 
 function maintainStep6(data) {
-    set_db_errors(data);
+    addErrorReport(data);
     $("status").innerText = "Checking the folder names";
     xHttp.request("/admin/maintenance/files/folderNames/", maintainStep7);
 }
 
 function maintainStep5(data) {
-    set_db_errors(data);
+    addErrorReport(data);
     $("status").innerText = "Checking the file names";
     xHttp.request("/admin/maintenance/files/names/", maintainStep6);
 }
 
 function maintainStep4(data) {
-    set_db_errors(data);
+    addErrorReport(data);
     $("status").innerText = "Searching for cirkalur linked categories";
     xHttp.request("/admin/maintenance/categories/circular/", maintainStep5);
 }
 
 function maintainStep3(data) {
-    set_db_errors(data);
+    addErrorReport(data);
     $("status").innerText = "Searching for pages with illegal bindings";
     xHttp.request("/admin/maintenance/pages/mismatches/", maintainStep4);
 }
 
 function maintainStep2(data) {
-    set_db_errors(data);
+    addErrorReport(data);
     $("status").innerText = "Searching for pages without bindings";
     xHttp.request("/admin/maintenance/pages/orphans/", maintainStep3);
 }
 
-function scan_db() {
+function runMaintenance() {
     $("loading").style.visibility = "";
     $("errors").innerText = "";
 
@@ -998,7 +998,7 @@ window.addEventListener("DOMContentLoaded", function(event) {
     window.sendEmail = sendEmail;
     window.deleteuser = deleteuser;
     window.updateuser = updateuser;
-    window.scan_db = scan_db;
+    window.runMaintenance = runMaintenance;
     window.getSubscriptionsWithBadEmails = getSubscriptionsWithBadEmails;
     window.removeNoneExistingFiles = removeNoneExistingFiles;
     window.getEmailUsage = getEmailUsage;

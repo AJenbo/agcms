@@ -432,7 +432,7 @@ function movefile(dir) {
     xHttp.request("/admin/explorer/files/" + fileId + "/", moveFileCallback, "PUT", data);
 }
 
-function swap_pannel(navn) {
+function swapPannel(navn) {
     // Save what mode we are in and what was searched for
     if (navn === "search") {
         document.getElementById("files").innerText = "";
@@ -468,7 +468,7 @@ window.addEventListener("DOMContentLoaded", function(event) {
     window.openUploader = openUploader;
     window.renamefile = renamefile;
     window.movefile = movefile;
-    window.swap_pannel = swap_pannel;
+    window.swapPannel = swapPannel;
 
     returnType = window.returnType || "";
     fileId = window.fileId || null;

@@ -303,7 +303,7 @@ function showhidealtpost(status) {
 }
 
 function setPaymentTransferred(id, transferred) {
-    xHttp.request("/admin/invoices/payments/" + id + "/", reloadCallback, "PUT", {"transferred": transferred});
+    xHttp.request("/admin/invoices/payments/" + id + "/", reloadCallback, "PUT", {transferred});
     return false;
 }
 
