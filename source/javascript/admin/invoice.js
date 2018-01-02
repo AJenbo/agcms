@@ -129,7 +129,7 @@ function valideMail() {
     }
 
     if (!$("email").value.match("^[A-z0-9_.-]+@([A-z0-9-]+\\.)+[A-z0-9-]+$")) {
-        displayInvoiceEmailAction({"isValid": false});
+        setVisabilityForSendAction({"isValid": false});
         return;
     }
 
@@ -137,7 +137,7 @@ function valideMail() {
         lastemail = $("email").value;
         xHttp.cancel(validemailajaxcall);
         $("loading").style.visibility = "";
-        displayInvoiceEmailAction({"isValid": false});
+        setVisabilityForSendAction({"isValid": false});
 
         validemailajaxcall = xHttp.request("/admin/addressbook/validEmail/?email=" + encodeURIComponent(lastemail),
                                            setVisabilityForSendAction, "GET");
