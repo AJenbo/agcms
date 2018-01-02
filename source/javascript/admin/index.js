@@ -843,7 +843,7 @@ function getSubscriptionsWithBadEmails() {
     $("loading").style.visibility = "";
     $("errors").innerText = "";
 
-    starttime = new Date().getTime();
+    startTime = new Date().getTime();
 
     $("status").innerText = "Searching for illegal e-mail adresses";
     xHttp.request("/admin/maintenance/contacts/invalid/", subscriptionsWithBadEmailsCallback);
@@ -870,7 +870,7 @@ function removeNoneExistingFilesCallback(data) {
 function removeNoneExistingFiles() {
     $("loading").style.visibility = "";
 
-    starttime = new Date().getTime();
+    startTime = new Date().getTime();
 
     $("status").innerText = "Remove missing files from database";
     xHttp.request("/admin/maintenance/files/missing/", removeNoneExistingFilesCallback, "DELETE");
