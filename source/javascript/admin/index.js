@@ -23,7 +23,7 @@ import {
     annul,
     save,
     sendReminder,
-    showhidealtpost,
+    setShippingAddressVisability,
     setPaymentTransferred,
     confirmPaymentValidate
 } from "./invoice.js";
@@ -1052,7 +1052,7 @@ window.addEventListener("DOMContentLoaded", function(event) {
     window.annul = annul;
     window.save = save;
     window.sendReminder = sendReminder;
-    window.showhidealtpost = showhidealtpost;
+    window.setShippingAddressVisability = setShippingAddressVisability;
     window.setPaymentTransferred = setPaymentTransferred;
     window.confirmPaymentValidate = confirmPaymentValidate;
 

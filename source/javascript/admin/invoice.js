@@ -202,7 +202,7 @@ function annul(id) {
 }
 
 function invoiceSaveResponse(date) {
-    if (date.status !== status || date.type === "lock" || date.type === "cancel" || date.type === "giro" ||
+    if (date.status !== window.status || date.type === "lock" || date.type === "cancel" || date.type === "giro" ||
         date.type === "cash") {
         window.location.reload();
     }
@@ -227,7 +227,7 @@ function save(id = null, type = null) {
     }
 
     var update = {"action": type};
-    if (status === "new") {
+    if (window.status === "new") {
         update.lines = invoiceLines;
         update.shipping = $("fragt").value.replace(/[^-0-9,]/g, "").replace(/,/, ".") || 0;
         update.amount = invoiceAmount;
@@ -262,8 +262,8 @@ function save(id = null, type = null) {
 
     update.note = $("note") ? $("note").value : "";
     update.internalNote = $("internalNote").value;
-    update.clerk = getSelectValue("clerk") || null;
-    update.department = getSelectValue("department") || null;
+    update.clerk = getSelectValue("clerk") || ($("clerk") && $("clerk").value) || null;
+    update.department = getSelectValue("department") || ($("department") && $("department").value) || null;
 
     if (type === "giro") {
         update.paydate = $("gdate").value;
@@ -295,7 +295,7 @@ function sendReminder(id) {
     return false;
 }
 
-function showhidealtpost(status) {
+function setShippingAddressVisability(status) {
     var rows = $$(".altpost");
     for (const row of rows) {
         row.style.display = status ? "" : "none";
@@ -328,7 +328,7 @@ export {
     annul,
     save,
     sendReminder,
-    showhidealtpost,
+    setShippingAddressVisability,
     setPaymentTransferred,
     confirmPaymentValidate
 };
