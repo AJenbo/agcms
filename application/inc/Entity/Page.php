@@ -646,7 +646,7 @@ class Page extends AbstractRenderable implements InterfaceRichText
             $requirement = ORM::getOne(Requirement::class, $this->requirementId);
         }
 
-        return null;
+        return $requirement;
     }
 
     /**
