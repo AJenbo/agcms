@@ -250,6 +250,10 @@ class InvoicePdfService
      */
     private function getShippingAddress(array $countries): string
     {
+        if (!$this->invoice->hasShippingAddress()) {
+            return '';
+        }
+
         $address = $this->invoice->getShippingName();
         if ($this->invoice->getShippingAttn()) {
             $address .= "\n" . _('Attn.:') . ' ' . $this->invoice->getShippingAttn();
