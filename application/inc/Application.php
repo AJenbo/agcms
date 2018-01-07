@@ -38,17 +38,17 @@ class Application
      */
     public function __construct(string $basePath)
     {
-        $this->ravenClient = new Raven_Client(Config::get('sentry'));
+        $this->ravenClient = new Raven_Client(config('sentry'));
         $this->ravenClient->install();
 
-        date_default_timezone_set(Config::get('timezone', 'Europe/Copenhagen'));
+        date_default_timezone_set(config('timezone', 'Europe/Copenhagen'));
 
-        if ('develop' === Config::get('enviroment', 'develop')) {
+        if ('develop' === config('enviroment', 'develop')) {
             ini_set('display_errors', 1);
             error_reporting(-1);
         }
 
-        setlocale(LC_ALL, Config::get('locale', 'C'));
+        setlocale(LC_ALL, config('locale', 'C'));
         setlocale(LC_NUMERIC, 'C');
 
         bindtextdomain('agcms', $basePath . '/theme/locale');
@@ -158,7 +158,7 @@ class Application
     private function handleException(Request $request, Throwable $exception): Response
     {
         if ($this->shouldLog($exception)) {
-            if ('develop' === Config::get('enviroment')) {
+            if ('develop' === config('enviroment')) {
                 http_response_code(Response::HTTP_INTERNAL_SERVER_ERROR);
                 throw $exception;
             }

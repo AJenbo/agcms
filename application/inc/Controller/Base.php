@@ -66,15 +66,15 @@ class Base extends AbstractController
             'infoPage'       => ORM::getOne(CustomPage::class, 2),
             'crumbs'         => [$category],
             'category'       => $category,
-            'companyName'    => Config::get('site_name'),
-            'companyAddress' => Config::get('address'),
-            'companyZipCode' => Config::get('postcode'),
-            'companyCity'    => Config::get('city'),
-            'companyPhone'   => Config::get('phone'),
-            'companyEmail'   => first(Config::get('emails'))['address'],
+            'companyName'    => config('site_name'),
+            'companyAddress' => config('address'),
+            'companyZipCode' => config('postcode'),
+            'companyCity'    => config('city'),
+            'companyPhone'   => config('phone'),
+            'companyEmail'   => first(config('emails'))['address'],
             'localeconv'     => localeconv(),
-            'blankImage'     => Config::get('blank_image', '/theme/default/images/intet-foto.jpg'),
-            'pageCount'      => Config::get('has_count') ? $this->getActivePageCount() : null,
+            'blankImage'     => config('blank_image', '/theme/default/images/intet-foto.jpg'),
+            'pageCount'      => config('has_count') ? $this->getActivePageCount() : null,
         ];
     }
 

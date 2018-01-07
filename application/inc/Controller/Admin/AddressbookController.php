@@ -44,7 +44,7 @@ class AddressbookController extends AbstractAdminController
     {
         $data = $this->basicPageData($request);
         $data['contact'] = $id ? ORM::getOne(Contact::class, $id) : null;
-        $data['interests'] = Config::get('interests', []);
+        $data['interests'] = config('interests', []);
 
         $content = Render::render('admin/editContact', $data);
 

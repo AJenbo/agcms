@@ -267,7 +267,7 @@ class FileService
             $onclick = 'files[' . $file->getId() . '].addToEditor()';
         } elseif ('thb' === $returnType && in_array($file->getMime(), ['image/gif', 'image/jpeg', 'image/png'], true)) {
             $onclick = 'openImageThumbnail(' . $file->getId() . ')';
-            if ($file->getWidth() <= Config::get('thumb_width') && $file->getHeight() <= Config::get('thumb_height')) {
+            if ($file->getWidth() <= config('thumb_width') && $file->getHeight() <= config('thumb_height')) {
                 $onclick = 'insertThumbnail(' . $file->getId() . ')';
             }
         }

@@ -61,9 +61,9 @@ class EmailService
      */
     public function send(Email $email, array $bcc = []): void
     {
-        $emailConfig = first(Config::get('emails'));
-        if (isset(Config::get('emails')[$email->getSenderAddress()])) {
-            $emailConfig = Config::get('emails')[$email->getSenderAddress()];
+        $emailConfig = first(config('emails'));
+        if (isset(config('emails')[$email->getSenderAddress()])) {
+            $emailConfig = config('emails')[$email->getSenderAddress()];
         }
 
         $mailer = new PHPMailer(true);
@@ -72,7 +72,7 @@ class EmailService
 
         $this->configureSmtp($mailer, $emailConfig);
 
-        $mailer->setFrom($emailConfig['address'], Config::get('site_name'));
+        $mailer->setFrom($emailConfig['address'], config('site_name'));
         if ($email->getSenderAddress() !== $emailConfig['address']) {
             $mailer->addReplyTo($email->getSenderAddress(), $email->getSenderName());
         }

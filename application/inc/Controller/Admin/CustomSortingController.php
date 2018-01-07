@@ -49,7 +49,7 @@ class CustomSortingController extends AbstractAdminController
 
         $data = [
             'customSorting' => $customSorting,
-            'textWidth'     => Config::get('text_width'),
+            'textWidth'     => config('text_width'),
         ] + $this->basicPageData($request);
 
         $content = Render::render('admin/listsort-edit', $data);

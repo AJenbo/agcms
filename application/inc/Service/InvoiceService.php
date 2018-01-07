@@ -263,8 +263,8 @@ class InvoiceService
 
         $invoice->setInternalNote($updates['internalNote']);
 
-        if (!$invoice->getDepartment() && 1 === count(Config::get('emails'))) {
-            $email = first(Config::get('emails'))['address'];
+        if (!$invoice->getDepartment() && 1 === count(config('emails'))) {
+            $email = first(config('emails'))['address'];
             $invoice->setDepartment($email);
         } elseif (!empty($updates['department'])) {
             $invoice->setDepartment($updates['department']);
@@ -353,9 +353,9 @@ class InvoiceService
      */
     private function getPayment(Invoice $invoice): Epayment
     {
-        $epaymentService = new EpaymentAdminService(Config::get('pbsid'), Config::get('pbspwd'));
+        $epaymentService = new EpaymentAdminService(config('pbsid'), config('pbspwd'));
 
-        return $epaymentService->getPayment(Config::get('pbsfix') . $invoice->getId());
+        return $epaymentService->getPayment(config('pbsfix') . $invoice->getId());
     }
 
     /**
@@ -373,8 +373,8 @@ class InvoiceService
             throw new InvalidInput(_('Email is not valid.'));
         }
 
-        if (!$invoice->getDepartment() && 1 === count(Config::get('emails'))) {
-            $email = first(Config::get('emails'))['address'];
+        if (!$invoice->getDepartment() && 1 === count(config('emails'))) {
+            $email = first(config('emails'))['address'];
             $invoice->setDepartment($email);
         } elseif (!$invoice->getDepartment()) {
             throw new InvalidInput(_('You have not selected a sender.'));
@@ -383,7 +383,7 @@ class InvoiceService
             throw new InvalidInput(_('The invoice must be of at least 1 cent.'));
         }
 
-        $subject = _('Online payment for ') . Config::get('site_name');
+        $subject = _('Online payment for ') . config('site_name');
         $emailTemplate = 'email/invoice';
         if ($invoice->isSent()) {
             $subject = 'Elektronisk faktura vedr. ordre';
@@ -394,18 +394,18 @@ class InvoiceService
             $emailTemplate,
             [
                 'invoice'  => $invoice,
-                'siteName' => Config::get('site_name'),
-                'address'  => Config::get('address'),
-                'postcode' => Config::get('postcode'),
-                'city'     => Config::get('city'),
-                'phone'    => Config::get('phone'),
+                'siteName' => config('site_name'),
+                'address'  => config('address'),
+                'postcode' => config('postcode'),
+                'city'     => config('city'),
+                'phone'    => config('phone'),
             ]
         );
 
         $email = new Email([
             'subject'          => $subject,
             'body'             => $emailBody,
-            'senderName'       => Config::get('site_name'),
+            'senderName'       => config('site_name'),
             'senderAddress'    => $invoice->getDepartment(),
             'recipientName'    => $invoice->getName(),
             'recipientAddress' => $invoice->getEmail(),

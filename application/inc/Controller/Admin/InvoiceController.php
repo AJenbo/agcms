@@ -116,7 +116,7 @@ class InvoiceController extends AbstractAdminController
             'currentUser'   => $user,
             'selected'      => $selected,
             'countries'     => include app()->basePath('/inc/countries.php'),
-            'departments'   => array_keys(Config::get('emails', [])),
+            'departments'   => array_keys(config('emails', [])),
             'users'         => ORM::getByQuery(User::class, 'SELECT * FROM `users` ORDER BY `fullname`'),
             'invoices'      => $invoices,
             'years'         => range($oldest, date('Y')),
@@ -391,7 +391,7 @@ class InvoiceController extends AbstractAdminController
             'invoice'     => $invoice,
             'currentUser' => $user,
             'users'       => ORM::getByQuery(User::class, 'SELECT * FROM `users` ORDER BY fullname'),
-            'departments' => array_keys(Config::get('emails', [])),
+            'departments' => array_keys(config('emails', [])),
             'countries'   => include app()->basePath('/inc/countries.php'),
         ] + $this->basicPageData($request);
 

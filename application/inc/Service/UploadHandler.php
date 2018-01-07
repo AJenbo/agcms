@@ -99,7 +99,7 @@ class UploadHandler
         if ($this->isImageFile()) {
             $image = new ImageService($this->file->getRealPath());
             $image->setAutoCrop(true);
-            $image->setScale(Config::get('text_width'));
+            $image->setScale(config('text_width'));
 
             if ($this->shouldProcessImage($image, $image->getWidth(), $image->getHeight(), $destinationType)) {
                 $this->processImage($image, $destinationType);

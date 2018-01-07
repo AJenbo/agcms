@@ -34,7 +34,7 @@ Config::load(__DIR__);
 
 $app = new Application(__DIR__);
 $app->addMiddleware('/', Utf8Url::class);
-if ('develop' === Config::get('enviroment')) {
+if ('develop' === config('enviroment')) {
     $app->addMiddleware('/images/', Placekitten::class);
     $app->addMiddleware('/files/', Placekitten::class);
 }

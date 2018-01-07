@@ -56,7 +56,7 @@ class Feed extends Base
             }
         }
         $data = [
-            'base_url'     => Config::get('base_url'),
+            'base_url'     => config('base_url'),
             'categories'   => $activeCategories,
             'pages'        => $pages,
             'brands'       => $brands,
@@ -114,7 +114,7 @@ class Feed extends Base
 
             $decription = '';
             if ($page->getIcon()) {
-                $imgUrl = Config::get('base_url') . encodeUrl($page->getIcon()->getPath());
+                $imgUrl = config('base_url') . encodeUrl($page->getIcon()->getPath());
                 $decription .= '<img style="float:left;margin:0 10px 5px 0" src="'
                     . htmlspecialchars($imgUrl, ENT_COMPAT | ENT_XHTML) . '" ><p>';
             }
@@ -135,8 +135,8 @@ class Feed extends Base
             $categories = array_unique($categories);
 
             $items[] = [
-                'title'       => trim($page->getTitle()) ?: Config::get('site_name'),
-                'link'        => Config::get('base_url') . encodeUrl($page->getCanonicalLink()),
+                'title'       => trim($page->getTitle()) ?: config('site_name'),
+                'link'        => config('base_url') . encodeUrl($page->getCanonicalLink()),
                 'description' => $decription,
                 'pubDate'     => gmdate('D, d M Y H:i:s', $page->getTimeStamp()) . ' GMT',
                 'categories'  => $categories,
@@ -144,12 +144,12 @@ class Feed extends Base
         }
 
         $data = [
-            'url'           => Config::get('base_url') . '/feed/rss/',
-            'title'         => Config::get('site_name'),
-            'siteUrl'       => Config::get('base_url') . '/',
+            'url'           => config('base_url') . '/feed/rss/',
+            'title'         => config('site_name'),
+            'siteUrl'       => config('base_url') . '/',
             'lastBuildDate' => gmdate('D, d M Y H:i:s', $timestamp) . ' GMT',
-            'email'         => first(Config::get('emails'))['address'],
-            'siteName'      => Config::get('site_name'),
+            'email'         => first(config('emails'))['address'],
+            'siteName'      => config('site_name'),
             'items'         => $items,
         ];
         $content = Render::render('rss', $data);
@@ -169,9 +169,9 @@ class Feed extends Base
         Render::sendCacheHeader($request, Render::getUpdateTime(false));
 
         $data = [
-            'shortName'   => Config::get('site_name'),
-            'description' => sprintf(_('Find in %s'), Config::get('site_name')),
-            'url'         => Config::get('base_url') . '/search/results/?q={searchTerms}&sogikke=&minpris=&maxpris=&maerke=0',
+            'shortName'   => config('site_name'),
+            'description' => sprintf(_('Find in %s'), config('site_name')),
+            'url'         => config('base_url') . '/search/results/?q={searchTerms}&sogikke=&minpris=&maxpris=&maerke=0',
         ];
         $content = Render::render('opensearch', $data);
 

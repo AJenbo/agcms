@@ -263,11 +263,11 @@ class Newsletter extends AbstractEntity implements InterfaceRichText
         }
 
         $data = [
-            'siteName' => Config::get('site_name'),
+            'siteName' => config('site_name'),
             'css'      => file_get_contents(
-                app()->basePath('/theme/' . Config::get('theme', 'default') . '/style/email.css')
+                app()->basePath('/theme/' . config('theme', 'default') . '/style/email.css')
             ),
-            'body'     => str_replace(' href="/', ' href="' . Config::get('base_url') . '/', $this->html),
+            'body'     => str_replace(' href="/', ' href="' . config('base_url') . '/', $this->html),
         ];
         $emailService = new EmailService();
         $failedCount = 0;
@@ -275,9 +275,9 @@ class Newsletter extends AbstractEntity implements InterfaceRichText
             $email = new Email([
                 'subject'          => $this->subject,
                 'body'             => Render::render('email/newsletter', $data),
-                'senderName'       => Config::get('site_name'),
+                'senderName'       => config('site_name'),
                 'senderAddress'    => $this->from,
-                'recipientName'    => Config::get('site_name'),
+                'recipientName'    => config('site_name'),
                 'recipientAddress' => $this->from,
             ]);
 

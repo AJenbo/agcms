@@ -18,10 +18,10 @@ function db(DB $overwrite = null): DB
         $connection = $overwrite;
     } elseif (!$connection) {
         $connection = new DB(
-            Config::get('mysql_server'),
-            Config::get('mysql_user'),
-            Config::get('mysql_password'),
-            Config::get('mysql_database')
+            config('mysql_server'),
+            config('mysql_user'),
+            config('mysql_password'),
+            config('mysql_database')
         );
     }
 
@@ -36,6 +36,19 @@ function db(DB $overwrite = null): DB
 function app(): Application
 {
     return Application::getInstance();
+}
+
+/**
+ * Helper function for getting configurations.
+ *
+ * @param string $key     The name of the configuration to fetch
+ * @param mixed  $default What to return if key does not exists
+ *
+ * @return mixed
+ */
+function config(string $key, $default = null): Application
+{
+    return config($key, $default);
 }
 
 /**

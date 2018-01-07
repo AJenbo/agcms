@@ -59,15 +59,15 @@ class PageController extends AbstractAdminController
         $siteTreeService = new SiteTreeService();
 
         $data = [
-            'textWidth'    => Config::get('text_width'),
-            'thumbWidth'   => Config::get('thumb_width'),
+            'textWidth'    => config('text_width'),
+            'thumbWidth'   => config('thumb_width'),
             'siteTree'     => $siteTreeService->getSiteTreeData($openCategories, 'categories', $selectedId),
             'requirements' => ORM::getByQuery(Requirement::class, 'SELECT * FROM `krav` ORDER BY navn'),
             'brands'       => ORM::getByQuery(Brand::class, 'SELECT * FROM `maerke` ORDER BY navn'),
             'page'         => $page,
             'bindings'     => $bindings,
             'accessories'  => $accessories,
-            'blank_image'  => Config::get('blank_image', '/theme/default/images/intet-foto.jpg'),
+            'blank_image'  => config('blank_image', '/theme/default/images/intet-foto.jpg'),
         ] + $this->basicPageData($request);
 
         $content = Render::render('admin/redigerside', $data);

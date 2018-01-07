@@ -104,13 +104,13 @@ class UserController extends AbstractAdminController
 
             $emailbody = Render::render('admin/email/newuser', ['fullname' => $fullname]);
 
-            $emailAddress = first(Config::get('emails'))['address'];
+            $emailAddress = first(config('emails'))['address'];
             $email = new Email([
                 'subject'          => _('New user'),
                 'body'             => $emailbody,
-                'senderName'       => Config::get('site_name'),
+                'senderName'       => config('site_name'),
                 'senderAddress'    => $emailAddress,
-                'recipientName'    => Config::get('site_name'),
+                'recipientName'    => config('site_name'),
                 'recipientAddress' => $emailAddress,
             ]);
             $emailService = new EmailService();

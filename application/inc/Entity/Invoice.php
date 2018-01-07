@@ -1175,7 +1175,7 @@ class Invoice extends AbstractEntity
             $this->save();
         }
 
-        return Config::get('base_url') . '/admin/invoices/' . $this->id . '/';
+        return config('base_url') . '/admin/invoices/' . $this->id . '/';
     }
 
     /**
@@ -1189,7 +1189,7 @@ class Invoice extends AbstractEntity
             $this->save();
         }
 
-        return Config::get('base_url') . '/betaling/' . $this->getId() . '/' . $this->getCheckId() . '/';
+        return config('base_url') . '/betaling/' . $this->getId() . '/' . $this->getCheckId() . '/';
     }
 
     /**
@@ -1234,7 +1234,7 @@ class Invoice extends AbstractEntity
             return '';
         }
 
-        return mb_substr(md5($this->id . Config::get('pbssalt')), 3, 5);
+        return mb_substr(md5($this->id . config('pbssalt')), 3, 5);
     }
 
     /**

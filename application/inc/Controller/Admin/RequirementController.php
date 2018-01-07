@@ -64,7 +64,7 @@ class RequirementController extends AbstractAdminController
     public function editPage(Request $request, int $id = null): Response
     {
         $data = $this->basicPageData($request);
-        $data['textWidth'] = Config::get('text_width');
+        $data['textWidth'] = config('text_width');
         $data['requirement'] = $id ? ORM::getOne(Requirement::class, $id) : null;
 
         $content = Render::render('admin/editkrav', $data);

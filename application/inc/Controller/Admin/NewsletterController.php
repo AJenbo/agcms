@@ -50,9 +50,9 @@ class NewsletterController extends AbstractAdminController
         $data = [
             'newsletter'     => $newsletter,
             'recipientCount' => $newsletter ? $newsletter->countRecipients() : 0,
-            'interests'      => Config::get('interests', []),
-            'textWidth'      => Config::get('text_width'),
-            'emails'         => array_keys(Config::get('emails')),
+            'interests'      => config('interests', []),
+            'textWidth'      => config('text_width'),
+            'emails'         => array_keys(config('emails')),
         ] + $this->basicPageData($request);
 
         $content = Render::render('admin/viewemail', $data);

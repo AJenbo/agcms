@@ -27,7 +27,7 @@ class CustomPageController extends AbstractAdminController
     {
         $data = $this->basicPageData($request);
         $data['page'] = ORM::getOne(CustomPage::class, $id);
-        $data['pageWidth'] = Config::get('text_width');
+        $data['pageWidth'] = config('text_width');
         if (1 === $id) {
             /** @var ?Category */
             $category = ORM::getOne(Category::class, 0);
@@ -36,8 +36,8 @@ class CustomPageController extends AbstractAdminController
             }
 
             $data['category'] = $category;
-            $data['textWidth'] = Config::get('text_width');
-            $data['pageWidth'] = Config::get('frontpage_width');
+            $data['textWidth'] = config('text_width');
+            $data['pageWidth'] = config('frontpage_width');
             $data['categories'] = $category->getChildren();
         }
 

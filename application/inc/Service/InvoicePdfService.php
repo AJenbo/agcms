@@ -59,7 +59,7 @@ class InvoicePdfService
     {
         // set document information
         $this->pdf->SetCreator(PDF_CREATOR);
-        $this->pdf->SetAuthor(Config::get('site_name'));
+        $this->pdf->SetAuthor(config('site_name'));
         $this->pdf->SetTitle('Online faktura #' . $this->invoice->getId());
 
         // remove default header/footer
@@ -148,7 +148,7 @@ class InvoicePdfService
     private function insertPageTitle(): void
     {
         $this->pdf->SetFont('times', 'B', 37.5);
-        $this->pdf->Write(0, Config::get('site_name'));
+        $this->pdf->Write(0, config('site_name'));
     }
 
     /**
@@ -160,16 +160,16 @@ class InvoicePdfService
     {
         $this->pdf->SetY(12);
         $this->pdf->SetFont('times', '', 10);
-        $addressLine = Config::get('address') . "\n" . Config::get('postcode') . ' ' . Config::get('city') . "\n";
+        $addressLine = config('address') . "\n" . config('postcode') . ' ' . config('city') . "\n";
         $this->pdf->Write(0, $addressLine, '', 0, 'R');
         $this->pdf->SetFont('times', 'B', 11);
-        $this->pdf->Write(0, _('Phone:') . ' ' . Config::get('phone') . "\n", '', 0, 'R');
+        $this->pdf->Write(0, _('Phone:') . ' ' . config('phone') . "\n", '', 0, 'R');
         $this->pdf->SetFont('times', '', 10);
 
         if (!$this->invoice->getDepartment()) {
-            $this->invoice->setDepartment(first(Config::get('emails'))['address']);
+            $this->invoice->setDepartment(first(config('emails'))['address']);
         }
-        $domain = explode('/', Config::get('base_url'));
+        $domain = explode('/', config('base_url'));
         $domain = $domain[count($domain) - 1];
         $this->pdf->Write(0, $this->invoice->getDepartment() . "\n" . $domain . "\n\n", '', 0, 'R');
         $this->pdf->SetFont('times', '', 11);
@@ -398,7 +398,7 @@ class InvoicePdfService
         $this->pdf->SetMargins(137, 0, 0);
         $this->pdf->Write(0, "\n");
         $this->pdf->SetY(-52);
-        $this->pdf->Write(0, _('Sincerely,') . "\n\n\n" . $this->invoice->getClerk() . "\n" . Config::get('site_name'));
+        $this->pdf->Write(0, _('Sincerely,') . "\n\n\n" . $this->invoice->getClerk() . "\n" . config('site_name'));
     }
 
     /**

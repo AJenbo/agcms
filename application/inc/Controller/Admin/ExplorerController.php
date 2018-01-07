@@ -47,7 +47,7 @@ class ExplorerController extends AbstractAdminController
         $data = [
             'returnType' => $request->get('return', ''),
             'returnid'   => $request->get('returnid', ''),
-            'bgcolor'    => Config::get('bgcolor'),
+            'bgcolor'    => config('bgcolor'),
             'dirs'       => $this->fileService->getRootDirs($currentDir),
         ];
 
@@ -642,9 +642,9 @@ class ExplorerController extends AbstractAdminController
         }
 
         $data = [
-            'textWidth'   => Config::get('text_width'),
-            'thumbWidth'  => Config::get('thumb_width'),
-            'thumbHeight' => Config::get('thumb_height'),
+            'textWidth'   => config('text_width'),
+            'thumbWidth'  => config('thumb_width'),
+            'thumbHeight' => config('thumb_height'),
             'mode'        => $mode,
             'fileName'    => $fileName,
             'file'        => $file,

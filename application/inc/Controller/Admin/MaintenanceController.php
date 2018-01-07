@@ -422,7 +422,7 @@ class MaintenanceController extends AbstractAdminController
     {
         $size = 0;
 
-        foreach (Config::get('emails', []) as $email) {
+        foreach (config('emails', []) as $email) {
             $imap = new Imap(
                 $email['address'],
                 $email['password'],

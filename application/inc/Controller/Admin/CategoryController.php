@@ -39,8 +39,8 @@ class CategoryController extends AbstractAdminController
         $siteTreeService = new SiteTreeService();
 
         $data = [
-            'textWidth'    => Config::get('text_width'),
-            'emails'       => array_keys(Config::get('emails')),
+            'textWidth'    => config('text_width'),
+            'emails'       => array_keys(config('emails')),
             'siteTree'     => $siteTreeService->getSiteTreeData($openCategories, 'categories', $selectedId),
             'includePages' => false,
             'category'     => $category,

@@ -18,7 +18,7 @@ abstract class AbstractAdminController extends AbstractController
     {
         return [
             'title' => 'Administrator menu',
-            'theme' => Config::get('theme', 'default'),
+            'theme' => config('theme', 'default'),
             'hide'  => [
                 'activity'    => $request->cookies->get('hideActivity'),
                 'binding'     => $request->cookies->get('hidebinding'),

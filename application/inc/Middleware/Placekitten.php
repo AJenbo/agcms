@@ -20,8 +20,8 @@ class Placekitten implements Middleware
      */
     public function handle(Request $request, Closure $next): Response
     {
-        $width = Config::get('thumb_width');
-        $height = Config::get('thumb_height');
+        $width = config('thumb_width');
+        $height = config('thumb_height');
 
         $requestUrl = urldecode($request->getRequestUri());
         $file = File::getByPath($requestUrl);

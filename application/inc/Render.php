@@ -135,23 +135,23 @@ class Render
     {
         $templatePath = app()->basePath('/theme');
         $loader = new Twig_Loader_Filesystem('default/', $templatePath);
-        $langPath = 'default/' . Config::get('locale', 'C') . '/';
+        $langPath = 'default/' . config('locale', 'C') . '/';
         if (file_exists($templatePath . '/' . $langPath)) {
             $loader->prependPath($langPath);
         }
-        if (Config::get('theme')) {
-            $loader->prependPath(Config::get('theme') . '/');
-            $langPath = Config::get('theme') . '/' . Config::get('locale', 'C') . '/';
+        if (config('theme')) {
+            $loader->prependPath(config('theme') . '/');
+            $langPath = config('theme') . '/' . config('locale', 'C') . '/';
             if (file_exists($templatePath . '/' . $langPath)) {
                 $loader->prependPath($langPath);
             }
         }
 
         $twig = new Twig_Environment($loader);
-        if ('production' === Config::get('enviroment', 'develop')) {
+        if ('production' === config('enviroment', 'develop')) {
             $twig->setCache(app()->basePath('/theme/cache/twig'));
         }
-        if ('develop' === Config::get('enviroment', 'develop')) {
+        if ('develop' === config('enviroment', 'develop')) {
             $twig->enableDebug();
         }
         $twig->addExtension(new Twig_Extensions_Extension_I18n());

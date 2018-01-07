@@ -204,9 +204,9 @@ class Payment extends Base
         $data['renderable'] = $renderable;
 
         $inputs = [
-            'group'          => Config::get('pbsfix'),
-            'merchantnumber' => Config::get('pbsid'),
-            'orderid'        => Config::get('pbsfix') . $invoice->getId(),
+            'group'          => config('pbsfix'),
+            'merchantnumber' => config('pbsid'),
+            'orderid'        => config('pbsfix') . $invoice->getId(),
             'currency'       => 208,
             'amount'         => number_format($invoice->getAmount(), 2, '', ''),
             'ownreceipt'     => 1,
@@ -214,9 +214,9 @@ class Payment extends Base
             'cancelurl'      => $invoice->getLink() . 'terms/',
             'callbackurl'    => $invoice->getLink() . 'callback/',
             'windowstate'    => 3,
-            'windowid'       => Config::get('pbswindow'),
+            'windowid'       => config('pbswindow'),
         ];
-        $inputs['hash'] = md5(implode('', $inputs) . Config::get('pbspassword'));
+        $inputs['hash'] = md5(implode('', $inputs) . config('pbspassword'));
         $data['inputs'] = $inputs;
         $data['html'] = $this->getTermsHtml();
 
@@ -356,7 +356,7 @@ class Payment extends Base
         $params = $request->query->all();
         unset($params['hash']);
 
-        $eKey = md5(implode('', $params) . Config::get('pbspassword'));
+        $eKey = md5(implode('', $params) . config('pbspassword'));
 
         return $eKey === $request->get('hash');
     }
@@ -380,7 +380,7 @@ class Payment extends Base
 
         $emailService = new EmailService();
         if (!$emailService->valideMail($invoice->getDepartment())) {
-            $invoice->setDepartment(first(Config::get('emails'))['address']);
+            $invoice->setDepartment(first(config('emails'))['address']);
         }
 
         $invoice->setCardtype($cardType)
@@ -404,16 +404,16 @@ class Payment extends Base
     {
         $data = [
             'invoice'  => $invoice,
-            'siteName' => Config::get('site_name'),
-            'address'  => Config::get('address'),
-            'postcode' => Config::get('postcode'),
-            'city'     => Config::get('city'),
-            'phone'    => Config::get('phone'),
+            'siteName' => config('site_name'),
+            'address'  => config('address'),
+            'postcode' => config('postcode'),
+            'city'     => config('city'),
+            'phone'    => config('phone'),
         ];
         $email = new Email([
             'subject'          => sprintf(_('Order #%d - payment completed'), $invoice->getId()),
             'body'             => Render::render('email/payment-confirmation', $data),
-            'senderName'       => Config::get('site_name'),
+            'senderName'       => config('site_name'),
             'senderAddress'    => $invoice->getDepartment(),
             'recipientName'    => $invoice->getName(),
             'recipientAddress' => $invoice->getEmail(),
@@ -444,9 +444,9 @@ class Payment extends Base
         $email = new Email([
             'subject'          => $subject,
             'body'             => Render::render('admin/email/payment-confirmation', ['invoice' => $invoice]),
-            'senderName'       => Config::get('site_name'),
+            'senderName'       => config('site_name'),
             'senderAddress'    => $invoice->getDepartment(),
-            'recipientName'    => Config::get('site_name'),
+            'recipientName'    => config('site_name'),
             'recipientAddress' => $invoice->getDepartment(),
         ]);
         $emailService = new EmailService();

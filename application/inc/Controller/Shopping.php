@@ -135,8 +135,8 @@ class Shopping extends Base
             'body'             => $emailBody,
             'senderName'       => $invoice->getName(),
             'senderAddress'    => $invoice->getEmail(),
-            'recipientName'    => Config::get('site_name'),
-            'recipientAddress' => first(Config::get('emails'))['address'],
+            'recipientName'    => config('site_name'),
+            'recipientAddress' => first(config('emails'))['address'],
         ]);
         $emailService = new EmailService();
         try {
