@@ -25,7 +25,7 @@ class InvoiceController extends AbstractAdminController
     {
         $selected = [
             'id'         => (int) $request->get('id') ?: null,
-            'year'       => $request->query->getInt('y', date('Y')),
+            'year'       => $request->query->getInt('y'),
             'month'      => $request->query->getInt('m'),
             'department' => $request->get('department'),
             'status'     => $request->get('status', 'activ'),

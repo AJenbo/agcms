@@ -31,6 +31,7 @@
             <td>
                 <input name="id" value="{{selected.id}}" size="4" /></td><td>
                 <select name="y">
+                    <option value=""{% if not selected.year %} selected="selected"{% endif %}>{{'All'|trans}}</option>
                     {% for year in years %}
                     <option value="{{year}}"{% if selected.year == year %} selected="selected"{% endif %}>
                         {{year}}
