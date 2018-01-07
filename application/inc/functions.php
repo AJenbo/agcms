@@ -46,9 +46,9 @@ function app(): Application
  *
  * @return mixed
  */
-function config(string $key, $default = null): Application
+function config(string $key, $default = null)
 {
-    return config($key, $default);
+    return Config::get($key, $default);
 }
 
 /**
