@@ -8,18 +8,24 @@ class Table extends AbstractEntity
 {
     /** Table name in database. */
     const TABLE_NAME = 'lists';
+
     /** Cell string */
     const COLUMN_TYPE_STRING = 0;
+
     /** Cell integer */
     const COLUMN_TYPE_INT = 1;
+
     /** Cell price */
     const COLUMN_TYPE_PRICE = 2;
+
     /** Cell sales price */
     const COLUMN_TYPE_PRICE_NEW = 3;
+
     /** Cell previous price */
     const COLUMN_TYPE_PRICE_OLD = 4;
 
     // Backed by DB
+
     /** @var int Parent page id. */
     private $pageId;
 
@@ -36,6 +42,7 @@ class Table extends AbstractEntity
     private $hasPrices = false;
 
     // Runtime
+
     /** @var array[] Decoded column data. */
     private $columns = [];
 

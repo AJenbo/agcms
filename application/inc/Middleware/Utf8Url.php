@@ -20,7 +20,7 @@ class Utf8Url implements Middleware
     {
         $requestUrl = urldecode($request->getRequestUri());
 
-        $encoding = mb_detect_encoding($requestUrl, 'UTF-8, ISO-8859-1');
+        $encoding = mb_detect_encoding($requestUrl, 'UTF-8, ISO-8859-1', true);
         if ('UTF-8' === $encoding) {
             return $next($request);
         }

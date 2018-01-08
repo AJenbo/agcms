@@ -11,6 +11,7 @@ class Render
 {
     /** @var bool[] */
     private static $loadedTables = [];
+
     /** @var string[] */
     private static $adminOnlyTables = [
         'email',

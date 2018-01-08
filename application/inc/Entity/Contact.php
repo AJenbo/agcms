@@ -8,28 +8,40 @@ class Contact extends AbstractEntity
     const TABLE_NAME = 'email';
 
     // Backed by DB
+
     /** @var string Name */
     private $name = '';
+
     /** @var string Email */
     private $email = '';
+
     /** @var string Address */
     private $address = '';
+
     /** @var string Country */
     private $country = '';
+
     /** @var string Postcode */
     private $postcode = '';
+
     /** @var string City */
     private $city = '';
+
     /** @var string Phone number */
     private $phone1 = '';
+
     /** @var string Mobile phone number */
     private $phone2 = '';
+
     /** @var bool Is the user subscribed to the newsletter. */
     private $subscribed = false;
+
     /** @var string[] List of newsletter topics that the user is signed up for. */
     private $interests = [];
+
     /** @var int */
     private $timestamp;
+
     /** @var string Client IP at moment of signup */
     private $ip = '';
 

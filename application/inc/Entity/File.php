@@ -12,6 +12,7 @@ class File extends AbstractEntity
     const TABLE_NAME = 'files';
 
     // Backed by DB
+
     /** @var string File path. */
     private $path;
 

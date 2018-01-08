@@ -123,6 +123,7 @@ class Application
     public function run(Request $request): void
     {
         Render::sendCacheHeader($request);
+
         try {
             $response = $this->dispatch($request);
         } catch (Throwable $exception) {
@@ -160,6 +161,7 @@ class Application
         if ($this->shouldLog($exception)) {
             if ('develop' === config('enviroment')) {
                 http_response_code(Response::HTTP_INTERNAL_SERVER_ERROR);
+
                 throw $exception;
             }
 

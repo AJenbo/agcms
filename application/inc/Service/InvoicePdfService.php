@@ -7,13 +7,18 @@ use TCPDF;
 class InvoicePdfService
 {
     const CELL_WIDTH_QUANTITY = 24;
+
     const CELL_WIDTH_TITLE = 106;
+
     const CELL_WIDTH_PRICE = 29;
+
     const CELL_WIDTH_TOTAL = 34;
+
     const MAX_PRODCUTS = 20;
 
     /** @var TCPDF */
     private $pdf;
+
     /** @var Invoice */
     private $invoice;
 
