@@ -2,7 +2,7 @@
 
 use PHPUnit\Framework\TestCase;
 
-class functionsTest extends TestCase
+class FunctionsTest extends TestCase
 {
     /**
      * @covers \encodeUrl
