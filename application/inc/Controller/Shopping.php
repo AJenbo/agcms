@@ -134,6 +134,7 @@ class Shopping extends Base
             'recipientAddress' => first(config('emails'))['address'],
         ]);
         $emailService = new EmailService();
+
         try {
             $emailService->send($email);
         } catch (Throwable $exception) {

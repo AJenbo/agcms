@@ -6,22 +6,31 @@ class ImageService
 {
     /** @var Image */
     private $image;
+
     /** @var int */
     private $cropX = 0;
+
     /** @var int */
     private $cropY = 0;
+
     /** @var int */
     private $cropW;
+
     /** @var int */
     private $cropH;
+
     /** @var bool */
     private $autoCrop = false;
+
     /** @var int */
     private $maxW;
+
     /** @var int */
     private $maxH;
+
     /** @var int */
     private $flip = 0;
+
     /** @var int */
     private $rotate = 0;
 

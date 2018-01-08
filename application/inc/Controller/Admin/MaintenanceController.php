@@ -251,7 +251,7 @@ class MaintenanceController extends AbstractAdminController
             if (!is_file(app()->basePath($file->getPath()))) {
                 if (!$file->isInUse()) {
                     $file->delete();
-                    ++$deleted;
+                    $deleted++;
                     continue;
                 }
 
@@ -374,7 +374,7 @@ class MaintenanceController extends AbstractAdminController
             foreach ($emails as $email) {
                 $emailService->send($email);
                 $email->delete();
-                ++$emailsSendt;
+                $emailsSendt++;
             }
 
             $cronStatus->save();

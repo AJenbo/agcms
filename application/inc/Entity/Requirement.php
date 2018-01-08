@@ -6,6 +6,7 @@ class Requirement extends AbstractRenderable implements InterfaceRichText
     const TABLE_NAME = 'krav';
 
     // Backed by DB
+
     /** @var string The body HTML. */
     private $html = '';
 
