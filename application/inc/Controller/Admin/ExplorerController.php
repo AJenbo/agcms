@@ -332,7 +332,7 @@ class ExplorerController extends AbstractAdminController
 
         if ('image' === $type) {
             $pathinfo['extension'] = 'jpg';
-        } elseif ('lineimage' == $type) {
+        } elseif ('lineimage' === $type) {
             $pathinfo['extension'] = 'png';
         }
         $path = $pathinfo['dirname'] . '/' . $this->fileService->cleanFileName($pathinfo['filename']);

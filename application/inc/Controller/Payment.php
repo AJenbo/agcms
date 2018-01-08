@@ -408,6 +408,7 @@ class Payment extends Base
             'recipientAddress' => $invoice->getEmail(),
         ]);
         $emailService = new EmailService();
+
         try {
             $emailService->send($email);
         } catch (Throwable $exception) {
@@ -439,6 +440,7 @@ class Payment extends Base
             'recipientAddress' => $invoice->getDepartment(),
         ]);
         $emailService = new EmailService();
+
         try {
             $emailService->send($email);
         } catch (Throwable $exception) {

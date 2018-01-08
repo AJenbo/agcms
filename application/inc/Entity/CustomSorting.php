@@ -6,8 +6,10 @@ class CustomSorting extends AbstractEntity
     const TABLE_NAME = 'tablesort';
 
     // Backed by DB
+
     /** @var string Title */
     private $title = '';
+
     /** @var string[] Ordered list of values. */
     private $items = [];
 

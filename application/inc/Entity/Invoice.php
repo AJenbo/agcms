@@ -8,81 +8,120 @@ class Invoice extends AbstractEntity
     const TABLE_NAME = 'fakturas';
 
     // Backed by DB
+
     /** @var int createTime */
     private $timeStamp = 0;
+
     /** @var ?int Finalized time */
     private $timeStampPay;
+
     /** @var float Full amount */
     private $amount = 0.00;
+
     /** @var string Billing name */
     private $name = '';
+
     /** @var string Billing attention */
     private $attn = '';
+
     /** @var string Billing address */
     private $address = '';
+
     /** @var string Billing postbox */
     private $postbox = '';
+
     /** @var string Billing zipcode */
     private $postcode = '';
+
     /** @var string Billing city */
     private $city = '';
+
     /** @var string Billing country */
     private $country = '';
+
     /** @var string Billing email */
     private $email = '';
+
     /** @var string Billing phone number */
     private $phone1 = '';
+
     /** @var string Billing mobile number */
     private $phone2 = '';
+
     /** @var bool Is the shipping address different from the billing address */
     private $hasShippingAddress = false;
+
     /** @var string Shipping phone number */
     private $shippingPhone = '';
+
     /** @var string Shipping name */
     private $shippingName = '';
+
     /** @var string Shipping attention */
     private $shippingAttn = '';
+
     /** @var string Shipping first address line */
     private $shippingAddress = '';
+
     /** @var string Shipping secound address line */
     private $shippingAddress2 = '';
+
     /** @var string Shipping postbox */
     private $shippingPostbox = '';
+
     /** @var string Shipping zipcode */
     private $shippingPostcode = '';
+
     /** @var string Shipping city */
     private $shippingCity = '';
+
     /** @var string Shipping country */
     private $shippingCountry = '';
+
     /** @var string Client visable note */
     private $note = '';
+
     /** @var string Name of responsible cleark */
     private $clerk = '';
+
     /** @var string Order status */
     private $status = '';
+
     /** @var float Shipping price */
     private $shipping = 0.00;
+
     /** @var float Tax percentage */
     private $vat = 0.25;
+
     /** @var bool Has product prices been entered with vat added */
     private $preVat = true;
+
     /** @var bool Has the money been transfered */
     private $transferred = false;
+
     /** @var string Name of used electronic payment method */
     private $cardtype = '';
+
     /** @var string Internal reference */
     private $iref = '';
+
     /** @var string External reference */
     private $eref = '';
+
     /** @var bool Has the invoice been sent to the customer */
     private $sent = false;
+
     /** @var string Email of responsible department */
     private $department = '';
+
     /** @var string Internal note */
     private $internalNote = '';
+
     /** @var int Payment id */
     private $paymentId;
+
     // Dynamic
+
     /** @var array[] */
     private $items = [];
 

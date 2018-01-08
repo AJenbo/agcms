@@ -6,6 +6,7 @@ class CustomPage extends AbstractEntity implements InterfaceRichText
     const TABLE_NAME = 'special';
 
     // Backed by DB
+
     /** @var string The title. */
     private $title = '';
 
