@@ -63,7 +63,7 @@ class FunctionsTest extends TestCase
             ['a' => '10'],
         ];
 
-        $this->assertSame($expected, arrayNatsort($list, 'a', 'a'));
+        $this->assertSame($expected, arrayNatsort($list, 'a'));
     }
 
     /**
@@ -85,7 +85,7 @@ class FunctionsTest extends TestCase
             ['a' => '1'],
         ];
 
-        $this->assertSame($expected, arrayNatsort($list, 'a', 'a', 'desc'));
+        $this->assertSame($expected, arrayNatsort($list, 'a', 'desc'));
     }
 
     /**

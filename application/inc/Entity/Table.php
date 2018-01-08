@@ -353,35 +353,30 @@ class Table extends AbstractEntity
         $orderBy = min($orderBy, count($this->columns) - 1);
 
         if (!$this->columns[$orderBy]['sorting']) {
-            return arrayNatsort($rows, 'id', (string) $orderBy); // Alpha numeric
+            return arrayNatsort($rows, (string) $orderBy); // Alpha numeric
         }
 
         $options = $this->columns[$orderBy]['options'];
 
-        $arySort = [];
-        foreach ($rows as $aryRow) {
-            $arySort[$aryRow['id']] = -1;
-            foreach ($options as $kalKey => $kalSort) {
-                if ($aryRow[$orderBy] == $kalSort) {
-                    $arySort[$aryRow['id']] = $kalKey;
+        $tempArray = [];
+        foreach ($rows as $rowKey => $row) {
+            $tempArray[$rowKey] = -1;
+            foreach ($options as $orderIndex => $orderName) {
+                if ((string) $row[$orderBy] === $orderName) {
+                    $tempArray[$rowKey] = $orderIndex;
                     break;
                 }
             }
         }
 
-        natcasesort($arySort);
+        asort($tempArray);
 
-        $aryResult = [];
-        foreach (array_keys($arySort) as $arySortKey) {
-            foreach ($rows as $aryRow) {
-                if ($aryRow['id'] == $arySortKey) {
-                    $aryResult[] = $aryRow;
-                    break;
-                }
-            }
+        $result = [];
+        foreach (array_keys($tempArray) as $rowKey) {
+            $result[] = $rows[$rowKey];
         }
 
-        return $aryResult;
+        return $result;
     }
 
     /**

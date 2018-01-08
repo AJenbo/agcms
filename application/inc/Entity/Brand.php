@@ -151,7 +151,7 @@ class Brand extends AbstractRenderable
                 'object' => $page,
             ];
         }
-        $objectArray = arrayNatsort($objectArray, 'id', $order);
+        $objectArray = arrayNatsort($objectArray, $order);
         $pages = [];
         foreach ($objectArray as $item) {
             $pages[] = $item['object'];

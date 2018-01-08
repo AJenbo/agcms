@@ -390,7 +390,7 @@ class Category extends AbstractRenderable
                 'object' => $page,
             ];
         }
-        $objectArray = arrayNatsort($objectArray, 'id', $order, $reverseOrder ? 'desc' : '');
+        $objectArray = arrayNatsort($objectArray, $order, $reverseOrder ? 'desc' : '');
         $pages = [];
         foreach ($objectArray as $item) {
             $pages[] = $item['object'];
