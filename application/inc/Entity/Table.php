@@ -357,16 +357,11 @@ class Table extends AbstractEntity
         }
 
         $options = $this->columns[$orderBy]['options'];
+        $options = array_flip($options);
 
         $tempArray = [];
         foreach ($rows as $rowKey => $row) {
-            $tempArray[$rowKey] = -1;
-            foreach ($options as $orderIndex => $orderName) {
-                if ((string) $row[$orderBy] === $orderName) {
-                    $tempArray[$rowKey] = $orderIndex;
-                    break;
-                }
-            }
+            $tempArray[$rowKey] = $options[$row[$orderBy]] ?? -1;
         }
 
         asort($tempArray);
