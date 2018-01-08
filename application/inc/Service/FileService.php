@@ -1,6 +1,5 @@
 <?php namespace AGCMS\Service;
 
-use AGCMS\Config;
 use AGCMS\Entity\File;
 use AGCMS\Exception\Exception;
 use AGCMS\Exception\InvalidInput;

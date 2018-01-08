@@ -1,6 +1,5 @@
 <?php namespace AGCMS\Controller\Admin;
 
-use AGCMS\Config;
 use AGCMS\Entity\Email;
 use AGCMS\Entity\User;
 use AGCMS\Exception\InvalidInput;

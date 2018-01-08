@@ -1,6 +1,5 @@
 <?php namespace AGCMS\Service;
 
-use AGCMS\Config;
 use AGCMS\Entity\Contact;
 use AGCMS\Entity\Email;
 use AGCMS\Entity\Invoice;

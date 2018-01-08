@@ -1,6 +1,5 @@
 <?php namespace AGCMS\Controller\Admin;
 
-use AGCMS\Config;
 use AGCMS\Entity\Brand;
 use AGCMS\Entity\Category;
 use AGCMS\Entity\File;

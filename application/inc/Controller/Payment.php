@@ -1,6 +1,5 @@
 <?php namespace AGCMS\Controller;
 
-use AGCMS\Config;
 use AGCMS\Entity\CustomPage;
 use AGCMS\Entity\Email;
 use AGCMS\Entity\Invoice;

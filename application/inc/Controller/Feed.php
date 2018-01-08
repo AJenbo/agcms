@@ -1,6 +1,5 @@
 <?php namespace AGCMS\Controller;
 
-use AGCMS\Config;
 use AGCMS\Entity\Category;
 use AGCMS\Entity\Page;
 use AGCMS\Entity\Requirement;

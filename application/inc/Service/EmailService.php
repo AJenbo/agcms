@@ -1,6 +1,5 @@
 <?php namespace AGCMS\Service;
 
-use AGCMS\Config;
 use AGCMS\Entity\Email;
 use AGCMS\Exception\SendEmail;
 use AJenbo\Imap;

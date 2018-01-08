@@ -1,6 +1,5 @@
 <?php namespace AGCMS\Controller\Admin;
 
-use AGCMS\Config;
 use AGCMS\Entity\CustomPage;
 use AGCMS\Entity\File;
 use AGCMS\Entity\InterfaceRichText;

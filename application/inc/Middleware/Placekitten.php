@@ -1,6 +1,5 @@
 <?php namespace AGCMS\Middleware;
 
-use AGCMS\Config;
 use AGCMS\Controller\Base;
 use AGCMS\Entity\File;
 use AGCMS\Interfaces\Middleware;

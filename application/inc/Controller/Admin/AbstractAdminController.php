@@ -1,8 +1,6 @@
 <?php namespace AGCMS\Controller\Admin;
 
-use AGCMS\Config;
 use AGCMS\Controller\AbstractController;
-use AGCMS\Render;
 use Symfony\Component\HttpFoundation\Request;
 
 abstract class AbstractAdminController extends AbstractController

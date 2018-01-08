@@ -1,6 +1,5 @@
 <?php namespace AGCMS\Entity;
 
-use AGCMS\Config;
 use AGCMS\Exception\Exception;
 use AGCMS\ORM;
 use AGCMS\Render;

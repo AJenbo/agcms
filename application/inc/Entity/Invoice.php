@@ -1,6 +1,5 @@
 <?php namespace AGCMS\Entity;
 
-use AGCMS\Config;
 use AGCMS\Service\EmailService;
 
 class Invoice extends AbstractEntity
