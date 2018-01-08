@@ -3,7 +3,6 @@
 use AGCMS\Entity\Requirement;
 use AGCMS\Exception\InvalidInput;
 use AGCMS\ORM;
-use AGCMS\Render;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -22,9 +21,8 @@ class RequirementController extends AbstractAdminController
         $data = $this->basicPageData($request);
         /* @var Requirement[] */
         $data['requirements'] = ORM::getByQuery(Requirement::class, 'SELECT * FROM `krav` ORDER BY navn');
-        $content = Render::render('admin/krav', $data);
 
-        return new Response($content);
+        return $this->render('admin/krav', $data);
     }
 
     /**
@@ -66,9 +64,7 @@ class RequirementController extends AbstractAdminController
         $data['textWidth'] = config('text_width');
         $data['requirement'] = $id ? ORM::getOne(Requirement::class, $id) : null;
 
-        $content = Render::render('admin/editkrav', $data);
-
-        return new Response($content);
+        return $this->render('admin/editkrav', $data);
     }
 
     /**

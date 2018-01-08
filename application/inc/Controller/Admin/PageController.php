@@ -69,9 +69,7 @@ class PageController extends AbstractAdminController
             'blank_image'  => config('blank_image', '/theme/default/images/intet-foto.jpg'),
         ] + $this->basicPageData($request);
 
-        $content = Render::render('admin/redigerside', $data);
-
-        return new Response($content);
+        return $this->render('admin/redigerside', $data);
     }
 
     /**
@@ -282,15 +280,13 @@ class PageController extends AbstractAdminController
         }
 
         $pages = $this->findPages($text);
-
-        $template = $request->isXmlHttpRequest() ? 'admin/partial-search' : 'admin/search';
-        $html = Render::render($template, ['text' => $text, 'pages' => $pages]);
+        $data = ['text' => $text, 'pages' => $pages];
 
         if ($request->isXmlHttpRequest()) {
-            return new JsonResponse(['id' => 'canvas', 'html' => $html]);
+            return new JsonResponse(['id' => 'canvas', 'html' => Render::render('admin/partial-search', $data)]);
         }
 
-        return new Response($html);
+        return $this->render('admin/search', $data);
     }
 
     /**

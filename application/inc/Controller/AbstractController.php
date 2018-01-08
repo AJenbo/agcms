@@ -1,5 +1,6 @@
 <?php namespace AGCMS\Controller;
 
+use AGCMS\Render;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -59,5 +60,26 @@ abstract class AbstractController
         $fragment = !empty($parsedUrl['fragment']) ? '#' . $parsedUrl['fragment'] : '';
 
         return $scheme . $user . $pass . $host . $port . $path . $query . $fragment;
+    }
+
+    /**
+     * Renders a view.
+     *
+     * @param string   $view
+     * @param array    $parameters
+     * @param Response $response
+     *
+     * @return Response
+     */
+    protected function render(string $view, array $parameters = [], Response $response = null): Response
+    {
+        $content = Render::render($view, $parameters);
+
+        if (null === $response) {
+            $response = new Response();
+        }
+        $response->setContent($content);
+
+        return $response;
     }
 }

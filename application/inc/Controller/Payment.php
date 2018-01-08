@@ -45,9 +45,7 @@ class Payment extends Base
         $data['id'] = $request->get('id');
         $data['checkid'] = $request->get('checkid');
 
-        $content = Render::render('payment-manual', $data);
-
-        return new Response($content);
+        return $this->render('payment-manual', $data);
     }
 
     /**
@@ -77,9 +75,7 @@ class Payment extends Base
         $data['renderable'] = $renderable;
         $data['invoice'] = $invoice;
 
-        $content = Render::render('payment-form0', $data);
-
-        return new Response($content);
+        return $this->render('payment-form0', $data);
     }
 
     /**
@@ -113,9 +109,7 @@ class Payment extends Base
         $data['action'] = $invoice->getLink() . 'address/';
         $data['actionLable'] = _('Continue');
 
-        $content = Render::render('order-form1', $data);
-
-        return new Response($content);
+        return $this->render('payment-form1', $data);
     }
 
     /**
@@ -219,9 +213,7 @@ class Payment extends Base
         $data['inputs'] = $inputs;
         $data['html'] = $this->getTermsHtml();
 
-        $content = Render::render('payment-form2', $data);
-
-        return new Response($content);
+        return $this->render('payment-form2', $data);
     }
 
     /**
@@ -287,9 +279,7 @@ class Payment extends Base
         $data['action'] = $invoice->getLink() . 'address/';
         $data['statusMessage'] = $this->getStatusMessage($invoice);
 
-        $content = Render::render('payment-status', $data);
-
-        return new Response($content);
+        return $this->render('payment-status', $data);
     }
 
     /**

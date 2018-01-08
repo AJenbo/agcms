@@ -1,6 +1,5 @@
 <?php namespace AGCMS\Controller\Admin;
 
-use AGCMS\Render;
 use AGCMS\Request;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -17,9 +16,7 @@ class AdminController extends AbstractAdminController
     {
         $data = $this->basicPageData($request);
 
-        $content = Render::render('admin/index', $data);
-
-        return new Response($content);
+        return $this->render('admin/index', $data);
     }
 
     /**

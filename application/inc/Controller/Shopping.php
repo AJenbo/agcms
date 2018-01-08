@@ -47,9 +47,7 @@ class Shopping extends Base
         $data['payMethod'] = $cart['payMethod'] ?? '';
         $data['deleveryMethod'] = $cart['deleveryMethod'] ?? '';
 
-        $content = Render::render('order-form', $data);
-
-        return new Response($content);
+        return $this->render('order-form', $data);
     }
 
     /**
@@ -81,9 +79,7 @@ class Shopping extends Base
         $data['onsubmit'] = 'shoppingCart.sendCart(); return false';
         $data['actionLable'] = _('Send order');
 
-        $content = Render::render('order-form1', $data);
-
-        return new Response($content);
+        return $this->render('order-form1', $data);
     }
 
     /**
@@ -170,8 +166,6 @@ class Shopping extends Base
         $data['crumbs'][] = $renderable;
         $data['renderable'] = $renderable;
 
-        $content = Render::render('order-form2', $data);
-
-        return new Response($content);
+        return $this->render('order-form2', $data);
     }
 }

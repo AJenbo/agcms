@@ -50,9 +50,7 @@ class ExplorerController extends AbstractAdminController
             'dirs'       => $this->fileService->getRootDirs($currentDir),
         ];
 
-        $content = Render::render('admin/explorer', $data);
-
-        return new Response($content);
+        return $this->render('admin/explorer', $data);
     }
 
     /**
@@ -315,9 +313,7 @@ class ExplorerController extends AbstractAdminController
             $template = 'admin/popup-audio';
         }
 
-        $content = Render::render($template, ['file' => $file]);
-
-        return new Response($content);
+        return $this->render($template, ['file' => $file]);
     }
 
     /**
@@ -432,9 +428,8 @@ class ExplorerController extends AbstractAdminController
             'file' => $file,
             'dirs' => $this->fileService->getRootDirs($currentDir),
         ];
-        $content = Render::render('admin/file-move', $data);
 
-        return new Response($content);
+        return $this->render('admin/file-move', $data);
     }
 
     /**
@@ -455,9 +450,8 @@ class ExplorerController extends AbstractAdminController
             'maxbyte'   => $maxbyte,
             'activeDir' => $request->get('path'),
         ];
-        $content = Render::render('admin/file-upload', $data);
 
-        return new Response($content);
+        return $this->render('admin/file-upload', $data);
     }
 
     /**
@@ -648,9 +642,8 @@ class ExplorerController extends AbstractAdminController
             'fileName'    => $fileName,
             'file'        => $file,
         ];
-        $content = Render::render('admin/image-edit', $data);
 
-        return new Response($content);
+        return $this->render('admin/image-edit', $data);
     }
 
     /**

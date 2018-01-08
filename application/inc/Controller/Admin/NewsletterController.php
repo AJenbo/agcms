@@ -3,7 +3,6 @@
 use AGCMS\Entity\Newsletter;
 use AGCMS\Exception\InvalidInput;
 use AGCMS\ORM;
-use AGCMS\Render;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -22,9 +21,7 @@ class NewsletterController extends AbstractAdminController
         $data = $this->basicPageData($request);
         $data['newsletters'] = ORM::getByQuery(Newsletter::class, 'SELECT * FROM newsmails ORDER BY sendt, id DESC');
 
-        $content = Render::render('admin/emaillist', $data);
-
-        return new Response($content);
+        return $this->render('admin/emaillist', $data);
     }
 
     /**
@@ -54,9 +51,7 @@ class NewsletterController extends AbstractAdminController
             'emails'         => array_keys(config('emails')),
         ] + $this->basicPageData($request);
 
-        $content = Render::render('admin/viewemail', $data);
-
-        return new Response($content);
+        return $this->render('admin/viewemail', $data);
     }
 
     /**

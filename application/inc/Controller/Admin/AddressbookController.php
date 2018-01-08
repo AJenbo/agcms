@@ -3,7 +3,6 @@
 use AGCMS\Entity\Contact;
 use AGCMS\Exception\InvalidInput;
 use AGCMS\ORM;
-use AGCMS\Render;
 use AGCMS\Service\EmailService;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -26,9 +25,8 @@ class AddressbookController extends AbstractAdminController
             $order = 'navn';
         }
         $data['contacts'] = ORM::getByQuery(Contact::class, 'SELECT * FROM email ORDER BY ' . $order);
-        $content = Render::render('admin/addressbook', $data);
 
-        return new Response($content);
+        return $this->render('admin/addressbook', $data);
     }
 
     /**
@@ -45,9 +43,7 @@ class AddressbookController extends AbstractAdminController
         $data['contact'] = $id ? ORM::getOne(Contact::class, $id) : null;
         $data['interests'] = config('interests', []);
 
-        $content = Render::render('admin/editContact', $data);
-
-        return new Response($content);
+        return $this->render('admin/editContact', $data);
     }
 
     /**

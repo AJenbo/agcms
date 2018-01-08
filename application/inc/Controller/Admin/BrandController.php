@@ -4,7 +4,6 @@ use AGCMS\Entity\Brand;
 use AGCMS\Entity\File;
 use AGCMS\Exception\InvalidInput;
 use AGCMS\ORM;
-use AGCMS\Render;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -23,9 +22,8 @@ class BrandController extends AbstractAdminController
         $data = $this->basicPageData($request);
         $data['brands'] = ORM::getByQuery(Brand::class, 'SELECT * FROM `maerke` ORDER BY navn');
         $data['blank_image'] = config('blank_image', '/theme/default/images/intet-foto.jpg');
-        $content = Render::render('admin/maerker', $data);
 
-        return new Response($content);
+        return $this->render('admin/maerker', $data);
     }
 
     /**
@@ -42,9 +40,7 @@ class BrandController extends AbstractAdminController
         $data['brand'] = $id ? ORM::getOne(Brand::class, $id) : null;
         $data['blank_image'] = config('blank_image', '/theme/default/images/intet-foto.jpg');
 
-        $content = Render::render('admin/updatemaerke', $data);
-
-        return new Response($content);
+        return $this->render('admin/updatemaerke', $data);
     }
 
     /**

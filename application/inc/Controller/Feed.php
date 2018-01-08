@@ -61,9 +61,10 @@ class Feed extends Base
             'brands'       => $brands,
             'requirements' => ORM::getByQuery(Requirement::class, 'SELECT * FROM krav'),
         ];
-        $content = Render::render('sitemap', $data);
 
-        return new Response($content, 200, ['Content-Type' => 'text/xml;charset=utf-8']);
+        $response = new Response('', 200, ['Content-Type' => 'text/xml;charset=utf-8']);
+
+        return $this->render('sitemap', $data, $response);
     }
 
     /**
@@ -151,9 +152,10 @@ class Feed extends Base
             'siteName'      => config('site_name'),
             'items'         => $items,
         ];
-        $content = Render::render('rss', $data);
 
-        return new Response($content, 200, ['Content-Type' => 'application/rss+xml']);
+        $response = new Response('', 200, ['Content-Type' => 'application/rss+xml']);
+
+        return $this->render('rss', $data, $response);
     }
 
     /**
@@ -172,8 +174,9 @@ class Feed extends Base
             'description' => sprintf(_('Find in %s'), config('site_name')),
             'url'         => config('base_url') . '/search/results/?q={searchTerms}&sogikke=&minpris=&maxpris=&maerke=0',
         ];
-        $content = Render::render('opensearch', $data);
 
-        return new Response($content, 200, ['Content-Type' => 'application/opensearchdescription+xml']);
+        $response = new Response('', 200, ['Content-Type' => 'application/opensearchdescription+xml']);
+
+        return $this->render('opensearch', $data, $response);
     }
 }

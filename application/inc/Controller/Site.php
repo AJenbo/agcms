@@ -7,7 +7,6 @@ use AGCMS\Entity\Page;
 use AGCMS\Entity\Requirement;
 use AGCMS\Interfaces\Renderable;
 use AGCMS\ORM;
-use AGCMS\Render;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -55,9 +54,8 @@ class Site extends Base
             'renderable'      => $renderable,
             'hasProductTable' => $hasProductTable,
         ] + $this->basicPageData();
-        $content = Render::render($template, $data);
 
-        return new Response($content);
+        return $this->render($template, $data);
     }
 
     /**
@@ -70,9 +68,8 @@ class Site extends Base
         $data = [
             'renderable' => ORM::getOne(CustomPage::class, 1),
         ] + $this->basicPageData();
-        $content = Render::render('index', $data);
 
-        return new Response($content);
+        return $this->render('index', $data);
     }
 
     /**
@@ -128,9 +125,8 @@ class Site extends Base
             'renderable'      => $page,
             'hasProductTable' => $hasProductTable,
         ] + $this->basicPageData();
-        $content = Render::render('product', $data);
 
-        return new Response($content);
+        return $this->render('product', $data);
     }
 
     /**
@@ -153,9 +149,8 @@ class Site extends Base
             'renderable' => $requirement,
         ] + $this->basicPageData();
         $data['crumbs'][] = $requirement;
-        $content = Render::render('requirement', $data);
 
-        return new Response($content);
+        return $this->render('requirement', $data);
     }
 
     /**
@@ -179,9 +174,8 @@ class Site extends Base
             'renderable' => $brand,
         ] + $this->basicPageData();
         $data['crumbs'][] = $brand;
-        $content = Render::render('tiles', $data);
 
-        return new Response($content);
+        return $this->render('tiles', $data);
     }
 
     /**

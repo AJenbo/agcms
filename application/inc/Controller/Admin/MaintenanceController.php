@@ -53,9 +53,7 @@ class MaintenanceController extends AbstractAdminController
             'lastrun'            => $page->getTimeStamp(),
         ] + $this->basicPageData($request);
 
-        $content = Render::render('admin/get_db_error', $data);
-
-        return new Response($content);
+        return $this->render('admin/get_db_error', $data);
     }
 
     /**

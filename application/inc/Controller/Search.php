@@ -22,9 +22,8 @@ class Search extends Base
         $data = $this->basicPageData();
         $data['crumbs'][] = new VolatilePage(_('Search'), '/search/');
         $data['brands'] = $this->getActiveBrands();
-        $content = Render::render('search', $data);
 
-        return new Response($content);
+        return $this->render('search', $data);
     }
 
     /**
@@ -111,9 +110,8 @@ class Search extends Base
         $data['crumbs'][] = $requirement;
         $data['renderable'] = $requirement;
         $data['search'] = $request->get('q', '');
-        $content = Render::render('tiles', $data);
 
-        return new Response($content);
+        return $this->render('tiles', $data);
     }
 
     /**

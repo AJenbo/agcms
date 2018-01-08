@@ -5,7 +5,6 @@ use AGCMS\Entity\CustomPage;
 use AGCMS\Exception\Exception;
 use AGCMS\Exception\InvalidInput;
 use AGCMS\ORM;
-use AGCMS\Render;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -40,9 +39,7 @@ class CustomPageController extends AbstractAdminController
             $data['categories'] = $category->getChildren();
         }
 
-        $content = Render::render('admin/redigerSpecial', $data);
-
-        return new Response($content);
+        return $this->render('admin/redigerSpecial', $data);
     }
 
     /**

@@ -3,7 +3,6 @@
 use AGCMS\Entity\CustomSorting;
 use AGCMS\Exception\InvalidInput;
 use AGCMS\ORM;
-use AGCMS\Render;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -22,9 +21,7 @@ class CustomSortingController extends AbstractAdminController
         $data = $this->basicPageData($request);
         $data['lists'] = ORM::getByQuery(CustomSorting::class, 'SELECT * FROM `tablesort`');
 
-        $content = Render::render('admin/listsort', $data);
-
-        return new Response($content);
+        return $this->render('admin/listsort', $data);
     }
 
     /**
@@ -51,9 +48,7 @@ class CustomSortingController extends AbstractAdminController
             'textWidth'     => config('text_width'),
         ] + $this->basicPageData($request);
 
-        $content = Render::render('admin/listsort-edit', $data);
-
-        return new Response($content);
+        return $this->render('admin/listsort-edit', $data);
     }
 
     /**

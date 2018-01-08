@@ -4,7 +4,6 @@ use AGCMS\Entity\Category;
 use AGCMS\Entity\File;
 use AGCMS\Exception\InvalidInput;
 use AGCMS\ORM;
-use AGCMS\Render;
 use AGCMS\Service\SiteTreeService;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -45,9 +44,7 @@ class CategoryController extends AbstractAdminController
             'category'     => $category,
         ] + $this->basicPageData($request);
 
-        $content = Render::render('admin/redigerkat', $data);
-
-        return new Response($content);
+        return $this->render('admin/redigerkat', $data);
     }
 
     /**

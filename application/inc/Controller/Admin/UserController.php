@@ -36,9 +36,7 @@ class UserController extends AbstractAdminController
             'users'       => $users,
         ] + $this->basicPageData($request);
 
-        $content = Render::render('admin/users', $data);
-
-        return new Response($content);
+        return $this->render('admin/users', $data);
     }
 
     /**
@@ -57,9 +55,7 @@ class UserController extends AbstractAdminController
         $session->remove('message');
         $session->save();
 
-        $content = Render::render('admin/newuser', ['message' => $message]);
-
-        return new Response($content);
+        return $this->render('admin/newuser', ['message' => $message]);
     }
 
     /**
@@ -162,9 +158,7 @@ class UserController extends AbstractAdminController
             ],
         ] + $this->basicPageData($request);
 
-        $content = Render::render('admin/user', $data);
-
-        return new Response($content);
+        return $this->render('admin/user', $data);
     }
 
     /**

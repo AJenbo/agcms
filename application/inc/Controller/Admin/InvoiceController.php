@@ -135,9 +135,7 @@ class InvoiceController extends AbstractAdminController
             ],
         ] + $this->basicPageData($request);
 
-        $content = Render::render('admin/fakturas', $data);
-
-        return new Response($content);
+        return $this->render('admin/fakturas', $data);
     }
 
     /**
@@ -164,9 +162,7 @@ class InvoiceController extends AbstractAdminController
             'invoices' => $invoices,
         ] + $this->basicPageData($request);
 
-        $content = Render::render('admin/fakturasvalidate', $data);
-
-        return new Response($content);
+        return $this->render('admin/fakturasvalidate', $data);
     }
 
     /**
@@ -394,9 +390,7 @@ class InvoiceController extends AbstractAdminController
             'countries'   => include app()->basePath('/inc/countries.php'),
         ] + $this->basicPageData($request);
 
-        $content = Render::render('admin/faktura', $data);
-
-        return new Response($content);
+        return $this->render('admin/faktura', $data);
     }
 
     /**

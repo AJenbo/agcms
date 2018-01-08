@@ -28,9 +28,7 @@ class SiteTreeController extends AbstractAdminController
         $data = $this->basicPageData($request);
         $data['siteTree'] = $siteTreeService->getSiteTreeData($openCategories);
 
-        $content = Render::render('admin/getSiteTree', $data);
-
-        return new Response($content);
+        return $this->render('admin/getSiteTree', $data);
     }
 
     /**
@@ -105,9 +103,7 @@ class SiteTreeController extends AbstractAdminController
             ),
         ];
 
-        $content = Render::render('admin/pagelist', $data);
-
-        return new Response($content);
+        return $this->render('admin/pagelist', $data);
     }
 
     /**
@@ -163,8 +159,7 @@ class SiteTreeController extends AbstractAdminController
             'pathPrefix'   => '',
             'categoryId'   => $categoryId,
         ];
-        $content = Render::render('admin/listview', $data);
 
-        return new Response($content);
+        return $this->render('admin/listview', $data);
     }
 }
