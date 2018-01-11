@@ -314,7 +314,7 @@ class FileService
         }
 
         $pathinfo = pathinfo($file->getPath());
-        $html .= '" alt="" title="" /> </div><div ondblclick="showfilename(' . $file->getId()
+        $html .= '" alt="" title="" /> </div><div ondblclick="showFileName(' . $file->getId()
             . ')" class="navn" id="navn' . $file->getId() . 'div" title="' . $pathinfo['filename'] . '"> '
             . $pathinfo['filename'] . '</div><form action="" method="get" onsubmit="document.getElementById(\'rename'
             . $file->getId() . '\').blur();return false" style="display:none" id="navn' . $file->getId()
