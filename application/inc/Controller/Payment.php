@@ -109,7 +109,7 @@ class Payment extends Base
         $data['action'] = $invoice->getLink() . 'address/';
         $data['actionLable'] = _('Continue');
 
-        return $this->render('payment-form1', $data);
+        return $this->render('order-form1', $data);
     }
 
     /**
