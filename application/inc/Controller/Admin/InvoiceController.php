@@ -34,8 +34,67 @@ class InvoiceController extends AbstractAdminController
             'momssats'   => $request->get('momssats'),
             'clerk'      => $request->get('clerk'),
         ];
+
         /** @var User */
         $user = $request->user();
+
+        $where = $this->generateFilterInvoiceBySelection($selected, $user);
+
+        Render::addLoadedTable('fakturas');
+        $oldest = db()->fetchOne(
+            "
+            SELECT UNIX_TIMESTAMP(`date`) AS `date` FROM `fakturas`
+            WHERE UNIX_TIMESTAMP(`date`) != '0' ORDER BY `date`
+            "
+        );
+        $oldest = $oldest['date'] ?? time();
+        $oldest = date('Y', $oldest);
+
+        /** @var Invoice[] */
+        $invoices = ORM::getByQuery(Invoice::class, 'SELECT * FROM `fakturas`' . $where . ' ORDER BY `id` DESC');
+
+        $data = [
+            'title'         => _('Invoice list'),
+            'currentUser'   => $user,
+            'selected'      => $selected,
+            'countries'     => include app()->basePath('/inc/countries.php'),
+            'departments'   => array_keys(config('emails', [])),
+            'users'         => ORM::getByQuery(User::class, 'SELECT * FROM `users` ORDER BY `fullname`'),
+            'invoices'      => $invoices,
+            'years'         => range($oldest, date('Y')),
+            'statusOptions' => [
+                ''         => _('All'),
+                'activ'    => _('Current'),
+                'inactiv'  => _('Finalized'),
+                'new'      => _('New'),
+                'locked'   => _('Locked'),
+                'pbsok'    => _('Ready'),
+                'accepted' => _('Processed'),
+                'giro'     => _('Giro'),
+                'cash'     => _('Cash'),
+                'pbserror' => _('Error'),
+                'canceled' => _('Canceled'),
+                'rejected' => _('Rejected'),
+            ],
+        ] + $this->basicPageData($request);
+
+        return $this->render('admin/fakturas', $data);
+    }
+
+    /**
+     * Generate an SQL where clause from a select array.
+     *
+     * @param array $selected
+     * @param User  $user
+     *
+     * @return string
+     */
+    private function generateFilterInvoiceBySelection(array $selected, User $user): string
+    {
+        if ($selected['id']) {
+            return 'WHERE `id` = ' . $selected['id'];
+        }
+
         if (null === $selected['clerk'] && !$user->hasAccess(User::ADMINISTRATOR)) {
             $selected['clerk'] = $user->getFullName();
         }
@@ -91,51 +150,11 @@ class InvoiceController extends AbstractAdminController
             $where[] = '`momssats` = ' . db()->eandq($selected['momssats']);
         }
 
-        $where = implode(' AND ', $where);
-
-        if ($selected['id']) {
-            $where = ' `id` = ' . $selected['id'];
+        if (!$where) {
+            return '';
         }
 
-        Render::addLoadedTable('fakturas');
-        $oldest = db()->fetchOne(
-            "
-            SELECT UNIX_TIMESTAMP(`date`) AS `date` FROM `fakturas`
-            WHERE UNIX_TIMESTAMP(`date`) != '0' ORDER BY `date`
-            "
-        );
-        $oldest = $oldest['date'] ?? time();
-        $oldest = date('Y', $oldest);
-
-        /** @var Invoice[] */
-        $invoices = ORM::getByQuery(Invoice::class, 'SELECT * FROM `fakturas` WHERE ' . $where . ' ORDER BY `id` DESC');
-
-        $data = [
-            'title'         => _('Invoice list'),
-            'currentUser'   => $user,
-            'selected'      => $selected,
-            'countries'     => include app()->basePath('/inc/countries.php'),
-            'departments'   => array_keys(config('emails', [])),
-            'users'         => ORM::getByQuery(User::class, 'SELECT * FROM `users` ORDER BY `fullname`'),
-            'invoices'      => $invoices,
-            'years'         => range($oldest, date('Y')),
-            'statusOptions' => [
-                ''         => _('All'),
-                'activ'    => _('Current'),
-                'inactiv'  => _('Finalized'),
-                'new'      => _('New'),
-                'locked'   => _('Locked'),
-                'pbsok'    => _('Ready'),
-                'accepted' => _('Processed'),
-                'giro'     => _('Giro'),
-                'cash'     => _('Cash'),
-                'pbserror' => _('Error'),
-                'canceled' => _('Canceled'),
-                'rejected' => _('Rejected'),
-            ],
-        ] + $this->basicPageData($request);
-
-        return $this->render('admin/fakturas', $data);
+        return ' WHERE ' . implode(' AND ', $where);
     }
 
     /**
