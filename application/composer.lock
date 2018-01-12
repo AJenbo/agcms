@@ -39,16 +39,16 @@
         },
         {
             "name": "ajenbo/imap.php",
-            "version": "0.9.2",
+            "version": "0.9.3",
             "source": {
                 "type": "git",
                 "url": "https://github.com/AJenbo/Imap.php.git",
-                "reference": "3308b7a5e8e6cd2643b560e0598d067dc31f1243"
+                "reference": "15bbdbc887cd165905ecc6c9a6841225a6f453b3"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/AJenbo/Imap.php/zipball/3308b7a5e8e6cd2643b560e0598d067dc31f1243",
-                "reference": "3308b7a5e8e6cd2643b560e0598d067dc31f1243",
+                "url": "https://api.github.com/repos/AJenbo/Imap.php/zipball/15bbdbc887cd165905ecc6c9a6841225a6f453b3",
+                "reference": "15bbdbc887cd165905ecc6c9a6841225a6f453b3",
                 "shasum": ""
             },
             "require": {
@@ -65,7 +65,7 @@
                 "MIT"
             ],
             "description": "IMAP over socket",
-            "time": "2017-11-20T12:26:26+00:00"
+            "time": "2018-01-12T00:12:11+00:00"
         },
         {
             "name": "ezyang/htmlpurifier",
