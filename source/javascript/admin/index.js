@@ -28,6 +28,7 @@ import {
     confirmPaymentValidate
 } from "./invoice.js";
 import openPopup from "./openPopup.js";
+import {changeZipCode} from "../getAddress.js";
 
 var contextMenuActiveSide;
 var contextMenuInactiveSide;
@@ -1056,6 +1057,7 @@ window.addEventListener("DOMContentLoaded", function(event) {
     window.setShippingAddressVisability = setShippingAddressVisability;
     window.setPaymentTransferred = setPaymentTransferred;
     window.confirmPaymentValidate = confirmPaymentValidate;
+    window.changeZipCode = changeZipCode;
 
     window.openPopup = openPopup;
 
