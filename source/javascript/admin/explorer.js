@@ -87,6 +87,12 @@ function openImageThumbnail(id) {
     openPopup("/admin/explorer/files/" + id + "/image/edit/?mode=thb", "imageThumbnail", 740, 600);
 }
 
+function setThumbnail(value, src) {
+    window.opener.document.getElementById(window.returnid).value = value;
+    window.opener.document.getElementById(window.returnid + "thb").src = src;
+    window.close();
+}
+
 var fileTileContextMenu = [
     {
       "name": "Åbne",
@@ -472,6 +478,7 @@ window.addEventListener("DOMContentLoaded", function(event) {
     window.swapPannel = swapPannel;
     window.showFileName = showFileName;
     window.openImageThumbnail = openImageThumbnail;
+    window.setThumbnail = setThumbnail;
 
     returnType = window.returnType || "";
     fileId = window.fileId || null;
