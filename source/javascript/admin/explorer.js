@@ -471,6 +471,7 @@ window.addEventListener("DOMContentLoaded", function(event) {
     window.movefile = movefile;
     window.swapPannel = swapPannel;
     window.showFileName = showFileName;
+    window.openImageThumbnail = openImageThumbnail;
 
     returnType = window.returnType || "";
     fileId = window.fileId || null;
