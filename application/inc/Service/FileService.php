@@ -336,7 +336,7 @@ class FileService
     {
         $dirs = [];
         foreach (['/images' => _('Images'), '/files' => _('Files')] as $path => $name) {
-            $dirs[] = $this->formatDir($path, $name, $currentDir);
+            $dirs[] = ['isRoot' => true] + $this->formatDir($path, $name, $currentDir);
         }
 
         return $dirs;
