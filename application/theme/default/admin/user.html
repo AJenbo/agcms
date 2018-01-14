@@ -38,13 +38,13 @@
                 </select>
             </td>
         </tr>
-        {% if currentUser.accessLevel == user.id %}
+        {% if currentUser.id == user.id %}
         <tr>
             <td>{{'Password:'|trans}}</td>
             <td><input type="password" id="password" name="password" /></td>
         </tr>
         {% endif %}
-        {% if currentUser.accessLevel == user.id or currentUser.accessLevel == 1 %}
+        {% if currentUser.id == user.id or currentUser.accessLevel == 1 %}
         <tr>
             <td>{{'New password:'|trans}}</td>
             <td><input type="password" id="password_new" name="password_new" /></td>
