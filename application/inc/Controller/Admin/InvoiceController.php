@@ -34,6 +34,9 @@ class InvoiceController extends AbstractAdminController
             'momssats'   => $request->get('momssats'),
             'clerk'      => $request->get('clerk'),
         ];
+        if ('' === $selected['momssats']) {
+            $selected['momssats'] = null;
+        }
 
         /** @var User */
         $user = $request->user();
@@ -98,9 +101,6 @@ class InvoiceController extends AbstractAdminController
         if (null === $selected['clerk'] && !$user->hasAccess(User::ADMINISTRATOR)) {
             $selected['clerk'] = $user->getFullName();
         }
-        if ('' === $selected['momssats']) {
-            $selected['momssats'] = null;
-        }
 
         $where = [];
 
@@ -146,7 +146,7 @@ class InvoiceController extends AbstractAdminController
             $where[] = "`email` LIKE '%" . db()->esc($selected['email']) . "%'";
         }
 
-        if ($selected['momssats']) {
+        if (null !== $selected['momssats']) {
             $where[] = '`momssats` = ' . db()->eandq($selected['momssats']);
         }
 
