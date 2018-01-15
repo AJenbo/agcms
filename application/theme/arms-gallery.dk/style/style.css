@@ -214,9 +214,11 @@ h1 {
 #text table {
     font-size: 13px;
 }
-#krav {
-    display: block;
-    float: right;
+.requirement {
+    text-align: right;
+}
+.requirement a {
+    display: inline-block;
     font-weight: bold;
     text-align: center;
     text-decoration: none;
