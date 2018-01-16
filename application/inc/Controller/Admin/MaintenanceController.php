@@ -14,7 +14,6 @@ use AJenbo\Imap;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Throwable;
 
 /**
  * @todo test for missing alt="" in <img>
@@ -251,7 +250,7 @@ class MaintenanceController extends AbstractAdminController
             if (!is_file(app()->basePath($file->getPath()))) {
                 if (!$file->isInUse()) {
                     $file->delete();
-                    ++$deleted;
+                    $deleted++;
                     continue;
                 }
 
@@ -374,7 +373,7 @@ class MaintenanceController extends AbstractAdminController
             foreach ($emails as $email) {
                 $emailService->send($email);
                 $email->delete();
-                ++$emailsSendt;
+                $emailsSendt++;
             }
 
             $cronStatus->save();
@@ -428,18 +427,14 @@ class MaintenanceController extends AbstractAdminController
             );
 
             foreach ($imap->listMailboxes() as $mailbox) {
-                try {
-                    $mailboxStatus = $imap->select($mailbox['name'], true);
-                    if (!$mailboxStatus['exists']) {
-                        continue;
-                    }
-
-                    $mails = $imap->fetch('1:*', 'RFC822.SIZE');
-                    preg_match_all('/RFC822.SIZE\s([0-9]+)/', $mails['data'], $mailSizes);
-                    $size += array_sum($mailSizes[1]);
-                } catch (Throwable $e) {
-                    app()->logException($e);
+                $mailboxStatus = $imap->select($mailbox['name'], true);
+                if (!$mailboxStatus['exists']) {
+                    continue;
                 }
+
+                $mails = $imap->fetch('1:*', 'RFC822.SIZE');
+                preg_match_all('/RFC822.SIZE\s([0-9]+)/', $mails['data'], $mailSizes);
+                $size += array_sum($mailSizes[1]);
             }
         }
 

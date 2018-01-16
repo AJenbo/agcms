@@ -12,14 +12,19 @@ class Newsletter extends AbstractEntity implements InterfaceRichText
     const TABLE_NAME = 'newsmails';
 
     // Backed by DB
+
     /** @var string Sender email address */
     private $from = '';
+
     /** @var string Email subject */
     private $subject = '';
+
     /** @var string Body */
     private $html = '';
+
     /** @var bool Has it been sent. */
     private $sent = false;
+
     /** @var string[] List of topics is covered. */
     private $interests = [];
 

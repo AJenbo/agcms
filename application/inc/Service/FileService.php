@@ -267,7 +267,7 @@ class FileService
         } elseif ('thb' === $returnType && in_array($file->getMime(), ['image/gif', 'image/jpeg', 'image/png'], true)) {
             $onclick = 'openImageThumbnail(' . $file->getId() . ')';
             if ($file->getWidth() <= config('thumb_width') && $file->getHeight() <= config('thumb_height')) {
-                $onclick = 'insertThumbnail(' . $file->getId() . ')';
+                $onclick = 'setThumbnail(' . $file->getId() . ',' . htmlspecialchars(json_encode($file->getPath()), ENT_COMPAT | ENT_XHTML) . ')';
             }
         }
         $html .= ' onclick="' . $onclick . '"> <img src="';
@@ -314,7 +314,7 @@ class FileService
         }
 
         $pathinfo = pathinfo($file->getPath());
-        $html .= '" alt="" title="" /> </div><div ondblclick="showfilename(' . $file->getId()
+        $html .= '" alt="" title="" /> </div><div ondblclick="showFileName(' . $file->getId()
             . ')" class="navn" id="navn' . $file->getId() . 'div" title="' . $pathinfo['filename'] . '"> '
             . $pathinfo['filename'] . '</div><form action="" method="get" onsubmit="document.getElementById(\'rename'
             . $file->getId() . '\').blur();return false" style="display:none" id="navn' . $file->getId()
@@ -336,7 +336,7 @@ class FileService
     {
         $dirs = [];
         foreach (['/images' => _('Images'), '/files' => _('Files')] as $path => $name) {
-            $dirs[] = $this->formatDir($path, $name, $currentDir);
+            $dirs[] = ['isRoot' => true] + $this->formatDir($path, $name, $currentDir);
         }
 
         return $dirs;

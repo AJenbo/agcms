@@ -15,12 +15,16 @@ class UploadHandler
 
     /** @var string Foler where the current upload will be saved. */
     private $targetDir = '';
+
     /** @var string File name with out extension. */
     private $baseName = '';
+
     /** @var string File extension. */
     private $extension = '';
+
     /** @var FileService */
     private $fileService;
+
     /** @var FileHandeler */
     private $file;
 

@@ -130,7 +130,7 @@ img,
 #dir input,
 #searchpath,
 #searchalt {
-    border: 1px #000000 solid;
+    border: 1px #ccc solid;
     font-size: inherit;
     text-align: left;
 }
@@ -162,7 +162,6 @@ img,
 }
 #files form,
 #files form * {
-    border: 0;
     display: inline;
     padding: 0;
 }

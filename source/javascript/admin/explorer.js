@@ -5,7 +5,7 @@ import {injectHtml, setCookie, getCookie, htmlEncode, removeTagById} from "./jav
 
 var fileId = null;
 var returnType = "";
-var activeDir = getCookie("admin_dir");
+window.activeDir = getCookie("admin_dir");
 
 var contextMenuFileTile;
 var contextMenuImageTile;
@@ -85,6 +85,12 @@ function editDescription(id) {
 
 function openImageThumbnail(id) {
     openPopup("/admin/explorer/files/" + id + "/image/edit/?mode=thb", "imageThumbnail", 740, 600);
+}
+
+function setThumbnail(value, src) {
+    window.opener.document.getElementById(window.returnid).value = value;
+    window.opener.document.getElementById(window.returnid + "thb").src = src;
+    window.close();
 }
 
 var fileTileContextMenu = [
@@ -204,8 +210,8 @@ function injectFileData(data) {
 var showFilesRequest = null;
 function showfiles(dir) {
     // TODO, scroll to top.
-    activeDir = dir;
-    setCookie("admin_dir", activeDir, 360);
+    window.activeDir = dir;
+    setCookie("admin_dir", window.activeDir, 360);
 
     document.getElementById("loading").style.visibility = "";
     var dirlist = document.getElementById("dir").getElementsByTagName("a");
@@ -296,7 +302,8 @@ function deleteFolderCallback(data) {
 function deleteFolder() {
     // TODO hvilket folder?
     if (confirm("Er du sikker på du vil slette denne mappe og dens indhold?")) {
-        xHttp.request("/admin/explorer/folders/?path=" + encodeURIComponent(activeDir), deleteFolderCallback, "DELETE");
+        xHttp.request("/admin/explorer/folders/?path=" + encodeURIComponent(window.activeDir), deleteFolderCallback,
+                      "DELETE");
         setCookie("admin_dir", "", 360);
     }
     return false;
@@ -315,9 +322,9 @@ function makedir() {
     var name = prompt("Hvad skal mappen hede?", "Ny mappe");
     if (name) {
         document.getElementById("loading").style.visibility = "";
-        xHttp.request(
-            "/admin/explorer/folders/?path=" + encodeURIComponent(activeDir) + "&name=" + encodeURIComponent(name),
-            makedirCallback, "POST");
+        xHttp.request("/admin/explorer/folders/?path=" + encodeURIComponent(window.activeDir) + "&name=" +
+                          encodeURIComponent(name),
+                      makedirCallback, "POST");
     }
     return false;
 }
@@ -358,7 +365,7 @@ function contractFolder(obj) {
 }
 
 function openUploader() {
-    openPopup("/admin/explorer/upload/?path=" + encodeURIComponent(activeDir), "fileUpload", 640, 150);
+    openPopup("/admin/explorer/upload/?path=" + encodeURIComponent(window.activeDir), "fileUpload", 640, 150);
     return false;
 }
 
@@ -450,7 +457,7 @@ function swapPannel(navn) {
         document.getElementById("search").style.display = "none";
         document.getElementById("dir_bn").className = "down";
         document.getElementById("dir").style.display = "";
-        showfiles(activeDir);
+        showfiles(window.activeDir);
     }
     return false;
 }
@@ -469,6 +476,9 @@ window.addEventListener("DOMContentLoaded", function(event) {
     window.renamefile = renamefile;
     window.movefile = movefile;
     window.swapPannel = swapPannel;
+    window.showFileName = showFileName;
+    window.openImageThumbnail = openImageThumbnail;
+    window.setThumbnail = setThumbnail;
 
     returnType = window.returnType || "";
     fileId = window.fileId || null;
@@ -479,9 +489,9 @@ window.addEventListener("DOMContentLoaded", function(event) {
     contextMenuImageTile =
         new Proto.Menu({"selector": ".imagetile", "className": "menu desktop", "menuItems": imageTileContextMenu});
 
-    if (!activeDir || !document.getElementById(dirToId(activeDir))) {
-        activeDir = "/images";
+    if (!window.activeDir || !document.getElementById(dirToId(window.activeDir))) {
+        window.activeDir = "/images";
     }
 
-    showfiles(activeDir);
+    showfiles(window.activeDir);
 });

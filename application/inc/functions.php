@@ -99,44 +99,31 @@ function clearFileName(string $name): string
 /**
  * Natsort an array.
  *
- * @param array[] $aryData     Array to sort
- * @param string  $strIndex    Key of unique id
- * @param string  $strSortBy   Key to sort by
- * @param string  $strSortType Revers sorting
+ * @param array[] $rows      Array to sort
+ * @param string  $orderBy   Key to sort by
+ * @param string  $direction Revers sorting
  *
  * @return array[]
  */
-function arrayNatsort(array $aryData, string $strIndex, string $strSortBy, string $strSortType = 'asc'): array
+function arrayNatsort(array $rows, string $orderBy, string $direction = 'asc'): array
 {
-    //loop through the array
-    $arySort = [];
-    foreach ($aryData as $aryRow) {
-        //set up the value in the array
-        $arySort[$aryRow[$strIndex]] = $aryRow[$strSortBy];
+    $tempArray = [];
+    foreach ($rows as $rowKey => $row) {
+        $tempArray[$rowKey] = $row[$orderBy];
     }
 
-    //apply the natural sort
-    natcasesort($arySort);
+    natcasesort($tempArray);
 
-    //if the sort type is descending
-    if (in_array($strSortType, ['desc', '-'], true)) {
-        //reverse the array
-        arsort($arySort);
+    if (in_array($direction, ['desc', '-'], true)) {
+        arsort($tempArray);
     }
 
-    //loop through the sorted and original data
-    $aryResult = [];
-    foreach (array_keys($arySort) as $arySortKey) {
-        foreach ($aryData as $aryRow) {
-            if ($aryRow[$strIndex] == $arySortKey) {
-                $aryResult[] = $aryRow;
-                break;
-            }
-        }
+    $result = [];
+    foreach (array_keys($tempArray) as $rowKey) {
+        $result[] = $rows[$rowKey];
     }
 
-    //return the result
-    return $aryResult;
+    return $result;
 }
 
 /**

@@ -28,6 +28,7 @@ import {
     confirmPaymentValidate
 } from "./invoice.js";
 import openPopup from "./openPopup.js";
+import {changeZipCode} from "../getAddress.js";
 
 var contextMenuActiveSide;
 var contextMenuInactiveSide;
@@ -942,13 +943,14 @@ function isInteger(string) {
 
 function jumpto() {
     var jumptoid = $("jumptoid").value;
-    if (!jumptoid && isInteger(jumptoid)) {
+    if (!jumptoid || !isInteger(jumptoid)) {
         alert("Du skal indtaste et korrekt side nummer");
 
         return false;
     }
 
     location.href = "/admin/page/" + jumptoid + "/";
+    return false;
 }
 
 function sogsearch() {
@@ -1055,6 +1057,7 @@ window.addEventListener("DOMContentLoaded", function(event) {
     window.setShippingAddressVisability = setShippingAddressVisability;
     window.setPaymentTransferred = setPaymentTransferred;
     window.confirmPaymentValidate = confirmPaymentValidate;
+    window.changeZipCode = changeZipCode;
 
     window.openPopup = openPopup;
 

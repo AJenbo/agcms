@@ -12,18 +12,25 @@ class Email extends AbstractEntity
     private $emailService;
 
     // Backed by DB
+
     /** @var string Subject */
     private $subject = '';
+
     /** @var string HTML body */
     private $body = '';
+
     /** @var string Semder name */
     private $senderName = '';
+
     /** @var string Semder email address */
     private $senderAddress = '';
+
     /** @var string Recipient name */
     private $recipientName = '';
+
     /** @var string Recipient email address */
     private $recipientAddress = '';
+
     /** @var int */
     private $timestamp;
 

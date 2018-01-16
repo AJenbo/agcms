@@ -66,11 +66,11 @@ class Epayment
         $this->transactionId = $transactionData->transactionid;
         $this->amount = (int) $transactionData->authamount;
 
-        if ('PAYMENT_NEW' == $transactionData->status) {
+        if ('PAYMENT_NEW' === $transactionData->status) {
             $this->authorized = true;
-        } elseif ('PAYMENT_CAPTURED' == $transactionData->status) {
+        } elseif ('PAYMENT_CAPTURED' === $transactionData->status) {
             $this->amountCaptured = (int) $transactionData->capturedamount;
-        } elseif ('PAYMENT_DELETED' == $transactionData->status) {
+        } elseif ('PAYMENT_DELETED' === $transactionData->status) {
             $this->annulled = true;
         }
     }

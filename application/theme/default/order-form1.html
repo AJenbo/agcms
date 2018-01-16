@@ -13,7 +13,7 @@
                     </td>
                 </tr>
                 <tr>
-                    <td>{{'Mobile:'|trans}} </td>
+                    <td><b>{{'Mobile:'|trans}}</b> </td>
                     <td colspan="2"><input name="phone2" id="phone2" style="width:157px" value="{{invoice.phone2}}" /></td>
                     <td>
                         <input type="button" value="{{'Get address'|trans}}" onclick="getAddress(document.getElementById('phone2').value,getAddressCallback1)" />
@@ -79,7 +79,7 @@
                     </td>
                 </tr>
                 <tr class="altpost"{% if not invoice.hasShippingAddress %} style="display:none"{% endif %}>
-                    <td> {{'Phone:'|trans}}</td>
+                    <td> <b>{{'Phone:'|trans}}</b></td>
                     <td colspan="2">
                         <input name="shippingPhone" id="shippingPhone" style="width:157px" value="{{invoice.shippingPhone}}" />
                     </td>

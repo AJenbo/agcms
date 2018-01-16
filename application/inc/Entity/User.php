@@ -6,26 +6,34 @@ class User extends AbstractEntity
 {
     /** Table name */
     const TABLE_NAME = 'users';
+
     /** Number of seconds a user is assumed to be active. */
     const ONLINE_INTERVAL = 1800;
 
     /** Not approved user */
     const NO_ACCESS = 0;
+
     /** Full access user */
     const ADMINISTRATOR = 1;
+
     /** Can't edit other users */
     const MANAGER = 3;
+
     /** Can only handle orders */
     const CLERK = 4;
 
     /** @var string User's full name. */
     private $fullName = '';
+
     /** @var string User's nick name. */
     private $nickname = '';
+
     /** @var string User's Password hash. */
     private $passwordHash = '';
+
     /** @var int User's access level. */
     private $accessLevel = 0;
+
     /** @var int time of last login */
     private $lastLogin;
 

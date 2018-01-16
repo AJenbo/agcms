@@ -76,6 +76,7 @@ class UserController extends AbstractAdminController
         $password = $request->get('password');
 
         $message = _('Your account has been created. An administrator will evaluate it shortly.');
+
         try {
             if (!$fullname || !$name || !$password) {
                 throw new InvalidInput(_('All fields must be filled.'));
@@ -109,6 +110,7 @@ class UserController extends AbstractAdminController
                 'recipientAddress' => $emailAddress,
             ]);
             $emailService = new EmailService();
+
             try {
                 $emailService->send($email);
             } catch (Throwable $exception) {

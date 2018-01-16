@@ -8,6 +8,7 @@ class Brand extends AbstractRenderable
     const TABLE_NAME = 'maerke';
 
     // Backed by DB
+
     /** @var string The external link for this brand. */
     private $link = '';
 
@@ -121,7 +122,7 @@ class Brand extends AbstractRenderable
      */
     public function getPages(string $order = 'navn'): array
     {
-        if (!in_array($order, ['navn', 'for', 'pris', 'varenr'])) {
+        if (!in_array($order, ['navn', 'for', 'pris', 'varenr'], true)) {
             $order = 'navn';
         }
 
@@ -151,7 +152,7 @@ class Brand extends AbstractRenderable
                 'object' => $page,
             ];
         }
-        $objectArray = arrayNatsort($objectArray, 'id', $order);
+        $objectArray = arrayNatsort($objectArray, $order);
         $pages = [];
         foreach ($objectArray as $item) {
             $pages[] = $item['object'];

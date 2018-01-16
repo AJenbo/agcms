@@ -32,7 +32,7 @@
                 <li><a href="/admin/sitetree/"><img src="/theme/default/images/admin/book_open.png" width="16" height="16" alt="" /> {{'Overview'|trans}}</a></li>
                 <li><a href="#" onclick="return jumpto()"><img src="/theme/default/images/admin/book_go.png" width="16" height="16" alt="" /> {{'Skip to page'|trans}}</a>
                 <form onsubmit="return jumpto()" action="" method="get"><input style="width:1px;height:1px;position:absolute;top:-20px;left:-20px" type="submit" accesskey="g" />
-                    <p style="display:inline"><input style="width:30px" id="jumptoid" name="id" /></p>
+                    <p style="display:inline"><input style="width:30px" id="jumptoid" name="id" onkeypress="return checkForInt(event)" /></p>
                 </form>
                 </li>
                 <li><a href="#" onclick="return sogsearch()">

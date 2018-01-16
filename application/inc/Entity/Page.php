@@ -9,6 +9,7 @@ class Page extends AbstractRenderable implements InterfaceRichText
     const TABLE_NAME = 'sider';
 
     // Backed by DB
+
     /** @var string Stock keeping unit. */
     private $sku = '';
 

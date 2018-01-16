@@ -16,10 +16,12 @@
     <div id="spar">Spar<br />{{(100 / renderable.oldPrice * (renderable.oldPrice - renderable.price))|round}}%</div>
     {% endif %}
     {% if renderable.requirement %}
-    <a id="krav" href="{{renderable.requirement.canonicalLink}}" onclick="return openkrav({{renderable.requirement.canonicalLink|json_encode()}})" target="krav">
-        <img src="/theme/arms-gallery.dk/images/advarsel.gif" alt="" title="" width="54" height="47" /><br />
-        {{renderable.requirement.title}}
-    </a>
+    <p class="requirement">
+        <a href="{{renderable.requirement.canonicalLink}}" onclick="return openkrav({{renderable.requirement.canonicalLink|json_encode()}})" target="requirement">
+            <img src="/theme/arms-gallery.dk/images/advarsel.gif" alt="" title="" width="54" height="47" /><br />
+            {{renderable.requirement.title}}
+        </a>
+    </p>
     {% endif %}
     {% if renderable.sku or renderable.price or renderable.brand %}
     <p vocab="http://schema.org/" typeof="Product" style="text-align:right">
@@ -28,7 +30,7 @@
         {% if renderable.icon %}<meta property="image" content="{{renderable.icon.path}}" />{% endif %}
         {% if renderable.excerpt %}<meta property="description" content="{{renderable.excerpt}}" />{% endif %}
         {% if renderable.sku %}
-        <br /><strong>Varenr: <span property="sku">{{renderable.sku}}</span></strong><br />
+        <strong>Varenr: <span property="sku">{{renderable.sku}}</span></strong><br />
         {% endif %}
         {% if not hasProductTable %}{% include 'price.html' with {'product': renderable} %}{% endif %}
         {% if renderable.price > 0 %}
@@ -37,7 +39,7 @@
             <meta property="priceCurrency" content="{{'USD'|trans}}" />
         </span>
         {% if not hasProductTable %}
-        <a href="" onclick="shoppingCart.addItem('page',{{renderable.id}});return false">
+        &nbsp;<a href="" onclick="shoppingCart.addItem('page',{{renderable.id}});return false">
             <img src="/theme/default/images/cart_add.png" alt="+" title="{{'Add to shopping cart'|trans}}" />
         </a>
         {% endif %}

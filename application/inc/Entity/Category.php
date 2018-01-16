@@ -19,6 +19,7 @@ class Category extends AbstractRenderable
     const LIST = 2;
 
     // Backed by DB
+
     /** @var ?int */
     private $parentId;
 
@@ -38,6 +39,7 @@ class Category extends AbstractRenderable
     private $weight = 0;
 
     // Runtime
+
     /** @var ?bool Cache if category is visible or not. */
     private $visable;
 
@@ -366,7 +368,7 @@ class Category extends AbstractRenderable
     {
         Render::addLoadedTable('bind');
 
-        if (!in_array($order, ['navn', 'for', 'pris', 'varenr'])) {
+        if (!in_array($order, ['navn', 'for', 'pris', 'varenr'], true)) {
             $order = 'navn';
         }
 
@@ -390,7 +392,7 @@ class Category extends AbstractRenderable
                 'object' => $page,
             ];
         }
-        $objectArray = arrayNatsort($objectArray, 'id', $order, $reverseOrder ? 'desc' : '');
+        $objectArray = arrayNatsort($objectArray, $order, $reverseOrder ? 'desc' : '');
         $pages = [];
         foreach ($objectArray as $item) {
             $pages[] = $item['object'];

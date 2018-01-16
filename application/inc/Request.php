@@ -22,8 +22,8 @@ class Request extends SymfonyRequest
     {
         $request = parent::createFromGlobals();
 
-        if (0 === strpos($request->headers->get('CONTENT_TYPE'), 'application/json')
-            && in_array(strtoupper($request->server->get('REQUEST_METHOD', 'GET')), ['POST', 'PUT', 'DELETE', 'PATCH'])
+        if (0 === mb_strpos($request->headers->get('CONTENT_TYPE'), 'application/json')
+            && in_array(mb_strtoupper($request->server->get('REQUEST_METHOD', 'GET')), ['POST', 'PUT', 'DELETE', 'PATCH'], true)
         ) {
             $data = json_decode($request->getContent(), true) ?? [];
             $data = is_array($data) ? $data : ['json' => $data];

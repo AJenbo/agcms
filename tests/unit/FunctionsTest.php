@@ -2,7 +2,7 @@
 
 use PHPUnit\Framework\TestCase;
 
-class functionsTest extends TestCase
+class FunctionsTest extends TestCase
 {
     /**
      * @covers \encodeUrl
@@ -63,7 +63,7 @@ class functionsTest extends TestCase
             ['a' => '10'],
         ];
 
-        $this->assertSame($expected, arrayNatsort($list, 'a', 'a'));
+        $this->assertSame($expected, arrayNatsort($list, 'a'));
     }
 
     /**
@@ -85,7 +85,7 @@ class functionsTest extends TestCase
             ['a' => '1'],
         ];
 
-        $this->assertSame($expected, arrayNatsort($list, 'a', 'a', 'desc'));
+        $this->assertSame($expected, arrayNatsort($list, 'a', 'desc'));
     }
 
     /**

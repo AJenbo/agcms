@@ -8,18 +8,24 @@ class Table extends AbstractEntity
 {
     /** Table name in database. */
     const TABLE_NAME = 'lists';
+
     /** Cell string */
     const COLUMN_TYPE_STRING = 0;
+
     /** Cell integer */
     const COLUMN_TYPE_INT = 1;
+
     /** Cell price */
     const COLUMN_TYPE_PRICE = 2;
+
     /** Cell sales price */
     const COLUMN_TYPE_PRICE_NEW = 3;
+
     /** Cell previous price */
     const COLUMN_TYPE_PRICE_OLD = 4;
 
     // Backed by DB
+
     /** @var int Parent page id. */
     private $pageId;
 
@@ -36,6 +42,7 @@ class Table extends AbstractEntity
     private $hasPrices = false;
 
     // Runtime
+
     /** @var array[] Decoded column data. */
     private $columns = [];
 
@@ -353,35 +360,25 @@ class Table extends AbstractEntity
         $orderBy = min($orderBy, count($this->columns) - 1);
 
         if (!$this->columns[$orderBy]['sorting']) {
-            return arrayNatsort($rows, 'id', (string) $orderBy); // Alpha numeric
+            return arrayNatsort($rows, (string) $orderBy); // Alpha numeric
         }
 
         $options = $this->columns[$orderBy]['options'];
+        $options = array_flip($options);
 
-        $arySort = [];
-        foreach ($rows as $aryRow) {
-            $arySort[$aryRow['id']] = -1;
-            foreach ($options as $kalKey => $kalSort) {
-                if ($aryRow[$orderBy] == $kalSort) {
-                    $arySort[$aryRow['id']] = $kalKey;
-                    break;
-                }
-            }
+        $tempArray = [];
+        foreach ($rows as $rowKey => $row) {
+            $tempArray[$rowKey] = $options[$row[$orderBy]] ?? -1;
         }
 
-        natcasesort($arySort);
+        asort($tempArray);
 
-        $aryResult = [];
-        foreach (array_keys($arySort) as $arySortKey) {
-            foreach ($rows as $aryRow) {
-                if ($aryRow['id'] == $arySortKey) {
-                    $aryResult[] = $aryRow;
-                    break;
-                }
-            }
+        $result = [];
+        foreach (array_keys($tempArray) as $rowKey) {
+            $result[] = $rows[$rowKey];
         }
 
-        return $aryResult;
+        return $result;
     }
 
     /**
