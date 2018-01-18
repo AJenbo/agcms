@@ -1032,6 +1032,7 @@ window.addEventListener("DOMContentLoaded", function(event) {
     window.sogsearch = sogsearch;
     window.setPaymentTransferred = setPaymentTransferred;
     window.confirmPaymentValidate = confirmPaymentValidate;
+    window.getRadio = getRadio;
 
     // Lists
     window.listlink = listlink;
