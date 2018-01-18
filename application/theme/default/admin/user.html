@@ -29,13 +29,16 @@
         <tr>
             <td>{{'Access level:'|trans}}</td>
             <td>
-                <select name="access" id="access">
+                <select name="access" id="access" {% if currentUser.accessLevel != 1 %}style="display:none"{% endif %}>
                     {% for level, name in accessLevels %}
                     <option{% if user.accessLevel == level %} selected="selected"{% endif %} value="{{level}}">
                         {{name}}
                     </option>
                     {% endfor %}
                 </select>
+                {% if currentUser.accessLevel != 1 %}
+                {{accessLevels[user.accessLevel]}}
+                {% endif %}
             </td>
         </tr>
         {% if currentUser.id == user.id %}
