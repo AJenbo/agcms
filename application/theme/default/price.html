@@ -6,7 +6,7 @@
     {% else %}
         {{'Before:'|trans}} <span class="XPris">
     {% endif %}
-    {{product.oldPrice|number_format(2, localeconv.mon_decimal_point, localeconv.mon_thousands_sep)}} </span>
+    {{product.oldPrice|number_format(2, localeconv.mon_decimal_point, localeconv.mon_thousands_sep)}}</span>&nbsp;
 {% endif %}
 
 {% if product.price > 0 %}
