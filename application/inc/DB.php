@@ -75,7 +75,7 @@ class DB
      */
     public function query(string $query): int
     {
-        $stmt = $this->connection->query($query)->rowCount();
+        $this->connection->query($query);
 
         return $this->connection->lastInsertId();
     }
