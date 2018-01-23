@@ -167,19 +167,19 @@ class ExplorerController extends AbstractAdminController
                 $sql .= '(';
             }
             if ($qpath) {
-                $sql .= "MATCH(path) AGAINST(" . db()->quote($qpath) . ")>0";
+                $sql .= 'MATCH(path) AGAINST(' . db()->quote($qpath) . ')>0';
             }
             if ($qpath && $qalt) {
                 $sql .= ' OR ';
             }
             if ($qalt) {
-                $sql .= "MATCH(alt) AGAINST(" . db()->quote($qalt) . ")>0";
+                $sql .= 'MATCH(alt) AGAINST(' . db()->quote($qalt) . ')>0';
             }
             if ($qpath) {
-                $sql .= " OR `path` LIKE " . db()->quote('%' . $qpath . '%');
+                $sql .= ' OR `path` LIKE ' . db()->quote('%' . $qpath . '%');
             }
             if ($qalt) {
-                $sql .= " OR `alt` LIKE " . db()->quote('%' . $qalt . '%');
+                $sql .= ' OR `alt` LIKE ' . db()->quote('%' . $qalt . '%');
             }
             if ($qpath || $qalt) {
                 $sql .= ')';
