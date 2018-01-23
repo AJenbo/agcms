@@ -166,7 +166,7 @@ class Search extends Base
         string $antiWords = ''
     ): array {
         $simpleQuery = '%' . preg_replace('/\s+/u', '%', $searchString) . '%';
-        $simpleQuery = db()->eand($simpleQuery);
+        $simpleQuery = db()->quote($simpleQuery);
 
         //Full search
         $where = '';
