@@ -264,11 +264,11 @@ class File extends AbstractEntity
     {
         $newPathEsc = db()->quote('="' . $newPath . '"');
         $pathEsc = db()->quote('="' . $path . '"');
-        db()->query("UPDATE sider     SET text = REPLACE(text, " . $pathEsc . ", " . $newPathEsc . ")");
-        db()->query("UPDATE template  SET text = REPLACE(text, " . $pathEsc . ", " . $newPathEsc . ")");
-        db()->query("UPDATE special   SET text = REPLACE(text, " . $pathEsc . ", " . $newPathEsc . ")");
-        db()->query("UPDATE krav      SET text = REPLACE(text, " . $pathEsc . ", " . $newPathEsc . ")");
-        db()->query("UPDATE newsmails SET text = REPLACE(text, " . $pathEsc . ", " . $newPathEsc . ")");
+        db()->query('UPDATE sider     SET text = REPLACE(text, ' . $pathEsc . ', ' . $newPathEsc . ')');
+        db()->query('UPDATE template  SET text = REPLACE(text, ' . $pathEsc . ', ' . $newPathEsc . ')');
+        db()->query('UPDATE special   SET text = REPLACE(text, ' . $pathEsc . ', ' . $newPathEsc . ')');
+        db()->query('UPDATE krav      SET text = REPLACE(text, ' . $pathEsc . ', ' . $newPathEsc . ')');
+        db()->query('UPDATE newsmails SET text = REPLACE(text, ' . $pathEsc . ', ' . $newPathEsc . ')');
     }
 
     /**
@@ -370,7 +370,7 @@ class File extends AbstractEntity
         /** @var ?static */
         $file = ORM::getOneByQuery(
             static::class,
-            'SELECT * FROM `' . self::TABLE_NAME . "` WHERE path = " . db()->quote($path)
+            'SELECT * FROM `' . self::TABLE_NAME . '` WHERE path = ' . db()->quote($path)
         );
 
         return $file;

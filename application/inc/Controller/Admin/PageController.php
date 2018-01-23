@@ -375,14 +375,14 @@ class PageController extends AbstractAdminController
         /** @var Page[] */
         $pages = ORM::getByQuery(
             Page::class,
-            "
+            '
             SELECT * FROM sider
-            WHERE MATCH (navn, text, beskrivelse) AGAINST(" . db()->quote($text) . ") > 0
-                OR `navn` LIKE " . db()->quote('%' . $simpleq . '%') . "
-                OR `text` LIKE " . db()->quote('%' . $simpleq . '%') . "
-                OR `beskrivelse` LIKE " . db()->quote('%' . $simpleq . '%') . "
-            ORDER BY MATCH (navn, text, beskrivelse) AGAINST(" . db()->quote($text) . ") DESC
-            "
+            WHERE MATCH (navn, text, beskrivelse) AGAINST(' . db()->quote($text) . ') > 0
+                OR `navn` LIKE ' . db()->quote('%' . $simpleq . '%') . '
+                OR `text` LIKE ' . db()->quote('%' . $simpleq . '%') . '
+                OR `beskrivelse` LIKE ' . db()->quote('%' . $simpleq . '%') . '
+            ORDER BY MATCH (navn, text, beskrivelse) AGAINST(' . db()->quote($text) . ') DESC
+            '
         );
 
         return $pages;

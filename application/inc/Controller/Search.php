@@ -174,7 +174,7 @@ class Search extends Base
             $where = ' AND `maerke` = ' . $brandId;
         }
         if ($varenr) {
-            $where .= " AND varenr LIKE " . db()->eanq($varenr . '%');
+            $where .= ' AND varenr LIKE ' . db()->eanq($varenr . '%');
         }
         if ($minpris) {
             $where .= ' AND pris > ' . $minpris;

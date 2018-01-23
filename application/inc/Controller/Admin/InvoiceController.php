@@ -134,16 +134,16 @@ class InvoiceController extends AbstractAdminController
         }
 
         if ($selected['name']) {
-            $where[] = "`navn` LIKE " . db()->quote('%' . $selected['name'] . '%');
+            $where[] = '`navn` LIKE ' . db()->quote('%' . $selected['name'] . '%');
         }
 
         if ($selected['tlf']) {
-            $where[] = "(`tlf1` LIKE " . db()->quote('%' . $selected['tlf'] . '%')
-                . " OR `tlf2` LIKE " . db()->quote('%' . $selected['tlf'] . '%') . ")";
+            $where[] = '(`tlf1` LIKE ' . db()->quote('%' . $selected['tlf'] . '%')
+                . ' OR `tlf2` LIKE ' . db()->quote('%' . $selected['tlf'] . '%') . ')';
         }
 
         if ($selected['email']) {
-            $where[] = "`email` LIKE " . db()->endq('%' . $selected['email'] . '%');
+            $where[] = '`email` LIKE ' . db()->endq('%' . $selected['email'] . '%');
         }
 
         if (null !== $selected['momssats']) {
