@@ -12,15 +12,12 @@ class DB
     /**
      * Connect the database and set session to UTF-8 Danish.
      *
-     * @param string $host
+     * @param string $dsn
      * @param string $user
      * @param string $password
-     * @param string $schema
      */
-    public function __construct(string $host, string $user, string $password, string $schema)
+    public function __construct(string $dsn, string $user, string $password)
     {
-        $dsn = 'mysql:dbname=' . $schema . ';host=' . $host;
-
         $this->connection = new PDO($dsn, $user, $password);
         $this->connection->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 

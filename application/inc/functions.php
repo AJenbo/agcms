@@ -17,12 +17,8 @@ function db(DB $overwrite = null): DB
     if ($overwrite) {
         $connection = $overwrite;
     } elseif (!$connection) {
-        $connection = new DB(
-            config('mysql_server'),
-            config('mysql_user'),
-            config('mysql_password'),
-            config('mysql_database')
-        );
+        $dsn = 'mysql:dbname=' . config('mysql_database') . ';host=' . config('mysql_server');
+        $connection = new DB($dsn, config('mysql_user'), config('mysql_password'));
     }
 
     return $connection;
