@@ -126,8 +126,8 @@ class ExplorerController extends AbstractAdminController
     public function search(Request $request): JsonResponse
     {
         $returnType = $request->get('return', '');
-        $qpath = db()->escapeWildcards(db()->esc($request->get('qpath', '')));
-        $qalt = db()->escapeWildcards(db()->esc($request->get('qalt', '')));
+        $qpath = db()->escapeWildcards($request->get('qpath', ''));
+        $qalt = db()->escapeWildcards($request->get('qalt', ''));
 
         $qtype = $request->get('qtype');
         $sqlMime = '';
@@ -167,19 +167,19 @@ class ExplorerController extends AbstractAdminController
                 $sql .= '(';
             }
             if ($qpath) {
-                $sql .= "MATCH(path) AGAINST('" . $qpath . "')>0";
+                $sql .= "MATCH(path) AGAINST(" . db()->quote($qpath) . ")>0";
             }
             if ($qpath && $qalt) {
                 $sql .= ' OR ';
             }
             if ($qalt) {
-                $sql .= "MATCH(alt) AGAINST('" . $qalt . "')>0";
+                $sql .= "MATCH(alt) AGAINST(" . db()->quote($qalt) . ")>0";
             }
             if ($qpath) {
-                $sql .= " OR `path` LIKE '%" . $qpath . "%' ";
+                $sql .= " OR `path` LIKE " . db()->quote('%' . $qpath . '%');
             }
             if ($qalt) {
-                $sql .= " OR `alt` LIKE '%" . $qalt . "%'";
+                $sql .= " OR `alt` LIKE " . db()->quote('%' . $qalt . '%');
             }
             if ($qpath || $qalt) {
                 $sql .= ')';
@@ -199,13 +199,13 @@ class ExplorerController extends AbstractAdminController
                 $sqlSelect .= '(';
             }
             if ($qpath) {
-                $sqlSelect .= 'MATCH(path) AGAINST(\'' . $qpath . '\')';
+                $sqlSelect .= 'MATCH(path) AGAINST(' . db()->quote($qpath) . ')';
             }
             if ($qpath && $qalt) {
                 $sqlSelect .= ' + ';
             }
             if ($qalt) {
-                $sqlSelect .= 'MATCH(alt) AGAINST(\'' . $qalt . '\')';
+                $sqlSelect .= 'MATCH(alt) AGAINST(' . db()->quote($qalt) . ')';
             }
             if ($qpath && $qalt) {
                 $sqlSelect .= ')';
@@ -372,7 +372,7 @@ class ExplorerController extends AbstractAdminController
             $richTexts = ORM::getByQuery(
                 $className,
                 'SELECT * FROM `' . $className::TABLE_NAME
-                    . "` WHERE `text` LIKE '%=\"" . db()->esc($file->getPath()) . "\"%'"
+                    . '` WHERE `text` LIKE ' . db()->quote('%="' . $file->getPath() . '"%')
             );
             $this->updateAltInHtml($richTexts, $file);
         }

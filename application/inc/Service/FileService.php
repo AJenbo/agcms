@@ -50,7 +50,7 @@ class FileService
         /** @var File[] */
         $files = ORM::getByQuery(
             File::class,
-            'SELECT * FROM `' . File::TABLE_NAME . "` WHERE path LIKE '" . db()->esc($path) . "/%'"
+            'SELECT * FROM `' . File::TABLE_NAME . "` WHERE path LIKE " . db()->quote($path . '/%')
         );
         foreach ($files as $file) {
             if ($file->isInUse()) {
@@ -156,17 +156,18 @@ class FileService
      */
     public function replaceFolderPaths(string $path, string $newPath): void
     {
-        $newPathEsc = db()->esc($newPath);
-        $pathEsc = db()->esc($path);
-        db()->query("UPDATE sider    SET text = REPLACE(text, '=\"" . $pathEsc . "', '=\"" . $newPathEsc . "')");
-        db()->query("UPDATE template SET text = REPLACE(text, '=\"" . $pathEsc . "', '=\"" . $newPathEsc . "')");
-        db()->query("UPDATE special  SET text = REPLACE(text, '=\"" . $pathEsc . "', '=\"" . $newPathEsc . "')");
-        db()->query("UPDATE krav     SET text = REPLACE(text, '=\"" . $pathEsc . "', '=\"" . $newPathEsc . "')");
+        $newPathEsc = db()->quote('="' . $newPath . '/');
+        $pathEsc = db()->quote('="' . $path . '/');
+        db()->query("UPDATE sider    SET text = REPLACE(text, " . $pathEsc . ", " . $newPathEsc . ")");
+        db()->query("UPDATE template SET text = REPLACE(text, " . $pathEsc . ", " . $newPathEsc . ")");
+        db()->query("UPDATE special  SET text = REPLACE(text, " . $pathEsc . ", " . $newPathEsc . ")");
+        db()->query("UPDATE krav     SET text = REPLACE(text, " . $pathEsc . ", " . $newPathEsc . ")");
+
         db()->query(
             "
             UPDATE files
-            SET path = REPLACE(path, '" . $pathEsc . "', '" . $newPathEsc . "')
-            WHERE path LIKE '$pathEsc%'
+            SET path = REPLACE(path, " . db()->quote($path . '/') . ", " . db()->quote($newPath . '/') . ")
+            WHERE path LIKE " . db()->quote($path . '/%') . "
             "
         );
     }

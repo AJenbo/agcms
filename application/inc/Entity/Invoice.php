@@ -1369,11 +1369,11 @@ class Invoice extends AbstractEntity
         $itemTitle = implode('<', $itemTitle);
         $itemValue = implode('<', $itemValue);
 
-        $paydate = db()->eandq('0000-00-00');
+        $paydate = db()->quote('0000-00-00');
         if ($this->timeStampPay + db()->getTimeOffset()) {
             $paydate = 'FROM_UNIXTIME(' . ($this->timeStampPay + db()->getTimeOffset()) . ')';
         }
-        $date = db()->eandq('0000-00-00');
+        $date = db()->quote('0000-00-00');
         if ($this->timeStamp + db()->getTimeOffset()) {
             $date = 'FROM_UNIXTIME(' . ($this->timeStamp + db()->getTimeOffset()) . ')';
         }
@@ -1381,44 +1381,44 @@ class Invoice extends AbstractEntity
         return [
             'paydate'        => $paydate,
             'date'           => $date,
-            'quantities'     => db()->eandq($itemQuantities),
-            'products'       => db()->eandq($itemTitle),
-            'values'         => db()->eandq($itemValue),
+            'quantities'     => db()->quote($itemQuantities),
+            'products'       => db()->quote($itemTitle),
+            'values'         => db()->quote($itemValue),
             'amount'         => db()->escNum($this->amount),
-            'navn'           => db()->eandq($this->name),
-            'att'            => db()->eandq($this->attn),
-            'adresse'        => db()->eandq($this->address),
-            'postbox'        => db()->eandq($this->postbox),
-            'postnr'         => db()->eandq($this->postcode),
-            'by'             => db()->eandq($this->city),
-            'land'           => db()->eandq($this->country),
-            'email'          => db()->eandq($this->email),
-            'tlf1'           => db()->eandq($this->phone1),
-            'tlf2'           => db()->eandq($this->phone2),
+            'navn'           => db()->quote($this->name),
+            'att'            => db()->quote($this->attn),
+            'adresse'        => db()->quote($this->address),
+            'postbox'        => db()->quote($this->postbox),
+            'postnr'         => db()->quote($this->postcode),
+            'by'             => db()->quote($this->city),
+            'land'           => db()->quote($this->country),
+            'email'          => db()->quote($this->email),
+            'tlf1'           => db()->quote($this->phone1),
+            'tlf2'           => db()->quote($this->phone2),
             'altpost'        => (string) (int) $this->hasShippingAddress,
-            'posttlf'        => db()->eandq($this->shippingPhone),
-            'postname'       => db()->eandq($this->shippingName),
-            'postatt'        => db()->eandq($this->shippingAttn),
-            'postaddress'    => db()->eandq($this->shippingAddress),
-            'postaddress2'   => db()->eandq($this->shippingAddress2),
-            'postpostbox'    => db()->eandq($this->shippingPostbox),
-            'postpostalcode' => db()->eandq($this->shippingPostcode),
-            'postcity'       => db()->eandq($this->shippingCity),
-            'postcountry'    => db()->eandq($this->shippingCountry),
-            'note'           => db()->eandq($this->note),
-            'clerk'          => db()->eandq($this->clerk),
-            'status'         => db()->eandq($this->status),
+            'posttlf'        => db()->quote($this->shippingPhone),
+            'postname'       => db()->quote($this->shippingName),
+            'postatt'        => db()->quote($this->shippingAttn),
+            'postaddress'    => db()->quote($this->shippingAddress),
+            'postaddress2'   => db()->quote($this->shippingAddress2),
+            'postpostbox'    => db()->quote($this->shippingPostbox),
+            'postpostalcode' => db()->quote($this->shippingPostcode),
+            'postcity'       => db()->quote($this->shippingCity),
+            'postcountry'    => db()->quote($this->shippingCountry),
+            'note'           => db()->quote($this->note),
+            'clerk'          => db()->quote($this->clerk),
+            'status'         => db()->quote($this->status),
             'fragt'          => db()->escNum($this->shipping),
             'momssats'       => db()->escNum($this->vat),
             'premoms'        => (string) (int) $this->preVat,
             'transferred'    => (string) (int) $this->transferred,
-            'cardtype'       => db()->eandq($this->cardtype),
-            'iref'           => db()->eandq($this->iref),
-            'eref'           => db()->eandq($this->eref),
+            'cardtype'       => db()->quote($this->cardtype),
+            'iref'           => db()->quote($this->iref),
+            'eref'           => db()->quote($this->eref),
             'sendt'          => (string) (int) $this->sent,
             'payment_id'     => null !== $this->paymentId ? (string) $this->paymentId : 'NULL',
-            'department'     => db()->eandq($this->department),
-            'enote'          => db()->eandq($this->internalNote),
+            'department'     => db()->quote($this->department),
+            'enote'          => db()->quote($this->internalNote),
         ];
     }
 }

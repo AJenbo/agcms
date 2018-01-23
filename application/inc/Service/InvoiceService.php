@@ -169,7 +169,7 @@ class InvoiceService
         /** @var ?Contact */
         $conteact = ORM::getOneByQuery(
             Contact::class,
-            'SELECT * FROM email WHERE email = ' . db()->eandq($invoice->getEmail())
+            'SELECT * FROM email WHERE email = ' . db()->quote($invoice->getEmail())
         );
         if (!$conteact) {
             $conteact = new Contact([

@@ -377,11 +377,11 @@ class PageController extends AbstractAdminController
             Page::class,
             "
             SELECT * FROM sider
-            WHERE MATCH (navn, text, beskrivelse) AGAINST(" . db()->eandq($text) . ") > 0
-                OR `navn` LIKE " . db()->eandq('%' . $simpleq . '%') . "
-                OR `text` LIKE " . db()->eandq('%' . $simpleq . '%') . "
-                OR `beskrivelse` LIKE '%" . db()->esc($simpleq) . "%'
-            ORDER BY MATCH (navn, text, beskrivelse) AGAINST(" . db()->eandq($text) . ") DESC
+            WHERE MATCH (navn, text, beskrivelse) AGAINST(" . db()->quote($text) . ") > 0
+                OR `navn` LIKE " . db()->quote('%' . $simpleq . '%') . "
+                OR `text` LIKE " . db()->quote('%' . $simpleq . '%') . "
+                OR `beskrivelse` LIKE " . db()->quote('%' . $simpleq . '%') . "
+            ORDER BY MATCH (navn, text, beskrivelse) AGAINST(" . db()->quote($text) . ") DESC
             "
         );
 

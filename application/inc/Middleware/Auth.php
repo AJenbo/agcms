@@ -71,7 +71,7 @@ class Auth implements Middleware
         /** @var ?User */
         $user = ORM::getOneByQuery(
             User::class,
-            'SELECT * FROM `users` WHERE `name` = ' . db()->eandq($request->get('username', ''))
+            'SELECT * FROM `users` WHERE `name` = ' . db()->quote($request->get('username', ''))
         );
         if ($user && $user->getAccessLevel() && $user->validatePassword($request->get('password', ''))) {
             $request->startSession();

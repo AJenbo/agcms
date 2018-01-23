@@ -133,7 +133,7 @@ class Brand extends AbstractRenderable
             SELECT sider.*
             FROM sider
             WHERE maerke = ' . $this->getId() . '
-            ORDER BY sider.`' . db()->esc($order) . '` ASC
+            ORDER BY sider.`' . $order . '` ASC
             '
         );
 
@@ -171,8 +171,8 @@ class Brand extends AbstractRenderable
     public function getDbArray(): array
     {
         return [
-            'navn'    => db()->eandq($this->title),
-            'link'    => db()->eandq($this->link),
+            'navn'    => db()->quote($this->title),
+            'link'    => db()->quote($this->link),
             'icon_id' => null !== $this->iconId ? (string) $this->iconId : 'NULL',
         ];
     }

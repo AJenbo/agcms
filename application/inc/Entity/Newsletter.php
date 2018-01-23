@@ -182,11 +182,11 @@ class Newsletter extends AbstractEntity implements InterfaceRichText
         $interests = implode('<', $interests);
 
         return [
-            'from'         => db()->eandq($this->from),
-            'subject'      => db()->eandq($this->subject),
-            'text'         => db()->eandq($this->html),
-            'sendt'        => db()->eandq((string) (int) $this->sent),
-            'interests'    => db()->eandq($interests),
+            'from'         => db()->quote($this->from),
+            'subject'      => db()->quote($this->subject),
+            'text'         => db()->quote($this->html),
+            'sendt'        => db()->quote((string) (int) $this->sent),
+            'interests'    => db()->quote($interests),
         ];
     }
 

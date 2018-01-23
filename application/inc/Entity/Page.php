@@ -678,11 +678,11 @@ class Page extends AbstractRenderable implements InterfaceRichText
 
         return [
             'dato'        => 'NOW()',
-            'navn'        => db()->eandq($this->title),
-            'keywords'    => db()->eandq($this->keywords),
-            'text'        => db()->eandq($this->html),
-            'varenr'      => db()->eandq($this->sku),
-            'beskrivelse' => db()->eandq($this->excerpt),
+            'navn'        => db()->quote($this->title),
+            'keywords'    => db()->quote($this->keywords),
+            'text'        => db()->quote($this->html),
+            'varenr'      => db()->quote($this->sku),
+            'beskrivelse' => db()->quote($this->excerpt),
             'icon_id'     => null !== $this->iconId ? (string) $this->iconId : 'NULL',
             'krav'        => null !== $this->requirementId ? (string) $this->requirementId : 'NULL',
             'maerke'      => null !== $this->brandId ? (string) $this->brandId : 'NULL',

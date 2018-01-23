@@ -1,16 +1,13 @@
 <?php namespace AGCMS;
 
-use AGCMS\Exception\Exception;
-use mysqli;
+use PDO;
 
-/**
- * @property int $insert_id
- * @property int $affected_rows
- */
-class DB extends mysqli
+class DB
 {
     /** @var int */
     private static $timeOffset;
+    /** @var PDO */
+    private $connection;
 
     /**
      * Connect the database and set session to UTF-8 Danish.
@@ -20,40 +17,35 @@ class DB extends mysqli
      * @param string $password
      * @param string $schema
      */
-    public function __construct($host, $user, $password, $schema)
+    public function __construct(string $host, string $user, string $password, string $schema)
     {
-        parent::__construct($host, $user, $password, $schema);
+        $dsn = 'mysql:dbname=' . $schema . ';host=' . $host;
 
-        // Throwing an exception in the constructor can revel the password
-        if (mysqli_connect_error()) {
-            return;
-        }
+        $this->connection = new PDO($dsn, $user, $password);
+        $this->connection->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
-        $this->query("SET NAMES 'UTF8'");
-        $this->query("SET SESSION character_set_server = 'UTF8'");
-        $this->query('SET collation_server=utf8_danish_ci');
+        $this->connection->query("SET NAMES 'UTF8'");
+        $this->connection->query("SET SESSION character_set_server = 'UTF8'");
+        $this->connection->query('SET collation_server=utf8_danish_ci');
     }
 
     /**
      * Performe query and return result as an array of associative arrays.
      *
-     * @param string $query The MySQL query to preforme
+     * @param string $query The SQL query to preforme
      *
-     * @throws Exception
+     * @throws \PDOException
      *
      * @return array[]
      */
     public function fetchArray(string $query): array
     {
-        $result = parent::query($query);
-        if (mysqli_error($this)) {
-            throw new Exception(mysqli_error($this), mysqli_errno($this));
-        }
+        $result = $this->connection->query($query, PDO::FETCH_ASSOC);
         $rows = [];
-        while ($row = $result->fetch_assoc()) {
+        foreach ($result as $row) {
             $rows[] = $row;
         }
-        $result->close();
+        $result->closeCursor();
 
         return $rows;
     }
@@ -61,7 +53,7 @@ class DB extends mysqli
     /**
      * Performe query and return the first result as an associative arrays.
      *
-     * @param string $query The MySQL query to preforme
+     * @param string $query The SQL query to preforme
      */
     public function fetchOne(string $query): array
     {
@@ -78,23 +70,21 @@ class DB extends mysqli
     /**
      * Performe query.
      *
-     * @param string   $query      The query string
-     * @param int|null $resultmode
+     * @param string $query The query string
      *
-     * @throws Exception
+     * @throws \PDOException
      *
-     * @return void
+     * @return int
      */
-    public function query($query, $resultmode = null): void
+    public function query(string $query): int
     {
-        parent::query($query, $resultmode);
-        if (mysqli_error($this)) {
-            throw new Exception(mysqli_error($this), mysqli_errno($this));
-        }
+        $stmt = $this->connection->query($query)->rowCount();
+
+        return $this->connection->lastInsertId();
     }
 
     /**
-     * Escape all MySQL wildcards.
+     * Escape all SQL wildcards.
      *
      * @param string $string String to process
      *
@@ -106,27 +96,15 @@ class DB extends mysqli
     }
 
     /**
-     * Escape a string for concatting in squery string.
-     *
-     * @param string $string The sting to escape
-     *
-     * @return string
-     */
-    public function esc(string $string): string
-    {
-        return parent::real_escape_string($string);
-    }
-
-    /**
      * Escape and quate a string.
      *
      * @param string $string
      *
      * @return string
      */
-    public function eandq(string $string): string
+    public function quote(string $string): string
     {
-        return '"' . $this->esc($string) . '"';
+        return $this->connection->quote($string);
     }
 
     public function escNum(float $number, int $decimals = 2): string

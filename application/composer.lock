@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "content-hash": "a9fdb45d31680908f23059b525fdc870",
+    "content-hash": "b98e6716399d229ec9c373a720008bed",
     "packages": [
         {
             "name": "ajenbo/image.php",
@@ -2952,7 +2952,8 @@
     "platform": {
         "php": ">=7.1.0",
         "ext-mbstring": "*",
-        "ext-mysqli": "*",
+        "ext-pdo": "*",
+        "ext-pdo_mysql": "*",
         "ext-gettext": "*",
         "ext-soap": "*",
         "ext-xml": "*",

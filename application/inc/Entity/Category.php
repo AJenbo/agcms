@@ -378,7 +378,7 @@ class Category extends AbstractRenderable
             '
             SELECT * FROM sider
             WHERE id IN(SELECT side FROM bind WHERE kat = ' . $this->getId() . ')
-            ORDER BY `' . db()->esc($order) . '` ' . ($reverseOrder ? 'DESC' : 'ASC')
+            ORDER BY `' . $order . '` ' . ($reverseOrder ? 'DESC' : 'ASC')
         );
 
         $objectArray = [];
@@ -519,11 +519,11 @@ class Category extends AbstractRenderable
     public function getDbArray(): array
     {
         return [
-            'navn'             => db()->eandq($this->title),
+            'navn'             => db()->quote($this->title),
             'bind'             => null !== $this->parentId ? (string) $this->parentId : 'NULL',
             'icon_id'          => null !== $this->iconId ? (string) $this->iconId : 'NULL',
             'vis'              => (string) $this->renderMode,
-            'email'            => db()->eandq($this->email),
+            'email'            => db()->quote($this->email),
             'custom_sort_subs' => (string) (int) $this->weightedChildren,
             'order'            => (string) $this->weight,
             'access'           => '""',

@@ -10,7 +10,8 @@
     "require": {
         "php": ">=7.1.0",
         "ext-mbstring": "*",
-        "ext-mysqli": "*",
+        "ext-pdo": "*",
+        "ext-pdo_mysql": "*",
         "ext-gettext": "*",
         "ext-soap": "*",
         "ext-xml": "*",

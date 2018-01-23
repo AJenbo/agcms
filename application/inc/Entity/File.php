@@ -223,10 +223,10 @@ class File extends AbstractEntity
     public function getDbArray(): array
     {
         return [
-            'path'   => db()->eandq($this->path),
-            'mime'   => db()->eandq($this->mime),
+            'path'   => db()->quote($this->path),
+            'mime'   => db()->quote($this->mime),
             'size'   => (string) $this->size,
-            'alt'    => db()->eandq($this->description),
+            'alt'    => db()->quote($this->description),
             'width'  => (string) $this->width,
             'height' => (string) $this->height,
         ];
@@ -262,13 +262,13 @@ class File extends AbstractEntity
      */
     private function replacePaths(string $path, string $newPath): void
     {
-        $newPathEsc = db()->esc($newPath);
-        $pathEsc = db()->esc($path);
-        db()->query("UPDATE sider     SET text = REPLACE(text, '=\"" . $pathEsc . "\"', '=\"" . $newPathEsc . "\"')");
-        db()->query("UPDATE template  SET text = REPLACE(text, '=\"" . $pathEsc . "\"', '=\"" . $newPathEsc . "\"')");
-        db()->query("UPDATE special   SET text = REPLACE(text, '=\"" . $pathEsc . "\"', '=\"" . $newPathEsc . "\"')");
-        db()->query("UPDATE krav      SET text = REPLACE(text, '=\"" . $pathEsc . "\"', '=\"" . $newPathEsc . "\"')");
-        db()->query("UPDATE newsmails SET text = REPLACE(text, '=\"" . $pathEsc . "\"', '=\"" . $newPathEsc . "\"')");
+        $newPathEsc = db()->quote('="' . $newPath . '"');
+        $pathEsc = db()->quote('="' . $path . '"');
+        db()->query("UPDATE sider     SET text = REPLACE(text, " . $pathEsc . ", " . $newPathEsc . ")");
+        db()->query("UPDATE template  SET text = REPLACE(text, " . $pathEsc . ", " . $newPathEsc . ")");
+        db()->query("UPDATE special   SET text = REPLACE(text, " . $pathEsc . ", " . $newPathEsc . ")");
+        db()->query("UPDATE krav      SET text = REPLACE(text, " . $pathEsc . ", " . $newPathEsc . ")");
+        db()->query("UPDATE newsmails SET text = REPLACE(text, " . $pathEsc . ", " . $newPathEsc . ")");
     }
 
     /**
@@ -280,14 +280,14 @@ class File extends AbstractEntity
      */
     public function isInUse(bool $onlyCheckHtml = false): bool
     {
-        $escapedPath = db()->esc($this->path);
+        $escapedPath = db()->quote('%="' . $this->path . '"%');
 
         $sql = "
-              (SELECT id FROM `sider`     WHERE `text` LIKE '%=\"$escapedPath\"%' LIMIT 1)
-        UNION (SELECT id FROM `template`  WHERE `text` LIKE '%=\"$escapedPath\"%' LIMIT 1)
-        UNION (SELECT id FROM `special`   WHERE `text` LIKE '%=\"$escapedPath\"%' LIMIT 1)
-        UNION (SELECT id FROM `krav`      WHERE `text` LIKE '%=\"$escapedPath\"%' LIMIT 1)
-        UNION (SELECT id FROM `newsmails` WHERE `text` LIKE '%=\"$escapedPath\"%' LIMIT 1)
+              (SELECT id FROM `sider`     WHERE `text` LIKE $escapedPath LIMIT 1)
+        UNION (SELECT id FROM `template`  WHERE `text` LIKE $escapedPath LIMIT 1)
+        UNION (SELECT id FROM `special`   WHERE `text` LIKE $escapedPath LIMIT 1)
+        UNION (SELECT id FROM `krav`      WHERE `text` LIKE $escapedPath LIMIT 1)
+        UNION (SELECT id FROM `newsmails` WHERE `text` LIKE $escapedPath LIMIT 1)
         ";
         Render::addLoadedTable('sider');
         Render::addLoadedTable('template');
@@ -370,7 +370,7 @@ class File extends AbstractEntity
         /** @var ?static */
         $file = ORM::getOneByQuery(
             static::class,
-            'SELECT * FROM `' . self::TABLE_NAME . "` WHERE path = '" . db()->esc($path) . "'"
+            'SELECT * FROM `' . self::TABLE_NAME . "` WHERE path = " . db()->quote($path)
         );
 
         return $file;

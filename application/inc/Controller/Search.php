@@ -166,7 +166,7 @@ class Search extends Base
         string $antiWords = ''
     ): array {
         $simpleQuery = '%' . preg_replace('/\s+/u', '%', $searchString) . '%';
-        $simpleQuery = db()->esc($simpleQuery);
+        $simpleQuery = db()->eand($simpleQuery);
 
         //Full search
         $where = '';
@@ -174,7 +174,7 @@ class Search extends Base
             $where = ' AND `maerke` = ' . $brandId;
         }
         if ($varenr) {
-            $where .= " AND varenr LIKE '" . db()->esc($varenr) . "%'";
+            $where .= " AND varenr LIKE " . db()->eanq($varenr . '%');
         }
         if ($minpris) {
             $where .= ' AND pris > ' . $minpris;
@@ -184,11 +184,11 @@ class Search extends Base
         }
         if ($antiWords) {
             $simpleAntiQuery = '%' . preg_replace('/\s+/u', '%', $antiWords) . '%';
-            $simpleAntiQuery = db()->esc($simpleAntiQuery);
-            $where .= ' AND !MATCH (navn, text, beskrivelse) AGAINST(' . db()->eandq($antiWords) . ") > 0
-            AND `navn` NOT LIKE '$simpleAntiQuery'
-            AND `text` NOT LIKE '$simpleAntiQuery'
-            AND `beskrivelse` NOT LIKE '$simpleAntiQuery'
+            $simpleAntiQuery = db()->quote($simpleAntiQuery);
+            $where .= ' AND !MATCH (navn, text, beskrivelse) AGAINST(' . db()->quote($antiWords) . ") > 0
+            AND `navn` NOT LIKE $simpleAntiQuery
+            AND `text` NOT LIKE $simpleAntiQuery
+            AND `beskrivelse` NOT LIKE $simpleAntiQuery
             ";
         }
 
@@ -205,14 +205,14 @@ class Search extends Base
             Page::class,
             '
             SELECT `' . implode('`, `', $columns) . '`
-            FROM (SELECT sider.*, MATCH(navn, text, beskrivelse) AGAINST (' . db()->eandq($searchString) . ') AS score
+            FROM (SELECT sider.*, MATCH(navn, text, beskrivelse) AGAINST (' . db()->quote($searchString) . ') AS score
             FROM sider
             JOIN bind ON sider.id = bind.side AND bind.kat != -1
             WHERE (
-                MATCH (navn, text, beskrivelse) AGAINST(' . db()->eandq($searchString) . ") > 0
-                OR `navn` LIKE '$simpleQuery'
-                OR `text` LIKE '$simpleQuery'
-                OR `beskrivelse` LIKE '$simpleQuery'
+                MATCH (navn, text, beskrivelse) AGAINST(' . db()->quote($searchString) . ") > 0
+                OR `navn` LIKE $simpleQuery
+                OR `text` LIKE $simpleQuery
+                OR `beskrivelse` LIKE $simpleQuery
             )
             $where
             ORDER BY `score` DESC) x
@@ -221,7 +221,7 @@ class Search extends Base
             JOIN lists ON list_rows.list_id = lists.id
             JOIN sider ON lists.page_id = sider.id
             JOIN bind ON sider.id = bind.side AND bind.kat != -1
-            WHERE list_rows.`cells` LIKE '$simpleQuery'"
+            WHERE list_rows.`cells` LIKE $simpleQuery"
             . $where
         );
 
@@ -258,11 +258,11 @@ class Search extends Base
             '
             SELECT * FROM `maerke`
             WHERE (
-                MATCH (navn) AGAINST(' . db()->eandq($searchString) . ') > 0
-                OR navn LIKE ' . db()->eandq($simpleSearchString) . '
+                MATCH (navn) AGAINST(' . db()->quote($searchString) . ') > 0
+                OR navn LIKE ' . db()->quote($simpleSearchString) . '
             )
-            AND !MATCH (navn) AGAINST(' . db()->eandq($antiWords) . ') > 0
-            AND navn NOT LIKE ' . db()->eandq($simpleAntiWords) . '
+            AND !MATCH (navn) AGAINST(' . db()->quote($antiWords) . ') > 0
+            AND navn NOT LIKE ' . db()->quote($simpleAntiWords) . '
             '
         );
 
@@ -290,14 +290,14 @@ class Search extends Base
         $categories = ORM::getByQuery(
             Category::class,
             '
-            SELECT *, MATCH (navn) AGAINST (' . db()->eandq($searchString) . ') AS score
+            SELECT *, MATCH (navn) AGAINST (' . db()->quote($searchString) . ') AS score
             FROM kat
             WHERE (
-                MATCH (navn) AGAINST(' . db()->eandq($searchString) . ') > 0
-                OR navn LIKE ' . db()->eandq($simpleSearchString) . '
+                MATCH (navn) AGAINST(' . db()->quote($searchString) . ') > 0
+                OR navn LIKE ' . db()->quote($simpleSearchString) . '
             )
-            AND !MATCH (navn) AGAINST(' . db()->eandq($antiWords) . ') > 0
-            AND navn NOT LIKE ' . db()->eandq($simpleAntiWords) . "
+            AND !MATCH (navn) AGAINST(' . db()->quote($antiWords) . ') > 0
+            AND navn NOT LIKE ' . db()->quote($simpleAntiWords) . "
             AND `vis` != '0'
             ORDER BY score, navn
             "

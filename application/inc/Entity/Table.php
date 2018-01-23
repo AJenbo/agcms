@@ -300,14 +300,12 @@ class Table extends AbstractEntity
         $cells = array_map('htmlspecialchars', $cells);
         $cells = implode('<', $cells);
 
-        db()->query(
+        return db()->query(
             '
             INSERT INTO `list_rows`(`list_id`, `cells`, `link`)
-            VALUES (' . $this->getId() . ', ' . db()->eandq($cells) . ', ' . (null === $link ? 'NULL' : $link) . ')
+            VALUES (' . $this->getId() . ', ' . db()->quote($cells) . ', ' . (null === $link ? 'NULL' : $link) . ')
             '
         );
-
-        return db()->insert_id;
     }
 
     /**
@@ -327,7 +325,7 @@ class Table extends AbstractEntity
         db()->query(
             '
             UPDATE `list_rows` SET
-                `cells` = ' . db()->eandq($cells) . ',
+                `cells` = ' . db()->quote($cells) . ',
                 `link` = ' . (null === $link ? 'NULL' : $link) . '
             WHERE list_id = ' . $this->getId() . '
               AND id = ' . $rowId
@@ -422,10 +420,10 @@ class Table extends AbstractEntity
 
         return [
             'page_id'    => (string) $this->pageId,
-            'title'      => db()->eandq($this->title),
-            'sorts'      => db()->eandq($columnSortings),
-            'cells'      => db()->eandq($columnTypes),
-            'cell_names' => db()->eandq($columnTitles),
+            'title'      => db()->quote($this->title),
+            'sorts'      => db()->quote($columnSortings),
+            'cells'      => db()->quote($columnTypes),
+            'cell_names' => db()->quote($columnTitles),
             'sort'       => (string) $this->orderBy,
             'link'       => (string) (int) $this->hasLinks,
         ];

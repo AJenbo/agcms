@@ -118,8 +118,8 @@ class Ajax extends Base
                     postbox postbox,
                     email
                 FROM `fakturas`
-                WHERE `tlf1` LIKE " . db()->eandq($phoneNumber) . '
-                   OR `tlf2` LIKE ' . db()->eandq($phoneNumber) . '
+                WHERE `tlf1` LIKE " . db()->quote($phoneNumber) . '
+                   OR `tlf2` LIKE ' . db()->quote($phoneNumber) . '
                 ORDER BY id DESC
                 LIMIT 1
             ) x
@@ -134,7 +134,7 @@ class Ajax extends Base
                     postpostbox postbox,
                     email
                 FROM `fakturas`
-                WHERE `posttlf` LIKE ' . db()->eandq($phoneNumber) . "
+                WHERE `posttlf` LIKE ' . db()->quote($phoneNumber) . "
                 ORDER BY id DESC
                 LIMIT 1
             ) x
@@ -149,8 +149,8 @@ class Ajax extends Base
                     '' postbox,
                     email
                 FROM `email`
-                WHERE `tlf1` LIKE " . db()->eandq($phoneNumber) . '
-                   OR `tlf2` LIKE ' . db()->eandq($phoneNumber) . "
+                WHERE `tlf1` LIKE " . db()->quote($phoneNumber) . '
+                   OR `tlf2` LIKE ' . db()->quote($phoneNumber) . "
                 ORDER BY id DESC
                 LIMIT 1
             ) x
@@ -165,7 +165,7 @@ class Ajax extends Base
                     '' postbox,
                     '' email
                 FROM `post`
-                WHERE `recipientID` LIKE " . db()->eandq($phoneNumber) . '
+                WHERE `recipientID` LIKE " . db()->quote($phoneNumber) . '
                 ORDER BY id DESC
                 LIMIT 1
             ) x

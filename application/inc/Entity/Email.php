@@ -275,10 +275,10 @@ class Email extends AbstractEntity
 
         return [
             'date'    => 'NOW()',
-            'subject' => db()->eandq($this->subject),
-            'body'    => db()->eandq($this->body),
-            'from'    => db()->eandq($this->senderAddress . '<' . $this->senderName . '>'),
-            'to'      => db()->eandq($this->recipientAddress . '<' . $this->recipientName . '>'),
+            'subject' => db()->quote($this->subject),
+            'body'    => db()->quote($this->body),
+            'from'    => db()->quote($this->senderAddress . '<' . $this->senderName . '>'),
+            'to'      => db()->quote($this->recipientAddress . '<' . $this->recipientName . '>'),
         ];
     }
 }

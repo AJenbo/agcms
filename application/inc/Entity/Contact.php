@@ -412,17 +412,17 @@ class Contact extends AbstractEntity
 
         return [
             'dato'      => 'NOW()',
-            'navn'      => db()->eandq($this->name),
-            'email'     => db()->eandq($this->email),
-            'adresse'   => db()->eandq($this->address),
-            'land'      => db()->eandq($this->country),
-            'post'      => db()->eandq($this->postcode),
-            'by'        => db()->eandq($this->city),
-            'tlf1'      => db()->eandq($this->phone1),
-            'tlf2'      => db()->eandq($this->phone2),
-            'kartotek'  => db()->eandq((string) (int) $this->subscribed), // enum :(
-            'interests' => db()->eandq($interests),
-            'ip'        => db()->eandq($this->ip),
+            'navn'      => db()->quote($this->name),
+            'email'     => db()->quote($this->email),
+            'adresse'   => db()->quote($this->address),
+            'land'      => db()->quote($this->country),
+            'post'      => db()->quote($this->postcode),
+            'by'        => db()->quote($this->city),
+            'tlf1'      => db()->quote($this->phone1),
+            'tlf2'      => db()->quote($this->phone2),
+            'kartotek'  => db()->quote((string) (int) $this->subscribed), // enum :(
+            'interests' => db()->quote($interests),
+            'ip'        => db()->quote($this->ip),
         ];
     }
 }

@@ -99,14 +99,14 @@ abstract class AbstractEntity implements InterfaceEntity
      */
     private function insert(array $data): void
     {
-        db()->query(
+        $id = db()->query(
             '
             INSERT INTO `' . static::TABLE_NAME . '`
             (`' . implode('`,`', array_keys($data)) . '`)
             VALUES (' . implode(',', $data) . ')'
         );
-        $this->setId(db()->insert_id);
-        ORM::remember(static::class, db()->insert_id, $this);
+        $this->setId($id);
+        ORM::remember(static::class, $id, $this);
     }
 
     /**

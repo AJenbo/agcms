@@ -113,16 +113,16 @@ class InvoiceController extends AbstractAdminController
         }
 
         if ($selected['department']) {
-            $where[] = '`department` = ' . db()->eandq($selected['department']);
+            $where[] = '`department` = ' . db()->quote($selected['department']);
         }
         if ($selected['clerk']
             && (!$user->hasAccess(User::ADMINISTRATOR) || $user->getFullName() === $selected['clerk'])
         ) {
             //Viewing your self
-            $where[] = '(`clerk` = ' . db()->eandq($selected['clerk']) . " OR `clerk` = '')";
+            $where[] = '(`clerk` = ' . db()->quote($selected['clerk']) . " OR `clerk` = '')";
         } elseif ($selected['clerk']) {
             //Viewing some one else
-            $where[] = '`clerk` = ' . db()->eandq($selected['clerk']);
+            $where[] = '`clerk` = ' . db()->quote($selected['clerk']);
         }
 
         if ('activ' === $selected['status']) {
@@ -130,24 +130,24 @@ class InvoiceController extends AbstractAdminController
         } elseif ('inactiv' === $selected['status']) {
             $where[] = "`status` NOT IN('new', 'locked', 'pbsok', 'pbserror')";
         } elseif ($selected['status']) {
-            $where[] = '`status` = ' . db()->eandq($selected['status']);
+            $where[] = '`status` = ' . db()->quote($selected['status']);
         }
 
         if ($selected['name']) {
-            $where[] = "`navn` LIKE '%" . db()->esc($selected['name']) . "%'";
+            $where[] = "`navn` LIKE " . db()->quote('%' . $selected['name'] . '%');
         }
 
         if ($selected['tlf']) {
-            $where[] = "(`tlf1` LIKE '%" . db()->esc($selected['tlf'])
-                . "%' OR `tlf2` LIKE '%" . db()->esc($selected['tlf']) . "%')";
+            $where[] = "(`tlf1` LIKE " . db()->quote('%' . $selected['tlf'] . '%')
+                . " OR `tlf2` LIKE " . db()->quote('%' . $selected['tlf'] . '%') . ")";
         }
 
         if ($selected['email']) {
-            $where[] = "`email` LIKE '%" . db()->esc($selected['email']) . "%'";
+            $where[] = "`email` LIKE " . db()->endq('%' . $selected['email'] . '%');
         }
 
         if (null !== $selected['momssats']) {
-            $where[] = '`momssats` = ' . db()->eandq($selected['momssats']);
+            $where[] = '`momssats` = ' . db()->quote($selected['momssats']);
         }
 
         if (!$where) {

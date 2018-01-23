@@ -79,9 +79,9 @@ class User extends AbstractEntity
     public function getDbArray(): array
     {
         return [
-            'fullname'  => db()->eandq($this->fullName),
-            'name'      => db()->eandq($this->nickname),
-            'password'  => db()->eandq($this->passwordHash),
+            'fullname'  => db()->quote($this->fullName),
+            'name'      => db()->quote($this->nickname),
+            'password'  => db()->quote($this->passwordHash),
             'access'    => (string) $this->accessLevel,
             'lastlogin' => 'FROM_UNIXTIME(' . $this->lastLogin . ')',
         ];

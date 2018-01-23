@@ -106,8 +106,8 @@ class CustomSorting extends AbstractEntity
         $items = implode('<', $items);
 
         return [
-            'navn'  => db()->eandq($this->title),
-            'text'  => db()->eandq($items),
+            'navn'  => db()->quote($this->title),
+            'text'  => db()->quote($items),
         ];
     }
 }
