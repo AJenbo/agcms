@@ -83,7 +83,7 @@ class User extends AbstractEntity
             'name'      => db()->quote($this->nickname),
             'password'  => db()->quote($this->passwordHash),
             'access'    => (string) $this->accessLevel,
-            'lastlogin' => 'FROM_UNIXTIME(' . $this->lastLogin . ')',
+            'lastlogin' => db()->getDateValue($this->lastLogin - db()->getTimeOffset()),
         ];
     }
 

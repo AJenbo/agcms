@@ -8,22 +8,32 @@ class DB
     private static $timeOffset;
     /** @var PDO */
     private $connection;
+    /** @var string */
+    private $driver = 'mysql';
 
     /**
      * Connect the database and set session to UTF-8 Danish.
+     *
+     * The MySQL and sqlite driver is supported, for other driveres it will default ot MySQL syntax
      *
      * @param string $dsn
      * @param string $user
      * @param string $password
      */
-    public function __construct(string $dsn, string $user, string $password)
+    public function __construct(string $dsn, string $user = '', string $password = '')
     {
         $this->connection = new PDO($dsn, $user, $password);
         $this->connection->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
-        $this->connection->query("SET NAMES 'UTF8'");
-        $this->connection->query("SET SESSION character_set_server = 'UTF8'");
-        $this->connection->query('SET collation_server=utf8_danish_ci');
+        if (0 === mb_strpos($dsn, 'sqlite:')) {
+            $this->driver = 'sqlite';
+        }
+
+        if ('mysql' === $this->driver) {
+            $this->connection->query("SET NAMES 'UTF8'");
+            $this->connection->query("SET SESSION character_set_server = 'UTF8'");
+            $this->connection->query('SET collation_server=utf8_danish_ci');
+        }
     }
 
     /**
@@ -104,22 +114,86 @@ class DB
         return $this->connection->quote($string);
     }
 
+    /**
+     * A string that will convert to the current datetime for the current driver.
+     *
+     * @return string
+     */
+    public function getNowValue(): string
+    {
+        if ('sqlite' === $this->driver) {
+            return $this->connection->quote('now');
+        }
+
+        return 'NOW()';
+    }
+
+    /**
+     * A string that will convert a unixtimestam to datetime for the current driver.
+     *
+     * @return string
+     */
+    public function getDateValue(int $timestamp): string
+    {
+        if ('sqlite' === $this->driver) {
+            return 'datetime(' . $timestamp . ', \'unixepoch\')';
+        }
+
+        return 'FROM_UNIXTIME(' . $timestamp . ')';
+    }
+
     public function escNum(float $number, int $decimals = 2): string
     {
         return number_format($number, $decimals, '.', '');
     }
 
     /**
-     * Find out what offset the on the time database has form UTC.
+     * Find out what offset database local time has form UTC.
      *
      * @return int
      */
     public function getTimeOffset(): int
     {
         if (null === self::$timeOffset) {
-            self::$timeOffset = time() - strtotime($this->fetchOne('SELECT NOW() date')['date']);
+            $sql = 'SELECT NOW() now';
+            if ('sqlite' === $this->driver) {
+                $sql = 'SELECT datetime(\'now\') now';
+            }
+
+            self::$timeOffset = time() - strtotime($this->fetchOne($sql)['now']);
         }
 
         return self::$timeOffset;
+    }
+
+    /**
+     * Check update time for tables.
+     *
+     * @param array $tables
+     * @param array $excludeTables
+     *
+     * @return int
+     */
+    public function tablesUpdated(array $tables, array $excludeTables): int
+    {
+        if ('sqlite' === $this->driver) {
+            return time();
+        }
+
+        $where = ' WHERE 1';
+        if ($tables) {
+            $where .= " AND Name IN('" . implode("', '", $tables) . "')";
+        }
+        if ($excludeTables) {
+            $where .= " AND Name NOT IN('" . implode("', '", $excludeTables) . "')";
+        }
+
+        $tables = db()->fetchArray('SHOW TABLE STATUS' . $where);
+        $updateTime = 0;
+        foreach ($tables as $table) {
+            $updateTime = max($updateTime, strtotime($table['Update_time']) + $this->getTimeOffset());
+        }
+
+        return $updateTime;
     }
 }

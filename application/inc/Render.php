@@ -51,36 +51,12 @@ class Render
         }
 
         if ($checkDb) {
-            $updateTime = self::checkDbUpdate($updateTime ?: 0);
+            $dbTime = db()->tablesUpdated(array_keys(self::$loadedTables), self::$adminOnlyTables);
+            $updateTime = max($dbTime, $updateTime ?: 0);
         }
 
         if ($updateTime <= 0) {
             return time();
-        }
-
-        return $updateTime;
-    }
-
-    /**
-     * Check update time for tables in database.
-     *
-     * @param int $updateTime
-     *
-     * @return int
-     */
-    private static function checkDbUpdate(int $updateTime): int
-    {
-        $timeOffset = db()->getTimeOffset();
-        $where = ' WHERE 1';
-        if (self::$adminOnlyTables) {
-            $where .= " AND Name NOT IN('" . implode("', '", self::$adminOnlyTables) . "')";
-        }
-        if (self::$loadedTables) {
-            $where .= " AND Name IN('" . implode("', '", array_keys(self::$loadedTables)) . "')";
-        }
-        $tables = db()->fetchArray('SHOW TABLE STATUS' . $where);
-        foreach ($tables as $table) {
-            $updateTime = max($updateTime, strtotime($table['Update_time']) + $timeOffset);
         }
 
         return $updateTime;

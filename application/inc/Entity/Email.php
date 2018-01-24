@@ -274,7 +274,7 @@ class Email extends AbstractEntity
         $this->setTimestamp(time());
 
         return [
-            'date'    => 'NOW()',
+            'date'    => db()->getNowValue(),
             'subject' => db()->quote($this->subject),
             'body'    => db()->quote($this->body),
             'from'    => db()->quote($this->senderAddress . '<' . $this->senderName . '>'),

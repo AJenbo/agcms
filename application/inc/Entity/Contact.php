@@ -411,7 +411,7 @@ class Contact extends AbstractEntity
         $interests = implode('<', $interests);
 
         return [
-            'dato'      => 'NOW()',
+            'dato'      => db()->getNowValue(),
             'navn'      => db()->quote($this->name),
             'email'     => db()->quote($this->email),
             'adresse'   => db()->quote($this->address),

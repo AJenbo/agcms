@@ -677,7 +677,7 @@ class Page extends AbstractRenderable implements InterfaceRichText
         $this->setTimeStamp(time());
 
         return [
-            'dato'        => 'NOW()',
+            'dato'        => db()->getNowValue(),
             'navn'        => db()->quote($this->title),
             'keywords'    => db()->quote($this->keywords),
             'text'        => db()->quote($this->html),

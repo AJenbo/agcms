@@ -44,13 +44,8 @@ class InvoiceController extends AbstractAdminController
         $where = $this->generateFilterInvoiceBySelection($selected, $user);
 
         Render::addLoadedTable('fakturas');
-        $oldest = db()->fetchOne(
-            "
-            SELECT UNIX_TIMESTAMP(`date`) AS `date` FROM `fakturas`
-            WHERE UNIX_TIMESTAMP(`date`) != '0' ORDER BY `date`
-            "
-        );
-        $oldest = $oldest['date'] ?? time();
+        $oldest = db()->fetchOne("SELECT `date` FROM `fakturas` ORDER BY `date`")['date'] ?? 'now';
+        $oldest = strtotime($oldest);
         $oldest = date('Y', $oldest);
 
         /** @var Invoice[] */

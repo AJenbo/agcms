@@ -1369,18 +1369,15 @@ class Invoice extends AbstractEntity
         $itemTitle = implode('<', $itemTitle);
         $itemValue = implode('<', $itemValue);
 
+        $date = db()->getDateValue($this->timeStamp - db()->getTimeOffset());
         $paydate = db()->quote('0000-00-00');
         if ($this->timeStampPay + db()->getTimeOffset()) {
-            $paydate = 'FROM_UNIXTIME(' . ($this->timeStampPay + db()->getTimeOffset()) . ')';
-        }
-        $date = db()->quote('0000-00-00');
-        if ($this->timeStamp + db()->getTimeOffset()) {
-            $date = 'FROM_UNIXTIME(' . ($this->timeStamp + db()->getTimeOffset()) . ')';
+            $paydate = db()->getDateValue($this->timeStampPay - db()->getTimeOffset());
         }
 
         return [
-            'paydate'        => $paydate,
             'date'           => $date,
+            'paydate'        => $paydate,
             'quantities'     => db()->quote($itemQuantities),
             'products'       => db()->quote($itemTitle),
             'values'         => db()->quote($itemValue),

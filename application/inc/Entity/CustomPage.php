@@ -132,7 +132,7 @@ class CustomPage extends AbstractEntity implements InterfaceRichText
         $this->setTimeStamp(time());
 
         return [
-            'dato' => 'NOW()',
+            'dato' => db()->getNowValue(),
             'navn' => db()->quote($this->title),
             'text' => db()->quote($this->html),
         ];
