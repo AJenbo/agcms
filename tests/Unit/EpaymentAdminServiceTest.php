@@ -1,4 +1,4 @@
-<?php namespace AGCMS\Tests;
+<?php namespace AGCMS\Tests\Unit;
 
 use AGCMS\EpaymentAdminService;
 use PHPUnit\Framework\TestCase;
