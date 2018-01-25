@@ -25,7 +25,6 @@ class Auth implements Middleware
     {
         $user = $request->user();
         if ($user || '/admin/users/new/' === $request->getPathInfo()) {
-            $sentry->user_context(['id' => $user->getId(), 'name' => $user->getFullName()]);
 
             return $next($request);
         }

@@ -179,6 +179,11 @@ class Application
                 throw $exception;
             }
 
+            if ($request->user()) {
+                $this->ravenClient->user_context(
+                    ['id' => $request->user()->getId(), 'name' => $request->user()->getFullName()]
+                );
+            }
             $logId = $this->logException($exception);
         }
 
