@@ -6,6 +6,7 @@ class DB
 {
     /** @var int */
     private static $timeOffset;
+
     /** @var PDO */
     private $connection;
     /** @var string */
