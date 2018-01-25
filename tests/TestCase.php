@@ -3,17 +3,22 @@
 use AGCMS\Application;
 use AGCMS\Config;
 use AGCMS\DB;
+use AGCMS\Entity\User;
 use AGCMS\Request;
+use PHPUnit\Framework\Assert;
 use PHPUnit\Framework\TestCase as BaseTestCase;
 use Symfony\Component\HttpFoundation\Response;
-use PHPUnit\Framework\Assert;
 
 abstract class TestCase extends BaseTestCase
 {
     /** @var Application */
     protected $app;
+
     /** @var Response|null */
     protected $response;
+
+    /** @var User|null */
+    private $user;
 
     /**
      * Initiate the database, config and application.
@@ -23,6 +28,7 @@ abstract class TestCase extends BaseTestCase
     protected function setUp(): void
     {
         $this->response = null;
+        $this->user = null;
 
         // Set the db connection
         $connection = new DB('sqlite::memory:');
@@ -72,20 +78,40 @@ abstract class TestCase extends BaseTestCase
     ): void {
         $this->currentUri = config('base_url') . $uri;
         $request = Request::create($this->currentUri, $method, $parameters, $cookies, $files, $server, $content);
+        if ($this->user) {
+            $request->setUser($this->user);
+        }
 
         $this->response = $this->app->handle($request);
     }
 
     /**
+     * Set the User making the request.
+     *
+     * @param User $user
+     *
+     * @return $this
+     */
+    public function actingAs(User $user): self
+    {
+        $this->user = $user;
+
+        return $this;
+    }
+
+    /**
      * Assert that the client response has a given code.
      *
-     * @param  int  $code
-     * @return void
+     * @param int $code
+     *
+     * @return $this
      */
-    public function assertResponseStatus($code)
+    public function assertResponseStatus(int $code): self
     {
         $actual = $this->response->getStatusCode();
 
-        return Assert::assertEquals($code, $this->response->getStatusCode(), "Expected status code {$code}, got {$actual}.");
+        Assert::assertEquals($code, $this->response->getStatusCode(), "Expected status code {$code}, got {$actual}.");
+
+        return $this;
     }
 }

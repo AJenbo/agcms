@@ -53,6 +53,18 @@ class Request extends SymfonyRequest
     }
 
     /**
+     * Set the user making the request.
+     *
+     * @param User $user
+     *
+     * @return void
+     */
+    public function setUser(User $user): void
+    {
+        $this->user = $user;
+    }
+
+    /**
      * Get the currently authenticated user.
      *
      * @return ?User
