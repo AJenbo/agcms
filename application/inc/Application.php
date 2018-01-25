@@ -152,11 +152,11 @@ class Application
      *
      * @param Throwable $exception
      *
-     * @return void
+     * @return ?string
      */
-    public function logException(Throwable $exception): void
+    public function logException(Throwable $exception): ?string
     {
-        $this->ravenClient->captureException($exception);
+        return $this->ravenClient->captureException($exception);
     }
 
     /**
@@ -171,6 +171,7 @@ class Application
      */
     private function handleException(Request $request, Throwable $exception): Response
     {
+        $logId = null;
         if ($this->shouldLog($exception)) {
             if ('develop' === config('enviroment')) {
                 http_response_code(Response::HTTP_INTERNAL_SERVER_ERROR);
@@ -178,7 +179,7 @@ class Application
                 throw $exception;
             }
 
-            $this->logException($exception);
+            $logId = $this->logException($exception);
         }
 
         $status = Response::HTTP_INTERNAL_SERVER_ERROR;
@@ -187,7 +188,10 @@ class Application
         }
 
         if ($request->isXmlHttpRequest()) {
-            return new JsonResponse(['error' => ['message' => $exception->getMessage()]], $status);
+            return new JsonResponse(
+                ['error' => ['message' => $exception->getMessage(), 'sentry_id' => $logId]],
+                $status
+            );
         }
 
         return new Response($exception->getMessage(), $status);

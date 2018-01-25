@@ -23,7 +23,10 @@ class Auth implements Middleware
      */
     public function handle(Request $request, Closure $next): Response
     {
-        if ($request->user() || '/admin/users/new/' === $request->getPathInfo()) {
+        $user = $request->user();
+        if ($user || '/admin/users/new/' === $request->getPathInfo()) {
+            $sentry->user_context(['id' => $user->getId(), 'name' => $user->getFullName()]);
+
             return $next($request);
         }
 
