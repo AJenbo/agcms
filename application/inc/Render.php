@@ -68,24 +68,24 @@ class Render
      * @param Request  $request
      * @param int|null $timestamp Unix time stamp of last update to content
      *
-     * @return void
+     * @return ?Response
      */
-    public static function sendCacheHeader(Request $request, int $timestamp = null): void
+    public static function sendCacheHeader(Request $request, int $timestamp = null): ?Response
     {
         if (!$request->isMethodCacheable()) {
-            return;
+            return null;
         }
 
         if (!$timestamp) {
             $timestamp = self::getUpdateTime();
         }
         if (!$timestamp) {
-            return;
+            return null;
         }
 
         $lastModified = DateTime::createFromFormat('U', (string) $timestamp);
         if (!$lastModified) {
-            return;
+            return null;
         }
 
         $response = new Response();
@@ -94,10 +94,11 @@ class Render
         $response->setLastModified($lastModified);
         $response->setMaxAge(0);
 
-        if ($response->isNotModified($request)) {
-            $response->send();
-            exit;
+        if (!$response->isNotModified($request)) {
+            return null;
         }
+
+        return $response;
     }
 
     /**

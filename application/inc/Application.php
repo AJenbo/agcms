@@ -134,10 +134,11 @@ class Application
      */
     public function handle(Request $request): Response
     {
-        Render::sendCacheHeader($request);
-
         try {
-            $response = $this->dispatch($request);
+            $response = Render::sendCacheHeader($request);
+            if (!$response) {
+                $response = $this->dispatch($request);
+            }
         } catch (Throwable $exception) {
             $response = $this->handleException($request, $exception);
         }
