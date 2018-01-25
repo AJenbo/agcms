@@ -23,9 +23,9 @@ class Auth implements Middleware
      */
     public function handle(Request $request, Closure $next): Response
     {
-        $user = $request->user();
-        if ($user || '/admin/users/new/' === $request->getPathInfo()) {
-
+        if (($request->user() && $request->user()->getAccessLevel())
+            || '/admin/users/new/' === $request->getPathInfo()
+        ) {
             return $next($request);
         }
 
