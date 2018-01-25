@@ -12,4 +12,4 @@ $app = new Application(__DIR__);
 
 require_once __DIR__ . '/inc/routes.php';
 
-$app->run(Request::createFromGlobals());
+$app->run();

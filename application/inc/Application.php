@@ -116,11 +116,23 @@ class Application
     /**
      * Run the application.
      *
-     * @param Request $request
-     *
      * @return void
      */
-    public function run(Request $request): void
+    public function run(): void
+    {
+        $request = Request::createFromGlobals();
+        $response = $this->handle($request);
+        $response->send();
+    }
+
+    /**
+     * Handle a request.
+     *
+     * @param Request $request
+     *
+     * @return Response
+     */
+    public function handle(Request $request): Response
     {
         Render::sendCacheHeader($request);
 
@@ -131,7 +143,8 @@ class Application
         }
         $response->prepare($request);
         $response->isNotModified($request); // Set up 304 response if relevant
-        $response->send();
+
+        return $response;
     }
 
     /**
