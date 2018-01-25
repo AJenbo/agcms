@@ -38,30 +38,70 @@ class Application
      */
     public function __construct(string $basePath)
     {
+        $this->basePath = $basePath;
+
+        $this->initErrorLogging();
+        $this->setLocale();
+        $this->loadTranslations();
+        $this->loadRoutes();
+
+        self::$instance = $this;
+    }
+
+    /**
+     * Set error loggin.
+     *
+     * @return void
+     */
+    private function initErrorLogging(): void
+    {
         $this->ravenClient = new Raven_Client(config('sentry'));
         $this->ravenClient->install();
-
-        date_default_timezone_set(config('timezone', 'Europe/Copenhagen'));
 
         if ('develop' === config('enviroment', 'develop')) {
             ini_set('display_errors', 1);
             error_reporting(-1);
         }
+    }
+
+    /**
+     * Set locale and endcodings.
+     *
+     * @return void
+     */
+    private function setLocale(): void
+    {
+        date_default_timezone_set(config('timezone', 'Europe/Copenhagen'));
 
         setlocale(LC_ALL, config('locale', 'C'));
         setlocale(LC_NUMERIC, 'C');
 
-        bindtextdomain('agcms', $basePath . '/theme/locale');
-        bind_textdomain_codeset('agcms', 'UTF-8');
-        textdomain('agcms');
-
         mb_language('uni');
         mb_detect_order('UTF-8, ISO-8859-1');
         mb_internal_encoding('UTF-8');
+    }
 
-        $this->basePath = $basePath;
+    /**
+     * Load translations.
+     *
+     * @return void
+     */
+    private function loadTranslations(): void
+    {
+        bindtextdomain('agcms', $this->basePath . '/theme/locale');
+        bind_textdomain_codeset('agcms', 'UTF-8');
+        textdomain('agcms');
+    }
 
-        self::$instance = $this;
+    /**
+     * Load application routes.
+     *
+     * @return void
+     */
+    private function loadRoutes(): void
+    {
+        $app = $this;
+        require __DIR__ . '/routes.php';
     }
 
     /**

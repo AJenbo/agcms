@@ -46,12 +46,7 @@ abstract class TestCase extends BaseTestCase
         Config::load(__DIR__ . '/application');
 
         // Initialize application
-        $app = new Application(__DIR__ . '/../application');
-
-        // Load routes
-        require_once __DIR__ . '/../application/inc/routes.php';
-
-        $this->app = $app;
+        $this->app = new Application(__DIR__ . '/../application');
     }
 
     /**
