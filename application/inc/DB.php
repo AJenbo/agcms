@@ -9,6 +9,7 @@ class DB
 
     /** @var PDO */
     private $connection;
+
     /** @var string */
     private $driver = 'mysql';
 
