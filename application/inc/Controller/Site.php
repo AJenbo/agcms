@@ -33,25 +33,16 @@ class Site extends Base
 
         $renderable = $category;
         $pages = $category->getPages();
-        $hasProductTable = false;
         if (1 === count($pages)) {
             /** @var Page */
             $renderable = array_shift($pages);
             $template = 'product';
-
-            foreach ($renderable->getTables() as $table) {
-                if ($table->hasPrices() && $table->hasPrices()) {
-                    $hasProductTable = true;
-                    break;
-                }
-            }
         }
 
         $data = [
             'crumbs'          => $category->getBranch(),
             'category'        => $category,
             'renderable'      => $renderable,
-            'hasProductTable' => $hasProductTable,
         ] + $this->basicPageData();
 
         return $this->render($template, $data);
@@ -108,19 +99,10 @@ class Site extends Base
         $crumbs = $category->getBranch();
         $crumbs[] = $page;
 
-        $hasProductTable = false;
-        foreach ($page->getTables() as $table) {
-            if ($table->hasPrices() && $table->hasPrices()) {
-                $hasProductTable = true;
-                break;
-            }
-        }
-
         $data = [
             'crumbs'          => $crumbs,
             'category'        => $category,
             'renderable'      => $page,
-            'hasProductTable' => $hasProductTable,
         ] + $this->basicPageData();
 
         return $this->render('product', $data);

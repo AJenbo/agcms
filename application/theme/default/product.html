@@ -27,8 +27,8 @@
         {% if renderable.icon %}<meta property="image" content="{{renderable.icon.path}}" />{% endif %}
         {% if renderable.excerpt %}<meta property="description" content="{{renderable.excerpt}}" />{% endif %}
         {% if renderable.sku %}<meta property="sku" content="{{renderable.sku}}" />{% endif %}
-        {% if not hasProductTable %}{% include 'price.html' with {'product': renderable} %}{% endif %}
-        {% if not hasProductTable and not renderable.price %}
+        {% if not renderable.hasProductTable %}{% include 'price.html' with {'product': renderable} %}{% endif %}
+        {% if not renderable.hasProductTable and not renderable.price %}
         <span class="web"><a href="mailto:{{companyEmail}}?subject=Angiv emne:" class="Pris">{{'Contact us via email'|trans}}</a></span>
         {% endif %}
         {% if renderable.price > 0 %}
@@ -36,7 +36,7 @@
             <meta property="price" content="{{renderable.price|number_format(2, '.', '')}}" />
             <meta property="priceCurrency" content="{{'USD'|trans}}" />
         </span>
-        {% if not hasProductTable %}
+        {% if not renderable.hasProductTable %}
         <br />
         <a href="" onclick="shoppingCart.addItem('page',{{renderable.id}});return false">
             {{'Add to shopping cart'|trans}}

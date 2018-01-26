@@ -32,13 +32,13 @@
         {% if renderable.sku %}
         <strong>Varenr: <span property="sku">{{renderable.sku}}</span></strong><br />
         {% endif %}
-        {% if not hasProductTable %}{% include 'price.html' with {'product': renderable} %}{% endif %}
+        {% if not renderable.hasProductTable %}{% include 'price.html' with {'product': renderable} %}{% endif %}
         {% if renderable.price > 0 %}
         <span property="offers" typeof="Offer">
             <meta property="price" content="{{renderable.price|number_format(2, '.', '')}}" />
             <meta property="priceCurrency" content="{{'USD'|trans}}" />
         </span>
-        {% if not hasProductTable %}
+        {% if not renderable.hasProductTable %}
         &nbsp;<a href="" onclick="shoppingCart.addItem('page',{{renderable.id}});return false">
             <img src="/theme/default/images/cart_add.png" alt="+" title="{{'Add to shopping cart'|trans}}" />
         </a>

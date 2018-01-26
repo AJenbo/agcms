@@ -619,6 +619,22 @@ class Page extends AbstractRenderable implements InterfaceRichText
     }
 
     /**
+     * Check if there is a product table attached to this page.
+     *
+     * @return bool
+     */
+    public function hasProductTable(): array
+    {
+        foreach ($page->getTables() as $table) {
+            if ($table->hasPrices() && $table->hasPrices()) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    /**
      * Get product brand.
      *
      * @return ?Brand

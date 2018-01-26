@@ -22,13 +22,13 @@
         {% if renderable.icon %}<meta property="image" content="{{renderable.icon.path}}" />{% endif %}
         {% if renderable.excerpt %}<meta property="description" content="{{renderable.excerpt}}" />{% endif %}
         {% if renderable.sku %}<meta property="sku" content="{{renderable.sku}}" />{% endif %}
-        {% if not hasProductTable %}{% include 'price.html' with {'product': renderable} %}{% endif %}
+        {% if not renderable.hasProductTable %}{% include 'price.html' with {'product': renderable} %}{% endif %}
         {% if renderable.price > 0 %}
         <span property="offers" typeof="Offer">
             <meta property="price" content="{{renderable.price|number_format(2, '.', '')}}" />
             <meta property="priceCurrency" content="{{'USD'|trans}}" />
         </span>
-        {% if not hasProductTable %}
+        {% if not renderable.hasProductTable %}
         <br />
         <img src="/theme/www.jagtogfiskerimagasinet.dk/images/nocolors.gif" alt="" width="196" height="5" /><br />
         <span class="web">
