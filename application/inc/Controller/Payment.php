@@ -64,7 +64,6 @@ class Payment extends Base
         if ($redirect = $this->checkStatus($request, $id, $checkId, $invoice)) {
             return $redirect;
         }
-        assert($invoice instanceof Invoice);
 
         $invoice->setStatus('locked')->save();
 
@@ -94,7 +93,6 @@ class Payment extends Base
         if ($redirect = $this->checkStatus($request, $id, $checkId, $invoice)) {
             return $redirect;
         }
-        assert($invoice instanceof Invoice);
 
         $data = $this->basicPageData();
 
@@ -128,7 +126,6 @@ class Payment extends Base
         if ($redirect = $this->checkStatus($request, $id, $checkId, $invoice)) {
             return $redirect;
         }
-        assert($invoice instanceof Invoice);
 
         $invoice->setStatus('locked')
             ->setName($request->get('name'))
@@ -184,7 +181,6 @@ class Payment extends Base
         if ($redirect = $this->checkStatus($request, $id, $checkId, $invoice)) {
             return $redirect;
         }
-        assert($invoice instanceof Invoice);
 
         $invoice->setStatus('locked')->save();
 

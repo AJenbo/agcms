@@ -28,7 +28,6 @@ class Site extends Base
         if ($redirect = $this->checkCategoryUrl($request, $category)) {
             return $redirect;
         }
-        assert($category instanceof Category);
 
         $template = Category::GALLERY === $category->getRenderMode() ? 'tiles' : 'list';
 
@@ -104,8 +103,6 @@ class Site extends Base
         if ($redirect = $this->checkPageUrl($request, $category, $page)) {
             return $redirect;
         }
-        assert($category instanceof Category);
-        assert($page instanceof Page);
 
         /** @var Renderable[] */
         $crumbs = $category->getBranch();
