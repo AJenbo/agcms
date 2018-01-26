@@ -15,7 +15,7 @@ abstract class AbstractAdminController extends AbstractController
     protected function basicPageData(Request $request): array
     {
         return [
-            'title' => 'Administrator menu',
+            'title' => _('Administration'),
             'theme' => config('theme', 'default'),
             'hide'  => [
                 'activity'    => $request->cookies->get('hideActivity'),

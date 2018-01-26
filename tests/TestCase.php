@@ -5,7 +5,6 @@ use AGCMS\Config;
 use AGCMS\DB;
 use AGCMS\Entity\User;
 use AGCMS\Request;
-use PHPUnit\Framework\Assert;
 use PHPUnit\Framework\TestCase as BaseTestCase;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -13,9 +12,6 @@ abstract class TestCase extends BaseTestCase
 {
     /** @var Application */
     protected $app;
-
-    /** @var Response|null */
-    protected $response;
 
     /** @var User|null */
     private $user;
@@ -27,7 +23,6 @@ abstract class TestCase extends BaseTestCase
      */
     protected function setUp(): void
     {
-        $this->response = null;
         $this->user = null;
 
         // Set the db connection
@@ -60,7 +55,7 @@ abstract class TestCase extends BaseTestCase
      * @param array  $server
      * @param string $content
      *
-     * @return void
+     * @return TestResponse
      */
     public function call(
         $method,
@@ -70,14 +65,14 @@ abstract class TestCase extends BaseTestCase
         $files = [],
         $server = [],
         $content = null
-    ): void {
+    ): TestResponse {
         $this->currentUri = config('base_url') . $uri;
         $request = Request::create($this->currentUri, $method, $parameters, $cookies, $files, $server, $content);
         if ($this->user) {
             $request->setUser($this->user);
         }
 
-        $this->response = $this->app->handle($request);
+        return new TestResponse($this->app->handle($request));
     }
 
     /**
@@ -90,22 +85,6 @@ abstract class TestCase extends BaseTestCase
     public function actingAs(User $user): self
     {
         $this->user = $user;
-
-        return $this;
-    }
-
-    /**
-     * Assert that the client response has a given code.
-     *
-     * @param int $code
-     *
-     * @return $this
-     */
-    public function assertResponseStatus(int $code): self
-    {
-        $actual = $this->response->getStatusCode();
-
-        Assert::assertEquals($code, $this->response->getStatusCode(), "Expected status code {$code}, got {$actual}.");
 
         return $this;
     }

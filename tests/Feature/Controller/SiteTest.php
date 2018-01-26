@@ -6,7 +6,8 @@ class SiteTest extends TestCase
 {
     public function testFrontPage(): void
     {
-        $this->call('GET', '/');
-        $this->assertResponseStatus(200);
+        $this->call('GET', '/')
+            ->assertResponseStatus(200)
+            ->assertSee('<title>Frontpage</title>');
     }
 }
