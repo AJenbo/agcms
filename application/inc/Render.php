@@ -13,7 +13,7 @@ class Render
     private static $loadedTables = [];
 
     /** @var string[] */
-    private static $adminOnlyTables = [
+    const ADMIN_ONLY_TABLES = [
         'email',
         'emails',
         'fakturas',
@@ -51,7 +51,7 @@ class Render
         }
 
         if ($checkDb) {
-            $dbTime = db()->tablesUpdated(array_keys(self::$loadedTables), self::$adminOnlyTables);
+            $dbTime = db()->tablesUpdated(array_keys(self::$loadedTables), self::ADMIN_ONLY_TABLES);
             $updateTime = max($dbTime, $updateTime ?: 0);
         }
 

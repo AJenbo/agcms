@@ -5,7 +5,7 @@ use PDO;
 class DB
 {
     /** @var int */
-    private static $timeOffset;
+    private $timeOffset;
 
     /** @var PDO */
     private $connection;
@@ -156,16 +156,16 @@ class DB
      */
     public function getTimeOffset(): int
     {
-        if (null === self::$timeOffset) {
+        if (null === $this->timeOffset) {
             $sql = 'SELECT NOW() now';
             if ('sqlite' === $this->driver) {
                 $sql = 'SELECT datetime(\'now\') now';
             }
 
-            self::$timeOffset = time() - strtotime($this->fetchOne($sql)['now']);
+            $this->timeOffset = time() - strtotime($this->fetchOne($sql)['now']);
         }
 
-        return self::$timeOffset;
+        return $this->timeOffset;
     }
 
     /**

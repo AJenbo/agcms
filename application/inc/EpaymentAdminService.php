@@ -21,7 +21,7 @@ class EpaymentAdminService
     private $soapClient;
 
     /** @var string[] */
-    private static $paymentTypes = [
+    const PAYMENT_TYPES = [
         1  => 'Dankort/Visa-Dankort',
         3  => 'Visa / Visa Electron',
         4  => 'MasterCard',
@@ -67,7 +67,7 @@ class EpaymentAdminService
      */
     public static function getPaymentName(int $paymentType): string
     {
-        return self::$paymentTypes[$paymentType];
+        return self::PAYMENT_TYPES[$paymentType];
     }
 
     /**
