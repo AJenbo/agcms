@@ -194,7 +194,7 @@ class Site extends Base
     private function checkPageUrl(Request $request, ?Category $category, ?Page $page): ?RedirectResponse
     {
         if (!$page || $page->isInactive()) {
-            if ($category && $category->isVisable()) {
+            if ($category && $category->getParent() && $category->isVisable()) {
                 $status = $page ? Response::HTTP_FOUND : Response::HTTP_MOVED_PERMANENTLY;
 
                 return $this->redirect($request, $category->getCanonicalLink(), $status);
