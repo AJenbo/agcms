@@ -115,12 +115,10 @@ class SiteTreeController extends AbstractAdminController
      */
     public function inventory(Request $request): Response
     {
-        Render::addLoadedTable('bind');
-        Render::addLoadedTable('kat');
-        Render::addLoadedTable('krav');
-        Render::addLoadedTable('maerke');
-        Render::addLoadedTable('sider');
-        Render::sendCacheHeader($request);
+        db()->addLoadedTable('bind', 'kat', 'krav', 'maerke', 'sider');
+        if ($response = $this->earlyResponse($request)) {
+            return $response;
+        }
 
         $categoryId = $request->request->get('kat', '');
         $sort = $request->get('sort', 'navn');

@@ -1,7 +1,6 @@
 <?php namespace AGCMS\Entity;
 
 use AGCMS\ORM;
-use AGCMS\Render;
 
 class Page extends AbstractRenderable implements InterfaceRichText
 {
@@ -104,16 +103,16 @@ class Page extends AbstractRenderable implements InterfaceRichText
     public function delete(): bool
     {
         // Forget affected tables, though alter indivitual deletes will forget most
-        Render::addLoadedTable('list_rows');
+        db()->addLoadedTable('list_rows');
         db()->query('DELETE FROM `list_rows` WHERE `link` = ' . $this->getId());
         foreach ($this->getTables() as $table) {
             $table->delete();
         }
 
         // parent::delete will forget any binding and accessory relationship
-        Render::addLoadedTable('bind');
+        db()->addLoadedTable('bind');
         db()->query('DELETE FROM `bind` WHERE side = ' . $this->getId());
-        Render::addLoadedTable('tilbehor');
+        db()->addLoadedTable('tilbehor');
         db()->query('DELETE FROM `tilbehor` WHERE side = ' . $this->getId() . ' OR tilbehor =' . $this->getId());
 
         return parent::delete();
@@ -454,7 +453,7 @@ class Page extends AbstractRenderable implements InterfaceRichText
      */
     public function isInCategory(Category $category): bool
     {
-        Render::addLoadedTable('bind');
+        db()->addLoadedTable('bind');
 
         return (bool) db()->fetchOne(
             '
@@ -497,7 +496,7 @@ class Page extends AbstractRenderable implements InterfaceRichText
      */
     private function getCategoriesQuery(): string
     {
-        Render::addLoadedTable('bind');
+        db()->addLoadedTable('bind');
 
         return 'SELECT * FROM `kat` WHERE id IN (SELECT kat FROM `bind` WHERE side = ' . $this->getId() . ')';
     }
@@ -595,7 +594,7 @@ class Page extends AbstractRenderable implements InterfaceRichText
      */
     private function getAccessoryQuery(): string
     {
-        Render::addLoadedTable('tilbehor');
+        db()->addLoadedTable('tilbehor');
 
         return '
             SELECT * FROM sider

@@ -82,4 +82,74 @@ abstract class AbstractController
 
         return $response;
     }
+
+    /**
+     * Generate an early 304 Response if posible.
+     *
+     * @param Request $request
+     *
+     * @return ?Response
+     */
+    protected function earlyResponse(Request $request): ?Response
+    {
+        if ($request->headers->has('Last-Modefied')) {
+            $response = $this->cachedResponse();
+            if ($response->isNotModified($request)) {
+                return $response;
+            }
+        }
+
+        return null;
+    }
+
+    /**
+     * Add the needed headeres for a 304 cache response based on the loaded data.
+     *
+     * @param Response|null $response
+     *
+     * @return Response
+     */
+    protected function cachedResponse(Response $response = null): Response
+    {
+        if (!$response) {
+            $response = new Response();
+        }
+
+        $timestamp = $this->getUpdateTime();
+        $lastModified = DateTime::createFromFormat('U', (string) $timestamp);
+        if (!$lastModified) {
+            return $response;
+        }
+
+        $response->setPublic();
+        $response->headers->addCacheControlDirective('must-revalidate');
+        $response->setLastModified($lastModified);
+        $response->setMaxAge(0);
+
+        return $response;
+    }
+
+    /**
+     * Figure out when the loaded data was last touched.
+     *
+     * @return int
+     */
+    private function getUpdateTime(bool $checkDb = true): int
+    {
+        $updateTime = 0;
+        foreach (get_included_files() as $filename) {
+            $updateTime = max($updateTime, filemtime($filename));
+        }
+
+        if ($checkDb) {
+            $dbTime = db()->dataAge(static::ADMIN_ONLY_TABLES);
+            $updateTime = max($dbTime, $updateTime ?: 0);
+        }
+
+        if ($updateTime <= 0) {
+            return time();
+        }
+
+        return $updateTime;
+    }
 }

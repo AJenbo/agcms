@@ -31,7 +31,7 @@ class MaintenanceController extends AbstractAdminController
      */
     public function index(Request $request): Response
     {
-        Render::addLoadedTable('emails');
+        db()->addLoadedTable('emails');
         $emailStatus = db()->fetchArray("SHOW TABLE STATUS LIKE 'emails'");
         /** @var (string|int)[] */
         $emailStatus = reset($emailStatus);
@@ -42,8 +42,7 @@ class MaintenanceController extends AbstractAdminController
             throw new Exception(_('Cron status missing'));
         }
 
-        Render::addLoadedTable('emails');
-        Render::sendCacheHeader($request, time()); // getDbSize isn't cachable
+        db()->addLoadedTable('emails');
         $data = [
             'dbSize'             => $this->byteToHuman($this->getDbSize()),
             'wwwSize'            => $this->byteToHuman($this->getSizeOfFiles()),
@@ -162,10 +161,7 @@ class MaintenanceController extends AbstractAdminController
         }
 
         //Add active pages that has a list that links to this page
-        Render::addLoadedTable('list_rows');
-        Render::addLoadedTable('lists');
-        Render::addLoadedTable('sider');
-        Render::addLoadedTable('bind');
+        db()->addLoadedTable('list_rows', 'lists', 'sider', 'bind');
         $pages = db()->fetchArray(
             '
             SELECT `sider`.*, `lists`.`page_id`
@@ -304,7 +300,7 @@ class MaintenanceController extends AbstractAdminController
      */
     public function badFolderNames(): JsonResponse
     {
-        Render::addLoadedTable('files');
+        db()->addLoadedTable('files');
         $html = '';
         $errors = db()->fetchArray(
             '
@@ -341,7 +337,6 @@ class MaintenanceController extends AbstractAdminController
      */
     public function usage(Request $request): JsonResponse
     {
-        Render::sendCacheHeader($request, time()); // getDbSize isn't cachable
         return new JsonResponse([
             'www' => $this->getSizeOfFiles(),
             'db'  => $this->getDbSize(),
@@ -465,7 +460,7 @@ class MaintenanceController extends AbstractAdminController
      */
     private function getSizeOfFiles(): int
     {
-        Render::addLoadedTable('files');
+        db()->addLoadedTable('files');
         $files = db()->fetchOne('SELECT sum(`size`) AS `filesize` FROM `files`');
 
         return $files['filesize'] ?? 0;

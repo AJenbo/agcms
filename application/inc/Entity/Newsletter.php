@@ -197,7 +197,7 @@ class Newsletter extends AbstractEntity implements InterfaceRichText
      */
     public function countRecipients(): int
     {
-        Render::addLoadedTable('email');
+        db()->addLoadedTable('email');
         $emails = db()->fetchOne(
             "
             SELECT count(DISTINCT email) as 'count'

@@ -175,10 +175,7 @@ class Application
     public function handle(Request $request): Response
     {
         try {
-            $response = Render::sendCacheHeader($request);
-            if (!$response) {
-                $response = $this->dispatch($request);
-            }
+            $response = $this->dispatch($request);
         } catch (Throwable $exception) {
             $response = $this->handleException($request, $exception);
         }

@@ -2,7 +2,6 @@
 
 use AGCMS\Exception\Exception;
 use AGCMS\ORM;
-use AGCMS\Render;
 
 class Table extends AbstractEntity
 {
@@ -82,7 +81,7 @@ class Table extends AbstractEntity
             $sorting = $columnSortings[$key] ?? 0;
             $options = [];
             if ($sorting) {
-                Render::addLoadedTable('tablesort');
+                db()->addLoadedTable('tablesort');
                 $tablesort = db()->fetchOne('SELECT `text` FROM `tablesort` WHERE id = ' . $sorting);
                 if ($tablesort) {
                     $options = explode('<', $tablesort['text']);
@@ -263,7 +262,7 @@ class Table extends AbstractEntity
             FROM `list_rows`
             WHERE `list_id` = ' . $this->getId()
         );
-        Render::addLoadedTable('list_rows');
+        db()->addLoadedTable('list_rows');
 
         // Cells are indexed by id, this is needed for sorting the rows
         foreach ($rows as &$row) {

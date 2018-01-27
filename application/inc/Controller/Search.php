@@ -4,7 +4,6 @@ use AGCMS\Entity\Brand;
 use AGCMS\Entity\Category;
 use AGCMS\Entity\Page;
 use AGCMS\ORM;
-use AGCMS\Render;
 use AGCMS\VolatilePage;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -192,9 +191,7 @@ class Search extends Base
             ";
         }
 
-        Render::addLoadedTable('list_rows');
-        Render::addLoadedTable('lists');
-        Render::addLoadedTable('bind');
+        db()->addLoadedTable('list_rows', 'lists', 'bind');
         $columns = [];
         foreach (db()->fetchArray('SHOW COLUMNS FROM sider') as $column) {
             $columns[] = $column['Field'];

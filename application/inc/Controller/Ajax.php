@@ -24,12 +24,10 @@ class Ajax extends Base
      */
     public function table(Request $request, int $categoryId, int $tableId, int $orderBy): JsonResponse
     {
-        Render::addLoadedTable('lists');
-        Render::addLoadedTable('list_rows');
-        Render::addLoadedTable('sider');
-        Render::addLoadedTable('bind');
-        Render::addLoadedTable('kat');
-        Render::sendCacheHeader($request);
+        db()->addLoadedTable('lists', 'list_rows', 'sider', 'bind', 'kat');
+        if ($response = $this->earlyResponse($request)) {
+            return $response;
+        }
 
         $html = '';
 
@@ -62,10 +60,10 @@ class Ajax extends Base
      */
     public function category(Request $request, int $categoryId, string $orderBy): JsonResponse
     {
-        Render::addLoadedTable('sider');
-        Render::addLoadedTable('bind');
-        Render::addLoadedTable('kat');
-        Render::sendCacheHeader($request);
+        db()->addLoadedTable('sider', 'bind', 'kat');
+        if ($response = $this->earlyResponse($request)) {
+            return $response;
+        }
 
         $data = [
             'renderable' => ORM::getOne(Category::class, $categoryId),
@@ -90,10 +88,10 @@ class Ajax extends Base
      */
     public function address(Request $request, string $phoneNumber): JsonResponse
     {
-        Render::addLoadedTable('fakturas');
-        Render::addLoadedTable('email');
-        Render::addLoadedTable('post');
-        Render::sendCacheHeader($request);
+        db()->addLoadedTable('fakturas', 'email', 'post');
+        if ($response = $this->earlyResponse($request)) {
+            return $response;
+        }
 
         $default = [
             'name'     => '',

@@ -32,7 +32,7 @@ class InvoiceService
             $value = null;
             $pageId = null;
             if ('line' === $item['type']) { // Find item based on price table row
-                Render::addLoadedTable('list_rows');
+                db()->addLoadedTable('list_rows');
                 $listRow = db()->fetchOne('SELECT * FROM `list_rows` WHERE id = ' . $item['id']);
                 /** @var ?Table */
                 $table = $listRow ? ORM::getOne(Table::class, $listRow['list_id']) : null;

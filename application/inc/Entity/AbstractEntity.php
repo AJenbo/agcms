@@ -1,7 +1,6 @@
 <?php namespace AGCMS\Entity;
 
 use AGCMS\ORM;
-use AGCMS\Render;
 
 abstract class AbstractEntity implements InterfaceEntity
 {
@@ -78,7 +77,7 @@ abstract class AbstractEntity implements InterfaceEntity
     public function save(): InterfaceEntity
     {
         $data = $this->getDbArray();
-        Render::addLoadedTable(static::TABLE_NAME);
+        db()->addLoadedTable(static::TABLE_NAME);
         if (null === $this->id) {
             $this->insert($data);
 

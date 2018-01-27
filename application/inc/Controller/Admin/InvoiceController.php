@@ -4,7 +4,6 @@ use AGCMS\Entity\Invoice;
 use AGCMS\Entity\User;
 use AGCMS\Exception\InvalidInput;
 use AGCMS\ORM;
-use AGCMS\Render;
 use AGCMS\Request;
 use AGCMS\Service\InvoicePdfService;
 use AGCMS\Service\InvoiceService;
@@ -43,7 +42,7 @@ class InvoiceController extends AbstractAdminController
 
         $where = $this->generateFilterInvoiceBySelection($selected, $user);
 
-        Render::addLoadedTable('fakturas');
+        db()->addLoadedTable('fakturas');
         $oldest = db()->fetchOne('SELECT `date` FROM `fakturas` ORDER BY `date`')['date'] ?? 'now';
         $oldest = strtotime($oldest);
         $oldest = date('Y', $oldest);

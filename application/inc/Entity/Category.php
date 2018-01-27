@@ -366,7 +366,7 @@ class Category extends AbstractRenderable
      */
     public function getPages(string $order = 'navn', bool $reverseOrder = false): array
     {
-        Render::addLoadedTable('bind');
+        db()->addLoadedTable('bind');
 
         if (!in_array($order, ['navn', 'for', 'pris', 'varenr'], true)) {
             $order = 'navn';
@@ -408,7 +408,7 @@ class Category extends AbstractRenderable
      */
     public function hasPages(): bool
     {
-        Render::addLoadedTable('bind');
+        db()->addLoadedTable('bind');
 
         $hasPages = (bool) db()->fetchOne('SELECT kat FROM `bind` WHERE `kat` = ' . $this->getId());
         if ($hasPages) {

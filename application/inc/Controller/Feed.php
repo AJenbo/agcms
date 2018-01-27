@@ -4,7 +4,6 @@ use AGCMS\Entity\Category;
 use AGCMS\Entity\Page;
 use AGCMS\Entity\Requirement;
 use AGCMS\ORM;
-use AGCMS\Render;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -19,13 +18,10 @@ class Feed extends Base
      */
     public function siteMap(Request $request): Response
     {
-        Render::addLoadedTable('bind');
-        Render::addLoadedTable('kat');
-        Render::addLoadedTable('sider');
-        Render::addLoadedTable('special');
-        Render::addLoadedTable('maerke');
-        Render::addLoadedTable('krav');
-        Render::sendCacheHeader($request);
+        db()->addLoadedTable('bind', 'kat', 'sider', 'special', 'maerke', 'krav');
+        if ($response = $this->earlyResponse($request)) {
+            return $response;
+        }
 
         $activeCategories = [];
         $activeCategoryIds = [];
@@ -78,13 +74,10 @@ class Feed extends Base
      */
     public function rss(Request $request): Response
     {
-        Render::addLoadedTable('bind');
-        Render::addLoadedTable('files');
-        Render::addLoadedTable('kat');
-        Render::addLoadedTable('maerke');
-        Render::addLoadedTable('sider');
-        $timestamp = Render::getUpdateTime();
-        Render::sendCacheHeader($request, $timestamp);
+        db()->addLoadedTable('bind', 'files', 'kat', 'maerke', 'sider');
+        if ($response = $this->earlyResponse($request)) {
+            return $response;
+        }
 
         $time = false;
         if ($request->headers->has('If-Modified-Since')) {
@@ -167,7 +160,9 @@ class Feed extends Base
      */
     public function openSearch(Request $request): Response
     {
-        Render::sendCacheHeader($request, Render::getUpdateTime(false));
+        if ($response = $this->earlyResponse($request)) {
+            return $response;
+        }
 
         $data = [
             'shortName'   => config('site_name'),

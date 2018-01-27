@@ -31,7 +31,7 @@ class ORM
     {
         if (!isset(self::$byId[$class]) || !array_key_exists($id, self::$byId[$class])) {
             $data = db()->fetchOne('SELECT * FROM `' . $class::TABLE_NAME . '` WHERE id = ' . $id);
-            Render::addLoadedTable($class::TABLE_NAME);
+            db()->addLoadedTable($class::TABLE_NAME);
             self::$byId[$class][$id] = $data ? new $class($class::mapFromDB($data)) : null;
         }
 
@@ -53,7 +53,7 @@ class ORM
             self::$oneBySql[$class][$query] = null;
 
             $data = db()->fetchOne($query);
-            Render::addLoadedTable($class::TABLE_NAME);
+            db()->addLoadedTable($class::TABLE_NAME);
             if ($data) {
                 if (!isset(self::$byId[$class][$data['id']])) {
                     self::$byId[$class][$data['id']] = new $class($class::mapFromDB($data));
@@ -84,7 +84,7 @@ class ORM
                 }
                 self::$bySql[$class][$query][] = self::$byId[$class][$data['id']];
             }
-            Render::addLoadedTable($class::TABLE_NAME);
+            db()->addLoadedTable($class::TABLE_NAME);
         }
 
         return self::$bySql[$class][$query];

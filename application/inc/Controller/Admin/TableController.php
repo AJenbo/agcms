@@ -3,7 +3,6 @@
 use AGCMS\Entity\Table;
 use AGCMS\Exception\InvalidInput;
 use AGCMS\ORM;
-use AGCMS\Render;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -41,7 +40,7 @@ class TableController extends AbstractAdminController
      */
     public function createDialog(Request $request, int $pageId): Response
     {
-        Render::addLoadedTable('tablesort');
+        db()->addLoadedTable('tablesort');
 
         return $this->render(
             'admin/addlist',

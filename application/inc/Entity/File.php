@@ -3,7 +3,6 @@
 use AGCMS\Exception\Exception;
 use AGCMS\Exception\InvalidInput;
 use AGCMS\ORM;
-use AGCMS\Render;
 use Symfony\Component\HttpFoundation\File\MimeType\MimeTypeGuesser;
 
 class File extends AbstractEntity
@@ -289,11 +288,7 @@ class File extends AbstractEntity
         UNION (SELECT id FROM `krav`      WHERE `text` LIKE $escapedPath LIMIT 1)
         UNION (SELECT id FROM `newsmails` WHERE `text` LIKE $escapedPath LIMIT 1)
         ";
-        Render::addLoadedTable('sider');
-        Render::addLoadedTable('template');
-        Render::addLoadedTable('special');
-        Render::addLoadedTable('krav');
-        Render::addLoadedTable('newsmails');
+        db()->addLoadedTable('sider', 'template', 'special', 'krav', 'newsmails');
 
         if (!$onlyCheckHtml) {
             $sql .= '
@@ -302,7 +297,7 @@ class File extends AbstractEntity
             UNION (SELECT id FROM `maerke`   WHERE `icon_id` = ' . $this->getId() . ' LIMIT 1)
             UNION (SELECT id FROM `kat`      WHERE `icon_id` = ' . $this->getId() . ' LIMIT 1)
             ';
-            Render::addLoadedTable('kat');
+            db()->addLoadedTable('kat');
         }
 
         return (bool) db()->fetchOne($sql);
