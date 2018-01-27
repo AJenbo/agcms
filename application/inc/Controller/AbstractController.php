@@ -141,8 +141,8 @@ abstract class AbstractController
             $updateTime = max($updateTime, filemtime($filename));
         }
 
-        if ($checkDb) {
-            $dbTime = app('db')->dataAge(static::ADMIN_ONLY_TABLES);
+        $dbTime = app('db')->dataAge(static::ADMIN_ONLY_TABLES);
+        if ($dbTime) {
             $updateTime = max($dbTime, $updateTime ?: 0);
         }
 

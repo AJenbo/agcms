@@ -628,7 +628,7 @@ class Page extends AbstractRenderable implements InterfaceRichText
      */
     public function hasProductTable(): array
     {
-        foreach ($page->getTables() as $table) {
+        foreach ($this->getTables() as $table) {
             if ($table->hasPrices() && $table->hasPrices()) {
                 return true;
             }
