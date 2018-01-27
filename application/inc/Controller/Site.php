@@ -148,6 +148,10 @@ class Site extends Base
             return $redirect;
         }
 
+        if (!$brand->getPages()) {
+            return $this->redirectToSearch($request);
+        }
+
         $data = [
             'brand'      => $brand,
             'renderable' => $brand,
