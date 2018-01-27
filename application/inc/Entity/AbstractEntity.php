@@ -121,7 +121,9 @@ abstract class AbstractEntity implements InterfaceEntity
         foreach ($data as $filedName => $value) {
             $sets[] = '`' . $filedName . '` = ' . $value;
         }
-        app('db')->query('UPDATE `' . static::TABLE_NAME . '` SET ' . implode(',', $sets) . ' WHERE `id` = ' . $this->id);
+        app('db')->query(
+            'UPDATE `' . static::TABLE_NAME . '` SET ' . implode(',', $sets) . ' WHERE `id` = ' . $this->id
+        );
     }
 
     /**

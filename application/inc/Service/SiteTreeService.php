@@ -29,7 +29,10 @@ class SiteTreeService
         $customPages = [];
         if (!$inputType) {
             /** @var CustomPage[] */
-            $customPages = app('orm')->getByQuery(CustomPage::class, 'SELECT * FROM `special` WHERE `id` > 1 ORDER BY `navn`');
+            $customPages = app('orm')->getByQuery(
+                CustomPage::class,
+                'SELECT * FROM `special` WHERE `id` > 1 ORDER BY `navn`'
+            );
         }
 
         return [

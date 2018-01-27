@@ -134,7 +134,7 @@ abstract class AbstractController
      *
      * @return int
      */
-    private function getUpdateTime(bool $checkDb = true): int
+    private function getUpdateTime(): int
     {
         $updateTime = 0;
         foreach (get_included_files() as $filename) {

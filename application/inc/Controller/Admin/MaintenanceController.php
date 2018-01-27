@@ -100,7 +100,10 @@ class MaintenanceController extends AbstractAdminController
     public function orphanPages(): JsonResponse
     {
         /** @var Page[] */
-        $pages = app('orm')->getByQuery(Page::class, 'SELECT * FROM `sider` WHERE `id` NOT IN(SELECT `side` FROM `bind`)');
+        $pages = app('orm')->getByQuery(
+            Page::class,
+            'SELECT * FROM `sider` WHERE `id` NOT IN(SELECT `side` FROM `bind`)'
+        );
 
         $html = '';
         if ($pages) {

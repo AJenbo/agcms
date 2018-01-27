@@ -510,7 +510,9 @@ class Page extends AbstractRenderable implements InterfaceRichText
      */
     public function addToCategory(Category $category): void
     {
-        app('db')->query('INSERT INTO `bind` (`side`, `kat`) VALUES (' . $this->getId() . ', ' . $category->getId() . ')');
+        app('db')->query(
+            'INSERT INTO `bind` (`side`, `kat`) VALUES (' . $this->getId() . ', ' . $category->getId() . ')'
+        );
         app('orm')->forgetByQuery(self::class, $this->getCategoriesQuery());
     }
 
@@ -552,7 +554,9 @@ class Page extends AbstractRenderable implements InterfaceRichText
      */
     public function removeAccessory(self $accessory): void
     {
-        app('db')->query('DELETE FROM `tilbehor` WHERE side = ' . $this->getId() . ' AND tilbehor = ' . $accessory->getId());
+        app('db')->query(
+            'DELETE FROM `tilbehor` WHERE side = ' . $this->getId() . ' AND tilbehor = ' . $accessory->getId()
+        );
 
         app('orm')->forgetByQuery(self::class, $this->getAccessoryQuery());
     }

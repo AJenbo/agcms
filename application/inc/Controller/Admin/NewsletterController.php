@@ -19,7 +19,10 @@ class NewsletterController extends AbstractAdminController
     public function index(Request $request): Response
     {
         $data = $this->basicPageData($request);
-        $data['newsletters'] = app('orm')->getByQuery(Newsletter::class, 'SELECT * FROM newsmails ORDER BY sendt, id DESC');
+        $data['newsletters'] = app('orm')->getByQuery(
+            Newsletter::class,
+            'SELECT * FROM newsmails ORDER BY sendt, id DESC'
+        );
 
         return $this->render('admin/emaillist', $data);
     }
