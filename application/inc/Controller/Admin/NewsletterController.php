@@ -19,7 +19,7 @@ class NewsletterController extends AbstractAdminController
     public function index(Request $request): Response
     {
         $data = $this->basicPageData($request);
-        $data['newsletters'] = ORM::getByQuery(Newsletter::class, 'SELECT * FROM newsmails ORDER BY sendt, id DESC');
+        $data['newsletters'] = app('orm')->getByQuery(Newsletter::class, 'SELECT * FROM newsmails ORDER BY sendt, id DESC');
 
         return $this->render('admin/emaillist', $data);
     }
@@ -37,7 +37,7 @@ class NewsletterController extends AbstractAdminController
         $newsletter = null;
         if (null !== $id) {
             /** @var ?Newsletter */
-            $newsletter = ORM::getOne(Newsletter::class, $id);
+            $newsletter = app('orm')->getOne(Newsletter::class, $id);
             if (!$newsletter) {
                 throw new InvalidInput(_('Newsletter not found.'), 404);
             }
@@ -87,7 +87,7 @@ class NewsletterController extends AbstractAdminController
     public function update(Request $request, int $id): JsonResponse
     {
         /** @var ?Newsletter */
-        $newsletter = ORM::getOne(Newsletter::class, $id);
+        $newsletter = app('orm')->getOne(Newsletter::class, $id);
         if (!$newsletter) {
             throw new InvalidInput(_('Newsletter not found.'), 404);
         }

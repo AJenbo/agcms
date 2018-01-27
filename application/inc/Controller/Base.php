@@ -55,14 +55,14 @@ class Base extends AbstractController
     protected function basicPageData(): array
     {
         /** @var ?Category */
-        $category = ORM::getOne(Category::class, 0);
+        $category = app('orm')->getOne(Category::class, 0);
         if (!$category) {
             throw new Exception(_('Root category is missing.'));
         }
 
         return [
             'menu'           => $category->getVisibleChildren(),
-            'infoPage'       => ORM::getOne(CustomPage::class, 2),
+            'infoPage'       => app('orm')->getOne(CustomPage::class, 2),
             'crumbs'         => [$category],
             'category'       => $category,
             'companyName'    => config('site_name'),
@@ -86,7 +86,7 @@ class Base extends AbstractController
     {
         $activeCategoryIds = [];
         /** @var Category[] */
-        $categories = ORM::getByQuery(Category::class, 'SELECT * FROM kat');
+        $categories = app('orm')->getByQuery(Category::class, 'SELECT * FROM kat');
         foreach ($categories as $category) {
             if ($category->isInactive()) {
                 continue;
@@ -94,7 +94,7 @@ class Base extends AbstractController
             $activeCategoryIds[] = $category->getId();
         }
 
-        $pages = db()->fetchOne(
+        $pages = app('db')->fetchOne(
             'SELECT COUNT(DISTINCT side) as count FROM bind WHERE kat IN(' . implode(',', $activeCategoryIds) . ')'
         );
 

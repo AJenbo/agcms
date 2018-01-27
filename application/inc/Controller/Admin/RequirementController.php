@@ -20,7 +20,7 @@ class RequirementController extends AbstractAdminController
     {
         $data = $this->basicPageData($request);
         /* @var Requirement[] */
-        $data['requirements'] = ORM::getByQuery(Requirement::class, 'SELECT * FROM `krav` ORDER BY navn');
+        $data['requirements'] = app('orm')->getByQuery(Requirement::class, 'SELECT * FROM `krav` ORDER BY navn');
 
         return $this->render('admin/krav', $data);
     }
@@ -62,7 +62,7 @@ class RequirementController extends AbstractAdminController
     {
         $data = $this->basicPageData($request);
         $data['textWidth'] = config('text_width');
-        $data['requirement'] = $id ? ORM::getOne(Requirement::class, $id) : null;
+        $data['requirement'] = $id ? app('orm')->getOne(Requirement::class, $id) : null;
 
         return $this->render('admin/editkrav', $data);
     }
@@ -88,7 +88,7 @@ class RequirementController extends AbstractAdminController
         }
 
         /** @var ?Requirement */
-        $requirement = ORM::getOne(Requirement::class, $id);
+        $requirement = app('orm')->getOne(Requirement::class, $id);
         if (!$requirement) {
             throw new InvalidInput(_('Requirement not found.'), 404);
         }
@@ -109,7 +109,7 @@ class RequirementController extends AbstractAdminController
     public function delete(Request $request, int $id): JsonResponse
     {
         /** @var ?Requirement */
-        $requirement = ORM::getOne(Requirement::class, $id);
+        $requirement = app('orm')->getOne(Requirement::class, $id);
         if ($requirement) {
             $requirement->delete();
         }

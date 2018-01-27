@@ -6,15 +6,10 @@ use Twig_Loader_Filesystem;
 
 class Render
 {
-    /**
-     * Render a template.
-     *
-     * @param string $template
-     * @param array  $data
-     *
-     * @return string
-     */
-    public static function render(string $template = 'index', array $data = []): string
+    /** @var Twig_Environment */
+    private $twig;
+
+    public function __construct()
     {
         $templatePath = app()->basePath('/theme');
         $loader = new Twig_Loader_Filesystem('default/', $templatePath);
@@ -30,15 +25,26 @@ class Render
             }
         }
 
-        $twig = new Twig_Environment($loader);
+        $this->twig = new Twig_Environment($loader);
         if ('production' === config('enviroment', 'develop')) {
-            $twig->setCache(app()->basePath('/theme/cache/twig'));
+            $this->twig->setCache(app()->basePath('/theme/cache/twig'));
         }
         if ('develop' === config('enviroment', 'develop')) {
-            $twig->enableDebug();
+            $this->twig->enableDebug();
         }
-        $twig->addExtension(new Twig_Extensions_Extension_I18n());
+        $this->twig->addExtension(new Twig_Extensions_Extension_I18n());
+    }
 
-        return $twig->render($template . '.html', $data);
+    /**
+     * Render a template.
+     *
+     * @param string $template
+     * @param array  $data
+     *
+     * @return string
+     */
+    public function render(string $template = 'index', array $data = []): string
+    {
+        return $this->twig->render($template . '.html', $data);
     }
 }

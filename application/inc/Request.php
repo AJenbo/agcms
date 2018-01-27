@@ -85,9 +85,9 @@ class Request extends SymfonyRequest
         }
 
         /** @var ?User */
-        $user = ORM::getOneByQuery(
+        $user = app('orm')->getOneByQuery(
             User::class,
-            'SELECT * FROM `users` WHERE `id` = ' . $id . ' AND access != 0 AND password = ' . db()->quote($hash)
+            'SELECT * FROM `users` WHERE `id` = ' . $id . ' AND access != 0 AND password = ' . app('db')->quote($hash)
         );
         if ($user) {
             $user->setLastLogin(time())->save();

@@ -254,7 +254,7 @@ class Email extends AbstractEntity
 
         return [
             'id'               => $data['id'],
-            'timestamp'        => strtotime($data['date']) + db()->getTimeOffset(),
+            'timestamp'        => strtotime($data['date']) + app('db')->getTimeOffset(),
             'subject'          => $data['subject'],
             'body'             => $data['body'],
             'senderName'       => $senderName,
@@ -274,11 +274,11 @@ class Email extends AbstractEntity
         $this->setTimestamp(time());
 
         return [
-            'date'    => db()->getNowValue(),
-            'subject' => db()->quote($this->subject),
-            'body'    => db()->quote($this->body),
-            'from'    => db()->quote($this->senderAddress . '<' . $this->senderName . '>'),
-            'to'      => db()->quote($this->recipientAddress . '<' . $this->recipientName . '>'),
+            'date'    => app('db')->getNowValue(),
+            'subject' => app('db')->quote($this->subject),
+            'body'    => app('db')->quote($this->body),
+            'from'    => app('db')->quote($this->senderAddress . '<' . $this->senderName . '>'),
+            'to'      => app('db')->quote($this->recipientAddress . '<' . $this->recipientName . '>'),
         ];
     }
 }

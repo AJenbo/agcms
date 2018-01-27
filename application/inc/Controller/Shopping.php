@@ -117,7 +117,7 @@ class Shopping extends Base
 
         $invoice->save();
 
-        $emailBody = Render::render(
+        $emailBody = app('render')->render(
             'admin/email/order-notification',
             [
                 'invoice'    => $invoice,

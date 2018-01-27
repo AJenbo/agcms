@@ -18,7 +18,7 @@ class Feed extends Base
      */
     public function siteMap(Request $request): Response
     {
-        db()->addLoadedTable('bind', 'kat', 'sider', 'special', 'maerke', 'krav');
+        app('db')->addLoadedTable('bind', 'kat', 'sider', 'special', 'maerke', 'krav');
         if ($response = $this->earlyResponse($request)) {
             return $response;
         }
@@ -26,7 +26,7 @@ class Feed extends Base
         $activeCategories = [];
         $activeCategoryIds = [];
         /** @var Category[] */
-        $categories = ORM::getByQuery(Category::class, 'SELECT * FROM kat');
+        $categories = app('orm')->getByQuery(Category::class, 'SELECT * FROM kat');
         foreach ($categories as $category) {
             if ($category->isInactive()) {
                 continue;
@@ -36,7 +36,7 @@ class Feed extends Base
         }
 
         /** @var Page[] */
-        $pages = ORM::getByQuery(
+        $pages = app('orm')->getByQuery(
             Page::class,
             '
             SELECT sider.* FROM bind
@@ -55,7 +55,7 @@ class Feed extends Base
             'categories'   => $activeCategories,
             'pages'        => $pages,
             'brands'       => $brands,
-            'requirements' => ORM::getByQuery(Requirement::class, 'SELECT * FROM krav'),
+            'requirements' => app('orm')->getByQuery(Requirement::class, 'SELECT * FROM krav'),
         ];
 
         $response = new Response('', 200, ['Content-Type' => 'text/xml;charset=utf-8']);
@@ -74,7 +74,7 @@ class Feed extends Base
      */
     public function rss(Request $request): Response
     {
-        db()->addLoadedTable('bind', 'files', 'kat', 'maerke', 'sider');
+        app('db')->addLoadedTable('bind', 'files', 'kat', 'maerke', 'sider');
         if ($response = $this->earlyResponse($request)) {
             return $response;
         }
@@ -93,7 +93,7 @@ class Feed extends Base
 
         $items = [];
         /** @var Page[] */
-        $pages = ORM::getByQuery(
+        $pages = app('orm')->getByQuery(
             Page::class,
             'SELECT * FROM sider'
             . $where

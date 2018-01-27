@@ -28,7 +28,7 @@ class CategoryController extends AbstractAdminController
         $category = null;
         if (null !== $id) {
             /** @var ?Category */
-            $category = ORM::getOne(Category::class, $id);
+            $category = app('orm')->getOne(Category::class, $id);
             if ($category) {
                 $selectedId = $category->getParent() ? $category->getParent()->getId() : null;
             }
@@ -94,7 +94,7 @@ class CategoryController extends AbstractAdminController
     public function update(Request $request, int $id): JsonResponse
     {
         /** @var ?Category */
-        $category = ORM::getOne(Category::class, $id);
+        $category = app('orm')->getOne(Category::class, $id);
         if (!$category) {
             throw new InvalidInput(_('Category not found.'), 404);
         }
@@ -102,7 +102,7 @@ class CategoryController extends AbstractAdminController
         if ($request->request->has('parentId')) {
             $parentId = $request->request->get('parentId');
             /** @var ?Category */
-            $parent = null !== $parentId ? ORM::getOne(Category::class, $parentId) : null;
+            $parent = null !== $parentId ? app('orm')->getOne(Category::class, $parentId) : null;
             if ($parent) {
                 foreach ($parent->getBranch() as $node) {
                     if ($node->getId() === $category->getId()) {
@@ -134,7 +134,7 @@ class CategoryController extends AbstractAdminController
             $iconId = $request->request->get('icon_id');
             if (null !== $iconId) {
                 /** @var ?File */
-                $icon = ORM::getOne(File::class, $iconId);
+                $icon = app('orm')->getOne(File::class, $iconId);
             }
             $category->setIcon($icon);
         }
@@ -167,7 +167,7 @@ class CategoryController extends AbstractAdminController
         $order = array_map('intval', $order);
         foreach ($order as $weight => $id) {
             /** @var ?Category */
-            $category = ORM::getOne(Category::class, $id);
+            $category = app('orm')->getOne(Category::class, $id);
             if ($category) {
                 $category->setWeight($weight)->save();
             }
@@ -191,7 +191,7 @@ class CategoryController extends AbstractAdminController
         }
 
         /** @var ?Category */
-        $category = ORM::getOne(Category::class, $id);
+        $category = app('orm')->getOne(Category::class, $id);
         if ($category) {
             $category->delete();
         }

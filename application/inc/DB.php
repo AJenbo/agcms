@@ -206,7 +206,7 @@ class DB
 
         $updateTime = 0;
         $sql = 'SHOW TABLE STATUS WHERE Name IN(\'' . implode('\', \'', $tableNames) . '\')';
-        $tables = db()->fetchArray($sql);
+        $tables = app('db')->fetchArray($sql);
         foreach ($tables as $table) {
             $updateTime = max($updateTime, strtotime($table['Update_time']) + $this->getTimeOffset());
         }

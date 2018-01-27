@@ -58,7 +58,7 @@ class Auth implements Middleware
             );
         }
 
-        return new Response(Render::render('admin/login'), Response::HTTP_UNAUTHORIZED);
+        return new Response(app('render')->render('admin/login'), Response::HTTP_UNAUTHORIZED);
     }
 
     /**
@@ -71,9 +71,9 @@ class Auth implements Middleware
     private function authenticate(Request $request): void
     {
         /** @var ?User */
-        $user = ORM::getOneByQuery(
+        $user = app('orm')->getOneByQuery(
             User::class,
-            'SELECT * FROM `users` WHERE `name` = ' . db()->quote($request->get('username', ''))
+            'SELECT * FROM `users` WHERE `name` = ' . app('db')->quote($request->get('username', ''))
         );
         if ($user && $user->getAccessLevel() && $user->validatePassword($request->get('password', ''))) {
             $request->startSession();

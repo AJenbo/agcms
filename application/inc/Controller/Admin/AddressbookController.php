@@ -24,7 +24,7 @@ class AddressbookController extends AbstractAdminController
         if (!in_array($order, ['email', 'tlf1', 'tlf2', 'post', 'adresse'], true)) {
             $order = 'navn';
         }
-        $data['contacts'] = ORM::getByQuery(Contact::class, 'SELECT * FROM email ORDER BY ' . $order);
+        $data['contacts'] = app('orm')->getByQuery(Contact::class, 'SELECT * FROM email ORDER BY ' . $order);
 
         return $this->render('admin/addressbook', $data);
     }
@@ -40,7 +40,7 @@ class AddressbookController extends AbstractAdminController
     public function editContact(Request $request, int $id = null): Response
     {
         $data = $this->basicPageData($request);
-        $data['contact'] = $id ? ORM::getOne(Contact::class, $id) : null;
+        $data['contact'] = $id ? app('orm')->getOne(Contact::class, $id) : null;
         $data['interests'] = config('interests', []);
 
         return $this->render('admin/editContact', $data);
@@ -86,7 +86,7 @@ class AddressbookController extends AbstractAdminController
     public function update(Request $request, int $id): JsonResponse
     {
         /** @var ?Contact */
-        $contact = ORM::getOne(Contact::class, $id);
+        $contact = app('orm')->getOne(Contact::class, $id);
         if (!$contact) {
             throw new InvalidInput(_('Contact not found.'), 404);
         }
@@ -117,7 +117,7 @@ class AddressbookController extends AbstractAdminController
     public function delete(Request $request, int $id): JsonResponse
     {
         /** @var ?Contact */
-        $contact = ORM::getOne(Contact::class, $id);
+        $contact = app('orm')->getOne(Contact::class, $id);
         if ($contact) {
             $contact->delete();
         }

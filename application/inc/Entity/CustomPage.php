@@ -40,7 +40,7 @@ class CustomPage extends AbstractEntity implements InterfaceRichText
     {
         return [
             'id'        => $data['id'],
-            'timestamp' => strtotime($data['dato']) + db()->getTimeOffset(),
+            'timestamp' => strtotime($data['dato']) + app('db')->getTimeOffset(),
             'title'     => $data['navn'],
             'html'      => $data['text'],
         ];
@@ -132,9 +132,9 @@ class CustomPage extends AbstractEntity implements InterfaceRichText
         $this->setTimeStamp(time());
 
         return [
-            'dato' => db()->getNowValue(),
-            'navn' => db()->quote($this->title),
-            'text' => db()->quote($this->html),
+            'dato' => app('db')->getNowValue(),
+            'navn' => app('db')->quote($this->title),
+            'text' => app('db')->quote($this->html),
         ];
     }
 }

@@ -77,7 +77,7 @@ abstract class AbstractEntity implements InterfaceEntity
     public function save(): InterfaceEntity
     {
         $data = $this->getDbArray();
-        db()->addLoadedTable(static::TABLE_NAME);
+        app('db')->addLoadedTable(static::TABLE_NAME);
         if (null === $this->id) {
             $this->insert($data);
 
@@ -98,14 +98,14 @@ abstract class AbstractEntity implements InterfaceEntity
      */
     private function insert(array $data): void
     {
-        $id = db()->query(
+        $id = app('db')->query(
             '
             INSERT INTO `' . static::TABLE_NAME . '`
             (`' . implode('`,`', array_keys($data)) . '`)
             VALUES (' . implode(',', $data) . ')'
         );
         $this->setId($id);
-        ORM::remember(static::class, $id, $this);
+        app('orm')->remember(static::class, $id, $this);
     }
 
     /**
@@ -121,7 +121,7 @@ abstract class AbstractEntity implements InterfaceEntity
         foreach ($data as $filedName => $value) {
             $sets[] = '`' . $filedName . '` = ' . $value;
         }
-        db()->query('UPDATE `' . static::TABLE_NAME . '` SET ' . implode(',', $sets) . ' WHERE `id` = ' . $this->id);
+        app('db')->query('UPDATE `' . static::TABLE_NAME . '` SET ' . implode(',', $sets) . ' WHERE `id` = ' . $this->id);
     }
 
     /**
@@ -135,8 +135,8 @@ abstract class AbstractEntity implements InterfaceEntity
             return true;
         }
 
-        db()->query('DELETE FROM `' . static::TABLE_NAME . '` WHERE `id` = ' . $this->id);
-        ORM::forget(static::class, $this->getId());
+        app('db')->query('DELETE FROM `' . static::TABLE_NAME . '` WHERE `id` = ' . $this->id);
+        app('orm')->forget(static::class, $this->getId());
 
         return true;
     }

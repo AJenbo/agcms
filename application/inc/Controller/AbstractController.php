@@ -73,7 +73,7 @@ abstract class AbstractController
      */
     protected function render(string $view, array $parameters = [], Response $response = null): Response
     {
-        $content = Render::render($view, $parameters);
+        $content = app('render')->render($view, $parameters);
 
         if (null === $response) {
             $response = new Response();
@@ -142,7 +142,7 @@ abstract class AbstractController
         }
 
         if ($checkDb) {
-            $dbTime = db()->dataAge(static::ADMIN_ONLY_TABLES);
+            $dbTime = app('db')->dataAge(static::ADMIN_ONLY_TABLES);
             $updateTime = max($dbTime, $updateTime ?: 0);
         }
 

@@ -49,9 +49,9 @@ class SiteTreeController extends AbstractAdminController
             'openCategories' => $openCategories,
             'includePages'   => (!$inputType || 'pages' === $inputType),
             'inputType'      => $inputType,
-            'node'           => ORM::getOne(Category::class, $categoryId),
+            'node'           => app('orm')->getOne(Category::class, $categoryId),
         ];
-        $html = Render::render('admin/partial-kat_expand', $data);
+        $html = app('render')->render('admin/partial-kat_expand', $data);
 
         return new JsonResponse(['id' => $categoryId, 'html' => $html]);
     }
@@ -69,7 +69,7 @@ class SiteTreeController extends AbstractAdminController
     public function lable(Request $request, int $id): JsonResponse
     {
         /** @var ?Category */
-        $category = ORM::getOne(Category::class, $id);
+        $category = app('orm')->getOne(Category::class, $id);
         if (!$category) {
             throw new InvalidInput(_('Category not found.'), 404);
         }
@@ -115,7 +115,7 @@ class SiteTreeController extends AbstractAdminController
      */
     public function inventory(Request $request): Response
     {
-        db()->addLoadedTable('bind', 'kat', 'krav', 'maerke', 'sider');
+        app('db')->addLoadedTable('bind', 'kat', 'krav', 'maerke', 'sider');
         if ($response = $this->earlyResponse($request)) {
             return $response;
         }
@@ -143,10 +143,10 @@ class SiteTreeController extends AbstractAdminController
         $sort = isset($sortOptions[$sort]) ? $sort : 'navn';
 
         /** @var Category[] */
-        $categories = ORM::getByQuery(Category::class, 'SELECT * FROM kat WHERE bind IS NULL');
+        $categories = app('orm')->getByQuery(Category::class, 'SELECT * FROM kat WHERE bind IS NULL');
         if ('' !== $categoryId) {
             /** @var Category[] */
-            $categories = [ORM::getOne(Category::class, $categoryId)];
+            $categories = [app('orm')->getOne(Category::class, $categoryId)];
         }
 
         $data = [

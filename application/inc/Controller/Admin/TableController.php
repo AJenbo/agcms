@@ -40,12 +40,12 @@ class TableController extends AbstractAdminController
      */
     public function createDialog(Request $request, int $pageId): Response
     {
-        db()->addLoadedTable('tablesort');
+        app('db')->addLoadedTable('tablesort');
 
         return $this->render(
             'admin/addlist',
             [
-                'tablesorts' => db()->fetchArray('SELECT id, navn title FROM `tablesort`'),
+                'tablesorts' => app('db')->fetchArray('SELECT id, navn title FROM `tablesort`'),
                 'page_id'    => $pageId,
             ]
         );
@@ -67,7 +67,7 @@ class TableController extends AbstractAdminController
         $link = $request->request->get('link');
 
         /** @var ?Table */
-        $table = ORM::getOne(Table::class, $tableId);
+        $table = app('orm')->getOne(Table::class, $tableId);
         if (!$table) {
             throw new InvalidInput(_('Table not found.'), 404);
         }
@@ -94,7 +94,7 @@ class TableController extends AbstractAdminController
         $link = $request->request->get('link');
 
         /** @var ?Table */
-        $table = ORM::getOne(Table::class, $tableId);
+        $table = app('orm')->getOne(Table::class, $tableId);
         if (!$table) {
             throw new InvalidInput(_('Table not found.'), 404);
         }
@@ -118,7 +118,7 @@ class TableController extends AbstractAdminController
     public function removeRow(Request $request, int $tableId, int $rowId): JsonResponse
     {
         /** @var ?Table */
-        $table = ORM::getOne(Table::class, $tableId);
+        $table = app('orm')->getOne(Table::class, $tableId);
         if (!$table) {
             throw new InvalidInput(_('Table not found.'), 404);
         }

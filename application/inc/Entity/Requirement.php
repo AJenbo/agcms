@@ -86,8 +86,8 @@ class Requirement extends AbstractRenderable implements InterfaceRichText
     public function getDbArray(): array
     {
         return [
-            'navn' => db()->quote($this->title),
-            'text' => db()->quote($this->html),
+            'navn' => app('db')->quote($this->title),
+            'text' => app('db')->quote($this->html),
         ];
     }
 }

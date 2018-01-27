@@ -25,7 +25,7 @@ class UserController extends AbstractAdminController
     public function index(Request $request): Response
     {
         /** @var User[] */
-        $users = ORM::getByQuery(
+        $users = app('orm')->getByQuery(
             User::class,
             'SELECT * FROM `users` ORDER BY ' . ($request->get('order') ? 'lastlogin' : 'fullname')
         );
@@ -84,10 +84,10 @@ class UserController extends AbstractAdminController
             if ($password !== $request->get('password2')) {
                 throw new InvalidInput(_('The passwords do not match.'), 403);
             }
-            if (ORM::getOneByQuery(User::class, 'SELECT * FROM users WHERE name = ' . db()->quote($name))) {
+            if (app('orm')->getOneByQuery(User::class, 'SELECT * FROM users WHERE name = ' . app('db')->quote($name))) {
                 throw new InvalidInput(_('Username already taken.'));
             }
-            $firstUser = !(bool) ORM::getOneByQuery(User::class, 'SELECT * FROM users WHERE access != 0');
+            $firstUser = !(bool) app('orm')->getOneByQuery(User::class, 'SELECT * FROM users WHERE access != 0');
 
             $user = new User([
                 'full_name'     => $fullname,
@@ -98,7 +98,7 @@ class UserController extends AbstractAdminController
             ]);
             $user->setPassword($password)->save();
 
-            $emailbody = Render::render('admin/email/newuser', ['fullname' => $fullname]);
+            $emailbody = app('render')->render('admin/email/newuser', ['fullname' => $fullname]);
 
             $emailAddress = first(config('emails'))['address'];
             $email = new Email([
@@ -143,7 +143,7 @@ class UserController extends AbstractAdminController
     public function editUser(Request $request, int $id): Response
     {
         /** @var ?User */
-        $user = ORM::getOne(User::class, $id);
+        $user = app('orm')->getOne(User::class, $id);
         if (!$user) {
             throw new InvalidInput(_('User not found.'), 404);
         }
@@ -189,7 +189,7 @@ class UserController extends AbstractAdminController
         }
 
         /** @var ?User */
-        $user = ORM::getOne(User::class, $id);
+        $user = app('orm')->getOne(User::class, $id);
         if (!$user) {
             throw new InvalidInput(_('User not found.'), 404);
         }
@@ -246,7 +246,7 @@ class UserController extends AbstractAdminController
         }
 
         /** @var ?User */
-        $user = ORM::getOne(User::class, $id);
+        $user = app('orm')->getOne(User::class, $id);
         if ($user) {
             $user->delete();
         }

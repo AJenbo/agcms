@@ -60,7 +60,7 @@ class Payment extends Base
     public function basket(Request $request, int $id, string $checkId): Response
     {
         /** @var ?Invoice */
-        $invoice = ORM::getOne(Invoice::class, $id);
+        $invoice = app('orm')->getOne(Invoice::class, $id);
         if ($redirect = $this->checkStatus($request, $id, $checkId, $invoice)) {
             return $redirect;
         }
@@ -89,7 +89,7 @@ class Payment extends Base
     public function address(Request $request, int $id, string $checkId): Response
     {
         /** @var ?Invoice */
-        $invoice = ORM::getOne(Invoice::class, $id);
+        $invoice = app('orm')->getOne(Invoice::class, $id);
         if ($redirect = $this->checkStatus($request, $id, $checkId, $invoice)) {
             return $redirect;
         }
@@ -122,7 +122,7 @@ class Payment extends Base
     public function addressSave(Request $request, int $id, string $checkId): Response
     {
         /** @var ?Invoice */
-        $invoice = ORM::getOne(Invoice::class, $id);
+        $invoice = app('orm')->getOne(Invoice::class, $id);
         if ($redirect = $this->checkStatus($request, $id, $checkId, $invoice)) {
             return $redirect;
         }
@@ -177,7 +177,7 @@ class Payment extends Base
     public function terms(Request $request, int $id, string $checkId): Response
     {
         /** @var ?Invoice */
-        $invoice = ORM::getOne(Invoice::class, $id);
+        $invoice = app('orm')->getOne(Invoice::class, $id);
         if ($redirect = $this->checkStatus($request, $id, $checkId, $invoice)) {
             return $redirect;
         }
@@ -220,7 +220,7 @@ class Payment extends Base
     public function getTermsHtml(): string
     {
         /** @var ?CustomPage */
-        $shoppingTerms = ORM::getOne(CustomPage::class, 3);
+        $shoppingTerms = app('orm')->getOne(CustomPage::class, 3);
         if (!$shoppingTerms) {
             app()->logException(new Exception(_('Missing terms and conditions')));
 
@@ -244,7 +244,7 @@ class Payment extends Base
     public function status(Request $request, int $id, string $checkId): Response
     {
         /** @var ?Invoice */
-        $invoice = ORM::getOne(Invoice::class, $id);
+        $invoice = app('orm')->getOne(Invoice::class, $id);
         if (!$invoice || $checkId !== $invoice->getCheckId()) {
             return $this->redirect($request, '/betaling/?id=' . $id . '&checkid=' . rawurlencode($checkId));
         }
@@ -316,7 +316,7 @@ class Payment extends Base
     public function callback(Request $request, int $id, string $checkId): Response
     {
         /** @var ?Invoice */
-        $invoice = ORM::getOne(Invoice::class, $id);
+        $invoice = app('orm')->getOne(Invoice::class, $id);
         if (!$invoice
             || $checkId !== $invoice->getCheckId()
             || !$this->isHashValid($request)
@@ -397,7 +397,7 @@ class Payment extends Base
         ];
         $email = new Email([
             'subject'          => sprintf(_('Order #%d - payment completed'), $invoice->getId()),
-            'body'             => Render::render('email/payment-confirmation', $data),
+            'body'             => app('render')->render('email/payment-confirmation', $data),
             'senderName'       => config('site_name'),
             'senderAddress'    => $invoice->getDepartment(),
             'recipientName'    => $invoice->getName(),
@@ -429,7 +429,7 @@ class Payment extends Base
         );
         $email = new Email([
             'subject'          => $subject,
-            'body'             => Render::render('admin/email/payment-confirmation', ['invoice' => $invoice]),
+            'body'             => app('render')->render('admin/email/payment-confirmation', ['invoice' => $invoice]),
             'senderName'       => config('site_name'),
             'senderAddress'    => $invoice->getDepartment(),
             'recipientName'    => config('site_name'),
