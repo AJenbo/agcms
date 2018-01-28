@@ -48,9 +48,9 @@ class FileService
         $this->checkPermittedPath($path);
 
         /** @var File[] */
-        $files = ORM::getByQuery(
+        $files = app('orm')->getByQuery(
             File::class,
-            'SELECT * FROM `' . File::TABLE_NAME . '` WHERE path LIKE ' . db()->quote($path . '/%')
+            'SELECT * FROM `' . File::TABLE_NAME . '` WHERE path LIKE ' . app('db')->quote($path . '/%')
         );
         foreach ($files as $file) {
             if ($file->isInUse()) {
@@ -156,18 +156,18 @@ class FileService
      */
     public function replaceFolderPaths(string $path, string $newPath): void
     {
-        $newPathEsc = db()->quote('="' . $newPath . '/');
-        $pathEsc = db()->quote('="' . $path . '/');
-        db()->query('UPDATE sider    SET text = REPLACE(text, ' . $pathEsc . ', ' . $newPathEsc . ')');
-        db()->query('UPDATE template SET text = REPLACE(text, ' . $pathEsc . ', ' . $newPathEsc . ')');
-        db()->query('UPDATE special  SET text = REPLACE(text, ' . $pathEsc . ', ' . $newPathEsc . ')');
-        db()->query('UPDATE krav     SET text = REPLACE(text, ' . $pathEsc . ', ' . $newPathEsc . ')');
+        $newPathEsc = app('db')->quote('="' . $newPath . '/');
+        $pathEsc = app('db')->quote('="' . $path . '/');
+        app('db')->query('UPDATE sider    SET text = REPLACE(text, ' . $pathEsc . ', ' . $newPathEsc . ')');
+        app('db')->query('UPDATE template SET text = REPLACE(text, ' . $pathEsc . ', ' . $newPathEsc . ')');
+        app('db')->query('UPDATE special  SET text = REPLACE(text, ' . $pathEsc . ', ' . $newPathEsc . ')');
+        app('db')->query('UPDATE krav     SET text = REPLACE(text, ' . $pathEsc . ', ' . $newPathEsc . ')');
 
-        db()->query(
+        app('db')->query(
             '
             UPDATE files
-            SET path = REPLACE(path, ' . db()->quote($path . '/') . ', ' . db()->quote($newPath . '/') . ')
-            WHERE path LIKE ' . db()->quote($path . '/%') . '
+            SET path = REPLACE(path, ' . app('db')->quote($path . '/') . ', ' . app('db')->quote($newPath . '/') . ')
+            WHERE path LIKE ' . app('db')->quote($path . '/%') . '
             '
         );
     }

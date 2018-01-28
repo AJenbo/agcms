@@ -24,11 +24,11 @@ class CustomPageController extends AbstractAdminController
     public function index(Request $request, int $id): Response
     {
         $data = $this->basicPageData($request);
-        $data['page'] = ORM::getOne(CustomPage::class, $id);
+        $data['page'] = app('orm')->getOne(CustomPage::class, $id);
         $data['pageWidth'] = config('text_width');
         if (1 === $id) {
             /** @var ?Category */
-            $category = ORM::getOne(Category::class, 0);
+            $category = app('orm')->getOne(Category::class, 0);
             if (!$category) {
                 throw new Exception(_('Root category is missing.'));
             }
@@ -56,7 +56,7 @@ class CustomPageController extends AbstractAdminController
     public function update(Request $request, int $id): JsonResponse
     {
         /** @var ?CustomPage */
-        $page = ORM::getOne(CustomPage::class, $id);
+        $page = app('orm')->getOne(CustomPage::class, $id);
         if (!$page) {
             throw new InvalidInput(_('Page not found.'), 404);
         }
@@ -72,7 +72,7 @@ class CustomPageController extends AbstractAdminController
 
         if (1 === $id) {
             /** @var ?Category */
-            $category = ORM::getOne(Category::class, 0);
+            $category = app('orm')->getOne(Category::class, 0);
             if (!$category) {
                 throw new Exception(_('Root category is missing.'));
             }

@@ -272,7 +272,7 @@ class Category extends AbstractRenderable
         $cetegory = null;
         if (null !== $this->parentId) {
             /** @var ?static */
-            $cetegory = ORM::getOne(static::class, $this->parentId);
+            $cetegory = app('orm')->getOne(static::class, $this->parentId);
         }
 
         return $cetegory;
@@ -295,7 +295,7 @@ class Category extends AbstractRenderable
         }
 
         /** @var self[] */
-        $children = ORM::getByQuery(
+        $children = app('orm')->getByQuery(
             self::class,
             '
             SELECT * FROM kat
@@ -366,14 +366,14 @@ class Category extends AbstractRenderable
      */
     public function getPages(string $order = 'navn', bool $reverseOrder = false): array
     {
-        Render::addLoadedTable('bind');
+        app('db')->addLoadedTable('bind');
 
         if (!in_array($order, ['navn', 'for', 'pris', 'varenr'], true)) {
             $order = 'navn';
         }
 
         /** @var Page[] */
-        $pages = ORM::getByQuery(
+        $pages = app('orm')->getByQuery(
             Page::class,
             '
             SELECT * FROM sider
@@ -408,9 +408,9 @@ class Category extends AbstractRenderable
      */
     public function hasPages(): bool
     {
-        Render::addLoadedTable('bind');
+        app('db')->addLoadedTable('bind');
 
-        $hasPages = (bool) db()->fetchOne('SELECT kat FROM `bind` WHERE `kat` = ' . $this->getId());
+        $hasPages = (bool) app('db')->fetchOne('SELECT kat FROM `bind` WHERE `kat` = ' . $this->getId());
         if ($hasPages) {
             $this->visable = true;
         }
@@ -503,7 +503,7 @@ class Category extends AbstractRenderable
         $file = null;
         if (null !== $this->iconId) {
             /** @var ?File */
-            $file = ORM::getOne(File::class, $this->iconId);
+            $file = app('orm')->getOne(File::class, $this->iconId);
         }
 
         return $file;
@@ -519,11 +519,11 @@ class Category extends AbstractRenderable
     public function getDbArray(): array
     {
         return [
-            'navn'             => db()->quote($this->title),
+            'navn'             => app('db')->quote($this->title),
             'bind'             => null !== $this->parentId ? (string) $this->parentId : 'NULL',
             'icon_id'          => null !== $this->iconId ? (string) $this->iconId : 'NULL',
             'vis'              => (string) $this->renderMode,
-            'email'            => db()->quote($this->email),
+            'email'            => app('db')->quote($this->email),
             'custom_sort_subs' => (string) (int) $this->weightedChildren,
             'order'            => (string) $this->weight,
             'access'           => '""',

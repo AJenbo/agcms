@@ -1,7 +1,6 @@
 <?php namespace AGCMS\Entity;
 
 use AGCMS\ORM;
-use AGCMS\Render;
 
 class Page extends AbstractRenderable implements InterfaceRichText
 {
@@ -81,7 +80,7 @@ class Page extends AbstractRenderable implements InterfaceRichText
         return [
             'id'             => $data['id'],
             'sku'            => $data['varenr'],
-            'timestamp'      => strtotime($data['dato']) + db()->getTimeOffset(),
+            'timestamp'      => strtotime($data['dato']) + app('db')->getTimeOffset(),
             'title'          => $data['navn'],
             'keywords'       => $data['keywords'],
             'html'           => $data['text'],
@@ -104,17 +103,17 @@ class Page extends AbstractRenderable implements InterfaceRichText
     public function delete(): bool
     {
         // Forget affected tables, though alter indivitual deletes will forget most
-        Render::addLoadedTable('list_rows');
-        db()->query('DELETE FROM `list_rows` WHERE `link` = ' . $this->getId());
+        app('db')->addLoadedTable('list_rows');
+        app('db')->query('DELETE FROM `list_rows` WHERE `link` = ' . $this->getId());
         foreach ($this->getTables() as $table) {
             $table->delete();
         }
 
         // parent::delete will forget any binding and accessory relationship
-        Render::addLoadedTable('bind');
-        db()->query('DELETE FROM `bind` WHERE side = ' . $this->getId());
-        Render::addLoadedTable('tilbehor');
-        db()->query('DELETE FROM `tilbehor` WHERE side = ' . $this->getId() . ' OR tilbehor =' . $this->getId());
+        app('db')->addLoadedTable('bind');
+        app('db')->query('DELETE FROM `bind` WHERE side = ' . $this->getId());
+        app('db')->addLoadedTable('tilbehor');
+        app('db')->query('DELETE FROM `tilbehor` WHERE side = ' . $this->getId() . ' OR tilbehor =' . $this->getId());
 
         return parent::delete();
     }
@@ -283,7 +282,7 @@ class Page extends AbstractRenderable implements InterfaceRichText
         $file = null;
         if (null !== $this->iconId) {
             /** @var ?File */
-            $file = ORM::getOne(File::class, $this->iconId);
+            $file = app('orm')->getOne(File::class, $this->iconId);
         }
 
         return $file;
@@ -454,9 +453,9 @@ class Page extends AbstractRenderable implements InterfaceRichText
      */
     public function isInCategory(Category $category): bool
     {
-        Render::addLoadedTable('bind');
+        app('db')->addLoadedTable('bind');
 
-        return (bool) db()->fetchOne(
+        return (bool) app('db')->fetchOne(
             '
             SELECT kat FROM `bind`
             WHERE side = ' . $this->getId() . '
@@ -472,7 +471,7 @@ class Page extends AbstractRenderable implements InterfaceRichText
     public function getPrimaryCategory(): ?Category
     {
         /** @var ?Category */
-        $category = ORM::getOneByQuery(Category::class, $this->getCategoriesQuery());
+        $category = app('orm')->getOneByQuery(Category::class, $this->getCategoriesQuery());
 
         return $category;
     }
@@ -485,7 +484,7 @@ class Page extends AbstractRenderable implements InterfaceRichText
     public function getCategories(): array
     {
         /** @var Category[] */
-        $categories = ORM::getByQuery(Category::class, $this->getCategoriesQuery());
+        $categories = app('orm')->getByQuery(Category::class, $this->getCategoriesQuery());
 
         return $categories;
     }
@@ -497,7 +496,7 @@ class Page extends AbstractRenderable implements InterfaceRichText
      */
     private function getCategoriesQuery(): string
     {
-        Render::addLoadedTable('bind');
+        app('db')->addLoadedTable('bind');
 
         return 'SELECT * FROM `kat` WHERE id IN (SELECT kat FROM `bind` WHERE side = ' . $this->getId() . ')';
     }
@@ -511,8 +510,10 @@ class Page extends AbstractRenderable implements InterfaceRichText
      */
     public function addToCategory(Category $category): void
     {
-        db()->query('INSERT INTO `bind` (`side`, `kat`) VALUES (' . $this->getId() . ', ' . $category->getId() . ')');
-        ORM::forgetByQuery(self::class, $this->getCategoriesQuery());
+        app('db')->query(
+            'INSERT INTO `bind` (`side`, `kat`) VALUES (' . $this->getId() . ', ' . $category->getId() . ')'
+        );
+        app('orm')->forgetByQuery(self::class, $this->getCategoriesQuery());
     }
 
     /**
@@ -524,8 +525,8 @@ class Page extends AbstractRenderable implements InterfaceRichText
      */
     public function removeFromCategory(Category $category): void
     {
-        db()->query('DELETE FROM `bind` WHERE `side` = ' . $this->getId() . ' AND `kat` = ' . $category->getId());
-        ORM::forgetByQuery(self::class, $this->getCategoriesQuery());
+        app('db')->query('DELETE FROM `bind` WHERE `side` = ' . $this->getId() . ' AND `kat` = ' . $category->getId());
+        app('orm')->forgetByQuery(self::class, $this->getCategoriesQuery());
     }
 
     /**
@@ -535,13 +536,13 @@ class Page extends AbstractRenderable implements InterfaceRichText
      */
     public function addAccessory(self $accessory): void
     {
-        db()->query(
+        app('db')->query(
             '
             INSERT IGNORE INTO `tilbehor` (`side`, `tilbehor`)
             VALUES (' . $this->getId() . ', ' . $accessory->getId() . ')'
         );
 
-        ORM::forgetByQuery(self::class, $this->getAccessoryQuery());
+        app('orm')->forgetByQuery(self::class, $this->getAccessoryQuery());
     }
 
     /**
@@ -553,9 +554,11 @@ class Page extends AbstractRenderable implements InterfaceRichText
      */
     public function removeAccessory(self $accessory): void
     {
-        db()->query('DELETE FROM `tilbehor` WHERE side = ' . $this->getId() . ' AND tilbehor = ' . $accessory->getId());
+        app('db')->query(
+            'DELETE FROM `tilbehor` WHERE side = ' . $this->getId() . ' AND tilbehor = ' . $accessory->getId()
+        );
 
-        ORM::forgetByQuery(self::class, $this->getAccessoryQuery());
+        app('orm')->forgetByQuery(self::class, $this->getAccessoryQuery());
     }
 
     /**
@@ -566,7 +569,7 @@ class Page extends AbstractRenderable implements InterfaceRichText
     public function getAccessories(): array
     {
         /** @var Page[] */
-        $page = ORM::getByQuery(self::class, $this->getAccessoryQuery());
+        $page = app('orm')->getByQuery(self::class, $this->getAccessoryQuery());
 
         return $page;
     }
@@ -595,7 +598,7 @@ class Page extends AbstractRenderable implements InterfaceRichText
      */
     private function getAccessoryQuery(): string
     {
-        Render::addLoadedTable('tilbehor');
+        app('db')->addLoadedTable('tilbehor');
 
         return '
             SELECT * FROM sider
@@ -610,7 +613,7 @@ class Page extends AbstractRenderable implements InterfaceRichText
     public function getTables(): array
     {
         /** @var Table[] */
-        $tables = ORM::getByQuery(
+        $tables = app('orm')->getByQuery(
             Table::class,
             'SELECT * FROM `lists` WHERE page_id = ' . $this->getId()
         );
@@ -625,7 +628,7 @@ class Page extends AbstractRenderable implements InterfaceRichText
      */
     public function hasProductTable(): array
     {
-        foreach ($page->getTables() as $table) {
+        foreach ($this->getTables() as $table) {
             if ($table->hasPrices() && $table->hasPrices()) {
                 return true;
             }
@@ -644,7 +647,7 @@ class Page extends AbstractRenderable implements InterfaceRichText
         $brand = null;
         if (null !== $this->brandId) {
             /** @var ?Brand */
-            $brand = ORM::getOne(Brand::class, $this->brandId);
+            $brand = app('orm')->getOne(Brand::class, $this->brandId);
         }
 
         return $brand;
@@ -660,7 +663,7 @@ class Page extends AbstractRenderable implements InterfaceRichText
         $requirement = null;
         if (null !== $this->requirementId) {
             /** @var ?Requirement */
-            $requirement = ORM::getOne(Requirement::class, $this->requirementId);
+            $requirement = app('orm')->getOne(Requirement::class, $this->requirementId);
         }
 
         return $requirement;
@@ -693,12 +696,12 @@ class Page extends AbstractRenderable implements InterfaceRichText
         $this->setTimeStamp(time());
 
         return [
-            'dato'        => db()->getNowValue(),
-            'navn'        => db()->quote($this->title),
-            'keywords'    => db()->quote($this->keywords),
-            'text'        => db()->quote($this->html),
-            'varenr'      => db()->quote($this->sku),
-            'beskrivelse' => db()->quote($this->excerpt),
+            'dato'        => app('db')->getNowValue(),
+            'navn'        => app('db')->quote($this->title),
+            'keywords'    => app('db')->quote($this->keywords),
+            'text'        => app('db')->quote($this->html),
+            'varenr'      => app('db')->quote($this->sku),
+            'beskrivelse' => app('db')->quote($this->excerpt),
             'icon_id'     => null !== $this->iconId ? (string) $this->iconId : 'NULL',
             'krav'        => null !== $this->requirementId ? (string) $this->requirementId : 'NULL',
             'maerke'      => null !== $this->brandId ? (string) $this->brandId : 'NULL',

@@ -32,10 +32,10 @@ class InvoiceService
             $value = null;
             $pageId = null;
             if ('line' === $item['type']) { // Find item based on price table row
-                Render::addLoadedTable('list_rows');
-                $listRow = db()->fetchOne('SELECT * FROM `list_rows` WHERE id = ' . $item['id']);
+                app('db')->addLoadedTable('list_rows');
+                $listRow = app('db')->fetchOne('SELECT * FROM `list_rows` WHERE id = ' . $item['id']);
                 /** @var ?Table */
-                $table = $listRow ? ORM::getOne(Table::class, $listRow['list_id']) : null;
+                $table = $listRow ? app('orm')->getOne(Table::class, $listRow['list_id']) : null;
                 if ($table) {
                     $pageId = $table->getPage()->getId();
                     if ($table->hasLinks() && $listRow['link']) {
@@ -67,7 +67,7 @@ class InvoiceService
             }
 
             /** @var ?Page */
-            $page = $pageId ? ORM::getOne(Page::class, $pageId) : null;
+            $page = $pageId ? app('orm')->getOne(Page::class, $pageId) : null;
             if (!$page || $page->isInactive()) {
                 $title = _('Expired');
             } else {
@@ -171,9 +171,9 @@ class InvoiceService
     {
         $countries = include app()->basePath('/inc/countries.php');
         /** @var ?Contact */
-        $conteact = ORM::getOneByQuery(
+        $conteact = app('orm')->getOneByQuery(
             Contact::class,
-            'SELECT * FROM email WHERE email = ' . db()->quote($invoice->getEmail())
+            'SELECT * FROM email WHERE email = ' . app('db')->quote($invoice->getEmail())
         );
         if (!$conteact) {
             $conteact = new Contact([
@@ -393,7 +393,7 @@ class InvoiceService
             $emailTemplate = 'email/invoice-reminder';
         }
 
-        $emailBody = Render::render(
+        $emailBody = app('render')->render(
             $emailTemplate,
             [
                 'invoice'  => $invoice,

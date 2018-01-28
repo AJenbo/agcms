@@ -36,7 +36,7 @@ class PageController extends AbstractAdminController
         $accessories = [];
         if (null !== $id) {
             /** @var ?Page */
-            $page = ORM::getOne(Page::class, $id);
+            $page = app('orm')->getOne(Page::class, $id);
             if (!$page) {
                 throw new InvalidInput(_('Page not found.'), 404);
             }
@@ -61,8 +61,8 @@ class PageController extends AbstractAdminController
             'textWidth'    => config('text_width'),
             'thumbWidth'   => config('thumb_width'),
             'siteTree'     => $siteTreeService->getSiteTreeData($openCategories, 'categories', $selectedId),
-            'requirements' => ORM::getByQuery(Requirement::class, 'SELECT * FROM `krav` ORDER BY navn'),
-            'brands'       => ORM::getByQuery(Brand::class, 'SELECT * FROM `maerke` ORDER BY navn'),
+            'requirements' => app('orm')->getByQuery(Requirement::class, 'SELECT * FROM `krav` ORDER BY navn'),
+            'brands'       => app('orm')->getByQuery(Brand::class, 'SELECT * FROM `maerke` ORDER BY navn'),
             'page'         => $page,
             'bindings'     => $bindings,
             'accessories'  => $accessories,
@@ -84,7 +84,7 @@ class PageController extends AbstractAdminController
     public function createPage(Request $request): JsonResponse
     {
         /** @var ?Category */
-        $category = ORM::getOne(Category::class, $request->request->get('categoryId'));
+        $category = app('orm')->getOne(Category::class, $request->request->get('categoryId'));
         if (!$category) {
             throw new InvalidInput(_('Category not found.'), 404);
         }
@@ -124,11 +124,11 @@ class PageController extends AbstractAdminController
         $icon = null;
         if ($request->request->has('iconId')) {
             /** @var ?File */
-            $icon = ORM::getOne(File::class, $request->request->getInt('iconId'));
+            $icon = app('orm')->getOne(File::class, $request->request->getInt('iconId'));
         }
 
         /** @var ?Page */
-        $page = ORM::getOne(Page::class, $id);
+        $page = app('orm')->getOne(Page::class, $id);
         if (!$page) {
             throw new InvalidInput(_('Page not found.'), 404);
         }
@@ -161,7 +161,7 @@ class PageController extends AbstractAdminController
     public function delete(Request $request, int $id): JsonResponse
     {
         /** @var ?Page */
-        $page = ORM::getOne(Page::class, $id);
+        $page = app('orm')->getOne(Page::class, $id);
         if ($page) {
             $page->delete();
         }
@@ -183,13 +183,13 @@ class PageController extends AbstractAdminController
     public function addToCategory(Request $request, int $id, int $categoryId): JsonResponse
     {
         /** @var ?Page */
-        $page = ORM::getOne(Page::class, $id);
+        $page = app('orm')->getOne(Page::class, $id);
         if (!$page) {
             throw new InvalidInput(_('Page not found.'), 404);
         }
 
         /** @var ?Category */
-        $category = ORM::getOne(Category::class, $categoryId);
+        $category = app('orm')->getOne(Category::class, $categoryId);
         if (!$category) {
             throw new InvalidInput(_('Category not found.'), 404);
         }
@@ -230,13 +230,13 @@ class PageController extends AbstractAdminController
     public function removeFromCategory(Request $request, int $id, int $categoryId): JsonResponse
     {
         /** @var ?Page */
-        $page = ORM::getOne(Page::class, $id);
+        $page = app('orm')->getOne(Page::class, $id);
         if (!$page) {
             throw new InvalidInput(_('Page not found.'), 404);
         }
 
         /** @var ?Category */
-        $category = ORM::getOne(Category::class, $categoryId);
+        $category = app('orm')->getOne(Category::class, $categoryId);
         if (!$category) {
             throw new InvalidInput(_('Category not found.'), 404);
         }
@@ -248,7 +248,7 @@ class PageController extends AbstractAdminController
 
         if (1 === count($page->getCategories())) {
             /** @var ?Category */
-            $inactiveCategory = ORM::getOne(Category::class, -1);
+            $inactiveCategory = app('orm')->getOne(Category::class, -1);
             if (!$inactiveCategory) {
                 throw new InvalidInput(_('Category not found.'), 404);
             }
@@ -283,7 +283,7 @@ class PageController extends AbstractAdminController
         $data = ['text' => $text, 'pages' => $pages];
 
         if ($request->isXmlHttpRequest()) {
-            return new JsonResponse(['id' => 'canvas', 'html' => Render::render('admin/partial-search', $data)]);
+            return new JsonResponse(['id' => 'canvas', 'html' => app('render')->render('admin/partial-search', $data)]);
         }
 
         return $this->render('admin/search', $data);
@@ -303,13 +303,13 @@ class PageController extends AbstractAdminController
     public function addAccessory(Request $request, int $pageId, int $accessoryId): JsonResponse
     {
         /** @var ?Page */
-        $page = ORM::getOne(Page::class, $pageId);
+        $page = app('orm')->getOne(Page::class, $pageId);
         if (!$page) {
             throw new InvalidInput(_('Page not found.'), 404);
         }
 
         /** @var ?Page */
-        $accessory = ORM::getOne(Page::class, $accessoryId);
+        $accessory = app('orm')->getOne(Page::class, $accessoryId);
         if (!$accessory) {
             throw new InvalidInput(_('Accessory not found.'), 404);
         }
@@ -342,13 +342,13 @@ class PageController extends AbstractAdminController
     public function removeAccessory(Request $request, int $pageId, int $accessoryId): JsonResponse
     {
         /** @var ?Page */
-        $page = ORM::getOne(Page::class, $pageId);
+        $page = app('orm')->getOne(Page::class, $pageId);
         if (!$page) {
             throw new InvalidInput(_('Page not found.'), 404);
         }
 
         /** @var ?Page */
-        $accessory = ORM::getOne(Page::class, $accessoryId);
+        $accessory = app('orm')->getOne(Page::class, $accessoryId);
         if (!$accessory) {
             throw new InvalidInput(_('Accessory not found.'), 404);
         }
@@ -373,15 +373,15 @@ class PageController extends AbstractAdminController
         );
 
         /** @var Page[] */
-        $pages = ORM::getByQuery(
+        $pages = app('orm')->getByQuery(
             Page::class,
             '
             SELECT * FROM sider
-            WHERE MATCH (navn, text, beskrivelse) AGAINST(' . db()->quote($text) . ') > 0
-                OR `navn` LIKE ' . db()->quote('%' . $simpleq . '%') . '
-                OR `text` LIKE ' . db()->quote('%' . $simpleq . '%') . '
-                OR `beskrivelse` LIKE ' . db()->quote('%' . $simpleq . '%') . '
-            ORDER BY MATCH (navn, text, beskrivelse) AGAINST(' . db()->quote($text) . ') DESC
+            WHERE MATCH (navn, text, beskrivelse) AGAINST(' . app('db')->quote($text) . ') > 0
+                OR `navn` LIKE ' . app('db')->quote('%' . $simpleq . '%') . '
+                OR `text` LIKE ' . app('db')->quote('%' . $simpleq . '%') . '
+                OR `beskrivelse` LIKE ' . app('db')->quote('%' . $simpleq . '%') . '
+            ORDER BY MATCH (navn, text, beskrivelse) AGAINST(' . app('db')->quote($text) . ') DESC
             '
         );
 

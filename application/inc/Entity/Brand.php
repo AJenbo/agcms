@@ -95,7 +95,7 @@ class Brand extends AbstractRenderable
         $file = null;
         if (null !== $this->iconId) {
             /** @var ?File */
-            $file = ORM::getOne(File::class, $this->iconId);
+            $file = app('orm')->getOne(File::class, $this->iconId);
         }
 
         return $file;
@@ -127,7 +127,7 @@ class Brand extends AbstractRenderable
         }
 
         /** @var Page[] */
-        $pages = ORM::getByQuery(
+        $pages = app('orm')->getByQuery(
             Page::class,
             '
             SELECT sider.*
@@ -171,8 +171,8 @@ class Brand extends AbstractRenderable
     public function getDbArray(): array
     {
         return [
-            'navn'    => db()->quote($this->title),
-            'link'    => db()->quote($this->link),
+            'navn'    => app('db')->quote($this->title),
+            'link'    => app('db')->quote($this->link),
             'icon_id' => null !== $this->iconId ? (string) $this->iconId : 'NULL',
         ];
     }

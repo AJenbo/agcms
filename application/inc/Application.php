@@ -31,6 +31,16 @@ class Application
         InvalidInput::class,
     ];
 
+    /** @var string[] */
+    private $aliases = [
+        'db'     => DB::class,
+        'orm'    => ORM::class,
+        'render' => Render::class,
+    ];
+
+    /** @var object[] */
+    private $services = [];
+
     /**
      * Set up the enviroment.
      *
@@ -126,6 +136,59 @@ class Application
     }
 
     /**
+     * Sets a service.
+     *
+     * Setting a service to null resets the service.
+     *
+     * @param string  $id      The service identifier
+     * @param ?object $service The service instance
+     *
+     * @return object The associated service
+     */
+    public function set(string $id, $service)
+    {
+        $id = $this->aliases[$id] ?? $id;
+
+        $this->services[$id] = $service;
+    }
+
+    /**
+     * Gets a service.
+     *
+     * @param string $id The service identifier
+     *
+     * @return object The associated service
+     */
+    public function get(string $id)
+    {
+        $id = $this->aliases[$id] ?? $id;
+
+        if (!isset($this->services[$id])) {
+            $this->services[$id] = $this->loadService($id);
+        }
+
+        return $this->services[$id];
+    }
+
+    /**
+     * Load a service.
+     *
+     * @param string $service
+     *
+     * @return object The associated service
+     */
+    public function loadService(string $service)
+    {
+        if ('AGCMS\\DB' === $service) {
+            $dsn = config('db_dns') ?: 'mysql:dbname=' . config('mysql_database') . ';host=' . config('mysql_server');
+
+            return new DB($dsn, config('mysql_user', 'root'), config('mysql_password', ''));
+        }
+
+        return new $service();
+    }
+
+    /**
      * Add middleware.
      *
      * @param string $uriPrefix
@@ -175,10 +238,7 @@ class Application
     public function handle(Request $request): Response
     {
         try {
-            $response = Render::sendCacheHeader($request);
-            if (!$response) {
-                $response = $this->dispatch($request);
-            }
+            $response = $this->dispatch($request);
         } catch (Throwable $exception) {
             $response = $this->handleException($request, $exception);
         }

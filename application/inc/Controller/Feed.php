@@ -4,7 +4,6 @@ use AGCMS\Entity\Category;
 use AGCMS\Entity\Page;
 use AGCMS\Entity\Requirement;
 use AGCMS\ORM;
-use AGCMS\Render;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -19,18 +18,15 @@ class Feed extends Base
      */
     public function siteMap(Request $request): Response
     {
-        Render::addLoadedTable('bind');
-        Render::addLoadedTable('kat');
-        Render::addLoadedTable('sider');
-        Render::addLoadedTable('special');
-        Render::addLoadedTable('maerke');
-        Render::addLoadedTable('krav');
-        Render::sendCacheHeader($request);
+        app('db')->addLoadedTable('bind', 'kat', 'sider', 'special', 'maerke', 'krav');
+        if ($response = $this->earlyResponse($request)) {
+            return $response;
+        }
 
         $activeCategories = [];
         $activeCategoryIds = [];
         /** @var Category[] */
-        $categories = ORM::getByQuery(Category::class, 'SELECT * FROM kat');
+        $categories = app('orm')->getByQuery(Category::class, 'SELECT * FROM kat');
         foreach ($categories as $category) {
             if ($category->isInactive()) {
                 continue;
@@ -40,7 +36,7 @@ class Feed extends Base
         }
 
         /** @var Page[] */
-        $pages = ORM::getByQuery(
+        $pages = app('orm')->getByQuery(
             Page::class,
             '
             SELECT sider.* FROM bind
@@ -59,7 +55,7 @@ class Feed extends Base
             'categories'   => $activeCategories,
             'pages'        => $pages,
             'brands'       => $brands,
-            'requirements' => ORM::getByQuery(Requirement::class, 'SELECT * FROM krav'),
+            'requirements' => app('orm')->getByQuery(Requirement::class, 'SELECT * FROM krav'),
         ];
 
         $response = new Response('', 200, ['Content-Type' => 'text/xml;charset=utf-8']);
@@ -78,13 +74,10 @@ class Feed extends Base
      */
     public function rss(Request $request): Response
     {
-        Render::addLoadedTable('bind');
-        Render::addLoadedTable('files');
-        Render::addLoadedTable('kat');
-        Render::addLoadedTable('maerke');
-        Render::addLoadedTable('sider');
-        $timestamp = Render::getUpdateTime();
-        Render::sendCacheHeader($request, $timestamp);
+        app('db')->addLoadedTable('bind', 'files', 'kat', 'maerke', 'sider');
+        if ($response = $this->earlyResponse($request)) {
+            return $response;
+        }
 
         $time = false;
         if ($request->headers->has('If-Modified-Since')) {
@@ -100,7 +93,7 @@ class Feed extends Base
 
         $items = [];
         /** @var Page[] */
-        $pages = ORM::getByQuery(
+        $pages = app('orm')->getByQuery(
             Page::class,
             'SELECT * FROM sider'
             . $where
@@ -167,7 +160,9 @@ class Feed extends Base
      */
     public function openSearch(Request $request): Response
     {
-        Render::sendCacheHeader($request, Render::getUpdateTime(false));
+        if ($response = $this->earlyResponse($request)) {
+            return $response;
+        }
 
         $url = config('base_url') . '/search/results/?q={searchTerms}&sogikke=&minpris=&maxpris=&maerke=0';
         $data = [

@@ -24,7 +24,7 @@ class Site extends Base
     public function category(Request $request, int $categoryId): Response
     {
         /** @var ?Category */
-        $category = ORM::getOne(Category::class, $categoryId);
+        $category = app('orm')->getOne(Category::class, $categoryId);
         if ($redirect = $this->checkCategoryUrl($request, $category)) {
             return $redirect;
         }
@@ -56,7 +56,7 @@ class Site extends Base
     public function frontPage(): Response
     {
         $data = [
-            'renderable' => ORM::getOne(CustomPage::class, 1),
+            'renderable' => app('orm')->getOne(CustomPage::class, 1),
         ] + $this->basicPageData();
 
         return $this->render('index', $data);
@@ -87,9 +87,9 @@ class Site extends Base
     public function page(Request $request, int $categoryId, int $pageId): Response
     {
         /** @var ?Category */
-        $category = ORM::getOne(Category::class, $categoryId);
+        $category = app('orm')->getOne(Category::class, $categoryId);
         /** @var ?Page */
-        $page = ORM::getOne(Page::class, $pageId);
+        $page = app('orm')->getOne(Page::class, $pageId);
 
         if ($redirect = $this->checkPageUrl($request, $category, $page)) {
             return $redirect;
@@ -119,7 +119,7 @@ class Site extends Base
     public function requirement(Request $request, int $requirementId): Response
     {
         /** @var ?Requirement */
-        $requirement = ORM::getOne(Requirement::class, $requirementId);
+        $requirement = app('orm')->getOne(Requirement::class, $requirementId);
         if ($redirect = $this->checkRenderableUrl($request, $requirement)) {
             return $redirect;
         }
@@ -143,7 +143,7 @@ class Site extends Base
     public function brand(Request $request, int $brandId): Response
     {
         /** @var ?Brand */
-        $brand = ORM::getOne(Brand::class, $brandId);
+        $brand = app('orm')->getOne(Brand::class, $brandId);
         if ($redirect = $this->checkRenderableUrl($request, $brand)) {
             return $redirect;
         }

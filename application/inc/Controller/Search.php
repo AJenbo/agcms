@@ -4,7 +4,6 @@ use AGCMS\Entity\Brand;
 use AGCMS\Entity\Category;
 use AGCMS\Entity\Page;
 use AGCMS\ORM;
-use AGCMS\Render;
 use AGCMS\VolatilePage;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -35,7 +34,7 @@ class Search extends Base
     {
         $categoryIds = [];
         /** @var Category[] */
-        $categories = ORM::getByQuery(Category::class, 'SELECT * FROM kat');
+        $categories = app('orm')->getByQuery(Category::class, 'SELECT * FROM kat');
         foreach ($categories as $category) {
             if ($category->isInactive()) {
                 continue;
@@ -44,7 +43,7 @@ class Search extends Base
         }
 
         /** @var Brand[] */
-        $brands = ORM::getByQuery(
+        $brands = app('orm')->getByQuery(
             Brand::class,
             '
             SELECT * FROM `maerke`
@@ -78,7 +77,7 @@ class Search extends Base
         $antiWords = $request->get('sogikke', '');
 
         if ($brandId && !$searchString && !$varenr && !$minpris && !$maxpris && !$antiWords) {
-            $brand = ORM::getOne(Brand::class, $brandId);
+            $brand = app('orm')->getOne(Brand::class, $brandId);
             if ($brand) {
                 return $this->redirect($request, $brand->getCanonicalLink(), Response::HTTP_PERMANENTLY_REDIRECT);
             }
@@ -131,7 +130,7 @@ class Search extends Base
         ) {
             if ($request->get('maerke')) {
                 /** @var ?Brand */
-                $brand = ORM::getOne(Brand::class, $request->get('maerke'));
+                $brand = app('orm')->getOne(Brand::class, $request->get('maerke'));
                 if ($brand) {
                     return $this->redirect($request, $brand->getCanonicalLink(), Response::HTTP_MOVED_PERMANENTLY);
                 }
@@ -166,7 +165,7 @@ class Search extends Base
         string $antiWords = ''
     ): array {
         $simpleQuery = '%' . preg_replace('/\s+/u', '%', $searchString) . '%';
-        $simpleQuery = db()->quote($simpleQuery);
+        $simpleQuery = app('db')->quote($simpleQuery);
 
         //Full search
         $where = '';
@@ -174,7 +173,7 @@ class Search extends Base
             $where = ' AND `maerke` = ' . $brandId;
         }
         if ($varenr) {
-            $where .= ' AND varenr LIKE ' . db()->eanq($varenr . '%');
+            $where .= ' AND varenr LIKE ' . app('db')->eanq($varenr . '%');
         }
         if ($minpris) {
             $where .= ' AND pris > ' . $minpris;
@@ -184,32 +183,30 @@ class Search extends Base
         }
         if ($antiWords) {
             $simpleAntiQuery = '%' . preg_replace('/\s+/u', '%', $antiWords) . '%';
-            $simpleAntiQuery = db()->quote($simpleAntiQuery);
-            $where .= ' AND !MATCH (navn, text, beskrivelse) AGAINST(' . db()->quote($antiWords) . ") > 0
+            $simpleAntiQuery = app('db')->quote($simpleAntiQuery);
+            $where .= ' AND !MATCH (navn, text, beskrivelse) AGAINST(' . app('db')->quote($antiWords) . ") > 0
             AND `navn` NOT LIKE $simpleAntiQuery
             AND `text` NOT LIKE $simpleAntiQuery
             AND `beskrivelse` NOT LIKE $simpleAntiQuery
             ";
         }
 
-        Render::addLoadedTable('list_rows');
-        Render::addLoadedTable('lists');
-        Render::addLoadedTable('bind');
+        app('db')->addLoadedTable('list_rows', 'lists', 'bind');
         $columns = [];
-        foreach (db()->fetchArray('SHOW COLUMNS FROM sider') as $column) {
+        foreach (app('db')->fetchArray('SHOW COLUMNS FROM sider') as $column) {
             $columns[] = $column['Field'];
         }
 
         /** @var Page[] */
-        $pages = ORM::getByQuery(
+        $pages = app('orm')->getByQuery(
             Page::class,
             '
             SELECT `' . implode('`, `', $columns) . '`
-            FROM (SELECT sider.*, MATCH(navn, text, beskrivelse) AGAINST (' . db()->quote($searchString) . ') AS score
+            FROM (SELECT sider.*, MATCH(navn, text, beskrivelse) AGAINST (' . app('db')->quote($searchString) . ') AS score
             FROM sider
             JOIN bind ON sider.id = bind.side AND bind.kat != -1
             WHERE (
-                MATCH (navn, text, beskrivelse) AGAINST(' . db()->quote($searchString) . ") > 0
+                MATCH (navn, text, beskrivelse) AGAINST(' . app('db')->quote($searchString) . ") > 0
                 OR `navn` LIKE $simpleQuery
                 OR `text` LIKE $simpleQuery
                 OR `beskrivelse` LIKE $simpleQuery
@@ -253,16 +250,16 @@ class Search extends Base
         $simpleAntiWords = $antiWords ? '%' . preg_replace('/\s+/u', '%', $antiWords) . '%' : '';
 
         /** @var Brand[] */
-        $brands = ORM::getByQuery(
+        $brands = app('orm')->getByQuery(
             Brand::class,
             '
             SELECT * FROM `maerke`
             WHERE (
-                MATCH (navn) AGAINST(' . db()->quote($searchString) . ') > 0
-                OR navn LIKE ' . db()->quote($simpleSearchString) . '
+                MATCH (navn) AGAINST(' . app('db')->quote($searchString) . ') > 0
+                OR navn LIKE ' . app('db')->quote($simpleSearchString) . '
             )
-            AND !MATCH (navn) AGAINST(' . db()->quote($antiWords) . ') > 0
-            AND navn NOT LIKE ' . db()->quote($simpleAntiWords) . '
+            AND !MATCH (navn) AGAINST(' . app('db')->quote($antiWords) . ') > 0
+            AND navn NOT LIKE ' . app('db')->quote($simpleAntiWords) . '
             '
         );
 
@@ -287,17 +284,17 @@ class Search extends Base
         $simpleAntiWords = $antiWords ? '%' . preg_replace('/\s+/u', '%', $antiWords) . '%' : '';
 
         /** @var Category[] */
-        $categories = ORM::getByQuery(
+        $categories = app('orm')->getByQuery(
             Category::class,
             '
-            SELECT *, MATCH (navn) AGAINST (' . db()->quote($searchString) . ') AS score
+            SELECT *, MATCH (navn) AGAINST (' . app('db')->quote($searchString) . ') AS score
             FROM kat
             WHERE (
-                MATCH (navn) AGAINST(' . db()->quote($searchString) . ') > 0
-                OR navn LIKE ' . db()->quote($simpleSearchString) . '
+                MATCH (navn) AGAINST(' . app('db')->quote($searchString) . ') > 0
+                OR navn LIKE ' . app('db')->quote($simpleSearchString) . '
             )
-            AND !MATCH (navn) AGAINST(' . db()->quote($antiWords) . ') > 0
-            AND navn NOT LIKE ' . db()->quote($simpleAntiWords) . "
+            AND !MATCH (navn) AGAINST(' . app('db')->quote($antiWords) . ') > 0
+            AND navn NOT LIKE ' . app('db')->quote($simpleAntiWords) . "
             AND `vis` != '0'
             ORDER BY score, navn
             "

@@ -2,36 +2,23 @@
 
 use AGCMS\Application;
 use AGCMS\Config;
-use AGCMS\DB;
 
 /**
- * Get database connection.
+ * Get the current application instance or contained service instance.
  *
- * @param DB|null $overwrite
+ * @param string|null $name
  *
- * @return DB
+ * @return object
  */
-function db(DB $overwrite = null): DB
+function app(string $name = null)
 {
-    static $connection;
-    if ($overwrite) {
-        $connection = $overwrite;
-    } elseif (!$connection) {
-        $dsn = 'mysql:dbname=' . config('mysql_database') . ';host=' . config('mysql_server');
-        $connection = new DB($dsn, config('mysql_user'), config('mysql_password'));
+    $app = Application::getInstance();
+
+    if (null !== $name) {
+        return $app->get($name);
     }
 
-    return $connection;
-}
-
-/**
- * Get the current application instance.
- *
- * @return Application
- */
-function app(): Application
-{
-    return Application::getInstance();
+    return $app;
 }
 
 /**

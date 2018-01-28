@@ -19,7 +19,7 @@ class CustomSortingController extends AbstractAdminController
     public function index(Request $request): Response
     {
         $data = $this->basicPageData($request);
-        $data['lists'] = ORM::getByQuery(CustomSorting::class, 'SELECT * FROM `tablesort`');
+        $data['lists'] = app('orm')->getByQuery(CustomSorting::class, 'SELECT * FROM `tablesort`');
 
         return $this->render('admin/listsort', $data);
     }
@@ -37,7 +37,7 @@ class CustomSortingController extends AbstractAdminController
         $customSorting = null;
         if (null !== $id) {
             /** @var ?CustomSorting */
-            $customSorting = ORM::getOne(CustomSorting::class, $id);
+            $customSorting = app('orm')->getOne(CustomSorting::class, $id);
             if (!$customSorting) {
                 throw new InvalidInput(_('Custom sorting not found.'), 404);
             }
@@ -92,7 +92,7 @@ class CustomSortingController extends AbstractAdminController
         }
 
         /** @var ?CustomSorting */
-        $customSorting = ORM::getOne(CustomSorting::class, $id);
+        $customSorting = app('orm')->getOne(CustomSorting::class, $id);
         if (!$customSorting) {
             throw new InvalidInput(_('Custom sorting not found.'), 404);
         }

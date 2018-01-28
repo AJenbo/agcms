@@ -67,7 +67,7 @@ class User extends AbstractEntity
             'nickname'      => $data['name'],
             'password_hash' => $data['password'],
             'access_level'  => $data['access'],
-            'last_login'    => strtotime($data['lastlogin']) + db()->getTimeOffset(),
+            'last_login'    => strtotime($data['lastlogin']) + app('db')->getTimeOffset(),
         ];
     }
 
@@ -79,11 +79,11 @@ class User extends AbstractEntity
     public function getDbArray(): array
     {
         return [
-            'fullname'  => db()->quote($this->fullName),
-            'name'      => db()->quote($this->nickname),
-            'password'  => db()->quote($this->passwordHash),
+            'fullname'  => app('db')->quote($this->fullName),
+            'name'      => app('db')->quote($this->nickname),
+            'password'  => app('db')->quote($this->passwordHash),
             'access'    => (string) $this->accessLevel,
-            'lastlogin' => db()->getDateValue($this->lastLogin - db()->getTimeOffset()),
+            'lastlogin' => app('db')->getDateValue($this->lastLogin - app('db')->getTimeOffset()),
         ];
     }
 

@@ -13,6 +13,9 @@ class DB
     /** @var string */
     private $driver = 'mysql';
 
+    /** @var bool[] */
+    private $loadedTables = [];
+
     /**
      * Connect the database and set session to UTF-8 Danish.
      *
@@ -169,29 +172,41 @@ class DB
     }
 
     /**
-     * Check update time for tables.
+     * Remember what tabels where read during page load.
      *
-     * @param array $tables
+     * @param string[] ...$tableName The table name
+     *
+     * @return void
+     */
+    public function addLoadedTable(string ...$tableNames): void
+    {
+        foreach ($tableNames as $tableName) {
+            $this->loadedTables[$tableName] = true;
+        }
+    }
+
+    /**
+     * Get update for loaded tables tables.
+     *
      * @param array $excludeTables
      *
-     * @return int
+     * @return ?int Unix time stamp, or null if no tables has ben accessed
      */
-    public function tablesUpdated(array $tables, array $excludeTables): int
+    public function dataAge(): ?int
     {
+        if (!$this->loadedTables) {
+            return null;
+        }
+
         if ('sqlite' === $this->driver) {
             return time();
         }
 
-        $where = ' WHERE 1';
-        if ($tables) {
-            $where .= " AND Name IN('" . implode("', '", $tables) . "')";
-        }
-        if ($excludeTables) {
-            $where .= " AND Name NOT IN('" . implode("', '", $excludeTables) . "')";
-        }
+        $tableNames = array_keys($this->loadedTables);
 
-        $tables = db()->fetchArray('SHOW TABLE STATUS' . $where);
         $updateTime = 0;
+        $sql = 'SHOW TABLE STATUS WHERE Name IN(\'' . implode('\', \'', $tableNames) . '\')';
+        $tables = app('db')->fetchArray($sql);
         foreach ($tables as $table) {
             $updateTime = max($updateTime, strtotime($table['Update_time']) + $this->getTimeOffset());
         }

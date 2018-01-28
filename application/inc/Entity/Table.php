@@ -2,7 +2,6 @@
 
 use AGCMS\Exception\Exception;
 use AGCMS\ORM;
-use AGCMS\Render;
 
 class Table extends AbstractEntity
 {
@@ -82,8 +81,8 @@ class Table extends AbstractEntity
             $sorting = $columnSortings[$key] ?? 0;
             $options = [];
             if ($sorting) {
-                Render::addLoadedTable('tablesort');
-                $tablesort = db()->fetchOne('SELECT `text` FROM `tablesort` WHERE id = ' . $sorting);
+                app('db')->addLoadedTable('tablesort');
+                $tablesort = app('db')->fetchOne('SELECT `text` FROM `tablesort` WHERE id = ' . $sorting);
                 if ($tablesort) {
                     $options = explode('<', $tablesort['text']);
                     $options = array_map('html_entity_decode', $options);
@@ -257,20 +256,20 @@ class Table extends AbstractEntity
      */
     public function getRows(int $orderBy = null): array
     {
-        $rows = db()->fetchArray(
+        $rows = app('db')->fetchArray(
             '
             SELECT *
             FROM `list_rows`
             WHERE `list_id` = ' . $this->getId()
         );
-        Render::addLoadedTable('list_rows');
+        app('db')->addLoadedTable('list_rows');
 
         // Cells are indexed by id, this is needed for sorting the rows
         foreach ($rows as &$row) {
             $row['id'] = (int) $row['id'];
             $row['page'] = null;
             if ($this->hasLinks() && $row['link']) {
-                $row['page'] = ORM::getOne(Page::class, $row['link']);
+                $row['page'] = app('orm')->getOne(Page::class, $row['link']);
             }
             $cells = explode('<', $row['cells']);
             $cells = array_map('html_entity_decode', $cells);
@@ -300,10 +299,10 @@ class Table extends AbstractEntity
         $cells = array_map('htmlspecialchars', $cells);
         $cells = implode('<', $cells);
 
-        return db()->query(
+        return app('db')->query(
             '
             INSERT INTO `list_rows`(`list_id`, `cells`, `link`)
-            VALUES (' . $this->getId() . ', ' . db()->quote($cells) . ', ' . (null === $link ? 'NULL' : $link) . ')
+            VALUES (' . $this->getId() . ', ' . app('db')->quote($cells) . ', ' . (null === $link ? 'NULL' : $link) . ')
             '
         );
     }
@@ -322,10 +321,10 @@ class Table extends AbstractEntity
         $cells = array_map('htmlspecialchars', $cells);
         $cells = implode('<', $cells);
 
-        db()->query(
+        app('db')->query(
             '
             UPDATE `list_rows` SET
-                `cells` = ' . db()->quote($cells) . ',
+                `cells` = ' . app('db')->quote($cells) . ',
                 `link` = ' . (null === $link ? 'NULL' : $link) . '
             WHERE list_id = ' . $this->getId() . '
               AND id = ' . $rowId
@@ -341,7 +340,7 @@ class Table extends AbstractEntity
      */
     public function removeRow(int $rowId): void
     {
-        db()->query('DELETE FROM `list_rows` WHERE list_id = ' . $this->id . ' AND `id` = ' . $rowId);
+        app('db')->query('DELETE FROM `list_rows` WHERE list_id = ' . $this->id . ' AND `id` = ' . $rowId);
     }
 
     /**
@@ -389,7 +388,7 @@ class Table extends AbstractEntity
     public function getPage(): Page
     {
         /** @var ?Page */
-        $page = ORM::getOne(Page::class, $this->pageId);
+        $page = app('orm')->getOne(Page::class, $this->pageId);
         if (!$page) {
             throw new Exception(_('Page not found.'));
         }
@@ -420,10 +419,10 @@ class Table extends AbstractEntity
 
         return [
             'page_id'    => (string) $this->pageId,
-            'title'      => db()->quote($this->title),
-            'sorts'      => db()->quote($columnSortings),
-            'cells'      => db()->quote($columnTypes),
-            'cell_names' => db()->quote($columnTitles),
+            'title'      => app('db')->quote($this->title),
+            'sorts'      => app('db')->quote($columnSortings),
+            'cells'      => app('db')->quote($columnTypes),
+            'cell_names' => app('db')->quote($columnTitles),
             'sort'       => (string) $this->orderBy,
             'link'       => (string) (int) $this->hasLinks,
         ];

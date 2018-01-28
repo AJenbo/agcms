@@ -12,6 +12,8 @@ return [
     'base_url'   => 'https://localhost',
     'site_name'  => 'My store',
 
+    'db_dns'     => 'sqlite::memory:',
+
     'emails' => [
         'mail@example.com' => [
             'address'  => 'mail@example.com',

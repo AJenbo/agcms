@@ -31,7 +31,7 @@ return PhpCsFixer\Config::create()
       "declare_equal_normalize":true,
       "function_typehint_space":true,
       "include":true,
-      "increment_style":true,
+      "increment_style":{"style":"post"},
       "lowercase_cast":true,
       "magic_constant_casing":true,
       "method_argument_space":true,

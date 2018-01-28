@@ -24,17 +24,15 @@ class Ajax extends Base
      */
     public function table(Request $request, int $categoryId, int $tableId, int $orderBy): JsonResponse
     {
-        Render::addLoadedTable('lists');
-        Render::addLoadedTable('list_rows');
-        Render::addLoadedTable('sider');
-        Render::addLoadedTable('bind');
-        Render::addLoadedTable('kat');
-        Render::sendCacheHeader($request);
+        app('db')->addLoadedTable('lists', 'list_rows', 'sider', 'bind', 'kat');
+        if ($response = $this->earlyResponse($request)) {
+            return $response;
+        }
 
         $html = '';
 
         /** @var ?Table */
-        $table = ORM::getOne(Table::class, $tableId);
+        $table = app('orm')->getOne(Table::class, $tableId);
         if (!$table) {
             throw new InvalidInput(_('Table not found.'), 404);
         }
@@ -43,9 +41,9 @@ class Ajax extends Base
             $data = [
                 'orderBy'  => $orderBy,
                 'table'    => $table,
-                'category' => ORM::getOne(Category::class, $categoryId),
+                'category' => app('orm')->getOne(Category::class, $categoryId),
             ];
-            $html = Render::render('partial-table', $data);
+            $html = app('render')->render('partial-table', $data);
         }
 
         return new JsonResponse(['id' => 'table' . $tableId, 'html' => $html]);
@@ -62,19 +60,19 @@ class Ajax extends Base
      */
     public function category(Request $request, int $categoryId, string $orderBy): JsonResponse
     {
-        Render::addLoadedTable('sider');
-        Render::addLoadedTable('bind');
-        Render::addLoadedTable('kat');
-        Render::sendCacheHeader($request);
+        app('db')->addLoadedTable('sider', 'bind', 'kat');
+        if ($response = $this->earlyResponse($request)) {
+            return $response;
+        }
 
         $data = [
-            'renderable' => ORM::getOne(Category::class, $categoryId),
+            'renderable' => app('orm')->getOne(Category::class, $categoryId),
             'orderBy'    => $orderBy,
         ];
 
         return new JsonResponse([
             'id'   => 'kat' . $categoryId,
-            'html' => Render::render('partial-product-list', $data),
+            'html' => app('render')->render('partial-product-list', $data),
         ]);
     }
 
@@ -90,10 +88,10 @@ class Ajax extends Base
      */
     public function address(Request $request, string $phoneNumber): JsonResponse
     {
-        Render::addLoadedTable('fakturas');
-        Render::addLoadedTable('email');
-        Render::addLoadedTable('post');
-        Render::sendCacheHeader($request);
+        app('db')->addLoadedTable('fakturas', 'email', 'post');
+        if ($response = $this->earlyResponse($request)) {
+            return $response;
+        }
 
         $default = [
             'name'     => '',
@@ -106,7 +104,7 @@ class Ajax extends Base
         ];
 
         //Try katalog orders
-        $address = db()->fetchOne(
+        $address = app('db')->fetchOne(
             "
             SELECT * FROM (
                 SELECT
@@ -118,8 +116,8 @@ class Ajax extends Base
                     postbox postbox,
                     email
                 FROM `fakturas`
-                WHERE `tlf1` LIKE " . db()->quote($phoneNumber) . '
-                   OR `tlf2` LIKE ' . db()->quote($phoneNumber) . '
+                WHERE `tlf1` LIKE " . app('db')->quote($phoneNumber) . '
+                   OR `tlf2` LIKE ' . app('db')->quote($phoneNumber) . '
                 ORDER BY id DESC
                 LIMIT 1
             ) x
@@ -134,7 +132,7 @@ class Ajax extends Base
                     postpostbox postbox,
                     email
                 FROM `fakturas`
-                WHERE `posttlf` LIKE ' . db()->quote($phoneNumber) . "
+                WHERE `posttlf` LIKE ' . app('db')->quote($phoneNumber) . "
                 ORDER BY id DESC
                 LIMIT 1
             ) x
@@ -149,8 +147,8 @@ class Ajax extends Base
                     '' postbox,
                     email
                 FROM `email`
-                WHERE `tlf1` LIKE " . db()->quote($phoneNumber) . '
-                   OR `tlf2` LIKE ' . db()->quote($phoneNumber) . "
+                WHERE `tlf1` LIKE " . app('db')->quote($phoneNumber) . '
+                   OR `tlf2` LIKE ' . app('db')->quote($phoneNumber) . "
                 ORDER BY id DESC
                 LIMIT 1
             ) x
@@ -165,7 +163,7 @@ class Ajax extends Base
                     '' postbox,
                     '' email
                 FROM `post`
-                WHERE `recipientID` LIKE " . db()->quote($phoneNumber) . '
+                WHERE `recipientID` LIKE " . app('db')->quote($phoneNumber) . '
                 ORDER BY id DESC
                 LIMIT 1
             ) x

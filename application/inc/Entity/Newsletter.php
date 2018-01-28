@@ -182,11 +182,11 @@ class Newsletter extends AbstractEntity implements InterfaceRichText
         $interests = implode('<', $interests);
 
         return [
-            'from'         => db()->quote($this->from),
-            'subject'      => db()->quote($this->subject),
-            'text'         => db()->quote($this->html),
-            'sendt'        => db()->quote((string) (int) $this->sent),
-            'interests'    => db()->quote($interests),
+            'from'         => app('db')->quote($this->from),
+            'subject'      => app('db')->quote($this->subject),
+            'text'         => app('db')->quote($this->html),
+            'sendt'        => app('db')->quote((string) (int) $this->sent),
+            'interests'    => app('db')->quote($interests),
         ];
     }
 
@@ -197,8 +197,8 @@ class Newsletter extends AbstractEntity implements InterfaceRichText
      */
     public function countRecipients(): int
     {
-        Render::addLoadedTable('email');
-        $emails = db()->fetchOne(
+        app('db')->addLoadedTable('email');
+        $emails = app('db')->fetchOne(
             "
             SELECT count(DISTINCT email) as 'count'
             FROM `email`
@@ -255,7 +255,7 @@ class Newsletter extends AbstractEntity implements InterfaceRichText
 
         $andWhere = $this->getContactFilterSQL();
         /** @var Contact[] */
-        $contacts = ORM::getByQuery(
+        $contacts = app('orm')->getByQuery(
             Contact::class,
             'SELECT * FROM email WHERE email NOT LIKE \'\' AND `kartotek` = \'1\' ' . $andWhere . ' GROUP BY `email`'
         );
@@ -278,7 +278,7 @@ class Newsletter extends AbstractEntity implements InterfaceRichText
         foreach ($contactsGroups as $bcc) {
             $email = new Email([
                 'subject'          => $this->subject,
-                'body'             => Render::render('email/newsletter', $data),
+                'body'             => app('render')->render('email/newsletter', $data),
                 'senderName'       => config('site_name'),
                 'senderAddress'    => $this->from,
                 'recipientName'    => config('site_name'),

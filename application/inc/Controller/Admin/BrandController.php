@@ -20,7 +20,7 @@ class BrandController extends AbstractAdminController
     public function index(Request $request): Response
     {
         $data = $this->basicPageData($request);
-        $data['brands'] = ORM::getByQuery(Brand::class, 'SELECT * FROM `maerke` ORDER BY navn');
+        $data['brands'] = app('orm')->getByQuery(Brand::class, 'SELECT * FROM `maerke` ORDER BY navn');
         $data['blank_image'] = config('blank_image', '/theme/default/images/intet-foto.jpg');
 
         return $this->render('admin/maerker', $data);
@@ -37,7 +37,7 @@ class BrandController extends AbstractAdminController
     public function editPage(Request $request, int $id): Response
     {
         $data = $this->basicPageData($request);
-        $data['brand'] = $id ? ORM::getOne(Brand::class, $id) : null;
+        $data['brand'] = $id ? app('orm')->getOne(Brand::class, $id) : null;
         $data['blank_image'] = config('blank_image', '/theme/default/images/intet-foto.jpg');
 
         return $this->render('admin/updatemaerke', $data);
@@ -87,7 +87,7 @@ class BrandController extends AbstractAdminController
         }
 
         /** @var ?Brand */
-        $brand = ORM::getOne(Brand::class, $id);
+        $brand = app('orm')->getOne(Brand::class, $id);
         if (!$brand) {
             throw new InvalidInput(_('Brand not found.'), 404);
         }
@@ -95,7 +95,7 @@ class BrandController extends AbstractAdminController
         $icon = null;
         if (null !== $iconId) {
             /** @var ?File */
-            $icon = ORM::getOne(File::class, $iconId);
+            $icon = app('orm')->getOne(File::class, $iconId);
         }
 
         $brand->setIcon($icon)
@@ -116,7 +116,7 @@ class BrandController extends AbstractAdminController
     public function delete(Request $request, int $id): JsonResponse
     {
         /** @var ?Brand */
-        $brand = ORM::getOne(Brand::class, $id);
+        $brand = app('orm')->getOne(Brand::class, $id);
         if ($brand) {
             $brand->delete();
         }

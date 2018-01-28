@@ -31,23 +31,22 @@ class MaintenanceController extends AbstractAdminController
      */
     public function index(Request $request): Response
     {
-        Render::addLoadedTable('emails');
-        $emailStatus = db()->fetchArray("SHOW TABLE STATUS LIKE 'emails'");
+        app('db')->addLoadedTable('emails');
+        $emailStatus = app('db')->fetchArray("SHOW TABLE STATUS LIKE 'emails'");
         /** @var (string|int)[] */
         $emailStatus = reset($emailStatus);
 
         /** @var ?CustomPage */
-        $page = ORM::getOne(CustomPage::class, 0);
+        $page = app('orm')->getOne(CustomPage::class, 0);
         if (!$page) {
             throw new Exception(_('Cron status missing'));
         }
 
-        Render::addLoadedTable('emails');
-        Render::sendCacheHeader($request, time()); // getDbSize isn't cachable
+        app('db')->addLoadedTable('emails');
         $data = [
             'dbSize'             => $this->byteToHuman($this->getDbSize()),
             'wwwSize'            => $this->byteToHuman($this->getSizeOfFiles()),
-            'pendingEmails'      => db()->fetchOne("SELECT count(*) as 'count' FROM `emails`")['count'],
+            'pendingEmails'      => app('db')->fetchOne("SELECT count(*) as 'count' FROM `emails`")['count'],
             'totalDelayedEmails' => $emailStatus['Auto_increment'] - 1,
             'lastrun'            => $page->getTimeStamp(),
         ] + $this->basicPageData($request);
@@ -82,7 +81,7 @@ class MaintenanceController extends AbstractAdminController
     public function removeBadContacts(): JsonResponse
     {
         /** @var Contact[] */
-        $contacts = ORM::getByQuery(
+        $contacts = app('orm')->getByQuery(
             Contact::class,
             "SELECT * FROM `email` WHERE `email` = '' AND `adresse` = '' AND `tlf1` = '' AND `tlf2` = ''"
         );
@@ -101,7 +100,10 @@ class MaintenanceController extends AbstractAdminController
     public function orphanPages(): JsonResponse
     {
         /** @var Page[] */
-        $pages = ORM::getByQuery(Page::class, 'SELECT * FROM `sider` WHERE `id` NOT IN(SELECT `side` FROM `bind`)');
+        $pages = app('orm')->getByQuery(
+            Page::class,
+            'SELECT * FROM `sider` WHERE `id` NOT IN(SELECT `side` FROM `bind`)'
+        );
 
         $html = '';
         if ($pages) {
@@ -130,13 +132,13 @@ class MaintenanceController extends AbstractAdminController
         $categoryActiveMaps = [];
 
         /** @var Category[] */
-        $categories = ORM::getByQuery(Category::class, 'SELECT * FROM `kat`');
+        $categories = app('orm')->getByQuery(Category::class, 'SELECT * FROM `kat`');
         foreach ($categories as $category) {
             $categoryActiveMaps[(int) $category->isInactive()][] = $category->getId();
         }
 
         /** @var Page[] */
-        $pages = ORM::getByQuery(
+        $pages = app('orm')->getByQuery(
             Page::class,
             '
             SELECT * FROM `sider`
@@ -162,11 +164,8 @@ class MaintenanceController extends AbstractAdminController
         }
 
         //Add active pages that has a list that links to this page
-        Render::addLoadedTable('list_rows');
-        Render::addLoadedTable('lists');
-        Render::addLoadedTable('sider');
-        Render::addLoadedTable('bind');
-        $pages = db()->fetchArray(
+        app('db')->addLoadedTable('list_rows', 'lists', 'sider', 'bind');
+        $pages = app('db')->fetchArray(
             '
             SELECT `sider`.*, `lists`.`page_id`
             FROM `list_rows`
@@ -189,7 +188,7 @@ class MaintenanceController extends AbstractAdminController
             $html .= '<b>' . _('The following inactive pages appear in a list on an active page:') . '</b><br />';
             foreach ($pages as $page) {
                 /** @var ?Page */
-                $listPage = ORM::getOne(Page::class, $page['page_id']);
+                $listPage = app('orm')->getOne(Page::class, $page['page_id']);
                 if (!$listPage) {
                     throw new Exception(_('Page disappeared during processing'));
                 }
@@ -215,7 +214,7 @@ class MaintenanceController extends AbstractAdminController
         $html = '';
 
         /** @var Category[] */
-        $categories = ORM::getByQuery(Category::class, 'SELECT * FROM `kat` WHERE bind != 0 AND bind != -1');
+        $categories = app('orm')->getByQuery(Category::class, 'SELECT * FROM `kat` WHERE bind != 0 AND bind != -1');
         foreach ($categories as $category) {
             $branchIds = [$category->getId() => true];
             while ($category = $category->getParent()) {
@@ -242,7 +241,7 @@ class MaintenanceController extends AbstractAdminController
     public function removeNoneExistingFiles(): JsonResponse
     {
         /** @var File[] */
-        $files = ORM::getByQuery(File::class, 'SELECT * FROM `files`');
+        $files = app('orm')->getByQuery(File::class, 'SELECT * FROM `files`');
 
         $deleted = 0;
         $missingFiles = [];
@@ -269,7 +268,7 @@ class MaintenanceController extends AbstractAdminController
     public function badFileNames(): JsonResponse
     {
         /** @var File[] */
-        $files = ORM::getByQuery(
+        $files = app('orm')->getByQuery(
             File::class,
             '
             SELECT * FROM `files`
@@ -304,9 +303,9 @@ class MaintenanceController extends AbstractAdminController
      */
     public function badFolderNames(): JsonResponse
     {
-        Render::addLoadedTable('files');
+        app('db')->addLoadedTable('files');
         $html = '';
-        $errors = db()->fetchArray(
+        $errors = app('db')->fetchArray(
             '
             SELECT path FROM `files`
             WHERE `path` COLLATE UTF8_bin REGEXP \'[A-Z|_"\\\'`:%=#&+?*<>{}\\]+.*[/]+\'
@@ -341,7 +340,6 @@ class MaintenanceController extends AbstractAdminController
      */
     public function usage(Request $request): JsonResponse
     {
-        Render::sendCacheHeader($request, time()); // getDbSize isn't cachable
         return new JsonResponse([
             'www' => $this->getSizeOfFiles(),
             'db'  => $this->getDbSize(),
@@ -358,7 +356,7 @@ class MaintenanceController extends AbstractAdminController
     public function sendDelayedEmail(): JsonResponse
     {
         /** @var ?CustomPage */
-        $cronStatus = ORM::getOne(CustomPage::class, 0);
+        $cronStatus = app('orm')->getOne(CustomPage::class, 0);
         if (!$cronStatus) {
             throw new Exception(_('Cron status missing'));
         }
@@ -366,7 +364,7 @@ class MaintenanceController extends AbstractAdminController
         $html = '';
 
         /** @var Email[] */
-        $emails = ORM::getByQuery(Email::class, 'SELECT * FROM `emails`');
+        $emails = app('orm')->getByQuery(Email::class, 'SELECT * FROM `emails`');
         if ($emails) {
             $emailsSendt = 0;
             $emailService = new EmailService();
@@ -397,14 +395,14 @@ class MaintenanceController extends AbstractAdminController
     public function contactsWithInvalidEmails(): JsonResponse
     {
         /** @var Contact[] */
-        $contacts = ORM::getByQuery(Contact::class, "SELECT * FROM `email` WHERE `email` != ''");
+        $contacts = app('orm')->getByQuery(Contact::class, "SELECT * FROM `email` WHERE `email` != ''");
         foreach ($contacts as $key => $contact) {
             if ($contact->isEmailValide()) {
                 unset($contacts[$key]);
             }
         }
 
-        $html = Render::render('admin/partial-subscriptions_with_bad_emails', ['contacts' => $contacts]);
+        $html = app('render')->render('admin/partial-subscriptions_with_bad_emails', ['contacts' => $contacts]);
 
         return new JsonResponse(['html' => $html]);
     }
@@ -448,7 +446,7 @@ class MaintenanceController extends AbstractAdminController
      */
     private function getDbSize(): int
     {
-        $tabels = db()->fetchArray('SHOW TABLE STATUS');
+        $tabels = app('db')->fetchArray('SHOW TABLE STATUS');
         $dbsize = 0;
         foreach ($tabels as $tabel) {
             $dbsize += $tabel['Data_length'];
@@ -465,8 +463,8 @@ class MaintenanceController extends AbstractAdminController
      */
     private function getSizeOfFiles(): int
     {
-        Render::addLoadedTable('files');
-        $files = db()->fetchOne('SELECT sum(`size`) AS `filesize` FROM `files`');
+        app('db')->addLoadedTable('files');
+        $files = app('db')->fetchOne('SELECT sum(`size`) AS `filesize` FROM `files`');
 
         return $files['filesize'] ?? 0;
     }
