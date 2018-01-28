@@ -52,7 +52,11 @@ class InvoiceService
 
                         if (in_array($column['type'], [Table::COLUMN_TYPE_STRING, Table::COLUMN_TYPE_INT], true)) {
                             $title .= ' ' . trim($cells[$i]);
-                        } elseif (in_array($column['type'], [Table::COLUMN_TYPE_PRICE, Table::COLUMN_TYPE_PRICE_NEW], true)) {
+                        } elseif (in_array(
+                            $column['type'],
+                            [Table::COLUMN_TYPE_PRICE, Table::COLUMN_TYPE_PRICE_NEW],
+                            true
+                        )) {
                             $value = (int) $cells[$i] ?: $value;
                         }
                     }

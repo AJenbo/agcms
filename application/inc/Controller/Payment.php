@@ -127,6 +127,11 @@ class Payment extends Base
             return $redirect;
         }
 
+        $shippingAttn = '';
+        if ($request->get('shippingAttn') !== $request->get('shippingName')) {
+            $shippingAttn = $request->get('shippingAttn');
+        }
+
         $invoice->setStatus('locked')
             ->setName($request->get('name'))
             ->setAttn($request->get('attn') !== $request->get('name') ? $request->get('attn') : '')
@@ -141,7 +146,7 @@ class Payment extends Base
             ->setHasShippingAddress($request->request->getBoolean('altpost'))
             ->setShippingPhone($request->get('shippingPhone'))
             ->setShippingName($request->get('shippingName'))
-            ->setShippingAttn($request->get('shippingAttn') !== $request->get('shippingName') ? $request->get('shippingAttn') : '')
+            ->setShippingAttn($attn)
             ->setShippingAddress($request->get('shippingAddress'))
             ->setShippingAddress2($request->get('shippingAddress2'))
             ->setShippingPostbox($request->get('shippingPostbox'))

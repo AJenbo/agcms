@@ -169,10 +169,11 @@ class Feed extends Base
     {
         Render::sendCacheHeader($request, Render::getUpdateTime(false));
 
+        $url = config('base_url') . '/search/results/?q={searchTerms}&sogikke=&minpris=&maxpris=&maerke=0';
         $data = [
             'shortName'   => config('site_name'),
             'description' => sprintf(_('Find in %s'), config('site_name')),
-            'url'         => config('base_url') . '/search/results/?q={searchTerms}&sogikke=&minpris=&maxpris=&maerke=0',
+            'url'         => $url,
         ];
 
         $response = new Response('', 200, ['Content-Type' => 'application/opensearchdescription+xml']);

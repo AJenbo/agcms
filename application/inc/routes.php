@@ -165,7 +165,12 @@ $app->addRoute('DELETE', '/admin/users/(\d+)/', UserController::class, 'delete')
 // Maintenance
 $app->addRoute('GET', '/admin/maintenance/', MaintenanceController::class, 'index');
 $app->addRoute('DELETE', '/admin/maintenance/contacts/empty/', MaintenanceController::class, 'removeBadContacts');
-$app->addRoute('GET', '/admin/maintenance/contacts/invalid/', MaintenanceController::class, 'contactsWithInvalidEmails');
+$app->addRoute(
+    'GET',
+    '/admin/maintenance/contacts/invalid/',
+    MaintenanceController::class,
+    'contactsWithInvalidEmails'
+);
 $app->addRoute('GET', '/admin/maintenance/pages/mismatches/', MaintenanceController::class, 'mismatchedBindings');
 $app->addRoute('GET', '/admin/maintenance/pages/orphans/', MaintenanceController::class, 'orphanPages');
 $app->addRoute('GET', '/admin/maintenance/categories/circular/', MaintenanceController::class, 'circularLinks');
