@@ -116,7 +116,8 @@ class SiteTreeController extends AbstractAdminController
     public function inventory(Request $request): Response
     {
         app('db')->addLoadedTable('bind', 'kat', 'krav', 'maerke', 'sider');
-        if ($response = $this->earlyResponse($request)) {
+        $response = $this->cachedResponse();
+        if ($response->isNotModified($request)) {
             return $response;
         }
 
@@ -158,6 +159,6 @@ class SiteTreeController extends AbstractAdminController
             'categoryId'   => $categoryId,
         ];
 
-        return $this->render('admin/listview', $data);
+        return $this->render('admin/listview', $data, $response);
     }
 }

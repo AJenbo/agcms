@@ -19,7 +19,9 @@ class Feed extends Base
     public function siteMap(Request $request): Response
     {
         app('db')->addLoadedTable('bind', 'kat', 'sider', 'special', 'maerke', 'krav');
-        if ($response = $this->earlyResponse($request)) {
+        $response = new Response('', 200, ['Content-Type' => 'text/xml;charset=utf-8']);
+        $response = $this->cachedResponse($response);
+        if ($response->isNotModified($request)) {
             return $response;
         }
 
@@ -58,8 +60,6 @@ class Feed extends Base
             'requirements' => app('orm')->getByQuery(Requirement::class, 'SELECT * FROM krav'),
         ];
 
-        $response = new Response('', 200, ['Content-Type' => 'text/xml;charset=utf-8']);
-
         return $this->render('sitemap', $data, $response);
     }
 
@@ -75,7 +75,9 @@ class Feed extends Base
     public function rss(Request $request): Response
     {
         app('db')->addLoadedTable('bind', 'files', 'kat', 'maerke', 'sider');
-        if ($response = $this->earlyResponse($request)) {
+        $response = new Response('', 200, ['Content-Type' => 'application/rss+xml']);
+        $response = $this->cachedResponse($response);
+        if ($response->isNotModified($request)) {
             return $response;
         }
 
@@ -146,8 +148,6 @@ class Feed extends Base
             'items'         => $items,
         ];
 
-        $response = new Response('', 200, ['Content-Type' => 'application/rss+xml']);
-
         return $this->render('rss', $data, $response);
     }
 
@@ -160,7 +160,9 @@ class Feed extends Base
      */
     public function openSearch(Request $request): Response
     {
-        if ($response = $this->earlyResponse($request)) {
+        $response = new Response('', 200, ['Content-Type' => 'application/opensearchdescription+xml']);
+        $response = $this->cachedResponse($response);
+        if ($response->isNotModified($request)) {
             return $response;
         }
 
@@ -170,8 +172,6 @@ class Feed extends Base
             'description' => sprintf(_('Find in %s'), config('site_name')),
             'url'         => $url,
         ];
-
-        $response = new Response('', 200, ['Content-Type' => 'application/opensearchdescription+xml']);
 
         return $this->render('opensearch', $data, $response);
     }

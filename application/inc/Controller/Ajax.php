@@ -25,7 +25,8 @@ class Ajax extends Base
     public function table(Request $request, int $categoryId, int $tableId, int $orderBy): JsonResponse
     {
         app('db')->addLoadedTable('lists', 'list_rows', 'sider', 'bind', 'kat');
-        if ($response = $this->earlyResponse($request)) {
+        $response = $this->cachedResponse(new JsonResponse());
+        if ($response->isNotModified($request)) {
             return $response;
         }
 
@@ -46,7 +47,7 @@ class Ajax extends Base
             $html = app('render')->render('partial-table', $data);
         }
 
-        return new JsonResponse(['id' => 'table' . $tableId, 'html' => $html]);
+        return $response->setData(['id' => 'table' . $tableId, 'html' => $html]);
     }
 
     /**
@@ -61,7 +62,8 @@ class Ajax extends Base
     public function category(Request $request, int $categoryId, string $orderBy): JsonResponse
     {
         app('db')->addLoadedTable('sider', 'bind', 'kat');
-        if ($response = $this->earlyResponse($request)) {
+        $response = $this->cachedResponse(new JsonResponse());
+        if ($response->isNotModified($request)) {
             return $response;
         }
 
@@ -70,7 +72,7 @@ class Ajax extends Base
             'orderBy'    => $orderBy,
         ];
 
-        return new JsonResponse([
+        return $response->setData([
             'id'   => 'kat' . $categoryId,
             'html' => app('render')->render('partial-product-list', $data),
         ]);
@@ -89,7 +91,8 @@ class Ajax extends Base
     public function address(Request $request, string $phoneNumber): JsonResponse
     {
         app('db')->addLoadedTable('fakturas', 'email', 'post');
-        if ($response = $this->earlyResponse($request)) {
+        $response = $this->cachedResponse(new JsonResponse());
+        if ($response->isNotModified($request)) {
             return $response;
         }
 
@@ -174,6 +177,6 @@ class Ajax extends Base
             throw new InvalidInput(_('The address could not be found.'), 404);
         }
 
-        return new JsonResponse($address);
+        return $response->setData($address);
     }
 }

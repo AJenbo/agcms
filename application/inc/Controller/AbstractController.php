@@ -1,6 +1,8 @@
 <?php namespace AGCMS\Controller;
 
 use AGCMS\Render;
+use DateTime;
+use DateTimeZone;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -92,7 +94,7 @@ abstract class AbstractController
      */
     protected function earlyResponse(Request $request): ?Response
     {
-        if ($request->headers->has('Last-Modefied')) {
+        if ($request->headers->has('If-Modified-Since')) {
             $response = $this->cachedResponse();
             if ($response->isNotModified($request)) {
                 return $response;
@@ -116,7 +118,7 @@ abstract class AbstractController
         }
 
         $timestamp = $this->getUpdateTime();
-        $lastModified = DateTime::createFromFormat('U', (string) $timestamp);
+        $lastModified = DateTime::createFromFormat('U', (string) $timestamp, new DateTimeZone('GMT'));
         if (!$lastModified) {
             return $response;
         }
@@ -141,7 +143,7 @@ abstract class AbstractController
             $updateTime = max($updateTime, filemtime($filename));
         }
 
-        $dbTime = app('db')->dataAge(static::ADMIN_ONLY_TABLES);
+        $dbTime = app('db')->dataAge();
         if ($dbTime) {
             $updateTime = max($dbTime, $updateTime ?: 0);
         }
