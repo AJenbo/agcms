@@ -5,7 +5,7 @@ use PDO;
 class DbService
 {
     /** @var int */
-    private $timeOffset;
+    private $timeOffset = 0;
 
     /** @var PDO */
     private $connection;
@@ -15,6 +15,15 @@ class DbService
 
     /** @var bool[] */
     private $loadedTables = [];
+
+    /** @var string */
+    private $dsn = '';
+
+    /** @var string */
+    private $user = '';
+
+    /** @var string */
+    private $password = '';
 
     /**
      * Connect the database and set session to UTF-8 Danish.
@@ -27,18 +36,36 @@ class DbService
      */
     public function __construct(string $dsn, string $user = '', string $password = '')
     {
-        $this->connection = new PDO($dsn, $user, $password);
-        $this->connection->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+        $this->dsn = $dsn;
+        $this->user = $user;
+        $this->password = $password;
+    }
 
-        if (0 === mb_strpos($dsn, 'sqlite:')) {
-            $this->driver = 'sqlite';
+    /**
+     * Get connection.
+     *
+     * @return PDO
+     */
+    private function connection(): PDO
+    {
+        if (!$this->connection) {
+            $pdo = new PDO($this->dsn, $this->user, $this->password);
+            $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+
+            if (0 === mb_strpos($this->dsn, 'sqlite:')) {
+                $this->driver = 'sqlite';
+            }
+
+            if ('mysql' === $this->driver) {
+                $pdo->query("SET NAMES 'UTF8'");
+                $pdo->query("SET SESSION character_set_server = 'UTF8'");
+                $pdo->query('SET collation_server=utf8_danish_ci');
+            }
+
+            $this->connection = $pdo;
         }
 
-        if ('mysql' === $this->driver) {
-            $this->connection->query("SET NAMES 'UTF8'");
-            $this->connection->query("SET SESSION character_set_server = 'UTF8'");
-            $this->connection->query('SET collation_server=utf8_danish_ci');
-        }
+        return $this->connection;
     }
 
     /**
@@ -52,7 +79,7 @@ class DbService
      */
     public function fetchArray(string $query): array
     {
-        $result = $this->connection->query($query, PDO::FETCH_ASSOC);
+        $result = $this->connection()->query($query, PDO::FETCH_ASSOC);
         $rows = [];
         foreach ($result as $row) {
             $rows[] = $row;
@@ -90,9 +117,9 @@ class DbService
      */
     public function query(string $query): int
     {
-        $this->connection->query($query);
+        $this->connection()->query($query);
 
-        return $this->connection->lastInsertId();
+        return $this->connection()->lastInsertId();
     }
 
     /**
@@ -116,7 +143,7 @@ class DbService
      */
     public function quote(string $string): string
     {
-        return $this->connection->quote($string);
+        return $this->connection()->quote($string);
     }
 
     /**
@@ -127,7 +154,7 @@ class DbService
     public function getNowValue(): string
     {
         if ('sqlite' === $this->driver) {
-            return $this->connection->quote('now');
+            return $this->connection()->quote('now');
         }
 
         return 'NOW()';
