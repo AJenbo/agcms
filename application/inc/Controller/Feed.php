@@ -33,7 +33,10 @@ class Feed extends Base
             if ($category->isInactive()) {
                 continue;
             }
-            $activeCategories[] = $category;
+            $pageCount = count($category->getPages());
+            if ($category->isVisable() && 1 !== $pageCount) {
+                $activeCategories[] = $category;
+            }
             $activeCategoryIds[] = $category->getId();
         }
 
