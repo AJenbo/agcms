@@ -4,6 +4,7 @@ use AGCMS\Entity\CustomPage;
 use AGCMS\Entity\Email;
 use AGCMS\Entity\Invoice;
 use AGCMS\Exception\Exception;
+use AGCMS\Exception\InvalidInput;
 use AGCMS\ORM;
 use AGCMS\Render;
 use AGCMS\Service\EmailService;
@@ -338,7 +339,7 @@ class Payment extends Base
             || $checkId !== $invoice->getCheckId()
             || !$this->isHashValid($request)
         ) {
-            return new Response('', 400);
+            throw new InvalidInput(Response::HTTP_BAD_REQUEST);
         }
 
         $this->setPaymentStatus($request, $invoice);
