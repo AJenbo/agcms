@@ -19,7 +19,7 @@ class EpaymentServiceTest extends TestCase
     }
 
     /**
-     * @covers \AGCMS\EpaymentService::__construct
+     * @covers \AGCMS\Service\EpaymentService::__construct
      *
      * @return void
      */
