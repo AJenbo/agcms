@@ -4,6 +4,24 @@ use AGCMS\Tests\TestCase;
 
 class FeedTest extends TestCase
 {
+    public function testSiteMap(): void
+    {
+        $this->get('/sitemap.xml')
+            ->assertResponseStatus(200)
+            ->assertSee('<?xml version="1.0" encoding="utf-8"?>')
+            ->assertSee('<loc>https://localhost/search/</loc>')
+            ->assertSee('<loc>https://localhost/kat1-Gallery-Category/</loc>')
+            ->assertSee('<loc>https://localhost/kat1-Gallery-Category/side2-Page-1.html</loc>')
+            ->assertSee('<loc>https://localhost/kat6-Indexed-Category/side4-Category-Index-Page.html</loc>')
+            ->assertSee('<loc>https://localhost/krav/1/Test.html</loc>')
+            ->assertSee('<loc>https://localhost/mærke1-Test/</loc>')
+            ->assertNotSee('<loc>https://localhost/kat3-Empty-Category/</loc>')
+            ->assertNotSee('<loc>https://localhost/kat4-Inactive-Category/</loc>')
+            ->assertNotSee('<loc>https://localhost/kat5-Hidden-Category/</loc>')
+            ->assertNotSee('<loc>https://localhost/kat6-Indexed-Category/</loc>')
+            ->assertNotSee('<loc>https://localhost/mærke2-Empty-Brand/</loc>');
+    }
+
     public function testSiteMapCache(): void
     {
         // Set the call one hour in to the feature to make sure the data is older

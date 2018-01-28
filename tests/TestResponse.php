@@ -67,6 +67,20 @@ class TestResponse
     }
 
     /**
+     * Assert that the given string is not contained within the response.
+     *
+     * @param string $value
+     *
+     * @return $this
+     */
+    public function assertNotSee(string $value): self
+    {
+        Assert::assertNotContains($value, $this->response->getContent());
+
+        return $this;
+    }
+
+    /**
      * Make sure a url is valid.
      *
      * @param string $uri
