@@ -58,7 +58,7 @@ class CustomPageController extends AbstractAdminController
         /** @var ?CustomPage */
         $page = app('orm')->getOne(CustomPage::class, $id);
         if (!$page) {
-            throw new InvalidInput(_('Page not found.'), 404);
+            throw new InvalidInput(_('Page not found.'), Response::HTTP_NOT_FOUND);
         }
 
         $title = $request->get('title', '');

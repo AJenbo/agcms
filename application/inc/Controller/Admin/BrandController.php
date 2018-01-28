@@ -89,7 +89,7 @@ class BrandController extends AbstractAdminController
         /** @var ?Brand */
         $brand = app('orm')->getOne(Brand::class, $id);
         if (!$brand) {
-            throw new InvalidInput(_('Brand not found.'), 404);
+            throw new InvalidInput(_('Brand not found.'), Response::HTTP_NOT_FOUND);
         }
 
         $icon = null;

@@ -96,7 +96,7 @@ class CategoryController extends AbstractAdminController
         /** @var ?Category */
         $category = app('orm')->getOne(Category::class, $id);
         if (!$category) {
-            throw new InvalidInput(_('Category not found.'), 404);
+            throw new InvalidInput(_('Category not found.'), Response::HTTP_NOT_FOUND);
         }
 
         if ($request->request->has('parentId')) {
@@ -187,7 +187,7 @@ class CategoryController extends AbstractAdminController
     public function delete(Request $request, int $id): JsonResponse
     {
         if ($id < 1) {
-            throw new InvalidInput(_('Cannot delete root categories.'), 423);
+            throw new InvalidInput(_('Cannot delete root categories.'), Response::HTTP_LOCKED);
         }
 
         /** @var ?Category */

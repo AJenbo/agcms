@@ -71,7 +71,7 @@ class SiteTreeController extends AbstractAdminController
         /** @var ?Category */
         $category = app('orm')->getOne(Category::class, $id);
         if (!$category) {
-            throw new InvalidInput(_('Category not found.'), 404);
+            throw new InvalidInput(_('Category not found.'), Response::HTTP_NOT_FOUND);
         }
 
         $data = [

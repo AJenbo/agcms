@@ -69,7 +69,7 @@ class TableController extends AbstractAdminController
         /** @var ?Table */
         $table = app('orm')->getOne(Table::class, $tableId);
         if (!$table) {
-            throw new InvalidInput(_('Table not found.'), 404);
+            throw new InvalidInput(_('Table not found.'), Response::HTTP_NOT_FOUND);
         }
 
         $rowId = $table->addRow($cells, $link);
@@ -96,7 +96,7 @@ class TableController extends AbstractAdminController
         /** @var ?Table */
         $table = app('orm')->getOne(Table::class, $tableId);
         if (!$table) {
-            throw new InvalidInput(_('Table not found.'), 404);
+            throw new InvalidInput(_('Table not found.'), Response::HTTP_NOT_FOUND);
         }
 
         $table->updateRow($rowId, $cells, $link);
@@ -120,7 +120,7 @@ class TableController extends AbstractAdminController
         /** @var ?Table */
         $table = app('orm')->getOne(Table::class, $tableId);
         if (!$table) {
-            throw new InvalidInput(_('Table not found.'), 404);
+            throw new InvalidInput(_('Table not found.'), Response::HTTP_NOT_FOUND);
         }
 
         $table->removeRow($rowId);

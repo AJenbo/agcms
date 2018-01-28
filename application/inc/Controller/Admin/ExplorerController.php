@@ -245,7 +245,7 @@ class ExplorerController extends AbstractAdminController
         $file = app('orm')->getOne(File::class, $id);
         if ($file) {
             if ($file->isInUse()) {
-                throw new InvalidInput(_('The file can not be deleted because it is in use.'), 423);
+                throw new InvalidInput(_('The file can not be deleted because it is in use.'), Response::HTTP_LOCKED);
             }
 
             $file->delete();
@@ -302,7 +302,7 @@ class ExplorerController extends AbstractAdminController
         /** @var ?File */
         $file = app('orm')->getOne(File::class, $id);
         if (!$file) {
-            throw new InvalidInput(_('File not found.'), 404);
+            throw new InvalidInput(_('File not found.'), Response::HTTP_NOT_FOUND);
         }
 
         $template = 'admin/popup-image';
@@ -360,7 +360,7 @@ class ExplorerController extends AbstractAdminController
         /** @var ?File */
         $file = app('orm')->getOne(File::class, $id);
         if (!$file) {
-            throw new InvalidInput(_('File not found.'), 404);
+            throw new InvalidInput(_('File not found.'), Response::HTTP_NOT_FOUND);
         }
 
         $description = $request->request->get('description', '');
@@ -420,7 +420,7 @@ class ExplorerController extends AbstractAdminController
         /** @var ?File */
         $file = app('orm')->getOne(File::class, $id);
         if (!$file) {
-            throw new InvalidInput(_('File not found.'), 404);
+            throw new InvalidInput(_('File not found.'), Response::HTTP_NOT_FOUND);
         }
 
         $data = [
@@ -505,7 +505,7 @@ class ExplorerController extends AbstractAdminController
             /** @var ?File */
             $file = app('orm')->getOne(File::class, $id);
             if (!$file) {
-                throw new InvalidInput(_('File not found.'), 404);
+                throw new InvalidInput(_('File not found.'), Response::HTTP_NOT_FOUND);
             }
 
             $pathinfo = pathinfo($file->getPath());
@@ -551,7 +551,10 @@ class ExplorerController extends AbstractAdminController
                 throw new Exception(_('An error occurred with the file operations.'));
             }
         } catch (InvalidInput $exception) {
-            return new JsonResponse(['error' => ['message' => $exception->getMessage()], 'id' => $id], 400);
+            return new JsonResponse(
+                ['error' => ['message' => $exception->getMessage()], 'id' => $id],
+                Response::HTTP_BAD_REQUEST
+            );
         }
 
         return new JsonResponse(['id' => $id, 'filename' => $filename, 'path' => $newPath]);
@@ -604,7 +607,10 @@ class ExplorerController extends AbstractAdminController
                 throw new Exception(_('An error occurred with the file operations.'));
             }
         } catch (InvalidInput $exception) {
-            return new JsonResponse(['error' => ['message' => $exception->getMessage()], 'path' => $path], 400);
+            return new JsonResponse(
+                ['error' => ['message' => $exception->getMessage()], 'path' => $path],
+                Response::HTTP_BAD_REQUEST
+            );
         }
 
         $this->fileService->replaceFolderPaths($path, $newPath);
@@ -627,7 +633,7 @@ class ExplorerController extends AbstractAdminController
         /** @var ?File */
         $file = app('orm')->getOne(File::class, $id);
         if (!$file) {
-            throw new InvalidInput(_('File not found.'), 404);
+            throw new InvalidInput(_('File not found.'), Response::HTTP_NOT_FOUND);
         }
 
         $mode = $request->get('mode');
@@ -665,7 +671,7 @@ class ExplorerController extends AbstractAdminController
         /** @var ?File */
         $file = app('orm')->getOne(File::class, $id);
         if (!$file) {
-            throw new InvalidInput(_('File not found.'), 404);
+            throw new InvalidInput(_('File not found.'), Response::HTTP_NOT_FOUND);
         }
 
         $path = $file->getPath();
@@ -674,7 +680,7 @@ class ExplorerController extends AbstractAdminController
 
         $timestamp = filemtime(app()->basePath($path));
         if (false === $timestamp) {
-            throw new Exception('File not found.', 404);
+            throw new Exception('File not found.', Response::HTTP_NOT_FOUND);
         }
 
         if (!$noCache) {
@@ -722,7 +728,7 @@ class ExplorerController extends AbstractAdminController
         /** @var ?File */
         $file = app('orm')->getOne(File::class, $id);
         if (!$file) {
-            throw new InvalidInput(_('File not found.'), 404);
+            throw new InvalidInput(_('File not found.'), Response::HTTP_NOT_FOUND);
         }
 
         $path = $file->getPath();
@@ -733,7 +739,7 @@ class ExplorerController extends AbstractAdminController
             return $this->createImageResponse($file);
         }
         if ($file->isInUse(true)) {
-            throw new InvalidInput(_('Image can not be changed as it used in a text.'), 423);
+            throw new InvalidInput(_('Image can not be changed as it used in a text.'), Response::HTTP_LOCKED);
         }
 
         $type = 'jpeg';
@@ -769,7 +775,7 @@ class ExplorerController extends AbstractAdminController
         /** @var ?File */
         $file = app('orm')->getOne(File::class, $id);
         if (!$file) {
-            throw new InvalidInput(_('File not found.'), 404);
+            throw new InvalidInput(_('File not found.'), Response::HTTP_NOT_FOUND);
         }
 
         $path = $file->getPath();

@@ -38,7 +38,7 @@ class PageController extends AbstractAdminController
             /** @var ?Page */
             $page = app('orm')->getOne(Page::class, $id);
             if (!$page) {
-                throw new InvalidInput(_('Page not found.'), 404);
+                throw new InvalidInput(_('Page not found.'), Response::HTTP_NOT_FOUND);
             }
 
             foreach ($page->getCategories() as $category) {
@@ -86,7 +86,7 @@ class PageController extends AbstractAdminController
         /** @var ?Category */
         $category = app('orm')->getOne(Category::class, $request->request->get('categoryId'));
         if (!$category) {
-            throw new InvalidInput(_('Category not found.'), 404);
+            throw new InvalidInput(_('Category not found.'), Response::HTTP_NOT_FOUND);
         }
 
         $page = new Page([
@@ -130,7 +130,7 @@ class PageController extends AbstractAdminController
         /** @var ?Page */
         $page = app('orm')->getOne(Page::class, $id);
         if (!$page) {
-            throw new InvalidInput(_('Page not found.'), 404);
+            throw new InvalidInput(_('Page not found.'), Response::HTTP_NOT_FOUND);
         }
 
         $page->setKeywords($request->request->get('keywords'))
@@ -185,13 +185,13 @@ class PageController extends AbstractAdminController
         /** @var ?Page */
         $page = app('orm')->getOne(Page::class, $id);
         if (!$page) {
-            throw new InvalidInput(_('Page not found.'), 404);
+            throw new InvalidInput(_('Page not found.'), Response::HTTP_NOT_FOUND);
         }
 
         /** @var ?Category */
         $category = app('orm')->getOne(Category::class, $categoryId);
         if (!$category) {
-            throw new InvalidInput(_('Category not found.'), 404);
+            throw new InvalidInput(_('Category not found.'), Response::HTTP_NOT_FOUND);
         }
 
         $result = ['pageId' => $page->getId(), 'deleted' => [], 'added' => null];
@@ -232,13 +232,13 @@ class PageController extends AbstractAdminController
         /** @var ?Page */
         $page = app('orm')->getOne(Page::class, $id);
         if (!$page) {
-            throw new InvalidInput(_('Page not found.'), 404);
+            throw new InvalidInput(_('Page not found.'), Response::HTTP_NOT_FOUND);
         }
 
         /** @var ?Category */
         $category = app('orm')->getOne(Category::class, $categoryId);
         if (!$category) {
-            throw new InvalidInput(_('Category not found.'), 404);
+            throw new InvalidInput(_('Category not found.'), Response::HTTP_NOT_FOUND);
         }
 
         $result = ['pageId' => $page->getId(), 'deleted' => [], 'added' => null];
@@ -250,7 +250,7 @@ class PageController extends AbstractAdminController
             /** @var ?Category */
             $inactiveCategory = app('orm')->getOne(Category::class, -1);
             if (!$inactiveCategory) {
-                throw new InvalidInput(_('Category not found.'), 404);
+                throw new InvalidInput(_('Category not found.'), Response::HTTP_NOT_FOUND);
             }
 
             $page->addToCategory($inactiveCategory);
@@ -305,13 +305,13 @@ class PageController extends AbstractAdminController
         /** @var ?Page */
         $page = app('orm')->getOne(Page::class, $pageId);
         if (!$page) {
-            throw new InvalidInput(_('Page not found.'), 404);
+            throw new InvalidInput(_('Page not found.'), Response::HTTP_NOT_FOUND);
         }
 
         /** @var ?Page */
         $accessory = app('orm')->getOne(Page::class, $accessoryId);
         if (!$accessory) {
-            throw new InvalidInput(_('Accessory not found.'), 404);
+            throw new InvalidInput(_('Accessory not found.'), Response::HTTP_NOT_FOUND);
         }
 
         $page->addAccessory($accessory);
@@ -344,13 +344,13 @@ class PageController extends AbstractAdminController
         /** @var ?Page */
         $page = app('orm')->getOne(Page::class, $pageId);
         if (!$page) {
-            throw new InvalidInput(_('Page not found.'), 404);
+            throw new InvalidInput(_('Page not found.'), Response::HTTP_NOT_FOUND);
         }
 
         /** @var ?Page */
         $accessory = app('orm')->getOne(Page::class, $accessoryId);
         if (!$accessory) {
-            throw new InvalidInput(_('Accessory not found.'), 404);
+            throw new InvalidInput(_('Accessory not found.'), Response::HTTP_NOT_FOUND);
         }
 
         $page->removeAccessory($accessory);

@@ -192,13 +192,13 @@ class InvoiceController extends AbstractAdminController
         /** @var User */
         $user = $request->user();
         if (!$user->hasAccess(User::ADMINISTRATOR)) {
-            throw new InvalidInput(_('You do not have permission to validate payments.'), 403);
+            throw new InvalidInput(_('You do not have permission to validate payments.'), Response::HTTP_FORBIDDEN);
         }
 
         /** @var ?Invoice */
         $invoice = app('orm')->getOne(Invoice::class, $id);
         if (!$invoice) {
-            throw new InvalidInput(_('Invoice not found.'), 404);
+            throw new InvalidInput(_('Invoice not found.'), Response::HTTP_NOT_FOUND);
         }
 
         $invoice->setTransferred($request->request->getBoolean('transferred'))->save();
@@ -252,7 +252,7 @@ class InvoiceController extends AbstractAdminController
         /** @var ?Invoice */
         $invoice = app('orm')->getOne(Invoice::class, $id);
         if (!$invoice) {
-            throw new InvalidInput(_('Invoice not found.'), 404);
+            throw new InvalidInput(_('Invoice not found.'), Response::HTTP_NOT_FOUND);
         }
 
         $invoiceService = new InvoiceService();
@@ -283,7 +283,7 @@ class InvoiceController extends AbstractAdminController
         /** @var ?Invoice */
         $invoice = app('orm')->getOne(Invoice::class, $id);
         if (!$invoice) {
-            throw new InvalidInput(_('Invoice not found.'), 404);
+            throw new InvalidInput(_('Invoice not found.'), Response::HTTP_NOT_FOUND);
         }
 
         $invoice = clone $invoice;
@@ -309,7 +309,7 @@ class InvoiceController extends AbstractAdminController
         /** @var ?Invoice */
         $invoice = app('orm')->getOne(Invoice::class, $id);
         if (!$invoice) {
-            throw new InvalidInput(_('Invoice not found.'), 404);
+            throw new InvalidInput(_('Invoice not found.'), Response::HTTP_NOT_FOUND);
         }
 
         $invoiceService = new InvoiceService();
@@ -333,7 +333,7 @@ class InvoiceController extends AbstractAdminController
         /** @var ?Invoice */
         $invoice = app('orm')->getOne(Invoice::class, $id);
         if (!$invoice) {
-            throw new InvalidInput(_('Invoice not found.'), 404);
+            throw new InvalidInput(_('Invoice not found.'), Response::HTTP_NOT_FOUND);
         }
 
         $invoiceService = new InvoiceService();
@@ -357,7 +357,7 @@ class InvoiceController extends AbstractAdminController
         /** @var ?Invoice */
         $invoice = app('orm')->getOne(Invoice::class, $id);
         if (!$invoice) {
-            throw new InvalidInput(_('Invoice not found.'), 404);
+            throw new InvalidInput(_('Invoice not found.'), Response::HTTP_NOT_FOUND);
         }
 
         $invoiceService = new InvoiceService();
@@ -383,7 +383,7 @@ class InvoiceController extends AbstractAdminController
             /** @var ?Invoice */
             $invoice = app('orm')->getOne(Invoice::class, $id);
             if (!$invoice) {
-                throw new InvalidInput(_('Invoice not found.'), 404);
+                throw new InvalidInput(_('Invoice not found.'), Response::HTTP_NOT_FOUND);
             }
         }
 
@@ -418,7 +418,7 @@ class InvoiceController extends AbstractAdminController
         /** @var ?Invoice */
         $invoice = app('orm')->getOne(Invoice::class, $id);
         if (!$invoice) {
-            return new Response(_('Invoice not found.'), 404);
+            return new Response(_('Invoice not found.'), Response::HTTP_NOT_FOUND);
         }
 
         $invoicePdfService = new InvoicePdfService($invoice);
@@ -429,6 +429,6 @@ class InvoiceController extends AbstractAdminController
             'Content-Disposition' => 'inline; filename="Faktura-' . $invoice->getId() . '.pdf"',
         ];
 
-        return new Response($pdfData, 200, $header);
+        return new Response($pdfData, Response::HTTP_OK, $header);
     }
 }
