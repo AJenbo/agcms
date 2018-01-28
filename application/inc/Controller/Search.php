@@ -197,16 +197,18 @@ class Search extends Base
             $columns[] = $column['Field'];
         }
 
+        $against = app('db')->quote($searchString);
+
         /** @var Page[] */
         $pages = app('orm')->getByQuery(
             Page::class,
             '
             SELECT `' . implode('`, `', $columns) . '`
-            FROM (SELECT sider.*, MATCH(navn, text, beskrivelse) AGAINST (' . app('db')->quote($searchString) . ') AS score
+            FROM (SELECT sider.*, MATCH(navn, text, beskrivelse) AGAINST (' . $against . ') AS score
             FROM sider
             JOIN bind ON sider.id = bind.side AND bind.kat != -1
             WHERE (
-                MATCH (navn, text, beskrivelse) AGAINST(' . app('db')->quote($searchString) . ") > 0
+                MATCH (navn, text, beskrivelse) AGAINST(' . $against . ") > 0
                 OR `navn` LIKE $simpleQuery
                 OR `text` LIKE $simpleQuery
                 OR `beskrivelse` LIKE $simpleQuery
