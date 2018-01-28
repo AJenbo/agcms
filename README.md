@@ -10,6 +10,74 @@
 
 AGcms is a simple CMS that I build around 2004, since it still have active userse I try to maintain the code base and use it to experiment with differnet tools. The maintanace mostly revolve around keeping the back end in a decent shape code wise.
 
+## Development setup
+
+**Prerequisites**
+* [Composer](https://getcomposer.org/download/)
+* [NPM](https://getcomposer.org/download/)
+* [NodeJS](https://nodejs.org/en/)
+* [Docker Compose](https://docs.docker.com/compose/)
+
+On Ubuntu this can be install using the following command:
+```bash
+sudo apt install composer npm nodejs-legacy docker.io docker-compose
+sudo adduser yourussername docker
+```
+Then log out and back in.
+
+build.sh also depends on wget and unzip
+
+**Install dependencies**
+
+build.sh install most dependencies, except for php development liberies
+```bash
+./build.sh
+cd application
+composer install
+```
+
+## Development setup
+
+**PHP**
+
+The code is found in application/inc. It is structured to be similar to [Laravel](https://laravel.com/), but with a some what limited scope.
+
+**JavaScript**
+
+The source is found in source/javascript, it is transpiled using webpack meaning you can write ES6 and having it still work on older browseres that only support ES5. To run the transpiler execute the following command:
+```bash
+npm run build
+```
+
+**Running the project**
+
+The project comes with a docker setup that will run an NginX server on port 80 and MySQL on 3306 so thease ports neads to be avalible. To start it simply run:
+```bash
+docker-compose up
+```
+
+If you want to setup a server manually you need to point it to the application folder, you will find the needed sql files for the database in the source folder.
+
+## Running tests
+
+You can run the unit tests via the following command from the project root:
+```bash
+php application/vendor/bin/phpunit
+```
+
+## Preparing a release
+Run the build.sh script
+```bash
+./build.sh
+```
+Upload the content of the application folder to your webserver.
+
+Afterwareds you will need to run the following command to return to develop mode:
+```bash
+cd application
+composer install
+```
+
 ## Security Vulnerabilities
 
 If you discover a security vulnerability within AGcms, please create an issue on [github](https://github.com/AJenbo/agcms/issues). All security vulnerabilities will be promptly addressed.
