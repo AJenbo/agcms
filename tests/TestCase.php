@@ -41,6 +41,21 @@ abstract class TestCase extends BaseTestCase
     }
 
     /**
+     * Visit the given URI with a GET request.
+     *
+     * @param string $uri
+     * @param array  $headers
+     *
+     * @return $this
+     */
+    public function get($uri, array $headers = [])
+    {
+        $server = $this->transformHeadersToServerVars($headers);
+
+        return $this->call('GET', $uri, [], [], [], $server);
+    }
+
+    /**
      * Call the given URI and return the Response.
      *
      * @param string $method
@@ -69,6 +84,28 @@ abstract class TestCase extends BaseTestCase
         }
 
         return new TestResponse($this->app->handle($request));
+    }
+
+    /**
+     * Transform headers array to array of $_SERVER vars with HTTP_* format.
+     *
+     * @param array $headers
+     *
+     * @return array
+     */
+    protected function transformHeadersToServerVars(array $headers)
+    {
+        $server = [];
+        $prefix = 'HTTP_';
+        foreach ($headers as $name => $value) {
+            $name = strtr(strtoupper($name), '-', '_');
+            if (false === mb_strpos($name, $prefix) && 'CONTENT_TYPE' != $name) {
+                $name = $prefix . $name;
+            }
+            $server[$name] = $value;
+        }
+
+        return $server;
     }
 
     /**
