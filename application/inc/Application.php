@@ -2,6 +2,9 @@
 
 use AGCMS\Controller\Base;
 use AGCMS\Exception\InvalidInput;
+use AGCMS\Service\DbService;
+use AGCMS\Service\OrmService;
+use AGCMS\Service\RenderService;
 use Closure;
 use Raven_Client;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -33,9 +36,9 @@ class Application
 
     /** @var string[] */
     private $aliases = [
-        'db'     => DB::class,
-        'orm'    => ORM::class,
-        'render' => Render::class,
+        'db'     => DbService::class,
+        'orm'    => OrmService::class,
+        'render' => RenderService::class,
     ];
 
     /** @var object[] */
@@ -179,10 +182,10 @@ class Application
      */
     public function loadService(string $service)
     {
-        if ('AGCMS\\DB' === $service) {
+        if (DbService::class === $service) {
             $dsn = config('db_dns') ?: 'mysql:dbname=' . config('mysql_database') . ';host=' . config('mysql_server');
 
-            return new DB($dsn, config('mysql_user', 'root'), config('mysql_password', ''));
+            return new DbService($dsn, config('mysql_user', 'root'), config('mysql_password', ''));
         }
 
         return new $service();

@@ -1,10 +1,10 @@
-<?php namespace AGCMS;
+<?php namespace AGCMS\Service;
 
 use Twig_Environment;
 use Twig_Extensions_Extension_I18n;
 use Twig_Loader_Filesystem;
 
-class Render
+class RenderService
 {
     /** @var Twig_Environment */
     private $twig;

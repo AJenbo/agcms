@@ -1,8 +1,8 @@
-<?php namespace AGCMS;
+<?php namespace AGCMS\Service;
 
 use AGCMS\Entity\AbstractEntity;
 
-class ORM
+class OrmService
 {
     /**
      * Cache entity by id.

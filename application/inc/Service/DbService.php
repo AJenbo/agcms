@@ -1,8 +1,8 @@
-<?php namespace AGCMS;
+<?php namespace AGCMS\Service;
 
 use PDO;
 
-class DB
+class DbService
 {
     /** @var int */
     private $timeOffset;

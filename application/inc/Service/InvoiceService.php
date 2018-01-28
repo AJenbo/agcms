@@ -7,7 +7,6 @@ use AGCMS\Entity\Page;
 use AGCMS\Entity\Table;
 use AGCMS\Entity\User;
 use AGCMS\Epayment;
-use AGCMS\EpaymentAdminService;
 use AGCMS\Exception\Exception;
 use AGCMS\Exception\InvalidInput;
 use AGCMS\ORM;
@@ -356,7 +355,7 @@ class InvoiceService
      */
     private function getPayment(Invoice $invoice): Epayment
     {
-        $epaymentService = new EpaymentAdminService(config('pbsid'), config('pbspwd'));
+        $epaymentService = new EpaymentService(config('pbsid'), config('pbspwd'));
 
         return $epaymentService->getPayment(config('pbsfix') . $invoice->getId());
     }

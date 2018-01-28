@@ -1,5 +1,6 @@
 <?php namespace AGCMS;
 
+use AGCMS\Service\EpaymentService;
 use stdClass;
 
 class Epayment
@@ -7,7 +8,7 @@ class Epayment
     /**
      * The manager for handeling service communication.
      *
-     * @var EpaymentAdminService
+     * @var EpaymentService
      */
     private $service;
 
@@ -56,10 +57,10 @@ class Epayment
     /**
      * Setup the class variables for initialization.
      *
-     * @param EpaymentAdminService $service         The manager for handeling service communication
-     * @param stdClass             $transactionData
+     * @param EpaymentService $service         The manager for handeling service communication
+     * @param stdClass        $transactionData
      */
-    public function __construct(EpaymentAdminService $service, stdClass $transactionData)
+    public function __construct(EpaymentService $service, stdClass $transactionData)
     {
         $this->service = $service;
 

@@ -3,11 +3,11 @@
 use AGCMS\Entity\CustomPage;
 use AGCMS\Entity\Email;
 use AGCMS\Entity\Invoice;
-use AGCMS\EpaymentAdminService;
 use AGCMS\Exception\Exception;
 use AGCMS\ORM;
 use AGCMS\Render;
 use AGCMS\Service\EmailService;
+use AGCMS\Service\EpaymentService;
 use AGCMS\Service\InvoiceService;
 use AGCMS\VolatilePage;
 use Symfony\Component\HttpFoundation\RedirectResponse;
@@ -365,7 +365,7 @@ class Payment extends Base
             return;
         }
 
-        $cardType = EpaymentAdminService::getPaymentName($request->get('paymenttype'));
+        $cardType = EpaymentService::getPaymentName($request->get('paymenttype'));
         $internalNote = $this->generateInternalPaymentNote($request);
 
         $emailService = app(EmailService::class);

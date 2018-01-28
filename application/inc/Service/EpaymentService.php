@@ -1,5 +1,6 @@
-<?php namespace AGCMS;
+<?php namespace AGCMS\Service;
 
+use AGCMS\Epayment;
 use SoapClient;
 use stdClass;
 
@@ -9,7 +10,7 @@ use stdClass;
  * See http://www.betalingsterminal.no/Netthandel-forside/Teknisk-veiledning/API/ for
  * a description of the returned objects
  */
-class EpaymentAdminService
+class EpaymentService
 {
     /** @var string Shops merchant id. */
     private $merchantId;

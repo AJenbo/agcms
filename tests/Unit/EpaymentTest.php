@@ -1,15 +1,15 @@
 <?php namespace AGCMS\Tests\Unit;
 
 use AGCMS\Epayment;
-use AGCMS\EpaymentAdminService;
+use AGCMS\Service\EpaymentService;
 use Mockery as M;
 use PHPUnit\Framework\TestCase;
 use stdClass;
 
 class EpaymentTest extends TestCase
 {
-    /** @var EpaymentAdminService */
-    private $epaymentAdminService;
+    /** @var EpaymentService */
+    private $epaymentService;
 
     /**
      * Initiate the mock.
@@ -18,7 +18,7 @@ class EpaymentTest extends TestCase
      */
     public function setUp(): void
     {
-        $this->epaymentAdminService = M::mock(EpaymentAdminService::class);
+        $this->epaymentService = M::mock(EpaymentService::class);
     }
 
     /**
@@ -38,7 +38,7 @@ class EpaymentTest extends TestCase
         $data->authamount = $amount;
         $data->capturedamount = $captured;
 
-        return new Epayment($this->epaymentAdminService, $data);
+        return new Epayment($this->epaymentService, $data);
     }
 
     /**
@@ -84,7 +84,7 @@ class EpaymentTest extends TestCase
     {
         $epayment = $this->getPayment();
 
-        $this->epaymentAdminService
+        $this->epaymentService
             ->shouldReceive('annul')
             ->with($epayment)
             ->once()
@@ -104,7 +104,7 @@ class EpaymentTest extends TestCase
     {
         $epayment = $this->getPayment();
 
-        $this->epaymentAdminService
+        $this->epaymentService
             ->shouldReceive('annul')
             ->with($epayment)
             ->once()
@@ -151,7 +151,7 @@ class EpaymentTest extends TestCase
     {
         $epayment = $this->getPayment();
 
-        $this->epaymentAdminService
+        $this->epaymentService
             ->shouldReceive('confirm')
             ->with($epayment, 100)
             ->once()
@@ -172,7 +172,7 @@ class EpaymentTest extends TestCase
     {
         $epayment = $this->getPayment();
 
-        $this->epaymentAdminService
+        $this->epaymentService
             ->shouldReceive('confirm')
             ->with($epayment, 100)
             ->once()
