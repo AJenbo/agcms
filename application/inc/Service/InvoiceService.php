@@ -414,7 +414,7 @@ class InvoiceService
             'recipientAddress' => $invoice->getEmail(),
         ]);
 
-        $emailService = new EmailService();
+        $emailService = app(EmailService::class);
         $emailService->send($email);
 
         if ('new' === $invoice->getStatus()) {

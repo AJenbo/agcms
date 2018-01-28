@@ -368,7 +368,7 @@ class Payment extends Base
         $cardType = EpaymentAdminService::getPaymentName($request->get('paymenttype'));
         $internalNote = $this->generateInternalPaymentNote($request);
 
-        $emailService = new EmailService();
+        $emailService = app(EmailService::class);
         if (!$emailService->valideMail($invoice->getDepartment())) {
             $invoice->setDepartment(first(config('emails'))['address']);
         }
@@ -408,7 +408,7 @@ class Payment extends Base
             'recipientName'    => $invoice->getName(),
             'recipientAddress' => $invoice->getEmail(),
         ]);
-        $emailService = new EmailService();
+        $emailService = app(EmailService::class);
 
         try {
             $emailService->send($email);
@@ -440,7 +440,7 @@ class Payment extends Base
             'recipientName'    => config('site_name'),
             'recipientAddress' => $invoice->getDepartment(),
         ]);
-        $emailService = new EmailService();
+        $emailService = app(EmailService::class);
 
         try {
             $emailService->send($email);

@@ -109,7 +109,7 @@ class UserController extends AbstractAdminController
                 'recipientName'    => config('site_name'),
                 'recipientAddress' => $emailAddress,
             ]);
-            $emailService = new EmailService();
+            $emailService = app(EmailService::class);
 
             try {
                 $emailService->send($email);

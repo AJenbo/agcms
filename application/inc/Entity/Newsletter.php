@@ -273,7 +273,7 @@ class Newsletter extends AbstractEntity implements InterfaceRichText
             ),
             'body'     => str_replace(' href="/', ' href="' . config('base_url') . '/', $this->html),
         ];
-        $emailService = new EmailService();
+        $emailService = app(EmailService::class);
         $failedCount = 0;
         foreach ($contactsGroups as $bcc) {
             $email = new Email([

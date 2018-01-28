@@ -362,7 +362,7 @@ class Contact extends AbstractEntity
      */
     public function isEmailValide(): bool
     {
-        $emailService = new EmailService();
+        $emailService = app(EmailService::class);
 
         return $this->email && $emailService->valideMail($this->email);
     }

@@ -133,7 +133,7 @@ class Shopping extends Base
             'recipientName'    => config('site_name'),
             'recipientAddress' => first(config('emails'))['address'],
         ]);
-        $emailService = new EmailService();
+        $emailService = app(EmailService::class);
 
         try {
             $emailService->send($email);

@@ -7,6 +7,8 @@ use PHPMailer\PHPMailer\PHPMailer;
 
 class EmailService
 {
+    private $ceche = [];
+
     /**
      * Checks if email an address looks valid and that an mx server is responding.
      *
@@ -38,14 +40,12 @@ class EmailService
      */
     private function checkMx(string $domain): bool
     {
-        static $ceche = [];
-
-        if (!isset($ceche[$domain])) {
+        if (!isset($this->ceche[$domain])) {
             $dummy = [];
-            $ceche[$domain] = getmxrr($domain, $dummy);
+            $this->ceche[$domain] = getmxrr($domain, $dummy);
         }
 
-        return $ceche[$domain];
+        return $this->ceche[$domain];
     }
 
     /**

@@ -41,7 +41,7 @@ class Email extends AbstractEntity
      */
     public function __construct(array $data = [])
     {
-        $this->emailService = new EmailService();
+        $this->emailService = app(EmailService::class);
 
         $this->setTimestamp($data['timestamp'] ?? time())
             ->setSubject($data['subject'])

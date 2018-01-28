@@ -1282,7 +1282,7 @@ class Invoice extends AbstractEntity
      */
     public function hasValidEmail(): bool
     {
-        $emailService = new EmailService();
+        $emailService = app(EmailService::class);
         if (!$this->email || !$emailService->valideMail($this->email)) {
             return false;
         }

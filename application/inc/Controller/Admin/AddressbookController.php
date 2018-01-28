@@ -136,7 +136,7 @@ class AddressbookController extends AbstractAdminController
     {
         $email = $request->get('email', '');
 
-        $emailService = new EmailService();
+        $emailService = app(EmailService::class);
         $isValid = $emailService->valideMail($email);
 
         return new JsonResponse(['isValid' => $isValid]);

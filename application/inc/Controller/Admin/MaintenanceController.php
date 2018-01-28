@@ -367,7 +367,7 @@ class MaintenanceController extends AbstractAdminController
         $emails = app('orm')->getByQuery(Email::class, 'SELECT * FROM `emails`');
         if ($emails) {
             $emailsSendt = 0;
-            $emailService = new EmailService();
+            $emailService = app(EmailService::class);
             foreach ($emails as $email) {
                 $emailService->send($email);
                 $email->delete();
