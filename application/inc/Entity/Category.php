@@ -41,7 +41,7 @@ class Category extends AbstractRenderable
     // Runtime
 
     /** @var ?bool Cache if category is visible or not. */
-    private $visable;
+    private $visible;
 
     /**
      * Construct the entity.
@@ -223,21 +223,21 @@ class Category extends AbstractRenderable
      *
      * @return bool
      */
-    public function isVisable(): bool
+    public function isVisible(): bool
     {
         if (self::HIDDEN === $this->renderMode) {
             return false;
         }
 
-        if (null === $this->visable) {
+        if (null === $this->visible) {
             if (!$this->isInactive() && ($this->hasPages() || $this->hasVisibleChildren())) {
                 return true;
             }
 
-            $this->visable = false;
+            $this->visible = false;
         }
 
-        return $this->visable;
+        return $this->visible;
     }
 
     /**
@@ -283,11 +283,11 @@ class Category extends AbstractRenderable
      *
      * @todo natsort when sorted by title
      *
-     * @param bool $onlyVisable Only return visible
+     * @param bool $onlyVisible Only return visible
      *
      * @return self[]
      */
-    public function getChildren(bool $onlyVisable = false): array
+    public function getChildren(bool $onlyVisible = false): array
     {
         $orderBy = 'navn';
         if ($this->hasWeightedChildren()) {
@@ -303,12 +303,12 @@ class Category extends AbstractRenderable
             ORDER BY ' . $orderBy
         );
 
-        if (!$onlyVisable) {
+        if (!$onlyVisible) {
             return $children;
         }
 
         foreach ($children as $key => $child) {
-            if (!$child->isVisable()) {
+            if (!$child->isVisible()) {
                 unset($children[$key]);
             }
         }
@@ -329,16 +329,16 @@ class Category extends AbstractRenderable
     /**
      * Check if it has attached categories.
      *
-     * @param bool $onlyVisable Only check visible
+     * @param bool $onlyVisible Only check visible
      *
      * @return bool
      */
-    public function hasChildren(bool $onlyVisable = false): bool
+    public function hasChildren(bool $onlyVisible = false): bool
     {
-        $children = $this->getChildren($onlyVisable);
+        $children = $this->getChildren($onlyVisible);
         if ($children) {
-            if ($onlyVisable) {
-                $this->visable = true;
+            if ($onlyVisible) {
+                $this->visible = true;
             }
 
             return true;
@@ -412,7 +412,7 @@ class Category extends AbstractRenderable
 
         $hasPages = (bool) app('db')->fetchOne('SELECT kat FROM `bind` WHERE `kat` = ' . $this->getId());
         if ($hasPages) {
-            $this->visable = true;
+            $this->visible = true;
         }
 
         return $hasPages;

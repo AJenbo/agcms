@@ -308,7 +308,7 @@ class Search extends Base
 
         $activeCategories = [];
         foreach ($categories as $category) {
-            if ($category->isVisable()) {
+            if ($category->isVisible()) {
                 $activeCategories[] = $category;
             }
         }

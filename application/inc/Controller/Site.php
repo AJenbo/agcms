@@ -183,7 +183,7 @@ class Site extends Base
      */
     private function checkCategoryUrl(Request $request, ?Category $category): ?RedirectResponse
     {
-        if ($category && !$category->isVisable()) {
+        if ($category && !$category->isVisible()) {
             return $this->redirectToSearch($request);
         }
 
@@ -208,7 +208,7 @@ class Site extends Base
     private function checkPageUrl(Request $request, ?Category $category, ?Page $page): ?RedirectResponse
     {
         if (!$page || $page->isInactive()) {
-            if ($category && $category->getParent() && $category->isVisable()) {
+            if ($category && $category->getParent() && $category->isVisible()) {
                 $status = $page ? Response::HTTP_FOUND : Response::HTTP_MOVED_PERMANENTLY;
 
                 return $this->redirect($request, $category->getCanonicalLink(), $status);

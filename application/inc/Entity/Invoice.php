@@ -78,7 +78,7 @@ class Invoice extends AbstractEntity
     /** @var string Shipping country */
     private $shippingCountry = '';
 
-    /** @var string Client visable note */
+    /** @var string Client visible note */
     private $note = '';
 
     /** @var string Name of responsible cleark */

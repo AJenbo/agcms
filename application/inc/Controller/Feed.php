@@ -34,7 +34,7 @@ class Feed extends Base
                 continue;
             }
             $pageCount = count($category->getPages());
-            if ($category->isVisable() && 1 !== $pageCount) {
+            if ($category->isVisible() && 1 !== $pageCount) {
                 $activeCategories[] = $category;
             }
             $activeCategoryIds[] = $category->getId();
