@@ -591,7 +591,9 @@ class ExplorerController extends AbstractAdminController
             if (file_exists(app()->basePath($newPath))) {
                 if (!$overwrite) {
                     return new JsonResponse([
-                        'yesno' => _('A file with the same name already exists. Would you like to replace the existing file?'),
+                        'yesno' => _(
+                            'A file with the same name already exists. Would you like to replace the existing file?'
+                        ),
                         'path'  => $path,
                     ]);
                 }
