@@ -11,6 +11,15 @@ class SiteTest extends TestCase
             ->assertSee('<title>Frontpage</title>');
     }
 
+    public function testFrontPageCache(): void
+    {
+        // Set the call one hour in to the feature to make sure the data is older
+        $ifModifiedSince = $this->timeToHeader(time() + 3600);
+
+        $this->get('/', ['If-Modified-Since' => $ifModifiedSince])
+            ->assertResponseStatus(304);
+    }
+
     public function testCategory(): void
     {
         $this->get('/kat1-Gallery-Category/')

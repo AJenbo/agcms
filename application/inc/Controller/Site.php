@@ -45,7 +45,9 @@ class Site extends Base
             'renderable'      => $renderable,
         ] + $this->basicPageData();
 
-        return $this->render($template, $data);
+        $response = $this->render($template, $data);
+
+        return $this->cachedResponse($response);
     }
 
     /**
@@ -59,7 +61,9 @@ class Site extends Base
             'renderable' => app('orm')->getOne(CustomPage::class, 1),
         ] + $this->basicPageData();
 
-        return $this->render('index', $data);
+        $response = $this->render('index', $data);
+
+        return $this->cachedResponse($response);
     }
 
     /**
@@ -105,7 +109,9 @@ class Site extends Base
             'renderable'      => $page,
         ] + $this->basicPageData();
 
-        return $this->render('product', $data);
+        $response = $this->render('product', $data);
+
+        return $this->cachedResponse($response);
     }
 
     /**
@@ -129,7 +135,9 @@ class Site extends Base
         ] + $this->basicPageData();
         $data['crumbs'][] = $requirement;
 
-        return $this->render('requirement', $data);
+        $response = $this->render('requirement', $data);
+
+        return $this->cachedResponse($response);
     }
 
     /**
@@ -158,7 +166,9 @@ class Site extends Base
         ] + $this->basicPageData();
         $data['crumbs'][] = $brand;
 
-        return $this->render('tiles', $data);
+        $response = $this->render('tiles', $data);
+
+        return $this->cachedResponse($response);
     }
 
     /**

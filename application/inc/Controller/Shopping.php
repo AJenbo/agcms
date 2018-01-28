@@ -47,7 +47,9 @@ class Shopping extends Base
         $data['payMethod'] = $cart['payMethod'] ?? '';
         $data['deleveryMethod'] = $cart['deleveryMethod'] ?? '';
 
-        return $this->render('order-form', $data);
+        $response = $this->render('order-form', $data);
+
+        return $this->cachedResponse($response);
     }
 
     /**
@@ -79,7 +81,9 @@ class Shopping extends Base
         $data['onsubmit'] = 'shoppingCart.sendCart(); return false';
         $data['actionLable'] = _('Send order');
 
-        return $this->render('order-form1', $data);
+        $response = $this->render('order-form1', $data);
+
+        return $this->cachedResponse($response);
     }
 
     /**
@@ -167,6 +171,8 @@ class Shopping extends Base
         $data['crumbs'][] = $renderable;
         $data['renderable'] = $renderable;
 
-        return $this->render('order-form2', $data);
+        $response = $this->render('order-form2', $data);
+
+        return $this->cachedResponse($response);
     }
 }

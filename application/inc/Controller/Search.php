@@ -22,7 +22,9 @@ class Search extends Base
         $data['crumbs'][] = new VolatilePage(_('Search'), '/search/');
         $data['brands'] = $this->getActiveBrands();
 
-        return $this->render('search', $data);
+        $response = $this->render('search', $data);
+
+        return $this->cachedResponse($response);
     }
 
     /**
@@ -110,7 +112,9 @@ class Search extends Base
         $data['renderable'] = $requirement;
         $data['search'] = $request->get('q', '');
 
-        return $this->render('tiles', $data);
+        $response = $this->render('tiles', $data);
+
+        return $this->cachedResponse($response);
     }
 
     /**

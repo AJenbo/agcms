@@ -45,7 +45,9 @@ class Payment extends Base
         $data['id'] = $request->get('id');
         $data['checkid'] = $request->get('checkid');
 
-        return $this->render('payment-manual', $data);
+        $response = $this->render('payment-manual', $data);
+
+        return $this->cachedResponse($response);
     }
 
     /**
@@ -74,7 +76,9 @@ class Payment extends Base
         $data['renderable'] = $renderable;
         $data['invoice'] = $invoice;
 
-        return $this->render('payment-form0', $data);
+        $response = $this->render('payment-form0', $data);
+
+        return $this->cachedResponse($response);
     }
 
     /**
@@ -107,7 +111,9 @@ class Payment extends Base
         $data['action'] = $invoice->getLink() . 'address/';
         $data['actionLable'] = _('Continue');
 
-        return $this->render('order-form1', $data);
+        $response = $this->render('order-form1', $data);
+
+        return $this->cachedResponse($response);
     }
 
     /**
@@ -214,7 +220,9 @@ class Payment extends Base
         $data['inputs'] = $inputs;
         $data['html'] = $this->getTermsHtml();
 
-        return $this->render('payment-form2', $data);
+        $response = $this->render('payment-form2', $data);
+
+        return $this->cachedResponse($response);
     }
 
     /**
@@ -232,7 +240,9 @@ class Payment extends Base
             return '';
         }
 
-        return $shoppingTerms->getHtml();
+        $response = $shoppingTerms->getHtml();
+
+        return $this->cachedResponse($response);
     }
 
     /**
@@ -280,7 +290,9 @@ class Payment extends Base
         $data['action'] = $invoice->getLink() . 'address/';
         $data['statusMessage'] = $this->getStatusMessage($invoice);
 
-        return $this->render('payment-status', $data);
+        $response = $this->render('payment-status', $data);
+
+        return $this->cachedResponse($response);
     }
 
     /**
