@@ -108,16 +108,18 @@ abstract class AbstractController
      * Add the needed headeres for a 304 cache response based on the loaded data.
      *
      * @param Response|null $response
+     * @param int           $timestamp
+     * @param int           $maxAge
      *
      * @return Response
      */
-    protected function cachedResponse(Response $response = null): Response
+    protected function cachedResponse(Response $response = null, int $timestamp = null, int $maxAge = 0): Response
     {
         if (!$response) {
             $response = new Response();
         }
 
-        $timestamp = $this->getUpdateTime();
+        $timestamp = $timestamp ?? $this->getUpdateTime();
         $lastModified = DateTime::createFromFormat('U', (string) $timestamp, new DateTimeZone('GMT'));
         if (!$lastModified) {
             return $response;
@@ -126,7 +128,7 @@ abstract class AbstractController
         $response->setPublic();
         $response->headers->addCacheControlDirective('must-revalidate');
         $response->setLastModified($lastModified);
-        $response->setMaxAge(0);
+        $response->setMaxAge($maxAge);
 
         return $response;
     }

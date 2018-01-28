@@ -13,7 +13,6 @@ use AGCMS\Render;
 use AGCMS\Service\FileService;
 use AGCMS\Service\ImageService;
 use AGCMS\Service\UploadHandler;
-use DateTime;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -678,14 +677,10 @@ class ExplorerController extends AbstractAdminController
             throw new Exception('File not found.', 404);
         }
 
-        $lastModified = DateTime::createFromFormat('U', (string) $timestamp);
-
         if (!$noCache) {
-            $response = new Response();
-            $response->setLastModified($lastModified);
+            $response = $this->cachedResponse(null, $timestamp, 2592000);
             if ($response->isNotModified($request)) {
-                $response->setMaxAge(2592000); // one month
-                return $response; // 304
+                return $response;
             }
         }
 
@@ -708,12 +703,8 @@ class ExplorerController extends AbstractAdminController
 
         $response = new BinaryFileResponse($targetPath);
         $response->setContentDisposition(ResponseHeaderBag::DISPOSITION_INLINE, pathinfo($path, PATHINFO_BASENAME));
-        $response->setLastModified($lastModified);
-        if ($noCache) {
-            $response->setMaxAge(2592000); // one month
-        }
 
-        return $response;
+        return $this->cachedResponse($response, $timestamp, 2592000);
     }
 
     /**
