@@ -146,7 +146,7 @@ class Payment extends Base
             ->setHasShippingAddress($request->request->getBoolean('altpost'))
             ->setShippingPhone($request->get('shippingPhone'))
             ->setShippingName($request->get('shippingName'))
-            ->setShippingAttn($attn)
+            ->setShippingAttn($shippingAttn)
             ->setShippingAddress($request->get('shippingAddress'))
             ->setShippingAddress2($request->get('shippingAddress2'))
             ->setShippingPostbox($request->get('shippingPostbox'))

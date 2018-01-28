@@ -140,7 +140,7 @@ class Feed extends Base
             'url'           => config('base_url') . '/feed/rss/',
             'title'         => config('site_name'),
             'siteUrl'       => config('base_url') . '/',
-            'lastBuildDate' => gmdate('D, d M Y H:i:s', $timestamp) . ' GMT',
+            'lastBuildDate' => gmdate('D, d M Y H:i:s', app('db')->dataAge()) . ' GMT',
             'email'         => first(config('emails'))['address'],
             'siteName'      => config('site_name'),
             'items'         => $items,
