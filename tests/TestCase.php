@@ -5,6 +5,8 @@ use AGCMS\Config;
 use AGCMS\DB;
 use AGCMS\Entity\User;
 use AGCMS\Request;
+use DateTime;
+use DateTimeZone;
 use PHPUnit\Framework\TestCase as BaseTestCase;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -38,6 +40,22 @@ abstract class TestCase extends BaseTestCase
         foreach ($queries as $query) {
             app('db')->query($query);
         }
+    }
+
+    /**
+     * Convert a timastamp to a string appropriate for the HTTP header.
+     *
+     * @param int $timestamp
+     *
+     * @return string
+     */
+    public function timeToHeader(int $timestamp): string
+    {
+        // Set the call one hour in to the feature to make sure the data is older
+        $lastModified = DateTime::createFromFormat('U', (string) $timestamp, new DateTimeZone('GMT'));
+        $lastModified = $lastModified->format('r');
+
+        return mb_substr($lastModified, 0, -5) . 'GMT';
     }
 
     /**
