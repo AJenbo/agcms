@@ -139,23 +139,6 @@ class Application
     }
 
     /**
-     * Sets a service.
-     *
-     * Setting a service to null resets the service.
-     *
-     * @param string  $id      The service identifier
-     * @param ?object $service The service instance
-     *
-     * @return object The associated service
-     */
-    public function set(string $id, $service)
-    {
-        $id = $this->aliases[$id] ?? $id;
-
-        $this->services[$id] = $service;
-    }
-
-    /**
      * Gets a service.
      *
      * @param string $id The service identifier
