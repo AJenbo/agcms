@@ -4,8 +4,8 @@ use PDO;
 
 class DbService
 {
-    /** @var int */
-    private $timeOffset = 0;
+    /** @var int|null */
+    private $timeOffset;
 
     /** @var PDO */
     private $connection;
