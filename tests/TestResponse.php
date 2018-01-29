@@ -88,11 +88,9 @@ class TestResponse
      *
      * @return $this
      */
-    public function assertJson(array $data, bool $strict = false)
+    public function assertJson(array $data, bool $strict = false): self
     {
-        Assert::assertArraySubset(
-            $data, $this->decodeResponseJson(), $strict, $this->assertJsonMessage($data)
-        );
+        Assert::assertArraySubset($data, $this->decodeResponseJson(), $strict, $this->assertJsonMessage($data));
 
         return $this;
     }
@@ -101,11 +99,11 @@ class TestResponse
      * Assert that the response has a given JSON structure.
      *
      * @param string[]|null $structure
-     * @param string[]|null $responseData
+     * @param array|null    $responseData
      *
      * @return $this
      */
-    public function assertJsonStructure(array $structure = null, $responseData = null)
+    public function assertJsonStructure(array $structure = null, $responseData = null): self
     {
         if (is_null($structure)) {
             return $this->assertJson($this->json());
@@ -119,12 +117,16 @@ class TestResponse
                 foreach ($responseData as $responseDataItem) {
                     $this->assertJsonStructure($structure['*'], $responseDataItem);
                 }
-            } elseif (is_array($value)) {
+                continue;
+            }
+
+            if (is_array($value)) {
                 Assert::assertArrayHasKey($key, $responseData);
                 $this->assertJsonStructure($structure[$key], $responseData[$key]);
-            } else {
-                Assert::assertArrayHasKey($value, $responseData);
+                continue;
             }
+
+            Assert::assertArrayHasKey($value, $responseData);
         }
 
         return $this;
@@ -137,7 +139,7 @@ class TestResponse
      *
      * @return string
      */
-    private function assertJsonMessage(array $data)
+    private function assertJsonMessage(array $data): string
     {
         $expected = json_encode($data, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES);
         $actual = json_encode($this->decodeResponseJson(), JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES);
@@ -153,7 +155,7 @@ class TestResponse
      *
      * @return array
      */
-    private function decodeResponseJson()
+    private function decodeResponseJson(): array
     {
         $decodedResponse = json_decode($this->response->getContent(), true);
         if (null === $decodedResponse || false === $decodedResponse) {
