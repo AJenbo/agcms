@@ -86,25 +86,6 @@ abstract class AbstractController
     }
 
     /**
-     * Generate an early 304 Response if posible.
-     *
-     * @param Request $request
-     *
-     * @return ?Response
-     */
-    protected function earlyResponse(Request $request): ?Response
-    {
-        if ($request->headers->has('If-Modified-Since')) {
-            $response = $this->cachedResponse();
-            if ($response->isNotModified($request)) {
-                return $response;
-            }
-        }
-
-        return null;
-    }
-
-    /**
      * Add the needed headeres for a 304 cache response based on the loaded data.
      *
      * @param Response|null $response
