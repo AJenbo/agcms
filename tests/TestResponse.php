@@ -81,6 +81,89 @@ class TestResponse
     }
 
     /**
+     * Assert that the response is a superset of the given JSON.
+     *
+     * @param array $data
+     * @param bool  $strict
+     *
+     * @return $this
+     */
+    public function assertJson(array $data, bool $strict = false)
+    {
+        Assert::assertArraySubset(
+            $data, $this->decodeResponseJson(), $strict, $this->assertJsonMessage($data)
+        );
+
+        return $this;
+    }
+
+    /**
+     * Assert that the response has a given JSON structure.
+     *
+     * @param string[]|null $structure
+     * @param string[]|null $responseData
+     *
+     * @return $this
+     */
+    public function assertJsonStructure(array $structure = null, $responseData = null)
+    {
+        if (is_null($structure)) {
+            return $this->assertJson($this->json());
+        }
+        if (is_null($responseData)) {
+            $responseData = $this->decodeResponseJson();
+        }
+        foreach ($structure as $key => $value) {
+            if (is_array($value) && '*' === $key) {
+                Assert::assertInternalType('array', $responseData);
+                foreach ($responseData as $responseDataItem) {
+                    $this->assertJsonStructure($structure['*'], $responseDataItem);
+                }
+            } elseif (is_array($value)) {
+                Assert::assertArrayHasKey($key, $responseData);
+                $this->assertJsonStructure($structure[$key], $responseData[$key]);
+            } else {
+                Assert::assertArrayHasKey($value, $responseData);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * Get the assertion message for assertJson.
+     *
+     * @param array $data
+     *
+     * @return string
+     */
+    private function assertJsonMessage(array $data)
+    {
+        $expected = json_encode($data, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES);
+        $actual = json_encode($this->decodeResponseJson(), JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES);
+
+        return 'Unable to find JSON: ' . PHP_EOL . PHP_EOL .
+            "[{$expected}]" . PHP_EOL . PHP_EOL .
+            'within response JSON:' . PHP_EOL . PHP_EOL .
+            "[{$actual}]." . PHP_EOL . PHP_EOL;
+    }
+
+    /**
+     * Validate and return the decoded response JSON.
+     *
+     * @return array
+     */
+    private function decodeResponseJson()
+    {
+        $decodedResponse = json_decode($this->response->getContent(), true);
+        if (null === $decodedResponse || false === $decodedResponse) {
+            Assert::fail('Invalid JSON was returned from the route.');
+        }
+
+        return $decodedResponse;
+    }
+
+    /**
      * Make sure a url is valid.
      *
      * @param string $uri

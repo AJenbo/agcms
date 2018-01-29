@@ -10,6 +10,8 @@ use Symfony\Component\HttpFoundation\Request;
 
 class Ajax extends Base
 {
+    const MESSAGE_ADDRESS_NOT_FOUND = 'The address could not be found.';
+
     /**
      * Return html for a sorted list.
      *
@@ -174,7 +176,7 @@ class Ajax extends Base
         ) + $default;
 
         if ($address === $default) {
-            throw new InvalidInput(_('The address could not be found.'), JsonResponse::HTTP_NOT_FOUND);
+            throw new InvalidInput(_(self::MESSAGE_ADDRESS_NOT_FOUND), JsonResponse::HTTP_NOT_FOUND);
         }
 
         return $response->setData($address);

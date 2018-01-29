@@ -32,3 +32,10 @@ INSERT INTO `maerke` (`id`, `navn`) VALUES
 ('2', 'Empty Brand');
 INSERT INTO `krav` (`id`, `navn`, `text`) VALUES
 ('1', 'Test', '');
+INSERT INTO `fakturas` (`quantities`, `products`, `values`, `paydate`, `cardtype`, `iref`, `eref`, `navn`, `att`, `adresse`, `postbox`, `postnr`, `by`, `email`, `tlf1`, `tlf2`, `posttlf`, `postname`, `postatt`, `postaddress`, `postaddress2`, `postpostbox`, `postpostalcode`, `postcity`, `clerk`, `department`, `note`, `enote`) VALUES
+('', '', '', '', '', '', '', 'John Doe', 'Jane Doe', '50 Oakland Ave', 'P.O. box #578', '32104', 'A City, Florida', 'john@example.com', '88888888', '88888889', '88888890', 'Jane Doe', 'John Doe', '20 Shipping rd.', 'Collage Green', 'P.O. box #382', '902010', 'Beverly hills', '', '', '', '');
+
+INSERT INTO `email` (`email`, `interests`, `navn`, `adresse`, `post`, `tlf1`, `tlf2`) VALUES
+('john-email@excample.com', '', 'John Email', '48 Email street', '31047', '88888891', '88888892');
+INSERT INTO `post` (`recipientID`, `recName1`, `recAddress1`, `recZipCode`) VALUES
+('88888893', 'John Post', '48 Post street', '80447');

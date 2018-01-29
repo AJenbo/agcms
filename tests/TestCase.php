@@ -61,12 +61,12 @@ abstract class TestCase extends BaseTestCase
     /**
      * Visit the given URI with a GET request.
      *
-     * @param string $uri
-     * @param array  $headers
+     * @param string   $uri
+     * @param string[] $headers
      *
-     * @return $this
+     * @return TestResponse
      */
-    public function get($uri, array $headers = [])
+    public function get(string $uri, array $headers = []): TestResponse
     {
         $server = $this->transformHeadersToServerVars($headers);
 
@@ -74,26 +74,48 @@ abstract class TestCase extends BaseTestCase
     }
 
     /**
+     * Call the given URI with a JSON request.
+     *
+     * @param string   $method
+     * @param string   $uri
+     * @param array    $data
+     * @param string[] $headers
+     *
+     * @return TestResponse
+     */
+    public function json(string $method, string $uri, array $data = [], array $headers = []): TestResponse
+    {
+        $content = json_encode($data);
+        $headers = array_merge([
+            'CONTENT_LENGTH' => mb_strlen($content, '8bit'),
+            'CONTENT_TYPE'   => 'application/json',
+            'Accept'         => 'application/json',
+        ], $headers);
+
+        return $this->call($method, $uri, [], [], [], $this->transformHeadersToServerVars($headers), $content);
+    }
+
+    /**
      * Call the given URI and return the Response.
      *
-     * @param string $method
-     * @param string $uri
-     * @param array  $parameters
-     * @param array  $cookies
-     * @param array  $files
-     * @param array  $server
-     * @param string $content
+     * @param string   $method
+     * @param string   $uri
+     * @param string[] $parameters
+     * @param string[] $cookies
+     * @param array    $files
+     * @param string[] $server
+     * @param string   $content
      *
      * @return TestResponse
      */
     public function call(
-        $method,
-        $uri,
-        $parameters = [],
-        $cookies = [],
-        $files = [],
-        $server = [],
-        $content = null
+        string $method,
+        string $uri,
+        array $parameters = [],
+        array $cookies = [],
+        array $files = [],
+        array $server = [],
+        string $content = null
     ): TestResponse {
         $this->currentUri = config('base_url') . $uri;
         $request = Request::create($this->currentUri, $method, $parameters, $cookies, $files, $server, $content);
@@ -107,11 +129,11 @@ abstract class TestCase extends BaseTestCase
     /**
      * Transform headers array to array of $_SERVER vars with HTTP_* format.
      *
-     * @param array $headers
+     * @param string[] $headers
      *
-     * @return array
+     * @return string[]
      */
-    protected function transformHeadersToServerVars(array $headers)
+    protected function transformHeadersToServerVars(array $headers): array
     {
         $server = [];
         $prefix = 'HTTP_';
