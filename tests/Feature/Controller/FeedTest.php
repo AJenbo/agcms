@@ -37,7 +37,8 @@ class FeedTest extends TestCase
             ->assertResponseStatus(200)
             ->assertSee('<?xml version="1.0" encoding="utf-8"?>')
             ->assertSee('<title>My store</title>')
-            ->assertSee('<guid>https://localhost/side1-Root-Page.html</guid>');
+            ->assertSee('<guid>https://localhost/side1-Root-Page.html</guid>')
+            ->assertSee(' src=&quot;https://localhost/images/test.jpg&quot;');
     }
 
     public function testRssCache(): void
@@ -47,6 +48,17 @@ class FeedTest extends TestCase
 
         $this->get('/feed/rss/', ['If-Modified-Since' => $ifModifiedSince])
             ->assertResponseStatus(304);
+    }
+
+    public function testRssRevisit(): void
+    {
+        // Set the call one hour in to the feature to make sure the data is older
+        $ifModifiedSince = $this->timeToHeader(1514955600); // 2018-01-03 06:00:00
+
+        $this->get('/feed/rss/', ['If-Modified-Since' => $ifModifiedSince])
+            ->assertResponseStatus(200)
+            ->assertSee('<guid>https://localhost/kat6-Indexed-Category/side4-Category-Index-Page.html</guid>')
+            ->assertNotSee('<guid>https://localhost/side1-Root-Page.html</guid>');
     }
 
     public function testOpenSearch(): void

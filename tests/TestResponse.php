@@ -17,6 +17,16 @@ class TestResponse
     }
 
     /**
+     * Gets the current response content.
+     *
+     * @return string Content
+     */
+    public function getContent(): string
+    {
+        return $this->response->getContent();
+    }
+
+    /**
      * Assert that the client response has a given code.
      *
      * @param int $code
@@ -163,6 +173,16 @@ class TestResponse
         }
 
         return $decodedResponse;
+    }
+
+    /**
+     * Validate and return the decoded response JSON.
+     *
+     * @return array
+     */
+    public function json()
+    {
+        return $this->decodeResponseJson();
     }
 
     /**

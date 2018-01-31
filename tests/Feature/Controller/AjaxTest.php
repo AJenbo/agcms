@@ -5,6 +5,63 @@ use AGCMS\Tests\TestCase;
 
 class AjaxTest extends TestCase
 {
+    public function testCategory(): void
+    {
+        $response = $this->json('GET', '/ajax/category/2/navn');
+
+        $response->assertResponseStatus(200)
+            ->assertJson(['id' => 'kat2'])
+            ->assertJsonStructure(['id', 'html']);
+
+        $data = $response->json();
+        $this->assertRegExp('/side3.*side6.*side7.*side8/su', $data['html']);
+    }
+
+    public function testCategoryOldPrice(): void
+    {
+        $response = $this->json('GET', '/ajax/category/2/for');
+
+        $response->assertResponseStatus(200)
+            ->assertJson(['id' => 'kat2'])
+            ->assertJsonStructure(['id', 'html']);
+
+        $data = $response->json();
+        $this->assertRegExp('/side6.*side3.*side7.*side8/su', $data['html']);
+    }
+
+    public function testCategoryPrice(): void
+    {
+        $response = $this->json('GET', '/ajax/category/2/pris');
+
+        $response->assertResponseStatus(200)
+            ->assertJson(['id' => 'kat2'])
+            ->assertJsonStructure(['id', 'html']);
+
+        $data = $response->json();
+        $this->assertRegExp('/side7.*side3.*side6.*side8/su', $data['html']);
+    }
+
+    public function testCategorySku(): void
+    {
+        $response = $this->json('GET', '/ajax/category/2/varenr');
+
+        $response->assertResponseStatus(200)
+            ->assertJson(['id' => 'kat2'])
+            ->assertJsonStructure(['id', 'html']);
+
+        $data = $response->json();
+        $this->assertRegExp('/side8.*side3.*side6.*side7/su', $data['html']);
+    }
+
+    public function testCategoryCache(): void
+    {
+        // Set the call one hour in to the feature to make sure the data is older
+        $ifModifiedSince = $this->timeToHeader(time() + 3600);
+
+        $this->json('GET', '/ajax/category/2/navn', [], ['If-Modified-Since' => $ifModifiedSince])
+            ->assertResponseStatus(304);
+    }
+
     public function testAddressInvoice1(): void
     {
         $this->json('GET', '/ajax/address/88888888')
