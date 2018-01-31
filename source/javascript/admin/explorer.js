@@ -440,9 +440,9 @@ function movefile(dir) {
 }
 
 function swapPannel(navn) {
-    // Save what mode we are in and what was searched for
+    document.getElementById("files").innerText = "";
+
     if (navn === "search") {
-        document.getElementById("files").innerText = "";
         document.getElementById("dir_bn").className = "";
         document.getElementById("dir").style.display = "none";
         document.getElementById("search_bn").className = "down";
@@ -452,7 +452,6 @@ function swapPannel(navn) {
             searchfiles();
         }
     } else if (navn === "dir") {
-        document.getElementById("files").innerText = "";
         document.getElementById("search_bn").className = "";
         document.getElementById("search").style.display = "none";
         document.getElementById("dir_bn").className = "down";

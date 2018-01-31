@@ -19,7 +19,7 @@ class Feed extends Base
     public function siteMap(Request $request): Response
     {
         app('db')->addLoadedTable('bind', 'kat', 'sider', 'special', 'maerke', 'krav');
-        $response = new Response('', 200, ['Content-Type' => 'text/xml;charset=utf-8']);
+        $response = new Response('', Response::HTTP_OK, ['Content-Type' => 'text/xml;charset=utf-8']);
         $response = $this->cachedResponse($response);
         if ($response->isNotModified($request)) {
             return $response;
@@ -78,7 +78,7 @@ class Feed extends Base
     public function rss(Request $request): Response
     {
         app('db')->addLoadedTable('bind', 'files', 'kat', 'maerke', 'sider');
-        $response = new Response('', 200, ['Content-Type' => 'application/rss+xml']);
+        $response = new Response('', Response::HTTP_OK, ['Content-Type' => 'application/rss+xml']);
         $response = $this->cachedResponse($response);
         if ($response->isNotModified($request)) {
             return $response;
@@ -163,7 +163,7 @@ class Feed extends Base
      */
     public function openSearch(Request $request): Response
     {
-        $response = new Response('', 200, ['Content-Type' => 'application/opensearchdescription+xml']);
+        $response = new Response('', Response::HTTP_OK, ['Content-Type' => 'application/opensearchdescription+xml']);
         $response = $this->cachedResponse($response);
         if ($response->isNotModified($request)) {
             return $response;
