@@ -5,6 +5,58 @@ use AGCMS\Tests\TestCase;
 
 class AjaxTest extends TestCase
 {
+    public function testTable(): void
+    {
+        $response = $this->json('GET', '/ajax/category/1/table/1/0');
+
+        $response->assertResponseStatus(200)
+            ->assertJson(['id' => 'table1'])
+            ->assertJsonStructure(['id', 'html']);
+
+        $data = $response->json();
+        $this->assertContains('<caption>Variants</caption>', $data['html']);
+        $this->assertRegExp('/side7.*side6.*side8/su', $data['html']);
+    }
+
+    public function testTableOrder(): void
+    {
+        $response = $this->json('GET', '/ajax/category/1/table/1/1');
+
+        $response->assertResponseStatus(200)
+            ->assertJson(['id' => 'table1'])
+            ->assertJsonStructure(['id', 'html']);
+
+        $data = $response->json();
+        $this->assertRegExp('/side8.*side7.*side6/su', $data['html']);
+    }
+
+    public function testTableCustomOrder(): void
+    {
+        $response = $this->json('GET', '/ajax/category/1/table/1/2');
+
+        $response->assertResponseStatus(200)
+            ->assertJson(['id' => 'table1'])
+            ->assertJsonStructure(['id', 'html']);
+
+        $data = $response->json();
+        $this->assertRegExp('/side8.*side6.*side7/su', $data['html']);
+    }
+
+    public function testTableCache(): void
+    {
+        // Set the call one hour in to the feature to make sure the data is older
+        $ifModifiedSince = $this->timeToHeader(time() + 3600);
+
+        $this->json('GET', '/ajax/category/1/table/1/0', [], ['If-Modified-Since' => $ifModifiedSince])
+            ->assertResponseStatus(304);
+    }
+
+    public function testTable404(): void
+    {
+        $this->json('GET', '/ajax/category/1/table/404/0')
+            ->assertResponseStatus(404);
+    }
+
     public function testCategory(): void
     {
         $response = $this->json('GET', '/ajax/category/2/navn');
@@ -14,7 +66,7 @@ class AjaxTest extends TestCase
             ->assertJsonStructure(['id', 'html']);
 
         $data = $response->json();
-        $this->assertRegExp('/side3.*side6.*side7.*side8/su', $data['html']);
+        $this->assertRegExp('/side3.*side7.*side6.*side8/su', $data['html']);
     }
 
     public function testCategoryOldPrice(): void
@@ -38,7 +90,7 @@ class AjaxTest extends TestCase
             ->assertJsonStructure(['id', 'html']);
 
         $data = $response->json();
-        $this->assertRegExp('/side7.*side3.*side6.*side8/su', $data['html']);
+        $this->assertRegExp('/side8.*side7.*side3.*side6/su', $data['html']);
     }
 
     public function testCategorySku(): void
