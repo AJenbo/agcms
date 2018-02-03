@@ -167,7 +167,7 @@ class DbService
             return 'datetime(' . $timestamp . ', \'unixepoch\')';
         }
 
-        return 'FROM_UNIXTIME(' . $timestamp . ')';
+        return 'DATE_ADD(\'1970-01-01 00:00:00\', INTERVAL ' . ($timestamp + $this->getTimeOffset()) . ' SECOND)';
     }
 
     public function escNum(float $number, int $decimals = 2): string
