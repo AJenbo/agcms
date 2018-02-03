@@ -1,4 +1,4 @@
-import "../../../../source/javascript/site.js";
+import "./site.js";
 
 window.addEventListener("DOMContentLoaded", function(event) {
     // Scroll to selected item in menu

@@ -8,8 +8,8 @@ module.exports = {
         "adminImageEdit": "./source/javascript/admin/image-edit.js",
         "adminAddList": "./source/javascript/admin/addList.js",
         "site": "./source/javascript/site.js",
-        "arms-gallery.dk": "./application/theme/arms-gallery.dk/javascript/javascript.js",
-        "huntershouse.dk": "./application/theme/huntershouse.dk/javascript/javascript.js"
+        "arms-gallery.dk": "./source/javascript/arms-gallery.dk.js",
+        "huntershouse.dk": "./source/javascript/huntershouse.dk.js"
     },
     output: {filename: "[name].js", path: __dirname + "/application/javascript"},
     plugins: [new MinifyPlugin({}, {})],

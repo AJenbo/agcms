@@ -1,4 +1,4 @@
-import "../../../../source/javascript/site.js";
+import "./site.js";
 
 var krav;
 function openkrav(url) {
