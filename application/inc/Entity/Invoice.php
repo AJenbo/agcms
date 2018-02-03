@@ -1341,7 +1341,7 @@ class Invoice extends AbstractEntity
             if (!$this->shippingCity) {
                 $invalid['shippingCity'] = true;
             }
-            if ($this->shippingCountry) {
+            if (!$this->shippingCountry) {
                 $invalid['shippingCountry'] = true;
             }
         }
