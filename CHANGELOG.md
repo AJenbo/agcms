@@ -7,9 +7,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ## [Unreleased]
 ### Changed
 - Fix redirect on missing root page
-- Fix redirect on unused brand
-- Don't redirect to inactive brands
-- Fix validating shipping address
+- Don't show inactive brands
+- Fix order shipping address
 
 ### Added
 - CHANGELOG.md

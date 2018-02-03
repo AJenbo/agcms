@@ -120,7 +120,7 @@
                 <tr class="altpost"{% if not invoice.hasShippingAddress %} style="display:none"{% endif %}>
                     <td> {{'Zipcode:'|trans}}</td>
                     <td>
-                        <input name="shippingPostcode" id="shippingPostcode" style="width:35px" value="{{invoice.shippingPostalcode}}" onblur="changeZipCode(this.value, 'shippingCountry', 'shippingCity')" onkeyup="changeZipCode(this.value, 'shippingCountry', 'shippingCity')" onchange="changeZipCode(this.value, 'shippingCountry', 'shippingCity')" />
+                        <input name="shippingPostcode" id="shippingPostcode" style="width:35px" value="{{invoice.shippingPostcode}}" onblur="changeZipCode(this.value, 'shippingCountry', 'shippingCity')" onkeyup="changeZipCode(this.value, 'shippingCountry', 'shippingCity')" onchange="changeZipCode(this.value, 'shippingCountry', 'shippingCity')" />
                     </td>
                     <td align="right">
                         {{'City:'|trans}} <input name="shippingCity" id="shippingCity" style="width:90px" value="{{invoice.shippingCity}}" />
