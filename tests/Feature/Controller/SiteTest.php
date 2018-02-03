@@ -8,6 +8,7 @@ class SiteTest extends TestCase
     {
         $this->get('/')
             ->assertResponseStatus(200)
+            ->assertSee('Wellcome')
             ->assertSee('<title>Frontpage</title>');
     }
 

@@ -150,10 +150,10 @@ class AjaxTest extends TestCase
             ->assertResponseStatus(200)
             ->assertJson([
                 'name'     => 'Jane Doe',
-                'attn'     => 'John Doe',
+                'attn'     => 'John D. Doe',
                 'address1' => '20 Shipping rd.',
                 'address2' => 'Collage Green',
-                'zipcode'  => '902010',
+                'zipcode'  => '90210',
                 'postbox'  => 'P.O. box #382',
                 'email'    => 'john@example.com',
             ]);

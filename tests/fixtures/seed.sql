@@ -61,8 +61,8 @@ INSERT INTO `list_rows` (`id`, `list_id`, `cells`, `link`) VALUES
 
 -- special
 INSERT INTO `special` (`id`, `navn`, `dato`, `text`) VALUES
-(1, 'Frontpage', 'now', ''),
-(3, 'Terms & Conditions', 'now', ''),
+(1, 'Frontpage', 'now', 'Wellcome'),
+(3, 'Terms & Conditions', 'now', 'The terms'),
 (0, 'Cron', 'now', '');
 
 -- post
@@ -70,8 +70,9 @@ INSERT INTO `post` (`recipientID`, `recName1`, `recAddress1`, `recZipCode`) VALU
 ('88888893', 'John Post', '48 Post street', '80447');
 
 -- fakturas
-INSERT INTO `fakturas` (`quantities`, `products`, `values`, `paydate`, `cardtype`, `iref`, `eref`, `navn`, `att`, `adresse`, `postbox`, `postnr`, `by`, `email`, `tlf1`, `tlf2`, `posttlf`, `postname`, `postatt`, `postaddress`, `postaddress2`, `postpostbox`, `postpostalcode`, `postcity`, `clerk`, `department`, `note`, `enote`) VALUES
-('', '', '', '', '', '', '', 'John Doe', 'Jane Doe', '50 Oakland Ave', 'P.O. box #578', '32104', 'A City, Florida', 'john@example.com', '88888888', '88888889', '88888890', 'Jane Doe', 'John Doe', '20 Shipping rd.', 'Collage Green', 'P.O. box #382', '902010', 'Beverly hills', '', '', '', '');
+INSERT INTO `fakturas` (`id`, `status`, `quantities`, `products`, `values`, `fragt`, `amount`, `date`, `paydate`, `cardtype`, `iref`, `eref`, `navn`, `att`, `adresse`, `postbox`, `postnr`, `by`, `email`, `tlf1`, `tlf2`, `altpost`, `posttlf`, `postname`, `postatt`, `postaddress`, `postaddress2`, `postpostbox`, `postpostalcode`, `postcity`, `clerk`, `department`, `note`, `enote`) VALUES
+(1, 'new', '1', 'Test Item', '100', 59, 159, 'now', '1970-01-01', 'Unknown', '', '', 'John Doe', 'Jane Doe', '50 Oakland Ave', 'P.O. box #578', '32104', 'A City, Florida', 'john@example.com', '88888888', '88888889', 1, '88888890', 'Jane Doe', 'John D. Doe', '20 Shipping rd.', 'Collage Green', 'P.O. box #382', '90210', 'Beverly hills', '', '', '', ''),
+(2, 'new', '1', 'Test Item', '100', 59, 159, 'now', '1970-01-01', 'Unknown', '', '', 'John Doe', 'Jane Doe', '50 Oakland Ave', 'P.O. box #578', '32104', 'A City, Florida', 'john@example.com', '88888886', '88888887', 0, '', '', '', '', '', '', '', '', '', '', '', '');
 
 -- email
 INSERT INTO `email` (`id`, `email`, `interests`, `navn`, `adresse`, `post`, `tlf1`, `tlf2`) VALUES
