@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ### Changed
 - Fix redirect on missing root page
 - Fix redirect on unused brand
+- Don't redirect to inactive brands
 
 ### Added
 - CHANGELOG.md

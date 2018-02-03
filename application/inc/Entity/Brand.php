@@ -114,6 +114,25 @@ class Brand extends AbstractRenderable
     }
 
     /**
+     * Check if the brand has any active pages associated.
+     *
+     * @return bool
+     */
+    public function hasPages(): bool
+    {
+        /** @var Page[] */
+        $pages = app('orm')->getByQuery(Page::class, 'SELECT * FROM sider WHERE maerke = ' . $this->getId());
+
+        foreach ($pages as $page) {
+            if (!$page->isInactive()) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    /**
      * Get all pages under this brand.
      *
      * @param string $order How to order the pages
@@ -129,12 +148,7 @@ class Brand extends AbstractRenderable
         /** @var Page[] */
         $pages = app('orm')->getByQuery(
             Page::class,
-            '
-            SELECT sider.*
-            FROM sider
-            WHERE maerke = ' . $this->getId() . '
-            ORDER BY sider.`' . $order . '` ASC
-            '
+            'SELECT * FROM sider WHERE maerke = ' . $this->getId() . ' ORDER BY sider.`' . $order . '` ASC'
         );
 
         $objectArray = [];

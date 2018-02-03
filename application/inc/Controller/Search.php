@@ -135,7 +135,7 @@ class Search extends Base
             if ($request->get('maerke')) {
                 /** @var ?Brand */
                 $brand = app('orm')->getOne(Brand::class, $request->get('maerke'));
-                if ($brand) {
+                if ($brand && $brand->hasPages()) {
                     return $this->redirect($request, $brand->getCanonicalLink(), Response::HTTP_MOVED_PERMANENTLY);
                 }
             }

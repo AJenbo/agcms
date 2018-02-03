@@ -156,7 +156,7 @@ class Site extends Base
             return $redirect;
         }
 
-        if (!$brand->getPages()) {
+        if (!$brand->hasPages()) {
             return $this->redirectToSearch($request);
         }
 
