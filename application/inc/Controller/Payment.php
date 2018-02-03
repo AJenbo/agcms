@@ -242,9 +242,7 @@ class Payment extends Base
             return '';
         }
 
-        $response = $shoppingTerms->getHtml();
-
-        return $this->cachedResponse($response);
+        return $shoppingTerms->getHtml();
     }
 
     /**
