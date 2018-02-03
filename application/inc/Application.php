@@ -1,13 +1,11 @@
 <?php namespace AGCMS;
 
 use AGCMS\Controller\Base;
-use AGCMS\Exception\InvalidInput;
+use AGCMS\Exceptions\Handler as ExceptionHandler;
 use AGCMS\Service\DbService;
 use AGCMS\Service\OrmService;
 use AGCMS\Service\RenderService;
 use Closure;
-use Raven_Client;
-use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Response;
 use Throwable;
@@ -25,14 +23,6 @@ class Application
 
     /** @var array[] */
     private $routes = [];
-
-    /** @var Raven_Client */
-    private $ravenClient;
-
-    /** @var string[] */
-    private $dontReport = [
-        InvalidInput::class,
-    ];
 
     /** @var string[] */
     private $aliases = [
@@ -68,9 +58,6 @@ class Application
      */
     private function initErrorLogging(): void
     {
-        $this->ravenClient = new Raven_Client(config('sentry'));
-        $this->ravenClient->install();
-
         if ('develop' === config('enviroment', 'develop')) {
             ini_set('display_errors', 1);
             error_reporting(-1);
@@ -223,6 +210,8 @@ class Application
      */
     public function handle(Request $request): Response
     {
+        $this->services[Request::class] = $request;
+
         try {
             $response = $this->dispatch($request);
         } catch (Throwable $exception) {
@@ -235,76 +224,20 @@ class Application
     }
 
     /**
-     * Log an exception for later debugging.
-     *
-     * @param Throwable $exception
-     *
-     * @return ?string
-     */
-    public function logException(Throwable $exception): ?string
-    {
-        return $this->ravenClient->captureException($exception);
-    }
-
-    /**
-     * Generate an error response and repport the exception.
+     * Handle the given exception.
      *
      * @param Request   $request
      * @param Throwable $exception
      *
-     * @throws Throwable
-     *
      * @return Response
      */
-    private function handleException(Request $request, Throwable $exception): Response
+    protected function handleException(Request $request, Throwable $exception): Response
     {
-        $logId = null;
-        if ($this->shouldLog($exception)) {
-            if ('develop' === config('enviroment')) {
-                http_response_code(Response::HTTP_INTERNAL_SERVER_ERROR);
+        $handler = $this->get(ExceptionHandler::class);
 
-                throw $exception;
-            }
+        $handler->report($exception);
 
-            if ($request->user()) {
-                $this->ravenClient->user_context(
-                    ['id' => $request->user()->getId(), 'name' => $request->user()->getFullName()]
-                );
-            }
-            $logId = $this->logException($exception);
-        }
-
-        $status = Response::HTTP_INTERNAL_SERVER_ERROR;
-        if ($exception->getCode() >= 400 && $exception->getCode() <= 599) {
-            $status = $exception->getCode();
-        }
-
-        if ($request->isXmlHttpRequest()) {
-            return new JsonResponse(
-                ['error' => ['message' => $exception->getMessage(), 'sentry_id' => $logId]],
-                $status
-            );
-        }
-
-        return new Response($exception->getMessage(), $status);
-    }
-
-    /**
-     * Determin if the exception should be logged.
-     *
-     * @param Throwable $exception
-     *
-     * @return bool
-     */
-    private function shouldLog(Throwable $exception): bool
-    {
-        foreach ($this->dontReport as $className) {
-            if ($exception instanceof $className) {
-                return false;
-            }
-        }
-
-        return true;
+        return $handler->render($request, $exception);
     }
 
     /**

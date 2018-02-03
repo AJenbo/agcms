@@ -1,9 +1,8 @@
-<?php namespace AGCMS\Exception;
+<?php namespace AGCMS\Exceptions;
 
-use Exception as NativeException;
 use Throwable;
 
-class Exception extends NativeException
+class InvalidInput extends Exception
 {
     /**
      * Set up the exception.
@@ -12,7 +11,7 @@ class Exception extends NativeException
      * @param int        $code
      * @param ?Throwable $previous
      */
-    public function __construct(string $message, int $code = 500, Throwable $previous = null)
+    public function __construct(string $message, int $code = 422, Throwable $previous = null)
     {
         parent::__construct($message, $code, $previous);
     }

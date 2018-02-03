@@ -1,7 +1,7 @@
 <?php namespace AGCMS\Entity;
 
-use AGCMS\Exception\Exception;
-use AGCMS\Exception\InvalidInput;
+use AGCMS\Exceptions\Exception;
+use AGCMS\Exceptions\InvalidInput;
 use AGCMS\ORM;
 use Symfony\Component\HttpFoundation\File\MimeType\MimeTypeGuesser;
 

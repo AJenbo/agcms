@@ -1,7 +1,7 @@
 <?php namespace AGCMS\Controller\Admin;
 
 use AGCMS\Entity\Category;
-use AGCMS\Exception\InvalidInput;
+use AGCMS\Exceptions\InvalidInput;
 use AGCMS\ORM;
 use AGCMS\Render;
 use AGCMS\Service\SiteTreeService;

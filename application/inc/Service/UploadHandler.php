@@ -1,8 +1,8 @@
 <?php namespace AGCMS\Service;
 
 use AGCMS\Entity\File;
-use AGCMS\Exception\Exception;
-use AGCMS\Exception\InvalidInput;
+use AGCMS\Exceptions\Exception;
+use AGCMS\Exceptions\InvalidInput;
 use DateTime;
 use getID3;
 use Symfony\Component\HttpFoundation\File\File as FileHandeler;

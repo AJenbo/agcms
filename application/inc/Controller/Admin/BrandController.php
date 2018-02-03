@@ -2,7 +2,7 @@
 
 use AGCMS\Entity\Brand;
 use AGCMS\Entity\File;
-use AGCMS\Exception\InvalidInput;
+use AGCMS\Exceptions\InvalidInput;
 use AGCMS\ORM;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;

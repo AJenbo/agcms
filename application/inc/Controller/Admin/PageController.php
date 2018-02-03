@@ -5,7 +5,7 @@ use AGCMS\Entity\Category;
 use AGCMS\Entity\File;
 use AGCMS\Entity\Page;
 use AGCMS\Entity\Requirement;
-use AGCMS\Exception\InvalidInput;
+use AGCMS\Exceptions\InvalidInput;
 use AGCMS\ORM;
 use AGCMS\Render;
 use AGCMS\Service\SiteTreeService;

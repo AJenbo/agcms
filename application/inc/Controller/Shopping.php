@@ -1,7 +1,8 @@
 <?php namespace AGCMS\Controller;
 
 use AGCMS\Entity\Email;
-use AGCMS\Exception\InvalidInput;
+use AGCMS\Exceptions\Handler as ExceptionHandler;
+use AGCMS\Exceptions\InvalidInput;
 use AGCMS\Render;
 use AGCMS\Service\EmailService;
 use AGCMS\Service\InvoiceService;
@@ -142,7 +143,7 @@ class Shopping extends Base
         try {
             $emailService->send($email);
         } catch (Throwable $exception) {
-            app()->logException($exception);
+            app(ExceptionHandler::class)->report($exception);
             $email->save();
         }
 

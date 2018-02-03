@@ -1,7 +1,7 @@
 <?php namespace AGCMS\Controller\Admin;
 
 use AGCMS\Entity\Newsletter;
-use AGCMS\Exception\InvalidInput;
+use AGCMS\Exceptions\InvalidInput;
 use AGCMS\ORM;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;

@@ -2,7 +2,7 @@
 
 use AGCMS\Controller\Base;
 use AGCMS\Entity\User;
-use AGCMS\Exception\InvalidInput;
+use AGCMS\Exceptions\InvalidInput;
 use AGCMS\Interfaces\Middleware;
 use AGCMS\ORM;
 use AGCMS\Render;

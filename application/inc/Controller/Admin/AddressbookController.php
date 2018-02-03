@@ -1,7 +1,7 @@
 <?php namespace AGCMS\Controller\Admin;
 
 use AGCMS\Entity\Contact;
-use AGCMS\Exception\InvalidInput;
+use AGCMS\Exceptions\InvalidInput;
 use AGCMS\ORM;
 use AGCMS\Service\EmailService;
 use Symfony\Component\HttpFoundation\JsonResponse;

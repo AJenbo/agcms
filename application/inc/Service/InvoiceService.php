@@ -7,8 +7,8 @@ use AGCMS\Entity\Page;
 use AGCMS\Entity\Table;
 use AGCMS\Entity\User;
 use AGCMS\Epayment;
-use AGCMS\Exception\Exception;
-use AGCMS\Exception\InvalidInput;
+use AGCMS\Exceptions\Exception;
+use AGCMS\Exceptions\InvalidInput;
 use AGCMS\ORM;
 use AGCMS\Render;
 

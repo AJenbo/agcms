@@ -2,7 +2,7 @@
 
 use AGCMS\Entity\Invoice;
 use AGCMS\Entity\User;
-use AGCMS\Exception\InvalidInput;
+use AGCMS\Exceptions\InvalidInput;
 use AGCMS\ORM;
 use AGCMS\Request;
 use AGCMS\Service\InvoicePdfService;

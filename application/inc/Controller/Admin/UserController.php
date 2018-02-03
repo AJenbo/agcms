@@ -2,7 +2,8 @@
 
 use AGCMS\Entity\Email;
 use AGCMS\Entity\User;
-use AGCMS\Exception\InvalidInput;
+use AGCMS\Exceptions\Handler as ExceptionHandler;
+use AGCMS\Exceptions\InvalidInput;
 use AGCMS\ORM;
 use AGCMS\Render;
 use AGCMS\Request;
@@ -114,7 +115,7 @@ class UserController extends AbstractAdminController
             try {
                 $emailService->send($email);
             } catch (Throwable $exception) {
-                app()->logException($exception);
+                app(ExceptionHandler::class)->report($exception);
                 $email->save();
             }
         } catch (InvalidInput $exception) {

@@ -3,8 +3,9 @@
 use AGCMS\Entity\CustomPage;
 use AGCMS\Entity\Email;
 use AGCMS\Entity\Invoice;
-use AGCMS\Exception\Exception;
-use AGCMS\Exception\InvalidInput;
+use AGCMS\Exceptions\Exception;
+use AGCMS\Exceptions\Handler as ExceptionHandler;
+use AGCMS\Exceptions\InvalidInput;
 use AGCMS\ORM;
 use AGCMS\Render;
 use AGCMS\Service\EmailService;
@@ -236,7 +237,7 @@ class Payment extends Base
         /** @var ?CustomPage */
         $shoppingTerms = app('orm')->getOne(CustomPage::class, 3);
         if (!$shoppingTerms) {
-            app()->logException(new Exception(_('Missing terms and conditions')));
+            app(ExceptionHandler::class)->report(new Exception(_('Missing terms and conditions')));
 
             return '';
         }
@@ -426,7 +427,7 @@ class Payment extends Base
         try {
             $emailService->send($email);
         } catch (Throwable $exception) {
-            app()->logException($exception);
+            app(ExceptionHandler::class)->report($exception);
             $email->save();
         }
     }
@@ -458,7 +459,7 @@ class Payment extends Base
         try {
             $emailService->send($email);
         } catch (Throwable $exception) {
-            app()->logException($exception);
+            app(ExceptionHandler::class)->report($exception);
             $email->save();
         }
     }

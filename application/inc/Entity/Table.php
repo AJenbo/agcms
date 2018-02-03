@@ -1,6 +1,6 @@
 <?php namespace AGCMS\Entity;
 
-use AGCMS\Exception\Exception;
+use AGCMS\Exceptions\Exception;
 use AGCMS\ORM;
 
 class Table extends AbstractEntity

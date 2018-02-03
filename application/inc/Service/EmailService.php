@@ -1,7 +1,7 @@
 <?php namespace AGCMS\Service;
 
 use AGCMS\Entity\Email;
-use AGCMS\Exception\SendEmail;
+use AGCMS\Exceptions\SendEmail;
 use AJenbo\Imap;
 use PHPMailer\PHPMailer\PHPMailer;
 

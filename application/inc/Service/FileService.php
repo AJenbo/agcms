@@ -1,8 +1,8 @@
 <?php namespace AGCMS\Service;
 
 use AGCMS\Entity\File;
-use AGCMS\Exception\Exception;
-use AGCMS\Exception\InvalidInput;
+use AGCMS\Exceptions\Exception;
+use AGCMS\Exceptions\InvalidInput;
 use AGCMS\ORM;
 
 class FileService

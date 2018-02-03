@@ -6,7 +6,7 @@ use AGCMS\Entity\CustomPage;
 use AGCMS\Entity\Email;
 use AGCMS\Entity\File;
 use AGCMS\Entity\Page;
-use AGCMS\Exception\Exception;
+use AGCMS\Exceptions\Exception;
 use AGCMS\ORM;
 use AGCMS\Render;
 use AGCMS\Service\EmailService;

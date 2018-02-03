@@ -1,6 +1,6 @@
 <?php namespace AGCMS\Entity;
 
-use AGCMS\Exception\InvalidInput;
+use AGCMS\Exceptions\InvalidInput;
 use AGCMS\Service\EmailService;
 
 class Email extends AbstractEntity

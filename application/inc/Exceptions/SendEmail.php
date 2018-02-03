@@ -1,4 +1,4 @@
-<?php namespace AGCMS\Exception;
+<?php namespace AGCMS\Exceptions;
 
 class SendEmail extends Exception
 {

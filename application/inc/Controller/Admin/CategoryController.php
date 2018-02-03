@@ -2,7 +2,7 @@
 
 use AGCMS\Entity\Category;
 use AGCMS\Entity\File;
-use AGCMS\Exception\InvalidInput;
+use AGCMS\Exceptions\InvalidInput;
 use AGCMS\ORM;
 use AGCMS\Service\SiteTreeService;
 use Symfony\Component\HttpFoundation\JsonResponse;

@@ -1,7 +1,7 @@
 <?php namespace AGCMS\Service;
 
 use AGCMS\Entity\Invoice;
-use AGCMS\Exception\InvalidInput;
+use AGCMS\Exceptions\InvalidInput;
 use TCPDF;
 
 class InvoicePdfService

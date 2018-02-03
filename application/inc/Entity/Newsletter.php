@@ -1,6 +1,7 @@
 <?php namespace AGCMS\Entity;
 
-use AGCMS\Exception\Exception;
+use AGCMS\Exceptions\Exception;
+use AGCMS\Exceptions\Handler as ExceptionHandler;
 use AGCMS\ORM;
 use AGCMS\Render;
 use AGCMS\Service\EmailService;
@@ -288,7 +289,7 @@ class Newsletter extends AbstractEntity implements InterfaceRichText
             try {
                 $emailService->send($email, $bcc);
             } catch (Throwable $exception) {
-                app()->logException($exception);
+                app(ExceptionHandler::class)->report($exception);
                 $failedCount += count($bcc);
             }
         }
