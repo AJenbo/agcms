@@ -176,6 +176,97 @@ Note',
         $this->assertDatabaseMissing('email', ['email' => $cart['email']]);
     }
 
+    public function testSendShipping(): void
+    {
+        $cart = [
+           'items'              => [
+              [
+                 'type'     => 'page',
+                 'id'       => 6,
+                 'quantity' => 1,
+              ],
+           ],
+           'name'               => 'Name',
+           'attn'               => 'Attn',
+           'address'            => 'Address 1',
+           'postbox'            => 'Postboks',
+           'postcode'           => '4000',
+           'city'               => 'Roskilde',
+           'country'            => 'DK',
+           'email'              => 'test@excample.com',
+           'phone1'             => '99999999',
+           'phone2'             => '88888888',
+           'hasShippingAddress' => true,
+           'shippingPhone'      => '77777777',
+           'shippingName'       => 'Shipping street',
+           'shippingAttn'       => 'Shipping Attn',
+           'shippingAddress'    => 'Shipping Address 1',
+           'shippingAddress2'   => 'Shipping Address 2',
+           'shippingPostbox'    => '8000',
+           'shippingPostcode'   => 'Shipping Postcode',
+           'shippingCity'       => 'Ålborg',
+           'shippingCountry'    => 'DK',
+           'note'               => 'Note',
+           'payMethod'          => 'creditcard',
+           'deleveryMethod'     => 'postal',
+           'newsletter'         => false,
+        ];
+        $redirectCart = $cart;
+        $redirectCart['items'] = [];
+
+        $this->post('/order/send/', ['cart' => json_encode($cart)])
+            ->assertResponseStatus(303)
+            ->assertRedirect('/order/receipt/?cart=' . rawurlencode(json_encode($redirectCart)));
+
+        $this->assertDatabaseHas(
+            'fakturas',
+            [
+                'status'         => 'new',
+                'quantities'     => '1',
+                'products'       => 'Product 1 Green - sku3',
+                'values'         => '20',
+                'discount'       => '0',
+                'fragt'          => '0',
+                'amount'         => '20',
+                'momssats'       => 0.25,
+                'premoms'        => 1,
+                'transferred'    => 0,
+                'cardtype'       => 'Unknown',
+                'iref'           => '',
+                'eref'           => '',
+                'navn'           => $cart['name'],
+                'att'            => $cart['attn'],
+                'adresse'        => $cart['address'],
+                'postbox'        => $cart['postbox'],
+                'postnr'         => $cart['postcode'],
+                'by'             => $cart['city'],
+                'land'           => $cart['country'],
+                'email'          => $cart['email'],
+                'sendt'          => 0,
+                'tlf1'           => $cart['phone1'],
+                'tlf2'           => $cart['phone2'],
+                'altpost'        => 1,
+                'posttlf'        => $cart['shippingPhone'],
+                'postname'       => $cart['shippingName'],
+                'postatt'        => $cart['shippingAttn'],
+                'postaddress'    => $cart['shippingAddress'],
+                'postaddress2'   => $cart['shippingAddress2'],
+                'postpostbox'    => $cart['shippingPostbox'],
+                'postpostalcode' => $cart['shippingPostcode'],
+                'postcity'       => $cart['shippingCity'],
+                'postcountry'    => $cart['shippingCountry'],
+                'clerk'          => '',
+                'department'     => '',
+                'note'           => 'I would like to pay via credit card.
+Please send the goods by mail.
+Note',
+                'enote'          => '',
+            ]
+        );
+
+        $this->assertDatabaseMissing('email', ['email' => $cart['email']]);
+    }
+
     public function testSendNewsletter(): void
     {
         $cart = [
