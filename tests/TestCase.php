@@ -190,7 +190,8 @@ abstract class TestCase extends BaseTestCase
     {
         $message = sprintf(
             'Failed asserting that a row in the table [%s] matches the attributes %s.',
-            $table, json_encode($data, JSON_PRETTY_PRINT)
+            $table,
+            json_encode($data, JSON_PRETTY_PRINT)
         );
 
         $this->assertTrue($this->getFromDatabase($table, $data), $message);
@@ -210,7 +211,8 @@ abstract class TestCase extends BaseTestCase
     {
         $message = sprintf(
             'Failed asserting that no row in the table [%s] matches the attributes %s.',
-            $table, json_encode($data, JSON_PRETTY_PRINT)
+            $table,
+            json_encode($data, JSON_PRETTY_PRINT)
         );
 
         $this->assertFalse($this->getFromDatabase($table, $data), $message);
