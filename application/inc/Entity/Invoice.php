@@ -1329,10 +1329,11 @@ class Invoice extends AbstractEntity
             if (!$this->shippingCountry) {
                 $invalid['shippingCountry'] = true;
             }
-            if (!$this->shippingPostbox && (
-                !$this->shippingAddress
-                || ('DK' === $this->shippingCountry && !preg_match('/\s/ui', $this->shippingAddress))
-            )) {
+            if (!$this->shippingPostbox
+                && (!$this->shippingAddress
+                    || ('DK' === $this->shippingCountry && !preg_match('/\s/ui', $this->shippingAddress))
+                )
+            ) {
                 $invalid['shippingAddress'] = true;
             }
             if (!$this->shippingPostcode) {
