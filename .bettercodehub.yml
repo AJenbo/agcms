@@ -1,10 +1,7 @@
 exclude:
 - /.phan/config.php
-- /application/index.php
 - /application/javascript/admin/calendar.js
 - /application/javascript/admin/lib/.*
-- /application/theme/.*
-- /wip/admin/vcard.php
 component_depth: 3
 languages:
 - javascript
