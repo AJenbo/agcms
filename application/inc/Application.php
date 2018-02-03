@@ -116,6 +116,11 @@ class Application
         return $this->basePath . $path;
     }
 
+    /**
+     * Get the most recent instance.
+     *
+     * @return self
+     */
     public static function getInstance(): self
     {
         if (!self::$instance) {
@@ -137,28 +142,10 @@ class Application
         $id = $this->aliases[$id] ?? $id;
 
         if (!isset($this->services[$id])) {
-            $this->services[$id] = $this->loadService($id);
+            $this->services[$id] = new $id();
         }
 
         return $this->services[$id];
-    }
-
-    /**
-     * Load a service.
-     *
-     * @param string $service
-     *
-     * @return object The associated service
-     */
-    public function loadService(string $service)
-    {
-        if (DbService::class === $service) {
-            $dsn = config('db_dns') ?: 'mysql:dbname=' . config('mysql_database') . ';host=' . config('mysql_server');
-
-            return new DbService($dsn, config('mysql_user', 'root'), config('mysql_password', ''));
-        }
-
-        return new $service();
     }
 
     /**

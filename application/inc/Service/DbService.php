@@ -29,16 +29,12 @@ class DbService
      * Connect the database and set session to UTF-8 Danish.
      *
      * The MySQL and sqlite driver is supported, for other driveres it will default ot MySQL syntax
-     *
-     * @param string $dsn
-     * @param string $user
-     * @param string $password
      */
-    public function __construct(string $dsn, string $user = '', string $password = '')
+    public function __construct()
     {
-        $this->dsn = $dsn;
-        $this->user = $user;
-        $this->password = $password;
+        $this->dsn = config('db_dns') ?: 'mysql:dbname=' . config('mysql_database') . ';host=' . config('mysql_server');
+        $this->user = config('mysql_user', 'root');
+        $this->password = config('mysql_password', '');
     }
 
     /**
