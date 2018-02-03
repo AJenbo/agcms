@@ -69,7 +69,9 @@ class Search extends Base
      */
     public function results(Request $request): Response
     {
-        $this->checkSearchable($request);
+        if ($response = $this->checkSearchable($request)) {
+            return $response;
+        }
 
         $searchString = $request->get('q', '');
         $brandId = $request->query->getInt('maerke');
@@ -77,13 +79,6 @@ class Search extends Base
         $minpris = $request->query->getInt('minpris', 0);
         $maxpris = $request->query->getInt('maxpris', 0);
         $antiWords = $request->get('sogikke', '');
-
-        if ($brandId && !$searchString && !$varenr && !$minpris && !$maxpris && !$antiWords) {
-            $brand = app('orm')->getOne(Brand::class, $brandId);
-            if ($brand) {
-                return $this->redirect($request, $brand->getCanonicalLink(), Response::HTTP_PERMANENTLY_REDIRECT);
-            }
-        }
 
         $pages = $this->findPages($searchString, $brandId, $varenr, $minpris, $maxpris, $antiWords);
         if (1 === count($pages)) {
