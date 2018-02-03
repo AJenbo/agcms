@@ -74,6 +74,22 @@ abstract class TestCase extends BaseTestCase
     }
 
     /**
+     * Visit the given URI with a POST request.
+     *
+     * @param string   $uri
+     * @param array    $data
+     * @param string[] $headers
+     *
+     * @return $this
+     */
+    public function post(string $uri, array $data = [], array $headers = [])
+    {
+        $server = $this->transformHeadersToServerVars($headers);
+
+        return $this->call('POST', $uri, $data, [], [], $server);
+    }
+
+    /**
      * Call the given URI with a JSON request.
      *
      * @param string   $method
@@ -160,5 +176,64 @@ abstract class TestCase extends BaseTestCase
         $this->user = $user;
 
         return $this;
+    }
+
+    /**
+     * Assert that a given where condition exists in the database.
+     *
+     * @param string $table
+     * @param array  $data
+     *
+     * @return $this
+     */
+    protected function assertDatabaseHas(string $table, array $data): self
+    {
+        $message = sprintf(
+            'Failed asserting that a row in the table [%s] matches the attributes %s.',
+            $table, json_encode($data, JSON_PRETTY_PRINT)
+        );
+
+        $this->assertTrue($this->getFromDatabase($table, $data), $message);
+
+        return $this;
+    }
+
+    /**
+     * Assert that a given where condition does not exist in the database.
+     *
+     * @param string $table
+     * @param array  $data
+     *
+     * @return $this
+     */
+    protected function assertDatabaseMissing(string $table, array $data): self
+    {
+        $message = sprintf(
+            'Failed asserting that no row in the table [%s] matches the attributes %s.',
+            $table, json_encode($data, JSON_PRETTY_PRINT)
+        );
+
+        $this->assertFalse($this->getFromDatabase($table, $data), $message);
+
+        return $this;
+    }
+
+    /**
+     * Test if a given where condition exists in the database.
+     *
+     * @param string $table
+     * @param array  $data
+     *
+     * @return bool
+     */
+    private function getFromDatabase(string $table, array $data): bool
+    {
+        $sets = [];
+        foreach ($data as $filedName => $value) {
+            $sets[] = '`' . $filedName . '` = ' . app('db')->quote($value);
+        }
+        $query = 'SELECT * FROM `' . $table . '` WHERE ' . implode(' AND ', $sets);
+
+        return (bool) app('db')->fetchOne($query);
     }
 }

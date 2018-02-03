@@ -90,7 +90,7 @@ class AjaxTest extends TestCase
             ->assertJsonStructure(['id', 'html']);
 
         $data = $response->json();
-        $this->assertRegExp('/side8.*side7.*side3.*side6/su', $data['html']);
+        $this->assertRegExp('/side7.*side8.*side3.*side6/su', $data['html']);
     }
 
     public function testCategorySku(): void

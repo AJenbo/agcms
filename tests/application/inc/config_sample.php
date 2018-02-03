@@ -15,8 +15,8 @@ return [
     'db_dns'     => 'sqlite::memory:',
 
     'emails' => [
-        'mail@example.com' => [
-            'address'  => 'mail@example.com',
+        'mail@gmail.com' => [
+            'address'  => 'mail@gmail.com',
             'password' => 'password',
             'sentBox'  => 'INBOX.Sent',
             'imapHost' => 'imap.example.dk',
