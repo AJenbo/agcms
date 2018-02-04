@@ -81,11 +81,10 @@ class Table extends AbstractEntity
             $sorting = $columnSortings[$key] ?? 0;
             $options = [];
             if ($sorting) {
-                app('db')->addLoadedTable('tablesort');
-                $tablesort = app('db')->fetchOne('SELECT `text` FROM `tablesort` WHERE id = ' . $sorting);
+                /** @var CustomSorting */
+                $tablesort = app('orm')->getOne(CustomSorting::class, $sorting);
                 if ($tablesort) {
-                    $options = explode('<', $tablesort['text']);
-                    $options = array_map('html_entity_decode', $options);
+                    $options = $tablesort->getItems();
                 }
             }
 

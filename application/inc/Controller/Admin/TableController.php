@@ -1,5 +1,6 @@
 <?php namespace AGCMS\Controller\Admin;
 
+use AGCMS\Entity\CustomSorting;
 use AGCMS\Entity\Table;
 use AGCMS\Exceptions\InvalidInput;
 use AGCMS\ORM;
@@ -40,13 +41,11 @@ class TableController extends AbstractAdminController
      */
     public function createDialog(Request $request, int $pageId): Response
     {
-        app('db')->addLoadedTable('tablesort');
-
         return $this->render(
             'admin/addlist',
             [
-                'tablesorts' => app('db')->fetchArray('SELECT id, navn title FROM `tablesort`'),
-                'page_id'    => $pageId,
+                'customSortings' => app('orm')->getByQuery(CustomSorting::class, 'SELECT * FROM `tablesort`'),
+                'page_id'        => $pageId,
             ]
         );
     }
