@@ -5,6 +5,8 @@ use AGCMS\Render;
 
 class Category extends AbstractRenderable
 {
+    use HasIcon;
+
     /** Table name in database. */
     const TABLE_NAME = 'kat';
 
@@ -21,9 +23,6 @@ class Category extends AbstractRenderable
 
     /** @var ?int */
     private $parentId;
-
-    /** @var ?int File id. */
-    private $iconId;
 
     /** @var int Render mode for page list. */
     private $renderMode = 1;
@@ -476,36 +475,6 @@ class Category extends AbstractRenderable
         }
 
         return $path;
-    }
-
-    /**
-     * Set icon.
-     *
-     * @param ?File $icon
-     *
-     * @return $this
-     */
-    public function setIcon(?File $icon): self
-    {
-        $this->iconId = $icon ? $icon->getId() : null;
-
-        return $this;
-    }
-
-    /**
-     * Get the file that is used as an icon.
-     *
-     * @return ?File
-     */
-    public function getIcon(): ?File
-    {
-        $file = null;
-        if (null !== $this->iconId) {
-            /** @var ?File */
-            $file = app('orm')->getOne(File::class, $this->iconId);
-        }
-
-        return $file;
     }
 
     // ORM related functions

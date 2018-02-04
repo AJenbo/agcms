@@ -2,6 +2,8 @@
 
 class Brand extends AbstractRenderable
 {
+    use HasIcon;
+
     /** Table name in database. */
     const TABLE_NAME = 'maerke';
 
@@ -9,9 +11,6 @@ class Brand extends AbstractRenderable
 
     /** @var string The external link for this brand. */
     private $link = '';
-
-    /** @var ?int File id. */
-    private $iconId;
 
     /**
      * Construct the entity.
@@ -67,36 +66,6 @@ class Brand extends AbstractRenderable
     public function getLink(): string
     {
         return $this->link;
-    }
-
-    /**
-     * Set icon.
-     *
-     * @param ?File $icon
-     *
-     * @return $this
-     */
-    public function setIcon(?File $icon): self
-    {
-        $this->iconId = $icon ? $icon->getId() : null;
-
-        return $this;
-    }
-
-    /**
-     * Get the file that is used as an icon.
-     *
-     * @return ?File
-     */
-    public function getIcon(): ?File
-    {
-        $file = null;
-        if (null !== $this->iconId) {
-            /** @var ?File */
-            $file = app('orm')->getOne(File::class, $this->iconId);
-        }
-
-        return $file;
     }
 
     // General methods

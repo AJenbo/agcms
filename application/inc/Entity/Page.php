@@ -2,6 +2,8 @@
 
 class Page extends AbstractRenderable implements InterfaceRichText
 {
+    use HasIcon;
+
     /** Table name in database. */
     const TABLE_NAME = 'sider';
 
@@ -21,9 +23,6 @@ class Page extends AbstractRenderable implements InterfaceRichText
 
     /** @var string Short text description. */
     private $excerpt = '';
-
-    /** @var ?int File id. */
-    private $iconId;
 
     /** @var ?int Id of requirement page. */
     private $requirementId;
@@ -254,36 +253,6 @@ class Page extends AbstractRenderable implements InterfaceRichText
     public function hasExcerpt(): bool
     {
         return (bool) $this->excerpt;
-    }
-
-    /**
-     * Set icon.
-     *
-     * @param ?File $icon
-     *
-     * @return $this
-     */
-    public function setIcon(?File $icon): self
-    {
-        $this->iconId = $icon ? $icon->getId() : null;
-
-        return $this;
-    }
-
-    /**
-     * Get the file that is used as an icon.
-     *
-     * @return ?File
-     */
-    public function getIcon(): ?File
-    {
-        $file = null;
-        if (null !== $this->iconId) {
-            /** @var ?File */
-            $file = app('orm')->getOne(File::class, $this->iconId);
-        }
-
-        return $file;
     }
 
     /**
