@@ -26,6 +26,20 @@ class PaymentTest extends TestCase
         $this->assertDatabaseHas('fakturas', ['id' => 1, 'status' => 'locked']);
     }
 
+    public function testBasketInvalid(): void
+    {
+        $this->json('GET', '/betaling/1/wrong/')
+            ->assertResponseStatus(303)
+            ->assertRedirect('/betaling/?id=1&checkid=wrong');
+    }
+
+    public function testBasketFinalized(): void
+    {
+        $this->json('GET', '/betaling/3/bc87e/')
+            ->assertResponseStatus(303)
+            ->assertRedirect('/betaling/3/bc87e/status/');
+    }
+
     public function testAddress(): void
     {
         $this->json('GET', '/betaling/1/a4238/address/')
@@ -58,6 +72,13 @@ class PaymentTest extends TestCase
             ->assertSee(' id="hasShippingAddress" type="checkbox" />');
     }
 
+    public function testAddressInvalid(): void
+    {
+        $this->json('GET', '/betaling/1/wrong/address/')
+            ->assertResponseStatus(303)
+            ->assertRedirect('/betaling/?id=1&checkid=wrong');
+    }
+
     public function testTerms(): void
     {
         $id = 1;
@@ -77,5 +98,12 @@ class PaymentTest extends TestCase
             ->assertSee(' name="callbackurl" value="https://localhost' . $baseUrl . 'callback/"')
             ->assertSee(' name="windowstate" value="3"')
             ->assertSee(' name="windowid" value="' . config('pbswindow') . '"');
+    }
+
+    public function testTermsInvalid(): void
+    {
+        $this->json('GET', '/betaling/1/wrong/terms/')
+            ->assertResponseStatus(303)
+            ->assertRedirect('/betaling/?id=1&checkid=wrong');
     }
 }
