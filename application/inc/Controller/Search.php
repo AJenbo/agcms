@@ -3,7 +3,6 @@
 use AGCMS\Entity\Brand;
 use AGCMS\Entity\Category;
 use AGCMS\Entity\Page;
-use AGCMS\ORM;
 use AGCMS\VolatilePage;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;

@@ -1,7 +1,5 @@
 <?php namespace AGCMS\Entity;
 
-use AGCMS\ORM;
-
 class Brand extends AbstractRenderable
 {
     /** Table name in database. */

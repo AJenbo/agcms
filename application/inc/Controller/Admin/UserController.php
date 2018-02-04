@@ -4,7 +4,6 @@ use AGCMS\Entity\Email;
 use AGCMS\Entity\User;
 use AGCMS\Exceptions\Handler as ExceptionHandler;
 use AGCMS\Exceptions\InvalidInput;
-use AGCMS\ORM;
 use AGCMS\Render;
 use AGCMS\Request;
 use AGCMS\Service\EmailService;

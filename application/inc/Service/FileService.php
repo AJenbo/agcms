@@ -3,7 +3,6 @@
 use AGCMS\Entity\File;
 use AGCMS\Exceptions\Exception;
 use AGCMS\Exceptions\InvalidInput;
-use AGCMS\ORM;
 
 class FileService
 {

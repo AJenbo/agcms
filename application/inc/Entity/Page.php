@@ -1,7 +1,5 @@
 <?php namespace AGCMS\Entity;
 
-use AGCMS\ORM;
-
 class Page extends AbstractRenderable implements InterfaceRichText
 {
     /** Table name in database. */

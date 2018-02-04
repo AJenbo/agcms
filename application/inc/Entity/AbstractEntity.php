@@ -1,7 +1,5 @@
 <?php namespace AGCMS\Entity;
 
-use AGCMS\ORM;
-
 abstract class AbstractEntity implements InterfaceEntity
 {
     /** Table name in database. */

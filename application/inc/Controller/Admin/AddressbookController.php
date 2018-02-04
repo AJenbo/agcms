@@ -2,7 +2,6 @@
 
 use AGCMS\Entity\Contact;
 use AGCMS\Exceptions\InvalidInput;
-use AGCMS\ORM;
 use AGCMS\Service\EmailService;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;

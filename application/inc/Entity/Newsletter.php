@@ -2,7 +2,6 @@
 
 use AGCMS\Exceptions\Exception;
 use AGCMS\Exceptions\Handler as ExceptionHandler;
-use AGCMS\ORM;
 use AGCMS\Render;
 use AGCMS\Service\EmailService;
 use Throwable;

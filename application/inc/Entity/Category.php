@@ -1,7 +1,6 @@
 <?php namespace AGCMS\Entity;
 
 use AGCMS\Exceptions\InvalidInput;
-use AGCMS\ORM;
 use AGCMS\Render;
 
 class Category extends AbstractRenderable

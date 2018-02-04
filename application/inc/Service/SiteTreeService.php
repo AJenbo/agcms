@@ -2,7 +2,6 @@
 
 use AGCMS\Entity\Category;
 use AGCMS\Entity\CustomPage;
-use AGCMS\ORM;
 
 class SiteTreeService
 {

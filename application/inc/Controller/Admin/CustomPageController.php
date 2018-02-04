@@ -4,7 +4,6 @@ use AGCMS\Entity\Category;
 use AGCMS\Entity\CustomPage;
 use AGCMS\Exceptions\Exception;
 use AGCMS\Exceptions\InvalidInput;
-use AGCMS\ORM;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
