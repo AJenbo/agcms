@@ -1,6 +1,6 @@
-<?php namespace AGCMS\Exceptions;
+<?php namespace App\Exceptions;
 
-use AGCMS\Request;
+use App\Http\Request;
 use Raven_Client;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;

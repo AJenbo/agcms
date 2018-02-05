@@ -1,7 +1,7 @@
 <?php
 
-use AGCMS\Application;
-use AGCMS\Config;
+use App\Application;
+use App\Services\ConfigService;
 
 /**
  * Get the current application instance or contained service instance.
@@ -31,7 +31,7 @@ function app(string $name = null)
  */
 function config(string $key, $default = null)
 {
-    return Config::get($key, $default);
+    return ConfigService::get($key, $default);
 }
 
 /**

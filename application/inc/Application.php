@@ -1,10 +1,11 @@
-<?php namespace AGCMS;
+<?php namespace App;
 
-use AGCMS\Controller\Base;
-use AGCMS\Exceptions\Handler as ExceptionHandler;
-use AGCMS\Service\DbService;
-use AGCMS\Service\OrmService;
-use AGCMS\Service\RenderService;
+use App\Http\Request;
+use App\Http\Controllers\Base;
+use App\Exceptions\Handler as ExceptionHandler;
+use App\Services\DbService;
+use App\Services\OrmService;
+use App\Services\RenderService;
 use Closure;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Response;
@@ -88,9 +89,9 @@ class Application
      */
     private function loadTranslations(): void
     {
-        bindtextdomain('agcms', $this->basePath . '/theme/locale');
-        bind_textdomain_codeset('agcms', 'UTF-8');
-        textdomain('agcms');
+        bindtextdomain('app', $this->basePath . '/theme/locale');
+        bind_textdomain_codeset('app', 'UTF-8');
+        textdomain('app');
     }
 
     /**

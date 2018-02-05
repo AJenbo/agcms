@@ -1,10 +1,9 @@
-<?php namespace AGCMS\Tests;
+<?php namespace Tests;
 
-use AGCMS\Application;
-use AGCMS\Config;
-use AGCMS\DB;
-use AGCMS\Entity\User;
-use AGCMS\Request;
+use App\Application;
+use App\Services\ConfigService;
+use App\Models\User;
+use App\Http\Request;
 use DateTime;
 use DateTimeZone;
 use PHPUnit\Framework\TestCase as BaseTestCase;
@@ -28,7 +27,7 @@ abstract class TestCase extends BaseTestCase
         $this->user = null;
 
         // Initialize configuration
-        Config::load(__DIR__ . '/application');
+        ConfigService::load(__DIR__ . '/application');
 
         // Initialize application
         $this->app = new Application(__DIR__ . '/../application');

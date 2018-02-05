@@ -1,29 +1,29 @@
 <?php
 
-use AGCMS\Controller\Admin\AddressbookController;
-use AGCMS\Controller\Admin\AdminController;
-use AGCMS\Controller\Admin\BrandController;
-use AGCMS\Controller\Admin\CategoryController;
-use AGCMS\Controller\Admin\CustomPageController;
-use AGCMS\Controller\Admin\CustomSortingController;
-use AGCMS\Controller\Admin\ExplorerController;
-use AGCMS\Controller\Admin\InvoiceController;
-use AGCMS\Controller\Admin\MaintenanceController;
-use AGCMS\Controller\Admin\NewsletterController;
-use AGCMS\Controller\Admin\PageController;
-use AGCMS\Controller\Admin\RequirementController;
-use AGCMS\Controller\Admin\SiteTreeController;
-use AGCMS\Controller\Admin\TableController;
-use AGCMS\Controller\Admin\UserController;
-use AGCMS\Controller\Ajax;
-use AGCMS\Controller\Feed;
-use AGCMS\Controller\Payment;
-use AGCMS\Controller\Search;
-use AGCMS\Controller\Shopping;
-use AGCMS\Controller\Site;
-use AGCMS\Middleware\Auth;
-use AGCMS\Middleware\Placekitten;
-use AGCMS\Middleware\Utf8Url;
+use App\Http\Controllers\Admin\AddressbookController;
+use App\Http\Controllers\Admin\AdminController;
+use App\Http\Controllers\Admin\BrandController;
+use App\Http\Controllers\Admin\CategoryController;
+use App\Http\Controllers\Admin\CustomPageController;
+use App\Http\Controllers\Admin\CustomSortingController;
+use App\Http\Controllers\Admin\ExplorerController;
+use App\Http\Controllers\Admin\InvoiceController;
+use App\Http\Controllers\Admin\MaintenanceController;
+use App\Http\Controllers\Admin\NewsletterController;
+use App\Http\Controllers\Admin\PageController;
+use App\Http\Controllers\Admin\RequirementController;
+use App\Http\Controllers\Admin\SiteTreeController;
+use App\Http\Controllers\Admin\TableController;
+use App\Http\Controllers\Admin\UserController;
+use App\Http\Controllers\Ajax;
+use App\Http\Controllers\Feed;
+use App\Http\Controllers\Payment;
+use App\Http\Controllers\Search;
+use App\Http\Controllers\Shopping;
+use App\Http\Controllers\Site;
+use App\Http\Middleware\Auth;
+use App\Http\Middleware\Placekitten;
+use App\Http\Middleware\Utf8Url;
 
 $app->addMiddleware('/', Utf8Url::class);
 if ('develop' === config('enviroment')) {

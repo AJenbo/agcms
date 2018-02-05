@@ -1,4 +1,4 @@
-<?php namespace AGCMS\Tests;
+<?php namespace Tests;
 
 use PHPUnit\Framework\Assert;
 use Symfony\Component\HttpFoundation\Response;

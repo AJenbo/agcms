@@ -1,7 +1,7 @@
 {
     "autoload": {
         "psr-4": {
-            "AGCMS\\": "inc/"
+            "App\\": "inc/"
         },
         "files": [
             "inc/functions.php"
@@ -9,7 +9,7 @@
     },
     "autoload-dev": {
         "psr-4": {
-            "AGCMS\\Tests\\": "../tests/"
+            "Tests\\": "../tests/"
         }
     },
     "require": {
