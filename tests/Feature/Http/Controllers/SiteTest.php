@@ -29,6 +29,13 @@ class SiteTest extends TestCase
             ->assertSee('<table cellspacing="0" id="liste">');
     }
 
+    public function testCategoryHead(): void
+    {
+        $this->head('/kat1-Gallery-Category/')
+            ->assertResponseStatus(200)
+            ->assertNotSee('<title>Gallery Category</title>');
+    }
+
     public function testCategoryBadSlug(): void
     {
         $this->get('/kat1-Wrong/')

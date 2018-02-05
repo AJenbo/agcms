@@ -58,6 +58,21 @@ abstract class TestCase extends BaseTestCase
     }
 
     /**
+     * Visit the given URI with a HEAD request.
+     *
+     * @param string   $uri
+     * @param string[] $headers
+     *
+     * @return TestResponse
+     */
+    public function head(string $uri, array $headers = []): TestResponse
+    {
+        $server = $this->transformHeadersToServerVars($headers);
+
+        return $this->call('HEAD', $uri, [], [], [], $server);
+    }
+
+    /**
      * Visit the given URI with a GET request.
      *
      * @param string   $uri
