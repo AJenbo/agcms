@@ -1,7 +1,6 @@
 <?php namespace App\Http\Middleware;
 
 use App\Contracts\Middleware;
-use App\Http\Controllers\Base;
 use App\Http\Request;
 use Closure;
 use Symfony\Component\HttpFoundation\Response;
@@ -32,6 +31,6 @@ class Utf8Url implements Middleware
 
         $requestUrl = mb_convert_encoding($requestUrl, 'UTF-8', $encoding);
 
-        return (new Base())->redirect($request, $requestUrl, Response::HTTP_MOVED_PERMANENTLY);
+        return redirect($requestUrl, Response::HTTP_MOVED_PERMANENTLY);
     }
 }

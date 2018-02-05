@@ -127,7 +127,7 @@ class UserController extends AbstractAdminController
         $session->set('message', $message);
         $session->save();
 
-        return $this->redirect($request, '/admin/users/new/');
+        return redirect('/admin/users/new/', Response::HTTP_SEE_OTHER);
     }
 
     /**

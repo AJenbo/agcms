@@ -83,7 +83,7 @@ class Search extends Base
         if (1 === count($pages)) {
             $page = array_shift($pages);
 
-            return $this->redirect($request, $page->getCanonicalLink(), Response::HTTP_FOUND);
+            return redirect($page->getCanonicalLink());
         }
 
         $brands = $this->findBrands(
@@ -130,11 +130,11 @@ class Search extends Base
                 /** @var ?Brand */
                 $brand = app('orm')->getOne(Brand::class, $request->get('maerke'));
                 if ($brand && $brand->hasPages()) {
-                    return $this->redirect($request, $brand->getCanonicalLink(), Response::HTTP_MOVED_PERMANENTLY);
+                    return redirect($brand->getCanonicalLink(), Response::HTTP_MOVED_PERMANENTLY);
                 }
             }
 
-            return $this->redirect($request, '/search/', Response::HTTP_MOVED_PERMANENTLY);
+            return redirect('/search/', Response::HTTP_MOVED_PERMANENTLY);
         }
 
         return null;

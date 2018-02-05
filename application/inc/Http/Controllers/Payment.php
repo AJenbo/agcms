@@ -64,7 +64,7 @@ class Payment extends Base
     {
         /** @var ?Invoice */
         $invoice = app('orm')->getOne(Invoice::class, $id);
-        if ($redirect = $this->checkStatus($request, $id, $checkId, $invoice)) {
+        if ($redirect = $this->checkStatus($id, $checkId, $invoice)) {
             return $redirect;
         }
 
@@ -95,7 +95,7 @@ class Payment extends Base
     {
         /** @var ?Invoice */
         $invoice = app('orm')->getOne(Invoice::class, $id);
-        if ($redirect = $this->checkStatus($request, $id, $checkId, $invoice)) {
+        if ($redirect = $this->checkStatus($id, $checkId, $invoice)) {
             return $redirect;
         }
 
@@ -130,7 +130,7 @@ class Payment extends Base
     {
         /** @var ?Invoice */
         $invoice = app('orm')->getOne(Invoice::class, $id);
-        if ($redirect = $this->checkStatus($request, $id, $checkId, $invoice)) {
+        if ($redirect = $this->checkStatus($id, $checkId, $invoice)) {
             return $redirect;
         }
 
@@ -164,17 +164,17 @@ class Payment extends Base
 
         if ($invoice->getInvalid()) {
             if ($request->request->getBoolean('newsletter')) {
-                return $this->redirect($request, $invoice->getLink() . 'address/?newsletter=1');
+                return redirect($invoice->getLink() . 'address/?newsletter=1', Response::HTTP_SEE_OTHER);
             }
 
-            return $this->redirect($request, $invoice->getLink() . 'address/');
+            return redirect($invoice->getLink() . 'address/', Response::HTTP_SEE_OTHER);
         }
 
         if ($request->request->getBoolean('newsletter')) {
             $this->invoiceService->addToAddressBook($invoice, $request->getClientIp());
         }
 
-        return $this->redirect($request, $invoice->getLink() . 'terms/');
+        return redirect($invoice->getLink() . 'terms/', Response::HTTP_SEE_OTHER);
     }
 
     /**
@@ -190,7 +190,7 @@ class Payment extends Base
     {
         /** @var ?Invoice */
         $invoice = app('orm')->getOne(Invoice::class, $id);
-        if ($redirect = $this->checkStatus($request, $id, $checkId, $invoice)) {
+        if ($redirect = $this->checkStatus($id, $checkId, $invoice)) {
             return $redirect;
         }
 
@@ -260,16 +260,16 @@ class Payment extends Base
         /** @var ?Invoice */
         $invoice = app('orm')->getOne(Invoice::class, $id);
         if (!$invoice || $checkId !== $invoice->getCheckId()) {
-            return $this->redirect($request, '/betaling/?id=' . $id . '&checkid=' . rawurlencode($checkId));
+            return redirect('/betaling/?id=' . $id . '&checkid=' . rawurlencode($checkId), Response::HTTP_SEE_OTHER);
         }
 
         if (!$invoice->isFinalized() && 'pbsok' !== $invoice->getStatus() && !$request->query->has('txnid')) {
-            return $this->redirect($request, $invoice->getLink());
+            return redirect($invoice->getLink(), Response::HTTP_SEE_OTHER);
         }
 
         if ($request->query->has('txnid')) {
             if (!$this->isHashValid($request)) {
-                return $this->redirect($request, $invoice->getLink());
+                return redirect($invoice->getLink(), Response::HTTP_SEE_OTHER);
             }
 
             $this->setPaymentStatus($request, $invoice);
@@ -492,20 +492,19 @@ class Payment extends Base
     /**
      * Check if request should be redirected to a different page in the process.
      *
-     * @param Request  $request
      * @param int      $id
      * @param string   $checkId
      * @param ?Invoice $invoice
      *
      * @return ?RedirectResponse
      */
-    private function checkStatus(Request $request, int $id, string $checkId, ?Invoice $invoice): ?RedirectResponse
+    private function checkStatus(int $id, string $checkId, ?Invoice $invoice): ?RedirectResponse
     {
         if (!$invoice || $checkId !== $invoice->getCheckId()) {
-            return $this->redirect($request, '/betaling/?id=' . $id . '&checkid=' . rawurlencode($checkId));
+            return redirect('/betaling/?id=' . $id . '&checkid=' . rawurlencode($checkId), Response::HTTP_SEE_OTHER);
         }
         if ($invoice->isFinalized() || 'pbsok' === $invoice->getStatus()) {
-            return $this->redirect($request, $invoice->getLink() . 'status/');
+            return redirect($invoice->getLink() . 'status/', Response::HTTP_SEE_OTHER);
         }
 
         return null;

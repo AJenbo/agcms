@@ -210,14 +210,14 @@ class Site extends Base
             if ($category && $category->getParent() && $category->isVisible()) {
                 $status = $page ? Response::HTTP_FOUND : Response::HTTP_MOVED_PERMANENTLY;
 
-                return $this->redirect($request, $category->getCanonicalLink(), $status);
+                return redirect($category->getCanonicalLink(), $status);
             }
 
             return $this->redirectToSearch($request);
         }
 
         if ($page->getCanonicalLink($category) !== urldecode($request->getPathInfo())) {
-            return $this->redirect($request, $page->getCanonicalLink($category), Response::HTTP_MOVED_PERMANENTLY);
+            return redirect($page->getCanonicalLink($category), Response::HTTP_MOVED_PERMANENTLY);
         }
 
         return null;
@@ -240,7 +240,7 @@ class Site extends Base
         }
 
         if ($renderable->getCanonicalLink() !== urldecode($request->getPathInfo())) {
-            return $this->redirect($request, $renderable->getCanonicalLink(), Response::HTTP_MOVED_PERMANENTLY);
+            return redirect($renderable->getCanonicalLink(), Response::HTTP_MOVED_PERMANENTLY);
         }
 
         return null;

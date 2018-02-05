@@ -1,7 +1,6 @@
 <?php namespace App\Http\Middleware;
 
 use App\Contracts\Middleware;
-use App\Http\Controllers\Base;
 use App\Http\Request;
 use App\Models\File;
 use Closure;
@@ -31,6 +30,6 @@ class Placekitten implements Middleware
 
         $url = 'https://placeimg.com/' . $width . '/' . $height . '/animals';
 
-        return (new Base())->redirect($request, $url, Response::HTTP_TEMPORARY_REDIRECT);
+        return redirect($url, Response::HTTP_TEMPORARY_REDIRECT);
     }
 }

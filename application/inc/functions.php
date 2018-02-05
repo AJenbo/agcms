@@ -2,6 +2,9 @@
 
 use App\Application;
 use App\Services\ConfigService;
+use Symfony\Component\HttpFoundation\RedirectResponse;
+use App\Http\Request;
+use GuzzleHttp\Psr7\Uri;
 
 /**
  * Get the current application instance or contained service instance.
@@ -32,6 +35,26 @@ function app(string $name = null)
 function config(string $key, $default = null)
 {
     return ConfigService::get($key, $default);
+}
+
+/**
+ * Generate redirect response.
+ *
+ * @param string $url
+ * @param int    $status
+ *
+ * @return RedirectResponse
+ */
+function redirect(string $url, int $status = RedirectResponse::HTTP_FOUND): RedirectResponse
+{
+    if (false === filter_var($url, FILTER_VALIDATE_URL)) {
+        /** @var Request */
+        $request = app(Request::class);
+        $url = $request->getSchemeAndHttpHost() . $url;
+    }
+    $url = (string) new Uri($url); // encode raw utf-8
+
+    return new RedirectResponse($url, $status);
 }
 
 /**

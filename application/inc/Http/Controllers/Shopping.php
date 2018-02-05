@@ -105,7 +105,7 @@ class Shopping extends Base
         $invoice = $this->invoiceService->createFromCart($cart);
 
         if ($invoice->getInvalid()) {
-            return $this->redirect($request, '/order/address/?cart=' . rawurlencode($rawCart));
+            return redirect('/order/address/?cart=' . rawurlencode($rawCart), Response::HTTP_SEE_OTHER);
         }
 
         if (!empty($cart['newsletter'])) {
@@ -113,7 +113,7 @@ class Shopping extends Base
         }
 
         if (!$invoice->getItems()) {
-            return $this->redirect($request, '/order/?cart=' . rawurlencode($rawCart));
+            return redirect('/order/?cart=' . rawurlencode($rawCart), Response::HTTP_SEE_OTHER);
         }
 
         $note = $this->invoiceService->generateExtraNote($cart);
@@ -150,7 +150,7 @@ class Shopping extends Base
         $cart['items'] = [];
         $rawCart = json_encode($cart);
 
-        return $this->redirect($request, '/order/receipt/?cart=' . rawurlencode($rawCart));
+        return redirect('/order/receipt/?cart=' . rawurlencode($rawCart), Response::HTTP_SEE_OTHER);
     }
 
     /**

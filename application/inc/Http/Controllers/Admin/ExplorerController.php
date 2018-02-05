@@ -691,7 +691,7 @@ class ExplorerController extends AbstractAdminController
 
         $image = $this->createImageServiceFomRequest($request->query, app()->basePath($path));
         if ($image->isNoOp()) {
-            return $this->redirect($request, $path, Response::HTTP_MOVED_PERMANENTLY);
+            return redirect($path, Response::HTTP_MOVED_PERMANENTLY);
         }
 
         $targetPath = tempnam(sys_get_temp_dir(), 'image');

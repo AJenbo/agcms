@@ -2,7 +2,6 @@
 
 use App\Contracts\Middleware;
 use App\Exceptions\InvalidInput;
-use App\Http\Controllers\Base;
 use App\Http\Request;
 use App\Models\User;
 use App\Render;
@@ -34,7 +33,7 @@ class Auth implements Middleware
 
         $this->authenticate($request);
 
-        return (new Base())->redirect($request, $request->getRequestUri(), Response::HTTP_MOVED_PERMANENTLY);
+        return redirect($request->getRequestUri(), Response::HTTP_MOVED_PERMANENTLY);
     }
 
     /**

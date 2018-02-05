@@ -41,7 +41,7 @@ class Base extends AbstractController
             $redirectUrl = '/search/results/?q=' . rawurlencode($query) . '&sogikke=&minpris=&maxpris=&maerke=0';
         }
 
-        return $this->redirect($request, $redirectUrl);
+        return redirect($redirectUrl, RedirectResponse::HTTP_SEE_OTHER);
     }
 
     /**

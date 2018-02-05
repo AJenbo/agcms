@@ -313,7 +313,7 @@ class Application
                 $query = '?' . $query;
             }
 
-            return (new Base())->redirect($request, $requestUrl . '/' . $query, Response::HTTP_PERMANENTLY_REDIRECT);
+            return redirect($requestUrl . '/' . $query, Response::HTTP_PERMANENTLY_REDIRECT);
         };
     }
 }

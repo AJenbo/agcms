@@ -30,6 +30,6 @@ class AdminController extends AbstractAdminController
     {
         $request->logout();
 
-        return $this->redirect($request, '/admin/');
+        return redirect('/admin/', Response::HTTP_SEE_OTHER);
     }
 }
