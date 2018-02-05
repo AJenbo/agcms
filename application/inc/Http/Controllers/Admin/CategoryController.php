@@ -1,8 +1,8 @@
 <?php namespace App\Http\Controllers\Admin;
 
+use App\Exceptions\InvalidInput;
 use App\Models\Category;
 use App\Models\File;
-use App\Exceptions\InvalidInput;
 use App\Services\SiteTreeService;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;

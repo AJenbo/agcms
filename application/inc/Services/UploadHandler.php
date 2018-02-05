@@ -1,8 +1,8 @@
 <?php namespace App\Services;
 
-use App\Models\File;
 use App\Exceptions\Exception;
 use App\Exceptions\InvalidInput;
+use App\Models\File;
 use DateTime;
 use getID3;
 use Symfony\Component\HttpFoundation\File\File as FileHandeler;

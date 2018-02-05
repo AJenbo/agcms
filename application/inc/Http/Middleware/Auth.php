@@ -1,11 +1,11 @@
 <?php namespace App\Http\Middleware;
 
 use App\Contracts\Middleware;
-use App\Http\Controllers\Base;
-use App\Models\User;
 use App\Exceptions\InvalidInput;
-use App\Render;
+use App\Http\Controllers\Base;
 use App\Http\Request;
+use App\Models\User;
+use App\Render;
 use Closure;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;

@@ -1,11 +1,11 @@
 <?php namespace App\Http\Controllers;
 
+use App\Contracts\Renderable;
 use App\Models\Brand;
 use App\Models\Category;
 use App\Models\CustomPage;
 use App\Models\Page;
 use App\Models\Requirement;
-use App\Contracts\Renderable;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;

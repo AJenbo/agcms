@@ -1,9 +1,9 @@
 <?php namespace App\Http\Controllers\Admin;
 
-use App\Models\Category;
-use App\Models\CustomPage;
 use App\Exceptions\Exception;
 use App\Exceptions\InvalidInput;
+use App\Models\Category;
+use App\Models\CustomPage;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;

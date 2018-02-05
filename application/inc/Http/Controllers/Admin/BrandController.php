@@ -1,8 +1,8 @@
 <?php namespace App\Http\Controllers\Admin;
 
+use App\Exceptions\InvalidInput;
 use App\Models\Brand;
 use App\Models\File;
-use App\Exceptions\InvalidInput;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;

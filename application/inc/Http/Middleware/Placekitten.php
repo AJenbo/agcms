@@ -2,8 +2,8 @@
 
 use App\Contracts\Middleware;
 use App\Http\Controllers\Base;
-use App\Models\File;
 use App\Http\Request;
+use App\Models\File;
 use Closure;
 use Symfony\Component\HttpFoundation\Response;
 

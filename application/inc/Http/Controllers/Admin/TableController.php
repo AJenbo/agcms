@@ -1,8 +1,8 @@
 <?php namespace App\Http\Controllers\Admin;
 
+use App\Exceptions\InvalidInput;
 use App\Models\CustomSorting;
 use App\Models\Table;
-use App\Exceptions\InvalidInput;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;

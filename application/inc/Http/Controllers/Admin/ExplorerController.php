@@ -1,13 +1,13 @@
 <?php namespace App\Http\Controllers\Admin;
 
+use App\Exceptions\Exception;
+use App\Exceptions\InvalidInput;
 use App\Models\CustomPage;
 use App\Models\File;
 use App\Models\InterfaceRichText;
 use App\Models\Newsletter;
 use App\Models\Page;
 use App\Models\Requirement;
-use App\Exceptions\Exception;
-use App\Exceptions\InvalidInput;
 use App\Render;
 use App\Services\FileService;
 use App\Services\ImageService;

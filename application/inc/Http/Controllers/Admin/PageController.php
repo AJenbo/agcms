@@ -1,11 +1,11 @@
 <?php namespace App\Http\Controllers\Admin;
 
+use App\Exceptions\InvalidInput;
 use App\Models\Brand;
 use App\Models\Category;
 use App\Models\File;
 use App\Models\Page;
 use App\Models\Requirement;
-use App\Exceptions\InvalidInput;
 use App\Render;
 use App\Services\SiteTreeService;
 use Symfony\Component\HttpFoundation\JsonResponse;

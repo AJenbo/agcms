@@ -1,12 +1,12 @@
 <?php namespace App\Http\Controllers;
 
-use App\Models\Email;
 use App\Exceptions\Handler as ExceptionHandler;
 use App\Exceptions\InvalidInput;
+use App\Models\Email;
+use App\Models\VolatilePage;
 use App\Render;
 use App\Services\EmailService;
 use App\Services\InvoiceService;
-use App\Models\VolatilePage;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Throwable;

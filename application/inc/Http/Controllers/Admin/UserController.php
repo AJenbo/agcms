@@ -1,11 +1,11 @@
 <?php namespace App\Http\Controllers\Admin;
 
-use App\Models\Email;
-use App\Models\User;
 use App\Exceptions\Handler as ExceptionHandler;
 use App\Exceptions\InvalidInput;
-use App\Render;
 use App\Http\Request;
+use App\Models\Email;
+use App\Models\User;
+use App\Render;
 use App\Services\EmailService;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\RedirectResponse;

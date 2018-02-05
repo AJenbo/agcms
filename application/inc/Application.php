@@ -1,8 +1,8 @@
 <?php namespace App;
 
-use App\Http\Request;
-use App\Http\Controllers\Base;
 use App\Exceptions\Handler as ExceptionHandler;
+use App\Http\Controllers\Base;
+use App\Http\Request;
 use App\Services\DbService;
 use App\Services\OrmService;
 use App\Services\RenderService;

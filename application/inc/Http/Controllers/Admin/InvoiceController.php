@@ -1,9 +1,9 @@
 <?php namespace App\Http\Controllers\Admin;
 
-use App\Models\Invoice;
-use App\Models\User;
 use App\Exceptions\InvalidInput;
 use App\Http\Request;
+use App\Models\Invoice;
+use App\Models\User;
 use App\Services\InvoicePdfService;
 use App\Services\InvoiceService;
 use Symfony\Component\HttpFoundation\JsonResponse;

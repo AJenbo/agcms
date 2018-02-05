@@ -1,16 +1,16 @@
 <?php namespace App\Http\Controllers;
 
-use App\Models\CustomPage;
-use App\Models\Email;
-use App\Models\Invoice;
 use App\Exceptions\Exception;
 use App\Exceptions\Handler as ExceptionHandler;
 use App\Exceptions\InvalidInput;
+use App\Models\CustomPage;
+use App\Models\Email;
+use App\Models\Invoice;
+use App\Models\VolatilePage;
 use App\Render;
 use App\Services\EmailService;
 use App\Services\EpaymentService;
 use App\Services\InvoiceService;
-use App\Models\VolatilePage;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;

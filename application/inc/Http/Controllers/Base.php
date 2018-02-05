@@ -1,8 +1,8 @@
 <?php namespace App\Http\Controllers;
 
+use App\Exceptions\Exception;
 use App\Models\Category;
 use App\Models\CustomPage;
-use App\Exceptions\Exception;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 

@@ -1,8 +1,8 @@
 <?php namespace App\Services;
 
-use App\Models\Email;
-use App\Exceptions\SendEmail;
 use AJenbo\Imap;
+use App\Exceptions\SendEmail;
+use App\Models\Email;
 use PHPMailer\PHPMailer\PHPMailer;
 
 class EmailService

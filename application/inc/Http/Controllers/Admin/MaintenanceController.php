@@ -1,15 +1,15 @@
 <?php namespace App\Http\Controllers\Admin;
 
+use AJenbo\Imap;
+use App\Exceptions\Exception;
 use App\Models\Category;
 use App\Models\Contact;
 use App\Models\CustomPage;
 use App\Models\Email;
 use App\Models\File;
 use App\Models\Page;
-use App\Exceptions\Exception;
 use App\Render;
 use App\Services\EmailService;
-use AJenbo\Imap;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;

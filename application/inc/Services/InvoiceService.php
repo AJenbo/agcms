@@ -1,14 +1,14 @@
 <?php namespace App\Services;
 
+use App\Epayment;
+use App\Exceptions\Exception;
+use App\Exceptions\InvalidInput;
 use App\Models\Contact;
 use App\Models\Email;
 use App\Models\Invoice;
 use App\Models\Page;
 use App\Models\Table;
 use App\Models\User;
-use App\Epayment;
-use App\Exceptions\Exception;
-use App\Exceptions\InvalidInput;
 use App\Render;
 
 class InvoiceService

@@ -1,9 +1,9 @@
 <?php namespace Tests;
 
 use App\Application;
-use App\Services\ConfigService;
-use App\Models\User;
 use App\Http\Request;
+use App\Models\User;
+use App\Services\ConfigService;
 use DateTime;
 use DateTimeZone;
 use PHPUnit\Framework\TestCase as BaseTestCase;

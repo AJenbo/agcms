@@ -1,7 +1,7 @@
 <?php namespace App\Services;
 
-use App\Models\Invoice;
 use App\Exceptions\InvalidInput;
+use App\Models\Invoice;
 use TCPDF;
 
 class InvoicePdfService

@@ -1,8 +1,8 @@
 <?php namespace App\Http\Controllers;
 
+use App\Exceptions\InvalidInput;
 use App\Models\Category;
 use App\Models\Table;
-use App\Exceptions\InvalidInput;
 use App\Render;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
