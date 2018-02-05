@@ -208,7 +208,7 @@ abstract class TestCase extends BaseTestCase
             json_encode($data, JSON_PRETTY_PRINT)
         );
 
-        $this->assertTrue($this->getFromDatabase($table, $data), $message);
+        $this->assertTrue($this->isInDatabase($table, $data), $message);
 
         return $this;
     }
@@ -229,7 +229,7 @@ abstract class TestCase extends BaseTestCase
             json_encode($data, JSON_PRETTY_PRINT)
         );
 
-        $this->assertFalse($this->getFromDatabase($table, $data), $message);
+        $this->assertFalse($this->isInDatabase($table, $data), $message);
 
         return $this;
     }
@@ -242,7 +242,7 @@ abstract class TestCase extends BaseTestCase
      *
      * @return bool
      */
-    private function getFromDatabase(string $table, array $data): bool
+    private function isInDatabase(string $table, array $data): bool
     {
         $sets = [];
         foreach ($data as $filedName => $value) {
