@@ -1,11 +1,11 @@
 <?php
 
 use AGCMS\Application;
-use AGCMS\Config;
+use AGCMS\Services\ConfigService;
 
 require_once __DIR__ . '/vendor/autoload.php';
 
-Config::load(__DIR__);
+ConfigService::load(__DIR__);
 
 $app = new Application(__DIR__);
 
