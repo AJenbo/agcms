@@ -172,6 +172,15 @@ Note',
                 'enote'          => '',
             ]
         );
+        $this->assertDatabaseHas(
+            'emails',
+            [
+                'id'      => '1',
+                'subject' => 'Online order #4',
+                'from'    => $cart['email'] . '<' . $cart['name'] . '>',
+                'to'      => 'mail@gmail.com<My store>',
+            ]
+        );
 
         $this->assertDatabaseMissing('email', ['email' => $cart['email']]);
     }
@@ -263,6 +272,15 @@ Note',
                 'enote'          => '',
             ]
         );
+        $this->assertDatabaseHas(
+            'emails',
+            [
+                'id'      => '1',
+                'subject' => 'Online order #4',
+                'from'    => $cart['email'] . '<' . $cart['name'] . '>',
+                'to'      => 'mail@gmail.com<My store>',
+            ]
+        );
 
         $this->assertDatabaseMissing('email', ['email' => $cart['email']]);
     }
@@ -291,6 +309,15 @@ Note',
         $this->post('/order/send/', ['cart' => json_encode($cart)]);
 
         $this->assertDatabaseHas('email', ['email' => $cart['email']]);
+        $this->assertDatabaseHas(
+            'emails',
+            [
+                'id'      => '1',
+                'subject' => 'Online order #4',
+                'from'    => $cart['email'] . '<' . $cart['name'] . '>',
+                'to'      => 'mail@gmail.com<My store>',
+            ]
+        );
     }
 
     public function testSendNewsletterDuplicate(): void
@@ -317,6 +344,15 @@ Note',
         $this->post('/order/send/', ['cart' => json_encode($cart)]);
 
         $this->assertDatabaseHas('email', ['id' => 1, 'email' => $cart['email']]);
+        $this->assertDatabaseHas(
+            'emails',
+            [
+                'id'      => '1',
+                'subject' => 'Online order #4',
+                'from'    => $cart['email'] . '<' . $cart['name'] . '>',
+                'to'      => 'mail@gmail.com<My store>',
+            ]
+        );
     }
 
     public function testSendInvalidData(): void
