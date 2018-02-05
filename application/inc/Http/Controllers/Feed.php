@@ -3,6 +3,7 @@
 use App\Models\Category;
 use App\Models\Page;
 use App\Models\Requirement;
+use GuzzleHttp\Psr7\Uri;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -111,7 +112,7 @@ class Feed extends Base
 
             $decription = '';
             if ($page->getIcon()) {
-                $imgUrl = config('base_url') . encodeUrl($page->getIcon()->getPath());
+                $imgUrl = (string) new Uri(config('base_url') . $page->getIcon()->getPath());
                 $decription .= '<img style="float:left;margin:0 10px 5px 0" src="'
                     . htmlspecialchars($imgUrl, ENT_COMPAT | ENT_XHTML) . '" ><p>';
             }
@@ -133,7 +134,7 @@ class Feed extends Base
 
             $items[] = [
                 'title'       => trim($page->getTitle()) ?: config('site_name'),
-                'link'        => config('base_url') . encodeUrl($page->getCanonicalLink()),
+                'link'        => (string) new Uri(config('base_url') . $page->getCanonicalLink()),
                 'description' => $decription,
                 'pubDate'     => gmdate('D, d M Y H:i:s', $page->getTimeStamp()) . ' GMT',
                 'categories'  => $categories,

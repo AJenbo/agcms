@@ -5,16 +5,6 @@ use PHPUnit\Framework\TestCase;
 class FunctionsTest extends TestCase
 {
     /**
-     * @covers \encodeUrl
-     *
-     * @return void
-     */
-    public function testEncodeUrl(): void
-    {
-        $this->assertSame('/test/%C3%B8', encodeUrl('/test/ø'));
-    }
-
-    /**
      * @covers \clearFileName
      *
      * @return void

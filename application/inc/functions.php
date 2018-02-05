@@ -1,10 +1,10 @@
 <?php
 
 use App\Application;
-use App\Services\ConfigService;
-use Symfony\Component\HttpFoundation\RedirectResponse;
 use App\Http\Request;
+use App\Services\ConfigService;
 use GuzzleHttp\Psr7\Uri;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 
 /**
  * Get the current application instance or contained service instance.
@@ -55,21 +55,6 @@ function redirect(string $url, int $status = RedirectResponse::HTTP_FOUND): Redi
     $url = (string) new Uri($url); // encode raw utf-8
 
     return new RedirectResponse($url, $status);
-}
-
-/**
- * rawurlencode a string, but leave / alone.
- *
- * @param string $url
- *
- * @return string
- */
-function encodeUrl(string $url): string
-{
-    $url = explode('/', $url);
-    $url = array_map('rawurlencode', $url);
-
-    return implode('/', $url);
 }
 
 /**
