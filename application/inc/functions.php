@@ -1,10 +1,10 @@
 <?php
 
 use App\Application;
-use App\Services\ConfigService;
-use Symfony\Component\HttpFoundation\RedirectResponse;
 use App\Http\Request;
+use App\Services\ConfigService;
 use GuzzleHttp\Psr7\Uri;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 
 /**
  * Get the current application instance or contained service instance.
