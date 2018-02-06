@@ -6,7 +6,7 @@ class PaymentTest extends TestCase
 {
     public function testIndex(): void
     {
-        $this->json('GET', '/betaling/?id=1&checkid=a4238')
+        $this->get('/betaling/?id=1&checkid=a4238')
             ->assertResponseStatus(200)
             ->assertSee('<input id="id" name="id" value="1" />')
             ->assertSee('<input id="checkid" name="checkid" value="a4238" />');
@@ -14,7 +14,7 @@ class PaymentTest extends TestCase
 
     public function testBasket(): void
     {
-        $this->json('GET', '/betaling/1/a4238/')
+        $this->get('/betaling/1/a4238/')
             ->assertResponseStatus(200)
             ->assertSee('100')
             ->assertSee('80')
@@ -28,21 +28,21 @@ class PaymentTest extends TestCase
 
     public function testBasketInvalid(): void
     {
-        $this->json('GET', '/betaling/1/wrong/')
+        $this->get('/betaling/1/wrong/')
             ->assertResponseStatus(303)
             ->assertRedirect('/betaling/?id=1&checkid=wrong');
     }
 
     public function testBasketFinalized(): void
     {
-        $this->json('GET', '/betaling/3/bc87e/')
+        $this->get('/betaling/3/bc87e/')
             ->assertResponseStatus(303)
             ->assertRedirect('/betaling/3/bc87e/status/');
     }
 
     public function testAddress(): void
     {
-        $this->json('GET', '/betaling/1/a4238/address/')
+        $this->get('/betaling/1/a4238/address/')
             ->assertResponseStatus(200)
             ->assertSee(' id="phone1" style="width:157px" value="88888888" />')
             ->assertSee(' id="phone2" style="width:157px" value="88888889" />')
@@ -66,7 +66,7 @@ class PaymentTest extends TestCase
 
     public function testAddressOtherShipping(): void
     {
-        $this->json('GET', '/betaling/2/e728d/address/')
+        $this->get('/betaling/2/e728d/address/')
             ->assertResponseStatus(200)
             ->assertSee('<option value="DK" selected="selected">')
             ->assertSee(' id="hasShippingAddress" type="checkbox" />');
@@ -74,7 +74,7 @@ class PaymentTest extends TestCase
 
     public function testAddressInvalid(): void
     {
-        $this->json('GET', '/betaling/1/wrong/address/')
+        $this->get('/betaling/1/wrong/address/')
             ->assertResponseStatus(303)
             ->assertRedirect('/betaling/?id=1&checkid=wrong');
     }
@@ -83,7 +83,7 @@ class PaymentTest extends TestCase
     {
         $id = 1;
         $baseUrl = '/betaling/' . $id . '/a4238/';
-        $this->json('GET', $baseUrl . 'terms/')
+        $this->get($baseUrl . 'terms/')
             ->assertResponseStatus(200)
             ->assertSee('<title>Trade Conditions</title>')
             ->assertSee('="https://ssl.ditonlinebetalingssystem.dk/integration/ewindow/Default.aspx" method="post">')
@@ -102,7 +102,7 @@ class PaymentTest extends TestCase
 
     public function testTermsInvalid(): void
     {
-        $this->json('GET', '/betaling/1/wrong/terms/')
+        $this->get('/betaling/1/wrong/terms/')
             ->assertResponseStatus(303)
             ->assertRedirect('/betaling/?id=1&checkid=wrong');
     }

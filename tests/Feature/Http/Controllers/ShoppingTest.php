@@ -7,7 +7,7 @@ class ShoppingTest extends TestCase
     public function testBasket(): void
     {
         $basket = ['items' => [['type' => 'page', 'id' => 6, 'quantity' => 1]]];
-        $this->json('GET', '/order/?cart=' . rawurlencode(json_encode($basket)))
+        $this->get('/order/?cart=' . rawurlencode(json_encode($basket)))
             ->assertResponseStatus(200)
             ->assertSee('Product 1 Green - sku3')
             ->assertSee('var values = [20];')
@@ -17,7 +17,7 @@ class ShoppingTest extends TestCase
     public function testBasketLineItem(): void
     {
         $basket = ['items' => [['type' => 'line', 'id' => 2, 'quantity' => 1]]];
-        $this->json('GET', '/order/?cart=' . rawurlencode(json_encode($basket)))
+        $this->get('/order/?cart=' . rawurlencode(json_encode($basket)))
             ->assertResponseStatus(200)
             ->assertSee('Blue')
             ->assertSee('var values = [17];')
@@ -27,7 +27,7 @@ class ShoppingTest extends TestCase
     public function testBasketLineItem404(): void
     {
         $basket = ['items' => [['type' => 'line', 'id' => 404, 'quantity' => 1]]];
-        $this->json('GET', '/order/?cart=' . rawurlencode(json_encode($basket)))
+        $this->get('/order/?cart=' . rawurlencode(json_encode($basket)))
             ->assertResponseStatus(200)
             ->assertSee('<title>Shopping list</title>')
             ->assertSee('<td>Expired</td>');
@@ -36,7 +36,7 @@ class ShoppingTest extends TestCase
     public function testBasketUnknownPrice(): void
     {
         $basket = ['items' => [['type' => 'page', 'id' => 2, 'quantity' => 1]]];
-        $this->json('GET', '/order/?cart=' . rawurlencode(json_encode($basket)))
+        $this->get('/order/?cart=' . rawurlencode(json_encode($basket)))
             ->assertResponseStatus(200)
             ->assertSee('<title>Shopping list</title>')
             ->assertSee('Page 1')
@@ -46,7 +46,7 @@ class ShoppingTest extends TestCase
     public function testBasketExpired(): void
     {
         $basket = ['items' => [['type' => 'page', 'id' => 5, 'quantity' => 1]]];
-        $this->json('GET', '/order/?cart=' . rawurlencode(json_encode($basket)))
+        $this->get('/order/?cart=' . rawurlencode(json_encode($basket)))
             ->assertResponseStatus(200)
             ->assertSee('<title>Shopping list</title>')
             ->assertSee('<td>Expired</td>');
@@ -55,7 +55,7 @@ class ShoppingTest extends TestCase
     public function testBasket404(): void
     {
         $basket = ['items' => [['type' => 'page', 'id' => 404, 'quantity' => 1]]];
-        $this->json('GET', '/order/?cart=' . rawurlencode(json_encode($basket)))
+        $this->get('/order/?cart=' . rawurlencode(json_encode($basket)))
             ->assertResponseStatus(200)
             ->assertSee('<title>Shopping list</title>')
             ->assertSee('<td>Expired</td>');
@@ -63,20 +63,20 @@ class ShoppingTest extends TestCase
 
     public function testBasketInvalid(): void
     {
-        $this->json('GET', '/order/?cart=')
+        $this->get('/order/?cart=')
             ->assertResponseStatus(422);
     }
 
     public function testAddress(): void
     {
-        $this->json('GET', '/order/address/?cart={"items":[]}')
+        $this->get('/order/address/?cart={"items":[]}')
             ->assertResponseStatus(200)
             ->assertSee('<option value="DK" selected="selected">');
     }
 
     public function testAddressInvalid(): void
     {
-        $this->json('GET', '/order/address/?cart=Wrong')
+        $this->get('/order/address/?cart=Wrong')
             ->assertResponseStatus(422);
     }
 
@@ -400,7 +400,7 @@ Note',
     public function testReceat(): void
     {
         $rawCart = '{"items":[]}';
-        $this->json('GET', '/order/receipt/?cart=' . $rawCart)
+        $this->get('/order/receipt/?cart=' . $rawCart)
             ->assertResponseStatus(200)
             ->assertSee('/order/?cart=' . rawurlencode($rawCart))
             ->assertSee('/order/address/?cart=' . rawurlencode($rawCart))
