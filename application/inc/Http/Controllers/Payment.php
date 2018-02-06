@@ -317,7 +317,7 @@ class Payment extends Base
                 return _('The payment was received and the package is sent.');
         }
 
-        return _('An errror occured.');
+        throw new Exception(_('Unknown status.'));
     }
 
     /**
