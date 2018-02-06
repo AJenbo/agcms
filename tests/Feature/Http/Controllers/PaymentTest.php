@@ -4,6 +4,33 @@ use Tests\TestCase;
 
 class PaymentTest extends TestCase
 {
+    const PAYLOAD = [
+       'name'               => 'Name',
+       'attn'               => 'Attn',
+       'address'            => 'Address 1',
+       'postbox'            => 'Postboks',
+       'postcode'           => '4000',
+       'city'               => 'Roskilde',
+       'country'            => 'DK',
+       'email'              => 'test@excample.com',
+       'phone1'             => '77777777',
+       'phone2'             => '66666666',
+       'hasShippingAddress' => '0',
+       'shippingPhone'      => '',
+       'shippingName'       => 'John',
+       'shippingAttn'       => 'Jane',
+       'shippingAddress'    => '',
+       'shippingAddress2'   => '',
+       'shippingPostbox'    => '',
+       'shippingPostcode'   => '',
+       'shippingCity'       => '',
+       'shippingCountry'    => 'DK',
+       'note'               => 'Note',
+       'payMethod'          => 'creditcard',
+       'deleveryMethod'     => 'postal',
+       'newsletter'         => '0',
+    ];
+
     public function testIndex(): void
     {
         $this->get('/betaling/?id=1&checkid=a4238')
@@ -79,6 +106,110 @@ class PaymentTest extends TestCase
             ->assertRedirect('/betaling/?id=1&checkid=wrong');
     }
 
+    public function testAddressSave(): void
+    {
+        $payload = self::PAYLOAD;
+
+        $this->post('/betaling/1/a4238/address/', $payload)
+            ->assertResponseStatus(303)
+            ->assertRedirect('/betaling/1/a4238/terms/');
+
+        $this->assertDatabaseHas(
+            'fakturas',
+            [
+                'id' => '1',
+                'navn' => 'Name',
+                'att' => 'Attn',
+                'tlf1' => '77777777',
+                'tlf2' => '66666666',
+                'postname' => 'John',
+                'postatt' => 'Jane',
+            ]
+        );
+
+        $this->assertDatabaseMissing('email', ['email' => $payload['email']]);
+    }
+
+    public function testAddressSaveNewsletter(): void
+    {
+        $payload = ['newsletter' => '1'] + self::PAYLOAD;
+
+        $this->post('/betaling/1/a4238/address/', $payload)
+            ->assertResponseStatus(303)
+            ->assertRedirect('/betaling/1/a4238/terms/');
+
+        $this->assertDatabaseHas(
+            'fakturas',
+            [
+                'id' => '1',
+                'navn' => 'Name',
+                'att' => 'Attn',
+                'tlf1' => '77777777',
+                'tlf2' => '66666666',
+                'postname' => 'John',
+                'postatt' => 'Jane',
+            ]
+        );
+
+        $this->assertDatabaseHas('email', ['email' => $payload['email']]);
+    }
+
+    public function testAddressSaveIdenticalInfo(): void
+    {
+        $payload = [
+           'name'         => 'Name',
+           'attn'         => 'Name',
+           'phone1'       => '77777777',
+           'phone2'       => '77777777',
+           'shippingName' => 'John',
+           'shippingAttn' => 'John',
+        ] + self::PAYLOAD;
+
+        $this->post('/betaling/1/a4238/address/', $payload)
+            ->assertResponseStatus(303)
+            ->assertRedirect('/betaling/1/a4238/terms/');
+
+        $this->assertDatabaseHas(
+            'fakturas',
+            [
+                'id' => '1',
+                'navn' => 'Name',
+                'att' => '',
+                'tlf1' => '',
+                'tlf2' => '77777777',
+                'postname' => 'John',
+                'postatt' => '',
+            ]
+        );
+    }
+
+    public function testAddressSaveInvalid(): void
+    {
+        $payload = ['name' => ''] + self::PAYLOAD;
+
+        $url = '/betaling/1/a4238/address/';
+        $this->post($url, $payload)
+            ->assertResponseStatus(303)
+            ->assertRedirect($url);
+    }
+
+    public function testAddressSaveInvalidNewsletter(): void
+    {
+        $payload = ['name' => '', 'newsletter' => '1'] + self::PAYLOAD;
+
+        $url = '/betaling/1/a4238/address/';
+        $this->post($url, $payload)
+            ->assertResponseStatus(303)
+            ->assertRedirect($url. '?newsletter=1');
+    }
+
+    public function testAddressSaveWrong(): void
+    {
+        $this->post('/betaling/1/wrong/address/', [])
+            ->assertResponseStatus(303)
+            ->assertRedirect('/betaling/?id=1&checkid=wrong');
+    }
+
     public function testTerms(): void
     {
         $id = 1;
@@ -105,5 +236,25 @@ class PaymentTest extends TestCase
         $this->get('/betaling/1/wrong/terms/')
             ->assertResponseStatus(303)
             ->assertRedirect('/betaling/?id=1&checkid=wrong');
+    }
+
+    public function testStatusNew(): void
+    {
+        $this->get('/betaling/1/a4238/status/')
+            ->assertResponseStatus(303)
+            ->assertRedirect('/betaling/1/a4238/');
+    }
+
+    public function testStatusWrong(): void
+    {
+        $this->get('/betaling/1/wrong/status/')
+            ->assertResponseStatus(303)
+            ->assertRedirect('/betaling/?id=1&checkid=wrong');
+    }
+
+    public function testStatusCancled(): void
+    {
+        $this->get('/betaling/3/bc87e/status/')
+            ->assertResponseStatus(200);
     }
 }
