@@ -125,7 +125,7 @@ class AjaxTest extends TestCase
                 'address2' => '',
                 'zipcode'  => '32104',
                 'postbox'  => 'P.O. box #578',
-                'email'    => 'john@example.com',
+                'email'    => 'test@gmail.com',
             ]);
     }
 
@@ -140,7 +140,7 @@ class AjaxTest extends TestCase
                 'address2' => '',
                 'zipcode'  => '32104',
                 'postbox'  => 'P.O. box #578',
-                'email'    => 'john@example.com',
+                'email'    => 'test@gmail.com',
             ]);
     }
 
@@ -155,7 +155,7 @@ class AjaxTest extends TestCase
                 'address2' => 'Collage Green',
                 'zipcode'  => '90210',
                 'postbox'  => 'P.O. box #382',
-                'email'    => 'john@example.com',
+                'email'    => 'test@gmail.com',
             ]);
     }
 
