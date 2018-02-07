@@ -337,7 +337,7 @@ class Payment extends Base
             || $checkId !== $invoice->getCheckId()
             || !$this->isHashValid($request)
         ) {
-            throw new InvalidInput(Response::HTTP_BAD_REQUEST);
+            throw new InvalidInput('', Response::HTTP_BAD_REQUEST);
         }
 
         $this->setPaymentStatus($request, $invoice);
