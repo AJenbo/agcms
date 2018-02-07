@@ -306,7 +306,7 @@ class Payment extends Base
         switch ($invoice->getStatus()) {
             case 'pbsok':
                 return _('Payment is now accepted. We will send your goods by mail as soon as possible.')
-                    . "\n" . _('A copy of your order has been sent to your email.');
+                    . '<br />' . _('A copy of your order has been sent to your email.');
             case 'canceled':
                 return _('The transaction is canceled.');
             case 'giro':
