@@ -12,7 +12,7 @@ class PaymentTest extends TestCase
        'postcode'           => '4000',
        'city'               => 'Roskilde',
        'country'            => 'DK',
-       'email'              => 'test@excample.com',
+       'email'              => 'test@gmail.com',
        'phone1'             => '77777777',
        'phone2'             => '66666666',
        'hasShippingAddress' => '0',
@@ -79,7 +79,7 @@ class PaymentTest extends TestCase
             ->assertSee(' id="postbox" style="width:157px" value="P.O. box #578" />')
             ->assertSee(' id="postcode" style="width:35px" value="32104" ')
             ->assertSee(' id="city" style="width:90px" value="A City, Florida" />')
-            ->assertSee(' id="email" style="width:157px" value="john@example.com" />')
+            ->assertSee(' id="email" style="width:157px" value="test@gmail.com" />')
             ->assertSee(' id="hasShippingAddress" type="checkbox" checked="checked" />')
             ->assertSee(' id="shippingName" style="width:157px" value="Jane Doe" />')
             ->assertSee(' id="shippingAttn" style="width:157px" value="John D. Doe" />')
@@ -255,6 +255,33 @@ class PaymentTest extends TestCase
     public function testStatusCancled(): void
     {
         $this->get('/betaling/3/bc87e/status/')
+             ->assertResponseStatus(200)
+             ->assertSee('The transaction is canceled.');
+    }
+
+    public function testStatusFinalize(): void
+    {
+        $this->get('/betaling/1/a4238/status/?txnid=123456&paymenttype=1&hash=aaa42296669b958c3cee6c0475c8093e')
+            ->assertResponseStatus(200)
+             ->assertSee('Payment is now accepted. We will send your goods by mail as soon as possible.');
+    }
+
+    public function testStatusFinalizeWrong(): void
+    {
+        $this->get('/betaling/1/a4238/status/?txnid=123456&paymenttype=1&hash=wrong')
+            ->assertResponseStatus(303)
+            ->assertRedirect('/betaling/1/a4238/');
+    }
+
+    public function testCallback(): void
+    {
+        $this->get('/betaling/1/a4238/callback/?txnid=123456&paymenttype=1&hash=aaa42296669b958c3cee6c0475c8093e')
             ->assertResponseStatus(200);
+    }
+
+    public function testCallbackWrong(): void
+    {
+        $this->get('/betaling/1/a4238/callback/?txnid=123456&paymenttype=1&hash=wrong')
+            ->assertResponseStatus(400);
     }
 }

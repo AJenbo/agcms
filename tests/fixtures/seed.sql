@@ -71,8 +71,8 @@ INSERT INTO `post` (`recipientID`, `recName1`, `recAddress1`, `recZipCode`) VALU
 
 -- fakturas
 INSERT INTO `fakturas` (`id`, `status`, `quantities`, `products`, `values`, `fragt`, `amount`, `date`, `paydate`, `cardtype`, `iref`, `eref`, `navn`, `att`, `adresse`, `postbox`, `postnr`, `by`, `email`, `tlf1`, `tlf2`, `altpost`, `posttlf`, `postname`, `postatt`, `postaddress`, `postaddress2`, `postpostbox`, `postpostalcode`, `postcity`, `clerk`, `department`, `note`, `enote`) VALUES
-(1, 'new', '1', 'Test Item', '100', 59, 159, 'now', '1970-01-01', 'Unknown', '', '', 'John Doe', 'Jane Doe', '50 Oakland Ave', 'P.O. box #578', '32104', 'A City, Florida', 'john@example.com', '88888888', '88888889', 1, '88888890', 'Jane Doe', 'John D. Doe', '20 Shipping rd.', 'Collage Green', 'P.O. box #382', '90210', 'Beverly hills', '', '', '', ''),
-(2, 'new', '1', 'Test Item', '100', 59, 159, 'now', '1970-01-01', 'Unknown', '', '', 'John Doe', 'Jane Doe', '50 Oakland Ave', 'P.O. box #578', '32104', 'A City, Florida', 'john@example.com', '88888886', '88888887', 0, '', '', '', '', '', '', '', '', '', '', '', ''),
+(1, 'new', '1', 'Test Item', '100', 59, 159, 'now', '1970-01-01', 'Unknown', '', '', 'John Doe', 'Jane Doe', '50 Oakland Ave', 'P.O. box #578', '32104', 'A City, Florida', 'test@gmail.com', '88888888', '88888889', 1, '88888890', 'Jane Doe', 'John D. Doe', '20 Shipping rd.', 'Collage Green', 'P.O. box #382', '90210', 'Beverly hills', '', '', '', ''),
+(2, 'new', '1', 'Test Item', '100', 59, 159, 'now', '1970-01-01', 'Unknown', '', '', 'John Doe', 'Jane Doe', '50 Oakland Ave', 'P.O. box #578', '32104', 'A City, Florida', 'test@gmail.com', '88888886', '88888887', 0, '', '', '', '', '', '', '', '', '', '', '', ''),
 (3, 'canceled', '1', 'Test Item', '100', 59, 159, 'now', 'now', 'Unknown', '', '', 'John Doe', 'Jane Doe', '50 Oakland Ave', 'P.O. box #578', '32104', 'A City, Florida', 'john@example.com', '88888886', '88888887', 0, '', '', '', '', '', '', '', '', '', '', '', '');
 
 -- email
