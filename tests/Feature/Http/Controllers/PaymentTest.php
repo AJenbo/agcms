@@ -355,6 +355,21 @@ class PaymentTest extends TestCase
         );
     }
 
+    public function testCallbackFinalized(): void
+    {
+        $this->get('/betaling/3/bc87e/callback/?txnid=123456&paymenttype=1&hash=aaa42296669b958c3cee6c0475c8093e')
+            ->assertResponseStatus(200);
+
+        $this->assertDatabaseMissing(
+            'emails',
+            [
+                'subject' => 'Order #1 - payment completed',
+                'from'    => 'mail@gmail.com<My store>',
+                'to'      => 'test@gmail.com<John Doe>',
+            ]
+        );
+    }
+
     public function testCallbackWrong(): void
     {
         $this->get('/betaling/1/a4238/callback/?txnid=123456&paymenttype=1&hash=wrong')
