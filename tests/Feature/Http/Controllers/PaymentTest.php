@@ -16,14 +16,14 @@ class PaymentTest extends TestCase
        'phone1'             => '77777777',
        'phone2'             => '66666666',
        'hasShippingAddress' => '0',
-       'shippingPhone'      => '',
+       'shippingPhone'      => '55555555',
        'shippingName'       => 'John',
        'shippingAttn'       => 'Jane',
-       'shippingAddress'    => '',
+       'shippingAddress'    => 'Street 4',
        'shippingAddress2'   => '',
-       'shippingPostbox'    => '',
-       'shippingPostcode'   => '',
-       'shippingCity'       => '',
+       'shippingPostbox'    => 'Postboks2',
+       'shippingPostcode'   => '8000',
+       'shippingCity'       => 'Town',
        'shippingCountry'    => 'DK',
        'note'               => 'Note',
        'payMethod'          => 'creditcard',
@@ -117,52 +117,30 @@ class PaymentTest extends TestCase
         $this->assertDatabaseHas(
             'fakturas',
             [
-                'id' => '1',
-                'navn' => 'Name',
-                'att' => 'Attn',
-                'tlf1' => '77777777',
-                'tlf2' => '66666666',
-                'postname' => 'John',
-                'postatt' => 'Jane',
+                'id'       => 1,
+                'navn'     => 'Name',
+                'att'      => 'Attn',
+                'tlf1'     => '77777777',
+                'tlf2'     => '66666666',
             ]
         );
 
         $this->assertDatabaseMissing('email', ['email' => $payload['email']]);
     }
 
-    public function testAddressSaveNewsletter(): void
-    {
-        $payload = ['newsletter' => '1'] + self::PAYLOAD;
-
-        $this->post('/betaling/1/a4238/address/', $payload)
-            ->assertResponseStatus(303)
-            ->assertRedirect('/betaling/1/a4238/terms/');
-
-        $this->assertDatabaseHas(
-            'fakturas',
-            [
-                'id' => '1',
-                'navn' => 'Name',
-                'att' => 'Attn',
-                'tlf1' => '77777777',
-                'tlf2' => '66666666',
-                'postname' => 'John',
-                'postatt' => 'Jane',
-            ]
-        );
-
-        $this->assertDatabaseHas('email', ['email' => $payload['email']]);
-    }
-
-    public function testAddressSaveIdenticalInfo(): void
+    public function testAddressSaveSameShipping(): void
     {
         $payload = [
-           'name'         => 'Name',
-           'attn'         => 'Name',
-           'phone1'       => '77777777',
-           'phone2'       => '77777777',
-           'shippingName' => 'John',
-           'shippingAttn' => 'John',
+           'hasShippingAddress' => '1',
+           'shippingPhone'      => self::PAYLOAD['phone2'],
+           'shippingName'       => self::PAYLOAD['name'],
+           'shippingAttn'       => self::PAYLOAD['attn'],
+           'shippingAddress'    => self::PAYLOAD['address'],
+           'shippingAddress2'   => '',
+           'shippingPostbox'    => self::PAYLOAD['postbox'],
+           'shippingPostcode'   => self::PAYLOAD['postcode'],
+           'shippingCity'       => self::PAYLOAD['city'],
+           'shippingCountry'    => self::PAYLOAD['country'],
         ] + self::PAYLOAD;
 
         $this->post('/betaling/1/a4238/address/', $payload)
@@ -172,13 +150,77 @@ class PaymentTest extends TestCase
         $this->assertDatabaseHas(
             'fakturas',
             [
-                'id' => '1',
-                'navn' => 'Name',
-                'att' => '',
-                'tlf1' => '',
-                'tlf2' => '77777777',
-                'postname' => 'John',
-                'postatt' => '',
+                'id'      => 1,
+                'altpost' => 0,
+            ]
+        );
+    }
+
+    public function testAddressSaveNewsletter(): void
+    {
+
+        $payload = ['newsletter' => '1', 'hasShippingAddress' => '1'] + self::PAYLOAD;
+
+        $this->post('/betaling/1/a4238/address/', $payload)
+            ->assertResponseStatus(303)
+            ->assertRedirect('/betaling/1/a4238/terms/');
+
+        $this->assertDatabaseHas(
+            'fakturas',
+            [
+                'id'             => 1,
+                'navn'           => 'Name',
+                'att'            => 'Attn',
+                'postnr'         => '4000',
+                'postbox'        => 'Postboks',
+                'tlf1'           => '77777777',
+                'tlf2'           => '66666666',
+                'altpost'        => 1,
+                'postname'       => 'John',
+                'postatt'        => 'Jane',
+                'postpostalcode' => '8000',
+                'postpostbox'    => 'Postboks2',
+            ]
+        );
+
+        $this->assertDatabaseHas('email', ['email' => $payload['email']]);
+    }
+
+    public function testAddressSaveIdenticalInfo(): void
+    {
+        $payload = [
+           'name'               => 'Name',
+           'attn'               => 'Name',
+           'postcode'           => '4000',
+           'postbox'            => '4000',
+           'phone1'             => '77777777',
+           'phone2'             => '77777777',
+           'hasShippingAddress' => '1',
+           'shippingName'       => 'John',
+           'shippingAttn'       => 'John',
+           'shippingPostcode'   => '8000',
+           'shippingPostbox'    => '8000',
+        ] + self::PAYLOAD;
+
+        $this->post('/betaling/1/a4238/address/', $payload)
+            ->assertResponseStatus(303)
+            ->assertRedirect('/betaling/1/a4238/terms/');
+
+        $this->assertDatabaseHas(
+            'fakturas',
+            [
+                'id'             => 1,
+                'navn'           => 'Name',
+                'att'            => '',
+                'postnr'         => '4000',
+                'postbox'        => '',
+                'tlf1'           => '',
+                'tlf2'           => '77777777',
+                'altpost'        => 1,
+                'postname'       => 'John',
+                'postatt'        => '',
+                'postpostalcode' => '8000',
+                'postpostbox'    => '',
             ]
         );
     }
@@ -264,6 +306,23 @@ class PaymentTest extends TestCase
         $this->get('/betaling/1/a4238/status/?txnid=123456&paymenttype=1&hash=aaa42296669b958c3cee6c0475c8093e')
             ->assertResponseStatus(200)
              ->assertSee('Payment is now accepted. We will send your goods by mail as soon as possible.');
+
+        $this->assertDatabaseHas(
+            'emails',
+            [
+                'subject' => 'Order #1 - payment completed',
+                'from'    => 'mail@gmail.com<My store>',
+                'to'      => 'test@gmail.com<John Doe>',
+            ]
+        );
+        $this->assertDatabaseHas(
+            'emails',
+            [
+                'subject' => 'Attn.:  - Payment received for invoice #1',
+                'from'    => 'mail@gmail.com<My store>',
+                'to'      => 'mail@gmail.com<My store>',
+            ]
+        );
     }
 
     public function testStatusFinalizeWrong(): void
@@ -277,6 +336,23 @@ class PaymentTest extends TestCase
     {
         $this->get('/betaling/1/a4238/callback/?txnid=123456&paymenttype=1&hash=aaa42296669b958c3cee6c0475c8093e')
             ->assertResponseStatus(200);
+
+        $this->assertDatabaseHas(
+            'emails',
+            [
+                'subject' => 'Order #1 - payment completed',
+                'from'    => 'mail@gmail.com<My store>',
+                'to'      => 'test@gmail.com<John Doe>',
+            ]
+        );
+        $this->assertDatabaseHas(
+            'emails',
+            [
+                'subject' => 'Attn.:  - Payment received for invoice #1',
+                'from'    => 'mail@gmail.com<My store>',
+                'to'      => 'mail@gmail.com<My store>',
+            ]
+        );
     }
 
     public function testCallbackWrong(): void

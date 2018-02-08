@@ -175,7 +175,7 @@ Note',
         $this->assertDatabaseHas(
             'emails',
             [
-                'id'      => '1',
+                'id'      => 1,
                 'subject' => 'Online order #4',
                 'from'    => $cart['email'] . '<' . $cart['name'] . '>',
                 'to'      => 'mail@gmail.com<My store>',
@@ -275,7 +275,7 @@ Note',
         $this->assertDatabaseHas(
             'emails',
             [
-                'id'      => '1',
+                'id'      => 1,
                 'subject' => 'Online order #4',
                 'from'    => $cart['email'] . '<' . $cart['name'] . '>',
                 'to'      => 'mail@gmail.com<My store>',
@@ -312,7 +312,7 @@ Note',
         $this->assertDatabaseHas(
             'emails',
             [
-                'id'      => '1',
+                'id'      => 1,
                 'subject' => 'Online order #4',
                 'from'    => $cart['email'] . '<' . $cart['name'] . '>',
                 'to'      => 'mail@gmail.com<My store>',
@@ -347,7 +347,7 @@ Note',
         $this->assertDatabaseHas(
             'emails',
             [
-                'id'      => '1',
+                'id'      => 1,
                 'subject' => 'Online order #4',
                 'from'    => $cart['email'] . '<' . $cart['name'] . '>',
                 'to'      => 'mail@gmail.com<My store>',

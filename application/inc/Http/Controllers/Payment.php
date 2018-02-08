@@ -134,32 +134,30 @@ class Payment extends Base
             return $redirect;
         }
 
-        $shippingAttn = '';
-        if ($request->get('shippingAttn') !== $request->get('shippingName')) {
-            $shippingAttn = $request->get('shippingAttn');
-        }
+        $data = $request->request->all();
+        $data = $this->invoiceService->cleanAddressData($data);
 
         $invoice->setStatus('locked')
-            ->setName($request->get('name'))
-            ->setAttn($request->get('attn') !== $request->get('name') ? $request->get('attn') : '')
-            ->setAddress($request->get('address'))
-            ->setPostbox($request->get('postbox'))
-            ->setPostcode($request->get('postcode'))
-            ->setCity($request->get('city'))
-            ->setCountry($request->get('country'))
-            ->setEmail($request->get('email'))
-            ->setPhone1($request->get('phone1') !== $request->get('phone2') ? $request->get('phone1') : '')
-            ->setPhone2($request->get('phone2'))
-            ->setHasShippingAddress($request->request->getBoolean('altpost'))
-            ->setShippingPhone($request->get('shippingPhone'))
-            ->setShippingName($request->get('shippingName'))
-            ->setShippingAttn($shippingAttn)
-            ->setShippingAddress($request->get('shippingAddress'))
-            ->setShippingAddress2($request->get('shippingAddress2'))
-            ->setShippingPostbox($request->get('shippingPostbox'))
-            ->setShippingPostcode($request->get('shippingPostcode'))
-            ->setShippingCity($request->get('shippingCity'))
-            ->setShippingCountry($request->get('shippingCountry'))
+            ->setName($data['name'])
+            ->setAttn($data['attn'])
+            ->setAddress($data['address'])
+            ->setPostbox($data['postbox'])
+            ->setPostcode($data['postcode'])
+            ->setCity($data['city'])
+            ->setCountry($data['country'])
+            ->setEmail($data['email'])
+            ->setPhone1($data['phone1'])
+            ->setPhone2($data['phone2'])
+            ->setHasShippingAddress($data['has_shipping_address'])
+            ->setShippingPhone($data['shipping_phone'])
+            ->setShippingName($data['shipping_name'])
+            ->setShippingAttn($data['shipping_attn'])
+            ->setShippingAddress($data['shipping_address'])
+            ->setShippingAddress2($data['shipping_address2'])
+            ->setShippingPostbox($data['shipping_postbox'])
+            ->setShippingPostcode($data['shipping_postcode'])
+            ->setShippingCity($data['shipping_city'])
+            ->setShippingCountry($data['shipping_country'])
             ->save();
 
         if ($invoice->getInvalid()) {

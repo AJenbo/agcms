@@ -95,33 +95,77 @@ class InvoiceService
 
         $items = json_encode($items);
 
-        $invoice = new Invoice([
-            'item_data'            => $items,
-            'amount'               => $amount,
-            'name'                 => $cart['name'] ?? '',
-            'attn'                 => $cart['attn'] ?? '',
-            'address'              => $cart['address'] ?? '',
-            'postbox'              => $cart['postbox'] ?? '',
-            'postcode'             => $cart['postcode'] ?? '',
-            'city'                 => $cart['city'] ?? '',
-            'country'              => $cart['country'] ?? 'DK',
-            'email'                => $cart['email'] ?? '',
-            'phone1'               => $cart['phone1'] ?? '',
-            'phone2'               => $cart['phone2'] ?? '',
-            'has_shipping_address' => (bool) ($cart['hasShippingAddress'] ?? false),
-            'shipping_phone'       => $cart['shippingPhone'] ?? '',
-            'shipping_name'        => $cart['shippingName'] ?? '',
-            'shipping_attn'        => $cart['shippingAttn'] ?? '',
-            'shipping_address'     => $cart['shippingAddress'] ?? '',
-            'shipping_address2'    => $cart['shippingAddress2'] ?? '',
-            'shipping_postbox'     => $cart['shippingPostbox'] ?? '',
-            'shipping_postcode'    => $cart['shippingPostcode'] ?? '',
-            'shipping_city'        => $cart['shippingCity'] ?? '',
-            'shipping_country'     => $cart['shippingCountry'] ?? 'DK',
-            'note'                 => $cart['note'] ?? '',
+        $addressData = $this->cleanAddressData($cart);
+
+        $invoice = new Invoice($addressData + [
+            'item_data' => $items,
+            'amount'    => $amount,
+            'note'      => $cart['note'] ?? '',
         ]);
 
         return $invoice;
+    }
+
+    /**
+     * Clean up address data.
+     *
+     * @param array $data
+     *
+     * @return array
+     */
+    public function cleanAddressData(array $data): array
+    {
+        $data = [
+            'name'                 => $data['name'] ?? '',
+            'attn'                 => $data['attn'] ?? '',
+            'address'              => $data['address'] ?? '',
+            'postbox'              => $data['postbox'] ?? '',
+            'postcode'             => $data['postcode'] ?? '',
+            'city'                 => $data['city'] ?? '',
+            'country'              => $data['country'] ?? 'DK',
+            'email'                => $data['email'] ?? '',
+            'phone1'               => $data['phone1'] ?? '',
+            'phone2'               => $data['phone2'] ?? '',
+            'has_shipping_address' => (bool) ($data['hasShippingAddress'] ?? false),
+            'shipping_phone'       => $data['shippingPhone'] ?? '',
+            'shipping_name'        => $data['shippingName'] ?? '',
+            'shipping_attn'        => $data['shippingAttn'] ?? '',
+            'shipping_address'     => $data['shippingAddress'] ?? '',
+            'shipping_address2'    => $data['shippingAddress2'] ?? '',
+            'shipping_postbox'     => $data['shippingPostbox'] ?? '',
+            'shipping_postcode'    => $data['shippingPostcode'] ?? '',
+            'shipping_city'        => $data['shippingCity'] ?? '',
+            'shipping_country'     => $data['shippingCountry'] ?? 'DK',
+        ];
+        if ($data['attn'] === $data['name']) {
+            $data['attn'] = '';
+        }
+        if ($data['postbox'] === $data['postcode']) {
+            $data['postbox'] = '';
+        }
+        if ($data['phone1'] === $data['phone2']) {
+            $data['phone1'] = '';
+        }
+        if ($data['shipping_attn'] === $data['shipping_name']) {
+            $data['shipping_attn'] = '';
+        }
+        if ($data['shipping_postbox'] === $data['shipping_postcode']) {
+            $data['shipping_postbox'] = '';
+        }
+        if (!$data['shipping_address2']
+            && ($data['shipping_phone'] === $data['phone1'] || $data['shipping_phone'] === $data['phone2'])
+            && $data['shipping_name'] === $data['name']
+            && $data['shipping_attn'] === $data['attn']
+            && $data['shipping_address'] === $data['address']
+            && $data['shipping_postbox'] === $data['postbox']
+            && $data['shipping_postcode'] === $data['postcode']
+            && $data['shipping_city'] === $data['city']
+            && $data['shipping_country'] === $data['country']
+        ) {
+            $data['has_shipping_address'] = false;
+        }
+
+        return $data;
     }
 
     /**
