@@ -2,7 +2,8 @@
 html {
     font-family: Verdana, Arial, Helvetica, sans-serif;
 }
-#text {
+#text,
+.liste .vare {
     font-family: "Times New Roman", Times, serif;
 }
 body {
