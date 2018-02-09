@@ -6,6 +6,14 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 ### Changed
+- Fix getting payment model
+
+### Added
+
+### Removed
+
+## [1.1.1] - 2018-02-08
+### Changed
 - Fix redirect on missing root page
 - Don't show inactive brands
 - Fix order shipping address
