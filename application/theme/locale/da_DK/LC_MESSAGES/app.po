@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: agcms\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2017-12-11 01:39+0100\n"
-"PO-Revision-Date: 2017-12-11 01:39+0100\n"
+"PO-Revision-Date: 2018-02-10 01:22+0100\n"
 "Last-Translator: Anders Jenbo <anders@jenbo.dk>\n"
 "Language-Team: \n"
 "Language: da\n"
@@ -2069,7 +2069,7 @@ msgstr "Tilbud"
 
 #: /tmp/cache/5a2dd3c6e892a/6f/6f3aa23f9573fa1d018ae4d00282006532278532cbf0085f27df5d73c5e6f6d8.php:83
 msgid "Order by column:"
-msgstr "Sorter efter kolonde:"
+msgstr "Sorter efter kolonne:"
 
 #: /tmp/cache/5a2dd3c6e892a/6f/6f3aa23f9573fa1d018ae4d00282006532278532cbf0085f27df5d73c5e6f6d8.php:95
 msgid "Ordering:"
