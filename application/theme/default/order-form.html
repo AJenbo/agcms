@@ -19,7 +19,7 @@
                         <td class="td1"></td>
                         <td></td>
                         <td class="td3 tal">Total</td>
-                        <td class="td4 tal" id="total">{{invoice.amount|number_format(2, ',', '')}}</td>
+                        <td class="td4 tal" id="total">{{invoice.amount|number_format(2, localeconv.mon_decimal_point, '')}}</td>
                     </tr>
                 </tfoot>
                 <tbody>
@@ -30,10 +30,10 @@
                         </td>
                         <td>{{item.title}}</td>
                         <td class="tal">
-                            {% if item.value %}{{(item.value * (1 + invoice.vat))|number_format(2, ',', '')}}{% else %}*{% endif %}
+                            {% if item.value %}{{(item.value * (1 + invoice.vat))|number_format(2, localeconv.mon_decimal_point, '')}}{% else %}*{% endif %}
                         </td>
                         <td class="tal total">
-                            {% if item.value %}{{(item.value * item.quantity * (1 + invoice.vat))|number_format(2, ',', '')}}{% else %}*{% endif %}
+                            {% if item.value %}{{(item.value * item.quantity * (1 + invoice.vat))|number_format(2, localeconv.mon_decimal_point, '')}}{% else %}*{% endif %}
                         </td>
                     </tr>
                     {% endfor %}

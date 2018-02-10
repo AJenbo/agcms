@@ -19,7 +19,7 @@
                     <img class="laemere web" src="/theme/arms-gallery.dk/images/info.gif" alt="{{'Read more'|trans}}" width="83" height="15" />
                 </a>
                 <div style="padding:5px;text-align:right">
-                    {% if product.price > 0 %}<strong>{{product.price|number_format(0, ',', '.')}},-</strong>{% else %}&nbsp;{% endif %}
+                    {% if product.price > 0 %}<strong>{{product.price|number_format(0, localeconv()['mon_decimal_point'], '.')}},-</strong>{% else %}&nbsp;{% endif %}
                 </div>
             </div>
         </td>

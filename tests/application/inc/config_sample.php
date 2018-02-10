@@ -8,7 +8,7 @@
 return [
     'enviroment' => 'test',
     'timezone'   => 'Europe/Copenhagen',
-    'locale'     => 'da_DK',
+    'locale'     => 'en_US',
     'base_url'   => 'https://localhost',
     'site_name'  => 'My store',
 
@@ -17,13 +17,13 @@ return [
     'emails' => [
         'mail@gmail.com' => [
             'address'  => 'mail@gmail.com',
-            'password' => 'password',
+            'password' => '',
             'sentBox'  => 'INBOX.Sent',
-            'imapHost' => 'imap.example.dk',
-            'imapPort' => 143,
-            'smtpHost' => 'smtp.example.com',
-            'smtpPort' => '25',
-            'smtpAuth' => true,
+            'imapHost' => '',
+            'imapPort' => 0,
+            'smtpHost' => '',
+            'smtpPort' => '',
+            'smtpAuth' => false,
         ],
     ],
 

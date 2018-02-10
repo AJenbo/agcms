@@ -438,12 +438,13 @@ class InvoiceService
         $emailBody = app('render')->render(
             $emailTemplate,
             [
-                'invoice'  => $invoice,
-                'siteName' => config('site_name'),
-                'address'  => config('address'),
-                'postcode' => config('postcode'),
-                'city'     => config('city'),
-                'phone'    => config('phone'),
+                'invoice'    => $invoice,
+                'localeconv' => localeconv(),
+                'siteName'   => config('site_name'),
+                'address'    => config('address'),
+                'postcode'   => config('postcode'),
+                'city'       => config('city'),
+                'phone'      => config('phone'),
             ]
         );
 

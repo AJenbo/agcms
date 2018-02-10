@@ -402,12 +402,13 @@ class Payment extends Base
     private function sendCustomerEmail(Invoice $invoice): void
     {
         $data = [
-            'invoice'  => $invoice,
-            'siteName' => config('site_name'),
-            'address'  => config('address'),
-            'postcode' => config('postcode'),
-            'city'     => config('city'),
-            'phone'    => config('phone'),
+            'invoice'    => $invoice,
+            'localeconv' => localeconv(),
+            'siteName'   => config('site_name'),
+            'address'    => config('address'),
+            'postcode'   => config('postcode'),
+            'city'       => config('city'),
+            'phone'      => config('phone'),
         ];
         $email = new Email([
             'subject'          => sprintf(_('Order #%d - payment completed'), $invoice->getId()),
@@ -441,9 +442,15 @@ class Payment extends Base
             $invoice->getClerk(),
             $invoice->getId()
         );
+
+        $emailBody = app('render')->render(
+            'admin/email/payment-confirmation',
+            ['invoice' => $invoice, 'localeconv' => localeconv()]
+        );
+
         $email = new Email([
             'subject'          => $subject,
-            'body'             => app('render')->render('admin/email/payment-confirmation', ['invoice' => $invoice]),
+            'body'             => $emailBody,
             'senderName'       => config('site_name'),
             'senderAddress'    => $invoice->getDepartment(),
             'recipientName'    => config('site_name'),

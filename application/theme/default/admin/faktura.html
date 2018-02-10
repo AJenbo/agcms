@@ -447,7 +447,7 @@
             <td>&nbsp;</td>
             <td>&nbsp;</td>
             <td class="tal">{{'Net Amount'|trans}}</td>
-            <td class="tal" id="netto">{{invoice.netAmount|number_format(2, ',', '')}}</td>
+            <td class="tal" id="netto">{{invoice.netAmount|number_format(2, localeconv.mon_decimal_point, '')}}</td>
         </tr>
         <tr>
             <td>&nbsp;</td>
@@ -455,9 +455,9 @@
             <td class="tal">{{'Freight'|trans}}</td>
             <td class="tal">
                 {% if not invoice or invoice.status == 'new' %}
-                <input maxlength="9" name="fragt" id="fragt" style="width:80px" class="tal" value="{{invoice.shipping|number_format(2, ',', '')}}" onkeyup="prisUpdate()" onchange="prisUpdate()" onblur="prisUpdate()" />
+                <input maxlength="9" name="fragt" id="fragt" style="width:80px" class="tal" value="{{invoice.shipping|number_format(2, localeconv.mon_decimal_point, '')}}" onkeyup="prisUpdate()" onchange="prisUpdate()" onblur="prisUpdate()" />
                 {% else %}
-                {{invoice.shipping|number_format(2, ',', '')}}
+                {{invoice.shipping|number_format(2, localeconv.mon_decimal_point, '')}}
                 {% endif %}
             </td>
         </tr>
@@ -474,13 +474,13 @@
                 {% endif %}
             </td>
             <td class="tal">{{'VAT Amount'|trans}}</td>
-            <td class="tal" id="moms">{{(invoice.vat * invoice.netAmount)|number_format(2, ',', '')}}</td>
+            <td class="tal" id="moms">{{(invoice.vat * invoice.netAmount)|number_format(2, localeconv.mon_decimal_point, '')}}</td>
         </tr>
         <tr class="border">
             <td colspan="2">&nbsp;</td>
             <td style="text-align:center;font-weight:bold">{{'TO PAY'|trans}}</td>
             <td class="tal" id="payamount">
-                {{((invoice.vat + 1) * invoice.netAmount + invoice.shipping)|number_format(2, ',', '')}}
+                {{((invoice.vat + 1) * invoice.netAmount + invoice.shipping)|number_format(2, localeconv.mon_decimal_point, '')}}
             </td>
         </tr>
     </tfoot>
@@ -495,7 +495,7 @@
                 <input name="product" style="width:303px" value="{{item.title}}" onkeyup="prisUpdate()" onchange="prisUpdate()" onblur="prisUpdate()" />
             </td>
             <td>
-                <input name="value" style="width:69px" class="tal" value="{% if invoice.hasPreVat %}{{(item.value * 1.25)|number_format(2, ',', '')}}{% else %}{{item.value|number_format(2, ',', '')}}{% endif %}" onkeyup="prisUpdate()" onchange="prisUpdate()" onblur="prisUpdate()" />
+                <input name="value" style="width:69px" class="tal" value="{% if invoice.hasPreVat %}{{(item.value * 1.25)|number_format(2, localeconv.mon_decimal_point, '')}}{% else %}{{item.value|number_format(2, localeconv.mon_decimal_point, '')}}{% endif %}" onkeyup="prisUpdate()" onchange="prisUpdate()" onblur="prisUpdate()" />
             </td>
             <td class="tal total"></td>
             <td style="border:0;font-weight:bold">
@@ -508,8 +508,8 @@
         <tr>
             <td class="tal">{{item.quantity}}</td>
             <td>{{item.title}}</td>
-            <td class="tal">{{item.value|number_format(2, ',', '')}}</td>
-            <td class="tal">{{(item.value * item.quantity)|number_format(2, ',', '')}}</td>
+            <td class="tal">{{item.value|number_format(2, localeconv.mon_decimal_point, '')}}</td>
+            <td class="tal">{{(item.value * item.quantity)|number_format(2, localeconv.mon_decimal_point, '')}}</td>
         </tr>
         {% endif %}
         {% endfor %}

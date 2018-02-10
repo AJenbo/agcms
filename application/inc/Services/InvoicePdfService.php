@@ -325,8 +325,8 @@ class InvoicePdfService
 
         $this->pdf->Cell(self::CELL_WIDTH_QUANTITY, 6, $item['quantity'], 'RL', 0, 'R');
         $lines = $this->pdf->MultiCell(self::CELL_WIDTH_TITLE, 6, $item['title'], 'RL', 'L', false, 0);
-        $this->pdf->Cell(self::CELL_WIDTH_PRICE, 6, number_format($value, 2, ',', ''), 'RL', 0, 'R');
-        $this->pdf->Cell(self::CELL_WIDTH_TOTAL, 6, number_format($lineTotal, 2, ',', ''), 'RL', 1, 'R');
+        $this->pdf->Cell(self::CELL_WIDTH_PRICE, 6, number_format($value, 2, localeconv()['mon_decimal_point'], ''), 'RL', 0, 'R');
+        $this->pdf->Cell(self::CELL_WIDTH_TOTAL, 6, number_format($lineTotal, 2, localeconv()['mon_decimal_point'], ''), 'RL', 1, 'R');
 
         if ($lines > 1) {
             $this->insertTableSpacing($lines - 1);
@@ -358,8 +358,8 @@ class InvoicePdfService
     private function insertTableFooter(): void
     {
         $vatText = ($this->invoice->getVat() * 100) . _('% VAT is: ')
-            . number_format($this->invoice->getNetAmount() * $this->invoice->getVat(), 2, ',', '');
-        $shippingPrice = number_format($this->invoice->getShipping(), 2, ',', '');
+            . number_format($this->invoice->getNetAmount() * $this->invoice->getVat(), 2, localeconv()['mon_decimal_point'], '');
+        $shippingPrice = number_format($this->invoice->getShipping(), 2, localeconv()['mon_decimal_point'], '');
         $finePrint = '<strong>' . _('Payment Terms:') . '</strong> ' . _('Initial net amount.')
             . '<small><br>'
             . _('In case of payment later than the stated deadline, 2% interest will be added per month.')
@@ -376,7 +376,7 @@ class InvoicePdfService
         $this->pdf->SetFont('times', 'B', 11);
         $this->pdf->Cell(self::CELL_WIDTH_PRICE, 9, _('Total (USD)'), 1, 0, 'C');
         $this->pdf->SetFont('times', '', 11);
-        $this->pdf->Cell(self::CELL_WIDTH_TOTAL, 9, number_format($this->invoice->getAmount(), 2, ',', ''), 1, 1, 'R');
+        $this->pdf->Cell(self::CELL_WIDTH_TOTAL, 9, number_format($this->invoice->getAmount(), 2, localeconv()['mon_decimal_point'], ''), 1, 1, 'R');
     }
 
     /**

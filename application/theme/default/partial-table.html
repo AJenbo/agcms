@@ -27,7 +27,7 @@
                         {{row[loop.index0]}}
                     {% else %}
                         {% if row[loop.index0] > 0 %}
-                            {{row[loop.index0]|number_format(0, ',', '.')}}{{'.00'|trans}}
+                            {{row[loop.index0]|number_format(0, localeconv.mon_decimal_point, localeconv.mon_thousands_sep)}}{{'.00'|trans}}
                         {% elseif row[loop.index0] < 0 %}
                             {{'Sold-out'|trans}}
                         {% endif %}

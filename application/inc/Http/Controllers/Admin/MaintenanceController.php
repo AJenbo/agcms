@@ -65,7 +65,7 @@ class MaintenanceController extends AbstractAdminController
         $units = ['B', 'KiB', 'MiB', 'GiB', 'TiB', 'PiB', 'EiB', 'ZiB', 'YiB', 'BiB'];
         foreach ($units as $unit) {
             if ($size < 1024 || 'BiB' === $unit) {
-                return number_format($size, 1, ',', '') . $unit;
+                return number_format($size, 1, localeconv()['mon_decimal_point'], '') . $unit;
             }
 
             $size /= 1024;
