@@ -12,26 +12,33 @@ class Request extends SymfonyRequest
     private $user;
 
     /**
-     * Creates a new request with values from PHP's super globals.
-     *
-     * Also decode json in content data
-     *
-     * @return static
+     * @param array           $query      The GET parameters
+     * @param array           $request    The POST parameters
+     * @param array           $attributes The request attributes (parameters parsed from the PATH_INFO, ...)
+     * @param array           $cookies    The COOKIE parameters
+     * @param array           $files      The FILES parameters
+     * @param array           $server     The SERVER parameters
+     * @param resource|string $content    The raw body data
      */
-    public static function createFromGlobals()
-    {
-        $request = parent::createFromGlobals();
+    public function __construct(
+        array $query = [],
+        array $request = [],
+        array $attributes = [],
+        array $cookies = [],
+        array $files = [],
+        array $server = [],
+        $content = null
+    ) {
+        parent::__construct($query, $request, $attributes, $cookies, $files, $server, $content);
 
-        $methode = mb_strtoupper($request->server->get('REQUEST_METHOD', 'GET'));
-        if (0 === mb_strpos($request->headers->get('CONTENT_TYPE'), 'application/json')
+        $methode = mb_strtoupper($this->server->get('REQUEST_METHOD', 'GET'));
+        if (0 === mb_strpos($this->headers->get('CONTENT_TYPE'), 'application/json')
             && in_array($methode, ['POST', 'PUT', 'DELETE', 'PATCH'], true)
         ) {
-            $data = json_decode($request->getContent(), true) ?? [];
+            $data = json_decode($this->getContent(), true) ?? [];
             $data = is_array($data) ? $data : ['json' => $data];
-            $request->request = new ParameterBag($data);
+            $this->request = new ParameterBag($data);
         }
-
-        return $request;
     }
 
     /**
