@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ## [Unreleased]
 ### Changed
 - Fix getting payment model
+- Allow description link to open in same window
+- Fix typo in danish translation
+- Adjust maxsizes to actual schema limits
 
 ### Added
 
