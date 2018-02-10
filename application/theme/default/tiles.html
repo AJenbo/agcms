@@ -4,7 +4,7 @@
 {% if brand %}
 <p align="center">
     {% if brand.link %}
-    <a rel="nofollow" target="_blank" href="{{brand.link}}">
+    <a rel="nofollow" href="{{brand.link}}">
     {{'Read more about %title%'|trans|replace({'%title%': brand.title})}}
     {% else %}
     {{brand.title}}
