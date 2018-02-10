@@ -353,8 +353,11 @@ h1 {
         position: static;
         width: 100%;
     }
-    #text img {
+    #text img, #text iframe, #text video, #text audio {
         max-width: 100%;
+    }
+    #text img, #text video {
+        height: auto;
     }
     .open {
         font-weight: bold;

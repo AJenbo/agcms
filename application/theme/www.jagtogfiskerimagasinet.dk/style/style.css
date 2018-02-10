@@ -410,8 +410,11 @@ h1 {
         padding: 0 2px;
         width: auto;
     }
-    #text img {
+    #text img, #text iframe, #text video, #text audio {
         max-width: 100%;
+    }
+    #text img, #text video {
+        height: auto;
     }
     #liste {
         margin: auto;
