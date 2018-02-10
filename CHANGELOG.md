@@ -11,6 +11,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Fix typo in danish translation
 - Adjust maxsizes to actual schema limits
 - Fix image scaling on mobile for all themes 
+- Fix searching for invoices by email
 
 ### Added
 
