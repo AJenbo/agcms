@@ -25,7 +25,7 @@ npm run build
 
 **Prerequisites**
 * [Composer](https://getcomposer.org/download/)
-* [NPM](https://getcomposer.org/download/)
+* [NPM](https://www.npmjs.com/get-npm)
 * [NodeJS](https://nodejs.org/en/)
 * [Docker Compose](https://docs.docker.com/compose/)
 
