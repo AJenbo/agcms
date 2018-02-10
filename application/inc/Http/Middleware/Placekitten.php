@@ -21,7 +21,7 @@ class Placekitten implements Middleware
         $width = config('thumb_width');
         $height = config('thumb_height');
 
-        $requestUrl = urldecode($request->getRequestUri());
+        $requestUrl = rawurldecode($request->getRequestUri());
         $file = File::getByPath($requestUrl);
         if ($file) {
             $width = $file->getWidth();

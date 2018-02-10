@@ -238,7 +238,7 @@ class Application
     private function dispatch(Request $request): Response
     {
         $metode = $request->getMethod();
-        $requestUrl = urldecode($request->getPathInfo());
+        $requestUrl = rawurldecode($request->getPathInfo());
         $processRequest = $this->matchRoute($metode, $requestUrl);
 
         foreach ($this->middleware as $middleware) {

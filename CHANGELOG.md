@@ -12,6 +12,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Adjust maxsizes to actual schema limits
 - Fix image scaling on mobile for all themes 
 - Fix searching for invoices by email
+- Fix looping redirects by cusitently using RFC 3986 for urls
 
 ### Added
 

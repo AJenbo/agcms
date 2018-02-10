@@ -93,6 +93,13 @@ class SiteTest extends TestCase
             ->assertSee('<title>Page 1</title>');
     }
 
+    public function testPagePlusEncoding(): void
+    {
+        $this->get('/kat5-Hidden-Category/side9-Power+.html')
+            ->assertResponseStatus(200)
+            ->assertSee('<title>Power+</title>');
+    }
+
     public function testPageBadId(): void
     {
         $this->get('/kat1-Gallery-Category/side404-Page-1.html')

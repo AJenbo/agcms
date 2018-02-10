@@ -34,7 +34,7 @@ class Base extends AbstractController
                 ' \1',
                 ' ',
             ],
-            urldecode($request->getPathInfo())
+            rawurldecode($request->getPathInfo())
         );
         $query = trim($query);
         if ($query) {

@@ -216,7 +216,7 @@ class Site extends Base
             return $this->redirectToSearch($request);
         }
 
-        if ($page->getCanonicalLink($category) !== urldecode($request->getPathInfo())) {
+        if ($page->getCanonicalLink($category) !== rawurldecode($request->getPathInfo())) {
             return redirect($page->getCanonicalLink($category), Response::HTTP_MOVED_PERMANENTLY);
         }
 
@@ -239,7 +239,7 @@ class Site extends Base
             return $this->redirectToSearch($request);
         }
 
-        if ($renderable->getCanonicalLink() !== urldecode($request->getPathInfo())) {
+        if ($renderable->getCanonicalLink() !== rawurldecode($request->getPathInfo())) {
             return redirect($renderable->getCanonicalLink(), Response::HTTP_MOVED_PERMANENTLY);
         }
 

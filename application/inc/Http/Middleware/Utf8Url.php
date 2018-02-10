@@ -17,7 +17,7 @@ class Utf8Url implements Middleware
      */
     public function handle(Request $request, Closure $next): Response
     {
-        $requestUrl = urldecode($request->getRequestUri());
+        $requestUrl = rawurldecode($request->getRequestUri());
 
         $encoding = mb_detect_encoding($requestUrl, 'UTF-8, ISO-8859-1', true);
         if ('UTF-8' === $encoding) {
