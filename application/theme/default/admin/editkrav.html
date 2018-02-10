@@ -9,7 +9,7 @@
 <form action="" method="post" onsubmit="return savekrav()">
     <input type="submit" accesskey="s" style="width:1px;height:1px;position:absolute;top:-20px;left:-20px" />
     <input type="hidden" name="id" id="id" value="{{requirement.id}}" />
-    <input class="admin_name" type="text" name="navn" id="navn" value="{{requirement.title}}" maxlength="127" size="127" style="width:{{textWidth}}px" />
+    <input class="admin_name" type="text" name="navn" id="navn" value="{{requirement.title}}" maxlength="32" style="width:{{textWidth}}px" />
     <textarea id="text" style="width:{{textWidth}}px;height:420px">{{requirement.html|raw}}</textarea>
     <script type="text/javascript"><!--
         CKEDITOR.config.width = {{textWidth}};
