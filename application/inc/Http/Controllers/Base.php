@@ -8,6 +8,8 @@ use Symfony\Component\HttpFoundation\Request;
 
 class Base extends AbstractController
 {
+    const DEFAULT_ICON = '/theme/default/images/intet-foto.jpg';
+
     /**
      * Generate a redirect to the search page based on the current request url.
      *
@@ -71,7 +73,7 @@ class Base extends AbstractController
             'companyPhone'   => config('phone'),
             'companyEmail'   => first(config('emails'))['address'],
             'localeconv'     => localeconv(),
-            'blankImage'     => config('blank_image', '/theme/default/images/intet-foto.jpg'),
+            'blankImage'     => config('blank_image', self::DEFAULT_ICON),
             'pageCount'      => config('has_count') ? $this->getActivePageCount() : null,
         ];
     }

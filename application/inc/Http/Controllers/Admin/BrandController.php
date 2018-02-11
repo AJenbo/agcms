@@ -1,6 +1,7 @@
 <?php namespace App\Http\Controllers\Admin;
 
 use App\Exceptions\InvalidInput;
+use App\Http\Controllers\Base;
 use App\Models\Brand;
 use App\Models\File;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -20,7 +21,7 @@ class BrandController extends AbstractAdminController
     {
         $data = $this->basicPageData($request);
         $data['brands'] = app('orm')->getByQuery(Brand::class, 'SELECT * FROM `maerke` ORDER BY navn');
-        $data['blank_image'] = config('blank_image', '/theme/default/images/intet-foto.jpg');
+        $data['blank_image'] = config('blank_image', Base::DEFAULT_ICON);
 
         return $this->render('admin/maerker', $data);
     }
@@ -37,7 +38,7 @@ class BrandController extends AbstractAdminController
     {
         $data = $this->basicPageData($request);
         $data['brand'] = $id ? app('orm')->getOne(Brand::class, $id) : null;
-        $data['blank_image'] = config('blank_image', '/theme/default/images/intet-foto.jpg');
+        $data['blank_image'] = config('blank_image', Base::DEFAULT_ICON);
 
         return $this->render('admin/updatemaerke', $data);
     }

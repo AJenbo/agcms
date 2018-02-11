@@ -1,6 +1,7 @@
 <?php namespace App\Http\Controllers\Admin;
 
 use App\Exceptions\InvalidInput;
+use App\Http\Controllers\Base;
 use App\Models\Brand;
 use App\Models\Category;
 use App\Models\File;
@@ -65,7 +66,7 @@ class PageController extends AbstractAdminController
             'page'         => $page,
             'bindings'     => $bindings,
             'accessories'  => $accessories,
-            'blank_image'  => config('blank_image', '/theme/default/images/intet-foto.jpg'),
+            'blank_image'  => config('blank_image', Base::DEFAULT_ICON),
         ] + $this->basicPageData($request);
 
         return $this->render('admin/redigerside', $data);
