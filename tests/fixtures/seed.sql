@@ -80,8 +80,19 @@ INSERT INTO `fakturas` (`id`, `status`, `quantities`, `products`, `values`, `fra
 (3, 'canceled', '1', 'Test Item', '100', 59, 159, 'now',        'now', 'Unknown', '', '', 'John Doe', 'Jane Doe', '50 Oakland Ave', 'P.O. box #578', '32104', 'A City, Florida', 'john@example.com', '88888886', '88888887', 0,         '',         '',            '',                '',              '',              '',      '',              '', '', '', '', '');
 
 -- email
-INSERT INTO `email` (`id`, `email`, `interests`, `navn`, `adresse`, `post`, `tlf1`, `tlf2`) VALUES
-(1, 'john-email@excample.com', '', 'John Email', '48 Email street', '31047', '88888891', '88888892');
+INSERT INTO `email` (`id`, `email`, `interests`, `navn`, `adresse`, `post`, `tlf1`, `tlf2`, kartotek) VALUES
+(1,  'john-email@excample.com',                '', 'John Email', '48 Email street', '31047', '88888891', '88888892', 1),
+(2, 'john-email2@excample.com',            'cats', 'John Email', '48 Email street', '31047',         '',         '', 0),
+(3, 'john-email3@excample.com',            'cats', 'John Email', '48 Email street', '31047',         '',         '', 1),
+(4, 'john-email4@excample.com',       'cats<dogs', 'John Email', '48 Email street', '31047',         '',         '', 1),
+(5, 'john-email5@excample.com',      'sheep<cats', 'John Email', '48 Email street', '31047',         '',         '', 1),
+(6, 'john-email6@excample.com', 'sheep<cats<dogs', 'John Email', '48 Email street', '31047',         '',         '', 1),
+(7, 'john-email7@excample.com',      'sheep<dogs', 'John Email', '48 Email street', '31047',         '',         '', 1);
+
+-- newsmails
+INSERT INTO `newsmails` (`id`, `from`, `subject`, `interests`, `text`, `sendt`) VALUES
+(1, 'mail@example.com', 'Old stuff', '', '<p>Body</p>', 1),
+(2, 'mail@example.com', 'New stuff', '', '<p>New body</p>', 0);
 
 -- users
 INSERT INTO `users` (`fullname`, `name`, `password`, `access`, `lastlogin`) VALUES
