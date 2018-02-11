@@ -13,14 +13,16 @@ INSERT INTO `files` (`id`, `path`, `mime`, `alt`, `width`, `height`, `size`) VAL
 
 -- kat
 INSERT INTO `kat` (`id`, `navn`, `bind`, `vis`, `email`, `access`) VALUES
-(-1, 'Trash',             NULL, 0, 'mail@example.com', ''),
-( 0, 'Frontpage',         NULL, 1, 'mail@example.com', ''),
+(-1, 'Trash',             null, 0, 'mail@example.com', ''),
+( 0, 'Frontpage',         null, 1, 'mail@example.com', ''),
 ( 1, 'Gallery Category',     0, 1, 'mail@example.com', ''),
 ( 2, 'List Category',        0, 2, 'mail@example.com', ''),
 ( 3, 'Empty Category',       0, 1, 'mail@example.com', ''),
 ( 4, 'Inactive Category',   -1, 1, 'mail@example.com', ''),
 ( 5, 'Hidden Category',      0, 0, 'mail@example.com', ''),
-( 6, 'Indexed Category',     0, 1, 'mail@example.com', '');
+( 6, 'Indexed Category',     0, 1, 'mail@example.com', ''),
+( 7, 'Sub-category 1',       1, 1, 'mail@example.com', ''),
+( 8, 'Sub-category 2',       1, 1, 'mail@example.com', '');
 
 -- sider
 INSERT INTO `sider` (`id`, `navn`, `text`, `beskrivelse`, `maerke`, `dato`, `icon_id`, `varenr`, `for`, `pris`) VALUES

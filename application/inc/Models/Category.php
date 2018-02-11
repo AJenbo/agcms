@@ -57,8 +57,8 @@ class Category extends AbstractRenderable
             ->setTitle($data['title'])
             ->setId($data['id'] ?? null);
 
-        $this->iconId = $data['icon_id'];
-        $this->parentId = $data['parent_id'];
+        $this->iconId = ((int) $data['icon_id']) ?: null;
+        $this->parentId = null !== $data['parent_id'] ? (int) $data['parent_id'] : null;
         if (null === $this->parentId && $this->id > 0) {
             throw new InvalidInput(_('Cannot create root categories.'), 423);
         }
