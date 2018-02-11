@@ -1,50 +1,39 @@
 <?php namespace Tests\Feature\Http\Controllers\Admin;
 
-use App\Models\User;
-use Tests\TestCase;
+use Tests\AdminTestCase;
 
-class AddressbookControllerTest extends TestCase
+class AddressbookControllerTest extends AdminTestCase
 {
     public function testIndex(): void
     {
-        $user = app('orm')->getOne(User::class, 1);
-
-        $this->actingAs($user)->get('/admin/addressbook/list/')
+        $this->get('/admin/addressbook/list/')
             ->assertResponseStatus(200)
             ->assertSee('<div id="headline">Address Book</div>');
     }
 
     public function testIndexInvalidOrder(): void
     {
-        $user = app('orm')->getOne(User::class, 1);
-
-        $this->actingAs($user)->get('/admin/addressbook/list/?order=wrong')
+        $this->get('/admin/addressbook/list/?order=wrong')
             ->assertResponseStatus(200)
             ->assertSee('<div id="headline">Address Book</div>');
     }
 
     public function testEditContact(): void
     {
-        $user = app('orm')->getOne(User::class, 1);
-
-        $this->actingAs($user)->get('/admin/addressbook/2/')
+        $this->get('/admin/addressbook/2/')
             ->assertResponseStatus(200)
             ->assertSee('<div id="headline">Edit contact person</div>');
     }
 
     public function testEditContactNew(): void
     {
-        $user = app('orm')->getOne(User::class, 1);
-
-        $this->actingAs($user)->get('/admin/addressbook/')
+        $this->get('/admin/addressbook/')
             ->assertResponseStatus(200)
             ->assertSee('<div id="headline">Edit contact person</div>');
     }
 
     public function testCreate(): void
     {
-        $user = app('orm')->getOne(User::class, 1);
-
         $data = [
             'name'       => 'Joe',
             'email'      => 'test@excample.com',
@@ -58,7 +47,7 @@ class AddressbookControllerTest extends TestCase
             'interests'  => ['cats', 'mise'],
         ];
 
-        $this->actingAs($user)->json('POST', '/admin/addressbook/', $data)
+        $this->json('POST', '/admin/addressbook/', $data)
             ->assertResponseStatus(200);
 
         $this->assertDatabaseHas(
@@ -80,8 +69,6 @@ class AddressbookControllerTest extends TestCase
 
     public function testUpdate(): void
     {
-        $user = app('orm')->getOne(User::class, 1);
-
         $data = [
             'name'       => 'Joe',
             'email'      => 'test@excample.com',
@@ -95,7 +82,7 @@ class AddressbookControllerTest extends TestCase
             'interests'  => ['cats', 'mise'],
         ];
 
-        $this->actingAs($user)->json('PUT', '/admin/addressbook/1/', $data)
+        $this->json('PUT', '/admin/addressbook/1/', $data)
             ->assertResponseStatus(200);
 
         $this->assertDatabaseHas(
@@ -118,17 +105,13 @@ class AddressbookControllerTest extends TestCase
 
     public function testUpdate404(): void
     {
-        $user = app('orm')->getOne(User::class, 1);
-
-        $this->actingAs($user)->json('PUT', '/admin/addressbook/404/', [])
+        $this->json('PUT', '/admin/addressbook/404/', [])
             ->assertResponseStatus(404);
     }
 
     public function testDelete(): void
     {
-        $user = app('orm')->getOne(User::class, 1);
-
-        $this->actingAs($user)->json('DELETE', '/admin/addressbook/1/', [])
+        $this->json('DELETE', '/admin/addressbook/1/', [])
             ->assertResponseStatus(200);
 
         $this->assertDatabaseMissing('email', ['id' => 1]);
@@ -136,9 +119,7 @@ class AddressbookControllerTest extends TestCase
 
     public function testIsValidEmail(): void
     {
-        $user = app('orm')->getOne(User::class, 1);
-
-        $this->actingAs($user)->json('GET', '/admin/addressbook/validEmail/?email=test%40excample.com')
+        $this->json('GET', '/admin/addressbook/validEmail/?email=test%40excample.com')
             ->assertResponseStatus(200)
             ->assertJson(['isValid' => true]);
     }
