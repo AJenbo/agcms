@@ -65,10 +65,11 @@ class NewsletterController extends AbstractAdminController
      */
     public function create(Request $request): JsonResponse
     {
+        $html = purifyHTML($request->get('html'));
         $newsletter = new Newsletter([
             'from'       => $request->request->get('from'),
             'subject'    => $request->request->get('subject'),
-            'html'       => $request->request->get('html'),
+            'html'       => $html,
             'interests'  => $request->request->get('interests', []),
         ]);
         $newsletter->save();
