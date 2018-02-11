@@ -9,7 +9,7 @@ INSERT INTO `krav` (`id`, `navn`, `text`) VALUES
 
 -- files
 INSERT INTO `files` (`id`, `path`, `mime`, `alt`, `width`, `height`, `size`) VALUES
-(1, '/images/test.jpg', 'image/jpeg', 'Test', 64, 64, 1024);
+(1, '/images/test.jpg', 'image/jpeg', 'Test', 128, 64, 1024);
 
 -- kat
 INSERT INTO `kat` (`id`, `navn`, `bind`, `vis`, `email`, `access`) VALUES
