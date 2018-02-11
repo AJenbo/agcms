@@ -18,6 +18,11 @@ class Placekitten implements Middleware
      */
     public function handle(Request $request, Closure $next): Response
     {
+        $requestUrl = $request->getPathInfo();
+        if (0 !== mb_strpos($requestUrl, '/files/') && 0 !== mb_strpos($requestUrl, '/images/')) {
+            return $next($request);
+        }
+
         $width = config('thumb_width');
         $height = config('thumb_height');
 

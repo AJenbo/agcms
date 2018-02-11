@@ -25,10 +25,9 @@ use App\Http\Middleware\Auth;
 use App\Http\Middleware\Placekitten;
 use App\Http\Middleware\Utf8Url;
 
-$app->addMiddleware('/', Utf8Url::class);
+$app->middleware([Utf8Url::class, Auth::class]);
 if ('develop' === config('enviroment')) {
-    $app->addMiddleware('/images/', Placekitten::class);
-    $app->addMiddleware('/files/', Placekitten::class);
+    $app->middleware(Placekitten::class);
 }
 
 // Set up site routes
@@ -64,7 +63,6 @@ $app->addRoute('GET', '/sitemap.xml', Feed::class, 'siteMap');
 $app->addRoute('GET', '/feed/rss/', Feed::class, 'rss');
 
 // Admin backoffice
-$app->addMiddleware('/admin/', Auth::class);
 // Main index
 $app->addRoute('GET', '/admin/', AdminController::class, 'index');
 $app->addRoute('GET', '/admin/logout', AdminController::class, 'logout');

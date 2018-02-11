@@ -19,8 +19,12 @@ class Application
     /** @var string */
     private $basePath;
 
-    /** @var array[] */
-    private $middleware = [];
+    /**
+     * All of the global middleware for the application.
+     *
+     * @var array[]
+     */
+    protected $middleware = [];
 
     /** @var array[] */
     private $routes = [];
@@ -150,16 +154,19 @@ class Application
     }
 
     /**
-     * Add middleware.
+     * Add new middleware to the application.
      *
-     * @param string $uriPrefix
-     * @param string $middleware
+     * @param string|string[] $middleware
      *
-     * @return void
+     * @return $this
      */
-    public function addMiddleware(string $uriPrefix, string $middleware): void
+    public function middleware($middleware): self
     {
-        $this->middleware[] = ['uriPrefix' => $uriPrefix, 'middleware' => $middleware];
+        $middleware = (array) $middleware;
+
+        $this->middleware = array_unique(array_merge($this->middleware, $middleware));
+
+        return $this;
     }
 
     /**
@@ -242,9 +249,7 @@ class Application
         $processRequest = $this->matchRoute($metode, $requestUrl);
 
         foreach ($this->middleware as $middleware) {
-            if (0 === mb_strpos($requestUrl, $middleware['uriPrefix'])) {
-                $processRequest = $this->wrapMiddleware($middleware['middleware'], $processRequest);
-            }
+            $processRequest = $this->wrapMiddleware($middleware, $processRequest);
         }
 
         return $processRequest($request);
