@@ -10,6 +10,7 @@ RUN apt-get update -y \
     && docker-php-ext-configure gd --with-png-dir=/usr/include/ --with-jpeg-dir=/usr/include/ \
     && docker-php-ext-install pdo pdo_mysql soap mbstring gd gettext intl \
     && docker-php-ext-enable pdo pdo_mysql soap mbstring gd gettext intl \
+    && docker-php-source delete \
     && apt-get purge -y libxml2-dev libpng-dev libjpeg62-turbo-dev libicu-dev \
     && apt-get autoremove --purge -y \
     && apt-get clean \
