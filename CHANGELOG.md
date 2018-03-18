@@ -7,6 +7,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ## [Unreleased]
 ### Changed
 - Fix searching for product by sku
+- Add IE9 compatability for clients
 
 ### Added
 
@@ -18,7 +19,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Allow description link to open in same window
 - Fix typo in danish translation
 - Adjust maxsizes to actual schema limits
-- Fix image scaling on mobile for all themes 
+- Fix image scaling on mobile for all themes
 - Fix searching for invoices by email
 - Fix looping redirects by cusitently using RFC 3986 for urls
 

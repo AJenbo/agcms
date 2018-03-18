@@ -1,3 +1,4 @@
+import "babel-polyfill";
 import xHttp from "./xHttp.js";
 import {getAddress, changeZipCode} from "./getAddress.js";
 import shoppingCart from "./shoppingCart.js";

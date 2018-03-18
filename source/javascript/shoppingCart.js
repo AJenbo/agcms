@@ -129,7 +129,10 @@ const shoppingCart = {
     },
     "onupdate": function() {
         const itemCount = shoppingCart.getCart().items.length;
-        document.getElementById("count").firstChild.data = itemCount;
+        const mobileCart = document.getElementById("count");
+        if (mobileCart) {
+            mobileCart.firstChild.data = itemCount;
+        }
         document.getElementById("cartCount").innerText = itemCount ? "(" + itemCount + ")" : "";
     }
 };
