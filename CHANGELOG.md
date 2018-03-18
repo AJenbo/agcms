@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ### Changed
 - Fix searching for product by sku
 - Add IE9 compatability for clients
+- Fix searching for sku and email
 
 ### Added
 

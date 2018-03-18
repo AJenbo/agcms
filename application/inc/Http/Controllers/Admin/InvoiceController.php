@@ -136,7 +136,7 @@ class InvoiceController extends AbstractAdminController
         }
 
         if ($selected['email']) {
-            $where[] = '`email` LIKE ' . app('db')->eandq('%' . $selected['email'] . '%');
+            $where[] = '`email` LIKE ' . app('db')->quote('%' . $selected['email'] . '%');
         }
 
         if (null !== $selected['momssats']) {
