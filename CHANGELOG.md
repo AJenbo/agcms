@@ -6,13 +6,16 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 ### Changed
-- Fix searching for product by sku
-- Add IE9 compatability for clients
-- Fix searching for sku and email
 
 ### Added
 
 ### Removed
+
+## [1.1.3] - 2018-03-18
+### Changed
+- Fix searching for product by sku
+- Add IE9 compatability for clients
+- Fix searching for invoices by email
 
 ## [1.1.2] - 2018-02-10
 ### Changed
