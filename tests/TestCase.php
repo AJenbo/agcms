@@ -7,7 +7,6 @@ use App\Services\ConfigService;
 use DateTime;
 use DateTimeZone;
 use PHPUnit\Framework\TestCase as BaseTestCase;
-use Symfony\Component\HttpFoundation\Response;
 
 abstract class TestCase extends BaseTestCase
 {
