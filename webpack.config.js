@@ -1,5 +1,3 @@
-const MinifyPlugin = require("babel-minify-webpack-plugin");
-
 module.exports = {
     entry: {
         "admin": "./source/javascript/admin/index.js",
@@ -12,9 +10,11 @@ module.exports = {
         "huntershouse.dk": "./source/javascript/huntershouse.dk.js"
     },
     output: {filename: "[name].js", path: __dirname + "/application/javascript"},
-    plugins: [new MinifyPlugin({}, {})],
     module: {
-        rules:
-            [{test: /\.js$/, exclude: /node_modules/, use: {loader: "babel-loader", options: {"presets": ["env"]}}}]
+        rules: [{
+            test: /\.js$/,
+            exclude: /node_modules/,
+            use: {loader: "babel-loader", options: {"presets": ["env"]}}
+        }]
     }
 };
