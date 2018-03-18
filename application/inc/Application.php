@@ -244,9 +244,9 @@ class Application
      */
     private function dispatch(Request $request): Response
     {
-        $metode = $request->getMethod();
+        $method = $request->getMethod();
         $requestUrl = rawurldecode($request->getPathInfo());
-        $processRequest = $this->matchRoute($metode, $requestUrl);
+        $processRequest = $this->matchRoute($method, $requestUrl);
 
         foreach ($this->middleware as $middleware) {
             $processRequest = $this->wrapMiddleware($middleware, $processRequest);
@@ -258,18 +258,18 @@ class Application
     /**
      * Wrap closure in a middle ware call.
      *
-     * @param string $metode
+     * @param string $method
      * @param string $requestUrl
      *
      * @return Closure
      */
-    private function matchRoute(string $metode, string $requestUrl): Closure
+    private function matchRoute(string $method, string $requestUrl): Closure
     {
-        if ('HEAD' === $metode) {
-            $metode = 'GET';
+        if ('HEAD' === $method) {
+            $method = 'GET';
         }
 
-        foreach ($this->routes[$metode] ?? [] as $route) {
+        foreach ($this->routes[$method] ?? [] as $route) {
             if (preg_match('%^' . $route['url'] . '$%u', $requestUrl, $matches)) {
                 return function (Request $request) use ($route, $matches): Response {
                     $matches[0] = $request;
