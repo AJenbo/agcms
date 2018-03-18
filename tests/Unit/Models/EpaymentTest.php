@@ -18,7 +18,16 @@ class EpaymentTest extends TestCase
      */
     public function setUp(): void
     {
+        parent::setUp();
+
         $this->epaymentService = M::mock(EpaymentService::class);
+    }
+
+    public function tearDown()
+    {
+        parent::tearDown();
+
+        M::close();
     }
 
     /**
