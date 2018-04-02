@@ -66,7 +66,7 @@ class CategoryController extends AbstractAdminController
             throw new InvalidInput(_('You must enter a title and choose a location for the new category.'));
         }
 
-        $icon = app('orm')->getOne(File::class, $iconId);
+        $icon = $iconId ? app('orm')->getOne(File::class, $iconId) : null;
         $parent = app('orm')->getOne(Category::class, $parentId);
 
         $category = new Category([

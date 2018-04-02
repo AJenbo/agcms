@@ -245,6 +245,11 @@ abstract class TestCase extends BaseTestCase
     {
         $sets = [];
         foreach ($data as $filedName => $value) {
+            if ($value === null) {
+                $sets[] = '`' . $filedName . '` IS NULL';
+                continue;
+            }
+
             $sets[] = '`' . $filedName . '` = ' . app('db')->quote($value);
         }
         $query = 'SELECT * FROM `' . $table . '` WHERE ' . implode(' AND ', $sets);
