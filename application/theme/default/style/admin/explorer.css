@@ -60,7 +60,7 @@ img,
     overflow-y: scroll;
     padding: 5px;
     position: absolute;
-    top: 26px;
+    top: 25px;
     width: 195px;
 }
 #dir div div {
@@ -104,6 +104,7 @@ img,
     width: 178px;
 }
 #files {
+    border-left: 2px #c8c8c8 solid;
     background-color: #fff;
     bottom: 0;
     left: 205px;
@@ -112,7 +113,7 @@ img,
     padding-top: 10px;
     position: absolute;
     right: 0;
-    top: 26px;
+    top: 25px;
 }
 #files .navn {
     border: 1px #fff solid;
