@@ -44,6 +44,31 @@ class CategoryControllerTest extends AdminTestCase
         );
     }
 
+    public function testCreateNoIcon(): void
+    {
+        $data = [
+            'title'       => 'New title',
+            'parentId'    => -1,
+            'render_mode' => 2,
+            'email'       => 'mail@example.com',
+            'icon_id'     => null,
+        ];
+
+        $this->json('POST', '/admin/categories/', $data)
+            ->assertResponseStatus(200);
+
+        $this->assertDatabaseHas(
+            'kat',
+            [
+                'navn'    => $data['title'],
+                'bind'    => $data['parentId'],
+                'vis'     => $data['render_mode'],
+                'email'   => $data['email'],
+                'icon_id' => $data['icon_id'],
+            ]
+        );
+    }
+
     public function testCreateNoTitle(): void
     {
         $data = [
