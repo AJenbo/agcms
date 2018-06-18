@@ -20,7 +20,11 @@ before_script:
   - chmod +x ./cc-test-reporter
   - ./cc-test-reporter before-build
 
-script: phpunit
+script:
+  - cd application
+  - vendor/bin/phpstan analyze --memory-limit=-1 --no-progress --level=max inc/ ../tests/
+  - cd ..
+  - phpunit
 
 after_success:
   - travis_retry php application/vendor/bin/php-coveralls
