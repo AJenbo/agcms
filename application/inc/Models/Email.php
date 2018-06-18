@@ -245,12 +245,12 @@ class Email extends AbstractEntity
     public static function mapFromDB(array $data): array
     {
         $data['from'] = explode('<', $data['from']);
-        $senderName = trim($data['from'][0]);
-        $senderAddress = mb_substr($data['from'][1], 0, -1);
+        $senderAddress = trim($data['from'][0]);
+        $senderName = mb_substr($data['from'][1], 0, -1);
 
         $data['to'] = explode('<', $data['to']);
-        $recipientName = trim($data['to'][0]);
-        $recipientAddress = mb_substr($data['to'][1], 0, -1);
+        $recipientAddress = trim($data['to'][0]);
+        $recipientName = mb_substr($data['to'][1], 0, -1);
 
         return [
             'id'               => $data['id'],
