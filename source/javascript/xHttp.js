@@ -19,7 +19,7 @@ const xHttp = {
                 alert("Error: " + message);
             }
 
-            callback(x.response);
+            callback(x.response || {"error": {"message": x.statusText}});
         };
 
         x.open(method || "GET", uri);
