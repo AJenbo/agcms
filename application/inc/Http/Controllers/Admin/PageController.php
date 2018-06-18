@@ -7,7 +7,9 @@ use App\Models\Category;
 use App\Models\File;
 use App\Models\Page;
 use App\Models\Requirement;
-use App\Render;
+use App\Services\DbService;
+use App\Services\OrmService;
+use App\Services\RenderService;
 use App\Services\SiteTreeService;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -31,12 +33,15 @@ class PageController extends AbstractAdminController
         $openCategories = explode('<', $request->cookies->get('openkat', ''));
         $openCategories = array_map('intval', $openCategories);
 
+        /** @var OrmService */
+        $orm = app(OrmService::class);
+
         $page = null;
         $bindings = [];
         $accessories = [];
         if (null !== $id) {
             /** @var ?Page */
-            $page = app('orm')->getOne(Page::class, $id);
+            $page = $orm->getOne(Page::class, $id);
             if (!$page) {
                 throw new InvalidInput(_('Page not found.'), Response::HTTP_NOT_FOUND);
             }
@@ -61,8 +66,8 @@ class PageController extends AbstractAdminController
             'textWidth'    => config('text_width'),
             'thumbWidth'   => config('thumb_width'),
             'siteTree'     => $siteTreeService->getSiteTreeData($openCategories, 'categories', $selectedId),
-            'requirements' => app('orm')->getByQuery(Requirement::class, 'SELECT * FROM `krav` ORDER BY navn'),
-            'brands'       => app('orm')->getByQuery(Brand::class, 'SELECT * FROM `maerke` ORDER BY navn'),
+            'requirements' => $orm->getByQuery(Requirement::class, 'SELECT * FROM `krav` ORDER BY navn'),
+            'brands'       => $orm->getByQuery(Brand::class, 'SELECT * FROM `maerke` ORDER BY navn'),
             'page'         => $page,
             'bindings'     => $bindings,
             'accessories'  => $accessories,
@@ -83,8 +88,11 @@ class PageController extends AbstractAdminController
      */
     public function createPage(Request $request): JsonResponse
     {
+        /** @var OrmService */
+        $orm = app(OrmService::class);
+
         /** @var ?Category */
-        $category = app('orm')->getOne(Category::class, $request->request->get('categoryId'));
+        $category = $orm->getOne(Category::class, $request->request->get('categoryId'));
         if (!$category) {
             throw new InvalidInput(_('Category not found.'), Response::HTTP_NOT_FOUND);
         }
@@ -121,14 +129,17 @@ class PageController extends AbstractAdminController
      */
     public function updatePage(Request $request, int $id): JsonResponse
     {
+        /** @var OrmService */
+        $orm = app(OrmService::class);
+
         $icon = null;
         if ($request->request->has('iconId')) {
             /** @var ?File */
-            $icon = app('orm')->getOne(File::class, $request->request->getInt('iconId'));
+            $icon = $orm->getOne(File::class, $request->request->getInt('iconId'));
         }
 
         /** @var ?Page */
-        $page = app('orm')->getOne(Page::class, $id);
+        $page = $orm->getOne(Page::class, $id);
         if (!$page) {
             throw new InvalidInput(_('Page not found.'), Response::HTTP_NOT_FOUND);
         }
@@ -160,8 +171,11 @@ class PageController extends AbstractAdminController
      */
     public function delete(Request $request, int $id): JsonResponse
     {
+        /** @var OrmService */
+        $orm = app(OrmService::class);
+
         /** @var ?Page */
-        $page = app('orm')->getOne(Page::class, $id);
+        $page = $orm->getOne(Page::class, $id);
         if ($page) {
             $page->delete();
         }
@@ -182,14 +196,17 @@ class PageController extends AbstractAdminController
      */
     public function addToCategory(Request $request, int $id, int $categoryId): JsonResponse
     {
+        /** @var OrmService */
+        $orm = app(OrmService::class);
+
         /** @var ?Page */
-        $page = app('orm')->getOne(Page::class, $id);
+        $page = $orm->getOne(Page::class, $id);
         if (!$page) {
             throw new InvalidInput(_('Page not found.'), Response::HTTP_NOT_FOUND);
         }
 
         /** @var ?Category */
-        $category = app('orm')->getOne(Category::class, $categoryId);
+        $category = $orm->getOne(Category::class, $categoryId);
         if (!$category) {
             throw new InvalidInput(_('Category not found.'), Response::HTTP_NOT_FOUND);
         }
@@ -229,14 +246,17 @@ class PageController extends AbstractAdminController
      */
     public function removeFromCategory(Request $request, int $id, int $categoryId): JsonResponse
     {
+        /** @var OrmService */
+        $orm = app(OrmService::class);
+
         /** @var ?Page */
-        $page = app('orm')->getOne(Page::class, $id);
+        $page = $orm->getOne(Page::class, $id);
         if (!$page) {
             throw new InvalidInput(_('Page not found.'), Response::HTTP_NOT_FOUND);
         }
 
         /** @var ?Category */
-        $category = app('orm')->getOne(Category::class, $categoryId);
+        $category = $orm->getOne(Category::class, $categoryId);
         if (!$category) {
             throw new InvalidInput(_('Category not found.'), Response::HTTP_NOT_FOUND);
         }
@@ -248,7 +268,7 @@ class PageController extends AbstractAdminController
 
         if (1 === count($page->getCategories())) {
             /** @var ?Category */
-            $inactiveCategory = app('orm')->getOne(Category::class, -1);
+            $inactiveCategory = $orm->getOne(Category::class, -1);
             if (!$inactiveCategory) {
                 throw new InvalidInput(_('Category not found.'), Response::HTTP_NOT_FOUND);
             }
@@ -283,7 +303,10 @@ class PageController extends AbstractAdminController
         $data = ['text' => $text, 'pages' => $pages];
 
         if ($request->isXmlHttpRequest()) {
-            return new JsonResponse(['id' => 'canvas', 'html' => app('render')->render('admin/partial-search', $data)]);
+            /** @var RenderService */
+            $render = app(RenderService::class);
+
+            return new JsonResponse(['id' => 'canvas', 'html' => $render->render('admin/partial-search', $data)]);
         }
 
         return $this->render('admin/search', $data);
@@ -302,14 +325,17 @@ class PageController extends AbstractAdminController
      */
     public function addAccessory(Request $request, int $pageId, int $accessoryId): JsonResponse
     {
+        /** @var OrmService */
+        $orm = app(OrmService::class);
+
         /** @var ?Page */
-        $page = app('orm')->getOne(Page::class, $pageId);
+        $page = $orm->getOne(Page::class, $pageId);
         if (!$page) {
             throw new InvalidInput(_('Page not found.'), Response::HTTP_NOT_FOUND);
         }
 
         /** @var ?Page */
-        $accessory = app('orm')->getOne(Page::class, $accessoryId);
+        $accessory = $orm->getOne(Page::class, $accessoryId);
         if (!$accessory) {
             throw new InvalidInput(_('Accessory not found.'), Response::HTTP_NOT_FOUND);
         }
@@ -341,14 +367,17 @@ class PageController extends AbstractAdminController
      */
     public function removeAccessory(Request $request, int $pageId, int $accessoryId): JsonResponse
     {
+        /** @var OrmService */
+        $orm = app(OrmService::class);
+
         /** @var ?Page */
-        $page = app('orm')->getOne(Page::class, $pageId);
+        $page = $orm->getOne(Page::class, $pageId);
         if (!$page) {
             throw new InvalidInput(_('Page not found.'), Response::HTTP_NOT_FOUND);
         }
 
         /** @var ?Page */
-        $accessory = app('orm')->getOne(Page::class, $accessoryId);
+        $accessory = $orm->getOne(Page::class, $accessoryId);
         if (!$accessory) {
             throw new InvalidInput(_('Accessory not found.'), Response::HTTP_NOT_FOUND);
         }
@@ -372,16 +401,22 @@ class PageController extends AbstractAdminController
             $text
         );
 
+        /** @var DbService */
+        $db = app(DbService::class);
+
+        /** @var OrmService */
+        $orm = app(OrmService::class);
+
         /** @var Page[] */
-        $pages = app('orm')->getByQuery(
+        $pages = $orm->getByQuery(
             Page::class,
             '
             SELECT * FROM sider
-            WHERE MATCH (navn, text, beskrivelse) AGAINST(' . app('db')->quote($text) . ') > 0
-                OR `navn` LIKE ' . app('db')->quote('%' . $simpleq . '%') . '
-                OR `text` LIKE ' . app('db')->quote('%' . $simpleq . '%') . '
-                OR `beskrivelse` LIKE ' . app('db')->quote('%' . $simpleq . '%') . '
-            ORDER BY MATCH (navn, text, beskrivelse) AGAINST(' . app('db')->quote($text) . ') DESC
+            WHERE MATCH (navn, text, beskrivelse) AGAINST(' . $db->quote($text) . ') > 0
+                OR `navn` LIKE ' . $db->quote('%' . $simpleq . '%') . '
+                OR `text` LIKE ' . $db->quote('%' . $simpleq . '%') . '
+                OR `beskrivelse` LIKE ' . $db->quote('%' . $simpleq . '%') . '
+            ORDER BY MATCH (navn, text, beskrivelse) AGAINST(' . $db->quote($text) . ') DESC
             '
         );
 

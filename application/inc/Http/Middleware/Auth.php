@@ -5,6 +5,9 @@ use App\Exceptions\InvalidInput;
 use App\Http\Request;
 use App\Models\User;
 use App\Render;
+use App\Services\DbService;
+use App\Services\OrmService;
+use App\Services\RenderService;
 use Closure;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
@@ -22,10 +25,12 @@ class Auth implements Middleware
     public function handle(Request $request, Closure $next): Response
     {
         $requestUrl = $request->getPathInfo();
-        if (0 !== mb_strpos($requestUrl, '/admin/')
-            || '/admin/users/new/' === $requestUrl
-            || ($request->user() && $request->user()->getAccessLevel())
-        ) {
+        if (0 !== mb_strpos($requestUrl, '/admin/') || '/admin/users/new/' === $requestUrl) {
+            return $next($request);
+        }
+
+        $user = $request->user();
+        if ($user && $user->getAccessLevel()) {
             return $next($request);
         }
 
@@ -58,7 +63,10 @@ class Auth implements Middleware
             );
         }
 
-        return new Response(app('render')->render('admin/login'), Response::HTTP_UNAUTHORIZED);
+        /** @var RenderService */
+        $render = app(RenderService::class);
+
+        return new Response($render->render('admin/login'), Response::HTTP_UNAUTHORIZED);
     }
 
     /**
@@ -70,10 +78,16 @@ class Auth implements Middleware
      */
     private function authenticate(Request $request): void
     {
+        /** @var DbService */
+        $db = app(DbService::class);
+
+        /** @var OrmService */
+        $orm = app(OrmService::class);
+
         /** @var ?User */
-        $user = app('orm')->getOneByQuery(
+        $user = $orm->getOneByQuery(
             User::class,
-            'SELECT * FROM `users` WHERE `name` = ' . app('db')->quote($request->get('username', ''))
+            'SELECT * FROM `users` WHERE `name` = ' . $db->quote($request->get('username', ''))
         );
         if ($user && $user->getAccessLevel() && $user->validatePassword($request->get('password', ''))) {
             $request->startSession();

@@ -3,6 +3,7 @@
 use App\Exceptions\InvalidInput;
 use App\Models\Contact;
 use App\Services\EmailService;
+use App\Services\OrmService;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -18,12 +19,15 @@ class AddressbookController extends AbstractAdminController
      */
     public function index(Request $request): Response
     {
+        /** @var OrmService */
+        $orm = app(OrmService::class);
+
         $data = $this->basicPageData($request);
         $order = $request->get('order');
         if (!in_array($order, ['email', 'tlf1', 'tlf2', 'post', 'adresse'], true)) {
             $order = 'navn';
         }
-        $data['contacts'] = app('orm')->getByQuery(Contact::class, 'SELECT * FROM email ORDER BY ' . $order);
+        $data['contacts'] = $orm->getByQuery(Contact::class, 'SELECT * FROM email ORDER BY ' . $order);
 
         return $this->render('admin/addressbook', $data);
     }
@@ -38,8 +42,11 @@ class AddressbookController extends AbstractAdminController
      */
     public function editContact(Request $request, int $id = null): Response
     {
+        /** @var OrmService */
+        $orm = app(OrmService::class);
+
         $data = $this->basicPageData($request);
-        $data['contact'] = $id ? app('orm')->getOne(Contact::class, $id) : null;
+        $data['contact'] = $id ? $orm->getOne(Contact::class, $id) : null;
         $data['interests'] = config('interests', []);
 
         return $this->render('admin/editContact', $data);
@@ -84,8 +91,11 @@ class AddressbookController extends AbstractAdminController
      */
     public function update(Request $request, int $id): JsonResponse
     {
+        /** @var OrmService */
+        $orm = app(OrmService::class);
+
         /** @var ?Contact */
-        $contact = app('orm')->getOne(Contact::class, $id);
+        $contact = $orm->getOne(Contact::class, $id);
         if (!$contact) {
             throw new InvalidInput(_('Contact not found.'), Response::HTTP_NOT_FOUND);
         }
@@ -115,8 +125,11 @@ class AddressbookController extends AbstractAdminController
      */
     public function delete(Request $request, int $id): JsonResponse
     {
+        /** @var OrmService */
+        $orm = app(OrmService::class);
+
         /** @var ?Contact */
-        $contact = app('orm')->getOne(Contact::class, $id);
+        $contact = $orm->getOne(Contact::class, $id);
         if ($contact) {
             $contact->delete();
         }
@@ -135,6 +148,7 @@ class AddressbookController extends AbstractAdminController
     {
         $email = $request->get('email', '');
 
+        /** @var EmailService */
         $emailService = app(EmailService::class);
         $isValid = $emailService->valideMail($email);
 

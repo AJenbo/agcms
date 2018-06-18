@@ -1,6 +1,7 @@
 <?php namespace App\Models;
 
 use App\Exceptions\InvalidInput;
+use App\Services\DbService;
 use App\Services\EmailService;
 
 class Email extends AbstractEntity
@@ -41,7 +42,9 @@ class Email extends AbstractEntity
      */
     public function __construct(array $data = [])
     {
-        $this->emailService = app(EmailService::class);
+        /** @var EmailService */
+        $emailService = app(EmailService::class);
+        $this->emailService = $emailService;
 
         $this->setTimestamp($data['timestamp'] ?? time())
             ->setSubject($data['subject'])
@@ -252,9 +255,12 @@ class Email extends AbstractEntity
         $recipientAddress = trim($data['to'][0]);
         $recipientName = mb_substr($data['to'][1], 0, -1);
 
+        /** @var DbService */
+        $db = app(DbService::class);
+
         return [
             'id'               => $data['id'],
-            'timestamp'        => strtotime($data['date']) + app('db')->getTimeOffset(),
+            'timestamp'        => strtotime($data['date']) + $db->getTimeOffset(),
             'subject'          => $data['subject'],
             'body'             => $data['body'],
             'senderName'       => $senderName,
@@ -273,12 +279,15 @@ class Email extends AbstractEntity
     {
         $this->setTimestamp(time());
 
+        /** @var DbService */
+        $db = app(DbService::class);
+
         return [
-            'date'    => app('db')->getNowValue(),
-            'subject' => app('db')->quote($this->subject),
-            'body'    => app('db')->quote($this->body),
-            'from'    => app('db')->quote($this->senderAddress . '<' . $this->senderName . '>'),
-            'to'      => app('db')->quote($this->recipientAddress . '<' . $this->recipientName . '>'),
+            'date'    => $db->getNowValue(),
+            'subject' => $db->quote($this->subject),
+            'body'    => $db->quote($this->body),
+            'from'    => $db->quote($this->senderAddress . '<' . $this->senderName . '>'),
+            'to'      => $db->quote($this->recipientAddress . '<' . $this->recipientName . '>'),
         ];
     }
 }

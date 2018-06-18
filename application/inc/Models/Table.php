@@ -1,6 +1,8 @@
 <?php namespace App\Models;
 
 use App\Exceptions\Exception;
+use App\Services\DbService;
+use App\Services\OrmService;
 
 class Table extends AbstractEntity
 {
@@ -75,13 +77,16 @@ class Table extends AbstractEntity
         $columnTitles = explode('<', $data['cell_names']);
         $columnTitles = array_map('html_entity_decode', $columnTitles);
 
+        /** @var OrmService */
+        $orm = app(OrmService::class);
+
         $columns = [];
         foreach ($columnTitles as $key => $title) {
             $sorting = $columnSortings[$key] ?? 0;
             $options = [];
             if ($sorting) {
-                /** @var CustomSorting */
-                $tablesort = app('orm')->getOne(CustomSorting::class, $sorting);
+                /** @var ?CustomSorting */
+                $tablesort = $orm->getOne(CustomSorting::class, $sorting);
                 if ($tablesort) {
                     $options = $tablesort->getItems();
                 }
@@ -254,20 +259,26 @@ class Table extends AbstractEntity
      */
     public function getRows(int $orderBy = null): array
     {
-        $rows = app('db')->fetchArray(
+        /** @var DbService */
+        $db = app(DbService::class);
+
+        $rows = $db->fetchArray(
             '
             SELECT *
             FROM `list_rows`
             WHERE `list_id` = ' . $this->getId()
         );
-        app('db')->addLoadedTable('list_rows');
+        $db->addLoadedTable('list_rows');
+
+        /** @var OrmService */
+        $orm = app(OrmService::class);
 
         // Cells are indexed by id, this is needed for sorting the rows
         foreach ($rows as &$row) {
             $row['id'] = (int) $row['id'];
             $row['page'] = null;
             if ($this->hasLinks() && $row['link']) {
-                $row['page'] = app('orm')->getOne(Page::class, $row['link']);
+                $row['page'] = $orm->getOne(Page::class, $row['link']);
             }
             $cells = explode('<', $row['cells']);
             $cells = array_map('html_entity_decode', $cells);
@@ -297,10 +308,13 @@ class Table extends AbstractEntity
         $cells = array_map('htmlspecialchars', $cells);
         $cells = implode('<', $cells);
 
-        return app('db')->query(
+        /** @var DbService */
+        $db = app(DbService::class);
+
+        return $db->query(
             '
             INSERT INTO `list_rows`(`list_id`, `cells`, `link`)
-            VALUES (' . $this->getId() . ', ' . app('db')->quote($cells) . ', ' . (null === $link ? 'NULL' : $link) . ')
+            VALUES (' . $this->getId() . ', ' . $db->quote($cells) . ', ' . (null === $link ? 'NULL' : $link) . ')
             '
         );
     }
@@ -319,10 +333,13 @@ class Table extends AbstractEntity
         $cells = array_map('htmlspecialchars', $cells);
         $cells = implode('<', $cells);
 
-        app('db')->query(
+        /** @var DbService */
+        $db = app(DbService::class);
+
+        $db->query(
             '
             UPDATE `list_rows` SET
-                `cells` = ' . app('db')->quote($cells) . ',
+                `cells` = ' . $db->quote($cells) . ',
                 `link` = ' . (null === $link ? 'NULL' : $link) . '
             WHERE list_id = ' . $this->getId() . '
               AND id = ' . $rowId
@@ -338,7 +355,10 @@ class Table extends AbstractEntity
      */
     public function removeRow(int $rowId): void
     {
-        app('db')->query('DELETE FROM `list_rows` WHERE list_id = ' . $this->id . ' AND `id` = ' . $rowId);
+        /** @var DbService */
+        $db = app(DbService::class);
+
+        $db->query('DELETE FROM `list_rows` WHERE list_id = ' . $this->id . ' AND `id` = ' . $rowId);
     }
 
     /**
@@ -385,8 +405,11 @@ class Table extends AbstractEntity
      */
     public function getPage(): Page
     {
+        /** @var OrmService */
+        $orm = app(OrmService::class);
+
         /** @var ?Page */
-        $page = app('orm')->getOne(Page::class, $this->pageId);
+        $page = $orm->getOne(Page::class, $this->pageId);
         if (!$page) {
             throw new Exception(_('Page not found.'));
         }
@@ -415,12 +438,15 @@ class Table extends AbstractEntity
         $columnTitles = array_map('htmlspecialchars', $columnTitles);
         $columnTitles = implode('<', $columnTitles);
 
+        /** @var DbService */
+        $db = app(DbService::class);
+
         return [
             'page_id'    => (string) $this->pageId,
-            'title'      => app('db')->quote($this->title),
-            'sorts'      => app('db')->quote($columnSortings),
-            'cells'      => app('db')->quote($columnTypes),
-            'cell_names' => app('db')->quote($columnTitles),
+            'title'      => $db->quote($this->title),
+            'sorts'      => $db->quote($columnSortings),
+            'cells'      => $db->quote($columnTypes),
+            'cell_names' => $db->quote($columnTitles),
             'sort'       => (string) $this->orderBy,
             'link'       => (string) (int) $this->hasLinks,
         ];

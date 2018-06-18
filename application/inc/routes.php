@@ -1,5 +1,6 @@
 <?php
 
+use App\Application;
 use App\Http\Controllers\Admin\AddressbookController;
 use App\Http\Controllers\Admin\AdminController;
 use App\Http\Controllers\Admin\BrandController;
@@ -24,6 +25,9 @@ use App\Http\Controllers\Site;
 use App\Http\Middleware\Auth;
 use App\Http\Middleware\Placekitten;
 use App\Http\Middleware\Utf8Url;
+
+/** @var Application $app */
+$app = $app;
 
 $app->middleware([Utf8Url::class, Auth::class]);
 if ('develop' === config('enviroment')) {

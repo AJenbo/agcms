@@ -1,5 +1,6 @@
 <?php namespace App\Services;
 
+use App\Application;
 use App\Exceptions\Exception;
 use App\Exceptions\InvalidInput;
 use App\Models\File;
@@ -22,11 +23,14 @@ class FileService
     {
         $this->checkPermittedTargetPath($path);
 
-        if (file_exists(app()->basePath($path))) {
+        /** @var Application */
+        $app = app();
+
+        if (file_exists($app->basePath($path))) {
             throw new InvalidInput(_('A file or folder with the same name already exists.'));
         }
 
-        if (!@mkdir(app()->basePath($path), 0771)) {
+        if (!@mkdir($app->basePath($path), 0771)) {
             throw new Exception(
                 _('Could not create folder. You may not have sufficient rights to this folder.')
             );
@@ -46,10 +50,16 @@ class FileService
     {
         $this->checkPermittedPath($path);
 
+        /** @var DbService */
+        $db = app(DbService::class);
+
+        /** @var OrmService */
+        $orm = app(OrmService::class);
+
         /** @var File[] */
-        $files = app('orm')->getByQuery(
+        $files = $orm->getByQuery(
             File::class,
-            'SELECT * FROM `' . File::TABLE_NAME . '` WHERE path LIKE ' . app('db')->quote($path . '/%')
+            'SELECT * FROM `' . File::TABLE_NAME . '` WHERE path LIKE ' . $db->quote($path . '/%')
         );
         foreach ($files as $file) {
             if ($file->isInUse()) {
@@ -59,7 +69,10 @@ class FileService
             $file->delete();
         }
 
-        $this->deltree(app()->basePath($path));
+        /** @var Application */
+        $app = app();
+
+        $this->deltree($app->basePath($path));
     }
 
     /**
@@ -89,7 +102,10 @@ class FileService
      */
     public function checkPermittedPath(string $path): void
     {
-        if (realpath(app()->basePath($path)) !== app()->basePath($path)) {
+        /** @var Application */
+        $app = app();
+
+        if (realpath($app->basePath($path)) !== $app->basePath($path)) {
             throw new InvalidInput(_('Path must be absolute.'));
         }
 
@@ -116,7 +132,10 @@ class FileService
             throw new InvalidInput(_('The name is too long.'));
         }
 
-        if (!is_dir(app()->basePath($dirname . '/'))) {
+        /** @var Application */
+        $app = app();
+
+        if (!is_dir($app->basePath($dirname . '/'))) {
             throw new InvalidInput(_('Target is not a folder.'));
         }
     }
@@ -155,18 +174,21 @@ class FileService
      */
     public function replaceFolderPaths(string $path, string $newPath): void
     {
-        $newPathEsc = app('db')->quote('="' . $newPath . '/');
-        $pathEsc = app('db')->quote('="' . $path . '/');
-        app('db')->query('UPDATE sider    SET text = REPLACE(text, ' . $pathEsc . ', ' . $newPathEsc . ')');
-        app('db')->query('UPDATE template SET text = REPLACE(text, ' . $pathEsc . ', ' . $newPathEsc . ')');
-        app('db')->query('UPDATE special  SET text = REPLACE(text, ' . $pathEsc . ', ' . $newPathEsc . ')');
-        app('db')->query('UPDATE krav     SET text = REPLACE(text, ' . $pathEsc . ', ' . $newPathEsc . ')');
+        /** @var DbService */
+        $db = app(DbService::class);
 
-        app('db')->query(
+        $newPathEsc = $db->quote('="' . $newPath . '/');
+        $pathEsc = $db->quote('="' . $path . '/');
+        $db->query('UPDATE sider    SET text = REPLACE(text, ' . $pathEsc . ', ' . $newPathEsc . ')');
+        $db->query('UPDATE template SET text = REPLACE(text, ' . $pathEsc . ', ' . $newPathEsc . ')');
+        $db->query('UPDATE special  SET text = REPLACE(text, ' . $pathEsc . ', ' . $newPathEsc . ')');
+        $db->query('UPDATE krav     SET text = REPLACE(text, ' . $pathEsc . ', ' . $newPathEsc . ')');
+
+        $db->query(
             '
             UPDATE files
-            SET path = REPLACE(path, ' . app('db')->quote($path . '/') . ', ' . app('db')->quote($newPath . '/') . ')
-            WHERE path LIKE ' . app('db')->quote($path . '/%') . '
+            SET path = REPLACE(path, ' . $db->quote($path . '/') . ', ' . $db->quote($newPath . '/') . ')
+            WHERE path LIKE ' . $db->quote($path . '/%') . '
             '
         );
     }
@@ -182,7 +204,7 @@ class FileService
     {
         $success = true;
 
-        $nodes = scandir($path);
+        $nodes = scandir($path) ?: [];
         foreach ($nodes as $node) {
             if ('.' === $node || '..' === $node) {
                 continue;
@@ -268,7 +290,7 @@ class FileService
             $onclick = 'openImageThumbnail(' . $file->getId() . ')';
             if ($file->getWidth() <= config('thumb_width') && $file->getHeight() <= config('thumb_height')) {
                 $onclick = 'setThumbnail(' . $file->getId() . ','
-                    . htmlspecialchars(json_encode($file->getPath()), ENT_COMPAT | ENT_XHTML) . ')';
+                    . htmlspecialchars(json_encode($file->getPath()) ?: "''", ENT_COMPAT | ENT_XHTML) . ')';
             }
         }
         $html .= ' onclick="' . $onclick . '"> <img src="';
@@ -381,7 +403,10 @@ class FileService
      */
     public function getSubDirs(string $path, string $currentDir): array
     {
-        $folders = glob(app()->basePath($path . '/*/'));
+        /** @var Application */
+        $app = app();
+
+        $folders = glob($app->basePath($path . '/*/'));
         natcasesort($folders);
 
         $dirs = [];
@@ -402,6 +427,9 @@ class FileService
      */
     private function hasSubsDirs(string $path): bool
     {
-        return (bool) glob(app()->basePath($path . '/*/'));
+        /** @var Application */
+        $app = app();
+
+        return (bool) glob($app->basePath($path . '/*/'));
     }
 }

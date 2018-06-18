@@ -7,7 +7,7 @@ class DbService
     /** @var int|null */
     private $timeOffset;
 
-    /** @var PDO */
+    /** @var ?PDO */
     private $connection;
 
     /** @var string */
@@ -115,7 +115,7 @@ class DbService
     {
         $this->connection()->query($query);
 
-        return $this->connection()->lastInsertId();
+        return (int) $this->connection()->lastInsertId();
     }
 
     /**
@@ -197,7 +197,7 @@ class DbService
     /**
      * Remember what tabels where read during page load.
      *
-     * @param string[] ...$tableName The table name
+     * @param string[] ...$tableNames The table name
      *
      * @return void
      */
@@ -210,8 +210,6 @@ class DbService
 
     /**
      * Get update for loaded tables tables.
-     *
-     * @param array $excludeTables
      *
      * @return ?int Unix time stamp, or null if no tables has ben accessed
      */
@@ -229,7 +227,7 @@ class DbService
 
         $updateTime = 0;
         $sql = 'SHOW TABLE STATUS WHERE Name IN(\'' . implode('\', \'', $tableNames) . '\')';
-        $tables = app('db')->fetchArray($sql);
+        $tables = $this->fetchArray($sql);
         foreach ($tables as $table) {
             $updateTime = max($updateTime, strtotime($table['Update_time']) + $this->getTimeOffset());
         }

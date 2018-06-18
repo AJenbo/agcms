@@ -3,7 +3,9 @@
 use App\Exceptions\InvalidInput;
 use App\Models\Category;
 use App\Models\Table;
-use App\Render;
+use App\Services\DbService;
+use App\Services\OrmService;
+use App\Services\RenderService;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 
@@ -25,7 +27,11 @@ class Ajax extends Base
      */
     public function table(Request $request, int $categoryId, int $tableId, int $orderBy): JsonResponse
     {
-        app('db')->addLoadedTable('lists', 'list_rows', 'sider', 'bind', 'kat');
+        /** @var DbService */
+        $db = app(DbService::class);
+
+        $db->addLoadedTable('lists', 'list_rows', 'sider', 'bind', 'kat');
+        /** @var JsonResponse */
         $response = $this->cachedResponse(new JsonResponse());
         if ($response->isNotModified($request)) {
             return $response;
@@ -33,19 +39,25 @@ class Ajax extends Base
 
         $html = '';
 
+        /** @var OrmService */
+        $orm = app(OrmService::class);
+
         /** @var ?Table */
-        $table = app('orm')->getOne(Table::class, $tableId);
+        $table = $orm->getOne(Table::class, $tableId);
         if (!$table) {
             throw new InvalidInput(_('Table not found.'), JsonResponse::HTTP_NOT_FOUND);
         }
 
         if ($table->getRows()) {
+            /** @var RenderService */
+            $render = app(RenderService::class);
+
             $data = [
                 'orderBy'  => $orderBy,
                 'table'    => $table,
-                'category' => app('orm')->getOne(Category::class, $categoryId),
+                'category' => $orm->getOne(Category::class, $categoryId),
             ];
-            $html = app('render')->render('partial-table', $data);
+            $html = $render->render('partial-table', $data);
         }
 
         return $response->setData(['id' => 'table' . $tableId, 'html' => $html]);
@@ -62,20 +74,30 @@ class Ajax extends Base
      */
     public function category(Request $request, int $categoryId, string $orderBy): JsonResponse
     {
-        app('db')->addLoadedTable('sider', 'bind', 'kat');
+        /** @var DbService */
+        $db = app(DbService::class);
+
+        $db->addLoadedTable('sider', 'bind', 'kat');
+        /** @var JsonResponse */
         $response = $this->cachedResponse(new JsonResponse());
         if ($response->isNotModified($request)) {
             return $response;
         }
 
+        /** @var OrmService */
+        $orm = app(OrmService::class);
+
         $data = [
-            'renderable' => app('orm')->getOne(Category::class, $categoryId),
+            'renderable' => $orm->getOne(Category::class, $categoryId),
             'orderBy'    => $orderBy,
         ];
 
+        /** @var RenderService */
+        $render = app(RenderService::class);
+
         return $response->setData([
             'id'   => 'kat' . $categoryId,
-            'html' => app('render')->render('partial-product-list', $data),
+            'html' => $render->render('partial-product-list', $data),
         ]);
     }
 
@@ -91,7 +113,11 @@ class Ajax extends Base
      */
     public function address(Request $request, string $phoneNumber): JsonResponse
     {
-        app('db')->addLoadedTable('fakturas', 'email', 'post');
+        /** @var DbService */
+        $db = app(DbService::class);
+
+        $db->addLoadedTable('fakturas', 'email', 'post');
+        /** @var JsonResponse */
         $response = $this->cachedResponse(new JsonResponse());
         if ($response->isNotModified($request)) {
             return $response;
@@ -108,7 +134,7 @@ class Ajax extends Base
         ];
 
         //Try katalog orders
-        $address = app('db')->fetchOne(
+        $address = $db->fetchOne(
             "
             SELECT * FROM (
                 SELECT
@@ -120,8 +146,8 @@ class Ajax extends Base
                     postbox postbox,
                     email
                 FROM `fakturas`
-                WHERE `tlf1` LIKE " . app('db')->quote($phoneNumber) . '
-                   OR `tlf2` LIKE ' . app('db')->quote($phoneNumber) . '
+                WHERE `tlf1` LIKE " . $db->quote($phoneNumber) . '
+                   OR `tlf2` LIKE ' . $db->quote($phoneNumber) . '
                 ORDER BY id DESC
                 LIMIT 1
             ) x
@@ -136,7 +162,7 @@ class Ajax extends Base
                     postpostbox postbox,
                     email
                 FROM `fakturas`
-                WHERE `posttlf` LIKE ' . app('db')->quote($phoneNumber) . "
+                WHERE `posttlf` LIKE ' . $db->quote($phoneNumber) . "
                 ORDER BY id DESC
                 LIMIT 1
             ) x
@@ -151,8 +177,8 @@ class Ajax extends Base
                     '' postbox,
                     email
                 FROM `email`
-                WHERE `tlf1` LIKE " . app('db')->quote($phoneNumber) . '
-                   OR `tlf2` LIKE ' . app('db')->quote($phoneNumber) . "
+                WHERE `tlf1` LIKE " . $db->quote($phoneNumber) . '
+                   OR `tlf2` LIKE ' . $db->quote($phoneNumber) . "
                 ORDER BY id DESC
                 LIMIT 1
             ) x
@@ -167,7 +193,7 @@ class Ajax extends Base
                     '' postbox,
                     '' email
                 FROM `post`
-                WHERE `recipientID` LIKE " . app('db')->quote($phoneNumber) . '
+                WHERE `recipientID` LIKE " . $db->quote($phoneNumber) . '
                 ORDER BY id DESC
                 LIMIT 1
             ) x

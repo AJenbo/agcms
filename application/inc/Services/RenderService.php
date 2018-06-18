@@ -1,5 +1,6 @@
 <?php namespace App\Services;
 
+use App\Application;
 use Twig_Environment;
 use Twig_Extensions_Extension_I18n;
 use Twig_Loader_Filesystem;
@@ -11,7 +12,9 @@ class RenderService
 
     public function __construct()
     {
-        $templatePath = app()->basePath('/theme');
+        /** @var Application */
+        $app = app();
+        $templatePath = $app->basePath('/theme');
         $loader = new Twig_Loader_Filesystem('default/', $templatePath);
         $langPath = 'default/' . config('locale', 'C') . '/';
         if (file_exists($templatePath . '/' . $langPath)) {
@@ -27,7 +30,7 @@ class RenderService
 
         $this->twig = new Twig_Environment($loader);
         if ('production' === config('enviroment', 'develop')) {
-            $this->twig->setCache(app()->basePath('/theme/cache/twig'));
+            $this->twig->setCache($app->basePath('/theme/cache/twig'));
         }
         if ('develop' === config('enviroment', 'develop')) {
             $this->twig->enableDebug();

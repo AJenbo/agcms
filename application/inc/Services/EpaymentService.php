@@ -18,7 +18,7 @@ class EpaymentService
     /** @var string Service password. */
     private $password;
 
-    /** @var SoapClient Service connection. */
+    /** @var ?SoapClient Service connection. */
     private $soapClient;
 
     /** @var string[] */

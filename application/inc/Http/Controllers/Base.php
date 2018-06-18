@@ -3,6 +3,8 @@
 use App\Exceptions\Exception;
 use App\Models\Category;
 use App\Models\CustomPage;
+use App\Services\DbService;
+use App\Services\OrmService;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 
@@ -55,15 +57,18 @@ class Base extends AbstractController
      */
     protected function basicPageData(): array
     {
+        /** @var OrmService */
+        $orm = app(OrmService::class);
+
         /** @var ?Category */
-        $category = app('orm')->getOne(Category::class, 0);
+        $category = $orm->getOne(Category::class, 0);
         if (!$category) {
             throw new Exception(_('Root category is missing.'));
         }
 
         return [
             'menu'           => $category->getVisibleChildren(),
-            'infoPage'       => app('orm')->getOne(CustomPage::class, 2),
+            'infoPage'       => $orm->getOne(CustomPage::class, 2),
             'crumbs'         => [$category],
             'category'       => $category,
             'companyName'    => config('site_name'),
@@ -85,9 +90,12 @@ class Base extends AbstractController
      */
     private function getActivePageCount(): int
     {
+        /** @var OrmService */
+        $orm = app(OrmService::class);
+
         $activeCategoryIds = [];
         /** @var Category[] */
-        $categories = app('orm')->getByQuery(Category::class, 'SELECT * FROM kat');
+        $categories = $orm->getByQuery(Category::class, 'SELECT * FROM kat');
         foreach ($categories as $category) {
             if ($category->isInactive()) {
                 continue;
@@ -95,7 +103,10 @@ class Base extends AbstractController
             $activeCategoryIds[] = $category->getId();
         }
 
-        $pages = app('db')->fetchOne(
+        /** @var DbService */
+        $db = app(DbService::class);
+
+        $pages = $db->fetchOne(
             'SELECT COUNT(DISTINCT side) as count FROM bind WHERE kat IN(' . implode(',', $activeCategoryIds) . ')'
         );
 

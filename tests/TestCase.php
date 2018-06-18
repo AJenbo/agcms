@@ -4,6 +4,7 @@ use App\Application;
 use App\Http\Request;
 use App\Models\User;
 use App\Services\ConfigService;
+use App\Services\DbService;
 use DateTime;
 use DateTimeZone;
 use PHPUnit\Framework\TestCase as BaseTestCase;
@@ -15,6 +16,9 @@ abstract class TestCase extends BaseTestCase
 
     /** @var User|null */
     private $user;
+
+    /** @var string */
+    private $currentUri;
 
     /**
      * Initiate the database, config and application.
@@ -31,12 +35,15 @@ abstract class TestCase extends BaseTestCase
         // Initialize application
         $this->app = new Application(__DIR__ . '/../application');
 
+        /** @var DbService */
+        $db = app(DbService::class);
+
         // Load schema and seed data
         $sql = file_get_contents(__DIR__ . '/fixtures/schema_sqlite.sql');
         $sql .= file_get_contents(__DIR__ . '/fixtures/seed.sql');
         $queries = explode(';', $sql);
         foreach ($queries as $query) {
-            app('db')->query($query);
+            $db->query($query);
         }
     }
 
@@ -50,6 +57,7 @@ abstract class TestCase extends BaseTestCase
     public function timeToHeader(int $timestamp): string
     {
         // Set the call one hour in to the feature to make sure the data is older
+        /** @var DateTime */
         $lastModified = DateTime::createFromFormat('U', (string) $timestamp, new DateTimeZone('GMT'));
         $lastModified = $lastModified->format('r');
 
@@ -93,7 +101,7 @@ abstract class TestCase extends BaseTestCase
      * @param array    $data
      * @param string[] $headers
      *
-     * @return $this
+     * @return TestResponse
      */
     public function post(string $uri, array $data = [], array $headers = [])
     {
@@ -114,9 +122,9 @@ abstract class TestCase extends BaseTestCase
      */
     public function json(string $method, string $uri, array $data = [], array $headers = []): TestResponse
     {
-        $content = json_encode($data);
+        $content = json_encode($data) ?: null;
         $headers = array_merge([
-            'CONTENT_LENGTH' => mb_strlen($content, '8bit'),
+            'CONTENT_LENGTH' => (string) mb_strlen($content ?: '', '8bit') ?: '0',
             'CONTENT_TYPE'   => 'application/json',
             'Accept'         => 'application/json',
         ], $headers);
@@ -243,17 +251,20 @@ abstract class TestCase extends BaseTestCase
      */
     private function isInDatabase(string $table, array $data): bool
     {
+        /** @var DbService */
+        $db = app(DbService::class);
+
         $sets = [];
         foreach ($data as $filedName => $value) {
-            if ($value === null) {
+            if (null === $value) {
                 $sets[] = '`' . $filedName . '` IS NULL';
                 continue;
             }
 
-            $sets[] = '`' . $filedName . '` = ' . app('db')->quote($value);
+            $sets[] = '`' . $filedName . '` = ' . $db->quote($value);
         }
         $query = 'SELECT * FROM `' . $table . '` WHERE ' . implode(' AND ', $sets);
 
-        return (bool) app('db')->fetchOne($query);
+        return (bool) $db->fetchOne($query);
     }
 }

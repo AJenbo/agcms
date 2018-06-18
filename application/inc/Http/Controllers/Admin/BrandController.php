@@ -4,6 +4,7 @@ use App\Exceptions\InvalidInput;
 use App\Http\Controllers\Base;
 use App\Models\Brand;
 use App\Models\File;
+use App\Services\OrmService;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -19,8 +20,11 @@ class BrandController extends AbstractAdminController
      */
     public function index(Request $request): Response
     {
+        /** @var OrmService */
+        $orm = app(OrmService::class);
+
         $data = $this->basicPageData($request);
-        $data['brands'] = app('orm')->getByQuery(Brand::class, 'SELECT * FROM `maerke` ORDER BY navn');
+        $data['brands'] = $orm->getByQuery(Brand::class, 'SELECT * FROM `maerke` ORDER BY navn');
         $data['blank_image'] = config('blank_image', Base::DEFAULT_ICON);
 
         return $this->render('admin/maerker', $data);
@@ -36,8 +40,10 @@ class BrandController extends AbstractAdminController
      */
     public function editPage(Request $request, int $id): Response
     {
+        /** @var OrmService */
+        $orm = app(OrmService::class);
         $data = $this->basicPageData($request);
-        $data['brand'] = $id ? app('orm')->getOne(Brand::class, $id) : null;
+        $data['brand'] = $id ? $orm->getOne(Brand::class, $id) : null;
         $data['blank_image'] = config('blank_image', Base::DEFAULT_ICON);
 
         return $this->render('admin/updatemaerke', $data);
@@ -86,8 +92,11 @@ class BrandController extends AbstractAdminController
             throw new InvalidInput(_('You must enter a title.'));
         }
 
+        /** @var OrmService */
+        $orm = app(OrmService::class);
+
         /** @var ?Brand */
-        $brand = app('orm')->getOne(Brand::class, $id);
+        $brand = $orm->getOne(Brand::class, $id);
         if (!$brand) {
             throw new InvalidInput(_('Brand not found.'), Response::HTTP_NOT_FOUND);
         }
@@ -95,7 +104,7 @@ class BrandController extends AbstractAdminController
         $icon = null;
         if (null !== $iconId) {
             /** @var ?File */
-            $icon = app('orm')->getOne(File::class, $iconId);
+            $icon = $orm->getOne(File::class, $iconId);
         }
 
         $brand->setIcon($icon)
@@ -115,8 +124,11 @@ class BrandController extends AbstractAdminController
      */
     public function delete(Request $request, int $id): JsonResponse
     {
+        /** @var OrmService */
+        $orm = app(OrmService::class);
+
         /** @var ?Brand */
-        $brand = app('orm')->getOne(Brand::class, $id);
+        $brand = $orm->getOne(Brand::class, $id);
         if ($brand) {
             $brand->delete();
         }

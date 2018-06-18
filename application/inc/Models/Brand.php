@@ -1,5 +1,8 @@
 <?php namespace App\Models;
 
+use App\Services\DbService;
+use App\Services\OrmService;
+
 class Brand extends AbstractRenderable
 {
     use HasIcon;
@@ -87,8 +90,11 @@ class Brand extends AbstractRenderable
      */
     public function hasPages(): bool
     {
+        /** @var OrmService */
+        $orm = app(OrmService::class);
+
         /** @var Page[] */
-        $pages = app('orm')->getByQuery(Page::class, 'SELECT * FROM sider WHERE maerke = ' . $this->getId());
+        $pages = $orm->getByQuery(Page::class, 'SELECT * FROM sider WHERE maerke = ' . $this->getId());
 
         foreach ($pages as $page) {
             if (!$page->isInactive()) {
@@ -112,8 +118,11 @@ class Brand extends AbstractRenderable
             $order = 'navn';
         }
 
+        /** @var OrmService */
+        $orm = app(OrmService::class);
+
         /** @var Page[] */
-        $pages = app('orm')->getByQuery(
+        $pages = $orm->getByQuery(
             Page::class,
             'SELECT * FROM sider WHERE maerke = ' . $this->getId() . ' ORDER BY sider.`' . $order . '` ASC'
         );
@@ -151,9 +160,12 @@ class Brand extends AbstractRenderable
      */
     public function getDbArray(): array
     {
+        /** @var DbService */
+        $db = app(DbService::class);
+
         return [
-            'navn'    => app('db')->quote($this->title),
-            'link'    => app('db')->quote($this->link),
+            'navn'    => $db->quote($this->title),
+            'link'    => $db->quote($this->link),
             'icon_id' => null !== $this->iconId ? (string) $this->iconId : 'NULL',
         ];
     }

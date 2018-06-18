@@ -2,6 +2,7 @@
 
 use App\Exceptions\InvalidInput;
 use App\Models\Requirement;
+use App\Services\OrmService;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -17,9 +18,12 @@ class RequirementController extends AbstractAdminController
      */
     public function index(Request $request): Response
     {
+        /** @var OrmService */
+        $orm = app(OrmService::class);
+
         $data = $this->basicPageData($request);
         /* @var Requirement[] */
-        $data['requirements'] = app('orm')->getByQuery(Requirement::class, 'SELECT * FROM `krav` ORDER BY navn');
+        $data['requirements'] = $orm->getByQuery(Requirement::class, 'SELECT * FROM `krav` ORDER BY navn');
 
         return $this->render('admin/krav', $data);
     }
@@ -59,9 +63,12 @@ class RequirementController extends AbstractAdminController
      */
     public function editPage(Request $request, int $id = null): Response
     {
+        /** @var OrmService */
+        $orm = app(OrmService::class);
+
         $data = $this->basicPageData($request);
         $data['textWidth'] = config('text_width');
-        $data['requirement'] = $id ? app('orm')->getOne(Requirement::class, $id) : null;
+        $data['requirement'] = $id ? $orm->getOne(Requirement::class, $id) : null;
 
         return $this->render('admin/editkrav', $data);
     }
@@ -86,8 +93,11 @@ class RequirementController extends AbstractAdminController
             throw new InvalidInput(_('You must enter a name and a text for the requirement.'));
         }
 
+        /** @var OrmService */
+        $orm = app(OrmService::class);
+
         /** @var ?Requirement */
-        $requirement = app('orm')->getOne(Requirement::class, $id);
+        $requirement = $orm->getOne(Requirement::class, $id);
         if (!$requirement) {
             throw new InvalidInput(_('Requirement not found.'), Response::HTTP_NOT_FOUND);
         }
@@ -107,8 +117,11 @@ class RequirementController extends AbstractAdminController
      */
     public function delete(Request $request, int $id): JsonResponse
     {
+        /** @var OrmService */
+        $orm = app(OrmService::class);
+
         /** @var ?Requirement */
-        $requirement = app('orm')->getOne(Requirement::class, $id);
+        $requirement = $orm->getOne(Requirement::class, $id);
         if ($requirement) {
             $requirement->delete();
         }

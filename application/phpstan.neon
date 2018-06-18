@@ -1,0 +1,9 @@
+parameters:
+	ignoreErrors:
+		- '#Parameter \#1 \$function of function call_user_func_array expects callable, array<int, mixed> given#'
+		- '#Access to undefined constant string::TABLE_NAME#'
+		- '#Cannot call method gettransactionlist\(\) on SoapClient\|null#'
+		- '#Cannot call method delete\(\) on SoapClient\|null#'
+		- '#Cannot call method capture\(\) on SoapClient\|null#'
+		- '#If condition is always true#'
+		- '#Undefined variable: \$app#'

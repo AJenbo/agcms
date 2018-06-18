@@ -1,11 +1,13 @@
 <?php namespace App\Http\Controllers;
 
 use App\Contracts\Renderable;
+use App\Exceptions\InvalidInput;
 use App\Models\Brand;
 use App\Models\Category;
 use App\Models\CustomPage;
 use App\Models\Page;
 use App\Models\Requirement;
+use App\Services\OrmService;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -22,10 +24,16 @@ class Site extends Base
      */
     public function category(Request $request, int $categoryId): Response
     {
+        /** @var OrmService */
+        $orm = app(OrmService::class);
+
         /** @var ?Category */
-        $category = app('orm')->getOne(Category::class, $categoryId);
+        $category = $orm->getOne(Category::class, $categoryId);
         if ($redirect = $this->checkCategoryUrl($request, $category)) {
             return $redirect;
+        }
+        if (!$category) {
+            throw new InvalidInput('Page not found', Response::HTTP_NOT_FOUND);
         }
 
         $template = Category::GALLERY === $category->getRenderMode() ? 'tiles' : 'list';
@@ -56,8 +64,11 @@ class Site extends Base
      */
     public function frontPage(): Response
     {
+        /** @var OrmService */
+        $orm = app(OrmService::class);
+
         $data = [
-            'renderable' => app('orm')->getOne(CustomPage::class, 1),
+            'renderable' => $orm->getOne(CustomPage::class, 1),
         ] + $this->basicPageData();
 
         $response = $this->render('index', $data);
@@ -89,13 +100,19 @@ class Site extends Base
      */
     public function page(Request $request, int $categoryId, int $pageId): Response
     {
+        /** @var OrmService */
+        $orm = app(OrmService::class);
+
         /** @var ?Category */
-        $category = app('orm')->getOne(Category::class, $categoryId);
+        $category = $orm->getOne(Category::class, $categoryId);
         /** @var ?Page */
-        $page = app('orm')->getOne(Page::class, $pageId);
+        $page = $orm->getOne(Page::class, $pageId);
 
         if ($redirect = $this->checkPageUrl($request, $category, $page)) {
             return $redirect;
+        }
+        if (!$category || !$page) {
+            throw new InvalidInput('Page not found', Response::HTTP_NOT_FOUND);
         }
 
         /** @var Renderable[] */
@@ -123,8 +140,11 @@ class Site extends Base
      */
     public function requirement(Request $request, int $requirementId): Response
     {
+        /** @var OrmService */
+        $orm = app(OrmService::class);
+
         /** @var ?Requirement */
-        $requirement = app('orm')->getOne(Requirement::class, $requirementId);
+        $requirement = $orm->getOne(Requirement::class, $requirementId);
         if ($redirect = $this->checkRenderableUrl($request, $requirement)) {
             return $redirect;
         }
@@ -149,13 +169,16 @@ class Site extends Base
      */
     public function brand(Request $request, int $brandId): Response
     {
+        /** @var OrmService */
+        $orm = app(OrmService::class);
+
         /** @var ?Brand */
-        $brand = app('orm')->getOne(Brand::class, $brandId);
+        $brand = $orm->getOne(Brand::class, $brandId);
         if ($redirect = $this->checkRenderableUrl($request, $brand)) {
             return $redirect;
         }
 
-        if (!$brand->hasPages()) {
+        if (!$brand || !$brand->hasPages()) {
             return $this->redirectToSearch($request);
         }
 

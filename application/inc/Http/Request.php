@@ -1,6 +1,8 @@
 <?php namespace App\Http;
 
 use App\Models\User;
+use App\Services\DbService;
+use App\Services\OrmService;
 use Symfony\Component\HttpFoundation\ParameterBag;
 use Symfony\Component\HttpFoundation\Request as SymfonyRequest;
 use Symfony\Component\HttpFoundation\Session\Session;
@@ -32,10 +34,14 @@ class Request extends SymfonyRequest
         parent::__construct($query, $request, $attributes, $cookies, $files, $server, $content);
 
         $methode = mb_strtoupper($this->server->get('REQUEST_METHOD', 'GET'));
-        if (0 === mb_strpos($this->headers->get('CONTENT_TYPE'), 'application/json')
+        /** @var string */
+        $contentType = $this->headers->get('CONTENT_TYPE', 'text/plain');
+        if (0 === mb_strpos($contentType, 'application/json')
             && in_array($methode, ['POST', 'PUT', 'DELETE', 'PATCH'], true)
         ) {
-            $data = json_decode($this->getContent(), true) ?? [];
+            /** @var string */
+            $content = $this->getContent();
+            $data = json_decode($content, true) ?? [];
             $data = is_array($data) ? $data : ['json' => $data];
             $this->request = new ParameterBag($data);
         }
@@ -92,10 +98,16 @@ class Request extends SymfonyRequest
             return null;
         }
 
+        /** @var DbService */
+        $db = app(DbService::class);
+
+        /** @var OrmService */
+        $orm = app(OrmService::class);
+
         /** @var ?User */
-        $user = app('orm')->getOneByQuery(
+        $user = $orm->getOneByQuery(
             User::class,
-            'SELECT * FROM `users` WHERE `id` = ' . $id . ' AND access != 0 AND password = ' . app('db')->quote($hash)
+            'SELECT * FROM `users` WHERE `id` = ' . $id . ' AND access != 0 AND password = ' . $db->quote($hash)
         );
         if ($user) {
             $user->setLastLogin(time())->save();

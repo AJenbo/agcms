@@ -2,6 +2,8 @@
 
 use App\Exceptions\InvalidInput;
 use App\Render;
+use App\Services\DbService;
+use App\Services\OrmService;
 
 class Category extends AbstractRenderable
 {
@@ -269,8 +271,11 @@ class Category extends AbstractRenderable
     {
         $cetegory = null;
         if (null !== $this->parentId) {
+            /** @var OrmService */
+            $orm = app(OrmService::class);
+
             /** @var ?static */
-            $cetegory = app('orm')->getOne(static::class, $this->parentId);
+            $cetegory = $orm->getOne(static::class, $this->parentId);
         }
 
         return $cetegory;
@@ -292,8 +297,11 @@ class Category extends AbstractRenderable
             $orderBy = '`order`, navn';
         }
 
+        /** @var OrmService */
+        $orm = app(OrmService::class);
+
         /** @var self[] */
-        $children = app('orm')->getByQuery(
+        $children = $orm->getByQuery(
             self::class,
             '
             SELECT * FROM kat
@@ -364,14 +372,20 @@ class Category extends AbstractRenderable
      */
     public function getPages(string $order = 'navn', bool $reverseOrder = false): array
     {
-        app('db')->addLoadedTable('bind');
+        /** @var DbService */
+        $db = app(DbService::class);
+
+        $db->addLoadedTable('bind');
 
         if (!in_array($order, ['navn', 'for', 'pris', 'varenr'], true)) {
             $order = 'navn';
         }
 
+        /** @var OrmService */
+        $orm = app(OrmService::class);
+
         /** @var Page[] */
-        $pages = app('orm')->getByQuery(
+        $pages = $orm->getByQuery(
             Page::class,
             '
             SELECT * FROM sider
@@ -406,9 +420,12 @@ class Category extends AbstractRenderable
      */
     public function hasPages(): bool
     {
-        app('db')->addLoadedTable('bind');
+        /** @var DbService */
+        $db = app(DbService::class);
 
-        $hasPages = (bool) app('db')->fetchOne('SELECT kat FROM `bind` WHERE `kat` = ' . $this->getId());
+        $db->addLoadedTable('bind');
+
+        $hasPages = (bool) $db->fetchOne('SELECT kat FROM `bind` WHERE `kat` = ' . $this->getId());
         if ($hasPages) {
             $this->visible = true;
         }
@@ -486,12 +503,15 @@ class Category extends AbstractRenderable
      */
     public function getDbArray(): array
     {
+        /** @var DbService */
+        $db = app(DbService::class);
+
         return [
-            'navn'             => app('db')->quote($this->title),
+            'navn'             => $db->quote($this->title),
             'bind'             => null !== $this->parentId ? (string) $this->parentId : 'NULL',
             'icon_id'          => null !== $this->iconId ? (string) $this->iconId : 'NULL',
             'vis'              => (string) $this->renderMode,
-            'email'            => app('db')->quote($this->email),
+            'email'            => $db->quote($this->email),
             'custom_sort_subs' => (string) (int) $this->weightedChildren,
             'order'            => (string) $this->weight,
             'access'           => '""',

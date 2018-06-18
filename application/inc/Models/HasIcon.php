@@ -1,5 +1,7 @@
 <?php namespace App\Models;
 
+use App\Services\OrmService;
+
 trait HasIcon
 {
     /** @var ?int File id. */
@@ -28,8 +30,11 @@ trait HasIcon
     {
         $file = null;
         if (null !== $this->iconId) {
+            /** @var OrmService */
+            $orm = app(OrmService::class);
+
             /** @var ?File */
-            $file = app('orm')->getOne(File::class, $this->iconId);
+            $file = $orm->getOne(File::class, $this->iconId);
         }
 
         return $file;

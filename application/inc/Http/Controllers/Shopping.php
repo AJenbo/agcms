@@ -1,12 +1,13 @@
 <?php namespace App\Http\Controllers;
 
+use App\Application;
 use App\Exceptions\Handler as ExceptionHandler;
 use App\Exceptions\InvalidInput;
 use App\Models\Email;
 use App\Models\VolatilePage;
-use App\Render;
 use App\Services\EmailService;
 use App\Services\InvoiceService;
+use App\Services\RenderService;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Throwable;
@@ -70,6 +71,9 @@ class Shopping extends Base
 
         $invoice = $this->invoiceService->createFromCart($cart);
 
+        /** @var Application */
+        $app = app();
+
         $data = $this->basicPageData();
         $data['crumbs'][] = new VolatilePage(_('Shopping list'), '/order/?cart=' . rawurlencode($rawCart));
         $renderable = new VolatilePage(_('Address'), '/order/address/?cart=' . rawurlencode($rawCart));
@@ -77,7 +81,8 @@ class Shopping extends Base
         $data['renderable'] = $renderable;
         $data['invoice'] = $invoice;
         $data['invalid'] = $invoice->getInvalid();
-        $data['countries'] = include app()->basePath('/inc/countries.php');
+        /* @var string[] */
+        $data['countries'] = include $app->basePath('/inc/countries.php');
         $data['newsletter'] = $cart['newsletter'] ?? false;
         $data['onsubmit'] = 'shoppingCart.sendCart(); return false';
         $data['actionLable'] = _('Send order');
@@ -122,7 +127,10 @@ class Shopping extends Base
 
         $invoice->save();
 
-        $emailBody = app('render')->render(
+        /** @var RenderService */
+        $render = app(RenderService::class);
+
+        $emailBody = $render->render(
             'admin/email/order-notification',
             [
                 'invoice'    => $invoice,
@@ -138,17 +146,20 @@ class Shopping extends Base
             'recipientName'    => config('site_name'),
             'recipientAddress' => first(config('emails'))['address'],
         ]);
+        /** @var EmailService */
         $emailService = app(EmailService::class);
 
         try {
             $emailService->send($email);
         } catch (Throwable $exception) {
-            app(ExceptionHandler::class)->report($exception);
+            /** @var ExceptionHandler */
+            $handler = app(ExceptionHandler::class);
+            $handler->report($exception);
             $email->save();
         }
 
         $cart['items'] = [];
-        $rawCart = json_encode($cart);
+        $rawCart = json_encode($cart) ?: '';
 
         return redirect('/order/receipt/?cart=' . rawurlencode($rawCart), Response::HTTP_SEE_OTHER);
     }

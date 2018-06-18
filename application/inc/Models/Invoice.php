@@ -1,5 +1,6 @@
 <?php namespace App\Models;
 
+use App\Services\DbService;
 use App\Services\EmailService;
 
 class Invoice extends AbstractEntity
@@ -1099,12 +1100,15 @@ class Invoice extends AbstractEntity
         }
         $items = json_encode($items);
 
+        /** @var DbService */
+        $db = app(DbService::class);
+
         return [
             'id'                   => $data['id'],
             'item_data'            => $items,
             'has_shipping_address' => (bool) $data['altpost'],
-            'timestamp'            => strtotime($data['date']) + app('db')->getTimeOffset(),
-            'timestamp_pay'        => strtotime($data['paydate']) + app('db')->getTimeOffset(),
+            'timestamp'            => strtotime($data['date']) + $db->getTimeOffset(),
+            'timestamp_pay'        => strtotime($data['paydate']) + $db->getTimeOffset(),
             'amount'               => (float) $data['amount'],
             'name'                 => $data['navn'],
             'attn'                 => $data['att'],
@@ -1282,6 +1286,7 @@ class Invoice extends AbstractEntity
      */
     public function hasValidEmail(): bool
     {
+        /** @var EmailService */
         $emailService = app(EmailService::class);
         if (!$this->email || !$emailService->valideMail($this->email)) {
             return false;
@@ -1370,53 +1375,56 @@ class Invoice extends AbstractEntity
         $itemTitle = implode('<', $itemTitle);
         $itemValue = implode('<', $itemValue);
 
-        $date = app('db')->getDateValue($this->timeStamp - app('db')->getTimeOffset());
-        $paydate = app('db')->quote('0000-00-00');
-        if ($this->timeStampPay + app('db')->getTimeOffset()) {
-            $paydate = app('db')->getDateValue($this->timeStampPay - app('db')->getTimeOffset());
+        /** @var DbService */
+        $db = app(DbService::class);
+
+        $date = $db->getDateValue($this->timeStamp - $db->getTimeOffset());
+        $paydate = $db->quote('0000-00-00');
+        if ($this->timeStampPay + $db->getTimeOffset()) {
+            $paydate = $db->getDateValue($this->timeStampPay - $db->getTimeOffset());
         }
 
         return [
             'date'           => $date,
             'paydate'        => $paydate,
-            'quantities'     => app('db')->quote($itemQuantities),
-            'products'       => app('db')->quote($itemTitle),
-            'values'         => app('db')->quote($itemValue),
-            'amount'         => app('db')->escNum($this->amount),
-            'navn'           => app('db')->quote($this->name),
-            'att'            => app('db')->quote($this->attn),
-            'adresse'        => app('db')->quote($this->address),
-            'postbox'        => app('db')->quote($this->postbox),
-            'postnr'         => app('db')->quote($this->postcode),
-            'by'             => app('db')->quote($this->city),
-            'land'           => app('db')->quote($this->country),
-            'email'          => app('db')->quote($this->email),
-            'tlf1'           => app('db')->quote($this->phone1),
-            'tlf2'           => app('db')->quote($this->phone2),
+            'quantities'     => $db->quote($itemQuantities),
+            'products'       => $db->quote($itemTitle),
+            'values'         => $db->quote($itemValue),
+            'amount'         => $db->escNum($this->amount),
+            'navn'           => $db->quote($this->name),
+            'att'            => $db->quote($this->attn),
+            'adresse'        => $db->quote($this->address),
+            'postbox'        => $db->quote($this->postbox),
+            'postnr'         => $db->quote($this->postcode),
+            'by'             => $db->quote($this->city),
+            'land'           => $db->quote($this->country),
+            'email'          => $db->quote($this->email),
+            'tlf1'           => $db->quote($this->phone1),
+            'tlf2'           => $db->quote($this->phone2),
             'altpost'        => (string) (int) $this->hasShippingAddress,
-            'posttlf'        => app('db')->quote($this->shippingPhone),
-            'postname'       => app('db')->quote($this->shippingName),
-            'postatt'        => app('db')->quote($this->shippingAttn),
-            'postaddress'    => app('db')->quote($this->shippingAddress),
-            'postaddress2'   => app('db')->quote($this->shippingAddress2),
-            'postpostbox'    => app('db')->quote($this->shippingPostbox),
-            'postpostalcode' => app('db')->quote($this->shippingPostcode),
-            'postcity'       => app('db')->quote($this->shippingCity),
-            'postcountry'    => app('db')->quote($this->shippingCountry),
-            'note'           => app('db')->quote($this->note),
-            'clerk'          => app('db')->quote($this->clerk),
-            'status'         => app('db')->quote($this->status),
-            'fragt'          => app('db')->escNum($this->shipping),
-            'momssats'       => app('db')->escNum($this->vat),
+            'posttlf'        => $db->quote($this->shippingPhone),
+            'postname'       => $db->quote($this->shippingName),
+            'postatt'        => $db->quote($this->shippingAttn),
+            'postaddress'    => $db->quote($this->shippingAddress),
+            'postaddress2'   => $db->quote($this->shippingAddress2),
+            'postpostbox'    => $db->quote($this->shippingPostbox),
+            'postpostalcode' => $db->quote($this->shippingPostcode),
+            'postcity'       => $db->quote($this->shippingCity),
+            'postcountry'    => $db->quote($this->shippingCountry),
+            'note'           => $db->quote($this->note),
+            'clerk'          => $db->quote($this->clerk),
+            'status'         => $db->quote($this->status),
+            'fragt'          => $db->escNum($this->shipping),
+            'momssats'       => $db->escNum($this->vat),
             'premoms'        => (string) (int) $this->preVat,
             'transferred'    => (string) (int) $this->transferred,
-            'cardtype'       => app('db')->quote($this->cardtype),
-            'iref'           => app('db')->quote($this->iref),
-            'eref'           => app('db')->quote($this->eref),
+            'cardtype'       => $db->quote($this->cardtype),
+            'iref'           => $db->quote($this->iref),
+            'eref'           => $db->quote($this->eref),
             'sendt'          => (string) (int) $this->sent,
             'payment_id'     => null !== $this->paymentId ? (string) $this->paymentId : 'NULL',
-            'department'     => app('db')->quote($this->department),
-            'enote'          => app('db')->quote($this->internalNote),
+            'department'     => $db->quote($this->department),
+            'enote'          => $db->quote($this->internalNote),
         ];
     }
 }

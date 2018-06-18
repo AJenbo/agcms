@@ -16,19 +16,22 @@ class SiteTreeService
      */
     public function getSiteTreeData(array $openCategories, string $inputType = '', int $selectedId = null): array
     {
+        /** @var OrmService */
+        $orm = app(OrmService::class);
+
         $category = null;
         if (null !== $selectedId) {
             /** @var ?Category */
-            $category = app('orm')->getOne(Category::class, $selectedId);
+            $category = $orm->getOne(Category::class, $selectedId);
         }
 
         /** @var Category[] */
-        $rootCategories = app('orm')->getByQuery(Category::class, 'SELECT * FROM kat WHERE bind IS NULL');
+        $rootCategories = $orm->getByQuery(Category::class, 'SELECT * FROM kat WHERE bind IS NULL');
 
         $customPages = [];
         if (!$inputType) {
             /** @var CustomPage[] */
-            $customPages = app('orm')->getByQuery(
+            $customPages = $orm->getByQuery(
                 CustomPage::class,
                 'SELECT * FROM `special` WHERE `id` > 1 ORDER BY `navn`'
             );
@@ -55,8 +58,11 @@ class SiteTreeService
     private function getOpenCategories(array $openCategories, int $selectedId = null): array
     {
         if (null !== $selectedId) {
+            /** @var OrmService */
+            $orm = app(OrmService::class);
+
             /** @var ?Category */
-            $category = app('orm')->getOne(Category::class, $selectedId);
+            $category = $orm->getOne(Category::class, $selectedId);
             if ($category) {
                 foreach ($category->getBranch() as $category) {
                     $openCategories[] = $category->getId();

@@ -1,6 +1,8 @@
 <?php namespace App\Http\Controllers;
 
 use App\Render;
+use App\Services\DbService;
+use App\Services\RenderService;
 use DateTime;
 use DateTimeZone;
 use Symfony\Component\HttpFoundation\Response;
@@ -18,7 +20,10 @@ abstract class AbstractController
      */
     protected function render(string $view, array $parameters = [], Response $response = null): Response
     {
-        $content = app('render')->render($view, $parameters);
+        /** @var RenderService */
+        $render = app(RenderService::class);
+
+        $content = $render->render($view, $parameters);
 
         if (null === $response) {
             $response = new Response();
@@ -66,12 +71,15 @@ abstract class AbstractController
     {
         $updateTime = 0;
         foreach (get_included_files() as $filename) {
-            $updateTime = max($updateTime, filemtime($filename));
+            $updateTime = max($updateTime, filemtime($filename)) ?: 0;
         }
 
-        $dbTime = app('db')->dataAge();
+        /** @var DbService */
+        $db = app(DbService::class);
+
+        $dbTime = $db->dataAge();
         if ($dbTime) {
-            $updateTime = max($dbTime, $updateTime ?: 0);
+            $updateTime = max($dbTime, $updateTime ?: 0) ?: 0;
         }
 
         if ($updateTime <= 0) {

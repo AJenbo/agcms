@@ -1,5 +1,7 @@
 <?php namespace App\Models;
 
+use App\Services\DbService;
+
 class Requirement extends AbstractRenderable implements InterfaceRichText
 {
     /** Table name in database. */
@@ -85,9 +87,12 @@ class Requirement extends AbstractRenderable implements InterfaceRichText
      */
     public function getDbArray(): array
     {
+        /** @var DbService */
+        $db = app(DbService::class);
+
         return [
-            'navn' => app('db')->quote($this->title),
-            'text' => app('db')->quote($this->html),
+            'navn' => $db->quote($this->title),
+            'text' => $db->quote($this->html),
         ];
     }
 }

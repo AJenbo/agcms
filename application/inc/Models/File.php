@@ -1,7 +1,10 @@
 <?php namespace App\Models;
 
+use App\Application;
 use App\Exceptions\Exception;
 use App\Exceptions\InvalidInput;
+use App\Services\DbService;
+use App\Services\OrmService;
 use Symfony\Component\HttpFoundation\File\MimeType\MimeTypeGuesser;
 
 class File extends AbstractEntity
@@ -220,11 +223,14 @@ class File extends AbstractEntity
      */
     public function getDbArray(): array
     {
+        /** @var DbService */
+        $db = app(DbService::class);
+
         return [
-            'path'   => app('db')->quote($this->path),
-            'mime'   => app('db')->quote($this->mime),
+            'path'   => $db->quote($this->path),
+            'mime'   => $db->quote($this->mime),
             'size'   => (string) $this->size,
-            'alt'    => app('db')->quote($this->description),
+            'alt'    => $db->quote($this->description),
             'width'  => (string) $this->width,
             'height' => (string) $this->height,
         ];
@@ -239,8 +245,11 @@ class File extends AbstractEntity
      */
     public function move(string $path): bool
     {
+        /** @var Application */
+        $app = app();
+
         //Rename/move or give an error
-        if (!rename(app()->basePath($this->getPath()), app()->basePath($path))) {
+        if (!rename($app->basePath($this->getPath()), $app->basePath($path))) {
             return false;
         }
 
@@ -260,13 +269,16 @@ class File extends AbstractEntity
      */
     private function replacePaths(string $path, string $newPath): void
     {
-        $newPathEsc = app('db')->quote('="' . $newPath . '"');
-        $pathEsc = app('db')->quote('="' . $path . '"');
-        app('db')->query('UPDATE sider     SET text = REPLACE(text, ' . $pathEsc . ', ' . $newPathEsc . ')');
-        app('db')->query('UPDATE template  SET text = REPLACE(text, ' . $pathEsc . ', ' . $newPathEsc . ')');
-        app('db')->query('UPDATE special   SET text = REPLACE(text, ' . $pathEsc . ', ' . $newPathEsc . ')');
-        app('db')->query('UPDATE krav      SET text = REPLACE(text, ' . $pathEsc . ', ' . $newPathEsc . ')');
-        app('db')->query('UPDATE newsmails SET text = REPLACE(text, ' . $pathEsc . ', ' . $newPathEsc . ')');
+        /** @var DbService */
+        $db = app(DbService::class);
+
+        $newPathEsc = $db->quote('="' . $newPath . '"');
+        $pathEsc = $db->quote('="' . $path . '"');
+        $db->query('UPDATE sider     SET text = REPLACE(text, ' . $pathEsc . ', ' . $newPathEsc . ')');
+        $db->query('UPDATE template  SET text = REPLACE(text, ' . $pathEsc . ', ' . $newPathEsc . ')');
+        $db->query('UPDATE special   SET text = REPLACE(text, ' . $pathEsc . ', ' . $newPathEsc . ')');
+        $db->query('UPDATE krav      SET text = REPLACE(text, ' . $pathEsc . ', ' . $newPathEsc . ')');
+        $db->query('UPDATE newsmails SET text = REPLACE(text, ' . $pathEsc . ', ' . $newPathEsc . ')');
     }
 
     /**
@@ -278,7 +290,10 @@ class File extends AbstractEntity
      */
     public function isInUse(bool $onlyCheckHtml = false): bool
     {
-        $escapedPath = app('db')->quote('%="' . $this->path . '"%');
+        /** @var DbService */
+        $db = app(DbService::class);
+
+        $escapedPath = $db->quote('%="' . $this->path . '"%');
 
         $sql = "
               (SELECT id FROM `sider`     WHERE `text` LIKE $escapedPath LIMIT 1)
@@ -287,7 +302,7 @@ class File extends AbstractEntity
         UNION (SELECT id FROM `krav`      WHERE `text` LIKE $escapedPath LIMIT 1)
         UNION (SELECT id FROM `newsmails` WHERE `text` LIKE $escapedPath LIMIT 1)
         ";
-        app('db')->addLoadedTable('sider', 'template', 'special', 'krav', 'newsmails');
+        $db->addLoadedTable('sider', 'template', 'special', 'krav', 'newsmails');
 
         if (!$onlyCheckHtml) {
             $sql .= '
@@ -296,10 +311,10 @@ class File extends AbstractEntity
             UNION (SELECT id FROM `maerke`   WHERE `icon_id` = ' . $this->getId() . ' LIMIT 1)
             UNION (SELECT id FROM `kat`      WHERE `icon_id` = ' . $this->getId() . ' LIMIT 1)
             ';
-            app('db')->addLoadedTable('kat');
+            $db->addLoadedTable('kat');
         }
 
-        return (bool) app('db')->fetchOne($sql);
+        return (bool) $db->fetchOne($sql);
     }
 
     /**
@@ -313,8 +328,14 @@ class File extends AbstractEntity
      */
     public static function fromPath(string $path): self
     {
-        $fullPath = app()->basePath($path);
+        /** @var Application */
+        $app = app();
+
+        $fullPath = $app->basePath($path);
         $imagesize = @getimagesize($fullPath);
+        if (!$imagesize) {
+            $imagesize = [];
+        }
 
         $guesser = MimeTypeGuesser::getInstance();
         $mime = $guesser->guess($fullPath);
@@ -345,7 +366,10 @@ class File extends AbstractEntity
             throw new InvalidInput(sprintf(_('"%s" is still in use.'), $this->path), 423);
         }
 
-        if (file_exists(app()->basePath($this->path)) && !unlink(app()->basePath($this->path))) {
+        /** @var Application */
+        $app = app();
+
+        if (file_exists($app->basePath($this->path)) && !unlink($app->basePath($this->path))) {
             throw new Exception(sprintf(_('Could not delete "%s".'), $this->path), 403);
         }
 
@@ -361,10 +385,16 @@ class File extends AbstractEntity
      */
     public static function getByPath(string $path): ?self
     {
+        /** @var DbService */
+        $db = app(DbService::class);
+
+        /** @var OrmService */
+        $orm = app(OrmService::class);
+
         /** @var ?static */
-        $file = app('orm')->getOneByQuery(
+        $file = $orm->getOneByQuery(
             static::class,
-            'SELECT * FROM `' . self::TABLE_NAME . '` WHERE path = ' . app('db')->quote($path)
+            'SELECT * FROM `' . self::TABLE_NAME . '` WHERE path = ' . $db->quote($path)
         );
 
         return $file;

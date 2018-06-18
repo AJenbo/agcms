@@ -21,8 +21,6 @@ class Handler
 
     /**
      * Set error loggin.
-     *
-     * @param string $basePath
      */
     public function __construct()
     {
@@ -33,11 +31,7 @@ class Handler
     /**
      * Repport the exception.
      *
-     * @param Throwable $exception
-     *
      * @throws Throwable
-     *
-     * @return Response
      */
     public function report(Throwable $exception): void
     {
@@ -55,9 +49,10 @@ class Handler
         /** @var Request */
         $request = app(Request::class);
         if ($request->getSession() && $request->user()) {
-            $this->ravenClient->user_context(
-                ['id' => $request->user()->getId(), 'name' => $request->user()->getFullName()]
-            );
+            $user = $request->user();
+            if ($user) {
+                $this->ravenClient->user_context(['id' => $user->getId(), 'name' => $user->getFullName()]);
+            }
         }
 
         $this->lastLogId = $this->ravenClient->captureException($exception);
@@ -77,7 +72,7 @@ class Handler
     {
         $status = Response::HTTP_INTERNAL_SERVER_ERROR;
         if ($exception->getCode() >= 400 && $exception->getCode() <= 599) {
-            $status = $exception->getCode();
+            $status = (int) $exception->getCode();
         }
 
         if ($request->isXmlHttpRequest()) {

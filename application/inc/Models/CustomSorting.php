@@ -1,5 +1,7 @@
 <?php namespace App\Models;
 
+use App\Services\DbService;
+
 class CustomSorting extends AbstractEntity
 {
     /**  Table name in database. */
@@ -105,9 +107,12 @@ class CustomSorting extends AbstractEntity
         $items = array_map('htmlspecialchars', $this->items);
         $items = implode('<', $items);
 
+        /** @var DbService */
+        $db = app(DbService::class);
+
         return [
-            'navn'  => app('db')->quote($this->title),
-            'text'  => app('db')->quote($items),
+            'navn'  => $db->quote($this->title),
+            'text'  => $db->quote($items),
         ];
     }
 }

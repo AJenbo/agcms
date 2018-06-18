@@ -2,6 +2,7 @@
 
 use App\Exceptions\InvalidInput;
 use App\Models\CustomSorting;
+use App\Services\OrmService;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -17,8 +18,11 @@ class CustomSortingController extends AbstractAdminController
      */
     public function index(Request $request): Response
     {
+        /** @var OrmService */
+        $orm = app(OrmService::class);
+
         $data = $this->basicPageData($request);
-        $data['lists'] = app('orm')->getByQuery(CustomSorting::class, 'SELECT * FROM `tablesort`');
+        $data['lists'] = $orm->getByQuery(CustomSorting::class, 'SELECT * FROM `tablesort`');
 
         return $this->render('admin/listsort', $data);
     }
@@ -35,8 +39,11 @@ class CustomSortingController extends AbstractAdminController
     {
         $customSorting = null;
         if (null !== $id) {
+            /** @var OrmService */
+            $orm = app(OrmService::class);
+
             /** @var ?CustomSorting */
-            $customSorting = app('orm')->getOne(CustomSorting::class, $id);
+            $customSorting = $orm->getOne(CustomSorting::class, $id);
             if (!$customSorting) {
                 throw new InvalidInput(_('Custom sorting not found.'), Response::HTTP_NOT_FOUND);
             }
@@ -90,8 +97,11 @@ class CustomSortingController extends AbstractAdminController
             throw new InvalidInput(_('You must enter a title.'));
         }
 
+        /** @var OrmService */
+        $orm = app(OrmService::class);
+
         /** @var ?CustomSorting */
-        $customSorting = app('orm')->getOne(CustomSorting::class, $id);
+        $customSorting = $orm->getOne(CustomSorting::class, $id);
         if (!$customSorting) {
             throw new InvalidInput(_('Custom sorting not found.'), Response::HTTP_NOT_FOUND);
         }

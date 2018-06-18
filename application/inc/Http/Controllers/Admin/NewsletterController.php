@@ -2,6 +2,7 @@
 
 use App\Exceptions\InvalidInput;
 use App\Models\Newsletter;
+use App\Services\OrmService;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -17,8 +18,11 @@ class NewsletterController extends AbstractAdminController
      */
     public function index(Request $request): Response
     {
+        /** @var OrmService */
+        $orm = app(OrmService::class);
+
         $data = $this->basicPageData($request);
-        $data['newsletters'] = app('orm')->getByQuery(
+        $data['newsletters'] = $orm->getByQuery(
             Newsletter::class,
             'SELECT * FROM newsmails ORDER BY sendt, id DESC'
         );
@@ -38,8 +42,11 @@ class NewsletterController extends AbstractAdminController
     {
         $newsletter = null;
         if (null !== $id) {
+            /** @var OrmService */
+            $orm = app(OrmService::class);
+
             /** @var ?Newsletter */
-            $newsletter = app('orm')->getOne(Newsletter::class, $id);
+            $newsletter = $orm->getOne(Newsletter::class, $id);
             if (!$newsletter) {
                 throw new InvalidInput(_('Newsletter not found.'), Response::HTTP_NOT_FOUND);
             }
@@ -89,8 +96,11 @@ class NewsletterController extends AbstractAdminController
      */
     public function update(Request $request, int $id): JsonResponse
     {
+        /** @var OrmService */
+        $orm = app(OrmService::class);
+
         /** @var ?Newsletter */
-        $newsletter = app('orm')->getOne(Newsletter::class, $id);
+        $newsletter = $orm->getOne(Newsletter::class, $id);
         if (!$newsletter) {
             throw new InvalidInput(_('Newsletter not found.'), Response::HTTP_NOT_FOUND);
         }

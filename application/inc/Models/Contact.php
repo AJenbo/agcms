@@ -1,5 +1,6 @@
 <?php namespace App\Models;
 
+use App\Services\DbService;
 use App\Services\EmailService;
 
 class Contact extends AbstractEntity
@@ -362,6 +363,7 @@ class Contact extends AbstractEntity
      */
     public function isEmailValide(): bool
     {
+        /** @var EmailService */
         $emailService = app(EmailService::class);
 
         return $this->email && $emailService->valideMail($this->email);
@@ -379,9 +381,12 @@ class Contact extends AbstractEntity
         $interests = explode('<', $data['interests']);
         $interests = array_map('html_entity_decode', $interests);
 
+        /** @var DbService */
+        $db = app(DbService::class);
+
         return [
             'id'         => $data['id'],
-            'timestamp'  => strtotime($data['dato']) + app('db')->getTimeOffset(),
+            'timestamp'  => strtotime($data['dato']) + $db->getTimeOffset(),
             'name'       => $data['navn'],
             'email'      => $data['email'],
             'address'    => $data['adresse'],
@@ -410,19 +415,22 @@ class Contact extends AbstractEntity
         $interests = array_map('htmlspecialchars', $this->interests);
         $interests = implode('<', $interests);
 
+        /** @var DbService */
+        $db = app(DbService::class);
+
         return [
-            'dato'      => app('db')->getNowValue(),
-            'navn'      => app('db')->quote($this->name),
-            'email'     => app('db')->quote($this->email),
-            'adresse'   => app('db')->quote($this->address),
-            'land'      => app('db')->quote($this->country),
-            'post'      => app('db')->quote($this->postcode),
-            'by'        => app('db')->quote($this->city),
-            'tlf1'      => app('db')->quote($this->phone1),
-            'tlf2'      => app('db')->quote($this->phone2),
-            'kartotek'  => app('db')->quote((string) (int) $this->subscribed), // enum :(
-            'interests' => app('db')->quote($interests),
-            'ip'        => app('db')->quote($this->ip),
+            'dato'      => $db->getNowValue(),
+            'navn'      => $db->quote($this->name),
+            'email'     => $db->quote($this->email),
+            'adresse'   => $db->quote($this->address),
+            'land'      => $db->quote($this->country),
+            'post'      => $db->quote($this->postcode),
+            'by'        => $db->quote($this->city),
+            'tlf1'      => $db->quote($this->phone1),
+            'tlf2'      => $db->quote($this->phone2),
+            'kartotek'  => $db->quote((string) (int) $this->subscribed), // enum :(
+            'interests' => $db->quote($interests),
+            'ip'        => $db->quote($this->ip),
         ];
     }
 }

@@ -1,11 +1,14 @@
 <?php namespace App\Http\Controllers\Admin;
 
+use App\Application;
 use App\Exceptions\InvalidInput;
 use App\Http\Request;
 use App\Models\Invoice;
 use App\Models\User;
+use App\Services\DbService;
 use App\Services\InvoicePdfService;
 use App\Services\InvoiceService;
+use App\Services\OrmService;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -41,21 +44,30 @@ class InvoiceController extends AbstractAdminController
 
         $where = $this->generateFilterInvoiceBySelection($selected, $user);
 
-        app('db')->addLoadedTable('fakturas');
-        $oldest = app('db')->fetchOne('SELECT `date` FROM `fakturas` ORDER BY `date`')['date'] ?? 'now';
+        /** @var DbService */
+        $db = app(DbService::class);
+
+        $db->addLoadedTable('fakturas');
+        $oldest = $db->fetchOne('SELECT `date` FROM `fakturas` ORDER BY `date`')['date'] ?? 'now';
         $oldest = strtotime($oldest);
         $oldest = date('Y', $oldest);
 
+        /** @var OrmService */
+        $orm = app(OrmService::class);
+
         /** @var Invoice[] */
-        $invoices = app('orm')->getByQuery(Invoice::class, 'SELECT * FROM `fakturas`' . $where . ' ORDER BY `id` DESC');
+        $invoices = $orm->getByQuery(Invoice::class, 'SELECT * FROM `fakturas`' . $where . ' ORDER BY `id` DESC');
+
+        /** @var Application */
+        $app = app();
 
         $data = [
             'title'         => _('Invoice list'),
             'currentUser'   => $user,
             'selected'      => $selected,
-            'countries'     => include app()->basePath('/inc/countries.php'),
+            'countries'     => include $app->basePath('/inc/countries.php'),
             'departments'   => array_keys(config('emails', [])),
-            'users'         => app('orm')->getByQuery(User::class, 'SELECT * FROM `users` ORDER BY `fullname`'),
+            'users'         => $orm->getByQuery(User::class, 'SELECT * FROM `users` ORDER BY `fullname`'),
             'invoices'      => $invoices,
             'years'         => range($oldest, date('Y')),
             'statusOptions' => [
@@ -105,17 +117,20 @@ class InvoiceController extends AbstractAdminController
             $where[] = "`date` <= '" . $selected['year'] . "-12-31'";
         }
 
+        /** @var DbService */
+        $db = app(DbService::class);
+
         if ($selected['department']) {
-            $where[] = '`department` = ' . app('db')->quote($selected['department']);
+            $where[] = '`department` = ' . $db->quote($selected['department']);
         }
         if ($selected['clerk']
             && (!$user->hasAccess(User::ADMINISTRATOR) || $user->getFullName() === $selected['clerk'])
         ) {
             //Viewing your self
-            $where[] = '(`clerk` = ' . app('db')->quote($selected['clerk']) . " OR `clerk` = '')";
+            $where[] = '(`clerk` = ' . $db->quote($selected['clerk']) . " OR `clerk` = '')";
         } elseif ($selected['clerk']) {
             //Viewing some one else
-            $where[] = '`clerk` = ' . app('db')->quote($selected['clerk']);
+            $where[] = '`clerk` = ' . $db->quote($selected['clerk']);
         }
 
         if ('activ' === $selected['status']) {
@@ -123,24 +138,24 @@ class InvoiceController extends AbstractAdminController
         } elseif ('inactiv' === $selected['status']) {
             $where[] = "`status` NOT IN('new', 'locked', 'pbsok', 'pbserror')";
         } elseif ($selected['status']) {
-            $where[] = '`status` = ' . app('db')->quote($selected['status']);
+            $where[] = '`status` = ' . $db->quote($selected['status']);
         }
 
         if ($selected['name']) {
-            $where[] = '`navn` LIKE ' . app('db')->quote('%' . $selected['name'] . '%');
+            $where[] = '`navn` LIKE ' . $db->quote('%' . $selected['name'] . '%');
         }
 
         if ($selected['tlf']) {
-            $where[] = '(`tlf1` LIKE ' . app('db')->quote('%' . $selected['tlf'] . '%')
-                . ' OR `tlf2` LIKE ' . app('db')->quote('%' . $selected['tlf'] . '%') . ')';
+            $where[] = '(`tlf1` LIKE ' . $db->quote('%' . $selected['tlf'] . '%')
+                . ' OR `tlf2` LIKE ' . $db->quote('%' . $selected['tlf'] . '%') . ')';
         }
 
         if ($selected['email']) {
-            $where[] = '`email` LIKE ' . app('db')->quote('%' . $selected['email'] . '%');
+            $where[] = '`email` LIKE ' . $db->quote('%' . $selected['email'] . '%');
         }
 
         if (null !== $selected['momssats']) {
-            $where[] = '`momssats` = ' . app('db')->quote($selected['momssats']);
+            $where[] = '`momssats` = ' . $db->quote($selected['momssats']);
         }
 
         if (!$where) {
@@ -159,8 +174,11 @@ class InvoiceController extends AbstractAdminController
      */
     public function validationList(Request $request): Response
     {
+        /** @var OrmService */
+        $orm = app(OrmService::class);
+
         /** @var Invoice[] */
-        $invoices = app('orm')->getByQuery(
+        $invoices = $orm->getByQuery(
             Invoice::class,
             "
             SELECT * FROM `fakturas`
@@ -194,8 +212,11 @@ class InvoiceController extends AbstractAdminController
             throw new InvalidInput(_('You do not have permission to validate payments.'), Response::HTTP_FORBIDDEN);
         }
 
+        /** @var OrmService */
+        $orm = app(OrmService::class);
+
         /** @var ?Invoice */
-        $invoice = app('orm')->getOne(Invoice::class, $id);
+        $invoice = $orm->getOne(Invoice::class, $id);
         if (!$invoice) {
             throw new InvalidInput(_('Invoice not found.'), Response::HTTP_NOT_FOUND);
         }
@@ -248,8 +269,11 @@ class InvoiceController extends AbstractAdminController
         $data = $request->request->all();
         unset($data['action']);
 
+        /** @var OrmService */
+        $orm = app(OrmService::class);
+
         /** @var ?Invoice */
-        $invoice = app('orm')->getOne(Invoice::class, $id);
+        $invoice = $orm->getOne(Invoice::class, $id);
         if (!$invoice) {
             throw new InvalidInput(_('Invoice not found.'), Response::HTTP_NOT_FOUND);
         }
@@ -279,8 +303,11 @@ class InvoiceController extends AbstractAdminController
      */
     public function clone(Request $request, int $id): JsonResponse
     {
+        /** @var OrmService */
+        $orm = app(OrmService::class);
+
         /** @var ?Invoice */
-        $invoice = app('orm')->getOne(Invoice::class, $id);
+        $invoice = $orm->getOne(Invoice::class, $id);
         if (!$invoice) {
             throw new InvalidInput(_('Invoice not found.'), Response::HTTP_NOT_FOUND);
         }
@@ -305,8 +332,11 @@ class InvoiceController extends AbstractAdminController
      */
     public function sendReminder(Request $request, int $id): JsonResponse
     {
+        /** @var OrmService */
+        $orm = app(OrmService::class);
+
         /** @var ?Invoice */
-        $invoice = app('orm')->getOne(Invoice::class, $id);
+        $invoice = $orm->getOne(Invoice::class, $id);
         if (!$invoice) {
             throw new InvalidInput(_('Invoice not found.'), Response::HTTP_NOT_FOUND);
         }
@@ -329,8 +359,11 @@ class InvoiceController extends AbstractAdminController
      */
     public function capturePayment(Request $request, int $id): JsonResponse
     {
+        /** @var OrmService */
+        $orm = app(OrmService::class);
+
         /** @var ?Invoice */
-        $invoice = app('orm')->getOne(Invoice::class, $id);
+        $invoice = $orm->getOne(Invoice::class, $id);
         if (!$invoice) {
             throw new InvalidInput(_('Invoice not found.'), Response::HTTP_NOT_FOUND);
         }
@@ -353,8 +386,11 @@ class InvoiceController extends AbstractAdminController
      */
     public function annulPayment(Request $request, int $id): JsonResponse
     {
+        /** @var OrmService */
+        $orm = app(OrmService::class);
+
         /** @var ?Invoice */
-        $invoice = app('orm')->getOne(Invoice::class, $id);
+        $invoice = $orm->getOne(Invoice::class, $id);
         if (!$invoice) {
             throw new InvalidInput(_('Invoice not found.'), Response::HTTP_NOT_FOUND);
         }
@@ -377,10 +413,13 @@ class InvoiceController extends AbstractAdminController
      */
     public function invoice(Request $request, int $id = null): Response
     {
+        /** @var OrmService */
+        $orm = app(OrmService::class);
+
         $invoice = null;
         if (null !== $id) {
             /** @var ?Invoice */
-            $invoice = app('orm')->getOne(Invoice::class, $id);
+            $invoice = $orm->getOne(Invoice::class, $id);
             if (!$invoice) {
                 throw new InvalidInput(_('Invoice not found.'), Response::HTTP_NOT_FOUND);
             }
@@ -393,13 +432,16 @@ class InvoiceController extends AbstractAdminController
             $invoice->setClerk($user->getFullName());
         }
 
+        /** @var Application */
+        $app = app();
+
         $data = [
             'title'       => $invoice ? _('Online Invoice #') . $invoice->getId() : _('Create invoice'),
             'invoice'     => $invoice,
             'currentUser' => $user,
-            'users'       => app('orm')->getByQuery(User::class, 'SELECT * FROM `users` ORDER BY fullname'),
+            'users'       => $orm->getByQuery(User::class, 'SELECT * FROM `users` ORDER BY fullname'),
             'departments' => array_keys(config('emails', [])),
-            'countries'   => include app()->basePath('/inc/countries.php'),
+            'countries'   => include $app->basePath('/inc/countries.php'),
         ] + $this->basicPageData($request);
 
         return $this->render('admin/faktura', $data);
@@ -414,8 +456,11 @@ class InvoiceController extends AbstractAdminController
      */
     public function pdf(Request $request, int $id): Response
     {
+        /** @var OrmService */
+        $orm = app(OrmService::class);
+
         /** @var ?Invoice */
-        $invoice = app('orm')->getOne(Invoice::class, $id);
+        $invoice = $orm->getOne(Invoice::class, $id);
         if (!$invoice) {
             return new Response(_('Invoice not found.'), Response::HTTP_NOT_FOUND);
         }

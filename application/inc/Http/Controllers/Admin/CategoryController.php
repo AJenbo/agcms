@@ -3,6 +3,7 @@
 use App\Exceptions\InvalidInput;
 use App\Models\Category;
 use App\Models\File;
+use App\Services\OrmService;
 use App\Services\SiteTreeService;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -24,12 +25,16 @@ class CategoryController extends AbstractAdminController
         $openCategories = explode('<', $request->cookies->get('openkat', ''));
         $openCategories = array_map('intval', $openCategories);
 
+        /** @var OrmService */
+        $orm = app(OrmService::class);
+
         $category = null;
         if (null !== $id) {
             /** @var ?Category */
-            $category = app('orm')->getOne(Category::class, $id);
+            $category = $orm->getOne(Category::class, $id);
             if ($category) {
-                $selectedId = $category->getParent() ? $category->getParent()->getId() : null;
+                $parent = $category->getParent();
+                $selectedId = $parent ? $parent->getId() : null;
             }
         }
 
@@ -66,8 +71,11 @@ class CategoryController extends AbstractAdminController
             throw new InvalidInput(_('You must enter a title and choose a location for the new category.'));
         }
 
-        $icon = $iconId ? app('orm')->getOne(File::class, $iconId) : null;
-        $parent = app('orm')->getOne(Category::class, $parentId);
+        /** @var OrmService */
+        $orm = app(OrmService::class);
+
+        $icon = $iconId ? $orm->getOne(File::class, $iconId) : null;
+        $parent = $orm->getOne(Category::class, $parentId);
 
         $category = new Category([
             'title'             => $title,
@@ -95,8 +103,11 @@ class CategoryController extends AbstractAdminController
      */
     public function update(Request $request, int $id): JsonResponse
     {
+        /** @var OrmService */
+        $orm = app(OrmService::class);
+
         /** @var ?Category */
-        $category = app('orm')->getOne(Category::class, $id);
+        $category = $orm->getOne(Category::class, $id);
         if (!$category) {
             throw new InvalidInput(_('Category not found.'), Response::HTTP_NOT_FOUND);
         }
@@ -104,7 +115,7 @@ class CategoryController extends AbstractAdminController
         if ($request->request->has('parentId')) {
             $parentId = $request->request->get('parentId');
             /** @var ?Category */
-            $parent = null !== $parentId ? app('orm')->getOne(Category::class, $parentId) : null;
+            $parent = null !== $parentId ? $orm->getOne(Category::class, $parentId) : null;
             if ($parent) {
                 foreach ($parent->getBranch() as $node) {
                     if ($node->getId() === $category->getId()) {
@@ -136,7 +147,7 @@ class CategoryController extends AbstractAdminController
             $iconId = $request->request->get('icon_id');
             if (null !== $iconId) {
                 /** @var ?File */
-                $icon = app('orm')->getOne(File::class, $iconId);
+                $icon = $orm->getOne(File::class, $iconId);
             }
             $category->setIcon($icon);
         }
@@ -148,9 +159,11 @@ class CategoryController extends AbstractAdminController
             $this->updateKatOrder($subMenusOrder);
         }
 
+        $parent = $category->getParent();
+
         return new JsonResponse([
             'id'       => 'kat' . $category->getId(),
-            'parentId' => $category->getParent() ? $category->getParent()->getId() : null,
+            'parentId' => $parent ? $parent->getId() : null,
             'title'    => $category->getTitle(),
         ]);
     }
@@ -164,12 +177,15 @@ class CategoryController extends AbstractAdminController
      */
     public function updateKatOrder(string $order): void
     {
+        /** @var OrmService */
+        $orm = app(OrmService::class);
+
         $order = explode(',', $order);
         $order = array_filter($order);
         $order = array_map('intval', $order);
         foreach ($order as $weight => $id) {
             /** @var ?Category */
-            $category = app('orm')->getOne(Category::class, $id);
+            $category = $orm->getOne(Category::class, $id);
             if ($category) {
                 $category->setWeight($weight)->save();
             }
@@ -192,8 +208,11 @@ class CategoryController extends AbstractAdminController
             throw new InvalidInput(_('Cannot delete root categories.'), Response::HTTP_LOCKED);
         }
 
+        /** @var OrmService */
+        $orm = app(OrmService::class);
+
         /** @var ?Category */
-        $category = app('orm')->getOne(Category::class, $id);
+        $category = $orm->getOne(Category::class, $id);
         if ($category) {
             $category->delete();
         }

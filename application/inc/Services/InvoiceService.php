@@ -1,5 +1,6 @@
 <?php namespace App\Services;
 
+use App\Application;
 use App\Exceptions\Exception;
 use App\Exceptions\InvalidInput;
 use App\Models\Contact;
@@ -9,7 +10,6 @@ use App\Models\Invoice;
 use App\Models\Page;
 use App\Models\Table;
 use App\Models\User;
-use App\Render;
 
 class InvoiceService
 {
@@ -22,6 +22,10 @@ class InvoiceService
      */
     public function createFromCart(array $cart): Invoice
     {
+        /** @var DbService */
+        $db = app(DbService::class);
+        /** @var OrmService */
+        $orm = app(OrmService::class);
         $amount = 0;
         $items = [];
         foreach ($cart['items'] ?? [] as $item) {
@@ -30,10 +34,10 @@ class InvoiceService
             $value = null;
             $pageId = null;
             if ('line' === $item['type']) { // Find item based on price table row
-                app('db')->addLoadedTable('list_rows');
-                $listRow = app('db')->fetchOne('SELECT * FROM `list_rows` WHERE id = ' . $item['id']);
+                $db->addLoadedTable('list_rows');
+                $listRow = $db->fetchOne('SELECT * FROM `list_rows` WHERE id = ' . $item['id']);
                 /** @var ?Table */
-                $table = $listRow ? app('orm')->getOne(Table::class, $listRow['list_id']) : null;
+                $table = $listRow ? $orm->getOne(Table::class, $listRow['list_id']) : null;
                 if ($table) {
                     $pageId = $table->getPage()->getId();
                     if ($table->hasLinks() && $listRow['link']) {
@@ -65,7 +69,7 @@ class InvoiceService
             }
 
             /** @var ?Page */
-            $page = $pageId ? app('orm')->getOne(Page::class, $pageId) : null;
+            $page = $pageId ? $orm->getOne(Page::class, $pageId) : null;
             if (!$page || $page->isInactive()) {
                 $title = _('Expired');
             } else {
@@ -211,11 +215,18 @@ class InvoiceService
      */
     public function addToAddressBook(Invoice $invoice, ?string $clientIp): void
     {
-        $countries = include app()->basePath('/inc/countries.php');
+        /** @var DbService */
+        $db = app(DbService::class);
+        /** @var OrmService */
+        $orm = app(OrmService::class);
+        /** @var Application */
+        $app = app();
+        /** @var string[] */
+        $countries = include $app->basePath('/inc/countries.php');
         /** @var ?Contact */
-        $conteact = app('orm')->getOneByQuery(
+        $conteact = $orm->getOneByQuery(
             Contact::class,
-            'SELECT * FROM email WHERE email = ' . app('db')->quote($invoice->getEmail())
+            'SELECT * FROM email WHERE email = ' . $db->quote($invoice->getEmail())
         );
         if (!$conteact) {
             $conteact = new Contact([
@@ -296,7 +307,7 @@ class InvoiceService
                 $invoice->setShippingCity($updates['shippingCity']);
                 $invoice->setShippingCountry($updates['shippingCountry']);
             }
-            $invoice->setItemData(json_encode($updates['lines']));
+            $invoice->setItemData(json_encode($updates['lines']) ?: '[]');
         }
 
         if (isset($updates['note'])) {
@@ -435,7 +446,9 @@ class InvoiceService
             $emailTemplate = 'email/invoice-reminder';
         }
 
-        $emailBody = app('render')->render(
+        /** @var RenderService */
+        $render = app(RenderService::class);
+        $emailBody = $render->render(
             $emailTemplate,
             [
                 'invoice'    => $invoice,
@@ -457,6 +470,7 @@ class InvoiceService
             'recipientAddress' => $invoice->getEmail(),
         ]);
 
+        /** @var EmailService */
         $emailService = app(EmailService::class);
         $emailService->send($email);
 

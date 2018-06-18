@@ -30,8 +30,10 @@ class OrmService
     public function getOne(string $class, int $id): ?AbstractEntity
     {
         if (!isset($this->byId[$class]) || !array_key_exists($id, $this->byId[$class])) {
-            $data = app('db')->fetchOne('SELECT * FROM `' . $class::TABLE_NAME . '` WHERE id = ' . $id);
-            app('db')->addLoadedTable($class::TABLE_NAME);
+            /** @var DbService */
+            $db = app(DbService::class);
+            $data = $db->fetchOne('SELECT * FROM `' . $class::TABLE_NAME . '` WHERE id = ' . $id);
+            $db->addLoadedTable($class::TABLE_NAME);
             $this->byId[$class][$id] = $data ? new $class($class::mapFromDB($data)) : null;
         }
 
@@ -52,8 +54,10 @@ class OrmService
         if (!isset($this->oneBySql[$class]) || !array_key_exists($query, $this->oneBySql[$class])) {
             $this->oneBySql[$class][$query] = null;
 
-            $data = app('db')->fetchOne($query);
-            app('db')->addLoadedTable($class::TABLE_NAME);
+            /** @var DbService */
+            $db = app(DbService::class);
+            $data = $db->fetchOne($query);
+            $db->addLoadedTable($class::TABLE_NAME);
             if ($data) {
                 if (!isset($this->byId[$class][$data['id']])) {
                     $this->byId[$class][$data['id']] = new $class($class::mapFromDB($data));
@@ -78,13 +82,15 @@ class OrmService
         $query = trim(preg_replace('/\s+/u', ' ', $query));
         if (!isset($this->bySql[$class][$query])) {
             $this->bySql[$class][$query] = [];
-            foreach (app('db')->fetchArray($query) as $data) {
+            /** @var DbService */
+            $db = app(DbService::class);
+            foreach ($db->fetchArray($query) as $data) {
                 if (!isset($this->byId[$class][$data['id']])) {
                     $this->byId[$class][$data['id']] = new $class($class::mapFromDB($data));
                 }
                 $this->bySql[$class][$query][] = $this->byId[$class][$data['id']];
             }
-            app('db')->addLoadedTable($class::TABLE_NAME);
+            $db->addLoadedTable($class::TABLE_NAME);
         }
 
         return $this->bySql[$class][$query];

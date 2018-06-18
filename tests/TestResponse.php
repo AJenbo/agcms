@@ -108,8 +108,7 @@ class TestResponse
     /**
      * Assert that the response has a given JSON structure.
      *
-     * @param string[]|null $structure
-     * @param array|null    $responseData
+     * @param array|null $responseData
      *
      * @return $this
      */
@@ -132,7 +131,7 @@ class TestResponse
 
             if (is_array($value)) {
                 Assert::assertArrayHasKey($key, $responseData);
-                $this->assertJsonStructure($structure[$key], $responseData[$key]);
+                $this->assertJsonStructure($value, $responseData[$key]);
                 continue;
             }
 

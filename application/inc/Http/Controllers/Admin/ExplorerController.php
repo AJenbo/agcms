@@ -1,5 +1,6 @@
 <?php namespace App\Http\Controllers\Admin;
 
+use App\Application;
 use App\Exceptions\Exception;
 use App\Exceptions\InvalidInput;
 use App\Models\CustomPage;
@@ -9,8 +10,11 @@ use App\Models\Newsletter;
 use App\Models\Page;
 use App\Models\Requirement;
 use App\Render;
+use App\Services\DbService;
 use App\Services\FileService;
 use App\Services\ImageService;
+use App\Services\OrmService;
+use App\Services\RenderService;
 use App\Services\UploadHandler;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
@@ -64,7 +68,10 @@ class ExplorerController extends AbstractAdminController
         $move = $request->query->getBoolean('move');
         $currentDir = $request->cookies->get('admin_dir', '/images');
 
-        $html = app('render')->render(
+        /** @var RenderService */
+        $render = app(RenderService::class);
+
+        $html = $render->render(
             'admin/partial-listDirs',
             [
                 'dirs' => $this->fileService->getSubDirs($path, $currentDir),
@@ -91,13 +98,16 @@ class ExplorerController extends AbstractAdminController
 
         $this->fileService->checkPermittedPath($path);
 
-        $files = scandir(app()->basePath($path));
+        /** @var Application */
+        $app = app();
+
+        $files = scandir($app->basePath($path)) ?: [];
         natcasesort($files);
 
         $html = '';
         $fileData = [];
         foreach ($files as $fileName) {
-            if ('.' === mb_substr($fileName, 0, 1) || is_dir(app()->basePath($path . '/' . $fileName))) {
+            if ('.' === mb_substr($fileName, 0, 1) || is_dir($app->basePath($path . '/' . $fileName))) {
                 continue;
             }
 
@@ -123,9 +133,12 @@ class ExplorerController extends AbstractAdminController
      */
     public function search(Request $request): JsonResponse
     {
+        /** @var DbService */
+        $db = app(DbService::class);
+
         $returnType = $request->get('return', '');
-        $qpath = app('db')->escapeWildcards($request->get('qpath', ''));
-        $qalt = app('db')->escapeWildcards($request->get('qalt', ''));
+        $qpath = $db->escapeWildcards($request->get('qpath', ''));
+        $qalt = $db->escapeWildcards($request->get('qalt', ''));
 
         $qtype = $request->get('qtype');
         $sqlMime = '';
@@ -165,19 +178,19 @@ class ExplorerController extends AbstractAdminController
                 $sql .= '(';
             }
             if ($qpath) {
-                $sql .= 'MATCH(path) AGAINST(' . app('db')->quote($qpath) . ')>0';
+                $sql .= 'MATCH(path) AGAINST(' . $db->quote($qpath) . ')>0';
             }
             if ($qpath && $qalt) {
                 $sql .= ' OR ';
             }
             if ($qalt) {
-                $sql .= 'MATCH(alt) AGAINST(' . app('db')->quote($qalt) . ')>0';
+                $sql .= 'MATCH(alt) AGAINST(' . $db->quote($qalt) . ')>0';
             }
             if ($qpath) {
-                $sql .= ' OR `path` LIKE ' . app('db')->quote('%' . $qpath . '%');
+                $sql .= ' OR `path` LIKE ' . $db->quote('%' . $qpath . '%');
             }
             if ($qalt) {
-                $sql .= ' OR `alt` LIKE ' . app('db')->quote('%' . $qalt . '%');
+                $sql .= ' OR `alt` LIKE ' . $db->quote('%' . $qalt . '%');
             }
             if ($qpath || $qalt) {
                 $sql .= ')';
@@ -197,13 +210,13 @@ class ExplorerController extends AbstractAdminController
                 $sqlSelect .= '(';
             }
             if ($qpath) {
-                $sqlSelect .= 'MATCH(path) AGAINST(' . app('db')->quote($qpath) . ')';
+                $sqlSelect .= 'MATCH(path) AGAINST(' . $db->quote($qpath) . ')';
             }
             if ($qpath && $qalt) {
                 $sqlSelect .= ' + ';
             }
             if ($qalt) {
-                $sqlSelect .= 'MATCH(alt) AGAINST(' . app('db')->quote($qalt) . ')';
+                $sqlSelect .= 'MATCH(alt) AGAINST(' . $db->quote($qalt) . ')';
             }
             if ($qpath && $qalt) {
                 $sqlSelect .= ')';
@@ -216,8 +229,11 @@ class ExplorerController extends AbstractAdminController
         $html = '';
         $fileData = [];
 
+        /** @var OrmService */
+        $orm = app(OrmService::class);
+
         /** @var File[] */
-        $files = app('orm')->getByQuery(File::class, 'SELECT *' . $sql);
+        $files = $orm->getByQuery(File::class, 'SELECT *' . $sql);
         foreach ($files as $file) {
             if ('unused' !== $qtype || !$file->isInUse()) {
                 $html .= $this->fileService->filehtml($file, $returnType);
@@ -240,8 +256,11 @@ class ExplorerController extends AbstractAdminController
      */
     public function fileDelete(Request $request, int $id): JsonResponse
     {
+        /** @var OrmService */
+        $orm = app(OrmService::class);
+
         /** @var ?File */
-        $file = app('orm')->getOne(File::class, $id);
+        $file = $orm->getOne(File::class, $id);
         if ($file) {
             if ($file->isInUse()) {
                 throw new InvalidInput(_('The file can not be deleted because it is in use.'), Response::HTTP_LOCKED);
@@ -298,8 +317,11 @@ class ExplorerController extends AbstractAdminController
      */
     public function fileView(Request $request, int $id): Response
     {
+        /** @var OrmService */
+        $orm = app(OrmService::class);
+
         /** @var ?File */
-        $file = app('orm')->getOne(File::class, $id);
+        $file = $orm->getOne(File::class, $id);
         if (!$file) {
             throw new InvalidInput(_('File not found.'), Response::HTTP_NOT_FOUND);
         }
@@ -333,13 +355,17 @@ class ExplorerController extends AbstractAdminController
         } elseif ('lineimage' === $type) {
             $pathinfo['extension'] = 'png';
         }
+
+        /** @var Application */
+        $app = app();
+
         $path = $pathinfo['dirname'] . '/' . $this->fileService->cleanFileName($pathinfo['filename']);
-        $fullPath = app()->basePath($path);
+        $fullPath = $app->basePath($path);
         if ($pathinfo['extension']) {
             $fullPath .= '.' . $pathinfo['extension'];
         }
 
-        return new JsonResponse(['exists' => (bool) is_file($fullPath), 'name' => basename($fullPath)]);
+        return new JsonResponse(['exists' => is_file($fullPath), 'name' => basename($fullPath)]);
     }
 
     /**
@@ -356,8 +382,11 @@ class ExplorerController extends AbstractAdminController
      */
     public function fileDescription(Request $request, int $id): JsonResponse
     {
+        /** @var OrmService */
+        $orm = app(OrmService::class);
+
         /** @var ?File */
-        $file = app('orm')->getOne(File::class, $id);
+        $file = $orm->getOne(File::class, $id);
         if (!$file) {
             throw new InvalidInput(_('File not found.'), Response::HTTP_NOT_FOUND);
         }
@@ -365,12 +394,15 @@ class ExplorerController extends AbstractAdminController
         $description = $request->request->get('description', '');
         $file->setDescription($description)->save();
 
+        /** @var DbService */
+        $db = app(DbService::class);
+
         foreach ([Page::class, CustomPage::class, Requirement::class, Newsletter::class] as $className) {
             /** @var (Page|CustomPage|Requirement|Newsletter)[] */
-            $richTexts = app('orm')->getByQuery(
+            $richTexts = $orm->getByQuery(
                 $className,
                 'SELECT * FROM `' . $className::TABLE_NAME
-                    . '` WHERE `text` LIKE ' . app('db')->quote('%="' . $file->getPath() . '"%')
+                    . '` WHERE `text` LIKE ' . $db->quote('%="' . $file->getPath() . '"%')
             );
             $this->updateAltInHtml($richTexts, $file);
         }
@@ -416,8 +448,11 @@ class ExplorerController extends AbstractAdminController
     {
         $currentDir = $request->cookies->get('admin_dir', '/images');
 
+        /** @var OrmService */
+        $orm = app(OrmService::class);
+
         /** @var ?File */
-        $file = app('orm')->getOne(File::class, $id);
+        $file = $orm->getOne(File::class, $id);
         if (!$file) {
             throw new InvalidInput(_('File not found.'), Response::HTTP_NOT_FOUND);
         }
@@ -440,8 +475,8 @@ class ExplorerController extends AbstractAdminController
     public function fileUploadDialog(Request $request): Response
     {
         $maxbyte = min(
-            $this->fileService->returnBytes(ini_get('post_max_size')),
-            $this->fileService->returnBytes(ini_get('upload_max_filesize'))
+            $this->fileService->returnBytes(ini_get('post_max_size') ?: '0'),
+            $this->fileService->returnBytes(ini_get('upload_max_filesize') ?: '0')
         );
 
         $data = [
@@ -500,9 +535,12 @@ class ExplorerController extends AbstractAdminController
      */
     public function fileRename(Request $request, int $id): JsonResponse
     {
+        /** @var OrmService */
+        $orm = app(OrmService::class);
+
         try {
             /** @var ?File */
-            $file = app('orm')->getOne(File::class, $id);
+            $file = $orm->getOne(File::class, $id);
             if (!$file) {
                 throw new InvalidInput(_('File not found.'), Response::HTTP_NOT_FOUND);
             }
@@ -589,7 +627,10 @@ class ExplorerController extends AbstractAdminController
 
             $this->fileService->checkPermittedTargetPath($path);
 
-            if (file_exists(app()->basePath($newPath))) {
+            /** @var Application */
+            $app = app();
+
+            if (file_exists($app->basePath($newPath))) {
                 if (!$overwrite) {
                     return new JsonResponse([
                         'yesno' => _(
@@ -602,7 +643,7 @@ class ExplorerController extends AbstractAdminController
                 $this->fileService->deleteFolder($newPath);
             }
 
-            if (!rename(app()->basePath($path), app()->basePath($newPath))) {
+            if (!rename($app->basePath($path), $app->basePath($newPath))) {
                 throw new Exception(_('An error occurred with the file operations.'));
             }
         } catch (InvalidInput $exception) {
@@ -629,8 +670,11 @@ class ExplorerController extends AbstractAdminController
      */
     public function imageEditWidget(Request $request, int $id): Response
     {
+        /** @var OrmService */
+        $orm = app(OrmService::class);
+
         /** @var ?File */
-        $file = app('orm')->getOne(File::class, $id);
+        $file = $orm->getOne(File::class, $id);
         if (!$file) {
             throw new InvalidInput(_('File not found.'), Response::HTTP_NOT_FOUND);
         }
@@ -667,8 +711,11 @@ class ExplorerController extends AbstractAdminController
      */
     public function image(Request $request, int $id): Response
     {
+        /** @var OrmService */
+        $orm = app(OrmService::class);
+
         /** @var ?File */
-        $file = app('orm')->getOne(File::class, $id);
+        $file = $orm->getOne(File::class, $id);
         if (!$file) {
             throw new InvalidInput(_('File not found.'), Response::HTTP_NOT_FOUND);
         }
@@ -677,7 +724,10 @@ class ExplorerController extends AbstractAdminController
 
         $noCache = $request->query->getBoolean('noCache');
 
-        $timestamp = filemtime(app()->basePath($path));
+        /** @var Application */
+        $app = app();
+
+        $timestamp = filemtime($app->basePath($path));
         if (false === $timestamp) {
             throw new Exception('File not found.', Response::HTTP_NOT_FOUND);
         }
@@ -689,7 +739,7 @@ class ExplorerController extends AbstractAdminController
             }
         }
 
-        $image = $this->createImageServiceFomRequest($request->query, app()->basePath($path));
+        $image = $this->createImageServiceFomRequest($request->query, $app->basePath($path));
         if ($image->isNoOp()) {
             return redirect($path, Response::HTTP_MOVED_PERMANENTLY);
         }
@@ -724,14 +774,20 @@ class ExplorerController extends AbstractAdminController
      */
     public function imageSave(Request $request, int $id): Response
     {
+        /** @var OrmService */
+        $orm = app(OrmService::class);
+
         /** @var ?File */
-        $file = app('orm')->getOne(File::class, $id);
+        $file = $orm->getOne(File::class, $id);
         if (!$file) {
             throw new InvalidInput(_('File not found.'), Response::HTTP_NOT_FOUND);
         }
 
+        /** @var Application */
+        $app = app();
+
         $path = $file->getPath();
-        $fullPath = app()->basePath($path);
+        $fullPath = $app->basePath($path);
 
         $image = $this->createImageServiceFomRequest($request->request, $fullPath);
         if ($image->isNoOp()) {
@@ -753,7 +809,7 @@ class ExplorerController extends AbstractAdminController
         $file->setWidth($image->getWidth())
             ->setHeight($image->getHeight())
             ->setMime($mime)
-            ->setSize(filesize($fullPath))
+            ->setSize(filesize($fullPath) ?: 0)
             ->save();
 
         return $this->createImageResponse($file);
@@ -771,15 +827,21 @@ class ExplorerController extends AbstractAdminController
      */
     public function imageSaveThumb(Request $request, int $id): Response
     {
+        /** @var OrmService */
+        $orm = app(OrmService::class);
+
         /** @var ?File */
-        $file = app('orm')->getOne(File::class, $id);
+        $file = $orm->getOne(File::class, $id);
         if (!$file) {
             throw new InvalidInput(_('File not found.'), Response::HTTP_NOT_FOUND);
         }
 
         $path = $file->getPath();
 
-        $image = $this->createImageServiceFomRequest($request->request, app()->basePath($path));
+        /** @var Application */
+        $app = app();
+
+        $image = $this->createImageServiceFomRequest($request->request, $app->basePath($path));
         if ($image->isNoOp()) {
             return $this->createImageResponse($file);
         }
@@ -799,7 +861,7 @@ class ExplorerController extends AbstractAdminController
         if (File::getByPath($newPath)) {
             throw new InvalidInput(_('Thumbnail already exists.'));
         }
-        $image->processImage(app()->basePath($newPath), $type);
+        $image->processImage($app->basePath($newPath), $type);
 
         /** @var File */
         $newFile = File::fromPath($newPath);

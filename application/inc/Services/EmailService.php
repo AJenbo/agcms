@@ -1,7 +1,9 @@
 <?php namespace App\Services;
 
 use AJenbo\Imap;
+use App\Application;
 use App\Exceptions\SendEmail;
+use App\Models\Contact;
 use App\Models\Email;
 use PHPMailer\PHPMailer\PHPMailer;
 
@@ -22,6 +24,9 @@ class EmailService
         $domain = preg_replace('/^.+?@/u', '', $email);
         if (function_exists('idn_to_ascii')) {
             $domain = idn_to_ascii($domain, 0, INTL_IDNA_VARIANT_UTS46);
+        }
+        if (!$domain) {
+            return false;
         }
 
         if (filter_var($user . '@' . $domain, FILTER_VALIDATE_EMAIL) && $this->checkMx($domain)) {
@@ -80,8 +85,11 @@ class EmailService
             $mailer->addBCC($contact->getEmail(), $contact->getName());
         }
 
+        /** @var Application */
+        $app = app();
+
         $mailer->Subject = $email->getSubject();
-        $mailer->msgHTML($email->getBody(), app()->basePath());
+        $mailer->msgHTML($email->getBody(), $app->basePath());
         $mailer->addAddress($email->getRecipientAddress(), $email->getRecipientName());
 
         if (!$mailer->send()) {

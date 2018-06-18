@@ -3,6 +3,7 @@
 use App\Exceptions\InvalidInput;
 use App\Models\CustomSorting;
 use App\Models\Table;
+use App\Services\OrmService;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -40,10 +41,13 @@ class TableController extends AbstractAdminController
      */
     public function createDialog(Request $request, int $pageId): Response
     {
+        /** @var OrmService */
+        $orm = app(OrmService::class);
+
         return $this->render(
             'admin/addlist',
             [
-                'customSortings' => app('orm')->getByQuery(CustomSorting::class, 'SELECT * FROM `tablesort`'),
+                'customSortings' => $orm->getByQuery(CustomSorting::class, 'SELECT * FROM `tablesort`'),
                 'page_id'        => $pageId,
             ]
         );
@@ -64,8 +68,11 @@ class TableController extends AbstractAdminController
         $cells = $request->request->get('cells', []);
         $link = $request->request->get('link');
 
+        /** @var OrmService */
+        $orm = app(OrmService::class);
+
         /** @var ?Table */
-        $table = app('orm')->getOne(Table::class, $tableId);
+        $table = $orm->getOne(Table::class, $tableId);
         if (!$table) {
             throw new InvalidInput(_('Table not found.'), Response::HTTP_NOT_FOUND);
         }
@@ -91,8 +98,11 @@ class TableController extends AbstractAdminController
         $cells = $request->request->get('cells', []);
         $link = $request->request->get('link');
 
+        /** @var OrmService */
+        $orm = app(OrmService::class);
+
         /** @var ?Table */
-        $table = app('orm')->getOne(Table::class, $tableId);
+        $table = $orm->getOne(Table::class, $tableId);
         if (!$table) {
             throw new InvalidInput(_('Table not found.'), Response::HTTP_NOT_FOUND);
         }
@@ -115,8 +125,11 @@ class TableController extends AbstractAdminController
      */
     public function removeRow(Request $request, int $tableId, int $rowId): JsonResponse
     {
+        /** @var OrmService */
+        $orm = app(OrmService::class);
+
         /** @var ?Table */
-        $table = app('orm')->getOne(Table::class, $tableId);
+        $table = $orm->getOne(Table::class, $tableId);
         if (!$table) {
             throw new InvalidInput(_('Table not found.'), Response::HTTP_NOT_FOUND);
         }

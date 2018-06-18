@@ -4,6 +4,7 @@ use App\Exceptions\Exception;
 use App\Exceptions\InvalidInput;
 use App\Models\Category;
 use App\Models\CustomPage;
+use App\Services\OrmService;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -22,12 +23,15 @@ class CustomPageController extends AbstractAdminController
      */
     public function index(Request $request, int $id): Response
     {
+        /** @var OrmService */
+        $orm = app(OrmService::class);
+
         $data = $this->basicPageData($request);
-        $data['page'] = app('orm')->getOne(CustomPage::class, $id);
+        $data['page'] = $orm->getOne(CustomPage::class, $id);
         $data['pageWidth'] = config('text_width');
         if (1 === $id) {
             /** @var ?Category */
-            $category = app('orm')->getOne(Category::class, 0);
+            $category = $orm->getOne(Category::class, 0);
             if (!$category) {
                 throw new Exception(_('Root category is missing.'));
             }
@@ -54,8 +58,11 @@ class CustomPageController extends AbstractAdminController
      */
     public function update(Request $request, int $id): JsonResponse
     {
+        /** @var OrmService */
+        $orm = app(OrmService::class);
+
         /** @var ?CustomPage */
-        $page = app('orm')->getOne(CustomPage::class, $id);
+        $page = $orm->getOne(CustomPage::class, $id);
         if (!$page) {
             throw new InvalidInput(_('Page not found.'), Response::HTTP_NOT_FOUND);
         }
@@ -71,7 +78,7 @@ class CustomPageController extends AbstractAdminController
 
         if (1 === $id) {
             /** @var ?Category */
-            $category = app('orm')->getOne(Category::class, 0);
+            $category = $orm->getOne(Category::class, 0);
             if (!$category) {
                 throw new Exception(_('Root category is missing.'));
             }

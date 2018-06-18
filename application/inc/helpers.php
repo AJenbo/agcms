@@ -152,12 +152,15 @@ function stringLimit(string $string, int $length = 50, string $ellipsis = '…')
 function purifyHTML(string $html): string
 {
     $config = HTMLPurifier_Config::createDefault();
+    /** @var Application */
+    $app = app();
     $config->set('HTML.SafeIframe', true);
     $config->set('URI.SafeIframeRegexp', '%^(https:|http:)?//www.youtube.com/embed/%u');
     $config->set('HTML.Doctype', 'XHTML 1.0 Transitional');
-    $config->set('Cache.SerializerPath', app()->basePath('/theme/cache/HTMLPurifier'));
+    $config->set('Cache.SerializerPath', $app->basePath('/theme/cache/HTMLPurifier'));
 
     $config->set('HTML.DefinitionID', 'html5-definitions'); // unqiue id
+
     if ($def = $config->maybeGetRawHTMLDefinition()) {
         $def->addAttribute('div', 'data-oembed_provider', 'Text');
         $def->addAttribute('div', 'data-oembed', 'Text');
@@ -181,7 +184,6 @@ function purifyHTML(string $html): string
         ]);
         $def->addElement('source', 'Block', 'Empty', 'Common', ['src' => 'URI', 'type' => 'Text']);
     }
-
     $purifier = new HTMLPurifier($config);
 
     $html = $purifier->purify($html);

@@ -2,7 +2,9 @@
 
 use App\Exceptions\InvalidInput;
 use App\Models\Category;
-use App\Render;
+use App\Services\DbService;
+use App\Services\OrmService;
+use App\Services\RenderService;
 use App\Services\SiteTreeService;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -44,13 +46,19 @@ class SiteTreeController extends AbstractAdminController
         $openCategories = explode('<', $request->cookies->get('openkat', ''));
         $openCategories = array_map('intval', $openCategories);
 
+        /** @var OrmService */
+        $orm = app(OrmService::class);
+
+        /** @var RenderService */
+        $render = app(RenderService::class);
+
         $data = [
             'openCategories' => $openCategories,
             'includePages'   => (!$inputType || 'pages' === $inputType),
             'inputType'      => $inputType,
-            'node'           => app('orm')->getOne(Category::class, $categoryId),
+            'node'           => $orm->getOne(Category::class, $categoryId),
         ];
-        $html = app('render')->render('admin/partial-kat_expand', $data);
+        $html = $render->render('admin/partial-kat_expand', $data);
 
         return new JsonResponse(['id' => $categoryId, 'html' => $html]);
     }
@@ -67,8 +75,11 @@ class SiteTreeController extends AbstractAdminController
      */
     public function lable(Request $request, int $id): JsonResponse
     {
+        /** @var OrmService */
+        $orm = app(OrmService::class);
+
         /** @var ?Category */
-        $category = app('orm')->getOne(Category::class, $id);
+        $category = $orm->getOne(Category::class, $id);
         if (!$category) {
             throw new InvalidInput(_('Category not found.'), Response::HTTP_NOT_FOUND);
         }
@@ -114,7 +125,10 @@ class SiteTreeController extends AbstractAdminController
      */
     public function inventory(Request $request): Response
     {
-        app('db')->addLoadedTable('bind', 'kat', 'krav', 'maerke', 'sider');
+        /** @var DbService */
+        $db = app(DbService::class);
+
+        $db->addLoadedTable('bind', 'kat', 'krav', 'maerke', 'sider');
         $response = $this->cachedResponse();
         if ($response->isNotModified($request)) {
             return $response;
@@ -142,11 +156,14 @@ class SiteTreeController extends AbstractAdminController
 
         $sort = isset($sortOptions[$sort]) ? $sort : 'navn';
 
+        /** @var OrmService */
+        $orm = app(OrmService::class);
+
         /** @var Category[] */
-        $categories = app('orm')->getByQuery(Category::class, 'SELECT * FROM kat WHERE bind IS NULL');
+        $categories = $orm->getByQuery(Category::class, 'SELECT * FROM kat WHERE bind IS NULL');
         if ('' !== $categoryId) {
             /** @var Category[] */
-            $categories = [app('orm')->getOne(Category::class, $categoryId)];
+            $categories = [$orm->getOne(Category::class, $categoryId)];
         }
 
         $data = [

@@ -1,6 +1,8 @@
 <?php namespace App\Models;
 
 use App\Contracts\Entity;
+use App\Services\DbService;
+use App\Services\OrmService;
 
 abstract class AbstractEntity implements Entity
 {
@@ -76,8 +78,11 @@ abstract class AbstractEntity implements Entity
      */
     public function save(): Entity
     {
+        /** @var DbService */
+        $db = app(DbService::class);
+
         $data = $this->getDbArray();
-        app('db')->addLoadedTable(static::TABLE_NAME);
+        $db->addLoadedTable(static::TABLE_NAME);
         if (null === $this->id) {
             $this->insert($data);
 
@@ -98,14 +103,20 @@ abstract class AbstractEntity implements Entity
      */
     private function insert(array $data): void
     {
-        $id = app('db')->query(
+        /** @var DbService */
+        $db = app(DbService::class);
+
+        /** @var OrmService */
+        $orm = app(OrmService::class);
+
+        $id = $db->query(
             '
             INSERT INTO `' . static::TABLE_NAME . '`
             (`' . implode('`,`', array_keys($data)) . '`)
             VALUES (' . implode(',', $data) . ')'
         );
         $this->setId($id);
-        app('orm')->remember(static::class, $id, $this);
+        $orm->remember(static::class, $id, $this);
     }
 
     /**
@@ -117,11 +128,14 @@ abstract class AbstractEntity implements Entity
      */
     private function update(array $data): void
     {
+        /** @var DbService */
+        $db = app(DbService::class);
+
         $sets = [];
         foreach ($data as $filedName => $value) {
             $sets[] = '`' . $filedName . '` = ' . $value;
         }
-        app('db')->query(
+        $db->query(
             'UPDATE `' . static::TABLE_NAME . '` SET ' . implode(',', $sets) . ' WHERE `id` = ' . $this->id
         );
     }
@@ -137,8 +151,14 @@ abstract class AbstractEntity implements Entity
             return true;
         }
 
-        app('db')->query('DELETE FROM `' . static::TABLE_NAME . '` WHERE `id` = ' . $this->id);
-        app('orm')->forget(static::class, $this->getId());
+        /** @var DbService */
+        $db = app(DbService::class);
+
+        /** @var OrmService */
+        $orm = app(OrmService::class);
+
+        $db->query('DELETE FROM `' . static::TABLE_NAME . '` WHERE `id` = ' . $this->id);
+        $orm->forget(static::class, $this->getId());
 
         return true;
     }

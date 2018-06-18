@@ -3,6 +3,8 @@
 use App\Models\Category;
 use App\Models\Page;
 use App\Models\Requirement;
+use App\Services\DbService;
+use App\Services\OrmService;
 use GuzzleHttp\Psr7\Uri;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -18,17 +20,23 @@ class Feed extends Base
      */
     public function siteMap(Request $request): Response
     {
-        app('db')->addLoadedTable('bind', 'kat', 'sider', 'special', 'maerke', 'krav');
+        /** @var DbService */
+        $db = app(DbService::class);
+
+        $db->addLoadedTable('bind', 'kat', 'sider', 'special', 'maerke', 'krav');
         $response = new Response('', Response::HTTP_OK, ['Content-Type' => 'text/xml;charset=utf-8']);
         $response = $this->cachedResponse($response);
         if ($response->isNotModified($request)) {
             return $response;
         }
 
+        /** @var OrmService */
+        $orm = app(OrmService::class);
+
         $activeCategories = [];
         $activeCategoryIds = [];
         /** @var Category[] */
-        $categories = app('orm')->getByQuery(Category::class, 'SELECT * FROM kat');
+        $categories = $orm->getByQuery(Category::class, 'SELECT * FROM kat');
         foreach ($categories as $category) {
             if ($category->isInactive()) {
                 continue;
@@ -41,7 +49,7 @@ class Feed extends Base
         }
 
         /** @var Page[] */
-        $pages = app('orm')->getByQuery(
+        $pages = $orm->getByQuery(
             Page::class,
             '
             SELECT sider.* FROM bind
@@ -60,7 +68,7 @@ class Feed extends Base
             'categories'   => $activeCategories,
             'pages'        => $pages,
             'brands'       => $brands,
-            'requirements' => app('orm')->getByQuery(Requirement::class, 'SELECT * FROM krav'),
+            'requirements' => $orm->getByQuery(Requirement::class, 'SELECT * FROM krav'),
         ];
 
         return $this->render('sitemap', $data, $response);
@@ -77,7 +85,10 @@ class Feed extends Base
      */
     public function rss(Request $request): Response
     {
-        app('db')->addLoadedTable('bind', 'files', 'kat', 'maerke', 'sider');
+        /** @var DbService */
+        $db = app(DbService::class);
+
+        $db->addLoadedTable('bind', 'files', 'kat', 'maerke', 'sider');
         $response = new Response('', Response::HTTP_OK, ['Content-Type' => 'application/rss+xml']);
         $response = $this->cachedResponse($response);
         if ($response->isNotModified($request)) {
@@ -86,7 +97,9 @@ class Feed extends Base
 
         $time = false;
         if ($request->headers->has('If-Modified-Since')) {
-            $time = strtotime($request->headers->get('If-Modified-Since'));
+            /** @var string */
+            $ifModifiedSince = $request->headers->get('If-Modified-Since');
+            $time = strtotime($ifModifiedSince);
         }
 
         $where = '';
@@ -96,9 +109,12 @@ class Feed extends Base
             $limit = '';
         }
 
+        /** @var OrmService */
+        $orm = app(OrmService::class);
+
         $items = [];
         /** @var Page[] */
-        $pages = app('orm')->getByQuery(
+        $pages = $orm->getByQuery(
             Page::class,
             'SELECT * FROM sider'
             . $where
@@ -111,8 +127,9 @@ class Feed extends Base
             }
 
             $decription = '';
-            if ($page->getIcon()) {
-                $imgUrl = (string) new Uri(config('base_url') . $page->getIcon()->getPath());
+            $icon = $page->getIcon();
+            if ($icon) {
+                $imgUrl = (string) new Uri(config('base_url') . $icon->getPath());
                 $decription .= '<img style="float:left;margin:0 10px 5px 0" src="'
                     . htmlspecialchars($imgUrl, ENT_COMPAT | ENT_XHTML) . '" ><p>';
             }
@@ -145,7 +162,7 @@ class Feed extends Base
             'url'           => config('base_url') . '/feed/rss/',
             'title'         => config('site_name'),
             'siteUrl'       => config('base_url') . '/',
-            'lastBuildDate' => gmdate('D, d M Y H:i:s', app('db')->dataAge()) . ' GMT',
+            'lastBuildDate' => gmdate('D, d M Y H:i:s', $db->dataAge() ?: time()) . ' GMT',
             'email'         => first(config('emails'))['address'],
             'siteName'      => config('site_name'),
             'items'         => $items,

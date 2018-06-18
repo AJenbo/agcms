@@ -1,4 +1,4 @@
-<?php namespace Tests\Feature\Http\Controllers;
+<?php namespace Tests\Unit\Http\Middleware;
 
 use App\Http\Middleware\Placekitten;
 use App\Http\Request;

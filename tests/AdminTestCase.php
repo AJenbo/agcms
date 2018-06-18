@@ -1,6 +1,7 @@
 <?php namespace Tests;
 
 use App\Models\User;
+use App\Services\OrmService;
 
 abstract class AdminTestCase extends TestCase
 {
@@ -12,7 +13,10 @@ abstract class AdminTestCase extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
-        $user = app('orm')->getOne(User::class, 1);
+        /** @var OrmService */
+        $orm = app(OrmService::class);
+        /** @var User */
+        $user = $orm->getOne(User::class, 1);
         $this->actingAs($user);
     }
 }

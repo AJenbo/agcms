@@ -1,9 +1,12 @@
 <?php namespace App\Models;
 
+use App\Application;
 use App\Exceptions\Exception;
 use App\Exceptions\Handler as ExceptionHandler;
-use App\Render;
+use App\Services\DbService;
 use App\Services\EmailService;
+use App\Services\OrmService;
+use App\Services\RenderService;
 use Throwable;
 
 class Newsletter extends AbstractEntity implements InterfaceRichText
@@ -181,12 +184,15 @@ class Newsletter extends AbstractEntity implements InterfaceRichText
         $interests = array_map('htmlspecialchars', $this->interests);
         $interests = implode('<', $interests);
 
+        /** @var DbService */
+        $db = app(DbService::class);
+
         return [
-            'from'         => app('db')->quote($this->from),
-            'subject'      => app('db')->quote($this->subject),
-            'text'         => app('db')->quote($this->html),
-            'sendt'        => app('db')->quote((string) (int) $this->sent),
-            'interests'    => app('db')->quote($interests),
+            'from'         => $db->quote($this->from),
+            'subject'      => $db->quote($this->subject),
+            'text'         => $db->quote($this->html),
+            'sendt'        => $db->quote((string) (int) $this->sent),
+            'interests'    => $db->quote($interests),
         ];
     }
 
@@ -197,8 +203,11 @@ class Newsletter extends AbstractEntity implements InterfaceRichText
      */
     public function countRecipients(): int
     {
-        app('db')->addLoadedTable('email');
-        $emails = app('db')->fetchOne(
+        /** @var DbService */
+        $db = app(DbService::class);
+
+        $db->addLoadedTable('email');
+        $emails = $db->fetchOne(
             "
             SELECT count(DISTINCT email) as 'count'
             FROM `email`
@@ -253,9 +262,12 @@ class Newsletter extends AbstractEntity implements InterfaceRichText
             throw new Exception(_('The newsletter has already been sent.'));
         }
 
+        /** @var OrmService */
+        $orm = app(OrmService::class);
+
         $andWhere = $this->getContactFilterSQL();
         /** @var Contact[] */
-        $contacts = app('orm')->getByQuery(
+        $contacts = $orm->getByQuery(
             Contact::class,
             'SELECT * FROM email WHERE email NOT LIKE \'\' AND `kartotek` = \'1\' ' . $andWhere . ' GROUP BY `email`'
         );
@@ -266,19 +278,27 @@ class Newsletter extends AbstractEntity implements InterfaceRichText
             $contactsGroups[(int) floor($x / 99) + 1][] = $contact;
         }
 
+        /** @var Application */
+        $app = app();
+
         $data = [
             'siteName' => config('site_name'),
             'css'      => file_get_contents(
-                app()->basePath('/theme/' . config('theme', 'default') . '/style/email.css')
+                $app->basePath('/theme/' . config('theme', 'default') . '/style/email.css')
             ),
             'body'     => str_replace(' href="/', ' href="' . config('base_url') . '/', $this->html),
         ];
+        /** @var EmailService */
         $emailService = app(EmailService::class);
         $failedCount = 0;
+
+        /** @var RenderService */
+        $render = app(RenderService::class);
+
         foreach ($contactsGroups as $bcc) {
             $email = new Email([
                 'subject'          => $this->subject,
-                'body'             => app('render')->render('email/newsletter', $data),
+                'body'             => $render->render('email/newsletter', $data),
                 'senderName'       => config('site_name'),
                 'senderAddress'    => $this->from,
                 'recipientName'    => config('site_name'),
@@ -288,7 +308,9 @@ class Newsletter extends AbstractEntity implements InterfaceRichText
             try {
                 $emailService->send($email, $bcc);
             } catch (Throwable $exception) {
-                app(ExceptionHandler::class)->report($exception);
+                /** @var ExceptionHandler */
+                $handler = app(ExceptionHandler::class);
+                $handler->report($exception);
                 $failedCount += count($bcc);
             }
         }

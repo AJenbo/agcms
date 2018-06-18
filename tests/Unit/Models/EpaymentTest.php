@@ -3,6 +3,8 @@
 use App\Models\Epayment;
 use App\Services\EpaymentService;
 use Mockery as M;
+use Mockery\Expectation;
+use Mockery\MockInterface;
 use PHPUnit\Framework\TestCase;
 use stdClass;
 
@@ -20,7 +22,9 @@ class EpaymentTest extends TestCase
     {
         parent::setUp();
 
-        $this->epaymentService = M::mock(EpaymentService::class);
+        /** @var EpaymentService */
+        $epaymentService = M::mock(EpaymentService::class);
+        $this->epaymentService = $epaymentService;
     }
 
     public function tearDown()
@@ -93,11 +97,9 @@ class EpaymentTest extends TestCase
     {
         $epayment = $this->getPayment();
 
-        $this->epaymentService
-            ->shouldReceive('annul')
-            ->with($epayment)
-            ->once()
-            ->andReturn(true);
+        if ($this->epaymentService instanceof MockInterface) {
+            $this->mockMethod($this->epaymentService, 'annul', true, [$epayment]);
+        }
 
         $this->assertTrue($epayment->annul());
         $this->assertTrue($epayment->isAnnulled());
@@ -113,11 +115,9 @@ class EpaymentTest extends TestCase
     {
         $epayment = $this->getPayment();
 
-        $this->epaymentService
-            ->shouldReceive('annul')
-            ->with($epayment)
-            ->once()
-            ->andReturn(false);
+        if ($this->epaymentService instanceof MockInterface) {
+            $this->mockMethod($this->epaymentService, 'annul', false, [$epayment]);
+        }
 
         $this->assertFalse($epayment->annul());
         $this->assertFalse($epayment->isAnnulled());
@@ -160,11 +160,9 @@ class EpaymentTest extends TestCase
     {
         $epayment = $this->getPayment();
 
-        $this->epaymentService
-            ->shouldReceive('confirm')
-            ->with($epayment, 100)
-            ->once()
-            ->andReturn(true);
+        if ($this->epaymentService instanceof MockInterface) {
+            $this->mockMethod($this->epaymentService, 'confirm', true, [$epayment, 100]);
+        }
 
         $this->assertTrue($epayment->confirm());
         $this->assertSame(100, $epayment->getAmountCaptured());
@@ -181,14 +179,28 @@ class EpaymentTest extends TestCase
     {
         $epayment = $this->getPayment();
 
-        $this->epaymentService
-            ->shouldReceive('confirm')
-            ->with($epayment, 100)
-            ->once()
-            ->andReturn(false);
+        if ($this->epaymentService instanceof MockInterface) {
+            $this->mockMethod($this->epaymentService, 'confirm', false, [$epayment, 100]);
+        }
 
         $this->assertFalse($epayment->confirm());
         $this->assertSame(0, $epayment->getAmountCaptured());
+    }
+
+    protected function mockMethod(
+        MockInterface $mockClass,
+        string $methodName,
+        $return = null,
+        ?array $with = [],
+        int $times = 1
+    ): void {
+        /** @var Expectation */
+        $method = $mockClass->shouldReceive($methodName);
+        $method->times($times);
+        if (null !== $with) {
+            $method->withArgs($with);
+        }
+        $method->andReturn($return);
     }
 
     /**

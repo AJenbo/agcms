@@ -3,9 +3,6 @@
 use App\Exceptions\Handler as ExceptionHandler;
 use App\Http\Controllers\Base;
 use App\Http\Request;
-use App\Services\DbService;
-use App\Services\OrmService;
-use App\Services\RenderService;
 use Closure;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Response;
@@ -13,7 +10,7 @@ use Throwable;
 
 class Application
 {
-    /** @var self */
+    /** @var ?self */
     private static $instance;
 
     /** @var string */
@@ -22,19 +19,12 @@ class Application
     /**
      * All of the global middleware for the application.
      *
-     * @var array[]
+     * @var string[]
      */
     protected $middleware = [];
 
     /** @var array[] */
     private $routes = [];
-
-    /** @var string[] */
-    private $aliases = [
-        'db'     => DbService::class,
-        'orm'    => OrmService::class,
-        'render' => RenderService::class,
-    ];
 
     /** @var object[] */
     private $services = [];
@@ -46,14 +36,13 @@ class Application
      */
     public function __construct(string $basePath)
     {
+        self::$instance = $this;
         $this->basePath = $basePath;
 
         $this->initErrorLogging();
         $this->setLocale();
         $this->loadTranslations();
         $this->loadRoutes();
-
-        self::$instance = $this;
     }
 
     /**
@@ -128,11 +117,11 @@ class Application
      */
     public static function getInstance(): self
     {
-        if (!self::$instance) {
-            new self(realpath(__DIR__ . '/../..'));
+        if (self::$instance) {
+            return self::$instance;
         }
 
-        return self::$instance;
+        return new self(realpath(__DIR__ . '/../..') ?: '');
     }
 
     /**
@@ -144,8 +133,6 @@ class Application
      */
     public function get(string $id)
     {
-        $id = $this->aliases[$id] ?? $id;
-
         if (!isset($this->services[$id])) {
             $this->services[$id] = new $id();
         }
@@ -228,6 +215,7 @@ class Application
      */
     protected function handleException(Request $request, Throwable $exception): Response
     {
+        /** @var ExceptionHandler */
         $handler = $this->get(ExceptionHandler::class);
 
         $handler->report($exception);

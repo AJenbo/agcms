@@ -1,5 +1,7 @@
 <?php namespace App\Models;
 
+use App\Exceptions\Exception;
+use App\Services\DbService;
 use DateTime;
 
 class User extends AbstractEntity
@@ -61,13 +63,16 @@ class User extends AbstractEntity
      */
     public static function mapFromDB(array $data): array
     {
+        /** @var DbService */
+        $db = app(DbService::class);
+
         return [
             'id'            => $data['id'],
             'full_name'     => $data['fullname'],
             'nickname'      => $data['name'],
             'password_hash' => $data['password'],
             'access_level'  => $data['access'],
-            'last_login'    => strtotime($data['lastlogin']) + app('db')->getTimeOffset(),
+            'last_login'    => strtotime($data['lastlogin']) + $db->getTimeOffset(),
         ];
     }
 
@@ -78,12 +83,15 @@ class User extends AbstractEntity
      */
     public function getDbArray(): array
     {
+        /** @var DbService */
+        $db = app(DbService::class);
+
         return [
-            'fullname'  => app('db')->quote($this->fullName),
-            'name'      => app('db')->quote($this->nickname),
-            'password'  => app('db')->quote($this->passwordHash),
+            'fullname'  => $db->quote($this->fullName),
+            'name'      => $db->quote($this->nickname),
+            'password'  => $db->quote($this->passwordHash),
             'access'    => (string) $this->accessLevel,
-            'lastlogin' => app('db')->getDateValue($this->lastLogin - app('db')->getTimeOffset()),
+            'lastlogin' => $db->getDateValue($this->lastLogin - $db->getTimeOffset()),
         ];
     }
 
@@ -144,7 +152,12 @@ class User extends AbstractEntity
      */
     public function setPassword(string $password): self
     {
-        $this->passwordHash = password_hash($password, PASSWORD_BCRYPT);
+        $hash = password_hash($password, PASSWORD_BCRYPT);
+        if (!$hash) {
+            throw new Exception('Failed to hash password');
+        }
+
+        $this->passwordHash = $hash;
 
         return $this;
     }

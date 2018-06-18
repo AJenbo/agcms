@@ -1,5 +1,6 @@
 <?php namespace App\Services;
 
+use App\Application;
 use App\Exceptions\Exception;
 use App\Exceptions\InvalidInput;
 use App\Models\File;
@@ -212,7 +213,12 @@ class UploadHandler
      */
     private function checkMemorry(ImageService $image): void
     {
-        $memoryLimit = $this->fileService->returnBytes(ini_get('memory_limit')) - 270336;
+        $memoryLimit = ini_get('memory_limit');
+        if (!$memoryLimit) {
+            throw new Exception(_('Invalid memory limit'));
+        }
+
+        $memoryLimit = $this->fileService->returnBytes($memoryLimit) - 270336;
         if ($image->getWidth() * $image->getHeight() > $memoryLimit / 10) {
             throw new InvalidInput(_('Image is too large to be processed.'));
         }
@@ -237,7 +243,9 @@ class UploadHandler
             $file->delete();
         }
 
-        $this->file->move(app()->basePath($this->targetDir), $this->getFilename());
+        /** @var Application */
+        $app = app();
+        $this->file->move($app->basePath($this->targetDir), $this->getFilename());
 
         return File::fromPath($path)
             ->setDescription($description)
