@@ -1,7 +1,6 @@
 # AGcms
 
 [![Build Status](https://travis-ci.org/AJenbo/agcms.svg?branch=master)](https://travis-ci.org/AJenbo/agcms)
-[![Dependency Status](https://gemnasium.com/badges/github.com/AJenbo/agcms.svg)](https://gemnasium.com/github.com/AJenbo/agcms)
 [![Codacy Badge](https://api.codacy.com/project/badge/Grade/5d172d5d3df840c4bf958fed492d54b5)](https://www.codacy.com/app/AJenbo/agcms?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=AJenbo/agcms&amp;utm_campaign=Badge_Grade)
 [![Maintainability](https://api.codeclimate.com/v1/badges/9fe78b598a206a6162d7/maintainability)](https://codeclimate.com/github/AJenbo/agcms/maintainability)
 [![codebeat badge](https://codebeat.co/badges/16e1065d-d41c-4082-a86c-22af842274f1)](https://codebeat.co/projects/github-com-ajenbo-agcms-master)
