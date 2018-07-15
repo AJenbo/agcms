@@ -54,8 +54,7 @@ class Request extends SymfonyRequest
      */
     public function startSession(): void
     {
-        $session = $this->getSession();
-        if (!$session) {
+        if (!$this->hasSession()) {
             $storage = new NativeSessionStorage([
                 'cookie_httponly' => 1,
                 'cookie_path'     => '/admin/',
@@ -63,7 +62,7 @@ class Request extends SymfonyRequest
             $session = new Session($storage);
             $this->setSession($session);
         }
-        $session->start();
+        $this->getSession()->start();
     }
 
     /**
