@@ -48,7 +48,7 @@ class Handler
 
         /** @var Request */
         $request = app(Request::class);
-        if ($request->getSession() && $request->user()) {
+        if ($request->hasSession() && $request->user()) {
             $user = $request->user();
             if ($user) {
                 $this->ravenClient->user_context(['id' => $user->getId(), 'name' => $user->getFullName()]);
