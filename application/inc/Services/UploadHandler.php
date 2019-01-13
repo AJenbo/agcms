@@ -98,10 +98,15 @@ class UploadHandler
      */
     private function processFile(string $destinationType, string $description): File
     {
+        $filePath = $this->file->getRealPath();
+        if (false === $filePath) {
+            throw new Exception('Files doesn\'t exist');
+        }
+
         $width = 0;
         $height = 0;
         if ($this->isImageFile()) {
-            $image = new ImageService($this->file->getRealPath());
+            $image = new ImageService($filePath);
             $image->setAutoCrop(true);
             $image->setScale(config('text_width'));
 
@@ -113,7 +118,7 @@ class UploadHandler
             $height = $image->getHeight();
         } elseif ($this->isVideoFile()) {
             $getID3 = new getID3();
-            $fileInfo = $getID3->analyze($this->file->getRealPath());
+            $fileInfo = $getID3->analyze($filePath);
             $width = $fileInfo['video']['resolution_x'];
             $height = $fileInfo['video']['resolution_y'];
         }

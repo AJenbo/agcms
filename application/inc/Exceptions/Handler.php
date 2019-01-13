@@ -1,6 +1,7 @@
 <?php namespace App\Exceptions;
 
 use App\Http\Request;
+use App\Application;
 use Raven_Client;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
@@ -40,7 +41,9 @@ class Handler
             return;
         }
 
-        if ('develop' === config('enviroment')) {
+        /** @var Application */
+        $app = app();
+        if ($app->environment('develop')) {
             http_response_code(Response::HTTP_INTERNAL_SERVER_ERROR);
 
             throw $exception;
@@ -48,7 +51,7 @@ class Handler
 
         /** @var Request */
         $request = app(Request::class);
-        if ($request->getSession() && $request->user()) {
+        if ($request->hasSession() && $request->user()) {
             $user = $request->user();
             if ($user) {
                 $this->ravenClient->user_context(['id' => $user->getId(), 'name' => $user->getFullName()]);

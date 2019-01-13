@@ -6,6 +6,7 @@ use App\Services\OrmService;
 use Symfony\Component\HttpFoundation\ParameterBag;
 use Symfony\Component\HttpFoundation\Request as SymfonyRequest;
 use Symfony\Component\HttpFoundation\Session\Session;
+use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Symfony\Component\HttpFoundation\Session\Storage\NativeSessionStorage;
 
 class Request extends SymfonyRequest
@@ -54,15 +55,18 @@ class Request extends SymfonyRequest
      */
     public function startSession(): void
     {
-        $session = $this->getSession();
-        if (!$session) {
+        if (!$this->hasSession()) {
             $storage = new NativeSessionStorage([
                 'cookie_httponly' => 1,
                 'cookie_path'     => '/admin/',
             ]);
             $session = new Session($storage);
             $this->setSession($session);
+        } else {
+            /** @var SessionInterface */
+            $session = $this->getSession();
         }
+
         $session->start();
     }
 

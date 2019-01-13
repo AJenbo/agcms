@@ -40,6 +40,9 @@ class Base extends AbstractController
             ],
             rawurldecode($request->getPathInfo())
         );
+        if (null === $query) {
+            throw new Exception('preg_replace failed');
+        }
         $query = trim($query);
         if ($query) {
             $redirectUrl = '/search/results/?q=' . rawurlencode($query) . '&sogikke=&minpris=&maxpris=&maerke=0';

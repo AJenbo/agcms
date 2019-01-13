@@ -29,16 +29,6 @@ class EmailServiceTest extends TestCase
     }
 
     /**
-     * @covers \App\Services\EmailService::validemail
-     *
-     * @return void
-     */
-    public function testValideAddressForNonExistingDomain(): void
-    {
-        $this->assertFalse($this->emailService->validemail('email@test.notadomain'));
-    }
-
-    /**
      * @covers \App\Services\EmailService::checkMx
      *
      * @return void

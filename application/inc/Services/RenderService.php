@@ -29,10 +29,10 @@ class RenderService
         }
 
         $this->twig = new Twig_Environment($loader);
-        if ('production' === config('enviroment', 'develop')) {
+        if ($app->environment('production')) {
             $this->twig->setCache($app->basePath('/theme/cache/twig'));
         }
-        if ('develop' === config('enviroment', 'develop')) {
+        if ($app->environment('develop')) {
             $this->twig->enableDebug();
         }
         $this->twig->addExtension(new Twig_Extensions_Extension_I18n());

@@ -45,6 +45,15 @@ class Application
         $this->loadRoutes();
     }
 
+    public function environment(...$environments): bool
+    {
+        foreach ($environments as $environment) {
+            return $environment === config('enviroment', 'develop');
+        }
+
+        return false;
+    }
+
     /**
      * Set error loggin.
      *
@@ -52,7 +61,7 @@ class Application
      */
     private function initErrorLogging(): void
     {
-        if ('develop' === config('enviroment', 'develop')) {
+        if ($this->environment('develop')) {
             ini_set('display_errors', 1);
             error_reporting(-1);
         }

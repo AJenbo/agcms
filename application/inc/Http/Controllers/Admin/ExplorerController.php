@@ -36,10 +36,6 @@ class ExplorerController extends AbstractAdminController
 
     /**
      * Show the file manager.
-     *
-     * @param Request $request
-     *
-     * @return Response
      */
     public function index(Request $request): Response
     {
@@ -57,10 +53,6 @@ class ExplorerController extends AbstractAdminController
 
     /**
      * Render subfolder.
-     *
-     * @param Request $request
-     *
-     * @return JsonResponse
      */
     public function folders(Request $request): JsonResponse
     {
@@ -86,10 +78,6 @@ class ExplorerController extends AbstractAdminController
      * Display a list of files in the selected folder.
      *
      * @todo only output json, let fronend generate html and init objects
-     *
-     * @param Request $request
-     *
-     * @return JsonResponse
      */
     public function files(Request $request): JsonResponse
     {
@@ -126,10 +114,6 @@ class ExplorerController extends AbstractAdminController
 
     /**
      * Search for files.
-     *
-     * @param Request $request
-     *
-     * @return JsonResponse
      */
     public function search(Request $request): JsonResponse
     {
@@ -247,12 +231,7 @@ class ExplorerController extends AbstractAdminController
     /**
      * Delete file.
      *
-     * @param Request $request
-     * @param int     $id
-     *
      * @throws InvalidInput
-     *
-     * @return JsonResponse
      */
     public function fileDelete(Request $request, int $id): JsonResponse
     {
@@ -274,10 +253,6 @@ class ExplorerController extends AbstractAdminController
 
     /**
      * Create new folder.
-     *
-     * @param Request $request
-     *
-     * @return JsonResponse
      */
     public function folderCreate(Request $request): JsonResponse
     {
@@ -292,10 +267,6 @@ class ExplorerController extends AbstractAdminController
 
     /**
      * Endpoint for deleting a folder.
-     *
-     * @param Request $request
-     *
-     * @return JsonResponse
      */
     public function folderDelete(Request $request): JsonResponse
     {
@@ -308,12 +279,7 @@ class ExplorerController extends AbstractAdminController
     /**
      * File viwer.
      *
-     * @param Request $request
-     * @param int     $id
-     *
      * @throws InvalidInput
-     *
-     * @return Response
      */
     public function fileView(Request $request, int $id): Response
     {
@@ -338,10 +304,6 @@ class ExplorerController extends AbstractAdminController
 
     /**
      * Check if a file already exists.
-     *
-     * @param Request $request
-     *
-     * @return JsonResponse
      */
     public function fileExists(Request $request): JsonResponse
     {
@@ -354,6 +316,8 @@ class ExplorerController extends AbstractAdminController
             $pathinfo['extension'] = 'jpg';
         } elseif ('lineimage' === $type) {
             $pathinfo['extension'] = 'png';
+        } elseif (empty($pathinfo['extension'])) {
+            $pathinfo['extension'] = 'jpg';
         }
 
         /** @var Application */
@@ -373,12 +337,7 @@ class ExplorerController extends AbstractAdminController
      *
      * @todo make db fixer check for missing alt="" in <img>
      *
-     * @param Request $request
-     * @param int     $id
-     *
      * @throws InvalidInput
-     *
-     * @return JsonResponse
      */
     public function fileDescription(Request $request, int $id): JsonResponse
     {
@@ -414,9 +373,6 @@ class ExplorerController extends AbstractAdminController
      * Update alt text for images in HTML text.
      *
      * @param InterfaceRichText[] $richTexts
-     * @param File                $file
-     *
-     * @return void
      */
     private function updateAltInHtml(array $richTexts, File $file): void
     {
@@ -430,6 +386,9 @@ class ExplorerController extends AbstractAdminController
                 '\1' . htmlspecialchars($file->getDescription(), ENT_COMPAT | ENT_XHTML) . '\2',
                 $html
             );
+            if (null === $html) {
+                throw new Exception('preg_replace failed');
+            }
             $richText->setHtml($html)->save();
         }
     }
@@ -437,12 +396,7 @@ class ExplorerController extends AbstractAdminController
     /**
      * File viwer.
      *
-     * @param Request $request
-     * @param int     $id
-     *
      * @throws InvalidInput
-     *
-     * @return Response
      */
     public function fileMoveDialog(Request $request, int $id): Response
     {
@@ -468,8 +422,6 @@ class ExplorerController extends AbstractAdminController
     /**
      * Upload dialog.
      *
-     * @param Request $request
-     *
      * @return Response
      */
     public function fileUploadDialog(Request $request): Response
@@ -490,11 +442,7 @@ class ExplorerController extends AbstractAdminController
     /**
      * Upload file.
      *
-     * @param Request $request
-     *
      * @throws InvalidInput
-     *
-     * @return Response
      */
     public function fileUpload(Request $request): Response
     {
@@ -526,12 +474,7 @@ class ExplorerController extends AbstractAdminController
     /**
      * Rename or relocate file.
      *
-     * @param Request $request
-     * @param int     $id
-     *
      * @throws InvalidInput
-     *
-     * @return JsonResponse
      */
     public function fileRename(Request $request, int $id): JsonResponse
     {
@@ -600,11 +543,7 @@ class ExplorerController extends AbstractAdminController
     /**
      * Rename directory.
      *
-     * @param Request $request
-     *
      * @throws InvalidInput
-     *
-     * @return JsonResponse
      */
     public function folderRename(Request $request): JsonResponse
     {
@@ -661,12 +600,7 @@ class ExplorerController extends AbstractAdminController
     /**
      * Image editing window.
      *
-     * @param Request $request
-     * @param int     $id
-     *
      * @throws InvalidInput
-     *
-     * @return Response
      */
     public function imageEditWidget(Request $request, int $id): Response
     {
@@ -701,13 +635,8 @@ class ExplorerController extends AbstractAdminController
     /**
      * Dynamic image.
      *
-     * @param Request $request
-     * @param int     $id
-     *
      * @throws Exception
      * @throws InvalidInput
-     *
-     * @return Response
      */
     public function image(Request $request, int $id): Response
     {
@@ -765,12 +694,7 @@ class ExplorerController extends AbstractAdminController
     /**
      * Process an image.
      *
-     * @param Request $request
-     * @param int     $id
-     *
      * @throws InvalidInput
-     *
-     * @return Response
      */
     public function imageSave(Request $request, int $id): Response
     {
@@ -818,12 +742,7 @@ class ExplorerController extends AbstractAdminController
     /**
      * Generate a thumbnail image from an existing image.
      *
-     * @param Request $request
-     * @param int     $id
-     *
      * @throws InvalidInput
-     *
-     * @return Response
      */
     public function imageSaveThumb(Request $request, int $id): Response
     {
@@ -872,11 +791,6 @@ class ExplorerController extends AbstractAdminController
 
     /**
      * Create an image service from a path and the request parameteres.
-     *
-     * @param ParameterBag $parameterBag
-     * @param string       $path
-     *
-     * @return ImageService
      */
     private function createImageServiceFomRequest(ParameterBag $parameterBag, string $path): ImageService
     {
@@ -896,10 +810,6 @@ class ExplorerController extends AbstractAdminController
 
     /**
      * Create an image response for the image editor.
-     *
-     * @param File $file
-     *
-     * @return JsonResponse
      */
     private function createImageResponse(File $file): JsonResponse
     {

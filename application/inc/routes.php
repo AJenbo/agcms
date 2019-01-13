@@ -30,7 +30,7 @@ use App\Http\Middleware\Utf8Url;
 $app = $app;
 
 $app->middleware([Utf8Url::class, Auth::class]);
-if ('develop' === config('enviroment')) {
+if ($app->environment('develop')) {
     $app->middleware(Placekitten::class);
 }
 

@@ -88,7 +88,12 @@ class FileService
         $search = ['/[.&?\/:*"\'´`<>{}|%\s-_=+#\\\\]+/u', '/^\s+|\s+$/u', '/\s+/u'];
         $replace = [' ', '', '-'];
 
-        return mb_strtolower(preg_replace($search, $replace, $filename), 'UTF-8');
+        $filename = preg_replace($search, $replace, $filename);
+        if (null === $filename) {
+            throw new Exception('preg_replace failed');
+        }
+
+        return mb_strtolower($filename, 'UTF-8');
     }
 
     /**
@@ -384,8 +389,13 @@ class FileService
             $hassubs = $this->hasSubsDirs($path);
         }
 
+        $id = preg_replace('#/#u', '.', $path);
+        if (null === $id) {
+            throw new Exception('preg_replace failed');
+        }
+
         return [
-            'id'      => preg_replace('#/#u', '.', $path),
+            'id'      => $id,
             'path'    => $path,
             'name'    => $name,
             'hassubs' => $hassubs,

@@ -1,5 +1,6 @@
 <?php namespace App\Models;
 
+use App\Exceptions\Exception;
 use App\Services\DbService;
 use App\Services\OrmService;
 
@@ -245,8 +246,14 @@ class Page extends AbstractRenderable implements InterfaceRichText
     {
         if (!$this->excerpt) {
             $excerpt = preg_replace(['/</', '/>/', '/\s+/'], [' <', '> ', ' '], $this->html);
+            if (null === $excerpt) {
+                throw new Exception('preg_replace failed');
+            }
             $excerpt = strip_tags($excerpt);
             $excerpt = preg_replace('/\s+/', ' ', $excerpt);
+            if (null === $excerpt) {
+                throw new Exception('preg_replace failed');
+            }
 
             return stringLimit($excerpt, 100);
         }

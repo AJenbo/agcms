@@ -2,6 +2,7 @@
 
 use AJenbo\Imap;
 use App\Application;
+use App\Exceptions\Exception;
 use App\Exceptions\SendEmail;
 use App\Models\Contact;
 use App\Models\Email;
@@ -21,10 +22,14 @@ class EmailService
     public function valideMail(string $email): bool
     {
         $user = preg_replace('/@.+$/u', '', $email);
-        $domain = preg_replace('/^.+?@/u', '', $email);
-        if (function_exists('idn_to_ascii')) {
-            $domain = idn_to_ascii($domain, 0, INTL_IDNA_VARIANT_UTS46);
+        if (null === $user) {
+            throw new Exception('preg_replace failed');
         }
+        $domain = preg_replace('/^.+?@/u', '', $email);
+        if (null === $domain) {
+            throw new Exception('preg_replace failed');
+        }
+        $domain = idn_to_ascii($domain, 0, INTL_IDNA_VARIANT_UTS46);
         if (!$domain) {
             return false;
         }
@@ -47,7 +52,12 @@ class EmailService
     {
         if (!isset($this->ceche[$domain])) {
             $dummy = [];
-            $this->ceche[$domain] = getmxrr($domain, $dummy);
+            $this->ceche[$domain] = true;
+            /** @var Application */
+            $app = app();
+            if (!$app->environment('test')) {
+                $this->ceche[$domain] = getmxrr($domain, $dummy);
+            }
         }
 
         return $this->ceche[$domain];

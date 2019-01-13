@@ -1,5 +1,6 @@
 <?php namespace App\Services;
 
+use App\Exceptions\Exception;
 use App\Models\AbstractEntity;
 
 class OrmService
@@ -50,7 +51,12 @@ class OrmService
      */
     public function getOneByQuery(string $class, string $query): ?AbstractEntity
     {
-        $query = trim(preg_replace('/\s+/u', ' ', $query));
+        $query = preg_replace('/\s+/u', ' ', $query);
+        if (null === $query) {
+            throw new Exception('preg_replace failed');
+        }
+        $query = trim($query);
+
         if (!isset($this->oneBySql[$class]) || !array_key_exists($query, $this->oneBySql[$class])) {
             $this->oneBySql[$class][$query] = null;
 
@@ -79,7 +85,11 @@ class OrmService
      */
     public function getByQuery(string $class, string $query): array
     {
-        $query = trim(preg_replace('/\s+/u', ' ', $query));
+        $query = preg_replace('/\s+/u', ' ', $query);
+        if (null === $query) {
+            throw new Exception('preg_replace failed');
+        }
+        $query = trim($query);
         if (!isset($this->bySql[$class][$query])) {
             $this->bySql[$class][$query] = [];
             /** @var DbService */

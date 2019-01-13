@@ -1,5 +1,6 @@
 <?php namespace App\Http\Controllers\Admin;
 
+use App\Exceptions\Exception;
 use App\Exceptions\InvalidInput;
 use App\Http\Controllers\Base;
 use App\Models\Brand;
@@ -400,6 +401,9 @@ class PageController extends AbstractAdminController
             ['%', '_', '_', '_'],
             $text
         );
+        if (null === $simpleq) {
+            throw new Exception('preg_replace failed');
+        }
 
         /** @var DbService */
         $db = app(DbService::class);

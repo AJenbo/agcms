@@ -1,6 +1,8 @@
 <?php namespace App\Services;
 
+use App\Exceptions\Exception;
 use PDO;
+use PDOStatement;
 
 class DbService
 {
@@ -75,6 +77,7 @@ class DbService
      */
     public function fetchArray(string $query): array
     {
+        /** @var PDOStatement */
         $result = $this->connection()->query($query, PDO::FETCH_ASSOC);
         $rows = [];
         foreach ($result as $row) {
@@ -127,7 +130,12 @@ class DbService
      */
     public function escapeWildcards(string $string): string
     {
-        return preg_replace('/([%_])/u', '\\\\$1', $string);
+        $string = preg_replace('/([%_])/u', '\\\\$1', $string);
+        if (null === $string) {
+            throw new Exception('preg_replace failed');
+        }
+
+        return $string;
     }
 
     /**

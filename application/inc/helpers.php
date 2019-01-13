@@ -1,6 +1,7 @@
 <?php
 
 use App\Application;
+use App\Exceptions\Exception;
 use App\Http\Request;
 use App\Services\ConfigService;
 use GuzzleHttp\Psr7\Uri;
@@ -60,8 +61,6 @@ function redirect(string $url, int $status = RedirectResponse::HTTP_FOUND): Redi
 /**
  * Get first element from an array that can't be referenced.
  *
- * @param array $array
- *
  * @return mixed
  */
 function first(array $array)
@@ -73,8 +72,6 @@ function first(array $array)
  * Generate safe file name.
  *
  * @param string $name String to clean
- *
- * @return string
  */
 function clearFileName(string $name): string
 {
@@ -84,7 +81,12 @@ function clearFileName(string $name): string
         '/\s+/u'                                   => '-',
     ];
 
-    return preg_replace(array_keys($replace), $replace, $name);
+    $name = preg_replace(array_keys($replace), $replace, $name);
+    if (null === $name) {
+        throw new Exception('preg_replace failed');
+    }
+
+    return $name;
 }
 
 /**
@@ -137,6 +139,9 @@ function stringLimit(string $string, int $length = 50, string $ellipsis = '…')
     $string = trim($string);
     if (mb_strlen($string) >= $length) {
         $string = preg_replace('/\s+\S+$/u', '', $string);
+        if (null === $string) {
+            throw new Exception('preg_replace failed');
+        }
     }
 
     return $string . (mb_strlen($string) === $length ? '' : ' ') . $ellipsis;
@@ -192,6 +197,9 @@ function purifyHTML(string $html): string
 
     // remove extra white space
     $html = preg_replace('/\s+/', ' ', $html);
+    if (null === $html) {
+        throw new Exception('preg_replace failed');
+    }
 
     return trim($html);
 }
