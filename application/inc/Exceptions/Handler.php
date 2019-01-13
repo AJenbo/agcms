@@ -9,7 +9,7 @@ use Throwable;
 
 class Handler
 {
-    /** @var Raven_Client */
+    /** @var ?Raven_Client */
     private $ravenClient;
 
     /** @var string|null */
@@ -25,8 +25,12 @@ class Handler
      */
     public function __construct()
     {
-        $this->ravenClient = new Raven_Client(config('sentry'));
-        $this->ravenClient->install();
+        /** @var Application */
+        $app = app();
+        if ($app->environment('production')) {
+            $this->ravenClient = new Raven_Client(config('sentry'));
+            $this->ravenClient->install();
+        }
     }
 
     /**
@@ -53,12 +57,14 @@ class Handler
         $request = app(Request::class);
         if ($request->hasSession() && $request->user()) {
             $user = $request->user();
-            if ($user) {
+            if ($user && $app->environment('production')) {
                 $this->ravenClient->user_context(['id' => $user->getId(), 'name' => $user->getFullName()]);
             }
         }
 
-        $this->lastLogId = $this->ravenClient->captureException($exception);
+        if ($app->environment('production')) {
+            $this->lastLogId = $this->ravenClient->captureException($exception);
+        }
     }
 
     /**
