@@ -57,12 +57,12 @@ class Handler
         $request = app(Request::class);
         if ($request->hasSession() && $request->user()) {
             $user = $request->user();
-            if ($user && $app->environment('production')) {
+            if ($user && $this->ravenClient) {
                 $this->ravenClient->user_context(['id' => $user->getId(), 'name' => $user->getFullName()]);
             }
         }
 
-        if ($app->environment('production')) {
+        if ($this->ravenClient) {
             $this->lastLogId = $this->ravenClient->captureException($exception);
         }
     }

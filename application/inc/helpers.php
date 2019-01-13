@@ -76,9 +76,9 @@ function first(array $array)
 function clearFileName(string $name): string
 {
     $replace = [
-        '/[&?\\/:*"<>|%\s-_#\\[\\]@;={}^~\\\\]+/u' => ' ',
-        '/^\s+|\s+$/u'                             => '', // trim
-        '/\s+/u'                                   => '-',
+        '/[&?\\/:*"<>|%\\s\\-_#\\[\\]@;={}^~\\\\]+/u' => ' ',
+        '/^\\s+|\\s+$/u'                              => '', // trim
+        '/\\s+/u'                                     => '-',
     ];
 
     $name = preg_replace(array_keys($replace), $replace, $name);
