@@ -25,7 +25,7 @@ script:
   - cd application
   - vendor/bin/phpstan analyze --memory-limit=-1 --no-progress --level=max inc/ ../tests/
   - cd ..
-  - phpunit
+  - application/vendor/bin/phpunit
 
 after_success:
   - travis_retry php application/vendor/bin/php-coveralls
