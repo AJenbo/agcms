@@ -69,7 +69,8 @@ function first(array $array)
 }
 
 /**
- * Generate safe file name.
+ * Takes a string and changes it to comply with file name restrictions in windows, linux, mac and urls (UTF8)
+ * .|"'´`:%=#&\/+?*<>{}-_.
  *
  * @param string $name String to clean
  */

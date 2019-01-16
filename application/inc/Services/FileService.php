@@ -75,23 +75,14 @@ class FileService
         $this->deltree($app->basePath($path));
     }
 
-    /**
-     * Takes a string and changes it to comply with file name restrictions in windows, linux, mac and urls (UTF8)
-     * .|"'´`:%=#&\/+?*<>{}-_.
-     *
-     * @param string $filename
-     *
-     * @return string
-     */
     public function cleanFileName(string $filename): string
     {
-        $search = ['/[.&?\/:*"\'´`<>{}|%\s-_=+#\\\\]+/u', '/^\s+|\s+$/u', '/\s+/u'];
-        $replace = [' ', '', '-'];
-
-        $filename = preg_replace($search, $replace, $filename);
+        $filename = preg_replace('/[.\'´`]+/u', ' ', $filename);
         if (null === $filename) {
             throw new Exception('preg_replace failed');
         }
+
+        $filename = cleanFileName($filename);
 
         return mb_strtolower($filename, 'UTF-8');
     }
