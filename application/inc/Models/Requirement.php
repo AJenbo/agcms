@@ -75,7 +75,7 @@ class Requirement extends AbstractRenderable implements InterfaceRichText
      */
     public function getSlug(): string
     {
-        return 'krav/' . $this->getId() . '/' . clearFileName($this->getTitle()) . '.html';
+        return 'krav/' . $this->getId() . '/' . cleanFileName($this->getTitle()) . '.html';
     }
 
     // ORM related functions

@@ -80,7 +80,7 @@ class Brand extends AbstractRenderable
      */
     public function getSlug(): string
     {
-        return 'mærke' . $this->getId() . '-' . clearFileName($this->getTitle()) . '/';
+        return 'mærke' . $this->getId() . '-' . cleanFileName($this->getTitle()) . '/';
     }
 
     /**

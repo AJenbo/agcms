@@ -404,7 +404,7 @@ class Page extends AbstractRenderable implements InterfaceRichText
      */
     public function getSlug(): string
     {
-        return 'side' . $this->getId() . '-' . clearFileName($this->getTitle()) . '.html';
+        return 'side' . $this->getId() . '-' . cleanFileName($this->getTitle()) . '.html';
     }
 
     /**

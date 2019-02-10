@@ -74,7 +74,7 @@ function first(array $array)
  *
  * @param string $name String to clean
  */
-function clearFileName(string $name): string
+function cleanFileName(string $name): string
 {
     $replace = [
         '/[&?\\/:*"<>|%\\s\\-_#\\[\\]@;={}^~\\\\]+/u' => ' ',

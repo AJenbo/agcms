@@ -259,7 +259,7 @@ class Category extends AbstractRenderable
             return '';
         }
 
-        return 'kat' . $this->getId() . '-' . clearFileName($title) . '/';
+        return 'kat' . $this->getId() . '-' . cleanFileName($title) . '/';
     }
 
     /**
