@@ -6,20 +6,13 @@ plugins:
     enabled: true
   phpcodesniffer:
     enabled: true
+    config:
+      file_extensions: "php"
+      standard: "phpcs.xml"
   phpmd:
     enabled: true
     config:
       rulesets: "phpmd.xml"
   sonar-php:
     enabled: true
-exclude_patterns: [
-  "**/node_modules/",
-  "**/tests/",
-  "**/vendor/",
-  "**/*.min.*",
-  "application/javascript/admin/ckeditor/",
-  "application/javascript/admin/lib/",
-  "application/javascript/admin/calendar.js",
-  "application/theme/default/style/admin/calendar.css",
-  "application/theme/default/style/admin/proto.menu.css",
 ]
