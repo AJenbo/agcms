@@ -2,6 +2,9 @@ import "babel-polyfill";
 import xHttp from "./xHttp.js";
 import {getAddress, changeZipCode} from "./getAddress.js";
 import shoppingCart from "./shoppingCart.js";
+import * as Sentry from '@sentry/browser';
+
+Sentry.init({ dsn: 'https://ffe8276405e74679a38aec92752ea282@sentry.io/241257' });
 
 let getTableCall = null;
 let getKatCall = null;

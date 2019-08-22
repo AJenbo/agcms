@@ -29,6 +29,9 @@ import {
 } from "./invoice.js";
 import openPopup from "./openPopup.js";
 import {changeZipCode} from "../getAddress.js";
+import * as Sentry from '@sentry/browser';
+
+Sentry.init({ dsn: 'https://ffe8276405e74679a38aec92752ea282@sentry.io/241257' });
 
 var contextMenuActiveSide;
 var contextMenuInactiveSide;

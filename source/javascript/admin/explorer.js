@@ -2,6 +2,9 @@
 import File from "./File.js";
 import openPopup from "./openPopup.js";
 import {injectHtml, setCookie, getCookie, htmlEncode, removeTagById} from "./javascript.js";
+import * as Sentry from '@sentry/browser';
+
+Sentry.init({ dsn: 'https://ffe8276405e74679a38aec92752ea282@sentry.io/241257' });
 
 var fileId = null;
 var returnType = "";

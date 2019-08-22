@@ -1,4 +1,7 @@
 import xHttp from "../xHttp.js";
+import * as Sentry from '@sentry/browser';
+
+Sentry.init({ dsn: 'https://ffe8276405e74679a38aec92752ea282@sentry.io/241257' });
 
 function createTableCallback(data) {
     window.opener.location.reload();
