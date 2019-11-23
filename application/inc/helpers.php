@@ -167,7 +167,9 @@ function purifyHTML(string $html): string
 
     $config->set('HTML.DefinitionID', 'html5-definitions'); // unqiue id
 
-    if ($def = $config->maybeGetRawHTMLDefinition()) {
+    /** @var ?HTMLPurifier_HTMLDefinition */
+    $def = $config->maybeGetRawHTMLDefinition();
+    if ($def) {
         $def->addAttribute('div', 'data-oembed_provider', 'Text');
         $def->addAttribute('div', 'data-oembed', 'Text');
         $def->addAttribute('div', 'data-widget', 'Text');

@@ -271,7 +271,9 @@ class Application
                 return function (Request $request) use ($route, $matches): Response {
                     $matches[0] = $request;
 
-                    return call_user_func_array([new $route['controller'](), $route['action']], $matches);
+                    /** @var callable */
+                    $callable = [new $route['controller'](), $route['action']];
+                    return call_user_func_array($callable, $matches);
                 };
             }
 

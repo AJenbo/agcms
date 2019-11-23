@@ -408,6 +408,9 @@ class FileService
         $app = app();
 
         $folders = glob($app->basePath($path . '/*/'));
+        if ($folders === false) {
+            throw new Exception(_('Unable to access folder'));
+        }
         natcasesort($folders);
 
         $dirs = [];

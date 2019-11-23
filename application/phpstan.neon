@@ -1,12 +1,13 @@
 includes:
-	- vendor/phpstan/phpstan/conf/config.levelmax.neon
 	- vendor/phpstan/phpstan-mockery/extension.neon
 	- vendor/phpstan/phpstan-phpunit/extension.neon
 parameters:
+	level: max
+	paths:
+		- inc
+		- index.php
 	ignoreErrors:
-		- '#Parameter \#1 \$function of function call_user_func_array expects callable, array\(mixed, mixed\) given#'
-		- '#Cannot call method gettransactionlist\(\) on SoapClient\|null#'
-		- '#Cannot call method delete\(\) on SoapClient\|null#'
-		- '#Cannot call method capture\(\) on SoapClient\|null#'
-		- '#If condition is always true#'
+		- '#Call to an undefined method SoapClient::gettransactionlist\(\)\.#'
+		- '#Call to an undefined method SoapClient::delete\(\)\.#'
+		- '#Call to an undefined method SoapClient::capture\(\)\.#'
 		- '#Undefined variable: \$app#'

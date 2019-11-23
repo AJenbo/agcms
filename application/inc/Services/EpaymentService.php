@@ -78,7 +78,6 @@ class EpaymentService
      */
     public function getPayment(string $orderId): Epayment
     {
-        $this->openConnection();
         $transactionData = $this->getTransactionData($orderId);
 
         return new Epayment($this, $transactionData);
@@ -86,24 +85,22 @@ class EpaymentService
 
     /**
      * Setup the connection to the API.
-     *
-     * @return void
      */
-    private function openConnection(): void
+    private function getConnection(): SoapClient
     {
-        if ($this->soapClient) {
-            return;
+        if (!$this->soapClient) {
+            $this->soapClient = new SoapClient(
+                'https://ssl.ditonlinebetalingssystem.dk/remote/payment.asmx?WSDL',
+                [
+                    'soap_version' => SOAP_1_2,
+                    'features'     => SOAP_SINGLE_ELEMENT_ARRAYS,
+                    'trace'        => true,
+                    'exceptions'   => true,
+                ]
+            );
         }
 
-        $this->soapClient = new SoapClient(
-            'https://ssl.ditonlinebetalingssystem.dk/remote/payment.asmx?WSDL',
-            [
-                'soap_version' => SOAP_1_2,
-                'features'     => SOAP_SINGLE_ELEMENT_ARRAYS,
-                'trace'        => true,
-                'exceptions'   => true,
-            ]
-        );
+        return $this->soapClient;
     }
 
     /**
@@ -116,7 +113,7 @@ class EpaymentService
     private function getTransactionData(string $orderId): stdClass
     {
         foreach (['PAYMENT_CAPTURED', 'PAYMENT_NEW', 'PAYMENT_DELETED'] as $status) {
-            $response = $this->soapClient->gettransactionlist($this->getSearchData($orderId, $status));
+            $response = $this->getConnection()->gettransactionlist($this->getSearchData($orderId, $status));
             if (!empty($response->transactionInformationAry->TransactionInformationType)) {
                 return first($response->transactionInformationAry->TransactionInformationType);
             }
@@ -160,7 +157,7 @@ class EpaymentService
      */
     public function annul(Epayment $epayment): bool
     {
-        $response = $this->soapClient->delete(
+        $response = $this->getConnection()->delete(
             [
                 'pwd'            => $this->password,
                 'merchantnumber' => $this->merchantId,
@@ -186,7 +183,7 @@ class EpaymentService
      */
     public function confirm(Epayment $epayment, int $amount): bool
     {
-        $response = $this->soapClient->capture([
+        $response = $this->getConnection()->capture([
             'pwd'            => $this->password,
             'merchantnumber' => $this->merchantId,
             'transactionid'  => $epayment->getId(),
