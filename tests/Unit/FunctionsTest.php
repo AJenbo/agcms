@@ -5,33 +5,33 @@ use PHPUnit\Framework\TestCase;
 class FunctionsTest extends TestCase
 {
     /**
-     * @covers \clearFileName
+     * @covers \cleanFileName
      *
      * @return void
      */
-    public function testClearFileNameDate(): void
+    public function testCleanFileNameDate(): void
     {
-        $this->assertSame('13-04-2016', clearFileName('13/04/2016'));
+        $this->assertSame('13-04-2016', cleanFileName('13/04/2016'));
     }
 
     /**
-     * @covers \clearFileName
+     * @covers \cleanFileName
      *
      * @return void
      */
-    public function testClearFileNameSequenceOfBadChars(): void
+    public function testCleanFileNameSequenceOfBadChars(): void
     {
-        $this->assertSame('my-folder', clearFileName('my\/\/\/folder'));
+        $this->assertSame('my-folder', cleanFileName('my\/\/\/folder'));
     }
 
     /**
-     * @covers \clearFileName
+     * @covers \cleanFileName
      *
      * @return void
      */
-    public function testClearFileNameTrim(): void
+    public function testCleanFileNameTrim(): void
     {
-        $this->assertSame('trimed', clearFileName('trimed#'));
+        $this->assertSame('trimed', cleanFileName('trimed#'));
     }
 
     /**
