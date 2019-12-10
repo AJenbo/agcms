@@ -130,7 +130,7 @@ const shoppingCart = {
     "onupdate": function() {
         const itemCount = shoppingCart.getCart().items.length;
         const mobileCart = document.getElementById("count");
-        if (mobileCart) {
+        if (mobileCart && mobileCart.firstChild) {
             mobileCart.firstChild.data = itemCount;
         }
         document.getElementById("cartCount").innerText = itemCount ? "(" + itemCount + ")" : "";

@@ -207,7 +207,7 @@ function invoiceSaveResponse(date) {
         window.location.reload();
     }
 
-    if (date.status !== "new" && $("note").value) {
+    if (date.status !== "new" && $("note") && $("note").value) {
         $$(".note")[0].innerText += "\n" + $("note").value;
         $("note").value = "";
     }
