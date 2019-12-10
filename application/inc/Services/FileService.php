@@ -244,7 +244,7 @@ class FileService
      *
      * @param File $file
      *
-     * @return array
+     * @return array<string, mixed>
      */
     public function fileAsArray(File $file): array
     {
@@ -349,7 +349,7 @@ class FileService
      *
      * @param string $currentDir
      *
-     * @return array[]
+     * @return array<array<string, mixed>>
      */
     public function getRootDirs(string $currentDir): array
     {
@@ -368,7 +368,7 @@ class FileService
      * @param string $name
      * @param string $currentDir
      *
-     * @return array
+     * @return array<string, mixed>
      */
     private function formatDir(string $path, string $name, string $currentDir): array
     {
@@ -400,7 +400,7 @@ class FileService
      * @param string $path
      * @param string $currentDir
      *
-     * @return array[]
+     * @return array<int, array<string, mixed>>
      */
     public function getSubDirs(string $path, string $currentDir): array
     {

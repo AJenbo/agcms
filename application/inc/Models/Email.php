@@ -35,11 +35,6 @@ class Email extends AbstractEntity
     /** @var int */
     private $timestamp;
 
-    /**
-     * Construct the entity.
-     *
-     * @param array $data The entity data
-     */
     public function __construct(array $data = [])
     {
         /** @var EmailService */
@@ -238,22 +233,15 @@ class Email extends AbstractEntity
 
     // ORM related functions
 
-    /**
-     * Map data from DB table to entity.
-     *
-     * @param array $data The data from the database
-     *
-     * @return array
-     */
     public static function mapFromDB(array $data): array
     {
-        $data['from'] = explode('<', $data['from']);
-        $senderAddress = trim($data['from'][0]);
-        $senderName = mb_substr($data['from'][1], 0, -1);
+        $from = explode('<', $data['from']);
+        $senderAddress = trim($from[0]);
+        $senderName = mb_substr($from[1], 0, -1);
 
-        $data['to'] = explode('<', $data['to']);
-        $recipientAddress = trim($data['to'][0]);
-        $recipientName = mb_substr($data['to'][1], 0, -1);
+        $to = explode('<', $data['to']);
+        $recipientAddress = trim($to[0]);
+        $recipientName = mb_substr($to[1], 0, -1);
 
         /** @var DbService */
         $db = app(DbService::class);
@@ -270,11 +258,6 @@ class Email extends AbstractEntity
         ];
     }
 
-    /**
-     * Get data in array format for the database.
-     *
-     * @return string[]
-     */
     public function getDbArray(): array
     {
         $this->setTimestamp(time());

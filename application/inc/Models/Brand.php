@@ -15,11 +15,6 @@ class Brand extends AbstractRenderable
     /** @var string The external link for this brand. */
     private $link = '';
 
-    /**
-     * Construct the entity.
-     *
-     * @param array $data The entity data
-     */
     public function __construct(array $data = [])
     {
         $this->iconId = $data['icon_id'];
@@ -28,13 +23,6 @@ class Brand extends AbstractRenderable
             ->setId($data['id'] ?? null);
     }
 
-    /**
-     * Map data from DB table to entity.
-     *
-     * @param array $data The data from the database
-     *
-     * @return array
-     */
     public static function mapFromDB(array $data): array
     {
         return [
@@ -153,11 +141,6 @@ class Brand extends AbstractRenderable
 
     // ORM related functions
 
-    /**
-     * Get data in array format for the database.
-     *
-     * @return string[]
-     */
     public function getDbArray(): array
     {
         /** @var DbService */

@@ -16,7 +16,7 @@ class InvoiceService
     /**
      * Create an invoice from the client cart array.
      *
-     * @param array $cart
+     * @param array<string, mixed> $cart
      *
      * @return Invoice
      */
@@ -37,7 +37,7 @@ class InvoiceService
                 $db->addLoadedTable('list_rows');
                 $listRow = $db->fetchOne('SELECT * FROM `list_rows` WHERE id = ' . $item['id']);
                 /** @var ?Table */
-                $table = $listRow ? $orm->getOne(Table::class, $listRow['list_id']) : null;
+                $table = $listRow ? $orm->getOne(Table::class, (int)$listRow['list_id']) : null;
                 if ($table) {
                     $pageId = $table->getPage()->getId();
                     if ($table->hasLinks() && $listRow['link']) {
@@ -113,9 +113,9 @@ class InvoiceService
     /**
      * Clean up address data.
      *
-     * @param array $data
+     * @param array<string, mixed> $data
      *
-     * @return array
+     * @return array<string, mixed>
      */
     public function cleanAddressData(array $data): array
     {
@@ -175,7 +175,7 @@ class InvoiceService
     /**
      * Generate additional order comments based on cart options.
      *
-     * @param array $cart
+     * @param array<string, string> $cart
      *
      * @return string
      */
@@ -263,10 +263,10 @@ class InvoiceService
     /**
      * Update invoice and mange it's state.
      *
-     * @param Invoice $invoice
-     * @param User    $user
-     * @param string  $action
-     * @param array   $updates
+     * @param Invoice              $invoice
+     * @param User                 $user
+     * @param string               $action
+     * @param array<string, mixed> $updates
      *
      * @return void
      */

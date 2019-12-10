@@ -73,11 +73,11 @@ class DbService
      *
      * @throws \PDOException
      *
-     * @return array[]
+     * @return array<int, array<string|int, string>>
      */
     public function fetchArray(string $query): array
     {
-        /** @var PDOStatement */
+        /** @var PDOStatement<int, array<string, string>> */
         $result = $this->connection()->query($query, PDO::FETCH_ASSOC);
         $rows = [];
         foreach ($result as $row) {
@@ -92,6 +92,8 @@ class DbService
      * Performe query and return the first result as an associative arrays.
      *
      * @param string $query The SQL query to preforme
+     *
+     * @return array<string|int, string>
      */
     public function fetchOne(string $query): array
     {
@@ -205,7 +207,7 @@ class DbService
     /**
      * Remember what tabels where read during page load.
      *
-     * @param string[] ...$tableNames The table name
+     * @param array<int, string> ...$tableNames The table name
      *
      * @return void
      */

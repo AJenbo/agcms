@@ -43,14 +43,9 @@ class Table extends AbstractEntity
 
     // Runtime
 
-    /** @var array[] Decoded column data. */
+    /** @var array<int, array<string, mixed>> Decoded column data. */
     private $columns = [];
 
-    /**
-     * Construct the entity.
-     *
-     * @param array $data The entity data
-     */
     public function __construct(array $data = [])
     {
         $this->setPageId($data['page_id'])
@@ -61,13 +56,6 @@ class Table extends AbstractEntity
             ->setId($data['id'] ?? null);
     }
 
-    /**
-     * Map data from DB table to entity.
-     *
-     * @param array $data The data from the database
-     *
-     * @return array
-     */
     public static function mapFromDB(array $data): array
     {
         $columnSortings = explode('<', $data['sorts']);
@@ -185,7 +173,7 @@ class Table extends AbstractEntity
     /**
      * Get tabel colum structure.
      *
-     * @return array[]
+     * @return array<int, array<string, mixed>>
      */
     public function getColumns(): array
     {
@@ -255,14 +243,14 @@ class Table extends AbstractEntity
     /**
      * Get table rows.
      *
-     * @return array
+     * @return array<int, array<string|int, mixed>>
      */
     public function getRows(int $orderBy = null): array
     {
         /** @var DbService */
         $db = app(DbService::class);
 
-        $rows = $db->fetchArray(
+        $dataRows = $db->fetchArray(
             '
             SELECT *
             FROM `list_rows`
@@ -274,22 +262,28 @@ class Table extends AbstractEntity
         $orm = app(OrmService::class);
 
         // Cells are indexed by id, this is needed for sorting the rows
-        foreach ($rows as &$row) {
-            $row['id'] = (int) $row['id'];
-            $row['page'] = null;
-            if ($this->hasLinks() && $row['link']) {
-                $row['page'] = $orm->getOne(Page::class, $row['link']);
+        $rows = [];
+        foreach ($dataRows as $rowData) {
+            $page = null;
+            if ($this->hasLinks() && $rowData['link']) {
+                $page = $orm->getOne(Page::class, (int)$rowData['link']);
             }
-            $cells = explode('<', $row['cells']);
+            $cells = explode('<', $rowData['cells']);
             $cells = array_map('html_entity_decode', $cells);
-            unset($row['cells'], $row['list_id'], $row['link']);
+
+            $row = [
+                'id'   => (int)$rowData['id'],
+                'page' => $page,
+            ];
 
             foreach ($this->columns as $key => $column) {
                 $row[$key] = $cells[$key] ?? '';
                 if (!empty($column['type'])) {
-                    $row[$key] = (int) $row[$key];
+                    $row[$key] = (int)$rowData[$key];
                 }
             }
+
+            $rows[] = $row;
         }
 
         return $this->orderRows($rows, $orderBy);
@@ -298,7 +292,7 @@ class Table extends AbstractEntity
     /**
      * Add a new row to the table.
      *
-     * @param array    $cells
+     * @param string[] $cells
      * @param int|null $link
      *
      * @return int Id of the new row
@@ -323,7 +317,7 @@ class Table extends AbstractEntity
      * Update an existing row.
      *
      * @param int      $rowId
-     * @param array    $cells
+     * @param string[] $cells
      * @param int|null $link
      *
      * @return void
@@ -364,9 +358,9 @@ class Table extends AbstractEntity
     /**
      * Sort a 2D array based on a custome sort order.
      *
-     * @param array[] $rows
+     * @param array<int, array<string|int, mixed>> $rows
      *
-     * @return array[]
+     * @return array<int, array<string|int, mixed>>
      */
     private function orderRows(array $rows, int $orderBy = null): array
     {
@@ -417,11 +411,6 @@ class Table extends AbstractEntity
         return $page;
     }
 
-    /**
-     * Get data in array format for the database.
-     *
-     * @return string[]
-     */
     public function getDbArray(): array
     {
         $columnSortings = [];

@@ -5,19 +5,13 @@ use App\Models\AbstractEntity;
 
 class OrmService
 {
-    /**
-     * Cache entity by id.
-     */
+    /** @var array<string, array<int, ?AbstractEntity>> Cache entity by id. */
     private $byId = [];
 
-    /**
-     * Cache multiple entity by query.
-     */
+    /** @var array<string, array<string, array<int, AbstractEntity>>> Cache multiple entity by query. */
     private $bySql = [];
 
-    /**
-     * Cache entity by query.
-     */
+    /** @var array<string, array<string, ?AbstractEntity>> Cache entity by query. */
     private $oneBySql = [];
 
     /**

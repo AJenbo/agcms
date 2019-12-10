@@ -12,11 +12,6 @@ class Requirement extends AbstractRenderable implements InterfaceRichText
     /** @var string The body HTML. */
     private $html = '';
 
-    /**
-     * Construct the entity.
-     *
-     * @param array $data The entity data
-     */
     public function __construct(array $data = [])
     {
         $this->setHtml($data['html'])
@@ -24,13 +19,6 @@ class Requirement extends AbstractRenderable implements InterfaceRichText
             ->setId($data['id'] ?? null);
     }
 
-    /**
-     * Map data from DB table to entity.
-     *
-     * @param array $data The data from the database
-     *
-     * @return array
-     */
     public static function mapFromDB(array $data): array
     {
         return [
@@ -80,11 +68,6 @@ class Requirement extends AbstractRenderable implements InterfaceRichText
 
     // ORM related functions
 
-    /**
-     * Get data in array format for the database.
-     *
-     * @return string[]
-     */
     public function getDbArray(): array
     {
         /** @var DbService */

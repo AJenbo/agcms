@@ -46,11 +46,6 @@ class Page extends AbstractRenderable implements InterfaceRichText
     /** @var int What type of price is the previous (from, specific). */
     private $oldPriceType = 0;
 
-    /**
-     * Construct the entity.
-     *
-     * @param array $data The entity data
-     */
     public function __construct(array $data = [])
     {
         $this->iconId = $data['icon_id'];
@@ -69,13 +64,6 @@ class Page extends AbstractRenderable implements InterfaceRichText
             ->setId($data['id'] ?? null);
     }
 
-    /**
-     * Map data from DB table to entity.
-     *
-     * @param array $data The data from the database
-     *
-     * @return array
-     */
     public static function mapFromDB(array $data): array
     {
         /** @var DbService */
@@ -720,11 +708,6 @@ class Page extends AbstractRenderable implements InterfaceRichText
 
     // ORM related functions
 
-    /**
-     * Get data in array format for the database.
-     *
-     * @return string[]
-     */
     public function getDbArray(): array
     {
         $this->setTimeStamp(time());

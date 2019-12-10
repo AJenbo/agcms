@@ -12,9 +12,9 @@ abstract class AbstractController
     /**
      * Renders a view.
      *
-     * @param string   $view
-     * @param array    $parameters
-     * @param Response $response
+     * @param string               $view
+     * @param array<string, mixed> $parameters
+     * @param Response             $response
      *
      * @return Response
      */

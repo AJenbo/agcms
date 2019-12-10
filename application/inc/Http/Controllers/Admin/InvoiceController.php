@@ -1,6 +1,7 @@
 <?php namespace App\Http\Controllers\Admin;
 
 use App\Application;
+use App\Exceptions\Exception;
 use App\Exceptions\InvalidInput;
 use App\Http\Request;
 use App\Models\Invoice;
@@ -50,6 +51,9 @@ class InvoiceController extends AbstractAdminController
         $db->addLoadedTable('fakturas');
         $oldest = $db->fetchOne('SELECT `date` FROM `fakturas` ORDER BY `date`')['date'] ?? 'now';
         $oldest = strtotime($oldest);
+        if ($oldest === false) {
+            throw new Exception('Unable to get time from database server');
+        }
         $oldest = date('Y', $oldest);
 
         /** @var OrmService */
@@ -92,8 +96,8 @@ class InvoiceController extends AbstractAdminController
     /**
      * Generate an SQL where clause from a select array.
      *
-     * @param array $selected
-     * @param User  $user
+     * @param array<string, mixed> $selected
+     * @param User                 $user
      *
      * @return string
      */

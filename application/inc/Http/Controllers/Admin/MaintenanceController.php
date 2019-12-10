@@ -74,11 +74,13 @@ class MaintenanceController extends AbstractAdminController
         $units = ['B', 'KiB', 'MiB', 'GiB', 'TiB', 'PiB', 'EiB', 'ZiB', 'YiB', 'BiB'];
         foreach ($units as $unit) {
             if ($size < 1024 || 'BiB' === $unit) {
-                return number_format($size, 1, localeconv()['mon_decimal_point'], '') . $unit;
+                break;
             }
 
             $size /= 1024;
         }
+
+        return number_format($size, 1, localeconv()['mon_decimal_point'], '') . $unit;
     }
 
     /**
@@ -208,7 +210,7 @@ class MaintenanceController extends AbstractAdminController
             $html .= '<b>' . _('The following inactive pages appear in a list on an active page:') . '</b><br />';
             foreach ($pages as $page) {
                 /** @var ?Page */
-                $listPage = $orm->getOne(Page::class, $page['page_id']);
+                $listPage = $orm->getOne(Page::class, (int)$page['page_id']);
                 if (!$listPage) {
                     throw new Exception(_('Page disappeared during processing'));
                 }
@@ -517,6 +519,6 @@ class MaintenanceController extends AbstractAdminController
         $db->addLoadedTable('files');
         $files = $db->fetchOne('SELECT sum(`size`) AS `filesize` FROM `files`');
 
-        return $files['filesize'] ?? 0;
+        return (int)($files['filesize'] ?? 0);
     }
 }

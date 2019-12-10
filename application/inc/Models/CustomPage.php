@@ -18,11 +18,6 @@ class CustomPage extends AbstractEntity implements InterfaceRichText
     /** @var string HTML body. */
     private $html = '';
 
-    /**
-     * Construct the entity.
-     *
-     * @param array $data The entity data
-     */
     public function __construct(array $data = [])
     {
         $this->setTimeStamp($data['timestamp'])
@@ -31,13 +26,6 @@ class CustomPage extends AbstractEntity implements InterfaceRichText
             ->setId($data['id'] ?? null);
     }
 
-    /**
-     * Map data from DB table to entity.
-     *
-     * @param array $data The data from the database
-     *
-     * @return array
-     */
     public static function mapFromDB(array $data): array
     {
         /** @var DbService */
@@ -127,11 +115,6 @@ class CustomPage extends AbstractEntity implements InterfaceRichText
 
     // ORM related functions
 
-    /**
-     * Get data in array format for the database.
-     *
-     * @return string[]
-     */
     public function getDbArray(): array
     {
         $this->setTimeStamp(time());

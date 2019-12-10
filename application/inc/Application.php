@@ -23,7 +23,7 @@ class Application
      */
     protected $middleware = [];
 
-    /** @var array[] */
+    /** @var array<string, null|array<string, array<string, string>>> */
     private $routes = [];
 
     /** @var object[] */
@@ -45,7 +45,7 @@ class Application
         $this->loadRoutes();
     }
 
-    public function environment(...$environments): bool
+    public function environment(string ...$environments): bool
     {
         foreach ($environments as $environment) {
             return $environment === config('enviroment', 'develop');

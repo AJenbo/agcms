@@ -10,7 +10,7 @@ abstract class AbstractAdminController extends AbstractController
      *
      * @param Request $request
      *
-     * @return array
+     * @return array<string, mixed>
      */
     protected function basicPageData(Request $request): array
     {

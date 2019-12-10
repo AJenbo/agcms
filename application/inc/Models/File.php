@@ -32,11 +32,6 @@ class File extends AbstractEntity
     /** @var int Object height in px. */
     private $height = 0;
 
-    /**
-     * Construct the entity.
-     *
-     * @param array $data The entity data
-     */
     public function __construct(array $data = [])
     {
         $this->setPath($data['path'])
@@ -48,13 +43,6 @@ class File extends AbstractEntity
             ->setId($data['id'] ?? null);
     }
 
-    /**
-     * Map data from DB table to entity.
-     *
-     * @param array $data The data from the database
-     *
-     * @return array
-     */
     public static function mapFromDB(array $data): array
     {
         return [
@@ -216,11 +204,6 @@ class File extends AbstractEntity
 
     // ORM related functions
 
-    /**
-     * Get data in array format for the database.
-     *
-     * @return string[]
-     */
     public function getDbArray(): array
     {
         /** @var DbService */

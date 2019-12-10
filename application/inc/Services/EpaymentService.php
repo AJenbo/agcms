@@ -21,7 +21,7 @@ class EpaymentService
     /** @var ?SoapClient Service connection. */
     private $soapClient;
 
-    /** @var string[] */
+    /** @var array<int, string> */
     const PAYMENT_TYPES = [
         1  => 'Dankort/Visa-Dankort',
         3  => 'Visa / Visa Electron',
@@ -133,7 +133,7 @@ class EpaymentService
      * @param string $orderId
      * @param string $status
      *
-     * @return array
+     * @return array<string, mixed>
      */
     private function getSearchData(string $orderId, string $status): array
     {

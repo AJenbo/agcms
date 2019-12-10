@@ -39,11 +39,6 @@ class User extends AbstractEntity
     /** @var int time of last login */
     private $lastLogin;
 
-    /**
-     * Create an entity.
-     *
-     * @param array $data
-     */
     public function __construct(array $data = [])
     {
         $this->setFullName($data['full_name'])
@@ -54,13 +49,6 @@ class User extends AbstractEntity
             ->setId($data['id'] ?? null);
     }
 
-    /**
-     * Map database content to enity format.
-     *
-     * @param array $data The data from the database
-     *
-     * @return array
-     */
     public static function mapFromDB(array $data): array
     {
         /** @var DbService */
@@ -76,11 +64,6 @@ class User extends AbstractEntity
         ];
     }
 
-    /**
-     * Prepare data for injecting in to the database.
-     *
-     * @return string[]
-     */
     public function getDbArray(): array
     {
         /** @var DbService */

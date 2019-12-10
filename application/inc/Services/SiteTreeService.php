@@ -12,7 +12,7 @@ class SiteTreeService
      * @param string   $inputType
      * @param int|null $selectedId
      *
-     * @return array
+     * @return array<string, mixed>
      */
     public function getSiteTreeData(array $openCategories, string $inputType = '', int $selectedId = null): array
     {

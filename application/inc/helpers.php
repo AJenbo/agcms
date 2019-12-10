@@ -14,7 +14,7 @@ use Symfony\Component\HttpFoundation\RedirectResponse;
  *
  * @return object
  */
-function app(string $name = null)
+function app(string $name = null): object
 {
     $app = Application::getInstance();
 
@@ -61,6 +61,8 @@ function redirect(string $url, int $status = RedirectResponse::HTTP_FOUND): Redi
 /**
  * Get first element from an array that can't be referenced.
  *
+ * @param array<mixed> $array
+ *
  * @return mixed
  */
 function first(array $array)
@@ -93,13 +95,13 @@ function cleanFileName(string $name): string
 /**
  * Natsort an array.
  *
- * @param array[] $rows      Array to sort
- * @param string  $orderBy   Key to sort by
- * @param string  $direction Revers sorting
+ * @param array[]    $rows      Array to sort
+ * @param string|int $orderBy   Key to sort by
+ * @param string     $direction Revers sorting
  *
  * @return array[]
  */
-function arrayNatsort(array $rows, string $orderBy, string $direction = 'asc'): array
+function arrayNatsort(array $rows, $orderBy, string $direction = 'asc'): array
 {
     $tempArray = [];
     foreach ($rows as $rowKey => $row) {

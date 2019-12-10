@@ -15,11 +15,6 @@ class CustomSorting extends AbstractEntity
     /** @var string[] Ordered list of values. */
     private $items = [];
 
-    /**
-     * Construct the entity.
-     *
-     * @param array $data The entity data
-     */
     public function __construct(array $data = [])
     {
         $this->setTitle($data['title'])
@@ -76,13 +71,6 @@ class CustomSorting extends AbstractEntity
         return $this->items;
     }
 
-    /**
-     * Map data from DB table to entity.
-     *
-     * @param array $data The data from the database
-     *
-     * @return array
-     */
     public static function mapFromDB(array $data): array
     {
         $items = explode('<', $data['text']);
@@ -97,11 +85,6 @@ class CustomSorting extends AbstractEntity
 
     // ORM related functions
 
-    /**
-     * Get data in array format for the database.
-     *
-     * @return string[]
-     */
     public function getDbArray(): array
     {
         $items = array_map('htmlspecialchars', $this->items);

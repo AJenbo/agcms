@@ -56,7 +56,7 @@ class Base extends AbstractController
      *
      * @throws Exception
      *
-     * @return array
+     * @return array<string, mixed>
      */
     protected function basicPageData(): array
     {
@@ -113,6 +113,6 @@ class Base extends AbstractController
             'SELECT COUNT(DISTINCT side) as count FROM bind WHERE kat IN(' . implode(',', $activeCategoryIds) . ')'
         );
 
-        return $pages['count'];
+        return (int)$pages['count'];
     }
 }

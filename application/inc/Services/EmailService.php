@@ -10,6 +10,7 @@ use PHPMailer\PHPMailer\PHPMailer;
 
 class EmailService
 {
+    /** @var array<string, bool> */
     private $ceche = [];
 
     /**
@@ -112,8 +113,8 @@ class EmailService
     /**
      * Set up the SMTP configuration.
      *
-     * @param PHPMailer $mailer
-     * @param array     $emailConfig
+     * @param PHPMailer            $mailer
+     * @param array<string, mixed> $emailConfig
      *
      * @return void
      */
@@ -132,8 +133,8 @@ class EmailService
     /**
      * Upload email to the sendt box of the imap account.
      *
-     * @param array  $emailConfig
-     * @param string $mimeMessage
+     * @param array<string, mixed> $emailConfig
+     * @param string               $mimeMessage
      *
      * @return void
      */

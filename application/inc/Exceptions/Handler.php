@@ -15,7 +15,7 @@ class Handler
     /** @var string|null */
     private $lastLogId;
 
-    /** @var string[] */
+    /** @var array<int, string> */
     private $dontReport = [
         InvalidInput::class,
     ];

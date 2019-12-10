@@ -15,12 +15,12 @@ class Request extends SymfonyRequest
     private $user;
 
     /**
-     * @param array           $query      The GET parameters
-     * @param array           $request    The POST parameters
-     * @param array           $attributes The request attributes (parameters parsed from the PATH_INFO, ...)
-     * @param array           $cookies    The COOKIE parameters
-     * @param array           $files      The FILES parameters
-     * @param array           $server     The SERVER parameters
+     * @param array<mixed>    $query      The GET parameters
+     * @param array<mixed>    $request    The POST parameters
+     * @param array<mixed>    $attributes The request attributes (parameters parsed from the PATH_INFO, ...)
+     * @param array<mixed>    $cookies    The COOKIE parameters
+     * @param array<mixed>    $files      The FILES parameters
+     * @param array<mixed>    $server     The SERVER parameters
      * @param resource|string $content    The raw body data
      */
     public function __construct(

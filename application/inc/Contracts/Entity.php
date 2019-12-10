@@ -5,16 +5,16 @@ interface Entity
     /**
      * Construct the entity.
      *
-     * @param array $data The entity data
+     * @param array<string, mixed> $data The entity data
      */
     public function __construct(array $data = []);
 
     /**
      * Map data from DB table to entity.
      *
-     * @param array $data The data from the database
+     * @param array<string|int, string> $data The data from the database
      *
-     * @return array
+     * @return array<string, mixed>
      */
     public static function mapFromDB(array $data): array;
 

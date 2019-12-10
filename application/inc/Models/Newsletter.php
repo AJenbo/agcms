@@ -31,11 +31,6 @@ class Newsletter extends AbstractEntity implements InterfaceRichText
     /** @var string[] List of topics is covered. */
     private $interests = [];
 
-    /**
-     * Construct the entity.
-     *
-     * @param array $data The entity data
-     */
     public function __construct(array $data = [])
     {
         $this->setFrom($data['from'] ?? '')
@@ -150,13 +145,6 @@ class Newsletter extends AbstractEntity implements InterfaceRichText
         return $this->interests;
     }
 
-    /**
-     * Map data from DB table to entity.
-     *
-     * @param array $data The data from the database
-     *
-     * @return array
-     */
     public static function mapFromDB(array $data): array
     {
         $interests = explode('<', $data['interests']);
@@ -174,11 +162,6 @@ class Newsletter extends AbstractEntity implements InterfaceRichText
 
     // ORM related functions
 
-    /**
-     * Get data in array format for the database.
-     *
-     * @return string[]
-     */
     public function getDbArray(): array
     {
         $interests = array_map('htmlspecialchars', $this->interests);
@@ -215,7 +198,7 @@ class Newsletter extends AbstractEntity implements InterfaceRichText
             " . $this->getContactFilterSQL()
         );
 
-        return $emails['count'];
+        return (int)$emails['count'];
     }
 
     /**

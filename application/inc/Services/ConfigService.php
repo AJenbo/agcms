@@ -2,9 +2,7 @@
 
 class ConfigService
 {
-    /**
-     * Store the configurations.
-     */
+    /** @var array<string, mixed> Store the configurations. */
     private static $config = [];
 
     /**

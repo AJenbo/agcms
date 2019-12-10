@@ -46,11 +46,6 @@ class Contact extends AbstractEntity
     /** @var string Client IP at moment of signup */
     private $ip = '';
 
-    /**
-     * Construct the entity.
-     *
-     * @param array $data The entity data
-     */
     public function __construct(array $data = [])
     {
         $this->setTimestamp($data['timestamp'] ?? time())
@@ -369,13 +364,6 @@ class Contact extends AbstractEntity
         return $this->email && $emailService->valideMail($this->email);
     }
 
-    /**
-     * Map data from DB table to entity.
-     *
-     * @param array $data The data from the database
-     *
-     * @return array
-     */
     public static function mapFromDB(array $data): array
     {
         $interests = explode('<', $data['interests']);
@@ -403,11 +391,6 @@ class Contact extends AbstractEntity
 
     // ORM related functions
 
-    /**
-     * Get data in array format for the database.
-     *
-     * @return string[]
-     */
     public function getDbArray(): array
     {
         $this->setTimestamp(time());

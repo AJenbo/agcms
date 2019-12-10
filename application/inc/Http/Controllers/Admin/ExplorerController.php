@@ -791,6 +791,8 @@ class ExplorerController extends AbstractAdminController
 
     /**
      * Create an image service from a path and the request parameteres.
+     *
+     * @param ParameterBag<string, int> $parameterBag
      */
     private function createImageServiceFomRequest(ParameterBag $parameterBag, string $path): ImageService
     {

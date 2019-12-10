@@ -41,8 +41,8 @@ class RenderService
     /**
      * Render a template.
      *
-     * @param string $template
-     * @param array  $data
+     * @param string               $template
+     * @param array<string, mixed> $data
      *
      * @return string
      */

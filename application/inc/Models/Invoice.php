@@ -123,14 +123,9 @@ class Invoice extends AbstractEntity
 
     // Dynamic
 
-    /** @var array[] */
+    /** @var array<int, array<string, mixed>> */
     private $items = [];
 
-    /**
-     * Construct the entity.
-     *
-     * @param array $data The entity data
-     */
     public function __construct(array $data = [])
     {
         $this->setItemData($data['item_data'] ?? '[]')
@@ -1074,13 +1069,6 @@ class Invoice extends AbstractEntity
         return $this->internalNote;
     }
 
-    /**
-     * Map data from DB table to entity.
-     *
-     * @param array $data The data from the database
-     *
-     * @return array
-     */
     public static function mapFromDB(array $data): array
     {
         $itemQuantities = explode('<', $data['quantities']);
@@ -1176,7 +1164,7 @@ class Invoice extends AbstractEntity
      * @param bool $normalizeVat Some invoices have prices entered including VAT,
      *                           when set to true the function will always return values with out vat
      *
-     * @return array[]
+     * @return array<int, array<string, mixed>>
      */
     public function getItems(bool $normalizeVat = true): array
     {
@@ -1355,11 +1343,6 @@ class Invoice extends AbstractEntity
         return $invalid;
     }
 
-    /**
-     * Get data in array format for the database.
-     *
-     * @return string[]
-     */
     public function getDbArray(): array
     {
         $itemQuantities = [];

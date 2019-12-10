@@ -13,28 +13,12 @@ abstract class AbstractEntity implements Entity
     protected $id;
 
     /**
-     * Construct the entity.
-     *
-     * @param array $data The entity data
-     */
-    abstract public function __construct(array $data = []);
-
-    /**
      * Clone entity.
      */
     public function __clone()
     {
         $this->id = null;
     }
-
-    /**
-     * Map data from DB table to entity.
-     *
-     * @param array $data The data from the database
-     *
-     * @return array
-     */
-    abstract public static function mapFromDB(array $data): array;
 
     /**
      * Set the entity ID.
@@ -50,11 +34,6 @@ abstract class AbstractEntity implements Entity
         return $this;
     }
 
-    /**
-     * Get the entity ID.
-     *
-     * @return int
-     */
     public function getId(): int
     {
         if (null === $this->id) {
@@ -67,7 +46,7 @@ abstract class AbstractEntity implements Entity
     /**
      * Get data in array format for the database.
      *
-     * @return string[]
+     * @return array<string, string>
      */
     abstract protected function getDbArray(): array;
 
@@ -97,7 +76,7 @@ abstract class AbstractEntity implements Entity
     /**
      * insert new entity in to the database.
      *
-     * @param array $data
+     * @param array<string, string> $data
      *
      * @return void
      */
@@ -122,7 +101,7 @@ abstract class AbstractEntity implements Entity
     /**
      * Update an entity in the database.
      *
-     * @param array $data
+     * @param array<string, string> $data
      *
      * @return void
      */
@@ -140,11 +119,6 @@ abstract class AbstractEntity implements Entity
         );
     }
 
-    /**
-     * Delete entity.
-     *
-     * @return bool
-     */
     public function delete(): bool
     {
         if (null === $this->id) {
