@@ -1,4 +1,4 @@
-FROM php:fpm
+FROM php:7.3-fpm
 MAINTAINER Anders Jenbo <anders@jenbo.dk>
 
 RUN apt-get update -y \
