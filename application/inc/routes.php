@@ -14,6 +14,7 @@ use App\Http\Controllers\Admin\NewsletterController;
 use App\Http\Controllers\Admin\PageController;
 use App\Http\Controllers\Admin\RequirementController;
 use App\Http\Controllers\Admin\SiteTreeController;
+use App\Http\Controllers\Admin\ExportController;
 use App\Http\Controllers\Admin\TableController;
 use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\Ajax;
@@ -107,6 +108,7 @@ $app->addRoute('GET', '/admin/sitetree/([-\d]+)/lable/', SiteTreeController::cla
 $app->addRoute('GET', '/admin/sitetree/([-\d]+)/', SiteTreeController::class, 'categoryContent');
 $app->addRoute('GET', '/admin/sitetree/pageWidget/', SiteTreeController::class, 'pageWidget');
 $app->addRoute('GET', '/admin/sitetree/inventory/', SiteTreeController::class, 'inventory');
+$app->addRoute('GET', '/admin/sitetree/export/', ExportController::class, 'index');
 // Requirement editing
 $app->addRoute('GET', '/admin/requirement/list/', RequirementController::class, 'index');
 $app->addRoute('GET', '/admin/requirement/', RequirementController::class, 'editPage');
