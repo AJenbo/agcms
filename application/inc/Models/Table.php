@@ -279,7 +279,7 @@ class Table extends AbstractEntity
             foreach ($this->columns as $key => $column) {
                 $row[$key] = $cells[$key] ?? '';
                 if (!empty($column['type'])) {
-                    $row[$key] = (int)$rowData[$key];
+                    $row[$key] = (int)$row[$key];
                 }
             }
 
