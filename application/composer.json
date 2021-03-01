@@ -21,7 +21,7 @@
         "ext-pdo_mysql": "*",
         "ext-soap": "*",
         "ext-xml": "*",
-        "GuzzleHttp/Psr7": "^1.4",
+        "guzzlehttp/psr7": "^1.4",
         "ajenbo/image.php": "^0.9.3",
         "ajenbo/imap.php": "^0.9.1",
         "ezyang/htmlpurifier": ">=4.4",
