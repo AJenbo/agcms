@@ -45,17 +45,21 @@ jobs:
         run: application/vendor/bin/phpunit --printer mheap\\GithubActionsReporter\\Printer
 
       - name: Upload coverage to Coveralls
+        if: matrix.php == '8.0'
         env:
           COVERALLS_REPO_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: application/vendor/bin/php-coveralls
 
       - name: Upload coverage to Codecov
+        if: matrix.php == '8.0'
         uses: codecov/codecov-action@v3
 
       - name: Upload coverage to Codacy
+        if: matrix.php == '8.0'
         uses: codacy/codacy-analysis-cli-action@v4.2.0
 
       - name: Upload coverage to Codeclimate
+        if: matrix.php == '8.0'
         uses: paambaati/codeclimate-action@v3.1.0
         env:
           CC_TEST_REPORTER_ID: dded30dc4b62f393c80ed752f13c7c7efaf748c3573daee0f4040615457ff9c0
