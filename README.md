@@ -5,7 +5,7 @@
 [![Maintainability](https://api.codeclimate.com/v1/badges/9fe78b598a206a6162d7/maintainability)](https://codeclimate.com/github/AJenbo/agcms/maintainability)
 [![codebeat badge](https://codebeat.co/badges/16e1065d-d41c-4082-a86c-22af842274f1)](https://codebeat.co/projects/github-com-ajenbo-agcms-master)
 [![BCH compliance](https://bettercodehub.com/edge/badge/AJenbo/agcms?branch=master)](https://bettercodehub.com/)
-[![Coverage Status](https://coveralls.io/repos/github/AJenbo/agcms/badge.svg?branch=master)](https://coveralls.io/github/AJenbo/agcms?branch=master)
+[![codecov](https://codecov.io/gh/AJenbo/agcms/branch/master/graph/badge.svg?token=hFHGd8QVSo)](https://codecov.io/gh/AJenbo/agcms)
 
 AGcms is a simple CMS that I build around 2004, since it still have active userse I try to maintain the code base and use it to experiment with differnet tools. The maintanace mostly revolve around keeping the back end in a decent shape code wise.
 
