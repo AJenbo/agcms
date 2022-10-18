@@ -1,4 +1,6 @@
-<?php namespace App\Services;
+<?php
+
+namespace App\Services;
 
 use App\Application;
 use App\Exceptions\InvalidInput;
@@ -7,15 +9,15 @@ use TCPDF;
 
 class InvoicePdfService
 {
-    const CELL_WIDTH_QUANTITY = 24;
+    private const CELL_WIDTH_QUANTITY = 24;
 
-    const CELL_WIDTH_TITLE = 106;
+    private const CELL_WIDTH_TITLE = 106;
 
-    const CELL_WIDTH_PRICE = 29;
+    private const CELL_WIDTH_PRICE = 29;
 
-    const CELL_WIDTH_TOTAL = 34;
+    private const CELL_WIDTH_TOTAL = 34;
 
-    const MAX_PRODCUTS = 20;
+    private const MAX_PRODCUTS = 20;
 
     /** @var TCPDF */
     private $pdf;
@@ -25,8 +27,6 @@ class InvoicePdfService
 
     /**
      * Create the service.
-     *
-     * @param Invoice $invoice
      *
      * @throws InvalidInput
      */
@@ -47,8 +47,6 @@ class InvoicePdfService
 
     /**
      * Get the PDF as a blob.
-     *
-     * @return string
      */
     public function getStream(): string
     {
@@ -57,8 +55,6 @@ class InvoicePdfService
 
     /**
      * Set up document defaults, title, size and margins.
-     *
-     * @return void
      */
     private function setupDocument(): void
     {
@@ -93,8 +89,6 @@ class InvoicePdfService
 
     /**
      * Generate the header part of the document.
-     *
-     * @return void
      */
     private function generateHeader(): void
     {
@@ -107,8 +101,6 @@ class InvoicePdfService
 
     /**
      * Insert date, id and references.
-     *
-     * @return void
      */
     private function insertInvoiceInformation(): void
     {
@@ -133,8 +125,6 @@ class InvoicePdfService
 
     /**
      * Add lines to seporate the document, client and company addresses.
-     *
-     * @return void
      */
     private function addSeporationLines(): void
     {
@@ -147,8 +137,6 @@ class InvoicePdfService
 
     /**
      * Insert the company name in big bold letters.
-     *
-     * @return void
      */
     private function insertPageTitle(): void
     {
@@ -158,17 +146,15 @@ class InvoicePdfService
 
     /**
      * Insert company address, phone, email and bank account.
-     *
-     * @return void
      */
     private function insertCompanyContacts(): void
     {
         $this->pdf->SetY(12);
         $this->pdf->SetFont('times', '', 10);
         $addressLine = config('address') . "\n" . config('postcode') . ' ' . config('city') . "\n";
-        $this->pdf->Write(0, $addressLine, '', 0, 'R');
+        $this->pdf->Write(0, $addressLine, '', false, 'R');
         $this->pdf->SetFont('times', 'B', 11);
-        $this->pdf->Write(0, _('Phone:') . ' ' . config('phone') . "\n", '', 0, 'R');
+        $this->pdf->Write(0, _('Phone:') . ' ' . config('phone') . "\n", '', false, 'R');
         $this->pdf->SetFont('times', '', 10);
 
         if (!$this->invoice->getDepartment()) {
@@ -176,26 +162,22 @@ class InvoicePdfService
         }
         $domain = explode('/', config('base_url'));
         $domain = $domain[count($domain) - 1];
-        $this->pdf->Write(0, $this->invoice->getDepartment() . "\n" . $domain . "\n\n", '', 0, 'R');
+        $this->pdf->Write(0, $this->invoice->getDepartment() . "\n" . $domain . "\n\n", '', false, 'R');
         $this->pdf->SetFont('times', '', 11);
-        $this->pdf->Write(0, "Danske Bank (Giro)\nReg.: 9541 Kont.: 169 3336\n", '', 0, 'R');
+        $this->pdf->Write(0, "Danske Bank (Giro)\nReg.: 9541 Kont.: 169 3336\n", '', false, 'R');
         $this->pdf->SetFont('times', '', 10);
-        $this->pdf->Write(0, "\nIBAN: DK693 000 000-1693336\nSWIFT BIC: DABADKKK\n\n", '', 0, 'R');
+        $this->pdf->Write(0, "\nIBAN: DK693 000 000-1693336\nSWIFT BIC: DABADKKK\n\n", '', false, 'R');
         $this->pdf->SetFont('times', 'B', 11);
-        $this->pdf->Write(0, 'CVR 1308 1387', '', 0, 'R');
+        $this->pdf->Write(0, 'CVR 1308 1387', '', false, 'R');
     }
 
     /**
      * Insert billing and shipping addresses.
-     *
-     * @return void
      */
     private function insertCustomerAddresses(): void
     {
-        /** @var Application */
-        $app = app();
         /** @var string[] */
-        $countries = include $app->basePath('/inc/countries.php');
+        $countries = include app()->basePath('/inc/countries.php');
 
         //Invoice address
         $address = $this->getBillingAddress($countries);
@@ -222,8 +204,6 @@ class InvoicePdfService
      * Get the billing addres.
      *
      * @param string[] $countries
-     *
-     * @return string
      */
     private function getBillingAddress(array $countries): string
     {
@@ -253,8 +233,6 @@ class InvoicePdfService
      * Get the shippig addres.
      *
      * @param string[] $countries
-     *
-     * @return string
      */
     private function getShippingAddress(array $countries): string
     {
@@ -289,8 +267,6 @@ class InvoicePdfService
 
     /**
      * Add product table.
-     *
-     * @return void
      */
     private function addProductTable(): void
     {
@@ -319,16 +295,14 @@ class InvoicePdfService
      * Insert a single product line in the product table.
      *
      * @param (int|string)[] $item
-     *
-     * @return int
      */
     private function insertProductLine(array $item): int
     {
-        $value = $item['value'] * (1 + $this->invoice->getVat());
-        $lineTotal = $value * $item['quantity'];
+        $value = (float)$item['value'] * (1 + $this->invoice->getVat());
+        $lineTotal = $value * (int)$item['quantity'];
 
-        $this->pdf->Cell(self::CELL_WIDTH_QUANTITY, 6, $item['quantity'], 'RL', 0, 'R');
-        $lines = $this->pdf->MultiCell(self::CELL_WIDTH_TITLE, 6, $item['title'], 'RL', 'L', false, 0);
+        $this->pdf->Cell(self::CELL_WIDTH_QUANTITY, 6, (string)$item['quantity'], 'RL', 0, 'R');
+        $lines = $this->pdf->MultiCell(self::CELL_WIDTH_TITLE, 6, (string)$item['title'], 'RL', 'L', false, 0);
         $this->pdf->Cell(self::CELL_WIDTH_PRICE, 6, number_format($value, 2, localeconv()['mon_decimal_point'], ''), 'RL', 0, 'R');
         $this->pdf->Cell(self::CELL_WIDTH_TOTAL, 6, number_format($lineTotal, 2, localeconv()['mon_decimal_point'], ''), 'RL', 1, 'R');
 
@@ -341,10 +315,6 @@ class InvoicePdfService
 
     /**
      * Insert empty lines at the of the table to keep it at a consistent height.
-     *
-     * @param int $lines
-     *
-     * @return void
      */
     private function insertTableSpacing(int $lines): void
     {
@@ -356,8 +326,6 @@ class InvoicePdfService
 
     /**
      * Set the table footer, contaning total amount, shipping, conditions.
-     *
-     * @return void
      */
     private function insertTableFooter(): void
     {
@@ -376,7 +344,7 @@ class InvoicePdfService
 
         $this->pdf->SetFont('times', '', 10);
         $cellWidth = self::CELL_WIDTH_QUANTITY + self::CELL_WIDTH_TITLE;
-        $this->pdf->MultiCell($cellWidth, 9, $finePrint, 1, 'L', false, 0, '', '', false, 8, true, false);
+        $this->pdf->MultiCell($cellWidth, 9, $finePrint, 1, 'L', false, 0, null, null, false, 8, true, false);
         $this->pdf->SetFont('times', 'B', 11);
         $this->pdf->Cell(self::CELL_WIDTH_PRICE, 9, _('Total (USD)'), 1, 0, 'C');
         $this->pdf->SetFont('times', '', 11);
@@ -385,8 +353,6 @@ class InvoicePdfService
 
     /**
      * Generate the footer part of the invoice.
-     *
-     * @return void
      */
     private function generateFooter(): void
     {
@@ -411,8 +377,6 @@ class InvoicePdfService
 
     /**
      * Generate the payment note containing date and type of payment.
-     *
-     * @return string
      */
     private function getPaymentNote(): string
     {

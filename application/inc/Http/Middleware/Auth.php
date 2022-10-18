@@ -1,4 +1,6 @@
-<?php namespace App\Http\Middleware;
+<?php
+
+namespace App\Http\Middleware;
 
 use App\Contracts\Middleware;
 use App\Exceptions\InvalidInput;
@@ -8,7 +10,6 @@ use App\Render;
 use App\Services\DbService;
 use App\Services\OrmService;
 use App\Services\RenderService;
-use Closure;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
 
@@ -16,13 +17,8 @@ class Auth implements Middleware
 {
     /**
      * Assert that the user is logged in.
-     *
-     * @param Request $request
-     * @param Closure $next
-     *
-     * @return Response
      */
-    public function handle(Request $request, Closure $next): Response
+    public function handle(Request $request, callable $next): Response
     {
         $requestUrl = $request->getPathInfo();
         if (0 !== mb_strpos($requestUrl, '/admin/') || '/admin/users/new/' === $requestUrl) {
@@ -46,11 +42,7 @@ class Auth implements Middleware
     /**
      * Render the login page.
      *
-     * @param Request $request
-     *
      * @throws InvalidInput If the request is an AJAX call
-     *
-     * @return Response
      */
     private function showLoginPage(Request $request): Response
     {
@@ -63,35 +55,20 @@ class Auth implements Middleware
             );
         }
 
-        /** @var RenderService */
-        $render = app(RenderService::class);
-
-        return new Response($render->render('admin/login'), Response::HTTP_UNAUTHORIZED);
+        return new Response(app(RenderService::class)->render('admin/login'), Response::HTTP_UNAUTHORIZED);
     }
 
     /**
      * Authenticate and attach the user to a session.
-     *
-     * @param Request $request
-     *
-     * @return void
      */
     private function authenticate(Request $request): void
     {
-        /** @var DbService */
-        $db = app(DbService::class);
-
-        /** @var OrmService */
-        $orm = app(OrmService::class);
-
-        /** @var ?User */
-        $user = $orm->getOneByQuery(
+        $user = app(OrmService::class)->getOneByQuery(
             User::class,
-            'SELECT * FROM `users` WHERE `name` = ' . $db->quote($request->get('username', ''))
+            'SELECT * FROM `users` WHERE `name` = ' . app(DbService::class)->quote($request->get('username', ''))
         );
         if ($user && $user->getAccessLevel() && $user->validatePassword($request->get('password', ''))) {
             $request->startSession();
-            /** @var SessionInterface */
             $session = $request->getSession();
             $session->set('login_id', $user->getId());
             $session->set('login_hash', $user->getPasswordHash());

@@ -1,4 +1,6 @@
-<?php namespace Tests\Feature\Http\Controllers\Admin;
+<?php
+
+namespace Tests\Feature\Http\Controllers\Admin;
 
 use Tests\AdminTestCase;
 
@@ -103,6 +105,7 @@ class NewsletterControllerTest extends AdminTestCase
     {
         $this->markTestSkipped('Still not able to dalay sending newsletters');
 
+        /** @phpstan-ignore-next-line */
         $data = [
             'from'      => 'mail@gmail.com',
             'subject'   => 'Test',

@@ -1,4 +1,6 @@
-<?php namespace App\Models;
+<?php
+
+namespace App\Models;
 
 use App\Services\DbService;
 use App\Services\EmailService;
@@ -6,7 +8,7 @@ use App\Services\EmailService;
 class Contact extends AbstractEntity
 {
     /**  Table name in database. */
-    const TABLE_NAME = 'email';
+    public const TABLE_NAME = 'email';
 
     // Backed by DB
 
@@ -66,8 +68,6 @@ class Contact extends AbstractEntity
     /**
      * Set name.
      *
-     * @param string $name
-     *
      * @return $this
      */
     public function setName(string $name): self
@@ -79,8 +79,6 @@ class Contact extends AbstractEntity
 
     /**
      * Get Name.
-     *
-     * @return string
      */
     public function getName(): string
     {
@@ -89,8 +87,6 @@ class Contact extends AbstractEntity
 
     /**
      * Set email.
-     *
-     * @param string $email
      *
      * @return $this
      */
@@ -103,8 +99,6 @@ class Contact extends AbstractEntity
 
     /**
      * Get email.
-     *
-     * @return string
      */
     public function getEmail(): string
     {
@@ -113,8 +107,6 @@ class Contact extends AbstractEntity
 
     /**
      * Set address.
-     *
-     * @param string $address
      *
      * @return $this
      */
@@ -127,8 +119,6 @@ class Contact extends AbstractEntity
 
     /**
      * Get address.
-     *
-     * @return string
      */
     public function getAddress(): string
     {
@@ -137,8 +127,6 @@ class Contact extends AbstractEntity
 
     /**
      * Set country.
-     *
-     * @param string $country
      *
      * @return $this
      */
@@ -151,8 +139,6 @@ class Contact extends AbstractEntity
 
     /**
      * Get country.
-     *
-     * @return string
      */
     public function getCountry(): string
     {
@@ -161,8 +147,6 @@ class Contact extends AbstractEntity
 
     /**
      * Set postcode.
-     *
-     * @param string $postcode
      *
      * @return $this
      */
@@ -175,8 +159,6 @@ class Contact extends AbstractEntity
 
     /**
      * Get postcode.
-     *
-     * @return string
      */
     public function getPostcode(): string
     {
@@ -185,8 +167,6 @@ class Contact extends AbstractEntity
 
     /**
      * Set city.
-     *
-     * @param string $city
      *
      * @return $this
      */
@@ -199,8 +179,6 @@ class Contact extends AbstractEntity
 
     /**
      * Get city.
-     *
-     * @return string
      */
     public function getCity(): string
     {
@@ -209,8 +187,6 @@ class Contact extends AbstractEntity
 
     /**
      * Set phone number.
-     *
-     * @param string $phone1
      *
      * @return $this
      */
@@ -223,8 +199,6 @@ class Contact extends AbstractEntity
 
     /**
      * Get phone number.
-     *
-     * @return string
      */
     public function getPhone1(): string
     {
@@ -233,8 +207,6 @@ class Contact extends AbstractEntity
 
     /**
      * Set mobile phone number.
-     *
-     * @param string $phone2
      *
      * @return $this
      */
@@ -247,8 +219,6 @@ class Contact extends AbstractEntity
 
     /**
      * Get mobile phone number.
-     *
-     * @return string
      */
     public function getPhone2(): string
     {
@@ -257,8 +227,6 @@ class Contact extends AbstractEntity
 
     /**
      * Set newsletter subscribtion status.
-     *
-     * @param bool $subscribed
      *
      * @return $this
      */
@@ -271,8 +239,6 @@ class Contact extends AbstractEntity
 
     /**
      * Get newsletter subscribtion status.
-     *
-     * @return bool
      */
     public function isSubscribed(): bool
     {
@@ -306,8 +272,6 @@ class Contact extends AbstractEntity
     /**
      * Set created time.
      *
-     * @param int $timestamp
-     *
      * @return $this
      */
     public function setTimestamp(int $timestamp): self
@@ -319,8 +283,6 @@ class Contact extends AbstractEntity
 
     /**
      * Get creation time.
-     *
-     * @return int
      */
     public function getTimestamp(): int
     {
@@ -329,8 +291,6 @@ class Contact extends AbstractEntity
 
     /**
      * Set client IP.
-     *
-     * @param string $ip
      *
      * @return $this
      */
@@ -343,8 +303,6 @@ class Contact extends AbstractEntity
 
     /**
      * Get client IP.
-     *
-     * @return string
      */
     public function getIp(): string
     {
@@ -353,15 +311,10 @@ class Contact extends AbstractEntity
 
     /**
      * Check if email address is currently valid.
-     *
-     * @return bool
      */
     public function isEmailValide(): bool
     {
-        /** @var EmailService */
-        $emailService = app(EmailService::class);
-
-        return $this->email && $emailService->valideMail($this->email);
+        return $this->email && app(EmailService::class)->valideMail($this->email);
     }
 
     public static function mapFromDB(array $data): array
@@ -369,12 +322,9 @@ class Contact extends AbstractEntity
         $interests = explode('<', $data['interests']);
         $interests = array_map('html_entity_decode', $interests);
 
-        /** @var DbService */
-        $db = app(DbService::class);
-
         return [
             'id'         => $data['id'],
-            'timestamp'  => strtotime($data['dato']) + $db->getTimeOffset(),
+            'timestamp'  => strtotime($data['dato']) + app(DbService::class)->getTimeOffset(),
             'name'       => $data['navn'],
             'email'      => $data['email'],
             'address'    => $data['adresse'],
@@ -398,7 +348,6 @@ class Contact extends AbstractEntity
         $interests = array_map('htmlspecialchars', $this->interests);
         $interests = implode('<', $interests);
 
-        /** @var DbService */
         $db = app(DbService::class);
 
         return [

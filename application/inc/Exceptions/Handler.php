@@ -1,4 +1,6 @@
-<?php namespace App\Exceptions;
+<?php
+
+namespace App\Exceptions;
 
 use App\Http\Request;
 use App\Application;
@@ -6,13 +8,11 @@ use Raven_Client;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
 use Throwable;
+use Sentry\State\Scope;
 
 class Handler
 {
-    /** @var ?Raven_Client */
-    private $ravenClient;
-
-    /** @var string|null */
+    /** @var null|string */
     private $lastLogId;
 
     /** @var array<int, string> */
@@ -25,11 +25,8 @@ class Handler
      */
     public function __construct()
     {
-        /** @var Application */
-        $app = app();
-        if ($app->environment('production')) {
-            $this->ravenClient = new Raven_Client(config('sentry'));
-            $this->ravenClient->install();
+        if (app()->environment('production')) {
+            \Sentry\init(['dsn' => config('sentry')]);
         }
     }
 
@@ -45,37 +42,31 @@ class Handler
             return;
         }
 
-        /** @var Application */
-        $app = app();
-        if ($app->environment('develop')) {
+        if (app()->environment('develop')) {
             http_response_code(Response::HTTP_INTERNAL_SERVER_ERROR);
 
             throw $exception;
         }
 
-        /** @var Request */
         $request = app(Request::class);
-        if ($request->hasSession() && $request->user()) {
+        if ($request->hasSession()) {
             $user = $request->user();
-            if ($user && $this->ravenClient) {
-                $this->ravenClient->user_context(['id' => $user->getId(), 'name' => $user->getFullName()]);
+            if ($user && app()->environment('production')) {
+                \Sentry\configureScope(function (Scope $scope) use ($user): void {
+                    $scope->setUser(['id' => $user->getId(), 'name' => $user->getFullName()]);
+                });
             }
         }
 
-        if ($this->ravenClient) {
-            $this->lastLogId = $this->ravenClient->captureException($exception);
+        if (app()->environment('production')) {
+            $this->lastLogId = \Sentry\captureException($exception);
         }
     }
 
     /**
      * Generate an error response.
      *
-     * @param Request   $request
-     * @param Throwable $exception
-     *
      * @throws Throwable
-     *
-     * @return Response
      */
     public function render(Request $request, Throwable $exception): Response
     {
@@ -96,10 +87,6 @@ class Handler
 
     /**
      * Determin if the exception should be logged.
-     *
-     * @param Throwable $exception
-     *
-     * @return bool
      */
     private function shouldLog(Throwable $exception): bool
     {

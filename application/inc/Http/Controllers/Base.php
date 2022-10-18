@@ -1,4 +1,6 @@
-<?php namespace App\Http\Controllers;
+<?php
+
+namespace App\Http\Controllers;
 
 use App\Exceptions\Exception;
 use App\Models\Category;
@@ -10,14 +12,10 @@ use Symfony\Component\HttpFoundation\Request;
 
 class Base extends AbstractController
 {
-    const DEFAULT_ICON = '/theme/default/images/intet-foto.jpg';
+    public const DEFAULT_ICON = '/theme/default/images/intet-foto.jpg';
 
     /**
      * Generate a redirect to the search page based on the current request url.
-     *
-     * @param Request $request
-     *
-     * @return RedirectResponse
      */
     public function redirectToSearch(Request $request): RedirectResponse
     {
@@ -60,10 +58,8 @@ class Base extends AbstractController
      */
     protected function basicPageData(): array
     {
-        /** @var OrmService */
         $orm = app(OrmService::class);
 
-        /** @var ?Category */
         $category = $orm->getOne(Category::class, 0);
         if (!$category) {
             throw new Exception(_('Root category is missing.'));
@@ -88,17 +84,11 @@ class Base extends AbstractController
 
     /**
      * Get number active page.
-     *
-     * @return int
      */
     private function getActivePageCount(): int
     {
-        /** @var OrmService */
-        $orm = app(OrmService::class);
-
         $activeCategoryIds = [];
-        /** @var Category[] */
-        $categories = $orm->getByQuery(Category::class, 'SELECT * FROM kat');
+        $categories = app(OrmService::class)->getByQuery(Category::class, 'SELECT * FROM kat');
         foreach ($categories as $category) {
             if ($category->isInactive()) {
                 continue;
@@ -106,10 +96,7 @@ class Base extends AbstractController
             $activeCategoryIds[] = $category->getId();
         }
 
-        /** @var DbService */
-        $db = app(DbService::class);
-
-        $pages = $db->fetchOne(
+        $pages = app(DbService::class)->fetchOne(
             'SELECT COUNT(DISTINCT side) as count FROM bind WHERE kat IN(' . implode(',', $activeCategoryIds) . ')'
         );
 

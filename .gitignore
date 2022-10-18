@@ -12,3 +12,4 @@
 /build
 /node_modules
 /tests/application/theme/cache
+/.phpunit.result.cache

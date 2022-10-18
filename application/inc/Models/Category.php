@@ -1,4 +1,6 @@
-<?php namespace App\Models;
+<?php
+
+namespace App\Models;
 
 use App\Exceptions\InvalidInput;
 use App\Render;
@@ -10,16 +12,16 @@ class Category extends AbstractRenderable
     use HasIcon;
 
     /** Table name in database. */
-    const TABLE_NAME = 'kat';
+    public const TABLE_NAME = 'kat';
 
     /** Do not show category. */
-    const HIDDEN = 0;
+    public const HIDDEN = 0;
 
     /** Gallery rendering of pages. */
-    const GALLERY = 1;
+    public const GALLERY = 1;
 
     /** List rendering of pages. */
-    const LIST = 2;
+    public const LIST = 2;
 
     // Backed by DB
 
@@ -82,8 +84,6 @@ class Category extends AbstractRenderable
      * Delete category and all of it's content.
      *
      * Not that this deletes all pages, even if they aren't exclusive to this category.
-     *
-     * @return bool
      */
     public function delete(): bool
     {
@@ -137,8 +137,6 @@ class Category extends AbstractRenderable
 
     /**
      * Get the page list rendermode for this category.
-     *
-     * @return int
      */
     public function getRenderMode(): int
     {
@@ -161,8 +159,6 @@ class Category extends AbstractRenderable
 
     /**
      * Get the contact email address for pages in this category.
-     *
-     * @return string
      */
     public function getEmail(): string
     {
@@ -185,8 +181,6 @@ class Category extends AbstractRenderable
 
     /**
      * Are the children of this category be manually ordered.
-     *
-     * @return bool
      */
     public function hasWeightedChildren(): bool
     {
@@ -211,8 +205,6 @@ class Category extends AbstractRenderable
 
     /**
      * Should the category be visible on the website (is it empty or hidden).
-     *
-     * @return bool
      */
     public function isVisible(): bool
     {
@@ -233,8 +225,6 @@ class Category extends AbstractRenderable
 
     /**
      * Get the url slug.
-     *
-     * @return string
      */
     public function getSlug(): string
     {
@@ -262,11 +252,7 @@ class Category extends AbstractRenderable
     {
         $cetegory = null;
         if (null !== $this->parentId) {
-            /** @var OrmService */
-            $orm = app(OrmService::class);
-
-            /** @var ?static */
-            $cetegory = $orm->getOne(static::class, $this->parentId);
+            $cetegory = app(OrmService::class)->getOne(static::class, $this->parentId);
         }
 
         return $cetegory;
@@ -288,11 +274,7 @@ class Category extends AbstractRenderable
             $orderBy = '`order`, navn';
         }
 
-        /** @var OrmService */
-        $orm = app(OrmService::class);
-
-        /** @var self[] */
-        $children = $orm->getByQuery(
+        $children = app(OrmService::class)->getByQuery(
             self::class,
             '
             SELECT * FROM kat
@@ -327,8 +309,6 @@ class Category extends AbstractRenderable
      * Check if it has attached categories.
      *
      * @param bool $onlyVisible Only check visible
-     *
-     * @return bool
      */
     public function hasChildren(bool $onlyVisible = false): bool
     {
@@ -346,8 +326,6 @@ class Category extends AbstractRenderable
 
     /**
      * Check if there are children that are appropriate for displaying.
-     *
-     * @return bool
      */
     public function hasVisibleChildren(): bool
     {
@@ -363,20 +341,13 @@ class Category extends AbstractRenderable
      */
     public function getPages(string $order = 'navn', bool $reverseOrder = false): array
     {
-        /** @var DbService */
-        $db = app(DbService::class);
-
-        $db->addLoadedTable('bind');
+        app(DbService::class)->addLoadedTable('bind');
 
         if (!in_array($order, ['navn', 'for', 'pris', 'varenr'], true)) {
             $order = 'navn';
         }
 
-        /** @var OrmService */
-        $orm = app(OrmService::class);
-
-        /** @var Page[] */
-        $pages = $orm->getByQuery(
+        $pages = app(OrmService::class)->getByQuery(
             Page::class,
             '
             SELECT * FROM sider
@@ -406,12 +377,9 @@ class Category extends AbstractRenderable
 
     /**
      * Chekc if there are andy attached pages.
-     *
-     * @return bool
      */
     public function hasPages(): bool
     {
-        /** @var DbService */
         $db = app(DbService::class);
 
         $db->addLoadedTable('bind');
@@ -426,8 +394,6 @@ class Category extends AbstractRenderable
 
     /**
      * Check if there is any content for this category.
-     *
-     * @return bool
      */
     public function hasContent(): bool
     {
@@ -436,8 +402,6 @@ class Category extends AbstractRenderable
 
     /**
      * Is page currently not placed on the website.
-     *
-     * @return bool
      */
     public function isInactive(): bool
     {
@@ -446,8 +410,6 @@ class Category extends AbstractRenderable
 
     /**
      * Find the root category.
-     *
-     * @return self
      */
     public function getRoot(): self
     {
@@ -472,8 +434,6 @@ class Category extends AbstractRenderable
 
     /**
      * Get display path.
-     *
-     * @return string
      */
     public function getPath(): string
     {
@@ -489,7 +449,6 @@ class Category extends AbstractRenderable
 
     public function getDbArray(): array
     {
-        /** @var DbService */
         $db = app(DbService::class);
 
         return [

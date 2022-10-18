@@ -1,4 +1,6 @@
-<?php namespace App\Services;
+<?php
+
+namespace App\Services;
 
 use App\Exceptions\Exception;
 use PDO;
@@ -6,7 +8,7 @@ use PDOStatement;
 
 class DbService
 {
-    /** @var int|null */
+    /** @var null|int */
     private $timeOffset;
 
     /** @var ?PDO */
@@ -41,8 +43,6 @@ class DbService
 
     /**
      * Get connection.
-     *
-     * @return PDO
      */
     private function connection(): PDO
     {
@@ -73,7 +73,7 @@ class DbService
      *
      * @throws \PDOException
      *
-     * @return array<int, array<string|int, string>>
+     * @return array<int, array<int|string, string>>
      */
     public function fetchArray(string $query): array
     {
@@ -93,7 +93,7 @@ class DbService
      *
      * @param string $query The SQL query to preforme
      *
-     * @return array<string|int, string>
+     * @return array<int|string, string>
      */
     public function fetchOne(string $query): array
     {
@@ -113,8 +113,6 @@ class DbService
      * @param string $query The query string
      *
      * @throws \PDOException
-     *
-     * @return int
      */
     public function query(string $query): int
     {
@@ -127,8 +125,6 @@ class DbService
      * Escape all SQL wildcards.
      *
      * @param string $string String to process
-     *
-     * @return string
      */
     public function escapeWildcards(string $string): string
     {
@@ -142,10 +138,6 @@ class DbService
 
     /**
      * Escape and quate a string.
-     *
-     * @param string $string
-     *
-     * @return string
      */
     public function quote(string $string): string
     {
@@ -154,8 +146,6 @@ class DbService
 
     /**
      * A string that will convert to the current datetime for the current driver.
-     *
-     * @return string
      */
     public function getNowValue(): string
     {
@@ -168,8 +158,6 @@ class DbService
 
     /**
      * A string that will convert a unixtimestam to datetime for the current driver.
-     *
-     * @return string
      */
     public function getDateValue(int $timestamp): string
     {
@@ -187,8 +175,6 @@ class DbService
 
     /**
      * Find out what offset database local time has form UTC.
-     *
-     * @return int
      */
     public function getTimeOffset(): int
     {
@@ -208,8 +194,6 @@ class DbService
      * Remember what tabels where read during page load.
      *
      * @param array<int, string> ...$tableNames The table name
-     *
-     * @return void
      */
     public function addLoadedTable(string ...$tableNames): void
     {

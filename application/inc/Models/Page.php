@@ -1,4 +1,6 @@
-<?php namespace App\Models;
+<?php
+
+namespace App\Models;
 
 use App\Exceptions\Exception;
 use App\Services\DbService;
@@ -9,7 +11,7 @@ class Page extends AbstractRenderable implements InterfaceRichText
     use HasIcon;
 
     /** Table name in database. */
-    const TABLE_NAME = 'sider';
+    public const TABLE_NAME = 'sider';
 
     // Backed by DB
 
@@ -66,13 +68,10 @@ class Page extends AbstractRenderable implements InterfaceRichText
 
     public static function mapFromDB(array $data): array
     {
-        /** @var DbService */
-        $db = app(DbService::class);
-
         return [
             'id'             => $data['id'],
             'sku'            => $data['varenr'],
-            'timestamp'      => strtotime($data['dato']) + $db->getTimeOffset(),
+            'timestamp'      => strtotime($data['dato']) + app(DbService::class)->getTimeOffset(),
             'title'          => $data['navn'],
             'keywords'       => $data['keywords'],
             'html'           => $data['text'],
@@ -89,12 +88,9 @@ class Page extends AbstractRenderable implements InterfaceRichText
 
     /**
      * Delete page and it's relations.
-     *
-     * @return bool
      */
     public function delete(): bool
     {
-        /** @var DbService */
         $db = app(DbService::class);
 
         // Forget affected tables, though alter indivitual deletes will forget most
@@ -131,8 +127,6 @@ class Page extends AbstractRenderable implements InterfaceRichText
 
     /**
      * Get the Stock Keeping Unity.
-     *
-     * @return string
      */
     public function getSku(): string
     {
@@ -155,8 +149,6 @@ class Page extends AbstractRenderable implements InterfaceRichText
 
     /**
      * Get last modefied.
-     *
-     * @return int
      */
     public function getTimeStamp(): int
     {
@@ -179,8 +171,6 @@ class Page extends AbstractRenderable implements InterfaceRichText
 
     /**
      * Get keywords.
-     *
-     * @return string
      */
     public function getKeywords(): string
     {
@@ -203,8 +193,6 @@ class Page extends AbstractRenderable implements InterfaceRichText
 
     /**
      * Get the HTML body.
-     *
-     * @return string
      */
     public function getHtml(): string
     {
@@ -227,8 +215,6 @@ class Page extends AbstractRenderable implements InterfaceRichText
 
     /**
      * Get the short description.
-     *
-     * @return string
      */
     public function getExcerpt(): string
     {
@@ -251,8 +237,6 @@ class Page extends AbstractRenderable implements InterfaceRichText
 
     /**
      * Check if an except has been entered manually.
-     *
-     * @return bool
      */
     public function hasExcerpt(): bool
     {
@@ -303,8 +287,6 @@ class Page extends AbstractRenderable implements InterfaceRichText
 
     /**
      * Get the price.
-     *
-     * @return int
      */
     public function getPrice(): int
     {
@@ -327,8 +309,6 @@ class Page extends AbstractRenderable implements InterfaceRichText
 
     /**
      * Get the previous price.
-     *
-     * @return int
      */
     public function getOldPrice(): int
     {
@@ -351,8 +331,6 @@ class Page extends AbstractRenderable implements InterfaceRichText
 
     /**
      * Get the price Type.
-     *
-     * @return int
      */
     public function getPriceType(): int
     {
@@ -361,8 +339,6 @@ class Page extends AbstractRenderable implements InterfaceRichText
 
     /**
      * Set the type of the privious price.
-     *
-     * @param int $oldPriceType
      *
      * @return $this
      */
@@ -375,8 +351,6 @@ class Page extends AbstractRenderable implements InterfaceRichText
 
     /**
      * Get the previous price Type.
-     *
-     * @return int
      */
     public function getOldPriceType(): int
     {
@@ -387,8 +361,6 @@ class Page extends AbstractRenderable implements InterfaceRichText
 
     /**
      * Get the url slug.
-     *
-     * @return string
      */
     public function getSlug(): string
     {
@@ -398,9 +370,7 @@ class Page extends AbstractRenderable implements InterfaceRichText
     /**
      * Get canonical url for this entity.
      *
-     * @param Category|null $category Category to base the url on
-     *
-     * @return string
+     * @param null|Category $category Category to base the url on
      */
     public function getCanonicalLink(Category $category = null): string
     {
@@ -417,14 +387,9 @@ class Page extends AbstractRenderable implements InterfaceRichText
 
     /**
      * Check if the page i attached to a given category.
-     *
-     * @param Category $category
-     *
-     * @return bool
      */
     public function isInCategory(Category $category): bool
     {
-        /** @var DbService */
         $db = app(DbService::class);
 
         $db->addLoadedTable('bind');
@@ -444,11 +409,7 @@ class Page extends AbstractRenderable implements InterfaceRichText
      */
     public function getPrimaryCategory(): ?Category
     {
-        /** @var OrmService */
-        $orm = app(OrmService::class);
-
-        /** @var ?Category */
-        $category = $orm->getOneByQuery(Category::class, $this->getCategoriesQuery());
+        $category = app(OrmService::class)->getOneByQuery(Category::class, $this->getCategoriesQuery());
 
         return $category;
     }
@@ -460,112 +421,65 @@ class Page extends AbstractRenderable implements InterfaceRichText
      */
     public function getCategories(): array
     {
-        /** @var OrmService */
-        $orm = app(OrmService::class);
-
-        /** @var Category[] */
-        $categories = $orm->getByQuery(Category::class, $this->getCategoriesQuery());
+        $categories = app(OrmService::class)->getByQuery(Category::class, $this->getCategoriesQuery());
 
         return $categories;
     }
 
     /**
      * Generate the query for getting all categories where this page is linke.
-     *
-     * @return string
      */
     private function getCategoriesQuery(): string
     {
-        /** @var DbService */
-        $db = app(DbService::class);
-
-        $db->addLoadedTable('bind');
+        app(DbService::class)->addLoadedTable('bind');
 
         return 'SELECT * FROM `kat` WHERE id IN (SELECT kat FROM `bind` WHERE side = ' . $this->getId() . ')';
     }
 
     /**
      * Add the page to a given category.
-     *
-     * @param Category $category
-     *
-     * @return void
      */
     public function addToCategory(Category $category): void
     {
-        /** @var DbService */
-        $db = app(DbService::class);
-
-        /** @var OrmService */
-        $orm = app(OrmService::class);
-
-        $db->query(
+        app(DbService::class)->query(
             'INSERT INTO `bind` (`side`, `kat`) VALUES (' . $this->getId() . ', ' . $category->getId() . ')'
         );
-        $orm->forgetByQuery(self::class, $this->getCategoriesQuery());
+        app(OrmService::class)->forgetByQuery(self::class, $this->getCategoriesQuery());
     }
 
     /**
      * Remove the page form a given cateogory.
-     *
-     * @param Category $category
-     *
-     * @return void
      */
     public function removeFromCategory(Category $category): void
     {
-        /** @var DbService */
-        $db = app(DbService::class);
-
-        /** @var OrmService */
-        $orm = app(OrmService::class);
-
-        $db->query('DELETE FROM `bind` WHERE `side` = ' . $this->getId() . ' AND `kat` = ' . $category->getId());
-        $orm->forgetByQuery(self::class, $this->getCategoriesQuery());
+        app(DbService::class)->query('DELETE FROM `bind` WHERE `side` = ' . $this->getId() . ' AND `kat` = ' . $category->getId());
+        app(OrmService::class)->forgetByQuery(self::class, $this->getCategoriesQuery());
     }
 
     /**
      * Add a page as an accessory.
-     *
-     * @return void
      */
     public function addAccessory(self $accessory): void
     {
-        /** @var DbService */
-        $db = app(DbService::class);
-
-        /** @var OrmService */
-        $orm = app(OrmService::class);
-
-        $db->query(
+        app(DbService::class)->query(
             '
             INSERT IGNORE INTO `tilbehor` (`side`, `tilbehor`)
             VALUES (' . $this->getId() . ', ' . $accessory->getId() . ')'
         );
 
-        $orm->forgetByQuery(self::class, $this->getAccessoryQuery());
+        app(OrmService::class)->forgetByQuery(self::class, $this->getAccessoryQuery());
     }
 
     /**
      * Remove an accessory from the page.
-     *
-     * @param Page $accessory
-     *
-     * @return void
      */
     public function removeAccessory(self $accessory): void
     {
-        /** @var DbService */
-        $db = app(DbService::class);
-
-        /** @var OrmService */
-        $orm = app(OrmService::class);
-
-        $db->query(
+        app(DbService::class)->query(
             'DELETE FROM `tilbehor` WHERE side = ' . $this->getId() . ' AND tilbehor = ' . $accessory->getId()
         );
 
-        $orm->forgetByQuery(self::class, $this->getAccessoryQuery());
+        app(OrmService::class)->forgetByQuery(self::class, $this->getAccessoryQuery());
     }
 
     /**
@@ -575,11 +489,7 @@ class Page extends AbstractRenderable implements InterfaceRichText
      */
     public function getAccessories(): array
     {
-        /** @var OrmService */
-        $orm = app(OrmService::class);
-
-        /** @var Page[] */
-        $page = $orm->getByQuery(self::class, $this->getAccessoryQuery());
+        $page = app(OrmService::class)->getByQuery(self::class, $this->getAccessoryQuery());
 
         return $page;
     }
@@ -603,15 +513,10 @@ class Page extends AbstractRenderable implements InterfaceRichText
 
     /**
      * Get query for finding accessories.
-     *
-     * @return string
      */
     private function getAccessoryQuery(): string
     {
-        /** @var DbService */
-        $db = app(DbService::class);
-
-        $db->addLoadedTable('tilbehor');
+        app(DbService::class)->addLoadedTable('tilbehor');
 
         return '
             SELECT * FROM sider
@@ -625,11 +530,7 @@ class Page extends AbstractRenderable implements InterfaceRichText
      */
     public function getTables(): array
     {
-        /** @var OrmService */
-        $orm = app(OrmService::class);
-
-        /** @var Table[] */
-        $tables = $orm->getByQuery(
+        $tables = app(OrmService::class)->getByQuery(
             Table::class,
             'SELECT * FROM `lists` WHERE page_id = ' . $this->getId()
         );
@@ -639,13 +540,11 @@ class Page extends AbstractRenderable implements InterfaceRichText
 
     /**
      * Check if there is a product table attached to this page.
-     *
-     * @return bool
      */
     public function hasProductTable(): bool
     {
         foreach ($this->getTables() as $table) {
-            if ($table->hasPrices() && $table->hasPrices()) {
+            if ($table->hasPrices()) {
                 return true;
             }
         }
@@ -662,11 +561,7 @@ class Page extends AbstractRenderable implements InterfaceRichText
     {
         $brand = null;
         if (null !== $this->brandId) {
-            /** @var OrmService */
-            $orm = app(OrmService::class);
-
-            /** @var ?Brand */
-            $brand = $orm->getOne(Brand::class, $this->brandId);
+            $brand = app(OrmService::class)->getOne(Brand::class, $this->brandId);
         }
 
         return $brand;
@@ -681,11 +576,7 @@ class Page extends AbstractRenderable implements InterfaceRichText
     {
         $requirement = null;
         if (null !== $this->requirementId) {
-            /** @var OrmService */
-            $orm = app(OrmService::class);
-
-            /** @var ?Requirement */
-            $requirement = $orm->getOne(Requirement::class, $this->requirementId);
+            $requirement = app(OrmService::class)->getOne(Requirement::class, $this->requirementId);
         }
 
         return $requirement;
@@ -693,8 +584,6 @@ class Page extends AbstractRenderable implements InterfaceRichText
 
     /**
      * Is the product not on the website.
-     *
-     * @return bool
      */
     public function isInactive(): bool
     {
@@ -712,7 +601,6 @@ class Page extends AbstractRenderable implements InterfaceRichText
     {
         $this->setTimeStamp(time());
 
-        /** @var DbService */
         $db = app(DbService::class);
 
         return [

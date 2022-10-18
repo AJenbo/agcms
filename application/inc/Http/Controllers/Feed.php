@@ -1,4 +1,6 @@
-<?php namespace App\Http\Controllers;
+<?php
+
+namespace App\Http\Controllers;
 
 use App\Models\Category;
 use App\Models\Page;
@@ -13,29 +15,20 @@ class Feed extends Base
 {
     /**
      * Generate a Google Site Map.
-     *
-     * @param Request $request
-     *
-     * @return Response
      */
     public function siteMap(Request $request): Response
     {
-        /** @var DbService */
-        $db = app(DbService::class);
-
-        $db->addLoadedTable('bind', 'kat', 'sider', 'special', 'maerke', 'krav');
+        app(DbService::class)->addLoadedTable('bind', 'kat', 'sider', 'special', 'maerke', 'krav');
         $response = new Response('', Response::HTTP_OK, ['Content-Type' => 'text/xml;charset=utf-8']);
         $response = $this->cachedResponse($response);
         if ($response->isNotModified($request)) {
             return $response;
         }
 
-        /** @var OrmService */
         $orm = app(OrmService::class);
 
         $activeCategories = [];
         $activeCategoryIds = [];
-        /** @var Category[] */
         $categories = $orm->getByQuery(Category::class, 'SELECT * FROM kat');
         foreach ($categories as $category) {
             if ($category->isInactive()) {
@@ -48,7 +41,6 @@ class Feed extends Base
             $activeCategoryIds[] = $category->getId();
         }
 
-        /** @var Page[] */
         $pages = $orm->getByQuery(
             Page::class,
             '
@@ -78,14 +70,9 @@ class Feed extends Base
      * Rss feed of most recently updated articles.
      *
      * If a If-Modefied-Since is detected the feed will extend to that date, else it will limit to 20 items
-     *
-     * @param Request $request
-     *
-     * @return Response
      */
     public function rss(Request $request): Response
     {
-        /** @var DbService */
         $db = app(DbService::class);
 
         $db->addLoadedTable('bind', 'files', 'kat', 'maerke', 'sider');
@@ -109,12 +96,8 @@ class Feed extends Base
             $limit = '';
         }
 
-        /** @var OrmService */
-        $orm = app(OrmService::class);
-
         $items = [];
-        /** @var Page[] */
-        $pages = $orm->getByQuery(
+        $pages = app(OrmService::class)->getByQuery(
             Page::class,
             'SELECT * FROM sider'
             . $where
@@ -173,10 +156,6 @@ class Feed extends Base
 
     /**
      * Generate an OpenSearch configuration.
-     *
-     * @param Request $request
-     *
-     * @return Response
      */
     public function openSearch(Request $request): Response
     {

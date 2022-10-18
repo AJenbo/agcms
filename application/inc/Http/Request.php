@@ -1,8 +1,11 @@
-<?php namespace App\Http;
+<?php
+
+namespace App\Http;
 
 use App\Models\User;
 use App\Services\DbService;
 use App\Services\OrmService;
+use Exception;
 use Symfony\Component\HttpFoundation\ParameterBag;
 use Symfony\Component\HttpFoundation\Request as SymfonyRequest;
 use Symfony\Component\HttpFoundation\Session\Session;
@@ -50,8 +53,6 @@ class Request extends SymfonyRequest
 
     /**
      * Make sure we have a session and that it has been started.
-     *
-     * @return void
      */
     public function startSession(): void
     {
@@ -63,7 +64,6 @@ class Request extends SymfonyRequest
             $session = new Session($storage);
             $this->setSession($session);
         } else {
-            /** @var SessionInterface */
             $session = $this->getSession();
         }
 
@@ -72,10 +72,6 @@ class Request extends SymfonyRequest
 
     /**
      * Set the user making the request.
-     *
-     * @param User $user
-     *
-     * @return void
      */
     public function setUser(User $user): void
     {
@@ -94,6 +90,9 @@ class Request extends SymfonyRequest
         }
 
         $this->startSession();
+        if (!$this->session instanceof SessionInterface) {
+            throw new Exception('Failed to start session.');
+        }
         $id = $this->session->get('login_id');
         $hash = $this->session->get('login_hash');
         $this->session->save();
@@ -102,16 +101,9 @@ class Request extends SymfonyRequest
             return null;
         }
 
-        /** @var DbService */
-        $db = app(DbService::class);
-
-        /** @var OrmService */
-        $orm = app(OrmService::class);
-
-        /** @var ?User */
-        $user = $orm->getOneByQuery(
+        $user = app(OrmService::class)->getOneByQuery(
             User::class,
-            'SELECT * FROM `users` WHERE `id` = ' . $id . ' AND access != 0 AND password = ' . $db->quote($hash)
+            'SELECT * FROM `users` WHERE `id` = ' . $id . ' AND access != 0 AND password = ' . app(DbService::class)->quote($hash)
         );
         if ($user) {
             $user->setLastLogin(time())->save();
@@ -123,12 +115,14 @@ class Request extends SymfonyRequest
 
     /**
      * Remove the user data from the session.
-     *
-     * @return void
      */
     public function logout(): void
     {
         $this->startSession();
+        if (!$this->session instanceof SessionInterface) {
+            throw new Exception('Failed to start session.');
+        }
+
         $this->session->remove('login_id');
         $this->session->remove('login_hash');
         $this->session->save();

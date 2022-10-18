@@ -10,19 +10,17 @@ use Symfony\Component\HttpFoundation\RedirectResponse;
 /**
  * Get the current application instance or contained service instance.
  *
- * @param string|null $name
+ * @template T of object
  *
- * @return object
+ * @param class-string<T> $name
+ *
+ * @return T
  */
-function app(string $name = null): object
+function app(string $name = Application::class): object
 {
     $app = Application::getInstance();
 
-    if (null !== $name) {
-        return $app->get($name);
-    }
-
-    return $app;
+    return $app->get($name);
 }
 
 /**
@@ -31,7 +29,7 @@ function app(string $name = null): object
  * @param string $key     The name of the configuration to fetch
  * @param mixed  $default What to return if key does not exists
  *
- * @return mixed
+ * @return mixed Key value
  */
 function config(string $key, $default = null)
 {
@@ -40,18 +38,11 @@ function config(string $key, $default = null)
 
 /**
  * Generate redirect response.
- *
- * @param string $url
- * @param int    $status
- *
- * @return RedirectResponse
  */
 function redirect(string $url, int $status = RedirectResponse::HTTP_FOUND): RedirectResponse
 {
     if (false === filter_var($url, FILTER_VALIDATE_URL)) {
-        /** @var Request */
-        $request = app(Request::class);
-        $url = $request->getSchemeAndHttpHost() . $url;
+        $url = app(Request::class)->getSchemeAndHttpHost() . $url;
     }
     $url = (string) new Uri($url); // encode raw utf-8
 
@@ -63,7 +54,7 @@ function redirect(string $url, int $status = RedirectResponse::HTTP_FOUND): Redi
  *
  * @param array<mixed> $array
  *
- * @return mixed
+ * @return mixed First element in the array
  */
 function first(array $array)
 {
@@ -95,11 +86,11 @@ function cleanFileName(string $name): string
 /**
  * Natsort an array.
  *
- * @param array[]    $rows      Array to sort
- * @param string|int $orderBy   Key to sort by
- * @param string     $direction Revers sorting
+ * @param array<array<mixed>> $rows      Array to sort
+ * @param int|string          $orderBy   Key to sort by
+ * @param string              $direction Revers sorting
  *
- * @return array[]
+ * @return array<array<mixed>>
  */
 function arrayNatsort(array $rows, $orderBy, string $direction = 'asc'): array
 {
@@ -128,8 +119,6 @@ function arrayNatsort(array $rows, $orderBy, string $direction = 'asc'): array
  * @param string $string   String to crope
  * @param int    $length   Crope length
  * @param string $ellipsis String to add at the end, with in the limit
- *
- * @return string
  */
 function stringLimit(string $string, int $length = 50, string $ellipsis = '…'): string
 {
@@ -213,10 +202,6 @@ function purifyHTML(string $html): string
  * Normalize char encoding.
  *
  * Minimize char encoding to facilitate updating file with search replace
- *
- * @param string $html
- *
- * @return string
  */
 function htmlUrlDecode(string $html): string
 {

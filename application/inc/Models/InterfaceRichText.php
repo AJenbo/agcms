@@ -1,4 +1,6 @@
-<?php namespace App\Models;
+<?php
+
+namespace App\Models;
 
 use App\Contracts\Entity;
 
@@ -15,8 +17,6 @@ interface InterfaceRichText extends Entity
 
     /**
      * Set the HTML body.
-     *
-     * @return string
      */
     public function getHtml(): string;
 }

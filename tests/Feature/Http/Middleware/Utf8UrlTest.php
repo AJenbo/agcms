@@ -1,4 +1,6 @@
-<?php namespace Tests\Feature\Http\Middleware;
+<?php
+
+namespace Tests\Feature\Http\Middleware;
 
 use Tests\TestCase;
 

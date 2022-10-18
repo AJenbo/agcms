@@ -1,4 +1,6 @@
-<?php namespace App\Services;
+<?php
+
+namespace App\Services;
 
 class ConfigService
 {
@@ -9,10 +11,6 @@ class ConfigService
      * Load the site configurations.
      *
      * Will fallback to config_sample.php if config.php does not exist.
-     *
-     * @param string $basePath
-     *
-     * @return void
      */
     public static function load(string $basePath): void
     {
@@ -28,7 +26,7 @@ class ConfigService
      * @param string $key     The name of the configuration to fetch
      * @param mixed  $default What to return if key does not exists
      *
-     * @return mixed
+     * @return mixed Key value
      */
     public static function get(string $key, $default = null)
     {

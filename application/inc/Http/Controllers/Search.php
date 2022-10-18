@@ -1,4 +1,6 @@
-<?php namespace App\Http\Controllers;
+<?php
+
+namespace App\Http\Controllers;
 
 use App\Models\Brand;
 use App\Models\Category;
@@ -14,8 +16,6 @@ class Search extends Base
 {
     /**
      * Show the advanced search form.
-     *
-     * @return Response
      */
     public function index(): Response
     {
@@ -35,11 +35,9 @@ class Search extends Base
      */
     private function getActiveBrands(): array
     {
-        /** @var OrmService */
         $orm = app(OrmService::class);
 
         $categoryIds = [];
-        /** @var Category[] */
         $categories = $orm->getByQuery(Category::class, 'SELECT * FROM kat');
         foreach ($categories as $category) {
             if ($category->isInactive()) {
@@ -48,7 +46,6 @@ class Search extends Base
             $categoryIds[] = $category->getId();
         }
 
-        /** @var Brand[] */
         $brands = $orm->getByQuery(
             Brand::class,
             '
@@ -66,10 +63,6 @@ class Search extends Base
 
     /**
      * Show search results.
-     *
-     * @param Request $request
-     *
-     * @return Response
      */
     public function results(Request $request): Response
     {
@@ -86,7 +79,6 @@ class Search extends Base
 
         $pages = $this->findPages($searchString, $brandId, $varenr, $minpris, $maxpris, $antiWords);
         if (1 === count($pages)) {
-            /** @var Page */
             $page = array_shift($pages);
 
             return redirect($page->getCanonicalLink());
@@ -120,8 +112,6 @@ class Search extends Base
     /**
      * Check if we should performe the search or handle it else where.
      *
-     * @param Request $request
-     *
      * @return ?RedirectResponse
      */
     private function checkSearchable(Request $request): ?RedirectResponse
@@ -133,11 +123,7 @@ class Search extends Base
             && !$request->get('sogikke')
         ) {
             if ($request->get('maerke')) {
-                /** @var OrmService */
-                $orm = app(OrmService::class);
-
-                /** @var ?Brand */
-                $brand = $orm->getOne(Brand::class, $request->get('maerke'));
+                $brand = app(OrmService::class)->getOne(Brand::class, $request->get('maerke'));
                 if ($brand && $brand->hasPages()) {
                     return redirect($brand->getCanonicalLink(), Response::HTTP_MOVED_PERMANENTLY);
                 }
@@ -154,13 +140,6 @@ class Search extends Base
      *
      * @todo search in keywords
      *
-     * @param string $searchString
-     * @param int    $brandId
-     * @param string $varenr
-     * @param int    $minpris
-     * @param int    $maxpris
-     * @param string $antiWords
-     *
      * @return Page[]
      */
     private function findPages(
@@ -171,10 +150,6 @@ class Search extends Base
         int $maxpris = 0,
         string $antiWords = ''
     ): array {
-        /** @var DbService */
-        $db = app(DbService::class);
-
-        /** @var DbService */
         $db = app(DbService::class);
 
         $simpleQuery = '%' . preg_replace('/\s+/u', '%', $searchString) . '%';
@@ -212,11 +187,7 @@ class Search extends Base
 
         $against = $db->quote($searchString);
 
-        /** @var OrmService */
-        $orm = app(OrmService::class);
-
-        /** @var Page[] */
-        $pages = $orm->getByQuery(
+        $pages = app(OrmService::class)->getByQuery(
             Page::class,
             '
             SELECT `' . implode('`, `', $columns) . '`
@@ -253,9 +224,6 @@ class Search extends Base
     /**
      * Search for brands.
      *
-     * @param string $searchString
-     * @param string $antiWords
-     *
      * @return Brand[]
      */
     private function findBrands(string $searchString, string $antiWords): array
@@ -264,17 +232,12 @@ class Search extends Base
             return [];
         }
 
-        $simpleSearchString = $searchString ? '%' . preg_replace('/\s+/u', '%', $searchString) . '%' : '';
+        $simpleSearchString = '%' . preg_replace('/\s+/u', '%', $searchString) . '%';
         $simpleAntiWords = $antiWords ? '%' . preg_replace('/\s+/u', '%', $antiWords) . '%' : '';
 
-        /** @var DbService */
         $db = app(DbService::class);
 
-        /** @var OrmService */
-        $orm = app(OrmService::class);
-
-        /** @var Brand[] */
-        $brands = $orm->getByQuery(
+        $brands = app(OrmService::class)->getByQuery(
             Brand::class,
             '
             SELECT * FROM `maerke`
@@ -293,9 +256,6 @@ class Search extends Base
     /**
      * Search for categories.
      *
-     * @param string $searchString
-     * @param string $antiWords
-     *
      * @return Category[]
      */
     private function findCategories(string $searchString, string $antiWords): array
@@ -304,17 +264,12 @@ class Search extends Base
             return [];
         }
 
-        $simpleSearchString = $searchString ? '%' . preg_replace('/\s+/u', '%', $searchString) . '%' : '';
+        $simpleSearchString = '%' . preg_replace('/\s+/u', '%', $searchString) . '%';
         $simpleAntiWords = $antiWords ? '%' . preg_replace('/\s+/u', '%', $antiWords) . '%' : '';
 
-        /** @var DbService */
         $db = app(DbService::class);
 
-        /** @var OrmService */
-        $orm = app(OrmService::class);
-
-        /** @var Category[] */
-        $categories = $orm->getByQuery(
+        $categories = app(OrmService::class)->getByQuery(
             Category::class,
             '
             SELECT *, MATCH (navn) AGAINST (' . $db->quote($searchString) . ') AS score

@@ -1,4 +1,6 @@
-<?php namespace App\Http\Controllers\Admin;
+<?php
+
+namespace App\Http\Controllers\Admin;
 
 use App\Exceptions\Exception;
 use App\Exceptions\InvalidInput;
@@ -21,12 +23,7 @@ class PageController extends AbstractAdminController
     /**
      * Create or edit pages.
      *
-     * @param Request  $request
-     * @param int|null $id
-     *
      * @throws InvalidInput
-     *
-     * @return Response
      */
     public function index(Request $request, int $id = null): Response
     {
@@ -34,14 +31,12 @@ class PageController extends AbstractAdminController
         $openCategories = explode('<', $request->cookies->get('openkat', ''));
         $openCategories = array_map('intval', $openCategories);
 
-        /** @var OrmService */
         $orm = app(OrmService::class);
 
         $page = null;
         $bindings = [];
         $accessories = [];
         if (null !== $id) {
-            /** @var ?Page */
             $page = $orm->getOne(Page::class, $id);
             if (!$page) {
                 throw new InvalidInput(_('Page not found.'), Response::HTTP_NOT_FOUND);
@@ -81,19 +76,11 @@ class PageController extends AbstractAdminController
     /**
      * Create new page and attach it to a category.
      *
-     * @param Request $request
-     *
      * @throws InvalidInput
-     *
-     * @return JsonResponse
      */
     public function createPage(Request $request): JsonResponse
     {
-        /** @var OrmService */
-        $orm = app(OrmService::class);
-
-        /** @var ?Category */
-        $category = $orm->getOne(Category::class, $request->request->get('categoryId'));
+        $category = app(OrmService::class)->getOne(Category::class, $request->request->get('categoryId'));
         if (!$category) {
             throw new InvalidInput(_('Category not found.'), Response::HTTP_NOT_FOUND);
         }
@@ -121,25 +108,17 @@ class PageController extends AbstractAdminController
     /**
      * Update existing page.
      *
-     * @param Request $request
-     * @param int     $id
-     *
      * @throws InvalidInput
-     *
-     * @return JsonResponse
      */
     public function updatePage(Request $request, int $id): JsonResponse
     {
-        /** @var OrmService */
         $orm = app(OrmService::class);
 
         $icon = null;
         if ($request->request->has('iconId')) {
-            /** @var ?File */
             $icon = $orm->getOne(File::class, $request->request->getInt('iconId'));
         }
 
-        /** @var ?Page */
         $page = $orm->getOne(Page::class, $id);
         if (!$page) {
             throw new InvalidInput(_('Page not found.'), Response::HTTP_NOT_FOUND);
@@ -164,19 +143,10 @@ class PageController extends AbstractAdminController
 
     /**
      * Delete page.
-     *
-     * @param Request $request
-     * @param int     $id
-     *
-     * @return JsonResponse
      */
     public function delete(Request $request, int $id): JsonResponse
     {
-        /** @var OrmService */
-        $orm = app(OrmService::class);
-
-        /** @var ?Page */
-        $page = $orm->getOne(Page::class, $id);
+        $page = app(OrmService::class)->getOne(Page::class, $id);
         if ($page) {
             $page->delete();
         }
@@ -187,26 +157,17 @@ class PageController extends AbstractAdminController
     /**
      * Attach a page to a category.
      *
-     * @param Request $request
-     * @param int     $id
-     * @param int     $categoryId
-     *
      * @throws InvalidInput
-     *
-     * @return JsonResponse
      */
     public function addToCategory(Request $request, int $id, int $categoryId): JsonResponse
     {
-        /** @var OrmService */
         $orm = app(OrmService::class);
 
-        /** @var ?Page */
         $page = $orm->getOne(Page::class, $id);
         if (!$page) {
             throw new InvalidInput(_('Page not found.'), Response::HTTP_NOT_FOUND);
         }
 
-        /** @var ?Category */
         $category = $orm->getOne(Category::class, $categoryId);
         if (!$category) {
             throw new InvalidInput(_('Category not found.'), Response::HTTP_NOT_FOUND);
@@ -237,26 +198,17 @@ class PageController extends AbstractAdminController
     /**
      * Remove the page from category.
      *
-     * @param Request $request
-     * @param int     $id
-     * @param int     $categoryId
-     *
      * @throws InvalidInput
-     *
-     * @return JsonResponse
      */
     public function removeFromCategory(Request $request, int $id, int $categoryId): JsonResponse
     {
-        /** @var OrmService */
         $orm = app(OrmService::class);
 
-        /** @var ?Page */
         $page = $orm->getOne(Page::class, $id);
         if (!$page) {
             throw new InvalidInput(_('Page not found.'), Response::HTTP_NOT_FOUND);
         }
 
-        /** @var ?Category */
         $category = $orm->getOne(Category::class, $categoryId);
         if (!$category) {
             throw new InvalidInput(_('Category not found.'), Response::HTTP_NOT_FOUND);
@@ -268,7 +220,6 @@ class PageController extends AbstractAdminController
         }
 
         if (1 === count($page->getCategories())) {
-            /** @var ?Category */
             $inactiveCategory = $orm->getOne(Category::class, -1);
             if (!$inactiveCategory) {
                 throw new InvalidInput(_('Category not found.'), Response::HTTP_NOT_FOUND);
@@ -287,11 +238,7 @@ class PageController extends AbstractAdminController
     /**
      * Search page.
      *
-     * @param Request $request
-     *
      * @throws InvalidInput
-     *
-     * @return Response
      */
     public function search(Request $request): Response
     {
@@ -304,10 +251,7 @@ class PageController extends AbstractAdminController
         $data = ['text' => $text, 'pages' => $pages];
 
         if ($request->isXmlHttpRequest()) {
-            /** @var RenderService */
-            $render = app(RenderService::class);
-
-            return new JsonResponse(['id' => 'canvas', 'html' => $render->render('admin/partial-search', $data)]);
+            return new JsonResponse(['id' => 'canvas', 'html' => app(RenderService::class)->render('admin/partial-search', $data)]);
         }
 
         return $this->render('admin/search', $data);
@@ -316,26 +260,17 @@ class PageController extends AbstractAdminController
     /**
      * Add a page to page relation.
      *
-     * @param Request $request
-     * @param int     $pageId
-     * @param int     $accessoryId
-     *
      * @throws InvalidInput
-     *
-     * @return JsonResponse
      */
     public function addAccessory(Request $request, int $pageId, int $accessoryId): JsonResponse
     {
-        /** @var OrmService */
         $orm = app(OrmService::class);
 
-        /** @var ?Page */
         $page = $orm->getOne(Page::class, $pageId);
         if (!$page) {
             throw new InvalidInput(_('Page not found.'), Response::HTTP_NOT_FOUND);
         }
 
-        /** @var ?Page */
         $accessory = $orm->getOne(Page::class, $accessoryId);
         if (!$accessory) {
             throw new InvalidInput(_('Accessory not found.'), Response::HTTP_NOT_FOUND);
@@ -358,26 +293,17 @@ class PageController extends AbstractAdminController
     /**
      * Remove a page to page relation.
      *
-     * @param Request $request
-     * @param int     $pageId
-     * @param int     $accessoryId
-     *
      * @throws InvalidInput
-     *
-     * @return JsonResponse
      */
     public function removeAccessory(Request $request, int $pageId, int $accessoryId): JsonResponse
     {
-        /** @var OrmService */
         $orm = app(OrmService::class);
 
-        /** @var ?Page */
         $page = $orm->getOne(Page::class, $pageId);
         if (!$page) {
             throw new InvalidInput(_('Page not found.'), Response::HTTP_NOT_FOUND);
         }
 
-        /** @var ?Page */
         $accessory = $orm->getOne(Page::class, $accessoryId);
         if (!$accessory) {
             throw new InvalidInput(_('Accessory not found.'), Response::HTTP_NOT_FOUND);
@@ -405,14 +331,9 @@ class PageController extends AbstractAdminController
             throw new Exception('preg_replace failed');
         }
 
-        /** @var DbService */
         $db = app(DbService::class);
 
-        /** @var OrmService */
-        $orm = app(OrmService::class);
-
-        /** @var Page[] */
-        $pages = $orm->getByQuery(
+        $pages = app(OrmService::class)->getByQuery(
             Page::class,
             '
             SELECT * FROM sider

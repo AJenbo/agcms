@@ -1,4 +1,6 @@
-<?php namespace App\Http\Controllers;
+<?php
+
+namespace App\Http\Controllers;
 
 use App\Application;
 use App\Exceptions\Exception;
@@ -33,10 +35,6 @@ class Payment extends Base
 
     /**
      * Page for manually entering the id and checkid code.
-     *
-     * @param Request $request
-     *
-     * @return Response
      */
     public function index(Request $request): Response
     {
@@ -55,20 +53,10 @@ class Payment extends Base
 
     /**
      * Show the items in the shopping basket.
-     *
-     * @param Request $request
-     * @param int     $id
-     * @param string  $checkId
-     *
-     * @return Response
      */
     public function basket(Request $request, int $id, string $checkId): Response
     {
-        /** @var OrmService */
-        $orm = app(OrmService::class);
-
-        /** @var ?Invoice */
-        $invoice = $orm->getOne(Invoice::class, $id);
+        $invoice = app(OrmService::class)->getOne(Invoice::class, $id);
         if ($redirect = $this->checkStatus($id, $checkId, $invoice)) {
             return $redirect;
         }
@@ -92,20 +80,10 @@ class Payment extends Base
 
     /**
      * Page for user to correct there contact info.
-     *
-     * @param Request $request
-     * @param int     $id
-     * @param string  $checkId
-     *
-     * @return Response
      */
     public function address(Request $request, int $id, string $checkId): Response
     {
-        /** @var OrmService */
-        $orm = app(OrmService::class);
-
-        /** @var ?Invoice */
-        $invoice = $orm->getOne(Invoice::class, $id);
+        $invoice = app(OrmService::class)->getOne(Invoice::class, $id);
         if ($redirect = $this->checkStatus($id, $checkId, $invoice)) {
             return $redirect;
         }
@@ -115,11 +93,8 @@ class Payment extends Base
 
         $data = $this->basicPageData();
 
-        /** @var Application */
-        $app = app();
-
         /* @var string[] */
-        $data['countries'] = include $app->basePath('/inc/countries.php');
+        $data['countries'] = include app()->basePath('/inc/countries.php');
         $data['crumbs'][] = new VolatilePage(_('Order #') . $id, $invoice->getLink());
         $renderable = new VolatilePage(_('Address'), $invoice->getLink() . 'address/');
         $data['crumbs'][] = $renderable;
@@ -137,20 +112,10 @@ class Payment extends Base
 
     /**
      * Update the contact infor and forwared the user in the payment process.
-     *
-     * @param Request $request
-     * @param int     $id
-     * @param string  $checkId
-     *
-     * @return Response
      */
     public function addressSave(Request $request, int $id, string $checkId): Response
     {
-        /** @var OrmService */
-        $orm = app(OrmService::class);
-
-        /** @var ?Invoice */
-        $invoice = $orm->getOne(Invoice::class, $id);
+        $invoice = app(OrmService::class)->getOne(Invoice::class, $id);
         if ($redirect = $this->checkStatus($id, $checkId, $invoice)) {
             return $redirect;
         }
@@ -201,20 +166,10 @@ class Payment extends Base
 
     /**
      * Show the terms of condition.
-     *
-     * @param Request $request
-     * @param int     $id
-     * @param string  $checkId
-     *
-     * @return Response
      */
     public function terms(Request $request, int $id, string $checkId): Response
     {
-        /** @var OrmService */
-        $orm = app(OrmService::class);
-
-        /** @var ?Invoice */
-        $invoice = $orm->getOne(Invoice::class, $id);
+        $invoice = app(OrmService::class)->getOne(Invoice::class, $id);
         if ($redirect = $this->checkStatus($id, $checkId, $invoice)) {
             return $redirect;
         }
@@ -256,20 +211,12 @@ class Payment extends Base
 
     /**
      * Get the terms and conditions text.
-     *
-     * @return string
      */
     public function getTermsHtml(): string
     {
-        /** @var OrmService */
-        $orm = app(OrmService::class);
-
-        /** @var ?CustomPage */
-        $shoppingTerms = $orm->getOne(CustomPage::class, 3);
+        $shoppingTerms = app(OrmService::class)->getOne(CustomPage::class, 3);
         if (!$shoppingTerms) {
-            /** @var ExceptionHandler */
-            $handler = app(ExceptionHandler::class);
-            $handler->report(new Exception(_('Missing terms and conditions')));
+            app(ExceptionHandler::class)->report(new Exception(_('Missing terms and conditions')));
 
             return '';
         }
@@ -281,20 +228,10 @@ class Payment extends Base
      * Show the order status page.
      *
      * Also set the order payment status if txnid is provided
-     *
-     * @param Request $request
-     * @param int     $id
-     * @param string  $checkId
-     *
-     * @return Response
      */
     public function status(Request $request, int $id, string $checkId): Response
     {
-        /** @var OrmService */
-        $orm = app(OrmService::class);
-
-        /** @var ?Invoice */
-        $invoice = $orm->getOne(Invoice::class, $id);
+        $invoice = app(OrmService::class)->getOne(Invoice::class, $id);
         if (!$invoice || $checkId !== $invoice->getCheckId()) {
             return redirect('/betaling/?id=' . $id . '&checkid=' . rawurlencode($checkId), Response::HTTP_SEE_OTHER);
         }
@@ -332,10 +269,6 @@ class Payment extends Base
 
     /**
      * Get the status message.
-     *
-     * @param Invoice $invoice
-     *
-     * @return string
      */
     private function getStatusMessage(Invoice $invoice): string
     {
@@ -358,20 +291,10 @@ class Payment extends Base
 
     /**
      * Set the order payment status.
-     *
-     * @param Request $request
-     * @param int     $id
-     * @param string  $checkId
-     *
-     * @return Response
      */
     public function callback(Request $request, int $id, string $checkId): Response
     {
-        /** @var OrmService */
-        $orm = app(OrmService::class);
-
-        /** @var ?Invoice */
-        $invoice = $orm->getOne(Invoice::class, $id);
+        $invoice = app(OrmService::class)->getOne(Invoice::class, $id);
         if (!$invoice
             || $checkId !== $invoice->getCheckId()
             || !$this->isHashValid($request)
@@ -386,12 +309,8 @@ class Payment extends Base
 
     /**
      * Validate payment hash.
-     *
-     * @param mixed $request
-     *
-     * @return bool
      */
-    private function isHashValid($request): bool
+    private function isHashValid(Request $request): bool
     {
         $params = $request->query->all();
         unset($params['hash']);
@@ -403,11 +322,6 @@ class Payment extends Base
 
     /**
      * Set the order payment status.
-     *
-     * @param Request $request
-     * @param Invoice $invoice
-     *
-     * @return void
      */
     private function setPaymentStatus(Request $request, Invoice $invoice): void
     {
@@ -418,9 +332,7 @@ class Payment extends Base
         $cardType = EpaymentService::getPaymentName($request->get('paymenttype'));
         $internalNote = $this->generateInternalPaymentNote($request);
 
-        /** @var EmailService */
-        $emailService = app(EmailService::class);
-        if (!$emailService->valideMail($invoice->getDepartment())) {
+        if (!app(EmailService::class)->valideMail($invoice->getDepartment())) {
             $invoice->setDepartment(first(config('emails'))['address']);
         }
 
@@ -436,16 +348,9 @@ class Payment extends Base
 
     /**
      * Send recipt to the customer.
-     *
-     * @param Invoice $invoice
-     *
-     * @return void
      */
     private function sendCustomerEmail(Invoice $invoice): void
     {
-        /** @var RenderService */
-        $render = app(RenderService::class);
-
         $data = [
             'invoice'    => $invoice,
             'localeconv' => localeconv(),
@@ -457,31 +362,23 @@ class Payment extends Base
         ];
         $email = new Email([
             'subject'          => sprintf(_('Order #%d - payment completed'), $invoice->getId()),
-            'body'             => $render->render('email/payment-confirmation', $data),
+            'body'             => app(RenderService::class)->render('email/payment-confirmation', $data),
             'senderName'       => config('site_name'),
             'senderAddress'    => $invoice->getDepartment(),
             'recipientName'    => $invoice->getName(),
             'recipientAddress' => $invoice->getEmail(),
         ]);
-        /** @var EmailService */
-        $emailService = app(EmailService::class);
 
         try {
-            $emailService->send($email);
+            app(EmailService::class)->send($email);
         } catch (Throwable $exception) {
-            /** @var ExceptionHandler */
-            $handler = app(ExceptionHandler::class);
-            $handler->report($exception);
+            app(ExceptionHandler::class)->report($exception);
             $email->save();
         }
     }
 
     /**
      * Send status email to the admin.
-     *
-     * @param Invoice $invoice
-     *
-     * @return void
      */
     private function sendAdminEmail(Invoice $invoice): void
     {
@@ -491,10 +388,7 @@ class Payment extends Base
             $invoice->getId()
         );
 
-        /** @var RenderService */
-        $render = app(RenderService::class);
-
-        $emailBody = $render->render(
+        $emailBody = app(RenderService::class)->render(
             'admin/email/payment-confirmation',
             ['invoice' => $invoice, 'localeconv' => localeconv()]
         );
@@ -507,25 +401,17 @@ class Payment extends Base
             'recipientName'    => config('site_name'),
             'recipientAddress' => $invoice->getDepartment(),
         ]);
-        /** @var EmailService */
-        $emailService = app(EmailService::class);
 
         try {
-            $emailService->send($email);
+            app(EmailService::class)->send($email);
         } catch (Throwable $exception) {
-            /** @var ExceptionHandler */
-            $handler = app(ExceptionHandler::class);
-            $handler->report($exception);
+            app(ExceptionHandler::class)->report($exception);
             $email->save();
         }
     }
 
     /**
      * Generate message for the internal note about fraud status.
-     *
-     * @param Request $request
-     *
-     * @return string
      */
     private function generateInternalPaymentNote(Request $request): string
     {
@@ -537,11 +423,8 @@ class Payment extends Base
             $internalNote .= _('Credit card no.: ') . $request->get('cardno') . "\n";
         }
 
-        /** @var Application */
-        $app = app();
-
         /** @var string[] */
-        $countries = include $app->basePath('/inc/countries.php');
+        $countries = include app()->basePath('/inc/countries.php');
         if ($request->get('issuercountry')) {
             $internalNote .= _('Card is from: ') . $countries[$request->get('issuercountry')] . "\n";
         }
@@ -555,8 +438,6 @@ class Payment extends Base
     /**
      * Check if request should be redirected to a different page in the process.
      *
-     * @param int      $id
-     * @param string   $checkId
      * @param ?Invoice $invoice
      *
      * @return ?RedirectResponse

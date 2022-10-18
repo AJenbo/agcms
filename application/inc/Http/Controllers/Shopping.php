@@ -1,4 +1,6 @@
-<?php namespace App\Http\Controllers;
+<?php
+
+namespace App\Http\Controllers;
 
 use App\Application;
 use App\Exceptions\Handler as ExceptionHandler;
@@ -27,10 +29,6 @@ class Shopping extends Base
 
     /**
      * Show the items in the shopping basket.
-     *
-     * @param Request $request
-     *
-     * @return Response
      */
     public function basket(Request $request): Response
     {
@@ -56,10 +54,6 @@ class Shopping extends Base
 
     /**
      * Show address input page.
-     *
-     * @param Request $request
-     *
-     * @return Response
      */
     public function address(Request $request): Response
     {
@@ -71,9 +65,6 @@ class Shopping extends Base
 
         $invoice = $this->invoiceService->createFromCart($cart);
 
-        /** @var Application */
-        $app = app();
-
         $data = $this->basicPageData();
         $data['crumbs'][] = new VolatilePage(_('Shopping list'), '/order/?cart=' . rawurlencode($rawCart));
         $renderable = new VolatilePage(_('Address'), '/order/address/?cart=' . rawurlencode($rawCart));
@@ -82,7 +73,7 @@ class Shopping extends Base
         $data['invoice'] = $invoice;
         $data['invalid'] = $invoice->getInvalid();
         /* @var string[] */
-        $data['countries'] = include $app->basePath('/inc/countries.php');
+        $data['countries'] = include app()->basePath('/inc/countries.php');
         $data['newsletter'] = $cart['newsletter'] ?? false;
         $data['onsubmit'] = 'shoppingCart.sendCart(); return false';
         $data['actionLable'] = _('Send order');
@@ -94,10 +85,6 @@ class Shopping extends Base
 
     /**
      * Show address input page.
-     *
-     * @param Request $request
-     *
-     * @return Response
      */
     public function send(Request $request): Response
     {
@@ -127,10 +114,7 @@ class Shopping extends Base
 
         $invoice->save();
 
-        /** @var RenderService */
-        $render = app(RenderService::class);
-
-        $emailBody = $render->render(
+        $emailBody = app(RenderService::class)->render(
             'admin/email/order-notification',
             [
                 'invoice'    => $invoice,
@@ -146,30 +130,22 @@ class Shopping extends Base
             'recipientName'    => config('site_name'),
             'recipientAddress' => first(config('emails'))['address'],
         ]);
-        /** @var EmailService */
-        $emailService = app(EmailService::class);
 
         try {
-            $emailService->send($email);
+            app(EmailService::class)->send($email);
         } catch (Throwable $exception) {
-            /** @var ExceptionHandler */
-            $handler = app(ExceptionHandler::class);
-            $handler->report($exception);
+            app(ExceptionHandler::class)->report($exception);
             $email->save();
         }
 
         $cart['items'] = [];
-        $rawCart = json_encode($cart) ?: '';
+        $rawCart = json_encode($cart, JSON_THROW_ON_ERROR) ?: '';
 
         return redirect('/order/receipt/?cart=' . rawurlencode($rawCart), Response::HTTP_SEE_OTHER);
     }
 
     /**
      * Show a receipt page.
-     *
-     * @param Request $request
-     *
-     * @return Response
      */
     public function receipt(Request $request): Response
     {

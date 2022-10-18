@@ -1,4 +1,6 @@
-<?php namespace App\Services;
+<?php
+
+namespace App\Services;
 
 use AJenbo\Image;
 
@@ -36,8 +38,6 @@ class ImageService
 
     /**
      * Load the image.
-     *
-     * @param string $path
      */
     public function __construct(string $path)
     {
@@ -50,11 +50,6 @@ class ImageService
 
     /**
      * Set cropping operation.
-     *
-     * @param int $startX
-     * @param int $startY
-     * @param int $width
-     * @param int $height
      *
      * @return $this
      */
@@ -78,8 +73,6 @@ class ImageService
     /**
      * Set autocrop.
      *
-     * @param bool $autoCrop
-     *
      * @return $this
      */
     public function setAutoCrop(bool $autoCrop): self
@@ -91,9 +84,6 @@ class ImageService
 
     /**
      * Set scale operation.
-     *
-     * @param int $width
-     * @param int $height
      *
      * @return $this
      */
@@ -111,8 +101,6 @@ class ImageService
     /**
      * Set flip/mirror.
      *
-     * @param int $flip
-     *
      * @return $this
      */
     public function setFlip(int $flip): self
@@ -125,8 +113,6 @@ class ImageService
     /**
      * Set rotate operation.
      *
-     * @param int $rotate
-     *
      * @return $this
      */
     public function setRotate(int $rotate): self
@@ -138,8 +124,6 @@ class ImageService
 
     /**
      * Test if the settings will cause a change in the image.
-     *
-     * @return bool
      */
     public function isNoOp(): bool
     {
@@ -167,8 +151,6 @@ class ImageService
 
     /**
      * Get image width.
-     *
-     * @return int
      */
     public function getWidth(): int
     {
@@ -177,8 +159,6 @@ class ImageService
 
     /**
      * Get image height.
-     *
-     * @return int
      */
     public function getHeight(): int
     {
@@ -189,11 +169,6 @@ class ImageService
      * Performe the set operations and save the image.
      *
      * Doing so will reset the changes
-     *
-     * @param string $targetPath
-     * @param string $type
-     *
-     * @return void
      */
     public function processImage(string $targetPath, string $type = 'jpeg'): void
     {
@@ -236,8 +211,6 @@ class ImageService
 
     /**
      * Reset operations to loaded image.
-     *
-     * @return void
      */
     private function reset(): void
     {

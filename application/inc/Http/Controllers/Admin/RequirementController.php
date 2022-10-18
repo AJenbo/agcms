@@ -1,4 +1,6 @@
-<?php namespace App\Http\Controllers\Admin;
+<?php
+
+namespace App\Http\Controllers\Admin;
 
 use App\Exceptions\InvalidInput;
 use App\Models\Requirement;
@@ -11,19 +13,11 @@ class RequirementController extends AbstractAdminController
 {
     /**
      * Index page for requirements.
-     *
-     * @param Request $request
-     *
-     * @return Response
      */
     public function index(Request $request): Response
     {
-        /** @var OrmService */
-        $orm = app(OrmService::class);
-
         $data = $this->basicPageData($request);
-        /* @var Requirement[] */
-        $data['requirements'] = $orm->getByQuery(Requirement::class, 'SELECT * FROM `krav` ORDER BY navn');
+        $data['requirements'] = app(OrmService::class)->getByQuery(Requirement::class, 'SELECT * FROM `krav` ORDER BY navn');
 
         return $this->render('admin/krav', $data);
     }
@@ -31,11 +25,7 @@ class RequirementController extends AbstractAdminController
     /**
      * Create a requirement.
      *
-     * @param Request $request
-     *
      * @throws InvalidInput
-     *
-     * @return JsonResponse
      */
     public function create(Request $request): JsonResponse
     {
@@ -55,20 +45,12 @@ class RequirementController extends AbstractAdminController
 
     /**
      * Page for editing or creating a requirement.
-     *
-     * @param Request  $request
-     * @param int|null $id
-     *
-     * @return Response
      */
     public function editPage(Request $request, int $id = null): Response
     {
-        /** @var OrmService */
-        $orm = app(OrmService::class);
-
         $data = $this->basicPageData($request);
         $data['textWidth'] = config('text_width');
-        $data['requirement'] = $id ? $orm->getOne(Requirement::class, $id) : null;
+        $data['requirement'] = $id ? app(OrmService::class)->getOne(Requirement::class, $id) : null;
 
         return $this->render('admin/editkrav', $data);
     }
@@ -76,12 +58,7 @@ class RequirementController extends AbstractAdminController
     /**
      * Update requirement.
      *
-     * @param Request $request
-     * @param int     $id
-     *
      * @throws InvalidInput
-     *
-     * @return JsonResponse
      */
     public function update(Request $request, int $id): JsonResponse
     {
@@ -93,11 +70,7 @@ class RequirementController extends AbstractAdminController
             throw new InvalidInput(_('You must enter a name and a text for the requirement.'));
         }
 
-        /** @var OrmService */
-        $orm = app(OrmService::class);
-
-        /** @var ?Requirement */
-        $requirement = $orm->getOne(Requirement::class, $id);
+        $requirement = app(OrmService::class)->getOne(Requirement::class, $id);
         if (!$requirement) {
             throw new InvalidInput(_('Requirement not found.'), Response::HTTP_NOT_FOUND);
         }
@@ -109,19 +82,10 @@ class RequirementController extends AbstractAdminController
 
     /**
      * Delete a requirement.
-     *
-     * @param Request $request
-     * @param int     $id
-     *
-     * @return JsonResponse
      */
     public function delete(Request $request, int $id): JsonResponse
     {
-        /** @var OrmService */
-        $orm = app(OrmService::class);
-
-        /** @var ?Requirement */
-        $requirement = $orm->getOne(Requirement::class, $id);
+        $requirement = app(OrmService::class)->getOne(Requirement::class, $id);
         if ($requirement) {
             $requirement->delete();
         }

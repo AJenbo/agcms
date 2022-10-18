@@ -1,4 +1,6 @@
-<?php namespace Tests\Unit;
+<?php
+
+namespace Tests\Unit;
 
 use PHPUnit\Framework\TestCase;
 
@@ -213,6 +215,10 @@ class FunctionsTest extends TestCase
     private function flushPurifyerCache(): void
     {
         $files = glob(__DIR__ . '/../application/theme/cache/HTMLPurifier/**/*');
+        if ($files === false) {
+            return;
+        }
+
         foreach ($files as $file) {
             unlink($file);
         }

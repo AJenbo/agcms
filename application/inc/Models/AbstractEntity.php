@@ -1,4 +1,6 @@
-<?php namespace App\Models;
+<?php
+
+namespace App\Models;
 
 use App\Contracts\Entity;
 use App\Services\DbService;
@@ -7,7 +9,7 @@ use App\Services\OrmService;
 abstract class AbstractEntity implements Entity
 {
     /** Table name in database. */
-    const TABLE_NAME = '';
+    public const TABLE_NAME = '';
 
     /** @var ?int The entity ID. */
     protected $id;
@@ -23,7 +25,7 @@ abstract class AbstractEntity implements Entity
     /**
      * Set the entity ID.
      *
-     * @param int|null $id The id
+     * @param null|int $id The id
      *
      * @return $this
      */
@@ -57,11 +59,8 @@ abstract class AbstractEntity implements Entity
      */
     public function save(): Entity
     {
-        /** @var DbService */
-        $db = app(DbService::class);
-
         $data = $this->getDbArray();
-        $db->addLoadedTable(static::TABLE_NAME);
+        app(DbService::class)->addLoadedTable(static::TABLE_NAME);
         if (null === $this->id) {
             $this->insert($data);
 
@@ -77,44 +76,31 @@ abstract class AbstractEntity implements Entity
      * insert new entity in to the database.
      *
      * @param array<string, string> $data
-     *
-     * @return void
      */
     private function insert(array $data): void
     {
-        /** @var DbService */
-        $db = app(DbService::class);
-
-        /** @var OrmService */
-        $orm = app(OrmService::class);
-
-        $id = $db->query(
+        $id = app(DbService::class)->query(
             '
             INSERT INTO `' . static::TABLE_NAME . '`
             (`' . implode('`,`', array_keys($data)) . '`)
             VALUES (' . implode(',', $data) . ')'
         );
         $this->setId($id);
-        $orm->remember(static::class, $id, $this);
+        app(OrmService::class)->remember(static::class, $id, $this);
     }
 
     /**
      * Update an entity in the database.
      *
      * @param array<string, string> $data
-     *
-     * @return void
      */
     private function update(array $data): void
     {
-        /** @var DbService */
-        $db = app(DbService::class);
-
         $sets = [];
         foreach ($data as $filedName => $value) {
             $sets[] = '`' . $filedName . '` = ' . $value;
         }
-        $db->query(
+        app(DbService::class)->query(
             'UPDATE `' . static::TABLE_NAME . '` SET ' . implode(',', $sets) . ' WHERE `id` = ' . $this->id
         );
     }
@@ -125,14 +111,8 @@ abstract class AbstractEntity implements Entity
             return true;
         }
 
-        /** @var DbService */
-        $db = app(DbService::class);
-
-        /** @var OrmService */
-        $orm = app(OrmService::class);
-
-        $db->query('DELETE FROM `' . static::TABLE_NAME . '` WHERE `id` = ' . $this->id);
-        $orm->forget(static::class, $this->getId());
+        app(DbService::class)->query('DELETE FROM `' . static::TABLE_NAME . '` WHERE `id` = ' . $this->id);
+        app(OrmService::class)->forget(static::class, $this->getId());
 
         return true;
     }

@@ -1,4 +1,6 @@
-<?php namespace App\Http\Controllers;
+<?php
+
+namespace App\Http\Controllers;
 
 use App\Exceptions\InvalidInput;
 use App\Models\Category;
@@ -11,26 +13,20 @@ use Symfony\Component\HttpFoundation\Request;
 
 class Ajax extends Base
 {
-    const MESSAGE_ADDRESS_NOT_FOUND = 'The address could not be found.';
+    public const MESSAGE_ADDRESS_NOT_FOUND = 'The address could not be found.';
 
     /**
      * Return html for a sorted list.
      *
-     * @param Request $request
-     * @param int     $categoryId Id of current category
-     * @param int     $tableId    Id of list
-     * @param int     $orderBy    What cell to sort by
+     * @param int $categoryId Id of current category
+     * @param int $tableId    Id of list
+     * @param int $orderBy    What cell to sort by
      *
      * @exception InvalidInput
-     *
-     * @return JsonResponse
      */
     public function table(Request $request, int $categoryId, int $tableId, int $orderBy): JsonResponse
     {
-        /** @var DbService */
-        $db = app(DbService::class);
-
-        $db->addLoadedTable('lists', 'list_rows', 'sider', 'bind', 'kat');
+        app(DbService::class)->addLoadedTable('lists', 'list_rows', 'sider', 'bind', 'kat');
         /** @var JsonResponse */
         $response = $this->cachedResponse(new JsonResponse());
         if ($response->isNotModified($request)) {
@@ -39,25 +35,20 @@ class Ajax extends Base
 
         $html = '';
 
-        /** @var OrmService */
         $orm = app(OrmService::class);
 
-        /** @var ?Table */
         $table = $orm->getOne(Table::class, $tableId);
         if (!$table) {
             throw new InvalidInput(_('Table not found.'), JsonResponse::HTTP_NOT_FOUND);
         }
 
         if ($table->getRows()) {
-            /** @var RenderService */
-            $render = app(RenderService::class);
-
             $data = [
                 'orderBy'  => $orderBy,
                 'table'    => $table,
                 'category' => $orm->getOne(Category::class, $categoryId),
             ];
-            $html = $render->render('partial-table', $data);
+            $html = app(RenderService::class)->render('partial-table', $data);
         }
 
         return $response->setData(['id' => 'table' . $tableId, 'html' => $html]);
@@ -66,54 +57,38 @@ class Ajax extends Base
     /**
      * Get the html for content bellonging to a category.
      *
-     * @param Request $request
-     * @param int     $categoryId Id of activ category
-     * @param string  $orderBy    What column to sort by
-     *
-     * @return JsonResponse
+     * @param int    $categoryId Id of activ category
+     * @param string $orderBy    What column to sort by
      */
     public function category(Request $request, int $categoryId, string $orderBy): JsonResponse
     {
-        /** @var DbService */
-        $db = app(DbService::class);
-
-        $db->addLoadedTable('sider', 'bind', 'kat');
+        app(DbService::class)->addLoadedTable('sider', 'bind', 'kat');
         /** @var JsonResponse */
         $response = $this->cachedResponse(new JsonResponse());
         if ($response->isNotModified($request)) {
             return $response;
         }
 
-        /** @var OrmService */
-        $orm = app(OrmService::class);
-
         $data = [
-            'renderable' => $orm->getOne(Category::class, $categoryId),
+            'renderable' => app(OrmService::class)->getOne(Category::class, $categoryId),
             'orderBy'    => $orderBy,
         ];
 
-        /** @var RenderService */
-        $render = app(RenderService::class);
-
         return $response->setData([
             'id'   => 'kat' . $categoryId,
-            'html' => $render->render('partial-product-list', $data),
+            'html' => app(RenderService::class)->render('partial-product-list', $data),
         ]);
     }
 
     /**
      * Get address from phone number.
      *
-     * @param Request $request
-     * @param string  $phoneNumber Phone number
+     * @param string $phoneNumber Phone number
      *
      * @throws InvalidInput
-     *
-     * @return JsonResponse
      */
     public function address(Request $request, string $phoneNumber): JsonResponse
     {
-        /** @var DbService */
         $db = app(DbService::class);
 
         $db->addLoadedTable('fakturas', 'email', 'post');

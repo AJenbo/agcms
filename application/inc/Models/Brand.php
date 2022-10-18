@@ -1,4 +1,6 @@
-<?php namespace App\Models;
+<?php
+
+namespace App\Models;
 
 use App\Services\DbService;
 use App\Services\OrmService;
@@ -8,7 +10,7 @@ class Brand extends AbstractRenderable
     use HasIcon;
 
     /** Table name in database. */
-    const TABLE_NAME = 'maerke';
+    public const TABLE_NAME = 'maerke';
 
     // Backed by DB
 
@@ -51,8 +53,6 @@ class Brand extends AbstractRenderable
 
     /**
      * Get the external link for this brand.
-     *
-     * @return string
      */
     public function getLink(): string
     {
@@ -63,8 +63,6 @@ class Brand extends AbstractRenderable
 
     /**
      * Get the url slug.
-     *
-     * @return string
      */
     public function getSlug(): string
     {
@@ -73,16 +71,10 @@ class Brand extends AbstractRenderable
 
     /**
      * Check if the brand has any active pages associated.
-     *
-     * @return bool
      */
     public function hasPages(): bool
     {
-        /** @var OrmService */
-        $orm = app(OrmService::class);
-
-        /** @var Page[] */
-        $pages = $orm->getByQuery(Page::class, 'SELECT * FROM sider WHERE maerke = ' . $this->getId());
+        $pages = app(OrmService::class)->getByQuery(Page::class, 'SELECT * FROM sider WHERE maerke = ' . $this->getId());
 
         foreach ($pages as $page) {
             if (!$page->isInactive()) {
@@ -106,11 +98,7 @@ class Brand extends AbstractRenderable
             $order = 'navn';
         }
 
-        /** @var OrmService */
-        $orm = app(OrmService::class);
-
-        /** @var Page[] */
-        $pages = $orm->getByQuery(
+        $pages = app(OrmService::class)->getByQuery(
             Page::class,
             'SELECT * FROM sider WHERE maerke = ' . $this->getId() . ' ORDER BY sider.`' . $order . '` ASC'
         );
@@ -143,7 +131,6 @@ class Brand extends AbstractRenderable
 
     public function getDbArray(): array
     {
-        /** @var DbService */
         $db = app(DbService::class);
 
         return [

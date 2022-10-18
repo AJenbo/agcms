@@ -1,4 +1,6 @@
-<?php namespace App\Http\Controllers\Admin;
+<?php
+
+namespace App\Http\Controllers\Admin;
 
 use App\Exceptions\InvalidInput;
 use App\Models\Newsletter;
@@ -11,18 +13,11 @@ class NewsletterController extends AbstractAdminController
 {
     /**
      * Index page for newsletters.
-     *
-     * @param Request $request
-     *
-     * @return Response
      */
     public function index(Request $request): Response
     {
-        /** @var OrmService */
-        $orm = app(OrmService::class);
-
         $data = $this->basicPageData($request);
-        $data['newsletters'] = $orm->getByQuery(
+        $data['newsletters'] = app(OrmService::class)->getByQuery(
             Newsletter::class,
             'SELECT * FROM newsmails ORDER BY sendt, id DESC'
         );
@@ -32,21 +27,12 @@ class NewsletterController extends AbstractAdminController
 
     /**
      * Page for editing or creating a newsletter.
-     *
-     * @param Request  $request
-     * @param int|null $id
-     *
-     * @return Response
      */
     public function editNewsletter(Request $request, int $id = null): Response
     {
         $newsletter = null;
         if (null !== $id) {
-            /** @var OrmService */
-            $orm = app(OrmService::class);
-
-            /** @var ?Newsletter */
-            $newsletter = $orm->getOne(Newsletter::class, $id);
+            $newsletter = app(OrmService::class)->getOne(Newsletter::class, $id);
             if (!$newsletter) {
                 throw new InvalidInput(_('Newsletter not found.'), Response::HTTP_NOT_FOUND);
             }
@@ -65,10 +51,6 @@ class NewsletterController extends AbstractAdminController
 
     /**
      * Creating a mewsletter.
-     *
-     * @param Request $request
-     *
-     * @return JsonResponse
      */
     public function create(Request $request): JsonResponse
     {
@@ -87,20 +69,11 @@ class NewsletterController extends AbstractAdminController
     /**
      * Update newsletter.
      *
-     * @param Request $request
-     * @param int     $id
-     *
      * @throws InvalidInput
-     *
-     * @return JsonResponse
      */
     public function update(Request $request, int $id): JsonResponse
     {
-        /** @var OrmService */
-        $orm = app(OrmService::class);
-
-        /** @var ?Newsletter */
-        $newsletter = $orm->getOne(Newsletter::class, $id);
+        $newsletter = app(OrmService::class)->getOne(Newsletter::class, $id);
         if (!$newsletter) {
             throw new InvalidInput(_('Newsletter not found.'), Response::HTTP_NOT_FOUND);
         }
@@ -126,11 +99,7 @@ class NewsletterController extends AbstractAdminController
     /**
      * Count recipients for given interests.
      *
-     * @param Request $request
-     *
      * @throws InvalidInput
-     *
-     * @return JsonResponse
      */
     public function countRecipients(Request $request): JsonResponse
     {

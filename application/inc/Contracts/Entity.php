@@ -1,4 +1,6 @@
-<?php namespace App\Contracts;
+<?php
+
+namespace App\Contracts;
 
 interface Entity
 {
@@ -12,7 +14,7 @@ interface Entity
     /**
      * Map data from DB table to entity.
      *
-     * @param array<string|int, string> $data The data from the database
+     * @param array<int|string, string> $data The data from the database
      *
      * @return array<string, mixed>
      */
@@ -20,8 +22,6 @@ interface Entity
 
     /**
      * Get the entity ID.
-     *
-     * @return int
      */
     public function getId(): int;
 

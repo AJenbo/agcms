@@ -1,4 +1,6 @@
-<?php namespace App\Models;
+<?php
+
+namespace App\Models;
 
 use App\Application;
 use App\Exceptions\Exception;
@@ -10,7 +12,7 @@ use Symfony\Component\HttpFoundation\File\MimeType\MimeTypeGuesser;
 class File extends AbstractEntity
 {
     /** Table name in database. */
-    const TABLE_NAME = 'files';
+    public const TABLE_NAME = 'files';
 
     // Backed by DB
 
@@ -74,8 +76,6 @@ class File extends AbstractEntity
 
     /**
      * Return the file path.
-     *
-     * @return string
      */
     public function getPath(): string
     {
@@ -98,8 +98,6 @@ class File extends AbstractEntity
 
     /**
      * Get the mime type.
-     *
-     * @return string
      */
     public function getMime(): string
     {
@@ -122,8 +120,6 @@ class File extends AbstractEntity
 
     /**
      * Get the file size.
-     *
-     * @return int
      */
     public function getSize(): int
     {
@@ -146,8 +142,6 @@ class File extends AbstractEntity
 
     /**
      * Get the text description.
-     *
-     * @return string
      */
     public function getDescription(): string
     {
@@ -156,8 +150,6 @@ class File extends AbstractEntity
 
     /**
      * Set display width.
-     *
-     * @param int $width
      *
      * @return $this
      */
@@ -170,8 +162,6 @@ class File extends AbstractEntity
 
     /**
      * Get display width.
-     *
-     * @return int
      */
     public function getWidth(): int
     {
@@ -180,8 +170,6 @@ class File extends AbstractEntity
 
     /**
      * Set display height.
-     *
-     * @param int $height
      *
      * @return $this
      */
@@ -194,8 +182,6 @@ class File extends AbstractEntity
 
     /**
      * Get display height.
-     *
-     * @return int
      */
     public function getHeight(): int
     {
@@ -206,7 +192,6 @@ class File extends AbstractEntity
 
     public function getDbArray(): array
     {
-        /** @var DbService */
         $db = app(DbService::class);
 
         return [
@@ -221,14 +206,9 @@ class File extends AbstractEntity
 
     /**
      * Rename file.
-     *
-     * @param string $path
-     *
-     * @return bool
      */
     public function move(string $path): bool
     {
-        /** @var Application */
         $app = app();
 
         //Rename/move or give an error
@@ -244,15 +224,9 @@ class File extends AbstractEntity
 
     /**
      * Update related data.
-     *
-     * @param string $path
-     * @param string $newPath
-     *
-     * @return void
      */
     private function replacePaths(string $path, string $newPath): void
     {
-        /** @var DbService */
         $db = app(DbService::class);
 
         $newPathEsc = $db->quote('="' . $newPath . '"');
@@ -266,14 +240,9 @@ class File extends AbstractEntity
 
     /**
      * Check if file is in use.
-     *
-     * @param bool $onlyCheckHtml
-     *
-     * @return bool
      */
     public function isInUse(bool $onlyCheckHtml = false): bool
     {
-        /** @var DbService */
         $db = app(DbService::class);
 
         $escapedPath = $db->quote('%="' . $this->path . '"%');
@@ -311,10 +280,7 @@ class File extends AbstractEntity
      */
     public static function fromPath(string $path): self
     {
-        /** @var Application */
-        $app = app();
-
-        $fullPath = $app->basePath($path);
+        $fullPath = app()->basePath($path);
         $imagesize = @getimagesize($fullPath);
         if (!$imagesize) {
             $imagesize = [];
@@ -340,8 +306,6 @@ class File extends AbstractEntity
      *
      * @throws Exception
      * @throws InvalidInput
-     *
-     * @return bool
      */
     public function delete(): bool
     {
@@ -349,7 +313,6 @@ class File extends AbstractEntity
             throw new InvalidInput(sprintf(_('"%s" is still in use.'), $this->path), 423);
         }
 
-        /** @var Application */
         $app = app();
 
         if (file_exists($app->basePath($this->path)) && !unlink($app->basePath($this->path))) {
@@ -368,16 +331,9 @@ class File extends AbstractEntity
      */
     public static function getByPath(string $path): ?self
     {
-        /** @var DbService */
-        $db = app(DbService::class);
-
-        /** @var OrmService */
-        $orm = app(OrmService::class);
-
-        /** @var ?static */
-        $file = $orm->getOneByQuery(
+        $file = app(OrmService::class)->getOneByQuery(
             static::class,
-            'SELECT * FROM `' . self::TABLE_NAME . '` WHERE path = ' . $db->quote($path)
+            'SELECT * FROM `' . self::TABLE_NAME . '` WHERE path = ' . app(DbService::class)->quote($path)
         );
 
         return $file;

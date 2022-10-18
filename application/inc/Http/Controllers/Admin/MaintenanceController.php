@@ -1,4 +1,6 @@
-<?php namespace App\Http\Controllers\Admin;
+<?php
+
+namespace App\Http\Controllers\Admin;
 
 use AJenbo\Imap;
 use App\Application;
@@ -25,15 +27,10 @@ class MaintenanceController extends AbstractAdminController
     /**
      * Create or edit category.
      *
-     * @param Request $request
-     *
      * @throws Exception
-     *
-     * @return Response
      */
     public function index(Request $request): Response
     {
-        /** @var DbService */
         $db = app(DbService::class);
 
         $db->addLoadedTable('emails');
@@ -41,11 +38,7 @@ class MaintenanceController extends AbstractAdminController
         /** @var (string|int)[] */
         $emailStatus = reset($emailStatus);
 
-        /** @var OrmService */
-        $orm = app(OrmService::class);
-
-        /** @var ?CustomPage */
-        $page = $orm->getOne(CustomPage::class, 0);
+        $page = app(OrmService::class)->getOne(CustomPage::class, 0);
         if (!$page) {
             throw new Exception(_('Cron status missing'));
         }
@@ -64,10 +57,6 @@ class MaintenanceController extends AbstractAdminController
 
     /**
      * Format bytes in a hum frindly maner.
-     *
-     * @param int $size
-     *
-     * @return string
      */
     private function byteToHuman(int $size): string
     {
@@ -85,16 +74,10 @@ class MaintenanceController extends AbstractAdminController
 
     /**
      * Remove newletter submissions that are missing vital information.
-     *
-     * @return JsonResponse
      */
     public function removeBadContacts(): JsonResponse
     {
-        /** @var OrmService */
-        $orm = app(OrmService::class);
-
-        /** @var Contact[] */
-        $contacts = $orm->getByQuery(
+        $contacts = app(OrmService::class)->getByQuery(
             Contact::class,
             "SELECT * FROM `email` WHERE `email` = '' AND `adresse` = '' AND `tlf1` = '' AND `tlf2` = ''"
         );
@@ -107,16 +90,10 @@ class MaintenanceController extends AbstractAdminController
 
     /**
      * Get a list of pages with no bindings.
-     *
-     * @return JsonResponse
      */
     public function orphanPages(): JsonResponse
     {
-        /** @var OrmService */
-        $orm = app(OrmService::class);
-
-        /** @var Page[] */
-        $pages = $orm->getByQuery(
+        $pages = app(OrmService::class)->getByQuery(
             Page::class,
             'SELECT * FROM `sider` WHERE `id` NOT IN(SELECT `side` FROM `bind`)'
         );
@@ -137,8 +114,6 @@ class MaintenanceController extends AbstractAdminController
      * Get list of pages with bindings to both active and inactive sections of the site.
      *
      * @throws Exception
-     *
-     * @return JsonResponse
      */
     public function mismatchedBindings(): JsonResponse
     {
@@ -147,16 +122,13 @@ class MaintenanceController extends AbstractAdminController
         // Map out active / inactive
         $categoryActiveMaps = [];
 
-        /** @var OrmService */
         $orm = app(OrmService::class);
 
-        /** @var Category[] */
         $categories = $orm->getByQuery(Category::class, 'SELECT * FROM `kat`');
         foreach ($categories as $category) {
             $categoryActiveMaps[(int) $category->isInactive()][] = $category->getId();
         }
 
-        /** @var Page[] */
         $pages = $orm->getByQuery(
             Page::class,
             '
@@ -182,7 +154,6 @@ class MaintenanceController extends AbstractAdminController
             }
         }
 
-        /** @var DbService */
         $db = app(DbService::class);
 
         //Add active pages that has a list that links to this page
@@ -209,7 +180,6 @@ class MaintenanceController extends AbstractAdminController
         if ($pages) {
             $html .= '<b>' . _('The following inactive pages appear in a list on an active page:') . '</b><br />';
             foreach ($pages as $page) {
-                /** @var ?Page */
                 $listPage = $orm->getOne(Page::class, (int)$page['page_id']);
                 if (!$listPage) {
                     throw new Exception(_('Page disappeared during processing'));
@@ -228,18 +198,12 @@ class MaintenanceController extends AbstractAdminController
 
     /**
      * List categories that have been circularly linked.
-     *
-     * @return JsonResponse
      */
     public function circularLinks(): JsonResponse
     {
         $html = '';
 
-        /** @var OrmService */
-        $orm = app(OrmService::class);
-
-        /** @var Category[] */
-        $categories = $orm->getByQuery(Category::class, 'SELECT * FROM `kat` WHERE bind != 0 AND bind != -1');
+        $categories = app(OrmService::class)->getByQuery(Category::class, 'SELECT * FROM `kat` WHERE bind != 0 AND bind != -1');
         foreach ($categories as $category) {
             $branchIds = [$category->getId() => true];
             while ($category = $category->getParent()) {
@@ -260,18 +224,11 @@ class MaintenanceController extends AbstractAdminController
 
     /**
      * Remove enteries for files that do no longer exist.
-     *
-     * @return JsonResponse
      */
     public function removeNoneExistingFiles(): JsonResponse
     {
-        /** @var OrmService */
-        $orm = app(OrmService::class);
+        $files = app(OrmService::class)->getByQuery(File::class, 'SELECT * FROM `files`');
 
-        /** @var File[] */
-        $files = $orm->getByQuery(File::class, 'SELECT * FROM `files`');
-
-        /** @var Application */
         $app = app();
 
         $deleted = 0;
@@ -293,16 +250,10 @@ class MaintenanceController extends AbstractAdminController
 
     /**
      * Get list of files with problematic names.
-     *
-     * @return JsonResponse
      */
     public function badFileNames(): JsonResponse
     {
-        /** @var OrmService */
-        $orm = app(OrmService::class);
-
-        /** @var File[] */
-        $files = $orm->getByQuery(
+        $files = app(OrmService::class)->getByQuery(
             File::class,
             '
             SELECT * FROM `files`
@@ -332,12 +283,9 @@ class MaintenanceController extends AbstractAdminController
      * Get list of bad folder names.
      *
      * @todo only repport one error per folder
-     *
-     * @return JsonResponse
      */
     public function badFolderNames(): JsonResponse
     {
-        /** @var DbService */
         $db = app(DbService::class);
 
         $db->addLoadedTable('files');
@@ -370,10 +318,6 @@ class MaintenanceController extends AbstractAdminController
 
     /**
      * Endpoint for getting system usage.
-     *
-     * @param Request $request
-     *
-     * @return JsonResponse
      */
     public function usage(Request $request): JsonResponse
     {
@@ -387,15 +331,11 @@ class MaintenanceController extends AbstractAdminController
      * Resend any email that failed ealier.
      *
      * @throws Exception
-     *
-     * @return JsonResponse
      */
     public function sendDelayedEmail(): JsonResponse
     {
-        /** @var OrmService */
         $orm = app(OrmService::class);
 
-        /** @var ?CustomPage */
         $cronStatus = $orm->getOne(CustomPage::class, 0);
         if (!$cronStatus) {
             throw new Exception(_('Cron status missing'));
@@ -403,11 +343,9 @@ class MaintenanceController extends AbstractAdminController
 
         $html = '';
 
-        /** @var Email[] */
         $emails = $orm->getByQuery(Email::class, 'SELECT * FROM `emails`');
         if ($emails) {
             $emailsSendt = 0;
-            /** @var EmailService */
             $emailService = app(EmailService::class);
             foreach ($emails as $email) {
                 $emailService->send($email);
@@ -430,34 +368,23 @@ class MaintenanceController extends AbstractAdminController
 
     /**
      * Get list of contacts with invalid emails.
-     *
-     * @return JsonResponse
      */
     public function contactsWithInvalidEmails(): JsonResponse
     {
-        /** @var OrmService */
-        $orm = app(OrmService::class);
-
-        /** @var Contact[] */
-        $contacts = $orm->getByQuery(Contact::class, "SELECT * FROM `email` WHERE `email` != ''");
+        $contacts = app(OrmService::class)->getByQuery(Contact::class, "SELECT * FROM `email` WHERE `email` != ''");
         foreach ($contacts as $key => $contact) {
             if ($contact->isEmailValide()) {
                 unset($contacts[$key]);
             }
         }
 
-        /** @var RenderService */
-        $render = app(RenderService::class);
-
-        $html = $render->render('admin/partial-subscriptions_with_bad_emails', ['contacts' => $contacts]);
+        $html = app(RenderService::class)->render('admin/partial-subscriptions_with_bad_emails', ['contacts' => $contacts]);
 
         return new JsonResponse(['html' => $html]);
     }
 
     /**
      * Get combined email usage.
-     *
-     * @return JsonResponse
      */
     public function mailUsage(): JsonResponse
     {
@@ -488,15 +415,10 @@ class MaintenanceController extends AbstractAdminController
 
     /**
      * Get size of database.
-     *
-     * @return int
      */
     private function getDbSize(): int
     {
-        /** @var DbService */
-        $db = app(DbService::class);
-
-        $tabels = $db->fetchArray('SHOW TABLE STATUS');
+        $tabels = app(DbService::class)->fetchArray('SHOW TABLE STATUS');
         $dbsize = 0;
         foreach ($tabels as $tabel) {
             $dbsize += $tabel['Data_length'];
@@ -508,12 +430,9 @@ class MaintenanceController extends AbstractAdminController
 
     /**
      * Get total size of files.
-     *
-     * @return int
      */
     private function getSizeOfFiles(): int
     {
-        /** @var DbService */
         $db = app(DbService::class);
 
         $db->addLoadedTable('files');

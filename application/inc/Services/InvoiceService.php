@@ -1,4 +1,6 @@
-<?php namespace App\Services;
+<?php
+
+namespace App\Services;
 
 use App\Application;
 use App\Exceptions\Exception;
@@ -17,14 +19,10 @@ class InvoiceService
      * Create an invoice from the client cart array.
      *
      * @param array<string, mixed> $cart
-     *
-     * @return Invoice
      */
     public function createFromCart(array $cart): Invoice
     {
-        /** @var DbService */
         $db = app(DbService::class);
-        /** @var OrmService */
         $orm = app(OrmService::class);
         $amount = 0;
         $items = [];
@@ -36,7 +34,6 @@ class InvoiceService
             if ('line' === $item['type']) { // Find item based on price table row
                 $db->addLoadedTable('list_rows');
                 $listRow = $db->fetchOne('SELECT * FROM `list_rows` WHERE id = ' . $item['id']);
-                /** @var ?Table */
                 $table = $listRow ? $orm->getOne(Table::class, (int)$listRow['list_id']) : null;
                 if ($table) {
                     $pageId = $table->getPage()->getId();
@@ -59,7 +56,7 @@ class InvoiceService
                             [Table::COLUMN_TYPE_PRICE, Table::COLUMN_TYPE_PRICE_NEW],
                             true
                         )) {
-                            $value = (int) $cells[$i] ?: $value;
+                            $value = (int) $cells[$i];
                         }
                     }
                     $title = trim($title);
@@ -68,7 +65,6 @@ class InvoiceService
                 $pageId = $item['id'] ?? null;
             }
 
-            /** @var ?Page */
             $page = $pageId ? $orm->getOne(Page::class, $pageId) : null;
             if (!$page || $page->isInactive()) {
                 $title = _('Expired');
@@ -97,7 +93,7 @@ class InvoiceService
             $amount += $value * $quantity;
         }
 
-        $items = json_encode($items);
+        $items = json_encode($items, JSON_THROW_ON_ERROR);
 
         $addressData = $this->cleanAddressData($cart);
 
@@ -176,8 +172,6 @@ class InvoiceService
      * Generate additional order comments based on cart options.
      *
      * @param array<string, string> $cart
-     *
-     * @return string
      */
     public function generateExtraNote(array $cart): string
     {
@@ -208,25 +202,15 @@ class InvoiceService
     /**
      * Add the customer to the malinglist.
      *
-     * @param Invoice $invoice
      * @param ?string $clientIp
-     *
-     * @return void
      */
     public function addToAddressBook(Invoice $invoice, ?string $clientIp): void
     {
-        /** @var DbService */
-        $db = app(DbService::class);
-        /** @var OrmService */
-        $orm = app(OrmService::class);
-        /** @var Application */
-        $app = app();
         /** @var string[] */
-        $countries = include $app->basePath('/inc/countries.php');
-        /** @var ?Contact */
-        $conteact = $orm->getOneByQuery(
+        $countries = include app()->basePath('/inc/countries.php');
+        $conteact = app(OrmService::class)->getOneByQuery(
             Contact::class,
-            'SELECT * FROM email WHERE email = ' . $db->quote($invoice->getEmail())
+            'SELECT * FROM email WHERE email = ' . app(DbService::class)->quote($invoice->getEmail())
         );
         if (!$conteact) {
             $conteact = new Contact([
@@ -263,12 +247,7 @@ class InvoiceService
     /**
      * Update invoice and mange it's state.
      *
-     * @param Invoice              $invoice
-     * @param User                 $user
-     * @param string               $action
      * @param array<string, mixed> $updates
-     *
-     * @return void
      */
     public function invoiceBasicUpdate(Invoice $invoice, User $user, string $action, array $updates): void
     {
@@ -307,7 +286,7 @@ class InvoiceService
                 $invoice->setShippingCity($updates['shippingCity']);
                 $invoice->setShippingCountry($updates['shippingCountry']);
             }
-            $invoice->setItemData(json_encode($updates['lines']) ?: '[]');
+            $invoice->setItemData(json_encode($updates['lines'], JSON_THROW_ON_ERROR) ?: '[]');
         }
 
         if (isset($updates['note'])) {
@@ -361,11 +340,7 @@ class InvoiceService
     /**
      * Accept payment.
      *
-     * @param Invoice $invoice
-     *
      * @throws Exception
-     *
-     * @return void
      */
     public function capturePayment(Invoice $invoice): void
     {
@@ -382,11 +357,7 @@ class InvoiceService
     /**
      * Cancle payment.
      *
-     * @param Invoice $invoice
-     *
      * @throws Exception
-     *
-     * @return void
      */
     public function annulPayment(Invoice $invoice): void
     {
@@ -402,10 +373,6 @@ class InvoiceService
 
     /**
      * Get payment.
-     *
-     * @param Invoice $invoice
-     *
-     * @return Epayment
      */
     private function getPayment(Invoice $invoice): Epayment
     {
@@ -417,11 +384,7 @@ class InvoiceService
     /**
      * Send payment email to client.
      *
-     * @param Invoice $invoice
-     *
      * @throws InvalidInput
-     *
-     * @return void
      */
     public function sendInvoice(Invoice $invoice): void
     {
@@ -446,9 +409,7 @@ class InvoiceService
             $emailTemplate = 'email/invoice-reminder';
         }
 
-        /** @var RenderService */
-        $render = app(RenderService::class);
-        $emailBody = $render->render(
+        $emailBody = app(RenderService::class)->render(
             $emailTemplate,
             [
                 'invoice'    => $invoice,
@@ -470,9 +431,7 @@ class InvoiceService
             'recipientAddress' => $invoice->getEmail(),
         ]);
 
-        /** @var EmailService */
-        $emailService = app(EmailService::class);
-        $emailService->send($email);
+        app(EmailService::class)->send($email);
 
         if ('new' === $invoice->getStatus()) {
             $invoice->setStatus('locked');

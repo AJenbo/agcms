@@ -1,4 +1,6 @@
-<?php namespace App\Services;
+<?php
+
+namespace App\Services;
 
 use AJenbo\Imap;
 use App\Application;
@@ -17,8 +19,6 @@ class EmailService
      * Checks if email an address looks valid and that an mx server is responding.
      *
      * @param string $email The email address to check
-     *
-     * @return bool
      */
     public function valideMail(string $email): bool
     {
@@ -44,19 +44,13 @@ class EmailService
 
     /**
      * Check that the domain has a valid MX setup.
-     *
-     * @param string $domain
-     *
-     * @return bool
      */
     private function checkMx(string $domain): bool
     {
         if (!isset($this->ceche[$domain])) {
             $dummy = [];
             $this->ceche[$domain] = true;
-            /** @var Application */
-            $app = app();
-            if (!$app->environment('test')) {
+            if (!app()->environment('test')) {
                 $this->ceche[$domain] = getmxrr($domain, $dummy);
             }
         }
@@ -67,12 +61,9 @@ class EmailService
     /**
      * Send an email.
      *
-     * @param Email     $email
      * @param Contact[] $bcc
      *
      * @throws SendEmail
-     *
-     * @return void
      */
     public function send(Email $email, array $bcc = []): void
     {
@@ -96,11 +87,8 @@ class EmailService
             $mailer->addBCC($contact->getEmail(), $contact->getName());
         }
 
-        /** @var Application */
-        $app = app();
-
         $mailer->Subject = $email->getSubject();
-        $mailer->msgHTML($email->getBody(), $app->basePath());
+        $mailer->msgHTML($email->getBody(), app()->basePath());
         $mailer->addAddress($email->getRecipientAddress(), $email->getRecipientName());
 
         if (!$mailer->send()) {
@@ -113,10 +101,7 @@ class EmailService
     /**
      * Set up the SMTP configuration.
      *
-     * @param PHPMailer            $mailer
      * @param array<string, mixed> $emailConfig
-     *
-     * @return void
      */
     private function configureSmtp(PHPMailer $mailer, array $emailConfig): void
     {
@@ -134,9 +119,6 @@ class EmailService
      * Upload email to the sendt box of the imap account.
      *
      * @param array<string, mixed> $emailConfig
-     * @param string               $mimeMessage
-     *
-     * @return void
      */
     private function uploadEmail(array $emailConfig, string $mimeMessage): void
     {

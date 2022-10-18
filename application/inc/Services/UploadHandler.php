@@ -1,4 +1,6 @@
-<?php namespace App\Services;
+<?php
+
+namespace App\Services;
 
 use App\Application;
 use App\Exceptions\Exception;
@@ -12,7 +14,7 @@ use Symfony\Component\HttpFoundation\File\UploadedFile;
 class UploadHandler
 {
     /** A well compressed JPEG */
-    const MAX_BYTE_PER_PIXEL = 0.7;
+    private const MAX_BYTE_PER_PIXEL = 0.7;
 
     /** @var string Foler where the current upload will be saved. */
     private $targetDir = '';
@@ -31,8 +33,6 @@ class UploadHandler
 
     /**
      * Initialize the service.
-     *
-     * @param string $targetDir
      */
     public function __construct(string $targetDir)
     {
@@ -43,10 +43,6 @@ class UploadHandler
 
     /**
      * Set the target folder.
-     *
-     * @param string $targetDir
-     *
-     * @return void
      */
     public function settargetDir(string $targetDir): void
     {
@@ -56,13 +52,7 @@ class UploadHandler
     /**
      * Process a given file upload.
      *
-     * @param UploadedFile $uploadedFile
-     * @param string       $destinationType
-     * @param string       $description
-     *
      * @throws InvalidInput
-     *
-     * @return File
      */
     public function process(
         UploadedFile $uploadedFile,
@@ -90,11 +80,6 @@ class UploadHandler
 
     /**
      * Performe file operations.
-     *
-     * @param string $destinationType
-     * @param string $description
-     *
-     * @return File
      */
     private function processFile(string $destinationType, string $description): File
     {
@@ -128,8 +113,6 @@ class UploadHandler
 
     /**
      * Check if file is a supported image type.
-     *
-     * @return bool
      */
     private function isImageFile(): bool
     {
@@ -138,8 +121,6 @@ class UploadHandler
 
     /**
      * Check if file is type of video.
-     *
-     * @return bool
      */
     private function isVideoFile(): bool
     {
@@ -148,13 +129,6 @@ class UploadHandler
 
     /**
      * Should we process the image.
-     *
-     * @param ImageService $image
-     * @param int          $width
-     * @param int          $height
-     * @param string       $destinationType
-     *
-     * @return bool
      */
     private function shouldProcessImage(ImageService $image, int $width, int $height, string $destinationType): bool
     {
@@ -176,12 +150,7 @@ class UploadHandler
     /**
      * Crop and resize uploaded image.
      *
-     * @param ImageService $image
-     * @param string       $destinationType
-     *
      * @throws Exception
-     *
-     * @return void
      */
     public function processImage(ImageService $image, string $destinationType): void
     {
@@ -210,11 +179,7 @@ class UploadHandler
      * @todo substract current usage
      * @todo reestimate limits
      *
-     * @param ImageService $image
-     *
      * @throws InvalidInput If we don't have the needed memory avalibe
-     *
-     * @return void
      */
     private function checkMemorry(ImageService $image): void
     {
@@ -231,12 +196,6 @@ class UploadHandler
 
     /**
      * Insert the file in the database and move it to the final location.
-     *
-     * @param string $description
-     * @param int    $width
-     * @param int    $height
-     *
-     * @return File
      */
     private function insertFile(string $description, int $width, int $height): File
     {
@@ -248,9 +207,7 @@ class UploadHandler
             $file->delete();
         }
 
-        /** @var Application */
-        $app = app();
-        $this->file->move($app->basePath($this->targetDir), $this->getFilename());
+        $this->file->move(app()->basePath($this->targetDir), $this->getFilename());
 
         return File::fromPath($path)
             ->setDescription($description)
@@ -261,8 +218,6 @@ class UploadHandler
 
     /**
      * Get the full destination path.
-     *
-     * @return string
      */
     private function getFilename(): string
     {

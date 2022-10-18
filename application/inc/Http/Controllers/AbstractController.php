@@ -1,4 +1,6 @@
-<?php namespace App\Http\Controllers;
+<?php
+
+namespace App\Http\Controllers;
 
 use App\Render;
 use App\Services\DbService;
@@ -12,18 +14,12 @@ abstract class AbstractController
     /**
      * Renders a view.
      *
-     * @param string               $view
      * @param array<string, mixed> $parameters
      * @param Response             $response
-     *
-     * @return Response
      */
     protected function render(string $view, array $parameters = [], Response $response = null): Response
     {
-        /** @var RenderService */
-        $render = app(RenderService::class);
-
-        $content = $render->render($view, $parameters);
+        $content = app(RenderService::class)->render($view, $parameters);
 
         if (null === $response) {
             $response = new Response();
@@ -36,11 +32,7 @@ abstract class AbstractController
     /**
      * Add the needed headeres for a 304 cache response based on the loaded data.
      *
-     * @param Response|null $response
-     * @param int           $timestamp
-     * @param int           $maxAge
-     *
-     * @return Response
+     * @param int $timestamp
      */
     protected function cachedResponse(Response $response = null, int $timestamp = null, int $maxAge = 0): Response
     {
@@ -64,8 +56,6 @@ abstract class AbstractController
 
     /**
      * Figure out when the loaded data was last touched.
-     *
-     * @return int
      */
     private function getUpdateTime(): int
     {
@@ -74,10 +64,7 @@ abstract class AbstractController
             $updateTime = max($updateTime, filemtime($filename)) ?: 0;
         }
 
-        /** @var DbService */
-        $db = app(DbService::class);
-
-        $dbTime = $db->dataAge();
+        $dbTime = app(DbService::class)->dataAge();
         if ($dbTime) {
             $updateTime = max($dbTime, $updateTime ?: 0) ?: 0;
         }

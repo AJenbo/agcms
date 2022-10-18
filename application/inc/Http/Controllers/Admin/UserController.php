@@ -1,4 +1,6 @@
-<?php namespace App\Http\Controllers\Admin;
+<?php
+
+namespace App\Http\Controllers\Admin;
 
 use App\Exceptions\Handler as ExceptionHandler;
 use App\Exceptions\InvalidInput;
@@ -19,18 +21,10 @@ class UserController extends AbstractAdminController
 {
     /**
      * Index page for users.
-     *
-     * @param Request $request
-     *
-     * @return Response
      */
     public function index(Request $request): Response
     {
-        /** @var OrmService */
-        $orm = app(OrmService::class);
-
-        /** @var User[] */
-        $users = $orm->getByQuery(
+        $users = app(OrmService::class)->getByQuery(
             User::class,
             'SELECT * FROM `users` ORDER BY ' . ($request->get('order') ? 'lastlogin' : 'fullname')
         );
@@ -46,15 +40,10 @@ class UserController extends AbstractAdminController
 
     /**
      * Page for creating a new user.
-     *
-     * @param Request $request
-     *
-     * @return Response
      */
     public function newUser(Request $request): Response
     {
         $request->startSession();
-        /** @var SessionInterface */
         $session = $request->getSession();
         $message = $session->get('message', '');
         $session->remove('message');
@@ -68,11 +57,7 @@ class UserController extends AbstractAdminController
      *
      * The new user must be verified by an admin.
      *
-     * @param Request $request
-     *
      * @throws InvalidInput
-     *
-     * @return RedirectResponse
      */
     public function create(Request $request): RedirectResponse
     {
@@ -90,13 +75,9 @@ class UserController extends AbstractAdminController
                 throw new InvalidInput(_('The passwords do not match.'), Response::HTTP_FORBIDDEN);
             }
 
-            /** @var DbService */
-            $db = app(DbService::class);
-
-            /** @var OrmService */
             $orm = app(OrmService::class);
 
-            if ($orm->getOneByQuery(User::class, 'SELECT * FROM users WHERE name = ' . $db->quote($name))) {
+            if ($orm->getOneByQuery(User::class, 'SELECT * FROM users WHERE name = ' . app(DbService::class)->quote($name))) {
                 throw new InvalidInput(_('Username already taken.'));
             }
             $firstUser = !(bool) $orm->getOneByQuery(User::class, 'SELECT * FROM users WHERE access != 0');
@@ -110,10 +91,7 @@ class UserController extends AbstractAdminController
             ]);
             $user->setPassword($password)->save();
 
-            /** @var RenderService */
-            $render = app(RenderService::class);
-
-            $emailbody = $render->render('admin/email/newuser', ['fullname' => $fullname]);
+            $emailbody = app(RenderService::class)->render('admin/email/newuser', ['fullname' => $fullname]);
 
             $emailAddress = first(config('emails'))['address'];
             $email = new Email([
@@ -124,11 +102,9 @@ class UserController extends AbstractAdminController
                 'recipientName'    => config('site_name'),
                 'recipientAddress' => $emailAddress,
             ]);
-            /** @var EmailService */
-            $emailService = app(EmailService::class);
 
             try {
-                $emailService->send($email);
+                app(EmailService::class)->send($email);
             } catch (Throwable $exception) {
                 /** @var ExceptionHandler */
                 $handler = app(ExceptionHandler::class);
@@ -140,7 +116,6 @@ class UserController extends AbstractAdminController
         }
 
         $request->startSession();
-        /** @var SessionInterface */
         $session = $request->getSession();
         $session->set('message', $message);
         $session->save();
@@ -151,20 +126,11 @@ class UserController extends AbstractAdminController
     /**
      * Page for editing a user.
      *
-     * @param Request $request
-     * @param int     $id
-     *
      * @throws InvalidInput
-     *
-     * @return Response
      */
     public function editUser(Request $request, int $id): Response
     {
-        /** @var OrmService */
-        $orm = app(OrmService::class);
-
-        /** @var ?User */
-        $user = $orm->getOne(User::class, $id);
+        $user = app(OrmService::class)->getOne(User::class, $id);
         if (!$user) {
             throw new InvalidInput(_('User not found.'), Response::HTTP_NOT_FOUND);
         }
@@ -187,18 +153,12 @@ class UserController extends AbstractAdminController
     /**
      * Update user.
      *
-     * @param Request $request
-     * @param int     $id
-     *
      * @throws InvalidInput
-     *
-     * @return JsonResponse
      */
     public function update(Request $request, int $id): JsonResponse
     {
-        /** @var User */
         $user = $request->user();
-        if (!$user->hasAccess(User::ADMINISTRATOR) && $user->getId() !== $id) {
+        if (!$user || (!$user->hasAccess(User::ADMINISTRATOR) && $user->getId() !== $id)) {
             throw new InvalidInput(_('You do not have permission to edit users.'), Response::HTTP_FORBIDDEN);
         }
 
@@ -209,11 +169,7 @@ class UserController extends AbstractAdminController
             throw new InvalidInput(_('You can\'t change your own access level.'), Response::HTTP_FORBIDDEN);
         }
 
-        /** @var OrmService */
-        $orm = app(OrmService::class);
-
-        /** @var ?User */
-        $user = $orm->getOne(User::class, $id);
+        $user = app(OrmService::class)->getOne(User::class, $id);
         if (!$user) {
             throw new InvalidInput(_('User not found.'), Response::HTTP_NOT_FOUND);
         }
@@ -251,29 +207,19 @@ class UserController extends AbstractAdminController
     /**
      * Delete a user.
      *
-     * @param Request $request
-     * @param int     $id
-     *
      * @throws InvalidInput
-     *
-     * @return JsonResponse
      */
     public function delete(Request $request, int $id): JsonResponse
     {
-        /** @var User */
         $user = $request->user();
-        if (!$user->hasAccess(User::ADMINISTRATOR)) {
+        if (!$user || !$user->hasAccess(User::ADMINISTRATOR)) {
             throw new InvalidInput(_('You do not have permission to edit users.'), Response::HTTP_FORBIDDEN);
         }
         if ($user->getId() === $id) {
             throw new InvalidInput(_('You can\'t delete yourself.'), Response::HTTP_FORBIDDEN);
         }
 
-        /** @var OrmService */
-        $orm = app(OrmService::class);
-
-        /** @var ?User */
-        $user = $orm->getOne(User::class, $id);
+        $user = app(OrmService::class)->getOne(User::class, $id);
         if ($user) {
             $user->delete();
         }

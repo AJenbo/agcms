@@ -1,4 +1,6 @@
-<?php namespace App\Exceptions;
+<?php
+
+namespace App\Exceptions;
 
 use Throwable;
 
@@ -7,8 +9,6 @@ class InvalidInput extends Exception
     /**
      * Set up the exception.
      *
-     * @param string     $message
-     * @param int        $code
      * @param ?Throwable $previous
      */
     public function __construct(string $message, int $code = 422, Throwable $previous = null)

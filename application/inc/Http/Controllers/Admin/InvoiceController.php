@@ -1,4 +1,6 @@
-<?php namespace App\Http\Controllers\Admin;
+<?php
+
+namespace App\Http\Controllers\Admin;
 
 use App\Application;
 use App\Exceptions\Exception;
@@ -17,10 +19,6 @@ class InvoiceController extends AbstractAdminController
 {
     /**
      * List of invoices.
-     *
-     * @param Request $request
-     *
-     * @return Response
      */
     public function index(Request $request): Response
     {
@@ -40,12 +38,13 @@ class InvoiceController extends AbstractAdminController
             $selected['momssats'] = null;
         }
 
-        /** @var User */
         $user = $request->user();
+        if (!$user) {
+            throw new Exception('You need to be logged in to access invoices.');
+        }
 
         $where = $this->generateFilterInvoiceBySelection($selected, $user);
 
-        /** @var DbService */
         $db = app(DbService::class);
 
         $db->addLoadedTable('fakturas');
@@ -56,20 +55,15 @@ class InvoiceController extends AbstractAdminController
         }
         $oldest = date('Y', $oldest);
 
-        /** @var OrmService */
         $orm = app(OrmService::class);
 
-        /** @var Invoice[] */
         $invoices = $orm->getByQuery(Invoice::class, 'SELECT * FROM `fakturas`' . $where . ' ORDER BY `id` DESC');
-
-        /** @var Application */
-        $app = app();
 
         $data = [
             'title'         => _('Invoice list'),
             'currentUser'   => $user,
             'selected'      => $selected,
-            'countries'     => include $app->basePath('/inc/countries.php'),
+            'countries'     => include app()->basePath('/inc/countries.php'),
             'departments'   => array_keys(config('emails', [])),
             'users'         => $orm->getByQuery(User::class, 'SELECT * FROM `users` ORDER BY `fullname`'),
             'invoices'      => $invoices,
@@ -97,9 +91,6 @@ class InvoiceController extends AbstractAdminController
      * Generate an SQL where clause from a select array.
      *
      * @param array<string, mixed> $selected
-     * @param User                 $user
-     *
-     * @return string
      */
     private function generateFilterInvoiceBySelection(array $selected, User $user): string
     {
@@ -121,7 +112,6 @@ class InvoiceController extends AbstractAdminController
             $where[] = "`date` <= '" . $selected['year'] . "-12-31'";
         }
 
-        /** @var DbService */
         $db = app(DbService::class);
 
         if ($selected['department']) {
@@ -171,18 +161,10 @@ class InvoiceController extends AbstractAdminController
 
     /**
      * List of invoices.
-     *
-     * @param Request $request
-     *
-     * @return Response
      */
     public function validationList(Request $request): Response
     {
-        /** @var OrmService */
-        $orm = app(OrmService::class);
-
-        /** @var Invoice[] */
-        $invoices = $orm->getByQuery(
+        $invoices = app(OrmService::class)->getByQuery(
             Invoice::class,
             "
             SELECT * FROM `fakturas`
@@ -202,25 +184,16 @@ class InvoiceController extends AbstractAdminController
     /**
      * Set payment transferred status.
      *
-     * @param Request $request
-     *
      * @throws InvalidInput
-     *
-     * @return JsonResponse
      */
     public function validate(Request $request, int $id): JsonResponse
     {
-        /** @var User */
         $user = $request->user();
-        if (!$user->hasAccess(User::ADMINISTRATOR)) {
+        if (!$user || !$user->hasAccess(User::ADMINISTRATOR)) {
             throw new InvalidInput(_('You do not have permission to validate payments.'), Response::HTTP_FORBIDDEN);
         }
 
-        /** @var OrmService */
-        $orm = app(OrmService::class);
-
-        /** @var ?Invoice */
-        $invoice = $orm->getOne(Invoice::class, $id);
+        $invoice = app(OrmService::class)->getOne(Invoice::class, $id);
         if (!$invoice) {
             throw new InvalidInput(_('Invoice not found.'), Response::HTTP_NOT_FOUND);
         }
@@ -232,15 +205,14 @@ class InvoiceController extends AbstractAdminController
 
     /**
      * Create a new invoice.
-     *
-     * @param Request $request
-     *
-     * @return JsonResponse
      */
     public function create(Request $request): JsonResponse
     {
-        /** @var User */
         $user = $request->user();
+        if (!$user) {
+            throw new Exception('You need to be logged in to access invoices.');
+        }
+
         $action = $request->get('action', 'save');
         $data = $request->request->all();
         unset($data['action']);
@@ -260,12 +232,7 @@ class InvoiceController extends AbstractAdminController
     /**
      * Update invoice.
      *
-     * @param Request $request
-     * @param int     $id
-     *
      * @throws InvalidInput
-     *
-     * @return JsonResponse
      */
     public function update(Request $request, int $id): JsonResponse
     {
@@ -273,19 +240,17 @@ class InvoiceController extends AbstractAdminController
         $data = $request->request->all();
         unset($data['action']);
 
-        /** @var OrmService */
-        $orm = app(OrmService::class);
-
-        /** @var ?Invoice */
-        $invoice = $orm->getOne(Invoice::class, $id);
+        $invoice = app(OrmService::class)->getOne(Invoice::class, $id);
         if (!$invoice) {
             throw new InvalidInput(_('Invoice not found.'), Response::HTTP_NOT_FOUND);
         }
 
-        $invoiceService = new InvoiceService();
-
-        /** @var User */
         $user = $request->user();
+        if (!$user) {
+            throw new Exception('You need to be logged in to access invoices.');
+        }
+
+        $invoiceService = new InvoiceService();
         $invoiceService->invoiceBasicUpdate($invoice, $user, $action, $data);
 
         if ('email' === $action) {
@@ -298,27 +263,21 @@ class InvoiceController extends AbstractAdminController
     /**
      * Clone invoice.
      *
-     * @param Request $request
-     * @param int     $id
-     *
      * @throws InvalidInput
-     *
-     * @return JsonResponse
      */
     public function clone(Request $request, int $id): JsonResponse
     {
-        /** @var OrmService */
-        $orm = app(OrmService::class);
-
-        /** @var ?Invoice */
-        $invoice = $orm->getOne(Invoice::class, $id);
+        $invoice = app(OrmService::class)->getOne(Invoice::class, $id);
         if (!$invoice) {
             throw new InvalidInput(_('Invoice not found.'), Response::HTTP_NOT_FOUND);
         }
 
         $invoice = clone $invoice;
-        /** @var User */
         $user = $request->user();
+        if (!$user) {
+            throw new Exception('You need to be logged in to access invoices.');
+        }
+
         $invoice->setClerk($user->getFullName())->save();
 
         return new JsonResponse(['id' => $invoice->getId()]);
@@ -327,20 +286,11 @@ class InvoiceController extends AbstractAdminController
     /**
      * Send payment reminder.
      *
-     * @param Request $request
-     * @param int     $id
-     *
      * @throws InvalidInput
-     *
-     * @return JsonResponse
      */
     public function sendReminder(Request $request, int $id): JsonResponse
     {
-        /** @var OrmService */
-        $orm = app(OrmService::class);
-
-        /** @var ?Invoice */
-        $invoice = $orm->getOne(Invoice::class, $id);
+        $invoice = app(OrmService::class)->getOne(Invoice::class, $id);
         if (!$invoice) {
             throw new InvalidInput(_('Invoice not found.'), Response::HTTP_NOT_FOUND);
         }
@@ -354,20 +304,11 @@ class InvoiceController extends AbstractAdminController
     /**
      * Accept payment.
      *
-     * @param Request $request
-     * @param int     $id
-     *
      * @throws InvalidInput
-     *
-     * @return JsonResponse
      */
     public function capturePayment(Request $request, int $id): JsonResponse
     {
-        /** @var OrmService */
-        $orm = app(OrmService::class);
-
-        /** @var ?Invoice */
-        $invoice = $orm->getOne(Invoice::class, $id);
+        $invoice = app(OrmService::class)->getOne(Invoice::class, $id);
         if (!$invoice) {
             throw new InvalidInput(_('Invoice not found.'), Response::HTTP_NOT_FOUND);
         }
@@ -381,20 +322,11 @@ class InvoiceController extends AbstractAdminController
     /**
      * Cancle payment.
      *
-     * @param Request $request
-     * @param int     $id
-     *
      * @throws InvalidInput
-     *
-     * @return JsonResponse
      */
     public function annulPayment(Request $request, int $id): JsonResponse
     {
-        /** @var OrmService */
-        $orm = app(OrmService::class);
-
-        /** @var ?Invoice */
-        $invoice = $orm->getOne(Invoice::class, $id);
+        $invoice = app(OrmService::class)->getOne(Invoice::class, $id);
         if (!$invoice) {
             throw new InvalidInput(_('Invoice not found.'), Response::HTTP_NOT_FOUND);
         }
@@ -408,36 +340,30 @@ class InvoiceController extends AbstractAdminController
     /**
      * Display invoice.
      *
-     * @param Request $request
-     * @param int     $id
+     * @param int $id
      *
      * @throws InvalidInput
-     *
-     * @return Response
      */
     public function invoice(Request $request, int $id = null): Response
     {
-        /** @var OrmService */
         $orm = app(OrmService::class);
 
         $invoice = null;
         if (null !== $id) {
-            /** @var ?Invoice */
             $invoice = $orm->getOne(Invoice::class, $id);
             if (!$invoice) {
                 throw new InvalidInput(_('Invoice not found.'), Response::HTTP_NOT_FOUND);
             }
         }
 
-        /** @var User */
         $user = $request->user();
+        if (!$user) {
+            throw new Exception('You need to be logged in to access invoices.');
+        }
 
         if ($invoice && !$invoice->getClerk()) {
             $invoice->setClerk($user->getFullName());
         }
-
-        /** @var Application */
-        $app = app();
 
         $data = [
             'title'       => $invoice ? _('Online Invoice #') . $invoice->getId() : _('Create invoice'),
@@ -445,7 +371,7 @@ class InvoiceController extends AbstractAdminController
             'currentUser' => $user,
             'users'       => $orm->getByQuery(User::class, 'SELECT * FROM `users` ORDER BY fullname'),
             'departments' => array_keys(config('emails', [])),
-            'countries'   => include $app->basePath('/inc/countries.php'),
+            'countries'   => include app()->basePath('/inc/countries.php'),
         ] + $this->basicPageData($request);
 
         return $this->render('admin/faktura', $data);
@@ -453,18 +379,10 @@ class InvoiceController extends AbstractAdminController
 
     /**
      * Show a pdf version of the invoice.
-     *
-     * @param Request $request
-     *
-     * @return Response
      */
     public function pdf(Request $request, int $id): Response
     {
-        /** @var OrmService */
-        $orm = app(OrmService::class);
-
-        /** @var ?Invoice */
-        $invoice = $orm->getOne(Invoice::class, $id);
+        $invoice = app(OrmService::class)->getOne(Invoice::class, $id);
         if (!$invoice) {
             return new Response(_('Invoice not found.'), Response::HTTP_NOT_FOUND);
         }

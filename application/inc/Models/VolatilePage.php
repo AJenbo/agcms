@@ -1,4 +1,6 @@
-<?php namespace App\Models;
+<?php
+
+namespace App\Models;
 
 use App\Contracts\Renderable;
 
@@ -16,8 +18,6 @@ class VolatilePage implements Renderable
     /**
      * Set varables.
      *
-     * @param string       $title
-     * @param string       $link
      * @param Renderable[] $list
      */
     public function __construct(string $title, string $link, array $list = [])
@@ -29,8 +29,6 @@ class VolatilePage implements Renderable
 
     /**
      * Get page title.
-     *
-     * @return string
      */
     public function getTitle(): string
     {
@@ -39,8 +37,6 @@ class VolatilePage implements Renderable
 
     /**
      * Get page link.
-     *
-     * @return string
      */
     public function getCanonicalLink(): string
     {

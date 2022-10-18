@@ -1,4 +1,6 @@
-<?php namespace App\Http\Controllers\Admin;
+<?php
+
+namespace App\Http\Controllers\Admin;
 
 use App\Exceptions\InvalidInput;
 use App\Models\CustomSorting;
@@ -12,17 +14,13 @@ class TableController extends AbstractAdminController
 {
     /**
      * Add table to page.
-     *
-     * @param Request $request
-     *
-     * @return JsonResponse
      */
     public function create(Request $request): JsonResponse
     {
         $table = new Table([
             'page_id'     => $request->request->getInt('page_id'),
             'title'       => $request->request->get('title'),
-            'column_data' => json_encode($request->request->get('columns', [])),
+            'column_data' => json_encode($request->request->get('columns', []), JSON_THROW_ON_ERROR),
             'order_by'    => $request->request->getInt('order_by'),
             'has_links'   => $request->request->getBoolean('has_links'),
         ]);
@@ -33,21 +31,13 @@ class TableController extends AbstractAdminController
 
     /**
      * Add table to page.
-     *
-     * @param Request $request
-     * @param int     $pageId
-     *
-     * @return Response
      */
     public function createDialog(Request $request, int $pageId): Response
     {
-        /** @var OrmService */
-        $orm = app(OrmService::class);
-
         return $this->render(
             'admin/addlist',
             [
-                'customSortings' => $orm->getByQuery(CustomSorting::class, 'SELECT * FROM `tablesort`'),
+                'customSortings' => app(OrmService::class)->getByQuery(CustomSorting::class, 'SELECT * FROM `tablesort`'),
                 'page_id'        => $pageId,
             ]
         );
@@ -56,23 +46,14 @@ class TableController extends AbstractAdminController
     /**
      * Add row to a table.
      *
-     * @param Request $request
-     * @param int     $tableId
-     *
      * @throws InvalidInput
-     *
-     * @return JsonResponse
      */
     public function addRow(Request $request, int $tableId): JsonResponse
     {
         $cells = $request->request->get('cells', []);
         $link = $request->request->get('link');
 
-        /** @var OrmService */
-        $orm = app(OrmService::class);
-
-        /** @var ?Table */
-        $table = $orm->getOne(Table::class, $tableId);
+        $table = app(OrmService::class)->getOne(Table::class, $tableId);
         if (!$table) {
             throw new InvalidInput(_('Table not found.'), Response::HTTP_NOT_FOUND);
         }
@@ -85,24 +66,14 @@ class TableController extends AbstractAdminController
     /**
      * Update a row in a table.
      *
-     * @param Request $request
-     * @param int     $tableId
-     * @param int     $rowId
-     *
      * @throws InvalidInput
-     *
-     * @return JsonResponse
      */
     public function updateRow(Request $request, int $tableId, int $rowId): JsonResponse
     {
         $cells = $request->request->get('cells', []);
         $link = $request->request->get('link');
 
-        /** @var OrmService */
-        $orm = app(OrmService::class);
-
-        /** @var ?Table */
-        $table = $orm->getOne(Table::class, $tableId);
+        $table = app(OrmService::class)->getOne(Table::class, $tableId);
         if (!$table) {
             throw new InvalidInput(_('Table not found.'), Response::HTTP_NOT_FOUND);
         }
@@ -115,21 +86,11 @@ class TableController extends AbstractAdminController
     /**
      * Remove a row from a table.
      *
-     * @param Request $request
-     * @param int     $tableId
-     * @param int     $rowId
-     *
      * @throws InvalidInput
-     *
-     * @return JsonResponse
      */
     public function removeRow(Request $request, int $tableId, int $rowId): JsonResponse
     {
-        /** @var OrmService */
-        $orm = app(OrmService::class);
-
-        /** @var ?Table */
-        $table = $orm->getOne(Table::class, $tableId);
+        $table = app(OrmService::class)->getOne(Table::class, $tableId);
         if (!$table) {
             throw new InvalidInput(_('Table not found.'), Response::HTTP_NOT_FOUND);
         }

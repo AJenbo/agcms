@@ -1,4 +1,6 @@
-<?php namespace App\Models;
+<?php
+
+namespace App\Models;
 
 use App\Contracts\Renderable;
 
@@ -23,8 +25,6 @@ abstract class AbstractRenderable extends AbstractEntity implements Renderable
 
     /**
      * Get the title.
-     *
-     * @return string
      */
     public function getTitle(): string
     {
@@ -33,15 +33,11 @@ abstract class AbstractRenderable extends AbstractEntity implements Renderable
 
     /**
      * Get the url slug.
-     *
-     * @return string
      */
     abstract public function getSlug(): string;
 
     /**
      * Get canonical url for this entity.
-     *
-     * @return string
      */
     public function getCanonicalLink(): string
     {

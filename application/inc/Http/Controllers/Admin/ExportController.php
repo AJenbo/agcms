@@ -1,4 +1,6 @@
-<?php namespace App\Http\Controllers\Admin;
+<?php
+
+namespace App\Http\Controllers\Admin;
 
 use App\Exceptions\InvalidInput;
 use App\Models\Page;
@@ -11,6 +13,7 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use GuzzleHttp\Psr7\Uri;
+use Exception;
 
 class ExportController extends AbstractAdminController
 {
@@ -55,27 +58,16 @@ class ExportController extends AbstractAdminController
         'Button text',
         'Position',
     ];
-    /**
-     * @param Request $request
-     *
-     * @return Response
-     */
+
     public function index(Request $request): Response
     {
-        /** @var DbService */
-        $db = app(DbService::class);
-
-        $db->addLoadedTable('bind', 'kat', 'krav', 'maerke', 'sider');
+        app(DbService::class)->addLoadedTable('bind', 'kat', 'krav', 'maerke', 'sider');
         $response = $this->cachedResponse();
         if ($response->isNotModified($request)) {
             return $response;
         }
 
-        /** @var OrmService */
-        $orm = app(OrmService::class);
-
-        /** @var Page[] */
-        $pages = $orm->getByQuery(Page::class, 'SELECT * FROM sider');
+        $pages = app(OrmService::class)->getByQuery(Page::class, 'SELECT * FROM sider');
 
         $maxAttributes = 0;
         foreach ($pages as $page) {
@@ -103,7 +95,7 @@ class ExportController extends AbstractAdminController
 
         foreach ($pages as $page) {
             $tables = $page->getTables();
-            $type = $tables ? 'variable': 'simple';
+            $type = $tables ? 'variable' : 'simple';
             $productData = $this->getPageData($type, $page);
             $variations = [];
             $attributeValues = [];
@@ -196,7 +188,9 @@ class ExportController extends AbstractAdminController
     {
         $categories = $page->getCategories();
         $paths = [];
+        $isVisible = false;
         foreach ($categories as $category) {
+            $isVisible |= $category->isVisible();
             $path = [];
             foreach ($category->getBranch() as $node) {
                 $path[] = $node->getTitle();
@@ -221,29 +215,29 @@ class ExportController extends AbstractAdminController
         }
 
         $description = $page->getHtml();
-        $description = preg_replace('/<img[^>]*?>/ui', '', $description);
+        $description = preg_replace('/<img[^>]*?>/ui', '', $description) ?: '';
 
         $requirement = $page->getRequirement();
         $purchaseNote = $requirement ? $requirement->getHtml() : '';
 
-        $price = $page->getPrice();
+        $price = (string)$page->getPrice();
         if ($page->getOldPrice()) {
-            $price = $page->getOldPrice();
+            $price = (string)$page->getOldPrice();
         }
 
         $salesPrice = '';
         if ($page->getOldPrice()) {
-            $salesPrice = $page->getPrice();
+            $salesPrice = (string)$page->getPrice();
         }
 
         return [
-            $page->getId(),
+            (string)$page->getId(),
             $type,
             $page->getSku() ?: ('#'.$page->getId()),
             $page->getTitle(),
             $page->isInactive() ? '0' : '1',
             '0',
-            $category->isVisible() ? 'visible' : 'hidden',
+            $isVisible ? 'visible' : 'hidden',
             $page->getExcerpt(),
             $description,
             '',
@@ -306,13 +300,14 @@ class ExportController extends AbstractAdminController
     }
 
     /**
-     * @param array<int, string> $data
-     *
-     * @return Response
+     * @param array<int, array<int, string>> $data
      */
     protected function renderCSV(array $data = []): Response
     {
         $csv = fopen('php://temp', 'r+');
+        if ($csv === false) {
+            throw new Exception('Failed to create buffer for CSV data.');
+        }
 
         foreach ($data as $row) {
             fputcsv($csv, $row);

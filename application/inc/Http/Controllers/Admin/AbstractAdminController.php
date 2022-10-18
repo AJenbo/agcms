@@ -1,4 +1,6 @@
-<?php namespace App\Http\Controllers\Admin;
+<?php
+
+namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -7,8 +9,6 @@ abstract class AbstractAdminController extends AbstractController
 {
     /**
      * Basic admin render data.
-     *
-     * @param Request $request
      *
      * @return array<string, mixed>
      */

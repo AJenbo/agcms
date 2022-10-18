@@ -2,12 +2,8 @@ includes:
 	- vendor/phpstan/phpstan-mockery/extension.neon
 	- vendor/phpstan/phpstan-phpunit/extension.neon
 parameters:
-	level: max
+	level: 8
 	paths:
 		- inc
 		- index.php
-	ignoreErrors:
-		- '#Call to an undefined method SoapClient::gettransactionlist\(\)\.#'
-		- '#Call to an undefined method SoapClient::delete\(\)\.#'
-		- '#Call to an undefined method SoapClient::capture\(\)\.#'
-		- '#Undefined variable: \$app#'
+		- ../tests

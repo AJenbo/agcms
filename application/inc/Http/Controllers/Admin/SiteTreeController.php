@@ -1,4 +1,6 @@
-<?php namespace App\Http\Controllers\Admin;
+<?php
+
+namespace App\Http\Controllers\Admin;
 
 use App\Exceptions\InvalidInput;
 use App\Models\Category;
@@ -14,10 +16,6 @@ class SiteTreeController extends AbstractAdminController
 {
     /**
      * Page showing the site structure.
-     *
-     * @param Request $request
-     *
-     * @return Response
      */
     public function index(Request $request): Response
     {
@@ -34,11 +32,6 @@ class SiteTreeController extends AbstractAdminController
 
     /**
      * Fetch the content for a category.
-     *
-     * @param Request $request
-     * @param int     $categoryId
-     *
-     * @return JsonResponse
      */
     public function categoryContent(Request $request, int $categoryId): JsonResponse
     {
@@ -46,19 +39,13 @@ class SiteTreeController extends AbstractAdminController
         $openCategories = explode('<', $request->cookies->get('openkat', ''));
         $openCategories = array_map('intval', $openCategories);
 
-        /** @var OrmService */
-        $orm = app(OrmService::class);
-
-        /** @var RenderService */
-        $render = app(RenderService::class);
-
         $data = [
             'openCategories' => $openCategories,
             'includePages'   => (!$inputType || 'pages' === $inputType),
             'inputType'      => $inputType,
-            'node'           => $orm->getOne(Category::class, $categoryId),
+            'node'           => app(OrmService::class)->getOne(Category::class, $categoryId),
         ];
-        $html = $render->render('admin/partial-kat_expand', $data);
+        $html = app(RenderService::class)->render('admin/partial-kat_expand', $data);
 
         return new JsonResponse(['id' => $categoryId, 'html' => $html]);
     }
@@ -66,20 +53,11 @@ class SiteTreeController extends AbstractAdminController
     /**
      * Get the label for a folded tree widget.
      *
-     * @param Request $request
-     * @param int     $id
-     *
      * @throws InvalidInput
-     *
-     * @return JsonResponse
      */
     public function lable(Request $request, int $id): JsonResponse
     {
-        /** @var OrmService */
-        $orm = app(OrmService::class);
-
-        /** @var ?Category */
-        $category = $orm->getOne(Category::class, $id);
+        $category = app(OrmService::class)->getOne(Category::class, $id);
         if (!$category) {
             throw new InvalidInput(_('Category not found.'), Response::HTTP_NOT_FOUND);
         }
@@ -94,10 +72,6 @@ class SiteTreeController extends AbstractAdminController
 
     /**
      * Page picker widget.
-     *
-     * @param Request $request
-     *
-     * @return Response
      */
     public function pageWidget(Request $request): Response
     {
@@ -118,17 +92,10 @@ class SiteTreeController extends AbstractAdminController
 
     /**
      * List all site products.
-     *
-     * @param Request $request
-     *
-     * @return Response
      */
     public function inventory(Request $request): Response
     {
-        /** @var DbService */
-        $db = app(DbService::class);
-
-        $db->addLoadedTable('bind', 'kat', 'krav', 'maerke', 'sider');
+        app(DbService::class)->addLoadedTable('bind', 'kat', 'krav', 'maerke', 'sider');
         $response = $this->cachedResponse();
         if ($response->isNotModified($request)) {
             return $response;
@@ -156,13 +123,10 @@ class SiteTreeController extends AbstractAdminController
 
         $sort = isset($sortOptions[$sort]) ? $sort : 'navn';
 
-        /** @var OrmService */
         $orm = app(OrmService::class);
 
-        /** @var Category[] */
         $categories = $orm->getByQuery(Category::class, 'SELECT * FROM kat WHERE bind IS NULL');
         if ('' !== $categoryId) {
-            /** @var Category[] */
             $categories = [$orm->getOne(Category::class, $categoryId)];
         }
 

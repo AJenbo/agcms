@@ -1,4 +1,6 @@
-<?php namespace App\Models;
+<?php
+
+namespace App\Models;
 
 use App\Exceptions\Exception;
 use App\Services\DbService;
@@ -7,22 +9,22 @@ use App\Services\OrmService;
 class Table extends AbstractEntity
 {
     /** Table name in database. */
-    const TABLE_NAME = 'lists';
+    public const TABLE_NAME = 'lists';
 
     /** Cell string */
-    const COLUMN_TYPE_STRING = 0;
+    public const COLUMN_TYPE_STRING = 0;
 
     /** Cell integer */
-    const COLUMN_TYPE_INT = 1;
+    public const COLUMN_TYPE_INT = 1;
 
     /** Cell price */
-    const COLUMN_TYPE_PRICE = 2;
+    public const COLUMN_TYPE_PRICE = 2;
 
     /** Cell sales price */
-    const COLUMN_TYPE_PRICE_NEW = 3;
+    public const COLUMN_TYPE_PRICE_NEW = 3;
 
     /** Cell previous price */
-    const COLUMN_TYPE_PRICE_OLD = 4;
+    public const COLUMN_TYPE_PRICE_OLD = 4;
 
     // Backed by DB
 
@@ -65,7 +67,6 @@ class Table extends AbstractEntity
         $columnTitles = explode('<', $data['cell_names']);
         $columnTitles = array_map('html_entity_decode', $columnTitles);
 
-        /** @var OrmService */
         $orm = app(OrmService::class);
 
         $columns = [];
@@ -73,7 +74,6 @@ class Table extends AbstractEntity
             $sorting = $columnSortings[$key] ?? 0;
             $options = [];
             if ($sorting) {
-                /** @var ?CustomSorting */
                 $tablesort = $orm->getOne(CustomSorting::class, $sorting);
                 if ($tablesort) {
                     $options = $tablesort->getItems();
@@ -87,7 +87,7 @@ class Table extends AbstractEntity
                 'options' => $options,
             ];
         }
-        $columns = json_encode($columns);
+        $columns = json_encode($columns, JSON_THROW_ON_ERROR);
 
         return [
             'id'          => $data['id'],
@@ -117,8 +117,6 @@ class Table extends AbstractEntity
 
     /**
      * Get page id.
-     *
-     * @return int
      */
     public function getPageId(): int
     {
@@ -141,8 +139,6 @@ class Table extends AbstractEntity
 
     /**
      * Get the table caption.
-     *
-     * @return string
      */
     public function getTitle(): string
     {
@@ -196,8 +192,6 @@ class Table extends AbstractEntity
 
     /**
      * Get the default sort by column (zero index).
-     *
-     * @return int
      */
     public function getOrderBy(): int
     {
@@ -206,8 +200,6 @@ class Table extends AbstractEntity
 
     /**
      * Allow rows to link to pages.
-     *
-     * @param bool $hasLinks
      *
      * @return $this
      */
@@ -220,8 +212,6 @@ class Table extends AbstractEntity
 
     /**
      * Allow rows to link to pages.
-     *
-     * @return bool
      */
     public function hasLinks(): bool
     {
@@ -232,8 +222,6 @@ class Table extends AbstractEntity
 
     /**
      * Indicate if there is a column with sales prices.
-     *
-     * @return bool
      */
     public function hasPrices(): bool
     {
@@ -243,11 +231,10 @@ class Table extends AbstractEntity
     /**
      * Get table rows.
      *
-     * @return array<int, array<string|int, mixed>>
+     * @return array<int, array<int|string, mixed>>
      */
     public function getRows(int $orderBy = null): array
     {
-        /** @var DbService */
         $db = app(DbService::class);
 
         $dataRows = $db->fetchArray(
@@ -258,7 +245,6 @@ class Table extends AbstractEntity
         );
         $db->addLoadedTable('list_rows');
 
-        /** @var OrmService */
         $orm = app(OrmService::class);
 
         // Cells are indexed by id, this is needed for sorting the rows
@@ -293,7 +279,6 @@ class Table extends AbstractEntity
      * Add a new row to the table.
      *
      * @param string[] $cells
-     * @param int|null $link
      *
      * @return int Id of the new row
      */
@@ -302,7 +287,6 @@ class Table extends AbstractEntity
         $cells = array_map('htmlspecialchars', $cells);
         $cells = implode('<', $cells);
 
-        /** @var DbService */
         $db = app(DbService::class);
 
         return $db->query(
@@ -316,18 +300,13 @@ class Table extends AbstractEntity
     /**
      * Update an existing row.
      *
-     * @param int      $rowId
      * @param string[] $cells
-     * @param int|null $link
-     *
-     * @return void
      */
     public function updateRow(int $rowId, array $cells, int $link = null): void
     {
         $cells = array_map('htmlspecialchars', $cells);
         $cells = implode('<', $cells);
 
-        /** @var DbService */
         $db = app(DbService::class);
 
         $db->query(
@@ -342,25 +321,18 @@ class Table extends AbstractEntity
 
     /**
      * Remove a row from the table.
-     *
-     * @param int $rowId
-     *
-     * @return void
      */
     public function removeRow(int $rowId): void
     {
-        /** @var DbService */
-        $db = app(DbService::class);
-
-        $db->query('DELETE FROM `list_rows` WHERE list_id = ' . $this->id . ' AND `id` = ' . $rowId);
+        app(DbService::class)->query('DELETE FROM `list_rows` WHERE list_id = ' . $this->id . ' AND `id` = ' . $rowId);
     }
 
     /**
      * Sort a 2D array based on a custome sort order.
      *
-     * @param array<int, array<string|int, mixed>> $rows
+     * @param array<int, array<int|string, mixed>> $rows
      *
-     * @return array<int, array<string|int, mixed>>
+     * @return array<int, array<int|string, mixed>>
      */
     private function orderRows(array $rows, int $orderBy = null): array
     {
@@ -394,16 +366,10 @@ class Table extends AbstractEntity
      * Get the page this table belongs to.
      *
      * @throws Exception
-     *
-     * @return Page
      */
     public function getPage(): Page
     {
-        /** @var OrmService */
-        $orm = app(OrmService::class);
-
-        /** @var ?Page */
-        $page = $orm->getOne(Page::class, $this->pageId);
+        $page = app(OrmService::class)->getOne(Page::class, $this->pageId);
         if (!$page) {
             throw new Exception(_('Page not found.'));
         }
@@ -427,7 +393,6 @@ class Table extends AbstractEntity
         $columnTitles = array_map('htmlspecialchars', $columnTitles);
         $columnTitles = implode('<', $columnTitles);
 
-        /** @var DbService */
         $db = app(DbService::class);
 
         return [

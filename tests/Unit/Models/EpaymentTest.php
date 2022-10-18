@@ -1,4 +1,6 @@
-<?php namespace Tests\Unit\Models;
+<?php
+
+namespace Tests\Unit\Models;
 
 use App\Models\Epayment;
 use App\Services\EpaymentService;
@@ -15,19 +17,16 @@ class EpaymentTest extends TestCase
 
     /**
      * Initiate the mock.
-     *
-     * @return void
      */
-    public function setUp(): void
+    protected function setUp(): void
     {
         parent::setUp();
 
-        /** @var EpaymentService */
         $epaymentService = M::mock(EpaymentService::class);
         $this->epaymentService = $epaymentService;
     }
 
-    public function tearDown()
+    protected function tearDown(): void
     {
         parent::tearDown();
 
@@ -187,6 +186,10 @@ class EpaymentTest extends TestCase
         $this->assertSame(0, $epayment->getAmountCaptured());
     }
 
+    /**
+     * @param mixed $return
+     * @param null|mixed[] $with
+     */
     protected function mockMethod(
         MockInterface $mockClass,
         string $methodName,
@@ -194,7 +197,6 @@ class EpaymentTest extends TestCase
         ?array $with = [],
         int $times = 1
     ): void {
-        /** @var Expectation */
         $method = $mockClass->shouldReceive($methodName);
         $method->times($times);
         if (null !== $with) {

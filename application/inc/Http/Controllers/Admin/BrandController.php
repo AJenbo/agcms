@@ -1,4 +1,6 @@
-<?php namespace App\Http\Controllers\Admin;
+<?php
+
+namespace App\Http\Controllers\Admin;
 
 use App\Exceptions\InvalidInput;
 use App\Http\Controllers\Base;
@@ -13,18 +15,11 @@ class BrandController extends AbstractAdminController
 {
     /**
      * Index page for brands.
-     *
-     * @param Request $request
-     *
-     * @return Response
      */
     public function index(Request $request): Response
     {
-        /** @var OrmService */
-        $orm = app(OrmService::class);
-
         $data = $this->basicPageData($request);
-        $data['brands'] = $orm->getByQuery(Brand::class, 'SELECT * FROM `maerke` ORDER BY navn');
+        $data['brands'] = app(OrmService::class)->getByQuery(Brand::class, 'SELECT * FROM `maerke` ORDER BY navn');
         $data['blank_image'] = config('blank_image', Base::DEFAULT_ICON);
 
         return $this->render('admin/maerker', $data);
@@ -32,18 +27,11 @@ class BrandController extends AbstractAdminController
 
     /**
      * Page for editing or creating a brand.
-     *
-     * @param Request $request
-     * @param int     $id
-     *
-     * @return Response
      */
     public function editPage(Request $request, int $id): Response
     {
-        /** @var OrmService */
-        $orm = app(OrmService::class);
         $data = $this->basicPageData($request);
-        $data['brand'] = $id ? $orm->getOne(Brand::class, $id) : null;
+        $data['brand'] = $id ? app(OrmService::class)->getOne(Brand::class, $id) : null;
         $data['blank_image'] = config('blank_image', Base::DEFAULT_ICON);
 
         return $this->render('admin/updatemaerke', $data);
@@ -52,11 +40,7 @@ class BrandController extends AbstractAdminController
     /**
      * Create new brand.
      *
-     * @param Request $request
-     *
      * @throws InvalidInput
-     *
-     * @return JsonResponse
      */
     public function create(Request $request): JsonResponse
     {
@@ -76,12 +60,7 @@ class BrandController extends AbstractAdminController
     /**
      * Update a brand.
      *
-     * @param Request $request
-     * @param int     $id
-     *
      * @throws InvalidInput
-     *
-     * @return JsonResponse
      */
     public function update(Request $request, int $id): JsonResponse
     {
@@ -92,10 +71,8 @@ class BrandController extends AbstractAdminController
             throw new InvalidInput(_('You must enter a title.'));
         }
 
-        /** @var OrmService */
         $orm = app(OrmService::class);
 
-        /** @var ?Brand */
         $brand = $orm->getOne(Brand::class, $id);
         if (!$brand) {
             throw new InvalidInput(_('Brand not found.'), Response::HTTP_NOT_FOUND);
@@ -103,7 +80,6 @@ class BrandController extends AbstractAdminController
 
         $icon = null;
         if (null !== $iconId) {
-            /** @var ?File */
             $icon = $orm->getOne(File::class, $iconId);
         }
 
@@ -117,18 +93,10 @@ class BrandController extends AbstractAdminController
 
     /**
      * Delete a brand.
-     *
-     * @param Request $request
-     *
-     * @return JsonResponse
      */
     public function delete(Request $request, int $id): JsonResponse
     {
-        /** @var OrmService */
-        $orm = app(OrmService::class);
-
-        /** @var ?Brand */
-        $brand = $orm->getOne(Brand::class, $id);
+        $brand = app(OrmService::class)->getOne(Brand::class, $id);
         if ($brand) {
             $brand->delete();
         }

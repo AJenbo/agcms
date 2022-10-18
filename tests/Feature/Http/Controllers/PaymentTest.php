@@ -1,10 +1,12 @@
-<?php namespace Tests\Feature\Http\Controllers;
+<?php
+
+namespace Tests\Feature\Http\Controllers;
 
 use Tests\TestCase;
 
 class PaymentTest extends TestCase
 {
-    const PAYLOAD = [
+    private const PAYLOAD = [
        'name'               => 'Name',
        'attn'               => 'Attn',
        'address'            => 'Address 1',
@@ -158,7 +160,6 @@ class PaymentTest extends TestCase
 
     public function testAddressSaveNewsletter(): void
     {
-
         $payload = ['newsletter' => '1', 'hasShippingAddress' => '1'] + self::PAYLOAD;
 
         $this->post('/betaling/1/a4238/address/', $payload)

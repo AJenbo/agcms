@@ -1,12 +1,15 @@
-<?php namespace App;
+<?php
+
+namespace App;
 
 use App\Exceptions\Handler as ExceptionHandler;
 use App\Http\Controllers\Base;
 use App\Http\Request;
-use Closure;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Response;
 use Throwable;
+use App\Http\Controllers\AbstractController;
+use App\Contracts\Middleware;
 
 class Application
 {
@@ -19,24 +22,25 @@ class Application
     /**
      * All of the global middleware for the application.
      *
-     * @var string[]
+     * @var array<class-string<Middleware>>
      */
     protected $middleware = [];
 
-    /** @var array<string, null|array<string, array<string, string>>> */
+    /** @var array<string, array<int, Route>> */
     private $routes = [];
 
-    /** @var object[] */
+    /**
+     * @var array<class-string<object>, object>
+     */
     private $services = [];
 
     /**
      * Set up the enviroment.
-     *
-     * @param string $basePath
      */
     public function __construct(string $basePath)
     {
         self::$instance = $this;
+        $this->services[self::class] = $this;
         $this->basePath = $basePath;
 
         $this->initErrorLogging();
@@ -56,21 +60,17 @@ class Application
 
     /**
      * Set error loggin.
-     *
-     * @return void
      */
     private function initErrorLogging(): void
     {
         if ($this->environment('develop')) {
-            ini_set('display_errors', 1);
+            ini_set('display_errors', '1');
             error_reporting(-1);
         }
     }
 
     /**
      * Set locale and endcodings.
-     *
-     * @return void
      */
     private function setLocale(): void
     {
@@ -86,8 +86,6 @@ class Application
 
     /**
      * Load translations.
-     *
-     * @return void
      */
     private function loadTranslations(): void
     {
@@ -98,8 +96,6 @@ class Application
 
     /**
      * Load application routes.
-     *
-     * @return void
      */
     private function loadRoutes(): void
     {
@@ -109,10 +105,6 @@ class Application
 
     /**
      * Get base path for the running application.
-     *
-     * @param string $path
-     *
-     * @return string
      */
     public function basePath(string $path = ''): string
     {
@@ -121,8 +113,6 @@ class Application
 
     /**
      * Get the most recent instance.
-     *
-     * @return self
      */
     public static function getInstance(): self
     {
@@ -136,9 +126,11 @@ class Application
     /**
      * Gets a service.
      *
-     * @param string $id The service identifier
+     * @template T of object
      *
-     * @return object The associated service
+     * @param class-string<T> $id The service identifier
+     *
+     * @return T The associated service
      */
     public function get(string $id)
     {
@@ -146,13 +138,14 @@ class Application
             $this->services[$id] = new $id();
         }
 
+        /** @var T */
         return $this->services[$id];
     }
 
     /**
      * Add new middleware to the application.
      *
-     * @param string|string[] $middleware
+     * @param class-string<Middleware>|array<class-string<Middleware>> $middleware
      *
      * @return $this
      */
@@ -168,22 +161,15 @@ class Application
     /**
      * Add a route.
      *
-     * @param string $method
-     * @param string $uri
-     * @param string $controller
-     * @param string $action
-     *
-     * @return void
+     * @param class-string<AbstractController> $controller
      */
     public function addRoute(string $method, string $uri, string $controller, string $action): void
     {
-        $this->routes[$method][] = ['url' => $uri, 'controller' => $controller, 'action' => $action];
+        $this->routes[$method][] = new Route($uri, $controller, $action);
     }
 
     /**
      * Run the application.
-     *
-     * @return void
      */
     public function run(): void
     {
@@ -194,10 +180,6 @@ class Application
 
     /**
      * Handle a request.
-     *
-     * @param Request $request
-     *
-     * @return Response
      */
     public function handle(Request $request): Response
     {
@@ -216,15 +198,9 @@ class Application
 
     /**
      * Handle the given exception.
-     *
-     * @param Request   $request
-     * @param Throwable $exception
-     *
-     * @return Response
      */
     protected function handleException(Request $request, Throwable $exception): Response
     {
-        /** @var ExceptionHandler */
         $handler = $this->get(ExceptionHandler::class);
 
         $handler->report($exception);
@@ -234,10 +210,6 @@ class Application
 
     /**
      * Find a matching route for the current request.
-     *
-     * @param Request $request
-     *
-     * @return Response
      */
     private function dispatch(Request $request): Response
     {
@@ -255,29 +227,27 @@ class Application
     /**
      * Wrap closure in a middle ware call.
      *
-     * @param string $method
-     * @param string $requestUrl
-     *
-     * @return Closure
+     * @return callable(Request): Response
      */
-    private function matchRoute(string $method, string $requestUrl): Closure
+    private function matchRoute(string $method, string $requestUrl): callable
     {
         if ('HEAD' === $method) {
             $method = 'GET';
         }
 
-        foreach ($this->routes[$method] ?? [] as $route) {
-            if (preg_match('%^' . $route['url'] . '$%u', $requestUrl, $matches)) {
+        foreach ($this->routes[$method] as $route) {
+            if (preg_match('%^' . $route->getUri() . '$%u', $requestUrl, $matches)) {
                 return function (Request $request) use ($route, $matches): Response {
                     $matches[0] = $request;
 
-                    /** @var callable */
-                    $callable = [new $route['controller'](), $route['action']];
+                    $class = $route->getController();
+                    /** @var callable(Request, string...) */
+                    $callable = [new $class(), $route->getAction()];
                     return call_user_func_array($callable, $matches);
                 };
             }
 
-            if (preg_match('%^' . $route['url'] . '$%u', $requestUrl . '/', $matches)) {
+            if (preg_match('%^' . $route->getUri() . '$%u', $requestUrl . '/', $matches)) {
                 return $this->redirectToFolderPath($requestUrl);
             }
         }
@@ -290,12 +260,12 @@ class Application
     /**
      * Wrap closure in a middle ware call.
      *
-     * @param string  $middlewareClass
-     * @param Closure $next
+     * @param class-string<Middleware> $middlewareClass
+     * @param callable(Request): Response $next
      *
-     * @return Closure
+     * @return callable(Request): Response
      */
-    private function wrapMiddleware(string $middlewareClass, Closure $next): Closure
+    private function wrapMiddleware(string $middlewareClass, callable $next): callable
     {
         return function (Request $request) use ($middlewareClass, $next): Response {
             return (new $middlewareClass())->handle($request, $next);
@@ -305,11 +275,9 @@ class Application
     /**
      * Generate a redirect for the requested path with a / appended to the path.
      *
-     * @param string $requestUrl
-     *
-     * @return Closure
+     * @return callable(Request): Response
      */
-    private function redirectToFolderPath(string $requestUrl): Closure
+    private function redirectToFolderPath(string $requestUrl): callable
     {
         return function (Request $request) use ($requestUrl): RedirectResponse {
             $query = $request->getQueryString() ?: '';

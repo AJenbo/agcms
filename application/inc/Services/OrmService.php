@@ -1,4 +1,6 @@
-<?php namespace App\Services;
+<?php
+
+namespace App\Services;
 
 use App\Exceptions\Exception;
 use App\Models\AbstractEntity;
@@ -17,31 +19,35 @@ class OrmService
     /**
      * Get a single entitly by id.
      *
-     * @param string $class Class name
-     * @param int    $id    Id of the entity
+     * @template T of AbstractEntity
      *
-     * @return ?AbstractEntity
+     * @param class-string<T> $class Class name
+     * @param int             $id    Id of the entity
+     *
+     * @return ?T
      */
     public function getOne(string $class, int $id): ?AbstractEntity
     {
         if (!isset($this->byId[$class]) || !array_key_exists($id, $this->byId[$class])) {
-            /** @var DbService */
             $db = app(DbService::class);
             $data = $db->fetchOne('SELECT * FROM `' . $class::TABLE_NAME . '` WHERE id = ' . $id);
             $db->addLoadedTable($class::TABLE_NAME);
             $this->byId[$class][$id] = $data ? new $class($class::mapFromDB($data)) : null;
         }
 
+        /** @var ?T */
         return $this->byId[$class][$id];
     }
 
     /**
      * Find a single entity from a SQL query string.
      *
-     * @param string $class Class name
-     * @param string $query The query
+     * @template T of AbstractEntity
      *
-     * @return ?AbstractEntity
+     * @param class-string<T> $class Class name
+     * @param string          $query The query
+     *
+     * @return ?T
      */
     public function getOneByQuery(string $class, string $query): ?AbstractEntity
     {
@@ -54,28 +60,31 @@ class OrmService
         if (!isset($this->oneBySql[$class]) || !array_key_exists($query, $this->oneBySql[$class])) {
             $this->oneBySql[$class][$query] = null;
 
-            /** @var DbService */
             $db = app(DbService::class);
             $data = $db->fetchOne($query);
             $db->addLoadedTable($class::TABLE_NAME);
             if ($data) {
-                if (!isset($this->byId[$class][$data['id']])) {
-                    $this->byId[$class][$data['id']] = new $class($class::mapFromDB($data));
+                $id = (int)$data['id'];
+                if (!isset($this->byId[$class][$id])) {
+                    $this->byId[$class][$id] = new $class($class::mapFromDB($data));
                 }
-                $this->oneBySql[$class][$query] = $this->byId[$class][$data['id']];
+                $this->oneBySql[$class][$query] = $this->byId[$class][$id];
             }
         }
 
+        /** @var ?T */
         return $this->oneBySql[$class][$query];
     }
 
     /**
      * Find multiple entities from a SQL query string.
      *
-     * @param string $class Class name
-     * @param string $query The query
+     * @template T of AbstractEntity
      *
-     * @return AbstractEntity[]
+     * @param class-string<T> $class Class name
+     * @param string          $query The query
+     *
+     * @return T[]
      */
     public function getByQuery(string $class, string $query): array
     {
@@ -86,25 +95,25 @@ class OrmService
         $query = trim($query);
         if (!isset($this->bySql[$class][$query])) {
             $this->bySql[$class][$query] = [];
-            /** @var DbService */
             $db = app(DbService::class);
             foreach ($db->fetchArray($query) as $data) {
-                if (!isset($this->byId[$class][$data['id']])) {
-                    $this->byId[$class][$data['id']] = new $class($class::mapFromDB($data));
+                $id = (int)$data['id'];
+                if (!isset($this->byId[$class][$id])) {
+                    $this->byId[$class][$id] = new $class($class::mapFromDB($data));
                 }
-                $this->bySql[$class][$query][] = $this->byId[$class][$data['id']];
+                $this->bySql[$class][$query][] = $this->byId[$class][$id];
             }
             $db->addLoadedTable($class::TABLE_NAME);
         }
 
+        /** @var T[] */
         return $this->bySql[$class][$query];
     }
 
     /**
      * Remove an entity from the caches.
      *
-     * @param string $class
-     * @param int    $id
+     * @param class-string<AbstractEntity> $class
      */
     public function forget(string $class, int $id): void
     {
@@ -116,8 +125,8 @@ class OrmService
     /**
      * Remove an entity from the caches.
      *
-     * @param string $class
-     * @param string $query The query
+     * @param class-string<AbstractEntity> $class
+     * @param string                       $query The query
      */
     public function forgetByQuery(string $class, string $query): void
     {
@@ -127,9 +136,10 @@ class OrmService
     /**
      * Remember an entity.
      *
-     * @param string         $class
-     * @param int            $id
-     * @param AbstractEntity $entity
+     * @template T of AbstractEntity
+     *
+     * @param class-string<T> $class
+     * @param T               $entity
      */
     public function remember(string $class, int $id, AbstractEntity $entity): void
     {

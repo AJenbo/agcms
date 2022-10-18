@@ -1,4 +1,6 @@
-<?php namespace App\Models;
+<?php
+
+namespace App\Models;
 
 use App\Exceptions\Exception;
 use App\Services\DbService;
@@ -7,22 +9,22 @@ use DateTime;
 class User extends AbstractEntity
 {
     /** Table name */
-    const TABLE_NAME = 'users';
+    public const TABLE_NAME = 'users';
 
     /** Number of seconds a user is assumed to be active. */
-    const ONLINE_INTERVAL = 1800;
+    private const ONLINE_INTERVAL = 1800;
 
     /** Not approved user */
-    const NO_ACCESS = 0;
+    public const NO_ACCESS = 0;
 
     /** Full access user */
-    const ADMINISTRATOR = 1;
+    public const ADMINISTRATOR = 1;
 
     /** Can't edit other users */
-    const MANAGER = 3;
+    public const MANAGER = 3;
 
     /** Can only handle orders */
-    const CLERK = 4;
+    public const CLERK = 4;
 
     /** @var string User's full name. */
     private $fullName = '';
@@ -51,22 +53,18 @@ class User extends AbstractEntity
 
     public static function mapFromDB(array $data): array
     {
-        /** @var DbService */
-        $db = app(DbService::class);
-
         return [
             'id'            => $data['id'],
             'full_name'     => $data['fullname'],
             'nickname'      => $data['name'],
             'password_hash' => $data['password'],
             'access_level'  => $data['access'],
-            'last_login'    => strtotime($data['lastlogin']) + $db->getTimeOffset(),
+            'last_login'    => strtotime($data['lastlogin']) + app(DbService::class)->getTimeOffset(),
         ];
     }
 
     public function getDbArray(): array
     {
-        /** @var DbService */
         $db = app(DbService::class);
 
         return [
@@ -81,8 +79,6 @@ class User extends AbstractEntity
     /**
      * Set user's full name.
      *
-     * @param string $fullName
-     *
      * @return $this
      */
     public function setFullName(string $fullName): self
@@ -94,8 +90,6 @@ class User extends AbstractEntity
 
     /**
      * Get user's full name.
-     *
-     * @return string
      */
     public function getFullName(): string
     {
@@ -104,8 +98,6 @@ class User extends AbstractEntity
 
     /**
      * Set user's nick name.
-     *
-     * @param string $nickname
      *
      * @return $this
      */
@@ -118,8 +110,6 @@ class User extends AbstractEntity
 
     /**
      * Get nick name.
-     *
-     * @return string
      */
     public function getNickname(): string
     {
@@ -128,8 +118,6 @@ class User extends AbstractEntity
 
     /**
      * Set users password.
-     *
-     * @param string $password
      *
      * @return $this
      */
@@ -148,8 +136,6 @@ class User extends AbstractEntity
     /**
      * Set users password hash.
      *
-     * @param string $passwordHash
-     *
      * @return $this
      */
     public function setPasswordHash(string $passwordHash): self
@@ -161,8 +147,6 @@ class User extends AbstractEntity
 
     /**
      * Get password hash.
-     *
-     * @return string
      */
     public function getPasswordHash(): string
     {
@@ -171,8 +155,6 @@ class User extends AbstractEntity
 
     /**
      * Set access level.
-     *
-     * @param int $accessLevel
      *
      * @return $this
      */
@@ -185,8 +167,6 @@ class User extends AbstractEntity
 
     /**
      * Get access level.
-     *
-     * @return int
      */
     public function getAccessLevel(): int
     {
@@ -195,8 +175,6 @@ class User extends AbstractEntity
 
     /**
      * Set last activity time.
-     *
-     * @param int $lastLogin
      *
      * @return $this
      */
@@ -209,8 +187,6 @@ class User extends AbstractEntity
 
     /**
      * Get last activity time.
-     *
-     * @return int
      */
     public function getLastLogin(): int
     {
@@ -219,10 +195,6 @@ class User extends AbstractEntity
 
     /**
      * Validate a password with this user.
-     *
-     * @param string $password
-     *
-     * @return bool
      */
     public function validatePassword(string $password): bool
     {
@@ -231,10 +203,6 @@ class User extends AbstractEntity
 
     /**
      * Check if user has given access level (or higher).
-     *
-     * @param int $requestedLevel
-     *
-     * @return bool
      */
     public function hasAccess(int $requestedLevel): bool
     {
@@ -251,8 +219,6 @@ class User extends AbstractEntity
 
     /**
      * Generate a human frindly string showing time since last active.
-     *
-     * @return string
      */
     public function getLastLoginText(): string
     {

@@ -1,10 +1,15 @@
-<?php namespace Tests;
+<?php
 
+namespace Tests;
+
+use DMS\PHPUnitExtensions\ArraySubset\ArraySubsetAsserts;
 use PHPUnit\Framework\Assert;
 use Symfony\Component\HttpFoundation\Response;
 
 class TestResponse
 {
+    use ArraySubsetAsserts;
+
     /** @var Response */
     private $response;
 
@@ -23,7 +28,7 @@ class TestResponse
      */
     public function getContent(): string
     {
-        return $this->response->getContent();
+        return $this->response->getContent() ?: '';
     }
 
     /**
@@ -71,7 +76,7 @@ class TestResponse
      */
     public function assertSee(string $value): self
     {
-        Assert::assertContains($value, $this->response->getContent());
+        Assert::assertStringContainsString($value, $this->getContent());
 
         return $this;
     }
@@ -85,7 +90,7 @@ class TestResponse
      */
     public function assertNotSee(string $value): self
     {
-        Assert::assertNotContains($value, $this->response->getContent());
+        Assert::assertStringNotContainsString($value, $this->getContent());
 
         return $this;
     }
@@ -93,14 +98,14 @@ class TestResponse
     /**
      * Assert that the response is a superset of the given JSON.
      *
-     * @param array $data
+     * @param array<string, mixed> $data
      * @param bool  $strict
      *
      * @return $this
      */
     public function assertJson(array $data, bool $strict = false): self
     {
-        Assert::assertArraySubset($data, $this->decodeResponseJson(), $strict, $this->assertJsonMessage($data));
+        self::assertArraySubset($data, $this->decodeResponseJson(), $strict, $this->assertJsonMessage($data));
 
         return $this;
     }
@@ -108,7 +113,8 @@ class TestResponse
     /**
      * Assert that the response has a given JSON structure.
      *
-     * @param array|null $responseData
+     * @param array<int, string|mixed[]>|null $structure
+     * @param array<int, string|mixed[]>|null $responseData
      *
      * @return $this
      */
@@ -121,14 +127,6 @@ class TestResponse
             $responseData = $this->decodeResponseJson();
         }
         foreach ($structure as $key => $value) {
-            if (is_array($value) && '*' === $key) {
-                Assert::assertInternalType('array', $responseData);
-                foreach ($responseData as $responseDataItem) {
-                    $this->assertJsonStructure($structure['*'], $responseDataItem);
-                }
-                continue;
-            }
-
             if (is_array($value)) {
                 Assert::assertArrayHasKey($key, $responseData);
                 $this->assertJsonStructure($value, $responseData[$key]);
@@ -144,14 +142,14 @@ class TestResponse
     /**
      * Get the assertion message for assertJson.
      *
-     * @param array $data
+     * @param array<string, mixed> $data
      *
      * @return string
      */
     private function assertJsonMessage(array $data): string
     {
-        $expected = json_encode($data, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES);
-        $actual = json_encode($this->decodeResponseJson(), JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES);
+        $expected = json_encode($data, JSON_THROW_ON_ERROR | JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES);
+        $actual = json_encode($this->decodeResponseJson(), JSON_THROW_ON_ERROR | JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES);
 
         return 'Unable to find JSON: ' . PHP_EOL . PHP_EOL .
             "[{$expected}]" . PHP_EOL . PHP_EOL .
@@ -162,11 +160,11 @@ class TestResponse
     /**
      * Validate and return the decoded response JSON.
      *
-     * @return array
+     * @return array<string, mixed>
      */
     private function decodeResponseJson(): array
     {
-        $decodedResponse = json_decode($this->response->getContent(), true);
+        $decodedResponse = json_decode($this->getContent(), true);
         if (null === $decodedResponse || false === $decodedResponse) {
             Assert::fail('Invalid JSON was returned from the route.');
         }
@@ -177,7 +175,7 @@ class TestResponse
     /**
      * Validate and return the decoded response JSON.
      *
-     * @return array
+     * @return array<string, mixed>
      */
     public function json()
     {

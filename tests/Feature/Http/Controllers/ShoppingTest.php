@@ -1,4 +1,6 @@
-<?php namespace Tests\Feature\Http\Controllers;
+<?php
+
+namespace Tests\Feature\Http\Controllers;
 
 use Tests\TestCase;
 
@@ -7,7 +9,7 @@ class ShoppingTest extends TestCase
     public function testBasket(): void
     {
         $basket = ['items' => [['type' => 'page', 'id' => 6, 'quantity' => 1]]];
-        $this->get('/order/?cart=' . rawurlencode(json_encode($basket) ?: ''))
+        $this->get('/order/?cart=' . rawurlencode(json_encode($basket, JSON_THROW_ON_ERROR) ?: ''))
             ->assertResponseStatus(200)
             ->assertSee('Product 1 Green - sku3')
             ->assertSee('var values = [20];')
@@ -17,7 +19,7 @@ class ShoppingTest extends TestCase
     public function testBasketLineItem(): void
     {
         $basket = ['items' => [['type' => 'line', 'id' => 2, 'quantity' => 1]]];
-        $this->get('/order/?cart=' . rawurlencode(json_encode($basket) ?: ''))
+        $this->get('/order/?cart=' . rawurlencode(json_encode($basket, JSON_THROW_ON_ERROR) ?: ''))
             ->assertResponseStatus(200)
             ->assertSee('Blue')
             ->assertSee('var values = [17];')
@@ -27,7 +29,7 @@ class ShoppingTest extends TestCase
     public function testBasketLineItem404(): void
     {
         $basket = ['items' => [['type' => 'line', 'id' => 404, 'quantity' => 1]]];
-        $this->get('/order/?cart=' . rawurlencode(json_encode($basket) ?: ''))
+        $this->get('/order/?cart=' . rawurlencode(json_encode($basket, JSON_THROW_ON_ERROR) ?: ''))
             ->assertResponseStatus(200)
             ->assertSee('<title>Shopping list</title>')
             ->assertSee('<td>Expired</td>');
@@ -36,7 +38,7 @@ class ShoppingTest extends TestCase
     public function testBasketUnknownPrice(): void
     {
         $basket = ['items' => [['type' => 'page', 'id' => 2, 'quantity' => 1]]];
-        $this->get('/order/?cart=' . rawurlencode(json_encode($basket) ?: ''))
+        $this->get('/order/?cart=' . rawurlencode(json_encode($basket, JSON_THROW_ON_ERROR) ?: ''))
             ->assertResponseStatus(200)
             ->assertSee('<title>Shopping list</title>')
             ->assertSee('Page 1')
@@ -46,7 +48,7 @@ class ShoppingTest extends TestCase
     public function testBasketExpired(): void
     {
         $basket = ['items' => [['type' => 'page', 'id' => 5, 'quantity' => 1]]];
-        $this->get('/order/?cart=' . rawurlencode(json_encode($basket) ?: ''))
+        $this->get('/order/?cart=' . rawurlencode(json_encode($basket, JSON_THROW_ON_ERROR) ?: ''))
             ->assertResponseStatus(200)
             ->assertSee('<title>Shopping list</title>')
             ->assertSee('<td>Expired</td>');
@@ -55,7 +57,7 @@ class ShoppingTest extends TestCase
     public function testBasket404(): void
     {
         $basket = ['items' => [['type' => 'page', 'id' => 404, 'quantity' => 1]]];
-        $this->get('/order/?cart=' . rawurlencode(json_encode($basket) ?: ''))
+        $this->get('/order/?cart=' . rawurlencode(json_encode($basket, JSON_THROW_ON_ERROR) ?: ''))
             ->assertResponseStatus(200)
             ->assertSee('<title>Shopping list</title>')
             ->assertSee('<td>Expired</td>');
@@ -123,9 +125,9 @@ class ShoppingTest extends TestCase
         $redirectCart = $cart;
         $redirectCart['items'] = [];
 
-        $this->post('/order/send/', ['cart' => json_encode($cart) ?: ''])
+        $this->post('/order/send/', ['cart' => json_encode($cart, JSON_THROW_ON_ERROR) ?: ''])
             ->assertResponseStatus(303)
-            ->assertRedirect('/order/receipt/?cart=' . rawurlencode(json_encode($redirectCart) ?: ''));
+            ->assertRedirect('/order/receipt/?cart=' . rawurlencode(json_encode($redirectCart, JSON_THROW_ON_ERROR) ?: ''));
 
         $this->assertDatabaseHas(
             'fakturas',
@@ -223,9 +225,9 @@ Note',
         $redirectCart = $cart;
         $redirectCart['items'] = [];
 
-        $this->post('/order/send/', ['cart' => json_encode($cart) ?: ''])
+        $this->post('/order/send/', ['cart' => json_encode($cart, JSON_THROW_ON_ERROR) ?: ''])
             ->assertResponseStatus(303)
-            ->assertRedirect('/order/receipt/?cart=' . rawurlencode(json_encode($redirectCart) ?: ''));
+            ->assertRedirect('/order/receipt/?cart=' . rawurlencode(json_encode($redirectCart, JSON_THROW_ON_ERROR) ?: ''));
 
         $this->assertDatabaseHas(
             'fakturas',
@@ -306,7 +308,7 @@ Note',
         $redirectCart = $cart;
         $redirectCart['items'] = [];
 
-        $this->post('/order/send/', ['cart' => json_encode($cart)]);
+        $this->post('/order/send/', ['cart' => json_encode($cart, JSON_THROW_ON_ERROR)]);
 
         $this->assertDatabaseHas('email', ['email' => $cart['email']]);
         $this->assertDatabaseHas(
@@ -341,7 +343,7 @@ Note',
         $redirectCart = $cart;
         $redirectCart['items'] = [];
 
-        $this->post('/order/send/', ['cart' => json_encode($cart)]);
+        $this->post('/order/send/', ['cart' => json_encode($cart, JSON_THROW_ON_ERROR)]);
 
         $this->assertDatabaseHas('email', ['id' => 1, 'email' => $cart['email']]);
         $this->assertDatabaseHas(

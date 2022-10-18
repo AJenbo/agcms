@@ -1,4 +1,6 @@
-<?php namespace App\Http\Controllers\Admin;
+<?php
+
+namespace App\Http\Controllers\Admin;
 
 use App\Exceptions\InvalidInput;
 use App\Models\Category;
@@ -13,11 +15,6 @@ class CategoryController extends AbstractAdminController
 {
     /**
      * Create or edit category.
-     *
-     * @param Request  $request
-     * @param int|null $id
-     *
-     * @return Response
      */
     public function index(Request $request, int $id = null): Response
     {
@@ -25,13 +22,9 @@ class CategoryController extends AbstractAdminController
         $openCategories = explode('<', $request->cookies->get('openkat', ''));
         $openCategories = array_map('intval', $openCategories);
 
-        /** @var OrmService */
-        $orm = app(OrmService::class);
-
         $category = null;
         if (null !== $id) {
-            /** @var ?Category */
-            $category = $orm->getOne(Category::class, $id);
+            $category = app(OrmService::class)->getOne(Category::class, $id);
             if ($category) {
                 $parent = $category->getParent();
                 $selectedId = $parent ? $parent->getId() : null;
@@ -54,11 +47,7 @@ class CategoryController extends AbstractAdminController
     /**
      * Create a category.
      *
-     * @param Request $request
-     *
      * @throws InvalidInput
-     *
-     * @return JsonResponse
      */
     public function create(Request $request): JsonResponse
     {
@@ -71,7 +60,6 @@ class CategoryController extends AbstractAdminController
             throw new InvalidInput(_('You must enter a title and choose a location for the new category.'));
         }
 
-        /** @var OrmService */
         $orm = app(OrmService::class);
 
         $icon = $iconId ? $orm->getOne(File::class, $iconId) : null;
@@ -94,19 +82,12 @@ class CategoryController extends AbstractAdminController
     /**
      * Move category.
      *
-     * @param Request $request
-     * @param int     $id
-     *
      * @throws InvalidInput
-     *
-     * @return JsonResponse
      */
     public function update(Request $request, int $id): JsonResponse
     {
-        /** @var OrmService */
         $orm = app(OrmService::class);
 
-        /** @var ?Category */
         $category = $orm->getOne(Category::class, $id);
         if (!$category) {
             throw new InvalidInput(_('Category not found.'), Response::HTTP_NOT_FOUND);
@@ -114,7 +95,6 @@ class CategoryController extends AbstractAdminController
 
         if ($request->request->has('parentId')) {
             $parentId = $request->request->get('parentId');
-            /** @var ?Category */
             $parent = null !== $parentId ? $orm->getOne(Category::class, $parentId) : null;
             if ($parent) {
                 foreach ($parent->getBranch() as $node) {
@@ -146,7 +126,6 @@ class CategoryController extends AbstractAdminController
             $icon = null;
             $iconId = $request->request->get('icon_id');
             if (null !== $iconId) {
-                /** @var ?File */
                 $icon = $orm->getOne(File::class, $iconId);
             }
             $category->setIcon($icon);
@@ -172,19 +151,15 @@ class CategoryController extends AbstractAdminController
      * Update the order of categories.
      *
      * @param string $order Comma seporated list of ids
-     *
-     * @return void
      */
     public function updateKatOrder(string $order): void
     {
-        /** @var OrmService */
         $orm = app(OrmService::class);
 
         $order = explode(',', $order);
         $order = array_filter($order);
         $order = array_map('intval', $order);
         foreach ($order as $weight => $id) {
-            /** @var ?Category */
             $category = $orm->getOne(Category::class, $id);
             if ($category) {
                 $category->setWeight($weight)->save();
@@ -195,12 +170,7 @@ class CategoryController extends AbstractAdminController
     /**
      * Delete category.
      *
-     * @param Request $request
-     * @param int     $id
-     *
      * @throws InvalidInput
-     *
-     * @return JsonResponse
      */
     public function delete(Request $request, int $id): JsonResponse
     {
@@ -208,11 +178,7 @@ class CategoryController extends AbstractAdminController
             throw new InvalidInput(_('Cannot delete root categories.'), Response::HTTP_LOCKED);
         }
 
-        /** @var OrmService */
-        $orm = app(OrmService::class);
-
-        /** @var ?Category */
-        $category = $orm->getOne(Category::class, $id);
+        $category = app(OrmService::class)->getOne(Category::class, $id);
         if ($category) {
             $category->delete();
         }

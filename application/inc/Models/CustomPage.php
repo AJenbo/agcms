@@ -1,11 +1,13 @@
-<?php namespace App\Models;
+<?php
+
+namespace App\Models;
 
 use App\Services\DbService;
 
 class CustomPage extends AbstractEntity implements InterfaceRichText
 {
     /** Table name in database. */
-    const TABLE_NAME = 'special';
+    public const TABLE_NAME = 'special';
 
     // Backed by DB
 
@@ -28,12 +30,9 @@ class CustomPage extends AbstractEntity implements InterfaceRichText
 
     public static function mapFromDB(array $data): array
     {
-        /** @var DbService */
-        $db = app(DbService::class);
-
         return [
             'id'        => $data['id'],
-            'timestamp' => strtotime($data['dato']) + $db->getTimeOffset(),
+            'timestamp' => strtotime($data['dato']) + app(DbService::class)->getTimeOffset(),
             'title'     => $data['navn'],
             'html'      => $data['text'],
         ];
@@ -57,8 +56,6 @@ class CustomPage extends AbstractEntity implements InterfaceRichText
 
     /**
      * Get last update time.
-     *
-     * @return int
      */
     public function getTimeStamp(): int
     {
@@ -81,8 +78,6 @@ class CustomPage extends AbstractEntity implements InterfaceRichText
 
     /**
      * Get the title.
-     *
-     * @return string
      */
     public function getTitle(): string
     {
@@ -105,8 +100,6 @@ class CustomPage extends AbstractEntity implements InterfaceRichText
 
     /**
      * Set the HTML body.
-     *
-     * @return string
      */
     public function getHtml(): string
     {
@@ -119,7 +112,6 @@ class CustomPage extends AbstractEntity implements InterfaceRichText
     {
         $this->setTimeStamp(time());
 
-        /** @var DbService */
         $db = app(DbService::class);
 
         return [

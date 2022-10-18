@@ -1,4 +1,6 @@
-<?php namespace App\Services;
+<?php
+
+namespace App\Services;
 
 use App\Application;
 use App\Exceptions\Exception;
@@ -7,23 +9,18 @@ use App\Models\File;
 
 class FileService
 {
-    const MAX_PATH_LENGHT = 255; // Limit for some older browsers
+    private const MAX_PATH_LENGHT = 255; // Limit for some older browsers
 
     /**
      * Create new folder.
      *
-     * @param string $path
-     *
      * @throws Exception
      * @throws InvalidInput
-     *
-     * @return void
      */
     public function createFolder(string $path): void
     {
         $this->checkPermittedTargetPath($path);
 
-        /** @var Application */
         $app = app();
 
         if (file_exists($app->basePath($path))) {
@@ -40,26 +37,15 @@ class FileService
     /**
      * Delete folder.
      *
-     * @param string $path
-     *
      * @throws InvalidInput
-     *
-     * @return void
      */
     public function deleteFolder(string $path): void
     {
         $this->checkPermittedPath($path);
 
-        /** @var DbService */
-        $db = app(DbService::class);
-
-        /** @var OrmService */
-        $orm = app(OrmService::class);
-
-        /** @var File[] */
-        $files = $orm->getByQuery(
+        $files = app(OrmService::class)->getByQuery(
             File::class,
-            'SELECT * FROM `' . File::TABLE_NAME . '` WHERE path LIKE ' . $db->quote($path . '/%')
+            'SELECT * FROM `' . File::TABLE_NAME . '` WHERE path LIKE ' . app(DbService::class)->quote($path . '/%')
         );
         foreach ($files as $file) {
             if ($file->isInUse()) {
@@ -69,10 +55,7 @@ class FileService
             $file->delete();
         }
 
-        /** @var Application */
-        $app = app();
-
-        $this->deltree($app->basePath($path));
+        $this->deltree(app()->basePath($path));
     }
 
     public function cleanFileName(string $filename): string
@@ -90,15 +73,10 @@ class FileService
     /**
      * Check that given path is within the permittede datafolders.
      *
-     * @param string $path
-     *
      * @throws InvalidInput
-     *
-     * @return void
      */
     public function checkPermittedPath(string $path): void
     {
-        /** @var Application */
         $app = app();
 
         if (realpath($app->basePath($path)) !== $app->basePath($path)) {
@@ -113,11 +91,7 @@ class FileService
     /**
      * Check that the path is a valid save to taget.
      *
-     * @param string $path
-     *
      * @throws InvalidInput
-     *
-     * @return void
      */
     public function checkPermittedTargetPath(string $path): void
     {
@@ -128,10 +102,7 @@ class FileService
             throw new InvalidInput(_('The name is too long.'));
         }
 
-        /** @var Application */
-        $app = app();
-
-        if (!is_dir($app->basePath($dirname . '/'))) {
+        if (!is_dir(app()->basePath($dirname . '/'))) {
             throw new InvalidInput(_('Target is not a folder.'));
         }
     }
@@ -164,13 +135,9 @@ class FileService
 
     /**
      * Replace file paths in the html of pages, templates and requirements.
-     *
-     * @param string $path
-     * @param string $newPath
      */
     public function replaceFolderPaths(string $path, string $newPath): void
     {
-        /** @var DbService */
         $db = app(DbService::class);
 
         $newPathEsc = $db->quote('="' . $newPath . '/');
@@ -219,10 +186,6 @@ class FileService
 
     /**
      * Generate javascript for setting up file objects in Explorer.
-     *
-     * @param File $file
-     *
-     * @return string
      */
     public function filejavascript(File $file): string
     {
@@ -236,13 +199,11 @@ class FileService
             'description' => $file->getDescription(),
         ];
 
-        return 'files[' . $file->getId() . '] = new File(' . json_encode($data) . ');';
+        return 'files[' . $file->getId() . '] = new File(' . json_encode($data, JSON_THROW_ON_ERROR) . ');';
     }
 
     /**
      * Get file data as an array.
-     *
-     * @param File $file
      *
      * @return array<string, mixed>
      */
@@ -261,11 +222,6 @@ class FileService
 
     /**
      * Generate display HTML for file objects in Explorer.
-     *
-     * @param File   $file
-     * @param string $returnType
-     *
-     * @return string
      */
     public function filehtml(File $file, string $returnType = ''): string
     {
@@ -286,7 +242,7 @@ class FileService
             $onclick = 'openImageThumbnail(' . $file->getId() . ')';
             if ($file->getWidth() <= config('thumb_width') && $file->getHeight() <= config('thumb_height')) {
                 $onclick = 'setThumbnail(' . $file->getId() . ','
-                    . htmlspecialchars(json_encode($file->getPath()) ?: "''", ENT_COMPAT | ENT_XHTML) . ')';
+                    . htmlspecialchars(json_encode($file->getPath(), JSON_THROW_ON_ERROR) ?: "''", ENT_COMPAT | ENT_XHTML) . ')';
             }
         }
         $html .= ' onclick="' . $onclick . '"> <img src="';
@@ -338,7 +294,7 @@ class FileService
             . $pathinfo['filename'] . '</div><form action="" method="get" onsubmit="document.getElementById(\'rename'
             . $file->getId() . '\').blur();return false" style="display:none" id="navn' . $file->getId()
             . 'form"><p><input id="rename' . $file->getId() . '" onblur="renamefile(\'' . $file->getId()
-            . '\')" maxlength="' . (251 - mb_strlen($pathinfo['dirname'], 'UTF-8')) . '" value="'
+            . '\')" maxlength="' . (251 - mb_strlen($pathinfo['dirname'] ?? '', 'UTF-8')) . '" value="'
             . $pathinfo['filename'] . '" /></p></form></div>';
 
         return $html;
@@ -346,8 +302,6 @@ class FileService
 
     /**
      * Get root of folder tree.
-     *
-     * @param string $currentDir
      *
      * @return array<array<string, mixed>>
      */
@@ -363,10 +317,6 @@ class FileService
 
     /**
      * Get metadata for a folder.
-     *
-     * @param string $path
-     * @param string $name
-     * @param string $currentDir
      *
      * @return array<string, mixed>
      */
@@ -397,17 +347,11 @@ class FileService
     /**
      * Return list of folders in a folder.
      *
-     * @param string $path
-     * @param string $currentDir
-     *
      * @return array<int, array<string, mixed>>
      */
     public function getSubDirs(string $path, string $currentDir): array
     {
-        /** @var Application */
-        $app = app();
-
-        $folders = glob($app->basePath($path . '/*/'));
+        $folders = glob(app()->basePath($path . '/*/'));
         if ($folders === false) {
             throw new Exception(_('Unable to access folder'));
         }
@@ -424,16 +368,9 @@ class FileService
 
     /**
      * Check if folder has subfolders.
-     *
-     * @param string $path
-     *
-     * @return bool
      */
     private function hasSubsDirs(string $path): bool
     {
-        /** @var Application */
-        $app = app();
-
-        return (bool) glob($app->basePath($path . '/*/'));
+        return (bool) glob(app()->basePath($path . '/*/'));
     }
 }

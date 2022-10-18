@@ -1,11 +1,13 @@
-<?php namespace App\Models;
+<?php
+
+namespace App\Models;
 
 use App\Services\DbService;
 
 class CustomSorting extends AbstractEntity
 {
     /**  Table name in database. */
-    const TABLE_NAME = 'tablesort';
+    public const TABLE_NAME = 'tablesort';
 
     // Backed by DB
 
@@ -25,8 +27,6 @@ class CustomSorting extends AbstractEntity
     /**
      * Set title.
      *
-     * @param string $title
-     *
      * @return $this
      */
     public function setTitle(string $title): self
@@ -38,8 +38,6 @@ class CustomSorting extends AbstractEntity
 
     /**
      * Get title.
-     *
-     * @return string
      */
     public function getTitle(): string
     {
@@ -90,7 +88,6 @@ class CustomSorting extends AbstractEntity
         $items = array_map('htmlspecialchars', $this->items);
         $items = implode('<', $items);
 
-        /** @var DbService */
         $db = app(DbService::class);
 
         return [

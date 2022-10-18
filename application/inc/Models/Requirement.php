@@ -1,11 +1,13 @@
-<?php namespace App\Models;
+<?php
+
+namespace App\Models;
 
 use App\Services\DbService;
 
 class Requirement extends AbstractRenderable implements InterfaceRichText
 {
     /** Table name in database. */
-    const TABLE_NAME = 'krav';
+    public const TABLE_NAME = 'krav';
 
     // Backed by DB
 
@@ -46,8 +48,6 @@ class Requirement extends AbstractRenderable implements InterfaceRichText
 
     /**
      * Get the HTML body.
-     *
-     * @return string
      */
     public function getHtml(): string
     {
@@ -58,8 +58,6 @@ class Requirement extends AbstractRenderable implements InterfaceRichText
 
     /**
      * Get the url slug.
-     *
-     * @return string
      */
     public function getSlug(): string
     {
@@ -70,7 +68,6 @@ class Requirement extends AbstractRenderable implements InterfaceRichText
 
     public function getDbArray(): array
     {
-        /** @var DbService */
         $db = app(DbService::class);
 
         return [

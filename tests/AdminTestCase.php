@@ -1,7 +1,10 @@
-<?php namespace Tests;
+<?php
+
+namespace Tests;
 
 use App\Models\User;
 use App\Services\OrmService;
+use Exception;
 
 abstract class AdminTestCase extends TestCase
 {
@@ -13,10 +16,10 @@ abstract class AdminTestCase extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
-        /** @var OrmService */
-        $orm = app(OrmService::class);
-        /** @var User */
-        $user = $orm->getOne(User::class, 1);
+        $user = app(OrmService::class)->getOne(User::class, 1);
+        if ($user === null) {
+            throw new Exception('Failed to load user from database');
+        }
         $this->actingAs($user);
     }
 }

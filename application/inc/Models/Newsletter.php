@@ -1,4 +1,6 @@
-<?php namespace App\Models;
+<?php
+
+namespace App\Models;
 
 use App\Application;
 use App\Exceptions\Exception;
@@ -12,7 +14,7 @@ use Throwable;
 class Newsletter extends AbstractEntity implements InterfaceRichText
 {
     /**  Table name in database. */
-    const TABLE_NAME = 'newsmails';
+    public const TABLE_NAME = 'newsmails';
 
     // Backed by DB
 
@@ -42,8 +44,6 @@ class Newsletter extends AbstractEntity implements InterfaceRichText
     }
 
     /**
-     * @param string $from
-     *
      * @return $this
      */
     public function setFrom(string $from): self
@@ -53,17 +53,12 @@ class Newsletter extends AbstractEntity implements InterfaceRichText
         return $this;
     }
 
-    /**
-     * @return string
-     */
     public function getFrom(): string
     {
         return $this->from;
     }
 
     /**
-     * @param string $subject
-     *
      * @return $this
      */
     public function setSubject(string $subject): self
@@ -73,17 +68,12 @@ class Newsletter extends AbstractEntity implements InterfaceRichText
         return $this;
     }
 
-    /**
-     * @return string
-     */
     public function getSubject(): string
     {
         return $this->subject;
     }
 
     /**
-     * @param string $html
-     *
      * @return $this
      */
     public function setHtml(string $html): InterfaceRichText
@@ -93,17 +83,12 @@ class Newsletter extends AbstractEntity implements InterfaceRichText
         return $this;
     }
 
-    /**
-     * @return string
-     */
     public function getHtml(): string
     {
         return $this->html;
     }
 
     /**
-     * @param bool $sent
-     *
      * @return $this
      */
     public function setSent(bool $sent): self
@@ -113,9 +98,6 @@ class Newsletter extends AbstractEntity implements InterfaceRichText
         return $this;
     }
 
-    /**
-     * @return bool
-     */
     public function isSent(): bool
     {
         return $this->sent;
@@ -167,7 +149,6 @@ class Newsletter extends AbstractEntity implements InterfaceRichText
         $interests = array_map('htmlspecialchars', $this->interests);
         $interests = implode('<', $interests);
 
-        /** @var DbService */
         $db = app(DbService::class);
 
         return [
@@ -181,12 +162,9 @@ class Newsletter extends AbstractEntity implements InterfaceRichText
 
     /**
      * Count number of recipients for this newsletter.
-     *
-     * @return int
      */
     public function countRecipients(): int
     {
-        /** @var DbService */
         $db = app(DbService::class);
 
         $db->addLoadedTable('email');
@@ -203,8 +181,6 @@ class Newsletter extends AbstractEntity implements InterfaceRichText
 
     /**
      * Get SQL for filtering contacts based on interests.
-     *
-     * @return string
      */
     private function getContactFilterSQL(): string
     {
@@ -236,8 +212,6 @@ class Newsletter extends AbstractEntity implements InterfaceRichText
      * @todo resend failed emails, save bcc
      *
      * @throws Exception
-     *
-     * @return void
      */
     public function send(): void
     {
@@ -245,12 +219,8 @@ class Newsletter extends AbstractEntity implements InterfaceRichText
             throw new Exception(_('The newsletter has already been sent.'));
         }
 
-        /** @var OrmService */
-        $orm = app(OrmService::class);
-
         $andWhere = $this->getContactFilterSQL();
-        /** @var Contact[] */
-        $contacts = $orm->getByQuery(
+        $contacts = app(OrmService::class)->getByQuery(
             Contact::class,
             'SELECT * FROM email WHERE email NOT LIKE \'\' AND `kartotek` = \'1\' ' . $andWhere . ' GROUP BY `email`'
         );
@@ -261,21 +231,16 @@ class Newsletter extends AbstractEntity implements InterfaceRichText
             $contactsGroups[(int) floor($x / 99) + 1][] = $contact;
         }
 
-        /** @var Application */
-        $app = app();
-
         $data = [
             'siteName' => config('site_name'),
             'css'      => file_get_contents(
-                $app->basePath('/theme/' . config('theme', 'default') . '/style/email.css')
+                app()->basePath('/theme/' . config('theme', 'default') . '/style/email.css')
             ),
             'body'     => str_replace(' href="/', ' href="' . config('base_url') . '/', $this->html),
         ];
-        /** @var EmailService */
         $emailService = app(EmailService::class);
         $failedCount = 0;
 
-        /** @var RenderService */
         $render = app(RenderService::class);
 
         foreach ($contactsGroups as $bcc) {
@@ -291,9 +256,7 @@ class Newsletter extends AbstractEntity implements InterfaceRichText
             try {
                 $emailService->send($email, $bcc);
             } catch (Throwable $exception) {
-                /** @var ExceptionHandler */
-                $handler = app(ExceptionHandler::class);
-                $handler->report($exception);
+                app(ExceptionHandler::class)->report($exception);
                 $failedCount += count($bcc);
             }
         }

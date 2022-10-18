@@ -1,4 +1,6 @@
-<?php namespace Tests\Feature\Http\Controllers\Admin;
+<?php
+
+namespace Tests\Feature\Http\Controllers\Admin;
 
 use Tests\AdminTestCase;
 

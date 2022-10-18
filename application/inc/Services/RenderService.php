@@ -1,4 +1,6 @@
-<?php namespace App\Services;
+<?php
+
+namespace App\Services;
 
 use App\Application;
 use Twig_Environment;
@@ -12,7 +14,6 @@ class RenderService
 
     public function __construct()
     {
-        /** @var Application */
         $app = app();
         $templatePath = $app->basePath('/theme');
         $loader = new Twig_Loader_Filesystem('default/', $templatePath);
@@ -41,10 +42,7 @@ class RenderService
     /**
      * Render a template.
      *
-     * @param string               $template
      * @param array<string, mixed> $data
-     *
-     * @return string
      */
     public function render(string $template = 'index', array $data = []): string
     {

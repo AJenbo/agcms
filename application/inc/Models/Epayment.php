@@ -1,4 +1,6 @@
-<?php namespace App\Models;
+<?php
+
+namespace App\Models;
 
 use App\Services\EpaymentService;
 use stdClass;
@@ -48,17 +50,9 @@ class Epayment
     private $annulled = false;
 
     /**
-     * Did an error occure on the last action.
-     *
-     * @var bool
-     */
-    private $error = false;
-
-    /**
      * Setup the class variables for initialization.
      *
-     * @param EpaymentService $service         The manager for handeling service communication
-     * @param stdClass        $transactionData
+     * @param EpaymentService $service The manager for handeling service communication
      */
     public function __construct(EpaymentService $service, stdClass $transactionData)
     {
@@ -78,8 +72,6 @@ class Epayment
 
     /**
      * Get transaction id.
-     *
-     * @return int
      */
     public function getId(): int
     {
@@ -88,8 +80,6 @@ class Epayment
 
     /**
      * Is the transaction ready to be captured.
-     *
-     * @return bool
      */
     public function isAuthorized(): bool
     {
@@ -98,8 +88,6 @@ class Epayment
 
     /**
      * Has the transaction been cancled.
-     *
-     * @return bool
      */
     public function isAnnulled(): bool
     {
@@ -108,8 +96,6 @@ class Epayment
 
     /**
      * Transfer an amount to the shop.
-     *
-     * @return int
      */
     public function getAmountCaptured(): int
     {
@@ -118,8 +104,6 @@ class Epayment
 
     /**
      * Canncels a payment transation.
-     *
-     * @return bool
      */
     public function annul(): bool
     {
@@ -129,8 +113,6 @@ class Epayment
 
         $success = $this->service->annul($this);
         if (!$success) {
-            $this->error = true;
-
             return false;
         }
 
@@ -145,9 +127,7 @@ class Epayment
      *
      * @todo support multiple partial captures
      *
-     * @param int|null $amount The amount to draw from the customers account
-     *
-     * @return bool
+     * @param null|int $amount The amount to draw from the customers account
      */
     public function confirm(int $amount = null): bool
     {
@@ -166,17 +146,11 @@ class Epayment
 
     /**
      * Send the actual transaction request.
-     *
-     * @param int $amount
-     *
-     * @return bool
      */
     private function doCapture(int $amount): bool
     {
         $success = $this->service->confirm($this, $amount);
         if (!$success) {
-            $this->error = true;
-
             return false;
         }
 

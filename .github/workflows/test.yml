@@ -1,0 +1,61 @@
+name: Test
+
+on:
+  push:
+    branches:
+      - master
+  pull_request:
+    types: [ opened, synchronize ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        php: [ '7.4', '8.0' ]
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: ${{ matrix.php }}
+          tools: composer:v2, cs2pr
+          coverage: pcov
+
+      - name: Get Cache
+        id: composer-cache
+        run: echo "::set-output name=dir::$(cd ./application && composer config cache-files-dir)"
+      - uses: actions/cache@v3
+        with:
+          path: ${{ steps.composer-cache.outputs.dir }}
+          key: composer-${{ hashFiles('**/composer.lock') }}
+          restore-keys: composer-
+
+      - name: Install dependencies
+        working-directory: ./application
+        run: composer install
+
+      - name: PHPStan
+        working-directory: ./application
+        run: vendor/bin/phpstan
+
+      - name: PHPUnit
+        run: application/vendor/bin/phpunit --printer mheap\\GithubActionsReporter\\Printer
+
+      - name: Upload coverage to Coveralls
+        env:
+          COVERALLS_REPO_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: application/vendor/bin/php-coveralls
+
+      - name: Upload coverage to Codecov
+        uses: codecov/codecov-action@v3
+
+      - name: Upload coverage to Codacy
+        uses: codacy/codacy-analysis-cli-action@v4.2.0
+
+      - name: Upload coverage to Codeclimate
+        uses: paambaati/codeclimate-action@v3.1.0
+        env:
+          CC_TEST_REPORTER_ID: dded30dc4b62f393c80ed752f13c7c7efaf748c3573daee0f4040615457ff9c0

@@ -1,4 +1,6 @@
-<?php namespace App\Http\Controllers\Admin;
+<?php
+
+namespace App\Http\Controllers\Admin;
 
 use App\Exceptions\InvalidInput;
 use App\Models\CustomSorting;
@@ -11,18 +13,11 @@ class CustomSortingController extends AbstractAdminController
 {
     /**
      * Show list of custom sortings.
-     *
-     * @param Request $request
-     *
-     * @return Response
      */
     public function index(Request $request): Response
     {
-        /** @var OrmService */
-        $orm = app(OrmService::class);
-
         $data = $this->basicPageData($request);
-        $data['lists'] = $orm->getByQuery(CustomSorting::class, 'SELECT * FROM `tablesort`');
+        $data['lists'] = app(OrmService::class)->getByQuery(CustomSorting::class, 'SELECT * FROM `tablesort`');
 
         return $this->render('admin/listsort', $data);
     }
@@ -30,20 +25,13 @@ class CustomSortingController extends AbstractAdminController
     /**
      * Edit page for custom sorting.
      *
-     * @param Request $request
-     * @param int     $id
-     *
-     * @return Response
+     * @param int $id
      */
     public function listsortEdit(Request $request, int $id = null): Response
     {
         $customSorting = null;
         if (null !== $id) {
-            /** @var OrmService */
-            $orm = app(OrmService::class);
-
-            /** @var ?CustomSorting */
-            $customSorting = $orm->getOne(CustomSorting::class, $id);
+            $customSorting = app(OrmService::class)->getOne(CustomSorting::class, $id);
             if (!$customSorting) {
                 throw new InvalidInput(_('Custom sorting not found.'), Response::HTTP_NOT_FOUND);
             }
@@ -59,10 +47,6 @@ class CustomSortingController extends AbstractAdminController
 
     /**
      * Create new custom sorting.
-     *
-     * @param Request $request
-     *
-     * @return JsonResponse
      */
     public function create(Request $request): JsonResponse
     {
@@ -83,11 +67,6 @@ class CustomSortingController extends AbstractAdminController
 
     /**
      * Update custom sorting.
-     *
-     * @param Request $request
-     * @param int     $id
-     *
-     * @return JsonResponse
      */
     public function update(Request $request, int $id): JsonResponse
     {
@@ -97,11 +76,7 @@ class CustomSortingController extends AbstractAdminController
             throw new InvalidInput(_('You must enter a title.'));
         }
 
-        /** @var OrmService */
-        $orm = app(OrmService::class);
-
-        /** @var ?CustomSorting */
-        $customSorting = $orm->getOne(CustomSorting::class, $id);
+        $customSorting = app(OrmService::class)->getOne(CustomSorting::class, $id);
         if (!$customSorting) {
             throw new InvalidInput(_('Custom sorting not found.'), Response::HTTP_NOT_FOUND);
         }

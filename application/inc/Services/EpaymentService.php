@@ -1,4 +1,6 @@
-<?php namespace App\Services;
+<?php
+
+namespace App\Services;
 
 use App\Models\Epayment;
 use SoapClient;
@@ -22,7 +24,7 @@ class EpaymentService
     private $soapClient;
 
     /** @var array<int, string> */
-    const PAYMENT_TYPES = [
+    private const PAYMENT_TYPES = [
         1  => 'Dankort/Visa-Dankort',
         3  => 'Visa / Visa Electron',
         4  => 'MasterCard',
@@ -61,10 +63,6 @@ class EpaymentService
 
     /**
      * Get name of payment type.
-     *
-     * @param int $paymentType
-     *
-     * @return string
      */
     public static function getPaymentName(int $paymentType): string
     {
@@ -73,8 +71,6 @@ class EpaymentService
 
     /**
      * @param string $orderId The order id
-     *
-     * @return Epayment
      */
     public function getPayment(string $orderId): Epayment
     {
@@ -107,8 +103,6 @@ class EpaymentService
      * Fetch the transation data.
      *
      * @param string $orderId Shop order id
-     *
-     * @return stdClass
      */
     private function getTransactionData(string $orderId): stdClass
     {
@@ -130,9 +124,6 @@ class EpaymentService
     /**
      * Generate a search request.
      *
-     * @param string $orderId
-     * @param string $status
-     *
      * @return array<string, mixed>
      */
     private function getSearchData(string $orderId, string $status): array
@@ -150,10 +141,6 @@ class EpaymentService
 
     /**
      * Canncels a payment transation.
-     *
-     * @param Epayment $epayment
-     *
-     * @return bool
      */
     public function annul(Epayment $epayment): bool
     {
@@ -176,10 +163,7 @@ class EpaymentService
     /**
      * Confirm the transation and draw the amount from the users account.
      *
-     * @param Epayment $epayment
-     * @param int      $amount   The amount to draw from the customers account
-     *
-     * @return bool
+     * @param int $amount The amount to draw from the customers account
      */
     public function confirm(Epayment $epayment, int $amount): bool
     {

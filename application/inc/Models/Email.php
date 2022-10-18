@@ -1,4 +1,6 @@
-<?php namespace App\Models;
+<?php
+
+namespace App\Models;
 
 use App\Exceptions\InvalidInput;
 use App\Services\DbService;
@@ -7,7 +9,7 @@ use App\Services\EmailService;
 class Email extends AbstractEntity
 {
     /**  Table name in database. */
-    const TABLE_NAME = 'emails';
+    public const TABLE_NAME = 'emails';
 
     /** @var EmailService */
     private $emailService;
@@ -37,9 +39,7 @@ class Email extends AbstractEntity
 
     public function __construct(array $data = [])
     {
-        /** @var EmailService */
-        $emailService = app(EmailService::class);
-        $this->emailService = $emailService;
+        $this->emailService = app(EmailService::class);
 
         $this->setTimestamp($data['timestamp'] ?? time())
             ->setSubject($data['subject'])
@@ -54,8 +54,6 @@ class Email extends AbstractEntity
     /**
      * Set created time.
      *
-     * @param int $timestamp
-     *
      * @return $this
      */
     public function setTimestamp(int $timestamp): self
@@ -67,8 +65,6 @@ class Email extends AbstractEntity
 
     /**
      * Get creation time.
-     *
-     * @return int
      */
     public function getTimestamp(): int
     {
@@ -76,8 +72,6 @@ class Email extends AbstractEntity
     }
 
     /**
-     * @param string $subject
-     *
      * @throws InvalidInput
      *
      * @return $this
@@ -93,17 +87,12 @@ class Email extends AbstractEntity
         return $this;
     }
 
-    /**
-     * @return string
-     */
     public function getSubject(): string
     {
         return $this->subject;
     }
 
     /**
-     * @param string $body
-     *
      * @throws InvalidInput
      *
      * @return $this
@@ -119,17 +108,12 @@ class Email extends AbstractEntity
         return $this;
     }
 
-    /**
-     * @return string
-     */
     public function getBody(): string
     {
         return $this->body;
     }
 
     /**
-     * @param string $senderName
-     *
      * @throws InvalidInput
      *
      * @return $this
@@ -145,17 +129,12 @@ class Email extends AbstractEntity
         return $this;
     }
 
-    /**
-     * @return string
-     */
     public function getSenderName(): string
     {
         return $this->senderName;
     }
 
     /**
-     * @param string $senderAddress
-     *
      * @throws InvalidInput
      *
      * @return $this
@@ -171,17 +150,12 @@ class Email extends AbstractEntity
         return $this;
     }
 
-    /**
-     * @return string
-     */
     public function getSenderAddress(): string
     {
         return $this->senderAddress;
     }
 
     /**
-     * @param string $recipientName
-     *
      * @throws InvalidInput
      *
      * @return $this
@@ -197,17 +171,12 @@ class Email extends AbstractEntity
         return $this;
     }
 
-    /**
-     * @return string
-     */
     public function getRecipientName(): string
     {
         return $this->recipientName;
     }
 
     /**
-     * @param string $recipientAddress
-     *
      * @throws InvalidInput
      *
      * @return $this
@@ -223,9 +192,6 @@ class Email extends AbstractEntity
         return $this;
     }
 
-    /**
-     * @return string
-     */
     public function getRecipientAddress(): string
     {
         return $this->recipientAddress;
@@ -243,12 +209,9 @@ class Email extends AbstractEntity
         $recipientAddress = trim($to[0]);
         $recipientName = mb_substr($to[1], 0, -1);
 
-        /** @var DbService */
-        $db = app(DbService::class);
-
         return [
             'id'               => $data['id'],
-            'timestamp'        => strtotime($data['date']) + $db->getTimeOffset(),
+            'timestamp'        => strtotime($data['date']) + app(DbService::class)->getTimeOffset(),
             'subject'          => $data['subject'],
             'body'             => $data['body'],
             'senderName'       => $senderName,
@@ -262,7 +225,6 @@ class Email extends AbstractEntity
     {
         $this->setTimestamp(time());
 
-        /** @var DbService */
         $db = app(DbService::class);
 
         return [

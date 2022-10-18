@@ -1,4 +1,6 @@
-<?php namespace Tests;
+<?php
+
+namespace Tests;
 
 use App\Application;
 use App\Http\Request;
@@ -7,7 +9,9 @@ use App\Services\ConfigService;
 use App\Services\DbService;
 use DateTime;
 use DateTimeZone;
+use Exception;
 use PHPUnit\Framework\TestCase as BaseTestCase;
+use Symfony\Component\HttpFoundation\File\UploadedFile;
 
 abstract class TestCase extends BaseTestCase
 {
@@ -35,7 +39,6 @@ abstract class TestCase extends BaseTestCase
         // Initialize application
         $this->app = new Application(__DIR__ . '/../application');
 
-        /** @var DbService */
         $db = app(DbService::class);
 
         // Load schema and seed data
@@ -57,8 +60,11 @@ abstract class TestCase extends BaseTestCase
     public function timeToHeader(int $timestamp): string
     {
         // Set the call one hour in to the feature to make sure the data is older
-        /** @var DateTime */
         $lastModified = DateTime::createFromFormat('U', (string) $timestamp, new DateTimeZone('GMT'));
+        if ($lastModified === false) {
+            throw new Exception('Unable to parse timestamp: ' . $timestamp);
+        }
+
         $lastModified = $lastModified->format('r');
 
         return mb_substr($lastModified, 0, -5) . 'GMT';
@@ -98,7 +104,7 @@ abstract class TestCase extends BaseTestCase
      * Visit the given URI with a POST request.
      *
      * @param string   $uri
-     * @param array    $data
+     * @param string[] $data
      * @param string[] $headers
      *
      * @return TestResponse
@@ -115,7 +121,7 @@ abstract class TestCase extends BaseTestCase
      *
      * @param string   $method
      * @param string   $uri
-     * @param array    $data
+     * @param mixed[]  $data
      * @param string[] $headers
      *
      * @return TestResponse
@@ -139,7 +145,7 @@ abstract class TestCase extends BaseTestCase
      * @param string   $uri
      * @param string[] $parameters
      * @param string[] $cookies
-     * @param array    $files
+     * @param UploadedFile[]    $files
      * @param string[] $server
      * @param string   $content
      *
@@ -202,8 +208,8 @@ abstract class TestCase extends BaseTestCase
     /**
      * Assert that a given where condition exists in the database.
      *
-     * @param string $table
-     * @param array  $data
+     * @param string                     $table
+     * @param array<string, null|string|int|float> $data
      *
      * @return $this
      */
@@ -212,7 +218,7 @@ abstract class TestCase extends BaseTestCase
         $message = sprintf(
             'Failed asserting that a row in the table [%s] matches the attributes %s.',
             $table,
-            json_encode($data, JSON_PRETTY_PRINT)
+            json_encode($data, JSON_THROW_ON_ERROR | JSON_PRETTY_PRINT)
         );
 
         $this->assertTrue($this->isInDatabase($table, $data), $message);
@@ -223,8 +229,8 @@ abstract class TestCase extends BaseTestCase
     /**
      * Assert that a given where condition does not exist in the database.
      *
-     * @param string $table
-     * @param array  $data
+     * @param string                     $table
+     * @param array<string, null|string|int|float> $data
      *
      * @return $this
      */
@@ -233,7 +239,7 @@ abstract class TestCase extends BaseTestCase
         $message = sprintf(
             'Failed asserting that no row in the table [%s] matches the attributes %s.',
             $table,
-            json_encode($data, JSON_PRETTY_PRINT)
+            json_encode($data, JSON_THROW_ON_ERROR | JSON_PRETTY_PRINT)
         );
 
         $this->assertFalse($this->isInDatabase($table, $data), $message);
@@ -244,14 +250,13 @@ abstract class TestCase extends BaseTestCase
     /**
      * Test if a given where condition exists in the database.
      *
-     * @param string $table
-     * @param array  $data
+     * @param string                     $table
+     * @param array<string, null|string|int|float> $data
      *
      * @return bool
      */
     private function isInDatabase(string $table, array $data): bool
     {
-        /** @var DbService */
         $db = app(DbService::class);
 
         $sets = [];
@@ -261,7 +266,7 @@ abstract class TestCase extends BaseTestCase
                 continue;
             }
 
-            $sets[] = '`' . $filedName . '` = ' . $db->quote($value);
+            $sets[] = '`' . $filedName . '` = ' . $db->quote((string)$value);
         }
         $query = 'SELECT * FROM `' . $table . '` WHERE ' . implode(' AND ', $sets);
 

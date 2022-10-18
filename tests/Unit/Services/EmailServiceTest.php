@@ -1,4 +1,6 @@
-<?php namespace Tests\Unit\Services;
+<?php
+
+namespace Tests\Unit\Services;
 
 use App\Services\EmailService;
 use PHPUnit\Framework\TestCase;

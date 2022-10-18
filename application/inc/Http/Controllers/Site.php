@@ -1,4 +1,6 @@
-<?php namespace App\Http\Controllers;
+<?php
+
+namespace App\Http\Controllers;
 
 use App\Contracts\Renderable;
 use App\Exceptions\InvalidInput;
@@ -16,19 +18,10 @@ class Site extends Base
 {
     /**
      * View a category.
-     *
-     * @param Request $request
-     * @param int     $categoryId
-     *
-     * @return Response
      */
     public function category(Request $request, int $categoryId): Response
     {
-        /** @var OrmService */
-        $orm = app(OrmService::class);
-
-        /** @var ?Category */
-        $category = $orm->getOne(Category::class, $categoryId);
+        $category = app(OrmService::class)->getOne(Category::class, $categoryId);
         if ($redirect = $this->checkCategoryUrl($request, $category)) {
             return $redirect;
         }
@@ -41,7 +34,6 @@ class Site extends Base
         $renderable = $category;
         $pages = $category->getPages();
         if (1 === count($pages)) {
-            /** @var Page */
             $renderable = array_shift($pages);
             $template = 'product';
         }
@@ -59,16 +51,11 @@ class Site extends Base
 
     /**
      * View the frontpage.
-     *
-     * @return Response
      */
     public function frontPage(): Response
     {
-        /** @var OrmService */
-        $orm = app(OrmService::class);
-
         $data = [
-            'renderable' => $orm->getOne(CustomPage::class, 1),
+            'renderable' => app(OrmService::class)->getOne(CustomPage::class, 1),
         ] + $this->basicPageData();
 
         $response = $this->render('index', $data);
@@ -78,11 +65,6 @@ class Site extends Base
 
     /**
      * View page in the root category.
-     *
-     * @param Request $request
-     * @param int     $pageId
-     *
-     * @return Response
      */
     public function rootPage(Request $request, int $pageId): Response
     {
@@ -91,21 +73,12 @@ class Site extends Base
 
     /**
      * View a page.
-     *
-     * @param Request $request
-     * @param int     $categoryId
-     * @param int     $pageId
-     *
-     * @return Response
      */
     public function page(Request $request, int $categoryId, int $pageId): Response
     {
-        /** @var OrmService */
         $orm = app(OrmService::class);
 
-        /** @var ?Category */
         $category = $orm->getOne(Category::class, $categoryId);
-        /** @var ?Page */
         $page = $orm->getOne(Page::class, $pageId);
 
         if ($redirect = $this->checkPageUrl($request, $category, $page)) {
@@ -132,19 +105,10 @@ class Site extends Base
 
     /**
      * View a requirement notice.
-     *
-     * @param Request $request
-     * @param int     $requirementId
-     *
-     * @return Response
      */
     public function requirement(Request $request, int $requirementId): Response
     {
-        /** @var OrmService */
-        $orm = app(OrmService::class);
-
-        /** @var ?Requirement */
-        $requirement = $orm->getOne(Requirement::class, $requirementId);
+        $requirement = app(OrmService::class)->getOne(Requirement::class, $requirementId);
         if ($redirect = $this->checkRenderableUrl($request, $requirement)) {
             return $redirect;
         }
@@ -161,19 +125,10 @@ class Site extends Base
 
     /**
      * View a brand.
-     *
-     * @param Request $request
-     * @param int     $brandId
-     *
-     * @return Response
      */
     public function brand(Request $request, int $brandId): Response
     {
-        /** @var OrmService */
-        $orm = app(OrmService::class);
-
-        /** @var ?Brand */
-        $brand = $orm->getOne(Brand::class, $brandId);
+        $brand = app(OrmService::class)->getOne(Brand::class, $brandId);
         if ($redirect = $this->checkRenderableUrl($request, $brand)) {
             return $redirect;
         }
@@ -198,7 +153,6 @@ class Site extends Base
      *
      * Returns a redirect responce if the url is not valid
      *
-     * @param Request   $request
      * @param ?Category $category
      *
      * @return ?RedirectResponse
@@ -221,7 +175,6 @@ class Site extends Base
      *
      * Returns a redirect responce if the url is not valid
      *
-     * @param Request   $request
      * @param ?Category $category
      * @param ?Page     $page
      *
@@ -251,7 +204,6 @@ class Site extends Base
      *
      * Returns a redirect responce if the url is not valid
      *
-     * @param Request     $request
      * @param ?Renderable $renderable
      *
      * @return ?RedirectResponse
