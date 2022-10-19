@@ -201,8 +201,6 @@ class InvoiceService
 
     /**
      * Add the customer to the malinglist.
-     *
-     * @param ?string $clientIp
      */
     public function addToAddressBook(Invoice $invoice, ?string $clientIp): void
     {

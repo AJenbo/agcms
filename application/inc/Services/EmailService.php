@@ -13,12 +13,10 @@ use PHPMailer\PHPMailer\PHPMailer;
 class EmailService
 {
     /** @var array<string, bool> */
-    private $ceche = [];
+    private array $ceche = [];
 
     /**
      * Checks if email an address looks valid and that an mx server is responding.
-     *
-     * @param string $email The email address to check
      */
     public function valideMail(string $email): bool
     {
@@ -47,12 +45,13 @@ class EmailService
      */
     private function checkMx(string $domain): bool
     {
+        if (app()->environment('test')) {
+            return true;
+        }
+
         if (!isset($this->ceche[$domain])) {
             $dummy = [];
-            $this->ceche[$domain] = true;
-            if (!app()->environment('test')) {
-                $this->ceche[$domain] = getmxrr($domain, $dummy);
-            }
+            $this->ceche[$domain] = getmxrr($domain, $dummy);
         }
 
         return $this->ceche[$domain];

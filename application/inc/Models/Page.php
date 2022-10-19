@@ -16,37 +16,37 @@ class Page extends AbstractRenderable implements InterfaceRichText
     // Backed by DB
 
     /** @var string Stock keeping unit. */
-    private $sku = '';
+    private string $sku = '';
 
     /** @var int Latest save time. */
-    private $timeStamp;
+    private int $timeStamp;
 
     /** @var string Page keywords, coma seporated. */
-    private $keywords = '';
+    private string $keywords = '';
 
     /** @var string HTML body. */
-    private $html = '';
+    private string $html = '';
 
     /** @var string Short text description. */
-    private $excerpt = '';
+    private string $excerpt = '';
 
     /** @var ?int Id of requirement page. */
-    private $requirementId;
+    private ?int $requirementId;
 
     /** @var ?int Id of brand. */
-    private $brandId;
+    private ?int $brandId;
 
     /** @var int Current price. */
-    private $price = 0;
+    private int $price = 0;
 
     /** @var int Previous price. */
-    private $oldPrice = 0;
+    private int $oldPrice = 0;
 
     /** @var int What type of price is the current (from, specific). */
-    private $priceType = 0;
+    private int $priceType = 0;
 
     /** @var int What type of price is the previous (from, specific). */
-    private $oldPriceType = 0;
+    private int $oldPriceType = 0;
 
     public function __construct(array $data = [])
     {
@@ -114,8 +114,6 @@ class Page extends AbstractRenderable implements InterfaceRichText
     /**
      * Set the Stock Keeping Unit identifyer.
      *
-     * @param string $sku Stock product number
-     *
      * @return $this
      */
     public function setSku(string $sku): self
@@ -136,8 +134,6 @@ class Page extends AbstractRenderable implements InterfaceRichText
     /**
      * Set the last modefied time stamp.
      *
-     * @param int $timeStamp Last modefied
-     *
      * @return $this
      */
     public function setTimeStamp(int $timeStamp): self
@@ -156,8 +152,6 @@ class Page extends AbstractRenderable implements InterfaceRichText
     }
 
     /**
-     * Set keywords.
-     *
      * @param string $keywords Comma seporated
      *
      * @return $this
@@ -169,19 +163,12 @@ class Page extends AbstractRenderable implements InterfaceRichText
         return $this;
     }
 
-    /**
-     * Get keywords.
-     */
     public function getKeywords(): string
     {
         return $this->keywords;
     }
 
     /**
-     * Set HTML body.
-     *
-     * @param string $html The HTML body
-     *
      * @return $this
      */
     public function setHtml(string $html): InterfaceRichText
@@ -201,8 +188,6 @@ class Page extends AbstractRenderable implements InterfaceRichText
 
     /**
      * Set the breaf description.
-     *
-     * @param string $excerpt Short text
      *
      * @return $this
      */
@@ -244,10 +229,6 @@ class Page extends AbstractRenderable implements InterfaceRichText
     }
 
     /**
-     * Set the Requirement id.
-     *
-     * @param ?int $requirementId Requirement id
-     *
      * @return $this
      */
     public function setRequirementId(?int $requirementId): self
@@ -258,10 +239,6 @@ class Page extends AbstractRenderable implements InterfaceRichText
     }
 
     /**
-     * Set the Brand id.
-     *
-     * @param ?int $brandId Brand id
-     *
      * @return $this
      */
     public function setBrandId(?int $brandId): self
@@ -273,8 +250,6 @@ class Page extends AbstractRenderable implements InterfaceRichText
 
     /**
      * Set the price.
-     *
-     * @param int $price Price
      *
      * @return $this
      */
@@ -317,8 +292,6 @@ class Page extends AbstractRenderable implements InterfaceRichText
 
     /**
      * Set the price type.
-     *
-     * @param int $priceType The price type
      *
      * @return $this
      */

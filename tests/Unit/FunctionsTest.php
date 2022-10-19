@@ -8,8 +8,6 @@ class FunctionsTest extends TestCase
 {
     /**
      * @covers \cleanFileName
-     *
-     * @return void
      */
     public function testCleanFileNameDate(): void
     {
@@ -18,8 +16,6 @@ class FunctionsTest extends TestCase
 
     /**
      * @covers \cleanFileName
-     *
-     * @return void
      */
     public function testCleanFileNameSequenceOfBadChars(): void
     {
@@ -28,8 +24,6 @@ class FunctionsTest extends TestCase
 
     /**
      * @covers \cleanFileName
-     *
-     * @return void
      */
     public function testCleanFileNameTrim(): void
     {
@@ -38,8 +32,6 @@ class FunctionsTest extends TestCase
 
     /**
      * @covers \arrayNatsort
-     *
-     * @return void
      */
     public function testArrayNatsort(): void
     {
@@ -60,8 +52,6 @@ class FunctionsTest extends TestCase
 
     /**
      * @covers \arrayNatsort
-     *
-     * @return void
      */
     public function testArrayNatsortReverse(): void
     {
@@ -82,8 +72,6 @@ class FunctionsTest extends TestCase
 
     /**
      * @covers \first
-     *
-     * @return void
      */
     public function testFirst(): void
     {
@@ -92,8 +80,6 @@ class FunctionsTest extends TestCase
 
     /**
      * @covers \stringLimit
-     *
-     * @return void
      */
     public function testStringLimit(): void
     {
@@ -102,8 +88,6 @@ class FunctionsTest extends TestCase
 
     /**
      * @covers \stringLimit
-     *
-     * @return void
      */
     public function testStringLimitRdgeOfWord(): void
     {
@@ -112,8 +96,6 @@ class FunctionsTest extends TestCase
 
     /**
      * @covers \stringLimit
-     *
-     * @return void
      */
     public function testStringLimitTiny(): void
     {
@@ -122,8 +104,6 @@ class FunctionsTest extends TestCase
 
     /**
      * @covers \stringLimit
-     *
-     * @return void
      */
     public function testStringLimitNoop(): void
     {
@@ -132,8 +112,6 @@ class FunctionsTest extends TestCase
 
     /**
      * @covers \purifyHTML
-     *
-     * @return void
      */
     public function testPurifyHTMLAlert(): void
     {
@@ -143,8 +121,6 @@ class FunctionsTest extends TestCase
 
     /**
      * @covers \purifyHTML
-     *
-     * @return void
      */
     public function testPurifyHTMLVideo(): void
     {
@@ -155,8 +131,6 @@ class FunctionsTest extends TestCase
 
     /**
      * @covers \purifyHTML
-     *
-     * @return void
      */
     public function testPurifyHTMLAudio(): void
     {
@@ -167,8 +141,6 @@ class FunctionsTest extends TestCase
 
     /**
      * @covers \purifyHTML
-     *
-     * @return void
      */
     public function testPurifyHTMLYoutube(): void
     {
@@ -179,8 +151,6 @@ class FunctionsTest extends TestCase
 
     /**
      * @covers \htmlUrlDecode
-     *
-     * @return void
      */
     public function testHtmlUrlDecodeDecodeUrl(): void
     {
@@ -189,8 +159,6 @@ class FunctionsTest extends TestCase
 
     /**
      * @covers \htmlUrlDecode
-     *
-     * @return void
      */
     public function testHtmlUrlDecodeDecodeHtml(): void
     {
@@ -199,8 +167,6 @@ class FunctionsTest extends TestCase
 
     /**
      * @covers \htmlUrlDecode
-     *
-     * @return void
      */
     public function testHtmlUrlDecodeMaintainSpecial(): void
     {
@@ -209,8 +175,6 @@ class FunctionsTest extends TestCase
 
     /**
      * Clear purifyer cache.
-     *
-     * @return void
      */
     private function flushPurifyerCache(): void
     {

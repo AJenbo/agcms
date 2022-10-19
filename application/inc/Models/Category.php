@@ -13,37 +13,30 @@ class Category extends AbstractRenderable
 
     /** Table name in database. */
     public const TABLE_NAME = 'kat';
-
     /** Do not show category. */
     public const HIDDEN = 0;
-
     /** Gallery rendering of pages. */
     public const GALLERY = 1;
-
     /** List rendering of pages. */
     public const LIST = 2;
 
     // Backed by DB
 
-    /** @var ?int */
-    private $parentId;
+    private ?int $parentId;
 
     /** @var int Render mode for page list. */
-    private $renderMode = 1;
-
+    private int $renderMode = 1;
     /** @var string Contact email. */
-    private $email = '';
-
+    private string $email = '';
     /** @var bool Are children to be fetched by weight. */
-    private $weightedChildren = false;
-
+    private bool $weightedChildren = false;
     /** @var int Sorting weight. */
-    private $weight = 0;
+    private int $weight = 0;
 
     // Runtime
 
     /** @var ?bool Cache if category is visible or not. */
-    private $visible;
+    private ?bool $visible = null;
 
     /**
      * @param array<string, mixed> $data The entity data
@@ -101,8 +94,6 @@ class Category extends AbstractRenderable
     /**
      * Set parent.
      *
-     * @param ?self $parent
-     *
      * @throws InvalidInput
      *
      * @return $this
@@ -145,8 +136,6 @@ class Category extends AbstractRenderable
 
     /**
      * Set contact email.
-     *
-     * @param string $email Contact email
      *
      * @return $this
      */

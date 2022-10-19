@@ -7,13 +7,10 @@ use PHPUnit\Framework\TestCase;
 
 class EmailServiceTest extends TestCase
 {
-    /** @var EmailService */
-    private $emailService;
+    private EmailService $emailService;
 
     /**
      * Initiate the mock.
-     *
-     * @return void
      */
     public function setUp(): void
     {
@@ -22,8 +19,6 @@ class EmailServiceTest extends TestCase
 
     /**
      * @covers \App\Services\EmailService::validemail
-     *
-     * @return void
      */
     public function testValidAddress(): void
     {
@@ -32,8 +27,6 @@ class EmailServiceTest extends TestCase
 
     /**
      * @covers \App\Services\EmailService::checkMx
-     *
-     * @return void
      */
     public function testValidAddressIdnDomain(): void
     {

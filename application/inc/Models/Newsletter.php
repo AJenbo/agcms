@@ -19,19 +19,19 @@ class Newsletter extends AbstractEntity implements InterfaceRichText
     // Backed by DB
 
     /** @var string Sender email address */
-    private $from = '';
+    private string $from = '';
 
     /** @var string Email subject */
-    private $subject = '';
+    private string $subject = '';
 
     /** @var string Body */
-    private $html = '';
+    private string $html = '';
 
     /** @var bool Has it been sent. */
-    private $sent = false;
+    private bool $sent = false;
 
     /** @var string[] List of topics is covered. */
-    private $interests = [];
+    private array $interests = [];
 
     public function __construct(array $data = [])
     {

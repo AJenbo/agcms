@@ -15,7 +15,6 @@ abstract class AbstractController
      * Renders a view.
      *
      * @param array<string, mixed> $parameters
-     * @param Response             $response
      */
     protected function render(string $view, array $parameters = [], Response $response = null): Response
     {
@@ -31,8 +30,6 @@ abstract class AbstractController
 
     /**
      * Add the needed headeres for a 304 cache response based on the loaded data.
-     *
-     * @param int $timestamp
      */
     protected function cachedResponse(Response $response = null, int $timestamp = null, int $maxAge = 0): Response
     {

@@ -17,22 +17,22 @@ class File extends AbstractEntity
     // Backed by DB
 
     /** @var string File path. */
-    private $path;
+    private string $path;
 
     /** @var string File mime. */
-    private $mime;
+    private string $mime;
 
     /** @var int File byte size. */
-    private $size;
+    private int $size;
 
     /** @var string Text description of file. */
-    private $description = '';
+    private string $description = '';
 
     /** @var int Object width in px. */
-    private $width = 0;
+    private int $width = 0;
 
     /** @var int Object height in px. */
-    private $height = 0;
+    private int $height = 0;
 
     public function __construct(array $data = [])
     {
@@ -61,10 +61,6 @@ class File extends AbstractEntity
     // Getters and setters
 
     /**
-     * Set path.
-     *
-     * @param string $path The file path
-     *
      * @return $this
      */
     private function setPath(string $path): self
@@ -74,19 +70,12 @@ class File extends AbstractEntity
         return $this;
     }
 
-    /**
-     * Return the file path.
-     */
     public function getPath(): string
     {
         return $this->path;
     }
 
     /**
-     * Set the mime type.
-     *
-     * @param string $mime The mime type
-     *
      * @return $this
      */
     public function setMime(string $mime): self
@@ -96,17 +85,12 @@ class File extends AbstractEntity
         return $this;
     }
 
-    /**
-     * Get the mime type.
-     */
     public function getMime(): string
     {
         return $this->mime;
     }
 
     /**
-     * Set the file size.
-     *
      * @param int $size The file size in bytes
      *
      * @return $this
@@ -127,10 +111,6 @@ class File extends AbstractEntity
     }
 
     /**
-     * Set the file text description.
-     *
-     * @param string $description Text description
-     *
      * @return $this
      */
     public function setDescription(string $description): self
@@ -274,8 +254,6 @@ class File extends AbstractEntity
      *
      * @todo Load size of video
      *
-     * @param string $path The file path
-     *
      * @return static
      */
     public static function fromPath(string $path): self
@@ -323,10 +301,6 @@ class File extends AbstractEntity
     }
 
     /**
-     * Find entity by file path.
-     *
-     * @param string $path The file path
-     *
      * @return ?self
      */
     public static function getByPath(string $path): ?self

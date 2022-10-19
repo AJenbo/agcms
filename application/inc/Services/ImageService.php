@@ -6,35 +6,16 @@ use AJenbo\Image;
 
 class ImageService
 {
-    /** @var Image */
-    private $image;
-
-    /** @var int */
-    private $cropX = 0;
-
-    /** @var int */
-    private $cropY = 0;
-
-    /** @var int */
-    private $cropW;
-
-    /** @var int */
-    private $cropH;
-
-    /** @var bool */
-    private $autoCrop = false;
-
-    /** @var int */
-    private $maxW;
-
-    /** @var int */
-    private $maxH;
-
-    /** @var int */
-    private $flip = 0;
-
-    /** @var int */
-    private $rotate = 0;
+    private Image $image;
+    private int $cropX = 0;
+    private int $cropY = 0;
+    private int $cropW;
+    private int $cropH;
+    private bool $autoCrop = false;
+    private int $maxW;
+    private int $maxH;
+    private int $flip = 0;
+    private int $rotate = 0;
 
     /**
      * Load the image.

@@ -8,26 +8,14 @@ use PDOStatement;
 
 class DbService
 {
-    /** @var null|int */
-    private $timeOffset;
-
-    /** @var ?PDO */
-    private $connection;
-
-    /** @var string */
-    private $driver = 'mysql';
-
+    private ?int $timeOffset = null;
+    private ?PDO $connection = null;
+    private string $driver = 'mysql';
     /** @var bool[] */
-    private $loadedTables = [];
-
-    /** @var string */
-    private $dsn = '';
-
-    /** @var string */
-    private $user = '';
-
-    /** @var string */
-    private $password = '';
+    private array $loadedTables = [];
+    private string $dsn = '';
+    private string $user = '';
+    private string $password = '';
 
     /**
      * Connect the database and set session to UTF-8 Danish.
@@ -69,8 +57,6 @@ class DbService
     /**
      * Performe query and return result as an array of associative arrays.
      *
-     * @param string $query The SQL query to preforme
-     *
      * @throws \PDOException
      *
      * @return array<int, array<int|string, string>>
@@ -91,8 +77,6 @@ class DbService
     /**
      * Performe query and return the first result as an associative arrays.
      *
-     * @param string $query The SQL query to preforme
-     *
      * @return array<int|string, string>
      */
     public function fetchOne(string $query): array
@@ -110,8 +94,6 @@ class DbService
     /**
      * Performe query.
      *
-     * @param string $query The query string
-     *
      * @throws \PDOException
      */
     public function query(string $query): int
@@ -123,8 +105,6 @@ class DbService
 
     /**
      * Escape all SQL wildcards.
-     *
-     * @param string $string String to process
      */
     public function escapeWildcards(string $string): string
     {

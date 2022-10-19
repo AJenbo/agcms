@@ -15,7 +15,7 @@ class Brand extends AbstractRenderable
     // Backed by DB
 
     /** @var string The external link for this brand. */
-    private $link = '';
+    private string $link = '';
 
     public function __construct(array $data = [])
     {

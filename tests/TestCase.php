@@ -15,19 +15,12 @@ use Symfony\Component\HttpFoundation\File\UploadedFile;
 
 abstract class TestCase extends BaseTestCase
 {
-    /** @var Application */
-    protected $app;
-
-    /** @var User|null */
-    private $user;
-
-    /** @var string */
-    private $currentUri;
+    protected Application $app;
+    private ?User $user;
+    private string $currentUri;
 
     /**
      * Initiate the database, config and application.
-     *
-     * @return void
      */
     protected function setUp(): void
     {
@@ -52,10 +45,6 @@ abstract class TestCase extends BaseTestCase
 
     /**
      * Convert a timastamp to a string appropriate for the HTTP header.
-     *
-     * @param int $timestamp
-     *
-     * @return string
      */
     public function timeToHeader(int $timestamp): string
     {
@@ -73,10 +62,7 @@ abstract class TestCase extends BaseTestCase
     /**
      * Visit the given URI with a HEAD request.
      *
-     * @param string   $uri
      * @param string[] $headers
-     *
-     * @return TestResponse
      */
     public function head(string $uri, array $headers = []): TestResponse
     {
@@ -88,10 +74,7 @@ abstract class TestCase extends BaseTestCase
     /**
      * Visit the given URI with a GET request.
      *
-     * @param string   $uri
      * @param string[] $headers
-     *
-     * @return TestResponse
      */
     public function get(string $uri, array $headers = []): TestResponse
     {
@@ -103,13 +86,10 @@ abstract class TestCase extends BaseTestCase
     /**
      * Visit the given URI with a POST request.
      *
-     * @param string   $uri
      * @param string[] $data
      * @param string[] $headers
-     *
-     * @return TestResponse
      */
-    public function post(string $uri, array $data = [], array $headers = [])
+    public function post(string $uri, array $data = [], array $headers = []): TestResponse
     {
         $server = $this->transformHeadersToServerVars($headers);
 
@@ -119,12 +99,8 @@ abstract class TestCase extends BaseTestCase
     /**
      * Call the given URI with a JSON request.
      *
-     * @param string   $method
-     * @param string   $uri
      * @param mixed[]  $data
      * @param string[] $headers
-     *
-     * @return TestResponse
      */
     public function json(string $method, string $uri, array $data = [], array $headers = []): TestResponse
     {
@@ -141,15 +117,10 @@ abstract class TestCase extends BaseTestCase
     /**
      * Call the given URI and return the Response.
      *
-     * @param string   $method
-     * @param string   $uri
-     * @param string[] $parameters
-     * @param string[] $cookies
-     * @param UploadedFile[]    $files
-     * @param string[] $server
-     * @param string   $content
-     *
-     * @return TestResponse
+     * @param string[]       $parameters
+     * @param string[]       $cookies
+     * @param UploadedFile[] $files
+     * @param string[]       $server
      */
     public function call(
         string $method,
@@ -194,8 +165,6 @@ abstract class TestCase extends BaseTestCase
     /**
      * Set the User making the request.
      *
-     * @param User $user
-     *
      * @return $this
      */
     public function actingAs(User $user): self
@@ -208,7 +177,6 @@ abstract class TestCase extends BaseTestCase
     /**
      * Assert that a given where condition exists in the database.
      *
-     * @param string                     $table
      * @param array<string, null|string|int|float> $data
      *
      * @return $this
@@ -229,7 +197,6 @@ abstract class TestCase extends BaseTestCase
     /**
      * Assert that a given where condition does not exist in the database.
      *
-     * @param string                     $table
      * @param array<string, null|string|int|float> $data
      *
      * @return $this
@@ -250,10 +217,7 @@ abstract class TestCase extends BaseTestCase
     /**
      * Test if a given where condition exists in the database.
      *
-     * @param string                     $table
      * @param array<string, null|string|int|float> $data
-     *
-     * @return bool
      */
     private function isInDatabase(string $table, array $data): bool
     {

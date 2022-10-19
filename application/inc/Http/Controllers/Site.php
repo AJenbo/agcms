@@ -152,10 +152,6 @@ class Site extends Base
      * Check that the url for a category is correct.
      *
      * Returns a redirect responce if the url is not valid
-     *
-     * @param ?Category $category
-     *
-     * @return ?RedirectResponse
      */
     private function checkCategoryUrl(Request $request, ?Category $category): ?RedirectResponse
     {
@@ -174,11 +170,6 @@ class Site extends Base
      * Check that the url for a page is correct.
      *
      * Returns a redirect responce if the url is not valid
-     *
-     * @param ?Category $category
-     * @param ?Page     $page
-     *
-     * @return ?RedirectResponse
      */
     private function checkPageUrl(Request $request, ?Category $category, ?Page $page): ?RedirectResponse
     {
@@ -203,10 +194,6 @@ class Site extends Base
      * Check that the url for a renderable is correct.
      *
      * Returns a redirect responce if the url is not valid
-     *
-     * @param ?Renderable $renderable
-     *
-     * @return ?RedirectResponse
      */
     private function checkRenderableUrl(Request $request, ?Renderable $renderable): ?RedirectResponse
     {

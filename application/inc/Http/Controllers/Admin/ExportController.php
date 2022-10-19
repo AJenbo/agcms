@@ -18,7 +18,7 @@ use Exception;
 class ExportController extends AbstractAdminController
 {
     /** @var array<int, string> */
-    private $header = [
+    private array $header = [
         'ID',
         'Type',
         'SKU',

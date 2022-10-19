@@ -22,8 +22,7 @@ use Throwable;
 
 class Payment extends Base
 {
-    /** @var InvoiceService */
-    private $invoiceService;
+    private InvoiceService $invoiceService;
 
     /**
      * Initialize needed services.
@@ -45,7 +44,6 @@ class Payment extends Base
         $data['renderable'] = $renderable;
         $data['id'] = $request->get('id');
         $data['checkid'] = $request->get('checkid');
-
         $response = $this->render('payment-manual', $data);
 
         return $this->cachedResponse($response);
@@ -437,10 +435,6 @@ class Payment extends Base
 
     /**
      * Check if request should be redirected to a different page in the process.
-     *
-     * @param ?Invoice $invoice
-     *
-     * @return ?RedirectResponse
      */
     private function checkStatus(int $id, string $checkId, ?Invoice $invoice): ?RedirectResponse
     {

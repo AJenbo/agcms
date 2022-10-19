@@ -15,13 +15,13 @@ use stdClass;
 class EpaymentService
 {
     /** @var string Shops merchant id. */
-    private $merchantId;
+    private string $merchantId;
 
     /** @var string Service password. */
-    private $password;
+    private string $password;
 
     /** @var ?SoapClient Service connection. */
-    private $soapClient;
+    private ?SoapClient $soapClient;
 
     /** @var array<int, string> */
     private const PAYMENT_TYPES = [
@@ -52,8 +52,7 @@ class EpaymentService
     /**
      * Setup the class variables for initialization.
      *
-     * @param string $merchantId Id provided by PBS identifying the shop
-     * @param string $password   Password for service
+     * @param string $merchantId Id provided identifying the shop
      */
     public function __construct(string $merchantId, string $password)
     {
@@ -69,9 +68,6 @@ class EpaymentService
         return self::PAYMENT_TYPES[$paymentType];
     }
 
-    /**
-     * @param string $orderId The order id
-     */
     public function getPayment(string $orderId): Epayment
     {
         $transactionData = $this->getTransactionData($orderId);

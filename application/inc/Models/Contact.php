@@ -13,40 +13,39 @@ class Contact extends AbstractEntity
     // Backed by DB
 
     /** @var string Name */
-    private $name = '';
+    private string $name = '';
 
     /** @var string Email */
-    private $email = '';
+    private string $email = '';
 
     /** @var string Address */
-    private $address = '';
+    private string $address = '';
 
     /** @var string Country */
-    private $country = '';
+    private string $country = '';
 
     /** @var string Postcode */
-    private $postcode = '';
+    private string $postcode = '';
 
     /** @var string City */
-    private $city = '';
+    private string $city = '';
 
     /** @var string Phone number */
-    private $phone1 = '';
+    private string $phone1 = '';
 
     /** @var string Mobile phone number */
-    private $phone2 = '';
+    private string $phone2 = '';
 
     /** @var bool Is the user subscribed to the newsletter. */
-    private $subscribed = false;
+    private bool $subscribed = false;
 
     /** @var string[] List of newsletter topics that the user is signed up for. */
-    private $interests = [];
+    private array $interests = [];
 
-    /** @var int */
-    private $timestamp;
+    private int $timestamp;
 
     /** @var string Client IP at moment of signup */
-    private $ip = '';
+    private string $ip = '';
 
     public function __construct(array $data = [])
     {

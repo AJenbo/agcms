@@ -24,8 +24,6 @@ class CustomSortingController extends AbstractAdminController
 
     /**
      * Edit page for custom sorting.
-     *
-     * @param int $id
      */
     public function listsortEdit(Request $request, int $id = null): Response
     {

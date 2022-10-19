@@ -7,13 +7,13 @@ use App\Contracts\Renderable;
 class VolatilePage implements Renderable
 {
     /** @var string Page title */
-    private $title;
+    private string $title;
 
     /** @var string Page link */
-    private $link;
+    private string $link;
 
     /** @var Renderable[] Content list */
-    private $list;
+    private array $list;
 
     /**
      * Set varables.

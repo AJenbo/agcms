@@ -29,24 +29,24 @@ class Table extends AbstractEntity
     // Backed by DB
 
     /** @var int Parent page id. */
-    private $pageId;
+    private int $pageId;
 
     /** @var string Table caption. */
-    private $title = '';
+    private string $title = '';
 
     /** @var int The default column to order by, starting from 0. */
-    private $orderBy = 0;
+    private int $orderBy = 0;
 
     /** @var bool If rows can be linked to pages. */
-    private $hasLinks = false;
+    private bool $hasLinks = false;
 
     /** @var bool Indicate if there is a column with sales prices. */
-    private $hasPrices = false;
+    private bool $hasPrices = false;
 
     // Runtime
 
     /** @var array<int, array<string, mixed>> Decoded column data. */
-    private $columns = [];
+    private array $columns = [];
 
     public function __construct(array $data = [])
     {
@@ -104,8 +104,6 @@ class Table extends AbstractEntity
     /**
      * Set parent page id.
      *
-     * @param int $pageId The page the table belongs on
-     *
      * @return $this
      */
     private function setPageId(int $pageId): self
@@ -125,8 +123,6 @@ class Table extends AbstractEntity
 
     /**
      * Set the table caption.
-     *
-     * @param string $title The caption
      *
      * @return $this
      */

@@ -13,7 +13,7 @@
         }
     },
     "require": {
-        "php": "^7.4.0|^8.0.0",
+        "php": "^8.1",
         "ext-gettext": "*",
         "ext-intl": "*",
         "ext-mbstring": "*",
@@ -23,11 +23,11 @@
         "ext-xml": "*",
         "ajenbo/image.php": "^0.9.3",
         "ajenbo/imap.php": "^0.9.1",
-        "ezyang/htmlpurifier": ">=4.4",
+        "ezyang/htmlpurifier": "^4.16",
         "guzzlehttp/psr7": "^1.4",
         "james-heinrich/getid3": "^1.9",
         "php-http/guzzle7-adapter": "^1.0",
-        "phpmailer/phpmailer": ">=5.0.0",
+        "phpmailer/phpmailer": "^6.6.5",
         "sentry/sentry": "^3.9",
         "symfony/http-foundation": "^4.0",
         "tecnickcom/tcpdf": "^6.2",
@@ -36,7 +36,6 @@
     },
     "require-dev": {
         "ext-pdo_sqlite": "*",
-        "codacy/coverage": "^1.0",
         "dms/phpunit-arraysubset-asserts": "^0.4.0",
         "friendsofphp/php-cs-fixer": "^3.12",
         "mheap/phpunit-github-actions-printer": "^1.5",

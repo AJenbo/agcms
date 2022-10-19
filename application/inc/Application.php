@@ -16,23 +16,22 @@ class Application
     /** @var ?self */
     private static $instance;
 
-    /** @var string */
-    private $basePath;
+    private string $basePath;
 
     /**
      * All of the global middleware for the application.
      *
      * @var array<class-string<Middleware>>
      */
-    protected $middleware = [];
+    protected array $middleware = [];
 
     /** @var array<string, array<int, Route>> */
-    private $routes = [];
+    private array $routes = [];
 
     /**
      * @var array<class-string<object>, object>
      */
-    private $services = [];
+    private array $services = [];
 
     /**
      * Set up the enviroment.
@@ -132,7 +131,7 @@ class Application
      *
      * @return T The associated service
      */
-    public function get(string $id)
+    public function get(string $id): object
     {
         if (!isset($this->services[$id])) {
             $this->services[$id] = new $id();
@@ -260,7 +259,7 @@ class Application
     /**
      * Wrap closure in a middle ware call.
      *
-     * @param class-string<Middleware> $middlewareClass
+     * @param class-string<Middleware>    $middlewareClass
      * @param callable(Request): Response $next
      *
      * @return callable(Request): Response

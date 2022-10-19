@@ -5,7 +5,7 @@ namespace App\Services;
 class ConfigService
 {
     /** @var array<string, mixed> Store the configurations. */
-    private static $config = [];
+    private static array $config = [];
 
     /**
      * Load the site configurations.
@@ -14,21 +14,21 @@ class ConfigService
      */
     public static function load(string $basePath): void
     {
-        self::$config = @include $basePath . '/inc/config.php';
-        if (!self::$config) {
-            self::$config = include $basePath . '/inc/config_sample.php';
+        $config = @include $basePath . '/inc/config.php';
+        if ($config === false) {
+            $config = include $basePath . '/inc/config_sample.php';
         }
+        self::$config = $config;
     }
 
     /**
      * Fetch a setting.
      *
-     * @param string $key     The name of the configuration to fetch
-     * @param mixed  $default What to return if key does not exists
+     * @param mixed $default What to return if key does not exists
      *
      * @return mixed Key value
      */
-    public static function get(string $key, $default = null)
+    public static function get(string $key, $default = null): mixed
     {
         return self::$config[$key] ?? $default;
     }

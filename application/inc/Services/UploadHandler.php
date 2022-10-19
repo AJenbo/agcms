@@ -17,19 +17,13 @@ class UploadHandler
     private const MAX_BYTE_PER_PIXEL = 0.7;
 
     /** @var string Foler where the current upload will be saved. */
-    private $targetDir = '';
-
+    private string $targetDir = '';
     /** @var string File name with out extension. */
-    private $baseName = '';
-
+    private string $baseName = '';
     /** @var string File extension. */
-    private $extension = '';
-
-    /** @var FileService */
-    private $fileService;
-
-    /** @var FileHandeler */
-    private $file;
+    private string $extension = '';
+    private FileService $fileService;
+    private FileHandeler $file;
 
     /**
      * Initialize the service.

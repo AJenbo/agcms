@@ -12,8 +12,6 @@ class PlacekittenTest extends TestCase
 {
     /**
      * @covers \App\Http\Middleware\Placekitten::handle
-     *
-     * @return void
      */
     public function testDontPlacekitten(): void
     {
@@ -32,8 +30,6 @@ class PlacekittenTest extends TestCase
 
     /**
      * @covers \App\Http\Middleware\Placekitten::handle
-     *
-     * @return void
      */
     public function testPlacekitten(): void
     {
@@ -52,8 +48,6 @@ class PlacekittenTest extends TestCase
 
     /**
      * @covers \App\Http\Middleware\Placekitten::handle
-     *
-     * @return void
      */
     public function testPlacekittenKnownSize(): void
     {

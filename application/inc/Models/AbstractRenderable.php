@@ -7,12 +7,10 @@ use App\Contracts\Renderable;
 abstract class AbstractRenderable extends AbstractEntity implements Renderable
 {
     /** @var string The title. */
-    protected $title = '';
+    protected string $title = '';
 
     /**
      * Set the title.
-     *
-     * @param string $title The title
      *
      * @return $this
      */

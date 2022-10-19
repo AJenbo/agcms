@@ -28,8 +28,8 @@ use Symfony\Component\HttpFoundation\ResponseHeaderBag;
 
 class ExplorerController extends AbstractAdminController
 {
-    /** @var FileService */
-    private $fileService;
+    
+    private FileService $fileService;
 
     public function __construct()
     {

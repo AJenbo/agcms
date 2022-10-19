@@ -10,12 +10,8 @@ class TestResponse
 {
     use ArraySubsetAsserts;
 
-    /** @var Response */
-    private $response;
+    private Response $response;
 
-    /**
-     * @param Response $response
-     */
     public function __construct(Response $response)
     {
         $this->response = $response;
@@ -34,8 +30,6 @@ class TestResponse
     /**
      * Assert that the client response has a given code.
      *
-     * @param int $code
-     *
      * @return $this
      */
     public function assertResponseStatus(int $code): self
@@ -49,8 +43,6 @@ class TestResponse
 
     /**
      * Assert whether the response is redirecting to a given URI.
-     *
-     * @param string $uri
      *
      * @return $this
      */
@@ -70,8 +62,6 @@ class TestResponse
     /**
      * Assert that the given string is contained within the response.
      *
-     * @param string $value
-     *
      * @return $this
      */
     public function assertSee(string $value): self
@@ -83,8 +73,6 @@ class TestResponse
 
     /**
      * Assert that the given string is not contained within the response.
-     *
-     * @param string $value
      *
      * @return $this
      */
@@ -99,7 +87,6 @@ class TestResponse
      * Assert that the response is a superset of the given JSON.
      *
      * @param array<string, mixed> $data
-     * @param bool  $strict
      *
      * @return $this
      */
@@ -118,7 +105,7 @@ class TestResponse
      *
      * @return $this
      */
-    public function assertJsonStructure(array $structure = null, $responseData = null): self
+    public function assertJsonStructure(array $structure = null, ?array $responseData = null): self
     {
         if (is_null($structure)) {
             return $this->assertJson($this->json());
@@ -143,8 +130,6 @@ class TestResponse
      * Get the assertion message for assertJson.
      *
      * @param array<string, mixed> $data
-     *
-     * @return string
      */
     private function assertJsonMessage(array $data): string
     {
@@ -177,17 +162,13 @@ class TestResponse
      *
      * @return array<string, mixed>
      */
-    public function json()
+    public function json(): array
     {
         return $this->decodeResponseJson();
     }
 
     /**
      * Make sure a url is valid.
-     *
-     * @param string $uri
-     *
-     * @return string
      */
     private function toUrl(string $uri): string
     {

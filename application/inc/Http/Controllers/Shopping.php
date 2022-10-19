@@ -16,8 +16,7 @@ use Throwable;
 
 class Shopping extends Base
 {
-    /** @var InvoiceService */
-    private $invoiceService;
+    private InvoiceService $invoiceService;
 
     /**
      * Initialize needed services.

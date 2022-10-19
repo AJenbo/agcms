@@ -12,8 +12,7 @@ use stdClass;
 
 class EpaymentTest extends TestCase
 {
-    /** @var EpaymentService */
-    private $epaymentService;
+    private EpaymentService $epaymentService;
 
     /**
      * Initiate the mock.
@@ -35,12 +34,6 @@ class EpaymentTest extends TestCase
 
     /**
      * Create a payment.
-     *
-     * @param string $status
-     * @param int    $amount
-     * @param int    $captured
-     *
-     * @return Epayment
      */
     private function getPayment(string $status = 'PAYMENT_NEW', int $amount = 100, int $captured = 0): Epayment
     {
@@ -55,8 +48,6 @@ class EpaymentTest extends TestCase
 
     /**
      * @covers \App\Models\Epayment::__construct
-     *
-     * @return void
      */
     public function testCanInstanciate(): void
     {
@@ -66,8 +57,6 @@ class EpaymentTest extends TestCase
 
     /**
      * @covers \App\Models\Epayment::isAuthorized
-     *
-     * @return void
      */
     public function testIsAuthorized(): void
     {
@@ -77,8 +66,6 @@ class EpaymentTest extends TestCase
 
     /**
      * @covers \App\Models\Epayment::getId
-     *
-     * @return void
      */
     public function testGetId(): void
     {
@@ -89,8 +76,6 @@ class EpaymentTest extends TestCase
     /**
      * @covers \App\Models\Epayment::annul
      * @covers \App\Models\Epayment::isAnnulled
-     *
-     * @return void
      */
     public function testAnnulPayment(): void
     {
@@ -107,8 +92,6 @@ class EpaymentTest extends TestCase
     /**
      * @covers \App\Models\Epayment::annul
      * @covers \App\Models\Epayment::isAnnulled
-     *
-     * @return void
      */
     public function testAnnulPaymentFail(): void
     {
@@ -125,8 +108,6 @@ class EpaymentTest extends TestCase
     /**
      * @covers \App\Models\Epayment::__construct
      * @covers \App\Models\Epayment::isAnnulled
-     *
-     * @return void
      */
     public function testIsAnulled(): void
     {
@@ -137,8 +118,6 @@ class EpaymentTest extends TestCase
 
     /**
      * @covers \App\Models\Epayment::annul
-     *
-     * @return void
      */
     public function testAnullAnulled(): void
     {
@@ -152,8 +131,6 @@ class EpaymentTest extends TestCase
      * @covers \App\Models\Epayment::confirm
      * @covers \App\Models\Epayment::doCapture
      * @covers \App\Models\Epayment::getAmountCaptured
-     *
-     * @return void
      */
     public function testConfirmAndCheckeCapturedAmount(): void
     {
@@ -171,8 +148,6 @@ class EpaymentTest extends TestCase
      * @covers \App\Models\Epayment::confirm
      * @covers \App\Models\Epayment::doCapture
      * @covers \App\Models\Epayment::getAmountCaptured
-     *
-     * @return void
      */
     public function testConfirmFail(): void
     {
@@ -187,13 +162,12 @@ class EpaymentTest extends TestCase
     }
 
     /**
-     * @param mixed $return
      * @param null|mixed[] $with
      */
     protected function mockMethod(
         MockInterface $mockClass,
         string $methodName,
-        $return = null,
+        mixed $return = null,
         ?array $with = [],
         int $times = 1
     ): void {
@@ -209,8 +183,6 @@ class EpaymentTest extends TestCase
      * @covers \App\Models\Epayment::confirm
      * @covers \App\Models\Epayment::doCapture
      * @covers \App\Models\Epayment::getAmountCaptured
-     *
-     * @return void
      */
     public function testConfirmWithOvercharge(): void
     {
@@ -223,8 +195,6 @@ class EpaymentTest extends TestCase
     /**
      * @covers \App\Models\Epayment::__construct
      * @covers \App\Models\Epayment::getAmountCaptured
-     *
-     * @return void
      */
     public function testGetConfirmedAmountAlreadyCaptured(): void
     {
@@ -237,8 +207,6 @@ class EpaymentTest extends TestCase
      * @covers \App\Models\Epayment::confirm
      * @covers \App\Models\Epayment::doCapture
      * @covers \App\Models\Epayment::getAmountCaptured
-     *
-     * @return void
      */
     public function testConfirmConfirmed(): void
     {

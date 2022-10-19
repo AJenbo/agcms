@@ -26,12 +26,11 @@ function app(string $name = Application::class): object
 /**
  * Helper function for getting configurations.
  *
- * @param string $key     The name of the configuration to fetch
- * @param mixed  $default What to return if key does not exists
+ * @param mixed $default What to return if key does not exists
  *
  * @return mixed Key value
  */
-function config(string $key, $default = null)
+function config(string $key, $default = null): mixed
 {
     return ConfigService::get($key, $default);
 }
@@ -56,7 +55,7 @@ function redirect(string $url, int $status = RedirectResponse::HTTP_FOUND): Redi
  *
  * @return mixed First element in the array
  */
-function first(array $array)
+function first(array $array): mixed
 {
     return reset($array);
 }
@@ -64,8 +63,6 @@ function first(array $array)
 /**
  * Takes a string and changes it to comply with file name restrictions in windows, linux, mac and urls (UTF8)
  * .|"'´`:%=#&\/+?*<>{}-_.
- *
- * @param string $name String to clean
  */
 function cleanFileName(string $name): string
 {
@@ -88,7 +85,7 @@ function cleanFileName(string $name): string
  *
  * @param array<array<mixed>> $rows      Array to sort
  * @param int|string          $orderBy   Key to sort by
- * @param string              $direction Revers sorting
+ * @param string              $direction desc for revers sorting
  *
  * @return array<array<mixed>>
  */
@@ -116,8 +113,6 @@ function arrayNatsort(array $rows, $orderBy, string $direction = 'asc'): array
 /**
  * Crope a string to a given max lengt, round by word.
  *
- * @param string $string   String to crope
- * @param int    $length   Crope length
  * @param string $ellipsis String to add at the end, with in the limit
  */
 function stringLimit(string $string, int $length = 50, string $ellipsis = '…'): string
@@ -141,10 +136,6 @@ function stringLimit(string $string, int $length = 50, string $ellipsis = '…')
 
 /**
  * Use HTMLPurifier to clean HTML-code, preserves youtube videos.
- *
- * @param string $html Sting to clean
- *
- * @return string Cleaned stirng
  */
 function purifyHTML(string $html): string
 {

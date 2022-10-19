@@ -27,19 +27,19 @@ class User extends AbstractEntity
     public const CLERK = 4;
 
     /** @var string User's full name. */
-    private $fullName = '';
+    private string $fullName = '';
 
     /** @var string User's nick name. */
-    private $nickname = '';
+    private string $nickname = '';
 
     /** @var string User's Password hash. */
-    private $passwordHash = '';
+    private string $passwordHash = '';
 
     /** @var int User's access level. */
-    private $accessLevel = 0;
+    private int $accessLevel = 0;
 
     /** @var int time of last login */
-    private $lastLogin;
+    private int $lastLogin;
 
     public function __construct(array $data = [])
     {

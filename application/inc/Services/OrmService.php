@@ -8,13 +8,13 @@ use App\Models\AbstractEntity;
 class OrmService
 {
     /** @var array<string, array<int, ?AbstractEntity>> Cache entity by id. */
-    private $byId = [];
+    private array $byId = [];
 
     /** @var array<string, array<string, array<int, AbstractEntity>>> Cache multiple entity by query. */
-    private $bySql = [];
+    private array $bySql = [];
 
     /** @var array<string, array<string, ?AbstractEntity>> Cache entity by query. */
-    private $oneBySql = [];
+    private array $oneBySql = [];
 
     /**
      * Get a single entitly by id.
@@ -22,7 +22,6 @@ class OrmService
      * @template T of AbstractEntity
      *
      * @param class-string<T> $class Class name
-     * @param int             $id    Id of the entity
      *
      * @return ?T
      */
@@ -45,7 +44,6 @@ class OrmService
      * @template T of AbstractEntity
      *
      * @param class-string<T> $class Class name
-     * @param string          $query The query
      *
      * @return ?T
      */
@@ -82,7 +80,6 @@ class OrmService
      * @template T of AbstractEntity
      *
      * @param class-string<T> $class Class name
-     * @param string          $query The query
      *
      * @return T[]
      */
@@ -126,7 +123,6 @@ class OrmService
      * Remove an entity from the caches.
      *
      * @param class-string<AbstractEntity> $class
-     * @param string                       $query The query
      */
     public function forgetByQuery(string $class, string $query): void
     {

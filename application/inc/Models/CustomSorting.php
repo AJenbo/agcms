@@ -12,10 +12,10 @@ class CustomSorting extends AbstractEntity
     // Backed by DB
 
     /** @var string Title */
-    private $title = '';
+    private string $title = '';
 
     /** @var string[] Ordered list of values. */
-    private $items = [];
+    private array $items = [];
 
     public function __construct(array $data = [])
     {

@@ -25,8 +25,6 @@ abstract class AbstractEntity implements Entity
     /**
      * Set the entity ID.
      *
-     * @param null|int $id The id
-     *
      * @return $this
      */
     protected function setId(int $id = null): self

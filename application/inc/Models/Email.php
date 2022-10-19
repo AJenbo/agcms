@@ -11,31 +11,29 @@ class Email extends AbstractEntity
     /**  Table name in database. */
     public const TABLE_NAME = 'emails';
 
-    /** @var EmailService */
-    private $emailService;
+    private EmailService $emailService;
 
     // Backed by DB
 
     /** @var string Subject */
-    private $subject = '';
+    private string $subject = '';
 
     /** @var string HTML body */
-    private $body = '';
+    private string $body = '';
 
     /** @var string Semder name */
-    private $senderName = '';
+    private string $senderName = '';
 
     /** @var string Semder email address */
-    private $senderAddress = '';
+    private string $senderAddress = '';
 
     /** @var string Recipient name */
-    private $recipientName = '';
+    private string $recipientName = '';
 
     /** @var string Recipient email address */
-    private $recipientAddress = '';
+    private string $recipientAddress = '';
 
-    /** @var int */
-    private $timestamp;
+    private int $timestamp;
 
     public function __construct(array $data = [])
     {

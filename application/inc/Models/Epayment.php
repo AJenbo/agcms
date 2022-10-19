@@ -9,45 +9,33 @@ class Epayment
 {
     /**
      * The manager for handeling service communication.
-     *
-     * @var EpaymentService
      */
-    private $service;
+    private EpaymentService $service;
 
     /**
      * Id of transaction.
-     *
-     * @var int
      */
-    private $transactionId = 0;
+    private int $transactionId = 0;
 
     /**
      * Transaction ammount.
-     *
-     * @var int
      */
-    private $amount = 0;
+    private int $amount = 0;
 
     /**
      * Amount that was transfered to the shop.
-     *
-     * @var int
      */
-    private $amountCaptured = 0;
+    private int $amountCaptured = 0;
 
     /**
      * Is the transaction authorized and ready to transfer the amount.
-     *
-     * @var bool
      */
-    private $authorized = false;
+    private bool $authorized = false;
 
     /**
      * Has the transaction been cancled.
-     *
-     * @var bool
      */
-    private $annulled = false;
+    private bool $annulled = false;
 
     /**
      * Setup the class variables for initialization.

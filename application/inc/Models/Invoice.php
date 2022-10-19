@@ -13,120 +13,116 @@ class Invoice extends AbstractEntity
     // Backed by DB
 
     /** @var int createTime */
-    private $timeStamp = 0;
+    private int $timeStamp = 0;
 
     /** @var ?int Finalized time */
-    private $timeStampPay;
+    private ?int $timeStampPay;
 
     /** @var float Full amount */
-    private $amount = 0.00;
+    private float $amount = 0.00;
 
     /** @var string Billing name */
-    private $name = '';
+    private string $name = '';
 
     /** @var string Billing attention */
-    private $attn = '';
+    private string $attn = '';
 
     /** @var string Billing address */
-    private $address = '';
+    private string $address = '';
 
     /** @var string Billing postbox */
-    private $postbox = '';
+    private string $postbox = '';
 
     /** @var string Billing zipcode */
-    private $postcode = '';
+    private string $postcode = '';
 
     /** @var string Billing city */
-    private $city = '';
+    private string $city = '';
 
     /** @var string Billing country */
-    private $country = '';
+    private string $country = '';
 
     /** @var string Billing email */
-    private $email = '';
+    private string $email = '';
 
     /** @var string Billing phone number */
-    private $phone1 = '';
+    private string $phone1 = '';
 
     /** @var string Billing mobile number */
-    private $phone2 = '';
+    private string $phone2 = '';
 
     /** @var bool Is the shipping address different from the billing address */
-    private $hasShippingAddress = false;
+    private bool $hasShippingAddress = false;
 
     /** @var string Shipping phone number */
-    private $shippingPhone = '';
+    private string $shippingPhone = '';
 
     /** @var string Shipping name */
-    private $shippingName = '';
+    private string $shippingName = '';
 
     /** @var string Shipping attention */
-    private $shippingAttn = '';
+    private string $shippingAttn = '';
 
     /** @var string Shipping first address line */
-    private $shippingAddress = '';
+    private string $shippingAddress = '';
 
     /** @var string Shipping secound address line */
-    private $shippingAddress2 = '';
+    private string $shippingAddress2 = '';
 
     /** @var string Shipping postbox */
-    private $shippingPostbox = '';
+    private string $shippingPostbox = '';
 
     /** @var string Shipping zipcode */
-    private $shippingPostcode = '';
+    private string $shippingPostcode = '';
 
     /** @var string Shipping city */
-    private $shippingCity = '';
+    private string $shippingCity = '';
 
     /** @var string Shipping country */
-    private $shippingCountry = '';
+    private string $shippingCountry = '';
 
     /** @var string Client visible note */
-    private $note = '';
+    private string $note = '';
 
     /** @var string Name of responsible cleark */
-    private $clerk = '';
+    private string $clerk = '';
 
     /** @var string Order status */
-    private $status = '';
+    private string $status = '';
 
     /** @var float Shipping price */
-    private $shipping = 0.00;
+    private float $shipping = 0.00;
 
     /** @var float Tax percentage */
-    private $vat = 0.25;
+    private float $vat = 0.25;
 
     /** @var bool Has product prices been entered with vat added */
-    private $preVat = true;
+    private bool $preVat = true;
 
     /** @var bool Has the money been transfered */
-    private $transferred = false;
+    private bool $transferred = false;
 
     /** @var string Name of used electronic payment method */
-    private $cardtype = '';
+    private string $cardtype = '';
 
     /** @var string Internal reference */
-    private $iref = '';
+    private string $iref = '';
 
     /** @var string External reference */
-    private $eref = '';
+    private string $eref = '';
 
     /** @var bool Has the invoice been sent to the customer */
-    private $sent = false;
+    private bool $sent = false;
 
     /** @var string Email of responsible department */
-    private $department = '';
-
-    /** @var string Internal note */
-    private $internalNote = '';
-
-    /** @var int Payment id */
-    private $paymentId;
+    private string $department = '';
+    private string $internalNote = '';
+    private ?int $paymentId = null;
 
     // Dynamic
 
     /** @var array<int, array<string, mixed>> */
-    private $items = [];
+    private array $items = [];
 
     public function __construct(array $data = [])
     {

@@ -12,13 +12,13 @@ class CustomPage extends AbstractEntity implements InterfaceRichText
     // Backed by DB
 
     /** @var string The title. */
-    private $title = '';
+    private string $title = '';
 
     /** @var int The time of last save. */
-    private $timeStamp;
+    private int $timeStamp;
 
     /** @var string HTML body. */
-    private $html = '';
+    private string $html = '';
 
     public function __construct(array $data = [])
     {
@@ -65,8 +65,6 @@ class CustomPage extends AbstractEntity implements InterfaceRichText
     /**
      * Set the title.
      *
-     * @param string $title The title
-     *
      * @return $this
      */
     public function setTitle(string $title): self
@@ -86,8 +84,6 @@ class CustomPage extends AbstractEntity implements InterfaceRichText
 
     /**
      * Set the HTML body.
-     *
-     * @param string $html HTML body
      *
      * @return $this
      */

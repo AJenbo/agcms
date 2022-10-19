@@ -12,11 +12,10 @@ use Sentry\State\Scope;
 
 class Handler
 {
-    /** @var null|string */
-    private $lastLogId;
+    private ?string $lastLogId;
 
     /** @var array<int, string> */
-    private $dontReport = [
+    private array $dontReport = [
         InvalidInput::class,
     ];
 
@@ -48,17 +47,17 @@ class Handler
             throw $exception;
         }
 
-        $request = app(Request::class);
-        if ($request->hasSession()) {
-            $user = $request->user();
-            if ($user && app()->environment('production')) {
-                \Sentry\configureScope(function (Scope $scope) use ($user): void {
-                    $scope->setUser(['id' => $user->getId(), 'name' => $user->getFullName()]);
-                });
+        if (app()->environment('productino')) {
+            $request = app(Request::class);
+            if ($request->hasSession()) {
+                $user = $request->user();
+                if ($user) {
+                    \Sentry\configureScope(function (Scope $scope) use ($user): void {
+                        $scope->setUser(['id' => $user->getId(), 'name' => $user->getFullName()]);
+                    });
+                }
             }
-        }
 
-        if (app()->environment('production')) {
             $this->lastLogId = \Sentry\captureException($exception);
         }
     }
@@ -70,6 +69,12 @@ class Handler
      */
     public function render(Request $request, Throwable $exception): Response
     {
+        if (app()->environment('test') && $this->shouldLog($exception)) {
+            http_response_code(Response::HTTP_INTERNAL_SERVER_ERROR);
+
+            throw $exception;
+        }
+
         $status = Response::HTTP_INTERNAL_SERVER_ERROR;
         if ($exception->getCode() >= 400 && $exception->getCode() <= 599) {
             $status = (int) $exception->getCode();

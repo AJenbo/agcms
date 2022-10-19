@@ -12,7 +12,7 @@ class Requirement extends AbstractRenderable implements InterfaceRichText
     // Backed by DB
 
     /** @var string The body HTML. */
-    private $html = '';
+    private string $html = '';
 
     public function __construct(array $data = [])
     {
@@ -33,10 +33,6 @@ class Requirement extends AbstractRenderable implements InterfaceRichText
     // Getters and setters
 
     /**
-     * Set HTML body.
-     *
-     * @param string $html The HTML body
-     *
      * @return $this
      */
     public function setHtml(string $html): InterfaceRichText
@@ -46,9 +42,6 @@ class Requirement extends AbstractRenderable implements InterfaceRichText
         return $this;
     }
 
-    /**
-     * Get the HTML body.
-     */
     public function getHtml(): string
     {
         return $this->html;

@@ -7,13 +7,10 @@ use PHPUnit\Framework\TestCase;
 
 class EpaymentServiceTest extends TestCase
 {
-    /** @var EpaymentService */
-    private $epaymentService;
+    private EpaymentService $epaymentService;
 
     /**
      * Initiate the mock.
-     *
-     * @return void
      */
     public function setUp(): void
     {
@@ -22,8 +19,6 @@ class EpaymentServiceTest extends TestCase
 
     /**
      * @covers \App\Services\EpaymentService::__construct
-     *
-     * @return void
      */
     public function testCanInstanciate(): void
     {

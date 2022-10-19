@@ -7,13 +7,9 @@ use App\Services\OrmService;
 trait HasIcon
 {
     /** @var ?int File id. */
-    private $iconId;
+    private ?int $iconId;
 
     /**
-     * Set icon.
-     *
-     * @param ?File $icon
-     *
      * @return $this
      */
     public function setIcon(?File $icon): self
@@ -23,11 +19,6 @@ trait HasIcon
         return $this;
     }
 
-    /**
-     * Get the file that is used as an icon.
-     *
-     * @return ?File
-     */
     public function getIcon(): ?File
     {
         $file = null;
