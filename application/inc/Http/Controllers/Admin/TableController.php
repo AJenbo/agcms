@@ -45,8 +45,6 @@ class TableController extends AbstractAdminController
 
     /**
      * Add row to a table.
-     *
-     * @throws InvalidInput
      */
     public function addRow(Request $request, int $tableId): JsonResponse
     {
@@ -63,11 +61,6 @@ class TableController extends AbstractAdminController
         return new JsonResponse(['listid' => $tableId, 'rowid' => $rowId]);
     }
 
-    /**
-     * Update a row in a table.
-     *
-     * @throws InvalidInput
-     */
     public function updateRow(Request $request, int $tableId, int $rowId): JsonResponse
     {
         $cells = $request->request->get('cells', []);
@@ -83,11 +76,6 @@ class TableController extends AbstractAdminController
         return new JsonResponse(['listid' => $tableId, 'rowid' => $rowId]);
     }
 
-    /**
-     * Remove a row from a table.
-     *
-     * @throws InvalidInput
-     */
     public function removeRow(Request $request, int $tableId, int $rowId): JsonResponse
     {
         $table = app(OrmService::class)->getOne(Table::class, $tableId);

@@ -149,11 +149,7 @@ class EpaymentService
             ]
         );
 
-        if ($response->deleteResult) {
-            return true;
-        }
-
-        return false;
+        return $response->deleteResult;
     }
 
     /**
@@ -172,10 +168,6 @@ class EpaymentService
             'pbsResponse'    => true,
         ]);
 
-        if ($response->captureResult) {
-            return true;
-        }
-
-        return false;
+        return $response->captureResult;
     }
 }

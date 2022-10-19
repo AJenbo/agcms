@@ -3,7 +3,6 @@
 namespace App\Services;
 
 use AJenbo\Imap;
-use App\Application;
 use App\Exceptions\Exception;
 use App\Exceptions\SendEmail;
 use App\Models\Contact;
@@ -33,11 +32,7 @@ class EmailService
             return false;
         }
 
-        if (filter_var($user . '@' . $domain, FILTER_VALIDATE_EMAIL) && $this->checkMx($domain)) {
-            return true;
-        }
-
-        return false;
+        return filter_var($user . '@' . $domain, FILTER_VALIDATE_EMAIL) && $this->checkMx($domain);
     }
 
     /**

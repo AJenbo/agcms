@@ -947,10 +947,10 @@ class Invoice extends AbstractEntity
         return [
             'id'                   => $data['id'],
             'item_data'            => $items,
-            'has_shipping_address' => (bool) $data['altpost'],
+            'has_shipping_address' => (bool)$data['altpost'],
             'timestamp'            => strtotime($data['date']) + $db->getTimeOffset(),
             'timestamp_pay'        => strtotime($data['paydate']) + $db->getTimeOffset(),
-            'amount'               => (float) $data['amount'],
+            'amount'               => (float)$data['amount'],
             'name'                 => $data['navn'],
             'attn'                 => $data['att'],
             'address'              => $data['adresse'],
@@ -974,14 +974,14 @@ class Invoice extends AbstractEntity
             'internal_note'        => $data['enote'],
             'clerk'                => $data['clerk'],
             'status'               => $data['status'],
-            'shipping'             => (float) $data['fragt'],
-            'vat'                  => (float) $data['momssats'],
-            'pre_vat'              => (bool) $data['premoms'],
-            'transferred'          => (bool) $data['transferred'],
+            'shipping'             => (float)$data['fragt'],
+            'vat'                  => (float)$data['momssats'],
+            'pre_vat'              => (bool)$data['premoms'],
+            'transferred'          => (bool)$data['transferred'],
             'cardtype'             => $data['cardtype'],
             'iref'                 => $data['iref'],
             'eref'                 => $data['eref'],
-            'sent'                 => (bool) $data['sendt'],
+            'sent'                 => (bool)$data['sendt'],
             'department'           => $data['department'],
         ];
     }
@@ -1000,9 +1000,9 @@ class Invoice extends AbstractEntity
         $items = json_decode($itemData, true);
         foreach ($items as $item) {
             $item = [
-                'quantity' => (int) $item['quantity'],
-                'title'    => (string) $item['title'],
-                'value'    => (float) $item['value'],
+                'quantity' => (int)$item['quantity'],
+                'title'    => (string)$item['title'],
+                'value'    => (float)$item['value'],
             ];
             if (!$item['quantity'] && !$item['title'] && !$item['value']) {
                 continue;
@@ -1113,11 +1113,7 @@ class Invoice extends AbstractEntity
      */
     public function hasValidEmail(): bool
     {
-        if (!$this->email || !app(EmailService::class)->valideMail($this->email)) {
-            return false;
-        }
-
-        return true;
+        return !(!$this->email || !app(EmailService::class)->valideMail($this->email));
     }
 
     /**
@@ -1221,7 +1217,7 @@ class Invoice extends AbstractEntity
             'email'          => $db->quote($this->email),
             'tlf1'           => $db->quote($this->phone1),
             'tlf2'           => $db->quote($this->phone2),
-            'altpost'        => (string) (int) $this->hasShippingAddress,
+            'altpost'        => (string)(int)$this->hasShippingAddress,
             'posttlf'        => $db->quote($this->shippingPhone),
             'postname'       => $db->quote($this->shippingName),
             'postatt'        => $db->quote($this->shippingAttn),
@@ -1236,13 +1232,13 @@ class Invoice extends AbstractEntity
             'status'         => $db->quote($this->status),
             'fragt'          => $db->escNum($this->shipping),
             'momssats'       => $db->escNum($this->vat),
-            'premoms'        => (string) (int) $this->preVat,
-            'transferred'    => (string) (int) $this->transferred,
+            'premoms'        => (string)(int)$this->preVat,
+            'transferred'    => (string)(int)$this->transferred,
             'cardtype'       => $db->quote($this->cardtype),
             'iref'           => $db->quote($this->iref),
             'eref'           => $db->quote($this->eref),
-            'sendt'          => (string) (int) $this->sent,
-            'payment_id'     => null !== $this->paymentId ? (string) $this->paymentId : 'NULL',
+            'sendt'          => (string)(int)$this->sent,
+            'payment_id'     => null !== $this->paymentId ? (string)$this->paymentId : 'NULL',
             'department'     => $db->quote($this->department),
             'enote'          => $db->quote($this->internalNote),
         ];

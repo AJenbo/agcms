@@ -12,7 +12,7 @@ return [
     'base_url'   => 'https://localhost',
     'site_name'  => 'My store',
 
-    'db_dns'     => 'sqlite::memory:',
+    'db_dns' => 'sqlite::memory:',
 
     'emails' => [
         'mail@gmail.com' => [

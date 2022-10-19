@@ -332,7 +332,7 @@ class Contact extends AbstractEntity
             'city'       => $data['by'],
             'phone1'     => $data['tlf1'],
             'phone2'     => $data['tlf2'],
-            'subscribed' => (bool) $data['kartotek'],
+            'subscribed' => (bool)$data['kartotek'],
             'interests'  => $interests,
             'ip'         => $data['ip'],
         ];
@@ -359,7 +359,7 @@ class Contact extends AbstractEntity
             'by'        => $db->quote($this->city),
             'tlf1'      => $db->quote($this->phone1),
             'tlf2'      => $db->quote($this->phone2),
-            'kartotek'  => $db->quote((string) (int) $this->subscribed), // enum :(
+            'kartotek'  => $db->quote((string)(int)$this->subscribed), // enum :(
             'interests' => $db->quote($interests),
             'ip'        => $db->quote($this->ip),
         ];

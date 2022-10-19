@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use App\Render;
 use App\Services\DbService;
 use App\Services\RenderService;
 use DateTime;
@@ -16,7 +15,7 @@ abstract class AbstractController
      *
      * @param array<string, mixed> $parameters
      */
-    protected function render(string $view, array $parameters = [], Response $response = null): Response
+    protected function render(string $view, array $parameters = [], ?Response $response = null): Response
     {
         $content = app(RenderService::class)->render($view, $parameters);
 
@@ -31,14 +30,14 @@ abstract class AbstractController
     /**
      * Add the needed headeres for a 304 cache response based on the loaded data.
      */
-    protected function cachedResponse(Response $response = null, int $timestamp = null, int $maxAge = 0): Response
+    protected function cachedResponse(?Response $response = null, ?int $timestamp = null, int $maxAge = 0): Response
     {
         if (!$response) {
             $response = new Response();
         }
 
-        $timestamp = $timestamp ?? $this->getUpdateTime();
-        $lastModified = DateTime::createFromFormat('U', (string) $timestamp, new DateTimeZone('GMT'));
+        $timestamp ??= $this->getUpdateTime();
+        $lastModified = DateTime::createFromFormat('U', (string)$timestamp, new DateTimeZone('GMT'));
         if (!$lastModified) {
             return $response;
         }

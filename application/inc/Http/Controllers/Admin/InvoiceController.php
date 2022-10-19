@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers\Admin;
 
-use App\Application;
+use App\Countries;
 use App\Exceptions\Exception;
 use App\Exceptions\InvalidInput;
 use App\Http\Request;
@@ -19,11 +19,13 @@ class InvoiceController extends AbstractAdminController
 {
     /**
      * List of invoices.
+     *
+     * @throws Exception
      */
     public function index(Request $request): Response
     {
         $selected = [
-            'id'         => (int) $request->get('id') ?: null,
+            'id'         => (int)$request->get('id') ?: null,
             'year'       => $request->query->getInt('y'),
             'month'      => $request->query->getInt('m'),
             'department' => $request->get('department'),
@@ -63,7 +65,7 @@ class InvoiceController extends AbstractAdminController
             'title'         => _('Invoice list'),
             'currentUser'   => $user,
             'selected'      => $selected,
-            'countries'     => include app()->basePath('/inc/countries.php'),
+            'countries'     => Countries::getOrdered(),
             'departments'   => array_keys(config('emails', [])),
             'users'         => $orm->getByQuery(User::class, 'SELECT * FROM `users` ORDER BY `fullname`'),
             'invoices'      => $invoices,
@@ -183,8 +185,6 @@ class InvoiceController extends AbstractAdminController
 
     /**
      * Set payment transferred status.
-     *
-     * @throws InvalidInput
      */
     public function validate(Request $request, int $id): JsonResponse
     {
@@ -205,6 +205,8 @@ class InvoiceController extends AbstractAdminController
 
     /**
      * Create a new invoice.
+     *
+     * @throws Exception
      */
     public function create(Request $request): JsonResponse
     {
@@ -230,9 +232,7 @@ class InvoiceController extends AbstractAdminController
     }
 
     /**
-     * Update invoice.
-     *
-     * @throws InvalidInput
+     * @throws Exception
      */
     public function update(Request $request, int $id): JsonResponse
     {
@@ -261,9 +261,7 @@ class InvoiceController extends AbstractAdminController
     }
 
     /**
-     * Clone invoice.
-     *
-     * @throws InvalidInput
+     * @throws Exception
      */
     public function clone(Request $request, int $id): JsonResponse
     {
@@ -285,8 +283,6 @@ class InvoiceController extends AbstractAdminController
 
     /**
      * Send payment reminder.
-     *
-     * @throws InvalidInput
      */
     public function sendReminder(Request $request, int $id): JsonResponse
     {
@@ -303,8 +299,6 @@ class InvoiceController extends AbstractAdminController
 
     /**
      * Accept payment.
-     *
-     * @throws InvalidInput
      */
     public function capturePayment(Request $request, int $id): JsonResponse
     {
@@ -321,8 +315,6 @@ class InvoiceController extends AbstractAdminController
 
     /**
      * Cancle payment.
-     *
-     * @throws InvalidInput
      */
     public function annulPayment(Request $request, int $id): JsonResponse
     {
@@ -340,9 +332,9 @@ class InvoiceController extends AbstractAdminController
     /**
      * Display invoice.
      *
-     * @throws InvalidInput
+     * @throws Exception
      */
-    public function invoice(Request $request, int $id = null): Response
+    public function invoice(Request $request, ?int $id = null): Response
     {
         $orm = app(OrmService::class);
 
@@ -369,7 +361,7 @@ class InvoiceController extends AbstractAdminController
             'currentUser' => $user,
             'users'       => $orm->getByQuery(User::class, 'SELECT * FROM `users` ORDER BY fullname'),
             'departments' => array_keys(config('emails', [])),
-            'countries'   => include app()->basePath('/inc/countries.php'),
+            'countries'   => Countries::getOrdered(),
         ] + $this->basicPageData($request);
 
         return $this->render('admin/faktura', $data);

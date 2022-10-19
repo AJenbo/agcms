@@ -3,12 +3,10 @@
 namespace App\Exceptions;
 
 use App\Http\Request;
-use App\Application;
-use Raven_Client;
+use Sentry\State\Scope;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
 use Throwable;
-use Sentry\State\Scope;
 
 class Handler
 {
@@ -31,8 +29,6 @@ class Handler
 
     /**
      * Repport the exception.
-     *
-     * @throws Throwable
      */
     public function report(Throwable $exception): void
     {
@@ -64,20 +60,16 @@ class Handler
 
     /**
      * Generate an error response.
-     *
-     * @throws Throwable
      */
     public function render(Request $request, Throwable $exception): Response
     {
         if (app()->environment('test') && $this->shouldLog($exception)) {
-            http_response_code(Response::HTTP_INTERNAL_SERVER_ERROR);
-
             throw $exception;
         }
 
         $status = Response::HTTP_INTERNAL_SERVER_ERROR;
         if ($exception->getCode() >= 400 && $exception->getCode() <= 599) {
-            $status = (int) $exception->getCode();
+            $status = (int)$exception->getCode();
         }
 
         if ($request->isXmlHttpRequest()) {

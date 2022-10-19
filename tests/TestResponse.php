@@ -46,13 +46,13 @@ class TestResponse
      *
      * @return $this
      */
-    public function assertRedirect(string $uri = null): self
+    public function assertRedirect(?string $uri = null): self
     {
         Assert::assertTrue(
             $this->response->isRedirect(),
             'Response status code [' . $this->response->getStatusCode() . '] is not a redirect status code.'
         );
-        if (!is_null($uri)) {
+        if (null !== $uri) {
             Assert::assertEquals($this->toUrl($uri), $this->response->headers->get('Location'));
         }
 
@@ -100,23 +100,24 @@ class TestResponse
     /**
      * Assert that the response has a given JSON structure.
      *
-     * @param array<int, string|mixed[]>|null $structure
-     * @param array<int, string|mixed[]>|null $responseData
+     * @param null|array<int, mixed[]|string> $structure
+     * @param null|array<int, mixed[]|string> $responseData
      *
      * @return $this
      */
-    public function assertJsonStructure(array $structure = null, ?array $responseData = null): self
+    public function assertJsonStructure(?array $structure = null, ?array $responseData = null): self
     {
-        if (is_null($structure)) {
+        if (null === $structure) {
             return $this->assertJson($this->json());
         }
-        if (is_null($responseData)) {
+        if (null === $responseData) {
             $responseData = $this->decodeResponseJson();
         }
         foreach ($structure as $key => $value) {
             if (is_array($value)) {
                 Assert::assertArrayHasKey($key, $responseData);
                 $this->assertJsonStructure($value, $responseData[$key]);
+
                 continue;
             }
 
@@ -136,10 +137,10 @@ class TestResponse
         $expected = json_encode($data, JSON_THROW_ON_ERROR | JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES);
         $actual = json_encode($this->decodeResponseJson(), JSON_THROW_ON_ERROR | JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES);
 
-        return 'Unable to find JSON: ' . PHP_EOL . PHP_EOL .
-            "[{$expected}]" . PHP_EOL . PHP_EOL .
-            'within response JSON:' . PHP_EOL . PHP_EOL .
-            "[{$actual}]." . PHP_EOL . PHP_EOL;
+        return 'Unable to find JSON: ' . PHP_EOL . PHP_EOL
+            . "[{$expected}]" . PHP_EOL . PHP_EOL
+            . 'within response JSON:' . PHP_EOL . PHP_EOL
+            . "[{$actual}]." . PHP_EOL . PHP_EOL;
     }
 
     /**

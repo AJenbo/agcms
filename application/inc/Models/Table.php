@@ -95,7 +95,7 @@ class Table extends AbstractEntity
             'title'       => $data['title'],
             'column_data' => $columns,
             'order_by'    => $data['sort'],
-            'has_links'   => (bool) $data['link'],
+            'has_links'   => (bool)$data['link'],
         ];
     }
 
@@ -229,7 +229,7 @@ class Table extends AbstractEntity
      *
      * @return array<int, array<int|string, mixed>>
      */
-    public function getRows(int $orderBy = null): array
+    public function getRows(?int $orderBy = null): array
     {
         $db = app(DbService::class);
 
@@ -278,7 +278,7 @@ class Table extends AbstractEntity
      *
      * @return int Id of the new row
      */
-    public function addRow(array $cells, int $link = null): int
+    public function addRow(array $cells, ?int $link = null): int
     {
         $cells = array_map('htmlspecialchars', $cells);
         $cells = implode('<', $cells);
@@ -298,7 +298,7 @@ class Table extends AbstractEntity
      *
      * @param string[] $cells
      */
-    public function updateRow(int $rowId, array $cells, int $link = null): void
+    public function updateRow(int $rowId, array $cells, ?int $link = null): void
     {
         $cells = array_map('htmlspecialchars', $cells);
         $cells = implode('<', $cells);
@@ -330,14 +330,14 @@ class Table extends AbstractEntity
      *
      * @return array<int, array<int|string, mixed>>
      */
-    private function orderRows(array $rows, int $orderBy = null): array
+    private function orderRows(array $rows, ?int $orderBy = null): array
     {
-        $orderBy = $orderBy ?? $this->orderBy;
+        $orderBy ??= $this->orderBy;
         $orderBy = max($orderBy, 0);
         $orderBy = min($orderBy, count($this->columns) - 1);
 
         if (!$this->columns[$orderBy]['sorting']) {
-            return arrayNatsort($rows, (string) $orderBy); // Alpha numeric
+            return arrayNatsort($rows, (string)$orderBy); // Alpha numeric
         }
 
         $options = $this->columns[$orderBy]['options'];
@@ -392,13 +392,13 @@ class Table extends AbstractEntity
         $db = app(DbService::class);
 
         return [
-            'page_id'    => (string) $this->pageId,
+            'page_id'    => (string)$this->pageId,
             'title'      => $db->quote($this->title),
             'sorts'      => $db->quote($columnSortings),
             'cells'      => $db->quote($columnTypes),
             'cell_names' => $db->quote($columnTitles),
-            'sort'       => (string) $this->orderBy,
-            'link'       => (string) (int) $this->hasLinks,
+            'sort'       => (string)$this->orderBy,
+            'link'       => (string)(int)$this->hasLinks,
         ];
     }
 }

@@ -29,7 +29,9 @@ jobs:
         run: echo "::set-output name=dir::$(cd ./application && composer config cache-files-dir)"
       - uses: actions/cache@v3
         with:
-          path: ${{ steps.composer-cache.outputs.dir }}
+          path: |
+            ${{ steps.composer-cache.outputs.dir }}
+            ./.php-cs-fixer.cache
           key: composer-${{ hashFiles('**/composer.lock') }}
           restore-keys: composer-
 
@@ -43,6 +45,12 @@ jobs:
 
       - name: PHPUnit
         run: application/vendor/bin/phpunit --printer mheap\\GithubActionsReporter\\Printer
+
+      - name: Code style
+        if: matrix.php == '8.1'
+        run: |
+         application/vendor/bin/php-cs-fixer fix --dry-run --diff --ansi || true
+         application/vendor/bin/php-cs-fixer fix --dry-run --format=checkstyle | cs2pr
 
       - name: Upload coverage to Coveralls
         if: matrix.php == '8.1'

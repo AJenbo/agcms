@@ -79,12 +79,12 @@ class NewsletterControllerTest extends AdminTestCase
         $this->assertDatabaseHas(
             'newsmails',
             [
-                'id'         => 2,
-                'from'       => $data['from'],
-                'subject'    => $data['subject'],
-                'text'       => $data['html'],
-                'interests'  => 'cats<dogs',
-                'sendt'      => 0,
+                'id'        => 2,
+                'from'      => $data['from'],
+                'subject'   => $data['subject'],
+                'text'      => $data['html'],
+                'interests' => 'cats<dogs',
+                'sendt'     => 0,
             ]
         );
     }
@@ -103,7 +103,7 @@ class NewsletterControllerTest extends AdminTestCase
 
     public function testUpdateSend(): void
     {
-        $this->markTestSkipped('Still not able to dalay sending newsletters');
+        static::markTestSkipped('Still not able to dalay sending newsletters');
 
         /** @phpstan-ignore-next-line */
         $data = [
@@ -120,12 +120,12 @@ class NewsletterControllerTest extends AdminTestCase
         $this->assertDatabaseHas(
             'newsmails',
             [
-                'id'         => 2,
-                'from'       => $data['from'],
-                'subject'    => $data['subject'],
-                'text'       => $data['html'],
-                'interests'  => 'cats<dogs',
-                'sendt'      => 1,
+                'id'        => 2,
+                'from'      => $data['from'],
+                'subject'   => $data['subject'],
+                'text'      => $data['html'],
+                'interests' => 'cats<dogs',
+                'sendt'     => 1,
             ]
         );
     }

@@ -77,7 +77,7 @@ class BrandControllerTest extends AdminTestCase
 
     public function testUpdate404(): void
     {
-        $this->json('PUT', '/admin/brands/404/', ['title'  => 'NoName'])
+        $this->json('PUT', '/admin/brands/404/', ['title' => 'NoName'])
             ->assertResponseStatus(404);
     }
 

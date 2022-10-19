@@ -41,10 +41,7 @@ class CustomPageController extends AbstractAdminController
     }
 
     /**
-     * Update custome page.
-     *
      * @throws Exception
-     * @throws InvalidInput
      */
     public function update(Request $request, int $id): JsonResponse
     {

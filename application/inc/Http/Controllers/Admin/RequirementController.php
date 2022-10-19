@@ -22,11 +22,6 @@ class RequirementController extends AbstractAdminController
         return $this->render('admin/krav', $data);
     }
 
-    /**
-     * Create a requirement.
-     *
-     * @throws InvalidInput
-     */
     public function create(Request $request): JsonResponse
     {
         $title = $request->get('title', '');
@@ -46,7 +41,7 @@ class RequirementController extends AbstractAdminController
     /**
      * Page for editing or creating a requirement.
      */
-    public function editPage(Request $request, int $id = null): Response
+    public function editPage(Request $request, ?int $id = null): Response
     {
         $data = $this->basicPageData($request);
         $data['textWidth'] = config('text_width');
@@ -55,11 +50,6 @@ class RequirementController extends AbstractAdminController
         return $this->render('admin/editkrav', $data);
     }
 
-    /**
-     * Update requirement.
-     *
-     * @throws InvalidInput
-     */
     public function update(Request $request, int $id): JsonResponse
     {
         $title = $request->get('title', '');

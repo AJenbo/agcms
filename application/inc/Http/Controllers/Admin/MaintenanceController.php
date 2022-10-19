@@ -3,7 +3,6 @@
 namespace App\Http\Controllers\Admin;
 
 use AJenbo\Imap;
-use App\Application;
 use App\Exceptions\Exception;
 use App\Models\Category;
 use App\Models\Contact;
@@ -48,7 +47,7 @@ class MaintenanceController extends AbstractAdminController
             'dbSize'             => $this->byteToHuman($this->getDbSize()),
             'wwwSize'            => $this->byteToHuman($this->getSizeOfFiles()),
             'pendingEmails'      => $db->fetchOne("SELECT count(*) as 'count' FROM `emails`")['count'],
-            'totalDelayedEmails' => (int) $emailStatus['Auto_increment'] - 1,
+            'totalDelayedEmails' => (int)$emailStatus['Auto_increment'] - 1,
             'lastrun'            => $page->getTimeStamp(),
         ] + $this->basicPageData($request);
 
@@ -126,7 +125,7 @@ class MaintenanceController extends AbstractAdminController
 
         $categories = $orm->getByQuery(Category::class, 'SELECT * FROM `kat`');
         foreach ($categories as $category) {
-            $categoryActiveMaps[(int) $category->isInactive()][] = $category->getId();
+            $categoryActiveMaps[(int)$category->isInactive()][] = $category->getId();
         }
 
         $pages = $orm->getByQuery(
@@ -238,6 +237,7 @@ class MaintenanceController extends AbstractAdminController
                 if (!$file->isInUse()) {
                     $file->delete();
                     $deleted++;
+
                     continue;
                 }
 
@@ -425,7 +425,7 @@ class MaintenanceController extends AbstractAdminController
             $dbsize += $tabel['Index_length'];
         }
 
-        return (int) $dbsize;
+        return (int)$dbsize;
     }
 
     /**

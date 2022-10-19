@@ -45,11 +45,13 @@ abstract class TestCase extends BaseTestCase
 
     /**
      * Convert a timastamp to a string appropriate for the HTTP header.
+     *
+     * @throws Exception
      */
     public function timeToHeader(int $timestamp): string
     {
         // Set the call one hour in to the feature to make sure the data is older
-        $lastModified = DateTime::createFromFormat('U', (string) $timestamp, new DateTimeZone('GMT'));
+        $lastModified = DateTime::createFromFormat('U', (string)$timestamp, new DateTimeZone('GMT'));
         if ($lastModified === false) {
             throw new Exception('Unable to parse timestamp: ' . $timestamp);
         }
@@ -106,7 +108,7 @@ abstract class TestCase extends BaseTestCase
     {
         $content = json_encode($data) ?: null;
         $headers = array_merge([
-            'CONTENT_LENGTH' => (string) mb_strlen($content ?: '', '8bit') ?: '0',
+            'CONTENT_LENGTH' => (string)mb_strlen($content ?: '', '8bit') ?: '0',
             'CONTENT_TYPE'   => 'application/json',
             'Accept'         => 'application/json',
         ], $headers);
@@ -129,7 +131,7 @@ abstract class TestCase extends BaseTestCase
         array $cookies = [],
         array $files = [],
         array $server = [],
-        string $content = null
+        ?string $content = null
     ): TestResponse {
         $this->currentUri = config('base_url') . $uri;
         $request = Request::create($this->currentUri, $method, $parameters, $cookies, $files, $server, $content);
@@ -152,8 +154,8 @@ abstract class TestCase extends BaseTestCase
         $server = [];
         $prefix = 'HTTP_';
         foreach ($headers as $name => $value) {
-            $name = strtr(strtoupper($name), '-', '_');
-            if (false === mb_strpos($name, $prefix) && 'CONTENT_TYPE' != $name) {
+            $name = strtr(mb_strtoupper($name), '-', '_');
+            if (false === mb_strpos($name, $prefix) && 'CONTENT_TYPE' !== $name) {
                 $name = $prefix . $name;
             }
             $server[$name] = $value;
@@ -177,7 +179,7 @@ abstract class TestCase extends BaseTestCase
     /**
      * Assert that a given where condition exists in the database.
      *
-     * @param array<string, null|string|int|float> $data
+     * @param array<string, null|float|int|string> $data
      *
      * @return $this
      */
@@ -189,7 +191,7 @@ abstract class TestCase extends BaseTestCase
             json_encode($data, JSON_THROW_ON_ERROR | JSON_PRETTY_PRINT)
         );
 
-        $this->assertTrue($this->isInDatabase($table, $data), $message);
+        static::assertTrue($this->isInDatabase($table, $data), $message);
 
         return $this;
     }
@@ -197,7 +199,7 @@ abstract class TestCase extends BaseTestCase
     /**
      * Assert that a given where condition does not exist in the database.
      *
-     * @param array<string, null|string|int|float> $data
+     * @param array<string, null|float|int|string> $data
      *
      * @return $this
      */
@@ -209,7 +211,7 @@ abstract class TestCase extends BaseTestCase
             json_encode($data, JSON_THROW_ON_ERROR | JSON_PRETTY_PRINT)
         );
 
-        $this->assertFalse($this->isInDatabase($table, $data), $message);
+        static::assertFalse($this->isInDatabase($table, $data), $message);
 
         return $this;
     }
@@ -217,7 +219,7 @@ abstract class TestCase extends BaseTestCase
     /**
      * Test if a given where condition exists in the database.
      *
-     * @param array<string, null|string|int|float> $data
+     * @param array<string, null|float|int|string> $data
      */
     private function isInDatabase(string $table, array $data): bool
     {
@@ -227,6 +229,7 @@ abstract class TestCase extends BaseTestCase
         foreach ($data as $filedName => $value) {
             if (null === $value) {
                 $sets[] = '`' . $filedName . '` IS NULL';
+
                 continue;
             }
 
@@ -234,6 +237,6 @@ abstract class TestCase extends BaseTestCase
         }
         $query = 'SELECT * FROM `' . $table . '` WHERE ' . implode(' AND ', $sets);
 
-        return (bool) $db->fetchOne($query);
+        return (bool)$db->fetchOne($query);
     }
 }

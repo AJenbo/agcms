@@ -112,7 +112,7 @@ class Feed extends Base
             $decription = '';
             $icon = $page->getIcon();
             if ($icon) {
-                $imgUrl = (string) new Uri(config('base_url') . $icon->getPath());
+                $imgUrl = (string)new Uri(config('base_url') . $icon->getPath());
                 $decription .= '<img style="float:left;margin:0 10px 5px 0" src="'
                     . htmlspecialchars($imgUrl, ENT_COMPAT | ENT_XHTML) . '" ><p>';
             }
@@ -134,7 +134,7 @@ class Feed extends Base
 
             $items[] = [
                 'title'       => trim($page->getTitle()) ?: config('site_name'),
-                'link'        => (string) new Uri(config('base_url') . $page->getCanonicalLink()),
+                'link'        => (string)new Uri(config('base_url') . $page->getCanonicalLink()),
                 'description' => $decription,
                 'pubDate'     => gmdate('D, d M Y H:i:s', $page->getTimeStamp()) . ' GMT',
                 'categories'  => $categories,

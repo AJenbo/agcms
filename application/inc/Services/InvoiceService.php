@@ -2,7 +2,7 @@
 
 namespace App\Services;
 
-use App\Application;
+use App\Countries;
 use App\Exceptions\Exception;
 use App\Exceptions\InvalidInput;
 use App\Models\Contact;
@@ -38,7 +38,7 @@ class InvoiceService
                 if ($table) {
                     $pageId = $table->getPage()->getId();
                     if ($table->hasLinks() && $listRow['link']) {
-                        $pageId = (int) $listRow['link'];
+                        $pageId = (int)$listRow['link'];
                     }
 
                     $cells = explode('<', $listRow['cells']);
@@ -56,7 +56,7 @@ class InvoiceService
                             [Table::COLUMN_TYPE_PRICE, Table::COLUMN_TYPE_PRICE_NEW],
                             true
                         )) {
-                            $value = (int) $cells[$i];
+                            $value = (int)$cells[$i];
                         }
                     }
                     $title = trim($title);
@@ -97,13 +97,11 @@ class InvoiceService
 
         $addressData = $this->cleanAddressData($cart);
 
-        $invoice = new Invoice($addressData + [
+        return new Invoice($addressData + [
             'item_data' => $items,
             'amount'    => $amount,
             'note'      => $cart['note'] ?? '',
         ]);
-
-        return $invoice;
     }
 
     /**
@@ -126,7 +124,7 @@ class InvoiceService
             'email'                => $data['email'] ?? '',
             'phone1'               => $data['phone1'] ?? '',
             'phone2'               => $data['phone2'] ?? '',
-            'has_shipping_address' => (bool) ($data['hasShippingAddress'] ?? false),
+            'has_shipping_address' => (bool)($data['hasShippingAddress'] ?? false),
             'shipping_phone'       => $data['shippingPhone'] ?? '',
             'shipping_name'        => $data['shippingName'] ?? '',
             'shipping_attn'        => $data['shippingAttn'] ?? '',
@@ -205,7 +203,7 @@ class InvoiceService
     public function addToAddressBook(Invoice $invoice, ?string $clientIp): void
     {
         /** @var string[] */
-        $countries = include app()->basePath('/inc/countries.php');
+        $countries = Countries::getOrdered();
         $conteact = app(OrmService::class)->getOneByQuery(
             Contact::class,
             'SELECT * FROM email WHERE email = ' . app(DbService::class)->quote($invoice->getEmail())

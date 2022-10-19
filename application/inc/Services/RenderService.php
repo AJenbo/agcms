@@ -2,7 +2,6 @@
 
 namespace App\Services;
 
-use App\Application;
 use Twig_Environment;
 use Twig_Extensions_Extension_I18n;
 use Twig_Loader_Filesystem;

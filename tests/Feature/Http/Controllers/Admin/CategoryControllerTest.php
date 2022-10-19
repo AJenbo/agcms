@@ -125,8 +125,8 @@ class CategoryControllerTest extends AdminTestCase
         $this->json('PUT', '/admin/categories/1/', $data)
             ->assertResponseStatus(200);
 
-        $this->assertDatabaseHas('kat', ['id' => 8, 'order'=> 0]);
-        $this->assertDatabaseHas('kat', ['id' => 7, 'order'=> 1]);
+        $this->assertDatabaseHas('kat', ['id' => 8, 'order' => 0]);
+        $this->assertDatabaseHas('kat', ['id' => 7, 'order' => 1]);
     }
 
     public function testUpdate404(): void

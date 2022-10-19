@@ -2,7 +2,6 @@
 
 namespace App\Models;
 
-use App\Application;
 use App\Exceptions\Exception;
 use App\Exceptions\Handler as ExceptionHandler;
 use App\Services\DbService;
@@ -137,7 +136,7 @@ class Newsletter extends AbstractEntity implements InterfaceRichText
             'from'       => $data['from'],
             'subject'    => $data['subject'],
             'html'       => $data['text'],
-            'sent'       => (bool) $data['sendt'],
+            'sent'       => (bool)$data['sendt'],
             'interests'  => $interests,
         ];
     }
@@ -155,7 +154,7 @@ class Newsletter extends AbstractEntity implements InterfaceRichText
             'from'         => $db->quote($this->from),
             'subject'      => $db->quote($this->subject),
             'text'         => $db->quote($this->html),
-            'sendt'        => $db->quote((string) (int) $this->sent),
+            'sendt'        => $db->quote((string)(int)$this->sent),
             'interests'    => $db->quote($interests),
         ];
     }
@@ -228,7 +227,7 @@ class Newsletter extends AbstractEntity implements InterfaceRichText
         // Split in to groups of 99 to avoid server limit on bcc
         $contactsGroups = [];
         foreach ($contacts as $x => $contact) {
-            $contactsGroups[(int) floor($x / 99) + 1][] = $contact;
+            $contactsGroups[(int)floor($x / 99) + 1][] = $contact;
         }
 
         $data = [

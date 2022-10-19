@@ -11,7 +11,6 @@ use App\Services\DbService;
 use App\Services\OrmService;
 use App\Services\RenderService;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\HttpFoundation\Session\SessionInterface;
 
 class Auth implements Middleware
 {

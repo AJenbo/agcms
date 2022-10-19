@@ -4,6 +4,7 @@ namespace App\Services;
 
 use App\Exceptions\Exception;
 use PDO;
+use PDOException;
 use PDOStatement;
 
 class DbService
@@ -57,7 +58,7 @@ class DbService
     /**
      * Performe query and return result as an array of associative arrays.
      *
-     * @throws \PDOException
+     * @throws PDOException
      *
      * @return array<int, array<int|string, string>>
      */
@@ -94,13 +95,13 @@ class DbService
     /**
      * Performe query.
      *
-     * @throws \PDOException
+     * @throws PDOException
      */
     public function query(string $query): int
     {
         $this->connection()->query($query);
 
-        return (int) $this->connection()->lastInsertId();
+        return (int)$this->connection()->lastInsertId();
     }
 
     /**

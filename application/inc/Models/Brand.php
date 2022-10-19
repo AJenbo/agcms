@@ -136,7 +136,7 @@ class Brand extends AbstractRenderable
         return [
             'navn'    => $db->quote($this->title),
             'link'    => $db->quote($this->link),
-            'icon_id' => null !== $this->iconId ? (string) $this->iconId : 'NULL',
+            'icon_id' => null !== $this->iconId ? (string)$this->iconId : 'NULL',
         ];
     }
 }

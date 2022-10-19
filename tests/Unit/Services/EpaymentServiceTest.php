@@ -12,7 +12,7 @@ class EpaymentServiceTest extends TestCase
     /**
      * Initiate the mock.
      */
-    public function setUp(): void
+    protected function setUp(): void
     {
         $this->epaymentService = new EpaymentService('', '');
     }
@@ -22,6 +22,6 @@ class EpaymentServiceTest extends TestCase
      */
     public function testCanInstanciate(): void
     {
-        $this->assertInstanceOf(EpaymentService::class, $this->epaymentService);
+        static::assertInstanceOf(EpaymentService::class, $this->epaymentService);
     }
 }

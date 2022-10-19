@@ -71,7 +71,7 @@ class User extends AbstractEntity
             'fullname'  => $db->quote($this->fullName),
             'name'      => $db->quote($this->nickname),
             'password'  => $db->quote($this->passwordHash),
-            'access'    => (string) $this->accessLevel,
+            'access'    => (string)$this->accessLevel,
             'lastlogin' => $db->getDateValue($this->lastLogin - $db->getTimeOffset()),
         ];
     }
@@ -118,6 +118,8 @@ class User extends AbstractEntity
 
     /**
      * Set users password.
+     *
+     * @throws Exception
      *
      * @return $this
      */
@@ -210,11 +212,7 @@ class User extends AbstractEntity
             return false;
         }
 
-        if ($this->accessLevel <= $requestedLevel) {
-            return true;
-        }
-
-        return false;
+        return $this->accessLevel <= $requestedLevel;
     }
 
     /**

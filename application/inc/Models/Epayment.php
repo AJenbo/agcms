@@ -7,34 +7,22 @@ use stdClass;
 
 class Epayment
 {
-    /**
-     * The manager for handeling service communication.
-     */
+    /** The manager for handeling service communication. */
     private EpaymentService $service;
 
-    /**
-     * Id of transaction.
-     */
+    /** Id of transaction. */
     private int $transactionId = 0;
 
-    /**
-     * Transaction ammount.
-     */
+    /** Transaction ammount. */
     private int $amount = 0;
 
-    /**
-     * Amount that was transfered to the shop.
-     */
+    /** Amount that was transfered to the shop. */
     private int $amountCaptured = 0;
 
-    /**
-     * Is the transaction authorized and ready to transfer the amount.
-     */
+    /** Is the transaction authorized and ready to transfer the amount. */
     private bool $authorized = false;
 
-    /**
-     * Has the transaction been cancled.
-     */
+    /** Has the transaction been cancled. */
     private bool $annulled = false;
 
     /**
@@ -47,12 +35,12 @@ class Epayment
         $this->service = $service;
 
         $this->transactionId = $transactionData->transactionid;
-        $this->amount = (int) $transactionData->authamount;
+        $this->amount = (int)$transactionData->authamount;
 
         if ('PAYMENT_NEW' === $transactionData->status) {
             $this->authorized = true;
         } elseif ('PAYMENT_CAPTURED' === $transactionData->status) {
-            $this->amountCaptured = (int) $transactionData->capturedamount;
+            $this->amountCaptured = (int)$transactionData->capturedamount;
         } elseif ('PAYMENT_DELETED' === $transactionData->status) {
             $this->annulled = true;
         }
@@ -117,9 +105,9 @@ class Epayment
      *
      * @param null|int $amount The amount to draw from the customers account
      */
-    public function confirm(int $amount = null): bool
+    public function confirm(?int $amount = null): bool
     {
-        $amount = $amount ?? $this->amount;
+        $amount ??= $this->amount;
 
         if ($this->amountCaptured) {
             return true;

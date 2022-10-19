@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Application;
+use App\Countries;
 use App\Exceptions\Exception;
 use App\Exceptions\Handler as ExceptionHandler;
 use App\Exceptions\InvalidInput;
@@ -91,8 +91,7 @@ class Payment extends Base
 
         $data = $this->basicPageData();
 
-        /* @var string[] */
-        $data['countries'] = include app()->basePath('/inc/countries.php');
+        $data['countries'] = Countries::getOrdered();
         $data['crumbs'][] = new VolatilePage(_('Order #') . $id, $invoice->getLink());
         $renderable = new VolatilePage(_('Address'), $invoice->getLink() . 'address/');
         $data['crumbs'][] = $renderable;
@@ -267,6 +266,8 @@ class Payment extends Base
 
     /**
      * Get the status message.
+     *
+     * @throws Exception
      */
     private function getStatusMessage(Invoice $invoice): string
     {
@@ -421,8 +422,7 @@ class Payment extends Base
             $internalNote .= _('Credit card no.: ') . $request->get('cardno') . "\n";
         }
 
-        /** @var string[] */
-        $countries = include app()->basePath('/inc/countries.php');
+        $countries = Countries::getOrdered();
         if ($request->get('issuercountry')) {
             $internalNote .= _('Card is from: ') . $countries[$request->get('issuercountry')] . "\n";
         }

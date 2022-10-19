@@ -55,16 +55,16 @@ class AddressbookControllerTest extends AdminTestCase
         $this->assertDatabaseHas(
             'email',
             [
-                'navn'       => $data['name'],
-                'email'      => $data['email'],
-                'adresse'    => $data['address'],
-                'land'       => $data['country'],
-                'post'       => $data['postcode'],
-                'by'         => $data['city'],
-                'tlf1'       => $data['phone1'],
-                'tlf2'       => $data['phone2'],
-                'kartotek'   => (int) $data['newsletter'],
-                'interests'  => 'cats<mise',
+                'navn'      => $data['name'],
+                'email'     => $data['email'],
+                'adresse'   => $data['address'],
+                'land'      => $data['country'],
+                'post'      => $data['postcode'],
+                'by'        => $data['city'],
+                'tlf1'      => $data['phone1'],
+                'tlf2'      => $data['phone2'],
+                'kartotek'  => (int)$data['newsletter'],
+                'interests' => 'cats<mise',
             ]
         );
     }
@@ -90,17 +90,17 @@ class AddressbookControllerTest extends AdminTestCase
         $this->assertDatabaseHas(
             'email',
             [
-                'id'         => 1,
-                'navn'       => $data['name'],
-                'email'      => $data['email'],
-                'adresse'    => $data['address'],
-                'land'       => $data['country'],
-                'post'       => $data['postcode'],
-                'by'         => $data['city'],
-                'tlf1'       => $data['phone1'],
-                'tlf2'       => $data['phone2'],
-                'kartotek'   => (int) $data['newsletter'],
-                'interests'  => 'cats<mise',
+                'id'        => 1,
+                'navn'      => $data['name'],
+                'email'     => $data['email'],
+                'adresse'   => $data['address'],
+                'land'      => $data['country'],
+                'post'      => $data['postcode'],
+                'by'        => $data['city'],
+                'tlf1'      => $data['phone1'],
+                'tlf2'      => $data['phone2'],
+                'kartotek'  => (int)$data['newsletter'],
+                'interests' => 'cats<mise',
             ]
         );
     }

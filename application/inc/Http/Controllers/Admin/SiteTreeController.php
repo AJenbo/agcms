@@ -52,8 +52,6 @@ class SiteTreeController extends AbstractAdminController
 
     /**
      * Get the label for a folded tree widget.
-     *
-     * @throws InvalidInput
      */
     public function lable(Request $request, int $id): JsonResponse
     {

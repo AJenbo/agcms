@@ -39,8 +39,6 @@ class BrandController extends AbstractAdminController
 
     /**
      * Create new brand.
-     *
-     * @throws InvalidInput
      */
     public function create(Request $request): JsonResponse
     {
@@ -57,11 +55,6 @@ class BrandController extends AbstractAdminController
         return new JsonResponse(['id' => $brand->getId()]);
     }
 
-    /**
-     * Update a brand.
-     *
-     * @throws InvalidInput
-     */
     public function update(Request $request, int $id): JsonResponse
     {
         $title = $request->request->get('title');

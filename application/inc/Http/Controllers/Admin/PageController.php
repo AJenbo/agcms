@@ -22,10 +22,8 @@ class PageController extends AbstractAdminController
 {
     /**
      * Create or edit pages.
-     *
-     * @throws InvalidInput
      */
-    public function index(Request $request, int $id = null): Response
+    public function index(Request $request, ?int $id = null): Response
     {
         $selectedId = $request->cookies->get('activekat', -1);
         $openCategories = explode('<', $request->cookies->get('openkat', ''));
@@ -75,8 +73,6 @@ class PageController extends AbstractAdminController
 
     /**
      * Create new page and attach it to a category.
-     *
-     * @throws InvalidInput
      */
     public function createPage(Request $request): JsonResponse
     {
@@ -107,8 +103,6 @@ class PageController extends AbstractAdminController
 
     /**
      * Update existing page.
-     *
-     * @throws InvalidInput
      */
     public function updatePage(Request $request, int $id): JsonResponse
     {
@@ -156,8 +150,6 @@ class PageController extends AbstractAdminController
 
     /**
      * Attach a page to a category.
-     *
-     * @throws InvalidInput
      */
     public function addToCategory(Request $request, int $id, int $categoryId): JsonResponse
     {
@@ -197,8 +189,6 @@ class PageController extends AbstractAdminController
 
     /**
      * Remove the page from category.
-     *
-     * @throws InvalidInput
      */
     public function removeFromCategory(Request $request, int $id, int $categoryId): JsonResponse
     {
@@ -237,8 +227,6 @@ class PageController extends AbstractAdminController
 
     /**
      * Search page.
-     *
-     * @throws InvalidInput
      */
     public function search(Request $request): Response
     {
@@ -259,8 +247,6 @@ class PageController extends AbstractAdminController
 
     /**
      * Add a page to page relation.
-     *
-     * @throws InvalidInput
      */
     public function addAccessory(Request $request, int $pageId, int $accessoryId): JsonResponse
     {
@@ -292,8 +278,6 @@ class PageController extends AbstractAdminController
 
     /**
      * Remove a page to page relation.
-     *
-     * @throws InvalidInput
      */
     public function removeAccessory(Request $request, int $pageId, int $accessoryId): JsonResponse
     {
@@ -333,7 +317,7 @@ class PageController extends AbstractAdminController
 
         $db = app(DbService::class);
 
-        $pages = app(OrmService::class)->getByQuery(
+        return app(OrmService::class)->getByQuery(
             Page::class,
             '
             SELECT * FROM sider
@@ -344,7 +328,5 @@ class PageController extends AbstractAdminController
             ORDER BY MATCH (navn, text, beskrivelse) AGAINST(' . $db->quote($text) . ') DESC
             '
         );
-
-        return $pages;
     }
 }

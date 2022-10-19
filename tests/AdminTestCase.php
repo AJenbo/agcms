@@ -10,6 +10,8 @@ abstract class AdminTestCase extends TestCase
 {
     /**
      * Initiate the database, config and application.
+     *
+     * @throws Exception
      */
     protected function setUp(): void
     {

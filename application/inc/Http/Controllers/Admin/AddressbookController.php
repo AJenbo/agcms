@@ -30,7 +30,7 @@ class AddressbookController extends AbstractAdminController
     /**
      * Page for editing or creating a contact.
      */
-    public function editContact(Request $request, int $id = null): Response
+    public function editContact(Request $request, ?int $id = null): Response
     {
         $data = $this->basicPageData($request);
         $data['contact'] = $id ? app(OrmService::class)->getOne(Contact::class, $id) : null;
@@ -64,8 +64,6 @@ class AddressbookController extends AbstractAdminController
 
     /**
      * Update contact.
-     *
-     * @throws InvalidInput
      */
     public function update(Request $request, int $id): JsonResponse
     {

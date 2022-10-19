@@ -46,7 +46,7 @@ class Search extends Base
             $categoryIds[] = $category->getId();
         }
 
-        $brands = $orm->getByQuery(
+        return $orm->getByQuery(
             Brand::class,
             '
             SELECT * FROM `maerke`
@@ -57,8 +57,6 @@ class Search extends Base
             ) ORDER BY `navn`
             '
         );
-
-        return $brands;
     }
 
     /**
@@ -237,7 +235,7 @@ class Search extends Base
 
         $db = app(DbService::class);
 
-        $brands = app(OrmService::class)->getByQuery(
+        return app(OrmService::class)->getByQuery(
             Brand::class,
             '
             SELECT * FROM `maerke`
@@ -249,8 +247,6 @@ class Search extends Base
             AND navn NOT LIKE ' . $db->quote($simpleAntiWords) . '
             '
         );
-
-        return $brands;
     }
 
     /**

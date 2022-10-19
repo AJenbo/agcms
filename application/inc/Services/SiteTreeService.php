@@ -14,7 +14,7 @@ class SiteTreeService
      *
      * @return array<string, mixed>
      */
-    public function getSiteTreeData(array $openCategories, string $inputType = '', int $selectedId = null): array
+    public function getSiteTreeData(array $openCategories, string $inputType = '', ?int $selectedId = null): array
     {
         $orm = app(OrmService::class);
 
@@ -50,7 +50,7 @@ class SiteTreeService
      *
      * @return int[]
      */
-    private function getOpenCategories(array $openCategories, int $selectedId = null): array
+    private function getOpenCategories(array $openCategories, ?int $selectedId = null): array
     {
         if (null !== $selectedId) {
             $category = app(OrmService::class)->getOne(Category::class, $selectedId);

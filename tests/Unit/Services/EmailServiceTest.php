@@ -12,7 +12,7 @@ class EmailServiceTest extends TestCase
     /**
      * Initiate the mock.
      */
-    public function setUp(): void
+    protected function setUp(): void
     {
         $this->emailService = new EmailService();
     }
@@ -22,7 +22,7 @@ class EmailServiceTest extends TestCase
      */
     public function testValidAddress(): void
     {
-        $this->assertTrue($this->emailService->validemail('_An-._E-mail@gmail.com'));
+        static::assertTrue($this->emailService->validemail('_An-._E-mail@gmail.com'));
     }
 
     /**
@@ -30,6 +30,6 @@ class EmailServiceTest extends TestCase
      */
     public function testValidAddressIdnDomain(): void
     {
-        $this->assertTrue($this->emailService->validemail('email@sørensen.dk'));
+        static::assertTrue($this->emailService->validemail('email@sørensen.dk'));
     }
 }

@@ -2,14 +2,14 @@
 
 namespace App;
 
+use App\Contracts\Middleware;
 use App\Exceptions\Handler as ExceptionHandler;
+use App\Http\Controllers\AbstractController;
 use App\Http\Controllers\Base;
 use App\Http\Request;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Response;
 use Throwable;
-use App\Http\Controllers\AbstractController;
-use App\Contracts\Middleware;
 
 class Application
 {
@@ -28,9 +28,7 @@ class Application
     /** @var array<string, array<int, Route>> */
     private array $routes = [];
 
-    /**
-     * @var array<class-string<object>, object>
-     */
+    /** @var array<class-string<object>, object> */
     private array $services = [];
 
     /**
@@ -98,8 +96,7 @@ class Application
      */
     private function loadRoutes(): void
     {
-        $app = $this;
-        require __DIR__ . '/routes.php';
+        Routes::load($this);
     }
 
     /**
@@ -138,19 +135,22 @@ class Application
         }
 
         /** @var T */
-        return $this->services[$id];
+        $class = $this->services[$id];
+        assert(is_object($class));
+
+        return $class;
     }
 
     /**
      * Add new middleware to the application.
      *
-     * @param class-string<Middleware>|array<class-string<Middleware>> $middleware
+     * @param array<class-string<Middleware>>|class-string<Middleware> $middleware
      *
      * @return $this
      */
     public function middleware($middleware): self
     {
-        $middleware = (array) $middleware;
+        $middleware = (array)$middleware;
 
         $this->middleware = array_unique(array_merge($this->middleware, $middleware));
 
@@ -242,7 +242,8 @@ class Application
                     $class = $route->getController();
                     /** @var callable(Request, string...) */
                     $callable = [new $class(), $route->getAction()];
-                    return call_user_func_array($callable, $matches);
+
+                    return $callable(...$matches);
                 };
             }
 

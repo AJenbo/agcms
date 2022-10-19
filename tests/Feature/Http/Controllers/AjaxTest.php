@@ -16,8 +16,8 @@ class AjaxTest extends TestCase
             ->assertJsonStructure(['id', 'html']);
 
         $data = $response->json();
-        $this->assertStringContainsString('<caption>Variants</caption>', $data['html']);
-        $this->assertMatchesRegularExpression('/side7.*side6.*side8/su', $data['html']);
+        static::assertStringContainsString('<caption>Variants</caption>', $data['html']);
+        static::assertMatchesRegularExpression('/side7.*side6.*side8/su', $data['html']);
     }
 
     public function testTableOrder(): void
@@ -29,7 +29,7 @@ class AjaxTest extends TestCase
             ->assertJsonStructure(['id', 'html']);
 
         $data = $response->json();
-        $this->assertMatchesRegularExpression('/side8.*side7.*side6/su', $data['html']);
+        static::assertMatchesRegularExpression('/side8.*side7.*side6/su', $data['html']);
     }
 
     public function testTableCustomOrder(): void
@@ -41,7 +41,7 @@ class AjaxTest extends TestCase
             ->assertJsonStructure(['id', 'html']);
 
         $data = $response->json();
-        $this->assertMatchesRegularExpression('/side8.*side6.*side7/su', $data['html']);
+        static::assertMatchesRegularExpression('/side8.*side6.*side7/su', $data['html']);
     }
 
     public function testTableCache(): void
@@ -68,7 +68,7 @@ class AjaxTest extends TestCase
             ->assertJsonStructure(['id', 'html']);
 
         $data = $response->json();
-        $this->assertMatchesRegularExpression('/side3.*side7.*side6.*side8/su', $data['html']);
+        static::assertMatchesRegularExpression('/side3.*side7.*side6.*side8/su', $data['html']);
     }
 
     public function testCategoryOldPrice(): void
@@ -80,7 +80,7 @@ class AjaxTest extends TestCase
             ->assertJsonStructure(['id', 'html']);
 
         $data = $response->json();
-        $this->assertMatchesRegularExpression('/side6.*side3.*side7.*side8/su', $data['html']);
+        static::assertMatchesRegularExpression('/side6.*side3.*side7.*side8/su', $data['html']);
     }
 
     public function testCategoryPrice(): void
@@ -92,7 +92,7 @@ class AjaxTest extends TestCase
             ->assertJsonStructure(['id', 'html']);
 
         $data = $response->json();
-        $this->assertMatchesRegularExpression('/side7.*side8.*side3.*side6/su', $data['html']);
+        static::assertMatchesRegularExpression('/side7.*side8.*side3.*side6/su', $data['html']);
     }
 
     public function testCategorySku(): void
@@ -104,7 +104,7 @@ class AjaxTest extends TestCase
             ->assertJsonStructure(['id', 'html']);
 
         $data = $response->json();
-        $this->assertMatchesRegularExpression('/side8.*side3.*side6.*side7/su', $data['html']);
+        static::assertMatchesRegularExpression('/side8.*side3.*side6.*side7/su', $data['html']);
     }
 
     public function testCategoryCache(): void

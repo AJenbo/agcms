@@ -80,6 +80,8 @@ class Request extends SymfonyRequest
     /**
      * Get the currently authenticated user.
      *
+     * @throws Exception
+     *
      * @return ?User
      */
     public function user(): ?User
@@ -114,6 +116,8 @@ class Request extends SymfonyRequest
 
     /**
      * Remove the user data from the session.
+     *
+     * @throws Exception
      */
     public function logout(): void
     {

@@ -5,7 +5,6 @@ namespace Tests\Unit\Models;
 use App\Models\Epayment;
 use App\Services\EpaymentService;
 use Mockery as M;
-use Mockery\Expectation;
 use Mockery\MockInterface;
 use PHPUnit\Framework\TestCase;
 use stdClass;
@@ -52,7 +51,7 @@ class EpaymentTest extends TestCase
     public function testCanInstanciate(): void
     {
         $epayment = $this->getPayment();
-        $this->assertInstanceOf(Epayment::class, $epayment);
+        static::assertInstanceOf(Epayment::class, $epayment);
     }
 
     /**
@@ -61,7 +60,7 @@ class EpaymentTest extends TestCase
     public function testIsAuthorized(): void
     {
         $epayment = $this->getPayment();
-        $this->assertTrue($epayment->isAuthorized());
+        static::assertTrue($epayment->isAuthorized());
     }
 
     /**
@@ -70,7 +69,7 @@ class EpaymentTest extends TestCase
     public function testGetId(): void
     {
         $epayment = $this->getPayment();
-        $this->assertSame(1, $epayment->getId());
+        static::assertSame(1, $epayment->getId());
     }
 
     /**
@@ -85,8 +84,8 @@ class EpaymentTest extends TestCase
             $this->mockMethod($this->epaymentService, 'annul', true, [$epayment]);
         }
 
-        $this->assertTrue($epayment->annul());
-        $this->assertTrue($epayment->isAnnulled());
+        static::assertTrue($epayment->annul());
+        static::assertTrue($epayment->isAnnulled());
     }
 
     /**
@@ -101,8 +100,8 @@ class EpaymentTest extends TestCase
             $this->mockMethod($this->epaymentService, 'annul', false, [$epayment]);
         }
 
-        $this->assertFalse($epayment->annul());
-        $this->assertFalse($epayment->isAnnulled());
+        static::assertFalse($epayment->annul());
+        static::assertFalse($epayment->isAnnulled());
     }
 
     /**
@@ -113,7 +112,7 @@ class EpaymentTest extends TestCase
     {
         $epayment = $this->getPayment('PAYMENT_DELETED');
 
-        $this->assertTrue($epayment->isAnnulled());
+        static::assertTrue($epayment->isAnnulled());
     }
 
     /**
@@ -123,8 +122,8 @@ class EpaymentTest extends TestCase
     {
         $epayment = $this->getPayment('PAYMENT_DELETED');
 
-        $this->assertTrue($epayment->annul());
-        $this->assertTrue($epayment->isAnnulled());
+        static::assertTrue($epayment->annul());
+        static::assertTrue($epayment->isAnnulled());
     }
 
     /**
@@ -140,8 +139,8 @@ class EpaymentTest extends TestCase
             $this->mockMethod($this->epaymentService, 'confirm', true, [$epayment, 100]);
         }
 
-        $this->assertTrue($epayment->confirm());
-        $this->assertSame(100, $epayment->getAmountCaptured());
+        static::assertTrue($epayment->confirm());
+        static::assertSame(100, $epayment->getAmountCaptured());
     }
 
     /**
@@ -157,8 +156,8 @@ class EpaymentTest extends TestCase
             $this->mockMethod($this->epaymentService, 'confirm', false, [$epayment, 100]);
         }
 
-        $this->assertFalse($epayment->confirm());
-        $this->assertSame(0, $epayment->getAmountCaptured());
+        static::assertFalse($epayment->confirm());
+        static::assertSame(0, $epayment->getAmountCaptured());
     }
 
     /**
@@ -188,8 +187,8 @@ class EpaymentTest extends TestCase
     {
         $epayment = $this->getPayment();
 
-        $this->assertFalse($epayment->confirm(200));
-        $this->assertSame(0, $epayment->getAmountCaptured());
+        static::assertFalse($epayment->confirm(200));
+        static::assertSame(0, $epayment->getAmountCaptured());
     }
 
     /**
@@ -200,7 +199,7 @@ class EpaymentTest extends TestCase
     {
         $epayment = $this->getPayment('PAYMENT_CAPTURED', 100, 100);
 
-        $this->assertSame(100, $epayment->getAmountCaptured());
+        static::assertSame(100, $epayment->getAmountCaptured());
     }
 
     /**
@@ -212,7 +211,7 @@ class EpaymentTest extends TestCase
     {
         $epayment = $this->getPayment('PAYMENT_CAPTURED', 100, 100);
 
-        $this->assertTrue($epayment->confirm());
-        $this->assertSame(100, $epayment->getAmountCaptured());
+        static::assertTrue($epayment->confirm());
+        static::assertSame(100, $epayment->getAmountCaptured());
     }
 }

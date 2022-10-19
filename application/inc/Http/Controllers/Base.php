@@ -16,6 +16,8 @@ class Base extends AbstractController
 
     /**
      * Generate a redirect to the search page based on the current request url.
+     *
+     * @throws Exception
      */
     public function redirectToSearch(Request $request): RedirectResponse
     {

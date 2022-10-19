@@ -80,8 +80,6 @@ class Ajax extends Base
 
     /**
      * Get address from phone number.
-     *
-     * @throws InvalidInput
      */
     public function address(Request $request, string $phoneNumber): JsonResponse
     {

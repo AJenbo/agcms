@@ -2,7 +2,7 @@
 
 namespace App\Services;
 
-use App\Application;
+use App\Countries;
 use App\Exceptions\InvalidInput;
 use App\Models\Invoice;
 use TCPDF;
@@ -169,8 +169,7 @@ class InvoicePdfService
      */
     private function insertCustomerAddresses(): void
     {
-        /** @var string[] */
-        $countries = include app()->basePath('/inc/countries.php');
+        $countries = Countries::getOrdered();
 
         //Invoice address
         $address = $this->getBillingAddress($countries);

@@ -2,7 +2,6 @@
 
 namespace App\Services;
 
-use App\Application;
 use App\Exceptions\Exception;
 use App\Exceptions\InvalidInput;
 use App\Models\File;
@@ -74,6 +73,8 @@ class UploadHandler
 
     /**
      * Performe file operations.
+     *
+     * @throws Exception
      */
     private function processFile(string $destinationType, string $description): File
     {
@@ -130,15 +131,10 @@ class UploadHandler
             return false;
         }
 
-        if ('lineimage' !== $destinationType
-            && 'image/jpeg' === $this->file->getMimeType()
-            && $this->file->getSize() / $width / $height <= self::MAX_BYTE_PER_PIXEL
-            && $image->isNoOp()
-        ) {
-            return false;
-        }
-
-        return true;
+        return 'lineimage' === $destinationType
+            || 'image/jpeg' !== $this->file->getMimeType()
+            || $this->file->getSize() / $width / $height > self::MAX_BYTE_PER_PIXEL
+            || !$image->isNoOp();
     }
 
     /**
@@ -173,6 +169,7 @@ class UploadHandler
      * @todo substract current usage
      * @todo reestimate limits
      *
+     * @throws Exception
      * @throws InvalidInput If we don't have the needed memory avalibe
      */
     private function checkMemorry(ImageService $image): void

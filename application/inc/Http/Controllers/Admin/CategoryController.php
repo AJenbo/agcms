@@ -16,7 +16,7 @@ class CategoryController extends AbstractAdminController
     /**
      * Create or edit category.
      */
-    public function index(Request $request, int $id = null): Response
+    public function index(Request $request, ?int $id = null): Response
     {
         $selectedId = $request->cookies->get('activekat', -1);
         $openCategories = explode('<', $request->cookies->get('openkat', ''));
@@ -44,11 +44,6 @@ class CategoryController extends AbstractAdminController
         return $this->render('admin/redigerkat', $data);
     }
 
-    /**
-     * Create a category.
-     *
-     * @throws InvalidInput
-     */
     public function create(Request $request): JsonResponse
     {
         $iconId = $request->request->get('icon_id');
@@ -81,8 +76,6 @@ class CategoryController extends AbstractAdminController
 
     /**
      * Move category.
-     *
-     * @throws InvalidInput
      */
     public function update(Request $request, int $id): JsonResponse
     {
@@ -167,11 +160,6 @@ class CategoryController extends AbstractAdminController
         }
     }
 
-    /**
-     * Delete category.
-     *
-     * @throws InvalidInput
-     */
     public function delete(Request $request, int $id): JsonResponse
     {
         if ($id < 1) {

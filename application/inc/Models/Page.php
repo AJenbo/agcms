@@ -225,7 +225,7 @@ class Page extends AbstractRenderable implements InterfaceRichText
      */
     public function hasExcerpt(): bool
     {
-        return (bool) $this->excerpt;
+        return (bool)$this->excerpt;
     }
 
     /**
@@ -345,7 +345,7 @@ class Page extends AbstractRenderable implements InterfaceRichText
      *
      * @param null|Category $category Category to base the url on
      */
-    public function getCanonicalLink(Category $category = null): string
+    public function getCanonicalLink(?Category $category = null): string
     {
         $url = '/';
         if (!$category || !$this->isInCategory($category)) {
@@ -367,7 +367,7 @@ class Page extends AbstractRenderable implements InterfaceRichText
 
         $db->addLoadedTable('bind');
 
-        return (bool) $db->fetchOne(
+        return (bool)$db->fetchOne(
             '
             SELECT kat FROM `bind`
             WHERE side = ' . $this->getId() . '
@@ -382,9 +382,7 @@ class Page extends AbstractRenderable implements InterfaceRichText
      */
     public function getPrimaryCategory(): ?Category
     {
-        $category = app(OrmService::class)->getOneByQuery(Category::class, $this->getCategoriesQuery());
-
-        return $category;
+        return app(OrmService::class)->getOneByQuery(Category::class, $this->getCategoriesQuery());
     }
 
     /**
@@ -394,9 +392,7 @@ class Page extends AbstractRenderable implements InterfaceRichText
      */
     public function getCategories(): array
     {
-        $categories = app(OrmService::class)->getByQuery(Category::class, $this->getCategoriesQuery());
-
-        return $categories;
+        return app(OrmService::class)->getByQuery(Category::class, $this->getCategoriesQuery());
     }
 
     /**
@@ -462,9 +458,7 @@ class Page extends AbstractRenderable implements InterfaceRichText
      */
     public function getAccessories(): array
     {
-        $page = app(OrmService::class)->getByQuery(self::class, $this->getAccessoryQuery());
-
-        return $page;
+        return app(OrmService::class)->getByQuery(self::class, $this->getAccessoryQuery());
     }
 
     /**
@@ -503,12 +497,10 @@ class Page extends AbstractRenderable implements InterfaceRichText
      */
     public function getTables(): array
     {
-        $tables = app(OrmService::class)->getByQuery(
+        return app(OrmService::class)->getByQuery(
             Table::class,
             'SELECT * FROM `lists` WHERE page_id = ' . $this->getId()
         );
-
-        return $tables;
     }
 
     /**
@@ -583,13 +575,13 @@ class Page extends AbstractRenderable implements InterfaceRichText
             'text'        => $db->quote($this->html),
             'varenr'      => $db->quote($this->sku),
             'beskrivelse' => $db->quote($this->excerpt),
-            'icon_id'     => null !== $this->iconId ? (string) $this->iconId : 'NULL',
-            'krav'        => null !== $this->requirementId ? (string) $this->requirementId : 'NULL',
-            'maerke'      => null !== $this->brandId ? (string) $this->brandId : 'NULL',
-            'pris'        => (string) $this->price,
-            'for'         => (string) $this->oldPrice,
-            'fra'         => (string) $this->priceType,
-            'burde'       => (string) $this->oldPriceType,
+            'icon_id'     => null !== $this->iconId ? (string)$this->iconId : 'NULL',
+            'krav'        => null !== $this->requirementId ? (string)$this->requirementId : 'NULL',
+            'maerke'      => null !== $this->brandId ? (string)$this->brandId : 'NULL',
+            'pris'        => (string)$this->price,
+            'for'         => (string)$this->oldPrice,
+            'fra'         => (string)$this->priceType,
+            'burde'       => (string)$this->oldPriceType,
         ];
     }
 }

@@ -2,18 +2,14 @@
 
 namespace App\Http\Controllers\Admin;
 
-use App\Exceptions\InvalidInput;
-use App\Models\Page;
 use App\Models\InterfaceRichText;
+use App\Models\Page;
 use App\Services\DbService;
 use App\Services\OrmService;
-use App\Services\RenderService;
-use App\Services\SiteTreeService;
-use Symfony\Component\HttpFoundation\JsonResponse;
+use Exception;
+use GuzzleHttp\Psr7\Uri;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use GuzzleHttp\Psr7\Uri;
-use Exception;
 
 class ExportController extends AbstractAdminController
 {
@@ -86,10 +82,10 @@ class ExportController extends AbstractAdminController
         }
 
         for ($i = 1; $i <= $maxAttributes; $i++) {
-            $this->header[] = 'Attribute '.$i.' name';
-            $this->header[] = 'Attribute '.$i.' value(s)';
-            $this->header[] = 'Attribute '.$i.' visible';
-            $this->header[] = 'Attribute '.$i.' global';
+            $this->header[] = 'Attribute ' . $i . ' name';
+            $this->header[] = 'Attribute ' . $i . ' value(s)';
+            $this->header[] = 'Attribute ' . $i . ' visible';
+            $this->header[] = 'Attribute ' . $i . ' global';
         }
         $data = [$this->header];
 
@@ -118,10 +114,10 @@ class ExportController extends AbstractAdminController
 
                     $rowData = $productData;
 
-                    $rowData[0] .= '-'.$variationId;
+                    $rowData[0] .= '-' . $variationId;
                     $rowData[1] = 'variation';
-                    $rowData[2] .= '-'.$variationId;
-                    $rowData[31] = 'id:'.$productData[0];
+                    $rowData[2] .= '-' . $variationId;
+                    $rowData[31] = 'id:' . $productData[0];
 
                     $price = null;
                     $oldPrice = null;
@@ -129,14 +125,17 @@ class ExportController extends AbstractAdminController
                     foreach ($columns as $i => $column) {
                         if ($column['type'] === 2) {
                             $price = $row[$i];
+
                             continue;
                         }
                         if ($column['type'] === 3) {
                             $salePrice = $row[$i];
+
                             continue;
                         }
                         if ($column['type'] === 4) {
                             $oldPrice = $row[$i];
+
                             continue;
                         }
                         $rowData[] = $column['title'];
@@ -156,7 +155,7 @@ class ExportController extends AbstractAdminController
                     if ($salePrice && !$price) {
                         $price = $salePrice;
                     }
-                    if ($salePrice && $salePrice != $price) {
+                    if ($salePrice && $salePrice !== $price) {
                         $rowData[23] = $salePrice;
                     }
                     if ($price) {
@@ -201,7 +200,7 @@ class ExportController extends AbstractAdminController
 
         $accessoryIds = [];
         foreach ($page->getAccessories() as $accessory) {
-            $accessoryIds[] = 'id:'.$accessory->getId();
+            $accessoryIds[] = 'id:' . $accessory->getId();
         }
         foreach ($page->getTables() as $table) {
             if (!$table->hasLinks()) {
@@ -209,7 +208,7 @@ class ExportController extends AbstractAdminController
             }
             foreach ($table->getRows() as $row) {
                 if ($row['page']) {
-                    $accessoryIds[] = 'id:'.$row['page']->getId();
+                    $accessoryIds[] = 'id:' . $row['page']->getId();
                 }
             }
         }
@@ -233,7 +232,7 @@ class ExportController extends AbstractAdminController
         return [
             (string)$page->getId(),
             $type,
-            $page->getSku() ?: ('#'.$page->getId()),
+            $page->getSku() ?: ('#' . $page->getId()),
             $page->getTitle(),
             $page->isInactive() ? '0' : '1',
             '0',
@@ -254,8 +253,8 @@ class ExportController extends AbstractAdminController
             '',
             '1',
             $purchaseNote,
-            $salesPrice ? $salesPrice : '',
-            $price ? $price : '',
+            $salesPrice ?: '',
+            $price ?: '',
             implode(', ', $paths),
             trim($page->getKeywords(), " \n\r\t\v\0,"),
             '',
@@ -293,7 +292,7 @@ class ExportController extends AbstractAdminController
 
         $result = [];
         foreach ($urls as $url) {
-            $result[] = (string) new Uri(config('base_url') . $url);
+            $result[] = (string)new Uri(config('base_url') . $url);
         }
 
         return $result;
@@ -301,10 +300,12 @@ class ExportController extends AbstractAdminController
 
     /**
      * @param array<int, array<int, string>> $data
+     *
+     * @throws Exception
      */
     protected function renderCSV(array $data = []): Response
     {
-        $csv = fopen('php://temp', 'r+');
+        $csv = fopen('php://temp', 'r+b');
         if ($csv === false) {
             throw new Exception('Failed to create buffer for CSV data.');
         }
@@ -319,11 +320,9 @@ class ExportController extends AbstractAdminController
 
         $header = [
             'Content-Type'        => 'text/csv',
-            'Content-Disposition' => 'attachment; filename="Export-' . date('c').'.csv' . '"',
+            'Content-Disposition' => 'attachment; filename="Export-' . date('c') . '.csv' . '"',
         ];
 
-        $response = new Response($output, Response::HTTP_OK, $header);
-
-        return $response;
+        return new Response($output, Response::HTTP_OK, $header);
     }
 }

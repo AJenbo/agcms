@@ -7,30 +7,30 @@ use Tests\TestCase;
 class PaymentTest extends TestCase
 {
     private const PAYLOAD = [
-       'name'               => 'Name',
-       'attn'               => 'Attn',
-       'address'            => 'Address 1',
-       'postbox'            => 'Postboks',
-       'postcode'           => '4000',
-       'city'               => 'Roskilde',
-       'country'            => 'DK',
-       'email'              => 'test@gmail.com',
-       'phone1'             => '77777777',
-       'phone2'             => '66666666',
-       'hasShippingAddress' => '0',
-       'shippingPhone'      => '55555555',
-       'shippingName'       => 'John',
-       'shippingAttn'       => 'Jane',
-       'shippingAddress'    => 'Street 4',
-       'shippingAddress2'   => '',
-       'shippingPostbox'    => 'Postboks2',
-       'shippingPostcode'   => '8000',
-       'shippingCity'       => 'Town',
-       'shippingCountry'    => 'DK',
-       'note'               => 'Note',
-       'payMethod'          => 'creditcard',
-       'deleveryMethod'     => 'postal',
-       'newsletter'         => '0',
+        'name'               => 'Name',
+        'attn'               => 'Attn',
+        'address'            => 'Address 1',
+        'postbox'            => 'Postboks',
+        'postcode'           => '4000',
+        'city'               => 'Roskilde',
+        'country'            => 'DK',
+        'email'              => 'test@gmail.com',
+        'phone1'             => '77777777',
+        'phone2'             => '66666666',
+        'hasShippingAddress' => '0',
+        'shippingPhone'      => '55555555',
+        'shippingName'       => 'John',
+        'shippingAttn'       => 'Jane',
+        'shippingAddress'    => 'Street 4',
+        'shippingAddress2'   => '',
+        'shippingPostbox'    => 'Postboks2',
+        'shippingPostcode'   => '8000',
+        'shippingCity'       => 'Town',
+        'shippingCountry'    => 'DK',
+        'note'               => 'Note',
+        'payMethod'          => 'creditcard',
+        'deleveryMethod'     => 'postal',
+        'newsletter'         => '0',
     ];
 
     public function testIndex(): void
@@ -119,11 +119,11 @@ class PaymentTest extends TestCase
         $this->assertDatabaseHas(
             'fakturas',
             [
-                'id'       => 1,
-                'navn'     => 'Name',
-                'att'      => 'Attn',
-                'tlf1'     => '77777777',
-                'tlf2'     => '66666666',
+                'id'   => 1,
+                'navn' => 'Name',
+                'att'  => 'Attn',
+                'tlf1' => '77777777',
+                'tlf2' => '66666666',
             ]
         );
 
@@ -133,16 +133,16 @@ class PaymentTest extends TestCase
     public function testAddressSaveSameShipping(): void
     {
         $payload = [
-           'hasShippingAddress' => '1',
-           'shippingPhone'      => self::PAYLOAD['phone2'],
-           'shippingName'       => self::PAYLOAD['name'],
-           'shippingAttn'       => self::PAYLOAD['attn'],
-           'shippingAddress'    => self::PAYLOAD['address'],
-           'shippingAddress2'   => '',
-           'shippingPostbox'    => self::PAYLOAD['postbox'],
-           'shippingPostcode'   => self::PAYLOAD['postcode'],
-           'shippingCity'       => self::PAYLOAD['city'],
-           'shippingCountry'    => self::PAYLOAD['country'],
+            'hasShippingAddress' => '1',
+            'shippingPhone'      => self::PAYLOAD['phone2'],
+            'shippingName'       => self::PAYLOAD['name'],
+            'shippingAttn'       => self::PAYLOAD['attn'],
+            'shippingAddress'    => self::PAYLOAD['address'],
+            'shippingAddress2'   => '',
+            'shippingPostbox'    => self::PAYLOAD['postbox'],
+            'shippingPostcode'   => self::PAYLOAD['postcode'],
+            'shippingCity'       => self::PAYLOAD['city'],
+            'shippingCountry'    => self::PAYLOAD['country'],
         ] + self::PAYLOAD;
 
         $this->post('/betaling/1/a4238/address/', $payload)
@@ -190,17 +190,17 @@ class PaymentTest extends TestCase
     public function testAddressSaveIdenticalInfo(): void
     {
         $payload = [
-           'name'               => 'Name',
-           'attn'               => 'Name',
-           'postcode'           => '4000',
-           'postbox'            => '4000',
-           'phone1'             => '77777777',
-           'phone2'             => '77777777',
-           'hasShippingAddress' => '1',
-           'shippingName'       => 'John',
-           'shippingAttn'       => 'John',
-           'shippingPostcode'   => '8000',
-           'shippingPostbox'    => '8000',
+            'name'               => 'Name',
+            'attn'               => 'Name',
+            'postcode'           => '4000',
+            'postbox'            => '4000',
+            'phone1'             => '77777777',
+            'phone2'             => '77777777',
+            'hasShippingAddress' => '1',
+            'shippingName'       => 'John',
+            'shippingAttn'       => 'John',
+            'shippingPostcode'   => '8000',
+            'shippingPostbox'    => '8000',
         ] + self::PAYLOAD;
 
         $this->post('/betaling/1/a4238/address/', $payload)
@@ -243,7 +243,7 @@ class PaymentTest extends TestCase
         $url = '/betaling/1/a4238/address/';
         $this->post($url, $payload)
             ->assertResponseStatus(303)
-            ->assertRedirect($url. '?newsletter=1');
+            ->assertRedirect($url . '?newsletter=1');
     }
 
     public function testAddressSaveWrong(): void
@@ -298,15 +298,15 @@ class PaymentTest extends TestCase
     public function testStatusCancled(): void
     {
         $this->get('/betaling/3/bc87e/status/')
-             ->assertResponseStatus(200)
-             ->assertSee('The transaction is canceled.');
+            ->assertResponseStatus(200)
+            ->assertSee('The transaction is canceled.');
     }
 
     public function testStatusFinalize(): void
     {
         $this->get('/betaling/1/a4238/status/?txnid=123456&paymenttype=1&hash=aaa42296669b958c3cee6c0475c8093e')
             ->assertResponseStatus(200)
-             ->assertSee('Payment is now accepted. We will send your goods by mail as soon as possible.');
+            ->assertSee('Payment is now accepted. We will send your goods by mail as soon as possible.');
 
         $this->assertDatabaseHas(
             'emails',

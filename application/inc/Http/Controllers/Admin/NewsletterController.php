@@ -28,7 +28,7 @@ class NewsletterController extends AbstractAdminController
     /**
      * Page for editing or creating a newsletter.
      */
-    public function editNewsletter(Request $request, int $id = null): Response
+    public function editNewsletter(Request $request, ?int $id = null): Response
     {
         $newsletter = null;
         if (null !== $id) {
@@ -66,11 +66,6 @@ class NewsletterController extends AbstractAdminController
         return new JsonResponse(['id' => $newsletter->getId()]);
     }
 
-    /**
-     * Update newsletter.
-     *
-     * @throws InvalidInput
-     */
     public function update(Request $request, int $id): JsonResponse
     {
         $newsletter = app(OrmService::class)->getOne(Newsletter::class, $id);
@@ -98,8 +93,6 @@ class NewsletterController extends AbstractAdminController
 
     /**
      * Count recipients for given interests.
-     *
-     * @throws InvalidInput
      */
     public function countRecipients(Request $request): JsonResponse
     {

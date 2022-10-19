@@ -34,7 +34,7 @@ class OrmService
             $this->byId[$class][$id] = $data ? new $class($class::mapFromDB($data)) : null;
         }
 
-        /** @var ?T */
+        // @phpstan-ignore-next-line
         return $this->byId[$class][$id];
     }
 
@@ -70,7 +70,7 @@ class OrmService
             }
         }
 
-        /** @var ?T */
+        // @phpstan-ignore-next-line
         return $this->oneBySql[$class][$query];
     }
 
@@ -103,7 +103,7 @@ class OrmService
             $db->addLoadedTable($class::TABLE_NAME);
         }
 
-        /** @var T[] */
+        // @phpstan-ignore-next-line
         return $this->bySql[$class][$query];
     }
 

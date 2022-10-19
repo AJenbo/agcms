@@ -16,9 +16,6 @@ use Symfony\Component\HttpFoundation\Response;
 
 class Site extends Base
 {
-    /**
-     * View a category.
-     */
     public function category(Request $request, int $categoryId): Response
     {
         $category = app(OrmService::class)->getOne(Category::class, $categoryId);
@@ -71,9 +68,6 @@ class Site extends Base
         return $this->page($request, 0, $pageId);
     }
 
-    /**
-     * View a page.
-     */
     public function page(Request $request, int $categoryId, int $pageId): Response
     {
         $orm = app(OrmService::class);

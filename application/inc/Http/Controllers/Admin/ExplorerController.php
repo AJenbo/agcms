@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers\Admin;
 
-use App\Application;
 use App\Exceptions\Exception;
 use App\Exceptions\InvalidInput;
 use App\Models\CustomPage;
@@ -28,7 +27,6 @@ use Symfony\Component\HttpFoundation\ResponseHeaderBag;
 
 class ExplorerController extends AbstractAdminController
 {
-    
     private FileService $fileService;
 
     public function __construct()
@@ -221,11 +219,6 @@ class ExplorerController extends AbstractAdminController
         return new JsonResponse(['id' => 'files', 'html' => $html, 'files' => $fileData]);
     }
 
-    /**
-     * Delete file.
-     *
-     * @throws InvalidInput
-     */
     public function fileDelete(Request $request, int $id): JsonResponse
     {
         $file = app(OrmService::class)->getOne(File::class, $id);
@@ -265,11 +258,6 @@ class ExplorerController extends AbstractAdminController
         return new JsonResponse([]);
     }
 
-    /**
-     * File viwer.
-     *
-     * @throws InvalidInput
-     */
     public function fileView(Request $request, int $id): Response
     {
         $file = app(OrmService::class)->getOne(File::class, $id);
@@ -305,7 +293,7 @@ class ExplorerController extends AbstractAdminController
             $pathinfo['extension'] = 'jpg';
         }
 
-        $path = ($pathinfo['dirname']  ?? '') . '/' . $this->fileService->cleanFileName($pathinfo['filename']);
+        $path = ($pathinfo['dirname'] ?? '') . '/' . $this->fileService->cleanFileName($pathinfo['filename']);
         $fullPath = app()->basePath($path);
         $fullPath .= '.' . $pathinfo['extension'];
 
@@ -316,8 +304,6 @@ class ExplorerController extends AbstractAdminController
      * Update image description.
      *
      * @todo make db fixer check for missing alt="" in <img>
-     *
-     * @throws InvalidInput
      */
     public function fileDescription(Request $request, int $id): JsonResponse
     {
@@ -349,6 +335,8 @@ class ExplorerController extends AbstractAdminController
      * Update alt text for images in HTML text.
      *
      * @param InterfaceRichText[] $richTexts
+     *
+     * @throws Exception
      */
     private function updateAltInHtml(array $richTexts, File $file): void
     {
@@ -371,8 +359,6 @@ class ExplorerController extends AbstractAdminController
 
     /**
      * File viwer.
-     *
-     * @throws InvalidInput
      */
     public function fileMoveDialog(Request $request, int $id): Response
     {
@@ -409,11 +395,6 @@ class ExplorerController extends AbstractAdminController
         return $this->render('admin/file-upload', $data);
     }
 
-    /**
-     * Upload file.
-     *
-     * @throws InvalidInput
-     */
     public function fileUpload(Request $request): Response
     {
         /** @var ?UploadedFile */
@@ -444,7 +425,7 @@ class ExplorerController extends AbstractAdminController
     /**
      * Rename or relocate file.
      *
-     * @throws InvalidInput
+     * @throws Exception
      */
     public function fileRename(Request $request, int $id): JsonResponse
     {
@@ -509,7 +490,7 @@ class ExplorerController extends AbstractAdminController
     /**
      * Rename directory.
      *
-     * @throws InvalidInput
+     * @throws Exception
      */
     public function folderRename(Request $request): JsonResponse
     {
@@ -564,8 +545,6 @@ class ExplorerController extends AbstractAdminController
 
     /**
      * Image editing window.
-     *
-     * @throws InvalidInput
      */
     public function imageEditWidget(Request $request, int $id): Response
     {
@@ -597,7 +576,6 @@ class ExplorerController extends AbstractAdminController
      * Dynamic image.
      *
      * @throws Exception
-     * @throws InvalidInput
      */
     public function image(Request $request, int $id): Response
     {
@@ -649,8 +627,6 @@ class ExplorerController extends AbstractAdminController
 
     /**
      * Process an image.
-     *
-     * @throws InvalidInput
      */
     public function imageSave(Request $request, int $id): Response
     {
@@ -690,8 +666,6 @@ class ExplorerController extends AbstractAdminController
 
     /**
      * Generate a thumbnail image from an existing image.
-     *
-     * @throws InvalidInput
      */
     public function imageSaveThumb(Request $request, int $id): Response
     {

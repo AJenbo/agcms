@@ -2,7 +2,6 @@
 
 namespace App\Models;
 
-use App\Application;
 use App\Exceptions\Exception;
 use App\Exceptions\InvalidInput;
 use App\Services\DbService;
@@ -177,10 +176,10 @@ class File extends AbstractEntity
         return [
             'path'   => $db->quote($this->path),
             'mime'   => $db->quote($this->mime),
-            'size'   => (string) $this->size,
+            'size'   => (string)$this->size,
             'alt'    => $db->quote($this->description),
-            'width'  => (string) $this->width,
-            'height' => (string) $this->height,
+            'width'  => (string)$this->width,
+            'height' => (string)$this->height,
         ];
     }
 
@@ -246,7 +245,7 @@ class File extends AbstractEntity
             $db->addLoadedTable('kat');
         }
 
-        return (bool) $db->fetchOne($sql);
+        return (bool)$db->fetchOne($sql);
     }
 
     /**

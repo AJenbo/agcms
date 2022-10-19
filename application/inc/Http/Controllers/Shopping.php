@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Application;
+use App\Countries;
 use App\Exceptions\Handler as ExceptionHandler;
 use App\Exceptions\InvalidInput;
 use App\Models\Email;
@@ -71,8 +71,7 @@ class Shopping extends Base
         $data['renderable'] = $renderable;
         $data['invoice'] = $invoice;
         $data['invalid'] = $invoice->getInvalid();
-        /* @var string[] */
-        $data['countries'] = include app()->basePath('/inc/countries.php');
+        $data['countries'] = Countries::getOrdered();
         $data['newsletter'] = $cart['newsletter'] ?? false;
         $data['onsubmit'] = 'shoppingCart.sendCart(); return false';
         $data['actionLable'] = _('Send order');

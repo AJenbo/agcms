@@ -11,7 +11,7 @@ class FunctionsTest extends TestCase
      */
     public function testCleanFileNameDate(): void
     {
-        $this->assertSame('13-04-2016', cleanFileName('13/04/2016'));
+        static::assertSame('13-04-2016', cleanFileName('13/04/2016'));
     }
 
     /**
@@ -19,7 +19,7 @@ class FunctionsTest extends TestCase
      */
     public function testCleanFileNameSequenceOfBadChars(): void
     {
-        $this->assertSame('my-folder', cleanFileName('my\/\/\/folder'));
+        static::assertSame('my-folder', cleanFileName('my\/\/\/folder'));
     }
 
     /**
@@ -27,7 +27,7 @@ class FunctionsTest extends TestCase
      */
     public function testCleanFileNameTrim(): void
     {
-        $this->assertSame('trimed', cleanFileName('trimed#'));
+        static::assertSame('trimed', cleanFileName('trimed#'));
     }
 
     /**
@@ -47,7 +47,7 @@ class FunctionsTest extends TestCase
             ['a' => '10'],
         ];
 
-        $this->assertSame($expected, arrayNatsort($list, 'a'));
+        static::assertSame($expected, arrayNatsort($list, 'a'));
     }
 
     /**
@@ -67,7 +67,7 @@ class FunctionsTest extends TestCase
             ['a' => '1'],
         ];
 
-        $this->assertSame($expected, arrayNatsort($list, 'a', 'desc'));
+        static::assertSame($expected, arrayNatsort($list, 'a', 'desc'));
     }
 
     /**
@@ -75,7 +75,7 @@ class FunctionsTest extends TestCase
      */
     public function testFirst(): void
     {
-        $this->assertSame(1, first([1, 2]));
+        static::assertSame(1, first([1, 2]));
     }
 
     /**
@@ -83,7 +83,7 @@ class FunctionsTest extends TestCase
      */
     public function testStringLimit(): void
     {
-        $this->assertSame('Long tekst …', stringLimit('Long tekst here', 12));
+        static::assertSame('Long tekst …', stringLimit('Long tekst here', 12));
     }
 
     /**
@@ -91,7 +91,7 @@ class FunctionsTest extends TestCase
      */
     public function testStringLimitRdgeOfWord(): void
     {
-        $this->assertSame('Long …', stringLimit('Long tekst here', 11));
+        static::assertSame('Long …', stringLimit('Long tekst here', 11));
     }
 
     /**
@@ -99,7 +99,7 @@ class FunctionsTest extends TestCase
      */
     public function testStringLimitTiny(): void
     {
-        $this->assertSame('Lon…', stringLimit('Long tekst here', 4));
+        static::assertSame('Lon…', stringLimit('Long tekst here', 4));
     }
 
     /**
@@ -107,7 +107,7 @@ class FunctionsTest extends TestCase
      */
     public function testStringLimitNoop(): void
     {
-        $this->assertSame('Long tekst here', stringLimit('Long tekst here', 15));
+        static::assertSame('Long tekst here', stringLimit('Long tekst here', 15));
     }
 
     /**
@@ -116,7 +116,7 @@ class FunctionsTest extends TestCase
     public function testPurifyHTMLAlert(): void
     {
         $this->flushPurifyerCache();
-        $this->assertSame('<p>Click me!</p>', purifyHTML('<p onclick="alert(\'Boo!\')">Click me!</p>'));
+        static::assertSame('<p>Click me!</p>', purifyHTML('<p onclick="alert(\'Boo!\')">Click me!</p>'));
     }
 
     /**
@@ -126,7 +126,7 @@ class FunctionsTest extends TestCase
     {
         $this->flushPurifyerCache();
         $html = '<video width="320" height="240" src="video.mp4" controls=""></video>';
-        $this->assertSame($html, purifyHTML($html));
+        static::assertSame($html, purifyHTML($html));
     }
 
     /**
@@ -136,7 +136,7 @@ class FunctionsTest extends TestCase
     {
         $this->flushPurifyerCache();
         $html = '<audio src="audio.mp3" controls=""></audio>';
-        $this->assertSame($html, purifyHTML($html));
+        static::assertSame($html, purifyHTML($html));
     }
 
     /**
@@ -146,7 +146,7 @@ class FunctionsTest extends TestCase
     {
         $this->flushPurifyerCache();
         $html = '<div class="embeddedContent oembed-provider- oembed-provider-youtube" data-oembed="https://www.youtube.com/watch?v=-I4pOBJ3RZQ" data-oembed_provider="youtube"><iframe src="//www.youtube.com/embed/-I4pOBJ3RZQ?wmode=transparent&amp;jqoemcache=mUXUu" allowfullscreen="" scrolling="no" width="425" height="349" frameborder="0"></iframe></div>';
-        $this->assertSame($html, purifyHTML($html));
+        static::assertSame($html, purifyHTML($html));
     }
 
     /**
@@ -154,7 +154,7 @@ class FunctionsTest extends TestCase
      */
     public function testHtmlUrlDecodeDecodeUrl(): void
     {
-        $this->assertSame('<a href="/test/ø">', htmlUrlDecode('<a href="/test/%C3%B8">'));
+        static::assertSame('<a href="/test/ø">', htmlUrlDecode('<a href="/test/%C3%B8">'));
     }
 
     /**
@@ -162,7 +162,7 @@ class FunctionsTest extends TestCase
      */
     public function testHtmlUrlDecodeDecodeHtml(): void
     {
-        $this->assertSame('<a href="/test/ø">', htmlUrlDecode('<a href="/test/&oslash;">'));
+        static::assertSame('<a href="/test/ø">', htmlUrlDecode('<a href="/test/&oslash;">'));
     }
 
     /**
@@ -170,7 +170,7 @@ class FunctionsTest extends TestCase
      */
     public function testHtmlUrlDecodeMaintainSpecial(): void
     {
-        $this->assertSame('&quot;%22?test&amp;hi', htmlUrlDecode('&quot;%22?test&amp;hi'));
+        static::assertSame('&quot;%22?test&amp;hi', htmlUrlDecode('&quot;%22?test&amp;hi'));
     }
 
     /**

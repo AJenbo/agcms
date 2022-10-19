@@ -52,8 +52,8 @@ class Category extends AbstractRenderable
             ->setTitle($data['title'])
             ->setId($data['id'] ?? null);
 
-        $this->iconId = ((int) $data['icon_id']) ?: null;
-        $this->parentId = null !== $data['parent_id'] ? (int) $data['parent_id'] : null;
+        $this->iconId = ((int)$data['icon_id']) ?: null;
+        $this->parentId = null !== $data['parent_id'] ? (int)$data['parent_id'] : null;
         if (null === $this->parentId && $this->id > 0) {
             throw new InvalidInput(_('Cannot create root categories.'), 423);
         }
@@ -373,7 +373,7 @@ class Category extends AbstractRenderable
 
         $db->addLoadedTable('bind');
 
-        $hasPages = (bool) $db->fetchOne('SELECT kat FROM `bind` WHERE `kat` = ' . $this->getId());
+        $hasPages = (bool)$db->fetchOne('SELECT kat FROM `bind` WHERE `kat` = ' . $this->getId());
         if ($hasPages) {
             $this->visible = true;
         }
@@ -394,7 +394,7 @@ class Category extends AbstractRenderable
      */
     public function isInactive(): bool
     {
-        return (bool) $this->getRoot()->getId();
+        return (bool)$this->getRoot()->getId();
     }
 
     /**
@@ -442,12 +442,12 @@ class Category extends AbstractRenderable
 
         return [
             'navn'             => $db->quote($this->title),
-            'bind'             => null !== $this->parentId ? (string) $this->parentId : 'NULL',
-            'icon_id'          => null !== $this->iconId ? (string) $this->iconId : 'NULL',
-            'vis'              => (string) $this->renderMode,
+            'bind'             => null !== $this->parentId ? (string)$this->parentId : 'NULL',
+            'icon_id'          => null !== $this->iconId ? (string)$this->iconId : 'NULL',
+            'vis'              => (string)$this->renderMode,
             'email'            => $db->quote($this->email),
-            'custom_sort_subs' => (string) (int) $this->weightedChildren,
-            'order'            => (string) $this->weight,
+            'custom_sort_subs' => (string)(int)$this->weightedChildren,
+            'order'            => (string)$this->weight,
             'access'           => '""',
         ];
     }

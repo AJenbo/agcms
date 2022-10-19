@@ -2,7 +2,6 @@
 
 namespace App\Services;
 
-use App\Application;
 use App\Exceptions\Exception;
 use App\Exceptions\InvalidInput;
 use App\Models\File;
@@ -27,7 +26,7 @@ class FileService
             throw new InvalidInput(_('A file or folder with the same name already exists.'));
         }
 
-        if (!@mkdir($app->basePath($path), 0771)) {
+        if (!@mkdir($app->basePath($path), 0o771)) {
             throw new Exception(
                 _('Could not create folder. You may not have sufficient rights to this folder.')
             );
@@ -118,7 +117,7 @@ class FileService
     {
         $last = mb_substr($val, -1);
         $last = mb_strtolower($last);
-        $val = (int) mb_substr($val, 0, -1);
+        $val = (int)mb_substr($val, 0, -1);
         switch ($last) {
             case 'g':
                 $val *= 1024;
@@ -160,6 +159,8 @@ class FileService
      * Delete a folder structure.
      *
      * Alle files must be deleted seperatly
+     *
+     * @throws InvalidInput
      *
      * return bool
      */
@@ -325,7 +326,7 @@ class FileService
         $subs = [];
         if (0 === mb_strpos($currentDir, $path)) {
             $subs = $this->getSubDirs($path, $currentDir);
-            $hassubs = (bool) $subs;
+            $hassubs = (bool)$subs;
         } else {
             $hassubs = $this->hasSubsDirs($path);
         }
@@ -346,6 +347,8 @@ class FileService
 
     /**
      * Return list of folders in a folder.
+     *
+     * @throws Exception
      *
      * @return array<int, array<string, mixed>>
      */
@@ -371,6 +374,6 @@ class FileService
      */
     private function hasSubsDirs(string $path): bool
     {
-        return (bool) glob(app()->basePath($path . '/*/'));
+        return (bool)glob(app()->basePath($path . '/*/'));
     }
 }

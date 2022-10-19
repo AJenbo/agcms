@@ -14,7 +14,6 @@ use App\Services\RenderService;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Throwable;
 
 class UserController extends AbstractAdminController
@@ -56,8 +55,6 @@ class UserController extends AbstractAdminController
      * Create a user.
      *
      * The new user must be verified by an admin.
-     *
-     * @throws InvalidInput
      */
     public function create(Request $request): RedirectResponse
     {
@@ -80,7 +77,7 @@ class UserController extends AbstractAdminController
             if ($orm->getOneByQuery(User::class, 'SELECT * FROM users WHERE name = ' . app(DbService::class)->quote($name))) {
                 throw new InvalidInput(_('Username already taken.'));
             }
-            $firstUser = !(bool) $orm->getOneByQuery(User::class, 'SELECT * FROM users WHERE access != 0');
+            $firstUser = !(bool)$orm->getOneByQuery(User::class, 'SELECT * FROM users WHERE access != 0');
 
             $user = new User([
                 'full_name'     => $fullname,
@@ -123,11 +120,6 @@ class UserController extends AbstractAdminController
         return redirect('/admin/users/new/', Response::HTTP_SEE_OTHER);
     }
 
-    /**
-     * Page for editing a user.
-     *
-     * @throws InvalidInput
-     */
     public function editUser(Request $request, int $id): Response
     {
         $user = app(OrmService::class)->getOne(User::class, $id);
@@ -150,11 +142,6 @@ class UserController extends AbstractAdminController
         return $this->render('admin/user', $data);
     }
 
-    /**
-     * Update user.
-     *
-     * @throws InvalidInput
-     */
     public function update(Request $request, int $id): JsonResponse
     {
         $user = $request->user();
@@ -204,11 +191,6 @@ class UserController extends AbstractAdminController
         return new JsonResponse([]);
     }
 
-    /**
-     * Delete a user.
-     *
-     * @throws InvalidInput
-     */
     public function delete(Request $request, int $id): JsonResponse
     {
         $user = $request->user();

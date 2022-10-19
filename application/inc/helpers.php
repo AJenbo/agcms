@@ -43,7 +43,7 @@ function redirect(string $url, int $status = RedirectResponse::HTTP_FOUND): Redi
     if (false === filter_var($url, FILTER_VALIDATE_URL)) {
         $url = app(Request::class)->getSchemeAndHttpHost() . $url;
     }
-    $url = (string) new Uri($url); // encode raw utf-8
+    $url = (string)new Uri($url); // encode raw utf-8
 
     return new RedirectResponse($url, $status);
 }

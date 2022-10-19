@@ -123,11 +123,7 @@ class ImageService
             return false;
         }
 
-        if ($this->flip || $this->rotate) {
-            return false;
-        }
-
-        return true;
+        return !$this->flip && !$this->rotate;
     }
 
     /**

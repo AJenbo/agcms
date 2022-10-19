@@ -24,7 +24,7 @@ class CustomPageControllerTest extends AdminTestCase
 
     public function testUpdate(): void
     {
-        $data = ['html'  => '<p>Terms</p>'];
+        $data = ['html' => '<p>Terms</p>'];
 
         $this->json('PUT', '/admin/custom/3/', $data)
             ->assertResponseStatus(200);
@@ -48,7 +48,7 @@ class CustomPageControllerTest extends AdminTestCase
         $this->json('PUT', '/admin/custom/1/', $data)
             ->assertResponseStatus(200);
 
-        $this->assertDatabaseHas('kat', ['id' => 0, 'navn'=>  $data['title']]);
+        $this->assertDatabaseHas('kat', ['id' => 0, 'navn' => $data['title']]);
     }
 
     public function testUpdate404(): void

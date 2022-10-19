@@ -27,7 +27,7 @@ abstract class AbstractEntity implements Entity
      *
      * @return $this
      */
-    protected function setId(int $id = null): self
+    protected function setId(?int $id = null): self
     {
         $this->id = $id;
 
@@ -40,7 +40,7 @@ abstract class AbstractEntity implements Entity
             $this->save();
         }
 
-        return (int) $this->id;
+        return (int)$this->id;
     }
 
     /**
