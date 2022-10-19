@@ -4,11 +4,12 @@ namespace App\Http\Controllers\Admin;
 
 use App\Exceptions\InvalidInput;
 use App\Http\Controllers\Base;
+use App\Http\Request;
 use App\Models\Brand;
 use App\Models\File;
+use App\Services\ConfigService;
 use App\Services\OrmService;
 use Symfony\Component\HttpFoundation\JsonResponse;
-use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
 class BrandController extends AbstractAdminController
@@ -20,7 +21,7 @@ class BrandController extends AbstractAdminController
     {
         $data = $this->basicPageData($request);
         $data['brands'] = app(OrmService::class)->getByQuery(Brand::class, 'SELECT * FROM `maerke` ORDER BY navn');
-        $data['blank_image'] = config('blank_image', Base::DEFAULT_ICON);
+        $data['blank_image'] = ConfigService::getString('blank_image', Base::DEFAULT_ICON);
 
         return $this->render('admin/maerker', $data);
     }
@@ -32,7 +33,7 @@ class BrandController extends AbstractAdminController
     {
         $data = $this->basicPageData($request);
         $data['brand'] = $id ? app(OrmService::class)->getOne(Brand::class, $id) : null;
-        $data['blank_image'] = config('blank_image', Base::DEFAULT_ICON);
+        $data['blank_image'] = ConfigService::getString('blank_image', Base::DEFAULT_ICON);
 
         return $this->render('admin/updatemaerke', $data);
     }
@@ -42,9 +43,9 @@ class BrandController extends AbstractAdminController
      */
     public function create(Request $request): JsonResponse
     {
-        $title = $request->request->get('title', '');
-        $link = $request->request->get('link', '');
-        $iconId = $request->request->get('iconId');
+        $title = $request->getRequestString('title') ?? '';
+        $link = $request->getRequestString('link') ?? '';
+        $iconId = $request->getRequestInt('iconId');
         if (!$title) {
             throw new InvalidInput(_('You must enter a name.'));
         }
@@ -52,14 +53,15 @@ class BrandController extends AbstractAdminController
         $brand = new Brand(['title' => $title, 'link' => $link, 'icon_id' => $iconId]);
         $brand->save();
 
+
         return new JsonResponse(['id' => $brand->getId()]);
     }
 
     public function update(Request $request, int $id): JsonResponse
     {
-        $title = $request->request->get('title');
-        $link = $request->request->get('link', '');
-        $iconId = $request->request->get('iconId');
+        $title = $request->getRequestString('title');
+        $link = $request->getRequestString('link') ?? '';
+        $iconId = $request->getRequestInt('iconId');
         if (!$title) {
             throw new InvalidInput(_('You must enter a title.'));
         }

@@ -49,19 +49,24 @@ class Contact extends AbstractEntity
 
     public function __construct(array $data = [])
     {
-        $this->setTimestamp($data['timestamp'] ?? time())
-            ->setName($data['name'])
-            ->setEmail($data['email'])
-            ->setAddress($data['address'])
-            ->setCountry($data['country'])
-            ->setPostcode($data['postcode'])
-            ->setCity($data['city'])
-            ->setPhone1($data['phone1'])
-            ->setPhone2($data['phone2'])
-            ->setSubscribed($data['subscribed'])
-            ->setInterests($data['interests'] ?? [])
-            ->setIp($data['ip'])
-            ->setId($data['id'] ?? null);
+        $interests = $data['interests'] ?? null;
+        if (!is_array($interests)) {
+            $interests = [];
+        }
+
+        $this->setTimestamp(intval($data['timestamp'] ?? time()))
+            ->setName(strval($data['name']))
+            ->setEmail(strval($data['email']))
+            ->setAddress(strval($data['address']))
+            ->setCountry(strval($data['country']))
+            ->setPostcode(strval($data['postcode']))
+            ->setCity(strval($data['city']))
+            ->setPhone1(strval($data['phone1']))
+            ->setPhone2(strval($data['phone2']))
+            ->setSubscribed(boolval($data['subscribed']))
+            ->setInterests($interests)
+            ->setIp(strval($data['ip']))
+            ->setId(intOrNull($data['id'] ?? null));
     }
 
     /**

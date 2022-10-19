@@ -241,7 +241,7 @@ class FileService
             $onclick = 'files[' . $file->getId() . '].addToEditor()';
         } elseif ('thb' === $returnType && in_array($file->getMime(), ['image/gif', 'image/jpeg', 'image/png'], true)) {
             $onclick = 'openImageThumbnail(' . $file->getId() . ')';
-            if ($file->getWidth() <= config('thumb_width') && $file->getHeight() <= config('thumb_height')) {
+            if ($file->getWidth() <= ConfigService::getInt('thumb_width') && $file->getHeight() <= ConfigService::getInt('thumb_height')) {
                 $onclick = 'setThumbnail(' . $file->getId() . ','
                     . htmlspecialchars(json_encode($file->getPath(), JSON_THROW_ON_ERROR) ?: "''", ENT_COMPAT | ENT_XHTML) . ')';
             }

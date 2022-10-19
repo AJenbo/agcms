@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Contracts\Renderable;
 use App\Exceptions\InvalidInput;
+use App\Http\Request;
 use App\Models\Brand;
 use App\Models\Category;
 use App\Models\CustomPage;
@@ -11,7 +12,6 @@ use App\Models\Page;
 use App\Models\Requirement;
 use App\Services\OrmService;
 use Symfony\Component\HttpFoundation\RedirectResponse;
-use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
 class Site extends Base
@@ -110,7 +110,12 @@ class Site extends Base
         $data = [
             'renderable' => $requirement,
         ] + $this->basicPageData();
-        $data['crumbs'][] = $requirement;
+        $crumbs = $data['crumbs'] ?? null;
+        if (!is_array($crumbs)) {
+            $crumbs = [];
+        }
+        $crumbs[] = $requirement;
+        $data['crumbs'] = $crumbs;
 
         $response = $this->render('requirement', $data);
 
@@ -135,7 +140,12 @@ class Site extends Base
             'brand'      => $brand,
             'renderable' => $brand,
         ] + $this->basicPageData();
-        $data['crumbs'][] = $brand;
+        $crumbs = $data['crumbs'] ?? null;
+        if (!is_array($crumbs)) {
+            $crumbs = [];
+        }
+        $crumbs[] = $brand;
+        $data['crumbs'] = $crumbs;
 
         $response = $this->render('tiles', $data);
 

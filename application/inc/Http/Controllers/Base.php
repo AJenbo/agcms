@@ -3,12 +3,13 @@
 namespace App\Http\Controllers;
 
 use App\Exceptions\Exception;
+use App\Http\Request;
 use App\Models\Category;
 use App\Models\CustomPage;
+use App\Services\ConfigService;
 use App\Services\DbService;
 use App\Services\OrmService;
 use Symfony\Component\HttpFoundation\RedirectResponse;
-use Symfony\Component\HttpFoundation\Request;
 
 class Base extends AbstractController
 {
@@ -72,15 +73,15 @@ class Base extends AbstractController
             'infoPage'       => $orm->getOne(CustomPage::class, 2),
             'crumbs'         => [$category],
             'category'       => $category,
-            'companyName'    => config('site_name'),
-            'companyAddress' => config('address'),
-            'companyZipCode' => config('postcode'),
-            'companyCity'    => config('city'),
-            'companyPhone'   => config('phone'),
-            'companyEmail'   => first(config('emails'))['address'],
+            'companyName'    => ConfigService::getString('site_name'),
+            'companyAddress' => ConfigService::getString('address'),
+            'companyZipCode' => ConfigService::getString('postcode'),
+            'companyCity'    => ConfigService::getString('city'),
+            'companyPhone'   => ConfigService::getString('phone'),
+            'companyEmail'   => ConfigService::getDefaultEmail(),
             'localeconv'     => localeconv(),
-            'blankImage'     => config('blank_image', self::DEFAULT_ICON),
-            'pageCount'      => config('has_count') ? $this->getActivePageCount() : null,
+            'blankImage'     => ConfigService::getString('blank_image', self::DEFAULT_ICON),
+            'pageCount'      => ConfigService::getBool('has_count') ? $this->getActivePageCount() : null,
         ];
     }
 

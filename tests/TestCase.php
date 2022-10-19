@@ -133,7 +133,7 @@ abstract class TestCase extends BaseTestCase
         array $server = [],
         ?string $content = null
     ): TestResponse {
-        $this->currentUri = config('base_url') . $uri;
+        $this->currentUri = ConfigService::getString('base_url') . $uri;
         $request = Request::create($this->currentUri, $method, $parameters, $cookies, $files, $server, $content);
         if ($this->user) {
             $request->setUser($this->user);

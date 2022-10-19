@@ -3,12 +3,13 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Exceptions\InvalidInput;
+use App\Http\Request;
 use App\Models\Category;
 use App\Models\File;
+use App\Services\ConfigService;
 use App\Services\OrmService;
 use App\Services\SiteTreeService;
 use Symfony\Component\HttpFoundation\JsonResponse;
-use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
 class CategoryController extends AbstractAdminController
@@ -18,8 +19,12 @@ class CategoryController extends AbstractAdminController
      */
     public function index(Request $request, ?int $id = null): Response
     {
-        $selectedId = $request->cookies->get('activekat', -1);
-        $openCategories = explode('<', $request->cookies->get('openkat', ''));
+        $selectedId = $request->cookies->getInt('activekat', -1);
+        $openCategories = $request->cookies->get('openkat', '');
+        if (!is_string($openCategories)) {
+            $openCategories = '';
+        }
+        $openCategories = explode('<', $openCategories);
         $openCategories = array_map('intval', $openCategories);
 
         $category = null;
@@ -34,8 +39,8 @@ class CategoryController extends AbstractAdminController
         $siteTreeService = new SiteTreeService();
 
         $data = [
-            'textWidth'    => config('text_width'),
-            'emails'       => array_keys(config('emails')),
+            'textWidth'    => ConfigService::getInt('text_width'),
+            'emails'       => array_keys(ConfigService::getEmailConfigs()),
             'siteTree'     => $siteTreeService->getSiteTreeData($openCategories, 'categories', $selectedId),
             'includePages' => false,
             'category'     => $category,
@@ -46,11 +51,11 @@ class CategoryController extends AbstractAdminController
 
     public function create(Request $request): JsonResponse
     {
-        $iconId = $request->request->get('icon_id');
+        $iconId = $request->getRequestInt('icon_id');
         $renderMode = $request->request->getInt('render_mode', Category::GALLERY);
-        $email = $request->request->get('email');
-        $parentId = $request->request->get('parentId');
-        $title = $request->request->get('title');
+        $email = $request->getRequestString('email');
+        $parentId = $request->getRequestInt('parentId');
+        $title = $request->getRequestString('title');
         if (!$title || null === $parentId) {
             throw new InvalidInput(_('You must enter a title and choose a location for the new category.'));
         }
@@ -87,7 +92,7 @@ class CategoryController extends AbstractAdminController
         }
 
         if ($request->request->has('parentId')) {
-            $parentId = $request->request->get('parentId');
+            $parentId = $request->getRequestInt('parentId');
             $parent = null !== $parentId ? $orm->getOne(Category::class, $parentId) : null;
             if ($parent) {
                 foreach ($parent->getBranch() as $node) {
@@ -99,7 +104,7 @@ class CategoryController extends AbstractAdminController
             $category->setParent($parent);
         }
         if ($request->request->has('title')) {
-            $title = $request->request->get('title', '');
+            $title = $request->getRequestString('title') ?? '';
             $category->setTitle($title);
         }
         if ($request->request->has('render_mode')) {
@@ -110,14 +115,14 @@ class CategoryController extends AbstractAdminController
             $weightedChildren = $request->request->getBoolean('weightedChildren');
             $category->setWeightedChildren($weightedChildren);
         }
-        if ($request->request->has('email')) {
-            $email = $request->request->get('email');
+        $email = $request->getRequestString('email');
+        if ($email) {
             $category->setEmail($email);
         }
 
         if ($request->request->has('icon_id')) {
             $icon = null;
-            $iconId = $request->request->get('icon_id');
+            $iconId = $request->getRequestInt('icon_id');
             if (null !== $iconId) {
                 $icon = $orm->getOne(File::class, $iconId);
             }
@@ -127,7 +132,7 @@ class CategoryController extends AbstractAdminController
         $category->save();
 
         if ($request->request->has('subMenusOrder')) {
-            $subMenusOrder = $request->request->get('subMenusOrder', '');
+            $subMenusOrder = $request->getRequestString('subMenusOrder') ?? '';
             $this->updateKatOrder($subMenusOrder);
         }
 

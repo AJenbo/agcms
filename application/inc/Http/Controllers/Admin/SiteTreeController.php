@@ -3,13 +3,13 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Exceptions\InvalidInput;
+use App\Http\Request;
 use App\Models\Category;
 use App\Services\DbService;
 use App\Services\OrmService;
 use App\Services\RenderService;
 use App\Services\SiteTreeService;
 use Symfony\Component\HttpFoundation\JsonResponse;
-use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
 class SiteTreeController extends AbstractAdminController
@@ -19,7 +19,7 @@ class SiteTreeController extends AbstractAdminController
      */
     public function index(Request $request): Response
     {
-        $openCategories = explode('<', $request->cookies->get('openkat', ''));
+        $openCategories = explode('<', strval($request->cookies->get('openkat', '')));
         $openCategories = array_map('intval', $openCategories);
 
         $siteTreeService = new SiteTreeService();
@@ -35,8 +35,8 @@ class SiteTreeController extends AbstractAdminController
      */
     public function categoryContent(Request $request, int $categoryId): JsonResponse
     {
-        $inputType = $request->get('type', '');
-        $openCategories = explode('<', $request->cookies->get('openkat', ''));
+        $inputType = $request->getRequestString('type') ?? '';
+        $openCategories = explode('<', strval($request->cookies->get('openkat', '')));
         $openCategories = array_map('intval', $openCategories);
 
         $data = [
@@ -73,7 +73,7 @@ class SiteTreeController extends AbstractAdminController
      */
     public function pageWidget(Request $request): Response
     {
-        $openCategories = explode('<', $request->cookies->get('openkat', ''));
+        $openCategories = explode('<', strval($request->cookies->get('openkat', '')));
         $openCategories = array_map('intval', $openCategories);
 
         $siteTreeService = new SiteTreeService();
@@ -81,7 +81,7 @@ class SiteTreeController extends AbstractAdminController
             'siteTree' => $siteTreeService->getSiteTreeData(
                 $openCategories,
                 'pages',
-                $request->cookies->get('activekat', -1)
+                intval($request->cookies->get('activekat', -1))
             ),
         ];
 
@@ -99,8 +99,8 @@ class SiteTreeController extends AbstractAdminController
             return $response;
         }
 
-        $categoryId = $request->request->get('kat', '');
-        $sort = $request->get('sort', 'navn');
+        $categoryId = $request->getRequestInt('kat');
+        $sort = $request->getRequestString('sort') ?? 'navn';
 
         $sortOptions = [
             'id'     => _('ID'),
@@ -124,7 +124,7 @@ class SiteTreeController extends AbstractAdminController
         $orm = app(OrmService::class);
 
         $categories = $orm->getByQuery(Category::class, 'SELECT * FROM kat WHERE bind IS NULL');
-        if ('' !== $categoryId) {
+        if ($categoryId) {
             $categories = [$orm->getOne(Category::class, $categoryId)];
         }
 

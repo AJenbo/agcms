@@ -7,6 +7,7 @@ use App\Exceptions\InvalidInput;
 use App\Http\Request;
 use App\Models\Email;
 use App\Models\User;
+use App\Services\ConfigService;
 use App\Services\DbService;
 use App\Services\EmailService;
 use App\Services\OrmService;
@@ -59,8 +60,8 @@ class UserController extends AbstractAdminController
     public function create(Request $request): RedirectResponse
     {
         $fullname = $request->get('fullname');
-        $name = $request->get('name');
-        $password = $request->get('password');
+        $name = $request->getRequestString('name') ?? '';
+        $password = $request->getRequestString('password') ?? '';
 
         $message = _('Your account has been created. An administrator will evaluate it shortly.');
 
@@ -90,13 +91,13 @@ class UserController extends AbstractAdminController
 
             $emailbody = app(RenderService::class)->render('admin/email/newuser', ['fullname' => $fullname]);
 
-            $emailAddress = first(config('emails'))['address'];
+            $emailAddress = ConfigService::getDefaultEmail();
             $email = new Email([
                 'subject'          => _('New user'),
                 'body'             => $emailbody,
-                'senderName'       => config('site_name'),
+                'senderName'       => ConfigService::getString('site_name'),
                 'senderAddress'    => $emailAddress,
-                'recipientName'    => config('site_name'),
+                'recipientName'    => ConfigService::getString('site_name'),
                 'recipientAddress' => $emailAddress,
             ]);
 
@@ -162,7 +163,7 @@ class UserController extends AbstractAdminController
         }
 
         // Validate password update
-        $newPassword = $request->request->get('password_new');
+        $newPassword = $request->getRequestString('password_new');
         if ($newPassword) {
             if (!$user->hasAccess(User::ADMINISTRATOR) && $user->getId() !== $id) {
                 throw new InvalidInput(
@@ -171,7 +172,8 @@ class UserController extends AbstractAdminController
                 );
             }
 
-            if ($user->getId() === $id && !$user->validatePassword($request->request->get('password'))) {
+            $password = $request->getRequestString('password');
+            if (!$password || ($user->getId() === $id && !$user->validatePassword($password))) {
                 throw new InvalidInput(_('Incorrect password.'), Response::HTTP_FORBIDDEN);
             }
 
@@ -183,7 +185,7 @@ class UserController extends AbstractAdminController
         }
 
         if ($request->request->has('fullname')) {
-            $user->setFullName($request->request->get('fullname', ''));
+            $user->setFullName($request->getRequestString('fullname') ?? '');
         }
 
         $user->save();

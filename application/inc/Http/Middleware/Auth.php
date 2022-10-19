@@ -29,7 +29,7 @@ class Auth implements Middleware
             return $next($request);
         }
 
-        if (!$request->request->get('username') || !$request->request->get('password')) {
+        if (!$request->getRequestString('username') || !$request->getRequestString('password')) {
             return $this->showLoginPage($request);
         }
 
@@ -64,9 +64,9 @@ class Auth implements Middleware
     {
         $user = app(OrmService::class)->getOneByQuery(
             User::class,
-            'SELECT * FROM `users` WHERE `name` = ' . app(DbService::class)->quote($request->get('username', ''))
+            'SELECT * FROM `users` WHERE `name` = ' . app(DbService::class)->quote($request->getRequestString('username') ?? '')
         );
-        if ($user && $user->getAccessLevel() && $user->validatePassword($request->get('password', ''))) {
+        if ($user && $user->getAccessLevel() && $user->validatePassword($request->getRequestString('password') ?? '')) {
             $request->startSession();
             $session = $request->getSession();
             $session->set('login_id', $user->getId());

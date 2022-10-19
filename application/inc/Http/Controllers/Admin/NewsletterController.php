@@ -3,10 +3,11 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Exceptions\InvalidInput;
+use App\Http\Request;
 use App\Models\Newsletter;
+use App\Services\ConfigService;
 use App\Services\OrmService;
 use Symfony\Component\HttpFoundation\JsonResponse;
-use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
 class NewsletterController extends AbstractAdminController
@@ -41,9 +42,9 @@ class NewsletterController extends AbstractAdminController
         $data = [
             'newsletter'     => $newsletter,
             'recipientCount' => $newsletter ? $newsletter->countRecipients() : 0,
-            'interests'      => config('interests', []),
-            'textWidth'      => config('text_width'),
-            'emails'         => array_keys(config('emails')),
+            'interests'      => ConfigService::getArray('interests'),
+            'textWidth'      => ConfigService::getInt('text_width'),
+            'emails'         => array_keys(ConfigService::getEmailConfigs()),
         ] + $this->basicPageData($request);
 
         return $this->render('admin/viewemail', $data);
@@ -54,10 +55,10 @@ class NewsletterController extends AbstractAdminController
      */
     public function create(Request $request): JsonResponse
     {
-        $html = purifyHTML($request->get('html'));
+        $html = purifyHTML($request->getRequestString('html') ?? '');
         $newsletter = new Newsletter([
-            'from'       => $request->request->get('from'),
-            'subject'    => $request->request->get('subject'),
+            'from'       => $request->getRequestString('from'),
+            'subject'    => $request->getRequestString('subject'),
             'html'       => $html,
             'interests'  => $request->request->get('interests', []),
         ]);
@@ -77,11 +78,17 @@ class NewsletterController extends AbstractAdminController
             throw new InvalidInput(_('The newsletter has already been sent.'), Response::HTTP_LOCKED);
         }
 
-        $html = purifyHTML($request->get('html'));
-        $newsletter->setFrom($request->get('from'))
+        $html = purifyHTML($request->getRequestString('html') ?? '');
+
+        $interests = $request->get('interests');
+        if (!is_array($interests)) {
+            $interests = [];
+        }
+
+        $newsletter->setFrom($request->getRequestString('from') ?? '')
             ->setHtml($html)
-            ->setSubject($request->get('subject'))
-            ->setInterests($request->get('interests', []))
+            ->setSubject($request->getRequestString('subject') ?? '')
+            ->setInterests($interests)
             ->save();
 
         if ($request->request->getBoolean('send')) {
@@ -97,7 +104,10 @@ class NewsletterController extends AbstractAdminController
     public function countRecipients(Request $request): JsonResponse
     {
         $newsletter = new Newsletter();
-        $newsletter->setInterests($request->get('interests', []));
+        $interests = $request->get('interests');
+        if (is_array($interests)) {
+            $newsletter->setInterests($interests);
+        }
 
         return new JsonResponse(['count' => $newsletter->countRecipients()]);
     }

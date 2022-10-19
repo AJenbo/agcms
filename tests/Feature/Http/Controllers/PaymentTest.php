@@ -2,6 +2,7 @@
 
 namespace Tests\Feature\Http\Controllers;
 
+use App\Services\ConfigService;
 use Tests\TestCase;
 
 class PaymentTest extends TestCase
@@ -261,9 +262,9 @@ class PaymentTest extends TestCase
             ->assertResponseStatus(200)
             ->assertSee('<title>Trade Conditions</title>')
             ->assertSee('="https://ssl.ditonlinebetalingssystem.dk/integration/ewindow/Default.aspx" method="post">')
-            ->assertSee(' name="group" value="' . config('pbsfix') . '"')
-            ->assertSee(' name="merchantnumber" value="' . config('pbsid') . '"')
-            ->assertSee(' name="orderid" value="' . config('pbsfix') . $id . '"')
+            ->assertSee(' name="group" value="' . ConfigService::getString('pbsfix') . '"')
+            ->assertSee(' name="merchantnumber" value="' . ConfigService::getString('pbsid') . '"')
+            ->assertSee(' name="orderid" value="' . ConfigService::getString('pbsfix') . $id . '"')
             ->assertSee(' name="currency" value="208"')
             ->assertSee(' name="amount" value="15900"')
             ->assertSee(' name="ownreceipt" value="1"')
@@ -271,7 +272,7 @@ class PaymentTest extends TestCase
             ->assertSee(' name="cancelurl" value="https://localhost' . $baseUrl . 'terms/"')
             ->assertSee(' name="callbackurl" value="https://localhost' . $baseUrl . 'callback/"')
             ->assertSee(' name="windowstate" value="3"')
-            ->assertSee(' name="windowid" value="' . config('pbswindow') . '"');
+            ->assertSee(' name="windowid" value="' . ConfigService::getInt('pbswindow') . '"');
     }
 
     public function testTermsInvalid(): void

@@ -3,7 +3,6 @@
 use App\Application;
 use App\Exceptions\Exception;
 use App\Http\Request;
-use App\Services\ConfigService;
 use GuzzleHttp\Psr7\Uri;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 
@@ -24,18 +23,6 @@ function app(string $name = Application::class): object
 }
 
 /**
- * Helper function for getting configurations.
- *
- * @param mixed $default What to return if key does not exists
- *
- * @return mixed Key value
- */
-function config(string $key, $default = null): mixed
-{
-    return ConfigService::get($key, $default);
-}
-
-/**
  * Generate redirect response.
  */
 function redirect(string $url, int $status = RedirectResponse::HTTP_FOUND): RedirectResponse
@@ -51,13 +38,28 @@ function redirect(string $url, int $status = RedirectResponse::HTTP_FOUND): Redi
 /**
  * Get first element from an array that can't be referenced.
  *
- * @param array<mixed> $array
+ * @template T of mixed
  *
- * @return mixed First element in the array
+ * @param array<T> $array
+ *
+ * @return T First element in the array
  */
 function first(array $array): mixed
 {
-    return reset($array);
+    foreach ($array as $value) {
+        return $value;
+    }
+
+    throw new Exception('Empty array');
+}
+
+function intOrNull(mixed $value): ?int
+{
+    if ($value === null) {
+        return null;
+    }
+
+    return intval($value);
 }
 
 /**
@@ -89,7 +91,7 @@ function cleanFileName(string $name): string
  *
  * @return array<array<mixed>>
  */
-function arrayNatsort(array $rows, $orderBy, string $direction = 'asc'): array
+function arrayNatsort(array $rows, int|string $orderBy, string $direction = 'asc'): array
 {
     $tempArray = [];
     foreach ($rows as $rowKey => $row) {

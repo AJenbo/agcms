@@ -2,9 +2,11 @@
 
 namespace App\Services;
 
+use App\Enums\InvoiceStatus;
 use App\Countries;
 use App\Exceptions\InvalidInput;
 use App\Models\Invoice;
+use App\DTO\InvoiceItem;
 use TCPDF;
 
 class InvoicePdfService
@@ -25,7 +27,7 @@ class InvoicePdfService
      */
     public function __construct(Invoice $invoice)
     {
-        if ('new' === $invoice->getStatus()) {
+        if (InvoiceStatus::New === $invoice->getStatus()) {
             throw new InvalidInput(_('Can\'t print invoice before it\'s locked.'));
         }
 
@@ -53,7 +55,7 @@ class InvoicePdfService
     {
         // set document information
         $this->pdf->SetCreator(PDF_CREATOR);
-        $this->pdf->SetAuthor(config('site_name'));
+        $this->pdf->SetAuthor(ConfigService::getString('site_name'));
         $this->pdf->SetTitle('Online faktura #' . $this->invoice->getId());
 
         // remove default header/footer
@@ -134,7 +136,7 @@ class InvoicePdfService
     private function insertPageTitle(): void
     {
         $this->pdf->SetFont('times', 'B', 37.5);
-        $this->pdf->Write(0, config('site_name'));
+        $this->pdf->Write(0, ConfigService::getString('site_name'));
     }
 
     /**
@@ -144,16 +146,16 @@ class InvoicePdfService
     {
         $this->pdf->SetY(12);
         $this->pdf->SetFont('times', '', 10);
-        $addressLine = config('address') . "\n" . config('postcode') . ' ' . config('city') . "\n";
+        $addressLine = ConfigService::getString('address') . "\n" . ConfigService::getString('postcode') . ' ' . ConfigService::getString('city') . "\n";
         $this->pdf->Write(0, $addressLine, '', false, 'R');
         $this->pdf->SetFont('times', 'B', 11);
-        $this->pdf->Write(0, _('Phone:') . ' ' . config('phone') . "\n", '', false, 'R');
+        $this->pdf->Write(0, _('Phone:') . ' ' . ConfigService::getString('phone') . "\n", '', false, 'R');
         $this->pdf->SetFont('times', '', 10);
 
         if (!$this->invoice->getDepartment()) {
-            $this->invoice->setDepartment(first(config('emails'))['address']);
+            $this->invoice->setDepartment(ConfigService::getDefaultEmail());
         }
-        $domain = explode('/', config('base_url'));
+        $domain = explode('/', ConfigService::getString('base_url'));
         $domain = $domain[count($domain) - 1];
         $this->pdf->Write(0, $this->invoice->getDepartment() . "\n" . $domain . "\n\n", '', false, 'R');
         $this->pdf->SetFont('times', '', 11);
@@ -285,16 +287,14 @@ class InvoicePdfService
 
     /**
      * Insert a single product line in the product table.
-     *
-     * @param (int|string)[] $item
      */
-    private function insertProductLine(array $item): int
+    private function insertProductLine(InvoiceItem $item): int
     {
-        $value = (float)$item['value'] * (1 + $this->invoice->getVat());
-        $lineTotal = $value * (int)$item['quantity'];
+        $value = $item->value * (1 + $this->invoice->getVat());
+        $lineTotal = $value * $item->quantity;
 
-        $this->pdf->Cell(self::CELL_WIDTH_QUANTITY, 6, (string)$item['quantity'], 'RL', 0, 'R');
-        $lines = $this->pdf->MultiCell(self::CELL_WIDTH_TITLE, 6, (string)$item['title'], 'RL', 'L', false, 0);
+        $this->pdf->Cell(self::CELL_WIDTH_QUANTITY, 6, (string)$item->quantity, 'RL', 0, 'R');
+        $lines = $this->pdf->MultiCell(self::CELL_WIDTH_TITLE, 6, $item->title, 'RL', 'L', false, 0);
         $this->pdf->Cell(self::CELL_WIDTH_PRICE, 6, number_format($value, 2, localeconv()['mon_decimal_point'], ''), 'RL', 0, 'R');
         $this->pdf->Cell(self::CELL_WIDTH_TOTAL, 6, number_format($lineTotal, 2, localeconv()['mon_decimal_point'], ''), 'RL', 1, 'R');
 
@@ -364,7 +364,7 @@ class InvoicePdfService
         $this->pdf->SetMargins(137, 0, 0);
         $this->pdf->Write(0, "\n");
         $this->pdf->SetY(-52);
-        $this->pdf->Write(0, _('Sincerely,') . "\n\n\n" . $this->invoice->getClerk() . "\n" . config('site_name'));
+        $this->pdf->Write(0, _('Sincerely,') . "\n\n\n" . $this->invoice->getClerk() . "\n" . ConfigService::getString('site_name'));
     }
 
     /**
@@ -373,13 +373,13 @@ class InvoicePdfService
     private function getPaymentNote(): string
     {
         switch ($this->invoice->getStatus()) {
-            case 'accepted':
+            case InvoiceStatus::Accepted:
                 $note = _('Paid online');
                 break;
-            case 'giro':
+            case InvoiceStatus::Giro:
                 $note = _('Paid via giro');
                 break;
-            case 'cash':
+            case InvoiceStatus::Cash:
                 $note = _('Paid in cash');
                 break;
             default:

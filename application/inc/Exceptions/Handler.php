@@ -3,6 +3,7 @@
 namespace App\Exceptions;
 
 use App\Http\Request;
+use App\Services\ConfigService;
 use Sentry\State\Scope;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
@@ -23,7 +24,7 @@ class Handler
     public function __construct()
     {
         if (app()->environment('production')) {
-            \Sentry\init(['dsn' => config('sentry')]);
+            \Sentry\init(['dsn' => ConfigService::getString('sentry')]);
         }
     }
 

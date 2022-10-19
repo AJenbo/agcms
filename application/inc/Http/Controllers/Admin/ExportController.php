@@ -2,13 +2,15 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Enums\ColumnType;
+use App\Http\Request;
 use App\Models\InterfaceRichText;
 use App\Models\Page;
+use App\Services\ConfigService;
 use App\Services\DbService;
 use App\Services\OrmService;
 use Exception;
 use GuzzleHttp\Psr7\Uri;
-use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
 class ExportController extends AbstractAdminController
@@ -73,8 +75,8 @@ class ExportController extends AbstractAdminController
                     continue;
                 }
                 foreach ($table->getColumns() as $column) {
-                    if ($column['type'] <= 1) {
-                        $columns[$column['title']] = true;
+                    if ($column->type === ColumnType::String || $column->type === ColumnType::Int) {
+                        $columns[$column->title] = true;
                     }
                 }
             }
@@ -103,8 +105,8 @@ class ExportController extends AbstractAdminController
                 }
                 $columns = $table->getColumns();
                 foreach ($columns as $column) {
-                    if ($column['type'] <= 1 && !isset($attributeValues[$column['title']])) {
-                        $attributeValues[$column['title']] = [];
+                    if (($column->type === ColumnType::String || $column->type === ColumnType::Int) && !isset($attributeValues[$column->title])) {
+                        $attributeValues[$column->title] = [];
                     }
                 }
                 foreach ($rows as $row) {
@@ -123,27 +125,27 @@ class ExportController extends AbstractAdminController
                     $oldPrice = null;
                     $salePrice = null;
                     foreach ($columns as $i => $column) {
-                        if ($column['type'] === 2) {
+                        if ($column->type === ColumnType::Price) {
                             $price = $row[$i];
 
                             continue;
                         }
-                        if ($column['type'] === 3) {
+                        if ($column->type === ColumnType::SalesPrice) {
                             $salePrice = $row[$i];
 
                             continue;
                         }
-                        if ($column['type'] === 4) {
+                        if ($column->type === ColumnType::PreviousPrice) {
                             $oldPrice = $row[$i];
 
                             continue;
                         }
-                        $rowData[] = $column['title'];
-                        $rowData[] = $row[$i];
+                        $rowData[] = $column->title;
+                        $rowData[] = strval($row[$i]);
                         $rowData[] = '';
                         $rowData[] = '0';
 
-                        $attributeValues[$column['title']][] = $row[$i];
+                        $attributeValues[$column->title][] = $row[$i];
                     }
 
                     if (!$salePrice && $oldPrice && $price) {
@@ -156,10 +158,10 @@ class ExportController extends AbstractAdminController
                         $price = $salePrice;
                     }
                     if ($salePrice && $salePrice !== $price) {
-                        $rowData[23] = $salePrice;
+                        $rowData[23] = strval($salePrice);
                     }
                     if ($price) {
-                        $rowData[24] = $price;
+                        $rowData[24] = strval($price);
                     }
 
                     $variations[] = $rowData;
@@ -207,7 +209,7 @@ class ExportController extends AbstractAdminController
                 continue;
             }
             foreach ($table->getRows() as $row) {
-                if ($row['page']) {
+                if ($row['page'] instanceof Page) {
                     $accessoryIds[] = 'id:' . $row['page']->getId();
                 }
             }
@@ -292,7 +294,7 @@ class ExportController extends AbstractAdminController
 
         $result = [];
         foreach ($urls as $url) {
-            $result[] = (string)new Uri(config('base_url') . $url);
+            $result[] = (string)new Uri(ConfigService::getString('base_url') . $url);
         }
 
         return $result;

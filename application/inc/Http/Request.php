@@ -2,6 +2,7 @@
 
 namespace App\Http;
 
+use App\Exceptions\InvalidInput;
 use App\Models\User;
 use App\Services\DbService;
 use App\Services\OrmService;
@@ -36,11 +37,13 @@ class Request extends SymfonyRequest
     ) {
         parent::__construct($query, $request, $attributes, $cookies, $files, $server, $content);
 
-        $methode = mb_strtoupper($this->server->get('REQUEST_METHOD', 'GET'));
+        $methode = $this->server->get('REQUEST_METHOD', 'GET');
+
         /** @var string */
         $contentType = $this->headers->get('CONTENT_TYPE', 'text/plain');
         if (0 === mb_strpos($contentType, 'application/json')
-            && in_array($methode, ['POST', 'PUT', 'DELETE', 'PATCH'], true)
+            && is_string($methode)
+            && in_array(mb_strtoupper($methode), ['POST', 'PUT', 'DELETE', 'PATCH'], true)
         ) {
             /** @var string */
             $content = $this->getContent();
@@ -98,7 +101,7 @@ class Request extends SymfonyRequest
         $hash = $this->session->get('login_hash');
         $this->session->save();
 
-        if (!$id || !$hash) {
+        if (!$id || !$hash || !is_string($hash)) {
             return null;
         }
 
@@ -130,5 +133,37 @@ class Request extends SymfonyRequest
         $this->session->remove('login_hash');
         $this->session->save();
         $this->user = null;
+    }
+
+    /**
+     * @throws Exception
+     */
+    public function getRequestString(string $key): ?string
+    {
+        $value = $this->request->get($key);
+        if ($value === null) {
+            return null;
+        }
+        if (!is_string($value)) {
+            throw new InvalidInput(_('Invalid input.'));
+        }
+
+        return $value;
+    }
+
+    /**
+     * @throws Exception
+     */
+    public function getRequestInt(string $key): ?int
+    {
+        $value = $this->request->get($key);
+        if ($value === null) {
+            return null;
+        }
+        if (!ctype_digit($value) && !is_int($value)) {
+            throw new InvalidInput(_('Invalid input.'));
+        }
+
+        return (int)$value;
     }
 }

@@ -3,11 +3,14 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Countries;
+use App\DTO\InvoiceFilter;
+use App\Enums\InvoiceAction;
 use App\Exceptions\Exception;
 use App\Exceptions\InvalidInput;
 use App\Http\Request;
 use App\Models\Invoice;
 use App\Models\User;
+use App\Services\ConfigService;
 use App\Services\DbService;
 use App\Services\InvoicePdfService;
 use App\Services\InvoiceService;
@@ -24,21 +27,22 @@ class InvoiceController extends AbstractAdminController
      */
     public function index(Request $request): Response
     {
-        $selected = [
-            'id'         => (int)$request->get('id') ?: null,
-            'year'       => $request->query->getInt('y'),
-            'month'      => $request->query->getInt('m'),
-            'department' => $request->get('department'),
-            'status'     => $request->get('status', 'activ'),
-            'name'       => $request->get('name'),
-            'tlf'        => $request->get('tlf'),
-            'email'      => $request->get('email'),
-            'momssats'   => $request->get('momssats'),
-            'clerk'      => $request->get('clerk'),
-        ];
-        if ('' === $selected['momssats']) {
-            $selected['momssats'] = null;
+        $momssats = strval($request->get('momssats'));
+        if (!$momssats) {
+            $momssats = null;
         }
+        $selected = new InvoiceFilter(
+            $request->query->getInt('id') ?: null,
+            $request->query->getInt('y'),
+            $request->query->getInt('m'),
+            strval($request->get('department') ?? ''),
+            strval($request->get('status', 'activ')),
+            strval($request->get('name') ?? ''),
+            strval($request->get('tlf') ?? ''),
+            strval($request->get('email') ?? ''),
+            $momssats,
+            strval($request->get('clerk') ?? ''),
+        );
 
         $user = $request->user();
         if (!$user) {
@@ -66,7 +70,7 @@ class InvoiceController extends AbstractAdminController
             'currentUser'   => $user,
             'selected'      => $selected,
             'countries'     => Countries::getOrdered(),
-            'departments'   => array_keys(config('emails', [])),
+            'departments'   => array_keys(ConfigService::getEmailConfigs()),
             'users'         => $orm->getByQuery(User::class, 'SELECT * FROM `users` ORDER BY `fullname`'),
             'invoices'      => $invoices,
             'years'         => range($oldest, date('Y')),
@@ -91,67 +95,66 @@ class InvoiceController extends AbstractAdminController
 
     /**
      * Generate an SQL where clause from a select array.
-     *
-     * @param array<string, mixed> $selected
      */
-    private function generateFilterInvoiceBySelection(array $selected, User $user): string
+    private function generateFilterInvoiceBySelection(InvoiceFilter $selected, User $user): string
     {
-        if ($selected['id']) {
-            return 'WHERE `id` = ' . $selected['id'];
+        if ($selected->id) {
+            return 'WHERE `id` = ' . $selected->id;
         }
 
-        if (null === $selected['clerk'] && !$user->hasAccess(User::ADMINISTRATOR)) {
-            $selected['clerk'] = $user->getFullName();
+        $clerk = $selected->clerk;
+        if (!$clerk && !$user->hasAccess(User::ADMINISTRATOR)) {
+            $clerk = $user->getFullName();
         }
 
         $where = [];
 
-        if ($selected['month'] && $selected['year']) {
-            $where[] = "`date` >= '" . $selected['year'] . '-' . $selected['month'] . "-01'";
-            $where[] = "`date` <= '" . $selected['year'] . '-' . $selected['month'] . "-31'";
-        } elseif ($selected['year']) {
-            $where[] = "`date` >= '" . $selected['year'] . "-01-01'";
-            $where[] = "`date` <= '" . $selected['year'] . "-12-31'";
+        if ($selected->month && $selected->year) {
+            $where[] = "`date` >= '" . $selected->year . '-' . $selected->month . "-01'";
+            $where[] = "`date` <= '" . $selected->year . '-' . $selected->month . "-31'";
+        } elseif ($selected->year) {
+            $where[] = "`date` >= '" . $selected->year . "-01-01'";
+            $where[] = "`date` <= '" . $selected->year . "-12-31'";
         }
 
         $db = app(DbService::class);
 
-        if ($selected['department']) {
-            $where[] = '`department` = ' . $db->quote($selected['department']);
+        if ($selected->department) {
+            $where[] = '`department` = ' . $db->quote($selected->department);
         }
-        if ($selected['clerk']
-            && (!$user->hasAccess(User::ADMINISTRATOR) || $user->getFullName() === $selected['clerk'])
+        if ($clerk
+            && (!$user->hasAccess(User::ADMINISTRATOR) || $user->getFullName() === $clerk)
         ) {
             //Viewing your self
-            $where[] = '(`clerk` = ' . $db->quote($selected['clerk']) . " OR `clerk` = '')";
-        } elseif ($selected['clerk']) {
+            $where[] = '(`clerk` = ' . $db->quote($clerk) . " OR `clerk` = '')";
+        } elseif ($clerk) {
             //Viewing some one else
-            $where[] = '`clerk` = ' . $db->quote($selected['clerk']);
+            $where[] = '`clerk` = ' . $db->quote($clerk);
         }
 
-        if ('activ' === $selected['status']) {
+        if ('activ' === $selected->status) {
             $where[] = "`status` IN('new', 'locked', 'pbsok', 'pbserror')";
-        } elseif ('inactiv' === $selected['status']) {
+        } elseif ('inactiv' === $selected->status) {
             $where[] = "`status` NOT IN('new', 'locked', 'pbsok', 'pbserror')";
-        } elseif ($selected['status']) {
-            $where[] = '`status` = ' . $db->quote($selected['status']);
+        } elseif ($selected->status) {
+            $where[] = '`status` = ' . $db->quote($selected->status);
         }
 
-        if ($selected['name']) {
-            $where[] = '`navn` LIKE ' . $db->quote('%' . $selected['name'] . '%');
+        if ($selected->name) {
+            $where[] = '`navn` LIKE ' . $db->quote('%' . $selected->name . '%');
         }
 
-        if ($selected['tlf']) {
-            $where[] = '(`tlf1` LIKE ' . $db->quote('%' . $selected['tlf'] . '%')
-                . ' OR `tlf2` LIKE ' . $db->quote('%' . $selected['tlf'] . '%') . ')';
+        if ($selected->tlf) {
+            $where[] = '(`tlf1` LIKE ' . $db->quote('%' . $selected->tlf . '%')
+                . ' OR `tlf2` LIKE ' . $db->quote('%' . $selected->tlf . '%') . ')';
         }
 
-        if ($selected['email']) {
-            $where[] = '`email` LIKE ' . $db->quote('%' . $selected['email'] . '%');
+        if ($selected->email) {
+            $where[] = '`email` LIKE ' . $db->quote('%' . $selected->email . '%');
         }
 
-        if (null !== $selected['momssats']) {
-            $where[] = '`momssats` = ' . $db->quote($selected['momssats']);
+        if (null !== $selected->momssats) {
+            $where[] = '`momssats` = ' . $db->quote($selected->momssats);
         }
 
         if (!$where) {
@@ -215,7 +218,8 @@ class InvoiceController extends AbstractAdminController
             throw new Exception('You need to be logged in to access invoices.');
         }
 
-        $action = $request->get('action', 'save');
+        $action = $request->getRequestString('action') ?? 'save';
+        $action = InvoiceAction::from($action);
         $data = $request->request->all();
         unset($data['action']);
 
@@ -224,7 +228,7 @@ class InvoiceController extends AbstractAdminController
         $invoiceService = new InvoiceService();
         $invoiceService->invoiceBasicUpdate($invoice, $user, $action, $data);
 
-        if ('email' === $action) {
+        if (InvoiceAction::Email === $action) {
             $invoiceService->sendInvoice($invoice);
         }
 
@@ -236,7 +240,9 @@ class InvoiceController extends AbstractAdminController
      */
     public function update(Request $request, int $id): JsonResponse
     {
-        $action = $request->get('action', 'save');
+        $action = $request->getRequestString('action') ?? 'save';
+        $action = InvoiceAction::from($action);
+
         $data = $request->request->all();
         unset($data['action']);
 
@@ -253,7 +259,7 @@ class InvoiceController extends AbstractAdminController
         $invoiceService = new InvoiceService();
         $invoiceService->invoiceBasicUpdate($invoice, $user, $action, $data);
 
-        if ('email' === $action) {
+        if (InvoiceAction::Email === $action) {
             $invoiceService->sendInvoice($invoice);
         }
 
@@ -360,7 +366,7 @@ class InvoiceController extends AbstractAdminController
             'invoice'     => $invoice,
             'currentUser' => $user,
             'users'       => $orm->getByQuery(User::class, 'SELECT * FROM `users` ORDER BY fullname'),
-            'departments' => array_keys(config('emails', [])),
+            'departments' => array_keys(ConfigService::getEmailConfigs()),
             'countries'   => Countries::getOrdered(),
         ] + $this->basicPageData($request);
 

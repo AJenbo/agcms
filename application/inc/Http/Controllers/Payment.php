@@ -2,21 +2,23 @@
 
 namespace App\Http\Controllers;
 
+use App\Enums\InvoiceStatus;
 use App\Countries;
 use App\Exceptions\Exception;
 use App\Exceptions\Handler as ExceptionHandler;
 use App\Exceptions\InvalidInput;
+use App\Http\Request;
 use App\Models\CustomPage;
 use App\Models\Email;
 use App\Models\Invoice;
 use App\Models\VolatilePage;
+use App\Services\ConfigService;
 use App\Services\EmailService;
 use App\Services\EpaymentService;
 use App\Services\InvoiceService;
 use App\Services\OrmService;
 use App\Services\RenderService;
 use Symfony\Component\HttpFoundation\RedirectResponse;
-use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Throwable;
 
@@ -38,9 +40,14 @@ class Payment extends Base
     public function index(Request $request): Response
     {
         $data = $this->basicPageData();
+        $crumbs = $data['crumbs'] ?? null;
+        if (!is_array($crumbs)) {
+            $crumbs = [];
+        }
 
         $renderable = new VolatilePage(_('Payment'), $request->getRequestUri());
-        $data['crumbs'][] = $renderable;
+        $crumbs[] = $renderable;
+        $data['crumbs'] = $crumbs;
         $data['renderable'] = $renderable;
         $data['id'] = $request->get('id');
         $data['checkid'] = $request->get('checkid');
@@ -62,12 +69,17 @@ class Payment extends Base
             throw new InvalidInput('Invoice not found', Response::HTTP_NOT_FOUND);
         }
 
-        $invoice->setStatus('locked')->save();
+        $invoice->setStatus(InvoiceStatus::Locked)->save();
 
         $data = $this->basicPageData();
+        $crumbs = $data['crumbs'] ?? null;
+        if (!is_array($crumbs)) {
+            $crumbs = [];
+        }
 
         $renderable = new VolatilePage(_('Order #') . $id, $invoice->getLink());
-        $data['crumbs'][] = $renderable;
+        $crumbs[] = $renderable;
+        $data['crumbs'] = $crumbs;
         $data['renderable'] = $renderable;
         $data['invoice'] = $invoice;
 
@@ -90,11 +102,16 @@ class Payment extends Base
         }
 
         $data = $this->basicPageData();
+        $crumbs = $data['crumbs'] ?? null;
+        if (!is_array($crumbs)) {
+            $crumbs = [];
+        }
 
         $data['countries'] = Countries::getOrdered();
-        $data['crumbs'][] = new VolatilePage(_('Order #') . $id, $invoice->getLink());
+        $crumbs[] = new VolatilePage(_('Order #') . $id, $invoice->getLink());
         $renderable = new VolatilePage(_('Address'), $invoice->getLink() . 'address/');
-        $data['crumbs'][] = $renderable;
+        $crumbs[] = $renderable;
+        $data['crumbs'] = $crumbs;
         $data['renderable'] = $renderable;
         $data['newsletter'] = $request->query->getBoolean('newsletter');
         $data['invoice'] = $invoice;
@@ -123,27 +140,27 @@ class Payment extends Base
         $data = $request->request->all();
         $data = $this->invoiceService->cleanAddressData($data);
 
-        $invoice->setStatus('locked')
-            ->setName($data['name'])
-            ->setAttn($data['attn'])
-            ->setAddress($data['address'])
-            ->setPostbox($data['postbox'])
-            ->setPostcode($data['postcode'])
-            ->setCity($data['city'])
-            ->setCountry($data['country'])
-            ->setEmail($data['email'])
-            ->setPhone1($data['phone1'])
-            ->setPhone2($data['phone2'])
-            ->setHasShippingAddress($data['has_shipping_address'])
-            ->setShippingPhone($data['shipping_phone'])
-            ->setShippingName($data['shipping_name'])
-            ->setShippingAttn($data['shipping_attn'])
-            ->setShippingAddress($data['shipping_address'])
-            ->setShippingAddress2($data['shipping_address2'])
-            ->setShippingPostbox($data['shipping_postbox'])
-            ->setShippingPostcode($data['shipping_postcode'])
-            ->setShippingCity($data['shipping_city'])
-            ->setShippingCountry($data['shipping_country'])
+        $invoice->setStatus(InvoiceStatus::Locked)
+            ->setName(strval($data['name']))
+            ->setAttn(strval($data['attn']))
+            ->setAddress(strval($data['address']))
+            ->setPostbox(strval($data['postbox']))
+            ->setPostcode(strval($data['postcode']))
+            ->setCity(strval($data['city']))
+            ->setCountry(strval($data['country']))
+            ->setEmail(strval($data['email']))
+            ->setPhone1(strval($data['phone1']))
+            ->setPhone2(strval($data['phone2']))
+            ->setHasShippingAddress(intval($data['has_shipping_address']) === 1)
+            ->setShippingPhone(strval($data['shipping_phone']))
+            ->setShippingName(strval($data['shipping_name']))
+            ->setShippingAttn(strval($data['shipping_attn']))
+            ->setShippingAddress(strval($data['shipping_address']))
+            ->setShippingAddress2(strval($data['shipping_address2']))
+            ->setShippingPostbox(strval($data['shipping_postbox']))
+            ->setShippingPostcode(strval($data['shipping_postcode']))
+            ->setShippingCity(strval($data['shipping_city']))
+            ->setShippingCountry(strval($data['shipping_country']))
             ->save();
 
         if ($invoice->getInvalid()) {
@@ -174,20 +191,25 @@ class Payment extends Base
             throw new InvalidInput('Invoice not found', Response::HTTP_NOT_FOUND);
         }
 
-        $invoice->setStatus('locked')->save();
+        $invoice->setStatus(InvoiceStatus::Locked)->save();
 
         $data = $this->basicPageData();
+        $crumbs = $data['crumbs'] ?? null;
+        if (!is_array($crumbs)) {
+            $crumbs = [];
+        }
 
-        $data['crumbs'][] = new VolatilePage(_('Order #') . $id, $invoice->getLink());
-        $data['crumbs'][] = new VolatilePage(_('Address'), $invoice->getLink() . 'address/');
+        $crumbs[] = new VolatilePage(_('Order #') . $id, $invoice->getLink());
+        $crumbs[] = new VolatilePage(_('Address'), $invoice->getLink() . 'address/');
         $renderable = new VolatilePage(_('Trade Conditions'), $invoice->getLink() . 'terms/');
-        $data['crumbs'][] = $renderable;
+        $crumbs[] = $renderable;
+        $data['crumbs'] = $crumbs;
         $data['renderable'] = $renderable;
 
         $inputs = [
-            'group'          => config('pbsfix'),
-            'merchantnumber' => config('pbsid'),
-            'orderid'        => config('pbsfix') . $invoice->getId(),
+            'group'          => ConfigService::getString('pbsfix'),
+            'merchantnumber' => ConfigService::getString('pbsid'),
+            'orderid'        => ConfigService::getString('pbsfix') . $invoice->getId(),
             'currency'       => 208,
             'amount'         => number_format($invoice->getAmount(), 2, '', ''),
             'ownreceipt'     => 1,
@@ -195,9 +217,9 @@ class Payment extends Base
             'cancelurl'      => $invoice->getLink() . 'terms/',
             'callbackurl'    => $invoice->getLink() . 'callback/',
             'windowstate'    => 3,
-            'windowid'       => config('pbswindow'),
+            'windowid'       => ConfigService::getInt('pbswindow'),
         ];
-        $inputs['hash'] = md5(implode('', $inputs) . config('pbspassword'));
+        $inputs['hash'] = md5(implode('', $inputs) . ConfigService::getString('pbspassword'));
         $data['inputs'] = $inputs;
         $data['html'] = $this->getTermsHtml();
 
@@ -233,7 +255,7 @@ class Payment extends Base
             return redirect('/betaling/?id=' . $id . '&checkid=' . rawurlencode($checkId), Response::HTTP_SEE_OTHER);
         }
 
-        if (!$invoice->isFinalized() && 'pbsok' !== $invoice->getStatus() && !$request->query->has('txnid')) {
+        if (!$invoice->isFinalized() && InvoiceStatus::PbsOk !== $invoice->getStatus() && !$request->query->has('txnid')) {
             return redirect($invoice->getLink(), Response::HTTP_SEE_OTHER);
         }
 
@@ -246,12 +268,17 @@ class Payment extends Base
         }
 
         $data = $this->basicPageData();
+        $crumbs = $data['crumbs'] ?? null;
+        if (!is_array($crumbs)) {
+            $crumbs = [];
+        }
 
-        $data['crumbs'][] = new VolatilePage(_('Order #') . $id, $invoice->getLink());
-        $data['crumbs'][] = new VolatilePage(_('Address'), $invoice->getLink() . 'address/');
-        $data['crumbs'][] = new VolatilePage(_('Trade Conditions'), $invoice->getLink() . 'terms/');
+        $crumbs[] = new VolatilePage(_('Order #') . $id, $invoice->getLink());
+        $crumbs[] = new VolatilePage(_('Address'), $invoice->getLink() . 'address/');
+        $crumbs[] = new VolatilePage(_('Trade Conditions'), $invoice->getLink() . 'terms/');
         $renderable = new VolatilePage(_('Receipt'), $invoice->getLink() . 'status/');
-        $data['crumbs'][] = $renderable;
+        $crumbs[] = $renderable;
+        $data['crumbs'] = $crumbs;
         $data['renderable'] = $renderable;
         $data['newsletter'] = $request->query->getBoolean('newsletter');
         $data['invoice'] = $invoice;
@@ -272,16 +299,16 @@ class Payment extends Base
     private function getStatusMessage(Invoice $invoice): string
     {
         switch ($invoice->getStatus()) {
-            case 'pbsok':
+            case InvoiceStatus::PbsOk:
                 return _('Payment is now accepted. We will send your goods by mail as soon as possible.')
                     . '<br />' . _('A copy of your order has been sent to your email.');
-            case 'canceled':
+            case InvoiceStatus::Canceled:
                 return _('The transaction is canceled.');
-            case 'giro':
+            case InvoiceStatus::Giro:
                 return _('The payment has already been received via giro.');
-            case 'cash':
+            case InvoiceStatus::Cash:
                 return _('The payment has already been received in cash.');
-            case 'accepted':
+            case InvoiceStatus::Accepted:
                 return _('The payment was received and the package is sent.');
         }
 
@@ -314,7 +341,7 @@ class Payment extends Base
         $params = $request->query->all();
         unset($params['hash']);
 
-        $eKey = md5(implode('', $params) . config('pbspassword'));
+        $eKey = md5(implode('', $params) . ConfigService::getString('pbspassword'));
 
         return $eKey === $request->get('hash');
     }
@@ -324,20 +351,20 @@ class Payment extends Base
      */
     private function setPaymentStatus(Request $request, Invoice $invoice): void
     {
-        if ($invoice->isFinalized() || 'pbsok' === $invoice->getStatus()) {
+        if ($invoice->isFinalized() || InvoiceStatus::PbsOk === $invoice->getStatus()) {
             return;
         }
 
-        $cardType = EpaymentService::getPaymentName($request->get('paymenttype'));
+        $cardType = EpaymentService::getPaymentName(intval($request->get('paymenttype')));
         $internalNote = $this->generateInternalPaymentNote($request);
 
         if (!app(EmailService::class)->valideMail($invoice->getDepartment())) {
-            $invoice->setDepartment(first(config('emails'))['address']);
+            $invoice->setDepartment(ConfigService::getDefaultEmail());
         }
 
         $invoice->setCardtype($cardType)
             ->setInternalNote(trim($invoice->getInternalNote() . "\n" . $internalNote))
-            ->setStatus('pbsok')
+            ->setStatus(InvoiceStatus::PbsOk)
             ->setTimeStampPay(time())
             ->save();
 
@@ -353,16 +380,16 @@ class Payment extends Base
         $data = [
             'invoice'    => $invoice,
             'localeconv' => localeconv(),
-            'siteName'   => config('site_name'),
-            'address'    => config('address'),
-            'postcode'   => config('postcode'),
-            'city'       => config('city'),
-            'phone'      => config('phone'),
+            'siteName'   => ConfigService::getString('site_name'),
+            'address'    => ConfigService::getString('address'),
+            'postcode'   => ConfigService::getString('postcode'),
+            'city'       => ConfigService::getString('city'),
+            'phone'      => ConfigService::getString('phone'),
         ];
         $email = new Email([
             'subject'          => sprintf(_('Order #%d - payment completed'), $invoice->getId()),
             'body'             => app(RenderService::class)->render('email/payment-confirmation', $data),
-            'senderName'       => config('site_name'),
+            'senderName'       => ConfigService::getString('site_name'),
             'senderAddress'    => $invoice->getDepartment(),
             'recipientName'    => $invoice->getName(),
             'recipientAddress' => $invoice->getEmail(),
@@ -395,9 +422,9 @@ class Payment extends Base
         $email = new Email([
             'subject'          => $subject,
             'body'             => $emailBody,
-            'senderName'       => config('site_name'),
+            'senderName'       => ConfigService::getString('site_name'),
             'senderAddress'    => $invoice->getDepartment(),
-            'recipientName'    => config('site_name'),
+            'recipientName'    => ConfigService::getString('site_name'),
             'recipientAddress' => $invoice->getDepartment(),
         ]);
 
@@ -441,7 +468,7 @@ class Payment extends Base
         if (!$invoice || $checkId !== $invoice->getCheckId()) {
             return redirect('/betaling/?id=' . $id . '&checkid=' . rawurlencode($checkId), Response::HTTP_SEE_OTHER);
         }
-        if ($invoice->isFinalized() || 'pbsok' === $invoice->getStatus()) {
+        if ($invoice->isFinalized() || InvoiceStatus::PbsOk === $invoice->getStatus()) {
             return redirect($invoice->getLink() . 'status/', Response::HTTP_SEE_OTHER);
         }
 

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Request;
 use App\Models\Brand;
 use App\Models\Category;
 use App\Models\Page;
@@ -9,7 +10,6 @@ use App\Models\VolatilePage;
 use App\Services\DbService;
 use App\Services\OrmService;
 use Symfony\Component\HttpFoundation\RedirectResponse;
-use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
 class Search extends Base
@@ -20,7 +20,12 @@ class Search extends Base
     public function index(): Response
     {
         $data = $this->basicPageData();
-        $data['crumbs'][] = new VolatilePage(_('Search'), '/search/');
+        $crumbs = $data['crumbs'] ?? null;
+        if (!is_array($crumbs)) {
+            $crumbs = [];
+        }
+        $crumbs[] = new VolatilePage(_('Search'), '/search/');
+        $data['crumbs'] = $crumbs;
         $data['brands'] = $this->getActiveBrands();
 
         $response = $this->render('search', $data);
@@ -68,12 +73,21 @@ class Search extends Base
             return $response;
         }
 
-        $searchString = $request->get('q', '');
+        $searchString = $request->get('q');
+        if (!is_string($searchString)) {
+            $searchString = '';
+        }
         $brandId = $request->query->getInt('maerke');
-        $varenr = $request->get('varenr', '');
+        $varenr = $request->get('varenr');
+        if (!is_string($varenr)) {
+            $varenr = '';
+        }
         $minpris = $request->query->getInt('minpris', 0);
         $maxpris = $request->query->getInt('maxpris', 0);
-        $antiWords = $request->get('sogikke', '');
+        $antiWords = $request->get('sogikke');
+        if (!is_string($antiWords)) {
+            $antiWords = '';
+        }
 
         $pages = $this->findPages($searchString, $brandId, $varenr, $minpris, $maxpris, $antiWords);
         if (1 === count($pages)) {
@@ -83,13 +97,13 @@ class Search extends Base
         }
 
         $brands = $this->findBrands(
-            $request->get('q', ''),
-            $request->get('sogikke', '')
+            $searchString,
+            $antiWords
         );
 
         $categories = $this->findCategories(
-            $request->get('q', ''),
-            $request->get('sogikke', '')
+            $searchString,
+            $antiWords
         );
 
         $contentList = array_merge($pages, $brands, $categories);
@@ -97,10 +111,16 @@ class Search extends Base
         $requirement = new VolatilePage('Results', $request->getRequestUri(), $contentList);
 
         $data = $this->basicPageData();
-        $data['crumbs'][] = new VolatilePage(_('Search'), '/search/');
-        $data['crumbs'][] = $requirement;
+        $crumbs = $data['crumbs'] ?? null;
+        if (!is_array($crumbs)) {
+            $crumbs = [];
+        }
+        $crumbs[] = new VolatilePage(_('Search'), '/search/');
+        $crumbs[] = $requirement;
+        $data['crumbs'] = $crumbs;
+
         $data['renderable'] = $requirement;
-        $data['search'] = $request->get('q', '');
+        $data['search'] = $searchString;
 
         $response = $this->render('tiles', $data);
 
@@ -114,14 +134,15 @@ class Search extends Base
      */
     private function checkSearchable(Request $request): ?RedirectResponse
     {
+        $brandId = $request->get('maerke');
         if (!$request->get('q')
             && !$request->get('varenr')
             && !$request->get('minpris')
             && !$request->get('maxpris')
             && !$request->get('sogikke')
         ) {
-            if ($request->get('maerke')) {
-                $brand = app(OrmService::class)->getOne(Brand::class, $request->get('maerke'));
+            if (ctype_digit($brandId) || is_int($brandId)) {
+                $brand = app(OrmService::class)->getOne(Brand::class, (int)$brandId);
                 if ($brand && $brand->hasPages()) {
                     return redirect($brand->getCanonicalLink(), Response::HTTP_MOVED_PERMANENTLY);
                 }

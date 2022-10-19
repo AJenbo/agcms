@@ -2,13 +2,14 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Request;
 use App\Models\Category;
 use App\Models\Page;
 use App\Models\Requirement;
+use App\Services\ConfigService;
 use App\Services\DbService;
 use App\Services\OrmService;
 use GuzzleHttp\Psr7\Uri;
-use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
 class Feed extends Base
@@ -56,7 +57,7 @@ class Feed extends Base
             }
         }
         $data = [
-            'base_url'     => config('base_url'),
+            'base_url'     => ConfigService::getString('base_url'),
             'categories'   => $activeCategories,
             'pages'        => $pages,
             'brands'       => $brands,
@@ -112,7 +113,7 @@ class Feed extends Base
             $decription = '';
             $icon = $page->getIcon();
             if ($icon) {
-                $imgUrl = (string)new Uri(config('base_url') . $icon->getPath());
+                $imgUrl = (string)new Uri(ConfigService::getString('base_url') . $icon->getPath());
                 $decription .= '<img style="float:left;margin:0 10px 5px 0" src="'
                     . htmlspecialchars($imgUrl, ENT_COMPAT | ENT_XHTML) . '" ><p>';
             }
@@ -133,8 +134,8 @@ class Feed extends Base
             $categories = array_unique($categories);
 
             $items[] = [
-                'title'       => trim($page->getTitle()) ?: config('site_name'),
-                'link'        => (string)new Uri(config('base_url') . $page->getCanonicalLink()),
+                'title'       => trim($page->getTitle()) ?: ConfigService::getString('site_name'),
+                'link'        => (string)new Uri(ConfigService::getString('base_url') . $page->getCanonicalLink()),
                 'description' => $decription,
                 'pubDate'     => gmdate('D, d M Y H:i:s', $page->getTimeStamp()) . ' GMT',
                 'categories'  => $categories,
@@ -142,12 +143,12 @@ class Feed extends Base
         }
 
         $data = [
-            'url'           => config('base_url') . '/feed/rss/',
-            'title'         => config('site_name'),
-            'siteUrl'       => config('base_url') . '/',
+            'url'           => ConfigService::getString('base_url') . '/feed/rss/',
+            'title'         => ConfigService::getString('site_name'),
+            'siteUrl'       => ConfigService::getString('base_url') . '/',
             'lastBuildDate' => gmdate('D, d M Y H:i:s', $db->dataAge() ?: time()) . ' GMT',
-            'email'         => first(config('emails'))['address'],
-            'siteName'      => config('site_name'),
+            'email'         => ConfigService::getDefaultEmail(),
+            'siteName'      => ConfigService::getString('site_name'),
             'items'         => $items,
         ];
 
@@ -165,10 +166,10 @@ class Feed extends Base
             return $response;
         }
 
-        $url = config('base_url') . '/search/results/?q={searchTerms}&sogikke=&minpris=&maxpris=&maerke=0';
+        $url = ConfigService::getString('base_url') . '/search/results/?q={searchTerms}&sogikke=&minpris=&maxpris=&maerke=0';
         $data = [
-            'shortName'   => config('site_name'),
-            'description' => sprintf(_('Find in %s'), config('site_name')),
+            'shortName'   => ConfigService::getString('site_name'),
+            'description' => sprintf(_('Find in %s'), ConfigService::getString('site_name')),
             'url'         => $url,
         ];
 

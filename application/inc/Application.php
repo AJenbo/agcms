@@ -7,6 +7,7 @@ use App\Exceptions\Handler as ExceptionHandler;
 use App\Http\Controllers\AbstractController;
 use App\Http\Controllers\Base;
 use App\Http\Request;
+use App\Services\ConfigService;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Response;
 use Throwable;
@@ -46,13 +47,9 @@ class Application
         $this->loadRoutes();
     }
 
-    public function environment(string ...$environments): bool
+    public function environment(string $environment): bool
     {
-        foreach ($environments as $environment) {
-            return $environment === config('enviroment', 'develop');
-        }
-
-        return false;
+        return $environment === ConfigService::getString('enviroment', 'develop');
     }
 
     /**
@@ -71,9 +68,9 @@ class Application
      */
     private function setLocale(): void
     {
-        date_default_timezone_set(config('timezone', 'Europe/Copenhagen'));
+        date_default_timezone_set(ConfigService::getString('timezone', 'Europe/Copenhagen'));
 
-        setlocale(LC_ALL, config('locale', 'C'));
+        setlocale(LC_ALL, ConfigService::getString('locale', 'C'));
         setlocale(LC_NUMERIC, 'C');
 
         mb_language('uni');

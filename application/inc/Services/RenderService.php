@@ -15,13 +15,14 @@ class RenderService
         $app = app();
         $templatePath = $app->basePath('/theme');
         $loader = new Twig_Loader_Filesystem('default/', $templatePath);
-        $langPath = 'default/' . config('locale', 'C') . '/';
+        $langPath = 'default/' . ConfigService::getString('locale', 'C') . '/';
         if (file_exists($templatePath . '/' . $langPath)) {
             $loader->prependPath($langPath);
         }
-        if (config('theme')) {
-            $loader->prependPath(config('theme') . '/');
-            $langPath = config('theme') . '/' . config('locale', 'C') . '/';
+        $theme = ConfigService::getString('theme');
+        if ($theme) {
+            $loader->prependPath($theme . '/');
+            $langPath = $theme . '/' . ConfigService::getString('locale', 'C') . '/';
             if (file_exists($templatePath . '/' . $langPath)) {
                 $loader->prependPath($langPath);
             }

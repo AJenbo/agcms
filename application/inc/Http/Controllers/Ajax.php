@@ -3,13 +3,13 @@
 namespace App\Http\Controllers;
 
 use App\Exceptions\InvalidInput;
+use App\Http\Request;
 use App\Models\Category;
 use App\Models\Table;
 use App\Services\DbService;
 use App\Services\OrmService;
 use App\Services\RenderService;
 use Symfony\Component\HttpFoundation\JsonResponse;
-use Symfony\Component\HttpFoundation\Request;
 
 class Ajax extends Base
 {

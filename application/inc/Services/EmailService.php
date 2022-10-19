@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\DTO\EmailConfig;
 use AJenbo\Imap;
 use App\Exceptions\Exception;
 use App\Exceptions\SendEmail;
@@ -61,9 +62,10 @@ class EmailService
      */
     public function send(Email $email, array $bcc = []): void
     {
-        $emailConfig = first(config('emails'));
-        if (isset(config('emails')[$email->getSenderAddress()])) {
-            $emailConfig = config('emails')[$email->getSenderAddress()];
+        $emailConfigs = ConfigService::getEmailConfigs();
+        $emailConfig = first($emailConfigs);
+        if (isset($emailConfigs[$email->getSenderAddress()])) {
+            $emailConfig = $emailConfigs[$email->getSenderAddress()];
         }
 
         $mailer = new PHPMailer(true);
@@ -72,8 +74,8 @@ class EmailService
 
         $this->configureSmtp($mailer, $emailConfig);
 
-        $mailer->setFrom($emailConfig['address'], config('site_name'));
-        if ($email->getSenderAddress() !== $emailConfig['address']) {
+        $mailer->setFrom($emailConfig->address, ConfigService::getString('site_name'));
+        if ($email->getSenderAddress() !== $emailConfig->address) {
             $mailer->addReplyTo($email->getSenderAddress(), $email->getSenderName());
         }
 
@@ -94,38 +96,34 @@ class EmailService
 
     /**
      * Set up the SMTP configuration.
-     *
-     * @param array<string, mixed> $emailConfig
      */
-    private function configureSmtp(PHPMailer $mailer, array $emailConfig): void
+    private function configureSmtp(PHPMailer $mailer, EmailConfig $emailConfig): void
     {
         $mailer->isSMTP();
-        $mailer->Host = $emailConfig['smtpHost'];
-        $mailer->Port = $emailConfig['smtpPort'];
-        if ($emailConfig['smtpAuth']) {
+        $mailer->Host = $emailConfig->smtpHost;
+        $mailer->Port = $emailConfig->smtpPort;
+        if ($emailConfig->smtpAuth) {
             $mailer->SMTPAuth = true;
-            $mailer->Username = $emailConfig['address'];
-            $mailer->Password = $emailConfig['password'];
+            $mailer->Username = $emailConfig->address;
+            $mailer->Password = $emailConfig->password;
         }
     }
 
     /**
      * Upload email to the sendt box of the imap account.
-     *
-     * @param array<string, mixed> $emailConfig
      */
-    private function uploadEmail(array $emailConfig, string $mimeMessage): void
+    private function uploadEmail(EmailConfig $emailConfig, string $mimeMessage): void
     {
-        if (!$emailConfig['imapHost']) {
+        if (!$emailConfig->imapHost) {
             return;
         }
 
         $imap = new Imap(
-            $emailConfig['address'],
-            $emailConfig['password'],
-            $emailConfig['imapHost'],
-            $emailConfig['imapPort']
+            $emailConfig->address,
+            $emailConfig->password,
+            $emailConfig->imapHost,
+            $emailConfig->imapPort
         );
-        $imap->append($emailConfig['sentBox'], $mimeMessage, '\Seen');
+        $imap->append($emailConfig->sentBox, $mimeMessage, '\Seen');
     }
 }

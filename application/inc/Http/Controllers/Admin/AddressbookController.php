@@ -3,11 +3,12 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Exceptions\InvalidInput;
+use App\Http\Request;
 use App\Models\Contact;
+use App\Services\ConfigService;
 use App\Services\EmailService;
 use App\Services\OrmService;
 use Symfony\Component\HttpFoundation\JsonResponse;
-use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
 class AddressbookController extends AbstractAdminController
@@ -34,7 +35,7 @@ class AddressbookController extends AbstractAdminController
     {
         $data = $this->basicPageData($request);
         $data['contact'] = $id ? app(OrmService::class)->getOne(Contact::class, $id) : null;
-        $data['interests'] = config('interests', []);
+        $data['interests'] = ConfigService::getArray('interests');
 
         return $this->render('admin/editContact', $data);
     }
@@ -45,12 +46,12 @@ class AddressbookController extends AbstractAdminController
     public function create(Request $request): JsonResponse
     {
         $contact = new Contact([
-            'name'       => $request->request->get('name', ''),
-            'email'      => $request->request->get('email', ''),
-            'address'    => $request->request->get('address', ''),
-            'country'    => $request->request->get('country', ''),
-            'postcode'   => $request->request->get('postcode', ''),
-            'city'       => $request->request->get('city', ''),
+            'name'       => $request->getRequestString('name') ?? '',
+            'email'      => $request->getRequestString('email') ?? '',
+            'address'    => $request->getRequestString('address') ?? '',
+            'country'    => $request->getRequestString('country') ?? '',
+            'postcode'   => $request->getRequestString('postcode') ?? '',
+            'city'       => $request->getRequestString('city') ?? '',
             'phone1'     => $request->request->getAlnum('phone1'),
             'phone2'     => $request->request->getAlnum('phone2'),
             'subscribed' => $request->request->getBoolean('newsletter'),
@@ -72,16 +73,21 @@ class AddressbookController extends AbstractAdminController
             throw new InvalidInput(_('Contact not found.'), Response::HTTP_NOT_FOUND);
         }
 
-        $contact->setName($request->request->get('name', ''))
-            ->setEmail($request->request->get('email', ''))
-            ->setAddress($request->request->get('address', ''))
-            ->setCountry($request->request->get('country', ''))
-            ->setPostcode($request->request->get('postcode', ''))
-            ->setCity($request->request->get('city', ''))
+        $interests = $request->request->get('interests');
+        if (!is_array($interests)) {
+            $interests = [];
+        }
+
+        $contact->setName($request->getRequestString('name') ?? '')
+            ->setEmail($request->getRequestString('email') ?? '')
+            ->setAddress($request->getRequestString('address') ?? '')
+            ->setCountry($request->getRequestString('country') ?? '')
+            ->setPostcode($request->getRequestString('postcode') ?? '')
+            ->setCity($request->getRequestString('city') ?? '')
             ->setPhone1($request->request->getAlnum('phone1'))
             ->setPhone2($request->request->getAlnum('phone2'))
             ->setSubscribed($request->request->getBoolean('newsletter'))
-            ->setInterests($request->request->get('interests', []))
+            ->setInterests($interests)
             ->save();
 
         return new JsonResponse([]);
@@ -105,7 +111,10 @@ class AddressbookController extends AbstractAdminController
      */
     public function isValidEmail(Request $request): JsonResponse
     {
-        $email = $request->get('email', '');
+        $email = $request->get('email');
+        if (!is_string($email)) {
+            $email = '';
+        }
 
         $isValid = app(EmailService::class)->valideMail($email);
 

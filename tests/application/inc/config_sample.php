@@ -1,5 +1,7 @@
 <?php
 
+use App\DTO\EmailConfig;
+
 /**
  * Configuration of site.
  *
@@ -11,28 +13,44 @@ return [
     'locale'     => 'en_US',
     'base_url'   => 'https://localhost',
     'site_name'  => 'My store',
-
-    'db_dns' => 'sqlite::memory:',
+    'address'    => '',
+    'postcode'   => '',
+    'city'       => '',
+    'phone'      => '',
+    'has_count'  => false,
 
     'emails' => [
-        'mail@gmail.com' => [
-            'address'  => 'mail@gmail.com',
-            'password' => '',
-            'sentBox'  => 'INBOX.Sent',
-            'imapHost' => '',
-            'imapPort' => 0,
-            'smtpHost' => '',
-            'smtpPort' => '',
-            'smtpAuth' => false,
-        ],
+        'mail@gmail.com' => new EmailConfig(
+            'mail@gmail.com',
+            '',
+            'INBOX.Sent',
+            '',
+            0,
+            '',
+            0,
+            false,
+        ),
     ],
 
     'interests' => [
         'Stuff',
     ],
 
+    // Payment gateway
+    'pbsid'       => '',
+    'pbspassword' => '',
+    'pbsfix'      => '',
+    'pbswindow'   => 0,
+    'pbssalt'     => '',
+
+    // Database
+    'db_dns'         => 'sqlite::memory:',
+    'mysql_user'     => '',
+    'mysql_password' => '',
+
     //Admin options
-    'theme' => 'default',
+    'theme'       => 'default',
+    'blank_image' => '',
 
     // Site color settings
     'bgcolor'  => 'FFFFFF',

@@ -35,13 +35,13 @@ class File extends AbstractEntity
 
     public function __construct(array $data = [])
     {
-        $this->setPath($data['path'])
-            ->setMime($data['mime'])
-            ->setSize($data['size'])
-            ->setDescription($data['description'])
-            ->setWidth($data['width'])
-            ->setHeight($data['height'])
-            ->setId($data['id'] ?? null);
+        $this->setPath(strval($data['path']))
+            ->setMime(strval($data['mime']))
+            ->setSize(intval($data['size']))
+            ->setDescription(strval($data['description']))
+            ->setWidth(intval($data['width']))
+            ->setHeight(intval($data['height']))
+            ->setId(intOrNull($data['id'] ?? null));
     }
 
     public static function mapFromDB(array $data): array

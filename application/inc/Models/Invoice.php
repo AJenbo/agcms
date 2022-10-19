@@ -2,6 +2,9 @@
 
 namespace App\Models;
 
+use App\DTO\InvoiceItem;
+use App\Enums\InvoiceStatus;
+use App\Services\ConfigService;
 use App\Services\DbService;
 use App\Services\EmailService;
 
@@ -87,8 +90,7 @@ class Invoice extends AbstractEntity
     /** @var string Name of responsible cleark */
     private string $clerk = '';
 
-    /** @var string Order status */
-    private string $status = '';
+    private InvoiceStatus $status = InvoiceStatus::New;
 
     /** @var float Shipping price */
     private float $shipping = 0.00;
@@ -121,49 +123,49 @@ class Invoice extends AbstractEntity
 
     // Dynamic
 
-    /** @var array<int, array<string, mixed>> */
+    /** @var array<int, InvoiceItem> */
     private array $items = [];
 
     public function __construct(array $data = [])
     {
-        $this->setItemData($data['item_data'] ?? '[]')
-            ->setHasShippingAddress($data['has_shipping_address'] ?? false)
-            ->setTimeStamp($data['timestamp'] ?? time())
-            ->setTimeStampPay($data['timestamp_pay'] ?? 0)
-            ->setAmount($data['amount'] ?? 0.00)
-            ->setName($data['name'] ?? '')
-            ->setAttn($data['attn'] ?? '')
-            ->setAddress($data['address'] ?? '')
-            ->setPostbox($data['postbox'] ?? '')
-            ->setPostcode($data['postcode'] ?? '')
-            ->setCity($data['city'] ?? '')
-            ->setCountry($data['country'] ?? 'DK')
-            ->setEmail($data['email'] ?? '')
-            ->setPhone1($data['phone1'] ?? '')
-            ->setPhone2($data['phone2'] ?? '')
-            ->setShippingPhone($data['shipping_phone'] ?? '')
-            ->setShippingName($data['shipping_name'] ?? '')
-            ->setShippingAttn($data['shipping_attn'] ?? '')
-            ->setShippingAddress($data['shipping_address'] ?? '')
-            ->setShippingAddress2($data['shipping_address2'] ?? '')
-            ->setShippingPostbox($data['shipping_postbox'] ?? '')
-            ->setShippingPostcode($data['shipping_postcode'] ?? '')
-            ->setShippingCity($data['shipping_city'] ?? '')
-            ->setShippingCountry($data['shipping_country'] ?? 'DK')
-            ->setNote($data['note'] ?? '')
-            ->setInternalNote($data['internal_note'] ?? '')
-            ->setClerk($data['clerk'] ?? '')
-            ->setStatus($data['status'] ?? 'new')
-            ->setShipping($data['shipping'] ?? '0.00')
-            ->setVat($data['vat'] ?? '0.25')
-            ->setPreVat($data['pre_vat'] ?? true)
-            ->setTransferred($data['transferred'] ?? false)
-            ->setCardtype($data['cardtype'] ?? '')
-            ->setIref($data['iref'] ?? '')
-            ->setEref($data['eref'] ?? '')
-            ->setSent($data['sent'] ?? false)
-            ->setDepartment($data['department'] ?? '')
-            ->setId($data['id'] ?? null);
+        $this->setItemData(strval($data['item_data'] ?? '[]'))
+            ->setHasShippingAddress(boolval($data['has_shipping_address'] ?? false))
+            ->setTimeStamp(intval($data['timestamp'] ?? time()))
+            ->setTimeStampPay(intval($data['timestamp_pay'] ?? 0))
+            ->setAmount(floatval($data['amount'] ?? 0.00))
+            ->setName(strval($data['name'] ?? ''))
+            ->setAttn(strval($data['attn'] ?? ''))
+            ->setAddress(strval($data['address'] ?? ''))
+            ->setPostbox(strval($data['postbox'] ?? ''))
+            ->setPostcode(strval($data['postcode'] ?? ''))
+            ->setCity(strval($data['city'] ?? ''))
+            ->setCountry(strval($data['country'] ?? 'DK'))
+            ->setEmail(strval($data['email'] ?? ''))
+            ->setPhone1(strval($data['phone1'] ?? ''))
+            ->setPhone2(strval($data['phone2'] ?? ''))
+            ->setShippingPhone(strval($data['shipping_phone'] ?? ''))
+            ->setShippingName(strval($data['shipping_name'] ?? ''))
+            ->setShippingAttn(strval($data['shipping_attn'] ?? ''))
+            ->setShippingAddress(strval($data['shipping_address'] ?? ''))
+            ->setShippingAddress2(strval($data['shipping_address2'] ?? ''))
+            ->setShippingPostbox(strval($data['shipping_postbox'] ?? ''))
+            ->setShippingPostcode(strval($data['shipping_postcode'] ?? ''))
+            ->setShippingCity(strval($data['shipping_city'] ?? ''))
+            ->setShippingCountry(strval($data['shipping_country'] ?? 'DK'))
+            ->setNote(strval($data['note'] ?? ''))
+            ->setInternalNote(strval($data['internal_note'] ?? ''))
+            ->setClerk(strval($data['clerk'] ?? ''))
+            ->setStatus(InvoiceStatus::from(strval($data['status'] ?? 'new')))
+            ->setShipping(floatval($data['shipping'] ?? 0.00))
+            ->setVat(floatval($data['vat'] ?? 0.25))
+            ->setPreVat(boolval($data['pre_vat'] ?? true))
+            ->setTransferred(boolval($data['transferred'] ?? false))
+            ->setCardtype(strval($data['cardtype'] ?? ''))
+            ->setIref(strval($data['iref'] ?? ''))
+            ->setEref(strval($data['eref'] ?? ''))
+            ->setSent(boolval($data['sent'] ?? false))
+            ->setDepartment(strval($data['department'] ?? ''))
+            ->setId(intOrNull($data['id'] ?? null));
     }
 
     /**
@@ -172,7 +174,7 @@ class Invoice extends AbstractEntity
     public function __clone()
     {
         parent::__clone();
-        $this->status = 'new';
+        $this->status = InvoiceStatus::New;
         $this->timeStamp = time();
         $this->timeStampPay = null;
         $this->sent = false;
@@ -708,7 +710,7 @@ class Invoice extends AbstractEntity
      *
      * @return $this
      */
-    public function setStatus(string $status): self
+    public function setStatus(InvoiceStatus $status): self
     {
         $this->status = $status;
 
@@ -718,7 +720,7 @@ class Invoice extends AbstractEntity
     /**
      * Get status.
      */
-    public function getStatus(): string
+    public function getStatus(): InvoiceStatus
     {
         return $this->status;
     }
@@ -998,16 +1000,26 @@ class Invoice extends AbstractEntity
         $this->items = [];
 
         $items = json_decode($itemData, true);
-        foreach ($items as $item) {
-            $item = [
-                'quantity' => (int)$item['quantity'],
-                'title'    => (string)$item['title'],
-                'value'    => (float)$item['value'],
-            ];
-            if (!$item['quantity'] && !$item['title'] && !$item['value']) {
-                continue;
+        if (is_array($items)) {
+            foreach ($items as $item) {
+                $quantity = $item['quantity'] ?? null;
+                if (!is_int($quantity)) {
+                    $quantity = 0;
+                }
+                $title = $item['title'] ?? null;
+                if (!is_string($title)) {
+                    $title = '';
+                }
+                $value = $item['value'] ?? null;
+                if (!is_float($value) && !is_int($value)) {
+                    $value = 0.0;
+                }
+                if (!$quantity && !$title && !$value) {
+                    continue;
+                }
+
+                $this->items[] = new InvoiceItem($quantity, $title, $value);
             }
-            $this->items[] = $item;
         }
 
         return $this;
@@ -1017,7 +1029,7 @@ class Invoice extends AbstractEntity
      * @param bool $normalizeVat Some invoices have prices entered including VAT,
      *                           when set to true the function will always return values with out vat
      *
-     * @return array<int, array<string, mixed>>
+     * @return array<int, InvoiceItem>
      */
     public function getItems(bool $normalizeVat = true): array
     {
@@ -1027,11 +1039,11 @@ class Invoice extends AbstractEntity
 
         $items = [];
         foreach ($this->items as $item) {
-            $items[] = [
-                'quantity' => $item['quantity'],
-                'title'    => $item['title'],
-                'value'    => $item['value'] / 1.25,
-            ];
+            $items[] = new InvoiceItem(
+                $item->quantity,
+                $item->title,
+                $item->value / 1.25
+            );
         }
 
         return $items;
@@ -1042,7 +1054,12 @@ class Invoice extends AbstractEntity
      */
     public function isFinalized(): bool
     {
-        return in_array($this->status, ['accepted', 'giro', 'cash', 'canceled'], true);
+        return in_array($this->status, [
+            InvoiceStatus::Accepted,
+            InvoiceStatus::Giro,
+            InvoiceStatus::Cash,
+            InvoiceStatus::Canceled,
+        ], true);
     }
 
     /**
@@ -1054,7 +1071,7 @@ class Invoice extends AbstractEntity
             $this->save();
         }
 
-        return config('base_url') . '/admin/invoices/' . $this->id . '/';
+        return ConfigService::getString('base_url') . '/admin/invoices/' . $this->id . '/';
     }
 
     /**
@@ -1066,7 +1083,7 @@ class Invoice extends AbstractEntity
             $this->save();
         }
 
-        return config('base_url') . '/betaling/' . $this->getId() . '/' . $this->getCheckId() . '/';
+        return ConfigService::getString('base_url') . '/betaling/' . $this->getId() . '/' . $this->getCheckId() . '/';
     }
 
     /**
@@ -1075,7 +1092,7 @@ class Invoice extends AbstractEntity
     public function hasUnknownPrice(): bool
     {
         foreach ($this->items as $item) {
-            if (!$item['value']) {
+            if (!$item->value) {
                 return true;
             }
         }
@@ -1090,7 +1107,7 @@ class Invoice extends AbstractEntity
     {
         $netAmount = 0;
         foreach ($this->getItems() as $item) {
-            $netAmount += $item['quantity'] * $item['value'];
+            $netAmount += $item->quantity * $item->value;
         }
 
         return $netAmount;
@@ -1105,7 +1122,7 @@ class Invoice extends AbstractEntity
             return '';
         }
 
-        return mb_substr(md5($this->id . config('pbssalt')), 3, 5);
+        return mb_substr(md5($this->id . ConfigService::getString('pbssalt')), 3, 5);
     }
 
     /**
@@ -1183,9 +1200,9 @@ class Invoice extends AbstractEntity
         $itemTitle = [];
         $itemValue = [];
         foreach ($this->items as $column) {
-            $itemQuantities[] = $column['quantity'];
-            $itemTitle[] = htmlspecialchars($column['title']);
-            $itemValue[] = round($column['value'], 2);
+            $itemQuantities[] = $column->quantity;
+            $itemTitle[] = htmlspecialchars($column->title);
+            $itemValue[] = round($column->value, 2);
         }
 
         $itemQuantities = implode('<', $itemQuantities);
@@ -1229,7 +1246,7 @@ class Invoice extends AbstractEntity
             'postcountry'    => $db->quote($this->shippingCountry),
             'note'           => $db->quote($this->note),
             'clerk'          => $db->quote($this->clerk),
-            'status'         => $db->quote($this->status),
+            'status'         => $db->quote($this->status->value),
             'fragt'          => $db->escNum($this->shipping),
             'momssats'       => $db->escNum($this->vat),
             'premoms'        => (string)(int)$this->preVat,

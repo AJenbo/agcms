@@ -2,6 +2,8 @@
 
 namespace App\Models;
 
+use App\DTO\TableColumn;
+use App\Enums\ColumnType;
 use App\Exceptions\Exception;
 use App\Services\DbService;
 use App\Services\OrmService;
@@ -10,21 +12,6 @@ class Table extends AbstractEntity
 {
     /** Table name in database. */
     public const TABLE_NAME = 'lists';
-
-    /** Cell string */
-    public const COLUMN_TYPE_STRING = 0;
-
-    /** Cell integer */
-    public const COLUMN_TYPE_INT = 1;
-
-    /** Cell price */
-    public const COLUMN_TYPE_PRICE = 2;
-
-    /** Cell sales price */
-    public const COLUMN_TYPE_PRICE_NEW = 3;
-
-    /** Cell previous price */
-    public const COLUMN_TYPE_PRICE_OLD = 4;
 
     // Backed by DB
 
@@ -45,17 +32,17 @@ class Table extends AbstractEntity
 
     // Runtime
 
-    /** @var array<int, array<string, mixed>> Decoded column data. */
+    /** @var array<int, TableColumn> Decoded column data. */
     private array $columns = [];
 
     public function __construct(array $data = [])
     {
-        $this->setPageId($data['page_id'])
-            ->setTitle($data['title'])
-            ->setColumnData($data['column_data'])
-            ->setOrderBy($data['order_by'])
-            ->setHasLinks($data['has_links'])
-            ->setId($data['id'] ?? null);
+        $this->setPageId(intval($data['page_id']))
+            ->setTitle(strval($data['title']))
+            ->setColumnData(strval($data['column_data']))
+            ->setOrderBy(intval($data['order_by']))
+            ->setHasLinks(boolval($data['has_links']))
+            ->setId(intOrNull($data['id'] ?? null));
     }
 
     public static function mapFromDB(array $data): array
@@ -150,12 +137,22 @@ class Table extends AbstractEntity
      */
     public function setColumnData(string $columnData): self
     {
-        $this->columns = json_decode($columnData, true);
+        $columns = json_decode($columnData, true);
 
-        foreach ($this->columns as $column) {
-            if (in_array($column['type'], [self::COLUMN_TYPE_PRICE, self::COLUMN_TYPE_PRICE_NEW], true)) {
-                $this->hasPrices = true;
-                break;
+        if (is_array($columns)) {
+            foreach ($columns as $columnData) {
+                $column = new TableColumn(
+                    $columnData['title'],
+                    ColumnType::from($columnData['type']),
+                    $columnData['sorting'],
+                    $columnData['options'],
+                );
+
+                if (in_array($column->type, [ColumnType::Price, ColumnType::SalesPrice], true)) {
+                    $this->hasPrices = true;
+                }
+
+                $this->columns[] = $column;
             }
         }
 
@@ -165,7 +162,7 @@ class Table extends AbstractEntity
     /**
      * Get tabel colum structure.
      *
-     * @return array<int, array<string, mixed>>
+     * @return array<int, TableColumn>
      */
     public function getColumns(): array
     {
@@ -260,7 +257,7 @@ class Table extends AbstractEntity
 
             foreach ($this->columns as $key => $column) {
                 $row[$key] = $cells[$key] ?? '';
-                if (!empty($column['type'])) {
+                if ($column->type !== ColumnType::String) {
                     $row[$key] = (int)$row[$key];
                 }
             }
@@ -336,11 +333,11 @@ class Table extends AbstractEntity
         $orderBy = max($orderBy, 0);
         $orderBy = min($orderBy, count($this->columns) - 1);
 
-        if (!$this->columns[$orderBy]['sorting']) {
+        if (!$this->columns[$orderBy]->sorting) {
             return arrayNatsort($rows, (string)$orderBy); // Alpha numeric
         }
 
-        $options = $this->columns[$orderBy]['options'];
+        $options = $this->columns[$orderBy]->options;
         $options = array_flip($options);
 
         $tempArray = [];
@@ -379,9 +376,9 @@ class Table extends AbstractEntity
         $columnTypes = [];
         $columnTitles = [];
         foreach ($this->columns as $column) {
-            $columnSortings[] = $column['sorting'];
-            $columnTypes[] = $column['type'];
-            $columnTitles[] = $column['title'];
+            $columnSortings[] = $column->sorting;
+            $columnTypes[] = $column->type->value;
+            $columnTitles[] = $column->title;
         }
 
         $columnSortings = implode('<', $columnSortings);

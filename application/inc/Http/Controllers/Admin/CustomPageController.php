@@ -4,11 +4,12 @@ namespace App\Http\Controllers\Admin;
 
 use App\Exceptions\Exception;
 use App\Exceptions\InvalidInput;
+use App\Http\Request;
 use App\Models\Category;
 use App\Models\CustomPage;
+use App\Services\ConfigService;
 use App\Services\OrmService;
 use Symfony\Component\HttpFoundation\JsonResponse;
-use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
 class CustomPageController extends AbstractAdminController
@@ -24,7 +25,7 @@ class CustomPageController extends AbstractAdminController
 
         $data = $this->basicPageData($request);
         $data['page'] = $orm->getOne(CustomPage::class, $id);
-        $data['pageWidth'] = config('text_width');
+        $data['pageWidth'] = ConfigService::getInt('text_width');
         if (1 === $id) {
             $category = $orm->getOne(Category::class, 0);
             if (!$category) {
@@ -32,8 +33,8 @@ class CustomPageController extends AbstractAdminController
             }
 
             $data['category'] = $category;
-            $data['textWidth'] = config('text_width');
-            $data['pageWidth'] = config('frontpage_width');
+            $data['textWidth'] = ConfigService::getInt('text_width');
+            $data['pageWidth'] = ConfigService::getInt('frontpage_width');
             $data['categories'] = $category->getChildren();
         }
 
@@ -52,8 +53,8 @@ class CustomPageController extends AbstractAdminController
             throw new InvalidInput(_('Page not found.'), Response::HTTP_NOT_FOUND);
         }
 
-        $title = $request->get('title', '');
-        $html = $request->get('html');
+        $title = $request->getRequestString('title') ?? '';
+        $html = $request->getRequestString('html') ?? '';
         $html = purifyHTML($html);
 
         if ($title) {

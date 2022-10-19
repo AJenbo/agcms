@@ -4,18 +4,19 @@ namespace App\Http\Controllers\Admin;
 
 use AJenbo\Imap;
 use App\Exceptions\Exception;
+use App\Http\Request;
 use App\Models\Category;
 use App\Models\Contact;
 use App\Models\CustomPage;
 use App\Models\Email;
 use App\Models\File;
 use App\Models\Page;
+use App\Services\ConfigService;
 use App\Services\DbService;
 use App\Services\EmailService;
 use App\Services\OrmService;
 use App\Services\RenderService;
 use Symfony\Component\HttpFoundation\JsonResponse;
-use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
 /**
@@ -390,12 +391,12 @@ class MaintenanceController extends AbstractAdminController
     {
         $size = 0;
 
-        foreach (config('emails', []) as $email) {
+        foreach (ConfigService::getEmailConfigs() as $email) {
             $imap = new Imap(
-                $email['address'],
-                $email['password'],
-                $email['imapHost'],
-                $email['imapPort']
+                $email->address,
+                $email->password,
+                $email->imapHost,
+                $email->imapPort
             );
 
             foreach ($imap->listMailboxes() as $mailbox) {

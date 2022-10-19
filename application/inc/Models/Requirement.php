@@ -16,9 +16,9 @@ class Requirement extends AbstractRenderable implements InterfaceRichText
 
     public function __construct(array $data = [])
     {
-        $this->setHtml($data['html'])
-            ->setTitle($data['title'])
-            ->setId($data['id'] ?? null);
+        $this->setHtml(strval($data['html']))
+            ->setTitle(strval($data['title']))
+            ->setId(intOrNull($data['id'] ?? null));
     }
 
     public static function mapFromDB(array $data): array

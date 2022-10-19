@@ -25,9 +25,9 @@ class DbService
      */
     public function __construct()
     {
-        $this->dsn = config('db_dns') ?: 'mysql:dbname=' . config('mysql_database') . ';host=' . config('mysql_server');
-        $this->user = config('mysql_user', 'root');
-        $this->password = config('mysql_password', '');
+        $this->dsn = ConfigService::getString('db_dns') ?: 'mysql:dbname=' . ConfigService::getString('mysql_database') . ';host=' . ConfigService::getString('mysql_server');
+        $this->user = ConfigService::getString('mysql_user', 'root');
+        $this->password = ConfigService::getString('mysql_password', '');
     }
 
     /**

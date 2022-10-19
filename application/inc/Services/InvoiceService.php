@@ -2,6 +2,9 @@
 
 namespace App\Services;
 
+use App\Enums\InvoiceAction;
+use App\Enums\InvoiceStatus;
+use App\Enums\ColumnType;
 use App\Countries;
 use App\Exceptions\Exception;
 use App\Exceptions\InvalidInput;
@@ -26,71 +29,80 @@ class InvoiceService
         $orm = app(OrmService::class);
         $amount = 0;
         $items = [];
-        foreach ($cart['items'] ?? [] as $item) {
-            $title = '';
-            $quantity = $item['quantity'] ?? null;
-            $value = null;
-            $pageId = null;
-            if ('line' === $item['type']) { // Find item based on price table row
-                $db->addLoadedTable('list_rows');
-                $listRow = $db->fetchOne('SELECT * FROM `list_rows` WHERE id = ' . $item['id']);
-                $table = $listRow ? $orm->getOne(Table::class, (int)$listRow['list_id']) : null;
-                if ($table) {
-                    $pageId = $table->getPage()->getId();
-                    if ($table->hasLinks() && $listRow['link']) {
-                        $pageId = (int)$listRow['link'];
-                    }
-
-                    $cells = explode('<', $listRow['cells']);
-                    $cells = array_map('html_entity_decode', $cells);
-
-                    foreach ($table->getColumns() as $i => $column) {
-                        if (empty($cells[$i]) || !trim($cells[$i])) {
-                            continue;
-                        }
-
-                        if (in_array($column['type'], [Table::COLUMN_TYPE_STRING, Table::COLUMN_TYPE_INT], true)) {
-                            $title .= ' ' . trim($cells[$i]);
-                        } elseif (in_array(
-                            $column['type'],
-                            [Table::COLUMN_TYPE_PRICE, Table::COLUMN_TYPE_PRICE_NEW],
-                            true
-                        )) {
-                            $value = (int)$cells[$i];
-                        }
-                    }
-                    $title = trim($title);
+        if (isset($cart['items']) && is_array($cart['items'])) {
+            foreach ($cart['items'] as $item) {
+                if (!is_array($item)) {
+                    continue;
                 }
-            } elseif ('page' === $item['type']) {
-                $pageId = $item['id'] ?? null;
+                $title = '';
+                $quantity = $item['quantity'] ?? null;
+                if (!ctype_digit($quantity) && !is_int($quantity)) {
+                    $quantity = 0;
+                }
+                $quantity = (int)$quantity;
+                $value = null;
+                $pageId = null;
+                if ('line' === $item['type']) { // Find item based on price table row
+                    $db->addLoadedTable('list_rows');
+                    $listRow = $db->fetchOne('SELECT * FROM `list_rows` WHERE id = ' . $item['id']);
+                    $table = $listRow ? $orm->getOne(Table::class, (int)$listRow['list_id']) : null;
+                    if ($table) {
+                        $pageId = $table->getPage()->getId();
+                        if ($table->hasLinks() && $listRow['link']) {
+                            $pageId = (int)$listRow['link'];
+                        }
+
+                        $cells = explode('<', $listRow['cells']);
+                        $cells = array_map('html_entity_decode', $cells);
+
+                        foreach ($table->getColumns() as $i => $column) {
+                            if (empty($cells[$i]) || !trim($cells[$i])) {
+                                continue;
+                            }
+
+                            if (in_array($column->type, [ColumnType::String, ColumnType::Int], true)) {
+                                $title .= ' ' . trim($cells[$i]);
+                            } elseif (in_array(
+                                $column->type,
+                                [ColumnType::Price, ColumnType::SalesPrice],
+                                true
+                            )) {
+                                $value = (int)$cells[$i];
+                            }
+                        }
+                        $title = trim($title);
+                    }
+                } elseif ('page' === $item['type']) {
+                    $pageId = $item['id'] ?? null;
+                }
+
+                $page = $pageId ? $orm->getOne(Page::class, $pageId) : null;
+                if (!$page || $page->isInactive()) {
+                    $title = _('Expired');
+                } else {
+                    if (!$title) {
+                        $title = $page->getTitle();
+                        if ($page->getSku()) {
+                            if ($title) {
+                                $title .= ' - ';
+                            }
+
+                            $title .= $page->getSku();
+                        }
+                    }
+                    if (!$value || 'page' === $item['type']) {
+                        $value = $value ?: $page->getPrice();
+                    }
+                }
+
+                $items[] = [
+                    'title'    => trim($title),
+                    'quantity' => $quantity,
+                    'value'    => $value,
+                ];
+
+                $amount += $value * $quantity;
             }
-
-            $page = $pageId ? $orm->getOne(Page::class, $pageId) : null;
-            if (!$page || $page->isInactive()) {
-                $title = _('Expired');
-            } else {
-                if (!$title) {
-                    $title = $page->getTitle();
-                    if ($page->getSku()) {
-                        if ($title) {
-                            $title .= ' - ';
-                        }
-
-                        $title .= $page->getSku();
-                    }
-                }
-                if (!$value || 'page' === $item['type']) {
-                    $value = $value ?: $page->getPrice();
-                }
-            }
-
-            $items[] = [
-                'title'    => trim($title),
-                'quantity' => $quantity,
-                'value'    => $value,
-            ];
-
-            $amount += $value * $quantity;
         }
 
         $items = json_encode($items, JSON_THROW_ON_ERROR);
@@ -245,59 +257,64 @@ class InvoiceService
      *
      * @param array<string, mixed> $updates
      */
-    public function invoiceBasicUpdate(Invoice $invoice, User $user, string $action, array $updates): void
+    public function invoiceBasicUpdate(Invoice $invoice, User $user, InvoiceAction $action, array $updates): void
     {
         $status = $invoice->getStatus();
 
-        if ('new' === $invoice->getStatus()) {
-            if ('lock' === $action) {
-                $status = 'locked';
+        if (InvoiceStatus::New === $invoice->getStatus()) {
+            if (InvoiceAction::Lock === $action) {
+                $status = InvoiceStatus::Locked;
             }
-            $invoice->setTimeStamp(strtotime($updates['date']));
-            $invoice->setShipping($updates['shipping']);
-            $invoice->setAmount($updates['amount']);
-            $invoice->setVat($updates['vat']);
-            $invoice->setPreVat($updates['preVat']);
-            $invoice->setIref($updates['iref']);
-            $invoice->setEref($updates['eref']);
-            $invoice->setName($updates['name']);
-            $invoice->setAttn($updates['attn']);
-            $invoice->setAddress($updates['address']);
-            $invoice->setPostbox($updates['postbox']);
-            $invoice->setPostcode($updates['postcode']);
-            $invoice->setCity($updates['city']);
-            $invoice->setCountry($updates['country']);
-            $invoice->setEmail($updates['email']);
-            $invoice->setPhone1($updates['phone1']);
-            $invoice->setPhone2($updates['phone2']);
-            $invoice->setHasShippingAddress($updates['hasShippingAddress']);
+            $invoice->setTimeStamp(strtotime(strval($updates['date'])) ?: time());
+            $invoice->setShipping(floatval($updates['shipping']));
+            $invoice->setAmount(floatval($updates['amount']));
+            $invoice->setVat(floatval($updates['vat']));
+            $invoice->setPreVat(boolval($updates['preVat']));
+            $invoice->setIref(strval($updates['iref']));
+            $invoice->setEref(strval($updates['eref']));
+            $invoice->setName(strval($updates['name']));
+            $invoice->setAttn(strval($updates['attn']));
+            $invoice->setAddress(strval($updates['address']));
+            $invoice->setPostbox(strval($updates['postbox']));
+            $invoice->setPostcode(strval($updates['postcode']));
+            $invoice->setCity(strval($updates['city']));
+            $invoice->setCountry(strval($updates['country']));
+            $invoice->setEmail(strval($updates['email']));
+            $invoice->setPhone1(strval($updates['phone1']));
+            $invoice->setPhone2(strval($updates['phone2']));
+            $invoice->setHasShippingAddress(boolval($updates['hasShippingAddress']));
             if ($updates['hasShippingAddress']) {
-                $invoice->setShippingPhone($updates['shippingPhone']);
-                $invoice->setShippingName($updates['shippingName']);
-                $invoice->setShippingAttn($updates['shippingAttn']);
-                $invoice->setShippingAddress($updates['shippingAddress']);
-                $invoice->setShippingAddress2($updates['shippingAddress2']);
-                $invoice->setShippingPostbox($updates['shippingPostbox']);
-                $invoice->setShippingPostcode($updates['shippingPostcode']);
-                $invoice->setShippingCity($updates['shippingCity']);
-                $invoice->setShippingCountry($updates['shippingCountry']);
+                $invoice->setShippingPhone(strval($updates['shippingPhone']));
+                $invoice->setShippingName(strval($updates['shippingName']));
+                $invoice->setShippingAttn(strval($updates['shippingAttn']));
+                $invoice->setShippingAddress(strval($updates['shippingAddress']));
+                $invoice->setShippingAddress2(strval($updates['shippingAddress2']));
+                $invoice->setShippingPostbox(strval($updates['shippingPostbox']));
+                $invoice->setShippingPostcode(strval($updates['shippingPostcode']));
+                $invoice->setShippingCity(strval($updates['shippingCity']));
+                $invoice->setShippingCountry(strval($updates['shippingCountry']));
             }
             $invoice->setItemData(json_encode($updates['lines'], JSON_THROW_ON_ERROR) ?: '[]');
         }
 
-        if (isset($updates['note'])) {
-            if ('new' !== $invoice->getStatus()) {
-                $updates['note'] = trim($invoice->getNote() . "\n" . $updates['note']);
+        if (isset($updates['note']) && is_string($updates['note'])) {
+            $note = $updates['note'];
+            if (InvoiceStatus::New !== $invoice->getStatus()) {
+                $note = trim($invoice->getNote() . "\n" . $note);
             }
-            $invoice->setNote($updates['note']);
+            $invoice->setNote($note);
         }
 
-        $invoice->setInternalNote($updates['internalNote']);
+        $internalNote = $updates['internalNote'] ?? null;
+        if (!is_string($internalNote)) {
+            $internalNote = '';
+        }
+        $invoice->setInternalNote($internalNote);
 
-        if (!$invoice->getDepartment() && 1 === count(config('emails'))) {
-            $email = first(config('emails'))['address'];
+        if (!$invoice->getDepartment() && 1 === count(ConfigService::getEmailConfigs())) {
+            $email = ConfigService::getDefaultEmail();
             $invoice->setDepartment($email);
-        } elseif (!empty($updates['department'])) {
+        } elseif (!empty($updates['department']) && is_string($updates['department'])) {
             $invoice->setDepartment($updates['department']);
         }
 
@@ -305,28 +322,40 @@ class InvoiceService
             $invoice->setClerk($user->getFullName());
         }
 
-        if (('giro' === $action || 'cash' === $action)
-            && in_array($invoice->getStatus(), ['new', 'locked', 'rejected'], true)
-        ) {
-            $status = $action;
+        if (in_array($invoice->getStatus(), [
+            InvoiceStatus::New,
+            InvoiceStatus::Locked,
+            InvoiceStatus::Rejected,
+        ], true)) {
+            if (InvoiceAction::Giro === $action) {
+                $status = InvoiceStatus::Giro;
+            }
+            if (InvoiceAction::Cash === $action) {
+                $status = InvoiceStatus::Cash;
+            }
         }
 
         if (!$invoice->isFinalized()) {
-            if (in_array($action, ['cancel', 'giro', 'cash'], true)
-                || ('lock' === $action && 'locked' !== $invoice->getStatus())
+            if (in_array($action, [InvoiceAction::Cancel, InvoiceAction::Giro, InvoiceAction::Cash], true)
+                || (InvoiceAction::Lock === $action && InvoiceStatus::Locked !== $invoice->getStatus())
             ) {
-                $invoice->setTimeStampPay(strtotime($updates['paydate'] ?? '') ?: time());
+                $date = $updates['paydate'] ?? null;
+                if (!is_string($date)) {
+                    $date = '';
+                }
+                $invoice->setTimeStampPay(strtotime($date) ?: time());
             }
 
-            if ('cancel' === $action) {
-                if ('pbsok' === $invoice->getStatus()) {
+            if (InvoiceAction::Cancel === $action) {
+                if (InvoiceStatus::PbsOk === $invoice->getStatus()) {
                     $this->annulPayment($invoice);
                 }
-                $status = 'canceled';
+                $status = InvoiceStatus::Canceled;
             }
 
-            if (isset($updates['clerk']) && $user->hasAccess(User::ADMINISTRATOR)) {
-                $invoice->setClerk($updates['clerk']);
+            $clerk = $updates['clerk'] ?? null;
+            if (is_string($clerk) && $user->hasAccess(User::ADMINISTRATOR)) {
+                $invoice->setClerk($clerk);
             }
         }
 
@@ -345,7 +374,7 @@ class InvoiceService
             throw new Exception(_('Failed to capture payment.'));
         }
 
-        $invoice->setStatus('accepted')
+        $invoice->setStatus(InvoiceStatus::Accepted)
             ->setTimeStampPay(time())
             ->save();
     }
@@ -362,8 +391,8 @@ class InvoiceService
             throw new Exception(_('Failed to cancel payment.'));
         }
 
-        if ('pbsok' === $invoice->getStatus()) {
-            $invoice->setStatus('rejected')->save();
+        if (InvoiceStatus::PbsOk === $invoice->getStatus()) {
+            $invoice->setStatus(InvoiceStatus::Rejected)->save();
         }
     }
 
@@ -372,9 +401,9 @@ class InvoiceService
      */
     private function getPayment(Invoice $invoice): Epayment
     {
-        $epaymentService = new EpaymentService(config('pbsid'), config('pbspwd'));
+        $epaymentService = new EpaymentService(ConfigService::getString('pbsid'), ConfigService::getString('pbspwd'));
 
-        return $epaymentService->getPayment(config('pbsfix') . $invoice->getId());
+        return $epaymentService->getPayment(ConfigService::getString('pbsfix') . $invoice->getId());
     }
 
     /**
@@ -388,8 +417,8 @@ class InvoiceService
             throw new InvalidInput(_('Email is not valid.'));
         }
 
-        if (!$invoice->getDepartment() && 1 === count(config('emails'))) {
-            $email = first(config('emails'))['address'];
+        if (!$invoice->getDepartment() && 1 === count(ConfigService::getEmailConfigs())) {
+            $email = ConfigService::getDefaultEmail();
             $invoice->setDepartment($email);
         } elseif (!$invoice->getDepartment()) {
             throw new InvalidInput(_('You have not selected a sender.'));
@@ -398,7 +427,7 @@ class InvoiceService
             throw new InvalidInput(_('The invoice must be of at least 1 cent.'));
         }
 
-        $subject = _('Online payment for ') . config('site_name');
+        $subject = _('Online payment for ') . ConfigService::getString('site_name');
         $emailTemplate = 'email/invoice';
         if ($invoice->isSent()) {
             $subject = 'Elektronisk faktura vedr. ordre';
@@ -410,18 +439,18 @@ class InvoiceService
             [
                 'invoice'    => $invoice,
                 'localeconv' => localeconv(),
-                'siteName'   => config('site_name'),
-                'address'    => config('address'),
-                'postcode'   => config('postcode'),
-                'city'       => config('city'),
-                'phone'      => config('phone'),
+                'siteName'   => ConfigService::getString('site_name'),
+                'address'    => ConfigService::getString('address'),
+                'postcode'   => ConfigService::getString('postcode'),
+                'city'       => ConfigService::getString('city'),
+                'phone'      => ConfigService::getString('phone'),
             ]
         );
 
         $email = new Email([
             'subject'          => $subject,
             'body'             => $emailBody,
-            'senderName'       => config('site_name'),
+            'senderName'       => ConfigService::getString('site_name'),
             'senderAddress'    => $invoice->getDepartment(),
             'recipientName'    => $invoice->getName(),
             'recipientAddress' => $invoice->getEmail(),
@@ -429,8 +458,8 @@ class InvoiceService
 
         app(EmailService::class)->send($email);
 
-        if ('new' === $invoice->getStatus()) {
-            $invoice->setStatus('locked');
+        if (InvoiceStatus::New === $invoice->getStatus()) {
+            $invoice->setStatus(InvoiceStatus::Locked);
         }
 
         $invoice->setSent(true)

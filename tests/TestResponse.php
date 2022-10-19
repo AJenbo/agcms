@@ -2,6 +2,7 @@
 
 namespace Tests;
 
+use App\Services\ConfigService;
 use DMS\PHPUnitExtensions\ArraySubset\ArraySubsetAsserts;
 use PHPUnit\Framework\Assert;
 use Symfony\Component\HttpFoundation\Response;
@@ -19,8 +20,6 @@ class TestResponse
 
     /**
      * Gets the current response content.
-     *
-     * @return string Content
      */
     public function getContent(): string
     {
@@ -100,8 +99,8 @@ class TestResponse
     /**
      * Assert that the response has a given JSON structure.
      *
-     * @param null|array<int, mixed[]|string> $structure
-     * @param null|array<int, mixed[]|string> $responseData
+     * @param null|array<mixed>        $structure
+     * @param null|array<array<mixed>> $responseData
      *
      * @return $this
      */
@@ -116,12 +115,19 @@ class TestResponse
         foreach ($structure as $key => $value) {
             if (is_array($value)) {
                 Assert::assertArrayHasKey($key, $responseData);
+                Assert::assertIsArray($responseData[$key]);
                 $this->assertJsonStructure($value, $responseData[$key]);
 
                 continue;
             }
 
-            Assert::assertArrayHasKey($value, $responseData);
+            if (is_string($value) || is_int($value)) {
+                Assert::assertArrayHasKey($value, $responseData);
+
+                continue;
+            }
+
+            Assert::fail('Invalid JSON structure.');
         }
 
         return $this;
@@ -130,7 +136,7 @@ class TestResponse
     /**
      * Get the assertion message for assertJson.
      *
-     * @param array<string, mixed> $data
+     * @param array<mixed> $data
      */
     private function assertJsonMessage(array $data): string
     {
@@ -146,12 +152,12 @@ class TestResponse
     /**
      * Validate and return the decoded response JSON.
      *
-     * @return array<string, mixed>
+     * @return array<mixed>
      */
     private function decodeResponseJson(): array
     {
         $decodedResponse = json_decode($this->getContent(), true);
-        if (null === $decodedResponse || false === $decodedResponse) {
+        if (!is_array($decodedResponse)) {
             Assert::fail('Invalid JSON was returned from the route.');
         }
 
@@ -161,7 +167,7 @@ class TestResponse
     /**
      * Validate and return the decoded response JSON.
      *
-     * @return array<string, mixed>
+     * @return array<mixed>
      */
     public function json(): array
     {
@@ -174,7 +180,7 @@ class TestResponse
     private function toUrl(string $uri): string
     {
         if (0 !== mb_strpos($uri, 'http')) {
-            $uri = config('base_url') . $uri;
+            $uri = ConfigService::getString('base_url') . $uri;
         }
 
         return $uri;

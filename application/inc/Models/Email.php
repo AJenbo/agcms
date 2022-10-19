@@ -39,14 +39,14 @@ class Email extends AbstractEntity
     {
         $this->emailService = app(EmailService::class);
 
-        $this->setTimestamp($data['timestamp'] ?? time())
-            ->setSubject($data['subject'])
-            ->setBody($data['body'])
-            ->setSenderName($data['senderName'])
-            ->setSenderAddress($data['senderAddress'])
-            ->setRecipientName($data['recipientName'])
-            ->setRecipientAddress($data['recipientAddress'])
-            ->setId($data['id'] ?? null);
+        $this->setTimestamp(intval($data['timestamp'] ?? time()))
+            ->setSubject(strval($data['subject']))
+            ->setBody(strval($data['body']))
+            ->setSenderName(strval($data['senderName']))
+            ->setSenderAddress(strval($data['senderAddress']))
+            ->setRecipientName(strval($data['recipientName']))
+            ->setRecipientAddress(strval($data['recipientAddress']))
+            ->setId(intOrNull($data['id'] ?? null));
     }
 
     /**

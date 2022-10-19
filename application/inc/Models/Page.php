@@ -50,20 +50,20 @@ class Page extends AbstractRenderable implements InterfaceRichText
 
     public function __construct(array $data = [])
     {
-        $this->iconId = $data['icon_id'];
-        $this->setSku($data['sku'])
-            ->setTimeStamp($data['timestamp'] ?? 0)
-            ->setKeywords($data['keywords'])
-            ->setExcerpt($data['excerpt'])
-            ->setRequirementId($data['requirement_id'])
-            ->setBrandId($data['brand_id'])
-            ->setPrice($data['price'])
-            ->setOldPrice($data['old_price'])
-            ->setPriceType($data['price_type'])
-            ->setOldPriceType($data['old_price_type'])
-            ->setHtml($data['html'])
-            ->setTitle($data['title'])
-            ->setId($data['id'] ?? null);
+        $this->iconId = intOrNull($data['icon_id'] ?? null);
+        $this->setSku(strval($data['sku']))
+            ->setTimeStamp(intval($data['timestamp'] ?? 0))
+            ->setKeywords(strval($data['keywords']))
+            ->setExcerpt(strval($data['excerpt']))
+            ->setRequirementId(intOrNull($data['requirement_id']))
+            ->setBrandId(intOrNull($data['brand_id']))
+            ->setPrice(intval($data['price']))
+            ->setOldPrice(intval($data['old_price']))
+            ->setPriceType(intval($data['price_type']))
+            ->setOldPriceType(intval($data['old_price_type']))
+            ->setHtml(strval($data['html']))
+            ->setTitle(strval($data['title']))
+            ->setId(intOrNull($data['id'] ?? null));
     }
 
     public static function mapFromDB(array $data): array

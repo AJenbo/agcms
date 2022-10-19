@@ -1,5 +1,7 @@
 <?php
 
+use App\DTO\EmailConfig;
+
 /**
  * Configuration of site.
  *
@@ -19,16 +21,16 @@ return [
     'has_count'  => false,
 
     'emails' => [
-        'mail@example.com' => [
-            'address'  => 'mail@example.com',
-            'password' => 'password',
-            'sentBox'  => 'INBOX.Sent',
-            'imapHost' => 'imap.example.dk',
-            'imapPort' => 143,
-            'smtpHost' => 'smtp.example.com',
-            'smtpPort' => '25',
-            'smtpAuth' => true,
-        ],
+        'mail@example.com' => new EmailConfig(
+            'mail@example.com',
+            'password',
+            'INBOX.Sent',
+            'imap.example.dk',
+            143,
+            'smtp.example.com',
+            25,
+            true,
+        ),
     ],
 
     'interests' => [

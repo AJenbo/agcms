@@ -16,6 +16,7 @@ class AjaxTest extends TestCase
             ->assertJsonStructure(['id', 'html']);
 
         $data = $response->json();
+        static::assertIsString($data['html']);
         static::assertStringContainsString('<caption>Variants</caption>', $data['html']);
         static::assertMatchesRegularExpression('/side7.*side6.*side8/su', $data['html']);
     }
@@ -29,6 +30,7 @@ class AjaxTest extends TestCase
             ->assertJsonStructure(['id', 'html']);
 
         $data = $response->json();
+        static::assertIsString($data['html']);
         static::assertMatchesRegularExpression('/side8.*side7.*side6/su', $data['html']);
     }
 
@@ -41,6 +43,7 @@ class AjaxTest extends TestCase
             ->assertJsonStructure(['id', 'html']);
 
         $data = $response->json();
+        static::assertIsString($data['html']);
         static::assertMatchesRegularExpression('/side8.*side6.*side7/su', $data['html']);
     }
 
@@ -68,6 +71,7 @@ class AjaxTest extends TestCase
             ->assertJsonStructure(['id', 'html']);
 
         $data = $response->json();
+        static::assertIsString($data['html']);
         static::assertMatchesRegularExpression('/side3.*side7.*side6.*side8/su', $data['html']);
     }
 
@@ -80,6 +84,7 @@ class AjaxTest extends TestCase
             ->assertJsonStructure(['id', 'html']);
 
         $data = $response->json();
+        static::assertIsString($data['html']);
         static::assertMatchesRegularExpression('/side6.*side3.*side7.*side8/su', $data['html']);
     }
 
@@ -92,6 +97,7 @@ class AjaxTest extends TestCase
             ->assertJsonStructure(['id', 'html']);
 
         $data = $response->json();
+        static::assertIsString($data['html']);
         static::assertMatchesRegularExpression('/side7.*side8.*side3.*side6/su', $data['html']);
     }
 
@@ -104,6 +110,7 @@ class AjaxTest extends TestCase
             ->assertJsonStructure(['id', 'html']);
 
         $data = $response->json();
+        static::assertIsString($data['html']);
         static::assertMatchesRegularExpression('/side8.*side3.*side6.*side7/su', $data['html']);
     }
 

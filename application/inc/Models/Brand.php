@@ -19,10 +19,10 @@ class Brand extends AbstractRenderable
 
     public function __construct(array $data = [])
     {
-        $this->iconId = $data['icon_id'];
-        $this->setLink($data['link'])
-            ->setTitle($data['title'])
-            ->setId($data['id'] ?? null);
+        $this->iconId = intOrNull($data['icon_id']);
+        $this->setLink(strval($data['link']))
+            ->setTitle(strval($data['title']))
+            ->setId(intOrNull($data['id'] ?? null));
     }
 
     public static function mapFromDB(array $data): array
@@ -103,28 +103,9 @@ class Brand extends AbstractRenderable
             'SELECT * FROM sider WHERE maerke = ' . $this->getId() . ' ORDER BY sider.`' . $order . '` ASC'
         );
 
-        $objectArray = [];
-        foreach ($pages as $page) {
-            if ($page->isInactive()) {
-                continue;
-            }
-
-            $objectArray[] = [
-                'id'     => $page->getId(),
-                'navn'   => $page->getTitle(),
-                'for'    => $page->getOldPrice(),
-                'pris'   => $page->getPrice(),
-                'varenr' => $page->getSku(),
-                'object' => $page,
-            ];
-        }
-        $objectArray = arrayNatsort($objectArray, $order);
-        $pages = [];
-        foreach ($objectArray as $item) {
-            $pages[] = $item['object'];
-        }
-
-        return $pages;
+        return array_filter($pages, function (Page $page): bool {
+            return !$page->isInactive();
+        });
     }
 
     // ORM related functions

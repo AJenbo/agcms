@@ -3,10 +3,11 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Exceptions\InvalidInput;
+use App\Http\Request;
 use App\Models\CustomSorting;
+use App\Services\ConfigService;
 use App\Services\OrmService;
 use Symfony\Component\HttpFoundation\JsonResponse;
-use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
 class CustomSortingController extends AbstractAdminController
@@ -37,7 +38,7 @@ class CustomSortingController extends AbstractAdminController
 
         $data = [
             'customSorting' => $customSorting,
-            'textWidth'     => config('text_width'),
+            'textWidth'     => ConfigService::getInt('text_width'),
         ] + $this->basicPageData($request);
 
         return $this->render('admin/listsort-edit', $data);
@@ -68,8 +69,11 @@ class CustomSortingController extends AbstractAdminController
      */
     public function update(Request $request, int $id): JsonResponse
     {
-        $items = $request->get('items', []);
-        $title = $request->get('title');
+        $items = $request->get('items');
+        if (!is_array($items)) {
+            $items = [];
+        }
+        $title = $request->getRequestString('title');
         if (!$title) {
             throw new InvalidInput(_('You must enter a title.'));
         }

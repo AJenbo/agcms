@@ -4,6 +4,7 @@ namespace App\Models;
 
 use App\Exceptions\Exception;
 use App\Exceptions\Handler as ExceptionHandler;
+use App\Services\ConfigService;
 use App\Services\DbService;
 use App\Services\EmailService;
 use App\Services\OrmService;
@@ -34,12 +35,17 @@ class Newsletter extends AbstractEntity implements InterfaceRichText
 
     public function __construct(array $data = [])
     {
-        $this->setFrom($data['from'] ?? '')
-            ->setSubject($data['subject'] ?? '')
-            ->setInterests($data['interests'] ?? [])
-            ->setHtml($data['html'] ?? '')
-            ->setSent($data['sent'] ?? false)
-            ->setId($data['id'] ?? null);
+        $interests = $data['interests'] ?? null;
+        if (!is_array($interests)) {
+            $interests =  [];
+        }
+
+        $this->setFrom(strval($data['from'] ?? ''))
+            ->setSubject(strval($data['subject'] ?? ''))
+            ->setInterests($interests)
+            ->setHtml(strval($data['html'] ?? ''))
+            ->setSent(boolval($data['sent'] ?? false))
+            ->setId(intOrNull($data['id'] ?? null));
     }
 
     /**
@@ -231,11 +237,11 @@ class Newsletter extends AbstractEntity implements InterfaceRichText
         }
 
         $data = [
-            'siteName' => config('site_name'),
+            'siteName' => ConfigService::getString('site_name'),
             'css'      => file_get_contents(
-                app()->basePath('/theme/' . config('theme', 'default') . '/style/email.css')
+                app()->basePath('/theme/' . ConfigService::getString('theme', 'default') . '/style/email.css')
             ),
-            'body'     => str_replace(' href="/', ' href="' . config('base_url') . '/', $this->html),
+            'body'     => str_replace(' href="/', ' href="' . ConfigService::getString('base_url') . '/', $this->html),
         ];
         $emailService = app(EmailService::class);
         $failedCount = 0;
@@ -246,9 +252,9 @@ class Newsletter extends AbstractEntity implements InterfaceRichText
             $email = new Email([
                 'subject'          => $this->subject,
                 'body'             => $render->render('email/newsletter', $data),
-                'senderName'       => config('site_name'),
+                'senderName'       => ConfigService::getString('site_name'),
                 'senderAddress'    => $this->from,
-                'recipientName'    => config('site_name'),
+                'recipientName'    => ConfigService::getString('site_name'),
                 'recipientAddress' => $this->from,
             ]);
 

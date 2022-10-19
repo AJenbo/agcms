@@ -104,8 +104,17 @@ class EpaymentService
     {
         foreach (['PAYMENT_CAPTURED', 'PAYMENT_NEW', 'PAYMENT_DELETED'] as $status) {
             $response = $this->getConnection()->gettransactionlist($this->getSearchData($orderId, $status));
-            if (!empty($response->transactionInformationAry->TransactionInformationType)) {
-                return first($response->transactionInformationAry->TransactionInformationType);
+            if ($response instanceof stdClass) {
+                if (isset($response->transactionInformationAry)) {
+                    if ($response->transactionInformationAry instanceof stdClass) {
+                        if (isset($response->transactionInformationAry->TransactionInformationType) && is_array($response->transactionInformationAry->TransactionInformationType)) {
+                            $data = first($response->transactionInformationAry->TransactionInformationType);
+                            if ($data instanceof stdClass) {
+                                return $data;
+                            }
+                        }
+                    }
+                }
             }
         }
 
@@ -140,6 +149,7 @@ class EpaymentService
      */
     public function annul(Epayment $epayment): bool
     {
+        /** @var stdClass */
         $response = $this->getConnection()->delete(
             [
                 'pwd'            => $this->password,
@@ -159,6 +169,7 @@ class EpaymentService
      */
     public function confirm(Epayment $epayment, int $amount): bool
     {
+        /** @var stdClass */
         $response = $this->getConnection()->capture([
             'pwd'            => $this->password,
             'merchantnumber' => $this->merchantId,

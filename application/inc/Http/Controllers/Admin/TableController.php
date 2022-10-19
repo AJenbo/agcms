@@ -3,11 +3,11 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Exceptions\InvalidInput;
+use App\Http\Request;
 use App\Models\CustomSorting;
 use App\Models\Table;
 use App\Services\OrmService;
 use Symfony\Component\HttpFoundation\JsonResponse;
-use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
 class TableController extends AbstractAdminController
@@ -19,7 +19,7 @@ class TableController extends AbstractAdminController
     {
         $table = new Table([
             'page_id'     => $request->request->getInt('page_id'),
-            'title'       => $request->request->get('title'),
+            'title'       => $request->getRequestString('title'),
             'column_data' => json_encode($request->request->get('columns', []), JSON_THROW_ON_ERROR),
             'order_by'    => $request->request->getInt('order_by'),
             'has_links'   => $request->request->getBoolean('has_links'),
@@ -48,8 +48,11 @@ class TableController extends AbstractAdminController
      */
     public function addRow(Request $request, int $tableId): JsonResponse
     {
-        $cells = $request->request->get('cells', []);
-        $link = $request->request->get('link');
+        $cells = $request->request->get('cells');
+        if (!is_array($cells)) {
+            $cells = [];
+        }
+        $link = $request->getRequestInt('link');
 
         $table = app(OrmService::class)->getOne(Table::class, $tableId);
         if (!$table) {
@@ -63,8 +66,11 @@ class TableController extends AbstractAdminController
 
     public function updateRow(Request $request, int $tableId, int $rowId): JsonResponse
     {
-        $cells = $request->request->get('cells', []);
-        $link = $request->request->get('link');
+        $cells = $request->request->get('cells');
+        if (!is_array($cells)) {
+            $cells = [];
+        }
+        $link = $request->getRequestInt('link');
 
         $table = app(OrmService::class)->getOne(Table::class, $tableId);
         if (!$table) {

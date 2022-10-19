@@ -5,12 +5,13 @@ namespace App\Http\Controllers;
 use App\Countries;
 use App\Exceptions\Handler as ExceptionHandler;
 use App\Exceptions\InvalidInput;
+use App\Http\Request;
 use App\Models\Email;
 use App\Models\VolatilePage;
+use App\Services\ConfigService;
 use App\Services\EmailService;
 use App\Services\InvoiceService;
 use App\Services\RenderService;
-use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Throwable;
 
@@ -31,16 +32,24 @@ class Shopping extends Base
      */
     public function basket(Request $request): Response
     {
-        $rawCart = $request->get('cart', '');
+        $rawCart = $request->get('cart');
+        if (!is_string($rawCart)) {
+            $rawCart = '';
+        }
         $cart = json_decode($rawCart, true);
-        if (!$cart) {
+        if (!is_array($cart)) {
             throw new InvalidInput(_('Basket data is invalid'));
         }
 
         $data = $this->basicPageData();
 
         $renderable = new VolatilePage(_('Shopping list'), '/order/?cart=' . rawurlencode($rawCart));
-        $data['crumbs'][] = $renderable;
+        $crumbs = $data['crumbs'] ?? null;
+        if (!is_array($crumbs)) {
+            $crumbs = [];
+        }
+        $crumbs[] = $renderable;
+        $data['crumbs'] = $crumbs ;
         $data['renderable'] = $renderable;
         $data['invoice'] = $this->invoiceService->createFromCart($cart);
         $data['payMethod'] = $cart['payMethod'] ?? '';
@@ -56,18 +65,26 @@ class Shopping extends Base
      */
     public function address(Request $request): Response
     {
-        $rawCart = $request->get('cart', '');
+        $rawCart = $request->get('cart');
+        if (!is_string($rawCart)) {
+            $rawCart = '';
+        }
         $cart = json_decode($rawCart, true);
-        if (!$cart) {
+        if (!is_array($cart)) {
             throw new InvalidInput(_('Basket data is invalid'));
         }
 
         $invoice = $this->invoiceService->createFromCart($cart);
 
         $data = $this->basicPageData();
-        $data['crumbs'][] = new VolatilePage(_('Shopping list'), '/order/?cart=' . rawurlencode($rawCart));
+        $crumbs = $data['crumbs'] ?? null;
+        if (!is_array($crumbs)) {
+            $crumbs = [];
+        }
+        $crumbs[] = new VolatilePage(_('Shopping list'), '/order/?cart=' . rawurlencode($rawCart));
         $renderable = new VolatilePage(_('Address'), '/order/address/?cart=' . rawurlencode($rawCart));
-        $data['crumbs'][] = $renderable;
+        $crumbs[] = $renderable;
+        $data['crumbs'] = $crumbs;
         $data['renderable'] = $renderable;
         $data['invoice'] = $invoice;
         $data['invalid'] = $invoice->getInvalid();
@@ -86,9 +103,12 @@ class Shopping extends Base
      */
     public function send(Request $request): Response
     {
-        $rawCart = $request->get('cart', '');
+        $rawCart = $request->get('cart');
+        if (!is_string($rawCart)) {
+            $rawCart = '';
+        }
         $cart = json_decode($rawCart, true);
-        if (!$cart) {
+        if (!is_array($cart)) {
             throw new InvalidInput(_('Basket data is invalid'));
         }
 
@@ -125,8 +145,8 @@ class Shopping extends Base
             'body'             => $emailBody,
             'senderName'       => $invoice->getName(),
             'senderAddress'    => $invoice->getEmail(),
-            'recipientName'    => config('site_name'),
-            'recipientAddress' => first(config('emails'))['address'],
+            'recipientName'    => ConfigService::getString('site_name'),
+            'recipientAddress' => ConfigService::getDefaultEmail(),
         ]);
 
         try {
@@ -147,14 +167,22 @@ class Shopping extends Base
      */
     public function receipt(Request $request): Response
     {
-        $rawCart = $request->get('cart', '');
+        $rawCart = $request->get('cart');
+        if (!is_string($rawCart)) {
+            $rawCart = '';
+        }
 
         $data = $this->basicPageData();
+        $crumbs = $data['crumbs'] ?? null;
+        if (!is_array($crumbs)) {
+            $crumbs = [];
+        }
 
-        $data['crumbs'][] = new VolatilePage(_('Shopping list'), '/order/?cart=' . rawurlencode($rawCart));
-        $data['crumbs'][] = new VolatilePage(_('Address'), '/order/address/?cart=' . rawurlencode($rawCart));
+        $crumbs[] = new VolatilePage(_('Shopping list'), '/order/?cart=' . rawurlencode($rawCart));
+        $crumbs[] = new VolatilePage(_('Address'), '/order/address/?cart=' . rawurlencode($rawCart));
         $renderable = new VolatilePage(_('Recipient'), '/order/receipt/?cart=' . rawurlencode($rawCart));
-        $data['crumbs'][] = $renderable;
+        $crumbs[] = $renderable;
+        $data['crumbs'] = $crumbs;
         $data['renderable'] = $renderable;
 
         $response = $this->render('order-form2', $data);

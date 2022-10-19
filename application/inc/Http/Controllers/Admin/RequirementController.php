@@ -3,10 +3,11 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Exceptions\InvalidInput;
+use App\Http\Request;
 use App\Models\Requirement;
+use App\Services\ConfigService;
 use App\Services\OrmService;
 use Symfony\Component\HttpFoundation\JsonResponse;
-use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
 class RequirementController extends AbstractAdminController
@@ -24,8 +25,8 @@ class RequirementController extends AbstractAdminController
 
     public function create(Request $request): JsonResponse
     {
-        $title = $request->get('title', '');
-        $html = $request->get('html', '');
+        $title = $request->getRequestString('title') ?? '';
+        $html = $request->getRequestString('html') ?? '';
         $html = purifyHTML($html);
 
         if ('' === $title || '' === $html) {
@@ -44,7 +45,7 @@ class RequirementController extends AbstractAdminController
     public function editPage(Request $request, ?int $id = null): Response
     {
         $data = $this->basicPageData($request);
-        $data['textWidth'] = config('text_width');
+        $data['textWidth'] = ConfigService::getInt('text_width');
         $data['requirement'] = $id ? app(OrmService::class)->getOne(Requirement::class, $id) : null;
 
         return $this->render('admin/editkrav', $data);
@@ -52,8 +53,8 @@ class RequirementController extends AbstractAdminController
 
     public function update(Request $request, int $id): JsonResponse
     {
-        $title = $request->get('title', '');
-        $html = $request->get('html', '');
+        $title = $request->getRequestString('title') ?? '';
+        $html = strval($request->get('html', ''));
         $html = purifyHTML($html);
 
         if ('' === $title || '' === $html) {

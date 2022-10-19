@@ -3,7 +3,8 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\AbstractController;
-use Symfony\Component\HttpFoundation\Request;
+use App\Http\Request;
+use App\Services\ConfigService;
 
 abstract class AbstractAdminController extends AbstractController
 {
@@ -16,7 +17,7 @@ abstract class AbstractAdminController extends AbstractController
     {
         return [
             'title' => _('Administration'),
-            'theme' => config('theme', 'default'),
+            'theme' => ConfigService::getString('theme', 'default'),
             'hide'  => [
                 'activity'    => $request->cookies->get('hideActivity'),
                 'binding'     => $request->cookies->get('hidebinding'),

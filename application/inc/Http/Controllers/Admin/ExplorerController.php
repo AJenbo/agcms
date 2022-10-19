@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Exceptions\Exception;
 use App\Exceptions\InvalidInput;
+use App\Http\Request;
 use App\Models\CustomPage;
 use App\Models\File;
 use App\Models\InterfaceRichText;
@@ -11,6 +12,7 @@ use App\Models\Newsletter;
 use App\Models\Page;
 use App\Models\Requirement;
 use App\Render;
+use App\Services\ConfigService;
 use App\Services\DbService;
 use App\Services\FileService;
 use App\Services\ImageService;
@@ -21,7 +23,6 @@ use Symfony\Component\HttpFoundation\BinaryFileResponse;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\ParameterBag;
-use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\ResponseHeaderBag;
 
@@ -39,12 +40,12 @@ class ExplorerController extends AbstractAdminController
      */
     public function index(Request $request): Response
     {
-        $currentDir = $request->cookies->get('admin_dir', '/images');
+        $currentDir = strval($request->cookies->get('admin_dir', '/images'));
 
         $data = [
             'returnType' => $request->get('return', ''),
             'returnid'   => $request->get('returnid', ''),
-            'bgcolor'    => config('bgcolor'),
+            'bgcolor'    => ConfigService::getString('bgcolor'),
             'dirs'       => $this->fileService->getRootDirs($currentDir),
         ];
 
@@ -56,9 +57,9 @@ class ExplorerController extends AbstractAdminController
      */
     public function folders(Request $request): JsonResponse
     {
-        $path = $request->get('path');
+        $path = $request->getRequestString('path') ?? '';
         $move = $request->query->getBoolean('move');
-        $currentDir = $request->cookies->get('admin_dir', '/images');
+        $currentDir = strval($request->cookies->get('admin_dir', '/images'));
 
         $html = app(RenderService::class)->render(
             'admin/partial-listDirs',
@@ -78,8 +79,8 @@ class ExplorerController extends AbstractAdminController
      */
     public function files(Request $request): JsonResponse
     {
-        $path = $request->get('path');
-        $returnType = $request->get('return', '');
+        $path = $request->getRequestString('path') ?? '';
+        $returnType = $request->getRequestString('return') ?? '';
 
         $this->fileService->checkPermittedPath($path);
 
@@ -115,11 +116,11 @@ class ExplorerController extends AbstractAdminController
     {
         $db = app(DbService::class);
 
-        $returnType = $request->get('return', '');
-        $qpath = $db->escapeWildcards($request->get('qpath', ''));
-        $qalt = $db->escapeWildcards($request->get('qalt', ''));
+        $returnType = $request->getRequestString('return') ?? '';
+        $qpath = $db->escapeWildcards($request->getRequestString('qpath') ?? '');
+        $qalt = $db->escapeWildcards($request->getRequestString('qalt') ?? '');
 
-        $qtype = $request->get('qtype');
+        $qtype = $request->getRequestString('qtype');
         $sqlMime = '';
         switch ($qtype) {
             case 'image':
@@ -238,8 +239,8 @@ class ExplorerController extends AbstractAdminController
      */
     public function folderCreate(Request $request): JsonResponse
     {
-        $path = $request->get('path', '');
-        $name = $this->fileService->cleanFileName($request->get('name', ''));
+        $path = $request->getRequestString('path') ?? '';
+        $name = $this->fileService->cleanFileName($request->getRequestString('name') ?? '');
         $newPath = $path . '/' . $name;
 
         $this->fileService->createFolder($newPath);
@@ -252,7 +253,7 @@ class ExplorerController extends AbstractAdminController
      */
     public function folderDelete(Request $request): JsonResponse
     {
-        $path = $request->get('path', '');
+        $path = $request->getRequestString('path') ?? '';
         $this->fileService->deleteFolder($path);
 
         return new JsonResponse([]);
@@ -280,8 +281,8 @@ class ExplorerController extends AbstractAdminController
      */
     public function fileExists(Request $request): JsonResponse
     {
-        $path = $request->get('path', '');
-        $type = $request->get('type', '');
+        $path = $request->getRequestString('path') ?? '';
+        $type = $request->getRequestString('type') ?? '';
 
         $pathinfo = pathinfo($path);
 
@@ -314,7 +315,7 @@ class ExplorerController extends AbstractAdminController
             throw new InvalidInput(_('File not found.'), Response::HTTP_NOT_FOUND);
         }
 
-        $description = $request->request->get('description', '');
+        $description = $request->getRequestString('description') ?? '';
         $file->setDescription($description)->save();
 
         $db = app(DbService::class);
@@ -362,7 +363,7 @@ class ExplorerController extends AbstractAdminController
      */
     public function fileMoveDialog(Request $request, int $id): Response
     {
-        $currentDir = $request->cookies->get('admin_dir', '/images');
+        $currentDir = strval($request->cookies->get('admin_dir', '/images'));
 
         $file = app(OrmService::class)->getOne(File::class, $id);
         if (!$file) {
@@ -403,10 +404,10 @@ class ExplorerController extends AbstractAdminController
             throw new InvalidInput(_('No file received.'));
         }
 
-        $currentDir = $request->cookies->get('admin_dir', '/images');
-        $targetDir = $request->get('dir', $currentDir);
-        $destinationType = $request->get('type', '');
-        $description = $request->get('alt', '');
+        $currentDir = strval($request->cookies->get('admin_dir', '/images'));
+        $targetDir = $request->getRequestString('dir') ?? $currentDir;
+        $destinationType = $request->getRequestString('type') ?? '';
+        $description = $request->getRequestString('alt') ?? '';
 
         $uploadHandler = new UploadHandler($targetDir);
         $file = $uploadHandler->process($uploadedFile, $destinationType, $description);
@@ -437,8 +438,8 @@ class ExplorerController extends AbstractAdminController
 
             $pathinfo = pathinfo($file->getPath());
 
-            $dir = $request->request->get('dir', $pathinfo['dirname'] ?? '');
-            $filename = $request->request->get('name', $pathinfo['filename']);
+            $dir = $request->getRequestString('dir') ?? ($pathinfo['dirname'] ?? '');
+            $filename = $request->getRequestString('name') ?? $pathinfo['filename'];
             $filename = $this->fileService->cleanFileName($filename);
             $overwrite = $request->request->getBoolean('overwrite');
 
@@ -494,8 +495,8 @@ class ExplorerController extends AbstractAdminController
      */
     public function folderRename(Request $request): JsonResponse
     {
-        $path = $request->request->get('path', '');
-        $name = $request->request->get('name', '');
+        $path = $request->getRequestString('path') ?? '';
+        $name = $request->getRequestString('name') ?? '';
         $name = $this->fileService->cleanFileName($name);
         $overwrite = $request->request->getBoolean('overwrite');
 
@@ -561,9 +562,9 @@ class ExplorerController extends AbstractAdminController
         }
 
         $data = [
-            'textWidth'   => config('text_width'),
-            'thumbWidth'  => config('thumb_width'),
-            'thumbHeight' => config('thumb_height'),
+            'textWidth'   => ConfigService::getInt('text_width'),
+            'thumbWidth'  => ConfigService::getInt('thumb_width'),
+            'thumbHeight' => ConfigService::getInt('thumb_height'),
             'mode'        => $mode,
             'fileName'    => $fileName,
             'file'        => $file,

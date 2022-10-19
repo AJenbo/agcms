@@ -5,6 +5,7 @@ namespace App\Http\Middleware;
 use App\Contracts\Middleware;
 use App\Http\Request;
 use App\Models\File;
+use App\Services\ConfigService;
 use Symfony\Component\HttpFoundation\Response;
 
 class Placekitten implements Middleware
@@ -19,8 +20,8 @@ class Placekitten implements Middleware
             return $next($request);
         }
 
-        $width = config('thumb_width');
-        $height = config('thumb_height');
+        $width = ConfigService::getInt('thumb_width');
+        $height = ConfigService::getInt('thumb_height');
 
         $requestUrl = rawurldecode($request->getRequestUri());
         $file = File::getByPath($requestUrl);

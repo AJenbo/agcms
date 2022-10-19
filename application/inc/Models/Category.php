@@ -45,15 +45,15 @@ class Category extends AbstractRenderable
      */
     public function __construct(array $data = [])
     {
-        $this->setRenderMode($data['render_mode'])
-            ->setEmail($data['email'])
-            ->setWeightedChildren($data['weighted_children'])
-            ->setWeight($data['weight'])
-            ->setTitle($data['title'])
-            ->setId($data['id'] ?? null);
+        $this->setRenderMode(intval($data['render_mode']))
+            ->setEmail(strval($data['email']))
+            ->setWeightedChildren(boolval($data['weighted_children']))
+            ->setWeight(intval($data['weight']))
+            ->setTitle(strval($data['title']))
+            ->setId(intOrNull($data['id'] ?? null));
 
-        $this->iconId = ((int)$data['icon_id']) ?: null;
-        $this->parentId = null !== $data['parent_id'] ? (int)$data['parent_id'] : null;
+        $this->iconId = intOrNull($data['icon_id'] ?? null);
+        $this->parentId = intOrNull($data['parent_id'] ?? null);
         if (null === $this->parentId && $this->id > 0) {
             throw new InvalidInput(_('Cannot create root categories.'), 423);
         }
@@ -336,32 +336,13 @@ class Category extends AbstractRenderable
             $order = 'navn';
         }
 
-        $pages = app(OrmService::class)->getByQuery(
+        return app(OrmService::class)->getByQuery(
             Page::class,
             '
             SELECT * FROM sider
             WHERE id IN(SELECT side FROM bind WHERE kat = ' . $this->getId() . ')
             ORDER BY `' . $order . '` ' . ($reverseOrder ? 'DESC' : 'ASC')
         );
-
-        $objectArray = [];
-        foreach ($pages as $page) {
-            $objectArray[] = [
-                'id'     => $page->getId(),
-                'navn'   => $page->getTitle(),
-                'for'    => $page->getOldPrice(),
-                'pris'   => $page->getPrice(),
-                'varenr' => $page->getSku(),
-                'object' => $page,
-            ];
-        }
-        $objectArray = arrayNatsort($objectArray, $order, $reverseOrder ? 'desc' : '');
-        $pages = [];
-        foreach ($objectArray as $item) {
-            $pages[] = $item['object'];
-        }
-
-        return $pages;
     }
 
     /**

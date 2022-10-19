@@ -5,17 +5,18 @@ namespace App\Http\Controllers\Admin;
 use App\Exceptions\Exception;
 use App\Exceptions\InvalidInput;
 use App\Http\Controllers\Base;
+use App\Http\Request;
 use App\Models\Brand;
 use App\Models\Category;
 use App\Models\File;
 use App\Models\Page;
 use App\Models\Requirement;
+use App\Services\ConfigService;
 use App\Services\DbService;
 use App\Services\OrmService;
 use App\Services\RenderService;
 use App\Services\SiteTreeService;
 use Symfony\Component\HttpFoundation\JsonResponse;
-use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
 class PageController extends AbstractAdminController
@@ -25,8 +26,8 @@ class PageController extends AbstractAdminController
      */
     public function index(Request $request, ?int $id = null): Response
     {
-        $selectedId = $request->cookies->get('activekat', -1);
-        $openCategories = explode('<', $request->cookies->get('openkat', ''));
+        $selectedId = intval($request->cookies->get('activekat', -1));
+        $openCategories = explode('<', strval($request->cookies->get('openkat', '')));
         $openCategories = array_map('intval', $openCategories);
 
         $orm = app(OrmService::class);
@@ -57,15 +58,15 @@ class PageController extends AbstractAdminController
         $siteTreeService = new SiteTreeService();
 
         $data = [
-            'textWidth'    => config('text_width'),
-            'thumbWidth'   => config('thumb_width'),
+            'textWidth'    => ConfigService::getInt('text_width'),
+            'thumbWidth'   => ConfigService::getInt('thumb_width'),
             'siteTree'     => $siteTreeService->getSiteTreeData($openCategories, 'categories', $selectedId),
             'requirements' => $orm->getByQuery(Requirement::class, 'SELECT * FROM `krav` ORDER BY navn'),
             'brands'       => $orm->getByQuery(Brand::class, 'SELECT * FROM `maerke` ORDER BY navn'),
             'page'         => $page,
             'bindings'     => $bindings,
             'accessories'  => $accessories,
-            'blank_image'  => config('blank_image', Base::DEFAULT_ICON),
+            'blank_image'  => ConfigService::getString('blank_image', Base::DEFAULT_ICON),
         ] + $this->basicPageData($request);
 
         return $this->render('admin/redigerside', $data);
@@ -76,20 +77,20 @@ class PageController extends AbstractAdminController
      */
     public function createPage(Request $request): JsonResponse
     {
-        $category = app(OrmService::class)->getOne(Category::class, $request->request->get('categoryId'));
+        $category = app(OrmService::class)->getOne(Category::class, $request->request->getInt('categoryId'));
         if (!$category) {
             throw new InvalidInput(_('Category not found.'), Response::HTTP_NOT_FOUND);
         }
 
         $page = new Page([
-            'title'          => $request->request->get('title'),
-            'keywords'       => $request->request->get('keywords'),
-            'excerpt'        => $request->request->get('excerpt'),
-            'html'           => purifyHTML($request->request->get('html')),
-            'sku'            => $request->request->get('sku'),
-            'icon_id'        => $request->request->get('iconId'),
-            'requirement_id' => $request->request->get('requirementId'),
-            'brand_id'       => $request->request->get('brandId'),
+            'title'          => $request->getRequestString('title') ?? '',
+            'keywords'       => $request->getRequestString('keywords') ?? '',
+            'excerpt'        => $request->getRequestString('excerpt') ?? '',
+            'html'           => purifyHTML($request->getRequestString('html') ?? ''),
+            'sku'            => $request->getRequestString('sku') ?? '',
+            'icon_id'        => $request->getRequestInt('iconId'),
+            'requirement_id' => $request->getRequestInt('requirementId'),
+            'brand_id'       => $request->getRequestInt('brandId'),
             'price'          => $request->request->get('price'),
             'old_price'      => $request->request->get('oldPrice'),
             'price_type'     => $request->request->get('priceType'),
@@ -118,18 +119,18 @@ class PageController extends AbstractAdminController
             throw new InvalidInput(_('Page not found.'), Response::HTTP_NOT_FOUND);
         }
 
-        $page->setKeywords($request->request->get('keywords'))
-            ->setPrice($request->request->get('price'))
-            ->setSku($request->request->get('sku'))
-            ->setOldPrice($request->request->get('oldPrice'))
-            ->setExcerpt($request->request->get('excerpt'))
-            ->setRequirementId($request->request->get('requirementId'))
-            ->setBrandId($request->request->get('brandId'))
+        $page->setKeywords($request->getRequestString('keywords') ?? '')
+            ->setPrice($request->request->getInt('price'))
+            ->setSku($request->getRequestString('sku') ?? '')
+            ->setOldPrice($request->request->getInt('oldPrice'))
+            ->setExcerpt($request->getRequestString('excerpt') ?? '')
+            ->setRequirementId($request->getRequestInt('requirementId'))
+            ->setBrandId($request->getRequestInt('brandId'))
             ->setIcon($icon)
-            ->setPriceType($request->request->get('priceType'))
-            ->setOldPriceType($request->request->get('oldPriceType'))
-            ->setHtml(purifyHTML($request->request->get('html')))
-            ->setTitle($request->request->get('title'))
+            ->setPriceType($request->request->getInt('priceType'))
+            ->setOldPriceType($request->request->getInt('oldPriceType'))
+            ->setHtml(purifyHTML($request->getRequestString('html') ?? ''))
+            ->setTitle($request->getRequestString('title') ?? '')
             ->save();
 
         return new JsonResponse(['success' => true]);
@@ -230,8 +231,8 @@ class PageController extends AbstractAdminController
      */
     public function search(Request $request): Response
     {
-        $text = $request->get('text', '');
-        if ('' === $text) {
+        $text = strval($request->get('text', ''));
+        if (!$text) {
             throw new InvalidInput(_('You must enter a search word.'));
         }
 
