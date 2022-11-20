@@ -204,7 +204,7 @@ class DbService
         $sql = 'SHOW TABLE STATUS WHERE Name IN(\'' . implode('\', \'', $tableNames) . '\')';
         $tables = $this->fetchArray($sql);
         foreach ($tables as $table) {
-            $updateTime = max($updateTime, strtotime($table['Update_time']) + $this->getTimeOffset());
+            $updateTime = max($updateTime, strtotime($table['Update_time'] ?? '0') + $this->getTimeOffset());
         }
 
         return $updateTime;

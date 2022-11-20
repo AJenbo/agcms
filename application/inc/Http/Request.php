@@ -15,7 +15,7 @@ use Symfony\Component\HttpFoundation\Session\Storage\NativeSessionStorage;
 
 class Request extends SymfonyRequest
 {
-    private ?User $user;
+    private ?User $user = null;
 
     /**
      * @param array<mixed>    $query      The GET parameters

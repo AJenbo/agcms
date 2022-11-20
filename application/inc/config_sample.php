@@ -46,6 +46,7 @@ return [
     'pbssalt'     => '',
 
     // Database
+    'db_dns'         => '',
     'mysql_server'   => 'db',
     'mysql_user'     => 'root',
     'mysql_password' => '',

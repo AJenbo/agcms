@@ -11,12 +11,13 @@
     <input type="hidden" name="id" id="id" value="{{page.id}}" />
     <div>
         <input class="admin_name" type="text" name="navn" id="navn" value="{{page.title}}" maxlength="127" size="127" style="width:{{textWidth + 19}}px" />
-        <textarea id="text" style="width:{{textWidth + 32}}px;height:420px">{{page.html|raw}}</textarea>
+        <div><textarea id="text" style="width:{{textWidth + 32}}px;height:420px">{{page.html|raw}}</textarea>
         <script type="text/javascript"><!--
             CKEDITOR.config.width = {{textWidth + 32}};
             CKEDITOR.config.contentsCss = '/theme/{{theme}}/style/rtef-text.css';
             CKEDITOR.replace('text');
         --></script>
+        </div>
         {{'Keywords (separate search terms with a comma - for example: \'emergency blanket, first aid\'):'|trans}}<br />
         <textarea name="keywords" id="keywords" style="width:{{textWidth}}px;max-width:{{textWidth}}px" rows="2" cols="">{{page.keywords}}</textarea>
     </div>

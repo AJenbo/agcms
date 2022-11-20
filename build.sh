@@ -1,7 +1,7 @@
 #!/bin/sh
 
 # Install the wysiwyg editor
-wget --show-progress -q -O ckeditor.zip http://ckeditor.com/builder/download/4ef93c2297099222b5d2ba696dceaafa
+wget --show-progress -q -O ckeditor.zip https://ckeditor.com/cke4/builder/download/007ac3fe0d3df1eb49f7a1a6c5b70551
 unzip ckeditor.zip
 rm ckeditor.zip
 sed -i 's/ckeditor\/plugins\/custimage\/dialogs\/dialogtest.html/\/admin\/explorer\/?return=ckeditor/g' ckeditor/plugins/custimage/dialogs/custimage.js

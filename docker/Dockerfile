@@ -1,4 +1,4 @@
-FROM php:8.0-fpm
+FROM php:8.1-fpm
 
 RUN apt-get update -y \
     && apt-get install -y --no-install-recommends locales libonig-dev libxml2-dev libpng16-16 libpng-dev libjpeg62-turbo libjpeg62-turbo-dev libicu-dev libzip4 libzip-dev \
