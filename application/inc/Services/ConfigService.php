@@ -33,9 +33,9 @@ class ConfigService
     }
 
     /**
-     * @return array<string, EmailConfig>
-     *
      * @throws Exception
+     *
+     * @return array<string, EmailConfig>
      */
     public static function getEmailConfigs(): array
     {

@@ -49,7 +49,7 @@ class Shopping extends Base
             $crumbs = [];
         }
         $crumbs[] = $renderable;
-        $data['crumbs'] = $crumbs ;
+        $data['crumbs'] = $crumbs;
         $data['renderable'] = $renderable;
         $data['invoice'] = $this->invoiceService->createFromCart($cart);
         $data['payMethod'] = $cart['payMethod'] ?? '';

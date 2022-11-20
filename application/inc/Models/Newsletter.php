@@ -37,7 +37,7 @@ class Newsletter extends AbstractEntity implements InterfaceRichText
     {
         $interests = $data['interests'] ?? null;
         if (!is_array($interests)) {
-            $interests =  [];
+            $interests = [];
         }
 
         $this->setFrom(strval($data['from'] ?? ''))

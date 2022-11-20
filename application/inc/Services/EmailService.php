@@ -2,8 +2,8 @@
 
 namespace App\Services;
 
-use App\DTO\EmailConfig;
 use AJenbo\Imap;
+use App\DTO\EmailConfig;
 use App\Exceptions\Exception;
 use App\Exceptions\SendEmail;
 use App\Models\Contact;

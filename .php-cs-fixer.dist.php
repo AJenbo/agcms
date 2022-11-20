@@ -77,7 +77,7 @@ return $config->setRiskyAllowed(true)
         'is_null'                                          => true,
         'mb_str_functions'                                 => true,
         'method_chaining_indentation'                      => true,
-        'modernize_types_casting'                          => true,
+        'modernize_types_casting'                          => false,
         'multiline_comment_opening_closing'                => true,
         'no_alias_language_construct_call'                 => true,
         'no_alternative_syntax'                            => true,

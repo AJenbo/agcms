@@ -53,7 +53,6 @@ class BrandController extends AbstractAdminController
         $brand = new Brand(['title' => $title, 'link' => $link, 'icon_id' => $iconId]);
         $brand->save();
 
-
         return new JsonResponse(['id' => $brand->getId()]);
     }
 
