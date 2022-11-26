@@ -4,6 +4,7 @@ namespace App\Enums;
 
 enum InvoiceAction: string
 {
+    case Save = 'save';
     case Lock = 'lock';
     case Email = 'email';
     case Giro = 'giro';

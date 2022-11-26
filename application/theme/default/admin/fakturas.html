@@ -71,7 +71,7 @@
             <td>
                 <select name="status">
                     {% for value, name in statusOptions %}
-                    <option value="{{value}}"{% if selected.status == value %} selected="selected"{% endif %}>
+                    <option value="{{value}}"{% if selected.status.value == value %} selected="selected"{% endif %}>
                         {{name}}
                     </option>
                     {% endfor %}
@@ -128,25 +128,25 @@
         <tr>
             <td style="text-align:center">
                 <a href="/admin/invoices/{{invoice.id}}/">
-                    {% if invoice.status == 'new' %}
+                    {% if invoice.isNew %}
                     <img src="/theme/default/images/admin/table.png" alt="{{'New'|trans}}" title="{{'New'|trans}}" />
-                    {% elseif invoice.status == 'locked' and invoice.sent %}
+                    {% elseif invoice.status.value == 'locked' and invoice.sent %}
                     <img src="/theme/default/images/admin/email_go.png" alt="{{'Sent'|trans}}" title="{{'Sent to customer'|trans}}" />
-                    {% elseif invoice.status == 'locked' %}
+                    {% elseif invoice.status.value == 'locked' %}
                     <img src="/theme/default/images/admin/lock.png" alt="{{'Locked'|trans}}" title="{{'Locked'|trans}}" />
-                    {% elseif invoice.status == 'pbsok' %}
+                    {% elseif invoice.status.value == 'pbsok' %}
                     <img src="/theme/default/images/admin/money.png" alt="{{'Ready'|trans}}" title="{{'Ready'|trans}}" />
-                    {% elseif invoice.status == 'accepted' %}
+                    {% elseif invoice.status.value == 'accepted' %}
                     <img src="/theme/default/images/admin/creditcards.png" alt="{{'Processed'|trans}}" title="{{'Processed'|trans}}" />
-                    {% elseif invoice.status == 'giro' %}
+                    {% elseif invoice.status.value == 'giro' %}
                     <img src="/theme/default/images/admin/building.png" alt="{{'Giro'|trans}}" title="{{'Giro'|trans}}" />
-                    {% elseif invoice.status == 'cash' %}
+                    {% elseif invoice.status.value == 'cash' %}
                     <img src="/theme/default/images/admin/email.png" alt="{{'Cash'|trans}}" title="{{'Cash'|trans}}" />
-                    {% elseif invoice.status == 'pbserror' %}
+                    {% elseif invoice.status.value == 'pbserror' %}
                     <img src="/theme/default/images/admin/error.png" alt="{{'Error'|trans}}" title="{{'Error'|trans}}" />
-                    {% elseif invoice.status == 'canceled' %}
+                    {% elseif invoice.status.value == 'canceled' %}
                     <img src="/theme/default/images/admin/bin.png" alt="{{'Canceled'|trans}}" title="{{'Canceled'|trans}}" />
-                    {% elseif invoice.status == 'rejected' %}
+                    {% elseif invoice.status.value == 'rejected' %}
                     <img src="/theme/default/images/admin/bin.png" alt="{{'Rejected'|trans}}" title="{{'Rejected'|trans}}" />
                     {% endif %}
                 </a>

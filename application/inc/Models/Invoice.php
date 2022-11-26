@@ -725,6 +725,26 @@ class Invoice extends AbstractEntity
         return $this->status;
     }
 
+    public function isHandled(): bool
+    {
+        return in_array($this->status, [InvoiceStatus::Canceled, InvoiceStatus::Accepted, InvoiceStatus::Giro, InvoiceStatus::Cash], true);
+    }
+
+    public function isLocked(): bool
+    {
+        return $this->isHandled() || $this->status !== InvoiceStatus::PbsOk;
+    }
+
+    public function isEditable(): bool
+    {
+        return !$this->isLocked() && $this->status !== InvoiceStatus::Rejected;
+    }
+
+    public function isNew(): bool
+    {
+        return $this->status === InvoiceStatus::New;
+    }
+
     /**
      * Set fraight cost.
      *
