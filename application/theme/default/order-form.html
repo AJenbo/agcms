@@ -57,7 +57,7 @@
         <p>
             {{'Delivery:'|trans}}
             <select id="deleveryMethod" name="deleveryMethod" style="float:right">
-                <option value="postal"{% if deleveryMethod == 'postal' %} selected="selected"{% endif %}>{{'Mail'|trans}}</option>
+                <option value="postal"{% if deleveryMethod == 'postal' %} selected="selected"{% endif %}>{{'Shipping'|trans}}</option>
                 <option value="pickup"{% if deleveryMethod == 'pickup' %} selected="selected"{% endif %}>{{'Pick-up in store'|trans}}</option>
             </select>
             <small id="shipping"><br />{{'The exact shipping cost will be calculated when the goods are packed.'|trans}}</small>
