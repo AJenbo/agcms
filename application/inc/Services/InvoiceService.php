@@ -36,7 +36,7 @@ class InvoiceService
                 }
                 $title = '';
                 $quantity = $item['quantity'] ?? null;
-                if (!ctype_digit($quantity) && !is_int($quantity)) {
+                if (!is_int($quantity) && (!is_string($quantity) || !ctype_digit($quantity))) {
                     $quantity = 0;
                 }
                 $quantity = (int)$quantity;

@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Exceptions\InvalidInput;
 use App\Http\Request;
 use App\Models\CustomSorting;
+use App\Models\Page;
 use App\Models\Table;
 use App\Services\OrmService;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -53,6 +54,12 @@ class TableController extends AbstractAdminController
             $cells = [];
         }
         $link = $request->getRequestInt('link');
+        if ($link) {
+            $page = app(OrmService::class)->getOne(Page::class, $link);
+            if (!$page) {
+                throw new InvalidInput(_('Linked page not found.'), Response::HTTP_NOT_FOUND);
+            }
+        }
 
         $table = app(OrmService::class)->getOne(Table::class, $tableId);
         if (!$table) {
@@ -71,6 +78,12 @@ class TableController extends AbstractAdminController
             $cells = [];
         }
         $link = $request->getRequestInt('link');
+        if ($link) {
+            $page = app(OrmService::class)->getOne(Page::class, $link);
+            if (!$page) {
+                throw new InvalidInput(_('Linked page not found.'), Response::HTTP_NOT_FOUND);
+            }
+        }
 
         $table = app(OrmService::class)->getOne(Table::class, $tableId);
         if (!$table) {

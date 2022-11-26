@@ -33,7 +33,7 @@ INSERT INTO `sider` (`id`, `navn`, `text`, `beskrivelse`, `maerke`, `dato`, `ico
 ( 5, 'Inactive page',       '', '', null, '2018-01-03 08:00:00', null,     '',   0,  0),
 ( 6, 'Product 1 Green',     '', '',    1, '2018-01-04 00:00:00', null, 'sku3', 100, 20),
 ( 7, 'Product 1 Blue',      '', '',    1, '2018-01-04 00:00:00', null, 'sku4', 300, 17),
-( 8, 'Product 1 Red',       '', '',    1, '2018-01-04 00:00:00', null, 'sku1', 400, 18),
+( 8, 'Product 1 Red',       '', '',    1, '2018-01-04 00:00:00', null, 'sku1', 400, 16),
 ( 9, 'Power+',              '', '',    1, '2018-01-04 00:00:00', null, 'sku1', 400, 18),
 (10, 'Inactive',            '', '',    1, '2018-01-04 00:00:00', null, 'sku1', 400, 18);
 
@@ -57,13 +57,13 @@ INSERT INTO `tablesort` (`id`, `navn`, `text`) VALUES
 
 -- lists
 INSERT INTO `lists` (`id`, `page_id`, `title`, `cells`, `cell_names`, `sort`, `sorts`, `link`) VALUES
-(1, 3, 'Variants', '0<1<0', 'Title<Price<Size', 0, '0<0<1', 1);
+(1, 3, 'Variants', '0<2<0', 'Title<Price<Size', 0, '0<0<1', 1);
 
 -- list_rows
 INSERT INTO `list_rows` (`id`, `list_id`, `cells`, `link`) VALUES
 (1, 1, 'Product 1 Green<20<M', 6),
-(2, 1,  'Product 1 Blue<19<L', 7),
-(3, 1,   'Product 1 Red<18<S', 8);
+(2, 1,  'Product 1 Blue<17<L', 7),
+(3, 1,   'Product 1 Red<16<S', 8);
 
 -- special
 INSERT INTO `special` (`id`, `navn`, `dato`, `text`) VALUES

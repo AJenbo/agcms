@@ -119,7 +119,7 @@
                     <tr id="list{{table.id}}footer">
                         {% for column in table.columns %}
                         {% if column.sorting == 0 %}
-                        <td><input style="display:none;{% if column.type != 0 %}text-align:right;{% endif %}" /></td>
+                        <td><input style="display:none;{% if column.isPrice %}text-align:right;{% endif %}" /></td>
                         {% else %}
                         <td>
                             <select style="display:none">
@@ -145,8 +145,8 @@
                     <tr id="list_row{{row.id}}">
                         {% for columnId, column in table.columns %}
                         {% if column.sort == 0 %}
-                        <td{% if column.type %} style="text-align:right"{% endif %}>
-                            <input value="{{row[columnId]}}" style="display:none;{% if column.type %}text-align:right;{% endif %}" />
+                        <td{% if column.isPrice %} style="text-align:right"{% endif %}>
+                            <input value="{{row[columnId]}}" style="display:none;{% if column.isPrice %}text-align:right;{% endif %}" />
                             <span>{{row[columnId]}}</span>
                         </td>
                         {% else %}

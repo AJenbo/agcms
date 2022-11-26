@@ -95,6 +95,29 @@ class SiteTest extends TestCase
             ->assertSee('<title>Page 1</title>');
     }
 
+    public function testProductVariants(): void
+    {
+        $response = $this->get('/kat2-List-Category/side3-Product-1.html');
+
+        $response->assertResponseStatus(200)
+            ->assertSee('<title>Product 1</title>')
+            ->assertSee('<caption>Variants</caption>')
+            ->assertSee('17.00')
+            ->assertSee('20.00')
+            ->assertSee('16.00')
+            ->assertSee('<a href="" onclick="shoppingCart.addItem(\'line\',1);return false"><img src="/theme/default/images/cart_add.png" title="Add to shopping cart" alt="+" /></a>')
+            ->assertSee('<a href="" onclick="shoppingCart.addItem(\'line\',2);return false"><img src="/theme/default/images/cart_add.png" title="Add to shopping cart" alt="+" /></a>')
+            ->assertSee('<a href="" onclick="shoppingCart.addItem(\'line\',3);return false"><img src="/theme/default/images/cart_add.png" title="Add to shopping cart" alt="+" /></a>');
+
+        $data = $response->getContent();
+        static::assertMatchesRegularExpression('/<thead>.*<tr>.*<td><a href="" onclick="return getTable\(2, 1, 0\)">.*Title.*?<\/a><\/td>.*<\/tr>.*<\/thead>/su', $data);
+        static::assertMatchesRegularExpression('/<thead>.*<tr>.*<td><a href="" onclick="return getTable\(2, 1, 1\)">.*Price.*?<\/a><\/td>.*<\/tr>.*<\/thead>/su', $data);
+        static::assertMatchesRegularExpression('/<thead>.*<tr>.*<td><a href="" onclick="return getTable\(2, 1, 2\)">.*Size.*?<\/a><\/td>.*<\/tr>.*<\/thead>/su', $data);
+        static::assertMatchesRegularExpression('/<tbody>.*<tr>.*<td><a href="\/kat2-List-Category\/side7-Product-1-Blue.html">\\s*Product 1 Blue.*<\/a><\/td>.*<\/tr>.*<\/tbody>/su', $data);
+        static::assertMatchesRegularExpression('/<tbody>.*<tr>.*<td><a href="\/kat2-List-Category\/side6-Product-1-Green.html">\\s*Product 1 Green.*<\/a><\/td>.*<\/tr>.*<\/tbody>/su', $data);
+        static::assertMatchesRegularExpression('/<tbody>.*<tr>.*<td><a href="\/kat2-List-Category\/side8-Product-1-Red.html">\\s*Product 1 Red.*<\/a><\/td>.*<\/tr>.*<\/tbody>/su', $data);
+    }
+
     public function testPagePlusEncoding(): void
     {
         $this->get('/kat5-Hidden-Category/side9-Power+.html')

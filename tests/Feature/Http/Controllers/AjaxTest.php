@@ -98,7 +98,7 @@ class AjaxTest extends TestCase
 
         $data = $response->json();
         static::assertIsString($data['html']);
-        static::assertMatchesRegularExpression('/side7.*side8.*side3.*side6/su', $data['html']);
+        static::assertMatchesRegularExpression('/side8.*side7.*side3.*side6/su', $data['html']);
     }
 
     public function testCategorySku(): void

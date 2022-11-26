@@ -18,12 +18,12 @@
         {% set forSale = false %}
         <tr{% if loop.index is even %} class="altrow"{% endif %}>
             {% for column in table.columns %}
-            {% if (column.type == 2 or column.type == 3) and row[loop.index0] > 0 %}
+            {% if (column.isCheckoutPrice and row[loop.index0] > 0) %}
                 {% set forSale = true %}
             {% endif %}
-            <td{% if column.type %} style="text-align:right"{% endif %}{% if column.type > 2 %} class="{% if column.type == 2 %}Pris{% elseif column.type == 3 %}NyPris{% elseif column.type == 4 %}XPris{% endif %}"{% endif %}>
+            <td{% if not column.isText %} style="text-align:right"{% endif %}{% if column.isPrice %} class="{% if column.isDiscountPrice %}Ny{% elseif column.isPreviousPrice %}X{% endif %}Pris"{% endif %}>
                 {% if table.hasLinks and row.page %}<a href="{{row.page.canonicalLink(category)}}">{% endif %}
-                    {% if column.type < 2 %}
+                    {% if not column.isPrice %}
                         {{row[loop.index0]}}
                     {% else %}
                         {% if row[loop.index0] > 0 %}
