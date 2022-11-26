@@ -103,9 +103,30 @@ class Brand extends AbstractRenderable
             'SELECT * FROM sider WHERE maerke = ' . $this->getId() . ' ORDER BY sider.`' . $order . '` ASC'
         );
 
-        return array_filter($pages, function (Page $page): bool {
-            return !$page->isInactive();
-        });
+        $pageMap = [];
+        $objectArray = [];
+        foreach ($pages as $page) {
+            if ($page->isInactive()) {
+                continue;
+            }
+
+            $pageMap[$page->getId()] = $page;
+            $objectArray[] = [
+                'id'     => $page->getId(),
+                'navn'   => $page->getTitle(),
+                'for'    => $page->getOldPrice(),
+                'pris'   => $page->getPrice(),
+                'varenr' => $page->getSku(),
+            ];
+        }
+        $objectArray = arrayNatsort($objectArray, $order);
+
+        $pages = [];
+        foreach ($objectArray as $item) {
+            $pages[] = $pageMap[$item['id']];
+        }
+
+        return $pages;
     }
 
     // ORM related functions

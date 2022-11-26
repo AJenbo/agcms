@@ -336,13 +336,34 @@ class Category extends AbstractRenderable
             $order = 'navn';
         }
 
-        return app(OrmService::class)->getByQuery(
+        $pages = app(OrmService::class)->getByQuery(
             Page::class,
             '
             SELECT * FROM sider
             WHERE id IN(SELECT side FROM bind WHERE kat = ' . $this->getId() . ')
             ORDER BY `' . $order . '` ' . ($reverseOrder ? 'DESC' : 'ASC')
         );
+
+        $pageMap = [];
+        $objectArray = [];
+        foreach ($pages as $page) {
+            $pageMap[$page->getId()] = $page;
+            $objectArray[] = [
+                'id'     => $page->getId(),
+                'navn'   => $page->getTitle(),
+                'for'    => $page->getOldPrice(),
+                'pris'   => $page->getPrice(),
+                'varenr' => $page->getSku(),
+            ];
+        }
+        $objectArray = arrayNatsort($objectArray, $order, $reverseOrder ? 'desc' : '');
+
+        $pages = [];
+        foreach ($objectArray as $item) {
+            $pages[] = $pageMap[$item['id']];
+        }
+
+        return $pages;
     }
 
     /**
