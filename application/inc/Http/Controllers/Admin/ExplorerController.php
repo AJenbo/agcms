@@ -57,7 +57,10 @@ class ExplorerController extends AbstractAdminController
      */
     public function folders(Request $request): JsonResponse
     {
-        $path = $request->getRequestString('path') ?? '';
+        $path = $request->query->get('path');
+        if (!is_string($path)) {
+            $path = '';
+        }
         $move = $request->query->getBoolean('move');
         $currentDir = strval($request->cookies->get('admin_dir', '/images'));
 
@@ -79,8 +82,14 @@ class ExplorerController extends AbstractAdminController
      */
     public function files(Request $request): JsonResponse
     {
-        $path = $request->getRequestString('path') ?? '';
-        $returnType = $request->getRequestString('return') ?? '';
+        $path = $request->query->get('path');
+        if (!is_string($path)) {
+            $path = '';
+        }
+        $returnType = $request->query->get('return');
+        if (!is_string($returnType)) {
+            $returnType = '';
+        }
 
         $this->fileService->checkPermittedPath($path);
 
@@ -116,11 +125,25 @@ class ExplorerController extends AbstractAdminController
     {
         $db = app(DbService::class);
 
-        $returnType = $request->getRequestString('return') ?? '';
-        $qpath = $db->escapeWildcards($request->getRequestString('qpath') ?? '');
-        $qalt = $db->escapeWildcards($request->getRequestString('qalt') ?? '');
+        $returnType = $request->query->get('return');
+        if (!is_string($returnType)) {
+            $returnType = '';
+        }
+        $qpath = $request->query->get('qpath');
+        if (!is_string($qpath)) {
+            $qpath = '';
+        }
+        $qpath = $db->escapeWildcards($qpath);
+        $qalt = $request->query->get('qalt');
+        if (!is_string($qalt)) {
+            $qalt = '';
+        }
+        $qalt = $db->escapeWildcards($qalt);
 
-        $qtype = $request->getRequestString('qtype');
+        $qtype = $request->query->get('qtype');
+        if (!is_string($qtype)) {
+            $qtype = '';
+        }
         $sqlMime = '';
         switch ($qtype) {
             case 'image':
@@ -239,8 +262,15 @@ class ExplorerController extends AbstractAdminController
      */
     public function folderCreate(Request $request): JsonResponse
     {
-        $path = $request->getRequestString('path') ?? '';
-        $name = $this->fileService->cleanFileName($request->getRequestString('name') ?? '');
+        $path = $request->query->get('path');
+        if (!is_string($path)) {
+            $path = '';
+        }
+        $name = $request->query->get('name');
+        if (!is_string($name)) {
+            $name = '';
+        }
+        $name = $this->fileService->cleanFileName($name);
         $newPath = $path . '/' . $name;
 
         $this->fileService->createFolder($newPath);
@@ -253,7 +283,10 @@ class ExplorerController extends AbstractAdminController
      */
     public function folderDelete(Request $request): JsonResponse
     {
-        $path = $request->getRequestString('path') ?? '';
+        $path = $request->query->get('path');
+        if (!is_string($path)) {
+            $path = '';
+        }
         $this->fileService->deleteFolder($path);
 
         return new JsonResponse([]);
@@ -281,8 +314,14 @@ class ExplorerController extends AbstractAdminController
      */
     public function fileExists(Request $request): JsonResponse
     {
-        $path = $request->getRequestString('path') ?? '';
-        $type = $request->getRequestString('type') ?? '';
+        $path = $request->query->get('path');
+        if (!is_string($path)) {
+            $path = '';
+        }
+        $type = $request->query->get('type');
+        if (!is_string($type)) {
+            $type = '';
+        }
 
         $pathinfo = pathinfo($path);
 

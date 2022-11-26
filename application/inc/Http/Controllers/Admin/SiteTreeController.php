@@ -35,7 +35,10 @@ class SiteTreeController extends AbstractAdminController
      */
     public function categoryContent(Request $request, int $categoryId): JsonResponse
     {
-        $inputType = $request->getRequestString('type') ?? '';
+        $inputType = $request->query->get('type');
+        if (!is_string($inputType)) {
+            $inputType = '';
+        }
         $openCategories = explode('<', strval($request->cookies->get('openkat', '')));
         $openCategories = array_map('intval', $openCategories);
 
@@ -99,8 +102,11 @@ class SiteTreeController extends AbstractAdminController
             return $response;
         }
 
-        $categoryId = $request->getRequestInt('kat');
-        $sort = $request->getRequestString('sort') ?? 'navn';
+        $categoryId = $request->query->getInt('kat');
+        $sort = $request->query->get('sort');
+        if (!is_string($sort)) {
+            $sort = 'navn';
+        }
 
         $sortOptions = [
             'id'     => _('ID'),
