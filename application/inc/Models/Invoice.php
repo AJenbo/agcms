@@ -732,7 +732,7 @@ class Invoice extends AbstractEntity
 
     public function isLocked(): bool
     {
-        return $this->isHandled() || $this->status !== InvoiceStatus::PbsOk;
+        return $this->isHandled() || $this->status === InvoiceStatus::PbsOk;
     }
 
     public function isEditable(): bool
