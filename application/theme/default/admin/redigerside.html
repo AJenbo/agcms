@@ -101,7 +101,7 @@
             Lists:
         </a>
         <div style="width:{{textWidth + 32}}px{% if hide.listbox %};display:none{% endif %}" id="listbox">
-            {% spaceless %}
+            {% apply spaceless %}
             {% for table in page.tables %}
             <table>
                 <thead>
@@ -186,7 +186,7 @@
                 });
             --></script>
             {% endfor %}
-            {% endspaceless %}
+            {% endapply %}
             <input type="button" onclick="openPopup('/admin/page/{{page.id}}/tables/','addList',0,250)" value="{{'Add list'|trans}}">
         </div>
     </div>

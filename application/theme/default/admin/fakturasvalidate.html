@@ -27,7 +27,7 @@
             </td>
             <td><a href="/admin/invoices/{{invoice.id}}/">{{invoice.clerk}}</a></td>
             <td style="text-align:right">
-                <a href="/admin/invoices/{{invoice.id}}/">{{invoice.amount|number_format(2, localeconv.mon_decimal_point, localeconv.mon_thousands_sep)}}</a>
+                <a href="/admin/invoices/{{invoice.id}}/">{{invoice.amount|money}}</a>
             </td>
             <td style="text-align:center">
                 <a href="" onclick="return confirmPaymentValidate({{invoice.id}})">

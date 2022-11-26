@@ -5,7 +5,7 @@
 {% endblock %}
 
 {% block canvas %}
-{% spaceless %}
+{% apply spaceless %}
 <div id="headline">{{'List of brands'|trans}}</div>
 <form action="" id="maerkerform" onsubmit="return saveBrand()">
     {% include 'admin/partial-maerker.html' %}
@@ -28,5 +28,5 @@
         </div>
     {% endfor %}
     </form>
-{% endspaceless %}
+{% endapply %}
 {% endblock %}

@@ -2,19 +2,19 @@
 
 namespace App\Services;
 
-use Twig_Environment;
-use Twig_Extensions_Extension_I18n;
-use Twig_Loader_Filesystem;
+use App\TwigExtensions;
+use Twig\Environment;
+use Twig\Loader\FilesystemLoader;
 
 class RenderService
 {
-    private Twig_Environment $twig;
+    private Environment $twig;
 
     public function __construct()
     {
         $app = app();
         $templatePath = $app->basePath('/theme');
-        $loader = new Twig_Loader_Filesystem('default/', $templatePath);
+        $loader = new FilesystemLoader('default/', $templatePath);
         $langPath = 'default/' . ConfigService::getString('locale', 'C') . '/';
         if (file_exists($templatePath . '/' . $langPath)) {
             $loader->prependPath($langPath);
@@ -28,14 +28,14 @@ class RenderService
             }
         }
 
-        $this->twig = new Twig_Environment($loader);
+        $this->twig = new Environment($loader);
         if ($app->environment('production')) {
             $this->twig->setCache($app->basePath('/theme/cache/twig'));
         }
         if ($app->environment('develop')) {
             $this->twig->enableDebug();
         }
-        $this->twig->addExtension(new Twig_Extensions_Extension_I18n());
+        $this->twig->addExtension(new TwigExtensions());
     }
 
     /**

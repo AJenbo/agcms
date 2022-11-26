@@ -1,4 +1,4 @@
-{% spaceless %}
+{% apply spaceless %}
 <table class="tabel">
     <thead>
         <tr>
@@ -15,12 +15,12 @@
             <td><a href="{{page.canonicalLink(renderable)}}">{{page.title}}</a></td>
             <td class="XPris" align="right">
                 {% if page.oldPrice > 0 %}
-                {{page.oldPrice|number_format(0, localeconv.mon_decimal_point, localeconv.mon_thousands_sep)}}{{'.00'|trans}}
+                {{page.oldPrice|money(true, 0)}}{{'.00'|trans}}
                 {% endif %}
             </td>
             <td class="Pris" align="right">
                 {% if page.price > 0 %}
-                {{page.price|number_format(0, localeconv.mon_decimal_point, localeconv.mon_thousands_sep)}}{{'.00'|trans}}
+                {{page.price|money(true, 0)}}{{'.00'|trans}}
                 {% elseif page.price < 0 %}
                 {{'Sold-out'|trans}}
                 {% endif %}
@@ -37,4 +37,4 @@
         {% endfor %}
     </tbody>
 </table>
-{% endspaceless %}
+{% endapply %}

@@ -79,7 +79,6 @@ class Base extends AbstractController
             'companyCity'    => ConfigService::getString('city'),
             'companyPhone'   => ConfigService::getString('phone'),
             'companyEmail'   => ConfigService::getDefaultEmail(),
-            'localeconv'     => localeconv(),
             'blankImage'     => ConfigService::getString('blank_image', self::DEFAULT_ICON),
             'pageCount'      => ConfigService::getBool('has_count') ? $this->getActivePageCount() : null,
         ];

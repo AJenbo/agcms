@@ -136,7 +136,6 @@ class Shopping extends Base
             'admin/email/order-notification',
             [
                 'invoice'    => $invoice,
-                'localeconv' => localeconv(),
             ]
         );
 

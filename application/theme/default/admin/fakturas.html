@@ -159,7 +159,7 @@
             </td>
             {% if not selected.clerk %}<td><a href="/admin/invoices/{{invoice.id}}/">{{invoice.clerk}}</a></td>{% endif %}
             <td style="text-align:right">
-                <a href="/admin/invoices/{{invoice.id}}/">{{invoice.amount|number_format(2, localeconv.mon_decimal_point, localeconv.mon_thousands_sep)}}</a>
+                <a href="/admin/invoices/{{invoice.id}}/">{{invoice.amount|money}}</a>
             </td>
             <td>
                 <a href="/admin/invoices/{{invoice.id}}/">

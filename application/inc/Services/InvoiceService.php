@@ -438,7 +438,6 @@ class InvoiceService
             $emailTemplate,
             [
                 'invoice'    => $invoice,
-                'localeconv' => localeconv(),
                 'siteName'   => ConfigService::getString('site_name'),
                 'address'    => ConfigService::getString('address'),
                 'postcode'   => ConfigService::getString('postcode'),

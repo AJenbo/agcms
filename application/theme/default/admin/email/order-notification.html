@@ -29,8 +29,8 @@
                 <tr>
                     <td class="tal">{{item.quantity}}</td>
                     <td>{{item.title}}</td>
-                    <td class="tal">{{(item.value * (1 + invoice.vat))|number_format(2, localeconv.mon_decimal_point, localeconv.mon_thousands_sep)}}</td>
-                    <td class="tal">{{(item.value * item.quantity * (1 + invoice.vat))|number_format(2, localeconv.mon_decimal_point, localeconv.mon_thousands_sep)}}</td>
+                    <td class="tal">{{(item.value * (1 + invoice.vat))|money}}</td>
+                    <td class="tal">{{(item.value * item.quantity * (1 + invoice.vat))|money}}</td>
                 </tr>
                 {% endfor %}
             </tbody>

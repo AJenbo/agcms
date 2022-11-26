@@ -1,4 +1,4 @@
-{% spaceless %}
+{% apply spaceless %}
 {% for dir in dirs %}
 <div id="dir_{{dir.id}}">
     {% if dir.hassubs %}
@@ -23,4 +23,4 @@
     {% endif %}
 </div>
 {% endfor %}
-{% endspaceless %}
+{% endapply %}

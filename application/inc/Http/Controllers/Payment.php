@@ -379,7 +379,6 @@ class Payment extends Base
     {
         $data = [
             'invoice'    => $invoice,
-            'localeconv' => localeconv(),
             'siteName'   => ConfigService::getString('site_name'),
             'address'    => ConfigService::getString('address'),
             'postcode'   => ConfigService::getString('postcode'),
@@ -416,7 +415,7 @@ class Payment extends Base
 
         $emailBody = app(RenderService::class)->render(
             'admin/email/payment-confirmation',
-            ['invoice' => $invoice, 'localeconv' => localeconv()]
+            ['invoice' => $invoice]
         );
 
         $email = new Email([

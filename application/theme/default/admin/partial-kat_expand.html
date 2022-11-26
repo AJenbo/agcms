@@ -1,4 +1,4 @@
-{% spaceless %}
+{% apply spaceless %}
 {% for category in node.children %}
 {% set hasContent = (includePages and category.hasContent) or category.hasChildren %}
 {% set isOpen = hasContent and category.id in openCategories %}
@@ -31,4 +31,4 @@
 </div>
 {% endfor %}
 {% endif %}
-{% endspaceless %}
+{% endapply %}
