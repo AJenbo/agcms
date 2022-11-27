@@ -123,8 +123,6 @@ class ExplorerController extends AbstractAdminController
      */
     public function search(Request $request): JsonResponse
     {
-        $db = app(DbService::class);
-
         $returnType = $request->query->get('return');
         if (!is_string($returnType)) {
             $returnType = '';
@@ -133,45 +131,38 @@ class ExplorerController extends AbstractAdminController
         if (!is_string($qpath)) {
             $qpath = '';
         }
-        $qpath = $db->escapeWildcards($qpath);
         $qalt = $request->query->get('qalt');
         if (!is_string($qalt)) {
             $qalt = '';
         }
-        $qalt = $db->escapeWildcards($qalt);
 
         $qtype = $request->query->get('qtype');
         if (!is_string($qtype)) {
             $qtype = '';
         }
-        $sqlMime = '';
-        switch ($qtype) {
-            case 'image':
-                $sqlMime = "mime IN('image/jpeg', 'image/png', 'image/gif')";
-                break;
-            case 'imagefile':
-                $sqlMime = "mime LIKE 'image/%' AND mime NOT IN('image/jpeg', 'image/png', 'image/gif')";
-                break;
-            case 'video':
-                $sqlMime = "mime LIKE 'video/%'";
-                break;
-            case 'audio':
-                $sqlMime = "mime LIKE 'audio/%'";
-                break;
-            case 'text':
-                $sqlMime = "(
-                    mime IN(
-                        'application/pdf',
-                        'application/msword',
-                        'application/vnd.ms-%',
-                        'application/vnd.openxmlformats-officedocument.%',
-                        'application/vnd.oasis.opendocument.%'
-                )";
-                break;
-            case 'compressed':
-                $sqlMime = "mime = 'application/zip'";
-                break;
+
+        $html = '';
+        $fileData = [];
+        $query = $this->buildSearchQuery($qpath, $qalt, $qtype);
+
+        $files = app(OrmService::class)->getByQuery(File::class, $query);
+        foreach ($files as $file) {
+            if ('unused' !== $qtype || !$file->isInUse()) {
+                $html .= $this->fileService->filehtml($file, $returnType);
+                $fileData[] = $this->fileService->fileAsArray($file);
+            }
         }
+
+        return new JsonResponse(['id' => 'files', 'html' => $html, 'files' => $fileData]);
+    }
+
+    private function buildSearchQuery(string $qpath, string $qalt, string $qtype): string
+    {
+        $db = app(DbService::class);
+        $qpath = $db->escapeWildcards($qpath);
+        $qalt = $db->escapeWildcards($qalt);
+
+        $sqlMime = $this->getMimeClause($qtype);
 
         //Generate search query
         $sql = ' FROM `files`';
@@ -229,18 +220,34 @@ class ExplorerController extends AbstractAdminController
             $sql .= ' ORDER BY `score` DESC';
         }
 
-        $html = '';
-        $fileData = [];
+        return 'SELECT *' . $sql;
+    }
 
-        $files = app(OrmService::class)->getByQuery(File::class, 'SELECT *' . $sql);
-        foreach ($files as $file) {
-            if ('unused' !== $qtype || !$file->isInUse()) {
-                $html .= $this->fileService->filehtml($file, $returnType);
-                $fileData[] = $this->fileService->fileAsArray($file);
-            }
+    private function getMimeClause(string $qtype): string
+    {
+        switch ($qtype) {
+            case 'image':
+                return "mime IN('image/jpeg', 'image/png', 'image/gif')";
+            case 'imagefile':
+                return "mime LIKE 'image/%' AND mime NOT IN('image/jpeg', 'image/png', 'image/gif')";
+            case 'video':
+                return "mime LIKE 'video/%'";
+            case 'audio':
+                return "mime LIKE 'audio/%'";
+            case 'text':
+                return "(
+                    mime IN(
+                        'application/pdf',
+                        'application/msword',
+                        'application/vnd.ms-%',
+                        'application/vnd.openxmlformats-officedocument.%',
+                        'application/vnd.oasis.opendocument.%'
+                )";
+            case 'compressed':
+                return "mime = 'application/zip'";
+            default:
+                return '';
         }
-
-        return new JsonResponse(['id' => 'files', 'html' => $html, 'files' => $fileData]);
     }
 
     public function fileDelete(Request $request, int $id): JsonResponse
