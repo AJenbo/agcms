@@ -177,7 +177,7 @@
                 {% endfor %}
             </select>
             {% else %}
-            {% if invoice.clerk or invoice.isFinalized %}{{invoice.clerk}}{% else %}{{currentUser.fullname}}{% endif %}
+            {% if invoice.clerk or invoice.isHandled %}{{invoice.clerk}}{% else %}{{currentUser.fullname}}{% endif %}
             {% endif %}
         </td>
     </tr>

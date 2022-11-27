@@ -335,7 +335,7 @@ class InvoiceService
             }
         }
 
-        if (!$invoice->isFinalized()) {
+        if (!$invoice->isHandled()) {
             if (in_array($action, [InvoiceAction::Cancel, InvoiceAction::Giro, InvoiceAction::Cash], true)
                 || (InvoiceAction::Lock === $action && InvoiceStatus::Locked !== $invoice->getStatus())
             ) {

@@ -255,7 +255,7 @@ class Payment extends Base
             return redirect('/betaling/?id=' . $id . '&checkid=' . rawurlencode($checkId), Response::HTTP_SEE_OTHER);
         }
 
-        if (!$invoice->isFinalized() && InvoiceStatus::PbsOk !== $invoice->getStatus() && !$request->query->has('txnid')) {
+        if (!$invoice->isHandled() && InvoiceStatus::PbsOk !== $invoice->getStatus() && !$request->query->has('txnid')) {
             return redirect($invoice->getLink(), Response::HTTP_SEE_OTHER);
         }
 
@@ -351,7 +351,7 @@ class Payment extends Base
      */
     private function setPaymentStatus(Request $request, Invoice $invoice): void
     {
-        if ($invoice->isFinalized() || InvoiceStatus::PbsOk === $invoice->getStatus()) {
+        if ($invoice->isHandled() || InvoiceStatus::PbsOk === $invoice->getStatus()) {
             return;
         }
 
@@ -467,7 +467,7 @@ class Payment extends Base
         if (!$invoice || $checkId !== $invoice->getCheckId()) {
             return redirect('/betaling/?id=' . $id . '&checkid=' . rawurlencode($checkId), Response::HTTP_SEE_OTHER);
         }
-        if ($invoice->isFinalized() || InvoiceStatus::PbsOk === $invoice->getStatus()) {
+        if ($invoice->isHandled() || InvoiceStatus::PbsOk === $invoice->getStatus()) {
             return redirect($invoice->getLink() . 'status/', Response::HTTP_SEE_OTHER);
         }
 

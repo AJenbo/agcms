@@ -1075,19 +1075,6 @@ class Invoice extends AbstractEntity
     }
 
     /**
-     * Check if this invoice is closed for editing.
-     */
-    public function isFinalized(): bool
-    {
-        return in_array($this->status, [
-            InvoiceStatus::Accepted,
-            InvoiceStatus::Giro,
-            InvoiceStatus::Cash,
-            InvoiceStatus::Canceled,
-        ], true);
-    }
-
-    /**
      * Get full url for administrating this invoice.
      */
     public function getAdminLink(): string
