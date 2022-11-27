@@ -55,7 +55,7 @@ class AddressbookController extends AbstractAdminController
             'phone1'     => $request->request->getAlnum('phone1'),
             'phone2'     => $request->request->getAlnum('phone2'),
             'subscribed' => $request->request->getBoolean('newsletter'),
-            'interests'  => $request->request->get('interests', []),
+            'interests'  => $request->request->all('interests', []),
             'ip'         => $request->getClientIp(),
         ]);
         $contact->save();
@@ -73,7 +73,7 @@ class AddressbookController extends AbstractAdminController
             throw new InvalidInput(_('Contact not found.'), Response::HTTP_NOT_FOUND);
         }
 
-        $interests = $request->request->get('interests');
+        $interests = $request->request->all('interests');
         if (!is_array($interests)) {
             $interests = [];
         }

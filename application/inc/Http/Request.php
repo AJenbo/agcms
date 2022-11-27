@@ -7,7 +7,7 @@ use App\Models\User;
 use App\Services\DbService;
 use App\Services\OrmService;
 use Exception;
-use Symfony\Component\HttpFoundation\ParameterBag;
+use Symfony\Component\HttpFoundation\InputBag;
 use Symfony\Component\HttpFoundation\Request as SymfonyRequest;
 use Symfony\Component\HttpFoundation\Session\Session;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
@@ -49,7 +49,7 @@ class Request extends SymfonyRequest
             $content = $this->getContent();
             $data = json_decode($content, true) ?? [];
             $data = is_array($data) ? $data : ['json' => $data];
-            $this->request = new ParameterBag($data);
+            $this->request = new InputBag($data);
         }
     }
 

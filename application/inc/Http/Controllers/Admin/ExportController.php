@@ -318,7 +318,7 @@ class ExportController extends AbstractAdminController
 
         rewind($csv);
 
-        $output = stream_get_contents($csv);
+        $output = stream_get_contents($csv) ?: null;
 
         $header = [
             'Content-Type'        => 'text/csv',

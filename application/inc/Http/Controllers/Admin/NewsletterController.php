@@ -60,7 +60,7 @@ class NewsletterController extends AbstractAdminController
             'from'       => $request->getRequestString('from'),
             'subject'    => $request->getRequestString('subject'),
             'html'       => $html,
-            'interests'  => $request->request->get('interests', []),
+            'interests'  => $request->request->all('interests', []),
         ]);
         $newsletter->save();
 
@@ -80,7 +80,7 @@ class NewsletterController extends AbstractAdminController
 
         $html = purifyHTML($request->getRequestString('html') ?? '');
 
-        $interests = $request->get('interests');
+        $interests = $request->request->all('interests');
         if (!is_array($interests)) {
             $interests = [];
         }
@@ -104,7 +104,7 @@ class NewsletterController extends AbstractAdminController
     public function countRecipients(Request $request): JsonResponse
     {
         $newsletter = new Newsletter();
-        $interests = $request->get('interests');
+        $interests = $request->query->all('interests');
         if (is_array($interests)) {
             $newsletter->setInterests($interests);
         }

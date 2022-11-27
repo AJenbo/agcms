@@ -6,7 +6,7 @@ use App\Exceptions\Exception;
 use App\Exceptions\InvalidInput;
 use App\Services\DbService;
 use App\Services\OrmService;
-use Symfony\Component\HttpFoundation\File\MimeType\MimeTypeGuesser;
+use Symfony\Component\Mime\MimeTypes;
 
 class File extends AbstractEntity
 {
@@ -263,8 +263,8 @@ class File extends AbstractEntity
             $imagesize = [];
         }
 
-        $guesser = MimeTypeGuesser::getInstance();
-        $mime = $guesser->guess($fullPath);
+        $guesser = new MimeTypes();
+        $mime = $guesser->guessMimeType($fullPath);
 
         $file = new static([
             'path'        => $path,

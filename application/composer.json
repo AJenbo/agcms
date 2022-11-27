@@ -27,23 +27,24 @@
         "guzzlehttp/psr7": "^2.4",
         "james-heinrich/getid3": "^1.9",
         "php-http/guzzle7-adapter": "^1.0",
-        "phpmailer/phpmailer": "^6.6.5",
-        "sentry/sentry": "^3.9",
-        "symfony/http-foundation": "^4.0",
-        "tecnickcom/tcpdf": "^6.2",
+        "phpmailer/phpmailer": "^6.6",
+        "sentry/sentry": "^3.12",
+        "symfony/http-foundation": "^6.1",
+        "symfony/mime": "^6.1",
+        "tecnickcom/tcpdf": "^6.5",
         "twig/twig": "^3.4"
     },
     "require-dev": {
         "ext-pdo_sqlite": "*",
         "dms/phpunit-arraysubset-asserts": "^0.4.0",
-        "friendsofphp/php-cs-fixer": "^3.12",
+        "friendsofphp/php-cs-fixer": "^3.13",
         "mheap/phpunit-github-actions-printer": "^1.5",
-        "mockery/mockery": "^1.0.0",
-        "php-coveralls/php-coveralls": "^2.0",
+        "mockery/mockery": "^1.5",
+        "php-coveralls/php-coveralls": "^2.5",
         "phpstan/phpstan": "*",
         "phpstan/phpstan-mockery": "*",
         "phpstan/phpstan-phpunit": "*",
-        "phpunit/phpunit": "^9.0"
+        "phpunit/phpunit": "^9.5"
     },
     "replace": {
         "symfony/polyfill-php72": "*",
