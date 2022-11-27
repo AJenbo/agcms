@@ -19,6 +19,7 @@
         <meta property="og:image:alt" content="{{renderable.icon.description}}" />
         {% endif %}
         {% if renderable.excerpt %}<meta property="og:description" content="{{renderable.excerpt}}" />{% endif %}
+        {% block header %}{% endblock %}
     </head>
     <body>
         <div id="wrapper">
@@ -47,10 +48,6 @@
             </ul>
         </div>
         <script type="text/javascript" src="/javascript/site.js"></script>
-        <script type="text/javascript"><!--
-            {% block jsonload %}{% endblock %}
-
-        --></script>
     </body>
 </html>
 {% endapply %}

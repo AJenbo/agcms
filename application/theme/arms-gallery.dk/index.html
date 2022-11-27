@@ -19,6 +19,7 @@
         <meta property="og:image:alt" content="{{renderable.icon.description}}" />
         {% endif %}
         {% if renderable.excerpt %}<meta property="og:description" content="{{renderable.excerpt}}" />{% endif %}
+        {% block header %}{% endblock %}
     </head>
     <body>
         <div id="headder">
@@ -104,11 +105,6 @@
             </div>
         </div>
         <script type="text/javascript" src="/javascript/arms-gallery.dk.js"></script>
-        <script type="text/javascript"><!--
-            {% block jsonload %}{% endblock %}
-            var addthis_config = {"data_use_cookies_ondomain": false, "data_use_cookies": false};
-        --></script>
-        <script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=armsgallery"></script>
         <script type="text/javascript"><!--
             (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
             (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
