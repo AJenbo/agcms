@@ -24,12 +24,12 @@
     </a>
 </li>
 {% endif %}
-{% if invoice.id and not invoice.isLocked %}
+{% if invoice.id and not invoice.isFinalized %}
 <li>
     <a onclick="return save({{invoice.id}}, 'cancel')"><img src="/theme/default/images/admin/bin.png" alt="" width="16" height="16" /> {{'Cancel'|trans}}</a>
 </li>
 {% endif %}
-{% if not invoice.isEditable %}
+{% if invoice.isEditable %}
 {% if not invoice.sent %}
 <li id="emaillink"{% if not invoice.hasValidEmail %} style="display:none"{% endif %}>
     <a onclick="return save({{invoice.id|json_encode|raw}}, 'email')">
@@ -49,7 +49,7 @@
 {% block canvas %}
 <div id="headline">{{title}}</div>
 <table style="float:right">
-    {% if not invoice.isLocked %}
+    {% if not invoice.isFinalized %}
     <tr>
         <td><input type="button" value="{{'Paid via giro'|trans}}" onclick="save({{invoice.id|json_encode|raw}}, 'giro')" /></td>
         <td>

@@ -730,14 +730,19 @@ class Invoice extends AbstractEntity
         return in_array($this->status, [InvoiceStatus::Canceled, InvoiceStatus::Accepted, InvoiceStatus::Giro, InvoiceStatus::Cash], true);
     }
 
-    public function isLocked(): bool
+    public function isFinalized(): bool
     {
         return $this->isHandled() || $this->status === InvoiceStatus::PbsOk;
     }
 
+    public function isLocked(): bool
+    {
+        return $this->status === InvoiceStatus::Locked;
+    }
+
     public function isEditable(): bool
     {
-        return !$this->isLocked() && $this->status !== InvoiceStatus::Rejected;
+        return !$this->isFinalized() && $this->status !== InvoiceStatus::Rejected;
     }
 
     public function isNew(): bool
