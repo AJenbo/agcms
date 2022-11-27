@@ -21,7 +21,7 @@ class TableController extends AbstractAdminController
         $table = new Table([
             'page_id'     => $request->request->getInt('page_id'),
             'title'       => $request->getRequestString('title'),
-            'column_data' => json_encode($request->request->get('columns', []), JSON_THROW_ON_ERROR),
+            'column_data' => json_encode($request->request->all('columns'), JSON_THROW_ON_ERROR),
             'order_by'    => $request->request->getInt('order_by'),
             'has_links'   => $request->request->getBoolean('has_links'),
         ]);
@@ -49,7 +49,7 @@ class TableController extends AbstractAdminController
      */
     public function addRow(Request $request, int $tableId): JsonResponse
     {
-        $cells = $request->request->get('cells');
+        $cells = $request->request->all('cells');
         if (!is_array($cells)) {
             $cells = [];
         }
@@ -73,7 +73,7 @@ class TableController extends AbstractAdminController
 
     public function updateRow(Request $request, int $tableId, int $rowId): JsonResponse
     {
-        $cells = $request->request->get('cells');
+        $cells = $request->request->all('cells');
         if (!is_array($cells)) {
             $cells = [];
         }

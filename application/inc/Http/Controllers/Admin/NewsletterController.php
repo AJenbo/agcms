@@ -60,7 +60,7 @@ class NewsletterController extends AbstractAdminController
             'from'       => $request->getRequestString('from'),
             'subject'    => $request->getRequestString('subject'),
             'html'       => $html,
-            'interests'  => $request->request->all('interests', []),
+            'interests'  => $request->request->all('interests'),
         ]);
         $newsletter->save();
 
