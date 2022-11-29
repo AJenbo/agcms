@@ -1,3 +1,5 @@
+var webpack = require('webpack');
+
 module.exports = {
     entry: {
         "admin": "./source/javascript/admin/index.js",
@@ -10,6 +12,11 @@ module.exports = {
         "huntershouse.dk": "./source/javascript/huntershouse.dk.js"
     },
     output: {filename: "[name].js", path: __dirname + "/application/javascript"},
+    devtool: false,
+    plugins: [new webpack.SourceMapDevToolPlugin({
+       filename: 'sourcemaps/[file].map',
+       fileContext: 'public'
+    })],
     module: {
         rules: [{
             test: /\.js$/,
