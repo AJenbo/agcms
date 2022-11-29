@@ -21,7 +21,7 @@ class EpaymentService
     private string $password;
 
     /** @var ?SoapClient Service connection. */
-    private ?SoapClient $soapClient;
+    private ?SoapClient $soapClient = null;
 
     /** @var array<int, string> */
     private const PAYMENT_TYPES = [
