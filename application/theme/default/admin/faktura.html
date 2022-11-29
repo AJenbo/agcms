@@ -447,7 +447,7 @@
             <td>&nbsp;</td>
             <td>&nbsp;</td>
             <td class="tal">{{'Net Amount'|trans}}</td>
-            <td class="tal" id="netto">{{invoice.netAmount|money(false)}}</td>
+            <td class="tal" id="netto">{% if not invoice.netAmount is null %}{{invoice.netAmount|money(false)}}{% endif %}</td>
         </tr>
         <tr>
             <td>&nbsp;</td>
@@ -455,7 +455,7 @@
             <td class="tal">{{'Freight'|trans}}</td>
             <td class="tal">
                 {% if not invoice or invoice.isNew %}
-                <input maxlength="9" name="fragt" id="fragt" style="width:80px" class="tal" value="{{invoice.shipping|money(false)}}" onkeyup="prisUpdate()" onchange="prisUpdate()" onblur="prisUpdate()" />
+                <input maxlength="9" name="fragt" id="fragt" style="width:80px" class="tal" value="{% if not invoice.netAmount is null %}{{invoice.shipping|money(false)}}{% endif %}" onkeyup="prisUpdate()" onchange="prisUpdate()" onblur="prisUpdate()" />
                 {% else %}
                 {{invoice.shipping|money(false)}}
                 {% endif %}
