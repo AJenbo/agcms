@@ -28,11 +28,10 @@ jobs:
 
       - name: Get Cache
         id: composer-cache
-        run: echo "::set-output name=dir::$(cd ./application && composer config cache-files-dir)"
-      - uses: actions/cache@v3
+        uses: actions/cache@v3
         with:
           path: |
-            ${{ steps.composer-cache.outputs.dir }}
+            application/vendor
             ./.php-cs-fixer.cache
           key: composer-${{ hashFiles('**/composer.lock') }}
           restore-keys: composer-
