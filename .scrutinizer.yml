@@ -1,0 +1,18 @@
+build:
+    environment:
+        php:
+            version: 8.1
+    tests:
+        override:
+            - true
+
+checks:
+    php:
+        code_rating: true
+        duplication: true
+
+filter:
+    paths: [ "application/*" ]
+
+tools:
+    external_code_coverage: true
