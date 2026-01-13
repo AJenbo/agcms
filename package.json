@@ -29,6 +29,6 @@
     "webpack-cli": "^5.0.0"
   },
   "dependencies": {
-    "@sentry/browser": "^7.21.1"
+    "@sentry/browser": "^7.119.1"
   }
 }
