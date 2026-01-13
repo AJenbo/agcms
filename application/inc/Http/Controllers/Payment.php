@@ -358,7 +358,7 @@ class Payment extends Base
         $cardType = EpaymentService::getPaymentName(intval($request->get('paymenttype')));
         $internalNote = $this->generateInternalPaymentNote($request);
 
-        if (!app(EmailService::class)->valideMail($invoice->getDepartment())) {
+        if (!$invoice->getDepartment() || !app(EmailService::class)->valideMail($invoice->getDepartment())) {
             $invoice->setDepartment(ConfigService::getDefaultEmail());
         }
 
