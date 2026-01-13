@@ -36,22 +36,13 @@ class EpaymentTest extends TestCase
      */
     private function getPayment(string $status = 'PAYMENT_NEW', int $amount = 100, int $captured = 0): Epayment
     {
-        $data = new StdClass();
+        $data = new stdClass();
         $data->transactionid = 1;
         $data->status = $status;
         $data->authamount = $amount;
         $data->capturedamount = $captured;
 
         return new Epayment($this->epaymentService, $data);
-    }
-
-    /**
-     * @covers \App\Models\Epayment::__construct
-     */
-    public function testCanInstanciate(): void
-    {
-        $epayment = $this->getPayment();
-        static::assertInstanceOf(Epayment::class, $epayment);
     }
 
     /**

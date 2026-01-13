@@ -73,9 +73,9 @@ class AddressbookController extends AbstractAdminController
             throw new InvalidInput(_('Contact not found.'), Response::HTTP_NOT_FOUND);
         }
 
-        $interests = $request->request->all('interests');
-        if (!is_array($interests)) {
-            $interests = [];
+        $interests = [];
+        foreach ($request->request->all('interests') as $interest) {
+            $interests[] = valstring($interest);
         }
 
         $contact->setName($request->getRequestString('name') ?? '')

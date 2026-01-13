@@ -258,14 +258,14 @@ class Countries
         ];
     }
 
-/**
- * @return array<string, string>
- */
-public static function getOrdered(): array
-{
-    $countries = self::getCountries();
-    natcasesort($countries);
+    /**
+     * @return array<string, string>
+     */
+    public static function getOrdered(): array
+    {
+        $countries = self::getCountries();
+        natcasesort($countries);
 
-    return $countries;
-}
+        return $countries;
+    }
 }

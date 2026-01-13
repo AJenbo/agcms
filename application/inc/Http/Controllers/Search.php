@@ -129,8 +129,6 @@ class Search extends Base
 
     /**
      * Check if we should performe the search or handle it else where.
-     *
-     * @return ?RedirectResponse
      */
     private function checkSearchable(Request $request): ?RedirectResponse
     {

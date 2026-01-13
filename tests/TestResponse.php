@@ -85,7 +85,7 @@ class TestResponse
     /**
      * Assert that the response is a superset of the given JSON.
      *
-     * @param array<string, mixed> $data
+     * @param array<mixed> $data
      *
      * @return $this
      */
@@ -99,8 +99,8 @@ class TestResponse
     /**
      * Assert that the response has a given JSON structure.
      *
-     * @param null|array<mixed>        $structure
-     * @param null|array<array<mixed>> $responseData
+     * @param null|array<mixed> $structure
+     * @param null|array<mixed> $responseData
      *
      * @return $this
      */

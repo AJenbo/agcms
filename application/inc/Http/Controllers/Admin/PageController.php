@@ -26,8 +26,8 @@ class PageController extends AbstractAdminController
      */
     public function index(Request $request, ?int $id = null): Response
     {
-        $selectedId = intval($request->cookies->get('activekat', -1));
-        $openCategories = explode('<', strval($request->cookies->get('openkat', '')));
+        $selectedId = valint($request->cookies->get('activekat', -1));
+        $openCategories = explode('<', valstring($request->cookies->get('openkat', '')));
         $openCategories = array_map('intval', $openCategories);
 
         $orm = app(OrmService::class);
@@ -231,7 +231,7 @@ class PageController extends AbstractAdminController
      */
     public function search(Request $request): Response
     {
-        $text = strval($request->get('text', ''));
+        $text = valstring($request->get('text', ''));
         if (!$text) {
             throw new InvalidInput(_('You must enter a search word.'));
         }

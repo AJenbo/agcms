@@ -17,8 +17,9 @@ class TwigExtensions extends AbstractExtension
             new TwigFilter('money', function (float $amount, bool $thousan = true, int $decimals = 2): string {
                 $conv = localeconv();
                 $decimal_point = $conv['mon_decimal_point'];
+                $decimal_point = is_string($decimal_point) ? $decimal_point : '';
                 $thousands_sep = '';
-                if ($thousan) {
+                if ($thousan && is_string($conv['mon_thousands_sep'])) {
                     $thousands_sep = $conv['mon_thousands_sep'];
                 }
 

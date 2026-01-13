@@ -141,7 +141,7 @@ class ExportController extends AbstractAdminController
                             continue;
                         }
                         $rowData[] = $column->title;
-                        $rowData[] = strval($row[$i]);
+                        $rowData[] = valstring($row[$i]);
                         $rowData[] = '';
                         $rowData[] = '0';
 
@@ -158,10 +158,10 @@ class ExportController extends AbstractAdminController
                         $price = $salePrice;
                     }
                     if ($salePrice && $salePrice !== $price) {
-                        $rowData[23] = strval($salePrice);
+                        $rowData[23] = valstring($salePrice);
                     }
                     if ($price) {
-                        $rowData[24] = strval($price);
+                        $rowData[24] = valstring($price);
                     }
 
                     $variations[] = $rowData;
@@ -258,7 +258,7 @@ class ExportController extends AbstractAdminController
             $salesPrice ?: '',
             $price ?: '',
             implode(', ', $paths),
-            trim($page->getKeywords(), " \n\r\t\v\0,"),
+            mb_trim($page->getKeywords(), " \n\r\t\v\0,"),
             '',
             implode(', ', $this->extractImages($page)),
             'n/a',
@@ -290,7 +290,7 @@ class ExportController extends AbstractAdminController
             throw new Exception('preg_replace failed');
         }
 
-        $urls = array_filter($matches[1] ?? []);
+        $urls = array_filter($matches[1]);
 
         $result = [];
         foreach ($urls as $url) {

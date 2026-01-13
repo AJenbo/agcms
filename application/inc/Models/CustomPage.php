@@ -22,9 +22,9 @@ class CustomPage extends AbstractEntity implements InterfaceRichText
 
     public function __construct(array $data = [])
     {
-        $this->setTimeStamp(intval($data['timestamp']))
-            ->setTitle(strval($data['title']))
-            ->setHtml(strval($data['html']))
+        $this->setTimeStamp(valint($data['timestamp']))
+            ->setTitle(valstring($data['title']))
+            ->setHtml(valstring($data['html']))
             ->setId(intOrNull($data['id'] ?? null));
     }
 

@@ -128,43 +128,43 @@ class Invoice extends AbstractEntity
 
     public function __construct(array $data = [])
     {
-        $this->setItemData(strval($data['item_data'] ?? '[]'))
-            ->setHasShippingAddress(boolval($data['has_shipping_address'] ?? false))
-            ->setTimeStamp(intval($data['timestamp'] ?? time()))
-            ->setTimeStampPay(intval($data['timestamp_pay'] ?? 0))
-            ->setAmount(floatval($data['amount'] ?? 0.00))
-            ->setName(strval($data['name'] ?? ''))
-            ->setAttn(strval($data['attn'] ?? ''))
-            ->setAddress(strval($data['address'] ?? ''))
-            ->setPostbox(strval($data['postbox'] ?? ''))
-            ->setPostcode(strval($data['postcode'] ?? ''))
-            ->setCity(strval($data['city'] ?? ''))
-            ->setCountry(strval($data['country'] ?? 'DK'))
-            ->setEmail(strval($data['email'] ?? ''))
-            ->setPhone1(strval($data['phone1'] ?? ''))
-            ->setPhone2(strval($data['phone2'] ?? ''))
-            ->setShippingPhone(strval($data['shipping_phone'] ?? ''))
-            ->setShippingName(strval($data['shipping_name'] ?? ''))
-            ->setShippingAttn(strval($data['shipping_attn'] ?? ''))
-            ->setShippingAddress(strval($data['shipping_address'] ?? ''))
-            ->setShippingAddress2(strval($data['shipping_address2'] ?? ''))
-            ->setShippingPostbox(strval($data['shipping_postbox'] ?? ''))
-            ->setShippingPostcode(strval($data['shipping_postcode'] ?? ''))
-            ->setShippingCity(strval($data['shipping_city'] ?? ''))
-            ->setShippingCountry(strval($data['shipping_country'] ?? 'DK'))
-            ->setNote(strval($data['note'] ?? ''))
-            ->setInternalNote(strval($data['internal_note'] ?? ''))
-            ->setClerk(strval($data['clerk'] ?? ''))
-            ->setStatus(InvoiceStatus::from(strval($data['status'] ?? 'new')))
-            ->setShipping(floatval($data['shipping'] ?? 0.00))
-            ->setVat(floatval($data['vat'] ?? 0.25))
-            ->setPreVat(boolval($data['pre_vat'] ?? true))
-            ->setTransferred(boolval($data['transferred'] ?? false))
-            ->setCardtype(strval($data['cardtype'] ?? ''))
-            ->setIref(strval($data['iref'] ?? ''))
-            ->setEref(strval($data['eref'] ?? ''))
-            ->setSent(boolval($data['sent'] ?? false))
-            ->setDepartment(strval($data['department'] ?? ''))
+        $this->setItemData(valstring($data['item_data'] ?? '[]'))
+            ->setHasShippingAddress(valbool($data['has_shipping_address'] ?? false))
+            ->setTimeStamp(valint($data['timestamp'] ?? time()))
+            ->setTimeStampPay(valint($data['timestamp_pay'] ?? 0))
+            ->setAmount(valfloat($data['amount'] ?? 0.00))
+            ->setName(valstring($data['name'] ?? ''))
+            ->setAttn(valstring($data['attn'] ?? ''))
+            ->setAddress(valstring($data['address'] ?? ''))
+            ->setPostbox(valstring($data['postbox'] ?? ''))
+            ->setPostcode(valstring($data['postcode'] ?? ''))
+            ->setCity(valstring($data['city'] ?? ''))
+            ->setCountry(valstring($data['country'] ?? 'DK'))
+            ->setEmail(valstring($data['email'] ?? ''))
+            ->setPhone1(valstring($data['phone1'] ?? ''))
+            ->setPhone2(valstring($data['phone2'] ?? ''))
+            ->setShippingPhone(valstring($data['shipping_phone'] ?? ''))
+            ->setShippingName(valstring($data['shipping_name'] ?? ''))
+            ->setShippingAttn(valstring($data['shipping_attn'] ?? ''))
+            ->setShippingAddress(valstring($data['shipping_address'] ?? ''))
+            ->setShippingAddress2(valstring($data['shipping_address2'] ?? ''))
+            ->setShippingPostbox(valstring($data['shipping_postbox'] ?? ''))
+            ->setShippingPostcode(valstring($data['shipping_postcode'] ?? ''))
+            ->setShippingCity(valstring($data['shipping_city'] ?? ''))
+            ->setShippingCountry(valstring($data['shipping_country'] ?? 'DK'))
+            ->setNote(valstring($data['note'] ?? ''))
+            ->setInternalNote(valstring($data['internal_note'] ?? ''))
+            ->setClerk(valstring($data['clerk'] ?? ''))
+            ->setStatus(InvoiceStatus::from(valstring($data['status'] ?? 'new')))
+            ->setShipping(valfloat($data['shipping'] ?? 0.00))
+            ->setVat(valfloat($data['vat'] ?? 0.25))
+            ->setPreVat(valbool($data['pre_vat'] ?? true))
+            ->setTransferred(valbool($data['transferred'] ?? false))
+            ->setCardtype(valstring($data['cardtype'] ?? ''))
+            ->setIref(valstring($data['iref'] ?? ''))
+            ->setEref(valstring($data['eref'] ?? ''))
+            ->setSent(valbool($data['sent'] ?? false))
+            ->setDepartment(valstring($data['department'] ?? ''))
             ->setId(intOrNull($data['id'] ?? null));
     }
 
@@ -215,8 +215,6 @@ class Invoice extends AbstractEntity
 
     /**
      * Get time the payment was finalized.
-     *
-     * @return ?int
      */
     public function getTimeStampPay(): ?int
     {
@@ -237,8 +235,6 @@ class Invoice extends AbstractEntity
 
     /**
      * Get payment id.
-     *
-     * @return ?int
      */
     public function getPaymentId(): ?int
     {
@@ -272,7 +268,7 @@ class Invoice extends AbstractEntity
      */
     public function setName(string $name): self
     {
-        $this->name = trim($name);
+        $this->name = mb_trim($name);
 
         return $this;
     }
@@ -292,7 +288,7 @@ class Invoice extends AbstractEntity
      */
     public function setAttn(string $attn): self
     {
-        $this->attn = trim($attn);
+        $this->attn = mb_trim($attn);
 
         return $this;
     }
@@ -312,7 +308,7 @@ class Invoice extends AbstractEntity
      */
     public function setAddress(string $address): self
     {
-        $this->address = trim($address);
+        $this->address = mb_trim($address);
 
         return $this;
     }
@@ -332,7 +328,7 @@ class Invoice extends AbstractEntity
      */
     public function setPostbox(string $postbox): self
     {
-        $this->postbox = trim($postbox);
+        $this->postbox = mb_trim($postbox);
 
         return $this;
     }
@@ -352,7 +348,7 @@ class Invoice extends AbstractEntity
      */
     public function setPostcode(string $postcode): self
     {
-        $this->postcode = trim($postcode);
+        $this->postcode = mb_trim($postcode);
 
         return $this;
     }
@@ -372,7 +368,7 @@ class Invoice extends AbstractEntity
      */
     public function setCity(string $city): self
     {
-        $this->city = trim($city);
+        $this->city = mb_trim($city);
 
         return $this;
     }
@@ -392,7 +388,7 @@ class Invoice extends AbstractEntity
      */
     public function setCountry(string $country): self
     {
-        $this->country = trim($country);
+        $this->country = mb_trim($country);
 
         return $this;
     }
@@ -412,7 +408,7 @@ class Invoice extends AbstractEntity
      */
     public function setEmail(string $email): self
     {
-        $this->email = trim($email);
+        $this->email = mb_trim($email);
 
         return $this;
     }
@@ -432,7 +428,7 @@ class Invoice extends AbstractEntity
      */
     public function setPhone1(string $phone1): self
     {
-        $this->phone1 = trim($phone1);
+        $this->phone1 = mb_trim($phone1);
 
         return $this;
     }
@@ -452,7 +448,7 @@ class Invoice extends AbstractEntity
      */
     public function setPhone2(string $phone2): self
     {
-        $this->phone2 = trim($phone2);
+        $this->phone2 = mb_trim($phone2);
 
         return $this;
     }
@@ -492,7 +488,7 @@ class Invoice extends AbstractEntity
      */
     public function setShippingPhone(string $shippingPhone): self
     {
-        $this->shippingPhone = trim($shippingPhone);
+        $this->shippingPhone = mb_trim($shippingPhone);
 
         return $this;
     }
@@ -512,7 +508,7 @@ class Invoice extends AbstractEntity
      */
     public function setShippingName(string $shippingName): self
     {
-        $this->shippingName = trim($shippingName);
+        $this->shippingName = mb_trim($shippingName);
 
         return $this;
     }
@@ -532,7 +528,7 @@ class Invoice extends AbstractEntity
      */
     public function setShippingAttn(string $shippingAttn): self
     {
-        $this->shippingAttn = trim($shippingAttn);
+        $this->shippingAttn = mb_trim($shippingAttn);
 
         return $this;
     }
@@ -552,7 +548,7 @@ class Invoice extends AbstractEntity
      */
     public function setShippingAddress(string $shippingAddress): self
     {
-        $this->shippingAddress = trim($shippingAddress);
+        $this->shippingAddress = mb_trim($shippingAddress);
 
         return $this;
     }
@@ -572,7 +568,7 @@ class Invoice extends AbstractEntity
      */
     public function setShippingAddress2(string $shippingAddress2): self
     {
-        $this->shippingAddress2 = trim($shippingAddress2);
+        $this->shippingAddress2 = mb_trim($shippingAddress2);
 
         return $this;
     }
@@ -592,7 +588,7 @@ class Invoice extends AbstractEntity
      */
     public function setShippingPostbox(string $shippingPostbox): self
     {
-        $this->shippingPostbox = trim($shippingPostbox);
+        $this->shippingPostbox = mb_trim($shippingPostbox);
 
         return $this;
     }
@@ -612,7 +608,7 @@ class Invoice extends AbstractEntity
      */
     public function setShippingPostcode(string $shippingPostcode): self
     {
-        $this->shippingPostcode = trim($shippingPostcode);
+        $this->shippingPostcode = mb_trim($shippingPostcode);
 
         return $this;
     }
@@ -632,7 +628,7 @@ class Invoice extends AbstractEntity
      */
     public function setShippingCity(string $shippingCity): self
     {
-        $this->shippingCity = trim($shippingCity);
+        $this->shippingCity = mb_trim($shippingCity);
 
         return $this;
     }
@@ -652,7 +648,7 @@ class Invoice extends AbstractEntity
      */
     public function setShippingCountry(string $shippingCountry): self
     {
-        $this->shippingCountry = trim($shippingCountry);
+        $this->shippingCountry = mb_trim($shippingCountry);
 
         return $this;
     }
@@ -672,7 +668,7 @@ class Invoice extends AbstractEntity
      */
     public function setNote(string $note): self
     {
-        $this->note = trim($note);
+        $this->note = mb_trim($note);
 
         return $this;
     }
@@ -692,7 +688,7 @@ class Invoice extends AbstractEntity
      */
     public function setClerk(string $clerk): self
     {
-        $this->clerk = trim($clerk);
+        $this->clerk = mb_trim($clerk);
 
         return $this;
     }
@@ -837,7 +833,7 @@ class Invoice extends AbstractEntity
      */
     public function setCardtype(string $cardtype): self
     {
-        $this->cardtype = trim($cardtype) ?: _('Unknown');
+        $this->cardtype = mb_trim($cardtype) ?: _('Unknown');
 
         return $this;
     }
@@ -857,7 +853,7 @@ class Invoice extends AbstractEntity
      */
     public function setIref(string $iref): self
     {
-        $this->iref = trim($iref);
+        $this->iref = mb_trim($iref);
 
         return $this;
     }
@@ -877,7 +873,7 @@ class Invoice extends AbstractEntity
      */
     public function setEref(string $eref): self
     {
-        $this->eref = trim($eref);
+        $this->eref = mb_trim($eref);
 
         return $this;
     }
@@ -917,7 +913,7 @@ class Invoice extends AbstractEntity
      */
     public function setDepartment(string $department): self
     {
-        $this->department = trim($department);
+        $this->department = mb_trim($department);
 
         return $this;
     }
@@ -937,7 +933,7 @@ class Invoice extends AbstractEntity
      */
     public function setInternalNote(string $internalNote): self
     {
-        $this->internalNote = trim($internalNote);
+        $this->internalNote = mb_trim($internalNote);
 
         return $this;
     }
@@ -1027,6 +1023,7 @@ class Invoice extends AbstractEntity
         $items = json_decode($itemData, true);
         if (is_array($items)) {
             foreach ($items as $item) {
+                assert(is_array($item));
                 $quantity = $item['quantity'] ?? null;
                 if (!is_int($quantity)) {
                     $quantity = 0;

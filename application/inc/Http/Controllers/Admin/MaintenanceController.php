@@ -35,7 +35,7 @@ class MaintenanceController extends AbstractAdminController
 
         $db->addLoadedTable('emails');
         $emailStatus = $db->fetchArray("SHOW TABLE STATUS LIKE 'emails'");
-        /** @var (string|int)[] */
+        /** @var (int|string)[] */
         $emailStatus = reset($emailStatus);
 
         $page = app(OrmService::class)->getOne(CustomPage::class, 0);
@@ -69,7 +69,7 @@ class MaintenanceController extends AbstractAdminController
             $size /= 1024;
         }
 
-        return number_format($size, 1, localeconv()['mon_decimal_point'], '') . $unit;
+        return number_format($size, 1, valstring(localeconv()['mon_decimal_point']), '') . $unit;
     }
 
     /**
@@ -400,7 +400,7 @@ class MaintenanceController extends AbstractAdminController
             );
 
             foreach ($imap->listMailboxes() as $mailbox) {
-                $mailboxStatus = $imap->select($mailbox['name'], true);
+                $mailboxStatus = $imap->select(valstring($mailbox['name']), true);
                 if (!$mailboxStatus['exists']) {
                     continue;
                 }
@@ -422,8 +422,8 @@ class MaintenanceController extends AbstractAdminController
         $tabels = app(DbService::class)->fetchArray('SHOW TABLE STATUS');
         $dbsize = 0;
         foreach ($tabels as $tabel) {
-            $dbsize += $tabel['Data_length'];
-            $dbsize += $tabel['Index_length'];
+            $dbsize += valint($tabel['Data_length']);
+            $dbsize += valint($tabel['Index_length']);
         }
 
         return (int)$dbsize;

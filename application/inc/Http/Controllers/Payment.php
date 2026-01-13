@@ -141,26 +141,26 @@ class Payment extends Base
         $data = $this->invoiceService->cleanAddressData($data);
 
         $invoice->setStatus(InvoiceStatus::Locked)
-            ->setName(strval($data['name']))
-            ->setAttn(strval($data['attn']))
-            ->setAddress(strval($data['address']))
-            ->setPostbox(strval($data['postbox']))
-            ->setPostcode(strval($data['postcode']))
-            ->setCity(strval($data['city']))
-            ->setCountry(strval($data['country']))
-            ->setEmail(strval($data['email']))
-            ->setPhone1(strval($data['phone1']))
-            ->setPhone2(strval($data['phone2']))
-            ->setHasShippingAddress(intval($data['has_shipping_address']) === 1)
-            ->setShippingPhone(strval($data['shipping_phone']))
-            ->setShippingName(strval($data['shipping_name']))
-            ->setShippingAttn(strval($data['shipping_attn']))
-            ->setShippingAddress(strval($data['shipping_address']))
-            ->setShippingAddress2(strval($data['shipping_address2']))
-            ->setShippingPostbox(strval($data['shipping_postbox']))
-            ->setShippingPostcode(strval($data['shipping_postcode']))
-            ->setShippingCity(strval($data['shipping_city']))
-            ->setShippingCountry(strval($data['shipping_country']))
+            ->setName(valstring($data['name']))
+            ->setAttn(valstring($data['attn']))
+            ->setAddress(valstring($data['address']))
+            ->setPostbox(valstring($data['postbox']))
+            ->setPostcode(valstring($data['postcode']))
+            ->setCity(valstring($data['city']))
+            ->setCountry(valstring($data['country']))
+            ->setEmail(valstring($data['email']))
+            ->setPhone1(valstring($data['phone1']))
+            ->setPhone2(valstring($data['phone2']))
+            ->setHasShippingAddress(valbool($data['has_shipping_address']))
+            ->setShippingPhone(valstring($data['shipping_phone']))
+            ->setShippingName(valstring($data['shipping_name']))
+            ->setShippingAttn(valstring($data['shipping_attn']))
+            ->setShippingAddress(valstring($data['shipping_address']))
+            ->setShippingAddress2(valstring($data['shipping_address2']))
+            ->setShippingPostbox(valstring($data['shipping_postbox']))
+            ->setShippingPostcode(valstring($data['shipping_postcode']))
+            ->setShippingCity(valstring($data['shipping_city']))
+            ->setShippingCountry(valstring($data['shipping_country']))
             ->save();
 
         if ($invoice->getInvalid()) {
@@ -355,7 +355,7 @@ class Payment extends Base
             return;
         }
 
-        $cardType = EpaymentService::getPaymentName(intval($request->get('paymenttype')));
+        $cardType = EpaymentService::getPaymentName(valint($request->get('paymenttype')));
         $internalNote = $this->generateInternalPaymentNote($request);
 
         if (!$invoice->getDepartment() || !app(EmailService::class)->valideMail($invoice->getDepartment())) {
@@ -363,7 +363,7 @@ class Payment extends Base
         }
 
         $invoice->setCardtype($cardType)
-            ->setInternalNote(trim($invoice->getInternalNote() . "\n" . $internalNote))
+            ->setInternalNote(mb_trim($invoice->getInternalNote() . "\n" . $internalNote))
             ->setStatus(InvoiceStatus::PbsOk)
             ->setTimeStampPay(time())
             ->save();
@@ -444,19 +444,22 @@ class Payment extends Base
         if ($request->get('fraud')) {
             $internalNote .= _('Possible payment fraud.') . "\n";
         }
-        if ($request->get('cardno')) {
-            $internalNote .= _('Credit card no.: ') . $request->get('cardno') . "\n";
+        $cardno = valstring($request->get('cardno'));
+        if ($cardno) {
+            $internalNote .= _('Credit card no.: ') . $cardno . "\n";
         }
 
         $countries = Countries::getOrdered();
-        if ($request->get('issuercountry')) {
-            $internalNote .= _('Card is from: ') . $countries[$request->get('issuercountry')] . "\n";
+        $issuercountry = valstring($request->get('issuercountry'));
+        if ($issuercountry) {
+            $internalNote .= _('Card is from: ') . $countries[$issuercountry] . "\n";
         }
-        if ($request->get('payercountry')) {
-            $internalNote .= _('Payment was made from: ') . $countries[$request->get('payercountry')] . "\n";
+        $payercountry = valstring($request->get('payercountry'));
+        if ($payercountry) {
+            $internalNote .= _('Payment was made from: ') . $countries[$payercountry] . "\n";
         }
 
-        return trim($internalNote);
+        return mb_trim($internalNote);
     }
 
     /**

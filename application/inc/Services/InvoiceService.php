@@ -21,7 +21,7 @@ class InvoiceService
     /**
      * Create an invoice from the client cart array.
      *
-     * @param array<string, mixed> $cart
+     * @param array<mixed> $cart
      */
     public function createFromCart(array $cart): Invoice
     {
@@ -44,7 +44,7 @@ class InvoiceService
                 $pageId = null;
                 if ('line' === $item['type']) { // Find item based on price table row
                     $db->addLoadedTable('list_rows');
-                    $listRow = $db->fetchOne('SELECT * FROM `list_rows` WHERE id = ' . $item['id']);
+                    $listRow = $db->fetchOne('SELECT * FROM `list_rows` WHERE id = ' . valint($item['id']));
                     $table = $listRow ? $orm->getOne(Table::class, (int)$listRow['list_id']) : null;
                     if ($table) {
                         $pageId = $table->getPage()->getId();
@@ -56,12 +56,12 @@ class InvoiceService
                         $cells = array_map('html_entity_decode', $cells);
 
                         foreach ($table->getColumns() as $i => $column) {
-                            if (empty($cells[$i]) || !trim($cells[$i])) {
+                            if (empty($cells[$i]) || !mb_trim($cells[$i])) {
                                 continue;
                             }
 
                             if (in_array($column->type, [ColumnType::String, ColumnType::Int], true)) {
-                                $title .= ' ' . trim($cells[$i]);
+                                $title .= ' ' . mb_trim($cells[$i]);
                             } elseif (in_array(
                                 $column->type,
                                 [ColumnType::Price, ColumnType::SalesPrice],
@@ -70,10 +70,10 @@ class InvoiceService
                                 $value = (int)$cells[$i];
                             }
                         }
-                        $title = trim($title);
+                        $title = mb_trim($title);
                     }
                 } elseif ('page' === $item['type']) {
-                    $pageId = $item['id'] ?? null;
+                    $pageId = intOrNull($item['id'] ?? null);
                 }
 
                 $page = $pageId ? $orm->getOne(Page::class, $pageId) : null;
@@ -96,7 +96,7 @@ class InvoiceService
                 }
 
                 $items[] = [
-                    'title'    => trim($title),
+                    'title'    => mb_trim($title),
                     'quantity' => $quantity,
                     'value'    => $value,
                 ];
@@ -119,7 +119,7 @@ class InvoiceService
     /**
      * Clean up address data.
      *
-     * @param array<string, mixed> $data
+     * @param array<mixed> $data
      *
      * @return array<string, mixed>
      */
@@ -181,12 +181,12 @@ class InvoiceService
     /**
      * Generate additional order comments based on cart options.
      *
-     * @param array<string, string> $cart
+     * @param array<mixed> $cart
      */
     public function generateExtraNote(array $cart): string
     {
         $notes = [];
-        switch ($cart['payMethod'] ?? '') {
+        switch (valstring($cart['payMethod'] ?? '')) {
             case 'creditcard':
                 $notes[] = _('I would like to pay via credit card.');
                 break;
@@ -197,7 +197,7 @@ class InvoiceService
                 $notes[] = _('I would like to pay via cash.');
                 break;
         }
-        switch ($cart['deleveryMethod'] ?? '') {
+        switch (valstring($cart['deleveryMethod'] ?? '')) {
             case 'pickup':
                 $notes[] = _('I will pick up the goods in your shop.');
                 break;
@@ -255,7 +255,7 @@ class InvoiceService
     /**
      * Update invoice and mange it's state.
      *
-     * @param array<string, mixed> $updates
+     * @param array<mixed> $updates
      */
     public function invoiceBasicUpdate(Invoice $invoice, User $user, InvoiceAction $action, array $updates): void
     {
@@ -265,34 +265,34 @@ class InvoiceService
             if (InvoiceAction::Lock === $action) {
                 $status = InvoiceStatus::Locked;
             }
-            $invoice->setTimeStamp(strtotime(strval($updates['date'])) ?: time());
-            $invoice->setShipping(floatval($updates['shipping']));
-            $invoice->setAmount(floatval($updates['amount']));
-            $invoice->setVat(floatval($updates['vat']));
-            $invoice->setPreVat(boolval($updates['preVat']));
-            $invoice->setIref(strval($updates['iref']));
-            $invoice->setEref(strval($updates['eref']));
-            $invoice->setName(strval($updates['name']));
-            $invoice->setAttn(strval($updates['attn']));
-            $invoice->setAddress(strval($updates['address']));
-            $invoice->setPostbox(strval($updates['postbox']));
-            $invoice->setPostcode(strval($updates['postcode']));
-            $invoice->setCity(strval($updates['city']));
-            $invoice->setCountry(strval($updates['country']));
-            $invoice->setEmail(strval($updates['email']));
-            $invoice->setPhone1(strval($updates['phone1']));
-            $invoice->setPhone2(strval($updates['phone2']));
-            $invoice->setHasShippingAddress(boolval($updates['hasShippingAddress']));
+            $invoice->setTimeStamp(strtotime(valstring($updates['date'])) ?: time());
+            $invoice->setShipping(valfloat($updates['shipping']));
+            $invoice->setAmount(valfloat($updates['amount']));
+            $invoice->setVat(valfloat($updates['vat']));
+            $invoice->setPreVat(valbool($updates['preVat']));
+            $invoice->setIref(valstring($updates['iref']));
+            $invoice->setEref(valstring($updates['eref']));
+            $invoice->setName(valstring($updates['name']));
+            $invoice->setAttn(valstring($updates['attn']));
+            $invoice->setAddress(valstring($updates['address']));
+            $invoice->setPostbox(valstring($updates['postbox']));
+            $invoice->setPostcode(valstring($updates['postcode']));
+            $invoice->setCity(valstring($updates['city']));
+            $invoice->setCountry(valstring($updates['country']));
+            $invoice->setEmail(valstring($updates['email']));
+            $invoice->setPhone1(valstring($updates['phone1']));
+            $invoice->setPhone2(valstring($updates['phone2']));
+            $invoice->setHasShippingAddress(valbool($updates['hasShippingAddress']));
             if ($updates['hasShippingAddress']) {
-                $invoice->setShippingPhone(strval($updates['shippingPhone']));
-                $invoice->setShippingName(strval($updates['shippingName']));
-                $invoice->setShippingAttn(strval($updates['shippingAttn']));
-                $invoice->setShippingAddress(strval($updates['shippingAddress']));
-                $invoice->setShippingAddress2(strval($updates['shippingAddress2']));
-                $invoice->setShippingPostbox(strval($updates['shippingPostbox']));
-                $invoice->setShippingPostcode(strval($updates['shippingPostcode']));
-                $invoice->setShippingCity(strval($updates['shippingCity']));
-                $invoice->setShippingCountry(strval($updates['shippingCountry']));
+                $invoice->setShippingPhone(valstring($updates['shippingPhone']));
+                $invoice->setShippingName(valstring($updates['shippingName']));
+                $invoice->setShippingAttn(valstring($updates['shippingAttn']));
+                $invoice->setShippingAddress(valstring($updates['shippingAddress']));
+                $invoice->setShippingAddress2(valstring($updates['shippingAddress2']));
+                $invoice->setShippingPostbox(valstring($updates['shippingPostbox']));
+                $invoice->setShippingPostcode(valstring($updates['shippingPostcode']));
+                $invoice->setShippingCity(valstring($updates['shippingCity']));
+                $invoice->setShippingCountry(valstring($updates['shippingCountry']));
             }
             $invoice->setItemData(json_encode($updates['lines'], JSON_THROW_ON_ERROR) ?: '[]');
         }
@@ -300,7 +300,7 @@ class InvoiceService
         if (isset($updates['note']) && is_string($updates['note'])) {
             $note = $updates['note'];
             if (InvoiceStatus::New !== $invoice->getStatus()) {
-                $note = trim($invoice->getNote() . "\n" . $note);
+                $note = mb_trim($invoice->getNote() . "\n" . $note);
             }
             $invoice->setNote($note);
         }

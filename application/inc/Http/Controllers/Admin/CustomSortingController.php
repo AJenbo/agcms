@@ -69,10 +69,14 @@ class CustomSortingController extends AbstractAdminController
      */
     public function update(Request $request, int $id): JsonResponse
     {
-        $items = $request->get('items');
-        if (!is_array($items)) {
-            $items = [];
+        $items = [];
+        $rawItems = $request->get('items');
+        if (is_array($rawItems)) {
+            foreach ($rawItems as $rawItem) {
+                $items[] = valstring($rawItem);
+            }
         }
+
         $title = $request->getRequestString('title');
         if (!$title) {
             throw new InvalidInput(_('You must enter a title.'));

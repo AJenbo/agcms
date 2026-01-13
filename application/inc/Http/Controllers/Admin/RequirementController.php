@@ -54,7 +54,7 @@ class RequirementController extends AbstractAdminController
     public function update(Request $request, int $id): JsonResponse
     {
         $title = $request->getRequestString('title') ?? '';
-        $html = strval($request->get('html', ''));
+        $html = valstring($request->get('html', ''));
         $html = purifyHTML($html);
 
         if ('' === $title || '' === $html) {

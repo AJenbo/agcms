@@ -131,11 +131,10 @@ class Application
             $this->services[$id] = new $id();
         }
 
-        /** @var T */
-        $class = $this->services[$id];
-        assert(is_object($class));
+        $service = $this->services[$id];
+        assert($service instanceof $id);
 
-        return $class;
+        return $service;
     }
 
     /**
@@ -237,7 +236,7 @@ class Application
                     $matches[0] = $request;
 
                     $class = $route->getController();
-                    /** @var callable(Request, string...) */
+                    /** @var callable((Request|string)...): Response */
                     $callable = [new $class(), $route->getAction()];
 
                     return $callable(...$matches);

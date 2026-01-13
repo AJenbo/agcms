@@ -55,11 +55,11 @@ function first(array $array): mixed
 
 function intOrNull(mixed $value): ?int
 {
-    if ($value === null) {
+    if ($value === null || !is_scalar($value)) {
         return null;
     }
 
-    return intval($value);
+    return valint($value);
 }
 
 /**
@@ -85,11 +85,13 @@ function cleanFileName(string $name): string
 /**
  * Natsort an array.
  *
- * @param array<array<mixed>> $rows      Array to sort
- * @param int|string          $orderBy   Key to sort by
- * @param string              $direction desc for revers sorting
+ * @template T of array<mixed>
  *
- * @return array<array<mixed>>
+ * @param array<int, T> $rows      Array to sort
+ * @param int|string    $orderBy   Key to sort by
+ * @param string        $direction desc for revers sorting
+ *
+ * @return list<T>
  */
 function arrayNatsort(array $rows, int|string $orderBy, string $direction = 'asc'): array
 {
@@ -125,7 +127,7 @@ function stringLimit(string $string, int $length = 50, string $ellipsis = '…')
 
     $length -= mb_strlen($ellipsis);
     $string = mb_substr($string, 0, $length);
-    $string = trim($string);
+    $string = mb_trim($string);
     if (mb_strlen($string) >= $length) {
         $string = preg_replace('/\s+\S+$/u', '', $string);
         if (null === $string) {
@@ -188,7 +190,7 @@ function purifyHTML(string $html): string
         throw new Exception('preg_replace failed');
     }
 
-    return trim($html);
+    return mb_trim($html);
 }
 
 /**
@@ -217,4 +219,53 @@ function htmlUrlDecode(string $html): string
 
     // Decode all html entities
     return html_entity_decode($html, ENT_QUOTES, 'UTF-8');
+}
+
+function valbool(mixed $value): bool
+{
+    if ($value instanceof Stringable || is_scalar($value)) {
+        filter_var((string)$value, FILTER_VALIDATE_BOOLEAN);
+    }
+
+    return (bool)$value;
+}
+
+function valstring(mixed $value): string
+{
+    if ($value === null) {
+        return '';
+    }
+    if (!$value instanceof Stringable && !is_scalar($value)) {
+        throw new Exception('Not string: ' . gettype($value));
+    }
+
+    return (string)$value;
+}
+
+function valfloat(mixed $value): float
+{
+    if (is_float($value)) {
+        return $value;
+    }
+
+    $value = valstring($value);
+    if (!is_numeric($value)) {
+        throw new Exception('Not numeric: ' . $value);
+    }
+
+    return (float)$value;
+}
+
+function valint(mixed $value): int
+{
+    if (is_int($value)) {
+        return $value;
+    }
+
+    $value = valstring($value);
+    if (!ctype_digit($value)) {
+        throw new Exception('Not int: ' . $value);
+    }
+
+    return (int)$value;
 }

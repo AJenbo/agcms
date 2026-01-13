@@ -40,7 +40,7 @@ class ExplorerController extends AbstractAdminController
      */
     public function index(Request $request): Response
     {
-        $currentDir = strval($request->cookies->get('admin_dir', '/images'));
+        $currentDir = valstring($request->cookies->get('admin_dir', '/images'));
 
         $data = [
             'returnType' => $request->get('return', ''),
@@ -62,7 +62,7 @@ class ExplorerController extends AbstractAdminController
             $path = '';
         }
         $move = $request->query->getBoolean('move');
-        $currentDir = strval($request->cookies->get('admin_dir', '/images'));
+        $currentDir = valstring($request->cookies->get('admin_dir', '/images'));
 
         $html = app(RenderService::class)->render(
             'admin/partial-listDirs',
@@ -409,7 +409,7 @@ class ExplorerController extends AbstractAdminController
      */
     public function fileMoveDialog(Request $request, int $id): Response
     {
-        $currentDir = strval($request->cookies->get('admin_dir', '/images'));
+        $currentDir = valstring($request->cookies->get('admin_dir', '/images'));
 
         $file = app(OrmService::class)->getOne(File::class, $id);
         if (!$file) {
@@ -450,7 +450,7 @@ class ExplorerController extends AbstractAdminController
             throw new InvalidInput(_('No file received.'));
         }
 
-        $currentDir = strval($request->cookies->get('admin_dir', '/images'));
+        $currentDir = valstring($request->cookies->get('admin_dir', '/images'));
         $targetDir = $request->getRequestString('dir') ?? $currentDir;
         $destinationType = $request->getRequestString('type') ?? '';
         $description = $request->getRequestString('alt') ?? '';

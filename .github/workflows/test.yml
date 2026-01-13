@@ -14,7 +14,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        php: [ '8.1', '8.2', '8.3' ]
+        php: [ '8.1', '8.2', '8.3', '8.4', '8.5' ]
 
     steps:
       - uses: actions/checkout@v4
@@ -35,7 +35,7 @@ jobs:
           path: |
             application/vendor
             ./.php-cs-fixer.cache
-          key: composer-${{ hashFiles('**/composer.lock') }}
+          key: composer-${{ matrix.php }}-${{ hashFiles('**/composer.lock') }}
           restore-keys: composer-
 
       - name: Install dependencies
@@ -76,9 +76,3 @@ jobs:
         with:
           project-token: ${{ secrets.CODACY_PROJECT_TOKEN }}
           coverage-reports: build/logs/clover.xml
-
-      - name: Upload coverage to Codeclimate
-        if: matrix.php == '8.1'
-        uses: paambaati/codeclimate-action@v3.2.0
-        env:
-          CC_TEST_REPORTER_ID: dded30dc4b62f393c80ed752f13c7c7efaf748c3573daee0f4040615457ff9c0

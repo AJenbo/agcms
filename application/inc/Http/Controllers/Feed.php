@@ -134,7 +134,7 @@ class Feed extends Base
             $categories = array_unique($categories);
 
             $items[] = [
-                'title'       => trim($page->getTitle()) ?: ConfigService::getString('site_name'),
+                'title'       => mb_trim($page->getTitle()) ?: ConfigService::getString('site_name'),
                 'link'        => (string)new Uri(ConfigService::getString('base_url') . $page->getCanonicalLink()),
                 'description' => $decription,
                 'pubDate'     => gmdate('D, d M Y H:i:s', $page->getTimeStamp()) . ' GMT',
