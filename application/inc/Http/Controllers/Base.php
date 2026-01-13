@@ -44,7 +44,7 @@ class Base extends AbstractController
         if (null === $query) {
             throw new Exception('preg_replace failed');
         }
-        $query = trim($query);
+        $query = mb_trim($query);
         if ($query) {
             $redirectUrl = '/search/results/?q=' . rawurlencode($query) . '&sogikke=&minpris=&maxpris=&maerke=0';
         }

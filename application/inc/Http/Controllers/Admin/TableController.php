@@ -49,10 +49,11 @@ class TableController extends AbstractAdminController
      */
     public function addRow(Request $request, int $tableId): JsonResponse
     {
-        $cells = $request->request->all('cells');
-        if (!is_array($cells)) {
-            $cells = [];
+        $cells = [];
+        foreach ($request->request->all('cells') as $cell) {
+            $cells[] = valstring($cell);
         }
+
         $link = $request->getRequestInt('link');
         if ($link) {
             $page = app(OrmService::class)->getOne(Page::class, $link);
@@ -73,10 +74,11 @@ class TableController extends AbstractAdminController
 
     public function updateRow(Request $request, int $tableId, int $rowId): JsonResponse
     {
-        $cells = $request->request->all('cells');
-        if (!is_array($cells)) {
-            $cells = [];
+        $cells = [];
+        foreach ($request->request->all('cells') as $cell) {
+            $cells[] = valstring($cell);
         }
+
         $link = $request->getRequestInt('link');
         if ($link) {
             $page = app(OrmService::class)->getOne(Page::class, $link);

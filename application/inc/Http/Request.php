@@ -84,8 +84,6 @@ class Request extends SymfonyRequest
      * Get the currently authenticated user.
      *
      * @throws Exception
-     *
-     * @return ?User
      */
     public function user(): ?User
     {
@@ -97,7 +95,7 @@ class Request extends SymfonyRequest
         if (!$this->session instanceof SessionInterface) {
             throw new Exception('Failed to start session.');
         }
-        $id = $this->session->get('login_id');
+        $id = valint($this->session->get('login_id'));
         $hash = $this->session->get('login_hash');
         $this->session->save();
 

@@ -35,16 +35,19 @@ class Newsletter extends AbstractEntity implements InterfaceRichText
 
     public function __construct(array $data = [])
     {
-        $interests = $data['interests'] ?? null;
-        if (!is_array($interests)) {
-            $interests = [];
+        $interests = [];
+        $rawInterests = $data['interests'] ?? null;
+        if (is_array($rawInterests)) {
+            foreach ($rawInterests as $rawInterest) {
+                $interests[] = valstring($rawInterest);
+            }
         }
 
-        $this->setFrom(strval($data['from'] ?? ''))
-            ->setSubject(strval($data['subject'] ?? ''))
+        $this->setFrom(valstring($data['from'] ?? ''))
+            ->setSubject(valstring($data['subject'] ?? ''))
             ->setInterests($interests)
-            ->setHtml(strval($data['html'] ?? ''))
-            ->setSent(boolval($data['sent'] ?? false))
+            ->setHtml(valstring($data['html'] ?? ''))
+            ->setSent(valbool($data['sent'] ?? false))
             ->setId(intOrNull($data['id'] ?? null));
     }
 

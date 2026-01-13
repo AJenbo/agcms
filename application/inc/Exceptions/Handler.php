@@ -4,6 +4,7 @@ namespace App\Exceptions;
 
 use App\Http\Request;
 use App\Services\ConfigService;
+use Sentry\EventId;
 use Sentry\State\Scope;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
@@ -11,7 +12,7 @@ use Throwable;
 
 class Handler
 {
-    private ?string $lastLogId;
+    private ?EventId $lastLogId;
 
     /** @var array<int, string> */
     private array $dontReport = [

@@ -35,12 +35,12 @@ class File extends AbstractEntity
 
     public function __construct(array $data = [])
     {
-        $this->setPath(strval($data['path']))
-            ->setMime(strval($data['mime']))
-            ->setSize(intval($data['size']))
-            ->setDescription(strval($data['description']))
-            ->setWidth(intval($data['width']))
-            ->setHeight(intval($data['height']))
+        $this->setPath(valstring($data['path']))
+            ->setMime(valstring($data['mime']))
+            ->setSize(valint($data['size']))
+            ->setDescription(valstring($data['description']))
+            ->setWidth(valint($data['width']))
+            ->setHeight(valint($data['height']))
             ->setId(intOrNull($data['id'] ?? null));
     }
 
@@ -299,9 +299,6 @@ class File extends AbstractEntity
         return parent::delete();
     }
 
-    /**
-     * @return ?self
-     */
     public static function getByPath(string $path): ?self
     {
         $file = app(OrmService::class)->getOneByQuery(

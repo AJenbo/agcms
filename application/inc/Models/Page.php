@@ -51,18 +51,18 @@ class Page extends AbstractRenderable implements InterfaceRichText
     public function __construct(array $data = [])
     {
         $this->iconId = intOrNull($data['icon_id'] ?? null);
-        $this->setSku(strval($data['sku']))
-            ->setTimeStamp(intval($data['timestamp'] ?? 0))
-            ->setKeywords(strval($data['keywords']))
-            ->setExcerpt(strval($data['excerpt']))
+        $this->setSku(valstring($data['sku']))
+            ->setTimeStamp(valint($data['timestamp'] ?? 0))
+            ->setKeywords(valstring($data['keywords']))
+            ->setExcerpt(valstring($data['excerpt']))
             ->setRequirementId(intOrNull($data['requirement_id']))
             ->setBrandId(intOrNull($data['brand_id']))
-            ->setPrice(intval($data['price']))
-            ->setOldPrice(intval($data['old_price']))
-            ->setPriceType(intval($data['price_type']))
-            ->setOldPriceType(intval($data['old_price_type']))
-            ->setHtml(strval($data['html']))
-            ->setTitle(strval($data['title']))
+            ->setPrice(valint($data['price']))
+            ->setOldPrice(valint($data['old_price']))
+            ->setPriceType(valint($data['price_type']))
+            ->setOldPriceType(valint($data['old_price_type']))
+            ->setHtml(valstring($data['html']))
+            ->setTitle(valstring($data['title']))
             ->setId(intOrNull($data['id'] ?? null));
     }
 
@@ -377,8 +377,6 @@ class Page extends AbstractRenderable implements InterfaceRichText
 
     /**
      * Get the primery category for this page.
-     *
-     * @return ?Category
      */
     public function getPrimaryCategory(): ?Category
     {
@@ -519,8 +517,6 @@ class Page extends AbstractRenderable implements InterfaceRichText
 
     /**
      * Get product brand.
-     *
-     * @return ?Brand
      */
     public function getBrand(): ?Brand
     {
@@ -534,8 +530,6 @@ class Page extends AbstractRenderable implements InterfaceRichText
 
     /**
      * Get product requirement.
-     *
-     * @return ?Requirement
      */
     public function getRequirement(): ?Requirement
     {

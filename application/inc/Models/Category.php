@@ -45,11 +45,11 @@ class Category extends AbstractRenderable
      */
     public function __construct(array $data = [])
     {
-        $this->setRenderMode(intval($data['render_mode']))
-            ->setEmail(strval($data['email']))
-            ->setWeightedChildren(boolval($data['weighted_children']))
-            ->setWeight(intval($data['weight']))
-            ->setTitle(strval($data['title']))
+        $this->setRenderMode(valint($data['render_mode']))
+            ->setEmail(valstring($data['email']))
+            ->setWeightedChildren(valbool($data['weighted_children']))
+            ->setWeight(valint($data['weight']))
+            ->setTitle(valstring($data['title']))
             ->setId(intOrNull($data['id'] ?? null));
 
         $this->iconId = intOrNull($data['icon_id'] ?? null);
@@ -420,7 +420,7 @@ class Category extends AbstractRenderable
             $nodes[] = $category;
         } while ($category = $category->getParent());
 
-        return array_values(array_reverse($nodes));
+        return array_reverse($nodes);
     }
 
     /**

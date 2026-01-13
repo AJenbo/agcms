@@ -53,7 +53,7 @@ class OrmService
         if (null === $query) {
             throw new Exception('preg_replace failed');
         }
-        $query = trim($query);
+        $query = mb_trim($query);
 
         if (!isset($this->oneBySql[$class]) || !array_key_exists($query, $this->oneBySql[$class])) {
             $this->oneBySql[$class][$query] = null;
@@ -89,7 +89,7 @@ class OrmService
         if (null === $query) {
             throw new Exception('preg_replace failed');
         }
-        $query = trim($query);
+        $query = mb_trim($query);
         if (!isset($this->bySql[$class][$query])) {
             $this->bySql[$class][$query] = [];
             $db = app(DbService::class);

@@ -43,11 +43,11 @@ class User extends AbstractEntity
 
     public function __construct(array $data = [])
     {
-        $this->setFullName(strval($data['full_name']))
-            ->setNickname(strval($data['nickname']))
-            ->setPasswordHash(strval($data['password_hash']))
-            ->setAccessLevel(intval($data['access_level']))
-            ->setLastLogin(intval($data['last_login']))
+        $this->setFullName(valstring($data['full_name']))
+            ->setNickname(valstring($data['nickname']))
+            ->setPasswordHash(valstring($data['password_hash']))
+            ->setAccessLevel(valint($data['access_level']))
+            ->setLastLogin(valint($data['last_login']))
             ->setId(intOrNull($data['id'] ?? null));
     }
 

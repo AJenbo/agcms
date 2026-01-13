@@ -39,13 +39,13 @@ class Email extends AbstractEntity
     {
         $this->emailService = app(EmailService::class);
 
-        $this->setTimestamp(intval($data['timestamp'] ?? time()))
-            ->setSubject(strval($data['subject']))
-            ->setBody(strval($data['body']))
-            ->setSenderName(strval($data['senderName']))
-            ->setSenderAddress(strval($data['senderAddress']))
-            ->setRecipientName(strval($data['recipientName']))
-            ->setRecipientAddress(strval($data['recipientAddress']))
+        $this->setTimestamp(valint($data['timestamp'] ?? time()))
+            ->setSubject(valstring($data['subject']))
+            ->setBody(valstring($data['body']))
+            ->setSenderName(valstring($data['senderName']))
+            ->setSenderAddress(valstring($data['senderAddress']))
+            ->setRecipientName(valstring($data['recipientName']))
+            ->setRecipientAddress(valstring($data['recipientAddress']))
             ->setId(intOrNull($data['id'] ?? null));
     }
 
@@ -200,11 +200,11 @@ class Email extends AbstractEntity
     public static function mapFromDB(array $data): array
     {
         $from = explode('<', $data['from']);
-        $senderAddress = trim($from[0]);
+        $senderAddress = mb_trim($from[0]);
         $senderName = mb_substr($from[1], 0, -1);
 
         $to = explode('<', $data['to']);
-        $recipientAddress = trim($to[0]);
+        $recipientAddress = mb_trim($to[0]);
         $recipientName = mb_substr($to[1], 0, -1);
 
         return [

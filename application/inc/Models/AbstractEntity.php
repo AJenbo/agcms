@@ -8,7 +8,7 @@ use App\Services\OrmService;
 
 abstract class AbstractEntity implements Entity
 {
-    /** Table name in database. */
+    /** @var string Table name in database. */
     public const TABLE_NAME = '';
 
     /** @var ?int The entity ID. */

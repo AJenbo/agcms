@@ -7,7 +7,7 @@ use App\Enums\ColumnType;
 class TableColumn
 {
     /**
-     * @param array<int, string> $options
+     * @param array<string> $options
      */
     public function __construct(
         public readonly string $title,

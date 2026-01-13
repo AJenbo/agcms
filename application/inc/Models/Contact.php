@@ -49,23 +49,26 @@ class Contact extends AbstractEntity
 
     public function __construct(array $data = [])
     {
-        $interests = $data['interests'] ?? null;
-        if (!is_array($interests)) {
-            $interests = [];
+        $interests = [];
+        $rawInterests = $data['interests'] ?? null;
+        if (is_array($rawInterests)) {
+            foreach ($rawInterests as $rawInterest) {
+                $interests[] = valstring($rawInterest);
+            }
         }
 
-        $this->setTimestamp(intval($data['timestamp'] ?? time()))
-            ->setName(strval($data['name']))
-            ->setEmail(strval($data['email']))
-            ->setAddress(strval($data['address']))
-            ->setCountry(strval($data['country']))
-            ->setPostcode(strval($data['postcode']))
-            ->setCity(strval($data['city']))
-            ->setPhone1(strval($data['phone1']))
-            ->setPhone2(strval($data['phone2']))
-            ->setSubscribed(boolval($data['subscribed']))
+        $this->setTimestamp(valint($data['timestamp'] ?? time()))
+            ->setName(valstring($data['name']))
+            ->setEmail(valstring($data['email']))
+            ->setAddress(valstring($data['address']))
+            ->setCountry(valstring($data['country']))
+            ->setPostcode(valstring($data['postcode']))
+            ->setCity(valstring($data['city']))
+            ->setPhone1(valstring($data['phone1']))
+            ->setPhone2(valstring($data['phone2']))
+            ->setSubscribed(valbool($data['subscribed']))
             ->setInterests($interests)
-            ->setIp(strval($data['ip']))
+            ->setIp(valstring($data['ip']))
             ->setId(intOrNull($data['id'] ?? null));
     }
 

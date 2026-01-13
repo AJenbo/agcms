@@ -19,12 +19,15 @@ class CustomSorting extends AbstractEntity
 
     public function __construct(array $data = [])
     {
-        $items = $data['items'] ?? null;
-        if (!is_array($items)) {
-            $items = [];
+        $items = [];
+        $rawItems = $data['items'] ?? null;
+        if (is_array($rawItems)) {
+            foreach ($rawItems as $rawItem) {
+                $items[] = valstring($rawItem);
+            }
         }
 
-        $this->setTitle(strval($data['title']))
+        $this->setTitle(valstring($data['title']))
             ->setItems($items)
             ->setId(intOrNull($data['id'] ?? null));
     }

@@ -25,7 +25,7 @@ class Utf8Url implements Middleware
             $encoding = 'windows-1252';
         }
 
-        $requestUrl = mb_convert_encoding($requestUrl, 'UTF-8', $encoding);
+        $requestUrl = mb_convert_encoding($requestUrl, 'UTF-8', $encoding) ?: $requestUrl;
 
         return redirect($requestUrl, Response::HTTP_MOVED_PERMANENTLY);
     }

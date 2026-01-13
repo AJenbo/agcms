@@ -37,11 +37,11 @@ class Table extends AbstractEntity
 
     public function __construct(array $data = [])
     {
-        $this->setPageId(intval($data['page_id']))
-            ->setTitle(strval($data['title']))
-            ->setColumnData(strval($data['column_data']))
-            ->setOrderBy(intval($data['order_by']))
-            ->setHasLinks(boolval($data['has_links']))
+        $this->setPageId(valint($data['page_id']))
+            ->setTitle(valstring($data['title']))
+            ->setColumnData(valstring($data['column_data']))
+            ->setOrderBy(valint($data['order_by']))
+            ->setHasLinks(valbool($data['has_links']))
             ->setId(intOrNull($data['id'] ?? null));
     }
 
@@ -139,21 +139,33 @@ class Table extends AbstractEntity
     {
         $columns = json_decode($columnData, true);
 
-        if (is_array($columns)) {
-            foreach ($columns as $columnData) {
-                $column = new TableColumn(
-                    $columnData['title'],
-                    ColumnType::from($columnData['type']),
-                    $columnData['sorting'],
-                    $columnData['options'],
-                );
-
-                if (in_array($column->type, [ColumnType::Price, ColumnType::SalesPrice], true)) {
-                    $this->hasPrices = true;
-                }
-
-                $this->columns[] = $column;
+        if (!is_array($columns)) {
+            return $this;
+        }
+        foreach ($columns as $columnData) {
+            if (!is_array($columnData)) {
+                continue;
             }
+            $rawOptions = $columnData['options'] ?? [];
+            if (!is_array($rawOptions)) {
+                continue;
+            }
+            $options = [];
+            foreach ($rawOptions as $key => $rawOption) {
+                $options[$key] = is_string($rawOption) ? $rawOption : '';
+            }
+            $column = new TableColumn(
+                valstring($columnData['title']),
+                ColumnType::from(valint($columnData['type'])),
+                valint($columnData['sorting']),
+                $options,
+            );
+
+            if (in_array($column->type, [ColumnType::Price, ColumnType::SalesPrice], true)) {
+                $this->hasPrices = true;
+            }
+
+            $this->columns[] = $column;
         }
 
         return $this;
@@ -323,9 +335,11 @@ class Table extends AbstractEntity
     /**
      * Sort a 2D array based on a custome sort order.
      *
-     * @param array<int, array<int|string, mixed>> $rows
+     * @template T of array<int|string, mixed>
      *
-     * @return array<int, array<int|string, mixed>>
+     * @param array<int, T> $rows
+     *
+     * @return list<T>
      */
     private function orderRows(array $rows, ?int $orderBy = null): array
     {
@@ -342,7 +356,11 @@ class Table extends AbstractEntity
 
         $tempArray = [];
         foreach ($rows as $rowKey => $row) {
-            $tempArray[$rowKey] = $options[$row[$orderBy]] ?? -1;
+            $optionKey = $row[$orderBy];
+            if (!is_string($optionKey) && !is_int($optionKey)) {
+                throw new Exception('Invalid order key: ' . gettype($optionKey));
+            }
+            $tempArray[$rowKey] = $options[$optionKey] ?? -1;
         }
 
         asort($tempArray);

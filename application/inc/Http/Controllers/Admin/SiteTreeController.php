@@ -19,7 +19,7 @@ class SiteTreeController extends AbstractAdminController
      */
     public function index(Request $request): Response
     {
-        $openCategories = explode('<', strval($request->cookies->get('openkat', '')));
+        $openCategories = explode('<', valstring($request->cookies->get('openkat', '')));
         $openCategories = array_map('intval', $openCategories);
 
         $siteTreeService = new SiteTreeService();
@@ -39,7 +39,7 @@ class SiteTreeController extends AbstractAdminController
         if (!is_string($inputType)) {
             $inputType = '';
         }
-        $openCategories = explode('<', strval($request->cookies->get('openkat', '')));
+        $openCategories = explode('<', valstring($request->cookies->get('openkat', '')));
         $openCategories = array_map('intval', $openCategories);
 
         $data = [
@@ -76,7 +76,7 @@ class SiteTreeController extends AbstractAdminController
      */
     public function pageWidget(Request $request): Response
     {
-        $openCategories = explode('<', strval($request->cookies->get('openkat', '')));
+        $openCategories = explode('<', valstring($request->cookies->get('openkat', '')));
         $openCategories = array_map('intval', $openCategories);
 
         $siteTreeService = new SiteTreeService();
@@ -84,7 +84,7 @@ class SiteTreeController extends AbstractAdminController
             'siteTree' => $siteTreeService->getSiteTreeData(
                 $openCategories,
                 'pages',
-                intval($request->cookies->get('activekat', -1))
+                valint($request->cookies->get('activekat', -1))
             ),
         ];
 

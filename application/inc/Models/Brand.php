@@ -20,8 +20,8 @@ class Brand extends AbstractRenderable
     public function __construct(array $data = [])
     {
         $this->iconId = intOrNull($data['icon_id']);
-        $this->setLink(strval($data['link']))
-            ->setTitle(strval($data['title']))
+        $this->setLink(valstring($data['link']))
+            ->setTitle(valstring($data['title']))
             ->setId(intOrNull($data['id'] ?? null));
     }
 

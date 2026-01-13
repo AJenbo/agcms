@@ -127,7 +127,7 @@ class Shopping extends Base
         }
 
         $note = $this->invoiceService->generateExtraNote($cart);
-        $note = trim($note . "\n" . $invoice->getNote());
+        $note = mb_trim($note . "\n" . $invoice->getNote());
         $invoice->setNote($note);
 
         $invoice->save();

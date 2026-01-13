@@ -27,7 +27,7 @@ class InvoiceController extends AbstractAdminController
      */
     public function index(Request $request): Response
     {
-        $momssats = strval($request->get('momssats'));
+        $momssats = valstring($request->get('momssats'));
         if (!$momssats) {
             $momssats = null;
         }
@@ -35,13 +35,13 @@ class InvoiceController extends AbstractAdminController
             $request->query->getInt('id') ?: null,
             $request->query->getInt('y'),
             $request->query->getInt('m'),
-            strval($request->get('department') ?? ''),
-            strval($request->get('status', 'activ')),
-            strval($request->get('name') ?? ''),
-            strval($request->get('tlf') ?? ''),
-            strval($request->get('email') ?? ''),
+            valstring($request->get('department') ?? ''),
+            valstring($request->get('status', 'activ')),
+            valstring($request->get('name') ?? ''),
+            valstring($request->get('tlf') ?? ''),
+            valstring($request->get('email') ?? ''),
             $momssats,
-            strval($request->get('clerk') ?? ''),
+            valstring($request->get('clerk') ?? ''),
         );
 
         $user = $request->user();

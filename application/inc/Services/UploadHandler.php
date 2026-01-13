@@ -99,8 +99,11 @@ class UploadHandler
         } elseif ($this->isVideoFile()) {
             $getID3 = new getID3();
             $fileInfo = $getID3->analyze($filePath);
-            $width = $fileInfo['video']['resolution_x'];
-            $height = $fileInfo['video']['resolution_y'];
+            $format = $fileInfo['video'] ?? [];
+            $width = is_array($format) ? $format['resolution_x'] ?? 0 : 0;
+            $width = is_int($width) ? $width : 0;
+            $height = is_array($format) ? $format['resolution_y'] ?? 0 : 0;
+            $height = is_int($height) ? $height : 0;
         }
 
         return $this->insertFile($description, $width, $height);

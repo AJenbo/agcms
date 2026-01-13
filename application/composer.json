@@ -31,17 +31,18 @@
         "sentry/sentry": "^3.12",
         "symfony/http-foundation": "^6.1",
         "symfony/mime": "^6.1",
+        "symfony/polyfill-mbstring": "^1.33",
         "tecnickcom/tcpdf": "^6.5",
         "twig/twig": "^3.4"
     },
     "require-dev": {
         "ext-pdo_sqlite": "*",
         "dms/phpunit-arraysubset-asserts": "^0.4.0",
-        "friendsofphp/php-cs-fixer": "^3.13",
+        "friendsofphp/php-cs-fixer": "^3.92",
         "mheap/phpunit-github-actions-printer": "^1.5",
         "mockery/mockery": "^1.5",
         "php-coveralls/php-coveralls": "^2.5",
-        "phpstan/phpstan": "*",
+        "phpstan/phpstan": "^2.1",
         "phpstan/phpstan-mockery": "*",
         "phpstan/phpstan-phpunit": "*",
         "phpunit/phpunit": "^9.5"

@@ -17,8 +17,10 @@ class ConfigService
      */
     public static function load(string $basePath): void
     {
+        /** @var array<string, mixed>|false */
         $config = @include $basePath . '/inc/config.php';
         if ($config === false) {
+            /** @var array<string, mixed> */
             $config = include $basePath . '/inc/config_sample.php';
         }
         self::$config = $config;
