@@ -6,7 +6,6 @@ use App\Contracts\Middleware;
 use App\Exceptions\InvalidInput;
 use App\Http\Request;
 use App\Models\User;
-use App\Render;
 use App\Services\DbService;
 use App\Services\OrmService;
 use App\Services\RenderService;
